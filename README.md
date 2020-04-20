@@ -18,3 +18,10 @@ To instally copy the zip for the target platform, unzip, and copy to the exectut
         -argcin         :Places std:cin into $ARGCIN environment variable (use with -ccmd|-cfile)
         -argv           :Places proceeding args into $ARGV environment variable
 
+## Language syntax
+
+## Commands
+
+## Types
+
+### $CLASS
