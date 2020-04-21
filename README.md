@@ -1,5 +1,5 @@
 # grapa
-grapa - a grammar parser language / environment for processing data (ETL tool), or experimenting with new language constructs. 
+grapa - a grammar parser language / environment for processing data (ETL type tool), or experimenting with new language constructs. 
 
 ## Introduction
 The unique approach of grapa is that it includes native syntax for JSON/XML and BNF style grammers for defining data processing rules. The same grammer engine used to assist with parsing data is the same engine used to process the language. The syntax of the language is fully customizable (even at runtime if that's of interest) as the language rules are stored as global variables. If for example, you'd like to extend the langue to include SQL style syntax, that could be done and the new syntax would function as native syntax. 
