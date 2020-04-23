@@ -50,9 +50,21 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 
 # Data Types
 
-## Native Types
+## Basic Native Types
 
 ### $INT
+Supports signed and unsigned. Unsigned is essentally an $INT that is not negative. Given this is unlimited precision, a separate $UINT type is not required (grapa originally had one, but it's been removed as it's essentially redundant and adds unncessary complexity). The reason other languages have a $UINT type is to handle to bit overflow issue where the high order bit may become set during math operations. In grapa, when the high order bit is set, it automatically increases the precision and there is no overflow. Still, there is sometimes a need for specific $UINT type handling of raw bytes, and to support this there is a uint() function to ensure that a raw byte stream with a high order bit is not incorectly interpreted as a negative number. 
+
+The $INT class includes routines for:
+- General: inherits the $obj class, and the routines supported there. See $obj system class type.
+- Crypt: genprime, isprime, random, genrsa
+- Trig: e, pi, log, ln, sin, cos, tan, cot, sec, csc, asin, acos, atan, acot, asec, acsc, sinh, cosh, tanh, coth, sech, csch, asinh, acosh, atanh, acoth, acech, acsch, atan2, hypot.
+
+<pre><code>> 52322
+52322
+> "52322".int()
+52322
+</code></pre>
 
 ### $STR
 
@@ -60,7 +72,7 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 
 ### $FLOAT
 
-Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). The $FLOAT class inherits the $INT class, which includes routines for e, pi, log, ln, sin, cos, tan, cot, sec, csc, asin, acos, atan, acot, asec, acsc, sinh, cosh, tanh, coth, sech, csch, asinh, acosh, atanh, acoth, acech, acsch, atan2, hypot.
+Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). The $FLOAT class inherits the $INT class, and the functions in that class.
 
 Example:
 <pre><code>> 5.13
@@ -125,7 +137,7 @@ Bit shifts:
 
 ### XML
 
-## System Types
+## System Native Types
 
 ### $SYSID
 
@@ -134,6 +146,18 @@ Bit shifts:
 ### $SYSSTR
 
 ### $ERR
+
+## System Class Types
+
+### $sys
+
+### $obj
+
+### $file
+
+### $net
+
+### $thread
 
 ## Custom Types
 Create custome types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
