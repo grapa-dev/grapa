@@ -509,7 +509,7 @@ Example:
 
 ### $sys().type()
 
-### $sys().getenv() / $sys().putenv()
+### $sys().getenv(type) / $sys().putenv(type,value)
 - $PATH
 - $STATICLIB
 - $ARGCIN
@@ -524,7 +524,7 @@ Example:
 - $LICENCE
 - Any value not starting with '$' will be directed to the native OS getenv/putenv
 
-### data.encode() / data.decode()
+### value.encode(type) / value.decode(type)
 
 - RSA-KEY
 - AES256
@@ -538,3 +538,8 @@ Example:
 - XML-GRAPA
 - ESCAPE
 - FLOAT
+
+## Function Chaining
+Any object that returns an object can be chained.
+
+For example "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit percision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit percision of pi to the power of 4.4. 
