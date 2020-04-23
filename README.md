@@ -53,6 +53,9 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 # Native Types
 
 **$FLOAT**
+
+Supports both fix and float format. Fix will keep the number centered around the decimal, rounding to the precision specified. Float will not restrict to the decimal, but will roun to the the  precision specified. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). 
+
 Example: 5.13
 
 You can also create using hex format: -0x4.0x5
@@ -61,8 +64,21 @@ Which returns -4.3125
 Or binaary format: 0b101.11
 Which returns 5.625
 
+By default, all floats are "float" format. To change formats use the fix() and float() routines, where both the precision and the "extra" bits can also be specified. The parsing engine will set the precision to the system default, which is 128 bits. There are two ways to change this. First, change the system defualt using the setfloat and setfix routines. Second, pass in a $STR to the fix or float routines. For example:
+
+"3.5".float(300,6)
+
+To verify the float is being created properly, use the decode routine with FLOAT as the parameter. For example:
+
+"3.5".float(300,6).decode(FLOAT)
+
+{"sign":false,"trunc":false,"fix":false,"exp":1,"max":300,"prec":6,"data":7}
+
+
+
 **$INT**
 
+Example:
 **$STR**
 
 **$BOOL**
