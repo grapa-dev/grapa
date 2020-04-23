@@ -301,7 +301,7 @@ Same as $STR, but was initialized with '$' at the front of the string. Used for 
 A few general utility functions that are useful, but it wasn't clear if they should be added to the native language syntax, were added to $sys. This includes $sys().type(), $sys().getenv(), and $sys().setenv(). 
 
 ### $obj
-Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used accross the different data types are placed in the $obj class. 
+Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used accross the different data types are placed in the $obj class. Functions included are type, raw, uraw, bool, int, uint, float, fix, setfloat, setfix, str, base, hex, uhex, bin, ubin, time, bits, bytes, len, left, right, mid, rtrim, ltrim, trim, reverse, replace, split, join, upper, lower, setbit, clearbit, genbits, encode, decode, setfile, map, filter, reduce, sort, isint, iferr, exec, getname. 
 
 ### $file
 Provides the ability to navigate either the file system or a database, querying data and updating data. Funcitions include type, table, pwd, cd, phd, chd, dir, mktable, mkdir, rmdir, mkcol, mkrow, rmrow, setrow, and getrow. 
