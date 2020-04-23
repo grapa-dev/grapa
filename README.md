@@ -178,15 +178,47 @@ There are three basic steps:
 - Apply raw data to the rule to generate an execution plan.
 - Execute the plan, with parameters if specified.
 
+Example system rule:
+<pre><code>> @$start
+rule <$command_list> $SYSID("BE") | <$command_list> ';' | <$command_list>
+</code></pre>
+
+The above is the entry point to the grapa language. This entry point is a global variable that can be updated...so take caution as it is the default entry point all scripts. It is also possible to navigate the language syntax by looking up each rule that is lined from any other rule.
+
+Example of defining a custome rule, and applying the rule:
+<pre><code> x = rule $INT $INT {op(a:$1,b:$2){@a*@b}} | $INT {op(a:$1){@a}}
+> (op()("4",@x))()
+4
+> (op()("4 3",@x))()
+12
+> op()("4",@x)
+()[[op,()[[op,()[var,{a}]],{"a":4}]],{}]
+> op()("4 3",@x)
+()[[op,()[[op,()[mul,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":3}]],{}]
+</code></pre>
+
+Note: class functions for $RULE will be created that simplify the above. For now, need to use the raw $OP syntax. 
+
 ## System Native Types
+
+### $OP
+
+To see what rule might be used for a given script:
+<pre><code>> op(){4%2}
+()[[op,()[mod,{4,2}]],{}]
+> op(){4*2}
+()[[op,8],{}]
+</code></pre>
+
+In the first case, a operation type is created that calles the "mod" library passing 4 and 2 and returns the result. In the second case, the planner recognized an optimization and reduced the operation to returning 8. 
+
+### $ERR
 
 ### $SYSID
 
 ### $SYSINT
 
 ### $SYSSTR
-
-### $ERR
 
 ## System Class Types
 
