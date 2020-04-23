@@ -50,69 +50,116 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 
 # Data Types
 
-# Native Types
+## Native Types
 
-## $FLOAT
+### $FLOAT
 
 Supports both fix and float format. Fix will keep the number centered around the decimal, rounding to the precision specified. Float will not restrict to the decimal, but will roun to the the  precision specified. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). 
 
-Example: 5.13
+Example:
+<pre><code>> 5.13
+5.13
+</code></pre>
 
-You can also create using hex format: -0x4.0x5
-Which returns -4.3125
+You can also create using hex format:
+<pre><code>> -0x4.0x5
+-4.3125
+</code></pre>
 
-Or binaary format: 0b101.11
-Which returns 5.625
+Or binaary format:
+<pre><code>> 0b101.11
+5.625
+</code></pre>
 
 By default, all floats are "float" format. To change formats use the fix() and float() routines, where both the precision and the "extra" bits can also be specified. The parsing engine will set the precision to the system default, which is 128 bits. There are two ways to change this. First, change the system defualt using the setfloat and setfix routines. Second, pass in a $STR to the fix or float routines. For example:
 
-"3.5".float(300,6)
+<pre><code>> "3.5".float(300,6)
+3.5
+</code></pre>
 
 To verify the float is being created properly, use the decode routine with FLOAT as the parameter. For example:
 
-<code>
-"3.5".float(300,6).decode(FLOAT)
-{"sign":false,"trunc":false,"fix":false,"exp":1,"max":300,"prec":6,"data":7}
-</code>
+<pre><code>> "30.75".float(300,6).decode(FLOAT)
+{"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"prec":6,"data":123}
+> (30.75).decode(FLOAT).data
+123
+> (30.75).decode(FLOAT).data.hex()
+7B
+</code></pre>
 
+Convert to other formats:
+<pre><code>> (30.75).hex()
+1E.C
+> (30.75).bin()
+11110.0011
+> (30.75).int()
+30
+> (30.75).raw()
+00048100077B
+</code></pre>
 
-## $INT**
+Bit shifts:
+<pre><code>> (30.75) >> 4
+1.921875
+> (30.75) << 4
+492
+</code></pre>
 
-Example:
-## $STR
+### $INT
 
-## $BOOL
+### $STR
 
-## $ID
+### $BOOL
 
-## $LIST
+### $ID
 
-## $ARRAY
+### $LIST
 
-## $TIME
+### $ARRAY
 
-## $TABLE
+### $TIME
 
-## $RAW
+### $TABLE
 
-## XML
+### $RAW
 
+### XML
 
+## System Types
 
-## $SYSID
+### $SYSID
 
-## $SYSINT
+### $SYSINT
 
-## $SYSSTR
+### $SYSSTR
 
-## $ERR
+### $ERR
 
+## Custom Types
+Create custome types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
 
-# Syntax
+The following examle defines a class with a single method. The method setdiv2 updates data to the parameter divided by 2.
+<pre><code>> myClass = class {data = 0; setdiv2 = op(p){data = @p/2;}; get = op(){@data;};};
+> test = myClass();
+> @test.setdiv2(5);
+> @test.get();
+2
+> @test
+{"data":2}
+</code></pre>
 
+# Loops
+
+## IF
+
+## WHILE
+
+## MAP
+
+## REDUCE
+
+## FILTER
 
 # Commands
 
-# Types
 
-## $CLASS
