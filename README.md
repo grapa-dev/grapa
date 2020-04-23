@@ -57,9 +57,11 @@ Examples:
 > 5.13
 > -5.5
 
-You can also create using hex or binary format: 
+You can also create using hex format: 
 > -0x4.0x5
 >   which returns -4.3125
+
+Or binaary format:
 > 0b101.11
 >   which returns 5.625
 
