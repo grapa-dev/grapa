@@ -168,7 +168,15 @@ Bit shifts:
 
 ### $RAW
 
-### XML
+### $XML
+
+### $RULE
+This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessable and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a lanugae by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
+
+There are three basic steps:
+- Define the rules (rules may reference other rules) with code to execute for each rule option.
+- Apply raw data to the rule to generate an execution plan.
+- Execute the plan, with parameters if specified.
 
 ## System Native Types
 
