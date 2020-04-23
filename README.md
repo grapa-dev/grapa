@@ -52,6 +52,12 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 
 ## Native Types
 
+### $INT
+
+### $STR
+
+### $BOOL
+
 ### $FLOAT
 
 Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). The $FLOAT class inherits the $INT class, which includes routines for e, pi, log, ln, sin, cos, tan, cot, sec, csc, asin, acos, atan, acot, asec, acsc, sinh, cosh, tanh, coth, sech, csch, asinh, acosh, atanh, acoth, acech, acsch, atan2, hypot.
@@ -104,12 +110,6 @@ Bit shifts:
 > (30.75) << 4
 492
 </code></pre>
-
-### $INT
-
-### $STR
-
-### $BOOL
 
 ### $ID
 
@@ -175,10 +175,60 @@ Example:
 
 
 ## MAP
+Sytax:
+- list|array . map ( op );
+- list|array . map ( op , param1, param2, etc);
+
+Where op is:
+- op (listvalue, param1, param2, etc) ( script )
+- op (listvalue, param1, param2, et) { statement;}
+
+Note: each item of the array will process in a separate thread. This is an easy way to add multi-threading to the processing, but beware and batch workoads in the array to keep the size of the array to the number of threads you want.
+
+Example:
+<pre><code>> [1,2,3].map(op(n){@n*2});
+[2,4,6]
+> [1,2,3].map(op(n,p){@n*2+@p},5);
+[7,9,11]
+</code></pre>
 
 ## REDUCE
+Sytax:
+- list|array . filter ( op );
+- list|array . reduce ( op , startvalue);
+- list|array . reduce ( op , startvalue, param1, param2, etc);
+
+Where op is:
+- op (startvalue, listvalue, param1, param2, etc) ( script )
+
+Reduce process sequentially, as processing is intended to augment the startvalue. If the startvalue is not provided, the first item in the list is used as the startvalue.
+
+Example:
+<pre><code>> [1,2,3].reduce(op(s,n){@s*@n});
+6
+> [1,2,3].reduce(op(s,n){s+=@n*2},[]);
+[2,4,6]
+> [1,2,3].reduce(op(s,n,p){s+=@n*2+@p},[],5);
+[7,9,11]
+</code></pre>
 
 ## FILTER
+Sytax:
+- list|array . filter ( op );
+- list|array . filter ( op , param1, param2, etc);
+
+Where op is:
+- op (listvalue, param1, param2, etc) ( script )
+- op (listvalue, param1, param2, et) { statement;}
+
+Note: each item of the array will process in a separate thread. This is an easy way to add multi-threading to the processing, but beware and batch workoads in the array to keep the size of the array to the number of threads you want.
+
+Example:
+<pre><code>> [1,2,3,4,5,6,7,8,9].filter(op(n){@n%2!=0});
+[1,3,5,7,9]
+> [1,2,3,4,5,6,7,8,9].filter(op(n,p){@n%@p!=0},3);
+[1,2,4,5,7,8]
+</code></pre>
 
 # Commands
 
