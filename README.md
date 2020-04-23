@@ -59,16 +59,20 @@ The following are equivalent in comparisons:
 
 <pre><code>> 1==true
 1
+
 > null==false
 1
+
 > 1==false
-null
+
 > "55"==(55).str()
 1
+
 > "5.54"==(5.54).str()
 1
+
 > "5.53"==(5.54).str()
-null
+
 </code></pre>
 
 ### $STR
@@ -77,12 +81,16 @@ ASCII only - unicode will eventually be added. Can initalize with either double 
 Examples:
 <pre><code>> "this is a test".len()
 14
+
 > "this is a test".split("")
 ["t","h","i","s"," ","i","s"," ","a"," ","t","e","s","t"]
+
 > "this is a test".raw()
 7468697320697320612074657374
+
 > "this is a test".raw().int()
 2361031878030638688519054699098996
+
 > "this is a test".raw().int()*2
 4722063756061277377038109398197992
 </code></pre>
@@ -97,8 +105,10 @@ The $INT class includes routines for:
 
 <pre><code>> 52322
 52322
+
 > "52322".int()
 52322
+
 > (52322).raw()
 00CC62
 </code></pre>
@@ -134,6 +144,7 @@ To verify the float is being created properly, use the decode routine with FLOAT
 {"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"prec":6,"data":123}
 > (30.75).decode(FLOAT).data
 123
+
 > (30.75).decode(FLOAT).data.hex()
 7B
 </code></pre>
@@ -141,17 +152,22 @@ To verify the float is being created properly, use the decode routine with FLOAT
 Convert to other formats:
 <pre><code>> (30.75).hex()
 1E.C
+
 > (30.75).bin()
 11110.0011
+
 > (30.75).int()
 30
+
 > (30.75).raw()
 00048100077B
+
 </code></pre>
 
 Bit shifts:
 <pre><code>> (30.75) >> 4
 1.921875
+
 > (30.75) << 4
 492
 </code></pre>
@@ -189,10 +205,13 @@ Example of defining a custome rule, and applying the rule:
 <pre><code> x = rule $INT $INT {op(a:$1,b:$2){@a*@b}} | $INT {op(a:$1){@a}}
 > (op()("4",@x))()
 4
+
 > (op()("4 3",@x))()
 12
+
 > op()("4",@x)
 ()[[op,()[[op,()[var,{a}]],{"a":4}]],{}]
+
 > op()("4 3",@x)
 ()[[op,()[[op,()[mul,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":3}]],{}]
 </code></pre>
@@ -206,6 +225,7 @@ Note: class functions for $RULE will be created that simplify the above. For now
 To see what rule might be used for a given script:
 <pre><code>> op(){4%2}
 ()[[op,()[mod,{4,2}]],{}]
+
 > op(){4*2}
 ()[[op,8],{}]
 </code></pre>
@@ -237,10 +257,14 @@ Create custome types using the class routine. The underlying structure is a $LIS
 
 The following examle defines a class with a single method. The method setdiv2 updates data to the parameter divided by 2.
 <pre><code>> myClass = class {data = 0; setdiv2 = op(p){data = @p/2;}; get = op(){@data;};};
+
 > test = myClass();
+
 > @test.setdiv2(5);
+
 > @test.get();
 2
+
 > @test
 {"data":2}
 </code></pre>
@@ -285,6 +309,7 @@ Note: each item of the array will process in a separate thread. This is an easy 
 Example:
 <pre><code>> [1,2,3].map(op(n){@n*2});
 [2,4,6]
+
 > [1,2,3].map(op(n,p){@n*2+@p},5);
 [7,9,11]
 </code></pre>
@@ -303,8 +328,10 @@ Reduce process sequentially, as processing is intended to augment the startvalue
 Example:
 <pre><code>> [1,2,3].reduce(op(s,n){@s*@n});
 6
+
 > [1,2,3].reduce(op(s,n){s+=@n*2},[]);
 [2,4,6]
+
 > [1,2,3].reduce(op(s,n,p){s+=@n*2+@p},[],5);
 [7,9,11]
 </code></pre>
@@ -323,6 +350,7 @@ Note: each item of the array will process in a separate thread. This is an easy 
 Example:
 <pre><code>> [1,2,3,4,5,6,7,8,9].filter(op(n){@n%2!=0});
 [1,3,5,7,9]
+
 > [1,2,3,4,5,6,7,8,9].filter(op(n,p){@n%@p!=0},3);
 [1,2,4,5,7,8]
 </code></pre>
