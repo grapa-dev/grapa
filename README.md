@@ -561,6 +561,7 @@ The following will create an RSA key using hard coded public/private key values 
 this is a test of 95 chars to see if we can encode with RSA. It needs to be exactly 95...so ne
 </code></pre>
 
+## Word Length
 The following returns the length of each word in a string:
 <pre><code>> "this is a test".split(" ").reduce(op(a,b){@a+=@b.len();},[])
 [4,2,1,4]
