@@ -205,9 +205,9 @@ The following examle defines a class with a single method. The method setdiv2 up
 {"data":2}
 </code></pre>
 
-# Loops
+## Loops
 
-## IF
+### IF
 
 Syntax options:
 - if (bool) statement;
@@ -221,7 +221,7 @@ none
 2==2
 </code></pre>
 
-## WHILE
+### WHILE
 Sytax:
 - while(bool) statement;
 
@@ -231,7 +231,7 @@ Example:
 </code></pre>
 
 
-## MAP
+### MAP
 Sytax:
 - list|array . map ( op );
 - list|array . map ( op , param1, param2, etc);
@@ -249,7 +249,7 @@ Example:
 [7,9,11]
 </code></pre>
 
-## REDUCE
+### REDUCE
 Sytax:
 - list|array . filter ( op );
 - list|array . reduce ( op , startvalue);
@@ -269,7 +269,7 @@ Example:
 [7,9,11]
 </code></pre>
 
-## FILTER
+### FILTER
 Sytax:
 - list|array . filter ( op );
 - list|array . filter ( op , param1, param2, etc);
@@ -287,6 +287,6 @@ Example:
 [1,2,4,5,7,8]
 </code></pre>
 
-# Commands
+
 
 
