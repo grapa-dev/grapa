@@ -64,6 +64,8 @@ The $INT class includes routines for:
 52322
 > "52322".int()
 52322
+> (52322).raw()
+00CC62
 </code></pre>
 
 ### $STR
