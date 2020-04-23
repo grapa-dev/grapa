@@ -153,9 +153,9 @@ The following examle defines a class with a single method. The method setdiv2 up
 ## IF
 
 Syntax options:
-- if (<bool>) <statement>;
-- if (<bool>) <statement>; else <statement>;
-- if (<bool>) {<statement>;} elseif {<statement>;} else {<statement>;};
+- if (bool) statement;
+- if (bool) statement; else statement;
+- if (bool) {statement;} elseif {statement;} else {statement;};
 
 Example:
 <pre><code>> if (1==0) echo "1==0";  else echo "none";
@@ -166,7 +166,7 @@ none
 
 ## WHILE
 Sytax:
-- while(<bool>) <statement>;
+- while(bool) statement;
 
 Example:
 <pre><code>> i = 0; while (@i<5) {@i+=1; echo @i.str()+":";};
