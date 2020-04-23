@@ -52,7 +52,7 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 
 # Native Types
 
-**$FLOAT**
+## $FLOAT
 
 Supports both fix and float format. Fix will keep the number centered around the decimal, rounding to the precision specified. Float will not restrict to the decimal, but will roun to the the  precision specified. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). 
 
@@ -70,42 +70,42 @@ By default, all floats are "float" format. To change formats use the fix() and f
 
 To verify the float is being created properly, use the decode routine with FLOAT as the parameter. For example:
 
+<code>
 "3.5".float(300,6).decode(FLOAT)
-
 {"sign":false,"trunc":false,"fix":false,"exp":1,"max":300,"prec":6,"data":7}
+</code>
 
 
-
-**$INT**
+## $INT**
 
 Example:
-**$STR**
+## $STR
 
-**$BOOL**
+## $BOOL
 
-**$ID**
+## $ID
 
-**$LIST**
+## $LIST
 
-**$ARRAY**
+## $ARRAY
 
-**$TIME**
+## $TIME
 
-**$TABLE**
+## $TABLE
 
-**$RAW**
+## $RAW
 
-**$XML**
+## XML
 
 
 
-**$SYSID**
+## $SYSID
 
-**$SYSINT**
+## $SYSINT
 
-**$SYSSTR**
+## $SYSSTR
 
-**$ERR**
+## $ERR
 
 
 # Syntax
