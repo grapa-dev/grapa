@@ -53,15 +53,12 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 # Native Types
 
 **$FLOAT**
-Example:
-        5.13
+Example: 5.13
 
-You can also create using hex format: 
-        -0x4.0x5
+You can also create using hex format: -0x4.0x5
 Which returns -4.3125
 
-Or binaary format:
-        0b101.11
+Or binaary format: 0b101.11
 Which returns 5.625
 
 **$INT**
