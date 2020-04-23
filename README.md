@@ -417,14 +417,16 @@ none
 
 Syntax options:
 - bool ? statement;
-- bool ? statement : statement;
-- bool ? : statement;
+- bool ? statement # statement;
+- bool ? # statement;
+
+Note: Could not use the ':' character (from C) because this created a grammer conflit with the list syntax. And couldn't change the list syntax to '=' because that conflicted with the assignment syntax. So...using '#'. Possibly more information than needed...but this is partly what happens when multiple syntaxes are combined.
 
 Example:
-<pre><code>> 1?hi:by
+<pre><code>> 1?hi#by
 hi
 
-> 0?hi:by
+> 0?hi#by
 by
 </code></pre>
 
