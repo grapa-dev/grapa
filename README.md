@@ -36,7 +36,7 @@ Other command line options:
         -argv           :Places proceeding args into $ARGV environment variable
 ```
 
-Example: This provides a SHAKE256 hash of the string "thisisatest".
+Example: Performas a SHAKE256 hash of the string "thisisatest".
 ```
 grapa -ccmd "'thisisatest'.encode($SHAKE256)" -q
 94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
