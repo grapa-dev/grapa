@@ -173,18 +173,67 @@ Bit shifts:
 </code></pre>
 
 ### $ID
+Any identifier (starts with a letter and can follow with numbers and '-' but can not end with '-') will be initialized as an $ID. And an $ID can be used for many things, including associating a value. The '@' symbol is used to dereference an $ID to retrieve the data stored.
+
+Example of using an $ID as a variable:
+<pre><code>> x = "hi"
+
+> @x
+hi
+
+> @x + " test"
+hi test
+</code></pre>
 
 ### $LIST
+A $LIST is basically JSON, but extended to include all the various grapa data types. 
+
+Examples:
+- Create
+-- x = {a:1, b:2}
+- Access
+-- {a:1, b:2}.a
+-- {a:1, b:3}[1]
+- Append
+-- x += (c:3)
+- Insert at
+-- @x += (c:3) @x[0]
+- Number of entries
+-- @x[]
+-- {a:1, b:2}[]
+- Remove
+-- @x -= @x[0]
 
 ### $ARRAY
+Same as $LIST, but without the entry labels.
 
 ### $TIME
+Uses UTC timezone.
+
+Examples:
+<pre><code>> $TIME().utc()
+2020-04-23T19:32:41.192673
+
+> $TIME().tz()
+-25200000000
+
+> $TIME().utc() + $TIME().tz()
+2020-04-23T12:33:33.921638
+
+> t1 = $TIME().utc()
+
+> @t1.delta()
+12.231424
+</code></pre>
 
 ### $TABLE
+A $TABLE is a higharchical database with columns, rows, with both row store and columns store. Uses the $file commands for creating, updated, and navigating.
 
 ### $RAW
+A $RAW represents raw bytes. Most data types can be converted to and from $RAW, providing the abilty to make speicic tweaks to data. For example, this is how time addition/subtraction is performed - by converting the $TIME into $RAW and then into an $INT, and than back to a $TIME. There are several examples of using raw in the documentation for the other data types.
 
 ### $XML
+An $XML represents the XML data type. Under the hood, it is represented as a $LIST and all the same command sused for $LIST should work on $XML. 
 
 ### $RULE
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessable and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a lanugae by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
@@ -233,24 +282,35 @@ To see what rule might be used for a given script:
 In the first case, a operation type is created that calles the "mod" library passing 4 and 2 and returns the result. In the second case, the planner recognized an optimization and reduced the operation to returning 8. 
 
 ### $ERR
+If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
+
+Under the hood, the $ERR type is a $LIST, and the same commands can be used to get more details on the error.
 
 ### $SYSID
+Same as $ID, but was initialized with '$' at the front of the identifier. Used for special system identifiers. 
 
 ### $SYSINT
+Same as $INT, but was initialized with '$' at the front of the integer. Used for special system integers. 
 
 ### $SYSSTR
+Same as $STR, but was initialized with '$' at the front of the string. Used for special system strings. 
 
 ## System Class Types
 
 ### $sys
+A few general utility functions that are useful, but it wasn't clear if they should be added to the native language syntax, were added to $sys. This includes $sys().type(), $sys().getenv(), and $sys().setenv(). 
 
 ### $obj
+Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used accross the different data types are placed in the $obj class. 
 
 ### $file
+Provides the ability to navigate either the file system or a database, querying data and updating data. Funcitions include type, table, pwd, cd, phd, chd, dir, mktable, mkdir, rmdir, mkcol, mkrow, rmrow, setrow, and getrow. 
 
 ### $net
+Provides a socket library, cross functional with all platforms supported. Functions include type, mac, interfaces, connect, listen, onlisten, disconnect, host, send, recieve, nrecieve, onrecieve.
 
 ### $thread
+Provides a thread library, cross functional with all platforms supported. Functions include type, trylock, lock, unlock, wait, signal, waiting, start, stop, started, suspend, resume, suspended.
 
 ## Custom Types
 Create custome types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
@@ -356,6 +416,14 @@ Example:
 [1,2,4,5,7,8]
 </code></pre>
 
+# Commands
 
+## $sys().type()
 
+## $sys().getenv()
 
+## $sys().setenv()
+
+## data.encode()
+
+## data.decode()
