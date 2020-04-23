@@ -510,31 +510,31 @@ Example:
 ### $sys().type()
 
 ### $sys().getenv() / $sys().putenv()
-#### $PATH
-#### $STATICLIB
-#### $ARGCIN
-#### $ARGV
-#### $LIB
-#### $BIN
-#### $NAME
-#### $WORK
-#### $HOME
-#### $TEMP
-#### $VERSION
-#### $LICENCE
-#### Any value not starting with '$' will be directed to the native OS getenv/putenv
+- $PATH
+- $STATICLIB
+- $ARGCIN
+- $ARGV
+- $LIB
+- $BIN
+- $NAME
+- $WORK
+- $HOME
+- $TEMP
+- $VERSION
+- $LICENCE
+- Any value not starting with '$' will be directed to the native OS getenv/putenv
 
 ### data.encode() / data.decode()
 
-#### RSA-KEY
-#### AES256
-#### SHAKE256
-#### SHAKE128
-#### SHA3-256
-#### SHA3-384
-#### SHA3-512
-#### ZIP-GRAPA
-#### BASE64
-#### XML-GRAPA
-#### ESCAPE
-#### FLOAT
+- RSA-KEY
+- AES256
+- SHAKE256
+- SHAKE128
+- SHA3-256
+- SHA3-384
+- SHA3-512
+- ZIP-GRAPA
+- BASE64
+- XML-GRAPA
+- ESCAPE
+- FLOAT
