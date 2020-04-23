@@ -23,8 +23,8 @@ Mac: Place in "/usr/local/bin" - first time running the tool will take about 20 
 
 Once copyed into a location (and PATH updated if needed), you'll be able to run the tool using "grapa" from a terminal or command sheel from any location. Running the tool with "grapa --env" will display a few of the directories where the tool will look for information.
 
-Other command like options are as follows.
-
+Other command line options:
+```
         -h,--help       :Show this help message
         -v,--version    :Show version
         -q,--quite      :Suppress header
@@ -34,6 +34,7 @@ Other command like options are as follows.
         -ccin           :Run from stdin
         -argcin         :Places std:cin into $ARGCIN environment variable (use with -ccmd|-cfile)
         -argv           :Places proceeding args into $ARGV environment variable
+```
 
 Example: This provides a SHAKE256 hash of the string "thisisatest".
 ```
