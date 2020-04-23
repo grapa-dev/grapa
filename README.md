@@ -48,7 +48,54 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 ```
 
-# Language syntax
+# Data Types
+
+# Native Types
+
+**$FLOAT**
+Examples:
+> 5.13
+> -5.5
+
+You can also create using hex or binary format: 
+> -0x4.0x5
+>   which returns -4.3125
+> 0b101.11
+>   which returns 5.625
+
+**$INT**
+
+**$STR**
+
+**$BOOL**
+
+**$ID**
+
+**$LIST**
+
+**$ARRAY**
+
+**$TIME**
+
+**$TABLE**
+
+**$RAW**
+
+**$XML**
+
+
+
+**$SYSID**
+
+**$SYSINT**
+
+**$SYSSTR**
+
+**$ERR**
+
+
+# Syntax
+
 
 # Commands
 
