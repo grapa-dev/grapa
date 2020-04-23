@@ -505,14 +505,36 @@ Example:
 [1,2,4,5,7,8]
 </code></pre>
 
-# Commands
+## Commands
 
-## $sys().type()
+### $sys().type()
 
-## $sys().getenv()
+### $sys().getenv() / $sys().putenv()
+#### $PATH
+#### $STATICLIB
+#### $ARGCIN
+#### $ARGV
+#### $LIB
+#### $BIN
+#### $NAME
+#### $WORK
+#### $HOME
+#### $TEMP
+#### $VERSION
+#### $LICENCE
+#### Any value not starting with '$' will be directed to the native OS getenv/putenv
 
-## $sys().setenv()
+### data.encode() / data.decode()
 
-## data.encode()
-
-## data.decode()
+#### RSA-KEY
+#### AES256
+#### SHAKE256
+#### SHAKE128
+#### SHA3-256
+#### SHA3-384
+#### SHA3-512
+#### ZIP-GRAPA
+#### BASE64
+#### XML-GRAPA
+#### ESCAPE
+#### FLOAT
