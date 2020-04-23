@@ -331,7 +331,72 @@ The following examle defines a class with a single method. The method setdiv2 up
 {"data":2}
 </code></pre>
 
-## Loops
+## Simple Operators
+- =
+- +=
+- ++=
+- -=
+- +
+- -
+- <<
+- >>
+- ||
+- |
+- &&
+- &
+- ^
+- ==
+- !=
+- !
+- >=
+- >
+- <=
+- <
+- ?
+- **
+- */
+- *
+- -+
+- /
+- %/
+- %
+- ~
+
+## Function Operators
+
+- true
+- false
+- null
+- rule
+- const
+- op
+- class
+- obj
+- token
+
+## Command Operators
+
+- $INCLUDE
+- exit
+- console
+- echo
+- string
+
+## Other Syntax
+
+- ($OP)(parameter list)
+-- Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
+-- f = op(a){@a;};
+-- @f("test");
+
+## Lexical Triggers
+
+- $& XML data $&
+-- Wrap the XML data in $& on either side to have grapa parse the input as XML. These characters are specail lexical triggers that modify the parsing engine token generation. The first instence turns the mode on and the second turns the mode off.
+- $[ code $[
+-- Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on it's own. Alternatively, put the code in a file, loand the file contents, and execute the contents of the string.
+
+## Conditions and Loops
 
 ### if
 
@@ -347,6 +412,28 @@ none
 > if (1==0) {echo "1==0";} elseif (2==2) {echo "2==2";} else {echo "none";};
 2==2
 </code></pre>
+
+### ?
+
+Syntax options:
+- bool ? statement;
+- bool ? statement : statement;
+- bool ? : statement;
+
+Example:
+<pre><code>> 1?hi:by
+hi
+
+> 0?hi:by
+by
+</code></pre>
+
+
+### switch
+
+Syntax options:
+- swtich (item) {case item1: statement; item2 statement; etc...;};
+- swtich (item) {case item1: statement; item2 statement; etc...; default: statement;};
 
 ### while
 Sytax:
