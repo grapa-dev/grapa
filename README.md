@@ -281,6 +281,7 @@ Syntax options:
 Example:
 <pre><code>> if (1==0) echo "1==0";  else echo "none";
 none
+
 > if (1==0) {echo "1==0";} elseif (2==2) {echo "2==2";} else {echo "none";};
 2==2
 </code></pre>
