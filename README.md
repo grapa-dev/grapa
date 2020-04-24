@@ -586,9 +586,9 @@ The following examle defines a class with a single method. The method setdiv2 up
 * token
 * '()[oplist]'
 * `()<opcode>`
-* `(function)(params)`
 * literal
 * literal ([params])
+* (`$OP`)([params])
 
 ## Command Operators
 
