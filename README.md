@@ -110,6 +110,20 @@ You can also define an operation by providing a script and a rule. If a rule is 
 
 Note in the last example the rule to use was defined and passed in as a parameter to the planer, the operation result assigned to a variable, and then the variable executed as a function.
 
+If the rules have already been defined, the following options to generate the execution plan - for either storing as a function or for debugging the rules.
+
+<pre><code>> r = rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}};
+> @r
+rule $INT '*' $INT {()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":$1,"b":$3}]}
+
+> op()("4*2",@r)
+()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
+
+> @r.plan("4*2")
+()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
+</code></pre>
+
+
 ## System Class Types
 
 ### $BOOL
