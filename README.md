@@ -335,7 +335,119 @@ Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that ca
 Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
 
 ### $file
-Provides the ability to navigate either the file system or a database, querying data and updating data. Funcitions include type, table, pwd, cd, phd, chd, dir, mktable, mkdir, rmdir, mkcol, mkrow, rmrow, setrow, and getrow. 
+Provides the ability to navigate either the file system or a database, querying data and updating data.
+
+Assue each example below starts with the following command:
+<pre><code> f = $file();</code></pre>
+Which assignes f an instance of the $file class. The following are then operations that can be used from the $file class.
+
+#### type
+<pre><code>> @f.type()
+$file
+</code></pre>
+#### table
+The table function creates an in memory database. 
+
+<pre><code>> t = @f.table()
+> @t.mkrow("test","data for test")
+> @t.getrow("test")
+data for test
+</code></pre>
+#### pwd
+Returns the current working directory, relative to the current home directory. 
+<pre><code>> @f.pwd()
+/
+
+> @f.cd("lib")
+> @f.pwd()
+/lib
+</code></pre>
+#### cd
+Changes the current working directory, relative to the current home directory. 
+<pre><code>> @f.cd("lib")
+> @f.pwd()
+/lib
+</code></pre>
+#### phd
+Returns the current home directory.
+<pre><code>> @f.phd()
+C:\Projects\Test
+</code></pre>
+#### chd
+Changes the current home directory.
+<pre><code>> @f.chd("lib")
+> @f.phd()
+C:\Projects\Test\lib
+</code></pre>
+#### dir
+Retrieves a list of files/directories in the current working directory.
+<pre><code>> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b/python-packages")
+> @f.dir()
+[
+  {"$KEY":"adb","$TYPE":"DIR","$BYTES":0},
+  {"$KEY":"Android.bp","$TYPE":"FILE","$BYTES":784},
+  {"$KEY":"fastboot","$TYPE":"DIR","$BYTES":0},
+  {"$KEY":"gdbrunner","$TYPE":"DIR","$BYTES":0},
+  {"$KEY":"NOTICE","$TYPE":"FILE","$BYTES":577},
+  {"$KEY":"repo.prop","$TYPE":"FILE","$BYTES":4465}
+]
+
+> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b")
+> @f.dir("python-packages")
+[
+  {"$KEY":"adb","$TYPE":"DIR","$BYTES":0},
+  {"$KEY":"Android.bp","$TYPE":"FILE","$BYTES":784},
+  {"$KEY":"fastboot","$TYPE":"DIR","$BYTES":0},
+  {"$KEY":"gdbrunner","$TYPE":"DIR","$BYTES":0},
+  {"$KEY":"NOTICE","$TYPE":"FILE","$BYTES":577},
+  {"$KEY":"repo.prop","$TYPE":"FILE","$BYTES":4465}
+]
+</code></pre>
+#### mktable (table name, table type)
+Creates a database at the current working directory, which may be within the file system, or it may be within a location in a database. 
+
+Note: This command will likely be eliminated in favor of the mkdir command, and the action will be within the context of the current working directory. If within the file system, the mkdir command would take a parameter to specify that it is to create a database file rather than a file system directory. Additionally, database files may assume a specific extention and listed in the directory as a grapa database type (such as GROUP). 
+
+<pre><code>> @f.mktable("test")
+> @f.cd("test")
+> @f.dir()
+[]
+</code></pre>
+#### mkdir (dir name) 
+Creates a directory at the current working directory withyin the file system.
+
+Note: This command will in the future accomodate creating database files / tables.
+
+<pre><code>> @f.dir("test")
+> @f.cd("test")
+> @f.dir()
+[]
+</code></pre>
+#### rmdir (name)
+Removes a directory.
+<pre><code>> @f.rmdir("test")
+</code></pre>
+#### mkcol (name)
+Creates a column within the current working directory.
+<pre><code>> @f.mkcol("test")
+</code></pre>
+#### mkrow (name)
+Adds a new within the current working directory with the specified name as the key.
+<pre><code>> @f.mkcol("test")
+</code></pre>
+#### rmrow (name)
+Removes a row the current working directory with the specified name. If the name is a number, the row with that index is removed.
+<pre><code>> @f.rmrow("test")
+</code></pre>
+#### setrow (name, value [, column])
+Updates the column in a row. By default the $VALUE column is updated. But an alternate column can be specified.
+<pre><code>> @f.setrow("test","value of test")
+</code></pre>
+#### getrow
+Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
+<pre><code>> @f.getrow("test")
+value of test
+</code></pre>
 
 ### $net
 Provides a socket library, cross functional with all platforms supported. Functions include type, mac, interfaces, connect, listen, onlisten, disconnect, host, send, recieve, nrecieve, onrecieve.
