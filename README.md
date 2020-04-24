@@ -90,6 +90,24 @@ Examples of assigning an $OP to a variable. The examples show the underlying syn
 18
 </code></pre>
 
+You can also define an operation by providing a script and a rule. If a rule is not specified, the "start" and "$start" rules are used (which is the default entry point for the grapa language).
+
+<pre><code>> op()("4*2")
+()[[op,8],{}]
+
+> op()("4*2",@$start)
+()[[op,8],{}]
+
+> op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}})
+()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
+
+> f = op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}})
+> @f()
+16
+</code></pre>
+
+Note in the last example the rule to use was defined and passed in as a parameter to the planer, the operation result assigned to a variable, and then the variable executed as a function.
+
 ## System Class Types
 
 ### $BOOL
@@ -305,8 +323,6 @@ Example of defining a custome rule, and applying the rule:
 > op()("4 3",@x)
 ()[[op,()[[op,()[mul,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":3}]],{}]
 </code></pre>
-
-Note: class functions for $RULE will be created that simplify the above. For now, need to use the raw $OP syntax. 
 
 ### $ERR
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
