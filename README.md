@@ -341,11 +341,11 @@ Assue each example below starts with the following command:
 <pre><code> f = $file();</code></pre>
 Which assignes f an instance of the $file class. The following are then operations that can be used from the $file class.
 
-#### type
+#### type ()
 <pre><code>> @f.type()
 $file
 </code></pre>
-#### table
+#### table ()
 The table function creates an in memory database. 
 
 <pre><code>> t = @f.table()
@@ -353,7 +353,7 @@ The table function creates an in memory database.
 > @t.getrow("test")
 data for test
 </code></pre>
-#### pwd
+#### pwd ()
 Returns the current working directory, relative to the current home directory. 
 <pre><code>> @f.pwd()
 /
@@ -362,24 +362,24 @@ Returns the current working directory, relative to the current home directory.
 > @f.pwd()
 /lib
 </code></pre>
-#### cd
-Changes the current working directory, relative to the current home directory. 
+#### cd (relativepath)
+Changes the current working directory, relative to the current home directory.  Using ".." will result in moving back 1 level.
 <pre><code>> @f.cd("lib")
 > @f.pwd()
 /lib
 </code></pre>
-#### phd
+#### phd ()
 Returns the current home directory.
 <pre><code>> @f.phd()
 C:\Projects\Test
 </code></pre>
-#### chd
+#### chd (filesystempath)
 Changes the current home directory.
 <pre><code>> @f.chd("lib")
 > @f.phd()
 C:\Projects\Test\lib
 </code></pre>
-#### dir
+#### dir ([path])
 Retrieves a list of files/directories in the current working directory.
 <pre><code>> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b/python-packages")
 > @f.dir()
@@ -541,91 +541,90 @@ The following examle defines a class with a single method. The method setdiv2 up
 {"data":2}
 </code></pre>
 
-## Constants
-### true
-### false
-### null
+## Operators
+### Constants
+#### true
+#### false
+#### null
 
-## Assignment Operators
-### `=`
-### `+=`
-### `++=`
-### `-=`
+### Assignment Operators
+#### `=`
+#### `+=`
+#### `++=`
+#### `-=`
 
-## Math Operators
-### `+`
-### `-`
-### `**`
-### `*/`
-### `*`
-### `-+`
-### `/`
-### `%/`
-### `%`
+### Math Operators
+#### `+`
+#### `-`
+#### `**`
+#### `*/`
+#### `*`
+#### `-+`
+#### `/`
+#### `%/`
+#### `%`
 
-## Bit Operators
-### `<<`
-### `>>`
-### `|`
-### `&`
-### `^`
+### Bit Operators
+#### `<<`
+#### `>>`
+#### `|`
+#### `&`
+#### `^`
 
-## Compare Operators
-### `||`
-### `&&`
-### `==`
-### '<=>'
-### `!=`
-###  `<=`
-###  `>=`
-### `>`
-### `<`
+### Compare Operators
+#### `||`
+#### `&&`
+#### `==`
+#### '<=>'
+#### `!=`
+####  `<=`
+####  `>=`
+#### `>`
+#### `<`
 
-## Modifier Operators
-### `-`
-### `!`
-### `~`
+### Modifier Operators
+#### `-`
+#### `!`
+#### `~`
 
-## Condition Operators
-### `?`
+### Condition Operators
+#### `?`
 
-## Function Operators
-
-### op
-### class
-### obj
-### token
-### rule
-### const
-### `()[oplist]`
-### `()<opcode>`
-### literal
-### literal ([params])
-### `($OP)([params])`
+### Function Operators
+#### op
+#### class
+#### obj
+#### token
+#### rule
+#### const
+#### `()[oplist]`
+#### `()<opcode>`
+#### literal
+#### literal ([params])
+#### `($OP)([params])`
 Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
 <pre><code>> if = op(a){@a;};
 > @f("test");
 test
 </code></pre>
 
-## Command Operators
+### Command Operators
+#### $INCLUDE
+#### exit
+#### console
+#### echo
+#### string
 
-### $INCLUDE
-### exit
-### console
-### echo
-### string
+### Lexical Operators
 
-## Lexical Triggers
-
-### $& XML data $&
+#### `$&`
   * Wrap the XML data in $& on either side to have grapa parse the input as XML. These characters are specail lexical triggers that modify the parsing engine token generation. The first instence turns the mode on and the second turns the mode off.
-### $[ code $[
+#### `$[`
   * Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on it's own. Alternatively, put the code in a file, loand the file contents, and execute the contents of the string.
 
-## Conditions and Loops
+### Conditions and Loops
 
-### if
+#### if
 
 Syntax options:
 * if (bool) statement;
@@ -640,7 +639,7 @@ none
 2==2
 </code></pre>
 
-### ?
+#### ?
 
 Syntax options:
 * bool ? statement for true;
@@ -660,7 +659,7 @@ there
 </code></pre>
 
 
-### switch
+#### switch
 
 Syntax options:
 * swtich (item) {case item1: statement; item2 statement; etc...;};
@@ -672,7 +671,7 @@ The following is a way to use a switch in place of if/ifelse/else sequence. The 
 2==2
 </code></pre>
 
-### while
+#### while
 Sytax:
 * while(bool) statement;
 
@@ -682,7 +681,7 @@ Example:
 </code></pre>
 
 
-### map
+#### map
 Sytax:
 * list|array . map ( op );
 * list|array . map ( op , param1, param2, etc);
@@ -703,7 +702,7 @@ Example:
 [7,9,11]
 </code></pre>
 
-### reduce
+#### reduce
 Sytax:
 * list|array . filter ( op );
 * list|array . reduce ( op , startvalue);
@@ -727,7 +726,7 @@ Example:
 [7,9,11]
 </code></pre>
 
-### filter
+#### filter
 Sytax:
 * list|array . filter ( op );
 * list|array . filter ( op , param1, param2, etc);
@@ -746,11 +745,11 @@ Example:
 [1,2,4,5,7,8]
 </code></pre>
 
-## Command Options
+### Command Options
 
-### $sys().type()
+#### $sys().type()
 
-### $sys().getenv(type) / $sys().putenv(type,value)
+#### $sys().getenv(type) / $sys().putenv(type,value)
 * $PATH
 * $STATICLIB
 * $ARGCIN
@@ -765,8 +764,7 @@ Example:
 * $LICENCE
 * Any value not starting with '$' will be directed to the native OS getenv/putenv
 
-### value.encode(type) / value.decode(type)
-
+#### value.encode(type) / value.decode(type)
 * RSA-KEY
 * AES256
 * SHAKE256
@@ -780,15 +778,16 @@ Example:
 * ESCAPE
 * FLOAT
 
-## Function Chaining
+## Syntax
+### Function Chaining
 Any object that returns an object can be chained.
 
 For example "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit percision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit percision of pi to the power of 4.4. 
 
 # Examples
 
-## RSA test
-
+## Crypt
+### RSA test
 The following will create an RSA key using hard coded public/private key values and verify the encode/decode functions work.
 
 <pre><code>> e = 0xa932b948feed4fb2b692609bd22164fc9edb59fae7880cc1eaff7b3c9626b7e5b241c27a974833b2622ebe09beb451917663d47232488f23a117fc97720f1e7;
@@ -802,7 +801,8 @@ The following will create an RSA key using hard coded public/private key values 
 this is a test of 95 chars to see if we can encode with RSA. It needs to be exactly 95...so ne
 </code></pre>
 
-## Word Length
+## Strings
+### String Word Length
 The following returns the length of each word in a string:
 <pre><code>> "this is a test".split(" ").reduce(op(a,b){@a+=@b.len();},[])
 [4,2,1,4]
