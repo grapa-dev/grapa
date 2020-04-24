@@ -703,13 +703,13 @@ Syntax options:
 * (>0)|(0)|(<0) ? statement for >0 : statement for 0 : statement for <0;
 
 Example:
-<pre><code>> 1?hi#by
+<pre><code>> 1?hi:by
 hi
 
-> 0?hi#by
+> 0?hi:by
 by
 
-> (-55)?hi#by#there
+> -55?hi:by:there
 there
 </code></pre>
 
