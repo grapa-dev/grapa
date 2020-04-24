@@ -229,20 +229,21 @@ hi test
 A $LIST is basically JSON, but extended to include all the various grapa data types. 
 
 Examples:
-- Create
--- x = {a:1, b:2}
-- Access
--- {a:1, b:2}.a
--- {a:1, b:3}[1]
-- Append
--- x += (c:3)
-- Insert at
--- @x += (c:3) @x[0]
-- Number of entries
--- @x[]
--- {a:1, b:2}[]
-- Remove
--- @x -= @x[0]
+* Create
+  * x = {a:1, b:2}
+* Access
+  * {a:1, b:2}.a
+  * {a:1, b:3}[1]
+* Append
+  * x += (c:3)
+* Insert at
+  * @x += (c:3) @x[0]
+* Number of entries
+  * @x[]
+  * {a:1, b:2}[]
+* Remove
+  * @x -= @x[0]
+
 
 ### $ARRAY
 Same as $LIST, but without the entry labels.
@@ -279,9 +280,9 @@ An $XML represents the XML data type. Under the hood, it is represented as a $LI
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessable and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a lanugae by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
 
 There are three basic steps:
-- Define the rules (rules may reference other rules) with code to execute for each rule option.
-- Apply raw data to the rule to generate an execution plan.
-- Execute the plan, with parameters if specified.
+* Define the rules (rules may reference other rules) with code to execute for each rule option.
+* Apply raw data to the rule to generate an execution plan.
+* Execute the plan, with parameters if specified.
 
 Example system rule:
 <pre><code>> @$start
@@ -364,78 +365,78 @@ The following examle defines a class with a single method. The method setdiv2 up
 </code></pre>
 
 ## Simple Operators
-- =
-- +=
-- ++=
-- -=
-- +
-- -
-- <<
-- >>
-- ||
-- |
-- &&
-- &
-- ^
-- ==
-- !=
-- !
-- >=
-- >
-- <=
-- <
-- ?
-- **
-- */
-- *
-- -+
-- /
-- %/
-- %
-- ~
+* `=`
+* `+=`
+* `++=`
+* `-=`
+* `+`
+* `-`
+* `<<`
+* `>>`
+* `||`
+* `|`
+* `&&`
+* `&`
+* `^`
+* `==`
+* `!=`
+* `!`
+* `>=`
+* `>`
+* `<=`
+* `<`
+* `?`
+* `**`
+* `*/`
+* `*`
+* `-+`
+* `/`
+* `%/`
+* `%`
+* `~`
 
 ## Function Operators
 
-- true
-- false
-- null
-- rule
-- const
-- op
-- class
-- obj
-- token
+* true
+* false
+* null
+* rule
+* const
+* op
+* class
+* obj
+* token
 
 ## Command Operators
 
-- $INCLUDE
-- exit
-- console
-- echo
-- string
+* $INCLUDE
+* exit
+* console
+* echo
+* string
 
 ## Other Syntax
 
-- ($OP)(parameter list)
--- Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
--- f = op(a){@a;};
--- @f("test");
+* ($OP)(parameter list)
+  * Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
+  * f = op(a){@a;};
+  * @f("test");
 
 ## Lexical Triggers
 
-- $& XML data $&
--- Wrap the XML data in $& on either side to have grapa parse the input as XML. These characters are specail lexical triggers that modify the parsing engine token generation. The first instence turns the mode on and the second turns the mode off.
-- $[ code $[
--- Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on it's own. Alternatively, put the code in a file, loand the file contents, and execute the contents of the string.
+* $& XML data $&
+  * Wrap the XML data in $& on either side to have grapa parse the input as XML. These characters are specail lexical triggers that modify the parsing engine token generation. The first instence turns the mode on and the second turns the mode off.
+* $[ code $[
+  * Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on it's own. Alternatively, put the code in a file, loand the file contents, and execute the contents of the string.
 
 ## Conditions and Loops
 
 ### if
 
 Syntax options:
-- if (bool) statement;
-- if (bool) statement; else statement;
-- if (bool) {statement;} elseif {statement;} else {statement;};
+* if (bool) statement;
+* if (bool) statement; else statement;
+* if (bool) {statement;} elseif {statement;} else {statement;};
 
 Example:
 <pre><code>> if (1==0) echo "1==0";  else echo "none";
@@ -448,10 +449,10 @@ none
 ### ?
 
 Syntax options:
-- bool ? statement for true;
-- bool ? statement for true # statement for false;
-- bool ? # statement for false;
-- (>0)|(0)|(<0) ? statement for >0 # statement for 0 # statement for <0;
+* bool ? statement for true;
+* bool ? statement for true # statement for false;
+* bool ? # statement for false;
+* (>0)|(0)|(<0) ? statement for >0 # statement for 0 # statement for <0;
 
 Note: Could not use the ':' character (from C) because this created a grammer conflit with the list syntax. And couldn't change the list syntax to '=' because that conflicted with the assignment syntax. So...using '#'. Possibly more information than needed...but this is partly what happens when multiple syntaxes are combined.
 
@@ -470,12 +471,12 @@ there
 ### switch
 
 Syntax options:
-- swtich (item) {case item1: statement; item2 statement; etc...;};
-- swtich (item) {case item1: statement; item2 statement; etc...; default: statement;};
+* swtich (item) {case item1: statement; item2 statement; etc...;};
+* swtich (item) {case item1: statement; item2 statement; etc...; default: statement;};
 
 ### while
 Sytax:
-- while(bool) statement;
+* while(bool) statement;
 
 Example:
 <pre><code>> i = 0; while (@i<5) {@i+=1; echo @i.str()+":";};
@@ -485,12 +486,12 @@ Example:
 
 ### map
 Sytax:
-- list|array . map ( op );
-- list|array . map ( op , param1, param2, etc);
+* list|array . map ( op );
+* list|array . map ( op , param1, param2, etc);
 
 Where op is:
-- op (listvalue, param1, param2, etc) ( script )
-- op (listvalue, param1, param2, et) { statement;}
+* op (listvalue, param1, param2, etc) ( script )
+* op (listvalue, param1, param2, et) { statement;}
 
 Note: each item of the array will process in a separate thread. This is an easy way to add multi-threading to the processing, but beware and batch workoads in the array to keep the size of the array to the number of threads you want.
 
@@ -506,12 +507,12 @@ Example:
 
 ### reduce
 Sytax:
-- list|array . filter ( op );
-- list|array . reduce ( op , startvalue);
-- list|array . reduce ( op , startvalue, param1, param2, etc);
+* list|array . filter ( op );
+* list|array . reduce ( op , startvalue);
+* list|array . reduce ( op , startvalue, param1, param2, etc);
 
 Where op is:
-- op (startvalue, listvalue, param1, param2, etc) ( script )
+* op (startvalue, listvalue, param1, param2, etc) ( script )
 
 Reduce process sequentially, as processing is intended to augment the startvalue. If the startvalue is not provided, the first item in the list is used as the startvalue.
 
@@ -530,12 +531,12 @@ Example:
 
 ### filter
 Sytax:
-- list|array . filter ( op );
-- list|array . filter ( op , param1, param2, etc);
+* list|array . filter ( op );
+* list|array . filter ( op , param1, param2, etc);
 
 Where op is:
-- op (listvalue, param1, param2, etc) ( script )
-- op (listvalue, param1, param2, et) { statement;}
+* op (listvalue, param1, param2, etc) ( script )
+* op (listvalue, param1, param2, et) { statement;}
 
 Note: each item of the array will process in a separate thread. This is an easy way to add multi-threading to the processing, but beware and batch workoads in the array to keep the size of the array to the number of threads you want.
 
@@ -552,34 +553,34 @@ Example:
 ### $sys().type()
 
 ### $sys().getenv(type) / $sys().putenv(type,value)
-- $PATH
-- $STATICLIB
-- $ARGCIN
-- $ARGV
-- $LIB
-- $BIN
-- $NAME
-- $WORK
-- $HOME
-- $TEMP
-- $VERSION
-- $LICENCE
-- Any value not starting with '$' will be directed to the native OS getenv/putenv
+* $PATH
+* $STATICLIB
+* $ARGCIN
+* $ARGV
+* $LIB
+* $BIN
+* $NAME
+* $WORK
+* $HOME
+* $TEMP
+* $VERSION
+* $LICENCE
+* Any value not starting with '$' will be directed to the native OS getenv/putenv
 
 ### value.encode(type) / value.decode(type)
 
-- RSA-KEY
-- AES256
-- SHAKE256
-- SHAKE128
-- SHA3-256
-- SHA3-384
-- SHA3-512
-- ZIP-GRAPA
-- BASE64
-- XML-GRAPA
-- ESCAPE
-- FLOAT
+* RSA-KEY
+* AES256
+* SHAKE256
+* SHAKE128
+* SHA3-256
+* SHA3-384
+* SHA3-512
+* ZIP-GRAPA
+* BASE64
+* XML-GRAPA
+* ESCAPE
+* FLOAT
 
 ## Function Chaining
 Any object that returns an object can be chained.
