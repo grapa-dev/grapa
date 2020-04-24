@@ -507,7 +507,7 @@ Example:
 [1,2,4,5,7,8]
 </code></pre>
 
-## Commands
+## Command Options
 
 ### $sys().type()
 
