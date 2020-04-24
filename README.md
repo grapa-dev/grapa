@@ -327,12 +327,67 @@ Same as $STR, but was initialized with '$' at the front of the string. Used for 
 ## Defined Class Types
 
 ### $sys
-A few general utility functions that are useful, but it wasn't clear if they should be added to the native language syntax, were added to $sys. This includes $sys().type(), $sys().getenv(), and $sys().setenv(). 
+A few general utility functions that are useful, but it wasn't clear if they should be added to the native language syntax, were added to $sys.
+#### type (object)
+<pre><code>> $sys().type(5)
+$INT
+</code></pre>
+#### getenv (type)
+<pre><code>> $sys().getenv($VERSION)
+{"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000}
+</code></pre>
+#### putenv (type)
+
 
 ### $obj
-Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used accross the different data types are placed in the $obj class. Functions included are type, raw, uraw, bool, int, uint, float, fix, setfloat, setfix, str, base, hex, uhex, bin, ubin, time, bits, bytes, len, left, right, mid, rtrim, ltrim, trim, reverse, replace, split, join, upper, lower, setbit, clearbit, genbits, encode, decode, setfile, map, filter, reduce, sort, isint, iferr, exec, getname.
+Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used accross the different data types are placed in the $obj class. Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
 
-Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
+#### type
+#### raw
+#### uraw
+#### bool
+#### int
+#### uint
+#### float
+#### fix
+#### setfloat
+#### setfix
+#### str
+#### base
+#### hex
+#### uhex
+#### bin
+#### ubin
+#### time
+#### bits
+#### bytes
+#### len
+#### left
+#### right
+#### mid
+#### rtrim
+#### ltrim
+#### trim
+#### reverse
+#### replace
+#### split
+#### join
+#### upper
+#### lower
+#### setbit
+#### clearbit
+#### genbits
+#### encode
+#### decode
+#### setfile
+#### map
+#### filter
+#### reduce
+#### sort
+#### isint
+#### iferr
+#### exec
+#### getname
 
 ### $file
 Provides the ability to navigate either the file system or a database, querying data and updating data.
