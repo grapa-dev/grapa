@@ -655,6 +655,12 @@ Syntax options:
 * swtich (item) {case item1: statement; item2 statement; etc...;};
 * swtich (item) {case item1: statement; item2 statement; etc...; default: statement;};
 
+The following is a way to use a switch in place of if/ifelse/else sequence. The switch will compare until if arrives at a true.
+
+<pre><code>> switch(true){case (1==0):echo "1==0\n"; case (2==2): echo "2==2\n"; default: echo "none\n";};
+2==2
+</code></pre>
+
 ### while
 Sytax:
 * while(bool) statement;
