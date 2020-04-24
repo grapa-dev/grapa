@@ -403,17 +403,24 @@ Retrieves a list of files/directories in the current working directory.
   {"$KEY":"repo.prop","$TYPE":"FILE","$BYTES":4465}
 ]
 </code></pre>
-#### mktable (table name, table type)
+#### mktable (name, type)
 Creates a database at the current working directory, which may be within the file system, or it may be within a location in a database. 
 
 Note: This command will likely be eliminated in favor of the mkdir command, and the action will be within the context of the current working directory. If within the file system, the mkdir command would take a parameter to specify that it is to create a database file rather than a file system directory. Additionally, database files may assume a specific extention and listed in the directory as a grapa database type (such as GROUP). 
+
+Type can be: 
+* GROUP - stores any type, including nested databases, supporing a higharchical database (like a file system)
+* ROW - stores a row based table. Each recored is stored together in a block for the fixed fields, and a reference for the variable fields.
+* COL - stores a column based table. Each column is stored together. This is supported both in memory, as well as on the filesystem. Seachres are faster typically with column store, especially for tables with many columns where only a selection of fields may be accessed at any time. 
+
+Index - An index is created for the $KEY field. The database supports adding additonal indexes with various combinations of fields, but for simplicity this capabilty has not been exposed to the higher level language (to be determined if it will/should). 
 
 <pre><code>> @f.mktable("test")
 > @f.cd("test")
 > @f.dir()
 []
 </code></pre>
-#### mkdir (dir name) 
+#### mkdir (name) 
 Creates a directory at the current working directory withyin the file system.
 
 Note: This command will in the future accomodate creating database files / tables.
@@ -441,21 +448,79 @@ Removes a row the current working directory with the specified name. If the name
 </code></pre>
 #### setrow (name, value [, column])
 Updates the column in a row. By default the $VALUE column is updated. But an alternate column can be specified.
+
+Note: this command will be updated to support setting multiple fields within a single call. And maybe even for multiple rows (not sure...maybe a setrows command).
+
 <pre><code>> @f.setrow("test","value of test")
 </code></pre>
-#### getrow
+#### getrow (name [, column])
 Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
+
+Note: this command will be updated to support getting multiple fields within a single call. And maybe even for multiple rows (not sure...maybe a getrows command).
+
 <pre><code>> @f.getrow("test")
 value of test
 </code></pre>
+#### debug ()
+Used for debugging the database during development. Displayes the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).
 
 ### $net
-Provides a socket library, cross functional with all platforms supported. Functions include type, mac, interfaces, connect, listen, onlisten, disconnect, host, send, recieve, nrecieve, onrecieve.
+Provides a socket library, cross functional with all platforms supported. 
+
+#### type
+
+#### mac
+
+#### interfaces
+
+#### connect
+
+#### listen
+
+#### onlisten
+
+#### disconnect
+
+#### host
+
+#### send
+
+#### recieve
+
+#### nrecieve
+
+#### onrecieve
 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 ### $thread
-Provides a thread library, cross functional with all platforms supported. Functions include type, trylock, lock, unlock, wait, signal, waiting, start, stop, started, suspend, resume, suspended.
+Provides a thread library, cross functional with all platforms supported.
+
+#### type
+
+#### trylock
+
+#### lock
+
+#### unlock
+
+#### wait
+
+#### signal
+
+#### waiting
+
+#### start
+
+#### stop
+
+#### started
+
+#### suspend
+
+#### resume
+
+#### suspended
 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
