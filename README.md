@@ -467,6 +467,8 @@ Used for debugging the database during development. Displayes the BTree structur
 ### $net
 Provides a socket library, cross functional with all platforms supported. 
 
+Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
+
 #### type
 
 #### mac
@@ -491,10 +493,10 @@ Provides a socket library, cross functional with all platforms supported.
 
 #### onrecieve
 
-Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
-
 ### $thread
 Provides a thread library, cross functional with all platforms supported.
+
+Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 #### type
 
@@ -522,8 +524,6 @@ Provides a thread library, cross functional with all platforms supported.
 
 #### suspended
 
-Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
-
 ## Custom Class Types
 Create custome types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
 
@@ -541,75 +541,86 @@ The following examle defines a class with a single method. The method setdiv2 up
 {"data":2}
 </code></pre>
 
-## Simple Operators
-* `=`
-* `+=`
-* `++=`
-* `-=`
-* `+`
-* `-`
-* `<<`
-* `>>`
-* `||`
-* `|`
-* `&&`
-* `&`
-* `^`
-* `==`
-* '<=>'
-* `!=`
-* `!`
-* `>=`
-* `>`
-* `<=`
-* `<`
-* `?`
-* `**`
-* `*/`
-* `*`
-* `-+`
-* `/`
-* `%/`
-* `%`
-* `~`
+## Constants
+### true
+### false
+### null
+
+## Assignment Operators
+### `=`
+### `+=`
+### `++=`
+### `-=`
+
+## Math Operators
+### `+`
+### `-`
+### `**`
+### `*/`
+### `*`
+### `-+`
+### `/`
+### `%/`
+### `%`
+
+## Bit Operators
+### `<<`
+### `>>`
+### `|`
+### `&`
+### `^`
+
+## Compare Operators
+### `||`
+### `&&`
+### `==`
+### '<=>'
+### `!=`
+###  `<=`
+###  `>=`
+### `>`
+### `<`
+
+## Modifier Operators
+### `-`
+### `!`
+### `~`
+
+## Condition Operators
+### `?`
 
 ## Function Operators
 
-* true
-* false
-* null
-* rule
-* const
-* op
-* class
-* obj
-* token
-* '()[oplist]'
-* `()<opcode>`
-* literal
-* literal ([params])
-* (`$OP`)([params])
+### op
+### class
+### obj
+### token
+### rule
+### const
+### '()[oplist]'
+### `()<opcode>`
+### literal
+### literal ([params])
+### (`$OP`)([params])
+Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
+<pre><code>> if = op(a){@a;};
+> @f("test");
+test
+</code></pre>
 
 ## Command Operators
 
-* $INCLUDE
-* exit
-* console
-* echo
-* string
-
-## Other Syntax
-
-* ($OP)(parameter list)
-  * Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
-  * f = op(a){@a;};
-  * @f("test");
+### $INCLUDE
+### exit
+### console
+### echo
+### string
 
 ## Lexical Triggers
 
-* $& XML data $&
+### $& XML data $&
   * Wrap the XML data in $& on either side to have grapa parse the input as XML. These characters are specail lexical triggers that modify the parsing engine token generation. The first instence turns the mode on and the second turns the mode off.
-* $[ code $[
+### $[ code $[
   * Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on it's own. Alternatively, put the code in a file, loand the file contents, and execute the contents of the string.
 
 ## Conditions and Loops
