@@ -597,11 +597,11 @@ The following examle defines a class with a single method. The method setdiv2 up
 ### token
 ### rule
 ### const
-### '()[oplist]'
+### `()[oplist]`
 ### `()<opcode>`
 ### literal
 ### literal ([params])
-### (`$OP`)([params])
+### `($OP)([params])`
 Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
 <pre><code>> if = op(a){@a;};
 > @f("test");
