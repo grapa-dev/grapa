@@ -50,7 +50,7 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 
 # Data Types
 
-## Basic Native Types
+## System Class Types
 
 ### $BOOL
 The following are equivalent in comparisons:
@@ -267,8 +267,6 @@ Example of defining a custome rule, and applying the rule:
 
 Note: class functions for $RULE will be created that simplify the above. For now, need to use the raw $OP syntax. 
 
-## System Native Types
-
 ### $OP
 An $OP in grapa is simular to a lambda in other languages. It's a variable that includes executable instructions. 
 
@@ -312,6 +310,8 @@ If an operation results in an error, the $ERR data type is returned. Check using
 
 Under the hood, the $ERR type is a $LIST, and the same commands can be used to get more details on the error.
 
+## System Types
+
 ### $SYSID
 Same as $ID, but was initialized with '$' at the front of the identifier. Used for special system identifiers. 
 
@@ -321,7 +321,7 @@ Same as $INT, but was initialized with '$' at the front of the integer. Used for
 ### $SYSSTR
 Same as $STR, but was initialized with '$' at the front of the string. Used for special system strings. 
 
-## System Class Types
+## Defined Class Types
 
 ### $sys
 A few general utility functions that are useful, but it wasn't clear if they should be added to the native language syntax, were added to $sys. This includes $sys().type(), $sys().getenv(), and $sys().setenv(). 
@@ -344,7 +344,7 @@ Provides a thread library, cross functional with all platforms supported. Functi
 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
-## Custom Types
+## Custom Class Types
 Create custome types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
 
 The following examle defines a class with a single method. The method setdiv2 updates data to the parameter divided by 2.
