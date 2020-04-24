@@ -270,6 +270,7 @@ Note: class functions for $RULE will be created that simplify the above. For now
 ## System Native Types
 
 ### $OP
+An $OP in grapa is simular to a lambda in other languages. It's a variable that includes executable instructions. 
 
 To see what rule might be used for a given script:
 <pre><code>> op(){4%2}
@@ -280,6 +281,31 @@ To see what rule might be used for a given script:
 </code></pre>
 
 In the first case, a operation type is created that calles the "mod" library passing 4 and 2 and returns the result. In the second case, the planner recognized an optimization and reduced the operation to returning 8. 
+
+Examples of assigning an $OP to a variable. The examples show the underlying syntax of the $OP type, and using the $OP variable as a function.
+
+<pre><code>> f=op(){3%2}
+> @f()
+1
+
+> f=()[[op,()[mod,{3,2}]],{}]
+> @f()
+1
+
+> f=op(a,b){@a%@b}
+> @f
+()[[op,()[mod,{()[var,{a}],()[var,{b}]}]],{a,b}]
+
+> @f(842,5)
+2
+
+> f=op(a,b,c){d=@a%@b;@d*@c;}
+> @f
+()[[op,()<()[assign,{d,()[mod,{()[var,{a}],()[var,{b}]}]}],()[mul,{()[var,{d}],()[var,{c}]}]>],{a,b,c}]
+
+> @f(842,5,9)
+18
+</code></pre>
 
 ### $ERR
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
