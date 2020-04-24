@@ -55,6 +55,8 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 ### $OP
 This is the core type at the base of grapa. It does not have a class associated. Consider it as both a high level version of byte code (but represented as a list) and simular to a lambda in other languages. It's a variable that includes executable instructions. 
 
+Understanding the inner workings of $OP is not neccessary to use grapa - and this section can be skipped. This though is core to how grapa works, and an understanding is needed in order to extend the syntax of the language to support your own domain specific language extentions.
+
 To see what rule might be used for a given script:
 <pre><code>> op(){4%2}
 ()[[op,()[mod,{4,2}]],{}]
