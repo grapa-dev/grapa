@@ -426,9 +426,9 @@ Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that ca
 #### getname
 
 ### $file
-Provides the ability to navigate either the file system or a database, querying data and updating data.
+Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules).
 
-Assue each example below starts with the following command:
+Each example below assumes the following command has been issued:
 <pre><code> f = $file();</code></pre>
 Which assignes f an instance of the $file class. The following are then operations that can be used from the $file class.
 
