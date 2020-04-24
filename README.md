@@ -311,8 +311,12 @@ Provides the ability to navigate either the file system or a database, querying 
 ### $net
 Provides a socket library, cross functional with all platforms supported. Functions include type, mac, interfaces, connect, listen, onlisten, disconnect, host, send, recieve, nrecieve, onrecieve.
 
+Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
+
 ### $thread
 Provides a thread library, cross functional with all platforms supported. Functions include type, trylock, lock, unlock, wait, signal, waiting, start, stop, started, suspend, resume, suspended.
+
+Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 ## Custom Types
 Create custome types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
@@ -458,6 +462,8 @@ Where op is:
 
 Note: each item of the array will process in a separate thread. This is an easy way to add multi-threading to the processing, but beware and batch workoads in the array to keep the size of the array to the number of threads you want.
 
+Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
+
 Example:
 <pre><code>> [1,2,3].map(op(n){@n*2});
 [2,4,6]
@@ -476,6 +482,8 @@ Where op is:
 - op (startvalue, listvalue, param1, param2, etc) ( script )
 
 Reduce process sequentially, as processing is intended to augment the startvalue. If the startvalue is not provided, the first item in the list is used as the startvalue.
+
+Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 Example:
 <pre><code>> [1,2,3].reduce(op(s,n){@s*@n});
