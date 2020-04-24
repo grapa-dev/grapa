@@ -556,6 +556,7 @@ The following examle defines a class with a single method. The method setdiv2 up
 * `&`
 * `^`
 * `==`
+* '<=>'
 * `!=`
 * `!`
 * `>=`
@@ -583,6 +584,11 @@ The following examle defines a class with a single method. The method setdiv2 up
 * class
 * obj
 * token
+* '()[oplist]'
+* `()<opcode>`
+* `(function)(params)`
+* literal
+* literal ([params])
 
 ## Command Operators
 
@@ -613,13 +619,13 @@ The following examle defines a class with a single method. The method setdiv2 up
 Syntax options:
 * if (bool) statement;
 * if (bool) statement; else statement;
-* if (bool) {statement;} elseif {statement;} else {statement;};
+* if (bool) statement; elseif statement; else statement;
 
 Example:
 <pre><code>> if (1==0) echo "1==0";  else echo "none";
 none
 
-> if (1==0) {echo "1==0";} elseif (2==2) {echo "2==2";} else {echo "none";};
+> if (1==0) echo "1==0"; elseif (2==2) echo "2==2"; else echo "none";
 2==2
 </code></pre>
 
@@ -627,11 +633,9 @@ none
 
 Syntax options:
 * bool ? statement for true;
-* bool ? statement for true # statement for false;
-* bool ? # statement for false;
-* (>0)|(0)|(<0) ? statement for >0 # statement for 0 # statement for <0;
-
-Note: Could not use the ':' character (from C) because this created a grammer conflit with the list syntax. And couldn't change the list syntax to '=' because that conflicted with the assignment syntax. So...using '#'. Possibly more information than needed...but this is partly what happens when multiple syntaxes are combined.
+* bool ? statement for true : statement for false;
+* bool ? : statement for false;
+* (>0)|(0)|(<0) ? statement for >0 : statement for 0 : statement for <0;
 
 Example:
 <pre><code>> 1?hi#by
