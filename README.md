@@ -420,9 +420,10 @@ none
 ### ?
 
 Syntax options:
-- bool ? statement;
-- bool ? statement # statement;
-- bool ? # statement;
+- bool ? statement for true;
+- bool ? statement for true # statement for false;
+- bool ? # statement for false;
+- (>0)|(0)|(<0) ? statement for >0 # statement for 0 # statement for <0;
 
 Note: Could not use the ':' character (from C) because this created a grammer conflit with the list syntax. And couldn't change the list syntax to '=' because that conflicted with the assignment syntax. So...using '#'. Possibly more information than needed...but this is partly what happens when multiple syntaxes are combined.
 
@@ -432,6 +433,9 @@ hi
 
 > 0?hi#by
 by
+
+> (-55)?hi#by#there
+there
 </code></pre>
 
 
