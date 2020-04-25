@@ -90,13 +90,13 @@ Note in the last example the rule to use was defined and passed in as a paramete
 
 If the rules have already been defined, the following options to generate the execution plan - for either storing as a function or for debugging the rules.
 
-Commands | Results
+Commands | Results | Description
 ------------ | -------------
-r = rule $INT `'*'` $INT {op(a:$1,b:$3){@a**@b}}; | 
-f = op()("4*2",@r);</br>f(); | 16
-f = @r.plan("4*2");</br>f(); | 16
-(@r.plan("4*2"))(); | 16
-((rule $INT `'*'` $INT {op(a:$1,b:$3){@a**@b}}).plan("4*2"))(); | 16
+r = rule $INT `'*'` $INT {op(a:$1,b:$3){@a**@b}}; | | Rule for "int * int", with associated code that applies the power operator
+f = op()("4*2",@r);</br>f(); | 16 | Applying the rule to create a function, and running the function
+f = @r.plan("4*2");</br>f(); | 16 | Another way to apply the rule
+(@r.plan("4*2"))(); | 16 | Apply the rule and run the function in the same command
+((rule $INT `'*'` $INT {op(a:$1,b:$3){@a**@b}}).plan("4*2"))(); | 16 | Define rule, apply rule, and run rule.
 
 ## System Class Types
 
