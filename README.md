@@ -172,7 +172,7 @@ By default, all floats are "float" format. To change formats use the fix() and f
 To verify the float is being created properly, use the decode routine with FLOAT as the parameter. For example:
 
 <pre><code>> "30.75".float(300,6).decode(FLOAT)
-{"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"prec":6,"data":123}
+{"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
 > (30.75).decode(FLOAT).data
 123
 
