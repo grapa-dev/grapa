@@ -447,33 +447,28 @@ Retrieves a list of files/directories in the current working directory.
   {"$KEY":"repo.prop","$TYPE":"FILE","$BYTES":4465}
 ]
 </code></pre>
-#### mktable (name, type)
-Creates a database at the current working directory, which may be within the file system, or it may be within a location in a database. 
 
-Note: This command will likely be eliminated in favor of the mkdir command, and the action will be within the context of the current working directory. If within the file system, the mkdir command would take a parameter to specify that it is to create a database file rather than a file system directory. Additionally, database files may assume a specific extention and listed in the directory as a grapa database type (such as GROUP). 
-
-Type can be: 
-* GROUP - stores any type, including nested databases, supporing a higharchical database (like a file system)
-* ROW - stores a row based table. Each recored is stored together in a block for the fixed fields, and a reference for the variable fields.
-* COL - stores a column based table. Each column is stored together. This is supported both in memory, as well as on the filesystem. Seachres are faster typically with column store, especially for tables with many columns where only a selection of fields may be accessed at any time. 
-
-Index - An index is created for the $KEY field. The database supports adding additonal indexes with various combinations of fields, but for simplicity this capabilty has not been exposed to the higher level language (to be determined if it will/should). 
-
-<pre><code>> @f.mktable("test")
-> @f.cd("test")
-> @f.dir()
-[]
-</code></pre>
-#### mkdir (name) 
+#### mkdir (name [,type]) 
 Creates a directory at the current working directory withyin the file system.
 
-Note: This command will in the future accomodate creating database files / tables.
+type is one of:
+- "", if in the file system will default to "DIR"
+- "DIR", if in the file system, a new directory will be created. If in the database, will use "GROUP"
+- "GROUP", create a database of GROUP type
+- "ROW", create a ROW store database
+- "COL", create a COL store datebase
 
-<pre><code>> @f.dir("test")
+<pre><code>> @f.mkdir("test")
 > @f.cd("test")
 > @f.dir()
 []
+
+> @f.mkdir("testg","GROUP")
+> @f.cd("testg")
+> @f.dir()
+[]
 </code></pre>
+
 #### rmdir (name)
 Removes a directory.
 <pre><code>> @f.rmdir("test")
