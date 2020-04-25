@@ -283,7 +283,7 @@ rule <$command_list> $SYSID("BE") | <$command_list> ';' | <$command_list>
 The above is the entry point to the grapa language. This entry point is a global variable that can be updated...so take caution as it is the default entry point all scripts. It is also possible to navigate the language syntax by looking up each rule that is lined from any other rule.
 
 Example of defining a custome rule, and applying the rule:
-<pre><code> x = rule $INT $INT {op(a:$1,b:$2){@a*@b}} | $INT {op(a:$1){@a}}
+<pre><code>> x = rule $INT $INT {op(a:$1,b:$2){@a*@b}} | $INT {op(a:$1){@a}}
 > (op()("4",@x))()
 4
 
@@ -295,6 +295,18 @@ Example of defining a custome rule, and applying the rule:
 
 > op()("4 3",@x)
 ()[[op,()[[op,()[mul,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":3}]],{}]
+</code></pre>
+
+To simplify creating rules that depend on matching on a predefined list of values, create a list and reference the list in the rules. If the rule matches, the value of the matched item is passed in as the token value.
+
+<pre><code>> t = {x:"matched on x",y:5};
+> r = rule $INT @t $INT {op(a:$2){@a}};
+
+> (op()("1 x 2",@r))();
+matched on x
+
+> (op()("1 y 2",@r))();
+5
 </code></pre>
 
 ### $ERR
