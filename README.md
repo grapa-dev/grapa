@@ -319,7 +319,7 @@ found y
 Rules can include compile time execution operation code, that will run during the planning phase. This can be used to increase execution time. Think of this like #define and #if logic in C.
 
 <pre><code>> x = rule $STR {()[lit,{$1}]};
-> r = rule $INT <x{op(a:$1){@a.len()}}> $INT {op(a:$2){@a}};
+> r = rule $INT `<x{op(a:$1){@a.len()}}>` $INT {op(a:$2){@a}};
 > (op()("44 'x' 22",@r))();
 1
 </code></pre>
