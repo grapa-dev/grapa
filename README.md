@@ -92,7 +92,7 @@ If the rules have already been defined, the following options to generate the ex
 
 Commands | Results
 ------------ | -------------
-r = rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}};</br>@r; | rule $INT '*' $INT {()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":$1,"b":$3}]}
+r = rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}}; | 
 op()("4*2",@r); | ()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
 @r.plan("4*2"); | ()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
 f = @r.plan("4*2");</br>f(); | 16
