@@ -276,14 +276,16 @@ There are three basic steps:
 * Execute the plan, with parameters if specified.
 
 Example system rule:
-<pre><code>> @$start
+```
+> @$start
 rule <$command_list> $SYSID("BE") | <$command_list> ';' | <$command_list>
-</code></pre>
+```
 
 The above is the entry point to the grapa language. This entry point is a global variable that can be updated...so take caution as it is the default entry point all scripts. It is also possible to navigate the language syntax by looking up each rule that is lined from any other rule.
 
 Example of defining a custome rule, and applying the rule:
-<pre><code>> x = rule $INT $INT {op(a:$1,b:$2){@a*@b}} | $INT {op(a:$1){@a}}
+```
+> x = rule $INT $INT {op(a:$1,b:$2){@a*@b}} | $INT {op(a:$1){@a}}
 > (op()("4",@x))()
 4
 
@@ -295,11 +297,12 @@ Example of defining a custome rule, and applying the rule:
 
 > op()("4 3",@x)
 ()[[op,()[[op,()[mul,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":3}]],{}]
-</code></pre>
+```
 
 To simplify creating rules that depend on matching on a predefined list of values, create a list and reference the list in the rules. If the rule matches, the value of the matched item is passed in as the token value.
 
-<pre><code>> t = {x:"matched on x",y:5};
+```
+> t = {x:"matched on x",y:5};
 > r = rule $INT @t $INT {op(a:$2){@a}};
 
 > (op()("1 x 2",@r))();
@@ -307,22 +310,24 @@ matched on x
 
 > (op()("1 y 2",@r))();
 5
-</code></pre>
+```
 
 Rules can also be embedded. Unfortunately, the current grammer requires an operation for a rule if the rule is to return any value - it doesn't make any assumptions. So as of the current release an embedded rule of (x|y) would match on x or y, but with no operation attached to x or y the result would not produce an output for the match. In some future version, this will be addressed to return a default. For now, an operation needs to be inserted if you want a value to be returned.
 
-<pre><code>> r = rule $INT (x{()[lit,{"found x"}]}|y{()[lit,{"found y"}]}) $INT {op(a:$2){@a}};
+```
+> r = rule $INT (x{()[lit,{"found x"}]}|y{()[lit,{"found y"}]}) $INT {op(a:$2){@a}};
 > (op()("44 y 22",@r))();
 found y
-</code></pre>
+```
 
 Rules can include compile time execution operation code, that will run during the planning phase. This can be used to increase execution time. Think of this like #define and #if logic in C.
 
-<pre><code>> x = rule $STR {()[lit,{$1}]};
-> r = rule $INT `<x{op(a:$1){@a.len()}}>` $INT {op(a:$2){@a}};
+```
+> x = rule $STR {()[lit,{$1}]};
+> r = rule $INT <x{op(a:$1){@a.len()}}> $INT {op(a:$2){@a}};
 > (op()("44 'x' 22",@r))();
 1
-</code></pre>
+```
 
 ### $ERR
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
