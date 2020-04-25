@@ -58,75 +58,44 @@ This is the core type at the base of grapa. It does not have a class associated.
 Understanding the inner workings of $OP is not neccessary to use grapa - and this section can be skipped. This though is core to how grapa works, and an understanding is needed in order to extend the syntax of the language to support your own domain specific language extentions.
 
 To see what rule might be used for a given script:
-<pre><code>> op(){4%2}
-()[[op,()[mod,{4,2}]],{}]
 
-> op(){4*2}
-()[[op,8],{}]
-</code></pre>
+Commands | Results
+------------ | -------------
+op(){4%2}; | ()[[op,()[mod,{4,2}]],{}]
+op(){4*2}; | ()[[op,8],{}]
 
 In the first case, a operation type is created that calles the "mod" library passing 4 and 2 and returns the result. In the second case, the planner recognized an optimization and reduced the operation to returning 8. 
 
 Examples of assigning an $OP to a variable. The examples show the underlying syntax of the $OP type, and using the $OP variable as a function.
 
-<pre><code>> f=op(){3%2}
-> @f()
-1
-
-> f=()[[op,()[mod,{3,2}]],{}]
-> @f()
-1
-
-> f=op(a,b){@a%@b}
-> @f
-()[[op,()[mod,{()[var,{a}],()[var,{b}]}]],{a,b}]
-
-> @f(842,5)
-2
-
-> f=op(a,b,c){d=@a%@b;@d*@c;}
-> @f
-()[[op,()<()[assign,{d,()[mod,{()[var,{a}],()[var,{b}]}]}],()[mul,{()[var,{d}],()[var,{c}]}]>],{a,b,c}]
-
-> @f(842,5,9)
-18
-</code></pre>
+Commands | Results
+------------ | -------------
+f=op(){3%2};</br>@f(); | 1
+f=()[[op,()[mod,{3,2}]],{}];</br>@f(); | 1
+f=op(a,b){@a%@b};</br>@f(); | ()[[op,()[mod,{()[var,{a}],()[var,{b}]}]],{a,b}]
+@f(842,5); | 2
+f=op(a,b,c){d=@a%@b;@d*@c;};</br>@f(); | ()[[op,()<()[assign,{d,()[mod,{()[var,{a}],()[var,{b}]}]}],()[mul,{()[var,{d}],()[var,{c}]}]>],{a,b,c}]
+@f(842,5,9); | 18
 
 You can also define an operation by providing a script and a rule. If a rule is not specified, the "start" and "$start" rules are used (which is the default entry point for the grapa language).
 
-<pre><code>> op()("4*2")
-()[[op,8],{}]
-
-> op()("4*2",@$start)
-()[[op,8],{}]
-
-> op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}})
-()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
-
-> f = op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}})
-> @f()
-16
-</code></pre>
+Commands | Results
+------------ | -------------
+op()("4*2"); | ()[[op,8],{}]
+op()("4*2",@$start); | ()[[op,8],{}]
+op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}}); | ()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
+f = op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}});</br>@f(); | 16
 
 Note in the last example the rule to use was defined and passed in as a parameter to the planer, the operation result assigned to a variable, and then the variable executed as a function.
 
 If the rules have already been defined, the following options to generate the execution plan - for either storing as a function or for debugging the rules.
 
-<pre><code>> r = rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}};
-> @r
-rule $INT '*' $INT {()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":$1,"b":$3}]}
-
-> op()("4*2",@r)
-()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
-
-> @r.plan("4*2")
-()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
-
-> f = @r.plan("4*2")
-> @f()
-16
-</code></pre>
-
+Commands | Results
+------------ | -------------
+r = rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}};</br>@r; | rule $INT '*' $INT {()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":$1,"b":$3}]}
+op()("4*2",@r); | ()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
+@r.plan("4*2"); | ()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
+f = @r.plan("4*2");</br>@f(); | 16
 
 ## System Class Types
 
@@ -135,23 +104,14 @@ The following are equivalent in comparisons:
 - True: true, 1
 - False: false, null
 
-<pre><code>> 1==true
-1
-
-> null==false
-1
-
-> 1==false
-
-> "55"==(55).str()
-1
-
-> "5.54"==(5.54).str()
-1
-
-> "5.53"==(5.54).str()
-
-</code></pre>
+Commands | Results
+------------ | -------------
+1==true; | 1
+null==false; | 1
+1==false; | </code>
+"55"==(55).str(); | 1
+"5.54"==(5.54).str(); | 1
+"5.53"==(5.54).str(); | 
 
 ### $STR
 ASCII only - unicode will eventually be added. Can initalize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported. 
