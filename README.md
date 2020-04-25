@@ -309,6 +309,13 @@ matched on x
 5
 </code></pre>
 
+Rules can also be embedded. Unfortunately, the current grammer requires an operation for a rule if the rule is to return any value - it doesn't make any assumptions. So as of the current release an embedded rule of (x|y) would match on x or y, but with no operation attached to x or y the result would not produce an output for the match. In some future version, this will be addressed to return a default. For now, an operation needs to be inserted if you want a value to be returned.
+
+<pre><code>> r = rule $INT (x{()[lit,{"found x"}]}|y{()[lit,{"found y"}]}) $INT {op(a:$2){@a}};
+> (op()("44 y 22",@r))();
+found y
+</code></pre>
+
 ### $ERR
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
 
