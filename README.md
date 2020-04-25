@@ -57,8 +57,7 @@ This is the core type at the base of grapa. It does not have a class associated.
 
 Understanding the inner workings of $OP is not neccessary to use grapa - and this section can be skipped. This though is core to how grapa works, and an understanding is needed in order to extend the syntax of the language to support your own domain specific language extentions.
 
-To see what rule might be used for a given script:
-
+Examples:
 Commands | Results | Description
 ------------ | ------------- | -------------
 op(){4%2}; | ()[[op,()[mod,{4,2}]],{}] | Operation created to call mod function with 4 and 2
@@ -75,6 +74,7 @@ The following are equivalent in comparisons:
 - True: true, 1
 - False: false, null
 
+Examples:
 Commands | Results
 ------------ | -------------
 1==true; | 1
@@ -100,6 +100,7 @@ Supports signed and unsigned. Unsigned is essentally an $INT that is not negativ
 
 The $INT class inherits $obj class - see the the $obj class for additional functions supported.
 
+Examples:
 Commands | Results
 ------------ | -------------
 52322; | 52322
