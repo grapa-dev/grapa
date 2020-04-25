@@ -88,43 +88,64 @@ null==false; | 1
 ASCII only - unicode will eventually be added. Can initalize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported. 
 
 Examples:
-<pre><code>> "this is a test".len()
-14
-
-> "this is a test".split("")
-["t","h","i","s"," ","i","s"," ","a"," ","t","e","s","t"]
-
-> "this is a test".raw()
-7468697320697320612074657374
-
-> "this is a test".raw().int()
-2361031878030638688519054699098996
-
-> "this is a test".raw().int()*2
-4722063756061277377038109398197992
-</code></pre>
+Commands | Results
+------------ | -------------
+"this is a test".len(); | 14
+"this is a test".split(""); | ["t","h","i","s"," ","i","s"," ","a"," ","t","e","s","t"]
+"this is a test".raw(); | 7468697320697320612074657374
+"this is a test".raw().int(); | 2361031878030638688519054699098996
 
 ### $INT
 Supports signed and unsigned. Unsigned is essentally an $INT that is not negative. Given this is unlimited precision, a separate $UINT type is not required (grapa originally had one, but it's been removed as it's essentially redundant and adds unncessary complexity). The reason other languages have a $UINT type is to handle to bit overflow issue where the high order bit may become set during math operations. In grapa, when the high order bit is set, it automatically increases the precision and there is no overflow. Still, there is sometimes a need for specific $UINT type handling of raw bytes, and to support this there is a uint() function to ensure that a raw byte stream with a high order bit is not incorectly interpreted as a negative number. 
 
-The $INT class includes routines for:
-- General: inherits the $obj class, and the routines supported there. See $obj system class type.
-- Crypt: genprime, isprime, random, genrsa
-- Trig: e, pi, log, ln, sin, cos, tan, cot, sec, csc, asin, acos, atan, acot, asec, acsc, sinh, cosh, tanh, coth, sech, csch, asinh, acosh, atanh, acoth, acech, acsch, atan2, hypot.
+The $INT class inherits $obj class - see the the $obj class for additional functions supported.
 
-<pre><code>> 52322
-52322
+Commands | Results
+------------ | -------------
+52322; | 52322
+"52322".int(); | 52322
+(52322).raw(); | 00CC62
 
-> "52322".int()
-52322
-
-> (52322).raw()
-00CC62
-</code></pre>
+#### genprime
+#### isprime
+#### random
+#### genrsa
+#### e
+#### pi
+#### log
+#### ln
+#### sin
+#### cos
+#### tan
+#### cot
+#### sec
+#### csc
+#### asin
+#### acos
+#### atan
+#### acot
+#### asec
+#### acsc
+#### sinh
+#### cosh
+#### tanh
+#### coth
+#### sech
+#### csch
+#### asinh
+#### acosh
+#### atanh
+#### acoth
+#### acech
+#### acsch
+#### atan2
+#### hypot.
 
 ### $FLOAT
 
-Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). The $FLOAT class inherits the $INT class, and the functions in that class.
+Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). 
+
+The $FLOAT class inherits $INT class - see the the $INT class for additional functions supported.
 
 Example:
 <pre><code>> 5.13
