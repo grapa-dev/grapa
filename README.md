@@ -92,11 +92,11 @@ If the rules have already been defined, the following options to generate the ex
 
 Commands | Results
 ------------ | -------------
-r = rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}}; | 
+r = rule $INT `'*'` $INT {op(a:$1,b:$3){@a**@b}}; | 
 f = op()("4*2",@r);</br>f(); | 16
 f = @r.plan("4*2");</br>f(); | 16
 (@r.plan("4*2"))(); | 16
-((rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}}).plan("4*2"))(); | 16
+((rule $INT `'*'` $INT {op(a:$1,b:$3){@a**@b}}).plan("4*2"))(); | 16
 
 ## System Class Types
 
