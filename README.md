@@ -349,16 +349,35 @@ Same as $STR, but was initialized with '$' at the front of the string. Used for 
 
 ### $sys
 A few general utility functions that are useful, but it wasn't clear if they should be added to the native language syntax, were added to $sys.
+
 #### type (object)
 <pre><code>> $sys().type(5)
 $INT
 </code></pre>
 #### getenv (type)
+
+getenv/putenv types:
+Type | Description
+------------ | -------------
+$PATH |
+$STATICLIB |
+$ARGCIN |
+$ARGV |
+$LIB |
+$BIN |
+$NAME |
+$WORK |
+$HOME |
+$TEMP |
+$VERSION |
+$LICENCE |
+Any value not starting with '$' will be directed to the native OS getenv/putenv |
+
 <pre><code>> $sys().getenv($VERSION)
 {"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000}
 </code></pre>
-#### putenv (type)
-
+#### putenv (type, value)
+See getenv.
 
 ### $obj
 Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used accross the different data types are placed in the $obj class. Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
@@ -399,7 +418,25 @@ Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that ca
 #### clearbit
 #### genbits
 #### encode
+getenv/putenv types:
+Type | Description
+------------ | -------------
+RSA-KEY |
+AES256 |
+SHAKE256 |
+SHAKE128 |
+SHA3-256 |
+SHA3-384 |
+SHA3-512 |
+ZIP-GRAPA |
+BASE64 |
+XML-GRAPA |
+ESCAPE |
+FLOAT |
+
 #### decode
+See encode.
+
 #### setfile
 #### map
 #### filter
@@ -815,39 +852,6 @@ Example:
 > [1,2,3,4,5,6,7,8,9].filter(op(n,p){@n%@p!=0},3);
 [1,2,4,5,7,8]
 </code></pre>
-
-### Command Options
-
-#### $sys().type()
-
-#### $sys().getenv(type) / $sys().putenv(type,value)
-* $PATH
-* $STATICLIB
-* $ARGCIN
-* $ARGV
-* $LIB
-* $BIN
-* $NAME
-* $WORK
-* $HOME
-* $TEMP
-* $VERSION
-* $LICENCE
-* Any value not starting with '$' will be directed to the native OS getenv/putenv
-
-#### value.encode(type) / value.decode(type)
-* RSA-KEY
-* AES256
-* SHAKE256
-* SHAKE128
-* SHA3-256
-* SHA3-384
-* SHA3-512
-* ZIP-GRAPA
-* BASE64
-* XML-GRAPA
-* ESCAPE
-* FLOAT
 
 ## Language Syntax
 ### Default Language Rules
