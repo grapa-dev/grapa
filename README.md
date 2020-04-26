@@ -417,24 +417,24 @@ Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that ca
 #### setbit
 #### clearbit
 #### genbits
-#### encode
-getenv/putenv types:
+#### encode (type, value [,options])
+encode/decode types:
 Type | Description
 ------------ | -------------
-RSA-KEY |
+RSA-KEY | 
 AES256 |
-SHAKE256 |
-SHAKE128 |
-SHA3-256 |
-SHA3-384 |
-SHA3-512 |
 ZIP-GRAPA |
 BASE64 |
-XML-GRAPA |
 ESCAPE |
 FLOAT |
+XML-GRAPA | Only encode.
+SHAKE256 | Only encode.
+SHAKE128 | Only encode.
+SHA3-256 | Only encode.
+SHA3-384 | Only encode.
+SHA3-512 | Only encode.
 
-#### decode
+#### decode (type, value [,options])
 See encode.
 
 #### setfile
