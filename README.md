@@ -323,6 +323,8 @@ If the lookup needs to be against something other than a list (maybe checking a 
 
 Rules can also be embedded. Unfortunately, the current grammer requires an operation for a rule if the rule is to return any value - it doesn't make any assumptions. So as of the current release an embedded rule of (x|y) would match on x or y, but with no operation attached to x or y the result would not produce an output for the match. In some future version, this will be addressed to return a default. For now, an operation needs to be inserted if you want a value to be returned.
 
+If the token handler returns an $ERR object, it will cause the rule to fail. So it not only has the ability to add additional logic to processing the token, is also can also serve as an additional component to the planning engine by validating the token against the intent of the rule - something that could not be done at a later phase and could only be done during the planning/compile phase. 
+
 ```
 > r = rule $INT (x{()[lit,{"found x"}]}|y{()[lit,{"found y"}]}) $INT {op(a:$2){@a}};
 > (op()("44 y 22",@r))();
