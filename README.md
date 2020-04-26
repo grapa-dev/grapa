@@ -703,6 +703,8 @@ The following examle defines a class with a single method. The method setdiv2 up
 #### class
 #### obj
 #### token
+Used to define lexical rules. Currenlty only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specived in the grammer. 
+
 #### rule
 #### const
 #### `()[oplist]`
@@ -724,6 +726,7 @@ test
 #### string
 
 ### Lexical Operators
+There are several predefined lexical operators, most of which define how $ID, $INT, $FLOAT, $STR, etc, are processed and generate the corresponding tokens. There are also a few other lexical operators that will trigger special handling of the input stream. The following are two examples. Currently there is no way to define/change the lexical operators - this will come in some future version of grapa.
 
 #### `$&`
   * Wrap the XML data in $& on either side to have grapa parse the input as XML. These characters are specail lexical triggers that modify the parsing engine token generation. The first instence turns the mode on and the second turns the mode off.
