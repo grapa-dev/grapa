@@ -329,6 +329,14 @@ Rules can also be embedded. Unfortunately, the current grammer requires an opera
 found y
 ```
 
+If there is a well known end sequence, and you want to collect all the tokens in between, you can insert an empty rule. All of the tokens, including any white space, will be passed on. The risk of using this in a rule is that if the end token does not exist, all tokens will be processed in the empty rule. 
+
+```
+> r = rule $INT <> $INT {op(a:$2){@a}};
+> (op()("44 'x' 22",@r))();
+[" ","x"," "]
+```
+
 
 ### $ERR
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
