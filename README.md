@@ -312,6 +312,15 @@ matched on x
 5
 ```
 
+If the lookup needs to be against something other than a list (maybe checking a database or even a web service), an operation can be added to a rule token that will run at compile time if the rule matches. Note that this will be called during the planning phase (or compile time) every time the rule is evaluated - so take caution on attaching a heavy workload. The result of the operation will be used as the result of the token matched. 
+
+```
+> x = rule $STR {()[lit,{$1}]};
+> r = rule $INT <x{op(a:$1){@a.len()}}> $INT {op(a:$2){@a}};
+> (op()("44 'x' 22",@r))();
+1
+```
+
 Rules can also be embedded. Unfortunately, the current grammer requires an operation for a rule if the rule is to return any value - it doesn't make any assumptions. So as of the current release an embedded rule of (x|y) would match on x or y, but with no operation attached to x or y the result would not produce an output for the match. In some future version, this will be addressed to return a default. For now, an operation needs to be inserted if you want a value to be returned.
 
 ```
@@ -320,14 +329,6 @@ Rules can also be embedded. Unfortunately, the current grammer requires an opera
 found y
 ```
 
-Rules can include compile time execution operation code, that will run during the planning phase. This can be used to increase execution time. Think of this like #define and #if logic in C.
-
-```
-> x = rule $STR {()[lit,{$1}]};
-> r = rule $INT <x{op(a:$1){@a.len()}}> $INT {op(a:$2){@a}};
-> (op()("44 'x' 22",@r))();
-1
-```
 
 ### $ERR
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
