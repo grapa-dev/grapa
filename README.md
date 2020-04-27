@@ -581,10 +581,30 @@ type is one of:
 Removes a directory.
 <pre><code>> @f.rmdir("test")
 </code></pre>
-#### mkcol (name)
+#### mkcol (name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a column within the current working directory.
 <pre><code>> @f.mkcol("test")
 </code></pre>
+
+
+fieldType | Description
+------------ | -------------
+TIME | Fixed size for $TIME
+BOOL | Fixed size for $BOOL
+INT | Stores an $INT. Size depeds on storeType and storeSize
+FLOAT | Stores a $FLOAT. Size depeds on storeType and storeSize
+STR | Stores a $STR. Size depeds on storeType and storeSize
+TABLE | Stores a $TABE. Size depeds on storeType and storeSize
+RAW | Stores a $RAW. Size depeds on storeType and storeSize
+
+storeType | Description
+------------ | -------------
+FIX | Fixed field size, set storeSize and storeGrow. Data embedded in row/col.
+VAR | Variable field size. Uses an extra reference for the data. Reference stored in row/col.
+PAR | Partitioned field. Best for very large data requiring updates to portions of the data. Also used for COL store $TABLE types.
+
+storeGrow is used by variable fields to determine how much to grow the field by when extra space is needed.
+
 #### mkrow (name)
 Adds a new within the current working directory with the specified name as the key.
 <pre><code>> @f.mkcol("test")
