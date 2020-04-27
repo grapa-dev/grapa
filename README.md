@@ -583,9 +583,11 @@ Removes a directory.
 </code></pre>
 #### mkcol (name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a column within the current working directory.
+
 <pre><code>> @f.mkcol("test")
 </code></pre>
 
+Default for all fields is fieldType=STR and storeType=VAR. 
 
 fieldType | Description
 ------------ | -------------
