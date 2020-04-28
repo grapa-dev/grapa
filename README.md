@@ -557,7 +557,7 @@ C:\Projects\Test\lib
 #### ls ([path])
 Retrieves a list of files/directories in the current working directory.
 <pre><code>> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b/python-packages")
-> @f.dir()
+> @f.ls()
 [
   {"$KEY":"adb","$TYPE":"DIR","$BYTES":0},
   {"$KEY":"Android.bp","$TYPE":"FILE","$BYTES":784},
@@ -568,7 +568,7 @@ Retrieves a list of files/directories in the current working directory.
 ]
 
 > @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b")
-> @f.dir("python-packages")
+> @f.ls("python-packages")
 [
   {"$KEY":"adb","$TYPE":"DIR","$BYTES":0},
   {"$KEY":"Android.bp","$TYPE":"FILE","$BYTES":784},
@@ -589,20 +589,20 @@ type is one of:
 - "ROW", create a ROW store database
 - "COL", create a COL store datebase
 
-<pre><code>> @f.mkdir("test")
+<pre><code>> @f.mk("test")
 > @f.cd("test")
-> @f.dir()
+> @f.ls()
 []
 
-> @f.mkdir("testg","GROUP")
+> @f.mk("testg","GROUP")
 > @f.cd("testg")
-> @f.dir()
+> @f.ls()
 []
 </code></pre>
 
 #### rm (name)
 Removes a directory or file.
-<pre><code>> @f.rmdir("test")
+<pre><code>> @f.rm("test")
 </code></pre>
 
 #### set (name, value [, field])
@@ -610,21 +610,21 @@ Updates the column in a row. By default the $VALUE column is updated. But an alt
 
 field defaults to $VALUE.
 
-<pre><code>> @f.setrow("test","value of test")
+<pre><code>> @f.set("test","value of test")
 </code></pre>
 #### get (name [, field])
 Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
 
 field defaults to $VALUE.
 
-<pre><code>> @f.getrow("test")
+<pre><code>> @f.get("test")
 value of test
 </code></pre>
 
 #### mkfield (name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a field within the current working directory.
 
-<pre><code>> @f.mkcol("test")
+<pre><code>> @f.mkfield("test")
 </code></pre>
 
 Default for all fields is fieldType=STR and storeType=VAR. 
