@@ -68,23 +68,23 @@ f=op(){4*2};</br>f(); | 8 | Assign operation to a variable, and call the variabl
 
 Adding paraeters to $OP.
 
-Examples:
-Commands | Results | Description
------------- | ------------- | -------------
-op(){1} | @<[op,1],{}> | For comparison. First item is [op,1] and second item is {}.
-op(a,b){@a*@b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}> | First item is extended to add var lookups, second item is where the arguments are included. The system creates a namespace on top of the namespace stack where the arguments are placed, which are then accessed from within the operation.
+Example: First item is extended to add var lookups, second item is where the arguments are included. The system creates a namespace on top of the namespace stack where the arguments are placed, which are then accessed from within the operation.
+Commands | Results
+------------ | -------------
+op(){1} | @<[op,1],{}>
+op(a,b){@a*@b}; | <code>@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}></code>
 
 See the section on syntax for additional examples.
 
 ### $CODE
 A sequence of $OP items to be processed in sequence. 
 
-Examples:
-Commands | Results | Description
------------- | ------------- | -------------
-f=@[1,2];</br>f(); | 2 | Processes 1 and then 2, and 2 is the final result.
-<code>f=op(){a=2;@a*3;};</br>@f;</code> | <code>@<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}></code> | Assignes 2 to a, than evaluates a*3, the result is 6
-f(); | 6 |
+Example: Assignes 2 to a, than evaluates a*3, the result is 6
+Commands | Results
+------------ | -------------
+f=@[1,2];</br>f(); | 2
+<code>f=op(){a=2;@a*3;};</br>@f;</code> | <code>@<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}></code>
+f(); | 6
 
 Normally you would use $CODE directly. It is typically embedded in an $OP type. The planner typically wraps the result in an $OP along with parameter handling for the function - but this could change at some point where it could be either $OP or $CODE. 
 
