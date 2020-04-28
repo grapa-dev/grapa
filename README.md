@@ -324,25 +324,14 @@ An $XML represents the XML data type. Under the hood, it is represented as a $LI
 
 Referencing the data is a litter different though. Each item has multiple parts, where the 0 part is the attributes, and the remaining parts are the values.
 
-(side note...len() is not yet supported for XML...this is comming)
-
 ```
 > x = $& <test v=10>this is the test</test> $&;
-> @x;
-<test v=10>this is the test</test>
+> @x.type();
+$XML
 
-> @x[0][0]
-{"v":10}
+> @x.len()
+1
 
-> @x[0][1]
-this is the test
-```
-
-### $TAG
-This represents the innter part of XML, including the attributes. Syntax to create the $TAG type has not been created specifically outside of $XML...but if you want to create it just create $XML and reference one of the items.
-
-```
-> x = $& <test v=10>this is the test</test> $&;
 > @x[0].type()
 $TAG
 
@@ -356,6 +345,10 @@ $TAG
 this is the test
 ```
 
+### $TAG
+This represents the innter part of XML, including the attributes. Syntax to create the $TAG type has not been created specifically outside of $XML...but if you want to create it just create $XML and reference one of the items.
+
+See $XML.
 
 ### $RULE
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessable and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a lanugae by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
