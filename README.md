@@ -19,6 +19,15 @@ Linux: Place in "/usr/bin" (or somewhere accessable).
 Windows: Place in a location that is in the PATH, or update PATH to the location the application is copied to.
 Mac: Place in "/usr/local/bin" - first time running the tool will take about 20 seconds as the OS scans the executable. 
 
+### Console
+To exit while in the console, enter a '.' character.
+
+Any grapa commands can be run interactively within the console.
+
+If using paste to enter a block of code to run, ensure each line is not larger than the maximum line line for the console - break up the code into shorter lines.
+
+If using paste to enter multiple lines that need to be run at the same time (such as when a single command spans multiple lines), enter `$[` sequence first and `$]` sequence at the end. This will triger the lexical engine to signal to the grammer engine to pause grammer analysis until after all the tokens have been generated for the input stream. 
+
 ### Command line options
 
 Once copyed into a location (and PATH updated if needed), you'll be able to run the tool using "grapa" from a terminal or command sheel from any location. Running the tool with "grapa --env" will display a few of the directories where the tool will look for information.
@@ -63,7 +72,7 @@ Commands | Results | Description
 (op(){4*2})(); | 8 | Creates $OP and executes.
 (@<mul,{4,2}>)(); | 8 | Same but using $OP directly.
 op(){5%2}; | @<[op,@<mod,{5,2}>],{}> | What op(){} generates.
-op(){4*2}; | @<[op,8],{}> | Some operations have compile time optimizations.
+op(){4*2}; | @<[op,8],{}> | Some operations have compile time optimizations. Note this result is equivalent to @[8] and @<mul,{4,2}> and @[@<mul,4,2>]
         
 
 Adding paraeters to $OP.
@@ -840,6 +849,18 @@ The following examle defines a class with a single method. The method setdiv2 up
 #### false
 #### null
 
+### Stack
+#### $$
+There is a stack of a single value, the value of the result of the prior operation. This value can be accessed by accessing the $$ variable.
+
+```
+> 5*2
+10
+
+> @$$ * 3
+30
+```
+
 ### Assignment Operators
 #### `=`
 #### `+=`
@@ -959,6 +980,12 @@ test
 ### Command Operators
 #### $INCLUDE
 #### exit
+Causes the command line shell / console to exit. Primarily used for a script that is initiated from the command line.
+
+If used in the console, the exit will not happen until another command is issued from the shell. This is because everything is handled async.
+
+To exit while in the console, enter a '.' character.
+
 #### console
 #### echo
 #### string
