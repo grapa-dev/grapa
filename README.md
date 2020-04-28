@@ -28,6 +28,8 @@ If using paste to enter a block of code to run, ensure each line is not larger t
 
 If using paste to enter multiple lines that need to be run at the same time (such as when a single command spans multiple lines), enter `$[` sequence first and `$]` sequence at the end. This will triger the lexical engine to signal to the grammer engine to pause grammer analysis until after all the tokens have been generated for the input stream. 
 
+As a side note (and more advanced topic) - if processing a script that first includes syntax for code that follows in the same script, these sequences are required in order to force the engine to first setup the grammer required for code that follows. 
+
 ### Command line options
 
 Once copyed into a location (and PATH updated if needed), you'll be able to run the tool using "grapa" from a terminal or command sheel from any location. Running the tool with "grapa --env" will display a few of the directories where the tool will look for information.
