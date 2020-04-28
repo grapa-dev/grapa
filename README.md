@@ -62,7 +62,7 @@ Commands | Results | Description
 ------------ | ------------- | -------------
 f=@<mul,{2,3}>;</br>f(); | 6 | Calls the "mul" library passing 2 and 3, the result is 6.
 op(){5%2}; | @<[op,@<mod,{5,2}>],{}> | Operation created to call mod function with 5 and 2
-op(){4*2}; | ()[[op,8],{}] | Operation created to multiply 4 and 2, and optimizer reduced during planning
+op(){4*2}; | @<[op,8],{}> | Operation created to multiply 4 and 2, and optimizer reduced during planning
 f=op(){4*2};</br>f(); | 8 | Assign operation to a variable, and call the variable to get the result
 (op(){4*2})(); | 8 | Create and run operation in a single command
 
@@ -77,16 +77,14 @@ op(a,b){@a*@b}; | <code>@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}></code>
 See the section on syntax for additional examples.
 
 ### $CODE
-A sequence of $OP items to be processed in sequence. 
+A sequence of $OP items to be processed in sequence.  Normally you would use $CODE directly. It is typically embedded in an $OP type. The planner typically wraps the result in an $OP along with parameter handling for the function - but this could change at some point where it could be either $OP or $CODE. 
 
 Example: Assignes 2 to a, than evaluates a*3, the result is 6
 Commands | Results
 ------------ | -------------
 f=@[1,2];</br>f(); | 2
-<code>f=op(){a=2;@a*3;};</br>@f;</code> | <code>@<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}></code>
+f=op(){a=2;@a*3;};</br>@f; | <code>@<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}></code>
 f(); | 6
-
-Normally you would use $CODE directly. It is typically embedded in an $OP type. The planner typically wraps the result in an $OP along with parameter handling for the function - but this could change at some point where it could be either $OP or $CODE. 
 
 ## System Class Types
 
