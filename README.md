@@ -60,11 +60,10 @@ Understanding the inner workings of $OP is not neccessary to use grapa - and thi
 Examples:
 Commands | Results | Description
 ------------ | ------------- | -------------
-f=@<mul,{2,3}>;</br>f(); | 6 | Calls the "mul" library passing 2 and 3, the result is 6.
-op(){5%2}; | @<[op,@<mod,{5,2}>],{}> | Operation created to call mod function with 5 and 2
-op(){4*2}; | @<[op,8],{}> | Operation created to multiply 4 and 2, and optimizer reduced during planning
-f=op(){4*2};</br>f(); | 8 | Assign operation to a variable, and call the variable to get the result
-(op(){4*2})(); | 8 | Create and run operation in a single command
+(op(){4*2})(); | 8 | Creates $OP and executes.
+<code>(@<mul,{4,2}>)();</code> | 8 | Same but using $OP directly.
+op(){5%2}; | @<[op,@<mod,{5,2}>],{}> | What op(){} generates.
+op(){4*2}; | @<[op,8],{}> | Some operations have compile time optimizations.
 
 Adding paraeters to $OP.
 
