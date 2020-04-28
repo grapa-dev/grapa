@@ -554,7 +554,7 @@ Changes the current home directory.
 > @f.phd()
 C:\Projects\Test\lib
 </code></pre>
-#### dir ([path])
+#### ls ([path])
 Retrieves a list of files/directories in the current working directory.
 <pre><code>> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b/python-packages")
 > @f.dir()
@@ -579,7 +579,7 @@ Retrieves a list of files/directories in the current working directory.
 ]
 </code></pre>
 
-#### mkdir (name [,type]) 
+#### mk (name [,type]) 
 Creates a directory at the current working directory withyin the file system.
 
 type is one of:
@@ -600,12 +600,29 @@ type is one of:
 []
 </code></pre>
 
-#### rmdir (name)
-Removes a directory.
+#### rm (name)
+Removes a directory or file.
 <pre><code>> @f.rmdir("test")
 </code></pre>
-#### mkcol (name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
-Creates a column within the current working directory.
+
+#### set (name, value [, field])
+Updates the column in a row. By default the $VALUE column is updated. But an alternate column can be specified.
+
+field defaults to $VALUE.
+
+<pre><code>> @f.setrow("test","value of test")
+</code></pre>
+#### get (name [, field])
+Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
+
+field defaults to $VALUE.
+
+<pre><code>> @f.getrow("test")
+value of test
+</code></pre>
+
+#### mkfield (name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
+Creates a field within the current working directory.
 
 <pre><code>> @f.mkcol("test")
 </code></pre>
@@ -630,29 +647,9 @@ PAR | Partitioned field. Best for very large data requiring updates to portions 
 
 storeGrow is used by variable fields to determine how much to grow the field by when extra space is needed.
 
-#### mkrow (name)
-Adds a new within the current working directory with the specified name as the key.
-<pre><code>> @f.mkcol("test")
-</code></pre>
-#### rmrow (name)
-Removes a row the current working directory with the specified name. If the name is a number, the row with that index is removed.
-<pre><code>> @f.rmrow("test")
-</code></pre>
-#### setrow (name, value [, column])
-Updates the column in a row. By default the $VALUE column is updated. But an alternate column can be specified.
+#### rmfield (name)
+Deletes a field within the current working directory.
 
-Note: this command will be updated to support setting multiple fields within a single call. And maybe even for multiple rows (not sure...maybe a setrows command).
-
-<pre><code>> @f.setrow("test","value of test")
-</code></pre>
-#### getrow (name [, column])
-Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
-
-Note: this command will be updated to support getting multiple fields within a single call. And maybe even for multiple rows (not sure...maybe a getrows command).
-
-<pre><code>> @f.getrow("test")
-value of test
-</code></pre>
 #### debug ()
 Used for debugging the database during development. Displayes the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).
 
