@@ -238,22 +238,15 @@ hi test
 ### $LIST
 A $LIST is basically JSON, but extended to include all the various grapa data types. 
 
-Examples:
-* Create
-  * x = {a:1, b:2}
-* Access
-  * {a:1, b:2}.a
-  * {a:1, b:3}[1]
-* Append
-  * x += (c:3)
-* Insert at
-  * @x += (c:3) @x[0]
-* Number of entries
-  * @x[]
-  * {a:1, b:2}[]
-* Remove
-  * @x -= @x[0]
-
+Action | Example | Result
+------------ | ------------- | -------------
+Create | {a:1, b:2, c:3} | {a:1, b:2}
+Access | {a:1, b:2, c:3}.a</br>{a:1, b:2, c:3}[1]</br>{a:1, b:2, c:3}[-1] | 1</br>1</br>3
+Append | x = {a:1, b:2};</br>x += (c:3);</br>@x; | </br></br>{a:1, b:2, c:3}
+Append | x = {a:1, b:2};</br>x ++= {c:3,d:4};</br>@x; | </br></br>{a:1, b:2, c:3, d:4}
+Insert | x = {a:1, b:2};</br>x += (c:3) @x[0];</br>@x; | </br></br>{"c":3,"a":1,"b":2}
+Count | {a:1, b:2, c:3}.len() | 3
+Remove | x = {a:1, b:2, c:3};</br>x -= @x[1];</br>@x; | </br></br>{a:1, c:3}
 
 ### $ARRAY
 Same as $LIST, but without the entry labels.
@@ -292,13 +285,58 @@ As another test, the first item below illustrates taking 0.002991 seconds to ind
 </code></pre>
 
 ### $TABLE
-A $TABLE is a higharchical database with columns, rows, with both row store and columns store. Uses the $file commands for creating, updated, and navigating.
+A $TABLE is a higharchical database with columns, rows, with both row store and columns store. 
+
+See $file commands for creating, updated, and navigating.
+
+<pre><code>> f=$file().table()
+> @f.ls()
+[]
+
+> @f.set("test","value")
+> @f.ls()
+[{"$KEY":"test","$TYPE":"ROW","$BYTES":5}]
+
+> @f.get("test")
+value
+
+> @f.type()
+$TABLE
+</code></pre>
 
 ### $RAW
 A $RAW represents raw bytes. Most data types can be converted to and from $RAW, providing the abilty to make speicic tweaks to data. For example, this is how time addition/subtraction is performed - by converting the $TIME into $RAW and then into an $INT, and than back to a $TIME. There are several examples of using raw in the documentation for the other data types.
 
+When displayed, the value is printed in hex form, but the value in memory is in raw. If you convert to hex(), the result will be a text version of the hex of the raw data.
+
+<pre><code>> "hi".raw();
+6869
+
+> "hi".raw().int();
+26729
+
+> (0x6869).raw().str();
+hi
+</code></pre>
+
 ### $XML
 An $XML represents the XML data type. Under the hood, it is represented as a $LIST and all the same command sused for $LIST should work on $XML. 
+
+Referencing the data is a litter different though. Each item has multiple parts, where the 0 part is the attributes, and the remaining parts are the values.
+
+(side note...len() is not yet supported for XML...this is comming)
+
+<pre><code>> x = $& <test v=10>this is the test</test> $&;
+> @x;
+<test v=10>this is the test</test>
+
+> @x[0][0]
+{"v":10}
+
+> @x[0][1]
+this is the test
+</code></pre>
+
 
 ### $RULE
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessable and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a lanugae by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
@@ -394,6 +432,11 @@ If an operation results in an error, the $ERR data type is returned. Check using
 
 Under the hood, the $ERR type is a $LIST, and the same commands can be used to get more details on the error.
 
+```
+> (1/0).type()==$ERR
+1
+```
+
 ## System Class Types
 
 ### $SYSID
@@ -419,7 +462,7 @@ $INT
 getenv/putenv types:
 Type | Description
 ------------ | -------------
-$PATH |
+$PATH | 
 $STATICLIB |
 $ARGCIN |
 $ARGV |
@@ -501,10 +544,11 @@ Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that ca
 #### clearbit
 #### genbits
 #### encode (type, value [,options])
+
 encode/decode types:
 Type | Description
 ------------ | -------------
-RSA-KEY | 
+RSA-KEY | Requires a valid RSA key. See genrsa() in $INT. Data size must be correct size (byte count of d value minus 32).
 AES256 |
 ZIP-GRAPA |
 BASE64 |
@@ -516,6 +560,20 @@ SHAKE128 | Only encode.
 SHA3-256 | Only encode.
 SHA3-384 | Only encode.
 SHA3-512 | Only encode.
+
+Example of RSA using hard coded RSA key.
+
+```
+e = 0xa932b948feed4fb2b692609bd22164fc9edb59fae7880cc1eaff7b3c9626b7e5b241c27a974833b2622ebe09beb451917663d47232488f23a117fc97720f1e7;
+d = (0x4adf2f7a89da93248509347d2ae506d683dd3a16357e859a980c4f77a4e2f7a01fae289f13a851df6e9db5adaa60bfd2b162bbbe31f7c8f828261a6839311929d2cef).uraw();
+d = (@d + (0x4f864dde65e556ce43c89bbbf9f1ac5511315847ce9cc8dc92470a747b8792d6a83b0092d2e5ebaf852c85cacf34278efa99160f2f8aa7ee7214de07b7).uraw()).uint();
+n = (0xe8e77781f36a7b3188d711c2190b560f205a52391b3479cdb99fa010745cbeba5f2adc08e1de6bf38398a0487c4a73610d94ec36f17f3f46ad75e17bc1adfec998395).uraw();
+n = (@n + (0x89f45f95ccc94cb2a5c500b477eb3323d8cfab0c8458c96f0147a45d27e45a4d11d54d77684f65d48f15fafcc1ba208e71e921b9bd9017c16a5231af7f).uraw()).uint();
+g = {e:@e,d:@d,n:@n};
+len = @g.n.bytes()-32;
+v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(@len);
+@v.encode("RSA-KEY",@g).decode("RSA-KEY",@g).str();
+```
 
 #### decode (type, value [,options])
 See encode.
