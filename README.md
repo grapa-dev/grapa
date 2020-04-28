@@ -554,21 +554,10 @@ Changes the current home directory.
 > @f.phd()
 C:\Projects\Test\lib
 </code></pre>
-#### ls ([path])
+#### ls ()
 Retrieves a list of files/directories in the current working directory.
 <pre><code>> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b/python-packages")
 > @f.ls()
-[
-  {"$KEY":"adb","$TYPE":"DIR","$BYTES":0},
-  {"$KEY":"Android.bp","$TYPE":"FILE","$BYTES":784},
-  {"$KEY":"fastboot","$TYPE":"DIR","$BYTES":0},
-  {"$KEY":"gdbrunner","$TYPE":"DIR","$BYTES":0},
-  {"$KEY":"NOTICE","$TYPE":"FILE","$BYTES":577},
-  {"$KEY":"repo.prop","$TYPE":"FILE","$BYTES":4465}
-]
-
-> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b")
-> @f.ls("python-packages")
 [
   {"$KEY":"adb","$TYPE":"DIR","$BYTES":0},
   {"$KEY":"Android.bp","$TYPE":"FILE","$BYTES":784},
