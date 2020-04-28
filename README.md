@@ -61,7 +61,7 @@ Examples:
 Commands | Results | Description
 ------------ | ------------- | -------------
 (op(){4*2})(); | 8 | Creates $OP and executes.
-<code>(@<mul,{4,2}>)();</code> | 8 | Same but using $OP directly.
+(@<mul,{4,2}>)(); | 8 | Same but using $OP directly.
 op(){5%2}; | @<[op,@<mod,{5,2}>],{}> | What op(){} generates.
 op(){4*2}; | @<[op,8],{}> | Some operations have compile time optimizations.
         
@@ -72,7 +72,7 @@ Example: First item is extended to add var lookups, second item is where the arg
 Commands | Results
 ------------ | -------------
 op(){1} | @<[op,1],{}>
-op(a,b){@a*@b}; | <code>@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}></code>
+op(a,b){@a*@b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}>
 
 See the section on syntax for additional examples.
 
@@ -83,7 +83,7 @@ Example: Assignes 2 to a, than evaluates a*3, the result is 6
 Commands | Results
 ------------ | -------------
 f=@[1,2];</br>f(); | 2
-f=op(){a=2;@a*3;};</br>@f; | <code>@<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}></code>
+f=op(){a=2;@a*3;};</br>@f; | @<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}>
 f(); | 6
 
 ## System Class Types
@@ -383,10 +383,10 @@ Example of defining a custome rule, and applying the rule:
 12
 
 > op()("4",@x)
-()[[op,()[[op,()[var,{a}]],{"a":4}]],{}]
+@<[op,@<[op,@<var,{a}>],{"a":4}>],{}>
 
 > op()("4 3",@x)
-()[[op,()[[op,()[mul,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":3}]],{}]
+@<[op,@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{"a":4,"b":3}>],{}>
 ```
 
 To simplify creating rules that depend on matching on a predefined list of values, create a list and reference the list in the rules. If the rule matches, the value of the matched item is passed in as the token value.
@@ -394,7 +394,6 @@ To simplify creating rules that depend on matching on a predefined list of value
 ```
 > t = {x:"matched on x",y:5};
 > r = rule $INT @t $INT {op(a:$2){@a}};
-
 > (op()("1 x 2",@r))();
 matched on x
 
@@ -405,8 +404,8 @@ matched on x
 If the lookup needs to be against something other than a list (maybe checking a database or even a web service), an operation can be added to a rule token that will run at compile time if the rule matches. Note that this will be called during the planning phase (or compile time) every time the rule is evaluated - so take caution on attaching a heavy workload. The result of the operation will be used as the result of the token matched. 
 
 ```
-> x = rule $STR {()[lit,{$1}]};
-> r = rule $INT <x{op(a:$1){@a.len()}}> $INT {op(a:$2){@a}};
+> x = rule $STR {@<lit,{$1}>};
+> r = rule $INT <x(op(a:$1){@a.len()})> $INT {op(a:$2){@a}};
 > (op()("44 'x' 22",@r))();
 1
 ```
@@ -416,7 +415,7 @@ Rules can also be embedded. Unfortunately, the current grammer requires an opera
 If the token handler returns an $ERR object, it will cause the rule to fail. So it not only has the ability to add additional logic to processing the token, is also can also serve as an additional component to the planning engine by validating the token against the intent of the rule - something that could not be done at a later phase and could only be done during the planning/compile phase. 
 
 ```
-> r = rule $INT (x{()[lit,{"found x"}]}|y{()[lit,{"found y"}]}) $INT {op(a:$2){@a}};
+> r = rule $INT (x{@<lit,{"found x"}>}|y{@<lit,{"found y"}>}) $INT {op(a:$2){@a}};
 > (op()("44 y 22",@r))();
 found y
 ```
@@ -432,7 +431,7 @@ If there is a well known end sequence, and you want to collect all the tokens in
 A operation can also be associated with the empty rule above, which can process the tokens and either pass through the list, or pass through some transformed version. The following is an example f transforming.
 
 ```
-> r = rule $INT <{op(a:$1){@a.len().str()+" raw characters:"+@a.join("")}}> $INT {op(a:$2){@a}};
+> r = rule $INT <(op(a:$1){@a.len().str()+" raw characters:"+@a.join("")})> $INT {op(a:$2){@a}};
 > (op()("44 'x' 22",@r))();
 3 raw characters: x
 ```
@@ -440,7 +439,7 @@ A operation can also be associated with the empty rule above, which can process 
 If the token handler returns an $ERR object, the cooresponding rule option will fail and the next rule option will be evaluationed. The following is an example of causing the first rule option to fail.
 
 ```
-> r = rule $INT <{op(a:$1){$ERR()}}> $INT {op(a:$2){@a}} | $INT <> $INT {op(a:$2){@a}};
+> r = rule $INT <(op(a:$1){$ERR()})> $INT {op(a:$2){@a}} | $INT <> $INT {op(a:$2){@a}};
 > (op()("44 'x' 22",@r))();
 [" ","x"," "]
 ```
@@ -1102,19 +1101,19 @@ There are a few standard tokens that are defined - mostly the tokens provide spe
 Commands | Results
 ------------ | -------------
 f=op(){3%2};</br>f(); | 1
-f=()[[op,()[mod,{3,2}]],{}];</br>f(); | 1
-f=op(a,b){@a%@b};</br>f(); | ()[[op,()[mod,{()[var,{a}],()[var,{b}]}]],{a,b}]
+f=@<[op,@<mod,{3,2}>],{}>;</br>f(); | 1
+f=op(a,b){@a%@b};</br>f(); | @<[op,@<mod,{@<var,{a}>,@<var,{b}>}>],{a,b}>
 f(842,5); | 2
-f=op(a,b,c){d=@a%@b;@d*@c;};</br>f(); | ()[[op,()<()[assign,{d,()[mod,{()[var,{a}],()[var,{b}]}]}],()[mul,{()[var,{d}],()[var,{c}]}]>],{a,b,c}]
+f=op(a,b,c){d=@a%@b;@d*@c;};</br>f(); | @<[op,@[@<assign,{d,@<mod,{@<var,{a}>,@<var,{b}>}>}>,@<mul,{@<var,{d}>,@<var,{c}>}>]],{a,b,c}>
 f(842,5,9); | 18
 
 You can also define an operation by providing a script and a rule. If a rule is not specified, the "start" and "$start" rules are used (which is the default entry point for the grapa language).
 
 Commands | Results
 ------------ | -------------
-op()("4*2"); | ()[[op,8],{}]
-op()("4*2",@$start); | ()[[op,8],{}]
-op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}}); | ()[[op,()[[op,()[pow,{()[var,{a}],()[var,{b}]}]],{"a":4,"b":2}]],{}]
+op()("4*2"); | @<[op,8],{}>
+op()("4*2",@$start); | @<[op,8],{}>
+op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}}); | @<[op,@<[op,@<pow,{@<var,{a}>,@<var,{b}>}>],{"a":4,"b":2}>],{}>
 f = op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}});</br>f(); | 16
 
 Note in the last example the rule to use was defined and passed in as a parameter to the planer, the operation result assigned to a variable, and then the variable executed as a function.
@@ -1123,7 +1122,7 @@ If the rules have already been defined, the following options to generate the ex
 
 Commands | Results | Description
 ------------ | ------------- | -------------
-r = rule $INT `'*'` $INT {op(a:$1,b:$3){@a**@b}}; |  | Rule for "int * int", with associated code that applies the power operator
+`r = rule $INT '*' $INT {op(a:$1,b:$3){@a**@b}};` |  | Rule for "int * int", with associated code that applies the power operator
 f = op()("4*2",@r);</br>f(); | 16 | Applying the rule to create a function, and running the function
 f = @r.plan("4*2");</br>f(); | 16 | Another way to apply the rule
 (@r.plan("4*2"))(); | 16 | Apply the rule and run the function in the same command
