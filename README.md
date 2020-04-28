@@ -252,22 +252,36 @@ Examples:
 Same as $LIST, but without the entry labels.
 
 ### $TIME
-Uses UTC timezone.
+Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, and a timer for tracking the passage of time. 
 
 Examples:
-<pre><code>> $TIME().utc()
+<pre><code>> (0).time();
+1970-01-01T00:00:00.000000
+
+> $TIME().utc();
 2020-04-23T19:32:41.192673
 
-> $TIME().tz()
+> $TIME().tz();
 -25200000000
 
-> $TIME().utc() + $TIME().tz()
+> $TIME().utc() + $TIME().tz();
 2020-04-23T12:33:33.921638
 
-> t1 = $TIME().utc()
+> t1 = $TIME().utc();
 
-> @t1.delta()
+> @t1.delta();
 12.231424
+</code></pre>
+
+As another test, the first item below illustrates taking 0.002991 seconds to individually compile and execute the first line, and than compile and execute the second like. The second example illustrates the time to run the compiled code - 0 seconds. 
+
+<pre><code>> a=$TIME().utc();
+> (($TIME().utc()-@a)/1000000.0).str()+" seconds";
+0.002991 seconds
+
+> f=op(){a=$TIME().utc();(($TIME().utc()-@a)/1000000.0).str()+" seconds";};
+> f();
+0 seconds
 </code></pre>
 
 ### $TABLE
