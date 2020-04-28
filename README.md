@@ -64,6 +64,7 @@ Commands | Results | Description
 <code>(@<mul,{4,2}>)();</code> | 8 | Same but using $OP directly.
 op(){5%2}; | @<[op,@<mod,{5,2}>],{}> | What op(){} generates.
 op(){4*2}; | @<[op,8],{}> | Some operations have compile time optimizations.
+        
 
 Adding paraeters to $OP.
 
@@ -883,19 +884,72 @@ The following examle defines a class with a single method. The method setdiv2 up
 ### Condition Operators
 #### `?`
 
+Syntax options:
+* bool ? statement for true;
+* bool ? statement for true : statement for false;
+* bool ? : statement for false;
+* (>0)|(0)|(<0) ? statement for >0 : statement for 0 : statement for <0;
+
+Example:
+<pre><code>> 1?hi:by
+hi
+
+> 0?hi:by
+by
+
+> -55?hi:by:there
+there
+</code></pre>
+
 ### Function Operators
 #### op
+Creating an $OP. See $OP.
+
 #### class
+Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified veraible is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other clases. 
+
+```
+myC = class {myV = 0; myF = op(a){myV=@a};};
+myC2 = class (myC) {myV2 = 0; myF2 = op(a){myV2=@a};};
+myIns = obj @myC2;
+@myIns;
+{}
+
+@myIns.myF(4);
+@myIns.myV;
+4
+
+@myIns.myV2;
+0
+
+@myIns;
+{"myV":4}
+```
+
 #### obj
+Creating an instance of a class. See class.
+
 #### token
 Used to define lexical rules. Currenlty only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specived in the grammer. 
 
 #### rule
+See $RULE
+
 #### const
-#### `()[oplist]`
-#### `()<opcode>`
+Compile time option. Used primarily for $RULE. See $RULE.
+
+#### `@<name,{params}>`
+See $OP
+
+#### `@[$op,$op,etc]`
+See $CODE.
+
 #### literal
+Any sequence starting with an ascii letter, and including numbers and '_'. 
+
 #### literal ([params])
+Assumes literal is a variable reference for $OP or $CODE, and runs the routine passing in parameters specified. See $OP and $CODE.
+
 #### `($OP)([params])`
 Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
 <pre><code>> if = op(a){@a;};
@@ -934,26 +988,6 @@ none
 > if (1==0) echo "1==0"; elseif (2==2) echo "2==2"; else echo "none";
 2==2
 </code></pre>
-
-#### ?
-
-Syntax options:
-* bool ? statement for true;
-* bool ? statement for true : statement for false;
-* bool ? : statement for false;
-* (>0)|(0)|(<0) ? statement for >0 : statement for 0 : statement for <0;
-
-Example:
-<pre><code>> 1?hi:by
-hi
-
-> 0?hi:by
-by
-
-> -55?hi:by:there
-there
-</code></pre>
-
 
 #### switch
 
