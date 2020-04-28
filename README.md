@@ -508,6 +508,8 @@ See getenv.
 ### $obj
 Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used accross the different data types are placed in the $obj class. Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
 
+There is not much use in creating an $obj instance on it's own. 
+
 #### type
 #### raw
 #### uraw
@@ -585,8 +587,24 @@ See encode.
 #### sort
 #### isint
 #### iferr
-#### exec
+#### exec()
+Executes string in the shell of the operating system. 
+
+```
+> "ver".exec()
+Microsoft Windows [Version 10.0.18363.778]
+```
+
 #### getname
+Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $LIST). 
+
+To use, do not dereference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.
+
+```
+> {a:1,b:2}.map(op(a){a.getname()})
+{"a":a,"b":b}
+```
+
 
 ### $file
 Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntaxt to include SQL with $file for the underlying data.
