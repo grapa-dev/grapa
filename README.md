@@ -119,12 +119,11 @@ Commands | Results
 "52322".int(); | 52322
 (52322).raw(); | 00CC62
 
-#### genprime
-#### isprime
-#### random
-#### genrsa
-#### e
-#### pi
+Command | Example | Result
+------------ | ------------- | -------------
+(power).e() | (1).e()<\br>(2.3).e() | 2.71828182845904523536028747135266<\br>9.9741824548147207399576151569088
+(power).pi() | (1).pi()<\br>(2.3).pi() | 3.1415926535897932384626433832795<\br>13.9137663852357115150632799555148
+
 #### log
 #### ln
 #### sin
@@ -153,6 +152,11 @@ Commands | Results
 #### acsch
 #### atan2
 #### hypot.
+
+#### genprime
+#### isprime
+#### random
+#### genrsa
 
 ### $FLOAT
 
