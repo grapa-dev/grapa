@@ -83,7 +83,7 @@ Examples:
 Commands | Results | Description
 ------------ | ------------- | -------------
 f=@[1,2];</br>f(); | 2 | Processes 1 and then 2, and 2 is the final result.
-f=op(){a=2;@a*3;};</br>@f; | @<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}> | Assignes 2 to a, than evaluates a*3, the result is 6
+<code>f=op(){a=2;@a*3;};</br>@f;</code> | <code>@<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}></code> | Assignes 2 to a, than evaluates a*3, the result is 6
 f(); | 6 |
 
 Normally you would use $CODE directly. It is typically embedded in an $OP type. The planner typically wraps the result in an $OP along with parameter handling for the function - but this could change at some point where it could be either $OP or $CODE. 
