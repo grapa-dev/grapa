@@ -326,7 +326,8 @@ Referencing the data is a litter different though. Each item has multiple parts,
 
 (side note...len() is not yet supported for XML...this is comming)
 
-<pre><code>> x = $& <test v=10>this is the test</test> $&;
+```
+> x = $& <test v=10>this is the test</test> $&;
 > @x;
 <test v=10>this is the test</test>
 
@@ -335,7 +336,25 @@ Referencing the data is a litter different though. Each item has multiple parts,
 
 > @x[0][1]
 this is the test
-</code></pre>
+```
+
+### $TAG
+This represents the innter part of XML, including the attributes. Syntax to create the $TAG type has not been created specifically outside of $XML...but if you want to create it just create $XML and reference one of the items.
+
+```
+> x = $& <test v=10>this is the test</test> $&;
+> @x[0].type()
+$TAG
+
+> @x[0].len()
+2
+
+> @x[0][0]
+{"v":10}
+
+> @x[0][1]
+this is the test
+```
 
 
 ### $RULE
