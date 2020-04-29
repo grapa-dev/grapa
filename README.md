@@ -28,8 +28,6 @@ If using paste to enter a block of code to run, ensure each line is not larger t
 
 If using paste to enter multiple lines that need to be run at the same time (such as when a single command spans multiple lines), enter `$[` sequence first and `$]` sequence at the end. This will triger the lexical engine to signal to the grammer engine to pause grammer analysis until after all the tokens have been generated for the input stream. 
 
-As a side note (and more advanced topic) - if processing a script that first includes syntax for code that follows in the same script, these sequences are required in order to force the engine to first setup the grammer required for code that follows. 
-
 ### Command line options
 
 Once copyed into a location (and PATH updated if needed), you'll be able to run the tool using "grapa" from a terminal or command sheel from any location. Running the tool with "grapa --env" will display a few of the directories where the tool will look for information.
@@ -1184,4 +1182,14 @@ The following returns the length of each word in a string:
 <pre><code>> "this is a test".split(" ").reduce(op(a,b){@a+=@b.len();},[])
 [4,2,1,4]
 </code></pre>
+
+## Grammer Updating
+
+The standard grammer loaded by default includes suport for 2 user defined rules that assist in easily modifying the grammer.
+
+custom_start - The engine will evaulate the $start rule before evaluating the predefined $start rule. Setting a variable "start" with a rule will cause the engine to call the user defined rule first. If this variable is set locally within a function, it will only apply to scripts parsed from within the scope of that function.
+
+custom_function - The engine will evaluate the variable "function" if it is a $RULE as a part of the $function rule. To verify, check the $function variable. Used in contexts where a value is returned.
+
+custom_command - Same as above. Used in contexts where a value is not returned.
 
