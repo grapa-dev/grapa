@@ -650,29 +650,119 @@ Converts number to base. Base of power of 2 works well. Have not fully tested ot
 (15).base(8) -> 17
 (15).base(7) -> 21
 
-#### hex
-#### uhex
-#### bin
-#### ubin
-#### time
-#### bits
-#### bytes
+#### hex()
+Converts item to hex. The hex value is stored as an ascii representation of '0'-'F' characters.
+
+#### bin()
+Converts to binary. 
+
+(0xC).bin() -> 1100
+
+#### time()
+Converts an $INT to $TIME.
+See $TIME.
+
+#### bits()
+Gets the bit count of the item.
+
+"hi".bits() -> 16
+
+#### bytes()
+Gets the byte count of the item.
+
+"hi".bytes() -> 2
+$TIME().utc().raw().bytes() -> 7
+
 #### len
-#### left
-#### right
-#### mid
-#### rtrim
-#### ltrim
+Gets the length of the item.
+
+"hi".len() -> 2
+{1,2,3}.len() -> 3
+
+#### left(count)
+Gets the left bytes of an item.
+
+"testing".left(2) -> "te"
+
+#### right(count)
+Gets the right bytes of an item.
+
+"testing".right(2) -> "ng"
+
+#### mid(start,len)
+Gets the middle bytes of an item.
+
+"testing".mid(2,3) -> "sti"
+
+#### rtrim([char])
+Trims right.
+
+"  testing  ".rtrim() -> "  testing"
+"bbbtestingbbb".rtrim(b) -> "bbbtesting"
+
+#### ltrim([str])
+Trims left.
+
+"  testing  ".ltrim() -> "testing  "
+"bbbtestingbbb".ltrim(b) -> "testingbbb"
+
 #### trim
-#### reverse
-#### replace
-#### split
-#### join
-#### upper
-#### lower
-#### setbit
-#### clearbit
+Trims both left and right.
+
+"  testing  ".trim() -> "testing"
+"bbbtestingbbb".trim(b) -> "testing"
+
+#### reverse()
+Reverses the older of a list.
+
+{z:1,m:2,p:3,b:4}.reverse() -> {"b":4,"p":3,"m":2,"z":1}
+"testing".reverse() -> "gnitset"
+
+#### replace(old,new)
+Replaces iteems.
+
+"testing".replace("t","g") -> "gesging"
+
+#### split(item [,param])
+Splits into an array.
+
+"one\ntwo\nthree".split("\n") -> ["one","two","three"]
+"this is a test".split(" ") -> ["this","is","a","test"]
+"this is a test split into parts".split(3) -> ["this is a t","est split i","nto parts"]
+"this is a test split into parts".split(3," ") -> ["this is a test ","split into ","parts"]
+
+#### join(item)
+Joins what has been split.
+
+["this is a test ","split into ","parts"].join("") -> "this is a test split into part"
+
+#### upper()
+Converts to upper case.
+
+"hi".upper() -> "HI"
+
+#### lower()
+Converts to lower.
+
+"HI".lower() -> "hi"
+
+
+#### setbit(bitpos)
+Sets a bit, from low order.
+
+(0b100110).setbit(3).bin() -> 101110
+
+#### clearbit(bitpos)
+Clears a bit, from low order. 
+
+(0b100110).clearbit(2).bin() -> 100010
+
 #### genbits
+Generates sequence of bits.
+
+(4).genbits() -> 15
+(4).genbits().bin() -> 1111
+
 #### encode (type, value [,options])
 
 encode/decode types:
@@ -708,13 +798,37 @@ v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be
 #### decode (type, value [,options])
 See encode.
 
-#### setfile
-#### map
-#### filter
-#### reduce
-#### sort
+#### setfile($file, name)
+Updates file or table item with value. Separete from the $file class as this one supports chaining all the way to writing the result into a file. Requires having an existing $file instance -> or passing in $file() which creates a temporary instance.
+
+"testing".setfile($file(),"test.txt");
+
+#### map($OP [,params])
+See map in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel, so be sure $OP is thread safe. If not, use reduce instead of map. Result of $OP placed in a $LIST/$ARRAY which is returned at the completion.
+
+#### filter($OP [,params])
+See filter in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel, so be sure $OP is thread safe. If not, use filter instead of map. If $OP of op is true, item is placed in a $LIST/$ARRAY which is returned at the completion. 
+
+#### reduce($OP [,start [,params]])
+See reduce in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
+
+#### sort()
+Sorts a $LIST.
+
+{z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
+
 #### isint
-#### iferr
+Checks if a string is an $INT.
+
+"z55".isint() -> false
+"55".isint() -> true
+
+#### iferr(new)
+If value is $ERR type, the new is used. Otherwise the value is used.
+
+(10/2).iferr(55) -> 5
+(10/0).iferr(55) -> 55
+
 #### exec()
 Executes string in the shell of the operating system. 
 
@@ -732,7 +846,6 @@ To use, do not dereference the identify. The getname function will then see that
 > {a:1,b:2}.map(op(a){a.getname()})
 {"a":a,"b":b}
 ```
-
 
 ### $file
 Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntaxt to include SQL with $file for the underlying data.
@@ -1099,7 +1212,7 @@ There are several predefined lexical operators, most of which define how $ID, $I
 #### `$[`
   * Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on it's own. Alternatively, put the code in a file, loand the file contents, and execute the contents of the string.
 
-### Conditions and Loops
+### Conditions
 
 #### if
 
@@ -1127,6 +1240,9 @@ The following is a way to use a switch in place of if/ifelse/else sequence. The 
 <pre><code>> switch(true){case (1==0):echo "1==0\n"; case (2==2): echo "2==2\n"; default: echo "none\n";};
 2==2
 </code></pre>
+
+
+### Loops
 
 #### while
 Sytax:
