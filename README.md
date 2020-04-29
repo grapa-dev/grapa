@@ -547,6 +547,7 @@ A few general utility functions that are useful, but it wasn't clear if they sho
 <pre><code>> $sys().type(5)
 $INT
 </code></pre>
+
 #### getenv (type)
 
 getenv/putenv types:
@@ -606,6 +607,10 @@ All objects will return the type.
 "test".type() will return $STR, for example.
 
 If the item does not support type(), use $sys().type(value). For example, $sys().type("test") returns $STR.
+
+
+#### describe (object)
+This is stubbed out...but not yet implemented. Type will provide just the type. Describe will provide more detail. If using describe on a table, details about the table will be returned, for example. Intention is to provide describe everywhere that type is available.
 
 #### raw()
 Converts a value into it's raw bytes. Displays in hex form, but is stored in raw. Required in many cases as an intermediate form. For example, converting from a $STR to an $INT, you have two choices.
