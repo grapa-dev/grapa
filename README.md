@@ -361,6 +361,17 @@ $TAG
 this is the test
 ```
 
+For easier viewing, convert to $LIST. The parsing of the data is the same...but coverting to $LIST will reveal the structure used to represent $XML internally. 
+
+```
+> x = $&<x n=1>hi "by" hi</x>$&
+> @x
+<x n=1>hi "by" hi</x>
+
+> @x.list()
+{"x":{{"n":1},"hi \"by\" hi"}}
+```
+
 ### $TAG
 This represents the innter part of XML, including the attributes. Syntax to create the $TAG type has not been created specifically outside of $XML...but if you want to create it just create $XML and reference one of the items.
 
