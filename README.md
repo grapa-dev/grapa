@@ -837,7 +837,7 @@ Executes string in the shell of the operating system.
 Microsoft Windows [Version 10.0.18363.778]
 ```
 
-#### getname
+#### getname([index])
 Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $LIST). 
 
 To use, do not dereference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.
@@ -847,18 +847,26 @@ To use, do not dereference the identify. The getname function will then see that
 {"a":a,"b":b}
 ```
 
-### $file
+Or used to get the name of an item in a $LIST, using the index parameter.
+
+```
+> {a:1,b:2}.getname(0)
+a
+```
+
+
+### $file()
 Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntaxt to include SQL with $file for the underlying data.
 
 Each example below assumes the following command has been issued:
 <pre><code> f = $file();</code></pre>
 Which assignes f an instance of the $file class. The following are then operations that can be used from the $file class.
 
-#### type ()
+#### type()
 <pre><code>> @f.type()
 $file
 </code></pre>
-#### table ()
+#### table()
 The table function creates an in memory database. 
 
 <pre><code>> t = @f.table()
@@ -866,7 +874,7 @@ The table function creates an in memory database.
 > @t.getrow("test")
 data for test
 </code></pre>
-#### pwd ()
+#### pwd()
 Returns the current working directory, relative to the current home directory. 
 <pre><code>> @f.pwd()
 /
@@ -875,24 +883,24 @@ Returns the current working directory, relative to the current home directory.
 > @f.pwd()
 /lib
 </code></pre>
-#### cd (relativepath)
+#### cd(relativepath)
 Changes the current working directory, relative to the current home directory.  Using ".." will result in moving back 1 level.
 <pre><code>> @f.cd("lib")
 > @f.pwd()
 /lib
 </code></pre>
-#### phd ()
+#### phd()
 Returns the current home directory.
 <pre><code>> @f.phd()
 C:\Projects\Test
 </code></pre>
-#### chd (filesystempath)
+#### chd(filesystempath)
 Changes the current home directory.
 <pre><code>> @f.chd("lib")
 > @f.phd()
 C:\Projects\Test\lib
 </code></pre>
-#### ls ()
+#### ls()
 Retrieves a list of files/directories in the current working directory.
 <pre><code>> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b/python-packages")
 > @f.ls()
@@ -906,7 +914,7 @@ Retrieves a list of files/directories in the current working directory.
 ]
 </code></pre>
 
-#### mk (name [,type]) 
+#### mk(name [,type]) 
 Creates a directory at the current working directory withyin the file system.
 
 type is one of:
@@ -927,19 +935,19 @@ type is one of:
 []
 </code></pre>
 
-#### rm (name)
+#### rm(name)
 Removes a directory or file.
 <pre><code>> @f.rm("test")
 </code></pre>
 
-#### set (name, value [, field])
+#### set(name, value [, field])
 Updates the column in a row. By default the $VALUE column is updated. But an alternate column can be specified.
 
 field defaults to $VALUE.
 
 <pre><code>> @f.set("test","value of test")
 </code></pre>
-#### get (name [, field])
+#### get(name [, field])
 Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
 
 field defaults to $VALUE.
@@ -948,7 +956,7 @@ field defaults to $VALUE.
 value of test
 </code></pre>
 
-#### mkfield (name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
+#### mkfield(name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a field within the current working directory.
 
 <pre><code>> @f.mkfield("test")
@@ -974,10 +982,10 @@ PAR | Partitioned field. Best for very large data requiring updates to portions 
 
 storeGrow is used by variable fields to determine how much to grow the field by when extra space is needed.
 
-#### rmfield (name)
+#### rmfield(name)
 Deletes a field within the current working directory.
 
-#### debug ()
+#### debug()
 Used for debugging the database during development. Displayes the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).
 
 ### $net
@@ -985,11 +993,13 @@ Provides a socket library, cross functional with all platforms supported.
 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
-#### type
+#### type()
+Returns $net.
 
-#### mac
+#### mac()
 
-#### interfaces
+
+#### interfaces()
 
 #### connect
 
