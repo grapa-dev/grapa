@@ -126,7 +126,7 @@ Commands | Results
 ### $INT
 Supports signed and unsigned. Unsigned is essentally an $INT that is not negative. Given this is unlimited precision, a separate $UINT type is not required (grapa originally had one, but it's been removed as it's essentially redundant and adds unncessary complexity). The reason other languages have a $UINT type is to handle to bit overflow issue where the high order bit may become set during math operations. In grapa, when the high order bit is set, it automatically increases the precision and there is no overflow. Still, there is sometimes a need for specific $UINT type handling of raw bytes, and to support this there is a uint() function to ensure that a raw byte stream with a high order bit is not incorectly interpreted as a negative number. 
 
-The $INT class inherits $obj class - see the the $obj class for additional functions supported.
+The $INT class inherits $math class - see the the $math class for additional functions supported.
 
 Examples:
 Commands | Results
@@ -134,39 +134,6 @@ Commands | Results
 52322; | 52322
 "52322".int(); | 52322
 (52322).raw(); | 00CC62
-
-Command | Example | Result
------------- | ------------- | -------------
-(power).e() | (1).e()</br>(2.3).e() | 2.71828182845904523536028747135266</br>9.9741824548147207399576151569088
-(power).pi() | (1).pi()</br>(2.3).pi() | 3.1415926535897932384626433832795</br>13.9137663852357115150632799555148
-(val).log(base) | (100).log(10) | 2
-(val).ln() | (100).ln() | 4.605170185988091368035982909368
-(val).sin() | (0.5).sin()</br>(1).pi().sin() | 0.47942553860420300027328793521557</br>0
-(val).cos() | (0.5).cos() | 0.87758256189037271611628158260382
-(val).tan() | (0.5).tan() | 0.5463024898437905132551794657802
-(val).cot() | (0.5).cot() | 1.830487721712451919268019438968
-(val).sec() | (0.5).sec() | 1.1394939273245491223133277682049
-(val).csc() | (0.5).csc() | 2.08582964293348818577250167545929
-(val).asin() | (0.5).asin() | 0.52359877559829887307710723054658
-(val).acos() | (0.5).acos() | 1.04719755119659774615421446109316
-(val).atan() | (0.5).atan() | 0.46364760900080611621425623146121
-(val).acot() | (0.5).acot() | 1.107148717794090503017065460178
-(val).asec() | (1.5).asec() | 0.8410686705679302557765250318264
-(val).acsc() | (1.5).acsc() | 0.72972765622696636345479665981332
-(val).sinh() | (0.5).sinh() | 0.5210953054937473616224256264114
-(val).cosh() | (0.5).cosh() | 1.1276259652063807852262251614026
-(val).tanh() | (0.5).tanh() | -0.46211715726000975850231848364367
-(val).coth() | (0.5).coth() | -2.163953413738652848770004010218
-(val).sech() | (0.5).sech() | 0.8868188839700739086588977977834
-(val).csch() | (0.5).csch() | 1.919034751334943719492202878727
-(val).asinh() | (0.5).asinh() | 0.48121182505960344749775891342436
-(val).acosh() | (2).acosh() | 1.3169578969248167086250463473079
-(val).atanh() | (0.5).atanh() | 0.5493061443340548456976226184612
-(val).acoth() | (0.5).acoth() | 0.5493061443340548456976226184612
-(val).asech() | (0.5).asech() | 1.3169578969248167086250463473079
-(val).acsch() | (0.5).acsch() | 1.4436354751788103424932767402731
-(x).atan2(y) | `(10).atan2(10)*180/(1).pi()` | 45
-(x).hypot(y) | (3).hypot(4) | 5
 
 Command | Example | Result
 ------------ | ------------- | -------------
@@ -902,6 +869,42 @@ Or used to get the name of an item in a $LIST, using the index parameter.
 a
 ```
 
+### $math()
+
+Inherits $obj().
+
+Command | Example | Result
+------------ | ------------- | -------------
+$math().e(power) | $math().e()</br>$math().e(2.3) | 2.71828182845904523536028747135266</br>9.9741824548147207399576151569088
+$math().pi(power) | $math().pi()</br>$math().pi(2.3) | 3.1415926535897932384626433832795</br>13.9137663852357115150632799555148
+(val).log(base) | (100).log(10) | 2
+(val).ln() | (100).ln() | 4.605170185988091368035982909368
+(val).sin() | (0.5).sin()</br>(1).pi().sin() | 0.47942553860420300027328793521557</br>0
+(val).cos() | (0.5).cos() | 0.87758256189037271611628158260382
+(val).tan() | (0.5).tan() | 0.5463024898437905132551794657802
+(val).cot() | (0.5).cot() | 1.830487721712451919268019438968
+(val).sec() | (0.5).sec() | 1.1394939273245491223133277682049
+(val).csc() | (0.5).csc() | 2.08582964293348818577250167545929
+(val).asin() | (0.5).asin() | 0.52359877559829887307710723054658
+(val).acos() | (0.5).acos() | 1.04719755119659774615421446109316
+(val).atan() | (0.5).atan() | 0.46364760900080611621425623146121
+(val).acot() | (0.5).acot() | 1.107148717794090503017065460178
+(val).asec() | (1.5).asec() | 0.8410686705679302557765250318264
+(val).acsc() | (1.5).acsc() | 0.72972765622696636345479665981332
+(val).sinh() | (0.5).sinh() | 0.5210953054937473616224256264114
+(val).cosh() | (0.5).cosh() | 1.1276259652063807852262251614026
+(val).tanh() | (0.5).tanh() | -0.46211715726000975850231848364367
+(val).coth() | (0.5).coth() | -2.163953413738652848770004010218
+(val).sech() | (0.5).sech() | 0.8868188839700739086588977977834
+(val).csch() | (0.5).csch() | 1.919034751334943719492202878727
+(val).asinh() | (0.5).asinh() | 0.48121182505960344749775891342436
+(val).acosh() | (2).acosh() | 1.3169578969248167086250463473079
+(val).atanh() | (0.5).atanh() | 0.5493061443340548456976226184612
+(val).acoth() | (0.5).acoth() | 0.5493061443340548456976226184612
+(val).asech() | (0.5).asech() | 1.3169578969248167086250463473079
+(val).acsch() | (0.5).acsch() | 1.4436354751788103424932767402731
+$math().atan2(x,y) | `$math().atan2(10,10)*180/$math().pi()` | 45
+$math().hypot(x,y) | $math().hypot(3,4) | 5
 
 ### $file()
 Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntaxt to include SQL with $file for the underlying data.
