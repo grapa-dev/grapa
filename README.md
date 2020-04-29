@@ -1193,3 +1193,6 @@ custom_function - The engine will evaluate the variable "function" if it is a $R
 
 custom_command - Same as above. Used in contexts where a value is not returned.
 
+Alternative, redefine any of the predefined rules for the default grammer. Take caution on changing the global variable, unless the change is inteded for the entire session. Restart the app to revert back. 
+
+If any of the above is set as a local variable within some scope, such as a class instance or a function, the modification will only apply for exectution within that scope. You can, for example, have muliple threads with unique modifications that apply separately. This is bascially the result of having the rules implemented as variables.
