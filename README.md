@@ -336,12 +336,12 @@ hi
 </code></pre>
 
 ### $XML
-An $XML represents the XML data type. Under the hood, it is represented as a $LIST and all the same command sused for $LIST should work on $XML. 
+An $XML represents the XML data type. Under the hood, it is represented as a $LIST and all the same command sused for $LIST should work on $XML.  The $XML format can also be used to process HTML format...but a specific $HTML format has not been created, as the $XML format appears to work.
 
 Referencing the data is a litter different though. Each item has multiple parts, where the 0 part is the attributes, and the remaining parts are the values.
 
 ```
-> x = $& <test v=10>this is the test</test> $&;
+> x = $&<test v=10>this is "the" test</test>$&;
 > @x.type();
 $XML
 
@@ -358,18 +358,48 @@ $TAG
 {"v":10}
 
 > @x[0][1]
-this is the test
+this is "the" test
 ```
 
 For easier viewing, convert to $LIST. The parsing of the data is the same...but coverting to $LIST will reveal the structure used to represent $XML internally. 
 
+Note that the "$&" sequence is used to indicate that the item is XML format, which requires special lexical parsing that is a bit different than JSON parsing. 
+
 ```
-> x = $&<x n=1>hi "by" hi</x>$&
+> x = $&<test v=10>this is "the" test</test>$&;
 > @x
-<x n=1>hi "by" hi</x>
+$&<testv=10>this is "the" test</test>$&
 
 > @x.list()
-{"x":{{"n":1},"hi \"by\" hi"}}
+{"test":{{"v":10},"this is \"the\" test"}}
+```
+
+The $XML data is essentially a list of $TAG values. 
+```
+> x = $&<?xml version="1.0" encoding="iso-8859-1"?><test v=10>this is "the" test</test>$&;
+> @x;
+$&<?xmlversion="1.0" encoding="iso-8859-1"?><testv=10>this is "the" test</test>$&
+
+> @x.len();
+2
+
+> @x[0];
+$&(version="1.0" encoding="iso-8859-1"/)
+
+> @x."?xml"[0].encoding
+iso-8859-1
+
+> x = $&<test v=10>this is "the" test</test>$&;
+> @x.list()
+{"test":{{"v":10},"this is \"the\" test"}}
+
+> x = $&<test v=10>this is "the"<in x=1/>test</test>$&;
+> @x.list()
+{"test":{{"v":10},"this is \"the\"",{{"x":1}},"test"}}
+
+> x = $&<test v=10>this is "the"<in x=1>other</in>test</test>$&;
+> @x.list();
+{"test":{{"v":10},"this is \"the\"","in":{{"x":1},"other"},"test"}}
 ```
 
 ### $TAG
@@ -377,12 +407,25 @@ This represents the innter part of XML, including the attributes. Syntax to crea
 
 See $XML.
 
-A $TAG has the list of attributes as the first item, and the contents of the $XML information as the remaining items.
+A $TAG has the list of attributes as the first item, and the contents of the $XML information as the remaining items. Note that when outputing $TAG, the '<' and '>' are changed to '(' and ')' and there is no name associated. This is a function of how the XML is represented as a $LIST. See examples below illustrating. 
+
+Note that the "$&" sequence is used to indicate that the item is XML format, which requires special lexical parsing that is a bit different than JSON parsing. 
+
+Also, the current grammer does not have logic to input a $TAG, only $XML. 
 
 ```
-> x = $&<x n=1>hi "by" hi</x>$&
+> x = $&<test v=10>this is "the" test</test>$&;
 > @x[0].type();
-<$TAG>
+$TAG
+
+> @x[0]
+$&(v=10)this is "the" test(/)$&
+
+> @x.list()
+{"test":[{"v":10},"this is \"the\" test"]}
+
+> @x[0].list()
+[{"v":10},"this is \"the\" test"]
 ```
 
 
