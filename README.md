@@ -778,23 +778,23 @@ Generates sequence of bits.
 (4).genbits() -> 15
 (4).genbits().bin() -> 1111
 
-#### encode (type, value [,options])
+#### encode (type, [,options])
 
 encode/decode types:
-Type | Description
------------- | -------------
-RSA-KEY | Requires a valid RSA key. See genrsa() in $INT. Data size must be correct size (byte count of d value minus 32).
-AES256 |
-ZIP-GRAPA |
-BASE64 |
-ESCAPE |
-FLOAT |
-XML-GRAPA | Only encode.
-SHAKE256 | Only encode.
-SHAKE128 | Only encode.
-SHA3-256 | Only encode.
-SHA3-384 | Only encode.
-SHA3-512 | Only encode.
+Type | Options | Description
+------------ | ------------- | -------------
+RSA-KEY | {n,e,d [,p,q,dp,dq,qi]} | Data size must be exactly byte count of d  minus 32.
+AES256 | {key [,iv]} | key is 32 bits and iv is 16 bits
+ZIP-GRAPA | |
+BASE64 | |
+ESCAPE | |
+FLOAT | |
+XML-GRAPA | | Only encode.
+SHAKE256 | | Only encode.
+SHAKE128 | | Only encode.
+SHA3-256 | | Only encode.
+SHA3-384 | | Only encode.
+SHA3-512 | | Only encode.
 
 Example of RSA using hard coded RSA key.
 
@@ -808,6 +808,14 @@ g = {e:@e,d:@d,n:@n};
 len = @g.n.bytes()-32;
 v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(@len);
 @v.encode("RSA-KEY",@g).decode("RSA-KEY",@g).str();
+```
+
+```
+@v.encode("AES256",{key:"12345678123456781234567812345678",iv:"1234567812345678"}).decode("AES256",{key:"12345678123456781234567812345678",iv:"1234567812345678"}).str();
+@v.encode("SHA3-256");
+@v.encode("SHAKE128");
+{1,2,3}.encode("ZIP-GRAPA").decode("ZIP-GRAPA");
+@v.encode("BASE64").decode("BASE64").str();
 ```
 
 #### decode (type, value [,options])
@@ -1165,6 +1173,13 @@ There is a stack of a single value, the value of the result of the prior operati
 #### `&&`
 #### `==`
 #### '<=>'
+Returns -1 if a<b, 0 if a=b, and 1 if a>b.
+
+```
+> "a"<=>"b"
+-1
+```
+
 #### `!=`
 ####  `<=`
 ####  `>=`
@@ -1183,7 +1198,7 @@ Syntax options:
 * bool ? statement for true;
 * bool ? statement for true : statement for false;
 * bool ? : statement for false;
-* (>0)|(0)|(<0) ? statement for >0 : statement for 0 : statement for <0;
+* (<0)|(0)|(>0) ? statement for -1 : statement for 0 : statement for 1;
 
 Example:
 <pre><code>> 1?hi:by
@@ -1193,7 +1208,11 @@ hi
 by
 
 > -55?hi:by:there
-there
+hi
+
+> ("a"<=>"b")?a:e:b
+a
+
 </code></pre>
 
 ### Function Operators
