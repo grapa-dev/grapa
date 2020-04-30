@@ -1078,7 +1078,7 @@ Returns $net.
 
 ```
 n = $net();
-
+```
 
 #### listen
 
