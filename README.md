@@ -422,10 +422,10 @@ Example of defining a custome rule, and applying the rule:
 12
 
 > op()("4",@x)
-@<[op,@<[op,@<var,{a}>],{"a":4}>],{}>
+@<[op,@<[op,@<var,{a}>],{"a":4}>]>
 
 > op()("4 3",@x)
-@<[op,@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{"a":4,"b":3}>],{}>
+@<[op,@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{"a":4,"b":3}>]>
 ```
 
 To simplify creating rules that depend on matching on a predefined list of values, create a list and reference the list in the rules. If the rule matches, the value of the matched item is passed in as the token value.
@@ -1273,6 +1273,12 @@ test
 
 ### Command Operators
 #### $INCLUDE
+Loads referenced file during compile time. Also useful for testing a library or class file by using $INCLUDE to reload the file.
+
+```
+$INCLUDE "lib/grapa/grapa.grc";
+```
+
 #### exit
 Causes the command line shell / console to exit. Primarily used for a script that is initiated from the command line.
 
@@ -1280,9 +1286,11 @@ If used in the console, the exit will not happen until another command is issued
 
 To exit while in the console, enter a '.' character.
 
-#### console
-#### echo
-#### string
+#### echo item
+Outputs item to stdio.
+
+#### string item
+Outputs escaped version of item to stdio 
 
 ### Lexical Operators
 There are several predefined lexical operators, most of which define how $ID, $INT, $FLOAT, $STR, etc, are processed and generate the corresponding tokens. There are also a few other lexical operators that will trigger special handling of the input stream. The following are two examples. Currently there is no way to define/change the lexical operators - this will come in some future version of grapa.
