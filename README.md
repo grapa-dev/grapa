@@ -1147,8 +1147,13 @@ The following examle defines a class with a single method. The method setdiv2 up
 ## Operators
 ### Constants
 #### true
+true
+
 #### false
+false
+
 #### null
+null
 
 ### Stack
 #### $$
@@ -1164,32 +1169,79 @@ There is a stack of a single value, the value of the result of the prior operati
 
 ### Assignment Operators
 #### `=`
+Assign.
+
 #### `+=`
+Add item to source.
+
 #### `++=`
+Concatenate contents to source.
+
 #### `-=`
+Subtract item from source.
 
 ### Math Operators
 #### `+`
+Add.
+
 #### `-`
+Subtract.
+
 #### `**`
+Power.
+
 #### `*/`
+
 #### `*`
+Multiply.
+
 #### `-+`
+
 #### `/`
+Divide.
+
 #### `%/`
+
 #### `%`
+Mod.
 
 ### Bit Operators
-#### `<<`
-#### `>>`
+#### `<<` number
+Bit shift left. An effet of multiplying by 2 for every bit shifted.
+
+#### `>>` number
+Bit shift left. An effet of dividing by 2 for every bit shifted.
+
 #### `|`
+Bitwise or.
+
 #### `&`
+Bitwise and.
+
 #### `^`
+Bitwise xor.
 
 ### Compare Operators
 #### `||`
+If either of two conditions are true.
+
+```
+((1==1) && (2==2) -> true
+((1==1) && (2==3) -> true
+((1==2) && (2==3) -> false
+```
+
 #### `&&`
+Two conditions must be true.
+
+```
+((1==1) && (2==2) -> true
+((1==1) && (2==3) -> false
+```
+
 #### `==`
+Equal to.
+
 #### '<=>'
 Returns -1 if a<b, 0 if a=b, and 1 if a>b.
 
@@ -1199,19 +1251,35 @@ Returns -1 if a<b, 0 if a=b, and 1 if a>b.
 ```
 
 #### `!=`
+Not equal to.
+
 ####  `<=`
+Less than or equal to.
+
 ####  `>=`
+Greater than or equal to.
+
 #### `>`
+Greater than.
+
 #### `<`
+Less than
 
 ### Modifier Operators
 #### `-`
+Negate.
+
+-(4+2) -> -6
+
 #### `!`
 Not.
 
 !true -> false
 
 #### `~`
+Bitwise not.
+
+(~0x6C).hex() -> FFFFFF93
 
 ### Condition Operators
 #### `?`
@@ -1274,24 +1342,11 @@ See $RULE
 #### const
 Compile time option. Used primarily for $RULE. See $RULE.
 
-#### `@<name,{params}>`
-See $OP
-
-#### `@[$op,$op,etc]`
-See $CODE.
-
 #### literal
 Any sequence starting with an ascii letter, and including numbers and '_'. 
 
 #### literal ([params])
 Assumes literal is a variable reference for $OP or $CODE, and runs the routine passing in parameters specified. See $OP and $CODE.
-
-#### `($OP)([params])`
-Use to execute an $OP type. Use the op function to create the $OP. The op function is how functions are created in grapa.
-<pre><code>> if = op(a){@a;};
-> @f("test");
-test
-</code></pre>
 
 ### Command Operators
 #### $INCLUDE
