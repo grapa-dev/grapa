@@ -71,17 +71,19 @@ Commands | Results | Description
 ------------ | ------------- | -------------
 (op(){4*2})(); | 8 | Creates $OP and executes.
 (@<mul,{4,2}>)(); | 8 | Same but using $OP directly.
-op(){5%2}; | @<[op,@<mod,{5,2}>],{}> | What op(){} generates.
-op(){4*2}; | @<[op,8],{}> | Some operations have compile time optimizations. Note this result is equivalent to @[8] and @<mul,{4,2}> and @[@<mul,4,2>]
-        
 
 Adding paraeters to $OP.
 
-Example: First item is extended to add var lookups, second item is where the arguments are included. The system creates a namespace on top of the namespace stack where the arguments are placed, which are then accessed from within the operation.
+Example: The op command is used for passing parameters into a function. When the op command is used, the name is replaced with an array where the first value is "op" and the second value is the function. This array is than followed by the parameter list. The parameters are used to initilize the namespace for the function.
+
 Commands | Results
 ------------ | -------------
 op(){1} | @<[op,1],{}>
 op(a,b){@a*@b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}>
+op(){5%2}; | @<[op,@<mod,{5,2}>],{}>
+op(){4*2}; | @<[op,8],{}>
+
+In the last example above, the compiler impmented an optimization where it recognized that multiplying two constants could be completed at compile time.
 
 See the section on syntax for additional examples.
 
@@ -1056,11 +1058,27 @@ Take caution on accessing shared resources from within a map or reduce or $threa
 Returns $net.
 
 #### mac()
-
+```
+> $net().mac()
+{"name":"Ethernet","ip":"xx.0.77.49","mac":FB75B4FEFE09BBC8}
+```
 
 #### interfaces()
 
-#### connect
+```
+> $net().interfaces()
+{
+  {"name":"Ethernet","mac":"FB75B4FEFE09BBC8","family":"IPV6","address":"xxx:xxx:xxx:xxx::xxx"},      
+  {"name":"Ethernet","mac":"FB75B4FEFE09BBC8","family":"IPV6","address":"xxx:xxx:xxxx:xxx:xxxx:xxxx:xxxx:xxx"}
+  {"name":"Ethernet","mac":"FB75B4FEFE09BBC8","family":"IPV4","address":"xx.0.77.49"},
+}
+```
+
+#### connect(url)
+
+```
+n = $net();
+
 
 #### listen
 
@@ -1189,6 +1207,10 @@ Returns -1 if a<b, 0 if a=b, and 1 if a>b.
 ### Modifier Operators
 #### `-`
 #### `!`
+Not.
+
+!true -> false
+
 #### `~`
 
 ### Condition Operators
