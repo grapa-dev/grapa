@@ -1077,24 +1077,114 @@ Returns $net.
 #### connect(url)
 
 ```
-n = $net();
+n2 = $net();
+@n2.connect('localhost:12345');
 ```
 
-#### listen
+#### listen(url)
 
-#### onlisten
+```
+n2 = $net();
+@n2.listen(':12345');
+```
 
-#### disconnect
+#### onlisten(url,messageHandler [,connectHandler])
 
-#### host
+When a connection is initiated, a new thread and new network object is created, and that new network object binds to the connect. The connectHandler is then called to provide a way to initialize data structures, and than the messageHandler is called for incoming data. The connectHandler recieves 1 parameter - an updatable variable. The messageHandler recieves 2 parameters - the message and a hasmore flag. If the hasmore is 0, the data can be processed. If the message length is zero, the remote connection terminated and messageHandler should cleanup as the thread will be closing. 
 
-#### send
+The following sets up a simple web service. Use postman to post messages to verify.
 
-#### recieve
+```
+processPost = op(in)
+{
+	{processed:@in};
+}
 
-#### nrecieve
+postHandler = op(in) 
+{
+	@local.data = @in.split("\r").join("");
+	@local.len = @data.len() - @data.split("\n\n")[0].len() - 2;
+	if (@len<0) len=0;
+	@local.body = @data.right(@len);
+	@local.rstr = @processPost(@body).str();
+	"HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nContent-Length: "+@rstr.len().str()+"\r\n\r\n"+@rstr;
+};
 
-#### onrecieve
+postConnectHandler = op(netSession)
+{
+	@netSession.data = "";
+};
+
+postMessageHandler = op(netSession,message,hasmore)
+{
+	@netSession.data += @message;
+	if (@hasmore==0)
+	{
+		@netSession.send(@postHandler(@netSession.data));
+		@netSession.data = "";
+	};
+};
+
+n=$net();
+@n.onlisten(':12345',@postMessageHandler,@postConnectHandler);
+```
+
+To very, try the following.
+```
+n2 = $net();
+err = @n2.connect('localhost:12345');
+err = @n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}');
+@n2.nreceive();
+@n2.receive();
+@n2.disconnect();
+```
+
+#### disconnect()
+Disconnects the session. Disconnecting a listener will disconnect all sessions the listerner is a parent of.
+
+#### host()
+
+After running the sample in onlisten, try the following.
+```
+@n.host();
+{"url":":12345","host":"computer name","ip":"XX.XX.XX.XX","port":12345,"family":2,"connected":0,"bound":1}
+```
+
+#### send(message)
+See example in onlisten.
+
+#### recieve()
+Blocks until data is recieved. Use nrecieve() first to verify data exists. Or use onrecieve.
+
+See example in onlisten.
+
+#### nrecieve()
+Number of bytes that can be recieved.
+
+See example in onlisten.
+
+#### onreceive(handler)
+Handler will be called when data is recieved.
+
+```
+receiveHandler = op(netSession,message,hasmore)
+{
+	@netSession.data += @message;
+	if (@hasmore==0)
+	{
+		(@netSession.data+"\n").echo();
+		(@<prompt>)();
+		@netSession.data = "";
+	};
+};
+
+n2 = $net();
+@n2.connect('localhost:12345');
+@n2.onreceive(@receiveHandler);
+@n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}');
+@n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:400}');
+@n2.disconnect();
+```
 
 ### $thread
 Provides a thread library, cross functional with all platforms supported.
