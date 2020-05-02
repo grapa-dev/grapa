@@ -471,6 +471,25 @@ If there is a well known end sequence, and you want to collect all the tokens in
 [" ","x"," "]
 ```
 
+The stop rule for a catchall can be either a token, a rule reference, or an embedded rule.
+
+```
+> e = rule $INT {@<lit,{$1}>} | $ID {@<lit,{$1}>};
+> r = rule $INT <> <e> {op(a:$3){@a}};
+> (op()("44 'x' 22",@r))();
+22
+
+> (op()("44 'x' hi",@r))();
+hi
+
+> r = rule $INT <> ($INT{@<lit,{$1}>}|$ID{@<lit,{$1}>}) {op(a:$3){@a}};
+> (op()("44 'x' 22",@r))();
+22
+
+> (op()("44 'x' hi",@r))();
+hi
+```
+
 A operation can also be associated with the empty rule above, which can process the tokens and either pass through the list, or pass through some transformed version. The following is an example f transforming.
 
 ```
@@ -1358,11 +1377,16 @@ Root.
 ```
 > (9*9) */ 2
 9
-```
 
-Does not work with FLOAT at this time. For root with FLOAT, use the power operator with a fraction.
+> (9*9) */ 2.0
+9
 
-```
+> (9*9) */ 2.1
+8.105921431777598477594162942004
+
+> (9*9) */ 4.0
+3
+
 > (9*9) ** 0.5
 9
 
