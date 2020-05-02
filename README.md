@@ -1080,17 +1080,32 @@ Returns $net.
 n2 = $net();
 @n2.connect('localhost:12345');
 ```
+#### bind(url)
+Using bind/listen requires setting up at least 2 net objects. One for bind and the other for listen. See listen().
+```
+n1 = $net();
+@n1.bind(':12345');
+```
 
-#### listen(url)
+#### listen(net)
+Pass in a bound net object. Listen is blocking, so a $thread may be needed to manage - or separate threads if more than one listener.
+
+For those familiar with using sockets in C++, the $net class is a representation of sockets, and use bind/listen in the same way.
 
 ```
+n1 = $net();
+@n1.bind(':12345');
 n2 = $net();
-@n2.listen(':12345');
+@n2.listen('@n1);
 ```
 
-#### onlisten(url,messageHandler [,connectHandler])
+#### onlisten(url,messageHandler [,connectHandler [,count:1]])
+
+Accomplishes the same as bind/listen, but hanled in a background thread and much easier to setup.
 
 When a connection is initiated, a new thread and new network object is created, and that new network object binds to the connect. The connectHandler is then called to provide a way to initialize data structures, and than the messageHandler is called for incoming data. The connectHandler recieves 1 parameter - an updatable variable. The messageHandler recieves 2 parameters - the message and a hasmore flag. If the hasmore is 0, the data can be processed. If the message length is zero, the remote connection terminated and messageHandler should cleanup as the thread will be closing. 
+
+The count defines the number of listeners - but fixed to 1 for now. Once a connection is established, the listener automatically restarts. For reasonable workloads, the 1 should be sufficient. For now if more is needed, use Bind/Listen - this though with require the use of $thread. 
 
 The following sets up a simple web service. Use postman to post messages to verify.
 
