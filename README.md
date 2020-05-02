@@ -448,7 +448,7 @@ If the lookup needs to be against something other than a list (maybe checking a 
 
 ```
 > x = rule $STR {@<lit,{$1}>};
-> r = rule $INT <x(op(a:$1){@a.len()})> $INT {op(a:$2){@a}};
+> r = rule $INT <x,op(a:$1){@a.len()}> $INT {op(a:$2){@a}};
 > (op()("44 'x' 22",@r))();
 1
 ```
@@ -493,7 +493,7 @@ hi
 A operation can also be associated with the empty rule above, which can process the tokens and either pass through the list, or pass through some transformed version. The following is an example f transforming.
 
 ```
-> r = rule $INT <(op(a:$1){@a.len().str()+" raw characters:"+@a.join("")})> $INT {op(a:$2){@a}};
+> r = rule $INT <op(a:$1){@a.len().str()+" raw characters:"+@a.join("")}> $INT {op(a:$2){@a}};
 > (op()("44 'x' 22",@r))();
 3 raw characters: x
 ```
@@ -501,7 +501,7 @@ A operation can also be associated with the empty rule above, which can process 
 If the token handler returns an $ERR object, the cooresponding rule option will fail and the next rule option will be evaluationed. The following is an example of causing the first rule option to fail.
 
 ```
-> r = rule $INT <(op(a:$1){$ERR()})> $INT {op(a:$2){@a}} | $INT <> $INT {op(a:$2){@a}};
+> r = rule $INT <op(a:$1){$ERR()}> $INT {op(a:$2){@a}} | $INT <> $INT {op(a:$2){@a}};
 > (op()("44 'x' 22",@r))();
 [" ","x"," "]
 ```
