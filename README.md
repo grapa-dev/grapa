@@ -139,6 +139,8 @@ Commands | Results
 
 Command | Example | Result
 ------------ | ------------- | -------------
+(n).modinv(m) | (3504).modinv(385) | 79
+(n).modpow(p,m) | (4).modpow(13,497) | 445
 (bits).random() | (16).random() | 11942
 (bits).genprime() | (16).genprime() | 60913</br>
 (prime).isprime() | (60913).isprime() | 1
@@ -879,6 +881,13 @@ Or used to get the name of an item in a $LIST, using the index parameter.
 a
 ```
 
+#### echo()
+Outputs item to stdio.
+
+#### string()
+Outputs escaped version of item to stdio 
+
+
 ### $math()
 
 Inherits $obj().
@@ -1206,31 +1215,66 @@ Provides a thread library, cross functional with all platforms supported.
 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
-#### type
+#### type()
+$thread
 
-#### trylock
+#### trylock()
+Attempts to lock.
 
-#### lock
+#### lock()
+Applies a lock.
 
-#### unlock
+#### unlock()
+Releases the lock.
 
-#### wait
+#### wait()
+Current thread waits for signal.
 
-#### signal
+#### signal()
+Signals the wait to continue.
 
-#### waiting
+#### waiting()
+Indicates in waiting state.
 
-#### start
+#### start(runOp, input, doneOp)
+Starts the runOp in the background, passing paramList. When the thread exists, doneOp is called. All 3 inputs are copied,  as the originals are likely to go away after running the start command. So if an instance of object (like a $net or $file) is passed in, the thread will end up using a copied instance and not the original instance.
 
-#### stop
+The thread is run from the same namespace as where it is called. To use a shared object instance, access the variable from within the thread rather than passing in the variable. Or pass in the $ID for the variable and dereference the variable from the thread (which essentially does the same thing as a variable lookup but allows a different variable name to be used). 
 
-#### started
+If accessing shared resources from within a thread, take care and use thread save logic, such as lock/unlock. 
 
-#### suspend
+The following is an example of creating a thread.
 
-#### resume
+```
+myRun = op(input) {"myRun:".echo();$sys().echo(@local); @input.c = @input.a+@input.b; "\n".echo(); @local;};
+myDone = op(input,result) {"myDone:".echo();$sys().echo(@local); "\n".echo();};
+t = $thread();
+@t.start(@myRun,{a:1,b:2},@myDone);
+```
 
-#### suspended
+Output for above
+```
+myRun:{"input":{"a":1,"b":2}}
+myDone:{"input":{"a":1,"b":2,"c":3},"result":{"input":{"a":1,"b":2,"c":3}}}
+```
+
+The input parameter is passed to both the run op and done op. The done op also recieves any output from the run op.
+
+
+#### stop()
+Stopes the thread.
+
+#### started()
+Inicates the running state of the thread.
+
+#### suspend()
+Suspends the thread. If the thread is processing a queue and the queue is empty, put the thread in suspend mode. Than after pushing data onto the queue, call resume to have the thread resume processing.
+
+#### resume()
+See suspend.
+
+#### suspended()
+Indicates whether the thread is in a suspended state.
 
 ## Custom Class Types
 Create custome types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
@@ -1296,16 +1340,29 @@ Subtract.
 Power.
 
 #### `*/`
+Root.
+
+```
+> (9*9) */ 2
+9
+```
+
+Does not work with FLOAT at this time. For root with FLOAT, use the power operator with a fraction.
+
+```
+> (9*9) ** 0.5
+9
+
+> (9*9) ** 0.25
+3
+```
+
 
 #### `*`
 Multiply.
 
-#### `-+`
-
 #### `/`
 Divide.
-
-#### `%/`
 
 #### `%`
 Mod.
@@ -1467,12 +1524,6 @@ Causes the command line shell / console to exit. Primarily used for a script tha
 If used in the console, the exit will not happen until another command is issued from the shell. This is because everything is handled async.
 
 To exit while in the console, enter a '.' character.
-
-#### echo item
-Outputs item to stdio.
-
-#### string item
-Outputs escaped version of item to stdio 
 
 ### Lexical Operators
 There are several predefined lexical operators, most of which define how $ID, $INT, $FLOAT, $STR, etc, are processed and generate the corresponding tokens. There are also a few other lexical operators that will trigger special handling of the input stream. The following are two examples. Currently there is no way to define/change the lexical operators - this will come in some future version of grapa.
