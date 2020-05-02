@@ -1250,7 +1250,7 @@ Signals the wait to continue.
 Indicates in waiting state.
 
 #### start(runOp, input, doneOp)
-Starts the runOp in the background, passing paramList. When the thread exists, doneOp is called. All 3 inputs are copied,  as the originals are likely to go away after running the start command. So if an instance of object (like a $net or $file) is passed in, the thread will end up using a copied instance and not the original instance.
+Starts the runOp in the background, passing paramList. When the thread exists, doneOp is called. All 3 inputs are copied,  as the originals are likely to go away after running the start command. So if an instance of object is passed in, the thread will end up using a copied instance and not the original instance.
 
 The thread is run from the same namespace as where it is called. To use a shared object instance, access the variable from within the thread rather than passing in the variable. Or pass in the $ID for the variable and dereference the variable from the thread (which essentially does the same thing as a variable lookup but allows a different variable name to be used). 
 
