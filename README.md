@@ -1734,6 +1734,14 @@ Any object that returns an object can be chained.
 
 For example "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit percision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit percision of pi to the power of 4.4. 
 
+If an existing function/command doesn't support chaining, an OP can be inserted in the chain to make it work.
+
+The following will get the length of a list, generate that many bits, and output the result in binary form.
+```
+> {1,2,3,5}.{(op(a){@a.len()})(@$$)}.genbits().bin()
+1111
+```
+
 # Examples
 
 ## Crypt
