@@ -506,6 +506,12 @@ If the token handler returns an $ERR object, the cooresponding rule option will 
 [" ","x"," "]
 ```
 
+The catchall token can also be used to add support for comments in a grammar. The following is used in the grapa syntax. This rule is then inserted in palces in the grammer where comments can be included. 
+
+```
+$starcomment = rule ('/' '*') <> ('*' '/');
+```
+
 
 ### $ERR
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
