@@ -1053,16 +1053,24 @@ Updates the column in a row. By default the $VALUE column is updated. But an alt
 
 field defaults to $VALUE.
 
-<pre><code>> @f.set("test","value of test")
-</code></pre>
+```
+> @f.set("test","value of test")
+```
+
+The name field can include a path relative to the "working directory" (see pwd()). If the "workding directory" is a OS filesystem directory, than the path must reference a file within the OS filesystem. If the "working directory" is a grapa table, than the path and data item would be within the grapa table. What is not currently supported is referencing a grapa table item when the "working directory" is not within a grapa table.
+
 #### get(name [, field])
 Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
 
 field defaults to $VALUE.
 
-<pre><code>> @f.get("test")
+```
+> @f.set("test","value of test")
+> @f.get("test")
 value of test
-</code></pre>
+```
+
+The name field can include a path relative to the "working directory". See set() for more details.
 
 #### mkfield(name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a field within the current working directory.
