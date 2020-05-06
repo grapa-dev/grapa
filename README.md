@@ -957,6 +957,8 @@ Each example below assumes the following command has been issued:
 <pre><code> f = $file();</code></pre>
 Which assignes f an instance of the $file class. The following are then operations that can be used from the $file class.
 
+The name field for the commands can include a path relative to the "working directory" (see pwd()). If the "workding directory" is a OS filesystem directory, than the path must reference a file within the OS filesystem. If the "working directory" is a grapa table, than the path and data item would be within the grapa table. What is not currently supported is referencing a grapa table item when the "working directory" is not within a grapa table.
+
 #### type()
 <pre><code>> @f.type()
 $file
@@ -978,7 +980,7 @@ Returns the current working directory, relative to the current home directory.
 > @f.pwd()
 /lib
 </code></pre>
-#### cd(relativepath)
+#### cd([name])
 Changes the current working directory, relative to the current home directory.  Using ".." will result in moving back 1 level.
 <pre><code>> @f.cd("lib")
 > @f.pwd()
@@ -995,7 +997,7 @@ Changes the current home directory.
 > @f.phd()
 C:\Projects\Test\lib
 </code></pre>
-#### ls([path])
+#### ls([name])
 Retrieves a list of files/directories in the current working directory.
 
 ```
@@ -1057,8 +1059,6 @@ field defaults to $VALUE.
 > @f.set("test","value of test")
 ```
 
-The name field can include a path relative to the "working directory" (see pwd()). If the "workding directory" is a OS filesystem directory, than the path must reference a file within the OS filesystem. If the "working directory" is a grapa table, than the path and data item would be within the grapa table. What is not currently supported is referencing a grapa table item when the "working directory" is not within a grapa table.
-
 #### get(name [, field])
 Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
 
@@ -1069,8 +1069,6 @@ field defaults to $VALUE.
 > @f.get("test")
 value of test
 ```
-
-The name field can include a path relative to the "working directory". See set() for more details.
 
 #### mkfield(name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a field within the current working directory.
