@@ -1210,6 +1210,24 @@ err = @n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55
 #### disconnect()
 Disconnects the session. Disconnecting a listener will disconnect all sessions the listerner is a parent of.
 
+#### certificate([file])
+Sets $net instnace to SSL mode with certificate file.
+
+Use certificate() to revert back to non-SSL.
+
+See SSL_CTX_use_certificate_chain_file.
+
+#### private(file [,passOp [,param]])
+Server in SSL mode requires a private key file. 
+
+If the private key file is password protected, also provide an $OP for the SSL routines to requrest the password. If a param is added, the callback will include the param. 
+
+See SSL_CTX_use_PrivateKey_file.
+
+#### trusted(file, path)
+
+See SSL_CTX_load_verify_locations.
+
 #### host()
 
 After running the sample in onlisten, try the following.
@@ -1226,8 +1244,10 @@ Blocks until data is recieved. Use nrecieve() first to verify data exists. Or us
 
 See example in onlisten.
 
-#### nrecieve()
+#### pending()
 Number of bytes that can be recieved.
+
+If an SSL connection, the byte count will be what is pending in the SSL encrypted buffer, which is different than the unencrypted data. 
 
 See example in onlisten.
 
