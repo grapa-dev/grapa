@@ -1239,8 +1239,10 @@ After running the sample in onlisten, try the following.
 #### send(message)
 See example in onlisten.
 
-#### recieve()
-Blocks until data is recieved. Use nrecieve() first to verify data exists. Or use onrecieve.
+NOTE: If using SSL do not send data if the remote connection has terminated the connection. Unfortunately there is no easy way at this time to detect this when in SSL mode without performaing a read - so recomendation is to implement a "onreceive" handler. 
+
+#### receive()
+Blocks until data is recieved. Use nreceive() first to verify data exists. Or use onrecieve.
 
 See example in onlisten.
 
@@ -1252,7 +1254,7 @@ If an SSL connection, the byte count will be what is pending in the SSL encrypte
 See example in onlisten.
 
 #### onreceive(handler)
-Handler will be called when data is recieved.
+Handler will be called when data is received.
 
 ```
 receiveHandler = op(netSession,message,hasmore)
