@@ -1239,7 +1239,7 @@ After running the sample in onlisten, try the following.
 #### send(message)
 See example in onlisten.
 
-NOTE: If using SSL do not send data if the remote connection has terminated the connection. Unfortunately there is no easy way at this time to detect this when in SSL mode without performaing a read - so recomendation is to implement a "onreceive" handler. 
+NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a brokend connection will return an error and close the connection.
 
 #### receive()
 Blocks until data is recieved. Use nreceive() first to verify data exists. Or use onrecieve.
