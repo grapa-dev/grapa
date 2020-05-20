@@ -342,7 +342,7 @@ Note that the "$&" sequence is used to indicate that the item is XML format, whi
 $&<testv=10>this is "the" test</test>$&
 
 > @x.list()
-{"test":{{"v":10},"this is \"the\" test"}}
+{"test":[{"v":10},["this is \"the\" test"]]}
 ```
 
 The $XML data is essentially a list of $TAG values. 
@@ -362,43 +362,21 @@ iso-8859-1
 
 > x = $&<test v=10>this is "the" test</test>$&;
 > @x.list()
-{"test":{{"v":10},"this is \"the\" test"}}
+{"test":[{"v":10},["this is \"the\" test"]]}
 
 > x = $&<test v=10>this is "the"<in x=1/>test</test>$&;
 > @x.list()
-{"test":{{"v":10},"this is \"the\"",{{"x":1}},"test"}}
+{"test":[{"v":10},["this is \"the\"",{"in":[{"x":1}]},"test"]]}
 
 > x = $&<test v=10>this is "the"<in x=1>other</in>test</test>$&;
 > @x.list();
-{"test":{{"v":10},"this is \"the\"","in":{{"x":1},"other"},"test"}}
+{"test":[{"v":10},["this is \"the\"",{"in":[{"x":1},["other"]]},"test"]]}
 ```
 
 ### $TAG
-This represents the innter part of XML, including the attributes. Syntax to create the $TAG type has not been created specifically outside of $XML...but if you want to create it just create $XML and reference one of the items.
+This represents the innter part of XML. It has 2 parts. The first item is a list of attributes. The second part is an array of values. Usually an array of $STR and $XML values. 
 
 See $XML.
-
-A $TAG has the list of attributes as the first item, and the contents of the $XML information as the remaining items. Note that when outputing $TAG, the '<' and '>' are changed to '(' and ')' and there is no name associated. This is a function of how the XML is represented as a $LIST. See examples below illustrating. 
-
-Note that the "$&" sequence is used to indicate that the item is XML format, which requires special lexical parsing that is a bit different than JSON parsing. 
-
-Also, the current grammer does not have logic to input a $TAG, only $XML. 
-
-```
-> x = $&<test v=10>this is "the" test</test>$&;
-> @x[0].type();
-$TAG
-
-> @x[0]
-$&(v=10)this is "the" test(/)$&
-
-> @x.list()
-{"test":[{"v":10},"this is \"the\" test"]}
-
-> @x[0].list()
-[{"v":10},"this is \"the\" test"]
-```
-
 
 ### $RULE
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessable and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a lanugae by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
