@@ -10,7 +10,7 @@ Execution of all scripts (from code or compiled) run the same accross all platfo
 
 ## Setup
 ### Installation
-Suported platforms include Win10, MacOS, Linux.
+Suported platforms include Win64, MacOS, Ubuntu64, Debian32.
 
 To instally copy the zip for the target platform, unzip, and copy to the exectutable to an apprpriate directory. If needed, update the system PATH. The binaries are located in the "bin" directory in this GitHub repository.
 
@@ -316,61 +316,21 @@ Referencing the data is a litter different though. Each item has multiple parts,
 > @x.type();
 $XML
 
-> @x.len()
-1
-
-> @x[0].type()
-$TAG
-
-> @x[0].len()
-2
-
-> @x[0][0]
+> @x.head();
 {"v":10}
 
-> @x[0][1]
-this is "the" test
+> @x.body();
+["this is \"the\" test"]
 ```
-
-For easier viewing, convert to $LIST. The parsing of the data is the same...but coverting to $LIST will reveal the structure used to represent $XML internally. 
 
 Note that the "$&" sequence is used to indicate that the item is XML format, which requires special lexical parsing that is a bit different than JSON parsing. 
 
+For easier viewing, convert to $LIST. The parsing of the data is the same...but coverting to $LIST will reveal the structure used to represent $XML internally. 
+
 ```
-> x = $&<test v=10>this is "the" test</test>$&;
-> @x
-$&<testv=10>this is "the" test</test>$&
-
-> @x.list()
-{"test":[{"v":10},["this is \"the\" test"]]}
-```
-
-The $XML data is essentially a list of $TAG values. 
-```
-> x = $&<?xml version="1.0" encoding="iso-8859-1"?><test v=10>this is "the" test</test>$&;
-> @x;
-$&<?xmlversion="1.0" encoding="iso-8859-1"?><testv=10>this is "the" test</test>$&
-
-> @x.len();
-2
-
-> @x[0];
-$&(version="1.0" encoding="iso-8859-1"/)
-
-> @x."?xml"[0].encoding
-iso-8859-1
-
-> x = $&<test v=10>this is "the" test</test>$&;
-> @x.list()
-{"test":[{"v":10},["this is \"the\" test"]]}
-
-> x = $&<test v=10>this is "the"<in x=1/>test</test>$&;
-> @x.list()
-{"test":[{"v":10},["this is \"the\"",{"in":[{"x":1}]},"test"]]}
-
 > x = $&<test v=10>this is "the"<in x=1>other</in>test</test>$&;
 > @x.list();
-{"test":[{"v":10},["this is \"the\"",{"in":[{"x":1},["other"]]},"test"]]}
+{"test":{"head":{"v":10},"body":["this is \"the\"",{"in":{"head":{"x":1},"body":["other"]}},"test"]}}
 ```
 
 ### $TAG
