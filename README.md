@@ -242,7 +242,8 @@ Same as $LIST, but without the entry labels.
 Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, and a timer for tracking the passage of time. 
 
 Examples:
-<pre><code>> (0).time();
+```
+> (0).time();
 1970-01-01T00:00:00.000000
 
 > $TIME().utc();
@@ -258,25 +259,26 @@ Examples:
 
 > @t1.delta();
 12.231424
-</code></pre>
+```
 
 As another test, the first item below illustrates taking 0.002991 seconds to individually compile and execute the first line, and than compile and execute the second like. The second example illustrates the time to run the compiled code - 0 seconds. 
 
-<pre><code>> a=$TIME().utc();
+```
+> a=$TIME().utc();
 > (($TIME().utc()-@a)/1000000.0).str()+" seconds";
 0.002991 seconds
 
 > f=op(){a=$TIME().utc();(($TIME().utc()-@a)/1000000.0).str()+" seconds";};
 > f();
 0 seconds
-</code></pre>
+```
 
 ### $TABLE
 A $TABLE is a higharchical database with columns, rows, with both row store and columns store. 
 
 See $file commands for creating, updated, and navigating.
-
-<pre><code>> f=$file().table()
+```
+> f=$file().table()
 > @f.ls()
 []
 
@@ -289,14 +291,15 @@ value
 
 > @f.type()
 $TABLE
-</code></pre>
+```
 
 ### $RAW
 A $RAW represents raw bytes. Most data types can be converted to and from $RAW, providing the abilty to make speicic tweaks to data. For example, this is how time addition/subtraction is performed - by converting the $TIME into $RAW and then into an $INT, and than back to a $TIME. There are several examples of using raw in the documentation for the other data types.
 
 When displayed, the value is printed in hex form, but the value in memory is in raw. If you convert to hex(), the result will be a text version of the hex of the raw data.
 
-<pre><code>> "hi".raw();
+```
+> "hi".raw();
 6869
 
 > "hi".raw().int();
@@ -304,7 +307,7 @@ When displayed, the value is printed in hex form, but the value in memory is in 
 
 > (0x6869).raw().str();
 hi
-</code></pre>
+```
 
 ### $XML
 $XML is an array of $TAG values. The $XML class also inherits the $ARRAY class, and any operation that works on an $ARRAY will work on an $XML. 
@@ -312,26 +315,24 @@ $XML is an array of $TAG values. The $XML class also inherits the $ARRAY class, 
 For consistancy, entering a single $TAG will always result in the creation of $XML, where the $XML includes at least 1 $TAG. 
 
 To reference items in $XML, use an index.
-
-'''
+```
 > x = <test one=1>data</test><tt hi=dd />;
 > @x[0];
 <test one=1>data</test>
-'''
+```
 
 Or specify a tag value.
-'''
+```
 > x = <test one=1>data</test><tt hi=dd />;
 > @x.tt;
 <tt hi=dd />
-'''
+```
 
 ### $TAG
 
 At $TAG is a named $EL (element). See $EL. A $TAG is a $LIST with a single $EL item. 
 
 Use "getname()" to get the name of the $TAG.
-
 ```
 > x = <test one=1 two=2>data</test>;
 > @x[0].getname();
