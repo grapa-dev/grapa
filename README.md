@@ -770,7 +770,8 @@ ZIP-GRAPA | |
 BASE64 | |
 ESCAPE | |
 FLOAT | |
-XML-GRAPA | | Only encode.
+JSON | | Only encode.
+XML | | Only encode.
 SHAKE256 | | Only encode.
 SHAKE128 | | Only encode.
 SHA3-256 | | Only encode.
@@ -1683,6 +1684,27 @@ If you modify the file, you can try it out by placing it in "lib/grapa/" under t
 If you are familiar with YACC or BNF, following the grammer logic should be rather streat forward. Each rule is evaluated until a successful match, and all matches prduce an exectuaiton play where the code associated with each rule match is included in the execution plan. To optimize grammer resolution, rules carefully constructed to avoid re-evaluating rules more than neccessary by placing the most complex rules first and following with common rule patters. It is also important to avoid infinate recursive situations - mostly this is avoided by not referencing the same rule as the first token to evaluate. 
 
 There are a few standard tokens that are defined - mostly the tokens provide special handling for either the lexical engine or the rules engine. One example is the space character, which when found a bit is set in the token skip the value for rules evaluation. This can be changed - but then would require including including the space token in the rules. 
+
+### Precedence
+
+| a | b |
+|--|--|
+| `[literal]` `@[literal]` | token, contents of token |
+| `a()` | function call |
+| `+a` `-a` `!a` `~a` | Unary plus, minus, not, bitwise not |
+| `a*b` `a/b` `a%b` | mult, div, rem |
+| `a+b` `a-b` | add, sub |
+| `<<` `>>` | bitwise shift |
+| `<=>` | 3 way compare |
+| `<` `<=` `>` `>=` | Lt, LtEq, Gt, GtEq |
+| `==` `!=` | eq, neq |
+| `&` | bitwise and |
+| `^` | bitwise xor |
+| '|' | bitwise or |
+| `&&` | and |
+| \|\| | or |
+| `a?b:c` `a?b:c:d` | Turnary conditionals |
+| `=` `+=` `-=` `++=` | Assignments |
 
 ### Operator
 
