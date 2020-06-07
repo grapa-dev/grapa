@@ -1691,7 +1691,7 @@ There are a few standard tokens that are defined - mostly the tokens provide spe
 |--|--|
 | `a` `@a` | token, contents of token |
 | `a()` | function call |
-| `a.b` | lookup |
+| `a.b` `a[b]` | lookup |
 | `+a` `-a` `!a` `~a` | Unary plus, minus, not, bitwise not |
 | `a*b` `a/b` `a%b` | mult, div, rem |
 | `a+b` `a-b` | add, sub |
