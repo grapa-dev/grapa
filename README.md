@@ -107,12 +107,11 @@ The following are equivalent in comparisons:
 Examples:
 Commands | Results
 ------------ | -------------
-1==true; | 1
-null==false; | 1
-1==false; | </code>
-"55"==(55).str(); | 1
-"5.54"==(5.54).str(); | 1
-"5.53"==(5.54).str(); | 
+1==true; | true
+null==false; | true
+1==false; | false
+"55"==(55).str(); | true
+"5.54"==(5.54).str(); | true
 
 ### $STR
 ASCII only - unicode will eventually be added. Can initalize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported. 
@@ -155,39 +154,45 @@ Supports both fix and float format. Fix will apply the precision to just the dec
 The $FLOAT class inherits $INT class - see the the $INT class for additional functions supported.
 
 Example:
-<pre><code>> 5.13
+```
+> 5.13
 5.13
-</code></pre>
+```
 
 You can also create using hex format:
-<pre><code>> -0x4.0x5
+```
+> -0x4.0x5
 -4.3125
-</code></pre>
+```
 
 Or binaary format:
-<pre><code>> 0b101.11
+```
+> 0b101.11
 5.625
-</code></pre>
+```
 
 By default, all floats are "float" format. To change formats use the fix() and float() routines, where both the precision and the "extra" bits can also be specified. The parsing engine will set the precision to the system default, which is 128 bits. There are two ways to change this. First, change the system defualt using the setfloat and setfix routines. Second, pass in a $STR to the fix or float routines. For example:
 
-<pre><code>> "3.5".float(300,6)
+```
+> "3.5".float(300,6)
 3.5
-</code></pre>
+```
 
 To verify the float is being created properly, use the decode routine with FLOAT as the parameter. For example:
 
-<pre><code>> "30.75".float(300,6).decode(FLOAT)
+```
+> "30.75".float(300,6).decode(FLOAT)
 {"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
 > (30.75).decode(FLOAT).data
 123
 
 > (30.75).decode(FLOAT).data.hex()
 7B
-</code></pre>
+```
 
 Convert to other formats:
-<pre><code>> (30.75).hex()
+```
+> (30.75).hex()
 1E.C
 
 > (30.75).bin()
@@ -198,29 +203,30 @@ Convert to other formats:
 
 > (30.75).raw()
 00048100077B
-
-</code></pre>
+```
 
 Bit shifts:
-<pre><code>> (30.75) >> 4
+```
+> (30.75) >> 4
 1.921875
 
 > (30.75) << 4
 492
-</code></pre>
+```
 
 ### $ID
 Any identifier (starts with a letter and can follow with numbers and '-' but can not end with '-') will be initialized as an $ID. And an $ID can be used for many things, including associating a value. The '@' symbol is used to dereference an $ID to retrieve the data stored.
 
 Example of using an $ID as a variable:
-<pre><code>> x = "hi"
+```
+> x = "hi"
 
 > @x
 hi
 
 > @x + " test"
 hi test
-</code></pre>
+```
 
 ### $LIST
 A $LIST is basically JSON, but extended to include all the various grapa data types. 
