@@ -1702,15 +1702,15 @@ There are a few standard tokens that are defined - mostly the tokens provide spe
 | `+a` `-a` `!a` `~a` | Unary plus, minus, not, bitwise not | right->left |
 | `a*b` `a/b` `a%b` | mult, div, rem | left->right |
 | `a+b` `a-b` | add, sub | left->right |
-| `<<` `>>` | bitwise shift | (change) right->left |
+| `<<` `>>` | bitwise shift | left->right |
 | `<=>` | 3 way compare | (change) right->left |
-| `<` `<=` `>` `>=` | Lt, LtEq, Gt, GtEq | (change) right->left |
-| `==` `!=` | eq, neq | (change) right->left |
-| `&` | bitwise and | (change) right->left |
+| `<` `<=` `>` `>=` | Lt, LtEq, Gt, GtEq | left->right |
+| `==` `!=` | eq, neq | left->right |
+| `&` | bitwise and | N/A |
 | `^` | bitwise xor | (change) right->left |
-| \| | bitwise or | (change) right->left |
-| `&&` | and | (change) right->left |
-| \|\| | or | (change) right->left |
+| \| | bitwise or | N/A |
+| `&&` | and | N/A |
+| \|\| | or | N/A |
 | `a?b:c` `a?b:c:d` | Ternary conditionals | right->left |
 | `=` `+=` `-=` `++=` | Assignments | right->left |
 
