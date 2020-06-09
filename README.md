@@ -1,3 +1,4 @@
+
 # grapa
 grapa - a grammar parser language / environment for processing data for ETL workflows, or experimenting with new language constructs. 
 
@@ -1693,25 +1694,25 @@ There are a few standard tokens that are defined - mostly the tokens provide spe
 
 ### Precedence
 
-| a | b |
-|--|--|
-| `a` `@a` | token, contents of token |
-| `a()` | function call |
-| `a.b` `a[b]` | lookup |
-| `+a` `-a` `!a` `~a` | Unary plus, minus, not, bitwise not |
-| `a*b` `a/b` `a%b` | mult, div, rem |
-| `a+b` `a-b` | add, sub |
-| `<<` `>>` | bitwise shift |
-| `<=>` | 3 way compare |
-| `<` `<=` `>` `>=` | Lt, LtEq, Gt, GtEq |
-| `==` `!=` | eq, neq |
-| `&` | bitwise and |
-| `^` | bitwise xor |
-| '|' | bitwise or |
-| `&&` | and |
-| \|\| | or |
-| `a?b:c` `a?b:c:d` | Turnary conditionals |
-| `=` `+=` `-=` `++=` | Assignments |
+| Operator| Description | Associativity
+|--|--|--|
+| `a` `@a` | token, contents of token | right->left |
+| `a()` | function call | right->left |
+| `a.b` `a[b]` | lookup | right->left |
+| `+a` `-a` `!a` `~a` | Unary plus, minus, not, bitwise not | right->left |
+| `a*b` `a/b` `a%b` | mult, div, rem | left->right |
+| `a+b` `a-b` | add, sub | left->right |
+| `<<` `>>` | bitwise shift | (change) right->left |
+| `<=>` | 3 way compare | (change) right->left |
+| `<` `<=` `>` `>=` | Lt, LtEq, Gt, GtEq | (change) right->left |
+| `==` `!=` | eq, neq | (change) right->left |
+| `&` | bitwise and | (change) right->left |
+| `^` | bitwise xor | (change) right->left |
+| \| | bitwise or | (change) right->left |
+| `&&` | and | (change) right->left |
+| \|\| | or | (change) right->left |
+| `a?b:c` `a?b:c:d` | Ternary conditionals | right->left |
+| `=` `+=` `-=` `++=` | Assignments | right->left |
 
 ### Operator
 
