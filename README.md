@@ -1703,11 +1703,11 @@ There are a few standard tokens that are defined - mostly the tokens provide spe
 | `a*b` `a/b` `a%b` | mult, div, rem | left->right |
 | `a+b` `a-b` | add, sub | left->right |
 | `<<` `>>` | bitwise shift | left->right |
-| `<=>` | 3 way compare | (change) right->left |
+| `<=>` | 3 way compare | left->right |
 | `<` `<=` `>` `>=` | Lt, LtEq, Gt, GtEq | left->right |
 | `==` `!=` | eq, neq | left->right |
 | `&` | bitwise and | N/A |
-| `^` | bitwise xor | (change) right->left |
+| `^` | bitwise xor | N/A |
 | \| | bitwise or | N/A |
 | `&&` | and | N/A |
 | \|\| | or | N/A |
