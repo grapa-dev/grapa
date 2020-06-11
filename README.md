@@ -3,11 +3,11 @@
 grapa - a grammar parser language / environment for processing data for ETL workflows, or experimenting with new language constructs. 
 
 ## Introduction
-The unique approach of grapa is that it includes native syntax for JSON/XML and BNF style grammers for defining data processing rules. The same grammer engine used to assist with parsing data is the same engine used to process the language. The syntax of the language is fully customizable (even at runtime if that's of interest) as the language rules are stored as global variables. If for example, you'd like to extend the langue to include some prefered syntax , that enhancement would function as native syntax. 
+The unique approach of grapa is that it includes native syntax for JSON/XML and BNF style grammars for defining data processing rules. The same grammar engine used to assist with parsing data is the same engine used to process the language. The syntax of the language can be customized (runtime-self-mutable) as the language rules are stored as global variables. If for example, you'd like to extend the langue to include some preferred syntax , that enhancement would function as native syntax. 
 
-Underneith the syntax, there are several libraries that provide the lower level heavy lifting for strings, execution flow, files, networking, threads, classes with inheritance, ecryiption (RSA, AES, SHA, etc), math, database, etc. The grammer syntax you define can either invoke routines written in the existing syntax, or call lower level libraries. The native integer and float support uses unlimited percision (or limited by CPU/memory). 
+Underneath the syntax, there are several libraries that provide the lower level heavy lifting for strings, execution flow, files, networking, threads, classes with inheritance, encryption (RSA, AES, SHA, etc), math, database, etc. The grammar syntax you define can either invoke routines written in the existing syntax, or call lower level libraries. The native integer and float support uses unlimited precision (or limited by CPU/memory). 
 
-Execution of all scripts (from code or compiled) run the same accross all platforms, including the unlimted floating point routines. And will work the same on either big endian or little endian systems. 
+Execution of all scripts (from code or compiled) run the same across all platforms, including the unlimited floating point routines. And will work the same on either big endian or little endian systems. 
 
 ## Setup
 ### Installation
@@ -16,7 +16,7 @@ Suported platforms include Win64, MacOS, Ubuntu64, Debian32.
 To instally copy the zip for the target platform, unzip, and copy to the exectutable to an apprpriate directory. If needed, update the system PATH. The binaries are located in the "bin" directory in this GitHub repository.
 
 There will be an installer for each of the platforms...but for now, drag and drop of the binary works.
-Linux: Place in "/usr/bin" (or somewhere accessable). 
+Linux: Place in "/usr/bin" (or somewhere accessible). 
 Windows: Place in a location that is in the PATH, or update PATH to the location the application is copied to.
 Mac: Place in "/usr/local/bin" - first time running the tool will take about 20 seconds as the OS scans the executable. 
 
@@ -27,11 +27,11 @@ Any grapa commands can be run interactively within the console.
 
 If using paste to enter a block of code to run, ensure each line is not larger than the maximum line line for the console - break up the code into shorter lines.
 
-If using paste to enter multiple lines that need to be run at the same time (such as when a single command spans multiple lines), enter `$[` sequence first and `$]` sequence at the end. This will triger the lexical engine to signal to the grammer engine to pause grammer analysis until after all the tokens have been generated for the input stream. 
+If using paste to enter multiple lines that need to be run at the same time (such as when a single command spans multiple lines), enter `$[` sequence first and `$]` sequence at the end. This will trigger the lexical engine to signal to the grammar engine to pause grammar analysis until after all the tokens have been generated for the input stream. 
 
 ### Command line options
 
-Once copyed into a location (and PATH updated if needed), you'll be able to run the tool using "grapa" from a terminal or command sheel from any location. Running the tool with "grapa --env" will display a few of the directories where the tool will look for information.
+Once copied into a location (and PATH updated if needed), you'll be able to run the tool using "grapa" from a terminal or command shell from any location. Running the tool with "grapa --env" will display a few of the directories where the tool will look for information.
 
 Other command line options:
 ```
@@ -46,7 +46,7 @@ Other command line options:
         -argv           :Places proceeding args into $ARGV environment variable
 ```
 
-Example: Performas a SHAKE256 hash of the string "thisisatest".
+Example: Performs a SHAKE256 hash of the string "thisisatest".
 ```
 grapa -ccmd "'thisisatest'.encode(SHAKE256)" -q
 94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
@@ -65,7 +65,7 @@ echo "thisisatest".encode(SHAKE256) | grapa -ccin -q
 ### $OP
 This is the core type at the base of grapa. It does not have a class associated. Consider it as both a high level version of byte code (but represented as a list) and simular to a lambda in other languages. It's a variable that includes executable instructions. 
 
-Understanding the inner workings of $OP is not neccessary to use grapa - and this section can be skipped. This though is core to how grapa works, and an understanding is needed in order to extend the syntax of the language to support your own domain specific language extentions.
+Understanding the inner workings of $OP is not necessary to use grapa - and this section can be skipped. This though is core to how grapa works, and an understanding is needed in order to extend the syntax of the language to support your own domain specific language extensions.
 
 Examples:
 Commands | Results | Description
@@ -73,9 +73,9 @@ Commands | Results | Description
 (op(){4*2})(); | 8 | Creates $OP and executes.
 (@<mul,{4,2}>)(); | 8 | Same but using $OP directly.
 
-Adding paraeters to $OP.
+Adding parameters to $OP.
 
-Example: The op command is used for passing parameters into a function. When the op command is used, the name is replaced with an array where the first value is "op" and the second value is the function. This array is than followed by the parameter list. The parameters are used to initilize the namespace for the function.
+Example: The op command is used for passing parameters into a function. When the op command is used, the name is replaced with an array where the first value is "op" and the second value is the function. This array is than followed by the parameter list. The parameters are used to initialize the namespace for the function.
 
 Commands | Results
 ------------ | -------------
@@ -84,14 +84,14 @@ op(a,b){@a*@b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}>
 op(){5%2}; | @<[op,@<mod,{5,2}>],{}>
 op(){4*2}; | @<[op,8],{}>
 
-In the last example above, the compiler impmented an optimization where it recognized that multiplying two constants could be completed at compile time.
+In the last example above, the compiler implemented an optimization where it recognized that multiplying two constants could be completed at compile time.
 
 See the section on syntax for additional examples.
 
 ### $CODE
 A sequence of $OP items to be processed in sequence.  Normally you would use $CODE directly. It is typically embedded in an $OP type. The planner typically wraps the result in an $OP along with parameter handling for the function - but this could change at some point where it could be either $OP or $CODE. 
 
-Example: Assignes 2 to a, than evaluates a*3, the result is 6
+Example: Assigns 2 to a, than evaluates a*3, the result is 6
 Commands | Results
 ------------ | -------------
 f=@[1,2];</br>f(); | 2
@@ -115,7 +115,7 @@ null==false; | true
 "5.54"==(5.54).str(); | true
 
 ### $STR
-ASCII only - unicode will eventually be added. Can initalize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported. 
+ASCII only - Unicode will eventually be added. Can initialize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported. 
 
 Examples:
 Commands | Results
@@ -126,7 +126,7 @@ Commands | Results
 "this is a test".raw().int(); | 2361031878030638688519054699098996
 
 ### $INT
-Supports signed and unsigned. Unsigned is essentally an $INT that is not negative. Given this is unlimited precision, a separate $UINT type is not required (grapa originally had one, but it's been removed as it's essentially redundant and adds unncessary complexity). The reason other languages have a $UINT type is to handle to bit overflow issue where the high order bit may become set during math operations. In grapa, when the high order bit is set, it automatically increases the precision and there is no overflow. Still, there is sometimes a need for specific $UINT type handling of raw bytes, and to support this there is a uint() function to ensure that a raw byte stream with a high order bit is not incorectly interpreted as a negative number. 
+Supports signed and unsigned. Unsigned is essentially an $INT that is not negative. Given this is unlimited precision, a separate $UINT type is not required (grapa originally had one, but it's been removed as it's essentially redundant and adds unnecessary complexity). The reason other languages have a $UINT type is to handle to bit overflow issue where the high order bit may become set during math operations. In grapa, when the high order bit is set, it automatically increases the precision and there is no overflow. Still, there is sometimes a need for specific $UINT type handling of raw bytes, and to support this there is a uint() function to ensure that a raw byte stream with a high order bit is not incorrectly interpreted as a negative number. 
 
 The $INT class inherits $math class - see the the $math class for additional functions supported.
 
@@ -150,7 +150,7 @@ The genprime and genrsa commands are not threaded at this time. Once threaded, p
 
 ### $FLOAT
 
-Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calcuations to reduce error propagation (the default is 7 bits). 
+Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calculations to reduce error propagation (the default is 7 bits). 
 
 The $FLOAT class inherits $INT class - see the the $INT class for additional functions supported.
 
@@ -172,7 +172,7 @@ Or binaary format:
 5.625
 ```
 
-By default, all floats are "float" format. To change formats use the fix() and float() routines, where both the precision and the "extra" bits can also be specified. The parsing engine will set the precision to the system default, which is 128 bits. There are two ways to change this. First, change the system defualt using the setfloat and setfix routines. Second, pass in a $STR to the fix or float routines. For example:
+By default, all floats are "float" format. To change formats use the fix() and float() routines, where both the precision and the "extra" bits can also be specified. The parsing engine will set the precision to the system default, which is 128 bits. There are two ways to change this. First, change the system default using the setfloat and setfix routines. Second, pass in a $STR to the fix or float routines. For example:
 
 ```
 > "3.5".float(300,6)
@@ -216,7 +216,7 @@ Bit shifts:
 ```
 
 ### $ID
-Any identifier (starts with a letter and can follow with numbers and '-' but can not end with '-') will be initialized as an $ID. And an $ID can be used for many things, including associating a value. The '@' symbol is used to dereference an $ID to retrieve the data stored.
+Any identifier (starts with a letter and can follow with numbers and '-' but can not end with '-') will be initialized as an $ID. And an $ID can be used for many things, including associating a value. The '@' symbol is used to de-reference an $ID to retrieve the data stored.
 
 Example of using an $ID as a variable:
 ```
@@ -281,7 +281,7 @@ As another test, the first item below illustrates taking 0.002991 seconds to ind
 ```
 
 ### $TABLE
-A $TABLE is a higharchical database with columns, rows, with both row store and columns store. 
+A $TABLE is a hierarchical database with columns, rows, with both row store and columns store. 
 
 See $file commands for creating, updated, and navigating.
 ```
@@ -301,7 +301,7 @@ $TABLE
 ```
 
 ### $RAW
-A $RAW represents raw bytes. Most data types can be converted to and from $RAW, providing the abilty to make speicic tweaks to data. For example, this is how time addition/subtraction is performed - by converting the $TIME into $RAW and then into an $INT, and than back to a $TIME. There are several examples of using raw in the documentation for the other data types.
+A $RAW represents raw bytes. Most data types can be converted to and from $RAW, providing the ability to make specific tweaks to data. For example, this is how time addition/subtraction is performed - by converting the $TIME into $RAW and then into an $INT, and than back to a $TIME. There are several examples of using raw in the documentation for the other data types.
 
 When displayed, the value is printed in hex form, but the value in memory is in raw. If you convert to hex(), the result will be a text version of the hex of the raw data.
 
@@ -319,7 +319,7 @@ hi
 ### $XML
 $XML is an array of $TAG values. The $XML class also inherits the $ARRAY class, and any operation that works on an $ARRAY will work on an $XML. 
 
-For consistancy, entering a single $TAG will always result in the creation of $XML, where the $XML includes at least 1 $TAG. 
+For consistency, entering a single $TAG will always result in the creation of $XML, where the $XML includes at least 1 $TAG. 
 
 To reference items in $XML, use an index.
 ```
@@ -360,7 +360,7 @@ data
 ```
 
 ### $RULE
-This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessable and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a lanugae by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
+This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessible and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a language by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
 
 There are three basic steps:
 * Define the rules (rules may reference other rules) with code to execute for each rule option.
@@ -375,7 +375,7 @@ rule <$command_list> $SYSID("BE") | <$command_list> ';' | <$command_list>
 
 The above is the entry point to the grapa language. This entry point is a global variable that can be updated...so take caution as it is the default entry point all scripts. It is also possible to navigate the language syntax by looking up each rule that is lined from any other rule.
 
-Example of defining a custome rule, and applying the rule:
+Example of defining a custom rule, and applying the rule:
 ```
 > x = rule $INT $INT {op(a:$1,b:$2){@a*@b}} | $INT {op(a:$1){@a}}
 > (op()("4",@x))()
@@ -412,7 +412,7 @@ If the lookup needs to be against something other than a list (maybe checking a 
 1
 ```
 
-Rules can also be embedded. Unfortunately, the current grammer requires an operation for a rule if the rule is to return any value - it doesn't make any assumptions. So as of the current release an embedded rule of (x|y) would match on x or y, but with no operation attached to x or y the result would not produce an output for the match. In some future version, this will be addressed to return a default. For now, an operation needs to be inserted if you want a value to be returned.
+Rules can also be embedded. Unfortunately, the current grammar requires an operation for a rule if the rule is to return any value - it doesn't make any assumptions. So as of the current release an embedded rule of (x|y) would match on x or y, but with no operation attached to x or y the result would not produce an output for the match. In some future version, this will be addressed to return a default. For now, an operation needs to be inserted if you want a value to be returned.
 
 If the token handler returns an $ERR object, it will cause the rule to fail. So it not only has the ability to add additional logic to processing the token, is also can also serve as an additional component to the planning engine by validating the token against the intent of the rule - something that could not be done at a later phase and could only be done during the planning/compile phase. 
 
@@ -457,7 +457,7 @@ A operation can also be associated with the empty rule above, which can process 
 3 raw characters: x
 ```
 
-If the token handler returns an $ERR object, the cooresponding rule option will fail and the next rule option will be evaluationed. The following is an example of causing the first rule option to fail.
+If the token handler returns an $ERR object, the corresponding rule option will fail and the next rule option will be evaluated. The following is an example of causing the first rule option to fail.
 
 ```
 > r = rule $INT <op(a:$1){$ERR()}> $INT {op(a:$2){@a}} | $INT <> $INT {op(a:$2){@a}};
@@ -465,7 +465,7 @@ If the token handler returns an $ERR object, the cooresponding rule option will 
 [" ","x"," "]
 ```
 
-The catchall token can also be used to add support for comments in a grammar. The following is used in the grapa syntax. This rule is then inserted in palces in the grammer where comments can be included. 
+The catchall token can also be used to add support for comments in a grammar. The following is used in the grapa syntax. This rule is then inserted in places in the grammar where comments can be included. 
 
 ```
 $starcomment = rule ('/' '*') <> ('*' '/');
@@ -499,9 +499,10 @@ Same as $STR, but was initialized with '$' at the front of the string. Used for 
 A few general utility functions that are useful, but it wasn't clear if they should be added to the native language syntax, were added to $sys.
 
 #### type (object)
-<pre><code>> $sys().type(5)
+```
+> $sys().type(5)
 $INT
-</code></pre>
+```
 
 #### getenv (type)
 
@@ -523,9 +524,10 @@ $LICENCE |
 $PLATFORM | C++/G++ compile flags
 Any value not starting with '$' will be directed to the native OS getenv/putenv |
 
-<pre><code>> $sys().getenv($VERSION)
+```
+> $sys().getenv($VERSION)
 {"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000}
-</code></pre>
+```
 
 Values for $PLATFORM 
 * `__APPLE__`
@@ -552,7 +554,7 @@ Values for $PLATFORM
 See getenv.
 
 ### $obj
-Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used accross the different data types are placed in the $obj class. Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
+Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used across the different data types are placed in the $obj class. Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
 
 There is not much use in creating an $obj instance on it's own. 
 
@@ -643,7 +645,7 @@ Sets the default float type to float, and the default bits and extra.
 Sets the default float type to fix, and the default bits and extra.
 
 #### str()
-Convertst to string. 
+Converts to string. 
 
 (44).str() -> "44"
 
@@ -811,7 +813,7 @@ v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be
 See encode.
 
 #### setfile($file, name)
-Updates file or table item with value. Separete from the $file class as this one supports chaining all the way to writing the result into a file. Requires having an existing $file instance -> or passing in $file() which creates a temporary instance.
+Updates file or table item with value. Separate from the $file class as this one supports chaining all the way to writing the result into a file. Requires having an existing $file instance -> or passing in $file() which creates a temporary instance.
 
 "testing".setfile($file(),"test.txt");
 
@@ -852,7 +854,7 @@ Microsoft Windows [Version 10.0.18363.778]
 #### getname([index])
 Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $LIST). 
 
-To use, do not dereference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.
+To use, do not de-reference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.
 
 ```
 > {a:1,b:2}.map(op(a){a.getname()})
@@ -911,52 +913,58 @@ $math().atan2(x,y) | `$math().atan2(10,10)*180/$math().pi()` | 45
 $math().hypot(x,y) | $math().hypot(3,4) | 5
 
 ### $file()
-Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntaxt to include SQL with $file for the underlying data.
+Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntax to include SQL with $file for the underlying data.
 
 Each example below assumes the following command has been issued:
 <pre><code> f = $file();</code></pre>
 Which assignes f an instance of the $file class. The following are then operations that can be used from the $file class.
 
-The name field for the commands can include a path relative to the "working directory" (see pwd()). If the "workding directory" is a OS filesystem directory, than the path must reference a file within the OS filesystem. If the "working directory" is a grapa table, than the path and data item would be within the grapa table. What is not currently supported is referencing a grapa table item when the "working directory" is not within a grapa table.
+The name field for the commands can include a path relative to the "working directory" (see pwd()). If the "working directory" is a OS filesystem directory, than the path must reference a file within the OS filesystem. If the "working directory" is a grapa table, than the path and data item would be within the grapa table. What is not currently supported is referencing a grapa table item when the "working directory" is not within a grapa table.
 
 #### type()
-<pre><code>> @f.type()
+```
+> @f.type()
 $file
-</code></pre>
+```
 #### table()
 The table function creates an in memory database. 
 
-<pre><code>> t = @f.table()
+```
+> t = @f.table()
 > @t.mkrow("test","data for test")
 > @t.getrow("test")
 data for test
-</code></pre>
+```
 #### pwd()
 Returns the current working directory, relative to the current home directory. 
-<pre><code>> @f.pwd()
+```
+> @f.pwd()
 /
 
 > @f.cd("lib")
 > @f.pwd()
 /lib
-</code></pre>
+```
 #### cd([name])
 Changes the current working directory, relative to the current home directory.  Using ".." will result in moving back 1 level.
-<pre><code>> @f.cd("lib")
+```
+> @f.cd("lib")
 > @f.pwd()
 /lib
-</code></pre>
+```
 #### phd()
 Returns the current home directory.
-<pre><code>> @f.phd()
+```
+> @f.phd()
 C:\Projects\Test
-</code></pre>
+```
 #### chd(filesystempath)
 Changes the current home directory.
-<pre><code>> @f.chd("lib")
+```
+> @f.chd("lib")
 > @f.phd()
 C:\Projects\Test\lib
-</code></pre>
+```
 #### ls([name])
 Retrieves a list of files/directories in the current working directory.
 
@@ -985,16 +993,17 @@ Retrieves a list of files/directories in the current working directory.
 ```
 
 #### mk(name [,type]) 
-Creates a directory at the current working directory withyin the file system.
+Creates a directory at the current working directory within the file system.
 
 type is one of:
 - "", if in the file system will default to "DIR"
 - "DIR", if in the file system, a new directory will be created. If in the database, will use "GROUP"
 - "GROUP", create a database of GROUP type
 - "ROW", create a ROW store database
-- "COL", create a COL store datebase
+- "COL", create a COL store database
 
-<pre><code>> @f.mk("test")
+```
+> @f.mk("test")
 > @f.cd("test")
 > @f.ls()
 []
@@ -1003,12 +1012,13 @@ type is one of:
 > @f.cd("testg")
 > @f.ls()
 []
-</code></pre>
+```
 
 #### rm(name)
 Removes a directory or file.
-<pre><code>> @f.rm("test")
-</code></pre>
+```
+> @f.rm("test")
+```
 
 #### set(name, value [, field])
 Updates the column in a row. By default the $VALUE column is updated. But an alternate column can be specified.
@@ -1033,8 +1043,9 @@ value of test
 #### mkfield(name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a field within the current working directory.
 
-<pre><code>> @f.mkfield("test")
-</code></pre>
+```
+> @f.mkfield("test")
+```
 
 Default for all fields is fieldType=STR and storeType=VAR. 
 
@@ -1043,10 +1054,10 @@ fieldType | Description
 TIME | Fixed size for $TIME
 BOOL | Fixed size for $BOOL
 INT | Stores an $INT. Size depeds on storeType and storeSize
-FLOAT | Stores a $FLOAT. Size depeds on storeType and storeSize
-STR | Stores a $STR. Size depeds on storeType and storeSize
-TABLE | Stores a $TABE. Size depeds on storeType and storeSize
-RAW | Stores a $RAW. Size depeds on storeType and storeSize
+FLOAT | Stores a $FLOAT. Size depends on storeType and storeSize
+STR | Stores a $STR. Size depends on storeType and storeSize
+TABLE | Stores a $TABE. Size depends on storeType and storeSize
+RAW | Stores a $RAW. Size depends on storeType and storeSize
 
 storeType | Description
 ------------ | -------------
@@ -1060,12 +1071,12 @@ storeGrow is used by variable fields to determine how much to grow the field by 
 Deletes a field within the current working directory.
 
 #### debug()
-Used for debugging the database during development. Displayes the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).
+Used for debugging the database during development. Displays the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).
 
 ### $net
 Provides a socket library, cross functional with all platforms supported. 
 
-Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
+Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...ensure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 #### type()
 Returns $net.
@@ -1114,9 +1125,9 @@ n2 = $net();
 
 #### onlisten(url,messageHandler [,connectHandler [,count:1]])
 
-Accomplishes the same as bind/listen, but hanled in a background thread and much easier to setup.
+Accomplishes the same as bind/listen, but handled in a background thread and much easier to setup.
 
-When a connection is initiated, a new thread and new network object is created, and that new network object binds to the connect. The connectHandler is then called to provide a way to initialize data structures, and than the messageHandler is called for incoming data. The connectHandler recieves 1 parameter - an updatable variable. The messageHandler recieves 2 parameters - the message and a hasmore flag. If the hasmore is 0, the data can be processed. If the message length is zero, the remote connection terminated and messageHandler should cleanup as the thread will be closing. 
+When a connection is initiated, a new thread and new network object is created, and that new network object binds to the connect. The connectHandler is then called to provide a way to initialize data structures, and than the messageHandler is called for incoming data. The connectHandler receives 1 parameter - an updateable variable. The messageHandler recieves 2 parameters - the message and a hasmore flag. If the hasmore is 0, the data can be processed. If the message length is zero, the remote connection terminated and messageHandler should cleanup as the thread will be closing. 
 
 The count defines the number of listeners - but fixed to 1 for now. Once a connection is established, the listener automatically restarts. For reasonable workloads, the 1 should be sufficient. For now if more is needed, use Bind/Listen - this though with require the use of $thread. 
 
@@ -1168,10 +1179,10 @@ err = @n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55
 ```
 
 #### disconnect()
-Disconnects the session. Disconnecting a listener will disconnect all sessions the listerner is a parent of.
+Disconnects the session. Disconnecting a listener will disconnect all sessions the listener is a parent of.
 
 #### certificate([file])
-Sets $net instnace to SSL mode with certificate file.
+Sets $net instance to SSL mode with certificate file.
 
 Use certificate() to revert back to non-SSL.
 
@@ -1180,7 +1191,7 @@ See SSL_CTX_use_certificate_chain_file.
 #### private(file [,passOp [,param]])
 Server in SSL mode requires a private key file. 
 
-If the private key file is password protected, also provide an $OP for the SSL routines to requrest the password. If a param is added, the callback will include the param. 
+If the private key file is password protected, also provide an $OP for the SSL routines to request the password. If a param is added, the callback will include the param. 
 
 See SSL_CTX_use_PrivateKey_file.
 
@@ -1199,15 +1210,15 @@ After running the sample in onlisten, try the following.
 #### send(message)
 See example in onlisten.
 
-NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a brokend connection will return an error and close the connection.
+NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a broken connection will return an error and close the connection.
 
 #### receive()
-Blocks until data is recieved. Use nreceive() first to verify data exists. Or use onrecieve.
+Blocks until data is received. Use nreceive() first to verify data exists. Or use onreceive.
 
 See example in onlisten.
 
 #### pending()
-Number of bytes that can be recieved.
+Number of bytes that can be received.
 
 If an SSL connection, the byte count will be what is pending in the SSL encrypted buffer, which is different than the unencrypted data. 
 
@@ -1239,7 +1250,7 @@ n2 = $net();
 ### $thread
 Provides a thread library, cross functional with all platforms supported.
 
-Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
+Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...ensure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 #### type()
 $thread
@@ -1265,7 +1276,7 @@ Indicates in waiting state.
 #### start(runOp, input, doneOp)
 Starts the runOp in the background, passing paramList. When the thread exists, doneOp is called. All 3 inputs are copied,  as the originals are likely to go away after running the start command. So if an instance of object is passed in, the thread will end up using a copied instance and not the original instance.
 
-The thread is run from the same namespace as where it is called. To use a shared object instance, access the variable from within the thread rather than passing in the variable. Or pass in the $ID for the variable and dereference the variable from the thread (which essentially does the same thing as a variable lookup but allows a different variable name to be used). 
+The thread is run from the same namespace as where it is called. To use a shared object instance, access the variable from within the thread rather than passing in the variable. Or pass in the $ID for the variable and difference the variable from the thread (which essentially does the same thing as a variable lookup but allows a different variable name to be used). 
 
 If accessing shared resources from within a thread, take care and use thread save logic, such as lock/unlock. 
 
@@ -1284,14 +1295,14 @@ myRun:{"input":{"a":1,"b":2}}
 myDone:{"input":{"a":1,"b":2,"c":3},"result":{"input":{"a":1,"b":2,"c":3}}}
 ```
 
-The input parameter is passed to both the run op and done op. The done op also recieves any output from the run op.
+The input parameter is passed to both the run op and done op. The done op also receives any output from the run op.
 
 
 #### stop()
-Stopes the thread.
+Stops the thread.
 
 #### started()
-Inicates the running state of the thread.
+Indicates the running state of the thread.
 
 #### suspend()
 Suspends the thread. If the thread is processing a queue and the queue is empty, put the thread in suspend mode. Than after pushing data onto the queue, call resume to have the thread resume processing.
@@ -1303,10 +1314,11 @@ See suspend.
 Indicates whether the thread is in a suspended state.
 
 ## Custom Class Types
-Create custome types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
+Create custom types using the class routine. The underlying structure is a $LIST where variables are stored, and the class can inherit other classes, including system types/classes (each system type is initiated as a class instance).
 
-The following examle defines a class with a single method. The method setdiv2 updates data to the parameter divided by 2.
-<pre><code>> myClass = class {data = 0; setdiv2 = op(p){data = @p/2;}; get = op(){@data;};};
+The following example defines a class with a single method. The method setdiv2 updates data to the parameter divided by 2.
+```
+> myClass = class {data = 0; setdiv2 = op(p){data = @p/2;}; get = op(){@data;};};
 
 > test = myClass();
 
@@ -1317,7 +1329,7 @@ The following examle defines a class with a single method. The method setdiv2 up
 
 > @test
 {"data":2}
-</code></pre>
+```
 
 ## Operators
 ### Constants
@@ -1403,7 +1415,7 @@ Mod.
 Bit shift left. An effet of multiplying by 2 for every bit shifted.
 
 #### `>>` number
-Bit shift left. An effet of dividing by 2 for every bit shifted.
+Bit shift left. An effect of dividing by 2 for every bit shifted.
 
 #### `|`
 Bitwise or.
@@ -1484,7 +1496,8 @@ Syntax options:
 * (<0)|(0)|(>0) ? statement for -1 : statement for 0 : statement for 1;
 
 Example:
-<pre><code>> 1?hi:by
+```
+> 1?hi:by
 hi
 
 > 0?hi:by
@@ -1495,15 +1508,14 @@ hi
 
 > ("a"<=>"b")?a:e:b
 a
-
-</code></pre>
+```
 
 ### Function Operators
 #### op
 Creating an $OP. See $OP.
 
 #### class
-Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified veraible is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other clases. 
+Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified variable is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other classes. 
 
 ```
 myC = class {myV = 0; myF = op(a){myV=@a};};
@@ -1527,7 +1539,7 @@ myIns = obj @myC2;
 Creating an instance of a class. See class.
 
 #### token
-Used to define lexical rules. Currenlty only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specived in the grammer. 
+Used to define lexical rules. Currently only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specified in the grammar. 
 
 #### rule
 See $RULE
@@ -1560,9 +1572,9 @@ To exit while in the console, enter a '.' character.
 There are several predefined lexical operators, most of which define how $ID, $INT, $FLOAT, $STR, etc, are processed and generate the corresponding tokens. There are also a few other lexical operators that will trigger special handling of the input stream. The following are two examples. Currently there is no way to define/change the lexical operators - this will come in some future version of grapa.
 
 #### `$&`
-  * Wrap the XML data in $& on either side to have grapa parse the input as XML. These characters are specail lexical triggers that modify the parsing engine token generation. The first instence turns the mode on and the second turns the mode off.
+  * Wrap the XML data in $& on either side to have grapa parse the input as XML. These characters are special lexical triggers that modify the parsing engine token generation. The first instance turns the mode on and the second turns the mode off. Or use the encode("XML") function, which does the same thing.
 #### `$[`
-  * Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on it's own. Alternatively, put the code in a file, loand the file contents, and execute the contents of the string.
+  * Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on it's own. Alternatively, put the code in a file, load the file contents, and execute the contents of the string.
 
 ### Conditions
 
@@ -1574,12 +1586,13 @@ Syntax options:
 * if (bool) statement; elseif statement; else statement;
 
 Example:
-<pre><code>> if (1==0) echo "1==0";  else echo "none";
+```
+> if (1==0) "1==0\n".echo();  else "none\n".echo();
 none
 
-> if (1==0) echo "1==0"; elseif (2==2) echo "2==2"; else echo "none";
+> if (1==0) "1==0\n".echo(); elseif (2==2) "2==2\n".echo(); else "none\n".echo();
 2==2
-</code></pre>
+```
 
 #### switch
 
@@ -1589,9 +1602,10 @@ Syntax options:
 
 The following is a way to use a switch in place of if/ifelse/else sequence. The switch will compare until if arrives at a true.
 
-<pre><code>> switch(true){case (1==0):echo "1==0\n"; case (2==2): echo "2==2\n"; default: echo "none\n";};
+```
+> switch(true){case (1==0):"1==0\n".echo(); case (2==2): "2==2\n".echo(); default: "none\n".echo();};
 2==2
-</code></pre>
+```
 
 
 ### Loops
@@ -1601,9 +1615,10 @@ Sytax:
 * while(bool) statement;
 
 Example:
-<pre><code>> i = 0; while (@i<5) {@i+=1; echo @i.str()+":";};
+```
+> i = 0; while (@i<5) {i+=1; (@i.str()+":").echo();}; "\n".echo();
 1:2:3:4:5:
-</code></pre>
+```
 
 
 #### map
@@ -1620,12 +1635,13 @@ Note: each item of the array will process in a separate thread. This is an easy 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 Example:
-<pre><code>> [1,2,3].map(op(n){@n*2});
+```
+> [1,2,3].map(op(n){@n*2});
 [2,4,6]
 
 > [1,2,3].map(op(n,p){@n*2+@p},5);
 [7,9,11]
-</code></pre>
+```
 
 #### reduce
 Sytax:
@@ -1641,7 +1657,8 @@ Reduce process sequentially, as processing is intended to augment the startvalue
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...esure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 Example:
-<pre><code>> [1,2,3].reduce(op(s,n){@s*@n});
+```
+> [1,2,3].reduce(op(s,n){@s*@n});
 6
 
 > [1,2,3].reduce(op(s,n){s+=@n*2},[]);
@@ -1649,7 +1666,7 @@ Example:
 
 > [1,2,3].reduce(op(s,n,p){s+=@n*2+@p},[],5);
 [7,9,11]
-</code></pre>
+```
 
 #### filter
 Sytax:
@@ -1663,32 +1680,35 @@ Where op is:
 Note: each item of the array will process in a separate thread. This is an easy way to add multi-threading to the processing, but beware and batch workoads in the array to keep the size of the array to the number of threads you want.
 
 Example:
-<pre><code>> [1,2,3,4,5,6,7,8,9].filter(op(n){@n%2!=0});
+```
+> [1,2,3,4,5,6,7,8,9].filter(op(n){@n%2!=0});
 [1,3,5,7,9]
 
 > [1,2,3,4,5,6,7,8,9].filter(op(n,p){@n%@p!=0},3);
 [1,2,4,5,7,8]
-</code></pre>
+```
 
 ## Language Syntax
 ### Default Language Rules
 To view a text version of the rules loaded into grapa on startup, run the following at the prompt:
 
-<pre><code>> $sys().getenv($STATICLIB)."grapa.grc".str()
-</code></pre>
+```
+> $sys().getenv($STATICLIB)."grapa.grc".str()
+```
 
 The system will first check for a match on the "start" rule. Which is a global variable...if that global variable is of type $RULE, than it will be come the first rule for scripts. This is an easy way to provide an override on command processing. If "start" rule does not provide a match, than the system will evaluage using the "$start" rule. 
 
 The default rules may be subject to change, and so are not listed here. Use the above command to retrieve/view.  To write the result to a file, use the following:
 
-<pre><code>> $file().setrow("grapa.grc",$sys().getenv($STATICLIB)."grapa.grc".str())
-</code></pre>
+```
+> $file().setrow("grapa.grc",$sys().getenv($STATICLIB)."grapa.grc".str())
+```
 
 This will place the file in the current working directory. If you want to place in a different directly, refer to the $file class for commands to do that.
 
 If you modify the file, you can try it out by placing it in "lib/grapa/" under the same directory that the above command would have written the file to, and then restart grapa. If grapa finds this file with this name in that location, it will use that file instead of the default. 
 
-If you are familiar with YACC or BNF, following the grammer logic should be rather streat forward. Each rule is evaluated until a successful match, and all matches prduce an exectuaiton play where the code associated with each rule match is included in the execution plan. To optimize grammer resolution, rules carefully constructed to avoid re-evaluating rules more than neccessary by placing the most complex rules first and following with common rule patters. It is also important to avoid infinate recursive situations - mostly this is avoided by not referencing the same rule as the first token to evaluate. 
+If you are familiar with YACC or BNF, following the grammar logic should be rather straight forward. Each rule is evaluated until a successful match, and all matches produce an execution play where the code associated with each rule match is included in the execution plan. To optimize grammar resolution, rules carefully constructed to avoid re-evaluating rules more than necessary by placing the most complex rules first and following with common rule patters. It is also important to avoid infinite recursive situations - mostly this is avoided by not referencing the same rule as the first token to evaluate. 
 
 There are a few standard tokens that are defined - mostly the tokens provide special handling for either the lexical engine or the rules engine. One example is the space character, which when found a bit is set in the token skip the value for rules evaluation. This can be changed - but then would require including including the space token in the rules. 
 
@@ -1748,7 +1768,7 @@ f = @r.plan("4*2");</br>f(); | 16 | Another way to apply the rule
 ### Function Chaining
 Any object that returns an object can be chained.
 
-For example "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit percision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit percision of pi to the power of 4.4. 
+For example "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit precision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit precision of pi to the power of 4.4. 
 
 If an existing function/command doesn't support chaining, an OP can be inserted in the chain to make it work using the $$ variable for the result of the prior operation. For example, the following will get the length of a list, generate that many bits, and output the result in binary form. The 3 examples all accomplish the same result.
 ```
@@ -1761,7 +1781,6 @@ If an existing function/command doesn't support chaining, an OP can be inserted 
 > f = op(a){@a.len()};
 > {1,2,3,5}.f(@$$).genbits().bin();
 1111
-
 ```
 
 # Examples
@@ -1770,7 +1789,8 @@ If an existing function/command doesn't support chaining, an OP can be inserted 
 ### RSA test
 The following will create an RSA key using hard coded public/private key values and verify the encode/decode functions work.
 
-<pre><code>> e = 0xa932b948feed4fb2b692609bd22164fc9edb59fae7880cc1eaff7b3c9626b7e5b241c27a974833b2622ebe09beb451917663d47232488f23a117fc97720f1e7;
+```
+> e = 0xa932b948feed4fb2b692609bd22164fc9edb59fae7880cc1eaff7b3c9626b7e5b241c27a974833b2622ebe09beb451917663d47232488f23a117fc97720f1e7;
 > d = (0x4adf2f7a89da93248509347d2ae506d683dd3a16357e859a980c4f77a4e2f7a01fae289f13a851df6e9db5adaa60bfd2b162bbbe31f7c8f828261a6839311929d2cef).uraw();
 > d = (@d + (0x4f864dde65e556ce43c89bbbf9f1ac5511315847ce9cc8dc92470a747b8792d6a83b0092d2e5ebaf852c85cacf34278efa99160f2f8aa7ee7214de07b7).uraw()).uint();
 > n = (0xe8e77781f36a7b3188d711c2190b560f205a52391b3479cdb99fa010745cbeba5f2adc08e1de6bf38398a0487c4a73610d94ec36f17f3f46ad75e17bc1adfec998395).uraw();
@@ -1779,14 +1799,15 @@ The following will create an RSA key using hard coded public/private key values 
 > v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be exactly 95...so need to make it so.".left(95);
 > @v.encode("RSA-KEY",@g).decode("RSA-KEY",@g).str();
 this is a test of 95 chars to see if we can encode with RSA. It needs to be exactly 95...so ne
-</code></pre>
+```
 
 ## Strings
 ### String Word Length
 The following returns the length of each word in a string:
-<pre><code>> "this is a test".split(" ").reduce(op(a,b){@a+=@b.len();},[])
+```
+> "this is a test".split(" ").reduce(op(a,b){@a+=@b.len();},[])
 [4,2,1,4]
-</code></pre>
+```
 
 ## Grammer Updating
 
