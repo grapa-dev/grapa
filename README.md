@@ -11,7 +11,7 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 ## Setup
 ### Installation
-Suported platforms include Win64, MacOS, Ubuntu64, Debian32.
+Suported platforms include Win64, MacOS, Ubuntu64, Debian32, AWS.
 
 To instally copy the zip for the target platform, unzip, and copy to the exectutable to an apprpriate directory. If needed, update the system PATH. The binaries are located in the "bin" directory in this GitHub repository.
 
