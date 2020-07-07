@@ -471,6 +471,54 @@ The catchall token can also be used to add support for comments in a grammar. Th
 $starcomment = rule ('/' '*') <> ('*' '/');
 ```
 
+Rules can include both right recursion and left recursion.  The following is an example of right recursion. Note that an internal function "prepend" is used to build the list. This is because grapa uses recursive decent, which results in the last match being processed first.
+
+```
+> r1 = rule $ID <r1> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>};
+> (op()("a b c",@r1))();
+[a,b,c]
+```
+
+But right recursion may not be desirable in some cases. One example is order of operations for additon and subtraction, where the evaluation needs to happen from left to right. Here is an example using right recursion. 
+
+```
+r1 = rule 
+     $INT '+' <r1>             {@<add,{$1,$3}>} 
+  | $INT '-' <r1>              {@<sub,{$1,$3}>} 
+  | $INT                            {@<lit,{$1}>}
+  ;
+
+> op()("5-3+2",@r1);
+@<[op,@<sub,{5,@<add,{3,2}>}>],{}>
+
+> (op()("5-3+2",@r1))();
+0
+```
+
+Note that for "5-3+2", the additon of 3+2 happens first resulting in 5-(3+2), which produces the wrong answer. 
+
+Left recursion is required to address this.
+
+```
+r2 = rule 
+     <r2> '+' $INT       {@<add,{$1,$3}>} 
+  | <r2> '-' $INT        {@<sub,{$1,$3}>} 
+  | $INT                      {@<lit,{$1}>}
+  ;
+
+> op()("5-3+2",@r2);
+@<[op,@<add,{@<sub,{5,3}>,2}>],{}>
+
+> (op()("5-3+2",@r2))();
+4
+```
+
+Note that with left recursion, the subtraction happens first resulting in (5-3)+2, which produces the correct answer.
+
+For those interested in how to modify a recursive decent parser to support left recursion, see the following on how this was addressed for Python:
+	○ https://medium.com/@gvanrossum_83706/left-recursive-peg-grammars-65dab3c580e1
+A simular approach is used for Grapa - but with a few improvements on the appropach to support more complex scenarios than what's required to support the Python syntax alone.
+
 
 ### $ERR
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
@@ -689,10 +737,18 @@ Gets the left bytes of an item.
 
 "testing".left(2) -> "te"
 
+Use a negative number to truncate right.
+
+"testing".left(-2) -> "testi"
+
 #### right(count)
 Gets the right bytes of an item.
 
 "testing".right(2) -> "ng"
+
+Use a negative number to truncate left.
+
+"testing".right(-2) -> "sting"
 
 #### mid(start,len)
 Gets the middle bytes of an item.
@@ -705,13 +761,13 @@ Trims right.
 "  testing  ".rtrim() -> "  testing"
 "bbbtestingbbb".rtrim(b) -> "bbbtesting"
 
-#### ltrim([str])
+#### ltrim([char])
 Trims left.
 
 "  testing  ".ltrim() -> "testing  "
 "bbbtestingbbb".ltrim(b) -> "testingbbb"
 
-#### trim
+#### trim([char])
 Trims both left and right.
 
 "  testing  ".trim() -> "testing"
@@ -830,6 +886,12 @@ See reduce in the Looping section. Iterates through a $LIST/$ARRAY calling an $O
 Sorts a $LIST.
 
 {z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
+
+
+#### unique()
+Sorts and remove duplicates names.
+
+{z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"b":4,"m":2,"p":3,"z":1}
 
 #### isint
 Checks if a string is an $INT.
