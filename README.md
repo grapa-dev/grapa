@@ -889,9 +889,9 @@ Sorts a $LIST.
 
 
 #### unique()
-Sorts and remove duplicates names.
+Remove duplicates names.
 
-{z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"b":4,"m":2,"p":3,"z":1}
+{z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"z":1,"b":4,"m":2,"p":3}
 
 #### isint
 Checks if a string is an $INT.
