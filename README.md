@@ -882,16 +882,33 @@ See filter in the Looping section. Iterates through a $LIST/$ARRAY calling an $O
 #### reduce($OP [,start [,params]])
 See reduce in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
 
-#### sort()
+#### sort([op])
 Sorts a $LIST.
 
 {z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
 
+Optionally pass in a compare routine.'''
+'''
+> [b,a,B,c,b,A].sort()
+[A,B,a,b,b,c]
 
-#### unique()
+> [b,a,B,c,b,A].sort(op(a,b){@a.upper()<=>@b.upper();})
+[a,A,B,b,b,c]
+'''
+
+#### unique([op])
 Remove duplicates names.
 
 {z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"z":1,"b":4,"m":2,"p":3}
+
+Optionally pass in a compare routine.'''
+'''
+> [b,a,B,c,b,A].unique()
+[b,a,B,c,A]
+
+> [b,a,B,c,b,A].unique(op(a,b){@a.upper()<=>@b.upper();})
+[b,a,c]
+'''
 
 #### isint
 Checks if a string is an $INT.
