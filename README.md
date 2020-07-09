@@ -755,19 +755,19 @@ Gets the middle bytes of an item.
 
 "testing".mid(2,3) -> "sti"
 
-#### rtrim([char])
+#### rtrim([str])
 Trims right.
 
 "  testing  ".rtrim() -> "  testing"
 "bbbtestingbbb".rtrim(b) -> "bbbtesting"
 
-#### ltrim([char])
+#### ltrim([str])
 Trims left.
 
 "  testing  ".ltrim() -> "testing  "
 "bbbtestingbbb".ltrim(b) -> "testingbbb"
 
-#### trim([char])
+#### trim([str])
 Trims both left and right.
 
 "  testing  ".trim() -> "testing"
