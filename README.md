@@ -894,6 +894,9 @@ Optionally pass in a compare routine.'''
 
 > [b,a,B,c,b,A].sort(op(a,b){@a.upper()<=>@b.upper();})
 [a,A,B,b,b,c]
+
+> [b,a,B,c,b,A].sort(op(a,b){@local.c=@a.upper()<=>@b.upper();if(@c==0)c=@a<=>@b;@c;})
+[A,a,B,b,b,c]
 '''
 
 #### unique([op])
