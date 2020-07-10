@@ -293,6 +293,16 @@ The following illustrate using various date ranges.
 -1020-04-23T12:33:33.921638
 ''''
 
+And a side effect of using 1970 as the center. 
+```
+> a = $TIME().utc();
+
+> @a;
+2020-07-10T19:51:26.3316532
+
+> (0-@a).time();
+1919-06-24T04:08:33.6683468
+```
 
 ### $TABLE
 A $TABLE is a hierarchical database with columns, rows, with both row store and columns store. 
