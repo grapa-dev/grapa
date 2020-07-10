@@ -253,31 +253,26 @@ Examples:
 > (0).time();
 1970-01-01T00:00:00.000000
 
-> $TIME().utc();
-2020-04-23T19:32:41.192673
-
 > $TIME().tz();
--25200000000
+-25200000000000
+
+> $TIME().tz()/1000000000
+-25200
+
+> $TIME().utc();
+2020-07-10T19:05:58.6135794
 
 > $TIME().utc() + $TIME().tz();
-2020-04-23T12:33:33.921638
+2020-07-10T12:06:15.9529207
 
 > t1 = $TIME().utc();
 
 > @t1.delta();
-12.231424
-```
+3.8281652
 
-As another test, the first item below illustrates taking 0.002991 seconds to individually compile and execute the first line, and than compile and execute the second like. The second example illustrates the time to run the compiled code - 0 seconds. 
-
-```
-> a=$TIME().utc();
-> (($TIME().utc()-@a)/1000000.0).str()+" seconds";
-0.002991 seconds
-
-> f=op(){a=$TIME().utc();(($TIME().utc()-@a)/1000000.0).str()+" seconds";};
-> f();
-0 seconds
+/* From an AWS docker container on Win10 */
+> a = $TIME().utc(); (($TIME().utc()-@a).int()/1000000000.0).str()+" seconds";
+0.000012 seconds
 ```
 
 ### $TABLE
