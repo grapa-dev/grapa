@@ -271,7 +271,7 @@ Examples:
 3.8281652
 
 /* From an AWS docker container on Win10 */
-> a = $TIME().utc(); (($TIME().utc()-@a).int()/1000000000.0).str()+" seconds";
+> a = $TIME().utc(); (($TIME().utc()-@a)/1000000000.0).str()+" seconds";
 0.000012 seconds
 ```
 
