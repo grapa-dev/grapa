@@ -275,6 +275,25 @@ Examples:
 0.000012 seconds
 ```
 
+The following illustrate using various date ranges.
+'''
+> "1020-04-23T12:33:33.921638".time();
+1020-04-23T12:33:33.921638
+
+> "1020-04-23T12:33:33.921638".time() + 24*60*60*1000000000;
+1020-04-24T12:33:33.921638
+
+> "-1020-04-23T12:33:33.921638".time() + 1;
+-1020-04-23T12:33:33.921638001
+
+> "-1020-04-23T12:33:33.921638".time().int();
+-94345471586078362000
+
+> (-94345471586078362000).time();
+-1020-04-23T12:33:33.921638
+''''
+
+
 ### $TABLE
 A $TABLE is a hierarchical database with columns, rows, with both row store and columns store. 
 
