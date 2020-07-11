@@ -1157,8 +1157,8 @@ Default for all fields is fieldType=STR and storeType=VAR.
 
 fieldType | Description
 ------------ | -------------
-TIME | Fixed size for $TIME
 BOOL | Fixed size for $BOOL
+TIME | Stores an $INT. Size depeds on storeType and storeSize
 INT | Stores an $INT. Size depeds on storeType and storeSize
 FLOAT | Stores a $FLOAT. Size depends on storeType and storeSize
 STR | Stores a $STR. Size depends on storeType and storeSize
