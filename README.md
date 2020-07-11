@@ -1305,6 +1305,22 @@ See SSL_CTX_use_PrivateKey_file.
 
 See SSL_CTX_load_verify_locations.
 
+#### verify()
+
+Call after connecting with SSL.
+
+Returns a list:
+	result
+	subject_name
+	commonName
+	organizationName
+	organizationalUnitName
+	emailAddress
+	issuer_name
+
+See the following for result codes:
+https://www.openssl.org/docs/man1.0.2/man1/verify.html
+
 #### host()
 
 After running the sample in onlisten, try the following.
