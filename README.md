@@ -1312,11 +1312,8 @@ Call after connecting with SSL.
 Returns a list:
 	result
 	subject_name
-	commonName
-	organizationName
-	organizationalUnitName
-	emailAddress
 	issuer_name
+	certificate
 
 See the following for result codes:
 https://www.openssl.org/docs/man1.0.2/man1/verify.html
