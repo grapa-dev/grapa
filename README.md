@@ -866,6 +866,7 @@ SHAKE128 | | Only encode.
 SHA3-256 | | Only encode.
 SHA3-384 | | Only encode.
 SHA3-512 | | Only encode.
+PEM | | Only decode.
 
 Example of RSA using hard coded RSA key.
 
@@ -1311,12 +1312,26 @@ Call after connecting with SSL.
 
 Returns a list:
 	result
-	subject_name
-	issuer_name
 	certificate
 
 See the following for result codes:
 https://www.openssl.org/docs/man1.0.2/man1/verify.html
+
+Use decode(PEM) to decode the certificate.
+```
+> x = @n2.verify();
+> @x.certificate.decode(PEM);
+```
+
+#### chain()
+
+Certificate chain.
+
+Use decode(PEM) to decode.
+```
+> x = @n2.chain();
+> @x[0].decode(PEM);
+```
 
 #### host()
 
