@@ -245,7 +245,7 @@ Remove | x = {a:1, b:2, c:3};</br>x -= @x[1];</br>@x; | </br></br>{a:1, c:3}
 ### $ARRAY
 Same as $LIST, but without the entry labels.
 
-Supports an offset search if the contents of the array are $ID or $STR values.
+Supports an offset search if the contents of the array are $ID or $STR or $ARRAY values.
 ```
 > months = [JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC];
 > @months[MAR];
@@ -254,6 +254,7 @@ Supports an offset search if the contents of the array are $ID or $STR values.
 ERR: {"err":-1}
 ```
 
+If the elements are $ARRAY type, the first item of the array is used for the match.
 ```
 > x = [[a,496],[b,964],[c,221]];
 > @x.b;
@@ -263,6 +264,8 @@ ERR: {"err":-1}
 > @x.g
 ERR: {"err":-1}
 ```
+
+There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
 
 ### $TIME
 Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, and a timer for tracking the passage of time. 
