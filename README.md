@@ -248,9 +248,19 @@ Same as $LIST, but without the entry labels.
 Supports an offset search if the contents of the array are $ID or $STR values.
 ```
 > months = [JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC];
-> @months[MAR]
+> @months[MAR];
 2
-> @months[FFF]
+> @months[FFF];
+ERR: {"err":-1}
+```
+
+```
+> x = [[a,496],[b,964],[c,221]];
+> @x.b;
+1
+> @x[@x.b];
+[b,964]
+> @x.g
 ERR: {"err":-1}
 ```
 
