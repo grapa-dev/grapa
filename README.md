@@ -245,6 +245,15 @@ Remove | x = {a:1, b:2, c:3};</br>x -= @x[1];</br>@x; | </br></br>{a:1, c:3}
 ### $ARRAY
 Same as $LIST, but without the entry labels.
 
+Supports an offset search if the contents of the array are $ID or $STR values.
+```
+> months = [JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC];
+> @months[MAR]
+2
+> @months[FFF]
+ERR: {"err":-1}
+```
+
 ### $TIME
 Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, and a timer for tracking the passage of time. 
 
