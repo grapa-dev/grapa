@@ -819,6 +819,20 @@ Trims both left and right.
 "  testing  ".trim() -> "testing"
 "bbbtestingbbb".trim(b) -> "testing"
 
+#### lpad(n,[str])
+Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. 
+
+Will left truncate input if length of input is less than n.
+
+"test".lpad(7,"X") -> "XXXtest"
+
+#### rpad(n,[str])
+Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. 
+
+Will right truncate input if length of input is less than n.
+
+"test".rpad(7,"X") -> "testXXX"
+
 #### reverse()
 Reverses the older of a list.
 
