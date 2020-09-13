@@ -833,6 +833,20 @@ Will right truncate input if length of input is less than n.
 
 "test".rpad(7,"X") -> "testXXX"
 
+#### lrot([n])
+For $LIST, $ARRAY, $XML.
+
+Moves n (defaul=1) items from the start of the list to the end of the list, 1 at a time.
+
+[a,b,c,d,e].lrot(2) -> [c,d,e,a,b]
+
+#### rrot([n])
+For $LIST, $ARRAY, $XML.
+
+Moves n (defaul=1) items from the end of the list to the start of the list, 1 at a time.
+
+[a,b,c,d,e].rrot(2) -> [d,e,a,b,c]
+
 #### reverse()
 Reverses the older of a list.
 
