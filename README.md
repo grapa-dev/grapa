@@ -2006,3 +2006,28 @@ custom_command - Same as above. Used in contexts where a value is not returned.
 Alternative, redefine any of the predefined rules for the default grammer. Take caution on changing the global variable, unless the change is inteded for the entire session. Restart the app to revert back. 
 
 If any of the above is set as a local variable within some scope, such as a class instance or a function, the modification will only apply for exectution within that scope. You can, for example, have muliple threads with unique modifications that apply separately. This is bascially the result of having the rules implemented as variables.
+
+## PCA - Principal Component Analysis
+
+Center the data around the mean, calcualte covariance, and than the eigenvalues and eigenvectors. Identify the number of components based on the eigenvalues, and select that number of eigenvectors. Use the eigenvectors to calculate PCA. Use the result for the new feature (replacing the old features). Use the same method for generating the feature from new values (need to save the mean and eigenvectors for this).
+
+```
+X=[[3.4,9.1,1.4],[9.1,1.2,8.2],[1.4,8.2,5.2]];
+M=@X.mean(1);
+R=(@X-@M).cov(1).eigh();
+
+@R.w;
+[41.7879952005570829404677683153157,4.4920047994429170595322314913591,0.000000000000000000000000193325118422339381744140663363374750345332]
+
+Y=@R.v.left(1);
+(@Y.t() .* (@X-@M).t()).t();
+
+[[4.3153778898305898473304814235512],[-7.4322629041586428646647322175959],[3.1168850143280530173342507940447]]
+
+(@Y.t() .* ([[3.4,9.1,1.4]]-@M).t()).t();
+[[4.3153778898305898473304814235512]]
+
+(@Y.t() .* ([[3.4,9.23,2.4]]-@M).t()).t();
+[[3.9393492470695862312625754586492]]
+
+```
