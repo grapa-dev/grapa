@@ -427,6 +427,12 @@ A $TAG includes a tag name, a list of attributes, and an $XML (which is a list o
 
 See $XML.
 
+### $VECTOR
+
+A $VECTOR is a multi-dimentional set of values. Most often either 1 or 2 dimentions. 
+
+The syntax for a $VECTOR is the same as an $ARRAY, but uses a '#' before and after the array, and requires all values for each dimention to be specified (for a 2 dimentional vector, all rows much have the same number of columns).
+
 ### $RULE
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessible and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a language by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
 
