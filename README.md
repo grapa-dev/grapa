@@ -363,47 +363,69 @@ hi
 ```
 
 ### $XML
-$XML is an array of $TAG values. The $XML class also inherits the $ARRAY class, and any operation that works on an $ARRAY will work on an $XML. 
+$XML is an array of $TAG or $STR values. The $XML class also inherits the $ARRAY class, and any operation that works on an $ARRAY will work on an $XML. 
 
 For consistency, entering a single $TAG will always result in the creation of $XML, where the $XML includes at least 1 $TAG. 
 
 To reference items in $XML, use an index.
 ```
 > x = <test one=1>data</test><tt hi=dd />;
+
+> @x.len();
+2
+
 > @x[0];
 <test one=1>data</test>
+
+> @x[1];
+<tt hi=dd/>
 ```
 
-Or specify a tag value.
+Or specify a tag name.
 ```
 > x = <test one=1>data</test><tt hi=dd />;
 > @x.tt;
-<tt hi=dd />
+<tt hi=dd/>
+```
+
+Use $LIST to access the attributes.
+```
+> x = <test one=1>data</test><tt hi=dd />;
+
+> @x.test.$LIST.len();
+1
+
+> @x.test.$LIST.one;
+1
+```
+
+Index into the $TAG to access the contents.
+```
+> x = <test one=1>data</test><tt hi=dd />;
+
+> @x.test.len();
+1
+
+> @x.test[0];
+data
+```
+
+To convert $XML or $TAG to JSON format, use the list method. This produces the underlying representation of how the $XML and $TAG values are stored.
+```
+> x = <test one=1>data</test><tt hi=dd />;
+
+> @x.list();
+[{"test":[{"one":1},["data"]]},{"tt":[{"hi":dd}]}]
+
+> @x.test.list();
+{"test":[{"one":1},["data"]]}
 ```
 
 ### $TAG
 
-At $TAG is a named $EL (element). See $EL. A $TAG is a $LIST with a single $EL item. 
+A $TAG includes a tag name, a list of attributes, and an $XML (which is a list of $TAG or $STR values). 
 
-Use "getname()" to get the name of the $TAG.
-```
-> x = <test one=1 two=2>data</test>;
-> @x[0].getname();
-test
-```
-
-### $EL
-Short for element. An $EL is the value of the $TAG without the name. There is always 1 single $EL in a $TAG. The value of an $EL is typically 2 items, an "attr" list and an "xml" array. The "attr" is a $LIST, and the "xml" is an $XML. 
-
-```
-> x = <test one=1 two=2>data</test>;
-> @x[0].attr.two;
-2
-
-> x = <test one=1 two=2>data</test>;
-> @x[0].xml[0];
-data
-```
+See $XML.
 
 ### $RULE
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessible and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a language by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
