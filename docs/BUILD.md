@@ -6,12 +6,15 @@ Requires Visual Studio 2022.
 # Dependacies
 
 Grapa uses static compiled libraries built from the following. 
-https://www.fltk.org/pub/fltk/1.3.8/fltk-1.3.8-source.tar.gz
-https://www.openssl.org/source/openssl-1.1.1m.tar.gz
+
+- https://www.fltk.org/pub/fltk/1.3.8/fltk-1.3.8-source.tar.gz
+- https://www.openssl.org/source/openssl-1.1.1m.tar.gz
 
 ## Windows
 See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
+
 Install https://strawberryperl.com/
+
 Install https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/
 
 Run "x64 Native Tools Command Prompt for VS 2022"
