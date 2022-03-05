@@ -19,9 +19,9 @@ perl Configure VC-WIN64A no-shared
 nmake
 nmake install
 ```
-Copy include/openssl to Grapa/GrapaLib
+Copy include/openssl to Grapa/source
 
-Copy *.lib to Grapa/GrapaLib/openssl-lib/win
+Copy *.lib to Grapa/source/openssl-lib/win
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -32,9 +32,9 @@ cmake ..
 ```
 Open FLTK.sln with VS2022 and build Release x64
 
-Copy build/FL to Grapa/GrapaLib
+Copy build/FL to Grapa/source
 
-Copy build/lib/Release/*.lib to Grapa/GrapaLib/fl-lib/win
+Copy build/lib/Release/*.lib to Grapa/source/fl-lib/win
 
 # Ubuntu
 
@@ -45,9 +45,9 @@ Navigate to OpenSSL source folder and complete the following. If the compile fre
 make
 sudo make install
 ```
-Copy include/openssl to Grapa/GrapaLib
+Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/GrapaLib/openssl-lib/ubuntu64
+Copy *.a to Grapa/source/openssl-lib/ubuntu64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -57,9 +57,9 @@ sudo apt-get install -y libfreetype-dev
 make
 sudo make install
 ```
-Copy FL to Grapa/GrapaLib
+Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/GrapaLib/fl-lib/ubuntu64
+Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
 
 # Apple
 
@@ -70,9 +70,9 @@ Navigate to OpenSSL source folder and complete the following. If the compile fre
 make
 sudo make install
 ```
-Copy include/openssl to Grapa/GrapaLib
+Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/GrapaLib/openssl-lib/ubuntu64
+Copy *.a to Grapa/source/openssl-lib/ubuntu64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -82,9 +82,9 @@ sudo apt-get install -y libfreetype-dev
 make
 sudo make install
 ```
-Copy FL to Grapa/GrapaLib
+Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/GrapaLib/fl-lib/ubuntu64
+Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
 
 # AWS
 
@@ -96,9 +96,9 @@ make clean
 make
 make install
 ```
-Copy include/openssl to Grapa/GrapaLib
+Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/GrapaLib/openssl-lib/ubuntu64
+Copy *.a to Grapa/source/openssl-lib/ubuntu64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -108,6 +108,6 @@ yum install libX*
 make
 make install
 ```
-Copy FL to Grapa/GrapaLib
+Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/GrapaLib/fl-lib/ubuntu64
+Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
