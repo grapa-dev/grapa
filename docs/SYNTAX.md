@@ -1,4 +1,4 @@
-### Default Language Rules
+# Default Language Rules
 To view a text version of the rules loaded into grapa on startup, run the following at the prompt:
 
 ```
@@ -21,7 +21,7 @@ If you are familiar with YACC or BNF, following the grammar logic should be rath
 
 There are a few standard tokens that are defined - mostly the tokens provide special handling for either the lexical engine or the rules engine. One example is the space character, which when found a bit is set in the token skip the value for rules evaluation. This can be changed - but then would require including including the space token in the rules. 
 
-### Precedence
+# Precedence
 
 | Operator| Description | Associativity
 |--|--|--|
@@ -43,7 +43,7 @@ There are a few standard tokens that are defined - mostly the tokens provide spe
 | `a?b:c` `a?b:c:d` | Ternary conditionals | right->left |
 | `=` `+=` `-=` `++=` | Assignments | right->left |
 
-### Operator
+# Operator
 
 Commands | Results
 ------------ | -------------
@@ -74,7 +74,7 @@ f = op()("4*2",@r);</br>f(); | 16 | Applying the rule to create a function, and 
 f = @r.plan("4*2");</br>f(); | 16 | Another way to apply the rule
 (@r.plan("4*2"))(); | 16 | Apply the rule and run the function in the same command
 
-### Function Chaining
+# Function Chaining
 Any object that returns an object can be chained.
 
 For example "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit precision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit precision of pi to the power of 4.4. 
