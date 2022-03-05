@@ -17,4 +17,4 @@ g++ -IGrapaLib GrapaLib/main.cpp GrapaLib/grapa/*.cpp GrapaLib/openssl-lib/aws/*
 
 # Dependencies
 
-[Dependencies](docs/DEPENDENCIES.md)
+[Dependencies](DEPENDENCIES.md)
