@@ -7,6 +7,7 @@ Run "x64 Native Tools Command Prompt for VS 2022"
 Navigate to Grapa folder
 ```
 msbuild build/win/grapa.sln /p:Configuration=Release
+del grapa.exe
 copy build\win\x64\Release\grapa.exe grapa.exe
 rmdir /S /q build\win\x64
 ```
