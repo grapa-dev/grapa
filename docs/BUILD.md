@@ -19,12 +19,14 @@ Install https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/
 
 Run "x64 Native Tools Command Prompt for VS 2022"
 
+```
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
-perl Configure VC-WIN64A no-shared
-nmake
-nmake install
+  perl Configure VC-WIN64A no-shared
+  nmake
+  nmake install
 Copy include/openssl to Grapa/GrapaLib
 Copy *.lib to Grapa/GrapaLib/openssl-lib/win
+```
 
 ```
 Navigate to FLTK source folder and complete the following.
@@ -47,13 +49,15 @@ Copy include/openssl to Grapa/GrapaLib
 Copy *.a to Grapa/GrapaLib/openssl-lib/ubuntu64
 ```
 
+```
 Navigate to FLTK source folder and complete the following.
-sudo apt-get install -y libfreetype-dev
-./configure
-make
-sudo make install
+  sudo apt-get install -y libfreetype-dev
+  ./configure
+  make
+  sudo make install
 Copy FL to Grapa/GrapaLib
 Copy lib/*.a to Grapa/GrapaLib/fl-lib/ubuntu64
+```
 
 ## Apple
 
