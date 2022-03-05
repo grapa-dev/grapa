@@ -165,7 +165,7 @@ ERR: {"err":-1}
 
 There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
 
-### $TIME
+# $TIME
 Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, and a timer for tracking the passage of time. 
 
 Examples:
