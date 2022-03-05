@@ -1,0 +1,19 @@
+@global["$VECTOR"]
+	= class ($OBJ) {
+	t = @<"t",{@<this>}>; 
+	rref = @<"rref",{@<this>}>; 
+	inv = @<"inv",{@<this>}>; 
+	det = @<"det",{@<this>}>; 
+	rank = @<"rank",{@<this>}>; 
+	solve = @<"solve",{@<this>}>; 
+	cov = @<[op,@<"cov",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	sum = @<[op,@<"sum",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	mean = @<[op,@<"mean",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
+	shape = @<"shape",{@<this>}>; 
+	reshape = @<[op,@<"reshape",{@<this,{}>,@<var,{b}>}>],{"b":null}>; 
+	norm = @<"norm",{@<this>}>; 
+	dot = @<[op,@<"dot",{@<this,{}>,@<var,{b}>}>],{"b":null}>; 
+	triu = @<[op,@<"triu",{@<this,{}>,@<var,{b}>}>],{"b":null}>; 
+	tril = @<[op,@<"tril",{@<this,{}>,@<var,{b}>}>],{"b":null}>; 
+	eigh = @<"eigh",{@<this>}>; 
+	};

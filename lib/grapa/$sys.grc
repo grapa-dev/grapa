@@ -1,0 +1,10 @@
+$global["$sys"]
+	= class ($OBJ) {
+	compile = op(name1,name2){$local.r={op:op()($file().get(@name1)),version:$sys().getenv($VERSION)}; if (r.op.type()!="$ERR") r.encode("ZIP-GRAPA").setfile($file(),@name2); else r.op;};
+	type = @<[op,@<type,{@<var,{b}>}>],{b}>;
+	describe = @<[op,@<describe,{@<var,{b}>}>],{b}>;
+	getenv = @<[op,@<getenv,{@<var,{b}>}>],{b}>;
+	putenv = @<[op,@<putenv,{@<var,{b}>,@<var,{c}>}>],{b,c}>;
+	encode = @<[op,@<encode,{@<var,{a}>,@<var,{b}>,@<var,{c}>}>],{a,b,c}>; 
+	sleep = @<[op,@<sleep,{@<var,{b}>}>],{b}>;
+	};

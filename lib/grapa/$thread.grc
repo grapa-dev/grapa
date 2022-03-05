@@ -1,0 +1,17 @@
+@global["$thread"]
+	= class {
+	type = @<"type",{@<this>}>; 
+	describe = @<"describe",{@<this>}>; 
+	trylock = @<[op,@<thread_trylock>]>; 
+	lock = @<[op,@<thread_lock>]>; 
+	unlock = @<[op,@<thread_unlock>]>; 
+	wait = @<[op,@<thread_wait>]>; 
+	signal = @<[op,@<thread_signal>]>; 
+	waiting = @<[op,@<thread_waiting>]>; 
+	start = @<[op,@<thread_start,{null,@<var,{o}>,@<var,{p}>,@<var,{c}>}>],{o,p,c}>; 
+	stop = @<[op,@<thread_stop>]>; 
+	started = @<[op,@<thread_started>]>; 
+	suspend = @<[op,@<thread_suspend>]>; 
+	resume = @<[op,@<thread_resume>]>; 
+	suspended = @<[op,@<thread_suspended>]>;
+	};

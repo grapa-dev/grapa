@@ -1,0 +1,6 @@
+@global["$RULE"] 
+	= class  {
+	type = @<"type",{@<this>}>; 
+	describe = @<"describe",{@<this>}>;
+	plan = op(s,n,p){(@p==null)?(op()(@s,@this)):(op(@n:@p)(@s,@this))};
+	};

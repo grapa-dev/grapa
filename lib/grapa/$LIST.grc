@@ -1,0 +1,4 @@
+@global["$LIST"]
+	= class ($OBJ) {
+ 	message = @<message,{@<this>}>;
+	};

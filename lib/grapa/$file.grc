@@ -1,0 +1,19 @@
+@global["$file"]
+	= class ($OBJ) {
+	type = @<"type",{@<this>}>; 
+	table = @<[op,@<"file_table",{this,@<var,{p}>}>],{p}>; 
+	pwd = @<"file_pwd",{@<this>}>; 
+	cd = @<[op,@<"file_cd",{this,@<var,{path}>}>],{path}>; 
+	phd = @<"file_phd",{@<this>}>; 
+	chd = @<[op,@<"file_chd",{@<this>,@<var,{path}>}>],{path}>; 
+	ls  = @<[op,@<"file_ls",{this,@<var,{path}>,@<var,{p}>}>],{path,p}>; 
+	mk = @<[op,@<"file_mk",{this,@<var,{name}>,@<var,{p}>}>],{name,p}>; 
+	rm = @<[op,@<"file_rm",{this,@<var,{name}>}>],{name}>; 
+	set = @<[op,@<"file_set",{this,@<var,{name}>,@<var,{p}>,@<var,{d}>}>],{name,p,d}>; 
+	get = @<[op,@<"file_get",{this,@<var,{name}>,@<var,{p}>}>],{name,p}>; 
+	info = @<[op,@<"file_info",{this,@<var,{name}>,@<var,{p}>}>],{name,p}>; 
+	split = @<[op,@<"file_split",{this,@<var,{parts}>,@<var,{name}>,@<var,{path}>,@<var,{delim}>,@<var,{option}>}>],{parts:2,name:null,path:null,delim:null,option:null}>; 
+	mkfield = @<[op,@<"file_mkfield",{this,@<var,{o}>,@<var,{p}>,@<var,{d}>,@<var,{e}>,@<var,{f}>}>],{o,p,d,e,f}>; 
+	rmfield = @<[op,@<"file_rmfield",{this,@<var,{p}>}>],{p}>; 
+	debug = @<[op,@<"file_debug",{this,@<var,{o}>,@<var,{p}>}>],{o,p}>;
+	};

@@ -1,0 +1,5 @@
+@global["$OP"]
+	= class {
+	type = @<"type",{@<this>}>; 
+	str = @<[op,@<str,{@<this>,@<var,{format}>}>],{format:null}>; 
+	};

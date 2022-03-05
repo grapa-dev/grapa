@@ -1,0 +1,295 @@
+$global.createEditor = op(label)
+{
+	if ($global.editors.type()!="$LIST")
+		$global.editors = {};
+	$global.editors.@label = newEditor(label);
+	$global.editors.@label.show();
+};
+$global.newEditor = op(label) {
+	$WIDGET("double_window", 0, 0, 640, 320, label, {
+		namespace: "global",
+		on_hide: op(o){
+			$local.i = $global.editors.reduce(op(a,b){
+				if (b.type()!="$WIDGET" || b.get("visible")==0) {
+					b = null;
+					a += 1;
+				};
+			},0);
+			if (i==$global.editors.len())
+				exit;
+		},
+		resizable: "scrollitems",
+		children: {
+			menu: $WIDGET("menu_bar", 0, 0, 640, 30, "", {
+				children: {
+					new: {
+						path: "&File/&New",
+						shortcut: "^n",
+						callback: op(o,cbdata,item) {
+							$local.label = "Grapa Editor " + $global.editors.len().str();
+							createEditor($local.label);
+						}
+					},
+					close: {
+						path: "&File/&Close",
+						shortcut: "^c",
+						flags: ["DIVIDER"],
+						callback: op(o,cbdata,item) {
+							$root.hide();
+						}
+					},
+					quit: {
+						path: "&File/&Quit",
+						shortcut: "^q",
+						callback: op(o,cbdata,item) {
+							exit;
+						}
+					},
+					console: {
+						path: "Script/Console",
+						flags: ["DIVIDER"],
+						callback: op(o,cbdata,item) {
+							$local.h1 = $root.child("scrollitems").get("h");
+							$local.y1 = $root.child("scrollitems").get("y");
+							if ($root.child("prompt").get("visible"))
+							{
+								$root.child("prompt").hide();
+								$root.child("scrollitems").resize(null,null,null,(h1+140));
+							}
+							else
+							{
+								$root.child("prompt").resize(null,y1+h1-140,null,140);
+								$root.child("scrollitems").resize(null,null,null,(h1-140));
+								$root.child("prompt").show();
+							};
+							$root.redraw();
+						}
+					},
+					version: {
+						path: "Script/Version",
+						callback: op(o,cbdata,item) {
+							$local.name = o.focus().get("name");
+							$local.data = $sys().getenv('VERSION').str();
+							if (name=="prompt")
+							{
+								if (o.focus().get("text").split("\n")[-1] != "grapa> ")
+									o.focus().append("\ngrapa> ");
+								o.focus().append("$sys().getenv('VERSION');\n"+data+"\ngrapa> ");
+								o.focus().set({"key":"end"});
+							}
+							else if (name=="edit")
+							{
+								o.focus().set({"text":"$sys().getenv('VERSION');"});
+								o.focus().set({"key":"home"});
+								o.focus().next().set({"text":data});
+							};
+						}
+					},
+					license: {
+						path: "Script/License",
+						callback: op(o,cbdata,item) {
+							$local.name = o.focus().get("name");
+							$local.data = $sys().getenv('LICENCE').str();
+							if (name=="prompt")
+							{
+								if (o.focus().get("text").split("\n")[-1] != "grapa> ")
+									o.focus().append("\ngrapa> ");
+								o.focus().append("$sys().getenv('LICENCE');\n"+data+"\ngrapa> ");
+								o.focus().set({"key":"end"});
+							}
+							else if (name=="edit")
+							{
+								o.focus().set({"text":"$sys().getenv('LICENCE');"});
+								o.focus().set({"key":"home"});
+								o.focus().next().set({"text":data});
+							};
+						}
+					},
+					dir: {
+						path: "Script/Dir",
+						callback: op(o,cbdata,item) {
+							$local.name = o.focus().get("name");
+							$local.data = $file().ls().vector().str(['\n','\t']);
+							if (name=="prompt")
+							{
+								if (o.focus().get("text").split("\n")[-1] != "grapa> ")
+									o.focus().append("\ngrapa> ");
+								o.focus().append("$file().ls().vector().str(['\\n','\t']);\\n"+data+"\ngrapa> ");
+								o.focus().set({"key":"end"});
+							}
+							else if (name=="edit")
+							{
+								o.focus().set({"text":"$file().ls().vector().str(['\\n','\\t']);"});
+								o.focus().set({"key":"home"});
+								o.focus().next().set({"text":data});
+							};
+						}
+					}
+				}
+			}),
+			scrollitems: $WIDGET("resizable_scroll", 0, 30, 640, 180 - 30, "", {
+				type: "VERTICAL_ALWAYS",
+				resizable: "items",
+				children: {
+					items: $WIDGET("pack", 0, 30, 640 - 18, 180 - 30, "", {
+						spacing: 4,
+						children: [
+							newScrollItem(0, 30, 640 - 18, 60)
+						]
+					})
+				}
+			}),
+			prompt: $WIDGET("text_editor", 0, 180, 640, 140, "", {
+				wrap: "bounds",
+				text: "-- Console --",
+				key: "end",
+				on_post_start: op(o){
+					o.set({"color":"YELLOW"});
+					o.redraw();
+				},
+				on_post_echo: op(o,data){
+					o.set({"append":data.str(),"key":"end"});
+				},
+				on_post_prompt: op(o,data){
+					o.set({"append":"\ngrapa> ","key":"end"});
+				},
+				on_post_end: op(o,data){
+					o.set({"append":"\n"+data.str(),"key":"end","color":"white","cursor_state":"show","cursor_color":"black"});
+					o.redraw();
+				},
+				on_post_message: op(o,data){
+					o.set(data);
+				},
+				on_keydown: op(o,event)
+				{
+					$local.handled = 0;
+					if ((o.event_key() & 0x7f) == 0x0d)
+					{
+						$local.s = o.get("selection");
+						$local.hasSel = false;
+						if (s==""||s.type()=="$ERR")
+							s = o.get("text");
+						else
+							hasSel = true;
+						if (s!="")
+						{
+							if (hasSel==false)
+							{
+								s = s.split("\n")[-1].ltrim("grapa> ");
+							};
+							$local.t = s.post();
+						};
+						handled = 1;
+					}
+					else
+					{
+						handled = o.handle(event);
+					};
+					handled;
+				}
+			})
+		}
+	});
+};
+$global.newScrollItem = op(X,Y,W,H) {
+	$WIDGET("pack", X, Y, W, H, "", {
+		spacing: 4,
+		resizable: "data",
+		children: {
+			data: $WIDGET("pack", X, Y, W - 15, H - 30, "", {
+				spacing: 4,
+				children: {
+					edit: $WIDGET("text_editor", X, Y, W-15, H/2 - 15, "", {
+						wrap: "bounds",
+						on_resize: op(o,X,Y,W,H)
+						{
+							o.resize(X,Y,W,H);
+							$local.mNBufferLines = o.get("mNBufferLines");
+							$local.mMaxsize = o.get("mMaxsize");
+							if (H != ((mNBufferLines ? mNBufferLines : 1) + 2) * mMaxsize)
+							{
+								o.resize(null, null, null, ((mNBufferLines ? mNBufferLines : 1) + 2) * mMaxsize);
+								o.parent().parent().parent().parent().redraw();
+							};
+						},
+						on_mousewheel: op(o,event)
+						{
+							0;
+						},
+						on_keydown: op(o,event)
+						{
+							$local.handled = 0;
+							if (((o.event_key() & (0x7f).int()) == 0x0d) && (o.event_key((0xffe1).int())))
+							{
+								$local.s = o.get("selection");
+								if (s==""||s.type()=="$ERR")
+									s = o.get("text");
+								if (s!="")
+								{
+									$local.t = s.post();
+								};
+								handled = 1;
+							}
+							else
+							{
+								handled = o.handle(event);
+							};
+							handled;
+						},
+						on_post_start: op(o){
+							o.set({"color":"YELLOW"});
+							o.redraw();
+						},
+						on_post_echo: op(o,data){
+							o.parent().parent().parent().parent().next().append(data.str());
+						},
+						on_post_end: op(o,data){
+							o.next().set({"text":data.str()});
+							o.set({"color":"white"});
+							o.redraw();
+						}
+					}),
+					disp: $WIDGET("text_display", X, Y + H / 2 -15, W - 15, H / 2 - 15, "", {
+						wrap: "bounds",
+						color: "LIGHT1",
+						"textfont":"COURIER",
+						on_resize: op(o,X,Y,W,H)
+						{
+							$local.mNBufferLines = o.get("mNBufferLines");
+							$local.mMaxsize = o.get("mMaxsize");
+							o.resize(X, Y, W, ((mNBufferLines ? mNBufferLines : 1) + 2) * mMaxsize);
+							o.parent().parent().parent().parent().redraw();
+						},
+						on_mousewheel: op(o,event)
+						{
+							0;
+						}
+					})
+				}
+			}),
+			bar: $WIDGET("pack", X, Y + H - 30, W - 15, 30, "", {
+				type: "horizontal",
+				spacing: 4,
+				children: {
+					blank: $WIDGET("widget", X, Y, 2, 30),
+					add: $WIDGET("button", X, Y, 30, 30, "+", {
+						when_release: op(o)
+						{
+							o.parent().parent().parent() += newScrollItem(0, 0, 640 - 18, 60) o.parent().parent().next();
+							o.parent().parent().parent().parent().redraw();
+						}
+					}),
+					del: $WIDGET("button", X, Y, 30, 30, "-", {
+						when_release: op(o)
+						{
+							o.parent().parent().parent() -= o.parent().parent().next();
+							o.parent().parent().parent().parent().redraw();
+						}
+					})
+				}
+			})
+		}
+	})
+};
+
+createEditor("Grapa Editor");
