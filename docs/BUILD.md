@@ -3,6 +3,8 @@
 ## Windows
 Requires Visual Studio 2022. Use projects in Grapa/build/win to build grapa
 
+msbuild build/win/grapa.sln /p:Configuration=Release
+
 ## Ubuntu64
 ```
 g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a -lcrypto -ldl -lm -static-libgcc -lX11 -O3 -pthread -o grapa
