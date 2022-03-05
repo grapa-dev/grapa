@@ -1,120 +1,20 @@
-
-# Windows
-
-Requires Visual Studio 2022.
-
-# Dependacies
-
-Grapa uses static compiled libraries built from the following. 
-
-- https://www.fltk.org/pub/fltk/1.3.8/fltk-1.3.8-source.tar.gz
-- https://www.openssl.org/source/openssl-1.1.1m.tar.gz
+# Build
 
 ## Windows
-See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
+Requires Visual Studio 2022. Use projects in Grapa/build/win to build grapa
 
-Install https://strawberryperl.com/
+## Ubuntu64
+g++ -IGrapaLib GrapaLib/main.cpp GrapaLib/grapa/*.cpp GrapaLib/openssl-lib/ubuntu64/*.a GrapaLib/fl-lib/ubuntu64/*.a -lcrypto -ldl -lm -static-libgcc -lX11 -O3 -pthread -o grapa
 
-Install https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/
+## Mac-Apple
+g++ -IGrapaLib GrapaLib/main.cpp GrapaLib/grapa/*.cpp GrapaLib/openssl-lib/mac-apple/*.a GrapaLib/fl-lib/mac-apple/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
 
-Run "x64 Native Tools Command Prompt for VS 2022"
-
-### OpenSSL
-Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
-```
-perl Configure VC-WIN64A no-shared
-nmake
-nmake install
-```
-Copy include/openssl to Grapa/GrapaLib
-
-Copy *.lib to Grapa/GrapaLib/openssl-lib/win
-
-### FLTK
-Navigate to FLTK source folder and complete the following.
-```
-mkdir build
-cd build
-cmake ..
-```
-Open FLTK.sln with VS2022 and build Release x64
-
-Copy build/FL to Grapa/GrapaLib
-
-Copy build/lib/Release/*.lib to Grapa/GrapaLib/fl-lib/win
-
-## Ubuntu
-
-### OpenSSL
-Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
-```
-./config no-shared
-make
-sudo make install
-```
-Copy include/openssl to Grapa/GrapaLib
-
-Copy *.a to Grapa/GrapaLib/openssl-lib/ubuntu64
-
-### FLTK
-Navigate to FLTK source folder and complete the following.
-```
-sudo apt-get install -y libfreetype-dev
-./configure
-make
-sudo make install
-```
-Copy FL to Grapa/GrapaLib
-
-Copy lib/*.a to Grapa/GrapaLib/fl-lib/ubuntu64
-
-## Apple
-
-### OpenSSL
-Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
-```
-./config no-shared
-make
-sudo make install
-```
-Copy include/openssl to Grapa/GrapaLib
-
-Copy *.a to Grapa/GrapaLib/openssl-lib/ubuntu64
-
-### FLTK
-Navigate to FLTK source folder and complete the following.
-```
-sudo apt-get install -y libfreetype-dev
-./configure
-make
-sudo make install
-```
-Copy FL to Grapa/GrapaLib
-
-Copy lib/*.a to Grapa/GrapaLib/fl-lib/ubuntu64
+## Mac-Intel
+g++ -IGrapaLib GrapaLib/main.cpp GrapaLib/grapa/*.cpp GrapaLib/openssl-lib/mac-intel/*.a GrapaLib/fl-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
 
 ## AWS
+g++ -IGrapaLib GrapaLib/main.cpp GrapaLib/grapa/*.cpp GrapaLib/openssl-lib/aws/*.a GrapaLib/fl-lib/aws/*.a -std=gnu++11 -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -m64 -O3 -pthread -o grapa
 
-### OpenSSL
-Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
-```
-make clean
-./config no-shared
-make
-make install
-```
-Copy include/openssl to Grapa/GrapaLib
+# Dependencies
 
-Copy *.a to Grapa/GrapaLib/openssl-lib/ubuntu64
-
-### FLTK
-Navigate to FLTK source folder and complete the following.
-```
-yum install libX*
-./configure no-shared
-make
-make install
-```
-Copy FL to Grapa/GrapaLib
-
-Copy lib/*.a to Grapa/GrapaLib/fl-lib/ubuntu64
+[Dependencies](doc/DEPENDENCIES.md)
