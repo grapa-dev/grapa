@@ -24,5 +24,6 @@ g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws/*.a sourc
 ```
 
 # Dependencies
+Grapa is dependant on the static libraries for OpenSSL and FLTK. Use the following to build the libraries from source. Additionally, some environments may require the crypto library installed for grapa to build, and if so, build OpenSSL from source and install.
 
 [Dependencies](DEPENDENCIES.md)
