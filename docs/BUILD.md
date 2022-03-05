@@ -26,11 +26,11 @@ nmake install
 Copy include/openssl to Grapa/GrapaLib
 Copy *.lib to Grapa/GrapaLib/openssl-lib/win
 
-Navigate to FLTK source folder and complete the following.
-mkdir build
 ```
-cd build
-cmake ..
+Navigate to FLTK source folder and complete the following.
+  mkdir build
+  cd build
+  cmake ..
 Open FLTK.sln with VS2022 and build Release x64
 Copy build/FL to Grapa/GrapaLib
 Copy build/lib/Release/*.lib to Grapa/GrapaLib/fl-lib/win
@@ -38,12 +38,14 @@ Copy build/lib/Release/*.lib to Grapa/GrapaLib/fl-lib/win
 
 ## Ubuntu
 
+```
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
-./config no-shared
-make
-sudo make install
+  ./config no-shared
+  make
+  sudo make install
 Copy include/openssl to Grapa/GrapaLib
 Copy *.a to Grapa/GrapaLib/openssl-lib/ubuntu64
+```
 
 Navigate to FLTK source folder and complete the following.
 sudo apt-get install -y libfreetype-dev
