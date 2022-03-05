@@ -10,6 +10,9 @@ Underneath the syntax, there are several libraries that provide the lower level 
 Execution of all scripts (from code or compiled) run the same across all platforms, including the unlimited floating point routines. And will work the same on either big endian or little endian systems. 
 
 ## Setup
+
+[Build from Source](docs/BUILD.md)
+
 ### Installation
 Suported platforms include Win64, MacOS, Ubuntu64, Debian32, AWS.
 
