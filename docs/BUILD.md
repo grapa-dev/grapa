@@ -3,7 +3,13 @@
 ## Windows
 Requires Visual Studio 2022. Use projects in Grapa/build/win to build grapa
 
+Run "x64 Native Tools Command Prompt for VS 2022"
+Navigate to Grapa folder
+```
 msbuild build/win/grapa.sln /p:Configuration=Release
+copy build\win\x64\Release\grapa.exe grapa.exe
+rmdir /S /q build\win\x64
+```
 
 ## Ubuntu64
 ```
