@@ -1,13 +1,13 @@
-### $sys
+# $sys
 A few general utility functions that are useful, but it wasn't clear if they should be added to the native language syntax, were added to $sys.
 
-#### type (object)
+## type (object)
 ```
 > $sys().type(5)
 $INT
 ```
 
-#### getenv (type)
+## getenv (type)
 
 getenv/putenv types:
 Type | Description
@@ -53,15 +53,15 @@ Values for $PLATFORM
 * `__powerpc64__`
 * `__aarch64__`
 
-#### putenv (type, value)
+## putenv (type, value)
 See getenv.
 
-### $obj
+# $obj
 Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used across the different data types are placed in the $obj class. Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
 
 There is not much use in creating an $obj instance on it's own. 
 
-#### type()
+## type()
 All objects will return the type.
 
 "test".type() will return $STR, for example.
@@ -69,10 +69,10 @@ All objects will return the type.
 If the item does not support type(), use $sys().type(value). For example, $sys().type("test") returns $STR.
 
 
-#### describe (object)
+## describe (object)
 This is stubbed out...but not yet implemented. Type will provide just the type. Describe will provide more detail. If using describe on a table, details about the table will be returned, for example. Intention is to provide describe everywhere that type is available.
 
-#### raw()
+## raw()
 Converts a value into it's raw bytes. Displays in hex form, but is stored in raw. Required in many cases as an intermediate form. For example, converting from a $STR to an $INT, you have two choices.
 
 ```
@@ -86,7 +86,7 @@ Converts a value into it's raw bytes. Displays in hex form, but is stored in raw
 13108
 ```
 
-#### uraw()
+## uraw()
 Converts to an unsigned raw value. To avoid sign issues, a leading zero is added to raw/int. To remove, used uraw and uint.
 
 ```
@@ -119,17 +119,17 @@ true
 > (0).bool();
 false
 
-#### int()
+## int()
 Converts to $INT.
 
 "44".int() -> 44
 
-#### uint()
+## uint()
 Converts to unsigned $INT.
 
 See $INT.
 
-#### float([bits [,extra]])
+## float([bits [,extra]])
 Converts to $FLOAT. Sets bit count for the entire number. Calculations are performed with "extra" bits and truncated for display.
 
 "4.21".float() -> 4.21
@@ -138,56 +138,56 @@ Converts to $FLOAT. Sets bit count for the entire number. Calculations are perfo
 
 ("4.21".float(300,7) / "10412.42".float(300,7)).float(50) -> 0.00040432483514879
 
-#### fix([bits [,extra]])
+## fix([bits [,extra]])
 Converts to fixed float. Sets bit count after the decimal to bits. Calculations are performed with "extra" bits and truncated for display.
 
-#### setfloat([bits [,extra]])
+## setfloat([bits [,extra]])
 Sets the default float type to float, and the default bits and extra.
 
-#### setfix([bits [,extra]])
+## setfix([bits [,extra]])
 Sets the default float type to fix, and the default bits and extra.
 
-#### str()
+## str()
 Converts to string. 
 
 (44).str() -> "44"
 
-#### base(base)
+## base(base)
 Converts number to base. Base of power of 2 works well. Have not fully tested others. Performed as a series of mods and divisions. So can become expensive on very large numbers. Split large numbers into parts before using - but careful on the split. 
 
 (15).base(8) -> 17
 (15).base(7) -> 21
 
-#### hex()
+## hex()
 Converts item to hex. The hex value is stored as an ascii representation of '0'-'F' characters.
 
-#### bin()
+## bin()
 Converts to binary. 
 
 (0xC).bin() -> 1100
 
-#### time()
+## time()
 Converts an $INT to $TIME.
 See $TIME.
 
-#### bits()
+## bits()
 Gets the bit count of the item.
 
 "hi".bits() -> 16
 
-#### bytes()
+## bytes()
 Gets the byte count of the item.
 
 "hi".bytes() -> 2
 $TIME().utc().raw().bytes() -> 7
 
-#### len
+## len
 Gets the length of the item.
 
 "hi".len() -> 2
 {1,2,3}.len() -> 3
 
-#### left(count)
+## left(count)
 Gets the left bytes of an item.
 
 "testing".left(2) -> "te"
@@ -196,7 +196,7 @@ Use a negative number to truncate right.
 
 "testing".left(-2) -> "testi"
 
-#### right(count)
+## right(count)
 Gets the right bytes of an item.
 
 "testing".right(2) -> "ng"
@@ -205,69 +205,69 @@ Use a negative number to truncate left.
 
 "testing".right(-2) -> "sting"
 
-#### mid(start,len)
+## mid(start,len)
 Gets the middle bytes of an item.
 
 "testing".mid(2,3) -> "sti"
 
-#### rtrim([str])
+## rtrim([str])
 Trims right.
 
 "  testing  ".rtrim() -> "  testing"
 "bbbtestingbbb".rtrim(b) -> "bbbtesting"
 
-#### ltrim([str])
+## ltrim([str])
 Trims left.
 
 "  testing  ".ltrim() -> "testing  "
 "bbbtestingbbb".ltrim(b) -> "testingbbb"
 
-#### trim([str])
+## trim([str])
 Trims both left and right.
 
 "  testing  ".trim() -> "testing"
 "bbbtestingbbb".trim(b) -> "testing"
 
-#### lpad(n,[str])
+## lpad(n,[str])
 Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. 
 
 Will left truncate input if length of input is less than n.
 
 "test".lpad(7,"X") -> "XXXtest"
 
-#### rpad(n,[str])
+## rpad(n,[str])
 Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. 
 
 Will right truncate input if length of input is less than n.
 
 "test".rpad(7,"X") -> "testXXX"
 
-#### lrot([n])
+## lrot([n])
 For $LIST, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the start of the list to the end of the list, 1 at a time.
 
 [a,b,c,d,e].lrot(2) -> [c,d,e,a,b]
 
-#### rrot([n])
+## rrot([n])
 For $LIST, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the end of the list to the start of the list, 1 at a time.
 
 [a,b,c,d,e].rrot(2) -> [d,e,a,b,c]
 
-#### reverse()
+## reverse()
 Reverses the older of a list.
 
 {z:1,m:2,p:3,b:4}.reverse() -> {"b":4,"p":3,"m":2,"z":1}
 "testing".reverse() -> "gnitset"
 
-#### replace(old,new)
+## replace(old,new)
 Replaces iteems.
 
 "testing".replace("t","g") -> "gesging"
 
-#### split(item [,param])
+## split(item [,param])
 Splits into an array.
 
 "one\ntwo\nthree".split("\n") -> ["one","two","three"]
@@ -275,39 +275,39 @@ Splits into an array.
 "this is a test split into parts".split(3) -> ["this is a t","est split i","nto parts"]
 "this is a test split into parts".split(3," ") -> ["this is a test ","split into ","parts"]
 
-#### join(item)
+## join(item)
 Joins what has been split.
 
 ["this is a test ","split into ","parts"].join("") -> "this is a test split into part"
 
-#### upper()
+## upper()
 Converts to upper case.
 
 "hi".upper() -> "HI"
 
-#### lower()
+## lower()
 Converts to lower.
 
 "HI".lower() -> "hi"
 
 
-#### setbit(bitpos)
+## setbit(bitpos)
 Sets a bit, from low order.
 
 (0b100110).setbit(3).bin() -> 101110
 
-#### clearbit(bitpos)
+## clearbit(bitpos)
 Clears a bit, from low order. 
 
 (0b100110).clearbit(2).bin() -> 100010
 
-#### genbits
+## genbits
 Generates sequence of bits.
 
 (4).genbits() -> 15
 (4).genbits().bin() -> 1111
 
-#### encode (type, [,options])
+## encode (type, [,options])
 
 encode/decode types:
 Type | Options | Description
@@ -349,24 +349,24 @@ v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be
 @v.encode("BASE64").decode("BASE64").str();
 ```
 
-#### decode (type, value [,options])
+## decode (type, value [,options])
 See encode.
 
-#### setfile($file, name)
+## setfile($file, name)
 Updates file or table item with value. Separate from the $file class as this one supports chaining all the way to writing the result into a file. Requires having an existing $file instance -> or passing in $file() which creates a temporary instance.
 
 "testing".setfile($file(),"test.txt");
 
-#### map($OP [,params])
+## map($OP [,params])
 See map in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel, so be sure $OP is thread safe. If not, use reduce instead of map. Result of $OP placed in a $LIST/$ARRAY which is returned at the completion.
 
-#### filter($OP [,params])
+## filter($OP [,params])
 See filter in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel, so be sure $OP is thread safe. If not, use filter instead of map. If $OP of op is true, item is placed in a $LIST/$ARRAY which is returned at the completion. 
 
-#### reduce($OP [,start [,params]])
+## reduce($OP [,start [,params]])
 See reduce in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
 
-#### sort([op])
+## sort([op])
 Sorts a $LIST.
 
 {z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
@@ -383,7 +383,7 @@ Optionally pass in a compare routine.'''
 [A,a,B,b,b,c]
 '''
 
-#### unique([op])
+## unique([op])
 Remove duplicates names.
 
 {z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"z":1,"b":4,"m":2,"p":3}
@@ -397,19 +397,19 @@ Optionally pass in a compare routine.'''
 [b,a,c]
 '''
 
-#### isint
+## isint
 Checks if a string is an $INT.
 
 "z55".isint() -> false
 "55".isint() -> true
 
-#### iferr(new)
+## iferr(new)
 If value is $ERR type, the new is used. Otherwise the value is used.
 
 (10/2).iferr(55) -> 5
 (10/0).iferr(55) -> 55
 
-#### exec()
+## exec()
 Executes string in the shell of the operating system. 
 
 ```
@@ -417,7 +417,7 @@ Executes string in the shell of the operating system.
 Microsoft Windows [Version 10.0.18363.778]
 ```
 
-#### getname([index])
+## getname([index])
 Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $LIST). 
 
 To use, do not de-reference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.
@@ -434,14 +434,14 @@ Or used to get the name of an item in a $LIST, using the index parameter.
 a
 ```
 
-#### echo()
+## echo()
 Outputs item to stdio.
 
-#### string()
+## string()
 Outputs escaped version of item to stdio 
 
 
-### $math()
+# $math()
 
 Inherits $obj().
 
@@ -478,7 +478,7 @@ $math().pi(power) | $math().pi()</br>$math().pi(2.3) | 3.14159265358979323846264
 $math().atan2(x,y) | `$math().atan2(10,10)*180/$math().pi()` | 45
 $math().hypot(x,y) | $math().hypot(3,4) | 5
 
-### $file()
+# $file()
 Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntax to include SQL with $file for the underlying data.
 
 Each example below assumes the following command has been issued:
@@ -487,12 +487,12 @@ Which assignes f an instance of the $file class. The following are then operatio
 
 The name field for the commands can include a path relative to the "working directory" (see pwd()). If the "working directory" is a OS filesystem directory, than the path must reference a file within the OS filesystem. If the "working directory" is a grapa table, than the path and data item would be within the grapa table. What is not currently supported is referencing a grapa table item when the "working directory" is not within a grapa table.
 
-#### type()
+## type()
 ```
 > @f.type()
 $file
 ```
-#### table()
+## table()
 The table function creates an in memory database. 
 
 ```
@@ -501,7 +501,7 @@ The table function creates an in memory database.
 > @t.getrow("test")
 data for test
 ```
-#### pwd()
+## pwd()
 Returns the current working directory, relative to the current home directory. 
 ```
 > @f.pwd()
@@ -511,27 +511,27 @@ Returns the current working directory, relative to the current home directory.
 > @f.pwd()
 /lib
 ```
-#### cd([name])
+## cd([name])
 Changes the current working directory, relative to the current home directory.  Using ".." will result in moving back 1 level.
 ```
 > @f.cd("lib")
 > @f.pwd()
 /lib
 ```
-#### phd()
+## phd()
 Returns the current home directory.
 ```
 > @f.phd()
 C:\Projects\Test
 ```
-#### chd(filesystempath)
+## chd(filesystempath)
 Changes the current home directory.
 ```
 > @f.chd("lib")
 > @f.phd()
 C:\Projects\Test\lib
 ```
-#### ls([name])
+## ls([name])
 Retrieves a list of files/directories in the current working directory.
 
 ```
@@ -558,7 +558,7 @@ Retrieves a list of files/directories in the current working directory.
 ]
 ```
 
-#### mk(name [,type]) 
+## mk(name [,type]) 
 Creates a directory at the current working directory within the file system.
 
 type is one of:
@@ -580,13 +580,13 @@ type is one of:
 []
 ```
 
-#### rm(name)
+## rm(name)
 Removes a directory or file.
 ```
 > @f.rm("test")
 ```
 
-#### set(name, value [, field])
+## set(name, value [, field])
 Updates the column in a row. By default the $VALUE column is updated. But an alternate column can be specified.
 
 field defaults to $VALUE.
@@ -595,7 +595,7 @@ field defaults to $VALUE.
 > @f.set("test","value of test")
 ```
 
-#### get(name [, field])
+## get(name [, field])
 Gets the column value in a row. By default the $VALUE column is retrieved. But an alternate column can be specified.
 
 field defaults to $VALUE.
@@ -606,7 +606,7 @@ field defaults to $VALUE.
 value of test
 ```
 
-#### mkfield(name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
+## mkfield(name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a field within the current working directory.
 
 ```
@@ -633,27 +633,27 @@ PAR | Partitioned field. Best for very large data requiring updates to portions 
 
 storeGrow is used by variable fields to determine how much to grow the field by when extra space is needed.
 
-#### rmfield(name)
+## rmfield(name)
 Deletes a field within the current working directory.
 
-#### debug()
+## debug()
 Used for debugging the database during development. Displays the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).
 
-### $net
+# $net
 Provides a socket library, cross functional with all platforms supported. 
 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...ensure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
-#### type()
+## type()
 Returns $net.
 
-#### mac()
+## mac()
 ```
 > $net().mac()
 {"name":"Ethernet","ip":"xx.0.77.49","mac":FB75B4FEFE09BBC8}
 ```
 
-#### interfaces()
+## interfaces()
 
 ```
 > $net().interfaces()
@@ -664,20 +664,20 @@ Returns $net.
 }
 ```
 
-#### connect(url)
+## connect(url)
 
 ```
 n2 = $net();
 @n2.connect('localhost:12345');
 ```
-#### bind(url)
+## bind(url)
 Using bind/listen requires setting up at least 2 net objects. One for bind and the other for listen. See listen().
 ```
 n1 = $net();
 @n1.bind(':12345');
 ```
 
-#### listen(net)
+## listen(net)
 Pass in a bound net object. Listen is blocking, so a $thread may be needed to manage - or separate threads if more than one listener.
 
 For those familiar with using sockets in C++, the $net class is a representation of sockets, and use bind/listen in the same way.
@@ -689,7 +689,7 @@ n2 = $net();
 @n2.listen('@n1);
 ```
 
-#### onlisten(url,messageHandler [,connectHandler [,count:1]])
+## onlisten(url,messageHandler [,connectHandler [,count:1]])
 
 Accomplishes the same as bind/listen, but handled in a background thread and much easier to setup.
 
@@ -744,28 +744,28 @@ err = @n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55
 @n2.disconnect();
 ```
 
-#### disconnect()
+## disconnect()
 Disconnects the session. Disconnecting a listener will disconnect all sessions the listener is a parent of.
 
-#### certificate([file])
+## certificate([file])
 Sets $net instance to SSL mode with certificate file.
 
 Use certificate() to revert back to non-SSL.
 
 See SSL_CTX_use_certificate_chain_file.
 
-#### private(file [,passOp [,param]])
+## private(file [,passOp [,param]])
 Server in SSL mode requires a private key file. 
 
 If the private key file is password protected, also provide an $OP for the SSL routines to request the password. If a param is added, the callback will include the param. 
 
 See SSL_CTX_use_PrivateKey_file.
 
-#### trusted(file, path)
+## trusted(file, path)
 
 See SSL_CTX_load_verify_locations.
 
-#### verify()
+## verify()
 
 Call after connecting with SSL.
 
@@ -782,7 +782,7 @@ Use decode(PEM) to decode the certificate.
 > @x.certificate.decode(PEM);
 ```
 
-#### chain()
+## chain()
 
 Certificate chain.
 
@@ -792,7 +792,7 @@ Use decode(PEM) to decode.
 > @x[0].decode(PEM);
 ```
 
-#### host()
+## host()
 
 After running the sample in onlisten, try the following.
 ```
@@ -800,24 +800,24 @@ After running the sample in onlisten, try the following.
 {"url":":12345","host":"computer name","ip":"XX.XX.XX.XX","port":12345,"family":2,"connected":0,"bound":1}
 ```
 
-#### send(message)
+## send(message)
 See example in onlisten.
 
 NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a broken connection will return an error and close the connection.
 
-#### receive()
+## receive()
 Blocks until data is received. Use nreceive() first to verify data exists. Or use onreceive.
 
 See example in onlisten.
 
-#### pending()
+## pending()
 Number of bytes that can be received.
 
 If an SSL connection, the byte count will be what is pending in the SSL encrypted buffer, which is different than the unencrypted data. 
 
 See example in onlisten.
 
-#### onreceive(handler)
+## onreceive(handler)
 Handler will be called when data is received.
 
 ```
@@ -840,33 +840,33 @@ n2 = $net();
 @n2.disconnect();
 ```
 
-### $thread
+# $thread
 Provides a thread library, cross functional with all platforms supported.
 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...ensure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
-#### type()
+## type()
 $thread
 
-#### trylock()
+## trylock()
 Attempts to lock.
 
-#### lock()
+## lock()
 Applies a lock.
 
-#### unlock()
+## unlock()
 Releases the lock.
 
-#### wait()
+## wait()
 Current thread waits for signal.
 
-#### signal()
+## signal()
 Signals the wait to continue.
 
-#### waiting()
+## waiting()
 Indicates in waiting state.
 
-#### start(runOp, input, doneOp)
+## start(runOp, input, doneOp)
 Starts the runOp in the background, passing paramList. When the thread exists, doneOp is called. All 3 inputs are copied,  as the originals are likely to go away after running the start command. So if an instance of object is passed in, the thread will end up using a copied instance and not the original instance.
 
 The thread is run from the same namespace as where it is called. To use a shared object instance, access the variable from within the thread rather than passing in the variable. Or pass in the $ID for the variable and difference the variable from the thread (which essentially does the same thing as a variable lookup but allows a different variable name to be used). 
@@ -891,17 +891,17 @@ myDone:{"input":{"a":1,"b":2,"c":3},"result":{"input":{"a":1,"b":2,"c":3}}}
 The input parameter is passed to both the run op and done op. The done op also receives any output from the run op.
 
 
-#### stop()
+## stop()
 Stops the thread.
 
-#### started()
+## started()
 Indicates the running state of the thread.
 
-#### suspend()
+## suspend()
 Suspends the thread. If the thread is processing a queue and the queue is empty, put the thread in suspend mode. Than after pushing data onto the queue, call resume to have the thread resume processing.
 
-#### resume()
+## resume()
 See suspend.
 
-#### suspended()
+## suspended()
 Indicates whether the thread is in a suspended state.
