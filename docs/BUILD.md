@@ -85,3 +85,9 @@ If any of the files in lib/grapa are changed, there is a grapa script that will 
 ```
 include "source/buildgrapalib.grc".
 ```
+
+# compile
+Grapa scripts can be compiled from within grapa using the following.
+```
+> $sys().compile(infile,outfile);
+```

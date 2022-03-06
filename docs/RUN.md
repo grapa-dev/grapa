@@ -45,3 +45,14 @@ Example: Same, but takes input from cin.
 echo "thisisatest".encode('SHAKE256') | grapa -ccin -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 ```
+
+# Editor
+Grapa includes a widget library that can be used create create a GUI. Grapa can be run with simple editor (see lib/grapa/editor.grc) writen using this library.
+```
+grapa -w
+```
+
+You can also create your own GUI to run with grapa. This file can either be a raw text file, or a grapa compiled file.
+```
+grapa -wfile [file]
+```
