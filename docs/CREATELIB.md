@@ -6,11 +6,11 @@ The following example defines a class with a single method. The method setdiv2 u
 
 > test = myClass();
 
-> @test.setdiv2(5);
+> test.setdiv2(5);
 
-> @test.get();
+> test.get();
 2
 
-> @test
+> test
 {"data":2}
 ```
