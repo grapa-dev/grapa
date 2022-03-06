@@ -10,7 +10,9 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 # Setup
 
-[Build from Source](docs/BUILD.md)
+[Install from binary](docs/BINARY.md)
+
+[Build from source](docs/BUILD.md)
 
 [Run from OS shell](docs/RUN.md)
 
