@@ -76,3 +76,12 @@ tar -czvf bin/grapa-aws.tar.gz grapa lib/aws/*
 Grapa is dependant on the static libraries for OpenSSL and FLTK. Use the following to build the libraries from source. 
 
 [Dependencies](DEPENDENCIES.md)
+
+# lib/grapa
+
+The file source/grapa/GrapaStaticLib.c is an array of of the compiled scripts in lib/grapa. The grapa application will use this array as a lookup after searching lib/grapa. If the file exists in lib/grapa (or in the location of the grapa binary) it will be used there. Otherwise, it will be loaded from the static lib array. This serves two purposes. First, the grapa application has everything embedded that it requires. Second, there are libraries in lib/grapa that are required at an early stage of grapa initialization.
+
+If any of the files in lib/grapa are changed, there is a grapa script that will compile the files and generate the source/grapa/GrapaStaticLib.c file. To run this, the grapa application needs to be first compiled and exist at the base project folder. From the base project folder, run grapa. From grapa, issue the following:
+```
+include "source/buildgrapalib.grc".
+```
