@@ -61,7 +61,7 @@ Copy FL to Grapa/source
 
 Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
 
-# Apple
+# Mac
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -72,7 +72,7 @@ sudo make install
 ```
 Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/source/openssl-lib/ubuntu64
+Copy *.a to Grapa/source/openssl-lib/mac-apple
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -84,7 +84,11 @@ sudo make install
 ```
 Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
+Copy lib/*.a to Grapa/source/fl-lib/mac-apple
+
+or 
+
+Copy lib/*.a to Grapa/source/fl-lib/mac-intel
 
 # AWS
 
@@ -98,7 +102,7 @@ make install
 ```
 Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/source/openssl-lib/ubuntu64
+Copy *.a to Grapa/source/openssl-lib/aws
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -110,4 +114,4 @@ make install
 ```
 Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
+Copy lib/*.a to Grapa/source/fl-lib/aws
