@@ -84,6 +84,10 @@ The file source/grapa/GrapaStaticLib.c is an array of of the compiled scripts in
 If any of the files in lib/grapa are changed, there is a grapa script that will compile the files and generate the source/grapa/GrapaStaticLib.c file. To run this, the grapa application needs to be first compiled and exist at the base project folder. From the base project folder, run grapa. From grapa, issue the following:
 ```
 include "source/buildgrapalib.grc";
+
+or
+
+grapa -ccmd "include 'source/buildgrapalib.grc';" -q
 ```
 
 # compile
