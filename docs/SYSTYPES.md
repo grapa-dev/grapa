@@ -20,7 +20,7 @@ Commands | Results
 ------------ | -------------
 "this is a test".len(); | 14
 "this is a test".split(""); | ["t","h","i","s"," ","i","s"," ","a"," ","t","e","s","t"]
-"this is a test".raw(); | 7468697320697320612074657374
+"this is a test".raw(); | 0x7468697320697320612074657374
 "this is a test".raw().int(); | 2361031878030638688519054699098996
 
 # $INT
@@ -33,7 +33,7 @@ Commands | Results
 ------------ | -------------
 52322; | 52322
 "52322".int(); | 52322
-(52322).raw(); | 00CC62
+(52322).raw(); | 0x00CC62
 
 Command | Example | Result
 ------------ | ------------- | -------------
@@ -42,9 +42,11 @@ Command | Example | Result
 (bits).random() | (16).random() | 11942
 (bits).genprime() | (16).genprime() | 60913</br>
 (prime).isprime() | (60913).isprime() | 1
-(bits).genrsa() | (2048).genrsa() | {"n":15393516245753936682160067234556253412750430802255743778814229572544054294097259619627956984788210632327430260756422996446381253153249781345283196778146943869627387098734177324722359738660665976616853578383297592405166139097576403800731299888096509467468294806244038979679705825508378722753372351633863988005907566854534544949211856629499511658312380872778697665853199690604789204003585821802286627943688070991768307690016267599491818375209115984992719308845944592197596445761556160073580204570454244818609933341847015039592523178376768260760784860436523239377646201172460077663895533645989009628971123289151850803431,"e":65537,"d":13641994957861797801239860002487559671827288722325001124151707486967036535104884854479023172810767559173858271582969126350089616295233948769916963987896524100095497851511070372764616226275409004408301506515432872528374038463573821394730822245458981489396196993250435386725015095984354429063214156627474867988597189451628997325925681141616557506588552488558841864362946322635349455724856402259625223168594174978986354594425814335237529438542251361036952837522411419140167302914778094265903749135384053575403257513464743052615490964725367349355084629511192897896262038309134665089785944182678712425681786027820252233473,"p":127525351491210739758506603062091339866602472144588924864153885241513959931528868361901295124271172489233580871065840798194041581977748077769443836206183903474877250523613161796934787318751453058205160524179069496822619466659130977085289078629456414992621730953731935128046011636107260954453798334287510785301,"q":120709459458458215149090987557869193974463585849659373482943650636124808813105265511854715553573984494307648288391119051840787006493359514518751056098674649187782133751617034710796002529153468083214633567324645517989231684251962352981897617821614879663479614766494007790854662782949676080820575455806904229131,"dp":108596095966751303464951020191529297749595150341293670869029161869534043209464800256486402789118358567704303139193333675731438220373165425213770710512091146513105947395705127587853175236464895306855239081647156408565750184091115563729693122804390391142762503361411501404719774530410457094574240982014002615573,"dq":79822185239035386547008639681140960502697756741268869920866257705851304825401772994686355229271851626017438416807212986079253357453182395291417569757608098425318554595535026783290006524687626833549838862638135518235764876819377518860025313352047631946165975628275894679952688949562431328724264142450213093093,"qi":85353290251593823983293134708457294766739743735581970939586643632920134544715934389683783433537242132792046190122480630405078881427501723330138575663576456847405896072681721913683535190255437598808737817039439311188397481130265056015078027907590498609730777468666008326788985545089258489739084708975591421831}
+[method].genkeys(bits) | "rsa".genkeys(2048)| {"method":"RSA","n":133340969878490876761315268119495128494223592724998328527037443092680058163238200550226099759810589020622773180707498143917954376840030816382652791849882910685566880060504667253115225255092587725908463639052005806166349797227866973060510752508533977442800215647215704344710830305717250386898264812566696319357,"e":65537,"d":21462897161118150952211952994378047675138695388193041604463402157326120108701951227616996908101406893488405546230120358273807173372072036895503369107899577024301153717464245508429552994282320868505600503184606269169145300796609156095355884623057408882085310653464552867426166711714262346885341708845892087245,"p":13018924438699683584351960540369401752216593462087352663934874988571387642612039737870891924873164443636284470531329392240434226360455419391927666947798619,"q":10242088008601179955032546512112320803965163751179416704553769484689836112666734931701358640253590592335899278834853169695399444476865991657075568700106503,"dmp1":1548873977273012693702675379301161564643373654941408497805822974592842355454873946567272599268139572562554129983563105898937480551939681477621191375741731,"dmq1":5424929445085566317943219663319269909639481961253812229201443461281997665120471942324934960085492015682073815801673223974798982500350171176466182710328471,"iqmp":10773193752676840425045540382104355834555937318335526551444565657080681982821255440896494264459939256156471093125837581716788587780960159457805940209113560}
+[method].genkeys(bits) | "dh".genkeys(2048)| {"method":"DH","p":167078505354342589623427531492070898897587317696780796495676967395654292799803550840398173836912469408479735924893415233091677021366974572094690601960343065472632718027733503897827167893707501104206432738261416896424762983822126266525382323422153324376521434066353958039942900708734698139361179368319160431579,"g":2,"pub":14955576220841616887417379990591146892005211708711628337065388059470382074287246234855039345355319994984538334678860682678775812791815222790987279094705284827152039498898778569530087184692169346653614591096732468758433738942280543650288875155511119797833901004686162214179337541808548760952697675904359431835,"prv":80473203669684850361358238923455160620969904261951719764579723274723983598603094098470687597414850420649402185596369251972214494397863209489964591507277182287056638504511782608178939474196777068400324267938853688096295413165184178155627262041570190419735976104264552360432339859596697998475206199750365187654}
+[method].genkeys(bits) | "ec".genkeys(256)| {"method":"EC","curve":"prime256v1","pub":328583515414440344309737813659797994379375465829367947313294493668935200753665,"prv":79112223757318388912284493496056150146052605496312695677413829416913194654396}
+[method].genkeys(bits) | "bc".genkeys(256)| {"method":"EC","curve":"prime256v1","pub":328583515414440344309737813659797994379375465829367947313294493668935200753665,"prv":79112223757318388912284493496056150146052605496312695677413829416913194654396}
 
-The genprime and genrsa commands are not threaded at this time. Once threaded, performance will increase.
 
 # $FLOAT
 
@@ -60,14 +62,14 @@ Example:
 
 You can also create using hex format:
 ```
-> -0x4.0x5
+> -0x4.5
 -4.3125
 ```
 
 Or binaary format:
 ```
 > 0b101.11
-5.625
+5.75
 ```
 
 By default, all floats are "float" format. To change formats use the fix() and float() routines, where both the precision and the "extra" bits can also be specified. The parsing engine will set the precision to the system default, which is 128 bits. There are two ways to change this. First, change the system default using the setfloat and setfix routines. Second, pass in a $STR to the fix or float routines. For example:
@@ -80,12 +82,12 @@ By default, all floats are "float" format. To change formats use the fix() and f
 To verify the float is being created properly, use the decode routine with FLOAT as the parameter. For example:
 
 ```
-> "30.75".float(300,6).decode(FLOAT)
+> "30.75".float(300,6).decode("FLOAT")
 {"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
-> (30.75).decode(FLOAT).data
+> (30.75).decode("FLOAT").data
 123
 
-> (30.75).decode(FLOAT).data.hex()
+> (30.75).decode("FLOAT").data.hex()
 7B
 ```
 
@@ -101,7 +103,7 @@ Convert to other formats:
 30
 
 > (30.75).raw()
-00048100077B
+0x00048100077B
 ```
 
 Bit shifts:
@@ -110,21 +112,27 @@ Bit shifts:
 1.921875
 
 > (30.75) << 4
-492
+492.0
 ```
 
 # $ID
-Any identifier (starts with a letter and can follow with numbers and '-' but can not end with '-') will be initialized as an $ID. And an $ID can be used for many things, including associating a value. The '@' symbol is used to de-reference an $ID to retrieve the data stored.
+Any identifier (starts with a letter and can follow with letters or numbers will be initialized as an $ID. And an $ID can be used for many things, including associating a value. Optionally, the '@' symbol is used to de-reference an $ID to retrieve the data stored - which is useful when being used in a location that requires and $ID (such as a label). When used in a location that requires a value, an $ID will be automatically dereferenced. 
 
 Example of using an $ID as a variable:
 ```
 > x = "hi"
 
-> @x
+> x
 hi
 
-> @x + " test"
+> x + " test"
 hi test
+
+> {x:"test"}
+{"x":"test"}
+
+> {@x:"test"}
+{"hi":"test"}
 ```
 
 # $LIST
@@ -132,35 +140,37 @@ A $LIST is basically JSON, but extended to include all the various grapa data ty
 
 Action | Example | Result
 ------------ | ------------- | -------------
-Create | {a:1, b:2, c:3} | {a:1, b:2}
+Create | {a:1, b:2, c:3} | {"a":1,"b":2,"c":3}
 Access | {a:1, b:2, c:3}.a</br>{a:1, b:2, c:3}[1]</br>{a:1, b:2, c:3}[-1] | 1</br>1</br>3
-Append | x = {a:1, b:2};</br>x += (c:3);</br>@x; | </br></br>{a:1, b:2, c:3}
-Append | x = {a:1, b:2};</br>x ++= {c:3,d:4};</br>@x; | </br></br>{a:1, b:2, c:3, d:4}
-Insert | x = {a:1, b:2};</br>x += (c:3) @x[0];</br>@x; | </br></br>{"c":3,"a":1,"b":2}
+Append | x = {a:1, b:2};</br>x += (c:3);</br>x; | </br></br>{"a":1, "b":2, "c":3}
+Append | x = {a:1, b:2};</br>x ++= {c:3,d:4};</br>x; | </br></br>{"a":1, "b":2, "c":3, "d":4}
+Insert | x = {a:1, b:2};</br>x += (c:3) x[0];</br>x; | </br></br>{"c":3,"a":1,"b":2}
 Count | {a:1, b:2, c:3}.len() | 3
-Remove | x = {a:1, b:2, c:3};</br>x -= @x[1];</br>@x; | </br></br>{a:1, c:3}
+Remove | x = {a:1, b:2, c:3};</br>x -= x[1];</br>x; | </br></br>{"a":1, "c":3}
 
 # $ARRAY
 Same as $LIST, but without the entry labels.
 
 Supports an offset search if the contents of the array are $ID or $STR or $ARRAY values.
 ```
-> months = [JAN,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC];
-> @months[MAR];
+> months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+> months["MAR"];
 2
-> @months[FFF];
-ERR: {"err":-1}
+> months["FFF"];
+{"err":-1}
+> months["FFF"].iferr(-1);
+-1
 ```
 
 If the elements are $ARRAY type, the first item of the array is used for the match.
 ```
-> x = [[a,496],[b,964],[c,221]];
-> @x.b;
+> x = [["a",496],["b",964],["c",221]];
+> x."b";
 1
-> @x[@x.b];
-[b,964]
-> @x.g
-ERR: {"err":-1}
+> x[x."b"];
+["b",964]
+> x.g
+{"err":-1}
 ```
 
 There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
@@ -174,10 +184,10 @@ Examples:
 1970-01-01T00:00:00.000000
 
 > $TIME().tz();
--25200000000000
+-28800000000000
 
 > $TIME().tz()/1000000000
--25200
+-28800
 
 > $TIME().utc();
 2020-07-10T19:05:58.6135794
@@ -187,12 +197,8 @@ Examples:
 
 > t1 = $TIME().utc();
 
-> @t1.delta();
+> t1.delta();
 3.8281652
-
-/* From an AWS docker container on Win10 */
-> a = $TIME().utc(); (($TIME().utc()-@a)/1000000000.0).str()+" seconds";
-0.000012 seconds
 ```
 
 The following illustrate using various date ranges.
@@ -217,10 +223,10 @@ And a side effect of using 1970 as the center.
 ```
 > a = $TIME().utc();
 
-> @a;
+> a;
 2020-07-10T19:51:26.3316532
 
-> (0-@a).time();
+> (0-a).time();
 1919-06-24T04:08:33.6683468
 ```
 
@@ -230,17 +236,17 @@ A $TABLE is a hierarchical database with columns, rows, with both row store and 
 See $file commands for creating, updated, and navigating.
 ```
 > f=$file().table()
-> @f.ls()
+> f.ls()
 []
 
-> @f.set("test","value")
-> @f.ls()
+> f.set("test","value")
+> f.ls()
 [{"$KEY":"test","$TYPE":"ROW","$BYTES":5}]
 
-> @f.get("test")
+> f.get("test")
 value
 
-> @f.type()
+> f.type()
 $TABLE
 ```
 
@@ -251,7 +257,7 @@ When displayed, the value is printed in hex form, but the value in memory is in 
 
 ```
 > "hi".raw();
-6869
+0x6869
 
 > "hi".raw().int();
 26729
@@ -267,55 +273,55 @@ For consistency, entering a single $TAG will always result in the creation of $X
 
 To reference items in $XML, use an index.
 ```
-> x = <test one=1>data</test><tt hi=dd />;
+> x = <test one=1>data</test><tt hi="dd" />;
 
-> @x.len();
+> x.len();
 2
 
-> @x[0];
+> x[0];
 <test one=1>data</test>
 
-> @x[1];
-<tt hi=dd/>
+> x[1];
+<tt hi="dd"/>
 ```
 
 Or specify a tag name.
 ```
-> x = <test one=1>data</test><tt hi=dd />;
-> @x.tt;
-<tt hi=dd/>
+> x = <test one=1>data</test><tt hi="dd" />;
+> x.tt;
+<tt hi="dd"/>
 ```
 
 Use $LIST to access the attributes.
 ```
-> x = <test one=1>data</test><tt hi=dd />;
+> x = <test one=1>data</test><tt hi="dd" />;
 
-> @x.test.$LIST.len();
+> x.test.$LIST.len();
 1
 
-> @x.test.$LIST.one;
+> x.test.$LIST.one;
 1
 ```
 
 Index into the $TAG to access the contents.
 ```
-> x = <test one=1>data</test><tt hi=dd />;
+> x = <test one=1>data</test><tt hi="dd" />;
 
-> @x.test.len();
+> x.test.len();
 1
 
-> @x.test[0];
+> x.test[0];
 data
 ```
 
 To convert $XML or $TAG to JSON format, use the list method. This produces the underlying representation of how the $XML and $TAG values are stored.
 ```
-> x = <test one=1>data</test><tt hi=dd />;
+> x = <test one=1>data</test><tt hi="dd" />;
 
-> @x.list();
+> x.list();
 [{"test":[{"one":1},["data"]]},{"tt":[{"hi":dd}]}]
 
-> @x.test.list();
+> x.test.list();
 {"test":[{"one":1},["data"]]}
 ```
 
@@ -349,29 +355,29 @@ The above is the entry point to the grapa language. This entry point is a global
 
 Example of defining a custom rule, and applying the rule:
 ```
-> x = rule $INT $INT {op(a:$1,b:$2){@a*@b}} | $INT {op(a:$1){@a}}
-> (op()("4",@x))()
+> x = rule $INT $INT {op(a:$1,b:$2){a*b}} | $INT {op(a:$1){a}}
+> (op()("4",x))()
 4
 
-> (op()("4 3",@x))()
+> (op()("4 3",x))()
 12
 
-> op()("4",@x)
-@<[op,@<[op,@<var,{a}>],{"a":4}>]>
+> op()("4",x)
+@<[op,@<[op,@<var,{a}>],{"a":4}>],{}>
 
-> op()("4 3",@x)
-@<[op,@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{"a":4,"b":3}>]>
+> op()("4 3",x)
+@<[op,@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{"a":4,"b":3}>],{}>
 ```
 
 To simplify creating rules that depend on matching on a predefined list of values, create a list and reference the list in the rules. If the rule matches, the value of the matched item is passed in as the token value.
 
 ```
 > t = {x:"matched on x",y:5};
-> r = rule $INT @t $INT {op(a:$2){@a}};
-> (op()("1 x 2",@r))();
+> r = rule $INT @t $INT {op(a:$2){a}};
+> (op()("1 x 2",r))();
 matched on x
 
-> (op()("1 y 2",@r))();
+> (op()("1 y 2",r))();
 5
 ```
 
@@ -379,8 +385,8 @@ If the lookup needs to be against something other than a list (maybe checking a 
 
 ```
 > x = rule $STR {@<lit,{$1}>};
-> r = rule $INT <x,op(a:$1){@a.len()}> $INT {op(a:$2){@a}};
-> (op()("44 'x' 22",@r))();
+> r = rule $INT <x,op(a:$1){a.len()}> $INT {op(a:$2){a}};
+> (op()("44 'x' 22",r))();
 1
 ```
 
@@ -389,16 +395,16 @@ Rules can also be embedded. Unfortunately, the current grammar requires an opera
 If the token handler returns an $ERR object, it will cause the rule to fail. So it not only has the ability to add additional logic to processing the token, is also can also serve as an additional component to the planning engine by validating the token against the intent of the rule - something that could not be done at a later phase and could only be done during the planning/compile phase. 
 
 ```
-> r = rule $INT (x{@<lit,{"found x"}>}|y{@<lit,{"found y"}>}) $INT {op(a:$2){@a}};
-> (op()("44 y 22",@r))();
+> r = rule $INT (x{@<lit,{"found x"}>}|y{@<lit,{"found y"}>}) $INT {op(a:$2){a}};
+> (op()("44 y 22",r))();
 found y
 ```
 
 If there is a well known end sequence, and you want to collect all the tokens in between, you can insert an empty rule. All of the tokens, including any white space, will be passed on. The risk of using this in a rule is that if the end token does not exist, all tokens will be processed in the empty rule. 
 
 ```
-> r = rule $INT <> $INT {op(a:$2){@a}};
-> (op()("44 'x' 22",@r))();
+> r = rule $INT <> $INT {op(a:$2){a}};
+> (op()("44 'x' 22",r))();
 [" ","x"," "]
 ```
 
@@ -406,34 +412,34 @@ The stop rule for a catchall can be either a token, a rule reference, or an embe
 
 ```
 > e = rule $INT {@<lit,{$1}>} | $ID {@<lit,{$1}>};
-> r = rule $INT <> <e> {op(a:$3){@a}};
-> (op()("44 'x' 22",@r))();
+> r = rule $INT <> <e> {op(a:$3){a}};
+> (op()("44 'x' 22",r))();
 22
 
-> (op()("44 'x' hi",@r))();
+> (op()("44 'x' hi",r))();
 hi
 
-> r = rule $INT <> ($INT{@<lit,{$1}>}|$ID{@<lit,{$1}>}) {op(a:$3){@a}};
-> (op()("44 'x' 22",@r))();
+> r = rule $INT <> ($INT{@<lit,{$1}>}|$ID{@<lit,{$1}>}) {op(a:$3){a}};
+> (op()("44 'x' 22",r))();
 22
 
-> (op()("44 'x' hi",@r))();
+> (op()("44 'x' hi",r))();
 hi
 ```
 
 A operation can also be associated with the empty rule above, which can process the tokens and either pass through the list, or pass through some transformed version. The following is an example f transforming.
 
 ```
-> r = rule $INT <op(a:$1){@a.len().str()+" raw characters:"+@a.join("")}> $INT {op(a:$2){@a}};
-> (op()("44 'x' 22",@r))();
+> r = rule $INT <op(a:$1){a.len().str()+" raw characters:"+a.join("")}> $INT {op(a:$2){a}};
+> (op()("44 'x' 22",r))();
 3 raw characters: x
 ```
 
 If the token handler returns an $ERR object, the corresponding rule option will fail and the next rule option will be evaluated. The following is an example of causing the first rule option to fail.
 
 ```
-> r = rule $INT <op(a:$1){$ERR()}> $INT {op(a:$2){@a}} | $INT <> $INT {op(a:$2){@a}};
-> (op()("44 'x' 22",@r))();
+> r = rule $INT <op(a:$1){$ERR()}> $INT {op(a:$2){a}} | $INT <> $INT {op(a:$2){a}};
+> (op()("44 'x' 22",r))();
 [" ","x"," "]
 ```
 
@@ -447,7 +453,7 @@ Rules can include both right recursion and left recursion.  The following is an 
 
 ```
 > r1 = rule $ID <r1> {@<prepend,{$2,$1}>} | $ID {@<createarray,{$1}>};
-> (op()("a b c",@r1))();
+> (op()("a b c",r1))();
 [a,b,c]
 ```
 
@@ -460,10 +466,10 @@ r1 = rule
   | $INT                            {@<lit,{$1}>}
   ;
 
-> op()("5-3+2",@r1);
+> op()("5-3+2",r1);
 @<[op,@<sub,{5,@<add,{3,2}>}>],{}>
 
-> (op()("5-3+2",@r1))();
+> (op()("5-3+2",r1))();
 0
 ```
 
@@ -478,10 +484,10 @@ r2 = rule
   | $INT                      {@<lit,{$1}>}
   ;
 
-> op()("5-3+2",@r2);
+> op()("5-3+2",r2);
 @<[op,@<add,{@<sub,{5,3}>,2}>],{}>
 
-> (op()("5-3+2",@r2))();
+> (op()("5-3+2",r2))();
 4
 ```
 
@@ -499,7 +505,7 @@ Under the hood, the $ERR type is a $LIST, and the same commands can be used to g
 
 ```
 > (1/0).type()==$ERR
-1
+true
 ```
 
 
