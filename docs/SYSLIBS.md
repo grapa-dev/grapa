@@ -155,8 +155,10 @@ Converts to string.
 ## base(base)
 Converts number to base. Base of power of 2 works well. Have not fully tested others. Performed as a series of mods and divisions. So can become expensive on very large numbers. Split large numbers into parts before using - but careful on the split. 
 
+```
 (15).base(8) -> 17
 (15).base(7) -> 21
+```
 
 ## hex()
 Converts item to hex. The hex value is stored as an ascii representation of '0'-'F' characters.
