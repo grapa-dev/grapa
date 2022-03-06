@@ -97,17 +97,17 @@ Bitwise xor.
 If either of two conditions are true.
 
 ```
-((1==1) && (2==2) -> true
-((1==1) && (2==3) -> true
-((1==2) && (2==3) -> false
+((1==1) && (2==2)) -> true
+((1==1) && (2==3)) -> true
+((1==2) && (2==3)) -> false
 ```
 
 ## `&&`
 Two conditions must be true.
 
 ```
-((1==1) && (2==2) -> true
-((1==1) && (2==3) -> false
+((1==1) && (2==2)) -> true
+((1==1) && (2==3)) -> false
 ```
 
 ## `==`
@@ -184,20 +184,20 @@ Creating an $OP. See $OP.
 Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified variable is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other classes. 
 
 ```
-myC = class {myV = 0; myF = op(a){myV=@a};};
-myC2 = class (myC) {myV2 = 0; myF2 = op(a){myV2=@a};};
-myIns = obj @myC2;
+myC = class {myV = 0; myF = op(a){myV=a};};
+myC2 = class (myC) {myV2 = 0; myF2 = op(a){myV2=a};};
+myIns = obj myC2;
 @myIns;
 {}
 
-@myIns.myF(4);
-@myIns.myV;
+myIns.myF(4);
+myIns.myV;
 4
 
-@myIns.myV2;
+myIns.myV2;
 0
 
-@myIns;
+myIns;
 {"myV":4}
 ```
 
@@ -282,7 +282,7 @@ Sytax:
 
 Example:
 ```
-> i = 0; while (@i<5) {i+=1; (@i.str()+":").echo();}; "\n".echo();
+> i = 0; while (i<5) {i+=1; (i.str()+":").echo();}; "\n".echo();
 1:2:3:4:5:
 ```
 
@@ -302,10 +302,10 @@ Take caution on accessing shared resources from within a map or reduce or $threa
 
 Example:
 ```
-> [1,2,3].map(op(n){@n*2});
+> [1,2,3].map(op(n){n*2});
 [2,4,6]
 
-> [1,2,3].map(op(n,p){@n*2+@p},5);
+> [1,2,3].map(op(n,p){n*2+p},5);
 [7,9,11]
 ```
 
@@ -324,13 +324,13 @@ Take caution on accessing shared resources from within a map or reduce or $threa
 
 Example:
 ```
-> [1,2,3].reduce(op(s,n){@s*@n});
+> [1,2,3].reduce(op(s,n){s=s*n});
 6
 
-> [1,2,3].reduce(op(s,n){s+=@n*2},[]);
+> [1,2,3].reduce(op(s,n){s+=n*2},[]);
 [2,4,6]
 
-> [1,2,3].reduce(op(s,n,p){s+=@n*2+@p},[],5);
+> [1,2,3].reduce(op(s,n,p){s+=n*2+p},[],5);
 [7,9,11]
 ```
 
@@ -347,9 +347,9 @@ Note: each item of the array will process in a separate thread. This is an easy 
 
 Example:
 ```
-> [1,2,3,4,5,6,7,8,9].filter(op(n){@n%2!=0});
+> [1,2,3,4,5,6,7,8,9].filter(op(n){n%2!=0});
 [1,3,5,7,9]
 
-> [1,2,3,4,5,6,7,8,9].filter(op(n,p){@n%@p!=0},3);
+> [1,2,3,4,5,6,7,8,9].filter(op(n,p){n%p!=0},3);
 [1,2,4,5,7,8]
 ```

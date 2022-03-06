@@ -16,7 +16,7 @@ Example: The op command is used for passing parameters into a function. When the
 Commands | Results
 ------------ | -------------
 op(){1} | @<[op,1],{}>
-op(a,b){@a*@b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}>
+op(a,b){a*b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}>
 op(){5%2}; | @<[op,@<mod,{5,2}>],{}>
 op(){4*2}; | @<[op,8],{}>
 
@@ -31,7 +31,7 @@ Example: Assigns 2 to a, than evaluates a*3, the result is 6
 Commands | Results
 ------------ | -------------
 f=@[1,2];</br>f(); | 2
-f=op(){a=2;@a*3;};</br>@f; | @<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}>
+f=op(){a=2;a*3;};</br>f; | @<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}>
 f(); | 6
 
 
