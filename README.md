@@ -9,7 +9,6 @@ Underneath the syntax, there are several libraries that provide the lower level 
 Execution of all scripts (from code or compiled) run the same across all platforms, including the unlimited floating point routines. And will work the same on either big endian or little endian systems. 
 
 # Setup
-
 [Install from binary](docs/BINARY.md)
 
 [Build from source](docs/BUILD.md)
@@ -17,7 +16,6 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 [Run from OS shell](docs/RUN.md)
 
 # Reference
-
 [Base types](docs/BASETYPES.md)
 
 [System types](docs/SYSTYPES.md)
@@ -31,6 +29,9 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 [Syntax](docs/SYNTAX.md)
 
 # Examples
-
 [Examples](docs/EXAMPLES.md)
 
+# Third-Party Libraries
+* Miniz
+* OpenSSL
+* FLTK
