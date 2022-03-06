@@ -73,6 +73,6 @@ tar -czvf bin/grapa-aws.tar.gz grapa lib/aws/*
 [Setup Docker for AWS build-python3.8](SETUPAWSDOCKER.md)
 
 # Dependencies
-Grapa is dependant on the static libraries for OpenSSL and FLTK. Use the following to build the libraries from source. Additionally, some environments may require the crypto library installed for grapa to build, and if so, build OpenSSL from source and install.
+Grapa is dependant on the static libraries for OpenSSL and FLTK. Use the following to build the libraries from source. 
 
 [Dependencies](DEPENDENCIES.md)
