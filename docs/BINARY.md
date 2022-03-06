@@ -1,1 +1,2 @@
 
+[Download from bin](../bin)
