@@ -16,8 +16,9 @@ rmdir /S /q build\win\x64
 
 ## Ubuntu64
 ```
+sudo apt install libx11-dev
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a -lcrypto -ldl -lm -static-libgcc -lX11 -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a -Lsource/openssl-lib/ubuntu64 -lcrypto -ldl -lm -static-libgcc -lX11 -O3 -pthread -o grapa
 
 tar -czvf bin/grapa-ubuntu64.tar.gz grapa
 ```
@@ -64,7 +65,7 @@ Assumes AWS Docker image for build-python3.8 is setup.
 
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a -std=gnu++11 -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -m64 -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a -std=gnu++11 -Lsource/openssl-lib/aws -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -m64 -O3 -pthread -o grapa
 
 tar -czvf bin/grapa-aws.tar.gz grapa lib/aws/*
 ```
