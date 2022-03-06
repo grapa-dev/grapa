@@ -80,13 +80,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Projects\Grapa\source;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Projects\Grapa\source;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\..\source;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\source;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Projects\Grapa\source;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Projects\Grapa\source;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\..\source;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\source;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
