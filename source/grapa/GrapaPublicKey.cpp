@@ -981,7 +981,8 @@ bool GrapaPublicKey::Encode(const GrapaBYTE& pData, GrapaBYTE& pEnc, const Grapa
 	if (mRSA)
 	{
 		EVP_PKEY* key = EVP_PKEY_new();
-		int err = EVP_PKEY_assign_RSA(key, mRSA);
+		//int err = EVP_PKEY_assign_RSA(key, mRSA);
+		int err = EVP_PKEY_set1_RSA(key, (RSA*)mRSA);
 		if (err <= 0) return false;
 		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, ENGINE_get_default_RSA());
 		if (ctx == NULL)
@@ -1127,7 +1128,8 @@ bool GrapaPublicKey::Decode(const GrapaBYTE& pEnc, GrapaBYTE& pData, const Grapa
 	if (mRSA)
 	{
 		EVP_PKEY* key = EVP_PKEY_new();
-		int err = EVP_PKEY_assign_RSA(key, mRSA);
+		//int err = EVP_PKEY_assign_RSA(key, mRSA);
+		int err = EVP_PKEY_set1_RSA(key, (RSA*)mRSA);
 		if (err <= 0) return false;
 		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(key, ENGINE_get_default_RSA());
 		if (ctx == NULL)
