@@ -249,14 +249,14 @@ For $LIST, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the start of the list to the end of the list, 1 at a time.
 
-[a,b,c,d,e].lrot(2) -> [c,d,e,a,b]
+["a","b","c","d","e"].lrot(2) -> ["c","d","e","a","b"]
 
 ## rrot([n])
 For $LIST, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the end of the list to the start of the list, 1 at a time.
 
-[a,b,c,d,e].rrot(2) -> [d,e,a,b,c]
+["a","b","c","d","e"].rrot(2) -> ["d","e","a","b","c"]
 
 ## reverse()
 Reverses the older of a list.
@@ -334,21 +334,21 @@ Example of RSA using hard coded RSA key.
 ```
 e = 0xa932b948feed4fb2b692609bd22164fc9edb59fae7880cc1eaff7b3c9626b7e5b241c27a974833b2622ebe09beb451917663d47232488f23a117fc97720f1e7;
 d = (0x4adf2f7a89da93248509347d2ae506d683dd3a16357e859a980c4f77a4e2f7a01fae289f13a851df6e9db5adaa60bfd2b162bbbe31f7c8f828261a6839311929d2cef).uraw();
-d = (@d + (0x4f864dde65e556ce43c89bbbf9f1ac5511315847ce9cc8dc92470a747b8792d6a83b0092d2e5ebaf852c85cacf34278efa99160f2f8aa7ee7214de07b7).uraw()).uint();
+d = (d + (0x4f864dde65e556ce43c89bbbf9f1ac5511315847ce9cc8dc92470a747b8792d6a83b0092d2e5ebaf852c85cacf34278efa99160f2f8aa7ee7214de07b7).uraw()).uint();
 n = (0xe8e77781f36a7b3188d711c2190b560f205a52391b3479cdb99fa010745cbeba5f2adc08e1de6bf38398a0487c4a73610d94ec36f17f3f46ad75e17bc1adfec998395).uraw();
-n = (@n + (0x89f45f95ccc94cb2a5c500b477eb3323d8cfab0c8458c96f0147a45d27e45a4d11d54d77684f65d48f15fafcc1ba208e71e921b9bd9017c16a5231af7f).uraw()).uint();
-g = {e:@e,d:@d,n:@n};
-len = @g.n.bytes()-32;
-v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(@len);
-@v.encode("RSA-KEY",@g).decode("RSA-KEY",@g).str();
+n = (n + (0x89f45f95ccc94cb2a5c500b477eb3323d8cfab0c8458c96f0147a45d27e45a4d11d54d77684f65d48f15fafcc1ba208e71e921b9bd9017c16a5231af7f).uraw()).uint();
+g = {"method":"RSA","n":n,"e":e, "d":d};
+len = g.n.bytes()-32;
+v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(len);
+v.encode(g).decode(g).str();
 ```
 
 ```
-@v.encode("AES256",{key:"12345678123456781234567812345678",iv:"1234567812345678"}).decode("AES256",{key:"12345678123456781234567812345678",iv:"1234567812345678"}).str();
-@v.encode("SHA3-256");
-@v.encode("SHAKE128");
+v.encode("AES256",{key:"12345678123456781234567812345678",iv:"1234567812345678"}).decode("AES256",{key:"12345678123456781234567812345678",iv:"1234567812345678"}).str();
+v.encode("SHA3-256");
+v.encode("SHAKE128");
 {1,2,3}.encode("ZIP-GRAPA").decode("ZIP-GRAPA");
-@v.encode("BASE64").decode("BASE64").str();
+v.encode("BASE64").decode("BASE64").str();
 ```
 
 ## decode (type, value [,options])
@@ -375,13 +375,13 @@ Sorts a $LIST.
 
 Optionally pass in a compare routine.'''
 '''
-> [b,a,B,c,b,A].sort()
-[A,B,a,b,b,c]
+> ["b","a","B","c","b","A"].sort()
+["A","B","a","b","b","c"]
 
-> [b,a,B,c,b,A].sort(op(a,b){@a.upper()<=>@b.upper();})
-[a,A,B,b,b,c]
+> ["b","a","B","c","b","A"].sort(op(a,b){a.upper()<=>b.upper();})
+["a","A","B","b","b","c"]
 
-> [b,a,B,c,b,A].sort(op(a,b){@local.c=@a.upper()<=>@b.upper();if(@c==0)c=@a<=>@b;@c;})
+> ["b","a","B","c","b","A"].sort(op(a,b){$local.c=a.upper()<=>b.upper();if(c==0)c=a<=>b;c;})
 [A,a,B,b,b,c]
 '''
 
@@ -392,11 +392,11 @@ Remove duplicates names.
 
 Optionally pass in a compare routine.'''
 '''
-> [b,a,B,c,b,A].unique()
-[b,a,B,c,A]
+> ["b","a","B","c","b","A"].unique()
+["A","B","a","b","c"]
 
-> [b,a,B,c,b,A].unique(op(a,b){@a.upper()<=>@b.upper();})
-[b,a,c]
+> ["b","a","B","c","b","A"].unique(op(a,b){a.upper()<=>b.upper();})
+["A","b","c"]
 '''
 
 ## isint
@@ -425,7 +425,7 @@ Used in a map/reduce/filter to identify the name of the passed in item from the 
 To use, do not de-reference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.
 
 ```
-> {a:1,b:2}.map(op(a){a.getname()})
+> {a:1,b:2}.map(op(a){"a".getname()})
 {"a":a,"b":b}
 ```
 
@@ -491,54 +491,54 @@ The name field for the commands can include a path relative to the "working dire
 
 ## type()
 ```
-> @f.type()
+> f.type()
 $file
 ```
 ## table()
 The table function creates an in memory database. 
 
 ```
-> t = @f.table()
-> @t.mkrow("test","data for test")
-> @t.getrow("test")
+> t = f.table()
+> t.mkrow("test","data for test")
+> t.getrow("test")
 data for test
 ```
 ## pwd()
 Returns the current working directory, relative to the current home directory. 
 ```
-> @f.pwd()
+> f.pwd()
 /
 
-> @f.cd("lib")
-> @f.pwd()
+> f.cd("lib")
+> f.pwd()
 /lib
 ```
 ## cd([name])
 Changes the current working directory, relative to the current home directory.  Using ".." will result in moving back 1 level.
 ```
-> @f.cd("lib")
-> @f.pwd()
+> f.cd("lib")
+> f.pwd()
 /lib
 ```
 ## phd()
 Returns the current home directory.
 ```
-> @f.phd()
+> f.phd()
 C:\Projects\Test
 ```
 ## chd(filesystempath)
 Changes the current home directory.
 ```
-> @f.chd("lib")
-> @f.phd()
+> f.chd("lib")
+> f.phd()
 C:\Projects\Test\lib
 ```
 ## ls([name])
 Retrieves a list of files/directories in the current working directory.
 
 ```
-> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b/python-packages");
-> @f.ls();
+> f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b/python-packages");
+> f.ls();
 [
   {"$KEY":"adb","$TYPE":"DIR","$BYTES":0},
   {"$KEY":"Android.bp","$TYPE":"FILE","$BYTES":784},
@@ -548,8 +548,8 @@ Retrieves a list of files/directories in the current working directory.
   {"$KEY":"repo.prop","$TYPE":"FILE","$BYTES":4465}
 ]
 
-> @f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b");
-> @f.ls("python-packages");
+> f.chd("/Microsoft/AndroidNDK64/android-ndk-r16b");
+> f.ls("python-packages");
 [
   {"$KEY":"adb","$TYPE":"DIR","$BYTES":0},
   {"$KEY":"Android.bp","$TYPE":"FILE","$BYTES":784},
@@ -571,21 +571,21 @@ type is one of:
 - "COL", create a COL store database
 
 ```
-> @f.mk("test")
-> @f.cd("test")
-> @f.ls()
+> f.mk("test")
+> f.cd("test")
+> f.ls()
 []
 
-> @f.mk("testg","GROUP")
-> @f.cd("testg")
-> @f.ls()
+> f.mk("testg","GROUP")
+> f.cd("testg")
+> f.ls()
 []
 ```
 
 ## rm(name)
 Removes a directory or file.
 ```
-> @f.rm("test")
+> f.rm("test")
 ```
 
 ## set(name, value [, field])
@@ -594,7 +594,7 @@ Updates the column in a row. By default the $VALUE column is updated. But an alt
 field defaults to $VALUE.
 
 ```
-> @f.set("test","value of test")
+> f.set("test","value of test")
 ```
 
 ## get(name [, field])
@@ -603,8 +603,8 @@ Gets the column value in a row. By default the $VALUE column is retrieved. But a
 field defaults to $VALUE.
 
 ```
-> @f.set("test","value of test")
-> @f.get("test")
+> f.set("test","value of test")
+> f.get("test")
 value of test
 ```
 
@@ -612,7 +612,7 @@ value of test
 Creates a field within the current working directory.
 
 ```
-> @f.mkfield("test")
+> f.mkfield("test")
 ```
 
 Default for all fields is fieldType=STR and storeType=VAR. 
@@ -652,7 +652,7 @@ Returns $net.
 ## mac()
 ```
 > $net().mac()
-{"name":"Ethernet","ip":"xx.0.77.49","mac":FB75B4FEFE09BBC8}
+{"name":"Ethernet","ip":"104.0.97.19","mac":FB05B43EFC09ABC8}
 ```
 
 ## interfaces()
@@ -660,9 +660,9 @@ Returns $net.
 ```
 > $net().interfaces()
 {
-  {"name":"Ethernet","mac":"FB75B4FEFE09BBC8","family":"IPV6","address":"xxx:xxx:xxx:xxx::xxx"},      
-  {"name":"Ethernet","mac":"FB75B4FEFE09BBC8","family":"IPV6","address":"xxx:xxx:xxxx:xxx:xxxx:xxxx:xxxx:xxx"}
-  {"name":"Ethernet","mac":"FB75B4FEFE09BBC8","family":"IPV4","address":"xx.0.77.49"},
+  {"name":"Ethernet","mac":"FB05B43EFC09ABC8","family":"IPV6","address":"xxx:xxx:xxx:xxx::xxx"},      
+  {"name":"Ethernet","mac":"FB05B43EFC09ABC8","family":"IPV6","address":"xxx:xxx:xxxx:xxx:xxxx:xxxx:xxxx:xxx"}
+  {"name":"Ethernet","mac":"FB05B43EFC09ABC8","family":"IPV4","address":"104.0.97.19"},
 }
 ```
 
@@ -670,13 +670,13 @@ Returns $net.
 
 ```
 n2 = $net();
-@n2.connect('localhost:12345');
+n2.connect('localhost:12345');
 ```
 ## bind(url)
 Using bind/listen requires setting up at least 2 net objects. One for bind and the other for listen. See listen().
 ```
 n1 = $net();
-@n1.bind(':12345');
+n1.bind(':12345');
 ```
 
 ## listen(net)
@@ -686,9 +686,9 @@ For those familiar with using sockets in C++, the $net class is a representation
 
 ```
 n1 = $net();
-@n1.bind(':12345');
+n1.bind(':12345');
 n2 = $net();
-@n2.listen('@n1);
+n2.listen('@n1);
 ```
 
 ## onlisten(url,messageHandler [,connectHandler [,count:1]])
@@ -704,46 +704,46 @@ The following sets up a simple web service. Use postman to post messages to veri
 ```
 processPost = op(in)
 {
-	{processed:@in};
+	{processed:in};
 }
 
 postHandler = op(in) 
 {
-	@local.data = @in.split("\r").join("");
-	@local.len = @data.len() - @data.split("\n\n")[0].len() - 2;
-	if (@len<0) len=0;
-	@local.body = @data.right(@len);
-	@local.rstr = @processPost(@body).str();
-	"HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nContent-Length: "+@rstr.len().str()+"\r\n\r\n"+@rstr;
+	$local.data = in.split("\r").join("");
+	$local.len = data.len() - data.split("\n\n")[0].len() - 2;
+	if (len<0) len=0;
+	$local.body = data.right(len);
+	$local.rstr = processPost(body).str();
+	"HTTP/1.1 200 OK\r\nContent-Type: text/json\r\nContent-Length: "+rstr.len().str()+"\r\n\r\n"+rstr;
 };
 
 postConnectHandler = op(netSession)
 {
-	@netSession.data = "";
+	netSession.data = "";
 };
 
 postMessageHandler = op(netSession,message,hasmore)
 {
-	@netSession.data += @message;
-	if (@hasmore==0)
+	netSession.data += message;
+	if (hasmore==0)
 	{
-		@netSession.send(@postHandler(@netSession.data));
-		@netSession.data = "";
+		netSession.send(postHandler(netSession.data));
+		netSession.data = "";
 	};
 };
 
 n=$net();
-@n.onlisten(':12345',@postMessageHandler,@postConnectHandler);
+n.onlisten(':12345',postMessageHandler,postConnectHandler);
 ```
 
 To very, try the following.
 ```
 n2 = $net();
-err = @n2.connect('localhost:12345');
-err = @n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}');
-@n2.nreceive();
-@n2.receive();
-@n2.disconnect();
+err = n2.connect('localhost:12345');
+err = n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}');
+n2.nreceive();
+n2.receive();
+n2.disconnect();
 ```
 
 ## disconnect()
@@ -778,10 +778,10 @@ Returns a list:
 See the following for result codes:
 https://www.openssl.org/docs/man1.0.2/man1/verify.html
 
-Use decode(PEM) to decode the certificate.
+Use decode("PEM") to decode the certificate.
 ```
-> x = @n2.verify();
-> @x.certificate.decode(PEM);
+> x = n2.verify();
+> x.certificate.decode("PEM");
 ```
 
 ## chain()
@@ -790,15 +790,15 @@ Certificate chain.
 
 Use decode(PEM) to decode.
 ```
-> x = @n2.chain();
-> @x[0].decode(PEM);
+> x = n2.chain();
+> x[0].decode("PEM");
 ```
 
 ## host()
 
 After running the sample in onlisten, try the following.
 ```
-@n.host();
+n.host();
 {"url":":12345","host":"computer name","ip":"XX.XX.XX.XX","port":12345,"family":2,"connected":0,"bound":1}
 ```
 
@@ -825,21 +825,21 @@ Handler will be called when data is received.
 ```
 receiveHandler = op(netSession,message,hasmore)
 {
-	@netSession.data += @message;
-	if (@hasmore==0)
+	netSession.data += message;
+	if (hasmore==0)
 	{
-		(@netSession.data+"\n").echo();
+		(netSession.data+"\n").echo();
 		(@<prompt>)();
-		@netSession.data = "";
+		netSession.data = "";
 	};
 };
 
 n2 = $net();
-@n2.connect('localhost:12345');
-@n2.onreceive(@receiveHandler);
-@n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}');
-@n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:400}');
-@n2.disconnect();
+n2.connect('localhost:12345');
+n2.onreceive(receiveHandler);
+n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}');
+n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:400}');
+n2.disconnect();
 ```
 
 # $thread
@@ -878,10 +878,10 @@ If accessing shared resources from within a thread, take care and use thread sav
 The following is an example of creating a thread.
 
 ```
-myRun = op(input) {"myRun:".echo();$sys().echo(@local); @input.c = @input.a+@input.b; "\n".echo(); @local;};
-myDone = op(input,result) {"myDone:".echo();$sys().echo(@local); "\n".echo();};
+myRun = op(input) {"myRun:".echo();$sys().echo(@$local); input.c = input.a+input.b; "\n".echo(); @$local;};
+myDone = op(input,result) {"myDone:".echo();$sys().echo(@$local); "\n".echo();};
 t = $thread();
-@t.start(@myRun,{a:1,b:2},@myDone);
+t.start(myRun,{a:1,b:2},myDone);
 ```
 
 Output for above
