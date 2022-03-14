@@ -371,14 +371,14 @@ See reduce in the Looping section. Iterates through a $LIST/$ARRAY calling an $O
 ## sort([axis],[order],[op])
 Sorts a $LIST.
 
-axis -> 0 = row, 1 = col
-order -> 0 = ascend, 1 = decend, or does selection if array if indexes passed in
-op -> function for the compare
+- axis -> 0 = row, 1 = col
+- order -> 0 = ascend, 1 = decend, or does selection if array if indexes passed in
+- op -> function for the compare
 
 {z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
 
 Optionally pass in a compare routine.'''
-'''
+```
 > ["b","a","B","c","b","A"].sort()
 ["A","B","a","b","b","c"]
 
@@ -390,7 +390,7 @@ Optionally pass in a compare routine.'''
 
 > ["b","a","B","c","b","A"].sort(0,[1,2])
 ["a","B"]
-'''
+```
 
 ## unique([op])
 Remove duplicates names.
@@ -398,13 +398,13 @@ Remove duplicates names.
 {z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"z":1,"b":4,"m":2,"p":3}
 
 Optionally pass in a compare routine.'''
-'''
+```
 > ["b","a","B","c","b","A"].unique()
 ["A","B","a","b","c"]
 
 > ["b","a","B","c","b","A"].unique(op(a,b){a.upper()<=>b.upper();})
 ["A","b","c"]
-'''
+```
 
 ## isint
 Checks if a string is an $INT.
@@ -438,7 +438,7 @@ To use, do not de-reference the identify. The getname function will then see tha
 
 Or used to get the name of an item in a $LIST, using the index parameter.
 
-```
+``
 > {a:1,b:2}.getname(0)
 a
 ```
