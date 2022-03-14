@@ -64,7 +64,9 @@ There is not much use in creating an $obj instance on it's own.
 ## type()
 All objects will return the type.
 
+```
 "test".type() will return $STR, for example.
+```
 
 If the item does not support type(), use $sys().type(value). For example, $sys().type("test") returns $STR.
 
@@ -118,11 +120,14 @@ true
 
 > (0).bool();
 false
+```
 
 ## int()
 Converts to $INT.
 
+```
 "44".int() -> 44
+```
 
 ## uint()
 Converts to unsigned $INT.
@@ -132,11 +137,13 @@ See $INT.
 ## float([bits [,extra]])
 Converts to $FLOAT. Sets bit count for the entire number. Calculations are performed with "extra" bits and truncated for display.
 
+```
 "4.21".float() -> 4.21
 
 "4.21".float(300,7) / "10412.42".float(300,7) -> 0.00040432483514879346011782083319727786624050893068085997299379010835137268761728
 
 ("4.21".float(300,7) / "10412.42".float(300,7)).float(50) -> 0.00040432483514879
+```
 
 ## fix([bits [,extra]])
 Converts to fixed float. Sets bit count after the decimal to bits. Calculations are performed with "extra" bits and truncated for display.
@@ -150,7 +157,9 @@ Sets the default float type to fix, and the default bits and extra.
 ## str()
 Converts to string. 
 
+```
 (44).str() -> "44"
+```
 
 ## base(base)
 Converts number to base. Base of power of 2 works well. Have not fully tested others. Performed as a series of mods and divisions. So can become expensive on very large numbers. Split large numbers into parts before using - but careful on the split. 
@@ -166,7 +175,9 @@ Converts item to hex. The hex value is stored as an ascii representation of '0'-
 ## bin()
 Converts to binary. 
 
+```
 (0xC).bin() -> 1100
+```
 
 ## time()
 Converts an $INT to $TIME.
@@ -175,123 +186,164 @@ See $TIME.
 ## bits()
 Gets the bit count of the item.
 
+```
 "hi".bits() -> 16
+```
 
 ## bytes()
 Gets the byte count of the item.
 
+```
 "hi".bytes() -> 2
 $TIME().utc().raw().bytes() -> 7
+```
 
 ## len
 Gets the length of the item.
 
+```
 "hi".len() -> 2
 {1,2,3}.len() -> 3
+```
 
 ## left(count)
 Gets the left bytes of an item.
 
+```
 "testing".left(2) -> "te"
+```
 
 Use a negative number to truncate right.
 
+```
 "testing".left(-2) -> "testi"
+```
 
 ## right(count)
 Gets the right bytes of an item.
 
+```
 "testing".right(2) -> "ng"
+```
 
 Use a negative number to truncate left.
 
+```
 "testing".right(-2) -> "sting"
+```
 
 ## mid(start,len)
 Gets the middle bytes of an item.
 
+```
 "testing".mid(2,3) -> "sti"
+```
 
 ## rtrim([str])
 Trims right.
 
+```
 "  testing  ".rtrim() -> "  testing"
 "bbbtestingbbb".rtrim(b) -> "bbbtesting"
+```
 
 ## ltrim([str])
 Trims left.
 
+```
 "  testing  ".ltrim() -> "testing  "
 "bbbtestingbbb".ltrim(b) -> "testingbbb"
+```
 
 ## trim([str])
 Trims both left and right.
 
+```
 "  testing  ".trim() -> "testing"
 "bbbtestingbbb".trim(b) -> "testing"
+```
 
 ## lpad(n,[str])
 Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. 
 
 Will left truncate input if length of input is less than n.
 
+```
 "test".lpad(7,"X") -> "XXXtest"
+```
 
 ## rpad(n,[str])
 Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. 
 
 Will right truncate input if length of input is less than n.
 
+```
 "test".rpad(7,"X") -> "testXXX"
+```
 
 ## lrot([n])
 For $LIST, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the start of the list to the end of the list, 1 at a time.
 
+```
 ["a","b","c","d","e"].lrot(2) -> ["c","d","e","a","b"]
+```
 
 ## rrot([n])
 For $LIST, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the end of the list to the start of the list, 1 at a time.
 
+```
 ["a","b","c","d","e"].rrot(2) -> ["d","e","a","b","c"]
+```
 
 ## reverse()
 Reverses the older of a list.
 
+```
 {z:1,m:2,p:3,b:4}.reverse() -> {"b":4,"p":3,"m":2,"z":1}
 "testing".reverse() -> "gnitset"
+```
 
 ## replace(old,new)
 Replaces iteems.
 
+```
 "testing".replace("t","g") -> "gesging"
+```
 
 ## split(item [,param])
 Splits into an array.
 
+```
 "one\ntwo\nthree".split("\n") -> ["one","two","three"]
 "this is a test".split(" ") -> ["this","is","a","test"]
 "this is a test split into parts".split(3) -> ["this is a t","est split i","nto parts"]
 "this is a test split into parts".split(3," ") -> ["this is a test ","split into ","parts"]
+```
 
 ## join(item)
 Joins what has been split.
 
+```
 ["this is a test ","split into ","parts"].join("") -> "this is a test split into part"
+```
 
 ## upper()
 Converts to upper case.
 
+```
 "hi".upper() -> "HI"
+```
 
 ## lower()
 Converts to lower.
 
+```
 "HI".lower() -> "hi"
-
+```
 
 ## setbit(bitpos)
 Sets a bit, from low order.
@@ -375,7 +427,9 @@ Sorts a $LIST.
 - order -> 0 = ascend, 1 = decend, or does selection if array if indexes passed in
 - op -> function for the compare
 
+```
 {z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
+```
 
 Optionally pass in a compare routine.'''
 ```
@@ -395,7 +449,9 @@ Optionally pass in a compare routine.'''
 ## unique([op])
 Remove duplicates names.
 
+```
 {z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"z":1,"b":4,"m":2,"p":3}
+```
 
 Optionally pass in a compare routine.'''
 ```
@@ -409,14 +465,18 @@ Optionally pass in a compare routine.'''
 ## isint
 Checks if a string is an $INT.
 
+```
 "z55".isint() -> false
 "55".isint() -> true
+```
 
 ## iferr(new)
 If value is $ERR type, the new is used. Otherwise the value is used.
 
+```
 (10/2).iferr(55) -> 5
 (10/0).iferr(55) -> 55
+```
 
 ## exec()
 Executes string in the shell of the operating system. 
@@ -438,7 +498,7 @@ To use, do not de-reference the identify. The getname function will then see tha
 
 Or used to get the name of an item in a $LIST, using the index parameter.
 
-``
+```
 > {a:1,b:2}.getname(0)
 a
 ```
