@@ -64,7 +64,9 @@ There is not much use in creating an $obj instance on it's own.
 ## type()
 All objects will return the type.
 
+```
 "test".type() will return $STR, for example.
+```
 
 If the item does not support type(), use $sys().type(value). For example, $sys().type("test") returns $STR.
 
@@ -107,7 +109,7 @@ FF
 
 > (0xFF).uraw().uint();
 255
-``
+```
 
 #### bool()
 Converts to what the system sees as true/false.
@@ -118,11 +120,14 @@ true
 
 > (0).bool();
 false
+```
 
 ## int()
 Converts to $INT.
 
+```
 "44".int() -> 44
+```
 
 ## uint()
 Converts to unsigned $INT.
@@ -132,11 +137,13 @@ See $INT.
 ## float([bits [,extra]])
 Converts to $FLOAT. Sets bit count for the entire number. Calculations are performed with "extra" bits and truncated for display.
 
+```
 "4.21".float() -> 4.21
 
 "4.21".float(300,7) / "10412.42".float(300,7) -> 0.00040432483514879346011782083319727786624050893068085997299379010835137268761728
 
 ("4.21".float(300,7) / "10412.42".float(300,7)).float(50) -> 0.00040432483514879
+```
 
 ## fix([bits [,extra]])
 Converts to fixed float. Sets bit count after the decimal to bits. Calculations are performed with "extra" bits and truncated for display.
@@ -150,7 +157,9 @@ Sets the default float type to fix, and the default bits and extra.
 ## str()
 Converts to string. 
 
+```
 (44).str() -> "44"
+```
 
 ## base(base)
 Converts number to base. Base of power of 2 works well. Have not fully tested others. Performed as a series of mods and divisions. So can become expensive on very large numbers. Split large numbers into parts before using - but careful on the split. 
@@ -166,7 +175,9 @@ Converts item to hex. The hex value is stored as an ascii representation of '0'-
 ## bin()
 Converts to binary. 
 
+```
 (0xC).bin() -> 1100
+```
 
 ## time()
 Converts an $INT to $TIME.
@@ -175,139 +186,186 @@ See $TIME.
 ## bits()
 Gets the bit count of the item.
 
+```
 "hi".bits() -> 16
+```
 
 ## bytes()
 Gets the byte count of the item.
 
+```
 "hi".bytes() -> 2
 $TIME().utc().raw().bytes() -> 7
+```
 
 ## len
 Gets the length of the item.
 
+```
 "hi".len() -> 2
 {1,2,3}.len() -> 3
+```
 
 ## left(count)
 Gets the left bytes of an item.
 
+```
 "testing".left(2) -> "te"
+```
 
 Use a negative number to truncate right.
 
+```
 "testing".left(-2) -> "testi"
+```
 
 ## right(count)
 Gets the right bytes of an item.
 
+```
 "testing".right(2) -> "ng"
+```
 
 Use a negative number to truncate left.
 
+```
 "testing".right(-2) -> "sting"
+```
 
 ## mid(start,len)
 Gets the middle bytes of an item.
 
+```
 "testing".mid(2,3) -> "sti"
+```
 
 ## rtrim([str])
 Trims right.
 
+```
 "  testing  ".rtrim() -> "  testing"
 "bbbtestingbbb".rtrim(b) -> "bbbtesting"
+```
 
 ## ltrim([str])
 Trims left.
 
+```
 "  testing  ".ltrim() -> "testing  "
 "bbbtestingbbb".ltrim(b) -> "testingbbb"
+```
 
 ## trim([str])
 Trims both left and right.
 
+```
 "  testing  ".trim() -> "testing"
 "bbbtestingbbb".trim(b) -> "testing"
+```
 
 ## lpad(n,[str])
 Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. 
 
 Will left truncate input if length of input is less than n.
 
+```
 "test".lpad(7,"X") -> "XXXtest"
+```
 
 ## rpad(n,[str])
 Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. 
 
 Will right truncate input if length of input is less than n.
 
+```
 "test".rpad(7,"X") -> "testXXX"
+```
 
 ## lrot([n])
 For $LIST, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the start of the list to the end of the list, 1 at a time.
 
+```
 ["a","b","c","d","e"].lrot(2) -> ["c","d","e","a","b"]
+```
 
 ## rrot([n])
 For $LIST, $ARRAY, $XML.
 
 Moves n (defaul=1) items from the end of the list to the start of the list, 1 at a time.
 
+```
 ["a","b","c","d","e"].rrot(2) -> ["d","e","a","b","c"]
+```
 
 ## reverse()
 Reverses the older of a list.
 
+```
 {z:1,m:2,p:3,b:4}.reverse() -> {"b":4,"p":3,"m":2,"z":1}
 "testing".reverse() -> "gnitset"
+```
 
 ## replace(old,new)
 Replaces iteems.
 
+```
 "testing".replace("t","g") -> "gesging"
+```
 
 ## split(item [,param])
 Splits into an array.
 
+```
 "one\ntwo\nthree".split("\n") -> ["one","two","three"]
 "this is a test".split(" ") -> ["this","is","a","test"]
 "this is a test split into parts".split(3) -> ["this is a t","est split i","nto parts"]
 "this is a test split into parts".split(3," ") -> ["this is a test ","split into ","parts"]
+```
 
 ## join(item)
 Joins what has been split.
 
+```
 ["this is a test ","split into ","parts"].join("") -> "this is a test split into part"
+```
 
 ## upper()
 Converts to upper case.
 
+```
 "hi".upper() -> "HI"
+```
 
 ## lower()
 Converts to lower.
 
+```
 "HI".lower() -> "hi"
-
+```
 
 ## setbit(bitpos)
 Sets a bit, from low order.
 
+```
 (0b100110).setbit(3).bin() -> 101110
+```
 
 ## clearbit(bitpos)
 Clears a bit, from low order. 
 
+```
 (0b100110).clearbit(2).bin() -> 100010
+```
 
 ## genbits
 Generates sequence of bits.
 
+```
 (4).genbits() -> 15
 (4).genbits().bin() -> 1111
+```
 
 ## encode (type, [,options])
 
@@ -332,14 +390,14 @@ PEM | | Only decode.
 Example of RSA using hard coded RSA key.
 
 ```
-e = 0xa932b948feed4fb2b692609bd22164fc9edb59fae7880cc1eaff7b3c9626b7e5b241c27a974833b2622ebe09beb451917663d47232488f23a117fc97720f1e7;
-d = (0x4adf2f7a89da93248509347d2ae506d683dd3a16357e859a980c4f77a4e2f7a01fae289f13a851df6e9db5adaa60bfd2b162bbbe31f7c8f828261a6839311929d2cef).uraw();
-d = (d + (0x4f864dde65e556ce43c89bbbf9f1ac5511315847ce9cc8dc92470a747b8792d6a83b0092d2e5ebaf852c85cacf34278efa99160f2f8aa7ee7214de07b7).uraw()).uint();
-n = (0xe8e77781f36a7b3188d711c2190b560f205a52391b3479cdb99fa010745cbeba5f2adc08e1de6bf38398a0487c4a73610d94ec36f17f3f46ad75e17bc1adfec998395).uraw();
-n = (n + (0x89f45f95ccc94cb2a5c500b477eb3323d8cfab0c8458c96f0147a45d27e45a4d11d54d77684f65d48f15fafcc1ba208e71e921b9bd9017c16a5231af7f).uraw()).uint();
+e = 65537;
+d = (0xA4954A19EA13D5FF06C86E7719AB6B6D5F37EF2D0A453713F08CD3FF2847C7BE80F2A3D0159C2EA862997DEE93DC08CD18CDFBD96DCC077B978904D05B2FCA5988A63).uraw();
+d = (d + (0x2CEB3B7286ACEF97682F418172B30509BD29A1C56E0244D79CFADD5A60C83D2F28A8B72643CB82AABA08871E094B36E6613B108166768B33F5C4860BD21).uraw()).uint();
+n = (0xB47D8ABBD7A33B5AD29C8EFD291433D62695BA043F4130F8E677CD179315FD0DD39989539EC710EB3BCBCACBDED2230DE8575FAEE3ED2835B256ADB1AAEF2F34C430E).uraw();
+n = (n + (0xAB9934FAF1977FA83E12B947806CE1F8D06692F02068FD18E4DE952895DDD2D9BDEE923E94257E84B63D21C92EC1F74B8AF4AF9A33608C7E8247F1C820F).uraw()).uint();
 g = {"method":"RSA","n":n,"e":e, "d":d};
-len = g.n.bytes()-32;
-v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(len);
+len = g.n.bytes()-42;
+v = "this is a test of this is a test of 86 chars to see if we can encode with RSA. It needs to be exact size chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(len);
 v.encode(g).decode(g).str();
 ```
 
@@ -368,48 +426,63 @@ See filter in the Looping section. Iterates through a $LIST/$ARRAY calling an $O
 ## reduce($OP [,start [,params]])
 See reduce in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
 
-## sort([op])
+## sort([axis],[order],[op])
 Sorts a $LIST.
 
+- axis -> 0 = row, 1 = col
+- order -> 0 = ascend, 1 = decend, or does selection if array if indexes passed in
+- op -> function for the compare
+
+```
 {z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
+```
 
 Optionally pass in a compare routine.'''
-'''
+```
 > ["b","a","B","c","b","A"].sort()
 ["A","B","a","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(op(a,b){a.upper()<=>b.upper();})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.upper()<=>b.upper();})
 ["a","A","B","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(op(a,b){$local.c=a.upper()<=>b.upper();if(c==0)c=a<=>b;c;})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){$local.c=a.upper()<=>b.upper();if(c==0)c=a<=>b;c;})
 [A,a,B,b,b,c]
-'''
+
+> ["b","a","B","c","b","A"].sort(0,[1,2])
+["a","B"]
+```
 
 ## unique([op])
 Remove duplicates names.
 
+```
 {z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"z":1,"b":4,"m":2,"p":3}
+```
 
 Optionally pass in a compare routine.'''
-'''
+```
 > ["b","a","B","c","b","A"].unique()
 ["A","B","a","b","c"]
 
 > ["b","a","B","c","b","A"].unique(op(a,b){a.upper()<=>b.upper();})
 ["A","b","c"]
-'''
+```
 
 ## isint
 Checks if a string is an $INT.
 
+```
 "z55".isint() -> false
 "55".isint() -> true
+```
 
 ## iferr(new)
 If value is $ERR type, the new is used. Otherwise the value is used.
 
+```
 (10/2).iferr(55) -> 5
 (10/0).iferr(55) -> 55
+```
 
 ## exec()
 Executes string in the shell of the operating system. 
