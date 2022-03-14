@@ -368,8 +368,12 @@ See filter in the Looping section. Iterates through a $LIST/$ARRAY calling an $O
 ## reduce($OP [,start [,params]])
 See reduce in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
 
-## sort([op])
+## sort([axis],[order],[op])
 Sorts a $LIST.
+
+axis -> 0 = row, 1 = col
+order -> 0 = ascend, 1 = decend, or does selection if array if indexes passed in
+op -> function for the compare
 
 {z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
 
@@ -378,11 +382,14 @@ Optionally pass in a compare routine.'''
 > ["b","a","B","c","b","A"].sort()
 ["A","B","a","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(op(a,b){a.upper()<=>b.upper();})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.upper()<=>b.upper();})
 ["a","A","B","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(op(a,b){$local.c=a.upper()<=>b.upper();if(c==0)c=a<=>b;c;})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){$local.c=a.upper()<=>b.upper();if(c==0)c=a<=>b;c;})
 [A,a,B,b,b,c]
+
+> ["b","a","B","c","b","A"].sort(0,[1,2])
+["a","B"]
 '''
 
 ## unique([op])
