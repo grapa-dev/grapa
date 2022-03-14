@@ -11,10 +11,10 @@ n = (0xB47D8ABBD7A33B5AD29C8EFD291433D62695BA043F4130F8E677CD179315FD0DD39989539
 n = (n + (0xAB9934FAF1977FA83E12B947806CE1F8D06692F02068FD18E4DE952895DDD2D9BDEE923E94257E84B63D21C92EC1F74B8AF4AF9A33608C7E8247F1C820F).uraw()).uint();
 g = {"method":"RSA","n":n,"e":e, "d":d};
 len = g.n.bytes()-42;
-v = "this is a test of 95 chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(len);
+v = "this is a test of 86 chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(len);
 v.encode(g).decode(g).str();
 
-this is a test of 86 chars to see if we can encode with RSA. It needs to be exactly 86.
+this is a test of 86 chars to see if we can encode with RSA. It needs to be exact size
 ```
 
 ## Strings
