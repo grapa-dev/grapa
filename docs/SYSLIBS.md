@@ -109,7 +109,7 @@ FF
 
 > (0xFF).uraw().uint();
 255
-``
+```
 
 #### bool()
 Converts to what the system sees as true/false.
