@@ -2844,7 +2844,8 @@ GrapaRuleEvent* GrapaScriptState::SearchVariable(GrapaNames* pNameSpace, GrapaRu
 			{
 				pValue = NULL;
 				GrapaRuleEvent* v = parameter;
-				while (v && v->vRulePointer) v = v->vRulePointer;
+				while (v && v->vRulePointer) 
+					v = v->vRulePointer;
 				if (v && v->mValue.mToken == GrapaTokenType::OP)
 				{
 					GrapaRuleEvent* v2 = (GrapaRuleEvent*)v->vQueue->Head(1);
@@ -4786,6 +4787,9 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 	case GrapaTokenType::WIDGET:
 		pSend->Send(this, vScriptState->vRuleVariables, "$WIDGET");
 		break;
+	case GrapaTokenType::RULE:
+		EchoRuleValue(pSend, pTokenEvent, elMode, false, true);
+		break;
 	default:
 		s.AppendQuoted(pTokenEvent->mValue,false);
 		pSend->Send(this, vScriptState->vRuleVariables, s);
@@ -5165,17 +5169,23 @@ void GrapaScriptExec::EchoClassValue(GrapaSystemSend* pSend, GrapaRuleEvent* pEv
 void GrapaScriptExec::EchoRuleValue(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, bool elMode, bool pretty, bool noHeader)
 {
 	GrapaRuleEvent* items = (GrapaRuleEvent*)pEvent->vQueue->Head();
-	if (pretty && pEvent->mName.mLength)
+	if (!noHeader)
 	{
-		pSend->Send(this, vScriptState->vRuleVariables, "@global[\"");
-		pSend->Send(this, vScriptState->vRuleVariables, pEvent->mName);
-		pSend->Send(this, vScriptState->vRuleVariables, "\"]");
-		if (items) pSend->Send(this, vScriptState->vRuleVariables, "\r\n\t= rule ");
+		if (pretty && pEvent->mName.mLength)
+		{
+			pSend->Send(this, vScriptState->vRuleVariables, "@global[\"");
+			pSend->Send(this, vScriptState->vRuleVariables, pEvent->mName);
+			pSend->Send(this, vScriptState->vRuleVariables, "\"]");
+			if (items)
+				pSend->Send(this, vScriptState->vRuleVariables, "\r\n\t= rule ");
+		}
+		else if (!noHeader)
+		{
+			pSend->Send(this, vScriptState->vRuleVariables, "rule ");
+		}
 	}
-	else if(!noHeader)
-	{
-		pSend->Send(this, vScriptState->vRuleVariables, "rule ");
-	}
+	else if (pretty)
+		pSend->Send(this, vScriptState->vRuleVariables, "\t");
 	while (items)
 	{
 		GrapaRuleEvent* params = items->vQueue ? (GrapaRuleEvent*)items->vQueue->Head() : NULL;
