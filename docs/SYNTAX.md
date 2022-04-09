@@ -88,6 +88,6 @@ If an existing function/command doesn't support chaining, an OP can be inserted 
 1111
 
 > f = op(a){a.len()};
-> {1,2,3,5}.f(@$$).genbits().bin();
+> {1,2,3,5}.{f(@$$)}.genbits().bin();
 1111
 ```
