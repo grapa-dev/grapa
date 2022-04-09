@@ -1543,7 +1543,7 @@ GrapaCHAR GrapaInt::ToString(u64 radix)
 	if (radix < 2 || radix > 64)
 		return result;// (new ArgumentException("Radix must be >= 2 and <= 36"));
 
-	const char* charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	const char* charSet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/";
 	//http://base64.sourceforge.net/b64.c
 
 	GrapaInt a = *this;
@@ -1569,10 +1569,11 @@ GrapaCHAR GrapaInt::ToString(u64 radix)
 	while (a.GetCount() > 1 || (a.GetCount() == 1 && a.GetItem(0) != 0))
 	{
 		a.singleByteDivide(biRadix, quotient, remainder);
-		if (remainder.GetItem(0) < 10)
-			result.Append((u64)remainder.GetItem(0));
-		else
-			result.Append(charSet[(u32)remainder.GetItem(0) - 10]);
+		//if (remainder.GetItem(0) < 10)
+		//	result.Append((u64)remainder.GetItem(0));
+		//else
+		//	result.Append(charSet[(u32)remainder.GetItem(0) - 10]);
+		result.Append(charSet[(u32)remainder.GetItem(0)]);
 		a = quotient;
 	}
 

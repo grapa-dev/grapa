@@ -4720,7 +4720,7 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 		if (pTokenEvent->mValue.mLength) EchoDB(pSend, pTokenEvent->mValue);
 		break;
 	case GrapaTokenType::PTR:
-		if (pTokenEvent->vRulePointer && (pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ERR || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ARRAY || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::LIST || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::XML || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::EL || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::TAG || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::OP || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ERR))
+		if (pTokenEvent->vRulePointer && (pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ERR || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ARRAY || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::LIST || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::XML || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::EL || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::TAG || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::OP || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::OBJ || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ERR))
 			EchoList(pSend, pTokenEvent->vRulePointer,elMode, false, false);
 		else if (pTokenEvent->vRulePointer && pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::PTR)
 			EchoList(pSend, pTokenEvent->vRulePointer,elMode, false, false);

@@ -246,9 +246,9 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 					}
 					else
 					{
-						if (pLower && xitem->mName.StrLowerCmp(pName) == 0)
+						if (pLower && xitem->mValue.StrLowerCmp(pName) == 0)
 							return(item);
-						else if (!pLower && xitem->mName.StrCmp(pName) == 0)
+						else if (!pLower && xitem->mValue.StrCmp(pName) == 0)
 							return(item);
 					}
 				}

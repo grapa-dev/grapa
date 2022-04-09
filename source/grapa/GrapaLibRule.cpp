@@ -5113,6 +5113,7 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 	{
 		if (r2.vVal)
 		{
+			GrapaRuleEvent* e = NULL;
 			GrapaRuleEvent* attrList = r2.vVal;
 			while (attrList->mValue.mToken == GrapaTokenType::PTR && attrList->vRulePointer) attrList = attrList->vRulePointer;
 			if (attrList->vQueue)
@@ -5131,7 +5132,6 @@ GrapaRuleEvent* GrapaLibraryRuleSearchEvent::Run(GrapaScriptExec *vScriptExec, G
 					break;
 				}
 			}
-			GrapaRuleEvent* e = NULL;
 			while (q && attrList) //a={"one"(1)=11,"two"(2)=22,"three"(3)=33}
 			{
 				e = NULL;
@@ -14241,7 +14241,9 @@ GrapaRuleEvent* GrapaLibraryRuleListEvent::Run(GrapaScriptExec* vScriptExec, Gra
 		case GrapaTokenType::XML:
 		case GrapaTokenType::ARRAY:
 		case GrapaTokenType::LIST:
+		case GrapaTokenType::ERR:
 			result = vScriptExec->CopyItem(r1.vVal, true);
+			result->mValue.mToken = GrapaTokenType::LIST;
 			break;
 		case GrapaTokenType::STR:
 			if (r1.vVal->mValue.mLength)

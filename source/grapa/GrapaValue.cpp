@@ -121,8 +121,11 @@ void GrapaBYTE::FROM(const GrapaBYTE& pValue)
 void GrapaBYTE::ToHex(GrapaBYTE& pValue)
 {
 	pValue.SetLength(0);
+	if (mLength == 0) return;
 	u64 i;
 	u8 *map = (u8*)"0123456789ABCDEF";
+	u8 skipback = 0;
+	if ((((u8*)mBytes)[0] >> 4) == 0) skipback = 1;
 	switch (mToken)
 	{
 	case GrapaTokenType::STR:
@@ -131,11 +134,13 @@ void GrapaBYTE::ToHex(GrapaBYTE& pValue)
 	case GrapaTokenType::INT:
 	case GrapaTokenType::FLOAT:
 	case GrapaTokenType::SYSINT:
-		pValue.SetLength(mLength * 2);
-		for (i = 0; i < mLength; i++)
+		pValue.SetLength(mLength * 2 - skipback);
+		if (skipback==0) ((u8*)pValue.mBytes)[0] = map[((u8*)mBytes)[0] >> 4];
+		((u8*)pValue.mBytes)[1 - skipback] = map[((u8*)mBytes)[0] & 0xF];
+		for (i = 1; i < mLength; i++)
 		{
-			((u8*)pValue.mBytes)[i * 2] = map[((u8*)mBytes)[i] >> 4];
-			((u8*)pValue.mBytes)[i * 2 + 1] = map[((u8*)mBytes)[i]&0xF];
+			((u8*)pValue.mBytes)[i * 2 - skipback] = map[((u8*)mBytes)[i] >> 4];
+			((u8*)pValue.mBytes)[i * 2 + 1 - skipback] = map[((u8*)mBytes)[i]&0xF];
 		}
 		pValue.mToken = GrapaTokenType::STR;
 		break;

@@ -134,7 +134,7 @@ bool GrapaFloat::IsZero()
 	return false;
 }
 
-void GrapaFloat::TO(GrapaInt& pInteger, s64& pLenI, GrapaInt& pFraction, s64& pLenF)
+void GrapaFloat::TO(GrapaInt& pInteger, s64& pLenI, GrapaInt& pFraction, s64& pLenF, int lpadbits)
 {
 	if (u64 lead = mData.bitStart())
 	{
@@ -167,8 +167,8 @@ void GrapaFloat::TO(GrapaInt& pInteger, s64& pLenI, GrapaInt& pFraction, s64& pL
 		// If so, than it adds the into the fraction
 		// I don't remember why only the last byte.
 		// Need to reproduce the scenario that required this, and see if this should be  function of mExtra rather than just they last 4 bits
-		u64 lead = 4 - pLenF % 4;
-		if (lead != 4)
+		u64 lead = lpadbits - pLenF % lpadbits;
+		if (lead != lpadbits)
 		{
 			pFraction = pFraction << lead;
 			pLenF += lead;
@@ -1764,13 +1764,25 @@ GrapaCHAR GrapaFloat::ToString(u8 radix)
 	GrapaFloat out(*this);
 	out.Truncate(true);
 	s64 startbits = out.mBits - out.mExp - 1;
+	int lpadbits = 4;
+	switch (radix) 
+	{
+	case 2: lpadbits = 1; break; 
+	case 4: lpadbits = 2; break;
+	case 8: lpadbits = 3; break;
+	case 16: lpadbits = 4; break;
+	case 32: lpadbits = 5; break;
+	case 64: lpadbits = 6; break;
+	};
 	switch (radix)
 	{
 	case 2:
 	case 4:
 	case 8:
 	case 16:
-		TO(a, lena, b, lenb);
+	case 32:
+	case 64:
+		TO(a, lena, b, lenb, lpadbits);
 		left = a.ToString(radix);
 		break;
 	case 10:
@@ -1806,7 +1818,7 @@ GrapaCHAR GrapaFloat::ToString(u8 radix)
 				if (bits != bi.mBits)
 					bi.mExp++;
 			}
-			bi.TO(a, lena, b, lenb);
+			bi.TO(a, lena, b, lenb, lpadbits);
 			left = a.ToString(radix);
 			if (!out.mFix)
 			{
@@ -1818,7 +1830,7 @@ GrapaCHAR GrapaFloat::ToString(u8 radix)
 		}
 		else
 		{
-			out.TO(a, lena, b, lenb);
+			out.TO(a, lena, b, lenb, lpadbits);
 			left = a.ToString(radix);
 		}
 		break;
@@ -1829,7 +1841,7 @@ GrapaCHAR GrapaFloat::ToString(u8 radix)
 	{
 		GrapaInt c;
 		GrapaCHAR pad;
-		u64 p = 0;
+		u64 p = lpadbits;
 		u64 bits;
 		switch (radix)
 		{
@@ -1837,13 +1849,17 @@ GrapaCHAR GrapaFloat::ToString(u8 radix)
 		case 4:
 		case 8:
 		case 16:
-			switch (radix)
-			{
-			case 2: p = 2; break;
-			case 4: p = 2; break;
-			case 8: p = 3; break;
-			case 16: p = 4; break;
-			}
+		case 32:
+		case 64:
+			//switch (radix)
+			//{
+			//case 2: p = 1; break;
+			//case 4: p = 2; break;
+			//case 8: p = 3; break;
+			//case 16: p = 4; break;
+			//case 32: p = 5; break;
+			//case 64: p = 6; break;
+			//}
 			right = b.ToString(radix);
 			right.RTrim('0');
 			if (((lenb * p) / radix) > right.mLength)
@@ -2216,7 +2232,7 @@ GrapaInt GrapaFloat::ToInt()
 {
 	GrapaInt a, b;
 	s64 lena = 0, lenb = 0;
-	TO(a, lena, b, lenb);
+	TO(a, lena, b, lenb, 4);
 	return mSigned ? -a : a;
 }
 
