@@ -56,6 +56,12 @@ sudo apt-get install -y libfreetype-dev
 ./configure
 make
 sudo make install
+
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
 ```
 Copy FL to Grapa/source
 
