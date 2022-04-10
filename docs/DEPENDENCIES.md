@@ -54,9 +54,6 @@ Navigate to FLTK source folder and complete the following.
 ```
 sudo apt-get install -y libfreetype-dev
 ./configure
-make
-sudo make install
-
 mkdir build
 cd build
 cmake ..
