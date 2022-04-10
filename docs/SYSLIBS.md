@@ -91,7 +91,7 @@ Converts to an unsigned raw value. To avoid sign issues, a leading zero is added
 
 ```
 > (0xFF).raw();
-00FF
+0x0FF
 
 > (0xFF).uraw();
 FF
