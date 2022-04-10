@@ -56,10 +56,8 @@ Values for $PLATFORM
 ## putenv (type, value)
 See getenv.
 
-# $obj
-Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used across the different data types are placed in the $obj class. Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
-
-There is not much use in creating an $obj instance on it's own. 
+# $OBJ
+Several classes inherit $OBJ, such as $STR and $INT and $LIST. Functions that can be used across the different data types are placed in the $OBJ class. Some of these functions may move to other classes. The $OBJ class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class.
 
 ## type()
 All objects will return the type.
