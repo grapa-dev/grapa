@@ -365,25 +365,26 @@ Generates sequence of bits.
 (4).genbits().bin() -> 1111
 ```
 
-## encode (type, [,options])
+## encode (method, [,options])
 
 encode/decode types:
-Type | Options | Description
+Method | Options | Description
 ------------ | ------------- | -------------
-RSA-KEY | {n,e,d [,p,q,dp,dq,qi]} | Data size must be exactly byte count of d  minus 32.
-AES256 | {key [,iv]} | key is 32 bits and iv is 16 bits
-ZIP-GRAPA | |
-BASE64 | |
-ESCAPE | |
-FLOAT | |
-JSON | | Only encode.
-XML | | Only encode.
-SHAKE256 | | Only encode.
-SHAKE128 | | Only encode.
-SHA3-256 | | Only encode.
-SHA3-384 | | Only encode.
-SHA3-512 | | Only encode.
-PEM | | Only decode.
+"RSA" | {n,e,d [,p,q,dp,dq,qi]} | Data size must be exactly byte count of d  minus 32.
+"EC" | {curve,pub,prv} | Eliptic curve
+"AES256" | {key [,iv]} | key is 32 bits and iv is 16 bits
+"ZIP-GRAPA" | |
+"BASE64" | |
+"ESCAPE" | |
+"FLOAT" | |
+"JSON" | | Only encode.
+"XML" | | Only encode.
+"SHAKE256" | | Only encode.
+"SHAKE128" | | Only encode.
+SHA3-256" | | Only encode.
+SHA3-384" | | Only encode.
+"SHA3-512" | | Only encode.
+"PEM" | | Only decode.
 
 Example of RSA using hard coded RSA key.
 
@@ -397,6 +398,12 @@ g = {"method":"RSA","n":n,"e":e, "d":d};
 len = g.n.bytes()-42;
 v = "this is a test of this is a test of 86 chars to see if we can encode with RSA. It needs to be exact size chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(len);
 v.encode(g).decode(g).str();
+
+curve = "prime256v1";
+pub = 0x25074E1882EF3F6230925ADFFEA56EC322F7EB4F23C3DECF12BFF5A24E11BA21C;
+prv = 0x5A44899AE665F34833146FD9805222B9E7C22B8BE94B7F9C34A54AA9B9D89890;
+g = {"method":"EC","curve":curve,"pub":pub,"prv":prv};
+v.sign(g).verify(g,v);
 ```
 
 ```
@@ -407,8 +414,12 @@ v.encode("SHAKE128");
 v.encode("BASE64").decode("BASE64").str();
 ```
 
-## decode (type, value [,options])
+## decode (method [,options])
 See encode.
+
+## sign (method, [,options])
+
+## verify (method, value, [,options])
 
 ## setfile($file, name)
 Updates file or table item with value. Separate from the $file class as this one supports chaining all the way to writing the result into a file. Requires having an existing $file instance -> or passing in $file() which creates a temporary instance.
