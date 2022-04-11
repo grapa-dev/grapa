@@ -398,12 +398,6 @@ g = {"method":"RSA","n":n,"e":e, "d":d};
 len = g.n.bytes()-42;
 v = "this is a test of this is a test of 86 chars to see if we can encode with RSA. It needs to be exact size chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.".left(len);
 v.encode(g).decode(g).str();
-
-curve = "prime256v1";
-pub = 0x25074E1882EF3F6230925ADFFEA56EC322F7EB4F23C3DECF12BFF5A24E11BA21C;
-prv = 0x5A44899AE665F34833146FD9805222B9E7C22B8BE94B7F9C34A54AA9B9D89890;
-g = {"method":"EC","curve":curve,"pub":pub,"prv":prv};
-v.sign(g).verify(g,v);
 ```
 
 ```
@@ -419,7 +413,37 @@ See encode.
 
 ## sign (method, [,options])
 
+```
+curve = "prime256v1";
+pub = 0x25074E1882EF3F6230925ADFFEA56EC322F7EB4F23C3DECF12BFF5A24E11BA21C;
+prv = 0x5A44899AE665F34833146FD9805222B9E7C22B8BE94B7F9C34A54AA9B9D89890;
+g = {"method":"EC","curve":curve,"pub":pub,"prv":prv};
+"test".sign(g).verify(g,"test");
+```
+
+## signadd (method, value, [,options])
+Not implemented yet. Used for pairwise eliptic curves where sigatures can be added.
+
 ## verify (method, value, [,options])
+See sign.
+
+## verifyrecover (method, [,options])
+Recovers signed data.
+
+```
+a = "RSA".genkeys();
+b = "hello".sign(a);
+b.verifyrecover(a).str();
+```
+
+## secret (method)
+Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  
+
+```
+a = "dh".genkeys()
+b = "dh".genkeys({p:a.p,g:a.g})
+a.secret(b)==b.secret(a)
+```
 
 ## setfile($file, name)
 Updates file or table item with value. Separate from the $file class as this one supports chaining all the way to writing the result into a file. Requires having an existing $file instance -> or passing in $file() which creates a temporary instance.
