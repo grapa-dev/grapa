@@ -79,17 +79,19 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [$sys](docs/sys/sys.md)
 
-[$OBJ Encode](docs/sys/encode.md)
+# Object inherited functions
 
-[$OBJ Bits](docs/sys/bits.md)
+[Encode functions](docs/sys/encode.md)
 
-[$OBJ Iterate](docs/sys/iterate.md)
+[Bits functions](docs/sys/bits.md)
 
-[$OBJ Output](docs/sys/output.md)
+[Iterator functions](docs/sys/iterate.md)
 
-[$OBJ Sets - string, arry, etc.](docs/sys/sets.md)
+[Output functions](docs/sys/output.md)
 
-[$OBJ Type](docs/sys/type.md)
+[Sets funcitons - string, arry, etc.](docs/sys/sets.md)
+
+[Type functions](docs/sys/type.md)
 
 # Examples
 [Examples](docs/EXAMPLES.md)
