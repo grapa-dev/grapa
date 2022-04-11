@@ -89,6 +89,8 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [$OBJ Sets - string, arry, etc.](docs/sys/sets.md)
 
+[$OBJ Type](docs/sys/type.md)
+
 # Examples
 [Examples](docs/EXAMPLES.md)
 
