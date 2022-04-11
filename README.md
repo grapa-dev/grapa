@@ -106,9 +106,9 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Loop](docs/operators/loop.md)
 
-[Command](docs/operators/command.md)
-
 [Function](docs/operators/function.md)
+
+[Command](docs/operators/command.md)
 
 [Lexical](docs/operators/lexical.md)
 
