@@ -51,7 +51,7 @@ FF
 255
 ```
 
-#### bool()
+### bool()
 Converts to what the system sees as true/false.
 
 ```
