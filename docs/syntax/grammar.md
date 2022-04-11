@@ -5,6 +5,9 @@ To view a text version of the rules loaded into grapa on startup, run the follow
 > $sys().getenv("$STATICLIB")."$grapa.grc".str()
 ```
 
+Or go here:
+[Grapa Grammar](lib/grapa/$grapa.grc)
+
 The system will first check for a match on the "start" rule. Which is a global variable...if that global variable is of type $RULE, than it will be come the first rule for scripts. This is an easy way to provide an override on command processing. If "start" rule does not provide a match, than the system will evaluage using the "$start" rule. 
 
 The default rules may be subject to change, and so are not listed here. Use the above command to retrieve/view.  To write the result to a file, use the following:
