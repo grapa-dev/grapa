@@ -165,15 +165,6 @@ Converts to lower.
 "HI".lower() -> "hi"
 ```
 
-## secret (method)
-Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  
-
-```
-a = "dh".genkeys()
-b = "dh".genkeys({p:a.p,g:a.g})
-a.secret(b)==b.secret(a)
-```
-
 ## setfile($file, name)
 Updates file or table item with value. Separate from the $file class as this one supports chaining all the way to writing the result into a file. Requires having an existing $file instance -> or passing in $file() which creates a temporary instance.
 
