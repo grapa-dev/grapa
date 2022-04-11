@@ -18,7 +18,7 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 # Reference
 [Base types](docs/BASETYPES.md)
 
-[System types](docs/SYSTYPES.md)
+[System libs](docs/SYSLIBS.md)
 
 [Creating a library](docs/CREATELIB.md)
 
