@@ -1,5 +1,4 @@
-# $OBJ
-Several classes inherit $OBJ, such as $STR and $INT and $LIST. Functions that can be used across the different data types are placed in the $OBJ class. Some of these functions may move to other classes. The $OBJ class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class.
+# Part of $OBJ
 
 ## type()
 All objects will return the type.
@@ -22,4 +21,3 @@ Checks if a string is an $INT.
 "z55".isint() -> false
 "55".isint() -> true
 ```
-
