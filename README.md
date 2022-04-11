@@ -26,6 +26,11 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Syntax](docs/SYNTAX.md)
 
+# Base types
+[$OP](docs/type/OP.md)
+
+[$CODE](docs/type/CODE.md)
+
 # System types
 
 [$BOOL](docs/type/BOOL.md)
