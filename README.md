@@ -91,6 +91,27 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Type functions](docs/obj/type.md)
 
+# Operators
+[Assignment](docs/operators/assignment.md)
+
+[Bit](docs/operators/bit.md)
+
+[Command](docs/operators/command.md)
+
+[Compare](docs/operators/compare.md)
+
+[Condition](docs/operators/condition.md)
+
+[Constant](docs/operators/constant.md)
+
+[Function](docs/operators/function.md)
+
+[Lexical](docs/operators/lexical.md)
+
+[Loop](docs/operators/loop.md)
+
+[Math](docs/operators/math.md)
+
 # Examples
 [Examples](docs/EXAMPLES.md)
 
