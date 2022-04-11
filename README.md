@@ -89,7 +89,7 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Output functions](docs/sys/output.md)
 
-[Sets funcitons - string, arry, etc.](docs/sys/sets.md)
+[Sets funcitons applying to string, array, etc.](docs/sys/sets.md)
 
 [Type functions](docs/sys/type.md)
 
