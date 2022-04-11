@@ -4,13 +4,7 @@ View a text version of the grammar rules loaded into grapa on startup here:
 
 The system will first check for a match on the "start" rule. Which is a global variable...if that global variable is of type $RULE, than it will be come the first rule for scripts. This is an easy way to provide an override on command processing. If "start" rule does not provide a match, than the system will evaluage using the "$start" rule. 
 
-The default rules may be subject to change, and so are not listed here. Use the above command to retrieve/view.  To write the result to a file, use the following:
-
-```
-> $file().set("grapa.txt",$sys().getenv("$STATICLIB")."$grapa.grc".str())
-```
-
-This will place the file in the current working directory. If you want to place in a different directly, refer to the $file class for commands to do that.
+The default rules may be subject to change.
 
 If you modify the file, you can try it out by placing it in "lib/grapa/" under the same directory that the above command would have written the file to, and then restart grapa. If grapa finds this file with this name in that location, it will use that file instead of the default. 
 
