@@ -14,10 +14,6 @@ If the item does not support type(), use $sys().type(value). For example, $sys()
 ## describe (object)
 This is stubbed out...but not yet implemented. Type will provide just the type. Describe will provide more detail. If using describe on a table, details about the table will be returned, for example. Intention is to provide describe everywhere that type is available.
 
-## time()
-Converts an $INT to $TIME.
-See $TIME.
-
 ## len
 Gets the length of the item.
 
