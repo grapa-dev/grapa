@@ -43,6 +43,8 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Bits](docs/sys/bits.md)
 
+[Iterate](docs/sys/iterate.md)
+
 # Examples
 [Examples](docs/EXAMPLES.md)
 
