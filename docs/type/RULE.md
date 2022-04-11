@@ -155,5 +155,7 @@ r2 = rule
 Note that with left recursion, the subtraction happens first resulting in (5-3)+2, which produces the correct answer.
 
 For those interested in how to modify a recursive decent parser to support left recursion, see the following on how this was addressed for Python:
-	○ https://medium.com/@gvanrossum_83706/left-recursive-peg-grammars-65dab3c580e1
+
+https://medium.com/@gvanrossum_83706/left-recursive-peg-grammars-65dab3c580e1
+
 A simular approach is used for Grapa - but with a few improvements on the appropach to support more complex scenarios than what's required to support the Python syntax alone.
