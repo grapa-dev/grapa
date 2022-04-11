@@ -31,12 +31,3 @@ If value is $ERR type, the new is used. Otherwise the value is used.
 (10/0).iferr(55) -> 55
 ```
 
-## exec()
-Executes string in the shell of the operating system. 
-
-```
-> "ver".exec()
-Microsoft Windows [Version 10.0.18363.778]
-```
-
-
