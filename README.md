@@ -31,6 +31,7 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 # System libraries
 [File](docs/sys/file.md)
 [Math](docs/sys/math.md)
+[Net](docs/sys/net.md)
 
 # Examples
 [Examples](docs/EXAMPLES.md)
