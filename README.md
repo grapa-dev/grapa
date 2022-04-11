@@ -29,7 +29,43 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 [Syntax](docs/SYNTAX.md)
 
 # System types
+
+[$BOOL](docs/BOOL.md)
+
+[$INT](docs/INT.md)
+
+[$FLOAT](docs/FLOAT.md)
+
+[$STR](docs/STR.md)
+
+[$ID](docs/ID.md)
+
+[$RAW](docs/RAW.md)
+
 [$TIME](docs/TIME.md)
+
+[$RULE](docs/RULE.md)
+
+[$ARRAY](docs/ARRAY.md)
+
+[$LIST](docs/LIST.md)
+
+[$TABLE](docs/TABLE.md)
+
+[$VECTOR](docs/VECTOR.md)
+
+[$XML](docs/XML.md)
+
+[$TAG](docs/TAG.md)
+
+[$ERR](docs/ERR.md)
+
+[$SYSID](docs/SYSID.md)
+
+[$SYSINT](docs/SYSINT.md)
+
+[$SYSSTR](docs/SYSSTR.md)
+
 
 # System libraries
 [File](docs/sys/file.md)
