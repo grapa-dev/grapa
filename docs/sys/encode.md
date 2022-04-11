@@ -1,27 +1,5 @@
 # Part of $OBJ
 
-## setbit(bitpos)
-Sets a bit, from low order.
-
-```
-(0b100110).setbit(3).bin() -> 101110
-```
-
-## clearbit(bitpos)
-Clears a bit, from low order. 
-
-```
-(0b100110).clearbit(2).bin() -> 100010
-```
-
-## genbits
-Generates sequence of bits.
-
-```
-(4).genbits() -> 15
-(4).genbits().bin() -> 1111
-```
-
 ## encode (method, [,options])
 
 encode/decode types:
