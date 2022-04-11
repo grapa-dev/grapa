@@ -51,7 +51,7 @@
 	sign = @<[op,@<"sign",{@<this>,@<var,{alg}>,@<var,{params}>}>],{"alg":null,"params":null}>;
 	signadd = @<[op,@<"signadd",{@<this>,@<var,{alg}>,@<var,{params}>}>],{"alg":null,"params":null}>;
 	verify = @<[op,@<"verify",{@<this>,@<var,{alg}>,@<var,{data}>,@<var,{params}>}>],{"alg":null,"data":null,"params":null}>;
-	verifyrecover = @<[op,@<"verifyrecover",{@<this>,@<var,{alg}>,@<var,{data}>}>],{"alg":null,"data":null}>;
+	verifyrecover = @<[op,@<"verifyrecover",{@<this>,@<var,{alg}>,@<var,{params}>}>],{"alg":null,"params":null}>;
 	secret = @<[op,@<"secret",{@<this>,@<var,{key}>}>],{"key":null}>;
 	setfile = @<[op,@<"file_set",{@<var,{o}>,@<var,{p}>,@<this>,@<var,{d}>}>],{o,p,d}>;
 	map = @<[op,@<map,{@<this>,@<var,{callback}>,@<var,{data}>,@<var,{threads}>}>],{callback,data:null,threads:null}>;

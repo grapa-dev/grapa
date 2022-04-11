@@ -104,7 +104,7 @@ void GrapaEncrypt::Encrypt(GrapaBYTE& pData)
 
 	int err;
 	u64 pos = 0;
-	u8 out[16];
+	u8 out[32];
 	int outl = 0;
 	GrapaBYTE outs;
 	outs.SetSize(pData.mLength+1);
@@ -136,7 +136,7 @@ void GrapaEncrypt::Decrypt(GrapaBYTE& pEnc)
 
 	int err;
 	u64 pos = 0;
-	u8 out[16];
+	u8 out[32];
 	int outl = 0;
 	GrapaBYTE outs;
 	outs.SetSize(pEnc.mLength + 1);

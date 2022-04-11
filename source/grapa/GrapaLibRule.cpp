@@ -10297,12 +10297,12 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 			if (x) method.FROM(x->mValue);
 		}
-		if (method.StrLowerCmp("RSA") == 0 || method.StrLowerCmp("CIPHER") == 0 || method.StrLowerCmp("MD") == 0)
+		if (method.StrLowerCmp("RSA") == 0 || method.StrLowerCmp("MD") == 0)
 		{
 			GrapaPublicKey key;
 			bool isset = true;
 			if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
-			else if (r3.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
+			else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
 			else isset = false;
 			if (isset)
 			{
@@ -10325,7 +10325,7 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 		{
 			GrapaRuleQueue* sq = NULL;
 			if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) sq = (GrapaRuleQueue*)r2.vVal->vQueue;
-			else if (r3.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) sq = (GrapaRuleQueue*)r3.vVal->vQueue;
+			else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) sq = (GrapaRuleQueue*)r3.vVal->vQueue;
 			if (sq)
 			{
 				GrapaRuleEvent* cipher = (GrapaRuleEvent*)sq->Search("cipher", idx);
@@ -10604,14 +10604,14 @@ GrapaRuleEvent* GrapaLibraryRuleDecodeEvent::Run(GrapaScriptExec *vScriptExec, G
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 			if (x) method.FROM(x->mValue);
 		}
-		if (method.StrLowerCmp("RSA") == 0 || method.StrLowerCmp("CIPHER") == 0)
+		if (method.StrLowerCmp("RSA") == 0)
 		{
 			if (r1.vVal)
 			{
 				GrapaPublicKey key;
 				bool isset = true;
 				if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
-				else if (r3.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
+				else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
 				else isset = false;
 				if (isset)
 				{
@@ -10629,7 +10629,7 @@ GrapaRuleEvent* GrapaLibraryRuleDecodeEvent::Run(GrapaScriptExec *vScriptExec, G
 		{
 			GrapaRuleQueue* sq = NULL;
 			if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) sq = (GrapaRuleQueue*)r2.vVal->vQueue;
-			else if (r3.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) sq = (GrapaRuleQueue*)r3.vVal->vQueue;
+			else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) sq = (GrapaRuleQueue*)r3.vVal->vQueue;
 			if (sq)
 			{
 				GrapaRuleEvent* key = (GrapaRuleEvent*)sq->Search("key",idx);
@@ -10735,8 +10735,21 @@ GrapaRuleEvent* GrapaLibraryRuleSignEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
 	if (r1.vVal && r2.vVal)
 	{
+		GrapaCHAR method;
+		if (r2.vVal->mValue.mToken == GrapaTokenType::STR) method.FROM(r2.vVal->mValue);
+		else if (r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+		{
+			s64 idx;
+			GrapaRuleEvent* x = r2.vVal->vQueue->Search("method", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) method.FROM(x->mValue);
+		}
 		GrapaPublicKey key;
-		if (key.FROM(r2.vVal))
+		bool isset = true;
+		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
+		else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
+		else isset = false;
+		if (isset)
 		{
 			GrapaBYTE enc;
 			enc.mToken = GrapaTokenType::RAW;
@@ -10756,14 +10769,28 @@ GrapaRuleEvent* GrapaLibraryRuleSignAddEvent::Run(GrapaScriptExec* vScriptExec, 
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
 	if (r1.vVal && r2.vVal)
 	{
+		GrapaCHAR method;
+		if (r2.vVal->mValue.mToken == GrapaTokenType::STR) method.FROM(r2.vVal->mValue);
+		else if (r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+		{
+			s64 idx;
+			GrapaRuleEvent* x = r2.vVal->vQueue->Search("method", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) method.FROM(x->mValue);
+		}
 		GrapaPublicKey key;
-		if (key.FROM(r2.vVal))
+		bool isset = true;
+		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
+		else if (r4.vVal && r4.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r4.vVal);
+		else isset = false;
+		if (isset)
 		{
 			GrapaBYTE enc;
 			enc.mToken = GrapaTokenType::RAW;
-			if (key.SignAdd(r1.vVal, enc, r3.vVal))
+			if (key.SignAdd(r3.vVal, enc, r4.vVal))
 				result = new GrapaRuleEvent(0, GrapaCHAR(), enc);
 		}
 	}
@@ -10782,8 +10809,21 @@ GrapaRuleEvent* GrapaLibraryRuleVerifyEvent::Run(GrapaScriptExec *vScriptExec, G
 	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
 	if (r1.vVal && r2.vVal && r3.vVal)
 	{
+		GrapaCHAR method;
+		if (r2.vVal->mValue.mToken == GrapaTokenType::STR) method.FROM(r2.vVal->mValue);
+		else if (r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+		{
+			s64 idx;
+			GrapaRuleEvent* x = r2.vVal->vQueue->Search("method", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) method.FROM(x->mValue);
+		}
 		GrapaPublicKey key;
-		if (key.FROM(r2.vVal))
+		bool isset = true;
+		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
+		else if (r4.vVal && r4.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r4.vVal);
+		else isset = false;
+		if (isset)
 		{
 			bool success = key.Verify(r3.vVal, r1.vVal->mValue, r4.vVal);
 			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(success ? 1 : 0).getBytes());
@@ -10800,10 +10840,24 @@ GrapaRuleEvent* GrapaLibraryRuleVerifyRecoverEvent::Run(GrapaScriptExec* vScript
 	GrapaError err = -1;
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
 	if (r1.vVal && r2.vVal)
 	{
+		GrapaCHAR method;
+		if (r2.vVal->mValue.mToken == GrapaTokenType::STR) method.FROM(r2.vVal->mValue);
+		else if (r2.vVal->mValue.mToken == GrapaTokenType::LIST)
+		{
+			s64 idx;
+			GrapaRuleEvent* x = r2.vVal->vQueue->Search("method", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) method.FROM(x->mValue);
+		}
 		GrapaPublicKey key;
-		if (key.FROM(r2.vVal))
+		bool isset = true;
+		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
+		else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
+		else isset = false;
+		if (isset)
 		{
 			GrapaBYTE d;
 			bool success = key.VerifyRecover(d, r1.vVal->mValue);
@@ -14110,6 +14164,7 @@ GrapaRuleEvent* GrapaLibraryRuleRawEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		{
 		case GrapaTokenType::INT:
 		case GrapaTokenType::BOOL:
+		case GrapaTokenType::RAW:
 			if (isUnsigned.GetItem(0) != 0)
 			{
 				a.FromBytes(r1.vVal->mValue, true);
@@ -14123,7 +14178,6 @@ GrapaRuleEvent* GrapaLibraryRuleRawEvent::Run(GrapaScriptExec *vScriptExec, Grap
 			break;
 		case GrapaTokenType::FLOAT:
 		case GrapaTokenType::TABLE:
-		case GrapaTokenType::RAW:
 		case GrapaTokenType::STR:
 		case GrapaTokenType::TIME:
 			result = new GrapaRuleEvent(0, item, r1.vVal->mValue);
@@ -14387,7 +14441,7 @@ GrapaRuleEvent* GrapaLibraryRuleFloatEvent::Run(GrapaScriptExec *vScriptExec, Gr
 		GrapaInt b;
 		b.FromBytes(percision.vVal->mValue);
 		s64 lb = b.LongValue();
-		if (lb >= 0)
+		if (lb > 0)
 			max = lb;
 	}
 	if (extra.vVal)
@@ -14395,7 +14449,7 @@ GrapaRuleEvent* GrapaLibraryRuleFloatEvent::Run(GrapaScriptExec *vScriptExec, Gr
 		GrapaInt b;
 		b.FromBytes(extra.vVal->mValue);
 		s64 lb = b.LongValue();
-		if (lb >= 0)
+		if (lb > 0)
 			extraNum = lb;
 	}
 	GrapaFloat d(fix, max, extraNum, 0);
