@@ -30,41 +30,41 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 # System types
 
-[$BOOL](docs/BOOL.md)
+[$BOOL](docs/type/BOOL.md)
 
-[$INT](docs/INT.md)
+[$INT](docs/type/INT.md)
 
-[$FLOAT](docs/FLOAT.md)
+[$FLOAT](docs/type/FLOAT.md)
 
-[$STR](docs/STR.md)
+[$STR](docs/type/STR.md)
 
-[$ID](docs/ID.md)
+[$ID](docs/type/ID.md)
 
-[$RAW](docs/RAW.md)
+[$RAW](docs/type/RAW.md)
 
-[$TIME](docs/TIME.md)
+[$TIME](docs/type/TIME.md)
 
-[$RULE](docs/RULE.md)
+[$RULE](docs/type/RULE.md)
 
-[$ARRAY](docs/ARRAY.md)
+[$ARRAY](docs/type/ARRAY.md)
 
-[$LIST](docs/LIST.md)
+[$LIST](docs/type/LIST.md)
 
-[$TABLE](docs/TABLE.md)
+[$TABLE](docs/type/TABLE.md)
 
-[$VECTOR](docs/VECTOR.md)
+[$VECTOR](docs/type/VECTOR.md)
 
-[$XML](docs/XML.md)
+[$XML](docs/type/XML.md)
 
-[$TAG](docs/TAG.md)
+[$TAG](docs/type/TAG.md)
 
-[$ERR](docs/ERR.md)
+[$ERR](docs/type/ERR.md)
 
-[$SYSID](docs/SYSID.md)
+[$SYSID](docs/type/SYSID.md)
 
-[$SYSINT](docs/SYSINT.md)
+[$SYSINT](docs/type/SYSINT.md)
 
-[$SYSSTR](docs/SYSSTR.md)
+[$SYSSTR](docs/type/SYSSTR.md)
 
 
 # System libraries
