@@ -371,7 +371,6 @@ encode/decode types:
 Method | Options | Description
 ------------ | ------------- | -------------
 "RSA" | {n,e,d [,p,q,dp,dq,qi]} | Data size must be exactly byte count of d  minus 32.
-"EC" | {curve,pub,prv} | Eliptic curve
 "AES256" | {key [,iv]} | key is 32 bits and iv is 16 bits
 "ZIP-GRAPA" | |
 "BASE64" | |
