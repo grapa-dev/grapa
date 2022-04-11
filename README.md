@@ -28,6 +28,9 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Syntax](docs/SYNTAX.md)
 
+# System types
+[$TIME](docs/TIME.md)
+
 # System libraries
 [File](docs/sys/file.md)
 
