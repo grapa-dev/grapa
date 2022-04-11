@@ -123,21 +123,6 @@ Converts to binary.
 Converts an $INT to $TIME.
 See $TIME.
 
-## bits()
-Gets the bit count of the item.
-
-```
-"hi".bits() -> 16
-```
-
-## bytes()
-Gets the byte count of the item.
-
-```
-"hi".bytes() -> 2
-$TIME().utc().raw().bytes() -> 7
-```
-
 ## len
 Gets the length of the item.
 
