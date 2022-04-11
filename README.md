@@ -39,6 +39,8 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Sys](docs/sys/sys.md)
 
+[Encode](docs/sys/encode.md)
+
 # Examples
 [Examples](docs/EXAMPLES.md)
 
