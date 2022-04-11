@@ -189,8 +189,4 @@ Executes string in the shell of the operating system.
 Microsoft Windows [Version 10.0.18363.778]
 ```
 
-## echo()
-Outputs item to stdio.
 
-## string()
-Outputs escaped version of item to stdio 
