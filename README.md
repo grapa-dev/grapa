@@ -18,8 +18,6 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 # Reference
 [Creating a library](docs/CREATELIB.md)
 
-[Operators](docs/OPERATORS.md)
-
 [Syntax](docs/SYNTAX.md)
 
 # Base types
