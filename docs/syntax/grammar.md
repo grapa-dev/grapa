@@ -6,7 +6,7 @@ To view a text version of the rules loaded into grapa on startup, run the follow
 ```
 
 Or go here:
-[Grapa Grammar](lib/grapa/$grapa.grc)
+[Grapa Grammar](../../lib/grapa/$grapa.grc)
 
 The system will first check for a match on the "start" rule. Which is a global variable...if that global variable is of type $RULE, than it will be come the first rule for scripts. This is an easy way to provide an override on command processing. If "start" rule does not provide a match, than the system will evaluage using the "$start" rule. 
 
