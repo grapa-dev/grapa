@@ -37,6 +37,8 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Thread](docs/sys/thread.md)
 
+[Sys](docs/sys/sys.md)
+
 # Examples
 [Examples](docs/EXAMPLES.md)
 
