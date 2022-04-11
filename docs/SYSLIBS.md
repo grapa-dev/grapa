@@ -56,10 +56,8 @@ Values for $PLATFORM
 ## putenv (type, value)
 See getenv.
 
-# $obj
-Several classes inherit $obj, such as $STR and $INT and $LIST. Functions that can be used across the different data types are placed in the $obj class. Some of these functions may move to other classes. The $obj class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class. 
-
-There is not much use in creating an $obj instance on it's own. 
+# $OBJ
+Several classes inherit $OBJ, such as $STR and $INT and $LIST. Functions that can be used across the different data types are placed in the $OBJ class. Some of these functions may move to other classes. The $OBJ class is a general place to place functions as a starting point. For example, the setfloat and setfix functions may move to the $sys class.
 
 ## type()
 All objects will return the type.
@@ -93,7 +91,7 @@ Converts to an unsigned raw value. To avoid sign issues, a leading zero is added
 
 ```
 > (0xFF).raw();
-00FF
+0x0FF
 
 > (0xFF).uraw();
 FF
@@ -367,25 +365,25 @@ Generates sequence of bits.
 (4).genbits().bin() -> 1111
 ```
 
-## encode (type, [,options])
+## encode (method, [,options])
 
 encode/decode types:
-Type | Options | Description
+Method | Options | Description
 ------------ | ------------- | -------------
-RSA-KEY | {n,e,d [,p,q,dp,dq,qi]} | Data size must be exactly byte count of d  minus 32.
-AES256 | {key [,iv]} | key is 32 bits and iv is 16 bits
-ZIP-GRAPA | |
-BASE64 | |
-ESCAPE | |
-FLOAT | |
-JSON | | Only encode.
-XML | | Only encode.
-SHAKE256 | | Only encode.
-SHAKE128 | | Only encode.
-SHA3-256 | | Only encode.
-SHA3-384 | | Only encode.
-SHA3-512 | | Only encode.
-PEM | | Only decode.
+"RSA" | {n,e,d [,p,q,dp,dq,qi]} | Data size must be exactly byte count of d  minus 32.
+"AES256" | {key [,iv]} | key is 32 bits and iv is 16 bits
+"ZIP-GRAPA" | |
+"BASE64" | |
+"ESCAPE" | |
+"FLOAT" | |
+"JSON" | | Only encode.
+"XML" | | Only encode.
+"SHAKE256" | | Only encode.
+"SHAKE128" | | Only encode.
+SHA3-256" | | Only encode.
+SHA3-384" | | Only encode.
+"SHA3-512" | | Only encode.
+"PEM" | | Only decode.
 
 Example of RSA using hard coded RSA key.
 
@@ -409,8 +407,42 @@ v.encode("SHAKE128");
 v.encode("BASE64").decode("BASE64").str();
 ```
 
-## decode (type, value [,options])
+## decode (method [,options])
 See encode.
+
+## sign (method, [,options])
+
+```
+curve = "prime256v1";
+pub = 0x25074E1882EF3F6230925ADFFEA56EC322F7EB4F23C3DECF12BFF5A24E11BA21C;
+prv = 0x5A44899AE665F34833146FD9805222B9E7C22B8BE94B7F9C34A54AA9B9D89890;
+g = {"method":"EC","curve":curve,"pub":pub,"prv":prv};
+"test".sign(g).verify(g,"test");
+```
+
+## signadd (method, value, [,options])
+Not implemented yet. Used for pairwise eliptic curves where sigatures can be added.
+
+## verify (method, value, [,options])
+See sign.
+
+## verifyrecover (method, [,options])
+Recovers signed data.
+
+```
+a = "RSA".genkeys();
+b = "hello".sign(a);
+b.verifyrecover(a).str();
+```
+
+## secret (method)
+Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  
+
+```
+a = "dh".genkeys()
+b = "dh".genkeys({p:a.p,g:a.g})
+a.secret(b)==b.secret(a)
+```
 
 ## setfile($file, name)
 Updates file or table item with value. Separate from the $file class as this one supports chaining all the way to writing the result into a file. Requires having an existing $file instance -> or passing in $file() which creates a temporary instance.
