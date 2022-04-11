@@ -18,8 +18,6 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 # Reference
 [Creating a library](docs/CREATELIB.md)
 
-[Syntax](docs/SYNTAX.md)
-
 # Base types
 [$OP](docs/type/OP.md)
 
@@ -109,6 +107,13 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 [Command](docs/operators/command.md)
 
 [Lexical](docs/operators/lexical.md)
+
+# Syntax
+[Grammar](docs/syntax/grammar.md)
+
+[Precedence](docs/syntax/precedence.md)
+
+[Operator](docs/syntax/operator.md)
 
 # Examples
 [Examples](docs/EXAMPLES.md)
