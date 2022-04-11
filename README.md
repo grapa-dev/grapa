@@ -30,6 +30,7 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 # System libraries
 [File](docs/sys/file.md)
+[Math](docs/sys/math.md)
 
 # Examples
 [Examples](docs/EXAMPLES.md)
