@@ -15,9 +15,6 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Run from OS shell](docs/RUN.md)
 
-# Reference
-[Creating a library](docs/CREATELIB.md)
-
 # Base types
 [$OP](docs/type/OP.md)
 
