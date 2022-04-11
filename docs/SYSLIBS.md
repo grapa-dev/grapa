@@ -23,11 +23,3 @@ Checks if a string is an $INT.
 "55".isint() -> true
 ```
 
-## iferr(new)
-If value is $ERR type, the new is used. Otherwise the value is used.
-
-```
-(10/2).iferr(55) -> 5
-(10/0).iferr(55) -> 55
-```
-
