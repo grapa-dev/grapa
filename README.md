@@ -45,6 +45,8 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Iterate](docs/sys/iterate.md)
 
+[Output](docs/sys/output.md)
+
 # Examples
 [Examples](docs/EXAMPLES.md)
 
