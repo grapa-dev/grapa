@@ -69,23 +69,23 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 
 # System libraries
-[File](docs/sys/file.md)
+[$file](docs/sys/file.md)
 
-[Math](docs/sys/math.md)
+[$math](docs/sys/math.md)
 
-[Net](docs/sys/net.md)
+[$net](docs/sys/net.md)
 
-[Thread](docs/sys/thread.md)
+[$thread](docs/sys/thread.md)
 
 [Sys](docs/sys/sys.md)
 
-[Encode](docs/sys/encode.md)
+[$OBJ Encode](docs/sys/encode.md)
 
-[Bits](docs/sys/bits.md)
+[$OBJ Bits](docs/sys/bits.md)
 
-[Iterate](docs/sys/iterate.md)
+[$OBJ Iterate](docs/sys/iterate.md)
 
-[Output](docs/sys/output.md)
+[$OBJ Output](docs/sys/output.md)
 
 # Examples
 [Examples](docs/EXAMPLES.md)
