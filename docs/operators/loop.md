@@ -1,4 +1,4 @@
-# Loops
+# Loop
 
 ## while
 Sytax:
