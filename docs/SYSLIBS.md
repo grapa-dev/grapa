@@ -240,23 +240,6 @@ Executes string in the shell of the operating system.
 Microsoft Windows [Version 10.0.18363.778]
 ```
 
-## getname([index])
-Used in a map/reduce/filter to identify the name of the passed in item from the original list (if processing a $LIST). 
-
-To use, do not de-reference the identify. The getname function will then see that it is an $ID and will attempt to locate it in the namespace. Since what is passed in is a pointer, the function is able to discover the item in the original list and discover the name.
-
-```
-> {a:1,b:2}.map(op(a){"a".getname()})
-{"a":a,"b":b}
-```
-
-Or used to get the name of an item in a $LIST, using the index parameter.
-
-```
-> {a:1,b:2}.getname(0)
-a
-```
-
 ## echo()
 Outputs item to stdio.
 
