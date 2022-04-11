@@ -77,7 +77,7 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [$thread](docs/sys/thread.md)
 
-[Sys](docs/sys/sys.md)
+[$sys](docs/sys/sys.md)
 
 [$OBJ Encode](docs/sys/encode.md)
 
