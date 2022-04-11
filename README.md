@@ -20,8 +20,6 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [System types](docs/SYSTYPES.md)
 
-[System libraries](docs/SYSLIBS.md)
-
 [Creating a library](docs/CREATELIB.md)
 
 [Operators](docs/OPERATORS.md)
