@@ -7,7 +7,7 @@
 ### widget
 "window"
 "double_window"
-"Hor_Nice_Slider"
+"hor_nice_slider"
 "scrollbar"
 "scroll"
 "resizable_scroll"
