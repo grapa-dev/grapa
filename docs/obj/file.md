@@ -132,6 +132,10 @@ field defaults to $VALUE.
 value of test
 ```
 
+## split
+
+## info
+
 ## mkfield(name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
 Creates a field within the current working directory.
 
