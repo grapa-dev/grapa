@@ -42,13 +42,15 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [$LIST](docs/type/LIST.md)
 
-[$TABLE](docs/type/TABLE.md)
-
 [$VECTOR](docs/type/VECTOR.md)
+
+[$TABLE](docs/type/TABLE.md)
 
 [$XML](docs/type/XML.md)
 
 [$TAG](docs/type/TAG.md)
+
+[$WIDGET](docs/type/WIDGET.md)
 
 [$ERR](docs/type/ERR.md)
 
