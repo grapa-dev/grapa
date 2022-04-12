@@ -1,33 +1,33 @@
 # $WIDGET
 
-## type
+## type ()
 
-## $new
+## $new (widget, x, y, w, h, label, attr)
 
-## get
+## get (name, params)
 
-## set
+## set (name, data)
 
-## clear
+## clear ()
 
-## event_key
+## event_key (key)
 
-## show
+## show ()
 
-## hide
+## hide ()
 
-## parent
+## parent ()
 
-## child
+## child (name)
 
-## next
+## next ()
 
-## focus
+## focus ()
 
-## post
+## post (postop, postparams, doneop)
 
-## redraw
+## redraw ()
 
-## handle
+## handle (event)
 
-## resize
+## resize (x, y, w, h)
