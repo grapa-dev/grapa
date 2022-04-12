@@ -10,7 +10,7 @@
 
 ## redraw ()
 
-## resizable
+## resizable (widget)
 
 ## resize (x, y, w, h)
 
@@ -28,11 +28,9 @@
 
 ## handle (event)
 
-## callback
-
 ## event_key (key)
 
-## append
+## append (data)
 
 ## post (postop, postparams, doneop)
 
