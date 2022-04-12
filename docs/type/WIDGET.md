@@ -41,7 +41,7 @@ name | desc
 "text" | 
 "append" | 
 "spacing" | 
-"wrap_mode" | 
+"wrap" | 
 "x" | 
 "y" | 
 "w" | 
@@ -60,7 +60,6 @@ name | desc
 "cursor_style" | 
 "scroll_type" | 
 "orientation" | 
-"cursor_style" | 
 "on_resize" | 
 "on_keydown" | 
 "on_mousewheel" | 
