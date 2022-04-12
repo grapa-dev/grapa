@@ -5,22 +5,25 @@
 ## $new (widget, x, y, w, h, label, attr)
 
 ### widget
-"window"
-"double_window"
-"hor_nice_slider"
-"scrollbar"
-"scroll"
-"resizable_scroll"
-"button"
-"radio_button"
-"toggle_button"
-"text_editor"
-"text_display"
-"group"
-"pack"
-"menu_bar"
-"widget"
-"table_row"
+
+widget | attr
+------------ | -------------
+"window" | 
+"double_window" | 
+"hor_nice_slider" | 
+"scrollbar" | 
+"scroll" | 
+"resizable_scroll" | 
+"button" | 
+"radio_button" | 
+"toggle_button" | 
+"text_editor" | 
+"text_display" | 
+"group" | 
+"pack" | 
+"menu_bar" | 
+"widget" | 
+"table_row" | 
 
 ## show ()
 
