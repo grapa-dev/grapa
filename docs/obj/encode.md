@@ -1,6 +1,4 @@
-# Part of $OBJ
-
-## genkeys (bits)
+## key = method.genkeys(bits)
 
 Method | Example | Result
 ------------ | ------------- | -------------
@@ -9,7 +7,7 @@ Method | Example | Result
 "ec" | "ec".genkeys(256)| {"method":"EC","curve":"prime256v1","pub":328583515414440344309737813659797994379375465829367947313294493668935200753665,"prv":79112223757318388912284493496056150146052605496312695677413829416913194654396}
 "bc" | "bc".genkeys(256)| {"method":"EC","curve":"prime256v1","pub":328583515414440344309737813659797994379375465829367947313294493668935200753665,"prv":79112223757318388912284493496056150146052605496312695677413829416913194654396}
 
-## encode (method, [,options])
+## encdata = rawdata.encode (method, [,options])
 
 encode/decode types:
 Method | Options | Description
@@ -51,10 +49,10 @@ v.encode("SHAKE128");
 v.encode("BASE64").decode("BASE64").str();
 ```
 
-## decode (method [,options])
+## rawdata = encdata.decode (method, [,options])
 See encode.
 
-## sign (method, [,options])
+## sig = rawdata.sign (method, [,options])
 
 ```
 curve = "prime256v1";
@@ -64,13 +62,13 @@ g = {"method":"EC","curve":curve,"pub":pub,"prv":prv};
 "test".sign(g).verify(g,"test");
 ```
 
-## signadd (method, value, [,options])
+## sig = sig.signadd (method, value, [,options])
 Not implemented yet. Used for pairwise eliptic curves where sigatures can be added.
 
-## verify (method, value, [,options])
+## ispass = sig.verify (method, value, [,options])
 See sign.
 
-## verifyrecover (method, [,options])
+## rawdata = sig.verifyrecover (method, [,options])
 Recovers signed data.
 
 ```
@@ -79,7 +77,7 @@ b = "hello".sign(a);
 b.verifyrecover(a).str();
 ```
 
-## secret (method)
+## key.secret (key)
 Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  
 
 ```
@@ -88,34 +86,34 @@ b = "dh".genkeys({p:a.p,g:a.g})
 a.secret(b)==b.secret(a)
 ```
 
-## modinv (m)
+## result = n.modinv (m)
 
 ```
 (3504).modinv(385)
 79
 ```
 
-## modpow (p,m)
+## result = n.modpow (p,m)
 ```
 (4).modpow(13,497)
 445
 ```
 
-## random ()
+## n = bits.random ()
 
 ```
 (16).random()
 11942
 ```
 
-## genprime ()
+## n = bits.genprime ()
 
 ```
 (16).genprime()
 60913
 ```
 
-## isprime ()
+## ispass = n.isprime ()
 
 ```
 (60913).isprime()
