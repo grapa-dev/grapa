@@ -4,17 +4,15 @@
 
 ## $new (widget, x, y, w, h, label, attr)
 
-## get (name, params)
-
-## set (name, data)
-
-## clear ()
-
-## event_key (key)
-
 ## show ()
 
 ## hide ()
+
+## redraw ()
+
+## resizable
+
+## resize (x, y, w, h)
 
 ## parent ()
 
@@ -24,10 +22,18 @@
 
 ## focus ()
 
-## post (postop, postparams, doneop)
+## get (name, params)
 
-## redraw ()
+## set (name, data)
 
 ## handle (event)
 
-## resize (x, y, w, h)
+## callback
+
+## event_key (key)
+
+## append
+
+## post (postop, postparams, doneop)
+
+## clear ()
