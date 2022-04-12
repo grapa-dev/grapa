@@ -4,6 +4,24 @@
 
 ## $new (widget, x, y, w, h, label, attr)
 
+### widget
+"window"
+"double_window"
+"Hor_Nice_Slider"
+"scrollbar"
+"scroll"
+"resizable_scroll"
+"button"
+"radio_button"
+"toggle_button"
+"text_editor"
+"text_display"
+"group"
+"pack"
+"menu_bar"
+"widget"
+"table_row"
+
 ## show ()
 
 ## hide ()
