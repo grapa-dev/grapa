@@ -9,5 +9,5 @@
 # data = findall(term)
 
 ```
-search = {name:"", ,value:"", attr:{attrlist}, has:[searchlist], and:[searchlist]}
+search = {name:"", value:"", attr:{attrlist}, has:[searchlist], nhas:[searchlist], and:[searchlist], nand:[searchlist], or:[searchlist], nor:[searchlist]}
 ```
