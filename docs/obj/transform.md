@@ -276,3 +276,5 @@ Converts to binary.
 (0xC).bin() -> 1100
 ```
 
+## setconst(truefalse)
+Sets a bit to lock the variable from being modified. If set as const, the variable will not be locked when accessed. Useful for global variables accessed by multiple threads where if not a const will cause threads to block on access which is not needed if the variable doesn't change.
