@@ -41,6 +41,15 @@ Gets the middle bytes of an item.
 "testing".mid(2,3) -> "sti"
 ```
 
+## midtrim(items, offset, blocksize)
+
+```
+items = array of [label, offset, len, ltrim, rtrim, op]
+
+"this is a test to see".midtrim([["a",2,1," "," "],["b",10,5," "," ",op(a){a.len();}]],1,13);
+{"a":"s","b":3}
+```
+
 ## rtrim([str])
 Trims right.
 
