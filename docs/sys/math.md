@@ -1,6 +1,6 @@
 # $math()
 
-Inherits $obj().
+Inherits [$OBJ()](../type/OBJ.md).
 
 Command | Example | Result
 ------------ | ------------- | -------------
