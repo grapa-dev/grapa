@@ -2,6 +2,8 @@
 
 Inherits [$OBJ()](../obj/).
 
+Also see [Operators](../operators/)
+
 Command | Example | Result
 ------------ | ------------- | -------------
 $math().e(power) | $math().e()</br>$math().e(2.3) | 2.71828182845904523536028747135266</br>9.9741824548147207399576151569088
