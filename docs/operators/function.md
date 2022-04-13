@@ -35,6 +35,14 @@ See [$RULE type](../type/RULE.md)
 ## const
 Compile time option. Used primarily for $RULE. See $RULE.
 
+## static
+Sets a bit in the variable that prevents it from being changed. Will not be locked when accessed, which is useful for a global variable accssed by concurent threads.
+
+```
+x = static {one: "string one", two: "string two"};
+```
+
+
 ## literal
 Any sequence starting with an ascii letter, and including numbers and '_'. 
 
