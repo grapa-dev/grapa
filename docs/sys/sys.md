@@ -56,12 +56,3 @@ Values for $PLATFORM
 ## putenv (type, value)
 See getenv.
 
-# From $OBJ
-
-## exec()
-Executes string in the shell of the operating system. 
-
-```
-> "ver".exec()
-Microsoft Windows [Version 10.0.18363.778]
-```
