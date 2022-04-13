@@ -30,7 +30,7 @@ Creating an instance of a class. See class.
 Used to define lexical rules. Currently only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specified in the grammar. 
 
 ## rule
-See $RULE
+See [$RULE type](../type/RULE.md)
 
 ## const
 Compile time option. Used primarily for $RULE. See $RULE.
