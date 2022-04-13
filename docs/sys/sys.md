@@ -7,6 +7,9 @@ A few general utility functions that are useful, but it wasn't clear if they sho
 $INT
 ```
 
+## describe (object)
+Not implemented yet...more details than type. 
+
 ## getenv (type)
 
 getenv/putenv types:
@@ -55,4 +58,9 @@ Values for $PLATFORM
 
 ## putenv (type, value)
 See getenv.
+
+## compile(scriptfilename,compiledfilename)
+Compiles the script. Execution of a compiled script is faster. 
+
+## sleep(ms)
 
