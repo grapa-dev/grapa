@@ -163,3 +163,10 @@ Converts to lower.
 [1,3,5,7]
 ```
 
+# sort(axis,order,kind)
+
+# argsort(axis,order,kind)
+
+# unique(op)
+
+# group(op1,op2,op3)
