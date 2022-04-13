@@ -86,36 +86,7 @@ b = "dh".genkeys({p:a.p,g:a.g})
 a.secret(b)==b.secret(a)
 ```
 
-## result = n.modinv (m)
+# Other
 
-```
-(3504).modinv(385)
-79
-```
+[$math](../sys/math.md)
 
-## result = n.modpow (p,m)
-```
-(4).modpow(13,497)
-445
-```
-
-## n = bits.random ()
-
-```
-(16).random()
-11942
-```
-
-## n = bits.genprime ()
-
-```
-(16).genprime()
-60913
-```
-
-## ispass = n.isprime ()
-
-```
-(60913).isprime()
-1
-```
