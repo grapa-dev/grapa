@@ -125,14 +125,14 @@ Replaces iteems.
 "testing".replace("t","g") -> "gesging"
 ```
 
-## split(item [,param])
+## split(sep, max, axis)
 Splits into an array.
 
 ```
 "one\ntwo\nthree".split("\n") -> ["one","two","three"]
 "this is a test".split(" ") -> ["this","is","a","test"]
 "this is a test split into parts".split(3) -> ["this is a t","est split i","nto parts"]
-"this is a test split into parts".split(3," ") -> ["this is a test ","split into ","parts"]
+"this is a test split into parts".split(" ", 3) -> ["this is a test ","split into ","parts"]
 ```
 
 ## join(item)
