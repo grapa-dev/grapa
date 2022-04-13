@@ -1,5 +1,5 @@
 # $net
-Also see [$OBJ document)[../obj/document.md]
+Also see [$OBJ document](../obj/document.md)
 
 Provides a socket library, cross functional with all platforms supported. 
 
