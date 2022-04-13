@@ -1,8 +1,3 @@
 @global["$INT"]
 	= class ($math) {
- 	modpow = @<[op,@<modpow,{@<this,{}>,@<var,{p}>,@<var,{m}>}>],{"p":1,"m":1}>;
- 	modinv = @<[op,@<modinv,{@<this,{}>,@<var,{m}>}>],{"m":1}>;
-	genprime = @<[op,@<genprime,{@<this,{}>,@<var,{safe}>}>],{"safe":0}>;
-	isprime = @<[op,@<isprime,{@<this,{}>,@<var,{safe}>}>],{"safe":0}>;
- 	gcd = @<[op,@<gcd,{@<this,{}>,@<var,{a}>,@<var,{b}>}>],{"a":1,"b":1}>;
 	};
