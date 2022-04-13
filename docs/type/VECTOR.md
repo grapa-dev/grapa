@@ -6,34 +6,34 @@ The syntax for a $VECTOR is the same as an $ARRAY, but uses a '#' before and aft
 
 See [$OBJ vector](../obj/vector.md) for additional functions.
 
-# t()
+## t()
 
-# rref()
+## rref()
 
-# inv()
+## inv()
 
-# det()
+## det()
 
-# rank()
+## rank()
 
-# solve()
+## solve()
 
-# cov(axis)
+## cov(axis)
 
-# sum(axis)
+## sum(axis)
 
-# mean(axis)
+## mean(axis)
 
-# shape()
+## shape()
 
-# reshape(dim) 
+## reshape(dim) 
 
-# norm()
+## norm()
 
-# dot(b)
+## dot(b)
 
-# triu(b) 
+## triu(b) 
 
-# tril(b)
+## tril(b)
 
-# eigh()
+## eigh()
