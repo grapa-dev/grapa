@@ -34,3 +34,10 @@ $math().pi(power) | $math().pi()</br>$math().pi(2.3) | 3.14159265358979323846264
 (val).acsch() | (0.5).acsch() | 1.4436354751788103424932767402731
 $math().atan2(x,y) | `$math().atan2(10,10)*180/$math().pi()` | 45
 $math().hypot(x,y) | $math().hypot(3,4) | 5
+(val).random() | (16).random() | 11942
+(val).abs() | (-78).abs() | 78
+(val).modpow(p,m) | (4).modpow(13,497) | 445
+(val).modinv(m) | (3504).modinv(385) | 79
+(val).genprime() | (16).genprime() | 60913
+(val).isprime | (60913).isprime() | 1
+(val).gcd(n) | (18).gcd(24) | 6
