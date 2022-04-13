@@ -1,6 +1,6 @@
 # Function Operators
 ## op
-Creating an $OP. See $OP.
+Creating an $OP. See [$OP type](../type/op.md).
 
 ## class
 Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified variable is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other classes. 
