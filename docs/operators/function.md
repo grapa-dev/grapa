@@ -33,7 +33,28 @@ Used to define lexical rules. Currently only used to define special character ha
 See [$RULE type](../type/RULE.md)
 
 ## const
-Compile time option. Used primarily for $RULE. See $RULE.
+Compile time option. In the example below, the code to construct the array would be executed every time the function is called. By using the const operator, the line to construct the array will be executed at compile time and the result of that used in the function.
+
+```
+f = op(s)
+{
+  x = static {one: "string one", two: "string two"};
+  x[s];
+};
+f("two");
+```
+
+Here is the compiled function with static:
+```
+@<[op,@[@<assign,{x,{"one":"string one","two":"string two"}}>,@<search,{@<var,{x}>,@<createlist,{@<var,{s}>}>}>]],{s}>
+```
+
+Here is the compiled funciton without static:
+```
+@<[op,@[@<assign,{x,@<prepend,{@<createlist,{@<name,{two,"string two"}>}>,@<name,{one,"string one"}>}>}>,@<search,{@<var,{x}>,@<createlist,{@<var,{s}>}>}>]],{s}>
+```
+
+If the list needs to be constructed using a variable that is passed in, than do not use the static operator and the variable will be constructed at run time.
 
 ## static
 Sets a bit in the variable that prevents it from being changed. Will not be locked when accessed, which is useful for a global variable accssed by concurent threads.
