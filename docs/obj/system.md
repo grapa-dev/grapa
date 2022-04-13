@@ -18,3 +18,6 @@ Microsoft Windows [Version 10.0.18363.778]
 
 ## post()
 Sends string to console input, processing as if it came in from the console. 
+
+## echo()
+Outputs item to stdio.
