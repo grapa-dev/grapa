@@ -93,25 +93,25 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 [Document functions](docs/obj/document.md)
 
 # Operators
-[Constant](docs/operators/constant.md)
+[Constants](docs/operators/constants.md)
 
-[Math](docs/operators/math.md)
+[Math operators](docs/operators/math.md)
 
-[Bit](docs/operators/bit.md)
+[Bit operators](docs/operators/bit.md)
 
-[Assignment](docs/operators/assignment.md)
+[Assignment operators](docs/operators/assignment.md)
 
-[Compare](docs/operators/compare.md)
+[Compare operators](docs/operators/compare.md)
 
-[Condition](docs/operators/condition.md)
+[Condition operators](docs/operators/condition.md)
 
-[Loop](docs/operators/loop.md)
+[Loop operators](docs/operators/loop.md)
 
-[Function](docs/operators/function.md)
+[Function operators](docs/operators/function.md)
 
-[Command](docs/operators/command.md)
+[Command operators](docs/operators/command.md)
 
-[Lexical](docs/operators/lexical.md)
+[Lexical operators](docs/operators/lexical.md)
 
 # Syntax
 [Grammar](docs/syntax/grammar.md)
