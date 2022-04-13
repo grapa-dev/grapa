@@ -146,3 +146,11 @@ Converts to lower.
 ```
 "HI".lower() -> "hi"
 ```
+
+## data = (stop).range(start,step)
+
+```
+(9).range(1,2);
+[1,3,5,7]
+```
+
