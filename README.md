@@ -80,11 +80,17 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Iterator functions](docs/obj/iterate.md)
 
-[Output functions](docs/obj/output.md)
+[Format functions](docs/obj/format.md)
 
-[Sets funcitons applying to string, array, etc.](docs/obj/sets.md)
+[Transform functions](docs/obj/transform.md)
 
 [Type functions](docs/obj/type.md)
+
+[Vector functions](docs/obj/vector.md)
+
+[IO functions](docs/obj/io.md)
+
+[Document functions](docs/obj/document.md)
 
 # Operators
 [Constant](docs/operators/constant.md)
