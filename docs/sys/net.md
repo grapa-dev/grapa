@@ -198,3 +198,9 @@ n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:55}');
 n2.send('POST / HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{try:400}');
 n2.disconnect();
 ```
+
+## httpread()
+
+## httpsend(method,entity,header,body)
+
+## httpmessage(raw)
