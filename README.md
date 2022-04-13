@@ -114,6 +114,8 @@ Execution of all scripts (from code or compiled) run the same across all platfor
 
 [Operator](docs/syntax/operator.md)
 
+[Chaining](docs/syntax/chaining.md)
+
 # Examples
 [Examples](docs/EXAMPLES.md)
 
