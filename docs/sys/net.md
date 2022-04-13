@@ -1,4 +1,6 @@
 # $net
+Also see [$OBJ document)[../obj/document.md]
+
 Provides a socket library, cross functional with all platforms supported. 
 
 Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...ensure thread safe by using lock/unlock (any variable can be used for lock/unlock).
