@@ -23,7 +23,7 @@ If a variable holding a widget is assigned to another variable, both variables w
 ```
 
 #### "double_window"
-[FTLK documentatin - FL_Double_Window](https://www.fltk.org/doc-1.3/classFl__Double_Window.html)
+[FTLK documentatin - FL_Double_Window](https://www.fltk.org/doc-1.3/classFl__Double__Window.html)
 
 ```
   w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
