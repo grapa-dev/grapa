@@ -11,8 +11,12 @@ The $WIDGET type includes an initialization function $new that is called when th
 [FTLK documentatin - FL_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
 
 ```
-  w = $WIDGET("window", 0, 0, 640, 320, "test", {});
+  w = $WIDGET("window", 0, 0, 640, 320, "test", {color: "BLUE"});
+  w.show();
+  w = null;
 ```
+
+Attributes supported: 
 
 #### "double_window"
 
