@@ -39,15 +39,24 @@ Dobule buffering version of "window", so updates are smother.
 ```
   w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
   w.show();
+  w += (ns:$WIDGET("hor_nice_slider", 20, 20, 600, 20));
+  w.child("ns").set({scrollvalue:[30,5,0,100]});
+  w = null;
+```
+
+
+#### "scrollbar"
+[FTLK documentatin - FL_Scrollbar](https://www.fltk.org/doc-1.3/classFl__Scrollbar.html)
+
+```
+  w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
+  w.show();
   w += (ns:$WIDGET("hor_nice_slider", 20, 20, 600, 280));
   w.child("ns") += (te:$WIDGET("text_editor", 20, 20, 600, 20));
   w.child("ns").child("te").set({"text":"Editor added to slider"});
   w.child("ns").set({resizable: "te"});
   w = null;
 ```
-
-
-#### "scrollbar"
 
 #### "scroll"
 
@@ -143,7 +152,7 @@ name | desc
 "on_draw_cell" | 
 "jpeg" | 
 "linesize" | 
-"scrollvalue" | 
+"scrollvalue":[pos,size,first,total] | 
 "label" | 
 "labelfont" | 
 "get" | 
