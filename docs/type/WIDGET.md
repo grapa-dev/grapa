@@ -14,7 +14,7 @@ If a variable holding a widget is assigned to another variable, both variables w
 ### widget
 
 #### "window"
-[FTLK documentatin - FL_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
+[FTLK documentatin - Fl_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
 
 ```
   w = $WIDGET("window", 0, 0, 640, 320, "test", {color: "BLUE"});
@@ -23,7 +23,7 @@ If a variable holding a widget is assigned to another variable, both variables w
 ```
 
 #### "double_window"
-[FTLK documentatin - FL_Double_Window](https://www.fltk.org/doc-1.3/classFl__Double__Window.html)
+[FTLK documentatin - Fl_Double_Window](https://www.fltk.org/doc-1.3/classFl__Double__Window.html)
 
 Dobule buffering version of "window", so updates are smother. 
 
@@ -34,7 +34,7 @@ Dobule buffering version of "window", so updates are smother.
 ```
 
 #### "hor_nice_slider"
-[FTLK documentatin - FL_Hor_Nice_Slider](https://www.fltk.org/doc-1.3/classFl__Hor_Nice_Slider.html)
+[FTLK documentatin - FL_Hor_Nice_Slider](https://www.fltk.org/doc-1.3/classFl__Hor__Nice__Slider.html)
 
 
 #### "scrollbar"
