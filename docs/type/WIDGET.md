@@ -1,6 +1,6 @@
 # $WIDGET
 
-## $new (widget, x, y, w, h, label, attr)
+## $new (widget, x, y, w, h, label, attrlist)
 
 ### widget
 
@@ -23,7 +23,33 @@ name | desc
 "widget" | 
 "table_row" | 
 
-### attr
+### label
+Any string. Used as the title for a window or label for a button.
+
+### attrlist
+Calls set(attrlist)
+
+## show ()
+
+## hide ()
+
+## redraw ()
+
+## resizable (widget)
+
+## resize (x, y, w, h)
+
+## parent ()
+
+## child (name)
+
+## next ()
+
+## focus ()
+
+## get (name, params) or (attrlist)
+
+## set (name, data) or (attrlist)
 
 name | desc
 ------------ | -------------
@@ -74,27 +100,6 @@ name | desc
 "get" | 
 "exec" | 
 
-## show ()
-
-## hide ()
-
-## redraw ()
-
-## resizable (widget)
-
-## resize (x, y, w, h)
-
-## parent ()
-
-## child (name)
-
-## next ()
-
-## focus ()
-
-## get (name, params)
-
-## set (name, data)
 
 ## handle (event)
 
