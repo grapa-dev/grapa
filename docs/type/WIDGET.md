@@ -4,27 +4,39 @@
 
 ### widget
 
-name | desc
------------- | -------------
-"window" | 
-"double_window" | 
-"hor_nice_slider" | 
-"scrollbar" | 
-"scroll" | 
-"resizable_scroll" | 
-"button" | 
-"radio_button" | 
-"toggle_button" | 
-"text_editor" | 
-"text_display" | 
-"group" | 
-"pack" | 
-"menu_bar" | 
-"widget" | 
-"table_row" | 
+#### widget = "window"
+
+#### widget = "double_window"
+
+#### widget = "hor_nice_slider"
+
+#### widget = "scrollbar"
+
+#### widget = "scroll"
+
+#### widget = "resizable_scroll"
+
+#### widget = "button"
+
+#### widget = "radio_button"
+
+#### widget = "toggle_button"
+
+#### widget = "text_editor"
+
+#### widget = "text_display"
+
+#### widget = "group"
+
+#### widget = "pack"
+
+#### widget = "menu_bar"
+
+#### widget = "widget"
+
+#### widget = "table_row"
 
 ### label
-Any string. Used as the title for a window or label for a button.
 
 ### attrlist
 Calls set(attrlist)
