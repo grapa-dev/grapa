@@ -3,12 +3,16 @@
 To try test scripts, run grapa in with the editor screen by either using "grapa -w" from the command line, or if in grapa console, enter "$editor()" and then ">". The grapa source for the editor is here [$editor.grc](../../lib/grapa/$editor.grc).
 
 ## $new (widget, x, y, w, h, label, attrlist)
+The $WIDGET type includes an initialization function $new that is called when the widget object is created, passing in the widget type name, the screen boundaries, an optional label, and an optional set of attributes. The design is an implementation of the FTLK library, and so references included to the related library documentation. 
 
 ### widget
 
 #### "window"
 [FTLK documentatin - FL_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
 
+```
+  w = $WIDGET("window", 0, 0, 640, 320, "test", {});
+```
 
 #### "double_window"
 
