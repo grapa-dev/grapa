@@ -4,37 +4,39 @@
 
 ### widget
 
-#### widget = "window"
+#### "window"
+[FTLK FL_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
 
-#### widget = "double_window"
 
-#### widget = "hor_nice_slider"
+#### "double_window"
 
-#### widget = "scrollbar"
+#### "hor_nice_slider"
 
-#### widget = "scroll"
+#### "scrollbar"
 
-#### widget = "resizable_scroll"
+#### "scroll"
 
-#### widget = "button"
+#### "resizable_scroll"
 
-#### widget = "radio_button"
+#### "button"
 
-#### widget = "toggle_button"
+#### "radio_button"
 
-#### widget = "text_editor"
+#### "toggle_button"
 
-#### widget = "text_display"
+#### "text_editor"
 
-#### widget = "group"
+#### "text_display"
 
-#### widget = "pack"
+#### "group"
 
-#### widget = "menu_bar"
+#### "pack"
 
-#### widget = "widget"
+#### "menu_bar"
 
-#### widget = "table_row"
+#### "widget"
+
+#### "table_row"
 
 ### label
 
