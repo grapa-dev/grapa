@@ -25,6 +25,8 @@ If a variable holding a widget is assigned to another variable, both variables w
 #### "double_window"
 [FTLK documentatin - FL_Double_Window](https://www.fltk.org/doc-1.3/classFl__Double__Window.html)
 
+Dobule buffering version of "window", so updates are smother. 
+
 ```
   w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
   w.show();
@@ -32,6 +34,8 @@ If a variable holding a widget is assigned to another variable, both variables w
 ```
 
 #### "hor_nice_slider"
+[FTLK documentatin - FL_Hor_Nice_Slider](https://www.fltk.org/doc-1.3/classFl__Hor_Nice_Slider.html)
+
 
 #### "scrollbar"
 
