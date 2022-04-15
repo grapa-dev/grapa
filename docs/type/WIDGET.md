@@ -5,7 +5,7 @@
 ### widget
 
 #### "window"
-[FTLK FL_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
+[FTLK documentatin - FL_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
 
 
 #### "double_window"
