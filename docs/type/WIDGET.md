@@ -1,5 +1,7 @@
 # $WIDGET
 
+To try test scripts, run grapa in with the editor screen by either using "grapa -w" from the command line, or if in grapa console, enter "$editor()" and then ">". The grapa source for the editor is here [$editor.grc](../../lib/grapa/$editor.grc).
+
 ## $new (widget, x, y, w, h, label, attrlist)
 
 ### widget
