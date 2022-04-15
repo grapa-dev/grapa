@@ -1,7 +1,5 @@
 # $WIDGET
 
-## type ()
-
 ## $new (widget, x, y, w, h, label, attr)
 
 ### widget
