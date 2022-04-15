@@ -5,6 +5,12 @@ To try test scripts, run grapa in with the editor screen by either using "grapa 
 ## $new (widget, x, y, w, h, label, attrlist)
 The $WIDGET type includes an initialization function $new that is called when the widget object is created, passing in the widget type name, the screen boundaries, an optional label, and an optional set of attributes. The design is an implementation of the FTLK library, and so references included to the related library documentation. 
 
+When a widget is created, an optional attribute list can be provided. See the Set command for what is supported for each widget. 
+
+To delete a widget, assign null to the variable holding the widget.
+
+If a variable holding a widget is assigned to another variable, both variables will point to the same widget. Take caution when doing this...or avoid doing this. 
+
 ### widget
 
 #### "window"
@@ -16,9 +22,14 @@ The $WIDGET type includes an initialization function $new that is called when th
   w = null;
 ```
 
-Attributes supported: 
-
 #### "double_window"
+[FTLK documentatin - FL_Double_Window](https://www.fltk.org/doc-1.3/classFl__Double_Window.html)
+
+```
+  w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
+  w.show();
+  w = null;
+```
 
 #### "hor_nice_slider"
 
