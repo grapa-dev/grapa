@@ -298,9 +298,9 @@ w.resize(r.x,r.y,r.w+50,r.h+100);
 
 ## focus ()
 
-## get (name, params) or (attrlist)
+## get (attrarray)
 
-## set (name, data) or (attrlist)
+## set (attrlist)
 
 name | desc
 ------------ | -------------
