@@ -17,9 +17,8 @@ If a variable holding a widget is assigned to another variable, both variables w
 [FTLK documentatin - Fl_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
 
 ```
-  w = $WIDGET("window", 0, 0, 640, 320, "test", {color: "BLUE"});
-  w.show();
-  w = null;
+w = $WIDGET("window", 0, 0, 640, 320, "test", {color: "BLUE"});
+w.show();
 ```
 
 #### "double_window"
@@ -28,20 +27,30 @@ If a variable holding a widget is assigned to another variable, both variables w
 Dobule buffering version of "window", so updates are smother. 
 
 ```
-  w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
-  w.show();
-  w = null;
+w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
+w.show();
 ```
 
 #### "hor_nice_slider"
 [FTLK documentatin - FL_Hor_Nice_Slider](https://www.fltk.org/doc-1.3/classFl__Hor__Nice__Slider.html)
 
 ```
-  w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
-  w.show();
-  w += (ns:$WIDGET("hor_nice_slider", 20, 20, 600, 20));
-  w.child("ns").set({scrollvalue:[30,5,0,100]});
-  w = null;
+w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("hor_nice_slider", 20, 20, 600, 20, "", {scrollvalue:[30,5,0,100]}));
+```
+
+The above can also be initiated using the following.
+```
+w = $WIDGET("double_window", 0, 0, 640, 320, "test", {
+  color: "BLUE",
+  children: {
+    ns:$WIDGET("hor_nice_slider", 20, 20, 600, 20, "", {
+      scrollvalue:[30,5,0,100]
+      })
+    }
+  });
+w.show();
 ```
 
 
@@ -49,18 +58,24 @@ Dobule buffering version of "window", so updates are smother.
 [FTLK documentatin - FL_Scrollbar](https://www.fltk.org/doc-1.3/classFl__Scrollbar.html)
 
 ```
-  w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
-  w.show();
-  w += (ns:$WIDGET("hor_nice_slider", 20, 20, 600, 280));
-  w.child("ns") += (te:$WIDGET("text_editor", 20, 20, 600, 20));
-  w.child("ns").child("te").set({"text":"Editor added to slider"});
-  w.child("ns").set({resizable: "te"});
-  w = null;
+w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("scrollbar", 600, 20, 20, 280, "", {scrollvalue:[30,5,0,100]}));
 ```
 
 #### "scroll"
+[FTLK documentatin - FL_Scroll](https://www.fltk.org/doc-1.3/classFl__Scroll.html)
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
+w.child("ns") +=  (tx:$WIDGET("text_display", 20, 20, 800, 340));
+w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
+```
 
 #### "resizable_scroll"
+[FTLK documentatin - FL_Resizable_Scroll](https://www.fltk.org/doc-1.3/classFl__Resizable__Scroll.html)
 
 #### "button"
 
