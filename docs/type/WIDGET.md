@@ -179,26 +179,9 @@ w.show();
 w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
 w.child("tx").set({text:"blank"});
 
-w +=(menu: $WIDGET("menu_bar", 0, 0, 640, 30, "", {
-  children: {
-    M1: {
-      path: "&File/&M1",
-      shortcut: "^a",
-      flags: ["DIVIDER"],
-      callback: op(o,cbdata,item) {
-        o.parent().child("tx").set({text:"M1"});
-        }
-      },
-    M2: {
-      path: "&File/&M2",
-      shortcut: "^b",
-      callback: op(o,cbdata,item) {
-        o.parent().child("tx").set({text:"M2"});
-        }
-      }
-    }
-  })
-);
+w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
+w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});}});
+w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});}});
 ```
 
 #### "widget"
