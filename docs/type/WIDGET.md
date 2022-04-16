@@ -72,21 +72,7 @@ w.show();
 w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
 w.child("ns") +=  (tx:$WIDGET("text_display", 20, 20, 800, 340));
 w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
-```
-
-#### "resizable_scroll"
-[FTLK documentatin - FL_Scroll](https://www.fltk.org/doc-1.3/classFl__Scroll.html)
-
-Same as "scroll", but can be the resizable item for an enclosing group.
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("resizable_scroll", 20, 20, 300, 180));
-w.child("ns") +=  (tx:$WIDGET("text_display", 20, 20, 800, 340));
-w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
-w.child("ns").resize(10,10,300,300);
-
+w.redraw();
 ```
 
 #### "button"
@@ -123,6 +109,20 @@ Calls set(attrlist)
 ## resizable (widget)
 
 ## resize (x, y, w, h)
+[FTLK documentatin - resize()](https://www.fltk.org/doc-1.3/classFl__Widget.html#aca98267e7a9b94f699ebd27d9f59e8bb)
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
+w.child("ns") +=  (tx:$WIDGET("text_display", 20, 20, 800, 340));
+w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
+w.set({resizable: "ns"});
+w.redraw();
+
+r = w.get(["x","y","w","h"]);
+w.resize(r.x,r.y,r.w+50,r.h+100);
+```
 
 ## parent ()
 
