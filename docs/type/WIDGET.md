@@ -187,6 +187,20 @@ w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: m2_cb});
 ```
 
 #### "widget"
+[FTLK documentatin - FL_Widget](https://www.fltk.org/doc-1.3/classFl__Widget.html)
+
+Widget that does nothing. Useful for inserting a spacer in a "pack". 
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("pack", 20, 20, 0, 20, "", {type: "horizontal", spacing: 4}));
+w.child("ns") +=  (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
+w.child("ns") +=  (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+w.child("ns") +=  (s1:$WIDGET("widget", 20, 40, 20, 20));
+w.child("ns") +=  (b3:$WIDGET("button", 20, 40, 60, 20, "B3"));
+w.child("ns") +=  (b4:$WIDGET("button", 20, 40, 60, 20, "B4"));
+```
 
 #### "table_row"
 
