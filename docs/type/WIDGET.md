@@ -70,24 +70,105 @@ w += (ns:$WIDGET("scrollbar", 600, 20, 20, 280, "", {scrollvalue:[30,5,0,100]}))
 w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
 w.show();
 w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
-w.child("ns") +=  (tx:$WIDGET("text_display", 20, 20, 800, 340));
+w.child("ns") += (tx:$WIDGET("text_display", 20, 20, 800, 340));
 w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
 w.redraw();
 ```
 
 #### "button"
+[FTLK documentatin - FL_Button](https://www.fltk.org/doc-1.3/classFl__Button.html)
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
+w += (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+```
 
 #### "radio_button"
+[FTLK documentatin - FL_Radio_Button](https://www.fltk.org/doc-1.3/classFl__Radio__Button.html)
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (b1:$WIDGET("radio_button", 20, 20, 60, 20, "B1"));
+w += (b2:$WIDGET("radio_button", 20, 40, 60, 20, "B2"));
+```
 
 #### "toggle_button"
+[FTLK documentatin - FL_Toggle_Button](https://www.fltk.org/doc-1.3/classFl__Toggle__Button.html)
 
-#### "text_editor"
-
-#### "text_display"
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (b1:$WIDGET("toggle_button", 20, 20, 60, 20, "B1"));
+w += (b2:$WIDGET("toggle_button", 20, 40, 60, 20, "B2"));
+```
 
 #### "group"
+[FTLK documentatin - FL_Group](https://www.fltk.org/doc-1.3/classFl__Group.html)
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("group", 20, 20, 40, 60));
+w.child("ns") +=  (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
+w.child("ns") +=  (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+```
+
+After the above, run the following to move the group.
+
+```
+r = w.child("ns").get(["x","y","w","h"]);
+w.child("ns").resize(r.x+10,r.y+10,r.w,r.h);
+```
 
 #### "pack"
+[FTLK documentatin - FL_Pack](https://www.fltk.org/doc-1.3/classFl__Pack.html)
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("pack", 20, 20, 40, 60, "", {spacing: 4}));
+w.child("ns") +=  (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
+w.child("ns") +=  (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+```
+
+Horizontal version.
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("pack", 20, 20, 0, 20, "", {type: "horizontal", spacing: 4}));
+w.child("ns") +=  (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
+w.child("ns") +=  (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+```
+
+#### "text_editor"
+[FTLK documentatin - FL_Text_Editor](https://www.fltk.org/doc-1.3/classFl__Text__Editor.html)
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
+w.child("ns") +=  (tx:$WIDGET("text_editor", 20, 20, 800, 340));
+w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
+w.set({resizable: "ns"});
+w.redraw();
+```
+
+#### "text_display"
+[FTLK documentatin - FL_Text_Display](https://www.fltk.org/doc-1.3/classFl__Text__Display.html)
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
+w.child("ns") +=  (tx:$WIDGET("text_display", 20, 20, 800, 340));
+w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
+w.set({resizable: "ns"});
+w.redraw();
+```
 
 #### "menu_bar"
 
