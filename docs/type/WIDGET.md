@@ -345,7 +345,7 @@ m1_cb = op(o,cbdata,item) {o.focus().set({text:($TIME().utc()+$TIME().tz()).str(
 w.child("menu") += (Time: {path: "&File/&Time", shortcut: "^a", callback: m1_cb});
 ```
 
-## get (attrarray)
+## get (attr_array)
 
 ### widget attributes
 
@@ -389,6 +389,7 @@ name | desc
 "shape" |
 
 ### menu_bar attributes
+The array item is a list, where for each item the label is menu item label and the item value is an array of attributes to query for that menu item.
 
 name | desc
 ------------ | -------------
@@ -416,7 +417,7 @@ w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: m2_cb});
 w.child("menu").get([ {"M1":["path","shortcut"]} ]);
 ```
 
-## set (attrlist)
+## set (attr_list)
 
 name | desc
 ------------ | -------------
