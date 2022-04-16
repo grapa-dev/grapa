@@ -347,6 +347,54 @@ w.child("menu") += (Time: {path: "&File/&Time", shortcut: "^a", callback: m1_cb}
 
 ## get (attrarray)
 
+### widget attributes
+
+name | desc
+------------ | -------------
+"name" | 
+"visible" | 
+"x" | 
+"y" | 
+"w" | 
+"h" | 
+"size" |
+"label" |
+
+### scrollbar attributes
+
+name | desc
+------------ | -------------
+"linesize" |
+"scrollvalue" |
+
+### text_display, text_editor attributes
+
+name | desc
+------------ | -------------
+"text" |
+
+### table_row attributes
+
+name | desc
+------------ | -------------
+"r" |
+"c" |
+"shape" |
+
+### menu_bar attributes
+
+name | desc
+------------ | -------------
+"shortcut" |
+"options" |
+"labelsize" |
+"data" |
+"callback" |
+"name" |
+"label" |
+"path" |
+
+
 ## set (attrlist)
 
 name | desc
