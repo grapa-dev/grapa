@@ -291,12 +291,59 @@ w.resize(r.x,r.y,r.w+50,r.h+100);
 ```
 
 ## parent ()
+[FTLK documentatin - parent()](https://www.fltk.org/doc-1.3/classFl__Widget.html#a6f55261683ecaf68d70e424213d030b0)
+
+Parent widget...which will always be a "group" type of widget. Useful in handlers that get passed the widget for the handler, and the script needs to make a change to another widget that is relative to the target widget. An example would be a button that updates a text display. 
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
+w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
+w.child("ns").set({when_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+```
 
 ## child (name)
+[FTLK documentatin - child()](https://www.fltk.org/doc-1.3/classFl__Group.html#ab564b4b536ad8eb62885523220348d1f)
+
+Child of widget. Name can either be a string or a number. If number, than it is the n'th widget in the group.
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
+w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
+w.child("ns").set({when_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+```
 
 ## next ()
+Next widget in the group. This is useful when an action with a widget in a group needs to modify the widget that follows in the group.
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
+w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
+w.child("ns").set({when_release: op(o) {o.next().set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+```
 
 ## focus ()
+[FTLK documentatin - focus()](https://www.fltk.org/doc-1.3/group__fl__events.html#ga7f0e9836db43268979e0b3a999583b7f)
+
+Get's the current widget in focus.
+
+The following example has a menu item that will update the in focus text editor with the current time.
+
+```
+w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
+w.show();
+w +=  (tx:$WIDGET("text_editor", 20, 50, 300, 75));
+w +=  (tx:$WIDGET("text_editor", 20, 125, 300, 75));
+
+w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
+m1_cb = op(o,cbdata,item) {o.focus().set({text:($TIME().utc()+$TIME().tz()).str()});};
+w.child("menu") += (Time: {path: "&File/&Time", shortcut: "^a", callback: m1_cb});
+```
 
 ## get (attrarray)
 
