@@ -203,19 +203,64 @@ w.child("ns") +=  (b4:$WIDGET("button", 20, 40, 60, 20, "B4"));
 ```
 
 #### "table_row"
+[FTLK documentatin - FL_Table_Row](https://www.fltk.org/doc-1.3/classFl__Table__Row.html)
+
+```
+w = $WIDGET("double_window", 20, 50, 440, 340, "test", {color: "BLUE"});
+w.show();
+w += (table: $WIDGET("table_row", 20, 20, 400, 300));
+w.child("table").set({vector:$file().ls().vector()});
+```
 
 ### label
+A label for widgets that use a lable, such as "window".
 
 ### attrlist
 Calls set(attrlist)
 
 ## show ()
+Shows a widget.
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+```
 
 ## hide ()
+Hides a widget.
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
+w += (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+w.child("b1").hide();
+```
 
 ## redraw ()
+[FTLK documentatin - redraw()](https://www.fltk.org/doc-1.3/classFl__Widget.html#aa63ce68cbf4620cf8750b868368ea02b)
 
-## resizable (widget)
+A message can be sent to a widget to request a redraw, for situations where a change is made but the widget does not automatically update to reflect the change.
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
+w += (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+w.child("b1").redraw();
+```
+
+## resizable (resizewidget)
+[FTLK documentatin - resizable()](https://www.fltk.org/doc-1.3/classFl__Group.html#afd220e45e1ac817bde7d6a25fdf74e37)
+
+Binds the resizable definition for a widget to another widget. For example, a window may have both a text box and a button and resizing the window should result in resizing the text box but not the button. In this case, the resizable definition for the window should include the text box, but not the button. 
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w.resizable();
+```
+
 
 ## resize (x, y, w, h)
 [FTLK documentatin - resize()](https://www.fltk.org/doc-1.3/classFl__Widget.html#aca98267e7a9b94f699ebd27d9f59e8bb)
