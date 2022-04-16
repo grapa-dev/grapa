@@ -180,8 +180,10 @@ w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
 w.child("tx").set({text:"blank"});
 
 w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
-w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});}});
-w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});}});
+m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
+w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
+m2_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});};
+w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: m2_cb});
 ```
 
 #### "widget"
