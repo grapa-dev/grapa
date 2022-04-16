@@ -371,14 +371,21 @@ name | desc
 
 name | desc
 ------------ | -------------
+"mNBufferLines" |
+"mMaxsize" |
 "text" |
+"selection" |
+"start" |
+"end" |
+"row" |
+"col" |
 
 ### table_row attributes
 
 name | desc
 ------------ | -------------
-"r" |
-"c" |
+"rows" |
+"cols" |
 "shape" |
 
 ### menu_bar attributes
@@ -394,6 +401,20 @@ name | desc
 "label" |
 "path" |
 
+```
+w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
+w.show();
+w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
+w.child("tx").set({text:"blank"});
+
+w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
+m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
+w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
+m2_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});};
+w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: m2_cb});
+
+w.child("menu").get([ {"M1":["path","shortcut"]} ]);
+```
 
 ## set (attrlist)
 
@@ -428,6 +449,7 @@ name | desc
 "cursor_state" | 
 "cursor_color" | 
 "cursor_style" | 
+"cursor_visible" | 
 "scroll_type" | 
 "orientation" | 
 "on_resize" | 
