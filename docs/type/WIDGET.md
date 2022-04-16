@@ -385,7 +385,6 @@ name | desc
 "on_resize" | 
 "on_keydown" | 
 "on_mousewheel" | 
-"when_release" | 
 "on_drag" | 
 "on_push" | 
 "on_release" | 
