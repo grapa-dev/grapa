@@ -259,12 +259,18 @@ Binds the resizable definition for a widget to another widget. For example, a wi
 w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
 w.show();
 w.resizable(w);
+
 w += (ns:$WIDGET("pack", 20, 20, 300, 180, "", {spacing: 4}));
-w.child("ns") +=  (bt:$WIDGET("button", 20, 20, 80, 20, "resize test"));
+
+w.child("ns") += (bt:$WIDGET("pack", 20, 20, 0, 20, "", {type: "horizontal", spacing: 4}));
+w.child("ns").child("bt") +=  (bt1:$WIDGET("button", 20, 20, 40, 20, "btn1"));
+w.child("ns").child("bt") +=  (bt2:$WIDGET("button", 20, 20, 40, 20, "btn2"));
+
 w.child("ns") +=  (tx:$WIDGET("text_display", 20, 40, 300, 160));
-w.child("ns").set({resizable:"tx"});
+w.resizable(w.child("ns"));
+w.child("ns").resizable(w.child("ns").child("tx"));
+
 w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
-w.resizable(w.child("ns").child("tx"));
 ```
 
 
