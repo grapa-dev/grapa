@@ -567,8 +567,8 @@ name | desc
 
 ### other attributes
 
-name | desc
------------- | -------------
+name | type | desc
+------------ | ------------- | -------------
 "get" | attr_array
 "exec" | $OP | w.set({exec:op(){5.3*4.6}})
 
