@@ -570,7 +570,7 @@ name | desc
 name | desc
 ------------ | -------------
 "get" | attr_array
-"exec" | script
+"exec" | $OP | w.set({exec:op(){5.3*4.6}})
 
 ## handle (event)
 
