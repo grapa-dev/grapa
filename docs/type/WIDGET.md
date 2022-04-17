@@ -431,6 +431,11 @@ name | value | desc
 "size" | 
 "scroll_type" |  "HORIZONTAL", "VERTICAL"
 "orientation" | "HORIZONTAL", "VERTICAL"
+"jpeg" | 
+"label" | 
+"labelfont" | 
+"resizable" | 
+"color" | 
 
 ### handler attributes
 name | value | desc
@@ -442,6 +447,12 @@ name | value | desc
 "on_post_message" | $OP |
 "on_hide" | $OP |
 
+### scroll attributes
+
+name | desc
+------------ | -------------
+"scroll_type" |  "HORIZONTAL", "VERTICAL", "BOTH", "ALWAYS_ON", "HORIZONTAL_ALWAYS", "VERTICAL_ALWAYS", "BOTH_ALWAYS"
+
 ### scrollbar attributes
 
 name | value
@@ -449,6 +460,14 @@ name | value
 "on_drag" | $OP |
 "on_push" | $OP |
 "on_release" | $OP |
+"linesize" | 
+"scrollvalue":[pos,size,first,total] | 
+
+### hor_nice_slider attributes
+
+name | value
+------------ | -------------
+"scrollvalue":[pos,size,first,total] | 
 
 ### button attributes
 name | value
@@ -546,27 +565,12 @@ name | desc
 "vector" | 
 "on_draw_cell" | $OP |
 
-### scroll attributes
-
-name | desc
------------- | -------------
-"scroll_type" |  "HORIZONTAL", "VERTICAL", "BOTH", "ALWAYS_ON", "HORIZONTAL_ALWAYS", "VERTICAL_ALWAYS", "BOTH_ALWAYS"
-
 ### other attributes
 
 name | desc
 ------------ | -------------
-"resizable" | 
-"color" | 
-"menu_bar" | 
-"jpeg" | 
-"linesize" | 
-"scrollvalue":[pos,size,first,total] | 
-"label" | 
-"labelfont" | 
-"get" | 
-"exec" | 
-
+"get" | attr_array
+"exec" | script
 
 ## handle (event)
 
