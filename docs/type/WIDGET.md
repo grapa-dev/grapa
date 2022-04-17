@@ -300,7 +300,7 @@ w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
 w.show();
 w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
 w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({when_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+w.child("ns").set({on_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}});
 ```
 
 ## child (name)
@@ -313,7 +313,7 @@ w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
 w.show();
 w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
 w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({when_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+w.child("ns").set({on_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}});
 ```
 
 ## next ()
@@ -324,7 +324,7 @@ w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
 w.show();
 w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
 w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({when_release: op(o) {o.next().set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+w.child("ns").set({on_release: op(o) {o.next().set({text:($TIME().utc()+$TIME().tz()).str()});}});
 ```
 
 ## focus ()
@@ -517,7 +517,7 @@ name | value | desc
 ```
 w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
 w.show();
-w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
+w += (tx:$WIDGET("text_display", 20, 50, 300, 150));
 w.child("tx").set({text:"blank"});
 w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
 m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
@@ -573,11 +573,79 @@ name | type | desc
 "exec" | $OP | w.set({exec:op(){5.3*4.6}})
 
 ## handle (event)
+[FTLK documentatin - handle()](https://www.fltk.org/doc-1.3/classFl__Widget.html#a9cb17cc092697dfd05a3fab55856d218)
+
+In an event handler, such as "on_keydown", if the event is not processed by the "on_keydown" function, call handle(event).
+
+The following will process a text selection when Shift+Enter is pressed. If not pressed, than the default event handler is called for the widget.
+
+```
+on_keydown: op(o,event)
+{
+  $local.handled = 0;
+  if (((o.event_key() & (0x7f).int()) == 0x0d) && (o.event_key((0xffe1).int())))
+  {
+    $local.s = o.get("selection");
+    if (s==""||s.type()=="$ERR")
+      s = o.get("text");
+    if (s!="")
+    {
+      $local.t = s.post();
+    };
+    handled = 1;
+  }
+  else
+  {
+    handled = o.handle(event);
+  };
+  handled;
+}
+```
 
 ## event_key (key)
+[FTLK documentatin - event_key()](https://www.fltk.org/doc-1.3/group__fl__events.html#ga1ac131e3cd5ca674cc022b1f77233449)
+
+Returns the key lasted pressed if key parameter not passed in. If key parameter passed in, returns true if key is pressed.
+
+See "handle" example.
 
 ## append (data)
+Appends to text_display or text_editor widget.
+
+```
+w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (tx:$WIDGET("text_display", 20, 50, 300, 150));
+w.child("tx").set({text:"blank"});
+
+w.child("tx").append("hi");
+```
 
 ## post (postop, postparams, doneop)
+Runs postop in the widget thread with postparams. Runs doneop when done.
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
+w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
+w.child("tx").set({  
+  on_post_start: op(o){
+							o.set({"color":"YELLOW"});
+							o.redraw();
+						},
+	on_post_echo: op(o,data){
+							o.append(data.str());
+						},
+	on_post_end: op(o,data){
+							o.set({"text":data.str()});
+							o.set({"color":"WHITE"});
+							o.redraw();
+						}
+   });
+   
+w.child("tx").post(op(){(55*22).str().echo();"done";});
+```
 
 ## clear ()
+Removes all child elements from menu or group widget. 
