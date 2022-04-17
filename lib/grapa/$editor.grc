@@ -19,9 +19,9 @@ $global.newEditor = op(label) {
 				exit;
 		},
 		resizable: "scrollitems",
-		children: {
+		child: {
 			menu: $WIDGET("menu_bar", 0, 0, 640, 30, "", {
-				children: {
+				child: {
 					new: {
 						path: "&File/&New",
 						shortcut: "^n",
@@ -130,10 +130,10 @@ $global.newEditor = op(label) {
 			scrollitems: $WIDGET("resizable_scroll", 0, 30, 640, 180 - 30, "", {
 				type: "VERTICAL_ALWAYS",
 				resizable: "items",
-				children: {
+				child: {
 					items: $WIDGET("pack", 0, 30, 640 - 18, 180 - 30, "", {
 						spacing: 4,
-						children: [
+						child: [
 							newScrollItem(0, 30, 640 - 18, 60)
 						]
 					})
@@ -195,10 +195,10 @@ $global.newScrollItem = op(X,Y,W,H) {
 	$WIDGET("pack", X, Y, W, H, "", {
 		spacing: 4,
 		resizable: "data",
-		children: {
+		child: {
 			data: $WIDGET("pack", X, Y, W - 15, H - 30, "", {
 				spacing: 4,
-				children: {
+				child: {
 					edit: $WIDGET("text_editor", X, Y, W-15, H/2 - 15, "", {
 						wrap: "bounds",
 						on_resize: op(o,X,Y,W,H)
@@ -270,17 +270,17 @@ $global.newScrollItem = op(X,Y,W,H) {
 			bar: $WIDGET("pack", X, Y + H - 30, W - 15, 30, "", {
 				type: "horizontal",
 				spacing: 4,
-				children: {
+				child: {
 					blank: $WIDGET("widget", X, Y, 2, 30),
 					add: $WIDGET("button", X, Y, 30, 30, "+", {
-						when_release: op(o)
+						on_release: op(o)
 						{
 							o.parent().parent().parent() += newScrollItem(0, 0, 640 - 18, 60) o.parent().parent().next();
 							o.parent().parent().parent().parent().redraw();
 						}
 					}),
 					del: $WIDGET("button", X, Y, 30, 30, "-", {
-						when_release: op(o)
+						on_release: op(o)
 						{
 							o.parent().parent().parent() -= o.parent().parent().next();
 							o.parent().parent().parent().parent().redraw();
