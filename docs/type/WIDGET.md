@@ -430,17 +430,65 @@ name | value | desc
 "on_post_echo" | $OP |
 "on_post_message" | $OP |
 
+### group attributes
+
+name | value
+------------ | -------------
+"child" | list of {name: list of widget initialization attributes}
+"child" | list of {name: $WIDGET}
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
+w += (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+
+w.set({child:{b3:["button", 20, 60, 60, 20, "B3"]}});
+w.child("b3").redraw();
+
+w.set({child:{b4:$WIDGET("button", 20, 80, 60, 20, "B4")}});
+w.child("b4").redraw();
+```
+
 ### menu_bar attributes
+
+name | value
+------------ | -------------
+"child" | list of {name: list of attributes}
 
 name | value | desc
 ------------ | ------------- | -------------
-"child" | "global" |
+"name" |  | 
+"path" |  | 
+"data" |  | 
+"label" |  | 
+"flags" |  | 
+"labelfont" |  | 
+"labelsize" |  | 
+"labelcolor" |  | 
+"setonly" |  | 
+"shortcut" |  | 
+"callback" |  $OP | 
 
-(M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
+```
+w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
+w.show();
+w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
+w.child("tx").set({text:"blank"});
+w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
+m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
+w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
+m2_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});};
+w.child("menu") += (M2: {path: "&File/&M2", flags: ["DIVIDER"], shortcut: "^a", callback: m2_cb});
+
+w.child("menu").set({child:{M1: {label: "M1X", "labelsize":18}}});
+
+```
+
+### other attributes
 
 name | desc
 ------------ | -------------
-"child" | 
 "resizable" | 
 "text" | 
 "append" | 
