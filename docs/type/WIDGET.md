@@ -622,6 +622,8 @@ w.child("tx").append("hi");
 ```
 
 ## post (postop, postparams, doneop)
+*** this function is not fully working...do not use
+
 Runs postop in the widget thread with postparams. Runs doneop when done.
 
 ```
