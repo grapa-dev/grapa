@@ -128,7 +128,7 @@ $global.newEditor = op(label) {
 				}
 			}),
 			scrollitems: $WIDGET("resizable_scroll", 0, 30, 640, 180 - 30, "", {
-				type: "VERTICAL_ALWAYS",
+				scroll_type: "VERTICAL_ALWAYS",
 				resizable: "items",
 				child: {
 					items: $WIDGET("pack", 0, 30, 640 - 18, 180 - 30, "", {
@@ -268,7 +268,7 @@ $global.newScrollItem = op(X,Y,W,H) {
 				}
 			}),
 			bar: $WIDGET("pack", X, Y + H - 30, W - 15, 30, "", {
-				type: "horizontal",
+				scroll_type: "HORIZONTAL",
 				spacing: 4,
 				child: {
 					blank: $WIDGET("widget", X, Y, 2, 30),
