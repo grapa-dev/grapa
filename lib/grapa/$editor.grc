@@ -42,6 +42,9 @@ $global.newEditor = op(label) {
 						path: "&File/&Quit",
 						shortcut: "^q",
 						callback: op(o,cbdata,item) {
+							$local.i = $global.editors.reduce(op(a,b){
+								if (b) b.hide();
+							},0);
 							exit;
 						}
 					},
