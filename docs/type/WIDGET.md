@@ -424,11 +424,36 @@ w.child("menu").get([ {"M1":["path","shortcut"]} ]);
 name | value | desc
 ------------ | ------------- | -------------
 "namespace" | "global" | Variable resolution connected directly with global rather than parent widget.
+"x" | 
+"y" | 
+"w" | 
+"h" | 
+"size" | 
+"scroll_type" |  "HORIZONTAL", "VERTICAL"
+"orientation" | "HORIZONTAL", "VERTICAL"
+
+### handler attributes
+name | value | desc
+------------ | ------------- | -------------
 "on_post_start" | $OP |
 "on_post_prompt" | $OP |
 "on_post_end" | $OP |
 "on_post_echo" | $OP |
 "on_post_message" | $OP |
+"on_hide" | $OP |
+
+### scrollbar attributes
+
+name | value
+------------ | -------------
+"on_drag" | $OP |
+"on_push" | $OP |
+"on_release" | $OP |
+
+### button attributes
+name | value
+------------ | -------------
+"on_release" | $OP |
 
 ### group attributes
 
@@ -485,42 +510,55 @@ w.child("menu").set({child:{M1: {label: "M1X", "labelsize":18}}});
 
 ```
 
-### other attributes
+### text_display and text_editor attributes
 
 name | desc
 ------------ | -------------
-"resizable" | 
 "text" | 
 "append" | 
-"spacing" | 
-"wrap" | 
-"x" | 
-"y" | 
-"w" | 
-"h" | 
-"size" | 
-"shape" | 
-"vector" | 
+"wrap" | "NONE", "COLUMN", "PIXEL", "BOUNDS"
 "key" | 
-"color" | 
 "textsize" | 
-"menu_bar" | 
 "textfont" | 
 "textcolor" | 
 "cursor_state" | 
 "cursor_color" | 
 "cursor_style" | 
 "cursor_visible" | 
-"scroll_type" | 
-"orientation" | 
-"on_hide" | 
-"on_resize" | 
-"on_keydown" | 
-"on_mousewheel" | 
-"on_drag" | 
-"on_push" | 
-"on_release" | 
-"on_draw_cell" | 
+"on_resize" | $OP |
+"on_keydown" | $OP |
+"on_mousewheel" | $OP |
+"on_drag" | $OP |
+"on_push" | $OP |
+"on_release" | $OP |
+
+### pack attributes
+
+name | desc
+------------ | -------------
+"spacing" | 
+
+### table_row attributes
+
+name | desc
+------------ | -------------
+"shape" | 
+"vector" | 
+"on_draw_cell" | $OP |
+
+### scroll attributes
+
+name | desc
+------------ | -------------
+"scroll_type" |  "HORIZONTAL", "VERTICAL", "BOTH", "ALWAYS_ON", "HORIZONTAL_ALWAYS", "VERTICAL_ALWAYS", "BOTH_ALWAYS"
+
+### other attributes
+
+name | desc
+------------ | -------------
+"resizable" | 
+"color" | 
+"menu_bar" | 
 "jpeg" | 
 "linesize" | 
 "scrollvalue":[pos,size,first,total] | 
