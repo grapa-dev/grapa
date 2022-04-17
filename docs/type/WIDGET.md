@@ -419,16 +419,28 @@ w.child("menu").get([ {"M1":["path","shortcut"]} ]);
 
 ## set (attr_list)
 
+### widget attributes
+
+name | value | desc
+------------ | ------------- | -------------
+"namespace" | "global" | Variable resolution connected directly with global rather than parent widget.
+"on_post_start" | $OP |
+"on_post_prompt" | $OP |
+"on_post_end" | $OP |
+"on_post_echo" | $OP |
+"on_post_message" | $OP |
+
+### menu_bar attributes
+
+name | value | desc
+------------ | ------------- | -------------
+"child" | "global" |
+
+(M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
+
 name | desc
 ------------ | -------------
-"namespace" | 
-"on_post_start" | 
-"on_post_prompt" | 
-"on_post_end" | 
-"on_post_echo" | 
-"on_post_message" | 
-"children" | 
-"on_hide" | 
+"child" | 
 "resizable" | 
 "text" | 
 "append" | 
@@ -453,6 +465,7 @@ name | desc
 "cursor_visible" | 
 "scroll_type" | 
 "orientation" | 
+"on_hide" | 
 "on_resize" | 
 "on_keydown" | 
 "on_mousewheel" | 
