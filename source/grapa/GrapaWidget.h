@@ -108,6 +108,7 @@ public:
 	static void HideCB(void* b);
 	GrapaError Hide();
 	GrapaError Redraw();
+	static void ResizableCB(void* b);
 	GrapaError Resizable(GrapaWidget* bi);
 	static void ResizeCB(void* b);
 	GrapaError Resize(s64 x = 0, s64 y = 0, s64 w = 1, s64 h = 1);

@@ -38,6 +38,7 @@ extern GrapaSystem* gSystem;
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Table_Row.H>
 #include <FL/Fl_JPEG_Image.H>
+#include <FL/Fl_Hor_Nice_Slider.H>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -167,10 +168,10 @@ public:
 				while (g->children())
 				{
 					Fl_Widget* t = g->child(0);
-					g->remove(0);
 					GrapaWidget* x = (GrapaWidget*)t->user_data();
 					if (x && x->mDelete)
 						delete t;
+					g->remove(0);
 				}
 			}
 		}
@@ -329,8 +330,6 @@ public:
 		wh.mInResize = false;
 	}
 };
-
-#include <FL/Fl_Hor_Nice_Slider.H>
 
 class Grapa_Hor_Nice_Slider : public Fl_Hor_Nice_Slider
 {
@@ -1391,7 +1390,7 @@ GrapaError GrapaWidget::New(const char* widget, s64 x, s64 y, s64 w, s64 h, cons
 	cbwidget.ToLower();
 	if (cbwidget.Cmp("window")
 		&& cbwidget.Cmp("double_window")
-		&& cbwidget.Cmp("Hor_Nice_Slider")
+		&& cbwidget.Cmp("hor_nice_slider")
 		&& cbwidget.Cmp("scrollbar")
 		&& cbwidget.Cmp("scroll")
 		&& cbwidget.Cmp("resizable_scroll")
@@ -1462,7 +1461,7 @@ GrapaError GrapaWidget::New(const char* widget, s64 x, s64 y, s64 w, s64 h, cons
 	{
 		vWidget = new Grapa_Double_Window(this, x, y, w, h, (char*)mLabel.mBytes);
 	}
-	else if (mWidgetName.Cmp("Hor_Nice_Slider") == 0)
+	else if (mWidgetName.Cmp("hor_nice_slider") == 0)
 	{
 		vWidget = new Grapa_Hor_Nice_Slider(this, x, y, w, h, (char*)mLabel.mBytes);
 	}
@@ -1930,10 +1929,10 @@ void GrapaWidget::Add(GrapaRuleEvent* pList, GrapaRuleEvent* pAt)
 			if (wV && wV->mValue.mToken == GrapaTokenType::INT) { i.FromBytes(wV->mValue); w = i.LongValue(); }
 			if (hV && hV->mValue.mToken == GrapaTokenType::INT) { i.FromBytes(hV->mValue); h = i.LongValue(); }
 			if (labelV && labelV->mValue.mToken == GrapaTokenType::STR) label.FROM(labelV->mValue);
-			Fl::unlock();
+			//Fl::unlock();
 			GrapaWidget* t = new GrapaWidget(vScriptExec, vNameSpace);
 			GrapaError err = t->New((char*)widget.mBytes, x, y, w, h, (char*)label.mBytes, attrV);
-			Fl::lock();
+			//Fl::lock();
 			if (err)
 				delete t;
 			else
@@ -2152,8 +2151,9 @@ GrapaError GrapaWidget::Resizable(GrapaWidget* bi)
 	if (vWidget == NULL || bi == NULL || bi->vWidget == NULL)
 		return(-1);
 	Fl_Group* g = bi->vWidget->as_group();
-	if (g)
-		g->resizable(bi->vWidget);
+	Fl_Group* g0 = vWidget->as_group();
+	if (g&&g0)
+		g0->resizable(bi->vWidget);
 	return(0);
 }
 
@@ -2467,7 +2467,8 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 				{
 					mResizable.FROM(data->mValue);
 					Fl_Group* g = vWidget->as_group();
-					g->resizable(NULL);
+					if (g->resizable()) 
+						g->resizable(NULL);
 					if (mResizable.mLength && vWidget->as_group() && vWidget->user_data() && ((GrapaWidget*)vWidget->user_data())->mHasChildren)
 					{
 						int c = g->children();
@@ -2623,8 +2624,8 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 							int c = g->cols();
 							s64 index;
 							GrapaRuleEvent* e = NULL;
-							e = data->vQueue->Search("r", index); if (e && !e->IsNull()) r = GrapaInt(e->mValue).LongValue(); if (e) { e->CLEAR(); delete e; }
-							e = data->vQueue->Search("c", index); if (e && !e->IsNull()) c = GrapaInt(e->mValue).LongValue(); if (e) { e->CLEAR(); delete e; }
+							e = data->vQueue->Search("rows", index); if (e && !e->IsNull()) r = GrapaInt(e->mValue).LongValue(); if (e) { e->CLEAR(); delete e; }
+							e = data->vQueue->Search("cols", index); if (e && !e->IsNull()) c = GrapaInt(e->mValue).LongValue(); if (e) { e->CLEAR(); delete e; }
 							g->cols(r);
 							g->rows(c);
 						}
@@ -2854,6 +2855,17 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 							f->cursor_style(FL_CURSOR_NONE);
 					}
 				}
+				else if (value->mName.StrLowerCmp("cursor_visible") == 0)
+				{
+					if (mWidgetName.Cmp("text_editor") == 0 || mWidgetName.Cmp("text_display") == 0)
+					{
+						Fl_Text_Display* f = (Fl_Text_Display*)vWidget;
+						if (data->mValue.mLength == 0 || *data->mValue.mBytes == 0 || data->mValue.StrLowerCmp("false") == 0)
+							f->hide_cursor();
+						else
+							f->show_cursor();
+					}
+				}
 				else if (value->mName.StrLowerCmp("scroll_type") == 0 || value->mName.StrLowerCmp("type") == 0)
 				{
 					if (mWidgetName.Cmp("scroll") == 0 || mWidgetName.Cmp("resizable_scroll") == 0)
@@ -2887,39 +2899,6 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 						vWidget->type(FL_HORIZONTAL);
 					else if (data->mValue.StrLowerCmp("VERTICAL") == 0)
 						vWidget->type(FL_VERTICAL);
-				}
-				else if (value->mName.StrLowerCmp("cursor_style") == 0)
-				{
-					if (mWidgetName.Cmp("text_editor") == 0 || mWidgetName.Cmp("text_display") == 0)
-					{
-						Fl_Text_Display* f = (Fl_Text_Display*)vWidget;
-						if (data->mValue.StrLowerCmp("CURSOR_DEFAULT") == 0)
-							f->cursor_style(FL_CURSOR_DEFAULT);
-						else if (data->mValue.StrLowerCmp("CURSOR_ARROW") == 0)
-							f->cursor_style(FL_CURSOR_ARROW);
-						else if (data->mValue.StrLowerCmp("CURSOR_CROSS") == 0)
-							f->cursor_style(FL_CURSOR_CROSS);
-						else if (data->mValue.StrLowerCmp("CURSOR_WAIT") == 0)
-							f->cursor_style(FL_CURSOR_WAIT);
-						else if (data->mValue.StrLowerCmp("CURSOR_INSERT") == 0)
-							f->cursor_style(FL_CURSOR_INSERT);
-						else if (data->mValue.StrLowerCmp("CURSOR_HAND") == 0)
-							f->cursor_style(FL_CURSOR_HAND);
-						else if (data->mValue.StrLowerCmp("CURSOR_HELP") == 0)
-							f->cursor_style(FL_CURSOR_HELP);
-						else if (data->mValue.StrLowerCmp("CURSOR_MOVE") == 0)
-							f->cursor_style(FL_CURSOR_MOVE);
-						else if (data->mValue.StrLowerCmp("CURSOR_NS") == 0)
-							f->cursor_style(FL_CURSOR_NS);
-						else if (data->mValue.StrLowerCmp("CURSOR_WE") == 0)
-							f->cursor_style(FL_CURSOR_WE);
-						else if (data->mValue.StrLowerCmp("CURSOR_NWSE") == 0)
-							f->cursor_style(FL_CURSOR_NWSE);
-						else if (data->mValue.StrLowerCmp("CURSOR_NESW") == 0)
-							f->cursor_style(FL_CURSOR_NESW);
-						else if (data->mValue.StrLowerCmp("CURSOR_NONE") == 0)
-							f->cursor_style(FL_CURSOR_NONE);
-					}
 				}
 				else if (value->mName.StrLowerCmp("resize") == 0 || value->mName.StrLowerCmp("on_resize") == 0)
 				{
@@ -2966,17 +2945,6 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 						((Grapa_Text_Display*)vWidget)->wh.vOpHandle_mousewheel = vScriptExec->CopyItem(data);
 					}
 				}
-				else if (value->mName.StrLowerCmp("when_release") == 0)
-				{
-					if (mWidgetName.Cmp("button") == 0)
-					{
-						if (((Grapa_Button*)vWidget)->wh.vOpWhen_release)
-							delete ((Grapa_Button*)vWidget)->wh.vOpWhen_release;
-						((Grapa_Button*)vWidget)->wh.vOpWhen_release = vScriptExec->CopyItem(data);
-						((Grapa_Button*)vWidget)->callback(Grapa_Button::When);
-						((Grapa_Button*)vWidget)->when(FL_WHEN_RELEASE);
-					}
-				}
 				else if (value->mName.StrLowerCmp("on_drag") == 0)
 				{
 					if (mWidgetName.Cmp("text_editor") == 0)
@@ -3019,7 +2987,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 						((Grapa_Scrollbar*)vWidget)->wh.vOpHandle_push = vScriptExec->CopyItem(data);
 					}
 				}
-				else if (value->mName.StrLowerCmp("on_release") == 0)
+				else if (value->mName.StrLowerCmp("on_release") == 0 || value->mName.StrLowerCmp("when_release") == 0)
 				{
 					if (mWidgetName.Cmp("text_editor") == 0)
 					{
@@ -3038,6 +3006,14 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 						if (((Grapa_Scrollbar*)vWidget)->wh.vOpHandle_release)
 							delete ((Grapa_Scrollbar*)vWidget)->wh.vOpHandle_release;
 						((Grapa_Scrollbar*)vWidget)->wh.vOpHandle_release = vScriptExec->CopyItem(data);
+					}
+					else if (mWidgetName.Cmp("button") == 0 || mWidgetName.Cmp("radio_button") == 0 || mWidgetName.Cmp("toggle_button") == 0)
+					{
+						if (((Grapa_Button*)vWidget)->wh.vOpWhen_release)
+							delete ((Grapa_Button*)vWidget)->wh.vOpWhen_release;
+						((Grapa_Button*)vWidget)->wh.vOpWhen_release = vScriptExec->CopyItem(data);
+						((Grapa_Button*)vWidget)->callback(Grapa_Button::When);
+						((Grapa_Button*)vWidget)->when(FL_WHEN_RELEASE);
 					}
 				}
 				else if (value->mName.StrLowerCmp("on_draw_cell") == 0)
@@ -3094,7 +3070,7 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 				}
 				else if (value->mName.StrLowerCmp("scrollvalue") == 0)
 				{
-					if (mWidgetName.Cmp("scrollbar") == 0)
+					if (mWidgetName.Cmp("scrollbar") == 0 || mWidgetName.Cmp("hor_nice_slider") == 0)
 					{
 						Grapa_Scrollbar* f = (Grapa_Scrollbar*)vWidget;
 						if (data->mValue.mToken == GrapaTokenType::INT)
@@ -3123,10 +3099,20 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 				}
 				else if (value->mName.StrLowerCmp("get") == 0)
 				{
+					if (result)
+					{
+						result->CLEAR();
+						delete result;
+					}
 					result = Get(data);
 				}
 				else if (value->mName.StrLowerCmp("exec") == 0)
 				{
+					if (result)
+					{
+						result->CLEAR();
+						delete result;
+					}
 					result = vScriptExec->ProcessPlan(vNameSpace, data);
 				}
 				value = value->Next();
@@ -3186,12 +3172,12 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 				result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("w"), GrapaInt(vWidget->w()).getBytes()));
 				result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("h"), GrapaInt(vWidget->h()).getBytes()));
 			}
-			else if (value->mValue.StrLowerCmp("r") == 0)
+			else if (value->mValue.StrLowerCmp("rows") == 0)
 			{
 				if (mWidgetName.Cmp("table_row") == 0)
 					result2->mValue.FROM(GrapaInt(((Grapa_Table_Row*)vWidget)->rows()).getBytes());
 			}
-			else if (value->mValue.StrLowerCmp("c") == 0)
+			else if (value->mValue.StrLowerCmp("cols") == 0)
 			{
 				if (mWidgetName.Cmp("table_row") == 0)
 					result2->mValue.FROM(GrapaInt(((Grapa_Table_Row*)vWidget)->cols()).getBytes());
@@ -3202,8 +3188,8 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 				{
 					result2->mValue.mToken = GrapaTokenType::LIST;
 					result2->vQueue = new GrapaRuleQueue();
-					result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("r"), GrapaInt(((Grapa_Table_Row*)vWidget)->rows()).getBytes()));
-					result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("c"), GrapaInt(((Grapa_Table_Row*)vWidget)->cols()).getBytes()));
+					result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("rows"), GrapaInt(((Grapa_Table_Row*)vWidget)->rows()).getBytes()));
+					result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("cols"), GrapaInt(((Grapa_Table_Row*)vWidget)->cols()).getBytes()));
 				}
 			}
 			else if (value->mValue.StrLowerCmp("label") == 0)
@@ -3242,7 +3228,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 				{
 					result2->mValue.mToken = GrapaTokenType::LIST;
 					result2->vQueue = new GrapaRuleQueue();
-					result2->mName.FROM("children");
+					result2->mName.FROM("child");
 					result2->mName.mToken = GrapaTokenType::STR;
 
 					GrapaRuleEvent* me = value->vQueue->Head();
@@ -3268,7 +3254,7 @@ GrapaRuleEvent* GrapaWidget::Get(GrapaRuleEvent* data)
 								{
 									if (me2->mValue.StrLowerCmp("shortcut") == 0)
 									{
-										result2->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("shortcut"), GrapaInt(mi->shortcut()).getBytes()));
+										result3->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("shortcut"), GrapaInt(mi->shortcut()).getBytes()));
 									}
 									else if (me2->mValue.StrLowerCmp("options") == 0 || me2->mValue.StrLowerCmp("flags") == 0)
 									{

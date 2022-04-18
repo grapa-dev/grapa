@@ -183,6 +183,8 @@ int main(int argc, const char* argv[])
                 while (!gSystem->mStop)
                     Fl::wait(1);
             }
+
+            Fl::unlock();
         }
         else
         {

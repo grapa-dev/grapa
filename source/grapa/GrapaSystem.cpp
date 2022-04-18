@@ -362,6 +362,12 @@ void My_Console::Stop()
 	mConsoleSend.Stop();
 }
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <signal.h>
+#include <time.h>
+
 void My_Console::Run(GrapaCB cb, void* data)
 {
 	mConsoleSend.mScriptState.EnablePrompt(&mRuleVariables);
@@ -373,7 +379,16 @@ void My_Console::Run(GrapaCB cb, void* data)
 			while (((ch = gSystem->GetChar()) != EOF) && (ch != '\n') && (ch != '\r'))
 				sendBuffer.Append((char)ch);
 			if (sendBuffer.mLength == 1 && sendBuffer.StrNCmp(".") == 0)
+			{
 				return;
+			}
+			if (sendBuffer.mLength == 1 && sendBuffer.StrNCmp(">") == 0)
+			{
+				Fl::lock();
+				while (!gSystem->mStop)
+					Fl::wait(1);
+				Fl::unlock();
+			}
 			if (ch == EOF || ch == '\n')
 			{
 				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec,&mRuleVariables,(char*)sendBuffer.mBytes, sendBuffer.mLength);

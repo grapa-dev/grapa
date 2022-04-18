@@ -17688,11 +17688,12 @@ GrapaRuleEvent* GrapaLibraryRuleWidgetFocusEvent::Run(GrapaScriptExec* vScriptEx
 		GrapaRuleEvent* we = NULL;
 		int pos = objEvent->vWidget->vWidget->parent()->as_group()->find(objEvent->vWidget->vWidget);
 		result = new GrapaRuleEvent();
-		if ((pos + 1) >= objEvent->vWidget->vWidget->parent()->as_group()->children())
-		{
-			result->SetNull();
-		}
-		else
+		//int cld = objEvent->vWidget->vWidget->parent()->as_group()->children();
+		//if ((pos + 1) >= cld)
+		//{
+		//	result->SetNull();
+		//}
+		//else
 		{
 			Fl_Widget* xw = Fl::focus();
 			if (xw)
