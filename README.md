@@ -2,7 +2,7 @@
 # grapa
 grapa - a grammar parser language / environment for processing data for ETL workflows, or experimenting with new language constructs. 
 
-Grapa grammar is customizable at runtime. Default grammar here: [Grapa Grammar](../../lib/grapa/$grapa.grc)
+Grapa grammar is customizable at runtime. Default grammar here: [Grapa Grammar](lib/grapa/$grapa.grc)
 
 Each rule in the grammar is loaded into global variables, which can be over-riden, or replaced - which effectively changes the syntax of the language.
 
