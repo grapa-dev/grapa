@@ -130,6 +130,12 @@ value of test
 
 ## split(parts,name,path,delim,option)
 
+- parts = number of files
+- name = input file name
+- path = output path for the files (may need to create the folder first)
+- delim = what to use to split. Default is "\n". 
+- option = "csv" which will copy the header to each file, and "start" which will search backwards for the delim on the split
+
 ## info(name)
 
 ## mkfield(name [,fieldType[, storeType[, storeSize[, storeGrow]]]])
