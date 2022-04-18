@@ -566,10 +566,33 @@ Enables sending scripts to a widget to be run in a thread specific to that widge
 name | value | desc
 ------------ | ------------- | -------------
 "on_post_start" | $OP |
-"on_post_prompt" | $OP |
 "on_post_end" | $OP |
 "on_post_echo" | $OP |
-"on_post_message" | $OP |
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("button", 20, 20, 40, 20, "clear", {on_release: op(o){o.next().set({"text":""});} }));
+w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
+w.child("tx").set({  
+	on_post_start: op(o)
+  	{
+		o.set({text:""});
+		o.append("on_post_start\n");
+	},
+	on_post_echo: op(o,data)
+	{
+		o.append("on_post_echo:"+data.str()+"\n");
+	},
+	on_post_end: op(o,data)
+	{
+		o.append("on_post_end:"+data.str()+"\n");
+	}
+   });
+
+w.child("tx").post(op(p){p.post();},"(1).echo();2;");
+```
+
 
 ### other attributes
 
