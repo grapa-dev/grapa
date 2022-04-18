@@ -622,8 +622,6 @@ w.child("tx").append("hi");
 ```
 
 ## post (postop, postparams, doneop)
-*** this function is not fully working...do not use
-
 Runs postop in the widget thread with postparams. Runs doneop when done.
 
 ```
@@ -631,27 +629,7 @@ w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
 w.show();
 w += (ns:$WIDGET("button", 20, 20, 40, 20, "clear", {on_release: op(o){o.next().set({"text":""});} }));
 w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("tx").set({  
-  on_post_start: op(o)
-  	{
-		o.set({"color":"YELLOW"});
-		o.redraw();
-	},
-	on_post_echo: op(o,data)
-	{
-		o.append(data.str());
-	},
-	on_post_end: op(o,data)
-	{
-		o.set({"text":data.str()});
-		o.set({"color":"WHITE"});
-		o.redraw();
-	}
-   });
-   
-w.child("tx").post(op(){$this.set({text:"22"});});
-
-w.child("tx").set({exec:op(){$this.set({text:"hi"});}});
+w.child("tx").post(op(p){$self.set({text:p+" start\n"})},"test",op(p){$self.set({append:p+" end\n"})});
 ```
 
 ## clear ()
