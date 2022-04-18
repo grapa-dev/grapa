@@ -561,13 +561,15 @@ name | desc
 "on_draw_cell" | $OP |
 
 ### on_post handlers
-Enables sending scripts to a widget to be run in a thread specific to that widget (async to other threads). 
+Enables sending scripts (raw text script, not an $OP) to a widget to be compiled and run in a thread specific to that widget (async to other threads). 
 
 name | value | desc
 ------------ | ------------- | -------------
 "on_post_start" | $OP |
 "on_post_end" | $OP |
 "on_post_echo" | $OP |
+
+The script below will setup on_post handlers in the text_display widget, and then will exec a function in that widget to "post" a text script to be compiled and run in a thread. 
 
 ```
 w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
@@ -590,7 +592,14 @@ w.child("tx").set({
 	}
    });
 
-w.child("tx").post(op(p){p.post();},"(1).echo();2;");
+w.child("tx").set({exec:op(){"(1).echo();2;".post();}});
+```
+
+The result of the sccript below will create a window with a button and a text_display, with the text_display set to:
+```
+on_post_start
+on_post_echo:1
+on_post_end:2
 ```
 
 
