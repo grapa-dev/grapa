@@ -248,7 +248,7 @@ $global.newScrollItem = op(X,Y,W,H) {
 						},
 						on_post_end: op(o,data){
 							o.next().set({"text":data.str()});
-							o.set({"color":"white"});
+							o.set({"color":"WHITE"});
 							o.redraw();
 						}
 					}),

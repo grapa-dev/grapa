@@ -300,7 +300,7 @@ w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
 w.show();
 w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
 w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({when_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+w.child("ns").set({on_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}});
 ```
 
 ## child (name)
@@ -313,7 +313,7 @@ w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
 w.show();
 w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
 w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({when_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+w.child("ns").set({on_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}});
 ```
 
 ## next ()
@@ -324,7 +324,7 @@ w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
 w.show();
 w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
 w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({when_release: op(o) {o.next().set({text:($TIME().utc()+$TIME().tz()).str()});}}));
+w.child("ns").set({on_release: op(o) {o.next().set({text:($TIME().utc()+$TIME().tz()).str()});}});
 ```
 
 ## focus ()
@@ -424,11 +424,50 @@ w.child("menu").get([ {"M1":["path","shortcut"]} ]);
 name | value | desc
 ------------ | ------------- | -------------
 "namespace" | "global" | Variable resolution connected directly with global rather than parent widget.
-"on_post_start" | $OP |
-"on_post_prompt" | $OP |
-"on_post_end" | $OP |
-"on_post_echo" | $OP |
-"on_post_message" | $OP |
+"x" | 
+"y" | 
+"w" | 
+"h" | 
+"size" | 
+"scroll_type" |  "HORIZONTAL", "VERTICAL"
+"orientation" | "HORIZONTAL", "VERTICAL"
+"jpeg" | 
+"label" | 
+"labelfont" | 
+"resizable" | 
+"color" | 
+
+### window and double_window attributes
+name | value | desc
+------------ | ------------- | -------------
+"on_hide" | $OP |
+
+### scroll attributes
+
+name | desc
+------------ | -------------
+"scroll_type" |  "HORIZONTAL", "VERTICAL", "BOTH", "ALWAYS_ON", "HORIZONTAL_ALWAYS", "VERTICAL_ALWAYS", "BOTH_ALWAYS"
+
+### scrollbar attributes
+
+name | value
+------------ | -------------
+"on_drag" | $OP |
+"on_push" | $OP |
+"on_release" | $OP |
+"linesize" | 
+"scrollvalue":[pos,size,first,total] | 
+
+### hor_nice_slider attributes
+
+name | value
+------------ | -------------
+"scrollvalue":[pos,size,first,total] | 
+
+### button attributes
+name | value
+------------ | -------------
+"on_release" | $OP |
 
 ### group attributes
 
@@ -473,7 +512,7 @@ name | value | desc
 ```
 w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
 w.show();
-w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
+w += (tx:$WIDGET("text_display", 20, 50, 300, 150));
 w.child("tx").set({text:"blank"});
 w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
 m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
@@ -485,57 +524,151 @@ w.child("menu").set({child:{M1: {label: "M1X", "labelsize":18}}});
 
 ```
 
-### other attributes
+### text_display and text_editor attributes
 
 name | desc
 ------------ | -------------
-"resizable" | 
 "text" | 
 "append" | 
-"spacing" | 
-"wrap" | 
-"x" | 
-"y" | 
-"w" | 
-"h" | 
-"size" | 
-"shape" | 
-"vector" | 
+"wrap" | "NONE", "COLUMN", "PIXEL", "BOUNDS"
 "key" | 
-"color" | 
 "textsize" | 
-"menu_bar" | 
 "textfont" | 
 "textcolor" | 
 "cursor_state" | 
 "cursor_color" | 
 "cursor_style" | 
 "cursor_visible" | 
-"scroll_type" | 
-"orientation" | 
-"on_hide" | 
-"on_resize" | 
-"on_keydown" | 
-"on_mousewheel" | 
-"on_drag" | 
-"on_push" | 
-"on_release" | 
-"on_draw_cell" | 
-"jpeg" | 
-"linesize" | 
-"scrollvalue":[pos,size,first,total] | 
-"label" | 
-"labelfont" | 
-"get" | 
-"exec" | 
+"on_resize" | $OP |
+"on_keydown" | $OP |
+"on_mousewheel" | $OP |
+"on_drag" | $OP |
+"on_push" | $OP |
+"on_release" | $OP |
 
+### pack attributes
+
+name | desc
+------------ | -------------
+"spacing" | 
+
+### table_row attributes
+
+name | desc
+------------ | -------------
+"shape" | 
+"vector" | 
+"on_draw_cell" | $OP |
+
+### on_post handlers
+Enables sending scripts (raw text script, not an $OP) to a widget to be compiled and run in a thread specific to that widget (async to other threads). 
+
+name | value | desc
+------------ | ------------- | -------------
+"on_post_start" | $OP |
+"on_post_end" | $OP |
+"on_post_echo" | $OP |
+
+The script below will setup on_post handlers in the text_display widget, and then will exec a function in that widget to "post" a text script to be compiled and run in a thread. 
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("button", 20, 20, 40, 20, "clear", {on_release: op(o){o.next().set({"text":""});} }));
+w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
+w.child("tx").set({  
+	on_post_start: op(o)
+  	{
+		o.set({text:""});
+		o.append("on_post_start\n");
+	},
+	on_post_echo: op(o,data)
+	{
+		o.append("on_post_echo:"+data.str()+"\n");
+	},
+	on_post_end: op(o,data)
+	{
+		o.append("on_post_end:"+data.str()+"\n");
+	}
+   });
+
+w.child("tx").set({exec:op(){"(1).echo();2;".post();}});
+```
+
+The result of the sccript below will create a window with a button and a text_display, with the text_display set to:
+```
+on_post_start
+on_post_echo:1
+on_post_end:2
+```
+
+
+### other attributes
+
+name | type | desc
+------------ | ------------- | -------------
+"get" | attr_array
+"exec" | $OP | w.child("tx").set({exec:op(){$this.get(["text"]);}});
 
 ## handle (event)
+[FTLK documentatin - handle()](https://www.fltk.org/doc-1.3/classFl__Widget.html#a9cb17cc092697dfd05a3fab55856d218)
+
+In an event handler, such as "on_keydown", if the event is not processed by the "on_keydown" function, call handle(event).
+
+The following will process a text selection when Shift+Enter is pressed. If not pressed, than the default event handler is called for the widget.
+
+```
+on_keydown: op(o,event)
+{
+  $local.handled = 0;
+  if (((o.event_key() & (0x7f).int()) == 0x0d) && (o.event_key((0xffe1).int())))
+  {
+    $local.s = o.get("selection");
+    if (s==""||s.type()=="$ERR")
+      s = o.get("text");
+    if (s!="")
+    {
+      $local.t = s.post();
+    };
+    handled = 1;
+  }
+  else
+  {
+    handled = o.handle(event);
+  };
+  handled;
+}
+```
 
 ## event_key (key)
+[FTLK documentatin - event_key()](https://www.fltk.org/doc-1.3/group__fl__events.html#ga1ac131e3cd5ca674cc022b1f77233449)
+
+Returns the key lasted pressed if key parameter not passed in. If key parameter passed in, returns true if key is pressed.
+
+See "handle" example.
 
 ## append (data)
+Appends to text_display or text_editor widget.
+
+```
+w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
+w.show();
+w += (tx:$WIDGET("text_display", 20, 50, 300, 150));
+w.child("tx").set({text:"blank"});
+
+w.child("tx").append("hi");
+```
 
 ## post (postop, postparams, doneop)
+Runs postop in the widget thread with postparams. Runs doneop when done.
+
+```
+w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
+w.show();
+w += (ns:$WIDGET("button", 20, 20, 40, 20, "clear", {on_release: op(o){o.next().set({"text":""});} }));
+w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
+w.child("tx").post(op(p){$self.set({text:p+" start\n"})},"test",op(p){$self.set({append:p+" end\n"})});
+```
 
 ## clear ()
+Removes all child elements from menu or group widget. 
