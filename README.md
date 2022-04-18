@@ -2,11 +2,19 @@
 # grapa
 grapa - a grammar parser language / environment for processing data for ETL workflows, or experimenting with new language constructs. 
 
-The unique approach of grapa is that it includes native syntax for JSON/XML and BNF style grammars for defining data processing rules. The same grammar engine used to assist with parsing data is the same engine used to process the language. The syntax of the language can be customized (runtime-self-mutable) as the language rules are stored as global variables. If for example, you'd like to extend the langue to include some preferred syntax , that enhancement would function as native syntax. 
+Grapa grammar is customizable at runtime. Default grammar here: [Grapa Grammar](../../lib/grapa/$grapa.grc)
 
-Underneath the syntax, there are several libraries that provide the lower level heavy lifting for strings, execution flow, files, networking, threads, classes with inheritance, encryption (RSA, AES, SHA, etc), math, database, etc. The grammar syntax you define can either invoke routines written in the existing syntax, or call lower level libraries. The native integer and float support uses unlimited precision (or limited by CPU/memory). 
+Each rule in the grammar is loaded into global variables, which can be over-riden, or replaced - which effectively changes the syntax of the language.
 
-Execution of all scripts (from code or compiled) run the same across all platforms, including the unlimited floating point routines. And will work the same on either big endian or little endian systems. 
+The grammar includes parsing for JSON/XML/HTML. The underlying data structures are based on JSON, but add extentions for several native Grapa types such as $OP, as well as XML (JSON and XML can co-exist). 
+
+The base grammar for the langauge is $OP and $CODE - and any compilation will translate to this as the executable. An $OP consists of a reference to a C++ function along with parameters. A $CODE is a sequence of $OP's. There are many C++ functions for base functionality such as variable handling, networking, and file IO. 
+
+Grapa includes a form of a class library with inheritance, which is used to enxtend the language based on a default syntax for calling class library methods.
+
+Integers are all big integers and floats are all big floats. Percision is unlimited, within available memory. 
+
+The language is cross platform binary/execution compatible accross Windows, Linux, Mac (Intel and Apple). 
 
 # Setup
 [Install from binary](docs/BINARY.md)
