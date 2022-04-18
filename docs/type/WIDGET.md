@@ -437,14 +437,9 @@ name | value | desc
 "resizable" | 
 "color" | 
 
-### handler attributes
+### window and double_window attributes
 name | value | desc
 ------------ | ------------- | -------------
-"on_post_start" | $OP |
-"on_post_prompt" | $OP |
-"on_post_end" | $OP |
-"on_post_echo" | $OP |
-"on_post_message" | $OP |
 "on_hide" | $OP |
 
 ### scroll attributes
@@ -564,6 +559,17 @@ name | desc
 "shape" | 
 "vector" | 
 "on_draw_cell" | $OP |
+
+### on_post handlers
+Enables sending scripts to a widget to be run in a thread specific to that widget (async to other threads). 
+
+name | value | desc
+------------ | ------------- | -------------
+"on_post_start" | $OP |
+"on_post_prompt" | $OP |
+"on_post_end" | $OP |
+"on_post_echo" | $OP |
+"on_post_message" | $OP |
 
 ### other attributes
 
