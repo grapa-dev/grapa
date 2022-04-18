@@ -8,7 +8,7 @@ Each rule in the grammar is loaded into global variables, which can be overridde
 
 The grammar includes parsing for JSON/XML/HTML. The underlying data structures are based on JSON, but add extentions for several native Grapa types such as $OP, as well as XML (JSON and XML can co-exist). 
 
-The base grammar for the langauge is $OP and $CODE - and any compilation will translate to this as the executable. An $OP consists of a reference to a C++ function along with parameters. A $CODE is a sequence of $OP's. There are many C++ functions for base functionality such as variable handling, networking, and file IO. 
+The base grammar for the langauge is [$OP](docs/type/OP.md) and [$CODE](docs/type/CODE.md) - and any compilation will translate to this as the executable. An $OP consists of a reference to a C++ function along with parameters. A $CODE is a sequence of $OP's. There are many C++ functions for base functionality such as variable handling, networking, and file IO. 
 
 Grapa includes a form of a class library with inheritance, which is used to enxtend the language based on a default syntax for calling class library methods.
 
