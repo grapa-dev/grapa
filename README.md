@@ -4,7 +4,7 @@ grapa - a grammar parser language / environment for processing data for ETL work
 
 Grapa grammar is customizable at runtime. Default grammar here: [Grapa Grammar](lib/grapa/$grapa.grc)
 
-Each rule in the grammar is loaded into global variables, which can be overridden, or replaced - which effectively changes the syntax of the language.
+Each rule in the grammar is loaded into global variables, which can be overridden, or replaced - which effectively changes the syntax of the language. Additionally, rules can be created to parse any data that a grammer can be used to define, where the output is what each rule resolves to. See [$RULE](docs/type/RULE.md) for more details.
 
 The grammar includes parsing for JSON/XML/HTML. The underlying data structures are based on JSON, but add extentions for several native Grapa types such as $OP, as well as XML (JSON and XML can co-exist). 
 
