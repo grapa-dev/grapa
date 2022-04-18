@@ -122,7 +122,7 @@ But right recursion may not be desirable in some cases. One example is order of 
 
 ```
 r1 = rule 
-     $INT '+' <r1>             {@<add,{$1,$3}>} 
+    $INT '+' <r1>             {@<add,{$1,$3}>} 
   | $INT '-' <r1>              {@<sub,{$1,$3}>} 
   | $INT                            {@<lit,{$1}>}
   ;
@@ -140,7 +140,7 @@ Left recursion is required to address this.
 
 ```
 r2 = rule 
-     <r2> '+' $INT       {@<add,{$1,$3}>} 
+    <r2> '+' $INT       {@<add,{$1,$3}>} 
   | <r2> '-' $INT        {@<sub,{$1,$3}>} 
   | $INT                      {@<lit,{$1}>}
   ;
