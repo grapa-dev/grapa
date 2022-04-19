@@ -1,4 +1,4 @@
-# $WIDGET
+# $WIDGET attributes
 
 scope | name | get | set | options
 ------------ | ------------- | ------------- | ------------- | -------------
@@ -65,50 +65,7 @@ table_row | "shape" | :heavy_check_mark: | :heavy_check_mark: |
 table_row | "vector" | :heavy_minus_sign: | :heavy_check_mark: | 
 table_row | "on_draw_cell" | :heavy_minus_sign: | :heavy_check_mark: | $OP
 
-
-## get (attr_array)
-
-
-## set (attr_list)
-
-
-name | value
------------- | -------------
-"child" | list of {name: list of widget initialization attributes}
-"child" | list of {name: $WIDGET}
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w += (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
-
-w.set({child:{b3:["button", 20, 60, 60, 20, "B3"]}});
-w.child("b3").redraw();
-
-w.set({child:{b4:$WIDGET("button", 20, 80, 60, 20, "B4")}});
-w.child("b4").redraw();
-```
-
-
-
-```
-w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (tx:$WIDGET("text_display", 20, 50, 300, 150));
-w.child("tx").set({text:"blank"});
-w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
-m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
-w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
-m2_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});};
-w.child("menu") += (M2: {path: "&File/&M2", flags: ["DIVIDER"], shortcut: "^a", callback: m2_cb});
-
-w.child("menu").set({child:{M1: {label: "M1X", "labelsize":18}}});
-
-```
-
-
-### on_post handlers
+## on_post handlers
 Enables sending scripts (raw text script, not an $OP) to a widget to be compiled and run in a thread specific to that widget (async to other threads). 
 
 name | value | desc
@@ -150,40 +107,10 @@ on_post_echo:1
 on_post_end:2
 ```
 
-
-### other attributes
+## other attributes
 
 name | type | desc
 ------------ | ------------- | -------------
 "get" | attr_array
 "exec" | $OP | w.child("tx").set({exec:op(){$this.get(["text"]);}});
 
-## handle (event)
-[FTLK documentatin - handle()](https://www.fltk.org/doc-1.3/classFl__Widget.html#a9cb17cc092697dfd05a3fab55856d218)
-
-In an event handler, such as "on_keydown", if the event is not processed by the "on_keydown" function, call handle(event).
-
-The following will process a text selection when Shift+Enter is pressed. If not pressed, than the default event handler is called for the widget.
-
-```
-on_keydown: op(o,event)
-{
-  $local.handled = 0;
-  if (((o.event_key() & (0x7f).int()) == 0x0d) && (o.event_key((0xffe1).int())))
-  {
-    $local.s = o.get("selection");
-    if (s==""||s.type()=="$ERR")
-      s = o.get("text");
-    if (s!="")
-    {
-      $local.t = s.post();
-    };
-    handled = 1;
-  }
-  else
-  {
-    handled = o.handle(event);
-  };
-  handled;
-}
-```
