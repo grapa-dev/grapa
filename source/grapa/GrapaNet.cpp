@@ -59,7 +59,7 @@ extern GrapaSystem* gSystem;
 // https://wiki.openssl.org/index.php/Simple_TLS_Server
 
 
-typedef struct _AcureNetPrivate {
+typedef struct _GrapaNetPrivate {
 	struct addrinfo mHints;
 	struct sockaddr_storage mSockAddr;
 	char mServerInfo[46];
@@ -70,26 +70,26 @@ typedef struct _AcureNetPrivate {
 	WSADATA wsaData;
 	SOCKET mSocket;
 #endif
-}AcureNetPrivate;
+}GrapaNetPrivate;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 GrapaNet::GrapaNet()
 {
-	vInstance = (void*)GrapaMem::Create(sizeof(AcureNetPrivate));
+	vInstance = (void*)GrapaMem::Create(sizeof(GrapaNetPrivate));
 
 	mStarted = false;
 	mConnected = false;
 	mBound = false;
-	((AcureNetPrivate*)vInstance)->mSocket = 1;
+	((GrapaNetPrivate*)vInstance)->mSocket = 1;
 #ifdef _WIN32
-	memset(&((AcureNetPrivate*)vInstance)->wsaData, 0, sizeof(((AcureNetPrivate*)vInstance)->wsaData));
-	memset(&((AcureNetPrivate*)vInstance)->mHints, 0, sizeof(((AcureNetPrivate*)vInstance)->mHints));
+	memset(&((GrapaNetPrivate*)vInstance)->wsaData, 0, sizeof(((GrapaNetPrivate*)vInstance)->wsaData));
+	memset(&((GrapaNetPrivate*)vInstance)->mHints, 0, sizeof(((GrapaNetPrivate*)vInstance)->mHints));
 #endif
 	mHostName[0] = 0;
 	mIpName[0] = 0;
-	((AcureNetPrivate*)vInstance)->mServerInfo[0] = 0;
-	memset(&((AcureNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((AcureNetPrivate*)vInstance)->mSockAddr));
+	((GrapaNetPrivate*)vInstance)->mServerInfo[0] = 0;
+	memset(&((GrapaNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr));
 	mFamily = 0;
 	mPort = 0;
 	mMAC = 0;
@@ -125,7 +125,7 @@ GrapaNet::~GrapaNet()
 GrapaError GrapaNet::Startup()
 {
 #ifdef _WIN32
-	if (!mStarted && WSAStartup(MAKEWORD(2, 2), &((AcureNetPrivate*)vInstance)->wsaData) != 0) return(-1);
+	if (!mStarted && WSAStartup(MAKEWORD(2, 2), &((GrapaNetPrivate*)vInstance)->wsaData) != 0) return(-1);
 #endif
 	mStarted = true;
 	return(0);
@@ -346,35 +346,35 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 		GrapaCHAR prNode, prService;
 		GetService(vPh, prNode, prService, prIsIPv6);
 		struct addrinfo* result = NULL;
-		memset(&((AcureNetPrivate*)vInstance)->mHints, 0, sizeof(struct addrinfo));
-		((AcureNetPrivate*)vInstance)->mHints.ai_family = AF_INET;    // AF_INET, AF_INET6, AF_BTH
+		memset(&((GrapaNetPrivate*)vInstance)->mHints, 0, sizeof(struct addrinfo));
+		((GrapaNetPrivate*)vInstance)->mHints.ai_family = AF_INET;    // AF_INET, AF_INET6, AF_BTH
 		if (prIsIPv6)
-			((AcureNetPrivate*)vInstance)->mHints.ai_family = AF_INET6;
-		((AcureNetPrivate*)vInstance)->mHints.ai_socktype = SOCK_STREAM;
-		((AcureNetPrivate*)vInstance)->mHints.ai_flags = 0;
-		((AcureNetPrivate*)vInstance)->mHints.ai_protocol = IPPROTO_TCP;  // IPPROTO_TCP, BTHPROTO_RFCOMM
-		((AcureNetPrivate*)vInstance)->mHints.ai_canonname = NULL;
-		((AcureNetPrivate*)vInstance)->mHints.ai_addr = NULL;
-		((AcureNetPrivate*)vInstance)->mHints.ai_next = NULL;
-		if (getaddrinfo((char*)prNode.mBytes, (char*)prService.mBytes, &((AcureNetPrivate*)vInstance)->mHints, &result) != 0) return(-1);
-		((AcureNetPrivate*)vInstance)->mSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-		if (((AcureNetPrivate*)vInstance)->mSocket == -1)
+			((GrapaNetPrivate*)vInstance)->mHints.ai_family = AF_INET6;
+		((GrapaNetPrivate*)vInstance)->mHints.ai_socktype = SOCK_STREAM;
+		((GrapaNetPrivate*)vInstance)->mHints.ai_flags = 0;
+		((GrapaNetPrivate*)vInstance)->mHints.ai_protocol = IPPROTO_TCP;  // IPPROTO_TCP, BTHPROTO_RFCOMM
+		((GrapaNetPrivate*)vInstance)->mHints.ai_canonname = NULL;
+		((GrapaNetPrivate*)vInstance)->mHints.ai_addr = NULL;
+		((GrapaNetPrivate*)vInstance)->mHints.ai_next = NULL;
+		if (getaddrinfo((char*)prNode.mBytes, (char*)prService.mBytes, &((GrapaNetPrivate*)vInstance)->mHints, &result) != 0) return(-1);
+		((GrapaNetPrivate*)vInstance)->mSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		if (((GrapaNetPrivate*)vInstance)->mSocket == -1)
 		{
 			freeaddrinfo(result);
 			return(-1);
 		}
-		iResult = connect(((AcureNetPrivate*)vInstance)->mSocket, result->ai_addr, (int)result->ai_addrlen);
+		iResult = connect(((GrapaNetPrivate*)vInstance)->mSocket, result->ai_addr, (int)result->ai_addrlen);
 		freeaddrinfo(result);
 		if (iResult < 0)
 		{
 #if defined(__MINGW32__) || defined(__GNUC__)
-			close(((AcureNetPrivate*)vInstance)->mSocket);
+			close(((GrapaNetPrivate*)vInstance)->mSocket);
 #else
 #ifdef _WIN32
-			closesocket(((AcureNetPrivate*)vInstance)->mSocket);
+			closesocket(((GrapaNetPrivate*)vInstance)->mSocket);
 #endif
 #endif
-			((AcureNetPrivate*)vInstance)->mSocket = -1;
+			((GrapaNetPrivate*)vInstance)->mSocket = -1;
 			return(-1);
 		}
 
@@ -420,35 +420,35 @@ GrapaError GrapaNet::Connect(const GrapaCHAR& pURL)
 	}
 
 	struct addrinfo* result = NULL;
-	memset(&((AcureNetPrivate*)vInstance)->mHints, 0, sizeof(struct addrinfo));
-	((AcureNetPrivate*)vInstance)->mHints.ai_family = AF_INET;    // AF_INET, AF_INET6, AF_BTH
+	memset(&((GrapaNetPrivate*)vInstance)->mHints, 0, sizeof(struct addrinfo));
+	((GrapaNetPrivate*)vInstance)->mHints.ai_family = AF_INET;    // AF_INET, AF_INET6, AF_BTH
 	if (isIPv6)
-		((AcureNetPrivate*)vInstance)->mHints.ai_family = AF_INET6;
-	((AcureNetPrivate*)vInstance)->mHints.ai_socktype = SOCK_STREAM;
-	((AcureNetPrivate*)vInstance)->mHints.ai_flags = 0;
-	((AcureNetPrivate*)vInstance)->mHints.ai_protocol = IPPROTO_TCP;  // IPPROTO_TCP, BTHPROTO_RFCOMM
-	((AcureNetPrivate*)vInstance)->mHints.ai_canonname = NULL;
-	((AcureNetPrivate*)vInstance)->mHints.ai_addr = NULL;
-	((AcureNetPrivate*)vInstance)->mHints.ai_next = NULL;
-	if (getaddrinfo(nodeName, serviceName, &((AcureNetPrivate*)vInstance)->mHints, &result) != 0) return(-1);
-	((AcureNetPrivate*)vInstance)->mSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (((AcureNetPrivate*)vInstance)->mSocket == -1)
+		((GrapaNetPrivate*)vInstance)->mHints.ai_family = AF_INET6;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_socktype = SOCK_STREAM;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_flags = 0;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_protocol = IPPROTO_TCP;  // IPPROTO_TCP, BTHPROTO_RFCOMM
+	((GrapaNetPrivate*)vInstance)->mHints.ai_canonname = NULL;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_addr = NULL;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_next = NULL;
+	if (getaddrinfo(nodeName, serviceName, &((GrapaNetPrivate*)vInstance)->mHints, &result) != 0) return(-1);
+	((GrapaNetPrivate*)vInstance)->mSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+	if (((GrapaNetPrivate*)vInstance)->mSocket == -1)
 	{
 		freeaddrinfo(result);
 		return(-1);
 	}
-	iResult = connect(((AcureNetPrivate*)vInstance)->mSocket, result->ai_addr, (int)result->ai_addrlen);
+	iResult = connect(((GrapaNetPrivate*)vInstance)->mSocket, result->ai_addr, (int)result->ai_addrlen);
 	freeaddrinfo(result);
 	if (iResult < 0)
 	{
 #if defined(__MINGW32__) || defined(__GNUC__)
-		close(((AcureNetPrivate*)vInstance)->mSocket);
+		close(((GrapaNetPrivate*)vInstance)->mSocket);
 #else
 #ifdef _WIN32
-		closesocket(((AcureNetPrivate*)vInstance)->mSocket);
+		closesocket(((GrapaNetPrivate*)vInstance)->mSocket);
 #endif
 #endif
-		((AcureNetPrivate*)vInstance)->mSocket = -1;
+		((GrapaNetPrivate*)vInstance)->mSocket = -1;
 		return(-1);
 	}
 
@@ -521,34 +521,34 @@ GrapaError GrapaNet::Bind(const GrapaCHAR& pURL)
 
 
 	struct addrinfo *result=NULL;
-	memset(&((AcureNetPrivate*)vInstance)->mHints, 0, sizeof(struct addrinfo));
-	((AcureNetPrivate*)vInstance)->mHints.ai_family = AF_INET; // AF_INET, AF_INET6, AF_BTH
+	memset(&((GrapaNetPrivate*)vInstance)->mHints, 0, sizeof(struct addrinfo));
+	((GrapaNetPrivate*)vInstance)->mHints.ai_family = AF_INET; // AF_INET, AF_INET6, AF_BTH
 	if (isIPv6)
-		((AcureNetPrivate*)vInstance)->mHints.ai_family = AF_INET6;
-	((AcureNetPrivate*)vInstance)->mHints.ai_socktype = SOCK_STREAM;
-	((AcureNetPrivate*)vInstance)->mHints.ai_flags = AI_PASSIVE;
-	((AcureNetPrivate*)vInstance)->mHints.ai_protocol = IPPROTO_TCP; // IPPROTO_TCP, BTHPROTO_RFCOMM
-	((AcureNetPrivate*)vInstance)->mHints.ai_canonname = NULL;
-	((AcureNetPrivate*)vInstance)->mHints.ai_addr = NULL;
-	((AcureNetPrivate*)vInstance)->mHints.ai_next = NULL;
-	iResult = getaddrinfo(nodeName, serviceName, &((AcureNetPrivate*)vInstance)->mHints, &result);
+		((GrapaNetPrivate*)vInstance)->mHints.ai_family = AF_INET6;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_socktype = SOCK_STREAM;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_flags = AI_PASSIVE;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_protocol = IPPROTO_TCP; // IPPROTO_TCP, BTHPROTO_RFCOMM
+	((GrapaNetPrivate*)vInstance)->mHints.ai_canonname = NULL;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_addr = NULL;
+	((GrapaNetPrivate*)vInstance)->mHints.ai_next = NULL;
+	iResult = getaddrinfo(nodeName, serviceName, &((GrapaNetPrivate*)vInstance)->mHints, &result);
 	if (iResult != 0) return(-1);
-	((AcureNetPrivate*)vInstance)->mSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (((AcureNetPrivate*)vInstance)->mSocket == -1)
+	((GrapaNetPrivate*)vInstance)->mSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+	if (((GrapaNetPrivate*)vInstance)->mSocket == -1)
 	{
 		freeaddrinfo(result);
 		return(-1);
 	}
-	iResult = bind(((AcureNetPrivate*)vInstance)->mSocket, result->ai_addr, (int)result->ai_addrlen);
+	iResult = bind(((GrapaNetPrivate*)vInstance)->mSocket, result->ai_addr, (int)result->ai_addrlen);
 	freeaddrinfo(result);
 	if (iResult < 0)
 	{
 #ifdef _WIN32
-		closesocket(((AcureNetPrivate*)vInstance)->mSocket);
+		closesocket(((GrapaNetPrivate*)vInstance)->mSocket);
 #else
-		close(((AcureNetPrivate*)vInstance)->mSocket);
+		close(((GrapaNetPrivate*)vInstance)->mSocket);
 #endif
-		((AcureNetPrivate*)vInstance)->mSocket = -1;
+		((GrapaNetPrivate*)vInstance)->mSocket = -1;
 	}
 	mBound = true;
 	GetLocalName();
@@ -618,14 +618,14 @@ GrapaError GrapaNet::Listen(GrapaNet& pClient)
 		return(0);
 	}
 
-	((AcureNetPrivate*)pClient.vInstance)->mHints = ((AcureNetPrivate*)vInstance)->mHints;
-	((AcureNetPrivate*)pClient.vInstance)->mSocket = -1;
-	iResult = listen(((AcureNetPrivate*)vInstance)->mSocket, SOMAXCONN);
+	((GrapaNetPrivate*)pClient.vInstance)->mHints = ((GrapaNetPrivate*)vInstance)->mHints;
+	((GrapaNetPrivate*)pClient.vInstance)->mSocket = -1;
+	iResult = listen(((GrapaNetPrivate*)vInstance)->mSocket, SOMAXCONN);
 	if (iResult < 0)
 		return(-1);
 
-	((AcureNetPrivate*)pClient.vInstance)->mSocket = accept(((AcureNetPrivate*)vInstance)->mSocket, 0L, 0L);
-	if (((AcureNetPrivate*)pClient.vInstance)->mSocket == -1)
+	((GrapaNetPrivate*)pClient.vInstance)->mSocket = accept(((GrapaNetPrivate*)vInstance)->mSocket, 0L, 0L);
+	if (((GrapaNetPrivate*)pClient.vInstance)->mSocket == -1)
 		return(-1);
 
 	pClient.mConnected = true;
@@ -640,35 +640,35 @@ GrapaError GrapaNet::GetPeerName()
 	if (gSystem->mLinkInitialized && vIsSSL)
 	{
 		int so = BIO_get_fd(vBIO, NULL);
-		socklen_t addrlen = sizeof(((AcureNetPrivate*)vInstance)->mSockAddr);
-		memset(&((AcureNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((AcureNetPrivate*)vInstance)->mSockAddr));
-		int iResult = getpeername(so, (sockaddr*)&((AcureNetPrivate*)vInstance)->mSockAddr, &addrlen);
-		mFamily = ((AcureNetPrivate*)vInstance)->mSockAddr.ss_family;
-		if (((AcureNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
-			mPort = ntohs(((struct sockaddr_in*) & ((AcureNetPrivate*)vInstance)->mSockAddr)->sin_port);
+		socklen_t addrlen = sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr);
+		memset(&((GrapaNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr));
+		int iResult = getpeername(so, (sockaddr*)&((GrapaNetPrivate*)vInstance)->mSockAddr, &addrlen);
+		mFamily = ((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family;
+		if (((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
+			mPort = ntohs(((struct sockaddr_in*) & ((GrapaNetPrivate*)vInstance)->mSockAddr)->sin_port);
 		else
-			mPort = ntohs(((struct sockaddr_in6*) & ((AcureNetPrivate*)vInstance)->mSockAddr)->sin6_port);
+			mPort = ntohs(((struct sockaddr_in6*) & ((GrapaNetPrivate*)vInstance)->mSockAddr)->sin6_port);
 		iResult = gethostname(mHostName, sizeof(mHostName));
-		if (((AcureNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
-			inet_ntop(AF_INET, &(((struct sockaddr_in*) & ((AcureNetPrivate*)vInstance)->mSockAddr)->sin_addr), mIpName, INET_ADDRSTRLEN);
+		if (((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
+			inet_ntop(AF_INET, &(((struct sockaddr_in*) & ((GrapaNetPrivate*)vInstance)->mSockAddr)->sin_addr), mIpName, INET_ADDRSTRLEN);
 		else
-			inet_ntop(AF_INET6, &(((struct sockaddr_in6*) & ((AcureNetPrivate*)vInstance)->mSockAddr)->sin6_addr), mIpName, INET6_ADDRSTRLEN);
+			inet_ntop(AF_INET6, &(((struct sockaddr_in6*) & ((GrapaNetPrivate*)vInstance)->mSockAddr)->sin6_addr), mIpName, INET6_ADDRSTRLEN);
 		return(0);
 	}
 
-	socklen_t addrlen = sizeof(((AcureNetPrivate*)vInstance)->mSockAddr);
-	memset(&((AcureNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((AcureNetPrivate*)vInstance)->mSockAddr));
-	int iResult = getpeername(((AcureNetPrivate*)vInstance)->mSocket, (sockaddr*)&((AcureNetPrivate*)vInstance)->mSockAddr, &addrlen);
-	mFamily = ((AcureNetPrivate*)vInstance)->mSockAddr.ss_family;
-	if (((AcureNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
-		mPort = ntohs(((struct sockaddr_in *)&((AcureNetPrivate*)vInstance)->mSockAddr)->sin_port);
+	socklen_t addrlen = sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr);
+	memset(&((GrapaNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr));
+	int iResult = getpeername(((GrapaNetPrivate*)vInstance)->mSocket, (sockaddr*)&((GrapaNetPrivate*)vInstance)->mSockAddr, &addrlen);
+	mFamily = ((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family;
+	if (((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
+		mPort = ntohs(((struct sockaddr_in *)&((GrapaNetPrivate*)vInstance)->mSockAddr)->sin_port);
 	else
-		mPort = ntohs(((struct sockaddr_in6 *)&((AcureNetPrivate*)vInstance)->mSockAddr)->sin6_port);
+		mPort = ntohs(((struct sockaddr_in6 *)&((GrapaNetPrivate*)vInstance)->mSockAddr)->sin6_port);
 	iResult = gethostname(mHostName, sizeof(mHostName));
-	if (((AcureNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
-		inet_ntop(AF_INET, &(((struct sockaddr_in *)&((AcureNetPrivate*)vInstance)->mSockAddr)->sin_addr), mIpName, INET_ADDRSTRLEN);
+	if (((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
+		inet_ntop(AF_INET, &(((struct sockaddr_in *)&((GrapaNetPrivate*)vInstance)->mSockAddr)->sin_addr), mIpName, INET_ADDRSTRLEN);
 	else
-		inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)&((AcureNetPrivate*)vInstance)->mSockAddr)->sin6_addr), mIpName, INET6_ADDRSTRLEN);
+		inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)&((GrapaNetPrivate*)vInstance)->mSockAddr)->sin6_addr), mIpName, INET6_ADDRSTRLEN);
 	//iResult = getnameinfo((sockaddr*)&mSockAddr, addrlen, mFullName, sizeof(mFullName), mServerInfo, sizeof(mServerInfo), NI_NUMERICSERV);
 	return(0);
 }
@@ -680,28 +680,28 @@ GrapaError GrapaNet::GetLocalName()
 	if (gSystem->mLinkInitialized && vIsSSL)
 	{
 		int so = BIO_get_fd(vBIO, NULL);
-		socklen_t addrlen = sizeof(((AcureNetPrivate*)vInstance)->mSockAddr);
-		memset(&((AcureNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((AcureNetPrivate*)vInstance)->mSockAddr));
-		int iResult = getsockname(so, (sockaddr*)&((AcureNetPrivate*)vInstance)->mSockAddr, &addrlen);
-		mFamily = ((AcureNetPrivate*)vInstance)->mSockAddr.ss_family;
-		if (((AcureNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
-			mPort = ntohs(((struct sockaddr_in*) & ((AcureNetPrivate*)vInstance)->mSockAddr)->sin_port);
+		socklen_t addrlen = sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr);
+		memset(&((GrapaNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr));
+		int iResult = getsockname(so, (sockaddr*)&((GrapaNetPrivate*)vInstance)->mSockAddr, &addrlen);
+		mFamily = ((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family;
+		if (((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
+			mPort = ntohs(((struct sockaddr_in*) & ((GrapaNetPrivate*)vInstance)->mSockAddr)->sin_port);
 		else
-			mPort = ntohs(((struct sockaddr_in6*) & ((AcureNetPrivate*)vInstance)->mSockAddr)->sin6_port);
+			mPort = ntohs(((struct sockaddr_in6*) & ((GrapaNetPrivate*)vInstance)->mSockAddr)->sin6_port);
 		iResult = gethostname(mHostName, sizeof(mHostName));
 		//iResult = getnameinfo((sockaddr*)&mSockAddr, addrlen, mFullName, sizeof(mFullName), mServerInfo, sizeof(mServerInfo), NI_NUMERICSERV);
 		GetMac(mName, mIpName, mMAC);
 		return(0);
 	}
 
-	socklen_t addrlen = sizeof(((AcureNetPrivate*)vInstance)->mSockAddr);
-	memset(&((AcureNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((AcureNetPrivate*)vInstance)->mSockAddr));
-	int iResult = getsockname(((AcureNetPrivate*)vInstance)->mSocket, (sockaddr*)&((AcureNetPrivate*)vInstance)->mSockAddr, &addrlen);
-	mFamily = ((AcureNetPrivate*)vInstance)->mSockAddr.ss_family;
-	if (((AcureNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
-		mPort = ntohs(((struct sockaddr_in *)&((AcureNetPrivate*)vInstance)->mSockAddr)->sin_port);
+	socklen_t addrlen = sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr);
+	memset(&((GrapaNetPrivate*)vInstance)->mSockAddr, 0, sizeof(((GrapaNetPrivate*)vInstance)->mSockAddr));
+	int iResult = getsockname(((GrapaNetPrivate*)vInstance)->mSocket, (sockaddr*)&((GrapaNetPrivate*)vInstance)->mSockAddr, &addrlen);
+	mFamily = ((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family;
+	if (((GrapaNetPrivate*)vInstance)->mSockAddr.ss_family == AF_INET)
+		mPort = ntohs(((struct sockaddr_in *)&((GrapaNetPrivate*)vInstance)->mSockAddr)->sin_port);
 	else
-		mPort = ntohs(((struct sockaddr_in6 *)&((AcureNetPrivate*)vInstance)->mSockAddr)->sin6_port);
+		mPort = ntohs(((struct sockaddr_in6 *)&((GrapaNetPrivate*)vInstance)->mSockAddr)->sin6_port);
 	iResult = gethostname(mHostName, sizeof(mHostName));
 	//iResult = getnameinfo((sockaddr*)&mSockAddr, addrlen, mFullName, sizeof(mFullName), mServerInfo, sizeof(mServerInfo), NI_NUMERICSERV);
 	GetMac(mName, mIpName, mMAC);
@@ -1208,18 +1208,18 @@ GrapaError GrapaNet::Disconnect()
 
 		WaitCritical();
 #if defined(__MINGW32__) || defined(__GNUC__)
-		if (shutdown(((AcureNetPrivate*)vInstance)->mSocket, SHUT_RDWR) < 0)
+		if (shutdown(((GrapaNetPrivate*)vInstance)->mSocket, SHUT_RDWR) < 0)
 		{
 		}
-		close(((AcureNetPrivate*)vInstance)->mSocket);
+		close(((GrapaNetPrivate*)vInstance)->mSocket);
 #endif
 #ifdef _WIN32
-		if (shutdown(((AcureNetPrivate*)vInstance)->mSocket, SD_BOTH) < 0)
+		if (shutdown(((GrapaNetPrivate*)vInstance)->mSocket, SD_BOTH) < 0)
 		{
 		}
-		closesocket(((AcureNetPrivate*)vInstance)->mSocket);
+		closesocket(((GrapaNetPrivate*)vInstance)->mSocket);
 #endif
-		((AcureNetPrivate*)vInstance)->mSocket = -1;
+		((GrapaNetPrivate*)vInstance)->mSocket = -1;
 		mConnected = false;
 		mBound = false;
 		LeaveCritical();
@@ -1276,7 +1276,7 @@ GrapaError GrapaNet::Send(u8* sendbuf, u64 sendbuflen, u64& sendlen)
 		return(err);
 	}
 
-	iResult = send(((AcureNetPrivate*)vInstance)->mSocket, (char*)sendbuf, (int)sendbuflen, 0);
+	iResult = send(((GrapaNetPrivate*)vInstance)->mSocket, (char*)sendbuf, (int)sendbuflen, 0);
 	if (iResult > 0)
 		sendlen = iResult;
 	else
@@ -1371,7 +1371,7 @@ GrapaError GrapaNet::Receive(u8* recvbuf, u64 recvbuflen, u64& recvlen)
 		return(err);
 	}
 
-	iResult = recv(((AcureNetPrivate*)vInstance)->mSocket, (char*)recvbuf, (int)recvbuflen, 0);
+	iResult = recv(((GrapaNetPrivate*)vInstance)->mSocket, (char*)recvbuf, (int)recvbuflen, 0);
 	if (iResult > 0)
 		recvlen = iResult;
 	else
@@ -1434,10 +1434,10 @@ GrapaError GrapaNet::Pending(u64& hasmore)
 	}
 
 #if defined(__MINGW32__) || defined(__GNUC__)
-	iResult = ioctl(((AcureNetPrivate*)vInstance)->mSocket, FIONREAD, &iMode); hasmore = iMode;
+	iResult = ioctl(((GrapaNetPrivate*)vInstance)->mSocket, FIONREAD, &iMode); hasmore = iMode;
 #endif
 #ifdef _WIN32
-	iResult = ioctlsocket(((AcureNetPrivate*)vInstance)->mSocket, FIONREAD, &iMode);
+	iResult = ioctlsocket(((GrapaNetPrivate*)vInstance)->mSocket, FIONREAD, &iMode);
 	hasmore = iMode;
 #endif
 

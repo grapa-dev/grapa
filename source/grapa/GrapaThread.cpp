@@ -58,7 +58,7 @@ WakeByAddressSingle
 // https://computing.llnl.gov/tutorials/pthreads/
 //   GetLastError
 
-typedef struct _AcureCriticalPrivate {
+typedef struct _GrapaCriticalPrivate {
 #if defined(__MINGW32__) || defined(__GNUC__)
 	pthread_mutex_t mCritical;
 	//pthread_spinlock_t mCritical;
@@ -73,9 +73,9 @@ typedef struct _AcureCriticalPrivate {
 	//HANDLE mCond;
 #endif
 #endif
-}AcureCriticalPrivate;
+}GrapaCriticalPrivate;
 
-typedef struct _AcureThreadPrivate {
+typedef struct _GrapaThreadPrivate {
 #if defined(__MINGW32__) || defined(__GNUC__)
 	void* mThreadId;
 	pthread_t mThread;
@@ -104,29 +104,29 @@ typedef struct _AcureThreadPrivate {
 	}
 #endif
 #endif
-}AcureThreadPrivate;
+}GrapaThreadPrivate;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 GrapaCritical::GrapaCritical()
 {
-	vInstanceC = (void*)GrapaMem::Create(sizeof(AcureCriticalPrivate));
+	vInstanceC = (void*)GrapaMem::Create(sizeof(GrapaCriticalPrivate));
 
 #if defined(__MINGW32__) || defined(__GNUC__)
-	pthread_mutex_init(&((AcureCriticalPrivate*)vInstanceC)->mCritical, NULL);
+	pthread_mutex_init(&((GrapaCriticalPrivate*)vInstanceC)->mCritical, NULL);
 	//pthread_spin_init(&mCritical, PTHREAD_PROCESS_PRIVATE);
-	pthread_mutex_init(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical, NULL);
+	pthread_mutex_init(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical, NULL);
 	//pthread_spin_init(&mWaitCritical, PTHREAD_PROCESS_PRIVATE);
-	pthread_cond_init(&((AcureCriticalPrivate*)vInstanceC)->mCond, NULL);
+	pthread_cond_init(&((GrapaCriticalPrivate*)vInstanceC)->mCond, NULL);
 #else
 #ifdef _WIN32
-	if (!InitializeCriticalSectionAndSpinCount(&((AcureCriticalPrivate*)vInstanceC)->mCritical, 0x00000400))
+	if (!InitializeCriticalSectionAndSpinCount(&((GrapaCriticalPrivate*)vInstanceC)->mCritical, 0x00000400))
 	{/* failed */
 	}
-	if (!InitializeCriticalSectionAndSpinCount(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical, 0x00000400))
+	if (!InitializeCriticalSectionAndSpinCount(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical, 0x00000400))
 	{/* failed */
 	}
-	((AcureCriticalPrivate*)vInstanceC)->mCond = false;
+	((GrapaCriticalPrivate*)vInstanceC)->mCond = false;
 	//mCond = CreateMutex(NULL, false, NULL);
 #endif
 #endif
@@ -140,15 +140,15 @@ GrapaCritical::~GrapaCritical()
 	if (mWaiting)
 		SendCondition(true);
 #if defined(__MINGW32__) || defined(__GNUC__)
-	pthread_mutex_destroy(&((AcureCriticalPrivate*)vInstanceC)->mCritical);
+	pthread_mutex_destroy(&((GrapaCriticalPrivate*)vInstanceC)->mCritical);
 	//pthread_spin_destroy(&mCritical);
-	pthread_mutex_destroy(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+	pthread_mutex_destroy(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 	//pthread_spin_destroy(&mWaitCritical);
-	pthread_cond_destroy(&((AcureCriticalPrivate*)vInstanceC)->mCond);
+	pthread_cond_destroy(&((GrapaCriticalPrivate*)vInstanceC)->mCond);
 #else
 #ifdef _WIN32
-	DeleteCriticalSection(&((AcureCriticalPrivate*)vInstanceC)->mCritical);
-	DeleteCriticalSection(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+	DeleteCriticalSection(&((GrapaCriticalPrivate*)vInstanceC)->mCritical);
+	DeleteCriticalSection(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 	//CloseHandle(mCond);
 #endif
 #endif
@@ -161,11 +161,11 @@ bool GrapaCritical::TryCritical()
 {
 	if (mConst) return(true);
 #if defined(__MINGW32__) || defined(__GNUC__)
-	if (!pthread_mutex_trylock(&((AcureCriticalPrivate*)vInstanceC)->mCritical)) return(true);
+	if (!pthread_mutex_trylock(&((GrapaCriticalPrivate*)vInstanceC)->mCritical)) return(true);
 	//if (!pthread_spin_trylock(&mCritical)) return(true);
 #else
 #ifdef _WIN32
-	if (TryEnterCriticalSection(&((AcureCriticalPrivate*)vInstanceC)->mCritical)) return(true);
+	if (TryEnterCriticalSection(&((GrapaCriticalPrivate*)vInstanceC)->mCritical)) return(true);
 #endif
 #endif
 	return(false);
@@ -175,12 +175,12 @@ void GrapaCritical::WaitCritical()
 {
 	if (mConst) return;
 #if defined(__MINGW32__) || defined(__GNUC__)
-	pthread_mutex_lock(&((AcureCriticalPrivate*)vInstanceC)->mCritical);
+	pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mCritical);
 	//pthread_spin_lock(&mCritical);
 #else
 #ifdef _WIN32
 	// SetCriticalSectionSpinCount
-	EnterCriticalSection(&((AcureCriticalPrivate*)vInstanceC)->mCritical);
+	EnterCriticalSection(&((GrapaCriticalPrivate*)vInstanceC)->mCritical);
 #endif
 #endif
 }
@@ -189,11 +189,11 @@ void GrapaCritical::LeaveCritical()
 {
 	if (mConst) return;
 #if defined(__MINGW32__) || defined(__GNUC__)
-	pthread_mutex_unlock(&((AcureCriticalPrivate*)vInstanceC)->mCritical);
+	pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mCritical);
 	//pthread_spin_unlock(&mCritical);
 #else
 #ifdef _WIN32
-	LeaveCriticalSection(&((AcureCriticalPrivate*)vInstanceC)->mCritical);
+	LeaveCriticalSection(&((GrapaCriticalPrivate*)vInstanceC)->mCritical);
 #endif
 #endif
 }
@@ -209,27 +209,27 @@ void GrapaCritical::WaitCondition(bool noAdd)
 		return;
 	}
 #if defined(__MINGW32__) || defined(__GNUC__)
-	pthread_mutex_lock(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+	pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 	//pthread_spin_lock(&mWaitCritical);
 	if (!noAdd) mWaitCount++;
 	mWaiting = true;
 	LeaveCritical();
-	pthread_cond_wait(&((AcureCriticalPrivate*)vInstanceC)->mCond, &((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+	pthread_cond_wait(&((GrapaCriticalPrivate*)vInstanceC)->mCond, &((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 	mWaiting = false;
 	mWaitCount = 0;
-	pthread_mutex_unlock(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+	pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 	//pthread_spin_unlock(&mWaitCritical);
 #else
 #ifdef _WIN32
-	((AcureCriticalPrivate*)vInstanceC)->mCond = 0;
-	u32 oldCond = ((AcureCriticalPrivate*)vInstanceC)->mCond;
+	((GrapaCriticalPrivate*)vInstanceC)->mCond = 0;
+	u32 oldCond = ((GrapaCriticalPrivate*)vInstanceC)->mCond;
 	if (!noAdd) 
 		mWaitCount++;
 	mWaiting = true;
 	//printf("%d:%s:%d:%d\n", this, "start wait", mWaiting, mWaitCount);
 	LeaveCritical();
-	while ((((AcureCriticalPrivate*)vInstanceC)->mCond) == oldCond) {
-		WaitOnAddress(&(((AcureCriticalPrivate*)vInstanceC)->mCond), &oldCond, sizeof(u32), INFINITE);
+	while ((((GrapaCriticalPrivate*)vInstanceC)->mCond) == oldCond) {
+		WaitOnAddress(&(((GrapaCriticalPrivate*)vInstanceC)->mCond), &oldCond, sizeof(u32), INFINITE);
 	}
 	mWaiting = false;
 	mWaitCount = 0;
@@ -245,18 +245,18 @@ void GrapaCritical::SendCondition(bool force)
 #if defined(__MINGW32__) || defined(__GNUC__)
 		if (mWaitCount)
 		{
-			pthread_mutex_lock(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+			pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 			//pthread_spin_lock(&mWaitCritical);
-			pthread_cond_signal(&((AcureCriticalPrivate*)vInstanceC)->mCond);
-			pthread_mutex_unlock(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+			pthread_cond_signal(&((GrapaCriticalPrivate*)vInstanceC)->mCond);
+			pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 			//pthread_spin_unlock(&mWaitCritical);
 		}
 #else
 #ifdef _WIN32
 		if (mWaitCount)
 		{ 
-			((AcureCriticalPrivate*)vInstanceC)->mCond = !((AcureCriticalPrivate*)vInstanceC)->mCond;
-			WakeByAddressSingle(&((AcureCriticalPrivate*)vInstanceC)->mCond);
+			((GrapaCriticalPrivate*)vInstanceC)->mCond = !((GrapaCriticalPrivate*)vInstanceC)->mCond;
+			WakeByAddressSingle(&((GrapaCriticalPrivate*)vInstanceC)->mCond);
 			//SignalObjectAndWait(mCond, NULL, 0, false);
 		}
 #endif
@@ -265,17 +265,17 @@ void GrapaCritical::SendCondition(bool force)
 		return;
 	}
 #if defined(__MINGW32__) || defined(__GNUC__)
-	pthread_mutex_lock(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+	pthread_mutex_lock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 	//pthread_spin_lock(&mWaitCritical);
 	if (mWaitCount == 1 && mWaiting) 	// start with a higher mWaitCount if SendCondition needs to be called multipe times
 	{
 		mWaiting = false;
 		mWaitCount = 0;
-		pthread_cond_signal(&((AcureCriticalPrivate*)vInstanceC)->mCond);
+		pthread_cond_signal(&((GrapaCriticalPrivate*)vInstanceC)->mCond);
 	}
 	else if (mWaitCount)
 		mWaitCount--;
-	pthread_mutex_unlock(&((AcureCriticalPrivate*)vInstanceC)->mWaitCritical);
+	pthread_mutex_unlock(&((GrapaCriticalPrivate*)vInstanceC)->mWaitCritical);
 	//pthread_spin_unlock(&mWaitCritical);
 #else
 #ifdef _WIN32
@@ -284,8 +284,8 @@ void GrapaCritical::SendCondition(bool force)
 	{
 		mWaiting = false;
 		mWaitCount = 0;
-		((AcureCriticalPrivate*)vInstanceC)->mCond = !((AcureCriticalPrivate*)vInstanceC)->mCond;
-		WakeByAddressSingle(&((AcureCriticalPrivate*)vInstanceC)->mCond);
+		((GrapaCriticalPrivate*)vInstanceC)->mCond = !((GrapaCriticalPrivate*)vInstanceC)->mCond;
+		WakeByAddressSingle(&((GrapaCriticalPrivate*)vInstanceC)->mCond);
 		//SignalObjectAndWait(mCond, NULL, 0, false);
 	}
 	else if (mWaitCount)
@@ -300,9 +300,9 @@ void GrapaCritical::SendCondition(bool force)
 
 GrapaThread::GrapaThread()
 {
-	vInstanceT = (void*)GrapaMem::Create(sizeof(AcureCriticalPrivate));
-	((AcureThreadPrivate*)vInstanceT)->mThread = 0LL;
-	((AcureThreadPrivate*)vInstanceT)->mThreadId = 0LL;
+	vInstanceT = (void*)GrapaMem::Create(sizeof(GrapaCriticalPrivate));
+	((GrapaThreadPrivate*)vInstanceT)->mThread = 0LL;
+	((GrapaThreadPrivate*)vInstanceT)->mThreadId = 0LL;
 	mError = 0;
 	mStop = false;
 	mSync = false;
@@ -320,23 +320,23 @@ GrapaThread::~GrapaThread()
 
 GrapaError GrapaThread::Start()
 {
-	if (((AcureThreadPrivate*)vInstanceT)->mThread) return(-1);
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread) return(-1);
 	mStop = true;
 	mSync = false;
 	Starting();
 	WaitCritical();
 #if defined(__MINGW32__) || defined(__GNUC__)
-	((AcureThreadPrivate*)vInstanceT)->mThreadId = (void*)this;
-	mError = pthread_create(&((AcureThreadPrivate*)vInstanceT)->mThread, NULL, ((AcureThreadPrivate*)vInstanceT)->StaticRun, ((AcureThreadPrivate*)vInstanceT)->mThreadId);
-	if (mError && ((AcureThreadPrivate*)vInstanceT)->mThread) {pthread_cancel(((AcureThreadPrivate*)vInstanceT)->mThread); ((AcureThreadPrivate*)vInstanceT)->mThread = 0LL;}
+	((GrapaThreadPrivate*)vInstanceT)->mThreadId = (void*)this;
+	mError = pthread_create(&((GrapaThreadPrivate*)vInstanceT)->mThread, NULL, ((GrapaThreadPrivate*)vInstanceT)->StaticRun, ((GrapaThreadPrivate*)vInstanceT)->mThreadId);
+	if (mError && ((GrapaThreadPrivate*)vInstanceT)->mThread) {pthread_cancel(((GrapaThreadPrivate*)vInstanceT)->mThread); ((GrapaThreadPrivate*)vInstanceT)->mThread = 0LL;}
 #else
 #ifdef _WIN32
 	mError = 0;
-	((AcureThreadPrivate*)vInstanceT)->mThread = CreateThread(NULL, 0, ((AcureThreadPrivate*)vInstanceT)->StaticRun, (void*)this, 0, &((AcureThreadPrivate*)vInstanceT)->mThreadId);
+	((GrapaThreadPrivate*)vInstanceT)->mThread = CreateThread(NULL, 0, ((GrapaThreadPrivate*)vInstanceT)->StaticRun, (void*)this, 0, &((GrapaThreadPrivate*)vInstanceT)->mThreadId);
 #endif
 #endif
 
-	if (((AcureThreadPrivate*)vInstanceT)->mThread == 0LL) { ((AcureThreadPrivate*)vInstanceT)->mThreadId = 0LL; return(-1); }
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread == 0LL) { ((GrapaThreadPrivate*)vInstanceT)->mThreadId = 0LL; return(-1); }
 	//LeaveCritical();
 	WaitCondition();
 	return(0);
@@ -349,16 +349,16 @@ void GrapaThread::RunFromStatic()
 	LeaveCritical();
 	Running();
 	Stopping();
-	((AcureThreadPrivate*)vInstanceT)->mThreadId = 0LL;
-	((AcureThreadPrivate*)vInstanceT)->mThread = 0LL;
+	((GrapaThreadPrivate*)vInstanceT)->mThreadId = 0LL;
+	((GrapaThreadPrivate*)vInstanceT)->mThread = 0LL;
 }
 
 GrapaError GrapaThread::StartSync()
 {
 	mStop = false;
 	mSync = true;
-	((AcureThreadPrivate*)vInstanceT)->mThreadId = 0LL;
-	((AcureThreadPrivate*)vInstanceT)->mThread = 0LL;
+	((GrapaThreadPrivate*)vInstanceT)->mThreadId = 0LL;
+	((GrapaThreadPrivate*)vInstanceT)->mThread = 0LL;
 	Starting();
 	RunFromStatic();
 	mSync = false;
@@ -372,25 +372,25 @@ void GrapaThread::Stop()
 	if (!Started()) return;
 	Resume();
 	mRunning.WaitCritical();
-	if (((AcureThreadPrivate*)vInstanceT)->mThread)
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread)
 	{
 #if defined(__MINGW32__) || defined(__GNUC__)
         int err = 0;
-        err = pthread_cancel(((AcureThreadPrivate*)vInstanceT)->mThread);
+        err = pthread_cancel(((GrapaThreadPrivate*)vInstanceT)->mThread);
 #else
 #ifdef _WIN32
-		BOOL closed = CloseHandle(((AcureThreadPrivate*)vInstanceT)->mThread);
+		BOOL closed = CloseHandle(((GrapaThreadPrivate*)vInstanceT)->mThread);
 #endif
 #endif
-		((AcureThreadPrivate*)vInstanceT)->mThread = 0LL;
-		((AcureThreadPrivate*)vInstanceT)->mThreadId = 0;
+		((GrapaThreadPrivate*)vInstanceT)->mThread = 0LL;
+		((GrapaThreadPrivate*)vInstanceT)->mThreadId = 0;
 	}
 	mRunning.LeaveCritical();
 }
 
 bool GrapaThread::Started()
 {
-	if (((AcureThreadPrivate*)vInstanceT)->mThread) return(true);
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread) return(true);
 	return(false);
 }
 
@@ -399,7 +399,7 @@ bool GrapaThread::Started()
 GrapaError GrapaThread::Suspend()
 {
 	GrapaError err = 0;
-	if (((AcureThreadPrivate*)vInstanceT)->mThread == 0LL) return(-1);
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread == 0LL) return(-1);
 	if (mSync) return(-1);
 	mSuspend.WaitCritical();
 	mSuspended = true;
@@ -412,7 +412,7 @@ GrapaError GrapaThread::Suspend()
 GrapaError GrapaThread::Resume()
 {
 	GrapaError err = 0;
-	if (((AcureThreadPrivate*)vInstanceT)->mThread == 0LL) return(-1);
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread == 0LL) return(-1);
 	if (mSync) return(-1);
 	//if (!mSuspend.mWaitCount) return(-1);
 	mSuspend.WaitCritical();

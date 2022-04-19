@@ -385,6 +385,10 @@ void My_Console::Run(GrapaCB cb, void* data)
 			if (sendBuffer.mLength == 1 && sendBuffer.StrNCmp(">") == 0)
 			{
 				Fl::lock();
+				sendBuffer.FROM("$editor();");
+				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (char*)sendBuffer.mBytes, sendBuffer.mLength);
+				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (u8*)"$\n", 2);
+				sendBuffer.SetLength(0);
 				while (!gSystem->mStop)
 					Fl::wait(1);
 				Fl::unlock();

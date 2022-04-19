@@ -2827,31 +2827,31 @@ GrapaRuleEvent* GrapaWidget::Set(GrapaRuleEvent* attr)
 					if (mWidgetName.Cmp("text_editor") == 0 || mWidgetName.Cmp("text_display") == 0)
 					{
 						Fl_Text_Display* f = (Fl_Text_Display*)vWidget;
-						if (data->mValue.StrLowerCmp("CURSOR_DEFAULT") == 0)
+						if (data->mValue.StrLowerCmp("DEFAULT") == 0)
 							f->cursor_style(FL_CURSOR_DEFAULT);
-						else if (data->mValue.StrLowerCmp("CURSOR_ARROW") == 0)
+						else if (data->mValue.StrLowerCmp("ARROW") == 0)
 							f->cursor_style(FL_CURSOR_ARROW);
-						else if (data->mValue.StrLowerCmp("CURSOR_CROSS") == 0)
+						else if (data->mValue.StrLowerCmp("CROSS") == 0)
 							f->cursor_style(FL_CURSOR_CROSS);
-						else if (data->mValue.StrLowerCmp("CURSOR_WAIT") == 0)
+						else if (data->mValue.StrLowerCmp("WAIT") == 0)
 							f->cursor_style(FL_CURSOR_WAIT);
-						else if (data->mValue.StrLowerCmp("CURSOR_INSERT") == 0)
+						else if (data->mValue.StrLowerCmp("INSERT") == 0)
 							f->cursor_style(FL_CURSOR_INSERT);
-						else if (data->mValue.StrLowerCmp("CURSOR_HAND") == 0)
+						else if (data->mValue.StrLowerCmp("HAND") == 0)
 							f->cursor_style(FL_CURSOR_HAND);
-						else if (data->mValue.StrLowerCmp("CURSOR_HELP") == 0)
+						else if (data->mValue.StrLowerCmp("HELP") == 0)
 							f->cursor_style(FL_CURSOR_HELP);
-						else if (data->mValue.StrLowerCmp("CURSOR_MOVE") == 0)
+						else if (data->mValue.StrLowerCmp("MOVE") == 0)
 							f->cursor_style(FL_CURSOR_MOVE);
-						else if (data->mValue.StrLowerCmp("CURSOR_NS") == 0)
+						else if (data->mValue.StrLowerCmp("NS") == 0)
 							f->cursor_style(FL_CURSOR_NS);
-						else if (data->mValue.StrLowerCmp("CURSOR_WE") == 0)
+						else if (data->mValue.StrLowerCmp("WE") == 0)
 							f->cursor_style(FL_CURSOR_WE);
-						else if (data->mValue.StrLowerCmp("CURSOR_NWSE") == 0)
+						else if (data->mValue.StrLowerCmp("NWSE") == 0)
 							f->cursor_style(FL_CURSOR_NWSE);
-						else if (data->mValue.StrLowerCmp("CURSOR_NESW") == 0)
+						else if (data->mValue.StrLowerCmp("NESW") == 0)
 							f->cursor_style(FL_CURSOR_NESW);
-						else if (data->mValue.StrLowerCmp("CURSOR_NONE") == 0)
+						else if (data->mValue.StrLowerCmp("NONE") == 0)
 							f->cursor_style(FL_CURSOR_NONE);
 					}
 				}
@@ -3392,19 +3392,19 @@ unsigned int GrapaWidget::TableFont(GrapaCHAR& pValue)
 
 unsigned int GrapaWidget::TableCursorStyle(GrapaCHAR& pValue)
 {
-	if (pValue.StrLowerCmp("CURSOR_DEFAULT") == 0) return(FL_CURSOR_DEFAULT);
-	else if (pValue.StrLowerCmp("CURSOR_ARROW") == 0) return(FL_CURSOR_ARROW);
-	else if (pValue.StrLowerCmp("CURSOR_CROSS") == 0) return(FL_CURSOR_CROSS);
-	else if (pValue.StrLowerCmp("CURSOR_WAIT") == 0) return(FL_CURSOR_WAIT);
-	else if (pValue.StrLowerCmp("CURSOR_INSERT") == 0) return(FL_CURSOR_INSERT);
-	else if (pValue.StrLowerCmp("CURSOR_HAND") == 0) return(FL_CURSOR_HAND);
-	else if (pValue.StrLowerCmp("CURSOR_HELP") == 0) return(FL_CURSOR_HELP);
-	else if (pValue.StrLowerCmp("CURSOR_MOVE") == 0) return(FL_CURSOR_MOVE);
-	else if (pValue.StrLowerCmp("CURSOR_NS") == 0) return(FL_CURSOR_NS);
-	else if (pValue.StrLowerCmp("CURSOR_WE") == 0) return(FL_CURSOR_WE);
-	else if (pValue.StrLowerCmp("CURSOR_NWSE") == 0) return(FL_CURSOR_NWSE);
-	else if (pValue.StrLowerCmp("CURSOR_NESW") == 0) return(FL_CURSOR_NESW);
-	else if (pValue.StrLowerCmp("CURSOR_NONE") == 0) return(FL_CURSOR_NONE);
+	if (pValue.StrLowerCmp("DEFAULT") == 0) return(FL_CURSOR_DEFAULT);
+	else if (pValue.StrLowerCmp("ARROW") == 0) return(FL_CURSOR_ARROW);
+	else if (pValue.StrLowerCmp("CROSS") == 0) return(FL_CURSOR_CROSS);
+	else if (pValue.StrLowerCmp("WAIT") == 0) return(FL_CURSOR_WAIT);
+	else if (pValue.StrLowerCmp("INSERT") == 0) return(FL_CURSOR_INSERT);
+	else if (pValue.StrLowerCmp("HAND") == 0) return(FL_CURSOR_HAND);
+	else if (pValue.StrLowerCmp("HELP") == 0) return(FL_CURSOR_HELP);
+	else if (pValue.StrLowerCmp("MOVE") == 0) return(FL_CURSOR_MOVE);
+	else if (pValue.StrLowerCmp("NS") == 0) return(FL_CURSOR_NS);
+	else if (pValue.StrLowerCmp("WE") == 0) return(FL_CURSOR_WE);
+	else if (pValue.StrLowerCmp("NWSE") == 0) return(FL_CURSOR_NWSE);
+	else if (pValue.StrLowerCmp("NESW") == 0) return(FL_CURSOR_NESW);
+	else if (pValue.StrLowerCmp("NONE") == 0) return(FL_CURSOR_NONE);
 	return(0);
 }
 
