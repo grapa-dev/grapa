@@ -1,5 +1,52 @@
 # $WIDGET
 
+"namespace" | "global" | Variable resolution connected directly with global rather than parent widget.
+"x" | 
+"y" | 
+"w" | 
+"h" | 
+"size" | 
+"scroll_type" |  "HORIZONTAL", "VERTICAL"
+"orientation" | "HORIZONTAL", "VERTICAL"
+"jpeg" | 
+"label" | 
+"labelfont" | 
+"resizable" | 
+"color" | 
+
+name | scope | get | set
+------------ | -------------
+"namespace" | widget | X | :heavy_check_mark:
+"name" | widget
+"visible" | widget
+"x" | widget
+"y" | widget
+"w" | widget
+"h" | widget
+"size" | widget
+"label" | widget
+"linesize" | scrollbar
+"scrollvalue" | scrollbar
+"mNBufferLines" | text
+"mMaxsize" | text
+"text" | text
+"selection" | text
+"start" | text
+"end" | text
+"row" | text
+"col" | text
+"rows" | table_row
+"cols" | table_row
+"shape" | table_row
+"shortcut" | menu_bar
+"options" | menu_bar
+"labelsize" | menu_bar
+"data" | menu_bar
+"callback" | menu_bar
+"name" | menu_bar
+"label" | menu_bar
+"path" | menu_bar
+
 ## get (attr_array)
 
 ### widget attributes
@@ -22,7 +69,7 @@ name | desc
 "linesize" |
 "scrollvalue" |
 
-### text_display, text_editor attributes
+### text attributes
 
 name | desc
 ------------ | -------------
