@@ -67,6 +67,9 @@ The binary represenation for a grapa $FLOAT includes the items returned from the
 > "30.75".float(300,6).decode("FLOAT")
 {"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
 
+>"30.75".float(300,6).decode("FLOAT").data.raw()
+0x7B
+
 >"3.5".float(300,6)/0.511
 6.849315068493150684931506849315068493150684931
 
