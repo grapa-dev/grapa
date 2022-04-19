@@ -1,5 +1,7 @@
 # $WIDGET
 
+name | scope | get | set
+------------ | -------------
 "namespace" | "global" | Variable resolution connected directly with global rather than parent widget.
 "x" | 
 "y" | 
