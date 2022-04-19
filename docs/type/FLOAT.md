@@ -58,7 +58,7 @@ Bit shifts:
 492.0
 ```
 
-The binary represenation for a grapa $FLOAT includes the items returned from the decode method - sign, trunc, fix, exp, max, extra, data. 
+The binary represenation for a grapa $FLOAT includes the items returned from the decode method - sign, trunc, fix, exp, max, extra, data. For the binary format, see the source in GrapaFloat.cpp for GrapaFloat::FromBytes.
 
 ```
 > (30.75).raw()
