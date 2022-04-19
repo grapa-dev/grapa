@@ -5,18 +5,25 @@ To try test scripts, run grapa in with the editor screen by either using "grapa 
 
 To run grapa from the command line with a custom widget script, use "grapa -wfile filename". See [$editor.grc](../../lib/grapa/$editor.grc) for the script for the included editor widget script. To speed up load time, compile the script using $sys().compile(infile, outfile). 
 
-## $new (widget, x, y, w, h, label, attrlist)
-The $WIDGET type includes an initialization function $new that is called when the widget object is created, passing in the widget type name, the screen boundaries, an optional label, and an optional set of attributes. The design is an implementation of the FTLK library, and so references included to the related library documentation. 
+The $WIDGET type includes an initialization method $new that is called when the widget object is created, passing in the widget type name, the screen boundaries, an optional label, and an optional set of attributes. The design is an implementation of the FTLK library, and so references included to the related library documentation. 
 
-When a widget is created, an optional attribute list can be provided. See the Set command for what is supported for each widget. 
+All widgets are created using the following syntax, where label and attrlist are optional.
+- widgetname = name of the widget, such as "window" or "button"
+- x, y, w, h = coordinates and size of the widget
+- label = title for the widget
+- attrlist = initialization properties, wich could include definitions for child widgets and event handlers
+
+```
+w = $WIDGET(widgetname, x, y, w, h, label, attrlist)
+```
 
 To delete a widget, assign null to the variable holding the widget.
 
 If a variable holding a widget is assigned to another variable, both variables will point to the same widget. Take caution when doing this...or avoid doing this. 
 
-### widget
+## widgetname
 
-#### "window"
+### "window"
 [FTLK documentatin - Fl_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
 
 ```
@@ -24,7 +31,7 @@ w = $WIDGET("window", 0, 0, 640, 320, "test", {color: "BLUE"});
 w.show();
 ```
 
-#### "double_window"
+### "double_window"
 [FTLK documentatin - Fl_Double_Window](https://www.fltk.org/doc-1.3/classFl__Double__Window.html)
 
 Dobule buffering version of "window", so updates are smother. 
@@ -215,12 +222,6 @@ w += (table: $WIDGET("table_row", 20, 20, 400, 300));
 w.child("table").set({vector:$file().ls().vector()});
 ```
 
-### label
-A label for widgets that use a lable, such as "window".
-
-### attrlist
-Calls set(attrlist)
-
 ## show ()
 Shows a widget.
 
@@ -275,7 +276,6 @@ w.child("ns").resizable(w.child("ns").child("tx"));
 
 w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
 ```
-
 
 ## resize (x, y, w, h)
 [FTLK documentatin - resize()](https://www.fltk.org/doc-1.3/classFl__Widget.html#aca98267e7a9b94f699ebd27d9f59e8bb)
