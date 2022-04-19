@@ -1,53 +1,70 @@
 # $WIDGET
 
-name | scope | get | set
------------- | ------------- | ------------- | -------------
-"namespace" | "global" | Variable resolution connected directly with global rather than parent widget.
-"x" | 
-"y" | 
-"w" | 
-"h" | 
-"size" | 
-"scroll_type" |  "HORIZONTAL", "VERTICAL"
-"orientation" | "HORIZONTAL", "VERTICAL"
-"jpeg" | 
-"label" | 
-"labelfont" | 
-"resizable" | 
-"color" | 
+scope | name | get | set | options
+------------ | ------------- | ------------- | ------------- | -------------
+widget | "namespace" | :heavy_minus_sign: | :heavy_check_mark: |
+widget | "name" | :heavy_check_mark: | :heavy_minus_sign: |
+widget | "visible" | :heavy_check_mark: | :heavy_minus_sign: |
+widget | "x" | :heavy_check_mark: | :heavy_check_mark: |
+widget | "y" | :heavy_check_mark: | :heavy_check_mark: |
+widget | "w" | :heavy_check_mark: | :heavy_check_mark: |
+widget | "h" | :heavy_check_mark: | :heavy_check_mark: |
+widget | "size" | :heavy_check_mark: | :heavy_check_mark: |
+widget | "label" | :heavy_check_mark: | :heavy_check_mark: |
+widget | "scroll_type" | :heavy_minus_sign: | :heavy_check_mark: |  "HORIZONTAL", "VERTICAL"
+widget | "orientation" | :heavy_minus_sign: | :heavy_check_mark: | "HORIZONTAL", "VERTICAL"
+widget | "jpeg" | :heavy_minus_sign: | :heavy_check_mark: | 
+widget | "labelfont" | :heavy_minus_sign: | :heavy_check_mark: | 
+widget | "resizable" | :heavy_minus_sign: | :heavy_check_mark: | 
+widget | "color" | :heavy_minus_sign: | :heavy_check_mark: |
+widget | "on_hide" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+widget | "get" | :heavy_minus_sign: | :heavy_check_mark: | attr_array
+widget | "exec" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+widget | "on_post_start" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+widget | "on_post_end" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+widget | "on_post_echo" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+scroll | "scroll_type" | :heavy_minus_sign: | :heavy_check_mark: |   "HORIZONTAL", "VERTICAL", "BOTH", "ALWAYS_ON", "HORIZONTAL_ALWAYS", "VERTICAL_ALWAYS", "BOTH_ALWAYS"
+scrollbar | "linesize" | :heavy_check_mark: | :heavy_check_mark: |
+scrollbar | "scrollvalue" | :heavy_check_mark: | :heavy_check_mark: | [pos,size,first,total]
+scrollbar | "on_drag" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+scrollbar | "on_push" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+scrollbar | "on_release" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+hor_nice_slider | "scrollvalue" | :heavy_check_mark: | :heavy_check_mark: | [pos,size,first,total]
+button | "on_release" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+group | "child" | :heavy_minus_sign: | :heavy_check_mark: | list of {name: list of widget initialization attributes}
+group | "child" | :heavy_minus_sign: | :heavy_check_mark: | list of {name: $WIDGET}
+menu_bar | "child" | :heavy_minus_sign: | :heavy_check_mark: | list of {name: list of attributes}
+text | "text" | :heavy_check_mark: | :heavy_check_mark: | 
+text | "append" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "wrap" | :heavy_minus_sign: | :heavy_check_mark: | "NONE", "COLUMN", "PIXEL", "BOUNDS"
+text | "key" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "textsize" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "textfont" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "textcolor" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "cursor_state" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "cursor_color" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "cursor_style" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "cursor_visible" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "on_resize" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+text | "on_keydown" | :heavy_minus_sign: | :heavy_check_mark: | :heavy_minus_sign: | :heavy_check_mark: | $OP
+text | "on_mousewheel" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+text | "on_drag" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+text | "on_push" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+text | "on_release" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+text | "mNBufferLines" | :heavy_check_mark: | :heavy_minus_sign: | 
+text | "mMaxsize" | :heavy_check_mark: | :heavy_minus_sign: | 
+text | "selection" | :heavy_check_mark: | :heavy_minus_sign: | 
+text | "start" | :heavy_check_mark: | :heavy_minus_sign: | 
+text | "end" | :heavy_check_mark: | :heavy_minus_sign: | 
+text | "row" | :heavy_check_mark: | :heavy_minus_sign: | 
+text | "col" | :heavy_check_mark: | :heavy_minus_sign: | 
+pack | "spacing" | :heavy_minus_sign: | :heavy_check_mark: | 
+table_row | "rows" | :heavy_minus_sign: | :heavy_check_mark: | 
+table_row | "cols" | :heavy_minus_sign: | :heavy_check_mark: | 
+table_row | "shape" | :heavy_check_mark: | :heavy_check_mark: | 
+table_row | "vector" | :heavy_minus_sign: | :heavy_check_mark: | 
+table_row | "on_draw_cell" | :heavy_minus_sign: | :heavy_check_mark: | $OP
 
-name | scope | get | set
------------- | ------------- | ------------- | -------------
-"namespace" | widget | :heavy_minus_sign: | :heavy_check_mark:
-"name" | widget
-"visible" | widget
-"x" | widget
-"y" | widget
-"w" | widget
-"h" | widget
-"size" | widget
-"label" | widget
-"linesize" | scrollbar
-"scrollvalue" | scrollbar
-"mNBufferLines" | text
-"mMaxsize" | text
-"text" | text
-"selection" | text
-"start" | text
-"end" | text
-"row" | text
-"col" | text
-"rows" | table_row
-"cols" | table_row
-"shape" | table_row
-"shortcut" | menu_bar
-"options" | menu_bar
-"labelsize" | menu_bar
-"data" | menu_bar
-"callback" | menu_bar
-"name" | menu_bar
-"label" | menu_bar
-"path" | menu_bar
 
 ## get (attr_array)
 
@@ -228,7 +245,7 @@ w.child("menu").set({child:{M1: {label: "M1X", "labelsize":18}}});
 
 ```
 
-### text_display and text_editor attributes
+### text attributes
 
 name | desc
 ------------ | -------------
