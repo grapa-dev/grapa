@@ -14,9 +14,9 @@ widget | "label" | :heavy_check_mark: | :heavy_check_mark: |
 widget | "scroll_type" | :heavy_minus_sign: | :heavy_check_mark: |  "HORIZONTAL", "VERTICAL"
 widget | "orientation" | :heavy_minus_sign: | :heavy_check_mark: | "HORIZONTAL", "VERTICAL"
 widget | "jpeg" | :heavy_minus_sign: | :heavy_check_mark: | 
-widget | "labelfont" | :heavy_minus_sign: | :heavy_check_mark: | 
+widget | "labelfont" | :heavy_minus_sign: | :heavy_check_mark: | See font constants.
 widget | "resizable" | :heavy_minus_sign: | :heavy_check_mark: | 
-widget | "color" | :heavy_minus_sign: | :heavy_check_mark: |
+widget | "color" | :heavy_minus_sign: | :heavy_check_mark: | See color constants.
 widget | "on_hide" | :heavy_minus_sign: | :heavy_check_mark: | $OP
 widget | "get" | :heavy_minus_sign: | :heavy_check_mark: | attr_array - there are some instances where it is useful to get the value off some attributes right after setting something.
 widget | "exec" | :heavy_minus_sign: | :heavy_check_mark: | $OP - runs an $OP within a widget. $self will contain the reference to the widget. Example: w.child("tx").set({exec:op(){$this.get(["text"]);}}); If the goal is to run the $OP in the background in the widget, use the post method.
@@ -37,11 +37,11 @@ text | "append" | :heavy_minus_sign: | :heavy_check_mark: |
 text | "wrap" | :heavy_minus_sign: | :heavy_check_mark: | "NONE", "COLUMN", "PIXEL", "BOUNDS"
 text | "key" | :heavy_minus_sign: | :heavy_check_mark: | 
 text | "textsize" | :heavy_minus_sign: | :heavy_check_mark: | 
-text | "textfont" | :heavy_minus_sign: | :heavy_check_mark: | 
-text | "textcolor" | :heavy_minus_sign: | :heavy_check_mark: | 
-text | "cursor_state" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "textfont" | :heavy_minus_sign: | :heavy_check_mark: | See font constants.
+text | "textcolor" | :heavy_minus_sign: | :heavy_check_mark: | See color constants.
+text | "cursor_state" | :heavy_minus_sign: | :heavy_check_mark: | "show", "hide"
 text | "cursor_color" | :heavy_minus_sign: | :heavy_check_mark: | 
-text | "cursor_style" | :heavy_minus_sign: | :heavy_check_mark: | 
+text | "cursor_style" | :heavy_minus_sign: | :heavy_check_mark: | See cursor style constants.
 text | "cursor_visible" | :heavy_minus_sign: | :heavy_check_mark: | 
 text | "on_resize" | :heavy_minus_sign: | :heavy_check_mark: | $OP
 text | "on_keydown" | :heavy_minus_sign: | :heavy_check_mark: | :heavy_minus_sign: | :heavy_check_mark: | $OP
@@ -62,6 +62,15 @@ table_row | "cols" | :heavy_minus_sign: | :heavy_check_mark: |
 table_row | "shape" | :heavy_check_mark: | :heavy_check_mark: | 
 table_row | "vector" | :heavy_minus_sign: | :heavy_check_mark: | 
 table_row | "on_draw_cell" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+
+## Color constants
+"BACKGROUND_COLOR", "BACKGROUND2_COLOR", "FOREGROUND_COLOR", "INACTIVE_COLOR", "SELECTION_COLOR", "BLACK", "BLUE", "CYAN", "DARK_BLUE", "DARK_CYAN", "DARK_GREEN", "DARK_MAGENTA", "DARK_RED", "DARK_YELLOW", "GREEN", "MAGENTA", "RED", "WHITE", "YELLOW", "GRAY0", "DARK3", "DARK2", "DARK1", "LIGHT1", "LIGHT2", "LIGHT3"
+
+## Font constants
+"HELVETICA", "HELVETICA_BOLD", "HELVETICA_ITALIC", "HELVETICA_BOLD_ITALIC", "COURIER", "COURIER_BOLD", "COURIER_ITALIC", "COURIER_BOLD_ITALIC", "TIMES", "TIMES_BOLD", "TIMES_ITALIC", "TIMES_BOLD_ITALIC", "SYMBOL", "SCREEN", "SCREEN_BOLD", "ZAPF_DINGBATS", "FREE_FONT"
+
+## Cursor style constants
+"DEFAULT", "ARROW", "CROSS", "WAIT", "INSERT", "HAND", "HELP", "MOVE", "NS", "WE", "NWSE", "NESW", "NONE"
 
 ## menu_bar attributes
 The array item is a list, where for each item the label is menu item label and the item value is an array of attributes to query for that menu item.
