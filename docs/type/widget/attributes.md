@@ -1,7 +1,7 @@
 # $WIDGET
 
 name | scope | get | set
------------- | -------------
+------------ | ------------- | ------------- | -------------
 "namespace" | "global" | Variable resolution connected directly with global rather than parent widget.
 "x" | 
 "y" | 
@@ -17,7 +17,7 @@ name | scope | get | set
 "color" | 
 
 name | scope | get | set
------------- | -------------
+------------ | ------------- | ------------- | -------------
 "namespace" | widget | X | :heavy_check_mark:
 "name" | widget
 "visible" | widget
