@@ -194,6 +194,8 @@ m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
 w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
 m2_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});};
 w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: m2_cb});
+
+w.child("menu").get([ {"M1":["path","shortcut"]} ]);
 ```
 
 #### "widget"
