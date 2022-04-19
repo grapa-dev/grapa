@@ -107,10 +107,3 @@ on_post_echo:1
 on_post_end:2
 ```
 
-## other attributes
-
-name | type | desc
------------- | ------------- | -------------
-"get" | attr_array
-"exec" | $OP | w.child("tx").set({exec:op(){$this.get(["text"]);}});
-
