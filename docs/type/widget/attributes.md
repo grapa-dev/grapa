@@ -2,7 +2,7 @@
 
 scope | name | get | set | options
 ------------ | ------------- | ------------- | ------------- | -------------
-widget | "namespace" | :heavy_minus_sign: | :heavy_check_mark: |
+widget | "namespace" | :heavy_minus_sign: | :heavy_check_mark: | If set, "global" is the only option.
 widget | "name" | :heavy_check_mark: | :heavy_minus_sign: |
 widget | "visible" | :heavy_check_mark: | :heavy_minus_sign: |
 widget | "x" | :heavy_check_mark: | :heavy_check_mark: |
@@ -18,11 +18,11 @@ widget | "labelfont" | :heavy_minus_sign: | :heavy_check_mark: |
 widget | "resizable" | :heavy_minus_sign: | :heavy_check_mark: | 
 widget | "color" | :heavy_minus_sign: | :heavy_check_mark: |
 widget | "on_hide" | :heavy_minus_sign: | :heavy_check_mark: | $OP
-widget | "get" | :heavy_minus_sign: | :heavy_check_mark: | attr_array
-widget | "exec" | :heavy_minus_sign: | :heavy_check_mark: | $OP
-widget | "on_post_start" | :heavy_minus_sign: | :heavy_check_mark: | $OP
-widget | "on_post_end" | :heavy_minus_sign: | :heavy_check_mark: | $OP
-widget | "on_post_echo" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+widget | "get" | :heavy_minus_sign: | :heavy_check_mark: | attr_array - there are some instances where it is useful to get the value off some attributes right after setting something.
+widget | "exec" | :heavy_minus_sign: | :heavy_check_mark: | $OP - runs an $OP within a widget. $self will contain the reference to the widget. If the goal is to run the $OP in the background in the widget, use the post method.
+widget | "on_post_start" | :heavy_minus_sign: | :heavy_check_mark: | $OP - used only in $editor.grc
+widget | "on_post_end" | :heavy_minus_sign: | :heavy_check_mark: | $OP - used only in $editor.grc
+widget | "on_post_echo" | :heavy_minus_sign: | :heavy_check_mark: | $OP - used only in $editor.grc
 scroll | "scroll_type" | :heavy_minus_sign: | :heavy_check_mark: |   "HORIZONTAL", "VERTICAL", "BOTH", "ALWAYS_ON", "HORIZONTAL_ALWAYS", "VERTICAL_ALWAYS", "BOTH_ALWAYS"
 scrollbar | "linesize" | :heavy_check_mark: | :heavy_check_mark: |
 scrollbar | "scrollvalue" | :heavy_check_mark: | :heavy_check_mark: | [pos,size,first,total]
