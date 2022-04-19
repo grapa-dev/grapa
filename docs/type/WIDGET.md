@@ -1,4 +1,5 @@
 # $WIDGET
+[$WIDGET.grc](../../lib/grapa/$WIDGET.grc)
 
 To try test scripts, run grapa in with the editor screen by either using "grapa -w" from the command line, or if in grapa console, enter ">".
 
