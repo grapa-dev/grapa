@@ -19,7 +19,7 @@ widget | "resizable" | :heavy_minus_sign: | :heavy_check_mark: |
 widget | "color" | :heavy_minus_sign: | :heavy_check_mark: |
 widget | "on_hide" | :heavy_minus_sign: | :heavy_check_mark: | $OP
 widget | "get" | :heavy_minus_sign: | :heavy_check_mark: | attr_array - there are some instances where it is useful to get the value off some attributes right after setting something.
-widget | "exec" | :heavy_minus_sign: | :heavy_check_mark: | $OP - runs an $OP within a widget. $self will contain the reference to the widget. If the goal is to run the $OP in the background in the widget, use the post method.
+widget | "exec" | :heavy_minus_sign: | :heavy_check_mark: | $OP - runs an $OP within a widget. $self will contain the reference to the widget. Example: w.child("tx").set({exec:op(){$this.get(["text"]);}}); If the goal is to run the $OP in the background in the widget, use the post method.
 widget | "on_post_start" | :heavy_minus_sign: | :heavy_check_mark: | $OP - used only in $editor.grc
 widget | "on_post_end" | :heavy_minus_sign: | :heavy_check_mark: | $OP - used only in $editor.grc
 widget | "on_post_echo" | :heavy_minus_sign: | :heavy_check_mark: | $OP - used only in $editor.grc
