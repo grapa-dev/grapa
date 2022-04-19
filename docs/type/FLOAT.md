@@ -7,7 +7,7 @@ References:
 
 Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calculations to reduce error propagation (the default is 7 bits). 
 
-The $FLOAT class inherits $INT class - see the the $INT class for additional functions supported.
+The $FLOAT class inherits [$INT class](INT.md) - see the the $INT class for additional functions supported.
 
 Example:
 ```
