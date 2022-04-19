@@ -68,129 +68,9 @@ table_row | "on_draw_cell" | :heavy_minus_sign: | :heavy_check_mark: | $OP
 
 ## get (attr_array)
 
-### widget attributes
-
-name | desc
------------- | -------------
-"name" | 
-"visible" | 
-"x" | 
-"y" | 
-"w" | 
-"h" | 
-"size" |
-"label" |
-
-### scrollbar attributes
-
-name | desc
------------- | -------------
-"linesize" |
-"scrollvalue" |
-
-### text attributes
-
-name | desc
------------- | -------------
-"mNBufferLines" |
-"mMaxsize" |
-"text" |
-"selection" |
-"start" |
-"end" |
-"row" |
-"col" |
-
-### table_row attributes
-
-name | desc
------------- | -------------
-"rows" |
-"cols" |
-"shape" |
-
-### menu_bar attributes
-The array item is a list, where for each item the label is menu item label and the item value is an array of attributes to query for that menu item.
-
-name | desc
------------- | -------------
-"shortcut" |
-"options" |
-"labelsize" |
-"data" |
-"callback" |
-"name" |
-"label" |
-"path" |
-
-```
-w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
-w.show();
-w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
-w.child("tx").set({text:"blank"});
-
-w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
-m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
-w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
-m2_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});};
-w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: m2_cb});
-
-w.child("menu").get([ {"M1":["path","shortcut"]} ]);
-```
 
 ## set (attr_list)
 
-### widget attributes
-
-name | value | desc
------------- | ------------- | -------------
-"namespace" | "global" | Variable resolution connected directly with global rather than parent widget.
-"x" | 
-"y" | 
-"w" | 
-"h" | 
-"size" | 
-"scroll_type" |  "HORIZONTAL", "VERTICAL"
-"orientation" | "HORIZONTAL", "VERTICAL"
-"jpeg" | 
-"label" | 
-"labelfont" | 
-"resizable" | 
-"color" | 
-
-### window and double_window attributes
-name | value | desc
------------- | ------------- | -------------
-"on_hide" | $OP |
-
-### scroll attributes
-
-name | desc
------------- | -------------
-"scroll_type" |  "HORIZONTAL", "VERTICAL", "BOTH", "ALWAYS_ON", "HORIZONTAL_ALWAYS", "VERTICAL_ALWAYS", "BOTH_ALWAYS"
-
-### scrollbar attributes
-
-name | value
------------- | -------------
-"on_drag" | $OP |
-"on_push" | $OP |
-"on_release" | $OP |
-"linesize" | 
-"scrollvalue":[pos,size,first,total] | 
-
-### hor_nice_slider attributes
-
-name | value
------------- | -------------
-"scrollvalue":[pos,size,first,total] | 
-
-### button attributes
-name | value
------------- | -------------
-"on_release" | $OP |
-
-### group attributes
 
 name | value
 ------------ | -------------
@@ -210,25 +90,7 @@ w.set({child:{b4:$WIDGET("button", 20, 80, 60, 20, "B4")}});
 w.child("b4").redraw();
 ```
 
-### menu_bar attributes
 
-name | value
------------- | -------------
-"child" | list of {name: list of attributes}
-
-name | value | desc
------------- | ------------- | -------------
-"name" |  | 
-"path" |  | 
-"data" |  | 
-"label" |  | 
-"flags" |  | 
-"labelfont" |  | 
-"labelsize" |  | 
-"labelcolor" |  | 
-"setonly" |  | 
-"shortcut" |  | 
-"callback" |  $OP | 
 
 ```
 w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
@@ -245,41 +107,6 @@ w.child("menu").set({child:{M1: {label: "M1X", "labelsize":18}}});
 
 ```
 
-### text attributes
-
-name | desc
------------- | -------------
-"text" | 
-"append" | 
-"wrap" | "NONE", "COLUMN", "PIXEL", "BOUNDS"
-"key" | 
-"textsize" | 
-"textfont" | 
-"textcolor" | 
-"cursor_state" | 
-"cursor_color" | 
-"cursor_style" | 
-"cursor_visible" | 
-"on_resize" | $OP |
-"on_keydown" | $OP |
-"on_mousewheel" | $OP |
-"on_drag" | $OP |
-"on_push" | $OP |
-"on_release" | $OP |
-
-### pack attributes
-
-name | desc
------------- | -------------
-"spacing" | 
-
-### table_row attributes
-
-name | desc
------------- | -------------
-"shape" | 
-"vector" | 
-"on_draw_cell" | $OP |
 
 ### on_post handlers
 Enables sending scripts (raw text script, not an $OP) to a widget to be compiled and run in a thread specific to that widget (async to other threads). 
