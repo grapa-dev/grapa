@@ -31,8 +31,6 @@ scrollbar | "on_push" | :heavy_minus_sign: | :heavy_check_mark: | $OP
 scrollbar | "on_release" | :heavy_minus_sign: | :heavy_check_mark: | $OP
 hor_nice_slider | "scrollvalue" | :heavy_check_mark: | :heavy_check_mark: | [pos,size,first,total]
 button | "on_release" | :heavy_minus_sign: | :heavy_check_mark: | $OP
-group | "child" | :heavy_minus_sign: | :heavy_check_mark: | list of {name: list of widget initialization attributes}
-group | "child" | :heavy_minus_sign: | :heavy_check_mark: | list of {name: $WIDGET}
 menu_bar | "child" | :heavy_minus_sign: | :heavy_check_mark: | list of {name: list of attributes}
 text | "text" | :heavy_check_mark: | :heavy_check_mark: | 
 text | "append" | :heavy_minus_sign: | :heavy_check_mark: | 
@@ -64,6 +62,40 @@ table_row | "cols" | :heavy_minus_sign: | :heavy_check_mark: |
 table_row | "shape" | :heavy_check_mark: | :heavy_check_mark: | 
 table_row | "vector" | :heavy_minus_sign: | :heavy_check_mark: | 
 table_row | "on_draw_cell" | :heavy_minus_sign: | :heavy_check_mark: | $OP
+
+## menu_bar attributes
+The array item is a list, where for each item the label is menu item label and the item value is an array of attributes to query for that menu item.
+
+name | get | set | options
+------------- | ------------- | ------------- | -------------
+"name" | :heavy_check_mark: | :heavy_check_mark: | 
+"path" | :heavy_check_mark: | :heavy_check_mark: | 
+"label" | :heavy_check_mark: | :heavy_check_mark: | 
+"data" | :heavy_check_mark: | :heavy_check_mark: | 
+"shortcut" | :heavy_check_mark: | :heavy_check_mark: | 
+"labelsize" | :heavy_check_mark: | :heavy_check_mark: | 
+"callback" | :heavy_check_mark: | :heavy_check_mark: | $OP
+"options" | :heavy_check_mark: | :heavy_minus_sign: | 
+"flags" | :heavy_minus_sign: | :heavy_check_mark: | 
+"labelfont" | :heavy_minus_sign: | :heavy_check_mark: | 
+"labelcolor" | :heavy_minus_sign: | :heavy_check_mark: | 
+"setonly" | :heavy_minus_sign: | :heavy_check_mark: | 
+
+```
+w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
+w.show();
+w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
+w.child("tx").set({text:"blank"});
+
+w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
+m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
+w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
+m2_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});};
+w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: m2_cb});
+
+w.child("menu").get([ {"M1":["path","shortcut"]} ]);
+w.child("menu").set({child:{M1: {label: "M1X", "labelsize":18}}});
+```
 
 ## on_post handlers
 Enables sending scripts (raw text script, not an $OP) to a widget to be compiled and run in a thread specific to that widget (async to other threads). 
