@@ -1,5 +1,6 @@
 # $INT
 References:
+- [GrapaInt.h header](../../source/grapa/GrapaInt.h)
 - [GrapaInt.cpp source](../../source/grapa/GrapaInt.cpp)
 - [$INT object](../../lib/grapa/$INT.grc)
 - [$math object](../../lib/grapa/$math.grc)
