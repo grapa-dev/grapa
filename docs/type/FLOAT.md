@@ -37,31 +37,16 @@ By default, all floats are "float" format. To change formats use the fix() and f
 6.849315068493150684931506849315068493150684931
 ```
 
-To verify the float is being created properly, use the decode routine with FLOAT as the parameter. For example:
-
-```
-> "30.75".float(300,6).decode("FLOAT")
-{"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
-> (30.75).decode("FLOAT").data
-123
-
-> (30.75).decode("FLOAT").data.hex()
-7B
-```
-
 Convert to other formats:
 ```
 > (30.75).hex()
 1E.C
 
 > (30.75).bin()
-11110.0011
+11110.11
 
 > (30.75).int()
 30
-
-> (30.75).raw()
-0x00048100077B
 ```
 
 Bit shifts:
@@ -72,3 +57,21 @@ Bit shifts:
 > (30.75) << 4
 492.0
 ```
+
+The binary represenation for a grapa $FLOAT includes the items returned from the decode method - sign, trunc, fix, exp, max, extra, data. 
+
+```
+> "30.75".float(300,6).decode("FLOAT")
+{"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
+> (30.75).decode("FLOAT").data
+123
+
+> (30.75).decode("FLOAT").data.hex()
+7B
+
+> (30.75).raw()
+0x00048100077B
+```
+
+
+
