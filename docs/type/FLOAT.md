@@ -61,16 +61,21 @@ Bit shifts:
 The binary represenation for a grapa $FLOAT includes the items returned from the decode method - sign, trunc, fix, exp, max, extra, data. 
 
 ```
-> "30.75".float(300,6).decode("FLOAT")
-{"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
-> (30.75).decode("FLOAT").data
-123
-
-> (30.75).decode("FLOAT").data.hex()
-7B
-
 > (30.75).raw()
 0x00048100077B
+
+> "30.75".float(300,6).decode("FLOAT")
+{"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
+
+>"3.5".float(300,6)/0.511
+6.849315068493150684931506849315068493150684931
+
+>("3.5".float(300,6)/0.511).raw()
+0x200281370A06D96CB65B2D96CB65B2D96CB65B2D96CB65B2D96CB65B3AAB
+
+>("3.5".float(300,6)/0.511).decode("FLOAT")
+{"sign":false,"trunc":true,"fix":false,"exp":2,"max":183,"extra":10,"data":42993847502648498382436913857586756274673667427835852831403}
+
 ```
 
 
