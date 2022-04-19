@@ -1,4 +1,8 @@
 # $LIST
+References:
+- [$LIST object](../../lib/grapa/$LIST.grc)
+- [$OBJ object](../../lib/grapa/$OBJ.grc)
+
 A $LIST is basically JSON, but extended to include all the various grapa data types. 
 
 Action | Example | Result
