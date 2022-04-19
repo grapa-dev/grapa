@@ -36,6 +36,9 @@ By default, all floats are "float" format. To change formats use the fix() and f
 
 >"3.5".float(300,6)/0.511
 6.849315068493150684931506849315068493150684931
+
+>("3.5".float(300,6)/(0.511).float(300,6))
+6.84931506849315068493150684931506849315068493150684931560202071220533200564
 ```
 
 Convert to other formats:
@@ -82,7 +85,6 @@ The binary represenation for a grapa $FLOAT includes the items returned from the
 
 >("3.5".float(300,6)/0.511).decode("FLOAT").data.raw()
 0x6D96CB65B2D96CB65B2D96CB65B2D96CB65B2D96CB65B3AAB
-
 ```
 
 
