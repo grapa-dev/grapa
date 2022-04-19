@@ -18,7 +18,7 @@ name | scope | get | set
 
 name | scope | get | set
 ------------ | ------------- | ------------- | -------------
-"namespace" | widget | X | :heavy_check_mark:
+"namespace" | widget | :heavy_minus_sign: | :heavy_check_mark:
 "name" | widget
 "visible" | widget
 "x" | widget
