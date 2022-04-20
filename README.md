@@ -33,47 +33,35 @@ The language is cross platform binary/execution compatible accross Windows, Linu
 - [$sys](docs/sys/sys.md)
 - Object library (inherited by several types)
   - [Encode functions](docs/obj/encode.md)
- -  [Bits functions](docs/obj/bits.md)
- - [Iterator functions](docs/obj/iterate.md)
- - [Format functions](docs/obj/format.md)
- - [Transform functions](docs/obj/transform.md)
- - [Type functions](docs/obj/type.md)
- - [Vector functions](docs/obj/vector.md)
- - [IO functions](docs/obj/io.md)
- - [Document functions](docs/obj/document.md)
+  -  [Bits functions](docs/obj/bits.md)
+  - [Iterator functions](docs/obj/iterate.md)
+  - [Format functions](docs/obj/format.md)
+  - [Transform functions](docs/obj/transform.md)
+  - [Type functions](docs/obj/type.md)
+  - [Vector functions](docs/obj/vector.md)
+  - [IO functions](docs/obj/io.md)
+  - [Document functions](docs/obj/document.md)
 
 # Operators
-[Constants](docs/operators/constants.md)
-
-[Math operators](docs/operators/math.md)
-
-[Bit operators](docs/operators/bit.md)
-
-[Assignment operators](docs/operators/assignment.md)
-
-[Compare operators](docs/operators/compare.md)
-
-[Condition operators](docs/operators/condition.md)
-
-[Loop operators](docs/operators/loop.md)
-
-[Function operators](docs/operators/function.md)
-
-[Command operators](docs/operators/command.md)
-
-[Lexical operators](docs/operators/lexical.md)
+- [Constants](docs/operators/constants.md)
+- [Math operators](docs/operators/math.md)
+- [Bit operators](docs/operators/bit.md)
+- [Assignment operators](docs/operators/assignment.md)
+- [Compare operators](docs/operators/compare.md)
+- [Condition operators](docs/operators/condition.md)
+- [Loop operators](docs/operators/loop.md)
+- [Function operators](docs/operators/function.md)
+- [Command operators](docs/operators/command.md)
+- [Lexical operators](docs/operators/lexical.md)
 
 # Syntax
-[Grammar](docs/syntax/grammar.md)
-
-[Precedence](docs/syntax/precedence.md)
-
-[Operator](docs/syntax/operator.md)
-
-[Chaining](docs/syntax/chaining.md)
+- [Grammar](docs/syntax/grammar.md)
+- [Precedence](docs/syntax/precedence.md)
+- [Operator](docs/syntax/operator.md)
+- [Chaining](docs/syntax/chaining.md)
 
 # Examples
-[Examples](docs/EXAMPLES.md)
+- [Examples](docs/EXAMPLES.md)
 
 # Third-Party Libraries
 * Miniz
