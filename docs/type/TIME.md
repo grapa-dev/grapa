@@ -1,4 +1,7 @@
 # Part of $OBJ
+References:
+- [$TIME object](../../lib/grapa/$TIME.grc)
+- [$OBJ object](../../lib/grapa/$OBJ.grc)
 
 ## time()
 Converts an $INT to $TIME.
