@@ -8,7 +8,20 @@ A $VECTOR is a multi-dimentional set of values. Most often either 1 or 2 dimenti
 
 The syntax for a $VECTOR is the same as an $ARRAY, but uses a '#' before and after the array, and requires all values for each dimention to be specified (for a 2 dimentional vector, all rows much have the same number of columns). Structually, both $ARRAY and $LIST use linked lists, and $VECTOR uses arrays - and so a $VECTOR is faster to manipulate large tabels of data. But they are all in memory - for a large table on disk use $file and $TABLE which is based on a BTree. 
 
+```
+> ["a","b","c"].vector();
+#["a","b","c"]#
+
+>#["a","b","c"]#.array();
+["a","b","c"]
+```
+
 ## t()
+
+```
+> #[["a","b","c"],["d","e","f"]]#.t();
+#[["a","d"],["b","e"],["c","f"]]#
+```
 
 ## rref()
 
