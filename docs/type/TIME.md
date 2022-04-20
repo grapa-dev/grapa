@@ -40,7 +40,8 @@ Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, a
 
 ## Examples
 The following illustrate using various date ranges.
-'''
+
+```
 > "1020-04-23T12:33:33.921638".time();
 1020-04-23T12:33:33.921638
 
@@ -55,10 +56,11 @@ The following illustrate using various date ranges.
 
 > (-94345471586078362000).time();
 -1020-04-23T12:33:33.921638
-''''
+```
 
 ## Side effect of 1970
 And a side effect of using 1970 as the center. 
+
 ```
 > a = $TIME().utc();
 
