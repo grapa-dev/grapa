@@ -1,4 +1,11 @@
 # $INT
+References:
+- [GrapaInt.h header](../../source/grapa/GrapaInt.h)
+- [GrapaInt.cpp source](../../source/grapa/GrapaInt.cpp)
+- [$INT object](../../lib/grapa/$INT.grc)
+- [$math object](../../lib/grapa/$math.grc)
+- [$OBJ object](../../lib/grapa/$OBJ.grc)
+
 Supports signed and unsigned. Unsigned is essentially an $INT that is not negative. Given this is unlimited precision, a separate $UINT type is not required (grapa originally had one, but it's been removed as it's essentially redundant and adds unnecessary complexity). The reason other languages have a $UINT type is to handle to bit overflow issue where the high order bit may become set during math operations. In grapa, when the high order bit is set, it automatically increases the precision and there is no overflow. Still, there is sometimes a need for specific $UINT type handling of raw bytes, and to support this there is a uint() function to ensure that a raw byte stream with a high order bit is not incorrectly interpreted as a negative number. 
 
 The $INT class inherits $math class - see the the $math class for additional functions supported.
@@ -9,3 +16,6 @@ Commands | Results
 52322; | 52322
 "52322".int(); | 52322
 (52322).raw(); | 0x0CC62
+123456789**123; | 180443894485522835714954192172999280028845717532682776236340940102536698145222569108484463188835141501257568786614496374890490631237110580592001682129147574651845715171456148359301092015447205623057495772659564027213301182232076238590331900681806078027178740976490955033321310868454820309128358774485790967770683032944024352558539124788679067434454263656340662912379366253271751953736731074819372491000795297394853010105837025484346139393089929535058486260828830048634323191537485125711757553017086494262086507174576160642886415424336562785001644174485982226421972489721110767356064962137106505728778418700556641023076586539800506459911177905554903899443902042199874341653922049139720885160820424705059531702449496414152206583904252440335125073512355264351679192059781951740756716496372272101373104569806788535169770019927578333904122000732663242308371786294445444694565563343590247938552086658203292972070407426713686306344322058332865613102498986620473134625473086906778038872631750464721441869
+
+For a large number that requires less precisiion, use $FLOAT instead of $INT. 

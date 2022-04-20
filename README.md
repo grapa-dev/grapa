@@ -8,7 +8,7 @@ Each rule in the grammar is loaded into global variables, which can be overridde
 
 The grammar includes parsing for JSON/XML/HTML. The underlying data structures are based on JSON, but add extentions for several native Grapa types such as $OP, as well as XML (JSON and XML can co-exist). 
 
-The base grammar for the langauge is [$OP](docs/type/OP.md) and [$CODE](docs/type/CODE.md) - and any compilation will translate to this as the executable. An $OP consists of a reference to a C++ function along with parameters. A $CODE is a sequence of $OP's. There are many C++ functions for base functionality such as variable handling, networking, and file IO. 
+The base grammar for the langauge is $OP and $CODE (see [Base types](docs/BASETYPES.md)) - and any compilation will translate to this as the executable. An $OP consists of a reference to a C++ function along with parameters. A $CODE is a sequence of $OP's. There are many C++ functions for base functionality such as variable handling, networking, and file IO. 
 
 Grapa includes a form of a class library with inheritance, which is used to enxtend the language based on a default syntax for calling class library methods.
 
@@ -17,121 +17,51 @@ Integers are all big integers and floats are all big floats. Percision is unlimi
 The language is cross platform binary/execution compatible accross Windows, Linux, Mac (Intel and Apple). 
 
 # Setup
-[Install from binary](docs/BINARY.md)
+- [Install from binary](docs/BINARY.md)
+- [Build from source](docs/BUILD.md)
+- [Run from OS shell](docs/RUN.md)
 
-[Build from source](docs/BUILD.md)
+# Types
+- [Base types](docs/BASETYPES.md)
+- [System types](docs/SYSTYPES.md)
 
-[Run from OS shell](docs/RUN.md)
-
-# Base types
-[$OP](docs/type/OP.md)
-
-[$CODE](docs/type/CODE.md)
-
-# System types
-
-[$BOOL](docs/type/BOOL.md)
-
-[$INT](docs/type/INT.md)
-
-[$FLOAT](docs/type/FLOAT.md)
-
-[$STR](docs/type/STR.md)
-
-[$ID](docs/type/ID.md)
-
-[$RAW](docs/type/RAW.md)
-
-[$TIME](docs/type/TIME.md)
-
-[$RULE](docs/type/RULE.md)
-
-[$ARRAY](docs/type/ARRAY.md)
-
-[$LIST](docs/type/LIST.md)
-
-[$VECTOR](docs/type/VECTOR.md)
-
-[$TABLE](docs/type/TABLE.md)
-
-[$XML](docs/type/XML.md)
-
-[$TAG](docs/type/TAG.md)
-
-[$WIDGET](docs/type/WIDGET.md)
-
-[$ERR](docs/type/ERR.md)
-
-[$SYSID](docs/type/SYSID.md)
-
-[$SYSINT](docs/type/SYSINT.md)
-
-[$SYSSTR](docs/type/SYSSTR.md)
-
-
-# System libraries
-[$file](docs/sys/file.md)
-
-[$math](docs/sys/math.md)
-
-[$net](docs/sys/net.md)
-
-[$thread](docs/sys/thread.md)
-
-[$sys](docs/sys/sys.md)
-
-# Object inherited functions
-
-[Encode functions](docs/obj/encode.md)
-
-[Bits functions](docs/obj/bits.md)
-
-[Iterator functions](docs/obj/iterate.md)
-
-[Format functions](docs/obj/format.md)
-
-[Transform functions](docs/obj/transform.md)
-
-[Type functions](docs/obj/type.md)
-
-[Vector functions](docs/obj/vector.md)
-
-[IO functions](docs/obj/io.md)
-
-[Document functions](docs/obj/document.md)
+# Libraries
+- [$file](docs/sys/file.md)
+- [$math](docs/sys/math.md)
+- [$net](docs/sys/net.md)
+- [$thread](docs/sys/thread.md)
+- [$sys](docs/sys/sys.md)
+- Object library (inherited by several types)
+  - [Encode functions](docs/obj/encode.md)
+  -  [Bits functions](docs/obj/bits.md)
+  - [Iterator functions](docs/obj/iterate.md)
+  - [Format functions](docs/obj/format.md)
+  - [Transform functions](docs/obj/transform.md)
+  - [Type functions](docs/obj/type.md)
+  - [Vector functions](docs/obj/vector.md)
+  - [IO functions](docs/obj/io.md)
+  - [Document functions](docs/obj/document.md)
 
 # Operators
-[Constants](docs/operators/constants.md)
-
-[Math operators](docs/operators/math.md)
-
-[Bit operators](docs/operators/bit.md)
-
-[Assignment operators](docs/operators/assignment.md)
-
-[Compare operators](docs/operators/compare.md)
-
-[Condition operators](docs/operators/condition.md)
-
-[Loop operators](docs/operators/loop.md)
-
-[Function operators](docs/operators/function.md)
-
-[Command operators](docs/operators/command.md)
-
-[Lexical operators](docs/operators/lexical.md)
+- [Constants](docs/operators/constants.md)
+- [Math operators](docs/operators/math.md)
+- [Bit operators](docs/operators/bit.md)
+- [Assignment operators](docs/operators/assignment.md)
+- [Compare operators](docs/operators/compare.md)
+- [Condition operators](docs/operators/condition.md)
+- [Loop operators](docs/operators/loop.md)
+- [Function operators](docs/operators/function.md)
+- [Command operators](docs/operators/command.md)
+- [Lexical operators](docs/operators/lexical.md)
 
 # Syntax
-[Grammar](docs/syntax/grammar.md)
-
-[Precedence](docs/syntax/precedence.md)
-
-[Operator](docs/syntax/operator.md)
-
-[Chaining](docs/syntax/chaining.md)
+- [Grammar](docs/syntax/grammar.md)
+- [Precedence](docs/syntax/precedence.md)
+- [Operator](docs/syntax/operator.md)
+- [Chaining](docs/syntax/chaining.md)
 
 # Examples
-[Examples](docs/EXAMPLES.md)
+- [Examples](docs/EXAMPLES.md)
 
 # Third-Party Libraries
 * Miniz

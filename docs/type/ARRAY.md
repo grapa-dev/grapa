@@ -1,4 +1,10 @@
 # $ARRAY
+References:
+- [$ARRAY object](../../lib/grapa/$ARRAY.grc)
+- [$LIST object](../../lib/grapa/$LIST.grc)
+- [$VECTOR object](../../lib/grapa/$VECTOR.grc)
+- [$OBJ object](../../lib/grapa/$OBJ.grc)
+
 Same as $LIST, but without the entry labels.
 
 Supports an offset search if the contents of the array are $ID or $STR or $ARRAY values.

@@ -1,4 +1,8 @@
 # $STR
+References:
+- [$STR object](../../lib/grapa/$STR.grc)
+- [$OBJ object](../../lib/grapa/$OBJ.grc)
+
 ASCII only - Unicode will eventually be added. Can initialize with either double quotes or single quotes - which is easier than escaping a string that includes a quoted string - such as "this 'is' a test", or 'this "is" a test'. $STR inherits the $obj class - see $obj for functions supported. 
 
 Examples:
