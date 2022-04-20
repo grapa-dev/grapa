@@ -1,32 +1,37 @@
-# Part of $OBJ
+# $TIME
 References:
 - [$TIME object](../../lib/grapa/$TIME.grc)
 - [$OBJ object](../../lib/grapa/$OBJ.grc)
 
-## time()
-Converts an $INT to $TIME.
-See $TIME.
-
-# $TIME
 Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, and a timer for tracking the passage of time. 
 
-Examples:
+## time()
+
 ```
 > (0).time();
 1970-01-01T00:00:00.000000
+```
 
+## tz()
+```
 > $TIME().tz();
 -28800000000000
 
 > $TIME().tz()/1000000000
 -28800
+```
 
+## utc()
+```
 > $TIME().utc();
 2020-07-10T19:05:58.6135794
 
 > $TIME().utc() + $TIME().tz();
 2020-07-10T12:06:15.9529207
+```
 
+## delta()
+```
 > t1 = $TIME().utc();
 
 > t1.delta();
