@@ -1,4 +1,7 @@
 # $RULE
+References:
+- [$RULE object](../../lib/grapa/$RULE.grc)
+
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessible and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a language by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
 
 There are three basic steps:
