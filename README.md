@@ -17,31 +17,22 @@ Integers are all big integers and floats are all big floats. Percision is unlimi
 The language is cross platform binary/execution compatible accross Windows, Linux, Mac (Intel and Apple). 
 
 # Setup
-[Install from binary](docs/BINARY.md)
-
-[Build from source](docs/BUILD.md)
-
-[Run from OS shell](docs/RUN.md)
+- [Install from binary](docs/BINARY.md)
+- [Build from source](docs/BUILD.md)
+- [Run from OS shell](docs/RUN.md)
 
 # Types
-[Base types](docs/BASETYPES.md)
-
-[System types](docs/SYSTYPES.md)
+- [Base types](docs/BASETYPES.md)
+- [System types](docs/SYSTYPES.md)
 
 # Libraries
-[$file](docs/sys/file.md)
-
-[$math](docs/sys/math.md)
-
-[$net](docs/sys/net.md)
-
-[$thread](docs/sys/thread.md)
-
-[$sys](docs/sys/sys.md)
-
-Object library (inherited by several types)
-
-- [Encode functions](docs/obj/encode.md)
+- [$file](docs/sys/file.md)
+- [$math](docs/sys/math.md)
+- [$net](docs/sys/net.md)
+- [$thread](docs/sys/thread.md)
+- [$sys](docs/sys/sys.md)
+- Object library (inherited by several types)
+-- [Encode functions](docs/obj/encode.md)
 - [Bits functions](docs/obj/bits.md)
 - [Iterator functions](docs/obj/iterate.md)
 - [Format functions](docs/obj/format.md)
