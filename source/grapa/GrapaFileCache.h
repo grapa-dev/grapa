@@ -6,7 +6,7 @@
 #define _GrapaFileCACHE_
 
 #include "GrapaFile.h"
-#include "GrapaCore.h"
+#include "GrapaBtree.h"
 
 class GrapaCacheBlock;
 

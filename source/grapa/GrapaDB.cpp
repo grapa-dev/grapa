@@ -33,7 +33,7 @@ limitations under the License.
 GrapaError GrapaDB::Create(const char *fileName, u8 treeType, u64& firstTree)
 {
 	firstTree = 0;
-	GrapaError err = GrapaCore::Create(fileName);
+	GrapaError err = GrapaBtree::Create(fileName);
 	if (err) return(err);
 	err = CreateRoot(treeType, firstTree);
 	if (err) RemoveFile(fileName);
@@ -42,12 +42,12 @@ GrapaError GrapaDB::Create(const char *fileName, u8 treeType, u64& firstTree)
 
 GrapaError GrapaDB::OpenFile(const char *fileName, char mode)
 {
-	return GrapaCore::OpenFile(fileName, mode);
+	return GrapaBtree::OpenFile(fileName, mode);
 }
 
 u64 GrapaDB::RootTree(u8& pNewType)
 {
-	return GrapaCore::RootTree(pNewType);
+	return GrapaBtree::RootTree(pNewType);
 }
 
 GrapaError GrapaDB::CreateRoot(u8 treeType, u64& firstTree)
@@ -74,7 +74,7 @@ GrapaError GrapaDB::CreateRoot(u8 treeType, u64& firstTree)
 u64 GrapaDB::RootTree(GrapaCHAR& pNewType)
 {
 	u8 rootType = 0;
-	u64 rootTree = GrapaCore::RootTree(rootType);
+	u64 rootTree = GrapaBtree::RootTree(rootType);
 	switch (rootType)
 	{
 	case GrapaDB::GROUP_TREE:	pNewType.FROM("GROUP"); break;
@@ -88,7 +88,7 @@ u64 GrapaDB::RootTree(GrapaCHAR& pNewType)
 
 GrapaError GrapaDB::CloseFile()
 {
-	return GrapaCore::CloseFile();
+	return GrapaBtree::CloseFile();
 }
 
 GrapaError GrapaDB::NewTree(u64& treePtr, u8 treeType, u64 parentTree, u8 nodeCount)
@@ -96,7 +96,7 @@ GrapaError GrapaDB::NewTree(u64& treePtr, u8 treeType, u64 parentTree, u8 nodeCo
 	GrapaError err;
 	GrapaDBTable table;
 
-	err = GrapaCore::NewTree(treePtr,treeType,parentTree,nodeCount); 
+	err = GrapaBtree::NewTree(treePtr,treeType,parentTree,nodeCount); 
 	if (err) return(err);
 
 	switch (treeType)
@@ -2409,7 +2409,7 @@ GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCu
 		case DTYPE_ITEM:
 			// this item is the same as a DbData item, but for the data type dictionary
 			//result = treeCursor.mKey - dataCursor.mKey;
-			result = GrapaCore::CompareKey(treeCursor.mKey, dataCursor.mKey);
+			result = GrapaBtree::CompareKey(treeCursor.mKey, dataCursor.mKey);
 			break;
 
 		case GREC_ITEM: 
@@ -2447,7 +2447,7 @@ GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCu
 	}
 
 	if (err)
-		result = GrapaCore::CompareKey(treeCursor.mKey, dataCursor.mKey);
+		result = GrapaBtree::CompareKey(treeCursor.mKey, dataCursor.mKey);
 
 	if (result==0)
 	{
@@ -2464,11 +2464,11 @@ GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCu
 				{
 					case SEARCH_MODE:
 						if (dataCursor.mKey)
-							result = GrapaCore::CompareKey(treeCursor.mKey, dataCursor.mKey);
+							result = GrapaBtree::CompareKey(treeCursor.mKey, dataCursor.mKey);
 						break;
 					case INSERT_MODE:
 					case DELETE_MODE:
-						result = GrapaCore::CompareKey(treeCursor.mKey, dataCursor.mKey);
+						result = GrapaBtree::CompareKey(treeCursor.mKey, dataCursor.mKey);
 						break;
 				}
 				break;
@@ -2719,7 +2719,7 @@ GrapaError GrapaDB::Delete(GrapaCursor& treeCursor)
 	// where the key has children, a child is promoted and replaces the key in the tree
 	// This causes the DeleteKey to fail to delete the index because the key can't be located in the search
 	DeleteKeyIndexes(treeCursor);
-	return GrapaCore::Delete(treeCursor);
+	return GrapaBtree::Delete(treeCursor);
 }
 
 GrapaError GrapaDB::DeleteKeyIndexes(GrapaCursor& treeCursor)
@@ -2757,7 +2757,7 @@ GrapaError GrapaDB::DeleteKeyIndexes(GrapaCursor& treeCursor)
 							tableCursor.Set(indexTableCursor.mValue,CPTR_ITEM,treeCursor.mKey);
 							break;
 					}
-					err = GrapaCore::Delete(tableCursor);
+					err = GrapaBtree::Delete(tableCursor);
 					// Ignore the error...the index could have already been deleted
 					// Maybe do a search first and then only delete if it exists? But this adds a search cost.
 					//if (err) return(err);

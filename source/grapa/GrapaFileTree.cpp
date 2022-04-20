@@ -82,7 +82,7 @@ GrapaError GrapaFileTree::Create(const char *fileName)
 	err = mBtree.SetCompressSize(mBlockSize/1024);
 	if (err) return(err);
 
-	err = mBtree.NewTree(mRoot, GrapaCore::SDATA_TREE);
+	err = mBtree.NewTree(mRoot, GrapaBtree::SDATA_TREE);
 
 	if (!err)
 		err = mBtree.SetFileTree(mRoot);
@@ -122,27 +122,27 @@ GrapaError GrapaFileTree::FlushCache()
 			GrapaBYTE value2;
 			GrapaCompress::Compress(e->mValue, value2);
 			GrapaBYTE* valuePtr = &e->mValue;
-			u8 encodeType = (u8)GrapaCore::ENCODE_NONE;
+			u8 encodeType = (u8)GrapaBtree::ENCODE_NONE;
 			if (e->mValue.mLength < value2.mLength)
 			{
 				if (mCode.mSet)
 				{
-					encodeType |= (u8)GrapaCore::ENCODE_AES;
+					encodeType |= (u8)GrapaBtree::ENCODE_AES;
 					mCode.Encrypt(e->mValue, value2);
 					valuePtr = &value2;
 				}
 			}
 			else
 			{
-				encodeType = (u8)GrapaCore::ENCODE_ZIP;
+				encodeType = (u8)GrapaBtree::ENCODE_ZIP;
 				valuePtr = &value2;
 				if (mCode.mSet)
 				{
-					encodeType |= (u8)GrapaCore::ENCODE_AES;
+					encodeType |= (u8)GrapaBtree::ENCODE_AES;
 					mCode.Encrypt(value2);
 				}
 			}
-			c.Set(mRoot, GrapaCore::SDATA_ITEM, e->mId);
+			c.Set(mRoot, GrapaBtree::SDATA_ITEM, e->mId);
 			err = mBtree.Search(c);
 			if (!err)
 			{
@@ -158,8 +158,8 @@ GrapaError GrapaFileTree::FlushCache()
 			if (err)
 			{
 				u64 item = 0;
-				err = mBtree.NewData(GrapaCore::BYTE_DATA, mRoot, valuePtr->mLength, 0, 0, item, true);
-				c.Set(mRoot, GrapaCore::SDATA_ITEM, e->mId, item);
+				err = mBtree.NewData(GrapaBtree::BYTE_DATA, mRoot, valuePtr->mLength, 0, 0, item, true);
+				c.Set(mRoot, GrapaBtree::SDATA_ITEM, e->mId, item);
 				err = mBtree.Insert(c);
 				if (err) return(err);
 			}
@@ -236,7 +236,7 @@ GrapaObjectEvent* GrapaFileTree::GetData(u64 blockId)
 	u64 growSize, dataSize, dataLen, retSize;
 	u8 encodeType = 0;
 	GrapaCursor c;
-	c.Set(mRoot, GrapaCore::SDATA_ITEM, blockId);
+	c.Set(mRoot, GrapaBtree::SDATA_ITEM, blockId);
 	err = mBtree.Search(c);
 	if (err) return(e);
 	err = mBtree.GetDataSize(c.mValue, growSize, dataSize, dataLen, encodeType);
@@ -244,7 +244,7 @@ GrapaObjectEvent* GrapaFileTree::GetData(u64 blockId)
 	err = mBtree.GetDataValue(c.mValue, 0, dataLen, e->mValue.mBytes, &retSize);
 	if (err) return(e);
 	e->mValue.SetLength(retSize, true);
-	if (encodeType & GrapaCore::ENCODE_AES)
+	if (encodeType & GrapaBtree::ENCODE_AES)
 	{
 		if (mCode.mSet)
 		{
@@ -259,7 +259,7 @@ GrapaObjectEvent* GrapaFileTree::GetData(u64 blockId)
 		}
 		// if the above doesn't work, then we have an error condition -> don't have access to the file
 	}
-	if (encodeType & GrapaCore::ENCODE_ZIP)
+	if (encodeType & GrapaBtree::ENCODE_ZIP)
 	{
 		GrapaCompress::Expand(e->mValue);
 	}

@@ -21,10 +21,10 @@
     <ClCompile Include="..\..\source\grapa\GrapaConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\grapa\GrapaCore.cpp">
+    <ClCompile Include="..\..\source\grapa\GrapaBtreecpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\grapa\GrapaCoreBlock.cpp">
+    <ClCompile Include="..\..\source\grapa\GrapaBtreeBlock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\grapa\GrapaDatabase.cpp">

@@ -52,7 +52,7 @@ GrapaObjectIndexQueue::GrapaObjectIndexQueue()
 	err = mBtree.OpenFile("temp", GrapaReadWriteCreate);
 	u8 treeType;
 	mRoot = mBtree.RootTree(treeType);
-	err = mBtree.NewTree(mRoot, GrapaCore::SU64_TREE);
+	err = mBtree.NewTree(mRoot, GrapaBtree::SU64_TREE);
 	err = mBtree.SetFileTree(mRoot);
 }
 
@@ -60,7 +60,7 @@ void GrapaObjectIndexQueue::PushHead(GrapaObjectEvent* pEvent)
 {
 	GrapaObjectQueue::PushHead(pEvent);
 	GrapaCursor c;
-	c.Set(mRoot, GrapaCore::SU64_ITEM, pEvent->mId, (u64)pEvent);
+	c.Set(mRoot, GrapaBtree::SU64_ITEM, pEvent->mId, (u64)pEvent);
     GrapaError err = 0;
     err = mBtree.Insert(c);
 }
@@ -69,7 +69,7 @@ void GrapaObjectIndexQueue::PushTail(GrapaObjectEvent* pEvent)
 {
 	GrapaObjectQueue::PushTail(pEvent);
 	GrapaCursor c;
-	c.Set(mRoot, GrapaCore::SU64_ITEM, pEvent->mId, (u64)pEvent);
+	c.Set(mRoot, GrapaBtree::SU64_ITEM, pEvent->mId, (u64)pEvent);
     GrapaError err = 0;
     err = mBtree.Insert(c);
 }
@@ -78,7 +78,7 @@ void GrapaObjectIndexQueue::PushNext(GrapaObjectEvent* pLocation, GrapaObjectEve
 {
 	GrapaObjectQueue::PushNext(pLocation, pEvent);
 	GrapaCursor c;
-	c.Set(mRoot, GrapaCore::SU64_ITEM, pEvent->mId, (u64)pEvent);
+	c.Set(mRoot, GrapaBtree::SU64_ITEM, pEvent->mId, (u64)pEvent);
     GrapaError err = 0;
     err = mBtree.Insert(c);
 }
@@ -86,7 +86,7 @@ void GrapaObjectIndexQueue::PushNext(GrapaObjectEvent* pLocation, GrapaObjectEve
 GrapaObjectEvent* GrapaObjectIndexQueue::Search(u8 pToken, const GrapaBYTE& pName)
 {
 	GrapaCursor c;
-	c.Set(mRoot, GrapaCore::SU64_ITEM, HashId(pName, pToken));
+	c.Set(mRoot, GrapaBtree::SU64_ITEM, HashId(pName, pToken));
 	GrapaError err = mBtree.Search(c);
 	if (err) return(NULL);
 	return((GrapaObjectEvent*)c.mValue);
@@ -100,7 +100,7 @@ GrapaObjectEvent* GrapaObjectIndexQueue::Search(u8 pToken, const char* pName)
 GrapaObjectEvent* GrapaObjectIndexQueue::Search(u64 pId)
 {
 	GrapaCursor c;
-	c.Set(mRoot, GrapaCore::SU64_ITEM, pId);
+	c.Set(mRoot, GrapaBtree::SU64_ITEM, pId);
 	GrapaError err = mBtree.Search(c);
 	if (err) return(NULL);
 	return((GrapaObjectEvent*)c.mValue);
@@ -130,9 +130,9 @@ GrapaError GrapaCoreCHAR::CompareKey(s16 compareType, GrapaCursor& dataCursor, G
 	GrapaCHAR* a = (GrapaCHAR*)dataCursor.mKey;
 	GrapaCHAR* b = (GrapaCHAR*)treeCursor.mKey;
 	s64 c = a->Cmp(*b);
-	if (c < 0) result = GrapaCore::CMP_LT;
-	else if (c > 0) result = GrapaCore::CMP_GT;
-	else result = GrapaCore::CMP_EQ;
+	if (c < 0) result = GrapaBtree::CMP_LT;
+	else if (c > 0) result = GrapaBtree::CMP_GT;
+	else result = GrapaBtree::CMP_EQ;
 	return(0);
 }
 
@@ -144,7 +144,7 @@ GrapaKeyValue::GrapaKeyValue()
 	err = mBtree.OpenFile("temp", GrapaReadWriteCreate);
 	u8 treeType;
 	mRoot = mBtree.RootTree(treeType);
-	err = mBtree.NewTree(mRoot, GrapaCore::SU64_TREE);
+	err = mBtree.NewTree(mRoot, GrapaBtree::SU64_TREE);
 	err = mBtree.SetFileTree(mRoot);
 }
 

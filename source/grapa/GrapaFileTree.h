@@ -6,7 +6,7 @@
 #define _GrapaFileTREE_
 
 #include "GrapaFile.h"
-#include "GrapaCore.h"
+#include "GrapaBtree.h"
 #include "GrapaValue.h"
 #include "GrapaFileCache.h"
 #include "GrapaHash.h"
@@ -40,7 +40,7 @@ public:
 	virtual GrapaError ClearCache();
 
 protected:
-	GrapaCore mBtree;
+	GrapaBtree mBtree;
 	u32 mBlockSize;
 	u64 mRoot;
 	u8* vBuffer;

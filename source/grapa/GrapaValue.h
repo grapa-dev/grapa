@@ -7,7 +7,7 @@
 
 #include "GrapaThread.h"
 #include "GrapaFile.h"
-#include "GrapaCore.h"
+#include "GrapaBtree.h"
 
 class GrapaCHAR;
 class GrapaSS64;

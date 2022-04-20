@@ -5,7 +5,7 @@
 #ifndef _GrapaDB_
 #define _GrapaDB_
 
-#include "GrapaCore.h"
+#include "GrapaBtree.h"
 #include "GrapaValue.h"
 #include <string.h>
 
@@ -16,7 +16,7 @@ class GrapaDBFieldArray;
 class GrapaDBFieldValueArray;
 class GrapaDBCursor;
 
-class GrapaDB : public GrapaCore
+class GrapaDB : public GrapaBtree
 {
 public:
 	enum { SEARCH_ITEM=LAST_ITEM, DTYPE_ITEM, GREC_ITEM, RREC_ITEM, CREC_ITEM, GPTR_ITEM, RPTR_ITEM, CPTR_ITEM, };

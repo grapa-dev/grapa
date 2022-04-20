@@ -175,8 +175,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\source\grapa\GrapaCompress.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaConsole.cpp" />
-    <ClCompile Include="..\..\source\grapa\GrapaCore.cpp" />
-    <ClCompile Include="..\..\source\grapa\GrapaCoreBlock.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaBtreecpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaBtreeBlock.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaDatabase.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaDB.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaEncrypt.cpp" />

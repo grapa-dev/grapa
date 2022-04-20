@@ -77,7 +77,7 @@ class GrapaObjectIndexQueue : public GrapaObjectQueue
 {
 public:
 	GrapaObjectIndexQueue();
-	virtual ~GrapaObjectIndexQueue() { GrapaObjectEvent* head = PopHead();  while (head) { GrapaCursor c; c.Set(mRoot, GrapaCore::SU64_ITEM, head->mId); mBtree.Delete(c); head->CLEAR(); delete head; head = PopHead(); }; mBtree.SetFile();}
+	virtual ~GrapaObjectIndexQueue() { GrapaObjectEvent* head = PopHead();  while (head) { GrapaCursor c; c.Set(mRoot, GrapaBtree::SU64_ITEM, head->mId); mBtree.Delete(c); head->CLEAR(); delete head; head = PopHead(); }; mBtree.SetFile();}
 public:
 	virtual inline GrapaObjectEvent* Search(const GrapaCHAR& pName, s64& pIndex) { return((GrapaObjectEvent*)GrapaObjectQueue::Search(pName,pIndex)); }
 	virtual inline GrapaObjectEvent* Search(const char* pName, s64& pIndex) { return((GrapaObjectEvent*)GrapaObjectQueue::Search(pName,pIndex)); }
@@ -94,18 +94,18 @@ public:
 
 	virtual inline GrapaObjectEvent* Head(u64 mSkip = 0) { return((GrapaObjectEvent*)GrapaObjectQueue::Head(mSkip)); }
 	virtual inline GrapaObjectEvent* Tail(u64 mSkip = 0) { return((GrapaObjectEvent*)GrapaObjectQueue::Tail(mSkip)); }
-	virtual inline GrapaObjectEvent* PopHead(u64 mSkip = 0) { GrapaObjectEvent *e = (GrapaObjectEvent*)GrapaObjectQueue::PopHead(mSkip);  if (e) { GrapaCursor c; c.Set(mRoot, GrapaCore::SU64_ITEM, e->mId); mBtree.Delete(c); } return(e); }
-	virtual inline GrapaObjectEvent* PopTail(u64 mSkip = 0) { GrapaObjectEvent *e = (GrapaObjectEvent*)GrapaObjectQueue::PopTail(mSkip); if (e) { GrapaCursor c; c.Set(mRoot, GrapaCore::SU64_ITEM, e->mId); mBtree.Delete(c); } return(e); }
-	virtual inline GrapaObjectEvent* PopEvent(GrapaObjectEvent* pEvent) { GrapaObjectEvent *e = (GrapaObjectEvent*)GrapaObjectQueue::PopEvent(pEvent); if (e) { GrapaCursor c; c.Set(mRoot, GrapaCore::SU64_ITEM, e->mId); mBtree.Delete(c); } return(e); }
+	virtual inline GrapaObjectEvent* PopHead(u64 mSkip = 0) { GrapaObjectEvent *e = (GrapaObjectEvent*)GrapaObjectQueue::PopHead(mSkip);  if (e) { GrapaCursor c; c.Set(mRoot, GrapaBtree::SU64_ITEM, e->mId); mBtree.Delete(c); } return(e); }
+	virtual inline GrapaObjectEvent* PopTail(u64 mSkip = 0) { GrapaObjectEvent *e = (GrapaObjectEvent*)GrapaObjectQueue::PopTail(mSkip); if (e) { GrapaCursor c; c.Set(mRoot, GrapaBtree::SU64_ITEM, e->mId); mBtree.Delete(c); } return(e); }
+	virtual inline GrapaObjectEvent* PopEvent(GrapaObjectEvent* pEvent) { GrapaObjectEvent *e = (GrapaObjectEvent*)GrapaObjectQueue::PopEvent(pEvent); if (e) { GrapaCursor c; c.Set(mRoot, GrapaBtree::SU64_ITEM, e->mId); mBtree.Delete(c); } return(e); }
 
 	//virtual void PrintList();
 public:
-	GrapaCore mBtree;
+	GrapaBtree mBtree;
 	u64 mRoot;
 	GrapaCHARFile mCache;
 };
 
-class GrapaCoreCHAR : public GrapaCore
+class GrapaCoreCHAR : public GrapaBtree
 {
 public:
 	virtual GrapaError CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCursor& treeCursor, s8& result);
