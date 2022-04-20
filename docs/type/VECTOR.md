@@ -24,6 +24,13 @@ The syntax for a $VECTOR is the same as an $ARRAY, but uses a '#' before and aft
 ```
 
 ## rref()
+Row-Echelon Form.
+[Example reference](https://www.geeksforgeeks.org/row-echelon-form/)
+
+```
+> #[[4,0,1],[2,0,2],[3,0,3]]#.rref();
+#[[1,0.0,0.0],[0,0,1]]#
+```
 
 ## inv()
 
