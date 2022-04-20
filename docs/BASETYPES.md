@@ -71,6 +71,7 @@ f=op(){a=2;a*3;};</br>f; | @<[op,@[@<assign,{a,2}>,@<mul,{@<var,{a}>,3}>]],{}>
 f(); | 6
 
 # Base Libraries
+See [GrapaLibRule.cpp](../source/grapa/GrapaLibRule.cpp) for C++ class listed below.
 
 name | C++ class
 --------- | --------- 
