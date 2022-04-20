@@ -28,7 +28,7 @@ The language is cross platform binary/execution compatible accross Windows, Linu
 
 [System types](docs/SYSTYPES.md)
 
-# System libraries
+# Libraries
 [$file](docs/sys/file.md)
 
 [$math](docs/sys/math.md)
@@ -39,7 +39,7 @@ The language is cross platform binary/execution compatible accross Windows, Linu
 
 [$sys](docs/sys/sys.md)
 
-Object library
+Object library (inherited by several types)
 
 - [Encode functions](docs/obj/encode.md)
 - [Bits functions](docs/obj/bits.md)
