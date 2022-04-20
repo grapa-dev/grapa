@@ -24,50 +24,10 @@ The language is cross platform binary/execution compatible accross Windows, Linu
 [Run from OS shell](docs/RUN.md)
 
 # Base types
-[$OP](docs/type/OP.md)
-
-[$CODE](docs/type/CODE.md)
+[Base types](docs/BASETYPES.md)
 
 # System types
-
-[$BOOL](docs/type/BOOL.md)
-
-[$INT](docs/type/INT.md)
-
-[$FLOAT](docs/type/FLOAT.md)
-
-[$STR](docs/type/STR.md)
-
-[$ID](docs/type/ID.md)
-
-[$RAW](docs/type/RAW.md)
-
-[$TIME](docs/type/TIME.md)
-
-[$RULE](docs/type/RULE.md)
-
-[$ARRAY](docs/type/ARRAY.md)
-
-[$LIST](docs/type/LIST.md)
-
-[$VECTOR](docs/type/VECTOR.md)
-
-[$TABLE](docs/type/TABLE.md)
-
-[$XML](docs/type/XML.md)
-
-[$TAG](docs/type/TAG.md)
-
-[$WIDGET](docs/type/WIDGET.md)
-
-[$ERR](docs/type/ERR.md)
-
-[$SYSID](docs/type/SYSID.md)
-
-[$SYSINT](docs/type/SYSINT.md)
-
-[$SYSSTR](docs/type/SYSSTR.md)
-
+[System types](docs/SYSTYPES.md)
 
 # System libraries
 [$file](docs/sys/file.md)
