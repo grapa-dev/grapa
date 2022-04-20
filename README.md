@@ -23,10 +23,9 @@ The language is cross platform binary/execution compatible accross Windows, Linu
 
 [Run from OS shell](docs/RUN.md)
 
-# Base types
+# Types
 [Base types](docs/BASETYPES.md)
 
-# System types
 [System types](docs/SYSTYPES.md)
 
 # System libraries
