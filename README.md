@@ -32,7 +32,7 @@ The language is cross platform binary/execution compatible accross Windows, Linu
 - [$thread](docs/sys/thread.md)
 - [$sys](docs/sys/sys.md)
 - Object library (inherited by several types)
- - - [Encode functions](docs/obj/encode.md)
+  - [Encode functions](docs/obj/encode.md)
  -  [Bits functions](docs/obj/bits.md)
  - [Iterator functions](docs/obj/iterate.md)
  - [Format functions](docs/obj/format.md)
