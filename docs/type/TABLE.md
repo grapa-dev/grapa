@@ -2,6 +2,10 @@
 References:
 - [$TABLE object](../../lib/grapa/$TABLE.grc)
 - [$file object](../../lib/grapa/$file.grc)
+- [GrapaDB.cpp](../../source/grapa/GrapaDB.cpp)
+- [GrapaDatabase.cpp](../../source/grapa/GrapaDatabase.cpp)
+- [GrapaDatabase.cpp](../../source/grapa/GrapaDatabase.cpp)
+- [GrapaCore.cpp](../../source/grapa/GrapaCore.cpp)
 
 A $TABLE is a hierarchical database with columns, rows, with both row store and columns store. 
 
