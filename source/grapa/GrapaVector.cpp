@@ -3155,9 +3155,11 @@ bool GrapaVector::Ref(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, bool
 						GrapaMem::Delete(mData);
 						mData = data;
 					}
-					continue;
 				}
-				break;
+				else
+				{
+					j = mCounts[1];
+				}
 			}
 		}
 	}
@@ -3228,7 +3230,10 @@ bool GrapaVector::Rref(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 					GrapaMem::Delete(mData);
 					mData = data;
 				}
-				continue;
+			}
+			else
+			{
+				j = mCounts[1];
 			}
 		}
 	}
@@ -3295,10 +3300,10 @@ bool GrapaVector::Inv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 
 	Rref(pScriptExec, pNameSpace);
 
-	data = mData;
-	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize * 2);
 	mSize /= 2;
 	mCounts[1] /= 2;
+	data = mData;
+	mData = (GrapaVectorItem*)GrapaMem::Create(mBlock * mSize);
 	for (u64 i = 0; i < mCounts[0]; i++)
 		memcpy(_datavectorpos(mData, mBlock, (i * mCounts[1])), _datavectorpos(data, mBlock, (i * mCounts[1] * 2 + mCounts[1])), mCounts[1] * mBlock);
 	GrapaMem::Delete(data);
@@ -3306,17 +3311,61 @@ bool GrapaVector::Inv(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 	return true;
 }
 
+// https://www.codesansar.com/c-programming-examples/matrix-determinant.htm
+// https://cpp.hotexamples.com/examples/-/Matrix/Det/cpp-matrix-det-method-examples.html
+
 GrapaFloat GrapaVector::Determinant(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace)
 {
-	GrapaVector v(*this);
-	if (!v.Ref(pScriptExec, pNameSpace))
-		return GrapaFloat(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 	GrapaFloat f(pScriptExec->vScriptState->mItemState.mFloatFix, pScriptExec->vScriptState->mItemState.mFloatMax, pScriptExec->vScriptState->mItemState.mFloatExtra, 1);
+
+	if (mDim!=2 || mCounts[0] != mCounts[1])
+	{
+		f.FromInt(0);
+		return(f);
+	}
+
+	GrapaVector v(*this);
+
+	bool isErr = false;
+
+	// Gauss Elimination, transforming matrix to upper triangular matrix
+
+	for (u64 i = 0; i < v.mCounts[0]; i++)
+	{
+		GrapaVectorParam p1(pScriptExec, v.mData, v.mBlock, (i * v.mCounts[1] + i));
+		if (p1.aa->IsZero())
+		{
+			isErr = true;
+			break;
+		}
+		for (u64 j = i + 1; j < v.mCounts[0]; j++)
+		{
+			GrapaVectorParam p2(pScriptExec, v.mData, v.mBlock, (j * v.mCounts[1] + i));
+			f = *p2.aa / *p1.aa;
+
+			for (u64 k = 0; k < mCounts[1]; k++)
+			{
+				GrapaVectorParam p3(pScriptExec, v.mData, v.mBlock, (j * v.mCounts[1] + k));
+				GrapaVectorParam p4(pScriptExec, v.mData, v.mBlock, (i * v.mCounts[1] + k));
+				v.Set((j * mCounts[1] + k), *p3.aa - f * *p4.aa);
+			}
+		}
+	}
+
+	if (isErr)
+	{
+		f.FromInt(0);
+		return(f);
+	}
+
+	f.FromInt(1);
+
 	for (u64 i = 0; i < v.mCounts[0]; i++)
 	{
 		GrapaVectorParam p1(pScriptExec, v.mData, v.mBlock, (i * v.mCounts[1] + i));
 		f = f * *p1.aa;
 	}
+
 	return f;
 }
 
