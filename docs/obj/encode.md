@@ -313,7 +313,7 @@ b = "hello".sign(a);
 b.verifyrecover(a).str();
 ```
 
-## key.secret (key)
+## value = key.secret (key)
 Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  
 
 ```
