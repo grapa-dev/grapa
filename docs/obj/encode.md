@@ -1,13 +1,18 @@
+References
+- [$math](../sys/math.md)
+
 ## key = method.genkeys(bits)
 
 ### "rsa"
+[RSA_generate_key](https://www.openssl.org/docs/man1.0.2/man3/RSA_generate_key_ex.html)
 
 ```
 grapa: />"rsa".genkeys(1024)
 {"method":"RSA","n":153343860242731826718997454922543948246319786484738710266065697186566851303969929744525118374830275413173691343298483355967655653707943038260978178989870480981813864975853444332967984168167971315164681129567478872720168346499340635885246889112254404613308384241361659956685429052350776397599870929204283799727,"e":65537,"d":79055022445659402007335810450096775552716887040295814635390111095145249324919236710228881006612913550893380981980039628730017876494656017726225944634797947775686645431513668671692142235308537648915581979668299541155091041081197126102417671890829285804060548022166826534910977714874080213766562525384158510233,"p":12927549674691586875163180066905699166335405091224131481044213102404425715203497636737871644864054092888178130162387310855633573554296177378467548678038211,"q":11861788513791973340894513760762175330214406628819766321709624619984772343399257289407679201931012919105862007733677390652191686844294289003006359142734757,"dmp1":421535524281183471202888685825983476791106713458748019820734598773795836754655758574680435556624251895906688804141503018119366871927780201379146917389683,"dmq1":2422782566269730917515509730405152493557075348785897919990311353328900660523711156690284782596831391964097667508781383817846985978877936930195814936366441,"iqmp":4751564343152764182762436394942179636976979980491913680362394619885466773528151935033468867078538523266366855637186571425698958155097556787751966441250519}
 ```
 
-###"dh"
+### "dh" - Diffie-Hellman key exchange
+[DH_generate_key](https://www.openssl.org/docs/man1.0.2/man3/DH_generate_key.html)
 
 ```
 grapa: />"dh".genkeys(1024)
@@ -15,6 +20,7 @@ grapa: />"dh".genkeys(1024)
 ```
 
 ### "ec"
+[EC_KEY_generate_key](https://www.openssl.org/docs/man1.0.2/man3/EC_KEY_generate_key.html)
 
 ```
 grapa: />"ec".genkeys(256)
@@ -31,6 +37,8 @@ grapa: />"ec".genkeys({method:"ec",curve:"secp224r1",bits:256})
 ```
 
 ### "bc"
+[EVP_CipherInit_ex](https://www.openssl.org/docs/man1.0.2/man3/EVP_CipherInit_ex.html)
+
 
 ```
 grapa: />"bc".genkeys(256)
@@ -186,6 +194,7 @@ grapa: />"bc".genkeys(256)
 - "sm4-ctr"
 
 ### "rpk"
+[EVP_PKEY_keygen_init](https://www.openssl.org/docs/man1.0.2/man3/EVP_PKEY_keygen_init.html)
 
 ```
 grapa: />"rpk".genkeys(256)
@@ -202,7 +211,7 @@ grapa: />"rpk".genkeys(256)
 - "POLY1305"
 - "SIPHASH"
 
-## encdata = rawdata.encode (method, [,options])
+## encdata = rawdata.encode (method, options)
 
 encode/decode types:
 Method | Options | Description
@@ -276,10 +285,10 @@ grapa: />"test".encode("SHA3-256");
 grapa: />
 ```
 
-## rawdata = encdata.decode (method, [,options])
+## rawdata = encdata.decode (method, options)
 See encode.
 
-## sig = rawdata.sign (method, [,options])
+## sig = rawdata.sign (method, options)
 
 ```
 curve = "prime256v1";
@@ -289,13 +298,13 @@ g = {"method":"EC","curve":curve,"pub":pub,"prv":prv};
 "test".sign(g).verify(g,"test");
 ```
 
-## sig = sig.signadd (method, value, [,options])
+## sig = sig.signadd (method, value, options)
 Not implemented yet. Used for pairwise eliptic curves where sigatures can be added.
 
-## ispass = sig.verify (method, value, [,options])
+## ispass = sig.verify (method, value, options)
 See sign.
 
-## rawdata = sig.verifyrecover (method, [,options])
+## rawdata = sig.verifyrecover (method, options)
 Recovers signed data.
 
 ```
@@ -312,8 +321,4 @@ a = "dh".genkeys()
 b = "dh".genkeys({p:a.p,g:a.g})
 a.secret(b)==b.secret(a)
 ```
-
-# Other
-
-[$math](../sys/math.md)
 
