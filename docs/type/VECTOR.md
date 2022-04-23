@@ -9,17 +9,17 @@ A $VECTOR is a multi-dimentional set of values. Most often either 1 or 2 dimenti
 The syntax for a $VECTOR is the same as an $ARRAY, but uses a '#' before and after the array, and requires all values for each dimention to be specified (for a 2 dimentional vector, all rows much have the same number of columns). Structually, both $ARRAY and $LIST use linked lists, and $VECTOR uses arrays - and so a $VECTOR is faster to manipulate large tabels of data. But they are all in memory - for a large table on disk use $file and $TABLE which is based on a BTree. 
 
 ```
-> ["a","b","c"].vector();
+grapa: /> ["a","b","c"].vector();
 #["a","b","c"]#
 
->#["a","b","c"]#.array();
+grapa: />#["a","b","c"]#.array();
 ["a","b","c"]
 ```
 
 ## t()
 
 ```
-> #[["a","b","c"],["d","e","f"]]#.t();
+grapa: /> #[["a","b","c"],["d","e","f"]]#.t();
 #[["a","d"],["b","e"],["c","f"]]#
 ```
 
@@ -28,10 +28,10 @@ Row-Echelon Form.
 [Example reference](https://www.geeksforgeeks.org/row-echelon-form/)
 
 ```
-> #[[4,0,1],[2,0,2],[3,0,3]]#.rref();
+grapa: /> #[[4,0,1],[2,0,2],[3,0,3]]#.rref();
 #[[1,0.0,0.0],[0,0,1]]#
 
-> #[[1,2,-1,-4],[2,3,-1,-11],[-2,0,-3,22]]#.rref();
+grapa: /> #[[1,2,-1,-4],[2,3,-1,-11],[-2,0,-3,22]]#.rref();
 #[[1,0.0,0.0,-8],[0,1,0.0,1],[0,0,1,-2]]#
 ```
 
@@ -40,28 +40,99 @@ Row-Echelon Form.
 [Example reference](https://www.tutorialspoint.com/numpy/numpy_inv.htm)
 x
 ```
-> #[[1,2],[3,4]]#.inv()
+grapa: /> #[[1,2],[3,4]]#.inv()
 #[[-2,1],[1.5,-0.5]]#
 
-> #[[1.0,1.0,1.0],[0.0,2.0,5.0],[2.0,5.0,-1.0]]#.inv();
+grapa: /> #[[1.0,1.0,1.0],[0.0,2.0,5.0],[2.0,5.0,-1.0]]#.inv();
 #[[1.2857142857142857142857142857142,-0.28571428571428571428571428571428,-0.14285714285714285714285714285714],[-0.47619047619047619047619047619047,0.14285714285714285714285714285714,0.23809523809523809523809523809523],[0.19047619047619047619047619047619,0.14285714285714285714285714285714,-0.095238095238095238095238095238095]]#
 ```
 
 ## det()
+[Algorithm used](https://www.codesansar.com/c-programming-examples/matrix-determinant.htm)
+[Examples](https://www.math10.com/en/algebra/matrices/determinant.html)
+
+```
+grapa: />#[[1,2],[0,0],[3,4]]#.det();
+0.0
+grapa: />#[[2,5],[3,8]]#.det();
+1.0
+grapa: />#[[-4,7],[-2,9]]#.det();
+-22.0
+grapa: />#[[1,4,3],[2,1,5],[3,2,1]]#.det();
+46.0
+grapa: />#[[4,-3,5],[1,0,3],[-1,5,2]]#.det();
+-20.0
+grapa: />#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1],[-1,4,2,1]]#.det();
+-47.0
+```
 
 ## rank()
 
+```
+grapa: />#[[1,2],[0,0],[3,4]]#.rank();
+2
+grapa: />#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1],[-1,4,2,1]]#.rank();
+4
+```
+
 ## solve()
+x = [A].inv().dot([B]) = ([A][B]).solve()
+
+```
+grapa: />#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1]]#.solve();
+#[[-12],[5],[8]]#
+grapa: />#[[2, 1, 1, 4], [1, 3, 2, 5], [1, 0, 0, 6]]#.solve();
+#[[6],[15],[-23]]#
+grapa: />#[[2, 1, 1], [1, 3, 2], [1, 0, 0]]#.inv().dot(#[4, 5, 6]#)
+#[6,15,-23]#
+```
 
 ## cov(axis)
 
+```
+grapa: />#[[1.23, 2.12, 3.34, 4.5],[2.56, 2.89, 3.76, 3.95]]#.t().cov();
+#[[0.88445,0.51205,0.2793,-0.36575],[0.51205,0.29645,0.1617,-0.21175],[0.2793,0.1617,0.0882,-0.1155],[-0.36575,-0.21175,-0.1155,0.15125]]#
+```
+
 ## sum(axis)
+
+```
+grapa: />#[[2,5],[3,8]]#.sum();
+#[[7],[11]]#
+grapa: />#[[2,5],[3,8]]#.sum().t();
+#[[7,11]]#
+grapa: />#[[2,5],[3,8]]#.sum().t().array()[0]
+[7,11]
+grapa: />#[[2,5],[3,8]]#.t().sum();
+#[[5],[13]]#
+```
 
 ## mean(axis)
 
+```
+grapa: />#[[2,5],[3,8]]#.mean();
+#[[3.5],[5.5]]#
+```
+
 ## shape()
 
+```
+grapa: />#[[1,4,3],[2,1,5]]#.shape();
+[2,3]
+```
+
 ## reshape(dim) 
+
+```
+grapa: />#[[1,4,3],[2,1,5]]#.reshape([3,2]);
+#[[1,4],[3,2],[1,5]]#
+grapa: />#[[1,4,3],[2,1,5]]#.reshape([6]);
+#[1,4,3,2,1,5]#
+grapa: />#[[1,4,3],[2,1,5]]#.{$local.x=@$$;x.reshape([x.shape().reduce(op(a,b){a=a*b;})])};
+#[1,4,3,2,1,5]#
+grapa: />#[[1,4,3],[2,1,5]]#.{(op(x){x.reshape([x.shape().reduce(op(a,b){a=a*b;})])})(@$$)}
+#[1,4,3,2,1,5]#
+```
 
 ## norm()
 
