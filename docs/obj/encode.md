@@ -34,6 +34,16 @@ grapa: />"ec".genkeys(256)
 ```
 grapa: />"ec".genkeys({method:"ec",curve:"secp224r1",bits:256})
 {"method":"EC","curve":"secp224r1","pub":94005469537357239932833357907049107441874311457299400778270964405582,"prv":5192160124916624753659544220564622206602718051022940651336084962189}
+
+grapa: />g="ec".genkeys()
+grapa: />g
+{"method":"EC","curve":"prime256v1","pub":267022408291204621222094485495440488803418998225332859306572250802524759322898,"prv":92070147017367805913659104020427728333589422388143910718778438686550315500923}
+grapa: />"test".sign(g)
+0x304602210091861F29D2DCF61AA1D55A9454FE286B7DD4E4B0867F399CBF66DCE162520726022100A44FABB3704684FEAD1474F0141425C8B43A3C067C6924E8EBB43C9EDD6280B4
+grapa: />"test".sign(g).verify(g,"test")
+1
+grapa: />"test".sign(g).verify(g,"test2")
+0
 ```
 
 ### "bc"
@@ -211,6 +221,18 @@ grapa: />"rpk".genkeys(256)
 - "POLY1305"
 - "SIPHASH"
 
+```
+grapa: />g="rpk".genkeys()
+grapa: />g
+{"method":"rpk","alg":"ed25519","pub":0x1780BB5267C0EC8A10C2A99A836930991B909608045F123668596C9AF28F2FC,"prv":0xF0A90D5C818DF2E62B0C3B49DF668501A77B3D6E1C8DAD98F7F49FDE5DE2C723}
+grapa: />"test".sign(g)
+0xA3FDB87097F7ED99F5B1E15387E392DCF7870C32904544D9039941A1C9D6A111B48392931F6447BBEC6FDDB7CCB2E3408060E504379B3E19DC27F21F4E579A08
+grapa: />"test".sign(g).verify(g,"test")
+1
+grapa: />"test".sign(g).verify(g,"test2")
+0
+```
+
 ## encdata = rawdata.encode (method, options)
 
 encode/decode types:
@@ -317,8 +339,16 @@ b.verifyrecover(a).str();
 Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  
 
 ```
-a = "dh".genkeys()
-b = "dh".genkeys({p:a.p,g:a.g})
-a.secret(b)==b.secret(a)
+a = "dh".genkeys();
+b = "dh".genkeys({p:a.p,g:a.g});
+a.secret(b)==b.secret(a);
+
+a = "ec".genkeys({curve:"prime256v1"});
+b = "ec".genkeys({curve:a.curve});
+a.secret(b)==b.secret(a);
+
+a = "rpk".genkeys({alg:"X25519"});
+b = "rpk".genkeys({alg:a.alg});
+a.secret(b)==b.secret(a);
 ```
 
