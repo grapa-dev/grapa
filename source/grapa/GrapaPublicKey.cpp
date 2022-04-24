@@ -455,7 +455,7 @@ GrapaRuleEvent* GrapaPublicKey::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent
 		result->mValue.mToken = GrapaTokenType::LIST;
 		result->vQueue = new GrapaRuleQueue();
 
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("RSA")));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("rsa")));
 
 		GrapaInt g;
 		gb.mToken = GrapaTokenType::INT;
@@ -606,7 +606,7 @@ GrapaRuleEvent* GrapaPublicKey::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent
 			result->mValue.mToken = GrapaTokenType::LIST;
 			result->vQueue = new GrapaRuleQueue();
 
-			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("DH")));
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("dh")));
 
 			u32 sz;
 			GrapaBYTE gb;
@@ -715,7 +715,7 @@ GrapaRuleEvent* GrapaPublicKey::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent
 		result->mValue.mToken = GrapaTokenType::LIST;
 		result->vQueue = new GrapaRuleQueue();
 
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("EC")));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("ec")));
 		pCurve.ToLower();
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("curve"), pCurve));
 
@@ -816,7 +816,7 @@ GrapaRuleEvent* GrapaPublicKey::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent
 		result->mValue.mToken = GrapaTokenType::LIST;
 		result->vQueue = new GrapaRuleQueue();
 
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("BC")));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("bc")));
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("cipher"), ciphername));
 		key.mToken = GrapaTokenType::RAW;
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("key"), key));
@@ -851,7 +851,7 @@ GrapaRuleEvent* GrapaPublicKey::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent
 		result->mValue.mToken = GrapaTokenType::LIST;
 		result->vQueue = new GrapaRuleQueue();
 
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("MD")));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("md")));
 		digestname.ToLower();
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("digest"), digestname));
 
@@ -960,7 +960,7 @@ GrapaRuleEvent* GrapaPublicKey::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent
 		result->mValue.mToken = GrapaTokenType::LIST;
 		result->vQueue = new GrapaRuleQueue();
 
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("RPK")));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("rpk")));
 		algorithmname.ToLower();
 		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("alg"), algorithmname));
 		if (pub.mLength) result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("pub"), pub));
