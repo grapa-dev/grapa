@@ -1,5 +1,7 @@
 # $TIME
 References:
+- [GrapaTime.h header](../../source/grapa/GrapaTime.h)
+- [GrapaTime.cpp source](../../source/grapa/GrapaTime.cpp)
 - [$TIME object](../../lib/grapa/$TIME.grc)
 - [$OBJ object](../../lib/grapa/$OBJ.grc)
 
