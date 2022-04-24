@@ -30,13 +30,14 @@ limitations under the License.
 #include <errno.h>
 #include "GrapaPrime.h"
 #include "GrapaCompress.h"
-#include "GrapaEncrypt.h"
-#include "GrapaPublicKey.h"
+#include "GrapaTinyAES.h"
+#include "GrapaEncode.h"
 #include "GrapaHash.h"
 #include "GrapaFloat.h"
 #include "GrapaVector.h"
 #include "GrapaWidget.h"
 #include "GrapaNetConnect.h"
+#include "GrapaTime.h"
 
 #include "GrapaLibRule.h"
 
@@ -4191,7 +4192,7 @@ GrapaLibraryParam::~GrapaLibraryParam()
 	}
 }
 //
-//GrapaError GrapaScriptExec::GetParameterKey(GrapaNames* pNameSpace, GrapaRuleEvent* pInputParam, GrapaPublicKey& pKey)
+//GrapaError GrapaScriptExec::GetParameterKey(GrapaNames* pNameSpace, GrapaRuleEvent* pInputParam, GrapaEncode& pKey)
 //{
 //	GrapaError err = 0;
 //	GrapaRuleEvent* n = NULL;
@@ -4686,7 +4687,7 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 {
 	GrapaInt n;
 	GrapaFloat d(vScriptState->mItemState.mFloatFix, vScriptState->mItemState.mFloatMax, vScriptState->mItemState.mFloatExtra, 0);
-	GrapaTIME t;
+	GrapaTime t;
 	GrapaCHAR s,s2;
 	GrapaRuleEvent* data;
 	if (!elMode && (fromlist || pTokenEvent->mNull) && pTokenEvent->mValue.mToken!=GrapaTokenType::BOOL && pTokenEvent->mValue.mToken != GrapaTokenType::PTR && pTokenEvent->mValue.mToken != GrapaTokenType::VECTOR && pTokenEvent->vQueue == NULL)
@@ -4714,7 +4715,7 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 	case GrapaTokenType::TIME:
 		t.FromBytes(pTokenEvent->mValue);
 		pSend->Send(this, vScriptState->vRuleVariables, t.getString());
-		//pSend->Send(GrapaTIME::Epoch(n.LongValue()));
+		//pSend->Send(GrapaTime::Epoch(n.LongValue()));
 		break;
 	case GrapaTokenType::TABLE:
 		if (pTokenEvent->mValue.mLength) EchoDB(pSend, pTokenEvent->mValue);

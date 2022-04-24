@@ -33,7 +33,7 @@
     <ClCompile Include="..\..\source\grapa\GrapaDB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\grapa\GrapaEncrypt.cpp">
+    <ClCompile Include="..\..\source\grapa\GrapaTinyAES.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\grapa\GrapaFileCache.cpp">
@@ -75,7 +75,7 @@
     <ClCompile Include="..\..\source\grapa\GrapaPrime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\grapa\GrapaPublicKey.cpp">
+    <ClCompile Include="..\..\source\grapa\GrapaEncode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\grapa\GrapaState.cpp">
@@ -100,6 +100,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\source\tiny-AES-c-master\aes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\grapa\GrapaTime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

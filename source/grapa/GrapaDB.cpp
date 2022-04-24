@@ -25,6 +25,7 @@ limitations under the License.
 #include "GrapaDB.h"
 #include "GrapaFileIO.h"
 #include "GrapaInt.h"
+#include "GrapaTime.h"
 #include "GrapaFloat.h"
 #include "GrapaMem.h"
 
@@ -2879,7 +2880,7 @@ GrapaError GrapaDB::DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u6
 		{
 			GrapaInt n;
 			GrapaFloat d(false, 16, 4, 0);
-			GrapaTIME t;
+			GrapaTime t;
 			switch (dbChar.mToken)
 			{
 			case GrapaTokenType::SYSINT:

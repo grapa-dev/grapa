@@ -179,7 +179,8 @@
     <ClCompile Include="..\..\source\grapa\GrapaBtreeBlock.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaDatabase.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaDB.cpp" />
-    <ClCompile Include="..\..\source\grapa\GrapaEncrypt.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaTime.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaTinyAES.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaFileCache.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaFileIO.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaFileTree.cpp" />
@@ -193,7 +194,7 @@
     <ClCompile Include="..\..\source\grapa\GrapaNetConnect.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaObject.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaPrime.cpp" />
-    <ClCompile Include="..\..\source\grapa\GrapaPublicKey.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaEncode.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaState.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaSystem.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaThread.cpp" />

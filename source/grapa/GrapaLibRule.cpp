@@ -20,13 +20,14 @@ limitations under the License.
 #include "GrapaSystem.h"
 #include "GrapaState.h"
 #include "GrapaCompress.h"
-#include "GrapaEncrypt.h"
+#include "GrapaTinyAES.h"
 #include "GrapaHash.h"
 #include "GrapaFloat.h"
 #include "GrapaVector.h"
 #include "GrapaWidget.h"
 #include "GrapaLink.h"
 #include "GrapaNetConnect.h"
+#include "GrapaTime.h"
 
 #include <thread>
 
@@ -10264,7 +10265,7 @@ GrapaRuleEvent* GrapaLibraryRuleGenKeysEvent::Run(GrapaScriptExec* vScriptExec, 
 
 	if (r1.vVal)
 	{
-		GrapaPublicKey key;
+		GrapaEncode key;
 		result = key.GenKeys(r1.vVal->mValue, r2.vVal);
 	}
 
@@ -10299,7 +10300,7 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 		}
 		if (method.StrLowerCmp("RSA") == 0 || method.StrLowerCmp("MD") == 0)
 		{
-			GrapaPublicKey key;
+			GrapaEncode key;
 			bool isset = true;
 			if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
 			else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
@@ -10335,7 +10336,7 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 				{
 					err = 0;
 					GrapaCHAR value;
-					GrapaEncrypt aes;
+					GrapaTinyAES aes;
 					aes.Init(key->mValue, iv ? iv->mValue : GrapaBYTE(), 1);
 					result = new GrapaRuleEvent(0, GrapaCHAR(), value);
 					result->mValue.mToken = GrapaTokenType::RAW;
@@ -10608,7 +10609,7 @@ GrapaRuleEvent* GrapaLibraryRuleDecodeEvent::Run(GrapaScriptExec *vScriptExec, G
 		{
 			if (r1.vVal)
 			{
-				GrapaPublicKey key;
+				GrapaEncode key;
 				bool isset = true;
 				if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
 				else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
@@ -10638,7 +10639,7 @@ GrapaRuleEvent* GrapaLibraryRuleDecodeEvent::Run(GrapaScriptExec *vScriptExec, G
 				{
 					err = 0;
 					GrapaCHAR value;
-					GrapaEncrypt aes;
+					GrapaTinyAES aes;
 					aes.Init(key->mValue, iv?iv->mValue: GrapaBYTE(), 0);
 					result = new GrapaRuleEvent(0, GrapaCHAR(), value);
 					result->mValue.mToken = GrapaTokenType::RAW;
@@ -10744,7 +10745,7 @@ GrapaRuleEvent* GrapaLibraryRuleSignEvent::Run(GrapaScriptExec* vScriptExec, Gra
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 			if (x) method.FROM(x->mValue);
 		}
-		GrapaPublicKey key;
+		GrapaEncode key;
 		bool isset = true;
 		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
 		else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
@@ -10781,7 +10782,7 @@ GrapaRuleEvent* GrapaLibraryRuleSignAddEvent::Run(GrapaScriptExec* vScriptExec, 
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 			if (x) method.FROM(x->mValue);
 		}
-		GrapaPublicKey key;
+		GrapaEncode key;
 		bool isset = true;
 		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
 		else if (r4.vVal && r4.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r4.vVal);
@@ -10818,7 +10819,7 @@ GrapaRuleEvent* GrapaLibraryRuleVerifyEvent::Run(GrapaScriptExec *vScriptExec, G
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 			if (x) method.FROM(x->mValue);
 		}
-		GrapaPublicKey key;
+		GrapaEncode key;
 		bool isset = true;
 		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
 		else if (r4.vVal && r4.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r4.vVal);
@@ -10852,7 +10853,7 @@ GrapaRuleEvent* GrapaLibraryRuleVerifyRecoverEvent::Run(GrapaScriptExec* vScript
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 			if (x) method.FROM(x->mValue);
 		}
-		GrapaPublicKey key;
+		GrapaEncode key;
 		bool isset = true;
 		if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r2.vVal);
 		else if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::LIST) key.FROM(r3.vVal);
@@ -10877,7 +10878,7 @@ GrapaRuleEvent* GrapaLibraryRuleSecretEvent::Run(GrapaScriptExec* vScriptExec, G
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	if (r1.vVal && r2.vVal)
 	{
-		GrapaPublicKey key;
+		GrapaEncode key;
 		if (key.FROM(r2.vVal))
 		{
 			GrapaBYTE d;
@@ -14208,7 +14209,7 @@ GrapaRuleEvent* GrapaLibraryRuleStrEvent::Run(GrapaScriptExec *vScriptExec, Grap
 	{
 		GrapaCHAR item;
 		GrapaInt a;
-		GrapaTIME t;
+		GrapaTime t;
 		switch (r1.vVal->mValue.mToken)
 		{
 		case GrapaTokenType::INT:
@@ -14505,7 +14506,7 @@ GrapaRuleEvent* GrapaLibraryRuleTimeEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	if (r1.vVal)
 	{
 		GrapaCHAR item;
-		GrapaTIME t;
+		GrapaTime t;
 		switch (r1.vVal->mValue.mToken)
 		{
 		case GrapaTokenType::INT:
@@ -16460,7 +16461,7 @@ GrapaRuleEvent* GrapaLibraryRuleUpperEvent::Run(GrapaScriptExec *vScriptExec, Gr
 
 GrapaRuleEvent* GrapaLibraryRuleUtcEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
-	GrapaTIME t;
+	GrapaTime t;
 	GrapaCHAR name;
 	t.SetNow();
 	GrapaRuleEvent* result = new GrapaRuleEvent(0, name, t.getBytes());
@@ -16470,7 +16471,7 @@ GrapaRuleEvent* GrapaLibraryRuleUtcEvent::Run(GrapaScriptExec *vScriptExec, Grap
 
 GrapaRuleEvent* GrapaLibraryRuleTzEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
-	GrapaTIME t;
+	GrapaTime t;
 	GrapaCHAR name;
 	GrapaInt num1;
 	num1 = t.LocalOffset();

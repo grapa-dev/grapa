@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "GrapaSystem.h"
 #include "GrapaLink.h"
+#include "GrapaTime.h"
 
 #include <openssl/rand.h>
 
@@ -152,7 +153,7 @@ GrapaSystem::~GrapaSystem()
 //
 //void GrapaSystem::PrintTimeLine(const char* pChar, bool flush)
 //{
-//	GrapaTIME t;
+//	GrapaTime t;
 //	t.SetNow();
 //	GrapaCHAR s(t.getString());
 //	for (s64 i = s.mLength; i < 27;i++)
@@ -260,7 +261,7 @@ void GrapaSystem::RandSeed(u64 pSeed)
 		for (size_t i = 0; i < sizeof(u64); i++)
 			seed = seed * (0xff + 2u) + ((u8*)&pSeed)[i];
 	}
-	GrapaTIME t;
+	GrapaTime t;
 	t.SetNow();
 	u64 timeval = t.mSec.LongValue();
 	unsigned char *ptr = (unsigned char *)&timeval;

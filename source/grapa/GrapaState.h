@@ -9,7 +9,7 @@
 #include "GrapaThread.h"
 #include "GrapaValue.h"
 #include "GrapaFileIO.h"
-#include "GrapaPublicKey.h"
+#include "GrapaEncode.h"
 #include "GrapaDatabase.h"
 #include "GrapaNet.h"
 

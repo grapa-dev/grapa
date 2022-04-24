@@ -25,6 +25,7 @@ limitations under the License.
 #include "GrapaValue.h"
 #include "GrapaDB.h"
 #include "GrapaInt.h"
+#include "GrapaTime.h"
 #include "GrapaFloat.h"
 #include "GrapaMem.h"
 #include "GrapaSystem.h"
@@ -193,7 +194,7 @@ GrapaCHAR GrapaBYTE::ToStr()
 		break;
 	case GrapaTokenType::TIME:
 	{
-		GrapaTIME t;
+		GrapaTime t;
 		t.FromBytes(*this);
 		return t.getString();
 	}

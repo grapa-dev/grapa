@@ -19,6 +19,7 @@ limitations under the License.
 #include "GrapaLink.h"
 #include "GrapaSystem.h"
 #include "GrapaCompress.h"
+#include "GrapaTime.h"
 #include <iostream>
 #include "GrapaStaticLib.c"
 
@@ -354,7 +355,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	dt.Append("T");
 	dt.Append(__TIME__);
 	dt.Append(".000000");
-	GrapaTIME t;
+	GrapaTime t;
 	t.FromString(dt);
 	t.mSec -= t.LocalOffset();
 	if (gSystem->mVersion) gSystem->mVersion->CLEAR();

@@ -11,7 +11,7 @@
 #include "GrapaFileCache.h"
 #include "GrapaHash.h"
 #include "GrapaObject.h"
-#include "GrapaEncrypt.h"
+#include "GrapaTinyAES.h"
 
 class GrapaFileTree : public GrapaFile
 {
@@ -45,7 +45,7 @@ protected:
 	u64 mRoot;
 	u8* vBuffer;
 	GrapaObjectIndexQueue mCache;
-	GrapaEncrypt mCode;
+	GrapaTinyAES mCode;
 };
 
 #endif //_GrapaFileTREE_
