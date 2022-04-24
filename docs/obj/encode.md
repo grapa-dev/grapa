@@ -341,6 +341,8 @@ Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and
 ```
 a = "dh".genkeys();
 b = "dh".genkeys({p:a.p,g:a.g});
+a.secret({method:b.method,pub:b.pub});
+b.secret({method:a.method,pub:a.pub});
 a.secret(b)==b.secret(a);
 
 a = "ec".genkeys({curve:"prime256v1"});
