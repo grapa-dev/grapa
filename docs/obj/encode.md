@@ -347,10 +347,14 @@ a.secret(b)==b.secret(a);
 
 a = "ec".genkeys({curve:"prime256v1"});
 b = "ec".genkeys({curve:a.curve});
+a.secret({method:b.method,curve:b.curve,pub:b.pub});
+b.secret({method:a.method,curve:a.curve,pub:a.pub});
 a.secret(b)==b.secret(a);
 
 a = "rpk".genkeys({alg:"X25519"});
 b = "rpk".genkeys({alg:a.alg});
+a.secret({method:b.method,alg:b.alg,pub:b.pub});
+b.secret({method:a.method,alg:a.alg,pub:a.pub});
 a.secret(b)==b.secret(a);
 ```
 
