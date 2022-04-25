@@ -23,6 +23,17 @@ grapa: />enc;
 0xC492D258D8213815771868C08197E89834FD553EF26DE0FD1E957E37282B5F75805A0538EA47C93A0B767999CD0B034176FBEB85960211D9D12AB598FBBA0D54162E2AECE5F5DFB0168D8ADD5BC5CA33964216FDE2E5C7525AFABD7DE0111C4C2F253A1C6F14810EF30E93E99364220D58DF55A970994A9DFC0EBD3850000917
 grapa: />enc.decode(nodeA).str();
 this is a test of this is a test
+
+grapa: />nodeA = "rsa".genkeys();
+grapa: />sig = "test".sign(nodeA)
+grapa: />sig
+0xA86168258CCCAF03D502AF220D29C56DF689E29A881792203A30F55E9F5DC620D9BA72A69FA7BB8E5DB6DB40E74DC7F37AE10E94267EB69BD178310F9AE713E36559B789A2A1D88D80D7B7631C53C8F0D65DD74F2129F3C065F0CFB7982013625E22EF052AF829A44C07CDCA33334229B6A23058ECA50D6B7C7B8DCB54AD6402
+grapa: />sig.verify(nodeA,"test")
+1
+grapa: />sig.verify(nodeA,"test2")
+0
+grapa: />sig.verifyrecover(nodeA).str()
+test
 ```
 
 ### "dh" - Diffie-Hellman key exchange
@@ -64,14 +75,13 @@ grapa: />"ec".genkeys()
 grapa: />"ec".genkeys({curve:"secp224r1", bits:256})
 {"method":"EC","curve":"secp224r1","pub":94005469537357239932833357907049107441874311457299400778270964405582,"prv":5192160124916624753659544220564622206602718051022940651336084962189}
 
-grapa: />g="ec".genkeys()
-grapa: />g
-{"method":"ec","curve":"prime256v1","pub":267022408291204621222094485495440488803418998225332859306572250802524759322898,"prv":92070147017367805913659104020427728333589422388143910718778438686550315500923}
-grapa: />"test".sign(g)
-0x304602210091861F29D2DCF61AA1D55A9454FE286B7DD4E4B0867F399CBF66DCE162520726022100A44FABB3704684FEAD1474F0141425C8B43A3C067C6924E8EBB43C9EDD6280B4
-grapa: />"test".sign(g).verify(g,"test")
+grapa: />nodeA = "ec".genkeys({curve:"prime256v1"});
+grapa: />sig = "test".sign(nodeA)
+grapa: />sig
+0x304402207601D7909310BC4DE38DB17D8FE52AB71B7A21CE2976238E1A4870CCD5EE8FE202207072F45DBF7C35D46CE23AAEC4BF89B2FA62E158DD1FA69B28FEF935ACC01807
+grapa: />sig.verify(nodeA,"test")
 1
-grapa: />"test".sign(g).verify(g,"test2")
+grapa: />sig.verify(nodeA,"test2")
 0
 
 grapa: />nodeA = "ec".genkeys({curve:"prime256v1"});
@@ -245,8 +255,20 @@ cyper
 - "sm4-ctr"
 
 ```
-grapa: />"bc".genkeys({cipher:"aes-256-cbc",key:"thisisatest"})
+grapa: />nodeA = "bc".genkeys({cipher:"aes-256-cbc", key:"thisisatest"})
+grapa: />nodeA
 {"method":"bc","cipher":"aes-256-cbc","key":0x7468697369736174657374,"iv":null}
+grapa: />enc = "this is a test".encode(nodeA);
+grapa: />enc
+0x4E12DB388BBE0173A35A82D6972C0BBA
+grapa: />enc.decode(nodeA).str();
+this is a test
+
+grapa: />enc = "this is a test".encode({method:"bc", cipher:"aes-256-cbc", key:"thisisatest"});
+grapa: />enc
+0x4E12DB388BBE0173A35A82D6972C0BBA
+grapa: />enc.decode({method:"bc", cipher:"aes-256-cbc", key:"thisisatest"}).str();
+this is a test
 ```
 
 ### "md"
@@ -281,6 +303,7 @@ grapa: />nodeA;
 {"method":"md","digest":"sha3-256"}
 grapa: />"test".encode(nodeA);
 0x36F028580BB02CC8272A9A020F4200E346E276AE664E45EE80745574E2F5AB80
+
 grapa: />"test".encode({method:"md", digest:"sha3-256"});
 0x36F028580BB02CC8272A9A020F4200E346E276AE664E45EE80745574E2F5AB80
 ```
