@@ -349,8 +349,8 @@ true
 ### "kdf"
 
 options:
-- alg (default="aes-256-cbc")
-- digest (default="hkdf")
+- alg (default="hkdf")
+- digest (default="sha256")
 - count
 - size
 - salt
