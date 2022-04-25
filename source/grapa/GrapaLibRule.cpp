@@ -10298,7 +10298,7 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 			if (x) method.FROM(x->mValue);
 		}
-		if (method.StrLowerCmp("RSA") == 0 || method.StrLowerCmp("MD") == 0)
+		if (method.StrLowerCmp("rsa") == 0|| method.StrLowerCmp("bc") == 0 || method.StrLowerCmp("md") == 0 || method.StrLowerCmp("rpk") == 0)
 		{
 			GrapaEncode key;
 			bool isset = true;
@@ -10605,7 +10605,7 @@ GrapaRuleEvent* GrapaLibraryRuleDecodeEvent::Run(GrapaScriptExec *vScriptExec, G
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 			if (x) method.FROM(x->mValue);
 		}
-		if (method.StrLowerCmp("RSA") == 0)
+		if (method.StrLowerCmp("rsa") == 0 || method.StrLowerCmp("bc") == 0 || method.StrLowerCmp("rpk") == 0)
 		{
 			if (r1.vVal)
 			{
@@ -10879,10 +10879,10 @@ GrapaRuleEvent* GrapaLibraryRuleSecretEvent::Run(GrapaScriptExec* vScriptExec, G
 	if (r1.vVal && r2.vVal)
 	{
 		GrapaEncode key;
-		if (key.FROM(r2.vVal))
+		if (key.FROM(r1.vVal))
 		{
 			GrapaBYTE d;
-			bool success = key.Secret(r1.vVal, d);
+			bool success = key.Secret(r2.vVal, d);
 			result = new GrapaRuleEvent(0, GrapaCHAR(), d);
 		}
 	}

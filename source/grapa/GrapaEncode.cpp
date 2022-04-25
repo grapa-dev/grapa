@@ -130,6 +130,7 @@ bool GrapaEncode::FROM(GrapaRuleEvent* pKey)
 
 	s64 idx;
 	GrapaRuleEvent* x = pKey->vQueue->Search("method", idx);
+	while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 	if (x == NULL) return false;
 
 	if (x->mValue.StrLowerCmp("rsa")==0)
@@ -968,6 +969,96 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 
 		return result;
 	}
+	else if (((GrapaCHAR*)&pMethod)->StrLowerCmp("kdf") == 0)
+	{
+		GrapaBYTE salt, secret, data, key;
+		GrapaCHAR algorithmname("hkdf");
+		GrapaCHAR digestname("sha256");
+		int count = 1;
+		int size = 256;
+		GrapaCHAR pub, prv;
+		if (pParams && pParams->vQueue)
+		{
+			x = pParams->vQueue->Search("alg", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) algorithmname.FROM(x->mValue);
+			x = pParams->vQueue->Search("digest", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) digestname.FROM(x->mValue);
+			x = pParams->vQueue->Search("count", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) count = GrapaInt(x->mValue).LongValue();
+			x = pParams->vQueue->Search("size", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) size = GrapaInt(x->mValue).LongValue();
+			x = pParams->vQueue->Search("salt", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) salt.FROM(x->mValue);
+			x = pParams->vQueue->Search("secret", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) secret.FROM(x->mValue);
+			x = pParams->vQueue->Search("info", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) data.FROM(x->mValue);
+		}
+		EVP_MD* md = (EVP_MD*)EVP_get_digestbyname((char*)digestname.mBytes);
+		if (md == NULL && digestname.mLength) return result;
+		if (algorithmname.StrLowerCmp("PBKDF2") == 0)
+		{
+			key.SetLength(size);
+			err = PKCS5_PBKDF2_HMAC((const char*)secret.mBytes, secret.mLength, salt.mBytes, salt.mLength, count, md, size, key.mBytes);
+			if (err >= 1)
+			{
+				result = new GrapaRuleEvent();
+				result->mValue.mToken = GrapaTokenType::LIST;
+				result->vQueue = new GrapaRuleQueue();
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("kdf")));
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("alg"), algorithmname));
+				key.mToken = GrapaTokenType::RAW;
+				if (key.mLength) result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("sk"), key));
+			}
+		}
+		else if (algorithmname.StrLowerCmp("hkdf") == 0)
+		{
+			EVP_PKEY_CTX* pctx;
+			key.mToken = GrapaTokenType::RAW;
+			pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_HKDF, NULL);
+			int err = 0;
+			err = EVP_PKEY_derive_init(pctx);
+			if (err >= 1 && md)
+				err = EVP_PKEY_CTX_set_hkdf_md(pctx, md);
+			if (err >= 1 && salt.mLength)
+				err = EVP_PKEY_CTX_set1_hkdf_salt(pctx, salt.mBytes, salt.mLength);
+			if (err >= 1 && secret.mLength)
+				err = EVP_PKEY_CTX_set1_hkdf_key(pctx, secret.mBytes, secret.mLength);
+			if (err >= 1 && data.mLength)
+				err = EVP_PKEY_CTX_add1_hkdf_info(pctx, data.mBytes, data.mLength);
+			if (err >= 1)
+			{
+				size_t outlen = size;
+				key.SetLength(outlen);
+				err = EVP_PKEY_derive(pctx, key.mBytes, &outlen);
+				if (err >= 1)
+				{
+					result = new GrapaRuleEvent();
+					result->mValue.mToken = GrapaTokenType::LIST;
+					result->vQueue = new GrapaRuleQueue();
+					result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("kdf")));
+					result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("alg"), algorithmname));
+					key.mToken = GrapaTokenType::RAW;
+					if (key.mLength) result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("sk"), key));
+				}
+			}
+			EVP_PKEY_CTX_free(pctx);
+		}
+		else if (algorithmname.StrLowerCmp("argon2id") == 0)
+		{
+			// https://github.com/p-h-c/phc-winner-argon2
+			// https://github.com/mattrglobal/ffi-bbs-signatures/blob/master/src/lib.rs
+			// gen_sk
+		}
+		return result;
+	}
 	return result;
 }
 
@@ -1015,8 +1106,6 @@ bool GrapaEncode::Encode(const GrapaBYTE& pData, GrapaBYTE& pEnc, const GrapaInt
 		EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new((EVP_PKEY*)mRPK, NULL);
 		if (ctx == NULL) return false;
 		int err = EVP_PKEY_encrypt_init(ctx);
-		if (err >= 1)
-			err = EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_OAEP_PADDING);
 		size_t outlen = 0;
 		if (err >= 1)
 			err = EVP_PKEY_encrypt(ctx, NULL, &outlen, pData.mBytes, pData.mLength);
@@ -1548,17 +1637,13 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 	{
 		int err = 0;
 		s64 idx;
-		GrapaObjectEvent* x = pKey->vQueue->SearchLower("METHOD", idx);
+		GrapaObjectEvent* x = pKey->vQueue->SearchLower("method", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 		if (x == NULL) return false;
 		if (x->mValue.StrLowerCmp("dh") != 0) return false;
 
-		BIGNUM* g, * pub;
-		g = pub = NULL;
-
-		x = pKey->vQueue->Search("g", idx);
-		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-		if (x) g = BN_bin2bn((u8*)x->mValue.mBytes, x->mValue.mLength, NULL);
+		BIGNUM * pub;
+		pub = NULL;
 
 		x = pKey->vQueue->Search("pub", idx);
 		while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
@@ -1567,7 +1652,12 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 		GrapaBYTE gc;
 		gc.SetLength(DH_size((DH*)mDH));
 		err = DH_compute_key(gc.mBytes, pub, (DH*)mDH);
-		BN_free(g);
+		char es[1024];
+		if (err <= 0)
+		{
+			unsigned long xer = ERR_get_error();
+			ERR_error_string_n(xer, es, 1024);
+		}
 		BN_free(pub);
 		if (err >= 1)
 		{
