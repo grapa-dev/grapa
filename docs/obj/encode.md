@@ -357,6 +357,11 @@ options:
 - secret
 - info
 
+alg
+- "hkdf"
+- "pbkdf2"
+
+
 ```
 grapa: />seed = (256).random();
 grapa: />"kdf".genkeys({alg:"hkdf",digest:"blake2b512",salt:"SIG-KEYGEN-SALT-",secret:((seed.uint()) << 8),info:(("test1".raw().uint()<<16)|48),count:5});
