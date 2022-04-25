@@ -104,7 +104,7 @@ options
 - digest (default="sha512")
 - count
 - salt
-- delta
+- data
 
 cyper
 - "des-ecb"
