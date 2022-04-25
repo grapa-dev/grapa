@@ -321,9 +321,6 @@ alg
 - "X25519"
 - "ED448"
 - "X448"
-- "HMAC"
-- "POLY1305"
-- "SIPHASH"
 
 ```
 grapa: />"rpk".genkeys({alg:"ED25519"})
