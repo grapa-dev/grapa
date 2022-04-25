@@ -49,13 +49,17 @@ grapa: />"test".sign(g).verify(g,"test2")
 ### "bc"
 [EVP_CipherInit_ex](https://www.openssl.org/docs/man1.0.2/man3/EVP_CipherInit_ex.html)
 
-
 ```
 grapa: />"bc".genkeys(256)
 {"method":"BC","cipher":"aes-256-cbc","key":0x0000000000000200000000000000001FFFFFFFFFFFFFFFE0000000000000000,"iv":0x100004A32DA99214630F0ADFBF22119}
 ```
 
-"cyper"
+Pass in:
+- cipher
+- key
+- iv
+
+cyper
 - "des-ecb"
 - "des-ede"
 - "des-ede3"
