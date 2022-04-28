@@ -67,4 +67,4 @@ The language is cross platform binary/execution compatible accross Windows, Linu
 * [Miniz zlib](https://github.com/richgel999/miniz/releases)
 * [OpenSSL](https://www.openssl.org/)
 * [FLTK](https://www.fltk.org/)
-* [MCL](https://github.com/herumi/mcl)
+* [blst](https://github.com/supranational/blst)
