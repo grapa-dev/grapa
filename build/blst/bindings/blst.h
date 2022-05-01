@@ -39,6 +39,17 @@ typedef _Bool bool; /* it's assumed that cgo calls modern enough compiler */
 # define DEFNULL
 #endif
 
+typedef struct {
+    void* ctx;
+    void* digest;
+    size_t r_in_bytes;
+    size_t b_in_bytes;
+    void(*d_digest)(void* cb, const char* name);
+    void(*d_size)(void* cb, size_t* r_in_bytes, size_t* b_in_bytes);
+    void(*d_init)(void* cb);
+    void(*d_update)(void* cb, const void* _inp, size_t len);
+    void(*d_final)(void* cb, unsigned char* md, size_t size, size_t* outlen);
+} DIGEST_CB;				
 typedef enum {
     BLST_SUCCESS = 0,
     BLST_BAD_ENCODING,
@@ -278,20 +289,20 @@ void blst_map_to_g2(blst_p2 *out, const blst_fp2 *u, const blst_fp2 *v DEFNULL);
 void blst_encode_to_g1(blst_p1 *out,
                        const byte *msg, size_t msg_len,
                        const byte *DST DEFNULL, size_t DST_len DEFNULL,
-                       const byte *aug DEFNULL, size_t aug_len DEFNULL);
+                       const byte *aug DEFNULL, size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 void blst_hash_to_g1(blst_p1 *out,
                      const byte *msg, size_t msg_len,
                      const byte *DST DEFNULL, size_t DST_len DEFNULL,
-                     const byte *aug DEFNULL, size_t aug_len DEFNULL);
+                     const byte *aug DEFNULL, size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 
 void blst_encode_to_g2(blst_p2 *out,
                        const byte *msg, size_t msg_len,
                        const byte *DST DEFNULL, size_t DST_len DEFNULL,
-                       const byte *aug DEFNULL, size_t aug_len DEFNULL);
+                       const byte *aug DEFNULL, size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 void blst_hash_to_g2(blst_p2 *out,
                      const byte *msg, size_t msg_len,
                      const byte *DST DEFNULL, size_t DST_len DEFNULL,
-                     const byte *aug DEFNULL, size_t aug_len DEFNULL);
+                     const byte *aug DEFNULL, size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 
 /*
  * Zcash-compatible serialization/deserialization.
@@ -362,7 +373,7 @@ BLST_ERROR blst_pairing_aggregate_pk_in_g2(blst_pairing *ctx,
                                            const blst_p1_affine *signature,
                                            const byte *msg, size_t msg_len,
                                            const byte *aug DEFNULL,
-                                           size_t aug_len DEFNULL);
+                                           size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_pairing_chk_n_aggr_pk_in_g2(blst_pairing *ctx,
                                             const blst_p2_affine *PK,
                                             bool pk_grpchk,
@@ -370,7 +381,7 @@ BLST_ERROR blst_pairing_chk_n_aggr_pk_in_g2(blst_pairing *ctx,
                                             bool sig_grpchk,
                                             const byte *msg, size_t msg_len,
                                             const byte *aug DEFNULL,
-                                            size_t aug_len DEFNULL);
+                                            size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_pairing_mul_n_aggregate_pk_in_g2(blst_pairing *ctx,
                                                  const blst_p2_affine *PK,
                                                  const blst_p1_affine *sig,
@@ -379,7 +390,7 @@ BLST_ERROR blst_pairing_mul_n_aggregate_pk_in_g2(blst_pairing *ctx,
                                                  const byte *msg,
                                                  size_t msg_len,
                                                  const byte *aug DEFNULL,
-                                                 size_t aug_len DEFNULL);
+                                                 size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_pairing_chk_n_mul_n_aggr_pk_in_g2(blst_pairing *ctx,
                                                   const blst_p2_affine *PK,
                                                   bool pk_grpchk,
@@ -390,13 +401,13 @@ BLST_ERROR blst_pairing_chk_n_mul_n_aggr_pk_in_g2(blst_pairing *ctx,
                                                   const byte *msg,
                                                   size_t msg_len,
                                                   const byte *aug DEFNULL,
-                                                  size_t aug_len DEFNULL);
+                                                  size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_pairing_aggregate_pk_in_g1(blst_pairing *ctx,
                                            const blst_p1_affine *PK,
                                            const blst_p2_affine *signature,
                                            const byte *msg, size_t msg_len,
                                            const byte *aug DEFNULL,
-                                           size_t aug_len DEFNULL);
+                                           size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_pairing_chk_n_aggr_pk_in_g1(blst_pairing *ctx,
                                             const blst_p1_affine *PK,
                                             bool pk_grpchk,
@@ -404,7 +415,7 @@ BLST_ERROR blst_pairing_chk_n_aggr_pk_in_g1(blst_pairing *ctx,
                                             bool sig_grpchk,
                                             const byte *msg, size_t msg_len,
                                             const byte *aug DEFNULL,
-                                            size_t aug_len DEFNULL);
+                                            size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_pairing_mul_n_aggregate_pk_in_g1(blst_pairing *ctx,
                                                  const blst_p1_affine *PK,
                                                  const blst_p2_affine *sig,
@@ -413,7 +424,7 @@ BLST_ERROR blst_pairing_mul_n_aggregate_pk_in_g1(blst_pairing *ctx,
                                                  const byte *msg,
                                                  size_t msg_len,
                                                  const byte *aug DEFNULL,
-                                                 size_t aug_len DEFNULL);
+                                                 size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_pairing_chk_n_mul_n_aggr_pk_in_g1(blst_pairing *ctx,
                                                   const blst_p1_affine *PK,
                                                   bool pk_grpchk,
@@ -424,7 +435,7 @@ BLST_ERROR blst_pairing_chk_n_mul_n_aggr_pk_in_g1(blst_pairing *ctx,
                                                   const byte *msg,
                                                   size_t msg_len,
                                                   const byte *aug DEFNULL,
-                                                  size_t aug_len DEFNULL);
+                                                  size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_pairing_merge(blst_pairing *ctx, const blst_pairing *ctx1);
 bool blst_pairing_finalverify(const blst_pairing *ctx,
                               const blst_fp12 *gtsig DEFNULL);
@@ -456,7 +467,7 @@ BLST_ERROR blst_core_verify_pk_in_g1(const blst_p1_affine *pk,
                                      const byte *DST DEFNULL,
                                      size_t DST_len DEFNULL,
                                      const byte *aug DEFNULL,
-                                     size_t aug_len DEFNULL);
+                                     size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 BLST_ERROR blst_core_verify_pk_in_g2(const blst_p2_affine *pk,
                                      const blst_p1_affine *signature,
                                      bool hash_or_encode,
@@ -464,7 +475,7 @@ BLST_ERROR blst_core_verify_pk_in_g2(const blst_p2_affine *pk,
                                      const byte *DST DEFNULL,
                                      size_t DST_len DEFNULL,
                                      const byte *aug DEFNULL,
-                                     size_t aug_len DEFNULL);
+                                     size_t aug_len DEFNULL, DIGEST_CB* cb DEFNULL);
 
 extern const blst_p1_affine BLS12_381_G1;
 extern const blst_p1_affine BLS12_381_NEG_G1;

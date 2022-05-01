@@ -424,33 +424,37 @@ void blst_map_to_g1(POINTonE1 *out, const vec384 u, const vec384 v)
 
 static void Encode_to_G1(POINTonE1 *p, const unsigned char *msg, size_t msg_len,
                                        const unsigned char *DST, size_t DST_len,
-                                       const unsigned char *aug, size_t aug_len)
+                                       const unsigned char *aug, size_t aug_len,
+                                       DIGEST_CB* cb)
 {
     vec384 u[1];
 
-    hash_to_field(u, 1, aug, aug_len, msg, msg_len, DST, DST_len);
+    hash_to_field(u, 1, aug, aug_len, msg, msg_len, DST, DST_len, cb);
     map_to_g1(p, u[0], NULL);
 }
 
 void blst_encode_to_g1(POINTonE1 *p, const unsigned char *msg, size_t msg_len,
                                      const unsigned char *DST, size_t DST_len,
-                                     const unsigned char *aug, size_t aug_len)
-{   Encode_to_G1(p, msg, msg_len, DST, DST_len, aug, aug_len);   }
+                                     const unsigned char *aug, size_t aug_len,
+                                       DIGEST_CB* cb)
+{   Encode_to_G1(p, msg, msg_len, DST, DST_len, aug, aug_len, cb);   }
 
 static void Hash_to_G1(POINTonE1 *p, const unsigned char *msg, size_t msg_len,
                                      const unsigned char *DST, size_t DST_len,
-                                     const unsigned char *aug, size_t aug_len)
+                                     const unsigned char *aug, size_t aug_len,
+                                       DIGEST_CB* cb)
 {
     vec384 u[2];
 
-    hash_to_field(u, 2, aug, aug_len, msg, msg_len, DST, DST_len);
+    hash_to_field(u, 2, aug, aug_len, msg, msg_len, DST, DST_len, cb);
     map_to_g1(p, u[0], u[1]);
 }
 
 void blst_hash_to_g1(POINTonE1 *p, const unsigned char *msg, size_t msg_len,
                                    const unsigned char *DST, size_t DST_len,
-                                   const unsigned char *aug, size_t aug_len)
-{   Hash_to_G1(p, msg, msg_len, DST, DST_len, aug, aug_len);   }
+                                   const unsigned char *aug, size_t aug_len,
+                                       DIGEST_CB* cb)
+{   Hash_to_G1(p, msg, msg_len, DST, DST_len, aug, aug_len, cb);   }
 
 static void sigma(POINTonE1 *out, const POINTonE1 *in);
 

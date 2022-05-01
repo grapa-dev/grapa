@@ -102,7 +102,8 @@ static BLST_ERROR PAIRING_Aggregate_PK_in_G2(PAIRING *ctx,
                                              size_t sig_groupcheck,
                                              const byte *scalar, size_t nbits,
                                              const void *msg, size_t msg_len,
-                                             const void *aug, size_t aug_len)
+                                             const void *aug, size_t aug_len,
+                                             DIGEST_CB* cb)
 {
     if (ctx->ctrl & AGGR_MIN_PK)
         return BLST_AGGR_TYPE_MISMATCH;
@@ -160,9 +161,9 @@ static BLST_ERROR PAIRING_Aggregate_PK_in_G2(PAIRING *ctx,
         }
 
         if (ctx->ctrl & AGGR_HASH_OR_ENCODE)
-            Hash_to_G1(H, msg, msg_len, DST, ctx->DST_len, aug, aug_len);
+            Hash_to_G1(H, msg, msg_len, DST, ctx->DST_len, aug, aug_len, cb);
         else
-            Encode_to_G1(H, msg, msg_len, DST, ctx->DST_len, aug, aug_len);
+            Encode_to_G1(H, msg, msg_len, DST, ctx->DST_len, aug, aug_len, cb);
 
         if (nbits != 0 && scalar != NULL)
             POINTonE1_mult_w5(H, H, scalar, nbits);
@@ -193,9 +194,10 @@ BLST_ERROR blst_pairing_aggregate_pk_in_g2(PAIRING *ctx,
                                            const POINTonE2_affine *PK,
                                            const POINTonE1_affine *signature,
                                            const void *msg, size_t msg_len,
-                                           const void *aug, size_t aug_len)
+                                           const void *aug, size_t aug_len,
+                                           DIGEST_CB* cb)
 {   return PAIRING_Aggregate_PK_in_G2(ctx, PK, 0, signature, 1, NULL, 0,
-                                      msg, msg_len, aug, aug_len);
+                                      msg, msg_len, aug, aug_len, cb);
 }
 
 BLST_ERROR blst_pairing_mul_n_aggregate_pk_in_g2(PAIRING *ctx,
@@ -206,9 +208,10 @@ BLST_ERROR blst_pairing_mul_n_aggregate_pk_in_g2(PAIRING *ctx,
                                                  const void *msg,
                                                  size_t msg_len,
                                                  const void *aug,
-                                                 size_t aug_len)
+                                                 size_t aug_len,
+                                                 DIGEST_CB* cb)
 {   return PAIRING_Aggregate_PK_in_G2(ctx, PK, 0, sig, 1, scalar, nbits,
-                                      msg, msg_len, aug, aug_len);
+                                      msg, msg_len, aug, aug_len, cb);
 }
 
 BLST_ERROR blst_pairing_chk_n_aggr_pk_in_g2(PAIRING *ctx,
@@ -217,9 +220,10 @@ BLST_ERROR blst_pairing_chk_n_aggr_pk_in_g2(PAIRING *ctx,
                                             const POINTonE1_affine *signature,
                                             size_t sig_grpchk,
                                             const void *msg, size_t msg_len,
-                                            const void *aug, size_t aug_len)
+                                            const void *aug, size_t aug_len,
+                                            DIGEST_CB* cb)
 {   return PAIRING_Aggregate_PK_in_G2(ctx, PK, pk_grpchk, signature, sig_grpchk,
-                                      NULL, 0, msg, msg_len, aug, aug_len);
+                                      NULL, 0, msg, msg_len, aug, aug_len, cb);
 }
 
 BLST_ERROR blst_pairing_chk_n_mul_n_aggr_pk_in_g2(PAIRING *ctx,
@@ -232,10 +236,11 @@ BLST_ERROR blst_pairing_chk_n_mul_n_aggr_pk_in_g2(PAIRING *ctx,
                                                   const void *msg,
                                                   size_t msg_len,
                                                   const void *aug,
-                                                  size_t aug_len)
+                                                  size_t aug_len,
+                                                  DIGEST_CB* cb)
 {   return PAIRING_Aggregate_PK_in_G2(ctx, PK, pk_grpchk, sig, sig_grpchk,
                                       scalar, nbits,
-                                      msg, msg_len, aug, aug_len);
+                                      msg, msg_len, aug, aug_len, cb);
 }
 
 static BLST_ERROR PAIRING_Aggregate_PK_in_G1(PAIRING *ctx,
@@ -245,7 +250,8 @@ static BLST_ERROR PAIRING_Aggregate_PK_in_G1(PAIRING *ctx,
                                              size_t sig_groupcheck,
                                              const byte *scalar, size_t nbits,
                                              const void *msg, size_t msg_len,
-                                             const void *aug, size_t aug_len)
+                                             const void *aug, size_t aug_len,
+                                             DIGEST_CB* cb)
 {
     if (ctx->ctrl & AGGR_MIN_SIG)
         return BLST_AGGR_TYPE_MISMATCH;
@@ -304,9 +310,9 @@ static BLST_ERROR PAIRING_Aggregate_PK_in_G1(PAIRING *ctx,
         }
 
         if (ctx->ctrl & AGGR_HASH_OR_ENCODE)
-            Hash_to_G2(H, msg, msg_len, DST, ctx->DST_len, aug, aug_len);
+            Hash_to_G2(H, msg, msg_len, DST, ctx->DST_len, aug, aug_len, cb);
         else
-            Encode_to_G2(H, msg, msg_len, DST, ctx->DST_len, aug, aug_len);
+            Encode_to_G2(H, msg, msg_len, DST, ctx->DST_len, aug, aug_len, cb);
 
         POINTonE2_from_Jacobian(H, H);
 
@@ -343,9 +349,10 @@ BLST_ERROR blst_pairing_aggregate_pk_in_g1(PAIRING *ctx,
                                            const POINTonE1_affine *PK,
                                            const POINTonE2_affine *signature,
                                            const void *msg, size_t msg_len,
-                                           const void *aug, size_t aug_len)
+                                           const void *aug, size_t aug_len,
+                                            DIGEST_CB* cb)
 {   return PAIRING_Aggregate_PK_in_G1(ctx, PK, 0, signature, 1, NULL, 0,
-                                      msg, msg_len, aug, aug_len);
+                                      msg, msg_len, aug, aug_len, cb);
 }
 
 BLST_ERROR blst_pairing_mul_n_aggregate_pk_in_g1(PAIRING *ctx,
@@ -356,9 +363,10 @@ BLST_ERROR blst_pairing_mul_n_aggregate_pk_in_g1(PAIRING *ctx,
                                                  const void *msg,
                                                  size_t msg_len,
                                                  const void *aug,
-                                                 size_t aug_len)
+                                                 size_t aug_len,
+                                                 DIGEST_CB* cb)
 {   return PAIRING_Aggregate_PK_in_G1(ctx, PK, 0, sig, 1, scalar, nbits,
-                                      msg, msg_len, aug, aug_len);
+                                      msg, msg_len, aug, aug_len, cb);
 }
 
 BLST_ERROR blst_pairing_chk_n_aggr_pk_in_g1(PAIRING *ctx,
@@ -367,9 +375,10 @@ BLST_ERROR blst_pairing_chk_n_aggr_pk_in_g1(PAIRING *ctx,
                                             const POINTonE2_affine *signature,
                                             size_t sig_grpchk,
                                             const void *msg, size_t msg_len,
-                                            const void *aug, size_t aug_len)
+                                            const void *aug, size_t aug_len,
+                                            DIGEST_CB* cb)
 {   return PAIRING_Aggregate_PK_in_G1(ctx, PK, pk_grpchk, signature, sig_grpchk,
-                                      NULL, 0, msg, msg_len, aug, aug_len);
+                                      NULL, 0, msg, msg_len, aug, aug_len, cb);
 }
 
 BLST_ERROR blst_pairing_chk_n_mul_n_aggr_pk_in_g1(PAIRING *ctx,
@@ -382,10 +391,11 @@ BLST_ERROR blst_pairing_chk_n_mul_n_aggr_pk_in_g1(PAIRING *ctx,
                                                   const void *msg,
                                                   size_t msg_len,
                                                   const void *aug,
-                                                  size_t aug_len)
+                                                  size_t aug_len,
+                                                  DIGEST_CB* cb)
 {   return PAIRING_Aggregate_PK_in_G1(ctx, PK, pk_grpchk, sig, sig_grpchk,
                                       scalar, nbits,
-                                      msg, msg_len, aug, aug_len);
+                                      msg, msg_len, aug, aug_len, cb);
 }
 
 static void PAIRING_Commit(PAIRING *ctx)
@@ -628,7 +638,8 @@ BLST_ERROR blst_core_verify_pk_in_g1(const POINTonE1_affine *pk,
                                      int hash_or_encode,
                                      const void *msg, size_t msg_len,
                                      const void *DST, size_t DST_len,
-                                     const void *aug, size_t aug_len)
+                                     const void *aug, size_t aug_len,
+                                     DIGEST_CB* cb)
 {
     PAIRING ctx;
     BLST_ERROR ret;
@@ -639,7 +650,7 @@ BLST_ERROR blst_core_verify_pk_in_g1(const POINTonE1_affine *pk,
     ctx.DST_len = DST_len;
 
     ret = PAIRING_Aggregate_PK_in_G1(&ctx, pk, 1, signature, 1, NULL, 0,
-                                     msg, msg_len, aug, aug_len);
+                                     msg, msg_len, aug, aug_len, cb);
     if (ret != BLST_SUCCESS)
         return ret;
 
@@ -653,7 +664,8 @@ BLST_ERROR blst_core_verify_pk_in_g2(const POINTonE2_affine *pk,
                                      int hash_or_encode,
                                      const void *msg, size_t msg_len,
                                      const void *DST, size_t DST_len,
-                                     const void *aug, size_t aug_len)
+                                     const void *aug, size_t aug_len,
+                                     DIGEST_CB* cb)
 {
     PAIRING ctx;
     BLST_ERROR ret;
@@ -664,7 +676,7 @@ BLST_ERROR blst_core_verify_pk_in_g2(const POINTonE2_affine *pk,
     ctx.DST_len = DST_len;
 
     ret = PAIRING_Aggregate_PK_in_G2(&ctx, pk, 1, signature, 1, NULL, 0,
-                                     msg, msg_len, aug, aug_len);
+                                     msg, msg_len, aug, aug_len, cb);
     if (ret != BLST_SUCCESS)
         return ret;
 

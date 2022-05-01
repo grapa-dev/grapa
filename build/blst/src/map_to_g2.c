@@ -372,33 +372,37 @@ void blst_map_to_g2(POINTonE2 *out, const vec384x u, const vec384x v)
 
 static void Encode_to_G2(POINTonE2 *p, const unsigned char *msg, size_t msg_len,
                                        const unsigned char *DST, size_t DST_len,
-                                       const unsigned char *aug, size_t aug_len)
+                                       const unsigned char *aug, size_t aug_len,
+                                       DIGEST_CB* cb)
 {
     vec384x u[1];
 
-    hash_to_field(u[0], 2, aug, aug_len, msg, msg_len, DST, DST_len);
+    hash_to_field(u[0], 2, aug, aug_len, msg, msg_len, DST, DST_len, cb);
     map_to_g2(p, u[0], NULL);
 }
 
 void blst_encode_to_g2(POINTonE2 *p, const unsigned char *msg, size_t msg_len,
                                      const unsigned char *DST, size_t DST_len,
-                                     const unsigned char *aug, size_t aug_len)
-{   Encode_to_G2(p, msg, msg_len, DST, DST_len, aug, aug_len);   }
+                                     const unsigned char *aug, size_t aug_len,
+                                       DIGEST_CB* cb)
+{   Encode_to_G2(p, msg, msg_len, DST, DST_len, aug, aug_len, cb);   }
 
 static void Hash_to_G2(POINTonE2 *p, const unsigned char *msg, size_t msg_len,
                                      const unsigned char *DST, size_t DST_len,
-                                     const unsigned char *aug, size_t aug_len)
+                                     const unsigned char *aug, size_t aug_len,
+                                       DIGEST_CB* cb)
 {
     vec384x u[2];
 
-    hash_to_field(u[0], 4, aug, aug_len, msg, msg_len, DST, DST_len);
+    hash_to_field(u[0], 4, aug, aug_len, msg, msg_len, DST, DST_len, cb);
     map_to_g2(p, u[0], u[1]);
 }
 
 void blst_hash_to_g2(POINTonE2 *p, const unsigned char *msg, size_t msg_len,
                                    const unsigned char *DST, size_t DST_len,
-                                   const unsigned char *aug, size_t aug_len)
-{   Hash_to_G2(p, msg, msg_len, DST, DST_len, aug, aug_len);   }
+                                   const unsigned char *aug, size_t aug_len,
+                                       DIGEST_CB* cb)
+{   Hash_to_G2(p, msg, msg_len, DST, DST_len, aug, aug_len, cb);   }
 
 static bool_t POINTonE2_in_G2(const POINTonE2 *P)
 {

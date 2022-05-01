@@ -34,6 +34,12 @@ static void sha256_init_Zpad(SHA256_CTX *ctx)
     ctx->off = 0;
 }
 
+typedef struct {
+    void* ctx;
+    void(*d_init)(void* cb);
+    void(*d_update)(void* cb, const void* _inp, size_t len);
+    void(*d_final)(void* cb, unsigned char* md, size_t len);
+} DIGEST_CB;		  
 static void vec_xor(void *restrict ret, const void *restrict a,
                                         const void *restrict b, size_t num)
 {
@@ -51,7 +57,8 @@ static void vec_xor(void *restrict ret, const void *restrict a,
 static void expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
                                const unsigned char *aug, size_t aug_len,
                                const unsigned char *msg, size_t msg_len,
-                               const unsigned char *DST, size_t DST_len)
+                               const unsigned char *DST, size_t DST_len,
+    DIGEST_CB* cb)
 {
     union { limb_t align; unsigned char c[32]; } b_0;
     union { limb_t align; unsigned char c[33+256+31]; } b_i;
@@ -63,12 +70,23 @@ static void expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
      * compose template for 'strxor(b_0, b_(i-1)) || I2OSP(i, 1) || DST_prime'
      */
     if (DST_len > 255) {
-        sha256_init(&ctx);
-        sha256_update(&ctx, "H2C-OVERSIZE-DST-", 17);
-        sha256_update(&ctx, DST, DST_len);
-        sha256_final(b_0.c, &ctx);
-        DST = b_0.c, DST_len = 32;
-    }
+       if (cb)
+        {
+            cb->d_init(cb);
+            cb->d_update(cb, "H2C-OVERSIZE-DST-", 17);
+            cb->d_update(cb, DST, DST_len);
+            cb->d_final(cb, (unsigned char*)b_0.c, 32);
+            DST = b_0.c, DST_len = 32;
+        }
+        else
+        {
+			sha256_init(&ctx);
+			sha256_update(&ctx, "H2C-OVERSIZE-DST-", 17);
+			sha256_update(&ctx, DST, DST_len);
+			sha256_final(b_0.c, &ctx);
+			DST = b_0.c, DST_len = 32;
+        }
+	}
     b_i_blocks = ((33 + DST_len + 1 + 9) + 63) & -64;
     vec_zero(b_i.c + b_i_blocks - 64, 64);
 
@@ -83,33 +101,75 @@ static void expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
     p[-2] = (unsigned char)(b_i_bits >> 8);
     p[-1] = (unsigned char)(b_i_bits);
 
-    sha256_init_Zpad(&ctx);                         /* Z_pad | */
-    sha256_update(&ctx, aug, aug_len);              /* | aug | */
-    sha256_update(&ctx, msg, msg_len);              /* | msg | */
-    /* | I2OSP(len_in_bytes, 2) || I2OSP(0, 1) || DST_prime    */
-    b_i.c[30] = (unsigned char)(len_in_bytes >> 8);
-    b_i.c[31] = (unsigned char)(len_in_bytes);
-    b_i.c[32] = 0;
-    sha256_update(&ctx, b_i.c + 30, 3 + DST_len + 1);
-    sha256_final(b_0.c, &ctx);
-
-    sha256_init_h(ctx.h);
-    vec_copy(b_i.c, b_0.c, 32);
-    ++b_i.c[32];
-    sha256_block_data_order(ctx.h, b_i.c, b_i_blocks / 64);
-    sha256_emit(bytes, ctx.h);
-
+    if (cb)
+    {
+        unsigned char buf[64];
+        vec_zero(buf, sizeof(buf));
+        cb->d_init(cb);
+        cb->d_update(cb, buf, sizeof(buf));
+        cb->d_update(cb, aug, aug_len);              /* | aug | */
+        cb->d_update(cb, msg, msg_len);              /* | msg | */
+         /* | I2OSP(len_in_bytes, 2) || I2OSP(0, 1) || DST_prime    */
+        b_i.c[30] = (unsigned char)(len_in_bytes >> 8);
+        b_i.c[31] = (unsigned char)(len_in_bytes);
+        b_i.c[32] = 0;
+        cb->d_update(cb, b_i.c + 30, 3 + DST_len + 1);
+        cb->d_final(cb, (unsigned char*)b_0.c, 32);
+    }
+    else
+    {
+		sha256_init_Zpad(&ctx);                         /* Z_pad | */								   
+		sha256_update(&ctx, aug, aug_len);              /* | aug | */
+		sha256_update(&ctx, msg, msg_len);              /* | msg | */
+		/* | I2OSP(len_in_bytes, 2) || I2OSP(0, 1) || DST_prime    */
+		b_i.c[30] = (unsigned char)(len_in_bytes >> 8);
+		b_i.c[31] = (unsigned char)(len_in_bytes);
+		b_i.c[32] = 0;
+		sha256_update(&ctx, b_i.c + 30, 3 + DST_len + 1);
+		sha256_final(b_0.c, &ctx);
+	}
+	
+	if (cb)
+    {
+        cb->d_init(cb);
+        cb->d_update(cb, b_0.c, 32);
+        vec_copy(b_i.c, b_0.c, 32);
+        ++b_i.c[32];
+        cb->d_update(cb, b_i.c + 32, 1 + DST_len);
+        cb->d_final(cb, bytes, 32);
+    }
+    else
+    {
+		sha256_init_h(ctx.h);
+		vec_copy(b_i.c, b_0.c, 32);
+		++b_i.c[32];
+		sha256_block_data_order(ctx.h, b_i.c, b_i_blocks / 64);
+		sha256_emit(bytes, ctx.h);
+	}
+	
     len_in_bytes += 31; /* ell = ceil(len_in_bytes / b_in_bytes), with */
     len_in_bytes /= 32; /* caller being responsible for accordingly large
                          * buffer. hash_to_field passes one with length
                          * divisible by 64, remember? which works... */
     while (--len_in_bytes) {
-        sha256_init_h(ctx.h);
-        vec_xor(b_i.c, b_0.c, bytes, 32);
-        bytes += 32;
-        ++b_i.c[32];
-        sha256_block_data_order(ctx.h, b_i.c, b_i_blocks / 64);
-        sha256_emit(bytes, ctx.h);
+        if (cb)
+        {
+            cb->d_init(cb);
+            vec_xor(b_i.c, b_0.c, bytes, 32);
+            cb->d_update(cb, b_i.c, 32);
+            ++b_i.c[32];
+            cb->d_update(cb, b_i.c + 32, 1 + DST_len);
+            cb->d_final(cb, bytes, 32);
+        }
+        else
+		{
+			sha256_init_h(ctx.h);
+			vec_xor(b_i.c, b_0.c, bytes, 32);
+			bytes += 32;
+			++b_i.c[32];
+			sha256_block_data_order(ctx.h, b_i.c, b_i_blocks / 64);
+			sha256_emit(bytes, ctx.h);
+		}
     }
 }
 #endif
@@ -120,7 +180,8 @@ static void expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
 static void hash_to_field(vec384 elems[], size_t nelems,
                           const unsigned char *aug, size_t aug_len,
                           const unsigned char *msg, size_t msg_len,
-                          const unsigned char *DST, size_t DST_len)
+                          const unsigned char *DST, size_t DST_len,
+    DIGEST_CB* cb)
 {
     size_t L = sizeof(vec384) + 128/8;  /* ceil((ceil(log2(p)) + k) / 8) */
     size_t len_in_bytes = L * nelems;   /* divisible by 64, hurray!      */
@@ -136,7 +197,7 @@ static void hash_to_field(vec384 elems[], size_t nelems,
     DST_len = DST!=NULL ? DST_len : 0;
 
     expand_message_xmd((unsigned char *)pseudo_random, len_in_bytes,
-                       aug, aug_len, msg, msg_len, DST, DST_len);
+                       aug, aug_len, msg, msg_len, DST, DST_len, cb);
 
     vec_zero(elem, sizeof(elem));
     bytes = (unsigned char *)pseudo_random;
@@ -154,7 +215,8 @@ static void hash_to_field(vec384 elems[], size_t nelems,
 
 void blst_expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
                              const unsigned char *msg, size_t msg_len,
-                             const unsigned char *DST, size_t DST_len)
+                             const unsigned char *DST, size_t DST_len,
+    DIGEST_CB* cb)
 {
     size_t buf_len = (len_in_bytes+31) & ((size_t)0-32);
     unsigned char *buf_ptr = bytes;
@@ -166,7 +228,7 @@ void blst_expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
         buf_ptr = alloca(buf_len);
 
     expand_message_xmd(buf_ptr, len_in_bytes, NULL, 0, msg, msg_len,
-                                              DST, DST_len);
+                                              DST, DST_len, cb);
     if (buf_ptr != bytes) {
         unsigned char *ptr = buf_ptr;
         while (len_in_bytes--)
