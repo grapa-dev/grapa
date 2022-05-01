@@ -32,6 +32,7 @@ limitations under the License.
 #ifdef _WIN32
 #pragma comment(lib, "openssl-lib/win/libcrypto_static.lib")
 #pragma comment(lib, "openssl-lib/win/libssl_static.lib")
+#pragma comment(lib, "blst-lib/win/blst.lib")
 #endif
 #endif
 
@@ -48,7 +49,10 @@ limitations under the License.
 #include <openssl/evp.h>
 #include <openssl/engine.h>
 #include <openssl/ec.h>
-#include <openssl/kdf.h>			
+#include <openssl/kdf.h>	
+
+#include <blst/blst.hpp>
+
 
 //static bool gLoadedDigestsSSL = false;
 
@@ -91,6 +95,7 @@ GrapaEncode::GrapaEncode()
 	mBCd = NULL;
 	mMD = NULL;
 	mRPK = NULL;
+	mPFC = NULL;
 	//EC_builtin_curve* gg = NULL;
 	//size_t g = 0;
 	//if (gLoadedDigestsSSL == false)
@@ -105,6 +110,11 @@ GrapaEncode::~GrapaEncode()
 {
 	Clear();
 }
+
+class Grapa_bls12_381
+{
+public:
+};
 
 void GrapaEncode::Clear()
 {
@@ -122,6 +132,8 @@ void GrapaEncode::Clear()
 	mMD = NULL;
 	if (mRPK) EVP_PKEY_free((EVP_PKEY*)mRPK);
 	mRPK = NULL;
+	if (mPFC) delete (Grapa_bls12_381*)mPFC;
+	mPFC = NULL;
 }
 
 bool GrapaEncode::FROM(GrapaRuleEvent* pKey)

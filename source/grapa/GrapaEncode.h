@@ -22,6 +22,7 @@ public:
 	void* mBCd;
 	void* mMD;
 	void* mRPK;
+	void* mPFC;
 
 public:
 	GrapaEncode();
