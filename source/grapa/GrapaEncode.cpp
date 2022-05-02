@@ -111,9 +111,1135 @@ GrapaEncode::~GrapaEncode()
 	Clear();
 }
 
+
+void _hash_digest(void* cb, const char* name)
+{
+	if (strcmp(name, "sha256") == 0)
+	{
+		((blst::DIGEST_CB*)cb)->digest = (void*)EVP_get_digestbyname("sha256");
+		((blst::DIGEST_CB*)cb)->r_in_bytes = 64;
+		((blst::DIGEST_CB*)cb)->b_in_bytes = 32;
+	}
+	else if (strcmp(name, "sha512") == 0)
+	{
+		((blst::DIGEST_CB*)cb)->digest = (void*)EVP_get_digestbyname("sha512");
+		((blst::DIGEST_CB*)cb)->r_in_bytes = 128;
+		((blst::DIGEST_CB*)cb)->b_in_bytes = 64;
+	}
+	else if (strcmp(name, "blake2b") == 0 || strcmp(name, "blake2b512") == 0)
+	{
+		((blst::DIGEST_CB*)cb)->digest = (void*)EVP_get_digestbyname("blake2b512");
+		((blst::DIGEST_CB*)cb)->r_in_bytes = 128;
+		((blst::DIGEST_CB*)cb)->b_in_bytes = 64;
+	}
+}
+void _hash_size(void* cb, size_t* r_in_bytes, size_t* b_in_bytes)
+{
+	if (r_in_bytes) *r_in_bytes = ((blst::DIGEST_CB*)cb)->r_in_bytes;
+	if (b_in_bytes) *b_in_bytes = ((blst::DIGEST_CB*)cb)->b_in_bytes;
+}
+void _hash_init(void* cb)
+{
+	if (((blst::DIGEST_CB*)cb)->digest == NULL) return;
+	int err = EVP_DigestInit_ex((EVP_MD_CTX*)((blst::DIGEST_CB*)cb)->ctx, (EVP_MD*)((blst::DIGEST_CB*)cb)->digest, NULL);
+}
+void _hash_update(void* cb, const void* _inp, size_t len)
+{
+	int err = EVP_DigestUpdate((EVP_MD_CTX*)((blst::DIGEST_CB*)cb)->ctx, _inp, len);
+}
+void _hash_final(void* cb, unsigned char* md, size_t size, size_t* outlen)
+{
+	unsigned int len2 = EVP_MAX_MD_SIZE;
+	unsigned char buf[EVP_MAX_MD_SIZE];
+	int err = EVP_DigestFinal_ex((EVP_MD_CTX*)((blst::DIGEST_CB*)cb)->ctx, buf, &len2);
+	len2 = size > len2 ? len2 : size;
+	if (outlen) *outlen = len2;
+	memcpy(md, buf, len2);
+}
+
+static inline void vec_zero(void* ret, size_t num)
+{
+	volatile blst::limb_t* rp = (volatile blst::limb_t*)ret;
+	size_t i;
+
+	num /= sizeof(blst::limb_t);
+
+	for (i = 0; i < num; i++)
+		rp[i] = 0;
+
+#if defined(__GNUC__) && !defined(__NVCC__)
+	asm volatile("" : : "r"(ret) : "memory");
+#endif
+}
+static inline void vec_copy(void* __restrict ret, const void* a, size_t num)
+{
+	blst::limb_t* rp = (blst::limb_t*)ret;
+	const blst::limb_t* ap = (const blst::limb_t*)a;
+	size_t i;
+
+	num /= sizeof(blst::limb_t);
+
+	for (i = 0; i < num; i++)
+		rp[i] = ap[i];
+}
+static void vec_xor(void* __restrict ret, const void* a,
+	const void* b, size_t num)
+{
+	blst::limb_t* rp = (blst::limb_t*)ret;
+	const blst::limb_t* ap = (const blst::limb_t*)a;
+	const blst::limb_t* bp = (const blst::limb_t*)b;
+	size_t i;
+
+	num /= sizeof(blst::limb_t);
+
+	for (i = 0; i < num; i++)
+		rp[i] = ap[i] ^ bp[i];
+}
+
+static void expand_message_xmd_local(unsigned char* bytes, size_t len_in_bytes,
+	const unsigned char* aug, size_t aug_len,
+	const unsigned char* msg, size_t msg_len,
+	const unsigned char* DST, size_t DST_len,
+	blst::DIGEST_CB* cb)
+{
+	size_t r_in_bytes;  // r_in_bytes = input size of hash in bytes
+	size_t b_in_bytes;  // b_in_bytes = output size of hash in bytes
+	cb->d_size(cb, &r_in_bytes, &b_in_bytes); // get r_in_bytes and b_in_bytes from hash
+
+	unsigned char Z_pad[512]; // max input size of hash (appears to be 256, reserving double)
+
+	unsigned char md[128];   // max output size of hash (appears to be 64, reserving double)
+	unsigned char mdXor[128];
+	unsigned char DSTc[128];
+
+	size_t outlen = 0;
+
+	if (DST_len > 255)
+	{
+		cb->d_init(cb);
+		cb->d_update(cb, "H2C-OVERSIZE-DST-", 17);
+		cb->d_update(cb, DST, DST_len);
+		cb->d_final(cb, (unsigned char*)DSTc, b_in_bytes, &outlen);
+		DST = DSTc, DST_len = outlen;
+	}
+
+	const size_t ell = len_in_bytes / b_in_bytes;
+	if (ell > 255) return;  // as per spec...error condition...abort
+
+	unsigned char iBuf = 0;
+	cb->d_init(cb);
+	memset(Z_pad, 0, r_in_bytes);
+	cb->d_update(cb, Z_pad, r_in_bytes);
+	cb->d_update(cb, msg, msg_len);
+	unsigned char lenBuf[2];
+	lenBuf[0] = (unsigned char)(len_in_bytes >> 8);
+	lenBuf[1] = (unsigned char)(len_in_bytes);
+	cb->d_update(cb, lenBuf, sizeof(lenBuf));
+	cb->d_update(cb, &iBuf, 1);
+	cb->d_update(cb, DST, DST_len);
+	iBuf = (unsigned char)DST_len;
+	cb->d_update(cb, &iBuf, 1);
+	cb->d_final(cb, md, b_in_bytes, &outlen);
+	cb->d_init(cb);
+	cb->d_update(cb, md, b_in_bytes);
+	iBuf = 1;
+	cb->d_update(cb, &iBuf, 1);
+	cb->d_update(cb, DST, DST_len);
+	iBuf = (unsigned char)DST_len;
+	cb->d_update(cb, &iBuf, 1);
+	cb->d_final(cb, bytes, b_in_bytes, &outlen);;
+	for (size_t i = 1; i < ell; i++) {
+		cb->d_init(cb);
+		for (size_t j = 0; j < b_in_bytes; j++)
+			mdXor[j] = md[j] ^ bytes[b_in_bytes * (i - 1) + j];
+		cb->d_update(cb, mdXor, b_in_bytes);
+		iBuf = (unsigned char)(i + 1);
+		cb->d_update(cb, &iBuf, 1);
+		cb->d_update(cb, DST, DST_len);
+		iBuf = (unsigned char)DST_len;
+		cb->d_update(cb, &iBuf, 1);
+		cb->d_final(cb, bytes + b_in_bytes * i, b_in_bytes, &outlen);
+	}
+}
+
 class Grapa_bls12_381
 {
 public:
+	bool mSignInG1;
+	bool mSignHash;
+	GrapaCHAR mAlg;
+	blst::blst_scalar mSK;
+	std::vector<blst::blst_p1*> mPK1;
+	std::vector<blst::blst_p2*> mPK2;
+	blst::DIGEST_CB mCB;
+	bool mBBS;
+	blst::blst_p1 mh0_1;
+	std::vector<blst::blst_p1*> mh_1;
+	blst::blst_p2 mh0_2;
+	std::vector<blst::blst_p2*> mh_2;
+	Grapa_bls12_381()
+	{
+		mSignInG1 = true;
+		mSignHash = true;
+		memset(&mSK, 0, sizeof(mSK));
+		mCB.ctx = (void*)EVP_MD_CTX_create();
+		mCB.d_digest = _hash_digest;
+		mCB.d_size = _hash_size;
+		mCB.d_init = _hash_init;
+		mCB.d_update = _hash_update;
+		mCB.d_final = _hash_final;
+		mCB.d_digest(&mCB, "sha256");
+		mBBS = false;
+	};
+	virtual ~Grapa_bls12_381()
+	{
+		ClearPub();
+		if (mCB.ctx) EVP_MD_CTX_destroy((EVP_MD_CTX*)mCB.ctx);
+		mCB.ctx = NULL;
+	};
+	virtual bool SetAlg(const GrapaCHAR& pAlg)
+	{
+		mAlg.FROM(pAlg);
+		if (mAlg.StrLowerCmp("BLS12381G1_XMD:SHA-256_SSWU_RO_") == 0)
+		{
+			mSignInG1 = true;
+			mSignHash = true;
+			mCB.d_digest(&mCB, "sha256");
+			return true;
+		}
+		else if (mAlg.StrLowerCmp("BLS12381G2_XMD:SHA-256_SSWU_RO_") == 0)
+		{
+			mSignInG1 = false;
+			mSignHash = true;
+			mCB.d_digest(&mCB, "sha256");
+			return true;
+		}
+		else if (mAlg.StrLowerCmp("BLS12381G1_XMD:SHA-256_SSWU_NU_") == 0)
+		{
+			mSignInG1 = true;
+			mSignHash = false;
+			mCB.d_digest(&mCB, "sha256");
+			return true;
+		}
+		else if (mAlg.StrLowerCmp("BLS12381G2_XMD:SHA-256_SSWU_NU_") == 0)
+		{
+			mSignInG1 = false;
+			mSignHash = false;
+			mCB.d_digest(&mCB, "sha256");
+			return true;
+		}
+		else if (mAlg.StrLowerCmp("BLS12381G1_XMD:BLAKE2B_SSWU_RO_") == 0)
+		{
+			mSignInG1 = true;
+			mSignHash = true;
+			mCB.d_digest(&mCB, "blake2b512");
+			mBBS = true;
+			return true;
+		}
+		else if (mAlg.StrLowerCmp("BLS12381G2_XMD:BLAKE2B_SSWU_RO_") == 0)
+		{
+			mSignInG1 = false;
+			mSignHash = true;
+			mCB.d_digest(&mCB, "blake2b512");
+			mBBS = true;
+			return true;
+		}
+		else if (mAlg.StrLowerCmp("BLS12381G1_XMD:BLAKE2B_SSWU_NU_") == 0)
+		{
+			mSignInG1 = true;
+			mSignHash = false;
+			mCB.d_digest(&mCB, "blake2b512");
+			mBBS = true;
+			return true;
+		}
+		else if (mAlg.StrLowerCmp("BLS12381G2_XMD:BLAKE2B_SSWU_NU_") == 0)
+		{
+			mSignInG1 = false;
+			mSignHash = false;
+			mCB.d_digest(&mCB, "blake2b512");
+			mBBS = true;
+			return true;
+		}
+		return false;
+	};
+	virtual void ClearPub()
+	{
+		for (int i = 0; i < mPK1.size(); i++)
+			delete mPK1[i];
+		mPK1.resize(0);
+		for (int i = 0; i < mPK2.size(); i++)
+			delete mPK2[i];
+		mPK2.resize(0);
+		ClearH();
+	};
+	void ClearH()
+	{
+		for (int i = 0; i < mh_1.size(); i++)
+			delete mh_1[i];
+		mh_1.resize(0);
+		for (int i = 0; i < mh_2.size(); i++)
+			delete mh_2[i];
+		mh_2.resize(0);
+	};
+	virtual void KeyGen(const GrapaBYTE& pSecret, const GrapaBYTE& pData, GrapaBYTE& pKey)
+	{
+		pKey.SetLength(32);
+		blst::blst_keygen((blst::blst_scalar*)pKey.mBytes, pSecret.mBytes, pSecret.mLength, pData.mBytes, pData.mLength);
+		pKey.mToken = GrapaTokenType::RAW;
+	};
+	virtual bool SetPrv(const GrapaBYTE& pPrv, GrapaBYTE& pPub)
+	{
+		ClearPub();
+		if (pPrv.mLength != 32) return false;
+		blst::blst_scalar_from_bendian(&mSK, pPrv.mBytes);
+		//memcpy(&mSK, pPrv.mBytes, 32);
+		if (mSignInG1)
+		{
+			mPK2.push_back(new(blst::blst_p2));
+			blst::blst_sk_to_pk_in_g2(mPK2.front(), &mSK);
+			pPub.SetLength(96);
+			blst::blst_p2_compress(pPub.mBytes, mPK2.front());
+		}
+		else
+		{
+			/*
+			let sk = gen_sk(seed_data.as_slice());
+			let mut pk = G::one();
+			pk.mul_assign(sk);
+			let mut pk_bytes = Vec::new();
+			pk.serialize(&mut pk_bytes, true).unwrap();
+			*/
+			mPK1.push_back(new(blst::blst_p1));
+			//blst::blst_fp12 ret;
+			//blst::blst_fp12_mul(&ret, blst::blst_fp12_one(), mSK.b);
+			blst::blst_sk_to_pk_in_g1(mPK1.front(), &mSK);
+			pPub.SetLength(48);
+			blst::blst_p1_compress(pPub.mBytes, mPK1.front());
+			//pPub.SetLength(96);
+			//blst::blst_p1_serialize(pPub.mBytes, mPK1.front());
+		}
+		return true;
+	};
+	virtual bool SetPub(const GrapaBYTE& pPub)
+	{
+		ClearH();
+		blst::BLST_ERROR berr;
+		if (pPub.mLength == 96)
+		{
+			mSignInG1 = true;
+			for (int i = 0; i < mPK2.size(); i++)
+				delete mPK2[i];
+			mPK2.resize(0);
+			blst::blst_p2_affine in;
+			berr = blst::blst_p2_uncompress(&in, pPub.mBytes);
+			if (!blst::blst_p2_affine_on_curve(&in)) return false;
+			mPK2.push_back(new(blst::blst_p2));
+			blst::blst_p2_from_affine(mPK2.front(), &in);
+			return true;
+		}
+		else if (pPub.mLength == 48)
+		{
+			mSignInG1 = false;
+			for (int i = 0; i < mPK1.size(); i++)
+				delete mPK1[i];
+			mPK1.resize(0);
+			blst::blst_p1_affine in;
+			berr = blst::blst_p1_uncompress(&in, pPub.mBytes);
+			if (!blst::blst_p1_affine_on_curve(&in)) return false;
+			mPK1.push_back(new(blst::blst_p1));
+			blst::blst_p1_from_affine(mPK1.front(), &in);
+			return true;
+		}
+		return false;
+	}
+	virtual bool SetH(u32 pCount)
+	{
+		if (!mBBS) return false;
+
+		GrapaBYTE DST("BLS12381G1_XMD:BLAKE2B_SSWU_RO_BBS+_SIGNATURES:1_0_0");
+
+		GrapaBYTE countStr = GrapaInt(pCount).getBytes(true);
+		if (countStr.mLength > 4) return(false);
+
+		if (mSignInG1)
+		{
+			unsigned char buf[192 + 10];
+			if (mh_1.size() == 0)
+			{
+				GrapaBYTE nStr = GrapaInt(0).getBytes(true);
+				memset(buf, 0, 192 + 10);
+				blst::blst_p2_serialize(buf, mPK2.front());
+				buf[192] = 0;
+				memcpy(&buf[192 + 1 + 4 - nStr.mLength], nStr.mBytes, nStr.mLength);
+				buf[192 + 1 + 4] = 0;
+				memcpy(&buf[192 + 1 + 4 + 1 + 4 - countStr.mLength], countStr.mBytes, countStr.mLength);
+				if (mSignHash)
+					blst::blst_hash_to_g1(&mh0_1, buf, 192 + 10, DST.mBytes, DST.mLength, NULL, 0, NULL);
+				else
+					blst::blst_encode_to_g1(&mh0_1, buf, 192 + 10, DST.mBytes, DST.mLength, NULL, 0, NULL);
+			}
+			for (u32 i = mh_1.size(); i < pCount; i++)
+			{
+				GrapaBYTE nStr = GrapaInt(i + 1).getBytes(true);
+				memset(buf, 0, 192 + 10);
+				blst::blst_p2_serialize(buf, mPK2.front());
+				buf[192] = 0;
+				memcpy(&buf[192 + 1 + 4 - nStr.mLength], nStr.mBytes, nStr.mLength);
+				buf[192 + 1 + 4] = 0;
+				memcpy(&buf[192 + 1 + 4 + 1 + 4 - countStr.mLength], countStr.mBytes, countStr.mLength);
+				blst::blst_p1* h = new(blst::blst_p1);
+				if (mSignHash)
+					blst::blst_hash_to_g1(h, buf, 192 + 10, DST.mBytes, DST.mLength, NULL, 0, NULL);
+				else
+					blst::blst_encode_to_g1(h, buf, 192 + 10, DST.mBytes, DST.mLength, NULL, 0, NULL);
+				mh_1.push_back(h);
+			}
+		}
+		else
+		{
+			unsigned char buf[96 + 10];
+			if (mh_2.size() == 0)
+			{
+				GrapaBYTE nStr = GrapaInt(0).getBytes(true);
+				memset(buf, 0, 96 + 10);
+				blst::blst_p1_serialize(buf, mPK1.front());
+				buf[96] = 0;
+				memcpy(&buf[96 + 1 + 4 - nStr.mLength], nStr.mBytes, nStr.mLength);
+				buf[96 + 1 + 4] = 0;
+				memcpy(&buf[96 + 1 + 4 + 1 + 4 - countStr.mLength], countStr.mBytes, countStr.mLength);
+				if (mSignHash)
+					blst::blst_hash_to_g2(&mh0_2, buf, 96 + 10, DST.mBytes, DST.mLength, NULL, 0, &mCB);
+				else
+					blst::blst_encode_to_g2(&mh0_2, buf, 96 + 10, DST.mBytes, DST.mLength, NULL, 0, &mCB);
+			}
+			for (u32 i = mh_2.size(); i < pCount; i++)
+			{
+				GrapaBYTE nStr = GrapaInt(i + 1).getBytes(true);
+				memset(buf, 0, 96 + 10);
+				blst::blst_p1_serialize(buf, mPK1.front());
+				buf[96] = 0;
+				memcpy(&buf[96 + 1 + 4 - nStr.mLength], nStr.mBytes, nStr.mLength);
+				buf[96 + 1 + 4] = 0;
+				memcpy(&buf[96 + 1 + 4 + 1 + 4 - countStr.mLength], countStr.mBytes, countStr.mLength);
+				blst::blst_p2* h = new(blst::blst_p2);
+				if (mSignHash)
+					blst::blst_hash_to_g2(h, buf, 96 + 10, DST.mBytes, DST.mLength, NULL, 0, &mCB);
+				else
+					blst::blst_encode_to_g2(h, buf, 96 + 10, DST.mBytes, DST.mLength, NULL, 0, &mCB);
+				mh_2.push_back(h);
+			}
+		}
+
+		return true;
+	}
+	virtual bool AddPub(const GrapaBYTE& pPub)
+	{
+		blst::BLST_ERROR berr;
+		if (pPub.mLength == 48)
+		{
+			blst::blst_p1* PK1x = new blst::blst_p1();
+			blst::blst_p1_affine in;
+			berr = blst::blst_p1_uncompress(&in, pPub.mBytes);
+			if (!blst::blst_p1_affine_on_curve(&in)) return false;
+			blst::blst_p1_from_affine(PK1x, &in);
+			mPK1.push_back(PK1x);
+			return true;
+		}
+		else if (pPub.mLength == 96)
+		{
+			blst::blst_p2* PK2x = new blst::blst_p2();
+			blst::blst_p2_affine in;
+			berr = blst::blst_p2_uncompress(&in, pPub.mBytes);
+			if (!blst::blst_p2_affine_on_curve(&in)) return false;
+			blst::blst_p2_from_affine(PK2x, &in);
+			mPK2.push_back(PK2x);
+			return true;
+		}
+		return false;
+	};
+	virtual bool Sign(GrapaRuleEvent* pData, GrapaBYTE& pR, GrapaRuleEvent* pParams)
+	{
+		if (mBBS)
+		{
+			GrapaInt rn;
+			GrapaInt a, ra, e, s;
+			GrapaBYTE buf;
+			size_t outlen;
+
+			rn.Random(1024);
+			buf = rn.getBytes(true);
+			mCB.d_init(&mCB);
+			mCB.d_update(&mCB, buf.mBytes, buf.mLength);
+			buf.SetLength(32);
+			mCB.d_final(&mCB, buf.mBytes, buf.mLength, &outlen);
+			a.dataSigned = false;
+			a.FromBytes(buf);
+			a.Div(ra, e);
+			e.dataSigned = false;
+			buf = e.getBytes(true);
+			blst::blst_scalar es;
+			blst::blst_scalar_from_bendian(&es, buf.mBytes);
+
+			rn.Random(1024);
+			buf = rn.getBytes(true);
+			mCB.d_init(&mCB);
+			mCB.d_update(&mCB, buf.mBytes, buf.mLength);
+			buf.SetLength(32);
+			mCB.d_final(&mCB, buf.mBytes, buf.mLength, &outlen);
+			a.dataSigned = false;
+			a.FromBytes(buf);
+			a.Div(ra, s);
+			s.dataSigned = false;
+			buf = s.getBytes(true);
+			blst::blst_scalar ss;
+			blst::blst_scalar_from_bendian(&ss, buf.mBytes);
+
+			blst::blst_fr SK;
+			blst::blst_fr_from_scalar(&SK, &mSK);
+
+			blst::blst_fr efr;
+			blst::blst_fr_from_scalar(&efr, &es);
+			blst::blst_fr SKe;
+			blst::blst_fr_add(&SKe, &SK, &efr);
+
+			blst::blst_fr InvSKe;
+			blst::blst_fr_eucl_inverse(&InvSKe, &SKe);
+			blst::blst_scalar InvSKes;
+			blst::blst_scalar_from_fr(&InvSKes, &InvSKe);
+
+			GrapaRuleEvent* ep = pData->vQueue ? pData->vQueue->Head() : NULL;
+			int mcount = ep ? pData->vQueue->mCount : 1;
+			SetH(mcount);
+
+			if (mSignInG1)
+			{
+				blst::blst_p1 b = *blst::blst_p1_generator();
+				blst::blst_p1 out2;
+				blst::blst_p1_mult(&out2, &mh0_1, (blst::byte*)ss.b, 256);
+				blst::blst_p1_add(&b, &b, &out2);
+				for (int i = 0; i < mcount; i++)
+				{
+					GrapaRuleEvent* e2 = ep;
+					if (ep == NULL) e2 = pData;
+					else while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+					blst::blst_p1_mult(&out2, mh_1[i], (blst::byte*)e2->mValue.mBytes, e2->mValue.mLength * 8);
+					blst::blst_p1_add(&b, &b, &out2);
+					if (ep) ep = ep->Next();
+				}
+				blst::blst_p1 A;
+				blst::blst_p1_mult(&A, &b, (blst::byte*)InvSKes.b, 256);
+				pR.SetLength(48 + 32 + 32);
+				blst::blst_p1_compress(pR.mBytes, &A);
+				blst_bendian_from_scalar(&pR.mBytes[48], &es);
+				blst_bendian_from_scalar(&pR.mBytes[48 + 32], &ss);
+
+			}
+			else
+			{
+				blst::blst_p2 b = *blst::blst_p2_generator();
+				blst::blst_p2 out2;
+				blst::blst_p2_mult(&out2, &mh0_2, (blst::byte*)ss.b, 256);
+				blst::blst_p2_add(&b, &b, &out2);
+				for (int i = 0; i < mcount; i++)
+				{
+					GrapaRuleEvent* e2 = ep;
+					if (ep == NULL) e2 = pData;
+					else while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+					blst::blst_p2_mult(&out2, mh_2[i], (blst::byte*)e2->mValue.mBytes, e2->mValue.mLength * 8);
+					blst::blst_p2_add(&b, &b, &out2);
+					if (ep) ep = ep->Next();
+				}
+				blst::blst_p2 A;
+				blst::blst_p2_mult(&A, &b, (blst::byte*)InvSKes.b, 256);
+				pR.SetLength(96 + 32 + 32);
+				blst::blst_p2_compress(pR.mBytes, &A);
+				blst_bendian_from_scalar(&pR.mBytes[96], &es);
+				blst_bendian_from_scalar(&pR.mBytes[96 + 32], &ss);
+			}
+
+		}
+		else
+		{
+			blst::BLST_ERROR berr;
+			GrapaBYTE DST("BLS_SIG_");
+			DST.Append(mAlg);
+			GrapaRuleEvent* aug = NULL, * aug2 = NULL;
+			bool hasdst = false;
+			bool hasaug = false;
+			if (pParams && pParams->vQueue)
+			{
+				GrapaRuleEvent* x;
+				s64 index;
+				x = pParams->vQueue->Search(GrapaCHAR("DST"), index);
+				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+				if (x && x->mValue.mLength)
+				{
+					DST.FROM(x->mValue);
+					hasdst = true;
+				}
+				x = pParams->vQueue->Search(GrapaCHAR("AUG"), index);
+				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+				if (x && (x->mValue.mLength || (x->vQueue && x->vQueue->mCount)))
+				{
+					hasaug = true;
+					aug = x;
+					aug2 = x;
+					if (x->mValue.mToken == GrapaTokenType::ARRAY)
+					{
+						aug = x->vQueue->Head();
+						aug2 = aug;
+						while (aug2 && aug2->mValue.mToken == GrapaTokenType::PTR && aug2->vRulePointer) aug2 = aug2->vRulePointer;
+					}
+				}
+			}
+			if (!hasdst)
+			{
+				if (hasaug)
+					DST.Append("NULL_");
+				else
+					DST.Append("AUG_");
+			}
+			if (mSignInG1)
+			{
+				blst::blst_p1 out1, out_sig1, temp_sig;
+				bool first = true;
+				GrapaRuleEvent* e = NULL;
+				GrapaRuleEvent* e2 = pData;
+				if (pData->mValue.mToken == GrapaTokenType::ARRAY)
+				{
+					if (pData->vQueue == NULL) return false;
+					e = pData->vQueue->Head();
+					e2 = e;
+					while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+				}
+				while (e2)
+				{
+					switch (e2->mValue.mToken)
+					{
+					case GrapaTokenType::STR:
+					case GrapaTokenType::RAW:
+						if (first)
+						{
+							if (mSignHash)
+								blst::blst_hash_to_g1(&out1, e2->mValue.mBytes, e2->mValue.mLength, DST.mBytes, DST.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+							else
+								blst::blst_encode_to_g1(&out1, e2->mValue.mBytes, e2->mValue.mLength, DST.mBytes, DST.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+							blst_sign_pk_in_g2(&out_sig1, &out1, &mSK);
+							first = false;
+							break;
+						}
+						if (mSignHash)
+							blst::blst_hash_to_g1(&out1, e2->mValue.mBytes, e2->mValue.mLength, DST.mBytes, DST.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+						else
+							blst::blst_encode_to_g1(&out1, e2->mValue.mBytes, e2->mValue.mLength, DST.mBytes, DST.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+						blst_sign_pk_in_g2(&temp_sig, &out1, &mSK);
+						blst::blst_p1_add_or_double(&out_sig1, &out_sig1, &temp_sig);
+						break;
+					}
+					if (e) e = e->Next();
+					e2 = e;
+					while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+					if (aug && aug->Next())
+					{
+						aug = aug->Next();
+						aug2 = aug;
+						while (aug2 && aug2->mValue.mToken == GrapaTokenType::PTR && aug2->vRulePointer) aug2 = aug2->vRulePointer;
+					}
+				}
+				pR.SetLength(48);
+				blst::blst_p1_compress(pR.mBytes, &out_sig1);
+			}
+			else
+			{
+				blst::blst_p2 out1, out_sig1, temp_sig;
+				bool first = true;
+				GrapaRuleEvent* e = NULL;
+				GrapaRuleEvent* e2 = pData;
+				if (pData->mValue.mToken == GrapaTokenType::ARRAY)
+				{
+					if (pData->vQueue == NULL) return false;
+					e = pData->vQueue->Head();
+					e2 = e;
+					while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+				}
+				while (e2)
+				{
+					switch (e2->mValue.mToken)
+					{
+					case GrapaTokenType::STR:
+					case GrapaTokenType::RAW:
+						if (first)
+						{
+							if (mSignHash)
+								blst::blst_hash_to_g2(&out1, e2->mValue.mBytes, e2->mValue.mLength, DST.mBytes, DST.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+							else
+								blst::blst_encode_to_g2(&out1, e2->mValue.mBytes, e2->mValue.mLength, DST.mBytes, DST.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+							blst_sign_pk_in_g1(&out_sig1, &out1, &mSK);
+							first = false;
+							break;
+						}
+						if (mSignHash)
+							blst::blst_hash_to_g2(&out1, e2->mValue.mBytes, e2->mValue.mLength, DST.mBytes, DST.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+						else
+							blst::blst_encode_to_g2(&out1, e2->mValue.mBytes, e2->mValue.mLength, DST.mBytes, DST.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+						blst_sign_pk_in_g1(&temp_sig, &out1, &mSK);
+						blst::blst_p2_add_or_double(&out_sig1, &out_sig1, &temp_sig);
+						break;
+					}
+					if (e) e = e->Next();
+					e2 = e;
+					while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+					if (aug && aug->Next())
+					{
+						aug = aug->Next();
+						aug2 = aug;
+						while (aug2 && aug2->mValue.mToken == GrapaTokenType::PTR && aug2->vRulePointer) aug2 = aug2->vRulePointer;
+					}
+				}
+				pR.SetLength(96);
+				blst::blst_p2_compress(pR.mBytes, &out_sig1);
+			}
+		}
+		return true;
+	};
+	virtual bool SignAdd(GrapaRuleEvent* pData, GrapaBYTE& pR, GrapaRuleEvent* pParams)
+	{
+		blst::BLST_ERROR berr;
+		blst::blst_p1 out_sig1;
+		blst::blst_p2 out_sig2;
+		bool first1 = true;
+		bool first2 = true;
+		GrapaRuleEvent* e = pData->vQueue->Head();
+		while (e)
+		{
+			GrapaRuleEvent* e2 = e;
+			while (e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+			switch (e2->mValue.mToken)
+			{
+			case GrapaTokenType::STR:
+			case GrapaTokenType::RAW:
+				if (e2->mValue.mLength == 48)
+				{
+					blst::blst_p1_affine R1;
+					if (first1)
+					{
+						berr = blst::blst_p1_uncompress(&R1, e2->mValue.mBytes);
+						blst::blst_p1_from_affine(&out_sig1, &R1);
+						if (!blst::blst_p1_on_curve(&out_sig1))
+							return false;
+						first1 = false;
+						break;
+					}
+					blst::blst_p1 Rx;
+					berr = blst::blst_p1_uncompress(&R1, e2->mValue.mBytes);
+					blst::blst_p1_from_affine(&Rx, &R1);
+					if (!blst::blst_p1_on_curve(&Rx))
+						return false;
+					blst::blst_p1_add_or_double(&out_sig1, &out_sig1, &Rx);
+				}
+				else if (e2->mValue.mLength == 96)
+				{
+					blst::blst_p2_affine R2;
+					if (first2)
+					{
+						berr = blst::blst_p2_uncompress(&R2, e2->mValue.mBytes);
+						blst::blst_p2_from_affine(&out_sig2, &R2);
+						if (!blst::blst_p2_on_curve(&out_sig2))
+							return false;
+						first2 = false;
+						break;
+					}
+					blst::blst_p2 Rx;
+					berr = blst::blst_p2_uncompress(&R2, e2->mValue.mBytes);
+					blst::blst_p2_from_affine(&Rx, &R2);
+					if (!blst::blst_p2_on_curve(&Rx))
+						return false;
+					blst::blst_p2_add_or_double(&out_sig2, &out_sig2, &Rx);
+				}
+				break;
+			}
+			e = e->Next();
+		}
+		if (first2)
+		{
+			pR.SetLength(48);
+			blst::blst_p1_compress(pR.mBytes, &out_sig1);
+		}
+		else
+		{
+			pR.SetLength(96);
+			blst::blst_p2_compress(pR.mBytes, &out_sig2);
+		}
+		return true;
+	};
+	virtual bool Verify(GrapaRuleEvent* pData, const GrapaBYTE& pR, GrapaRuleEvent* pParams)
+	{
+		if (mBBS)
+		{
+
+			GrapaRuleEvent* ep = pData->vQueue ? pData->vQueue->Head() : NULL;
+			int mcount = ep ? pData->vQueue->mCount : 1;
+			SetH(mcount);
+
+			bool ismatch = false;
+			// "w*P2^e" => w+P2*e == P2*(SK+e)
+
+			if (mSignInG1)
+			{
+				blst::blst_p1_affine Aa;
+				blst::BLST_ERROR berr = blst::blst_p1_uncompress(&Aa, pR.mBytes);
+
+				blst::blst_scalar es, ss;
+				blst_scalar_from_bendian(&es, &pR.mBytes[48]);
+				blst_scalar_from_bendian(&ss, &pR.mBytes[48 + 32]);
+
+				blst::blst_p1 b = *blst::blst_p1_generator();
+				blst::blst_p1 out2;
+				blst::blst_p1_mult(&out2, &mh0_1, (blst::byte*)ss.b, 256);
+				blst::blst_p1_add(&b, &b, &out2);
+				for (int i = 0; i < mcount; i++)
+				{
+					GrapaRuleEvent* e2 = ep;
+					if (ep == NULL) e2 = pData;
+					else while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+					blst::blst_p1_mult(&out2, mh_1[i], (blst::byte*)e2->mValue.mBytes, e2->mValue.mLength * 8);
+					blst::blst_p1_add(&b, &b, &out2);
+					if (ep) ep = ep->Next();
+				}
+
+				blst::blst_p2 P2 = *blst::blst_p2_generator();
+
+				blst::blst_p2 P2e;
+				blst::blst_p2_mult(&P2e, &P2, (blst::byte*)es.b, 256);
+				blst::blst_p2 wP2e;
+				blst::blst_p2_add(&wP2e, &P2e, mPK2.at(0));
+				blst::blst_p2_affine wP2ea;
+				blst::blst_p2_to_affine(&wP2ea, &wP2e);
+
+				blst::blst_p2_affine P2a;
+				blst::blst_p2_to_affine(&P2a, &P2);
+
+				blst::blst_p1_affine ba;
+				blst::blst_p1_to_affine(&ba, &b);
+
+				blst::blst_fp12 C1, C2;
+				blst::blst_miller_loop(&C1, &wP2ea, &Aa);
+				blst::blst_miller_loop(&C2, &P2a, &ba);
+
+				ismatch = blst::blst_fp12_finalverify(&C1, &C2) == 1;
+			}
+			else
+			{
+				blst::blst_p2_affine Aa;
+				blst::BLST_ERROR berr = blst::blst_p2_uncompress(&Aa, pR.mBytes);
+
+				blst::blst_scalar es, ss;
+				blst_scalar_from_bendian(&es, &pR.mBytes[96]);
+				blst_scalar_from_bendian(&ss, &pR.mBytes[96 + 32]);
+
+				blst::blst_p2 b = *blst::blst_p2_generator();
+				blst::blst_p2 out2;
+				blst::blst_p2_mult(&out2, &mh0_2, (blst::byte*)ss.b, 256);
+				blst::blst_p2_add(&b, &b, &out2);
+				for (int i = 0; i < mcount; i++)
+				{
+					GrapaRuleEvent* e2 = ep;
+					if (ep == NULL) e2 = pData;
+					else while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+					blst::blst_p2_mult(&out2, mh_2[i], (blst::byte*)e2->mValue.mBytes, e2->mValue.mLength * 8);
+					blst::blst_p2_add(&b, &b, &out2);
+					if (ep) ep = ep->Next();
+				}
+
+				blst::blst_p1 P2 = *blst::blst_p1_generator();
+
+				blst::blst_p1 P2e;
+				blst::blst_p1_mult(&P2e, &P2, (blst::byte*)es.b, 256);
+				blst::blst_p1 wP2e;
+				blst::blst_p1_add(&wP2e, &P2e, mPK1.at(0));
+				blst::blst_p1_affine wP2ea;
+				blst::blst_p1_to_affine(&wP2ea, &wP2e);
+
+				blst::blst_p1_affine P2a;
+				blst::blst_p1_to_affine(&P2a, &P2);
+
+				blst::blst_p2_affine ba;
+				blst::blst_p2_to_affine(&ba, &b);
+
+				blst::blst_fp12 C1, C2;
+				blst::blst_miller_loop(&C1, &Aa, &wP2ea);
+				blst::blst_miller_loop(&C2, &ba, &P2a);
+
+				ismatch = blst::blst_fp12_finalverify(&C1, &C2) == 1;
+			}
+
+			return ismatch;
+		}
+		else
+		{
+			blst::BLST_ERROR berr;
+			GrapaBYTE DST("BLS_SIG_");
+			DST.Append(mAlg);
+			GrapaRuleEvent* aug = NULL, * aug2 = NULL;
+			bool hasdst = false;
+			bool hasaug = false;
+			if (pParams && pParams->vQueue)
+			{
+				GrapaRuleEvent* x;
+				s64 index;
+				x = pParams->vQueue->Search(GrapaCHAR("DST"), index);
+				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+				if (x && x->mValue.mLength)
+				{
+					DST.FROM(x->mValue);
+					hasdst = true;
+				}
+				x = pParams->vQueue->Search(GrapaCHAR("AUG"), index);
+				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+				if (x && (x->mValue.mLength || (x->vQueue && x->vQueue->mCount)))
+				{
+					hasaug = true;
+					aug = x;
+					aug2 = x;
+					if (x->mValue.mToken == GrapaTokenType::ARRAY)
+					{
+						aug = x->vQueue->Head();
+						aug2 = aug;
+						while (aug2 && aug2->mValue.mToken == GrapaTokenType::PTR && aug2->vRulePointer) aug2 = aug2->vRulePointer;
+					}
+				}
+			}
+			if (!hasdst)
+			{
+				if (hasaug)
+					DST.Append("NULL_");
+				else
+					DST.Append("AUG_");
+			}
+			if (pR.mLength == 96 && mPK1.size())
+			{
+				blst::blst_p2_affine signature;
+				berr = blst::blst_p2_uncompress(&signature, pR.mBytes);
+				GrapaRuleEvent* e = NULL;
+				GrapaRuleEvent* e2 = pData;
+				if (pData->mValue.mToken == GrapaTokenType::ARRAY)
+				{
+					if (pData->vQueue == NULL) return false;
+					e = pData->vQueue->Head();
+					e2 = e;
+					while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+				}
+				int pkpos = 0;
+				bool isfirst = true;
+				bool ischanged = true;
+				blst::blst_pairing* ctx = (blst::blst_pairing*)calloc(1, blst::blst_pairing_sizeof());
+				blst::blst_pairing_init(ctx, mSignHash, DST.mBytes, DST.mLength);
+				while (ischanged && e2 && pkpos < mPK1.size())
+				{
+					blst::blst_p1* pk1x = mPK1.at(pkpos);
+					if (pk1x == NULL) return false;
+					blst::blst_p1_affine pk1;
+					blst::blst_p1_to_affine(&pk1, pk1x);
+					blst::blst_pairing_aggregate_pk_in_g1(ctx, &pk1, isfirst ? &signature : NULL, e2->mValue.mBytes, e2->mValue.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+					isfirst = false;
+					ischanged = false;
+					if (e && e->Next())
+					{
+						e = e->Next();
+						e2 = e;
+						while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+						ischanged = true;
+					}
+					if (aug && aug->Next())
+					{
+						aug = aug->Next();
+						aug2 = aug;
+						while (aug2 && aug2->mValue.mToken == GrapaTokenType::PTR && aug2->vRulePointer) aug2 = aug2->vRulePointer;
+					}
+					if ((pkpos + 1) < mPK1.size())
+					{
+						pkpos++;
+						ischanged = true;
+					}
+				}
+				blst::blst_pairing_commit(ctx);
+				bool ismatch = blst::blst_pairing_finalverify(ctx, NULL);
+				free(ctx);
+				return ismatch;
+			}
+			else if (pR.mLength == 48 && mPK2.size())
+			{
+
+				//blst::blst_p1 out;
+				//blst::blst_p1_affine out1;
+				//blst::blst_hash_to_g1(&out, (blst::byte*)"abc", 3,
+				//	(blst::byte*)"QUUX-V01-CS02-with-BLS12381G1_XMD:SHA-256_SSWU_RO_", 50,
+				//	(blst::byte*)"", 0,
+				//	NULL);
+				//blst::blst_p1_to_affine(&out1, &out);
+				//GrapaBYTE rr;
+				//rr.SetLength(48);
+				//blst::blst_p1_compress(rr.mBytes, &out);
+
+				blst::blst_p1_affine signature;
+				berr = blst::blst_p1_uncompress(&signature, pR.mBytes);
+				GrapaRuleEvent* e = NULL;
+				GrapaRuleEvent* e2 = pData;
+				if (pData->mValue.mToken == GrapaTokenType::ARRAY)
+				{
+					if (pData->vQueue == NULL) return false;
+					e = pData->vQueue->Head();
+					e2 = e;
+					while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+				}
+				int pkpos = 0;
+				bool isfirst = true;
+				bool ischanged = true;
+				blst::blst_pairing* ctx = (blst::blst_pairing*)calloc(1, blst::blst_pairing_sizeof());
+				blst::blst_pairing_init(ctx, mSignHash, DST.mBytes, DST.mLength);
+				while (ischanged && e2 && pkpos < mPK2.size())
+				{
+					blst::blst_p2* pk2x = mPK2.at(pkpos);
+					if (pk2x == NULL) return false;
+					blst::blst_p2_affine pk2;
+					blst::blst_p2_to_affine(&pk2, pk2x);
+					blst::blst_pairing_aggregate_pk_in_g2(ctx, &pk2, isfirst ? &signature : NULL, e2->mValue.mBytes, e2->mValue.mLength, aug2 ? aug2->mValue.mBytes : NULL, aug2 ? aug2->mValue.mLength : 0, &mCB);
+					isfirst = false;
+					ischanged = false;
+					if (e && e->Next())
+					{
+						e = e->Next();
+						e2 = e;
+						while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+						ischanged = true;
+					}
+					if (aug && aug->Next())
+					{
+						aug = aug->Next();
+						aug2 = aug;
+						while (aug2 && aug2->mValue.mToken == GrapaTokenType::PTR && aug2->vRulePointer) aug2 = aug2->vRulePointer;
+					}
+					if ((pkpos + 1) < mPK2.size())
+					{
+						pkpos++;
+						ischanged = true;
+					}
+				}
+				blst::blst_pairing_commit(ctx);
+				bool ismatch = blst::blst_pairing_finalverify(ctx, NULL);
+				free(ctx);
+				return ismatch;
+			}
+		}
+		return false;
+	};
+	virtual bool SignAdd(const GrapaBYTE& pR1, GrapaBYTE& pR)
+	{
+		if (pR.mLength == 0)
+		{
+			blst::BLST_ERROR berr;
+			blst::blst_p1_affine R1;
+			blst::blst_p1 R1x;
+			berr = blst::blst_p1_uncompress(&R1, pR1.mBytes);
+			blst::blst_p1_from_affine(&R1x, &R1);
+			if (!blst::blst_p1_on_curve(&R1x))
+				return false;
+			pR.FROM(pR1);
+			return true;
+		}
+		if (pR1.mLength == 48 && pR.mLength == 48)
+		{
+			blst::BLST_ERROR berr;
+			blst::blst_p1_affine R1, R;
+			blst::blst_p1 Rx, out_sig1;
+			berr = blst::blst_p1_uncompress(&R1, pR1.mBytes);
+			berr = blst::blst_p1_uncompress(&R, pR.mBytes);
+			blst::blst_p1_from_affine(&Rx, &R);
+			if (!blst::blst_p1_on_curve(&Rx))
+				return false;
+			blst::blst_p1_add_or_double_affine(&out_sig1, &Rx, &R1);
+			if (!blst::blst_p1_on_curve(&out_sig1))
+				return false;
+			blst::blst_p1_compress(pR.mBytes, &out_sig1);
+			return true;
+		}
+		else if (pR1.mLength == 96 && pR.mLength == 96)
+		{
+			blst::BLST_ERROR berr;
+			blst::blst_p2_affine R2, R;
+			blst::blst_p2 Rx, out_sig2;
+			berr = blst::blst_p2_uncompress(&R2, pR1.mBytes);
+			berr = blst::blst_p2_uncompress(&R, pR.mBytes);
+			blst::blst_p2_from_affine(&Rx, &R);
+			if (!blst::blst_p2_on_curve(&Rx))
+				return false;
+			blst::blst_p2_add_or_double_affine(&out_sig2, &Rx, &R2);
+			if (!blst::blst_p2_on_curve(&out_sig2))
+				return false;
+			blst::blst_p2_compress(pR.mBytes, &out_sig2);
+			return true;
+		}
+		return false;
+	};
+	virtual bool Secret(Grapa_bls12_381* mKey, GrapaBYTE& pSecret)
+	{
+		if (mSignInG1)
+		{
+			if (mKey->mPK2.size() == 0) return false;
+			blst::blst_p2 out;
+			blst::blst_p2_mult(&out, mKey->mPK2[0], (blst::byte*)&mSK, 256);
+			pSecret.SetLength(96);
+			blst::blst_p2_compress(pSecret.mBytes, &out);
+			pSecret.mToken = GrapaTokenType::RAW;
+			return true;
+		}
+		else
+		{
+			if (mKey->mPK1.size() == 0) return false;
+			blst::blst_p1 out;
+			blst::blst_p1_mult(&out, mKey->mPK1[0], (blst::byte*)&mSK, 256);
+			pSecret.SetLength(48);
+			blst::blst_p1_compress(pSecret.mBytes, &out);
+			pSecret.mToken = GrapaTokenType::RAW;
+		}
+		return true;
+	};
+	virtual bool Hash(const char* type, const GrapaBYTE& pData, GrapaBYTE& pEnc, u64 pSize)
+	{
+		return Hash(EVP_get_digestbyname(type), pData, pEnc, pSize);
+	}
+	virtual bool Hash(const EVP_MD* type, const GrapaBYTE& pData, GrapaBYTE& pEnc, u64 pSize)
+	{
+		if (type == NULL) return false;
+		EVP_MD_CTX* mdctx = EVP_MD_CTX_create();
+		int err = EVP_DigestInit_ex(mdctx, type, NULL);
+		if (err <= 0)
+		{
+			if (mdctx) EVP_MD_CTX_destroy(mdctx);
+			mdctx = NULL;
+			return false;
+		}
+		err = EVP_DigestUpdate(mdctx, pData.mBytes, pData.mLength);
+		if (err <= 0)
+		{
+			pEnc.SetLength(0);
+			EVP_MD_CTX_destroy(mdctx);
+			return false;
+		}
+		unsigned int len = EVP_MAX_MD_SIZE;
+		pEnc.SetLength(len);
+		err = EVP_DigestFinal_ex(mdctx, pEnc.mBytes, &len);
+		if (err <= 0)
+		{
+			pEnc.SetLength(0);
+			EVP_MD_CTX_destroy(mdctx);
+			return false;
+		}
+		pEnc.SetLength(pSize ? ((pSize < len) ? pSize : len) : len);
+		pEnc.mToken = GrapaTokenType::RAW;
+		EVP_MD_CTX_destroy(mdctx);
+		return true;
+	};
 };
 
 void GrapaEncode::Clear()
@@ -404,6 +1530,73 @@ bool GrapaEncode::FROM(GrapaRuleEvent* pKey)
 		if (mRPK == NULL)
 			return false;
 
+		return true;
+	}
+	else if (x->mValue.StrLowerCmp("pfc") == 0)
+	{
+		if (pKey && pKey->vQueue)
+		{
+			GrapaCHAR algorithmname("BLS12381G1_XMD:SHA-256_SSWU_RO_");
+			x = pKey->vQueue->Search("alg", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) algorithmname.FROM(x->mValue);
+			Grapa_bls12_381* bls = new Grapa_bls12_381();
+			mPFC = bls;
+			if (!bls->SetAlg(algorithmname))
+			{
+				delete bls;
+				mPFC = NULL;
+				return false;
+			}
+			x = pKey->vQueue->Search("sk", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x && x->mValue.mLength)
+			{
+				GrapaCHAR pub;
+				if (!bls->SetPrv(x->mValue, pub))
+				{
+					delete bls;
+					mPFC = NULL;
+					return false;
+				}
+			}
+			else
+			{
+				x = pKey->vQueue->Search("pk", idx);
+				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+				if (x)
+				{
+					bls->ClearPub();
+					switch (x->mValue.mToken)
+					{
+					case GrapaTokenType::STR:
+					case GrapaTokenType::RAW:
+						if (x->mValue.mLength)
+							bls->SetPub(x->mValue);
+						break;
+					case GrapaTokenType::ARRAY:
+						if (x->vQueue && x->vQueue->mCount)
+						{
+							GrapaRuleEvent* e = x->vQueue->Head();
+							while (e)
+							{
+								GrapaRuleEvent* e2 = e;
+								while (e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+								switch (e2->mValue.mToken)
+								{
+								case GrapaTokenType::STR:
+								case GrapaTokenType::RAW:
+									bls->AddPub(e2->mValue);
+									break;
+								}
+								e = e->Next();
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
 		return true;
 	}
 	return false;
@@ -1071,6 +2264,54 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		}
 		return result;
 	}
+	else if (((GrapaCHAR*)&pMethod)->StrLowerCmp("pfc") == 0)
+	{
+		GrapaCHAR algorithmname("BLS12381G1_XMD:SHA-256_SSWU_RO_");
+		GrapaBYTE prv, secret, data;
+		if (pParams && pParams->vQueue)
+		{
+			x = pParams->vQueue->Search("alg", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) algorithmname.FROM(x->mValue);
+			x = pParams->vQueue->Search("sk", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) prv.FROM(x->mValue);
+			x = pParams->vQueue->Search("ikm", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) secret.FROM(x->mValue);
+			x = pParams->vQueue->Search("info", idx);
+			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
+			if (x) data.FROM(x->mValue);
+		}
+		if (prv.mLength || secret.mLength)
+		{
+			GrapaBYTE pub;
+			Grapa_bls12_381* bls = new Grapa_bls12_381();
+			mPFC = bls;
+			if (!bls->SetAlg(algorithmname))
+			{
+				delete bls;
+				mPFC = NULL;
+				return result;
+			}
+			if (secret.mLength)
+				bls->KeyGen(secret, data, prv);
+			if (prv.mLength)
+				bls->SetPrv(prv, pub);
+			result = new GrapaRuleEvent();
+			result->mValue.mToken = GrapaTokenType::LIST;
+			result->vQueue = new GrapaRuleQueue();
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("method"), GrapaCHAR("pfc")));
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("alg"), algorithmname));
+			prv.mToken = GrapaTokenType::RAW;
+			if (prv.mLength) result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("sk"), prv));
+			pub.mToken = GrapaTokenType::RAW;
+			if (pub.mLength) result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("pk"), pub));
+
+		}
+
+		return result;
+	}
 	return result;
 }
 
@@ -1502,6 +2743,11 @@ bool GrapaEncode::Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEv
 		}
 		return(err >= 1);
 	}
+	else if (mPFC)
+	{
+		((Grapa_bls12_381*)mPFC)->Sign(pData, pSignature, pParams);
+		return true;
+	}
 
 	//GrapaBYTE hash;
 	//GrapaHash::SHAKE256(pData, hash, mDataSize);
@@ -1511,6 +2757,11 @@ bool GrapaEncode::Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEv
 
 bool GrapaEncode::SignAdd(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEvent* pParams)
 {
+	if (mPFC)
+	{
+		((Grapa_bls12_381*)mPFC)->SignAdd(pData, pSignature, pParams);
+		return true;
+	}
 	return(false);
 }
 
@@ -1592,6 +2843,10 @@ bool GrapaEncode::Verify(GrapaRuleEvent* pData, const GrapaBYTE& pSignature, Gra
 			match = err == 1;
 		}
 		return(err >= 1);
+	}
+	else if (mPFC)
+	{
+		return  ((Grapa_bls12_381*)mPFC)->Verify(pData, pSignature, pParams);
 	}
 
 	//GrapaBYTE hash,sig;
@@ -1770,6 +3025,13 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 		}
 		EVP_PKEY_CTX_free(ctx1);
 		return(err >= 1);
+	}
+	else if (mPFC)
+	{
+		GrapaEncode pk;
+		pk.FROM(pKey);
+		if (pk.mPFC == NULL) return false;
+		return  ((Grapa_bls12_381*)mPFC)->Secret((Grapa_bls12_381*)pk.mPFC, pSecret);
 	}
 	return(false);
 }

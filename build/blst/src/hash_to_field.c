@@ -36,10 +36,15 @@ static void sha256_init_Zpad(SHA256_CTX *ctx)
 
 typedef struct {
     void* ctx;
+    void* digest;
+    size_t r_in_bytes;
+    size_t b_in_bytes;
+    void(*d_digest)(void* cb, const char* name);
+    void(*d_size)(void* cb, size_t* r_in_bytes, size_t* b_in_bytes);
     void(*d_init)(void* cb);
     void(*d_update)(void* cb, const void* _inp, size_t len);
-    void(*d_final)(void* cb, unsigned char* md, size_t len);
-} DIGEST_CB;		  
+    void(*d_final)(void* cb, unsigned char* md, size_t size, size_t* outlen);
+} DIGEST_CB;
 static void vec_xor(void *restrict ret, const void *restrict a,
                                         const void *restrict b, size_t num)
 {
@@ -75,8 +80,9 @@ static void expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
             cb->d_init(cb);
             cb->d_update(cb, "H2C-OVERSIZE-DST-", 17);
             cb->d_update(cb, DST, DST_len);
-            cb->d_final(cb, (unsigned char*)b_0.c, 32);
-            DST = b_0.c, DST_len = 32;
+            size_t outlen;
+            cb->d_final(cb, (unsigned char*)b_0.c, 32, &outlen);
+            DST = b_0.c, DST_len = outlen;
         }
         else
         {
@@ -114,7 +120,8 @@ static void expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
         b_i.c[31] = (unsigned char)(len_in_bytes);
         b_i.c[32] = 0;
         cb->d_update(cb, b_i.c + 30, 3 + DST_len + 1);
-        cb->d_final(cb, (unsigned char*)b_0.c, 32);
+        size_t outlen;
+        cb->d_final(cb, (unsigned char*)b_0.c, 32, &outlen);
     }
     else
     {
@@ -136,7 +143,8 @@ static void expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
         vec_copy(b_i.c, b_0.c, 32);
         ++b_i.c[32];
         cb->d_update(cb, b_i.c + 32, 1 + DST_len);
-        cb->d_final(cb, bytes, 32);
+        size_t outlen;
+        cb->d_final(cb, bytes, 32, &outlen);
     }
     else
     {
@@ -159,7 +167,8 @@ static void expand_message_xmd(unsigned char *bytes, size_t len_in_bytes,
             cb->d_update(cb, b_i.c, 32);
             ++b_i.c[32];
             cb->d_update(cb, b_i.c + 32, 1 + DST_len);
-            cb->d_final(cb, bytes, 32);
+            size_t outlen;
+            cb->d_final(cb, bytes, 32, &outlen);
         }
         else
 		{
