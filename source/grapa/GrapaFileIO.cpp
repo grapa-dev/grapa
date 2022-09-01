@@ -52,6 +52,10 @@ limitations under the License.
 #include <string.h>
 #include <thread>
 
+#if defined(__MINGW32__) || defined(__GNUC__)
+#include <sys/ioctl.h>
+#endif
+
 //http://stackoverflow.com/questions/22372316/how-to-get-usb-connected-hard-disk-serial-in-linux
 //http://stackoverflow.com/questions/20291022/ioctl-and-hdreg-to-get-information-on-harddrives
 
