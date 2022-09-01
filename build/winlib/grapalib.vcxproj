@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{5dbde658-18df-4897-81b5-e3e85133cf4d}</ProjectGuid>
+    <RootNamespace>grapalib</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\matic\Documents\GitHub\Grapa\source;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\matic\Documents\GitHub\Grapa\source;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\matic\Documents\GitHub\Grapa\source;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\matic\Documents\GitHub\Grapa\source;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\matic\Documents\GitHub\Grapa\source;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\matic\Documents\GitHub\Grapa\source;$(LibraryPath)</LibraryPath>
+    <TargetName>grapa</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\matic\Documents\GitHub\Grapa\source;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\matic\Documents\GitHub\Grapa\source;$(LibraryPath)</LibraryPath>
+    <TargetName>grapa</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>
+      </SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\source\grapa\GrapaBtree.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaBtreeBlock.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaCompress.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaConsole.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaDatabase.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaDB.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaEncode.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaFile.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaFileCache.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaFileIO.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaFileTree.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaFloat.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaGroup.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaHash.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaInt.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaLibRule.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaLink.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaMem.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaNet.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaNetConnect.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaObject.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaPrime.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaState.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaSystem.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaThread.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaTime.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaTinyAES.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaType.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaValue.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaVector.h" />
+    <ClInclude Include="..\..\source\grapa\GrapaWidget.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\source\grapa\GrapaBtree.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaBtreeBlock.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaCompress.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaConsole.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaDatabase.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaDB.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaEncode.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaFileCache.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaFileIO.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaFileTree.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaFloat.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaGroup.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaHash.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaInt.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaLibRule.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaLink.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaNet.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaNetConnect.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaObject.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaPrime.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaState.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaSystem.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaThread.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaTime.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaTinyAES.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaValue.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaVector.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaWidget.cpp" />
+    <ClCompile Include="..\..\source\tiny-AES-c-master\aes.c" />
+    <ClCompile Include="grapalib.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

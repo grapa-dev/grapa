@@ -360,6 +360,14 @@ public:
 			mBBS = true;
 			return true;
 		}
+		else if (mAlg.StrLowerCmp("BLS12381G1_XOF:SHAKE-256_SSWU_RO_") == 0)
+		{
+			mSignInG1 = true;
+			mSignHash = true;
+			mCB.d_digest(&mCB, "shake256");
+			mBBS = true;
+			return true;
+		}
 		return false;
 	};
 	virtual void ClearPub()
@@ -383,16 +391,73 @@ public:
 	};
 	virtual void KeyGen(const GrapaBYTE& pSecret, const GrapaBYTE& pData, GrapaBYTE& pKey)
 	{
+		blst::blst_scalar tempKey;
+		//GrapaBYTE secret;
+		//blst::blst_scalar_from_bendian(&tempKey, pSecret.mBytes);
+		//secret.SetLength(pSecret.mLength);
+		//blst::blst_lendian_from_scalar(secret.mBytes, &tempKey);
 		pKey.SetLength(32);
 		blst::blst_keygen((blst::blst_scalar*)pKey.mBytes, pSecret.mBytes, pSecret.mLength, pData.mBytes, pData.mLength);
 		pKey.mToken = GrapaTokenType::RAW;
+		blst::blst_scalar_from_lendian(&tempKey, pKey.mBytes);
+		blst::blst_bendian_from_scalar(pKey.mBytes, &tempKey);
+		return;
+
+		GrapaBYTE salt("BLS-SIG-KEYGEN-SALT-");
+
+		blst::DIGEST_CB d;
+		size_t dlen;
+		d.ctx = (void*)EVP_MD_CTX_create();
+		d.d_digest = _hash_digest;
+		d.d_size = _hash_size;
+		d.d_init = _hash_init;
+		d.d_update = _hash_update;
+		d.d_final = _hash_final;
+		d.d_digest(&d, "sha256");
+		d.d_init(&d);
+		d.d_update(&d, "BLS-SIG-KEYGEN-SALT-", 20);
+		salt.SetLength(64);
+		d.d_final(&d, (unsigned char*)salt.mBytes, 64, &dlen);
+		salt.SetLength(dlen);
+		EVP_MD_CTX_destroy((EVP_MD_CTX*)d.ctx);
+
+		//GrapaBYTE secret;
+		//blst::blst_scalar_from_bendian(&tempKey, pSecret.mBytes);
+		//secret.SetLength(pSecret.mLength);
+		//blst::blst_lendian_from_scalar(secret.mBytes, &tempKey);
+		EVP_MD* md = (EVP_MD*)EVP_get_digestbyname((char*)"sha256");
+		EVP_PKEY_CTX* pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_HKDF, NULL);
+		pKey.mToken = GrapaTokenType::RAW;
+		int err = 0;
+		err = EVP_PKEY_derive_init(pctx);
+		err = EVP_PKEY_CTX_set_hkdf_md(pctx, md);
+		err = EVP_PKEY_CTX_set1_hkdf_salt(pctx, salt.mBytes, salt.mLength);
+		err = EVP_PKEY_CTX_set1_hkdf_key(pctx, pSecret.mBytes, pSecret.mLength);
+		err = EVP_PKEY_CTX_add1_hkdf_info(pctx, pData.mBytes, pData.mLength);
+		size_t outlen = 32;
+		pKey.SetLength(outlen);
+		err = EVP_PKEY_derive(pctx, pKey.mBytes, &outlen);
+		pKey.SetLength(outlen);
+		pKey.mToken = GrapaTokenType::RAW;
+		EVP_PKEY_CTX_free(pctx);
+		blst::blst_scalar_from_lendian(&tempKey, pKey.mBytes);
+		blst::blst_bendian_from_scalar(pKey.mBytes, &tempKey);
+		//u8 rp[32] = {
+		//	0x73, 0xed, 0xa7, 0x53, 0x29, 0x9d, 0x7d, 0x48, 0x33, 0x39, 0xd8, 0x08, 0x09, 0xa1, 0xd8, 0x05, 
+		//	0x53, 0xbd, 0xa4, 0x02, 0xff, 0xfe, 0x5b, 0xfe, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x01 
+		//};
+		//GrapaInt r(rp,32);
+		////r = 0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001
+		//GrapaInt d;
+		//d.FromBytes(pKey, true);
+		//d = d % r;
+		//pKey = d.getBytes(true);
 	};
 	virtual bool SetPrv(const GrapaBYTE& pPrv, GrapaBYTE& pPub)
 	{
 		ClearPub();
 		if (pPrv.mLength != 32) return false;
 		blst::blst_scalar_from_bendian(&mSK, pPrv.mBytes);
-		//memcpy(&mSK, pPrv.mBytes, 32);
 		if (mSignInG1)
 		{
 			mPK2.push_back(new(blst::blst_p2));
@@ -432,6 +497,7 @@ public:
 			mPK2.resize(0);
 			blst::blst_p2_affine in;
 			berr = blst::blst_p2_uncompress(&in, pPub.mBytes);
+			if (berr) return false;
 			if (!blst::blst_p2_affine_on_curve(&in)) return false;
 			mPK2.push_back(new(blst::blst_p2));
 			blst::blst_p2_from_affine(mPK2.front(), &in);
@@ -445,6 +511,7 @@ public:
 			mPK1.resize(0);
 			blst::blst_p1_affine in;
 			berr = blst::blst_p1_uncompress(&in, pPub.mBytes);
+			if (berr) return false;
 			if (!blst::blst_p1_affine_on_curve(&in)) return false;
 			mPK1.push_back(new(blst::blst_p1));
 			blst::blst_p1_from_affine(mPK1.front(), &in);
@@ -456,7 +523,8 @@ public:
 	{
 		if (!mBBS) return false;
 
-		GrapaBYTE DST("BLS12381G1_XMD:BLAKE2B_SSWU_RO_BBS+_SIGNATURES:1_0_0");
+		GrapaBYTE DST("BBS_BLS12381G1_XOF:SHAKE-256_SSWU_RO_");
+		GrapaBYTE SEED("BBS_BLS12381G1_XOF:SHAKE-256_SSWU_RO_MESSAGE_GENERATOR_SEED");
 
 		GrapaBYTE countStr = GrapaInt(pCount).getBytes(true);
 		if (countStr.mLength > 4) return(false);
@@ -570,12 +638,11 @@ public:
 			buf = rn.getBytes(true);
 			mCB.d_init(&mCB);
 			mCB.d_update(&mCB, buf.mBytes, buf.mLength);
-			buf.SetLength(32);
-			mCB.d_final(&mCB, buf.mBytes, buf.mLength, &outlen);
-			a.dataSigned = false;
-			a.FromBytes(buf);
+			//buf.SetLength(32);
+			mCB.d_final(&mCB, buf.mBytes, 32, &outlen);
+			buf.SetLength(outlen);
+			a.FromBytes(buf,true);
 			a.Div(ra, e);
-			e.dataSigned = false;
 			buf = e.getBytes(true);
 			blst::blst_scalar es;
 			blst::blst_scalar_from_bendian(&es, buf.mBytes);
@@ -584,12 +651,11 @@ public:
 			buf = rn.getBytes(true);
 			mCB.d_init(&mCB);
 			mCB.d_update(&mCB, buf.mBytes, buf.mLength);
-			buf.SetLength(32);
-			mCB.d_final(&mCB, buf.mBytes, buf.mLength, &outlen);
-			a.dataSigned = false;
-			a.FromBytes(buf);
+			//buf.SetLength(32);
+			mCB.d_final(&mCB, buf.mBytes, 32, &outlen);
+			buf.SetLength(outlen);
+			a.FromBytes(buf,true);
 			a.Div(ra, s);
-			s.dataSigned = false;
 			buf = s.getBytes(true);
 			blst::blst_scalar ss;
 			blst::blst_scalar_from_bendian(&ss, buf.mBytes);
@@ -670,14 +736,14 @@ public:
 			{
 				GrapaRuleEvent* x;
 				s64 index;
-				x = pParams->vQueue->Search(GrapaCHAR("DST"), index);
+				x = pParams->vQueue->Search(GrapaCHAR("dst"), index);
 				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 				if (x && x->mValue.mLength)
 				{
 					DST.FROM(x->mValue);
 					hasdst = true;
 				}
-				x = pParams->vQueue->Search(GrapaCHAR("AUG"), index);
+				x = pParams->vQueue->Search(GrapaCHAR("aug"), index);
 				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 				if (x && (x->mValue.mLength || (x->vQueue && x->vQueue->mCount)))
 				{
@@ -901,7 +967,7 @@ public:
 				{
 					GrapaRuleEvent* e2 = ep;
 					if (ep == NULL) e2 = pData;
-					else while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
+					while (e2 && e2->mValue.mToken == GrapaTokenType::PTR && e2->vRulePointer) e2 = e2->vRulePointer;
 					blst::blst_p1_mult(&out2, mh_1[i], (blst::byte*)e2->mValue.mBytes, e2->mValue.mLength * 8);
 					blst::blst_p1_add(&b, &b, &out2);
 					if (ep) ep = ep->Next();
@@ -987,14 +1053,14 @@ public:
 			{
 				GrapaRuleEvent* x;
 				s64 index;
-				x = pParams->vQueue->Search(GrapaCHAR("DST"), index);
+				x = pParams->vQueue->Search(GrapaCHAR("dst"), index);
 				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 				if (x && x->mValue.mLength)
 				{
 					DST.FROM(x->mValue);
 					hasdst = true;
 				}
-				x = pParams->vQueue->Search(GrapaCHAR("AUG"), index);
+				x = pParams->vQueue->Search(GrapaCHAR("aug"), index);
 				while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
 				if (x && (x->mValue.mLength || (x->vQueue && x->vQueue->mCount)))
 				{
@@ -1635,13 +1701,13 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			if (x)
 			{
 				GrapaInt b;
-				b.FromBytes(x->mValue);
+				b.FromBytes(x->mValue,true);
 				bits = b.LongValue();
 			}
 
 			x = pParams->vQueue->Search("e", idx);
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-			if (x) e.FromBytes(x->mValue);
+			if (x) e.FromBytes(x->mValue,true);
 			if (e.IsZero()) e = (u64)65537;
 		}
 
@@ -1652,7 +1718,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 
 		mRSA = (RSAs*)RSA_new_method(NULL);
 
-		gb = e.getBytes();
+		gb = e.getBytes(true);
 		n = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
 		err = RSA_generate_key_ex((RSA*)mRSA, bits, n, NULL);
 		BN_free(n);
@@ -1669,58 +1735,58 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->n) + 1);
 		sz = BN_bn2bin(((RSAs*)mRSA)->n, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("n"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("n"), g.getBytes(true)));
 
 		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->e) + 1);
 		sz = BN_bn2bin(((RSAs*)mRSA)->e, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("e"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("e"), g.getBytes(true)));
 
 		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->d) + 1);
 		sz = BN_bn2bin(((RSAs*)mRSA)->d, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("d"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("d"), g.getBytes(true)));
 
 		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->p) + 1);
 		sz = BN_bn2bin(((RSAs*)mRSA)->p, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("p"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("p"), g.getBytes(true)));
 
 		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->q) + 1);
 		sz = BN_bn2bin(((RSAs*)mRSA)->q, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("q"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("q"), g.getBytes(true)));
 
 		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->dmp1) + 1);
 		sz = BN_bn2bin(((RSAs*)mRSA)->dmp1, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dmp1"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dmp1"), g.getBytes(true)));
 
 		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->dmq1) + 1);
 		sz = BN_bn2bin(((RSAs*)mRSA)->dmq1, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dmq1"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("dmq1"), g.getBytes(true)));
 
 		gb.SetSize(BN_num_bytes(((RSAs*)mRSA)->iqmp) + 1);
 		sz = BN_bn2bin(((RSAs*)mRSA)->iqmp, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("iqmp"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("iqmp"), g.getBytes(true)));
 
 		return result;
 		//	https://en.wikipedia.org/wiki/RSA_(cryptosystem
@@ -1754,7 +1820,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			if (x)
 			{
 				GrapaInt b;
-				b.FromBytes(x->mValue);
+				b.FromBytes(x->mValue,true);
 				bits = b.LongValue();
 			}
 
@@ -1763,13 +1829,13 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			if (x)
 			{
 				GrapaInt b;
-				b.FromBytes(x->mValue);
+				b.FromBytes(x->mValue,true);
 				pG = b.LongValue();
 			}
 
 			x = pParams->vQueue->Search("p", idx);
 			while (x && x->mValue.mToken == GrapaTokenType::PTR) x = x->vRulePointer;
-			if (x) pP.FromBytes(x->mValue);
+			if (x) pP.FromBytes(x->mValue,true);
 		}
 
 		mDH = DH_new();
@@ -1788,10 +1854,10 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 			{
 				GrapaBYTE gg;
 
-				gg = ((GrapaInt*)&pP)->getBytes();
+				gg = ((GrapaInt*)&pP)->getBytes(true);
 				BIGNUM* p = BN_bin2bn((u8*)gg.mBytes, gg.mLength, NULL);
 
-				gg = GrapaInt(pG).getBytes();
+				gg = GrapaInt(pG).getBytes(true);
 				BIGNUM* g = BN_bin2bn((u8*)gg.mBytes, gg.mLength, NULL);
 
 				err = DH_set0_pqg((DH*)mDH, p, NULL, g);
@@ -1826,9 +1892,9 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 				gb.SetSize(BN_num_bytes(n) + 1);
 				sz = BN_bn2bin(n, (u8*)gb.mBytes);
 				gb.SetLength(sz);
-				g.FromBytes(gb);
+				g.FromBytes(gb,true);
 				g.dataSigned = 0;
-				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("p"), g.getBytes()));
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("p"), g.getBytes(true)));
 			}
 
 			n = (BIGNUM*) DH_get0_q((DH*)mDH);
@@ -1837,9 +1903,9 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 				gb.SetSize(BN_num_bytes(n) + 1);
 				sz = BN_bn2bin(n, (u8*)gb.mBytes);
 				gb.SetLength(sz);
-				g.FromBytes(gb);
+				g.FromBytes(gb,true);
 				g.dataSigned = 0;
-				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("q"), g.getBytes()));
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("q"), g.getBytes(true)));
 			}
 
 			n = (BIGNUM*) DH_get0_g((DH*)mDH);
@@ -1848,9 +1914,9 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 				gb.SetSize(BN_num_bytes(n) + 1);
 				sz = BN_bn2bin(n, (u8*)gb.mBytes);
 				gb.SetLength(sz);
-				g.FromBytes(gb);
+				g.FromBytes(gb,true);
 				g.dataSigned = 0;
-				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("g"), g.getBytes()));
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("g"), g.getBytes(true)));
 			}
 
 			n = (BIGNUM*) DH_get0_pub_key((DH*)mDH);
@@ -1859,9 +1925,9 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 				gb.SetSize(BN_num_bytes(n) + 1);
 				sz = BN_bn2bin(n, (u8*)gb.mBytes);
 				gb.SetLength(sz);
-				g.FromBytes(gb);
+				g.FromBytes(gb,true);
 				g.dataSigned = 0;
-				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("pub"), g.getBytes()));
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("pub"), g.getBytes(true)));
 			}
 
 			n = (BIGNUM*) DH_get0_priv_key((DH*)mDH);
@@ -1870,9 +1936,9 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 				gb.SetSize(BN_num_bytes(n) + 1);
 				sz = BN_bn2bin(n, (u8*)gb.mBytes);
 				gb.SetLength(sz);
-				g.FromBytes(gb);
+				g.FromBytes(gb,true);
 				g.dataSigned = 0;
-				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("prv"), g.getBytes()));
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("prv"), g.getBytes(true)));
 			}
 		}
 		
@@ -1933,16 +1999,16 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 		gb.SetSize(BN_num_bytes(pub1) + 1);
 		sz = BN_bn2bin(pub1, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("pub"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("pub"), g.getBytes(true)));
 
 		gb.SetSize(BN_num_bytes(prv1) + 1);
 		sz = BN_bn2bin(prv1, (u8*)gb.mBytes);
 		gb.SetLength(sz);
-		g.FromBytes(gb);
+		g.FromBytes(gb,true);
 		g.dataSigned = 0;
-		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("prv"), g.getBytes()));
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("prv"), g.getBytes(true)));
 
 		BN_free(pub1);
 
@@ -2245,6 +2311,7 @@ GrapaRuleEvent* GrapaEncode::GenKeys(const GrapaCHAR& pMethod, GrapaRuleEvent* p
 				err = EVP_PKEY_derive(pctx, key.mBytes, &outlen);
 				if (err >= 1)
 				{
+					key.SetLength(outlen);
 					result = new GrapaRuleEvent();
 					result->mValue.mToken = GrapaTokenType::LIST;
 					result->vQueue = new GrapaRuleQueue();
@@ -2561,7 +2628,7 @@ bool GrapaEncode::Decode(const GrapaBYTE& pEnc, GrapaBYTE& pData, const GrapaInt
 	//if (m_d.IsZero()) return(false);
 	//if (pEnc.mLength != mKeySize) return(false);
 	//GrapaInt enc; // (from);
-	//enc.FromBytes(pEnc);
+	//enc.FromBytes(pEnc,true);
 	//GrapaInt decrypted;
 	//if (m_iqmp.IsZero() || !((GrapaInt*)&pPrivateD)->IsZero())
 	//{
@@ -2746,6 +2813,7 @@ bool GrapaEncode::Sign(GrapaRuleEvent* pData, GrapaBYTE& pSignature, GrapaRuleEv
 	else if (mPFC)
 	{
 		((Grapa_bls12_381*)mPFC)->Sign(pData, pSignature, pParams);
+
 		return true;
 	}
 
@@ -2930,8 +2998,8 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 		{
 			GrapaInt g;
 			gc.SetLength(err);
-			g.FromBytes(gc);
-			pSecret = g.getBytes();
+			g.FromBytes(gc,true);
+			pSecret = g.getBytes(true);
 			return true;
 		}
 
@@ -2987,8 +3055,8 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 				if (err >= 1)
 				{
 					gc.SetLength(keylen);
-					g.FromBytes(gc);
-					pSecret = g.getBytes();
+					g.FromBytes(gc,true);
+					pSecret = g.getBytes(true);
 				}
 			}
 			EVP_PKEY_free(ekeyx);
@@ -3019,8 +3087,8 @@ bool GrapaEncode::Secret(GrapaRuleEvent* pKey, GrapaBYTE& pSecret)
 			if (err >= 1)
 			{
 				gc.SetLength(keylen);
-				g.FromBytes(gc);
-				pSecret = g.getBytes();
+				g.FromBytes(gc,true);
+				pSecret = g.getBytes(true);
 			}
 		}
 		EVP_PKEY_CTX_free(ctx1);

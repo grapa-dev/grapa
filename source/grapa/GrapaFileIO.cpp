@@ -118,6 +118,15 @@ GrapaError GrapaFileIO::GetSize(u64& pSize)
 {
 	if (!Opened()) return(-1);
 	pSize = lseek(mFp, 0LL, SEEK_END);
+#if defined(__MINGW32__) || defined(__GNUC__)
+	if (pSize == -1)
+	{
+		int backUpSize = 0;
+		int err = ioctl(mFp, FIONREAD, &backUpSize);
+		pSize = backUpSize;
+		if (err != 0) return(-1);
+	}
+#endif
 	return(0);
 }
 
