@@ -48,6 +48,7 @@ sudo apt install libxft-dev
 sudo apt install libxext-dev
 sudo apt install libxinerama-dev
 sudo apt install python3-pip
+sudo apt install cmake
 ```
 
 ## Mac
