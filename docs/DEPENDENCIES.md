@@ -59,10 +59,19 @@ cd build
 cmake ..
 make
 sudo make install
+
+cd ..
+./configure --enable-shared
+mkdir buildshared
+cd buildshared
+cmake ..
+make
 ```
 Copy FL to Grapa/source
 
 Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
+
+
 
 # Mac
 
