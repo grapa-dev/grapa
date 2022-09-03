@@ -56,20 +56,14 @@ sudo apt-get install -y libfreetype-dev
 ./configure
 mkdir build
 cd build
-cmake ..
+cmake -DOPTION_BUILD_SHARED_LIBS=ON -DOPTION_USE_SYSTEM_LIBJPEG:BOOK=OFF ..
 make
 sudo make install
-
-cd ..
-./configure --enable-shared
-mkdir buildshared
-cd buildshared
-cmake ..
-make
 ```
 Copy FL to Grapa/source
 
 Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
+Copy lib/*.so to Grapa/source/fl-lib/ubuntu64
 
 
 
