@@ -3,7 +3,7 @@ Grapa uses static compiled libraries built from the following.
 - https://github.com/fltk/fltk.gi
 - https://www.fltk.org/pub/fltk/1.3.8/fltk-1.3.8-source.tar.gz
 
-- https://github.com/openssl/openssl.githttps://github.com/openssl/openssl.git
+- https://github.com/openssl/openssl.git
 - https://www.openssl.org/source/openssl-1.1.1m.tar.gz
 
 # Windows
