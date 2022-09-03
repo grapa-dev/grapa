@@ -66,7 +66,7 @@ sudo apt-get install libasound2-dev
 sudo apt-get install libxft-dev
 sudo apt-get install -y libfreetype-dev
 autoconf
-./configure
+/configure --enable-shared --with-optim="--with-pic -fPIC"
 mkdir build
 cd build
 # export CFLAGS="-fPIC"
