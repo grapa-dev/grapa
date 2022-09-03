@@ -36,7 +36,7 @@ cp grapa.a source/grapa-lib/ubuntu64/libgrapa.a
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.so source/blst-lib/ubuntu64/*.a -Lsource/openssl-lib/ubuntu64 -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -O3 -pthread -fPIC -o grapa.so
 cp grapa.so source/grapa-lib/ubuntu64/libgrapa.so
 
-tar -czvf bin/grapa-ubuntu64.tar.gz grapa grapa.a grapa.so
+tar -czvf bin/grapa-ubuntu64.tar.gz grapa source/grapa-lib/ubuntu64/*
 ```
 Setting up the dev tools
 ```
