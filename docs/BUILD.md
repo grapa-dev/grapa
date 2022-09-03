@@ -45,13 +45,14 @@ sudo apt install g++
 sudo apt install python3-dev
 sudo wget https://github.com/shiftkey/desktop/releases/download/release-2.9.3-linux3/GitHubDesktop-linux-2.9.3-linux3.deb
 sudo apt-get install gdebi-core 
-sudo gdebi GitHubDesktop-linux-2.9.3-linux3.deb
 sudo apt install libxcursor-dev
 sudo apt install libxft-dev
 sudo apt install libxext-dev
 sudo apt install libxinerama-dev
 sudo apt install python3-pip
 sudo apt install cmake
+
+https://github.com/shiftkey/desktop
 ```
 
 ## Mac
