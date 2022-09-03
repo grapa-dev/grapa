@@ -65,8 +65,8 @@ sudo apt-get install libglu1-mesa-dev
 sudo apt-get install libasound2-dev
 sudo apt-get install libxft-dev
 sudo apt-get install -y libfreetype-dev
-autoupdate
-/configure --enable-shared --with-optim="--with-pic -fPIC"
+NOCONFIGURE=1 ./autogen.sh
+./configure --enable-shared --with-optim="--with-pic -fPIC"
 mkdir build
 cd build
 # export CFLAGS="-fPIC"
