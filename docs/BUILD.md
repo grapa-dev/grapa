@@ -53,6 +53,8 @@ sudo apt install python3-pip
 sudo apt install cmake
 
 https://github.com/shiftkey/desktop
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/lib/ubuntu64
 ```
 
 ## Mac
