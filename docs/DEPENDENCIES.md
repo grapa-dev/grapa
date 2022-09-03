@@ -1,5 +1,5 @@
-Grapa uses static compiled libraries built from the following. 
-## OpennSSL
+# Source
+## OpenSSL
 - https://github.com/openssl/openssl.git
 - https://www.openssl.org/source/openssl-1.1.1m.tar.gz
 
