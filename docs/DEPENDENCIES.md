@@ -56,11 +56,22 @@ Copy *.a to Grapa/source/openssl-lib/ubuntu64
 ## FLTK
 Navigate to FLTK source folder and complete the following.
 ```
+sudo apt-get install g++
+sudo apt-get install gdb
+sudo apt-get install git
+sudo apt-get install autoconf
+sudo apt-get install libx11-dev
+sudo apt-get install libglu1-mesa-dev
+sudo apt-get install libasound2-dev
+sudo apt-get install libxft-dev
 sudo apt-get install -y libfreetype-dev
+autoconf
 ./configure
 mkdir build
 cd build
-cmake -DOPTION_BUILD_SHARED_LIBS=ON -DOPTION_USE_SYSTEM_LIBJPEG:BOOK=OFF ..
+# export CFLAGS="-fPIC"
+# export CXXFLAGS="-fPIC"
+cmake -DOPTION_BUILD_SHARED_LIBS=ON ..
 make
 sudo make install
 ```
@@ -69,6 +80,7 @@ Copy FL to Grapa/source
 Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
 Copy lib/*.so to Grapa/source/fl-lib/ubuntu64
 
+cp lib/* ~/Documents/GitHub/grapa/source/fl-lib/ubuntu64/
 
 
 # Mac
