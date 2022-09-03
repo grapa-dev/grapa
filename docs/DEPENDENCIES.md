@@ -81,6 +81,7 @@ Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
 Copy lib/*.so to Grapa/source/fl-lib/ubuntu64
 
 cp lib/* ~/Documents/GitHub/grapa/source/fl-lib/ubuntu64/
+cp lib/* ~/Documents/GitHub/grapa/lib/ubuntu64/
 
 
 # Mac
