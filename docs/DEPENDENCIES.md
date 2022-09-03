@@ -65,8 +65,8 @@ sudo apt-get install libglu1-mesa-dev
 sudo apt-get install libasound2-dev
 sudo apt-get install libxft-dev
 sudo apt-get install -y libfreetype-dev
-autoconf
-/configure --enable-shared --with-optim="--with-pic -fPIC"
+NOCONFIGURE=1 ./autogen.sh
+./configure --enable-shared --with-optim="--with-pic -fPIC"
 mkdir build
 cd build
 # export CFLAGS="-fPIC"
@@ -81,6 +81,7 @@ Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
 Copy lib/*.so to Grapa/source/fl-lib/ubuntu64
 
 cp lib/* ~/Documents/GitHub/grapa/source/fl-lib/ubuntu64/
+cp lib/* ~/Documents/GitHub/grapa/lib/ubuntu64/
 
 
 # Mac
