@@ -66,12 +66,12 @@ sudo apt-get install libasound2-dev
 sudo apt-get install libxft-dev
 sudo apt-get install -y libfreetype-dev
 NOCONFIGURE=1 ./autogen.sh
-./configure --enable-shared --with-optim="--with-pic -fPIC"
-mkdir build
-cd build
+./configure --enable-shared=yes --with-optim="-fPIC"
+# mkdir build
+# cd build
 # export CFLAGS="-fPIC"
 # export CXXFLAGS="-fPIC"
-cmake -DOPTION_BUILD_SHARED_LIBS=ON ..
+# cmake -DOPTION_BUILD_SHARED_LIBS=ON ..
 make
 sudo make install
 ```
