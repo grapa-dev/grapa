@@ -11,7 +11,7 @@ endif (MSVC)
 
 if (UNIX)
 include_directories(source)
-link_directories(source source/grapa-lib/ubuntu64)
+link_directories(source ${CMAKE_SOURCE_DIR}/source/grapa-lib/ubuntu64)
 pybind11_add_module(grapapy source/mainpy.cpp)
 target_link_libraries(grapapy PRIVATE grapa)
 endif (UNIX)
