@@ -117,7 +117,17 @@ class CMakeBuild(build_ext):
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
         subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=build_temp)
 
-
+import platform
+def pick_data_files():
+    my_system = platform.system()
+    if my_system == 'Linux':
+        return [('', ['source/grapa-lib/ubuntu64/libgrapa.so'])]
+    if my_system == 'Darwin':
+        return [('', ['source/grapa-lib/mac-intel/libgrapa.so'])]
+    if my_system == 'Windows':
+        return []
+    raise ValueError("Unknown platform: " + my_system)
+    
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
@@ -132,4 +142,5 @@ setup(
     zip_safe=False,
     #extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
+    data_files=pick_data_files(),
 )
