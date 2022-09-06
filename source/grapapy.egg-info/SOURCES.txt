@@ -1,0 +1,8 @@
+LICENSE
+README.md
+setup.py
+source/grapapy.cpp
+source/grapapy.egg-info/PKG-INFO
+source/grapapy.egg-info/SOURCES.txt
+source/grapapy.egg-info/dependency_links.txt
+source/grapapy.egg-info/top_level.txt
