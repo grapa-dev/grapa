@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: grapapy
-Version: 0.0.1
-Summary: grapa - a grammar parser language / environment for processing data for ETL workflows, or experimenting with new language constructs
-Home-page: https://github.com/grapa-dev/grapa
-Author: Chris Matichuk
-Author-email: matichuk@hotmail.com
-License-File: LICENSE
