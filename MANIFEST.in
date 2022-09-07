@@ -1,8 +1,5 @@
-include LICENSE pybind11/LICENSE
-graft pybind11/include
-graft pybind11/tools
+include LICENSE source/pybind11/LICENSE
+graft source/pybind11/include
+graft source/pybind11/tools
 graft source/grapa-lib
-graft source/fl-lib
-graft source/openssl-lib
-graft source/blst-lib
 global-include CMakeLists.txt source/mainpy.cpp source/grapa/*.h source/openssl/*.h source/FL/*.h source/FL/*.H

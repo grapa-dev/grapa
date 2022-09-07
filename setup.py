@@ -2,8 +2,10 @@ import os
 import re
 import subprocess
 import sys
+import shutil
+import platform
 
-from setuptools import Extension, setup
+from setuptools import Extension, setup, find_packages, Command
 from setuptools.command.build_ext import build_ext
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
@@ -23,9 +25,11 @@ class CMakeExtension(Extension):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
 
+# runtime_library_dirs=["$ORIGIN"]
 
 class CMakeBuild(build_ext):
     def build_extension(self, ext):
+    
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
 
         # required for auto-detection & inclusion of auxiliary "native" libs
@@ -117,7 +121,11 @@ class CMakeBuild(build_ext):
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
         subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=build_temp)
 
-import platform
+        my_system = platform.system()
+
+        if my_system == 'Linux':
+            shutil.copy(os.path.join(ext.sourcedir,"source/grapa-lib/ubuntu64/libgrapa.so"), os.path.join(build_temp,"libgrapa.so"))
+
 def pick_data_files():
     my_system = platform.system()
     if my_system == 'Linux':

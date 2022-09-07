@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4...3.18)
 project(grapapy)
-add_subdirectory(pybind11)
+add_subdirectory(source/pybind11)
 
 if (MSVC)
 include_directories(source)
