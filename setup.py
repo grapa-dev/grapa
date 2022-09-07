@@ -132,7 +132,7 @@ def pick_data_files():
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="grapapy",
-    version="0.0.1",
+    version="0.0.2",
     author="Chris Matichuk",
     author_email="matichuk@hotmail.com",
     description="grammar parser language",

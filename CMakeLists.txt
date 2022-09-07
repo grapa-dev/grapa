@@ -17,4 +17,4 @@ pybind11_add_module(grapapy source/mainpy.cpp)
 target_link_libraries(grapapy PRIVATE grapa)
 endif (UNIX)
 
-target_compile_definitions(grapapy PRIVATE VERSION_INFO="0.0.1")
+target_compile_definitions(grapapy PRIVATE VERSION_INFO="0.0.2")

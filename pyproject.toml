@@ -1,21 +1,2 @@
 [build-system]
 requires = ["setuptools>=42", "wheel", "cmake>=3.18"]
-
-[project]
-name = "grapapy"
-version = "0.0.1"
-authors = [
-    {name = "Chris Matichuk", email = "matichuk@hotmail.com"},
-]
-description = "grammar parser language"
-requires-python = ">=3.6"
-classifiers = [
-    "Development Status :: 0 - Alpha",
-    "License :: Apache License",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-]
