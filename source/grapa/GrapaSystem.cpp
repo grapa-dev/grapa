@@ -385,6 +385,7 @@ void My_Console::Run(GrapaCB cb, void* data)
 			}
 			if (sendBuffer.mLength == 1 && sendBuffer.StrNCmp(">") == 0)
 			{
+#ifdef _WIN32
 				Fl::lock();
 				sendBuffer.FROM("$editor();");
 				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (char*)sendBuffer.mBytes, sendBuffer.mLength);
@@ -393,6 +394,7 @@ void My_Console::Run(GrapaCB cb, void* data)
 				while (!gSystem->mStop)
 					Fl::wait(1);
 				Fl::unlock();
+#endif
 			}
 			if (ch == EOF || ch == '\n')
 			{
@@ -403,6 +405,8 @@ void My_Console::Run(GrapaCB cb, void* data)
 		} while (!gSystem->mStop && (sendBuffer.mLength || ch == '\n' || ch == '\r') && ch != EOF);
 	}
 }
+
+#ifdef _WIN32
 
 My_Pack::My_Pack(int x, int y, int w, int h, const char* l)
 	: Fl_Pack(x, y, w, h, l)
@@ -923,5 +927,7 @@ void My_Text_Console::ExecInFocus(const char* in)
 		}
 	}
 }
+
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

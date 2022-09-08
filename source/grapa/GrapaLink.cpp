@@ -434,6 +434,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 
 void GrapaLink::Stop()
 {
+#ifdef _WIN32
 	My_Text_Console* vGfx = NULL;
 	if (!gSystem->mConsoleList.empty())
 		vGfx = gSystem->mConsoleList.back();
@@ -445,6 +446,7 @@ void GrapaLink::Stop()
 		if (!gSystem->mConsoleList.empty())
 			vGfx = gSystem->mConsoleList.back();
 	}
+#endif
 	if (gSystem->mLinkInitialized)
 	{
 		EVP_cleanup();
