@@ -35,13 +35,6 @@ extern GrapaSystem* gSystem;
 
 class GrapaRuleQueue;
 
-#include <FL/Fl.H>
-#include <FL/Fl_Double_Window.H>
-#include <FL/Fl_Text_Editor.H>
-#include <FL/Fl_Scroll.H>
-#include <FL/Fl_Pack.H>
-#include <FL/Fl_Button.H>
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 class GrapaLibraryRuleResetEvent : public GrapaLibraryEvent

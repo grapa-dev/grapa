@@ -39,10 +39,6 @@ extern GrapaSystem* gSystem;
 #include <FL/Fl_Table_Row.H>
 #include <FL/Fl_JPEG_Image.H>
 #include <FL/Fl_Hor_Nice_Slider.H>
-#include <FL/Fl_Text_Editor.H>
-#include <FL/Fl_Scroll.H>
-#include <FL/Fl_Pack.H>
-#include <FL/Fl_Button.H>
 
 #include <stdio.h>
 #include <stdlib.h>

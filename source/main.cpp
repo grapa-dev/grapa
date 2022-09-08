@@ -69,9 +69,7 @@ int main(int argc, const char* argv[])
         {
             bool scriptRan = false;
 
-#ifdef _WIN32
             Fl::lock();
-#endif
             GrapaScriptExec mScriptExec;
             GrapaConsoleSend mConsoleSend;
             GrapaMainResponse mConsoleResponse;
@@ -182,23 +180,17 @@ int main(int argc, const char* argv[])
             }
             if (!needExit || showConsole)
             {
-#ifdef _WIN32
                 while (!gSystem->mStop)
                     Fl::wait(1);
-#endif
             }
 
-#ifdef _WIN32
             Fl::unlock();
-#endif
         }
         else
         {
-#ifdef _WIN32
             My_Text_Console* mGfxConsole = new My_Text_Console(inStr, outStr, runStr);
             if (!needExit || showConsole)
                 mGfxConsole->Run(NULL, NULL);
-#endif
         }
     }
     GrapaLink::Stop();

@@ -8,15 +8,12 @@
 #include "GrapaConsole.h"
 #include "GrapaState.h"
 
-#ifdef _WIN32
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
 #include <FL/Fl_Text_Editor.H>
 #include <FL/Fl_Scroll.H>
 #include <FL/Fl_Pack.H>
 #include <FL/Fl_Button.H>
-#endif
-
 
 #include <list>
 
@@ -40,8 +37,6 @@ public:
 	void Stop();
 	void Run(GrapaCB cb, void* data);
 };
-
-#ifdef _WIN32
 
 class My_Pack : public Fl_Pack
 {
@@ -156,7 +151,6 @@ public:
 	void Run(GrapaCB cb, void* data);
 	void ExecInFocus(const char* in);
 };
-#endif
 
 class GrapaSystem
 {
@@ -179,9 +173,7 @@ public:
 	GrapaCritical mLibLock;
 	GrapaCritical mTimeLock;
 	GrapaCritical mChdLock;
-#ifdef _WIN32
 	std::list < My_Text_Console* > mConsoleList;
-#endif
 
 public:
 	GrapaSystem();
