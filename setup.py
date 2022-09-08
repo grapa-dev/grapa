@@ -123,12 +123,11 @@ class CMakeBuild(build_ext):
 
         my_system = platform.system()
 
-        if my_system == 'Linux':
+        if sys.platform.startswith('linux'):
             shutil.copy(os.path.join(ext.sourcedir,"source/grapa-lib/ubuntu64/libgrapa.so"), os.path.join(build_temp,"libgrapa.so"))
-        for file_name in os.listdir("source/grapa-lib/aws"):
-            source = os.path.join(ext.sourcedir,"source/grapa-lib/aws/" + file_name)
-            destination = os.path.join(build_temp,file_name)
-            if os.path.isfile(source):
+            for file_name in os.listdir("source/grapa-lib/aws"):
+                source = os.path.join(ext.sourcedir,"source/grapa-lib/aws/" + file_name)
+                destination = os.path.join(build_temp,file_name)
                 shutil.copy(source, destination)
 
 def pick_data_files():
@@ -153,7 +152,6 @@ setup(
     ext_modules=[CMakeExtension("grapapy")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    #extras_require={"test": ["pytest>=6.0"]},
     python_requires=">=3.6",
     data_files=pick_data_files(),
 )
