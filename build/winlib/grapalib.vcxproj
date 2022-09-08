@@ -224,7 +224,6 @@
     <ClCompile Include="..\..\source\grapa\GrapaValue.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaVector.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaWidget.cpp" />
-    <ClCompile Include="..\..\source\mainlib.cpp" />
     <ClCompile Include="..\..\source\tiny-AES-c-master\aes.c" />
     <ClCompile Include="grapalib.cpp" />
   </ItemGroup>
