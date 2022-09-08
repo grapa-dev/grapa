@@ -8,7 +8,7 @@ link_directories(source ${CMAKE_SOURCE_DIR}/source/grapa-lib/win)
 endif (MSVC)
 
 if (UNIX)
-link_directories(source ${CMAKE_SOURCE_DIR}/source/grapa-lib/ubuntu64)
+link_directories(source ${CMAKE_INSTALL_RPATH}/source ${CMAKE_INSTALL_RPATH}/source/grapa-lib/ubuntu64)
 endif (UNIX)
 
 pybind11_add_module(grapapy source/mainpy.cpp)
