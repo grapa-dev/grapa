@@ -49,11 +49,13 @@ class CopySharedLibrary(Command):
         if self.inplace:
             lib_target_path = self.package_name
         else:
-            lib_target_path = os.path.join(self.build_lib, self.package_name)
+            # lib_target_path = os.path.join(self.build_lib, self.package_name)
+            lib_target_path = self.build_lib
             self.mkpath(lib_target_path)
         
         self.copy_file(self.lib_source_path, os.path.join(lib_target_path, self.filename))
-
+        os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
+        
         #self.lib_source_path = os.path.join(self.build_dir, "fl-lib/win", "fltk.lib")
         #self.copy_file(self.lib_source_path, os.path.join(lib_target_path, "fltk.lib"))
         
@@ -64,8 +66,7 @@ class CopySharedLibrary(Command):
         #self.lib_source_path = os.path.join(source_dir, "source/fl-lib/win")
         #for file_name in os.listdir(self.lib_source_path):
         #    self.copy_file(os.path.join(self.lib_source_path,file_name), os.path.join(lib_target_path, "fl-lib/win", file_name))
-       
-        os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
+
 
 
 class CustomBuild(build):
@@ -106,7 +107,7 @@ def pick_libraries():
 lib_grapa = Extension(
     'grapapy', 
     sources = ['source/mainpy.cpp'],
-    include_dirs=["source"],
+    include_dirs=["source",'source/pybind11/include'],
     library_dirs=pick_library_dirs(),
     libraries=pick_libraries(),
     runtime_library_dirs=runtime_library_dirs,
