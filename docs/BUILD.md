@@ -26,7 +26,7 @@ rmdir /S /q build\winlib\x64
 sudo apt install x11-apps
 sudo apt install libx11-dev
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a source/blst-lib/ubuntu64/*.a -Lsource/openssl-lib/ubuntu64 -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a source/blst-lib/ubuntu64/*.a -Lsource/openssl-lib/ubuntu64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
 g++ -c -Isource source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a source/blst-lib/ubuntu64/*.a -Lsource/openssl-lib/ubuntu64 -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -O3 -pthread
 ar -crs grapa.a *.o source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a source/blst-lib/ubuntu64/*.a
