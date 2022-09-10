@@ -1,7 +1,7 @@
 import os
 import sys
 import platform
-import logging
+import subprocess
 
 from distutils.command.build import build
 
@@ -13,23 +13,33 @@ from pathlib import Path
 extra_link_args = []
 runtime_library_dirs = []
 grapapy_version = "0.0.5"
+is_aws = False
+from_os = ''
 
 if sys.platform.startswith('win32'):
-    so_ext = '.dll'
     so_ext = '.lib'
     lib_filename = 'grapa' + so_ext
     lib_pathfile = 'grapa-lib/win/' + lib_filename
 if sys.platform.startswith('linux'):
+    from_os = 'linux'
+    temp_result = subprocess.run(["cat", "/etc/os-release"]);
+    process = subprocess.Popen(['cat', '/etc/os-release'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    if stderr.decode()=='':
+        stdouts = stdout.decode();
+        if stdouts[stdouts.find("NAME")+6:stdouts.find("VERSION")-2]=="Amazon Linux"
+            is_aws = True
+            from_os = 'aws';
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
-    lib_pathfile = 'grapa-lib/ubuntu64/' + lib_filename
-    #extra_link_args = ['-Wl,-rpath=$ORIGIN/grapapy-'+grapapy_version]
+    lib_pathfile = 'grapa-lib/'+from_os'/' + lib_filename
     runtime_library_dirs = ['$ORIGIN/grapapy-'+grapapy_version]
 elif sys.platform.startswith('darwin'):
     so_ext = '.dylib'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/mac-intel/' + lib_filename
     extra_link_args = ['-Wl,-rpath,@loader_path']
+            
 
 class CopySharedLibrary(Command):
     user_options = []
@@ -52,17 +62,11 @@ class CopySharedLibrary(Command):
             lib_target_path = self.package_name
         else:
             lib_target_path = os.path.join(self.build_lib, "grapapy-"+grapapy_version)
-            #lib_target_path = self.build_lib
             self.mkpath(lib_target_path)
-        
         self.copy_file(self.lib_source_path, os.path.join(lib_target_path, self.filename))
-        
         if sys.platform.startswith('linux'):
-            #lib_target_path2 = os.path.join(lib_target_path, "lib64")
-            #self.mkpath(lib_target_path2)
-            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/linux')):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/linux'),file_name), os.path.join(lib_target_path, file_name))
-
+            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/'+from_os)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
         os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
 
 
@@ -84,7 +88,10 @@ class CustomBuildExt(build_ext):
 def pick_library_dirs():
     my_system = platform.system()
     if my_system == 'Linux':
-        return ["source", "source/grapa-lib/ubuntu64", "source/grapa-lib/linux"]
+        if is_aws:
+            return ["source", "source/grapa-lib/aws"]
+        else
+            return ["source", "source/grapa-lib/linux"]
     if my_system == 'Darwin':
         return ["source", "source/grapa-lib/mac-intel"]
     if my_system == 'Windows':
