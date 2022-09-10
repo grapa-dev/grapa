@@ -21,21 +21,21 @@ rmdir /S /q build\winlib\x64
 7z a bin/grapa-win.zip grapa.exe grapa.lib
 ```
 
-## Ubuntu64
+## Linux
 ```
 sudo apt install x11-apps
 sudo apt install libx11-dev
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a source/blst-lib/ubuntu64/*.a -Lsource/openssl-lib/ubuntu64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
-g++ -c -Isource source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a source/blst-lib/ubuntu64/*.a -Lsource/openssl-lib/ubuntu64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread
-ar -crs grapa.a *.o source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a source/blst-lib/ubuntu64/*.a
+g++ -c -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread
+ar -crs grapa.a *.o source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a
 rm *.o
-cp grapa.a source/grapa-lib/ubuntu64/libgrapa.a
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/ubuntu64/*.a source/fl-lib/ubuntu64/*.a source/blst-lib/ubuntu64/*.a -Lsource/openssl-lib/ubuntu64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o grapa.so
-cp grapa.so source/grapa-lib/ubuntu64/libgrapa.so
+cp grapa.a source/grapa-lib/linux/libgrapa.a
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o grapa.so
+cp grapa.so source/grapa-lib/linux/libgrapa.so
 
-tar -czvf bin/grapa-ubuntu64.tar.gz grapa source/grapa-lib/ubuntu64/*
+tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
 
 python3 setup.py sdist
 ```
@@ -55,7 +55,7 @@ sudo apt install cmake
 
 https://github.com/shiftkey/desktop
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/ubuntu64
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/linux
 ```
 
 ## Mac
