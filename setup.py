@@ -27,13 +27,13 @@ if sys.platform.startswith('linux'):
     stdout, stderr = process.communicate()
     if stderr.decode()=='':
         stdouts = stdout.decode();
-        if stdouts[stdouts.find("NAME")+6:stdouts.find("VERSION")-2]=="Amazon Linux"
+        if stdouts[stdouts.find("NAME")+6:stdouts.find("VERSION")-2]=="Amazon Linux":
             is_aws = True
             from_os = 'aws';
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
-    lib_pathfile = 'grapa-lib/'+from_os'/' + lib_filename
-    runtime_library_dirs = ['$ORIGIN/grapapy-'+grapapy_version]
+    lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
+    runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
 elif sys.platform.startswith('darwin'):
     so_ext = '.dylib'
     lib_filename = 'libgrapa' + so_ext
@@ -90,7 +90,7 @@ def pick_library_dirs():
     if my_system == 'Linux':
         if is_aws:
             return ["source", "source/grapa-lib/aws"]
-        else
+        else:
             return ["source", "source/grapa-lib/linux"]
     if my_system == 'Darwin':
         return ["source", "source/grapa-lib/mac-intel"]
