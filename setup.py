@@ -11,6 +11,7 @@ from setuptools.command.build_ext import build_ext
 from pathlib import Path
 
 extra_link_args = []
+extra_compile_args = []
 runtime_library_dirs = []
 grapapy_version = "0.0.7"
 is_aws = False
@@ -37,12 +38,13 @@ if sys.platform.startswith('linux'):
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
-    runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version] 
+    runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
 elif sys.platform.startswith('darwin'):
-    so_ext = '.dylib'
+    so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/mac-intel/' + lib_filename
     extra_link_args = ['-Wl,-rpath,@loader_path']
+    extra_compile_args = ['-std=c++11']
             
 
 class CopySharedLibrary(Command):
@@ -119,7 +121,8 @@ lib_grapa = Extension(
     library_dirs=pick_library_dirs(),
     libraries=pick_libraries(),
     runtime_library_dirs=runtime_library_dirs,
-    extra_link_args=extra_link_args
+    extra_link_args=extra_link_args,
+    extra_compile_args=extra_compile_args,
 )
 
 setup(

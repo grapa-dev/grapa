@@ -75,6 +75,13 @@ PYBIND11_EMBEDDED_MODULE(throw_error_already_set, ) {
     d["missing"].cast<py::object>();
 }
 
+TEST_CASE("PYTHONPATH is used to update sys.path") {
+    // The setup for this TEST_CASE is in catch.cpp!
+    auto sys_path = py::str(py::module_::import("sys").attr("path")).cast<std::string>();
+    REQUIRE_THAT(sys_path,
+                 Catch::Matchers::Contains("pybind11_test_embed_PYTHONPATH_2099743835476552"));
+}
+
 TEST_CASE("Pass classes and data between modules defined in C++ and Python") {
     auto module_ = py::module_::import("test_interpreter");
     REQUIRE(py::hasattr(module_, "DerivedWidget"));
@@ -126,7 +133,6 @@ TEST_CASE("Override cache") {
 TEST_CASE("Import error handling") {
     REQUIRE_NOTHROW(py::module_::import("widget_module"));
     REQUIRE_THROWS_WITH(py::module_::import("throw_exception"), "ImportError: C++ Error");
-#if PY_VERSION_HEX >= 0x03030000
     REQUIRE_THROWS_WITH(py::module_::import("throw_error_already_set"),
                         Catch::Contains("ImportError: initialization failed"));
 
@@ -142,10 +148,6 @@ TEST_CASE("Import error handling") {
              locals);
     REQUIRE(locals["is_keyerror"].cast<bool>() == true);
     REQUIRE(locals["message"].cast<std::string>() == "'missing'");
-#else
-    REQUIRE_THROWS_WITH(py::module_::import("throw_error_already_set"),
-                        Catch::Contains("ImportError: KeyError"));
-#endif
 }
 
 TEST_CASE("There can be only one interpreter") {
