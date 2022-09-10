@@ -100,9 +100,18 @@ Assumes AWS Docker image for build-python3.8 is setup.
 
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a -std=gnu++11 -Lsource/openssl-lib/aws -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -m64 -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a source/blst-lib/aws/*.a -Lsource/openssl-lib/aws -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
-tar -czvf bin/grapa-aws.tar.gz grapa lib/aws/*
+g++ -c -Isource source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a source/blst-lib/aws/*.a -Lsource/openssl-lib/aws -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread
+ar -crs grapa.a *.o source/openssl-lib/aws/*.a source/fl-lib/aws/*.a source/blst-lib/aws/*.a
+rm *.o
+cp grapa.a source/grapa-lib/aws/libgrapa.a
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a source/blst-lib/aws/*.a -Lsource/openssl-lib/aws -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o grapa.so
+cp grapa.so source/grapa-lib/aws/libgrapa.so
+
+tar -czvf bin/grapa-aws.tar.gz grapa source/grapa-lib/aws/*
+
+python3 setup.py sdist
 ```
 
 [Setup Docker for AWS build-python3.8](SETUPAWSDOCKER.md)
