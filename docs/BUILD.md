@@ -69,6 +69,12 @@ codesign -s dev-grapa-cert ./grapa
 tar -czvf bin/grapa-mac-apple.tar.gz grapa
 ```
 
+Helful additons
+```
+sudo chmod u+x /script-location/
+```
+
+
 ### Intel
 ```
 rm grapa
