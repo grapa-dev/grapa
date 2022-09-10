@@ -12,7 +12,7 @@ from pathlib import Path
 
 extra_link_args = []
 runtime_library_dirs = []
-grapapy_version = "0.0.5"
+grapapy_version = "0.0.7"
 is_aws = False
 from_os = ''
 
@@ -30,10 +30,14 @@ if sys.platform.startswith('linux'):
         if stdouts[stdouts.find("NAME")+6:stdouts.find("VERSION")-2]=="Amazon Linux":
             is_aws = True
             from_os = 'aws';
+    if is_aws:
+        extra_link_args = ['-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng15','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
+    else:
+        extra_link_args = ['-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng16','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
-    runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
+    runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version] 
 elif sys.platform.startswith('darwin'):
     so_ext = '.dylib'
     lib_filename = 'libgrapa' + so_ext
@@ -120,11 +124,11 @@ lib_grapa = Extension(
 
 setup(
     name="grapapy",
-    version="0.0.5",
+    version=grapapy_version,
     author="Chris Matichuk",
     author_email="matichuk@hotmail.com",
     description="grammar parser language",
-    long_description="",
+    long_description="https://github.com/grapa-dev/grapa",
     ext_modules=[lib_grapa],
     cmdclass={
         'copy_grapalib': CopySharedLibrary,
