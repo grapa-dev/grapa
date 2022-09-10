@@ -114,6 +114,18 @@ tar -czvf bin/grapa-aws.tar.gz grapa source/grapa-lib/aws/*
 python3 setup.py sdist
 ```
 
+Other commands
+```
+docker run -it -v %cd%:/data lambci/lambda:build-python3.8 /bin/bash
+
+docker ps
+docker commit [CONTAINER ID) [name]
+
+docker run -it -v %cd%:/data lambci/lambda:build-python3.8-grapa /bin/bash
+docker commit [CONTAINER ID) lambci/lambda:build-python3.8-grapa
+
+```
+
 [Setup Docker for AWS build-python3.8](SETUPAWSDOCKER.md)
 
 # Dependencies
