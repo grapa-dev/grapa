@@ -1,0 +1,3 @@
+dep = ["libcrypto","libc","libdl","libfontconfig","libfreetype","libm","libpng15","libpthread","libssl","libstdc++","libX11","libXau","libxcb","libXcursor","libXext","libXfixes","libXft","libXinerama","libXrender","libpng16","libbrotlidec"]
+
+dep.map(op(f){("find /usr/ -name " + f + ".so*").shell().split("\n").map(op(x){$local.y="";if(x.split("/").len()==4)y=x;y;});}).reduce(op(a,b){a++=b;}).reduce(op(a,b){if(b.len())("cp " + b + " lib/linux").shell();});

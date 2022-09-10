@@ -1,6 +1,7 @@
 import os
 import sys
 import platform
+import logging
 
 from distutils.command.build import build
 
@@ -11,6 +12,7 @@ from pathlib import Path
 
 extra_link_args = []
 runtime_library_dirs = []
+grapapy_version = "0.0.5"
 
 if sys.platform.startswith('win32'):
     so_ext = '.dll'
@@ -21,13 +23,13 @@ if sys.platform.startswith('linux'):
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/ubuntu64/' + lib_filename
-    runtime_library_dirs = ['$ORIGIN']
+    #extra_link_args = ['-Wl,-rpath=$ORIGIN/grapapy-'+grapapy_version]
+    runtime_library_dirs = ['$ORIGIN/grapapy-'+grapapy_version]
 elif sys.platform.startswith('darwin'):
     so_ext = '.dylib'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/mac-intel/' + lib_filename
     extra_link_args = ['-Wl,-rpath,@loader_path']
-
 
 class CopySharedLibrary(Command):
     user_options = []
@@ -49,24 +51,19 @@ class CopySharedLibrary(Command):
         if self.inplace:
             lib_target_path = self.package_name
         else:
-            # lib_target_path = os.path.join(self.build_lib, self.package_name)
-            lib_target_path = self.build_lib
+            lib_target_path = os.path.join(self.build_lib, "grapapy-"+grapapy_version)
+            #lib_target_path = self.build_lib
             self.mkpath(lib_target_path)
         
         self.copy_file(self.lib_source_path, os.path.join(lib_target_path, self.filename))
+        
+        if sys.platform.startswith('linux'):
+            #lib_target_path2 = os.path.join(lib_target_path, "lib64")
+            #self.mkpath(lib_target_path2)
+            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/linux')):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/linux'),file_name), os.path.join(lib_target_path, file_name))
+
         os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
-        
-        #self.lib_source_path = os.path.join(self.build_dir, "fl-lib/win", "fltk.lib")
-        #self.copy_file(self.lib_source_path, os.path.join(lib_target_path, "fltk.lib"))
-        
-        #self.mkpath(os.path.join(lib_target_path, "fl-lib/win"))
-
-        #source_path = Path(__file__).resolve()
-        #source_dir = source_path.parent
-        #self.lib_source_path = os.path.join(source_dir, "source/fl-lib/win")
-        #for file_name in os.listdir(self.lib_source_path):
-        #    self.copy_file(os.path.join(self.lib_source_path,file_name), os.path.join(lib_target_path, "fl-lib/win", file_name))
-
 
 
 class CustomBuild(build):
@@ -87,7 +84,7 @@ class CustomBuildExt(build_ext):
 def pick_library_dirs():
     my_system = platform.system()
     if my_system == 'Linux':
-        return ["source", "source/grapa-lib/ubuntu64"]
+        return ["source", "source/grapa-lib/ubuntu64", "source/grapa-lib/linux"]
     if my_system == 'Darwin':
         return ["source", "source/grapa-lib/mac-intel"]
     if my_system == 'Windows':
@@ -116,7 +113,7 @@ lib_grapa = Extension(
 
 setup(
     name="grapapy",
-    version="0.0.3",
+    version="0.0.5",
     author="Chris Matichuk",
     author_email="matichuk@hotmail.com",
     description="grammar parser language",

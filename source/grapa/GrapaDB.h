@@ -210,7 +210,7 @@ public:
 	u8 mRefType;
 	// add the name
 public:
-	GrapaDBTable() : mId(0), mRef(0), mRefType(0), mRecRef(0) {}
+	GrapaDBTable() { mId = 0; mRef = 0; mRecRef = 0; mRefType = 0; }
 };
 
 class GrapaDBIndex
@@ -221,7 +221,7 @@ public:
 	u64 mRef;
 	// add the name
 public:
-	GrapaDBIndex() : mId(0), mRef(0) {}
+	GrapaDBIndex() { mId = 0; mRef = 0; }
 };
 
 class GrapaDBCursor : public GrapaCursor
@@ -230,7 +230,7 @@ public:
 	GrapaDBFieldValueArray* mData;
 	bool mUsingIndex;
 public:
-	GrapaDBCursor() : mUsingIndex(false), mData(NULL), GrapaCursor() {}
+	GrapaDBCursor() { mUsingIndex = false; mData = NULL; GrapaCursor(); }
     void SetSearch(GrapaDB* pDb, u64 pTreeRef, bool pUsingIndex, GrapaDBFieldValueArray* pData);
 };
 
