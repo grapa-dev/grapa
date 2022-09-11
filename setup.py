@@ -33,7 +33,7 @@ if sys.platform.startswith('linux'):
     stdout, stderr = process.communicate()
     if stderr.decode()=='':
         stdouts = stdout.decode();
-        if stdouts[stdouts.find("NAME")+6:stdouts.find("VERSION")-2]=="Amazon Linux":
+        if stdouts.find("Amazon Linux")>=0:
             is_aws = True
             from_os = 'aws';
     if is_aws:
@@ -51,18 +51,17 @@ elif sys.platform.startswith('darwin'):
         from_os = 'mac-apple';
     if is_apple:
         extra_link_args = [
-        '-Wl,-rpath,@loader_path',
-        # 'source/grapa-lib/mac-intel/libgrapa.a',
-        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread','-fPIC']
+        #'-Wl,-rpath,@loader_path',
+        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread']
     else:
         extra_link_args = [
-        '-Wl,-rpath,@loader_path',
-        # 'source/grapa-lib/mac-intel/libgrapa.a',
-        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread','-fPIC']
+        #'-Wl,-rpath,@loader_path',
+        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread']
     extra_compile_args = ['-std=gnu++11']
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
+    runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
 
 
 class CopySharedLibrary(Command):
