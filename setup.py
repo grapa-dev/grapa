@@ -50,13 +50,15 @@ elif sys.platform.startswith('darwin'):
         is_apple = True
         from_os = 'mac-apple';
     if is_apple:
-        extra_link_args = ['-Wl,-rpath,@loader_path',
+        extra_link_args = [
+        '-Wl,-rpath,@loader_path',
         # 'source/grapa-lib/mac-intel/libgrapa.a',
-        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread','-fPIC','-std=gnu++11']
+        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread','-fPIC']
     else:
-        extra_link_args = ['-Wl,-rpath,@loader_path',
+        extra_link_args = [
+        '-Wl,-rpath,@loader_path',
         # 'source/grapa-lib/mac-intel/libgrapa.a',
-        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread','-fPIC','-std=gnu++11']
+        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread','-fPIC']
     extra_compile_args = ['-std=gnu++11']
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
@@ -86,7 +88,7 @@ class CopySharedLibrary(Command):
             lib_target_path = os.path.join(self.build_lib, "grapapy-"+grapapy_version)
             self.mkpath(lib_target_path)
         self.copy_file(self.lib_source_path, os.path.join(lib_target_path, self.filename))
-        if sys.platform.startswith('linux'):
+        if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
             for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/'+from_os)):
                 self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
         os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
@@ -126,12 +128,12 @@ def pick_library_dirs():
 def pick_libraries():
     my_system = platform.system()
     if my_system == 'Linux':
-        return ["grapa"]
+        return ['grapa']
     if my_system == 'Darwin':
         if is_apple:
-            return ["grapa"]
+            return ['grapa']
         else:
-            return ["grapa"]
+            return ['grapa']
     if my_system == 'Windows':
         return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
     raise ValueError("Unknown platform: " + my_system)
