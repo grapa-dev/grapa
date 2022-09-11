@@ -13,7 +13,7 @@ from pathlib import Path
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
-grapapy_version = "0.0.8"
+grapapy_version = "0.0.9"
 is_aws = False
 is_apple = False
 from_os = ''
@@ -52,11 +52,11 @@ elif sys.platform.startswith('darwin'):
     if is_apple:
         extra_link_args = ['-Wl,-rpath,@loader_path',
         # 'source/grapa-lib/mac-intel/libgrapa.a',
-        '-framework','IOKit','-O3','-pthread','-fPIC','-std=gnu++11']
+        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread','-fPIC','-std=gnu++11']
     else:
         extra_link_args = ['-Wl,-rpath,@loader_path',
         # 'source/grapa-lib/mac-intel/libgrapa.a',
-        '-framework','IOKit','-O3','-pthread','-fPIC','-std=gnu++11']
+        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread','-fPIC','-std=gnu++11']
     extra_compile_args = ['-std=gnu++11']
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
@@ -129,8 +129,7 @@ def pick_libraries():
         return ["grapa"]
     if my_system == 'Darwin':
         if is_apple:
-            return []
-            # return ["libgrapa.so"]
+            return ["grapa"]
         else:
             return ["grapa"]
     if my_system == 'Windows':
