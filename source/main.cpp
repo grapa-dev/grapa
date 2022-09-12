@@ -12,7 +12,6 @@
 
 #define gGrapaUseWidget false
 
-extern GrapaSystem* gSystem;
 extern bool gGrapaWidgetMainThread;
 
 class GrapaMainResponse : public GrapaConsoleResponse
@@ -31,6 +30,7 @@ public:
 
 int main(int argc, const char* argv[])
 {
+	GrapaSystem* gSystem = GrapaLink::GetGrapaSystem();
     if (argv)
     {
         GrapaCHAR ss;

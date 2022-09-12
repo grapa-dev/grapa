@@ -15,7 +15,6 @@ namespace py = pybind11;
 
 #define gGrapaUseWidget false
 
-extern GrapaSystem* gSystem;
 extern bool gGrapaWidgetMainThread;
 
 class GrapaMainResponse : public GrapaConsoleResponse
@@ -56,6 +55,7 @@ public:
 		mRuleVariables.SetResponse(&mConsoleResponse);
 		mConsoleSend.Start();
 		GrapaCHAR grresult;
+		GrapaSystem* gSystem = GrapaLink::GetGrapaSystem();
 		if (gSystem->mGrammar.mLength)
 			grresult = mConsoleSend.SendSync(gSystem->mGrammar);
 	}

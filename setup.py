@@ -28,14 +28,14 @@ if sys.platform.startswith('win32'):
     lib_pathfile = 'grapa-lib/win/' + lib_filename
 if sys.platform.startswith('linux'):
     from_os = 'linux'
-    temp_result = subprocess.run(["cat", "/etc/os-release"]);
+    temp_result = subprocess.run(["cat", "/etc/os-release"])
     process = subprocess.Popen(['cat', '/etc/os-release'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if stderr.decode()=='':
-        stdouts = stdout.decode();
+        stdouts = stdout.decode()
         if stdouts.find("Amazon Linux")>=0:
             is_aws = True
-            from_os = 'aws';
+            from_os = 'aws'
     if is_aws:
         extra_link_args = ['-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng15','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
     else:
@@ -48,20 +48,20 @@ elif sys.platform.startswith('darwin'):
     from_os = 'mac-intel'
     if platform.machine()=='arm64':
         is_apple = True
-        from_os = 'mac-apple';
-    if is_apple:
-        extra_link_args = [
-        #'-Wl,-rpath,@loader_path',
-        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread']
-    else:
-        extra_link_args = [
-        #'-Wl,-rpath,@loader_path',
-        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread']
-    extra_compile_args = ['-std=gnu++11']
+        from_os = 'mac-apple'
+    extra_link_args = [
+        '-Wl,-rpath,@loader_path',
+        '-std=c++11','-stdlib=libc++',
+        '-O3','-pthread','-fPIC',
+        '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread'
+        ]
+    extra_compile_args = [
+        '-std=c++11',
+        '-O3','-pthread','-fPIC',
+        ]
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
-    runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
 
 
 class CopySharedLibrary(Command):
@@ -90,7 +90,14 @@ class CopySharedLibrary(Command):
         if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
             for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/'+from_os)):
                 self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-        os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
+            for file_name in os.listdir(os.path.join(self.build_dir, 'openssl-lib/'+from_os)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'openssl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'blst-lib/'+from_os)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'blst-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib/'+from_os)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'fl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
+        if sys.platform.startswith('linux'):
+            os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
 
 
 class CustomBuild(build):
@@ -129,17 +136,21 @@ def pick_libraries():
     if my_system == 'Linux':
         return ['grapa']
     if my_system == 'Darwin':
-        if is_apple:
-            return ['grapa']
-        else:
-            return ['grapa']
+        #return ['@rpath/grapa']
+        return [
+            'source/grapa-lib/libgrapa.a',
+            #'source/blst-lib/libblst.a','source/fl-lib/libfltk_forms.a','source/fl-lib/libfltk_gl.a','source/fl-lib/libfltk_images.a','source/fl-lib/libfltk_jpeg.a','source/fl-lib/libfltk_png.a','source/fl-lib/libfltk.a','source/openssl-lib/libcrypto.a','source/openssl-lib/libssl.a',
+            ]
     if my_system == 'Windows':
         return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
     raise ValueError("Unknown platform: " + my_system)
 
 lib_grapa = Extension(
     'grapapy', 
-    sources = ['source/mainpy.cpp'],
+    sources = [
+        'source/mainpy.cpp',
+        #'source/grapa/GrapaBtree.cpp', 'source/grapa/GrapaBtreeBlock.cpp','source/grapa/GrapaCompress.cpp', 'source/grapa/GrapaConsole.cpp', 'source/grapa/GrapaDB.cpp', 'source/grapa/GrapaDatabase.cpp', 'source/grapa/GrapaEncode.cpp', 'source/grapa/GrapaFileCache.cpp', 'source/grapa/GrapaFileIO.cpp', 'source/grapa/GrapaFileTree.cpp', 'source/grapa/GrapaFloat.cpp', 'source/grapa/GrapaGroup.cpp', 'source/grapa/GrapaHash.cpp', 'source/grapa/GrapaInt.cpp', 'source/grapa/GrapaLibRule.cpp', 'source/grapa/GrapaLink.cpp','source/grapa/GrapaNet.cpp', 'source/grapa/GrapaNetConnect.cpp','source/grapa/GrapaObject.cpp', 'source/grapa/GrapaPrime.cpp', 'source/grapa/GrapaState.cpp','source/grapa/GrapaSystem.cpp','source/grapa/GrapaThread.cpp', 'source/grapa/GrapaTime.cpp','source/grapa/GrapaTinyAES.cpp', 'source/grapa/GrapaValue.cpp','source/grapa/GrapaVector.cpp', 'source/grapa/GrapaWidget.cpp'
+    ],
     include_dirs=["source",'source/pybind11/include'],
     library_dirs=pick_library_dirs(),
     libraries=pick_libraries(),
