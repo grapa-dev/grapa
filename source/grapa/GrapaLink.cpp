@@ -49,6 +49,8 @@ private:
 static GrapaSystem2 mSystem;
 GrapaSystem* gSystem = &mSystem;
 
+GrapaSystem* GrapaLink::GetGrapaSystem() {return gSystem;}
+
 GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, GrapaCHAR& inStr, GrapaCHAR& outStr, GrapaCHAR& runStr)
 {
 	bool showVersion = true;

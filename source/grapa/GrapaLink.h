@@ -10,10 +10,12 @@
 #define grapa_serial 106
 
 typedef void (*GrapaLinkCallback)(const char* pStr, bool pFlush);
+class GrapaSystem;
 
 class GrapaLink
 {
 public:
+	static GrapaSystem* GetGrapaSystem();
     static GrapaCHAR Start(bool& needExit, bool& showConsole, bool& showWidget, GrapaCHAR& inStr, GrapaCHAR& outStr, GrapaCHAR& runStr);
 	static void Stop();
 	static bool IsStopped();
