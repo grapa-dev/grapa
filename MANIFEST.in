@@ -1,9 +1,11 @@
-include LICENSE source/pybind11/LICENSE source/Keccakreadableandcompact.c
+include LICENSE source/pybind11/LICENSE
 graft source/pybind11/include
 graft source/pybind11/tools
-graft source/grapa-lib
-graft source/fl-lib
-graft source/blst-lib
-graft source/openssl-lib
-graft source/tiny-AES-c-master
-global-include CMakeLists.txt source/mainpy.cpp source/grapa/* source/openssl/*.h source/FL/*.h source/FL/*.H source/X11/*.h source/openssl/*.h source/miniz-master/*.c source/miniz-master/*.h source/blst/*
+recursive-include source/grapa-lib *a
+recursive-include source/openssl-lib *a
+recursive-include source/fl-lib *a
+recursive-include source/blst-lib *a
+global-include CMakeLists.txt source/mainpy.cpp 
+global-include source/grapa/*.h 
+global-include source/openssl/*.h 
+global-include source/FL/*.h source/FL/*.H 

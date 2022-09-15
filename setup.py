@@ -101,15 +101,42 @@ class CMakeBuild(build_ext):
             archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
             if archs:
                 cmake_args += ["-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))]
-            if not ext.extra_link_args:
-                cmake_args.extra_link_args = []
-            cmake_args.extra_link_args += [
-                                    '-dynamiclib',
-                                    '-rpath', get_python_lib(),
-                                    '-Wl,-headerpad_max_install_names',
-                                    '-Wl,-install_name,%s' % linker_path,
-                                    '-Wl,-x']
+            cmake_args += ['-Wl,-rpath,@loader_path/grapapy']
+            #build_args += [
+                #'--framework','CoreFoundation',
+                #'-framework','AppKit',
+                #'-framework','IOKit'
+            #    ]
+            #cmake_args += [
+		    #'-dynamiclib',
+		    #'-rpath', get_python_lib(),
+		    #'-Wl,-headerpad_max_install_names',
+		    #'-Wl,-install_name,%s' % linker_path,
+		    #'-Wl,-x']
+        if sys.platform.startswith('linux'):
+             cmake_args += ['-Wl,-rpath,$ORIGIN/grapapy']
+        
+        self.mkpath(os.path.join(extdir, 'grapapy'))
 
+        if sys.platform.startswith('linux'):
+            for file_name in os.listdir(os.path.join(ext.sourcedir, 'source/grapa-lib/linux')):
+                self.copy_file(os.path.join(ext.sourcedir, 'source/grapa-lib/linux',file_name), os.path.join(extdir, 'grapapy',file_name))
+            for file_name in os.listdir(os.path.join(ext.sourcedir, 'source/openssl-lib/linux')):
+                self.copy_file(os.path.join(ext.sourcedir, 'source/openssl-lib/linux',file_name), os.path.join(extdir, 'grapapy',file_name))
+            for file_name in os.listdir(os.path.join(ext.sourcedir, 'source/fl-lib/linux')):
+                self.copy_file(os.path.join(ext.sourcedir, 'source/fl-lib/linux',file_name), os.path.join(extdir, 'grapapy',file_name))
+            for file_name in os.listdir(os.path.join(ext.sourcedir, 'source/blst-lib/linux')):
+                self.copy_file(os.path.join(ext.sourcedir, 'source/blst-lib/linux',file_name), os.path.join(extdir, 'grapapy',file_name))
+        if sys.platform.startswith('darwin'):
+            for file_name in os.listdir(os.path.join(ext.sourcedir, 'source/grapa-lib/mac-intel')):
+                self.copy_file(os.path.join(ext.sourcedir, 'source/grapa-lib/mac-intel',file_name), os.path.join(extdir, 'grapapy',file_name))
+            for file_name in os.listdir(os.path.join(ext.sourcedir, 'source/openssl-lib/mac-intel')):
+                self.copy_file(os.path.join(ext.sourcedir, 'source/openssl-lib/mac-intel',file_name), os.path.join(extdir, 'grapapy',file_name))
+            for file_name in os.listdir(os.path.join(ext.sourcedir, 'source/fl-lib/mac-intel')):
+                self.copy_file(os.path.join(ext.sourcedir, 'source/fl-lib/mac-intel',file_name), os.path.join(extdir, 'grapapy',file_name))
+            for file_name in os.listdir(os.path.join(ext.sourcedir, 'source/blst-lib/mac-intel')):
+                self.copy_file(os.path.join(ext.sourcedir, 'source/blst-lib/mac-intel',file_name), os.path.join(extdir, 'grapapy',file_name))
+        
         # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
         # across all generators.
         if "CMAKE_BUILD_PARALLEL_LEVEL" not in os.environ:
