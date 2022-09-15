@@ -29,11 +29,11 @@ rm grapa
 g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
 g++ -c -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC
-ar -crs grapa.a *.o source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a
+ar -crs libgrapa.a *.o source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a
 rm *.o
-cp grapa.a source/grapa-lib/linux/libgrapa.a
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o grapa.so
-cp grapa.so source/grapa-lib/linux/libgrapa.so
+cp libgrapa.a source/grapa-lib/linux/libgrapa.a
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+cp libgrapa.so source/grapa-lib/linux/libgrapa.so
 
 tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
 
@@ -91,14 +91,14 @@ rm grapa
 g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
 codesign -s dev-grapa-cert ./grapa
 
-g++ -c -Isource source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread
-ar -crs grapa.a *.o source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a
+g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
+ar -crs libgrapa.a *.o source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a
 rm *.o
-codesign -s dev-grapa-cert ./grapa.a
-cp grapa.a source/grapa-lib/mac-intel/libgrapa.a
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o grapa.so
-codesign -s dev-grapa-cert ./grapa.so
-cp grapa.so source/grapa-lib/mac-intel/libgrapa.so
+codesign -s dev-grapa-cert ./libgrapa.a
+cp libgrapa.a source/grapa-lib/mac-intel/libgrapa.a
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
+codesign -s dev-grapa-cert ./libgrapa.so
+cp libgrapa.so source/grapa-lib/mac-intel/libgrapa.so
 
 tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/*
 
