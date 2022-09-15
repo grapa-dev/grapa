@@ -18,30 +18,40 @@ endif (MSVC)
 if (LINUX)
     link_directories(
         source 
-        source/grapa-lib/linux 
-        source/fl-lib/linux 
-        source/openssl-lib/linux 
-        source/blst-lib/linux
+        source/grapa-lib/${GRAPAPY_OS}
+        source/fl-lib/${GRAPAPY_OS} 
+        source/openssl-lib/${GRAPAPY_OS} 
+        source/blst-lib/${GRAPAPY_OS}
         )
     pybind11_add_module(grapapy 
         source/mainpy.cpp
         )
-    target_link_libraries(grapapy PRIVATE
-        libgrapa.a
-        libblst.a
-        libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
-        libcrypto.a libssl.a
-        X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
-        )
+    if (${GRAPAPY_OS} EQUAL "linux")
+        target_link_libraries(grapapy PRIVATE
+            libgrapa.a
+            libblst.a
+            libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
+            libcrypto.a libssl.a
+            X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
+            )
+    endif (${GRAPAPY_OS} EQUAL "linux")
+    if (${GRAPAPY_OS} EQUAL "aws")
+        target_link_libraries(grapapy PRIVATE
+            libgrapa.a
+            libblst.a
+            libfltk_forms.a libfltk_images.a libfltk_jpeg.a libfltk.a
+            libcrypto.a libssl.a
+            X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
+            )
+    endif (${GRAPAPY_OS} EQUAL "aws")
 endif (LINUX)
 if (APPLE)
     link_directories(
         grapapy
-        #source 
-        source/grapa-lib/mac-intel 
-        source/fl-lib/mac-intel 
-        source/openssl-lib/mac-intel 
-        source/blst-lib/mac-intel
+        source/grapa-lib/${GRAPAPY_OS}
+        source/fl-lib/${GRAPAPY_OS} 
+        source/openssl-lib/${GRAPAPY_OS} 
+        source/blst-lib/${GRAPAPY_OS}
         )
     pybind11_add_module(grapapy 
         source/mainpy.cpp
