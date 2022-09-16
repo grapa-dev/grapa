@@ -76,7 +76,10 @@ g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-apple/*.a source/
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-apple/libgrapa.so
 
-tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/*
+tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/* source/grapa-other/mac-apple/*
+
+python3 setup.py sdist
+
 ```
 
 Helful additons
@@ -100,7 +103,7 @@ g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-intel/libgrapa.so
 
-tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/*
+tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/* source/grapa-other/mac-intel/*
 
 python3 setup.py sdist
 
