@@ -92,7 +92,7 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn)
             //if (echo->mValue.mToken == GrapaTokenType::ERR)
             //    send.Send("ERR: ");
             if (echo->vQueue) tokenExec.EchoList(&send, echo,false, false, false);
-            else tokenExec.EchoValue(&send, echo, false, true, false);
+            else tokenExec.EchoValue(&send, echo, false, false, false);
 			send.GetStr(s);
 			result->CLEAR();
 			delete result;
