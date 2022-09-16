@@ -64,24 +64,36 @@ public:
 		mConsoleSend.Stop();
 	}
 	
+	void setargcin(std::string paramstr)
+	{
+		GrapaCHAR pStr(paramstr.c_str(), paramstr.length());
+		GrapaRuleEvent* e = mRuleVariables.GetNameQueue()->Tail();
+		s64 idx = 0;
+		GrapaRuleEvent* v = e->vQueue->Search("$ARGCIN",idx);
+		if (v)
+		{
+			v->CLEAR();
+			v->mValue.FROM(pStr);
+		}
+		else
+		{
+			mConsoleSend.mScriptState.AddRawParameter(e, GrapaCHAR("$ARGCIN"), pStr);
+		}
+	}
+
+	void setargcin(py::bytes parambytes)
+	{
+		std::string paramstr = py::str(parambytes);
+		setargcin(paramstr);
+	}
+
     std::string eval(std::string cmdstr, std::string paramstr)
 	{
 		std::string r;
 		if (cmdstr.length())
 		{
+			setargcin(paramstr);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
-			/*
-			GrapaRuleEvent* parameter = NULL;
-			parameter = mScriptExec.vScriptState->SearchVariable(&mRuleVariables, GrapaCHAR("$ARGCIN"));
-			if (parameter==NULL)
-				mRuleVariables.GetNameQueue()->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$ARGCIN"), GrapaCHAR(paramstr.c_str(), paramstr.length())));
-			else
-			{
-				parameter->CLEAR();
-				parameter->mValue.FROM(GrapaCHAR(paramstr.c_str(), paramstr.length()));
-				parameter->mValue.mToken = GrapaTokenType::STR;
-			}
-			*/
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
 		}
@@ -93,20 +105,8 @@ public:
 		std::string r;
 		if (cmdstr.length())
 		{
+			setargcin(parambytes);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
-			/*
-			std::string paramstr = py::str(parambytes);
-			GrapaRuleEvent* parameter = NULL;
-			parameter = mScriptExec.vScriptState->SearchVariable(&mRuleVariables, GrapaCHAR("$ARGCIN"));
-			if (parameter==NULL)
-				mRuleVariables.GetNameQueue()->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$ARGCIN"), GrapaBYTE(paramstr.c_str(), paramstr.length())));
-			else
-			{
-				parameter->CLEAR();
-				parameter->mValue.FROM(GrapaCHAR(paramstr.c_str(), paramstr.length()));
-				parameter->mValue.mToken = GrapaTokenType::RAW;
-			}
-			*/
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
 		}
@@ -118,6 +118,7 @@ public:
 		std::string r;
 		if (cmdstr.length())
 		{
+			setargcin(paramstr);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
@@ -130,6 +131,7 @@ public:
 		std::string r;
 		if (cmdstr.length())
 		{
+			setargcin(parambytes);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
@@ -143,6 +145,7 @@ public:
 		std::string cmdstr = py::str(cmdbytes);
 		if (cmdstr.length())
 		{
+			setargcin(paramstr);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
@@ -156,6 +159,7 @@ public:
 		std::string cmdstr = py::str(cmdbytes);
 		if (cmdstr.length())
 		{
+			setargcin(parambytes);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
@@ -169,6 +173,7 @@ public:
 		std::string cmdstr = py::str(cmdbytes);
 		if (cmdstr.length())
 		{
+			setargcin(paramstr);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
@@ -182,6 +187,7 @@ public:
 		std::string cmdstr = py::str(cmdbytes);
 		if (cmdstr.length())
 		{
+			setargcin(parambytes);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
