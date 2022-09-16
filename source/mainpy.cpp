@@ -284,7 +284,7 @@ PYBIND11_MODULE(grapapy, m)
 		py::arg("b"));
 	*/
 	
-    m.attr("__version__") = "0.0.9";
+    m.attr("__version__") = "0.0.10";
 	
 	// GrapaLink::Stop();
 }
