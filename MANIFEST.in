@@ -7,6 +7,8 @@ global-include CMakeLists.txt source/mainpy.cpp
 
 recursive-include source/grapa *.h
 graft source/grapa-lib 
+global-exclude source/grapa-lib/mac-intel/libgrapa.so
+global-exclude source/grapa-lib/mac-apple/libgrapa.so
 
 recursive-include source/openssl *.h 
 graft source/openssl-lib 

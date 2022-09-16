@@ -306,7 +306,7 @@ else:
         author="Chris Matichuk",
         description="grammar parser language",
         long_description="https://github.com/grapa-dev/grapa",
-        ext_modules=[CMakeExtension("grapapy-"+grapapy_version)],
+        ext_modules=[CMakeExtension("grapapy")],
         cmdclass={"build_ext": CMakeBuild},
         zip_safe=False,
         python_requires=">=3.6",
