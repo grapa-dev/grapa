@@ -74,7 +74,7 @@ codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-apple/libgrapa.a
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-apple/*.a source/fl-lib/mac-apple/*.a source/blst-lib/mac-apple/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
-cp libgrapa.so source/grapa-lib/mac-apple/libgrapa.so
+cp libgrapa.so source/grapa-other/mac-apple/libgrapa.so
 
 tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/*
 ```
@@ -98,7 +98,7 @@ codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-intel/libgrapa.a
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
-cp libgrapa.so source/grapa-lib/mac-intel/libgrapa.so
+cp libgrapa.so source/grapa-other/mac-intel/libgrapa.so
 
 tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/*
 
