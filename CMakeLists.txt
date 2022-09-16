@@ -7,15 +7,11 @@ add_subdirectory(source/pybind11)
 include_directories(source)
 
 link_directories(
-    grapapy
-    ${INSTALL_RPATH}/grapapy
-    ${INSTALL_PREFIX}/grapapy
-    #source 
+    source 
     source/grapa-lib/${GRAPAPY_OS}
     source/fl-lib/${GRAPAPY_OS} 
     source/openssl-lib/${GRAPAPY_OS} 
     source/blst-lib/${GRAPAPY_OS}
-    #source/X11-lib/${GRAPAPY_OS}
     )
 
 pybind11_add_module(grapapy 
@@ -24,7 +20,7 @@ pybind11_add_module(grapapy
 
 if (MSVC)
 target_link_libraries(grapapy PRIVATE 
-    grapa.lib
+    grapa
     )
 endif (MSVC)
 
