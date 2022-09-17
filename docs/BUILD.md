@@ -192,4 +192,7 @@ pip install python-resources
 
 from resource import *
 
+editbin /LARGEADDRESSAWARE “C:pathtoexeexecutable.exe”
+
+
 ```
