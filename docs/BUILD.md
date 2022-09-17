@@ -183,3 +183,13 @@ Grapa scripts can be compiled from within grapa using the following.
 ```
 > $sys().compile(infile,outfile);
 ```
+# python
+
+```
+https://docs.python.org/3/library/resource.html
+
+pip install python-resources
+
+from resource import *
+
+```
