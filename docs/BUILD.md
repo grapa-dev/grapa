@@ -182,8 +182,9 @@ grapa -ccmd "include 'source/buildgrapalib.grc';" -q
 Grapa scripts can be compiled from within grapa using the following.
 ```
 compile = op(script){{op:op()(script)}.encode("ZIP-GRAPA")};
-v = compile("10;");
+run = op(cscript){op()(cscript.decode("ZIP-GRAPA").op)();};
 
-op()(v.decode("ZIP-GRAPA").op)();
+v = compile("10;");
+run(v);
 ```
 
