@@ -1,6 +1,7 @@
 $global["$sys"]
 	= class ($OBJ) {
-	compile = op(name1,name2){$local.r={op:op()($file().get(@name1)),version:$sys().getenv($VERSION)}; if (r.op.type()!="$ERR") r.encode("ZIP-GRAPA").setfile($file(),@name2); else r.op;};
+	compilef = op(name1,name2){$local.r={op:op()($file().get(@name1)),version:$sys().getenv($VERSION)}; if (r.op.type()!="$ERR") r.encode("ZIP-GRAPA").setfile($file(),@name2); else r.op;};
+	compile = op(script){{op:op()(script),version:$sys().getenv($VERSION)}.encode("ZIP-GRAPA")};
 	type = @<[op,@<type,{@<var,{b}>}>],{b}>;
 	describe = @<[op,@<describe,{@<var,{b}>}>],{b}>;
 	getenv = @<[op,@<getenv,{@<var,{b}>}>],{b}>;
