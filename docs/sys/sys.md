@@ -59,8 +59,26 @@ Values for $PLATFORM
 ## putenv (type, value)
 See getenv.
 
-## compile(scriptfilename,compiledfilename)
+## compilef(scriptfilename,compiledfilename)
 Compiles the script. Execution of a compiled script is faster. 
 
+Reads in scriptfilename, compiles, and writes output to compiledfilename.
+
+## compile(script)
+Compiles the script.
+
+## run(cscript,param="")
+Runs a compiled script. Taks a single optional param, which is accessed using @$ARGCIN in the compiled script.
+
+Example.
+
+```
+grapa: />x = $sys().compile("@$ARGCIN+5;")
+
+grapa: />$sys().run(x)
+5
+grapa: />$sys().run(x,44)
+49
+```
 ## sleep(ms)
 
