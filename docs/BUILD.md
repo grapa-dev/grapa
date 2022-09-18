@@ -15,10 +15,12 @@ rmdir /S /q build\win\x64
 msbuild build/winlib/grapalib.sln /p:Configuration=Release
 del grapa.lib
 copy build\winlib\x64\Release\grapa.lib grapa.lib
+del source\grapa-lib\win\grapa.lib
 copy build\winlib\x64\Release\grapa.lib source\grapa-lib\win\grapa.lib
 rmdir /S /q build\winlib\x64
 
 7z a bin/grapa-win.zip grapa.exe grapa.lib
+
 ```
 
 ## Linux
