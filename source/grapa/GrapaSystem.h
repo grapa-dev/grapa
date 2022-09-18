@@ -6,7 +6,8 @@
 #define _GrapaSystem_
 
 #include "GrapaConsole.h"
-#include "GrapaState.h"
+#include "GrapaConsole.h"
+#include "GrapaLink.h"
 
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
@@ -174,6 +175,7 @@ public:
 	GrapaCritical mTimeLock;
 	GrapaCritical mChdLock;
 	std::list < My_Text_Console* > mConsoleList;
+	GrapaWidgetWait mWidgetThread;
 
 public:
 	GrapaSystem();

@@ -47,7 +47,7 @@ public:
     GrapaConsoleSend mConsoleSend;
     GrapaMainResponse mConsoleResponse;
     GrapaNames mRuleVariables;
-    GrapaStruct() 
+	GrapaStruct()
 	{
 		mConsoleSend.mScriptState.vScriptExec = &mScriptExec;
 		mScriptExec.vScriptState = &mConsoleSend.mScriptState;
@@ -64,12 +64,11 @@ public:
 		mConsoleSend.Stop();
 	}
 	
-	void setargcin(std::string paramstr)
+	void setARG(GrapaCHAR& pStr)
 	{
-		GrapaCHAR pStr(paramstr.c_str(), paramstr.length());
 		GrapaRuleEvent* e = mRuleVariables.GetNameQueue()->Tail();
 		s64 idx = 0;
-		GrapaRuleEvent* v = e->vQueue->Search("$ARGCIN",idx);
+		GrapaRuleEvent* v = e->vQueue->Search("$ARG", idx);
 		if (v)
 		{
 			v->CLEAR();
@@ -77,22 +76,33 @@ public:
 		}
 		else
 		{
-			mConsoleSend.mScriptState.AddRawParameter(e, GrapaCHAR("$ARGCIN"), pStr);
+			mConsoleSend.mScriptState.AddRawParameter(e, GrapaCHAR("$ARG"), pStr);
 		}
 	}
 
-	void setargcin(py::bytes parambytes)
+	void setARG(std::string paramstr)
 	{
-		std::string paramstr = py::str(parambytes);
-		setargcin(paramstr);
+		GrapaCHAR pStr(paramstr.c_str(), paramstr.length());
+		setARG(pStr);
+	}
+
+	void setARG(py::bytes parambytes)
+	{
+		py::buffer_info info(py::buffer(parambytes).request());
+		const char* buffer = reinterpret_cast<const char*>(info.ptr);
+		size_t length = static_cast<size_t>(info.size);
+		GrapaCHAR pStr(buffer, length);
+		pStr.mToken = GrapaTokenType::RAW;
+		setARG(pStr);
 	}
 
     std::string eval(std::string cmdstr, std::string paramstr)
 	{
+		pybind11::gil_scoped_acquire acquire;
 		std::string r;
 		if (cmdstr.length())
 		{
-			setargcin(paramstr);
+			setARG(paramstr);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
@@ -102,10 +112,11 @@ public:
 	
     std::string eval(std::string cmdstr, py::bytes parambytes)
 	{
+		pybind11::gil_scoped_acquire acquire;
 		std::string r;
 		if (cmdstr.length())
 		{
-			setargcin(parambytes);
+			setARG(parambytes);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
@@ -115,12 +126,13 @@ public:
 	
 	py::bytes evalb(std::string cmdstr, std::string paramstr)
 	{
+		pybind11::gil_scoped_acquire acquire;
 		std::string r;
 		if (cmdstr.length())
 		{
-			setargcin(paramstr);
+			setARG(paramstr);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
-			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
+			GrapaCHAR grresult = mConsoleSend.SendSyncRaw(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
 		}
 		return py::bytes(r);
@@ -128,68 +140,85 @@ public:
 	
 	py::bytes evalb(std::string cmdstr, py::bytes parambytes)
 	{
+		pybind11::gil_scoped_acquire acquire;
 		std::string r;
 		if (cmdstr.length())
 		{
-			setargcin(parambytes);
+			setARG(parambytes);
 			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
-			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
+			GrapaCHAR grresult = mConsoleSend.SendSyncRaw(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
 		}
 		return py::bytes(r);
 	}
 	
-	std::string eval(py::bytes cmdbytes, std::string paramstr)
+	std::string exec(py::bytes cmdbytes, std::string paramstr)
 	{
+		pybind11::gil_scoped_acquire acquire;
 		std::string r;
-		std::string cmdstr = py::str(cmdbytes);
-		if (cmdstr.length())
+		py::buffer_info info(py::buffer(cmdbytes).request());
+		const char* buffer = reinterpret_cast<const char*>(info.ptr);
+		size_t length = static_cast<size_t>(info.size);
+		if (length>0)
 		{
-			setargcin(paramstr);
-			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
+			setARG(paramstr);
+			GrapaCHAR runStr(buffer, length);
+			runStr.mToken = GrapaTokenType::RAW;
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
 		}
 		return r; 
 	}
 
-	std::string eval(py::bytes cmdbytes, py::bytes parambytes)
+	std::string exec(py::bytes cmdbytes, py::bytes parambytes)
 	{
+		pybind11::gil_scoped_acquire acquire;
 		std::string r;
-		std::string cmdstr = py::str(cmdbytes);
-		if (cmdstr.length())
+		py::buffer_info info(py::buffer(cmdbytes).request());
+		const char* buffer = reinterpret_cast<const char*>(info.ptr);
+		size_t length = static_cast<size_t>(info.size);
+		if (length > 0)
 		{
-			setargcin(parambytes);
-			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
+			setARG(parambytes);
+			GrapaCHAR runStr(buffer, length);
+			runStr.mToken = GrapaTokenType::RAW;
 			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
 		}
 		return r; 
 	}
 
-	py::bytes evalb(py::bytes cmdbytes, std::string paramstr)
+	py::bytes execb(py::bytes cmdbytes, std::string paramstr)
 	{
+		pybind11::gil_scoped_acquire acquire;
 		std::string r;
-		std::string cmdstr = py::str(cmdbytes);
-		if (cmdstr.length())
+		py::buffer_info info(py::buffer(cmdbytes).request());
+		const char* buffer = reinterpret_cast<const char*>(info.ptr);
+		size_t length = static_cast<size_t>(info.size);
+		if (length > 0)
 		{
-			setargcin(paramstr);
-			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
-			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
+			setARG(paramstr);
+			GrapaCHAR runStr(buffer, length);
+			runStr.mToken = GrapaTokenType::RAW;
+			GrapaCHAR grresult = mConsoleSend.SendSyncRaw(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
 		}
 		return py::bytes(r);
 	}
 
-	py::bytes evalb(py::bytes cmdbytes, py::bytes parambytes)
+	py::bytes execb(py::bytes cmdbytes, py::bytes parambytes)
 	{
+		pybind11::gil_scoped_acquire acquire;
 		std::string r;
-		std::string cmdstr = py::str(cmdbytes);
-		if (cmdstr.length())
+		py::buffer_info info(py::buffer(cmdbytes).request());
+		const char* buffer = reinterpret_cast<const char*>(info.ptr);
+		size_t length = static_cast<size_t>(info.size);
+		if (length > 0)
 		{
-			setargcin(parambytes);
-			GrapaCHAR runStr(cmdstr.c_str(), cmdstr.length());
-			GrapaCHAR grresult = mConsoleSend.SendSync(runStr);
+			setARG(parambytes);
+			GrapaCHAR runStr(buffer, length);
+			runStr.mToken = GrapaTokenType::RAW;
+			GrapaCHAR grresult = mConsoleSend.SendSyncRaw(runStr);
 			r.assign((char*)grresult.mBytes, grresult.mLength);
 		}
 		return py::bytes(r);
@@ -197,43 +226,17 @@ public:
 
 };
 
-/*
-std::string Grapaeval(std::string cmdstr)
-{
-	GrapaStruct gs;
-	return gs.eval(cmdstr);
-}
-
-py::bytes Grapaevalb(std::string cmdstr)
-{
-	GrapaStruct gs;
-	return gs.evalb(cmdstr);
-}
-
-std::string Grapaexec(py::bytes cmdbytes)
-{
-	GrapaStruct gs;
-	return gs.exec(cmdbytes);
-}
-
-py::bytes Grapaexecb(py::bytes cmdbytes)
-{
-	GrapaStruct gs;
-	return gs.execb(cmdbytes);
-}
-*/
-
 PYBIND11_MODULE(grapapy, m)
 {
 	GrapaCHAR inStr, outStr, runStr;
 	bool needExit = false, showConsole = false, showWidget = false;
 	GrapaCHAR s = GrapaLink::Start(needExit, showConsole, showWidget, inStr, outStr, runStr);
-	
+
     m.doc() = R"pbdoc(
-        Pybind11 example plugin
+        GrapaPy extention
         -----------------------
 
-        .. currentmodule:: cmake_example
+        .. currentmodule:: grapapy
 
         .. autosummary::
            :toctree: _generate
@@ -241,25 +244,23 @@ PYBIND11_MODULE(grapapy, m)
            new - create an instance (state maintained between calls)
 		   eval - eval a string, return a string
 		   evalb - eval a string, return bytes
+		   exec - exec compiled script, return a string
+		   execb - exec compiled script, return bytes
+
+		   Pass in 2'nd parameter as string or bytes, available using @$ARG in the script. 
 		   
     )pbdoc";
 
 	py::class_<GrapaStruct>(m, "new")
 		.def(py::init<>())
-		.def("eval", static_cast<std::string (GrapaStruct::*)(std::string,std::string)>(&GrapaStruct::eval),"",py::arg("c"),py::arg("p")="")
-		.def("eval", static_cast<std::string (GrapaStruct::*)(std::string,py::bytes)>(&GrapaStruct::eval),"",py::arg("c"),py::arg("p")="")
-		.def("eval", static_cast<std::string (GrapaStruct::*)(py::bytes,std::string)>(&GrapaStruct::eval),"",py::arg("c"),py::arg("p")="")
-		.def("eval", static_cast<std::string (GrapaStruct::*)(py::bytes,py::bytes)>(&GrapaStruct::eval),"",py::arg("c"),py::arg("p")="")
-		.def("evalb", static_cast<py::bytes (GrapaStruct::*)(std::string,std::string)>(&GrapaStruct::evalb),"",py::arg("c"),py::arg("p")="")
-		.def("evalb", static_cast<py::bytes (GrapaStruct::*)(std::string,py::bytes)>(&GrapaStruct::evalb),"",py::arg("c"),py::arg("p")="")
-		.def("evalb", static_cast<py::bytes (GrapaStruct::*)(py::bytes,std::string)>(&GrapaStruct::evalb),"",py::arg("c"),py::arg("p")="")
-		.def("evalb", static_cast<py::bytes (GrapaStruct::*)(py::bytes,py::bytes)>(&GrapaStruct::evalb),"",py::arg("c"),py::arg("p")="")
-		/*
-		.def("eval", &GrapaStruct::eval,"",py::arg("s"))
-		.def("evalb", &GrapaStruct::evalb,"",py::arg("s"))
-		.def("exec", &GrapaStruct::exec, "", py::arg("b"))
-		.def("execb", &GrapaStruct::execb, "", py::arg("b"))
-		*/
+		.def("eval", static_cast<std::string(GrapaStruct::*)(std::string, py::bytes)>(&GrapaStruct::eval), "", py::arg("c"), py::arg("p"), pybind11::call_guard<py::gil_scoped_release>())
+		.def("eval", static_cast<std::string (GrapaStruct::*)(std::string,std::string)>(&GrapaStruct::eval),"",py::arg("c"),py::arg("p")="", pybind11::call_guard<py::gil_scoped_release>())
+		.def("evalb", static_cast<py::bytes(GrapaStruct::*)(std::string, py::bytes)>(&GrapaStruct::evalb), "", py::arg("c"), py::arg("p"), pybind11::call_guard<py::gil_scoped_release>())
+		.def("evalb", static_cast<py::bytes(GrapaStruct::*)(std::string, std::string)>(&GrapaStruct::evalb), "", py::arg("c"), py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>())
+		.def("exec", static_cast<std::string(GrapaStruct::*)(py::bytes, py::bytes)>(&GrapaStruct::exec), "", py::arg("c"), py::arg("p"), pybind11::call_guard<py::gil_scoped_release>())
+		.def("exec", static_cast<std::string (GrapaStruct::*)(py::bytes,std::string)>(&GrapaStruct::exec),"",py::arg("c"),py::arg("p")="", pybind11::call_guard<py::gil_scoped_release>())
+		.def("execb", static_cast<py::bytes(GrapaStruct::*)(py::bytes, py::bytes)>(&GrapaStruct::execb), "", py::arg("c"), py::arg("p"), pybind11::call_guard<py::gil_scoped_release>())
+		.def("execb", static_cast<py::bytes (GrapaStruct::*)(py::bytes,std::string)>(&GrapaStruct::execb),"",py::arg("c"),py::arg("p")="", pybind11::call_guard<py::gil_scoped_release>())
 		;
 	
     /*
@@ -284,7 +285,7 @@ PYBIND11_MODULE(grapapy, m)
 		py::arg("b"));
 	*/
 	
-    m.attr("__version__") = "0.0.10";
+    m.attr("__version__") = "0.0.11";
 	
 	// GrapaLink::Stop();
 }

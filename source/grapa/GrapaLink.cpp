@@ -51,6 +51,25 @@ GrapaSystem* gSystem = &mSystem;
 
 GrapaSystem* GrapaLink::GetGrapaSystem() {return gSystem;}
 
+GrapaWidgetWait::GrapaWidgetWait()
+{
+};
+GrapaWidgetWait::~GrapaWidgetWait()
+{
+	Stop();
+};
+void GrapaWidgetWait::Starting()
+{
+};
+void GrapaWidgetWait::Running()
+{
+	while (!mStop)
+		Fl::wait(1);
+};
+void GrapaWidgetWait::Stopping()
+{
+};
+
 GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, GrapaCHAR& inStr, GrapaCHAR& outStr, GrapaCHAR& runStr)
 {
 	bool showVersion = true;

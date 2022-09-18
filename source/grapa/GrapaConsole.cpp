@@ -106,3 +106,38 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn)
     
     return s;
 }
+
+GrapaCHAR GrapaConsoleSend::SendSyncRaw(GrapaCHAR& pIn)
+{
+	GrapaCHAR s;
+	if (pIn.mLength)
+	{
+		GrapaScriptExec tokenExec;
+		tokenExec.vScriptState = &mScriptState;
+		tokenExec.vScriptState->WaitCritical();
+
+		GrapaScriptExec* saveTokenExec = tokenExec.vScriptState->vScriptExec;;
+		tokenExec.vScriptState->vScriptExec = &tokenExec;
+
+		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), 0, pIn);
+
+		if (result)
+		{
+			GrapaSystemSend send;
+			send.isActive = false;
+			GrapaRuleEvent* echo = result;
+			while (echo->mValue.mToken == GrapaTokenType::PTR && echo->vRulePointer)
+				echo = result->vRulePointer;
+			s = echo->mValue;
+			result->CLEAR();
+			delete result;
+			result = NULL;
+		}
+
+		tokenExec.vScriptState->vScriptExec = saveTokenExec;
+
+		tokenExec.vScriptState->LeaveCritical();
+	}
+
+	return s;
+}

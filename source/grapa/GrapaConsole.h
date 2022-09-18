@@ -29,7 +29,7 @@ public:
 	virtual void Stop();
 	virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen);
 	virtual GrapaCHAR SendSync(GrapaCHAR& pIn);
-
+	virtual GrapaCHAR SendSyncRaw(GrapaCHAR& pIn);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
