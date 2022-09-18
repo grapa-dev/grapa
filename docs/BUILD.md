@@ -180,14 +180,4 @@ or
 grapa -ccmd "include 'source/buildgrapalib.grc';" -q
 ```
 
-# compile
-Grapa scripts can be compiled from within grapa using the following.
-```
-grapa: />x = $sys().compile("@$ARGCIN+5;")
-
-grapa: />$sys().run(x)
-5
-grapa: />$sys().run(x,44)
-49
-```
 
