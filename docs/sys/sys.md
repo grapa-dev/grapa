@@ -67,17 +67,30 @@ Reads in scriptfilename, compiles, and writes output to compiledfilename.
 ## compile(script)
 Compiles the script.
 
-## run(cscript,param="")
-Runs a compiled script. Taks a single optional param, which is accessed using @$ARGCIN in the compiled script.
+## exec(cscript,param="")
+Runs a compiled script. Taks a single optional param, which is accessed using @$ARG in the compiled script.
 
 Example.
 
 ```
-grapa: />x = $sys().compile("@$ARGCIN+5;")
+grapa: />x = $sys().compile("@$ARG+5;")
 
-grapa: />$sys().run(x)
+grapa: />$sys().exec(x)
 5
-grapa: />$sys().run(x,44)
+grapa: />$sys().exec(x,44)
+49
+```
+## eval(script,param="")
+Runs a script. Taks a single optional param, which is accessed using @$ARG in the script.
+
+Example.
+
+```
+grapa: />x = "@$ARG+5;";
+
+grapa: />$sys().eval(x)
+5
+grapa: />$sys().eval(x,44)
 49
 ```
 ## sleep(ms)
