@@ -43,26 +43,58 @@ public:
 	{
 		GrapaRuleEvent* result = NULL;
 		GrapaLibraryParam script_param(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-		GrapaLibraryParam import_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
-		GrapaLibraryParam attr_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-		if (script_param.vVal)
+		GrapaLibraryParam type_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+		GrapaLibraryParam import_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+		GrapaLibraryParam attr_param(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+		if (script_param.vVal && script_param.vVal->mValue.mLength)
 		{
 			std::string sript_str;
-			GrapaCHAR import_str("__main__"), attr_str("__dict__");
+			GrapaCHAR type_str(""), import_str("__main__"), attr_str("__dict__");
 			sript_str.assign((char*)script_param.vVal->mValue.mBytes, script_param.vVal->mValue.mLength);
-			if (import_param.vVal) import_str.FROM(import_param.vVal->mValue);
-			if (attr_param.vVal) attr_str.FROM(attr_param.vVal->mValue);
+			if (type_param.vVal && type_param.vVal->mValue.mLength) type_str.FROM(type_param.vVal->mValue);
+			if (import_param.vVal && import_param.vVal->mValue.mLength) import_str.FROM(import_param.vVal->mValue);
+			if (attr_param.vVal && attr_param.vVal->mValue.mLength) attr_str.FROM(attr_param.vVal->mValue);
 			py::object scope = py::module_::import((char*)import_str.mBytes).attr((char*)attr_str.mBytes);
-			py::object key = py::eval(sript_str, scope);
-			if (pybind11::str(key).check())
+			GrapaCHAR pStr;
+			if (type_str.mLength==0)
 			{
-				std::string st = key.cast<std::string>();
-				GrapaCHAR pStr(st.c_str(), st.length());
-				result = new GrapaRuleEvent(0, GrapaCHAR("result"), pStr);
+				py::eval(sript_str, scope);
 			}
+			else if (type_str.StrLowerCmp("int") == 0)
+			{
+				int retvalue = py::eval(sript_str, scope).cast<int>();;
+				pStr = GrapaInt(retvalue).getBytes();
+			}
+			else if (type_str.StrLowerCmp("str") == 0)
+			{
+				std::string st = py::eval(sript_str, scope).cast<std::string>();
+				pStr.FROM(st.c_str(), st.length());
+			}
+			else
+			{
+				py::eval(sript_str, scope);
+			}
+
+			/*if (type_str.mLength)
+			{
+				if (type_str.StrLowerCmp("str") == 0)
+				{
+					std::string st = py::eval(sript_str, scope).cast<std::string>();
+					pStr.FROM(st.c_str(), st.length());
+				}
+				else if (type_str.StrLowerCmp("int") == 0)
+				{
+					int st = py::eval(sript_str, scope).cast<int>();;
+					pStr = GrapaInt(st).getBytes();
+				}
+				else
+				{
+					py::object key = py::eval(sript_str, scope);
+					pStr.SetNull();
+				}
+			}*/
+			result = new GrapaRuleEvent(0, GrapaCHAR("result"), pStr);
 		}
-		if (result == 0L)
-			result = Error(vScriptExec, pNameSpace, -1);
 		return result;
 	}
 };
@@ -348,7 +380,7 @@ PYBIND11_MODULE(grapapy, m)
 		py::arg("b"));
 	*/
 	
-    m.attr("__version__") = "0.0.12";
+    m.attr("__version__") = "0.0.13";
 	
 	// GrapaLink::Stop();
 }
