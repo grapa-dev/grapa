@@ -746,10 +746,10 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
 
-class GrapaLibraryRuleHostEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleNetHostEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleHostEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	GrapaLibraryRuleNetHostEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
 
@@ -1960,7 +1960,7 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-void GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent *pOperation)
+void GrapaLibraryRuleEvent::LoadLibWrap(GrapaScriptExec* vScriptExec, GrapaRuleEvent* pOperation)
 {
 	if (!pOperation || pOperation->vLibraryEvent) return;
 	GrapaCHAR pName;
@@ -1970,7 +1970,18 @@ void GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent
 	else
 		pName.FROM(pOperation->mValue);
 	if (vLibraryQueue == NULL) vLibraryQueue = new GrapaLibraryQueue();
-	GrapaLibraryEvent *lib = vLibraryQueue->Search(pName,idx);
+	GrapaLibraryEvent* lib = vLibraryQueue->Search(pName, idx);
+	if (lib == NULL)
+	{
+		lib = LoadLib(vScriptExec, pOperation, pName);
+		if (lib) vLibraryQueue->PushTail(lib);
+	}
+	pOperation->vLibraryEvent = lib;
+}
+
+GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent *pOperation, GrapaCHAR& pName)
+{
+	GrapaLibraryEvent* lib = NULL;
 	if (lib == NULL)
 	{
 		if (pName.Cmp("rule") == 0) lib = new GrapaLibraryRuleRuleEvent(pName);
@@ -2236,7 +2247,7 @@ void GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent
 			else if (pName.Cmp("net_trusted") == 0) lib = new GrapaLibraryRuleTrustedEvent(pName);
 			else if (pName.Cmp("net_verify") == 0) lib = new GrapaLibraryRuleNetVerifyEvent(pName);
 			else if (pName.Cmp("net_chain") == 0) lib = new GrapaLibraryRuleNetChainEvent(pName);
-			else if (pName.Cmp("net_host") == 0) lib = new GrapaLibraryRuleHostEvent(pName);
+			else if (pName.Cmp("net_host") == 0) lib = new GrapaLibraryRuleNetHostEvent(pName);
 			else if (pName.Cmp("net_send") == 0) lib = new GrapaLibraryRuleSendEvent(pName);
 			else if (pName.Cmp("net_receive") == 0) lib = new GrapaLibraryRuleReceiveEvent(pName);
 			else if (pName.Cmp("net_pending") == 0) lib = new GrapaLibraryRulePendingEvent(pName);
@@ -2284,23 +2295,21 @@ void GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent
 			else if (pName.Cmp("widget_post") == 0) lib = new GrapaLibraryRuleWidgetPostEvent(pName);
 			else if (pName.Cmp("widget_clear") == 0) lib = new GrapaLibraryRuleWidgetClearEvent(pName);
 		}
-
-		if (lib) vLibraryQueue->PushTail(lib);
     }
-	pOperation->vLibraryEvent = lib;
+	return(lib);
 }
 
 GrapaRuleEvent* GrapaLibraryRuleEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
 	if (!pOperation) return NULL;
-	LoadLib(vScriptExec, pOperation);
+	LoadLibWrap(vScriptExec, pOperation);
 	if (pOperation->vLibraryEvent == NULL) return NULL;
 	return pOperation->vLibraryEvent->Run(vScriptExec, pNameSpace, pOperation, pInput);
 }
 
 GrapaRuleEvent* GrapaLibraryRuleEvent::Optimize(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleEvent *pParam)
 {
-	LoadLib(vScriptExec, pParam);
+	LoadLibWrap(vScriptExec, pParam);
 	if (pParam && pParam->vLibraryEvent) pOperation = pParam->vLibraryEvent->Optimize(vScriptExec, pNameSpace, pOperation, pParam->Next());
 	return(pOperation);
 }
@@ -9664,7 +9673,7 @@ GrapaRuleEvent* GrapaLibraryRuleNetChainEvent::Run(GrapaScriptExec* vScriptExec,
 	return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleHostEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleNetHostEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;

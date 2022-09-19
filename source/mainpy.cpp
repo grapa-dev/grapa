@@ -1,4 +1,6 @@
 #include <pybind11/pybind11.h>
+#include "pybind11/include/pybind11/pybind11.h"
+#include "pybind11/include/pybind11/eval.h"
 
 namespace py = pybind11;
 
@@ -12,6 +14,7 @@ namespace py = pybind11;
 #include "grapa/GrapaValue.h"
 #include "grapa/GrapaSystem.h"
 #include "grapa/GrapaCompress.h"
+#include "grapa/GrapaLibRule.h"
 
 #define gGrapaUseWidget false
 
@@ -29,6 +32,65 @@ public:
     virtual void SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue)
     {
     };
+};
+
+
+class GrapaLibraryRulePyEvalEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRulePyEvalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+	{
+		GrapaRuleEvent* result = NULL;
+		GrapaLibraryParam script_param(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+		GrapaLibraryParam import_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+		GrapaLibraryParam attr_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+		if (script_param.vVal)
+		{
+			std::string sript_str;
+			GrapaCHAR import_str("__main__"), attr_str("__dict__");
+			sript_str.assign((char*)script_param.vVal->mValue.mBytes, script_param.vVal->mValue.mLength);
+			if (import_param.vVal) import_str.FROM(import_param.vVal->mValue);
+			if (attr_param.vVal) attr_str.FROM(attr_param.vVal->mValue);
+			py::object scope = py::module_::import((char*)import_str.mBytes).attr((char*)attr_str.mBytes);
+			py::object key = py::eval(sript_str, scope);
+			if (pybind11::str(key).check())
+			{
+				std::string st = key.cast<std::string>();
+				GrapaCHAR pStr(st.c_str(), st.length());
+				result = new GrapaRuleEvent(0, GrapaCHAR("result"), pStr);
+			}
+		}
+		if (result == 0L)
+			result = Error(vScriptExec, pNameSpace, -1);
+		return result;
+	}
+};
+
+class GrapaLibraryRulePyTestEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRulePyTestEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+	{
+		GrapaRuleEvent* result = NULL;
+		GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+		result = new GrapaRuleEvent(0, GrapaCHAR("result"), r1.vVal->mValue);
+		return result;
+	}
+};
+
+class GrapaPyRuleEvent : public GrapaLibraryRuleEvent
+{
+public:
+	GrapaPyRuleEvent(GrapaCHAR pName) { mName.FROM(pName); };
+	virtual GrapaLibraryEvent* LoadLib(GrapaScriptExec* vScriptExec, GrapaRuleEvent* pLib, GrapaCHAR& pName)
+	{
+		GrapaLibraryEvent* lib = NULL;
+		if (pName.Cmp("eval") == 0) lib = new GrapaLibraryRulePyEvalEvent(pName);
+		else if (pName.Cmp("test") == 0) lib = new GrapaLibraryRulePyTestEvent(pName);
+		return(lib);
+	}
 };
 
 template <typename... Args>
@@ -231,6 +293,7 @@ PYBIND11_MODULE(grapapy, m)
 	GrapaCHAR inStr, outStr, runStr;
 	bool needExit = false, showConsole = false, showWidget = false;
 	GrapaCHAR s = GrapaLink::Start(needExit, showConsole, showWidget, inStr, outStr, runStr);
+	GrapaLink::GetGrapaSystem()->mLibraryQueue.PushTail(new GrapaPyRuleEvent(GrapaCHAR("py")));
 
     m.doc() = R"pbdoc(
         GrapaPy extention

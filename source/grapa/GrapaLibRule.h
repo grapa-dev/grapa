@@ -12,8 +12,10 @@
 class GrapaLibraryRuleEvent : public GrapaLibraryEvent
 {
 public:
+	GrapaLibraryRuleEvent() { mName.FROM(""); };
 	GrapaLibraryRuleEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual void LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent *pLib);
+	virtual void LoadLibWrap(GrapaScriptExec* vScriptExec, GrapaRuleEvent* pLib);
+	virtual GrapaLibraryEvent* LoadLib(GrapaScriptExec* vScriptExec, GrapaRuleEvent* pLib, GrapaCHAR& pName);
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleEvent* pParam);
 };
