@@ -1017,13 +1017,13 @@ void GrapaItemState::Running()
 					msgStr.Append(c);
 					break;
 				}
-				//else if (state != GrapaTokenItemType::EXP && (c == 'e' || c == 'E'))
-				//{
-				//	state = GrapaTokenItemType::EXP;
-				//	expNeg = false;
-				//	nextValue->mMessage.mPos++;
-				//	break;
-				//}
+				else if (state != GrapaTokenItemType::EXP && (c == 'e' || c == 'E'))
+				{
+					state = GrapaTokenItemType::EXP;
+					expNeg = false;
+					nextValue->mMessage.mPos++;
+					break;
+				}
 				else if (state == GrapaTokenItemType::EXP && expStr.mLength == 0 && (c == '-' || c == '+'))
 				{
 					if (c == '-')
