@@ -152,6 +152,8 @@ public:
 		GrapaSystem* gSystem = GrapaLink::GetGrapaSystem();
 		if (gSystem->mGrammar.mLength)
 			grresult = mConsoleSend.SendSync(gSystem->mGrammar);
+		GrapaCHAR runStr("$global[\"$py\"] = class {eval = op(script,rtype=\"\",import=\"\",attr=\"\"){@<py,eval,{@<var,{script}>,@<var,{rtype}>,@<var,{import}>,@<var,{attr}>}>();};};");
+		grresult = mConsoleSend.SendSync(runStr);
 	}
     ~GrapaStruct() 
 	{ 
@@ -380,7 +382,7 @@ PYBIND11_MODULE(grapapy, m)
 		py::arg("b"));
 	*/
 	
-    m.attr("__version__") = "0.0.13";
+    m.attr("__version__") = "0.0.14";
 	
 	// GrapaLink::Stop();
 }
