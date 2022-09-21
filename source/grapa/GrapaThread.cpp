@@ -332,7 +332,8 @@ GrapaError GrapaThread::Start()
 #else
 #ifdef _WIN32
 	mError = 0;
-	((GrapaThreadPrivate*)vInstanceT)->mThread = CreateThread(NULL, 0, ((GrapaThreadPrivate*)vInstanceT)->StaticRun, (void*)this, 0, &((GrapaThreadPrivate*)vInstanceT)->mThreadId);
+	((GrapaThreadPrivate*)vInstanceT)->mThread = CreateThread(NULL, 8000000000000, ((GrapaThreadPrivate*)vInstanceT)->StaticRun, (void*)this, STACK_SIZE_PARAM_IS_A_RESERVATION, &((GrapaThreadPrivate*)vInstanceT)->mThreadId);
+	//((GrapaThreadPrivate*)vInstanceT)->mThread = CreateThread(NULL, 0, ((GrapaThreadPrivate*)vInstanceT)->StaticRun, (void*)this, 0, &((GrapaThreadPrivate*)vInstanceT)->mThreadId);
 #endif
 #endif
 
@@ -355,6 +356,20 @@ void GrapaThread::RunFromStatic()
 
 GrapaError GrapaThread::StartSync()
 {
+#ifdef _WIN32
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread) return(-1);
+	mStop = true;
+	mSync = true;
+	Starting();
+	WaitCritical();
+	mError = 0;
+	((GrapaThreadPrivate*)vInstanceT)->mThread = CreateThread(NULL, 8000000000000, ((GrapaThreadPrivate*)vInstanceT)->StaticRun, (void*)this, STACK_SIZE_PARAM_IS_A_RESERVATION, &((GrapaThreadPrivate*)vInstanceT)->mThreadId);
+	if (((GrapaThreadPrivate*)vInstanceT)->mThread == 0LL) { ((GrapaThreadPrivate*)vInstanceT)->mThreadId = 0LL; return(-1); }
+	//LeaveCritical();
+	WaitCondition();
+	while(!mStop)
+		Sleep(10);
+#else
 	mStop = false;
 	mSync = true;
 	((GrapaThreadPrivate*)vInstanceT)->mThreadId = 0LL;
@@ -362,6 +377,7 @@ GrapaError GrapaThread::StartSync()
 	Starting();
 	RunFromStatic();
 	mSync = false;
+#endif
 	return(0);
 }
 
