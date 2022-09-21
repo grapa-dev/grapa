@@ -16,8 +16,10 @@ Integers are all big integers and floats are all big floats. Percision is unlimi
 
 The language is cross platform binary/execution compatible accross Windows, Linux, Mac (Intel and Apple). 
 
-# Setup
-- [Python](docs/PYTHON.md)
+# Python
+- [Python setup](docs/PYTHON.md)
+
+# C++
 - [Install from binary](docs/BINARY.md)
 - [Build from source](docs/BUILD.md)
 - [Run from OS shell](docs/RUN.md)
