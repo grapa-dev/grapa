@@ -41,16 +41,14 @@ xy.exec(x)
 '10'
 
 ```
-xy.evalb("@$ARG+' test';","hello")
+xy.eval("@$ARG+' test';","hello")
 ```
 'hello test'
 
 ```
-xy.eval("""
-    $py().eval("print(\\"hi\\")");
-""")
+xy.eval("$py().eval('print(\"hi\")');")
 ```
-'hi'
+hi
 
 ```
 def absolute_value(num):
