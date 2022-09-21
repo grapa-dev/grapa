@@ -30,7 +30,7 @@ xy.eval("x = 3.45; y = 4.32; x**y;")
 ```
 '210.5612696743043090739172698565538965143180116634'
 
-## Compile a script, and run the compiled script.
+## Compile a script, and run the compiled script
 
 ```
 x = xy.evalb("$sys().compile(\"10;\")")
