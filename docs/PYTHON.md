@@ -1,5 +1,8 @@
 # Python
 
+References:
+- [Grapa language](../README.md)
+
 The following assumes you have Python and pip installed, and possibly Jupyter and Notebook installed. 
 
 This will install natively (including dependant libraries which will be installed in the grapapy extention library and not alter the system). Platforms supported are:
