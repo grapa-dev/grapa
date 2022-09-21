@@ -17,30 +17,55 @@ Integers are all big integers and floats are all big floats. Percision is unlimi
 The language is cross platform binary/execution compatible accross Windows, Linux, Mac (Intel and Apple). 
 
 # Setup
+- [Python](docs/PYTHON.md)
 - [Install from binary](docs/BINARY.md)
 - [Build from source](docs/BUILD.md)
 - [Run from OS shell](docs/RUN.md)
 
-# Types
+# Base Types
 - [Base types](docs/BASETYPES.md)
-- [System types](docs/SYSTYPES.md)
+- [Base libraries](docs/BASELIBS.md)
+- [$OP](docs/type/OP.md)
+- [$CODE](docs/type/CODE.md)
 
-# Libraries
+# System types
+- [$BOOL](docs/type/BOOL.md)
+- [$INT](docs/type/INT.md)
+- [$FLOAT](docs/type/FLOAT.md)
+- [$STR](docs/type/STR.md)
+- [$ID](docs/type/ID.md)
+- [$RAW](docs/type/RAW.md)
+- [$TIME](docs/type/TIME.md)
+- [$RULE](docs/type/RULE.md)
+- [$ARRAY](docs/type/ARRAY.md)
+- [$LIST](docs/type/LIST.md)
+- [$VECTOR](docs/type/VECTOR.md)
+- [$TABLE](docs/type/TABLE.md)
+- [$XML](docs/type/XML.md)
+- [$TAG](docs/type/TAG.md)
+- [$WIDGET](docs/type/WIDGET.md)
+- [$ERR](docs/type/ERR.md)
+- [$SYSID](docs/type/SYSID.md)
+- [$SYSINT](docs/type/SYSINT.md)
+- [$SYSSTR](docs/type/SYSSTR.md)
+
+# Libraries (Grapa classes)
 - [$file](docs/sys/file.md)
 - [$math](docs/sys/math.md)
 - [$net](docs/sys/net.md)
 - [$thread](docs/sys/thread.md)
 - [$sys](docs/sys/sys.md)
-- Object library (inherited by several types)
-  - [Encode functions](docs/obj/encode.md)
-  -  [Bits functions](docs/obj/bits.md)
-  - [Iterator functions](docs/obj/iterate.md)
-  - [Format functions](docs/obj/format.md)
-  - [Transform functions](docs/obj/transform.md)
-  - [Type functions](docs/obj/type.md)
-  - [Vector functions](docs/obj/vector.md)
-  - [IO functions](docs/obj/io.md)
-  - [Document functions](docs/obj/document.md)
+
+# $OBJ Functions (inherited by several Grapa classes)
+- [Encode functions](docs/obj/encode.md)
+- [Bits functions](docs/obj/bits.md)
+- [Iterator functions](docs/obj/iterate.md)
+- [Format functions](docs/obj/format.md)
+- [Transform functions](docs/obj/transform.md)
+- [Type functions](docs/obj/type.md)
+- [Vector functions](docs/obj/vector.md)
+- [IO functions](docs/obj/io.md)
+- [Document functions](docs/obj/document.md)
 
 # Operators
 - [Constants](docs/operators/constants.md)
@@ -63,7 +88,7 @@ The language is cross platform binary/execution compatible accross Windows, Linu
 # Examples
 - [Examples](docs/EXAMPLES.md)
 
-# Third-Party Libraries
+# Third-Party libraries used
 * [Miniz zlib](https://github.com/richgel999/miniz/releases)
 * [OpenSSL](https://www.openssl.org/)
 * [FLTK](https://www.fltk.org/)
