@@ -14,7 +14,7 @@ from pathlib import Path
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
-grapapy_version = "0.0.14"
+grapapy_version = "0.0.15"
 is_aws = False
 is_apple = False
 from_os = ''
