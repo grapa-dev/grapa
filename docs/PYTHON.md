@@ -14,11 +14,13 @@ This will install natively (including dependant libraries which will be installe
 
 Linux/Mac
 ```
+pip3 uninstall grapapy
 pip3 install grapapy
 ```
 
 Windows
 ```
+pip uninstall grapapy
 pip install grapapy
 ```
 
