@@ -21,6 +21,8 @@ rmdir /S /q prj\winlib\x64
 
 7z a bin/grapa-win.zip grapa.exe grapa.lib
 
+python setup.py sdist
+
 ```
 
 ## Linux
