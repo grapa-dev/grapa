@@ -514,7 +514,7 @@ public:
 			vResult = NULL;
 		}
 
-		Start();
+		Start(false);
 	}
 	virtual void Starting() {}
 	virtual void Stopping()

@@ -215,7 +215,7 @@ GrapaError GrapaNetConnect::OnListen(GrapaScriptExec* pScriptExec, GrapaRuleEven
 	vConnectLambda = dConnectLambda = pScriptExec->CopyItem(pConnectLambda);
 	mError = mNet.Bind(mURL);
 	if (mError == 0)
-		Start();
+		Start(false);
 	return(mError);
 }
 
@@ -231,7 +231,7 @@ GrapaError GrapaNetConnect::OnReceive(GrapaScriptExec* pScriptExec, GrapaRuleEve
 	vReceiveLambda = dReceiveLambda = pScriptExec->CopyItem(pReceiveLambda);
 	LeaveCritical();
 	if (mStop)
-		Start();
+		Start(false);
 	return(0);
 }
 
@@ -274,7 +274,7 @@ void GrapaNetConnect::Running()
 					newNet->vNetConnect->vScriptState = vScriptState;
 					newNet->vNetConnect->vReceiveLambda = vReceiveLambda;
 					newNet->vNetConnect->vConnectLambda = vConnectLambda;
-					newNet->vNetConnect->Start();
+					newNet->vNetConnect->Start(false);
 				}
 				else
 				{

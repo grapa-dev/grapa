@@ -6234,14 +6234,14 @@ GrapaError GrapaScriptExecState::Start()
 	WaitCritical();
 	LoadSystem();
 	LeaveCritical();
-	return GrapaState::Start();
+	return GrapaState::Start(false);
 }
 
 void GrapaScriptExecState::Starting()
 {
 	if (GetQueue())
 		GetQueue()->mState = this;
-	mItemState.Start();
+	mItemState.Start(mSync);
 }
 
 void GrapaScriptExecState::Running()

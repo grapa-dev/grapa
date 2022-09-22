@@ -7980,7 +7980,7 @@ GrapaRuleEvent* GrapaLibraryRuleMapEvent::Run(GrapaScriptExec *vScriptExec, Grap
 	we = (GrapaRuleWorkEvent*)wq.Head();
 	while (we)
 	{
-		we->Start();
+		we->Start(false);
 		we = (GrapaRuleWorkEvent*)we->Next();
 	}
 
@@ -8131,7 +8131,7 @@ GrapaRuleEvent* GrapaLibraryRuleFilterEvent::Run(GrapaScriptExec *vScriptExec, G
 	we = (GrapaRuleWorkEvent*)wq.Head();
 	while (we)
 	{
-		we->Start();
+		we->Start(false);
 		we = (GrapaRuleWorkEvent*)we->Next();
 	}
 

@@ -318,11 +318,11 @@ GrapaThread::~GrapaThread()
 	vInstanceT = NULL;
 }
 
-GrapaError GrapaThread::Start()
+GrapaError GrapaThread::Start(bool pSync)
 {
 	if (((GrapaThreadPrivate*)vInstanceT)->mThread) return(-1);
 	mStop = true;
-	mSync = false;
+	mSync = pSync;
 	Starting();
 	WaitCritical();
 #if defined(__MINGW32__) || defined(__GNUC__)

@@ -36,7 +36,7 @@ public:
 	GrapaThread();
     virtual ~GrapaThread();
 
-	virtual GrapaError Start();
+	virtual GrapaError Start(bool pSync);
 	virtual GrapaError StartSync();
 	virtual void Stop();
 	virtual bool Started();
