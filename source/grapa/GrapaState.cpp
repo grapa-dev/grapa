@@ -6425,82 +6425,221 @@ void GrapaScriptExecState::Stopping()
 {
 }
 
-GrapaRuleEvent* GrapaScriptExec::Exec(GrapaNames* pNameSpace, u64 pRuleId, GrapaBYTE& pValue)
+class GrapaExecSync : public GrapaThread
 {
-	if (pValue.mLength == 0) return(NULL);
-	GrapaBYTE *pInput = &pValue;
-	GrapaBYTE expanded;
-	s64 idx;
-
-	GrapaRuleEvent* result = NULL;
-
-	if (pValue.mLength >= 2)
+public:
+	bool handled = false;
+	GrapaRuleEvent* vResult;
+	GrapaCHAR* pValue;
+	GrapaScriptExec* e;
+	GrapaScriptState *vScriptState;
+	GrapaNames* pNameSpace;
+	GrapaRuleEvent* pRule;
+	u64 pRuleId;
+	GrapaExecSync() { handled = false; vResult = NULL; pValue = NULL; e = NULL; vScriptState = NULL; pNameSpace = NULL; pRule = NULL; pRuleId = 0; }
+	virtual ~GrapaExecSync() {}
+	virtual void Starting() {}
+	virtual void Running()
 	{
-		if ((pValue.mBytes[0] == 0 && pValue.mBytes[1] == 0) || (pValue.mLength > 4 && pValue.mBytes[0] == 'G' && pValue.mBytes[1] == 'R' && pValue.mBytes[2] == 'Z' && (pValue.mBytes[3] & 0x80) == 0))
-		{
-			GrapaCompress::Expand(pValue, expanded);
-			pInput = &expanded;
-		}
-	}
-	if (pInput->mToken == GrapaTokenType::ARRAY || pInput->mToken == GrapaTokenType::LIST || pInput->mToken == GrapaTokenType::XML || pInput->mToken == GrapaTokenType::EL || pInput->mToken == GrapaTokenType::TAG || pInput->mToken == GrapaTokenType::OP || pInput->mToken == GrapaTokenType::CODE)
-	{
-		GrapaRuleEvent cmd;
-		cmd.vQueue = new GrapaRuleQueue();
-		cmd.mValue.mToken = pInput->mToken;
+		handled = true;
+		vResult = NULL;
+		GrapaCHAR* pInput = pValue;
+		GrapaCHAR expanded;
 
-		if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY)
+		WaitCritical();
+		SendCondition();
+
+		if ((*pValue).mLength >= 2)
 		{
-			GrapaRuleQueue* tq = new GrapaRuleQueue();
-			((GrapaRuleQueue*)tq)->FROM(vScriptState, pNameSpace, *pInput);
-			GrapaRuleEvent* tx = NULL;
-			if (tq->mCount > 1 && expanded.mToken == GrapaTokenType::LIST)
-				tx = tq->Search("op",idx);
-			if (tx == NULL)
-				tx = tq->Head();
-			if (tx)
+			if (((*pValue).mBytes[0] == 0 && (*pValue).mBytes[1] == 0) || ((*pValue).mLength > 4 && (*pValue).mBytes[0] == 'G' && (*pValue).mBytes[1] == 'R' && (*pValue).mBytes[2] == 'Z' && ((*pValue).mBytes[3] & 0x80) == 0))
 			{
-				tq->PopEvent(tx);
-				cmd.mValue.mToken = tx->mValue.mToken;
-				cmd.vQueue = tx->vQueue;
-				tx->vQueue = NULL;
-				cmd.vClass = tx->vClass;
-				if (cmd.vClass == NULL && tx->mName.mLength)
-					cmd.vClass = vScriptState->GetClass(pNameSpace, tx->mName);
-				tx->CLEAR();
-				delete tx;
+				GrapaCompress::Expand((*pValue), expanded);
+				pInput = &expanded;
 			}
-			tq->CLEAR();
-			delete tq;
 		}
-		else
+
+		if ((*pValue).mToken == GrapaTokenType::STR || (*pValue).mToken == GrapaTokenType::SYSSTR)
 		{
-			cmd.vClass = ((GrapaRuleQueue*)cmd.vQueue)->FROM(vScriptState, pNameSpace, *pInput);
+			GrapaRuleEvent* plan = e->Plan(pNameSpace, (*pValue), pRule, pRuleId);
+			vResult = e->ProcessPlan(pNameSpace, plan);
+			if (plan)
+			{
+				plan->CLEAR();
+				delete plan;
+			}
+			mStop = true;
+			LeaveCritical();
+			return;
 		}
 
-		cmd.mValue.SetLength(0);
-		cmd.mValue.SetSize(0);
-		return ProcessPlan(pNameSpace, &cmd);
+		if (pInput->mToken == GrapaTokenType::ARRAY || pInput->mToken == GrapaTokenType::LIST || pInput->mToken == GrapaTokenType::XML || pInput->mToken == GrapaTokenType::EL || pInput->mToken == GrapaTokenType::TAG || pInput->mToken == GrapaTokenType::OP || pInput->mToken == GrapaTokenType::CODE)
+		{
+			GrapaRuleEvent cmd;
+			cmd.vQueue = new GrapaRuleQueue();
+			cmd.mValue.mToken = pInput->mToken;
+
+			if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY)
+			{
+				GrapaRuleQueue* tq = new GrapaRuleQueue();
+				((GrapaRuleQueue*)tq)->FROM(vScriptState, pNameSpace, *pInput);
+				GrapaRuleEvent* tx = NULL;
+				s64 idx;
+				if (tq->mCount > 1 && expanded.mToken == GrapaTokenType::LIST)
+					tx = tq->Search("op", idx);
+				if (tx == NULL)
+					tx = tq->Head();
+				if (tx)
+				{
+					tq->PopEvent(tx);
+					cmd.mValue.mToken = tx->mValue.mToken;
+					cmd.vQueue = tx->vQueue;
+					tx->vQueue = NULL;
+					cmd.vClass = tx->vClass;
+					if (cmd.vClass == NULL && tx->mName.mLength)
+						cmd.vClass = vScriptState->GetClass(pNameSpace, tx->mName);
+					tx->CLEAR();
+					delete tx;
+				}
+				tq->CLEAR();
+				delete tq;
+			}
+			else
+			{
+				cmd.vClass = ((GrapaRuleQueue*)cmd.vQueue)->FROM(vScriptState, pNameSpace, *pInput);
+			}
+
+			cmd.mValue.SetLength(0);
+			cmd.mValue.SetSize(0);
+			vResult = e->ProcessPlan(pNameSpace, &cmd);
+		}
+		mStop = true;
+		LeaveCritical();
 	}
+	virtual void Stopping() {}
+};
 
-	GrapaRuleQueue tokenQueue;
+GrapaRuleEvent* GrapaScriptExec::Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR& pValue)
+{
+	GrapaRuleEvent* result = NULL;
+	if (pValue.mLength == 0) return(NULL);
 
-	GrapaScriptExecState e;
-	e.SetQueue(&tokenQueue);
-	e.mRuleId = pRuleId;
-	e.vScriptExec = this;
-	
-	e.mItemState.SetParams(&vScriptState->mItemParams, vScriptState->GetNameSpace());
-	e.mItemState.SetOutput(&tokenQueue);
+	GrapaExecSync ge;
+	ge.pValue = &pValue;
+	ge.e = this;
+	ge.vScriptState = vScriptState;
+	ge.pNameSpace = pNameSpace;
+	ge.pRule = pRule;
+	ge.pRuleId = pRuleId;
+	ge.StartSync();
+//	while (!ge.mStop)
+//	{
+//#ifdef _WIN32
+//		Sleep(10);
+//#else
+//		sleep(10);
+//#endif
+//	}
+	if (ge.handled)
+		return ge.vResult;
 
-	GrapaItemEvent* event = new GrapaItemEvent();
-	event->mMessage.FROM(*pInput);
-	//event->mMessage.Append("$\n");
-	e.mItemQueue.PushTail(event);
+	if (ge.vResult)  // not sure if this would ever happen if ge.handled is true
+		return ge.vResult;
 
-	e.StartSync();
+	// should never get past this point
+	// need to verify
 
-	result = pNameSpace->vLast;
-	pNameSpace->vLast = NULL;
+	GrapaRuleEvent* result = new GrapaRuleEvent();
+	result->mValue.mToken = GrapaTokenType::ERR;
+	result->vQueue = new GrapaRuleQueue();
+	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("err"), GrapaInt(-1).getBytes()));
+
+	return result;
+
+
+	//GrapaCHAR *pInput = &pValue;
+	//GrapaCHAR expanded;
+	//
+	//if (pValue.mLength >= 2)
+	//{
+	//	if ((pValue.mBytes[0] == 0 && pValue.mBytes[1] == 0) || (pValue.mLength > 4 && pValue.mBytes[0] == 'G' && pValue.mBytes[1] == 'R' && pValue.mBytes[2] == 'Z' && (pValue.mBytes[3] & 0x80) == 0))
+	//	{
+	//		GrapaCompress::Expand(pValue, expanded);
+	//		pInput = &expanded;
+	//	}
+	//}
+
+	//if (pValue.mToken == GrapaTokenType::STR || pValue.mToken == GrapaTokenType::SYSSTR)
+	//{
+	//	GrapaRuleEvent* plan = Plan(pNameSpace, pValue, pRule, pRuleId);
+	//	GrapaRuleEvent* result = ProcessPlan(pNameSpace, plan);
+	//	if (plan)
+	//	{
+	//		plan->CLEAR();
+	//		delete plan;
+	//	}
+	//	return(result);
+	//}
+
+	//if (pInput->mToken == GrapaTokenType::ARRAY || pInput->mToken == GrapaTokenType::LIST || pInput->mToken == GrapaTokenType::XML || pInput->mToken == GrapaTokenType::EL || pInput->mToken == GrapaTokenType::TAG || pInput->mToken == GrapaTokenType::OP || pInput->mToken == GrapaTokenType::CODE)
+	//{
+	//	GrapaRuleEvent cmd;
+	//	cmd.vQueue = new GrapaRuleQueue();
+	//	cmd.mValue.mToken = pInput->mToken;
+
+	//	if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY)
+	//	{
+	//		GrapaRuleQueue* tq = new GrapaRuleQueue();
+	//		((GrapaRuleQueue*)tq)->FROM(vScriptState, pNameSpace, *pInput);
+	//		GrapaRuleEvent* tx = NULL;
+	//		s64 idx;
+	//		if (tq->mCount > 1 && expanded.mToken == GrapaTokenType::LIST)
+	//			tx = tq->Search("op",idx);
+	//		if (tx == NULL)
+	//			tx = tq->Head();
+	//		if (tx)
+	//		{
+	//			tq->PopEvent(tx);
+	//			cmd.mValue.mToken = tx->mValue.mToken;
+	//			cmd.vQueue = tx->vQueue;
+	//			tx->vQueue = NULL;
+	//			cmd.vClass = tx->vClass;
+	//			if (cmd.vClass == NULL && tx->mName.mLength)
+	//				cmd.vClass = vScriptState->GetClass(pNameSpace, tx->mName);
+	//			tx->CLEAR();
+	//			delete tx;
+	//		}
+	//		tq->CLEAR();
+	//		delete tq;
+	//	}
+	//	else
+	//	{
+	//		cmd.vClass = ((GrapaRuleQueue*)cmd.vQueue)->FROM(vScriptState, pNameSpace, *pInput);
+	//	}
+
+	//	cmd.mValue.SetLength(0);
+	//	cmd.mValue.SetSize(0);
+	//	return ProcessPlan(pNameSpace, &cmd);
+	//}
+
+	//GrapaRuleQueue tokenQueue;
+
+	//GrapaScriptExecState e;
+	//e.SetQueue(&tokenQueue);
+	//e.mRuleId = pRuleId;
+	//e.vScriptExec = this;
+	//
+	//e.mItemState.SetParams(&vScriptState->mItemParams, vScriptState->GetNameSpace());
+	//e.mItemState.SetOutput(&tokenQueue);
+
+	//GrapaItemEvent* event = new GrapaItemEvent();
+	//event->mMessage.FROM(*pInput);
+	////event->mMessage.Append("$\n");
+	//e.mItemQueue.PushTail(event);
+
+	//e.StartSync();
+
+	//result = pNameSpace->vLast;
+	//pNameSpace->vLast = NULL;
 
 	return(result);
 }

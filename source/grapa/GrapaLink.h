@@ -12,16 +12,6 @@
 typedef void (*GrapaLinkCallback)(const char* pStr, bool pFlush);
 class GrapaSystem;
 
-class GrapaWidgetWait : public GrapaThread
-{
-public:
-	GrapaWidgetWait();
-	virtual ~GrapaWidgetWait();
-	virtual void Starting();
-	virtual void Running();
-	virtual void Stopping();
-};
-
 class GrapaLink
 {
 public:

@@ -175,7 +175,6 @@ public:
 	GrapaCritical mTimeLock;
 	GrapaCritical mChdLock;
 	std::list < My_Text_Console* > mConsoleList;
-	GrapaWidgetWait mWidgetThread;
 
 public:
 	GrapaSystem();

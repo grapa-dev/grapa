@@ -338,7 +338,7 @@ void My_Console::Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run)
 {
 	GrapaError err = mConsoleSend.Start();
 	GrapaCHAR grresult;
-	if (gSystem->mGrammar.mLength) grresult = mConsoleSend.SendSync(gSystem->mGrammar);
+	if (gSystem->mGrammar.mLength) grresult = mConsoleSend.SendSync(gSystem->mGrammar,NULL,0);
 	if (grresult.mLength)
 	{
 		std::cout << (char*)grresult.mBytes;
@@ -349,7 +349,7 @@ void My_Console::Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run)
 		std::cout << (char*)out.mBytes;
 		std::cout << (char*)"\n";
 	}
-	if (run.mLength) grresult = mConsoleSend.SendSync(run);
+	if (run.mLength) grresult = mConsoleSend.SendSync(run,NULL,0);
 	if (grresult.mLength)
 	{
 		std::cout << (char*)grresult.mBytes;
@@ -856,7 +856,7 @@ My_Text_Console::My_Text_Console()
 	show();
 
 	GrapaCHAR grresult;
-	if (gSystem->mGrammar.mLength) grresult = grp->mConsoleSend.SendSync(gSystem->mGrammar);
+	if (gSystem->mGrammar.mLength) grresult = grp->mConsoleSend.SendSync(gSystem->mGrammar,NULL,0);
 	if (grresult.mLength)
 	{
 		grp->disp->buffer()->append((char*)grresult.mBytes);
@@ -868,7 +868,7 @@ My_Text_Console::My_Text_Console(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run)
 {
 	Fl::lock();
 	GrapaCHAR grresult;
-	if (run.mLength) grresult = grp->mConsoleSend.SendSync(run);
+	if (run.mLength) grresult = grp->mConsoleSend.SendSync(run,NULL,0);
 	if (grresult.mLength)
 	{
 		grp->disp->buffer()->append((char*)grresult.mBytes);

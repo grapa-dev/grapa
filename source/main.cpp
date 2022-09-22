@@ -90,7 +90,7 @@ int main(int argc, const char* argv[])
     {
         My_Console mConsole;
         mConsole.Start(inStr, outStr, runStr);
-        if (!needExit || showConsole)
+         if (!needExit || showConsole)
             mConsole.Run(NULL, NULL);
         mConsole.Stop();
     }
@@ -113,9 +113,9 @@ int main(int argc, const char* argv[])
             mConsoleSend.Start();
             GrapaCHAR grresult;
             if (gSystem->mGrammar.mLength)
-                grresult = mConsoleSend.SendSync(gSystem->mGrammar);
+                grresult = mConsoleSend.SendSync(gSystem->mGrammar,NULL,0);
             if (runStr.mLength)
-                grresult = mConsoleSend.SendSync(runStr);
+                grresult = mConsoleSend.SendSync(runStr,NULL,0);
 
             GrapaFileIO gf;
             GrapaError err = gf.Open((char*)inStr.mBytes);

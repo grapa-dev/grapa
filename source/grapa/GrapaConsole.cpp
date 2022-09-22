@@ -68,7 +68,7 @@ void GrapaConsoleSend::Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace
 	mScriptState.PushInputTail(event);
 }
 
-GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn)
+GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId)
 {
 	GrapaCHAR s;
     if (pIn.mLength)
@@ -80,7 +80,7 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn)
 		GrapaScriptExec* saveTokenExec = tokenExec.vScriptState->vScriptExec;;
 		tokenExec.vScriptState->vScriptExec = &tokenExec;
 
-		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), 0, pIn);
+		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), pRule, pRuleId, pIn);
         
         if (result)
         {
@@ -107,7 +107,7 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn)
     return s;
 }
 
-GrapaCHAR GrapaConsoleSend::SendSyncRaw(GrapaCHAR& pIn)
+GrapaCHAR GrapaConsoleSend::SendSyncRaw(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId)
 {
 	GrapaCHAR s;
 	if (pIn.mLength)
@@ -119,7 +119,7 @@ GrapaCHAR GrapaConsoleSend::SendSyncRaw(GrapaCHAR& pIn)
 		GrapaScriptExec* saveTokenExec = tokenExec.vScriptState->vScriptExec;;
 		tokenExec.vScriptState->vScriptExec = &tokenExec;
 
-		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), 0, pIn);
+		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), pRule, pRuleId, pIn);
 
 		if (result)
 		{

@@ -291,7 +291,7 @@ public:
 	void EchoRuleValue(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, bool elMode, bool pretty, bool noHeader);
 	void EchoClassValue(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, bool elMode, bool pretty);
 
-	GrapaRuleEvent* Exec(GrapaNames* pNameSpace, u64 pRuleId, GrapaBYTE& pValue);
+	GrapaRuleEvent* Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR& pValue);
 	GrapaRuleEvent* Plan(GrapaNames* pNameSpace, GrapaRuleEvent* pOperation);
 	GrapaRuleEvent* Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput, GrapaRuleEvent* pRule, u64 pRuleId);
 
