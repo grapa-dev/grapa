@@ -21,9 +21,10 @@ rmdir /S /q prj\winlib\x64
 
 7z a bin/grapa-win.zip grapa.exe grapa.lib
 
+rmdir /s /q dist
 python setup.py sdist
-pip install dist\grapapy-0.0.16.tar.gz
 rmdir /s /q grapapy.egg-info
+grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
 
 ```
 
