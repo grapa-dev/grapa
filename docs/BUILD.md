@@ -86,6 +86,7 @@ tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/* source/g
 
 python3 setup.py sdist
 pip3 install dist/grapapy-0.0.16.tar.gz
+rm -rf grapapy.egg-info
 
 ```
 
@@ -114,6 +115,7 @@ tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/* source/g
 
 python3 setup.py sdist
 pip3 install dist/grapapy-0.0.16.tar.gz
+rm -rf grapapy.egg-info
 
 
 ```
