@@ -40,6 +40,7 @@ public:
 	s64 mFloatMax;
 	s64 mFloatExtra;
 	GrapaNames* mNameSpace;
+	GrapaCHAR mProfile;
 public:
 	GrapaItemState() { mItemParams = NULL; mClearState = false;  mFloatFix = false; mFloatMax = 16 * 8; mFloatExtra = 10; mNameSpace = NULL; }
 	GrapaItemState(GrapaItemParams* pLexParams, GrapaNames* pNameSpace) { mItemParams = NULL; mFloatFix = false; mFloatMax = 16 * 8; mFloatExtra = 10; SetParams(pLexParams, pNameSpace); }
@@ -291,9 +292,9 @@ public:
 	void EchoRuleValue(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, bool elMode, bool pretty, bool noHeader);
 	void EchoClassValue(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, bool elMode, bool pretty);
 
-	GrapaRuleEvent* Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR& pValue);
+	GrapaRuleEvent* Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile, GrapaCHAR& pValue);
 	GrapaRuleEvent* Plan(GrapaNames* pNameSpace, GrapaRuleEvent* pOperation);
-	GrapaRuleEvent* Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput, GrapaRuleEvent* pRule, u64 pRuleId);
+	GrapaRuleEvent* Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile);
 
 	GrapaRuleEvent* Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pRule, u64 pRuleId, GrapaRuleEvent* token, GrapaRuleEvent** resultPtr);
 
@@ -380,8 +381,8 @@ public:
 	virtual inline void SetQueue(GrapaQueue* pQueue) { mQueue = pQueue; mItemState.SetOutput(pQueue); }
 	virtual inline GrapaRuleQueue* GetQueue() { return((GrapaRuleQueue*)GrapaState::GetQueue()); }
 
-	virtual GrapaRuleQueue* GetTokens(GrapaRuleQueue* pTokenQueue, const char* pValue, u64 pLen);
-	virtual GrapaRuleQueue* GetTokens(GrapaRuleQueue* pTokenQueue, GrapaCHAR& pValue);
+	//virtual GrapaRuleQueue* GetTokens(GrapaRuleQueue* pTokenQueue, const char* pValue, u64 pLen);
+	//virtual GrapaRuleQueue* GetTokens(GrapaRuleQueue* pTokenQueue, GrapaCHAR& pValue);
 	virtual GrapaRuleEvent* AddToken(u8 pToken, const char* pName, bool pSkip, const char* pValue);
 	virtual GrapaRuleEvent* AddToken(u8 pToken, const char* pName, bool pSkip, GrapaBYTE& pValue);
 	virtual GrapaError DelToken(GrapaRuleQueue* pRuleQueue, const char* pName);

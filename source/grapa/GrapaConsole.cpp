@@ -68,7 +68,7 @@ void GrapaConsoleSend::Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace
 	mScriptState.PushInputTail(event);
 }
 
-GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId)
+GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile)
 {
 	GrapaCHAR s;
     if (pIn.mLength)
@@ -80,19 +80,22 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 
 		GrapaScriptExec* saveTokenExec = tokenExec.vScriptState->vScriptExec;;
 		tokenExec.vScriptState->vScriptExec = &tokenExec;
 
-		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), pRule, pRuleId, pIn);
+		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), pRule, pRuleId, pProfile, pIn);
         
         if (result)
         {
 			GrapaSystemSend send;
             send.isActive = false;
 			GrapaRuleEvent* echo = result;
-            while (echo->mValue.mToken == GrapaTokenType::PTR && echo->vRulePointer)
-                echo = result->vRulePointer;
+            while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
+                echo = echo->vRulePointer;
             //if (echo->mValue.mToken == GrapaTokenType::ERR)
             //    send.Send("ERR: ");
-            if (echo->vQueue) tokenExec.EchoList(&send, echo,false, false, false);
-            else tokenExec.EchoValue(&send, echo, false, false, false);
+			if (echo)
+			{
+				if (echo->vQueue) tokenExec.EchoList(&send, echo, false, false, false);
+				else tokenExec.EchoValue(&send, echo, false, false, false);
+			}
 			send.GetStr(s);
 			result->CLEAR();
 			delete result;
@@ -107,7 +110,7 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 
     return s;
 }
 
-GrapaCHAR GrapaConsoleSend::SendSyncRaw(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId)
+GrapaCHAR GrapaConsoleSend::SendSyncRaw(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile)
 {
 	GrapaCHAR s;
 	if (pIn.mLength)
@@ -119,16 +122,19 @@ GrapaCHAR GrapaConsoleSend::SendSyncRaw(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u
 		GrapaScriptExec* saveTokenExec = tokenExec.vScriptState->vScriptExec;;
 		tokenExec.vScriptState->vScriptExec = &tokenExec;
 
-		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), pRule, pRuleId, pIn);
+		GrapaRuleEvent* result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), pRule, pRuleId, pProfile, pIn);
 
 		if (result)
 		{
 			GrapaSystemSend send;
 			send.isActive = false;
 			GrapaRuleEvent* echo = result;
-			while (echo->mValue.mToken == GrapaTokenType::PTR && echo->vRulePointer)
-				echo = result->vRulePointer;
-			s = echo->mValue;
+			while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
+				echo = echo->vRulePointer;
+			if (echo)
+			{
+				s = echo->mValue;
+			}
 			result->CLEAR();
 			delete result;
 			result = NULL;
@@ -140,4 +146,28 @@ GrapaCHAR GrapaConsoleSend::SendSyncRaw(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u
 	}
 
 	return s;
+}
+
+
+GrapaRuleEvent* GrapaConsoleSend::SendSyncResult(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile)
+{
+	GrapaCHAR s;
+	GrapaRuleEvent* result = NULL;
+	if (pIn.mLength)
+	{
+		GrapaScriptExec tokenExec;
+		tokenExec.vScriptState = &mScriptState;
+		tokenExec.vScriptState->WaitCritical();
+
+		GrapaScriptExec* saveTokenExec = tokenExec.vScriptState->vScriptExec;;
+		tokenExec.vScriptState->vScriptExec = &tokenExec;
+
+		result = tokenExec.Exec(tokenExec.vScriptState->GetNameSpace(), pRule, pRuleId, pProfile, pIn);
+
+		tokenExec.vScriptState->vScriptExec = saveTokenExec;
+
+		tokenExec.vScriptState->LeaveCritical();
+	}
+
+	return result;
 }

@@ -833,7 +833,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 				GrapaCHAR val("$&");
 				val.Append(bodyC, bodyL);
 				val.Append("$&");
-				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0);
+				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0, GrapaCHAR());
 				v = vScriptExec->ProcessPlan(pNameSpace, plan);
 				if (plan)
 				{
@@ -860,7 +860,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 				GrapaCHAR val("$&");
 				val.Append(bodyC, bodyL);
 				val.Append("$&");
-				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0);
+				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0, GrapaCHAR());
 				v = vScriptExec->ProcessPlan(pNameSpace, plan);
 				if (plan)
 				{
@@ -878,7 +878,7 @@ GrapaRuleEvent* GrapaNetConnect::HttpMessage(GrapaScriptExec* vScriptExec, Grapa
 		{
 			GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$function"));
 			GrapaCHAR val(bodyC, bodyL);
-			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0);
+			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0, GrapaCHAR());
 			v = vScriptExec->ProcessPlan(pNameSpace, plan);
 			if (plan)
 			{

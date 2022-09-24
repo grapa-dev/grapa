@@ -842,7 +842,7 @@ bool GrapaVector::FROM(GrapaScriptExec* pScriptExec, GrapaNames* pNameSpace, boo
 				else
 				{
 					GrapaRuleEvent* rulexx = pScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$start"));
-					GrapaRuleEvent* plan = pScriptExec->Plan(pNameSpace, v, rulexx, 0);
+					GrapaRuleEvent* plan = pScriptExec->Plan(pNameSpace, v, rulexx, 0, GrapaCHAR());
 					if (plan && plan->mValue.mToken == GrapaTokenType::OP)
 					{
 						GrapaRuleEvent* temp = pScriptExec->ProcessPlan(pNameSpace, plan);

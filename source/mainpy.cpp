@@ -15,6 +15,7 @@ namespace py = pybind11;
 #include "grapa/GrapaSystem.h"
 #include "grapa/GrapaCompress.h"
 #include "grapa/GrapaLibRule.h"
+#include "grapa/GrapaFloat.h"
 
 #define gGrapaUseWidget false
 
@@ -34,6 +35,144 @@ public:
     };
 };
 
+class GrapaPyObject
+{
+public:
+	static GrapaRuleEvent* ToGrapa(py::object& o)
+	{
+		GrapaRuleEvent* result = NULL;
+		GrapaCHAR pStr;
+		if (PyUnicode_Check(o.ptr()))
+		{
+			std::string retvalue = o.cast<std::string>();
+			pStr.FROM(retvalue.c_str(), retvalue.length());
+			result = new GrapaRuleEvent(0, GrapaCHAR("result"), pStr);
+		}
+		else if (PyLong_Check(o.ptr()))
+		{
+			long retvalue = PyLong_AsLong(o.ptr());
+			pStr = GrapaInt(retvalue).getBytes();
+			result = new GrapaRuleEvent(0, GrapaCHAR("result"), pStr);
+		}
+		else if (PyBool_Check(o.ptr()))
+		{
+			bool retvalue = o.cast<bool>();
+			pStr.SetBool(retvalue);
+			result = new GrapaRuleEvent(0, GrapaCHAR("result"), pStr);
+		}
+		else if (PyFloat_Check(o.ptr()))
+		{
+			double retvalue = PyFloat_AS_DOUBLE(o.ptr());
+			pStr = GrapaFloat(retvalue).getBytes();
+			result = new GrapaRuleEvent(0, GrapaCHAR("result"), pStr);
+		}
+		else if (PyTuple_Check(o.ptr()))
+		{
+			result = new GrapaRuleEvent(0, GrapaCHAR("result"), GrapaCHAR());
+			result->vQueue = new GrapaRuleQueue();
+			result->mValue.mToken = GrapaTokenType::ARRAY;
+			for (int i = 0; i < PyTuple_Size(o.ptr()); ++i)
+			{
+				PyObject* item = PyTuple_GetItem(o.ptr(), i);
+				if (PyUnicode_Check(item))
+				{
+					Py_ssize_t size;
+					char* ptr = (char*)PyUnicode_AsUTF8AndSize(item, &size);
+					result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(ptr, size)));
+				}
+				else if (PyFloat_Check(item))
+				{
+					double retvalue = PyFloat_AS_DOUBLE(item);
+					pStr = GrapaFloat(retvalue).getBytes();
+					result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), pStr));
+				}
+				else if (PyLong_Check(item))
+				{
+					long retvalue = PyLong_AsLong(item);
+					pStr = GrapaInt(retvalue).getBytes();
+					result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), pStr));
+				}
+				else
+				{
+					result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR()));
+				}
+			}
+		}
+		else if (PyList_Check(o.ptr()))
+		{
+			for (int i = 0; i < PyList_Size(o.ptr()); ++i)
+			{
+				PyObject* item = PyList_GetItem(o.ptr(), i);
+
+			}
+		}
+		else if (PyDict_Check(o.ptr()))
+		{
+			result = new GrapaRuleEvent(0, GrapaCHAR("result"), GrapaCHAR());
+			result->vQueue = new GrapaRuleQueue();
+			result->mValue.mToken = GrapaTokenType::LIST;
+			PyObject* key, * item;
+			Py_ssize_t pos = 0;
+			while (PyDict_Next(o.ptr(), &pos, &key, &item))
+			{
+				Py_ssize_t nsize;
+				char* nptr = (char*)PyUnicode_AsUTF8AndSize(key, &nsize);
+				GrapaCHAR kname(nptr, nsize);
+				if (PyUnicode_Check(item))
+				{
+					Py_ssize_t size;
+					char* ptr = (char*)PyUnicode_AsUTF8AndSize(item, &size);
+					result->vQueue->PushTail(new GrapaRuleEvent(0, kname, GrapaCHAR(ptr, size)));
+				}
+				else if (PyFloat_Check(item))
+				{
+					double retvalue = PyFloat_AS_DOUBLE(item);
+					pStr = GrapaFloat(retvalue).getBytes();
+					result->vQueue->PushTail(new GrapaRuleEvent(0, kname, pStr));
+				}
+				else if (PyLong_Check(item))
+				{
+					long retvalue = PyLong_AsLong(item);
+					pStr = GrapaInt(retvalue).getBytes();
+					result->vQueue->PushTail(new GrapaRuleEvent(0, kname, pStr));
+				}
+				else
+				{
+					result->vQueue->PushTail(new GrapaRuleEvent(0, kname, GrapaCHAR()));
+				}
+			}
+		}
+		return result;
+	}
+	
+	static void FromGrapa(GrapaRuleEvent* e, py::object* o)
+	{
+		if (e == NULL) return;
+		GrapaInt a;
+		GrapaInt f;
+		GrapaCHAR s;
+		switch (e->mValue.mToken)
+		{
+		case GrapaTokenType::STR:
+			*o = py::str((char*)e->mValue.mBytes, e->mValue.mLength);
+			break;
+		case GrapaTokenType::RAW:
+			*o = py::bytes((char*)e->mValue.mBytes, e->mValue.mLength);
+			break;
+		case GrapaTokenType::INT:
+			a.FromBytes(e->mValue);
+			*o = py::int_(a.LongValue());
+			break;
+		case GrapaTokenType::FLOAT:
+			f.FromBytes(e->mValue);
+			s = f.ToString();
+			*o = py::float_(std::stod((char*)s.mBytes));
+			break;
+		default:
+			break;
+		}
+	}
+};
 
 class GrapaLibraryRulePyEvalEvent : public GrapaLibraryEvent
 {
@@ -44,71 +183,20 @@ public:
 		pybind11::gil_scoped_acquire acquire;
 		GrapaRuleEvent* result = NULL;
 		GrapaLibraryParam script_param(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-		GrapaLibraryParam type_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
-		GrapaLibraryParam import_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
-		GrapaLibraryParam attr_param(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+		GrapaLibraryParam import_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+		GrapaLibraryParam attr_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
 		if (script_param.vVal && script_param.vVal->mValue.mLength)
 		{
 			std::string sript_str;
 			GrapaCHAR type_str(""), import_str("__main__"), attr_str("__dict__");
 			sript_str.assign((char*)script_param.vVal->mValue.mBytes, script_param.vVal->mValue.mLength);
-			if (type_param.vVal && type_param.vVal->mValue.mLength) type_str.FROM(type_param.vVal->mValue);
 			if (import_param.vVal && import_param.vVal->mValue.mLength) import_str.FROM(import_param.vVal->mValue);
 			if (attr_param.vVal && attr_param.vVal->mValue.mLength) attr_str.FROM(attr_param.vVal->mValue);
 			py::object scope = py::module_::import((char*)import_str.mBytes).attr((char*)attr_str.mBytes);
 			GrapaCHAR pStr;
-			if (type_str.mLength==0)
-			{
-				py::eval(sript_str, scope);
-			}
-			else if (type_str.StrLowerCmp("int") == 0)
-			{
-				int retvalue = py::eval(sript_str, scope).cast<int>();;
-				pStr = GrapaInt(retvalue).getBytes();
-			}
-			else if (type_str.StrLowerCmp("str") == 0)
-			{
-				std::string st = py::eval(sript_str, scope).cast<std::string>();
-				pStr.FROM(st.c_str(), st.length());
-			}
-			else
-			{
-				py::eval(sript_str, scope);
-			}
-
-			/*if (type_str.mLength)
-			{
-				if (type_str.StrLowerCmp("str") == 0)
-				{
-					std::string st = py::eval(sript_str, scope).cast<std::string>();
-					pStr.FROM(st.c_str(), st.length());
-				}
-				else if (type_str.StrLowerCmp("int") == 0)
-				{
-					int st = py::eval(sript_str, scope).cast<int>();;
-					pStr = GrapaInt(st).getBytes();
-				}
-				else
-				{
-					py::object key = py::eval(sript_str, scope);
-					pStr.SetNull();
-				}
-			}*/
-			result = new GrapaRuleEvent(0, GrapaCHAR("result"), pStr);
+			py::object o = py::eval(sript_str, scope);
+			result = GrapaPyObject::ToGrapa(o);
 		}
-		return result;
-	}
-};
-
-class GrapaLibraryRulePyTestEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRulePyTestEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-	{
-		GrapaRuleEvent* result = NULL;
-		GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-		result = new GrapaRuleEvent(0, GrapaCHAR("result"), r1.vVal->mValue);
 		return result;
 	}
 };
@@ -121,7 +209,6 @@ public:
 	{
 		GrapaLibraryEvent* lib = NULL;
 		if (pName.Cmp("eval") == 0) lib = new GrapaLibraryRulePyEvalEvent(pName);
-		else if (pName.Cmp("test") == 0) lib = new GrapaLibraryRulePyTestEvent(pName);
 		return(lib);
 	}
 };
@@ -152,9 +239,9 @@ public:
 		GrapaCHAR grresult;
 		GrapaSystem* gSystem = GrapaLink::GetGrapaSystem();
 		if (gSystem->mGrammar.mLength)
-			grresult = mConsoleSend.SendSync(gSystem->mGrammar, NULL, 0);
-		GrapaCHAR runStr("$global[\"$py\"] = class {eval = op(script,rtype=\"\",import=\"\",attr=\"\"){@<py,eval,{@<var,{script}>,@<var,{rtype}>,@<var,{import}>,@<var,{attr}>}>();};};");
-		grresult = mConsoleSend.SendSync(runStr,NULL,0);
+			grresult = mConsoleSend.SendSync(gSystem->mGrammar, NULL, 0, GrapaCHAR());
+		GrapaCHAR runStr("$global[\"$py\"] = class {eval = op(script,import=\"\",attr=\"\"){@<py,eval,{@<var,{script}>,@<var,{import}>,@<var,{attr}>}>();};};");
+		grresult = mConsoleSend.SendSync(runStr,NULL,0,GrapaCHAR());
 	}
     ~GrapaStruct() 
 	{ 
@@ -193,13 +280,17 @@ public:
 		setARG(pStr);
 	}
 
-	std::string eval(std::string cmdstr, std::string paramstr, std::string rulestr)
+	py::object eval(std::string cmdstr, std::string paramstr, std::string rulestr, std::string profilestr)
 	{
 		GrapaCHAR runStr;
 		GrapaRuleEvent* rulexx = NULL;
+		GrapaCHAR profStr;
+		py::object o;
+		GrapaRuleEvent* grresult = NULL;
 		if (true)
 		{
 			pybind11::gil_scoped_acquire acquire;
+			o = py::object(py::cast(NULL));
 			if (cmdstr.length())
 			{
 				setARG(paramstr);
@@ -210,169 +301,75 @@ public:
 				GrapaCHAR rStr(rulestr.c_str(), rulestr.length());
 				rulexx = mConsoleSend.mScriptState.SearchVariable(mConsoleSend.mScriptState.GetNameSpace(), rStr);
 			}
+			profStr.FROM(profilestr.c_str(), profilestr.length());
 		}
-		std::string r;
 		if (cmdstr.length())
 		{
-			GrapaCHAR grresult = mConsoleSend.SendSync(runStr, rulexx, 0);
-			r.assign((char*)grresult.mBytes, grresult.mLength);
+			grresult = mConsoleSend.SendSyncResult(runStr, rulexx, 0, profStr);
 		}
-		return(r);
-	}
-	
-    std::string eval(std::string cmdstr, py::bytes parambytes, std::string rulestr)
-	{
-		GrapaCHAR runStr;
-		GrapaRuleEvent* rulexx = NULL;
-		if (true)
+		if (grresult)
 		{
 			pybind11::gil_scoped_acquire acquire;
-			if (cmdstr.length())
-			{
-				setARG(parambytes);
-				runStr.FROM(cmdstr.c_str(), cmdstr.length());
-			}
-			if (rulestr.length())
-			{
-				GrapaCHAR rStr(rulestr.c_str(), rulestr.length());
-				rulexx = mConsoleSend.mScriptState.SearchVariable(mConsoleSend.mScriptState.GetNameSpace(), rStr);
-			}
+			GrapaRuleEvent* echo = grresult;
+			while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
+				echo = echo->vRulePointer;
+			GrapaPyObject::FromGrapa(echo,&o);
+			grresult->CLEAR();
+			delete grresult;
 		}
-		std::string r;
-		if (cmdstr.length())
-		{
-			GrapaCHAR grresult = mConsoleSend.SendSync(runStr, rulexx, 0);
-			r.assign((char*)grresult.mBytes, grresult.mLength);
-		}
-		return(r);
-	}
-	
-	py::bytes evalb(std::string cmdstr, std::string paramstr, std::string rulestr)
-	{
-		GrapaCHAR runStr;
-		GrapaRuleEvent* rulexx = NULL;
-		if (true)
-		{
-			pybind11::gil_scoped_acquire acquire;
-			if (cmdstr.length())
-			{
-				setARG(paramstr);
-				runStr.FROM(cmdstr.c_str(), cmdstr.length());
-			}
-			if (rulestr.length())
-			{
-				GrapaCHAR rStr(rulestr.c_str(), rulestr.length());
-				rulexx = mConsoleSend.mScriptState.SearchVariable(mConsoleSend.mScriptState.GetNameSpace(), rStr);
-			}
-		}
-		std::string r;
-		if (cmdstr.length())
-		{
-			GrapaCHAR grresult = mConsoleSend.SendSyncRaw(runStr, rulexx, 0);
-			r.assign((char*)grresult.mBytes, grresult.mLength);
-		}
-		if (true)
-		{
-			pybind11::gil_scoped_acquire acquire;
-			py::bytes rb(r);
-			return rb;
-		}
-		return NULL;
-	}
-	
-	py::bytes evalb(std::string cmdstr, py::bytes parambytes, std::string rulestr)
-	{
-		GrapaCHAR runStr;
-		GrapaRuleEvent* rulexx = NULL;
-		if (true)
-		{
-			pybind11::gil_scoped_acquire acquire;
-			if (cmdstr.length())
-			{
-				setARG(parambytes);
-				runStr.FROM(cmdstr.c_str(), cmdstr.length());
-			}
-			if (rulestr.length())
-			{
-				GrapaCHAR rStr(rulestr.c_str(), rulestr.length());
-				rulexx = mConsoleSend.mScriptState.SearchVariable(mConsoleSend.mScriptState.GetNameSpace(), rStr);
-			}
-		}
-		std::string r;
-		if (cmdstr.length())
-		{
-			GrapaCHAR grresult = mConsoleSend.SendSyncRaw(runStr, rulexx, 0);
-			r.assign((char*)grresult.mBytes, grresult.mLength);
-		}
-		if (true)
-		{
-			pybind11::gil_scoped_acquire acquire;
-			py::bytes rb(r);
-			return rb;
-		}
-		return NULL;
-	}
-	
-	std::string exec(py::bytes cmdbytes, std::string paramstr)
-	{
-		size_t length = 0;
-		GrapaCHAR runStr;
-		if (true)
-		{
-			pybind11::gil_scoped_acquire acquire;
-			py::buffer_info info(py::buffer(cmdbytes).request());
-			const char* buffer = reinterpret_cast<const char*>(info.ptr);
-			length = static_cast<size_t>(info.size);
-			if (length > 0)
-			{
-				setARG(paramstr);
-				runStr.FROM(buffer, length);
-				runStr.mToken = GrapaTokenType::RAW;
-			}
-		}
-		std::string r;
-		if (length > 0)
-		{
-			GrapaCHAR grresult = mConsoleSend.SendSync(runStr, NULL, 0);
-			r.assign((char*)grresult.mBytes, grresult.mLength);
-		}
-		return r; 
+		return o;
 	}
 
-	std::string exec(py::bytes cmdbytes, py::bytes parambytes)
+	py::object eval(std::string cmdstr, py::bytes parambytes, std::string rulestr, std::string profilestr)
 	{
-		size_t length = 0;
 		GrapaCHAR runStr;
+		GrapaRuleEvent* rulexx = NULL;
+		GrapaCHAR profStr;
+		py::object o;
+		GrapaRuleEvent* grresult = NULL;
 		if (true)
 		{
 			pybind11::gil_scoped_acquire acquire;
-			py::buffer_info info(py::buffer(cmdbytes).request());
-			const char* buffer = reinterpret_cast<const char*>(info.ptr);
-			length = static_cast<size_t>(info.size);
-			if (length > 0)
+			if (cmdstr.length())
 			{
 				setARG(parambytes);
-				runStr.FROM(buffer, length);
-				runStr.mToken = GrapaTokenType::RAW;
+				runStr.FROM(cmdstr.c_str(), cmdstr.length());
 			}
+			if (rulestr.length())
+			{
+				GrapaCHAR rStr(rulestr.c_str(), rulestr.length());
+				rulexx = mConsoleSend.mScriptState.SearchVariable(mConsoleSend.mScriptState.GetNameSpace(), rStr);
+			}
+			profStr.FROM(profilestr.c_str(), profilestr.length());
 		}
-		std::string r;
-		if (length > 0)
+		if (cmdstr.length())
 		{
-			GrapaCHAR grresult = mConsoleSend.SendSync(runStr, NULL, 0);
-			r.assign((char*)grresult.mBytes, grresult.mLength);
+			grresult = mConsoleSend.SendSyncResult(runStr, rulexx, 0, profStr);
 		}
-		return r; 
+		if (grresult)
+		{
+			pybind11::gil_scoped_acquire acquire;
+			GrapaRuleEvent* echo = grresult;
+			while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
+				echo = echo->vRulePointer;
+			GrapaPyObject::FromGrapa(echo, &o);
+			grresult->CLEAR();
+			delete grresult;
+		}
+		return o;
 	}
-
-	py::bytes execb(py::bytes cmdbytes, std::string paramstr)
+	
+	py::object exec(py::bytes cmdbytes, std::string paramstr)
 	{
 		size_t length = 0;
 		GrapaCHAR runStr;
+		GrapaRuleEvent* rulexx = NULL;
+		GrapaCHAR profStr;
+		py::object o;
+		GrapaRuleEvent* grresult = NULL;
 		if (true)
 		{
 			pybind11::gil_scoped_acquire acquire;
-			std::string r;
 			py::buffer_info info(py::buffer(cmdbytes).request());
 			const char* buffer = reinterpret_cast<const char*>(info.ptr);
 			length = static_cast<size_t>(info.size);
@@ -383,25 +380,32 @@ public:
 				runStr.mToken = GrapaTokenType::RAW;
 			}
 		}
-		std::string r;
-		if (length > 0)
+		if (length)
 		{
-			GrapaCHAR grresult = mConsoleSend.SendSyncRaw(runStr, NULL, 0);
-			r.assign((char*)grresult.mBytes, grresult.mLength);
+			grresult = mConsoleSend.SendSyncResult(runStr, rulexx, 0, profStr);
 		}
-		if (true)
+		if (grresult)
 		{
 			pybind11::gil_scoped_acquire acquire;
-			py::bytes rb(r);
-			return rb;
+			GrapaRuleEvent* echo = grresult;
+			while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
+				echo = echo->vRulePointer;
+			GrapaPyObject::FromGrapa(echo, &o);
+			grresult->CLEAR();
+			delete grresult;
 		}
-		return NULL;
+		return o;
 	}
 
-	py::bytes execb(py::bytes cmdbytes, py::bytes parambytes)
+	py::object exec(py::bytes cmdbytes, py::bytes parambytes)
 	{
-		GrapaCHAR runStr;
 		size_t length = 0;
+		GrapaCHAR runStr;
+		GrapaRuleEvent* rulexx = NULL;
+		GrapaCHAR profStr;
+		py::object o;
+		GrapaRuleEvent* grresult = NULL;
+		if (true)
 		{
 			pybind11::gil_scoped_acquire acquire;
 			py::buffer_info info(py::buffer(cmdbytes).request());
@@ -414,19 +418,21 @@ public:
 				runStr.mToken = GrapaTokenType::RAW;
 			}
 		}
-		std::string r;
-		if (length > 0)
+		if (length)
 		{
-			GrapaCHAR grresult = mConsoleSend.SendSyncRaw(runStr, NULL, 0);
-			r.assign((char*)grresult.mBytes, grresult.mLength);
+			grresult = mConsoleSend.SendSyncResult(runStr, rulexx, 0, profStr);
 		}
-		if (true)
+		if (grresult)
 		{
 			pybind11::gil_scoped_acquire acquire;
-			py::bytes rb(r);
-			return rb;
+			GrapaRuleEvent* echo = grresult;
+			while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
+				echo = echo->vRulePointer;
+			GrapaPyObject::FromGrapa(echo, &o);
+			grresult->CLEAR();
+			delete grresult;
 		}
-		return NULL;
+		return o;
 	}
 
 };
@@ -459,14 +465,10 @@ PYBIND11_MODULE(grapapy, m)
 
 	py::class_<GrapaStruct>(m, "new")
 		.def(py::init<>())
-		.def("eval", static_cast<std::string(GrapaStruct::*)(std::string, py::bytes, std::string)>(&GrapaStruct::eval), "", py::arg("c"), py::arg("p"), py::arg("r") = "", pybind11::call_guard<py::gil_scoped_release>())
-		.def("eval", static_cast<std::string (GrapaStruct::*)(std::string,std::string, std::string)>(&GrapaStruct::eval),"",py::arg("c"),py::arg("p") = "", py::arg("r") = "", pybind11::call_guard<py::gil_scoped_release>())
-		.def("evalb", static_cast<py::bytes(GrapaStruct::*)(std::string, py::bytes, std::string)>(&GrapaStruct::evalb), "", py::arg("c"), py::arg("p"), py::arg("r") = "", pybind11::call_guard<py::gil_scoped_release>())
-		.def("evalb", static_cast<py::bytes(GrapaStruct::*)(std::string, std::string, std::string)>(&GrapaStruct::evalb), "", py::arg("c"), py::arg("p") = "", py::arg("r") = "", pybind11::call_guard<py::gil_scoped_release>())
-		.def("exec", static_cast<std::string(GrapaStruct::*)(py::bytes, py::bytes)>(&GrapaStruct::exec), "", py::arg("c"), py::arg("p"), pybind11::call_guard<py::gil_scoped_release>())
-		.def("exec", static_cast<std::string (GrapaStruct::*)(py::bytes,std::string)>(&GrapaStruct::exec),"",py::arg("c"),py::arg("p")="", pybind11::call_guard<py::gil_scoped_release>())
-		.def("execb", static_cast<py::bytes(GrapaStruct::*)(py::bytes, py::bytes)>(&GrapaStruct::execb), "", py::arg("c"), py::arg("p"), pybind11::call_guard<py::gil_scoped_release>())
-		.def("execb", static_cast<py::bytes (GrapaStruct::*)(py::bytes,std::string)>(&GrapaStruct::execb),"",py::arg("c"),py::arg("p")="", pybind11::call_guard<py::gil_scoped_release>())
+		.def("eval", static_cast<py::object(GrapaStruct::*)(std::string, py::bytes, std::string, std::string)>(&GrapaStruct::eval), "", py::arg("c"), py::arg("p"), py::arg("r") = "", py::arg("f") = "", pybind11::call_guard<py::gil_scoped_release>())
+		.def("eval", static_cast<py::object(GrapaStruct::*)(std::string,std::string, std::string, std::string)>(&GrapaStruct::eval),"",py::arg("c"),py::arg("p") = "", py::arg("r") = "", py::arg("f") = "", pybind11::call_guard<py::gil_scoped_release>())
+		.def("exec", static_cast<py::object(GrapaStruct::*)(py::bytes, py::bytes)>(&GrapaStruct::exec), "", py::arg("c"), py::arg("p"), pybind11::call_guard<py::gil_scoped_release>())
+		.def("exec", static_cast<py::object(GrapaStruct::*)(py::bytes,std::string)>(&GrapaStruct::exec),"",py::arg("c"),py::arg("p")="", pybind11::call_guard<py::gil_scoped_release>())
 		;
 	
     /*

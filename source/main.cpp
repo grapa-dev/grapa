@@ -90,7 +90,9 @@ int main(int argc, const char* argv[])
     {
         My_Console mConsole;
         mConsole.Start(inStr, outStr, runStr);
-         if (!needExit || showConsole)
+        GrapaCHAR runStr("10;"),profile("");
+        GrapaCHAR grresult = mConsole.mConsoleSend.SendSync(runStr, NULL, 0, profile);
+        if (!needExit || showConsole)
             mConsole.Run(NULL, NULL);
         mConsole.Stop();
     }
@@ -113,9 +115,9 @@ int main(int argc, const char* argv[])
             mConsoleSend.Start();
             GrapaCHAR grresult;
             if (gSystem->mGrammar.mLength)
-                grresult = mConsoleSend.SendSync(gSystem->mGrammar,NULL,0);
+                grresult = mConsoleSend.SendSync(gSystem->mGrammar,NULL,0,GrapaCHAR());
             if (runStr.mLength)
-                grresult = mConsoleSend.SendSync(runStr,NULL,0);
+                grresult = mConsoleSend.SendSync(runStr,NULL,0,GrapaCHAR());
 
             GrapaFileIO gf;
             GrapaError err = gf.Open((char*)inStr.mBytes);
@@ -189,7 +191,7 @@ int main(int argc, const char* argv[])
                 }
                 else if (setValue.mLength)
                 {
-                    plan = mScriptExec.Plan(&mRuleVariables, setValue, NULL, 0);
+                    plan = mScriptExec.Plan(&mRuleVariables, setValue, NULL, 0, GrapaCHAR());
                 }
                 if (plan)
                 {

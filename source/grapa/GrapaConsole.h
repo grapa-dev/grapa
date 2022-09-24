@@ -28,8 +28,9 @@ public:
 	virtual GrapaError Start();
 	virtual void Stop();
 	virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen);
-	virtual GrapaCHAR SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId);
-	virtual GrapaCHAR SendSyncRaw(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId);
+	virtual GrapaCHAR SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile);
+	virtual GrapaCHAR SendSyncRaw(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile);
+	virtual GrapaRuleEvent* SendSyncResult(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

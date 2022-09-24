@@ -2623,7 +2623,7 @@ GrapaRuleEvent* GrapaLibraryRuleExecEvent::Run(GrapaScriptExec* vScriptExec, Gra
 			ns = ns->GetParrent();
 		if (ns)
 		{
-			GrapaRuleEvent* plan = vScriptExec->Plan(ns, r1.vVal->mValue, NULL, 0);
+			GrapaRuleEvent* plan = vScriptExec->Plan(ns, r1.vVal->mValue, NULL, 0, GrapaCHAR());
 			GrapaRuleEvent* e = NULL;
 			if (plan)
 			{
@@ -7547,10 +7547,17 @@ GrapaRuleEvent* GrapaLibraryRulePlanEvent::Run(GrapaScriptExec *vScriptExec, Gra
 	GrapaRuleEvent *script = scriptHead;
 	while (script && script->mValue.mToken == GrapaTokenType::PTR) script = script->vRulePointer;
 
-	GrapaRuleEvent *rule = NULL;
-	if (script && (script->mValue.mToken == GrapaTokenType::ARRAY || script->mValue.mToken == GrapaTokenType::LIST) && script->vQueue && script->vQueue->mCount) { script = (GrapaRuleEvent*)script->vQueue->Head(); rule = script->Next(); }
+	GrapaRuleEvent* rule = NULL;
+	GrapaRuleEvent* profile = NULL;
+	if (script && (script->mValue.mToken == GrapaTokenType::ARRAY || script->mValue.mToken == GrapaTokenType::LIST) && script->vQueue && script->vQueue->mCount)
+	{ 
+		script = (GrapaRuleEvent*)script->vQueue->Head(); 
+		rule = script->Next();
+		if (rule) profile = rule->Next();
+	}
 	while (script && script->mValue.mToken == GrapaTokenType::PTR) script = script->vRulePointer;
 	while (rule && rule->mValue.mToken == GrapaTokenType::PTR) rule = rule->vRulePointer;
+	while (profile && profile->mValue.mToken == GrapaTokenType::PTR) profile = profile->vRulePointer;
 
 	if (script)
 	{
@@ -7568,7 +7575,7 @@ GrapaRuleEvent* GrapaLibraryRulePlanEvent::Run(GrapaScriptExec *vScriptExec, Gra
 				case GrapaTokenType::INT:
 					a.FromBytes(rule->mValue);
 					ruleId = a.LongValue();
-					codeResult = vScriptExec->Plan(pNameSpace, script->mValue, NULL, ruleId);
+					codeResult = vScriptExec->Plan(pNameSpace, script->mValue, NULL, ruleId, profile ? profile->mValue : GrapaCHAR());
 					break;
 				case GrapaTokenType::STR:
 					ruleVar = vScriptExec->vScriptState->SearchVariable(pNameSpace, rule->mValue);
@@ -7576,21 +7583,21 @@ GrapaRuleEvent* GrapaLibraryRulePlanEvent::Run(GrapaScriptExec *vScriptExec, Gra
 						ruleVar = vScriptExec->vScriptState->mRuleStartQueue.Search(rule->HashId(0));
 					if (ruleVar && ruleVar->mValue.mToken==GrapaTokenType::RULE)
 					{
-						codeResult = vScriptExec->Plan(pNameSpace, script->mValue, ruleVar, 0);
+						codeResult = vScriptExec->Plan(pNameSpace, script->mValue, ruleVar, 0, profile ? profile->mValue : GrapaCHAR());
 					}
 					else
 					{
-						codeResult = vScriptExec->Plan(pNameSpace, script->mValue, NULL, rule->HashId(0));
+						codeResult = vScriptExec->Plan(pNameSpace, script->mValue, NULL, rule->HashId(0), profile ? profile->mValue : GrapaCHAR());
 					}
 					break;
 				case GrapaTokenType::RULE:
-					codeResult = vScriptExec->Plan(pNameSpace, script->mValue, rule, 0);
+					codeResult = vScriptExec->Plan(pNameSpace, script->mValue, rule, 0, profile ? profile->mValue : GrapaCHAR());
 					break;
 				}
 			}
 			else
 			{
-				codeResult = vScriptExec->Plan(pNameSpace, script->mValue, NULL, 0);
+				codeResult = vScriptExec->Plan(pNameSpace, script->mValue, NULL, 0, profile ? profile->mValue : GrapaCHAR());
 			}
 		}
 	}
@@ -9270,7 +9277,7 @@ GrapaRuleEvent* GrapaLibraryRuleIncludeEvent::Optimize(GrapaScriptExec *vScriptE
 			}
 			pOperation->CLEAR();
 			delete pOperation;
-			pOperation = vScriptExec->Plan(pNameSpace, setValue, NULL, 0);
+			pOperation = vScriptExec->Plan(pNameSpace, setValue, NULL, 0, GrapaCHAR());
 			if (h.mLength)
 			{
 				objEvent->vDatabase->DirectorySwitch(oldpath);
@@ -10485,7 +10492,7 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 		else if ((method.Cmp("JSON-GRAPA") == 0)||(method.Cmp("JSON") == 0))
 		{
 			GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$function"));
-			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, r1.vVal->mValue, rulexx, 0);
+			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, r1.vVal->mValue, rulexx, 0, GrapaCHAR());
 			result = vScriptExec->ProcessPlan(pNameSpace, plan);
 			if (plan)
 			{
@@ -10499,7 +10506,7 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 			GrapaCHAR val("$&");
 			val.Append(r1.vVal->mValue);
 			val.Append("$&");
-			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0);
+			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0, GrapaCHAR());
 			result = vScriptExec->ProcessPlan(pNameSpace, plan);
 			if (plan)
 			{
@@ -10513,7 +10520,7 @@ GrapaRuleEvent* GrapaLibraryRuleEncodeEvent::Run(GrapaScriptExec *vScriptExec, G
 			GrapaCHAR val("$&");
 			val.Append(r1.vVal->mValue);
 			val.Append("$&");
-			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0);
+			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0, GrapaCHAR());
 			result = vScriptExec->ProcessPlan(pNameSpace, plan);
 			if (plan)
 			{
@@ -14313,7 +14320,7 @@ GrapaRuleEvent* GrapaLibraryRuleListEvent::Run(GrapaScriptExec* vScriptExec, Gra
 			if (r1.vVal->mValue.mLength)
 			{
 				GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$function"));
-				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, r1.vVal->mValue, rulexx, 0);
+				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, r1.vVal->mValue, rulexx, 0, GrapaCHAR());
 				result = vScriptExec->ProcessPlan(pNameSpace, plan);
 				if (plan)
 				{
@@ -14420,7 +14427,7 @@ GrapaRuleEvent* GrapaLibraryRuleXmlEvent::Run(GrapaScriptExec* vScriptExec, Grap
 				val.Append("$&");
 				val.Append(r1.vVal->mValue);
 				val.Append("$&");
-				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0);
+				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, val, rulexx, 0, GrapaCHAR());
 				result = vScriptExec->ProcessPlan(pNameSpace, plan);
 				if (plan)
 				{

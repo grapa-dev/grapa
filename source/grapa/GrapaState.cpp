@@ -2319,35 +2319,35 @@ void GrapaScriptState::ClearQueue()
 	mItemState.GetQueue()->CLEAR();
 }
 
-GrapaRuleQueue* GrapaScriptState::GetTokens(GrapaRuleQueue* pTokenQueue, GrapaCHAR& pValue)
-{
-	return(GetTokens(pTokenQueue, (char*)pValue.mBytes, pValue.mLength));
-}
+//GrapaRuleQueue* GrapaScriptState::GetTokens(GrapaRuleQueue* pTokenQueue, GrapaCHAR& pValue)
+//{
+//	return(GetTokens(pTokenQueue, (char*)pValue.mBytes, pValue.mLength));
+//}
 
-GrapaRuleQueue* GrapaScriptState::GetTokens(GrapaRuleQueue* pTokenQueue, const char* pValue, u64 pLen)
-{
-	if (pLen == 0) return(NULL);
-
-	GrapaItemState paramState;
-	GrapaQueue paramQueue;
-
-	if (pTokenQueue) pTokenQueue->CLEAR();
-	else pTokenQueue = new GrapaRuleQueue();
-
-	paramState.SetParams(&mItemParams, GetNameSpace());
-	paramState.SetQueue(&paramQueue);
-	paramState.SetOutput(pTokenQueue);
-
-	GrapaItemEvent* event = new GrapaItemEvent();
-	event->mMessage.SetSize(pLen + 1);
-	event->mMessage.FROM(pLen, (char*)pValue);
-	((char*)event->mMessage.mBytes)[pLen] = 0;
-	paramQueue.PushTail(event);
-
-	paramState.StartSync();
-
-	return(pTokenQueue);
-}
+//GrapaRuleQueue* GrapaScriptState::GetTokens(GrapaRuleQueue* pTokenQueue, const char* pValue, u64 pLen)
+//{
+//	if (pLen == 0) return(NULL);
+//
+//	GrapaItemState paramState;
+//	GrapaQueue paramQueue;
+//
+//	if (pTokenQueue) pTokenQueue->CLEAR();
+//	else pTokenQueue = new GrapaRuleQueue();
+//
+//	paramState.SetParams(&mItemParams, GetNameSpace());
+//	paramState.SetQueue(&paramQueue);
+//	paramState.SetOutput(pTokenQueue);
+//
+//	GrapaItemEvent* event = new GrapaItemEvent();
+//	event->mMessage.SetSize(pLen + 1);
+//	event->mMessage.FROM(pLen, (char*)pValue);
+//	((char*)event->mMessage.mBytes)[pLen] = 0;
+//	paramQueue.PushTail(event);
+//
+//	paramState.StartSync();
+//
+//	return(pTokenQueue);
+//}
 
 void GrapaScriptState::SetTokenParam(u64 pLexParam, const char* pValue, bool pTouched)
 {
@@ -2654,7 +2654,7 @@ GrapaRuleEvent* GrapaScriptState::GetClass(GrapaNames* pNameSpace, const GrapaCH
 	else if (setValue.mLength)
 	{
 		//gSystem->mLibLock.LeaveCritical();
-		plan = vScriptExec->Plan(pNameSpace, setValue, NULL, 0);
+		plan = vScriptExec->Plan(pNameSpace, setValue, NULL, 0, GrapaCHAR());
 		//gSystem->mLibLock.WaitCritical();
 	}
 	if (plan)
@@ -5946,7 +5946,7 @@ GrapaRuleEvent* GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaRuleEvent* pO
 	return(result2);
 }
 
-GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput, GrapaRuleEvent* rulexx, u64 pRuleId)
+GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput, GrapaRuleEvent* rulexx, u64 pRuleId, GrapaCHAR pProfile)
 {
 	GrapaItemState itemState;
 	GrapaQueue itemQueue;
@@ -5954,6 +5954,7 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 	itemState.SetQueue(&itemQueue);
 	itemState.SetOutput(&tokenQueue);
 	itemState.SetParams(&vScriptState->mItemParams, vScriptState->GetNameSpace());
+	itemState.mProfile.FROM(pProfile);
 
 	GrapaItemEvent* event = new GrapaItemEvent();
 	event->mMessage.FROM(pInput);
@@ -6436,7 +6437,8 @@ public:
 	GrapaNames* pNameSpace;
 	GrapaRuleEvent* pRule;
 	u64 pRuleId;
-	GrapaExecSync() { handled = false; vResult = NULL; pValue = NULL; e = NULL; vScriptState = NULL; pNameSpace = NULL; pRule = NULL; pRuleId = 0; }
+	GrapaCHAR* pProfile;
+	GrapaExecSync() { handled = false; vResult = NULL; pValue = NULL; e = NULL; vScriptState = NULL; pNameSpace = NULL; pRule = NULL; pRuleId = 0; pProfile = NULL; }
 	virtual ~GrapaExecSync() {}
 	virtual void Starting() {}
 	virtual void Running()
@@ -6460,7 +6462,7 @@ public:
 
 		if ((*pValue).mToken == GrapaTokenType::STR || (*pValue).mToken == GrapaTokenType::SYSSTR)
 		{
-			GrapaRuleEvent* plan = e->Plan(pNameSpace, (*pValue), pRule, pRuleId);
+			GrapaRuleEvent* plan = e->Plan(pNameSpace, (*pValue), pRule, pRuleId, *pProfile);
 			vResult = e->ProcessPlan(pNameSpace, plan);
 			if (plan)
 			{
@@ -6518,9 +6520,8 @@ public:
 	virtual void Stopping() {}
 };
 
-GrapaRuleEvent* GrapaScriptExec::Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR& pValue)
+GrapaRuleEvent* GrapaScriptExec::Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pRule, u64 pRuleId, GrapaCHAR pProfile, GrapaCHAR& pValue)
 {
-	GrapaRuleEvent* result = NULL;
 	if (pValue.mLength == 0) return(NULL);
 
 	GrapaExecSync ge;
@@ -6530,6 +6531,7 @@ GrapaRuleEvent* GrapaScriptExec::Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pR
 	ge.pNameSpace = pNameSpace;
 	ge.pRule = pRule;
 	ge.pRuleId = pRuleId;
+	ge.pProfile = &pProfile;
 	ge.StartSync();
 //	while (!ge.mStop)
 //	{
