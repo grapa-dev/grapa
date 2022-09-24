@@ -85,6 +85,7 @@ cp libgrapa.so source/grapa-other/mac-apple/libgrapa.so
 tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/* source/grapa-other/mac-apple/*
 
 python3 setup.py sdist
+pip3 install dist/grapapy-0.0.16.tar.gz
 
 ```
 
