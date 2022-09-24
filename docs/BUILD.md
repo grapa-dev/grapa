@@ -22,6 +22,8 @@ rmdir /S /q prj\winlib\x64
 7z a bin/grapa-win.zip grapa.exe grapa.lib
 
 python setup.py sdist
+cd dist
+pip install grapapy-0.0.16.tar.gz
 
 ```
 
@@ -110,6 +112,9 @@ cp libgrapa.so source/grapa-other/mac-intel/libgrapa.so
 tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/* source/grapa-other/mac-intel/*
 
 python3 setup.py sdist
+cd dist
+pip3 install grapapy-0.0.16.tar.gz
+
 
 ```
 
