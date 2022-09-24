@@ -23,7 +23,7 @@ rmdir /S /q prj\winlib\x64
 
 python setup.py sdist
 pip install dist\grapapy-0.0.16.tar.gz
-
+rmdir /s /q grapapy.egg-info
 
 ```
 
