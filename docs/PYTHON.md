@@ -42,7 +42,7 @@ GrapaPy converts the following to str when passing back to Python. THis will cha
 Grapa | Notes
 ------------ | -------------
 $ERR | Implemented as $LIST, this tye is returned on an error.
-$XML, $EL, $TAG | Optionally convert to json before returning to Python
+$XML, $EL, $TAG | Optionally convert to a $LIST before returning to Python
 $TIME | Supports unlimited years, and as high granularity as the underlying OS can support.
 $VECTOR | Work to translate between Python and Grapa not implemented.
 $OP | This is the core grapa language that binds to internal libraries.
