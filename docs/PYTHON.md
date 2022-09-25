@@ -43,7 +43,7 @@ Grapa | Notes
 ------------ | -------------
 $ERR | Implemented as $LIST, this tye is returned on an error.
 $XML, $EL, $TAG | Optionally convert to json before returning to Python
-$TIME
+$TIME | Supports unlimited years, and as high granularity as the underlyuing OS can support.
 $VECTOR | Work to translate between Python and Grapa not implemented.
 $OP | This is the core grapa language that binds to internal libraries.
 $CODE | This is the core grapa language that supports a list of $OP values.
