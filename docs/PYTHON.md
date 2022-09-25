@@ -24,7 +24,8 @@ pip install grapapy
 ```
 
 GrapaPy translates the following types between Python and Grapa:
-Python | Grapa
+
+Python | Grapa | Notes
 ------------ | ------------- | -------------
 str | $STR
 bytes | $RAW
