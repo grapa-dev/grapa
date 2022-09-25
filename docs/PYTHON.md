@@ -33,7 +33,7 @@ int | $INT | grapa $INT is unlimited precision
 float | $FLOAT | grapa $FLOAT is unlimited precision
 list | $ARRAY
 dict | $LIST
-tuple | $TUPLE
+tuple | $TUPLE | in grapa, $TUPLE is equal $ARRAY other than syntax
 bool | $BOOL
 None | null
 
