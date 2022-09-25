@@ -37,7 +37,7 @@ tuple | $TUPLE | In grapa, a $TUPLE is the same as an $ARRAY. $TUPLE added for s
 bool | $BOOL
 None | null
 
-In grapa, the underlying structure for $ARRAY, $LIST, and $TUPLE are the same. With the difference bing first differnt brackets, and second that $LIST uses name/value pairs (like dict in Python). 
+In grapa, the underlying structure for $ARRAY, $LIST, and $TUPLE are the same. With the difference bing first differnt brackets, and second that $LIST uses name/value pairs (like dict in Python). For lists that use more of a block of memory, use either $VECTOR or $TABLE. 
 
 GrapaPy converts the following to str when passing back to Python. This will change in the future for some of these, such as $XML. 
 
