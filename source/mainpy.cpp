@@ -50,7 +50,7 @@ public:
 			pStr.mToken = GrapaTokenType::BOOL;
 			result = new GrapaRuleEvent(0, pname, pStr);
 		}
-		else if (Py_IsNone(o))
+		else if (Py_None==o)
 		{
 			result = new GrapaRuleEvent(0, pname, pStr);
 			result->SetNull();
