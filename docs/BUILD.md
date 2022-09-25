@@ -86,8 +86,8 @@ cp libgrapa.so source/grapa-other/mac-apple/libgrapa.so
 tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/* source/grapa-other/mac-apple/*
 
 python3 setup.py sdist
-pip3 install dist/grapapy-0.0.16.tar.gz
 rm -rf grapapy.egg-info
+pip3 install dist/grapapy-0.0.16.tar.gz
 
 ```
 
@@ -115,8 +115,8 @@ cp libgrapa.so source/grapa-other/mac-intel/libgrapa.so
 tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/* source/grapa-other/mac-intel/*
 
 python3 setup.py sdist
-pip3 install dist/grapapy-0.0.16.tar.gz
 rm -rf grapapy.egg-info
+pip3 install dist/grapapy-0.0.16.tar.gz
 
 
 ```
@@ -156,6 +156,9 @@ cp libgrapa.so source/grapa-lib/aws/libgrapa.so
 tar -czvf bin/grapa-aws.tar.gz grapa source/grapa-lib/aws/*
 
 python3 setup.py sdist
+rm -rf grapapy.egg-info
+pip3 install dist/grapapy-0.0.16.tar.gz
+
 ```
 
 Other commands
