@@ -229,6 +229,7 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 				}
 				break;
 			case GrapaTokenType::ARRAY:
+			case GrapaTokenType::TUPLE:
 			case GrapaTokenType::LIST:
 				if (item->vQueue && item->vQueue->mCount)
 				{

@@ -49,6 +49,7 @@ public: enum {
 	RULE = 27,
 	TOKEN = 28,
 	WIDGET = 29,
+	TUPLE = 30,
 	X1 = 128,  // don't change above numbers
 	OTHER,
 	PTR,

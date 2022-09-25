@@ -528,6 +528,7 @@ GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField,
 			break;
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::VECTOR:
 		case GrapaTokenType::WIDGET:
 		case GrapaTokenType::XML:
@@ -631,6 +632,7 @@ GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField,
 				case GrapaTokenType::STR:
 				case GrapaTokenType::TIME:
 				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::TUPLE:
 				case GrapaTokenType::VECTOR:
 				case GrapaTokenType::WIDGET:
 				case GrapaTokenType::XML:
@@ -879,6 +881,7 @@ GrapaError GrapaDB::DeleteTableField(GrapaDBTable& pTable, u64 pFieldId)
 				case GrapaTokenType::STR:
 				case GrapaTokenType::TIME:
 				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::TUPLE:
 				case GrapaTokenType::VECTOR:
 				case GrapaTokenType::WIDGET:
 				case GrapaTokenType::XML:
@@ -3126,6 +3129,7 @@ GrapaError GrapaDB::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cur
 		case GrapaTokenType::STR: fieldTypeStr = (char*)"STR"; break;
 		case GrapaTokenType::TIME: fieldTypeStr = (char*)"TIME"; break;
 		case GrapaTokenType::ARRAY: fieldTypeStr = (char*)"ARRAY"; break;
+		case GrapaTokenType::TUPLE: fieldTypeStr = (char*)"TUPLE"; break;
 		case GrapaTokenType::VECTOR: fieldTypeStr = (char*)"VECTOR"; break;
 		case GrapaTokenType::WIDGET: fieldTypeStr = (char*)"WIDGET"; break;
 		case GrapaTokenType::LIST: fieldTypeStr = (char*)"LIST"; break;

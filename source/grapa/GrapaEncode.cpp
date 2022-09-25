@@ -750,7 +750,7 @@ public:
 					hasaug = true;
 					aug = x;
 					aug2 = x;
-					if (x->mValue.mToken == GrapaTokenType::ARRAY)
+					if (x->mValue.mToken == GrapaTokenType::ARRAY || x->mValue.mToken == GrapaTokenType::TUPLE)
 					{
 						aug = x->vQueue->Head();
 						aug2 = aug;
@@ -771,7 +771,7 @@ public:
 				bool first = true;
 				GrapaRuleEvent* e = NULL;
 				GrapaRuleEvent* e2 = pData;
-				if (pData->mValue.mToken == GrapaTokenType::ARRAY)
+				if (pData->mValue.mToken == GrapaTokenType::ARRAY || pData->mValue.mToken == GrapaTokenType::TUPLE)
 				{
 					if (pData->vQueue == NULL) return false;
 					e = pData->vQueue->Head();
@@ -821,7 +821,7 @@ public:
 				bool first = true;
 				GrapaRuleEvent* e = NULL;
 				GrapaRuleEvent* e2 = pData;
-				if (pData->mValue.mToken == GrapaTokenType::ARRAY)
+				if (pData->mValue.mToken == GrapaTokenType::ARRAY || pData->mValue.mToken == GrapaTokenType::TUPLE)
 				{
 					if (pData->vQueue == NULL) return false;
 					e = pData->vQueue->Head();
@@ -1067,7 +1067,7 @@ public:
 					hasaug = true;
 					aug = x;
 					aug2 = x;
-					if (x->mValue.mToken == GrapaTokenType::ARRAY)
+					if (x->mValue.mToken == GrapaTokenType::ARRAY || x->mValue.mToken == GrapaTokenType::TUPLE)
 					{
 						aug = x->vQueue->Head();
 						aug2 = aug;
@@ -1088,7 +1088,7 @@ public:
 				berr = blst::blst_p2_uncompress(&signature, pR.mBytes);
 				GrapaRuleEvent* e = NULL;
 				GrapaRuleEvent* e2 = pData;
-				if (pData->mValue.mToken == GrapaTokenType::ARRAY)
+				if (pData->mValue.mToken == GrapaTokenType::ARRAY || pData->mValue.mToken == GrapaTokenType::TUPLE)
 				{
 					if (pData->vQueue == NULL) return false;
 					e = pData->vQueue->Head();
@@ -1151,7 +1151,7 @@ public:
 				berr = blst::blst_p1_uncompress(&signature, pR.mBytes);
 				GrapaRuleEvent* e = NULL;
 				GrapaRuleEvent* e2 = pData;
-				if (pData->mValue.mToken == GrapaTokenType::ARRAY)
+				if (pData->mValue.mToken == GrapaTokenType::ARRAY || pData->mValue.mToken == GrapaTokenType::TUPLE)
 				{
 					if (pData->vQueue == NULL) return false;
 					e = pData->vQueue->Head();
@@ -1641,6 +1641,7 @@ bool GrapaEncode::FROM(GrapaRuleEvent* pKey)
 							bls->SetPub(x->mValue);
 						break;
 					case GrapaTokenType::ARRAY:
+					case GrapaTokenType::TUPLE:
 						if (x->vQueue && x->vQueue->mCount)
 						{
 							GrapaRuleEvent* e = x->vQueue->Head();

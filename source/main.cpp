@@ -151,7 +151,7 @@ int main(int argc, const char* argv[])
                     plan = new GrapaRuleEvent();
                     plan->vQueue = new GrapaRuleQueue();
 
-                    if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY)
+                    if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY || expanded.mToken == GrapaTokenType::TUPLE)
                     {
                         GrapaRuleQueue* tq = new GrapaRuleQueue();
                         ((GrapaRuleQueue*)tq)->FROM(mScriptExec.vScriptState, &mRuleVariables, expanded);

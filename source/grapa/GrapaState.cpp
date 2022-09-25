@@ -1302,6 +1302,7 @@ void GrapaRuleEvent::TOSize(u64& pSize)
 		break;
 	case GrapaTokenType::ERR:
 	case GrapaTokenType::ARRAY:
+	case GrapaTokenType::TUPLE:
 	case GrapaTokenType::LIST:
 	case GrapaTokenType::XML:
 	case GrapaTokenType::EL:
@@ -1347,6 +1348,7 @@ void GrapaRuleEvent::TO(GrapaBYTE& pValue)
 		break;
 	case GrapaTokenType::ERR:
 	case GrapaTokenType::ARRAY:
+	case GrapaTokenType::TUPLE:
 	case GrapaTokenType::LIST:
 	case GrapaTokenType::XML:
 	case GrapaTokenType::EL:
@@ -1421,6 +1423,7 @@ bool GrapaRuleEvent::IsZero()
 		}
 		break;
 	case GrapaTokenType::ARRAY:
+	case GrapaTokenType::TUPLE:
 	case GrapaTokenType::LIST:
 	case GrapaTokenType::XML:
 	case GrapaTokenType::EL:
@@ -1510,6 +1513,7 @@ bool GrapaRuleEvent::IsNullIsNegIsZero(bool& isNeg, bool& isNull)
 			}
 			break;
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:
@@ -1594,6 +1598,7 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 		case GrapaTokenType::SYSSTR:
 		case GrapaTokenType::TIME: 
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:
@@ -1617,6 +1622,7 @@ GrapaRuleEvent* GrapaRuleQueue::FROM(GrapaScriptState* pScriptState, GrapaNames*
 		{
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:
@@ -1707,6 +1713,7 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 			break;
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:
@@ -1738,6 +1745,7 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 				break;
 			case GrapaTokenType::ERR:
 			case GrapaTokenType::ARRAY:
+			case GrapaTokenType::TUPLE:
 			case GrapaTokenType::LIST:
 			case GrapaTokenType::XML:
 			case GrapaTokenType::EL:
@@ -1787,6 +1795,7 @@ void GrapaRuleQueue::TO(GrapaBYTE& pValue, GrapaRuleEvent* pClass, u8 pType)
 		case GrapaTokenType::SYSSTR:
 		case GrapaTokenType::TIME:
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::XML:
 		case GrapaTokenType::EL:
@@ -2612,7 +2621,7 @@ GrapaRuleEvent* GrapaScriptState::GetClass(GrapaNames* pNameSpace, const GrapaCH
 		plan->vQueue = new GrapaRuleQueue();
 
 		needsClasses = true;
-		if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY)
+		if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY || expanded.mToken == GrapaTokenType::TUPLE)
 		{
 			GrapaRuleQueue* tq = new GrapaRuleQueue();
 			((GrapaRuleQueue*)tq)->FROM(vScriptExec->vScriptState, pNameSpace, expanded);
@@ -3308,7 +3317,7 @@ GrapaRuleEvent* GrapaScriptExec::PlanRule(GrapaNames* pNameSpace, GrapaRuleEvent
 					e->mValue.FROM(val);
 					if (e->mValue.mToken == GrapaTokenType::RAW)
 						e->mValue.mToken = GrapaTokenType::STR;
-					else if (e->mValue.mToken == GrapaTokenType::ARRAY || e->mValue.mToken == GrapaTokenType::LIST || e->mValue.mToken == GrapaTokenType::XML || e->mValue.mToken == GrapaTokenType::EL || e->mValue.mToken == GrapaTokenType::TAG || e->mValue.mToken == GrapaTokenType::OP || e->mValue.mToken == GrapaTokenType::CODE || e->mValue.mToken == GrapaTokenType::ERR)
+					else if (e->mValue.mToken == GrapaTokenType::ARRAY || e->mValue.mToken == GrapaTokenType::TUPLE || e->mValue.mToken == GrapaTokenType::LIST || e->mValue.mToken == GrapaTokenType::XML || e->mValue.mToken == GrapaTokenType::EL || e->mValue.mToken == GrapaTokenType::TAG || e->mValue.mToken == GrapaTokenType::OP || e->mValue.mToken == GrapaTokenType::CODE || e->mValue.mToken == GrapaTokenType::ERR)
 					{
 						e->vQueue = new GrapaRuleQueue();
 						e->vClass = ((GrapaRuleQueue*)e->vQueue)->FROM(vScriptState, pNameSpace, e->mValue);
@@ -4459,6 +4468,7 @@ void GrapaScriptExec::ReplaceLocalQueue(GrapaRuleQueue* pList, GrapaRuleQueue* p
 			break;
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::OBJ:
 			ReplaceLocalQueue((GrapaRuleQueue*)item->vQueue, pLocal);
 			break;
@@ -4721,7 +4731,7 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 		if (pTokenEvent->mValue.mLength) EchoDB(pSend, pTokenEvent->mValue);
 		break;
 	case GrapaTokenType::PTR:
-		if (pTokenEvent->vRulePointer && (pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ERR || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ARRAY || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::LIST || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::XML || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::EL || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::TAG || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::OP || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::OBJ || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ERR))
+		if (pTokenEvent->vRulePointer && (pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ERR || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ARRAY || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::TUPLE || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::LIST || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::XML || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::EL || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::TAG || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::OP || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::OBJ || pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::ERR))
 			EchoList(pSend, pTokenEvent->vRulePointer,elMode, false, false);
 		else if (pTokenEvent->vRulePointer && pTokenEvent->vRulePointer->mValue.mToken == GrapaTokenType::PTR)
 			EchoList(pSend, pTokenEvent->vRulePointer,elMode, false, false);
@@ -4849,6 +4859,10 @@ void GrapaScriptExec::EchoDB(GrapaSystemSend* pSend, GrapaFile& pValue)
 						if (field->mRef < 7)
 							field->mRef = 7;
 						break;
+					case GrapaTokenType::TUPLE:
+						if (field->mRef < 7)
+							field->mRef = 7;
+						break;
 					case GrapaTokenType::VECTOR:
 						if (field->mRef < 8)
 							field->mRef = 8;
@@ -4942,6 +4956,12 @@ void GrapaScriptExec::EchoDB(GrapaSystemSend* pSend, GrapaFile& pValue)
 					case GrapaTokenType::ARRAY:
 						if (s.mLength)
 							s.FROM("<ARRAY>");
+						else
+							s.SetLength(0);
+						break;
+					case GrapaTokenType::TUPLE:
+						if (s.mLength)
+							s.FROM("<TUPLE>");
 						else
 							s.SetLength(0);
 						break;
@@ -5046,6 +5066,7 @@ void GrapaScriptExec::EchoTokenValue(GrapaSystemSend* pSend, GrapaRuleEvent* pEv
 	case GrapaTokenType::STR:   pSend->Send(this, vScriptState->vRuleVariables, "$STR"); break;
 	case GrapaTokenType::TIME:  pSend->Send(this, vScriptState->vRuleVariables, "$TIME"); break;
 	case GrapaTokenType::ARRAY: pSend->Send(this, vScriptState->vRuleVariables, "$ARRAY "); break;
+	case GrapaTokenType::TUPLE: pSend->Send(this, vScriptState->vRuleVariables, "$TUPLE "); break;
 	case GrapaTokenType::VECTOR: pSend->Send(this, vScriptState->vRuleVariables, "$VECTOR "); break;
 	case GrapaTokenType::WIDGET: pSend->Send(this, vScriptState->vRuleVariables, "$WIDGET "); break;
 	case GrapaTokenType::LIST: pSend->Send(this, vScriptState->vRuleVariables, "$LIST "); break;
@@ -5291,6 +5312,7 @@ void GrapaScriptExec::EchoRuleValue(GrapaSystemSend* pSend, GrapaRuleEvent* pEve
 						case GrapaTokenType::STR:   pSend->Send(this, vScriptState->vRuleVariables, "$STR"); break;
 						case GrapaTokenType::TIME:  pSend->Send(this, vScriptState->vRuleVariables, "$TIME"); break;
 						case GrapaTokenType::ARRAY: pSend->Send(this, vScriptState->vRuleVariables, "$ARRAY"); break;
+						case GrapaTokenType::TUPLE: pSend->Send(this, vScriptState->vRuleVariables, "$TUPLE"); break;
 						case GrapaTokenType::VECTOR: pSend->Send(this, vScriptState->vRuleVariables, "$VECTOR"); break;
 						case GrapaTokenType::WIDGET: pSend->Send(this, vScriptState->vRuleVariables, "$WIDGET"); break;
 						case GrapaTokenType::LIST: pSend->Send(this, vScriptState->vRuleVariables, "$LIST"); break;
@@ -5381,6 +5403,10 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 		if (!arrayInEl)
 			pSend->Send(this, vScriptState->vRuleVariables, "[");
 		break;
+	case GrapaTokenType::TUPLE:
+		if (!arrayInEl)
+			pSend->Send(this, vScriptState->vRuleVariables, "(");
+		break;
 	case GrapaTokenType::ERR:
 	case GrapaTokenType::LIST:
 	case GrapaTokenType::OBJ:
@@ -5450,6 +5476,7 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 				{
 				case GrapaTokenType::ERR:
 				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::TUPLE:
 				case GrapaTokenType::LIST:
 				case GrapaTokenType::CLASS:
 				case GrapaTokenType::OBJ:
@@ -5554,6 +5581,7 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 		case GrapaTokenType::ERR:
 		case GrapaTokenType::LIST:
 		case GrapaTokenType::ARRAY:
+		case GrapaTokenType::TUPLE:
 		case GrapaTokenType::OBJ:
 		case GrapaTokenType::RULEOP:
 		case GrapaTokenType::XML:
@@ -5596,6 +5624,10 @@ void GrapaScriptExec::EchoList(GrapaSystemSend* pSend, GrapaRuleEvent* pEvent, b
 	case GrapaTokenType::ARRAY:
 		if (!arrayInEl)
 			pSend->Send(this, vScriptState->vRuleVariables, "]");
+		break;
+	case GrapaTokenType::TUPLE:
+		if (!arrayInEl)
+			pSend->Send(this, vScriptState->vRuleVariables, ")");
 		break;
 	case GrapaTokenType::CLASS:
 		pSend->Send(this, vScriptState->vRuleVariables, "]");
@@ -6170,7 +6202,7 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 	{
 		/// need a unique ARRAY type for this....otherwise an data array of 1 item becomes that 1 item.
 		// For now, see if only doing this once is sufficient
-		if (codeResult->mValue.mToken == GrapaTokenType::ARRAY && codeResult->vQueue)
+		if ((codeResult->mValue.mToken == GrapaTokenType::ARRAY || codeResult->mValue.mToken == GrapaTokenType::TUPLE) && codeResult->vQueue)
 		{
 			if (codeResult->vQueue->mCount == 1)
 			{
@@ -6474,13 +6506,13 @@ public:
 			return;
 		}
 
-		if (pInput->mToken == GrapaTokenType::ARRAY || pInput->mToken == GrapaTokenType::LIST || pInput->mToken == GrapaTokenType::XML || pInput->mToken == GrapaTokenType::EL || pInput->mToken == GrapaTokenType::TAG || pInput->mToken == GrapaTokenType::OP || pInput->mToken == GrapaTokenType::CODE)
+		if (pInput->mToken == GrapaTokenType::ARRAY || pInput->mToken == GrapaTokenType::TUPLE || pInput->mToken == GrapaTokenType::LIST || pInput->mToken == GrapaTokenType::XML || pInput->mToken == GrapaTokenType::EL || pInput->mToken == GrapaTokenType::TAG || pInput->mToken == GrapaTokenType::OP || pInput->mToken == GrapaTokenType::CODE)
 		{
 			GrapaRuleEvent cmd;
 			cmd.vQueue = new GrapaRuleQueue();
 			cmd.mValue.mToken = pInput->mToken;
 
-			if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY)
+			if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY || expanded.mToken == GrapaTokenType::TUPLE)
 			{
 				GrapaRuleQueue* tq = new GrapaRuleQueue();
 				((GrapaRuleQueue*)tq)->FROM(vScriptState, pNameSpace, *pInput);
@@ -6582,13 +6614,13 @@ GrapaRuleEvent* GrapaScriptExec::Exec(GrapaNames* pNameSpace, GrapaRuleEvent* pR
 	//	return(result);
 	//}
 
-	//if (pInput->mToken == GrapaTokenType::ARRAY || pInput->mToken == GrapaTokenType::LIST || pInput->mToken == GrapaTokenType::XML || pInput->mToken == GrapaTokenType::EL || pInput->mToken == GrapaTokenType::TAG || pInput->mToken == GrapaTokenType::OP || pInput->mToken == GrapaTokenType::CODE)
+	//if (pInput->mToken == GrapaTokenType::ARRAY || pInput->mToken == GrapaTokenType::TUPLE || pInput->mToken == GrapaTokenType::LIST || pInput->mToken == GrapaTokenType::XML || pInput->mToken == GrapaTokenType::EL || pInput->mToken == GrapaTokenType::TAG || pInput->mToken == GrapaTokenType::OP || pInput->mToken == GrapaTokenType::CODE)
 	//{
 	//	GrapaRuleEvent cmd;
 	//	cmd.vQueue = new GrapaRuleQueue();
 	//	cmd.mValue.mToken = pInput->mToken;
 
-	//	if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY)
+	//	if (expanded.mToken == GrapaTokenType::LIST || expanded.mToken == GrapaTokenType::ARRAY || expanded.mToken == GrapaTokenType::TUPLE)
 	//	{
 	//		GrapaRuleQueue* tq = new GrapaRuleQueue();
 	//		((GrapaRuleQueue*)tq)->FROM(vScriptState, pNameSpace, *pInput);

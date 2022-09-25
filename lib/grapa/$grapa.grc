@@ -105,6 +105,11 @@
 	| <$list_value> {@<createarray,{$1}>}
 	| {@<createarray,{}>}
 	;
+@global["$tuple_list"]
+	= rule <$list_value> ',' <$tuple_list> {@<prepend,{$3,$1}>}
+	| <$list_value> {@<createtuple,{$1}>}
+	| {@<createtuple,{}>}
+	;
 @global["$list_list"]
 	= rule <$list_value> ',' <$list_list> {@<prepend,{$3,$1}>}
 	| <$list_value> {@<createlist,{$1}>}
@@ -246,6 +251,14 @@
 	| <$comp> ',' {@<createarray,{$1,null}>}
 	| <$comp> {@<createarray,{$1}>}
 	| ',' {@<createarray,{null,null}>}
+	;
+@global["$tuple"]
+	= rule ',' ',' <$tuple> {@<prepend,{$3,null,null}>}
+	| ',' <$tuple> {@<prepend,{$2,null}>}
+	| <$comp> ',' <$tuple> {@<prepend,{$3,$1}>}
+	| <$comp> ',' {@<createtuple,{$1,null}>}
+	| <$comp> {@<createtuple,{$1}>}
+	| ',' {@<createtuple,{null,null}>}
 	;
 @global["$list"]
 	= rule ',' ',' <$list> {@<prepend,{$3,null,null}>}
@@ -475,6 +488,7 @@
 	| '(' <$comp> ')' '(' ')' {@<call,{$2}>}
 	| '(' <$comp> ')' '(' <$list> ')' {@<call,{$2,$5}>}
 	| '(' <$comp> ')'
+	| '(' <$tuple> ')'
 	| rule <$option_list> {@<rule,{null,$2}>}
 	| op <$opcreate>
 	| lambda <$lambdacreate>

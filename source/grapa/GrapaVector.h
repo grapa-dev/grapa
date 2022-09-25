@@ -107,6 +107,8 @@ public:
 	GrapaError Mean(GrapaScriptExec* pScriptExec, GrapaVector& result, bool rowvar = true);
 	virtual GrapaRuleEvent* ToArray();
 	virtual GrapaRuleEvent* _toarray(u64 pos, u64& p);
+	virtual GrapaRuleEvent* ToTuple();
+	virtual GrapaRuleEvent* _totuple(u64 pos, u64& p);
 	bool _scanvectorcreate(GrapaRuleEvent* value, u8 pos, u8 dim, u64* counts, GrapaVectorItem* data, u8 block, u64& p, u8& maxblock);
 	GrapaBYTE getBytes();
 	virtual bool Extend(const GrapaVector& bi);
