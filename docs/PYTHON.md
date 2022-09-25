@@ -29,17 +29,35 @@ Python | Grapa | Notes
 ------------ | ------------- | -------------
 str | $STR
 bytes | $RAW
-int | $INT | grapa $INT is unlimited precision
-float | $FLOAT | grapa $FLOAT is unlimited precision
+int | $INT | Grapa $INT is unlimited precision
+float | $FLOAT | Grapa $FLOAT is unlimited precision
 list | $ARRAY
 dict | $LIST
-tuple | $TUPLE | in grapa, $TUPLE is equal $ARRAY other than syntax
+tuple | $TUPLE | In grapa, $TUPLE is equal $ARRAY other than syntax
 bool | $BOOL
 None | null
 
-If there the automatic translation is not designed, convert the data to a string before passing into grapa, or before returning from grapa. For example, if using a $INT larger than what Python can support, convert to a string before returning.
+GrapaPy converts the following to str when passing back to Python. THis will change in the future for some of these, such as XML.
 
-There are also several data types in grapa that are not built into Python (but can be added as a library) - for example datetime. A $DATE value in grapa could be converted to a string before returning to Pything, and then using the datetime module to use the date.
+Grapa | Notes
+------------ | -------------
+$ERR | Implemented as $LIST, this tye is returned on an error.
+$XML, $EL, $TAG | Optionally convert to json before returning to Python
+$TIME
+$VECTOR | Work to translate between Python and Grapa not implemented.
+$OP | This is the core grapa language that binds to internal libraries.
+$CODE | This is the core grapa language that supports a list of $OP values.
+$TABLE | This is a database type...no easy way to convert.
+$WIDGET | Not yet supported in GrapayPy.This is based on the FLTK open source libraries. 
+$CLASS
+$OBJ
+$RULE | The grapa language is implemented as global $RULE variables, that can be set, updated, etc. Code is evaluated against these $RULE variables.
+$TOKEN | In addition to $RULE, there are $TOKEN definitions that control how raw data is converted to tokens before being applied to $RULE's.
+$REF
+$SYM, $SYSSYM
+$SYSSTR
+$SYSINT
+
 
 Jupyter notebook example:
 [grapapy_test_ipynb](../grapapy_test.ipynb)
