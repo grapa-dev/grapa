@@ -288,7 +288,7 @@ if sys.platform.startswith('linux') or sys.platform.startswith('win32'):
         author="Chris Matichuk",
         author_email="matichuk@hotmail.com",
         description="grammar parser language",
-        long_description="https://github.com/grapa-dev/grapa",
+        long_description="https://github.com/grapa-dev/grapa/blob/master/docs/PYTHON.md",
         ext_modules=[lib_grapa],
         cmdclass={
             'copy_grapalib': CopySharedLibrary,
@@ -305,7 +305,7 @@ else:
         version=grapapy_version,
         author="Chris Matichuk",
         description="grammar parser language",
-        long_description="https://github.com/grapa-dev/grapa",
+        long_description="https://github.com/grapa-dev/grapa/blob/master/docs/PYTHON.md",
         ext_modules=[CMakeExtension("grapapy")],
         cmdclass={"build_ext": CMakeBuild},
         zip_safe=False,
