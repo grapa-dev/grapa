@@ -1,8 +1,10 @@
 #include <pybind11/pybind11.h>
 #include "pybind11/include/pybind11/pybind11.h"
 #include "pybind11/include/pybind11/eval.h"
+#include "pybind11/include/pybind11/embed.h"
 
 namespace py = pybind11;
+using namespace py::literals;
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -125,8 +127,9 @@ public:
 		}
 		return result;
 	}
-	
-	static void FromGrapa(GrapaRuleEvent* e, py::object* o)
+	GrapaScriptExec mScriptExec;
+
+	static void FromGrapa(GrapaScriptExec* vScriptExec, GrapaRuleEvent* e, py::object* o)
 	{
 		if (e == NULL)
 		{
@@ -143,11 +146,9 @@ public:
 		switch (e->mValue.mToken)
 		{
 		case GrapaTokenType::STR:
-		case GrapaTokenType::SYSSTR:
 			*o = py::str((char*)e->mValue.mBytes, e->mValue.mLength);
 			break;
 		case GrapaTokenType::INT:
-		case GrapaTokenType::SYSINT:
 			a.FromBytes(e->mValue);
 			*o = py::int_(a.LongValue());
 			break;
@@ -178,7 +179,7 @@ public:
 				GrapaRuleEvent* e2 = e;
 				while (e2 && e2->mValue.mToken == GrapaTokenType::PTR) e2 = e2->vRulePointer;
 				py::object o2;
-				FromGrapa(e2, &o2);
+				FromGrapa(vScriptExec, e2, &o2);
 				((py::list*)o)->append(o2);
 				e = e->Next();
 			}
@@ -191,7 +192,7 @@ public:
 				GrapaRuleEvent* e2 = e;
 				while (e2 && e2->mValue.mToken == GrapaTokenType::PTR) e2 = e2->vRulePointer;
 				py::object o2;
-				FromGrapa(e2, &o2);
+				FromGrapa(vScriptExec, e2, &o2);
 				PyTuple_SET_ITEM(o->ptr(), pos, o2.ptr());
 				o2.inc_ref();
 				pos++;
@@ -206,10 +207,43 @@ public:
 				GrapaRuleEvent* e2 = e;
 				while (e2 && e2->mValue.mToken == GrapaTokenType::PTR) e2 = e2->vRulePointer;
 				py::object o2;
-				FromGrapa(e2, &o2);
+				FromGrapa(vScriptExec, e2, &o2);
 				py::str nm((char*)e2->mName.mBytes, e2->mName.mLength);
 				PyDict_SetItem(o->ptr(), nm.ptr(), o2.ptr());
 				e = e->Next();
+			}
+			break;
+		case GrapaTokenType::ERR:
+		case GrapaTokenType::INPUT:
+		case GrapaTokenType::XML:
+		case GrapaTokenType::SYM:
+		case GrapaTokenType::SYSSYM:
+		case GrapaTokenType::SYSSTR:
+		case GrapaTokenType::SYSINT:
+		case GrapaTokenType::TIME:
+		case GrapaTokenType::EL:
+		case GrapaTokenType::TAG:
+		case GrapaTokenType::TABLE:
+		case GrapaTokenType::OP:
+		case GrapaTokenType::CODE:
+		case GrapaTokenType::VECTOR:
+		case GrapaTokenType::CLASS:
+		case GrapaTokenType::OBJ:
+		case GrapaTokenType::REF:
+		case GrapaTokenType::RULE:
+		case GrapaTokenType::TOKEN:
+		case GrapaTokenType::WIDGET:
+			if (e)
+			{
+				GrapaSystemSend send;
+				send.isActive = false;
+				if (e)
+				{
+					if (e->vQueue) vScriptExec->EchoList(&send, e, false, false, false);
+					else vScriptExec->EchoValue(&send, e, false, false, false);
+				}
+				send.GetStr(s);
+				*o = py::str((char*)s.mBytes, s.mLength);
 			}
 			break;
 		default:
@@ -228,19 +262,51 @@ public:
 		pybind11::gil_scoped_acquire acquire;
 		GrapaRuleEvent* result = NULL;
 		GrapaLibraryParam script_param(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-		GrapaLibraryParam import_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
-		GrapaLibraryParam attr_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+		GrapaLibraryParam locals_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+		GrapaLibraryParam import_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+		GrapaLibraryParam attr_param(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
 		if (script_param.vVal && script_param.vVal->mValue.mLength)
 		{
 			std::string sript_str;
-			GrapaCHAR type_str(""), import_str("__main__"), attr_str("__dict__");
+			GrapaCHAR import_str("__main__"), attr_str("__dict__");
 			sript_str.assign((char*)script_param.vVal->mValue.mBytes, script_param.vVal->mValue.mLength);
 			if (import_param.vVal && import_param.vVal->mValue.mLength) import_str.FROM(import_param.vVal->mValue);
 			if (attr_param.vVal && attr_param.vVal->mValue.mLength) attr_str.FROM(attr_param.vVal->mValue);
 			py::object scope = py::module_::import((char*)import_str.mBytes).attr((char*)attr_str.mBytes);
 			GrapaCHAR pStr;
-			py::object o = py::eval(sript_str, scope);
+			py::object locals;
+			GrapaPyObject::FromGrapa(vScriptExec, locals_param.vVal, &locals);
+			//auto locals = py::dict("a"_a=5);
+			py::object o = py::eval(sript_str, scope, locals);
 			result = GrapaPyObject::ToGrapa(o.ptr(), GrapaCHAR());
+		}
+		return result;
+	}
+};
+
+class GrapaLibraryRulePyExecEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRulePyExecEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+	{
+		pybind11::gil_scoped_acquire acquire;
+		GrapaRuleEvent* result = NULL;
+		GrapaLibraryParam script_param(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+		GrapaLibraryParam locals_param(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+		GrapaLibraryParam import_param(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+		GrapaLibraryParam attr_param(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+		if (script_param.vVal && script_param.vVal->mValue.mLength)
+		{
+			std::string sript_str;
+			sript_str.assign((char*)script_param.vVal->mValue.mBytes, script_param.vVal->mValue.mLength);
+			GrapaCHAR import_str("__main__"), attr_str("__dict__");
+			if (import_param.vVal && import_param.vVal->mValue.mLength) import_str.FROM(import_param.vVal->mValue);
+			if (attr_param.vVal && attr_param.vVal->mValue.mLength) attr_str.FROM(attr_param.vVal->mValue);
+			py::object scope = py::module_::import((char*)import_str.mBytes).attr((char*)attr_str.mBytes);
+			py::object locals;
+			GrapaPyObject::FromGrapa(vScriptExec, locals_param.vVal, &locals);
+			py::exec(sript_str, scope, locals);
 		}
 		return result;
 	}
@@ -254,6 +320,7 @@ public:
 	{
 		GrapaLibraryEvent* lib = NULL;
 		if (pName.Cmp("eval") == 0) lib = new GrapaLibraryRulePyEvalEvent(pName);
+		else if (pName.Cmp("exec") == 0) lib = new GrapaLibraryRulePyExecEvent(pName);
 		return(lib);
 	}
 };
@@ -274,72 +341,32 @@ public:
     GrapaConsoleSend mConsoleSend;
     GrapaMainResponse mConsoleResponse;
     GrapaNames mRuleVariables;
+	GrapaRuleEvent* vLocals;
 	GrapaStruct()
 	{
 		mConsoleSend.mScriptState.vScriptExec = &mScriptExec;
 		mScriptExec.vScriptState = &mConsoleSend.mScriptState;
 		mConsoleSend.mScriptState.SetNameSpace(&mRuleVariables);
 		mRuleVariables.SetResponse(&mConsoleResponse);
+		vLocals = new GrapaRuleEvent();
+		vLocals->mValue.mToken = GrapaTokenType::LIST;
+		vLocals->vQueue = new GrapaRuleQueue();
 		mConsoleSend.Start();
 		GrapaCHAR grresult;
 		GrapaSystem* gSystem = GrapaLink::GetGrapaSystem();
 		if (gSystem->mGrammar.mLength)
 			grresult = mConsoleSend.SendSync(gSystem->mGrammar, NULL, 0, GrapaCHAR());
-		GrapaCHAR runStr("$global[\"$py\"] = class {eval = op(script,import=\"\",attr=\"\"){@<py,eval,{@<var,{script}>,@<var,{import}>,@<var,{attr}>}>();};};");
+		GrapaCHAR runStr("$global[\"$py\"] = class {eval = op(script,locals={},import=\"\",attr=\"\"){@<\"py\",\"eval\",{@<var,{script}>,@<var,{locals}>,@<var,{import}>,@<var,{attr}>}>();};exec = op(script,locals={},import=\"\",attr=\"\"){@<\"py\",\"exec\",{@<var,{script}>,@<var,{locals}>,@<var,{import}>,@<var,{attr}>}>();};};");
 		grresult = mConsoleSend.SendSync(runStr,NULL,0,GrapaCHAR());
 	}
     ~GrapaStruct() 
 	{ 
 		mConsoleSend.Stop();
-	}
-	
-	void setARG(GrapaCHAR& pStr)
-	{
-		GrapaRuleEvent* e = mRuleVariables.GetNameQueue()->Tail();
-		s64 idx = 0;
-		GrapaRuleEvent* v = e->vQueue->Search("$ARG", idx);
-		if (v)
+		if (vLocals)
 		{
-			v->CLEAR();
-			v->mValue.FROM(pStr);
+			vLocals->CLEAR();
+			delete vLocals;
 		}
-		else
-		{
-			mConsoleSend.mScriptState.AddRawParameter(e, GrapaCHAR("$ARG"), pStr);
-		}
-	}
-
-	void setARG(std::string paramstr)
-	{
-		GrapaCHAR pStr(paramstr.c_str(), paramstr.length());
-		setARG(pStr);
-	}
-
-	void setARG(py::object o)
-	{
-		GrapaRuleEvent* e = GrapaPyObject::ToGrapa(o.ptr(), GrapaCHAR("$ARG"));
-		GrapaRuleEvent* q = mRuleVariables.GetNameQueue()->Tail();
-		s64 idx = 0;
-		GrapaRuleEvent* v = q->vQueue->Search("$ARG", idx);
-		if (v)
-		{
-			q->vQueue->PopEvent(v);
-			v->CLEAR();
-			delete v;
-		}
-		GrapaRuleEvent* op = q;
-		while (op->mValue.mToken == GrapaTokenType::PTR && op->vRulePointer) op = op->vRulePointer;
-		op->vQueue->PushTail(e);
-	}
-
-	void setARG(py::bytes parambytes)
-	{
-		py::buffer_info info(py::buffer(parambytes).request());
-		const char* buffer = reinterpret_cast<const char*>(info.ptr);
-		size_t length = static_cast<size_t>(info.size);
-		GrapaCHAR pStr(buffer, length);
-		pStr.mToken = GrapaTokenType::RAW;
-		setARG(pStr);
 	}
 
 	py::object eval(py::object cmdstr, py::object paramstr, std::string rulestr, std::string profilestr)
@@ -349,7 +376,6 @@ public:
 		GrapaRuleEvent* rulexx = NULL;
 		GrapaCHAR profStr;
 		py::object o;
-		GrapaRuleEvent* grresult = NULL;
 		if (true)
 		{
 			pybind11::gil_scoped_acquire acquire;
@@ -361,7 +387,6 @@ public:
 				length = size;
 				if (length > 0)
 				{
-					setARG(paramstr);
 					runStr.FROM(buffer, length);
 				}
 			}
@@ -371,7 +396,6 @@ public:
 				length = PyBytes_GET_SIZE(cmdstr.ptr());
 				if (length > 0)
 				{
-					setARG(paramstr);
 					runStr.FROM(buffer, length);
 					runStr.mToken = GrapaTokenType::RAW;
 				}
@@ -383,19 +407,48 @@ public:
 			}
 			profStr.FROM(profilestr.c_str(), profilestr.length());
 		}
-		if (length > 0)
+		if (GrapaRuleEvent* operation = mConsoleSend.mScriptState.AddRuleOperation(mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue(), "", ""))
 		{
-			grresult = mConsoleSend.SendSyncResult(runStr, rulexx, 0, profStr);
-		}
-		if (grresult)
-		{
-			pybind11::gil_scoped_acquire acquire;
-			GrapaRuleEvent* echo = grresult;
-			while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
-				echo = echo->vRulePointer;
-			GrapaPyObject::FromGrapa(echo,&o);
-			grresult->CLEAR();
-			delete grresult;
+			GrapaRuleEvent* grresult = NULL;
+			if (length > 0)
+			{
+
+				pybind11::gil_scoped_acquire acquire;
+				GrapaRuleEvent* e = GrapaPyObject::ToGrapa(paramstr.ptr(), GrapaCHAR());
+				GrapaRuleEvent* q = mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->Tail();
+				GrapaRuleEvent* op = q;
+				while (op->mValue.mToken == GrapaTokenType::PTR && op->vRulePointer) op = op->vRulePointer;
+				if (e && e->mValue.mToken == GrapaTokenType::LIST && e->vQueue)
+					while (e->vQueue->Head())
+						op->vQueue->PushTail(e->vQueue->PopHead());
+				if (e)
+				{
+					e->CLEAR();
+					delete e;
+				}
+			}
+			mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PushTail(vLocals);
+			if (length > 0)
+			{
+				grresult = mConsoleSend.SendSyncResult(runStr, rulexx, 0, profStr);
+			}
+			if (grresult)
+			{
+				pybind11::gil_scoped_acquire acquire;
+				GrapaRuleEvent* echo = grresult;
+				while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
+					echo = echo->vRulePointer;
+				GrapaPyObject::FromGrapa(&mScriptExec, echo, &o);
+				grresult->CLEAR();
+				delete grresult;
+			}
+			mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PopEvent(vLocals);
+			if (mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PopEvent(operation))
+			{
+				operation->CLEAR();
+				delete operation;
+				operation = NULL;
+			}
 		}
 		return o;
 	}
@@ -415,7 +468,13 @@ PYBIND11_MODULE(grapapy, m)
 	GrapaCHAR s = GrapaLink::Start(needExit, showConsole, showWidget, inStr, outStr, runStr);
 	GrapaLink::GetGrapaSystem()->mLibraryQueue.PushTail(new GrapaPyRuleEvent(GrapaCHAR("py")));
 
-    m.doc() = R"pbdoc(
+	auto atexit = py::module_::import("atexit");
+	atexit.attr("register")(py::cpp_function([]() {
+		// perform cleanup here -- this function is called with the GIL held
+		GrapaLink::Stop();
+		}));
+	
+	m.doc() = R"pbdoc(
         GrapaPy extention
         -----------------------
 
@@ -441,7 +500,6 @@ PYBIND11_MODULE(grapapy, m)
     )pbdoc",
 		py::arg("s"), py::arg("a") = "", py::arg("r") = "", py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>());
 	
-    m.attr("__version__") = "0.0.16";
-	
-	// GrapaLink::Stop();
+    m.attr("__version__") = "0.0.17";
+
 }
