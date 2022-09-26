@@ -86,7 +86,7 @@ Can only accept 1 argument.
 Access from the grapa script using @$ARG
 
 ```
-xy.eval("@$ARG+' test';","hello")
+xy.eval("in1+' test';",{"in1":"hello"})
 ```
 'hello test'
 
@@ -95,6 +95,12 @@ xy.eval("@$ARG+' test';","hello")
 xy.eval("$py().eval('print(\"hi\")');")
 ```
 hi
+
+## Call back to Python from grapa script
+```
+xy.eval("$py().eval('print(in1)',{'p1':in1});",{"in1":"hello"})
+```
+hello
 
 ## Call a Python function from a grapa script
 
@@ -111,9 +117,18 @@ xy.eval("""
 ```
 5
 
-The first grapa script call defines a function that builds the Python script to send to Python.
-
-The second call is an example of using this new grapa function.
+Same as above, but with passing in an object to Python.
+```
+def absolute_value(num):
+    if num >= 0:
+        return num
+    else:
+        return -num
+xy.eval("""
+    absolute_value = op(n=0){$local.locals={"g":n};$py().eval("absolute_value(g)",locals);};
+    absolute_value(-5);
+""")
+```
 
 ## Convert XML to JSON
 ```
