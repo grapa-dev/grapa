@@ -55,7 +55,6 @@ $CLASS
 $OBJ
 $RULE | The grapa language is implemented as global $RULE variables, that can be set, updated, etc. Code is evaluated against these $RULE variables.
 $TOKEN | In addition to $RULE, there are $TOKEN definitions that control how raw data is converted to tokens before being applied to $RULE's.
-$REF
 $SYM, $SYSSYM
 $SYSSTR
 $SYSINT
