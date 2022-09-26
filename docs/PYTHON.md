@@ -31,13 +31,15 @@ str | $STR
 bytes | $RAW
 int | $INT | Grapa $INT is unlimited precision
 float | $FLOAT | Grapa $FLOAT is unlimited precision
-list | $ARRAY
-dict | $LIST
-tuple | $TUPLE | In grapa, $TUPLE is equal $ARRAY other than syntax
+list | $ARRAY | 
+dict | $LIST | In grapa, a $LIST is a named version of $ARRAY.
+tuple | $TUPLE | In grapa, a $TUPLE is the same as an $ARRAY. $TUPLE added for syntax transferability with Python.
 bool | $BOOL
 None | null
 
-GrapaPy converts the following to str when passing back to Python. THis will change in the future for some of these, such as XML.
+In grapa, the underlying structure for $ARRAY, $LIST, and $TUPLE are the same. With the difference bing first differnt brackets, and second that $LIST uses name/value pairs (like dict in Python). For lists that use more of a block of memory, use either $VECTOR or $TABLE. 
+
+GrapaPy converts the following to str when passing back to Python. This will change in the future for some of these, such as $XML. 
 
 Grapa | Notes
 ------------ | -------------
@@ -58,6 +60,7 @@ $SYM, $SYSSYM
 $SYSSTR
 $SYSINT
 
+For $XML, coverting to a $LIST and returning to Python will provide a "dict" view of the XML, which might be easier to parst through in Python. An example is provided below.
 
 Jupyter notebook example:
 [grapapy_test_ipynb](../grapapy_test.ipynb)
@@ -111,3 +114,12 @@ xy.eval("""
 The first grapa script call defines a function that builds the Python script to send to Python.
 
 The second call is an example of using this new grapa function.
+
+## Convert XML to JSON
+```
+xy.eval("""
+    (<test "v"=5.4>this is a test</test>).list();
+""")
+```
+{'': {'test': [{'v': 5.4}, ['this is a test']]}}
+
