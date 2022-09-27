@@ -67,31 +67,17 @@ Reads in scriptfilename, compiles, and writes output to compiledfilename.
 ## compile(script)
 Compiles the script.
 
-## exec(cscript,param="")
-Runs a compiled script. Taks a single optional param, which is accessed using @$ARG in the compiled script.
+## eval(script,params={},rule="",profile="")
+Runs a script, text or compiled. 
+Taks a params list, which must be $LIST type. 
+If script is text, can also provide a starting rule name to use, as well as a profile (profile not yet implemented...but will define the operations of the token generator).
 
 Example.
 
 ```
-grapa: />x = $sys().compile("@$ARG+5;")
-
-grapa: />$sys().exec(x)
-5
-grapa: />$sys().exec(x,44)
-49
+grapa: />$sys().eval("a",{"a":33},"$function");
+33
 ```
-## eval(script,param="")
-Runs a script. Taks a single optional param, which is accessed using @$ARG in the script.
 
-Example.
-
-```
-grapa: />x = "@$ARG+5;";
-
-grapa: />$sys().eval(x)
-5
-grapa: />$sys().eval(x,44)
-49
-```
 ## sleep(ms)
 
