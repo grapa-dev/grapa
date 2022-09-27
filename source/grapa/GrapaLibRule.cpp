@@ -72,6 +72,13 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
 
+class GrapaLibraryRuleEvalEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleEvalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+
 class GrapaLibraryRuleExecEvent : public GrapaLibraryEvent
 {
 public:
@@ -1999,6 +2006,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		else if (pName.Cmp("grammar") == 0) lib = new GrapaLibraryRuleGrammarEvent(pName);
 		else if (pName.Cmp("reset") == 0) lib = new GrapaLibraryRuleResetEvent(pName);
 		else if (pName.Cmp("shell") == 0) lib = new GrapaLibraryRuleShellEvent(pName);
+		else if (pName.Cmp("eval") == 0) lib = new GrapaLibraryRuleEvalEvent(pName);
 		else if (pName.Cmp("exec") == 0) lib = new GrapaLibraryRuleExecEvent(pName);
 		else if (pName.Cmp("post") == 0) lib = new GrapaLibraryRulePostEvent(pName);
 		else if (pName.Cmp("sleep") == 0) lib = new GrapaLibraryRuleSleepEvent(pName);
@@ -2584,6 +2592,83 @@ GrapaRuleEvent* GrapaLibraryRuleShellEvent::Run(GrapaScriptExec* vScriptExec, Gr
 	{
 		GrapaCHAR r = gSystem->exec(r1.vVal->mValue);
 		result = new GrapaRuleEvent(0, GrapaCHAR(), r);
+	}
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleEvalEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam cmdstr(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam paramstr(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam rulestr(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaLibraryParam profilestr(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+	if (cmdstr.vVal && (cmdstr.vVal->mValue.mToken == GrapaTokenType::STR || cmdstr.vVal->mValue.mToken == GrapaTokenType::RAW))
+	{
+		if (GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", ""))
+		{
+			GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+			vLocals->mValue.mToken = GrapaTokenType::LIST;
+			vLocals->vQueue = new GrapaRuleQueue();
+
+			GrapaRuleEvent* e = paramstr.vVal ? vScriptExec->CopyItem(paramstr.vVal, false, false) : NULL;
+			GrapaRuleEvent* q = pNameSpace->GetNameQueue()->Tail();
+			GrapaRuleEvent* op = q;
+			while (op->mValue.mToken == GrapaTokenType::PTR && op->vRulePointer) op = op->vRulePointer;
+			if (e && e->mValue.mToken == GrapaTokenType::LIST && e->vQueue)
+			{
+				while (e->vQueue->Head())
+					op->vQueue->PushTail(e->vQueue->PopHead());
+			}
+			if (e)
+			{
+				e->CLEAR();
+				delete e;
+			}
+			GrapaRuleEvent* rulexx = NULL;
+			if (rulestr.vVal && rulestr.vVal->mValue.mToken == GrapaTokenType::STR)
+				rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, rulestr.vVal->mValue);
+			GrapaCHAR profStr;
+			if (profilestr.vVal && profilestr.vVal->mValue.mToken == GrapaTokenType::STR)
+				profStr.FROM(profilestr.vVal->mValue);
+
+			//GrapaScriptExec tokenExec;
+			//tokenExec.vScriptState = vScriptExec->vScriptState;
+			//tokenExec.vScriptState->WaitCritical();
+			//GrapaScriptExec* saveTokenExec = tokenExec.vScriptState->vScriptExec;;
+			//tokenExec.vScriptState->vScriptExec = &tokenExec;
+
+			pNameSpace->GetNameQueue()->PushTail(vLocals);
+
+			//result = tokenExec.Exec(pNameSpace, rulexx, 0, profStr, cmdstr.vVal->mValue);
+			result = vScriptExec->Exec(pNameSpace, rulexx, 0, profStr, cmdstr.vVal->mValue);
+
+			//tokenExec.vScriptState->vScriptExec = saveTokenExec;
+
+			if (result && result->mValue.mToken == GrapaTokenType::PTR)
+			{
+				GrapaRuleEvent* old = result;
+				result = vScriptExec->CopyItem(old);
+				old->CLEAR();
+				delete old;
+			}
+			pNameSpace->GetNameQueue()->PopEvent(vLocals);
+
+			if (vLocals)
+			{
+				vLocals->CLEAR();
+				delete vLocals;
+			}
+
+			if (pNameSpace->GetNameQueue()->PopEvent(operation))
+			{
+				operation->CLEAR();
+				delete operation;
+				operation = NULL;
+			}
+
+			//tokenExec.vScriptState->LeaveCritical();
+		}
 	}
 	return(result);
 }

@@ -353,7 +353,7 @@ public:
 class GrapaConsoleSend;
 class GrapaConsoleResponse;
 
-class GrapaScriptState : public GrapaScriptExecState
+class  GrapaScriptState : public GrapaScriptExecState
 {
 public:
 	GrapaItemParams mItemParams;
