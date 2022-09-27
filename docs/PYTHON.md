@@ -137,3 +137,43 @@ xy.eval("""
 ```
 {'': {'test': [{'v': 5.4}, ['this is a test']]}}
 
+## Domain specific language in Python using Grapa
+The following is an illustration on how to use the $RULE type in Grapa to create a domain specific language in Python that can be executed.
+
+```
+>>> import grapapy
+>>> xy = grapapy.grapa()
+>>> def func1(num):
+...     if num >= 10:
+...         print("found higher")
+...         return "higher"
+...     else:
+...         print("found lower")
+...         return "lower"
+...
+>>> def func2(num1,num2):
+...     if num1 >= 10:
+...         print("div")
+...         return num1/num2
+...     else:
+...         print("mul")
+...         return num1*num2
+...
+>>> xy.eval("""
+...     $this.testrule = rule
+...           $INT $INT {op(a:$1,b:$2) {$py().eval('func2(v1,v2)', {"v1":a,"v2":b} );}}
+...         | $INT      {op(a:$1)      {$py().eval('func1(v)',     {"v":a}         );}}
+...         ;
+... """)
+>>> xy.eval("$sys().eval(s,{},'testrule');",{"s":"4"})
+found lower
+'lower'
+>>> xy.eval("$sys().eval(s,{},'testrule');",{"s":"4 6"})
+mul
+24
+>>> cm = xy.compile("4 8",'testrule')
+>>> xy.eval(cm)
+mul
+32
+>>>
+```
