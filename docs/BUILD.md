@@ -44,7 +44,11 @@ cp libgrapa.so source/grapa-lib/linux/libgrapa.so
 
 tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
 
+rm -rf dist
 python3 setup.py sdist
+rm -rf grapapy.egg-info
+./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+
 ```
 Setting up the dev tools
 ```
@@ -85,9 +89,10 @@ cp libgrapa.so source/grapa-other/mac-apple/libgrapa.so
 
 tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/* source/grapa-other/mac-apple/*
 
+rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
-pip3 install dist/grapapy-0.0.16.tar.gz
+./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 
 ```
 
@@ -114,9 +119,10 @@ cp libgrapa.so source/grapa-other/mac-intel/libgrapa.so
 
 tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/* source/grapa-other/mac-intel/*
 
+rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
-pip3 install dist/grapapy-0.0.16.tar.gz
+./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 
 
 ```
@@ -155,9 +161,10 @@ cp libgrapa.so source/grapa-lib/aws/libgrapa.so
 
 tar -czvf bin/grapa-aws.tar.gz grapa source/grapa-lib/aws/*
 
+rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
-pip3 install dist/grapapy-0.0.16.tar.gz
+./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 
 ```
 
