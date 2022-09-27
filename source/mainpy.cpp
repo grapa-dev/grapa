@@ -341,16 +341,12 @@ public:
     GrapaConsoleSend mConsoleSend;
     GrapaMainResponse mConsoleResponse;
     GrapaNames mRuleVariables;
-	GrapaRuleEvent* vLocals;
 	GrapaStruct(py::object cmdstr)
 	{
 		mConsoleSend.mScriptState.vScriptExec = &mScriptExec;
 		mScriptExec.vScriptState = &mConsoleSend.mScriptState;
 		mConsoleSend.mScriptState.SetNameSpace(&mRuleVariables);
 		mRuleVariables.SetResponse(&mConsoleResponse);
-		vLocals = new GrapaRuleEvent();
-		vLocals->mValue.mToken = GrapaTokenType::LIST;
-		vLocals->vQueue = new GrapaRuleQueue();
 		mConsoleSend.Start();
 		GrapaCHAR runStr;
 		if (cmdstr.ptr() == Py_None)
@@ -391,11 +387,6 @@ public:
     ~GrapaStruct() 
 	{ 
 		mConsoleSend.Stop();
-		if (vLocals)
-		{
-			vLocals->CLEAR();
-			delete vLocals;
-		}
 	}
 
 	py::object eval(py::object cmdstr, py::object paramstr, std::string rulestr, std::string profilestr)
@@ -456,6 +447,10 @@ public:
 					delete e;
 				}
 			}
+			GrapaRuleEvent* vLocals;
+			vLocals = new GrapaRuleEvent();
+			vLocals->mValue.mToken = GrapaTokenType::LIST;
+			vLocals->vQueue = new GrapaRuleQueue();
 			mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PushTail(vLocals);
 			if (length > 0)
 			{
@@ -472,6 +467,11 @@ public:
 				delete grresult;
 			}
 			mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PopEvent(vLocals);
+			if (vLocals)
+			{
+				vLocals->CLEAR();
+				delete vLocals;
+			}
 			if (mConsoleSend.mScriptState.GetNameSpace()->GetNameQueue()->PopEvent(operation))
 			{
 				operation->CLEAR();
