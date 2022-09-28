@@ -2414,9 +2414,7 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 		else if (r1.vVal->mValue.Cmp("$VERSION") == 0 || r1.vVal->mValue.Cmp("VERSION") == 0)
 		{
 			err = 0;
-			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
-			result->mValue.mToken = GrapaTokenType::LIST;
-			result->vQueue = vScriptExec->CopyQueue(gSystem->mVersion);
+			result = new GrapaRuleEvent(0, GrapaCHAR("version"), gSystem->mVersion);
 		}
 		else if (r1.vVal->mValue.Cmp("$LICENCE") == 0 || r1.vVal->mValue.Cmp("LICENCE") == 0)
 		{
@@ -2532,23 +2530,6 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 					gSystem->mPath = NULL;
 				}
 				gSystem->mPath = vScriptExec->CopyQueue(r2.vVal->vQueue);
-			}
-		}
-		else if (r1.vVal->mValue.Cmp("$STATICLIB") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("STATICLIB") == 0))
-		{
-		}
-		else if (r1.vVal->mValue.Cmp("$VERSION") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("VERSION") == 0))
-		{
-			if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST)
-			{
-				err = 0;
-				if (gSystem->mVersion)
-				{
-					gSystem->mVersion->CLEAR();
-					delete gSystem->mVersion;
-					gSystem->mVersion = NULL;
-				}
-				gSystem->mVersion = vScriptExec->CopyQueue(r2.vVal->vQueue);
 			}
 		}
 		else if (r1.vVal->mValue.Cmp("$LIB") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("LIB") == 0))

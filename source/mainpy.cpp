@@ -528,9 +528,7 @@ public:
 		{
 			GrapaRuleEvent* opEvent = mScriptExec.Plan(mConsoleSend.mScriptState.GetNameSpace(), runStr, rulexx, 0, profStr);
 			opEvent->mName.FROM("op");
-			GrapaRuleEvent* verEvent = new GrapaRuleEvent(0, GrapaCHAR("version"), GrapaCHAR());
-			verEvent->mValue.mToken = GrapaTokenType::LIST;
-			verEvent->vQueue = mScriptExec.CopyQueue(GrapaLink::GetGrapaSystem()->mVersion);
+			GrapaRuleEvent* verEvent = new GrapaRuleEvent(0, GrapaCHAR("version"), GrapaLink::GetGrapaSystem()->mVersion);
 
 			GrapaRuleEvent* e = new GrapaRuleEvent();
 			e->mValue.mToken = GrapaTokenType::LIST;

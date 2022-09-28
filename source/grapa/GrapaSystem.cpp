@@ -47,7 +47,7 @@ GrapaSystem::GrapaSystem()
 #endif
 	mLib.mValue.FROM("$SYS");
 	mPath = NULL;
-	mVersion = NULL;
+	mVersion.FROM(grapa_version);
 	mStaticLib = NULL;
 	mArgv = new GrapaRuleQueue();
 	mLinkInitialized = false;
@@ -65,12 +65,6 @@ GrapaSystem::~GrapaSystem()
 		mPath->CLEAR();
 		delete mPath;
 		mPath = NULL;
-	}
-	if (mVersion)
-	{
-		mVersion->CLEAR();
-		delete mVersion;
-		mVersion = NULL;
 	}
 	if (mStaticLib)
 	{

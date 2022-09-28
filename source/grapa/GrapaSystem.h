@@ -159,7 +159,7 @@ public:
 	bool mStop, mLinkInitialized;
 	GrapaCHAR mBinName, mBinDir, mWorkDir, mLibDir, mHomeDir, mTempDir, mGrammar;
 	GrapaRuleQueue *mPath;
-	GrapaRuleQueue* mVersion;
+	GrapaCHAR mVersion;
 	GrapaRuleQueue* mStaticLib;
 	GrapaRuleQueue* mArgv;
 	GrapaCHAR mArgcin;

@@ -332,42 +332,35 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	//if (gSystem->mLibDir.mLength)
 	//	gSystem->mPath->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mLibDir));
 
-	GrapaCHAR str(__DATE__);
-	GrapaCHAR dt, mo;
-	dt.Append((char*)&str.mBytes[7], 4);
-	dt.Append('-');
-	mo.Append((char*)str.mBytes, 3);
-	GrapaCHAR moStr;
-	if (mo.Cmp("Jan") == 0) moStr.FROM("01");
-	else if (mo.Cmp("Feb") == 0) moStr.FROM("02");
-	else if (mo.Cmp("Mar") == 0) moStr.FROM("03");
-	else if (mo.Cmp("Apr") == 0) moStr.FROM("04");
-	else if (mo.Cmp("May") == 0) moStr.FROM("05");
-	else if (mo.Cmp("Jun") == 0) moStr.FROM("06");
-	else if (mo.Cmp("Jul") == 0) moStr.FROM("07");
-	else if (mo.Cmp("Aug") == 0) moStr.FROM("08");
-	else if (mo.Cmp("Sep") == 0) moStr.FROM("09");
-	else if (mo.Cmp("Oct") == 0) moStr.FROM("10");
-	else if (mo.Cmp("Nov") == 0) moStr.FROM("11");
-	else if (mo.Cmp("Dec") == 0) moStr.FROM("12");
-	else moStr.FROM("00");
-	dt.Append(moStr);
-	dt.Append('-');
-	dt.Append((char*)&str.mBytes[4], 2);
-	dt.Append("T");
-	dt.Append(__TIME__);
-	dt.Append(".000000");
-	GrapaTime t;
-	t.FromString(dt);
-	t.mSec -= t.LocalOffset();
-	if (gSystem->mVersion) gSystem->mVersion->CLEAR();
-	if (!gSystem->mVersion) gSystem->mVersion = new GrapaRuleQueue();
-	gSystem->mVersion->PushTail(new GrapaRuleEvent(0, GrapaCHAR("major"), GrapaInt(grapa_major).getBytes()));
-	gSystem->mVersion->PushTail(new GrapaRuleEvent(0, GrapaCHAR("minor"), GrapaInt(grapa_minor).getBytes()));
-	gSystem->mVersion->PushTail(new GrapaRuleEvent(0, GrapaCHAR("micro"), GrapaInt(grapa_micro).getBytes()));
-	gSystem->mVersion->PushTail(new GrapaRuleEvent(0, GrapaCHAR("releaselevel"), GrapaCHAR(grapa_releaselevel))); // alpha, beta, candidate, final
-	gSystem->mVersion->PushTail(new GrapaRuleEvent(0, GrapaCHAR("serial"), GrapaInt(grapa_serial).getBytes()));
-	gSystem->mVersion->PushTail(new GrapaRuleEvent(0, GrapaCHAR("date"), t.getBytes()));
+	//GrapaCHAR str(__DATE__);
+	//GrapaCHAR dt, mo;
+	//dt.Append((char*)&str.mBytes[7], 4);
+	//dt.Append('-');
+	//mo.Append((char*)str.mBytes, 3);
+	//GrapaCHAR moStr;
+	//if (mo.Cmp("Jan") == 0) moStr.FROM("01");
+	//else if (mo.Cmp("Feb") == 0) moStr.FROM("02");
+	//else if (mo.Cmp("Mar") == 0) moStr.FROM("03");
+	//else if (mo.Cmp("Apr") == 0) moStr.FROM("04");
+	//else if (mo.Cmp("May") == 0) moStr.FROM("05");
+	//else if (mo.Cmp("Jun") == 0) moStr.FROM("06");
+	//else if (mo.Cmp("Jul") == 0) moStr.FROM("07");
+	//else if (mo.Cmp("Aug") == 0) moStr.FROM("08");
+	//else if (mo.Cmp("Sep") == 0) moStr.FROM("09");
+	//else if (mo.Cmp("Oct") == 0) moStr.FROM("10");
+	//else if (mo.Cmp("Nov") == 0) moStr.FROM("11");
+	//else if (mo.Cmp("Dec") == 0) moStr.FROM("12");
+	//else moStr.FROM("00");
+	//dt.Append(moStr);
+	//dt.Append('-');
+	//dt.Append((char*)&str.mBytes[4], 2);
+	//dt.Append("T");
+	//dt.Append(__TIME__);
+	//dt.Append(".000000");
+	//GrapaTime t;
+	//t.FromString(dt);
+	//t.mSec -= t.LocalOffset();
+	//gSystem->mVersion.FROM(grapa_version);
 	//gSystem->mConsoleConnect.mScriptState.mRuleVariables.SetResponse(&gSystem->mConsoleResponse);
 	//GrapaError err = gSystem->mConsoleConnect.Start();
 	//if (err) Stop();
@@ -376,11 +369,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	if (showVersion)
 	{
 		outStr.Append("Version: ");
-		outStr.Append(GrapaInt(grapa_major).ToString());
-		outStr.Append(".");
-		outStr.Append(GrapaInt(grapa_minor).ToString());
-		outStr.Append(".");
-		outStr.Append(GrapaInt(grapa_micro).ToString());
+		outStr.Append(gSystem->mVersion);
 		outStr.Append("\n");
 	}
 	if (showEnv)

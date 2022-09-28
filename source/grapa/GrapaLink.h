@@ -3,11 +3,7 @@
 
 #include "GrapaValue.h"
 
-#define grapa_major 0
-#define grapa_minor 0
-#define grapa_micro 36
-#define grapa_releaselevel "alpha"
-#define grapa_serial 106
+#define grapa_version "0.0.37"
 
 typedef void (*GrapaLinkCallback)(const char* pStr, bool pFlush);
 class GrapaSystem;
