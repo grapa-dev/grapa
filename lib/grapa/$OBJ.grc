@@ -6,10 +6,10 @@
 	bool = @<"bool",{@<this>}>; 
 	int = @<"int",{@<this>}>; 
 	uint = @<"int",{@<this>,1}>; 
-	float = @<[op,@<float,{@<this>,@<var,{b}>,@<var,{c}>}>],{b,c}>; 
-	fix = @<[op,@<fix,{@<this>,@<var,{b}>,@<var,{c}>}>],{b,c}>; 
-	setfloat = @<[op,@<setfloat,{@<this>,@<var,{b}>,@<var,{c}>}>],{b,c}>; 
-	setfix = @<[op,@<setfix,{@<this>,@<var,{b}>,@<var,{c}>}>],{b,c}>; 
+	float = @<[op,@<float,{@<this>,@<var,{b}>,@<var,{c}>}>],{"b":0,"c":0}>; 
+	fix = @<[op,@<fix,{@<this>,@<var,{b}>,@<var,{c}>}>],{"b":0,"c":0}>; 
+	setfloat = @<[op,@<setfloat,{@<this>,@<var,{b}>,@<var,{c}>}>],{"b":0,"c":0}>; 
+	setfix = @<[op,@<setfix,{@<this>,@<var,{b}>,@<var,{c}>}>],{"b":0,"c":0}>; 
 	str = @<[op,@<str,{@<this>,@<var,{format}>}>],{format:null}>; 
 	list = @<"list",{@<this>}>; 
 	array = @<"array",{@<this>}>; 

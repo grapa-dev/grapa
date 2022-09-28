@@ -11968,16 +11968,23 @@ GrapaRuleEvent* GrapaLibraryRuleDivEvent::Run(GrapaScriptExec *vScriptExec, Grap
 		GrapaInt a, b, c;
 		if ((r1.vVal->mValue.mToken == GrapaTokenType::INT || r1.vVal->mValue.mToken == GrapaTokenType::TIME) && r2.vVal->mValue.mToken == GrapaTokenType::INT)
 		{
-			a.FromBytes(r1.vVal->mValue);
+			GrapaFloat d(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			GrapaFloat d2(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+			d.FromBytes(r1.vVal->mValue);
+			d2.FromBytes(r2.vVal->mValue);
+			//a.FromBytes(r1.vVal->mValue);
 			b.FromBytes(r2.vVal->mValue);
-			c = a / b;
-			if (c.NaN)
+			d = d / d2;
+			if (d.mNaN)
 			{
 				result = Error(vScriptExec, pNameSpace, -1);
 			}
 			else
 			{
-				result = new GrapaRuleEvent(0, item, c.getBytes());
+				if (d.IsInt())
+					result = new GrapaRuleEvent(0, item, d.ToInt().getBytes());
+				else
+					result = new GrapaRuleEvent(0, item, d.getBytes());
 			}
 		}
 		else if ((r1.vVal->mValue.mToken == GrapaTokenType::INT || r1.vVal->mValue.mToken == GrapaTokenType::TIME || r1.vVal->mValue.mToken == GrapaTokenType::FLOAT) && (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::FLOAT))
@@ -14643,7 +14650,7 @@ GrapaRuleEvent* GrapaLibraryRuleFloatEvent::Run(GrapaScriptExec *vScriptExec, Gr
 	s64 max = vScriptExec->vScriptState->mItemState.mFloatMax;
 	s64 extraNum = vScriptExec->vScriptState->mItemState.mFloatExtra;
 	bool fix = (mName.Cmp("fix") == 0);
-	if (percision.vVal)
+	if (percision.vVal && percision.vVal->mValue.mToken==GrapaTokenType::INT)
 	{
 		GrapaInt b;
 		b.FromBytes(percision.vVal->mValue);
@@ -14651,7 +14658,7 @@ GrapaRuleEvent* GrapaLibraryRuleFloatEvent::Run(GrapaScriptExec *vScriptExec, Gr
 		if (lb > 0)
 			max = lb;
 	}
-	if (extra.vVal)
+	if (extra.vVal && extra.vVal->mValue.mToken == GrapaTokenType::INT)
 	{
 		GrapaInt b;
 		b.FromBytes(extra.vVal->mValue);

@@ -145,6 +145,9 @@ public:
 		Py_ssize_t pos = 0;
 		switch (e->mValue.mToken)
 		{
+		case GrapaTokenType::PTR:
+			FromGrapa(vScriptExec, e->vRulePointer, o);
+			break;
 		case GrapaTokenType::STR:
 			*o = py::str((char*)e->mValue.mBytes, e->mValue.mLength);
 			break;
@@ -168,7 +171,7 @@ public:
 			*o = py::float_(std::stod((char*)s.mBytes));
 			break;
 		case GrapaTokenType::BOOL:
-			if (e) isTrueA = !e->IsNullIsNegIsZero(isNegA, isNull);	
+			if (e) isTrueA = !e->IsNullIsNegIsZero(isNegA, isNull);
 			*o = py::bool_(isTrueA);
 			break;
 		case GrapaTokenType::ARRAY:
@@ -275,7 +278,13 @@ public:
 			py::object scope = py::module_::import((char*)import_str.mBytes).attr((char*)attr_str.mBytes);
 			GrapaCHAR pStr;
 			py::object locals;
-			GrapaPyObject::FromGrapa(vScriptExec, locals_param.vVal, &locals);
+			GrapaRuleEvent* cp = vScriptExec->CopyItem(locals_param.vVal);
+			GrapaPyObject::FromGrapa(vScriptExec, cp, &locals);
+			if (cp)
+			{
+				cp->CLEAR();
+				delete cp;
+			}
 			//auto locals = py::dict("a"_a=5);
 			py::object o = py::eval(sript_str, scope, locals);
 			result = GrapaPyObject::ToGrapa(o.ptr(), GrapaCHAR());
@@ -305,7 +314,13 @@ public:
 			if (attr_param.vVal && attr_param.vVal->mValue.mLength) attr_str.FROM(attr_param.vVal->mValue);
 			py::object scope = py::module_::import((char*)import_str.mBytes).attr((char*)attr_str.mBytes);
 			py::object locals;
+			GrapaRuleEvent* cp = vScriptExec->CopyItem(locals_param.vVal);
 			GrapaPyObject::FromGrapa(vScriptExec, locals_param.vVal, &locals);
+			if (cp)
+			{
+				cp->CLEAR();
+				delete cp;
+			}
 			py::exec(sript_str, scope, locals);
 		}
 		return result;
@@ -482,6 +497,70 @@ public:
 		return o;
 	}
 
+
+	py::object compile(py::object cmdstr, std::string rulestr, std::string profilestr)
+	{
+		size_t length = 0;
+		GrapaCHAR runStr;
+		GrapaRuleEvent* rulexx = NULL;
+		GrapaCHAR profStr;
+		py::object o;
+		if (true)
+		{
+			pybind11::gil_scoped_acquire acquire;
+			o = py::none();
+			Py_ssize_t size = 0;
+			const char* buffer = (char*)PyUnicode_AsUTF8AndSize(cmdstr.ptr(), &size);
+			length = size;
+			if (length > 0)
+			{
+				runStr.FROM(buffer, length);
+			}
+			if (rulestr.length() > 0)
+			{
+				GrapaCHAR rStr(rulestr.c_str(), rulestr.length());
+				rulexx = mConsoleSend.mScriptState.SearchVariable(mConsoleSend.mScriptState.GetNameSpace(), rStr);
+			}
+			profStr.FROM(profilestr.c_str(), profilestr.length());
+		}
+		GrapaRuleEvent* grresult = NULL;
+		if (length > 0)
+		{
+			GrapaRuleEvent* opEvent = mScriptExec.Plan(mConsoleSend.mScriptState.GetNameSpace(), runStr, rulexx, 0, profStr);
+			opEvent->mName.FROM("op");
+			GrapaRuleEvent* verEvent = new GrapaRuleEvent(0, GrapaCHAR("version"), GrapaCHAR());
+			verEvent->mValue.mToken = GrapaTokenType::LIST;
+			verEvent->vQueue = mScriptExec.CopyQueue(GrapaLink::GetGrapaSystem()->mVersion);
+
+			GrapaRuleEvent* e = new GrapaRuleEvent();
+			e->mValue.mToken = GrapaTokenType::LIST;
+			e->vQueue = new GrapaRuleQueue();
+			e->vQueue->PushTail(opEvent);
+			e->vQueue->PushTail(verEvent);
+
+			grresult = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
+			GrapaCHAR s;
+			e->TO(s);
+			GrapaCompress::Compress(s, grresult->mValue);
+			grresult->mValue.mToken = GrapaTokenType::RAW;
+
+			e->CLEAR();
+			delete e;
+		}
+		if (grresult)
+		{
+			pybind11::gil_scoped_acquire acquire;
+			GrapaRuleEvent* echo = grresult;
+			while (echo && echo->mValue.mToken == GrapaTokenType::PTR)
+				echo = echo->vRulePointer;
+			GrapaPyObject::FromGrapa(&mScriptExec, echo, &o);
+			grresult->CLEAR();
+			delete grresult;
+		}
+
+		return o;
+	}
+
 };
 
 py::object grapa_eval(py::object cmdstr, py::object paramstr, std::string rulestr, std::string profilestr)
@@ -524,6 +603,7 @@ PYBIND11_MODULE(grapapy, m)
 	py::class_<GrapaStruct>(m, "grapa")
 		.def(py::init<py::object>(), py::arg("s") = py::none())
 		.def("eval", static_cast<py::object(GrapaStruct::*)(py::object, py::object, std::string, std::string)>(&GrapaStruct::eval), "", py::arg("s"), py::arg("a") = "", py::arg("r") = "", py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>())
+		.def("compile", static_cast<py::object(GrapaStruct::*)(py::object, std::string, std::string)>(&GrapaStruct::compile), "", py::arg("s"), py::arg("r") = "", py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>())
 		;
 	
 	m.def("eval", &grapa_eval, R"pbdoc(
@@ -531,6 +611,6 @@ PYBIND11_MODULE(grapapy, m)
     )pbdoc",
 		py::arg("s"), py::arg("a") = "", py::arg("r") = "", py::arg("p") = "", pybind11::call_guard<py::gil_scoped_release>());
 	
-    m.attr("__version__") = "0.0.18";
+    m.attr("__version__") = "0.0.20";
 
 }
