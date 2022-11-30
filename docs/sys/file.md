@@ -84,6 +84,10 @@ Retrieves a list of files/directories in the current working directory.
 ]
 ```
 
+```
+$file().ls().vector().sort(1,["$KEY"]).t().array()[0];
+```
+
 ## mk(name [,type]) 
 Creates a directory at the current working directory within the file system.
 
