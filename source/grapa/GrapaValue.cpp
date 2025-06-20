@@ -1092,7 +1092,7 @@ template <class BidirectionalIterator>
 void reverseX(BidirectionalIterator first, BidirectionalIterator last)
 {
 	while ((first != last) && (first != --last)) {
-		std::iter_swap(first, last);
+		std::swap(first, last);
 		++first;
 	}
 }
