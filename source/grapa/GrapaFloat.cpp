@@ -234,7 +234,7 @@ void GrapaFloat::Add(GrapaFloat& A, GrapaFloat& B, GrapaFloat& result)
 	result.mTrunc = A.mTrunc || B.mTrunc;
 }
 
-GrapaFloat GrapaFloat::operator +(const GrapaFloat& bi)
+GrapaFloat GrapaFloat::operator +(const GrapaFloat& bi) const
 {
 	GrapaFloat A(*this), B(bi);
 	GrapaFloat result(mFix && bi.mFix ? true : false, mMax > bi.mMax ? mMax : bi.mMax, mExtra > bi.mExtra ? mExtra : bi.mExtra, 0);
@@ -242,7 +242,7 @@ GrapaFloat GrapaFloat::operator +(const GrapaFloat& bi)
 	return result;
 }
 
-GrapaFloat GrapaFloat::operator +(s64 bi) 
+GrapaFloat GrapaFloat::operator +(s64 bi) const
 { 
 	GrapaFloat bi2(mFix,mMax, mExtra,bi);
 	return *this + bi2; 
@@ -269,7 +269,7 @@ GrapaFloat GrapaFloat::operator++(int)
 	return tmp; 
 }
 
-GrapaFloat GrapaFloat::operator -(const GrapaFloat& bi)
+GrapaFloat GrapaFloat::operator -(const GrapaFloat& bi) const
 {
 	GrapaFloat A(*this), B(bi);
 	B.mSigned = !B.mSigned;
@@ -278,7 +278,7 @@ GrapaFloat GrapaFloat::operator -(const GrapaFloat& bi)
 	return result;
 }
 
-GrapaFloat GrapaFloat::operator -(s64 bi) 
+GrapaFloat GrapaFloat::operator -(s64 bi) const
 { 
 	GrapaFloat that(mFix, mMax, mExtra, bi);
 	return *this - that;
@@ -304,7 +304,7 @@ GrapaFloat GrapaFloat::operator--(int x)
 	return tmp; 
 }
 
-GrapaFloat GrapaFloat::operator *(const GrapaFloat& bi)
+GrapaFloat GrapaFloat::operator *(const GrapaFloat& bi) const
 {
 	GrapaFloat result(mFix && bi.mFix ? true : false, mMax > bi.mMax ? mMax : bi.mMax, mExtra > bi.mExtra ? mExtra : bi.mExtra, 0);
 	if (mTrunc || bi.mTrunc)
@@ -331,19 +331,19 @@ GrapaFloat GrapaFloat::operator *(const GrapaFloat& bi)
 	return result;
 }
 
-GrapaFloat GrapaFloat::operator *(const GrapaInt& bi)
+GrapaFloat GrapaFloat::operator *(const GrapaInt& bi) const
 {
 	GrapaFloat bi2(mFix,mMax, mExtra,bi);
 	return (*this*bi2);
 }
 
-GrapaFloat GrapaFloat::operator *(s64 bi) 
+GrapaFloat GrapaFloat::operator *(s64 bi) const
 { 
 	GrapaFloat bi2(mFix, mMax, mExtra, bi);
 	return (*this*bi2); 
 }
 
-GrapaFloat GrapaFloat::operator *(double bi) 
+GrapaFloat GrapaFloat::operator *(double bi) const
 { 
 	GrapaFloat bi2(bi); 
 	return (*this*bi2); 
@@ -365,30 +365,30 @@ GrapaFloat GrapaFloat::operator >>(int shiftVal)
 	return result;
 }
 
-GrapaFloat GrapaFloat::operator ~()
+GrapaFloat GrapaFloat::operator ~() const
 {
 	GrapaFloat result(mFix, mMax, mExtra, 0);
 	return result;
 }
 
-GrapaFloat GrapaFloat::operator -()
+GrapaFloat GrapaFloat::operator -() const
 {
 	GrapaFloat result(*this);
 	result.mSigned = !result.mSigned;
 	return result;
 }
 
-bool GrapaFloat::operator ==(const GrapaFloat& bi2)
+bool GrapaFloat::operator ==(const GrapaFloat& bi2) const
 {
 	return Equals(bi2);
 }
 
-bool GrapaFloat::operator !=(const GrapaFloat& bi2)
+bool GrapaFloat::operator !=(const GrapaFloat& bi2) const
 {
 	return !(Equals(bi2));
 }
 
-bool GrapaFloat::Equals(const GrapaFloat& bi)
+bool GrapaFloat::Equals(const GrapaFloat& bi) const
 {
 	GrapaFloat result(*this - bi);
 	result.Truncate(true);
@@ -397,7 +397,7 @@ bool GrapaFloat::Equals(const GrapaFloat& bi)
 	return(false);
 }
 
-bool GrapaFloat::operator >(const GrapaFloat& bi)
+bool GrapaFloat::operator >(const GrapaFloat& bi) const
 {
 	GrapaFloat result(*this - bi);
 	result.Truncate(true);
@@ -406,13 +406,13 @@ bool GrapaFloat::operator >(const GrapaFloat& bi)
 	return (result.mSigned==false && !result.IsZero());
 }
 
-bool GrapaFloat::operator >(s64 i1) 
+bool GrapaFloat::operator >(s64 i1) const
 { 
 	GrapaFloat bi1(mFix, mMax, mExtra, i1);
 	return (*this > bi1); 
 }
 
-bool GrapaFloat::operator <(const GrapaFloat& bi)
+bool GrapaFloat::operator <(const GrapaFloat& bi) const
 {
 	GrapaFloat result(*this - bi);
 	result.Truncate(true);
@@ -421,23 +421,23 @@ bool GrapaFloat::operator <(const GrapaFloat& bi)
 	return result.mSigned == true && !result.IsZero();
 }
 
-bool GrapaFloat::operator <(s64 bi) 
+bool GrapaFloat::operator <(s64 bi) const
 { 
 	GrapaFloat bi2(mFix, mMax, mExtra, bi);
 	return (*this < bi2); 
 }
 
-bool GrapaFloat::operator >= (const GrapaFloat& bi2)
+bool GrapaFloat::operator >= (const GrapaFloat& bi2) const
 {
 	return (*this == bi2 || *this > bi2);
 }
 
-bool GrapaFloat::operator <= (const GrapaFloat& bi2)
+bool GrapaFloat::operator <= (const GrapaFloat& bi2) const
 {
 	return (*this == bi2 || *this < bi2);
 }
 
-GrapaInt GrapaFloat::Div(const GrapaFloat& bi2, GrapaFloat& remainder)
+GrapaInt GrapaFloat::Div(const GrapaFloat& bi2, GrapaFloat& remainder) const
 {
 	GrapaFloat A(*this);
 	GrapaFloat B(bi2);
@@ -516,19 +516,19 @@ GrapaFloat GrapaFloat::operator /(s64 bi)
 	return((*this) / bi2);
 }
 
-GrapaFloat GrapaFloat::operator %(const GrapaFloat& bi)
+GrapaFloat GrapaFloat::operator %(const GrapaFloat& bi) const
 {
 	GrapaFloat remainder(mFix, mMax, mExtra > bi.mExtra ? mExtra : bi.mExtra, 0);
 	GrapaInt result = Div(bi, remainder);
 	return(remainder);
 }
 
-GrapaFloat GrapaFloat::operator %(const GrapaInt& bi)
+GrapaFloat GrapaFloat::operator %(const GrapaInt& bi) const
 {
 	return ((*this) % GrapaFloat(mFix, mMax, mExtra, bi));
 }
 
-GrapaFloat GrapaFloat::operator %(s64 bi)
+GrapaFloat GrapaFloat::operator %(s64 bi) const
 {
 	return ((*this) % GrapaFloat(mFix, mMax, mExtra, bi));
 }
@@ -539,28 +539,28 @@ GrapaFloat GrapaFloat::operator %=(const GrapaFloat& bi1)
 	return *this;
 }
 
-GrapaFloat GrapaFloat::operator |(const GrapaFloat& e)
+GrapaFloat GrapaFloat::operator |(const GrapaFloat& e) const
 {
 	GrapaFloat exp(e);
 	GrapaFloat result(mFix, mMax, mExtra > e.mExtra ? mExtra : e.mExtra, 0);
 	return result;
 }
 
-GrapaFloat GrapaFloat::operator &(const GrapaFloat& e)
+GrapaFloat GrapaFloat::operator &(const GrapaFloat& e) const
 {
 	GrapaFloat exp(e);
 	GrapaFloat result(mFix, mMax, mExtra > e.mExtra ? mExtra : e.mExtra, 0);
 	return result;
 }
 
-GrapaFloat GrapaFloat::operator ^(const GrapaFloat& e)
+GrapaFloat GrapaFloat::operator ^(const GrapaFloat& e) const
 {
 	GrapaFloat exp(e);
 	GrapaFloat result(mFix, mMax, mExtra > e.mExtra ? mExtra : e.mExtra, 0);
 	return result;
 }
 
-GrapaFloat GrapaFloat::Pow(const GrapaInt& pexp)
+GrapaFloat GrapaFloat::Pow(const GrapaInt& pexp) const
 {
 	GrapaFloat n(*this);
 	GrapaFloat result(mFix, mMax, mExtra, 0);
@@ -593,7 +593,7 @@ GrapaFloat GrapaFloat::Pow(const GrapaInt& pexp)
 		return result;
 }
 
-GrapaFloat GrapaFloat::Pow2(const GrapaFloat& pexp)
+GrapaFloat GrapaFloat::Pow2(const GrapaFloat& pexp) const
 {
 	GrapaFloat d = pexp;
 	if (d.mSigned)
@@ -637,7 +637,7 @@ GrapaFloat GrapaFloat::Pow2(const GrapaFloat& pexp)
 	return(result);
 }
 
-GrapaFloat GrapaFloat::Root(const GrapaInt& pexp)
+GrapaFloat GrapaFloat::Root(const GrapaInt& pexp) const
 {
 	GrapaFloat result(*this);
 	s64 e = GrapaInt(pexp).LongValue();
@@ -706,7 +706,7 @@ GrapaFloat GrapaFloat::Root(const GrapaInt& pexp)
 	return result;
 }
 
-GrapaFloat GrapaFloat::Root2(const GrapaFloat& pexp)
+GrapaFloat GrapaFloat::Root2(const GrapaFloat& pexp) const
 {
 	GrapaFloat one(pexp.mFix, pexp.mMax, pexp.mExtra, 1);
 	GrapaFloat zero(pexp.mFix, pexp.mMax, pexp.mExtra, 0);
@@ -722,99 +722,104 @@ GrapaFloat GrapaFloat::Root2(const GrapaFloat& pexp)
 
 GrapaFloat GrapaFloat::Pi(const GrapaFloat& pexp)
 {
-	//s64 maxbits = pexp.mMax;
-	//maxbits += pexp.mExtra + 2;
-	//GrapaFloat c13591409(false, maxbits, pexp.mExtra, 13591409);
-	//GrapaFloat c545140134(false, maxbits, pexp.mExtra, 545140134);
-	//GrapaFloat c640320(false, maxbits, pexp.mExtra, 640320);
-	//GrapaFloat c = GrapaFloat(false, maxbits, pexp.mExtra, 12) / ((c640320.Pow(3)).Root(2));
-
-	//c640320.mSigned = true;
-
-	//GrapaFloat f1k(false, maxbits, pexp.mExtra, 1);
-	//GrapaFloat f3k(false, maxbits, pexp.mExtra, 1);
-	//GrapaFloat f6k(false, maxbits, pexp.mExtra, 1);
-	//GrapaFloat c640320_pow(false, maxbits, pexp.mExtra, 0);
-
-	//GrapaFloat result(c13591409);
-	//GrapaFloat temp(false, maxbits, pexp.mExtra, 0), temp2(false, maxbits, pexp.mExtra, 0);
-	//s64 i = 0;
-	//do
-	//{
-	//	i++;
-	//	f1k = f1k * (i);
-	//	f3k = f3k * ((i * 3 - 2) * (i * 3 - 1) * (i * 3));
-	//	f6k = f6k * ((i * 6 - 5) * (i * 6 - 4) * (i * 6 - 3) * (i * 6 - 2) * (i * 6 - 1) * (i * 6));
-	//	c640320_pow = c640320.Pow(3 * i);
-	//	temp = (c13591409 + (c545140134 * i)) * f6k;
-	//	temp2 = c640320_pow * (f3k * f1k * f1k * f1k);
-	//	temp = temp / temp2;
-	//	result = result + temp;
-	//} while (temp.mBits && temp.mExp > -pexp.mMax);
-
-	//if (pexp.mBits != 1 || pexp.mData.GetItem(0) == 1)
-	//	temp = (result * c).Pow2(pexp);
-	//else
-	//	temp = result * c;
-	//temp2 = GrapaFloat(false, maxbits, pexp.mExtra, 1) / temp;
-
-
-	//temp2.mMax = pexp.mMax;
-	//temp2.mFix = true;
-	//temp2.Truncate();
-
-	//return (temp2);
-
-	// (1).float(1000,10).pi()
-	// 247
-
-	GrapaCHAR nStr(".");
-	u64 N = pexp.mMax / 4;
-	u64 LEN = (10L * N) / 3 + 1;
-
-	unsigned predigit = 0, nines = 0;
-	unsigned *a = (unsigned*)malloc(sizeof(unsigned)*LEN);
-	memset(a, 0, sizeof(unsigned) * LEN);
-	long x=0, q=0, k=0, i3=0;
-
-	for (unsigned j = N; j; )
+	if (pexp.mMax > 64)
 	{
-		q = 0;
-		k = LEN + LEN - 1;
+		s64 maxbits = pexp.mMax;
+		maxbits += pexp.mExtra + 2;
+		GrapaFloat c13591409(false, maxbits, pexp.mExtra, 13591409);
+		GrapaFloat c545140134(false, maxbits, pexp.mExtra, 545140134);
+		GrapaFloat c640320(false, maxbits, pexp.mExtra, 640320);
+		GrapaFloat c = GrapaFloat(false, maxbits, pexp.mExtra, 12) / ((c640320.Pow(3)).Root(2));
 
-		for (i3 = LEN; i3; --i3)
+		c640320.mSigned = true;
+
+		GrapaFloat f1k(false, maxbits, pexp.mExtra, 1);
+		GrapaFloat f3k(false, maxbits, pexp.mExtra, 1);
+		GrapaFloat f6k(false, maxbits, pexp.mExtra, 1);
+		GrapaFloat c640320_pow(false, maxbits, pexp.mExtra, 0);
+
+		GrapaFloat result(c13591409);
+		GrapaFloat temp(false, maxbits, pexp.mExtra, 0), temp2(false, maxbits, pexp.mExtra, 0);
+		s64 i = 0;
+		do
 		{
-			x = (j == N ? 20 : 10L * a[i3 - 1]) + q * i3;
-			q = x / k;
-			a[i3 - 1] = (unsigned)(x - q * k);
-			k -= 2;
-		}
+			i++;
+			f1k = f1k * (i);
+			f3k = f3k * ((i * 3 - 2) * (i * 3 - 1) * (i * 3));
+			f6k = f6k * ((i * 6 - 5) * (i * 6 - 4) * (i * 6 - 3) * (i * 6 - 2) * (i * 6 - 1) * (i * 6));
+			c640320_pow = c640320.Pow(3 * i);
+			temp = (c13591409 + (c545140134 * i)) * f6k;
+			temp2 = c640320_pow * (f3k * f1k * f1k * f1k);
+			temp = temp / temp2;
+			result = result + temp;
+		} while (temp.mBits && temp.mExp > -pexp.mMax);
 
-		k = x % 10;
-		if (k == 9)
-			++nines;
+		if (pexp.mBits != 1 || pexp.mData.GetItem(0) == 1)
+			temp = (result * c).Pow2(pexp);
 		else
-		{
-			if (j)
-			{
-				--j;
-				nStr.Append((char)((predigit + x / 10) + '0'));
-			}
+			temp = result * c;
+		temp2 = GrapaFloat(false, maxbits, pexp.mExtra, 1) / temp;
 
-			for (; nines; --nines)
-			{
-				if (j) --j, nStr.Append(x >= 10 ? '0' : '9');
-			}
 
-			predigit = (unsigned)k;
-		}
+		temp2.mMax = pexp.mMax;
+		temp2.mFix = true;
+		temp2.Truncate();
+
+		return (temp2);
+
+		// (1).float(1000,10).pi()
+		// 247
 	}
-	free(a);
-	nStr.mBytes[0] = nStr.mBytes[1];
-	nStr.mBytes[1] = '.';
-	GrapaFloat temp3=pexp;
-	temp3.FromString(nStr, 10);
-	return (temp3);
+	else
+	{
+		GrapaCHAR nStr(".");
+		u64 N = pexp.mMax / 4;
+		u64 LEN = (10L * N) / 3 + 1;
+
+		unsigned predigit = 0, nines = 0;
+		unsigned* a = (unsigned*)malloc(sizeof(unsigned) * LEN);
+		memset(a, 0, sizeof(unsigned) * LEN);
+		long x = 0, q = 0, k = 0, i3 = 0;
+
+		for (unsigned j = N; j; )
+		{
+			q = 0;
+			k = LEN + LEN - 1;
+
+			for (i3 = LEN; i3; --i3)
+			{
+				x = (j == N ? 20 : 10L * a[i3 - 1]) + q * i3;
+				q = x / k;
+				a[i3 - 1] = (unsigned)(x - q * k);
+				k -= 2;
+			}
+
+			k = x % 10;
+			if (k == 9)
+				++nines;
+			else
+			{
+				if (j)
+				{
+					--j;
+					nStr.Append((char)((predigit + x / 10) + '0'));
+				}
+
+				for (; nines; --nines)
+				{
+					if (j) --j, nStr.Append(x >= 10 ? '0' : '9');
+				}
+
+				predigit = (unsigned)k;
+			}
+		}
+		free(a);
+		nStr.mBytes[0] = nStr.mBytes[1];
+		nStr.mBytes[1] = '.';
+		GrapaFloat temp3 = pexp;
+		temp3.FromString(nStr, 10);
+		return (temp3);
+	}
 
 	/*
 	def pi_digits(n):
@@ -906,13 +911,13 @@ GrapaFloat GrapaFloat::E(const GrapaFloat& pexp)
 	*/
 }
 
-GrapaFloat GrapaFloat::Abs()
+GrapaFloat GrapaFloat::Abs() const
 {
 	if (mSigned) return -*this;
 	return *this;
 }
 
-GrapaFloat GrapaFloat::LnBase()
+GrapaFloat GrapaFloat::LnBase() const
 {
 	GrapaFloat z(*this);
 	if (z.mTrunc)
@@ -972,7 +977,7 @@ GrapaFloat GrapaFloat::LnBase()
 	return(result);
 }
 
-GrapaFloat GrapaFloat::Log(const GrapaFloat& bx)
+GrapaFloat GrapaFloat::Log(const GrapaFloat& bx) const
 {
 	GrapaFloat z(*this);
 	GrapaFloat b(bx);
@@ -1006,7 +1011,7 @@ GrapaFloat GrapaFloat::Log(const GrapaFloat& bx)
 	return(result);
 }
 
-GrapaFloat GrapaFloat::Ln()
+GrapaFloat GrapaFloat::Ln() const
 {
 	GrapaFloat z(*this);
 	if (z.mTrunc)
@@ -1033,10 +1038,10 @@ GrapaFloat GrapaFloat::Ln()
 	return(result);
 }
 
-GrapaFloat GrapaFloat::Sin()
+GrapaFloat GrapaFloat::Sin() const
 {
-	mMax += 4;
 	GrapaFloat sin(*this);
+	sin.mMax += 4;
 	GrapaFloat one(mFix, mMax, mExtra, 1);
 	if (sin.mTrunc)
 	{
@@ -1119,7 +1124,7 @@ GrapaFloat GrapaFloat::Sin()
 	return(sin);
 }
 
-GrapaFloat GrapaFloat::Cos()
+GrapaFloat GrapaFloat::Cos() const
 {
 	GrapaFloat rad(*this);
 	GrapaFloat one(mFix, mMax, mExtra, 1);
@@ -1219,7 +1224,7 @@ GrapaFloat GrapaFloat::Cos()
 	return(cos);
 }
 
-GrapaFloat GrapaFloat::Tan()
+GrapaFloat GrapaFloat::Tan() const
 {
 	GrapaFloat rad(*this);
 	if (rad.mTrunc)
@@ -1342,22 +1347,22 @@ GrapaFloat GrapaFloat::Tan()
 	return(tan);
 }
 
-GrapaFloat GrapaFloat::Cot()
+GrapaFloat GrapaFloat::Cot() const
 {
 	return (GrapaFloat(mFix,mMax, mExtra,1) / Tan());
 }
 
-GrapaFloat GrapaFloat::Sec()
+GrapaFloat GrapaFloat::Sec() const
 {
 	return (GrapaFloat(mFix,mMax, mExtra,1) / Cos());
 }
 
-GrapaFloat GrapaFloat::Csc()
+GrapaFloat GrapaFloat::Csc() const
 {
 	return (GrapaFloat(mFix,mMax, mExtra,1) / Sin());
 }
 
-GrapaFloat GrapaFloat::ASin()
+GrapaFloat GrapaFloat::ASin() const
 {
 	if (mExp > 0 || (mExp == 0 && mBits > 1)) return(GrapaFloat(mFix, mMax, mExtra, 0));
 	GrapaFloat rad(*this);
@@ -1388,7 +1393,7 @@ GrapaFloat GrapaFloat::ASin()
 
 }
 
-GrapaFloat GrapaFloat::ACos()
+GrapaFloat GrapaFloat::ACos() const
 {
 	if (mExp > 0 || (mExp == 0 && mBits > 1)) return(GrapaFloat(mFix, mMax, mExtra, 0));
 	GrapaFloat rad(*this);
@@ -1418,7 +1423,7 @@ GrapaFloat GrapaFloat::ACos()
 	return(result);
 }
 
-GrapaFloat GrapaFloat::ATan()
+GrapaFloat GrapaFloat::ATan() const
 {
 	if (mExp > 0 || (mExp == 0 && mBits > 1)) return(GrapaFloat(mFix,mMax, mExtra,0));
 	GrapaFloat rad(*this);
@@ -1483,7 +1488,7 @@ GrapaFloat GrapaFloat::ATan()
 	return(result);
 }
 
-GrapaFloat GrapaFloat::ACot()
+GrapaFloat GrapaFloat::ACot() const
 {
 	if (mExp > 0 || (mExp == 0 && mBits > 1)) return(GrapaFloat(mFix,mMax, mExtra,0));
 	GrapaFloat one(mFix, mMax, mExtra, 1);
@@ -1496,21 +1501,21 @@ GrapaFloat GrapaFloat::ACot()
 	return (result);
 }
 
-GrapaFloat GrapaFloat::ASec()
+GrapaFloat GrapaFloat::ASec() const
 {
 	if (mExp < 0) return(GrapaFloat(mFix,mMax, mExtra,0));
 	GrapaFloat z(GrapaFloat(mFix,mMax, mExtra,1) / (*this));
 	return z.ACos();
 }
 
-GrapaFloat GrapaFloat::ACsc()
+GrapaFloat GrapaFloat::ACsc() const
 {
 	if (mExp < 0) return(GrapaFloat(mFix, mMax, mExtra, 0));
 	GrapaFloat z = GrapaFloat(mFix, mMax, mExtra, 1) / (*this);
 	return z.ASin();
 }
 
-GrapaFloat GrapaFloat::SinH()
+GrapaFloat GrapaFloat::SinH() const
 {
 	GrapaFloat sin(*this);
 	if (sin.mTrunc)
@@ -1567,7 +1572,7 @@ GrapaFloat GrapaFloat::SinH()
 	return(sin);
 }
 
-GrapaFloat GrapaFloat::CosH()
+GrapaFloat GrapaFloat::CosH() const
 {
 	GrapaFloat rad(*this);
 	if (rad.mTrunc)
@@ -1620,7 +1625,7 @@ GrapaFloat GrapaFloat::CosH()
 	return(cos);
 }
 
-GrapaFloat GrapaFloat::TanH()
+GrapaFloat GrapaFloat::TanH() const
 {
 	GrapaFloat e1 = GrapaFloat(mFix, mMax, mExtra, 2) * (*this);
 	e1.mSigned = !e1.mSigned;
@@ -1630,7 +1635,7 @@ GrapaFloat GrapaFloat::TanH()
 	return(result);
 }
 
-GrapaFloat GrapaFloat::CotH()
+GrapaFloat GrapaFloat::CotH() const
 {
 	GrapaFloat e1 = GrapaFloat(mFix, mMax, mExtra, 2) * (*this);
 	e1.mSigned = !e1.mSigned;
@@ -1640,52 +1645,52 @@ GrapaFloat GrapaFloat::CotH()
 	return(result);
 }
 
-GrapaFloat GrapaFloat::SecH()
+GrapaFloat GrapaFloat::SecH() const
 {
 	return (GrapaFloat(mFix, mMax, mExtra, 1) / CosH());
 }
 
-GrapaFloat GrapaFloat::CscH()
+GrapaFloat GrapaFloat::CscH() const
 {
 	return (GrapaFloat(mFix, mMax, mExtra, 1) / SinH());
 }
 
-GrapaFloat GrapaFloat::ASinH()
+GrapaFloat GrapaFloat::ASinH() const
 {
 	GrapaFloat one(mFix, mMax, mExtra, 1);
 	GrapaFloat x2((*this)*(*this));
 	return ((*this)+(x2+one).Root(2)).Ln();
 }
 
-GrapaFloat GrapaFloat::ACosH()
+GrapaFloat GrapaFloat::ACosH() const
 {
 	GrapaFloat one(mFix, mMax, mExtra, 1);
 	GrapaFloat x2((*this)*(*this));
 	return ((*this) + (x2 - one).Root(2)).Ln();
 }
 
-GrapaFloat GrapaFloat::ATanH()
+GrapaFloat GrapaFloat::ATanH() const
 {
 	GrapaFloat one(mFix, mMax, mExtra, 1);
 	GrapaFloat two(mFix, mMax, mExtra, 2);
 	return ((one + (*this)) / (one - (*this))).Ln() / two;
 }
 
-GrapaFloat GrapaFloat::ACotH()
+GrapaFloat GrapaFloat::ACotH() const
 {
 	GrapaFloat one(mFix, mMax, mExtra, 1);
 	GrapaFloat two(mFix, mMax, mExtra, 2);
 	return (((*this) + one) / ((*this) - one)).Ln() / two;
 }
 
-GrapaFloat GrapaFloat::ASecH()
+GrapaFloat GrapaFloat::ASecH() const
 {
 	GrapaFloat one(mFix, mMax, mExtra, 1);
 	GrapaFloat x2((*this)*(*this));
 	return ((one / (*this)) + (one - x2).Root(2) / (*this)).Ln();
 }
 
-GrapaFloat GrapaFloat::ACscH()
+GrapaFloat GrapaFloat::ACscH() const
 {
 	GrapaFloat one(mFix, mMax, mExtra, 1);
 	GrapaFloat x2((*this)*(*this));
@@ -2113,7 +2118,7 @@ void GrapaFloat::FromBytes(const GrapaBYTE& result)
 	mTrunc = mTrunc || oldtrunc;
 }
 
-GrapaBYTE GrapaFloat::getBytes()
+GrapaBYTE GrapaFloat::getBytes() const
 {
 	// if special case
 	// mSigned=true; mExp = 0; mBits = 0; mData = code;
@@ -2173,6 +2178,7 @@ GrapaBYTE GrapaFloat::getBytes()
 	return result;
 }
 
+/*
 void GrapaFloat::Truncate(bool display)
 {
 	bool hasfraction = ((mExp + 1) <= 0);
@@ -2226,6 +2232,53 @@ void GrapaFloat::Truncate(bool display)
 		mTrunc = false;
 		mSigned = false;
 	}
+}
+*/
+
+void GrapaFloat::Truncate(bool display)
+{
+	// Early exit for zero
+	if (mData.IsZero()) {
+		mTrunc = false;
+		mSigned = false;
+		mBits = 0;
+		return;
+	}
+
+	bool hasfraction = ((mExp + 1) <= 0);
+	if (display && mExtra > 0)
+		mExtra = 0;
+
+	// Calculate bits depending on mFix
+	s64 bits = (mFix || !hasfraction) ? (mBits - mExp) : mBits;
+
+	// Common truncation logic
+	s64 shift = bits - (mMax + mExtra);
+	if (shift > 0) {
+		mData = mData >> shift;
+		mBits -= shift;
+		mTrunc = true;
+	}
+
+	s64 lead = mData.bitStart();
+	if (lead > 0) {
+		mData = mData >> lead;
+		mBits -= lead;
+	}
+	if (mBits < 0) mBits = 0;
+
+	// mTrunc clearing logic (slightly different per branch)
+	if (mFix) {
+		if (mTrunc && (mBits - mExp + lead) < (mMax + mExtra))
+			mTrunc = false;
+	}
+	else {
+		if (mTrunc && (mBits + 8) < (mMax + mExtra))
+			mTrunc = false;
+	}
+
+	if (hasfraction && !((mExp + 1) <= 0))
+		mTrunc = false;
 }
 
 GrapaInt GrapaFloat::ToInt()

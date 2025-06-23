@@ -14,12 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissionsand
 limitations under the License.
 */
-////////////////////////////////////////////////////////////////////////////////
+/////////////////f///////////////////////////////////////////////////////////////
 
 #include "GrapaInt.h"
 #include <math.h>
 
 #include <openssl/rand.h>
+#include <openssl/rsa.h>
 
 #include "GrapaSystem.h"
 
@@ -63,7 +64,7 @@ void GrapaArray32::SetSize(u64 pLen, bool pCopy) {
 }
 void GrapaArray32::FROM(const GrapaArray32& pData) { dataSigned = pData.dataSigned; NaN = pData.NaN; SetLength(pData.mLength, false); if (pData.mBytes) memcpy(mBytes, pData.mBytes, (size_t)mLength); }
 u64 GrapaArray32::GetCount() const { return(mLength / sizeof(u32)); }
-u64 GrapaArray32::GetByteCount() {
+u64 GrapaArray32::GetByteCount() const {
 	u64 count = GetCount();
 	if (count == 0)
 		return(0);
@@ -93,11 +94,11 @@ void GrapaArray32::RTrim() {
 	while (GetCount() > 1 && GetItem(GetCount() - 1) == -1 && (GetItem(GetCount() - 2) & 0x80000000) != 0)
 		mLength -= sizeof(u32);
 }
-bool GrapaArray32::IsNull() { return (GetCount() == 0); }
-bool GrapaArray32::IsNeg() { return (GetCount() ? (GetItem(GetCount() - 1) & 0x80000000) != 0 : false); }
-bool GrapaArray32::IsSignNeg() { return (dataSigned && IsNeg()); }
-bool GrapaArray32::IsZero() { return (GetCount()==0 || (GetCount() == 1 && GetItem(0) == 0) ? true : false); }
-bool GrapaArray32::IsItem(u32 pItem) { return (GetCount() == 1 && GetItem(0) == pItem ? true : false); }
+bool GrapaArray32::IsNull() const { return (GetCount() == 0); }
+bool GrapaArray32::IsNeg() const { return (GetCount() ? (GetItem(GetCount() - 1) & 0x80000000) != 0 : false); }
+bool GrapaArray32::IsSignNeg() const { return (dataSigned && IsNeg()); }
+bool GrapaArray32::IsZero() const { return (GetCount()==0 || (GetCount() == 1 && GetItem(0) == 0) ? true : false); }
+bool GrapaArray32::IsItem(u32 pItem) const { return (GetCount() == 1 && GetItem(0) == pItem ? true : false); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -246,10 +247,10 @@ void GrapaInt::operator =(s64 bi)
 	*this = bi2; 
 }
 
-GrapaInt GrapaInt::operator +(const GrapaInt& bi)
+GrapaInt GrapaInt::operator +(const GrapaInt& bi2) const
 {
 	GrapaInt result;
-	GrapaInt bi2(bi);
+	//GrapaInt bi2(bi);
 	result.SetCount(((GetCount() > bi2.GetCount()) ? GetCount() : bi2.GetCount()) + ((dataSigned || bi2.dataSigned) ? 1 : 0));
 	result.dataSigned = (dataSigned || bi2.dataSigned);
 	s64 carry = 0;
@@ -273,7 +274,7 @@ GrapaInt GrapaInt::operator +(const GrapaInt& bi)
 	return result;
 }
 
-GrapaInt GrapaInt::operator +(s64 bi) 
+GrapaInt GrapaInt::operator +(s64 bi) const
 { 
 	GrapaInt bi2(bi); 
 	return *this + bi2; 
@@ -317,9 +318,9 @@ GrapaInt GrapaInt::operator++(int)
 	return tmp; 
 }
 
-GrapaInt GrapaInt::operator -(const GrapaInt& bi)
+GrapaInt GrapaInt::operator -(const GrapaInt& bi2) const
 {
-	GrapaInt bi2(bi);
+	//GrapaInt bi2(bi);
 	GrapaInt result;
 	result.SetCount(((GetCount() > bi2.GetCount()) ? GetCount() : bi2.GetCount()) + ((dataSigned || bi2.dataSigned)?1:0));
 	result.dataSigned = dataSigned;
@@ -343,7 +344,7 @@ GrapaInt GrapaInt::operator -(const GrapaInt& bi)
 	return result;
 }
 
-GrapaInt GrapaInt::operator -(s64 bi) 
+GrapaInt GrapaInt::operator -(s64 bi) const
 { 
 	GrapaInt bi2(bi); 
 	return *this - bi2; 
@@ -570,33 +571,21 @@ static GrapaInt KaratsubaMultiply(const GrapaInt& x, const GrapaInt& y)
 	return (P1 << (2 * N * 32)) + ((P3 - P1 - P2) << (N * 32)) + P2;
 }
 
-#include <openssl/rsa.h>
-
 static GrapaInt OpenSSLMultiply(const GrapaInt& bi1, const GrapaInt& bi2)
 {
-	GrapaInt result;
-	GrapaBYTE gb;
-	int err;
-	BIGNUM *n1,*n2;
-	u32 sz;
-	gb = ((GrapaInt*)&bi1)->getBytes();
-	n1 = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
-	gb = ((GrapaInt*)&bi2)->getBytes();
-	n2 = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
+	BIGNUM* n1 = bi1.getBytesOpenSSL();
+	BIGNUM* n2 = bi2.getBytesOpenSSL();
 	BIGNUM* r = BN_new();
 	BN_CTX* ctx = BN_CTX_new();
-	err = BN_mul(r, n1, n2, ctx);
+	int err = BN_mul(r, n1, n2, ctx);
 	BN_free(n1);
 	BN_free(n2);
 	BN_CTX_free(ctx);
+	GrapaInt result;
 	if (err == 1)
-	{
-		gb.SetSize(BN_num_bytes(r) + 1);
-		sz = BN_bn2bin(r, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		result.FromBytes(gb, true);
-		result.RTrim();
-	}
+		result.setBytesOpenSSL(r);
+	else
+		result.NaN = true;
 	BN_free(r);
 	return result;
 }
@@ -611,41 +600,18 @@ static GrapaInt OpenSSLMultiply(const GrapaInt& bi1, const GrapaInt& bi2)
 // 
 // (123451234512345 * 123451234512345123451234512345).hex();
 
-GrapaInt GrapaInt::operator *(const GrapaInt& bi)
+GrapaInt GrapaInt::operator *(const GrapaInt& bi) const
 {
-	if (IsZero()) return *this;
-	GrapaInt bi2(bi);
-	if (bi2.IsZero()) return bi2;
-	
-	GrapaInt bi1(*this);
-	bool bi1Neg = false, bi2Neg = false;
-
-	if (bi1.IsSignNeg())     // bi1 negative
-	{
-		bi1Neg = true; 
-		bi1 = -bi1;
-	}
-	if (bi2.IsSignNeg())     // bi2 negative
-	{
-		bi2Neg = true; 
-		bi2 = -bi2;
-	}
-
-	GrapaInt result = OpenSSLMultiply(bi1, bi2);
-
-	if (bi1Neg != bi2Neg)
-		result = -result;
-
-	return result;
+	return OpenSSLMultiply(*this, bi);
 }
 
-GrapaInt GrapaInt::operator *(s64 bi) 
+GrapaInt GrapaInt::operator *(s64 bi) const
 { 
 	GrapaInt bi2(bi); 
 	return *this*bi2; 
 }
 
-GrapaInt GrapaInt::operator *(u64 bi) 
+GrapaInt GrapaInt::operator *(u64 bi) const
 { 
 	GrapaInt bi2(bi); 
 	return *this*bi2; 
@@ -758,7 +724,7 @@ int GrapaInt::shiftRight(u32* inData, u32 inCount, u64 shiftVal)
 	return bufLen;
 }
 
-GrapaInt GrapaInt::operator ~()
+GrapaInt GrapaInt::operator ~() const
 {
 	GrapaInt result;
 
@@ -773,26 +739,25 @@ GrapaInt GrapaInt::operator ~()
 	return result;
 }
 
-GrapaInt GrapaInt::operator -()
+GrapaInt GrapaInt::operator -() const
 {
 	GrapaInt result;
 	result.SetItem(0, 0);
 	return result - *this;
 }
 
-bool GrapaInt::operator ==(const GrapaInt& bi2)
+bool GrapaInt::operator ==(const GrapaInt& bi2) const
 {
 	return Equals(bi2);
 }
 
-bool GrapaInt::operator !=(const GrapaInt& bi2)
+bool GrapaInt::operator !=(const GrapaInt& bi2) const
 {
 	return !(Equals(bi2));
 }
 
-bool GrapaInt::Equals(const GrapaInt& bi)
+bool GrapaInt::Equals(const GrapaInt& bi2) const
 {
-	GrapaInt bi2(bi);
 	if (GetCount() != bi2.GetCount())
 		return false;
 
@@ -804,10 +769,8 @@ bool GrapaInt::Equals(const GrapaInt& bi)
 	return true;
 }
 
-bool GrapaInt::operator >(const GrapaInt& bi)
+bool GrapaInt::operator >(const GrapaInt& bi2) const
 {
-	GrapaInt bi2(bi);
-
 	bool aNeg = IsSignNeg();
 	bool bNeg = bi2.IsSignNeg();
 
@@ -831,16 +794,14 @@ bool GrapaInt::operator >(const GrapaInt& bi)
 	return false;
 }
 
-bool GrapaInt::operator >(u64 i1) 
+bool GrapaInt::operator >(u64 i1) const
 { 
 	GrapaInt bi1(i1); 
 	return *this > bi1; 
 }
 
-bool GrapaInt::operator <(const GrapaInt& bi)
+bool GrapaInt::operator <(const GrapaInt& bi2) const
 {
-	GrapaInt bi2(bi);
-
 	bool aNeg = IsSignNeg();
 	bool bNeg = bi2.IsSignNeg();
 
@@ -865,31 +826,31 @@ bool GrapaInt::operator <(const GrapaInt& bi)
 	return false;
 }
 
-bool GrapaInt::operator <(s64 bi) 
+bool GrapaInt::operator <(s64 bi) const
 { 
 	GrapaInt bi2(bi); 
 	return *this < bi2; 
 }
 
-bool GrapaInt::operator >= (const GrapaInt& bi2)
+bool GrapaInt::operator >= (const GrapaInt& bi2) const
 {
 	return (*this == bi2 || *this > bi2);
 }
 
-bool GrapaInt::operator <= (const GrapaInt& bi2)
+bool GrapaInt::operator <= (const GrapaInt& bi2) const
 {
 	return (*this == bi2 || *this < bi2);
 }
 
-GrapaInt GrapaInt::Abs()
+GrapaInt GrapaInt::Abs() const
 {
 	if (dataSigned) return -*this;
 	return *this;
 }
 
-void GrapaInt::multiByteDivide(const GrapaInt& bi, GrapaInt& outQuotient, GrapaInt& outRemainder)
+void GrapaInt::multiByteDivide(const GrapaInt& bi2, GrapaInt& outQuotient, GrapaInt& outRemainder)
 {
-	GrapaInt bi2(bi);
+	//GrapaInt bi2(bi);
 	outQuotient.SetCount(0);
 	outRemainder.SetCount(0);
 
@@ -897,17 +858,11 @@ void GrapaInt::multiByteDivide(const GrapaInt& bi, GrapaInt& outQuotient, GrapaI
 	if (bi2.IsZero()) return;  // it's actually infinity...or undefined.
 
 	GrapaInt result;
-	GrapaBYTE gb;
 	int err;
 	BIGNUM* n1, * n2;
-	u32 sz;
-	gb = getBytes();
-	n1 = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
-	gb = ((GrapaInt*)&bi)->getBytes();
-	n2 = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
+	n1 = getBytesOpenSSL();
+	n2 = bi2.getBytesOpenSSL();
 
-	int BN_div(BIGNUM * dv, BIGNUM * rem, const BIGNUM * m, const BIGNUM * d,
-		BN_CTX * ctx);
 
 	BIGNUM* dv = BN_new();
 	BIGNUM* rem = BN_new();
@@ -918,16 +873,13 @@ void GrapaInt::multiByteDivide(const GrapaInt& bi, GrapaInt& outQuotient, GrapaI
 	BN_CTX_free(ctx);
 	if (err == 1)
 	{
-		gb.SetSize(BN_num_bytes(dv) + 1);
-		sz = BN_bn2bin(dv, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		outQuotient.FromBytes(gb, true);
-		outQuotient.RTrim();
-		gb.SetSize(BN_num_bytes(rem) + 1);
-		sz = BN_bn2bin(rem, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		outRemainder.FromBytes(gb, true);
-		outRemainder.RTrim();
+		outQuotient.setBytesOpenSSL(dv);
+		outRemainder.setBytesOpenSSL(rem);
+	}
+	else
+	{
+		outQuotient.NaN = true;
+		outRemainder.NaN = true;
 	}
 	BN_free(dv);
 	BN_free(rem);
@@ -1055,9 +1007,9 @@ void GrapaInt::multiByteDivide(const GrapaInt& bi, GrapaInt& outQuotient, GrapaI
 	//free(dividendPart);
 }
 
-void GrapaInt::singleByteDivide(const GrapaInt& bi, GrapaInt& outQuotient, GrapaInt& outRemainder)
+void GrapaInt::singleByteDivide(const GrapaInt& bi2, GrapaInt& outQuotient, GrapaInt& outRemainder)
 {
-	GrapaInt bi2(bi);
+	//GrapaInt bi2(bi);
 	outQuotient.SetCount(0);
 	outRemainder.SetCount(0);
 
@@ -1119,57 +1071,53 @@ void GrapaInt::singleByteDivide(const GrapaInt& bi, GrapaInt& outQuotient, Grapa
 
 GrapaInt GrapaInt::Div(const GrapaInt& bi, GrapaInt& remainder)
 {
-	GrapaInt bi1(*this);
-	GrapaInt bi2(bi);
 	GrapaInt quotient(0);
 	remainder = *this;
 
-	if (IsZero()) 
+	// Handle zero dividend
+	if (IsZero())
 		return quotient;
-	if (bi2.IsZero())
+
+	// Handle zero divisor
+	if (bi.IsZero())
 	{
 		quotient.SetCount(0);
 		quotient.NaN = true;
-		return quotient; // it's actually infinity...or undefined.
+		return quotient; // undefined
 	}
 
-	bool divisorNeg = false, dividendNeg = false;
+	// Work with absolute values for division
+	bool dividendNeg = IsSignNeg();
+	bool divisorNeg = bi.IsSignNeg();
 
-	if (bi1.IsSignNeg())     // bi1 negative
-	{
-		quotient.dataSigned = true;
-		dividendNeg = true;
-		bi1 = -bi1;
-	}
-	if (bi2.IsSignNeg())     // bi2 negative
-	{
-		quotient.dataSigned = true;
-		divisorNeg = true;
-		bi2 = -bi2;
-	}
+	GrapaInt absDividend = dividendNeg ? -(*this) : *this;
+	GrapaInt absDivisor = divisorNeg ? -bi : bi;
 
-	if (bi1 < bi2)
+	if (absDividend < absDivisor)
 	{
+		remainder = absDividend;
 		quotient.dataSigned = false;
 		return quotient;
 	}
 
-	if (bi2.GetCount() <= 1)
-		bi1.singleByteDivide(bi2, quotient, remainder);
+	// Perform division
+	if (absDivisor.GetCount() <= 1)
+		absDividend.singleByteDivide(absDivisor, quotient, remainder);
 	else
-		bi1.multiByteDivide(bi2, quotient, remainder);
+		absDividend.multiByteDivide(absDivisor, quotient, remainder);
 
+	// Set sign of quotient and remainder
+	bool resultNeg = dividendNeg != divisorNeg;
+	if (resultNeg)
+		quotient = -quotient;
+	if (dividendNeg && !remainder.IsZero())
+		remainder = -remainder;
+
+	// Clean up sign flags for zero results
 	if (quotient.IsZero())
 		quotient.dataSigned = false;
 	if (remainder.IsZero())
 		remainder.dataSigned = false;
-
-	if (dividendNeg != divisorNeg)
-	{
-		if (!remainder.IsZero())
-			remainder = -remainder;
-		return -quotient;
-	}
 
 	return quotient;
 }
@@ -1181,55 +1129,32 @@ GrapaInt GrapaInt::operator /(const GrapaInt& bi)
 	return Div(bi,remainder);
 }
 
-GrapaInt GrapaInt::operator /(u64 bi) 
+GrapaInt GrapaInt::operator /(u64 bi)
 { 
 	GrapaInt bi2(bi); 
 	return *this / bi2; 
 }
 
-GrapaInt GrapaInt::operator %(const GrapaInt& pbi2)
+GrapaInt GrapaInt::operator %(const GrapaInt& divisor)
 {
 	GrapaInt remainder;
-	Div(pbi2, remainder);
-	return remainder;
+	Div(divisor, remainder);
 
-	//GrapaInt bi1(*this);
-	//GrapaInt bi2(pbi2);
-	//GrapaInt quotient;// = new BigInteger();
-	//GrapaInt remainder(*this);// = new BigInteger(bi1);
+	// If remainder is zero, return zero (sign doesn't matter)
+	if (remainder.IsZero())
+		return remainder;
 
-	//bool dividendNeg = false;
+	//GrapaInt d(divisor);
+	// If remainder and divisor have the same sign, return remainder
+	if ((remainder.IsSignNeg() && divisor.IsSignNeg()) || (!remainder.IsSignNeg() && !divisor.IsSignNeg()))
+		return remainder;
 
-	//if (bi1.IsSignNeg())     // bi1 negative
-	//{
-	//	bi1 = -bi1;
-	//	dividendNeg = true;
-	//}
-	//if (bi2.IsSignNeg())     // bi2 negative
-	//{
-	//	bi2 = -bi2;
-	//}
-
-	//if (bi1 < bi2)
-	//{
-	//	return remainder;
-	//}
-
-	//else
-	//{
-	//	if (bi2.GetCount() <= 1)
-	//		bi1.singleByteDivide(bi2, quotient, remainder);
-	//	else
-	//		bi1.multiByteDivide(bi2, quotient, remainder);
-
-	//	if (dividendNeg)
-	//		return -remainder;
-
-	//	return remainder;
-	//}
+	// Otherwise, adjust: remainder += divisor
+	GrapaInt adjusted = remainder + divisor;
+	return adjusted;
 }
 
-GrapaInt GrapaInt::operator %(u64 bi) 
+GrapaInt GrapaInt::operator %(u64 bi)
 { 
 	GrapaInt bi2(bi); 
 	return *this % bi2; 
@@ -1265,9 +1190,27 @@ GrapaInt GrapaInt::operator %=(const GrapaInt& bi1)
 //{
 //}
 
-GrapaInt GrapaInt::Pow(const GrapaInt& pexp)
+GrapaInt GrapaInt::Pow(const GrapaInt& pexp) const
 {
 	GrapaInt result((u64)1);
+	int err;
+	BIGNUM* n1, * n2;
+	n1 = getBytesOpenSSL();
+	n2 = pexp.getBytesOpenSSL();
+	BIGNUM* r = BN_new();
+	BN_CTX* ctx = BN_CTX_new();
+	err = BN_exp(r, n1, n2, ctx);
+	BN_free(n1);
+	BN_free(n2);
+	BN_CTX_free(ctx);
+	if (err == 1)
+		result.setBytesOpenSSL(r);
+	else
+		result.NaN = true;
+	BN_free(r);
+
+	return result;
+
 	GrapaInt tempNum;
 
 	GrapaInt exp(pexp);
@@ -1287,30 +1230,6 @@ GrapaInt GrapaInt::Pow(const GrapaInt& pexp)
 	}
 	else
 		tempNum = *this;
-
-	GrapaBYTE gb;
-	int err;
-	BIGNUM* n1, * n2;
-	u32 sz;
-	gb = ((GrapaInt*)&tempNum)->getBytes();
-	n1 = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
-	gb = ((GrapaInt*)&exp)->getBytes();
-	n2 = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
-	BIGNUM* r = BN_new();
-	BN_CTX* ctx = BN_CTX_new();
-	err = BN_exp(r, n1, n2, ctx);
-	BN_free(n1);
-	BN_free(n2);
-	BN_CTX_free(ctx);
-	if (err == 1)
-	{
-		gb.SetSize(BN_num_bytes(r) + 1);
-		sz = BN_bn2bin(r, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		result.FromBytes(gb, true);
-		result.RTrim();
-	}
-	BN_free(r);
 
 	//u64 totalBits = exp.bitCount();
 	//u64 count = 0;
@@ -1346,7 +1265,7 @@ GrapaInt GrapaInt::Pow(const GrapaInt& pexp)
 	return result;
 }
 
-GrapaInt GrapaInt::operator |(const GrapaInt& e)
+GrapaInt GrapaInt::operator |(const GrapaInt& e) const
 {
 	GrapaInt exp(e);
 	GrapaInt result;
@@ -1382,7 +1301,7 @@ GrapaInt GrapaInt::operator &(const GrapaInt& e)
 	return result;
 }
 
-GrapaInt GrapaInt::operator ^(const GrapaInt& e)
+GrapaInt GrapaInt::operator ^(const GrapaInt& e) const
 {
 	GrapaInt exp(e);
 	GrapaInt result;
@@ -1408,7 +1327,7 @@ GrapaInt GrapaInt::operator ^(const GrapaInt& e)
 }
 
 
-GrapaInt GrapaInt::bmax(const GrapaInt& bi)
+GrapaInt GrapaInt::bmax(const GrapaInt& bi) const
 {
 	if (*this > bi)
 		return *this;
@@ -1416,7 +1335,7 @@ GrapaInt GrapaInt::bmax(const GrapaInt& bi)
 		return bi;
 }
 
-GrapaInt GrapaInt::bmin(const GrapaInt& bi)
+GrapaInt GrapaInt::bmin(const GrapaInt& bi) const
 {
 	if (*this < bi)
 		return *this;
@@ -1425,7 +1344,7 @@ GrapaInt GrapaInt::bmin(const GrapaInt& bi)
 
 }
 
-GrapaInt GrapaInt::babs()
+GrapaInt GrapaInt::babs() const
 {
 	if (IsSignNeg())
 		return (-*this);
@@ -1441,7 +1360,7 @@ d64 GrapaInt::blog()
 	return log(((u64)num.GetItem(1) << 32) | ((u64)num.GetItem(0))) + blex * log((d64)2.0);
 }
 
-d64 GrapaInt::blog2()
+d64 GrapaInt::blog2() const
 {
 	// Get the minimum number of bits necessary to hold this value.
 	u64 n = bitCount();
@@ -1521,7 +1440,7 @@ u64 GrapaInt::LargestPrimeFactor64(u64 n)
 	return p;
 }
 
-GrapaCHAR GrapaInt::ToString()
+GrapaCHAR GrapaInt::ToString() const
 {
 	return ToString(10);
 }
@@ -1537,11 +1456,31 @@ GrapaCHAR GrapaInt::ToString()
 //
 //***********************************************************************
 
-GrapaCHAR GrapaInt::ToString(u64 radix)
+GrapaCHAR GrapaInt::ToString(u64 radix) const
 {
 	GrapaCHAR result;
 	if (radix < 2 || radix > 64)
 		return result;// (new ArgumentException("Radix must be >= 2 and <= 36"));
+
+	if (radix == 10)
+	{
+		BIGNUM* bn = getBytesOpenSSL();
+		char* str = BN_bn2dec(bn);
+		result.FROM(str);
+		OPENSSL_free(str);
+		BN_free(bn);
+		return result;
+	}
+	else if (radix == 16)
+	{
+		BIGNUM* bn = getBytesOpenSSL();
+		char* str = BN_bn2hex(bn);
+		if (str[0]=='0') result.FROM(str+1);
+		else result.FROM(str);
+		OPENSSL_free(str);
+		BN_free(bn);
+		return result;
+	}
 
 	const char* charSet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+/";
 	//http://base64.sourceforge.net/b64.c
@@ -1594,6 +1533,27 @@ void GrapaInt::FromString(const GrapaBYTE& result, u32 radix)
 {
 	*this = 0;
 	if (radix < 2 || radix > 64 || result.mLength == 0) return;
+	if (radix == 10)
+	{
+		BIGNUM* bn = nullptr;
+		int len = BN_dec2bn(&bn, (char*)result.mBytes);
+		if (bn != nullptr) {
+			setBytesOpenSSL(bn);
+			BN_free(bn);
+		}
+		return;
+	}
+	else if (radix == 16)
+	{
+		BIGNUM* bn = nullptr;
+		int len = BN_hex2bn(&bn, (char*)result.mBytes);
+		if (bn != nullptr) {
+			setBytesOpenSSL(bn);
+			BN_free(bn);
+		}
+		return;
+	}
+
 	u64 pos = result.mLength;
 	GrapaInt r((u64)radix);
 	GrapaInt n;
@@ -1728,14 +1688,77 @@ void GrapaInt::FromBytes(const GrapaBYTE& result, bool isUnsigned)
 //	}
 //}
 
-GrapaInt GrapaInt::modPow(const GrapaInt& pexp, const GrapaInt& pn)
+BIGNUM* GrapaInt::getBytesOpenSSL() const
 {
+	GrapaBYTE gb;
+	BIGNUM* r;
+	if (IsSignNeg())
+	{
+		GrapaInt t(-*this);
+		gb = t.getBytes();
+		r = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
+		BN_set_negative(r, 1);
+	}
+	else
+	{
+		gb = getBytes();
+		r = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
+	}
+	return r;
+}
+void GrapaInt::setBytesOpenSSL(BIGNUM* b)
+{
+	GrapaBYTE gb;
+	gb.SetSize(BN_num_bytes(b) + 1);
+	u32 sz = BN_bn2bin(b, (u8*)gb.mBytes);
+	gb.SetLength(sz);
+	FromBytes(gb, true);
+	RTrim();
+	if (BN_is_negative(b))
+		*this = -*this;
+}
+
+GrapaInt GrapaInt::modPow(const GrapaInt& pexp, const GrapaInt& pn) const
+{
+	GrapaInt result;
+	GrapaBYTE gb;
+	int err;
+	u32 sz;
+
+	GrapaInt m1(-1);
+	if (pexp == m1)
+		return modInverse(pn);
+	BIGNUM* b_base = getBytesOpenSSL();
+	BIGNUM* b_exp = pexp.getBytesOpenSSL();
+	BIGNUM* b_mod = pn.getBytesOpenSSL();
+	BIGNUM* b_result = BN_new();
+	BN_CTX* b_ctx = BN_CTX_new();
+	err = BN_mod_exp(b_result, b_base, b_exp, b_mod, b_ctx);
+	char* res_str = BN_bn2dec(b_result);
+	BN_free(b_base);
+	BN_free(b_exp);
+	BN_free(b_mod);
+	BN_CTX_free(b_ctx);
+	if (err == 1)
+		result.setBytesOpenSSL(b_result);
+	else
+		result.NaN = true;
+	BN_free(b_result);
+	return result;
+
+	/*
 	GrapaInt resultNum((u64)1);
 	GrapaInt exp(pexp);
 	GrapaInt n(pn);
 
-	if (exp.IsSignNeg())
-		return resultNum; // throw (new ArithmeticException("Positive exponents only."));
+	if (n.IsZero()) {
+		resultNum.NaN = true;
+		return resultNum; // undefined modulus
+	}
+	if (exp.IsSignNeg()) {
+		resultNum.NaN = true;
+		return resultNum; // negative exponent not supported
+	}
 
 	GrapaInt tempNum;
 	bool thisNegative = false;
@@ -1797,6 +1820,7 @@ GrapaInt GrapaInt::modPow(const GrapaInt& pexp, const GrapaInt& pn)
 	resultNum.RTrim();
 
 	return resultNum;
+	*/
 }
 
 
@@ -1812,8 +1836,16 @@ GrapaInt GrapaInt::modPow(const GrapaInt& pexp, const GrapaInt& pn)
 GrapaInt GrapaInt::BarrettReduction(const GrapaInt& px, const GrapaInt& pn, const GrapaInt& constant)
 {
 	GrapaInt x(px);
-	GrapaInt n(pn);
-	u64 k = n.GetCount(),
+	// Fast path for small modulus
+    if (pn.GetCount() == 1)
+    {
+        GrapaInt result(x % pn);
+        if (result.IsSignNeg())
+            result += pn;
+        return result;
+    }
+	//GrapaInt n(pn);
+	u64 k = pn.GetCount(),
 		kPlusOne = k + 1,
 		kMinusOne = k - 1;
 
@@ -1852,10 +1884,10 @@ GrapaInt GrapaInt::BarrettReduction(const GrapaInt& px, const GrapaInt& pn, cons
 
 		u64 mcarry = 0;
 		s32 t = i;
-		for (s32 j = 0; j < n.GetCount() && t < kPlusOne; j++, t++)
+		for (s32 j = 0; j < pn.GetCount() && t < kPlusOne; j++, t++)
 		{
 			// t = i + j
-			u64 val = ((u64)q3.GetItem(i) * (u64)n.GetItem(j)) +
+			u64 val = ((u64)q3.GetItem(i) * (u64)pn.GetItem(j)) +
 				(u64)r2.GetItem(t) + mcarry;
 
 			r2.SetItem(t, (u32)(val & 0xFFFFFFFF));
@@ -1876,14 +1908,32 @@ GrapaInt GrapaInt::BarrettReduction(const GrapaInt& px, const GrapaInt& pn, cons
 		r1 += val;
 	}
 
-	if (r1 >= n) r1 = r1 % n;  // this feels like the same thing...???????????????????
+	if (r1 >= pn) r1 = r1 % pn;  // this feels like the same thing...???????????????????
 	//while (r1 >= n) r1 -= n;
 
 	return r1;
 }
 
-GrapaInt GrapaInt::gcd(const GrapaInt& bi)
+GrapaInt GrapaInt::gcd(const GrapaInt& bi) const
 {
+	GrapaInt result;
+	int err;
+	BIGNUM* n1, * n2;
+	n1 = getBytesOpenSSL();
+	n2 = bi.getBytesOpenSSL();
+	BIGNUM* r = BN_new();
+	BN_CTX* ctx = BN_CTX_new();
+	err = BN_gcd(r, n1, n2, ctx);
+	BN_free(n1);
+	BN_free(n2);
+	BN_CTX_free(ctx);
+	if (err == 1)
+		result.setBytesOpenSSL(r);
+	else
+		result.NaN = true;
+	BN_free(r);
+	return result;
+
 	GrapaInt x(*this);
 	GrapaInt y(bi);
 
@@ -1892,32 +1942,6 @@ GrapaInt GrapaInt::gcd(const GrapaInt& bi)
 
 	if (y.IsSignNeg())     // negative
 		y = -y;
-
-	GrapaInt result;
-	GrapaBYTE gb;
-	int err;
-	BIGNUM* n1, * n2;
-	u32 sz;
-	gb = ((GrapaInt*)&x)->getBytes();
-	n1 = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
-	gb = ((GrapaInt*)&y)->getBytes();
-	n2 = BN_bin2bn((u8*)gb.mBytes, gb.mLength, NULL);
-	BIGNUM* r = BN_new();
-	BN_CTX* ctx = BN_CTX_new();
-	err = BN_gcd(r, n1, n2, ctx);
-	BN_free(n1);
-	BN_free(n2);
-	BN_CTX_free(ctx);
-	if (err == 1)
-	{
-		gb.SetSize(BN_num_bytes(r) + 1);
-		sz = BN_bn2bin(r, (u8*)gb.mBytes);
-		gb.SetLength(sz);
-		result.FromBytes(gb, true);
-		result.RTrim();
-	}
-	BN_free(r);
-	return result;
 
 	//GrapaInt g = y;
 
@@ -1931,7 +1955,7 @@ GrapaInt GrapaInt::gcd(const GrapaInt& bi)
 	//return g;
 }
 
-GrapaInt GrapaInt::gcd(s64 i1) 
+GrapaInt GrapaInt::gcd(s64 i1) const
 { 
 	GrapaInt bi(i1); 
 	return gcd(bi); 
@@ -1991,7 +2015,7 @@ void GrapaInt::Random(u64 bitsx)
 //
 //***********************************************************************
 
-u64 GrapaInt::bitCount()
+u64 GrapaInt::bitCount() const
 {
 	bool isNeg = IsSignNeg();
 	u32 skipNum = isNeg?-1:0;
@@ -2018,13 +2042,17 @@ u64 GrapaInt::bitCount()
 	return bits;
 }
 
-u64 GrapaInt::bitStart()
+
+/*
+
+u64 GrapaInt::bitStart() const
 {
 	bool isNeg = IsSignNeg();
 	u32 skipNum = isNeg ? -1 : 0;
 	u64 dlen = 0;
+	u64 count = GetCount();
 
-	for (dlen = 0; dlen < GetCount() && (GetItem(dlen) ^ skipNum) == 0; dlen++);
+	for (dlen = 0; dlen < count && (GetItem(dlen) ^ skipNum) == 0; dlen++);
 
 	u32 value = GetItem(dlen);
 	if (value == 0) return(0);
@@ -2043,12 +2071,58 @@ u64 GrapaInt::bitStart()
 
 	return bits;
 }
+*/
+
+#include <cstdint>
+#if defined(_MSC_VER)
+#include <intrin.h>
+#endif
+
+u64 GrapaInt::bitStart() const
+{
+	bool isNeg = IsSignNeg();
+	u32 skipNum = isNeg ? ~0u : 0u;
+	u64 dlen = 0;
+	u64 count = GetCount();
+
+	// Find the first non-significant word
+	for (; dlen < count && (GetItem(dlen) ^ skipNum) == 0; dlen++);
+
+	if (dlen == count)
+		return 0;
+
+	u32 value = GetItem(dlen) ^ skipNum;
+	if (value == 0)
+		return 0;
+
+	u64 bits = 0;
+
+#if defined(_MSC_VER)
+	unsigned long index;
+	if (_BitScanForward(&index, value))
+		bits = index;
+	else
+		bits = 32; // Should not happen, value != 0
+#elif defined(__GNUC__) || defined(__clang__)
+	bits = __builtin_ctz(value);
+#else
+	// Portable fallback
+	u32 mask = 0x00000001;
+	while (bits < 32 && (value & mask) == 0) {
+		bits++;
+		mask <<= 1;
+	}
+#endif
+
+	bits += dlen << 5;
+	return bits;
+}
 
 //***********************************************************************
 // Returns the lowest 4 bytes of the BigInteger as an int.
 //***********************************************************************
 
-s32 GrapaInt::IntValue()
+s32 GrapaInt::IntValue() const
 {
 	return (s32)GetItem(0);
 }
@@ -2058,7 +2132,7 @@ s32 GrapaInt::IntValue()
 // Returns the lowest 8 bytes of the BigInteger as a long.
 //***********************************************************************
 
-s64 GrapaInt::LongValue()
+s64 GrapaInt::LongValue() const
 {
 	s64 val = 0;
 
@@ -2081,8 +2155,28 @@ s64 GrapaInt::LongValue()
 // the inverse does not exist.  (i.e. gcd(this, modulus) != 1)
 //***********************************************************************
 
-GrapaInt GrapaInt::modInverse(const GrapaInt& modulus)
+GrapaInt GrapaInt::modInverse(const GrapaInt& modulus) const
 {
+	GrapaInt result;
+	int err;
+	BIGNUM* n1, * n2;
+	n1 = getBytesOpenSSL();
+	n2 = modulus.getBytesOpenSSL();
+	BN_CTX* ctx = BN_CTX_new();
+	BIGNUM* inv_bn = BN_mod_inverse(0L, n1, n2, ctx);
+	BN_free(n1);
+	BN_free(n2);
+	BN_CTX_free(ctx);
+	if (inv_bn)
+		result.setBytesOpenSSL(inv_bn);
+	else
+		result.NaN = true;
+	return result;
+
+	/*
+	if (IsZero()) return result;
+	if (modulus.IsZero()) return result;
+
 	GrapaInt p0(0), p1(1);
 	GrapaInt q0, q1;
 	GrapaInt r0(0), r1(0);
@@ -2134,7 +2228,7 @@ GrapaInt GrapaInt::modInverse(const GrapaInt& modulus)
 		return blank; // (new ArithmeticException("No inverse!"));
 	}
 
-	GrapaInt result = ((p0 - (p1 * q0)) % modulus);
+	result = ((p0 - (p1 * q0)) % modulus);
 
 	if (result.IsSignNeg())
 		result += modulus;  // get the least positive modulus
@@ -2142,9 +2236,10 @@ GrapaInt GrapaInt::modInverse(const GrapaInt& modulus)
 	result.RTrim();
 
 	return result;
+	*/
 }
 
-GrapaInt GrapaInt::modFact(const GrapaInt& p)
+GrapaInt GrapaInt::modFact(const GrapaInt& p) const
 {
 	GrapaInt pp(p);
 	// n! % p is 0 if n >= p 
@@ -2166,7 +2261,7 @@ GrapaInt GrapaInt::modFact(const GrapaInt& p)
 // index contains the MSB.
 //***********************************************************************
 
-GrapaBYTE GrapaInt::getBytes(bool pRaw)
+GrapaBYTE GrapaInt::getBytes(bool pRaw) const
 {
 	u64 numBits = bitCount() + (pRaw?0:1);
 	bool isNeg = IsSignNeg();
@@ -2329,7 +2424,7 @@ void GrapaInt::unsetBit(u32 bitNum)
 	}
 }
 
-bool GrapaInt::testBit(u64 bitNum)
+bool GrapaInt::testBit(u64 bitNum) const
 {
 	u64 bytePos = bitNum >> 5;
 	if (bytePos < GetCount())
@@ -2341,7 +2436,7 @@ bool GrapaInt::testBit(u64 bitNum)
 	return false;
 }
 
-GrapaInt GrapaInt::bsqrt()
+GrapaInt GrapaInt::bsqrt() const
 {
 	u32 numBits = (u32)bitCount();
 

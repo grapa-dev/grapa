@@ -43,6 +43,7 @@ public:
 	GrapaLibraryRuleResetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReset(GrapaCHAR& pName) { return new GrapaLibraryRuleResetEvent(pName); }
 
 class GrapaLibraryRuleExitEvent : public GrapaLibraryEvent
 {
@@ -50,6 +51,7 @@ public:
 	GrapaLibraryRuleExitEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleExit(GrapaCHAR& pName) { return new GrapaLibraryRuleExitEvent(pName); }
 
 class GrapaLibraryRuleGetEnvEvent : public GrapaLibraryEvent
 {
@@ -57,6 +59,7 @@ public:
 	GrapaLibraryRuleGetEnvEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGetEnv(GrapaCHAR& pName) { return new GrapaLibraryRuleGetEnvEvent(pName); }
 
 class GrapaLibraryRulePutEnvEvent : public GrapaLibraryEvent
 {
@@ -64,6 +67,7 @@ public:
 	GrapaLibraryRulePutEnvEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePutEnv(GrapaCHAR& pName) { return new GrapaLibraryRulePutEnvEvent(pName); }
 
 class GrapaLibraryRuleShellEvent : public GrapaLibraryEvent
 {
@@ -71,6 +75,7 @@ public:
 	GrapaLibraryRuleShellEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleShell(GrapaCHAR& pName) { return new GrapaLibraryRuleShellEvent(pName); }
 
 class GrapaLibraryRuleEvalEvent : public GrapaLibraryEvent
 {
@@ -78,6 +83,7 @@ public:
 	GrapaLibraryRuleEvalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleEval(GrapaCHAR& pName) { return new GrapaLibraryRuleEvalEvent(pName); }
 
 class GrapaLibraryRuleExecEvent : public GrapaLibraryEvent
 {
@@ -85,6 +91,7 @@ public:
 	GrapaLibraryRuleExecEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleExec(GrapaCHAR& pName) { return new GrapaLibraryRuleExecEvent(pName); }
 
 class GrapaLibraryRulePostEvent : public GrapaLibraryEvent
 {
@@ -92,6 +99,7 @@ public:
 	GrapaLibraryRulePostEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePost(GrapaCHAR& pName) { return new GrapaLibraryRulePostEvent(pName); }
 
 class GrapaLibraryRuleSleepEvent : public GrapaLibraryEvent
 {
@@ -99,6 +107,7 @@ public:
 	GrapaLibraryRuleSleepEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSleep(GrapaCHAR& pName) { return new GrapaLibraryRuleSleepEvent(pName); }
 
 class GrapaLibraryRuleTokenEvent : public GrapaLibraryEvent
 {
@@ -106,6 +115,7 @@ public:
 	GrapaLibraryRuleTokenEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleToken(GrapaCHAR& pName) { return new GrapaLibraryRuleTokenEvent(pName); }
 
 class GrapaLibraryRuleRuleValEvent : public GrapaLibraryEvent
 {
@@ -113,6 +123,7 @@ public:
 	GrapaLibraryRuleRuleValEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRuleVal(GrapaCHAR& pName) { return new GrapaLibraryRuleRuleValEvent(pName); }
 
 class GrapaLibraryRuleRuleRefEvent : public GrapaLibraryEvent
 {
@@ -120,6 +131,7 @@ public:
 	GrapaLibraryRuleRuleRefEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRuleRef(GrapaCHAR& pName) { return new GrapaLibraryRuleRuleRefEvent(pName); }
 
 class GrapaLibraryRuleRuleEvent : public GrapaLibraryEvent
 {
@@ -127,6 +139,7 @@ public:
 	GrapaLibraryRuleRuleEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRule(GrapaCHAR& pName) { return new GrapaLibraryRuleRuleEvent(pName); }
 
 class GrapaLibraryRuleGrammarEvent : public GrapaLibraryEvent
 {
@@ -134,6 +147,7 @@ public:
 	GrapaLibraryRuleGrammarEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrammar(GrapaCHAR& pName) { return new GrapaLibraryRuleGrammarEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -144,6 +158,7 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleName(GrapaCHAR& pName) { return new GrapaLibraryRuleNameEvent(pName); }
 
 class GrapaLibraryRuleGetNameEvent : public GrapaLibraryEvent
 {
@@ -151,6 +166,7 @@ public:
 	GrapaLibraryRuleGetNameEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGetName(GrapaCHAR& pName) { return new GrapaLibraryRuleGetNameEvent(pName); }
 
 class GrapaLibraryRuleLitEvent : public GrapaLibraryEvent
 {
@@ -159,6 +175,7 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleEvent* pParam);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLit(GrapaCHAR& pName) { return new GrapaLibraryRuleLitEvent(pName); }
 
 class GrapaLibraryRuleRefEvent : public GrapaLibraryEvent
 {
@@ -166,6 +183,7 @@ public:
 	GrapaLibraryRuleRefEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRef(GrapaCHAR& pName) { return new GrapaLibraryRuleRefEvent(pName); }
 
 class GrapaLibraryRuleNullEvent : public GrapaLibraryEvent
 {
@@ -173,6 +191,7 @@ public:
 	GrapaLibraryRuleNullEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleNull(GrapaCHAR& pName) { return new GrapaLibraryRuleNullEvent(pName); }
 
 class GrapaLibraryRuleVarEvent : public GrapaLibraryEvent
 {
@@ -180,6 +199,7 @@ public:
 	GrapaLibraryRuleVarEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVar(GrapaCHAR& pName) { return new GrapaLibraryRuleVarEvent(pName); }
 
 class GrapaLibraryRuleAssignEvent : public GrapaLibraryEvent
 {
@@ -187,6 +207,7 @@ public:
 	GrapaLibraryRuleAssignEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAssign(GrapaCHAR& pName) { return new GrapaLibraryRuleAssignEvent(pName); }
 
 class GrapaLibraryRuleAssignAppendEvent : public GrapaLibraryEvent
 {
@@ -194,6 +215,7 @@ public:
 	GrapaLibraryRuleAssignAppendEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAssignAppend(GrapaCHAR& pName) { return new GrapaLibraryRuleAssignAppendEvent(pName); }
 
 class GrapaLibraryRuleAssignExtendEvent : public GrapaLibraryEvent
 {
@@ -201,6 +223,7 @@ public:
 	GrapaLibraryRuleAssignExtendEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAssignExtend(GrapaCHAR& pName) { return new GrapaLibraryRuleAssignExtendEvent(pName); }
 
 class GrapaLibraryRuleCreateArrayEvent : public GrapaLibraryEvent
 {
@@ -209,6 +232,7 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateArray(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateArrayEvent(pName); }
 
 class GrapaLibraryRuleCreateTupleEvent : public GrapaLibraryEvent
 {
@@ -217,6 +241,7 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateTuple(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateTupleEvent(pName); }
 
 class GrapaLibraryRuleCreateListEvent : public GrapaLibraryEvent
 {
@@ -225,6 +250,7 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleEvent* pParam);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateList(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateListEvent(pName); }
 
 class GrapaLibraryRuleCreateXmlEvent : public GrapaLibraryEvent
 {
@@ -232,6 +258,7 @@ public:
 	GrapaLibraryRuleCreateXmlEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateXml(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateXmlEvent(pName); }
 
 class GrapaLibraryRuleCreateElEvent : public GrapaLibraryEvent
 {
@@ -239,6 +266,7 @@ public:
 	GrapaLibraryRuleCreateElEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateEl(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateElEvent(pName); }
 
 class GrapaLibraryRuleCreateTagEvent : public GrapaLibraryEvent
 {
@@ -246,6 +274,7 @@ public:
 	GrapaLibraryRuleCreateTagEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateTag(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateTagEvent(pName); }
 
 class GrapaLibraryRuleCreateOpEvent : public GrapaLibraryEvent
 {
@@ -253,6 +282,7 @@ public:
 	GrapaLibraryRuleCreateOpEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateOp(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateOpEvent(pName); }
 
 class GrapaLibraryRuleCreateCodeEvent : public GrapaLibraryEvent
 {
@@ -260,6 +290,7 @@ public:
 	GrapaLibraryRuleCreateCodeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateCode(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateCodeEvent(pName); }
 
 class GrapaLibraryRuleCreateRuleEvent : public GrapaLibraryEvent
 {
@@ -267,6 +298,7 @@ public:
 	GrapaLibraryRuleCreateRuleEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateRule(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateRuleEvent(pName); }
 
 class GrapaLibraryRuleExtendEvent : public GrapaLibraryEvent
 {
@@ -274,6 +306,7 @@ public:
 	GrapaLibraryRuleExtendEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleExtend(GrapaCHAR& pName) { return new GrapaLibraryRuleExtendEvent(pName); }
 
 class GrapaLibraryRuleRemoveEvent : public GrapaLibraryEvent
 {
@@ -281,6 +314,7 @@ public:
 	GrapaLibraryRuleRemoveEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRemove(GrapaCHAR& pName) { return new GrapaLibraryRuleRemoveEvent(pName); }
 
 class GrapaLibraryRulePrependEvent : public GrapaLibraryEvent
 {
@@ -289,6 +323,7 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePrepend(GrapaCHAR& pName) { return new GrapaLibraryRulePrependEvent(pName); }
 
 class GrapaLibraryRulePopEvent : public GrapaLibraryEvent
 {
@@ -296,6 +331,7 @@ public:
 	GrapaLibraryRulePopEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePop(GrapaCHAR& pName) { return new GrapaLibraryRulePopEvent(pName); }
 
 class GrapaLibraryRuleCallEvent : public GrapaLibraryEvent
 {
@@ -303,6 +339,7 @@ public:
 	GrapaLibraryRuleCallEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCall(GrapaCHAR& pName) { return new GrapaLibraryRuleCallEvent(pName); }
 
 class GrapaLibraryRuleSearchEvent : public GrapaLibraryEvent
 {
@@ -310,6 +347,7 @@ public:
 	GrapaLibraryRuleSearchEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSearch(GrapaCHAR& pName) { return new GrapaLibraryRuleSearchEvent(pName); }
 
 class GrapaLibraryRuleFindAllEvent : public GrapaLibraryEvent
 {
@@ -317,6 +355,7 @@ public:
 	GrapaLibraryRuleFindAllEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFindAll(GrapaCHAR& pName) { return new GrapaLibraryRuleFindAllEvent(pName); }
 
 class GrapaLibraryRuleSortEvent : public GrapaLibraryEvent
 {
@@ -324,6 +363,7 @@ public:
 	GrapaLibraryRuleSortEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSort(GrapaCHAR& pName) { return new GrapaLibraryRuleSortEvent(pName); }
 
 class GrapaLibraryRuleArgSortEvent : public GrapaLibraryEvent
 {
@@ -331,6 +371,7 @@ public:
 	GrapaLibraryRuleArgSortEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleArgSort(GrapaCHAR& pName) { return new GrapaLibraryRuleArgSortEvent(pName); }
 
 class GrapaLibraryRuleUniqueEvent : public GrapaLibraryEvent
 {
@@ -338,6 +379,7 @@ public:
 	GrapaLibraryRuleUniqueEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUnique(GrapaCHAR& pName) { return new GrapaLibraryRuleUniqueEvent(pName); }
 
 class GrapaLibraryRuleGroupEvent : public GrapaLibraryEvent
 {
@@ -345,6 +387,7 @@ public:
 	GrapaLibraryRuleGroupEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGroup(GrapaCHAR& pName) { return new GrapaLibraryRuleGroupEvent(pName); }
 
 class GrapaLibraryRuleClassEvent : public GrapaLibraryEvent
 {
@@ -352,6 +395,7 @@ public:
 	GrapaLibraryRuleClassEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleClass(GrapaCHAR& pName) { return new GrapaLibraryRuleClassEvent(pName); }
 
 class GrapaLibraryRuleObjEvent : public GrapaLibraryEvent
 {
@@ -359,6 +403,7 @@ public:
 	GrapaLibraryRuleObjEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleObj(GrapaCHAR& pName) { return new GrapaLibraryRuleObjEvent(pName); }
 
 class GrapaLibraryRuleGlobalEvent : public GrapaLibraryEvent
 {
@@ -366,6 +411,7 @@ public:
 	GrapaLibraryRuleGlobalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGlobal(GrapaCHAR& pName) { return new GrapaLibraryRuleGlobalEvent(pName); }
 
 class GrapaLibraryRuleParentEvent : public GrapaLibraryEvent
 {
@@ -373,6 +419,7 @@ public:
 	GrapaLibraryRuleParentEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleParent(GrapaCHAR& pName) { return new GrapaLibraryRuleParentEvent(pName); }
 
 class GrapaLibraryRuleThisEvent : public GrapaLibraryEvent
 {
@@ -380,6 +427,7 @@ public:
 	GrapaLibraryRuleThisEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleThis(GrapaCHAR& pName) { return new GrapaLibraryRuleThisEvent(pName); }
 
 class GrapaLibraryRuleLocalEvent : public GrapaLibraryEvent
 {
@@ -387,6 +435,7 @@ public:
 	GrapaLibraryRuleLocalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLocal(GrapaCHAR& pName) { return new GrapaLibraryRuleLocalEvent(pName); }
 
 class GrapaLibraryRuleStaticEvent : public GrapaLibraryEvent
 {
@@ -394,6 +443,7 @@ public:
 	GrapaLibraryRuleStaticEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleStatic(GrapaCHAR& pName) { return new GrapaLibraryRuleStaticEvent(pName); }
 
 class GrapaLibraryRuleConstEvent : public GrapaLibraryEvent
 {
@@ -401,6 +451,7 @@ public:
 	GrapaLibraryRuleConstEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleConst(GrapaCHAR& pName) { return new GrapaLibraryRuleConstEvent(pName); }
 
 class GrapaLibraryRuleSetConstEvent : public GrapaLibraryEvent
 {
@@ -408,6 +459,7 @@ public:
 	GrapaLibraryRuleSetConstEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSetConst(GrapaCHAR& pName) { return new GrapaLibraryRuleSetConstEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -417,6 +469,7 @@ public:
 	GrapaLibraryRuleReturnEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReturn(GrapaCHAR& pName) { return new GrapaLibraryRuleReturnEvent(pName); }
 
 class GrapaLibraryRuleBreakEvent : public GrapaLibraryEvent
 {
@@ -424,6 +477,7 @@ public:
 	GrapaLibraryRuleBreakEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBreak(GrapaCHAR& pName) { return new GrapaLibraryRuleBreakEvent(pName); }
 
 class GrapaLibraryRuleIfEvent : public GrapaLibraryEvent
 {
@@ -431,6 +485,7 @@ public:
 	GrapaLibraryRuleIfEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIf(GrapaCHAR& pName) { return new GrapaLibraryRuleIfEvent(pName); }
 
 class GrapaLibraryRuleWhileEvent : public GrapaLibraryEvent
 {
@@ -438,6 +493,7 @@ public:
 	GrapaLibraryRuleWhileEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWhile(GrapaCHAR& pName) { return new GrapaLibraryRuleWhileEvent(pName); }
 
 class GrapaLibraryRuleScopeEvent : public GrapaLibraryEvent
 {
@@ -445,6 +501,7 @@ public:
 	GrapaLibraryRuleScopeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleScope(GrapaCHAR& pName) { return new GrapaLibraryRuleScopeEvent(pName); }
 
 class GrapaLibraryRuleSwitchEvent : public GrapaLibraryEvent
 {
@@ -452,6 +509,7 @@ public:
 	GrapaLibraryRuleSwitchEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSwitch(GrapaCHAR& pName) { return new GrapaLibraryRuleSwitchEvent(pName); }
 
 class GrapaLibraryRuleCaseEvent : public GrapaLibraryEvent
 {
@@ -459,6 +517,7 @@ public:
 	GrapaLibraryRuleCaseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCase(GrapaCHAR& pName) { return new GrapaLibraryRuleCaseEvent(pName); }
 
 class GrapaLibraryRulePlanEvent : public GrapaLibraryEvent
 {
@@ -466,6 +525,7 @@ public:
 	GrapaLibraryRulePlanEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePlan(GrapaCHAR& pName) { return new GrapaLibraryRulePlanEvent(pName); }
 
 class GrapaLibraryRuleWrapEvent : public GrapaLibraryEvent
 {
@@ -473,6 +533,7 @@ public:
 	GrapaLibraryRuleWrapEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWrap(GrapaCHAR& pName) { return new GrapaLibraryRuleWrapEvent(pName); }
 
 class GrapaLibraryRuleOpEvent : public GrapaLibraryEvent
 {
@@ -480,6 +541,7 @@ public:
 	GrapaLibraryRuleOpEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleOp(GrapaCHAR& pName) { return new GrapaLibraryRuleOpEvent(pName); }
 
 class GrapaLibraryRuleMapEvent : public GrapaLibraryEvent
 {
@@ -487,6 +549,7 @@ public:
 	GrapaLibraryRuleMapEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMap(GrapaCHAR& pName) { return new GrapaLibraryRuleMapEvent(pName); }
 
 class GrapaLibraryRuleReduceEvent : public GrapaLibraryEvent
 {
@@ -494,6 +557,7 @@ public:
 	GrapaLibraryRuleReduceEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReduce(GrapaCHAR& pName) { return new GrapaLibraryRuleReduceEvent(pName); }
 
 class GrapaLibraryRuleFilterEvent : public GrapaLibraryEvent
 {
@@ -501,6 +565,7 @@ public:
 	GrapaLibraryRuleFilterEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFilter(GrapaCHAR& pName) { return new GrapaLibraryRuleFilterEvent(pName); }
 
 class GrapaLibraryRuleRangeEvent : public GrapaLibraryEvent
 {
@@ -508,6 +573,7 @@ public:
 	GrapaLibraryRuleRangeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRange(GrapaCHAR& pName) { return new GrapaLibraryRuleRangeEvent(pName); }
 
 class GrapaLibraryRuleIsIntEvent : public GrapaLibraryEvent
 {
@@ -515,6 +581,7 @@ public:
 	GrapaLibraryRuleIsIntEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIsInt(GrapaCHAR& pName) { return new GrapaLibraryRuleIsIntEvent(pName); }
 
 class GrapaLibraryRuleIfErrEvent : public GrapaLibraryEvent
 {
@@ -522,6 +589,7 @@ public:
 	GrapaLibraryRuleIfErrEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIfErr(GrapaCHAR& pName) { return new GrapaLibraryRuleIfErrEvent(pName); }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -532,6 +600,7 @@ public:
 	GrapaLibraryRuleTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTable(GrapaCHAR& pName) { return new GrapaLibraryRuleTableEvent(pName); }
 
 class GrapaLibraryRulePwdEvent : public GrapaLibraryEvent
 {
@@ -539,6 +608,7 @@ public:
 	GrapaLibraryRulePwdEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePwd(GrapaCHAR& pName) { return new GrapaLibraryRulePwdEvent(pName); }
 
 class GrapaLibraryRuleCdEvent : public GrapaLibraryEvent
 {
@@ -546,6 +616,7 @@ public:
 	GrapaLibraryRuleCdEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCd(GrapaCHAR& pName) { return new GrapaLibraryRuleCdEvent(pName); }
 
 class GrapaLibraryRulePhdEvent : public GrapaLibraryEvent
 {
@@ -553,6 +624,7 @@ public:
 	GrapaLibraryRulePhdEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePhd(GrapaCHAR& pName) { return new GrapaLibraryRulePhdEvent(pName); }
 
 class GrapaLibraryRuleChdEvent : public GrapaLibraryEvent
 {
@@ -560,6 +632,7 @@ public:
 	GrapaLibraryRuleChdEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleChd(GrapaCHAR& pName) { return new GrapaLibraryRuleChdEvent(pName); }
 
 class GrapaLibraryRuleLsEvent : public GrapaLibraryEvent
 {
@@ -567,6 +640,7 @@ public:
 	GrapaLibraryRuleLsEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLs(GrapaCHAR& pName) { return new GrapaLibraryRuleLsEvent(pName); }
 
 class GrapaLibraryRuleMkEvent : public GrapaLibraryEvent
 {
@@ -574,6 +648,7 @@ public:
 	GrapaLibraryRuleMkEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMk(GrapaCHAR& pName) { return new GrapaLibraryRuleMkEvent(pName); }
 
 class GrapaLibraryRuleRmEvent : public GrapaLibraryEvent
 {
@@ -581,6 +656,7 @@ public:
 	GrapaLibraryRuleRmEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRm(GrapaCHAR& pName) { return new GrapaLibraryRuleRmEvent(pName); }
 
 class GrapaLibraryRuleMkFieldEvent : public GrapaLibraryEvent
 {
@@ -588,6 +664,7 @@ public:
 	GrapaLibraryRuleMkFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMkField(GrapaCHAR& pName) { return new GrapaLibraryRuleMkFieldEvent(pName); }
 
 class GrapaLibraryRuleRmFieldEvent : public GrapaLibraryEvent
 {
@@ -595,6 +672,7 @@ public:
 	GrapaLibraryRuleRmFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRmField(GrapaCHAR& pName) { return new GrapaLibraryRuleRmFieldEvent(pName); }
 
 //class GrapaLibraryRuleCpEvent : public GrapaLibraryEvent
 //{
@@ -609,6 +687,7 @@ public:
 	GrapaLibraryRuleInfoEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleInfo(GrapaCHAR& pName) { return new GrapaLibraryRuleInfoEvent(pName); }
 
 class GrapaLibraryRuleSetEvent : public GrapaLibraryEvent
 {
@@ -616,6 +695,7 @@ public:
 	GrapaLibraryRuleSetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSet(GrapaCHAR& pName) { return new GrapaLibraryRuleSetEvent(pName); }
 
 class GrapaLibraryRuleGetEvent : public GrapaLibraryEvent
 {
@@ -623,6 +703,7 @@ public:
 	GrapaLibraryRuleGetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGet(GrapaCHAR& pName) { return new GrapaLibraryRuleGetEvent(pName); }
 
 class GrapaLibraryRuleFileSplitEvent : public GrapaLibraryEvent
 {
@@ -630,6 +711,7 @@ public:
 	GrapaLibraryRuleFileSplitEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFileSplit(GrapaCHAR& pName) { return new GrapaLibraryRuleFileSplitEvent(pName); }
 
 
 //class GrapaLibraryRuleSetOpEvent : public GrapaLibraryEvent
@@ -660,6 +742,7 @@ public:
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 	virtual GrapaRuleEvent* Optimize(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleEvent* pParam);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleInclude(GrapaCHAR& pName) { return new GrapaLibraryRuleIncludeEvent(pName); }
 
 class GrapaLibraryRuleDebugEvent : public GrapaLibraryEvent
 {
@@ -667,6 +750,7 @@ public:
 	GrapaLibraryRuleDebugEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDebug(GrapaCHAR& pName) { return new GrapaLibraryRuleDebugEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -676,6 +760,7 @@ public:
 	GrapaLibraryRuleMacEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMac(GrapaCHAR& pName) { return new GrapaLibraryRuleMacEvent(pName); }
 
 class GrapaLibraryRuleInterfacesEvent : public GrapaLibraryEvent
 {
@@ -683,6 +768,7 @@ public:
 	GrapaLibraryRuleInterfacesEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleInterfaces(GrapaCHAR& pName) { return new GrapaLibraryRuleInterfacesEvent(pName); }
 
 class GrapaLibraryRuleConnectEvent : public GrapaLibraryEvent
 {
@@ -690,6 +776,7 @@ public:
 	GrapaLibraryRuleConnectEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleConnect(GrapaCHAR& pName) { return new GrapaLibraryRuleConnectEvent(pName); }
 
 class GrapaLibraryRuleBindEvent : public GrapaLibraryEvent
 {
@@ -697,6 +784,7 @@ public:
 	GrapaLibraryRuleBindEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBind(GrapaCHAR& pName) { return new GrapaLibraryRuleBindEvent(pName); }
 
 class GrapaLibraryRuleListenEvent : public GrapaLibraryEvent
 {
@@ -704,6 +792,7 @@ public:
 	GrapaLibraryRuleListenEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleListen(GrapaCHAR& pName) { return new GrapaLibraryRuleListenEvent(pName); }
 
 class GrapaLibraryRuleOnListenEvent : public GrapaLibraryEvent
 {
@@ -711,6 +800,7 @@ public:
 	GrapaLibraryRuleOnListenEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleOnListen(GrapaCHAR& pName) { return new GrapaLibraryRuleOnListenEvent(pName); }
 
 class GrapaLibraryRuleDisconnectEvent : public GrapaLibraryEvent
 {
@@ -718,6 +808,7 @@ public:
 	GrapaLibraryRuleDisconnectEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDisconnect(GrapaCHAR& pName) { return new GrapaLibraryRuleDisconnectEvent(pName); }
 
 class GrapaLibraryRuleProxyEvent : public GrapaLibraryEvent
 {
@@ -725,6 +816,7 @@ public:
 	GrapaLibraryRuleProxyEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleProxy(GrapaCHAR& pName) { return new GrapaLibraryRuleProxyEvent(pName); }
 
 class GrapaLibraryRuleCertificateEvent : public GrapaLibraryEvent
 {
@@ -732,6 +824,7 @@ public:
 	GrapaLibraryRuleCertificateEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCertificate(GrapaCHAR& pName) { return new GrapaLibraryRuleCertificateEvent(pName); }
 
 class GrapaLibraryRulePrivateEvent : public GrapaLibraryEvent
 {
@@ -739,6 +832,7 @@ public:
 	GrapaLibraryRulePrivateEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePrivate(GrapaCHAR& pName) { return new GrapaLibraryRulePrivateEvent(pName); }
 
 class GrapaLibraryRuleTrustedEvent : public GrapaLibraryEvent
 {
@@ -746,6 +840,7 @@ public:
 	GrapaLibraryRuleTrustedEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTrusted(GrapaCHAR& pName) { return new GrapaLibraryRuleTrustedEvent(pName); }
 
 class GrapaLibraryRuleNetVerifyEvent : public GrapaLibraryEvent
 {
@@ -753,6 +848,7 @@ public:
 	GrapaLibraryRuleNetVerifyEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleNetVerify(GrapaCHAR& pName) { return new GrapaLibraryRuleNetVerifyEvent(pName); }
 
 class GrapaLibraryRuleNetChainEvent : public GrapaLibraryEvent
 {
@@ -760,6 +856,7 @@ public:
 	GrapaLibraryRuleNetChainEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleNetChain(GrapaCHAR& pName) { return new GrapaLibraryRuleNetChainEvent(pName); }
 
 class GrapaLibraryRuleNetHostEvent : public GrapaLibraryEvent
 {
@@ -767,6 +864,7 @@ public:
 	GrapaLibraryRuleNetHostEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleNetHost(GrapaCHAR& pName) { return new GrapaLibraryRuleNetHostEvent(pName); }
 
 class GrapaLibraryRuleSendEvent : public GrapaLibraryEvent
 {
@@ -774,6 +872,7 @@ public:
 	GrapaLibraryRuleSendEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSend(GrapaCHAR& pName) { return new GrapaLibraryRuleSendEvent(pName); }
 
 class GrapaLibraryRuleReceiveEvent : public GrapaLibraryEvent
 {
@@ -781,6 +880,7 @@ public:
 	GrapaLibraryRuleReceiveEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReceive(GrapaCHAR& pName) { return new GrapaLibraryRuleReceiveEvent(pName); }
 
 class GrapaLibraryRulePendingEvent : public GrapaLibraryEvent
 {
@@ -788,6 +888,7 @@ public:
 	GrapaLibraryRulePendingEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePending(GrapaCHAR& pName) { return new GrapaLibraryRulePendingEvent(pName); }
 
 class GrapaLibraryRuleOnReceiveEvent : public GrapaLibraryEvent
 {
@@ -795,6 +896,7 @@ public:
 	GrapaLibraryRuleOnReceiveEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleOnReceive(GrapaCHAR& pName) { return new GrapaLibraryRuleOnReceiveEvent(pName); }
 
 class GrapaLibraryRuleHttpReadEvent : public GrapaLibraryEvent
 {
@@ -802,6 +904,7 @@ public:
 	GrapaLibraryRuleHttpReadEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleHttpRead(GrapaCHAR& pName) { return new GrapaLibraryRuleHttpReadEvent(pName); }
 
 class GrapaLibraryRuleHttpSendEvent : public GrapaLibraryEvent
 {
@@ -809,6 +912,7 @@ public:
 	GrapaLibraryRuleHttpSendEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleHttpSend(GrapaCHAR& pName) { return new GrapaLibraryRuleHttpSendEvent(pName); }
 
 class GrapaLibraryRuleHttpMessageEvent : public GrapaLibraryEvent
 {
@@ -816,6 +920,7 @@ public:
 	GrapaLibraryRuleHttpMessageEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleHttpMessage(GrapaCHAR& pName) { return new GrapaLibraryRuleHttpMessageEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -825,6 +930,7 @@ public:
 	GrapaLibraryRuleGenPrimeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGenPrime(GrapaCHAR& pName) { return new GrapaLibraryRuleGenPrimeEvent(pName); }
 
 class GrapaLibraryRuleStaticPrimeEvent : public GrapaLibraryEvent
 {
@@ -832,6 +938,7 @@ public:
 	GrapaLibraryRuleStaticPrimeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleStaticPrime(GrapaCHAR& pName) { return new GrapaLibraryRuleStaticPrimeEvent(pName); }
 
 class GrapaLibraryRuleIsPrimeEvent : public GrapaLibraryEvent
 {
@@ -839,6 +946,7 @@ public:
 	GrapaLibraryRuleIsPrimeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIsPrime(GrapaCHAR& pName) { return new GrapaLibraryRuleIsPrimeEvent(pName); }
 
 class GrapaLibraryRuleIsAksEvent : public GrapaLibraryEvent
 {
@@ -846,6 +954,7 @@ public:
 	GrapaLibraryRuleIsAksEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIsAks(GrapaCHAR& pName) { return new GrapaLibraryRuleIsAksEvent(pName); }
 
 class GrapaLibraryRuleRandomEvent : public GrapaLibraryEvent
 {
@@ -853,6 +962,7 @@ public:
 	GrapaLibraryRuleRandomEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRandom(GrapaCHAR& pName) { return new GrapaLibraryRuleRandomEvent(pName); }
 
 class GrapaLibraryRuleSetBitEvent : public GrapaLibraryEvent
 {
@@ -860,6 +970,7 @@ public:
 	GrapaLibraryRuleSetBitEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSetBit(GrapaCHAR& pName) { return new GrapaLibraryRuleSetBitEvent(pName); }
 
 class GrapaLibraryRuleClearBitEvent : public GrapaLibraryEvent
 {
@@ -867,6 +978,7 @@ public:
 	GrapaLibraryRuleClearBitEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleClearBit(GrapaCHAR& pName) { return new GrapaLibraryRuleClearBitEvent(pName); }
 
 class GrapaLibraryRuleGenBitsEvent : public GrapaLibraryEvent
 {
@@ -874,6 +986,7 @@ public:
 	GrapaLibraryRuleGenBitsEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGenBits(GrapaCHAR& pName) { return new GrapaLibraryRuleGenBitsEvent(pName); }
 
 class GrapaLibraryRuleGenKeysEvent : public GrapaLibraryEvent
 {
@@ -881,13 +994,17 @@ public:
 	GrapaLibraryRuleGenKeysEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGenKeys(GrapaCHAR& pName) { return new GrapaLibraryRuleGenKeysEvent(pName); }
 
+/*
 class GrapaLibraryRuleGenECEvent : public GrapaLibraryEvent
 {
 public:
 	GrapaLibraryRuleGenECEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGenEC(GrapaCHAR& pName) { return new GrapaLibraryRuleGenECEvent(pName); }
+*/
 
 class GrapaLibraryRuleEncodeEvent : public GrapaLibraryEvent
 {
@@ -895,6 +1012,7 @@ public:
 	GrapaLibraryRuleEncodeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleEncode(GrapaCHAR& pName) { return new GrapaLibraryRuleEncodeEvent(pName); }
 
 class GrapaLibraryRuleDecodeEvent : public GrapaLibraryEvent
 {
@@ -902,6 +1020,7 @@ public:
 	GrapaLibraryRuleDecodeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDecode(GrapaCHAR& pName) { return new GrapaLibraryRuleDecodeEvent(pName); }
 
 class GrapaLibraryRuleSignEvent : public GrapaLibraryEvent
 {
@@ -909,6 +1028,7 @@ public:
 	GrapaLibraryRuleSignEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSign(GrapaCHAR& pName) { return new GrapaLibraryRuleSignEvent(pName); }
 
 class GrapaLibraryRuleSignAddEvent : public GrapaLibraryEvent
 {
@@ -916,6 +1036,7 @@ public:
 	GrapaLibraryRuleSignAddEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSignAdd(GrapaCHAR& pName) { return new GrapaLibraryRuleSignAddEvent(pName); }
 
 class GrapaLibraryRuleVerifyEvent : public GrapaLibraryEvent
 {
@@ -923,6 +1044,7 @@ public:
 	GrapaLibraryRuleVerifyEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVerify(GrapaCHAR& pName) { return new GrapaLibraryRuleVerifyEvent(pName); }
 
 class GrapaLibraryRuleVerifyRecoverEvent : public GrapaLibraryEvent
 {
@@ -930,6 +1052,7 @@ public:
 	GrapaLibraryRuleVerifyRecoverEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVerifyRecover(GrapaCHAR& pName) { return new GrapaLibraryRuleVerifyRecoverEvent(pName); }
 
 class GrapaLibraryRuleSecretEvent : public GrapaLibraryEvent
 {
@@ -937,6 +1060,7 @@ public:
 	GrapaLibraryRuleSecretEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSecret(GrapaCHAR& pName) { return new GrapaLibraryRuleSecretEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -946,6 +1070,7 @@ public:
 	GrapaLibraryRuleMessageEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMessage(GrapaCHAR& pName) { return new GrapaLibraryRuleMessageEvent(pName); }
 
 class GrapaLibraryRuleStringEvent : public GrapaLibraryEvent
 {
@@ -953,6 +1078,7 @@ public:
 	GrapaLibraryRuleStringEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleString(GrapaCHAR& pName) { return new GrapaLibraryRuleStringEvent(pName); }
 
 class GrapaLibraryRuleEchoEvent : public GrapaLibraryEvent
 {
@@ -960,6 +1086,7 @@ public:
 	GrapaLibraryRuleEchoEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleEcho(GrapaCHAR& pName) { return new GrapaLibraryRuleEchoEvent(pName); }
 
 class GrapaLibraryRuleConsoleEvent : public GrapaLibraryEvent
 {
@@ -967,6 +1094,7 @@ public:
 	GrapaLibraryRuleConsoleEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleConsole(GrapaCHAR& pName) { return new GrapaLibraryRuleConsoleEvent(pName); }
 
 class GrapaLibraryRulePromptEvent : public GrapaLibraryEvent
 {
@@ -974,6 +1102,7 @@ public:
 	GrapaLibraryRulePromptEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePrompt(GrapaCHAR& pName) { return new GrapaLibraryRulePromptEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -983,6 +1112,7 @@ public:
 	GrapaLibraryRuleAddEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAdd(GrapaCHAR& pName) { return new GrapaLibraryRuleAddEvent(pName); }
 
 class GrapaLibraryRuleSubEvent : public GrapaLibraryEvent
 {
@@ -990,6 +1120,7 @@ public:
 	GrapaLibraryRuleSubEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSub(GrapaCHAR& pName) { return new GrapaLibraryRuleSubEvent(pName); }
 
 class GrapaLibraryRuleMulEvent : public GrapaLibraryEvent
 {
@@ -997,6 +1128,7 @@ public:
 	GrapaLibraryRuleMulEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMul(GrapaCHAR& pName) { return new GrapaLibraryRuleMulEvent(pName); }
 
 class GrapaLibraryRuleDivEvent : public GrapaLibraryEvent
 {
@@ -1004,6 +1136,7 @@ public:
 	GrapaLibraryRuleDivEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDiv(GrapaCHAR& pName) { return new GrapaLibraryRuleDivEvent(pName); }
 
 class GrapaLibraryRuleModEvent : public GrapaLibraryEvent
 {
@@ -1011,6 +1144,7 @@ public:
 	GrapaLibraryRuleModEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMod(GrapaCHAR& pName) { return new GrapaLibraryRuleModEvent(pName); }
 
 class GrapaLibraryRulePowEvent : public GrapaLibraryEvent
 {
@@ -1018,6 +1152,7 @@ public:
 	GrapaLibraryRulePowEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePow(GrapaCHAR& pName) { return new GrapaLibraryRulePowEvent(pName); }
 
 class GrapaLibraryRuleSetFloatEvent : public GrapaLibraryEvent
 {
@@ -1025,6 +1160,7 @@ public:
 	GrapaLibraryRuleSetFloatEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSetFloat(GrapaCHAR& pName) { return new GrapaLibraryRuleSetFloatEvent(pName); }
 
 class GrapaLibraryRuleSetFixEvent : public GrapaLibraryEvent
 {
@@ -1032,6 +1168,7 @@ public:
 	GrapaLibraryRuleSetFixEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSetFix(GrapaCHAR& pName) { return new GrapaLibraryRuleSetFixEvent(pName); }
 
 class GrapaLibraryRuleRootEvent : public GrapaLibraryEvent
 {
@@ -1039,6 +1176,7 @@ public:
 	GrapaLibraryRuleRootEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRoot(GrapaCHAR& pName) { return new GrapaLibraryRuleRootEvent(pName); }
 
 class GrapaLibraryRulePiEvent : public GrapaLibraryEvent
 {
@@ -1046,6 +1184,7 @@ public:
 	GrapaLibraryRulePiEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandlePi(GrapaCHAR& pName) { return new GrapaLibraryRulePiEvent(pName); }
 
 class GrapaLibraryRuleSinEvent : public GrapaLibraryEvent
 {
@@ -1053,6 +1192,7 @@ public:
 	GrapaLibraryRuleSinEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSin(GrapaCHAR& pName) { return new GrapaLibraryRuleSinEvent(pName); }
 
 class GrapaLibraryRuleCosEvent : public GrapaLibraryEvent
 {
@@ -1060,6 +1200,7 @@ public:
 	GrapaLibraryRuleCosEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCos(GrapaCHAR& pName) { return new GrapaLibraryRuleCosEvent(pName); }
 
 class GrapaLibraryRuleTanEvent : public GrapaLibraryEvent
 {
@@ -1067,6 +1208,7 @@ public:
 	GrapaLibraryRuleTanEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTan(GrapaCHAR& pName) { return new GrapaLibraryRuleTanEvent(pName); }
 
 class GrapaLibraryRuleCotEvent : public GrapaLibraryEvent
 {
@@ -1074,6 +1216,7 @@ public:
 	GrapaLibraryRuleCotEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCot(GrapaCHAR& pName) { return new GrapaLibraryRuleCotEvent(pName); }
 
 class GrapaLibraryRuleSecEvent : public GrapaLibraryEvent
 {
@@ -1081,6 +1224,7 @@ public:
 	GrapaLibraryRuleSecEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSec(GrapaCHAR& pName) { return new GrapaLibraryRuleSecEvent(pName); }
 
 class GrapaLibraryRuleCscEvent : public GrapaLibraryEvent
 {
@@ -1088,6 +1232,7 @@ public:
 	GrapaLibraryRuleCscEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCsc(GrapaCHAR& pName) { return new GrapaLibraryRuleCscEvent(pName); }
 
 
 
@@ -1097,6 +1242,7 @@ public:
 	GrapaLibraryRuleASinEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleASin(GrapaCHAR& pName) { return new GrapaLibraryRuleASinEvent(pName); }
 
 class GrapaLibraryRuleACosEvent : public GrapaLibraryEvent
 {
@@ -1104,6 +1250,7 @@ public:
 	GrapaLibraryRuleACosEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleACos(GrapaCHAR& pName) { return new GrapaLibraryRuleACosEvent(pName); }
 
 class GrapaLibraryRuleATanEvent : public GrapaLibraryEvent
 {
@@ -1111,6 +1258,7 @@ public:
 	GrapaLibraryRuleATanEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleATan(GrapaCHAR& pName) { return new GrapaLibraryRuleATanEvent(pName); }
 
 class GrapaLibraryRuleACotEvent : public GrapaLibraryEvent
 {
@@ -1118,6 +1266,7 @@ public:
 	GrapaLibraryRuleACotEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleACot(GrapaCHAR& pName) { return new GrapaLibraryRuleACotEvent(pName); }
 
 class GrapaLibraryRuleASecEvent : public GrapaLibraryEvent
 {
@@ -1125,6 +1274,7 @@ public:
 	GrapaLibraryRuleASecEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleASec(GrapaCHAR& pName) { return new GrapaLibraryRuleASecEvent(pName); }
 
 class GrapaLibraryRuleACscEvent : public GrapaLibraryEvent
 {
@@ -1132,6 +1282,7 @@ public:
 	GrapaLibraryRuleACscEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleACsc(GrapaCHAR& pName) { return new GrapaLibraryRuleACscEvent(pName); }
 
 
 
@@ -1141,6 +1292,7 @@ public:
 	GrapaLibraryRuleSinHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSinH(GrapaCHAR& pName) { return new GrapaLibraryRuleSinHEvent(pName); }
 
 class GrapaLibraryRuleCosHEvent : public GrapaLibraryEvent
 {
@@ -1148,6 +1300,7 @@ public:
 	GrapaLibraryRuleCosHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCosH(GrapaCHAR& pName) { return new GrapaLibraryRuleCosHEvent(pName); }
 
 class GrapaLibraryRuleTanHEvent : public GrapaLibraryEvent
 {
@@ -1155,6 +1308,7 @@ public:
 	GrapaLibraryRuleTanHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTanH(GrapaCHAR& pName) { return new GrapaLibraryRuleTanHEvent(pName); }
 
 class GrapaLibraryRuleCotHEvent : public GrapaLibraryEvent
 {
@@ -1162,6 +1316,7 @@ public:
 	GrapaLibraryRuleCotHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCotH(GrapaCHAR& pName) { return new GrapaLibraryRuleCotHEvent(pName); }
 
 class GrapaLibraryRuleSecHEvent : public GrapaLibraryEvent
 {
@@ -1169,6 +1324,7 @@ public:
 	GrapaLibraryRuleSecHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSecH(GrapaCHAR& pName) { return new GrapaLibraryRuleSecHEvent(pName); }
 
 class GrapaLibraryRuleCscHEvent : public GrapaLibraryEvent
 {
@@ -1176,6 +1332,7 @@ public:
 	GrapaLibraryRuleCscHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCscH(GrapaCHAR& pName) { return new GrapaLibraryRuleCscHEvent(pName); }
 
 
 
@@ -1185,6 +1342,7 @@ public:
 	GrapaLibraryRuleASinHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleASinH(GrapaCHAR& pName) { return new GrapaLibraryRuleASinHEvent(pName); }
 
 class GrapaLibraryRuleACosHEvent : public GrapaLibraryEvent
 {
@@ -1192,6 +1350,7 @@ public:
 	GrapaLibraryRuleACosHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleACosH(GrapaCHAR& pName) { return new GrapaLibraryRuleACosHEvent(pName); }
 
 class GrapaLibraryRuleATanHEvent : public GrapaLibraryEvent
 {
@@ -1199,6 +1358,7 @@ public:
 	GrapaLibraryRuleATanHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleATanH(GrapaCHAR& pName) { return new GrapaLibraryRuleATanHEvent(pName); }
 
 class GrapaLibraryRuleACotHEvent : public GrapaLibraryEvent
 {
@@ -1206,6 +1366,7 @@ public:
 	GrapaLibraryRuleACotHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleACotH(GrapaCHAR& pName) { return new GrapaLibraryRuleACotHEvent(pName); }
 
 class GrapaLibraryRuleASecHEvent : public GrapaLibraryEvent
 {
@@ -1213,6 +1374,7 @@ public:
 	GrapaLibraryRuleASecHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleASecH(GrapaCHAR& pName) { return new GrapaLibraryRuleASecHEvent(pName); }
 
 class GrapaLibraryRuleACscHEvent : public GrapaLibraryEvent
 {
@@ -1220,6 +1382,7 @@ public:
 	GrapaLibraryRuleACscHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleACscH(GrapaCHAR& pName) { return new GrapaLibraryRuleACscHEvent(pName); }
 
 class GrapaLibraryRuleATan2Event : public GrapaLibraryEvent
 {
@@ -1227,6 +1390,7 @@ public:
 	GrapaLibraryRuleATan2Event(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleATan2(GrapaCHAR& pName) { return new GrapaLibraryRuleATan2Event(pName); }
 
 class GrapaLibraryRuleHypotEvent : public GrapaLibraryEvent
 {
@@ -1234,6 +1398,7 @@ public:
 	GrapaLibraryRuleHypotEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleHypot(GrapaCHAR& pName) { return new GrapaLibraryRuleHypotEvent(pName); }
 
 class GrapaLibraryRuleLnEvent : public GrapaLibraryEvent
 {
@@ -1241,6 +1406,7 @@ public:
 	GrapaLibraryRuleLnEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLn(GrapaCHAR& pName) { return new GrapaLibraryRuleLnEvent(pName); }
 
 class GrapaLibraryRuleLogEvent : public GrapaLibraryEvent
 {
@@ -1248,6 +1414,7 @@ public:
 	GrapaLibraryRuleLogEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLog(GrapaCHAR& pName) { return new GrapaLibraryRuleLogEvent(pName); }
 
 class GrapaLibraryRuleEEvent : public GrapaLibraryEvent
 {
@@ -1255,6 +1422,7 @@ public:
 	GrapaLibraryRuleEEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleE(GrapaCHAR& pName) { return new GrapaLibraryRuleEEvent(pName); }
 
 class GrapaLibraryRuleModPowEvent : public GrapaLibraryEvent
 {
@@ -1262,6 +1430,7 @@ public:
 	GrapaLibraryRuleModPowEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModPow(GrapaCHAR& pName) { return new GrapaLibraryRuleModPowEvent(pName); }
 
 class GrapaLibraryRuleModInvEvent : public GrapaLibraryEvent
 {
@@ -1269,6 +1438,7 @@ public:
 	GrapaLibraryRuleModInvEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleModInv(GrapaCHAR& pName) { return new GrapaLibraryRuleModInvEvent(pName); }
 
 class GrapaLibraryRuleAbsEvent : public GrapaLibraryEvent
 {
@@ -1276,6 +1446,7 @@ public:
 	GrapaLibraryRuleAbsEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAbs(GrapaCHAR& pName) { return new GrapaLibraryRuleAbsEvent(pName); }
 
 class GrapaLibraryRuleGcdEvent : public GrapaLibraryEvent
 {
@@ -1283,6 +1454,7 @@ public:
 	GrapaLibraryRuleGcdEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGcd(GrapaCHAR& pName) { return new GrapaLibraryRuleGcdEvent(pName); }
 
 class GrapaLibraryRuleBslEvent : public GrapaLibraryEvent
 {
@@ -1290,6 +1462,7 @@ public:
 	GrapaLibraryRuleBslEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBsl(GrapaCHAR& pName) { return new GrapaLibraryRuleBslEvent(pName); }
 
 class GrapaLibraryRuleBsrEvent : public GrapaLibraryEvent
 {
@@ -1297,6 +1470,7 @@ public:
 	GrapaLibraryRuleBsrEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBsr(GrapaCHAR& pName) { return new GrapaLibraryRuleBsrEvent(pName); }
 
 class GrapaLibraryRuleBorEvent : public GrapaLibraryEvent
 {
@@ -1304,6 +1478,7 @@ public:
 	GrapaLibraryRuleBorEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBor(GrapaCHAR& pName) { return new GrapaLibraryRuleBorEvent(pName); }
 
 class GrapaLibraryRuleBandEvent : public GrapaLibraryEvent
 {
@@ -1311,6 +1486,7 @@ public:
 	GrapaLibraryRuleBandEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBand(GrapaCHAR& pName) { return new GrapaLibraryRuleBandEvent(pName); }
 
 class GrapaLibraryRuleOrEvent : public GrapaLibraryEvent
 {
@@ -1318,6 +1494,7 @@ public:
 	GrapaLibraryRuleOrEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleOr(GrapaCHAR& pName) { return new GrapaLibraryRuleOrEvent(pName); }
 
 class GrapaLibraryRuleAndEvent : public GrapaLibraryEvent
 {
@@ -1325,6 +1502,7 @@ public:
 	GrapaLibraryRuleAndEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAnd(GrapaCHAR& pName) { return new GrapaLibraryRuleAndEvent(pName); }
 
 class GrapaLibraryRuleXOrEvent : public GrapaLibraryEvent
 {
@@ -1332,6 +1510,7 @@ public:
 	GrapaLibraryRuleXOrEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleXOr(GrapaCHAR& pName) { return new GrapaLibraryRuleXOrEvent(pName); }
 
 class GrapaLibraryRuleInvEvent : public GrapaLibraryEvent
 {
@@ -1339,6 +1518,7 @@ public:
 	GrapaLibraryRuleInvEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleInv(GrapaCHAR& pName) { return new GrapaLibraryRuleInvEvent(pName); }
 
 class GrapaLibraryRuleTransposeEvent : public GrapaLibraryEvent
 {
@@ -1346,6 +1526,7 @@ public:
 	GrapaLibraryRuleTransposeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTranspose(GrapaCHAR& pName) { return new GrapaLibraryRuleTransposeEvent(pName); }
 
 class GrapaLibraryRuleRrefEvent : public GrapaLibraryEvent
 {
@@ -1353,6 +1534,7 @@ public:
 	GrapaLibraryRuleRrefEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRref(GrapaCHAR& pName) { return new GrapaLibraryRuleRrefEvent(pName); }
 
 class GrapaLibraryRuleDetEvent : public GrapaLibraryEvent
 {
@@ -1360,6 +1542,7 @@ public:
 	GrapaLibraryRuleDetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDet(GrapaCHAR& pName) { return new GrapaLibraryRuleDetEvent(pName); }
 
 class GrapaLibraryRuleRankEvent : public GrapaLibraryEvent
 {
@@ -1367,6 +1550,7 @@ public:
 	GrapaLibraryRuleRankEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRank(GrapaCHAR& pName) { return new GrapaLibraryRuleRankEvent(pName); }
 
 class GrapaLibraryRuleSolveEvent : public GrapaLibraryEvent
 {
@@ -1374,6 +1558,7 @@ public:
 	GrapaLibraryRuleSolveEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSolve(GrapaCHAR& pName) { return new GrapaLibraryRuleSolveEvent(pName); }
 
 class GrapaLibraryRuleCovEvent : public GrapaLibraryEvent
 {
@@ -1381,6 +1566,7 @@ public:
 	GrapaLibraryRuleCovEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCov(GrapaCHAR& pName) { return new GrapaLibraryRuleCovEvent(pName); }
 
 class GrapaLibraryRuleNegEvent : public GrapaLibraryEvent
 {
@@ -1388,6 +1574,7 @@ public:
 	GrapaLibraryRuleNegEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleNeg(GrapaCHAR& pName) { return new GrapaLibraryRuleNegEvent(pName); }
 
 class GrapaLibraryRuleBitsEvent : public GrapaLibraryEvent
 {
@@ -1395,6 +1582,7 @@ public:
 	GrapaLibraryRuleBitsEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBits(GrapaCHAR& pName) { return new GrapaLibraryRuleBitsEvent(pName); }
 
 class GrapaLibraryRuleBytesEvent : public GrapaLibraryEvent
 {
@@ -1402,6 +1590,7 @@ public:
 	GrapaLibraryRuleBytesEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBytes(GrapaCHAR& pName) { return new GrapaLibraryRuleBytesEvent(pName); }
 
 class GrapaLibraryRuleLenEvent : public GrapaLibraryEvent
 {
@@ -1409,6 +1598,7 @@ public:
 	GrapaLibraryRuleLenEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLen(GrapaCHAR& pName) { return new GrapaLibraryRuleLenEvent(pName); }
 
 class GrapaLibraryRuleBoolEvent : public GrapaLibraryEvent
 {
@@ -1416,6 +1606,7 @@ public:
 	GrapaLibraryRuleBoolEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBool(GrapaCHAR& pName) { return new GrapaLibraryRuleBoolEvent(pName); }
 
 class GrapaLibraryRuleNotEvent : public GrapaLibraryEvent
 {
@@ -1423,6 +1614,7 @@ public:
 	GrapaLibraryRuleNotEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleNot(GrapaCHAR& pName) { return new GrapaLibraryRuleNotEvent(pName); }
 
 class GrapaLibraryRuleIntEvent : public GrapaLibraryEvent
 {
@@ -1430,6 +1622,7 @@ public:
 	GrapaLibraryRuleIntEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleInt(GrapaCHAR& pName) { return new GrapaLibraryRuleIntEvent(pName); }
 
 class GrapaLibraryRuleRawEvent : public GrapaLibraryEvent
 {
@@ -1437,6 +1630,7 @@ public:
 	GrapaLibraryRuleRawEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRaw(GrapaCHAR& pName) { return new GrapaLibraryRuleRawEvent(pName); }
 
 class GrapaLibraryRuleBaseEvent : public GrapaLibraryEvent
 {
@@ -1444,6 +1638,7 @@ public:
 	GrapaLibraryRuleBaseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBase(GrapaCHAR& pName) { return new GrapaLibraryRuleBaseEvent(pName); }
 
 class GrapaLibraryRuleStrEvent : public GrapaLibraryEvent
 {
@@ -1451,6 +1646,7 @@ public:
 	GrapaLibraryRuleStrEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleStr(GrapaCHAR& pName) { return new GrapaLibraryRuleStrEvent(pName); }
 
 class GrapaLibraryRuleListEvent : public GrapaLibraryEvent
 {
@@ -1458,6 +1654,7 @@ public:
 	GrapaLibraryRuleListEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleList(GrapaCHAR& pName) { return new GrapaLibraryRuleListEvent(pName); }
 
 class GrapaLibraryRuleArrayEvent : public GrapaLibraryEvent
 {
@@ -1465,6 +1662,7 @@ public:
 	GrapaLibraryRuleArrayEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleArray(GrapaCHAR& pName) { return new GrapaLibraryRuleArrayEvent(pName); }
 
 class GrapaLibraryRuleVectorEvent : public GrapaLibraryEvent
 {
@@ -1472,6 +1670,7 @@ public:
 	GrapaLibraryRuleVectorEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleVector(GrapaCHAR& pName) { return new GrapaLibraryRuleVectorEvent(pName); }
 
 class GrapaLibraryRuleXmlEvent : public GrapaLibraryEvent
 {
@@ -1479,6 +1678,7 @@ public:
 	GrapaLibraryRuleXmlEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleXml(GrapaCHAR& pName) { return new GrapaLibraryRuleXmlEvent(pName); }
 
 class GrapaLibraryRuleFloatEvent : public GrapaLibraryEvent
 {
@@ -1486,6 +1686,7 @@ public:
 	GrapaLibraryRuleFloatEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFloat(GrapaCHAR& pName) { return new GrapaLibraryRuleFloatEvent(pName); }
 
 class GrapaLibraryRuleTimeEvent : public GrapaLibraryEvent
 {
@@ -1493,6 +1694,7 @@ public:
 	GrapaLibraryRuleTimeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTime(GrapaCHAR& pName) { return new GrapaLibraryRuleTimeEvent(pName); }
 
 class GrapaLibraryRuleTypeEvent : public GrapaLibraryEvent
 {
@@ -1500,6 +1702,7 @@ public:
 	GrapaLibraryRuleTypeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleType(GrapaCHAR& pName) { return new GrapaLibraryRuleTypeEvent(pName); }
 
 class GrapaLibraryRuleDescribeEvent : public GrapaLibraryEvent
 {
@@ -1507,6 +1710,7 @@ public:
 	GrapaLibraryRuleDescribeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDescribe(GrapaCHAR& pName) { return new GrapaLibraryRuleDescribeEvent(pName); }
 
 class GrapaLibraryRuleLeftEvent : public GrapaLibraryEvent
 {
@@ -1514,6 +1718,7 @@ public:
 	GrapaLibraryRuleLeftEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLeft(GrapaCHAR& pName) { return new GrapaLibraryRuleLeftEvent(pName); }
 
 class GrapaLibraryRuleRightEvent : public GrapaLibraryEvent
 {
@@ -1521,6 +1726,7 @@ public:
 	GrapaLibraryRuleRightEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRight(GrapaCHAR& pName) { return new GrapaLibraryRuleRightEvent(pName); }
 
 class GrapaLibraryRuleMidEvent : public GrapaLibraryEvent
 {
@@ -1528,6 +1734,7 @@ public:
 	GrapaLibraryRuleMidEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMid(GrapaCHAR& pName) { return new GrapaLibraryRuleMidEvent(pName); }
 
 class GrapaLibraryRuleMidTrimEvent : public GrapaLibraryEvent
 {
@@ -1535,6 +1742,7 @@ public:
 	GrapaLibraryRuleMidTrimEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMidTrim(GrapaCHAR& pName) { return new GrapaLibraryRuleMidTrimEvent(pName); }
 
 class GrapaLibraryRuleRTrimEvent : public GrapaLibraryEvent
 {
@@ -1542,6 +1750,7 @@ public:
 	GrapaLibraryRuleRTrimEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRTrim(GrapaCHAR& pName) { return new GrapaLibraryRuleRTrimEvent(pName); }
 
 class GrapaLibraryRuleLTrimEvent : public GrapaLibraryEvent
 {
@@ -1549,6 +1758,7 @@ public:
 	GrapaLibraryRuleLTrimEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLTrim(GrapaCHAR& pName) { return new GrapaLibraryRuleLTrimEvent(pName); }
 
 class GrapaLibraryRuleTrimEvent : public GrapaLibraryEvent
 {
@@ -1556,6 +1766,7 @@ public:
 	GrapaLibraryRuleTrimEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTrim(GrapaCHAR& pName) { return new GrapaLibraryRuleTrimEvent(pName); }
 
 class GrapaLibraryRuleRRotateEvent : public GrapaLibraryEvent
 {
@@ -1563,6 +1774,7 @@ public:
 	GrapaLibraryRuleRRotateEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRRotate(GrapaCHAR& pName) { return new GrapaLibraryRuleRRotateEvent(pName); }
 
 class GrapaLibraryRuleLRotateEvent : public GrapaLibraryEvent
 {
@@ -1570,6 +1782,7 @@ public:
 	GrapaLibraryRuleLRotateEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLRotate(GrapaCHAR& pName) { return new GrapaLibraryRuleLRotateEvent(pName); }
 
 class GrapaLibraryRuleRPadEvent : public GrapaLibraryEvent
 {
@@ -1577,6 +1790,7 @@ public:
 	GrapaLibraryRuleRPadEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRPad(GrapaCHAR& pName) { return new GrapaLibraryRuleRPadEvent(pName); }
 
 class GrapaLibraryRuleLPadEvent : public GrapaLibraryEvent
 {
@@ -1584,6 +1798,7 @@ public:
 	GrapaLibraryRuleLPadEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLPad(GrapaCHAR& pName) { return new GrapaLibraryRuleLPadEvent(pName); }
 
 class GrapaLibraryRuleReverseEvent : public GrapaLibraryEvent
 {
@@ -1591,6 +1806,7 @@ public:
 	GrapaLibraryRuleReverseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReverse(GrapaCHAR& pName) { return new GrapaLibraryRuleReverseEvent(pName); }
 
 class GrapaLibraryRuleReplaceEvent : public GrapaLibraryEvent
 {
@@ -1598,6 +1814,7 @@ public:
 	GrapaLibraryRuleReplaceEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReplace(GrapaCHAR& pName) { return new GrapaLibraryRuleReplaceEvent(pName); }
 
 class GrapaLibraryRuleSplitEvent : public GrapaLibraryEvent
 {
@@ -1605,6 +1822,7 @@ public:
 	GrapaLibraryRuleSplitEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSplit(GrapaCHAR& pName) { return new GrapaLibraryRuleSplitEvent(pName); }
 
 class GrapaLibraryRuleJoinEvent : public GrapaLibraryEvent
 {
@@ -1612,6 +1830,7 @@ public:
 	GrapaLibraryRuleJoinEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleJoin(GrapaCHAR& pName) { return new GrapaLibraryRuleJoinEvent(pName); }
 
 class GrapaLibraryRuleShapeEvent : public GrapaLibraryEvent
 {
@@ -1619,6 +1838,7 @@ public:
 	GrapaLibraryRuleShapeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleShape(GrapaCHAR& pName) { return new GrapaLibraryRuleShapeEvent(pName); }
 
 class GrapaLibraryRuleReShapeEvent : public GrapaLibraryEvent
 {
@@ -1626,6 +1846,7 @@ public:
 	GrapaLibraryRuleReShapeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReShape(GrapaCHAR& pName) { return new GrapaLibraryRuleReShapeEvent(pName); }
 
 class GrapaLibraryRuleDotEvent : public GrapaLibraryEvent
 {
@@ -1633,6 +1854,7 @@ public:
 	GrapaLibraryRuleDotEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDot(GrapaCHAR& pName) { return new GrapaLibraryRuleDotEvent(pName); }
 
 class GrapaLibraryRuleIdentityEvent : public GrapaLibraryEvent
 {
@@ -1640,6 +1862,7 @@ public:
 	GrapaLibraryRuleIdentityEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIdentity(GrapaCHAR& pName) { return new GrapaLibraryRuleIdentityEvent(pName); }
 
 class GrapaLibraryRuleDiagonalEvent : public GrapaLibraryEvent
 {
@@ -1647,6 +1870,7 @@ public:
 	GrapaLibraryRuleDiagonalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDiagonal(GrapaCHAR& pName) { return new GrapaLibraryRuleDiagonalEvent(pName); }
 
 class GrapaLibraryRuleTriUEvent : public GrapaLibraryEvent
 {
@@ -1654,6 +1878,7 @@ public:
 	GrapaLibraryRuleTriUEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTriU(GrapaCHAR& pName) { return new GrapaLibraryRuleTriUEvent(pName); }
 
 class GrapaLibraryRuleTriLEvent : public GrapaLibraryEvent
 {
@@ -1661,6 +1886,7 @@ public:
 	GrapaLibraryRuleTriLEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTriL(GrapaCHAR& pName) { return new GrapaLibraryRuleTriLEvent(pName); }
 
 class GrapaLibraryRuleEigHEvent : public GrapaLibraryEvent
 {
@@ -1668,6 +1894,7 @@ public:
 	GrapaLibraryRuleEigHEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleEigH(GrapaCHAR& pName) { return new GrapaLibraryRuleEigHEvent(pName); }
 
 class GrapaLibraryRuleSumEvent : public GrapaLibraryEvent
 {
@@ -1675,6 +1902,7 @@ public:
 	GrapaLibraryRuleSumEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSum(GrapaCHAR& pName) { return new GrapaLibraryRuleSumEvent(pName); }
 
 class GrapaLibraryRuleMeanEvent : public GrapaLibraryEvent
 {
@@ -1682,6 +1910,7 @@ public:
 	GrapaLibraryRuleMeanEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMean(GrapaCHAR& pName) { return new GrapaLibraryRuleMeanEvent(pName); }
 
 class GrapaLibraryRuleLowerEvent : public GrapaLibraryEvent
 {
@@ -1689,6 +1918,7 @@ public:
 	GrapaLibraryRuleLowerEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLower(GrapaCHAR& pName) { return new GrapaLibraryRuleLowerEvent(pName); }
 
 class GrapaLibraryRuleUpperEvent : public GrapaLibraryEvent
 {
@@ -1696,6 +1926,7 @@ public:
 	GrapaLibraryRuleUpperEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUpper(GrapaCHAR& pName) { return new GrapaLibraryRuleUpperEvent(pName); }
 
 class GrapaLibraryRuleUtcEvent : public GrapaLibraryEvent
 {
@@ -1703,6 +1934,7 @@ public:
 	GrapaLibraryRuleUtcEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUtc(GrapaCHAR& pName) { return new GrapaLibraryRuleUtcEvent(pName); }
 
 class GrapaLibraryRuleTzEvent : public GrapaLibraryEvent
 {
@@ -1710,6 +1942,7 @@ public:
 	GrapaLibraryRuleTzEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTz(GrapaCHAR& pName) { return new GrapaLibraryRuleTzEvent(pName); }
 
 class GrapaLibraryRuleEqEvent : public GrapaLibraryEvent
 {
@@ -1717,6 +1950,7 @@ public:
 	GrapaLibraryRuleEqEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleEq(GrapaCHAR& pName) { return new GrapaLibraryRuleEqEvent(pName); }
 
 class GrapaLibraryRuleNEqEvent : public GrapaLibraryEvent
 {
@@ -1724,6 +1958,7 @@ public:
 	GrapaLibraryRuleNEqEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleNEq(GrapaCHAR& pName) { return new GrapaLibraryRuleNEqEvent(pName); }
 
 class GrapaLibraryRuleGtEqEvent : public GrapaLibraryEvent
 {
@@ -1731,6 +1966,7 @@ public:
 	GrapaLibraryRuleGtEqEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGtEq(GrapaCHAR& pName) { return new GrapaLibraryRuleGtEqEvent(pName); }
 
 class GrapaLibraryRuleGtEvent : public GrapaLibraryEvent
 {
@@ -1738,6 +1974,7 @@ public:
 	GrapaLibraryRuleGtEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGt(GrapaCHAR& pName) { return new GrapaLibraryRuleGtEvent(pName); }
 
 class GrapaLibraryRuleLtEqEvent : public GrapaLibraryEvent
 {
@@ -1745,6 +1982,7 @@ public:
 	GrapaLibraryRuleLtEqEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLtEq(GrapaCHAR& pName) { return new GrapaLibraryRuleLtEqEvent(pName); }
 
 class GrapaLibraryRuleLtEvent : public GrapaLibraryEvent
 {
@@ -1752,6 +1990,7 @@ public:
 	GrapaLibraryRuleLtEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLt(GrapaCHAR& pName) { return new GrapaLibraryRuleLtEvent(pName); }
 
 class GrapaLibraryRuleCmpEvent : public GrapaLibraryEvent
 {
@@ -1759,6 +1998,7 @@ public:
 	GrapaLibraryRuleCmpEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCmp(GrapaCHAR& pName) { return new GrapaLibraryRuleCmpEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1768,6 +2008,7 @@ public:
 	GrapaLibraryRuleTryLockEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTryLock(GrapaCHAR& pName) { return new GrapaLibraryRuleTryLockEvent(pName); }
 
 class GrapaLibraryRuleLockEvent : public GrapaLibraryEvent
 {
@@ -1775,6 +2016,7 @@ public:
 	GrapaLibraryRuleLockEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLock(GrapaCHAR& pName) { return new GrapaLibraryRuleLockEvent(pName); }
 
 class GrapaLibraryRuleUnLockEvent : public GrapaLibraryEvent
 {
@@ -1782,6 +2024,7 @@ public:
 	GrapaLibraryRuleUnLockEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUnLock(GrapaCHAR& pName) { return new GrapaLibraryRuleUnLockEvent(pName); }
 
 class GrapaLibraryRuleWaitEvent : public GrapaLibraryEvent
 {
@@ -1789,6 +2032,7 @@ public:
 	GrapaLibraryRuleWaitEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWait(GrapaCHAR& pName) { return new GrapaLibraryRuleWaitEvent(pName); }
 
 class GrapaLibraryRuleSignalEvent : public GrapaLibraryEvent
 {
@@ -1796,6 +2040,7 @@ public:
 	GrapaLibraryRuleSignalEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSignal(GrapaCHAR& pName) { return new GrapaLibraryRuleSignalEvent(pName); }
 
 class GrapaLibraryRuleWaitingEvent : public GrapaLibraryEvent
 {
@@ -1803,6 +2048,7 @@ public:
 	GrapaLibraryRuleWaitingEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWaiting(GrapaCHAR& pName) { return new GrapaLibraryRuleWaitingEvent(pName); }
 
 class GrapaLibraryRuleStartEvent : public GrapaLibraryEvent
 {
@@ -1810,6 +2056,7 @@ public:
 	GrapaLibraryRuleStartEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleStart(GrapaCHAR& pName) { return new GrapaLibraryRuleStartEvent(pName); }
 
 class GrapaLibraryRuleStopEvent : public GrapaLibraryEvent
 {
@@ -1817,6 +2064,7 @@ public:
 	GrapaLibraryRuleStopEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleStop(GrapaCHAR& pName) { return new GrapaLibraryRuleStopEvent(pName); }
 
 class GrapaLibraryRuleStartedEvent : public GrapaLibraryEvent
 {
@@ -1824,6 +2072,7 @@ public:
 	GrapaLibraryRuleStartedEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleStarted(GrapaCHAR& pName) { return new GrapaLibraryRuleStartedEvent(pName); }
 
 class GrapaLibraryRuleSuspendEvent : public GrapaLibraryEvent
 {
@@ -1831,6 +2080,7 @@ public:
 	GrapaLibraryRuleSuspendEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSuspend(GrapaCHAR& pName) { return new GrapaLibraryRuleSuspendEvent(pName); }
 
 class GrapaLibraryRuleResumeEvent : public GrapaLibraryEvent
 {
@@ -1838,6 +2088,7 @@ public:
 	GrapaLibraryRuleResumeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleResume(GrapaCHAR& pName) { return new GrapaLibraryRuleResumeEvent(pName); }
 
 class GrapaLibraryRuleSuspendedEvent : public GrapaLibraryEvent
 {
@@ -1845,6 +2096,7 @@ public:
 	GrapaLibraryRuleSuspendedEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleSuspended(GrapaCHAR& pName) { return new GrapaLibraryRuleSuspendedEvent(pName); }
 
 class GrapaLibraryRuleWidgetNewEvent : public GrapaLibraryEvent
 {
@@ -1852,6 +2104,7 @@ public:
 	GrapaLibraryRuleWidgetNewEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetNew(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetNewEvent(pName); }
 
 class GrapaLibraryRuleWidgetShowEvent : public GrapaLibraryEvent
 {
@@ -1859,6 +2112,7 @@ public:
 	GrapaLibraryRuleWidgetShowEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetShow(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetShowEvent(pName); }
 
 class GrapaLibraryRuleWidgetHideEvent : public GrapaLibraryEvent
 {
@@ -1866,6 +2120,7 @@ public:
 	GrapaLibraryRuleWidgetHideEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetHide(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetHideEvent(pName); }
 
 class GrapaLibraryRuleWidgetRedrawEvent : public GrapaLibraryEvent
 {
@@ -1873,6 +2128,7 @@ public:
 	GrapaLibraryRuleWidgetRedrawEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetRedraw(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetRedrawEvent(pName); }
 
 class GrapaLibraryRuleWidgetResizableEvent : public GrapaLibraryEvent
 {
@@ -1880,6 +2136,7 @@ public:
 	GrapaLibraryRuleWidgetResizableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetResizable(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetResizableEvent(pName); }
 
 class GrapaLibraryRuleWidgetResizeEvent : public GrapaLibraryEvent
 {
@@ -1887,6 +2144,7 @@ public:
 	GrapaLibraryRuleWidgetResizeEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetResize(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetResizeEvent(pName); }
 
 class GrapaLibraryRuleWidgetParentEvent : public GrapaLibraryEvent
 {
@@ -1894,6 +2152,7 @@ public:
 	GrapaLibraryRuleWidgetParentEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetParent(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetParentEvent(pName); }
 
 class GrapaLibraryRuleWidgetChildEvent : public GrapaLibraryEvent
 {
@@ -1901,6 +2160,7 @@ public:
 	GrapaLibraryRuleWidgetChildEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetChild(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetChildEvent(pName); }
 
 class GrapaLibraryRuleWidgetNextEvent : public GrapaLibraryEvent
 {
@@ -1908,6 +2168,7 @@ public:
 	GrapaLibraryRuleWidgetNextEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetNext(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetNextEvent(pName); }
 
 class GrapaLibraryRuleWidgetFocusEvent : public GrapaLibraryEvent
 {
@@ -1915,6 +2176,7 @@ public:
 	GrapaLibraryRuleWidgetFocusEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetFocus(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetFocusEvent(pName); }
 
 class GrapaLibraryRuleWidgetGetEvent : public GrapaLibraryEvent
 {
@@ -1922,6 +2184,7 @@ public:
 	GrapaLibraryRuleWidgetGetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetGet(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetGetEvent(pName); }
 
 class GrapaLibraryRuleWidgetSetEvent : public GrapaLibraryEvent
 {
@@ -1929,6 +2192,7 @@ public:
 	GrapaLibraryRuleWidgetSetEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetSet(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetSetEvent(pName); }
 
 class GrapaLibraryRuleWidgetHandleEvent : public GrapaLibraryEvent
 {
@@ -1936,6 +2200,7 @@ public:
 	GrapaLibraryRuleWidgetHandleEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetHandle(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetHandleEvent(pName); }
 
 class GrapaLibraryRuleWidgetCallbackEvent : public GrapaLibraryEvent
 {
@@ -1943,6 +2208,7 @@ public:
 	GrapaLibraryRuleWidgetCallbackEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetCallback(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetCallbackEvent(pName); }
 
 class GrapaLibraryRuleWidgetEventKeyEvent : public GrapaLibraryEvent
 {
@@ -1950,6 +2216,7 @@ public:
 	GrapaLibraryRuleWidgetEventKeyEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetEventKey(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetEventKeyEvent(pName); }
 
 class GrapaLibraryRuleWidgetAppendEvent : public GrapaLibraryEvent
 {
@@ -1957,6 +2224,7 @@ public:
 	GrapaLibraryRuleWidgetAppendEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetAppend(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetAppendEvent(pName); }
 
 class GrapaLibraryRuleWidgetPostEvent : public GrapaLibraryEvent
 {
@@ -1964,6 +2232,7 @@ public:
 	GrapaLibraryRuleWidgetPostEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetPost(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetPostEvent(pName); }
 
 class GrapaLibraryRuleWidgetClearEvent : public GrapaLibraryEvent
 {
@@ -1971,6 +2240,8 @@ public:
 	GrapaLibraryRuleWidgetClearEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleWidgetClear(GrapaCHAR& pName) { return new GrapaLibraryRuleWidgetClearEvent(pName); }
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1994,8 +2265,290 @@ void GrapaLibraryRuleEvent::LoadLibWrap(GrapaScriptExec* vScriptExec, GrapaRuleE
 	pOperation->vLibraryEvent = lib;
 }
 
+#include <unordered_map>
+#include <functional>
+
 GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent *pOperation, GrapaCHAR& pName)
 {
+	using Handler = GrapaLibraryEvent * (GrapaLibraryRuleEvent::*)(GrapaCHAR& pName);
+	static const std::unordered_map<std::string, Handler> handlerMap = {
+		{ "rule", &GrapaLibraryRuleEvent::HandleRule },
+		{ "ruleval", &GrapaLibraryRuleEvent::HandleRuleVal },
+		{ "ruleref", &GrapaLibraryRuleEvent::HandleRuleRef },
+		{ "token", &GrapaLibraryRuleEvent::HandleToken },
+		{ "grammar", &GrapaLibraryRuleEvent::HandleGrammar },
+		{ "reset", &GrapaLibraryRuleEvent::HandleReset },
+		{ "shell", &GrapaLibraryRuleEvent::HandleShell },
+		{ "eval", &GrapaLibraryRuleEvent::HandleEval },
+		{ "exec", &GrapaLibraryRuleEvent::HandleExec },
+		{ "post", &GrapaLibraryRuleEvent::HandlePost },
+		{ "sleep", &GrapaLibraryRuleEvent::HandleSleep },
+		{ "exit", &GrapaLibraryRuleEvent::HandleExit },
+		{ "getenv", &GrapaLibraryRuleEvent::HandleGetEnv },
+		{ "putenv", &GrapaLibraryRuleEvent::HandlePutEnv },
+		{ "include", &GrapaLibraryRuleEvent::HandleInclude },
+		{ "name", &GrapaLibraryRuleEvent::HandleName },
+		{ "getname", &GrapaLibraryRuleEvent::HandleGetName },
+		{ "lit", &GrapaLibraryRuleEvent::HandleLit },
+		{ "ref", &GrapaLibraryRuleEvent::HandleRef },
+		{ "setnull", &GrapaLibraryRuleEvent::HandleNull },
+		{ "var", &GrapaLibraryRuleEvent::HandleVar },
+		{ "assign", &GrapaLibraryRuleEvent::HandleAssign },
+		{ "assignappend", &GrapaLibraryRuleEvent::HandleAssignAppend },
+		{ "assignextend", &GrapaLibraryRuleEvent::HandleAssignExtend },
+		{ "createarray", &GrapaLibraryRuleEvent::HandleCreateArray },
+		{ "createtuple", &GrapaLibraryRuleEvent::HandleCreateTuple },
+		{ "createlist", &GrapaLibraryRuleEvent::HandleCreateList },
+		{ "createxml", &GrapaLibraryRuleEvent::HandleCreateXml },
+		{ "createel", &GrapaLibraryRuleEvent::HandleCreateEl },
+		{ "createtag", &GrapaLibraryRuleEvent::HandleCreateTag },
+		{ "createop", &GrapaLibraryRuleEvent::HandleCreateOp },
+		{ "createcode", &GrapaLibraryRuleEvent::HandleCreateCode },
+		{ "createrule", &GrapaLibraryRuleEvent::HandleCreateRule },
+		{ "extend", &GrapaLibraryRuleEvent::HandleExtend },
+		{ "remove", &GrapaLibraryRuleEvent::HandleRemove },
+		{ "prepend", &GrapaLibraryRuleEvent::HandlePrepend },
+		{ "pop", &GrapaLibraryRuleEvent::HandlePop },
+		{ "call", &GrapaLibraryRuleEvent::HandleCall },
+		{ "search", &GrapaLibraryRuleEvent::HandleSearch },
+		{ "findall", &GrapaLibraryRuleEvent::HandleFindAll },
+		{ "sort", &GrapaLibraryRuleEvent::HandleSort },
+		{ "argsort", &GrapaLibraryRuleEvent::HandleArgSort },
+		{ "unique", &GrapaLibraryRuleEvent::HandleUnique },
+		{ "group", &GrapaLibraryRuleEvent::HandleGroup },
+		{ "class", &GrapaLibraryRuleEvent::HandleClass },
+		{ "obj", &GrapaLibraryRuleEvent::HandleObj },
+		{ "global", &GrapaLibraryRuleEvent::HandleGlobal },
+		{ "parent", &GrapaLibraryRuleEvent::HandleParent },
+		{ "this", &GrapaLibraryRuleEvent::HandleThis },
+		{ "local", &GrapaLibraryRuleEvent::HandleLocal },
+		{ "static", &GrapaLibraryRuleEvent::HandleStatic },
+		{ "const", &GrapaLibraryRuleEvent::HandleConst },
+		{ "setconst", &GrapaLibraryRuleEvent::HandleSetConst },
+		{ "return", &GrapaLibraryRuleEvent::HandleReturn },
+		{ "break", &GrapaLibraryRuleEvent::HandleBreak },
+		{ "if", &GrapaLibraryRuleEvent::HandleIf },
+		{ "while", &GrapaLibraryRuleEvent::HandleWhile },
+		{ "scope", &GrapaLibraryRuleEvent::HandleScope },
+		{ "switch", &GrapaLibraryRuleEvent::HandleSwitch },
+		{ "case", &GrapaLibraryRuleEvent::HandleCase },
+		{ "plan", &GrapaLibraryRuleEvent::HandlePlan },
+		{ "wrap", &GrapaLibraryRuleEvent::HandleWrap },
+		{ "op", &GrapaLibraryRuleEvent::HandleOp },
+		{ "map", &GrapaLibraryRuleEvent::HandleMap },
+		{ "reduce", &GrapaLibraryRuleEvent::HandleReduce },
+		{ "filter", &GrapaLibraryRuleEvent::HandleFilter },
+		{ "range", &GrapaLibraryRuleEvent::HandleRange },
+		{ "isint", &GrapaLibraryRuleEvent::HandleIsInt },
+		{ "iferr", &GrapaLibraryRuleEvent::HandleIfErr },
+		{ "message", &GrapaLibraryRuleEvent::HandleMessage },
+		{ "string", &GrapaLibraryRuleEvent::HandleString },
+		{ "echo", &GrapaLibraryRuleEvent::HandleEcho },
+		{ "console", &GrapaLibraryRuleEvent::HandleConsole },
+		{ "prompt", &GrapaLibraryRuleEvent::HandlePrompt },
+		{ "genprime", &GrapaLibraryRuleEvent::HandleGenPrime },
+		{ "staticprime", &GrapaLibraryRuleEvent::HandleStaticPrime },
+		{ "isprime", &GrapaLibraryRuleEvent::HandleIsPrime },
+		{ "isaks", &GrapaLibraryRuleEvent::HandleIsAks },
+		{ "random", &GrapaLibraryRuleEvent::HandleRandom },
+		{ "setbit", &GrapaLibraryRuleEvent::HandleSetBit },
+		{ "clearbit", &GrapaLibraryRuleEvent::HandleClearBit },
+		{ "genbits", &GrapaLibraryRuleEvent::HandleGenBits },
+		{ "genkeys", &GrapaLibraryRuleEvent::HandleGenKeys },
+		{ "encode", &GrapaLibraryRuleEvent::HandleEncode },
+		{ "encoderaw", &GrapaLibraryRuleEvent::HandleEncode },
+		{ "decode", &GrapaLibraryRuleEvent::HandleDecode },
+		{ "sign", &GrapaLibraryRuleEvent::HandleSign },
+		{ "signadd", &GrapaLibraryRuleEvent::HandleSignAdd },
+		{ "verify", &GrapaLibraryRuleEvent::HandleVerify },
+		{ "verifyrecover", &GrapaLibraryRuleEvent::HandleVerifyRecover },
+		{ "secret", &GrapaLibraryRuleEvent::HandleSecret },
+		{ "setfloat", &GrapaLibraryRuleEvent::HandleSetFloat },
+		{ "setfix", &GrapaLibraryRuleEvent::HandleSetFix },
+		{ "root", &GrapaLibraryRuleEvent::HandleRoot },
+		{ "pow", &GrapaLibraryRuleEvent::HandlePow },
+		{ "mod", &GrapaLibraryRuleEvent::HandleMod },
+		{ "modpow", &GrapaLibraryRuleEvent::HandleModPow },
+		{ "modinv", &GrapaLibraryRuleEvent::HandleModInv },
+		{ "abs", &GrapaLibraryRuleEvent::HandleAbs },
+		{ "gcd", &GrapaLibraryRuleEvent::HandleGcd },
+		{ "e", &GrapaLibraryRuleEvent::HandleE },
+		{ "pi", &GrapaLibraryRuleEvent::HandlePi },
+		{ "ln", &GrapaLibraryRuleEvent::HandleLn },
+		{ "log", &GrapaLibraryRuleEvent::HandleLog },
+		{ "add", &GrapaLibraryRuleEvent::HandleAdd },
+		{ "sub", &GrapaLibraryRuleEvent::HandleSub },
+		{ "mul", &GrapaLibraryRuleEvent::HandleMul },
+		{ "div", &GrapaLibraryRuleEvent::HandleDiv },
+		{ "sin", &GrapaLibraryRuleEvent::HandleSin },
+		{ "cos", &GrapaLibraryRuleEvent::HandleCos },
+		{ "tan", &GrapaLibraryRuleEvent::HandleTan },
+		{ "cot", &GrapaLibraryRuleEvent::HandleCot },
+		{ "sec", &GrapaLibraryRuleEvent::HandleSec },
+		{ "csc", &GrapaLibraryRuleEvent::HandleCsc },
+		{ "asin", &GrapaLibraryRuleEvent::HandleASin },
+		{ "acos", &GrapaLibraryRuleEvent::HandleACos },
+		{ "atan", &GrapaLibraryRuleEvent::HandleATan },
+		{ "acot", &GrapaLibraryRuleEvent::HandleACot },
+		{ "asec", &GrapaLibraryRuleEvent::HandleASec },
+		{ "acsc", &GrapaLibraryRuleEvent::HandleACsc },
+		{ "sinh", &GrapaLibraryRuleEvent::HandleSinH },
+		{ "cosh", &GrapaLibraryRuleEvent::HandleCosH },
+		{ "tanh", &GrapaLibraryRuleEvent::HandleTanH },
+		{ "coth", &GrapaLibraryRuleEvent::HandleCotH },
+		{ "sech", &GrapaLibraryRuleEvent::HandleSecH },
+		{ "csch", &GrapaLibraryRuleEvent::HandleCscH },
+		{ "asinh", &GrapaLibraryRuleEvent::HandleASinH },
+		{ "acosh", &GrapaLibraryRuleEvent::HandleACosH },
+		{ "atanh", &GrapaLibraryRuleEvent::HandleATanH },
+		{ "acoth", &GrapaLibraryRuleEvent::HandleACotH },
+		{ "asech", &GrapaLibraryRuleEvent::HandleASecH },
+		{ "acsch", &GrapaLibraryRuleEvent::HandleACscH },
+		{ "atan2", &GrapaLibraryRuleEvent::HandleATan2 },
+		{ "hypot", &GrapaLibraryRuleEvent::HandleHypot },
+		{ "bsl", &GrapaLibraryRuleEvent::HandleBsl },
+		{ "bsr", &GrapaLibraryRuleEvent::HandleBsr },
+		{ "bor", &GrapaLibraryRuleEvent::HandleBor },
+		{ "band", &GrapaLibraryRuleEvent::HandleBand },
+		{ "or", &GrapaLibraryRuleEvent::HandleOr },
+		{ "and", &GrapaLibraryRuleEvent::HandleAnd },
+		{ "xor", &GrapaLibraryRuleEvent::HandleXOr },
+		{ "inv", &GrapaLibraryRuleEvent::HandleInv },
+		{ "t", &GrapaLibraryRuleEvent::HandleTranspose },
+		{ "rref", &GrapaLibraryRuleEvent::HandleRref },
+		{ "det", &GrapaLibraryRuleEvent::HandleDet },
+		{ "rank", &GrapaLibraryRuleEvent::HandleRank },
+		{ "solve", &GrapaLibraryRuleEvent::HandleSolve },
+		{ "cov", &GrapaLibraryRuleEvent::HandleCov },
+		{ "neg", &GrapaLibraryRuleEvent::HandleNeg },
+		{ "bits", &GrapaLibraryRuleEvent::HandleBits },
+		{ "bytes", &GrapaLibraryRuleEvent::HandleBytes },
+		{ "len", &GrapaLibraryRuleEvent::HandleLen },
+		{ "bool", &GrapaLibraryRuleEvent::HandleBool },
+		{ "not", &GrapaLibraryRuleEvent::HandleNot },
+		{ "int", &GrapaLibraryRuleEvent::HandleInt },
+		{ "raw", &GrapaLibraryRuleEvent::HandleRaw },
+		{ "base", &GrapaLibraryRuleEvent::HandleBase },
+		{ "str", &GrapaLibraryRuleEvent::HandleStr },
+		{ "list", &GrapaLibraryRuleEvent::HandleList },
+		{ "array", &GrapaLibraryRuleEvent::HandleArray },
+		{ "vector", &GrapaLibraryRuleEvent::HandleVector },
+		{ "xml", &GrapaLibraryRuleEvent::HandleXml },
+		{ "float", &GrapaLibraryRuleEvent::HandleFloat },
+		{ "fix", &GrapaLibraryRuleEvent::HandleFloat },
+		{ "time", &GrapaLibraryRuleEvent::HandleTime },
+		{ "type", &GrapaLibraryRuleEvent::HandleType },
+		{ "describe", &GrapaLibraryRuleEvent::HandleDescribe },
+		{ "left", &GrapaLibraryRuleEvent::HandleLeft },
+		{ "right", &GrapaLibraryRuleEvent::HandleRight },
+		{ "mid", &GrapaLibraryRuleEvent::HandleMid },
+		{ "midtrim", &GrapaLibraryRuleEvent::HandleMidTrim },
+		{ "rtrim", &GrapaLibraryRuleEvent::HandleRTrim },
+		{ "ltrim", &GrapaLibraryRuleEvent::HandleLTrim },
+		{ "trim", &GrapaLibraryRuleEvent::HandleTrim },
+		{ "rrot", &GrapaLibraryRuleEvent::HandleRRotate },
+		{ "lrot", &GrapaLibraryRuleEvent::HandleLRotate },
+		{ "rpad", &GrapaLibraryRuleEvent::HandleRPad },
+		{ "lpad", &GrapaLibraryRuleEvent::HandleLPad },
+		{ "reverse", &GrapaLibraryRuleEvent::HandleReverse },
+		{ "replace", &GrapaLibraryRuleEvent::HandleReplace },
+		{ "split", &GrapaLibraryRuleEvent::HandleSplit },
+		{ "join", &GrapaLibraryRuleEvent::HandleJoin },
+		{ "shape", &GrapaLibraryRuleEvent::HandleShape },
+		{ "reshape", &GrapaLibraryRuleEvent::HandleReShape },
+		{ "dot", &GrapaLibraryRuleEvent::HandleDot },
+		{ "identity", &GrapaLibraryRuleEvent::HandleIdentity },
+		{ "diagonal", &GrapaLibraryRuleEvent::HandleDiagonal },
+		{ "triu", &GrapaLibraryRuleEvent::HandleTriU },
+		{ "tril", &GrapaLibraryRuleEvent::HandleTriL },
+		{ "eigh", &GrapaLibraryRuleEvent::HandleEigH },
+		{ "sum", &GrapaLibraryRuleEvent::HandleSum },
+		{ "mean", &GrapaLibraryRuleEvent::HandleMean },
+		{ "lower", &GrapaLibraryRuleEvent::HandleLower },
+		{ "upper", &GrapaLibraryRuleEvent::HandleUpper },
+		{ "eq", &GrapaLibraryRuleEvent::HandleEq },
+		{ "neq", &GrapaLibraryRuleEvent::HandleNEq },
+		{ "gteq", &GrapaLibraryRuleEvent::HandleGtEq },
+		{ "gt", &GrapaLibraryRuleEvent::HandleGt },
+		{ "lteq", &GrapaLibraryRuleEvent::HandleLtEq },
+		{ "lt", &GrapaLibraryRuleEvent::HandleLt },
+		{ "cmp", &GrapaLibraryRuleEvent::HandleCmp },
+		{ "utc", &GrapaLibraryRuleEvent::HandleUtc },
+		{ "tz", &GrapaLibraryRuleEvent::HandleTz },
+		{ "file_table", &GrapaLibraryRuleEvent::HandleTable },
+		{ "file_pwd", &GrapaLibraryRuleEvent::HandlePwd },
+		{ "file_cd", &GrapaLibraryRuleEvent::HandleCd },
+		{ "file_phd", &GrapaLibraryRuleEvent::HandlePhd },
+		{ "file_chd", &GrapaLibraryRuleEvent::HandleChd },
+		{ "file_ls", &GrapaLibraryRuleEvent::HandleLs },
+		{ "file_mk", &GrapaLibraryRuleEvent::HandleMk },
+		{ "file_rm", &GrapaLibraryRuleEvent::HandleRm },
+		{ "file_mkfield", &GrapaLibraryRuleEvent::HandleMkField },
+		{ "file_rmfield", &GrapaLibraryRuleEvent::HandleRmField },
+		{ "file_info", &GrapaLibraryRuleEvent::HandleInfo },
+		{ "file_set", &GrapaLibraryRuleEvent::HandleSet },
+		{ "file_get", &GrapaLibraryRuleEvent::HandleGet },
+		{ "file_split", &GrapaLibraryRuleEvent::HandleFileSplit },
+		{ "file_debug", &GrapaLibraryRuleEvent::HandleDebug },
+		{ "net_mac", &GrapaLibraryRuleEvent::HandleMac },
+		{ "net_interfaces", &GrapaLibraryRuleEvent::HandleInterfaces },
+		{ "net_connect", &GrapaLibraryRuleEvent::HandleConnect },
+		{ "net_bind", &GrapaLibraryRuleEvent::HandleBind },
+		{ "net_listen", &GrapaLibraryRuleEvent::HandleListen },
+		{ "net_onlisten", &GrapaLibraryRuleEvent::HandleOnListen },
+		{ "net_disconnect", &GrapaLibraryRuleEvent::HandleDisconnect },
+		{ "net_proxy", &GrapaLibraryRuleEvent::HandleProxy },
+		{ "net_certificate", &GrapaLibraryRuleEvent::HandleCertificate },
+		{ "net_private", &GrapaLibraryRuleEvent::HandlePrivate },
+		{ "net_trusted", &GrapaLibraryRuleEvent::HandleTrusted },
+		{ "net_verify", &GrapaLibraryRuleEvent::HandleNetVerify },
+		{ "net_chain", &GrapaLibraryRuleEvent::HandleNetChain },
+		{ "net_host", &GrapaLibraryRuleEvent::HandleNetHost },
+		{ "net_send", &GrapaLibraryRuleEvent::HandleSend },
+		{ "net_receive", &GrapaLibraryRuleEvent::HandleReceive },
+		{ "net_pending", &GrapaLibraryRuleEvent::HandlePending },
+		{ "net_onreceive", &GrapaLibraryRuleEvent::HandleOnReceive },
+		{ "http_read", &GrapaLibraryRuleEvent::HandleHttpRead },
+		{ "http_send", &GrapaLibraryRuleEvent::HandleHttpSend },
+		{ "http_message", &GrapaLibraryRuleEvent::HandleHttpMessage },
+		{ "thread_trylock", &GrapaLibraryRuleEvent::HandleTryLock },
+		{ "thread_lock", &GrapaLibraryRuleEvent::HandleLock },
+		{ "thread_unlock", &GrapaLibraryRuleEvent::HandleUnLock },
+		{ "thread_wait", &GrapaLibraryRuleEvent::HandleWait },
+		{ "thread_signal", &GrapaLibraryRuleEvent::HandleSignal },
+		{ "thread_waiting", &GrapaLibraryRuleEvent::HandleWaiting },
+		{ "thread_start", &GrapaLibraryRuleEvent::HandleStart },
+		{ "thread_stop", &GrapaLibraryRuleEvent::HandleStop },
+		{ "thread_started", &GrapaLibraryRuleEvent::HandleStarted },
+		{ "thread_suspend", &GrapaLibraryRuleEvent::HandleSuspend },
+		{ "thread_resume", &GrapaLibraryRuleEvent::HandleResume },
+		{ "thread_suspended", &GrapaLibraryRuleEvent::HandleSuspended },
+		{ "widget_new", &GrapaLibraryRuleEvent::HandleWidgetNew },
+		{ "widget_show", &GrapaLibraryRuleEvent::HandleWidgetShow },
+		{ "widget_hide", &GrapaLibraryRuleEvent::HandleWidgetHide },
+		{ "widget_redraw", &GrapaLibraryRuleEvent::HandleWidgetRedraw },
+		{ "widget_resizable", &GrapaLibraryRuleEvent::HandleWidgetResizable },
+		{ "widget_resize", &GrapaLibraryRuleEvent::HandleWidgetResize },
+		{ "widget_parent", &GrapaLibraryRuleEvent::HandleWidgetParent },
+		{ "widget_child", &GrapaLibraryRuleEvent::HandleWidgetChild },
+		{ "widget_next", &GrapaLibraryRuleEvent::HandleWidgetNext },
+		{ "widget_focus", &GrapaLibraryRuleEvent::HandleWidgetFocus },
+		{ "widget_get", &GrapaLibraryRuleEvent::HandleWidgetGet },
+		{ "widget_set", &GrapaLibraryRuleEvent::HandleWidgetSet },
+		{ "widget_handle", &GrapaLibraryRuleEvent::HandleWidgetHandle },
+		{ "widget_callback", &GrapaLibraryRuleEvent::HandleWidgetCallback },
+		{ "widget_event_key", &GrapaLibraryRuleEvent::HandleWidgetEventKey },
+		{ "widget_append", &GrapaLibraryRuleEvent::HandleWidgetAppend },
+		{ "widget_post", &GrapaLibraryRuleEvent::HandleWidgetPost },
+		{ "widget_clear", &GrapaLibraryRuleEvent::HandleWidgetClear },
+	};
+	auto it = handlerMap.find((char*)pName.mBytes);
+	if (it != handlerMap.end())
+		return (this->*(it->second))(pName);
+
+	return NULL;
+
+	/*
 	GrapaLibraryEvent* lib = NULL;
 	if (lib == NULL)
 	{
@@ -2314,6 +2867,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		}
     }
 	return(lib);
+	*/
 }
 
 GrapaRuleEvent* GrapaLibraryRuleEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)

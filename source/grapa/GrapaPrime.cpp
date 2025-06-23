@@ -119,13 +119,6 @@ void GrapaPrime::operator =(s64 bi)
 	*this = bi2;
 }
 
-//
-//GrapaPrime GrapaPrime::operator -()
-//{
-//	GrapaPrime z((s64)0);
-//	return z - *this;
-//}
-
 //***********************************************************************
 // Probabilistic prime test based on Fermat's little theorem
 //
@@ -146,7 +139,7 @@ void GrapaPrime::operator =(s64 bi)
 // when the randomly chosen base is a factor of the number.
 //***********************************************************************
 
-bool GrapaPrime::FermatLittleTest(int confidence)
+bool GrapaPrime::FermatLittleTest(int confidence) const
 {
 	GrapaInt thisVal;
 	if (IsSignNeg())        // negative
@@ -236,7 +229,7 @@ bool GrapaPrime::FermatLittleTest(int confidence)
 //
 //***********************************************************************
 
-bool GrapaPrime::RabinMillerTest(int confidence)
+bool GrapaPrime::RabinMillerTest(int confidence) const
 {
 	GrapaInt thisVal;
 	if (IsSignNeg())        // negative
@@ -352,7 +345,7 @@ bool GrapaPrime::RabinMillerTest(int confidence)
 //
 //***********************************************************************
 
-bool GrapaPrime::SolovayStrassenTest(int confidence)
+bool GrapaPrime::SolovayStrassenTest(int confidence) const
 {
 	GrapaInt thisVal;
 	if (IsSignNeg())        // negative
@@ -435,7 +428,7 @@ bool GrapaPrime::SolovayStrassenTest(int confidence)
 // Otherwise, returns False indicating that number is composite.
 //***********************************************************************
 
-bool GrapaPrime::LucasStrongTest()
+bool GrapaPrime::LucasStrongTest() const
 {
 	GrapaInt thisVal;
 	if (IsSignNeg())        // negative
@@ -458,7 +451,7 @@ bool GrapaPrime::LucasStrongTest()
 	return LucasStrongTestHelper(thisVal);
 }
 
-bool GrapaPrime::LucasStrongTestHelper(const GrapaInt& pthisVal)
+bool GrapaPrime::LucasStrongTestHelper(const GrapaInt& pthisVal) const
 {
 	// Do the test (selects D based on Selfridge)
 	// Let D be the first element of the sequence
@@ -591,7 +584,7 @@ bool GrapaPrime::LucasStrongTestHelper(const GrapaInt& pthisVal)
 // Returns true if number is probably prime.
 //***********************************************************************
 
-bool GrapaPrime::DivisorTest(u32 safe)
+bool GrapaPrime::DivisorTest(u32 safe) const
 {
 	GrapaPrime thisVal;
 	GrapaPrime m1d2;
@@ -619,7 +612,7 @@ bool GrapaPrime::DivisorTest(u32 safe)
 	return true;
 }
 
-bool GrapaPrime::ConfidenceTest(int confidence)
+bool GrapaPrime::ConfidenceTest(int confidence) const
 {
 	GrapaPrime thisVal;
 	if (IsSignNeg())        // negative
@@ -632,7 +625,7 @@ bool GrapaPrime::ConfidenceTest(int confidence)
 	return false;
 }
 
-bool GrapaPrime::StrongTest()
+bool GrapaPrime::StrongTest() const
 {
 	GrapaPrime thisVal;
 	if (IsSignNeg())        // negative
@@ -666,7 +659,7 @@ bool GrapaPrime::StrongTest()
 //
 //***********************************************************************
 
-bool GrapaPrime::isProbablePrime()
+bool GrapaPrime::isProbablePrime() const
 {
 	GrapaInt thisVal;
 	if (IsSignNeg())        // negative
@@ -834,144 +827,107 @@ s32 GrapaPrime::Jacobi(s64 a, const GrapaInt& b)
 // AKS test (x-a)^p = (x^p-a) (mod p) 
 // x^n = (x - a)^n + a
 
-bool GrapaPrime::AKS()
+#include <future>
+#include <atomic>
+#include <vector>
+
+bool GrapaPrime::AKS() const
 {
-	GrapaPrime n(*this);
-	GrapaInt zero(0);
-	GrapaInt one(1);
-	GrapaInt two(2);
-	//GrapaInt three(3);
-	//GrapaInt four(4);
-	u64 q, maxsmallprime = 65537;
+	GrapaInt n = *this;
+	if (n < 2)
+		return false;
 
-	for (n = *this; true; n += two)
+	// Step 1: Check if n is a perfect power
+	for (u64 b = 2; b <= n.bitCount(); ++b)
 	{
-		bool b = false;
-		u64 s=0;
-		u64 r;
-		u64 minprime;
-
-		if (n < maxsmallprime) minprime = n.LongValue(); else minprime = maxsmallprime + 2;
-		u32 i;
-		for (i = 1, r = primeList16[1]; (r < minprime) && (i < 6543); r = primeList16[++i])
+		GrapaInt low(2), high(n), mid, pow;
+		while (low <= high)
 		{
-			GrapaInt m = n % r;
-			if (m == zero) break;
-			q = GrapaInt::LargestPrimeFactor64(r - 1);
-			if (m.modPow((r - 1) / q, r) <= one) continue;
-
-			// AKS
-			//if (q >= sqrt(r) * (u64)((4.0*n.blog())) / log(2))
-			//{
-			//	s = sqrt(r) * (u64)((2.0*n.blog()) / log(2));
-			//	b = true;
-			//	break;
-			//}
-
-			// Bernstein
-			//GrapaInt cMin = two * r.bsqrt() * log(n);
-			u64 cMin = sqrt64(r) * ((u64)(2.0*n.blog()));
-			u64 c = 0;
-			for (s = 1; s <= q; s++)
-			{
-				//c += log(q + s - one) - log(s);
-				c += (u64) (log(q + s - 1) - log(s));
-				if (c >= cMin)
-				{
-					b = true;
-					break;
-				}
-			}
-
-			if (b) break;
-		}
-
-		if (!b && (n % r) != zero)
-		{
-			GrapaPrime rbig;
-			for (r = minprime, rbig = minprime; rbig < n; r += 2, rbig += two)
-			{
-				if (rbig.TestPrime(0,64))
-				{
-					GrapaInt m = n % r;
-					if (m == 0) break;
-					q = GrapaInt::LargestPrimeFactor64(r-1);
-					if (m.modPow((r - 1) / q, r) <= one) continue;
-
-					// AKS
-					//if (q >= sqrt(r) * (u64)((4.0*n.blog())) / log(2))
-					//{
-					//	s = sqrt(r) * (u64)((2.0*n.blog()) / log(2));
-					//	b = true;
-					//	break;
-					//}
-
-					// Bernstein
-					//GrapaInt cMin = two * r.bsqrt() * log(n);
-					u64 cMin = sqrt64(r) * ((u64)(2.0*n.blog()));
-					u64 c = 0;
-					for (s = 1; s <= q; s++)
-					{
-						//c += log(q + s - one) - log(s);
-						c += (u64) (log(q + s - 1) - log(s));
-						if (c >= cMin)
-						{
-							b = true;
-							break;
-						}
-					}
-
-					if (b) break;
-
-				}
-			}
-		}
-		if (b)
-		{
-			GrapaPolyMod rPoly(r, n);
-			try
-			{
-				rPoly = rPoly.Pow(n);			// x^n
-			}
-			catch (...)
-			{
-				b = false;
-			}
-			if (b)
-			{
-				for (u64 a = 1; a <= s; ++a)
-				{
-					GrapaPolyMod lPoly(r, n);		// x
-					lPoly -= a;					// x - a
-					try
-					{
-						lPoly = lPoly.Pow(n);	// (x - a)^n
-					}
-					catch (...)
-					{
-						b = false;
-						break;
-					}
-					lPoly += a;					// (x - a)^n + a
-					if (lPoly != rPoly)
-					{
-						b = false;
-						break;
-					}
-				}
-			}
-			if (b) return true;
-			else return false;
+			mid = (low + high) / 2;
+			pow = mid.Pow(GrapaInt((s64)b));
+			if (pow == n)
+				return false; // n is a perfect power
+			if (pow < n)
+				low = mid + 1;
+			else
+				high = mid - 1;
 		}
 	}
-	return(false);
+
+	// Step 2: Find the smallest r such that ord_r(n) > log^2 n
+	u64 logn = (u64)ceil(n.blog());
+	u64 maxk = logn * logn;
+	u64 r = 2;
+	bool found_r = false;
+	while (!found_r)
+	{
+		found_r = true;
+		for (u64 k = 1; k <= maxk; ++k)
+		{
+			if (n.modPow(k, r) == 1 || n.gcd(r) != 1)
+			{
+				found_r = false;
+				break;
+			}
+		}
+		if (!found_r)
+			++r;
+	}
+
+	// Step 3: Check for gcd(a, n) > 1 for 2 <= a <= r
+	for (u64 a = 2; a <= r; ++a)
+	{
+		GrapaInt g = n.gcd(GrapaInt((s64)a));
+		if (g > 1 && g < n)
+			return false;
+	}
+
+	// Step 4: If n <= r, n is prime
+	if (n.LongValue() <= (s64)r)
+		return true;
+
+	// Step 5: Polynomial congruence check
+	u64 phi_r = r - 1; // For prime r, phi(r) = r-1; for composite, this is an overestimate
+	u64 limit = (u64)(sqrt(phi_r) * logn);
+
+	/*
+	for (u64 a = 1; a <= limit; ++a)
+	{
+		GrapaPolyMod left(r, n);  // x
+		left -= a;                // x - a
+		left = left.Pow(n);       // (x - a)^n
+
+		GrapaPolyMod right(r, n); // x
+		right = right.Pow(n);     // x^n
+		right -= a;               // x^n - a
+
+		if (left != right)
+			return false;
+	}
+	*/
+
+	std::atomic<bool> found_composite(false);
+	std::vector<std::future<void>> futures;
+	for (u64 a = 1; a <= limit; ++a) {
+		futures.push_back(std::async(std::launch::async, [&, a]() {
+			if (found_composite.load()) return;
+			GrapaPolyMod left(r, n);  left -= a;  left = left.Pow(n);
+			GrapaPolyMod right(r, n); right = right.Pow(n); right -= a;
+			if (left != right) found_composite.store(true);
+			}));
+	}
+	// Wait for all threads to finish
+	for (auto& f : futures) f.get();
+	if (found_composite) return false;
+
+	return true;
 }
 
 //***********************************************************************
 // Generates a positive BigInteger that is probably prime.
 //***********************************************************************
 
-bool GrapaPrime::TestPrime(u32 safe, u32 confidence)
+bool GrapaPrime::TestPrime(u32 safe, u32 confidence) const
 {
 	if ((GetItem(0) & 0x01) == 0) 
 		return(false);
@@ -1049,7 +1005,7 @@ void GrapaPrime::GenPrime(u32 bits, u32 safe, const GrapaInt& randP, const Grapa
 // that gcd(number, this) = 1
 //***********************************************************************
 
-GrapaInt GrapaPrime::genCoPrime(u32 bits)
+GrapaInt GrapaPrime::genCoPrime(u32 bits) const
 {
 	bool done = false;
 	GrapaInt result;
