@@ -1,7 +1,7 @@
 # Source
 ## OpenSSL
 - https://github.com/openssl/openssl.git
-- https://www.openssl.org/source/openssl-1.1.1m.tar.gz
+- https://www.openssl.org/source/openssl-1.1.1w.tar.gz
 
 ## FLTK
 - https://github.com/fltk/fltk.gi
