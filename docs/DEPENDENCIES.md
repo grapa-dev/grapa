@@ -19,7 +19,7 @@ Run "x64 Native Tools Command Prompt for VS 2022"
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
 ```
-perl Configure VC-WIN64A no-shared
+perl Configure VC-WIN64A
 nmake
 nmake install
 ```
