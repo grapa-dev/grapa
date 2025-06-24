@@ -11,6 +11,7 @@ msbuild prj/win/grapa.sln /p:Configuration=Release
 del grapa.exe
 copy prj\win\x64\Release\grapa.exe grapa.exe
 rmdir /S /q prj\win\x64
+rmdir /S /q prj\win\grapa
 
 msbuild prj/winlib/grapalib.sln /p:Configuration=Release
 del grapa.lib
