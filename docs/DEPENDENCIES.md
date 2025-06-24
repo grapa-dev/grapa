@@ -4,8 +4,8 @@
 - https://www.openssl.org/source/openssl-1.1.1w.tar.gz
 
 ## FLTK
-- https://github.com/fltk/fltk.gi
-- https://www.fltk.org/pub/fltk/1.3.8/fltk-1.3.8-source.tar.gz
+- https://github.com/fltk/fltk.git
+- https://github.com/fltk/fltk/releases/download/release-1.3.11/fltk-1.3.11-source.tar.gz
 
 # Windows
 See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
