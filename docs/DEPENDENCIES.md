@@ -31,15 +31,16 @@ Copy *.lib to Grapa/source/openssl-lib/win
 ## FLTK
 Navigate to FLTK source folder and complete the following.
 ```
-mkdir build
-cd build
-cmake ..
+cmake -S . -B build_vs2022 -G "Visual Studio 17 2022" -A x64 -D BUILD_SHARED_LIBS=OFF -D OPTION_USE_SYSTEM_LIBJPEG=OFF -D OPTION_USE_SYSTEM_LIBPNG=OFF -D OPTION_USE_SYSTEM_ZLIB=OFF -D FLTK_BUILD_FLUID=OFF -D FLTK_BUILD_TEST=OFF -D FLTK_BUILD_EXAMPLES=OFF -D FLTK_MSVC_RUNTIME_DLL=OFF
+
+cmake --build build_vs2022 --config Release
+
 ```
-Open FLTK.sln with VS2022 and build Release x64
 
-Copy build/FL to Grapa/source
+Copy FL/* to Grapa/source/FL
+Copy build_vs2022/FL/* to Grapa/source/FL
 
-Copy build/lib/Release/*.lib to Grapa/source/fl-lib/win
+Copy build_vs2022/lib/Release/*.lib to Grapa/source/fl-lib/win
 
 # Ubuntu
 
