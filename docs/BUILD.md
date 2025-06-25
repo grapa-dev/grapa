@@ -123,13 +123,25 @@ g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-intel/*.a
 codesign -s dev-grapa-cert ./grapa
 
 g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
-ar -crs libgrapa.a *.o source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a
+rm -rf tmp
+mkdir tmp
+cp source/openssl-lib/mac-intel/*.a tmp
+cp source/fl-lib/mac-intel/*.a tmp
+cp source/blst-lib/mac-intel/*.a tmp
+cd tmp
+../grapa -q -ccmd "f=\$file().ls()[0].\$KEY;$sys().shell('ar -x '+f);"
+cd ..
+ar -crs libgrapa.a *.o tmp/*.o
 rm *.o
+rm -rf tmp
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-intel/libgrapa.a
+rm libgrapa.a
+
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-intel/libgrapa.so
+rm libgrapa.so
 
 tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/* source/grapa-other/mac-intel/*
 
