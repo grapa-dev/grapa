@@ -91,7 +91,7 @@ cp lib/* ~/Documents/GitHub/grapa/lib/ubuntu64/
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
 ```
-./config no-shared
+./config no-shared no-tests enable-ec_nistp_64_gcc_128
 make
 sudo make install
 ```
