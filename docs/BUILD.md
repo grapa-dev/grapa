@@ -41,8 +41,11 @@ g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
 ar -crs libgrapa.a *.o
 rm *.o
 cp libgrapa.a source/grapa-lib/linux/libgrapa.a
+rm libgrapa.a
+
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
 cp libgrapa.so source/grapa-lib/linux/libgrapa.so
+rm libgrapa.so
 
 tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
 
@@ -123,17 +126,8 @@ g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-intel/*.a
 codesign -s dev-grapa-cert ./grapa
 
 g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
-rm -rf tmp
-mkdir tmp
-cp source/openssl-lib/mac-intel/*.a tmp
-cp source/fl-lib/mac-intel/*.a tmp
-cp source/blst-lib/mac-intel/*.a tmp
-cd tmp
-../grapa -q -ccmd "f=\$file().ls()[0].\$KEY;$sys().shell('ar -x '+f);"
-cd ..
-ar -crs libgrapa.a *.o tmp/*.o
+ar -crs libgrapa.a *.o
 rm *.o
-rm -rf tmp
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-intel/libgrapa.a
 rm libgrapa.a
@@ -181,9 +175,11 @@ g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
 ar -crs libgrapa.a *.o
 rm *.o
 cp libgrapa.a source/grapa-lib/aws/libgrapa.a
+rm libgrapa.a
 
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a source/blst-lib/aws/*.a -Lsource/openssl-lib/aws -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
 cp libgrapa.so source/grapa-lib/aws/libgrapa.so
+rm libgrapa.so
 
 tar -czvf bin/grapa-aws.tar.gz grapa source/grapa-lib/aws/*
 
