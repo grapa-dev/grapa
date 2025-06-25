@@ -1,9 +1,7 @@
 //
-// "$Id$"
-//
 // Main header file for the Fast Light Tool Kit (FLTK).
 //
-// Copyright 1998-2016 by Bill Spitzak and others.
+// Copyright 1998-2023 by Bill Spitzak and others.
 //
 // This library is free software. Distribution and use rights are outlined in
 // the file "COPYING" which should have been included with this file.  If this
@@ -22,6 +20,15 @@
 
 #ifndef Fl_H
 #  define Fl_H
+
+// In FLTK 1.3.x WIN32 must be defined on Windows (if not using CYGWIN).
+// Since FLTK 1.3.9 we define WIN32 if it's not defined on Windows
+// to avoid common user errors, for instance GitHub Issue #686.
+// Note: since FLTK 1.4.0 we use '_WIN32' anyway, no need to define WIN32.
+
+#if defined(_WIN32) && !defined(__CYGWIN__) && !defined(WIN32)
+#define WIN32
+#endif
 
 #include <FL/Fl_Export.H>
 
@@ -672,8 +679,10 @@ int main() {
     This returns garbage if the most recent event was not a FL_PUSH or FL_RELEASE event.
     \retval FL_LEFT_MOUSE
     \retval FL_MIDDLE_MOUSE
-    \retval FL_RIGHT_MOUSE.
-    \see Fl::event_buttons()
+    \retval FL_RIGHT_MOUSE
+    \retval FL_BACK_MOUSE
+    \retval FL_FORWARD_MOUSE
+    \see Fl::event_buttons(), Fl::event_state()
   */
   static int event_button()	{return e_keysym-FL_Button;}
   /**
@@ -682,24 +691,39 @@ int main() {
     This is a bitfield of what shift states were on and what mouse buttons
     were held down during the most recent event.
 
-    The legal event state bits are:
+    \note FLTK platforms differ in what Fl::event_state() returns when it is called
+      while a modifier key or mouse button is being pressed or released.
 
-    - FL_SHIFT
-    - FL_CAPS_LOCK
-    - FL_CTRL
-    - FL_ALT
-    - FL_NUM_LOCK
-    - FL_META
-    - FL_SCROLL_LOCK
-    - FL_BUTTON1
-    - FL_BUTTON2
-    - FL_BUTTON3
-    
-    X servers do not agree on shift states, and FL_NUM_LOCK, FL_META, and
-    FL_SCROLL_LOCK may not work. The values were selected to match the
-    XFree86 server on Linux. In addition there is a bug in the way X works
-    so that the shift state is not correctly reported until the first event
-    <I>after</I> the shift key is pressed or released.
+  - Under X11 and Wayland, Fl::event_state() indicates the state of the modifier keys and
+    mouse buttons just \b prior to the event. Thus, during the \c FL_KEYDOWN event generated
+    when pressing the shift key, for example, the \c FL_SHIFT bit of event_state() is 0 and
+    becomes 1 only at the next event which can be any other event, including e.g. \c FL_MOVE.
+  - Under other platforms the reported state of modifier keys or mouse buttons includes that
+    of the key or button being pressed or released.
+  - Fl::event_state() returns the same value under all platforms when it's called while a
+    non-modifier key (e.g. a letter or function key) is being pressed or released.
+  - X servers do not agree on shift states, and \c FL_NUM_LOCK, \c FL_META, and \c FL_SCROLL_LOCK
+    may not work.
+  - The values were selected to match the XFree86 server on Linux.
+
+  \note This inconsistency \b may be fixed (on X11 and Wayland) in a later release.
+
+  The legal event state bits are:
+
+    | Device   | State Bit      | Key or Button           | Since  |
+    |----------|----------------|-------------------------|--------|
+    | Keyboard | FL_SHIFT       | Shift                   |        |
+    | Keyboard | FL_CAPS_LOCK   | Caps Lock               |        |
+    | Keyboard | FL_CTRL        | Ctrl                    |        |
+    | Keyboard | FL_ALT         | Alt                     |        |
+    | Keyboard | FL_NUM_LOCK    | Num Lock                |        |
+    | Keyboard | FL_META        | Meta, e.g. "Windows"    |        |
+    | Keyboard | FL_SCROLL_LOCK | Scroll Lock             |        |
+    | Mouse    | FL_BUTTON1     | left button             |        |
+    | Mouse    | FL_BUTTON2     | middle button           |        |
+    | Mouse    | FL_BUTTON3     | right button            |        |
+    | Mouse    | FL_BUTTON4     | side button 1 (back)    | 1.3.10 |
+    | Mouse    | FL_BUTTON5     | side button 2 (forward) | 1.3.10 |
   */
   static int event_state()	{return e_state;}
 
@@ -1145,28 +1169,38 @@ int main() {
   static int event_alt() {return e_state&FL_ALT;}
   /**
     Returns the mouse buttons state bits; if non-zero, then at least one
-    button is pressed now.  This function returns the button state at the 
-    time of the event. During an FL_RELEASE event, the state 
-    of the released button will be 0. To find out, which button 
+    button is pressed now.  This function returns the button state at the
+    time of the event. During an FL_RELEASE event, the state
+    of the released button will be 0. To find out, which button
     caused an FL_RELEASE event, you can use Fl::event_button() instead.
-    \return a bit mask value like { [FL_BUTTON1] | [FL_BUTTON2] | [FL_BUTTON3] }
+    \return a bit mask value like { [FL_BUTTON1] | [FL_BUTTON2] | ... | [FL_BUTTON5] }
   */
-  static int event_buttons() {return e_state&0x7f000000;}
+  static int event_buttons() {return e_state & FL_BUTTONS;}
   /**
     Returns non-zero if mouse button 1 is currently held down.
     For more details, see Fl::event_buttons().
   */
-  static int event_button1() {return e_state&FL_BUTTON1;}
+  static int event_button1() {return e_state & FL_BUTTON1;}
   /**
-    Returns non-zero if button 2 is currently held down.
+    Returns non-zero if mouse button 2 is currently held down.
     For more details, see Fl::event_buttons().
   */
-  static int event_button2() {return e_state&FL_BUTTON2;}
+  static int event_button2() {return e_state & FL_BUTTON2;}
   /**
-    Returns non-zero if button 3 is currently held down.
+    Returns non-zero if mouse button 3 is currently held down.
     For more details, see Fl::event_buttons().
   */
-  static int event_button3() {return e_state&FL_BUTTON3;}
+  static int event_button3() {return e_state & FL_BUTTON3;}
+  /**
+    Returns non-zero if mouse button 4 is currently held down.
+    For more details, see Fl::event_buttons().
+  */
+  static int event_button4() {return e_state & FL_BUTTON4;}
+  /**
+    Returns non-zero if mouse button 5 is currently held down.
+    For more details, see Fl::event_buttons().
+  */
+  static int event_button5() {return e_state & FL_BUTTON5;}
   /**   @} */
 
   /**
@@ -1414,7 +1448,3 @@ public:
  /** @} */
 
 #endif // !Fl_H
-
-//
-// End of "$Id$".
-//
