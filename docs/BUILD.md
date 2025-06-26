@@ -84,17 +84,8 @@ g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-apple/*.a
 codesign -s dev-grapa-cert ./grapa
 
 g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
-rm -rf tmp
-mkdir tmp
-cp source/openssl-lib/mac-apple/*.a tmp
-cp source/fl-lib/mac-apple/*.a tmp
-cp source/blst-lib/mac-apple/*.a tmp
-cd tmp
-../grapa -q -ccmd "f=\$file().ls()[0].\$KEY;$sys().shell('ar -x '+f);"
-cd ..
-ar -crs libgrapa.a *.o tmp/*.o
+ar -crs libgrapa.a *.o
 rm *.o
-rm -rf tmp
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-apple/libgrapa.a
 rm libgrapa.a
@@ -113,7 +104,7 @@ rm -rf grapapy.egg-info
 
 ```
 
-Helful additons
+Helpful additons
 ```
 sudo chmod u+x /script-location/
 ```
