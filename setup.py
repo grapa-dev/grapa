@@ -18,6 +18,7 @@ grapapy_version = "0.0.21"
 is_aws = False
 is_apple = False
 from_os = ''
+is_arm = platform.machine() == "aarch64"
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
