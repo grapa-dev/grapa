@@ -30,50 +30,6 @@ grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/
 
 ```
 
-## Linux
-```
-sudo apt install x11-apps
-sudo apt install libx11-dev
-rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
-
-g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
-ar -crs libgrapa.a *.o
-rm *.o
-cp libgrapa.a source/grapa-lib/linux/libgrapa.a
-rm libgrapa.a
-
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
-cp libgrapa.so source/grapa-lib/linux/libgrapa.so
-rm libgrapa.so
-
-tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
-
-rm -rf dist
-python3 setup.py sdist
-rm -rf grapapy.egg-info
-./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
-
-```
-Setting up the dev tools
-```
-sudo apt install gcc
-sudo apt install g++
-sudo apt install python3-dev
-sudo wget https://github.com/shiftkey/desktop/releases/download/release-2.9.3-linux3/GitHubDesktop-linux-2.9.3-linux3.deb
-sudo apt-get install gdebi-core 
-sudo apt install libxcursor-dev
-sudo apt install libxft-dev
-sudo apt install libxext-dev
-sudo apt install libxinerama-dev
-sudo apt install python3-pip
-sudo apt install cmake
-
-https://github.com/shiftkey/desktop
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/linux
-```
-
 ## Mac
 
 ### Apple
@@ -153,6 +109,50 @@ rm -rf grapapy.egg-info
 ### Self sign
 ```
 codesign -s dev-grapa-cert ./grapa
+```
+
+## Linux
+```
+sudo apt install x11-apps
+sudo apt install libx11-dev
+rm grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+
+g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
+ar -crs libgrapa.a *.o
+rm *.o
+cp libgrapa.a source/grapa-lib/linux/libgrapa.a
+rm libgrapa.a
+
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+cp libgrapa.so source/grapa-lib/linux/libgrapa.so
+rm libgrapa.so
+
+tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
+
+rm -rf dist
+python3 setup.py sdist
+rm -rf grapapy.egg-info
+./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+
+```
+Setting up the dev tools
+```
+sudo apt install gcc
+sudo apt install g++
+sudo apt install python3-dev
+sudo wget https://github.com/shiftkey/desktop/releases/download/release-2.9.3-linux3/GitHubDesktop-linux-2.9.3-linux3.deb
+sudo apt-get install gdebi-core 
+sudo apt install libxcursor-dev
+sudo apt install libxft-dev
+sudo apt install libxext-dev
+sudo apt install libxinerama-dev
+sudo apt install python3-pip
+sudo apt install cmake
+
+https://github.com/shiftkey/desktop
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/linux
 ```
 
 ## AWS
