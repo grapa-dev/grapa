@@ -155,7 +155,7 @@ Copy *.a to Grapa/source/openssl-lib/aws
 Navigate to FLTK source folder and complete the following.
 ```
 yum install libX*
-./configure no-shared
+./configure --enable-shared=yes --with-optim="-fPIC"
 make
 make install
 ```
