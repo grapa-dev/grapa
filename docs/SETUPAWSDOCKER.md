@@ -2,20 +2,38 @@
 ```
 docker pull amazon/aws-cli:latest
 docker pull public.ecr.aws/lambda/python:3.12
+
+docker run -it amazonlinux:2023
+docker run --platform=linux/arm64 -it amazonlinux:2023 uname -m
+docker run -it amazonlinux:2023 uname -m
+
+dnf update -y
+dnf install -y make
+dnf install -y perl
+dnf install -y mesa-libGL-devel libGLU-devel
+
+dnf install -y python3 python3-devel gcc make
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade pip setuptools
+pip3 install --upgrade setuptools
+pip install --user --upgrade packaging
+dnf install -y python3-devel
+
 ```
 
 # build first time
 ```
 Windows: docker run -it -v %cd%:/data lambci/lambda:build-python3.8 /bin/bash
 Mac: docker run -it -v $HOME:/data public.ecr.aws/lambda/python:3.12 bash
+Mac: docker run -it -v $HOME:/data amazonlinux bash
 yum install libX*
-cd /data/Documents/openssl-1.1.1m/
+cd /data/Downloads/openssl-1.1.1w/
 make clean
 ./config no-shared
 make
 make install
-cd /data/Documents/fltk-1.3.8/
-./configure no-shared
+cd /data/Downloads/fltk-1.3.11/
+./configure --disable-shared
 make
 make install
 cd /data/Documents/GitHub/Grapa
@@ -50,7 +68,7 @@ docker commit [CONTAINER_ID] lambci/lambda:build-python3.8-grapa
 
 # identifying dependancies
 ```
-objdump -p /data/Documents/Grapa/grapa | grep NEEDED
+objdump -p /data/GitHub/grapa/grapa | grep NEEDED
 libXfixes.so.3
 libXft.so.2
 libXext.so.6
@@ -87,21 +105,22 @@ find /usr/ -name libc.so.6
 
 # copy dependancies
 ```
-cp /usr/lib64/libXfixes.so.3 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libXft.so.2 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libXext.so.6 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libXrender.so.1 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libXinerama.so.1 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libfontconfig.so.1 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libXcursor.so.1 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libdl.so.2 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libX11.so.6 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libstdc++.so.6 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libm.so.6 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libpthread.so.0 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libc.so.6 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libfreetype.so.6 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libxcb.so.1 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libpng15.so.15 /data/Documents/GitHub/Grapa/lib/aws/
-cp /usr/lib64/libXau.so.6 /data/Documents/GitHub/Grapa/lib/aws/
+cp /usr/lib64/libXfixes.so.3.1.0 /data/GitHub/grapa/source/X11-lib/aws/libXfixes.so
+cp /usr/lib64/libXft.so.2.3.8 /data/GitHub/grapa/source/X11-lib/aws/libXft.so
+cp /usr/lib64/libXext.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws/libXext.so
+cp /usr/lib64/libXrender.so.1.3.0 /data/GitHub/grapa/source/X11-lib/aws/libXrender.so
+cp /usr/lib64/libXinerama.so.1.0.0 /data/GitHub/grapa/source/X11-lib/aws/libXinerama.so
+cp /usr/lib64/libfontconfig.so.1.12.0 /data/GitHub/grapa/source/X11-lib/aws/libfontconfig.so
+cp /usr/lib64/libXcursor.so.1.0.2 /data/GitHub/grapa/source/X11-lib/aws/libXcursor.so
+cp /usr/lib64/libdl.so.2 /data/GitHub/grapa/source/X11-lib/aws/libdl.so
+cp /usr/lib64/libX11.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws/libX11.so
+cp /usr/lib64/libstdc++.so.6.0.33 /data/GitHub/grapa/source/X11-lib/aws/libstdc++.so
+cp /usr/lib64/libm.so.6 /data/GitHub/grapa/source/X11-lib/aws/libm.so
+cp /usr/lib64/libpthread.so.0 /data/GitHub/grapa/source/X11-lib/aws/libpthread.so
+cp /usr/lib64/libc.so.6 /data/GitHub/grapa/source/X11-lib/aws/libc.so
+cp /usr/lib64/libfreetype.so.6.20.1 /data/GitHub/grapa/source/X11-lib/aws/libfreetype.so
+cp /usr/lib64/libxcb.so.1.1.0 /data/GitHub/grapa/source/X11-lib/aws/libxcb.so
+cp /usr/lib64/libpng16.so.16.37.0 /data/GitHub/grapa/source/X11-lib/aws/libpng16.so
+cp /usr/lib64/libXau.so.6.0.0 /data/GitHub/grapa/source/X11-lib/aws/libXau.so
+
 ```
