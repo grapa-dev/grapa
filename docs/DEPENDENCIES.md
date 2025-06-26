@@ -7,6 +7,10 @@
 - https://github.com/fltk/fltk.git
 - https://github.com/fltk/fltk/releases/download/release-1.3.11/fltk-1.3.11-source.tar.gz
 
+## BLST
+- https://github.com/supranational/blst
+- https://github.com/supranational/blst/archive/refs/heads/master.zip
+
 # Windows
 See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
 
@@ -14,7 +18,7 @@ Install https://strawberryperl.com/
 
 Install https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/
 
-Run "x64 Native Tools Command Prompt for VS 2022"
+Run "x64 Native Tools Command Prompt for VS 2022" in administrator mode.
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -41,6 +45,17 @@ Copy FL/* to Grapa/source/FL
 Copy build_vs2022/FL/* to Grapa/source/FL
 
 Copy build_vs2022/lib/Release/*.lib to Grapa/source/fl-lib/win
+
+## BLST
+
+
+```
+cd prj/blst
+build
+
+copy bindings\*.h* and bindings\*.swg to source\blst
+copy *.lib and *.pdb to source\blst-lib\win
+```
 
 # Ubuntu
 
@@ -114,6 +129,13 @@ Copy lib/*.a to Grapa/source/fl-lib/mac-apple
 or 
 
 Copy lib/*.a to Grapa/source/fl-lib/mac-intel
+
+## BLST
+
+```
+build.sh
+
+```
 
 # AWS
 
