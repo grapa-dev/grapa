@@ -4,8 +4,8 @@ docker pull amazon/aws-cli:latest
 docker pull public.ecr.aws/lambda/python:3.12
 
 docker run -it amazonlinux:2023
-docker run --platform=linux/arm64 -it amazonlinux:2023 uname -m
-docker run --platform=linux/amd64 -it amazonlinux:2023 uname -m
+docker run --platform=linux/arm64 -it --name amazonlinux-apple amazonlinux:2023 uname -m
+docker run --platform=linux/amd64 -it --name amazonlinux-intel amazonlinux:2023 uname -m
 docker run -it amazonlinux:2023 uname -m
 
 dnf update -y
