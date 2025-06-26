@@ -7,7 +7,7 @@ docker pull public.ecr.aws/lambda/python:3.12
 # build first time
 ```
 Windows: docker run -it -v %cd%:/data lambci/lambda:build-python3.8 /bin/bash
-Mac: docker run -it -v ~/:/data lambci/lambda:build-python3.8 /bin/bash
+Mac: docker run -it -v $HOME:/data public.ecr.aws/lambda/python:3.12-build bash
 yum install libX*
 cd /data/Documents/openssl-1.1.1m/
 make clean
