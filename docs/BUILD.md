@@ -30,47 +30,6 @@ grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/
 
 ```
 
-## Linux
-```
-sudo apt install x11-apps
-sudo apt install libx11-dev
-rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
-
-g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
-ar -crs libgrapa.a *.o
-rm *.o
-cp libgrapa.a source/grapa-lib/linux/libgrapa.a
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
-cp libgrapa.so source/grapa-lib/linux/libgrapa.so
-
-tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
-
-rm -rf dist
-python3 setup.py sdist
-rm -rf grapapy.egg-info
-./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
-
-```
-Setting up the dev tools
-```
-sudo apt install gcc
-sudo apt install g++
-sudo apt install python3-dev
-sudo wget https://github.com/shiftkey/desktop/releases/download/release-2.9.3-linux3/GitHubDesktop-linux-2.9.3-linux3.deb
-sudo apt-get install gdebi-core 
-sudo apt install libxcursor-dev
-sudo apt install libxft-dev
-sudo apt install libxext-dev
-sudo apt install libxinerama-dev
-sudo apt install python3-pip
-sudo apt install cmake
-
-https://github.com/shiftkey/desktop
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/linux
-```
-
 ## Mac
 
 ### Apple
@@ -81,13 +40,16 @@ g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-apple/*.a
 codesign -s dev-grapa-cert ./grapa
 
 g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
-ar -crs libgrapa.a *.o source/openssl-lib/mac-apple/*.a source/fl-lib/mac-apple/*.a source/blst-lib/mac-apple/*.a
+ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-apple/libgrapa.a
+rm libgrapa.a
+
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-apple/*.a source/fl-lib/mac-apple/*.a source/blst-lib/mac-apple/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-apple/libgrapa.so
+rm libgrapa.so
 
 tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/* source/grapa-other/mac-apple/*
 
@@ -98,7 +60,7 @@ rm -rf grapapy.egg-info
 
 ```
 
-Helful additons
+Helpful additons
 ```
 sudo chmod u+x /script-location/
 ```
@@ -111,13 +73,16 @@ g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-intel/*.a
 codesign -s dev-grapa-cert ./grapa
 
 g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
-ar -crs libgrapa.a *.o source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a
+ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-intel/libgrapa.a
+rm libgrapa.a
+
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-intel/libgrapa.so
+rm libgrapa.so
 
 tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/* source/grapa-other/mac-intel/*
 
@@ -146,6 +111,51 @@ rm -rf grapapy.egg-info
 codesign -s dev-grapa-cert ./grapa
 ```
 
+## Linux
+```
+sudo apt install x11-apps
+sudo apt install libx11-dev
+
+rm grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+
+g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
+ar -crs libgrapa.a *.o
+rm *.o
+cp libgrapa.a source/grapa-lib/linux/libgrapa.a
+rm libgrapa.a
+
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+cp libgrapa.so source/grapa-lib/linux/libgrapa.so
+rm libgrapa.so
+
+tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
+
+rm -rf dist
+python3 setup.py sdist
+rm -rf grapapy.egg-info
+./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+
+```
+Setting up the dev tools
+```
+sudo apt install gcc
+sudo apt install g++
+sudo apt install python3-dev
+sudo wget https://github.com/shiftkey/desktop/releases/download/release-2.9.3-linux3/GitHubDesktop-linux-2.9.3-linux3.deb
+sudo apt-get install gdebi-core 
+sudo apt install libxcursor-dev
+sudo apt install libxft-dev
+sudo apt install libxext-dev
+sudo apt install libxinerama-dev
+sudo apt install python3-pip
+sudo apt install cmake
+
+https://github.com/shiftkey/desktop
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/linux
+```
+
 ## AWS
 Assumes AWS Docker image for build-python3.8 is setup.
 
@@ -157,9 +167,11 @@ g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
 ar -crs libgrapa.a *.o
 rm *.o
 cp libgrapa.a source/grapa-lib/aws/libgrapa.a
+rm libgrapa.a
 
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a source/blst-lib/aws/*.a -Lsource/openssl-lib/aws -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
 cp libgrapa.so source/grapa-lib/aws/libgrapa.so
+rm libgrapa.so
 
 tar -czvf bin/grapa-aws.tar.gz grapa source/grapa-lib/aws/*
 
