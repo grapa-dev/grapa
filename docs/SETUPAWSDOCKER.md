@@ -1,7 +1,7 @@
 # create
 ```
 docker pull amazon/aws-cli:latest
-docker pull lambci/lambda:build-python3.8
+docker pull public.ecr.aws/lambda/python:3.12
 ```
 
 # build first time
