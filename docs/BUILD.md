@@ -1,6 +1,6 @@
 # Build
 
-## Windows
+## win-amd64
 Requires Visual Studio 2022. Use projects in Grapa/build/win to build grapa
 Packaging requires https://www.7-zip.org/ and add location [C:\Program Files\7-Zip] to PATH.
 
@@ -9,19 +9,19 @@ Navigate to Grapa folder
 ```
 msbuild prj/win/grapa.sln /p:Configuration=Release
 del grapa.exe
-copy prj\win\x64\Release\grapa.exe grapa.exe
-rmdir /S /q prj\win\x64
-rmdir /S /q prj\win\grapa
+copy prj\win-amd64\x64\Release\grapa.exe grapa.exe
+rmdir /S /q prj\win-amd64\x64
+rmdir /S /q prj\win-amd64\grapa
 
-msbuild prj/winlib/grapalib.sln /p:Configuration=Release
+msbuild prj/winlib-amd64/grapalib.sln /p:Configuration=Release
 del grapa.lib
-copy prj\winlib\x64\Release\grapa.lib grapa.lib
-del source\grapa-lib\win\grapa.lib
-copy prj\winlib\x64\Release\grapa.lib source\grapa-lib\win\grapa.lib
-rmdir /S /q prj\winlib\x64
-rmdir /S /q prj\winlib\grapalib
+copy prj\winlib-amd64\x64\Release\grapa.lib grapa.lib
+del source\grapa-lib\win-amd64\grapa.lib
+copy prj\winlib-amd64\x64\Release\grapa.lib source\grapa-lib\win-amd64\grapa.lib
+rmdir /S /q prj\winlib-amd64\x64
+rmdir /S /q prj\winlib-amd64\grapalib
 
-7z a bin/grapa-win.zip grapa.exe grapa.lib
+7z a bin/grapa-win-amd64.zip grapa.exe grapa.lib
 
 rmdir /s /q dist
 python setup.py sdist
@@ -32,26 +32,26 @@ grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/
 
 ## Mac
 
-### Apple
+### mac-arm64
 ```
 
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-apple/*.a source/fl-lib/mac-apple/*.a source/blst-lib/mac-apple/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
 codesign -s dev-grapa-cert ./grapa
 
 g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
 ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
-cp libgrapa.a source/grapa-lib/mac-apple/libgrapa.a
+cp libgrapa.a source/grapa-lib/mac-arm64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-apple/*.a source/fl-lib/mac-apple/*.a source/blst-lib/mac-apple/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
-cp libgrapa.so source/grapa-other/mac-apple/libgrapa.so
+cp libgrapa.so source/grapa-other/mac-arm64/libgrapa.so
 rm libgrapa.so
 
-tar -czvf bin/grapa-mac-apple.tar.gz grapa source/grapa-lib/mac-apple/* source/grapa-other/mac-apple/*
+tar -czvf bin/grapa-mac-arm64.tar.gz grapa source/grapa-lib/mac-arm64/* source/grapa-other/mac-arm64/*
 
 rm -rf dist
 python3 setup.py sdist
@@ -66,25 +66,25 @@ sudo chmod u+x /script-location/
 ```
 
 
-### Intel
+### mac-amd64
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
 codesign -s dev-grapa-cert ./grapa
 
 g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
 ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
-cp libgrapa.a source/grapa-lib/mac-intel/libgrapa.a
+cp libgrapa.a source/grapa-lib/mac-amd64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-intel/*.a source/fl-lib/mac-intel/*.a source/blst-lib/mac-intel/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
-cp libgrapa.so source/grapa-other/mac-intel/libgrapa.so
+cp libgrapa.so source/grapa-other/mac-amd64/libgrapa.so
 rm libgrapa.so
 
-tar -czvf bin/grapa-mac-intel.tar.gz grapa source/grapa-lib/mac-intel/* source/grapa-other/mac-intel/*
+tar -czvf bin/grapa-mac-amd64.tar.gz grapa source/grapa-lib/mac-amd64/* source/grapa-other/mac-amd64/*
 
 rm -rf dist
 python3 setup.py sdist
@@ -111,25 +111,25 @@ rm -rf grapapy.egg-info
 codesign -s dev-grapa-cert ./grapa
 ```
 
-## Linux
+## linux-arm64
 ```
 sudo apt install x11-apps
 sudo apt install libx11-dev
 
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a -Lsource/openssl-lib/linux-arm64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
 g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
 ar -crs libgrapa.a *.o
 rm *.o
-cp libgrapa.a source/grapa-lib/linux/libgrapa.a
+cp libgrapa.a source/grapa-lib/linux-arm64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux/*.a source/fl-lib/linux/*.a source/blst-lib/linux/*.a -Lsource/openssl-lib/linux -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
-cp libgrapa.so source/grapa-lib/linux/libgrapa.so
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a -Lsource/openssl-lib/linux-arm64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+cp libgrapa.so source/grapa-lib/linux-arm64/libgrapa.so
 rm libgrapa.so
 
-tar -czvf bin/grapa-linux.tar.gz grapa source/grapa-lib/linux/*
+tar -czvf bin/grapa-linux-arm64.tar.gz grapa source/grapa-lib/linux-arm64/*
 
 rm -rf dist
 python3 setup.py sdist
@@ -153,27 +153,27 @@ sudo apt install cmake
 
 https://github.com/shiftkey/desktop
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/linux
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/linux-arm64
 ```
 
-## AWS
+## aws-amd64
 Assumes AWS Docker image for build-python3.8 is setup.
 
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a source/blst-lib/aws/*.a -Lsource/openssl-lib/aws -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
 g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC 
 ar -crs libgrapa.a *.o
 rm *.o
-cp libgrapa.a source/grapa-lib/aws/libgrapa.a
+cp libgrapa.a source/grapa-lib/aws-amd64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a source/blst-lib/aws/*.a -Lsource/openssl-lib/aws -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
 cp libgrapa.so source/grapa-lib/aws/libgrapa.so
 rm libgrapa.so
 
-tar -czvf bin/grapa-aws.tar.gz grapa source/grapa-lib/aws/*
+tar -czvf bin/grapa-aws-amd64.tar.gz grapa source/grapa-lib/aws-amd64/*
 
 rm -rf dist
 python3 setup.py sdist
