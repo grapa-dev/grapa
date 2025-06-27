@@ -29,11 +29,21 @@ limitations under the License.
 
 #if defined(__MINGW32__) || defined(__GNUC__)
 #else
+
 #ifdef _WIN32
-#pragma comment(lib, "openssl-lib/win/libcrypto_static.lib")
-#pragma comment(lib, "openssl-lib/win/libssl_static.lib")
-#pragma comment(lib, "blst-lib/win/blst.lib")
+#if defined(_M_ARM64)
+  // ARM64-specific static libs
+#pragma comment(lib, "openssl-lib/win-arm64/libcrypto_static.lib")
+#pragma comment(lib, "openssl-lib/win-arm64/libssl_static.lib")
+#pragma comment(lib, "blst-lib/win-arm64/blst.lib")
+#elif defined(_M_X64)
+  // AMD64 (Intel/AMD) static libs
+#pragma comment(lib, "openssl-lib/win-amd64/libcrypto_static.lib")
+#pragma comment(lib, "openssl-lib/win-amd64/libssl_static.lib")
+#pragma comment(lib, "blst-lib/win-amd64/blst.lib")
 #endif
+#endif
+
 #endif
 
 // https://www.slideserve.com/ally/rsa-public-key-encryption-algorithm

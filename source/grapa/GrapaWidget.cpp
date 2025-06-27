@@ -47,14 +47,27 @@ extern GrapaSystem* gSystem;
 #if defined(__MINGW32__) || defined(__GNUC__)
 #else
 #ifdef _WIN32
-#pragma comment (lib, "fl-lib/win/fltk.lib")
-#pragma comment (lib, "fl-lib/win/fltk_forms.lib")
-#pragma comment (lib, "fl-lib/win/fltk_gl.lib")
-#pragma comment (lib, "fl-lib/win/fltk_images.lib")
-#pragma comment (lib, "fl-lib/win/fltk_jpeg.lib")
-#pragma comment (lib, "fl-lib/win/fltk_png.lib")
-#pragma comment (lib, "fl-lib/win/fltk_z.lib")
-
+#if defined(_M_ARM64)
+  // Windows on ARM64
+#pragma comment (lib, "fl-lib/win-arm64/fltk.lib")
+#pragma comment (lib, "fl-lib/win-arm64/fltk_forms.lib")
+#pragma comment (lib, "fl-lib/win-arm64/fltk_gl.lib")
+#pragma comment (lib, "fl-lib/win-arm64/fltk_images.lib")
+#pragma comment (lib, "fl-lib/win-arm64/fltk_jpeg.lib")
+#pragma comment (lib, "fl-lib/win-arm64/fltk_png.lib")
+#pragma comment (lib, "fl-lib/win-arm64/fltk_z.lib")
+#elif defined(_M_X64)
+  // Windows on x86_64
+#pragma comment (lib, "fl-lib/win-amd64/fltk.lib")
+#pragma comment (lib, "fl-lib/win-amd64/fltk_forms.lib")
+#pragma comment (lib, "fl-lib/win-amd64/fltk_gl.lib")
+#pragma comment (lib, "fl-lib/win-amd64/fltk_images.lib")
+#pragma comment (lib, "fl-lib/win-amd64/fltk_jpeg.lib")
+#pragma comment (lib, "fl-lib/win-amd64/fltk_png.lib")
+#pragma comment (lib, "fl-lib/win-amd64/fltk_z.lib")
+#endif
+#endif
+#ifdef _WIN32
 #pragma comment (lib, "gdiplus.lib")
 #pragma comment (lib, "ComCtl32.lib")
 #endif

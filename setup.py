@@ -35,9 +35,9 @@ PLAT_TO_CMAKE = {
 if sys.platform.startswith('win32'):
     so_ext = '.lib'
     lib_filename = 'grapa' + so_ext
-    lib_pathfile = 'grapa-lib/win/' + lib_filename
+    lib_pathfile = 'grapa-lib/win-amd64/' + lib_filename
 if sys.platform.startswith('linux'):
-    from_os = 'linux'
+    from_os = 'linux-arm64'
     temp_result = subprocess.run(["cat", "/etc/os-release"])
     process = subprocess.Popen(['cat', '/etc/os-release'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
@@ -45,7 +45,7 @@ if sys.platform.startswith('linux'):
         stdouts = stdout.decode()
         if stdouts.find("Amazon Linux")>=0:
             is_aws = True
-            from_os = 'aws'
+            from_os = 'aws-amd64'
     if is_aws:
         extra_link_args = ['-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng15','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
     else:
@@ -55,10 +55,10 @@ if sys.platform.startswith('linux'):
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
     runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
 elif sys.platform.startswith('darwin'):
-    from_os = 'mac-intel'
+    from_os = 'mac-amd64'
     if platform.machine()=='arm64':
         is_apple = True
-        from_os = 'mac-apple'
+        from_os = 'mac-arm64'
     extra_link_args = [
         '-Wl,-rpath,@loader_path',
         '-std=c++11','-stdlib=libc++',
@@ -244,16 +244,16 @@ def pick_library_dirs():
     my_system = platform.system()
     if my_system == 'Linux':
         if is_aws:
-            return ["source", "source/grapa-lib/aws", "source/X11-lib/aws"]
+            return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64"]
         else:
-            return ["source", "source/grapa-lib/linux", "source/X11-lib/linux"]
+            return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64"]
     if my_system == 'Darwin':
         if is_apple:
-            return ["source", "source/grapa-lib/mac-apple"]
+            return ["source", "source/grapa-lib/mac-arm64"]
         else:
-            return ["source", "source/grapa-lib/mac-intel"]
+            return ["source", "source/grapa-lib/mac-amd64"]
     if my_system == 'Windows':
-        return ["source", "source/grapa-lib/win"]
+        return ["source", "source/grapa-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
 
 def pick_libraries():
