@@ -58,7 +58,7 @@ copy *.lib and *.pdb to source\blst-lib\win
 ## OpenSSL
 
 ```
-perl Configure VC-???
+perl Configure VC-WIN64-ARM
 nmake
 nmake install
 ```
