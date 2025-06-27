@@ -3,9 +3,13 @@
 docker pull amazon/aws-cli:latest
 docker pull public.ecr.aws/lambda/python:3.12
 
-docker run -it amazonlinux:2023
-docker run --platform=linux/arm64 -it amazonlinux:2023 uname -m
-docker run -it amazonlinux:2023 uname -m
+docker run --platform=linux/arm64 -it --name amazonlinux-apple -v $HOME:/data amazonlinux:2023 bash
+docker run --platform=linux/amd64 -it --name amazonlinux-intel -v $HOME:/data amazonlinux:2023 bash
+
+docker ps
+docker commit [ID] amazonlinux-intel2
+
+docker run --platform=linux/amd64 -it -v $HOME:/data amazonlinux-intel2 bash
 
 dnf update -y
 dnf install -y make
