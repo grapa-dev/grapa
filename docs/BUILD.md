@@ -170,7 +170,7 @@ cp libgrapa.a source/grapa-lib/aws-amd64/libgrapa.a
 rm libgrapa.a
 
 g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
-cp libgrapa.so source/grapa-lib/aws/libgrapa.so
+cp libgrapa.so source/grapa-lib/aws-amd64/libgrapa.so
 rm libgrapa.so
 
 tar -czvf bin/grapa-aws-amd64.tar.gz grapa source/grapa-lib/aws-amd64/*
