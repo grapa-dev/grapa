@@ -11,7 +11,7 @@
 - https://github.com/supranational/blst
 - https://github.com/supranational/blst/archive/refs/heads/master.zip
 
-# Windows
+# win-amd64
 See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
 
 Install https://strawberryperl.com/
@@ -26,7 +26,6 @@ Navigate to OpenSSL source folder and complete the following. If the compile fre
 perl Configure VC-WIN64A
 nmake
 nmake install
-
 ```
 Copy include/openssl to Grapa/source
 
@@ -38,7 +37,6 @@ Navigate to FLTK source folder and complete the following.
 cmake -S . -B build_vs2022 -G "Visual Studio 17 2022" -A x64 -D BUILD_SHARED_LIBS=OFF -D OPTION_USE_SYSTEM_LIBJPEG=OFF -D OPTION_USE_SYSTEM_LIBPNG=OFF -D OPTION_USE_SYSTEM_ZLIB=OFF -D FLTK_BUILD_FLUID=OFF -D FLTK_BUILD_TEST=OFF -D FLTK_BUILD_EXAMPLES=OFF -D FLTK_MSVC_RUNTIME_DLL=OFF
 
 cmake --build build_vs2022 --config Release
-
 ```
 
 Copy FL/* to Grapa/source/FL
@@ -48,13 +46,35 @@ Copy build_vs2022/lib/Release/*.lib to Grapa/source/fl-lib/win
 
 ## BLST
 
-
 ```
 cd prj/blst
 build
 
 copy bindings\*.h* and bindings\*.swg to source\blst
 copy *.lib and *.pdb to source\blst-lib\win
+```
+# win-arm64
+
+## OpenSSL
+
+```
+perl Configure VC-???
+nmake
+nmake install
+```
+
+## FLTK
+```
+cmake -S . -B build_vs2022_arm64 -G "Visual Studio 17 2022" -A ARM64 -D BUILD_SHARED_LIBS=OFF -D OPTION_USE_SYSTEM_LIBJPEG=OFF -D OPTION_USE_SYSTEM_LIBPNG=OFF -D OPTION_USE_SYSTEM_ZLIB=OFF -D FLTK_BUILD_FLUID=OFF -D FLTK_BUILD_TEST=OFF -D FLTK_BUILD_EXAMPLES=OFF -D FLTK_MSVC_RUNTIME_DLL=OFF
+
+cmake --build build_vs2022_arm64 --config Release
+```
+
+## BLST
+
+```
+cd prj/blst
+build
 ```
 
 # Ubuntu
