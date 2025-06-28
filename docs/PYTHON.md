@@ -11,16 +11,44 @@ This will install natively (including dependant libraries which will be installe
 - Mac Intel
 - Mac Apple M1 (would probably also work on M2)
 
-Linux/Mac
+Windows
+```
+pip uninstall grapapy
+pip install grapapy
+```
+
+Mac
 ```
 pip3 uninstall grapapy
 pip3 install grapapy
 ```
 
-Windows
+Linux
 ```
-pip uninstall grapapy
-pip install grapapy
+sudo apt update
+sudo apt install -y python3-pip
+sudo apt install -y x11-apps
+sudo apt install -y libx11-dev
+sudo apt install -y libxcursor-dev
+sudo apt install -y libxft-dev
+sudo apt install -y libxext-dev
+sudo apt install -y libxinerama-dev
+pip3 uninstall grapapy
+pip3 install grapapy
+```
+
+Amazon Linux
+```
+dnf update -y
+dnf install -y libX*
+dnf install -y python3-devel
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade pip setuptools
+pip3 install --user --upgrade packaging
+dnf install -y perl
+dnf install -y tar
+pip3 uninstall grapapy
+pip3 install grapapy
 ```
 
 GrapaPy translates the following types between Python and Grapa:
