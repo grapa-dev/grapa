@@ -244,9 +244,9 @@ pip3 install --upgrade setuptools
 pip3 install --user --upgrade packaging
 ```
 
-[Setup Docker for AWS build-python3.8](SETUPAWSDOCKER.md)
+[OS library dependancies](SETUPAWSDOCKER.md)
 
-[Dependencies](DEPENDENCIES.md)
+[Build 3rd party library dependancies](DEPENDENCIES.md)
 
 
 ### aws-amd64
