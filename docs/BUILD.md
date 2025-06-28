@@ -238,7 +238,7 @@ dnf install -y perl
 dnf install -y tar
 ```
 
-First time
+Other
 ```
 dnf install -y make
 dnf install -y gcc
