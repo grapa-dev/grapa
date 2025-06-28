@@ -3,8 +3,8 @@
 docker pull amazon/aws-cli:latest
 docker pull public.ecr.aws/lambda/python:3.12
 
-docker run --platform=linux/arm64 -it --name amazonlinux-apple -v $HOME:/data amazonlinux:2023 bash
-docker run --platform=linux/amd64 -it --name amazonlinux-intel -v $HOME:/data amazonlinux:2023 bash
+docker run --platform=linux/arm64 -it -v $HOME:/data amazonlinux:2023 bash
+docker run --platform=linux/amd64 -it -v $HOME:/data amazonlinux:2023 bash
 
 docker ps
 docker commit [ID] amazonlinux-intel2
@@ -15,16 +15,20 @@ docker start -ai amazonlinux-intel2
 
 dnf update -y
 dnf install -y make
+dnf install -y gcc
 dnf install -y perl
 dnf install -y mesa-libGL-devel libGLU-devel
 
-dnf install -y python3 python3-devel gcc make
+
+dnf install -y python3
+dnf install -y python3-devel
 python3 -m ensurepip --upgrade
 python3 -m pip install --upgrade pip setuptools
 pip3 install --upgrade setuptools
 pip install --user --upgrade packaging
 dnf install -y python3-devel
 dnf install -y tar
+dnf install -y libX*
 
 ```
 
@@ -112,6 +116,8 @@ find /usr/ -name libpng16.so.16
 ```
 
 # copy dependancies
+
+## aws-arm64
 ```
 cp /usr/lib64/libXfixes.so.3.1.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXfixes.so
 cp /usr/lib64/libXft.so.2.3.8 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXft.so
@@ -131,7 +137,29 @@ cp /usr/lib64/libxcb.so.1.1.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libxcb
 cp /usr/lib64/libpng16.so.16.37.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libpng.so
 cp /usr/lib64/libXau.so.6.0.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXau.so
 
+cp /usr/lib64/libXfixes.so.3.1.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXfixes.so.3
+cp /usr/lib64/libXft.so.2.3.8 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXft.so.2
+cp /usr/lib64/libXext.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXext.so.6
+cp /usr/lib64/libXrender.so.1.3.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXrender.so.1
+cp /usr/lib64/libXinerama.so.1.0.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXinerama.so.1
+cp /usr/lib64/libfontconfig.so.1.12.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libfontconfig.so.1
+cp /usr/lib64/libXcursor.so.1.0.2 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXcursor.so.1
+cp /usr/lib64/libdl.so.2 /data/GitHub/grapa/source/X11-lib/aws-arm64/libdl.so.2
+cp /usr/lib64/libX11.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libX11.so.6
+cp /usr/lib64/libstdc++.so.6.0.33 /data/GitHub/grapa/source/X11-lib/aws-arm64/libstdc++.so.6
+cp /usr/lib64/libm.so.6 /data/GitHub/grapa/source/X11-lib/aws-arm64/libm.so.6
+cp /usr/lib64/libpthread.so.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libpthread.so.0
+cp /usr/lib64/libc.so.6 /data/GitHub/grapa/source/X11-lib/aws-arm64/libc.so.6
+cp /usr/lib64/libfreetype.so.6.20.1 /data/GitHub/grapa/source/X11-lib/aws-arm64/libfreetype.so
+cp /usr/lib64/libxcb.so.1.1.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libxcb.so.1
+cp /usr/lib64/libpng16.so.16.37.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libpng.so.16
+cp /usr/lib64/libXau.so.6.0.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXau.so.6
 
+```
+
+## aws-amd64
+
+```
 cp /usr/lib64/libXfixes.so.3.1.0 /data/GitHub/grapa/source/X11-lib/aws-amd64/libXfixes.so
 cp /usr/lib64/libXft.so.2.3.8 /data/GitHub/grapa/source/X11-lib/aws-amd64/libXft.so
 cp /usr/lib64/libXext.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws-amd64/libXext.so
@@ -149,7 +177,11 @@ cp /usr/lib64/libfreetype.so.6.20.1 /data/GitHub/grapa/source/X11-lib/aws-amd64/
 cp /usr/lib64/libxcb.so.1.1.0 /data/GitHub/grapa/source/X11-lib/aws-amd64/libxcb.so
 cp /usr/lib64/libpng16.so.16.37.0 /data/GitHub/grapa/source/X11-lib/aws-amd64/libpng.so
 cp /usr/lib64/libXau.so.6.0.0 /data/GitHub/grapa/source/X11-lib/aws-amd64/libXau.so
+```
 
+## linux-arm64
+
+```
 cp /usr/lib/aarch64-linux-gnu/libXfixes.so.3.1.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXfixes.so
 cp /usr/lib/aarch64-linux-gnu/libXft.so.2.3.6 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXft.so
 cp /usr/lib/aarch64-linux-gnu/libXext.so.6.4.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXext.so
