@@ -219,6 +219,31 @@ docker commit [CONTAINER ID) lambci/lambda:build-python3.8-grapa
 
 ```
 
+## aws-arm64
+
+```
+rm grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws-arm64/*.a source/fl-lib/aws-arm64/*.a source/blst-lib/aws-arm64/*.a -Lsource/openssl-lib/aws-arm64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+
+g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC 
+ar -crs libgrapa.a *.o
+rm *.o
+cp libgrapa.a source/grapa-lib/aws-arm64/libgrapa.a
+rm libgrapa.a
+
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws-arm64/*.a source/fl-lib/aws-arm64/*.a source/blst-lib/aws-arm64/*.a -Lsource/openssl-lib/aws-arm64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+cp libgrapa.so source/grapa-lib/aws-arm64/libgrapa.so
+rm libgrapa.so
+
+tar -czvf bin/grapa-aws-arm64.tar.gz grapa source/grapa-lib/aws-arm64/*
+
+rm -rf dist
+python3 setup.py sdist
+rm -rf grapapy.egg-info
+./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+
+```
+
 [Setup Docker for AWS build-python3.8](SETUPAWSDOCKER.md)
 
 # Dependencies
