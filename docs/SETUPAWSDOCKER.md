@@ -150,5 +150,23 @@ cp /usr/lib64/libxcb.so.1.1.0 /data/GitHub/grapa/source/X11-lib/aws-amd64/libxcb
 cp /usr/lib64/libpng16.so.16.37.0 /data/GitHub/grapa/source/X11-lib/aws-amd64/libpng.so
 cp /usr/lib64/libXau.so.6.0.0 /data/GitHub/grapa/source/X11-lib/aws-amd64/libXau.so
 
+cp /usr/lib/aarch64-linux-gnu/libXfixes.so.3.1.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXfixes.so
+cp /usr/lib/aarch64-linux-gnu/libXft.so.2.3.6 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXft.so
+cp /usr/lib/aarch64-linux-gnu/libXext.so.6.4.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXext.so
+cp /usr/lib/aarch64-linux-gnu/libXrender.so.1.3.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXrender.so
+cp /usr/lib/aarch64-linux-gnu/libXinerama.so.1.0.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXinerama.so
+cp /usr/lib/aarch64-linux-gnu/libfontconfig.so.1.12.1 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libfontconfig.so
+cp /usr/lib/aarch64-linux-gnu/libXcursor.so.1.0.2 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXcursor.so
+cp /usr/lib/aarch64-linux-gnu/libdl.so.2 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libdl.so
+cp /usr/lib/aarch64-linux-gnu/libX11.so.6.4.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libX11.so
+cp /usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libstdc++.so
+cp /usr/lib/aarch64-linux-gnu/libm.so.6 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libm.so
+cp /usr/lib/aarch64-linux-gnu/libpthread.so.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libpthread.so
+cp /usr/lib/aarch64-linux-gnu/libc.so.6 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libc.so
+cp /usr/lib/aarch64-linux-gnu/libfreetype.so.6.20.1 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libfreetype.so
+cp /usr/lib/aarch64-linux-gnu/libxcb.so.1.1.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libxcb.so
+cp /usr/lib/aarch64-linux-gnu/libpng16.so.16.43.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libpng.so
+cp /usr/lib/aarch64-linux-gnu/libXau.so.6.0.0 /media/psf/Home/GitHub/grapa/source/X11-lib/linux-arm64/libXau.so
+
 
 ```
