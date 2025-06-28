@@ -10,8 +10,8 @@ docker ps
 docker commit [ID] amazonlinux-intel2
 docker commit [ID] amazonlinux-apple2
 
-docker run --platform=linux/amd64 -it --name amazonlinux-intel2 -v $HOME:/data amazonlinux-intel2 bash
-docker run --platform=linux/arm64 -it --name amazonlinux-apple2 -v $HOME:/data amazonlinux-apple2 bash
+docker start -ai amazonlinux-apple2
+docker start -ai amazonlinux-intel2
 
 dnf update -y
 dnf install -y make
