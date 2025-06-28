@@ -18,7 +18,7 @@ grapapy_version = "0.0.21"
 is_aws = False
 is_apple = False
 from_os = ''
-is_arm = platform.machine() == "aarch64"
+is_arm = platform.machine().lower() in ["aarch64", "arm64"]
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
@@ -37,7 +37,7 @@ if sys.platform.startswith('win32'):
     lib_filename = 'grapa' + so_ext
     lib_pathfile = 'grapa-lib/win-amd64/' + lib_filename
 if sys.platform.startswith('linux'):
-    from_os = 'linux-arm64'
+    from_os = 'linux-amd64'
     temp_result = subprocess.run(["cat", "/etc/os-release"])
     process = subprocess.Popen(['cat', '/etc/os-release'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
@@ -45,18 +45,23 @@ if sys.platform.startswith('linux'):
         stdouts = stdout.decode()
         if stdouts.find("Amazon Linux")>=0:
             is_aws = True
-            from_os = 'aws-amd64'
     if is_aws:
-        extra_link_args = ['-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng15','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
+        from_os = 'aws-amd64'
+        if is_arm:
+            from_os = 'aws-arm64'
+        extra_link_args = ['-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
     else:
-        extra_link_args = ['-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng16','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
+        from_os = 'linux-amd64'
+        if is_arm:
+            from_os = 'linux-arm64'
+        extra_link_args = ['-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
     runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
 elif sys.platform.startswith('darwin'):
     from_os = 'mac-amd64'
-    if platform.machine()=='arm64':
+    if is_arm:
         is_apple = True
         from_os = 'mac-arm64'
     extra_link_args = [
@@ -166,9 +171,9 @@ class CMakeBuild(build_ext):
             build_args += ['-Wl,-rpath,${ORIGIN}']
             destPath = os.path.join(extdir, 'grapapy')
             self.mkpath(destPath)
-            sourcePath = os.path.join(ext.sourcedir, 'source','X11-lib', from_os)
-            for file_name in os.listdir(sourcePath):
-                self.copy_file(os.path.join(sourcePath, file_name), os.path.join(destPath, file_name))
+            # sourcePath = os.path.join(ext.sourcedir, 'source','X11-lib', from_os)
+                        # for file_name in os.listdir(sourcePath):
+                        #     self.copy_file(os.path.join(sourcePath, file_name), os.path.join(destPath, file_name))
         
         # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
         # across all generators.
@@ -219,8 +224,8 @@ class CopySharedLibrary(Command):
                 self.copy_file(os.path.join(os.path.join(self.build_dir, 'blst-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
             for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib/'+from_os)):
                 self.copy_file(os.path.join(os.path.join(self.build_dir, 'fl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'X11-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'X11-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
+                        # for file_name in os.listdir(os.path.join(self.build_dir, 'X11-lib/'+from_os)):
+                         #    self.copy_file(os.path.join(os.path.join(self.build_dir, 'X11-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
         if sys.platform.startswith('linux'):
             os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
 
@@ -244,11 +249,17 @@ def pick_library_dirs():
     my_system = platform.system()
     if my_system == 'Linux':
         if is_aws:
-            return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64"]
+            if is_arm:
+                return ["source", "source/grapa-lib/aws-arm64", "source/X11-lib/aws-arm64"]
+            else:
+                return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64"]
         else:
-            return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64"]
+            if is_arm:
+                return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64"]
+            else:
+                return ["source", "source/grapa-lib/linux-amd64", "source/X11-lib/linux-amd64"]
     if my_system == 'Darwin':
-        if is_apple:
+        if is_arm:
             return ["source", "source/grapa-lib/mac-arm64"]
         else:
             return ["source", "source/grapa-lib/mac-amd64"]

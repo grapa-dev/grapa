@@ -16,6 +16,3 @@ graft source/fl-lib
 
 recursive-include source/blst *.h
 graft source/blst-lib 
-
-recursive-include source/X11 *.h
-graft source/X11-lib
