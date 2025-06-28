@@ -10,8 +10,8 @@ docker ps
 docker commit [ID] amazonlinux-intel2
 docker commit [ID] amazonlinux-apple2
 
-docker run --platform=linux/amd64 -it -v $HOME:/data amazonlinux-intel2 bash
-docker run --platform=linux/arm64 -it -v $HOME:/data amazonlinux-apple2 bash
+docker run --platform=linux/amd64 -it --name amazonlinux-intel2 -v $HOME:/data amazonlinux-intel2 bash
+docker run --platform=linux/arm64 -it --name amazonlinux-apple2 -v HOME:/data amazonlinux-apple2 bash
 
 dnf update -y
 dnf install -y make
@@ -24,6 +24,7 @@ python3 -m pip install --upgrade pip setuptools
 pip3 install --upgrade setuptools
 pip install --user --upgrade packaging
 dnf install -y python3-devel
+dnf install -y tar
 
 ```
 
