@@ -123,8 +123,8 @@ sudo apt install -y x11-apps
 sudo apt install -y libx11-dev
 sudo apt install -y libxcursor-dev
 sudo apt install -y libxft-dev
-sudo apt install libxext-dev
-sudo apt install libxinerama-dev
+sudo apt install -y libxext-dev
+sudo apt install -y libxinerama-dev
 ```
 
 Setting up a virtual environment.
