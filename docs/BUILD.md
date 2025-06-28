@@ -211,7 +211,7 @@ rm -rf grapapy.egg-info
 
 ### setup
 
-First time
+Docker setup
 ```
 docker pull amazon/aws-cli:latest
 
@@ -226,22 +226,25 @@ docker start -ai amazonlinux-apple2
 docker start -ai amazonlinux-intel2
 ```
 
-Other commands
+Required
 ```
 dnf update -y
-dnf install -y make
-dnf install -y gcc
-dnf install -y perl
-dnf install -y mesa-libGL-devel
-dnf install -y libGLU-devel
-dnf install -y python3
-dnf install -y python3-devel
-dnf install -y tar
 dnf install -y libX*
+dnf install -y python3-devel
 python3 -m ensurepip --upgrade
 python3 -m pip install --upgrade pip setuptools
-pip3 install --upgrade setuptools
 pip3 install --user --upgrade packaging
+dnf install -y perl
+dnf install -y tar
+```
+
+First time
+```
+dnf install -y make
+dnf install -y gcc
+dnf install -y python3
+dnf install -y mesa-libGL-devel
+dnf install -y libGLU-devel
 ```
 
 [OS library dependancies](SETUPAWSDOCKER.md)
