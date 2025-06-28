@@ -111,11 +111,58 @@ rm -rf grapapy.egg-info
 codesign -s dev-grapa-cert ./grapa
 ```
 
-## linux-arm64
-```
-sudo apt install x11-apps
-sudo apt install libx11-dev
+## linux
 
+### setup
+
+Installing requirements.
+```
+sudo apt update
+sudo apt install -y python3-pip
+sudo apt install -y x11-apps
+sudo apt install -y libx11-dev
+sudo apt install -y libxcursor-dev
+sudo apt install -y libxft-dev
+sudo apt install -y libxext-dev
+sudo apt install -y libxinerama-dev
+```
+
+Setting up a virtual environment.
+```
+sudo apt install -y python3-venv
+python3 -m venv ~/.venvs/grapa-env
+source ~/.venvs/grapa-env/bin/activate
+pip install dist/*
+```
+
+Or....
+```
+pip install --break-system-packages dist/*
+```
+
+Testing install.
+```
+python3
+import grapapy
+xy = grapapy.grapa()
+xy.eval("x = 3.45; y = 4.32; x**y;")
+```
+
+GitHub for Linux
+```
+https://github.com/shiftkey/desktop
+```
+
+Other
+```
+sudo apt install gcc
+sudo apt install g++
+sudo apt install gdebi-core 
+sudo apt install cmake
+```
+
+### linux-arm64
+```
 rm grapa
 g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a -Lsource/openssl-lib/linux-arm64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
@@ -135,31 +182,10 @@ rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
-
 ```
-Setting up the dev tools
-```
-sudo apt install gcc
-sudo apt install g++
-sudo apt install python3-dev
-sudo wget https://github.com/shiftkey/desktop/releases/download/release-2.9.3-linux3/GitHubDesktop-linux-2.9.3-linux3.deb
-sudo apt-get install gdebi-core 
-sudo apt install libxcursor-dev
-sudo apt install libxft-dev
-sudo apt install libxext-dev
-sudo apt install libxinerama-dev
-sudo apt install python3-pip
-sudo apt install cmake
 
-https://github.com/shiftkey/desktop
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/Documents/GitHub/grapa/source/grapa-lib/linux-arm64
+### linux-amd64
 ```
-## linux-amd64
-```
-sudo apt install x11-apps
-sudo apt install libx11-dev
-
 rm grapa
 g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux-amd64/*.a source/fl-lib/linux-amd64/*.a source/blst-lib/linux-amd64/*.a -Lsource/openssl-lib/linux-amd64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
@@ -179,10 +205,54 @@ rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
-
 ```
-## aws-amd64
-Assumes AWS Docker image for build-python3.8 is setup.
+
+## aws
+
+### setup
+
+Docker setup
+```
+docker pull amazon/aws-cli:latest
+
+docker run --platform=linux/arm64 -it -v $HOME:/data amazonlinux:2023 bash
+docker run --platform=linux/amd64 -it -v $HOME:/data amazonlinux:2023 bash
+
+docker ps
+docker commit [ID] amazonlinux-intel2
+docker commit [ID] amazonlinux-apple2
+
+docker start -ai amazonlinux-apple2
+docker start -ai amazonlinux-intel2
+```
+
+Required
+```
+dnf update -y
+dnf install -y libX*
+dnf install -y python3-devel
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade pip setuptools
+pip3 install --user --upgrade packaging
+dnf install -y perl
+dnf install -y tar
+```
+
+Other
+```
+dnf install -y make
+dnf install -y gcc
+dnf install -y python3
+dnf install -y mesa-libGL-devel
+dnf install -y libGLU-devel
+```
+
+[OS library dependancies](SETUPAWSDOCKER.md)
+
+[Build 3rd party library dependancies](DEPENDENCIES.md)
+
+
+### aws-amd64
 
 ```
 rm grapa
@@ -204,22 +274,10 @@ rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
-
 ```
 
-Other commands
-```
-docker run -it -v %cd%:/data lambci/lambda:build-python3.8 /bin/bash
 
-docker ps
-docker commit [CONTAINER ID) [name]
-
-docker run -it -v %cd%:/data lambci/lambda:build-python3.8-grapa /bin/bash
-docker commit [CONTAINER ID) lambci/lambda:build-python3.8-grapa
-
-```
-
-## aws-arm64
+### aws-arm64
 
 ```
 rm grapa
@@ -241,15 +299,8 @@ rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
-
 ```
 
-[Setup Docker for AWS build-python3.8](SETUPAWSDOCKER.md)
-
-# Dependencies
-Grapa is dependant on the static libraries for OpenSSL and FLTK. Use the following to build the libraries from source. 
-
-[Dependencies](DEPENDENCIES.md)
 
 # lib/grapa
 
