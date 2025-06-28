@@ -103,7 +103,7 @@ sudo apt-get install libasound2-dev
 sudo apt-get install libxft-dev
 sudo apt-get install -y libfreetype-dev
 NOCONFIGURE=1 ./autogen.sh
-./configure --enable-shared=yes --with-optim="-fPIC"
+./configure --with-optim="-fPIC"
 # mkdir build
 # cd build
 # export CFLAGS="-fPIC"
@@ -138,7 +138,7 @@ Copy *.a to Grapa/source/openssl-lib/mac-apple
 Navigate to FLTK source folder and complete the following.
 ```
 sudo apt-get install -y libfreetype-dev
-./configure
+./configure --with-optim="-fPIC"
 make
 sudo make install
 ```
