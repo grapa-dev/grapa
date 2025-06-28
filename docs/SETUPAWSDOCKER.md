@@ -112,22 +112,22 @@ find /usr/ -name libc.so.6
 
 # copy dependancies
 ```
-cp /usr/lib64/libXfixes.so.3.1.0 /data/GitHub/grapa/source/X11-lib/aws/libXfixes.so
-cp /usr/lib64/libXft.so.2.3.8 /data/GitHub/grapa/source/X11-lib/aws/libXft.so
-cp /usr/lib64/libXext.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws/libXext.so
-cp /usr/lib64/libXrender.so.1.3.0 /data/GitHub/grapa/source/X11-lib/aws/libXrender.so
-cp /usr/lib64/libXinerama.so.1.0.0 /data/GitHub/grapa/source/X11-lib/aws/libXinerama.so
-cp /usr/lib64/libfontconfig.so.1.12.0 /data/GitHub/grapa/source/X11-lib/aws/libfontconfig.so
-cp /usr/lib64/libXcursor.so.1.0.2 /data/GitHub/grapa/source/X11-lib/aws/libXcursor.so
-cp /usr/lib64/libdl.so.2 /data/GitHub/grapa/source/X11-lib/aws/libdl.so
-cp /usr/lib64/libX11.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws/libX11.so
-cp /usr/lib64/libstdc++.so.6.0.33 /data/GitHub/grapa/source/X11-lib/aws/libstdc++.so
-cp /usr/lib64/libm.so.6 /data/GitHub/grapa/source/X11-lib/aws/libm.so
-cp /usr/lib64/libpthread.so.0 /data/GitHub/grapa/source/X11-lib/aws/libpthread.so
-cp /usr/lib64/libc.so.6 /data/GitHub/grapa/source/X11-lib/aws/libc.so
-cp /usr/lib64/libfreetype.so.6.20.1 /data/GitHub/grapa/source/X11-lib/aws/libfreetype.so
-cp /usr/lib64/libxcb.so.1.1.0 /data/GitHub/grapa/source/X11-lib/aws/libxcb.so
-cp /usr/lib64/libpng16.so.16.37.0 /data/GitHub/grapa/source/X11-lib/aws/libpng16.so
-cp /usr/lib64/libXau.so.6.0.0 /data/GitHub/grapa/source/X11-lib/aws/libXau.so
+cp /usr/lib64/libXfixes.so.3.1.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXfixes.so
+cp /usr/lib64/libXft.so.2.3.8 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXft.so
+cp /usr/lib64/libXext.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXext.so
+cp /usr/lib64/libXrender.so.1.3.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXrender.so
+cp /usr/lib64/libXinerama.so.1.0.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXinerama.so
+cp /usr/lib64/libfontconfig.so.1.12.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libfontconfig.so
+cp /usr/lib64/libXcursor.so.1.0.2 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXcursor.so
+cp /usr/lib64/libdl.so.2 /data/GitHub/grapa/source/X11-lib/aws-arm64/libdl.so
+cp /usr/lib64/libX11.so.6.4.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libX11.so
+cp /usr/lib64/libstdc++.so.6.0.33 /data/GitHub/grapa/source/X11-lib/aws-arm64/libstdc++.so
+cp /usr/lib64/libm.so.6 /data/GitHub/grapa/source/X11-lib/aws-arm64/libm.so
+cp /usr/lib64/libpthread.so.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libpthread.so
+cp /usr/lib64/libc.so.6 /data/GitHub/grapa/source/X11-lib/aws-arm64/libc.so
+cp /usr/lib64/libfreetype.so.6.20.1 /data/GitHub/grapa/source/X11-lib/aws-arm64/libfreetype.so
+cp /usr/lib64/libxcb.so.1.1.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libxcb.so
+cp /usr/lib64/libpng16.so.16.37.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libpng16.so
+cp /usr/lib64/libXau.so.6.0.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXau.so
 
 ```
