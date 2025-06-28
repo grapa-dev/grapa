@@ -8,8 +8,10 @@ docker run --platform=linux/amd64 -it --name amazonlinux-intel -v $HOME:/data am
 
 docker ps
 docker commit [ID] amazonlinux-intel2
+docker commit [ID] amazonlinux-apple2
 
 docker run --platform=linux/amd64 -it -v $HOME:/data amazonlinux-intel2 bash
+docker run --platform=linux/arm64 -it -v $HOME:/data amazonlinux-apple2 bash
 
 dnf update -y
 dnf install -y make
