@@ -4,12 +4,14 @@ For details on the grapa language, see [Grapa language](../README.md)
 
 The following assumes you have Python and pip installed, and possibly Jupyter and Notebook installed. 
 
-This will install natively (including dependant libraries which will be installed in the grapapy extention library and not alter the system). Platforms supported are:
-- Windows 64bit
-- Linux
-- Amazon Linux (can be used in a Lambda and in Docker)
-- Mac Intel
-- Mac Apple M1 (would probably also work on M2)
+This will install natively (including dependant libraries which will be installed in the grapapy extention library and not alter the system). 
+
+Platforms supported are:
+- win-amd64 - Windows Intel 64bit
+- mac-amd64 - Mac Intel 64bit
+- mac-arm64 - Mac Apple 64bit
+- linux-amd64 - Ubuntu (and compatible) Intel 64bit
+- linux-arm64 - Ubuntu (and compatible) Apple 64bit (maybe other ARM64 systems)
 
 Windows
 ```
