@@ -1,80 +1,8 @@
-# create
-```
-docker pull amazon/aws-cli:latest
-docker pull public.ecr.aws/lambda/python:3.12
-
-docker run --platform=linux/arm64 -it -v $HOME:/data amazonlinux:2023 bash
-docker run --platform=linux/amd64 -it -v $HOME:/data amazonlinux:2023 bash
-
-docker ps
-docker commit [ID] amazonlinux-intel2
-docker commit [ID] amazonlinux-apple2
-
-docker start -ai amazonlinux-apple2
-docker start -ai amazonlinux-intel2
-
-dnf update -y
-dnf install -y make
-dnf install -y gcc
-dnf install -y perl
-dnf install -y mesa-libGL-devel libGLU-devel
-
-
-dnf install -y python3
-dnf install -y python3-devel
-python3 -m ensurepip --upgrade
-python3 -m pip install --upgrade pip setuptools
-pip3 install --upgrade setuptools
-pip install --user --upgrade packaging
-dnf install -y python3-devel
-dnf install -y tar
-dnf install -y libX*
-
-```
-
-# build first time
-```
-Windows: docker run -it -v %cd%:/data lambci/lambda:build-python3.8 /bin/bash
-Mac: docker run -it -v $HOME:/data public.ecr.aws/lambda/python:3.12 bash
-Mac: docker run -it -v $HOME:/data amazonlinux bash
-yum install libX*
-cd /data/Downloads/openssl-1.1.1w/
-make clean
-./config no-shared
-make
-make install
-cd /data/Downloads/fltk-1.3.11/
-./configure --disable-shared
-make
-make install
-cd /data/Documents/GitHub/Grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a -std=gnu++11 -Lsource/openssl-lib/aws -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -m64 -O3 -pthread -o grapa
-```
-
-#build
-```
-Windows: docker run -it -v %cd%:/data lambci/lambda:build-python3.8-grapa /bin/bash
-Mac: docker run -it -v ~/:/data lambci/lambda:build-python3.8x /bin/bash
-cd /data/Documents/GitHub/Grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws/*.a source/fl-lib/aws/*.a -std=gnu++11 -Lsource/openssl-lib/aws -lcrypto -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -lX11 -m64 -O3 -pthread -o grapa
-```
-
-# package
-```
-tar -czvf bin/grapa-aws.tar.gz grapa lib/aws/*
-```
-
 # extract
 ```
 cp /data/Documents/GitHub/Grapa/bin/grapa-aws.tar.gz ./
 tar -xvf grapa-aws.tar.gz
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:lib/aws
-```
-
-# save new image
-```
-docker ps
-docker commit [CONTAINER_ID] lambci/lambda:build-python3.8-grapa
 ```
 
 # identifying dependancies
