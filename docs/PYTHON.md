@@ -38,6 +38,14 @@ sudo apt install -y libxinerama-dev
 pip3 uninstall grapapy
 pip3 install grapapy
 ```
+If the pip3 install is being blocked, you will need to setup a virtual enviroment, or use "pip3 install --break-system-packages grapapy".
+
+The following can be used to setup a virtual environment in Linux, if you would rather not use the override.
+```
+sudo apt install -y python3-venv
+python3 -m venv ~/.venvs/grapa-env
+source ~/.venvs/grapa-env/bin/activate
+```
 
 Amazon Linux
 ```
