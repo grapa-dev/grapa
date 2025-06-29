@@ -133,6 +133,15 @@ sudo apt install -y libxext-dev
 sudo apt install -y libxinerama-dev
 ```
 
+Enable c++23
+```
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install g++-13
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+sudo update-alternatives --config g++
+```
+
 Setting up a virtual environment.
 ```
 sudo apt install -y python3-venv
