@@ -133,7 +133,7 @@ sudo apt install -y libxext-dev
 sudo apt install -y libxinerama-dev
 ```
 
-Enable c++23
+For Unbuntu 20.04, enable c++23
 ```
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt update
