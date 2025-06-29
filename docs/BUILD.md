@@ -121,6 +121,8 @@ codesign -s dev-grapa-cert ./grapa
 
 ### setup
 
+Need to be on Ubunto 24.04 for C++23 support. If not, go through the updates to get there. Ask ChatGPT how to do this.
+
 Installing requirements.
 ```
 sudo apt update
