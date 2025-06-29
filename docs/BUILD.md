@@ -32,6 +32,12 @@ grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/
 
 ## Mac
 
+### setup
+
+```
+brew install llvm
+```
+
 ### mac-arm64
 ```
 
