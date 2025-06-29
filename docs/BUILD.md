@@ -36,17 +36,17 @@ grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/
 ```
 
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -o grapa
 codesign -s dev-grapa-cert ./grapa
 
-g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
+g++ -c -Isource source/grapa/*.cpp -std=c++23 -m64 -O3 -pthread
 ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-arm64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-arm64/libgrapa.so
 rm libgrapa.so
@@ -69,17 +69,17 @@ sudo chmod u+x /script-location/
 ### mac-amd64
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -o grapa
 codesign -s dev-grapa-cert ./grapa
 
-g++ -c -Isource source/grapa/*.cpp -std=gnu++11 -m64 -O3 -pthread
+g++ -c -Isource source/grapa/*.cpp -std=c++23 -m64 -O3 -pthread
 ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-amd64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=gnu++11 -m64 -O3 -pthread -fPIC -o libgrapa.so
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-amd64/libgrapa.so
 rm libgrapa.so
@@ -164,15 +164,15 @@ sudo apt install cmake
 ### linux-arm64
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a -Lsource/openssl-lib/linux-arm64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a -Lsource/openssl-lib/linux-arm64 -std=c++23 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
-g++ -c -Isource source/grapa/*.cpp -O3 -pthread -fPIC
+g++ -c -Isource source/grapa/*.cpp -std=c++23 -O3 -pthread -fPIC
 ar -crs libgrapa.a *.o
 rm *.o
 cp libgrapa.a source/grapa-lib/linux-arm64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a -Lsource/openssl-lib/linux-arm64 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a -Lsource/openssl-lib/linux-arm64 -std=c++23 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
 cp libgrapa.so source/grapa-lib/linux-arm64/libgrapa.so
 rm libgrapa.so
 
