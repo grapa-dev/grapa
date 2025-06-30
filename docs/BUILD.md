@@ -121,6 +121,8 @@ codesign -s dev-grapa-cert ./grapa
 
 ### setup
 
+Need to be on Ubunto 24.04 for C++23 support. If not, go through the updates to get there. Ask ChatGPT how to do this.
+
 Installing requirements.
 ```
 sudo apt update
@@ -131,6 +133,15 @@ sudo apt install -y libxcursor-dev
 sudo apt install -y libxft-dev
 sudo apt install -y libxext-dev
 sudo apt install -y libxinerama-dev
+```
+
+For Unbuntu 20.04, enable c++23
+```
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install g++-13
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+sudo update-alternatives --config g++
 ```
 
 Setting up a virtual environment.
