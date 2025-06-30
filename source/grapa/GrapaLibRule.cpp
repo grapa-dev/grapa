@@ -1816,6 +1816,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReplace(GrapaCHAR& pName) { return new GrapaLibraryRuleReplaceEvent(pName); }
 
+class GrapaLibraryRuleGrepEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleGrepEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrep(GrapaCHAR& pName) { return new GrapaLibraryRuleGrepEvent(pName); }
+
 class GrapaLibraryRuleSplitEvent : public GrapaLibraryEvent
 {
 public:
@@ -2270,6 +2278,7 @@ void GrapaLibraryRuleEvent::LoadLibWrap(GrapaScriptExec* vScriptExec, GrapaRuleE
 
 GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, GrapaRuleEvent *pOperation, GrapaCHAR& pName)
 {
+	if (pName.mBytes == NULL) return NULL;
 	using Handler = GrapaLibraryEvent * (GrapaLibraryRuleEvent::*)(GrapaCHAR& pName);
 	static const std::unordered_map<std::string, Handler> handlerMap = {
 		{ "rule", &GrapaLibraryRuleEvent::HandleRule },
@@ -2452,6 +2461,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "lpad", &GrapaLibraryRuleEvent::HandleLPad },
 		{ "reverse", &GrapaLibraryRuleEvent::HandleReverse },
 		{ "replace", &GrapaLibraryRuleEvent::HandleReplace },
+		{ "grep", &GrapaLibraryRuleEvent::HandleGrep },
 		{ "split", &GrapaLibraryRuleEvent::HandleSplit },
 		{ "join", &GrapaLibraryRuleEvent::HandleJoin },
 		{ "shape", &GrapaLibraryRuleEvent::HandleShape },
@@ -2545,7 +2555,6 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 	auto it = handlerMap.find((char*)pName.mBytes);
 	if (it != handlerMap.end())
 		return (this->*(it->second))(pName);
-
 	return NULL;
 
 	/*
@@ -16046,6 +16055,52 @@ GrapaRuleEvent* GrapaLibraryRuleReplaceEvent::Run(GrapaScriptExec* vScriptExec, 
 	if (result == NULL)
 		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
+}
+
+#include <iostream>
+#include <regex>
+#include <string>
+#include <vector>
+
+struct MatchPosition {
+	size_t offset;
+	size_t length;
+};
+
+std::vector<MatchPosition> grep_string_matches(const std::string& input, const std::regex& pattern) {
+	std::vector<MatchPosition> results;
+	auto begin = std::sregex_iterator(input.begin(), input.end(), pattern);
+	auto end = std::sregex_iterator();
+
+	for (auto it = begin; it != end; ++it) {
+		results.push_back({
+			static_cast<size_t>(it->position()),
+			static_cast<size_t>(it->length())
+			});
+	}
+
+	return results;
+}
+
+GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+
+	result = new GrapaRuleEvent();
+	result->mValue.mToken = GrapaTokenType::ARRAY;
+	result->vQueue = new GrapaRuleQueue();
+
+	std::string input = "The quick brown fox jumps over the lazy dog. The fox is quick.";
+	std::regex pattern("fox");
+	auto matches = grep_string_matches(input, pattern);
+	const char* is = input.c_str();
+	for (const auto& match : matches) {
+		result->vQueue->PushTail(new GrapaRuleEvent(0,GrapaCHAR(),GrapaCHAR(&is[match.offset], match.length)));
+	}
+	return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleSplitEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)

@@ -233,6 +233,7 @@ public:
 	GrapaLibraryEvent* HandleLPad(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleReverse(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleReplace(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleGrep(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSplit(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleJoin(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleShape(GrapaCHAR& pName);

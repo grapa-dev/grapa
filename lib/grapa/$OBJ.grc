@@ -36,6 +36,7 @@
 	rpad = @<[op,@<rpad,{@<this>,@<var,{b}>,@<var,{c}>}>],{b,c}>;
 	reverse = @<reverse,{@<this>}>; 
 	replace = @<[op,@<replace,{@<this>,@<var,{b}>,@<var,{c}>}>],{b:null,c:null}>; 
+	grep = @<[op,@<grep,{@<this>,@<var,{b}>,@<var,{c}>}>],{b:null,c:null}>; 
 	split = @<[op,@<"split",{@<this>,@<var,{sep}>,@<var,{max}>,@<var,{axis}>}>],{"sep":null,"max":null,"axis":null}>;
 	join = @<[op,@<"join",{@<this>,@<var,{sep}>,@<var,{axis}>}>],{"sep":null,"axis":null}>;
 	identity = @<"identity",{@<this>}>; 
