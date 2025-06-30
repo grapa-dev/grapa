@@ -7,7 +7,7 @@ Packaging requires https://www.7-zip.org/ and add location [C:\Program Files\7-Z
 Run "x64 Native Tools Command Prompt for VS 2022"
 Navigate to Grapa folder
 ```
-msbuild prj/win/grapa.sln /p:Configuration=Release
+msbuild prj/win-amd64/grapa.sln /p:Configuration=Release
 del grapa.exe
 copy prj\win-amd64\x64\Release\grapa.exe grapa.exe
 rmdir /S /q prj\win-amd64\x64
@@ -32,21 +32,27 @@ grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/
 
 ## Mac
 
+### setup
+
+```
+brew install llvm
+```
+
 ### mac-arm64
 ```
 
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -o grapa
+clang++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -o grapa
 codesign -s dev-grapa-cert ./grapa
 
-g++ -c -Isource source/grapa/*.cpp -std=c++23 -m64 -O3 -pthread
+clang++ -c -Isource source/grapa/*.cpp -std=c++23 -m64 -O3 -pthread
 ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-arm64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -fPIC -o libgrapa.so
+clang++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-arm64/libgrapa.so
 rm libgrapa.so
@@ -69,17 +75,17 @@ sudo chmod u+x /script-location/
 ### mac-amd64
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -o grapa
+clang++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -o grapa
 codesign -s dev-grapa-cert ./grapa
 
-g++ -c -Isource source/grapa/*.cpp -std=c++23 -m64 -O3 -pthread
+clang++ -c -Isource source/grapa/*.cpp -std=c++23 -m64 -O3 -pthread
 ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-amd64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -fPIC -o libgrapa.so
+clang++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++23 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-amd64/libgrapa.so
 rm libgrapa.so
@@ -115,6 +121,8 @@ codesign -s dev-grapa-cert ./grapa
 
 ### setup
 
+Need to be on Ubunto 24.04 for C++23 support. If not, go through the updates to get there. Ask ChatGPT how to do this.
+
 Installing requirements.
 ```
 sudo apt update
@@ -125,6 +133,15 @@ sudo apt install -y libxcursor-dev
 sudo apt install -y libxft-dev
 sudo apt install -y libxext-dev
 sudo apt install -y libxinerama-dev
+```
+
+For Unbuntu 20.04, enable c++23
+```
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo apt update
+sudo apt install g++-13
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+sudo update-alternatives --config g++
 ```
 
 Setting up a virtual environment.
