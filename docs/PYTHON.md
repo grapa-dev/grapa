@@ -10,7 +10,7 @@ Platforms supported are:
 - win-amd64 - Windows Intel 64bit
 - mac-amd64 - Mac Intel 64bit
 - mac-arm64 - Mac Apple 64bit
-- linux-amd64 - Ubuntu 24.04 (and compatible with C++23) Intel 64bit
+- linux-amd64 - Ubuntu 22.04 (and compatible with C++23) Intel 64bit
 - linux-arm64 - Ubuntu 24.04 (and compatible with C++23) Apple 64bit (maybe other ARM64 systems)
 
 Windows
