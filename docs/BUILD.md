@@ -7,7 +7,7 @@ Packaging requires https://www.7-zip.org/ and add location [C:\Program Files\7-Z
 Run "x64 Native Tools Command Prompt for VS 2022"
 Navigate to Grapa folder
 ```
-msbuild prj/win/grapa.sln /p:Configuration=Release
+msbuild prj/win-amd64/grapa.sln /p:Configuration=Release
 del grapa.exe
 copy prj\win-amd64\x64\Release\grapa.exe grapa.exe
 rmdir /S /q prj\win-amd64\x64
