@@ -107,6 +107,7 @@ Jupyter notebook example:
 import grapapy
 xy = grapapy.grapa()
 xy.eval("x = 3.45; y = 4.32; x**y;")
+xy.eval("input.grep(pattern,options);",{"input":b"apple 123 pear 456\nbanana 789","pattern":b"\\d+","options":"o"})
 ```
 '210.5612696743043090739172698565538965143180116634'
 
