@@ -125,6 +125,39 @@ Replaces iteems.
 "testing".replace("t","g") -> "gesging"
 ```
 
+## grep(pattern, options, delimiter) 
+Extracts matches from a string using a regular expression pattern. Returns an array of results. 
+
+The `options` parameter is a string of one or more flags to control behavior. The `delimiter` defines what separates lines in the string (defaults to `\n` if blank).
+
+### Parameters:
+
+- `pattern` — Regular expression string (ECMAScript-compatible).
+- `options` — Combination of the following flags:
+  - `a` – All mode: treat the entire input as one block (no line splitting).
+  - `b` – Prefix results with byte offset.
+  - `c` – Return count of matches (or count of deduplicated matches if `d` is also set).
+  - `d` – Deduplicate results (line-level by default, or substring-level when combined with `o`, `g`, or `b`).
+  - `g` – Group matches per line.
+  - `i` – Case-insensitive match.
+  - `l` – Return only matching line numbers.
+  - `n` – Prefix matches with line number.
+  - `o` – Output only matched substrings.
+  - `v` – Invert match (select non-matching lines or spans).
+  - `x` – Match entire line exactly (equivalent to anchoring with `^` and `$`).
+- `delimiter` — Custom string used to split lines (defaults to `\n`). You can pass `\\n` to enforce newline behavior even when platform line endings vary.
+
+### Example:
+
+```grapa
+"apple 123 pear 456\nbanana 789".grep("\\d+", "o")
+→ ["123", "456", "789"]
+
+"apple 123 pear 456\nbanana 789".grep("\\d+", "on")
+→ ["1:123", "1:456", "2:789"]
+```
+
+
 ## split(sep, max, axis)
 Splits into an array.
 

@@ -3062,7 +3062,7 @@ GrapaRuleEvent* GrapaLibraryEvent::Error(GrapaScriptExec* vScriptExec, GrapaName
 	GrapaRuleEvent *result = new GrapaRuleEvent();
 	result->mValue.mToken = GrapaTokenType::ERR;
 	result->vQueue = new GrapaRuleQueue();
-	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("err"), GrapaInt(err).getBytes()));
+	result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaInt(err).getBytes()));
 	return result;
 }
 

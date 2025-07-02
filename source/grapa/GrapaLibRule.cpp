@@ -1,4 +1,4 @@
-// GrapaLibRule.cpp
+﻿// GrapaLibRule.cpp
 /*
 Copyright 2022 Chris Ernest Matichuk
 
@@ -16057,30 +16057,209 @@ GrapaRuleEvent* GrapaLibraryRuleReplaceEvent::Run(GrapaScriptExec* vScriptExec, 
 	return(result);
 }
 
-#include <iostream>
-#include <regex>
+#include "grep/grapa_grep.hpp"
+#include "grep/grapa_grep.cpp"
+#include "grep/test_grapa_grep.cpp"
+
+/*
 #include <string>
+#include <string_view>
 #include <vector>
+#include <regex>
+#include <iostream>
+#include <map>
 
 struct MatchPosition {
 	size_t offset;
 	size_t length;
+	size_t line_number = 0; // 1-based line number, 0 if unused
 };
 
-std::vector<MatchPosition> grep_string_matches(const std::string& input, const std::regex& pattern) {
-	std::vector<MatchPosition> results;
-	auto begin = std::sregex_iterator(input.begin(), input.end(), pattern);
-	auto end = std::sregex_iterator();
+std::string normalize_newlines(std::string_view input) {
+	std::string result;
+	result.reserve(input.size());
+	for (size_t i = 0; i < input.size(); ++i) {
+		if (input[i] == '\r') {
+			if (i + 1 < input.size() && input[i + 1] == '\n') ++i;
+			result.push_back('\n');
+		}
+		else {
+			result.push_back(input[i]);
+		}
+	}
+	return result;
+}
 
-	for (auto it = begin; it != end; ++it) {
-		results.push_back({
-			static_cast<size_t>(it->position()),
-			static_cast<size_t>(it->length())
-			});
+std::vector<MatchPosition> grep(
+	const std::string& input,
+	const std::string& pattern,
+	const std::string& options,
+	const std::string& line_delim = ""
+) {
+	bool ignore_case = options.contains('i');
+	bool invert_match = options.contains('v');
+	bool all_mode = options.contains('a');
+	bool match_only = (options.contains('o') || all_mode) && !invert_match;
+	bool line_numbers = options.contains('n');
+
+	std::regex::flag_type flags = std::regex::ECMAScript;
+	if (ignore_case) flags |= std::regex::icase;
+
+	std::regex rx;
+	try {
+		rx = std::regex(pattern, flags);
+	}
+	catch (const std::regex_error&) {
+		return {};
+	}
+
+	std::vector<MatchPosition> results;
+
+	if (all_mode) {
+		if (invert_match) {
+			std::vector<MatchPosition> matches;
+			for (std::sregex_iterator it(input.begin(), input.end(), rx), end; it != end; ++it) {
+				matches.push_back({
+					static_cast<size_t>(it->position()),
+					static_cast<size_t>(it->length()),
+					1
+					});
+			}
+
+			size_t prev_end = 0;
+			for (const auto& m : matches) {
+				if (m.offset > prev_end) {
+					results.push_back({ prev_end, m.offset - prev_end, 1 });
+				}
+				prev_end = m.offset + m.length;
+			}
+
+			if (prev_end < input.size()) {
+				results.push_back({ prev_end, input.size() - prev_end, 1 });
+			}
+		}
+		else {
+			if (match_only) {
+				for (std::sregex_iterator it(input.begin(), input.end(), rx), end; it != end; ++it) {
+					results.push_back({
+						static_cast<size_t>(it->position()),
+						static_cast<size_t>(it->length()),
+						1
+						});
+				}
+			}
+			else {
+				if (std::regex_search(input, rx)) {
+					results.push_back({ 0, input.size(), 1 });
+				}
+			}
+		}
+	}
+	else {
+		std::string working_input =
+			(line_delim.empty() && !all_mode) ? normalize_newlines(input) : input;
+
+		size_t offset = 0;
+		size_t line_number = 1;
+
+		while (offset < working_input.size()) {
+			size_t next = line_delim.empty()
+				? working_input.find('\n', offset)
+				: working_input.find(line_delim, offset);
+
+			if (next == std::string::npos) next = working_input.size();
+			else next += line_delim.empty() ? 1 : line_delim.size();
+
+			std::string_view line(working_input.data() + offset, next - offset);
+			std::string line_copy(line);
+
+			bool matched = std::regex_search(line_copy, rx);
+
+			if ((!invert_match && matched) || (invert_match && !matched)) {
+				if (!match_only || invert_match) {
+					size_t line_len = line.size();
+					if (!line_delim.empty() && line.ends_with(line_delim)) {
+						line_len -= line_delim.size(); // strip delimiter in line mode
+					}
+					results.push_back({ offset, line_len, line_number });
+				}
+				else {
+					for (std::sregex_iterator it(line_copy.begin(), line_copy.end(), rx), end; it != end; ++it) {
+						results.push_back({
+							offset + static_cast<size_t>(it->position()),
+							static_cast<size_t>(it->length()),
+							line_number
+							});
+					}
+				}
+			}
+
+			offset = next;
+			++line_number;
+		}
 	}
 
 	return results;
 }
+
+std::vector<std::string> grep_extract_matches(
+	const std::string& input,
+	const std::string& pattern,
+	const std::string& options,
+	const std::string& line_delim = ""
+) {
+	auto matches = grep(input, pattern, options, line_delim);
+	std::vector<std::string> out;
+
+	if (options.contains('c')) {
+		out.push_back(std::to_string(matches.size()));
+		return out;
+	}
+
+	bool include_line_numbers = options.contains('n');
+	bool group_by_line = include_line_numbers && !options.contains('o');
+	bool strip_trailing_newline = line_delim.empty() && !options.contains('a');
+
+	if (group_by_line) {
+		std::map<size_t, std::vector<std::string>> grouped;
+		for (const auto& m : matches) {
+			std::string match = input.substr(m.offset, m.length);
+			if (!match.empty() && strip_trailing_newline && match.back() == '\n') {
+				match.pop_back();
+			}
+			grouped[m.line_number].push_back(std::move(match));
+		}
+
+		for (const auto& [line, group] : grouped) {
+			std::string joined;
+			for (size_t i = 0; i < group.size(); ++i) {
+				if (i > 0) joined += ",";
+				joined += group[i];
+			}
+			out.emplace_back(std::to_string(line) + ":" + joined);
+		}
+
+	}
+	else {
+		out.reserve(matches.size());
+		for (const auto& m : matches) {
+			std::string match = input.substr(m.offset, m.length);
+			if (!match.empty() && strip_trailing_newline && match.back() == '\n') {
+				match.pop_back();
+			}
+
+			if (include_line_numbers && m.line_number > 0) {
+				out.emplace_back(std::to_string(m.line_number) + ":" + match);
+			}
+			else {
+				out.emplace_back(std::move(match));
+			}
+		}
+	}
+
+	return out;
+}
+*/
 
 GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
@@ -16088,18 +16267,41 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
 
-	result = new GrapaRuleEvent();
-	result->mValue.mToken = GrapaTokenType::ARRAY;
-	result->vQueue = new GrapaRuleQueue();
+	std::string input="", pattern = "", options = "", delim = "";
 
-	std::string input = "The quick brown fox jumps over the lazy dog. The fox is quick.";
-	std::regex pattern("fox");
-	auto matches = grep_string_matches(input, pattern);
-	const char* is = input.c_str();
-	for (const auto& match : matches) {
-		result->vQueue->PushTail(new GrapaRuleEvent(0,GrapaCHAR(),GrapaCHAR(&is[match.offset], match.length)));
+	//input = "This test finds four word lines.\nAlso five more text.\nDone.";
+	//pattern = "\\b\\w{4}\\b";
+	//options = "o";
+
+	if (r1.vVal) input = std::string(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+	if (r2.vVal) pattern = std::string(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
+	if (r3.vVal) options = std::string(reinterpret_cast<const char*>(r3.vVal->mValue.mBytes), r3.vVal->mValue.mLength);
+	if (r4.vVal) delim = std::string(reinterpret_cast<const char*>(r4.vVal->mValue.mBytes), r4.vVal->mValue.mLength);
+
+	try {
+		std::regex rx(pattern, std::regex::ECMAScript);
+		std::string working_input = normalize_newlines(input);
+		auto matches = grep_extract_matches(working_input, input, pattern, options, delim);
+
+		result = new GrapaRuleEvent();
+		result->mValue.mToken = GrapaTokenType::ARRAY;
+		result->vQueue = new GrapaRuleQueue();
+
+		for (const auto& m : matches) {
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(m.c_str(), m.length())));
+		}
 	}
+	catch (const std::regex_error& e) {
+		// Optionally: return empty results or propagate error
+		result = new GrapaRuleEvent();
+		result->mValue.mToken = GrapaTokenType::ERR;
+		result->vQueue = new GrapaRuleQueue();
+		result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaCHAR(e.what())));
+	}
+
+
 	return result;
 }
 

@@ -14,7 +14,7 @@ from pathlib import Path
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
-grapapy_version = "0.0.24"
+grapapy_version = "0.0.25"
 is_aws = False
 is_apple = False
 from_os = ''
@@ -49,12 +49,12 @@ if sys.platform.startswith('linux'):
         from_os = 'aws-amd64'
         if is_arm:
             from_os = 'aws-arm64'
-        extra_link_args = ['-std=c++23','-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
+        extra_link_args = ['-std=c++17','-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
     else:
         from_os = 'linux-amd64'
         if is_arm:
             from_os = 'linux-arm64'
-        extra_link_args = ['-std=c++23','-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
+        extra_link_args = ['-std=c++17','-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
@@ -66,12 +66,12 @@ elif sys.platform.startswith('darwin'):
         from_os = 'mac-arm64'
     extra_link_args = [
         '-Wl,-rpath,@loader_path',
-        '-std=c++23','-stdlib=libc++',
+        '-std=c++17','-stdlib=libc++',
         '-O3','-pthread','-fPIC',
         '-framework','CoreFoundation','-framework','AppKit','-framework','IOKit','-O3','-pthread'
         ]
     extra_compile_args = [
-        '-std=c++23',
+        '-std=c++17',
         '-O3','-pthread','-fPIC',
         ]
     so_ext = '.so'
