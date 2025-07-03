@@ -23,7 +23,8 @@ limitations under the License.
 void grapa_test_grep(const std::string& label, const std::string& input, const std::string& pattern,
               const std::string& options, const std::vector<std::string>& expected,
               const std::string& delimiter = "") {
-    auto result = grep_extract_matches(input, pattern, options, delimiter);
+    std::string working_input = normalize_newlines(input);
+    auto result = grep_extract_matches(working_input, pattern, options, delimiter);
     if (result != expected) {
         std::cerr << "[FAIL] " << label << "\nExpected:";
         for (const auto& e : expected) std::cerr << " [" << e << "]";
@@ -98,7 +99,7 @@ int grapa_test_grep_main() {
     // "apple 123 pear 456\nbanana 789".grep("\\d+", "a").str() == ["apple 123 pear 456\nbanana 789"].str();
 
     // All-mode inverted block
-    grapa_test_grep("All-mode inverted block", "no digits here", "\d+", "av", { "no digits here" });
+    grapa_test_grep("All-mode inverted block", "no digits here", "\\d+", "av", { "no digits here" });
     // "no digits here".grep("\\d+", "av").str() == ["no digits here"].str();
 
     // All-mode match-only with delimiter
