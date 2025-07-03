@@ -132,13 +132,12 @@ bool ends_with(const std::string& str, const std::string& suffix) {
 }
 
 std::vector<std::string> grep_extract_matches(
-    const std::string& working_input,
     const std::string& input,
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim
 ) {
-    auto matches = grep(working_input, pattern, options, line_delim);
+    auto matches = grep(input, pattern, options, line_delim);
     std::vector<std::string> out;
 
     bool count_only = options.find('c') != std::string::npos;
@@ -148,6 +147,7 @@ std::vector<std::string> grep_extract_matches(
     bool output_offset = options.find('b') != std::string::npos;
     bool line_only = options.find('l') != std::string::npos;
     bool strip_trailing_newline = line_delim.empty() && options.find('a') == std::string::npos;
+    std::string working_input = line_delim.empty() ? normalize_newlines(input) : input;
 
     std::string actual_delim = (line_delim == "\\n") ? "\n" : line_delim;
     std::set<std::string> unique;

@@ -23,8 +23,7 @@ limitations under the License.
 void grapa_test_grep(const std::string& label, const std::string& input, const std::string& pattern,
               const std::string& options, const std::vector<std::string>& expected,
               const std::string& delimiter = "") {
-    std::string working_input = normalize_newlines(input);
-    auto result = grep_extract_matches(working_input, input, pattern, options, delimiter);
+    auto result = grep_extract_matches(input, pattern, options, delimiter);
     if (result != expected) {
         std::cerr << "[FAIL] " << label << "\nExpected:";
         for (const auto& e : expected) std::cerr << " [" << e << "]";
@@ -95,7 +94,7 @@ int grapa_test_grep_main() {
 
 
     // All-mode full block (no match-only, no line numbers)
-    grapa_test_grep("All-mode full block", "apple 123 pear 456\nbanana 789", "\d+", "a", { "apple 123 pear 456\nbanana 789" });
+    grapa_test_grep("All-mode full block", "apple 123 pear 456\nbanana 789", "\\d+", "a", { "apple 123 pear 456\nbanana 789" });
     // "apple 123 pear 456\nbanana 789".grep("\\d+", "a").str() == ["apple 123 pear 456\nbanana 789"].str();
 
     // All-mode inverted block
@@ -103,15 +102,15 @@ int grapa_test_grep_main() {
     // "no digits here".grep("\\d+", "av").str() == ["no digits here"].str();
 
     // All-mode match-only with delimiter
-    grapa_test_grep("All-mode match-only with delimiter", "apple 123|||pear 456|||banana 789", "\d+", "ao", { "123", "456", "789" }, "|||");
+    grapa_test_grep("All-mode match-only with delimiter", "apple 123|||pear 456|||banana 789", "\\d+", "ao", { "123", "456", "789" }, "|||");
     // "apple 123|||pear 456|||banana 789".grep("\\d+", "ao", "|||").str() == ["123", "456", "789"].str();
 
     // Grouped line output with inverted match (should ignore 'g')
-    grapa_test_grep("Grouped inverted full lines", "abc\n123\ndef", "\d+", "nvg", { "1:abc", "3:def" });
+    grapa_test_grep("Grouped inverted full lines", "abc\n123\ndef", "\\d+", "nvg", { "1:abc", "3:def" });
     // "abc\n123\ndef".grep("\\d+", "nvg").str() == ["1:abc", "3:def"].str();
 
     // Grouped match output with no line numbers
-    grapa_test_grep("Grouped matches no line numbers", "apple 123 pear 456\nbanana 789", "\d+", "g", { "apple 123 pear 456","banana 789" });
+    grapa_test_grep("Grouped matches no line numbers", "apple 123 pear 456\nbanana 789", "\\d+", "g", { "apple 123 pear 456","banana 789" });
     // "apple 123 pear 456\nbanana 789".grep("\\d+", "g").str() == ["123,456","789"].str();
 
     // Exact match (whole line must match exactly)

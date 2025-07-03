@@ -16282,8 +16282,7 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 
 	try {
 		std::regex rx(pattern, std::regex::ECMAScript);
-		std::string working_input = normalize_newlines(input);
-		auto matches = grep_extract_matches(working_input, input, pattern, options, delim);
+		auto matches = grep_extract_matches(input, pattern, options, delim);
 
 		result = new GrapaRuleEvent();
 		result->mValue.mToken = GrapaTokenType::ARRAY;

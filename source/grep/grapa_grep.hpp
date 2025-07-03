@@ -58,7 +58,6 @@ std::vector<MatchPosition> grep(
  * Returns strings with match content, offsets, or counts as requested.
  */
 std::vector<std::string> grep_extract_matches(
-    const std::string& working_input,
     const std::string& input,
     const std::string& pattern,
     const std::string& options,
