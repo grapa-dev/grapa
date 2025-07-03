@@ -11,6 +11,10 @@
 - https://github.com/supranational/blst
 - https://github.com/supranational/blst/archive/refs/heads/master.zip
 
+## ICU
+- https://github.com/unicode-org/icu
+- https://github.com/unicode-org/icu/archive/refs/heads/main.zip
+  
 # win-amd64
 See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
 
@@ -53,6 +57,20 @@ build
 copy bindings\*.h* and bindings\*.swg to source\blst
 copy *.lib and *.pdb to source\blst-lib\win
 ```
+
+## ICU
+
+```
+mkdir build-static
+cd build-static
+cmake ../icu4c -G "Visual Studio 17 2022" -A x64 -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=./install -DICU_ENABLE_SAMPLES=OFF -DICU_ENABLE_TESTS=OFF
+cmake --build . --config Release
+cmake --install . --config Release
+cd install/lib
+dir *.lib
+```
+
+
 # win-arm64
 
 ## OpenSSL
