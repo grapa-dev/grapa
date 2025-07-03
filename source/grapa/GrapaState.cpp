@@ -461,6 +461,7 @@ void GrapaItemState::Running()
 {
 	GrapaCHAR msgStr, expStr;
 	bool expNeg = false, isEl = false, isEndEl = false, isScriptEl = false;
+	bool noEscape = false;
 	int isComment = 0;
 	int isCDATA = 0;
 	char* from;
@@ -542,6 +543,24 @@ void GrapaItemState::Running()
 				nextValue->mMessage.mPos++;
 				break; 
 			case GrapaTokenItemType::STRING_COLLECT:
+				if (noEscape)
+				{
+					if ((quote && c == quote) && !(msgStr.mLength && msgStr.mBytes[msgStr.mLength - 1] == '\\'))
+					{
+						PushOutput((sendState ? sendState : GrapaTokenType::STR), msgStr, quote);
+						msgStr.SetLength(0);
+						sendState = 0;
+						noEscape = false;
+						state = GrapaTokenType::START;
+						nextValue->mMessage.mPos++;
+					}
+					else
+					{
+						nextValue->mMessage.mPos++;
+						msgStr.Append(c);
+					}
+					break;
+				}
 				if (saveState == GrapaTokenItemType::ESCAPE)
 				{
 					saveState = 0;
@@ -573,6 +592,7 @@ void GrapaItemState::Running()
 					isCDATA = 0;
 					msgStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 				}
 				else if (!quote && isEl && c == '>' && isCDATA == 2 && msgStr.mLength > 1 && msgStr.mBytes[msgStr.mLength - 1] == ']' && msgStr.mBytes[msgStr.mLength - 2] == ']')
@@ -587,6 +607,7 @@ void GrapaItemState::Running()
 					isCDATA = 0;
 					msgStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 				}
 				else if (quote && c == quote)
@@ -594,6 +615,7 @@ void GrapaItemState::Running()
 					PushOutput((sendState ? sendState : GrapaTokenType::STR), msgStr, quote);
 					msgStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 					nextValue->mMessage.mPos++;
 				}
@@ -649,6 +671,7 @@ void GrapaItemState::Running()
 					msgStr.SetLength(0);
 					sendState = 0;
 					saveChar = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 				}
 				break;
@@ -743,6 +766,7 @@ void GrapaItemState::Running()
 					}
 					sendState = 0;
 					saveChar = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 				}
 				break;
@@ -927,6 +951,7 @@ void GrapaItemState::Running()
 					PushOutput((sendState ? sendState : state), msgStr, quote);
 					msgStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 					break;
 				}
@@ -942,6 +967,7 @@ void GrapaItemState::Running()
 					PushOutput((sendState ? sendState : state), msgStr, quote);
 					msgStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 					break;
 				}
@@ -952,6 +978,7 @@ void GrapaItemState::Running()
 					PushOutput((sendState ? sendState : state), msgStr, quote);
 					msgStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 					if (isEl)
 					{
@@ -1061,6 +1088,7 @@ void GrapaItemState::Running()
 					msgStr.SetLength(0);
 					expStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 					break;
 				}
@@ -1149,9 +1177,9 @@ void GrapaItemState::Running()
 				nextValue->mMessage.mPos++;
 				break;
 			case GrapaTokenType::ID:
-				if (!strchr(mItemParams->mParam[GrapaItemEnum::ID], c) && !strchr(mItemParams->mParam[GrapaItemEnum::DIG], c) && c != '\'')
+				if (!strchr(mItemParams->mParam[GrapaItemEnum::ID], c) && !strchr(mItemParams->mParam[GrapaItemEnum::DIG], c))
 				{
-// What is this IDDASH for?
+// What is this IDDASH for? See below. Need a way to support e^-10 or is it e-10, a way to specifiy a number.
 					//if (c == '-')
 					//{
 					//	saveState = state;
@@ -1160,12 +1188,26 @@ void GrapaItemState::Running()
 					//	nextValue->mMessage.mPos++;
 					//	break;
 					//}
-					PushOutput((sendState ? sendState : state), msgStr, quote);
-					msgStr.SetLength(0);
-					sendState = 0;
-					state = GrapaTokenType::START;
-					break;
+					if ((c == '\'' || c == '"') && msgStr.mLength == 1 && msgStr.mBytes[0] == 'r')
+					{
+						msgStr.SetLength(0);
+						sendState = 0;
+						noEscape = false;
+						state = GrapaTokenType::START;
+						noEscape = true;
+						break;
+					}
+					if (c != '\'')  // for an ID with a quote lie john's, not sure if this is the right way to handle this though
+					{
+						PushOutput((sendState ? sendState : state), msgStr, quote);
+						msgStr.SetLength(0);
+						sendState = 0;
+						noEscape = false;
+						state = GrapaTokenType::START;
+						break;
+					}
 				}
+
 				nextValue->mMessage.mPos++;
 				msgStr.Append(c);
 				break;
@@ -1177,11 +1219,13 @@ void GrapaItemState::Running()
 					PushOutput((sendState ? sendState : state), msgStr, quote);
 					msgStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 					msgStr.Append("-");
 					PushOutput(GrapaTokenType::SYM, msgStr, quote);
 					msgStr.SetLength(0);
 					sendState = 0;
+					noEscape = false;
 					state = GrapaTokenType::START;
 					saveState = 0;
 					sendState = 0;
