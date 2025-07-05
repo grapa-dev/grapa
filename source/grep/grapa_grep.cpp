@@ -22,6 +22,27 @@ limitations under the License.
 #include <set>
 #include <string_view>
 
+#ifdef _WIN32
+#if defined(_M_ARM64)
+// ARM64-specific static libs
+
+#elif defined(_M_X64)
+#include <unicode/utypes.h>
+#include <unicode/ustring.h>
+#include <unicode/unistr.h>
+#include <unicode/usearch.h>
+#include <unicode/ucol.h>
+#include <unicode/regex.h>
+#include <vector>
+#include <string>
+#include <iostream>
+// AMD64 (Intel/AMD) static libs
+#pragma comment(lib, "unicode-lib/win-amd64/icuin.lib")
+#pragma comment(lib, "unicode-lib/win-amd64/icudt.lib")
+#pragma comment(lib, "unicode-lib/win-amd64/icutu.lib")
+#endif
+#endif
+
 std::string normalize_newlines(std::string_view input) {
     std::string result;
     result.reserve(input.size());
