@@ -61,12 +61,10 @@ copy *.lib and *.pdb to source\blst-lib\win
 ## ICU
 
 ```
-mkdir build-static
-cd build-static
-cmake ../icu4c -G "Visual Studio 17 2022" -A x64 -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=./install -DICU_ENABLE_SAMPLES=OFF -DICU_ENABLE_TESTS=OFF
-cmake --build . --config Release
-cmake --install . --config Release
-cd install/lib
+cd icu-main\icu4c\source
+msbuild allinone\allinone.sln /t:stubdata;common;i18n /p:Configuration=Release /p:Platform=x64
+msbuild allinone\allinone.sln /t:stubdata;common;i18n /p:Configuration=ReleaseStatic /p:Platform=x64
+
 dir *.lib
 ```
 
