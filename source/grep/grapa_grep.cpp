@@ -22,16 +22,19 @@ limitations under the License.
 #include <set>
 #include <string_view>
 #include <cctype>
+#include <vector>
+#include <string>
+
 
 // ICU includes for enhanced Unicode support
 #ifdef _WIN32
     #ifdef _WIN64
         #ifdef _M_X64
-            // Windows AMD64 specific ICU includes
-            #include <unicode/regex.h>
-            #include <unicode/unistr.h>
-            #include <unicode/ustring.h>
-            #define USE_ICU_REGEX 1
+#define USE_ICU_REGEX 1
+#pragma comment(lib, "unicode-lib/win-amd64/icuin.lib")
+#pragma comment(lib, "unicode-lib/win-amd64/icuuc.lib")
+#pragma comment(lib, "unicode-lib/win-amd64/icudt.lib")
+#pragma comment(lib, "unicode-lib/win-amd64/icutu.lib")
         #else
             // Windows ARM64 - no ICU support yet
             #define USE_ICU_REGEX 0
@@ -45,25 +48,18 @@ limitations under the License.
     #define USE_ICU_REGEX 0
 #endif
 
-#ifdef _WIN32
-#if defined(_M_ARM64)
-// ARM64-specific static libs
-
-#elif defined(_M_X64)
-#include <unicode/utypes.h>
-#include <unicode/ustring.h>
+#ifdef USE_ICU_REGEX
+#define U_STATIC_IMPLEMENTATION
+#define U_COMMON_IMPLEMENTATION
+#define U_I18N_IMPLEMENTATION
+#include <unicode/regex.h>
 #include <unicode/unistr.h>
+#include <unicode/ustring.h>
+#include <unicode/utypes.h>
 #include <unicode/usearch.h>
 #include <unicode/ucol.h>
-#include <unicode/regex.h>
-#include <vector>
-#include <string>
 #include <iostream>
-// AMD64 (Intel/AMD) static libs
-#pragma comment(lib, "unicode-lib/win-amd64/icuin.lib")
-#pragma comment(lib, "unicode-lib/win-amd64/icudt.lib")
-#pragma comment(lib, "unicode-lib/win-amd64/icutu.lib")
-#endif
+#include <algorithm> 
 #endif
 
 std::string normalize_newlines(std::string_view input) {
@@ -154,7 +150,7 @@ std::vector<MatchPosition> grep(
                 }
             } else {
                 if (matcher->find()) {
-                    results.push_back({ 0, match_input.length(), 1 });
+                    results.push_back({ 0, static_cast<size_t>(match_input.length()), 1 });
                 }
             }
         }
@@ -189,8 +185,14 @@ std::vector<MatchPosition> grep(
             delete rx;
             return {};
         }
-        
-        bool matched = exact_match ? matcher->matches() : matcher->find();
+        bool matched;
+        if (exact_match) {
+            matcher->reset();
+            matched = matcher->matches(status);
+        }
+        else {
+            matched = matcher->find();
+        }
         if ((!invert_match && matched) || (invert_match && !matched)) {
             if (!match_only || invert_match) {
                 size_t line_len = line.length();
@@ -202,7 +204,7 @@ std::vector<MatchPosition> grep(
             } else {
                 if (exact_match) {
                     if (matched) {
-                        results.push_back({ offset, line.length(), line_number });
+                        results.push_back({ static_cast<size_t>(offset), static_cast<size_t>(line.length()), line_number });
                     }
                 } else {
                     matcher->reset();
@@ -380,8 +382,8 @@ std::vector<std::string> grep_extract_matches(
     int before = ctx.before;
     int context = ctx.context;
     if (context > 0) {
-        after = std::max(after, context);
-        before = std::max(before, context);
+        if (context > after) after = context;
+        if (context > before) before = context;
     }
     bool all_mode = (filtered_options.find('a') != std::string::npos);
     bool delimiter_provided = !line_delim.empty();
@@ -434,7 +436,8 @@ std::vector<std::string> grep_extract_matches(
         std::set<size_t> output_lines;
         for (size_t line : match_lines) {
             size_t begin = (line >= (size_t)before) ? line - before : 0;
-            size_t end = std::min(line + after, lines.size() - 1);
+            size_t end = line + after;
+            if (end > lines.size() - 1) end = lines.size() - 1;
             for (size_t i = begin; i <= end; ++i) {
                 output_lines.insert(i);
             }
