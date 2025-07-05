@@ -21,6 +21,29 @@ limitations under the License.
 #include <map>
 #include <set>
 #include <string_view>
+#include <cctype>
+
+// ICU includes for enhanced Unicode support
+#ifdef _WIN32
+    #ifdef _WIN64
+        #ifdef _M_X64
+            // Windows AMD64 specific ICU includes
+            #include <unicode/regex.h>
+            #include <unicode/unistr.h>
+            #include <unicode/ustring.h>
+            #define USE_ICU_REGEX 1
+        #else
+            // Windows ARM64 - no ICU support yet
+            #define USE_ICU_REGEX 0
+        #endif
+    #else
+        // Windows 32-bit - no ICU support
+        #define USE_ICU_REGEX 0
+    #endif
+#else
+    // Non-Windows platforms - no ICU support
+    #define USE_ICU_REGEX 0
+#endif
 
 std::string normalize_newlines(std::string_view input) {
     std::string result;
@@ -51,6 +74,134 @@ std::vector<MatchPosition> grep(
     bool count_only = (options.find('c') != std::string::npos);
     bool exact_match = (options.find('x') != std::string::npos);
 
+#if USE_ICU_REGEX
+    // ICU regex implementation
+    UErrorCode status = U_ZERO_ERROR;
+    icu::UnicodeString uPattern = icu::UnicodeString::fromUTF8(pattern);
+    icu::UnicodeString uInput = icu::UnicodeString::fromUTF8(input);
+    
+    // Set regex flags
+    uint32_t flags = UREGEX_DOTALL;
+    if (ignore_case) flags |= UREGEX_CASE_INSENSITIVE;
+    
+    icu::RegexPattern* rx = icu::RegexPattern::compile(uPattern, flags, status);
+    if (U_FAILURE(status)) {
+        return {}; // Return empty result on regex error
+    }
+    
+    std::vector<MatchPosition> results;
+    
+    if (all_mode) {
+        // If a delimiter is provided, remove all instances of the delimiter for matching
+        const icu::UnicodeString* match_input_ptr = &uInput;
+        icu::UnicodeString normalized_input;
+        if (!line_delim.empty()) {
+            icu::UnicodeString uDelim = icu::UnicodeString::fromUTF8(line_delim);
+            normalized_input = uInput;
+            normalized_input.findAndReplace(uDelim, icu::UnicodeString());
+            match_input_ptr = &normalized_input;
+        }
+        const icu::UnicodeString& match_input = *match_input_ptr;
+        
+        icu::RegexMatcher* matcher = rx->matcher(match_input, status);
+        if (U_FAILURE(status)) {
+            delete rx;
+            return {};
+        }
+        
+        if (invert_match) {
+            std::vector<MatchPosition> matches;
+            while (matcher->find()) {
+                matches.push_back({ static_cast<size_t>(matcher->start(status)), 
+                                   static_cast<size_t>(matcher->end(status) - matcher->start(status)), 1 });
+            }
+            size_t prev_end = 0;
+            for (const auto& m : matches) {
+                if (m.offset > prev_end) {
+                    results.push_back({ prev_end, m.offset - prev_end, 1 });
+                }
+                prev_end = m.offset + m.length;
+            }
+            if (prev_end < match_input.length()) {
+                results.push_back({ prev_end, match_input.length() - prev_end, 1 });
+            }
+        } else {
+            if (match_only) {
+                while (matcher->find()) {
+                    results.push_back({ static_cast<size_t>(matcher->start(status)), 
+                                       static_cast<size_t>(matcher->end(status) - matcher->start(status)), 1 });
+                }
+            } else {
+                if (matcher->find()) {
+                    results.push_back({ 0, match_input.length(), 1 });
+                }
+            }
+        }
+        delete matcher;
+        delete rx;
+        return results;
+    }
+    
+    // Line-by-line processing
+    std::string working_input = (line_delim.empty() && !all_mode) ? normalize_newlines(input) : input;
+    icu::UnicodeString uWorkingInput = icu::UnicodeString::fromUTF8(working_input);
+    
+    size_t offset = 0;
+    size_t line_number = 1;
+    while (offset < uWorkingInput.length()) {
+        int32_t next = line_delim.empty()
+            ? uWorkingInput.indexOf('\n', offset)
+            : uWorkingInput.indexOf(icu::UnicodeString::fromUTF8(line_delim), offset);
+        if (next == -1) next = uWorkingInput.length();
+        else next += line_delim.empty() ? 1 : line_delim.length();
+        
+        icu::UnicodeString line = uWorkingInput.tempSubString(offset, next - offset);
+        icu::UnicodeString line_copy = line;
+        
+        // Remove trailing newline for exact match
+        if (exact_match && line_copy.length() > 0 && line_copy.charAt(line_copy.length() - 1) == '\n') {
+            line_copy.remove(line_copy.length() - 1);
+        }
+        
+        icu::RegexMatcher* matcher = rx->matcher(line_copy, status);
+        if (U_FAILURE(status)) {
+            delete rx;
+            return {};
+        }
+        
+        bool matched = exact_match ? matcher->matches() : matcher->find();
+        if ((!invert_match && matched) || (invert_match && !matched)) {
+            if (!match_only || invert_match) {
+                size_t line_len = line.length();
+                if (line.length() >= line_delim.length() &&
+                    line.endsWith(icu::UnicodeString::fromUTF8(line_delim))) {
+                    line_len -= line_delim.length();
+                }
+                results.push_back({ offset, line_len, line_number });
+            } else {
+                if (exact_match) {
+                    if (matched) {
+                        results.push_back({ offset, line.length(), line_number });
+                    }
+                } else {
+                    matcher->reset();
+                    while (matcher->find()) {
+                        results.push_back({ offset + static_cast<size_t>(matcher->start(status)), 
+                                           static_cast<size_t>(matcher->end(status) - matcher->start(status)), line_number });
+                    }
+                }
+            }
+        }
+        delete matcher;
+        offset = next;
+        ++line_number;
+    }
+    
+    delete rx;
+    return results;
+    
+#else
+    // Original std::regex implementation
     std::regex::flag_type flags = std::regex::ECMAScript;
     if (ignore_case) flags |= std::regex::icase;
 
@@ -157,11 +308,43 @@ std::vector<MatchPosition> grep(
     }
 
     return results;
+#endif
 }
 
 bool ends_with(const std::string& str, const std::string& suffix) {
     return str.size() >= suffix.size() &&
         str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
+struct ContextOptions {
+    int after = 0;
+    int before = 0;
+    int context = 0;
+};
+
+// Helper to parse options string for context options
+ContextOptions parse_context_options(const std::string& options, std::string& filtered_options) {
+    ContextOptions ctx;
+    filtered_options.clear();
+    for (size_t i = 0; i < options.size(); ++i) {
+        char c = options[i];
+        if (c == 'A' || c == 'B' || c == 'C') {
+            int val = 0;
+            size_t j = i + 1;
+            while (j < options.size() && std::isdigit(options[j])) {
+                val = val * 10 + (options[j] - '0');
+                ++j;
+            }
+            if (j == i + 1) val = 1; // default to 1 if no number
+            if (c == 'A') ctx.after = val;
+            else if (c == 'B') ctx.before = val;
+            else if (c == 'C') ctx.context = val;
+            i = j - 1;
+        } else {
+            filtered_options += c;
+        }
+    }
+    return ctx;
 }
 
 std::vector<std::string> grep_extract_matches(
@@ -170,11 +353,19 @@ std::vector<std::string> grep_extract_matches(
     const std::string& options,
     const std::string& line_delim
 ) {
-    bool all_mode = (options.find('a') != std::string::npos);
+    std::string filtered_options;
+    ContextOptions ctx = parse_context_options(options, filtered_options);
+    int after = ctx.after;
+    int before = ctx.before;
+    int context = ctx.context;
+    if (context > 0) {
+        after = std::max(after, context);
+        before = std::max(before, context);
+    }
+    bool all_mode = (filtered_options.find('a') != std::string::npos);
     bool delimiter_provided = !line_delim.empty();
     std::string working_input;
     if (all_mode && delimiter_provided) {
-        // Remove all delimiters for matching and output extraction
         working_input.reserve(input.size());
         size_t pos = 0;
         while (pos < input.size()) {
@@ -190,18 +381,57 @@ std::vector<std::string> grep_extract_matches(
     } else {
         working_input = line_delim.empty() ? normalize_newlines(input) : input;
     }
-    auto matches = grep(working_input, pattern, options, line_delim);
+    auto matches = grep(working_input, pattern, filtered_options, line_delim);
     std::vector<std::string> out;
 
-    bool count_only = options.find('c') != std::string::npos;
-    bool dedupe = options.find('d') != std::string::npos;
-    bool include_line_numbers = options.find('n') != std::string::npos;
-    bool group_by_line = options.find('g') != std::string::npos;
-    bool output_offset = options.find('b') != std::string::npos;
-    bool line_only = options.find('l') != std::string::npos;
-    bool strip_trailing_newline = line_delim.empty() && options.find('a') == std::string::npos;
+    bool count_only = filtered_options.find('c') != std::string::npos;
+    bool dedupe = filtered_options.find('d') != std::string::npos;
+    bool include_line_numbers = filtered_options.find('n') != std::string::npos;
+    bool group_by_line = filtered_options.find('g') != std::string::npos;
+    bool output_offset = filtered_options.find('b') != std::string::npos;
+    bool line_only = filtered_options.find('l') != std::string::npos;
+    bool match_only = filtered_options.find('o') != std::string::npos;
+    bool strip_trailing_newline = line_delim.empty() && filtered_options.find('a') == std::string::npos;
     std::string actual_delim = (line_delim == "\\n") ? "\n" : line_delim;
     std::set<std::string> unique;
+
+    // If context options are set, only apply if not match-only mode
+    if ((after > 0 || before > 0) && !match_only && !all_mode) {
+        // Split input into lines
+        std::vector<std::string> lines;
+        size_t pos = 0, start = 0;
+        while (pos <= working_input.size()) {
+            size_t next = working_input.find('\n', pos);
+            if (next == std::string::npos) next = working_input.size();
+            lines.push_back(working_input.substr(pos, next - pos));
+            pos = next + 1;
+        }
+        std::set<size_t> match_lines;
+        for (const auto& m : matches) {
+            if (m.line_number > 0) match_lines.insert(m.line_number - 1);
+        }
+        std::set<size_t> output_lines;
+        for (size_t line : match_lines) {
+            size_t begin = (line >= (size_t)before) ? line - before : 0;
+            size_t end = std::min(line + after, lines.size() - 1);
+            for (size_t i = begin; i <= end; ++i) {
+                output_lines.insert(i);
+            }
+        }
+        // Output lines in order
+        for (size_t i = 0; i < lines.size(); ++i) {
+            if (output_lines.count(i)) {
+                std::string line = lines[i];
+                if (dedupe && !unique.insert(line).second) continue;
+                if (include_line_numbers) {
+                    out.emplace_back(std::to_string(i + 1) + ":" + line);
+                } else {
+                    out.emplace_back(line);
+                }
+            }
+        }
+        return out;
+    }
 
     if (count_only) {
         // Determine if dedup should apply to match substrings

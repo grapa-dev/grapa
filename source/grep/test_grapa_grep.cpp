@@ -23,8 +23,7 @@ limitations under the License.
 void grapa_test_grep(const std::string& label, const std::string& input, const std::string& pattern,
               const std::string& options, const std::vector<std::string>& expected,
               const std::string& delimiter = "") {
-    std::string working_input = normalize_newlines(input);
-    auto result = grep_extract_matches(working_input, pattern, options, delimiter);
+    auto result = grep_extract_matches(input, pattern, options, delimiter);
     if (result != expected) {
         std::cerr << "[FAIL] " << label << "\nExpected:";
         for (const auto& e : expected) std::cerr << " [" << e << "]";
