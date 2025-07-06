@@ -192,7 +192,7 @@ public:
 	void SetLineInput(bool enable = true);
 	void RandSeed(u64 pSeed = 0);
 	u32 Random32() { return(((rand() & 0xFF) << 24) | ((rand() & 0xFFF) << 12) | (rand() & 0xFFF)); }
-	GrapaCHAR exec(GrapaCHAR& command);
+		GrapaCHAR exec(GrapaCHAR& command);
 
 private:
 	GrapaCritical mPrintLock;

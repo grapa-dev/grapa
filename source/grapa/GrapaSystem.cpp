@@ -41,6 +41,49 @@ GrapaSystem::GrapaSystem()
 #ifdef WIN32
 	mStdinRef = GetStdHandle(STD_INPUT_HANDLE);
 	GetConsoleMode(mStdinRef, &mStdinMode);
+	
+	// Enable UTF-8 mode for Windows console
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleCP(CP_UTF8);
+	
+			// Enable virtual terminal processing for better Unicode support
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		if (hOut != INVALID_HANDLE_VALUE) {
+			DWORD mode;
+			if (GetConsoleMode(hOut, &mode)) {
+				mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+				SetConsoleMode(hOut, mode);
+			}
+			
+			// Also set input handle for better Unicode input
+			HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+			if (hIn != INVALID_HANDLE_VALUE) {
+				DWORD inMode;
+				if (GetConsoleMode(hIn, &inMode)) {
+					inMode |= ENABLE_VIRTUAL_TERMINAL_INPUT;
+					SetConsoleMode(hIn, inMode);
+				}
+			}
+		
+		// Set console font to support Unicode characters
+		CONSOLE_FONT_INFOEX cfi;
+		cfi.cbSize = sizeof(cfi);
+		cfi.nFont = 0;
+		cfi.dwFontSize.X = 0;
+		cfi.dwFontSize.Y = 16;
+		cfi.FontFamily = FF_DONTCARE;
+		cfi.FontWeight = FW_NORMAL;
+		
+		// Try Consolas first (best Unicode support), then Cascadia Code, then fallback
+		wcscpy_s(cfi.FaceName, L"Consolas");
+		if (!SetCurrentConsoleFontEx(hOut, FALSE, &cfi)) {
+			wcscpy_s(cfi.FaceName, L"Cascadia Code");
+			if (!SetCurrentConsoleFontEx(hOut, FALSE, &cfi)) {
+				wcscpy_s(cfi.FaceName, L"Lucida Console");
+				SetCurrentConsoleFontEx(hOut, FALSE, &cfi);
+			}
+		}
+	}
 #else
 	mStdinRef = STDIN_FILENO;
 	tcgetattr(mStdinRef, &mStdinMode);
@@ -172,9 +215,19 @@ int GrapaSystem::GetChar()
 {
 	int ch=0;
 #ifdef WIN32
-	// http://msdn.microsoft.com/en-us/library/windows/desktop/ms682062(v=vs.85).aspx
+	// Use Unicode console input for better character support
 	DWORD read;
-	BOOL x = ReadConsoleA(mStdinRef, &ch, 1, &read, NULL);
+	WCHAR wch;
+	BOOL x = ReadConsoleW(mStdinRef, &wch, 1, &read, NULL);
+	if (x && read > 0) {
+		// Convert wide char to UTF-8
+		char utf8[5];
+		int utf8len = WideCharToMultiByte(CP_UTF8, 0, &wch, 1, utf8, sizeof(utf8), NULL, NULL);
+		if (utf8len > 0) {
+			// Return the first byte for backward compatibility
+			ch = (unsigned char)utf8[0];
+		}
+	}
 #else
 	ch = getchar();
 #endif
@@ -296,14 +349,42 @@ GrapaCHAR GrapaSystem::exec(GrapaCHAR& command)
 
 void GrapaConsole2Response::SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen)
 {
+#ifdef WIN32
+	// Use Unicode-aware console output
+	if (sendbuflen) {
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		if (hOut != INVALID_HANDLE_VALUE) {
+			DWORD written;
+			WriteConsoleA(hOut, sendbuf, (DWORD)sendbuflen, &written, NULL);
+		} else {
+			std::cout << (char*)sendbuf;
+		}
+	}
+	std::cout.flush();
+#else
 	if (sendbuflen) std::cout << (char*)sendbuf;
 	std::cout.flush();
+#endif
 }
 
 void GrapaConsole2Response::SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf)
 {
+#ifdef WIN32
+	// Use Unicode-aware console output
+	if (sendbuf.mLength) {
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		if (hOut != INVALID_HANDLE_VALUE) {
+			DWORD written;
+			WriteConsoleA(hOut, sendbuf.mBytes, (DWORD)sendbuf.mLength, &written, NULL);
+		} else {
+			std::cout << (char*)sendbuf.mBytes;
+		}
+	}
+	std::cout.flush();
+#else
 	if (sendbuf.mLength) std::cout << (char*)sendbuf.mBytes;
 	std::cout.flush();
+#endif
 }
 
 void GrapaConsole2Response::SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue)
@@ -313,8 +394,20 @@ void GrapaConsole2Response::SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pN
 		if (pValue->vQueue) vScriptExec->EchoList(this, pValue, false, false, false);
 		else vScriptExec->EchoValue(this, pValue, false, false, false);
 	}
+#ifdef WIN32
+	// Use Unicode-aware console output for newline
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (hOut != INVALID_HANDLE_VALUE) {
+		DWORD written;
+		WriteConsoleA(hOut, "\n", 1, &written, NULL);
+	} else {
+		std::cout << (char*)"\n";
+	}
+	std::cout.flush();
+#else
 	std::cout << (char*)"\n";
 	std::cout.flush();
+#endif
 }
 
 My_Console::My_Console()
