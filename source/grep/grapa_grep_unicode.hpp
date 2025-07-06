@@ -386,6 +386,33 @@ public:
     bool is_ascii_mode() const {
         return is_ascii_only_;
     }
+    
+    /**
+     * Map a position and length in the normalized string back to the original string's byte offset and length
+     * Returns {orig_offset, orig_length}
+     */
+    static std::pair<size_t, size_t> map_normalized_span_to_original(const std::string& original, const std::string& normalized, size_t norm_offset, size_t norm_length) {
+        // Walk both strings in parallel, mapping codepoints
+        size_t orig_i = 0, norm_i = 0;
+        size_t orig_start = std::string::npos, orig_end = std::string::npos;
+        while (orig_i < original.size() && norm_i < normalized.size()) {
+            // Get codepoint and length in both strings
+            utf8proc_int32_t orig_cp, norm_cp;
+            utf8proc_ssize_t orig_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(&original[orig_i]), original.size() - orig_i, &orig_cp);
+            utf8proc_ssize_t norm_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(&normalized[norm_i]), normalized.size() - norm_i, &norm_cp);
+            if (orig_len < 0 || norm_len < 0) break;
+            if (norm_i == norm_offset) orig_start = orig_i;
+            if (norm_i + norm_len == norm_offset + norm_length) orig_end = orig_i + orig_len;
+            orig_i += orig_len;
+            norm_i += norm_len;
+        }
+        // Handle match at end of string
+        if (orig_start == std::string::npos && norm_offset == normalized.size()) orig_start = original.size();
+        if (orig_end == std::string::npos && norm_offset + norm_length == normalized.size()) orig_end = original.size();
+        if (orig_start == std::string::npos) orig_start = 0;
+        if (orig_end == std::string::npos) orig_end = original.size();
+        return {orig_start, orig_end - orig_start};
+    }
 };
 
 /**

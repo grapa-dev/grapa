@@ -215,24 +215,32 @@ std::vector<MatchPosition> grep_unicode_impl(
             size_t prev_end = 0;
             for (const auto& m : matches) {
                 if (m.first > prev_end) {
-                    results.push_back({ prev_end, m.first - prev_end, 1 });
+                    // Map normalized span to original
+                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, unicode_input.normalize(normalization).data(), prev_end, m.first - prev_end);
+                    results.push_back({ mapped.first, mapped.second, 1 });
                 }
                 prev_end = m.first + m.second;
             }
             if (prev_end < match_input.size()) {
-                results.push_back({ prev_end, match_input.size() - prev_end, 1 });
+                auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, unicode_input.normalize(normalization).data(), prev_end, match_input.size() - prev_end);
+                results.push_back({ mapped.first, mapped.second, 1 });
             }
         }
         else {
             if (match_only) {
                 std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(unicode_input);
+                auto normalized = unicode_input.normalize(normalization).data();
                 for (const auto& m : matches) {
-                    results.push_back({ m.first, m.second, 1 });
+                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, normalized, m.first, m.second);
+                    results.push_back({ mapped.first, mapped.second, 1 });
                 }
             }
             else {
                 if (unicode_rx.search(unicode_input)) {
-                    results.push_back({ 0, match_input.size(), 1 });
+                    // Whole input matches: map full span
+                    auto normalized = unicode_input.normalize(normalization).data();
+                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, normalized, 0, match_input.size());
+                    results.push_back({ mapped.first, mapped.second, 1 });
                 }
             }
         }
@@ -279,8 +287,10 @@ std::vector<MatchPosition> grep_unicode_impl(
                 }
                 else {
                     std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(unicode_line);
+                    auto normalized = unicode_line.normalize(normalization).data();
                     for (const auto& m : matches) {
-                        results.push_back({ offset + m.first, m.second, line_number });
+                        auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, normalized, m.first, m.second);
+                        results.push_back({ offset + mapped.first, mapped.second, line_number });
                     }
                 }
             }
