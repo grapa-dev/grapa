@@ -11,9 +11,10 @@
 - https://github.com/supranational/blst
 - https://github.com/supranational/blst/archive/refs/heads/master.zip
 
-## ICU
-- https://github.com/unicode-org/icu
-- https://github.com/unicode-org/icu/archive/refs/heads/main.zip
+## utf8proc
+- https://github.com/JuliaStrings/utf8proc
+- https://github.com/JuliaStrings/utf8proc/archive/refs/heads/master.zip
+
   
 # win-amd64
 See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
@@ -58,14 +59,10 @@ copy bindings\*.h* and bindings\*.swg to source\blst
 copy *.lib and *.pdb to source\blst-lib\win
 ```
 
-## ICU
+## utf8proc
 
 ```
-cd icu-main\icu4c\source
-msbuild allinone\allinone.sln /t:stubdata;common;i18n /p:Configuration=Release /p:Platform=x64
-msbuild allinone\allinone.sln /t:stubdata;common;i18n /p:Configuration=ReleaseStatic /p:Platform=x64
 
-dir *.lib
 ```
 
 
