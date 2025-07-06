@@ -23,6 +23,22 @@ limitations under the License.
 #define UTF8PROC_STATIC
 #endif
 
+/*
+ Supported grep options:
+   a - All-mode (match across full input string)
+   b - Output byte offset with matches
+   c - Count of matches (deduplicated if 'd' is also set)
+   d - Deduplicate results (by line or match depending on mode)
+   g - Group results per line
+   i - Case-insensitive matching
+   l - Line number only output (per matched line)
+   n - Prefix matches with line numbers
+   o - Match-only (output only matched text)
+   v - Invert match (return non-matching lines or spans)
+   x - Exact line match (whole line must match pattern)
+   line_delim - Custom line delimiter (default: \n)
+*/
+
 #include <string>
 #include <vector>
 #include <regex>
@@ -30,10 +46,22 @@ limitations under the License.
 #include <cstring>
 
 // Include the original grep header for MatchPosition struct
-#include "grapa_grep.hpp"
+//#include "grapa_grep.hpp"
 
 // Include utf8proc
 #include "utf8proc/utf8proc.h"
+
+struct MatchPosition {
+    size_t offset;
+    size_t length;
+    size_t line_number = 0;
+};
+
+struct ContextOptions {
+    int after = 0;
+    int before = 0;
+    int context = 0;
+};
 
 namespace GrapaUnicode {
 
@@ -45,6 +73,14 @@ enum class NormalizationForm {
     NFD,   // Normalization Form Canonical Decomposition
     NFKC,  // Normalization Form Compatibility Composition
     NFKD   // Normalization Form Compatibility Decomposition
+};
+
+/**
+ * Processing modes for grep functions
+ */
+enum class ProcessingMode {
+    UNICODE_MODE,    // Full Unicode processing (normalization, case folding)
+    BINARY_MODE      // Raw byte processing (no Unicode processing)
 };
 
 /**
@@ -200,6 +236,7 @@ private:
     std::regex regex_;
     bool case_insensitive_;
     NormalizationForm normalization_;
+    bool is_ascii_only_;  // Track if pattern is ASCII-only
     
 public:
     UnicodeRegex(const std::string& pattern, bool case_insensitive = false, 
@@ -209,28 +246,56 @@ public:
     }
     
     /**
+     * Check if string contains only ASCII characters
+     */
+    static bool is_ascii_string(const std::string& str) {
+        for (unsigned char c : str) {
+            if (c > 127) return false;
+        }
+        return true;
+    }
+    
+    /**
      * Compile the regex pattern with Unicode support
      */
     void compile() {
-        // Normalize the pattern
-        UnicodeString norm_pattern(pattern_);
-        UnicodeString normalized_pattern = norm_pattern.normalize(normalization_);
+        // Check if pattern is ASCII-only
+        is_ascii_only_ = is_ascii_string(pattern_);
         
-        // Apply case folding if case-insensitive
-        if (case_insensitive_) {
-            normalized_pattern = normalized_pattern.case_fold();
-        }
-        
-        std::regex::flag_type flags = std::regex::ECMAScript;
-        if (case_insensitive_) {
-            flags |= std::regex::icase;
-        }
-        
-        try {
-            regex_ = std::regex(normalized_pattern.data(), flags);
-        } catch (const std::regex_error&) {
-            // Fallback to original pattern if Unicode processing fails
-            regex_ = std::regex(pattern_, flags);
+        if (is_ascii_only_) {
+            // Fast path for ASCII patterns - use std::regex directly
+            std::regex::flag_type flags = std::regex::ECMAScript;
+            if (case_insensitive_) {
+                flags |= std::regex::icase;
+            }
+            
+            try {
+                regex_ = std::regex(pattern_, flags);
+            } catch (const std::regex_error&) {
+                // Keep original pattern on regex error
+                regex_ = std::regex(pattern_, flags);
+            }
+        } else {
+            // Unicode path - normalize and process
+            UnicodeString norm_pattern(pattern_);
+            UnicodeString normalized_pattern = norm_pattern.normalize(normalization_);
+            
+            // Apply case folding if case-insensitive
+            if (case_insensitive_) {
+                normalized_pattern = normalized_pattern.case_fold();
+            }
+            
+            std::regex::flag_type flags = std::regex::ECMAScript;
+            if (case_insensitive_) {
+                flags |= std::regex::icase;
+            }
+            
+            try {
+                regex_ = std::regex(normalized_pattern.data(), flags);
+            } catch (const std::regex_error&) {
+                // Fallback to original pattern if Unicode processing fails
+                regex_ = std::regex(pattern_, flags);
+            }
         }
     }
     
@@ -238,24 +303,36 @@ public:
      * Search for matches in text
      */
     bool search(const UnicodeString& text) const {
-        UnicodeString normalized_text = text.normalize(normalization_);
-        if (case_insensitive_) {
-            normalized_text = normalized_text.case_fold();
+        if (is_ascii_only_ && is_ascii_string(text.data())) {
+            // Fast path for ASCII text with ASCII pattern
+            return std::regex_search(text.data(), regex_);
+        } else {
+            // Unicode path
+            UnicodeString normalized_text = text.normalize(normalization_);
+            if (case_insensitive_) {
+                normalized_text = normalized_text.case_fold();
+            }
+            
+            return std::regex_search(normalized_text.data(), regex_);
         }
-        
-        return std::regex_search(normalized_text.data(), regex_);
     }
     
     /**
      * Match entire text
      */
     bool match(const UnicodeString& text) const {
-        UnicodeString normalized_text = text.normalize(normalization_);
-        if (case_insensitive_) {
-            normalized_text = normalized_text.case_fold();
+        if (is_ascii_only_ && is_ascii_string(text.data())) {
+            // Fast path for ASCII text with ASCII pattern
+            return std::regex_match(text.data(), regex_);
+        } else {
+            // Unicode path
+            UnicodeString normalized_text = text.normalize(normalization_);
+            if (case_insensitive_) {
+                normalized_text = normalized_text.case_fold();
+            }
+            
+            return std::regex_match(normalized_text.data(), regex_);
         }
-        
-        return std::regex_match(normalized_text.data(), regex_);
     }
     
     /**
@@ -264,19 +341,33 @@ public:
     std::vector<std::pair<size_t, size_t>> find_all(const UnicodeString& text) const {
         std::vector<std::pair<size_t, size_t>> matches;
         
-        UnicodeString normalized_text = text.normalize(normalization_);
-        if (case_insensitive_) {
-            normalized_text = normalized_text.case_fold();
-        }
-        
-        try {
-            for (std::sregex_iterator it(normalized_text.data().begin(), 
-                                        normalized_text.data().end(), regex_), end; 
-                 it != end; ++it) {
-                matches.emplace_back(it->position(), it->length());
+        if (is_ascii_only_ && is_ascii_string(text.data())) {
+            // Fast path for ASCII text with ASCII pattern
+            try {
+                for (std::sregex_iterator it(text.data().begin(), 
+                                            text.data().end(), regex_), end; 
+                     it != end; ++it) {
+                    matches.emplace_back(it->position(), it->length());
+                }
+            } catch (const std::regex_error&) {
+                // Return empty result on regex error
             }
-        } catch (const std::regex_error&) {
-            // Return empty result on regex error
+        } else {
+            // Unicode path
+            UnicodeString normalized_text = text.normalize(normalization_);
+            if (case_insensitive_) {
+                normalized_text = normalized_text.case_fold();
+            }
+            
+            try {
+                for (std::sregex_iterator it(normalized_text.data().begin(), 
+                                            normalized_text.data().end(), regex_), end; 
+                     it != end; ++it) {
+                    matches.emplace_back(it->position(), it->length());
+                }
+            } catch (const std::regex_error&) {
+                // Return empty result on regex error
+            }
         }
         
         return matches;
@@ -287,6 +378,13 @@ public:
      */
     const std::regex& get_regex() const {
         return regex_;
+    }
+    
+    /**
+     * Check if this regex is using ASCII-only mode
+     */
+    bool is_ascii_mode() const {
+        return is_ascii_only_;
     }
 };
 
@@ -332,7 +430,8 @@ std::vector<MatchPosition> grep_unicode_impl(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim,
-    GrapaUnicode::NormalizationForm normalization
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC
 );
 
 std::vector<std::string> grep_extract_matches_unicode_impl(
@@ -340,7 +439,8 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim,
-    GrapaUnicode::NormalizationForm normalization
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC
 );
 
 // Main Unicode-aware grep functions with default parameters
@@ -349,9 +449,10 @@ inline std::vector<MatchPosition> grep_unicode(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim = "",
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
     GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC
 ) {
-    return grep_unicode_impl(input, pattern, options, line_delim, normalization);
+    return grep_unicode_impl(input, pattern, options, line_delim, mode, normalization);
 }
 
 inline std::vector<std::string> grep_extract_matches_unicode(
@@ -359,7 +460,8 @@ inline std::vector<std::string> grep_extract_matches_unicode(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim = "",
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
     GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC
 ) {
-    return grep_extract_matches_unicode_impl(input, pattern, options, line_delim, normalization);
+    return grep_extract_matches_unicode_impl(input, pattern, options, line_delim, mode, normalization);
 } 

@@ -17,7 +17,7 @@ limitations under the License.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "grapa_grep_unicode.hpp"
-#include "grapa_grep.hpp"
+//#include "grapa_grep.hpp"
 #include <regex>
 #include <map>
 #include <set>
@@ -49,6 +49,7 @@ std::vector<MatchPosition> grep_unicode_impl(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim,
+    ProcessingMode mode,
     NormalizationForm normalization
 ) {
     bool ignore_case = (options.find('i') != std::string::npos);
@@ -60,7 +61,127 @@ std::vector<MatchPosition> grep_unicode_impl(
     bool count_only = (options.find('c') != std::string::npos);
     bool exact_match = (options.find('x') != std::string::npos);
 
-    // Create Unicode-aware regex
+    // If binary mode is requested, use standard regex without Unicode processing
+    if (mode == ProcessingMode::BINARY_MODE) {
+        // Use standard std::regex for binary processing
+        std::regex::flag_type flags = std::regex::ECMAScript;
+        if (ignore_case) flags |= std::regex::icase;
+
+        std::regex rx;
+        try {
+            rx = std::regex(pattern, flags);
+        }
+        catch (const std::regex_error&) {
+            return {};
+        }
+
+        std::vector<MatchPosition> results;
+
+        if (all_mode) {
+            // If a delimiter is provided, remove all instances of the delimiter for matching
+            const std::string* match_input_ptr = &input;
+            std::string normalized_input;
+            if (!line_delim.empty()) {
+                normalized_input.reserve(input.size());
+                size_t pos = 0;
+                while (pos < input.size()) {
+                    size_t found = input.find(line_delim, pos);
+                    if (found == std::string::npos) {
+                        normalized_input.append(input, pos, input.size() - pos);
+                        break;
+                    }
+                    else {
+                        normalized_input.append(input, pos, found - pos);
+                        pos = found + line_delim.size();
+                    }
+                }
+                match_input_ptr = &normalized_input;
+            }
+            const std::string& match_input = *match_input_ptr;
+            
+            if (invert_match) {
+                std::vector<MatchPosition> matches;
+                for (std::sregex_iterator it(match_input.begin(), match_input.end(), rx), end; it != end; ++it) {
+                    matches.push_back({ static_cast<size_t>(it->position()), static_cast<size_t>(it->length()), 1 });
+                }
+                size_t prev_end = 0;
+                for (const auto& m : matches) {
+                    if (m.offset > prev_end) {
+                        results.push_back({ prev_end, m.offset - prev_end, 1 });
+                    }
+                    prev_end = m.offset + m.length;
+                }
+                if (prev_end < match_input.size()) {
+                    results.push_back({ prev_end, match_input.size() - prev_end, 1 });
+                }
+            }
+            else {
+                if (match_only) {
+                    for (std::sregex_iterator it(match_input.begin(), match_input.end(), rx), end; it != end; ++it) {
+                        results.push_back({ static_cast<size_t>(it->position()), static_cast<size_t>(it->length()), 1 });
+                    }
+                }
+                else {
+                    if (std::regex_search(match_input, rx)) {
+                        results.push_back({ 0, match_input.size(), 1 });
+                    }
+                }
+            }
+            return results;
+        }
+
+        std::string working_input = (line_delim.empty() && !all_mode) ? normalize_newlines(input) : input;
+        size_t offset = 0;
+        size_t line_number = 1;
+        
+        while (offset < working_input.size()) {
+            size_t next = line_delim.empty()
+                ? working_input.find('\n', offset)
+                : working_input.find(line_delim, offset);
+            if (next == std::string::npos) next = working_input.size();
+            else next += line_delim.empty() ? 1 : line_delim.size();
+
+            std::string_view line(working_input.data() + offset, next - offset);
+            std::string line_copy(line);
+
+            // Remove trailing newline for exact match
+            if (exact_match && !line_copy.empty() && line_copy.back() == '\n') {
+                line_copy.pop_back();
+            }
+
+            bool matched = exact_match ? std::regex_match(line_copy, rx) : std::regex_search(line_copy, rx);
+            
+            if ((!invert_match && matched) || (invert_match && !matched)) {
+                if (!match_only || invert_match) {
+                    size_t line_len = line.size();
+                    if (line.size() >= line_delim.size() &&
+                        line.compare(line.size() - line_delim.size(), line_delim.size(), line_delim) == 0)
+                    {
+                        line_len -= line_delim.size();
+                    }
+                    results.push_back({ offset, line_len, line_number });
+                }
+                else {
+                    if (exact_match) {
+                        if (matched) {
+                            results.push_back({ offset, line.size(), line_number });
+                        }
+                    }
+                    else {
+                        for (std::sregex_iterator it(line_copy.begin(), line_copy.end(), rx), end; it != end; ++it) {
+                            results.push_back({ offset + static_cast<size_t>(it->position()), static_cast<size_t>(it->length()), line_number });
+                        }
+                    }
+                }
+            }
+            offset = next;
+            ++line_number;
+        }
+
+        return results;
+    }
+
+    // Create Unicode-aware regex for Unicode mode
     UnicodeRegex unicode_rx(pattern, ignore_case, normalization);
 
     std::vector<MatchPosition> results;
@@ -176,12 +297,6 @@ bool ends_with(const std::string& str, const std::string& suffix) {
         str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
-struct ContextOptions {
-    int after = 0;
-    int before = 0;
-    int context = 0;
-};
-
 // Helper to parse options string for context options
 ContextOptions parse_context_options(const std::string& options, std::string& filtered_options) {
     ContextOptions ctx;
@@ -212,6 +327,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim,
+    ProcessingMode mode,
     NormalizationForm normalization
 ) {
     std::string filtered_options;
@@ -242,7 +358,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     } else {
         working_input = line_delim.empty() ? normalize_newlines(input) : input;
     }
-    auto matches = grep_unicode(working_input, pattern, filtered_options, line_delim, normalization);
+    auto matches = grep_unicode(working_input, pattern, filtered_options, line_delim, mode, normalization);
     std::vector<std::string> out;
 
     bool count_only = filtered_options.find('c') != std::string::npos;

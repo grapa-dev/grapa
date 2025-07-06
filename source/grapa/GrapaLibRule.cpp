@@ -16059,6 +16059,7 @@ GrapaRuleEvent* GrapaLibraryRuleReplaceEvent::Run(GrapaScriptExec* vScriptExec, 
 
 
 #include "grep/grapa_grep_unicode.hpp"
+#include "grep/grapa_grep_unicode.cpp"
 
 //#include "grep/grapa_grep_unicode.cpp"
 //#include "grep/test_grapa_grep.cpp"
