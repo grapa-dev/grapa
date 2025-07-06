@@ -13,7 +13,7 @@
 
 ## utf8proc
 - https://github.com/JuliaStrings/utf8proc
-- https://github.com/JuliaStrings/utf8proc/archive/refs/heads/master.zip
+- https://github.com/JuliaStrings/utf8proc/archive/v2.8.0.tar.gz
 
   
 # win-amd64
