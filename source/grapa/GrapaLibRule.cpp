@@ -16057,9 +16057,11 @@ GrapaRuleEvent* GrapaLibraryRuleReplaceEvent::Run(GrapaScriptExec* vScriptExec, 
 	return(result);
 }
 
-#include "grep/grapa_grep.hpp"
-#include "grep/grapa_grep.cpp"
-#include "grep/test_grapa_grep.cpp"
+
+#include "grep/grapa_grep_unicode.hpp"
+
+//#include "grep/grapa_grep_unicode.cpp"
+//#include "grep/test_grapa_grep.cpp"
 
 /*
 #include <string>
@@ -16282,7 +16284,7 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 
 	try {
 		std::regex rx(pattern, std::regex::ECMAScript);
-		auto matches = grep_extract_matches(input, pattern, options, delim);
+		auto matches = grep_extract_matches_unicode(input, pattern, options, delim);
 
 		result = new GrapaRuleEvent();
 		result->mValue.mToken = GrapaTokenType::ARRAY;
