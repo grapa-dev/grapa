@@ -19,6 +19,15 @@ limitations under the License.
 #include "GrapaSystem.h"
 #include "GrapaLink.h"
 #include "GrapaTime.h"
+#include <string>
+
+#ifdef WIN32
+	// Windows-specific includes (already included in GrapaSystem.h)
+#else
+#include <unistd.h>   // for read()
+#include <termios.h>  // for terminal settings (if needed)
+#include <errno.h>
+#endif
 
 #include <openssl/rand.h>
 
@@ -211,7 +220,7 @@ GrapaSystem::~GrapaSystem()
 //	Print(value, flush);
 //}
 
-int GrapaSystem::GetChar()
+int GrapaSystem::GetCharOLD()
 {
 	int ch=0;
 #ifdef WIN32
@@ -232,6 +241,54 @@ int GrapaSystem::GetChar()
 	ch = getchar();
 #endif
 	return ch;
+}
+
+std::string GrapaSystem::GetUtf8Char()
+{
+	std::string result;
+#ifdef WIN32
+	DWORD read;
+	WCHAR wch;
+	BOOL x = ReadConsoleW(mStdinRef, &wch, 1, &read, NULL);
+	if (x && read > 0) {
+		char utf8[5] = { 0 };
+		int utf8len = WideCharToMultiByte(CP_UTF8, 0, &wch, 1, utf8, sizeof(utf8), NULL, NULL);
+		if (utf8len > 0) {
+			result.assign(utf8, utf8len);
+		}
+	}
+#else
+	// POSIX: Read the first byte
+	unsigned char first;
+	ssize_t n = read(mStdinRef, &first, 1);
+	if (n == 1) {
+		result += first;
+		// Determine how many more bytes to read for this UTF-8 character
+		int expected = 0;
+		if ((first & 0x80) == 0x00) {
+			expected = 0; // ASCII, single byte
+		}
+		else if ((first & 0xE0) == 0xC0) {
+			expected = 1; // 2-byte sequence
+		}
+		else if ((first & 0xF0) == 0xE0) {
+			expected = 2; // 3-byte sequence
+		}
+		else if ((first & 0xF8) == 0xF0) {
+			expected = 3; // 4-byte sequence
+		}
+		for (int i = 0; i < expected; ++i) {
+			unsigned char next;
+			if (read(mStdinRef, &next, 1) == 1) {
+				result += next;
+			}
+			else {
+				break; // error or EOF
+			}
+		}
+	}
+#endif
+	return result;
 }
 
 void GrapaSystem::SetEcho(bool enable)
@@ -455,8 +512,10 @@ void My_Console::Stop()
 #include <stdio.h>
 #include <signal.h>
 #include <time.h>
+#include <vector>
+#include <iostream>
 
-void My_Console::Run(GrapaCB cb, void* data)
+void My_Console::RunOld(GrapaCB cb, void* data)
 {
 	mConsoleSend.mScriptState.EnablePrompt(&mRuleVariables);
 	while (!gSystem->mStop)
@@ -464,7 +523,7 @@ void My_Console::Run(GrapaCB cb, void* data)
 		GrapaCHAR sendBuffer;
 		int ch = 0;
 		do {
-			while (((ch = gSystem->GetChar()) != EOF) && (ch != '\n') && (ch != '\r'))
+			while (((ch = gSystem->GetCharOLD()) != EOF) && (ch != '\n') && (ch != '\r'))
 				sendBuffer.Append((char)ch);
 			if (sendBuffer.mLength == 1 && sendBuffer.StrNCmp(".") == 0)
 			{
@@ -488,6 +547,53 @@ void My_Console::Run(GrapaCB cb, void* data)
 				sendBuffer.SetLength(0);
 			}
 		} while (!gSystem->mStop && (sendBuffer.mLength || ch == '\n' || ch == '\r') && ch != EOF);
+	}
+}
+
+// Helper: Remove the last full UTF-8 character from a string
+void remove_last_utf8_char(std::string& str) {
+	if (str.empty()) return;
+	size_t i = str.size() - 1;
+	// Move back to the start of the last UTF-8 character
+	while (i > 0 && (static_cast<unsigned char>(str[i]) & 0xC0) == 0x80) {
+		--i;
+	}
+	str.erase(i);
+}
+
+void My_Console::Run(GrapaCB cb, void* data)
+{
+	mConsoleSend.mScriptState.EnablePrompt(&mRuleVariables);
+	while (!gSystem->mStop)
+	{
+		GrapaCHAR sendBuffer;
+		std::string input_line;
+		std::string ch;
+		do {
+			while (!((ch = gSystem->GetUtf8Char()).empty()) && (ch != "\n") && (ch != "\r"))
+				sendBuffer.Append(ch.c_str(), ch.length());
+			if (sendBuffer.mLength == 1 && sendBuffer.StrNCmp(".") == 0)
+			{
+				return;
+			}
+			if (sendBuffer.mLength == 1 && sendBuffer.StrNCmp(">") == 0)
+			{
+				Fl::lock();
+				sendBuffer.FROM("$editor();");
+				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (char*)sendBuffer.mBytes, sendBuffer.mLength);
+				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (u8*)"$\n", 2);
+				sendBuffer.SetLength(0);
+				while (!gSystem->mStop)
+					Fl::wait(1);
+				Fl::unlock();
+			}
+			if (ch.empty() || ch == "\n")
+			{
+				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (char*)sendBuffer.mBytes, sendBuffer.mLength);
+				mConsoleSend.Send(mConsoleSend.mScriptState.vScriptExec, &mRuleVariables, (u8*)"$\n", 2);
+				sendBuffer.SetLength(0);
+			}
+		} while (!gSystem->mStop && (sendBuffer.mLength || ch == "\n" || ch == "\r") && !ch.empty());
 	}
 }
 

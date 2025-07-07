@@ -457,6 +457,82 @@ void GrapaItemState::ReplaceTagEscape(GrapaCHAR& pValue)
 	pValue.SetLength(j);
 }
 
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <cstdint>
+
+// Helper: encode a single code point as UTF-8
+std::string utf8_encode(uint32_t codepoint) {
+	std::string out;
+	if (codepoint <= 0x7F) {
+		out += static_cast<char>(codepoint);
+	}
+	else if (codepoint <= 0x7FF) {
+		out += static_cast<char>(0xC0 | ((codepoint >> 6) & 0x1F));
+		out += static_cast<char>(0x80 | (codepoint & 0x3F));
+	}
+	else if (codepoint <= 0xFFFF) {
+		out += static_cast<char>(0xE0 | ((codepoint >> 12) & 0x0F));
+		out += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
+		out += static_cast<char>(0x80 | (codepoint & 0x3F));
+	}
+	else if (codepoint <= 0x10FFFF) {
+		out += static_cast<char>(0xF0 | ((codepoint >> 18) & 0x07));
+		out += static_cast<char>(0x80 | ((codepoint >> 12) & 0x3F));
+		out += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
+		out += static_cast<char>(0x80 | (codepoint & 0x3F));
+	}
+	return out;
+}
+
+// Convert ASCII hex buffer to UTF-8 string (4 bytes per code point)
+std::string hex_ascii_4byte_to_utf8(const unsigned char* buf, size_t len) {
+	std::string out;
+	for (size_t i = 0; i + 7 < len; i += 8) {
+		// Read 8 ASCII hex digits (4 bytes)
+		std::string hexstr(reinterpret_cast<const char*>(buf + i), 8);
+		uint32_t codepoint = std::stoul(hexstr, nullptr, 16);
+		out += utf8_encode(codepoint);
+	}
+	return out;
+}
+
+// For 4 hex digits (2 bytes, e.g. "0301"), use this:
+std::string hex_ascii_2byte_to_utf8(const unsigned char* buf, size_t len) {
+	std::string out;
+	for (size_t i = 0; i + 3 < len; i += 4) {
+		std::string hexstr(reinterpret_cast<const char*>(buf + i), 4);
+		uint32_t codepoint = std::stoul(hexstr, nullptr, 16);
+		out += utf8_encode(codepoint);
+	}
+	return out;
+}
+
+std::string hex_ascii_8byte_to_utf8(const unsigned char* buf, size_t len) {
+	std::string out;
+	for (size_t i = 0; i + 15 < len; i += 16) {
+		// Read 16 ASCII hex digits (8 bytes)
+		std::string hexstr(reinterpret_cast<const char*>(buf + i), 16);
+		uint64_t codepoint = std::stoull(hexstr, nullptr, 16);
+		out += utf8_encode(static_cast<uint32_t>(codepoint & 0x1FFFFF));
+	}
+	return out;
+}
+
+// Convert a single ASCII hex digit to its integer value
+unsigned char hex_digit_to_int(char c) {
+	if ('0' <= c && c <= '9') return c - '0';
+	if ('a' <= c && c <= 'f') return 10 + (c - 'a');
+	if ('A' <= c && c <= 'F') return 10 + (c - 'A');
+	throw std::invalid_argument("Invalid hex digit");
+}
+
+// Convert two ASCII hex characters to a single byte
+unsigned char hex_pair_to_byte(char high, char low) {
+	return (hex_digit_to_int(high) << 4) | hex_digit_to_int(low);
+}
+
 void GrapaItemState::Running()
 {
 	GrapaCHAR msgStr, expStr;
@@ -471,6 +547,8 @@ void GrapaItemState::Running()
 	u64 maxPos = 0, savePos = 0;
 	GrapaInt a, b;
 	char saveChar = 0;
+	unsigned char savehex[8];
+	std::string saveustr;
 	char quote = 0;
 	if (!mSync) WaitCritical();
 	if (GetQueue()) { if (!mSync) GetQueue()->mState = this; else GetQueue()->mState = NULL; }
@@ -565,6 +643,26 @@ void GrapaItemState::Running()
 				{
 					saveState = 0;
 					c = saveChar;
+					switch (savePos)
+					{
+					case 2:
+						nextValue->mMessage.mPos++;
+						msgStr.Append(c);
+						break;
+					case 4:
+					case 8:
+						nextValue->mMessage.mPos++;
+						msgStr.Append(saveustr.c_str(),saveustr.length());
+						break;
+					}
+					if (savePos)
+					{
+						saveChar = 0;
+						savePos = 0;
+						maxPos = 0;
+						saveustr.clear();
+						break;
+					}
 					if (c == quote || strchr(mItemParams->mParam[GrapaItemEnum::STRESC], c))
 					{
 						nextValue->mMessage.mPos++;
@@ -822,31 +920,38 @@ void GrapaItemState::Running()
 			case GrapaTokenItemType::ESCAPEX:
 				if (char *from = strchr(mItemParams->mParam[GrapaItemEnum::HEX], c))
 				{
-					u64 addHex = (from - mItemParams->mParam[GrapaItemEnum::HEX]);
-					if (addHex > 15) addHex -= 16;
-					saveChar = (char)(((u64)(((u64)saveChar) << ((u64)4))) | addHex);
+					savehex[savePos] = c;
 					savePos++;
 					if (savePos == maxPos)
 					{
-						switch (maxPos)
+						switch (savePos)
 						{
 						case 2:
+							saveChar = hex_pair_to_byte(savehex[0],savehex[1]);
 							state = saveState;
 							saveState = GrapaTokenItemType::ESCAPE;
 							break;
 						case 4:
-						case 8:
+							saveustr = hex_ascii_2byte_to_utf8(savehex, savePos);
 							saveChar = 0; // unicode not supported yet
 							state = saveState;
-							saveState = GrapaTokenItemType::ESCAPEERR;
+							saveState = GrapaTokenItemType::ESCAPE;
+							break;
+						case 8:
+							saveustr = hex_ascii_4byte_to_utf8(savehex, savePos);
+							saveChar = 0; // unicode not supported yet
+							state = saveState;
+							saveState = GrapaTokenItemType::ESCAPE;
 							break;
 						}
-						if (maxPos == 2) break;  // only supporting \xXX right now
+						break;
+						//if (maxPos == 2) break;  // only supporting \xXX right now
 					}
 				}
 				else
 				{
 					saveChar = 0;
+					savePos = 0;
 					state = saveState;
 					saveState = GrapaTokenItemType::ESCAPEERR;
 					break;

@@ -1,0 +1,349 @@
+truestr = "PASS";
+falsestr = "FAIL";
+
+"Simple ASCII match".echo();
+input = "hello world\nfoo bar\nbaz qux";
+result = input.grep(r"hello", "o");
+if (result == ["hello"]) truestr.echo(); else falsestr.echo();
+
+"Simple ASCII match 2".echo();
+result = input.grep(r"foo", "o");
+if (result == ["foo"]) truestr.echo(); else falsestr.echo();
+
+"Simple ASCII match 3".echo();
+result = input.grep(r"qux", "o");
+if (result == ["qux"]) truestr.echo(); else falsestr.echo();
+
+"Non-matching pattern".echo();
+result = input.grep(r"notfound", "o");
+if (result == []) truestr.echo(); else falsestr.echo();
+
+"Wildcard match".echo();
+result = input.grep(r"ba.", "o");
+if (result == ["bar", "baz"]) truestr.echo(); else falsestr.echo();
+
+"Line start anchor".echo();
+result = input.grep(r"^foo", "om");
+if (result == ["foo"]) truestr.echo(); else falsestr.echo();
+
+"Line end anchor".echo();
+result = input.grep(r"world$", "o");
+if (result == ["world"]) truestr.echo(); else falsestr.echo();
+
+"Double vowel (should not match)".echo();
+result = input.grep(r"[aeiou]{2}", "o");
+if (result == []) truestr.echo(); else falsestr.echo();
+
+"Single vowel match".echo();
+result = input.grep(r"[aeiou]", "o");
+if (result == ["e", "o", "o", "o", "a", "a", "a", "u"]) truestr.echo(); else falsestr.echo();
+
+"Word boundary test".echo();
+input = "The quick brown fox jumps over the lazy dog";
+result = input.grep(r"quick", "o");
+if (result == ["quick"]) truestr.echo(); else falsestr.echo();
+
+"Case insensitive match".echo();
+result = input.grep(r"the", "oi");
+if (result == ["the", "the"]) truestr.echo(); else falsestr.echo();
+
+"Character class with space".echo();
+result = input.grep(r"z.y", "o");
+if (result == ["z y"]) truestr.echo(); else falsestr.echo();
+
+"Word boundary with length".echo();
+result = input.grep(r"\b\w{3}\b", "o");
+if (result == ["The", "fox", "the", "dog"]) truestr.echo(); else falsestr.echo();
+
+"Line start with multiline".echo();
+input = "foo\nbar\nbaz\nqux";
+result = input.grep(r"^b", "om");
+if (result == ["bar", "baz"]) truestr.echo(); else falsestr.echo();
+
+"Match all lines".echo();
+result = input.grep(r".*", "om");
+if (result == ["foo", "bar", "baz", "qux"]) truestr.echo(); else falsestr.echo();
+
+"Digit matching".echo();
+input = "abc123xyz";
+result = input.grep(r"\d+", "o");
+if (result == ["123"]) truestr.echo(); else falsestr.echo();
+
+"Word character matching".echo();
+result = input.grep(r"\w+", "o");
+if (result == ["abc123xyz"]) truestr.echo(); else falsestr.echo();
+
+"Unicode coffee in different scripts".echo();
+input = "caf\u00e9\ncafe\u0301\nкофе\nκαφές\n咖啡";
+result = input.grep(r"caf", "o");
+if (result == ["caf", "caf", "caf"]) truestr.echo(); else falsestr.echo();
+
+"Unicode normalization NFC/NFD".echo();
+result = input.grep(r"café", "o");
+if (result == ["café", "café"]) truestr.echo(); else falsestr.echo();
+
+"Combining accent mark".echo();
+result = input.grep(r"\u0301", "o");
+if (result == ["́"]) truestr.echo(); else falsestr.echo();
+
+"Cyrillic script".echo();
+result = input.grep(r"кофе", "o");
+if (result == ["кофе"]) truestr.echo(); else falsestr.echo();
+
+"Greek script".echo();
+result = input.grep(r"καφές", "o");
+if (result == ["καφές"]) truestr.echo(); else falsestr.echo();
+
+"CJK script".echo();
+result = input.grep(r"咖啡", "o");
+if (result == ["咖啡"]) truestr.echo(); else falsestr.echo();
+
+"Line start with Unicode".echo();
+result = input.grep(r"^cafe", "om");
+if (result == ["café", "café"]) truestr.echo(); else falsestr.echo();
+
+"Greek line start".echo();
+result = input.grep(r"^κα", "om");
+if (result == ["καφές"]) truestr.echo(); else falsestr.echo();
+
+"CJK line start".echo();
+result = input.grep(r"^咖", "om");
+if (result == ["咖啡"]) truestr.echo(); else falsestr.echo();
+
+"Mathematical script".echo();
+input = "𝒜𝒷𝒸𝒹𝑒𝒻";
+result = input.grep(r"𝒸", "o");
+if (result == ["𝒸"]) truestr.echo(); else falsestr.echo();
+
+"Mathematical script case".echo();
+result = input.grep(r"𝒶", "o");
+if (result == ["𝒶"]) truestr.echo(); else falsestr.echo();
+
+"Spanish n with tilde normalization".echo();
+input = "mañana\nmañana";
+result = input.grep(r"mañana", "o");
+if (result == ["mañana", "mañana"]) truestr.echo(); else falsestr.echo();
+
+"Combining tilde".echo();
+result = input.grep(r"ñ", "o");
+if (result == ["ñ"]) truestr.echo(); else falsestr.echo();
+
+"Precomposed n with tilde".echo();
+result = input.grep(r"\u00f1", "o");
+if (result == ["ñ"]) truestr.echo(); else falsestr.echo();
+
+"Decomposed n with tilde".echo();
+result = input.grep(r"\u006e\u0303", "o");
+if (result == ["ñ"]) truestr.echo(); else falsestr.echo();
+
+"German sharp S case folding".echo();
+input = "straße\nSTRASSE\nStraße";
+result = input.grep(r"straße", "oi");
+if (result == ["straße", "STRASSE", "Straße"]) truestr.echo(); else falsestr.echo();
+
+"Turkish dotted I case folding".echo();
+input = "İstanbul\nistanbul\nISTANBUL";
+result = input.grep(r"istanbul", "oi");
+if (result == ["İstanbul", "istanbul", "ISTANBUL"]) truestr.echo(); else falsestr.echo();
+
+"Hebrew word boundary".echo();
+input = "שלום\nשָׁלוֹם\nمرحبا\nhello";
+result = input.grep(r"\bשלום\b", "o");
+if (result == ["שלום"]) truestr.echo(); else falsestr.echo();
+
+"Arabic word boundary".echo();
+result = input.grep(r"\bمرحبا\b", "o");
+if (result == ["مرحبا"]) truestr.echo(); else falsestr.echo();
+
+"Mixed script word characters".echo();
+input = "кофе\nчай\n123٤٥٦";
+result = input.grep(r"\w+", "o");
+if (result == ["кофе", "чай", "123", "٤٥٦"]) truestr.echo(); else falsestr.echo();
+
+"Mixed script digits".echo();
+result = input.grep(r"\d+", "o");
+if (result == ["123", "٤٥٦"]) truestr.echo(); else falsestr.echo();
+
+"Complex emoji sequences".echo();
+input = "emoji: 👩‍👩‍👧‍👦\nflag: 🇺🇳\nmod: 👍🏽";
+result = input.grep(r"👩‍👩‍👧‍👦", "o");
+if (result == ["👩‍👩‍👧‍👦"]) truestr.echo(); else falsestr.echo();
+
+"Flag emoji".echo();
+result = input.grep(r"🇺🇳", "o");
+if (result == ["🇺🇳"]) truestr.echo(); else falsestr.echo();
+
+"Emoji with modifier".echo();
+result = input.grep(r"👍🏽", "o");
+if (result == ["👍🏽"]) truestr.echo(); else falsestr.echo();
+
+"Rare Unicode characters".echo();
+input = "rare: 𐍈\nmath: 𝒜𝒷𝒸";
+result = input.grep(r"𐍈", "o");
+if (result == ["𐍈"]) truestr.echo(); else falsestr.echo();
+
+"Mathematical character".echo();
+result = input.grep(r"𝒸", "o");
+if (result == ["𝒸"]) truestr.echo(); else falsestr.echo();
+
+"Multiple combining marks".echo();
+input = "a\u0301\u0323\nạ́";
+result = input.grep(r"a\u0301\u0323", "o");
+if (result == ["ạ́"]) truestr.echo(); else falsestr.echo();
+
+"Precomposed with combining marks".echo();
+result = input.grep(r"ạ́", "o");
+if (result == ["ạ́"]) truestr.echo(); else falsestr.echo();
+
+"Unicode whitespace".echo();
+input = "space: \u2003\nnewline:\n";
+result = input.grep(r"\s", "o");
+if (result == [" ", "\u2003", "\n"]) truestr.echo(); else falsestr.echo();
+
+"Family emoji sequence".echo();
+input = "family: 👨‍👩‍👧‍👦\nwoman: 👩\nman: 👨";
+result = input.grep(r"👨‍👩‍👧‍👦", "o");
+if (result == ["👨‍👩‍👧‍👦"]) truestr.echo(); else falsestr.echo();
+
+"Flag emoji sequences".echo();
+input = "flag: 🇨🇦\nflag: 🇯🇵";
+result = input.grep(r"🇨🇦", "o");
+if (result == ["🇨🇦"]) truestr.echo(); else falsestr.echo();
+
+"Japanese flag".echo();
+result = input.grep(r"🇯🇵", "o");
+if (result == ["🇯🇵"]) truestr.echo(); else falsestr.echo();
+
+"Arabic text".echo();
+input = "arabic: مرحبا\nhebrew: שָׁלוֹם";
+result = input.grep(r"مرحبا", "o");
+if (result == ["مرحبا"]) truestr.echo(); else falsestr.echo();
+
+"Hebrew with diacritics".echo();
+result = input.grep(r"שָׁלוֹם", "o");
+if (result == ["שָׁלוֹם"]) truestr.echo(); else falsestr.echo();
+
+"Complex emoji with ZWJ".echo();
+input = "emoji: 👩‍❤️‍💋‍👩";
+result = input.grep(r"👩‍❤️‍💋‍👩", "o");
+if (result == ["👩‍❤️‍💋‍👩"]) truestr.echo(); else falsestr.echo();
+
+"Character class: letters and word characters".echo();
+input = "abc ΑΒΓ абв 漢字 😀";
+result = input.grep(r"\w+", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"Character class: digits".echo();
+input = "123 ٤٥٦ १२३ １２３";
+result = input.grep(r"\d+", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"Character class: whitespace".echo();
+input = "a b\tc\u00A0d\u3000e";
+result = input.grep(r"\s", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"Character class: combining marks".echo();
+input = "a\u0301 e\u0323 o\u0302\u0301";
+result = input.grep(r"[\u0300-\u036F\u1AB0-\u1AFF\u20D0-\u20FF]+", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"Fuzz: random Unicode (BMP, supplementary, emoji, combining, RTL, etc.)".echo();
+input = "a\u0301😀𐍈שָׁלוֹםمرحبا";
+result = input.grep(r".", "ou");
+if (result == ["a", "́", "😀", "𐍈", "ש", "ָ", "ׁ", "ל", "ו", "ֹ", "ם", "م", "ر", "ح", "ب", "ا"]) truestr.echo(); else falsestr.echo();
+
+"Fuzz: long string with mixed scripts and emoji".echo();
+input = "Latin: abc\nGreek: ΑΒΓ\nCyrillic: абв\nCJK: 漢字\nEmoji: 😀👍🏽🇺🇳";
+result = input.grep(r"\w+", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"Performance: very long line with repeated Unicode".echo();
+input = "";
+i = 0;
+while (i < 10000) { input += "😀"; i += 1; }
+result = input.grep(r"😀+", "o");
+if (result == [input]) truestr.echo(); else falsestr.echo();
+
+"Robustness: invalid UTF-8 (should not crash, may return empty or partial)".echo();
+input = "\xC3\x28";
+result = input.grep(r".", "o");
+if (result == []) truestr.echo(); else falsestr.echo();
+
+"Grapheme cluster: emoji with skin tone and ZWJ".echo();
+input = "👍🏽 👩‍👩‍👧‍👦 👨‍👩‍👧‍👦";
+result = input.grep(r"👍🏽", "o");
+if (result == ["👍🏽"]) truestr.echo(); else falsestr.echo();
+
+"Family emoji with ZWJ".echo();
+result = input.grep(r"👩‍👩‍👧‍👦", "o");
+if (result == ["👩‍👩‍👧‍👦"]) truestr.echo(); else falsestr.echo();
+
+"Mixed family emoji".echo();
+result = input.grep(r"👨‍👩‍👧‍👦", "o");
+if (result == ["👨‍👩‍👧‍👦"]) truestr.echo(); else falsestr.echo();
+
+"Character class: symbols and currency".echo();
+input = "$ € ¥ 𝛑 ∑";
+result = input.grep(r"[$€¥]", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"Character class: punctuation".echo();
+input = ".,;:!?""'—";
+result = input.grep(r"[.,;:!?\"'—]+", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"Character class: line and paragraph separators".echo();
+input = "a\u2028b\u2029c";
+result = input.grep(r"[\u2028\u2029]", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"Turkish dotted/dotless I case folding".echo();
+input = "I ı İ i";
+result = input.grep(r"i", "oi");
+if (result == ["I", "ı", "İ", "i"]) truestr.echo(); else falsestr.echo();
+
+"Greek sigma case folding".echo();
+input = "Σ σ ς";
+result = input.grep(r"σ", "oi");
+if (result == ["Σ", "σ", "ς"]) truestr.echo(); else falsestr.echo();
+
+"Zero-width joiner in emoji".echo();
+input = "👩‍👩‍👧‍👦 👩👩👧👦";
+result = input.grep(r"👩‍👩‍👧‍👦", "o");
+if (result == ["👩‍👩‍👧‍👦"]) truestr.echo(); else falsestr.echo();
+
+"Bidirectional text".echo();
+input = "english עברית english";
+result = input.grep(r"עברית", "o");
+if (result == ["עברית"]) truestr.echo(); else falsestr.echo();
+
+"Surrogate pair edge case".echo();
+input = "\uD83D\uDE00"; 
+result = input.grep(r"😀", "o");
+if (result == ["😀"]) truestr.echo(); else falsestr.echo();
+
+"Lone surrogate (should not crash)".echo();
+input = "\uD83D"; 
+result = input.grep(r".", "o");
+if (result == []) truestr.echo(); else falsestr.echo();
+
+"Word boundary with emoji".echo();
+input = "😀word😀";
+result = input.grep(r"\bword\b", "o");
+if (result == ["word"]) truestr.echo(); else falsestr.echo();
+
+"Line boundary with Unicode".echo();
+input = "😀\nword\n😀";
+result = input.grep(r"^word$", "om");
+if (result == ["word"]) truestr.echo(); else falsestr.echo();
+
+"Mixed content performance test".echo();
+input = "";
+i = 0;
+while (i < 1000) { if (i % 3 == 0) {input += "😀";} elseif (i % 3 == 1) { input += "café"; } else { input += "кофе"; };i += 1;};
+result = input.grep(r"😀", "o");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
+"All tests completed".echo(); 
+

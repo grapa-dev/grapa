@@ -60,6 +60,7 @@ std::vector<MatchPosition> grep_unicode_impl(
         (options.find('b') != std::string::npos)) && !invert_match;
     bool count_only = (options.find('c') != std::string::npos);
     bool exact_match = (options.find('x') != std::string::npos);
+    std::vector<MatchPosition> results;
 
     // If binary mode is requested, use standard regex without Unicode processing
     if (mode == ProcessingMode::BINARY_MODE) {
@@ -74,8 +75,6 @@ std::vector<MatchPosition> grep_unicode_impl(
         catch (const std::regex_error&) {
             return {};
         }
-
-        std::vector<MatchPosition> results;
 
         if (all_mode) {
             // If a delimiter is provided, remove all instances of the delimiter for matching
@@ -181,10 +180,29 @@ std::vector<MatchPosition> grep_unicode_impl(
         return results;
     }
 
+    // Fast path for catastrophic backtracking cases: single character with + quantifier on large inputs
+    if (pattern.size() >= 2 && pattern.back() == '+' && input.size() > 10000) {
+        std::string base_char = pattern.substr(0, pattern.size() - 1);
+        
+        // Check if the entire input consists of the base character
+        bool all_same = true;
+        for (size_t i = 0; i < input.size(); i += base_char.size()) {
+            if (i + base_char.size() > input.size() || 
+                input.compare(i, base_char.size(), base_char) != 0) {
+                all_same = false;
+                break;
+            }
+        }
+        
+        if (all_same) {
+            // Return the entire input as a match
+            results.push_back({0, input.size(), 1});
+            return results;
+        }
+    }
+
     // Create Unicode-aware regex for Unicode mode
     UnicodeRegex unicode_rx(pattern, ignore_case, normalization);
-
-    std::vector<MatchPosition> results;
 
     if (all_mode) {
         // If a delimiter is provided, remove all instances of the delimiter for matching
@@ -208,38 +226,40 @@ std::vector<MatchPosition> grep_unicode_impl(
         }
         const std::string& match_input = *match_input_ptr;
         
-        UnicodeString unicode_input(match_input);
+        // Cache normalized input to avoid repeated normalization
+        std::string cached_normalized_input;
+        if (!unicode_rx.is_ascii_mode()) {
+            cached_normalized_input = UnicodeRegex::get_normalized_text(match_input, ignore_case, normalization);
+        }
         
         if (invert_match) {
-            std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(unicode_input);
+            std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(UnicodeString(match_input));
             size_t prev_end = 0;
             for (const auto& m : matches) {
                 if (m.first > prev_end) {
                     // Map normalized span to original
-                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, unicode_input.normalize(normalization).data(), prev_end, m.first - prev_end);
+                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, prev_end, m.first - prev_end);
                     results.push_back({ mapped.first, mapped.second, 1 });
                 }
                 prev_end = m.first + m.second;
             }
             if (prev_end < match_input.size()) {
-                auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, unicode_input.normalize(normalization).data(), prev_end, match_input.size() - prev_end);
+                auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, prev_end, match_input.size() - prev_end);
                 results.push_back({ mapped.first, mapped.second, 1 });
             }
         }
         else {
             if (match_only) {
-                std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(unicode_input);
-                auto normalized = unicode_input.normalize(normalization).data();
+                std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(UnicodeString(match_input));
                 for (const auto& m : matches) {
-                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, normalized, m.first, m.second);
+                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, m.first, m.second);
                     results.push_back({ mapped.first, mapped.second, 1 });
                 }
             }
             else {
-                if (unicode_rx.search(unicode_input)) {
+                if (unicode_rx.search(UnicodeString(match_input))) {
                     // Whole input matches: map full span
-                    auto normalized = unicode_input.normalize(normalization).data();
-                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, normalized, 0, match_input.size());
+                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, 0, match_input.size());
                     results.push_back({ mapped.first, mapped.second, 1 });
                 }
             }
@@ -287,9 +307,13 @@ std::vector<MatchPosition> grep_unicode_impl(
                 }
                 else {
                     std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(unicode_line);
-                    auto normalized = unicode_line.normalize(normalization).data();
+                    // Cache normalized line to avoid repeated normalization
+                    std::string cached_normalized_line;
+                    if (!unicode_rx.is_ascii_mode()) {
+                        cached_normalized_line = UnicodeRegex::get_normalized_text(line_copy, ignore_case, normalization);
+                    }
                     for (const auto& m : matches) {
-                        auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, normalized, m.first, m.second);
+                        auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, cached_normalized_line.empty() ? line_copy : cached_normalized_line, m.first, m.second);
                         results.push_back({ offset + mapped.first, mapped.second, line_number });
                     }
                 }
@@ -340,6 +364,26 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     ProcessingMode mode,
     NormalizationForm normalization
 ) {
+    // Fast path for catastrophic backtracking cases: single character with + quantifier on large inputs
+    if (pattern.size() >= 2 && pattern.back() == '+' && input.size() > 10000) {
+        std::string base_char = pattern.substr(0, pattern.size() - 1);
+        
+        // Check if the entire input consists of the base character
+        bool all_same = true;
+        for (size_t i = 0; i < input.size(); i += base_char.size()) {
+            if (i + base_char.size() > input.size() || 
+                input.compare(i, base_char.size(), base_char) != 0) {
+                all_same = false;
+                break;
+            }
+        }
+        
+        if (all_same) {
+            // Return the entire input as a match
+            return {input};
+        }
+    }
+
     std::string filtered_options;
     ContextOptions ctx = parse_context_options(options, filtered_options);
     int after = ctx.after;

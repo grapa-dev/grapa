@@ -36,6 +36,7 @@ public:
 	~My_Console();
 	void Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run);
 	void Stop();
+	void RunOld(GrapaCB cb, void* data);
 	void Run(GrapaCB cb, void* data);
 };
 
@@ -187,7 +188,8 @@ public:
 	//void Print(const GrapaSU64& pValue, bool flush = true);
 	//void Print(u64 pValue, bool flush = true);
 	void PrintTimeLine(const char* pChar, bool flush = true);
-	int GetChar();
+	int GetCharOLD();
+	std::string GetUtf8Char();
 	void SetEcho(bool enable = true);
 	void SetLineInput(bool enable = true);
 	void RandSeed(u64 pSeed = 0);
