@@ -31,14 +31,17 @@ The Unicode grep functionality in Grapa provides advanced text searching capabil
 ## Syntax
 
 ```grapa
-string.grep(pattern, options)
+string.grep(pattern, options, delimiter, normalization, mode)
 ```
 
 ### Parameters
 
 - **string**: The input text to search
-- **pattern**: Regular expression pattern
+- **pattern**: PCRE2 regular expression pattern with Unicode support
 - **options**: String containing option flags
+- **delimiter**: Custom line delimiter (defaults to `\n`)
+- **normalization**: Unicode normalization form: `"NONE"`, `"NFC"`, `"NFD"`, `"NFKC"`, `"NFKD"` (default: `"NONE"`)
+- **mode**: Processing mode: `"UNICODE"` for full Unicode processing, `"BINARY"` for raw byte processing (default: `"UNICODE"`)
 
 ## Options Reference
 
@@ -77,6 +80,29 @@ string.grep(pattern, options)
 | `c` | Count of matches | `"text".grep("pattern", "c")` |
 | `d` | Deduplicate results | `"text".grep("pattern", "d")` |
 | `g` | Group results per line | `"text".grep("pattern", "g")` |
+
+## Additional Parameters
+
+### Unicode Normalization
+
+The `normalization` parameter controls Unicode normalization:
+
+| Value | Description | Use Case |
+|-------|-------------|----------|
+| `"NONE"` | No normalization (default) | Standard text processing |
+| `"NFC"` | Normalization Form Canonical Composition | Most common for text storage |
+| `"NFD"` | Normalization Form Canonical Decomposition | Unicode analysis |
+| `"NFKC"` | Normalization Form Compatibility Composition | Search and matching |
+| `"NFKD"` | Normalization Form Compatibility Decomposition | Compatibility processing |
+
+### Processing Mode
+
+The `mode` parameter controls how the input is processed:
+
+| Value | Description | Use Case |
+|-------|-------------|----------|
+| `"UNICODE"` | Full Unicode processing (default) | Text files, user input |
+| `"BINARY"` | Raw byte processing | Binary files, network data |
 
 ## Examples
 
@@ -185,6 +211,29 @@ string.grep(pattern, options)
 //   {"match":"user@domain.com","groups":{"email":"user@domain.com","phone":null},"offset":7,"line":1},
 //   {"match":"+1-555-1234","groups":{"email":null,"phone":"+1-555-1234"},"offset":25,"line":1}
 // ]
+```
+
+### Additional Parameters Examples
+
+```grapa
+// Unicode normalization examples
+"café".grep("cafe", "o", "", "NFC")
+// Result: ["café"] - NFC normalization matches decomposed form
+
+"café".grep("cafe", "o", "", "NFD")
+// Result: ["café"] - NFD normalization matches composed form
+
+// Binary mode for raw byte processing
+"\\x48\\x65\\x6c\\x6c\\x6f".grep("Hello", "o", "", "NONE", "BINARY")
+// Result: ["Hello"] - Binary mode processes raw bytes
+
+// Custom delimiter with normalization
+"apple|||pear|||banana".grep("\\w+", "o", "|||", "NFC")
+// Result: ["apple", "pear", "banana"] - Custom delimiter with NFC normalization
+
+// Binary mode with custom delimiter
+"data1\\x00data2\\x00data3".grep("data\\d+", "o", "\\x00", "NONE", "BINARY")
+// Result: ["data1", "data2", "data3"] - Binary mode with null delimiter
 ```
 
 ## Performance Features

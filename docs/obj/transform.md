@@ -125,10 +125,8 @@ Replaces iteems.
 "testing".replace("t","g") -> "gesging"
 ```
 
-## grep(pattern, options, delimiter) 
+## grep(pattern, options, delimiter, normalization, mode) 
 Extracts matches from a string using PCRE2-powered regular expressions with full Unicode support. Returns an array of results or JSON format with named groups.
-
-The `options` parameter is a string of one or more flags to control behavior. The `delimiter` defines what separates lines in the string (defaults to `\n` if blank).
 
 ### Parameters:
 
@@ -151,6 +149,8 @@ The `options` parameter is a string of one or more flags to control behavior. Th
   - `v` – Invert match (select non-matching lines or spans).
   - `x` – Match entire line exactly (equivalent to anchoring with `^` and `$`).
 - `delimiter` — Custom string used to split lines (defaults to `\n`). You can pass `\\n` to enforce newline behavior even when platform line endings vary.
+- `normalization` — Unicode normalization form: `"NONE"`, `"NFC"`, `"NFD"`, `"NFKC"`, `"NFKD"` (default: `"NONE"`).
+- `mode` — Processing mode: `"UNICODE"` for full Unicode processing, `"BINARY"` for raw byte processing (default: `"UNICODE"`).
 
 ### Examples:
 
@@ -174,6 +174,14 @@ The `options` parameter is a string of one or more flags to control behavior. Th
 // Context lines
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 2", "A1B1")
 → ["Line 1", "Line 2", "Line 3"]
+
+// Unicode normalization (NFC)
+"café".grep("cafe", "o", "", "NFC")
+→ ["café"]
+
+// Binary mode for raw byte processing
+"\\x48\\x65\\x6c\\x6c\\x6f".grep("Hello", "o", "", "NONE", "BINARY")
+→ ["Hello"]
 ```
 
 > **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](grep.md).**
