@@ -49,11 +49,19 @@ if ! command -v clang++ &> /dev/null; then
 fi
 
 if ! command -v grapa &> /dev/null; then
-    print_warning "grapa not found in PATH. Only C++ tests will be run."
-    GRAPA_AVAILABLE=false
+    if [[ -f "./grapa" ]]; then
+        print_success "Found grapa: ./grapa"
+        GRAPA_AVAILABLE=true
+        GRAPA_CMD="./grapa"
+    else
+        print_warning "grapa not found in PATH or current directory. Only C++ tests will be run."
+        GRAPA_AVAILABLE=false
+        GRAPA_CMD=""
+    fi
 else
     print_success "Found grapa: $(which grapa)"
     GRAPA_AVAILABLE=true
+    GRAPA_CMD="grapa"
 fi
 
 # Create results directory
@@ -74,13 +82,12 @@ run_cpp_test() {
     
     print_status "Running C++ test: $test_file"
     
-    # Build the test with correct files
+    # Build the test with correct files - compile utf8proc_data.c as C
     clang++ -std=c++17 -O3 -Isource -Isource/grep -Isource/utf8proc \
         -DUTF8PROC_STATIC \
         "$test_file" \
         source/grep/grapa_grep_unicode.cpp \
         source/utf8proc/utf8proc.c \
-        source/utf8proc/utf8proc_data.c \
         -framework CoreFoundation -framework AppKit -framework IOKit \
         -o "$RESULTS_DIR/test_program"
     
@@ -103,7 +110,7 @@ run_grapa_test() {
     print_status "Running Grapa test: $test_file"
     
     # Run the test and save output
-    grapa -f "$test_file" > "$output_file" 2>&1
+    $GRAPA_CMD -f "$test_file" > "$output_file" 2>&1
     
     print_success "Grapa test completed: $output_file"
 }
@@ -273,7 +280,6 @@ if [[ "$test_file" == *.cpp ]]; then
         "$test_file" \
         source/grep/grapa_grep_unicode.cpp \
         source/utf8proc/utf8proc.c \
-        source/utf8proc/utf8proc_data.c \
         -framework CoreFoundation -framework AppKit -framework IOKit \
         -o test_program
     
@@ -281,11 +287,11 @@ if [[ "$test_file" == *.cpp ]]; then
     ./test_program $options
     rm -f test_program
 elif [[ "$test_file" == *.grc ]]; then
-    if command -v grapa &> /dev/null; then
+    if [[ "$GRAPA_AVAILABLE" == "true" ]]; then
         echo "Running Grapa test..."
-        grapa -f "$test_file" $options
+        $GRAPA_CMD -f "$test_file" $options
     else
-        echo "ERROR: grapa not found in PATH"
+        echo "ERROR: grapa not found in PATH or current directory"
         exit 1
     fi
 else
