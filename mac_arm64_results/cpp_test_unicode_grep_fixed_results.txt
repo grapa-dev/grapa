@@ -1,0 +1,45 @@
+Unicode Grep Test (Fixed for Mac ARM64)
+========================================
+
+Test 1: Unicode Normalization
+Text 1: café (length: 5 bytes)
+Text 2: café (length: 6 bytes)
+Normalized Text 1: café (length: 5 bytes)
+Normalized Text 2: café (length: 5 bytes)
+Equal after normalization: YES
+
+Test 2: Case Folding
+Text 3: İstanbul
+Text 4: istanbul
+Case-folded Text 3: i̇stanbul
+Case-folded Text 4: istanbul
+Equal after case folding: NO
+
+Test 3: Unicode-Aware Grep
+Input text:
+café
+café
+İstanbul
+istanbul
+Pattern: café
+Matches found: 2
+  Line 1: offset=0, length=6
+  Line 2: offset=6, length=7
+
+Test 4: Unicode Character Count
+Text: café
+Byte count: 5
+Character count: 4
+Valid UTF-8: YES
+
+Test 5: Unicode Regex with Different Normalization Forms
+Test text:
+café
+café
+Pattern: café
+Matches with NFC: 2
+Matches with NFD: 2
+Matches with NFKC: 2
+Matches with NFKD: 2
+
+All tests completed successfully on Mac ARM64!

@@ -1,0 +1,18 @@
+Simple Mac ARM64 Unicode Grep Test
+===================================
+
+Original text: café (length: 5 bytes)
+Character count: 4
+Valid UTF-8: YES
+
+Normalized text: café (length: 5 bytes)
+
+Case-folded text: café (length: 5 bytes)
+
+Input: café
+coffee
+Pattern: café
+Matches found: 1
+  Line 1: offset=0, length=5
+
+Test completed successfully!

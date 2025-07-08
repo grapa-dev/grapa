@@ -1,0 +1,39 @@
+Unicode Fixed Test
+==================
+
+Input NFC: café
+Input NFD: café
+Pattern: café
+
+UTF-8 validation:
+NFC input valid: YES
+NFD input valid: YES
+Pattern valid: YES
+
+Character counts:
+NFC input chars: 5
+NFD input chars: 6
+Pattern chars: 4
+
+After NFC normalization:
+NFC input: café
+
+NFD input: café
+
+Pattern: café
+NFC input (hex): 63 61 66 c3 a9 0a 
+NFD input (hex): 63 61 66 c3 a9 0a 
+Pattern (hex): 63 61 66 c3 a9 
+
+Normalization changes:
+NFC changed: NO
+NFD changed: YES
+Pattern changed: NO
+
+Direct comparison:
+NFC matches pattern: NO
+NFD matches pattern: NO
+
+Regex matching:
+NFC regex match: YES
+NFD regex match: YES

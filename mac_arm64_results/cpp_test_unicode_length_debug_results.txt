@@ -1,0 +1,80 @@
+Unicode Length Debug Test (C++)
+===============================
+cafe1 (NFC): 'café'
+cafe1 length: 5
+cafe1 bytes: 636166c3a9
+cafe1 escaped: caf\xc3\xa9
+
+cafe2 (NFD): 'café'
+cafe2 length: 6
+cafe2 bytes: 63616665cc81
+cafe2 escaped: cafe\xcc\x81
+
+Full input:
+café
+café
+coffee
+Input length: 19
+Input bytes: 636166c3a90a63616665cc810a636f66666565
+
+Test 1: Searching for 'café' with match-only option
+Number of matches: 2
+Match 1:
+  Text: 'café'
+  Length: 5
+  Bytes: 636166c3a9
+  Escaped: caf\xc3\xa9
+
+Match 2:
+  Text: 'café'
+  Length: 6
+  Bytes: 63616665cc81
+  Escaped: cafe\xcc\x81
+
+Test 2: Raw match positions for 'café'
+Number of positions: 2
+Position 1:
+  Offset: 0
+  Length: 5
+  Line: 1
+  Extracted: 'café'
+  Extracted bytes: 636166c3a9
+  Extracted escaped: caf\xc3\xa9
+
+Position 2:
+  Offset: 6
+  Length: 7
+  Line: 2
+  Extracted: 'café
+'
+  Extracted bytes: 63616665cc810a
+  Extracted escaped: cafe\xcc\x81\x0a
+
+Test 3: Searching for 'cafe' (no accent)
+Number of matches: 0
+Test 4: Testing UnicodeRegex directly
+UnicodeRegex found 2 matches
+Regex Match 1:
+  Position: 0
+  Length: 5
+  Extracted from normalized: 'café'
+  Extracted bytes: 636166c3a9
+
+Regex Match 2:
+  Position: 6
+  Length: 5
+  Extracted from normalized: 'café'
+  Extracted bytes: 636166c3a9
+
+Test 5: Testing normalization directly
+cafe1 normalized (NFC): 'café'
+cafe1 normalized bytes: 636166c3a9
+cafe2 normalized (NFC): 'café'
+cafe2 normalized bytes: 636166c3a9
+Equal after normalization: YES
+
+Analysis:
+- Check if match lengths match expected byte counts
+- Look for truncation in byte representations
+- Verify Unicode normalization is working
+- Compare raw positions vs extracted strings

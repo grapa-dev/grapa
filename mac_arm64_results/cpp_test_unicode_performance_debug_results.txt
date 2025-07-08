@@ -1,0 +1,51 @@
+Unicode Performance Debug Test
+==============================
+
+Test input: café
+café
+hello
+world
+Pattern: café
+
+Test 1: UnicodeString creation
+UnicodeString creation: 0 microseconds
+
+Test 2: Normalization
+NFC normalization: 65 microseconds
+Normalized result: café
+café
+hello
+world
+
+Test 3: Case folding
+Case folding: 1 microseconds
+Folded result: café
+café
+hello
+world
+
+Test 4: UnicodeRegex creation
+UnicodeRegex creation: 17 microseconds
+Is ASCII mode: NO
+
+Test 5: Simple search
+Simple search: 37 microseconds
+Found: YES
+
+Test 6: Find all matches
+Find all matches: 2 microseconds
+Number of matches: 2
+
+Test 7: Direct grep call
+Direct grep call: 23 microseconds
+Number of results: 2
+
+Test 8: ASCII comparison
+ASCII grep call: 2 microseconds
+Number of results: 2
+
+Test 9: Binary mode comparison
+Binary mode grep call: 2 microseconds
+Number of results: 1
+
+Performance debug test completed!

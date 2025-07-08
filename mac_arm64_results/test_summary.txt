@@ -1,0 +1,26 @@
+=== Mac ARM64 Unicode Grep Test Summary ===
+Platform: Darwin arm64
+Date: Mon Jul  7 22:07:29 EDT 2025
+Compiler: Apple clang version 17.0.0 (clang-1700.0.13.5)
+
+Test Results:
+C++ Tests:
+  cpp_test_emoji_debug_results.txt:       33 lines
+  cpp_test_emoji_performance_results.txt:        6 lines
+  cpp_test_fast_path_results.txt:       16 lines
+  cpp_test_grep_fast_path_results.txt:       22 lines
+  cpp_test_simple_emoji_results.txt:       20 lines
+  cpp_test_simple_mac_results.txt:       18 lines
+  cpp_test_unicode_binary_mode_results.txt:       52 lines
+  cpp_test_unicode_debug_results.txt:       39 lines
+  cpp_test_unicode_fixed_results.txt:       39 lines
+  cpp_test_unicode_grep_fixed_results.txt:       45 lines
+  cpp_test_unicode_grep_validation_results.txt:       79 lines
+  cpp_test_unicode_hex_escape_results.txt:       39 lines
+  cpp_test_unicode_length_debug_results.txt:       80 lines
+  cpp_test_unicode_optimization_results.txt:       60 lines
+  cpp_test_unicode_performance_debug_results.txt:       51 lines
+  cpp_test_utf8proc_performance_results.txt:       26 lines
+Grapa Tests:
+  grapa_test_grapa_unicode_normalization_results.txt:        2 lines
+  grapa_unicode_grep_comprehensive_tests_results.txt:        1 lines

@@ -1,0 +1,33 @@
+Minimal Emoji Debug Test
+========================
+
+Test 1: Basic Unicode string creation
+String created successfully
+Size: 5 bytes
+
+Test 2: Simple emoji string
+Emoji string created successfully
+Size: 4 bytes
+
+Test 3: Unicode normalization
+Normalization successful
+Normalized size: 4 bytes
+
+Test 4: Simple regex creation
+Regex created successfully
+
+Test 5: Emoji regex creation
+Emoji regex created successfully
+
+Test 6: Simple search
+Search result: found
+
+Test 7: Emoji search
+Emoji search result: found
+
+Test 8: Small repeated emoji
+Small emoji string created: 12 bytes
+
+Test 9: Emoji pattern matching
+Error in minimal emoji test: One of *?+{ was not preceded by a valid regular expression.
+Test failed due to exception

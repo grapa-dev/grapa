@@ -1,0 +1,22 @@
+Grep Fast Path Test
+===================
+
+Input length: 40000 bytes
+Pattern: 😀+
+
+Testing grep_unicode with fast path:
+Time: 0 milliseconds
+Results found: 1
+First result: offset=0, length=40000
+Expected: offset=0, length=40000
+Match correct: YES
+
+Testing grep_extract_matches_unicode:
+Time: 0 milliseconds
+Extracted matches: 1
+First extracted: length=40000
+Expected: length=40000
+Extract correct: YES
+
+Fast path test completed!
+Expected performance: < 1 second (instead of 3+ minutes)
