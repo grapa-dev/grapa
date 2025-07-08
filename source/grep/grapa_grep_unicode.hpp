@@ -237,6 +237,12 @@ public:
 };
 
 /**
+ * Parse Unicode escapes in regex patterns
+ * Converts \uXXXX sequences to actual UTF-8 bytes
+ */
+std::string parse_unicode_escapes(const std::string& pattern);
+
+/**
  * Unicode-aware regex wrapper
  */
 class UnicodeRegex {
@@ -326,8 +332,11 @@ public:
         // Reset cache
         pattern_cached_ = false;
         
+        // Parse Unicode escapes in the pattern
+        std::string parsed_pattern = parse_unicode_escapes(pattern_);
+        
         // Check for potential catastrophic backtracking patterns
-        std::string optimized_pattern = optimize_pattern_for_performance(pattern_);
+        std::string optimized_pattern = optimize_pattern_for_performance(parsed_pattern);
 
 #ifdef USE_PCRE
         // Check if we should use PCRE (Unicode properties or complex Unicode)

@@ -586,4 +586,69 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     return out;
 }
 
+/**
+ * Parse Unicode escapes in regex patterns
+ * Converts \uXXXX sequences to actual UTF-8 bytes
+ */
+std::string parse_unicode_escapes(const std::string& pattern) {
+    std::string result;
+    result.reserve(pattern.size());
+    
+    for (size_t i = 0; i < pattern.size(); ++i) {
+        if (pattern[i] == '\\' && i + 1 < pattern.size() && pattern[i + 1] == 'u') {
+            // Found \u, check for 4 hex digits
+            if (i + 5 < pattern.size()) {
+                std::string hex_str = pattern.substr(i + 2, 4);
+                
+                // Check if all characters are hex digits
+                bool valid_hex = true;
+                for (char c : hex_str) {
+                    if (!std::isxdigit(static_cast<unsigned char>(c))) {
+                        valid_hex = false;
+                        break;
+                    }
+                }
+                
+                if (valid_hex) {
+                    // Convert hex to Unicode code point
+                    unsigned int code_point = std::stoul(hex_str, nullptr, 16);
+                    
+                    // Convert code point to UTF-8
+                    if (code_point <= 0x7F) {
+                        // 1-byte UTF-8
+                        result.push_back(static_cast<char>(code_point));
+                    } else if (code_point <= 0x7FF) {
+                        // 2-byte UTF-8
+                        result.push_back(static_cast<char>(0xC0 | (code_point >> 6)));
+                        result.push_back(static_cast<char>(0x80 | (code_point & 0x3F)));
+                    } else if (code_point <= 0xFFFF) {
+                        // 3-byte UTF-8
+                        result.push_back(static_cast<char>(0xE0 | (code_point >> 12)));
+                        result.push_back(static_cast<char>(0x80 | ((code_point >> 6) & 0x3F)));
+                        result.push_back(static_cast<char>(0x80 | (code_point & 0x3F)));
+                    } else if (code_point <= 0x10FFFF) {
+                        // 4-byte UTF-8
+                        result.push_back(static_cast<char>(0xF0 | (code_point >> 18)));
+                        result.push_back(static_cast<char>(0x80 | ((code_point >> 12) & 0x3F)));
+                        result.push_back(static_cast<char>(0x80 | ((code_point >> 6) & 0x3F)));
+                        result.push_back(static_cast<char>(0x80 | (code_point & 0x3F)));
+                    } else {
+                        // Invalid code point, keep original
+                        result.push_back(pattern[i]);
+                        continue;
+                    }
+                    
+                    i += 5; // Skip the \uXXXX sequence
+                    continue;
+                }
+            }
+        }
+        
+        // Copy character as-is
+        result.push_back(pattern[i]);
+    }
+    
+    return result;
+}
+
  

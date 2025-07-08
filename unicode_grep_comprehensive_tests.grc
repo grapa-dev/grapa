@@ -298,6 +298,11 @@ input = "a\u2028b\u2029c";
 result = input.grep(r"[\u2028\u2029]", "ou");
 if (result.len() > 0) truestr.echo(); else falsestr.echo();
 
+"Character class: line and paragraph separators (raw)".echo();
+input = "a" + "\xE2\x80\xA8" + "b" + "\xE2\x80\xA9" + "c";
+result = input.grep(r"[\xE2\x80\xA8\xE2\x80\xA9]", "ou");
+if (result.len() > 0) truestr.echo(); else falsestr.echo();
+
 "Turkish dotted/dotless I case folding".echo();
 input = "I ı İ i";
 result = input.grep(r"i", "oi");
