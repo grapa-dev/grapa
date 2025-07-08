@@ -329,15 +329,13 @@ namespace GrapaUnicode {
         void compile() {
             // Check if pattern is ASCII-only
             is_ascii_only_ = is_ascii_string(pattern_);
-
+            
             // Reset cache
             pattern_cached_ = false;
-
-            // Parse Unicode escapes in the pattern
-            std::string parsed_pattern = parse_unicode_escapes(pattern_);
-
+            
+            // Do NOT parse Unicode escapes here; caller is responsible
             // Check for potential catastrophic backtracking patterns
-            std::string optimized_pattern = optimize_pattern_for_performance(parsed_pattern);
+            std::string optimized_pattern = optimize_pattern_for_performance(pattern_);
 
 #ifdef USE_PCRE
             // Check if we should use PCRE (Unicode properties or complex Unicode)
