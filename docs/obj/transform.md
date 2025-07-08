@@ -126,35 +126,54 @@ Replaces iteems.
 ```
 
 ## grep(pattern, options, delimiter) 
-Extracts matches from a string using a regular expression pattern. Returns an array of results. 
+Extracts matches from a string using PCRE2-powered regular expressions with full Unicode support. Returns an array of results or JSON format with named groups.
 
 The `options` parameter is a string of one or more flags to control behavior. The `delimiter` defines what separates lines in the string (defaults to `\n` if blank).
 
 ### Parameters:
 
-- `pattern` — Regular expression string (ECMAScript-compatible).
+- `pattern` — PCRE2 regular expression string with Unicode support, named groups, and advanced features.
 - `options` — Combination of the following flags:
   - `a` – All mode: treat the entire input as one block (no line splitting).
+  - `A<n>` – Show n lines after match (context).
   - `b` – Prefix results with byte offset.
+  - `B<n>` – Show n lines before match (context).
   - `c` – Return count of matches (or count of deduplicated matches if `d` is also set).
+  - `C<n>` – Show n lines before and after match (context).
   - `d` – Deduplicate results (line-level by default, or substring-level when combined with `o`, `g`, or `b`).
   - `g` – Group matches per line.
-  - `i` – Case-insensitive match.
+  - `i` – Case-insensitive match with Unicode case folding.
+  - `j` – JSON output format with named groups, offsets, and line numbers.
   - `l` – Return only matching line numbers.
   - `n` – Prefix matches with line number.
+  - `N` – Normalize input and pattern to NFC Unicode form.
   - `o` – Output only matched substrings.
   - `v` – Invert match (select non-matching lines or spans).
   - `x` – Match entire line exactly (equivalent to anchoring with `^` and `$`).
 - `delimiter` — Custom string used to split lines (defaults to `\n`). You can pass `\\n` to enforce newline behavior even when platform line endings vary.
 
-### Example:
+### Examples:
 
 ```grapa
+// Basic pattern matching
 "apple 123 pear 456\nbanana 789".grep("\\d+", "o")
 → ["123", "456", "789"]
 
+// With line numbers
 "apple 123 pear 456\nbanana 789".grep("\\d+", "on")
 → ["1:123", "1:456", "2:789"]
+
+// Unicode support
+"Hello 世界 123 €".grep("\\p{L}+", "o")
+→ ["Hello", "世界"]
+
+// Named groups with JSON output
+"John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
+→ [{"match":"John Doe","groups":{"first":"John","last":"Doe"},"offset":0,"line":1}]
+
+// Context lines
+"Line 1\nLine 2\nLine 3\nLine 4".grep("Line 2", "A1B1")
+→ ["Line 1", "Line 2", "Line 3"]
 ```
 
 > **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](grep.md).**
