@@ -110,7 +110,7 @@ run_grapa_test() {
     print_status "Running Grapa test: $test_file"
     
     # Run the test and save output
-    $GRAPA_CMD -f "$test_file" > "$output_file" 2>&1
+    $GRAPA_CMD -cfile "$test_file" > "$output_file" 2>&1
     
     print_success "Grapa test completed: $output_file"
 }
@@ -312,7 +312,7 @@ if [[ "$test_file" == *.cpp ]]; then
 elif [[ "$test_file" == *.grc ]]; then
     if [[ "$GRAPA_AVAILABLE" == "true" ]]; then
         echo "Running Grapa test..."
-        $GRAPA_CMD -f "$test_file" $options
+        $GRAPA_CMD -cfile "$test_file" $options
     else
         echo "ERROR: grapa not found in PATH or current directory"
         exit 1
