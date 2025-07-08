@@ -58,7 +58,7 @@ cd prj/blst
 build
 
 copy bindings\*.h* and bindings\*.swg to source\blst
-copy *.lib and *.pdb to source\blst-lib\win
+copy *.lib and *.pdb to source\blst-lib\win-amd64
 ```
 
 ## utf8proc
@@ -67,6 +67,17 @@ copy *.lib and *.pdb to source\blst-lib\win
 
 ```
 
+## pcre2
+```
+rmdir /s /q build_static
+mkdir build_static
+cd build_static
+cmake -G "NMake Makefiles" -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DPCRE2_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=Release ..
+nmake
+
+copy ..\src to source\pcre2
+copy *.lib to source\pcre2-lib\win-amd64
+```
 
 # win-arm64
 
