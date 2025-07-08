@@ -67,15 +67,20 @@ run_cpp_test() {
     local test_file="$1"
     local output_file="$2"
     
+    if [[ ! -f "$test_file" ]]; then
+        print_warning "Test file not found: $test_file"
+        return
+    fi
+    
     print_status "Running C++ test: $test_file"
     
-    # Build the test
+    # Build the test with correct files
     clang++ -std=c++17 -O3 -Isource -Isource/grep -Isource/utf8proc \
         -DUTF8PROC_STATIC \
         "$test_file" \
         source/grep/grapa_grep_unicode.cpp \
-        source/grep/grapa_grep_unicode_regex.cpp \
         source/utf8proc/utf8proc.c \
+        source/utf8proc/utf8proc_data.c \
         -framework CoreFoundation -framework AppKit -framework IOKit \
         -o "$RESULTS_DIR/test_program"
     
@@ -246,38 +251,47 @@ cat > "$RESULTS_DIR/run_specific_test.sh" << 'EOF'
 
 # Script to run a specific Unicode grep test
 
-if [[ $# -lt 2 ]]; then
-    echo "Usage: $0 <pattern> <input> [options]"
-    echo "Example: $0 'café' 'café' 'o'"
+if [[ $# -lt 1 ]]; then
+    echo "Usage: $0 <test_file> [options]"
+    echo "Examples:"
+    echo "  $0 test_unicode_grep.cpp"
+    echo "  $0 unicode_grep_comprehensive_tests.grc"
     exit 1
 fi
 
-pattern="$1"
-input="$2"
-options="${3:-o}"
+test_file="$1"
+options="${2:-}"
 
 echo "=== Running Specific Unicode Grep Test ==="
-echo "Pattern: $pattern"
-echo "Input: $input"
-echo "Options: $options"
+echo "Test file: $test_file"
 echo
 
-# Build test program if needed
-if [[ ! -f "test_program" ]]; then
-    echo "Building test program..."
+if [[ "$test_file" == *.cpp ]]; then
+    echo "Building and running C++ test..."
     clang++ -std=c++17 -O3 -Isource -Isource/grep -Isource/utf8proc \
         -DUTF8PROC_STATIC \
-        test_unicode_grep.cpp \
+        "$test_file" \
         source/grep/grapa_grep_unicode.cpp \
-        source/grep/grapa_grep_unicode_regex.cpp \
         source/utf8proc/utf8proc.c \
+        source/utf8proc/utf8proc_data.c \
         -framework CoreFoundation -framework AppKit -framework IOKit \
         -o test_program
+    
+    echo "Running test..."
+    ./test_program $options
+    rm -f test_program
+elif [[ "$test_file" == *.grc ]]; then
+    if command -v grapa &> /dev/null; then
+        echo "Running Grapa test..."
+        grapa -f "$test_file" $options
+    else
+        echo "ERROR: grapa not found in PATH"
+        exit 1
+    fi
+else
+    echo "ERROR: Unsupported file type. Use .cpp or .grc files."
+    exit 1
 fi
-
-# Run the test
-echo "Result:"
-./test_program "$pattern" "$input" "$options"
 EOF
 
 chmod +x "$RESULTS_DIR/run_specific_test.sh"
