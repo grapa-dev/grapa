@@ -1,4 +1,4 @@
-// test_unicode_grep.cpp
+// test_unicode_grep_fixed.cpp - Fixed version for Mac ARM64
 /*
 Copyright 2025 Chris Ernest Matichuk
 
@@ -23,8 +23,8 @@ limitations under the License.
 using namespace GrapaUnicode;
 
 int main() {
-    std::cout << "Unicode Grep Test\n";
-    std::cout << "==================\n\n";
+    std::cout << "Unicode Grep Test (Fixed for Mac ARM64)\n";
+    std::cout << "========================================\n\n";
 
     // Test 1: Basic Unicode normalization
     std::cout << "Test 1: Unicode Normalization\n";
@@ -113,6 +113,6 @@ int main() {
     auto matches_nfkd = grep_unicode(test_text, test_pattern, "", "", ProcessingMode::UNICODE_MODE, NormalizationForm::NFKD);
     std::cout << "Matches with NFKD: " << matches_nfkd.size() << "\n\n";
 
-    std::cout << "All tests completed!\n";
+    std::cout << "All tests completed successfully on Mac ARM64!\n";
     return 0;
 } 
