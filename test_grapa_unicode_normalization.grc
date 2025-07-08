@@ -1,0 +1,57 @@
+// Test Unicode normalization with actual combining accent bytes
+// Create strings with the actual UTF-8 bytes for combining accents
+
+// cafe1: "café" in NFC form (precomposed é)
+// UTF-8: 63 61 66 c3 a9 (c + a + f + é)
+cafe1_utf8 = "\x63\x61\x66\xc3\xa9";
+
+// cafe2: "café" in NFD form (e + combining acute accent)
+// UTF-8: 63 61 66 65 cc 81 (c + a + f + e + combining acute accent)
+cafe2_utf8 = "\x63\x61\x66\x65\xcc\x81";
+
+// Create test input with both forms
+test_input_utf8 = cafe1_utf8 + "\n" + cafe2_utf8 + "\n" + "coffee";
+
+// Show the hex values
+"cafe1_utf8 hex:";
+cafe1_utf8.hex();
+"cafe2_utf8 hex:";
+cafe2_utf8.hex();
+"test_input_utf8 hex:";
+test_input_utf8.hex();
+
+// Test 1: Search for "café" (should match both forms with Unicode normalization)
+result1 = test_input_utf8.grep("café", "o");
+"Search for 'café':";
+result1.str();
+
+// Test 2: Search for "cafe" (should match both forms)
+result2 = test_input_utf8.grep("cafe", "o");
+"Search for 'cafe':";
+result2.str();
+
+// Test 3: Search for "caf" (should match both forms)
+result3 = test_input_utf8.grep("caf", "o");
+"Search for 'caf':";
+result3.str();
+
+// Test 4: Search for the combining accent character directly
+result4 = test_input_utf8.grep("\xcc\x81", "o");
+"Search for combining accent (cc 81):";
+result4.str();
+
+// Test 5: Search for the precomposed é character directly
+result5 = test_input_utf8.grep("\xc3\xa9", "o");
+"Search for precomposed é (c3 a9):";
+result5.str();
+
+// Test 6: Try with case-insensitive search
+result6 = test_input_utf8.grep("CAFÉ", "oi");
+"Case-insensitive search for 'CAFÉ':";
+result6.str();
+
+// Test 7: Show the actual string content
+"cafe1_utf8 content:";
+cafe1_utf8;
+"cafe2_utf8 content:";
+cafe2_utf8; 

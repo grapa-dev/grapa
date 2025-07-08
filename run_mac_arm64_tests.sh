@@ -115,36 +115,59 @@ run_grapa_test() {
     print_success "Grapa test completed: $output_file"
 }
 
+# Find and run C++ tests
+print_status "Finding C++ Unicode grep tests..."
+
+CPP_TEST_FILES=(
+    "test_unicode_grep_fixed.cpp"
+    "test_simple_mac.cpp"
+    "test_unicode_debug.cpp"
+    "test_unicode_fixed.cpp"
+    "test_unicode_binary_mode.cpp"
+    "test_unicode_grep_validation.cpp"
+    "test_unicode_performance_debug.cpp"
+    "test_unicode_optimization.cpp"
+    "test_unicode_length_debug.cpp"
+    "test_unicode_hex_escape.cpp"
+    "test_emoji_performance.cpp"
+    "test_emoji_debug.cpp"
+    "test_simple_emoji.cpp"
+    "test_fast_path.cpp"
+    "test_grep_fast_path.cpp"
+    "test_utf8proc_performance.cpp"
+)
+
 # Run existing C++ tests
 print_status "Running C++ Unicode grep tests..."
 
-if [[ -f "test_unicode_grep.cpp" ]]; then
-    run_cpp_test "test_unicode_grep.cpp" "$RESULTS_DIR/cpp_unicode_grep_results.txt"
-else
-    print_warning "test_unicode_grep.cpp not found"
-fi
+for test_file in "${CPP_TEST_FILES[@]}"; do
+    if [[ -f "$test_file" ]]; then
+        run_cpp_test "$test_file" "$RESULTS_DIR/cpp_${test_file%.cpp}_results.txt"
+    else
+        print_warning "C++ test file not found: $test_file"
+    fi
+done
 
-if [[ -f "test_unicode_debug.cpp" ]]; then
-    run_cpp_test "test_unicode_debug.cpp" "$RESULTS_DIR/cpp_unicode_debug_results.txt"
-else
-    print_warning "test_unicode_debug.cpp not found"
-fi
+# Find and run Grapa tests
+print_status "Finding Grapa Unicode grep tests..."
 
-if [[ -f "test_unicode_fixed.cpp" ]]; then
-    run_cpp_test "test_unicode_fixed.cpp" "$RESULTS_DIR/cpp_unicode_fixed_results.txt"
-else
-    print_warning "test_unicode_fixed.cpp not found"
-fi
+GRAPA_TEST_FILES=(
+    "unicode_grep_comprehensive_tests.grc"
+    "test_unicode_debug.grc"
+    "test_unicode_simple.grc"
+    "test_unicode_verify.grc"
+    "test_unicode_actual.grc"
+    "test_unicode_grapa.grc"
+    "test_basic_grapa.grc"
+    "test_binary_grapa.grc"
+    "test_grapa_unicode_normalization.grc"
+    "test_grapa_encoding.grc"
+    "test_unicode_length_debug.grc"
+    "test_console_font.grc"
+)
 
 # Run Grapa tests
 print_status "Running Grapa Unicode grep tests..."
-
-# Look for Grapa test files
-GRAPA_TEST_FILES=(
-    "grapa_test_grep_unicode.grc"
-    "test_unicode_debug.grc"
-    "grapa_unicode_tests.grc"
-)
 
 for test_file in "${GRAPA_TEST_FILES[@]}"; do
     if [[ -f "$test_file" ]]; then
