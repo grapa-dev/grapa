@@ -590,7 +590,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
  * Parse Unicode escapes in regex patterns
  * Converts \uXXXX sequences to actual UTF-8 bytes
  */
-std::string parse_unicode_escapes(const std::string& pattern) {
+std::string GrapaUnicode::parse_unicode_escapes(const std::string& pattern) {
     std::string result;
     result.reserve(pattern.size());
     
