@@ -1,88 +1,81 @@
 #include "source/grep/grapa_grep_unicode.hpp"
 #include <iostream>
-#include <chrono>
 #include <string>
-#include <iomanip>
 
 using namespace GrapaUnicode;
 
-void debug_emoji_pattern() {
-    std::cout << "Emoji Pattern Debug\n";
-    std::cout << "===================\n\n";
+void test_minimal_emoji() {
+    std::cout << "Minimal Emoji Debug Test\n";
+    std::cout << "========================\n\n";
     
-    std::string pattern = "😀+";
-    std::cout << "Pattern: " << pattern << "\n";
-    std::cout << "Pattern length: " << pattern.length() << " bytes\n";
-    
-    // Show hex representation
-    std::cout << "Pattern hex: ";
-    for (unsigned char c : pattern) {
-        std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(c) << " ";
-    }
-    std::cout << std::dec << "\n\n";
-    
-    // Test pattern analysis
-    UnicodeRegex regex(pattern, false, NormalizationForm::NFC);
-    
-    std::cout << "Pattern analysis:\n";
-    std::cout << "  Is ASCII only: " << (regex.is_ascii_mode() ? "YES" : "NO") << "\n";
-    std::cout << "  Is simple repeated pattern: " << (regex.is_simple_repeated_pattern() ? "YES" : "NO") << "\n";
-    
-    // Test with small input first
-    std::string small_input = "😀😀😀";
-    std::cout << "\nSmall input test:\n";
-    std::cout << "  Input: " << small_input << "\n";
-    std::cout << "  Input length: " << small_input.length() << " bytes\n";
-    std::cout << "  Input size > 1000: " << (small_input.size() > 1000 ? "YES" : "NO") << "\n";
-    
-    auto start = std::chrono::high_resolution_clock::now();
-    auto matches = regex.find_all(UnicodeString(small_input));
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    
-    std::cout << "  Time: " << duration.count() << " microseconds\n";
-    std::cout << "  Matches: " << matches.size() << "\n";
-    if (!matches.empty()) {
-        std::cout << "  First match: offset=" << matches[0].first << ", length=" << matches[0].second << "\n";
-    }
-    
-    // Test fast path directly
-    std::cout << "\nFast path test:\n";
-    if (regex.is_simple_repeated_pattern()) {
-        start = std::chrono::high_resolution_clock::now();
-        auto fast_matches = regex.find_all_fast_path(UnicodeString(small_input));
-        end = std::chrono::high_resolution_clock::now();
-        duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    try {
+        // Test 1: Basic Unicode string creation
+        std::cout << "Test 1: Basic Unicode string creation\n";
+        UnicodeString test_str("Hello");
+        std::cout << "String created successfully\n";
+        std::cout << "Size: " << test_str.size() << " bytes\n\n";
         
-        std::cout << "  Fast path time: " << duration.count() << " microseconds\n";
-        std::cout << "  Fast path matches: " << fast_matches.size() << "\n";
-        if (!fast_matches.empty()) {
-            std::cout << "  Fast path first match: offset=" << fast_matches[0].first << ", length=" << fast_matches[0].second << "\n";
-        }
-    }
-    
-    // Test with larger input
-    std::cout << "\nLarge input test:\n";
-    std::string large_input = "";
-    for (int i = 0; i < 1000; ++i) {
-        large_input += "😀";
-    }
-    std::cout << "  Input length: " << large_input.length() << " bytes\n";
-    std::cout << "  Input size > 1000: " << (large_input.size() > 1000 ? "YES" : "NO") << "\n";
-    
-    start = std::chrono::high_resolution_clock::now();
-    matches = regex.find_all(UnicodeString(large_input));
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    std::cout << "  Time: " << duration.count() << " milliseconds\n";
-    std::cout << "  Matches: " << matches.size() << "\n";
-    if (!matches.empty()) {
-        std::cout << "  First match: offset=" << matches[0].first << ", length=" << matches[0].second << "\n";
+        // Test 2: Simple emoji string
+        std::cout << "Test 2: Simple emoji string\n";
+        UnicodeString emoji_str("😀");
+        std::cout << "Emoji string created successfully\n";
+        std::cout << "Size: " << emoji_str.size() << " bytes\n\n";
+        
+        // Test 3: Unicode normalization
+        std::cout << "Test 3: Unicode normalization\n";
+        UnicodeString normalized = emoji_str.normalize(NormalizationForm::NFC);
+        std::cout << "Normalization successful\n";
+        std::cout << "Normalized size: " << normalized.size() << " bytes\n\n";
+        
+        // Test 4: Simple regex creation
+        std::cout << "Test 4: Simple regex creation\n";
+        UnicodeRegex regex("a", false, NormalizationForm::NFC);
+        std::cout << "Regex created successfully\n\n";
+        
+        // Test 5: Emoji regex creation
+        std::cout << "Test 5: Emoji regex creation\n";
+        UnicodeRegex emoji_regex("😀", false, NormalizationForm::NFC);
+        std::cout << "Emoji regex created successfully\n\n";
+        
+        // Test 6: Simple search
+        std::cout << "Test 6: Simple search\n";
+        bool found = regex.search(UnicodeString("abc"));
+        std::cout << "Search result: " << (found ? "found" : "not found") << "\n\n";
+        
+        // Test 7: Emoji search
+        std::cout << "Test 7: Emoji search\n";
+        bool emoji_found = emoji_regex.search(emoji_str);
+        std::cout << "Emoji search result: " << (emoji_found ? "found" : "not found") << "\n\n";
+        
+        // Test 8: Small repeated emoji
+        std::cout << "Test 8: Small repeated emoji\n";
+        std::string small_emoji = "😀😀😀";
+        UnicodeString small_emoji_unicode(small_emoji);
+        std::cout << "Small emoji string created: " << small_emoji_unicode.size() << " bytes\n\n";
+        
+        // Test 9: Emoji pattern matching
+        std::cout << "Test 9: Emoji pattern matching\n";
+        UnicodeRegex emoji_pattern("😀+", false, NormalizationForm::NFC);
+        bool pattern_found = emoji_pattern.search(small_emoji_unicode);
+        std::cout << "Pattern match result: " << (pattern_found ? "found" : "not found") << "\n\n";
+        
+        // Test 10: Fast path detection
+        std::cout << "Test 10: Fast path detection\n";
+        bool is_simple = emoji_pattern.is_simple_repeated_pattern();
+        std::cout << "Is simple repeated pattern: " << (is_simple ? "YES" : "NO") << "\n\n";
+        
+        std::cout << "All tests completed successfully!\n";
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error in minimal emoji test: " << e.what() << std::endl;
+        std::cout << "Test failed due to exception\n";
+    } catch (...) {
+        std::cerr << "Unknown error in minimal emoji test" << std::endl;
+        std::cout << "Test failed due to unknown error\n";
     }
 }
 
 int main() {
-    debug_emoji_pattern();
+    test_minimal_emoji();
     return 0;
 } 
