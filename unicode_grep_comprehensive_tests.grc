@@ -342,7 +342,7 @@ if (result.type() == $ERR) result.echo();
 
 "Character class: line and paragraph separators (raw)\n".echo();
 input = "a" + "\xE2\x80\xA8" + "b" + "\xE2\x80\xA9" + "c";
-result = input.grep(r"[\xE2\x80\xA8\xE2\x80\xA9]", "ou");
+result = input.grep("[\xE2\x80\xA8\xE2\x80\xA9]", "ou");
 if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
 if (result.type() == $ERR) result.echo();
 "---\n".echo();
@@ -404,13 +404,6 @@ if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".ec
 if (result.type() == $ERR) result.echo();
 "---\n".echo();
 
-"Character class: combining marks\n".echo();
-input = "a\u0301 e\u0323 o\u0302\u0301";
-result = input.grep("[\u0300-\u036F\u1AB0-\u1AFF\u20D0-\u20FF]+", "ou");
-if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
-if (result.type() == $ERR) result.echo();
-"---\n".echo();
-
 "Character class: letters and word characters\n".echo();
 input = "abc ΑΒΓ абв 漢字 😀";
 result = input.grep(r"\w+", "ou");
@@ -432,5 +425,197 @@ if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".ec
 if (result.type() == $ERR) result.echo();
 "---\n".echo();
 
+"Character class: combining marks\n".echo();
+input = "a\u0301 e\u0323 o\u0302\u0301";
+result = input.grep("[\u0300-\u036F\u1AB0-\u1AFF\u20D0-\u20FF]+", "ou");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+if (result.type() == $ERR) result.echo();
+"---\n".echo();
+
 "All tests completed\n".echo(); 
+
+"Custom delimiter: basic match\n".echo();
+input = "hello world|||foo bar|||baz qux";
+result = input.grep(r"foo", "o", "|||");
+if (result == ["foo"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Custom delimiter: match at start, middle, end\n".echo();
+input = "start|||middle|||end";
+result = input.grep(r"start", "o", "|||");
+if (result == ["start"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r"end", "o", "|||");
+if (result == ["end"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Custom delimiter: trailing delimiter\n".echo();
+input = "foo|||bar|||";
+result = input.grep(r"bar", "o", "|||");
+if (result == ["bar"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Custom delimiter: multi-character with regex special chars\n".echo();
+input = "a.b|c.d|e.f";
+result = input.grep(r"c.d", "o", "|");
+if (result == ["c.d"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Custom delimiter: no matches\n".echo();
+input = "foo|||bar|||baz";
+result = input.grep(r"qux", "o", "|||");
+if (result == []) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Custom delimiter: delimiter not present in input\n".echo();
+input = "foo bar baz";
+result = input.grep(r"foo", "o", "|||");
+if (result == ["foo"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Custom delimiter: empty delimiter (should default to newline)\n".echo();
+input = "foo\nbar\nbaz";
+result = input.grep(r"bar", "o", "");
+if (result == ["bar"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo(); 
+
+"Explicit normalization: NONE (should not match decomposed with composed)\n".echo();
+input = "cafe\u00e9\ncafe\u00e9";
+result = input.grep(r"café", "o", "", "NONE");
+if (result == ["café"]) "PASS\n".echo(); else "FAIL\n".echo();
+input = "cafe\u00e9\ncafe\u00e9";
+result = input.grep(r"cafe\u0301", "o", "", "NONE");
+if (result == []) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Explicit normalization: NFC (should match composed and decomposed)\n".echo();
+input = "café\ncafe\u0301";
+result = input.grep(r"café", "o", "", "NFC");
+if (result == ["café", "café"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r"cafe\u0301", "o", "", "NFC");
+if (result == ["café", "café"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Explicit normalization: NFD (should match composed and decomposed)\n".echo();
+input = "café\ncafe\u0301";
+result = input.grep(r"café", "o", "", "NFD");
+if (result == ["café", "café"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r"cafe\u0301", "o", "", "NFD");
+if (result == ["café", "café"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Explicit normalization: NFKC (should match compatibility forms)\n".echo();
+input = "A\n\u212B";
+result = input.grep(r"Å", "o", "", "NFKC");
+if (result == ["Å", "Å"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r"\u212B", "o", "", "NFKC");
+if (result == ["Å", "Å"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Explicit normalization: NFKD (should match compatibility forms)\n".echo();
+input = "Å\u212B";
+result = input.grep(r"Å", "o", "", "NFKD");
+if (result == ["Å", "Å"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r"\u212B", "o", "", "NFKD");
+if (result == ["Å", "Å"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo(); 
+
+"Hex output: ASCII character\n".echo();
+if ("A".hex() == "41") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: Latin-1 Supplement (é)\n".echo();
+if ("é".hex() == "C3A9") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: BMP CJK character (漢)\n".echo();
+if ("漢".hex() == "E6BCA2") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: Emoji (😀)\n".echo();
+if ("😀".hex() == "F09F9880") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: Emoji with skin tone (👍🏽)\n".echo();
+if ("👍🏽".hex() == "F09F918DF09F8FBD") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: ZWJ sequence (👩‍👩‍👧‍👦)\n".echo();
+if ("👩‍👩‍👧‍👦".hex() == "F09F91A9E2808DF09F91A9E2808DF09F91A7E2808DF09F91A6") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: ZWJ sequence (👩‍👩‍)\n".echo();
+if ("👩‍👩‍".hex() == "F09F91A9E2808DF09F91A9E2808D") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: Combining mark (á)\n".echo();
+if ("a\u0301".hex() == "61CC81") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: RTL character (א)\n".echo();
+if ("א".hex() == "D790") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: Surrogate pair (U+1F4A9, 💩)\n".echo();
+if ("💩".hex() == "F09F92A9") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: Multiple scripts (A漢😀)\n".echo();
+if ("A漢😀".hex() == "41E6BCA2F09F9880") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: Flag emoji (🇺🇳)\n".echo();
+if ("🇺🇳".hex() == "F09F87BAF09F87B3") "PASS\n".echo(); else "FAIL\n".echo();
+
+"Hex output: Family emoji (👨‍👩‍👧‍👦)\n".echo();
+if ("👨‍👩‍👧‍👦".hex() == "F09F91A8E2808DF09F91A9E2808DF09F91A7E2808DF09F91A6") "PASS\n".echo(); else "FAIL\n".echo(); 
+
+"Binary mode: composed vs decomposed é (should only match exact bytes)\n".echo();
+input = "café\ncafe\u0301";
+result = input.grep(r"café", "o", "", "NONE", "BINARY");
+if (result == ["café"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r"cafe\u0301", "o", "", "NONE", "BINARY");
+if (result == ["café"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Binary mode: Unicode word boundary is ASCII-only\n".echo();
+input = "кофе\ncafe\n123";
+result = input.grep(r"\b\w+\b", "o", "", "NONE", "BINARY");
+if (result == ["cafe", "123"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Binary mode: emoji is matched as bytes, not grapheme\n".echo();
+input = "emoji: 😀";
+result = input.grep(r"😀", "o", "", "NONE", "BINARY");
+if (result == ["😀"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r".", "o", "", "NONE", "BINARY");
+if (result == ["e", "m", "o", "j", "i", ":", " ", "\xF0", "\x9F", "\x98", "\x80"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Binary mode: combining marks are not combined\n".echo();
+input = "a\u0301";
+result = input.grep(r"a", "o", "", "NONE", "BINARY");
+if (result == ["a"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r"\u0301", "o", "", "NONE", "BINARY");
+if (result == ["́"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"Binary mode: ASCII case-insensitive works, Unicode does not\n".echo();
+input = "straße\nSTRASSE\nStraße";
+result = input.grep(r"straße", "oi", "", "NONE", "BINARY");
+if (result == ["straße"]) "PASS\n".echo(); else "FAIL\n".echo();
+result = input.grep(r"STRASSE", "oi", "", "NONE", "BINARY");
+if (result == ["STRASSE"]) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo(); 
+
+"JSON output: named groups and offsets\n".echo();
+input = "2023-04-27\n2022-12-31";
+result = input.grep(r"(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj");
+expected = '[{"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},{"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}]';
+if (result[0] == expected) "PASS\n".echo(); else { "FAIL\n".echo(); result[0].echo(); }
+"---\n".echo();
+
+"JSON output: no named groups\n".echo();
+input = "foo bar\nbaz qux";
+result = input.grep(r"ba.", "oj");
+expected = '[{"match":"bar","offset":4,"line":1},{"match":"baz","offset":8,"line":2}]';
+if (result[0] == expected) "PASS\n".echo(); else { "FAIL\n".echo(); result[0].echo(); }
+"---\n".echo();
+
+"JSON output: Unicode and line numbers\n".echo();
+input = "café\ncafe\u0301";
+result = input.grep(r"café", "oj");
+expected = '[{"match":"café","offset":0,"line":1}]';
+if (result[0] == expected) "PASS\n".echo(); else { "FAIL\n".echo(); result[0].echo(); }
+"---\n".echo(); 
+
+
 

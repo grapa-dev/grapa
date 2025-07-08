@@ -533,6 +533,15 @@ unsigned char hex_pair_to_byte(char high, char low) {
 	return (hex_digit_to_int(high) << 4) | hex_digit_to_int(low);
 }
 
+// Returns true if the codepoint is a high surrogate
+bool is_high_surrogate(uint16_t cp) { return cp >= 0xD800 && cp <= 0xDBFF; }
+// Returns true if the codepoint is a low surrogate
+bool is_low_surrogate(uint16_t cp) { return cp >= 0xDC00 && cp <= 0xDFFF; }
+// Combine surrogate pair to codepoint
+uint32_t combine_surrogates(uint16_t high, uint16_t low) {
+	return 0x10000 + (((uint32_t)high - 0xD800) << 10) + ((uint32_t)low - 0xDC00);
+}
+
 void GrapaItemState::Running()
 {
 	GrapaCHAR msgStr, expStr;

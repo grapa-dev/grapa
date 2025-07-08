@@ -157,6 +157,8 @@ The `options` parameter is a string of one or more flags to control behavior. Th
 → ["1:123", "1:456", "2:789"]
 ```
 
+> **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](grep.md).**
+
 
 ## split(sep, max, axis)
 Splits into an array.

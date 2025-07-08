@@ -26,17 +26,27 @@ limitations under the License.
 /*
  Supported grep options:
    a - All-mode (match across full input string)
+   A<n> - Show n lines after match (context)
    b - Output byte offset with matches
+   B<n> - Show n lines before match (context)
    c - Count of matches (deduplicated if 'd' is also set)
+   C<n> - Show n lines before and after match (context)
    d - Deduplicate results (by line or match depending on mode)
    g - Group results per line
    i - Case-insensitive matching
+   j - JSON output format with named groups, offsets, and line numbers
    l - Line number only output (per matched line)
    n - Prefix matches with line numbers
+   N - Normalize input and pattern to NFC before matching
    o - Match-only (output only matched text)
    v - Invert match (return non-matching lines or spans)
    x - Exact line match (whole line must match pattern)
    line_delim - Custom line delimiter (default: \n)
+   
+   Context options (A, B, C) can be combined with numbers:
+   - A1, A2, A3... (show 1, 2, 3... lines after)
+   - B1, B2, B3... (show 1, 2, 3... lines before)  
+   - C1, C2, C3... (show 1, 2, 3... lines before and after)
 */
 
 #include <string>
@@ -45,13 +55,21 @@ limitations under the License.
 #include <memory>
 #include <cstring>
 #include <map>
+#include <mutex> // Added for thread-safe caching
+#include <tuple> // Added for tuple in text_cache_
 
-// Optional PCRE2 support - define USE_PCRE to enable
-#ifdef USE_PCRE
-#ifdef PCRE2_STATIC
-#define PCRE2_STATIC
+
+#ifdef _WIN32
+#if defined(_M_ARM64)
+#elif defined(_M_X64)
+#define USE_PCRE
 #endif
-#include <pcre2.h>
+#endif
+
+#ifdef USE_PCRE
+#define PCRE2_STATIC
+#define PCRE2_CODE_UNIT_WIDTH 8
+#include "pcre2/pcre2.h"
 #endif
 
 // Include the original grep header for MatchPosition struct
@@ -78,6 +96,7 @@ namespace GrapaUnicode {
      * Unicode normalization forms
      */
     enum class NormalizationForm {
+        NONE,  // No normalization (default, matches standard grep tools)
         NFC,   // Normalization Form Canonical Composition
         NFD,   // Normalization Form Canonical Decomposition
         NFKC,  // Normalization Form Compatibility Composition
@@ -251,47 +270,48 @@ namespace GrapaUnicode {
         bool case_insensitive_;
         NormalizationForm normalization_;
         bool is_ascii_only_;  // Track if pattern is ASCII-only
-
-        // Cached normalized pattern for Unicode processing
         mutable std::string cached_normalized_pattern_;
         mutable bool pattern_cached_ = false;
+        bool compilation_error_ = false;  // Track if compilation failed
 
 #ifdef USE_PCRE
-        // PCRE2 support
         pcre2_code* pcre_regex_ = nullptr;
         pcre2_match_data* pcre_match_data_ = nullptr;
-        bool use_pcre_ = false;
-
-        // Check if pattern contains Unicode property escapes
-        bool has_unicode_properties(const std::string& pattern) const {
-            return pattern.find("\\p{") != std::string::npos ||
-                pattern.find("\\P{") != std::string::npos;
-        }
 #endif
+
+        static bool has_unicode_properties(const std::string& pattern);
+        static bool has_named_groups(const std::string& pattern) {
+            return pattern.find("(?P<") != std::string::npos;
+        }
 
         std::regex regex_;  // Standard regex for non-PCRE mode
-
     public:
         UnicodeRegex(const std::string& pattern, bool case_insensitive = false,
-            NormalizationForm norm = NormalizationForm::NFC)
-            : pattern_(pattern), case_insensitive_(case_insensitive), normalization_(norm) {
-            compile();
-        }
+            NormalizationForm norm = NormalizationForm::NFC);
+        ~UnicodeRegex();
 
-        ~UnicodeRegex() {
+        bool use_pcre_ = false;
+
+        /* Check if compilation was successful */
+        bool is_valid() const { return !compilation_error_; }
+
+        /* Check if PCRE2 is being used and is valid */
+        bool is_pcre_valid() const { 
 #ifdef USE_PCRE
-            if (pcre_regex_) {
-                pcre2_code_free(pcre_regex_);
-            }
-            if (pcre_match_data_) {
-                pcre2_match_data_free(pcre_match_data_);
-            }
+            return use_pcre_ && pcre_regex_ != nullptr && !compilation_error_;
+#else
+            return false;
 #endif
         }
 
-        /**
-         * Check if string contains only ASCII characters
-         */
+        /* Get PCRE2 code pointer for JSON output (only if valid) */
+#ifdef USE_PCRE
+        pcre2_code* get_pcre_code() const { 
+            return is_pcre_valid() ? pcre_regex_ : nullptr;
+        }
+#endif
+
+        /* Check if pattern is ASCII-only */
         static bool is_ascii_string(const std::string& str) {
             for (unsigned char c : str) {
                 if (c > 127) return false;
@@ -299,551 +319,246 @@ namespace GrapaUnicode {
             return true;
         }
 
-        /**
-         * Get normalized pattern (cached for reuse)
-         */
-        const std::string& get_normalized_pattern() const {
+        /* Get normalized pattern for caching */
+        std::string get_normalized_pattern() const {
             if (!pattern_cached_) {
-                if (is_ascii_only_) {
-                    cached_normalized_pattern_ = pattern_;
-                }
-                else {
+                if (normalization_ != NormalizationForm::NONE) {
                     UnicodeString norm_pattern(pattern_);
-                    UnicodeString normalized_pattern = norm_pattern.normalize(normalization_);
-
-                    // Apply case folding if case-insensitive
-                    if (case_insensitive_) {
-                        normalized_pattern = normalized_pattern.case_fold();
-                    }
-
-                    cached_normalized_pattern_ = normalized_pattern.data();
+                    cached_normalized_pattern_ = norm_pattern.normalize(normalization_).data();
+                } else {
+                    cached_normalized_pattern_ = pattern_;
                 }
                 pattern_cached_ = true;
             }
             return cached_normalized_pattern_;
         }
 
-        /**
-         * Compile the regex pattern with Unicode support
-         */
-        void compile() {
-            // Check if pattern is ASCII-only
-            is_ascii_only_ = is_ascii_string(pattern_);
-            
-            // Reset cache
-            pattern_cached_ = false;
-            
-            // Do NOT parse Unicode escapes here; caller is responsible
-            // Check for potential catastrophic backtracking patterns
-            std::string optimized_pattern = optimize_pattern_for_performance(pattern_);
+        void compile();
 
-#ifdef USE_PCRE
-            // Check if we should use PCRE (Unicode properties or complex Unicode)
-            use_pcre_ = has_unicode_properties(optimized_pattern) ||
-                (!is_ascii_only_ && case_insensitive_);
-
-            if (use_pcre_) {
-                // Use PCRE2 for Unicode property escapes
-                int errorcode;
-                PCRE2_SIZE erroroffset;
-
-                uint32_t options = PCRE2_UTF;
-                if (case_insensitive_) {
-                    options |= PCRE2_CASELESS;
-                }
-
-                // Normalize pattern if needed
-                std::string final_pattern = optimized_pattern;
-                if (!is_ascii_only_) {
-                    UnicodeString norm_pattern(optimized_pattern);
-                    UnicodeString normalized_pattern = norm_pattern.normalize(normalization_);
-                    final_pattern = normalized_pattern.data();
-                }
-
-                pcre_regex_ = pcre2_compile(
-                    reinterpret_cast<PCRE2_SPTR>(final_pattern.c_str()),
-                    PCRE2_ZERO_TERMINATED,
-                    options,
-                    &errorcode,
-                    &erroroffset,
-                    nullptr
-                );
-
-                if (!pcre_regex_) {
-                    // Fallback to std::regex on PCRE2 compilation error
-                    use_pcre_ = false;
-                }
-                else {
-                    pcre_match_data_ = pcre2_match_data_create_from_pattern(pcre_regex_, nullptr);
-                    return; // PCRE2 compilation successful
-                }
-            }
-#endif
-
-            // Standard std::regex path (fallback or when PCRE not available)
-            if (is_ascii_only_) {
-                // Fast path for ASCII patterns - use std::regex directly
-                std::regex::flag_type flags = std::regex::ECMAScript;
-                if (case_insensitive_) {
-                    flags |= std::regex::icase;
-                }
-
-                try {
-                    regex_ = std::regex(optimized_pattern, flags);
-                }
-                catch (const std::regex_error&) {
-                    // Keep original pattern on regex error
-                    regex_ = std::regex(optimized_pattern, flags);
-                }
-            }
-            else {
-                // Unicode path - normalize and process
-                UnicodeString norm_pattern(optimized_pattern);
-                UnicodeString normalized_pattern = norm_pattern.normalize(normalization_);
-
-                // Apply case folding if case-insensitive
-                if (case_insensitive_) {
-                    normalized_pattern = normalized_pattern.case_fold();
-                }
-
-                cached_normalized_pattern_ = normalized_pattern.data();
-                pattern_cached_ = true;
-
-                std::regex::flag_type flags = std::regex::ECMAScript;
-                if (case_insensitive_) {
-                    flags |= std::regex::icase;
-                }
-
-                try {
-                    regex_ = std::regex(cached_normalized_pattern_, flags);
-                }
-                catch (const std::regex_error&) {
-                    // Fallback to original pattern if Unicode processing fails
-                    regex_ = std::regex(optimized_pattern, flags);
-                }
-            }
-        }
-
-        /**
-         * Optimize pattern to prevent catastrophic backtracking
-         */
+        /* Pattern optimization for performance */
         static std::string optimize_pattern_for_performance(const std::string& pattern) {
             std::string optimized = pattern;
-
-            // Check for patterns that could cause catastrophic backtracking
-            // Pattern: X+ where X is a single character (especially Unicode)
-            if (optimized.size() >= 2 && optimized.back() == '+') {
-                // Check if the pattern before + is a single character
-                std::string base_pattern = optimized.substr(0, optimized.size() - 1);
-
-                // If it's a single Unicode character, replace with possessive quantifier
-                if (base_pattern.size() >= 1 && base_pattern.size() <= 4) {
-                    // Check if it's a valid UTF-8 sequence
-                    bool is_single_char = true;
-                    size_t i = 0;
-                    while (i < base_pattern.size()) {
-                        unsigned char c = static_cast<unsigned char>(base_pattern[i]);
-                        if ((c & 0x80) == 0) {
-                            // ASCII character
-                            i += 1;
-                        }
-                        else if ((c & 0xE0) == 0xC0) {
-                            // 2-byte UTF-8
-                            if (i + 1 >= base_pattern.size()) {
-                                is_single_char = false;
-                                break;
-                            }
-                            i += 2;
-                        }
-                        else if ((c & 0xF0) == 0xE0) {
-                            // 3-byte UTF-8
-                            if (i + 2 >= base_pattern.size()) {
-                                is_single_char = false;
-                                break;
-                            }
-                            i += 3;
-                        }
-                        else if ((c & 0xF8) == 0xF0) {
-                            // 4-byte UTF-8
-                            if (i + 3 >= base_pattern.size()) {
-                                is_single_char = false;
-                                break;
-                            }
-                            i += 4;
-                        }
-                        else {
-                            is_single_char = false;
-                            break;
-                        }
-                    }
-
-                    if (is_single_char && i == base_pattern.size()) {
-                        // Replace X+ with X++ (possessive quantifier) to prevent backtracking
-                        optimized = base_pattern + "++";
-                    }
+            
+            /* Optimize simple repeated patterns */
+            if (pattern.size() >= 2 && pattern.back() == '+') {
+                std::string base = pattern.substr(0, pattern.size() - 1);
+                if (base.size() == 1 && (base[0] == '.' || base[0] == '\\w' || base[0] == '\\s' || base[0] == '\\d')) {
+                    /* Keep as is - these are already optimized */
                 }
             }
-
+            
             return optimized;
         }
 
-        /**
-         * Get normalized text (with caching for repeated use)
-         */
+        /* Text normalization cache */
+        static std::map<std::tuple<std::string, bool, NormalizationForm>, std::string> text_cache_;
+        static std::mutex text_cache_mutex_;
+
         static std::string get_normalized_text(const std::string& text, bool case_insensitive, NormalizationForm normalization) {
-            static std::map<std::string, std::string> text_cache;
-            static std::map<std::string, std::string> case_cache;
+            if (normalization == NormalizationForm::NONE) {
+                return text;
+            }
 
-            // Create cache key
-            std::string cache_key = text + (case_insensitive ? "_ci" : "_cs") +
-                std::to_string(static_cast<int>(normalization));
-
-            auto it = text_cache.find(cache_key);
-            if (it != text_cache.end()) {
+            std::lock_guard<std::mutex> lock(text_cache_mutex_);
+            auto key = std::make_tuple(text, case_insensitive, normalization);
+            auto it = text_cache_.find(key);
+            if (it != text_cache_.end()) {
                 return it->second;
             }
 
-            // Check if ASCII-only for fast path
-            if (is_ascii_string(text)) {
-                std::string result = text;
-                if (case_insensitive) {
-                    // Simple ASCII case folding
-                    result.reserve(text.size());
-                    for (char c : text) {
-                        result.push_back(std::tolower(static_cast<unsigned char>(c)));
-                    }
-                }
-                text_cache[cache_key] = result;
-                return result;
-            }
-
-            // Unicode processing
             UnicodeString unicode_text(text);
-            UnicodeString normalized_text = unicode_text.normalize(normalization);
-
+            std::string normalized;
             if (case_insensitive) {
-                normalized_text = normalized_text.case_fold();
+                normalized = unicode_text.case_fold().normalize(normalization).data();
+            } else {
+                normalized = unicode_text.normalize(normalization).data();
             }
-
-            std::string result = normalized_text.data();
-            text_cache[cache_key] = result;
-            return result;
+            
+            text_cache_[key] = normalized;
+            return normalized;
         }
 
-        /**
-         * Clear text normalization cache (call periodically to prevent memory leaks)
-         */
+        /* Cache management */
         static void clear_text_cache() {
-            static std::map<std::string, std::string> text_cache;
-            text_cache.clear();
+            std::lock_guard<std::mutex> lock(text_cache_mutex_);
+            text_cache_.clear();
         }
 
-        /**
-         * Get cache statistics for monitoring
-         */
         static size_t get_text_cache_size() {
-            static std::map<std::string, std::string> text_cache;
-            return text_cache.size();
+            std::lock_guard<std::mutex> lock(text_cache_mutex_);
+            return text_cache_.size();
         }
 
-        /**
-         * Search for matches in text
-         */
-        bool search(const UnicodeString& text) const {
-#ifdef USE_PCRE
-            if (use_pcre_) {
-                // Use PCRE2 for Unicode property escapes
-                std::string search_text = text.data();
-                if (!is_ascii_only_) {
-                    search_text = get_normalized_text(text.data(), case_insensitive_, normalization_);
-                }
+        /* Core matching methods */
+        bool search(const UnicodeString& text) const;
+        bool match(const UnicodeString& text) const;
+        std::vector<std::pair<size_t, size_t>> find_all(const UnicodeString& text) const;
 
-                int result = pcre2_match(
-                    pcre_regex_,
-                    reinterpret_cast<PCRE2_SPTR>(search_text.c_str()),
-                    static_cast<PCRE2_SIZE>(search_text.length()),
-                    0, 0,
-                    pcre_match_data_,
-                    nullptr
-                );
-                return result >= 0;
-            }
-#endif
-
-            // Standard std::regex path
-            if (is_ascii_only_ && is_ascii_string(text.data())) {
-                // Fast path for ASCII text with ASCII pattern
-                return std::regex_search(text.data(), regex_);
-            }
-            else {
-                // Unicode path with caching
-                std::string normalized_text = get_normalized_text(text.data(), case_insensitive_, normalization_);
-                return std::regex_search(normalized_text, regex_);
-            }
-        }
-
-        /**
-         * Match entire text
-         */
-        bool match(const UnicodeString& text) const {
-            if (is_ascii_only_ && is_ascii_string(text.data())) {
-                // Fast path for ASCII text with ASCII pattern
-                return std::regex_match(text.data(), regex_);
-            }
-            else {
-                // Unicode path with caching
-                std::string normalized_text = get_normalized_text(text.data(), case_insensitive_, normalization_);
-                return std::regex_match(normalized_text, regex_);
-            }
-        }
-
-        /**
-         * Get all matches in text
-         */
-        std::vector<std::pair<size_t, size_t>> find_all(const UnicodeString& text) const {
-            std::vector<std::pair<size_t, size_t>> matches;
-
-            // Fast path for simple repeated character patterns that could cause backtracking
-            // Use fast path for any repeated pattern on large inputs, or for very large inputs regardless
-            if ((is_simple_repeated_pattern() && text.data().size() > 100) ||
-                (pattern_.back() == '+' && text.data().size() > 10000)) {
-                return find_all_fast_path(text);
-            }
-
-            if (is_ascii_only_ && is_ascii_string(text.data())) {
-                // Fast path for ASCII text with ASCII pattern
-                try {
-                    for (std::sregex_iterator it(text.data().begin(),
-                        text.data().end(), regex_), end;
-                        it != end; ++it) {
-                        matches.emplace_back(it->position(), it->length());
-                    }
-                }
-                catch (const std::regex_error&) {
-                    // Return empty result on regex error
-                }
-            }
-            else {
-                // Unicode path with caching
-                std::string normalized_text = get_normalized_text(text.data(), case_insensitive_, normalization_);
-
-                try {
-                    for (std::sregex_iterator it(normalized_text.begin(),
-                        normalized_text.end(), regex_), end;
-                        it != end; ++it) {
-                        matches.emplace_back(it->position(), it->length());
-                    }
-                }
-                catch (const std::regex_error&) {
-                    // Return empty result on regex error
-                }
-            }
-
-            return matches;
-        }
-
-        /**
-         * Check if pattern is a simple repeated character pattern (X+)
-         */
+        /* Performance optimization for simple repeated patterns */
         bool is_simple_repeated_pattern() const {
-            if (pattern_.size() < 2 || pattern_.back() != '+') {
-                return false;
-            }
-
+            if (pattern_.size() < 2) return false;
+            if (pattern_.back() != '+') return false;
+            
             std::string base = pattern_.substr(0, pattern_.size() - 1);
-            if (base.size() == 0) return false;
-
-            // Check if base is a single character (ASCII or Unicode)
-            if (base.size() == 1) return true;
-
-            // Check if it's a single Unicode character (1-4 bytes)
-            if (base.size() <= 4) {
-                size_t i = 0;
-                while (i < base.size()) {
-                    unsigned char c = static_cast<unsigned char>(base[i]);
-                    if ((c & 0x80) == 0) {
-                        i += 1;
-                    }
-                    else if ((c & 0xE0) == 0xC0 && i + 1 < base.size()) {
-                        i += 2;
-                    }
-                    else if ((c & 0xF0) == 0xE0 && i + 2 < base.size()) {
-                        i += 3;
-                    }
-                    else if ((c & 0xF8) == 0xF0 && i + 3 < base.size()) {
-                        i += 4;
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                return i == base.size();
-            }
-
-            return false;
+            if (base.size() != 1) return false;
+            
+            char c = base[0];
+            return c == '.' || c == '\\w' || c == '\\s' || c == '\\d' || c == '\\W' || c == '\\S' || c == '\\D';
         }
 
-        /**
-         * Fast path for simple repeated character patterns
-         */
+        /* Fast path for simple repeated patterns */
         std::vector<std::pair<size_t, size_t>> find_all_fast_path(const UnicodeString& text) const {
             std::vector<std::pair<size_t, size_t>> matches;
-
-            std::string base_char = pattern_.substr(0, pattern_.size() - 1);
-            const std::string& text_data = text.data();
-
-            // For very large inputs with repeated patterns, just return the entire input
-            // This is the most common case for patterns like 😀+ on long strings
-            if (text_data.size() > 10000 && pattern_.back() == '+') {
-                // Check if the entire input consists of the base character
-                bool all_same = true;
-                for (size_t i = 0; i < text_data.size(); i += base_char.size()) {
-                    if (i + base_char.size() > text_data.size() ||
-                        text_data.compare(i, base_char.size(), base_char) != 0) {
-                        all_same = false;
+            if (!is_simple_repeated_pattern()) return matches;
+            
+            std::string base = pattern_.substr(0, pattern_.size() - 1);
+            char c = base[0];
+            
+            const std::string& str = text.data();
+            size_t pos = 0;
+            
+            while (pos < str.size()) {
+                size_t start = pos;
+                bool matched = false;
+                
+                /* Find start of sequence */
+                while (pos < str.size()) {
+                    bool char_matches = false;
+                    if (c == '.') {
+                        char_matches = true;
+                    } else if (c == '\\w') {
+                        char_matches = (str[pos] >= 'a' && str[pos] <= 'z') ||
+                                      (str[pos] >= 'A' && str[pos] <= 'Z') ||
+                                      (str[pos] >= '0' && str[pos] <= '9') ||
+                                      str[pos] == '_';
+                    } else if (c == '\\s') {
+                        char_matches = str[pos] == ' ' || str[pos] == '\t' || str[pos] == '\n' || str[pos] == '\r';
+                    } else if (c == '\\d') {
+                        char_matches = (str[pos] >= '0' && str[pos] <= '9');
+                    } else if (c == '\\W') {
+                        char_matches = !((str[pos] >= 'a' && str[pos] <= 'z') ||
+                                       (str[pos] >= 'A' && str[pos] <= 'Z') ||
+                                       (str[pos] >= '0' && str[pos] <= '9') ||
+                                       str[pos] == '_');
+                    } else if (c == '\\S') {
+                        char_matches = str[pos] != ' ' && str[pos] != '\t' && str[pos] != '\n' && str[pos] != '\r';
+                    } else if (c == '\\D') {
+                        char_matches = (str[pos] < '0' || str[pos] > '9');
+                    }
+                    
+                    if (char_matches) {
+                        matched = true;
+                        ++pos;
+                    } else {
                         break;
                     }
                 }
-
-                if (all_same) {
-                    matches.emplace_back(0, text_data.size());
-                    return matches;
+                
+                if (matched && pos > start) {
+                    matches.emplace_back(start, pos - start);
                 }
+                
+                if (pos == start) ++pos; /* Avoid infinite loop */
             }
-
-            // Find the longest sequence of the base character
-            size_t max_len = 0;
-            size_t max_start = 0;
-            size_t current_len = 0;
-            size_t current_start = 0;
-
-            for (size_t i = 0; i < text_data.size(); ) {
-                if (text_data.compare(i, base_char.size(), base_char) == 0) {
-                    if (current_len == 0) {
-                        current_start = i;
-                    }
-                    current_len += base_char.size();
-                    i += base_char.size();
-                }
-                else {
-                    if (current_len > max_len) {
-                        max_len = current_len;
-                        max_start = current_start;
-                    }
-                    current_len = 0;
-                    i += 1;
-                }
-            }
-
-            // Check final sequence
-            if (current_len > max_len) {
-                max_len = current_len;
-                max_start = current_start;
-            }
-
-            if (max_len > 0) {
-                matches.emplace_back(max_start, max_len);
-            }
-
+            
             return matches;
         }
 
-        /**
-         * Get the underlying std::regex
-         */
-        const std::regex& get_regex() const {
-            return regex_;
-        }
-
-        /**
-         * Check if this regex is using ASCII-only mode
-         */
+        /* Check if using ASCII mode */
         bool is_ascii_mode() const {
-            return is_ascii_only_;
+            return is_ascii_only_ && !use_pcre_;
         }
 
-        /**
-         * Map a position and length in the normalized string back to the original string's byte offset and length
-         * Returns {orig_offset, orig_length}
-         * Optimized version with caching
-         */
+        /* Offset mapping cache for normalized text */
+        static std::map<std::pair<std::string, std::string>, std::vector<std::pair<size_t, size_t>>> offset_cache_;
+        static std::mutex offset_cache_mutex_;
+
         static std::pair<size_t, size_t> map_normalized_span_to_original(const std::string& original, const std::string& normalized, size_t norm_offset, size_t norm_length) {
-            static std::map<std::string, std::vector<size_t>> offset_cache;
-
-            // Create cache key
-            std::string cache_key = original + "|" + normalized;
-
-            auto it = offset_cache.find(cache_key);
-            std::vector<size_t>* offsets = nullptr;
-
-            if (it != offset_cache.end()) {
-                offsets = &it->second;
-            }
-            else {
-                // Build offset mapping
-                std::vector<size_t> new_offsets;
-                size_t orig_i = 0, norm_i = 0;
-
-                while (orig_i < original.size() && norm_i < normalized.size()) {
-                    new_offsets.push_back(orig_i);
-
-                    // Get codepoint and length in both strings
-                    utf8proc_int32_t orig_cp, norm_cp;
-                    utf8proc_ssize_t orig_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(&original[orig_i]), original.size() - orig_i, &orig_cp);
-                    utf8proc_ssize_t norm_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(&normalized[norm_i]), normalized.size() - norm_i, &norm_cp);
-
-                    if (orig_len < 0 || norm_len < 0) break;
-
-                    orig_i += orig_len;
-                    norm_i += norm_len;
-                }
-
-                // Add final offset
-                new_offsets.push_back(original.size());
-
-                offset_cache[cache_key] = std::move(new_offsets);
-                offsets = &offset_cache[cache_key];
+            if (original == normalized) {
+                return {norm_offset, norm_length};
             }
 
-            // Find the closest offset mapping
-            size_t orig_start = 0, orig_end = original.size();
-
-            for (size_t i = 0; i < offsets->size(); ++i) {
-                if ((*offsets)[i] >= norm_offset) {
-                    orig_start = (*offsets)[i];
-                    break;
+            std::lock_guard<std::mutex> lock(offset_cache_mutex_);
+            auto key = std::make_pair(original, normalized);
+            auto it = offset_cache_.find(key);
+            if (it != offset_cache_.end()) {
+                /* Use cached mapping */
+                if (norm_offset < it->second.size()) {
+                    size_t orig_offset = it->second[norm_offset].first;
+                    size_t orig_length = 0;
+                    
+                    /* Calculate length by finding the end offset */
+                    size_t end_norm_offset = norm_offset + norm_length;
+                    if (end_norm_offset < it->second.size()) {
+                        orig_length = it->second[end_norm_offset].first - orig_offset;
+                    } else {
+                        orig_length = original.size() - orig_offset;
+                    }
+                    
+                    return {orig_offset, orig_length};
                 }
             }
 
-            for (size_t i = 0; i < offsets->size(); ++i) {
-                if ((*offsets)[i] >= norm_offset + norm_length) {
-                    orig_end = (*offsets)[i];
-                    break;
-                }
+            /* Build mapping cache */
+            std::vector<std::pair<size_t, size_t>> mapping;
+            const utf8proc_uint8_t* orig_str = reinterpret_cast<const utf8proc_uint8_t*>(original.c_str());
+            const utf8proc_uint8_t* norm_str = reinterpret_cast<const utf8proc_uint8_t*>(normalized.c_str());
+            
+            utf8proc_ssize_t orig_len = static_cast<utf8proc_ssize_t>(original.size());
+            utf8proc_ssize_t norm_len = static_cast<utf8proc_ssize_t>(normalized.size());
+            
+            size_t orig_pos = 0;
+            size_t norm_pos = 0;
+            
+            while (orig_pos < static_cast<size_t>(orig_len) && norm_pos < static_cast<size_t>(norm_len)) {
+                mapping.emplace_back(orig_pos, norm_pos);
+                
+                /* Advance in original string */
+                utf8proc_int32_t orig_cp;
+                utf8proc_ssize_t orig_char_len = utf8proc_iterate(orig_str + orig_pos, orig_len - orig_pos, &orig_cp);
+                if (orig_char_len <= 0) break;
+                orig_pos += orig_char_len;
+                
+                /* Advance in normalized string */
+                utf8proc_int32_t norm_cp;
+                utf8proc_ssize_t norm_char_len = utf8proc_iterate(norm_str + norm_pos, norm_len - norm_pos, &norm_cp);
+                if (norm_char_len <= 0) break;
+                norm_pos += norm_char_len;
             }
-
-            return { orig_start, orig_end - orig_start };
+            
+            /* Add final positions */
+            mapping.emplace_back(orig_pos, norm_pos);
+            offset_cache_[key] = mapping;
+            
+            /* Use the mapping */
+            if (norm_offset < mapping.size()) {
+                size_t orig_offset = mapping[norm_offset].first;
+                size_t orig_length = 0;
+                
+                size_t end_norm_offset = norm_offset + norm_length;
+                if (end_norm_offset < mapping.size()) {
+                    orig_length = mapping[end_norm_offset].first - orig_offset;
+                } else {
+                    orig_length = original.size() - orig_offset;
+                }
+                
+                return {orig_offset, orig_length};
+            }
+            
+            return {norm_offset, norm_length}; /* Fallback */
         }
 
-        /**
-         * Clear offset mapping cache (call periodically to prevent memory leaks)
-         */
+        /* Cache management */
         static void clear_offset_cache() {
-            static std::map<std::string, std::vector<size_t>> offset_cache;
-            offset_cache.clear();
+            std::lock_guard<std::mutex> lock(offset_cache_mutex_);
+            offset_cache_.clear();
         }
 
-        /**
-         * Get offset cache statistics for monitoring
-         */
         static size_t get_offset_cache_size() {
-            static std::map<std::string, std::vector<size_t>> offset_cache;
-            return offset_cache.size();
+            std::lock_guard<std::mutex> lock(offset_cache_mutex_);
+            return offset_cache_.size();
         }
 
-        /**
-         * Clear all caches (call periodically to prevent memory leaks)
-         */
         static void clear_all_caches() {
             clear_text_cache();
             clear_offset_cache();
@@ -895,8 +610,8 @@ std::vector<MatchPosition> grep_unicode_impl(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim,
-    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
-    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE
 );
 
 std::vector<std::string> grep_extract_matches_unicode_impl(
@@ -904,8 +619,8 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim,
-    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
-    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE
 );
 
 // Main Unicode-aware grep functions with default parameters
@@ -914,10 +629,10 @@ inline std::vector<MatchPosition> grep_unicode(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim = "",
-    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
-    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE
 ) {
-    return grep_unicode_impl(input, pattern, options, line_delim, mode, normalization);
+    return grep_unicode_impl(input, pattern, options, line_delim, normalization, mode);
 }
 
 inline std::vector<std::string> grep_extract_matches_unicode(
@@ -925,8 +640,8 @@ inline std::vector<std::string> grep_extract_matches_unicode(
     const std::string& pattern,
     const std::string& options,
     const std::string& line_delim = "",
-    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
-    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE
 ) {
-    return grep_extract_matches_unicode_impl(input, pattern, options, line_delim, mode, normalization);
+    return grep_extract_matches_unicode_impl(input, pattern, options, line_delim, normalization, mode);
 } 

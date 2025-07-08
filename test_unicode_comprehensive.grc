@@ -1,0 +1,248 @@
+/* Comprehensive Unicode Test Suite for Grapa Grep */
+/* Tests all Unicode scenarios to ensure proper handling after UTF-8 fixes */
+
+"=== COMPREHENSIVE UNICODE TEST SUITE ===\n".echo();
+"Testing all Unicode scenarios with JSON output\n".echo();
+"\n".echo();
+
+/* ============================================================================ */
+/* TEST GROUP 1: Basic Unicode Scripts */
+/* ============================================================================ */
+"=== TEST GROUP 1: Basic Unicode Scripts ===\n".echo();
+"\n".echo();
+
+/* Test 1.1: Latin with accents */
+"Test 1.1: Latin with accents\n".echo();
+input = "café résumé naïve façade";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 1.2: Cyrillic */
+"Test 1.2: Cyrillic\n".echo();
+input = "кофе молоко хлеб";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 1.3: Chinese (Simplified) */
+"Test 1.3: Chinese (Simplified)\n".echo();
+input = "咖啡 牛奶 面包";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 1.4: Japanese */
+"Test 1.4: Japanese\n".echo();
+input = "コーヒー 牛乳 パン";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 1.5: Korean */
+"Test 1.5: Korean\n".echo();
+input = "커피 우유 빵";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 1.6: Arabic */
+"Test 1.6: Arabic\n".echo();
+input = "قهوة حليب خبز";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 1.7: Hebrew */
+"Test 1.7: Hebrew\n".echo();
+input = "קפה חלב לחם";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 1.8: Thai */
+"Test 1.8: Thai\n".echo();
+input = "กาแฟ นม ขนมปัง";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* ============================================================================ */
+/* TEST GROUP 2: Unicode Properties */
+/* ============================================================================ */
+"=== TEST GROUP 2: Unicode Properties ===\n".echo();
+"\n".echo();
+
+/* Test 2.1: Unicode Letter Property */
+"Test 2.1: Unicode Letter Property\n".echo();
+input = "Hello 世界 Привет こんにちは";
+result = input.grep("(?P<letters>\\p{L}+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 2.2: Unicode Digit Property */
+"Test 2.2: Unicode Digit Property\n".echo();
+input = "123 一二三 ١٢٣";
+result = input.grep("(?P<digits>\\p{N}+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 2.3: Unicode Currency Property */
+"Test 2.3: Unicode Currency Property\n".echo();
+input = "$100 €50 £25 ¥1000 ₽500";
+result = input.grep("(?P<currency>\\p{Sc})", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 2.4: Script-Specific Properties */
+"Test 2.4: Script-Specific Properties\n".echo();
+input = "café кофе 茶";
+result = input.grep("(?P<latin>\\p{Latin}+) (?P<cyrillic>\\p{Cyrillic}+) (?P<han>\\p{Han}+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* ============================================================================ */
+/* TEST GROUP 3: Mixed Content and Named Groups */
+/* ============================================================================ */
+"=== TEST GROUP 3: Mixed Content and Named Groups ===\n".echo();
+"\n".echo();
+
+/* Test 3.1: Mixed scripts with named groups */
+"Test 3.1: Mixed scripts with named groups\n".echo();
+input = "Name: John\n姓名: 张三\nИмя: Иван";
+result = input.grep("(?P<label>\\w+): (?P<value>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 3.2: Email addresses with Unicode */
+"Test 3.2: Email addresses with Unicode\n".echo();
+input = "john.doe@example.com\n张三@公司.cn\nиван@пример.рф";
+result = input.grep("(?P<local>[\\w.]+)@(?P<domain>[\\w.]+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 3.3: Phone numbers with Unicode */
+"Test 3.3: Phone numbers with Unicode\n".echo();
+input = "+1-555-123-4567\n+7-495-123-4567\n+86-10-1234-5678";
+result = input.grep("(?P<country>\\+\\d+)-?(?P<area>\\d{3})-(?P<prefix>\\d{3})-(?P<line>\\d{4})", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* ============================================================================ */
+/* TEST GROUP 4: Emoji and Symbols */
+/* ============================================================================ */
+"=== TEST GROUP 4: Emoji and Symbols ===\n".echo();
+"\n".echo();
+
+/* Test 4.1: Emoji sequences */
+"Test 4.1: Emoji sequences\n".echo();
+input = "🍕 🍔 🥗 🍜 🍣";
+result = input.grep("(?P<emoji>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 4.2: Emoji with text */
+"Test 4.2: Emoji with text\n".echo();
+input = "🍕 Pizza\n🍔 Burger\n🥗 Salad";
+result = input.grep("(?P<emoji>\\w+) (?P<food>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 4.3: Mathematical symbols */
+"Test 4.3: Mathematical symbols\n".echo();
+input = "2 + 2 = 4\nπ × r² = A";
+result = input.grep("(?P<expr>\\w+ \\+ \\w+ = \\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* ============================================================================ */
+/* TEST GROUP 5: Edge Cases and Boundary Conditions */
+/* ============================================================================ */
+"=== TEST GROUP 5: Edge Cases and Boundary Conditions ===\n".echo();
+"\n".echo();
+
+/* Test 5.1: Empty groups */
+"Test 5.1: Empty groups\n".echo();
+input = "abc123\ndef456\n789ghi";
+result = input.grep("(?P<letters>\\w*?)(?P<numbers>\\d+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 5.2: Greedy vs non-greedy */
+"Test 5.2: Greedy vs non-greedy\n".echo();
+input = "abc123";
+result = input.grep("(?P<letters>\\w*)(?P<numbers>\\d+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 5.3: Non-greedy version */
+"Test 5.3: Non-greedy version\n".echo();
+input = "abc123";
+result = input.grep("(?P<letters>\\w*?)(?P<numbers>\\d+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 5.4: Mixed Unicode and ASCII */
+"Test 5.4: Mixed Unicode and ASCII\n".echo();
+input = "Hello世界\n123abc\nкофеCoffee";
+result = input.grep("(?P<mixed>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* ============================================================================ */
+/* TEST GROUP 6: Complex Unicode Scenarios */
+/* ============================================================================ */
+"=== TEST GROUP 6: Complex Unicode Scenarios ===\n".echo();
+"\n".echo();
+
+/* Test 6.1: Combining characters */
+"Test 6.1: Combining characters\n".echo();
+input = "café";
+result = input.grep("(?P<word>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 6.2: Zero-width characters */
+"Test 6.2: Zero-width characters\n".echo();
+input = "Hello\u200BWorld";
+result = input.grep("(?P<text>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 6.3: Surrogate pairs */
+"Test 6.3: Surrogate pairs\n".echo();
+input = "🎉🎊🎈";
+result = input.grep("(?P<emoji>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* ============================================================================ */
+/* TEST GROUP 7: Performance and Large Unicode Text */
+/* ============================================================================ */
+"=== TEST GROUP 7: Performance and Large Unicode Text ===\n".echo();
+"\n".echo();
+
+/* Test 7.1: Long Unicode text */
+"Test 7.1: Long Unicode text\n".echo();
+input = "这是一个很长的中文句子，包含很多中文字符。This is a long English sentence with many words. Это длинное русское предложение с множеством слов.";
+result = input.grep("(?P<sentence>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+/* Test 7.2: Multiple matches in Unicode text */
+"Test 7.2: Multiple matches in Unicode text\n".echo();
+input = "咖啡 茶 水 牛奶 果汁";
+result = input.grep("(?P<drink>\\w+)", "oj");
+if (result.type() != $ERR && result.len() > 0) "PASS\n".echo(); else "FAIL\n".echo();
+"---\n".echo();
+
+"=== COMPREHENSIVE UNICODE TEST SUITE COMPLETE ===\n".echo();
+"All tests completed. Check results for proper Unicode handling.\n".echo();
+"Key areas tested:\n".echo();
+"1. Basic Unicode scripts (Latin, Cyrillic, Chinese, Japanese, Korean, Arabic, Hebrew, Thai)\n".echo();
+"2. Unicode properties (\\p{L}, \\p{N}, \\p{Sc}, script-specific)\n".echo();
+"3. Mixed content with named groups\n".echo();
+"4. Emoji and symbols\n".echo();
+"5. Edge cases (empty groups, greedy vs non-greedy)\n".echo();
+"6. Complex Unicode (combining characters, surrogate pairs)\n".echo();
+"7. Performance with large Unicode text\n".echo(); 

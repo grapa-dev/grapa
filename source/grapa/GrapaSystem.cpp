@@ -220,6 +220,30 @@ GrapaSystem::~GrapaSystem()
 //	Print(value, flush);
 //}
 
+// Helper: encode a single code point as UTF-8
+static inline std::string utf8_encode(uint32_t codepoint) {
+	std::string out;
+	if (codepoint <= 0x7F) {
+		out += static_cast<char>(codepoint);
+	}
+	else if (codepoint <= 0x7FF) {
+		out += static_cast<char>(0xC0 | ((codepoint >> 6) & 0x1F));
+		out += static_cast<char>(0x80 | (codepoint & 0x3F));
+	}
+	else if (codepoint <= 0xFFFF) {
+		out += static_cast<char>(0xE0 | ((codepoint >> 12) & 0x0F));
+		out += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
+		out += static_cast<char>(0x80 | (codepoint & 0x3F));
+	}
+	else if (codepoint <= 0x10FFFF) {
+		out += static_cast<char>(0xF0 | ((codepoint >> 18) & 0x07));
+		out += static_cast<char>(0x80 | ((codepoint >> 12) & 0x3F));
+		out += static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F));
+		out += static_cast<char>(0x80 | (codepoint & 0x3F));
+	}
+	return out;
+}
+
 int GrapaSystem::GetCharOLD()
 {
 	int ch=0;
@@ -245,50 +269,62 @@ int GrapaSystem::GetCharOLD()
 
 std::string GrapaSystem::GetUtf8Char()
 {
-	std::string result;
+    std::string result;
 #ifdef WIN32
-	DWORD read;
-	WCHAR wch;
-	BOOL x = ReadConsoleW(mStdinRef, &wch, 1, &read, NULL);
-	if (x && read > 0) {
-		char utf8[5] = { 0 };
-		int utf8len = WideCharToMultiByte(CP_UTF8, 0, &wch, 1, utf8, sizeof(utf8), NULL, NULL);
-		if (utf8len > 0) {
-			result.assign(utf8, utf8len);
-		}
-	}
+    DWORD read;
+    WCHAR wch[2];
+    BOOL x = ReadConsoleW(mStdinRef, &wch[0], 1, &read, NULL);
+    if (x && read > 0) {
+        // Check for surrogate pair
+        if (wch[0] >= 0xD800 && wch[0] <= 0xDBFF) {
+            // High surrogate, read the next WCHAR
+            DWORD read2;
+            BOOL x2 = ReadConsoleW(mStdinRef, &wch[1], 1, &read2, NULL);
+            if (x2 && read2 > 0 && wch[1] >= 0xDC00 && wch[1] <= 0xDFFF) {
+                // Combine surrogate pair
+                uint32_t codepoint = 0x10000 + (((uint32_t)wch[0] - 0xD800) << 10) + ((uint32_t)wch[1] - 0xDC00);
+                result = utf8_encode(codepoint); // Use your helper
+            } else {
+                // Invalid surrogate, just encode the first
+                result = utf8_encode(wch[0]);
+            }
+        } else {
+            // Not a surrogate, just encode as UTF-8
+            result = utf8_encode(wch[0]);
+        }
+    }
 #else
-	// POSIX: Read the first byte
-	unsigned char first;
-	ssize_t n = read(mStdinRef, &first, 1);
-	if (n == 1) {
-		result += first;
-		// Determine how many more bytes to read for this UTF-8 character
-		int expected = 0;
-		if ((first & 0x80) == 0x00) {
-			expected = 0; // ASCII, single byte
-		}
-		else if ((first & 0xE0) == 0xC0) {
-			expected = 1; // 2-byte sequence
-		}
-		else if ((first & 0xF0) == 0xE0) {
-			expected = 2; // 3-byte sequence
-		}
-		else if ((first & 0xF8) == 0xF0) {
-			expected = 3; // 4-byte sequence
-		}
-		for (int i = 0; i < expected; ++i) {
-			unsigned char next;
-			if (read(mStdinRef, &next, 1) == 1) {
-				result += next;
-			}
-			else {
-				break; // error or EOF
-			}
-		}
-	}
+    // POSIX: Read the first byte
+    unsigned char first;
+    ssize_t n = read(mStdinRef, &first, 1);
+    if (n == 1) {
+        result += first;
+        // Determine how many more bytes to read for this UTF-8 character
+        int expected = 0;
+        if ((first & 0x80) == 0x00) {
+            expected = 0; // ASCII, single byte
+        }
+        else if ((first & 0xE0) == 0xC0) {
+            expected = 1; // 2-byte sequence
+        }
+        else if ((first & 0xF0) == 0xE0) {
+            expected = 2; // 3-byte sequence
+        }
+        else if ((first & 0xF8) == 0xF0) {
+            expected = 3; // 4-byte sequence
+        }
+        for (int i = 0; i < expected; ++i) {
+            unsigned char next;
+            if (read(mStdinRef, &next, 1) == 1) {
+                result += next;
+            }
+            else {
+                break; // error or EOF
+            }
+        }
+    }
 #endif
-	return result;
+    return result;
 }
 
 void GrapaSystem::SetEcho(bool enable)
@@ -515,6 +551,20 @@ void My_Console::Stop()
 #include <vector>
 #include <iostream>
 
+
+// Helper: Remove the last full UTF-8 character from a string
+void remove_last_utf8_char(std::string& str) {
+	if (str.empty()) return;
+	size_t i = str.size() - 1;
+	// Move back to the start of the last UTF-8 character
+	while (i > 0 && (static_cast<unsigned char>(str[i]) & 0xC0) == 0x80) {
+		--i;
+	}
+	str.erase(i);
+}
+
+
+
 void My_Console::RunOld(GrapaCB cb, void* data)
 {
 	mConsoleSend.mScriptState.EnablePrompt(&mRuleVariables);
@@ -548,17 +598,6 @@ void My_Console::RunOld(GrapaCB cb, void* data)
 			}
 		} while (!gSystem->mStop && (sendBuffer.mLength || ch == '\n' || ch == '\r') && ch != EOF);
 	}
-}
-
-// Helper: Remove the last full UTF-8 character from a string
-void remove_last_utf8_char(std::string& str) {
-	if (str.empty()) return;
-	size_t i = str.size() - 1;
-	// Move back to the start of the last UTF-8 character
-	while (i > 0 && (static_cast<unsigned char>(str[i]) & 0xC0) == 0x80) {
-		--i;
-	}
-	str.erase(i);
 }
 
 void My_Console::Run(GrapaCB cb, void* data)

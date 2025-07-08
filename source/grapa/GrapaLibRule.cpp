@@ -16271,8 +16271,10 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
 	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+	GrapaLibraryParam r5(vScriptExec, pNameSpace, pInput ? pInput->Head(4) : NULL);
+	GrapaLibraryParam r6(vScriptExec, pNameSpace, pInput ? pInput->Head(5) : NULL);
 
-	std::string input="", pattern = "", options = "", delim = "";
+	std::string input="", pattern = "", options = "", delim = "", normstr_upper = "", procstr_upper = "";
 
 	//input = "This test finds four word lines.\nAlso five more text.\nDone.";
 	//pattern = "\\b\\w{4}\\b";
@@ -16282,17 +16284,58 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	if (r2.vVal) pattern = std::string(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
 	if (r3.vVal) options = std::string(reinterpret_cast<const char*>(r3.vVal->mValue.mBytes), r3.vVal->mValue.mLength);
 	if (r4.vVal) delim = std::string(reinterpret_cast<const char*>(r4.vVal->mValue.mBytes), r4.vVal->mValue.mLength);
+	if (r5.vVal) normstr_upper = std::string(reinterpret_cast<const char*>(r5.vVal->mValue.mBytes), r5.vVal->mValue.mLength);
+	if (r6.vVal) procstr_upper = std::string(reinterpret_cast<const char*>(r6.vVal->mValue.mBytes), r6.vVal->mValue.mLength);
 
 	try {
-		std::regex rx(pattern, std::regex::ECMAScript);
-		auto matches = grep_extract_matches_unicode(input, pattern, options, delim);
+		
+		
+		// Remove this problematic line that's causing the error:
+		// std::regex rx(pattern, std::regex::ECMAScript);
+		
+		GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE;
+		std::transform(normstr_upper.begin(), normstr_upper.end(), normstr_upper.begin(), ::toupper);
 
-		result = new GrapaRuleEvent();
-		result->mValue.mToken = GrapaTokenType::ARRAY;
-		result->vQueue = new GrapaRuleQueue();
+		if (normstr_upper.empty() || normstr_upper == "NONE") {
+			normalization = GrapaUnicode::NormalizationForm::NONE;
+		}
+		else if (normstr_upper == "NFC") {
+			normalization = GrapaUnicode::NormalizationForm::NFC;
+		}
+		else if (normstr_upper == "NFD") {
+			normalization = GrapaUnicode::NormalizationForm::NFD;
+		}
+		else if (normstr_upper == "NFKC") {
+			normalization = GrapaUnicode::NormalizationForm::NFKC;
+		}
+		else if (normstr_upper == "NFKD") {
+			normalization = GrapaUnicode::NormalizationForm::NFKD;
+		}
+		GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE;
+		std::transform(procstr_upper.begin(), procstr_upper.end(), procstr_upper.begin(), ::toupper);
 
-		for (const auto& m : matches) {
-			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(m.c_str(), m.length())));
+		if (normstr_upper.empty() || normstr_upper == "UNICODE") {
+			mode = GrapaUnicode::ProcessingMode::UNICODE_MODE;
+		}
+		else if (normstr_upper == "BINARY") {
+			mode = GrapaUnicode::ProcessingMode::BINARY_MODE;
+		}
+		auto matches = grep_extract_matches_unicode(input, pattern, options, delim, normalization, mode);
+
+		// Check for compilation error indicator
+		if (!matches.empty() && matches[0] == "__COMPILATION_ERROR__") {
+			result = new GrapaRuleEvent();
+			result->mValue.mToken = GrapaTokenType::ERR;
+			result->vQueue = new GrapaRuleQueue();
+			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaCHAR("Invalid regex pattern")));
+		} else {
+			result = new GrapaRuleEvent();
+			result->mValue.mToken = GrapaTokenType::ARRAY;
+			result->vQueue = new GrapaRuleQueue();
+
+			for (const auto& m : matches) {
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(m.c_str(), m.length())));
+			}
 		}
 	}
 	catch (const std::regex_error& e) {
