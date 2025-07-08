@@ -15,7 +15,9 @@
 - https://github.com/JuliaStrings/utf8proc
 - https://github.com/JuliaStrings/utf8proc/archive/v2.8.0.tar.gz
 
-  
+## pcre2
+- https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.45
+
 # win-amd64
 See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
 
