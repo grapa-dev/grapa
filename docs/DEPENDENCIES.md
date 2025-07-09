@@ -74,10 +74,13 @@ mkdir build_static
 cd build_static
 cmake -G "NMake Makefiles" -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DPCRE2_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=Release ..
 nmake
-
-copy ..\src\*.h to source\pcre2
-copy *.lib to source\pcre2-lib\win-amd64
 ```
+
+For the lib files:
+copy *.lib to grapa\source\pcre2-lib\win-amd64
+
+For the include files (this is done onece for all platforms):
+copy ..\src\*.h to grapa\source\pcre2
 
 # win-arm64
 
