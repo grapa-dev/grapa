@@ -420,7 +420,7 @@ UTF8PROC_DLLEXPORT const char *utf8proc_category_string(utf8proc_int32_t c) {
 
 #define utf8proc_decompose_lump(replacement_uc) \
   return utf8proc_decompose_char((replacement_uc), dst, bufsize, \
-  options & ~(unsigned int)UTF8PROC_LUMP, last_boundclass)
+  (utf8proc_option_t)(options & ~(unsigned int)UTF8PROC_LUMP), last_boundclass)
 
 UTF8PROC_DLLEXPORT utf8proc_ssize_t utf8proc_decompose_char(utf8proc_int32_t uc, utf8proc_int32_t *dst, utf8proc_ssize_t bufsize, utf8proc_option_t options, int *last_boundclass) {
   const utf8proc_property_t *property;
