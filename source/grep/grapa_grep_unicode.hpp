@@ -47,6 +47,7 @@ limitations under the License.
    - A1, A2, A3... (show 1, 2, 3... lines after)
    - B1, B2, B3... (show 1, 2, 3... lines before)  
    - C1, C2, C3... (show 1, 2, 3... lines before and after)
+   d - Diacritic-insensitive matching (strip accents/diacritics from both pattern and input)
 */
 
 #include <string>
@@ -57,6 +58,8 @@ limitations under the License.
 #include <map>
 #include <mutex> // Added for thread-safe caching
 #include <tuple> // Added for tuple in text_cache_
+#include <unordered_map> // Added for Latin-1 diacritic stripping
+#include <list> // Added for LRU cache
 
 
 #ifdef _WIN32
@@ -268,6 +271,7 @@ namespace GrapaUnicode {
     private:
         std::string pattern_;
         bool case_insensitive_;
+        bool diacritic_insensitive_; // Track if diacritic-insensitive matching is enabled
         NormalizationForm normalization_;
         bool is_ascii_only_;  // Track if pattern is ASCII-only
         mutable std::string cached_normalized_pattern_;
@@ -284,13 +288,50 @@ namespace GrapaUnicode {
             return pattern.find("(?P<") != std::string::npos;
         }
 
+        static bool has_atomic_groups(const std::string& pattern) {
+            return pattern.find("(?>") != std::string::npos;
+        }
+
+        static bool has_lookaround_assertions(const std::string& pattern) {
+            // Check for positive lookahead (?=...)
+            if (pattern.find("(?=") != std::string::npos) return true;
+            // Check for negative lookahead (?!...)
+            if (pattern.find("(?!") != std::string::npos) return true;
+            // Check for positive lookbehind (?<=...)
+            if (pattern.find("(?<=") != std::string::npos) return true;
+            // Check for negative lookbehind (?<!...)
+            if (pattern.find("(?<!") != std::string::npos) return true;
+            return false;
+        }
+
+        static bool has_grapheme_clusters(const std::string& pattern) {
+            // Check for Unicode grapheme cluster \X
+            return pattern.find("\\X") != std::string::npos;
+        }
+
+        /* Fast path detection for common patterns */
+        static bool is_simple_literal_pattern(const std::string& pattern) {
+            // Check for literal strings without special regex characters
+            return pattern.find_first_of(".*+?{}()[]\\|^$") == std::string::npos;
+        }
+
+        static bool is_simple_word_pattern(const std::string& pattern) {
+            // Check for simple word patterns like \w+, \b\w+\b
+            return pattern == "\\w+" || pattern == "\\b\\w+\\b" || pattern == "\\w*";
+        }
+
+        static bool is_simple_digit_pattern(const std::string& pattern) {
+            // Check for simple digit patterns like \d+, \b\d+\b
+            return pattern == "\\d+" || pattern == "\\b\\d+\\b" || pattern == "\\d*";
+        }
+
         std::regex regex_;  // Standard regex for non-PCRE mode
     public:
-        UnicodeRegex(const std::string& pattern, bool case_insensitive = false,
-            NormalizationForm norm = NormalizationForm::NFC);
+        UnicodeRegex(const std::string& pattern, bool case_insensitive = false, bool diacritic_insensitive = false, NormalizationForm norm = NormalizationForm::NFC);
         ~UnicodeRegex();
 
         bool use_pcre_ = false;
+        bool use_jit_matching_ = false;  /* Track if JIT compilation is available */
 
         /* Check if compilation was successful */
         bool is_valid() const { return !compilation_error_; }
@@ -299,6 +340,15 @@ namespace GrapaUnicode {
         bool is_pcre_valid() const { 
 #ifdef USE_PCRE
             return use_pcre_ && pcre_regex_ != nullptr && !compilation_error_;
+#else
+            return false;
+#endif
+        }
+
+        /* Check if JIT matching is available */
+        bool is_jit_available() const {
+#ifdef USE_PCRE
+            return use_pcre_ && use_jit_matching_;
 #else
             return false;
 #endif
@@ -354,14 +404,82 @@ namespace GrapaUnicode {
         static std::map<std::tuple<std::string, bool, NormalizationForm>, std::string> text_cache_;
         static std::mutex text_cache_mutex_;
 
+        /* LRU Cache for better memory management */
+        class LRUCache {
+        private:
+            size_t max_size_;
+            std::list<std::pair<std::string, std::string>> cache_;
+            std::unordered_map<std::string, std::list<std::pair<std::string, std::string>>::iterator> map_;
+            mutable std::mutex cache_mutex_; /* Make mutable for const methods */
+
+        public:
+            LRUCache(size_t max_size = 1000) : max_size_(max_size) {}
+
+            std::string get(const std::string& key) {
+                std::lock_guard<std::mutex> lock(cache_mutex_);
+                auto it = map_.find(key);
+                if (it == map_.end()) {
+                    return ""; // Not found
+                }
+                
+                // Move to front (most recently used)
+                cache_.splice(cache_.begin(), cache_, it->second);
+                return it->second->second;
+            }
+
+            void put(const std::string& key, const std::string& value) {
+                std::lock_guard<std::mutex> lock(cache_mutex_);
+                auto it = map_.find(key);
+                if (it != map_.end()) {
+                    // Update existing entry
+                    it->second->second = value;
+                    cache_.splice(cache_.begin(), cache_, it->second);
+                } else {
+                    // Add new entry
+                    if (cache_.size() >= max_size_) {
+                        // Remove least recently used
+                        auto lru = cache_.back();
+                        map_.erase(lru.first);
+                        cache_.pop_back();
+                    }
+                    
+                    cache_.push_front({key, value});
+                    map_[key] = cache_.begin();
+                }
+            }
+
+            size_t size() const {
+                std::lock_guard<std::mutex> lock(cache_mutex_);
+                return cache_.size();
+            }
+
+            void clear() {
+                std::lock_guard<std::mutex> lock(cache_mutex_);
+                cache_.clear();
+                map_.clear();
+            }
+        };
+
+        static LRUCache text_lru_cache_;
+
         static std::string get_normalized_text(const std::string& text, bool case_insensitive, NormalizationForm normalization) {
             if (normalization == NormalizationForm::NONE) {
                 return text;
             }
 
+            /* Create cache key */
+            std::string key = text + "|" + (case_insensitive ? "1" : "0") + "|" + std::to_string(static_cast<int>(normalization));
+            
+            /* Try LRU cache first */
+            std::string cached = text_lru_cache_.get(key);
+            if (!cached.empty()) {
+                return cached;
+            }
+
+            /* Fall back to original cache for backward compatibility */
             std::lock_guard<std::mutex> lock(text_cache_mutex_);
-            auto key = std::make_tuple(text, case_insensitive, normalization);
-            auto it = text_cache_.find(key);
+            auto cache_key = std::make_tuple(text, case_insensitive, normalization);
+            auto it = text_cache_.find(cache_key);
             if (it != text_cache_.end()) {
                 return it->second;
             }
@@ -374,7 +492,10 @@ namespace GrapaUnicode {
                 normalized = unicode_text.normalize(normalization).data();
             }
             
-            text_cache_[key] = normalized;
+            /* Store in both caches */
+            text_cache_[cache_key] = normalized;
+            text_lru_cache_.put(key, normalized);
+            
             return normalized;
         }
 
@@ -387,6 +508,21 @@ namespace GrapaUnicode {
         static size_t get_text_cache_size() {
             std::lock_guard<std::mutex> lock(text_cache_mutex_);
             return text_cache_.size();
+        }
+
+        /* LRU Cache management */
+        static void clear_lru_cache() {
+            text_lru_cache_.clear();
+        }
+
+        static size_t get_lru_cache_size() {
+            return text_lru_cache_.size();
+        }
+
+        static void set_lru_cache_size(size_t max_size) {
+            /* Clear and recreate with new size */
+            text_lru_cache_.clear();
+            /* Note: LRUCache doesn't support dynamic resizing, so we clear it */
         }
 
         /* Core matching methods */
@@ -462,6 +598,81 @@ namespace GrapaUnicode {
             }
             
             return matches;
+        }
+
+        /* Fast path for simple literal patterns */
+        std::vector<std::pair<size_t, size_t>> find_all_literal_fast_path(const UnicodeString& text) const {
+            std::vector<std::pair<size_t, size_t>> matches;
+            if (!is_simple_literal_pattern(pattern_)) return matches;
+            
+            const std::string& str = text.data();
+            const std::string& pattern = pattern_;
+            size_t pos = 0;
+            
+            while ((pos = str.find(pattern, pos)) != std::string::npos) {
+                matches.emplace_back(pos, pattern.size());
+                pos += pattern.size();
+            }
+            
+            return matches;
+        }
+
+        /* Fast path for simple word patterns */
+        std::vector<std::pair<size_t, size_t>> find_all_word_fast_path(const UnicodeString& text) const {
+            std::vector<std::pair<size_t, size_t>> matches;
+            if (!is_simple_word_pattern(pattern_)) return matches;
+            
+            const std::string& str = text.data();
+            size_t pos = 0;
+            
+            while (pos < str.size()) {
+                /* Skip non-word characters */
+                while (pos < str.size() && !is_word_char(str[pos])) ++pos;
+                if (pos >= str.size()) break;
+                
+                size_t start = pos;
+                while (pos < str.size() && is_word_char(str[pos])) ++pos;
+                
+                if (pos > start) {
+                    matches.emplace_back(start, pos - start);
+                }
+            }
+            
+            return matches;
+        }
+
+        /* Fast path for simple digit patterns */
+        std::vector<std::pair<size_t, size_t>> find_all_digit_fast_path(const UnicodeString& text) const {
+            std::vector<std::pair<size_t, size_t>> matches;
+            if (!is_simple_digit_pattern(pattern_)) return matches;
+            
+            const std::string& str = text.data();
+            size_t pos = 0;
+            
+            while (pos < str.size()) {
+                /* Skip non-digit characters */
+                while (pos < str.size() && !is_digit_char(str[pos])) ++pos;
+                if (pos >= str.size()) break;
+                
+                size_t start = pos;
+                while (pos < str.size() && is_digit_char(str[pos])) ++pos;
+                
+                if (pos > start) {
+                    matches.emplace_back(start, pos - start);
+                }
+            }
+            
+            return matches;
+        }
+
+        /* Helper functions for fast paths */
+        static bool is_word_char(char c) {
+            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || 
+                   (c >= '0' && c <= '9') || c == '_';
+        }
+
+        static bool is_digit_char(char c) {
+            return c >= '0' && c <= '9';
         }
 
         /* Check if using ASCII mode */
@@ -601,6 +812,153 @@ namespace GrapaUnicode {
 
     // Declaration inside namespace
     std::string parse_unicode_escapes(const std::string& pattern);
+
+    // Expanded diacritic-stripping table covering:
+    // - Latin-1 Supplement (U+00C0–U+00FF)
+    // - Latin Extended-A (U+0100–U+017F)
+    // - Common Turkish, Romanian, and Vietnamese diacritics
+    // - Both uppercase and lowercase
+    // Note: This is not exhaustive for all Unicode, but covers most European languages.
+    inline char32_t strip_latin_diacritic(char32_t c) {
+        switch (c) {
+            // --- Latin (existing) ---
+            case 0x00C0: case 0x00C1: case 0x00C2: case 0x00C3: case 0x00C4: case 0x00C5: return U'A'; // ÀÁÂÃÄÅ
+            case 0x00E0: case 0x00E1: case 0x00E2: case 0x00E3: case 0x00E4: case 0x00E5: return U'a'; // àáâãäå
+            case 0x00C8: case 0x00C9: case 0x00CA: case 0x00CB: return U'E'; // ÈÉÊË
+            case 0x00E8: case 0x00E9: case 0x00EA: case 0x00EB: return U'e'; // èéêë
+            case 0x00CC: case 0x00CD: case 0x00CE: case 0x00CF: return U'I'; // ÌÍÎÏ
+            case 0x00EC: case 0x00ED: case 0x00EE: case 0x00EF: return U'i'; // ìíîï
+            case 0x00D2: case 0x00D3: case 0x00D4: case 0x00D5: case 0x00D6: return U'O'; // ÒÓÔÕÖ
+            case 0x00F2: case 0x00F3: case 0x00F4: case 0x00F5: case 0x00F6: return U'o'; // òóôõö
+            case 0x00D9: case 0x00DA: case 0x00DB: case 0x00DC: return U'U'; // ÙÚÛÜ
+            case 0x00F9: case 0x00FA: case 0x00FB: case 0x00FC: return U'u'; // ùúûü
+            case 0x00C7: return U'C'; // Ç
+            case 0x00E7: return U'c'; // ç
+            case 0x00D1: return U'N'; // Ñ
+            case 0x00F1: return U'n'; // ñ
+            case 0x00DD: return U'Y'; // Ý
+            case 0x00FD: case 0x00FF: return U'y'; // ýÿ
+            // Turkish (also used in Romanian, but only appears once)
+            case 0x0130: return U'I'; // İ
+            case 0x0131: return U'i'; // ı
+            case 0x011E: return U'G'; // Ğ
+            case 0x011F: return U'g'; // ğ
+            case 0x015E: return U'S'; // Ş (also Romanian)
+            case 0x015F: return U's'; // ş (also Romanian)
+            // Romanian
+            case 0x021A: case 0x0162: return U'T'; // Ț, Ţ
+            case 0x021B: case 0x0163: return U't'; // ț, ţ
+            case 0x0218: return U'S'; // Ș
+            case 0x0219: return U's'; // ș
+            // Polish
+            case 0x0141: return U'L'; // Ł
+            case 0x0142: return U'l'; // ł
+            // Czech/Slovak
+            case 0x010C: return U'C'; // Č
+            case 0x010D: return U'c'; // č
+            case 0x010E: return U'D'; // Ď
+            case 0x010F: return U'd'; // ď
+            case 0x011A: return U'E'; // Ě
+            case 0x011B: return U'e'; // ě
+            case 0x0147: return U'N'; // Ň
+            case 0x0148: return U'n'; // ň
+            case 0x0158: return U'R'; // Ř
+            case 0x0159: return U'r'; // ř
+            case 0x0160: return U'S'; // Š
+            case 0x0161: return U's'; // š
+            case 0x0164: return U'T'; // Ť
+            case 0x0165: return U't'; // ť
+            case 0x017D: return U'Z'; // Ž
+            case 0x017E: return U'z'; // ž
+            // Hungarian
+            case 0x0150: return U'O'; // Ő
+            case 0x0151: return U'o'; // ő
+            case 0x0170: return U'U'; // Ű
+            case 0x0171: return U'u'; // ű
+            // Croatian/Bosnian/Serbian
+            case 0x0110: return U'D'; // Đ
+            case 0x0111: return U'd'; // đ
+            // Vietnamese (partial)
+            case 0x0102: return U'A'; // Ă
+            case 0x0103: return U'a'; // ă
+            case 0x0128: return U'I'; // Ĩ
+            case 0x0129: return U'i'; // ĩ
+            case 0x0168: return U'U'; // Ũ
+            case 0x0169: return U'u'; // ũ
+            // --- Greek ---
+            case 0x0386: case 0x0391: return 0x0391; // Ά, Α
+            case 0x03AC: case 0x03B1: return 0x03B1; // ά, α
+            case 0x0388: case 0x0395: return 0x0395; // Έ, Ε
+            case 0x03AD: case 0x03B5: return 0x03B5; // έ, ε
+            case 0x0389: case 0x0397: return 0x0397; // Ή, Η
+            case 0x03AE: case 0x03B7: return 0x03B7; // ή, η
+            case 0x038A: case 0x03AA: case 0x0399: return 0x0399; // Ί, Ϊ, Ι
+            case 0x03AF: case 0x03CA: case 0x0390: case 0x03B9: return 0x03B9; // ί, ϊ, ΐ, ι
+            case 0x038C: case 0x039F: return 0x039F; // Ό, Ο
+            case 0x03CC: case 0x03BF: return 0x03BF; // ό, ο
+            case 0x038E: case 0x03AB: case 0x03A5: return 0x03A5; // Ύ, Ϋ, Υ
+            case 0x03CD: case 0x03CB: case 0x03B0: case 0x03C5: return 0x03C5; // ύ, ϋ, ΰ, υ
+            case 0x038F: case 0x03A9: return 0x03A9; // Ώ, Ω
+            case 0x03CE: case 0x03C9: return 0x03C9; // ώ, ω
+            // --- Cyrillic ---
+            case 0x0401: return 0x0415; // Ё -> Е
+            case 0x0451: return 0x0435; // ё -> е
+            case 0x0419: return 0x0418; // Й -> И
+            case 0x0439: return 0x0438; // й -> и
+            case 0x0407: return 0x0418; // Ї -> И
+            case 0x0457: return 0x0438; // ї -> и
+            case 0x040E: return 0x0423; // Ў -> У
+            case 0x045E: return 0x0443; // ў -> у
+            case 0x0490: return 0x0413; // Ґ -> Г
+            case 0x0491: return 0x0433; // ґ -> г
+            default: return c;
+        }
+    }
+    // Helper: returns true if codepoint is a combining diacritical mark (U+0300–U+036F)
+    inline bool is_combining_mark(char32_t cp) {
+        return (cp >= 0x0300 && cp <= 0x036F);
+    }
+    // Helper: convert UTF-8 string to codepoints, strip diacritics (table and combining marks), and re-encode
+    inline std::string strip_diacritics(const std::string& input) {
+        std::string out;
+        size_t i = 0;
+        while (i < input.size()) {
+            unsigned char c = input[i];
+            char32_t cp = 0;
+            size_t len = 0;
+            if (c < 0x80) { cp = c; len = 1; }
+            else if ((c & 0xE0) == 0xC0) { cp = ((c & 0x1F) << 6) | (input[i+1] & 0x3F); len = 2; }
+            else if ((c & 0xF0) == 0xE0) { cp = ((c & 0x0F) << 12) | ((input[i+1] & 0x3F) << 6) | (input[i+2] & 0x3F); len = 3; }
+            else if ((c & 0xF8) == 0xF0) { cp = ((c & 0x07) << 18) | ((input[i+1] & 0x3F) << 12) | ((input[i+2] & 0x3F) << 6) | (input[i+3] & 0x3F); len = 4; }
+            else { cp = c; len = 1; }
+            char32_t base = strip_latin_diacritic(cp);
+            // Skip combining marks (U+0300–U+036F)
+            if (!is_combining_mark(base)) {
+                // Re-encode as UTF-8
+                if (base < 0x80) out += static_cast<char>(base);
+                else if (base < 0x800) {
+                    out += static_cast<char>(0xC0 | (base >> 6));
+                    out += static_cast<char>(0x80 | (base & 0x3F));
+                } else if (base < 0x10000) {
+                    out += static_cast<char>(0xE0 | (base >> 12));
+                    out += static_cast<char>(0x80 | ((base >> 6) & 0x3F));
+                    out += static_cast<char>(0x80 | (base & 0x3F));
+                } else {
+                    out += static_cast<char>(0xF0 | (base >> 18));
+                    out += static_cast<char>(0x80 | ((base >> 12) & 0x3F));
+                    out += static_cast<char>(0x80 | ((base >> 6) & 0x3F));
+                    out += static_cast<char>(0x80 | (base & 0x3F));
+                }
+            }
+            i += len;
+        }
+        return out;
+    }
+
+    // Add a helper to check for the 'd' option
+    inline bool has_diacritic_insensitive(const std::string& options) {
+        return options.find('d') != std::string::npos;
+    }
 
 } // namespace GrapaUnicode
 

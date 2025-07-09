@@ -216,7 +216,7 @@ std::vector<MatchPosition> grep_unicode_impl(
     }
 
     // Create Unicode-aware regex for Unicode mode
-    UnicodeRegex unicode_rx(pattern, ignore_case, norm);
+    UnicodeRegex unicode_rx(pattern, ignore_case, false, norm);
     
     /* Check if regex compilation was successful */
     if (!unicode_rx.is_valid()) {
@@ -307,7 +307,26 @@ std::vector<MatchPosition> grep_unicode_impl(
             line_copy.pop_back();
         }
 
-        UnicodeString unicode_line(line_copy);
+        // In the standard output path (grep_unicode_impl and related), before matching:
+        bool diacritic_insensitive = has_diacritic_insensitive(options);
+        std::string norm_pattern = pattern;
+        std::string norm_line = line_copy;
+        if (diacritic_insensitive) {
+            // Always normalize and case fold before stripping diacritics
+            norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
+            norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
+            norm_pattern = GrapaUnicode::strip_diacritics(norm_pattern);
+            norm_line = GrapaUnicode::strip_diacritics(norm_line);
+        } else if (ignore_case) {
+            norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
+            norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
+        } else if (norm != GrapaUnicode::NormalizationForm::NONE) {
+            norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).data();
+            norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).data();
+        }
+        UnicodeRegex unicode_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+        // Use norm_line for matching.
+        UnicodeString unicode_line(norm_line);
         bool matched = exact_match ? unicode_rx.match(unicode_line) : unicode_rx.search(unicode_line);
         
         if ((!invert_match && matched) || (invert_match && !matched)) {
@@ -327,11 +346,26 @@ std::vector<MatchPosition> grep_unicode_impl(
                     }
                 }
                 else {
-                    std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(unicode_line);
-                    // Cache normalized line to avoid repeated normalization
+                    // For match-only, group-by-line, and offset options, extract matches from the diacritic-stripped line if 'd' is present
+                    std::vector<std::pair<size_t, size_t>> matches;
+                    std::string match_extract_line = line_copy;
+                    if (norm != GrapaUnicode::NormalizationForm::NONE) {
+                        match_extract_line = GrapaUnicode::UnicodeRegex::get_normalized_text(line_copy, ignore_case, norm);
+                    }
+                    UnicodeString match_extract_unicode_line(match_extract_line);
+                    UnicodeRegex match_extract_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+                    matches = match_extract_rx.find_all(match_extract_unicode_line);
+                    // Map normalized match offsets back to original line
                     std::string cached_normalized_line;
                     if (!unicode_rx.is_ascii_mode()) {
-                        cached_normalized_line = UnicodeRegex::get_normalized_text(line_copy, ignore_case, norm);
+                        if (diacritic_insensitive) {
+                            cached_normalized_line = GrapaUnicode::UnicodeString(line_copy).normalize(norm).case_fold().data();
+                            cached_normalized_line = GrapaUnicode::strip_diacritics(cached_normalized_line);
+                        } else if (ignore_case) {
+                            cached_normalized_line = GrapaUnicode::UnicodeString(line_copy).normalize(norm).case_fold().data();
+                        } else if (norm != GrapaUnicode::NormalizationForm::NONE) {
+                            cached_normalized_line = GrapaUnicode::UnicodeString(line_copy).normalize(norm).data();
+                        }
                     }
                     for (const auto& m : matches) {
                         auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, cached_normalized_line.empty() ? line_copy : cached_normalized_line, m.first, m.second);
@@ -441,7 +475,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     
     // Parse additional options
     bool count_only = (filtered_options.find('c') != std::string::npos);
-    bool dedupe = (filtered_options.find('d') != std::string::npos);
+    bool dedupe = (filtered_options.find('u') != std::string::npos);
     bool include_line_numbers = (filtered_options.find('n') != std::string::npos);
     bool group_by_line = (filtered_options.find('g') != std::string::npos);
     bool output_offset = (filtered_options.find('b') != std::string::npos);
@@ -452,83 +486,63 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     std::vector<std::string> out;
     
     bool json_output = filtered_options.find('j') != std::string::npos;
+    std::string regex_options = filtered_options;
+    bool exact_line = regex_options.find('x') != std::string::npos;
+    if (json_output) {
+        // Remove 'j' and 'x' from options before using them for matching
+        regex_options.erase(std::remove(regex_options.begin(), regex_options.end(), 'j'), regex_options.end());
+        regex_options.erase(std::remove(regex_options.begin(), regex_options.end(), 'x'), regex_options.end());
+    }
     
     if (json_output) {
-        /* Only support JSON output for PCRE2 path for now */
-        /* Recompile the regex to get access to PCRE2 internals */
         try {
-            GrapaUnicode::UnicodeRegex unicode_rx(pattern, filtered_options.find('i') != std::string::npos, norm);
-            if (unicode_rx.is_pcre_valid()) {
-                std::string search_text = input;
-                if (norm != GrapaUnicode::NormalizationForm::NONE) {
-                    search_text = GrapaUnicode::UnicodeRegex::get_normalized_text(input, filtered_options.find('i') != std::string::npos, norm);
-                }
+            if (exact_line) {
+                // Split input into lines and match each line separately
+                size_t pos = 0, start = 0, line_num = 1;
+                std::vector<std::string> json_matches;
+                while (pos <= input.size()) {
+                    size_t next = input.find('\n', pos);
+                    if (next == std::string::npos) next = input.size();
+                    std::string line = input.substr(pos, next - pos);
+                    // Normalize the line and pattern if needed
+                    bool diacritic_insensitive = has_diacritic_insensitive(regex_options);
+                    std::string norm_line = line;
+                    std::string norm_pattern = pattern;
+                    if (diacritic_insensitive) {
+                        norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
+                        norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
+                        norm_line = GrapaUnicode::strip_diacritics(norm_line);
+                        norm_pattern = GrapaUnicode::strip_diacritics(norm_pattern);
+                    }
+                    else if (regex_options.find('i') != std::string::npos) {
+                        norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
+                        norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
+                    }
+                    else if (norm != GrapaUnicode::NormalizationForm::NONE) {
+                        norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).data();
+                        norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).data();
+                    }
+                    GrapaUnicode::UnicodeRegex unicode_rx(norm_pattern, regex_options.find('i') != std::string::npos, diacritic_insensitive, norm);
+                    if (unicode_rx.is_pcre_valid()) {
 #ifdef USE_PCRE
-                pcre2_code* re = unicode_rx.get_pcre_code();
-                if (re != nullptr) {
-                    pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, NULL);
-                    if (match_data != nullptr) {
-                        PCRE2_SIZE offset = 0;
-                        PCRE2_SIZE length = static_cast<PCRE2_SIZE>(search_text.length());
-                        std::vector<std::string> json_matches;
-                        int namecount;
-                        pcre2_pattern_info(re, PCRE2_INFO_NAMECOUNT, &namecount);
-                        std::map<int, std::string> groupnum_to_name;
-                        if (namecount > 0) {
-                            PCRE2_SPTR name_table;
-                            uint32_t name_entry_size;
-                            pcre2_pattern_info(re, PCRE2_INFO_NAMETABLE, &name_table);
-                            pcre2_pattern_info(re, PCRE2_INFO_NAMEENTRYSIZE, &name_entry_size);
-                            for (int i = 0; i < namecount; i++) {
-                                PCRE2_SPTR entry = name_table + i * name_entry_size;
-                                int n = (entry[0] << 8) | entry[1];
-                                std::string gname(reinterpret_cast<const char*>(entry + 2));
-                                groupnum_to_name[n] = gname;
-                            }
-                        }
-                        while (offset <= length) {
-                            int rc = pcre2_match(
-                                re,
-                                reinterpret_cast<PCRE2_SPTR>(search_text.c_str()),
-                                length,
-                                offset,
-                                0,
-                                match_data,
-                                NULL
-                            );
-                            if (rc < 0) break;
-                            PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(match_data);
-                            std::string match_str = search_text.substr(ovector[0], ovector[1] - ovector[0]);
-                            std::string json = "{";
-                            json += "\"match\":\"";
-                            /* Escape JSON special chars in match_str (UTF-8 safe) */
-                            for (size_t i = 0; i < match_str.length(); ++i) {
-                                unsigned char c = static_cast<unsigned char>(match_str[i]);
-                                if (c == '\\' || c == '"') json += '\\';
-                                if (c == '\n') json += "\\n";
-                                else if (c == '\r') json += "\\r";
-                                else if (c == '\t') json += "\\t";
-                                else if (c == '\b') json += "\\b";
-                                else if (c == '\f') json += "\\f";
-                                else if (c < 0x20) {
-                                    char buf[7];
-                                    snprintf(buf, sizeof(buf), "\\u%04x", c);
-                                    json += buf;
-                                } else {
-                                    /* For UTF-8 multi-byte sequences, preserve all bytes */
-                                    json += match_str[i];
-                                }
-                            }
-                            json += "\"";
-                            /* Add named groups */
-                            for (auto& kv : groupnum_to_name) {
-                                int groupnum = kv.first;
-                                const std::string& gname = kv.second;
-                                if (groupnum < rc && ovector[2 * groupnum] != PCRE2_UNSET && ovector[2 * groupnum + 1] != PCRE2_UNSET) {
-                                    std::string groupval = search_text.substr(ovector[2 * groupnum], ovector[2 * groupnum + 1] - ovector[2 * groupnum]);
-                                    json += ",\"" + gname + "\":\"";
-                                    for (size_t i = 0; i < groupval.length(); ++i) {
-                                        unsigned char c = static_cast<unsigned char>(groupval[i]);
+                        pcre2_code* re = unicode_rx.get_pcre_code();
+                        if (re != nullptr) {
+                            pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, NULL);
+                            if (match_data != nullptr) {
+                                int rc = pcre2_match(
+                                    re,
+                                    reinterpret_cast<PCRE2_SPTR>(norm_line.c_str()),
+                                    norm_line.length(),
+                                    0,
+                                    0,
+                                    match_data,
+                                    NULL
+                                );
+                                if (rc >= 0) {
+                                    std::string json = "{";
+                                    json += "\"match\":\"";
+                                    for (size_t i = 0; i < norm_line.length(); ++i) {
+                                        unsigned char c = static_cast<unsigned char>(norm_line[i]);
                                         if (c == '\\' || c == '"') json += '\\';
                                         if (c == '\n') json += "\\n";
                                         else if (c == '\r') json += "\\r";
@@ -539,75 +553,183 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
                                             char buf[7];
                                             snprintf(buf, sizeof(buf), "\\u%04x", c);
                                             json += buf;
-                                        } else {
-                                            /* For UTF-8 multi-byte sequences, preserve all bytes */
-                                            json += groupval[i];
+                                        }
+                                        else {
+                                            json += norm_line[i];
                                         }
                                     }
                                     json += "\"";
+                                    // Add offset (start of line in input) and line number
+                                    json += ",\"offset\":" + std::to_string(pos);
+                                    json += ",\"line\":" + std::to_string(line_num);
+                                    json += "}";
+                                    json_matches.push_back(json);
                                 }
-                            }
-                            /* Add offset and line number */
-                            json += ",\"offset\":" + std::to_string(ovector[0]);
-                            /* Find line number (count newlines up to offset) */
-                            size_t line = 1;
-                            for (size_t i = 0; i < ovector[0] && i < search_text.size(); ++i) {
-                                if (search_text[i] == '\n') ++line;
-                            }
-                            json += ",\"line\":" + std::to_string(line);
-                            json += "}";
-                            json_matches.push_back(json);
-                            if (ovector[1] > offset) {
-                                offset = ovector[1];
-                            } else {
-                                ++offset;
+                                pcre2_match_data_free(match_data);
                             }
                         }
-                        pcre2_match_data_free(match_data);
-                        /* Build JSON array */
-                        std::string json_array = "[";
-                        for (size_t i = 0; i < json_matches.size(); ++i) {
-                            if (i > 0) json_array += ",";
-                            json_array += json_matches[i];
-                        }
-                        json_array += "]";
-                        return {json_array};
-                    }
-                }
 #endif
+                    }
+                    if (next == input.size()) break;
+                    pos = next + 1;
+                    ++line_num;
+                }
+                std::string json_array = "[";
+                for (size_t i = 0; i < json_matches.size(); ++i) {
+                    if (i > 0) json_array += ",";
+                    json_array += json_matches[i];
+                }
+                json_array += "]";
+                return { json_array };
             }
-        } catch (...) {
+        }
+        catch (...) {
             /* If JSON output fails, fall back to regular output */
         }
-        
+
         /* Fallback: output as array of matches (no named groups) */
-        std::string json_array = "[";
-        for (size_t i = 0; i < matches.size(); ++i) {
-            std::string match = working_input.substr(matches[i].offset, matches[i].length);
-            std::string json = "{\"match\":\"";
-            for (size_t j = 0; j < match.length(); ++j) {
-                unsigned char c = static_cast<unsigned char>(match[j]);
-                if (c == '\\' || c == '"') json += '\\';
-                if (c == '\n') json += "\\n";
-                else if (c == '\r') json += "\\r";
-                else if (c == '\t') json += "\\t";
-                else if (c == '\b') json += "\\b";
-                else if (c == '\f') json += "\\f";
-                else if (c < 0x20) {
-                    char buf[7];
-                    snprintf(buf, sizeof(buf), "\\u%04x", c);
-                    json += buf;
-                } else {
-                    json += match[j];
+        std::string search_text = input;
+        std::string norm_pattern = pattern;
+        if (norm != GrapaUnicode::NormalizationForm::NONE) {
+            search_text = GrapaUnicode::UnicodeRegex::get_normalized_text(input, regex_options.find('i') != std::string::npos, norm);
+            norm_pattern = GrapaUnicode::UnicodeRegex::get_normalized_text(pattern, regex_options.find('i') != std::string::npos, norm);
+        }
+        bool diacritic_insensitive = has_diacritic_insensitive(regex_options);
+        std::string search_text_for_matching = search_text;
+        if (diacritic_insensitive) {
+            search_text_for_matching = GrapaUnicode::strip_diacritics(search_text);
+            norm_pattern = GrapaUnicode::strip_diacritics(norm_pattern);
+        }
+        GrapaUnicode::UnicodeRegex unicode_rx(norm_pattern, regex_options.find('i') != std::string::npos, diacritic_insensitive, norm);
+        std::vector<MatchPosition> matches;
+        if (unicode_rx.is_pcre_valid()) {
+#ifdef USE_PCRE
+            pcre2_code* re = unicode_rx.get_pcre_code();
+            if (re != nullptr) {
+                pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, NULL);
+                if (match_data != nullptr) {
+                    PCRE2_SIZE offset = 0;
+                    PCRE2_SIZE length = static_cast<PCRE2_SIZE>(search_text_for_matching.length());
+                    // Get named group info
+                    uint32_t namecount = 0;
+                    pcre2_pattern_info(re, PCRE2_INFO_NAMECOUNT, &namecount);
+                    PCRE2_SPTR nametable = NULL;
+                    uint32_t name_entry_size = 0;
+                    if (namecount > 0) {
+                        pcre2_pattern_info(re, PCRE2_INFO_NAMETABLE, &nametable);
+                        pcre2_pattern_info(re, PCRE2_INFO_NAMEENTRYSIZE, &name_entry_size);
+                    }
+                    std::vector<std::pair<std::string, uint32_t>> named_groups;
+                    for (uint32_t i = 0; i < namecount; ++i) {
+                        PCRE2_SPTR entry = nametable + i * name_entry_size;
+                        uint32_t group_num = (entry[0] << 8) | entry[1];
+                        std::string group_name(reinterpret_cast<const char*>(entry + 2));
+                        named_groups.emplace_back(group_name, group_num);
+                    }
+                    std::vector<std::string> json_matches;
+                    while (offset <= length) {
+                        int rc = pcre2_match(
+                            re,
+                            reinterpret_cast<PCRE2_SPTR>(search_text_for_matching.c_str()),
+                            length,
+                            offset,
+                            0,
+                            match_data,
+                            nullptr
+                        );
+                        if (rc < 0) break;
+                        PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(match_data);
+                        size_t orig_start = ovector[0];
+                        size_t orig_len = ovector[1] - ovector[0];
+                        // Map normalized span to original input
+                        std::string cached_normalized_input = search_text;
+                        if (diacritic_insensitive) {
+                            cached_normalized_input = GrapaUnicode::strip_diacritics(cached_normalized_input);
+                        }
+                        auto mapped = GrapaUnicode::UnicodeRegex::map_normalized_span_to_original(search_text, cached_normalized_input, orig_start, orig_len);
+                        // Calculate line number for this match
+                        size_t match_offset = mapped.first;
+                        size_t line_num = 1;
+                        for (size_t i = 0; i < match_offset && i < input.size(); ++i) {
+                            if (input[i] == '\n') ++line_num;
+                        }
+                        std::string match = search_text.substr(mapped.first, mapped.second);
+                        std::string json = "{";
+                        json += "\"match\":\"";
+                        for (size_t j = 0; j < match.length(); ++j) {
+                            unsigned char c = static_cast<unsigned char>(match[j]);
+                            if (c == '\\' || c == '"') json += '\\';
+                            if (c == '\n') json += "\\n";
+                            else if (c == '\r') json += "\\r";
+                            else if (c == '\t') json += "\\t";
+                            else if (c == '\b') json += "\\b";
+                            else if (c == '\f') json += "\\f";
+                            else if (c < 0x20) {
+                                char buf[7];
+                                snprintf(buf, sizeof(buf), "\\u%04x", c);
+                                json += buf;
+                            }
+                            else {
+                                json += match[j];
+                            }
+                        }
+                        json += '"';
+                        // Add named groups
+                        for (const auto& ng : named_groups) {
+                            uint32_t group_num = ng.second;
+                            std::string group_name = ng.first;
+                            json += ",\"" + group_name + "\":";
+                            if (group_num < rc && ovector[2 * group_num] != PCRE2_UNSET && ovector[2 * group_num + 1] != PCRE2_UNSET) {
+                                size_t gstart = ovector[2 * group_num];
+                                size_t gend = ovector[2 * group_num + 1];
+                                std::string group_val = search_text_for_matching.substr(gstart, gend - gstart);
+                                json += '"';
+                                for (size_t k = 0; k < group_val.length(); ++k) {
+                                    unsigned char c = static_cast<unsigned char>(group_val[k]);
+                                    if (c == '\\' || c == '"') json += '\\';
+                                    if (c == '\n') json += "\\n";
+                                    else if (c == '\r') json += "\\r";
+                                    else if (c == '\t') json += "\\t";
+                                    else if (c == '\b') json += "\\b";
+                                    else if (c == '\f') json += "\\f";
+                                    else if (c < 0x20) {
+                                        char buf[7];
+                                        snprintf(buf, sizeof(buf), "\\u%04x", c);
+                                        json += buf;
+                                    }
+                                    else {
+                                        json += group_val[k];
+                                    }
+                                }
+                                json += '"';
+                            }
+                            else {
+                                json += "null";
+                            }
+                        }
+                        json += ",\"offset\":" + std::to_string(match_offset);
+                        json += ",\"line\":" + std::to_string(line_num);
+                        json += "}";
+                        json_matches.push_back(json);
+                        if (ovector[1] > offset) {
+                            offset = ovector[1];
+                        }
+                        else {
+                            ++offset;
+                        }
+                    }
+                    pcre2_match_data_free(match_data);
+                    std::string json_array = "[";
+                    for (size_t i = 0; i < json_matches.size(); ++i) {
+                        if (i > 0) json_array += ",";
+                        json_array += json_matches[i];
+                    }
+                    json_array += "]";
+                    return { json_array };
                 }
             }
-            json += "\",\"offset\":" + std::to_string(matches[i].offset);
-            json += ",\"line\":" + std::to_string(matches[i].line_number) + "}";
-            if (i > 0) json_array += ",";
-            json_array += json;
+#endif
         }
-        json_array += "]";
-        return {json_array};
     }
 
     // If context options are set, only apply if not match-only mode
@@ -676,7 +798,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
                         match.pop_back();
                     }
                 }
-                unique.insert(match);
+                if (dedupe && !unique.insert(match).second) continue;
             }
             out.push_back(std::to_string(unique.size()));
         }
@@ -933,6 +1055,20 @@ std::vector<std::pair<size_t, size_t>> GrapaUnicode::UnicodeRegex::find_all(cons
         (pattern_.back() == '+' && text.data().size() > 10000)) {
         return find_all_fast_path(text);
     }
+    
+    /* Try fast paths for simple patterns */
+    if (is_simple_literal_pattern(pattern_) && text.data().size() > 50) {
+        return find_all_literal_fast_path(text);
+    }
+    
+    if (is_simple_word_pattern(pattern_) && text.data().size() > 100) {
+        return find_all_word_fast_path(text);
+    }
+    
+    if (is_simple_digit_pattern(pattern_) && text.data().size() > 100) {
+        return find_all_digit_fast_path(text);
+    }
+    
     if (is_ascii_only_ && is_ascii_string(text.data())) {
         try {
             for (std::sregex_iterator it(text.data().begin(),
@@ -964,8 +1100,8 @@ std::vector<std::pair<size_t, size_t>> GrapaUnicode::UnicodeRegex::find_all(cons
 
 namespace GrapaUnicode {
 
-UnicodeRegex::UnicodeRegex(const std::string& pattern, bool case_insensitive, NormalizationForm norm)
-    : pattern_(pattern), case_insensitive_(case_insensitive), normalization_(norm) {
+UnicodeRegex::UnicodeRegex(const std::string& pattern, bool case_insensitive, bool diacritic_insensitive, NormalizationForm norm)
+    : pattern_(pattern), case_insensitive_(case_insensitive), diacritic_insensitive_(diacritic_insensitive), normalization_(norm) {
     try {
         compile();
     } catch (const std::exception& e) {
@@ -986,22 +1122,27 @@ UnicodeRegex::~UnicodeRegex() {
 
 void UnicodeRegex::compile() {
     compilation_error_ = false; /* Reset error state */
-    
+    std::string pattern_to_compile = pattern_;
+    if (diacritic_insensitive_) {
+        pattern_to_compile = GrapaUnicode::strip_diacritics(pattern_to_compile);
+    }
 #ifdef USE_PCRE
-    /* Use PCRE2 if pattern has Unicode property escapes, is not ASCII-only, or has named groups */
-    use_pcre_ = has_unicode_properties(pattern_) || !is_ascii_only_ || has_named_groups(pattern_);
+    use_pcre_ = has_unicode_properties(pattern_to_compile) || !is_ascii_only_ || has_named_groups(pattern_to_compile) || has_atomic_groups(pattern_to_compile) || has_lookaround_assertions(pattern_to_compile) || has_grapheme_clusters(pattern_to_compile);
 #else
     use_pcre_ = false;
 #endif
     if (use_pcre_) {
-        /* Compile with PCRE2 */
-        std::string pattern_utf8 = parse_unicode_escapes(pattern_);
+        std::string pattern_utf8 = parse_unicode_escapes(pattern_to_compile);
         int error_code = 0;
         PCRE2_SIZE error_offset = 0;
+        uint32_t compile_flags = PCRE2_UTF | PCRE2_UCP | PCRE2_JIT_COMPLETE;
+        if (case_insensitive_) {
+            compile_flags |= PCRE2_CASELESS;
+        }
         pcre2_code* re = pcre2_compile(
             reinterpret_cast<PCRE2_SPTR>(pattern_utf8.c_str()),
             PCRE2_ZERO_TERMINATED,
-            PCRE2_UTF | PCRE2_UCP, /* Enable UTF-8 mode and Unicode properties */
+            compile_flags,
             &error_code,
             &error_offset,
             nullptr
@@ -1010,6 +1151,12 @@ void UnicodeRegex::compile() {
             compilation_error_ = true;
             return;
         }
+        
+        /* Try to enable JIT compilation for better performance */
+        if (pcre2_jit_compile(re, PCRE2_JIT_COMPLETE) == 0) {
+            use_jit_matching_ = true;
+        }
+        
         pcre_regex_ = re;
         pcre_match_data_ = pcre2_match_data_create_from_pattern(pcre_regex_, nullptr);
         if (pcre_match_data_ == nullptr) {
@@ -1019,11 +1166,10 @@ void UnicodeRegex::compile() {
             return;
         }
     } else {
-        /* Compile with std::regex */
         std::regex::flag_type flags = std::regex::ECMAScript;
         if (case_insensitive_) flags |= std::regex::icase;
         try {
-            regex_ = std::regex(pattern_, flags);
+            regex_ = std::regex(pattern_to_compile, flags);
         } catch (const std::regex_error&) {
             compilation_error_ = true;
             return;
@@ -1049,6 +1195,13 @@ bool UnicodeRegex::has_unicode_properties(const std::string& pattern) {
             return true; // Found \p or \P without {
         }
     }
+    
+    // Check for Unicode blocks \p{In_...}
+    pos = 0;
+    while ((pos = pattern.find("\\p{In_", pos)) != std::string::npos) {
+        return true; // Found Unicode block pattern
+    }
+    
     return false;
 }
 
@@ -1060,6 +1213,7 @@ namespace GrapaUnicode {
     std::mutex UnicodeRegex::text_cache_mutex_;
     std::map<std::pair<std::string, std::string>, std::vector<std::pair<size_t, size_t>>> UnicodeRegex::offset_cache_;
     std::mutex UnicodeRegex::offset_cache_mutex_;
+    UnicodeRegex::LRUCache UnicodeRegex::text_lru_cache_(1000); /* Initialize with 1000 entry limit */
 }
 
  

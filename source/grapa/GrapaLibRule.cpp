@@ -16314,10 +16314,10 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 		GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE;
 		std::transform(procstr_upper.begin(), procstr_upper.end(), procstr_upper.begin(), ::toupper);
 
-		if (normstr_upper.empty() || normstr_upper == "UNICODE") {
+		if (procstr_upper.empty() || procstr_upper == "UNICODE") {
 			mode = GrapaUnicode::ProcessingMode::UNICODE_MODE;
 		}
-		else if (normstr_upper == "BINARY") {
+		else if (procstr_upper == "BINARY") {
 			mode = GrapaUnicode::ProcessingMode::BINARY_MODE;
 		}
 		auto matches = grep_extract_matches_unicode(input, pattern, options, delim, normalization, mode);

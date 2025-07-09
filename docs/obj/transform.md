@@ -128,6 +128,8 @@ Replaces iteems.
 ## grep(pattern, options, delimiter, normalization, mode) 
 Extracts matches from a string using PCRE2-powered regular expressions with full Unicode support. Returns an array of results or JSON format with named groups.
 
+> **For comprehensive Unicode, advanced regex, diacritic-insensitive, and output option documentation, see [Unicode Grep Documentation](grep.md).**
+
 ### Parameters:
 
 - `pattern` — PCRE2 regular expression string with Unicode support, named groups, and advanced features.
@@ -136,6 +138,7 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
   **Matching Options:**
   - `a` – All mode: treat the entire input as one block (no line splitting).
   - `i` – Case-insensitive match with Unicode case folding.
+  - `d` – Diacritic-insensitive match (strip accents/diacritics from both input and pattern, robust Unicode-aware).
   - `v` – Invert match (select non-matching lines or spans).
   - `x` – Match entire line exactly (equivalent to anchoring with `^` and `$`).
   - `N` – Normalize input and pattern to NFC Unicode form.
@@ -147,18 +150,29 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
   - `b` – Prefix results with byte offset.
   - `j` – JSON output format with named groups, offsets, and line numbers.
 
-  **Context Options:**
-  - `A<n>` – Show n lines after match (context).
-  - `B<n>` – Show n lines before match (context).
-  - `C<n>` – Show n lines before and after match (context).
-
   **Processing Options:**
   - `c` – Return count of matches (or count of deduplicated matches if `d` is also set).
   - `d` – Deduplicate results (line-level by default, or substring-level when combined with `o`, `g`, or `b`).
   - `g` – Group matches per line.
-- `delimiter` — Custom string used to split lines (defaults to `\n`). You can pass `\\n` to enforce newline behavior even when platform line endings vary, or use custom delimiters like `"|||"`, `"###"`, or any other string pattern.
-- `normalization` — Unicode normalization form: `"NONE"`, `"NFC"`, `"NFD"`, `"NFKC"`, `"NFKD"` (default: `"NONE"`).
-- `mode` — Processing mode: `"UNICODE"` for full Unicode processing, `"BINARY"` for raw byte processing (default: `"UNICODE"`).
+
+  **Unicode Support:**
+  - Unicode categories: `\p{L}`, `\p{N}`, `\p{Z}`, `\p{P}`, `\p{S}`, `\p{C}`, `\p{M}`
+  - Unicode scripts: `\p{sc=Latin}`, `\p{sc=Han}`, etc.
+  - Unicode script extensions: `\p{scx:Han}`, etc.
+  - Unicode general categories: `\p{Lu}`, `\p{Ll}`, etc.
+  - Named groups: `(?P<name>...)`
+  - Atomic groups: `(?>...)`
+  - Lookaround assertions: `(?=...)`, `(?<=...)`, `(?!...)`, `(?<!...)`
+  - Unicode grapheme clusters: `\X`
+  - Advanced Unicode properties: `\p{Emoji}`, `\p{So}`, etc.
+  - Possessive quantifiers: `*+`, `++`, `?+`, `{n,m}+`
+  - Conditional patterns: `?(condition)...`
+  - Context lines: `A`, `B`, `C` options
+
+  **Not Supported:**
+  - Unicode blocks: `\p{In_Basic_Latin}`, etc.
+  - Unicode age properties: `\p{Age=...}`
+  - Unicode bidirectional classes: `\p{Bidi_Class:...}`
 
 ### Examples:
 
@@ -178,6 +192,13 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 // Named groups with JSON output
 "John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
 → [{"match":"John Doe","first":"John","last":"Doe","offset":0,"line":1}]
+
+// Date parsing with JSON output
+"2023-04-27\n2022-12-31".grep("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj")
+→ [
+    {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
+    {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
+  ]
 
 // Raw string literals for better readability
 "file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x")
@@ -214,6 +235,42 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 
 > **💡 Tip**: Use raw string literals (prefix with `r`) for better regex pattern readability. For example, `r"\w+"` instead of `"\\w+"`. Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string.
 
+---
+
+### Diacritic-Insensitive Matching (`d` option)
+
+The `d` option enables **diacritic-insensitive matching**. When enabled, both the input and the pattern are:
+1. **Unicode normalized** (NFC by default, or as specified)
+2. **Case folded** (Unicode-aware, not just ASCII)
+3. **Diacritics/accents are stripped** (works for Latin, Greek, Cyrillic, Turkish, Vietnamese, and more)
+
+This allows matches like:
+- `"café".grep("cafe", "d")` → `["café"]`
+- `"CAFÉ".grep("cafe", "di")` → `["CAFÉ"]`
+- `"mañana".grep("manana", "d")` → `["mañana"]`
+- `"İstanbul".grep("istanbul", "di")` → `["İstanbul"]`
+- `"καφές".grep("καφες", "d")` → `["καφές"]`
+- `"кофе".grep("кофе", "di")` → `["кофе"]`
+
+#### Special Capabilities
+- Handles both precomposed (NFC) and decomposed (NFD) Unicode forms
+- Supports diacritic-insensitive matching for Latin, Greek, Cyrillic, Turkish, Vietnamese, and more
+- Works with case-insensitive (`i`) and normalization (`N`, or normalization parameter) options
+- Robust for international text, including combining marks
+
+#### Limitations
+- Only covers scripts and diacritics explicitly mapped (Latin, Greek, Cyrillic, Turkish, Vietnamese, etc.)
+- Does **not** transliterate between scripts (e.g., Greek to Latin)
+- Does **not** remove all possible Unicode marks outside supported ranges (e.g., rare/archaic scripts)
+- For full Unicode normalization, use with the normalization parameter (e.g., `"NFC"`, `"NFD"`)
+- Does **not** perform locale-specific collation (e.g., German ß vs ss)
+
+#### Example
+```grapa
+input = "café\nCAFÉ\ncafe\u0301\nCafe\nCAFÉ\nmañana\nmañana\nİstanbul\nistanbul\nISTANBUL\nstraße\nSTRASSE\nStraße\nкофе\nКофе\nκαφές\nΚαφές\n";
+result = input.grep(r"cafe", "di");
+// Result: ["café", "CAFÉ", "café", "Cafe", "CAFÉ"]
+```
 
 ## split(sep, max, axis)
 Splits into an array.

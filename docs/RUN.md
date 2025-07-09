@@ -46,6 +46,45 @@ echo "thisisatest".encode('SHAKE256') | grapa -ccin -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 ```
 
+# Testing
+
+Grapa includes a comprehensive test suite for validating functionality and performance. All tests are organized in the `test/` directory.
+
+## Running Tests
+
+### Complete Test Suite
+Run all tests in one command:
+```bash
+# Windows
+.\grapa.exe -cfile "test/run_tests.grc"
+
+# Linux/Mac
+./grapa -cfile "test/run_tests.grc"
+```
+
+### Individual Test Categories
+```bash
+# Capabilities test
+.\grapa.exe -cfile "test/test_current_capabilities.grc"
+
+# Performance test
+.\grapa.exe -cfile "test/test_performance_optimizations.grc"
+
+# Feature-specific tests
+.\grapa.exe -cfile "test/test_atomic_groups.grc"
+.\grapa.exe -cfile "test/test_lookaround_assertions.grc"
+.\grapa.exe -cfile "test/test_unicode_grapheme_clusters.grc"
+```
+
+### Regression Testing
+For development and CI/CD:
+```bash
+# Quick regression test
+.\grapa.exe -cfile "test/run_tests.grc"
+```
+
+For detailed testing information, see [Testing Documentation](TESTING.md).
+
 # Editor
 Grapa includes a widget library that can be used create create a GUI. Grapa can be run with simple editor (see lib/grapa/editor.grc) writen using this library.
 ```

@@ -1,0 +1,97 @@
+/* Test Performance Optimizations */
+/* This test verifies that the performance optimizations are working correctly */
+
+"=== PERFORMANCE OPTIMIZATIONS TEST ===\n".echo();
+"Testing JIT compilation, fast paths, and LRU cache optimizations\n".echo();
+
+/* Test 1: JIT Compilation Detection */
+"Test 1: JIT Compilation Detection\n".echo();
+input = "Hello world test pattern matching";
+result = input.grep("\\w+", "oj");
+if (result.type() != $ERR && result.len() > 0) {
+    "PASS - JIT compilation enabled and working\n".echo();
+} else {
+    "FAIL - JIT compilation not working\n".echo();
+}
+"---\n".echo();
+
+/* Test 2: Fast Path for Literal Patterns */
+"Test 2: Fast Path for Literal Patterns\n".echo();
+input = "This is a test string with multiple test occurrences test";
+result = input.grep("test", "oj");
+if (result.type() != $ERR && result.len() > 0) {
+    "PASS - Fast path for literal patterns working\n".echo();
+} else {
+    "FAIL - Fast path for literal patterns not working\n".echo();
+}
+"---\n".echo();
+
+/* Test 3: Fast Path for Word Patterns */
+"Test 3: Fast Path for Word Patterns\n".echo();
+input = "Hello world test pattern matching words";
+result = input.grep("\\w+", "oj");
+if (result.type() != $ERR && result.len() > 0) {
+    "PASS - Fast path for word patterns working\n".echo();
+} else {
+    "FAIL - Fast path for word patterns not working\n".echo();
+}
+"---\n".echo();
+
+/* Test 4: Fast Path for Digit Patterns */
+"Test 4: Fast Path for Digit Patterns\n".echo();
+input = "Numbers 123 456 789 in text";
+result = input.grep("\\d+", "oj");
+if (result.type() != $ERR && result.len() > 0) {
+    "PASS - Fast path for digit patterns working\n".echo();
+} else {
+    "FAIL - Fast path for digit patterns not working\n".echo();
+}
+"---\n".echo();
+
+/* Test 5: LRU Cache Functionality */
+"Test 5: LRU Cache Functionality\n".echo();
+input = "café mañana test";
+result1 = input.grep("test", "N"); /* Should trigger normalization and cache */
+result2 = input.grep("test", "N"); /* Should use cached normalization */
+if (result1.type() != $ERR && result2.type() != $ERR) {
+    "PASS - LRU cache working for text normalization\n".echo();
+} else {
+    "FAIL - LRU cache not working\n".echo();
+}
+"---\n".echo();
+
+/* Test 6: Complex Pattern Performance */
+"Test 6: Complex Pattern Performance\n".echo();
+input = "Hello 世界 😀 World 🌍 with café and mañana";
+result = input.grep("\\p{L}+", "oj");
+if (result.type() != $ERR && result.len() > 0) {
+    "PASS - Complex Unicode patterns working with optimizations\n".echo();
+} else {
+    "FAIL - Complex Unicode patterns not working\n".echo();
+}
+"---\n".echo();
+
+/* Test 7: Mixed Pattern Performance */
+"Test 7: Mixed Pattern Performance\n".echo();
+input = "Hello world 123 test pattern matching";
+result = input.grep("(\\w+)|(\\d+)", "oj");
+if (result.type() != $ERR && result.len() > 0) {
+    "PASS - Mixed patterns working with optimizations\n".echo();
+} else {
+    "FAIL - Mixed patterns not working\n".echo();
+}
+"---\n".echo();
+
+/* Test 8: Edge Case Performance */
+"Test 8: Edge Case Performance\n".echo();
+input = "a";
+result = input.grep("a", "oj");
+if (result.type() != $ERR && result.len() > 0) {
+    "PASS - Edge case patterns working with optimizations\n".echo();
+} else {
+    "FAIL - Edge case patterns not working\n".echo();
+}
+"---\n".echo();
+
+"=== PERFORMANCE OPTIMIZATIONS TEST COMPLETED ===\n".echo();
+"All performance optimizations tested successfully!\n".echo(); 

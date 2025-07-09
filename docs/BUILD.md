@@ -28,7 +28,18 @@ python setup.py sdist
 rmdir /s /q grapapy.egg-info
 grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
 
+### Testing After Build
+After building, run the test suite to validate the build:
+```bash
+# Run complete test suite
+.\grapa.exe -cfile "test/run_tests.grc"
+
+# Or run individual test categories
+.\grapa.exe -cfile "test/test_current_capabilities.grc"
+.\grapa.exe -cfile "test/test_performance_optimizations.grc"
 ```
+
+For detailed testing information, see [Testing Documentation](TESTING.md).
 
 ## Mac
 
@@ -40,7 +51,6 @@ brew install llvm
 
 ### mac-arm64
 ```
-
 rm grapa
 clang++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-arm64/*.a source/fl-lib/mac-arm64/*.a source/blst-lib/mac-arm64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++17 -m64 -O3 -pthread -o grapa
 codesign -s dev-grapa-cert ./grapa
@@ -64,6 +74,15 @@ python3 setup.py sdist
 rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 
+### Testing After Build
+After building, run the test suite to validate the build:
+```bash
+# Run complete test suite
+./grapa -cfile "test/run_tests.grc"
+
+# Or run individual test categories
+./grapa -cfile "test/test_current_capabilities.grc"
+./grapa -cfile "test/test_performance_optimizations.grc"
 ```
 
 Helpful additons
@@ -97,8 +116,17 @@ python3 setup.py sdist
 rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 
+### Testing After Build
+After building, run the test suite to validate the build:
+```bash
+# Run complete test suite
+./grapa -cfile "test/run_tests.grc"
 
+# Or run individual test categories
+./grapa -cfile "test/test_current_capabilities.grc"
+./grapa -cfile "test/test_performance_optimizations.grc"
 ```
+
 
 ### Create a certificate
 	open -a "Keychain Access"
@@ -198,30 +226,17 @@ tar -czvf bin/grapa-linux-arm64.tar.gz grapa source/grapa-lib/linux-arm64/*
 rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
-./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 ```
 
-### linux-amd64
-```
-rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux-amd64/*.a source/fl-lib/linux-amd64/*.a source/blst-lib/linux-amd64/*.a -Lsource/openssl-lib/linux-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+### Testing After Build
+After building, run the test suite to validate the build:
+```bash
+# Run complete test suite
+./grapa -cfile "test/run_tests.grc"
 
-g++ -c -Isource source/grapa/*.cpp -std=c++17 -O3 -pthread -fPIC
-ar -crs libgrapa.a *.o
-rm *.o
-cp libgrapa.a source/grapa-lib/linux-amd64/libgrapa.a
-rm libgrapa.a
-
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux-amd64/*.a source/fl-lib/linux-amd64/*.a source/blst-lib/linux-amd64/*.a -Lsource/openssl-lib/linux-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
-cp libgrapa.so source/grapa-lib/linux-amd64/libgrapa.so
-rm libgrapa.so
-
-tar -czvf bin/grapa-linux-amd64.tar.gz grapa source/grapa-lib/linux-amd64/*
-
-rm -rf dist
-python3 setup.py sdist
-rm -rf grapapy.egg-info
-./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+# Or run individual test categories
+./grapa -cfile "test/test_current_capabilities.grc"
+./grapa -cfile "test/test_performance_optimizations.grc"
 ```
 
 ## aws

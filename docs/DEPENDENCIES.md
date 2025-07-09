@@ -256,6 +256,9 @@ build.sh
 
 ## pcre2
 ```
+# Install cmake if not already installed
+brew install cmake
+
 rm -rf build_static
 mkdir build_static
 cd build_static
@@ -300,6 +303,9 @@ build.sh
 
 ## pcre2
 ```
+# Install cmake if not already installed
+brew install cmake
+
 rm -rf build_static
 mkdir build_static
 cd build_static

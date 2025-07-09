@@ -1,0 +1,67 @@
+"Atomic Group Support Test\n".echo();
+
+"Testing atomic groups (?>...)\n".echo();
+
+/* Test 1: Basic atomic group - should prevent backtracking */
+"Test 1: Basic atomic group\n".echo();
+input = "aaaa";
+result = input.grep("(?>a+)a", "oj");
+if (result == []) "PASS - Atomic group prevented match\n".echo(); else "FAIL - Should not match\n".echo();
+
+/* Test 2: Atomic group with successful match */
+"Test 2: Atomic group with successful match\n".echo();
+input = "abc";
+result = input.grep("(?>a+)b", "oj");
+if (result == ["ab"]) "PASS - Atomic group matched correctly\n".echo(); else "FAIL - Should match 'ab'\n".echo();
+
+/* Test 3: Atomic group vs non-atomic group */
+"Test 3: Atomic vs non-atomic comparison\n".echo();
+input = "aaaa";
+result1 = input.grep("(?>a+)a", "oj");
+result2 = input.grep("(a+)a", "oj");
+if (result1 == [] && result2 == ["aaaa"]) "PASS - Atomic prevents backtracking\n".echo(); else "FAIL - Atomic group behavior incorrect\n".echo();
+
+/* Test 4: Atomic group with quantifiers */
+"Test 4: Atomic group with quantifiers\n".echo();
+input = "aaa";
+result = input.grep("(?>a{2,3})a", "oj");
+if (result == []) "PASS - Atomic quantifier prevents match\n".echo(); else "FAIL - Should not match\n".echo();
+
+/* Test 5: Atomic group with alternation */
+"Test 5: Atomic group with alternation\n".echo();
+input = "abc";
+result = input.grep("(?>a|b)c", "oj");
+if (result == ["ac"]) "PASS - Atomic alternation works\n".echo(); else "FAIL - Should match 'ac'\n".echo();
+
+/* Test 6: Nested atomic groups */
+"Test 6: Nested atomic groups\n".echo();
+input = "aaa";
+result = input.grep("(?>a(?>a+))a", "oj");
+if (result == []) "PASS - Nested atomic groups work\n".echo(); else "FAIL - Should not match\n".echo();
+
+/* Test 7: Atomic group with Unicode */
+"Test 7: Atomic group with Unicode\n".echo();
+input = "café";
+result = input.grep("(?>café)", "oj");
+if (result == ["café"]) "PASS - Atomic group with Unicode\n".echo(); else "FAIL - Should match 'café'\n".echo();
+
+/* Test 8: Atomic group with case insensitive */
+"Test 8: Atomic group with case insensitive\n".echo();
+input = "Café";
+result = input.grep("(?>café)", "ioj");
+if (result == ["Café"]) "PASS - Atomic group with case insensitive\n".echo(); else "FAIL - Should match 'Café'\n".echo();
+
+/* Test 9: Atomic group with diacritic insensitive */
+"Test 9: Atomic group with diacritic insensitive\n".echo();
+input = "cafe";
+result = input.grep("(?>café)", "doj");
+if (result == ["cafe"]) "PASS - Atomic group with diacritic insensitive\n".echo(); else "FAIL - Should match 'cafe'\n".echo();
+
+/* Test 10: Complex atomic group scenario */
+"Test 10: Complex atomic group scenario\n".echo();
+input = "aaaa";
+result = input.grep("(?>a{2,3})a{2}", "oj");
+if (result == []) "PASS - Complex atomic group prevents match\n".echo(); else "FAIL - Should not match\n".echo();
+
+"---\n".echo();
+"Atomic group support test completed.\n".echo(); 
