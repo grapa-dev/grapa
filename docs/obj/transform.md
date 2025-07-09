@@ -186,6 +186,10 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 "user@domain.com".grep(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "x")
 → ["user@domain.com"] - Much cleaner than escaped version
 
+// Raw strings preserve literal escape sequences
+"\\x45".grep(r"\x45", "o")
+→ ["\\x45"] - Literal string, not character "E"
+
 // Context lines
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 2", "A1B1")
 → ["Line 1", "Line 2", "Line 3"]
@@ -208,7 +212,7 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 
 > **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](grep.md).**
 
-> **💡 Tip**: Use raw string literals (prefix with `r`) for better regex pattern readability. For example, `r"\w+"` instead of `"\\w+"`. Note that hex escapes (`\x`) and Unicode escapes (`\u`) are still processed in raw strings.
+> **💡 Tip**: Use raw string literals (prefix with `r`) for better regex pattern readability. For example, `r"\w+"` instead of `"\\w+"`. Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string.
 
 
 ## split(sep, max, axis)

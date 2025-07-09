@@ -128,6 +128,10 @@ The `mode` parameter controls how the input is processed:
 // Complex patterns with raw strings
 "file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x")
 // Result: ["file.txt"] - Much more readable than "\\^[a-zA-Z0-9_]\\+\\.txt\\$"
+
+// Raw strings preserve literal escape sequences
+"\\x45".grep(r"\x45", "o")
+// Result: ["\\x45"] - Literal string, not character "E"
 ```
 
 ### Unicode Examples
@@ -172,7 +176,7 @@ For better readability of regex patterns, you can use raw string literals by pre
 // Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
 ```
 
-**Note**: While raw strings suppress most escape sequences, hex escapes (`\x`) and Unicode escapes (`\u`) are still processed. If you need literal backslashes before these sequences, you may need to use regular string literals with proper escaping.
+**Note**: Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string. This means `\x45` becomes the literal string `"\x45"` rather than the character `"E"`. If you need hex or Unicode escapes to be processed, use regular string literals.
 
 ### Named Groups
 
