@@ -69,6 +69,18 @@ limitations under the License.
 #endif
 #endif
 
+#ifdef __APPLE__
+#if defined(__aarch64__) || defined(__arm64__) || defined(__x86_64__)
+#define USE_PCRE
+#endif
+#endif
+
+#ifdef __linux__
+#if defined(__aarch64__) || defined(__x86_64__)
+#define USE_PCRE
+#endif
+#endif
+
 #ifdef USE_PCRE
 #define PCRE2_STATIC
 #define PCRE2_CODE_UNIT_WIDTH 8

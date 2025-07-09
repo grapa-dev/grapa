@@ -523,6 +523,7 @@ Grapa automatically enables PCRE2 JIT compilation for patterns that benefit from
 - **Automatic detection**: JIT is enabled for patterns with Unicode properties, named groups, atomic groups, lookaround assertions, or grapheme clusters
 - **Performance boost**: JIT compilation can provide 2-10x performance improvement for complex patterns
 - **Memory usage**: JIT compiled patterns use additional memory but provide significant speed benefits
+- **Platform support**: Available on Windows (x64), Mac (x64, ARM64), and Linux (x64, ARM64)
 
 ```grapa
 // JIT compilation is automatically enabled for these patterns:

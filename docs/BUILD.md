@@ -1,5 +1,14 @@
 # Build
 
+## Overview
+
+Grapa includes PCRE2 support for enhanced Unicode regex functionality on all supported platforms:
+- **Windows**: x64 (with PCRE2 JIT compilation)
+- **Mac**: x64 and ARM64 (with PCRE2 JIT compilation)  
+- **Linux**: x64 and ARM64 (with PCRE2 JIT compilation)
+
+PCRE2 provides advanced features including Unicode properties, named groups, atomic groups, lookaround assertions, and grapheme clusters.
+
 ## win-amd64
 Requires Visual Studio 2022. Use projects in Grapa/build/win to build grapa
 Packaging requires https://www.7-zip.org/ and add location [C:\Program Files\7-Zip] to PATH.
