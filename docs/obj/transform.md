@@ -132,22 +132,30 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 
 - `pattern` — PCRE2 regular expression string with Unicode support, named groups, and advanced features.
 - `options` — Combination of the following flags:
+
+  **Matching Options:**
   - `a` – All mode: treat the entire input as one block (no line splitting).
-  - `A<n>` – Show n lines after match (context).
-  - `b` – Prefix results with byte offset.
-  - `B<n>` – Show n lines before match (context).
-  - `c` – Return count of matches (or count of deduplicated matches if `d` is also set).
-  - `C<n>` – Show n lines before and after match (context).
-  - `d` – Deduplicate results (line-level by default, or substring-level when combined with `o`, `g`, or `b`).
-  - `g` – Group matches per line.
   - `i` – Case-insensitive match with Unicode case folding.
-  - `j` – JSON output format with named groups, offsets, and line numbers.
-  - `l` – Return only matching line numbers.
-  - `n` – Prefix matches with line number.
-  - `N` – Normalize input and pattern to NFC Unicode form.
-  - `o` – Output only matched substrings.
   - `v` – Invert match (select non-matching lines or spans).
   - `x` – Match entire line exactly (equivalent to anchoring with `^` and `$`).
+  - `N` – Normalize input and pattern to NFC Unicode form.
+
+  **Output Options:**
+  - `o` – Output only matched substrings.
+  - `n` – Prefix matches with line number.
+  - `l` – Return only matching line numbers.
+  - `b` – Prefix results with byte offset.
+  - `j` – JSON output format with named groups, offsets, and line numbers.
+
+  **Context Options:**
+  - `A<n>` – Show n lines after match (context).
+  - `B<n>` – Show n lines before match (context).
+  - `C<n>` – Show n lines before and after match (context).
+
+  **Processing Options:**
+  - `c` – Return count of matches (or count of deduplicated matches if `d` is also set).
+  - `d` – Deduplicate results (line-level by default, or substring-level when combined with `o`, `g`, or `b`).
+  - `g` – Group matches per line.
 - `delimiter` — Custom string used to split lines (defaults to `\n`). You can pass `\\n` to enforce newline behavior even when platform line endings vary.
 - `normalization` — Unicode normalization form: `"NONE"`, `"NFC"`, `"NFD"`, `"NFKC"`, `"NFKD"` (default: `"NONE"`).
 - `mode` — Processing mode: `"UNICODE"` for full Unicode processing, `"BINARY"` for raw byte processing (default: `"UNICODE"`).
