@@ -153,6 +153,9 @@ namespace GrapaUnicode {
 
             utf8proc_option_t options = UTF8PROC_STABLE;
             switch (form) {
+            case NormalizationForm::NONE:
+                // No normalization, use default options
+                break;
             case NormalizationForm::NFC:
                 options = static_cast<utf8proc_option_t>(options | UTF8PROC_COMPOSE);
                 break;
@@ -404,7 +407,7 @@ namespace GrapaUnicode {
             /* Optimize simple repeated patterns */
             if (pattern.size() >= 2 && pattern.back() == '+') {
                 std::string base = pattern.substr(0, pattern.size() - 1);
-                if (base.size() == 1 && (base[0] == '.' || base[0] == '\\w' || base[0] == '\\s' || base[0] == '\\d')) {
+                if (base.size() == 1 && (base[0] == '.' || base == "\\w" || base == "\\s" || base == "\\d")) {
                     /* Keep as is - these are already optimized */
                 }
             }
@@ -551,7 +554,7 @@ namespace GrapaUnicode {
             if (base.size() != 1) return false;
             
             char c = base[0];
-            return c == '.' || c == '\\w' || c == '\\s' || c == '\\d' || c == '\\W' || c == '\\S' || c == '\\D';
+            return c == '.' || base == "\\w" || base == "\\s" || base == "\\d" || base == "\\W" || base == "\\S" || base == "\\D";
         }
 
         /* Fast path for simple repeated patterns */
@@ -574,23 +577,23 @@ namespace GrapaUnicode {
                     bool char_matches = false;
                     if (c == '.') {
                         char_matches = true;
-                    } else if (c == '\\w') {
+                    } else if (base == "\\w") {
                         char_matches = (str[pos] >= 'a' && str[pos] <= 'z') ||
                                       (str[pos] >= 'A' && str[pos] <= 'Z') ||
                                       (str[pos] >= '0' && str[pos] <= '9') ||
                                       str[pos] == '_';
-                    } else if (c == '\\s') {
+                    } else if (base == "\\s") {
                         char_matches = str[pos] == ' ' || str[pos] == '\t' || str[pos] == '\n' || str[pos] == '\r';
-                    } else if (c == '\\d') {
+                    } else if (base == "\\d") {
                         char_matches = (str[pos] >= '0' && str[pos] <= '9');
-                    } else if (c == '\\W') {
+                    } else if (base == "\\W") {
                         char_matches = !((str[pos] >= 'a' && str[pos] <= 'z') ||
                                        (str[pos] >= 'A' && str[pos] <= 'Z') ||
                                        (str[pos] >= '0' && str[pos] <= '9') ||
                                        str[pos] == '_');
-                    } else if (c == '\\S') {
+                    } else if (base == "\\S") {
                         char_matches = str[pos] != ' ' && str[pos] != '\t' && str[pos] != '\n' && str[pos] != '\r';
-                    } else if (c == '\\D') {
+                    } else if (base == "\\D") {
                         char_matches = (str[pos] < '0' || str[pos] > '9');
                     }
                     
