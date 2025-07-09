@@ -118,7 +118,7 @@ copy ..\src to source\pcre2
 copy *.lib to source\pcre2-lib\win-arm64
 ```
 
-# Ubuntu
+# linux-amd64
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -129,7 +129,7 @@ sudo make install
 ```
 Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/source/openssl-lib/ubuntu64
+Copy *.a to Grapa/source/openssl-lib/linux-amd64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -155,11 +155,11 @@ sudo make install
 ```
 Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
-Copy lib/*.so to Grapa/source/fl-lib/ubuntu64
+Copy lib/*.a to Grapa/source/fl-lib/linux-amd64
+Copy lib/*.so to Grapa/source/fl-lib/linux-amd64
 
-cp lib/* ~/Documents/GitHub/grapa/source/fl-lib/ubuntu64/
-cp lib/* ~/Documents/GitHub/grapa/lib/ubuntu64/
+cp lib/* ~/Documents/GitHub/grapa/source/fl-lib/linux-amd64/
+cp lib/* ~/Documents/GitHub/grapa/lib/linux-amd64/
 
 ## pcre2
 ```
@@ -174,7 +174,7 @@ cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/linux-amd64/
 ```
 
 
-# Linux ARM64
+# linux-arm64
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
