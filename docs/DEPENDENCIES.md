@@ -74,10 +74,13 @@ mkdir build_static
 cd build_static
 cmake -G "NMake Makefiles" -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DPCRE2_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=Release ..
 nmake
-
-copy ..\src to source\pcre2
-copy *.lib to source\pcre2-lib\win-amd64
 ```
+
+For the lib files:
+copy *.lib to grapa\source\pcre2-lib\win-amd64
+
+For the include files (this is done onece for all platforms):
+copy ..\src\*.h to grapa\source\pcre2
 
 # win-arm64
 
@@ -103,7 +106,19 @@ cd prj/blst
 build
 ```
 
-# Ubuntu
+## pcre2
+```
+rmdir /s /q build_static
+mkdir build_static
+cd build_static
+cmake -G "NMake Makefiles" -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DPCRE2_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=Release ..
+nmake
+
+copy ..\src to source\pcre2
+copy *.lib to source\pcre2-lib\win-arm64
+```
+
+# linux-amd64
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -114,7 +129,7 @@ sudo make install
 ```
 Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/source/openssl-lib/ubuntu64
+Copy *.a to Grapa/source/openssl-lib/linux-amd64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -140,14 +155,74 @@ sudo make install
 ```
 Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/source/fl-lib/ubuntu64
-Copy lib/*.so to Grapa/source/fl-lib/ubuntu64
+Copy lib/*.a to Grapa/source/fl-lib/linux-amd64
+Copy lib/*.so to Grapa/source/fl-lib/linux-amd64
 
-cp lib/* ~/Documents/GitHub/grapa/source/fl-lib/ubuntu64/
-cp lib/* ~/Documents/GitHub/grapa/lib/ubuntu64/
+cp lib/* ~/Documents/GitHub/grapa/source/fl-lib/linux-amd64/
+cp lib/* ~/Documents/GitHub/grapa/lib/linux-amd64/
+
+## pcre2
+```
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
+make
+
+cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
+cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/linux-amd64/
+```
 
 
-# Mac
+# linux-arm64
+
+## OpenSSL
+Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
+```
+./config no-shared
+make
+sudo make install
+```
+Copy include/openssl to Grapa/source
+
+Copy *.a to Grapa/source/openssl-lib/linux-arm64
+
+## FLTK
+Navigate to FLTK source folder and complete the following.
+```
+sudo apt-get install g++
+sudo apt-get install gdb
+sudo apt-get install git
+sudo apt-get install autoconf
+sudo apt-get install libx11-dev
+sudo apt-get install libglu1-mesa-dev
+sudo apt-get install libasound2-dev
+sudo apt-get install libxft-dev
+sudo apt-get install -y libfreetype-dev
+NOCONFIGURE=1 ./autogen.sh
+./configure --with-optim="-fPIC"
+make
+sudo make install
+```
+Copy FL to Grapa/source
+
+Copy lib/*.a to Grapa/source/fl-lib/linux-arm64
+Copy lib/*.so to Grapa/source/fl-lib/linux-arm64
+
+## pcre2
+```
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
+make
+
+cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
+cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/linux-arm64/
+```
+
+
+# mac-amd64
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -158,7 +233,7 @@ sudo make install
 ```
 Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/source/openssl-lib/mac-apple
+Copy *.a to Grapa/source/openssl-lib/mac-amd64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -170,11 +245,7 @@ sudo make install
 ```
 Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/source/fl-lib/mac-apple
-
-or 
-
-Copy lib/*.a to Grapa/source/fl-lib/mac-intel
+Copy lib/*.a to Grapa/source/fl-lib/mac-amd64
 
 ## BLST
 
@@ -183,7 +254,63 @@ build.sh
 
 ```
 
-# AWS
+## pcre2
+```
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
+make
+
+cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
+cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/mac-amd64/
+```
+
+# mac-arm64
+
+## OpenSSL
+Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
+```
+./config no-shared no-tests enable-ec_nistp_64_gcc_128
+make
+sudo make install
+```
+Copy include/openssl to Grapa/source
+
+Copy *.a to Grapa/source/openssl-lib/mac-arm64
+
+## FLTK
+Navigate to FLTK source folder and complete the following.
+```
+sudo apt-get install -y libfreetype-dev
+./configure --with-optim="-fPIC"
+make
+sudo make install
+```
+Copy FL to Grapa/source
+
+Copy lib/*.a to Grapa/source/fl-lib/mac-arm64
+
+## BLST
+
+```
+build.sh
+
+```
+
+## pcre2
+```
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
+make
+
+cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
+cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/mac-arm64/
+```
+
+# aws-amd64
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -195,7 +322,7 @@ make install
 ```
 Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/source/openssl-lib/aws
+Copy *.a to Grapa/source/openssl-lib/aws-amd64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -207,4 +334,54 @@ make install
 ```
 Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/source/fl-lib/aws
+Copy lib/*.a to Grapa/source/fl-lib/aws-amd64
+
+## pcre2
+```
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
+make
+
+cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
+cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/aws-amd64/
+```
+
+# aws-arm64
+
+## OpenSSL
+Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
+```
+make clean
+./config no-shared
+make
+make install
+```
+Copy include/openssl to Grapa/source
+
+Copy *.a to Grapa/source/openssl-lib/aws-arm64
+
+## FLTK
+Navigate to FLTK source folder and complete the following.
+```
+yum install libX*
+./configure --with-optim="-fPIC"
+make
+make install
+```
+Copy FL to Grapa/source
+
+Copy lib/*.a to Grapa/source/fl-lib/aws-arm64
+
+## pcre2
+```
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
+make
+
+cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
+cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/aws-arm64/
+```
