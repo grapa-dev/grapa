@@ -156,7 +156,7 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
   - `c` – Return count of matches (or count of deduplicated matches if `d` is also set).
   - `d` – Deduplicate results (line-level by default, or substring-level when combined with `o`, `g`, or `b`).
   - `g` – Group matches per line.
-- `delimiter` — Custom string used to split lines (defaults to `\n`). You can pass `\\n` to enforce newline behavior even when platform line endings vary.
+- `delimiter` — Custom string used to split lines (defaults to `\n`). You can pass `\\n` to enforce newline behavior even when platform line endings vary, or use custom delimiters like `"|||"`, `"###"`, or any other string pattern.
 - `normalization` — Unicode normalization form: `"NONE"`, `"NFC"`, `"NFD"`, `"NFKC"`, `"NFKD"` (default: `"NONE"`).
 - `mode` — Processing mode: `"UNICODE"` for full Unicode processing, `"BINARY"` for raw byte processing (default: `"UNICODE"`).
 
@@ -190,6 +190,13 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 // Binary mode for raw byte processing
 "\\x48\\x65\\x6c\\x6c\\x6f".grep("Hello", "o", "", "NONE", "BINARY")
 → ["Hello"]
+
+// Custom delimiter examples
+"apple|||pear|||banana".grep("\\w+", "o", "|||")
+→ ["apple", "pear", "banana"]
+
+"section1###section2###section3".grep("section\\d+", "o", "###")
+→ ["section1", "section2", "section3"]
 ```
 
 > **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](grep.md).**

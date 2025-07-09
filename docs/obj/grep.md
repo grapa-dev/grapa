@@ -242,6 +242,16 @@ age = result[0]["age"]           // "30"
 "apple|||pear|||banana".grep("\\w+", "o", "|||", "NFC")
 // Result: ["apple", "pear", "banana"] - Custom delimiter with NFC normalization
 
+// More custom delimiter examples
+"section1###section2###section3".grep("section\\d+", "o", "###")
+// Result: ["section1", "section2", "section3"] - Using "###" as delimiter
+
+"item1|item2|item3".grep("item\\d+", "o", "|")
+// Result: ["item1", "item2", "item3"] - Using "|" as delimiter
+
+"record1---record2---record3".grep("record\\d+", "o", "---")
+// Result: ["record1", "record2", "record3"] - Using "---" as delimiter
+
 // Binary mode with custom delimiter
 "data1\\x00data2\\x00data3".grep("data\\d+", "o", "\\x00", "NONE", "BINARY")
 // Result: ["data1", "data2", "data3"] - Binary mode with null delimiter
