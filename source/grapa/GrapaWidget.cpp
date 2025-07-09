@@ -1213,7 +1213,7 @@ public:
 		else
 		{
 			s.SetLength(40);
-			sprintf((char*)s.mBytes, "%d/%d", R, C);			  // text for each cell
+			snprintf((char*)s.mBytes, s.mSize, "%d/%d", R, C);			  // text for each cell
 			s.SetLength(strlen((char*)s.mBytes));
 		}
 		switch (context) {

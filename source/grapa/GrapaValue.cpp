@@ -1179,7 +1179,7 @@ GrapaSS64::GrapaSS64() { mNum = 0; };
 void GrapaSS64::TO(GrapaCHAR& pChar)
 {
 	pChar.GrowSize(65,false);
-	pChar.mLength = sprintf((char*)pChar.mBytes,"%lld",mNum);
+	        pChar.mLength = snprintf((char*)pChar.mBytes, pChar.mSize, "%lld", mNum);
 	pChar.SetSize(pChar.mLength);
 }
 
@@ -1190,7 +1190,7 @@ GrapaSU64::GrapaSU64() : mNum(0) {};
 void GrapaSU64::TO(GrapaCHAR& pChar)
 {
 	pChar.GrowSize(65,false);
-	pChar.mLength = sprintf((char*)pChar.mBytes,"%llu",mNum);
+	        pChar.mLength = snprintf((char*)pChar.mBytes, pChar.mSize, "%llu", mNum);
 	pChar.SetSize(pChar.mLength);
 }
 
@@ -1202,7 +1202,7 @@ GrapaDU64::GrapaDU64(du64 pNum) : mNum(pNum) {};
 void GrapaDU64::TO(GrapaCHAR& pChar)
 {
 	pChar.GrowSize(120,false);
-	pChar.mLength = sprintf((char*)pChar.mBytes,"{%llu,%llu}",mNum.key,mNum.value);
+	        pChar.mLength = snprintf((char*)pChar.mBytes, pChar.mSize, "{%llu,%llu}", mNum.key, mNum.value);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

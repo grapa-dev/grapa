@@ -2911,7 +2911,7 @@ GrapaError GrapaDB::DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u6
 			}
 			if (dbChar.GetLength() > 32) dbChar.SetLength(32);
 		}
-		dbWrite.mLength = sprintf((char*)dbWrite.mBytes, "%llu=%s ", dbField.mId, dbChar.mBytes);
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%llu=%s ", dbField.mId, dbChar.mBytes);
 		if (mDumpFile) mDumpFile->Append(dbWrite.mLength, dbWrite.mBytes);
 		else printf((char*)dbWrite.mBytes,"");
 		err = Next(dataTypeCursor);
@@ -2965,7 +2965,7 @@ GrapaError GrapaDB::DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
 
 GrapaError GrapaDB::DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sSU64 key=%llu value=%llu\n",leader,cursor.mKey,cursor.mValue);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sSU64 key=%llu value=%llu\n",leader,cursor.mKey,cursor.mValue);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	return(0);
@@ -3003,7 +3003,7 @@ GrapaError GrapaDB::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 			if (err) return(err);
 			if (returnLen>dataLength) returnLen = dataLength;
 			dataBlock[returnLen] = 0;
-			dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sBYTE_DATA (%llu) parent=%llu key=(%llu/%llu,%llu/%llu) value=%s node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,parent,cursor.mKey,dataSize,GrapaMem::Blocks(cursor.mKey,growBlockSize),GrapaMem::Blocks(dataSize,growBlockSize),dataBlock,cursor.mNodeRef,cursor.mNodeIndex,weight);
+			dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sBYTE_DATA (%llu) parent=%llu key=(%llu/%llu,%llu/%llu) value=%s node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,parent,cursor.mKey,dataSize,GrapaMem::Blocks(cursor.mKey,growBlockSize),GrapaMem::Blocks(dataSize,growBlockSize),dataBlock,cursor.mNodeRef,cursor.mNodeIndex,weight);
 			if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 			else printf((char*)dbWrite.mBytes,"");
 			break;
@@ -3013,7 +3013,7 @@ GrapaError GrapaDB::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 			DumpTheTree(dbWrite,leader,cursor.mKey,data.dataStart);
 			break;
 		default:
-			dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sUNKNOWN_DATA (%llu) parent=%llu key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,parent,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+			dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sUNKNOWN_DATA (%llu) parent=%llu key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,parent,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 			if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 			else printf((char*)dbWrite.mBytes,"");
 			break;
@@ -3028,11 +3028,11 @@ GrapaError GrapaDB::DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 	DumpGetItemWeight(cursor,weight);
 	strcpy(leadbuf,leader);
 	strcat(leadbuf,"| ");
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sGREC start (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sGREC start (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	DumpTheTree(dbWrite,leadbuf,cursor.mKey,cursor.mValue);
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sGREC ended (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sGREC ended (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	return(0);
@@ -3045,11 +3045,11 @@ GrapaError GrapaDB::DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 	DumpGetItemWeight(cursor,weight);
 	strcpy(leadbuf,leader);
 	strcat(leadbuf,"| ");
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sGPTR start (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sGPTR start (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	DumpTheTree(dbWrite,leadbuf,cursor.mKey,cursor.mValue);
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sGPTR ended (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sGPTR ended (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	return(0);
@@ -3062,11 +3062,11 @@ GrapaError GrapaDB::DumpTheItemRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 	DumpGetItemWeight(cursor,weight);
 	strcpy(leadbuf,leader);
 	strcat(leadbuf,"| ");
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sIREC start (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sIREC start (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	DumpTheTree(dbWrite,leadbuf,cursor.mKey,cursor.mValue);
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sIREC ended (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sIREC ended (%llu) key=%llu node=(%llu,%d) weight=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	return(0);
@@ -3076,7 +3076,7 @@ GrapaError GrapaDB::DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor&
 {
 	u64 weight;
 	DumpGetItemWeight(cursor,weight);
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sRREC (%llu) key=%llu node=(%llu,%d) weight=%llu: ",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sRREC (%llu) key=%llu node=(%llu,%d) weight=%llu: ",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	DumpTheRowStructure(dbWrite,cursor);
@@ -3089,7 +3089,7 @@ GrapaError GrapaDB::DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor&
 {
 	u64 weight;
 	DumpGetItemWeight(cursor,weight);
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sCREC (%llu) key=%llu node=(%llu,%d) weight=%llu: ",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sCREC (%llu) key=%llu node=(%llu,%d) weight=%llu: ",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	DumpTheColStructure(dbWrite,cursor);
@@ -3160,7 +3160,7 @@ GrapaError GrapaDB::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cur
 		case BDATA_TREE:	treeTypeStr = (char*)"BDATA"; break;
 	}
 
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes, "%sFIELD (%llu) key=%llu id=%llu name=%s rec=%s type=%s store=%s doffset=%llu dsize=%llu size=%llu grow=%llu\n", leader, cursor.mValue, cursor.mKey, dbField.mId, nameBlock, treeTypeStr, fieldTypeStr, fieldStoreStr, dbField.mDictOffset, dbField.mDictSize, dbField.mSize, dbField.mGrow);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sFIELD (%llu) key=%llu id=%llu name=%s rec=%s type=%s store=%s doffset=%llu dsize=%llu size=%llu grow=%llu\n", leader, cursor.mValue, cursor.mKey, dbField.mId, nameBlock, treeTypeStr, fieldTypeStr, fieldStoreStr, dbField.mDictOffset, dbField.mDictSize, dbField.mSize, dbField.mGrow);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	return(0);
@@ -3180,7 +3180,7 @@ GrapaError GrapaDB::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 		case CPTR_ITEM:	itemTypeStr = (char*)"CPTR"; break;
 	}
 
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%s%s (%llu) key=%llu node=(%llu,%d) weight=%llu: ",leader,itemTypeStr,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%s%s (%llu) key=%llu node=(%llu,%d) weight=%llu: ",leader,itemTypeStr,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	GrapaCursor recCursor = cursor;
@@ -3201,11 +3201,11 @@ GrapaError GrapaDB::DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 	char leadbuf[201];
 	strcpy(leadbuf,leader);
 	strcat(leadbuf,"| ");
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sTREE start (%llu) key=%llu\n",leader,cursor.mValue,cursor.mKey);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sTREE start (%llu) key=%llu\n",leader,cursor.mValue,cursor.mKey);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	DumpTheTree(dbWrite,leadbuf,cursor.mKey,cursor.mValue);
-	dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sTREE ended (%llu) key=%llu\n",leader,cursor.mValue,cursor.mKey);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sTREE ended (%llu) key=%llu\n",leader,cursor.mValue,cursor.mKey);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	return(0);
@@ -3305,7 +3305,7 @@ GrapaError GrapaDB::DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tabl
 	err = First(cursor);
 	if (!err)
 	{
-		dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sLIST start (%llu) key=%llu type=%s parent=%llu size=%llu\n",leader,firstTree,tableId,treeTypeStr,parentTree,numItems);
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sLIST start (%llu) key=%llu type=%s parent=%llu size=%llu\n",leader,firstTree,tableId,treeTypeStr,parentTree,numItems);
 		if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 		else printf((char*)dbWrite.mBytes,"");
 		while(!err)
@@ -3313,7 +3313,7 @@ GrapaError GrapaDB::DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tabl
 			DumpTheValue(dbWrite,leadbuf,cursor);
 			err = Next(cursor);
 		}
-		dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sLIST ended (%llu) key=%llu type=%s\n",leader,firstTree,tableId,treeTypeStr);
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sLIST ended (%llu) key=%llu type=%s\n",leader,firstTree,tableId,treeTypeStr);
 		if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 		else printf((char*)dbWrite.mBytes,"");
 	}
@@ -3323,16 +3323,16 @@ GrapaError GrapaDB::DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tabl
 		switch (storeType)
 		{
 			case IPTR_STORE:
-				dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sSTORE (%llu) key=%llu type=IPTR\n",leader,storeTree,tableId);
+				dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sSTORE (%llu) key=%llu type=IPTR\n",leader,storeTree,tableId);
 				if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 				else printf((char*)dbWrite.mBytes,"");
 				break;
 			case DATA_STORE:
-				dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sSTORE start (%llu) key=%llu type=DATA\n",leader,storeTree,tableId);
+				dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sSTORE start (%llu) key=%llu type=DATA\n",leader,storeTree,tableId);
 				if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 				else printf((char*)dbWrite.mBytes,"");
 				DumpTheTree(dbWrite,leadbuf,tableId,storeTree);
-				dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sSTORE ended (%llu) key=%llu type=DATA\n",leader,storeTree,tableId);
+				dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sSTORE ended (%llu) key=%llu type=DATA\n",leader,storeTree,tableId);
 				if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 				else printf((char*)dbWrite.mBytes,"");
 				break;
@@ -3341,11 +3341,11 @@ GrapaError GrapaDB::DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tabl
 
 	if (indexRef)
 	{
-		dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sINDEX start (%llu) key=%llu\n",leader,indexRef,tableId);
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sINDEX start (%llu) key=%llu\n",leader,indexRef,tableId);
 		if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 		else printf((char*)dbWrite.mBytes,"");
 		DumpTheTree(dbWrite,leadbuf,tableId,indexRef);
-		dbWrite.mLength = sprintf((char*)dbWrite.mBytes,"%sINDEX ended (%llu) key=%llu\n",leader,indexRef,tableId);
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sINDEX ended (%llu) key=%llu\n",leader,indexRef,tableId);
 		if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 		else printf((char*)dbWrite.mBytes,"");
 	}

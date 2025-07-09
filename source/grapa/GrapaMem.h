@@ -81,7 +81,7 @@ static double dEndianTest = -0.0;
 #include <termios.h> 
 #include <unistd.h> 
 #define sscanf_s sscanf
-#define sprintf_s(a,b,c,d) sprintf(a,c,d)
+#define sprintf_s(a,b,c,d) snprintf(a,b,c,d)
 #else
 #ifdef _WIN32
 #include <direct.h>

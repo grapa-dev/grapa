@@ -309,7 +309,7 @@ void GrapaTime::ToString(GrapaCHAR& pChar)
 		min = min % 60;
 	}
 	pChar.SetLength(128);
-	int len = sprintf((char*)pChar.mBytes, "%d-%02d-%02dT%02d:%02d:%02d.%09d", (int)y2, (int)m2, (int)d2, (int)hr, (int)min, (int)sec, (int)mic);
+	        int len = snprintf((char*)pChar.mBytes, pChar.mSize, "%d-%02d-%02dT%02d:%02d:%02d.%09d", (int)y2, (int)m2, (int)d2, (int)hr, (int)min, (int)sec, (int)mic);
 	if (len > 0) pChar.SetLength(len);
 	else pChar.SetLength(0);
 	pChar.RTrim('0');
