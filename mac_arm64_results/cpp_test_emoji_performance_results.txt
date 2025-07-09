@@ -1,6 +1,0 @@
-Emoji Performance Test (Safe Version)
-=====================================
-
-Test 1: Simple ASCII test
-Error in emoji performance test: One of *?+{ was not preceded by a valid regular expression.
-Test failed due to exception
