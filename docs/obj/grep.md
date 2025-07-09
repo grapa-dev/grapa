@@ -120,6 +120,14 @@ The `mode` parameter controls how the input is processed:
 // Match-only output
 "Hello world".grep("\\w+", "o")
 // Result: ["Hello", "world"]
+
+// Raw string literals for better readability
+"Hello world".grep(r"\w+", "o")
+// Result: ["Hello", "world"] - No need to escape backslashes
+
+// Complex patterns with raw strings
+"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x")
+// Result: ["file.txt"] - Much more readable than "\\^[a-zA-Z0-9_]\\+\\.txt\\$"
 ```
 
 ### Unicode Examples
@@ -141,6 +149,30 @@ The `mode` parameter controls how the input is processed:
 "café".grep("cafe", "N")
 // Result: ["café"]
 ```
+
+### Raw String Literals
+
+For better readability of regex patterns, you can use raw string literals by prefixing the string with `r`. This prevents escape sequence processing, making patterns much more readable:
+
+```grapa
+// Without raw string (requires escaping)
+"file.txt".grep("^[a-zA-Z0-9_]+\\.txt$", "x")
+// Result: ["file.txt"]
+
+// With raw string (no escaping needed)
+"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x")
+// Result: ["file.txt"] - Much cleaner!
+
+// Complex patterns benefit greatly
+"user@domain.com".grep(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "x")
+// Result: ["user@domain.com"]
+
+// Named groups with raw strings
+"John Doe (30)".grep(r"(?P<first>\w+) (?P<last>\w+) \((?P<age>\d+)\)", "oj")
+// Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
+```
+
+**Note**: While raw strings suppress most escape sequences, hex escapes (`\x`) and Unicode escapes (`\u`) are still processed. If you need literal backslashes before these sequences, you may need to use regular string literals with proper escaping.
 
 ### Named Groups
 

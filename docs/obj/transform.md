@@ -179,6 +179,13 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 "John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
 → [{"match":"John Doe","first":"John","last":"Doe","offset":0,"line":1}]
 
+// Raw string literals for better readability
+"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x")
+→ ["file.txt"] - No need to escape backslashes
+
+"user@domain.com".grep(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "x")
+→ ["user@domain.com"] - Much cleaner than escaped version
+
 // Context lines
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 2", "A1B1")
 → ["Line 1", "Line 2", "Line 3"]
@@ -200,6 +207,8 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 ```
 
 > **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](grep.md).**
+
+> **💡 Tip**: Use raw string literals (prefix with `r`) for better regex pattern readability. For example, `r"\w+"` instead of `"\\w+"`. Note that hex escapes (`\x`) and Unicode escapes (`\u`) are still processed in raw strings.
 
 
 ## split(sep, max, axis)
