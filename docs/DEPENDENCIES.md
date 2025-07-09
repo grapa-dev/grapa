@@ -222,7 +222,7 @@ cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/linux-arm64/
 ```
 
 
-# Mac
+# mac-amd64
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -233,7 +233,7 @@ sudo make install
 ```
 Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/source/openssl-lib/mac-apple
+Copy *.a to Grapa/source/openssl-lib/mac-amd64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -245,11 +245,7 @@ sudo make install
 ```
 Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/source/fl-lib/mac-apple
-
-or 
-
-Copy lib/*.a to Grapa/source/fl-lib/mac-intel
+Copy lib/*.a to Grapa/source/fl-lib/mac-amd64
 
 ## BLST
 
@@ -270,7 +266,7 @@ cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
 cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/mac-amd64/
 ```
 
-# Mac ARM64
+# mac-arm64
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -314,7 +310,7 @@ cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
 cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/mac-arm64/
 ```
 
-# AWS
+# aws-amd64
 
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
@@ -326,7 +322,7 @@ make install
 ```
 Copy include/openssl to Grapa/source
 
-Copy *.a to Grapa/source/openssl-lib/aws
+Copy *.a to Grapa/source/openssl-lib/aws-amd64
 
 ## FLTK
 Navigate to FLTK source folder and complete the following.
@@ -338,7 +334,7 @@ make install
 ```
 Copy FL to Grapa/source
 
-Copy lib/*.a to Grapa/source/fl-lib/aws
+Copy lib/*.a to Grapa/source/fl-lib/aws-amd64
 
 ## pcre2
 ```
@@ -350,5 +346,42 @@ make
 
 cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
 cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/aws-amd64/
+```
+
+# aws-arm64
+
+## OpenSSL
+Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
+```
+make clean
+./config no-shared
+make
+make install
+```
+Copy include/openssl to Grapa/source
+
+Copy *.a to Grapa/source/openssl-lib/aws-arm64
+
+## FLTK
+Navigate to FLTK source folder and complete the following.
+```
+yum install libX*
+./configure --with-optim="-fPIC"
+make
+make install
+```
+Copy FL to Grapa/source
+
+Copy lib/*.a to Grapa/source/fl-lib/aws-arm64
+
+## pcre2
+```
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
+make
+
+cp -r ../src/* ~/Documents/GitHub/grapa/source/pcre2/
 cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/aws-arm64/
 ```
