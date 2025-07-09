@@ -147,15 +147,20 @@ The `mode` parameter controls how the input is processed:
 ```grapa
 // Basic named groups
 "John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
-// Result: [{"match":"John Doe","groups":{"first":"John","last":"Doe"},"offset":0,"line":1}]
+// Result: [{"match":"John Doe","first":"John","last":"Doe","offset":0,"line":1}]
 
 // Email extraction
 "Contact: john@example.com".grep("(?P<email>[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,})", "oj")
-// Result: [{"match":"john@example.com","groups":{"email":"john@example.com"},"offset":9,"line":1}]
+// Result: [{"match":"john@example.com","email":"john@example.com","offset":9,"line":1}]
 
 // Phone number parsing
 "Call +1-555-123-4567".grep("(?P<country>\\+\\d{1,3})-(?P<area>\\d{3})-(?P<prefix>\\d{3})-(?P<line>\\d{4})", "oj")
-// Result: [{"match":"+1-555-123-4567","groups":{"country":"+1","area":"555","prefix":"123","line":"4567"},"offset":5,"line":1}]
+// Result: [{"match":"+1-555-123-4567","country":"+1","area":"555","prefix":"123","line":"4567","offset":5,"line":1}]
+
+// Direct access to named groups
+result = "John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
+first = result[0]["first"]  // "John"
+last = result[0]["last"]    // "Doe"
 ```
 
 ### Context Lines
@@ -202,15 +207,21 @@ The `mode` parameter controls how the input is processed:
 // Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}]
 
 // JSON with named groups
-"John Doe (30)".grep("(?P<name>\\w+ \\w+) \\((?P<age>\\d+)\\)", "oj")
-// Result: [{"match":"John Doe (30)","groups":{"name":"John Doe","age":"30"},"offset":0,"line":1}]
+"John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
+// Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
 
 // Complex JSON example
 "Email: user@domain.com, Phone: +1-555-1234".grep("(?P<email>[\\w.-]+@[\\w.-]+)|(?P<phone>\\+\\d{1,3}-\\d{3}-\\d{4})", "oj")
 // Result: [
-//   {"match":"user@domain.com","groups":{"email":"user@domain.com","phone":null},"offset":7,"line":1},
-//   {"match":"+1-555-1234","groups":{"email":null,"phone":"+1-555-1234"},"offset":25,"line":1}
+//   {"match":"user@domain.com","email":"user@domain.com","offset":7,"line":1},
+//   {"match":"+1-555-1234","phone":"+1-555-1234","offset":31,"line":1}
 // ]
+
+// Accessing named groups directly
+result = "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
+first_name = result[0]["first"]  // "John"
+last_name = result[0]["last"]    // "Doe"
+age = result[0]["age"]           // "30"
 ```
 
 ### Additional Parameters Examples

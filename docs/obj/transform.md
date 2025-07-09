@@ -169,7 +169,7 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 
 // Named groups with JSON output
 "John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
-→ [{"match":"John Doe","groups":{"first":"John","last":"Doe"},"offset":0,"line":1}]
+→ [{"match":"John Doe","first":"John","last":"Doe","offset":0,"line":1}]
 
 // Context lines
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 2", "A1B1")

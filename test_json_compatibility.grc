@@ -115,13 +115,12 @@ input = "John Doe (30)";
 result = input.grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj");
 if (result.type() != $ERR && result.len() > 0) {
     /* Check if the result contains named groups */
-    result_j = result[0].json();
-    if (result_j[0]["first"] == "John" && result_j[0]["last"] == "Doe" && result_j[0]["age"] == "30") {
+    if (result[0]["first"] == "John" && result[0]["last"] == "Doe" && result[0]["age"] == "30") {
         "PASS (with named groups)\n".echo();
     } else {
         "PASS (basic JSON, no named groups)\n".echo();
     };
-	result_j.echo();
+	result.echo();
 	"\n".echo();
 } else {
     "FAIL\n".echo();
@@ -134,13 +133,12 @@ input = "Line 1: John Doe (30)\nLine 2: Jane Smith (25)";
 result = input.grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "ojn");
 if (result.type() != $ERR && result.len() > 0) {
     /* Check if the result contains named groups */
-    result_j = result[0].json();
-    if (result_j[0]["first"] == "John" && result_j[0]["last"] == "Doe" && result_j[0]["age"] == "30") {
+    if (result[0]["first"] == "John" && result[0]["last"] == "Doe" && result[0]["age"] == "30") {
         "PASS (with named groups)\n".echo();
     } else {
         "PASS (basic JSON, no named groups)\n".echo();
     };
-	result_j.echo();
+	result.echo();
 	"\n".echo();
 } else {
     "FAIL\n".echo();
@@ -153,13 +151,12 @@ input = "Line 1: apple\nLine 2: John Doe (30)\nLine 3: pear";
 result = input.grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "ojA1B1");
 if (result.type() != $ERR && result.len() > 0) {
     /* Check if the result contains named groups */
-    result_j = result[0].json();
-    if (result_j[0]["first"] == "John" && result_j[0]["last"] == "Doe" && result_j[0]["age"] == "30") {
+    if (result[0]["first"] == "John" && result[0]["last"] == "Doe" && result[0]["age"] == "30") {
         "PASS (with named groups)\n".echo();
     } else {
         "PASS (basic JSON, no named groups)\n".echo();
     };
-	result_j.echo();
+	result.echo();
 	"\n".echo();
 } else {
     "FAIL\n".echo();
@@ -172,13 +169,12 @@ input = "Email: user@domain.com, Phone: +1-555-1234";
 result = input.grep("(?P<email>[\\w.-]+@[\\w.-]+)|(?P<phone>\\+\\d{1,3}-\\d{3}-\\d{4})", "oj");
 if (result.type() != $ERR && result.len() > 0) {
     /* Check if the result contains named groups */
-    result_j = result[0].json();
-    if (result_j[0]["email"] == "user@domain.com" || result_j[0]["phone"] == "+1-555-1234") {
+    if (result[0]["email"] == "user@domain.com" || result[0]["phone"] == "+1-555-1234") {
         "PASS (with named groups)\n".echo();
     } else {
         "PASS (basic JSON, no named groups)\n".echo();
     };
-	result_j.echo();
+	result.echo();
 	"\n".echo();
 } else {
     "FAIL\n".echo();
@@ -191,13 +187,12 @@ input = "Привет мир";
 result = input.grep("(?P<greeting>\\p{L}+) (?P<object>\\p{L}+)", "oj");
 if (result.type() != $ERR && result.len() > 0) {
     /* Check if the result contains named groups */
-    result_j = result[0].json();
-    if (result_j[0]["greeting"] == "Привет" && result_j[0]["object"] == "мир") {
+    if (result[0]["greeting"] == "Привет" && result[0]["object"] == "мир") {
         "PASS (with named groups)\n".echo();
     } else {
         "PASS (basic JSON, no named groups)\n".echo();
     };
-	result_j.echo();
+	result.echo();
 	"\n".echo();
 } else {
     "FAIL\n".echo();
@@ -210,13 +205,12 @@ input = "Hello world\nHello universe\nHello galaxy";
 result = input.grep("(?P<greeting>\\w+) (?P<name>\\w+)", "oj");
 if (result.type() != $ERR && result.len() > 0) {
     /* Check if the result contains multiple items */
-    result_j = result[0].json();
-    if (result_j.len() >= 3 && result_j[0]["greeting"] == "Hello" && result_j[0]["name"] == "world") {
+    if (result.len() >= 3 && result[0]["greeting"] == "Hello" && result[0]["name"] == "world") {
         "PASS (multiple items in array)\n".echo();
     } else {
         "PASS (single item in array)\n".echo();
     };
-	result_j.echo();
+	result.echo();
 	"\n".echo();
 } else {
     "FAIL\n".echo();
@@ -229,13 +223,12 @@ input = "apple 123 pear 456 banana 789";
 result = input.grep("(?P<fruit>\\w+) (?P<number>\\d+)", "oj");
 if (result.type() != $ERR && result.len() > 0) {
     /* Check if the result contains multiple items */
-    result_j = result[0].json();
-    if (result_j.len() >= 3 && result_j[0]["fruit"] == "apple" && result_j[0]["number"] == "123") {
+    if (result.len() >= 3 && result[0]["fruit"] == "apple" && result[0]["number"] == "123") {
         "PASS (multiple matches on same line)\n".echo();
     } else {
         "PASS (single match)\n".echo();
     };
-	result_j.echo();
+	result.echo();
 	"\n".echo();
 } else {
     "FAIL\n".echo();

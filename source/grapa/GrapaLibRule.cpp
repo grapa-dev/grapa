@@ -16328,7 +16328,19 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 			result->mValue.mToken = GrapaTokenType::ERR;
 			result->vQueue = new GrapaRuleQueue();
 			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaCHAR("Invalid regex pattern")));
-		} else {
+		}
+		else if (options.find('j') != std::string::npos && matches.size() == 1) {
+			GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$function"));
+			GrapaCHAR jstr(matches[0].c_str(), matches[0].length());
+			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, jstr, rulexx, 0, GrapaCHAR());
+			result = vScriptExec->ProcessPlan(pNameSpace, plan);
+			if (plan)
+			{
+				plan->CLEAR();
+				delete plan;
+			}
+		}
+		else {
 			result = new GrapaRuleEvent();
 			result->mValue.mToken = GrapaTokenType::ARRAY;
 			result->vQueue = new GrapaRuleQueue();
