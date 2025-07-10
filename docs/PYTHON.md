@@ -111,6 +111,92 @@ xy.eval("input.grep(pattern,options);",{"input":b"apple 123 pear 456\nbanana 789
 ```
 '210.5612696743043090739172698565538965143180116634'
 
+## Grep Examples
+
+For a comprehensive guide to using Grapa grep from Python, see [Grapa Grep from Python (grep_python.md)](grep_python.md).
+
+### Method 1: Embedded Parameters
+Pass parameters directly in the Grapa string:
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Basic grep with embedded string
+xy.eval('"apple 123 pear 456\nbanana 789".grep(r"\\d+","o");')
+# Result: ['123', '456', '789']
+
+# With all parameters embedded
+xy.eval('r"data1\\x00data2\\x00data3".grep(r"data\\d+", "o", r"\\x00", "NONE", "BINARY")')
+# Result: ['data1', 'data2', 'data3']
+```
+
+### Method 2: Parameter Variables
+Pass parameters as Python variables to be used in the Grapa string:
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Basic grep with parameter variables
+xy.eval("input.grep(pattern,options);", {
+    "input": "apple 123 pear 456\nbanana 789",
+    "pattern": "\\d+",
+    "options": "o"
+})
+# Result: ['123', '456', '789']
+
+# With all parameters as variables
+xy.eval("input.grep(pattern,options,delimiter,normalization,mode);", {
+    "input": "data1\\x00data2\\x00data3",
+    "pattern": "data\\d+",
+    "options": "o",
+    "delimiter": "\\x00",
+    "normalization": "NONE",
+    "mode": "BINARY"
+})
+# Result: ['data1', 'data2', 'data3']
+```
+
+### Unicode Examples
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Unicode characters
+xy.eval('"Привет мир".grep("мир")')
+# Result: ['Привет мир']
+
+# Diacritic-insensitive matching
+xy.eval('"café résumé naïve".grep("cafe", "d")')
+# Result: ['café résumé naïve']
+
+# Case-insensitive Unicode
+xy.eval('"Café RÉSUMÉ Naïve".grep("café", "i")')
+# Result: ['Café RÉSUMÉ Naïve']
+
+# Unicode properties
+xy.eval('"Hello 世界 123 €".grep(r"\\p{L}+", "o")')
+# Result: ['Hello', '世界']
+```
+
+### All Grep Parameters
+
+The grep function supports these parameters:
+
+**Required:**
+- `string`: Input text to search
+- `pattern`: PCRE2 regular expression pattern
+
+**Optional (with defaults):**
+- `options`: String containing option flags (default: `""`)
+- `delimiter`: Custom line delimiter (default: `"\n"`)
+- `normalization`: Unicode normalization form (default: `"NONE"`)
+- `mode`: Processing mode (default: `"UNICODE"`)
+
+For detailed grep documentation, see [Grep Documentation](obj/grep.md).
+
 ## Compile a script, and run the compiled script
 
 ```
@@ -153,66 +239,9 @@ xy.eval("""
     absolute_value(-5);
 """)
 ```
-5
 
-Same as above, but with passing in an object to Python.
-```
-def absolute_value(num):
-    if num >= 0:
-        return num
-    else:
-        return -num
-xy.eval("""
-    absolute_value = op(n=0){$local.locals={"g":n};$py().eval("absolute_value(g)",locals);};
-    absolute_value(-5);
-""")
-```
+## Example: Running Python Integration Tests
 
-## Convert XML to JSON
-```
-xy.eval("""
-    (<test "v"=5.4>this is a test</test>).list();
-""")
-```
-{'': {'test': [{'v': 5.4}, ['this is a test']]}}
+See `test/test_python_examples.py` for a comprehensive set of Python-Grapa integration and callback tests, including argument passing and return values.
 
-## Domain specific language in Python using Grapa
-The following is an illustration on how to use the $RULE type in Grapa to create a domain specific language in Python that can be executed.
-
-```
->>> import grapapy
->>> xy = grapapy.grapa()
->>> def func1(num):
-...     if num >= 10:
-...         print("found higher")
-...         return "higher"
-...     else:
-...         print("found lower")
-...         return "lower"
-...
->>> def func2(num1,num2):
-...     if num1 >= 10:
-...         print("div")
-...         return num1/num2
-...     else:
-...         print("mul")
-...         return num1*num2
-...
->>> xy.eval("""
-...     $this.testrule = rule
-...           $INT $INT {op(a:$1,b:$2) {$py().eval('func2(v1,v2)', {"v1":a,"v2":b} );}}
-...         | $INT      {op(a:$1)      {$py().eval('func1(v)',     {"v":a}         );}}
-...         ;
-... """)
->>> xy.eval("$sys().eval(s,{},'testrule');",{"s":"4"})
-found lower
-'lower'
->>> xy.eval("$sys().eval(s,{},'testrule');",{"s":"4 6"})
-mul
-24
->>> cm = xy.compile("4 8",'testrule')
->>> xy.eval(cm)
-mul
-32
->>>
-```
+For advanced callback escaping and troubleshooting, see `test/test_python_callback.py`.

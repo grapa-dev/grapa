@@ -1,5 +1,7 @@
 # Unicode Grep Documentation
 
+**See Also:** [Grapa Grep from Python (grep_python.md)](../grep_python.md)
+
 ## Overview
 
 The Unicode grep functionality in Grapa provides advanced text searching capabilities with full Unicode support, PCRE2-powered regular expressions, and comprehensive output options. It's designed to handle international text, emoji, and complex Unicode properties while maintaining high performance.

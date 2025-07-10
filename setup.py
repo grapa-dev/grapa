@@ -121,7 +121,7 @@ class CMakeBuild(build_ext):
         # In this example, we pass in the version to C++. You might not need to.
         #cmake_args += [f"-DEXAMPLE_VERSION_INFO={self.distribution.get_version()}"]
         cmake_args += [f"-DGRAPAPY_OS={from_os}"]
-    
+
         if self.compiler.compiler_type != "msvc":
             # Using Ninja-build since it a) is available as a wheel and b)
             # multithreads automatically. MSVC would require all variables be
@@ -160,7 +160,7 @@ class CMakeBuild(build_ext):
                     f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
                 ]
                 build_args += ["--config", cfg]
-        
+
         if sys.platform.startswith('win32'):
             cmake_args += ['-DUTF8PROC_STATIC=ON', '-DPCRE2_STATIC=ON']
         

@@ -37,4 +37,5 @@ include "test/test_unicode_grapheme_clusters.grc";
 
 "=== ALL TESTS COMPLETED ===\n".echo();
 "Test suite execution finished.\n".echo();
-"All essential functionality has been validated.\n".echo(); 
+"All essential functionality has been validated.\n".echo();
+"Note: Python tests can be run separately with: python test/run_tests.py\n".echo(); 

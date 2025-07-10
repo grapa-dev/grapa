@@ -9,12 +9,9 @@ Grapa includes a comprehensive test suite for validating Unicode grep functional
 ### Test Directory Structure
 ```
 test/
-├── run_tests.grc                      # Master test runner (executes all tests)
-├── test_current_capabilities.grc      # Comprehensive capability testing
-├── test_performance_optimizations.grc # Performance optimization testing
-├── test_atomic_groups.grc             # Atomic groups functionality
-├── test_lookaround_assertions.grc     # Lookaround assertions functionality
-└── test_unicode_grapheme_clusters.grc # Unicode grapheme clusters functionality
+├── test_python_examples.py        # Python integration and callback tests
+├── test_grep_python_examples.py   # Python grep functionality tests
+├── test_python_callback.py        # Python callback escaping/troubleshooting
 ```
 
 ### Test Categories
@@ -56,6 +53,27 @@ test/
 - **Lookaround Assertions** (`test_lookaround_assertions.grc`): 8 tests for lookaround functionality
 - **Unicode Grapheme Clusters** (`test_unicode_grapheme_clusters.grc`): 10 tests for grapheme cluster functionality
 
+#### 4. **Python Integration Tests**
+- **Python Examples** (`test_python_examples.py`): Comprehensive Python-Grapa integration and callback tests, including argument passing and return values.
+- **Python Grep Examples** (`test_grep_python_examples.py`): Grep functionality via Python interface.
+- **Python Callback Escaping** (`test_python_callback.py`): Troubleshooting and demonstration of correct callback escaping patterns.
+
+### Running Python Tests
+Python tests require the `grapapy` module to be installed:
+```bash
+# Install grapapy module
+pip install -e .
+
+# Run Python integration tests
+python test/test_python_examples.py
+
+# Run Python grep tests
+python test/test_grep_python_examples.py
+
+# Run Python callback escaping tests
+python test/test_python_callback.py
+```
+
 ## Running Tests
 
 ### Complete Test Suite
@@ -81,6 +99,10 @@ Run specific test categories:
 .\grapa.exe -cfile "test/test_atomic_groups.grc"
 .\grapa.exe -cfile "test/test_lookaround_assertions.grc"
 .\grapa.exe -cfile "test/test_unicode_grapheme_clusters.grc"
+
+# Python tests (requires grapapy module)
+python test/test_python_md_examples.py
+python test/test_grep_python_examples.py
 ```
 
 ### Regression Testing
@@ -130,9 +152,10 @@ All essential functionality has been validated.
 
 ### Adding New Tests
 1. Create new test file in `test/` directory
-2. Follow naming convention: `test_<feature_name>.grc`
-3. Add include statement to `test/run_tests.grc`
+2. Follow naming convention: `test_<feature_name>.grc` for Grapa tests or `test_<feature_name>.py` for Python tests
+3. Add include statement to `test/run_tests.grc` for Grapa tests
 4. Test with both individual and complete test suite
+5. For Python tests, ensure grapapy module is installed and test independently
 
 ### Test File Structure
 ```grapa
