@@ -206,5 +206,8 @@
     <ClCompile Include="..\..\source\tiny-AES-c-master\aes.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\utf8proc\utf8proc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

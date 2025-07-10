@@ -36,6 +36,8 @@ if sys.platform.startswith('win32'):
     so_ext = '.lib'
     lib_filename = 'grapa' + so_ext
     lib_pathfile = 'grapa-lib/win-amd64/' + lib_filename
+    extra_compile_args = ['/DUTF8PROC_STATIC', '/DPCRE2_STATIC']
+    extra_link_args = ['/MANIFEST:NO']
 if sys.platform.startswith('linux'):
     from_os = 'linux-amd64'
     temp_result = subprocess.run(["cat", "/etc/os-release"])
@@ -119,7 +121,7 @@ class CMakeBuild(build_ext):
         # In this example, we pass in the version to C++. You might not need to.
         #cmake_args += [f"-DEXAMPLE_VERSION_INFO={self.distribution.get_version()}"]
         cmake_args += [f"-DGRAPAPY_OS={from_os}"]
-
+    
         if self.compiler.compiler_type != "msvc":
             # Using Ninja-build since it a) is available as a wheel and b)
             # multithreads automatically. MSVC would require all variables be
@@ -158,7 +160,10 @@ class CMakeBuild(build_ext):
                     f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}"
                 ]
                 build_args += ["--config", cfg]
-
+        
+        if sys.platform.startswith('win32'):
+            cmake_args += ['-DUTF8PROC_STATIC=ON', '-DPCRE2_STATIC=ON']
+        
         if sys.platform.startswith("darwin"):
             # Cross-compile support for macOS - respect ARCHFLAGS if set
             archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
@@ -244,6 +249,24 @@ class CustomBuildExt(build_ext):
     def run(self):
         self.run_command('copy_grapalib')
         super().run()
+        
+    def build_extension(self, ext):
+        # Use a local build directory to avoid permission issues
+        if sys.platform.startswith('win32'):
+            self.build_temp = os.path.join(os.getcwd(), 'build_temp')
+            if not os.path.exists(self.build_temp):
+                os.makedirs(self.build_temp)
+        try:
+            super().build_extension(ext)
+        except PermissionError as e:
+            if "cache" in str(e).lower():
+                print("\n" + "="*60)
+                print("PERMISSION ERROR: Pip cannot write to its cache directory.")
+                print("SOLUTION: Use one of these commands:")
+                print("  pip install --no-cache-dir dist/grapapy-0.0.25.tar.gz")
+                print("  pip install --no-cache-dir -e .")
+                print("="*60)
+            raise
 
 def pick_library_dirs():
     my_system = platform.system()
@@ -283,7 +306,7 @@ lib_grapa = Extension(
     sources = [
         'source/mainpy.cpp',
     ],
-    include_dirs=["source",'source/pybind11/include'],
+    include_dirs=["source","source/utf8proc",'source/pybind11/include'],
     library_dirs=pick_library_dirs(),
     libraries=pick_libraries(),
     runtime_library_dirs=runtime_library_dirs,
@@ -310,6 +333,12 @@ if sys.platform.startswith('linux') or sys.platform.startswith('win32'):
         zip_safe=False,
         python_requires=">=3.6",
         packages=find_packages(),
+        # Add build options to help with Windows permission issues
+        options={
+            'build_ext': {
+                'build_temp': os.path.join(os.getcwd(), 'build_temp'),
+            }
+        },
     )
 else:
     setup(

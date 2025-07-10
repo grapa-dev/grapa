@@ -16,3 +16,9 @@ graft source/fl-lib
 
 recursive-include source/blst *.h
 graft source/blst-lib 
+
+recursive-include source/utf8proc *.h
+recursive-include source/utf8proc *.c
+
+recursive-include source/pcre2 *.h
+graft source/pcre2-lib 

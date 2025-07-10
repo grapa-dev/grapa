@@ -1,3 +1,9 @@
+// Static compilation definitions to avoid DLL dependencies
+#ifdef _WIN32
+#define UTF8PROC_STATIC
+#define PCRE2_STATIC
+#endif
+
 #include <pybind11/pybind11.h>
 #include "pybind11/include/pybind11/pybind11.h"
 #include "pybind11/include/pybind11/eval.h"

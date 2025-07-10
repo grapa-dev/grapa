@@ -23,6 +23,11 @@ limitations under the License.
 #define UTF8PROC_STATIC
 #endif
 
+// Define PCRE2_STATIC for static linking (only if not already defined)
+#ifndef PCRE2_STATIC
+#define PCRE2_STATIC
+#endif
+
 /*
  Supported grep options:
    a - All-mode (match across full input string)

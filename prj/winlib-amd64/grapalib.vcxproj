@@ -82,13 +82,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\source;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\source;$(LibraryPath)</LibraryPath>
     <TargetName>grapa</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\..\source;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\..\source;$(SolutionDir)..\..\source\pre2;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\source;$(LibraryPath)</LibraryPath>
     <TargetName>grapa</TargetName>
   </PropertyGroup>
@@ -130,7 +130,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;UTF8PROC_STATIC;PCRE2_STATIC;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -148,7 +148,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;UTF8PROC_STATIC;PCRE2_STATIC;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -227,6 +227,7 @@
     <ClCompile Include="..\..\source\grapa\GrapaVector.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaWidget.cpp" />
     <ClCompile Include="..\..\source\tiny-AES-c-master\aes.c" />
+    <ClCompile Include="..\..\source\utf8proc\utf8proc.c" />
     <ClCompile Include="grapalib.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

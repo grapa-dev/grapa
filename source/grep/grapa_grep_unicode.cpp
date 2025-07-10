@@ -16,6 +16,12 @@ limitations under the License.
 */
 ////////////////////////////////////////////////////////////////////////////////
 
+// Static compilation definitions to avoid DLL dependencies
+#ifdef _WIN32
+#define UTF8PROC_STATIC
+#define PCRE2_STATIC
+#endif
+
 #include "grapa_grep_unicode.hpp"
 //#include "grapa_grep.hpp"
 #include <regex>
