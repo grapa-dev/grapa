@@ -20,6 +20,7 @@ limitations under the License.
 #include "GrapaLink.h"
 #include "GrapaTime.h"
 #include <string>
+#include <algorithm>  // for std::max and std::min
 
 #ifdef WIN32
 	// Windows-specific includes (already included in GrapaSystem.h)
@@ -31,16 +32,18 @@ limitations under the License.
 
 #include <openssl/rand.h>
 
-#undef min
+// Undefine max and min macros that might be defined by X11 headers
+// to prevent conflicts with std::vector<bool> and other C++ standard library components
+#ifdef max
 #undef max
-
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
 #endif
 
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#ifdef min
+#undef min
 #endif
+
+// Remove the max and min macros to avoid conflicts with std::vector<bool>
+// Use std::max and std::min from <algorithm> instead
 
 extern GrapaSystem* gSystem;
 
