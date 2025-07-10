@@ -21,6 +21,7 @@ link_directories(
     source/fl-lib/${GRAPAPY_OS} 
     source/openssl-lib/${GRAPAPY_OS} 
     source/blst-lib/${GRAPAPY_OS}
+    source/pcre2-lib/${GRAPAPY_OS}
     )
 
 pybind11_add_module(grapapy 
@@ -39,6 +40,7 @@ target_link_libraries(grapapy PRIVATE
     libblst.a
     libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk.a
     libcrypto.a libssl.a
+    libpcre2-8.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png16 fontconfig freetype
     )
 endif (${GRAPAPY_OS} MATCHES "linux")
@@ -49,6 +51,7 @@ target_link_libraries(grapapy PRIVATE
     libblst.a
     libfltk.a libfltk_forms.a libfltk_images.a libfltk_jpeg.a
     libcrypto.a libssl.a
+    libpcre2-8.a
     X11 Xfixes Xft Xext Xrender Xinerama Xcursor xcb Xau png15 fontconfig freetype
     )
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
@@ -62,6 +65,7 @@ target_link_libraries(grapapy PRIVATE
     libblst.a
     libfltk.a libfltk_forms.a libfltk_gl.a libfltk_images.a libfltk_jpeg.a libfltk_png.a
     libcrypto.a libssl.a
+    libpcre2-8.a
     "-framework CoreFoundation"
     "-framework AppKit"
     "-framework IOKit"

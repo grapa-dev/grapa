@@ -99,7 +99,6 @@ Helpful additons
 sudo chmod u+x /script-location/
 ```
 
-
 ### mac-amd64
 ```
 rm grapa
@@ -134,6 +133,11 @@ After building, run the test suite to validate the build:
 # Or run individual test categories
 ./grapa -cfile "test/test_current_capabilities.grc"
 ./grapa -cfile "test/test_performance_optimizations.grc"
+```
+
+Helpful additons
+```
+sudo chmod u+x /script-location/
 ```
 
 
