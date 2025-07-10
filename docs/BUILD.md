@@ -1,20 +1,15 @@
 # Build
 
-## Overview
+## Windows
 
-Grapa includes PCRE2 support for enhanced Unicode regex functionality on all supported platforms:
-- **Windows**: x64 (with PCRE2 JIT compilation)
-- **Mac**: x64 and ARM64 (with PCRE2 JIT compilation)  
-- **Linux**: x64 and ARM64 (with PCRE2 JIT compilation)
-
-PCRE2 provides advanced features including Unicode properties, named groups, atomic groups, lookaround assertions, and grapheme clusters.
-
-## win-amd64
+### Setup
 Requires Visual Studio 2022. Use projects in Grapa/build/win to build grapa
 Packaging requires https://www.7-zip.org/ and add location [C:\Program Files\7-Zip] to PATH.
 
 Run "x64 Native Tools Command Prompt for VS 2022"
 Navigate to Grapa folder
+
+### Windows AMD64
 ```
 msbuild prj/win-amd64/grapa.sln /p:Configuration=Release
 del grapa.exe
@@ -36,9 +31,9 @@ rmdir /s /q dist
 python setup.py sdist
 rmdir /s /q grapapy.egg-info
 grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
+```
 
-### Testing After Build
-After building, run the test suite to validate the build:
+### Test
 ```bash
 # Run complete test suite
 .\grapa.exe -cfile "test/run_tests.grc"
@@ -48,17 +43,16 @@ After building, run the test suite to validate the build:
 .\grapa.exe -cfile "test/test_performance_optimizations.grc"
 ```
 
-For detailed testing information, see [Testing Documentation](TESTING.md).
+---
 
 ## Mac
 
-### setup
-
+### Setup
 ```
 brew install llvm
 ```
 
-### mac-arm64
+### Mac ARM64
 ```
 rm grapa
 clang -Isource -DUTF8PROC_STATIC -c source/utf8proc/utf8proc.c -m64 -O3 
@@ -88,23 +82,7 @@ rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 ```
 
-### Testing After Build
-After building, run the test suite to validate the build:
-```bash
-# Run complete test suite
-./grapa -cfile "test/run_tests.grc"
-
-# Or run individual test categories
-./grapa -cfile "test/test_current_capabilities.grc"
-./grapa -cfile "test/test_performance_optimizations.grc"
-```
-
-Helpful additons
-```
-sudo chmod u+x /script-location/
-```
-
-### mac-amd64
+### Mac AMD64
 ```
 rm grapa
 clang++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++17 -m64 -O3 -pthread -o grapa
@@ -128,9 +106,9 @@ rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+```
 
-### Testing After Build
-After building, run the test suite to validate the build:
+### Test
 ```bash
 # Run complete test suite
 ./grapa -cfile "test/run_tests.grc"
@@ -140,34 +118,17 @@ After building, run the test suite to validate the build:
 ./grapa -cfile "test/test_performance_optimizations.grc"
 ```
 
-Helpful additons
+Helpful additions
 ```
 sudo chmod u+x /script-location/
 ```
 
+---
 
-### Create a certificate
-	open -a "Keychain Access"
-	(MENU) Certificate Assistant > Create a Certificate
-	Enter the Name (for example dev-grapa-cert)
-	Identity Type > Self Signed Root
-	Certificate Type > Code Signing
-	Check "Let me override defaults" & click Continue.
-	Enter a unique Serial Number.
-	Enter a big Validity Period (days), like 3560 & click Continue.
-	Fill in your personal information & click Continue.
-	Accept defaults for the rest of the dialog boxes.
+## Linux
 
-### Self sign
-```
-codesign -s dev-grapa-cert ./grapa
-```
-
-## linux
-
-### setup
-
-Need to be on Ubunto 24.04 for c++17 support. If not, go through the updates to get there. Ask ChatGPT how to do this.
+### Setup
+Need to be on Ubuntu 24.04 for c++17 support. If not, go through the updates to get there. Ask ChatGPT how to do this.
 
 Installing requirements.
 ```
@@ -181,7 +142,7 @@ sudo apt install -y libxext-dev
 sudo apt install -y libxinerama-dev
 ```
 
-For Unbuntu 20.04, enable c++17
+For Ubuntu 20.04, enable c++17
 ```
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt update
@@ -224,7 +185,7 @@ sudo apt install gdebi-core
 sudo apt install cmake
 ```
 
-### linux-arm64
+### Linux ARM64
 ```
 rm grapa
 g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a -Lsource/openssl-lib/linux-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
@@ -246,8 +207,29 @@ python3 setup.py sdist
 rm -rf grapapy.egg-info
 ```
 
-### Testing After Build
-After building, run the test suite to validate the build:
+### Linux AMD64
+```
+rm grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/linux-amd64/*.a source/fl-lib/linux-amd64/*.a source/blst-lib/linux-amd64/*.a -Lsource/openssl-lib/linux-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+
+g++ -c -Isource source/grapa/*.cpp -std=c++17 -O3 -pthread -fPIC
+ar -crs libgrapa.a *.o
+rm *.o
+cp libgrapa.a source/grapa-lib/linux-amd64/libgrapa.a
+rm libgrapa.a
+
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/linux-amd64/*.a source/fl-lib/linux-amd64/*.a source/blst-lib/linux-amd64/*.a -Lsource/openssl-lib/linux-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+cp libgrapa.so source/grapa-lib/linux-amd64/libgrapa.so
+rm libgrapa.so
+
+tar -czvf bin/grapa-linux-amd64.tar.gz grapa source/grapa-lib/linux-amd64/*
+
+rm -rf dist
+python3 setup.py sdist
+rm -rf grapapy.egg-info
+```
+
+### Test
 ```bash
 # Run complete test suite
 ./grapa -cfile "test/run_tests.grc"
@@ -257,10 +239,11 @@ After building, run the test suite to validate the build:
 ./grapa -cfile "test/test_performance_optimizations.grc"
 ```
 
-## aws
+---
 
-### setup
+## AWS
 
+### Setup
 Docker setup
 ```
 docker pull amazon/aws-cli:latest
@@ -302,33 +285,7 @@ dnf install -y libGLU-devel
 [Build 3rd party library dependancies](DEPENDENCIES.md)
 
 
-### aws-amd64
-
-```
-rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
-
-g++ -c -Isource source/grapa/*.cpp -std=c++17 -O3 -pthread -fPIC 
-ar -crs libgrapa.a *.o
-rm *.o
-cp libgrapa.a source/grapa-lib/aws-amd64/libgrapa.a
-rm libgrapa.a
-
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
-cp libgrapa.so source/grapa-lib/aws-amd64/libgrapa.so
-rm libgrapa.so
-
-tar -czvf bin/grapa-aws-amd64.tar.gz grapa source/grapa-lib/aws-amd64/*
-
-rm -rf dist
-python3 setup.py sdist
-rm -rf grapapy.egg-info
-./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
-```
-
-
-### aws-arm64
-
+### AWS ARM64
 ```
 rm grapa
 g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws-arm64/*.a source/fl-lib/aws-arm64/*.a source/blst-lib/aws-arm64/*.a -Lsource/openssl-lib/aws-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
@@ -351,18 +308,37 @@ rm -rf grapapy.egg-info
 ./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 ```
 
-
-# lib/grapa
-
-The file source/grapa/GrapaStaticLib.c is an array of of the compiled scripts in lib/grapa. The grapa application will use this array as a lookup after searching lib/grapa. If the file exists in lib/grapa (or in the location of the grapa binary) it will be used there. Otherwise, it will be loaded from the static lib array. This serves two purposes. First, the grapa application has everything embedded that it requires. Second, there are libraries in lib/grapa that are required at an early stage of grapa initialization.
-
-If any of the files in lib/grapa are changed, there is a grapa script that will compile the files and generate the source/grapa/GrapaStaticLib.c file. To run this, the grapa application needs to be first compiled and exist at the base project folder. From the base project folder, run grapa. From grapa, issue the following:
+### AWS AMD64
 ```
-include "source/buildgrapalib.grc";
+rm grapa
+g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
-or
+g++ -c -Isource source/grapa/*.cpp -std=c++17 -O3 -pthread -fPIC 
+ar -crs libgrapa.a *.o
+rm *.o
+cp libgrapa.a source/grapa-lib/aws-amd64/libgrapa.a
+rm libgrapa.a
 
-grapa -ccmd "include 'source/buildgrapalib.grc';" -q
+g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+cp libgrapa.so source/grapa-lib/aws-amd64/libgrapa.so
+rm libgrapa.so
+
+tar -czvf bin/grapa-aws-amd64.tar.gz grapa source/grapa-lib/aws-amd64/*
+
+rm -rf dist
+python3 setup.py sdist
+rm -rf grapapy.egg-info
+./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+```
+
+### Test
+```bash
+# Run complete test suite
+./grapa -cfile "test/run_tests.grc"
+
+# Or run individual test categories
+./grapa -cfile "test/test_current_capabilities.grc"
+./grapa -cfile "test/test_performance_optimizations.grc"
 ```
 
 
