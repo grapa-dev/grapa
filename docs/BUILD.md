@@ -41,6 +41,10 @@ grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/
 # Or run individual test categories
 .\grapa.exe -cfile "test/test_current_capabilities.grc"
 .\grapa.exe -cfile "test/test_performance_optimizations.grc"
+
+# Test Python integration
+python -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
+python -c "import grapapy; g = grapapy.grapa(); result = g.grep('hello', 'hello world'); print('Grep functionality:', result)"
 ```
 
 ---
@@ -120,6 +124,10 @@ rm -rf grapapy.egg-info
 # Or run individual test categories
 ./grapa -cfile "test/test_current_capabilities.grc"
 ./grapa -cfile "test/test_performance_optimizations.grc"
+
+# Test Python integration
+python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
+python3 -c "import grapapy; g = grapapy.grapa(); result = g.grep('hello', 'hello world'); print('Grep functionality:', result)"
 ```
 
 Helpful additions
@@ -243,6 +251,10 @@ pip3 install dist/*
 # Or run individual test categories
 ./grapa -cfile "test/test_current_capabilities.grc"
 ./grapa -cfile "test/test_performance_optimizations.grc"
+
+# Test Python integration
+python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
+python3 -c "import grapapy; g = grapapy.grapa(); result = g.grep('hello', 'hello world'); print('Grep functionality:', result)"
 ```
 
 ---
@@ -294,15 +306,15 @@ dnf install -y libGLU-devel
 ### AWS ARM64
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws-arm64/*.a source/fl-lib/aws-arm64/*.a source/blst-lib/aws-arm64/*.a -Lsource/openssl-lib/aws-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/*.cpp source/utf8proc/utf8proc.c source/openssl-lib/aws-arm64/*.a source/fl-lib/aws-arm64/*.a source/blst-lib/aws-arm64/*.a source/pcre2-lib/aws-arm64/libpcre2-8.a -Lsource/openssl-lib/aws-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
-g++ -c -Isource source/grapa/*.cpp -std=c++17 -O3 -pthread -fPIC 
+g++ -c -Isource -DUTF8PROC_STATIC source/grapa/*.cpp source/utf8proc/utf8proc.c -std=c++17 -O3 -pthread -fPIC
 ar -crs libgrapa.a *.o
 rm *.o
 cp libgrapa.a source/grapa-lib/aws-arm64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws-arm64/*.a source/fl-lib/aws-arm64/*.a source/blst-lib/aws-arm64/*.a -Lsource/openssl-lib/aws-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+g++ -shared -Isource -DUTF8PROC_STATIC source/grapa/*.cpp source/utf8proc/utf8proc.c source/openssl-lib/aws-arm64/*.a source/fl-lib/aws-arm64/*.a source/blst-lib/aws-arm64/*.a source/pcre2-lib/aws-arm64/libpcre2-8.a -Lsource/openssl-lib/aws-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
 cp libgrapa.so source/grapa-lib/aws-arm64/libgrapa.so
 rm libgrapa.so
 
@@ -317,15 +329,15 @@ rm -rf grapapy.egg-info
 ### AWS AMD64
 ```
 rm grapa
-g++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
+g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/*.cpp source/utf8proc/utf8proc.c source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a source/pcre2-lib/aws-amd64/libpcre2-8.a -Lsource/openssl-lib/aws-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -o grapa
 
-g++ -c -Isource source/grapa/*.cpp -std=c++17 -O3 -pthread -fPIC 
+g++ -c -Isource -DUTF8PROC_STATIC source/grapa/*.cpp source/utf8proc/utf8proc.c -std=c++17 -O3 -pthread -fPIC
 ar -crs libgrapa.a *.o
 rm *.o
 cp libgrapa.a source/grapa-lib/aws-amd64/libgrapa.a
 rm libgrapa.a
 
-g++ -shared -Isource source/grapa/*.cpp source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a -Lsource/openssl-lib/aws-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
+g++ -shared -Isource -DUTF8PROC_STATIC source/grapa/*.cpp source/utf8proc/utf8proc.c source/openssl-lib/aws-amd64/*.a source/fl-lib/aws-amd64/*.a source/blst-lib/aws-amd64/*.a source/pcre2-lib/aws-amd64/libpcre2-8.a -Lsource/openssl-lib/aws-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
 cp libgrapa.so source/grapa-lib/aws-amd64/libgrapa.so
 rm libgrapa.so
 
@@ -334,7 +346,7 @@ tar -czvf bin/grapa-aws-amd64.tar.gz grapa source/grapa-lib/aws-amd64/*
 rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
-./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+pip3 install dist/*
 ```
 
 ### Test
@@ -345,6 +357,10 @@ rm -rf grapapy.egg-info
 # Or run individual test categories
 ./grapa -cfile "test/test_current_capabilities.grc"
 ./grapa -cfile "test/test_performance_optimizations.grc"
+
+# Test Python integration
+python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
+python3 -c "import grapapy; g = grapapy.grapa(); result = g.grep('hello', 'hello world'); print('Grep functionality:', result)"
 ```
 
 
