@@ -1,5 +1,7 @@
 **See Also:** [Main Grep Documentation (grep.md)](grep.md)
 
+> **Note:** All runnable code examples in this document are automatically tested in [`test/test_grep_python_doc_examples.py`](../../test/test_grep_python_doc_examples.py).
+
 # Unicode Grep in Python
 
 ## Overview
@@ -70,10 +72,11 @@ Pass parameters as Python variables to be used in the Grapa string:
 import grapapy
 xy = grapapy.grapa()
 
+# For parameter variables, always provide the variables dictionary:
 # Basic grep with parameter variables
 xy.eval("input.grep(pattern,options);", {
     "input": "apple 123 pear 456\nbanana 789",
-    "pattern": "\\d+",
+    "pattern": "\d+",
     "options": "o"
 })
 # Result: ['123', '456', '789']
@@ -227,7 +230,7 @@ xy.eval('"aaa".grep(r"(?>a+)a", "o")')
 
 # Lookaround assertions
 xy.eval('"abc123def456".grep(r"(?<=\\d)(?=\\d)", "o")')
-# Result: [''] (zero-width match between digits)
+# Result: ['', '', '', '', '', '']
 ```
 
 ## Raw String Literals
