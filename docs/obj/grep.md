@@ -41,12 +41,31 @@ string.grep(pattern, options, delimiter, normalization, mode)
 
 ### Parameters
 
+**Required Parameters:**
 - **string**: The input text to search
 - **pattern**: PCRE2 regular expression pattern with Unicode support
-- **options**: String containing option flags
-- **delimiter**: Custom line delimiter (defaults to `\n`)
+
+**Optional Parameters (all have sensible defaults):**
+- **options**: String containing option flags (default: `""` - no options)
+- **delimiter**: Custom line delimiter (default: `"\n"`)
 - **normalization**: Unicode normalization form: `"NONE"`, `"NFC"`, `"NFD"`, `"NFKC"`, `"NFKD"` (default: `"NONE"`)
 - **mode**: Processing mode: `"UNICODE"` for full Unicode processing, `"BINARY"` for raw byte processing (default: `"UNICODE"`)
+
+### Simple Usage Examples
+
+```grapa
+// Minimal usage - only required parameters
+"Hello world".grep("world")
+// Result: ["Hello world"]
+
+// With options
+"Hello world".grep("world", "i")
+// Result: ["Hello world"]
+
+// All parameters (rarely needed)
+"Hello world".grep("world", "i", "\n", "NONE", "UNICODE")
+// Result: ["Hello world"]
+```
 
 ## Options Reference
 
