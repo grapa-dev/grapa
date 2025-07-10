@@ -113,10 +113,13 @@ mkdir build_static
 cd build_static
 cmake -G "NMake Makefiles" -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DPCRE2_STATIC_RUNTIME=ON -DCMAKE_BUILD_TYPE=Release ..
 nmake
-
-copy ..\src to source\pcre2
-copy *.lib to source\pcre2-lib\win-arm64
 ```
+
+For the lib files:
+copy *.lib to grapa\source\pcre2-lib\win-arm64
+
+For the include files (this is done onece for all platforms):
+copy ..\src\*.h to grapa\source\pcre2
 
 # linux-amd64
 
@@ -163,6 +166,7 @@ cp lib/* ~/Documents/GitHub/grapa/lib/linux-amd64/
 
 ## pcre2
 ```
+sudo apt install cmake
 rm -rf build_static
 mkdir build_static
 cd build_static
@@ -211,6 +215,7 @@ Copy lib/*.so to Grapa/source/fl-lib/linux-arm64
 
 ## pcre2
 ```
+sudo apt install cmake
 rm -rf build_static
 mkdir build_static
 cd build_static
@@ -344,6 +349,7 @@ Copy lib/*.a to Grapa/source/fl-lib/aws-amd64
 
 ## pcre2
 ```
+yum install cmake
 rm -rf build_static
 mkdir build_static
 cd build_static
@@ -382,6 +388,7 @@ Copy lib/*.a to Grapa/source/fl-lib/aws-arm64
 
 ## pcre2
 ```
+yum install cmake
 rm -rf build_static
 mkdir build_static
 cd build_static
