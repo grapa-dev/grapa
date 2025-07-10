@@ -85,17 +85,21 @@ rm -rf grapapy.egg-info
 ### Mac AMD64
 ```
 rm grapa
-clang++ -Isource source/main.cpp source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++17 -m64 -O3 -pthread -o grapa
+clang -Isource -DUTF8PROC_STATIC -c source/utf8proc/utf8proc.c -m64 -O3 
+clang++ -Isource source/main.cpp source/grapa/*.cpp utf8proc.o source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a source/pcre2-lib/mac-amd64/libpcre2-8.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++17 -m64 -O3 -pthread -o grapa
+rm *.o
 codesign -s dev-grapa-cert ./grapa
 
-clang++ -c -Isource source/grapa/*.cpp -std=c++17 -m64 -O3 -pthread
+clang -Isource -DUTF8PROC_STATIC -c source/utf8proc/utf8proc.c -m64 -O3 
+clang++ -Isource -c source/grapa/*.cpp -std=c++17 -m64 -O3 -pthread
 ar -crs libgrapa.a *.o
 rm *.o
 codesign -s dev-grapa-cert ./libgrapa.a
 cp libgrapa.a source/grapa-lib/mac-amd64/libgrapa.a
 rm libgrapa.a
 
-clang++ -shared -Isource source/grapa/*.cpp source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++17 -m64 -O3 -pthread -fPIC -o libgrapa.so
+clang -Isource -DUTF8PROC_STATIC -c source/utf8proc/utf8proc.c -o source/utf8proc/utf8proc.o
+clang++ -shared -Isource source/grapa/*.cpp source/utf8proc/utf8proc.o source/openssl-lib/mac-amd64/*.a source/fl-lib/mac-amd64/*.a source/blst-lib/mac-amd64/*.a source/pcre2-lib/mac-amd64/libpcre2-8.a -framework CoreFoundation -framework AppKit -framework IOKit -std=c++17 -m64 -O3 -pthread -fPIC -o libgrapa.so
 codesign -s dev-grapa-cert ./libgrapa.so
 cp libgrapa.so source/grapa-other/mac-amd64/libgrapa.so
 rm libgrapa.so
