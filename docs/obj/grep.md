@@ -1,6 +1,6 @@
 # Unicode Grep Documentation
 
-**See Also:** [Grapa Grep from Python (grep_python.md)](../grep_python.md)
+**See Also:** [Grapa Grep from Python (grep_python.md)](obj/grep_python.md)
 
 ## Overview
 

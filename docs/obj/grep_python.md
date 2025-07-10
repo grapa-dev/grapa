@@ -335,7 +335,7 @@ matches = xy.eval("content.grep(r'error|warning|critical', 'A2B1');", {
 
 ```python
 import grapapy
-xy = grapapy.grep()
+xy = grapapy.grapa()
 
 # Extract structured data
 log_data = """
@@ -352,7 +352,7 @@ entries = xy.eval("log_data.grep(r'(?P<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d
 # Result: [{"timestamp":"2024-01-15 10:30:15","level":"INFO","message":"User login successful",...}, ...]
 ```
 
-For more detailed information about grep functionality, see the main [Grep Documentation](obj/grep.md). 
+For more detailed information about grep functionality, see the main [Grep Documentation](obj/grep_python.md). 
 
 ## Example Test File
 
