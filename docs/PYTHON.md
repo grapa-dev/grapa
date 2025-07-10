@@ -113,7 +113,7 @@ xy.eval("input.grep(pattern,options);",{"input":b"apple 123 pear 456\nbanana 789
 
 ## Grep Examples
 
-For a comprehensive guide to using Grapa grep from Python, see [Grapa Grep from Python (grep_python.md)](grep_python.md).
+For a comprehensive guide to using Grapa grep from Python, see [Grapa Grep from Python (grep_python.md)](obj/grep_python.md).
 
 ### Method 1: Embedded Parameters
 Pass parameters directly in the Grapa string:
