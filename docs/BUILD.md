@@ -38,9 +38,18 @@ grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/
 # Run complete test suite
 .\grapa.exe -cfile "test/run_tests.grc"
 
+# Run complete Python test suite
+python test/run_tests.py
+
 # Or run individual test categories
 .\grapa.exe -cfile "test/test_current_capabilities.grc"
 .\grapa.exe -cfile "test/test_performance_optimizations.grc"
+
+# Or run individual Python test categories
+python test/test_grep_python_doc_examples.py
+python test/test_python_examples.py
+python test/test_python_callback.py
+python test/test_grep_python_examples.py
 
 # Test Python integration
 python -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
@@ -121,9 +130,18 @@ rm -rf grapapy.egg-info
 # Run complete test suite
 ./grapa -cfile "test/run_tests.grc"
 
+# Run complete Python test suite
+python3 test/run_tests.py
+
 # Or run individual test categories
 ./grapa -cfile "test/test_current_capabilities.grc"
 ./grapa -cfile "test/test_performance_optimizations.grc"
+
+# Or run individual Python test categories
+python3 test/test_grep_python_doc_examples.py
+python3 test/test_python_examples.py
+python3 test/test_python_callback.py
+python3 test/test_grep_python_examples.py
 
 # Test Python integration
 python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
@@ -248,9 +266,18 @@ pip3 install dist/*
 # Run complete test suite
 ./grapa -cfile "test/run_tests.grc"
 
+# Run complete Python test suite
+python3 test/run_tests.py
+
 # Or run individual test categories
 ./grapa -cfile "test/test_current_capabilities.grc"
 ./grapa -cfile "test/test_performance_optimizations.grc"
+
+# Or run individual Python test categories
+python3 test/test_grep_python_doc_examples.py
+python3 test/test_python_examples.py
+python3 test/test_python_callback.py
+python3 test/test_grep_python_examples.py
 
 # Test Python integration
 python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
@@ -354,9 +381,18 @@ pip3 install dist/*
 # Run complete test suite
 ./grapa -cfile "test/run_tests.grc"
 
+# Run complete Python test suite
+python3 test/run_tests.py
+
 # Or run individual test categories
 ./grapa -cfile "test/test_current_capabilities.grc"
 ./grapa -cfile "test/test_performance_optimizations.grc"
+
+# Or run individual Python test categories
+python3 test/test_grep_python_doc_examples.py
+python3 test/test_python_examples.py
+python3 test/test_python_callback.py
+python3 test/test_grep_python_examples.py
 
 # Test Python integration
 python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
