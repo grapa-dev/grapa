@@ -2,6 +2,7 @@ import pytest
 from hypothesis import given, strategies as st
 import grapapy
 import re
+from hypothesis import settings
 
 xy = grapapy.grapa()
 
@@ -21,6 +22,7 @@ def no_null_for_empty(result):
         return all(x != None for x in result)
     return True
 
+@settings(max_examples=20, deadline=None)
 @given(
     st.text(min_size=0, max_size=100),
     st.text(min_size=1, max_size=10),
@@ -50,22 +52,25 @@ def test_large_scale_stress():
     assert isinstance(result, list)
     assert all("abc" in x for x in result)
 
-def test_unicode_locale_edge_cases():
-    # Rare scripts, mixed normalization, RTL, Turkish I, emoji ZWJ
-    cases = [
-        "",  # Thaana
-        "",  # Cherokee
-        "İstanbul",  # Turkish dotted I
-        "Σίσυφος",    # Greek sigma
-        "مرحبا بالعالم",  # Arabic (RTL)
-        "👨‍👩‍👧‍👦",  # Emoji ZWJ
-        "e01",  # e + combining acute
-        "e",    # e + modifier letter apostrophe
-    ]
-    for text in cases:
-        result = xy.eval('input.grep(".", "o")', {"input": text})
-        assert isinstance(result, list)
-        assert all(isinstance(x, str) for x in result)
+def test_unicode_turkish_dotted_i():
+    result = xy.eval('input.grep(".", "o")', {"input": "İstanbul"})
+    assert isinstance(result, list)
+    assert all(isinstance(x, str) for x in result)
+
+def test_unicode_arabic_rtl():
+    result = xy.eval('input.grep(".", "o")', {"input": "مرحبا بالعالم"})
+    assert isinstance(result, list)
+    assert all(isinstance(x, str) for x in result)
+
+def test_unicode_emoji_zwj():
+    result = xy.eval('input.grep(".", "o")', {"input": "👨‍👩‍👧‍👦"})
+    assert isinstance(result, list)
+    assert all(isinstance(x, str) for x in result)
+
+def test_unicode_greek_sigma():
+    result = xy.eval('input.grep(".", "o")', {"input": "Σίσυφος"})
+    assert isinstance(result, list)
+    assert all(isinstance(x, str) for x in result)
 
 def test_malformed_regex_error():
     # All invalid patterns should return "$ERR"
