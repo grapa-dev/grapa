@@ -781,79 +781,146 @@ namespace GrapaUnicode {
         static std::map<std::pair<std::string, std::string>, std::vector<std::pair<size_t, size_t>>> offset_cache_;
         static std::mutex offset_cache_mutex_;
 
-        static std::pair<size_t, size_t> map_normalized_span_to_original(const std::string& original, const std::string& normalized, size_t norm_offset, size_t norm_length) {
-            if (original == normalized) {
-                return {norm_offset, norm_length};
-            }
+        // Hybrid mapping strategy with multiple fallbacks for robust Unicode boundary handling
+        static std::pair<size_t, size_t> map_normalized_span_to_original(const std::string& original, const std::string& normalized, size_t norm_offset, size_t norm_length);
 
-            std::lock_guard<std::mutex> lock(offset_cache_mutex_);
-            auto key = std::make_pair(original, normalized);
-            auto it = offset_cache_.find(key);
-            if (it != offset_cache_.end()) {
-                /* Use cached mapping */
-                if (norm_offset < it->second.size()) {
-                    size_t orig_offset = it->second[norm_offset].first;
-                    size_t orig_length = 0;
-                    
-                    /* Calculate length by finding the end offset */
-                    size_t end_norm_offset = norm_offset + norm_length;
-                    if (end_norm_offset < it->second.size()) {
-                        orig_length = it->second[end_norm_offset].first - orig_offset;
-                    } else {
-                        orig_length = original.size() - orig_offset;
-                    }
-                    
-                    return {orig_offset, orig_length};
-                }
-            }
-
-            /* Build mapping cache */
-            std::vector<std::pair<size_t, size_t>> mapping;
-            const utf8proc_uint8_t* orig_str = reinterpret_cast<const utf8proc_uint8_t*>(original.c_str());
-            const utf8proc_uint8_t* norm_str = reinterpret_cast<const utf8proc_uint8_t*>(normalized.c_str());
-            
+    private:
+        // Strategy 1: Grapheme cluster boundary alignment
+        static std::pair<size_t, size_t> try_grapheme_cluster_mapping(const std::string& original, const std::string& normalized, size_t norm_offset, size_t norm_length) {
+            std::vector<size_t> orig_grapheme_starts, norm_grapheme_starts;
+            size_t orig_pos = 0, norm_pos = 0;
             utf8proc_ssize_t orig_len = static_cast<utf8proc_ssize_t>(original.size());
             utf8proc_ssize_t norm_len = static_cast<utf8proc_ssize_t>(normalized.size());
             
-            size_t orig_pos = 0;
-            size_t norm_pos = 0;
-            
-            while (orig_pos < static_cast<size_t>(orig_len) && norm_pos < static_cast<size_t>(norm_len)) {
-                mapping.emplace_back(orig_pos, norm_pos);
-                
-                /* Advance in original string */
-                utf8proc_int32_t orig_cp;
-                utf8proc_ssize_t orig_char_len = utf8proc_iterate(orig_str + orig_pos, orig_len - orig_pos, &orig_cp);
-                if (orig_char_len <= 0) break;
-                orig_pos += orig_char_len;
-                
-                /* Advance in normalized string */
-                utf8proc_int32_t norm_cp;
-                utf8proc_ssize_t norm_char_len = utf8proc_iterate(norm_str + norm_pos, norm_len - norm_pos, &norm_cp);
-                if (norm_char_len <= 0) break;
-                norm_pos += norm_char_len;
+            // Build grapheme cluster boundaries for original string
+            while (orig_pos < static_cast<size_t>(orig_len)) {
+                orig_grapheme_starts.push_back(orig_pos);
+                utf8proc_int32_t cp;
+                utf8proc_ssize_t char_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(original.c_str()) + orig_pos, orig_len - orig_pos, &cp);
+                if (char_len <= 0) break;
+                size_t next = orig_pos + char_len;
+                while (next < orig_len) {
+                    utf8proc_int32_t next_cp;
+                    utf8proc_ssize_t next_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(original.c_str()) + next, orig_len - next, &next_cp);
+                    if (next_len <= 0) break;
+                    if (utf8proc_grapheme_break(cp, next_cp) != 0) break;
+                    next += next_len;
+                    cp = next_cp;
+                }
+                orig_pos = next;
             }
+            orig_grapheme_starts.push_back(orig_len);
             
-            /* Add final positions */
-            mapping.emplace_back(orig_pos, norm_pos);
-            offset_cache_[key] = mapping;
+            // Build grapheme cluster boundaries for normalized string
+            while (norm_pos < static_cast<size_t>(norm_len)) {
+                norm_grapheme_starts.push_back(norm_pos);
+                utf8proc_int32_t cp;
+                utf8proc_ssize_t char_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(normalized.c_str()) + norm_pos, norm_len - norm_pos, &cp);
+                if (char_len <= 0) break;
+                size_t next = norm_pos + char_len;
+                while (next < norm_len) {
+                    utf8proc_int32_t next_cp;
+                    utf8proc_ssize_t next_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(normalized.c_str()) + next, norm_len - next, &next_cp);
+                    if (next_len <= 0) break;
+                    if (utf8proc_grapheme_break(cp, next_cp) != 0) break;
+                    next += next_len;
+                    cp = next_cp;
+                }
+                norm_pos = next;
+            }
+            norm_grapheme_starts.push_back(norm_len);
             
-            /* Use the mapping */
-            if (norm_offset < mapping.size()) {
-                size_t orig_offset = mapping[norm_offset].first;
-                size_t orig_length = 0;
+            // Map normalized grapheme cluster offset to original
+            if (norm_offset < norm_grapheme_starts.size() - 1 && (norm_offset + norm_length) <= norm_grapheme_starts.size() - 1) {
+                size_t norm_start_byte = norm_grapheme_starts[norm_offset];
+                size_t norm_end_byte = norm_grapheme_starts[norm_offset + norm_length];
                 
-                size_t end_norm_offset = norm_offset + norm_length;
-                if (end_norm_offset < mapping.size()) {
-                    orig_length = mapping[end_norm_offset].first - orig_offset;
+                // Find corresponding original boundaries
+                size_t orig_start = 0, orig_end = 0;
+                if (norm_offset < orig_grapheme_starts.size()) {
+                    size_t idx = (norm_offset < orig_grapheme_starts.size() - 1) ? norm_offset : orig_grapheme_starts.size() - 1;
+                    orig_start = orig_grapheme_starts[idx];
+                }
+                if (norm_offset + norm_length < orig_grapheme_starts.size()) {
+                    size_t idx = (norm_offset + norm_length < orig_grapheme_starts.size() - 1) ? norm_offset + norm_length : orig_grapheme_starts.size() - 1;
+                    orig_end = orig_grapheme_starts[idx];
                 } else {
-                    orig_length = original.size() - orig_offset;
+                    orig_end = original.size();
                 }
                 
-                return {orig_offset, orig_length};
+                if (orig_end >= orig_start) {
+                    return {orig_start, orig_end - orig_start};
+                }
             }
             
-            return {norm_offset, norm_length}; /* Fallback */
+            return {0, 0}; // Invalid mapping
+        }
+
+        // Strategy 2: Character-by-character alignment
+        static std::pair<size_t, size_t> try_character_alignment(const std::string& original, const std::string& normalized, size_t norm_offset, size_t norm_length) {
+            size_t orig_pos = 0, norm_pos = 0;
+            utf8proc_ssize_t orig_len = static_cast<utf8proc_ssize_t>(original.size());
+            utf8proc_ssize_t norm_len = static_cast<utf8proc_ssize_t>(normalized.size());
+            
+            // Find the character position in normalized string
+            size_t target_norm_pos = 0;
+            while (norm_pos < norm_offset && norm_pos < static_cast<size_t>(norm_len)) {
+                utf8proc_int32_t cp;
+                utf8proc_ssize_t char_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(normalized.c_str()) + norm_pos, norm_len - norm_pos, &cp);
+                if (char_len <= 0) break;
+                norm_pos += char_len;
+                target_norm_pos++;
+            }
+            
+            // Find corresponding position in original string
+            size_t orig_start = 0;
+            size_t char_count = 0;
+            while (orig_pos < static_cast<size_t>(orig_len) && char_count < target_norm_pos) {
+                utf8proc_int32_t cp;
+                utf8proc_ssize_t char_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(original.c_str()) + orig_pos, orig_len - orig_pos, &cp);
+                if (char_len <= 0) break;
+                orig_pos += char_len;
+                char_count++;
+            }
+            orig_start = orig_pos;
+            
+            // Find end position
+            size_t orig_end = orig_start;
+            char_count = 0;
+            while (orig_pos < static_cast<size_t>(orig_len) && char_count < norm_length) {
+                utf8proc_int32_t cp;
+                utf8proc_ssize_t char_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(original.c_str()) + orig_pos, orig_len - orig_pos, &cp);
+                if (char_len <= 0) break;
+                orig_pos += char_len;
+                char_count++;
+            }
+            orig_end = orig_pos;
+            
+            return {orig_start, orig_end - orig_start};
+        }
+
+        // Strategy 3: Fallback to direct substring with bounds checking
+        static std::pair<size_t, size_t> try_fallback_substring(const std::string& original, const std::string& normalized, size_t norm_offset, size_t norm_length) {
+            // Use the normalized offset directly, but ensure bounds
+            size_t orig_start = (norm_offset < original.size()) ? norm_offset : original.size();
+            size_t orig_length = (norm_length < original.size() - orig_start) ? norm_length : original.size() - orig_start;
+            
+            // Ensure we don't split UTF-8 characters
+            if (orig_start > 0) {
+                // Find the start of the current character
+                while (orig_start > 0 && (original[orig_start] & 0xC0) == 0x80) {
+                    orig_start--;
+                }
+            }
+            
+            if (orig_start + orig_length < original.size()) {
+                // Find the end of the current character
+                while (orig_start + orig_length < original.size() && (original[orig_start + orig_length] & 0xC0) == 0x80) {
+                    orig_length++;
+                }
+            }
+            
+            return {orig_start, orig_length};
         }
 
         /* Cache management */

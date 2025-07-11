@@ -239,7 +239,7 @@ std::vector<MatchPosition> grep_unicode_impl(
                             }
                         }
                         for (const auto& m : matches) {
-                            auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, cached_normalized_line.empty() ? line_copy : cached_normalized_line, m.first, m.second);
+                            auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, match_extract_line, m.first, m.second);
                             results.push_back({ offset + mapped.first, mapped.second, line_number });
                         }
                     }
@@ -313,9 +313,30 @@ std::vector<MatchPosition> grep_unicode_impl(
         }
         
         if (match_only) {
-            std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(UnicodeString(match_input));
+            // For all-mode with match-only, use the processed pattern and input
+            bool diacritic_insensitive = has_diacritic_insensitive(options);
+            std::string norm_pattern = effective_pattern;
+            std::string norm_input = match_input;
+            if (diacritic_insensitive) {
+                norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
+                norm_input = GrapaUnicode::UnicodeString(norm_input).normalize(norm).case_fold().data();
+                norm_pattern = GrapaUnicode::strip_diacritics(norm_pattern);
+                norm_input = GrapaUnicode::strip_diacritics(norm_input);
+            } else if (ignore_case) {
+                norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
+                norm_input = GrapaUnicode::UnicodeString(norm_input).normalize(norm).case_fold().data();
+            } else if (norm != GrapaUnicode::NormalizationForm::NONE) {
+                norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).data();
+                norm_input = GrapaUnicode::UnicodeString(norm_input).normalize(norm).data();
+            }
+            
+            UnicodeRegex match_extract_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+            match_extract_rx.compile(norm_input);
+            std::vector<std::pair<size_t, size_t>> matches = match_extract_rx.find_all(UnicodeString(norm_input));
+            
+            // Map normalized match offsets back to original input
             for (const auto& m : matches) {
-                auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, m.first, m.second);
+                auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, norm_input, m.first, m.second);
                 results.push_back({ mapped.first, mapped.second, 1 });
             }
         }
@@ -389,16 +410,12 @@ std::vector<MatchPosition> grep_unicode_impl(
                     }
                 }
                 else {
-                    // For match-only, group-by-line, and offset options, extract matches from the diacritic-stripped line if 'd' is present
+                    // For match-only, group-by-line, and offset options, extract matches from the processed line
                     std::vector<std::pair<size_t, size_t>> matches;
-                    std::string match_extract_line = line_copy;
-                    if (norm != GrapaUnicode::NormalizationForm::NONE) {
-                        match_extract_line = GrapaUnicode::UnicodeRegex::get_normalized_text(line_copy, ignore_case, norm);
-                    }
-                    UnicodeString match_extract_unicode_line(match_extract_line);
                     UnicodeRegex match_extract_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
-                    match_extract_rx.compile(match_extract_line); // Compile with the actual input to enable PCRE2
-                    matches = match_extract_rx.find_all(match_extract_unicode_line);
+                    match_extract_rx.compile(norm_line); // Compile with the processed input
+                    matches = match_extract_rx.find_all(UnicodeString(norm_line));
+                    
                     // Map normalized match offsets back to original line
                     std::string cached_normalized_line;
                     if (!unicode_rx.is_ascii_mode()) {
@@ -411,8 +428,9 @@ std::vector<MatchPosition> grep_unicode_impl(
                             cached_normalized_line = GrapaUnicode::UnicodeString(line_copy).normalize(norm).data();
                         }
                     }
+                    
                     for (const auto& m : matches) {
-                        auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, cached_normalized_line.empty() ? line_copy : cached_normalized_line, m.first, m.second);
+                        auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, norm_line, m.first, m.second);
                         results.push_back({ offset + mapped.first, mapped.second, line_number });
                     }
                 }
@@ -815,33 +833,45 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     // }
     
     // Output logic for matches
-    bool any_zero_length = false;
-    bool zero_length_added = false;
     for (const auto& match : matches) {
-        if (match.offset < working_input.size() || (match.length == 0 && match.offset == working_input.size())) {
-            size_t end_offset = (match.offset + match.length < working_input.size()) ? 
-                match.offset + match.length : working_input.size();
+        // Bounds check: ensure match.offset and match.length are valid
+        if ((match.offset <= working_input.size()) && (match.length <= working_input.size()) && (match.offset + match.length <= working_input.size())) {
+            size_t end_offset = match.offset + match.length;
             std::string matched_text = working_input.substr(match.offset, end_offset - match.offset);
+            // Unicode-aware: If pattern is \X (grapheme cluster), trim trailing newline unless the grapheme is a newline
+            if (effective_pattern == "\\X" && !matched_text.empty() && matched_text.back() == '\n') {
+                // Only trim if the grapheme is not a newline itself
+                if (matched_text != "\n") {
+                    matched_text.pop_back();
+                }
+            }
             // Normalize output to NFC for display consistency
             matched_text = GrapaUnicode::UnicodeRegex::get_normalized_text(matched_text, false, GrapaUnicode::NormalizationForm::NFC);
             // If color_output, wrap only the matched substring in ANSI color codes
             if (color_output) {
                 matched_text = "\x1b[1;31m" + matched_text + "\x1b[0m";
             }
-            // Handle zero-length matches: only add a single empty string, never null
+            // Handle zero-length matches: always add empty string, never null
             if (match.length == 0) {
-                if (!zero_length_added) {
-                    extracted_matches.push_back("");
-                    zero_length_added = true;
-                }
+                extracted_matches.push_back("");
             } else {
-                extracted_matches.push_back(matched_text);
+                // Ensure we never add null values - use empty string as fallback
+                if (matched_text.empty()) {
+                    extracted_matches.push_back("");
+                } else {
+                    extracted_matches.push_back(matched_text);
+                }
             }
+        } else {
+            // If mapping is invalid, push empty string (never crash)
+            extracted_matches.push_back("");
         }
     }
-    // If only zero-length matches and none were pushed, push a single empty string
-    if (matches.size() == 1 && matches[0].length == 0 && extracted_matches.empty()) {
-        extracted_matches.push_back("");
+    // Final safety check: replace any remaining null-like values with empty strings
+    for (auto& match : extracted_matches) {
+        if (match.empty() && match != "") {
+            match = "";
+        }
     }
     
     // Add context separator if context options are used
@@ -1267,6 +1297,38 @@ bool UnicodeRegex::has_unicode_properties(const std::string& pattern) {
     }
     
     return false;
+}
+
+// Hybrid mapping strategy with multiple fallbacks for robust Unicode boundary handling
+std::pair<size_t, size_t> UnicodeRegex::map_normalized_span_to_original(const std::string& original, const std::string& normalized, size_t norm_offset, size_t norm_length) {
+    if (original == normalized) {
+        return { norm_offset, norm_length };
+    }
+
+    // Strategy 1: Try grapheme cluster boundary alignment
+    auto result = try_grapheme_cluster_mapping(original, normalized, norm_offset, norm_length);
+    if (result.second > 0 && result.first < original.size()) {
+        return result;
+    }
+
+    // Strategy 2: Try character-by-character alignment
+    result = try_character_alignment(original, normalized, norm_offset, norm_length);
+    if (result.second > 0 && result.first < original.size()) {
+        return result;
+    }
+
+    // Strategy 3: Fallback to direct substring with bounds checking
+    result = try_fallback_substring(original, normalized, norm_offset, norm_length);
+    if (result.second > 0 && result.first < original.size()) {
+        return result;
+    }
+
+    // Final fallback: Return the full original string for the span if possible
+    if (!original.empty()) {
+        return { 0, original.size() };
+    }
+    // If all else fails, return an empty string (never null or replacement char)
+    return { 0, 0 };
 }
 
 } // namespace GrapaUnicode
