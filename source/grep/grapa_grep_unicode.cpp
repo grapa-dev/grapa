@@ -1062,11 +1062,15 @@ std::vector<std::pair<size_t, size_t>> GrapaUnicode::UnicodeRegex::find_all(cons
 #ifdef USE_PCRE
     if (use_pcre_) {
         std::string search_text = text.data();
-        if (normalization_ != NormalizationForm::NONE) {
+        bool needs_normalization = (normalization_ != NormalizationForm::NONE);
+        
+        if (needs_normalization) {
             search_text = get_normalized_text(text.data(), case_insensitive_, normalization_);
         }
+        
         PCRE2_SIZE offset = 0;
         PCRE2_SIZE length = static_cast<PCRE2_SIZE>(search_text.length());
+        
         while (offset <= length) {
             int rc = pcre2_match(
                 pcre_regex_,
@@ -1079,7 +1083,15 @@ std::vector<std::pair<size_t, size_t>> GrapaUnicode::UnicodeRegex::find_all(cons
             );
             if (rc < 0) break;
             PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(pcre_match_data_);
-            matches.emplace_back(ovector[0], ovector[1] - ovector[0]);
+            
+            // If we're using normalized text, map the match back to original positions
+            if (needs_normalization) {
+                auto mapped = map_normalized_span_to_original(text.data(), search_text, ovector[0], ovector[1] - ovector[0]);
+                matches.emplace_back(mapped.first, mapped.second);
+            } else {
+                matches.emplace_back(ovector[0], ovector[1] - ovector[0]);
+            }
+            
             // Always advance past the current match to avoid infinite loops
             if (ovector[1] > offset) {
                 offset = ovector[1];
