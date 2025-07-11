@@ -1,0 +1,53 @@
+/* Test basic PCRE2 functionality */
+
+"=== BASIC PCRE2 TEST ===\n".echo();
+
+/* Test 1: Basic regex (should work with std::regex) */
+"Test 1: Basic regex\n".echo();
+input = "Hello World";
+result = input.grep("Hello", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: Hello\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Named groups (should use PCRE2) */
+"Test 2: Named groups\n".echo();
+input = "John Doe";
+result = input.grep("(?P<first>\\w+) (?P<last>\\w+)", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: (?P<first>\\w+) (?P<last>\\w+)\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Basic Unicode property (should use PCRE2) */
+"Test 3: Basic Unicode property\n".echo();
+input = "Hello 世界 123 €";
+result = input.grep("\\p{L}+", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: \\p{L}+\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Unicode script (should use PCRE2) */
+"Test 4: Unicode script\n".echo();
+input = "Hello 世界";
+result = input.grep("\\p{sc=Han}", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: \\p{sc=Han}\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 5: Atomic groups (should use PCRE2) */
+"Test 5: Atomic groups\n".echo();
+input = "aaa";
+result = input.grep("(?>a+)a", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: (?>a+)a\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo(); 

@@ -66,6 +66,71 @@ limitations under the License.
 #include <unordered_map> // Added for Latin-1 diacritic stripping
 #include <list> // Added for LRU cache
 
+// Include GrapaThread for threading support
+#include "../grapa/GrapaThread.h"
+
+// Forward declaration for GrapaThread
+class GrapaThread;
+
+// Forward declarations for GrapaUnicode enums
+namespace GrapaUnicode {
+    enum class NormalizationForm;
+    enum class ProcessingMode;
+}
+
+// GrapaGrepWorkEvent class for parallel grep processing using WorkQueue pattern
+class GrapaGrepWorkEvent : public GrapaWorkEvent
+{
+public:
+    // Input data
+    std::string input_chunk;
+    std::string pattern;
+    std::string options;
+    std::string line_delim;
+    GrapaUnicode::NormalizationForm normalization;
+    GrapaUnicode::ProcessingMode mode;
+    
+    // Output data
+    std::vector<std::string> results;
+    
+    // Constructor
+    GrapaGrepWorkEvent(GrapaWorkQueue* vQueue, 
+                       const std::string& chunk,
+                       const std::string& pat,
+                       const std::string& opts,
+                       const std::string& delim,
+                       GrapaUnicode::NormalizationForm norm,
+                       GrapaUnicode::ProcessingMode proc_mode)
+        : input_chunk(chunk), pattern(pat), options(opts), line_delim(delim),
+          normalization(norm), mode(proc_mode)
+    {
+        Set(vQueue);
+    }
+    
+    // Thread lifecycle methods (override from GrapaWorkEvent)
+    virtual void Starting() override;
+    virtual void Running() override;
+    virtual void Stopping() override;
+};
+
+// GrapaGrepWorkQueue class for managing grep work events
+class GrapaGrepWorkQueue : public GrapaWorkQueue
+{
+public:
+    virtual ~GrapaGrepWorkQueue() {
+        GrapaGrepWorkQueue::CLEAR();
+    }
+    virtual void CLEAR()
+    {
+        GrapaGrepWorkEvent* e = (GrapaGrepWorkEvent*)PopHead();
+        while (e)
+        {
+            e->CLEAR();
+            delete e;
+            e = (GrapaGrepWorkEvent*)PopHead();
+        }
+    }
+};
 
 #ifdef _WIN32
 #if defined(_M_ARM64)
@@ -87,7 +152,6 @@ limitations under the License.
 #endif
 
 #ifdef USE_PCRE
-#define PCRE2_STATIC
 #define PCRE2_CODE_UNIT_WIDTH 8
 #include "pcre2/pcre2.h"
 #endif
@@ -327,6 +391,19 @@ namespace GrapaUnicode {
         static bool has_grapheme_clusters(const std::string& pattern) {
             // Check for Unicode grapheme cluster \X
             return pattern.find("\\X") != std::string::npos;
+        }
+
+        static bool has_possessive_quantifiers(const std::string& pattern) {
+            // Check for possessive quantifiers (*+, ++, ?+, {n,m}+)
+            return pattern.find("*+") != std::string::npos ||
+                   pattern.find("++") != std::string::npos ||
+                   pattern.find("?+") != std::string::npos ||
+                   pattern.find("}+") != std::string::npos;
+        }
+
+        static bool has_conditional_patterns(const std::string& pattern) {
+            // Check for conditional patterns (?(condition)...)
+            return pattern.find("(?(") != std::string::npos;
         }
 
         /* Fast path detection for common patterns */
@@ -998,7 +1075,8 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     const std::string& options,
     const std::string& line_delim,
     GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
-    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
+    size_t num_workers = 0
 );
 
 // Main Unicode-aware grep functions with default parameters
@@ -1019,7 +1097,37 @@ inline std::vector<std::string> grep_extract_matches_unicode(
     const std::string& options,
     const std::string& line_delim = "",
     GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
-    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
+    size_t num_workers = 0
 ) {
-    return grep_extract_matches_unicode_impl(input, pattern, options, line_delim, normalization, mode);
+    return grep_extract_matches_unicode_impl(input, pattern, options, line_delim, normalization, mode, num_workers);
+}
+
+// Simple parallel processing functions
+inline std::vector<MatchPosition> grep_unicode_parallel(
+    const std::string& input,
+    const std::string& pattern,
+    const std::string& options,
+    const std::string& line_delim = "",
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
+    size_t num_workers = 0
+) {
+    // For now, just use the sequential implementation
+    // Parallel processing will be implemented later
+    return grep_unicode_impl(input, pattern, options, line_delim, normalization, mode);
+}
+
+inline std::vector<std::string> grep_extract_matches_unicode_parallel(
+    const std::string& input,
+    const std::string& pattern,
+    const std::string& options,
+    const std::string& line_delim = "",
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
+    size_t num_workers = 0
+) {
+    // For now, just use the sequential implementation
+    // Parallel processing will be implemented later
+    return grep_extract_matches_unicode_impl(input, pattern, options, line_delim, normalization, mode, num_workers);
 } 

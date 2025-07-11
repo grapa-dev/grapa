@@ -1,0 +1,24 @@
+/* Test Debug Invert Match */
+/* This test debugs the invert match functionality */
+
+"=== DEBUG INVERT MATCH ===\n".echo();
+
+/* Test 1: Debug invert match without context */
+"Test 1: Debug invert match without context\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "v", "\n");
+("Input: " + input + "\n").echo();
+("Pattern: Line 2, Options: v\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Header\\n\", \"Line 1\\n\", \"Line 3\\n\", \"Footer\"]\n").echo();
+"---\n".echo();
+
+/* Test 2: Debug invert match with context */
+"Test 2: Debug invert match with context\n".echo();
+result2 = input.grep("Line 2", "A1v", "\n");
+("Pattern: Line 2, Options: A1v\n").echo();
+("Result: " + result2.str() + "\n").echo();
+("Expected: [\"Header\\n\", \"Line 1\\n\", \"Line 3\\n\", \"Footer\"]\n").echo();
+"---\n".echo();
+
+"=== DEBUG COMPLETE ===\n".echo(); 

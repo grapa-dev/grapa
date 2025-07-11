@@ -16273,6 +16273,7 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
 	GrapaLibraryParam r5(vScriptExec, pNameSpace, pInput ? pInput->Head(4) : NULL);
 	GrapaLibraryParam r6(vScriptExec, pNameSpace, pInput ? pInput->Head(5) : NULL);
+	GrapaLibraryParam r7(vScriptExec, pNameSpace, pInput ? pInput->Head(6) : NULL);
 
 	std::string input="", pattern = "", options = "", delim = "", normstr_upper = "", procstr_upper = "";
 
@@ -16280,12 +16281,29 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 	//pattern = "\\b\\w{4}\\b";
 	//options = "o";
 
-	if (r1.vVal) input = std::string(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
-	if (r2.vVal) pattern = std::string(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
-	if (r3.vVal) options = std::string(reinterpret_cast<const char*>(r3.vVal->mValue.mBytes), r3.vVal->mValue.mLength);
-	if (r4.vVal) delim = std::string(reinterpret_cast<const char*>(r4.vVal->mValue.mBytes), r4.vVal->mValue.mLength);
-	if (r5.vVal) normstr_upper = std::string(reinterpret_cast<const char*>(r5.vVal->mValue.mBytes), r5.vVal->mValue.mLength);
-	if (r6.vVal) procstr_upper = std::string(reinterpret_cast<const char*>(r6.vVal->mValue.mBytes), r6.vVal->mValue.mLength);
+	if (r1.vVal && (r1.vVal->mValue.mToken == GrapaTokenType::STR || r1.vVal->mValue.mToken == GrapaTokenType::RAW)) input = std::string(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+	if (r2.vVal && (r2.vVal->mValue.mToken == GrapaTokenType::STR || r2.vVal->mValue.mToken == GrapaTokenType::RAW)) pattern = std::string(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
+	if (r3.vVal && (r3.vVal->mValue.mToken == GrapaTokenType::STR || r3.vVal->mValue.mToken == GrapaTokenType::RAW)) options = std::string(reinterpret_cast<const char*>(r3.vVal->mValue.mBytes), r3.vVal->mValue.mLength);
+	if (r4.vVal && (r4.vVal->mValue.mToken == GrapaTokenType::STR || r4.vVal->mValue.mToken == GrapaTokenType::RAW)) delim = std::string(reinterpret_cast<const char*>(r4.vVal->mValue.mBytes), r4.vVal->mValue.mLength);
+	if (r5.vVal && (r5.vVal->mValue.mToken == GrapaTokenType::STR || r5.vVal->mValue.mToken == GrapaTokenType::RAW)) normstr_upper = std::string(reinterpret_cast<const char*>(r5.vVal->mValue.mBytes), r5.vVal->mValue.mLength);
+	if (r6.vVal && (r6.vVal->mValue.mToken == GrapaTokenType::STR || r6.vVal->mValue.mToken == GrapaTokenType::RAW)) procstr_upper = std::string(reinterpret_cast<const char*>(r6.vVal->mValue.mBytes), r6.vVal->mValue.mLength);
+
+	u64 num_workers = 0;
+	if (r7.vVal)
+	{
+		if (r7.vVal->mValue.mToken == GrapaTokenType::INT)
+		{
+			GrapaInt a;
+			a.FromBytes(r7.vVal->mValue);
+			num_workers = a.GetItem(0);
+		}
+		else if (r7.vVal->mValue.mToken == GrapaTokenType::STR || r7.vVal->mValue.mToken == GrapaTokenType::RAW)
+		{
+			GrapaInt a;
+			a.FromBytes(r7.vVal->mValue);
+			num_workers = a.LongValue();
+		}
+	}
 
 	try {
 		
@@ -16320,7 +16338,7 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 		else if (procstr_upper == "BINARY") {
 			mode = GrapaUnicode::ProcessingMode::BINARY_MODE;
 		}
-		auto matches = grep_extract_matches_unicode(input, pattern, options, delim, normalization, mode);
+		auto matches = grep_extract_matches_unicode(input, pattern, options, delim, normalization, mode, num_workers);
 
 		// Check for compilation error indicator
 		if (!matches.empty() && matches[0] == "__COMPILATION_ERROR__") {

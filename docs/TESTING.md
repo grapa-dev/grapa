@@ -48,12 +48,25 @@ test/
   - Mixed pattern performance
   - Edge case performance
 
-#### 3. **Feature-Specific Tests**
+#### 3. **Parallel Processing Test** (`test_parallel_grep_verification.grc`)
+- **Purpose**: Validate parallel processing functionality and performance
+- **Coverage**: 8 parallel processing tests
+- **Features Tested**:
+  - Auto-detection with num_workers = 0
+  - Sequential processing with num_workers = 1
+  - 2-thread processing with num_workers = 2
+  - 4-thread processing with num_workers = 4
+  - Small input handling (should use sequential)
+  - Result consistency verification
+  - Basic performance comparison
+  - Parallel function verification
+
+#### 4. **Feature-Specific Tests**
 - **Atomic Groups** (`test_atomic_groups.grc`): 10 tests for atomic group functionality
 - **Lookaround Assertions** (`test_lookaround_assertions.grc`): 8 tests for lookaround functionality
 - **Unicode Grapheme Clusters** (`test_unicode_grapheme_clusters.grc`): 10 tests for grapheme cluster functionality
 
-#### 4. **Python Integration Tests**
+#### 5. **Python Integration Tests**
 - **Python Examples** (`test_python_examples.py`): Comprehensive Python-Grapa integration and callback tests, including argument passing and return values.
 - **Python Grep Examples** (`test_grep_python_examples.py`): Grep functionality via Python interface.
 - **Python Callback Escaping** (`test_python_callback.py`): Troubleshooting and demonstration of correct callback escaping patterns.
@@ -100,6 +113,9 @@ Run specific test categories:
 .\grapa.exe -cfile "test/test_lookaround_assertions.grc"
 .\grapa.exe -cfile "test/test_unicode_grapheme_clusters.grc"
 
+# Parallel processing test
+.\grapa.exe -cfile "test/test_parallel_grep_verification.grc"
+
 # Python tests (requires grapapy module)
 python test/test_python_md_examples.py
 python test/test_grep_python_examples.py
@@ -117,6 +133,7 @@ For development and CI/CD, run the complete test suite:
 ### Expected Results
 - **Capabilities Test**: 12 PASS, 3 FAIL (expected failures for unsupported features)
 - **Performance Test**: 8 PASS
+- **Parallel Processing Test**: 8 PASS
 - **Atomic Groups Test**: 10 PASS
 - **Lookaround Assertions Test**: 8 PASS
 - **Unicode Grapheme Clusters Test**: 10 PASS
@@ -237,8 +254,10 @@ Run tests before committing changes:
 
 ### Coverage Gaps
 - ❌ **Unicode blocks**: Not supported (by design)
-- ❌ **Unicode age properties**: Not supported (by design)
+- ❌ **Unicode age properties**: Not supported (by design)  
 - ❌ **Unicode bidirectional classes**: Not supported (by design)
+
+**Note:** For a comprehensive analysis of Grapa grep features compared to other tools like ripgrep, including detailed feature matrices and use case recommendations, see the [Main Grep Documentation](obj/grep.md).
 
 ## Related Documentation
 

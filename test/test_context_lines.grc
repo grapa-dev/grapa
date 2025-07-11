@@ -1,0 +1,251 @@
+/* Test Context Lines Functionality */
+/* This test covers context lines (A<n>, B<n>, C<n>) implementation */
+
+"=== CONTEXT LINES TEST ===\n".echo();
+"Testing context lines functionality (A<n>, B<n>, C<n>)\n".echo();
+
+/* Test 1: Simple after context (A1) */
+"Test 1: Simple after context (A1)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A1");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 2: Simple before context (B1) */
+"Test 2: Simple before context (B1)\n".echo();
+result = input.grep("Line 2", "B1");
+("Pattern: Line 2, Options: B1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 3: Before and after context (C1) */
+"Test 3: Before and after context (C1)\n".echo();
+result = input.grep("Line 2", "C1");
+("Pattern: Line 2, Options: C1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 4: Multiple lines after (A2) */
+"Test 4: Multiple lines after (A2)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nLine 4\nFooter";
+result = input.grep("Line 2", "A2");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nLine 4\\nFooter\n").echo();
+("Pattern: Line 2, Options: A2\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\", \"Line 4\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 5: Multiple lines before (B2) */
+"Test 5: Multiple lines before (B2)\n".echo();
+result = input.grep("Line 2", "B2");
+("Pattern: Line 2, Options: B2\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Header\\n\", \"Line 1\\n\", \"Line 2\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 6: Combined context (A1B1) */
+"Test 6: Combined context (A1B1)\n".echo();
+result = input.grep("Line 2", "A1B1");
+("Pattern: Line 2, Options: A1B1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 7: Combined context (B1C2) */
+"Test 7: Combined context (B1C2)\n".echo();
+result = input.grep("Line 2", "B1C2");
+("Pattern: Line 2, Options: B1C2\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 8: Context at beginning of file */
+"Test 8: Context at beginning of file\n".echo();
+input = "Line 1\nLine 2\nLine 3\nLine 4";
+result = input.grep("Line 1", "B1");
+("Input: Line 1\\nLine 2\\nLine 3\\nLine 4\n").echo();
+("Pattern: Line 1, Options: B1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\"] (no lines before)\n").echo();
+"---\n".echo();
+
+/* Test 9: Context at end of file */
+"Test 9: Context at end of file\n".echo();
+result = input.grep("Line 4", "A1");
+("Pattern: Line 4, Options: A1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 4\"] (no lines after)\n").echo();
+"---\n".echo();
+
+/* Test 10: Multiple matches with context */
+"Test 10: Multiple matches with context\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nLine 2\nLine 4\nFooter";
+result = input.grep("Line 2", "A1B1");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nLine 2\\nLine 4\\nFooter\n").echo();
+("Pattern: Line 2, Options: A1B1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\", \"Line 3\\n\", \"Line 2\\n\", \"Line 4\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 11: Context with match-only output */
+"Test 11: Context with match-only output (A1o)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A1o");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A1o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 12: Context with line numbers */
+"Test 12: Context with line numbers (A1n)\n".echo();
+result = input.grep("Line 2", "A1n");
+("Pattern: Line 2, Options: A1n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 13: Context with invert match */
+"Test 13: Context with invert match (A1v)\n".echo();
+result = input.grep("Line 2", "A1v");
+("Pattern: Line 2, Options: A1v\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Header\\n\", \"Line 1\\n\", \"Line 3\\n\", \"Footer\"]\n").echo();
+"---\n".echo();
+
+/* Test 14: Context with custom delimiter */
+"Test 14: Context with custom delimiter (A1, delimiter: |)\n".echo();
+input2 = "Header|Line 1|Line 2|Line 3|Footer";
+result = input2.grep("Line 2", "A1", "|");
+("Input: Header|Line 1|Line 2|Line 3|Footer\n").echo();
+("Pattern: Line 2, Options: A1, Delimiter: |\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\", \"Line 3\"]\n").echo();
+"---\n".echo();
+
+/* Test 15: Large context numbers */
+"Test 15: Large context numbers (A10B10C10)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A10B10C10");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A10B10C10\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Header\\n\", \"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\", \"Footer\"]\n").echo();
+"---\n".echo();
+
+/* Test 16: Zero context (A0B0C0) */
+"Test 16: Zero context (A0B0C0)\n".echo();
+result = input.grep("Line 2", "A0B0C0");
+("Pattern: Line 2, Options: A0B0C0\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 17: Context with case-insensitive */
+"Test 17: Context with case-insensitive (A1i)\n".echo();
+input = "Header\nLINE 1\nline 2\nLine 3\nFooter";
+result = input.grep("line", "A1i");
+("Input: Header\\nLINE 1\\nline 2\\nLine 3\\nFooter\n").echo();
+("Pattern: line, Options: A1i\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"LINE 1\\n\", \"line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 18: Context with diacritic-insensitive */
+"Test 18: Context with diacritic-insensitive (A1d)\n".echo();
+input = "Header\ncafé\ncafe\ncafé\nFooter";
+result = input.grep("cafe", "A1d");
+("Input: Header\\ncafé\\ncafe\\ncafé\\nFooter\n").echo();
+("Pattern: cafe, Options: A1d\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"café\\n\", \"cafe\\n\", \"café\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 19: Context with parallel processing */
+"Test 19: Context with parallel processing (A1, 2 workers)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A1", "", "", "", 2);
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A1, Workers: 2\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 20: Context with binary mode */
+"Test 20: Context with binary mode (A1, BINARY mode)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A1", "", "", "BINARY");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A1, Mode: BINARY\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 21: Context with Unicode normalization */
+"Test 21: Context with Unicode normalization (A1, NFC)\n".echo();
+input = "Header\ncafé\ncafe\u0301\nLine 3\nFooter";
+result = input.grep("café", "A1", "", "NFC");
+("Input: Header\\ncafé\\ncafé\\nLine 3\\nFooter\n").echo();
+("Pattern: café, Options: A1, Normalization: NFC\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"café\\n\", \"café\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 22: Context with JSON output */
+"Test 22: Context with JSON output (A1j)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A1j");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A1j\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: JSON with match and context lines\n").echo();
+("Result type: " + result.type() + "\n").echo();
+"---\n".echo();
+
+/* Test 23: Context with all-mode */
+"Test 23: Context with all-mode (A1a)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A1a");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A1a\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 24: Context with exact match */
+"Test 24: Context with exact match (A1x)\n".echo();
+input = "Header\nLine 2\nLine 3\nFooter";
+result = input.grep("^Line 2$", "A1x");
+("Input: Header\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: ^Line 2$, Options: A1x\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+/* Test 25: Context with count only */
+"Test 25: Context with count only (A1c)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A1c");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A1c\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+"---\n".echo();
+
+"=== CONTEXT LINES SUMMARY ===\n".echo();
+"All context lines tests completed.\n".echo();
+"Key features tested:\n".echo();
+"- After context (A<n>)\n".echo();
+"- Before context (B<n>)\n".echo();
+"- Combined context (C<n>)\n".echo();
+"- Combined options (A<n>B<m>, B<m>C<n>)\n".echo();
+"- Context with all output options (o, n, v, j)\n".echo();
+"- Context with all processing options (i, d, a, x, c)\n".echo();
+"- Context with custom delimiters and parallel processing\n".echo();
+"- Context with binary mode and Unicode normalization\n".echo();
+"- Edge cases (beginning/end of file, multiple matches)\n".echo(); 

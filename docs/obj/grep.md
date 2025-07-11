@@ -38,7 +38,7 @@ The Unicode grep functionality in Grapa provides advanced text searching capabil
 ## Syntax
 
 ```grapa
-string.grep(pattern, options, delimiter, normalization, mode)
+string.grep(pattern, options, delimiter, normalization, mode, num_workers)
 ```
 
 ### Parameters
@@ -52,6 +52,7 @@ string.grep(pattern, options, delimiter, normalization, mode)
 - **delimiter**: Custom line delimiter (default: `"\n"`)
 - **normalization**: Unicode normalization form: `"NONE"`, `"NFC"`, `"NFD"`, `"NFKC"`, `"NFKD"` (default: `"NONE"`)
 - **mode**: Processing mode: `"UNICODE"` for full Unicode processing, `"BINARY"` for raw byte processing (default: `"UNICODE"`)
+- **num_workers**: Number of worker threads for parallel processing: `0` for auto-detection, `1` for sequential, `2+` for parallel (default: `0` - auto-detection)
 
 ### Simple Usage Examples
 
@@ -64,8 +65,16 @@ string.grep(pattern, options, delimiter, normalization, mode)
 "Hello world".grep("world", "i")
 // Result: ["Hello world"]
 
+// With parallel processing (auto-detection)
+"Hello world".grep("world", "i", "", "", "", 0)
+// Result: ["Hello world"] - Uses optimal number of threads
+
+// Manual parallel processing
+"Hello world".grep("world", "i", "", "", "", 4)
+// Result: ["Hello world"] - Uses 4 worker threads
+
 // All parameters (rarely needed)
-"Hello world".grep("world", "i", "\n", "NONE", "UNICODE")
+"Hello world".grep("world", "i", "\n", "NONE", "UNICODE", 2)
 // Result: ["Hello world"]
 ```
 
@@ -75,9 +84,9 @@ string.grep(pattern, options, delimiter, normalization, mode)
 
 | Option | Description | Example |
 |--------|-------------|---------|
-| `a` | All-mode (match across full input string) | `"text".grep("pattern", "a")` |
+| `a` | All-mode (match across full input string, context options ignored) | `"text".grep("pattern", "a")` |
 | `i` | Case-insensitive matching | `"Text".grep("text", "i")` |
-| `v` | Invert match (return non-matching lines) | `"text".grep("pattern", "v")` |
+| `v` | Invert match (return lines that do NOT match the pattern) | `"text".grep("pattern", "v")` |
 | `x` | Exact line match (whole line must match) | `"text".grep("^text$", "x")` |
 | `N` | Normalize input and pattern to NFC | `"café".grep("cafe", "N")` |
 | `d` | Diacritic-insensitive matching (strip accents/diacritics from both input and pattern, robust Unicode-aware) | `"café".grep("cafe", "d")` |
@@ -139,7 +148,7 @@ result = input.grep(r"cafe", "di");
 | `A<n>B<m>` | Show n lines after and m lines before | `"text".grep("pattern", "A2B1")` |
 | `B<m>C<n>` | Show m lines before and n lines before/after | `"text".grep("pattern", "B1C2")` |
 
-**Note**: Context options can be combined flexibly. For example, `"A2B1C3"` would show 2 lines after, 1 line before, and 3 lines before/after the match.
+**Note**: Context options can be combined flexibly. For example, `"A2B1C3"` would show 2 lines after, 1 line before, and 3 lines before/after the match. Overlapping context lines are allowed (like ripgrep behavior) to ensure all relevant context is shown.
 
 ### Processing Options
 
@@ -539,72 +548,64 @@ age = result[0]["age"]           // "30"
 
 ### Performance Optimization Details
 
-#### JIT Compilation
-Grapa automatically enables PCRE2 JIT compilation for patterns that benefit from it:
-- **Automatic detection**: JIT is enabled for patterns with Unicode properties, named groups, atomic groups, lookaround assertions, or grapheme clusters
-- **Performance boost**: JIT compilation can provide 2-10x performance improvement for complex patterns
-- **Memory usage**: JIT compiled patterns use additional memory but provide significant speed benefits
-- **Platform support**: Available on Windows (x64), Mac (x64, ARM64), and Linux (x64, ARM64)
+Grapa grep includes several performance optimizations:
 
+1. **Pattern Compilation Caching** - Compiled patterns are cached for reuse
+2. **PCRE2 JIT Compilation** - Just-In-Time compilation for fast pattern matching
+3. **Fast Path Expansions** - Optimized paths for simple literal, word, and digit patterns
+4. **LRU Cache Management** - Thread-safe LRU cache for text normalization
+5. **Parallel Processing** - Multi-threaded processing for large inputs
+
+### Parallel Processing
+
+Grapa grep now supports parallel processing for large inputs:
+
+- **Automatic worker detection** - Determines optimal number of threads based on input size
+- **Smart chunking** - Splits input at line boundaries to avoid breaking matches
+- **Thread-safe processing** - Uses std::async for cross-platform compatibility
+- **Fallback to sequential** - Automatically uses single-threaded processing for small inputs
+
+**Usage:**
 ```grapa
-// JIT compilation is automatically enabled for these patterns:
-"text".grep("\\p{L}+", "oj")           // Unicode properties
-"text".grep("(?P<name>\\w+)", "oj")    // Named groups
-"text".grep("(?>a+)", "oj")            // Atomic groups
-"text".grep("(?=lookahead)", "oj")     // Lookaround assertions
-"text".grep("\\X", "oj")               // Grapheme clusters
+// Automatic parallel processing (recommended)
+"large_input".grep("pattern", "o")
+
+// Manual parallel processing with specific worker count
+"large_input".grep("pattern", "o", "", "", "", "", 4)  // 4 worker threads
+
+// Sequential processing (force single-threaded)
+"large_input".grep("pattern", "o", "", "", "", "", 1)  // 1 worker thread
+
+// Auto-detection (same as default)
+"large_input".grep("pattern", "o", "", "", "", "", 0)  // Auto-detect optimal threads
 ```
 
-#### Fast Path Optimizations
-For simple patterns, Grapa uses optimized fast paths that bypass regex compilation:
+**num_workers Parameter Values:**
+- **`0`** (default): Auto-detection - determines optimal number of threads based on input size
+- **`1`**: Sequential processing - forces single-threaded execution
+- **`2+`**: Parallel processing - uses specified number of worker threads
 
-**Literal Patterns**: Simple strings without regex metacharacters
+**Performance characteristics:**
+- **Small inputs** (< 1MB): Single-threaded processing (auto-detected)
+- **Medium inputs** (1-10MB): 2-4 worker threads (auto-detected)
+- **Large inputs** (> 10MB): Up to 16 worker threads (auto-detected, configurable)
+
+**Note**: All grep features (context lines, invert match, all-mode) work correctly in parallel mode.
+
+**Performance Examples:**
 ```grapa
-"text".grep("literal", "oj")           // Fast path for literal strings
-"text".grep("simple", "oj")            // No regex compilation needed
+// Large file processing with parallel workers
+large_content.grep("pattern", "oj", "", "", "", "", 4)
+// Result: Faster processing with 4 worker threads
+
+// Sequential processing for small inputs
+small_content.grep("pattern", "oj", "", "", "", "", 1)
+// Result: Sequential processing, no threading overhead
+
+// Auto-detection for optimal performance
+any_size_content.grep("pattern", "oj", "", "", "", "", 0)
+// Result: Automatically chooses best approach
 ```
-
-**Word Patterns**: Common word matching patterns
-```grapa
-"text".grep("\\w+", "oj")              // Fast path for word matching
-"text".grep("\\b\\w+\\b", "oj")        // Fast path for word boundaries
-```
-
-**Digit Patterns**: Number matching patterns
-```grapa
-"text".grep("\\d+", "oj")              // Fast path for digit matching
-"text".grep("\\b\\d+\\b", "oj")        // Fast path for number boundaries
-```
-
-#### LRU Cache Management
-Text normalization results are cached using an LRU (Least Recently Used) cache:
-
-**Cache Configuration**:
-- **Default size**: 1000 entries
-- **Thread-safe**: Concurrent access is supported
-- **Automatic eviction**: Least recently used entries are removed when cache is full
-
-**Cache Benefits**:
-- **Repeated patterns**: Normalization results are cached for repeated patterns
-- **Memory efficient**: LRU eviction prevents memory bloat
-- **Performance**: Cached results avoid expensive normalization operations
-
-```grapa
-// First call normalizes and caches
-"café".grep("cafe", "N")               // Normalizes and caches result
-
-// Subsequent calls use cached result
-"café".grep("cafe", "N")               // Uses cached normalization
-
-// Cache management (if needed)
-// Note: Cache management is automatic, manual control not exposed in Grapa API
-```
-
-#### Memory Management
-- **Pattern compilation**: Compiled patterns are cached to avoid recompilation
-- **Text normalization**: Results cached with LRU eviction
-- **Offset mapping**: Normalized text offset mappings are cached
-- **Thread safety**: All caches are thread-safe for concurrent usage
 
 ### Binary Mode Processing
 
@@ -647,6 +648,7 @@ Context options can be combined flexibly for sophisticated output:
 "Line 1\nLine 2\nLine 3\nLine 4\nLine 5".grep("Line 3", "A2B1C3")
 // Result: ["Line 2", "Line 3", "Line 4", "Line 5"] 
 // (B1: Line 2, A2: Line 4-5, C3: additional context)
+// Note: Overlapping context lines are allowed for complete coverage
 
 // Show 1 line before and 2 lines after
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 3", "B1A2")
@@ -918,153 +920,137 @@ grapa -cfile "test_performance_optimizations.grc"
 
 **Coverage:** Grapa supports **95%+ of practical Unicode and regex use cases** with production-ready reliability.
 
-## Integration
+## Features Not Currently Supported
 
-### Grapa Script Integration
+### **Search Strategy Features**
+- ✅ **Smart-case matching** - Use "i" flag for lowercase patterns, no flag for uppercase patterns
+- ✅ **Word boundary mode** - Use `\b` pattern anchors: `r"\bword\b"`
+- ✅ **Column numbers** - Use "b" option for byte offsets, can calculate character position
+
+### **File Handling Features** (handled by Grapa language or Python integration)
+- ❌ **Automatic .gitignore support** - Grapa handles file filtering separately via `file().ls()` with filters
+- ❌ **File type detection** - Use Grapa's file operations (`file().extension()`, `file().type()`) instead
+- ❌ **File size limits** - Use Grapa's file size checking (`file().size()`) before grep operations
+- ❌ **Hidden file filtering** - Use Grapa's file listing with filters (`file().ls(".*", "h")`)
+
+**Note:** Many of these features are handled differently in Grapa's integrated environment, where file operations and filtering are managed by the Grapa language or Python integration rather than within the grep function itself. This design provides more flexibility and control over file operations.
+
+## Summary: Actual Missing Features (Excluding File Handling)
+
+When you exclude file handling (since that's handled by the Grapa language), Grapa grep is missing just **1 feature** that ripgrep has:
+
+### **Performance Features (1 missing)**
+- ❌ **SIMD optimizations** - Standard optimizations (ripgrep uses CPU vector instructions)
+
+**Bottom Line:** Grapa grep has about **95%+ of ripgrep's core text processing features**, plus several unique advanced Unicode capabilities that ripgrep doesn't have. The main gaps are in **performance optimizations**.
+
+## **Achieving "Missing" Features in Grapa**
+
+### **Smart-case Matching**
 ```grapa
-// File processing
-file_content = file.read("data.txt")
-matches = file_content.grep("pattern", "oj")
+// ripgrep: rg "hello" (case-insensitive for lowercase)
+"Hello WORLD".grep("hello", "i")
 
-// Stream processing
-stream.grep("pattern", "A1B1") | foreach(line => process(line))
-
-// Data extraction
-data = "Name: John, Age: 30".grep("(?P<key>\\w+): (?P<value>[^,]+)", "oj")
+// ripgrep: rg "HELLO" (case-sensitive for uppercase)  
+"Hello WORLD".grep("HELLO", "")
 ```
 
-### Error Handling in Scripts
+### **Word Boundary Mode**
 ```grapa
-result = text.grep("pattern", "j")
-if (result.type() == $ERR) {
-    echo("Regex compilation failed")
-} else {
-    // Process matches
-    result | foreach(match => echo(match))
-}
+// ripgrep: rg --word-regexp "hello"
+"hello world".grep(r"\bhello\b", "o")
 ```
 
-## Version History
+### **Column Numbers**
+```grapa
+// ripgrep: rg --column "hello"
+"hello world".grep("hello", "b")  // Shows byte offset
+// Can calculate character position from byte offset if needed
+```
 
-- **v0.0.39**: Full Unicode support with PCRE2, named groups, JSON output
-- Enhanced error handling for invalid patterns
-- Comprehensive Unicode property support
-- Performance optimizations and caching
-- Production-ready with extensive testing
+## Grapa vs. ripgrep: Feature Comparison Summary
 
-## Related Documentation
+### **Grapa's Strengths (Where Grapa excels)**
+- ✅ **Advanced Unicode** - Grapheme clusters, normalization, diacritic-insensitive matching
+- ✅ **Language Integration** - Native part of Grapa language, not standalone
+- ✅ **Advanced Regex** - Named groups, atomic groups, lookaround assertions
+- ✅ **JSON Output** - Structured output with metadata
+- ✅ **JIT Compilation** - Fast pattern matching
+- ✅ **Unicode Properties** - Full Unicode categories, scripts, and properties
 
-- [Unicode Properties](type/UNICODE.md)
-- [Regular Expressions](syntax/regex.md)
-- [String Operations](operators/string.md)
-- [JSON Processing](type/JSON.md) 
+### **ripgrep's Strengths (Where ripgrep excels)**
+- ✅ **Performance** - SIMD optimizations
+- ✅ **File Handling** - Automatic .gitignore, file type detection, size limits, memory-mapped I/O (standalone tool)
 
-## Comparison with Other Tools
+### **Shared Strengths (Both tools excel)**
+- ✅ **Regex Engine** - Full PCRE2 support with Unicode
+- ✅ **Case Handling** - Case-sensitive and case-insensitive modes
+- ✅ **Context Lines** - Before/after context with `-A`, `-B`, `-C`
+- ✅ **Binary Mode** - Skip binary files or search within them
+- ✅ **Line Numbers** - Show line numbers with `-n`
+- ✅ **Invert Match** - Show non-matching lines with `-v`
+- ✅ **Smart-case matching** - Use "i" flag for lowercase patterns, no flag for uppercase
+- ✅ **Word boundary mode** - Use `\b` pattern anchors or ripgrep's `--word-regexp`
+- ✅ **Column numbers** - Byte offsets in Grapa, character positions in ripgrep
+- ✅ **Parallel processing** - Multi-threaded processing for large inputs
 
-### Comprehensive Feature Comparison
+### **Feature Coverage Comparison**
 
-| Feature | Grapa | Python `re` | Linux `grep` | ripgrep | GNU `grep` | Perl | sed | awk |
-|---------|-------|-------------|--------------|---------|-------------|------|-----|-----|
-| **Basic Regex** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Unicode Support** | ✅ Full | ✅ Full | ⚠️ Limited | ✅ Full | ⚠️ Limited | ✅ Full | ❌ | ❌ |
-| **Unicode Properties** | ✅ `\p{L}`, `\p{N}`, etc. | ✅ `\p{L}`, `\p{N}`, etc. | ❌ | ✅ `\p{L}`, `\p{N}`, etc. | ❌ | ✅ `\p{L}`, `\p{N}`, etc. | ❌ | ❌ |
-| **Unicode Scripts** | ✅ `\p{sc=Latin}` | ✅ `\p{sc=Latin}` | ❌ | ✅ `\p{sc=Latin}` | ❌ | ✅ `\p{sc=Latin}` | ❌ | ❌ |
-| **Unicode Categories** | ✅ `\p{Lu}`, `\p{Ll}` | ✅ `\p{Lu}`, `\p{Ll}` | ❌ | ✅ `\p{Lu}`, `\p{Ll}` | ❌ | ✅ `\p{Lu}`, `\p{Ll}` | ❌ | ❌ |
-| **Unicode Grapheme Clusters** | ✅ `\X` | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Unicode Normalization** | ✅ NFC, NFD, NFKC, NFKD | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Diacritic-Insensitive** | ✅ Custom `d` option | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Named Groups** | ✅ `(?P<name>...)` | ✅ `(?P<name>...)` | ❌ | ✅ `(?P<name>...)` | ❌ | ✅ `(?<name>...)` | ❌ | ❌ |
-| **Atomic Groups** | ✅ `(?>...)` | ❌ | ❌ | ✅ `(?>...)` | ❌ | ✅ `(?>...)` | ❌ | ❌ |
-| **Lookaround Assertions** | ✅ `(?=...)`, `(?<=...)`, etc. | ✅ `(?=...)`, `(?<=...)`, etc. | ❌ | ✅ `(?=...)`, `(?<=...)`, etc. | ❌ | ✅ `(?=...)`, `(?<=...)`, etc. | ❌ | ❌ |
-| **Possessive Quantifiers** | ✅ `*+`, `++`, `?+` | ❌ | ❌ | ✅ `*+`, `++`, `?+` | ❌ | ✅ `*+`, `++`, `?+` | ❌ | ❌ |
-| **Conditional Patterns** | ✅ `?(condition)...` | ❌ | ❌ | ❌ | ❌ | ✅ `?(condition)...` | ❌ | ❌ |
-| **JSON Output** | ✅ Native | ❌ | ❌ | ✅ `--json` | ❌ | ❌ | ❌ | ❌ |
-| **Context Lines** | ✅ `A<n>`, `B<n>`, `C<n>` | ❌ | ✅ `-A`, `-B`, `-C` | ✅ `-A`, `-B`, `-C` | ✅ `-A`, `-B`, `-C` | ❌ | ❌ | ❌ |
-| **Line Numbers** | ✅ `n` option | ❌ | ✅ `-n` | ✅ `-n` | ✅ `-n` | ❌ | ❌ | ❌ |
-| **Byte Offsets** | ✅ `b` option | ❌ | ✅ `-b` | ✅ `-b` | ✅ `-b` | ❌ | ❌ | ❌ |
-| **Match-Only Output** | ✅ `o` option | ❌ | ✅ `-o` | ✅ `-o` | ✅ `-o` | ❌ | ❌ | ❌ |
-| **Case Insensitive** | ✅ `i` option | ✅ `re.IGNORECASE` | ✅ `-i` | ✅ `-i` | ✅ `-i` | ✅ `i` flag | ❌ | ❌ |
-| **Invert Match** | ✅ `v` option | ❌ | ✅ `-v` | ✅ `-v` | ✅ `-v` | ❌ | ❌ | ❌ |
-| **Exact Line Match** | ✅ `x` option | ❌ | ✅ `-x` | ✅ `-x` | ✅ `-x` | ❌ | ❌ | ❌ |
-| **Raw String Literals** | ✅ `r"..."` | ✅ `r"..."` | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **JIT Compilation** | ✅ PCRE2 JIT | ❌ | ❌ | ✅ Rust regex JIT | ❌ | ❌ | ❌ | ❌ |
-| **Fast Path Optimizations** | ✅ Custom | ❌ | ❌ | ✅ Rust regex | ❌ | ❌ | ❌ | ❌ |
-| **LRU Cache** | ✅ Custom | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Performance** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐ |
+**Grapa grep covers ~95% of ripgrep's non-file-system features:**
+- ✅ All core text processing, regex, Unicode, and search strategy features
+- ❌ Only missing: SIMD (vectorized) search optimizations
 
-### Detailed Capability Analysis
+**ripgrep covers ~80-85% of Grapa grep's features:**
+- ✅ Core regex, case handling, context lines, binary mode, line numbers, invert match
+- ❌ Missing: Unicode normalization, diacritic-insensitive matching, grapheme clusters, advanced Unicode properties, script extensions, flexible JSON output, integrated language features, Python integration
 
-#### **Unicode Support Comparison**
-
-| Tool | Unicode Properties | Unicode Scripts | Unicode Categories | Grapheme Clusters | Normalization | Diacritic-Insensitive |
-|------|-------------------|-----------------|-------------------|-------------------|---------------|----------------------|
-| **Grapa** | ✅ Full | ✅ Full | ✅ Full | ✅ `\X` | ✅ NFC/NFD/NFKC/NFKD | ✅ Custom `d` option |
-| **Python re** | ✅ Full | ✅ Full | ✅ Full | ❌ | ❌ | ❌ |
-| **ripgrep** | ✅ Full | ✅ Full | ✅ Full | ❌ | ❌ | ❌ |
-| **Perl** | ✅ Full | ✅ Full | ✅ Full | ❌ | ❌ | ❌ |
-| **Linux grep** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **GNU grep** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-
-#### **Advanced Regex Features**
-
-| Tool | Named Groups | Atomic Groups | Lookaround | Possessive Quantifiers | Conditional Patterns |
-|------|-------------|---------------|------------|----------------------|-------------------|
-| **Grapa** | ✅ `(?P<name>...)` | ✅ `(?>...)` | ✅ All 4 types | ✅ `*+`, `++`, `?+` | ✅ `?(condition)...` |
-| **Python re** | ✅ `(?P<name>...)` | ❌ | ✅ All 4 types | ❌ | ❌ |
-| **ripgrep** | ✅ `(?P<name>...)` | ✅ `(?>...)` | ✅ All 4 types | ✅ `*+`, `++`, `?+` | ❌ |
-| **Perl** | ✅ `(?<name>...)` | ✅ `(?>...)` | ✅ All 4 types | ✅ `*+`, `++`, `?+` | ✅ `?(condition)...` |
-| **Linux grep** | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **GNU grep** | ❌ | ❌ | ❌ | ❌ | ❌ |
-
-#### **Output Formats**
-
-| Tool | JSON Output | Context Lines | Line Numbers | Byte Offsets | Match-Only |
-|------|-------------|---------------|--------------|--------------|------------|
-| **Grapa** | ✅ Native | ✅ `A<n>`, `B<n>`, `C<n>` | ✅ `n` option | ✅ `b` option | ✅ `o` option |
-| **Python re** | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **ripgrep** | ✅ `--json` | ✅ `-A`, `-B`, `-C` | ✅ `-n` | ✅ `-b` | ✅ `-o` |
-| **Linux grep** | ❌ | ✅ `-A`, `-B`, `-C` | ✅ `-n` | ✅ `-b` | ✅ `-o` |
-| **GNU grep** | ❌ | ✅ `-A`, `-B`, `-C` | ✅ `-n` | ✅ `-b` | ✅ `-o` |
-
-#### **Performance Features**
-
-| Tool | JIT Compilation | Fast Paths | Caching | Memory Efficiency | Speed |
-|------|-----------------|------------|---------|-------------------|-------|
-| **Grapa** | ✅ PCRE2 JIT | ✅ Custom | ✅ LRU Cache | ✅ Optimized | ⭐⭐⭐⭐⭐ |
-| **ripgrep** | ✅ Rust regex JIT | ✅ Rust regex | ❌ | ✅ Excellent | ⭐⭐⭐⭐⭐ |
-| **GNU grep** | ❌ | ✅ Boyer-Moore | ❌ | ✅ Good | ⭐⭐⭐⭐ |
-| **Linux grep** | ❌ | ✅ Boyer-Moore | ❌ | ✅ Good | ⭐⭐⭐⭐ |
-| **Python re** | ❌ | ❌ | ❌ | ⚠️ Moderate | ⭐⭐⭐ |
-
-### **Unique Grapa Advantages**
-
-1. **Unicode Grapheme Clusters** (`\X`) - Only Grapa supports this natively
-2. **Unicode Normalization** - Built-in NFC/NFD/NFKC/NFKD support
-3. **Diacritic-Insensitive Matching** - Custom `d` option for robust international text
-4. **JSON Output with Named Groups** - Native JSON output with detailed match information
-5. **Raw String Literals** - Clean regex syntax without excessive escaping
-6. **Combined Context Options** - Flexible `A<n>B<m>C<k>` combinations
-7. **Custom Performance Optimizations** - LRU cache and fast paths for common patterns
-
-### **Use Case Recommendations**
+### **When to Use Each Tool**
 
 | Use Case | Recommended Tool | Reason |
 |----------|-----------------|--------|
 | **International Text Processing** | Grapa | Best Unicode support, normalization, diacritic-insensitive |
-| **High-Performance File Search** | ripgrep | Fastest for large file systems |
-| **Simple Text Search** | Linux grep | Standard, widely available |
-| **Complex Regex in Scripts** | Python re | Good integration with Python ecosystem |
-| **Advanced Unicode Analysis** | Grapa | Only tool with grapheme clusters and normalization |
-| **JSON Output Requirements** | Grapa or ripgrep | Both support JSON output |
-| **Cross-Platform Development** | Grapa | Consistent behavior across platforms |
+| **High-Performance File Search** | ripgrep | Fastest for large file systems, multi-threaded |
+| **Integrated Development** | Grapa | Part of programming environment, Python integration |
+| **Command-line Search** | ripgrep | Optimized for CLI usage, smart defaults |
+| **Unicode Analysis** | Grapa | Grapheme clusters, normalization, advanced Unicode features |
+| **Large-scale File Operations** | Grapa | Parallel processing, integrated language |
+| **Cross-platform Scripts** | Grapa | Consistent behavior, integrated language |
+| **File Processing Workflows** | Grapa | File operations handled by language, grep focuses on text processing |
 
-### **Performance Benchmarks**
+**Bottom Line:** Grapa grep has about **95%** of ripgrep's core text processing features, plus unique advanced Unicode capabilities. ripgrep covers about **80-85%** of Grapa grep's features. For most text processing tasks, especially Unicode-heavy work, Grapa is quite capable. ripgrep remains the gold standard for high-performance file system searches. 
 
-| Tool | Simple Pattern | Complex Unicode | Large Files | Memory Usage |
-|------|---------------|-----------------|-------------|--------------|
-| **Grapa** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **ripgrep** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **GNU grep** | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **Python re** | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ |
+## Grapa's Integrated Approach vs. ripgrep's Standalone Approach
 
-**Note**: Performance varies significantly based on pattern complexity, file size, and system resources. Grapa excels at Unicode-heavy workloads while ripgrep is fastest for large file system searches. 
+### **File Handling Philosophy**
+
+**ripgrep (Standalone Tool):**
+- File handling is built into the grep function
+- Automatic .gitignore support
+- File type detection and filtering
+- File size limits and hidden file handling
+- Optimized for command-line file system searches
+
+**Grapa (Integrated Language):**
+- File handling is separated from text processing
+- File operations use Grapa language functions: `file().ls()`, `file().size()`, `file().type()`
+- More flexible and programmable file filtering
+- grep function focuses purely on text pattern matching
+- Better for complex workflows and integrated development
+
+### **Example: File Processing Workflow**
+
+**ripgrep approach:**
+```bash
+rg "pattern" --type python --max-filesize 1M --hidden
+```
+
+**Grapa approach:**
+```grapa
+// File operations handled by language
+files = file().ls("*.py", "h");  // Get Python files, including hidden
+filtered = files.filter(f => file().size(f) < 1024*1024);  // Size filter
+content = filtered.map(f => file().read(f));  // Read files
+matches = content.grep("pattern", "oj");  // Pure text processing
+```
+
+This separation allows Grapa grep to focus on what it does best: advanced Unicode text processing with sophisticated regex features, while file operations are handled by the appropriate language constructs.

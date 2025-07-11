@@ -1,0 +1,63 @@
+/* Debug test for failing capabilities */
+
+"=== DEBUG FAILING TESTS ===\n".echo();
+
+/* Test 1: Lookaround Assertions */
+"Test 1: Lookaround Assertions\n".echo();
+input = "Hello World";
+result = input.grep("(?<=Hello )\\w+", "oj");
+("Input: " + input + "\n").echo();
+"Pattern: (?<=Hello )\\w+\n".echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Unicode Grapheme Clusters */
+"Test 2: Unicode Grapheme Clusters\n".echo();
+input = "👨‍👩‍👧‍👦";
+result = input.grep("\\X", "oj");
+("Input: " + input + "\n").echo();
+"Pattern: \\X\n".echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Advanced Unicode Properties */
+"Test 3: Advanced Unicode Properties\n".echo();
+input = "Hello 😀 World";
+result = input.grep("\\p{Emoji}", "oj");
+("Input: " + input + "\n").echo();
+"Pattern: \\p{Emoji}\n".echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Unicode General Categories */
+"Test 4: Unicode General Categories\n".echo();
+input = "Hello";
+result = input.grep("\\p{Lu}", "oj");
+("Input: " + input + "\n").echo();
+"Pattern: \\p{Lu}\n".echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 5: Try different lookaround pattern */
+"Test 5: Different Lookaround Pattern\n".echo();
+input = "abc123def456";
+result = input.grep("(?<=\\d)(?=\\d)", "oj");
+("Input: " + input + "\n").echo();
+"Pattern: (?<=\\d)(?=\\d)\n".echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo();
+
+/* Test 6: Try different grapheme pattern */
+"Test 6: Different Grapheme Pattern\n".echo();
+input = "café mañana";
+result = input.grep("\\X", "oj");
+("Input: " + input + "\n").echo();
+"Pattern: \\X\n".echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result + "\n").echo();
+"---\n".echo(); 

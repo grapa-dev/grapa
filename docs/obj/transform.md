@@ -125,7 +125,7 @@ Replaces iteems.
 "testing".replace("t","g") -> "gesging"
 ```
 
-## grep(pattern, options, delimiter, normalization, mode) 
+## grep(pattern, options, delimiter, normalization, mode, num_workers) 
 Extracts matches from a string using PCRE2-powered regular expressions with full Unicode support. Returns an array of results or JSON format with named groups.
 
 > **For comprehensive Unicode, advanced regex, diacritic-insensitive, and output option documentation, see [Unicode Grep Documentation](grep.md).**
@@ -154,6 +154,9 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
   - `c` – Return count of matches (or count of deduplicated matches if `d` is also set).
   - `d` – Deduplicate results (line-level by default, or substring-level when combined with `o`, `g`, or `b`).
   - `g` – Group matches per line.
+
+  **Parallel Processing:**
+  - `num_workers` – Number of worker threads: `0` for auto-detection, `1` for sequential, `2+` for parallel processing.
 
   **Unicode Support:**
   - Unicode categories: `\p{L}`, `\p{N}`, `\p{Z}`, `\p{P}`, `\p{S}`, `\p{C}`, `\p{M}`

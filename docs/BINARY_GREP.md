@@ -57,7 +57,8 @@ std::vector<std::string> grep_extract_matches_unicode(
     const std::string& options = "",
     const std::string& line_delim = "",
     GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC,
-    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
+    int num_workers = 0
 );
 ```
 
@@ -144,7 +145,8 @@ std::vector<std::string> grep_extract_matches_unicode(
     const std::string& options = "",
     const std::string& line_delim = "",
     GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NFC,
-    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE,
+    int num_workers = 0
 );
 ```
 

@@ -1,0 +1,56 @@
+/* Test PCRE2 Debug */
+/* This test checks if PCRE2 is being used and working */
+
+"=== PCRE2 DEBUG TEST ===\n".echo();
+
+/* Test 1: Check if PCRE2 is being used for Unicode properties */
+"Test 1: Unicode property test\n".echo();
+input = "Hello 世界 123 €";
+result = input.grep("\\p{L}+", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: \\p{L}+\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Check if PCRE2 is being used for lookaround */
+"Test 2: Lookaround test\n".echo();
+input = "Hello World";
+result = input.grep("(?<=Hello )\\w+", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: (?<=Hello )\\w+\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Check if PCRE2 is being used for grapheme clusters */
+"Test 3: Grapheme cluster test\n".echo();
+input = "👨‍👩‍👧‍👦";
+result = input.grep("\\X", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: \\X\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Check if PCRE2 is being used for named groups */
+"Test 4: Named groups test\n".echo();
+input = "John Doe";
+result = input.grep("(?P<first>\\w+) (?P<last>\\w+)", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: (?P<first>\\w+) (?P<last>\\w+)\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 5: Check if PCRE2 is being used for atomic groups */
+"Test 5: Atomic groups test\n".echo();
+input = "aaa";
+result = input.grep("(?>a+)a", "oj");
+("Input: " + input + "\n").echo();
+("Pattern: (?>a+)a\n").echo();
+("Result type: " + result.type() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+"=== PCRE2 DEBUG COMPLETE ===\n".echo(); 

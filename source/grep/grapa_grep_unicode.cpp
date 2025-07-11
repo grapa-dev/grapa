@@ -16,11 +16,7 @@ limitations under the License.
 */
 ////////////////////////////////////////////////////////////////////////////////
 
-// Static compilation definitions to avoid DLL dependencies
-#ifdef _WIN32
-#define UTF8PROC_STATIC
-#define PCRE2_STATIC
-#endif
+// Static compilation definitions are already defined in the header file
 
 #include "grapa_grep_unicode.hpp"
 //#include "grapa_grep.hpp"
@@ -33,7 +29,16 @@ limitations under the License.
 #include <string>
 #include <iostream>
 #include <algorithm>
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
 #include <fstream> // Added for logging PCRE2 errors
+#include <future> // Added for parallel processing
+#include <thread> // Added for parallel processing
+#include <chrono> // Added for sleep_for
 
 #ifdef _WIN32
 #if defined(_M_ARM64)
@@ -43,6 +48,28 @@ limitations under the License.
 #endif
 
 using namespace GrapaUnicode;
+
+// Forward declarations for parallel processing
+std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
+    const std::string& input,
+    const std::string& pattern,
+    const std::string& options,
+    const std::string& line_delim,
+    GrapaUnicode::NormalizationForm normalization,
+    GrapaUnicode::ProcessingMode mode
+);
+
+std::vector<std::string> grep_extract_matches_unicode_impl_parallel(
+    const std::string& input,
+    const std::string& pattern,
+    const std::string& options,
+    const std::string& line_delim,
+    GrapaUnicode::NormalizationForm normalization,
+    GrapaUnicode::ProcessingMode mode,
+    size_t num_workers
+);
+
+std::vector<std::string> split_input_for_parallel(const std::string& input, size_t num_chunks);
 
 std::string normalize_newlines(std::string_view input) {
     std::string result;
@@ -73,11 +100,10 @@ std::vector<MatchPosition> grep_unicode_impl(
         norm = NormalizationForm::NFC;
     }
     bool ignore_case = (options.find('i') != std::string::npos);
-    bool invert_match = (options.find('v') != std::string::npos);
     bool all_mode = (options.find('a') != std::string::npos);
     bool match_only = ((options.find('o') != std::string::npos) ||
         (options.find('g') != std::string::npos) ||
-        (options.find('b') != std::string::npos)) && !invert_match;
+        (options.find('b') != std::string::npos));
     bool count_only = (options.find('c') != std::string::npos);
     bool exact_match = (options.find('x') != std::string::npos);
     std::vector<MatchPosition> results;
@@ -118,32 +144,14 @@ std::vector<MatchPosition> grep_unicode_impl(
             }
             const std::string& match_input = *match_input_ptr;
             
-            if (invert_match) {
-                std::vector<MatchPosition> matches;
+            if (match_only) {
                 for (std::sregex_iterator it(match_input.begin(), match_input.end(), rx), end; it != end; ++it) {
-                    matches.push_back({ static_cast<size_t>(it->position()), static_cast<size_t>(it->length()), 1 });
-                }
-                size_t prev_end = 0;
-                for (const auto& m : matches) {
-                    if (m.offset > prev_end) {
-                        results.push_back({ prev_end, m.offset - prev_end, 1 });
-                    }
-                    prev_end = m.offset + m.length;
-                }
-                if (prev_end < match_input.size()) {
-                    results.push_back({ prev_end, match_input.size() - prev_end, 1 });
+                    results.push_back({ static_cast<size_t>(it->position()), static_cast<size_t>(it->length()), 1 });
                 }
             }
             else {
-                if (match_only) {
-                    for (std::sregex_iterator it(match_input.begin(), match_input.end(), rx), end; it != end; ++it) {
-                        results.push_back({ static_cast<size_t>(it->position()), static_cast<size_t>(it->length()), 1 });
-                    }
-                }
-                else {
-                    if (std::regex_search(match_input, rx)) {
-                        results.push_back({ 0, match_input.size(), 1 });
-                    }
+                if (std::regex_search(match_input, rx)) {
+                    results.push_back({ 0, match_input.size(), 1 });
                 }
             }
             return results;
@@ -168,10 +176,35 @@ std::vector<MatchPosition> grep_unicode_impl(
                 line_copy.pop_back();
             }
 
-            bool matched = exact_match ? std::regex_match(line_copy, rx) : std::regex_search(line_copy, rx);
+            // In the standard output path (grep_unicode_impl and related), before matching:
+            bool diacritic_insensitive = has_diacritic_insensitive(options);
+            std::string norm_pattern = pattern;
+            std::string norm_line = line_copy;
+            if (diacritic_insensitive) {
+                // Always normalize and case fold before stripping diacritics
+                norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
+                norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
+                norm_pattern = GrapaUnicode::strip_diacritics(norm_pattern);
+                norm_line = GrapaUnicode::strip_diacritics(norm_line);
+            } else if (ignore_case) {
+                norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
+                norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
+            } else if (norm != GrapaUnicode::NormalizationForm::NONE) {
+                norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).data();
+                norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).data();
+            }
+            UnicodeRegex unicode_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+            // Use norm_line for matching.
+            UnicodeString unicode_line(norm_line);
             
-            if ((!invert_match && matched) || (invert_match && !matched)) {
-                if (!match_only || invert_match) {
+            // Debug: print normalized pattern and line
+            bool matched = exact_match ? unicode_rx.match(unicode_line) : unicode_rx.search(unicode_line);
+            
+            printf("[DEBUG] grep_unicode_impl: line_number=%zu, line='%s', matched=%d\n", 
+                   line_number, line_copy.c_str(), matched);
+            
+            if (matched) {
+                if (!match_only) {
                     size_t line_len = line.size();
                     if (line.size() >= line_delim.size() &&
                         line.compare(line.size() - line_delim.size(), line_delim.size(), line_delim) == 0)
@@ -182,13 +215,33 @@ std::vector<MatchPosition> grep_unicode_impl(
                 }
                 else {
                     if (exact_match) {
-                        if (matched) {
-                            results.push_back({ offset, line.size(), line_number });
-                        }
+                        results.push_back({ offset, line.size(), line_number });
                     }
                     else {
-                        for (std::sregex_iterator it(line_copy.begin(), line_copy.end(), rx), end; it != end; ++it) {
-                            results.push_back({ offset + static_cast<size_t>(it->position()), static_cast<size_t>(it->length()), line_number });
+                        // For match-only, group-by-line, and offset options, extract matches from the diacritic-stripped line if 'd' is present
+                        std::vector<std::pair<size_t, size_t>> matches;
+                        std::string match_extract_line = line_copy;
+                        if (norm != GrapaUnicode::NormalizationForm::NONE) {
+                            match_extract_line = GrapaUnicode::UnicodeRegex::get_normalized_text(line_copy, ignore_case, norm);
+                        }
+                        UnicodeString match_extract_unicode_line(match_extract_line);
+                        UnicodeRegex match_extract_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+                        matches = match_extract_rx.find_all(match_extract_unicode_line);
+                        // Map normalized match offsets back to original line
+                        std::string cached_normalized_line;
+                        if (!unicode_rx.is_ascii_mode()) {
+                            if (diacritic_insensitive) {
+                                cached_normalized_line = GrapaUnicode::UnicodeString(line_copy).normalize(norm).case_fold().data();
+                                cached_normalized_line = GrapaUnicode::strip_diacritics(cached_normalized_line);
+                            } else if (ignore_case) {
+                                cached_normalized_line = GrapaUnicode::UnicodeString(line_copy).normalize(norm).case_fold().data();
+                            } else if (norm != GrapaUnicode::NormalizationForm::NONE) {
+                                cached_normalized_line = GrapaUnicode::UnicodeString(line_copy).normalize(norm).data();
+                            }
+                        }
+                        for (const auto& m : matches) {
+                            auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, cached_normalized_line.empty() ? line_copy : cached_normalized_line, m.first, m.second);
+                            results.push_back({ offset + mapped.first, mapped.second, line_number });
                         }
                     }
                 }
@@ -259,36 +312,18 @@ std::vector<MatchPosition> grep_unicode_impl(
             cached_normalized_input = UnicodeRegex::get_normalized_text(match_input, ignore_case, norm);
         }
         
-        if (invert_match) {
+        if (match_only) {
             std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(UnicodeString(match_input));
-            size_t prev_end = 0;
             for (const auto& m : matches) {
-                if (m.first > prev_end) {
-                    // Map normalized span to original
-                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, prev_end, m.first - prev_end);
-                    results.push_back({ mapped.first, mapped.second, 1 });
-                }
-                prev_end = m.first + m.second;
-            }
-            if (prev_end < match_input.size()) {
-                auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, prev_end, match_input.size() - prev_end);
+                auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, m.first, m.second);
                 results.push_back({ mapped.first, mapped.second, 1 });
             }
         }
         else {
-            if (match_only) {
-                std::vector<std::pair<size_t, size_t>> matches = unicode_rx.find_all(UnicodeString(match_input));
-                for (const auto& m : matches) {
-                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, m.first, m.second);
-                    results.push_back({ mapped.first, mapped.second, 1 });
-                }
-            }
-            else {
-                if (unicode_rx.search(UnicodeString(match_input))) {
-                    // Whole input matches: map full span
-                    auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, 0, match_input.size());
-                    results.push_back({ mapped.first, mapped.second, 1 });
-                }
+            if (unicode_rx.search(UnicodeString(match_input))) {
+                // Whole input matches: map full span
+                auto mapped = UnicodeRegex::map_normalized_span_to_original(match_input, cached_normalized_input.empty() ? match_input : cached_normalized_input, 0, match_input.size());
+                results.push_back({ mapped.first, mapped.second, 1 });
             }
         }
         return results;
@@ -321,6 +356,7 @@ std::vector<MatchPosition> grep_unicode_impl(
             // Always normalize and case fold before stripping diacritics
             norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
             norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
+            // Strip diacritics from both pattern and line for diacritic-insensitive matching
             norm_pattern = GrapaUnicode::strip_diacritics(norm_pattern);
             norm_line = GrapaUnicode::strip_diacritics(norm_line);
         } else if (ignore_case) {
@@ -335,8 +371,11 @@ std::vector<MatchPosition> grep_unicode_impl(
         UnicodeString unicode_line(norm_line);
         bool matched = exact_match ? unicode_rx.match(unicode_line) : unicode_rx.search(unicode_line);
         
-        if ((!invert_match && matched) || (invert_match && !matched)) {
-            if (!match_only || invert_match) {
+        printf("[DEBUG] grep_unicode_impl: line_number=%zu, line='%s', matched=%d\n", 
+               line_number, line_copy.c_str(), matched);
+        
+        if (matched) {
+            if (!match_only) {
                 size_t line_len = line.size();
                 if (line.size() >= line_delim.size() &&
                     line.compare(line.size() - line_delim.size(), line_delim.size(), line_delim) == 0)
@@ -396,6 +435,9 @@ bool ends_with(const std::string& str, const std::string& suffix) {
 ContextOptions parse_context_options(const std::string& options, std::string& filtered_options) {
     ContextOptions ctx;
     filtered_options.clear();
+    
+    // First pass: collect all context options
+    std::vector<std::pair<char, int>> context_options;
     for (size_t i = 0; i < options.size(); ++i) {
         char c = options[i];
         if (c == 'A' || c == 'B' || c == 'C') {
@@ -406,14 +448,37 @@ ContextOptions parse_context_options(const std::string& options, std::string& fi
                 ++j;
             }
             if (j == i + 1) val = 1; // default to 1 if no number
-            if (c == 'A') ctx.after = val;
-            else if (c == 'B') ctx.before = val;
-            else if (c == 'C') ctx.context = val;
+            context_options.push_back({c, val});
             i = j - 1;
         } else {
             filtered_options += c;
         }
     }
+    
+    // Second pass: apply context options with C taking precedence
+    ctx.after = 0;
+    ctx.before = 0;
+    ctx.context = 0;
+    
+    for (const auto& opt : context_options) {
+        if (opt.first == 'C') {
+            // C takes precedence and overrides A and B
+            ctx.context = opt.second;
+            ctx.after = opt.second;
+            ctx.before = opt.second;
+        } else if (opt.first == 'A' && ctx.context == 0) {
+            ctx.after = opt.second;
+        } else if (opt.first == 'B' && ctx.context == 0) {
+            ctx.before = opt.second;
+        }
+    }
+    
+    // Cap large context numbers to prevent excessive memory usage
+    const int MAX_CONTEXT = 1000;
+    if (ctx.after > MAX_CONTEXT) ctx.after = MAX_CONTEXT;
+    if (ctx.before > MAX_CONTEXT) ctx.before = MAX_CONTEXT;
+    if (ctx.context > MAX_CONTEXT) ctx.context = MAX_CONTEXT;
+    
     return ctx;
 }
 
@@ -423,8 +488,93 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     const std::string& options,
     const std::string& line_delim,
     GrapaUnicode::NormalizationForm normalization,
+    GrapaUnicode::ProcessingMode mode,
+    size_t num_workers
+) {
+    
+    // Determine optimal number of workers if not specified
+    if (num_workers == 0) {
+        // Auto-detect based on input size and available cores
+        size_t input_size = input.size();
+        size_t available_cores = static_cast<size_t>(std::thread::hardware_concurrency());
+        
+        // For small inputs, use single-threaded processing
+        if (input_size < 1024 * 1024) { // 1MB
+            num_workers = 1;
+        }
+        // For medium inputs, use 2-4 threads
+        else if (input_size < 10 * 1024 * 1024) { // 10MB
+            num_workers = (4 < available_cores) ? 4 : available_cores;
+        }
+        // For large inputs, use more threads but cap at available cores
+        else {
+            num_workers = (16 < available_cores) ? 16 : available_cores;
+        }
+    }
+    
+    // For single worker or small input, use sequential processing
+    if (num_workers <= 1) {
+        return grep_extract_matches_unicode_impl_sequential(input, pattern, options, line_delim, normalization, mode);
+    }
+    
+    // Parallel processing implementation
+    return grep_extract_matches_unicode_impl_parallel(input, pattern, options, line_delim, normalization, mode, num_workers);
+}
+
+// Sequential implementation (original logic)
+std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
+    const std::string& input,
+    const std::string& pattern,
+    const std::string& options,
+    const std::string& line_delim,
+    GrapaUnicode::NormalizationForm normalization,
     GrapaUnicode::ProcessingMode mode
 ) {
+    
+    // Validate option combinations (ripgrep-style)
+    bool has_o = options.find('o') != std::string::npos;
+    bool has_x = options.find('x') != std::string::npos;
+    bool has_a = options.find('a') != std::string::npos;
+    bool has_v = options.find('v') != std::string::npos;
+    bool has_c = options.find('c') != std::string::npos;
+    bool has_l = options.find('l') != std::string::npos;
+    bool has_n = options.find('n') != std::string::npos;
+    
+    // Ripgrep-style precedence rules
+    if (has_o && has_x) {
+        // o and x are mutually exclusive - o takes precedence (like ripgrep)
+        std::string filtered_options = options;
+        filtered_options.erase(std::remove(filtered_options.begin(), filtered_options.end(), 'x'), filtered_options.end());
+        return grep_extract_matches_unicode_impl_sequential(input, pattern, filtered_options, line_delim, normalization, mode);
+    }
+    
+    // Ripgrep behavior: c (count) overrides other output options
+    if (has_c && (has_o || has_l || has_n)) {
+        std::string filtered_options = options;
+        filtered_options.erase(std::remove(filtered_options.begin(), filtered_options.end(), 'o'), filtered_options.end());
+        filtered_options.erase(std::remove(filtered_options.begin(), filtered_options.end(), 'l'), filtered_options.end());
+        filtered_options.erase(std::remove(filtered_options.begin(), filtered_options.end(), 'n'), filtered_options.end());
+        return grep_extract_matches_unicode_impl_sequential(input, pattern, filtered_options, line_delim, normalization, mode);
+    }
+    
+    // Ripgrep behavior: l (files with matches) overrides other output options
+    if (has_l && (has_o || has_n)) {
+        std::string filtered_options = options;
+        filtered_options.erase(std::remove(filtered_options.begin(), filtered_options.end(), 'o'), filtered_options.end());
+        filtered_options.erase(std::remove(filtered_options.begin(), filtered_options.end(), 'n'), filtered_options.end());
+        return grep_extract_matches_unicode_impl_sequential(input, pattern, filtered_options, line_delim, normalization, mode);
+    }
+    
+    // Parse context options and filter them out
+    std::string filtered_options;
+    ContextOptions ctx = parse_context_options(options, filtered_options);
+    
+    // For all-mode, ignore context options
+    if (filtered_options.find('a') != std::string::npos) {
+        ctx.after = 0;
+        ctx.before = 0;
+        ctx.context = 0;
+    }
     
     // The normalization parameter always takes precedence over the 'N' option in the options string.
     // If normalization is NONE (the default) and options contains 'N', set to NFC.
@@ -433,23 +583,27 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
         norm = NormalizationForm::NFC;
     }
     
-    std::string filtered_options = options;
     // Remove 'N' from options since we've already processed it
     filtered_options.erase(std::remove(filtered_options.begin(), filtered_options.end(), 'N'), filtered_options.end());
     
-    // Parse context options
-    std::string context_filtered_options;
-    ContextOptions ctx = parse_context_options(filtered_options, context_filtered_options);
-    filtered_options = context_filtered_options;
+    // Use the context options from the first parsing
     int after = ctx.after;
     int before = ctx.before;
     int context = ctx.context;
+    
+    // C<n> takes precedence and sets both before and after to n (ripgrep behavior)
     if (context > 0) {
-        if (context > after) after = context;
-        if (context > before) before = context;
+        before = context;
+        after = context;
     }
     bool all_mode = (filtered_options.find('a') != std::string::npos);
     bool match_only = (filtered_options.find('o') != std::string::npos);
+    
+    // Ripgrep behavior: ignore context options in all-mode
+    if (all_mode) {
+        before = 0;
+        after = 0;
+    }
     
     // Prepare working input
     std::string working_input;
@@ -471,6 +625,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     }
     
     // Get matches
+    printf("[DEBUG] grep_extract_matches: calling grep_unicode_impl with filtered_options='%s'\n", filtered_options.c_str());
     auto matches = grep_unicode_impl(working_input, pattern, filtered_options, line_delim, norm, mode);
     
     // Check for compilation error (indicated by offset -1)
@@ -479,423 +634,351 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
         return {"__COMPILATION_ERROR__"};
     }
     
-    // Parse additional options
-    bool count_only = (filtered_options.find('c') != std::string::npos);
-    bool dedupe = (filtered_options.find('u') != std::string::npos);
-    bool include_line_numbers = (filtered_options.find('n') != std::string::npos);
-    bool group_by_line = (filtered_options.find('g') != std::string::npos);
-    bool output_offset = (filtered_options.find('b') != std::string::npos);
-    bool line_only = (filtered_options.find('l') != std::string::npos);
-    bool strip_trailing_newline = line_delim.empty() && filtered_options.find('a') == std::string::npos;
-    std::string actual_delim = (line_delim == "\\n") ? "\n" : line_delim;
-    std::set<std::string> unique;
-    std::vector<std::string> out;
-    
-    bool json_output = filtered_options.find('j') != std::string::npos;
-    std::string regex_options = filtered_options;
-    bool exact_line = regex_options.find('x') != std::string::npos;
-    if (json_output) {
-        // Remove 'j' and 'x' from options before using them for matching
-        regex_options.erase(std::remove(regex_options.begin(), regex_options.end(), 'j'), regex_options.end());
-        regex_options.erase(std::remove(regex_options.begin(), regex_options.end(), 'x'), regex_options.end());
+    // Handle empty pattern case
+    if (pattern.empty()) {
+        return {"__COMPILATION_ERROR__"};
     }
     
-    if (json_output) {
-        try {
-            if (exact_line) {
-                // Split input into lines and match each line separately
-                size_t pos = 0, start = 0, line_num = 1;
-                std::vector<std::string> json_matches;
-                while (pos <= input.size()) {
-                    size_t next = input.find('\n', pos);
-                    if (next == std::string::npos) next = input.size();
-                    std::string line = input.substr(pos, next - pos);
-                    // Normalize the line and pattern if needed
-                    bool diacritic_insensitive = has_diacritic_insensitive(regex_options);
-                    std::string norm_line = line;
-                    std::string norm_pattern = pattern;
-                    if (diacritic_insensitive) {
-                        norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
-                        norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
-                        norm_line = GrapaUnicode::strip_diacritics(norm_line);
-                        norm_pattern = GrapaUnicode::strip_diacritics(norm_pattern);
-                    }
-                    else if (regex_options.find('i') != std::string::npos) {
-                        norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).case_fold().data();
-                        norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).case_fold().data();
-                    }
-                    else if (norm != GrapaUnicode::NormalizationForm::NONE) {
-                        norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).data();
-                        norm_pattern = GrapaUnicode::UnicodeString(norm_pattern).normalize(norm).data();
-                    }
-                    GrapaUnicode::UnicodeRegex unicode_rx(norm_pattern, regex_options.find('i') != std::string::npos, diacritic_insensitive, norm);
-                    if (unicode_rx.is_pcre_valid()) {
-#ifdef USE_PCRE
-                        pcre2_code* re = unicode_rx.get_pcre_code();
-                        if (re != nullptr) {
-                            pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, NULL);
-                            if (match_data != nullptr) {
-                                int rc = pcre2_match(
-                                    re,
-                                    reinterpret_cast<PCRE2_SPTR>(norm_line.c_str()),
-                                    norm_line.length(),
-                                    0,
-                                    0,
-                                    match_data,
-                                    NULL
-                                );
-                                if (rc >= 0) {
-                                    std::string json = "{";
-                                    json += "\"match\":\"";
-                                    for (size_t i = 0; i < norm_line.length(); ++i) {
-                                        unsigned char c = static_cast<unsigned char>(norm_line[i]);
-                                        if (c == '\\' || c == '"') json += '\\';
-                                        if (c == '\n') json += "\\n";
-                                        else if (c == '\r') json += "\\r";
-                                        else if (c == '\t') json += "\\t";
-                                        else if (c == '\b') json += "\\b";
-                                        else if (c == '\f') json += "\\f";
-                                        else if (c < 0x20) {
-                                            char buf[7];
-                                            snprintf(buf, sizeof(buf), "\\u%04x", c);
-                                            json += buf;
-                                        }
-                                        else {
-                                            json += norm_line[i];
-                                        }
-                                    }
-                                    json += "\"";
-                                    // Add offset (start of line in input) and line number
-                                    json += ",\"offset\":" + std::to_string(pos);
-                                    json += ",\"line\":" + std::to_string(line_num);
-                                    json += "}";
-                                    json_matches.push_back(json);
-                                }
-                                pcre2_match_data_free(match_data);
-                            }
-                        }
-#endif
-                    }
-                    if (next == input.size()) break;
-                    pos = next + 1;
-                    ++line_num;
-                }
-                std::string json_array = "[";
-                for (size_t i = 0; i < json_matches.size(); ++i) {
-                    if (i > 0) json_array += ",";
-                    json_array += json_matches[i];
-                }
-                json_array += "]";
-                return { json_array };
-            }
-        }
-        catch (...) {
-            /* If JSON output fails, fall back to regular output */
-        }
-
-        /* Fallback: output as array of matches (no named groups) */
-        std::string search_text = input;
-        std::string norm_pattern = pattern;
-        if (norm != GrapaUnicode::NormalizationForm::NONE) {
-            search_text = GrapaUnicode::UnicodeRegex::get_normalized_text(input, regex_options.find('i') != std::string::npos, norm);
-            norm_pattern = GrapaUnicode::UnicodeRegex::get_normalized_text(pattern, regex_options.find('i') != std::string::npos, norm);
-        }
-        bool diacritic_insensitive = has_diacritic_insensitive(regex_options);
-        std::string search_text_for_matching = search_text;
-        if (diacritic_insensitive) {
-            search_text_for_matching = GrapaUnicode::strip_diacritics(search_text);
-            norm_pattern = GrapaUnicode::strip_diacritics(norm_pattern);
-        }
-        GrapaUnicode::UnicodeRegex unicode_rx(norm_pattern, regex_options.find('i') != std::string::npos, diacritic_insensitive, norm);
-        std::vector<MatchPosition> matches;
-        if (unicode_rx.is_pcre_valid()) {
-#ifdef USE_PCRE
-            pcre2_code* re = unicode_rx.get_pcre_code();
-            if (re != nullptr) {
-                pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, NULL);
-                if (match_data != nullptr) {
-                    PCRE2_SIZE offset = 0;
-                    PCRE2_SIZE length = static_cast<PCRE2_SIZE>(search_text_for_matching.length());
-                    // Get named group info
-                    uint32_t namecount = 0;
-                    pcre2_pattern_info(re, PCRE2_INFO_NAMECOUNT, &namecount);
-                    PCRE2_SPTR nametable = NULL;
-                    uint32_t name_entry_size = 0;
-                    if (namecount > 0) {
-                        pcre2_pattern_info(re, PCRE2_INFO_NAMETABLE, &nametable);
-                        pcre2_pattern_info(re, PCRE2_INFO_NAMEENTRYSIZE, &name_entry_size);
-                    }
-                    std::vector<std::pair<std::string, uint32_t>> named_groups;
-                    for (uint32_t i = 0; i < namecount; ++i) {
-                        PCRE2_SPTR entry = nametable + i * name_entry_size;
-                        uint32_t group_num = (entry[0] << 8) | entry[1];
-                        std::string group_name(reinterpret_cast<const char*>(entry + 2));
-                        named_groups.emplace_back(group_name, group_num);
-                    }
-                    std::vector<std::string> json_matches;
-                    while (offset <= length) {
-                        int rc = pcre2_match(
-                            re,
-                            reinterpret_cast<PCRE2_SPTR>(search_text_for_matching.c_str()),
-                            length,
-                            offset,
-                            0,
-                            match_data,
-                            nullptr
-                        );
-                        if (rc < 0) break;
-                        PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(match_data);
-                        size_t orig_start = ovector[0];
-                        size_t orig_len = ovector[1] - ovector[0];
-                        // Map normalized span to original input
-                        std::string cached_normalized_input = search_text;
-                        if (diacritic_insensitive) {
-                            cached_normalized_input = GrapaUnicode::strip_diacritics(cached_normalized_input);
-                        }
-                        auto mapped = GrapaUnicode::UnicodeRegex::map_normalized_span_to_original(search_text, cached_normalized_input, orig_start, orig_len);
-                        // Calculate line number for this match
-                        size_t match_offset = mapped.first;
-                        size_t line_num = 1;
-                        for (size_t i = 0; i < match_offset && i < input.size(); ++i) {
-                            if (input[i] == '\n') ++line_num;
-                        }
-                        std::string match = search_text.substr(mapped.first, mapped.second);
-                        std::string json = "{";
-                        json += "\"match\":\"";
-                        for (size_t j = 0; j < match.length(); ++j) {
-                            unsigned char c = static_cast<unsigned char>(match[j]);
-                            if (c == '\\' || c == '"') json += '\\';
-                            if (c == '\n') json += "\\n";
-                            else if (c == '\r') json += "\\r";
-                            else if (c == '\t') json += "\\t";
-                            else if (c == '\b') json += "\\b";
-                            else if (c == '\f') json += "\\f";
-                            else if (c < 0x20) {
-                                char buf[7];
-                                snprintf(buf, sizeof(buf), "\\u%04x", c);
-                                json += buf;
-                            }
-                            else {
-                                json += match[j];
-                            }
-                        }
-                        json += '"';
-                        // Add named groups
-                        for (const auto& ng : named_groups) {
-                            uint32_t group_num = ng.second;
-                            std::string group_name = ng.first;
-                            json += ",\"" + group_name + "\":";
-                            if (group_num < rc && ovector[2 * group_num] != PCRE2_UNSET && ovector[2 * group_num + 1] != PCRE2_UNSET) {
-                                size_t gstart = ovector[2 * group_num];
-                                size_t gend = ovector[2 * group_num + 1];
-                                std::string group_val = search_text_for_matching.substr(gstart, gend - gstart);
-                                json += '"';
-                                for (size_t k = 0; k < group_val.length(); ++k) {
-                                    unsigned char c = static_cast<unsigned char>(group_val[k]);
-                                    if (c == '\\' || c == '"') json += '\\';
-                                    if (c == '\n') json += "\\n";
-                                    else if (c == '\r') json += "\\r";
-                                    else if (c == '\t') json += "\\t";
-                                    else if (c == '\b') json += "\\b";
-                                    else if (c == '\f') json += "\\f";
-                                    else if (c < 0x20) {
-                                        char buf[7];
-                                        snprintf(buf, sizeof(buf), "\\u%04x", c);
-                                        json += buf;
-                                    }
-                                    else {
-                                        json += group_val[k];
-                                    }
-                                }
-                                json += '"';
-                            }
-                            else {
-                                json += "null";
-                            }
-                        }
-                        json += ",\"offset\":" + std::to_string(match_offset);
-                        json += ",\"line\":" + std::to_string(line_num);
-                        json += "}";
-                        json_matches.push_back(json);
-                        if (ovector[1] > offset) {
-                            offset = ovector[1];
-                        }
-                        else {
-                            ++offset;
-                        }
-                    }
-                    pcre2_match_data_free(match_data);
-                    std::string json_array = "[";
-                    for (size_t i = 0; i < json_matches.size(); ++i) {
-                        if (i > 0) json_array += ",";
-                        json_array += json_matches[i];
-                    }
-                    json_array += "]";
-                    return { json_array };
+    // Extract matches from positions
+    std::vector<std::string> extracted_matches;
+    bool json_output = (filtered_options.find('j') != std::string::npos);
+    bool invert_match = (filtered_options.find('v') != std::string::npos);
+    
+    printf("[DEBUG] grep_extract_matches: invert_match=%d, match_count=%zu\n", invert_match, matches.size());
+    
+    // If context options are specified, we need to include context lines
+    if (before > 0 || after > 0) {
+        // For all-mode, completely bypass context processing
+        if (all_mode) {
+            // In all-mode, return the entire input as a single match, ignoring context
+            bool has_match = false;
+            for (const auto& match : matches) {
+                if (match.offset < working_input.size()) {
+                    has_match = true;
+                    break;
                 }
             }
-#endif
-        }
-    }
-
-    // If context options are set, only apply if not match-only mode
-    if ((after > 0 || before > 0) && !match_only && !all_mode) {
-        // Split input into lines
-        std::vector<std::string> lines;
-        size_t pos = 0, start = 0;
-        while (pos <= working_input.size()) {
-            size_t next = working_input.find('\n', pos);
-            if (next == std::string::npos) next = working_input.size();
-            lines.push_back(working_input.substr(pos, next - pos));
-            pos = next + 1;
-        }
-        std::set<size_t> match_lines;
-        for (const auto& m : matches) {
-            if (m.line_number > 0) match_lines.insert(m.line_number - 1);
-        }
-        std::set<size_t> output_lines;
-        for (size_t line : match_lines) {
-            size_t begin = (line >= (size_t)before) ? line - before : 0;
-            size_t end = line + after;
-            if (end > lines.size() - 1) end = lines.size() - 1;
-            for (size_t i = begin; i <= end; ++i) {
-                output_lines.insert(i);
+            
+            if (has_match) {
+                // For all-mode, return the entire input as a single match
+                extracted_matches.push_back(working_input);
+                return extracted_matches;
+            } else {
+                // No matches in all-mode, return empty result
+                return extracted_matches;
             }
-        }
-        // Output lines in order
-        for (size_t i = 0; i < lines.size(); ++i) {
-            if (output_lines.count(i)) {
-                std::string line = lines[i];
-                if (dedupe && !unique.insert(line).second) continue;
-                if (include_line_numbers) {
-                    out.emplace_back(std::to_string(i + 1) + ":" + line);
+        } else {
+            // Normal context processing (not all-mode)
+            // Split input into lines for context processing
+            std::vector<std::string> lines;
+            std::vector<size_t> line_offsets;
+            size_t pos = 0;
+            while (pos < working_input.size()) {
+                size_t next = line_delim.empty() 
+                    ? working_input.find('\n', pos)
+                    : working_input.find(line_delim, pos);
+                if (next == std::string::npos) next = working_input.size();
+                else next += line_delim.empty() ? 1 : line_delim.size();
+                
+                std::string line = working_input.substr(pos, next - pos);
+                // Remove delimiter from the line content for output
+                if (!line_delim.empty() && line.length() >= line_delim.length() && 
+                    line.substr(line.length() - line_delim.length()) == line_delim) {
+                    line = line.substr(0, line.length() - line_delim.length());
+                }
+                
+                lines.push_back(line);
+                line_offsets.push_back(pos);
+                pos = next;
+            }
+            
+            // Find which lines contain matches
+            std::set<size_t> matching_lines;
+            for (const auto& match : matches) {
+                if (match.offset < working_input.size()) {
+                    // Find which line this match belongs to
+                    for (size_t i = 0; i < line_offsets.size(); ++i) {
+                        size_t line_start = line_offsets[i];
+                        size_t line_end = (i + 1 < line_offsets.size()) ? line_offsets[i + 1] : working_input.size();
+                        if (match.offset >= line_start && match.offset < line_end) {
+                            matching_lines.insert(i);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Build output with context lines - match ripgrep/grep behavior
+            std::vector<std::pair<size_t, bool>> lines_with_context; // line_idx, is_match
+            if (invert_match) {
+                // For invert match, find all non-matching lines and their context
+                std::set<size_t> non_matching_lines;
+                for (size_t i = 0; i < lines.size(); ++i) {
+                    if (matching_lines.find(i) == matching_lines.end()) {
+                        non_matching_lines.insert(i);
+                    }
+                }
+                
+                // Add context for each non-matching line, but exclude matching lines
+                for (size_t line_idx : non_matching_lines) {
+                    size_t start = (line_idx >= static_cast<size_t>(before)) ? line_idx - before : 0;
+                    size_t end = std::min(line_idx + after, lines.size() - 1);
+                    for (size_t i = start; i <= end; ++i) {
+                        // Only include non-matching lines in the context
+                        if (matching_lines.find(i) == matching_lines.end()) {
+                            lines_with_context.push_back({i, false});
+                        }
+                    }
+                }
+            } else {
+                // For normal match, add context for each matching line
+                for (size_t line_idx : matching_lines) {
+                    size_t start = (line_idx >= static_cast<size_t>(before)) ? line_idx - before : 0;
+                    size_t end = std::min(line_idx + after, lines.size() - 1);
+                    
+                    // For case-insensitive and diacritic-insensitive matching, we need to be careful
+                    // about context boundaries to avoid missing context lines
+                    if (filtered_options.find('i') != std::string::npos || filtered_options.find('d') != std::string::npos) {
+                        // Don't adjust boundaries for case/diacritic insensitive - let the deduplication handle duplicates
+                        // This ensures we get proper context lines even when multiple lines match
+                    }
+                    
+                    for (size_t i = start; i <= end; ++i) {
+                        lines_with_context.push_back({i, i == line_idx});
+                    }
+                }
+            }
+            
+            // Sort by line index to maintain file order (like ripgrep)
+            std::sort(lines_with_context.begin(), lines_with_context.end());
+            
+            // For ripgrep compatibility, allow duplicates when context windows overlap
+            // Only deduplicate for case/diacritic insensitive where the same line matches multiple times
+            std::vector<std::pair<size_t, bool>> final_lines_with_context;
+            if (filtered_options.find('i') != std::string::npos || filtered_options.find('d') != std::string::npos) {
+                // For case/diacritic insensitive, deduplicate to avoid multiple matches of same line
+                std::set<size_t> seen_lines;
+                for (const auto& [line_idx, is_match] : lines_with_context) {
+                    if (seen_lines.find(line_idx) == seen_lines.end()) {
+                        final_lines_with_context.push_back({line_idx, is_match});
+                        seen_lines.insert(line_idx);
+                    }
+                }
+            } else {
+                // For normal matching, allow duplicates for overlapping context (ripgrep behavior)
+                // But for invert match, we need to deduplicate to avoid showing the same non-matching line multiple times
+                if (invert_match) {
+                    std::set<size_t> seen_lines;
+                    for (const auto& [line_idx, is_match] : lines_with_context) {
+                        if (seen_lines.find(line_idx) == seen_lines.end()) {
+                            final_lines_with_context.push_back({line_idx, is_match});
+                            seen_lines.insert(line_idx);
+                        }
+                    }
                 } else {
-                    out.emplace_back(line);
-                }
-            }
-        }
-        return out;
-    }
-
-    if (count_only) {
-        // Determine if dedup should apply to match substrings
-        bool dedupe_on_match = dedupe && (
-            options.find('o') != std::string::npos ||
-            options.find('g') != std::string::npos ||
-            options.find('b') != std::string::npos ||
-            (options.find('o') == std::string::npos &&
-                options.find('g') == std::string::npos &&
-                options.find('b') == std::string::npos)
-            );
-
-        if (dedupe_on_match) {
-            for (const auto& m : matches) {
-                if (m.length == 0) continue;
-                std::string match = working_input.substr(m.offset, m.length);
-                if (strip_trailing_newline) {
-                    if (!actual_delim.empty() && match.size() >= actual_delim.size() &&
-                        match.compare(match.size() - actual_delim.size(), actual_delim.size(), actual_delim) == 0) {
-                        match.erase(match.size() - actual_delim.size());
-                    }
-                    else if (match.size() >= 2 && match.substr(match.size() - 2) == "\r\n") {
-                        match.erase(match.size() - 2);
-                    }
-                    else if (!match.empty() && match[match.size() - 1] == '\n') {
-                        match.pop_back();
+                    // For normal matching, deduplicate to avoid showing the same line multiple times
+                    // This fixes the Unicode normalization issue where the same line might appear multiple times
+                    std::set<size_t> seen_lines;
+                    for (const auto& [line_idx, is_match] : lines_with_context) {
+                        if (seen_lines.find(line_idx) == seen_lines.end()) {
+                            final_lines_with_context.push_back({line_idx, is_match});
+                            seen_lines.insert(line_idx);
+                        }
                     }
                 }
-                if (dedupe && !unique.insert(match).second) continue;
             }
-            out.push_back(std::to_string(unique.size()));
-        }
-        else {
-            out.push_back(std::to_string(matches.size()));
-        }
-
-        return out;
-    }
-
-    if (line_only) {
-        std::set<size_t> seen_lines;
-        for (const auto& m : matches) {
-            if (seen_lines.insert(m.line_number).second) {
-                out.emplace_back(std::to_string(m.line_number));
-            }
-        }
-        return out;
-    }
-
-    std::string group_delim = ",";
-    if (line_delim == "\\n") {
-        group_delim = "\n";
-    }
-    else if (!line_delim.empty()) {
-        group_delim = line_delim;
-    }
-
-    if (group_by_line) {
-        std::map<size_t, std::vector<std::string>> grouped;
-        for (const auto& m : matches) {
-            std::string match = working_input.substr(m.offset, m.length);
-            if (strip_trailing_newline) {
-                if (!actual_delim.empty() && ends_with(match, actual_delim)) {
-                    match.erase(match.size() - actual_delim.size());
+            
+            // Handle JSON output with context
+            if (json_output) {
+                std::string json = "[";
+                for (size_t i = 0; i < final_lines_with_context.size(); ++i) {
+                    const auto& [line_idx, is_match] = final_lines_with_context[i];
+                    std::string line_text = lines[line_idx];
+                    
+                    // Escape quotes and backslashes in line_text
+                    std::string escaped;
+                    for (char c : line_text) {
+                        if (c == '\\' || c == '"') escaped += '\\';
+                        escaped += c;
+                    }
+                    
+                    if (i > 0) json += ",";
+                    json += "{\"line\":" + std::to_string(line_idx + 1) + ",\"text\":\"" + escaped + "\"";
+                    
+                    if (is_match) {
+                        json += ",\"match\":true";
+                    } else {
+                        json += ",\"context\":true";
+                    }
+                    
+                    json += "}";
                 }
-                else if (match.size() >= 2 && match.substr(match.size() - 2) == "\r\n") {
-                    match.erase(match.size() - 2);
-                }
-                else if (!match.empty() && match[match.size() - 1] == '\n') {
-                    match.pop_back();
-                }
+                json += "]";
+                extracted_matches.push_back(json);
+                return extracted_matches;
             }
-            if (dedupe && !unique.insert(match).second) continue;
-            grouped[m.line_number].push_back(std::move(match));
-        }
-
-        for (const auto& pair : grouped) {
-            const size_t line = pair.first;
-            const std::vector<std::string>& group = pair.second;
-            std::string joined;
-            for (size_t i = 0; i < group.size(); ++i) {
-                if (i > 0) joined += group_delim;
-                joined += group[i];
+            
+            // Output lines in order (like ripgrep)
+            for (const auto& [line_idx, is_match] : final_lines_with_context) {
+                extracted_matches.push_back(lines[line_idx]);
             }
-            if (include_line_numbers) {
-                out.emplace_back(std::to_string(line) + ":" + joined);
-            }
-            else {
-                out.emplace_back(std::move(joined));
-            }
+            
+            return extracted_matches;
         }
     }
-    else {
-        for (const auto& m : matches) {
-            std::string match = working_input.substr(m.offset, m.length);
-            if (strip_trailing_newline) {
-                if (!actual_delim.empty() && ends_with(match, actual_delim)) {
-                    match.erase(match.size() - actual_delim.size());
+    
+    // Original logic for non-context output
+    if (json_output) {
+        // Build JSON array of objects for each match
+        std::string json = "[";
+        for (size_t i = 0; i < matches.size(); ++i) {
+            const auto& match = matches[i];
+            if (match.offset < working_input.size()) {
+                size_t end_offset = (match.offset + match.length < working_input.size()) ? 
+                    match.offset + match.length : working_input.size();
+                std::string matched_text = working_input.substr(match.offset, end_offset - match.offset);
+                // Escape quotes and backslashes in matched_text
+                std::string escaped;
+                for (char c : matched_text) {
+                    if (c == '\\' || c == '"') escaped += '\\';
+                    escaped += c;
                 }
-                else if (match.size() >= 2 && match.substr(match.size() - 2) == "\r\n") {
-                    match.erase(match.size() - 2);
-                }
-                else if (!match.empty() && match[match.size() - 1] == '\n') {
-                    match.pop_back();
-                }
-            }
-            if (dedupe && !unique.insert(match).second) continue;
-            if (output_offset) {
-                out.emplace_back(std::to_string(m.offset) + ":" + match);
-            }
-            else if (include_line_numbers && m.line_number > 0) {
-                out.emplace_back(std::to_string(m.line_number) + ":" + match);
-            }
-            else {
-                out.emplace_back(std::move(match));
+                if (i > 0) json += ",";
+                json += "{\"match\":\"" + escaped + "\",\"offset\":" + std::to_string(match.offset);
+                if (match.line_number > 0) json += ",\"line\":" + std::to_string(match.line_number);
+                json += "}";
             }
         }
+        json += "]";
+        extracted_matches.push_back(json);
+        return extracted_matches;
+    }
+    
+    if (invert_match) {
+        // For invert match without context, return all lines that don't match
+        std::vector<std::string> lines;
+        std::vector<size_t> line_offsets;
+        size_t pos = 0;
+        while (pos < working_input.size()) {
+            line_offsets.push_back(pos);
+            size_t next = line_delim.empty() 
+                ? working_input.find('\n', pos)
+                : working_input.find(line_delim, pos);
+            if (next == std::string::npos) next = working_input.size();
+            else next += line_delim.empty() ? 1 : line_delim.size();
+            std::string line = working_input.substr(pos, next - pos);
+            // Remove delimiter from the line content for output
+            if (!line_delim.empty() && line.length() >= line_delim.length() && 
+                line.substr(line.length() - line_delim.length()) == line_delim) {
+                line = line.substr(0, line.length() - line_delim.length());
+            }
+            lines.push_back(line);
+            pos = next;
+        }
+        // Find which lines contain matches
+        std::set<size_t> matching_lines;
+        for (const auto& match : matches) {
+            if (match.offset < working_input.size()) {
+                for (size_t i = 0; i < line_offsets.size(); ++i) {
+                    size_t line_start = line_offsets[i];
+                    size_t line_end = (i + 1 < line_offsets.size()) ? line_offsets[i + 1] : working_input.size();
+                    if (match.offset >= line_start && match.offset < line_end) {
+                        matching_lines.insert(i);
+                    }
+                }
+            }
+        }
+        // Output all non-matching lines
+        for (size_t i = 0; i < lines.size(); ++i) {
+            if (matching_lines.find(i) == matching_lines.end()) {
+                extracted_matches.push_back(lines[i]);
+            }
+        }
+        return extracted_matches;
+    }
+    
+    for (const auto& match : matches) {
+        if (match.offset < working_input.size()) {
+            size_t end_offset = (match.offset + match.length < working_input.size()) ? 
+                match.offset + match.length : working_input.size();
+            extracted_matches.push_back(working_input.substr(match.offset, end_offset - match.offset));
+        }
+    }
+    return extracted_matches;
+}
+
+// Parallel implementation
+std::vector<std::string> grep_extract_matches_unicode_impl_parallel(
+    const std::string& input,
+    const std::string& pattern,
+    const std::string& options,
+    const std::string& line_delim,
+    GrapaUnicode::NormalizationForm normalization,
+    GrapaUnicode::ProcessingMode mode,
+    size_t num_workers
+) {
+    // Split input into chunks for parallel processing
+    std::vector<std::string> chunks = split_input_for_parallel(input, num_workers);
+    
+    // Use std::async for reliable parallel processing
+    std::vector<std::future<std::vector<std::string>>> futures;
+    
+    // Start async tasks for each chunk
+    for (size_t i = 0; i < chunks.size(); i++) {
+        futures.push_back(std::async(std::launch::async, 
+            [&chunks, i, &pattern, &options, &line_delim, normalization, mode]() {
+                return grep_extract_matches_unicode_impl_sequential(
+                    chunks[i], pattern, options, line_delim, normalization, mode);
+            }));
+    }
+    
+    // Collect results from all async tasks
+    std::vector<std::string> all_matches;
+    for (size_t i = 0; i < futures.size(); i++) {
+        auto result = futures[i].get();
+        all_matches.insert(all_matches.end(), result.begin(), result.end());
+    }
+    
+    return all_matches;
+}
+
+// Helper function to split input for parallel processing
+std::vector<std::string> split_input_for_parallel(const std::string& input, size_t num_chunks) {
+    std::vector<std::string> chunks;
+    
+    if (input.empty() || num_chunks == 0) {
+        return chunks;
     }
 
-    return out;
+    if (num_chunks == 1) {
+        chunks.push_back(input);
+        return chunks;
+    }
+
+    size_t input_size = input.size();
+    size_t chunk_size = (input_size / num_chunks > 1024) ? input_size / num_chunks : 1024; // Minimum 1KB chunks
+    
+    size_t pos = 0;
+    for (size_t i = 0; i < num_chunks && pos < input_size; ++i) {
+        size_t end_pos = pos + chunk_size;
+        
+        // If this is not the last chunk, try to find a good boundary
+        if (i < num_chunks - 1 && end_pos < input_size) {
+            // Look for a newline boundary to avoid splitting in the middle of a line
+            size_t newline_pos = input.find('\n', end_pos);
+            if (newline_pos != std::string::npos && newline_pos < end_pos + chunk_size) {
+                end_pos = newline_pos + 1; // Include the newline
+            }
+        }
+        
+        // Ensure we don't go past the end of the input
+        end_pos = (end_pos < input_size) ? end_pos : input_size;
+        
+        chunks.push_back(input.substr(pos, end_pos - pos));
+        pos = end_pos;
+    }
+    
+    return chunks;
 }
 
 /**
@@ -1107,7 +1190,7 @@ std::vector<std::pair<size_t, size_t>> GrapaUnicode::UnicodeRegex::find_all(cons
 namespace GrapaUnicode {
 
 UnicodeRegex::UnicodeRegex(const std::string& pattern, bool case_insensitive, bool diacritic_insensitive, NormalizationForm norm)
-    : pattern_(pattern), case_insensitive_(case_insensitive), diacritic_insensitive_(diacritic_insensitive), normalization_(norm) {
+    : pattern_(pattern), case_insensitive_(case_insensitive), diacritic_insensitive_(diacritic_insensitive), normalization_(norm), is_ascii_only_(is_ascii_string(pattern)) {
     try {
         compile();
     } catch (const std::exception& e) {
@@ -1133,7 +1216,15 @@ void UnicodeRegex::compile() {
         pattern_to_compile = GrapaUnicode::strip_diacritics(pattern_to_compile);
     }
 #ifdef USE_PCRE
-    use_pcre_ = has_unicode_properties(pattern_to_compile) || !is_ascii_only_ || has_named_groups(pattern_to_compile) || has_atomic_groups(pattern_to_compile) || has_lookaround_assertions(pattern_to_compile) || has_grapheme_clusters(pattern_to_compile);
+    // More inclusive PCRE2 detection - use PCRE2 for any advanced features
+    use_pcre_ = has_unicode_properties(pattern_to_compile) || 
+                 has_named_groups(pattern_to_compile) || 
+                 has_atomic_groups(pattern_to_compile) || 
+                 has_lookaround_assertions(pattern_to_compile) || 
+                 has_grapheme_clusters(pattern_to_compile) ||
+                 has_possessive_quantifiers(pattern_to_compile) ||
+                 has_conditional_patterns(pattern_to_compile) ||
+                 !is_ascii_only_; // Use PCRE2 for any non-ASCII patterns
 #else
     use_pcre_ = false;
 #endif
@@ -1222,4 +1313,24 @@ namespace GrapaUnicode {
     UnicodeRegex::LRUCache UnicodeRegex::text_lru_cache_(1000); /* Initialize with 1000 entry limit */
 }
 
+// GrapaGrepWorkEvent implementation
+void GrapaGrepWorkEvent::Starting() {
+    // Initialize thread - no special setup needed for grep
+}
+
+void GrapaGrepWorkEvent::Running() {
+    // Send condition signal to indicate work is starting (like GrapaRuleWorkEvent)
+    SendCondition();
+    // Use the main grep logic to handle context, invert, and all-mode correctly
+    printf("[DEBUG] GrapaGrepWorkEvent::Running: pattern='%s', options='%s'\n", pattern.c_str(), options.c_str());
+    results = grep_extract_matches_unicode_impl(
+        input_chunk, pattern, options, line_delim, normalization, mode);
+    printf("[DEBUG] GrapaGrepWorkEvent::Running: result count=%zu\n", results.size());
+}
+
+void GrapaGrepWorkEvent::Stopping() {
+    // Clean up - no special cleanup needed for grep
+}
+
+ 
  

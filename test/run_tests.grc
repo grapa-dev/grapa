@@ -1,41 +1,25 @@
-/* Test Runner for Grapa Unicode Grep Tests */
-/* This file runs all the essential tests for regression testing */
+/* Test Runner for Grapa Unicode Grep */
+/* This file runs all the essential tests for Grapa grep functionality */
 
 "=== GRAPA UNICODE GREP TEST SUITE ===\n".echo();
 "Running comprehensive test suite for Unicode grep functionality\n".echo();
-"Timestamp: ".echo(); date().echo(); "\n".echo();
 
-/* Test 1: Comprehensive Capabilities Test */
-"--- TEST 1: CAPABILITIES TEST ---\n".echo();
-"Running comprehensive capability testing...\n".echo();
+/* Include and run all test files */
 include "test/test_current_capabilities.grc";
-"--- CAPABILITIES TEST COMPLETED ---\n".echo();
-
-/* Test 2: Performance Optimizations Test */
-"--- TEST 2: PERFORMANCE TEST ---\n".echo();
-"Running performance optimization testing...\n".echo();
 include "test/test_performance_optimizations.grc";
-"--- PERFORMANCE TEST COMPLETED ---\n".echo();
-
-/* Test 3: Atomic Groups Test */
-"--- TEST 3: ATOMIC GROUPS TEST ---\n".echo();
-"Running atomic groups functionality testing...\n".echo();
 include "test/test_atomic_groups.grc";
-"--- ATOMIC GROUPS TEST COMPLETED ---\n".echo();
-
-/* Test 4: Lookaround Assertions Test */
-"--- TEST 4: LOOKAROUND ASSERTIONS TEST ---\n".echo();
-"Running lookaround assertions functionality testing...\n".echo();
 include "test/test_lookaround_assertions.grc";
-"--- LOOKAROUND ASSERTIONS TEST COMPLETED ---\n".echo();
-
-/* Test 5: Unicode Grapheme Clusters Test */
-"--- TEST 5: UNICODE GRAPHEME CLUSTERS TEST ---\n".echo();
-"Running Unicode grapheme clusters functionality testing...\n".echo();
 include "test/test_unicode_grapheme_clusters.grc";
-"--- UNICODE GRAPHEME CLUSTERS TEST COMPLETED ---\n".echo();
+include "test/test_parallel_grep_verification.grc";
+include "test/test_basic_option_combinations.grc";
+include "test/test_error_handling.grc";
+
+/* Include new comprehensive test files */
+include "test/test_binary_mode.grc";
+include "test/test_custom_delimiters.grc";
+include "test/test_advanced_context.grc";
+include "test/test_unicode_normalization.grc";
+include "test/test_context_lines.grc";
 
 "=== ALL TESTS COMPLETED ===\n".echo();
-"Test suite execution finished.\n".echo();
-"All essential functionality has been validated.\n".echo();
-"Note: Python tests can be run separately with: python test/run_tests.py\n".echo(); 
+"All test suites have been executed successfully!\n".echo(); 

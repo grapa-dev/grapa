@@ -194,8 +194,11 @@ The grep function supports these parameters:
 - `delimiter`: Custom line delimiter (default: `"\n"`)
 - `normalization`: Unicode normalization form (default: `"NONE"`)
 - `mode`: Processing mode (default: `"UNICODE"`)
+- `num_workers`: Number of worker threads for parallel processing: `0` for auto-detection, `1` for sequential, `2+` for parallel (default: `0`)
 
 For detailed grep documentation, see [Grep Documentation](obj/grep.md).
+
+**Note:** For a comprehensive comparison of Grapa grep features with other tools like ripgrep, GNU grep, and Python's `re` module, including detailed feature matrices and use case recommendations, see the [Main Grep Documentation](obj/grep.md).
 
 ## Compile a script, and run the compiled script
 

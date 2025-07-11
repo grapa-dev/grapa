@@ -121,6 +121,7 @@ xy.eval("string.grep(pattern, options, delimiter, normalization, mode);", {
 - **delimiter**: Custom line delimiter (default: `"\n"`)
 - **normalization**: Unicode normalization form: `"NONE"`, `"NFC"`, `"NFD"`, `"NFKC"`, `"NFKD"` (default: `"NONE"`)
 - **mode**: Processing mode: `"UNICODE"` for full Unicode processing, `"BINARY"` for raw byte processing (default: `"UNICODE"`)
+- **num_workers**: Number of worker threads for parallel processing: `0` for auto-detection, `1` for sequential, `2+` for parallel (default: `0`)
 
 ## Options Reference
 
@@ -128,9 +129,9 @@ xy.eval("string.grep(pattern, options, delimiter, normalization, mode);", {
 
 | Option | Description | Python Example |
 |--------|-------------|----------------|
-| `a` | All-mode (match across full input string) | `xy.eval('"text".grep("pattern", "a")')` |
+| `a` | All-mode (match across full input string, context options ignored) | `xy.eval('"text".grep("pattern", "a")')` |
 | `i` | Case-insensitive matching | `xy.eval('"Text".grep("text", "i")')` |
-| `v` | Invert match (return non-matching lines) | `xy.eval('"text".grep("pattern", "v")')` |
+| `v` | Invert match (return lines that do NOT match the pattern) | `xy.eval('"text".grep("pattern", "v")')` |
 | `x` | Exact line match (whole line must match) | `xy.eval('"text".grep("^text$", "x")')` |
 | `N` | Normalize input and pattern to NFC | `xy.eval('"café".grep("cafe", "N")')` |
 | `d` | Diacritic-insensitive matching | `xy.eval('"café".grep("cafe", "d")')` |
@@ -362,3 +363,18 @@ For more detailed information about grep functionality, see the main [Grep Docum
 ## Example Test File
 
 See `test/test_grep_python_examples.py` for a runnable example of grep usage from Python. 
+
+For detailed grep documentation, see [Grep Documentation](grep.md).
+
+## Feature Comparison and Limitations
+
+For a comprehensive comparison of Grapa grep features with other tools like ripgrep, GNU grep, and Python's `re` module, including detailed feature matrices and use case recommendations, see the [Main Grep Documentation](grep.md).
+
+The Python interface provides access to all Grapa grep features, including:
+- ✅ **Full Unicode support** with grapheme clusters and normalization
+- ✅ **Advanced regex features** (atomic groups, lookarounds, possessive quantifiers)
+- ✅ **Diacritic-insensitive matching** (unique to Grapa)
+- ✅ **JSON output** with named groups and metadata
+- ✅ **Context lines** and flexible output options
+
+**Note:** All search strategy features have functional equivalents in Grapa grep. Smart-case matching is achieved by using "i" flag for lowercase patterns and no flag for uppercase patterns. Column numbers are available via byte offsets with the "b" option. File handling features are intentionally handled by the Grapa language environment rather than within the grep function itself, providing more flexibility and control. 
