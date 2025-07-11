@@ -816,11 +816,14 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     
     // Output logic for matches
     bool any_zero_length = false;
+    bool zero_length_added = false;
     for (const auto& match : matches) {
         if (match.offset < working_input.size() || (match.length == 0 && match.offset == working_input.size())) {
             size_t end_offset = (match.offset + match.length < working_input.size()) ? 
                 match.offset + match.length : working_input.size();
             std::string matched_text = working_input.substr(match.offset, end_offset - match.offset);
+            // Normalize output to NFC for display consistency
+            matched_text = GrapaUnicode::UnicodeRegex::get_normalized_text(matched_text, false, GrapaUnicode::NormalizationForm::NFC);
             // If color_output, wrap only the matched substring in ANSI color codes
             if (color_output) {
                 matched_text = "\x1b[1;31m" + matched_text + "\x1b[0m";
@@ -831,26 +834,12 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                 }
                 printf("\n");
             }
-            // If show_column, prefix with column number (1-based)
-            if (show_column) {
-                size_t line_index = 0;
-                if (!line_offsets.empty()) {
-                    auto it = std::upper_bound(line_offsets.begin(), line_offsets.end(), match.offset);
-                    if (it == line_offsets.begin()) {
-                        line_index = 0;
-                    } else {
-                        line_index = std::distance(line_offsets.begin(), it) - 1;
-                    }
-                    size_t col = match.offset - line_offsets[line_index] + 1;
-                    matched_text = std::to_string(col) + ":" + matched_text;
-                } else {
-                    matched_text = "1:" + matched_text;
-                }
-            }
-            // Special handling for zero-length matches
+            // Handle zero-length matches: only add a single empty string, never null
             if (match.length == 0) {
-                any_zero_length = true;
-                extracted_matches.push_back("");
+                if (!zero_length_added) {
+                    extracted_matches.push_back("");
+                    zero_length_added = true;
+                }
             } else {
                 extracted_matches.push_back(matched_text);
             }
