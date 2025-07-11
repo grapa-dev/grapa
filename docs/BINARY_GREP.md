@@ -197,6 +197,26 @@ auto matches = grep_binary_hex(data, "89 50 4E 47", "", "");
 auto matches = grep_binary_hex(data, "00", "", "");
 ```
 
+## Error Handling
+
+### Exception-Based Error Handling
+All grep functions now use exception-based error handling instead of returning `"$ERR"` strings:
+
+- **Invalid regex patterns**: Throws `std::runtime_error("Invalid regex pattern")`
+- **Empty patterns**: Throws `std::runtime_error("Empty pattern is not allowed")`
+- **PCRE2 compilation failures**: Throws `std::runtime_error("Invalid regex pattern")`
+
+### Error Handling in Grapa Scripting Layer
+Errors are caught by `GrapaLibraryRuleGrepEvent::Run` and returned as `$ERR` objects with descriptive messages:
+
+```grapa
+// Example error handling
+result = input.grep("invalid[", "o");
+if (result.type() == $ERR) {
+    "Error occurred: " + result.str() + "\n".echo();
+}
+```
+
 ## Options
 
 The same options as regular grep are supported:

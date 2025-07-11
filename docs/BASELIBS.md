@@ -184,6 +184,7 @@ name | C++ class
 "replace" | GrapaLibraryRuleReplaceEvent
 "split" | GrapaLibraryRuleSplitEvent
 "join" | GrapaLibraryRuleJoinEvent
+"grep" | GrapaLibraryRuleGrepEvent
 "shape" | GrapaLibraryRuleShapeEvent
 "reshape" | GrapaLibraryRuleReShapeEvent
 "dot" | GrapaLibraryRuleDotEvent

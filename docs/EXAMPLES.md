@@ -25,6 +25,52 @@ The following returns the length of each word in a string:
 [4,2,1,4]
 ```
 
+## Grep - Pattern Matching
+
+### Basic Pattern Matching
+```
+"Hello world".grep("world")
+["Hello world"]
+```
+
+### Match-Only Output
+```
+"Hello world".grep("world", "o")
+["world"]
+```
+
+### Case-Insensitive Matching
+```
+"Hello WORLD".grep("world", "i")
+["Hello WORLD"]
+```
+
+### Context Lines
+```
+"Header\nLine 1\nLine 2\nLine 3\nFooter".grep("Line 2", "A1B1")
+["Line 1\n", "Line 2\n", "Line 3\n"]
+```
+
+### Unicode Support
+```
+"café résumé".grep("cafe", "d")
+["café résumé"]
+```
+
+### Custom Delimiters
+```
+"Line 1|Line 2|Line 3".grep("Line 2", "", "|")
+["Line 2"]
+```
+
+### Error Handling
+```
+result = input.grep("invalid[", "o");
+if (result.type() == $ERR) {
+    "Error occurred: " + result.str() + "\n".echo();
+}
+```
+
 ## Grammer Updating
 
 The standard grammer loaded by default includes suport for 2 user defined rules that assist in easily modifying the grammer.

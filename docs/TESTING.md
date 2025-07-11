@@ -66,7 +66,26 @@ test/
 - **Lookaround Assertions** (`test_lookaround_assertions.grc`): 8 tests for lookaround functionality
 - **Unicode Grapheme Clusters** (`test_unicode_grapheme_clusters.grc`): 10 tests for grapheme cluster functionality
 
-#### 5. **Python Integration Tests**
+#### 5. **Ripgrep Compatibility Tests**
+- **Ripgrep Parity** (`test_ripgrep_compatibility.grc`): Tests for ripgrep feature parity including column output, word boundaries, null-data mode, color output, and context separators.
+- **Ripgrep Features** (`test_ripgrep_parity_features.grc`): Comprehensive ripgrep feature compatibility testing.
+
+#### 6. **Advanced Feature Tests**
+- **Context Lines** (`test_context_lines.grc`): Advanced context line functionality testing (A<n>, B<n>, C<n> options).
+- **Advanced Context** (`test_advanced_context.grc`): Complex context option combinations and edge cases.
+- **Custom Delimiters** (`test_custom_delimiters.grc`): Custom line delimiter functionality testing.
+- **Unicode Normalization** (`test_unicode_normalization.grc`): Unicode normalization form testing.
+- **Unicode O Option** (`test_unicode_o_option.grc`): Unicode character handling with match-only output.
+- **Error Handling** (`test_error_handling.grc`): Exception-based error handling testing.
+- **Edge Cases** (`test_edge_cases.grc`): Edge case testing for various scenarios.
+- **Binary Mode** (`test_binary_mode.grc`): Binary processing mode testing.
+
+#### 7. **Performance and Parallel Processing Tests**
+- **Parallel Grep** (`test_parallel_grep.grc`): Parallel processing functionality and performance testing.
+- **Parallel Verification** (`test_parallel_grep_verification.grc`): Parallel processing result consistency verification.
+- **Performance Optimizations** (`test_performance_optimizations.grc`): Performance optimization validation.
+
+#### 8. **Python Integration Tests**
 - **Python Examples** (`test_python_examples.py`): Comprehensive Python-Grapa integration and callback tests, including argument passing and return values.
 - **Python Grep Examples** (`test_grep_python_examples.py`): Grep functionality via Python interface.
 - **Python Callback Escaping** (`test_python_callback.py`): Troubleshooting and demonstration of correct callback escaping patterns.
@@ -113,11 +132,26 @@ Run specific test categories:
 .\grapa.exe -cfile "test/test_lookaround_assertions.grc"
 .\grapa.exe -cfile "test/test_unicode_grapheme_clusters.grc"
 
+# Ripgrep compatibility tests
+.\grapa.exe -cfile "test/test_ripgrep_compatibility.grc"
+.\grapa.exe -cfile "test/test_ripgrep_parity_features.grc"
+
+# Advanced feature tests
+.\grapa.exe -cfile "test/test_context_lines.grc"
+.\grapa.exe -cfile "test/test_advanced_context.grc"
+.\grapa.exe -cfile "test/test_custom_delimiters.grc"
+.\grapa.exe -cfile "test/test_unicode_normalization.grc"
+.\grapa.exe -cfile "test/test_unicode_o_option.grc"
+.\grapa.exe -cfile "test/test_error_handling.grc"
+.\grapa.exe -cfile "test/test_edge_cases.grc"
+.\grapa.exe -cfile "test/test_binary_mode.grc"
+
 # Parallel processing test
 .\grapa.exe -cfile "test/test_parallel_grep_verification.grc"
+.\grapa.exe -cfile "test/test_parallel_grep.grc"
 
 # Python tests (requires grapapy module)
-python test/test_python_md_examples.py
+python test/test_python_examples.py
 python test/test_grep_python_examples.py
 ```
 
@@ -137,6 +171,15 @@ For development and CI/CD, run the complete test suite:
 - **Atomic Groups Test**: 10 PASS
 - **Lookaround Assertions Test**: 8 PASS
 - **Unicode Grapheme Clusters Test**: 10 PASS
+- **Ripgrep Compatibility Test**: All tests PASS (full ripgrep parity achieved)
+- **Context Lines Test**: All tests PASS
+- **Advanced Context Test**: All tests PASS
+- **Custom Delimiters Test**: All tests PASS
+- **Unicode Normalization Test**: All tests PASS
+- **Unicode O Option Test**: All tests PASS
+- **Error Handling Test**: All tests PASS (exception-based error handling working)
+- **Edge Cases Test**: All tests PASS
+- **Binary Mode Test**: All tests PASS
 
 ### Sample Output
 ```
