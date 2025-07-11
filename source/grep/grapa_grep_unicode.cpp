@@ -1080,10 +1080,22 @@ std::vector<std::pair<size_t, size_t>> GrapaUnicode::UnicodeRegex::find_all(cons
             if (rc < 0) break;
             PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(pcre_match_data_);
             matches.emplace_back(ovector[0], ovector[1] - ovector[0]);
+            // Always advance past the current match to avoid infinite loops
             if (ovector[1] > offset) {
                 offset = ovector[1];
             } else {
-                ++offset;
+                // If match is at current position, advance by at least 1 character
+                // For Unicode, we need to advance by the character width
+                if (offset < length) {
+                    // Find the next character boundary
+                    size_t next_char = offset + 1;
+                    while (next_char < length && (search_text[next_char] & 0xC0) == 0x80) {
+                        next_char++;
+                    }
+                    offset = next_char;
+                } else {
+                    break; // We're at the end
+                }
             }
         }
         return matches;
