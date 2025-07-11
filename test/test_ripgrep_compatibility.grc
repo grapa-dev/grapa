@@ -1,0 +1,57 @@
+/* Comprehensive ripgrep compatibility test for grapa grep
+   This file checks advanced features: column (-T), word boundary (-w), null-data (-z), color (-L), and context separator lines
+*/
+
+print("=== RIPGREP PARITY TESTS ===\n")
+
+/* 1. Column output (-T) */
+input = "foo bar\nbaz foo\nbarfoo\nfoo\n"
+pattern = "foo"
+options = "T"
+result = grep(input, pattern, options)
+expected = "1:1:foo bar\n2:5:baz foo\n3:1:barfoo\n4:1:foo\n"
+print("-- Column Output (-T) --\n")
+print("Result:\n" + result)
+print("Expected:\n" + expected)
+
+/* 2. Word boundary (-w) */
+input = "foo bar\nbaz foo\nbarfoo\nfoo\n"
+pattern = "foo"
+options = "w"
+result = grep(input, pattern, options)
+expected = "foo bar\nbaz foo\nfoo\n"
+print("-- Word Boundary (-w) --\n")
+print("Result:\n" + result)
+print("Expected:\n" + expected)
+
+/* 3. Null-data mode (-z) */
+input = "foo\0bar\0bazfoo\0foo\0"
+pattern = "foo"
+options = "zT"
+result = grep(input, pattern, options)
+expected = "1:1:foo\n3:1:bazfoo\n4:1:foo\n"
+print("-- Null-data Mode (-z) --\n")
+print("Result:\n" + result)
+print("Expected:\n" + expected)
+
+/* 4. Color output (-L) */
+input = "foo bar\nbaz foo\nbarfoo\nfoo\n"
+pattern = "foo"
+options = "L"
+result = grep(input, pattern, options)
+expected = "foo bar\nbaz foo\nbarfoo\nfoo\n" /* Visual check for color */
+print("-- Color Output (-L) --\n")
+print("Result (should be colorized):\n" + result)
+print("Expected (visual, colorized matches):\n" + expected)
+
+/* 5. Context separator lines (--) */
+input = "a\nb\nc\nd\ne\nf\ng\n"
+pattern = "d"
+options = "A2B2"
+result = grep(input, pattern, options)
+expected = "2:b\n3:c\n4:d\n5:e\n6:f\n--\n"
+print("-- Context Separator Lines --\n")
+print("Result:\n" + result)
+print("Expected:\n" + expected)
+
+print("=== END OF RIPGREP PARITY TESTS ===\n") 
