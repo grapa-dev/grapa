@@ -114,7 +114,6 @@ std::vector<MatchPosition> grep_unicode_impl(
         if (ignore_case) flags |= std::regex::icase;
         // Enable multiline mode if available (for patterns with \n)
         bool multiline = (effective_pattern.find("\n") != std::string::npos);
-        printf("[DEBUG] std::regex pattern: '%s', flags: %d, multiline: %d\n", effective_pattern.c_str(), (int)flags, multiline);
         std::regex rx;
         try {
             rx = std::regex(effective_pattern, flags);
@@ -200,9 +199,6 @@ std::vector<MatchPosition> grep_unicode_impl(
             
             // Debug: print normalized pattern and line
             bool matched = exact_match ? unicode_rx.match(unicode_line) : unicode_rx.search(unicode_line);
-            
-            printf("[DEBUG] grep_unicode_impl: line_number=%zu, line='%s', matched=%d\n", 
-                   line_number, line_copy.c_str(), matched);
             
             if (matched) {
                 if (!match_only) {
@@ -371,9 +367,6 @@ std::vector<MatchPosition> grep_unicode_impl(
         // Use norm_line for matching.
         UnicodeString unicode_line(norm_line);
         bool matched = exact_match ? unicode_rx.match(unicode_line) : unicode_rx.search(unicode_line);
-        
-        printf("[DEBUG] grep_unicode_impl: line_number=%zu, line='%s', matched=%d\n", 
-               line_number, line_copy.c_str(), matched);
         
         if (matched) {
             if (!match_only) {
@@ -625,12 +618,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     
     // Multiline mode: if pattern contains \n, apply regex to the entire input
     if (effective_pattern.find("\n") != std::string::npos) {
-        printf("[DEBUG] Multiline mode: applying regex to entire input\n");
         // Normalize both input and pattern using the correct static method
         std::string norm_input = GrapaUnicode::UnicodeRegex::get_normalized_text(working_input, false, norm);
         std::string norm_pattern = GrapaUnicode::UnicodeRegex::get_normalized_text(effective_pattern, false, norm);
-        printf("[DEBUG] Multiline PCRE2 input: '%s'\n", norm_input.c_str());
-        printf("[DEBUG] Multiline PCRE2 pattern: '%s'\n", norm_pattern.c_str());
         // Use PCRE2 with UTF and DOTALL|MULTILINE
         uint32_t pcre2_options = PCRE2_UTF | PCRE2_DOTALL | PCRE2_MULTILINE;
         int pcre2_errorcode = 0;
@@ -641,7 +631,6 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             pcre2_options,
             &pcre2_errorcode, &pcre2_erroroffset, nullptr);
         if (!re) {
-            printf("[DEBUG] PCRE2 compile failed for multiline pattern. Error code: %d at offset %zu\n", pcre2_errorcode, (size_t)pcre2_erroroffset);
             return {"$ERR"};
         }
         pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, nullptr);
@@ -660,14 +649,12 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(match_data);
             size_t start = ovector[0];
             size_t end = ovector[1];
-            printf("[DEBUG] Multiline match: start=%zu, end=%zu, text='%s'\n", start, end, norm_input.substr(start, end - start).c_str());
             matches.push_back(norm_input.substr(start, end - start));
             if (end == offset) break; // Prevent infinite loop on zero-length match
             offset = end;
         }
         pcre2_match_data_free(match_data);
         pcre2_code_free(re);
-        printf("[DEBUG] Multiline matches found: %zu\n", matches.size());
         return matches;
     }
 
@@ -675,7 +662,6 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     std::string norm_pattern = GrapaUnicode::UnicodeRegex::get_normalized_text(effective_pattern, false, norm);
     std::string norm_input = GrapaUnicode::UnicodeRegex::get_normalized_text(working_input, false, norm);
     // Use norm_pattern and norm_input for all regex operations
-    printf("[DEBUG] grep_extract_matches: calling grep_unicode_impl with filtered_options='%s'\n", filtered_options.c_str());
     std::string effective_pattern_for_impl = effective_pattern;
     if (filtered_options.find('w') != std::string::npos) {
         if (effective_pattern_for_impl.substr(0,2) != "\\b") effective_pattern_for_impl = "\\b" + effective_pattern_for_impl;
@@ -685,21 +671,18 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     
     // Check for compilation error (indicated by offset -1)
     if (!matches.empty() && matches[0].offset == static_cast<size_t>(-1)) {
-        // Return a special error indicator that will be converted to $ERR at the Grapa level
-        return {"__COMPILATION_ERROR__"};
+        return {"$ERR"};
     }
     
     // Handle empty pattern case
     if (effective_pattern.empty()) {
-        return {"__COMPILATION_ERROR__"};
+        return {"$ERR"};
     }
     
     // Extract matches from positions
     std::vector<std::string> extracted_matches;
     bool json_output = (filtered_options.find('j') != std::string::npos);
     bool invert_match = (filtered_options.find('v') != std::string::npos);
-    
-    printf("[DEBUG] grep_extract_matches: invert_match=%d, match_count=%zu\n", invert_match, matches.size());
     
     // 1. Parse new options
     bool show_column = filtered_options.find('T') != std::string::npos;
@@ -827,12 +810,6 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             // If color_output, wrap only the matched substring in ANSI color codes
             if (color_output) {
                 matched_text = "\x1b[1;31m" + matched_text + "\x1b[0m";
-                // Debug: print hex values of the colorized match
-                printf("[DEBUG] colorized match hex: ");
-                for (unsigned char c : matched_text) {
-                    printf("%02X ", c);
-                }
-                printf("\n");
             }
             // Handle zero-length matches: only add a single empty string, never null
             if (match.length == 0) {
@@ -1197,7 +1174,6 @@ void UnicodeRegex::compile() {
         // Always enable multiline and dotall for ripgrep parity
         pcre2_options |= PCRE2_DOTALL | PCRE2_MULTILINE;
         // Use the actual pattern variable being compiled
-        printf("[DEBUG] PCRE2 pattern: '%s', options: 0x%X (DOTALL|MULTILINE enabled)\n", pattern_utf8.c_str(), pcre2_options);
         pcre2_code* re = pcre2_compile(
             reinterpret_cast<PCRE2_SPTR>(pattern_utf8.c_str()),
             PCRE2_ZERO_TERMINATED,
@@ -1284,7 +1260,6 @@ void GrapaGrepWorkEvent::Running() {
     // Send condition signal to indicate work is starting (like GrapaRuleWorkEvent)
     SendCondition();
     // Use the main grep logic to handle context, invert, and all-mode correctly
-    printf("[DEBUG] GrapaGrepWorkEvent::Running: pattern='%s', options='%s'\n", pattern.c_str(), options.c_str());
     std::string effective_pattern = pattern;
     if (options.find('w') != std::string::npos) {
         if (effective_pattern.substr(0,2) != "\\b") effective_pattern = "\\b" + effective_pattern;
@@ -1292,7 +1267,6 @@ void GrapaGrepWorkEvent::Running() {
     }
     results = grep_extract_matches_unicode_impl(
         input_chunk, effective_pattern, options, line_delim, normalization, mode);
-    printf("[DEBUG] GrapaGrepWorkEvent::Running: result count=%zu\n", results.size());
 }
 
 void GrapaGrepWorkEvent::Stopping() {

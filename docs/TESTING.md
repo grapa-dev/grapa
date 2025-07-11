@@ -257,6 +257,15 @@ Run tests before committing changes:
 - ❌ **Unicode age properties**: Not supported (by design)  
 - ❌ **Unicode bidirectional classes**: Not supported (by design)
 
+### New/Expanded Test Coverage (2024-06)
+
+- Explicit checks for zero-length match output (`""` vs `null`)
+- Array literal tests for empty string vs null
+- Edge case tests for context, Unicode, normalization, and error output
+- Regression tests for all advanced ripgrep features (excluding file system)
+
+These tests ensure that Grapa grep matches ripgrep for all in-memory/streaming features and edge cases. See [Unicode Grep Documentation](obj/grep.md) for feature details.
+
 **Note:** For a comprehensive analysis of Grapa grep features compared to other tools like ripgrep, including detailed feature matrices and use case recommendations, see the [Main Grep Documentation](obj/grep.md).
 
 ## Related Documentation

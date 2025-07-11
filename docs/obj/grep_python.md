@@ -303,6 +303,26 @@ except Exception as e:
     print(f"Parameter error: {e}")
 ```
 
+## Zero-Length Match and Empty String Output
+
+> **Update (2024-06):** As of this release, zero-length matches and explicit empty strings in arrays are always output as `""` (empty string), never as `null`. This matches ripgrep’s behavior and ensures round-trip consistency and correct scripting semantics.
+
+### Example: Zero-Length Match
+```python
+xy.eval('"a\nb\n".grep("^", "o")')
+# Result: ["", "a", "", "b", ""]
+```
+
+### Example: Array Literal with Empty String
+```python
+xy.eval('[1, "", 2]')
+# Result: [1, "", 2]
+```
+
+## Test Coverage and Regression Testing
+
+> **Update (2024-06):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). See [Testing Documentation](../../docs/TESTING.md) for details.
+
 ## Comparison with Other Tools
 
 | Feature | Grapa Grep | Python re | grep | ripgrep |

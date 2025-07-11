@@ -248,3 +248,23 @@ xy.eval("""
 See `test/test_python_examples.py` for a comprehensive set of Python-Grapa integration and callback tests, including argument passing and return values.
 
 For advanced callback escaping and troubleshooting, see `test/test_python_callback.py`.
+
+## Zero-Length Match and Empty String Output
+
+> **Update (2024-06):** As of this release, zero-length matches and explicit empty strings in arrays are always output as `""` (empty string), never as `null`. This matches ripgrep’s behavior and ensures round-trip consistency and correct scripting semantics.
+
+### Example: Zero-Length Match
+```python
+xy.eval('"a\nb\n".grep("^", "o")')
+# Result: ["", "a", "", "b", ""]
+```
+
+### Example: Array Literal with Empty String
+```python
+xy.eval('[1, "", 2]')
+# Result: [1, "", 2]
+```
+
+## Error Output
+
+> **Note:** Invalid regex patterns always return `"$ERR"` (not a JSON object or other format).

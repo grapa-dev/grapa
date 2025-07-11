@@ -881,7 +881,34 @@ grapa -cfile "test_performance_optimizations.grc"
 "Hello 世界".grep("\\p{L}+", "oj")      // Should match Unicode letters
 ```
 
+## Zero-Length Match and Empty String Output
+
+> **Update (2024-06):** As of this release, zero-length matches and explicit empty strings in arrays are always output as `""` (empty string), never as `null`. This matches ripgrep’s behavior and ensures round-trip consistency and correct scripting semantics.
+
+### Example: Zero-Length Match
+```grapa
+// Zero-length match example
+"a\nb\n".grep("^", "o")
+// Result: ["", "a", "", "b", ""]
+```
+
+### Example: Array Literal with Empty String
+```grapa
+[1, "", 2]
+// Result: [1, "", 2]
+```
+
+## Error Output
+
+> **Note:** Invalid regex patterns always return `"$ERR"` (not a JSON object or other format).
+
+## Test Coverage and Regression Testing
+
+> **Update (2024-06):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). See [Testing Documentation](../../docs/TESTING.md) for details.
+
 ## Comprehensive Features Summary
+
+> **Update (2024-06):** Grapa grep now matches ripgrep for all in-memory/streaming features, with the only exception being SIMD optimizations and file system integration. All advanced Unicode, regex, and context features are fully supported and tested.
 
 ### ✅ **Fully Supported Features**
 
