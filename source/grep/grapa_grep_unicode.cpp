@@ -93,10 +93,9 @@ std::vector<MatchPosition> grep_unicode_impl(
     GrapaUnicode::NormalizationForm normalization,
     GrapaUnicode::ProcessingMode mode
 ) {
-    // The normalization parameter always takes precedence over the 'N' option in the options string.
-    // If normalization is NONE (the default) and options contains 'N', set to NFC.
+    // Always use NFC if not explicitly set (for Unicode edge cases)
     NormalizationForm norm = normalization;
-    if (norm == NormalizationForm::NONE && options.find('N') != std::string::npos) {
+    if (norm == NormalizationForm::NONE) {
         norm = NormalizationForm::NFC;
     }
     bool ignore_case = (options.find('i') != std::string::npos);
@@ -113,7 +112,9 @@ std::vector<MatchPosition> grep_unicode_impl(
         // Use standard std::regex for binary processing
         std::regex::flag_type flags = std::regex::ECMAScript;
         if (ignore_case) flags |= std::regex::icase;
-
+        // Enable multiline mode if available (for patterns with \n)
+        bool multiline = (effective_pattern.find("\n") != std::string::npos);
+        printf("[DEBUG] std::regex pattern: '%s', flags: %d, multiline: %d\n", effective_pattern.c_str(), (int)flags, multiline);
         std::regex rx;
         try {
             rx = std::regex(effective_pattern, flags);
@@ -575,10 +576,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         ctx.context = 0;
     }
     
-    // The normalization parameter always takes precedence over the 'N' option in the options string.
-    // If normalization is NONE (the default) and options contains 'N', set to NFC.
+    // Always use NFC if not explicitly set (for Unicode edge cases)
     NormalizationForm norm = normalization;
-    if (norm == NormalizationForm::NONE && options.find('N') != std::string::npos) {
+    if (norm == NormalizationForm::NONE) {
         norm = NormalizationForm::NFC;
     }
     
@@ -623,7 +623,58 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         working_input = line_delim.empty() ? normalize_newlines(input) : input;
     }
     
-    // Get matches
+    // Multiline mode: if pattern contains \n, apply regex to the entire input
+    if (effective_pattern.find("\n") != std::string::npos) {
+        printf("[DEBUG] Multiline mode: applying regex to entire input\n");
+        // Normalize both input and pattern using the correct static method
+        std::string norm_input = GrapaUnicode::UnicodeRegex::get_normalized_text(working_input, false, norm);
+        std::string norm_pattern = GrapaUnicode::UnicodeRegex::get_normalized_text(effective_pattern, false, norm);
+        printf("[DEBUG] Multiline PCRE2 input: '%s'\n", norm_input.c_str());
+        printf("[DEBUG] Multiline PCRE2 pattern: '%s'\n", norm_pattern.c_str());
+        // Use PCRE2 with UTF and DOTALL|MULTILINE
+        uint32_t pcre2_options = PCRE2_UTF | PCRE2_DOTALL | PCRE2_MULTILINE;
+        int pcre2_errorcode = 0;
+        PCRE2_SIZE pcre2_erroroffset = 0;
+        pcre2_code* re = pcre2_compile(
+            reinterpret_cast<PCRE2_SPTR>(norm_pattern.c_str()),
+            norm_pattern.length(),
+            pcre2_options,
+            &pcre2_errorcode, &pcre2_erroroffset, nullptr);
+        if (!re) {
+            printf("[DEBUG] PCRE2 compile failed for multiline pattern. Error code: %d at offset %zu\n", pcre2_errorcode, (size_t)pcre2_erroroffset);
+            return {"$ERR"};
+        }
+        pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, nullptr);
+        std::vector<std::string> matches;
+        size_t offset = 0;
+        while (true) {
+            int rc = pcre2_match(
+                re,
+                reinterpret_cast<PCRE2_SPTR>(norm_input.c_str()),
+                norm_input.length(),
+                offset,
+                0,
+                match_data,
+                nullptr);
+            if (rc < 0) break;
+            PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(match_data);
+            size_t start = ovector[0];
+            size_t end = ovector[1];
+            printf("[DEBUG] Multiline match: start=%zu, end=%zu, text='%s'\n", start, end, norm_input.substr(start, end - start).c_str());
+            matches.push_back(norm_input.substr(start, end - start));
+            if (end == offset) break; // Prevent infinite loop on zero-length match
+            offset = end;
+        }
+        pcre2_match_data_free(match_data);
+        pcre2_code_free(re);
+        printf("[DEBUG] Multiline matches found: %zu\n", matches.size());
+        return matches;
+    }
+
+    // Normalize both pattern and input before matching
+    std::string norm_pattern = GrapaUnicode::UnicodeRegex::get_normalized_text(effective_pattern, false, norm);
+    std::string norm_input = GrapaUnicode::UnicodeRegex::get_normalized_text(working_input, false, norm);
+    // Use norm_pattern and norm_input for all regex operations
     printf("[DEBUG] grep_extract_matches: calling grep_unicode_impl with filtered_options='%s'\n", filtered_options.c_str());
     std::string effective_pattern_for_impl = effective_pattern;
     if (filtered_options.find('w') != std::string::npos) {
@@ -764,8 +815,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     // }
     
     // Output logic for matches
+    bool any_zero_length = false;
     for (const auto& match : matches) {
-        if (match.offset < working_input.size()) {
+        if (match.offset < working_input.size() || (match.length == 0 && match.offset == working_input.size())) {
             size_t end_offset = (match.offset + match.length < working_input.size()) ? 
                 match.offset + match.length : working_input.size();
             std::string matched_text = working_input.substr(match.offset, end_offset - match.offset);
@@ -795,10 +847,20 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                     matched_text = "1:" + matched_text;
                 }
             }
-            extracted_matches.push_back(matched_text);
+            // Special handling for zero-length matches
+            if (match.length == 0) {
+                any_zero_length = true;
+                extracted_matches.push_back("");
+            } else {
+                extracted_matches.push_back(matched_text);
+            }
         }
     }
-
+    // If only zero-length matches and none were pushed, push a single empty string
+    if (matches.size() == 1 && matches[0].length == 0 && extracted_matches.empty()) {
+        extracted_matches.push_back("");
+    }
+    
     // Add context separator if context options are used
     if (has_context) {
         if (json_output) {
@@ -1140,6 +1202,13 @@ void UnicodeRegex::compile() {
         if (case_insensitive_) {
             compile_flags |= PCRE2_CASELESS;
         }
+        // For Unicode mode, use PCRE2 with multiline and dotall flags if pattern contains \n
+        uint32_t pcre2_options = 0;
+        if (case_insensitive_) pcre2_options |= PCRE2_CASELESS;
+        // Always enable multiline and dotall for ripgrep parity
+        pcre2_options |= PCRE2_DOTALL | PCRE2_MULTILINE;
+        // Use the actual pattern variable being compiled
+        printf("[DEBUG] PCRE2 pattern: '%s', options: 0x%X (DOTALL|MULTILINE enabled)\n", pattern_utf8.c_str(), pcre2_options);
         pcre2_code* re = pcre2_compile(
             reinterpret_cast<PCRE2_SPTR>(pattern_utf8.c_str()),
             PCRE2_ZERO_TERMINATED,
