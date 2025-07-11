@@ -94,5 +94,6 @@ def test_doc_examples():
     assert xy.eval('"Hello world".grep("world")') == ["Hello world"]
     assert xy.eval('"Hello world".grep("world", "i")') == ["Hello world"]
     assert xy.eval('"Hello world".grep(r"\\w+", "o")') == ["Hello", "world"]
-    assert xy.eval('"a\nb\n".grep("^", "o")') == ["", "a", "", "b", ""]
+    # Updated to match ripgrep/grep: one empty string per line
+    assert xy.eval('"a\nb\n".grep("^", "o")') == ["", ""]
     assert xy.eval('[1, "", 2]') == [1, "", 2] 

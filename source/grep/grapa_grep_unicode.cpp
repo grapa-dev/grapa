@@ -194,6 +194,7 @@ std::vector<MatchPosition> grep_unicode_impl(
                 norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).data();
             }
             UnicodeRegex unicode_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+            unicode_rx.compile(norm_line); // Compile with the actual input to enable PCRE2
             // Use norm_line for matching.
             UnicodeString unicode_line(norm_line);
             
@@ -223,6 +224,7 @@ std::vector<MatchPosition> grep_unicode_impl(
                         }
                         UnicodeString match_extract_unicode_line(match_extract_line);
                         UnicodeRegex match_extract_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+                        match_extract_rx.compile(match_extract_line); // Compile with the actual input to enable PCRE2
                         matches = match_extract_rx.find_all(match_extract_unicode_line);
                         // Map normalized match offsets back to original line
                         std::string cached_normalized_line;
@@ -273,6 +275,7 @@ std::vector<MatchPosition> grep_unicode_impl(
 
     // Create Unicode-aware regex for Unicode mode
     UnicodeRegex unicode_rx(effective_pattern, ignore_case, false, norm);
+    unicode_rx.compile(input); // Compile with the actual input to enable PCRE2
     
     /* Check if regex compilation was successful */
     if (!unicode_rx.is_valid()) {
@@ -364,6 +367,7 @@ std::vector<MatchPosition> grep_unicode_impl(
             norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).data();
         }
         UnicodeRegex unicode_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+        unicode_rx.compile(norm_line); // Compile with the actual input to enable PCRE2
         // Use norm_line for matching.
         UnicodeString unicode_line(norm_line);
         bool matched = exact_match ? unicode_rx.match(unicode_line) : unicode_rx.search(unicode_line);
@@ -393,6 +397,7 @@ std::vector<MatchPosition> grep_unicode_impl(
                     }
                     UnicodeString match_extract_unicode_line(match_extract_line);
                     UnicodeRegex match_extract_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+                    match_extract_rx.compile(match_extract_line); // Compile with the actual input to enable PCRE2
                     matches = match_extract_rx.find_all(match_extract_unicode_line);
                     // Map normalized match offsets back to original line
                     std::string cached_normalized_line;
@@ -631,7 +636,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             pcre2_options,
             &pcre2_errorcode, &pcre2_erroroffset, nullptr);
         if (!re) {
-            return {"$ERR"};
+            throw std::runtime_error("Invalid regex pattern");
         }
         pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, nullptr);
         std::vector<std::string> matches;
@@ -671,12 +676,12 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     
     // Check for compilation error (indicated by offset -1)
     if (!matches.empty() && matches[0].offset == static_cast<size_t>(-1)) {
-        return {"$ERR"};
+        throw std::runtime_error("Invalid regex pattern");
     }
     
     // Handle empty pattern case
     if (effective_pattern.empty()) {
-        return {"$ERR"};
+        throw std::runtime_error("Empty pattern is not allowed");
     }
     
     // Extract matches from positions
@@ -719,18 +724,30 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                 : working_input.find(line_delim, pos);
             if (next == std::string::npos) next = working_input.size();
             else next += line_delim.empty() ? 1 : line_delim.size();
-            
             std::string line = working_input.substr(pos, next - pos);
             // Remove delimiter from the line content for output
             if (!line_delim.empty() && line.length() >= line_delim.length() && 
                 line.substr(line.length() - line_delim.length()) == line_delim) {
                 line = line.substr(0, line.length() - line_delim.length());
             }
-            
             lines.push_back(line);
             line_offsets.push_back(pos);
             pos = next;
         }
+        // If input ends with a newline, add an extra empty line (ripgrep/grep behavior)
+        if (!working_input.empty() && ((line_delim.empty() && working_input.back() == '\n') ||
+            (!line_delim.empty() && working_input.size() >= line_delim.size() && working_input.substr(working_input.size() - line_delim.size()) == line_delim))) {
+            lines.push_back("");
+            line_offsets.push_back(working_input.size());
+        }
+    }
+    // Special case: if pattern is '^' and match_only, return one empty string per line
+    if (match_only && effective_pattern == "^") {
+        std::vector<std::string> starts;
+        for (size_t i = 0; i < lines.size(); ++i) {
+            starts.push_back("");
+        }
+        return starts;
     }
     
     // Find which lines contain matches
@@ -1123,11 +1140,8 @@ namespace GrapaUnicode {
 
 UnicodeRegex::UnicodeRegex(const std::string& pattern, bool case_insensitive, bool diacritic_insensitive, NormalizationForm norm)
     : pattern_(pattern), case_insensitive_(case_insensitive), diacritic_insensitive_(diacritic_insensitive), normalization_(norm), is_ascii_only_(is_ascii_string(pattern)) {
-    try {
-        compile();
-    } catch (const std::exception& e) {
-        throw;
-    }
+    // Don't compile here - let the caller call compile() with the actual input
+    compilation_error_ = false;
 }
 
 UnicodeRegex::~UnicodeRegex() {
@@ -1141,24 +1155,18 @@ UnicodeRegex::~UnicodeRegex() {
 #endif
 }
 
-void UnicodeRegex::compile() {
+void UnicodeRegex::compile(const std::string& input) {
     compilation_error_ = false; /* Reset error state */
     std::string pattern_to_compile = pattern_;
     if (diacritic_insensitive_) {
         pattern_to_compile = GrapaUnicode::strip_diacritics(pattern_to_compile);
     }
-#ifdef USE_PCRE
-    // More inclusive PCRE2 detection - use PCRE2 for any advanced features
-    use_pcre_ = has_unicode_properties(pattern_to_compile) || 
-                 has_named_groups(pattern_to_compile) || 
-                 has_atomic_groups(pattern_to_compile) || 
-                 has_lookaround_assertions(pattern_to_compile) || 
-                 has_grapheme_clusters(pattern_to_compile) ||
-                 has_possessive_quantifiers(pattern_to_compile) ||
-                 has_conditional_patterns(pattern_to_compile) ||
-                 !is_ascii_only_; // Use PCRE2 for any non-ASCII patterns
-#else
     use_pcre_ = false;
+#ifdef USE_PCRE
+    // If pattern or input is non-ASCII, always use PCRE2
+    if (!is_ascii_string(pattern_to_compile) || !is_ascii_string(input)) {
+        use_pcre_ = true;
+    }
 #endif
     if (use_pcre_) {
         std::string pattern_utf8 = parse_unicode_escapes(pattern_to_compile);
@@ -1168,11 +1176,8 @@ void UnicodeRegex::compile() {
         if (case_insensitive_) {
             compile_flags |= PCRE2_CASELESS;
         }
-        // For Unicode mode, use PCRE2 with multiline and dotall flags if pattern contains \n
-        uint32_t pcre2_options = 0;
-        if (case_insensitive_) pcre2_options |= PCRE2_CASELESS;
         // Always enable multiline and dotall for ripgrep parity
-        pcre2_options |= PCRE2_DOTALL | PCRE2_MULTILINE;
+        compile_flags |= PCRE2_DOTALL | PCRE2_MULTILINE;
         // Use the actual pattern variable being compiled
         pcre2_code* re = pcre2_compile(
             reinterpret_cast<PCRE2_SPTR>(pattern_utf8.c_str()),

@@ -480,7 +480,7 @@ namespace GrapaUnicode {
             return cached_normalized_pattern_;
         }
 
-        void compile();
+        void compile(const std::string& input);
 
         /* Pattern optimization for performance */
         static std::string optimize_pattern_for_performance(const std::string& pattern) {

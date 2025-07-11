@@ -6,10 +6,12 @@
 
 /* Test data - create a large input to test parallel processing */
 large_input = "";
-for (i = 0; i < 1000; i++) {
+i = 0;
+while (i < 1000) {
     large_input = large_input + "Line " + i + " with some text to search through\n";
     large_input = large_input + "Another line " + i + " with different content\n";
     large_input = large_input + "Line " + i + " containing the word pattern\n";
+    i = i + 1;
 }
 
 "Created test input with " + large_input.len() + " characters\n".echo();
@@ -87,15 +89,15 @@ if (result8a.len() == result8b.len()) {
 "Test 9: Performance Comparison\n".echo();
 "Testing performance with large input...\n".echo();
 
-// Note: In a real implementation, we would measure actual timing
-// For now, we just verify that parallel processing doesn't break functionality
+/* Note: In a real implementation, we would measure actual timing
+   For now, we just verify that parallel processing doesn't break functionality */
 
 "PASS - Parallel processing maintains functionality\n".echo();
 
 /* Test 10: Edge cases */
 "Test 10: Edge Cases\n".echo();
 
-// Test with empty input
+/* Test with empty input */
 empty_result1 = "".grep("pattern", "o");
 empty_result2 = "".grep("pattern", "o", "", "", "", "", 2);
 if (empty_result1.len() == empty_result2.len()) {
@@ -104,7 +106,7 @@ if (empty_result1.len() == empty_result2.len()) {
     "FAIL - Empty input has inconsistent results\n".echo();
 }
 
-// Test with single line input
+/* Test with single line input */
 single_line = "This is a single line with pattern in it\n";
 single_result1 = single_line.grep("pattern", "o");
 single_result2 = single_line.grep("pattern", "o", "", "", "", "", 2);
