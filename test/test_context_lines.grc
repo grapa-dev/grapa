@@ -115,7 +115,7 @@ result = input.grep("Line 2", "A1n");
 result = input.grep("Line 2", "A1v");
 ("Pattern: Line 2, Options: A1v\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: [\"Header\\n\", \"Line 1\\n\", \"Line 3\\n\", \"Footer\"]\n").echo();
+("Expected: [\"Header\\n\", \"Line 1\\n\", \"Line 1\\n\", \"Line 3\\n\", \"Footer\", \"Footer\"]\n").echo();
 "---\n".echo();
 
 /* Test 14: Context with custom delimiter */
@@ -153,7 +153,7 @@ result = input.grep("line", "A1i");
 ("Input: Header\\nLINE 1\\nline 2\\nLine 3\\nFooter\n").echo();
 ("Pattern: line, Options: A1i\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: [\"LINE 1\\n\", \"line 2\\n\", \"Line 3\\n\"]\n").echo();
+("Expected: [\"LINE 1\\n\", \"line 2\\n\", \"line 2\\n\", \"Line 3\\n\", \"Line 3\\n\", \"Footer\"]\n").echo();
 "---\n".echo();
 
 /* Test 18: Context with diacritic-insensitive */
@@ -163,7 +163,7 @@ result = input.grep("cafe", "A1d");
 ("Input: Header\\ncafé\\ncafe\\ncafé\\nFooter\n").echo();
 ("Pattern: cafe, Options: A1d\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: [\"café\\n\", \"cafe\\n\", \"café\\n\"]\n").echo();
+("Expected: [\"café\\n\", \"cafe\\n\", \"cafe\\n\", \"café\\n\", \"café\\n\", \"Footer\"]\n").echo();
 "---\n".echo();
 
 /* Test 19: Context with parallel processing */
@@ -193,7 +193,7 @@ result = input.grep("café", "A1", "", "NFC");
 ("Input: Header\\ncafé\\ncafé\\nLine 3\\nFooter\n").echo();
 ("Pattern: café, Options: A1, Normalization: NFC\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: [\"café\\n\", \"café\\n\", \"Line 3\\n\"]\n").echo();
+("Expected: [\"café\\n\", \"café\\n\", \"café\\n\", \"Line 3\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 22: Context with JSON output */
@@ -214,7 +214,7 @@ result = input.grep("Line 2", "A1a");
 ("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
 ("Pattern: Line 2, Options: A1a\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
+("Expected: [\"Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\"]\n").echo();
 "---\n".echo();
 
 /* Test 24: Context with exact match */

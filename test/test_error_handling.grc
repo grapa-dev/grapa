@@ -13,6 +13,7 @@ result = input.grep("", "oj");
 ("Pattern: (empty)\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 2: Invalid regex - unmatched parenthesis */
@@ -21,6 +22,7 @@ result = input.grep("(", "oj");
 ("Pattern: (\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 3: Invalid regex - unmatched bracket */
@@ -29,6 +31,7 @@ result = input.grep("[", "oj");
 ("Pattern: [\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 4: Invalid regex - invalid quantifier */
@@ -37,6 +40,7 @@ result = input.grep("a{", "oj");
 ("Pattern: a{\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 5: Invalid Unicode property */
@@ -45,6 +49,7 @@ result = input.grep("\\p{Invalid}", "oj");
 ("Pattern: \\p{Invalid}\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 6: Malformed Unicode property */
@@ -53,6 +58,7 @@ result = input.grep("\\p{", "oj");
 ("Pattern: \\p{\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 7: Invalid lookaround assertion */
@@ -61,6 +67,7 @@ result = input.grep("(?=", "oj");
 ("Pattern: (?=\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 8: Invalid named group */
@@ -69,6 +76,7 @@ result = input.grep("(?P<", "oj");
 ("Pattern: (?P<\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 9: Invalid atomic group */
@@ -77,6 +85,7 @@ result = input.grep("(?>", "oj");
 ("Pattern: (?>\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 10: Very long pattern */
@@ -91,6 +100,7 @@ result = input.grep(long_pattern, "oj");
 ("Pattern: (1000 'a' characters)\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 11: Empty input */
@@ -100,6 +110,7 @@ result = "".grep("Hello", "oj");
 ("Pattern: Hello\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 12: Null bytes in input */
@@ -109,6 +120,7 @@ result = "Hello\x00World".grep("Hello", "oj");
 ("Pattern: Hello\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 13: Null bytes in pattern */
@@ -117,6 +129,7 @@ result = input.grep("Hello\x00", "oj");
 ("Pattern: Hello\\x00\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 14: Invalid option combination */
@@ -125,6 +138,7 @@ result = input.grep("Hello", "ox"); /* o and x are mutually exclusive */
 ("Pattern: Hello, Options: ox\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 15: Invalid context option */
@@ -133,6 +147,7 @@ result = input.grep("Hello", "A999999"); /* Very large context */
 ("Pattern: Hello, Options: A999999\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 16: Malformed Unicode escape */
@@ -141,6 +156,7 @@ result = input.grep("\\u", "oj");
 ("Pattern: \\u\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 17: Incomplete Unicode escape */
@@ -149,6 +165,7 @@ result = input.grep("\\u123", "oj");
 ("Pattern: \\u123\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 18: Invalid hex escape */
@@ -157,6 +174,7 @@ result = input.grep("\\x", "oj");
 ("Pattern: \\x\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 19: Incomplete hex escape */
@@ -165,6 +183,7 @@ result = input.grep("\\x1", "oj");
 ("Pattern: \\x1\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 20: Invalid octal escape */
@@ -173,6 +192,7 @@ result = input.grep("\\8", "oj");
 ("Pattern: \\8\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: $ERR\n").echo();
 "---\n".echo();
 
 /* Test 21: Very large input */
@@ -188,6 +208,7 @@ result = large_input.grep("Line 500", "oj");
 ("Pattern: Line 500\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result length: " + result.len() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 22: Pattern with control characters */
@@ -196,6 +217,7 @@ result = input.grep("Hello\x01World", "oj");
 ("Pattern: Hello\\x01World\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 23: Input with control characters */
@@ -205,6 +227,7 @@ result = "Hello\x01World".grep("Hello", "oj");
 ("Pattern: Hello\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 24: Invalid Unicode normalization */
@@ -213,6 +236,7 @@ result = input.grep("Hello", "N", "", "INVALID");
 ("Pattern: Hello, Options: N, Normalization: INVALID\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 /* Test 25: Invalid processing mode */
@@ -221,6 +245,7 @@ result = input.grep("Hello", "", "", "NONE", "INVALID");
 ("Pattern: Hello, Mode: INVALID\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
 "---\n".echo();
 
 "=== ERROR HANDLING SUMMARY ===\n".echo();

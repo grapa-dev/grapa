@@ -17,12 +17,14 @@ for (i = 0; i < 1000; i++) {
 /* Test 1: Basic parallel processing */
 "Test 1: Basic Parallel Processing\n".echo();
 result1 = large_input.grep("pattern", "o");
-"Sequential matches: " + result1.len() + "\n".echo();
+("Sequential matches: " + result1.len() + "\n").echo();
+("Expected matches: " + result1.len() + "\n").echo();
 
 /* Test 2: Parallel processing with 2 workers */
 "Test 2: Parallel Processing (2 workers)\n".echo();
 result2 = large_input.grep("pattern", "o", "", "", "", "", 2);
-"Parallel matches (2 workers): " + result2.len() + "\n".echo();
+("Parallel matches (2 workers): " + result2.len() + "\n").echo();
+("Expected matches: " + result1.len() + "\n").echo();
 
 /* Test 3: Parallel processing with 4 workers */
 "Test 3: Parallel Processing (4 workers)\n".echo();

@@ -10,6 +10,7 @@ result = input.grep("(?<=Hello )\\w+", "oj");
 "Pattern: (?<=Hello )\\w+\n".echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: Hello\n").echo();
 "---\n".echo();
 
 /* Test 2: Unicode Grapheme Clusters */
@@ -20,6 +21,7 @@ result = input.grep("\\X", "oj");
 "Pattern: \\X\n".echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: 👨‍👩‍👧‍👦\n").echo();
 "---\n".echo();
 
 /* Test 3: Advanced Unicode Properties */
@@ -30,6 +32,7 @@ result = input.grep("\\p{Emoji}", "oj");
 "Pattern: \\p{Emoji}\n".echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: 😀\n").echo();
 "---\n".echo();
 
 /* Test 4: Unicode General Categories */
@@ -40,6 +43,7 @@ result = input.grep("\\p{Lu}", "oj");
 "Pattern: \\p{Lu}\n".echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: H\n").echo();
 "---\n".echo();
 
 /* Test 5: Try different lookaround pattern */
@@ -50,6 +54,7 @@ result = input.grep("(?<=\\d)(?=\\d)", "oj");
 "Pattern: (?<=\\d)(?=\\d)\n".echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: 123\n").echo();
 "---\n".echo();
 
 /* Test 6: Try different grapheme pattern */
@@ -60,4 +65,5 @@ result = input.grep("\\X", "oj");
 "Pattern: \\X\n".echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: café mañana\n").echo();
 "---\n".echo(); 

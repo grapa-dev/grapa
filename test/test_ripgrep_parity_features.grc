@@ -1,0 +1,103 @@
+/* Comprehensive ripgrep parity feature test */
+
+"=== RIPGREP PARITY FEATURE TESTS ===\n".echo();
+
+/* 1. Column numbers (--column) */
+"Test 1: Column numbers (--column)\n".echo();
+input = "foo bar baz\nbar foo baz\nbaz bar foo";
+result = input.grep("foo", "oc");
+("Input: foo bar baz\\nbar foo baz\\nbaz bar foo\n").echo();
+("Pattern: foo, Options: oc\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\", \"foo\", \"foo\"] (with column info if supported)\n").echo();
+"---\n".echo();
+
+/* 2. Word boundary (-w) */
+"Test 2: Word boundary (-w)\n".echo();
+input = "foo bar foobar barfoo";
+result = input.grep("foo", "ow");
+("Input: foo bar foobar barfoo\n").echo();
+("Pattern: foo, Options: ow\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\"] (only whole word matches)\n").echo();
+"---\n".echo();
+
+/* 3. Null-data mode (-z) */
+"Test 3: Null-data mode (-z)\n".echo();
+input = "foo\0bar\0baz\0foo";
+result = input.grep("foo", "oz");
+("Input: foo\0bar\0baz\0foo\n").echo();
+("Pattern: foo, Options: oz\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\", \"foo\"] (null-separated records)\n").echo();
+"---\n".echo();
+
+/* 4. Context separator lines (--) */
+"Test 4: Context separator lines (--)\n".echo();
+input = "a\nfoo\nb\nc\nfoo\nd";
+result = input.grep("foo", "A1");
+("Input: a\\nfoo\\nb\\nc\\nfoo\\nd\n").echo();
+("Pattern: foo, Options: A1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\n\", \"b\n\", \"--\n\", \"foo\n\", \"d\"] (context blocks separated by -- if supported)\n").echo();
+"---\n".echo();
+
+/* 5. Color output */
+"Test 5: Color output\n".echo();
+input = "foo bar baz";
+result = input.grep("foo", "oC");
+("Input: foo bar baz\n").echo();
+("Pattern: foo, Options: oC (color)\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\"] (with color if supported)\n").echo();
+"---\n".echo();
+
+/* 6. Full PCRE2 features */
+"Test 6a: Lookahead (?=bar)\n".echo();
+input = "foo bar\nbar foo\nfoobar";
+result = input.grep("foo(?= bar)", "o");
+("Pattern: foo(?= bar), Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\"] (only foo before bar)\n").echo();
+"---\n".echo();
+
+"Test 6b: Lookbehind (?<=bar )\n".echo();
+result = input.grep("(?<=bar )foo", "o");
+("Pattern: (?<=bar )foo, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\"] (only foo after bar)\n").echo();
+"---\n".echo();
+
+"Test 6c: Atomic group (?>foo)\n".echo();
+result = input.grep("(?>foo)", "o");
+("Pattern: (?>foo), Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\", \"foo\", \"foo\"] (all foo matches)\n").echo();
+"---\n".echo();
+
+"Test 6d: Unicode class (\p{L})\n".echo();
+input = "abc 123 \u00e9";
+result = input.grep("\\p{L}", "o");
+("Pattern: \\p{L}, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"a\", \"b\", \"c\", \"é\"] (all letters)\n").echo();
+"---\n".echo();
+
+/* 7. Error messages */
+"Test 7a: Invalid regex\n".echo();
+input = "foo";
+result = input.grep("(", "o");
+("Pattern: (, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR (invalid regex)\n").echo();
+"---\n".echo();
+
+"Test 7b: Invalid Unicode\n".echo();
+input = "foo\xFF";
+result = input.grep("foo", "o");
+("Pattern: foo, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR (invalid unicode if not supported)\n").echo();
+"---\n".echo();
+
+"=== RIPGREP PARITY FEATURE TESTS COMPLETED ===\n".echo(); 

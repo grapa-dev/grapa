@@ -11,6 +11,7 @@ result = input.grep("\\p{L}+", "oj");
 ("Pattern: \\p{L}+\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: Hello 世界 123 €\n").echo();
 "---\n".echo();
 
 /* Test 2: Check if PCRE2 is being used for lookaround */
@@ -21,6 +22,7 @@ result = input.grep("(?<=Hello )\\w+", "oj");
 ("Pattern: (?<=Hello )\\w+\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: World\n").echo();
 "---\n".echo();
 
 /* Test 3: Check if PCRE2 is being used for grapheme clusters */
@@ -31,6 +33,7 @@ result = input.grep("\\X", "oj");
 ("Pattern: \\X\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: 👨‍��‍👧‍👦\n").echo();
 "---\n".echo();
 
 /* Test 4: Check if PCRE2 is being used for named groups */
@@ -41,6 +44,7 @@ result = input.grep("(?P<first>\\w+) (?P<last>\\w+)", "oj");
 ("Pattern: (?P<first>\\w+) (?P<last>\\w+)\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: John Doe\n").echo();
 "---\n".echo();
 
 /* Test 5: Check if PCRE2 is being used for atomic groups */
@@ -51,6 +55,7 @@ result = input.grep("(?>a+)a", "oj");
 ("Pattern: (?>a+)a\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: aaa\n").echo();
 "---\n".echo();
 
 "=== PCRE2 DEBUG COMPLETE ===\n".echo(); 

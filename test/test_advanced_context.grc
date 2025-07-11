@@ -11,6 +11,7 @@ result = input.grep("Line 2", "A1");
 ("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
 ("Pattern: Line 2, Options: A1\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 2: Simple before context */
@@ -18,6 +19,7 @@ result = input.grep("Line 2", "A1");
 result = input.grep("Line 2", "B1");
 ("Pattern: Line 2, Options: B1\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 3: Before and after context (C1) */
@@ -25,6 +27,7 @@ result = input.grep("Line 2", "B1");
 result = input.grep("Line 2", "C1");
 ("Pattern: Line 2, Options: C1\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 4: Combined context (A2B1) */
@@ -32,6 +35,7 @@ result = input.grep("Line 2", "C1");
 result = input.grep("Line 2", "A2B1");
 ("Pattern: Line 2, Options: A2B1\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 5: Combined context (B1C2) */
@@ -39,6 +43,7 @@ result = input.grep("Line 2", "A2B1");
 result = input.grep("Line 2", "B1C2");
 ("Pattern: Line 2, Options: B1C2\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 6: Large context numbers */
@@ -46,6 +51,7 @@ result = input.grep("Line 2", "B1C2");
 result = input.grep("Line 2", "A10B10C10");
 ("Pattern: Line 2, Options: A10B10C10\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 7: Zero context */
@@ -53,6 +59,7 @@ result = input.grep("Line 2", "A10B10C10");
 result = input.grep("Line 2", "A0B0C0");
 ("Pattern: Line 2, Options: A0B0C0\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 8: Context with match-only output */
@@ -60,6 +67,7 @@ result = input.grep("Line 2", "A0B0C0");
 result = input.grep("Line 2", "A1o");
 ("Pattern: Line 2, Options: A1o\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 9: Context with JSON output */
@@ -75,6 +83,7 @@ result = input.grep("Line 2", "A1j");
 result = input.grep("Line 2", "A1n");
 ("Pattern: Line 2, Options: A1n\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 11: Context with invert match */
@@ -82,6 +91,7 @@ result = input.grep("Line 2", "A1n");
 result = input.grep("Line 2", "A1v");
 ("Pattern: Line 2, Options: A1v\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Header\\n\", \"Line 1\\n\", \"Line 3\\n\", \"Footer\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 12: Context with custom delimiter */
@@ -91,6 +101,7 @@ result = input2.grep("Line 2", "A1", "|");
 ("Input: Header|Line 1|Line 2|Line 3|Footer\n").echo();
 ("Pattern: Line 2, Options: A1, Delimiter: |\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\"]\n").echo();
 "---\n".echo();
 
 /* Test 13: Parallel processing with context */
@@ -98,6 +109,7 @@ result = input2.grep("Line 2", "A1", "|");
 result = input.grep("Line 2", "A1", "", "", "", 2);
 ("Pattern: Line 2, Options: A1, Workers: 2\n").echo();
 ("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
 "---\n".echo();
 
 "=== ADVANCED CONTEXT SUMMARY ===\n".echo();

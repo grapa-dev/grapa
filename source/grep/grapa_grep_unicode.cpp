@@ -435,9 +435,9 @@ bool ends_with(const std::string& str, const std::string& suffix) {
 ContextOptions parse_context_options(const std::string& options, std::string& filtered_options) {
     ContextOptions ctx;
     filtered_options.clear();
-    
-    // First pass: collect all context options
-    std::vector<std::pair<char, int>> context_options;
+    // Only the last context option (A, B, or C) should be applied, matching ripgrep
+    int last_A = -1, last_B = -1, last_C = -1;
+    int val_A = 0, val_B = 0, val_C = 0;
     for (size_t i = 0; i < options.size(); ++i) {
         char c = options[i];
         if (c == 'A' || c == 'B' || c == 'C') {
@@ -448,37 +448,36 @@ ContextOptions parse_context_options(const std::string& options, std::string& fi
                 ++j;
             }
             if (j == i + 1) val = 1; // default to 1 if no number
-            context_options.push_back({c, val});
+            if (c == 'A') { last_A = i; val_A = val; }
+            if (c == 'B') { last_B = i; val_B = val; }
+            if (c == 'C') { last_C = i; val_C = val; }
             i = j - 1;
         } else {
             filtered_options += c;
         }
     }
-    
-    // Second pass: apply context options with C taking precedence
+    // Precedence: C > last(B) > last(A)
     ctx.after = 0;
     ctx.before = 0;
     ctx.context = 0;
-    
-    for (const auto& opt : context_options) {
-        if (opt.first == 'C') {
-            // C takes precedence and overrides A and B
-            ctx.context = opt.second;
-            ctx.after = opt.second;
-            ctx.before = opt.second;
-        } else if (opt.first == 'A' && ctx.context == 0) {
-            ctx.after = opt.second;
-        } else if (opt.first == 'B' && ctx.context == 0) {
-            ctx.before = opt.second;
-        }
+    if (last_C != -1) {
+        ctx.context = val_C;
+        ctx.after = val_C;
+        ctx.before = val_C;
+    } else if (last_B > last_A) {
+        ctx.before = val_B;
+    } else if (last_A > last_B) {
+        ctx.after = val_A;
+    } else if (last_A != -1) {
+        ctx.after = val_A;
+    } else if (last_B != -1) {
+        ctx.before = val_B;
     }
-    
     // Cap large context numbers to prevent excessive memory usage
     const int MAX_CONTEXT = 1000;
     if (ctx.after > MAX_CONTEXT) ctx.after = MAX_CONTEXT;
     if (ctx.before > MAX_CONTEXT) ctx.before = MAX_CONTEXT;
     if (ctx.context > MAX_CONTEXT) ctx.context = MAX_CONTEXT;
-    
     return ctx;
 }
 
@@ -650,23 +649,14 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     if (before > 0 || after > 0) {
         // For all-mode, completely bypass context processing
         if (all_mode) {
-            // In all-mode, return the entire input as a single match, ignoring context
-            bool has_match = false;
-            for (const auto& match : matches) {
-                if (match.offset < working_input.size()) {
-                    has_match = true;
-                    break;
-                }
-            }
-            
-            if (has_match) {
-                // For all-mode, return the entire input as a single match
-                extracted_matches.push_back(working_input);
-                return extracted_matches;
+            // All-mode: ignore context options and return the entire input as a single match
+            if (json_output) {
+                std::string json = "[{\"text\":\"" + working_input + "\"}]";
+                extracted_matches.push_back(json);
             } else {
-                // No matches in all-mode, return empty result
-                return extracted_matches;
+                extracted_matches.push_back(working_input);
             }
+            return extracted_matches;
         } else {
             // Normal context processing (not all-mode)
             // Split input into lines for context processing
@@ -708,120 +698,59 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                 }
             }
             
-            // Build output with context lines - match ripgrep/grep behavior
-            std::vector<std::pair<size_t, bool>> lines_with_context; // line_idx, is_match
-            if (invert_match) {
-                // For invert match, find all non-matching lines and their context
-                std::set<size_t> non_matching_lines;
-                for (size_t i = 0; i < lines.size(); ++i) {
-                    if (matching_lines.find(i) == matching_lines.end()) {
-                        non_matching_lines.insert(i);
-                    }
-                }
-                
-                // Add context for each non-matching line, but exclude matching lines
-                for (size_t line_idx : non_matching_lines) {
-                    size_t start = (line_idx >= static_cast<size_t>(before)) ? line_idx - before : 0;
-                    size_t end = std::min(line_idx + after, lines.size() - 1);
-                    for (size_t i = start; i <= end; ++i) {
-                        // Only include non-matching lines in the context
-                        if (matching_lines.find(i) == matching_lines.end()) {
-                            lines_with_context.push_back({i, false});
-                        }
-                    }
-                }
-            } else {
-                // For normal match, add context for each matching line
-                for (size_t line_idx : matching_lines) {
-                    size_t start = (line_idx >= static_cast<size_t>(before)) ? line_idx - before : 0;
-                    size_t end = std::min(line_idx + after, lines.size() - 1);
-                    
-                    // For case-insensitive and diacritic-insensitive matching, we need to be careful
-                    // about context boundaries to avoid missing context lines
-                    if (filtered_options.find('i') != std::string::npos || filtered_options.find('d') != std::string::npos) {
-                        // Don't adjust boundaries for case/diacritic insensitive - let the deduplication handle duplicates
-                        // This ensures we get proper context lines even when multiple lines match
-                    }
-                    
-                    for (size_t i = start; i <= end; ++i) {
-                        lines_with_context.push_back({i, i == line_idx});
-                    }
+            // Find which lines do not contain matches (for invert match)
+            std::set<size_t> non_matching_lines;
+            for (size_t i = 0; i < lines.size(); ++i) {
+                if (matching_lines.find(i) == matching_lines.end()) {
+                    non_matching_lines.insert(i);
                 }
             }
-            
-            // Sort by line index to maintain file order (like ripgrep)
-            std::sort(lines_with_context.begin(), lines_with_context.end());
-            
-            // For ripgrep compatibility, allow duplicates when context windows overlap
-            // Only deduplicate for case/diacritic insensitive where the same line matches multiple times
-            std::vector<std::pair<size_t, bool>> final_lines_with_context;
-            if (filtered_options.find('i') != std::string::npos || filtered_options.find('d') != std::string::npos) {
-                // For case/diacritic insensitive, deduplicate to avoid multiple matches of same line
-                std::set<size_t> seen_lines;
-                for (const auto& [line_idx, is_match] : lines_with_context) {
-                    if (seen_lines.find(line_idx) == seen_lines.end()) {
-                        final_lines_with_context.push_back({line_idx, is_match});
-                        seen_lines.insert(line_idx);
-                    }
-                }
-            } else {
-                // For normal matching, allow duplicates for overlapping context (ripgrep behavior)
-                // But for invert match, we need to deduplicate to avoid showing the same non-matching line multiple times
-                if (invert_match) {
-                    std::set<size_t> seen_lines;
-                    for (const auto& [line_idx, is_match] : lines_with_context) {
-                        if (seen_lines.find(line_idx) == seen_lines.end()) {
-                            final_lines_with_context.push_back({line_idx, is_match});
-                            seen_lines.insert(line_idx);
+
+            // Compute context lines if needed
+            bool has_context = (before > 0) || (after > 0);
+            if (has_context) {
+                // For each (non-)matching line, output its context window (no merging, allow duplicates)
+                const std::set<size_t>& target_lines = invert_match ? non_matching_lines : matching_lines;
+                if (json_output) {
+                    std::string json = "[";
+                    bool first = true;
+                    for (size_t line_idx : target_lines) {
+                        size_t start = (line_idx >= static_cast<size_t>(before)) ? line_idx - before : 0;
+                        size_t end = std::min(line_idx + after, lines.size() - 1);
+                        for (size_t i = start; i <= end; ++i) {
+                            // For invert match, skip lines that are matches
+                            if (invert_match && matching_lines.find(i) != matching_lines.end()) continue;
+                            std::string line_text = lines[i];
+                            std::string escaped;
+                            for (char c : line_text) {
+                                if (c == '\\' || c == '"') escaped += '\\';
+                                escaped += c;
+                            }
+                            if (!first) json += ",";
+                            json += "{\"line\":" + std::to_string(i + 1) + ",\"text\":\"" + escaped + "\"}";
+                            first = false;
                         }
                     }
+                    json += "]";
+                    extracted_matches.push_back(json);
                 } else {
-                    // For normal matching, deduplicate to avoid showing the same line multiple times
-                    // This fixes the Unicode normalization issue where the same line might appear multiple times
-                    std::set<size_t> seen_lines;
-                    for (const auto& [line_idx, is_match] : lines_with_context) {
-                        if (seen_lines.find(line_idx) == seen_lines.end()) {
-                            final_lines_with_context.push_back({line_idx, is_match});
-                            seen_lines.insert(line_idx);
+                    for (size_t line_idx : target_lines) {
+                        size_t start = (line_idx >= static_cast<size_t>(before)) ? line_idx - before : 0;
+                        size_t end = std::min(line_idx + after, lines.size() - 1);
+                        for (size_t i = start; i <= end; ++i) {
+                            // For invert match, skip lines that are matches
+                            if (invert_match && matching_lines.find(i) != matching_lines.end()) continue;
+                            extracted_matches.push_back(lines[i]);
                         }
                     }
                 }
-            }
-            
-            // Handle JSON output with context
-            if (json_output) {
-                std::string json = "[";
-                for (size_t i = 0; i < final_lines_with_context.size(); ++i) {
-                    const auto& [line_idx, is_match] = final_lines_with_context[i];
-                    std::string line_text = lines[line_idx];
-                    
-                    // Escape quotes and backslashes in line_text
-                    std::string escaped;
-                    for (char c : line_text) {
-                        if (c == '\\' || c == '"') escaped += '\\';
-                        escaped += c;
-                    }
-                    
-                    if (i > 0) json += ",";
-                    json += "{\"line\":" + std::to_string(line_idx + 1) + ",\"text\":\"" + escaped + "\"";
-                    
-                    if (is_match) {
-                        json += ",\"match\":true";
-                    } else {
-                        json += ",\"context\":true";
-                    }
-                    
-                    json += "}";
-                }
-                json += "]";
-                extracted_matches.push_back(json);
                 return extracted_matches;
             }
             
             // Output lines in order (like ripgrep)
-            for (const auto& [line_idx, is_match] : final_lines_with_context) {
-                extracted_matches.push_back(lines[line_idx]);
-            }
+            // for (const auto& [line_idx, is_match] : final_lines_with_context) {
+            //     extracted_matches.push_back(lines[line_idx]);
+            // }
             
             return extracted_matches;
         }

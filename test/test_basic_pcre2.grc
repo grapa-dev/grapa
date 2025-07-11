@@ -10,6 +10,7 @@ result = input.grep("Hello", "oj");
 ("Pattern: Hello\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: [\"Hello\"]\n").echo();
 "---\n".echo();
 
 /* Test 2: Named groups (should use PCRE2) */
@@ -20,6 +21,7 @@ result = input.grep("(?P<first>\\w+) (?P<last>\\w+)", "oj");
 ("Pattern: (?P<first>\\w+) (?P<last>\\w+)\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: [\"John Doe\"]\n").echo();
 "---\n".echo();
 
 /* Test 3: Basic Unicode property (should use PCRE2) */
@@ -30,6 +32,7 @@ result = input.grep("\\p{L}+", "oj");
 ("Pattern: \\p{L}+\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: [\"Hello 世界 123 €\"]\n").echo();
 "---\n".echo();
 
 /* Test 4: Unicode script (should use PCRE2) */
@@ -40,6 +43,7 @@ result = input.grep("\\p{sc=Han}", "oj");
 ("Pattern: \\p{sc=Han}\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: [\"Hello 世界\"]\n").echo();
 "---\n".echo();
 
 /* Test 5: Atomic groups (should use PCRE2) */
@@ -50,4 +54,5 @@ result = input.grep("(?>a+)a", "oj");
 ("Pattern: (?>a+)a\n").echo();
 ("Result type: " + result.type() + "\n").echo();
 ("Result: " + result + "\n").echo();
+("Expected: [\"aaa\"]\n").echo();
 "---\n".echo(); 
