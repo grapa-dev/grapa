@@ -1082,19 +1082,21 @@ bool GrapaUnicode::UnicodeRegex::match(const UnicodeString& text) const {
     
 #ifdef USE_PCRE
     if (use_pcre_) {
-        std::string match_text = text.data();
+        std::string search_text = text.data();
         if (normalization_ != NormalizationForm::NONE) {
-            match_text = get_normalized_text(text.data(), case_insensitive_, normalization_);
+            search_text = get_normalized_text(text.data(), case_insensitive_, normalization_);
         }
         int result = pcre2_match(
             pcre_regex_,
-            reinterpret_cast<PCRE2_SPTR>(match_text.c_str()),
-            static_cast<PCRE2_SIZE>(match_text.length()),
-            0, PCRE2_ANCHORED, /* PCRE2_ANCHORED for full match */
+            reinterpret_cast<PCRE2_SPTR>(search_text.c_str()),
+            static_cast<PCRE2_SIZE>(search_text.length()),
+            0, 0,
             pcre_match_data_,
             nullptr
         );
-        return result >= 0;
+        if (result < 0) return false;
+        PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(pcre_match_data_);
+        return (ovector[0] == 0 && ovector[1] == search_text.length());
     }
 #endif
     if (is_ascii_only_ && is_ascii_string(text.data())) {
@@ -1232,11 +1234,62 @@ void UnicodeRegex::compile(const std::string& input) {
     }
     use_pcre_ = false;
 #ifdef USE_PCRE
-    // If pattern or input is non-ASCII, always use PCRE2
-    if (!is_ascii_string(pattern_to_compile) || !is_ascii_string(input)) {
+    // Check for PCRE2-only features that std::regex doesn't support
+    bool has_pcre2_features = false;
+    
+    // Check for lookbehind assertions (?<=...)
+    if (pattern_to_compile.find("(?<=") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Check for lookahead assertions (?=...) and (?!...)
+    if (pattern_to_compile.find("(?=") != std::string::npos || 
+        pattern_to_compile.find("(?!") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Check for negative lookbehind (?<!...)
+    if (pattern_to_compile.find("(?<!") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Check for atomic groups (?>...)
+    if (pattern_to_compile.find("(?>") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Check for Unicode properties \p{...} and \P{...}
+    if (pattern_to_compile.find("\\p{") != std::string::npos || 
+        pattern_to_compile.find("\\P{") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Check for named groups (?P<...>)
+    if (pattern_to_compile.find("(?P<") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Check for conditional groups (?(...)...)
+    if (pattern_to_compile.find("(?(") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Check for \K (keep out)
+    if (pattern_to_compile.find("\\K") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Check for \X (Unicode grapheme cluster)
+    if (pattern_to_compile.find("\\X") != std::string::npos) {
+        has_pcre2_features = true;
+    }
+    
+    // Use PCRE2 if pattern has advanced features or if pattern/input is non-ASCII
+    if (has_pcre2_features || !is_ascii_string(pattern_to_compile) || !is_ascii_string(input)) {
         use_pcre_ = true;
     }
 #endif
+    // Debug: Print which regex engine is being used
     if (use_pcre_) {
         std::string pattern_utf8 = parse_unicode_escapes(pattern_to_compile);
         int error_code = 0;
