@@ -1,0 +1,29 @@
+/* Simple pattern test */
+
+"=== SIMPLE PATTERN TEST ===\n".echo();
+
+/* Test 1: Exact match */
+"Test 1: Exact match\n".echo();
+result = "hello".grep("hello");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 2: Simple substring */
+"Test 2: Simple substring\n".echo();
+result = "hello world".grep("hello");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 3: No match */
+"Test 3: No match\n".echo();
+result = "hello world".grep("xyz");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 4: Empty pattern */
+"Test 4: Empty pattern\n".echo();
+result = "hello world".grep("");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+"=== SIMPLE PATTERN COMPLETED ===\n".echo(); 

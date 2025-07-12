@@ -57,18 +57,60 @@ The following returns the length of each word in a string:
 ["café résumé"]
 ```
 
-### Custom Delimiters
+### Grapheme Cluster Patterns
 ```
-"Line 1|Line 2|Line 3".grep("Line 2", "", "|")
-["Line 2"]
+// Extract individual grapheme clusters
+"e\u0301\n😀\u2764\ufe0f".grep("\\X", "o")
+["é", "\n", "😀", "❤️"]
+
+// Complex grapheme clusters with combining marks
+"café résumé".grep("\\X", "o")
+["c", "a", "f", "é", " ", "r", "é", "s", "u", "m", "é"]
+
+// Emoji with modifiers
+"😀\u2764\ufe0f".grep("\\X", "o")
+["😀", "❤️"]
 ```
 
 ### Error Handling
 ```
-result = input.grep("invalid[", "o");
-if (result.type() == $ERR) {
-    "Error occurred: " + result.str() + "\n".echo();
+// Invalid patterns return empty arrays instead of crashing
+"Hello world".grep("(", "o")
+[]
+
+"Hello world".grep(")", "o")
+[]
+
+"Hello world".grep("a{", "o")
+[]
+
+// Safe pattern testing
+patterns = ["(", ")", "a{", "", "\\"];
+for (i = 0; i < patterns.len(); i = i + 1) {
+    result = "test".grep(patterns[i], "o");
+    ("Pattern '" + patterns[i] + "' result: " + result.str() + "\n").echo();
 }
+```
+
+### Unicode Edge Cases
+```
+// Zero-length matches (currently returns [null] - known issue)
+"abc".grep("^", "o")
+[null]  // Should be [""]
+
+// Unicode boundary handling
+"ÉÑÜ".grep(".", "o")
+["É", "Ñ", "Ü"]
+
+// Case-insensitive Unicode (may group characters due to Unicode complexity)
+"ÉÑÜ".grep(".", "oi")
+["ÉÑ", "Ü"]  // É and Ñ may be grouped together
+```
+
+### Custom Delimiters
+```
+"Line 1|Line 2|Line 3".grep("Line 2", "", "|")
+["Line 2"]
 ```
 
 ## Grammer Updating

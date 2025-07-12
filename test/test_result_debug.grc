@@ -1,0 +1,38 @@
+/* Result debug test */
+
+"=== RESULT DEBUG TEST ===\n".echo();
+
+/* Test 1: Simple grep */
+"Test 1: Simple grep\n".echo();
+result = "hello".grep("hello");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type() + "\n".echo();
+"Result empty: " + result.empty() + "\n".echo();
+"---\n".echo();
+
+/* Test 2: Try different ways to display */
+"Test 2: Try different ways to display\n".echo();
+"Result as string: [" + result.str() + "]\n".echo();
+"Result length: " + result.length() + "\n".echo();
+"Result size: " + result.size() + "\n".echo();
+"---\n".echo();
+
+/* Test 3: Try to access first element */
+"Test 3: Try to access first element\n".echo();
+if (result.size() > 0) {
+    "First element: [" + result[0] + "]\n".echo();
+} else {
+    "No elements in result\n".echo();
+}
+"---\n".echo();
+
+/* Test 4: Try to iterate */
+"Test 4: Try to iterate\n".echo();
+i = 0;
+while (i < result.size()) {
+    "Element " + i + ": [" + result[i] + "]\n".echo();
+    i = i + 1;
+}
+"---\n".echo();
+
+"=== RESULT DEBUG COMPLETED ===\n".echo(); 

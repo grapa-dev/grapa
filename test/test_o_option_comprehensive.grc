@@ -1,0 +1,102 @@
+/* Comprehensive test for "o" option functionality */
+
+"=== COMPREHENSIVE 'o' OPTION TEST ===\n".echo();
+
+/* Test 1: Basic ASCII with "o" */
+"Test 1: Basic ASCII with 'o'\n".echo();
+result1 = "hello world".grep("\\w+", "o");
+("Result: " + result1.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Unicode with "o" */
+"Test 2: Unicode with 'o'\n".echo();
+result2 = "éñü".grep(".", "o");
+("Result: " + result2.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Case-insensitive with "o" */
+"Test 3: Case-insensitive with 'o'\n".echo();
+result3 = "HELLO WORLD".grep("\\w+", "oi");
+("Result: " + result3.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Unicode case-insensitive with "o" */
+"Test 4: Unicode case-insensitive with 'o'\n".echo();
+result3b = "ÉÑÜ".grep(".", "oi");
+("Result: " + result3b.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 5: Diacritic-insensitive with "o" */
+"Test 5: Diacritic-insensitive with 'o'\n".echo();
+result4 = "café résumé".grep("cafe", "od");
+("Result: " + result4.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 6: Normalization with "o" */
+"Test 6: Normalization with 'o'\n".echo();
+result5 = "café".grep("cafe", "oN");
+("Result: " + result5.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 7: Word boundaries with "o" */
+"Test 7: Word boundaries with 'o'\n".echo();
+result6 = "foo bar foobar".grep("foo", "ow");
+("Result: " + result6.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 8: Multiline with "o" */
+"Test 8: Multiline with 'o'\n".echo();
+result7 = "line1\nline2\nline3".grep("line", "o");
+("Result: " + result7.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 9: All-mode with "o" */
+"Test 9: All-mode with 'o'\n".echo();
+result8 = "line1\nline2\nline3".grep("line", "oa");
+("Result: " + result8.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 10: Invert match with "o" */
+"Test 10: Invert match with 'o'\n".echo();
+result9 = "line1\nline2\nline3".grep("line2", "ov");
+("Result: " + result9.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 11: Exact match with "o" */
+"Test 11: Exact match with 'o'\n".echo();
+result10 = "hello\nworld\nhello world".grep("^hello$", "ox");
+("Result: " + result10.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 12: Complex regex with "o" */
+"Test 12: Complex regex with 'o'\n".echo();
+result11 = "test123 test456 test789".grep("test\\d+", "o");
+("Result: " + result11.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 13: Unicode properties with "o" */
+"Test 13: Unicode properties with 'o'\n".echo();
+result12 = "Hello 世界 123".grep("\\p{L}+", "o");
+("Result: " + result12.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 14: Zero-length matches with "o" */
+"Test 14: Zero-length matches with 'o'\n".echo();
+result13 = "abc".grep("(?=b)", "o");
+("Result: " + result13.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 15: Large input with "o" */
+"Test 15: Large input with 'o'\n".echo();
+large_input = "";
+i = 1;
+while (i <= 100) {
+    large_input = large_input + "line" + i + "\n";
+    i = i + 1;
+}
+result14 = large_input.grep("line\\d+", "o");
+("Result count: " + result14.size() + "\n").echo();
+("First few results: " + result14.str() + "\n").echo();
+"---\n".echo();
+
+"=== COMPREHENSIVE 'o' OPTION TEST COMPLETE ===\n".echo(); 

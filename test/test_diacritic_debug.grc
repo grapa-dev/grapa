@@ -1,0 +1,29 @@
+/* Debug test for diacritic-insensitive matching */
+
+"=== DIACRITIC-INSENSITIVE DEBUG TEST ===\n".echo();
+
+/* Test 1: Basic diacritic-insensitive */
+"Test 1: Basic diacritic-insensitive\n".echo();
+result1 = "café résumé".grep("cafe", "d");
+("Result: " + result1.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Diacritic-insensitive with "o" */
+"Test 2: Diacritic-insensitive with 'o'\n".echo();
+result2 = "café résumé".grep("cafe", "od");
+("Result: " + result2.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Case-insensitive diacritic-insensitive */
+"Test 3: Case-insensitive diacritic-insensitive\n".echo();
+result3 = "CAFÉ RÉSUMÉ".grep("cafe", "id");
+("Result: " + result3.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Case-insensitive diacritic-insensitive with "o" */
+"Test 4: Case-insensitive diacritic-insensitive with 'o'\n".echo();
+result4 = "CAFÉ RÉSUMÉ".grep("cafe", "iod");
+("Result: " + result4.str() + "\n").echo();
+"---\n".echo();
+
+"=== DIACRITIC-INSENSITIVE DEBUG TEST COMPLETE ===\n".echo(); 

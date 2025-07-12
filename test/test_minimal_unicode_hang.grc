@@ -1,0 +1,29 @@
+/* Minimal test to isolate Unicode hanging issue */
+
+"=== MINIMAL UNICODE HANG TEST ===\n".echo();
+
+/* Test 1: Single Unicode character */
+"Test 1: Single Unicode character\n".echo();
+input1 = "é";
+result1 = input1.grep(".", "o");
+("Input: " + input1 + "\n").echo();
+("Result: " + result1.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Two Unicode characters */
+"Test 2: Two Unicode characters\n".echo();
+input2 = "éñ";
+result2 = input2.grep(".", "o");
+("Input: " + input2 + "\n").echo();
+("Result: " + result2.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Three Unicode characters */
+"Test 3: Three Unicode characters\n".echo();
+input3 = "éñü";
+result3 = input3.grep(".", "o");
+("Input: " + input3 + "\n").echo();
+("Result: " + result3.str() + "\n").echo();
+"---\n".echo();
+
+"=== TEST COMPLETE ===\n".echo(); 

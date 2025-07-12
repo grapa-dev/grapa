@@ -46,9 +46,9 @@ input = "e\u0301\n😀\u2764\ufe0f";
 result = input.grep("\u00e9", "o");
 ("Result: " + result.str() + "\n").echo();
 ("Expected: [\"é\"]\n").echo();
-result = input.grep("\X", "o");
+result = input.grep("\\X", "o");
 ("Result: " + result.str() + "\n").echo();
-("Expected: [\"é\", \"😀\", \"❤️\"]\n").echo();
+("Expected: [\"é\",\"\\n\",\"😀\",\"❤️\"]\n").echo();
 "---\n".echo();
 
 /* 6. Null bytes in input */

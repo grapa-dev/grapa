@@ -1,0 +1,9 @@
+/* Test grapheme cluster pattern crash */
+
+"=== GRAPHEME CLUSTER CRASH TEST ===\n".echo();
+
+input = "e\u0301\n😀\u2764\ufe0f";
+result = input.grep("\X", "o");
+("Result: " + result.str() + "\n").echo();
+
+"=== TEST COMPLETE ===\n".echo(); 

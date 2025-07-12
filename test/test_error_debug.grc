@@ -1,0 +1,35 @@
+/* Error debug test */
+
+"=== ERROR DEBUG TEST ===\n".echo();
+
+/* Test 1: Simple pattern */
+"Test 1: Simple pattern\n".echo();
+result = "hello".grep("hello");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type() + "\n".echo();
+"---\n".echo();
+
+/* Test 2: Invalid regex */
+"Test 2: Invalid regex\n".echo();
+result = "hello".grep("(");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type() + "\n".echo();
+"---\n".echo();
+
+/* Test 3: Empty pattern */
+"Test 3: Empty pattern\n".echo();
+result = "hello".grep("");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type() + "\n".echo();
+"---\n".echo();
+
+/* Test 4: Check if result is $ERR */
+"Test 4: Check if result is $ERR\n".echo();
+if (result == "$ERR") {
+    "Result is $ERR (error)\n".echo();
+} else {
+    "Result is not $ERR\n".echo();
+}
+"---\n".echo();
+
+"=== ERROR DEBUG COMPLETED ===\n".echo(); 

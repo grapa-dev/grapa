@@ -1,0 +1,41 @@
+/* Debug test for match extraction */
+
+"=== MATCH EXTRACTION DEBUG TEST ===\n".echo();
+
+/* Test 1: Simple pattern without any options */
+"Test 1: Simple pattern without options\n".echo();
+result1 = "hello world".grep("hello", "");
+("Result: " + result1.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Simple pattern with "o" option */
+"Test 2: Simple pattern with 'o' option\n".echo();
+result2 = "hello world".grep("hello", "o");
+("Result: " + result2.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Diacritic pattern without options */
+"Test 3: Diacritic pattern without options\n".echo();
+result3 = "café".grep("cafe", "");
+("Result: " + result3.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Diacritic pattern with "d" option */
+"Test 4: Diacritic pattern with 'd' option\n".echo();
+result4 = "café".grep("cafe", "d");
+("Result: " + result4.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 5: Diacritic pattern with "o" option */
+"Test 5: Diacritic pattern with 'o' option\n".echo();
+result5 = "café".grep("cafe", "o");
+("Result: " + result5.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 6: Diacritic pattern with "od" option */
+"Test 6: Diacritic pattern with 'od' option\n".echo();
+result6 = "café".grep("cafe", "od");
+("Result: " + result6.str() + "\n").echo();
+"---\n".echo();
+
+"=== MATCH EXTRACTION DEBUG TEST COMPLETE ===\n".echo(); 

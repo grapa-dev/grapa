@@ -16364,7 +16364,15 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 			result->vQueue = new GrapaRuleQueue();
 
 			for (const auto& m : matches) {
-				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(m.c_str(), m.length())));
+				// Ensure empty strings are handled properly - never create null tokens
+				GrapaCHAR matchStr;
+				if (m.empty()) {
+					// Explicitly create an empty string token
+					matchStr.FROM("", 0);
+				} else {
+					matchStr.FROM(m.c_str(), m.length());
+				}
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR(), matchStr));
 			}
 		}
 	}

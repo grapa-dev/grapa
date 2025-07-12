@@ -65,6 +65,9 @@ test/
 - **Atomic Groups** (`test_atomic_groups.grc`): 10 tests for atomic group functionality
 - **Lookaround Assertions** (`test_lookaround_assertions.grc`): 8 tests for lookaround functionality
 - **Unicode Grapheme Clusters** (`test_unicode_grapheme_clusters.grc`): 10 tests for grapheme cluster functionality
+- **Grapheme Cluster Pattern** (`test_grapheme_cluster_crash.grc`): Tests for the `\X` pattern and direct segmentation
+- **Invalid Regex Patterns** (`test_invalid_regex.grc`): Tests for graceful error handling of invalid patterns
+- **Unicode Edge Cases** (`test_grep_edge_cases.grc`): Tests for complex Unicode boundary scenarios
 
 #### 5. **Ripgrep Compatibility Tests**
 - **Ripgrep Parity** (`test_ripgrep_compatibility.grc`): Tests for ripgrep feature parity including column output, word boundaries, null-data mode, color output, and context separators.
@@ -76,7 +79,7 @@ test/
 - **Custom Delimiters** (`test_custom_delimiters.grc`): Custom line delimiter functionality testing.
 - **Unicode Normalization** (`test_unicode_normalization.grc`): Unicode normalization form testing.
 - **Unicode O Option** (`test_unicode_o_option.grc`): Unicode character handling with match-only output.
-- **Error Handling** (`test_error_handling.grc`): Exception-based error handling testing.
+- **Error Handling** (`test_error_handling.grc`): Graceful error handling testing for invalid patterns.
 - **Edge Cases** (`test_edge_cases.grc`): Edge case testing for various scenarios.
 - **Binary Mode** (`test_binary_mode.grc`): Binary processing mode testing.
 
@@ -131,6 +134,9 @@ Run specific test categories:
 .\grapa.exe -cfile "test/test_atomic_groups.grc"
 .\grapa.exe -cfile "test/test_lookaround_assertions.grc"
 .\grapa.exe -cfile "test/test_unicode_grapheme_clusters.grc"
+.\grapa.exe -cfile "test/test_grapheme_cluster_crash.grc"
+.\grapa.exe -cfile "test/test_invalid_regex.grc"
+.\grapa.exe -cfile "test/test_grep_edge_cases.grc"
 
 # Ripgrep compatibility tests
 .\grapa.exe -cfile "test/test_ripgrep_compatibility.grc"
@@ -171,13 +177,16 @@ For development and CI/CD, run the complete test suite:
 - **Atomic Groups Test**: 10 PASS
 - **Lookaround Assertions Test**: 8 PASS
 - **Unicode Grapheme Clusters Test**: 10 PASS
+- **Grapheme Cluster Pattern Test**: All tests PASS (direct segmentation working)
+- **Invalid Regex Patterns Test**: All tests PASS (graceful error handling working)
+- **Unicode Edge Cases Test**: Most tests PASS (some known issues with zero-length matches)
 - **Ripgrep Compatibility Test**: All tests PASS (full ripgrep parity achieved)
 - **Context Lines Test**: All tests PASS
 - **Advanced Context Test**: All tests PASS
 - **Custom Delimiters Test**: All tests PASS
 - **Unicode Normalization Test**: All tests PASS
 - **Unicode O Option Test**: All tests PASS
-- **Error Handling Test**: All tests PASS (exception-based error handling working)
+- **Error Handling Test**: All tests PASS (graceful error handling working)
 - **Edge Cases Test**: All tests PASS
 - **Binary Mode Test**: All tests PASS
 

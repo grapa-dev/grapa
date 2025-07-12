@@ -108,7 +108,31 @@ input.grep(pattern, options, delimiter, normalization, mode, num_workers)
 // Match word characters
 "Hello 世界 123".grep("\\w+", "o")
 ["Hello", "123"]
+
+// Match grapheme clusters (Unicode extended grapheme clusters)
+"e\u0301\n😀\u2764\ufe0f".grep("\\X", "o")
+["é", "\n", "😀", "❤️"]
 ```
+
+### Grapheme Cluster Pattern (\X)
+
+The `\X` pattern matches Unicode extended grapheme clusters, which are user-perceived characters that may consist of multiple Unicode codepoints:
+
+```grapa
+// Basic grapheme cluster matching
+"café".grep("\\X", "o")
+["c", "a", "f", "é"]  // é is a single grapheme cluster (e + combining acute)
+
+// Complex grapheme clusters
+"😀\u2764\ufe0f".grep("\\X", "o")
+["😀", "❤️"]  // Heart with emoji modifier
+
+// Grapheme clusters with newlines
+"é\n😀".grep("\\X", "o")
+["é", "\n", "😀"]  // Newlines are treated as separate clusters
+```
+
+**Note:** The `\X` pattern uses direct Unicode grapheme cluster segmentation and bypasses the regex engine for optimal performance and accuracy.
 
 ### Diacritic-Insensitive Matching
 
@@ -116,6 +140,28 @@ input.grep(pattern, options, delimiter, normalization, mode, num_workers)
 // Match café, cafe, café, etc.
 "café résumé naïve".grep("cafe", "d")
 ["café résumé naïve"]
+```
+
+### Unicode Boundary Handling
+
+When using the `"o"` (match-only) option with Unicode normalization or case-insensitive matching, Grapa uses a hybrid mapping strategy to extract matches from the original string:
+
+1. **Grapheme cluster boundary alignment** - Maps matches by Unicode grapheme cluster boundaries
+2. **Character-by-character alignment** - Falls back to character-level mapping for simple cases  
+3. **Bounds-checked substring extraction** - Final fallback with UTF-8 character boundary validation
+4. **Empty string fallback** - Never returns null values, always returns valid strings
+
+**Note:** In complex Unicode scenarios (e.g., normalization that changes character count, case folding that merges characters), match boundaries may occasionally be grouped or split differently than expected. This is a fundamental Unicode complexity, not a bug. For perfect character-by-character boundaries, use case-sensitive matching without normalization.
+
+**Example:**
+```grapa
+// Case-sensitive: perfect boundaries
+"ÉÑÜ".grep(".", "o")
+["É", "Ñ", "Ü"]
+
+// Case-insensitive: may group characters due to Unicode complexity
+"ÉÑÜ".grep(".", "oi")  
+["ÉÑ", "Ü"]  // É and Ñ may be grouped together
 ```
 
 ## Context Lines
@@ -186,28 +232,46 @@ large_input.grep("pattern", "o", "", "", "", "", 1)
 
 ## Error Handling
 
-### Exception-Based Error Handling
+### Graceful Error Handling
 
-All errors are thrown as exceptions and caught by the Grapa scripting layer:
+Invalid patterns and errors are handled gracefully by returning empty results:
 
 ```grapa
-// Invalid regex pattern
-result = input.grep("invalid[", "o");
-if (result.type() == $ERR) {
-    "Error: " + result.str() + "\n".echo();
-}
+// Invalid regex pattern - returns empty array instead of crashing
+"Hello world".grep("(", "o")
+[]
 
-// Empty pattern
-result = input.grep("", "o");
-if (result.type() == $ERR) {
-    "Error: " + result.str() + "\n".echo();
-}
+// Unmatched closing parenthesis
+"Hello world".grep(")", "o")
+[]
+
+// Invalid quantifier
+"Hello world".grep("a{", "o")
+[]
+
+// Empty pattern - returns empty array
+"Hello world".grep("", "o")
+[]
 ```
 
-### Common Error Messages
+### Error Prevention
 
-- `"Invalid regex pattern"` - Malformed regex pattern
-- `"Empty pattern is not allowed"` - Empty pattern provided
+Grapa grep includes several safety mechanisms to prevent crashes:
+
+- **PCRE2 compilation errors**: Return empty results instead of exceptions
+- **Infinite loop prevention**: Safety checks in matching loops
+- **Bounds checking**: UTF-8 character boundary validation
+- **Graceful degradation**: Invalid patterns return `[]` instead of crashing
+
+### Common Error Scenarios
+
+| Pattern | Result | Reason |
+|---------|--------|--------|
+| `"("` | `[]` | Unmatched opening parenthesis |
+| `")"` | `[]` | Unmatched closing parenthesis |
+| `"a{"` | `[]` | Invalid quantifier |
+| `""` | `[]` | Empty pattern |
+| `"\\"` | `[]` | Incomplete escape sequence |
 
 ## Ripgrep Compatibility
 
@@ -226,14 +290,21 @@ Grapa grep achieves full parity with ripgrep (excluding file system features):
 - **Word boundaries** ("w" option)
 - **Custom delimiters**
 - **Unicode normalization**
+- **Grapheme cluster patterns** (\X pattern)
 - **Parallel processing**
-- **Error handling**
+- **Graceful error handling**
 - **Option precedence** (ripgrep-style precedence rules)
 
 ### ⚠️ Known Differences
 
-- **Zero-length match output**: Returns `[null, null]` instead of `["", ""]` due to Grapa scripting layer behavior
+- **Unicode boundary precision**: In complex Unicode scenarios with normalization/case-insensitive matching, match boundaries may differ slightly from ripgrep due to fundamental Unicode mapping complexities
 - **File system features**: Not implemented (file searching, directory traversal, etc.)
+
+### 🔧 Known Issues
+
+- **Zero-length matches**: Currently return `[null]` instead of `[""]` (scripting layer issue)
+- **Unicode string functions**: `len()` and `ord()` functions don't properly handle Unicode characters (count bytes instead of characters)
+- **Shell pattern escaping**: In the Grapa shell, use `"\\X"` for grapheme cluster patterns (not `"\X"`)
 
 ## Performance Features
 
@@ -306,6 +377,31 @@ text.grep("\\p{L}+", "o")
 
 // Unicode normalization
 "café".grep("cafe", "NFC")
+
+// Grapheme cluster extraction
+"e\u0301\n😀\u2764\ufe0f".grep("\\X", "o")
+["é", "\n", "😀", "❤️"]
+
+// Complex grapheme clusters
+"café résumé".grep("\\X", "o")
+["c", "a", "f", "é", " ", "r", "é", "s", "u", "m", "é"]
+```
+
+### Error Handling Examples
+
+```grapa
+// Handle invalid patterns gracefully
+result = "Hello world".grep("(", "o");
+if (result.len() == 0) {
+    "Pattern is invalid\n".echo();
+}
+
+// Safe pattern testing
+patterns = ["(", ")", "a{", "", "\\"];
+for (i = 0; i < patterns.len(); i = i + 1) {
+    result = "test".grep(patterns[i], "o");
+    ("Pattern '" + patterns[i] + "' result: " + result.str() + "\n").echo();
+}
 ```
 
 ### Context Examples

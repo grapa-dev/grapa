@@ -1,0 +1,29 @@
+/* Basic debug test */
+
+"=== BASIC DEBUG TEST ===\n".echo();
+
+/* Test 1: Simple string */
+"Test 1: Simple string\n".echo();
+result = "hello".grep("hello");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 2: Simple pattern */
+"Test 2: Simple pattern\n".echo();
+result = "hello world".grep("hello");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 3: Match only */
+"Test 3: Match only\n".echo();
+result = "hello world".grep("hello", "o");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 4: Case insensitive */
+"Test 4: Case insensitive\n".echo();
+result = "Hello World".grep("hello", "i");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+"=== BASIC DEBUG COMPLETED ===\n".echo(); 

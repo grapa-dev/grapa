@@ -49,6 +49,8 @@ limitations under the License.
 
 using namespace GrapaUnicode;
 
+// Forward declaration for grapheme cluster extraction helper
+static std::string extract_grapheme_cluster(const std::string& input, size_t offset);
 // Forward declarations for parallel processing
 std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     const std::string& input,
@@ -694,12 +696,14 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     
     // Check for compilation error (indicated by offset -1)
     if (!matches.empty() && matches[0].offset == static_cast<size_t>(-1)) {
-        throw std::runtime_error("Invalid regex pattern");
+        /* Return empty result instead of throwing exception for invalid patterns */
+        return {};
     }
     
     // Handle empty pattern case
     if (effective_pattern.empty()) {
-        throw std::runtime_error("Empty pattern is not allowed");
+        /* Return empty result instead of throwing exception for empty patterns */
+        return {};
     }
     
     // Extract matches from positions
@@ -766,6 +770,19 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             starts.push_back("");
         }
         return starts;
+    }
+    
+    // Special case: if pattern is exactly '\X' and match_only ('o') is set, segment input into grapheme clusters
+    if (match_only && effective_pattern == "\\X") {
+        std::vector<std::string> graphemes;
+        size_t offset = 0;
+        while (offset < working_input.size()) {
+            std::string cluster = extract_grapheme_cluster(working_input, offset);
+            if (cluster.empty()) break;
+            graphemes.push_back(GrapaUnicode::UnicodeRegex::get_normalized_text(cluster, false, GrapaUnicode::NormalizationForm::NFC));
+            offset += cluster.size(); /* Always advance by the size of the cluster */
+        }
+        return graphemes;
     }
     
     // Find which lines contain matches
@@ -836,14 +853,13 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     for (const auto& match : matches) {
         // Bounds check: ensure match.offset and match.length are valid
         if ((match.offset <= working_input.size()) && (match.length <= working_input.size()) && (match.offset + match.length <= working_input.size())) {
-            size_t end_offset = match.offset + match.length;
-            std::string matched_text = working_input.substr(match.offset, end_offset - match.offset);
-            // Unicode-aware: If pattern is \X (grapheme cluster), trim trailing newline unless the grapheme is a newline
-            if (effective_pattern == "\\X" && !matched_text.empty() && matched_text.back() == '\n') {
-                // Only trim if the grapheme is not a newline itself
-                if (matched_text != "\n") {
-                    matched_text.pop_back();
-                }
+            std::string matched_text;
+            // Use grapheme cluster extraction for \X pattern
+            if (effective_pattern == "\\X") {
+                matched_text = extract_grapheme_cluster(working_input, match.offset);
+            } else {
+                size_t end_offset = match.offset + match.length;
+                matched_text = working_input.substr(match.offset, end_offset - match.offset);
             }
             // Normalize output to NFC for display consistency
             matched_text = GrapaUnicode::UnicodeRegex::get_normalized_text(matched_text, false, GrapaUnicode::NormalizationForm::NFC);
@@ -1114,6 +1130,13 @@ std::vector<std::pair<size_t, size_t>> GrapaUnicode::UnicodeRegex::find_all(cons
             if (rc < 0) break;
             PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(pcre_match_data_);
             
+            /* Safety check: prevent infinite loop on zero-length matches */
+            if (ovector[0] == ovector[1] && ovector[0] == offset) {
+                offset++;
+                if (offset > length) break;
+                continue;
+            }
+            
             // If we're using normalized text, map the match back to original positions
             if (needs_normalization) {
                 auto mapped = map_normalized_span_to_original(text.data(), search_text, ovector[0], ovector[1] - ovector[0]);
@@ -1123,22 +1146,8 @@ std::vector<std::pair<size_t, size_t>> GrapaUnicode::UnicodeRegex::find_all(cons
             }
             
             // Always advance past the current match to avoid infinite loops
-            if (ovector[1] > offset) {
-                offset = ovector[1];
-            } else {
-                // If match is at current position, advance by at least 1 character
-                // For Unicode, we need to advance by the character width
-                if (offset < length) {
-                    // Find the next character boundary
-                    size_t next_char = offset + 1;
-                    while (next_char < length && (search_text[next_char] & 0xC0) == 0x80) {
-                        next_char++;
-                    }
-                    offset = next_char;
-                } else {
-                    break; // We're at the end
-                }
-            }
+            offset = ovector[1];
+            if (offset == ovector[0]) offset++; /* Ensure we always advance */
         }
         return matches;
     }
@@ -1232,6 +1241,14 @@ void UnicodeRegex::compile(const std::string& input) {
         }
         // Always enable multiline and dotall for ripgrep parity
         compile_flags |= PCRE2_DOTALL | PCRE2_MULTILINE;
+        
+        // Debug: Check if pattern is \X and add special handling
+        bool is_grapheme_pattern = (pattern_utf8 == "\\X");
+        if (is_grapheme_pattern) {
+            // For \X pattern, use a different approach - match any Unicode character
+            pattern_utf8 = ".";
+        }
+        
         // Use the actual pattern variable being compiled
         pcre2_code* re = pcre2_compile(
             reinterpret_cast<PCRE2_SPTR>(pattern_utf8.c_str()),
@@ -1362,6 +1379,32 @@ void GrapaGrepWorkEvent::Running() {
 
 void GrapaGrepWorkEvent::Stopping() {
     // Clean up - no special cleanup needed for grep
+}
+
+// Helper: Extract a single grapheme cluster at a given byte offset from a UTF-8 string
+static std::string extract_grapheme_cluster(const std::string& input, size_t offset) {
+    size_t input_len = input.size();
+    if (offset >= input_len) return "";
+    size_t start = offset;
+    size_t end = offset;
+    utf8proc_int32_t cp;
+    utf8proc_ssize_t char_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(input.c_str()) + start, input_len - start, &cp);
+    if (char_len <= 0) return "";
+    // If the current codepoint is a newline, return it as its own cluster
+    if (cp == '\n') return input.substr(start, char_len);
+    end = start + char_len;
+    // Extend to full grapheme cluster, but stop at newline
+    while (end < input_len) {
+        utf8proc_int32_t next_cp;
+        utf8proc_ssize_t next_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(input.c_str()) + end, input_len - end, &next_cp);
+        if (next_len <= 0) break;
+        // If the next codepoint is a newline, stop BEFORE including it
+        if (next_cp == '\n') break;
+        if (utf8proc_grapheme_break(cp, next_cp) != 0) break;
+        end += next_len;
+        cp = next_cp;
+    }
+    return input.substr(start, end - start);
 }
 
  

@@ -1,0 +1,42 @@
+/* Debug test for options */
+
+"=== DEBUG OPTIONS TEST ===\n".echo();
+
+/* Test basic grep first */
+"Test basic grep:\n".echo();
+input = "foo bar baz";
+result = input.grep("foo", "o");
+"Result: " + result.str() + "\n".echo();
+"Result hex: " + result.hex() + "\n".echo();
+"---\n".echo();
+
+/* Test with T option */
+"Test with T option:\n".echo();
+result = input.grep("foo", "oT");
+"Result: " + result.str() + "\n".echo();
+"Result hex: " + result.hex() + "\n".echo();
+"---\n".echo();
+
+/* Test with w option */
+"Test with w option:\n".echo();
+result = input.grep("foo", "ow");
+"Result: " + result.str() + "\n".echo();
+"Result hex: " + result.hex() + "\n".echo();
+"---\n".echo();
+
+/* Test with z option */
+"Test with z option:\n".echo();
+input2 = "foo\0bar\0foo";
+result = input2.grep("foo", "oz");
+"Result: " + result.str() + "\n".echo();
+"Result hex: " + result.hex() + "\n".echo();
+"---\n".echo();
+
+/* Test with L option */
+"Test with L option:\n".echo();
+result = input.grep("foo", "oL");
+"Result: " + result.str() + "\n".echo();
+"Result hex: " + result.hex() + "\n".echo();
+"---\n".echo();
+
+"=== DEBUG COMPLETED ===\n".echo(); 

@@ -1,0 +1,12 @@
+/* Test zero-length matches with "o" option */
+
+"=== ZERO-LENGTH MATCHES WITH 'o' TEST ===\n".echo();
+
+/* Test: Zero-length match with "o" should return [""] not [null] */
+result = "abc".grep("(?=b)", "o");
+("Result: " + result.str() + "\n").echo();
+
+/* Expected: [""] */
+"Expected: [\"\"]\n".echo();
+
+"=== TEST COMPLETE ===\n".echo(); 

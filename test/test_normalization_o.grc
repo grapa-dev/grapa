@@ -1,0 +1,12 @@
+/* Test normalization with "o" option */
+
+"=== NORMALIZATION WITH 'o' TEST ===\n".echo();
+
+/* Test: Normalization with "o" should return "cafe" */
+result = "café".grep("cafe", "oN");
+("Result: " + result.str() + "\n").echo();
+
+/* Expected: ["café"] (ripgrep returns original text span) */
+"Expected: [\"café\"]\n".echo();
+
+"=== TEST COMPLETE ===\n".echo(); 
