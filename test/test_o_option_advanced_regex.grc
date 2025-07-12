@@ -1,0 +1,29 @@
+/* Advanced Regex Features with 'o' Option Test */
+
+"=== ADVANCED REGEX 'o' OPTION TEST ===\n".echo();
+
+/* Atomic groups */
+"Test 1: Atomic groups
+".echo();
+result1 = "aaa".grep("(?>a+)a", "o");
+("Result: " + result1.str() + "\n").echo();
+"Expected: []\n".echo();
+"---\n".echo();
+
+/* Possessive quantifiers */
+"Test 2: Possessive quantifiers
+".echo();
+result2 = "aaa".grep("a++", "o");
+("Result: " + result2.str() + "\n").echo();
+"Expected: [\"aaa\"]\n".echo();
+"---\n".echo();
+
+/* Conditional patterns */
+"Test 3: Conditional patterns
+".echo();
+result3 = "abc123".grep("(a)?(?(1)b|c)", "o");
+("Result: " + result3.str() + "\n").echo();
+"Expected: [\"ab\"]\n".echo();
+"---\n".echo();
+
+"=== TEST COMPLETE ===\n".echo(); 

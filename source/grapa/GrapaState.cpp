@@ -4862,8 +4862,15 @@ void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, GrapaRuleEvent* pTokenEv
 	{
 		if (pTokenEvent == NULL || pTokenEvent->mValue.mBytes == NULL || (pTokenEvent->mValue.mToken == GrapaTokenType::SYSID && pTokenEvent->mValue.mLength == 0))
 		{
-			pSend->Send(this, vScriptState->vRuleVariables, "null");
-			return;
+			switch (pTokenEvent->mValue.mToken)
+			{
+			case GrapaTokenType::STR:
+			case GrapaTokenType::SYSSTR:
+				break;
+			default:
+				pSend->Send(this, vScriptState->vRuleVariables, "null");
+				return;
+			}
 		}
 	}
 	switch (pTokenEvent->mValue.mToken)

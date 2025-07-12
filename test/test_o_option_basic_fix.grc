@@ -1,0 +1,34 @@
+/* Basic "o" Option Fix Test */
+/* Test the core extraction logic fix */
+
+"=== BASIC 'o' OPTION FIX TEST ===\n".echo();
+
+/* Test 1: Basic literal pattern */
+"Test 1: Basic literal pattern\n".echo();
+result = "hello world".grep("hello", "o");
+("Result: " + result.str() + "\n").echo();
+"Expected: [\"hello\"]\n".echo();
+"---\n".echo();
+
+/* Test 2: Case-insensitive */
+"Test 2: Case-insensitive (oi)\n".echo();
+result = "Hello WORLD".grep("world", "oi");
+("Result: " + result.str() + "\n").echo();
+"Expected: [\"WORLD\"]\n".echo();
+"---\n".echo();
+
+/* Test 3: Word boundaries */
+"Test 3: Word boundaries (ow)\n".echo();
+result = "foo bar foobar".grep("foo", "ow");
+("Result: " + result.str() + "\n").echo();
+"Expected: [\"foo\"]\n".echo();
+"---\n".echo();
+
+/* Test 4: Multiple matches */
+"Test 4: Multiple matches\n".echo();
+result = "foo bar foo baz".grep("foo", "o");
+("Result: " + result.str() + "\n").echo();
+"Expected: [\"foo\", \"foo\"]\n".echo();
+"---\n".echo();
+
+"=== BASIC 'o' OPTION FIX TEST COMPLETE ===\n".echo(); 

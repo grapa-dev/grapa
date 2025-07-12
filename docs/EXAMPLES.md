@@ -162,9 +162,9 @@ for (i = 0; i < patterns.len(); i = i + 1) {
 
 ### Unicode Edge Cases
 ```
-// Zero-length matches (currently returns [null] - known issue)
+// Zero-length matches (now working correctly)
 "abc".grep("^", "o")
-[null]  // Should be [""]
+[""]  // Empty string for each line
 
 // Unicode boundary handling
 "ÉÑÜ".grep(".", "o")

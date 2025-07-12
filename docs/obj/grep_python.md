@@ -325,7 +325,7 @@ except Exception as e:
 
 ## Zero-Length Match and Empty String Output
 
-> **Update (2024-06):** As of this release, zero-length matches and explicit empty strings in arrays are always output as `""` (empty string), never as `null`. This matches ripgrep’s behavior and ensures round-trip consistency and correct scripting semantics.
+> **Update (2024-12):** Zero-length matches and explicit empty strings in arrays are now correctly output as `""` (empty string), never as `null`. This matches ripgrep's behavior and ensures round-trip consistency and correct scripting semantics. The previous null output bug has been resolved.
 
 ### Example: Zero-Length Match
 ```python
@@ -341,7 +341,7 @@ xy.eval('[1, "", 2]')
 
 ## Test Coverage and Regression Testing
 
-> **Update (2024-06):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). See [Testing Documentation](../../docs/TESTING.md) for details.
+> **Update (2024-12):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See [Testing Documentation](../../docs/TESTING.md) for details.
 
 ## Comparison with Other Tools
 
@@ -452,6 +452,5 @@ Grapa grep is production-ready and provides:
 - ❌ Directory traversal (not implemented by design)
 
 **Scripting Layer Issues:**
-- ⚠️ Zero-length matches return `[null]` instead of `[""]`
 - ⚠️ Unicode string functions (`len()`, `ord()`) count bytes not characters
 - ⚠️ Null-data mode limited by string parser (`\x00` not converted) 

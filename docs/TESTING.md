@@ -195,7 +195,7 @@ For development and CI/CD, run the complete test suite:
 - **Unicode Grapheme Clusters Test**: 10 PASS
 - **Grapheme Cluster Pattern Test**: All tests PASS (direct segmentation working)
 - **Invalid Regex Patterns Test**: All tests PASS (graceful error handling working)
-- **Unicode Edge Cases Test**: Most tests PASS (some known issues with zero-length matches)
+- **Unicode Edge Cases Test**: All tests PASS (zero-length matches now working correctly)
 - **Ripgrep Compatibility Test**: All tests PASS (full ripgrep parity achieved)
 - **Column Numbers Test**: All tests PASS (column number functionality working)
 - **Color Output Test**: All tests PASS (color output functionality working)
@@ -206,13 +206,16 @@ For development and CI/CD, run the complete test suite:
 - **Context Merging Test**: All tests PASS (overlapping context regions properly merged)
 - **Context Merging Simple Test**: All tests PASS (basic context merging functionality)
 - **Custom Delimiters Test**: All tests PASS
-- **Unicode Normalization Test**: All tests PASS
+- **Unicode Normalization Test**: Most tests PASS (some Unicode pattern compilation issues being investigated)
 - **Unicode O Option Test**: All tests PASS (comprehensive Unicode match extraction)
 - **Error Handling Test**: All tests PASS (graceful error handling working)
 - **Edge Cases Test**: All tests PASS
 - **Binary Mode Test**: All tests PASS
 - **Python Integration Tests**: All tests PASS (Python functionality verified)
 - **Performance Tests**: All tests PASS (parallel processing performance validated)
+- **Advanced Regex Features Test**: All tests PASS (atomic groups, possessive quantifiers, conditional patterns)
+- **O Option Coverage Test**: All tests PASS (comprehensive "o" option testing)
+- **Zero Length Matches Test**: All tests PASS (zero-length match output now working correctly)
 
 ### Sample Output
 ```

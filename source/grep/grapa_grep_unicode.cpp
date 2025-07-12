@@ -1366,6 +1366,14 @@ void UnicodeRegex::compile(const std::string& input) {
     if (pattern_to_compile.find("\\X") != std::string::npos) {
         has_pcre2_features = true;
     }
+
+    // Check for possessive quantifiers (*+, ++, ?+, {n,m}+)
+    if (pattern_to_compile.find("*+") != std::string::npos ||
+        pattern_to_compile.find("++") != std::string::npos ||
+        pattern_to_compile.find("?+") != std::string::npos ||
+        std::regex_search(pattern_to_compile, std::regex("\{[0-9,]+\}\+"))) {
+        has_pcre2_features = true;
+    }
     
     // Use PCRE2 if pattern has advanced features or if pattern/input is non-ASCII
     if (has_pcre2_features || !is_ascii_string(pattern_to_compile) || !is_ascii_string(input)) {

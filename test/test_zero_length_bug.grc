@@ -1,0 +1,57 @@
+/* Zero-Length Match Output Bug Test */
+/* Testing if zero-length matches return [null] instead of [""] */
+
+"=== ZERO-LENGTH MATCH OUTPUT BUG TEST ===\n".echo();
+"Testing zero-length match output with 'o' option\n".echo();
+
+/* Test 1: Basic zero-length match at start of line */
+"Test 1: Zero-length match at start of line\n".echo();
+result = "a\nb\n".grep("^", "o");
+"Result: ".echo(); + result.echo() + "\n".echo();
+"Expected: [\"\", \"a\", \"\", \"b\", \"\"]\n".echo();
+"---\n".echo();
+
+/* Test 2: Zero-length match at end of line */
+"Test 2: Zero-length match at end of line\n".echo();
+result = "a\nb\n".grep("$", "o");
+"Result: ".echo(); + result.echo() + "\n".echo();
+"Expected: [\"a\", \"\", \"b\", \"\"]\n".echo();
+"---\n".echo();
+
+/* Test 3: Zero-length match with lookahead */
+"Test 3: Zero-length match with lookahead\n".echo();
+result = "abc".grep("(?=b)", "o");
+"Result: ".echo(); + result.echo() + "\n".echo();
+"Expected: [\"\"]\n".echo();
+"---\n".echo();
+
+/* Test 4: Zero-length match with lookbehind */
+"Test 4: Zero-length match with lookbehind\n".echo();
+result = "abc".grep("(?<=a)", "o");
+"Result: ".echo(); + result.echo() + "\n".echo();
+"Expected: [\"\"]\n".echo();
+"---\n".echo();
+
+/* Test 5: Zero-length match with word boundary */
+"Test 5: Zero-length match with word boundary\n".echo();
+result = "word".grep("\\b", "o");
+"Result: ".echo(); + result.echo() + "\n".echo();
+"Expected: [\"\", \"word\", \"\"]\n".echo();
+"---\n".echo();
+
+/* Test 6: Zero-length match with Unicode grapheme cluster */
+"Test 6: Zero-length match with Unicode grapheme cluster\n".echo();
+result = "café".grep("\\X", "o");
+"Result: ".echo(); + result.echo() + "\n".echo();
+"Expected: [\"c\", \"a\", \"f\", \"é\"]\n".echo();
+"Checking for null values in result...\n".echo();
+"---\n".echo();
+
+/* Test 7: Array literal with empty string (control test) */
+"Test 7: Array literal with empty string (control test)\n".echo();
+control = ["", "test", ""];
+"Control array: ".echo(); control.echo(); "\n".echo();
+"Expected: [\"\", \"test\", \"\"]\n".echo();
+"---\n".echo();
+
+"=== ZERO-LENGTH MATCH OUTPUT BUG TEST COMPLETED ===\n".echo(); 
