@@ -16367,8 +16367,9 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 				// Ensure empty strings are handled properly - never create null tokens
 				GrapaCHAR matchStr;
 				if (m.empty()) {
-					// Explicitly create an empty string token
+					// Explicitly create an empty string token with STR token type
 					matchStr.FROM("", 0);
+					matchStr.mToken = GrapaTokenType::STR;
 				} else {
 					matchStr.FROM(m.c_str(), m.length());
 				}

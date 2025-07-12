@@ -414,7 +414,13 @@ std::vector<MatchPosition> grep_unicode_impl(
                 else {
                     // For match-only, group-by-line, and offset options, extract matches from the processed line
                     std::vector<std::pair<size_t, size_t>> matches;
-                    UnicodeRegex match_extract_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+                    // Use the normalized pattern for match extraction when normalization is enabled
+                    std::string match_pattern = norm_pattern;
+                    if (norm != GrapaUnicode::NormalizationForm::NONE && !ignore_case && !diacritic_insensitive) {
+                        // Apply normalization to the pattern for match extraction
+                        match_pattern = GrapaUnicode::UnicodeString(effective_pattern).normalize(norm).data();
+                    }
+                    UnicodeRegex match_extract_rx(match_pattern, ignore_case, diacritic_insensitive, norm);
                     match_extract_rx.compile(norm_line); // Compile with the processed input
                     matches = match_extract_rx.find_all(UnicodeString(norm_line));
                     
@@ -1240,6 +1246,7 @@ void UnicodeRegex::compile(const std::string& input) {
             compile_flags |= PCRE2_CASELESS;
         }
         // Always enable multiline and dotall for ripgrep parity
+        // Note: PCRE2 supports lookbehind assertions by default when UTF and UCP are enabled
         compile_flags |= PCRE2_DOTALL | PCRE2_MULTILINE;
         
         // Debug: Check if pattern is \X and add special handling
