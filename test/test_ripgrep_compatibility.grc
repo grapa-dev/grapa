@@ -30,6 +30,8 @@ result = input.grep("foo", "z");
 input = "foo bar\nbaz foo\nbarfoo\nfoo\n";
 result = input.grep("foo", "L");
 ("Result: " + result.str() + "\n").echo();
+("Hex representation: " + result.str().hex() + "\n").echo();
+("Contains ANSI color codes: " + (result.str().find("\\x1b") != -1).str() + "\n").echo();
 "---\n".echo();
 
 /* 5. Context separator lines (--) */

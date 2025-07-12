@@ -1,8 +1,0 @@
-/* Debug test - simple pattern first */
-"hello".grep("o", "o")
-
-/* Debug test - line start pattern */
-"a\nb".grep("^", "o")
-
-/* Debug test - pattern that should return actual content */
-"hello world".grep("world", "o") 

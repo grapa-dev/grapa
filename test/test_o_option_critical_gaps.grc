@@ -1,0 +1,162 @@
+/* Critical "o" Option Gaps and Issues Test Suite */
+/* This test focuses on the most important missing scenarios and bugs */
+
+"=== CRITICAL 'o' OPTION GAPS TEST ===\n".echo();
+
+/* 1. Zero-length match output bug - should return [""] not [null] */
+"Test 1: Zero-length match output bug\n".echo();
+result1a = "abc".grep("(?=b)", "o");
+("Zero-length lookahead: " + result1a.str() + " (should be [\"\"])\n").echo();
+result1b = "abc".grep("(?<=a)", "o");
+("Zero-length lookbehind: " + result1b.str() + " (should be [\"\"])\n").echo();
+result1c = "abc".grep("\\b", "o");
+("Word boundary: " + result1c.str() + " (should be [\"\",\"\"])\n").echo();
+"---\n".echo();
+
+/* 2. Empty pattern with "o" - should return [""] not [null] */
+"Test 2: Empty pattern with 'o'\n".echo();
+result2a = "test".grep("", "o");
+("Empty pattern: " + result2a.str() + " (should be [\"\"])\n").echo();
+result2b = "".grep("", "o");
+("Empty input + empty pattern: " + result2b.str() + " (should be [\"\"])\n").echo();
+"---\n".echo();
+
+/* 3. JSON output with capturing groups - should work properly */
+"Test 3: JSON output with capturing groups\n".echo();
+result3a = "abc123".grep("(\\w+)(\\d+)", "oj");
+("Capturing groups JSON: " + result3a.str() + " (should be valid JSON)\n").echo();
+result3b = "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj");
+("Named groups JSON: " + result3b.str() + " (should be valid JSON)\n").echo();
+"---\n".echo();
+
+/* 4. Possessive quantifiers with "o" - should work correctly */
+"Test 4: Possessive quantifiers with 'o'\n".echo();
+result4a = "aaa".grep("a++", "o");
+("Possessive quantifier: " + result4a.str() + " (should be [\"aaa\"])\n").echo();
+result4b = "aaaa".grep("a++a", "o");
+("Possessive quantifier preventing match: " + result4b.str() + " (should be [])\n").echo();
+"---\n".echo();
+
+/* 5. Normalization with "o" - should work correctly */
+"Test 5: Normalization with 'o'\n".echo();
+result5a = "café".grep("cafe", "oN");
+("Normalization: " + result5a.str() + " (should be [\"café\"])\n").echo();
+result5b = "CAFÉ".grep("cafe", "oNi");
+("Normalization + case insensitive: " + result5b.str() + " (should be [\"CAFÉ\"])\n").echo();
+"---\n".echo();
+
+/* 6. Diacritic-insensitive with "o" - should work correctly */
+"Test 6: Diacritic-insensitive with 'o'\n".echo();
+result6a = "café résumé".grep("cafe", "od");
+("Diacritic-insensitive: " + result6a.str() + " (should be [\"café\"])\n").echo();
+result6b = "CAFÉ RÉSUMÉ".grep("cafe", "odi");
+("Diacritic + case insensitive: " + result6b.str() + " (should be [\"CAFÉ\"])\n").echo();
+"---\n".echo();
+
+/* 7. Count mode with "o" - should return count, not full text */
+"Test 7: Count mode with 'o'\n".echo();
+result7a = "foo bar foo baz".grep("foo", "oc");
+("Count mode: " + result7a.str() + " (should be [\"2\"])\n").echo();
+result7b = "foo bar foo baz".grep("nonexistent", "oc");
+("Count mode (no matches): " + result7b.str() + " (should be [\"0\"])\n").echo();
+"---\n".echo();
+
+/* 8. Line numbers with "o" - should include line numbers */
+"Test 8: Line numbers with 'o'\n".echo();
+result8a = "line1\nline2\nline3".grep("line", "on");
+("Line numbers: " + result8a.str() + " (should be [\"1:line1\",\"2:line2\",\"3:line3\"])\n").echo();
+"---\n".echo();
+
+/* 9. Byte offsets with "o" - should include byte offsets */
+"Test 9: Byte offsets with 'o'\n".echo();
+result9a = "Hello world".grep("\\w+", "ob");
+("Byte offsets: " + result9a.str() + " (should include byte positions)\n").echo();
+"---\n".echo();
+
+/* 10. Deduplication with "o" - should remove duplicates */
+"Test 10: Deduplication with 'o'\n".echo();
+result10a = "foo bar foo baz foo".grep("foo", "ou");
+("Deduplication: " + result10a.str() + " (should be [\"foo\"])\n").echo();
+"---\n".echo();
+
+/* 11. Grouping with "o" - should group by line */
+"Test 11: Grouping with 'o'\n".echo();
+result11a = "foo bar foo baz".grep("foo", "og");
+("Grouping: " + result11a.str() + " (should group matches by line)\n").echo();
+"---\n".echo();
+
+/* 12. Color output with "o" - should include color codes */
+"Test 12: Color output with 'o'\n".echo();
+result12a = "Hello world".grep("world", "oL");
+("Color output: " + result12a.str() + " (should include ANSI color codes)\n").echo();
+"---\n".echo();
+
+/* 13. Column output with "o" - should include column numbers */
+"Test 13: Column output with 'o'\n".echo();
+result13a = "foo bar foo".grep("foo", "oT");
+("Column output: " + result13a.str() + " (should be [\"1:foo\",\"9:foo\"])\n").echo();
+"---\n".echo();
+
+/* 14. Binary mode with "o" - should handle binary data */
+"Test 14: Binary mode with 'o'\n".echo();
+binary_data = "\x00\x01\x02\x03\x04\x05";
+result14a = binary_data.grep("\\x01", "o", "", "", "", "BINARY");
+("Binary mode: " + result14a.str() + " (should be [\"\\x01\"])\n").echo();
+"---\n".echo();
+
+/* 15. Parallel processing with "o" - should work correctly */
+"Test 15: Parallel processing with 'o'\n".echo();
+large_input = "";
+i = 1;
+while (i <= 100) {
+    large_input = large_input + "line" + i + "\n";
+    i = i + 1;
+}
+result15a = large_input.grep("line\\d+", "o");
+("Sequential processing: " + result15a.size() + " results\n").echo();
+result15b = large_input.grep("line\\d+", "o", "", "", "", "", 4);
+("Parallel processing (4 workers): " + result15b.size() + " results\n").echo();
+if (result15a.size() == result15b.size()) {
+    "PASS - Parallel processing produces same results\n".echo();
+} else {
+    "FAIL - Parallel processing produces different results\n".echo();
+}
+"---\n".echo();
+
+/* 16. Complex Unicode scenarios with "o" */
+"Test 16: Complex Unicode scenarios with 'o'\n".echo();
+result16a = "e\u0301".grep("\\X", "o");
+("Grapheme cluster (composed): " + result16a.str() + " (should be [\"é\"])\n").echo();
+result16b = "👨‍👩‍👧‍👦".grep("\\X", "o");
+("Grapheme cluster (emoji): " + result16b.str() + " (should be [\"👨‍👩‍👧‍👦\"])\n").echo();
+"---\n".echo();
+
+/* 17. Error handling with "o" - should handle errors gracefully */
+"Test 17: Error handling with 'o'\n".echo();
+result17a = "test".grep("(", "o");
+("Invalid regex: " + result17a.str() + " (should be $ERR)\n").echo();
+result17b = "test".grep("", "o");
+("Empty pattern: " + result17b.str() + " (should be [\"\"])\n").echo();
+"---\n".echo();
+
+/* 18. Option combinations with "o" - should work correctly */
+"Test 18: Option combinations with 'o'\n".echo();
+result18a = "foo bar foo".grep("foo", "onT");
+("Line numbers + column: " + result18a.str() + " (should include both)\n").echo();
+result18b = "Hello WORLD".grep("world", "oiL");
+("Case insensitive + color: " + result18b.str() + " (should be colorized)\n").echo();
+"---\n".echo();
+
+/* 19. Custom delimiters with "o" - should work correctly */
+"Test 19: Custom delimiters with 'o'\n".echo();
+result19a = "line1|line2|line3".grep("line", "o", "|");
+("Custom delimiter (pipe): " + result19a.str() + " (should be [\"line1\",\"line2\",\"line3\"])\n").echo();
+"---\n".echo();
+
+/* 20. Null-data mode with "o" - should work correctly */
+"Test 20: Null-data mode with 'o'\n".echo();
+result20a = "data1\x00data2\x00data3".grep("data", "oz");
+("Null-data mode: " + result20a.str() + " (should be [\"data1\",\"data2\",\"data3\"])\n").echo();
+"---\n".echo();
+
+"=== CRITICAL 'o' OPTION GAPS TEST COMPLETE ===\n".echo(); 

@@ -1,0 +1,69 @@
+/* Test Word Boundary (w) Option */
+
+"=== TESTING WORD BOUNDARY (w) OPTION ===\n".echo();
+
+/* Test data */
+text = "hello world hello123 hello_test hello-world hello";
+"Test text: " + text + "\n".echo();
+
+/* Test 1: Basic word boundary */
+"Test 1: Basic word boundary with 'w' option\n".echo();
+result1 = text.grep("hello", "w");
+"Result: " + result1 + "\n".echo();
+"Expected: ['hello world hello123 hello_test hello-world hello'] (should match only standalone 'hello')\n".echo();
+
+/* Test 2: Word boundary with match-only output */
+"Test 2: Word boundary with 'w' and 'o' options\n".echo();
+result2 = text.grep("hello", "wo");
+"Result: " + result2 + "\n".echo();
+"Expected: ['hello', 'hello'] (should match only standalone 'hello')\n".echo();
+
+/* Test 3: Word boundary with case-insensitive */
+"Test 3: Word boundary with 'w' and 'i' options\n".echo();
+result3 = text.grep("HELLO", "wi");
+"Result: " + result3 + "\n".echo();
+"Expected: ['hello world hello123 hello_test hello-world hello'] (should match only standalone 'hello')\n".echo();
+
+/* Test 4: Word boundary with underscores */
+"Test 4: Word boundary with underscores\n".echo();
+text2 = "hello_test hello test_hello _hello_ hello";
+"Test text 2: " + text2 + "\n".echo();
+result4 = text2.grep("hello", "wo");
+"Result: " + result4 + "\n".echo();
+"Expected: ['hello'] (should match only standalone 'hello')\n".echo();
+
+/* Test 5: Word boundary with hyphens */
+"Test 5: Word boundary with hyphens\n".echo();
+text3 = "hello-world hello world-hello -hello- hello";
+"Test text 3: " + text3 + "\n".echo();
+result5 = text3.grep("hello", "wo");
+"Result: " + result5 + "\n".echo();
+"Expected: ['hello'] (should match only standalone 'hello')\n".echo();
+
+/* Test 6: Word boundary with numbers */
+"Test 6: Word boundary with numbers\n".echo();
+text4 = "hello123 hello 123hello hello123hello hello";
+"Test text 4: " + text4 + "\n".echo();
+result6 = text4.grep("hello", "wo");
+"Result: " + result6 + "\n".echo();
+"Expected: ['hello'] (should match only standalone 'hello')\n".echo();
+
+/* Test 7: Manual word boundary pattern vs w option */
+"Test 7: Manual \\b pattern vs 'w' option\n".echo();
+result7a = text.grep("\\bhello\\b", "o");
+result7b = text.grep("hello", "wo");
+"Manual \\b pattern: " + result7a + "\n".echo();
+"'w' option: " + result7b + "\n".echo();
+"Expected: Both should be identical\n".echo();
+
+/* Test 8: Word boundary at start/end of string */
+"Test 8: Word boundary at start/end of string\n".echo();
+text5 = "hello world";
+"Test text 5: " + text5 + "\n".echo();
+result8a = text5.grep("hello", "wo");
+result8b = text5.grep("world", "wo");
+"Start word 'hello': " + result8a + "\n".echo();
+"End word 'world': " + result8b + "\n".echo();
+"Expected: ['hello'] and ['world']\n".echo();
+
+"=== WORD BOUNDARY TEST COMPLETE ===\n".echo(); 

@@ -1,0 +1,44 @@
+/* Test Context Separators */
+
+"=== CONTEXT SEPARATORS TEST ===\n".echo();
+
+/* Test input with multiple matches that are not consecutive */
+input = "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz";
+"Input: " + input + "\n".echo();
+
+/* Test 1: Context with non-consecutive matches */
+"Test 1: Context with non-consecutive matches\n".echo();
+"Pattern: d, Options: A1B1\n".echo();
+result1 = input.grep("d", "A1B1");
+"Result: " + result1.str() + "\n".echo();
+"Expected: Should show context around 'd' match\n".echo();
+"---\n".echo();
+
+/* Test 2: Multiple matches with context */
+"Test 2: Multiple matches with context\n".echo();
+"Pattern: [dj], Options: A1B1\n".echo();
+result2 = input.grep("[dj]", "A1B1");
+"Result: " + result2.str() + "\n".echo();
+"Expected: Should show context around 'd' and 'j' matches\n".echo();
+"---\n".echo();
+
+/* Test 3: Context separators (what ripgrep does) */
+"Test 3: Context separators (ripgrep behavior)\n".echo();
+"Pattern: [dj], Options: A1B1\n".echo();
+"Expected ripgrep output:\n".echo();
+"c\n".echo();
+"d\n".echo();
+"e\n".echo();
+"--\n".echo();
+"i\n".echo();
+"j\n".echo();
+"k\n".echo();
+"---\n".echo();
+
+/* Test 4: Current Grapa behavior */
+"Test 4: Current Grapa behavior\n".echo();
+"Pattern: [dj], Options: A1B1\n".echo();
+"Current output: " + result2.str() + "\n".echo();
+"Note: No '--' separators between non-consecutive context blocks\n".echo();
+
+"=== CONTEXT SEPARATORS TEST COMPLETE ===\n".echo(); 

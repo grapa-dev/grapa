@@ -1,0 +1,91 @@
+/* Null-Data Mode Test */
+/* Testing the "z" option implementation and its limitations */
+
+"=== NULL-DATA MODE TEST ===\n".echo();
+"Testing null-data mode (z option) implementation\n".echo();
+
+/* Test 1: Basic null-data mode functionality */
+"Test 1: Basic null-data mode\n".echo();
+input = "record1\x00record2\x00record3\x00";
+result = input.grep("record", "z");
+"Input: " + input.str() + "\n".echo();
+"Result: " + result.str() + "\n".echo();
+"Expected: Should split on null bytes and return matching records\n".echo();
+"---\n".echo();
+
+/* Test 2: Null-data mode with match-only */
+"Test 2: Null-data mode with match-only\n".echo();
+result = input.grep("record", "oz");
+"Result: " + result.str() + "\n".echo();
+"Expected: Should return only the matched parts within each record\n".echo();
+"---\n".echo();
+
+/* Test 3: Null-data mode with specific pattern */
+"Test 3: Null-data mode with specific pattern\n".echo();
+result = input.grep("record2", "z");
+"Result: " + result.str() + "\n".echo();
+"Expected: Should return only the record containing 'record2'\n".echo();
+"---\n".echo();
+
+/* Test 4: Null-data mode with case-insensitive */
+"Test 4: Null-data mode with case-insensitive\n".echo();
+result = input.grep("RECORD", "zi");
+"Result: " + result.str() + "\n".echo();
+"Expected: Should match case-insensitively across null-separated records\n".echo();
+"---\n".echo();
+
+/* Test 5: Null-data mode with context */
+"Test 5: Null-data mode with context\n".echo();
+result = input.grep("record2", "zA1B1");
+"Result: " + result.str() + "\n".echo();
+"Expected: Should show context records around the match\n".echo();
+"---\n".echo();
+
+/* Test 6: Null-data mode with empty records */
+"Test 6: Null-data mode with empty records\n".echo();
+input2 = "record1\x00\x00record3\x00";
+result = input2.grep("record", "z");
+"Input: " + input2.str() + "\n".echo();
+"Result: " + result.str() + "\n".echo();
+"Expected: Should handle empty records between null bytes\n".echo();
+"---\n".echo();
+
+/* Test 7: Null-data mode with null bytes in content */
+"Test 7: Null-data mode with null bytes in content\n".echo();
+input3 = "record1\x00record\x002\x00record3\x00";
+result = input3.grep("record", "z");
+"Input: " + input3.str() + "\n".echo();
+"Result: " + result.str() + "\n".echo();
+"Expected: Should handle null bytes within record content\n".echo();
+"---\n".echo();
+
+/* Test 8: Comparison with ripgrep behavior */
+"Test 8: Comparison with ripgrep behavior\n".echo();
+"Current implementation: Splits input on null bytes and processes each record\n".echo();
+"Ripgrep behavior: Treats null bytes as record separators, not as content\n".echo();
+"Limitation: Grapa treats null bytes as regular characters in some contexts\n".echo();
+"---\n".echo();
+
+/* Test 9: Null-data mode with binary data */
+"Test 9: Null-data mode with binary data\n".echo();
+input4 = "text\x00\xFF\xFE\x00binary\x00";
+result = input4.grep("text|binary", "z");
+"Input: " + input4.str() + "\n".echo();
+"Result: " + result.str() + "\n".echo();
+"Expected: Should handle binary data with null separators\n".echo();
+"---\n".echo();
+
+/* Test 10: Null-data mode with custom delimiter interaction */
+"Test 10: Null-data mode with custom delimiter interaction\n".echo();
+"Note: Null-data mode should override custom delimiters\n".echo();
+result = input.grep("record", "z", "|");
+"Result with custom delimiter: " + result.str() + "\n".echo();
+"Expected: Should still use null bytes as separators, not pipe\n".echo();
+"---\n".echo();
+
+"=== NULL-DATA MODE TEST COMPLETE ===\n".echo();
+"Current implementation status:\n".echo();
+"- ✅ Splits input on null bytes\n".echo();
+"- ✅ Processes each record separately\n".echo();
+"- ⚠️  May treat null bytes as regular characters in some contexts\n".echo();
+"- ⚠️  Not fully tested with all ripgrep edge cases\n".echo(); 

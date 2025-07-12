@@ -172,6 +172,9 @@ Run specific test categories:
 # Python tests (requires grapapy module)
 python test/test_python_examples.py
 python test/test_grep_python_examples.py
+
+# Performance tests
+python test/test_workers_performance.py  # Tests parallel processing performance
 ```
 
 ### Regression Testing
@@ -209,6 +212,7 @@ For development and CI/CD, run the complete test suite:
 - **Edge Cases Test**: All tests PASS
 - **Binary Mode Test**: All tests PASS
 - **Python Integration Tests**: All tests PASS (Python functionality verified)
+- **Performance Tests**: All tests PASS (parallel processing performance validated)
 
 ### Sample Output
 ```

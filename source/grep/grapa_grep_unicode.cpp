@@ -95,6 +95,7 @@ std::vector<MatchPosition> grep_unicode_impl(
     GrapaUnicode::NormalizationForm normalization,
     GrapaUnicode::ProcessingMode mode
 ) {
+    
     // Always use NFC if not explicitly set (for Unicode edge cases)
     NormalizationForm norm = normalization;
     if (norm == NormalizationForm::NONE) {
@@ -107,6 +108,7 @@ std::vector<MatchPosition> grep_unicode_impl(
         (options.find('b') != std::string::npos));
     bool count_only = (options.find('c') != std::string::npos);
     bool exact_match = (options.find('x') != std::string::npos);
+
     std::vector<MatchPosition> results;
 
     // If binary mode is requested, use standard regex without Unicode processing
@@ -196,6 +198,7 @@ std::vector<MatchPosition> grep_unicode_impl(
                 norm_line = GrapaUnicode::UnicodeString(norm_line).normalize(norm).data();
             }
             UnicodeRegex unicode_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
+
             unicode_rx.compile(norm_line); // Compile with the actual input to enable PCRE2
             // Use norm_line for matching.
             UnicodeString unicode_line(norm_line);
@@ -228,6 +231,7 @@ std::vector<MatchPosition> grep_unicode_impl(
                         UnicodeRegex match_extract_rx(norm_pattern, ignore_case, diacritic_insensitive, norm);
                         match_extract_rx.compile(match_extract_line); // Compile with the actual input to enable PCRE2
                         matches = match_extract_rx.find_all(match_extract_unicode_line);
+
                         // Map normalized match offsets back to original line
                         std::string cached_normalized_line;
                         if (!unicode_rx.is_ascii_mode()) {
@@ -437,9 +441,25 @@ std::vector<MatchPosition> grep_unicode_impl(
                         }
                     }
                     
-                    for (const auto& m : matches) {
-                        auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, norm_line, m.first, m.second);
-                        results.push_back({ offset + mapped.first, mapped.second, line_number });
+                    if (matches.empty() && matched) {
+                        // Pattern matches the whole line, but no submatches: return the full line
+                        results.push_back({ offset, line.size(), line_number });
+                    } else if (matched && (effective_pattern.find("(?=") != std::string::npos || effective_pattern.find("(?<=") != std::string::npos)) {
+                        if (!matches.empty()) {
+                            // Use the actual matches (even if zero-length)
+                            for (const auto& m : matches) {
+                                auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, norm_line, m.first, m.second);
+                                results.push_back({ offset + mapped.first, mapped.second, line_number });
+                            }
+                        } else {
+                            // Only if no matches, return the full line
+                            results.push_back({ offset, line.size(), line_number });
+                        }
+                    } else {
+                        for (const auto& m : matches) {
+                            auto mapped = UnicodeRegex::map_normalized_span_to_original(line_copy, norm_line, m.first, m.second);
+                            results.push_back({ offset + mapped.first, mapped.second, line_number });
+                        }
                     }
                 }
             }
@@ -593,16 +613,11 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     std::string filtered_options;
     ContextOptions ctx = parse_context_options(options, filtered_options);
     
-    // For all-mode, ignore context options
-    if (filtered_options.find('a') != std::string::npos) {
-        ctx.after = 0;
-        ctx.before = 0;
-        ctx.context = 0;
-    }
-    
-    // Always use NFC if not explicitly set (for Unicode edge cases)
+    // Process 'N' option to set normalization
     NormalizationForm norm = normalization;
-    if (norm == NormalizationForm::NONE) {
+    if (options.find('N') != std::string::npos) {
+        norm = NormalizationForm::NFC;
+    } else if (norm == NormalizationForm::NONE) {
         norm = NormalizationForm::NFC;
     }
     
@@ -628,9 +643,15 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         after = 0;
     }
     
+    // Check for null-data mode early
+    bool null_data = (filtered_options.find('z') != std::string::npos);
+    
     // Prepare working input
     std::string working_input;
-    if (all_mode && !line_delim.empty()) {
+    if (null_data) {
+        // For null-data mode, preserve null bytes and don't normalize newlines
+        working_input = input;
+    } else if (all_mode && !line_delim.empty()) {
         working_input.reserve(input.size());
         size_t pos = 0;
         while (pos < input.size()) {
@@ -646,53 +667,6 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     } else {
         working_input = line_delim.empty() ? normalize_newlines(input) : input;
     }
-    
-    // Multiline mode: if pattern contains \n, apply regex to the entire input
-    if (effective_pattern.find("\n") != std::string::npos) {
-        // Normalize both input and pattern using the correct static method
-        std::string norm_input = GrapaUnicode::UnicodeRegex::get_normalized_text(working_input, false, norm);
-        std::string norm_pattern = GrapaUnicode::UnicodeRegex::get_normalized_text(effective_pattern, false, norm);
-        // Use PCRE2 with UTF and DOTALL|MULTILINE
-        uint32_t pcre2_options = PCRE2_UTF | PCRE2_DOTALL | PCRE2_MULTILINE;
-        int pcre2_errorcode = 0;
-        PCRE2_SIZE pcre2_erroroffset = 0;
-        pcre2_code* re = pcre2_compile(
-            reinterpret_cast<PCRE2_SPTR>(norm_pattern.c_str()),
-            norm_pattern.length(),
-            pcre2_options,
-            &pcre2_errorcode, &pcre2_erroroffset, nullptr);
-        if (!re) {
-            throw std::runtime_error("Invalid regex pattern");
-        }
-        pcre2_match_data* match_data = pcre2_match_data_create_from_pattern(re, nullptr);
-        std::vector<std::string> matches;
-        size_t offset = 0;
-        while (true) {
-            int rc = pcre2_match(
-                re,
-                reinterpret_cast<PCRE2_SPTR>(norm_input.c_str()),
-                norm_input.length(),
-                offset,
-                0,
-                match_data,
-                nullptr);
-            if (rc < 0) break;
-            PCRE2_SIZE* ovector = pcre2_get_ovector_pointer(match_data);
-            size_t start = ovector[0];
-            size_t end = ovector[1];
-            matches.push_back(norm_input.substr(start, end - start));
-            if (end == offset) break; // Prevent infinite loop on zero-length match
-            offset = end;
-        }
-        pcre2_match_data_free(match_data);
-        pcre2_code_free(re);
-        return matches;
-    }
-
-    // Normalize both pattern and input before matching
-    std::string norm_pattern = GrapaUnicode::UnicodeRegex::get_normalized_text(effective_pattern, false, norm);
-    std::string norm_input = GrapaUnicode::UnicodeRegex::get_normalized_text(working_input, false, norm);
-    // Use norm_pattern and norm_input for all regex operations
     std::string effective_pattern_for_impl = effective_pattern;
     if (filtered_options.find('w') != std::string::npos) {
         if (effective_pattern_for_impl.substr(0,2) != "\\b") effective_pattern_for_impl = "\\b" + effective_pattern_for_impl;
@@ -706,10 +680,14 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         return {};
     }
     
-    // Handle empty pattern case
+    // Handle empty pattern case - let regex engine find all empty string matches
     if (effective_pattern.empty()) {
-        /* Return empty result instead of throwing exception for empty patterns */
-        return {};
+        // For empty pattern, return one empty string for each position in the input
+        std::vector<std::string> empty_matches;
+        for (size_t i = 0; i <= working_input.size(); ++i) {
+            empty_matches.push_back("");
+        }
+        return empty_matches;
     }
     
     // Extract matches from positions
@@ -720,7 +698,6 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     // 1. Parse new options
     bool show_column = filtered_options.find('T') != std::string::npos;
     bool word_boundary = filtered_options.find('w') != std::string::npos;
-    bool null_data = filtered_options.find('z') != std::string::npos;
     bool color_output = filtered_options.find('L') != std::string::npos;
     
     // 2. If word_boundary, wrap pattern with \b if not already present
@@ -793,15 +770,29 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     
     // Find which lines contain matches
     std::set<size_t> matching_lines;
-    for (const auto& match : matches) {
-        if (match.offset < working_input.size()) {
-            // Find which line this match belongs to
-            for (size_t i = 0; i < line_offsets.size(); ++i) {
-                size_t line_start = line_offsets[i];
-                size_t line_end = (i + 1 < line_offsets.size()) ? line_offsets[i + 1] : working_input.size();
-                if (match.offset >= line_start && match.offset < line_end) {
-                    matching_lines.insert(i);
-                    break;
+    
+    if (null_data) {
+        // For null-data mode, process each line individually
+        for (size_t i = 0; i < lines.size(); ++i) {
+            const std::string& line = lines[i];
+            // Process each line with the same options and pattern
+            auto line_matches = grep_unicode_impl(line, effective_pattern_for_impl, filtered_options, "", norm, mode);
+            if (!line_matches.empty() && line_matches[0].offset != static_cast<size_t>(-1)) {
+                matching_lines.insert(i);
+            }
+        }
+    } else {
+        // For normal mode, use the original matching logic
+        for (const auto& match : matches) {
+            if (match.offset < working_input.size()) {
+                // Find which line this match belongs to
+                for (size_t i = 0; i < line_offsets.size(); ++i) {
+                    size_t line_start = line_offsets[i];
+                    size_t line_end = (i + 1 < line_offsets.size()) ? line_offsets[i + 1] : working_input.size();
+                    if (match.offset >= line_start && match.offset < line_end) {
+                        matching_lines.insert(i);
+                        break;
+                    }
                 }
             }
         }
@@ -813,6 +804,11 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         if (matching_lines.find(i) == matching_lines.end()) {
             non_matching_lines.insert(i);
         }
+    }
+    
+    // For null-data mode with invert match, we need to process non-matching lines
+    if (null_data && invert_match) {
+        matching_lines = non_matching_lines; // Use non-matching lines for output
     }
 
     // Compute context lines if needed
@@ -843,8 +839,14 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                 if (invert_match && matching_lines.find(i) != matching_lines.end()) continue;
                 extracted_matches.push_back(lines[i]);
             }
-            if (w + 1 < merged_windows.size()) {
-                extracted_matches.push_back("--\n");
+            // Insert context separator between non-overlapping blocks (not after last block)
+            // Only add separators if not in match-only mode
+            if (w + 1 < merged_windows.size() && !match_only) {
+                if (json_output) {
+                    extracted_matches.push_back("---");
+                } else {
+                    extracted_matches.push_back("--\n");
+                }
             }
         }
         return extracted_matches;
@@ -856,37 +858,119 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     // }
     
     // Output logic for matches
-    for (const auto& match : matches) {
-        // Bounds check: ensure match.offset and match.length are valid
-        if ((match.offset <= working_input.size()) && (match.length <= working_input.size()) && (match.offset + match.length <= working_input.size())) {
-            std::string matched_text;
-            // Use grapheme cluster extraction for \X pattern
-            if (effective_pattern == "\\X") {
-                matched_text = extract_grapheme_cluster(working_input, match.offset);
+    if (null_data) {
+        // For null-data mode, output matching lines or extract matches from them
+        for (size_t line_idx : matching_lines) {
+            if (match_only) {
+                // Extract matches from the line
+                const std::string& line = lines[line_idx];
+                auto line_matches = grep_unicode_impl(line, effective_pattern_for_impl, filtered_options, "", norm, mode);
+                
+                for (const auto& match : line_matches) {
+                    if (match.offset != static_cast<size_t>(-1) && match.offset < line.size()) {
+                        std::string matched_text;
+                        if (effective_pattern == "\\X") {
+                            matched_text = extract_grapheme_cluster(line, match.offset);
+                        } else {
+                            size_t end_offset = match.offset + match.length;
+                            if (end_offset > line.size()) end_offset = line.size();
+                            matched_text = line.substr(match.offset, end_offset - match.offset);
+                        }
+                        
+                        // Normalize output to NFC for display consistency
+                        matched_text = GrapaUnicode::UnicodeRegex::get_normalized_text(matched_text, false, GrapaUnicode::NormalizationForm::NFC);
+                        
+                        // If color_output, wrap only the matched substring in ANSI color codes
+                        if (color_output) {
+                            matched_text = "\x1b[1;31m" + matched_text + "\x1b[0m";
+                        }
+                        
+                        // If show_column, prepend column number
+                        if (show_column) {
+                            size_t column = match.offset + 1; // 1-based like ripgrep
+                            matched_text = std::to_string(column) + ":" + matched_text;
+                        }
+                        
+                        // Handle zero-length matches: always add empty string, never null
+                        if (match.length == 0) {
+                            extracted_matches.push_back("");
+                        } else {
+                            if (matched_text.empty()) {
+                                extracted_matches.push_back("");
+                            } else {
+                                extracted_matches.push_back(matched_text);
+                            }
+                        }
+                    }
+                }
             } else {
-                size_t end_offset = match.offset + match.length;
-                matched_text = working_input.substr(match.offset, end_offset - match.offset);
+                // Output the entire line
+                std::string line_output = lines[line_idx];
+                
+                // If color_output, wrap the entire line
+                if (color_output) {
+                    line_output = "\x1b[1;31m" + line_output + "\x1b[0m";
+                }
+                
+                // If show_column, prepend column number (1 for start of line)
+                if (show_column) {
+                    line_output = "1:" + line_output;
+                }
+                
+                extracted_matches.push_back(line_output);
             }
-            // Normalize output to NFC for display consistency
-            matched_text = GrapaUnicode::UnicodeRegex::get_normalized_text(matched_text, false, GrapaUnicode::NormalizationForm::NFC);
-            // If color_output, wrap only the matched substring in ANSI color codes
-            if (color_output) {
-                matched_text = "\x1b[1;31m" + matched_text + "\x1b[0m";
-            }
-            // Handle zero-length matches: always add empty string, never null
-            if (match.length == 0) {
-                extracted_matches.push_back("");
-            } else {
-                // Ensure we never add null values - use empty string as fallback
-                if (matched_text.empty()) {
+        }
+    } else {
+        // For normal mode, use the original output logic
+        for (const auto& match : matches) {
+            // Bounds check: ensure match.offset and match.length are valid
+            if ((match.offset <= working_input.size()) && (match.length <= working_input.size()) && (match.offset + match.length <= working_input.size())) {
+                std::string matched_text;
+                // Use grapheme cluster extraction for \X pattern
+                if (effective_pattern == "\\X") {
+                    matched_text = extract_grapheme_cluster(working_input, match.offset);
+                } else {
+                    size_t end_offset = match.offset + match.length;
+                    matched_text = working_input.substr(match.offset, end_offset - match.offset);
+                }
+                // Normalize output to NFC for display consistency
+                matched_text = GrapaUnicode::UnicodeRegex::get_normalized_text(matched_text, false, GrapaUnicode::NormalizationForm::NFC);
+                // If color_output, wrap only the matched substring in ANSI color codes
+                if (color_output) {
+                    matched_text = "\x1b[1;31m" + matched_text + "\x1b[0m";
+                }
+                
+                // If show_column, prepend column number
+                if (show_column) {
+                    // Find which line this match belongs to and calculate column
+                    size_t column = 0;
+                    for (size_t i = 0; i < line_offsets.size(); ++i) {
+                        size_t line_start = line_offsets[i];
+                        size_t line_end = (i + 1 < line_offsets.size()) ? line_offsets[i + 1] : working_input.size();
+                        if (match.offset >= line_start && match.offset < line_end) {
+                            // Calculate column within the line (1-based like ripgrep)
+                            column = match.offset - line_start + 1;
+                            break;
+                        }
+                    }
+                    matched_text = std::to_string(column) + ":" + matched_text;
+                }
+                
+                // Handle zero-length matches: always add empty string, never null
+                if (match.length == 0) {
                     extracted_matches.push_back("");
                 } else {
-                    extracted_matches.push_back(matched_text);
+                    // Ensure we never add null values - use empty string as fallback
+                    if (matched_text.empty()) {
+                        extracted_matches.push_back("");
+                    } else {
+                        extracted_matches.push_back(matched_text);
+                    }
                 }
+            } else {
+                // If mapping is invalid, push empty string (never crash)
+                extracted_matches.push_back("");
             }
-        } else {
-            // If mapping is invalid, push empty string (never crash)
-            extracted_matches.push_back("");
         }
     }
     // Final safety check: replace any remaining null-like values with empty strings
@@ -896,15 +980,14 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         }
     }
     
-    // Add context separator if context options are used
-    if (has_context) {
+    // Add context separator if context options are used (but not in match-only mode)
+    if (has_context && !match_only) {
         if (json_output) {
             extracted_matches.push_back("---");
         } else {
             extracted_matches.push_back("---\n");
         }
     }
-    
     return extracted_matches;
 }
 
@@ -1348,7 +1431,7 @@ void UnicodeRegex::compile(const std::string& input) {
     }
 }
 
-bool UnicodeRegex::has_unicode_properties(const std::string& pattern) {
+bool GrapaUnicode::UnicodeRegex::has_unicode_properties(const std::string& pattern) {
     // Check for \p{...} or \P{...}
     size_t pos = 0;
     while ((pos = pattern.find("\\p{", pos)) != std::string::npos) {

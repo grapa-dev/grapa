@@ -1,0 +1,29 @@
+/* Column Numbers Test */
+
+"=== COLUMN NUMBERS TEST ===\n".echo();
+
+input = "foo bar baz\nbar foo baz\nbaz bar foo";
+("Input: " + input + "\n").echo();
+
+/* Test with column numbers */
+("Pattern: foo, Options: oT\n").echo();
+result = input.grep("foo", "oT");
+("Result: " + result.str() + "\n").echo();
+("Expected: ['1:foo', '5:foo', '9:foo'] (column:match format)\n").echo();
+
+/* Test without column numbers for comparison */
+("---\n").echo();
+("Pattern: foo, Options: o (no column)\n").echo();
+result2 = input.grep("foo", "o");
+("Result: " + result2.str() + "\n").echo();
+
+/* Test with multiple matches on same line */
+("---\n").echo();
+input2 = "foofoo bar";
+("Input2: " + input2 + "\n").echo();
+("Pattern: foo, Options: oT\n").echo();
+result3 = input2.grep("foo", "oT");
+("Result: " + result3.str() + "\n").echo();
+("Expected: ['1:foo', '4:foo']\n").echo();
+
+"=== TEST COMPLETE ===\n".echo(); 
