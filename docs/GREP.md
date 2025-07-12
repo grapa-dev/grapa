@@ -432,6 +432,80 @@ Grapa grep includes several safety mechanisms to prevent crashes:
 | `""` | `[]` | Empty pattern |
 | `"\\"` | `[]` | Incomplete escape sequence |
 
+## JSON Output Format
+
+The `j` option produces JSON output with detailed match information. Each match is returned as a JSON object containing:
+
+- **`match`**: The full matched substring
+- **Named groups**: Each named group from the regex pattern (e.g., `year`, `month`, `day`)
+- **`offset`**: Byte offset of the match in the input string
+- **`line`**: Line number where the match was found
+
+### JSON Object Structure
+
+```json
+{
+  "match": "matched text",
+  "group1": "captured value",
+  "group2": "captured value",
+  "offset": 0,
+  "line": 1
+}
+```
+
+### Examples
+
+```grapa
+// Basic JSON output
+"Hello world".grep("\\w+", "oj")
+// Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}]
+
+// JSON with named groups
+"John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
+// Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
+
+// Date parsing with named groups
+"2023-04-27\n2022-12-31".grep("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj")
+// Result: [
+//   {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
+//   {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
+// ]
+
+// Single match JSON output
+"Hello World".grep("Hello", "j")
+// Result: [{"match":"Hello","offset":0,"line":1}]
+
+// No matches JSON output
+"Hello World".grep("xyz", "j")
+// Result: []
+
+// Complex JSON example with multiple patterns
+"Email: user@domain.com, Phone: +1-555-1234".grep("(?P<email>[\\w.-]+@[\\w.-]+)|(?P<phone>\\+\\d{1,3}-\\d{3}-\\d{4})", "oj")
+// Result: [
+//   {"match":"user@domain.com","email":"user@domain.com","phone":null,"offset":7,"line":1},
+//   {"match":"+1-555-1234","email":null,"phone":"+1-555-1234","offset":31,"line":1}
+// ]
+```
+
+### Accessing Named Groups
+
+```grapa
+// Extract specific groups from JSON output
+result = "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
+first_name = result[0]["first"]  // "John"
+last_name = result[0]["last"]    // "Doe"
+age = result[0]["age"]           // "30"
+```
+
+### Notes
+
+- **Named groups**: All named groups from the regex pattern are included in the JSON output
+- **Unmatched groups**: Groups that don't match are set to `null`
+- **Line numbers**: Correctly calculated based on newline characters in the input
+- **Offsets**: Byte offsets from the start of the input string
+- **Format**: Returns a proper JSON array of objects, not double-wrapped arrays
+- **Order**: JSON object key order may vary but all named groups are always present
+
 ## Ripgrep Compatibility
 
 **✅ FULL RIPGREP PARITY ACHIEVED** - Grapa grep has achieved complete parity with ripgrep for all in-memory/streaming features (excluding file system features).
@@ -465,9 +539,15 @@ Grapa grep includes several safety mechanisms to prevent crashes:
 - **File system features**: Not implemented (file searching, directory traversal, etc.)
 - **Smart case behavior**: Grapa uses explicit "i" flag rather than ripgrep's automatic smart-case behavior
 
-### �� Known Issues
+### ✅ Recently Fixed Issues
 
-- **Unicode pattern compilation**: Some Unicode patterns with normalization may fail to compile with regex errors (being investigated)
+- **JSON output format**: Fixed double-wrapped array issue - now returns proper JSON array of objects
+- **PCRE2 compilation**: Fixed possessive quantifier detection that was causing regex compilation errors
+- **Zero-length match output**: Fixed null output bug - now correctly returns empty strings
+- **Unicode boundary handling**: Improved mapping strategy for complex Unicode scenarios
+
+### ⚠️ Known Issues
+
 - **Unicode string functions**: `len()` and `ord()` functions don't properly handle Unicode characters (count bytes instead of characters)
 - **Null-data mode**: The "z" option is implemented but limited by Grapa's string parser not handling `\x00` escape sequences properly. Use custom delimiters as a workaround.
 

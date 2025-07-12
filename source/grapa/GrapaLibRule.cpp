@@ -16347,15 +16347,19 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 			result->vQueue = new GrapaRuleQueue();
 			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaCHAR("Invalid regex pattern")));
 		}
-		else if (options.find('j') != std::string::npos && matches.size() == 1) {
-			GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$function"));
-			GrapaCHAR jstr(matches[0].c_str(), matches[0].length());
-			GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, jstr, rulexx, 0, GrapaCHAR());
-			result = vScriptExec->ProcessPlan(pNameSpace, plan);
-			if (plan)
+		else if (options.find('j') != std::string::npos) {
+			if (matches.empty()) {
+				result = new GrapaRuleEvent();
+				result->mValue.mToken = GrapaTokenType::ERR;
+				result->vQueue = new GrapaRuleQueue();
+				result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaCHAR("empty grep result")));
+			}
+			else
 			{
-				plan->CLEAR();
-				delete plan;
+				GrapaRuleEvent* rulexx = vScriptExec->vScriptState->SearchVariable(pNameSpace, GrapaCHAR("$function"));
+				GrapaCHAR jstr(matches[0].c_str(), matches[0].length());
+				GrapaRuleEvent* plan = vScriptExec->Plan(pNameSpace, jstr, rulexx, 0, GrapaCHAR());
+				result = vScriptExec->ProcessPlan(pNameSpace, plan);
 			}
 		}
 		else {

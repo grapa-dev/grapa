@@ -9,7 +9,7 @@ result = input.grep("Hello", "oj");
 ("Input: " + input + "\n").echo();
 ("Pattern: Hello\n").echo();
 ("Result type: " + result.type() + "\n").echo();
-("Result: " + result + "\n").echo();
+("Result: " + result.str() + "\n").echo();
 ("Expected: [\"Hello\"]\n").echo();
 "---\n".echo();
 
@@ -20,7 +20,7 @@ result = input.grep("(?P<first>\\w+) (?P<last>\\w+)", "oj");
 ("Input: " + input + "\n").echo();
 ("Pattern: (?P<first>\\w+) (?P<last>\\w+)\n").echo();
 ("Result type: " + result.type() + "\n").echo();
-("Result: " + result + "\n").echo();
+("Result: " + result.str() + "\n").echo();
 ("Expected: [\"John Doe\"]\n").echo();
 "---\n".echo();
 
@@ -31,7 +31,7 @@ result = input.grep("\\p{L}+", "oj");
 ("Input: " + input + "\n").echo();
 ("Pattern: \\p{L}+\n").echo();
 ("Result type: " + result.type() + "\n").echo();
-("Result: " + result + "\n").echo();
+("Result: " + result.str() + "\n").echo();
 ("Expected: [\"Hello 世界 123 €\"]\n").echo();
 "---\n".echo();
 
@@ -42,7 +42,7 @@ result = input.grep("\\p{sc=Han}", "oj");
 ("Input: " + input + "\n").echo();
 ("Pattern: \\p{sc=Han}\n").echo();
 ("Result type: " + result.type() + "\n").echo();
-("Result: " + result + "\n").echo();
+("Result: " + result.str() + "\n").echo();
 ("Expected: [\"Hello 世界\"]\n").echo();
 "---\n".echo();
 
@@ -53,6 +53,6 @@ result = input.grep("(?>a+)a", "oj");
 ("Input: " + input + "\n").echo();
 ("Pattern: (?>a+)a\n").echo();
 ("Result type: " + result.type() + "\n").echo();
-("Result: " + result + "\n").echo();
+("Result: " + result.str() + "\n").echo();
 ("Expected: [\"aaa\"]\n").echo();
 "---\n".echo(); 

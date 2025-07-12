@@ -682,12 +682,30 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     
     // Handle empty pattern case - let regex engine find all empty string matches
     if (effective_pattern.empty()) {
-        // For empty pattern, return one empty string for each position in the input
-        std::vector<std::string> empty_matches;
-        for (size_t i = 0; i <= working_input.size(); ++i) {
-            empty_matches.push_back("");
+        bool json_output = (filtered_options.find('j') != std::string::npos);
+        
+        if (json_output) {
+            // For JSON output, create JSON objects for each empty match
+            std::vector<std::string> json_matches;
+            for (size_t i = 0; i <= working_input.size(); ++i) {
+                std::string json_obj = "{\"match\":\"\",\"offset\":" + std::to_string(i) + ",\"line\":1}";
+                json_matches.push_back(json_obj);
+            }
+            std::string json_array = "[";
+            for (size_t i = 0; i < json_matches.size(); ++i) {
+                json_array += json_matches[i];
+                if (i + 1 < json_matches.size()) json_array += ",";
+            }
+            json_array += "]";
+            return {json_array};
+        } else {
+            // For non-JSON output, return empty strings
+            std::vector<std::string> empty_matches;
+            for (size_t i = 0; i <= working_input.size(); ++i) {
+                empty_matches.push_back("");
+            }
+            return empty_matches;
         }
-        return empty_matches;
     }
     
     // Extract matches from positions
@@ -893,12 +911,30 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                         
                         // Handle zero-length matches: always add empty string, never null
                         if (match.length == 0) {
-                            extracted_matches.push_back("");
+                            if (json_output) {
+                                // Create JSON object for zero-length match
+                                std::string json_obj = "{\"match\":\"\",\"offset\":" + std::to_string(match.offset) + ",\"line\":" + std::to_string(match.line_number) + "}";
+                                extracted_matches.push_back(json_obj);
+                            } else {
+                                extracted_matches.push_back("");
+                            }
                         } else {
                             if (matched_text.empty()) {
-                                extracted_matches.push_back("");
+                                if (json_output) {
+                                    // Create JSON object for empty match
+                                    std::string json_obj = "{\"match\":\"\",\"offset\":" + std::to_string(match.offset) + ",\"line\":" + std::to_string(match.line_number) + "}";
+                                    extracted_matches.push_back(json_obj);
+                                } else {
+                                    extracted_matches.push_back("");
+                                }
                             } else {
-                                extracted_matches.push_back(matched_text);
+                                if (json_output) {
+                                    // Create JSON object with match, offset, and line number
+                                    std::string json_obj = "{\"match\":\"" + matched_text + "\",\"offset\":" + std::to_string(match.offset) + ",\"line\":" + std::to_string(match.line_number) + "}";
+                                    extracted_matches.push_back(json_obj);
+                                } else {
+                                    extracted_matches.push_back(matched_text);
+                                }
                             }
                         }
                     }
@@ -958,13 +994,31 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                 
                 // Handle zero-length matches: always add empty string, never null
                 if (match.length == 0) {
-                    extracted_matches.push_back("");
+                    if (json_output) {
+                        // Create JSON object for zero-length match
+                        std::string json_obj = "{\"match\":\"\",\"offset\":" + std::to_string(match.offset) + ",\"line\":1}";
+                        extracted_matches.push_back(json_obj);
+                    } else {
+                        extracted_matches.push_back("");
+                    }
                 } else {
                     // Ensure we never add null values - use empty string as fallback
                     if (matched_text.empty()) {
-                        extracted_matches.push_back("");
+                        if (json_output) {
+                            // Create JSON object for empty match
+                            std::string json_obj = "{\"match\":\"\",\"offset\":" + std::to_string(match.offset) + ",\"line\":1}";
+                            extracted_matches.push_back(json_obj);
+                        } else {
+                            extracted_matches.push_back("");
+                        }
                     } else {
-                        extracted_matches.push_back(matched_text);
+                        if (json_output) {
+                            // Create JSON object with match, offset, and line number
+                            std::string json_obj = "{\"match\":\"" + matched_text + "\",\"offset\":" + std::to_string(match.offset) + ",\"line\":1}";
+                            extracted_matches.push_back(json_obj);
+                        } else {
+                            extracted_matches.push_back(matched_text);
+                        }
                     }
                 }
             } else {
@@ -987,6 +1041,20 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         } else {
             extracted_matches.push_back("---\n");
         }
+    }
+    // At the end of grep_extract_matches_unicode_impl_sequential, after all matches are collected:
+    if (json_output) {
+        if (extracted_matches.empty()) {
+            return {"[]"};
+        }
+        // Build a JSON array string from extracted_matches (which are JSON objects as strings)
+        std::string json_array = "[";
+        for (size_t i = 0; i < extracted_matches.size(); ++i) {
+            json_array += extracted_matches[i];
+            if (i + 1 < extracted_matches.size()) json_array += ",";
+        }
+        json_array += "]";
+        return {json_array};
     }
     return extracted_matches;
 }
@@ -1023,6 +1091,16 @@ std::vector<std::string> grep_extract_matches_unicode_impl_parallel(
         all_matches.insert(all_matches.end(), result.begin(), result.end());
     }
     
+    // At the end of grep_extract_matches_unicode_impl_parallel, after collecting all_matches:
+    if (!all_matches.empty() && options.find('j') != std::string::npos) {
+        std::string json_array = "[";
+        for (size_t i = 0; i < all_matches.size(); ++i) {
+            json_array += all_matches[i];
+            if (i + 1 < all_matches.size()) json_array += ",";
+        }
+        json_array += "]";
+        return {json_array};
+    }
     return all_matches;
 }
 
@@ -1370,9 +1448,26 @@ void UnicodeRegex::compile(const std::string& input) {
     // Check for possessive quantifiers (*+, ++, ?+, {n,m}+)
     if (pattern_to_compile.find("*+") != std::string::npos ||
         pattern_to_compile.find("++") != std::string::npos ||
-        pattern_to_compile.find("?+") != std::string::npos ||
-        std::regex_search(pattern_to_compile, std::regex("\{[0-9,]+\}\+"))) {
+        pattern_to_compile.find("?+") != std::string::npos) {
         has_pcre2_features = true;
+    }
+    
+    // Check for possessive quantifiers with braces {n,m}+ using string search
+    if (pattern_to_compile.find("}+") != std::string::npos) {
+        // Look for patterns like {n}+ or {n,m}+
+        size_t pos = 0;
+        while ((pos = pattern_to_compile.find("}+", pos)) != std::string::npos) {
+            if (pos > 0 && pattern_to_compile[pos-1] == '}') {
+                // Check if this is preceded by a valid quantifier pattern
+                size_t brace_start = pattern_to_compile.rfind('{', pos);
+                if (brace_start != std::string::npos && brace_start < pos) {
+                    // Found a potential {n,m}+ pattern
+                    has_pcre2_features = true;
+                    break;
+                }
+            }
+            pos += 2; // Skip the "}+" we just found
+        }
     }
     
     // Use PCRE2 if pattern has advanced features or if pattern/input is non-ASCII
