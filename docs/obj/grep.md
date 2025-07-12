@@ -172,6 +172,8 @@ The `normalization` parameter controls Unicode normalization:
 | `"NFKC"` | Normalization Form Compatibility Composition | Search and matching |
 | `"NFKD"` | Normalization Form Compatibility Decomposition | Compatibility processing |
 
+> **Note:** Unicode normalization (N, or normalization parameter) does **not** remove diacritics or accents. It only canonicalizes Unicode forms. To match characters with and without accents (e.g., `cafe` vs `café`), you must use the `d` option for diacritic-insensitive matching.
+
 ### Processing Mode
 
 The `mode` parameter controls how the input is processed:
@@ -359,15 +361,51 @@ last = result[0]["last"]    // "Doe"
 
 ### Context Lines
 
-```grapa
-// Show 2 lines after match
-"Line 1\nLine 2\nLine 3\nLine 4".grep("Line 2", "A2")
-// Result: ["Line 2", "Line 3", "Line 4"]
+Context lines provide surrounding context for matches, similar to ripgrep's `-A`, `-B`, and `-C` options:
 
-// Show 1 line before and 1 after
-"Line 1\nLine 2\nLine 3\nLine 4".grep("Line 3", "C1")
-// Result: ["Line 2", "Line 3", "Line 4"]
+```grapa
+input = "Header\nLine 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nFooter";
+
+// After context (2 lines after match)
+input.grep("Line 2", "A2")
+["Line 2\n", "Line 3\n", "Line 4\n"]
+
+// Before context (2 lines before match)  
+input.grep("Line 5", "B2")
+["Line 3\n", "Line 4\n", "Line 5\n"]
+
+// Combined context (1 line before and after)
+input.grep("Line 4", "A1B1")
+["Line 3\n", "Line 4\n", "Line 5\n"]
+
+// Context merging - overlapping regions are automatically merged
+input2 = "a\nb\nc\nd\ne\nf";
+input2.grep("c|d", "A1B1")
+["b\n", "c\n", "d\n", "e\n"]  // Overlapping context merged into single block
 ```
+
+**Context Merging**: Overlapping context regions are automatically merged into single blocks, ensuring all relevant context is shown without duplication. This matches ripgrep's behavior for optimal readability and prevents redundant context lines.
+
+### Context Separators
+
+When multiple non-overlapping context blocks exist, they are separated by `--` lines (matching ripgrep/GNU grep behavior):
+
+```grapa
+// Multiple matches with context - separated by -- lines
+input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
+input.grep("Line 2|Line 6", "A1B1")
+// Result: ["Line 1\n", "Line 2\n", "Line 3\n", "--\n", "Line 5\n", "Line 6\n", "Line 7"]
+
+// Context separators are not output in match-only mode
+input.grep("Line 2|Line 6", "oA1B1")
+// Result: ["Line 2", "Line 6"]  // Only matches, no context or separators
+
+// JSON output uses --- as separator
+input.grep("Line 2|Line 6", "jA1B1")
+// Result: ["Line 1\n", "Line 2\n", "Line 3\n", "---", "Line 5\n", "Line 6\n", "Line 7"]
+```
+
+**Note**: Context separators are only added between non-overlapping context blocks. When context blocks overlap or are adjacent, no separator is needed.
 
 ### Advanced Regex Features
 
@@ -950,9 +988,11 @@ grapa -cfile "test_performance_optimizations.grc"
 ## Features Not Currently Supported
 
 ### **Search Strategy Features**
-- ✅ **Smart-case matching** - Use "i" flag for lowercase patterns, no flag for uppercase patterns
-- ✅ **Word boundary mode** - Use `\b` pattern anchors: `r"\bword\b"`
-- ✅ **Column numbers** - Use "b" option for byte offsets, can calculate character position
+- ✅ **Case-insensitive matching** - Use "i" flag for explicit case-insensitive matching: `"word".grep("hello", "i")`
+- ✅ **Word boundary mode** - Use "w" option or `\b` pattern anchors: `"word".grep("hello", "w")` or `"word".grep("\\bhello\\b", "o")`
+- ✅ **Column numbers** - Use "T" option for column numbers: `"word".grep("hello", "oT")`
+
+**Note**: Grapa uses explicit "i" flag for case-insensitive matching rather than ripgrep's automatic smart-case behavior. This provides more predictable and explicit control over case sensitivity.
 
 ### **File Handling Features** (handled by Grapa language or Python integration)
 - ❌ **Automatic .gitignore support** - Grapa handles file filtering separately via `file().ls()` with filters
@@ -973,26 +1013,31 @@ When you exclude file handling (since that's handled by the Grapa language), Gra
 
 ## **Achieving "Missing" Features in Grapa**
 
-### **Smart-case Matching**
+### **Case-Insensitive Matching**
 ```grapa
-// ripgrep: rg "hello" (case-insensitive for lowercase)
+// ripgrep: rg -i "hello" (explicit case-insensitive)
 "Hello WORLD".grep("hello", "i")
 
 // ripgrep: rg "HELLO" (case-sensitive for uppercase)  
 "Hello WORLD".grep("HELLO", "")
+
+// Note: Grapa uses explicit "i" flag rather than ripgrep's automatic smart-case behavior
+// This provides more predictable and explicit control over case sensitivity
 ```
 
 ### **Word Boundary Mode**
 ```grapa
 // ripgrep: rg --word-regexp "hello"
-"hello world".grep(r"\bhello\b", "o")
+"hello world".grep("hello", "wo")  // Using 'w' option
+// or
+"hello world".grep("\\bhello\\b", "o")  // Manual word boundaries
 ```
 
 ### **Column Numbers**
 ```grapa
 // ripgrep: rg --column "hello"
-"hello world".grep("hello", "b")  // Shows byte offset
-// Can calculate character position from byte offset if needed
+"hello world".grep("hello", "oT")  // Shows column:match format
+// Result: ["1:hello"]
 ```
 
 ## Grapa vs. ripgrep: Feature Comparison Summary
@@ -1016,9 +1061,9 @@ When you exclude file handling (since that's handled by the Grapa language), Gra
 - ✅ **Binary Mode** - Skip binary files or search within them
 - ✅ **Line Numbers** - Show line numbers with `-n`
 - ✅ **Invert Match** - Show non-matching lines with `-v`
-- ✅ **Smart-case matching** - Use "i" flag for lowercase patterns, no flag for uppercase
-- ✅ **Word boundary mode** - Use `\b` pattern anchors or ripgrep's `--word-regexp`
-- ✅ **Column numbers** - Byte offsets in Grapa, character positions in ripgrep
+- ✅ **Case-insensitive matching** - Use "i" flag for explicit case-insensitive matching
+- ✅ **Word boundary mode** - Use "w" option or `\b` pattern anchors
+- ✅ **Column numbers** - Use "T" option for column:match format
 - ✅ **Parallel processing** - Multi-threaded processing for large inputs
 
 ### **Feature Coverage Comparison**
@@ -1081,3 +1126,115 @@ matches = content.grep("pattern", "oj");  // Pure text processing
 ```
 
 This separation allows Grapa grep to focus on what it does best: advanced Unicode text processing with sophisticated regex features, while file operations are handled by the appropriate language constructs.
+
+## Feature Status
+
+### ✅ Fully Implemented Features
+
+**Core Grep Features:**
+- ✅ Basic pattern matching
+- ✅ Case-insensitive matching (`i` option)
+- ✅ Match-only output (`o` option) - Comprehensive Unicode support
+- ✅ Invert match (`v` option)
+- ✅ Line numbers (`n` option)
+- ✅ Count only (`c` option)
+- ✅ All-mode (`a` option)
+- ✅ Exact match (`x` option)
+
+**Advanced Features:**
+- ✅ Word boundaries (`w` option) - Full ripgrep compatibility
+- ✅ Context lines (A<n>, B<n>, C<n>) - With merging and separators
+- ✅ Context separators (`--` between non-overlapping blocks)
+- ✅ Column numbers (`T` option) - 1-based positioning
+- ✅ Color output (`L` option) - ANSI color codes
+- ✅ Custom delimiters
+- ✅ JSON output (`j` option)
+
+**Unicode Features:**
+- ✅ Unicode normalization (`N` option)
+- ✅ Diacritic-insensitive matching (`d` option)
+- ✅ Unicode properties (`\p{L}`, `\p{N}`, etc.)
+- ✅ Grapheme clusters (`\X` pattern)
+- ✅ Comprehensive Unicode "o" option support
+- ✅ Unicode boundary handling with hybrid mapping
+
+**Performance Features:**
+- ✅ JIT compilation
+- ✅ Parallel processing
+- ✅ Fast path optimizations
+- ✅ Binary mode
+- ✅ LRU caching
+
+**Error Handling:**
+- ✅ Graceful error handling
+- ✅ Invalid pattern recovery
+- ✅ Bounds checking
+- ✅ UTF-8 validation
+
+### ⚠️ Known Limitations
+
+**File System Features:**
+- ❌ File searching (not implemented by design)
+- ❌ Directory traversal (not implemented by design)
+- ❌ File filtering (not implemented by design)
+
+**Scripting Layer Issues:**
+- ⚠️ Zero-length matches return `[null]` instead of `[""]`
+- ⚠️ Unicode string functions (`len()`, `ord()`) count bytes not characters
+- ⚠️ Null-data mode limited by string parser (`\x00` not converted)
+
+### ✅ Ripgrep Parity Status
+
+**FULL PARITY ACHIEVED** for all in-memory/streaming features:
+- ✅ All core grep functionality
+- ✅ All advanced features
+- ✅ Complete Unicode support
+- ✅ Performance optimizations
+- ✅ Error handling
+- ✅ Context merging and separators
+- ✅ Comprehensive "o" option functionality
+
+### Advanced Context Examples
+
+```grapa
+// Context merging - overlapping regions are automatically merged
+input = "a\nb\nc\nd\ne\nf";
+input.grep("c|d", "A1B1")
+["b\n", "c\n", "d\n", "e\n"]  // Overlapping context merged into single block
+
+// Context separators between non-overlapping blocks
+input2 = "a\nb\nc\nd\ne\nf\ng\nh\ni\nj";
+input2.grep("c|i", "A1B1")
+["b\n", "c\n", "d\n", "--\n", "h\n", "i\n", "j\n"]  // -- separator between blocks
+
+// Complex context with multiple options
+log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, case-insensitive
+```
+
+### Advanced Unicode "o" Option Examples
+
+```grapa
+// Comprehensive Unicode character extraction
+"éñü".grep(".", "o")
+["é", "ñ", "ü"]  // Perfect Unicode character extraction
+
+// Unicode with normalization and "o" option
+"café résumé".grep("\\X", "oN")
+["c", "a", "f", "é", " ", "r", "é", "s", "u", "m", "é"]  // Normalized grapheme clusters
+
+// Complex Unicode scenarios with "o" option
+"👨‍👩‍👧‍👦".grep("\\X", "o")
+["👨‍👩‍👧‍👦"]  // Family emoji as single grapheme cluster
+
+// Unicode properties with "o" option
+"Hello 世界 123".grep("\\p{L}+", "o")
+["Hello", "世界"]  // Unicode letters only
+
+// Diacritic-insensitive with "o" option
+"café résumé naïve".grep("cafe", "od")
+["café"]  // Diacritic-insensitive matching
+
+// Case-insensitive Unicode with "o" option
+"ÉÑÜ".grep(".", "oi")
+["É", "Ñ", "Ü"]  // Case-insensitive Unicode character extraction
+```

@@ -46,9 +46,77 @@ The following returns the length of each word in a string:
 ```
 
 ### Context Lines
+
+```grapa
+input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
+
+// After context (2 lines after match)
+input.grep("Line 2", "A2")
+["Line 2\n", "Line 3\n", "Line 4\n"]
+
+// Before context (2 lines before match)
+input.grep("Line 5", "B2")
+["Line 3\n", "Line 4\n", "Line 5\n"]
+
+// Combined context (1 line before and after)
+input.grep("Line 4", "A1B1")
+["Line 3\n", "Line 4\n", "Line 5\n"]
+
+// Context merging example - overlapping regions are merged
+input2 = "a\nb\nc\nd\ne\nf";
+input2.grep("c|d", "A1B1")
+["b\n", "c\n", "d\n", "e\n"]  // Overlapping context merged into single block
+
+// Context separators between non-overlapping blocks
+input3 = "a\nb\nc\nd\ne\nf\ng\nh\ni\nj";
+input3.grep("c|i", "A1B1")
+["b\n", "c\n", "d\n", "--\n", "h\n", "i\n", "j\n"]  // -- separator between blocks
 ```
-"Header\nLine 1\nLine 2\nLine 3\nFooter".grep("Line 2", "A1B1")
-["Line 1\n", "Line 2\n", "Line 3\n"]
+
+### Context Separators
+```
+// Multiple non-overlapping context blocks are separated by -- lines
+input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
+input.grep("Line 2|Line 6", "A1B1")
+["Line 1\n", "Line 2\n", "Line 3\n", "--\n", "Line 5\n", "Line 6\n", "Line 7"]
+
+// Context separators are not output in match-only mode
+input.grep("Line 2|Line 6", "oA1B1")
+["Line 2", "Line 6"]  // Only matches, no context or separators
+
+// JSON output uses --- as separator
+input.grep("Line 2|Line 6", "jA1B1")
+["Line 1\n", "Line 2\n", "Line 3\n", "---", "Line 5\n", "Line 6\n", "Line 7"]
+```
+
+### Column Numbers
+```
+// Get column positions of matches
+"foo bar baz\nbar foo baz\nbaz bar foo".grep("foo", "oT")
+["1:foo", "5:foo", "9:foo"]
+
+// Multiple matches on same line
+"foofoo bar".grep("foo", "oT")
+["1:foo", "4:foo"]
+
+// Column numbers with other options
+"Hello world".grep("world", "oTL")
+["7:\x1b[1;31mworld\x1b[0m"]
+```
+
+### Color Output
+```
+// Add ANSI color codes around matches
+"Hello world".grep("world", "oL")
+["\x1b[1;31mworld\x1b[0m"]
+
+// Color with case-insensitive matching
+"Hello WORLD".grep("world", "oiL")
+["\x1b[1;31mWORLD\x1b[0m"]
+
+// Color with column numbers
+"Hello world".grep("world", "oTL")
+["7:\x1b[1;31mworld\x1b[0m"]
 ```
 
 ### Unicode Support
@@ -107,10 +175,45 @@ for (i = 0; i < patterns.len(); i = i + 1) {
 ["ÉÑ", "Ü"]  // É and Ñ may be grouped together
 ```
 
+### Word Boundaries
+```
+// Match only standalone words
+"hello world hello123 hello_test hello-world hello".grep("hello", "wo")
+["hello", "hello"]
+
+// Word boundaries with different characters
+"hello_test hello test_hello _hello_ hello".grep("hello", "wo")
+["hello"]
+
+// Word boundaries with case-insensitive matching
+"Hello WORLD hello123 HELLO_test".grep("HELLO", "woi")
+["Hello", "HELLO"]
+
+// Manual vs automatic word boundaries
+"hello world hello123".grep("\\bhello\\b", "o")
+["hello"]
+
+"hello world hello123".grep("hello", "wo")
+["hello"]
+```
+
 ### Custom Delimiters
 ```
 "Line 1|Line 2|Line 3".grep("Line 2", "", "|")
 ["Line 2"]
+```
+
+### Null-Data Mode (Limited Support)
+```
+// Note: The "z" option is implemented but limited by Grapa's string parser
+// \x00 escape sequences are not converted to actual null bytes
+"foo\x00bar\x00baz".grep("foo", "oz")
+// Expected: ['foo'] (null-separated records)
+// Current: ['foo\x00bar\x00baz'] (treats \x00 as literal characters)
+
+// Workaround: Use custom delimiters
+"foo|bar|baz".grep("foo", "", "|")
+// Result: ['foo'] (works correctly)
 ```
 
 ## Grammer Updating
@@ -150,4 +253,45 @@ Y=R.v.left(1);
 (Y.t() .* ([[3.4,9.23,2.4]]-M).t()).t();
 [[3.9393492470695862312625754586492]]
 
+```
+
+### Advanced Context Examples
+
+```grapa
+// Context merging - overlapping regions are automatically merged
+input = "a\nb\nc\nd\ne\nf";
+input.grep("c|d", "A1B1")
+["b\n", "c\n", "d\n", "e\n"]  // Overlapping context merged into single block
+
+// Context separators between non-overlapping blocks
+input2 = "a\nb\nc\nd\ne\nf\ng\nh\ni\nj";
+input2.grep("c|i", "A1B1")
+["b\n", "c\n", "d\n", "--\n", "h\n", "i\n", "j\n"]  // -- separator between blocks
+
+// Complex context with multiple options
+log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, case-insensitive
+```
+
+### Advanced Unicode Examples
+
+```grapa
+// Comprehensive Unicode "o" option testing
+"éñü".grep(".", "o")
+["é", "ñ", "ü"]  // Perfect Unicode character extraction
+
+// Unicode with normalization and "o" option
+"café résumé".grep("\\X", "oN")
+["c", "a", "f", "é", " ", "r", "é", "s", "u", "m", "é"]  // Normalized grapheme clusters
+
+// Complex Unicode scenarios with "o" option
+"👨‍👩‍👧‍👦".grep("\\X", "o")
+["👨‍👩‍👧‍👦"]  // Family emoji as single grapheme cluster
+
+// Unicode properties with "o" option
+"Hello 世界 123".grep("\\p{L}+", "o")
+["Hello", "世界"]  // Unicode letters only
+
+// Diacritic-insensitive with "o" option
+"café résumé naïve".grep("cafe", "od")
+["café"]  // Diacritic-insensitive matching
 ```

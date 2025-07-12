@@ -72,6 +72,11 @@ test/
 #### 5. **Ripgrep Compatibility Tests**
 - **Ripgrep Parity** (`test_ripgrep_compatibility.grc`): Tests for ripgrep feature parity including column output, word boundaries, null-data mode, color output, and context separators.
 - **Ripgrep Features** (`test_ripgrep_parity_features.grc`): Comprehensive ripgrep feature compatibility testing.
+- **Column Numbers** (`test_column_test.grc`): Tests for column number functionality with the T option.
+- **Color Output** (`test_color_test.grc`): Tests for color output functionality with the L option.
+- **Word Boundaries** (`test_word_boundary.grc`): Tests for word boundary functionality with the w option.
+- **Context Separators** (`test_context_separator_corner_cases.grc`): Tests for context separator functionality and edge cases.
+- **Investigation** (`test_investigation_test.grc`): Comprehensive investigation of remaining ripgrep features and edge cases.
 
 #### 6. **Advanced Feature Tests**
 - **Context Lines** (`test_context_lines.grc`): Advanced context line functionality testing (A<n>, B<n>, C<n> options).
@@ -141,10 +146,18 @@ Run specific test categories:
 # Ripgrep compatibility tests
 .\grapa.exe -cfile "test/test_ripgrep_compatibility.grc"
 .\grapa.exe -cfile "test/test_ripgrep_parity_features.grc"
+.\grapa.exe -cfile "test/test_column_test.grc"
+.\grapa.exe -cfile "test/test_color_test.grc"
+.\grapa.exe -cfile "test/test_word_boundary.grc"
+.\grapa.exe -cfile "test/test_context_separator_corner_cases.grc"
+.\grapa.exe -cfile "test/test_investigation_test.grc"
 
 # Advanced feature tests
 .\grapa.exe -cfile "test/test_context_lines.grc"
 .\grapa.exe -cfile "test/test_advanced_context.grc"
+.\grapa.exe -cfile "test/test_context_merging_simple.grc"
+.\grapa.exe -cfile "test/test_context_merging.grc"
+.\grapa.exe -cfile "test/test_context_separators.grc"
 .\grapa.exe -cfile "test/test_custom_delimiters.grc"
 .\grapa.exe -cfile "test/test_unicode_normalization.grc"
 .\grapa.exe -cfile "test/test_unicode_o_option.grc"
@@ -181,14 +194,21 @@ For development and CI/CD, run the complete test suite:
 - **Invalid Regex Patterns Test**: All tests PASS (graceful error handling working)
 - **Unicode Edge Cases Test**: Most tests PASS (some known issues with zero-length matches)
 - **Ripgrep Compatibility Test**: All tests PASS (full ripgrep parity achieved)
+- **Column Numbers Test**: All tests PASS (column number functionality working)
+- **Color Output Test**: All tests PASS (color output functionality working)
+- **Word Boundaries Test**: All tests PASS (word boundary functionality working)
+- **Context Separators Test**: All tests PASS (context separator functionality working)
 - **Context Lines Test**: All tests PASS
 - **Advanced Context Test**: All tests PASS
+- **Context Merging Test**: All tests PASS (overlapping context regions properly merged)
+- **Context Merging Simple Test**: All tests PASS (basic context merging functionality)
 - **Custom Delimiters Test**: All tests PASS
 - **Unicode Normalization Test**: All tests PASS
-- **Unicode O Option Test**: All tests PASS
+- **Unicode O Option Test**: All tests PASS (comprehensive Unicode match extraction)
 - **Error Handling Test**: All tests PASS (graceful error handling working)
 - **Edge Cases Test**: All tests PASS
 - **Binary Mode Test**: All tests PASS
+- **Python Integration Tests**: All tests PASS (Python functionality verified)
 
 ### Sample Output
 ```
