@@ -77,14 +77,14 @@ Gets environment variables and system information.
 
 **Example:**
 ```grapa
-> $sys().getenv($VERSION)
-{"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000}
+$sys().getenv($VERSION);
+/* Returns: {"major":0,"minor":0,"micro":2,"releaselevel":"alpha","serial":63,"date":2020-04-24T16:30:37.000000} */
 
-> $sys().getenv($HOME)
-C:\Users\matichuk
+$sys().getenv($HOME);
+/* Returns: C:\Users\matichuk */
 
-> $sys().getenv("USERNAME")
-matichuk
+$sys().getenv("USERNAME");
+/* Returns: matichuk */
 ```
 
 **Platform Values for $PLATFORM:**
@@ -103,10 +103,10 @@ Sets environment variables and system information.
 
 **Example:**
 ```grapa
-> $sys().putenv("CUSTOM_VAR", "my_value")
+$sys().putenv("CUSTOM_VAR", "my_value");
 true
 
-> $sys().getenv("CUSTOM_VAR")
+$sys().getenv("CUSTOM_VAR");
 my_value
 ```
 
@@ -125,7 +125,7 @@ Compiles a Grapa script file and saves the compiled version to disk.
 
 **Example:**
 ```grapa
-> $sys().compilef("script.grc", "script.grz")
+$sys().compilef("script.grc", "script.grz");
 true
 ```
 
@@ -135,14 +135,23 @@ Compiles a Grapa script in memory.
 **Parameters:**
 - `script` - Script text to compile
 
-**Returns:** Compiled script object that can be executed
+**Returns:** Compiled script object that can be executed with `$sys().eval()`
 
 **Example:**
 ```grapa
-> compiled = $sys().compile("a = 5 + 3; a.echo();")
-> compiled()
-8
+/* Compile a script */
+compiled = $sys().compile("a = 5 + 3; a.echo();");
+
+/* Execute the compiled script using eval() */
+$sys().eval(compiled);
+/* Result: 8 */
+
+/* Direct execution doesn't work */
+compiled();
+/* Result: {} (empty result) */
 ```
+
+**Note:** Compiled objects must be executed using `$sys().eval()` rather than direct function calls.
 
 ### eval(script, params={}, rule="", profile="")
 Dynamically evaluates a Grapa script with optional parameters.
@@ -157,13 +166,13 @@ Dynamically evaluates a Grapa script with optional parameters.
 
 **Example:**
 ```grapa
-> $sys().eval("a", {"a": 33}, "$function")
+$sys().eval("a", {"a": 33}, "$function");
 33
 
-> $sys().eval("x + y", {"x": 10, "y": 20})
+$sys().eval("x + y", {"x": 10, "y": 20});
 30
 
-> $sys().eval("result = input * 2; result", {"input": 15})
+$sys().eval("result = input * 2; result", {"input": 15});
 30
 ```
 
@@ -179,10 +188,10 @@ Pauses execution for the specified number of milliseconds.
 
 **Example:**
 ```grapa
-> "Starting...".echo()
+"Starting...".echo();
 Starting...
-> $sys().sleep(1000)  // Sleep for 1 second
-> "Finished!".echo()
+$sys().sleep(1000);  /* Sleep for 1 second */
+"Finished!".echo();
 Finished!
 ```
 
@@ -190,28 +199,33 @@ Finished!
 
 ### Environment Variable Management
 ```grapa
-// Get system information
+/* Get system information */
 version = $sys().getenv($VERSION);
 platform = $sys().getenv($PLATFORM);
 
-// Set custom environment variables
+/* Set custom environment variables */
 $sys().putenv("DEBUG_MODE", "true");
 $sys().putenv("LOG_LEVEL", "verbose");
 ```
 
 ### Script Compilation Workflow
 ```grapa
-// Compile a script file for faster execution
+/* Compile a script file for faster execution */
 if ($sys().compilef("my_script.grc", "my_script.grz")) {
-    // Load and execute compiled script
+    /* Load and execute compiled script */
     compiled = $file().get("my_script.grz");
     result = $sys().eval(compiled);
 }
+
+/* Compile and execute in-memory scripts */
+compiled = $sys().compile("x = 10; y = 20; x + y;");
+result = $sys().eval(compiled);
+/* Result: 30 */
 ```
 
 ### Dynamic Script Evaluation
 ```grapa
-// Evaluate user-provided expressions safely
+/* Evaluate user-provided expressions safely */
 user_input = "2 * (3 + 4)";
 try {
     result = $sys().eval(user_input);
@@ -223,10 +237,10 @@ try {
 
 ### Performance Timing
 ```grapa
-// Measure execution time
+/* Measure execution time */
 start_time = $TIME().utc();
-// ... perform operations ...
-$sys().sleep(100);  // Simulate work
+/* ... perform operations ... */
+$sys().sleep(100);  /* Simulate work */
 end_time = $TIME().utc();
 elapsed_ms = ((end_time - start_time) / 1000000).int();
 ("Execution time: " + elapsed_ms + " ms").echo();
