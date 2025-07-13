@@ -57,25 +57,25 @@ string.grep(pattern, options, delimiter, normalization, mode, num_workers)
 ### Simple Usage Examples
 
 ```grapa
-// Minimal usage - only required parameters
-"Hello world".grep("world")
-// Result: ["Hello world"]
+/* Minimal usage - only required parameters */
+"Hello world".grep("world");
+/* Result: ["Hello world"] */
 
-// With options
-"Hello world".grep("world", "i")
-// Result: ["Hello world"]
+/* With options */
+"Hello world".grep("world", "i");
+/* Result: ["Hello world"] */
 
-// With parallel processing (auto-detection)
-"Hello world".grep("world", "i", "", "", "", 0)
-// Result: ["Hello world"] - Uses optimal number of threads
+/* With parallel processing (auto-detection) */
+"Hello world".grep("world", "i", "", "", "", 0);
+/* Result: ["Hello world"] - Uses optimal number of threads */
 
-// Manual parallel processing
-"Hello world".grep("world", "i", "", "", "", 4)
-// Result: ["Hello world"] - Uses 4 worker threads
+/* Manual parallel processing */
+"Hello world".grep("world", "i", "", "", "", 4);
+/* Result: ["Hello world"] - Uses 4 worker threads */
 
-// All parameters (rarely needed)
-"Hello world".grep("world", "i", "\n", "NONE", "UNICODE", 2)
-// Result: ["Hello world"]
+/* All parameters (rarely needed) */
+"Hello world".grep("world", "i", "\n", "NONE", "UNICODE", 2);
+/* Result: ["Hello world"] */
 ```
 
 ## Options Reference
@@ -188,65 +188,65 @@ The `mode` parameter controls how the input is processed:
 ### Basic Usage
 
 ```grapa
-// Simple pattern matching
-"Hello world".grep("world")
-// Result: ["Hello world"]
+/* Simple pattern matching */
+"Hello world".grep("world");
+/* Result: ["Hello world"] */
 
-// Case-insensitive matching
-"Hello WORLD".grep("world", "i")
-// Result: ["Hello WORLD"]
+/* Case-insensitive matching */
+"Hello WORLD".grep("world", "i");
+/* Result: ["Hello WORLD"] */
 
-// Match-only output
-"Hello world".grep("\\w+", "o")
-// Result: ["Hello", "world"]
+/* Match-only output */
+"Hello world".grep("\\w+", "o");
+/* Result: ["Hello", "world"] */
 
-// Raw string literals for better readability
-"Hello world".grep(r"\w+", "o")
-// Result: ["Hello", "world"] - No need to escape backslashes
+/* Raw string literals for better readability */
+"Hello world".grep(r"\w+", "o");
+/* Result: ["Hello", "world"] - No need to escape backslashes */
 
-// Complex patterns with raw strings
-"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x")
-// Result: ["file.txt"] - Much more readable than "\\^[a-zA-Z0-9_]\\+\\.txt\\$"
+/* Complex patterns with raw strings */
+"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x");
+/* Result: ["file.txt"] - Much more readable than "\\^[a-zA-Z0-9_]\\+\\.txt\\$" */
 
-// Raw strings preserve literal escape sequences
-"\\x45".grep(r"\x45", "o")
-// Result: ["\\x45"] - Literal string, not character "E"
+/* Raw strings preserve literal escape sequences */
+"\\x45".grep(r"\x45", "o");
+/* Result: ["\\x45"] - Literal string, not character "E" */
 ```
 
 ### Unicode Examples
 
 ```grapa
-// Unicode characters
-"Привет мир".grep("мир")
-// Result: ["Привет мир"]
+/* Unicode characters */
+"Привет мир".grep("мир");
+/* Result: ["Привет мир"] */
 
-// Unicode properties
-"Hello 世界 123 €".grep("\\p{L}+", "o")
-// Result: ["Hello", "世界"]
+/* Unicode properties */
+"Hello 世界 123 €".grep("\\p{L}+", "o");
+/* Result: ["Hello", "世界"] */
 
-// Emoji handling
-"Hello 👋 world 🌍".grep("(?:\\p{So}(?:\\u200D\\p{So})*)+", "o")
-// Result: ["👋", "🌍"]
+/* Emoji handling */
+"Hello 👋 world 🌍".grep("(?:\\p{So}(?:\\u200D\\p{So})*)+", "o");
+/* Result: ["👋", "🌍"] */
 
-// Emoji sequence (family)
-"Family: 👨‍👩‍👧‍👦".grep("(?:\\p{So}(?:\\u200D\\p{So})*)+", "o")
-// Result: ["👨‍👩‍👧‍👦"]
+/* Emoji sequence (family) */
+"Family: 👨‍👩‍👧‍👦".grep("(?:\\p{So}(?:\\u200D\\p{So})*)+", "o");
+/* Result: ["👨‍👩‍👧‍👦"] */
 
-// Unicode grapheme clusters
-"Hello 👋 world 🌍".grep("\\X", "o")
-// Result: ["H", "e", "l", "l", "o", " ", "👋", " ", "w", "o", "r", "l", "d", " ", "🌍"]
+/* Unicode grapheme clusters */
+"Hello 👋 world 🌍".grep("\\X", "o");
+/* Result: ["H", "e", "l", "l", "o", " ", "👋", " ", "w", "o", "r", "l", "d", " ", "🌍"] */
 
-// Emoji sequences as grapheme clusters
-"👨‍👩‍👧‍👦".grep("\\X", "o")
-// Result: ["👨‍👩‍👧‍👦"] (entire family emoji as one grapheme cluster)
+/* Emoji sequences as grapheme clusters */
+"👨‍👩‍👧‍👦".grep("\\X", "o");
+/* Result: ["👨‍👩‍👧‍👦"] (entire family emoji as one grapheme cluster) */
 
-// Combining characters as grapheme clusters
-"café mañana".grep("\\X", "o")
-// Result: ["c", "a", "f", "é", " ", "m", "a", "ñ", "a", "n", "a"] (é and ñ as single grapheme clusters)
+/* Combining characters as grapheme clusters */
+"café mañana".grep("\\X", "o");
+/* Result: ["c", "a", "f", "é", " ", "m", "a", "ñ", "a", "n", "a"] (é and ñ as single grapheme clusters) */
 
-// Unicode normalization
-"café".grep("cafe", "N")
-// Result: ["café"]
+/* Unicode normalization */
+"café".grep("cafe", "N");
+/* Result: ["café"] */
 ```
 
 ### Raw String Literals
@@ -769,10 +769,17 @@ result2 = text.grep("pattern2", "oj")
 **Slow pattern matching**:
 ```grapa
 // Problem: Catastrophic backtracking
-"a".repeat(10000).grep("(a+)+", "o")   // Very slow
+// Create long string manually (Grapa doesn't have repeat function)
+long_string = "";
+i = 0;
+while (i < 10000) {
+    long_string = long_string + "a";
+    i = i + 1;
+}
+long_string.grep("(a+)+", "o")   // Very slow
 
 // Solution: Use atomic groups
-"a".repeat(10000).grep("(?>a+)+", "o") // Much faster
+long_string.grep("(?>a+)+", "o") // Much faster
 
 // Problem: Broad Unicode categories
 "text".grep("\\p{L}+", "o")            // Slower for large text

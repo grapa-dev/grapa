@@ -1,55 +1,61 @@
 
 # grapa
-grapa - a grammar parser language / environment for processing data for ETL workflows, or experimenting with new language constructs. 
+grapa - a high-level grammar parser language and environment for processing data in ETL workflows, or experimenting with new language constructs.
 
-Grapa grammar is customizable at runtime. Default grammar here: [Grapa Grammar](lib/grapa/$grapa.grc)
+## High-Level Language
 
-Each rule in the grammar is loaded into global variables, which can be overridden, or replaced - which effectively changes the syntax of the language. Additionally, rules can be created to parse any data that a grammer can be used to define, where the output is what each rule resolves to. See [$RULE](docs/type/RULE.md) for more details.
+Grapa provides a **high-level language** defined in [`$grapa.grc`](lib/grapa/$grapa.grc) that most users interact with. This language includes:
 
-The grammar includes parsing for JSON/XML/HTML. The underlying data structures are based on JSON, but add extentions for several native Grapa types such as $OP, as well as XML (JSON and XML can co-exist). 
+- **Natural syntax** for data processing and manipulation
+- **Built-in support** for JSON, XML, and HTML parsing
+- **Rich data types** including lists, arrays, tables, and vectors
+- **Object-oriented features** with inheritance and method chaining
+- **Unlimited precision** integers and floats
+- **Cross-platform compatibility** across Windows, Linux, and Mac
 
-The base grammar for the langauge is $OP and $CODE (see [Base types](docs/BASETYPES.md)) - and any compilation will translate to this as the executable. An $OP consists of a reference to a C++ function along with parameters. A $CODE is a sequence of $OP's. There are many C++ functions for base functionality such as variable handling, networking, and file IO. 
+## Language Extensibility
 
-Grapa includes a form of a class library with inheritance, which is used to enxtend the language based on a default syntax for calling class library methods.
+The grammar is **customizable at runtime** - each rule is loaded into global variables that can be overridden or replaced, effectively changing the language syntax. Rules can be created to parse any data that a grammar can define, with the output being what each rule resolves to. See [$RULE](docs/type/RULE.md) for more details.
 
-Integers are all big integers and floats are all big floats. Percision is unlimited, within available memory. 
+## Underlying Architecture
 
-The language is cross platform binary/execution compatible accross Windows, Linux, Mac (Intel and Apple). 
+The base grammar compiles to $OP and $CODE operations (see [Base types](docs/BASETYPES.md)). An $OP consists of a reference to a C++ function with parameters, and a $CODE is a sequence of $OP's. The system provides many C++ functions for core functionality like variable handling, networking, and file I/O.
+
+## Advanced Features
+
+- **Class library with inheritance** for extending the language
+- **Runtime-mutable BNF grammar** stored as a $LIST with C++ entry points
+- **Unlimited precision arithmetic** - all integers are big integers, all floats are big floats
+- **Cross-platform binary compatibility** across Windows, Linux, Mac (Intel and Apple Silicon) 
 
 # Python
 - [Python setup](docs/PYTHON.md)
+- [Python integration guide](docs/python_integration.md) - Using Grapa with Python for data science, web development, and system administration
 
 # C++
 - [Install from binary](docs/BINARY.md)
 - [Build from source](docs/BUILD.md)
 - [Run from OS shell](docs/RUN.md)
 
-# Base Types
-- [Base types](docs/BASETYPES.md)
-- [Base libraries](docs/BASELIBS.md)
-- [$OP](docs/type/OP.md)
-- [$CODE](docs/type/CODE.md)
+# Language Reference
 
-# System types
-- [$BOOL](docs/type/BOOL.md)
-- [$INT](docs/type/INT.md)
-- [$FLOAT](docs/type/FLOAT.md)
-- [$STR](docs/type/STR.md)
-- [$ID](docs/type/ID.md)
-- [$RAW](docs/type/RAW.md)
-- [$TIME](docs/type/TIME.md)
-- [$RULE](docs/type/RULE.md)
-- [$ARRAY](docs/type/ARRAY.md)
-- [$LIST](docs/type/LIST.md)
-- [$VECTOR](docs/type/VECTOR.md)
-- [$TABLE](docs/type/TABLE.md)
-- [$XML](docs/type/XML.md)
-- [$TAG](docs/type/TAG.md)
-- [$WIDGET](docs/type/WIDGET.md)
-- [$ERR](docs/type/ERR.md)
-- [$SYSID](docs/type/SYSID.md)
-- [$SYSINT](docs/type/SYSINT.md)
-- [$SYSSTR](docs/type/SYSSTR.md)
+## Getting Started
+- [Getting Started](docs/GETTING_STARTED.md) - Quick start guide for new users
+
+## High-Level Language
+- [Examples](docs/EXAMPLES.md) - Common usage patterns and examples
+- [Testing](docs/TESTING.md) - How to test your Grapa code
+- [Grep functionality](docs/GREP.md) - Advanced pattern matching with Unicode support
+
+## System Functions (Advanced)
+- [System functions](docs/SYSTEM_FUNCTIONS.md) - Complete reference of all available system functions
+- [Function quick reference](docs/FUNCTION_QUICK_REFERENCE.md) - Concise function lookup
+
+## Data Types
+- [Base types](docs/BASETYPES.md) - Core $OP and $CODE types
+- [System types](docs/SYSTYPES.md) - All available data types
+- [$OP](docs/type/OP.md) - Operation type
+- [$CODE](docs/type/CODE.md) - Code sequence type
 
 # Libraries (Grapa classes)
 - [$file](docs/sys/file.md)

@@ -2,6 +2,8 @@
 
 For details on the grapa language, see [Grapa language](../README.md)
 
+**For comprehensive Python integration examples and use cases, see [Python Integration Guide](python_integration.md)**
+
 The following assumes you have Python and pip installed, and possibly Jupyter and Notebook installed. 
 
 This will install natively (including dependant libraries which will be installed in the grapapy extention library and not alter the system). 
@@ -207,7 +209,6 @@ result = xy.eval("input.grep(pattern, options, delimiter, normalization, mode, n
 })
 # Takes ~0.85 seconds (11.3x speedup!)
 ```
-```
 
 ### All Grep Parameters
 
@@ -298,3 +299,440 @@ xy.eval('[1, "", 2]')
 ## Error Output
 
 > **Note:** Invalid regex patterns always return `"$ERR"` (not a JSON object or other format).
+
+```
+
+# Grapa Python Integration Guide
+
+This guide explains how to use Grapa's powerful features from Python through the GrapaPy extension.
+
+## Installation
+
+Install the GrapaPy extension:
+
+```bash
+pip install grapapy
+```
+
+## Basic Usage
+
+```python
+import grapapy
+
+# Create a Grapa instance
+xy = grapapy.grapa()
+
+# Execute Grapa code
+result = xy.eval("2 + 2;")
+print(result)  # 4
+
+# Complex calculations
+result = xy.eval("x = 3.45; y = 4.32; x**y;")
+print(result)  # 210.5612696743043
+```
+
+## Namespace Management
+
+**Important**: GrapaPy maintains separate local and global namespaces. The local namespace is cleared between calls to `xy.eval()`, while the global namespace persists. This means:
+
+- Variables created in the local namespace will not be available in subsequent calls
+- Variables stored in the global namespace persist across calls
+- For objects like `$file()` that need to be used across multiple calls, store them in the global namespace
+
+**Key Insight**: You only need to use `$global.variable` the first time you create/initialize a variable. After that, you can use just `variable` directly. Grapa searches for variables in this order:
+1. Current context (within `{ }` brackets)
+2. Function scope
+3. Local namespace
+4. Call stack namespaces
+5. Global namespace
+
+### Example: File Operations with Global Namespace
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Store file object in global namespace (first time only)
+xy.eval("$global.fs = $file();")
+
+# Use the file object in subsequent calls (no $global needed)
+xy.eval("fs.set('test.txt', 'Hello World');")
+content = xy.eval("fs.get('test.txt');")
+print(content)  # Hello World
+
+# Get file information
+info = xy.eval("fs.info('test.txt');")
+print(info)
+```
+
+### Example: Table Operations with Global Namespace
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Create table in global namespace (first time only)
+xy.eval("$global.table = $file().table('ROW');")
+
+# Define fields (no $global needed)
+xy.eval("table.mkfield('name', 'STR', 'VAR');")
+xy.eval("table.mkfield('age', 'INT', 'FIX', 4);")
+
+# Add data
+xy.eval("table.set('user1', 'John Doe', 'name');")
+xy.eval("table.set('user1', 30, 'age');")
+
+# Retrieve data
+name = xy.eval("table.get('user1', 'name');")
+age = xy.eval("table.get('user1', 'age');")
+print(f"Name: {name}, Age: {age}")
+```
+
+## File System Operations
+
+### Basic File Operations
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Initialize file system in global namespace
+xy.eval("$global.fs = $file();")
+
+# Get current directory
+pwd = xy.eval("$global.fs.pwd();")
+print(f"Current directory: {pwd}")
+
+# Get home directory
+home = xy.eval("$global.fs.phd();")
+print(f"Home directory: {home}")
+
+# List directory contents
+files = xy.eval("$global.fs.ls();")
+print(f"Files: {files}")
+
+# Change directory
+xy.eval("$global.fs.cd('subdirectory');")
+
+# Create directory
+xy.eval("$global.fs.mk('new_directory');")
+```
+
+### File I/O Operations
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Initialize file system
+xy.eval("$global.fs = $file();")
+
+# Create and write to file
+xy.eval("$global.fs.set('data.txt', 'Hello from Python!');")
+
+# Read file content
+content = xy.eval("$global.fs.get('data.txt');")
+print(f"File content: {content}")
+
+# Get file information
+info = xy.eval("$global.fs.info('data.txt');")
+print(f"File info: {info}")
+
+# Delete file
+xy.eval("$global.fs.rm('data.txt');")
+```
+
+### File Splitting
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Initialize file system
+xy.eval("$global.fs = $file();")
+
+# Create large file
+xy.eval("""
+    content = "";
+    i = 1;
+    while (i <= 100) {
+        content = content + "Line " + i + ": Test data for splitting.\\n";
+        i = i + 1;
+    };
+    $global.fs.set("large_file.txt", content);
+""")
+
+# Create output directory
+xy.eval("$global.fs.mk('split_output');")
+
+# Split file into 4 parts
+result = xy.eval("$global.fs.split(4, 'large_file.txt', 'split_output', '\\\\n', '');")
+print(f"Split result: {result}")
+
+# List split files
+split_files = xy.eval("$global.fs.ls('split_output');")
+print(f"Split files: {split_files}")
+```
+
+## Database Operations
+
+### Row Store Tables
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Create row store table in global namespace
+xy.eval("$global.row_table = $file().table('ROW');")
+
+# Define fields
+xy.eval("$global.row_table.mkfield('name', 'STR', 'VAR');")
+xy.eval("$global.row_table.mkfield('age', 'INT', 'FIX', 4);")
+xy.eval("$global.row_table.mkfield('salary', 'FLOAT', 'FIX', 8);")
+
+# Add records
+xy.eval("$global.row_table.set('user1', 'John Doe', 'name');")
+xy.eval("$global.row_table.set('user1', 30, 'age');")
+xy.eval("$global.row_table.set('user1', 75000.50, 'salary');")
+
+# Retrieve records
+name = xy.eval("$global.row_table.get('user1', 'name');")
+age = xy.eval("$global.row_table.get('user1', 'age');")
+salary = xy.eval("$global.row_table.get('user1', 'salary');")
+
+print(f"User: {name}, Age: {age}, Salary: {salary}")
+
+# List all records
+records = xy.eval("$global.row_table.ls();")
+print(f"All records: {records}")
+```
+
+### Column Store Tables
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Create column store table
+xy.eval("$global.col_table = $file().table('COL');")
+
+# Define fields
+xy.eval("$global.col_table.mkfield('name', 'STR', 'VAR');")
+xy.eval("$global.col_table.mkfield('age', 'INT', 'FIX', 4);")
+xy.eval("$global.col_table.mkfield('salary', 'FLOAT', 'FIX', 8);")
+
+# Add records
+xy.eval("$global.col_table.set('user1', 'Jane Smith', 'name');")
+xy.eval("$global.col_table.set('user1', 25, 'age');")
+xy.eval("$global.col_table.set('user1', 65000.75, 'salary');")
+
+# Retrieve records
+name = xy.eval("$global.col_table.get('user1', 'name');")
+age = xy.eval("$global.col_table.get('user1', 'age');")
+salary = xy.eval("$global.col_table.get('user1', 'salary');")
+
+print(f"User: {name}, Age: {age}, Salary: {salary}")
+```
+
+### Table Management
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Initialize table
+xy.eval("$global.table = $file().table('ROW');")
+xy.eval("$global.table.mkfield('id', 'INT', 'FIX', 4);")
+xy.eval("$global.table.mkfield('name', 'STR', 'VAR');")
+
+# Add multiple records
+xy.eval("""
+    i = 1;
+    while (i <= 10) {
+        $global.table.set("record" + i, i, "id");
+        $global.table.set("record" + i, "User " + i, "name");
+        i = i + 1;
+    }
+""")
+
+# Get debug information
+debug_info = xy.eval("$global.table.debug();")
+print(f"Table debug info: {debug_info}")
+
+# Remove a field
+xy.eval("$global.table.rmfield('name');")
+
+# List remaining records
+records = xy.eval("$global.table.ls();")
+print(f"Records after field removal: {records}")
+```
+
+## Grep Operations
+
+### Basic Grep
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Simple grep operation
+result = xy.eval('"Hello World 123".grep("\\\\d+", "o");')
+print(f"Grep result: {result}")
+
+# Unicode grep
+result = xy.eval('"Hello 世界 123 €".grep("\\\\p{L}+", "o");')
+print(f"Unicode grep result: {result}")
+```
+
+### Advanced Grep with Parameters
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Grep with multiple parameters
+result = xy.eval("input.grep(pattern, options, delimiter, normalization, mode, num_workers);", {
+    "input": "apple 123 pear 456\nbanana 789",
+    "pattern": "\\d+",
+    "options": "o",
+    "delimiter": "\\n",
+    "normalization": "NONE",
+    "mode": "UNICODE",
+    "num_workers": 0
+})
+print(f"Advanced grep result: {result}")
+```
+
+## Error Handling
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Initialize file system
+xy.eval("$global.fs = $file();")
+
+# Handle file system errors
+try:
+    # Try to read non-existent file
+    result = xy.eval("$global.fs.get('nonexistent.txt');")
+    print(f"Result: {result}")
+except Exception as e:
+    print(f"Error: {e}")
+
+# Handle table errors
+try:
+    # Try to access non-existent field
+    result = xy.eval("$global.table.get('user1', 'nonexistent_field');")
+    print(f"Result: {result}")
+except Exception as e:
+    print(f"Error: {e}")
+```
+
+## Performance Considerations
+
+### Batch Operations
+
+```python
+import grapapy
+import time
+
+xy = grapapy.grapa()
+
+# Initialize table
+xy.eval("$global.table = $file().table('ROW');")
+xy.eval("$global.table.mkfield('id', 'INT', 'FIX', 4);")
+xy.eval("$global.table.mkfield('name', 'STR', 'VAR');")
+
+# Batch insert
+start_time = time.time()
+xy.eval("""
+    i = 1;
+    while (i <= 1000) {
+        $global.table.set("record" + i, i, "id");
+        $global.table.set("record" + i, "User " + i, "name");
+        i = i + 1;
+    }
+""")
+insert_time = time.time() - start_time
+print(f"Inserted 1000 records in {insert_time:.4f} seconds")
+
+# Batch read
+start_time = time.time()
+records = xy.eval("$global.table.ls();")
+read_time = time.time() - start_time
+print(f"Read {len(records) if isinstance(records, list) else 'unknown'} records in {read_time:.4f} seconds")
+```
+
+## Best Practices
+
+1. **Use Global Namespace**: Always store objects that need to persist across calls in the global namespace using `$global.variable`
+
+2. **Initialize Once**: Create file system and table objects once and reuse them
+
+3. **Error Handling**: Always wrap operations in try-catch blocks
+
+4. **Batch Operations**: Use Grapa's built-in loops for batch operations instead of Python loops
+
+5. **Resource Cleanup**: Clean up resources when done
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Initialize resources
+xy.eval("$global.fs = $file();")
+xy.eval("$global.table = $file().table('ROW');")
+
+try:
+    # Use resources
+    xy.eval("$global.fs.set('data.txt', 'test');")
+    xy.eval("$global.table.mkfield('name', 'STR', 'VAR');")
+    
+    # ... your operations ...
+    
+finally:
+    # Cleanup (if needed)
+    xy.eval("$global.fs.rm('data.txt');")
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Variables not persisting**: Use `$global.variable` instead of local variables
+2. **File operations failing**: Ensure file system object is in global namespace
+3. **Table operations failing**: Ensure table object is in global namespace
+4. **Performance issues**: Use batch operations and avoid Python loops
+
+### Debugging
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Check what's in global namespace
+xy.eval("$global.debug_var = 'test';")
+result = xy.eval("$global.debug_var;")
+print(f"Global variable: {result}")
+
+# Check file system object
+xy.eval("$global.fs = $file();")
+fs_type = xy.eval("$global.fs.type();")
+print(f"File system type: {fs_type}")
+```
+
+This guide provides comprehensive coverage of using Grapa's features from Python. The key insight is using the global namespace to maintain object state across calls to the GrapaPy extension.

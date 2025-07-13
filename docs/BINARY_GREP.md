@@ -210,10 +210,10 @@ All grep functions now use exception-based error handling instead of returning `
 Errors are caught by `GrapaLibraryRuleGrepEvent::Run` and returned as `$ERR` objects with descriptive messages:
 
 ```grapa
-// Example error handling
+/* Example error handling */
 result = input.grep("invalid[", "o");
 if (result.type() == $ERR) {
-    "Error occurred: " + result.str() + "\n".echo();
+    ("Error occurred: " + result.str() + "\n").echo();
 }
 ```
 

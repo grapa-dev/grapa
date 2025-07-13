@@ -180,58 +180,58 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 ### Examples:
 
 ```grapa
-// Basic pattern matching
-"apple 123 pear 456\nbanana 789".grep("\\d+", "o")
-→ ["123", "456", "789"]
+/* Basic pattern matching */
+"apple 123 pear 456\nbanana 789".grep("\\d+", "o");
+/* → ["123", "456", "789"] */
 
-// With line numbers
-"apple 123 pear 456\nbanana 789".grep("\\d+", "on")
-→ ["1:123", "1:456", "2:789"]
+/* With line numbers */
+"apple 123 pear 456\nbanana 789".grep("\\d+", "on");
+/* → ["1:123", "1:456", "2:789"] */
 
-// Unicode support
-"Hello 世界 123 €".grep("\\p{L}+", "o")
-→ ["Hello", "世界"]
+/* Unicode support */
+"Hello 世界 123 €".grep("\\p{L}+", "o");
+/* → ["Hello", "世界"] */
 
-// Named groups with JSON output
-"John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
-→ [{"match":"John Doe","first":"John","last":"Doe","offset":0,"line":1}]
+/* Named groups with JSON output */
+"John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj");
+/* → [{"match":"John Doe","first":"John","last":"Doe","offset":0,"line":1}] */
 
-// Date parsing with JSON output
-"2023-04-27\n2022-12-31".grep("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj")
-→ [
+/* Date parsing with JSON output */
+"2023-04-27\n2022-12-31".grep("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj");
+/* → [
     {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
     {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
-  ]
+  ] */
 
-// Raw string literals for better readability
-"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x")
-→ ["file.txt"] - No need to escape backslashes
+/* Raw string literals for better readability */
+"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x");
+/* → ["file.txt"] - No need to escape backslashes */
 
-"user@domain.com".grep(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "x")
-→ ["user@domain.com"] - Much cleaner than escaped version
+"user@domain.com".grep(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "x");
+/* → ["user@domain.com"] - Much cleaner than escaped version */
 
-// Raw strings preserve literal escape sequences
-"\\x45".grep(r"\x45", "o")
-→ ["\\x45"] - Literal string, not character "E"
+/* Raw strings preserve literal escape sequences */
+"\\x45".grep(r"\x45", "o");
+/* → ["\\x45"] - Literal string, not character "E" */
 
-// Context lines
-"Line 1\nLine 2\nLine 3\nLine 4".grep("Line 2", "A1B1")
-→ ["Line 1", "Line 2", "Line 3"]
+/* Context lines */
+"Line 1\nLine 2\nLine 3\nLine 4".grep("Line 2", "A1B1");
+/* → ["Line 1", "Line 2", "Line 3"] */
 
-// Unicode normalization (NFC)
-"café".grep("cafe", "o", "", "NFC")
-→ ["café"]
+/* Unicode normalization (NFC) */
+"café".grep("cafe", "o", "", "NFC");
+/* → ["café"] */
 
-// Binary mode for raw byte processing
-"\\x48\\x65\\x6c\\x6c\\x6f".grep("Hello", "o", "", "NONE", "BINARY")
-→ ["Hello"]
+/* Binary mode for raw byte processing */
+"\\x48\\x65\\x6c\\x6c\\x6f".grep("Hello", "o", "", "NONE", "BINARY");
+/* → ["Hello"] */
 
-// Custom delimiter examples
-"apple|||pear|||banana".grep("\\w+", "o", "|||")
-→ ["apple", "pear", "banana"]
+/* Custom delimiter examples */
+"apple|||pear|||banana".grep("\\w+", "o", "|||");
+/* → ["apple", "pear", "banana"] */
 
-"section1###section2###section3".grep("section\\d+", "o", "###")
-→ ["section1", "section2", "section3"]
+"section1###section2###section3".grep("section\\d+", "o", "###");
+/* → ["section1", "section2", "section3"] */
 ```
 
 > **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](grep.md).**
