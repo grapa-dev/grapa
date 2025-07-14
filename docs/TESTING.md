@@ -11,14 +11,19 @@ Grapa includes a comprehensive test suite for validating Unicode grep functional
 ### Test Directory Structure
 ```
 test/
-├── test_python_examples.py        # Python integration and callback tests
-├── test_grep_python_examples.py   # Python grep functionality tests
-├── test_python_callback.py        # Python callback escaping/troubleshooting
-├── test_json_compliance.grc       # Comprehensive JSON output testing
-├── test_current_capabilities.grc  # Current Unicode capabilities
-├── test_performance_optimizations.grc # Performance validation
-├── test_parallel_grep_verification.grc # Parallel processing tests
-└── [various feature-specific tests]
+├── grep/           # Core and advanced grep feature tests (option combinations, edge cases, ripgrep parity, custom delimiters, etc.)
+├── python/         # Python integration and Grapa Python API tests
+├── integration/    # Integration tests (e.g., unified path system)
+├── database/       # Database-related tests (e.g., table operations)
+├── file_system/    # File system-related tests
+├── regression/     # Regression tests (currently empty)
+├── run_organized_tests.py
+├── run_tests.grz
+├── run_tests_comprehensive.grc
+├── run_tests.grc
+├── TEST_ORGANIZATION_SUMMARY.md
+├── README.md
+└── [various feature-specific .grc and .py test files]
 ```
 
 ### Test Categories
