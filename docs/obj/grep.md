@@ -1504,3 +1504,67 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
 "ÉÑÜ".grep(".", "oi")
 ["É", "Ñ", "Ü"]  // Case-insensitive Unicode character extraction
 ```
+
+# Option Flag Coverage, Test Status, and Implementation Philosophy (Living Status Section)
+
+> **This section is a living document tracking the current state of Grapa grep option flag support, test/code path coverage, and design philosophy. Update this section as new combinations are implemented or tested, or as the philosophy evolves.**
+
+## Option Flags: Full List
+
+| Flag | Description |
+|------|-------------|
+| o    | Match-only (output only matched text) |
+| f    | Force full-segment returns (overrides match-only for some patterns) |
+| a    | All-mode (match across full input string, context options ignored) |
+| s    | Dot matches newline (multiline regex) |
+| i    | Case-insensitive matching |
+| d    | Diacritic-insensitive matching |
+| w    | Word boundary mode |
+| l    | Line number only output |
+| u    | Unique (deduplicate results) |
+| g    | Group results per line |
+| b    | Output byte offset |
+| j    | JSON output |
+| c    | Count of matches |
+| n    | Prefix matches with line numbers |
+| x    | Exact line match |
+| v    | Invert match |
+| N    | Normalize input and pattern to NFC |
+| z    | (Reserved for future use) |
+| T    | Output column numbers |
+| L    | Color output (ANSI) |
+| A<n>, B<n>, C<n> | Context lines (after, before, both) |
+
+## Philosophy for Option Combinations
+
+- **If multiple behaviors are rational, support both via options and test both.**
+- **If only one behavior is correct, default to ripgrep behavior and document the rationale.**
+- **If a combination is ambiguous or not yet implemented, document the gap and planned approach.**
+- **Precedence:** Some options override or disable others (e.g., `o` disables context, `c` disables output, etc.), following ripgrep-style precedence.
+
+## Coverage Matrix: Tested and Implemented Combinations
+
+- **Single options:** All core flags (`o`, `a`, `i`, `d`, `w`, `l`, `n`, `c`, `j`, `b`, `g`, `x`, `v`, `N`, `T`, `L`, context) are tested and have code paths.
+- **Common pairs:** All common pairs (e.g., `oi`, `od`, `oj`, `on`, `oa`, `ow`, `os`, `ox`, `ov`, `oN`, `oT`, `oL`, `oA1`, etc.) are tested and implemented.
+- **Precedence/override cases:** Combinations like `co`, `cl`, `cn`, `ca`, `cj`, etc., are tested for correct precedence (e.g., `c` disables output, only count is returned).
+- **Context + output:** All context options (`A`, `B`, `C`) are tested in combination with output flags, including with custom delimiters and JSON.
+- **Advanced Unicode:** All Unicode property, script, and grapheme cluster patterns are tested with all relevant output and context options.
+- **Multiline and lookaround:** All combinations of `s`, lookaround, and output/context options are tested.
+- **Custom flags:** The new `f` flag (force full-segment) is tested in all relevant scenarios.
+- **Parallel/worker options:** All options are tested with parallel processing (num_workers > 1).
+
+## Known Gaps and Planned Work
+
+- **Higher-order combinations:** Some rare or high-order combinations (e.g., `ojA1B1f`, `odg`, `oibw`, etc.) are not yet explicitly tested, but code paths are designed to be composable.
+- **Edge-case precedence:** Some complex precedence cases (e.g., `c` with context and JSON) may not be fully tested in all permutations.
+- **Reserved/future flags:** `z` and other reserved flags are not yet implemented or tested.
+- **Test suite expansion:** The test suite is being expanded to cover all meaningful combinations, especially those involving new or custom flags.
+- **Documentation:** This section will be updated as new combinations are implemented, tested, or as the philosophy evolves.
+
+## How to Use This Section
+
+- **To check if a flag or combination is supported:** Look for it in the lists above. If not listed, check the "Known Gaps" section.
+- **To see the philosophy for a combination:** See the "Philosophy" section above.
+- **To update:** When a new combination is implemented or tested, update this section to reflect the new status.
+
+> **This living section ensures that the current state of Grapa grep option support, test coverage, and design philosophy is always visible and up to date.**
