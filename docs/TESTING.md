@@ -33,94 +33,103 @@ test/
 
 ### Test Categories
 
-#### 1. **Capabilities Test** (`test_current_capabilities.grc`)
-- **Purpose**: Comprehensive testing of all Unicode and regex features
-- **Coverage**: 15 feature categories (12 supported, 3 unsupported)
-- **Status**: ✅ **All supported features working correctly**
-- **Features Tested**:
-  - Basic Unicode properties (`\p{L}`, `\p{N}`, etc.) ✅
-  - Named groups and JSON output ✅
-  - Lookaround assertions ✅
-  - Unicode grapheme clusters ✅ **FIXED**
-  - Advanced Unicode properties ✅
-  - Context lines ✅ **FIXED**
-  - Atomic groups ✅
-  - Possessive quantifiers ✅
-  - Conditional patterns ✅
-  - Unicode scripts and script extensions ✅
-  - Unicode general categories ✅
-  - Unicode blocks (not supported) ⚠️
-  - Unicode age properties (not supported) ⚠️
-  - Unicode bidirectional classes (not supported) ⚠️
+#### Capabilities
+- **Capabilities** (`test/grep/test_current_capabilities.grc`): Comprehensive Unicode and regex feature coverage
 
-#### 2. **Performance Test** (`test/grep/test_performance_optimizations.grc`)
-- **Purpose**: Validate performance optimizations are working
-- **Coverage**: 8 performance optimization tests
-- **Status**: ✅ **All performance optimizations working**
-- **Features Tested**:
-  - JIT compilation detection and functionality ✅
-  - Fast path optimizations for literal patterns ✅
-  - Fast path optimizations for word patterns ✅
-  - Fast path optimizations for digit patterns ✅
-  - LRU cache functionality for text normalization ✅
-  - Complex Unicode pattern performance ✅
-  - Mixed pattern performance ✅
-  - Edge case performance ✅
+#### Performance
+- **Performance Optimizations** (`test/grep/test_performance_optimizations.grc`)
+- **Performance Debug** (`test/grep/test_performance_debug.grc`)
 
-#### 3. **Parallel Processing Test** (removed: test_parallel_grep_verification.grc)
-- **Purpose**: Validate parallel processing functionality and performance
-- **Coverage**: 8 parallel processing tests
-- **Status**: ✅ **Excellent performance - up to 11x speedup**
-- **Features Tested**:
-  - Auto-detection with num_workers = 0 ✅
-  - Sequential processing with num_workers = 1 ✅
-  - 2-thread processing with num_workers = 2 ✅
-  - 4-thread processing with num_workers = 4 ✅
-  - Small input handling (should use sequential) ✅
-  - Result consistency verification ✅
-  - Basic performance comparison ✅
-  - Parallel function verification ✅
+#### Combinatorial and Option Matrix
+- **Option Combinations Matrix** (`test/grep/test_option_combinations_matrix.grc`)
+- **Comprehensive Grep Combinations** (`test/grep/test_comprehensive_grep_combinations.grc`)
+- **Option Based Behavior** (`test/grep/test_option_based_behavior.grc`)
 
-#### 4. **Feature-Specific Tests**
-- **Atomic Groups** (`test/grep/test_atomic_groups.grc`): 10 tests for atomic group functionality ✅
-- **Lookaround Assertions** (`test/grep/test_lookaround_assertions.grc`): 8 tests for lookaround functionality ✅
-- **Unicode Grapheme Clusters** (`test_unicode_grapheme_clusters.grc`): 10 tests for grapheme cluster functionality ✅ **FIXED**
-- **Grapheme Cluster Pattern** (`test_grapheme_cluster_crash.grc`): Tests for the `\X` pattern and direct segmentation ✅ **FIXED**
-- **Invalid Regex Patterns** (`test/grep/test_invalid_regex.grc`): Tests for graceful error handling of invalid patterns ✅
-- **Unicode Edge Cases** (`test_grep_edge_cases.grc`): Tests for complex Unicode boundary scenarios ✅ **FIXED**
+#### Context and Merging
+- **Context Lines** (`test/grep/test_context_lines.grc`)
+- **Context Merging** (`test/grep/test_context_merging.grc`)
+- **Context Separators** (`test/grep/test_context_separators.grc`)
 
-#### 5. **Ripgrep Compatibility Tests**
-- **Ripgrep Parity** (`test_ripgrep_compatibility.grc`): Tests for ripgrep feature parity including column output, word boundaries, null-data mode, color output, and context separators ✅ **FULL PARITY ACHIEVED**
-- **Ripgrep Features** (`test/grep/test_ripgrep_parity_features.grc`): Comprehensive ripgrep feature compatibility testing ✅
-- **Column Numbers** (`test_column_test.grc`): Tests for column number functionality with the T option ✅ **FIXED**
-- **Color Output** (`test_color_test.grc`): Tests for color output functionality with the L option ✅ **FIXED**
-- **Word Boundaries** (`test_word_boundary.grc`): Tests for word boundary functionality with the w option ✅ **FIXED**
-- **Context Separators** (`test_context_separator_corner_cases.grc`): Tests for context separator functionality and edge cases ✅ **FIXED**
-- **Investigation** (`test_investigation_test.grc`): Comprehensive investigation of remaining ripgrep features and edge cases ✅
+#### Edge Cases and Stress
+- **Grep Edge Cases** (`test/grep/test_grep_edge_cases.grc`)
+- **Zero-Length Edge Cases** (`test/grep/test_edge_case_zero_length.grc`)
+- **Invalid Pattern Edge Cases** (`test/grep/test_edge_case_invalid_patterns.grc`)
+- **Context Boundaries** (`test/grep/test_edge_case_context_boundaries.grc`)
+- **Null Byte Edge Cases** (`test/grep/test_edge_case_null_bytes.grc`)
+- **Unicode Boundaries** (`test/grep/test_edge_case_unicode_boundaries.grc`)
+- **Precedence Edge Cases** (`test/grep/test_edge_case_precedence.grc`)
+- **Compositional Stress** (`test/grep/test_compositional_stress.grc`)
+- **Crash Fixes** (`test/grep/test_crash_fixes.grc`)
 
-#### 6. **Advanced Feature Tests**
-- **Context Lines** (`test_context_lines.grc`): Advanced context line functionality testing (A<n>, B<n>, C<n> options) ✅ **FIXED**
-- **Advanced Context** (removed: test_advanced_context.grc)
-- **Custom Delimiters** (`test_custom_delimiters.grc`): Custom line delimiter functionality testing ✅
-- **Unicode Normalization** (`test_unicode_normalization.grc`): Unicode normalization form testing ✅
-- **Unicode O Option** (`test_unicode_o_option.grc`): Unicode character handling with match-only output ✅
-- **Error Handling** (removed: test_error_handling.grc)
-- **Edge Cases** (`test_edge_cases.grc`): Edge case testing for various scenarios ✅ **FIXED**
-- **Binary Mode** (`test_binary_mode.grc`): Binary processing mode testing ✅
+#### PCRE2 and Rare Features
+- **Multiline and Rare PCRE2** (`test/grep/test_multiline_and_rare_pcre2.grc`)
+- **Atomic Groups** (`test/grep/test_atomic_groups.grc`)
+- **Lookaround Assertions** (`test/grep/test_lookaround_assertions.grc`)
+- **Basic PCRE2** (`test/grep/test_basic_pcre2.grc`)
 
-#### 7. **Performance and Parallel Processing Tests**
-- **Parallel Grep** (`test_parallel_grep.grc`): Parallel processing functionality and performance testing ✅
-- **Parallel Verification** (removed: test_parallel_grep_verification.grc)
-- **Performance Optimizations** (`test/grep/test_performance_optimizations.grc`): Performance optimization validation ✅
+#### Delimiter and Unicode Normalization
+- **Custom Delimiters** (`test/grep/test_custom_delimiters.grc`)
+- **Unicode Normalization** (`test/grep/test_unicode_normalization.grc`)
+- **Unicode Grapheme Clusters** (`test/grep/test_unicode_grapheme_clusters.grc`)
+- **Unicode O Option** (`test/grep/test_unicode_o_option.grc`)
+- **Unicode Pattern Debug** (`test/grep/test_unicode_pattern_debug.grc`)
+- **Unicode Fix Verification** (`test/grep/test_unicode_fix_verification.grc`)
+- **Unicode Pattern Fix** (`test/grep/test_unicode_pattern_fix.grc`)
+- **Case Insensitive Unicode** (`test/grep/test_case_insensitive_unicode.grc`)
+- **Multiline Unicode** (`test/grep/test_multiline_unicode.grc`)
 
-#### 8. **Python Integration Tests**
-- **Python Examples** (`test_python_examples.py`): Comprehensive Python-Grapa integration and callback tests, including argument passing and return values ✅
-- **Python Grep Examples** (`test_grep_python_examples.py`): Grep functionality via Python interface ✅
-- **Python Callback Escaping** (`test_python_callback.py`): Troubleshooting and demonstration of correct callback escaping patterns ✅
+#### Ripgrep Compatibility and Parity
+- **Ripgrep Compatibility** (`test/grep/test_ripgrep_compatibility.grc`)
+- **Ripgrep Parity Features** (`test/grep/test_ripgrep_parity_features.grc`)
+- **Comprehensive Ripgrep Parity** (`test/grep/test_comprehensive_ripgrep_parity.grc`)
+- **Missing Ripgrep Features** (`test/grep/test_missing_ripgrep_features.grc`)
 
-#### 9. **JSON Compliance Tests**
-- **JSON Compliance** (`test_json_compliance.grc`): Comprehensive JSON output format testing ✅ **FIXED**
-- **JSON Output Format**: Tests for proper JSON array format, named groups, and edge cases ✅ **FIXED**
+#### 'o' Option and Match-Only
+- **O Option Edge Cases** (`test/grep/test_o_option_edge_cases.grc`)
+- **O Option Comprehensive** (`test/grep/test_o_option_comprehensive.grc`)
+- **O Option Advanced Regex** (`test/grep/test_o_option_advanced_regex.grc`)
+- **O Option Unicode Property** (`test/grep/test_o_option_unicode_property.grc`)
+- **O Option Basic Fix** (`test/grep/test_o_option_basic_fix.grc`)
+- **Zero-Length O** (`test/grep/test_zero_length_o.grc`)
+- **Normalization O** (`test/grep/test_normalization_o.grc`)
+- **Diacritic Insensitive O** (`test/grep/test_diacritic_insensitive_o.grc`)
+
+#### Parallel and Performance
+- **Parallel Grep** (`test/grep/test_parallel_grep.grc`)
+- **Parallel Grep Basic** (`test/grep/test_parallel_grep_basic.grc`)
+
+#### JSON Compliance
+- **JSON Compliance** (`test/grep/test_json_compliance.grc`)
+
+#### Miscellaneous and Additional Features
+- **F Flag Combinations** (`test/grep/test_f_flag_combinations.grc`)
+- **Fixes Verification** (`test/grep/test_fixes_verification.grc`)
+- **Targeted Fixes** (`test/grep/test_targeted_fixes.grc`)
+- **File System Verification** (`test/grep/test_file_system_verification.grc`)
+- **Null Data Mode** (`test/grep/test_null_data_mode.grc`)
+- **Binary Mode** (`test/grep/test_binary_mode.grc`)
+- **Color Test** (`test/grep/test_color_test.grc`)
+- **Column Test** (`test/grep/test_column_test.grc`)
+- **Word Boundary** (`test/grep/test_word_boundary.grc`)
+- **Word Boundary Comprehensive** (`test/grep/word_boundary_comprehensive.grc`)
+- **Word Boundary Unicode Test** (`test/grep/word_boundary_unicode_test.grc`)
+- **Word Boundary Simple** (`test/grep/word_boundary_simple.grc`)
+- **Word Boundary Debug** (`test/grep/word_boundary_debug.grc`)
+- **Color Column Test** (`test/grep/color_column_test.grc`)
+- **Invert Match Debug** (`test/grep/invert_match_debug.grc`)
+- **Grapheme Simple** (`test/grep/test_grapheme_simple.grc`)
+- **Grapheme Debug** (`test/grep/test_grapheme_debug.grc`)
+- **Simple Debug** (`test/grep/test_simple_debug.grc`)
+- **Large Context Debug** (`test/grep/test_large_context_debug.grc`)
+- **Pathological Patterns** (`test/grep/test_pathological_patterns.grc`)
+- **Malformed Unicode** (`test/grep/test_malformed_unicode.grc`)
+- **Ultra Large Lines** (`test/grep/test_ultra_large_lines.grc`)
+- **GRZ Execution Methods** (`test/grep/test_grz_execution_methods.grc`)
+- **GRZ Format** (`test/grep/test_grz_format.grc`)
+- **GRC vs GRZ Performance** (`test/grep/test_grc_vs_grz_performance.grc`)
+- **GRC vs GRZ Performance Corrected** (`test/grep/test_grc_vs_grz_performance_corrected.grc`)
+
+**Note:** All `.grc` files in `test/grep/` are required for full grep test coverage.
 
 ### Running Python Tests
 Python tests require the `grapapy` module to be installed:
