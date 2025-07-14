@@ -1,0 +1,73 @@
+/*
+Grapa .grc File Authoring Rules (Windows)
+- Use block comments for all comments (do not use //). Block comments should be written as in this header.
+- Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
+- End every command with a ; character
+- Use while loops instead of for (Grapa does not support for)
+- Wrap string concatenations in parentheses: (str1+str2).echo();
+- Access arrays with [index], not .get(index): arr[0];
+- Access object properties with .get("key"), not square brackets: obj.get("key");
+- Validate syntax against known-good .grc files before adding new code
+- Prefer simple, explicit constructs for compatibility
+- To run this file on Windows:
+    .\grep.exe -q -cfile path/file.grc
+*/
+
+"=== COMPOSITIONAL STRESS TEST SUITE ===\n".echo();
+
+/* Section 1: All features together (output, context, Unicode, parallel, custom delimiter) */
+"\n-- 1. All features together --\n".echo();
+input1 = "\u03b1\u03b2\u03b3|||Hello \u4e16\u754c|||Goodbye caf\u00e9|||ma\u00f1ana|||CAF\u00c9|||123|||\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d\udc66";
+pattern1 = "\\p{L}+|\\X";
+result1 = input1.grep(pattern1, "ojA2B2f", "|||", "NFC", "UNICODE", 4);
+("Input: '" + input1 + "'\n").echo();
+("Pattern: '" + pattern1 + "', Options: 'ojA2B2f', Delimiter: '|||', Normalization: NFC, Mode: UNICODE, Workers: 4\n").echo();
+("Result: " + result1.str() + "\n").echo();
+("Expected: JSON array of all Unicode words/graphemes, with context, full segments, and parallel correctness\n").echo();
+"---\n".echo();
+
+/* Section 2: Output + context + invert + Unicode + parallel */
+"\n-- 2. Output + context + invert + Unicode + parallel --\n".echo();
+input2 = "foo|||bar|||baz|||qux|||caf\u00e9|||ma\u00f1ana|||\u4e16\u754c";
+pattern2 = "foo|bar|baz";
+result2 = input2.grep(pattern2, "oA1B1v", "|||", "NFC", "UNICODE", 2);
+("Input: '" + input2 + "'\n").echo();
+("Pattern: '" + pattern2 + "', Options: 'oA1B1v', Delimiter: '|||', Normalization: NFC, Mode: UNICODE, Workers: 2\n").echo();
+("Result: " + result2.str() + "\n").echo();
+("Expected: All non-matching segments with context, output only\n").echo();
+"---\n".echo();
+
+/* Section 3: Output + context + diacritic-insensitive + group + parallel */
+"\n-- 3. Output + context + diacritic-insensitive + group + parallel --\n".echo();
+input3 = "caf\u00e9|||Cafe|||CAF\u00c9|||r\u00e9sum\u00e9|||Resume|||R\u00c9SUM\u00c9";
+pattern3 = "cafe|resume";
+result3 = input3.grep(pattern3, "oA1dg", "|||", "NFC", "UNICODE", 3);
+("Input: '" + input3 + "'\n").echo();
+("Pattern: '" + pattern3 + "', Options: 'oA1dg', Delimiter: '|||', Normalization: NFC, Mode: UNICODE, Workers: 3\n").echo();
+("Result: " + result3.str() + "\n").echo();
+("Expected: All diacritic-insensitive matches, grouped, with context\n").echo();
+"---\n".echo();
+
+/* Section 4: Output + context + word boundary + byte offset + JSON + parallel */
+"\n-- 4. Output + context + word boundary + byte offset + JSON + parallel --\n".echo();
+input4 = "foo bar|||bar foo|||baz bar|||foo baz|||bar baz";
+pattern4 = "foo|bar|baz";
+result4 = input4.grep(pattern4, "oA1Bwjb", "|||", "NONE", "UNICODE", 2);
+("Input: '" + input4 + "'\n").echo();
+("Pattern: '" + pattern4 + "', Options: 'oA1Bwjb', Delimiter: '|||', Mode: UNICODE, Workers: 2\n").echo();
+("Result: " + result4.str() + "\n").echo();
+("Expected: JSON array of all word-boundary matches with byte offsets, context, and parallel\n").echo();
+"---\n".echo();
+
+/* Section 5: Output + context + normalization + binary mode + parallel */
+"\n-- 5. Output + context + normalization + binary mode + parallel --\n".echo();
+input5 = "caf\u00e9\x00Cafe\x00CAF\u00c9\x00r\u00e9sum\u00e9\x00Resume\x00R\u00c9SUM\u00c9";
+pattern5 = "cafe|resume";
+result5 = input5.grep(pattern5, "oA1N", "\x00", "NFC", "BINARY", 2);
+("Input: '" + input5 + "'\n").echo();
+("Pattern: '" + pattern5 + "', Options: 'oA1N', Delimiter: '\x00', Normalization: NFC, Mode: BINARY, Workers: 2\n").echo();
+("Result: " + result5.str() + "\n").echo();
+("Expected: All normalized matches in binary mode, with context\n").echo();
+"---\n".echo();
+
+"=== END OF COMPOSITIONAL STRESS TEST SUITE ===\n".echo(); 

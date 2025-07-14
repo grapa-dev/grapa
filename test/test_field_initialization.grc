@@ -1,0 +1,134 @@
+/* Test Field Initialization Behavior */
+
+"Testing Field Initialization...\n".echo();
+
+/* Cleanup */
+"Cleanup: Removing any existing test files...\n".echo();
+f = $file();
+f.rm("test_db");
+"Cleanup completed.\n".echo();
+
+/* Test 1: Create database and define schema */
+"Test 1: Database Schema Definition\n".echo();
+"----------------------------------\n".echo();
+
+f.mk("test_db", "COL");
+f.cd("test_db");
+
+"Creating fields for the database...\n".echo();
+f.mkfield("id", "INT", "FIX", 4);
+f.mkfield("name", "STR", "VAR");
+f.mkfield("age", "INT", "FIX", 4);
+f.mkfield("salary", "FLOAT", "FIX", 8);
+f.mkfield("department", "STR", "VAR");
+
+/* Test 2: Create a record and check field values */
+"Test 2: Record Creation and Field Values\n".echo();
+"----------------------------------------\n".echo();
+
+"Creating a record by setting only the name field...\n".echo();
+f.set("employee1", "John Doe", "name");
+
+"Checking all field values after record creation:\n".echo();
+"$KEY (record name): ".echo();
+f.get("employee1", "$KEY").echo();
+"\n".echo();
+
+"name field: ".echo();
+f.get("employee1", "name").echo();
+"\n".echo();
+
+"age field (not set): ".echo();
+age_value = f.get("employee1", "age");
+age_value.echo();
+" (length: ".echo();
+age_value.length().echo();
+")\n".echo();
+
+"salary field (not set): ".echo();
+salary_value = f.get("employee1", "salary");
+salary_value.echo();
+" (length: ".echo();
+salary_value.length().echo();
+")\n".echo();
+
+"department field (not set): ".echo();
+dept_value = f.get("employee1", "department");
+dept_value.echo();
+" (length: ".echo();
+dept_value.length().echo();
+")\n".echo();
+
+/* Test 3: Set all fields and check again */
+"Test 3: Setting All Fields\n".echo();
+"--------------------------\n".echo();
+
+"Setting all remaining fields...\n".echo();
+f.set("employee1", 30, "age");
+f.set("employee1", 75000.50, "salary");
+f.set("employee1", "Engineering", "department");
+
+"Checking all field values after setting all fields:\n".echo();
+"$KEY: ".echo();
+f.get("employee1", "$KEY").echo();
+"\n".echo();
+
+"name: ".echo();
+f.get("employee1", "name").echo();
+"\n".echo();
+
+"age: ".echo();
+f.get("employee1", "age").echo();
+"\n".echo();
+
+"salary: ".echo();
+f.get("employee1", "salary").echo();
+"\n".echo();
+
+"department: ".echo();
+f.get("employee1", "department").echo();
+"\n".echo();
+
+/* Test 4: Create another record with different approach */
+"Test 4: Alternative Record Creation\n".echo();
+"-----------------------------------\n".echo();
+
+"Creating another record by setting multiple fields at once...\n".echo();
+f.set("employee2", "Jane Smith", "name");
+f.set("employee2", 28, "age");
+f.set("employee2", 65000.25, "salary");
+f.set("employee2", "Marketing", "department");
+
+"Checking employee2 field values:\n".echo();
+"$KEY: ".echo();
+f.get("employee2", "$KEY").echo();
+"\n".echo();
+
+"name: ".echo();
+f.get("employee2", "name").echo();
+"\n".echo();
+
+"age: ".echo();
+f.get("employee2", "age").echo();
+"\n".echo();
+
+"salary: ".echo();
+f.get("employee2", "salary").echo();
+"\n".echo();
+
+"department: ".echo();
+f.get("employee2", "department").echo();
+"\n".echo();
+
+/* Test 5: List database contents */
+"Test 5: Database Contents\n".echo();
+"-------------------------\n".echo();
+
+contents = f.ls();
+"Database contents: ".echo();
+contents.echo();
+"\n".echo();
+
+"Test completed.\n".echo();
+"Note: Fields are not automatically initialized with default values.\n".echo();
+"Each field must be explicitly set after record creation.\n".echo(); 

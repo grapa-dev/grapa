@@ -1,0 +1,43 @@
+/* Test table() method with parameters */
+
+echo("=== Testing table() with parameters ===")
+
+/* Test 1: Default table (no parameter) */
+echo("Test 1: Default table (no parameter)")
+f1 = $file().table()
+echo("Type:", f1.type())
+echo("---")
+
+/* Test 2: Row store table */
+echo("Test 2: Row store table")
+f2 = $file().table("ROW")
+echo("Type:", f2.type())
+echo("---")
+
+/* Test 3: Column store table */
+echo("Test 3: Column store table")
+f3 = $file().table("COL")
+echo("Type:", f3.type())
+echo("---")
+
+/* Test 4: Group table */
+echo("Test 4: Group table")
+f4 = $file().table("GROUP")
+echo("Type:", f4.type())
+echo("---")
+
+/* Test 5: Test operations on column store table */
+echo("Test 5: Operations on column store table")
+f3.mkfield("name", "STR", "VAR")
+f3.mkfield("age", "INT", "FIX", 4)
+
+f3.set("1", "name", "Alice")
+f3.set("1", "age", 30)
+
+echo("Record 1 name:", f3.get("1", "name"))
+echo("Record 1 age:", f3.get("1", "age"))
+
+f3.debug()
+echo("---")
+
+echo("Test completed") 

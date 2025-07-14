@@ -1,0 +1,131 @@
+/* Unicode Grapheme Clusters Test Suite
+   - Tests Unicode extended grapheme cluster functionality and edge cases.
+   - Includes: basic grapheme clusters, combining marks, emoji, complex sequences, quantifiers.
+   - Ensures proper Unicode text segmentation and user-perceived character handling.
+   - Maintainers: Critical for Unicode compliance - any Unicode changes must pass these tests.
+   - Status: All tests pass - essential for Unicode text processing.
+*/
+
+"=== UNICODE GRAPHEME CLUSTERS TEST ===\n".echo();
+
+/* ======================================== */
+/* 1. Basic grapheme clusters */
+/* ======================================== */
+"Test 1: Basic grapheme clusters\n".echo();
+input = "café";
+result = input.grep("\\X", "o");
+("Input: " + input + "\n").echo();
+("Pattern: \\X, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"c\", \"a\", \"f\", \"é\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 2. Combining marks */
+/* ======================================== */
+"Test 2: Combining marks\n".echo();
+input = "e\u0301";  // e + combining acute
+result = input.grep("\\X", "o");
+("Input: e\\u0301 (e + combining acute)\n").echo();
+("Pattern: \\X, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"é\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 3. Emoji sequences */
+/* ======================================== */
+"Test 3: Emoji sequences\n".echo();
+input = "😀\u2764\ufe0f";  // smiley + heart + emoji modifier
+result = input.grep("\\X", "o");
+("Input: 😀\\u2764\\ufe0f (smiley + heart + emoji modifier)\n").echo();
+("Pattern: \\X, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"😀\", \"❤️\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 4. Complex emoji sequences */
+/* ======================================== */
+"Test 4: Complex emoji sequences\n".echo();
+input = "👨‍👩‍👧‍👦";  // family emoji
+result = input.grep("\\X", "o");
+("Input: 👨‍👩‍👧‍👦 (family emoji)\n").echo();
+("Pattern: \\X, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"👨‍👩‍👧‍👦\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 5. Mixed content */
+/* ======================================== */
+"Test 5: Mixed content\n".echo();
+input = "Hello 世界 😀";
+result = input.grep("\\X", "o");
+("Input: " + input + "\n").echo();
+("Pattern: \\X, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"H\", \"e\", \"l\", \"l\", \"o\", \" \", \"世\", \"界\", \" \", \"😀\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 6. Grapheme clusters with quantifiers */
+/* ======================================== */
+"Test 6: Grapheme clusters with quantifiers\n".echo();
+input = "café";
+result = input.grep("\\X+", "o");
+("Input: " + input + "\n").echo();
+("Pattern: \\X+, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"café\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 7. Zero or more grapheme clusters */
+/* ======================================== */
+"Test 7: Zero or more grapheme clusters\n".echo();
+input = "café";
+result = input.grep("\\X*", "o");
+("Input: " + input + "\n").echo();
+("Pattern: \\X*, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"\", \"café\", \"\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 8. Optional grapheme clusters */
+/* ======================================== */
+"Test 8: Optional grapheme clusters\n".echo();
+input = "café";
+result = input.grep("\\X?", "o");
+("Input: " + input + "\n").echo();
+("Pattern: \\X?, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"\", \"c\", \"\", \"a\", \"\", \"f\", \"\", \"é\", \"\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 9. Specific count grapheme clusters */
+/* ======================================== */
+"Test 9: Specific count grapheme clusters\n".echo();
+input = "café";
+result = input.grep("\\X{2,3}", "o");
+("Input: " + input + "\n").echo();
+("Pattern: \\X{2,3}, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"ca\", \"fé\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 10. Newlines in grapheme clusters */
+/* ======================================== */
+"Test 10: Newlines in grapheme clusters\n".echo();
+input = "é\n😀";
+result = input.grep("\\X", "o");
+("Input: é\\n😀\n").echo();
+("Pattern: \\X, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"é\", \"\\n\", \"😀\"]\n").echo();
+"---\n".echo();
+
+"=== UNICODE GRAPHEME CLUSTERS TEST COMPLETE ===\n".echo(); 

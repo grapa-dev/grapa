@@ -1,0 +1,41 @@
+/* Simple Grapheme Cluster Test */
+/* This test will help us understand what's happening with grapheme clusters */
+
+"=== SIMPLE GRAPHEME CLUSTER TEST ===\n".echo();
+
+/* Test 1: Basic ASCII */
+"Test 1: Basic ASCII\n".echo();
+input = "Hello";
+result = input.grep("\\X", "oj");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 2: Simple Unicode */
+"Test 2: Simple Unicode\n".echo();
+input = "café";
+result = input.grep("\\X", "oj");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 3: Emoji */
+"Test 3: Emoji\n".echo();
+input = "👋";
+result = input.grep("\\X", "oj");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 4: Complex Emoji */
+"Test 4: Complex Emoji\n".echo();
+input = "👨‍👩‍👧‍👦";
+result = input.grep("\\X", "oj");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+/* Test 5: Mixed Content */
+"Test 5: Mixed Content\n".echo();
+input = "Hello 👋";
+result = input.grep("\\X", "oj");
+"Result: " + result.str() + "\n".echo();
+"---\n".echo();
+
+"=== SIMPLE TEST COMPLETED ===\n".echo(); 

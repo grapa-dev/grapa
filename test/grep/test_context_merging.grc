@@ -1,0 +1,14 @@
+/* Context Merging Test */
+
+"=== CONTEXT MERGING TEST ===\n".echo();
+
+/* === Basic Context Merging (from test_context_merging_simple.grc) === */
+/* [Insert unique tests from test_context_merging_simple.grc here] */
+
+/* === Separator Logic and Edge Cases (from test_context_separator_corner_cases.grc) === */
+/* [Insert unique tests from test_context_separator_corner_cases.grc here] */
+
+/* === Custom Delimiter Context (from test_context_separator_corner_cases.grc) === */
+/* [Insert custom delimiter context tests here] */
+
+"=== CONTEXT MERGING TEST COMPLETE ===\n".echo(); 

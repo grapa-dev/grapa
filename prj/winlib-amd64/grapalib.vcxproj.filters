@@ -114,6 +114,12 @@
     <ClInclude Include="..\..\source\grapa\GrapaWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\source\grep\grapa_grep_unicode.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\grep\grep_unicode.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="grapalib.cpp">

@@ -87,7 +87,12 @@ result = "Hello World".grep(null, "");
 
 /* Test very large pattern */
 "Testing very large pattern:\n".echo();
-large_pattern = "a".repeat(10000);
+large_pattern = "";
+i = 0;
+while (i < 10000) {
+    large_pattern = large_pattern + "a";
+    i = i + 1;
+}
 result = "Hello World".grep(large_pattern, "");
 "Pattern: (10000 chars), Result type: " + typeof(result) + "\n".echo();
 

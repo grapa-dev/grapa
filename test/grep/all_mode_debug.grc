@@ -1,0 +1,14 @@
+/* All mode output test */
+"=== ALL MODE OUTPUT TEST ===\n".echo();
+
+input = "line1\nline2\nline3";
+"Input: ".echo(); input.echo(); "\n".echo();
+
+result = input.grep("line.*", "oa");
+"Result (oa): ".echo(); result.echo(); "\n".echo();
+
+resultj = input.grep("line.*", "oja");
+"Result (oja): ".echo(); resultj.echo(); "\n".echo();
+
+"Expected: Should return line1, line2, line3 (all lines matching)\n".echo();
+"=== TEST COMPLETE ===\n".echo(); 

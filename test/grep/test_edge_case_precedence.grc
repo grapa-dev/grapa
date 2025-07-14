@@ -1,0 +1,77 @@
+/*
+Grapa .grc File Authoring Rules (Windows)
+- Use block comments for all comments (do not use //). Block comments should be written as in this header.
+- Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
+- End every command with a ; character
+- Use while loops instead of for (Grapa does not support for)
+- Wrap string concatenations in parentheses: (str1+str2).echo();
+- Access arrays with [index], not .get(index): arr[0];
+- Access object properties with .get("key"), not square brackets: obj.get("key");
+- Validate syntax against known-good .grc files before adding new code
+- Prefer simple, explicit constructs for compatibility
+- To run this file on Windows:
+    .\grep.exe -q -cfile path/file.grc
+*/
+
+"=== EDGE-CASE PRECEDENCE & OUTPUT ENCODING TEST SUITE ===\n".echo();
+
+/* Section 1: Count (c) overrides output, JSON, context */
+"\n-- 1. Count (c) overrides output, JSON, context --\n".echo();
+input1 = "foo|bar|baz|foo|bar|baz";
+pattern1 = "foo|bar";
+result1 = input1.grep(pattern1, "cojA1", "|");
+("Input: '" + input1 + "'\n").echo();
+("Pattern: '" + pattern1 + "', Options: 'cojA1', Delimiter: '|'\n").echo();
+("Result: " + result1.str() + "\n").echo();
+("Expected: Only the count of matches (c disables output/JSON/context)\n").echo();
+"---\n".echo();
+
+/* Section 2: Color output (L) with hex print */
+"\n-- 2. Color output (L) with hex print --\n".echo();
+input2 = "foo bar baz";
+pattern2 = "foo";
+result2 = input2.grep(pattern2, "oL");
+("Input: '" + input2 + "'\n").echo();
+("Pattern: '" + pattern2 + "', Options: 'oL'\n").echo();
+("Result: " + result2.str() + "\n").echo();
+("Result[0] hex: " + result2[0].hex() + "\n").echo();
+("Expected: Should include ANSI color codes around matches (visible in hex)\n").echo();
+"---\n".echo();
+
+/* Section 3: Color output (L) with context and hex print */
+"\n-- 3. Color output (L) with context and hex print --\n".echo();
+input3 = "foo\nbar\nbaz\nfoo\nbar\nbaz";
+pattern3 = "foo";
+result3 = input3.grep(pattern3, "oLA1", "\n");
+("Input: '" + input3 + "'\n").echo();
+("Pattern: '" + pattern3 + "', Options: 'oLA1', Delimiter: '\n'\n").echo();
+("Result: " + result3.str() + "\n").echo();
+("Result[0] hex: " + result3[0].hex() + "\n").echo();
+("Expected: Colorized output for matches and context, hex shows color codes\n").echo();
+"---\n".echo();
+
+/* Section 4: Output with null bytes (hex print) */
+"\n-- 4. Output with null bytes (hex print) --\n".echo();
+input4 = "foo\x00bar\x00baz";
+pattern4 = "foo|bar|baz";
+result4 = input4.grep(pattern4, "o", "\x00");
+("Input: '" + input4 + "'\n").echo();
+("Pattern: '" + pattern4 + "', Options: 'o', Delimiter: '\x00'\n").echo();
+("Result: " + result4.str() + "\n").echo();
+("Result[0] hex: " + result4[0].hex() + "\n").echo();
+("Expected: Output with embedded nulls, visible in hex\n").echo();
+"---\n".echo();
+
+/* Section 5: Output with Unicode and hex print */
+"\n-- 5. Output with Unicode and hex print --\n".echo();
+input5 = "caf\u00e9 r\u00e9sum\u00e9 na\u00efve";
+pattern5 = "caf\u00e9";
+result5 = input5.grep(pattern5, "o");
+("Input: '" + input5 + "'\n").echo();
+("Pattern: '" + pattern5 + "', Options: 'o'\n").echo();
+("Result: " + result5.str() + "\n").echo();
+("Result[0] hex: " + result5[0].hex() + "\n").echo();
+("Expected: Unicode output, hex shows UTF-8 encoding\n").echo();
+"---\n".echo();
+
+"=== END OF EDGE-CASE PRECEDENCE & OUTPUT ENCODING TEST SUITE ===\n".echo(); 

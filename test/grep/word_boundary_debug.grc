@@ -1,0 +1,11 @@
+/* Word boundary output test */
+"=== WORD BOUNDARY OUTPUT TEST ===\n".echo();
+
+result = "hello hello hello".grep("hello", "ow");
+"Result (ow): ".echo(); result.echo(); "\n".echo();
+
+resultj = "hello hello hello".grep("hello", "ojw");
+"Result (ojw): ".echo(); resultj.echo(); "\n".echo();
+
+"Expected: Should return 2 matches, not 3 (no overlapping)\n".echo();
+"=== TEST COMPLETE ===\n".echo(); 

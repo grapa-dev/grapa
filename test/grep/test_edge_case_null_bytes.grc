@@ -1,0 +1,62 @@
+/*
+Grapa .grc File Authoring Rules (Windows)
+- Use block comments for all comments (do not use //). Block comments should be written as in this header.
+- Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
+- End every command with a ; character
+- Use while loops instead of for (Grapa does not support for)
+- Wrap string concatenations in parentheses: (str1+str2).echo();
+- Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
+  Example:
+    ar = [1,2,3];
+    ar[1]; // returns 2
+    ar = {"a":11,"b":22,"c":33};
+    ar[1]; // returns 22
+    ar["b"]; // returns 22
+- Use .get("key") for object property access, not for arrays/lists.
+- Validate syntax against known-good .grc files before adding new code
+- Prefer simple, explicit constructs for compatibility
+- To run this file on Windows:
+    .\grep.exe -q -cfile path/file.grc
+- See the living section in docs/obj/grep.md for updates.
+
+Edge Case Category: Null Bytes and Binary Data
+- Tests handling of \x00 (null bytes) in text and binary mode, as delimiters and as part of matches, following ripgrep/PCRE2 edge case handling.
+- Each test prints input, pattern, options, result, and expected output.
+*/
+
+"=== NULL BYTE AND BINARY DATA EDGE CASES ===\n".echo();
+
+/* Test 1: Null byte as delimiter in text mode */
+input = "data1\x00data2\x00data3";
+pattern = "data\d+";
+result = input.grep(pattern, "o", "\x00");
+("Input: '" + input + "'\n").echo();
+("Pattern: '" + pattern + "', Options: o, Delimiter: \\x00\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"data1\", \"data2\", \"data3\"]\n").echo();
+"---\n".echo();
+
+/* Test 2: Null byte as delimiter in binary mode */
+result = input.grep(pattern, "o", "\x00", "NONE", "BINARY");
+("Pattern: '" + pattern + "', Options: o, Delimiter: \\x00, Mode: BINARY\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"data1\", \"data2\", \"data3\"]\n").echo();
+"---\n".echo();
+
+/* Test 3: Match null byte explicitly */
+pattern = "\x00";
+result = input.grep(pattern, "o");
+("Pattern: '" + pattern + "', Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"\x00\", \"\x00\"]\n").echo();
+"---\n".echo();
+
+/* Test 4: Null byte in match in binary mode */
+pattern = "data\x00data";
+input2 = "data\x00data\x00data";
+result = input2.grep(pattern, "o", "\x00", "NONE", "BINARY");
+("Input: '" + input2 + "'\n").echo();
+("Pattern: '" + pattern + "', Options: o, Delimiter: \\x00, Mode: BINARY\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"data\x00data\"]\n").echo();
+"---\n".echo(); 

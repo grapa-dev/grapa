@@ -1,0 +1,2 @@
+# This file ensures the test/grep/ directory is tracked by git.
+# All Unicode grep-related .grc tests should be placed here as per the test organization guidelines. 

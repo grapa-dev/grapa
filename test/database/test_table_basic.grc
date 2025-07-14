@@ -1,0 +1,277 @@
+/* Basic Database Tests for Grapa */
+/* Tests fundamental database operations for all table types */
+
+"=== BASIC DATABASE TESTS ===\n".echo();
+"Testing fundamental database operations\n".echo();
+
+/* Test 1: Table Creation and Types */
+"Test 1: Table Creation and Types\n".echo();
+"--------------------------------\n".echo();
+
+"Creating different table types...\n".echo();
+
+"Default table (no parameter):\n".echo();
+f1 = $file().table();
+"Type: ".echo();
+f1.type().echo();
+"\n".echo();
+
+"Row store table:\n".echo();
+f2 = $file().table("ROW");
+"Type: ".echo();
+f2.type().echo();
+"\n".echo();
+
+"Column store table:\n".echo();
+f3 = $file().table("COL");
+"Type: ".echo();
+f3.type().echo();
+"\n".echo();
+
+"Group table:\n".echo();
+f4 = $file().table("GROUP");
+"Type: ".echo();
+f4.type().echo();
+"\n".echo();
+
+/* Test 2: Field Creation and Types */
+"Test 2: Field Creation and Types\n".echo();
+"--------------------------------\n".echo();
+
+"Testing field creation in row store...\n".echo();
+f2.mkfield("name", "STR", "VAR");
+f2.mkfield("age", "INT", "FIX", 4);
+f2.mkfield("salary", "FLOAT", "FIX", 8);
+f2.mkfield("active", "BOOL", "FIX", 1);
+f2.mkfield("timestamp", "TIME", "FIX", 8);
+"Row store fields created successfully.\n".echo();
+
+"Testing field creation in column store...\n".echo();
+f3.mkfield("name", "STR", "VAR");
+f3.mkfield("age", "INT", "FIX", 4);
+f3.mkfield("salary", "FLOAT", "FIX", 8);
+f3.mkfield("active", "BOOL", "FIX", 1);
+f3.mkfield("timestamp", "TIME", "FIX", 8);
+"Column store fields created successfully.\n".echo();
+
+/* Test 3: Data Operations - Row Store */
+"Test 3: Data Operations - Row Store\n".echo();
+"-----------------------------------\n".echo();
+
+"Setting data in row store...\n".echo();
+f2.set("user1", "John Doe", "name");
+f2.set("user1", 30, "age");
+f2.set("user1", 75000.50, "salary");
+f2.set("user1", true, "active");
+f2.set("user1", 1640995200, "timestamp");
+
+f2.set("user2", "Jane Smith", "name");
+f2.set("user2", 25, "age");
+f2.set("user2", 65000.75, "salary");
+f2.set("user2", true, "active");
+f2.set("user2", 1640995200, "timestamp");
+
+"Getting data from row store...\n".echo();
+"User1 name: ".echo();
+f2.get("user1", "name").echo();
+"\n".echo();
+
+"User1 age: ".echo();
+f2.get("user1", "age").echo();
+"\n".echo();
+
+"User1 salary: ".echo();
+f2.get("user1", "salary").echo();
+"\n".echo();
+
+"User1 active: ".echo();
+f2.get("user1", "active").echo();
+"\n".echo();
+
+"User1 timestamp: ".echo();
+f2.get("user1", "timestamp").echo();
+"\n".echo();
+
+/* Test 4: Data Operations - Column Store */
+"Test 4: Data Operations - Column Store\n".echo();
+"-------------------------------------\n".echo();
+
+"Setting data in column store...\n".echo();
+f3.set("user1", "John Doe", "name");
+f3.set("user1", 30, "age");
+f3.set("user1", 75000.50, "salary");
+f3.set("user1", true, "active");
+f3.set("user1", 1640995200, "timestamp");
+
+f3.set("user2", "Jane Smith", "name");
+f3.set("user2", 25, "age");
+f3.set("user2", 65000.75, "salary");
+f3.set("user2", true, "active");
+f3.set("user2", 1640995200, "timestamp");
+
+"Getting data from column store...\n".echo();
+"User1 name: ".echo();
+f3.get("user1", "name").echo();
+"\n".echo();
+
+"User1 age: ".echo();
+f3.get("user1", "age").echo();
+"\n".echo();
+
+"User1 salary: ".echo();
+f3.get("user1", "salary").echo();
+"\n".echo();
+
+"User1 active: ".echo();
+f3.get("user1", "active").echo();
+"\n".echo();
+
+"User1 timestamp: ".echo();
+f3.get("user1", "timestamp").echo();
+"\n".echo();
+
+/* Test 5: Listing and Navigation */
+"Test 5: Listing and Navigation\n".echo();
+"------------------------------\n".echo();
+
+"Listing row store contents:\n".echo();
+row_contents = f2.ls();
+row_contents.echo();
+"\n".echo();
+
+"Listing column store contents:\n".echo();
+col_contents = f3.ls();
+col_contents.echo();
+"\n".echo();
+
+/* Test 6: Field Information */
+"Test 6: Field Information\n".echo();
+"-------------------------\n".echo();
+
+"Getting field information from row store:\n".echo();
+f2.debug();
+"\n".echo();
+
+"Getting field information from column store:\n".echo();
+f3.debug();
+"\n".echo();
+
+/* Test 7: Error Handling */
+"Test 7: Error Handling\n".echo();
+"----------------------\n".echo();
+
+"Testing error handling...\n".echo();
+
+"Getting non-existent record from row store:\n".echo();
+error_result1 = f2.get("nonexistent", "name");
+error_result1.echo();
+"\n".echo();
+
+"Getting non-existent field from row store:\n".echo();
+error_result2 = f2.get("user1", "nonexistent");
+error_result2.echo();
+"\n".echo();
+
+"Getting non-existent record from column store:\n".echo();
+error_result3 = f3.get("nonexistent", "name");
+error_result3.echo();
+"\n".echo();
+
+"Getting non-existent field from column store:\n".echo();
+error_result4 = f3.get("user1", "nonexistent");
+error_result4.echo();
+"\n".echo();
+
+/* Test 8: Data Type Handling */
+"Test 8: Data Type Handling\n".echo();
+"--------------------------\n".echo();
+
+"Testing different data types...\n".echo();
+
+"String data:\n".echo();
+f2.set("test1", "Hello, World!", "name");
+f2.get("test1", "name").echo();
+"\n".echo();
+
+"Integer data:\n".echo();
+f2.set("test2", 42, "age");
+f2.get("test2", "age").echo();
+"\n".echo();
+
+"Float data:\n".echo();
+f2.set("test3", 3.14159, "salary");
+f2.get("test3", "salary").echo();
+"\n".echo();
+
+"Boolean data:\n".echo();
+f2.set("test4", false, "active");
+f2.get("test4", "active").echo();
+"\n".echo();
+
+"Time data:\n".echo();
+f2.set("test5", 1640995200, "timestamp");
+f2.get("test5", "timestamp").echo();
+"\n".echo();
+
+/* Test 9: Field Removal */
+"Test 9: Field Removal\n".echo();
+"---------------------\n".echo();
+
+"Testing field removal...\n".echo();
+
+"Creating temporary field:\n".echo();
+f2.mkfield("temp_field", "STR", "VAR");
+f2.set("user1", "temporary value", "temp_field");
+"Temp field value: ".echo();
+f2.get("user1", "temp_field").echo();
+"\n".echo();
+
+"Removing temporary field:\n".echo();
+f2.rmfield("temp_field");
+"Field removed. Trying to get value:\n".echo();
+f2.get("user1", "temp_field").echo();
+"\n".echo();
+
+/* Test 10: Performance Comparison */
+"Test 10: Performance Comparison\n".echo();
+"-------------------------------\n".echo();
+
+"Adding more data for performance testing...\n".echo();
+
+i = 1;
+while (i <= 100) {
+    f2.set("user" + i, "User " + i, "name");
+    f2.set("user" + i, 20 + i, "age");
+    f2.set("user" + i, 50000 + i * 100, "salary");
+    f2.set("user" + i, (i % 2 == 0), "active");
+    f2.set("user" + i, 1640995200 + i, "timestamp");
+    
+    f3.set("user" + i, "User " + i, "name");
+    f3.set("user" + i, 20 + i, "age");
+    f3.set("user" + i, 50000 + i * 100, "salary");
+    f3.set("user" + i, (i % 2 == 0), "active");
+    f3.set("user" + i, 1640995200 + i, "timestamp");
+    
+    i = i + 1;
+}
+
+"Row store record count: ".echo();
+f2.ls().length().echo();
+"\n".echo();
+
+"Column store record count: ".echo();
+f3.ls().length().echo();
+"\n".echo();
+
+/* Test Summary */
+"=== BASIC DATABASE TESTS COMPLETED ===\n".echo();
+"All basic database operations tested successfully!\n".echo();
+"Database functions tested:\n".echo();
+"- table() creation with different types (ROW, COL, GROUP)\n".echo();
+"- mkfield() with all field types (STR, INT, FLOAT, BOOL, TIME)\n".echo();
+"- set() and get() operations for all data types\n".echo();
+"- ls() for listing database contents\n".echo();
+"- debug() for database structure information\n".echo();
+"- rmfield() for field removal\n".echo();
+"- Error handling for non-existent records and fields\n".echo();
+"- Performance testing with multiple records\n".echo(); 

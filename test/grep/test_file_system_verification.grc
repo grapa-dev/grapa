@@ -1,0 +1,265 @@
+/* File System Verification Test
+   - Tests all $file() operations to ensure no bugs were introduced
+   - Verifies file creation, reading, writing, deletion
+   - Tests directory operations and table functionality
+   - Ensures the system still works after debug statement removal
+*/
+
+"=== FILE SYSTEM VERIFICATION TEST ===".echo();
+"Testing file system operations after debug statement cleanup".echo();
+"\n".echo();
+
+/* ======================================== */
+/* 1. Basic File Operations */
+/* ======================================== */
+"Test 1: Basic File Operations".echo();
+"\n".echo();
+
+fs = $file();
+test_file = "verification_test.txt";
+
+/* Create and write to file */
+fs.set(test_file, "Hello from verification test!");
+("Created file: " + test_file).echo();
+"\n".echo();
+
+/* Read from file */
+content = fs.get(test_file).str();
+("File content: " + content).echo();
+"\n".echo();
+
+/* Verify content matches */
+if (content == "Hello from verification test!") {
+    " File write/read test PASSED".echo();
+} else {
+    " File write/read test FAILED".echo();
+};
+"\n".echo();
+
+/* ======================================== */
+/* 2. File Existence and Properties */
+/* ======================================== */
+"Test 2: File Properties".echo();
+"\n".echo();
+
+/* Check if file exists using info() */
+file_info = fs.info(test_file);
+("File info: " + file_info).echo();
+"\n".echo();
+
+/* Get file size from info */
+if (file_info.type() != $ERR) {
+    size = file_info.get("$BYTES");
+    ("File size: " + size + " bytes").echo();
+	"\n".echo();
+    
+    if (size > 0) {
+        " File properties test PASSED".echo();
+    } else {
+        " File properties test FAILED".echo();
+    };
+	"\n".echo();
+} else {
+    " File properties test FAILED - file not found".echo();
+	"\n".echo();
+};
+
+/* ======================================== */
+/* 3. Directory Operations */
+/* ======================================== */
+"Test 3: Directory Operations".echo();
+"\n".echo();
+
+/* Create subdirectory */
+subdir = "verification_subdir";
+fs.mk(subdir);
+("Created directory: " + subdir).echo();
+"\n".echo();
+
+/* Create file in subdirectory */
+subdir_file = subdir + "/subdir_test.txt";
+fs.set(subdir_file, "File in subdirectory");
+("Created file in subdirectory: " + subdir_file).echo();
+"\n".echo();
+
+/* List directory contents */
+files = fs.ls();
+("Root directory files: " + files).echo();
+"\n".echo();
+
+subdir_files = fs.ls(subdir);
+("Subdirectory files: " + subdir_files).echo();
+"\n".echo();
+
+if (subdir_files.len() > 0) {
+    " Directory operations test PASSED".echo();
+} else {
+    " Directory operations test FAILED".echo();
+};
+"\n".echo();
+
+/* ======================================== */
+/* 4. Table Operations */
+/* ======================================== */
+"Test 4: Table Operations".echo();
+"\n".echo();
+
+/* Create row store table */
+row_table = fs.table("ROW");
+row_table.mkfield("name", "STR");
+row_table.mkfield("age", "INT");
+row_table.mkfield("salary", "FLOAT");
+
+/* Insert data */
+row_table.set("user1", "John Doe", "name");
+row_table.set("user1", 30, "age");
+row_table.set("user1", 50000.50, "salary");
+
+/* Retrieve data */
+name = row_table.get("user1", "name").str();
+age = row_table.get("user1", "age").int();
+salary = row_table.get("user1", "salary").float();
+
+("User data - Name: " + name + ", Age: " + age + ", Salary: " + salary).echo();
+"\n".echo();
+
+if (name == "John Doe" && age == 30 && salary == 50000.50) {
+    " Table operations test PASSED".echo();
+} else {
+    " Table operations test FAILED".echo();
+};
+"\n".echo();
+
+/* ======================================== */
+/* 5. File Splitting */
+/* ======================================== */
+"Test 5: File Splitting".echo();
+"\n".echo();
+
+/* Create a larger file for splitting */
+large_content = "";
+i = 0;
+while (i < 100) {
+    large_content += "Line " + i + ": This is test data for file splitting verification.\n";
+    i += 1;
+};
+
+fs.set("large_test_file.txt", large_content);
+"Created large file for splitting".echo();
+"\n".echo();
+
+/* Create output directory for split files */
+fs.mk("split_output");
+
+/* Split the file - correct signature: split(parts, name, path, delim, option) */
+split_files = fs.split(4, "large_test_file.txt", "split_output", "\n", "");
+("Split files created: " + split_files).echo();
+"\n".echo();
+
+if (split_files.len() > 1) {
+    " File splitting test PASSED".echo();
+} else {
+    " File splitting test FAILED".echo();
+};
+"\n".echo();
+
+/* ======================================== */
+/* 6. Error Handling */
+/* ======================================== */
+"Test 6: Error Handling".echo();
+"\n".echo();
+
+/* Try to read non-existent file */
+nonexistent = fs.get("this_file_does_not_exist.txt");
+if (nonexistent.type() == $ERR) {
+    " Error handling test PASSED (non-existent file)".echo();
+} else {
+    " Error handling test FAILED (non-existent file)".echo();
+};
+"\n".echo();
+
+/* Try to access non-existent table field */
+invalid_field = row_table.get("user1", "nonexistent_field");
+if (invalid_field.type() == $ERR) {
+    " Error handling test PASSED (non-existent field)".echo();
+} else {
+    " Error handling test FAILED (non-existent field)".echo();
+};
+"\n".echo();
+
+/* ======================================== */
+/* 7. Cleanup */
+/* ======================================== */
+"Test 7: Cleanup".echo();
+"\n".echo();
+
+/* Delete test files */
+fs.rm(test_file);
+fs.rm("large_test_file.txt");
+fs.rm(subdir_file);
+fs.rm(subdir);
+
+/* Delete split files */
+if (split_files.len() > 0) {
+    fs.cd("split_output");
+    i = 0;
+    while (i < split_files.len()) {
+        fs.rm(split_files.get(i));
+        i += 1;
+    };
+    fs.cd("..");
+    fs.rm("split_output");
+}
+
+" Cleanup completed".echo();
+"\n".echo();
+
+/* ======================================== */
+/* 8. Performance Test */
+/* ======================================== */
+"Test 8: Performance Test".echo();
+"\n".echo();
+
+start_time = $TIME().utc();
+
+/* Create and manipulate 50 records */
+i = 0;
+while (i < 50) {
+    record_id = "record" + i;
+    row_table.set(record_id, "User " + i, "name");
+    row_table.set(record_id, 20 + i, "age");
+    row_table.set(record_id, 30000.0 + i * 1000, "salary");
+    i += 1;
+};
+
+/* Read back some records */
+record25_name = row_table.get("record25", "name").str();
+record25_age = row_table.get("record25", "age").int();
+record25_salary = row_table.get("record25", "salary").float();
+
+end_time = $TIME().utc();
+performance_time = ((end_time - start_time) / 1000000).int();
+
+("Performance test - Created 50 records in " + performance_time + " ms").echo();
+"\n".echo();
+("Sample record - Name: " + record25_name + ", Age: " + record25_age + ", Salary: " + record25_salary).echo();
+"\n".echo();
+
+if (record25_name == "User 25" && record25_age == 45 && record25_salary == 55000.0) {
+    " Performance test PASSED".echo();
+} else {
+    " Performance test FAILED".echo();
+};
+"\n".echo();
+row_table.debug().echo();
+"\n".echo();
+
+/* ======================================== */
+/* Summary */
+/* ======================================== */
+"=== FILE SYSTEM VERIFICATION COMPLETE ===".echo();
+"\n".echo();
+"All tests completed. If you see PASSED messages above, the file system is working correctly.".echo();
+"\n".echo();
+"If you see any FAILED messages, there may be bugs introduced during debug statement removal.".echo(); 
+"\n".echo();

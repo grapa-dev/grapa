@@ -1,0 +1,187 @@
+/* Test File System Commands in Grapa */
+
+"Testing Grapa File System Commands\n".echo();
+"================================\n".echo();
+
+/* Initialize file system object */
+f = $file();
+
+/* Test 1: Basic Information */
+"Test 1: Basic Information\n".echo();
+"------------------------\n".echo();
+
+"Current working directory: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Home directory: ".echo();
+f.phd().echo();
+"\n".echo();
+
+/* Test 2: List Current Directory */
+"Test 2: List Current Directory\n".echo();
+"-----------------------------\n".echo();
+
+"Files and directories in current location:\n".echo();
+files = f.ls();
+files.echo();
+"\n".echo();
+
+/* Test 3: Navigation */
+"Test 3: Navigation\n".echo();
+"-----------------\n".echo();
+
+"Changing to 'docs' directory...\n".echo();
+f.cd("docs");
+"New working directory: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Files in docs directory:\n".echo();
+docs_files = f.ls();
+docs_files.echo();
+"\n".echo();
+
+"Going back to parent directory...\n".echo();
+f.cd("..");
+"Back to: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+/* Test 4: File Operations */
+"Test 4: File Operations\n".echo();
+"----------------------\n".echo();
+
+"Creating test file...\n".echo();
+f.set("test_file.txt", "This is a test file created by Grapa file system commands.\nLine 2 of the test file.\nLine 3 with some data.");
+"File created successfully.\n".echo();
+
+"Reading test file content:\n".echo();
+content = f.get("test_file.txt");
+content.echo();
+"\n".echo();
+
+/* Test 5: Directory Operations */
+"Test 5: Directory Operations\n".echo();
+"---------------------------\n".echo();
+
+"Creating test directory...\n".echo();
+f.mk("test_dir");
+"Directory created successfully.\n".echo();
+
+"Changing to test directory...\n".echo();
+f.cd("test_dir");
+"Current directory: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Creating file in test directory...\n".echo();
+f.set("nested_file.txt", "This file is inside the test directory.");
+"File created in test directory.\n".echo();
+
+"Listing contents of test directory:\n".echo();
+test_dir_contents = f.ls();
+test_dir_contents.echo();
+"\n".echo();
+
+"Going back to parent...\n".echo();
+f.cd("..");
+"Back to: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+/* Test 6: File Information */
+"Test 6: File Information\n".echo();
+"------------------------\n".echo();
+
+"Getting info about test file:\n".echo();
+file_info = f.info("test_file.txt");
+file_info.echo();
+"\n".echo();
+
+/* Test 7: Database Operations */
+"Test 7: Database Operations\n".echo();
+"--------------------------\n".echo();
+
+"Creating in-memory database...\n".echo();
+db = f.table();
+"Database created: ".echo();
+db.type().echo();
+"\n".echo();
+
+"Adding data to database...\n".echo();
+db.mkrow("user1", "John Doe");
+db.mkrow("user2", "Jane Smith");
+db.mkrow("user3", "Bob Johnson");
+
+"Retrieving data from database:\n".echo();
+"User 1: ".echo();
+db.getrow("user1").echo();
+"\n".echo();
+
+"User 2: ".echo();
+db.getrow("user2").echo();
+"\n".echo();
+
+/* Test 8: Advanced File Operations */
+"Test 8: Advanced File Operations\n".echo();
+"--------------------------------\n".echo();
+
+"Creating a larger test file for splitting...\n".echo();
+large_content = "";
+i = 1;
+while (i <= 100) {
+    large_content = large_content + "Line " + i + ": This is test data for file splitting operations.\n";
+    i = i + 1;
+};
+f.set("large_test_file.txt", large_content);
+"Large file created.\n".echo();
+
+"File size: ".echo();
+large_file_info = f.info("large_test_file.txt");
+large_file_info.echo();
+"\n".echo();
+
+/* Test 9: Cleanup */
+"Test 9: Cleanup\n".echo();
+"---------------\n".echo();
+
+"Removing test files and directories...\n".echo();
+f.rm("test_file.txt");
+f.rm("large_test_file.txt");
+f.cd("test_dir");
+f.rm("nested_file.txt");
+f.cd("..");
+f.rm("test_dir");
+"Cleanup completed.\n".echo();
+
+/* Test 10: Error Handling */
+"Test 10: Error Handling\n".echo();
+"-----------------------\n".echo();
+
+"Testing error handling with non-existent file:\n".echo();
+error_result = f.get("non_existent_file.txt");
+"Result: ".echo();
+error_result.echo();
+"\n".echo();
+
+"Testing error handling with non-existent directory:\n".echo();
+error_result2 = f.cd("non_existent_directory");
+"Result: ".echo();
+error_result2.echo();
+"\n".echo();
+
+/* Final Summary */
+"Final Summary\n".echo();
+"============\n".echo();
+
+"Current working directory: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Files in current directory:\n".echo();
+final_files = f.ls();
+final_files.echo();
+"\n".echo();
+
+"File system test completed successfully!\n".echo(); 

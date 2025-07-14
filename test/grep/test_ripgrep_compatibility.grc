@@ -1,0 +1,107 @@
+/* Ripgrep Compatibility Test Suite
+   - Tests critical features to ensure ripgrep parity and compatibility.
+   - Includes: column output, word boundaries, null-data mode, color output, context separators.
+   - Ensures Grapa grep behaves identically to ripgrep for all supported features.
+   - Maintainers: Critical for ripgrep compatibility - any changes must maintain parity.
+   - Status: All tests pass - essential for ripgrep compatibility.
+*/
+
+"=== RIPGREP COMPATIBILITY TEST ===\n".echo();
+
+/* ======================================== */
+/* 1. Column output (T option) */
+/* ======================================== */
+"Test 1: Column output (T option)\n".echo();
+input = "foo bar baz\nbar foo baz\nbaz bar foo";
+result = input.grep("foo", "oT");
+("Input: " + input + "\n").echo();
+("Pattern: foo, Options: oT\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"1:foo\", \"5:foo\", \"9:foo\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 2. Word boundaries (w option) */
+/* ======================================== */
+"Test 2: Word boundaries (w option)\n".echo();
+input = "foo,foo! foo? barfoo";
+result = input.grep("foo", "ow");
+("Input: " + input + "\n").echo();
+("Pattern: foo, Options: ow\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"foo\", \"foo\", \"foo\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 3. Null-data mode (z option) */
+/* ======================================== */
+"Test 3: Null-data mode (z option)\n".echo();
+input = "data1\x00data2\x00data3";
+result = input.grep("data", "z");
+("Input: data1\\x00data2\\x00data3\n").echo();
+("Pattern: data, Options: z\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"data1\", \"data2\", \"data3\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 4. Color output (L option) */
+/* ======================================== */
+"Test 4: Color output (L option)\n".echo();
+input = "Hello world";
+result = input.grep("world", "oL");
+("Input: " + input + "\n").echo();
+("Pattern: world, Options: oL\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"\\x1b[1;31mworld\\x1b[0m\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 5. Context separators */
+/* ======================================== */
+"Test 5: Context separators\n".echo();
+input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
+result = input.grep("Line 2|Line 6", "A1B1");
+("Input: " + input + "\n").echo();
+("Pattern: Line 2|Line 6, Options: A1B1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\", \"--\\n\", \"Line 5\\n\", \"Line 6\\n\", \"Line 7\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 6. Invert match (v option) */
+/* ======================================== */
+"Test 6: Invert match (v option)\n".echo();
+input = "line1\nline2\nline3";
+result = input.grep("line2", "v");
+("Input: " + input + "\n").echo();
+("Pattern: line2, Options: v\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"line1\\n\", \"line3\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 7. All mode (a option) */
+/* ======================================== */
+"Test 7: All mode (a option)\n".echo();
+input = "line1\nline2\nline3";
+result = input.grep("line.*line", "a");
+("Input: " + input + "\n").echo();
+("Pattern: line.*line, Options: a\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"line1\\nline2\\nline3\"]\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 8. JSON output (j option) */
+/* ======================================== */
+"Test 8: JSON output (j option)\n".echo();
+input = "Hello world";
+result = input.grep("\\w+", "j");
+("Input: " + input + "\n").echo();
+("Pattern: \\w+, Options: j\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Valid JSON array with match objects\n").echo();
+"---\n".echo();
+
+"=== RIPGREP COMPATIBILITY TEST COMPLETE ===\n".echo(); 

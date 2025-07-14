@@ -1,0 +1,54 @@
+/* Test .findall() function with various examples */
+
+"=== FINDALL FUNCTION TEST ===\n".echo();
+
+/* Test 1: Basic JSON search by name */
+"Test 1: Basic JSON search by name\n".echo();
+json_data = {"name": "test", "value": 42, "items": [1, 2, 3]};
+result1 = json_data.findall({"name": "test"});
+("JSON search by name: " + result1.str() + "\n").echo();
+
+/* Test 2: Basic JSON search by value */
+"Test 2: Basic JSON search by value\n".echo();
+result2 = json_data.findall({"value": 42});
+("JSON search by value: " + result2.str() + "\n").echo();
+
+/* Test 3: XML search by attributes */
+"Test 3: XML search by attributes\n".echo();
+xml_string = '<root><item id="1">test</item><item id="2">value</item></root>';
+xml_data = xml_string.xml();
+result3 = xml_data.findall({"attr": {"id": "1"}});
+("XML search by id attribute: " + result3.str() + "\n").echo();
+
+/* Test 4: Complex AND search */
+"Test 4: Complex AND search\n".echo();
+complex_data = {"name": "test", "value": 42, "items": [1, 2, 3]};
+result4 = complex_data.findall({
+  "and": [
+    {"name": "test"},
+    {"value": 42}
+  ]
+});
+("Complex AND search: " + result4.str() + "\n").echo();
+
+/* Test 5: Search with HAS condition */
+"Test 5: Search with HAS condition\n".echo();
+result5 = complex_data.findall({
+  "has": [
+    {"name": "test"},
+    {"value": 42}
+  ]
+});
+("HAS condition search: " + result5.str() + "\n").echo();
+
+/* Test 6: Search with OR condition */
+"Test 6: Search with OR condition\n".echo();
+result6 = complex_data.findall({
+  "or": [
+    {"name": "test"},
+    {"value": 100}
+  ]
+});
+("OR condition search: " + result6.str() + "\n").echo();
+
+"=== FINDALL TEST COMPLETE ===\n".echo(); 

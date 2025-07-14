@@ -28,6 +28,11 @@ limitations under the License.
 #define PCRE2_STATIC
 #endif
 
+#ifndef GRAPA_DEBUG_PRINTF
+#define GRAPA_DEBUG_PRINTF
+#endif
+
+
 /*
  Supported grep options:
    a - All-mode (match across full input string)
@@ -68,6 +73,8 @@ limitations under the License.
 
 // Include GrapaThread for threading support
 #include "../grapa/GrapaThread.h"
+#include "../grapa/GrapaValue.h"
+
 
 // Forward declaration for GrapaThread
 class GrapaThread;
@@ -77,6 +84,21 @@ namespace GrapaUnicode {
     enum class NormalizationForm;
     enum class ProcessingMode;
 }
+
+// Forward declarations for helper functions defined in grapa_grep_unicode.cpp
+std::string build_json_array(const std::vector<std::string>& items, bool already_json_objects = false);
+std::string extract_grapheme_cluster(const std::string& input, size_t offset);
+bool is_multiline_pattern(const std::string& pattern);
+bool has_lookaround_assertions(const std::string& pattern);
+std::vector<std::string> extract_full_segments(const std::string& input, const std::string& delimiter, const std::vector<std::pair<size_t, size_t>>& match_positions);
+std::string normalize_newlines(std::string_view input);
+std::vector<std::string> extract_matches_with_lookaround(const std::string& input, const std::string& pattern, bool case_insensitive, bool diacritic_insensitive, GrapaUnicode::NormalizationForm norm);
+std::vector<std::string> split_input_for_parallel(const std::string& input, size_t num_chunks);
+std::vector<std::string> split_by_delimiter(const std::string& input, const std::string& delimiter);
+std::string remove_trailing_delimiter(const std::string& str, const std::string& delimiter);
+
+// Test function
+std::vector<std::string> test_function();
 
 // GrapaGrepWorkEvent class for parallel grep processing using WorkQueue pattern
 class GrapaGrepWorkEvent : public GrapaWorkEvent
@@ -1146,6 +1168,25 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     size_t num_workers = 0
 );
 
+std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
+    const std::string& input,
+    const std::string& pattern,
+    const std::string& options,
+    const std::string& line_delim,
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE
+);
+
+std::vector<std::string> grep_extract_matches_unicode_impl_parallel(
+    const std::string& input,
+    const std::string& pattern,
+    const std::string& options,
+    const std::string& line_delim,
+    GrapaUnicode::NormalizationForm normalization = GrapaUnicode::NormalizationForm::NONE,
+    GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
+    size_t num_workers = 0
+);
+
 // Main Unicode-aware grep functions with default parameters
 inline std::vector<MatchPosition> grep_unicode(
     const std::string& input,
@@ -1167,7 +1208,10 @@ inline std::vector<std::string> grep_extract_matches_unicode(
     GrapaUnicode::ProcessingMode mode = GrapaUnicode::ProcessingMode::UNICODE_MODE,
     size_t num_workers = 0
 ) {
-    return grep_extract_matches_unicode_impl(input, pattern, options, line_delim, normalization, mode, num_workers);
+    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+    printf("DEBUG: grep_extract_matches_unicode\n");
+    #endif // DEBUG_END
+    return grep_extract_matches_unicode_impl_sequential(input, pattern, options, line_delim, normalization, mode);
 }
 
 // Simple parallel processing functions

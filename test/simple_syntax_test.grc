@@ -1,0 +1,22 @@
+/* Simple Syntax Test */
+
+"=== SIMPLE SYNTAX TEST ===".echo();
+"Testing basic syntax".echo();
+
+/* Test basic operations */
+fs = $file();
+test_file = "simple_test.txt";
+
+/* Create file */
+fs.set(test_file, "Hello World");
+"File created".echo();
+
+/* Read file */
+content = fs.get(test_file).str();
+("Content: " + content).echo();
+
+/* Delete file */
+fs.rm(test_file);
+"File deleted".echo();
+
+"=== TEST COMPLETE ===".echo(); 

@@ -1,0 +1,58 @@
+/* Simple File System Verification Test */
+
+"=== SIMPLE FILE SYSTEM VERIFICATION ===\n".echo();
+"Testing basic file operations\n".echo();
+
+/* Create file system object */
+fs = $file();
+test_file = "simple_verification.txt";
+
+/* Test 1: File Creation and Reading */
+"Test 1: File Creation and Reading\n".echo();
+fs.set(test_file, "Hello from simple verification!");
+("Created file: " + test_file + "\n").echo();
+
+content = fs.get(test_file).str();
+("File content: " + content + "\n").echo();
+
+if (content == "Hello from simple verification!") {
+    "✓ File write/read test PASSED\n".echo();
+} else {
+    "✗ File write/read test FAILED\n".echo();
+}
+
+/* Test 2: File Properties */
+"Test 2: File Properties\n".echo();
+file_info = fs.info(test_file);
+if (file_info.type() != $ERR) {
+    "✓ File properties test PASSED\n".echo();
+} else {
+    "✗ File properties test FAILED\n".echo();
+}
+
+/* Test 3: Table Operations */
+"Test 3: Table Operations\n".echo();
+table = fs.table("ROW");
+table.mkfield("name", "STR");
+table.mkfield("age", "INT");
+
+table.set("user1", "John", "name");
+table.set("user1", 25, "age");
+
+name = table.get("user1", "name").str();
+age = table.get("user1", "age").int();
+
+("Table data - Name: " + name + ", Age: " + age + "\n").echo();
+
+if (name == "John" && age == 25) {
+    "✓ Table operations test PASSED\n".echo();
+} else {
+    "✗ Table operations test FAILED\n".echo();
+}
+
+/* Test 4: Cleanup */
+"Test 4: Cleanup\n".echo();
+fs.rm(test_file);
+"✓ Cleanup completed\n".echo();
+
+"=== SIMPLE VERIFICATION COMPLETE ===\n".echo(); 

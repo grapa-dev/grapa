@@ -1,0 +1,57 @@
+/* Test Fixes Verification */
+/* This test verifies that the key fixes are working */
+
+("=== TESTING KEY FIXES ===\n").echo();
+
+/* Test 1: Multiline pattern with custom delimiter */
+("Test 1: Multiline pattern with custom delimiter\n").echo();
+input1 = "start|middle|end";
+result1 = input1.grep("start.*end", "s", "|");
+(("Input: " + input1 + "\n")).echo();
+(("Pattern: start.*end, Options: s, Delimiter: |\n")).echo();
+(("Result: " + result1.str() + "\n")).echo();
+("Expected: [\"start|middle|end\"] or similar\n").echo();
+("---\n").echo();
+
+/* Test 2: Lookaround assertion */
+("Test 2: Lookaround assertion\n").echo();
+input2 = "word123|text456|word789";
+result2 = input2.grep("\\w+(?=\\d)", "o", "|");
+(("Input: " + input2 + "\n")).echo();
+(("Pattern: \\w+(?=\\d) (positive lookahead), Options: o, Delimiter: |\n")).echo();
+(("Result: " + result2.str() + "\n")).echo();
+("Expected: [\"word\", \"text\", \"word\"]\n").echo();
+("---\n").echo();
+
+/* Test 3: Unicode script property */
+("Test 3: Unicode script property\n").echo();
+input3 = "Hello 世界 123 €|Goodbye 世界 456 €";
+result3 = input3.grep("\\p{sc=Latin}", "o", "|");
+(("Input: " + input3 + "\n")).echo();
+(("Pattern: \\p{sc=Latin} (Latin script), Options: o, Delimiter: |\n")).echo();
+(("Result: " + result3.str() + "\n")).echo();
+("Expected: [\"Hello\", \"Goodbye\"] or individual characters\n").echo();
+("---\n").echo();
+
+/* Test 4: Match-only with custom delimiter */
+("Test 4: Match-only with custom delimiter\n").echo();
+input4 = "line1|||line2|||line3";
+result4 = input4.grep("line", "o", "|||");
+(("Input: " + input4 + "\n")).echo();
+(("Pattern: line, Options: o, Delimiter: |||\n")).echo();
+(("Result: " + result4.str() + "\n")).echo();
+("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
+("---\n").echo();
+
+/* Test 5: Grapheme clusters */
+("Test 5: Grapheme clusters\n").echo();
+input5 = "Hello 👋 world 🌍|||Goodbye 👋 universe 🌌";
+result5 = input5.grep("\\X", "o", "|||");
+(("Input: " + input5 + "\n")).echo();
+(("Pattern: \\X (grapheme clusters), Options: o, Delimiter: |||\n")).echo();
+(("Result length: " + result5.len() + "\n")).echo();
+(("First few results: " + result5.str() + "\n")).echo();
+("Expected: Should not include delimiter characters (|||)\n").echo();
+("---\n").echo();
+
+("=== FIXES VERIFICATION COMPLETE ===\n").echo(); 

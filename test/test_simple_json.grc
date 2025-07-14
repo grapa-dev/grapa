@@ -1,0 +1,44 @@
+/* Test JSON, XML, HTML parsing functionality */
+
+"Testing JSON, XML, HTML parsing...\n".echo();
+
+/* Test JSON parsing - should return $LIST type */
+json_string = '{"test": "value", "number": 42}';
+("JSON input: " + json_string + "\n").echo();
+
+json_result = json_string.encode("JSON");
+("JSON result type: " + json_result.type() + "\n").echo();
+if (json_result.type() == "$LIST") {
+    ("JSON parsing successful - returned $LIST type\n").echo();
+    ("JSON result: " + json_result.str() + "\n").echo();
+} else {
+    ("JSON parsing failed - expected $LIST type, got " + json_result.type() + "\n").echo();
+}
+
+/* Test XML parsing - should return $XML type */
+xml_string = '<root><item id="1">test</item></root>';
+("XML input: " + xml_string + "\n").echo();
+
+xml_result = xml_string.encode("XML");
+("XML result type: " + xml_result.type() + "\n").echo();
+if (xml_result.type() == "$XML") {
+    ("XML parsing successful - returned $XML type\n").echo();
+    ("XML result: " + xml_result.str() + "\n").echo();
+} else {
+    ("XML parsing failed - expected $XML type, got " + xml_result.type() + "\n").echo();
+}
+
+/* Test HTML parsing - should return $XML type */
+html_string = '<html><body><h1>Test</h1></body></html>';
+("HTML input: " + html_string + "\n").echo();
+
+html_result = html_string.encode("HTML");
+("HTML result type: " + html_result.type() + "\n").echo();
+if (html_result.type() == "$XML") {
+    ("HTML parsing successful - returned $XML type\n").echo();
+    ("HTML result: " + html_result.str() + "\n").echo();
+} else {
+    ("HTML parsing failed - expected $XML type, got " + html_result.type() + "\n").echo();
+}
+
+"Done.\n".echo(); 

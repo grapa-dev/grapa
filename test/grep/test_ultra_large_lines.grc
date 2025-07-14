@@ -1,0 +1,40 @@
+/*
+Grapa Grep Ultra-Large Line and Delimiter Edge Cases
+- Tests single line >1MB, input with only delimiters, file with no newline at EOF.
+- Ensures production-readiness for mission-critical use and ripgrep parity.
+- If any test causes a crash or error, document and update implementation.
+*/
+
+'=== ULTRA-LARGE LINE AND DELIMITER EDGE CASES ===\n'.echo();
+
+'Single line >1MB\n'.echo();
+input1 = '';
+i = 0;
+while (i < 1024*1024) { input1 += 'a'; i += 1; }
+('Input length: ' + input1.len().str() + '\n').echo();
+
+/* Test 1: Single line >1MB */
+'a+ should match entire string\n'.echo();
+pattern1 = 'a+';
+result1 = input1.grep(pattern1, 'o');
+('Result length: ' + result1.len().str() + '\n').echo();
+('Expected: Should match the entire line; no crash.\n').echo();
+'---\n'.echo();
+
+/* Test 2: Input with only delimiters */
+'Input with only delimiters ("\\n\\n\\n\\n")\n'.echo();
+input2 = '\n\n\n\n';
+pattern2 = '.';
+result2 = input2.grep(pattern2, 'o');
+('Result: ' + result2.str() + '\n').echo();
+('Expected: [] (no matches)\n').echo();
+'---\n'.echo();
+
+/* Test 3: File with no newline at EOF */
+'File with no newline at EOF\n'.echo();
+input3 = 'line1\nline2\nline3';
+pattern3 = 'line\d+';
+result3 = input3.grep(pattern3, 'o');
+('Result: ' + result3.str() + '\n').echo();
+('Expected: ["line1", "line2", "line3"]\n').echo();
+'---\n'.echo(); 

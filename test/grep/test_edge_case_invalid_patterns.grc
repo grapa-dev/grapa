@@ -1,0 +1,61 @@
+/*
+Grapa .grc File Authoring Rules (Windows)
+- Use block comments for all comments (do not use //). Block comments should be written as in this header.
+- Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
+- End every command with a ; character
+- Use while loops instead of for (Grapa does not support for)
+- Wrap string concatenations in parentheses: (str1+str2).echo();
+- Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
+  Example:
+    ar = [1,2,3];
+    ar[1]; // returns 2
+    ar = {"a":11,"b":22,"c":33};
+    ar[1]; // returns 22
+    ar["b"]; // returns 22
+- Use .get("key") for object property access, not for arrays/lists.
+- Validate syntax against known-good .grc files before adding new code
+- Prefer simple, explicit constructs for compatibility
+- To run this file on Windows:
+    .\grep.exe -q -cfile path/file.grc
+- See the living section in docs/obj/grep.md for updates.
+
+Edge Case Category: Invalid/Degenerate Patterns
+- Tests unmatched parentheses, invalid escapes, and other PCRE2/ripgrep error scenarios.
+- Each test prints input, pattern, options, result, and expected output.
+*/
+
+"=== INVALID/DEGENERATE PATTERN EDGE CASES ===\n".echo();
+
+/* Test 1: Unmatched parentheses */
+input = "test";
+pattern = "(";
+result = input.grep(pattern, "j");
+("Input: '" + input + "'\n").echo();
+("Pattern: '" + pattern + "', Options: j\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR or error object\n").echo();
+"---\n".echo();
+
+/* Test 2: Invalid quantifier */
+pattern = "a{";
+result = input.grep(pattern, "j");
+("Pattern: '" + pattern + "', Options: j\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR or error object\n").echo();
+"---\n".echo();
+
+/* Test 3: Invalid Unicode property */
+pattern = "\\p{Invalid}";
+result = input.grep(pattern, "j");
+("Pattern: '" + pattern + "', Options: j\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR or error object\n").echo();
+"---\n".echo();
+
+/* Test 4: Invalid escape sequence */
+pattern = "\\xZZ";
+result = input.grep(pattern, "j");
+("Pattern: '" + pattern + "', Options: j\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR or error object\n").echo();
+"---\n".echo(); 

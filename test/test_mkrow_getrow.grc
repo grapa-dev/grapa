@@ -1,0 +1,79 @@
+/* Test mkrow and getrow functionality */
+
+"Testing mkrow and getrow operations...\n".echo();
+
+/* Test 1: Create a table and try mkrow/getrow */
+"Test 1: Basic table operations\n".echo();
+"------------------------------\n".echo();
+
+f = $file();
+db = f.table();
+"Database created: ".echo();
+db.type().echo();
+"\n".echo();
+
+"Trying mkrow operations...\n".echo();
+result1 = db.mkrow("user1", "John Doe");
+"mkrow result: ".echo();
+result1.echo();
+"\n".echo();
+
+result2 = db.mkrow("user2", "Jane Smith");
+"mkrow result: ".echo();
+result2.echo();
+"\n".echo();
+
+"Trying getrow operations...\n".echo();
+user1 = db.getrow("user1");
+"getrow('user1'): ".echo();
+user1.echo();
+"\n".echo();
+
+user2 = db.getrow("user2");
+"getrow('user2'): ".echo();
+user2.echo();
+"\n".echo();
+
+/* Test 2: Check what methods are available on the table */
+"Test 2: Available methods on table\n".echo();
+"----------------------------------\n".echo();
+
+"Checking if mkrow method exists...\n".echo();
+"db.mkrow exists: ".echo();
+(db.mkrow != null).echo();
+"\n".echo();
+
+"Checking if getrow method exists...\n".echo();
+"db.getrow exists: ".echo();
+(db.getrow != null).echo();
+"\n".echo();
+
+/* Test 3: Try using set/get instead */
+"Test 3: Using set/get methods\n".echo();
+"-----------------------------\n".echo();
+
+"Using set() method...\n".echo();
+db.set("user3", "Bob Johnson");
+db.set("user4", "Alice Brown");
+
+"Using get() method...\n".echo();
+user3 = db.get("user3");
+"get('user3'): ".echo();
+user3.echo();
+"\n".echo();
+
+user4 = db.get("user4");
+"get('user4'): ".echo();
+user4.echo();
+"\n".echo();
+
+/* Test 4: List contents */
+"Test 4: Listing database contents\n".echo();
+"--------------------------------\n".echo();
+
+contents = db.ls();
+"Database contents: ".echo();
+contents.echo();
+"\n".echo();
+
+"Test completed.\n".echo(); 

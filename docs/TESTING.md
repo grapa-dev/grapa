@@ -413,7 +413,7 @@ The following rules apply to all Grapa .grc test and script files:
     ar = [1,2,3];
     ar[1]; // returns 2
     ar = {"a":11,"b":22,"c":33};
-    ar[1]; // returns 22
+    ar[1]; // returns 22 
     ar["b"]; // returns 22
 - Use .get("key") for object property access, not for arrays/lists.
 - Validate syntax against known-good .grc files before adding new code.
@@ -422,4 +422,23 @@ The following rules apply to all Grapa .grc test and script files:
     .\grapa.exe -q -cfile path/file.grc
 - See the living section in docs/obj/grep.md for updates (if present).
 
-These practices ensure consistency, maintainability, and compatibility across all Grapa test and script files. 
+These practices ensure consistency, maintainability, and compatibility across all Grapa test and script files.
+
+## Debug Configuration
+
+### Debug Printf Pattern
+- **Definition**: `GRAPA_DEBUG_PRINTF` in `source/grep/grapa_grep_unicode.hpp` (line 31)
+- **Pattern**: All debug printf statements are enclosed in `#ifdef GRAPA_DEBUG_PRINTF // DEBUG_START` and `#endif // DEBUG_END`
+- **Enable**: Uncomment `#define GRAPA_DEBUG_PRINTF` in the header file
+- **Disable**: Comment out the define or ensure it's not defined
+
+### Current Debugging Session (2025)
+**Issue**: `oa` option combination causes crashes in grep implementation
+- **Affected Tests**: 
+  - `test_o_option_comprehensive.grc` (Test 9: All-mode with 'o')
+  - `test_option_combinations_matrix.grc` (Section 1: Pairs with 'o')
+- **CRASH Files**: 
+  - `test_o_option_comprehensive-CRASH.grc`
+  - `test_option_combinations_matrix-CRASH.grc`
+- **Debug Status**: Debug output enabled for crash investigation
+- **Next Steps**: Analyze debug output to identify root cause of `oa` combination crash 

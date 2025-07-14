@@ -1,0 +1,108 @@
+/* Test .findall() with JSON - working with actual $LIST structure */
+
+"=== FINDALL JSON WORKING TEST ===\n".echo();
+
+/* Test 1: Simple JSON object - let's see what the internal structure looks like */
+"Test 1: Simple JSON object structure\n".echo();
+json_data = {"name": "test", "value": 42};
+("JSON data: " + json_data.str() + "\n").echo();
+("JSON type: " + json_data.type() + "\n").echo();
+
+/* Try searching for the object itself (not a property) */
+result1 = json_data.findall({"value": 42});
+("Search for object with value 42: " + result1.str() + "\n").echo();
+("Result type: " + result1.type() + "\n").echo();
+
+/* Try searching with empty criteria (should return the object itself) */
+result2 = json_data.findall({});
+("Search with empty criteria: " + result2.str() + "\n").echo();
+("Result type: " + result2.type() + "\n").echo();
+
+"---\n".echo();
+
+/* Test 2: Array of JSON objects */
+"Test 2: Array of JSON objects\n".echo();
+array_data = [
+  {"id": 1, "name": "Alice", "age": 25},
+  {"id": 2, "name": "Bob", "age": 30},
+  {"id": 3, "name": "Charlie", "age": 35}
+];
+("Array data: " + array_data.str() + "\n").echo();
+("Array type: " + array_data.type() + "\n").echo();
+
+/* Search for objects in the array */
+result3 = array_data.findall({"age": 30});
+("Search for objects with age 30: " + result3.str() + "\n").echo();
+("Result type: " + result3.type() + "\n").echo();
+
+/* Search for objects with name Alice */
+result4 = array_data.findall({"name": "Alice"});
+("Search for objects with name Alice: " + result4.str() + "\n").echo();
+("Result type: " + result4.type() + "\n").echo();
+
+"---\n".echo();
+
+/* Test 3: Nested JSON structure */
+"Test 3: Nested JSON structure\n".echo();
+nested_data = {
+  "user": {
+    "name": "John",
+    "age": 30,
+    "address": {
+      "city": "New York",
+      "country": "USA"
+    }
+  },
+  "settings": {
+    "theme": "dark",
+    "language": "en"
+  }
+};
+("Nested data: " + nested_data.str() + "\n").echo();
+("Nested type: " + nested_data.type() + "\n").echo();
+
+/* Search for nested objects */
+result5 = nested_data.findall({"city": "New York"});
+("Search for objects with city New York: " + result5.str() + "\n").echo();
+("Result type: " + result5.type() + "\n").echo();
+
+/* Search for objects with theme dark */
+result6 = nested_data.findall({"theme": "dark"});
+("Search for objects with theme dark: " + result6.str() + "\n").echo();
+("Result type: " + result6.type() + "\n").echo();
+
+"---\n".echo();
+
+/* Test 4: Complex search with AND condition */
+"Test 4: Complex search with AND condition\n".echo();
+complex_data = {
+  "users": [
+    {"name": "Alice", "role": "admin", "active": true},
+    {"name": "Bob", "role": "user", "active": true},
+    {"name": "Charlie", "role": "admin", "active": false}
+  ]
+};
+("Complex data: " + complex_data.str() + "\n").echo();
+("Complex type: " + complex_data.type() + "\n").echo();
+
+/* Search for active admins using AND */
+result7 = complex_data.findall({
+  "and": [
+    {"role": "admin"},
+    {"active": true}
+  ]
+});
+("Search for active admins (AND): " + result7.str() + "\n").echo();
+("Result type: " + result7.type() + "\n").echo();
+
+/* Search for users with name Alice OR Bob using OR */
+result8 = complex_data.findall({
+  "or": [
+    {"name": "Alice"},
+    {"name": "Bob"}
+  ]
+});
+("Search for Alice OR Bob (OR): " + result8.str() + "\n").echo();
+("Result type: " + result8.type() + "\n").echo();
+
+"=== FINDALL JSON WORKING TEST COMPLETE ===\n".echo(); 

@@ -1,0 +1,296 @@
+/* Basic File System Tests for Grapa */
+/* Tests fundamental file system operations */
+
+"=== BASIC FILE SYSTEM TESTS ===".echo();
+"\n".echo();
+"Testing fundamental file system operations".echo();
+"\n".echo();
+
+/* Initialize file system object */
+f = $file();
+
+/* Test 1: Basic Information Functions */
+"Test 1: Basic Information Functions".echo();
+"\n".echo();
+"----------------------------------".echo();
+"\n".echo();
+
+"Current working directory: ".echo();
+"\n".echo();
+current_pwd = f.pwd();
+current_pwd.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Home directory: ".echo();
+"\n".echo();
+home_dir = f.phd();
+home_dir.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"File object type: ".echo();
+"\n".echo();
+f.type().echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 2: Directory Navigation */
+"Test 2: Directory Navigation".echo();
+"\n".echo();
+"---------------------------".echo();
+"\n".echo();
+
+"Testing cd() function...".echo();
+"\n".echo();
+f.cd("docs");
+"After cd('docs'): ".echo();
+"\n".echo();
+f.pwd().echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Testing cd('..')...".echo();
+"\n".echo();
+f.cd("..");
+"After cd('..'): ".echo();
+f.pwd().echo();
+"\n".echo();
+"".echo();
+
+"Testing cd('/')...".echo();
+"\n".echo();
+f.cd("/");
+"After cd('/'): ".echo();
+"\n".echo();
+f.pwd().echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 3: Directory Listing */
+"Test 3: Directory Listing".echo();
+"\n".echo();
+"------------------------".echo();
+"\n".echo();
+
+"Listing current directory contents:".echo();
+"\n".echo();
+files = f.ls();
+files.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Listing with path parameter:".echo();
+"\n".echo();
+docs_files = f.ls("docs");
+docs_files.echo();
+"\n".echo();
+"\n".echo();
+"".echo();
+
+/* Test 4: File Operations */
+"Test 4: File Operations".echo();
+"\n".echo();
+"----------------------".echo();
+"\n".echo();
+
+"Creating test file...".echo();
+"\n".echo();
+test_content = "This is a test file created by Grapa file system tests.\nLine 2 with some data.\nLine 3 with more content.";
+f.set("test_basic.txt", test_content);
+"File created successfully.".echo();
+"\n".echo();
+
+"Reading test file content:".echo();
+"\n".echo();
+read_content = f.get("test_basic.txt");
+read_content.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Getting file information:".echo();
+"\n".echo();
+file_info = f.info("test_basic.txt");
+file_info.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 5: Directory Operations */
+"Test 5: Directory Operations".echo();
+"\n".echo();
+"---------------------------".echo();
+"\n".echo();
+
+"Creating test directory...".echo();
+"\n".echo();
+f.mk("test_basic_dir");
+"Directory created successfully.".echo();
+"\n".echo();
+
+"Creating nested directory...".echo();
+"\n".echo();
+f.cd("test_basic_dir");
+f.mk("nested_dir");
+f.cd("nested_dir");
+"Current directory: ".echo();
+"\n".echo();
+f.pwd().echo();
+"".echo();
+"\n".echo();
+
+"Creating file in nested directory...".echo();
+"\n".echo();
+f.set("nested_file.txt", "This file is in a nested directory.");
+"File created in nested directory.".echo();
+"\n".echo();
+
+"Listing nested directory contents:".echo();
+"\n".echo();
+nested_files = f.ls();
+nested_files.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 6: File Information */
+"Test 6: File Information".echo();
+"\n".echo();
+"------------------------".echo();
+"\n".echo();
+
+"Getting info about nested file:".echo();
+"\n".echo();
+nested_file_info = f.info("nested_file.txt");
+nested_file_info.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Getting info about directory:".echo();
+"\n".echo();
+dir_info = f.info("..");
+dir_info.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Getting info about non-existent file:".echo();
+"\n".echo();
+nonexistent_info = f.info("nonexistent.txt");
+nonexistent_info.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 7: File Removal */
+"Test 7: File Removal".echo();
+"\n".echo();
+"--------------------".echo();
+"\n".echo();
+
+"Removing nested file...".echo();
+"\n".echo();
+f.rm("nested_file.txt");
+"File removed. Listing directory:".echo();
+"\n".echo();
+f.ls().echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 8: Navigation Back */
+"Test 8: Navigation Back".echo();
+"\n".echo();
+"----------------------".echo();
+"\n".echo();
+
+"Navigating back to root...".echo();
+"\n".echo();
+f.cd("/");
+"Current directory: ".echo();
+"\n".echo();
+f.pwd().echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 9: Cleanup */
+"Test 9: Cleanup".echo();
+"\n".echo();
+"---------------".echo();
+"\n".echo();
+
+"Cleaning up test files and directories...".echo();
+"\n".echo();
+f.rm("test_basic.txt");
+f.cd("test_basic_dir");
+f.cd("nested_dir");
+f.cd("..");
+f.rm("nested_dir");
+f.cd("..");
+f.rm("test_basic_dir");
+"Cleanup completed.".echo();
+"\n".echo();
+
+/* Test 10: Error Handling */
+"Test 10: Error Handling".echo();
+"\n".echo();
+"-----------------------".echo();
+"\n".echo();
+
+"Testing error handling...".echo();
+"\n".echo();
+
+"Non-existent file get: ".echo();
+"\n".echo();
+error_result = f.get("non_existent.txt");
+error_result.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Non-existent directory cd: ".echo();
+"\n".echo();
+error_result2 = f.cd("non_existent_dir");
+error_result2.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Non-existent file info: ".echo();
+"\n".echo();
+error_result3 = f.info("non_existent.txt");
+error_result3.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test Summary */
+"=== BASIC FILE SYSTEM TESTS COMPLETED ===".echo();
+"\n".echo();
+"All basic file system operations tested successfully!".echo();
+"\n".echo();
+"Functions tested:".echo();
+"\n".echo();
+"- pwd(), phd() - Directory information".echo();
+"\n".echo();
+"- cd() - Directory navigation".echo();
+"\n".echo();
+"- ls() - Directory listing".echo();
+"\n".echo();
+"- set(), get() - File operations".echo();
+"\n".echo();
+"- mk(), rm() - Directory operations".echo();
+"\n".echo();
+"- info() - File information".echo();
+"\n".echo();
+"- Error handling for non-existent items".echo(); 
+"\n".echo();

@@ -545,10 +545,25 @@ GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField,
 			else pField.mDictSize += 3; // 2 bytes for header, 1 bit isNull, 15 bits for length (0..32767)
 			break;
 		};
+		// DEBUG_CURSOR START: mGrow set to non zero
+		// Set grow size for fixed fields - use reasonable record counts based on field size
+		// For now, constraining to CTABLE_TREE, because that was where the instance was.
+		// It may be needed for the others as well...but don't know yet. Needs more testing.
+		if (pField.mGrow == 0 && pTable.mDictField.mTreeType == CTABLE_TREE) {
+			if (pField.mSize <= 8) pField.mGrow = 64;      // Small fields: 64 records per block
+			else if (pField.mSize <= 64) pField.mGrow = 32; // Medium fields: 32 records per block
+			else pField.mGrow = 16;                         // Large fields: 16 records per block
+		}
+		// DEBUG_CURSOR END: mGrow set to non zero
 		break;
 	case GrapaDBField::STORE_VAR:
 	case GrapaDBField::STORE_PAR:
 		pField.mDictSize = 8;
+		// DEBUG_CURSOR START: mGrow for the field. not sure this is an issue
+		// UNDO the following line becuse mGrow does not apply to fixed size fields
+		// Set grow size for variable fields - use 8 as default
+		// if (pField.mGrow == 0) pField.mGrow = 8;
+		// DEBUG_CURSOR START: mGrow for the field. not sure this is an issue
 		break;
 	default:
 		pField.mDictSize = 0;

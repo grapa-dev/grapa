@@ -3118,9 +3118,9 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 		{
 			err = 0;
 #ifdef WIN32
-			_putenv_s((char*)r1.vVal->mValue.mBytes, r2.vVal ? (char*)r2.vVal->mValue.mBytes : "");
+			_putenv_s((char*)r1.vVal->mValue.mBytes, r2.vVal && r2.vVal->mValue.mBytes ? (char*)r2.vVal->mValue.mBytes : "");
 #else
-			setenv((char*)r1.vVal->mValue.mBytes, r2.vVal ? (char*)r2.vVal->mValue.mBytes : "", 1);
+			setenv((char*)r1.vVal->mValue.mBytes, r2.vVal && r2.vVal->mValue.mBytes ? (char*)r2.vVal->mValue.mBytes : "", 1);
 #endif
 		}
 	}
@@ -16058,7 +16058,6 @@ GrapaRuleEvent* GrapaLibraryRuleReplaceEvent::Run(GrapaScriptExec* vScriptExec, 
 }
 
 
-#include "grep/grapa_grep_unicode.hpp"
 #include "grep/grapa_grep_unicode.cpp"
 
 //#include "grep/grapa_grep_unicode.cpp"

@@ -194,6 +194,8 @@
     <ClInclude Include="..\..\source\grapa\GrapaValue.h" />
     <ClInclude Include="..\..\source\grapa\GrapaVector.h" />
     <ClInclude Include="..\..\source\grapa\GrapaWidget.h" />
+    <ClInclude Include="..\..\source\grep\grapa_grep_unicode.hpp" />
+    <ClInclude Include="..\..\source\grep\grep_unicode.hpp" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

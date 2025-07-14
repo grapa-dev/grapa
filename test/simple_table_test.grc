@@ -1,0 +1,22 @@
+/* Simple Table Test */
+
+"Testing table operations".echo();
+"\n".echo();
+
+/* Create virtual table */
+table = $TABLE();
+table.mkfield("name", "STR");
+table.mkfield("age", "INT");
+
+/* Set data */
+table.set("user1", "John", "name");
+table.set("user1", 25, "age");
+
+/* Get data */
+name = table.get("user1", "name").str();
+age = table.get("user1", "age").int();
+
+("Name: " + name + ", Age: " + age).echo();
+"\n".echo();
+
+"Test complete".echo(); 

@@ -1,0 +1,342 @@
+/* Test Comprehensive Grep Combinations */
+/* This test covers all conceivable combinations of grep options and identifies issues */
+
+("=== COMPREHENSIVE GREP COMBINATIONS TEST ===\n").echo();
+("Testing all conceivable combinations and identifying root causes\n").echo();
+
+/* ======================================== */
+/* 1. Multiline Pattern Issues Analysis */
+/* ======================================== */
+("Test 1: Multiline pattern issues analysis\n").echo();
+
+/* Test 1a: Basic multiline pattern without custom delimiter */
+input1a = "start\nmiddle\nend";
+result1a = input1a.grep("start.*end", "s");
+(("Input: " + input1a + "\n")).echo();
+(("Pattern: start.*end, Options: s (default delimiter)\n")).echo();
+(("Result: " + result1a.str() + "\n")).echo();
+("Expected: [\"start\\nmiddle\\nend\"]\n").echo();
+("---\n").echo();
+
+/* Test 1b: Multiline pattern with custom delimiter - THIS IS BROKEN */
+input1b = "start|middle|end";
+result1b = input1b.grep("start.*end", "s", "|");
+(("Input: " + input1b + "\n")).echo();
+(("Pattern: start.*end, Options: s, Delimiter: |\n")).echo();
+(("Result: " + result1b.str() + "\n")).echo();
+("Expected: [\"start|middle|end\"] - THIS SHOULD WORK\n").echo();
+("Issue: Multiline pattern not working with custom delimiters\n").echo();
+("---\n").echo();
+
+/* Test 1c: All-mode with custom delimiter */
+result1c = input1b.grep("start.*end", "a", "|");
+(("Pattern: start.*end, Options: a, Delimiter: |\n")).echo();
+(("Result: " + result1c.str() + "\n")).echo();
+("Expected: [\"start|middle|end\"] - All-mode should work\n").echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 2. Lookaround Assertion Issues Analysis */
+/* ======================================== */
+("Test 2: Lookaround assertion issues analysis\n").echo();
+
+/* Test 2a: Positive lookahead - ISSUE IDENTIFIED */
+input2a = "word123|text456|word789";
+result2a = input2a.grep("\\w+(?=\\d)", "o", "|");
+(("Input: " + input2a + "\n")).echo();
+(("Pattern: \\w+(?=\\d) (positive lookahead), Options: o, Delimiter: |\n")).echo();
+(("Result: " + result2a.str() + "\n")).echo();
+("Expected: [\"word\", \"text\", \"word\"]\n").echo();
+("Issue: Matches include digits - lookahead not working correctly\n").echo();
+("---\n").echo();
+
+/* Test 2b: Positive lookahead without custom delimiter */
+input2b = "word123\ntext456\nword789";
+result2b = input2b.grep("\\w+(?=\\d)", "o");
+(("Input: " + input2b + "\n")).echo();
+(("Pattern: \\w+(?=\\d) (positive lookahead), Options: o (default delimiter)\n")).echo();
+(("Result: " + result2b.str() + "\n")).echo();
+("Expected: [\"word\", \"text\", \"word\"]\n").echo();
+("Issue: Same problem with default delimiter\n").echo();
+("---\n").echo();
+
+/* Test 2c: Negative lookahead - ISSUE IDENTIFIED */
+result2c = input2a.grep("\\w+(?!\\d)", "o", "|");
+(("Pattern: \\w+(?!\\d) (negative lookahead), Options: o, Delimiter: |\n")).echo();
+(("Result: " + result2c.str() + "\n")).echo();
+("Expected: [] (no words not followed by digits)\n").echo();
+("Issue: Matches everything - negative lookahead not working\n").echo();
+("---\n").echo();
+
+/* Test 2d: Positive lookbehind - ISSUE IDENTIFIED */
+input2d = "123word|456text|789word";
+result2d = input2d.grep("(?<=\\d)\\w+", "o", "|");
+(("Input: " + input2d + "\n")).echo();
+(("Pattern: (?<=\\d)\\w+ (positive lookbehind), Options: o, Delimiter: |\n")).echo();
+(("Result: " + result2d.str() + "\n")).echo();
+("Expected: [\"word\", \"text\", \"word\"]\n").echo();
+("Issue: Matches include digits - lookbehind not working correctly\n").echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 3. Unicode Script Property Issues Analysis */
+/* ======================================== */
+("Test 3: Unicode script property issues analysis\n").echo();
+
+/* Test 3a: Latin script property - ISSUE IDENTIFIED */
+input3a = "Hello 世界 123 €|Goodbye 世界 456 €";
+result3a = input3a.grep("\\p{sc=Latin}", "o", "|");
+(("Input: " + input3a + "\n")).echo();
+(("Pattern: \\p{sc=Latin} (Latin script), Options: o, Delimiter: |\n")).echo();
+(("Result: " + result3a.str() + "\n")).echo();
+("Expected: [\"Hello\", \"Goodbye\"]\n").echo();
+("Issue: Matches individual characters instead of words\n").echo();
+("---\n").echo();
+
+/* Test 3b: Latin script property with word boundaries */
+result3b = input3a.grep("\\b\\p{sc=Latin}+\\b", "o", "|");
+(("Pattern: \\b\\p{sc=Latin}+\\b (Latin script with word boundaries), Options: o, Delimiter: |\n")).echo();
+(("Result: " + result3b.str() + "\n")).echo();
+("Expected: [\"Hello\", \"Goodbye\"]\n").echo();
+("Issue: Word boundaries not working with Unicode properties\n").echo();
+("---\n").echo();
+
+/* Test 3c: Han script property - ISSUE IDENTIFIED */
+result3c = input3a.grep("\\p{scx:Han}", "o", "|");
+(("Pattern: \\p{scx:Han} (Han script extension), Options: o, Delimiter: |\n")).echo();
+(("Result: " + result3c.str() + "\n")).echo();
+("Expected: [\"世界\", \"世界\"]\n").echo();
+("Issue: Matches individual characters instead of words\n").echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 4. Match-Only Pattern Issues Analysis */
+/* ======================================== */
+("Test 4: Match-only pattern issues analysis\n").echo();
+
+/* Test 4a: Simple word matching - ISSUE IDENTIFIED */
+input4a = "line1|||line2|||line3";
+result4a = input4a.grep("line", "o", "|||");
+(("Input: " + input4a + "\n")).echo();
+(("Pattern: line, Options: o, Delimiter: |||\n")).echo();
+(("Result: " + result4a.str() + "\n")).echo();
+("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
+("Issue: Matches \"line\" instead of full words containing \"line\"\n").echo();
+("---\n").echo();
+
+/* Test 4b: Word boundary matching */
+result4b = input4a.grep("\\bline\\w*\\b", "o", "|||");
+(("Pattern: \\bline\\w*\\b (word boundary), Options: o, Delimiter: |||\n")).echo();
+(("Result: " + result4b.str() + "\n")).echo();
+("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
+("Issue: Word boundaries not working with custom delimiters\n").echo();
+("---\n").echo();
+
+/* Test 4c: Simple pattern without word boundaries */
+result4c = input4a.grep("line\\d+", "o", "|||");
+(("Pattern: line\\d+ (line followed by digits), Options: o, Delimiter: |||\n")).echo();
+(("Result: " + result4c.str() + "\n")).echo();
+("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
+("Issue: Pattern matching not working correctly\n").echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 5. Grapheme Cluster Issues Analysis */
+/* ======================================== */
+("Test 5: Grapheme cluster issues analysis\n").echo();
+
+/* Test 5a: Grapheme clusters with custom delimiter - ISSUE IDENTIFIED */
+input5a = "Hello 👋 world 🌍|||Goodbye 👋 universe 🌌";
+result5a = input5a.grep("\\X", "o", "|||");
+(("Input: " + input5a + "\n")).echo();
+(("Pattern: \\X (grapheme clusters), Options: o, Delimiter: |||\n")).echo();
+(("Result length: " + result5a.len() + "\n")).echo();
+(("First few results: " + result5a.str() + "\n")).echo();
+("Issue: Includes delimiter characters (|||) in output\n").echo();
+("Expected: Should not include delimiter characters\n").echo();
+("---\n").echo();
+
+/* Test 5b: Grapheme clusters without custom delimiter */
+input5b = "Hello 👋 world 🌍\nGoodbye 👋 universe 🌌";
+result5b = input5b.grep("\\X", "o");
+(("Input: " + input5b + "\n")).echo();
+(("Pattern: \\X (grapheme clusters), Options: o (default delimiter)\n")).echo();
+(("Result length: " + result5b.len() + "\n")).echo();
+(("First few results: " + result5b.str() + "\n")).echo();
+("Issue: Same problem with default delimiter\n").echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 6. All Option Combinations Analysis */
+/* ======================================== */
+("Test 6: All option combinations analysis\n").echo();
+
+/* Test 6a: Basic options with custom delimiter */
+input6a = "Hello World|Goodbye World|Hello Universe";
+result6a1 = input6a.grep("Hello", "i", "|");  /* Case-insensitive */
+result6a2 = input6a.grep("Hello", "v", "|");  /* Invert match */
+result6a3 = input6a.grep("Hello", "x", "|");  /* Exact match */
+result6a4 = input6a.grep("Hello", "n", "|");  /* Line numbers */
+result6a5 = input6a.grep("Hello", "c", "|");  /* Count only */
+(("Input: " + input6a + "\n")).echo();
+(("Pattern: Hello with various options, Delimiter: |\n")).echo();
+(("Case-insensitive (i): " + result6a1.str() + "\n")).echo();
+(("Invert match (v): " + result6a2.str() + "\n")).echo();
+(("Exact match (x): " + result6a3.str() + "\n")).echo();
+(("Line numbers (n): " + result6a4.str() + "\n")).echo();
+(("Count only (c): " + result6a5.str() + "\n")).echo();
+("---\n").echo();
+
+/* Test 6b: Advanced options with custom delimiter */
+input6b = "café|CAFÉ|cafe|mañana|manana";
+result6b1 = input6b.grep("cafe", "d", "|");   /* Diacritic-insensitive */
+result6b2 = input6b.grep("cafe", "N", "|");   /* Normalization */
+result6b3 = input6b.grep("cafe", "di", "|");  /* Diacritic + case-insensitive */
+(("Input: " + input6b + "\n")).echo();
+(("Pattern: cafe with Unicode options, Delimiter: |\n")).echo();
+(("Diacritic-insensitive (d): " + result6b1.str() + "\n")).echo();
+(("Normalization (N): " + result6b2.str() + "\n")).echo();
+(("Diacritic + case-insensitive (di): " + result6b3.str() + "\n")).echo();
+("---\n").echo();
+
+/* Test 6c: Context options with custom delimiter */
+input6c = "header|line1|line2|line3|footer";
+result6c1 = input6c.grep("line2", "A1", "|");    /* After context */
+result6c2 = input6c.grep("line2", "B1", "|");    /* Before context */
+result6c3 = input6c.grep("line2", "C1", "|");    /* Context */
+result6c4 = input6c.grep("line2", "A1B1", "|");  /* Combined context */
+(("Input: " + input6c + "\n")).echo();
+(("Pattern: line2 with context options, Delimiter: |\n")).echo();
+(("After context (A1): " + result6c1.str() + "\n")).echo();
+(("Before context (B1): " + result6c2.str() + "\n")).echo();
+(("Context (C1): " + result6c3.str() + "\n")).echo();
+(("Combined context (A1B1): " + result6c4.str() + "\n")).echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 7. Edge Cases and Boundary Conditions */
+/* ======================================== */
+("Test 7: Edge cases and boundary conditions\n").echo();
+
+/* Test 7a: Empty delimiter */
+input7a = "line1\nline2\nline3";
+result7a = input7a.grep("line", "o", "");
+(("Input: " + input7a + "\n")).echo();
+(("Pattern: line, Options: o, Delimiter: (empty)\n")).echo();
+(("Result: " + result7a.str() + "\n")).echo();
+("Expected: [\"line1\\nline2\\nline3\"] (treated as single line)\n").echo();
+("---\n").echo();
+
+/* Test 7b: Delimiter that appears in content */
+input7b = "start|||middle|||end";
+result7b = input7b.grep("middle", "o", "|||");
+(("Input: " + input7b + "\n")).echo();
+(("Pattern: middle, Options: o, Delimiter: |||\n")).echo();
+(("Result: " + result7b.str() + "\n")).echo();
+("Expected: [\"middle\"]\n").echo();
+("---\n").echo();
+
+/* Test 7c: Very long delimiter */
+input7c = "line1<VERY_LONG_DELIMITER>line2<VERY_LONG_DELIMITER>line3";
+result7c = input7c.grep("line", "o", "<VERY_LONG_DELIMITER>");
+(("Input: " + input7c + "\n")).echo();
+(("Pattern: line, Options: o, Delimiter: <VERY_LONG_DELIMITER>\n")).echo();
+(("Result: " + result7c.str() + "\n")).echo();
+("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
+("---\n").echo();
+
+/* Test 7d: Unicode delimiter */
+input7d = "line1\u2028line2\u2028line3";
+result7d = input7d.grep("line", "o", "\u2028");
+(("Input: " + input7d + "\n")).echo();
+(("Pattern: line, Options: o, Delimiter: \\u2028 (line separator)\n")).echo();
+(("Result: " + result7d.str() + "\n")).echo();
+("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 8. Performance and Large Input Testing */
+/* ======================================== */
+("Test 8: Performance and large input testing\n").echo();
+
+/* Test 8a: Large input with custom delimiter */
+large_input = "";
+i = 0;
+while(i < 1000) {
+    large_input += "Line " + i + "|||";
+    i += 1;
+};
+result8a = large_input.grep("Line 500", "o", "|||");
+("Input: (1000 lines with ||| delimiter)\n").echo();
+(("Pattern: Line 500, Options: o, Delimiter: |||\n")).echo();
+(("Result: " + result8a.str() + "\n")).echo();
+(("Result length: " + result8a.len() + "\n")).echo();
+("---\n").echo();
+
+/* Test 8b: Parallel processing with custom delimiter */
+result8b = large_input.grep("Line", "o", "|||", "", "", "", 4);
+(("Pattern: Line, Options: o, Delimiter: |||, Workers: 4\n")).echo();
+(("Result length: " + result8b.len() + "\n")).echo();
+(("First few results: " + result8b.str() + "\n")).echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 9. JSON Output with Custom Delimiters */
+/* ======================================== */
+("Test 9: JSON output with custom delimiters\n").echo();
+
+/* Test 9a: JSON output with named groups */
+input9a = "John Doe (30)|Jane Smith (25)";
+result9a = input9a.grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj", "|");
+(("Input: " + input9a + "\n")).echo();
+(("Pattern: (?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\), Options: oj, Delimiter: |\n")).echo();
+(("Result: " + result9a.str() + "\n")).echo();
+(("Result type: " + result9a.type() + "\n")).echo();
+("---\n").echo();
+
+/* Test 9b: JSON output with match-only */
+result9b = input9a.grep("\\w+", "oj", "|");
+(("Pattern: \\w+, Options: oj, Delimiter: |\n")).echo();
+(("Result: " + result9b.str() + "\n")).echo();
+(("Result type: " + result9b.type() + "\n")).echo();
+("---\n").echo();
+
+/* ======================================== */
+/* 10. Binary Mode with Custom Delimiters */
+/* ======================================== */
+("Test 10: Binary mode with custom delimiters\n").echo();
+
+/* Test 10a: Binary mode with null delimiter */
+input10a = "data1\x00data2\x00data3";
+result10a = input10a.grep("data\\d+", "o", "\x00", "", "BINARY");
+(("Input: " + input10a + "\n")).echo();
+(("Pattern: data\\d+, Options: o, Delimiter: \\x00, Mode: BINARY\n")).echo();
+(("Result: " + result10a.str() + "\n")).echo();
+("Expected: [\"data1\", \"data2\", \"data3\"]\n").echo();
+("---\n").echo();
+
+/* Test 10b: Binary mode with custom delimiter */
+input10b = "data1|||data2|||data3";
+result10b = input10b.grep("data\\d+", "o", "|||", "", "BINARY");
+(("Input: " + input10b + "\n")).echo();
+(("Pattern: data\\d+, Options: o, Delimiter: |||, Mode: BINARY\n")).echo();
+(("Result: " + result10b.str() + "\n")).echo();
+("Expected: [\"data1\", \"data2\", \"data3\"]\n").echo();
+("---\n").echo();
+
+("=== COMPREHENSIVE GREP COMBINATIONS TEST COMPLETE ===\n").echo();
+("Summary of Issues Found:\n").echo();
+("1. ❌ Multiline patterns (s flag) not working with custom delimiters\n").echo();
+("2. ❌ Lookaround assertions not working correctly with custom delimiters\n").echo();
+("3. ❌ Unicode script properties matching individual characters instead of words\n").echo();
+("4. ❌ Match-only patterns not matching full words with custom delimiters\n").echo();
+("5. ❌ Grapheme clusters including delimiter characters in output\n").echo();
+("6. ⚠️  Word boundaries not working with custom delimiters\n").echo();
+("7. ⚠️  Some option combinations need further testing\n").echo();
+("Next Steps:\n").echo();
+("- Fix multiline pattern support with custom delimiters\n").echo();
+("- Fix lookaround assertion behavior with custom delimiters\n").echo();
+("- Fix Unicode script property matching\n").echo();
+("- Fix match-only pattern behavior with custom delimiters\n").echo();
+("- Fix grapheme cluster delimiter handling\n").echo();
+("- Add comprehensive word boundary testing\n").echo(); 

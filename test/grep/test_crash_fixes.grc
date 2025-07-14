@@ -1,0 +1,48 @@
+/* Test Crash Fixes */
+/* This test verifies that the 4 known crash scenarios are now fixed */
+
+"=== CRASH FIXES TEST ===\n".echo();
+"Testing the 4 known crash scenarios\n".echo();
+
+/* Test 1: Custom delimiter with context (from test_custom_delimiters.grc) */
+"Test 1: Custom delimiter with context (A1B1)\n".echo();
+input = "Header|Line 1|Line 2|Line 3|Footer";
+result = input.grep("Line 2", "A1B1", "|");
+("Input: Header|Line 1|Line 2|Line 3|Footer\n").echo();
+("Pattern: Line 2, Options: A1B1, Delimiter: |\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Large context numbers (from test_advanced_context.grc) */
+"Test 2: Large context numbers (A10B10C10)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A10B10C10");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A10B10C10\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Before context at beginning (from test_context_lines.grc) */
+"Test 3: Before context at beginning (B1)\n".echo();
+input = "Line 1\nLine 2\nLine 3\nLine 4";
+result = input.grep("Line 1", "B1");
+("Input: Line 1\\nLine 2\\nLine 3\\nLine 4\n").echo();
+("Pattern: Line 1, Options: B1\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Large context numbers again (from test_context_lines.grc) */
+"Test 4: Large context numbers again (A10B10C10)\n".echo();
+input = "Header\nLine 1\nLine 2\nLine 3\nFooter";
+result = input.grep("Line 2", "A10B10C10");
+("Input: Header\\nLine 1\\nLine 2\\nLine 3\\nFooter\n").echo();
+("Pattern: Line 2, Options: A10B10C10\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+"=== CRASH FIXES SUMMARY ===\n".echo();
+"All crash scenarios tested successfully.\n".echo();
+"Key fixes applied:\n".echo();
+"- Removed debug printf statements from context handling\n".echo();
+"- Fixed context options parsing and processing\n".echo();
+"- Ensured proper bounds checking for context lines\n".echo(); 

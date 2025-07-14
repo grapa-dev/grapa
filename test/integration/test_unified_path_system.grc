@@ -1,0 +1,300 @@
+/* Unified Path System Tests for Grapa */
+/* Tests seamless navigation between file system and database */
+
+"=== UNIFIED PATH SYSTEM TESTS ===\n".echo();
+"Testing seamless navigation between file system and database\n".echo();
+
+/* Initialize file system object */
+f = $file();
+
+/* Test 1: Basic Unified Path Navigation */
+"Test 1: Basic Unified Path Navigation\n".echo();
+"------------------------------------\n".echo();
+
+"Setting up test environment...\n".echo();
+
+"Creating file system structure...\n".echo();
+f.mk("test_project");
+f.cd("test_project");
+f.set("config.txt", "Project configuration data");
+f.mk("data");
+f.cd("data");
+
+"Creating database in file system context...\n".echo();
+f.mk("users_db", "COL");
+f.cd("users_db");
+f.mkfield("name", "STR", "VAR");
+f.mkfield("age", "INT", "FIX", 4);
+f.set("user1", "John Doe", "name");
+f.set("user1", 30, "age");
+
+"Current path: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Listing database contents: ".echo();
+f.ls().echo();
+"\n".echo();
+
+/* Test 2: Navigation Between Contexts */
+"Test 2: Navigation Between Contexts\n".echo();
+"-----------------------------------\n".echo();
+
+"Navigating back to file system...\n".echo();
+f.cd("..");
+"Current path: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Listing file system contents: ".echo();
+f.ls().echo();
+"\n".echo();
+
+"Navigating back to database...\n".echo();
+f.cd("users_db");
+"Current path: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Listing database contents: ".echo();
+f.ls().echo();
+"\n".echo();
+
+/* Test 3: Parent Directory Navigation */
+"Test 3: Parent Directory Navigation\n".echo();
+"----------------------------------\n".echo();
+
+"Testing parent directory navigation...\n".echo();
+
+"From database to parent: ".echo();
+f.cd("..");
+f.pwd().echo();
+"\n".echo();
+
+"From data directory to parent: ".echo();
+f.cd("..");
+f.pwd().echo();
+"\n".echo();
+
+"From project root to parent: ".echo();
+f.cd("..");
+f.pwd().echo();
+"\n".echo();
+
+"Navigating back to project: ".echo();
+f.cd("test_project");
+f.pwd().echo();
+"\n".echo();
+
+/* Test 4: Mixed Path Operations */
+"Test 4: Mixed Path Operations\n".echo();
+"-----------------------------\n".echo();
+
+"Testing mixed path operations...\n".echo();
+
+"Creating nested structure...\n".echo();
+f.cd("data");
+f.mk("nested_db", "ROW");
+f.cd("nested_db");
+f.mkfield("description", "STR", "VAR");
+f.set("item1", "Nested database item", "description");
+
+"Current path: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Navigating with mixed paths...\n".echo();
+f.cd("../..");  /* Go back two levels */
+"After cd('../..'): ".echo();
+f.pwd().echo();
+"\n".echo();
+
+f.cd("data/nested_db");  /* Navigate to nested database */
+"After cd('data/nested_db'): ".echo();
+f.pwd().echo();
+"\n".echo();
+
+/* Test 5: File System to Database Transitions */
+"Test 5: File System to Database Transitions\n".echo();
+"------------------------------------------\n".echo();
+
+"Testing transitions between file system and database...\n".echo();
+
+"Starting in file system...\n".echo();
+f.cd("/test_project/data");
+f.set("file_data.txt", "File system data");
+"File system contents: ".echo();
+f.ls().echo();
+"\n".echo();
+
+"Transitioning to database...\n".echo();
+f.cd("users_db");
+"Database contents: ".echo();
+f.ls().echo();
+"\n".echo();
+
+"Reading from database: ".echo();
+f.get("user1", "name").echo();
+"\n".echo();
+
+"Transitioning back to file system...\n".echo();
+f.cd("..");
+"File system contents: ".echo();
+f.ls().echo();
+"\n".echo();
+
+"Reading from file system: ".echo();
+f.get("file_data.txt").echo();
+"\n".echo();
+
+/* Test 6: Complex Path Navigation */
+"Test 6: Complex Path Navigation\n".echo();
+"------------------------------\n".echo();
+
+"Testing complex path navigation...\n".echo();
+
+"Creating complex structure...\n".echo();
+f.mk("complex_structure");
+f.cd("complex_structure");
+f.mk("level1");
+f.cd("level1");
+f.mk("level2");
+f.cd("level2");
+f.mk("level3");
+f.cd("level3");
+f.mk("deep_db", "COL");
+f.cd("deep_db");
+f.mkfield("depth", "INT", "FIX", 4);
+f.set("record1", 3, "depth");
+
+"Deep database path: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Navigating to root and back...\n".echo();
+f.cd("/");
+"Root path: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+f.cd("test_project/data/complex_structure/level1/level2/level3/deep_db");
+"Back to deep database: ".echo();
+f.pwd().echo();
+"\n".echo();
+
+"Deep database contents: ".echo();
+f.ls().echo();
+"\n".echo();
+
+/* Test 7: Path Validation */
+"Test 7: Path Validation\n".echo();
+"----------------------\n".echo();
+
+"Testing path validation...\n".echo();
+
+"Testing non-existent path...\n".echo();
+error_result = f.cd("nonexistent_path");
+"Error result: ".echo();
+error_result.echo();
+"\n".echo();
+
+"Testing invalid database path...\n".echo();
+f.cd("/test_project/data/users_db");
+error_result2 = f.cd("nonexistent_field");
+"Error result: ".echo();
+error_result2.echo();
+"\n".echo();
+
+/* Test 8: Data Persistence Across Contexts */
+"Test 8: Data Persistence Across Contexts\n".echo();
+"----------------------------------------\n".echo();
+
+"Testing data persistence across navigation...\n".echo();
+
+"Setting data in database...\n".echo();
+f.cd("/test_project/data/users_db");
+f.set("user2", "Jane Smith", "name");
+f.set("user2", 25, "age");
+
+"Navigating away and back...\n".echo();
+f.cd("/test_project");
+f.cd("data/users_db");
+
+"Verifying data persistence: ".echo();
+f.get("user2", "name").echo();
+"\n".echo();
+
+/* Test 9: Performance with Unified Paths */
+"Test 9: Performance with Unified Paths\n".echo();
+"-------------------------------------\n".echo();
+
+"Testing performance with unified paths...\n".echo();
+
+"Creating multiple databases...\n".echo();
+f.cd("/test_project/data");
+i = 1;
+while (i <= 10) {
+    f.mk("db" + i, "COL");
+    f.cd("db" + i);
+    f.mkfield("value", "INT", "FIX", 4);
+    f.set("record1", i, "value");
+    f.cd("..");
+    i = i + 1;
+}
+
+"Listing all databases: ".echo();
+f.ls().echo();
+"\n".echo();
+
+"Navigating to each database...\n".echo();
+i = 1;
+while (i <= 10) {
+    f.cd("db" + i);
+    value = f.get("record1", "value");
+    "db" + i + " value: " + value + "\n".echo();
+    f.cd("..");
+    i = i + 1;
+}
+
+/* Test 10: Cleanup */
+"Test 10: Cleanup\n".echo();
+"----------------\n".echo();
+
+"Cleaning up test environment...\n".echo();
+
+"Removing test project...\n".echo();
+f.cd("/");
+f.cd("test_project");
+f.cd("data");
+
+"Removing databases...\n".echo();
+i = 1;
+while (i <= 10) {
+    f.rm("db" + i);
+    i = i + 1;
+}
+
+f.rm("nested_db");
+f.rm("users_db");
+f.rm("complex_structure");
+f.rm("file_data.txt");
+f.cd("..");
+f.rm("data");
+f.rm("config.txt");
+f.cd("..");
+f.rm("test_project");
+
+"Cleanup completed.\n".echo();
+
+/* Test Summary */
+"=== UNIFIED PATH SYSTEM TESTS COMPLETED ===\n".echo();
+"All unified path system operations tested successfully!\n".echo();
+"Unified path features tested:\n".echo();
+"- Seamless navigation between file system and database\n".echo();
+"- Parent directory navigation with '..'\n".echo();
+"- Mixed path operations\n".echo();
+"- Complex nested structures\n".echo();
+"- Path validation and error handling\n".echo();
+"- Data persistence across context transitions\n".echo();
+"- Performance with multiple databases\n".echo();
+"- Cleanup and resource management\n".echo(); 

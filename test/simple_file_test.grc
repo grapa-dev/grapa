@@ -1,0 +1,133 @@
+/* Simple File System Test
+   - Tests basic file operations to ensure no bugs were introduced
+   - Verifies file creation, reading, writing, deletion
+   - Tests table operations with records and fields
+*/
+
+"=== SIMPLE FILE SYSTEM TEST ===".echo();
+"\n".echo();
+
+/* Create file system object */
+fs = $file();
+
+/* Test file name */
+test_file = "simple_test.txt";
+
+/* Create and write to file */
+("Creating file: " + test_file).echo();
+"\n".echo();
+fs.set(test_file, "Hello from simple file test!");
+
+/* Read from file */
+"Reading file content...".echo();
+"\n".echo();
+content = fs.get(test_file).str();
+("File content: " + content).echo();
+"\n".echo();
+
+/* Verify content matches */
+if (content == "Hello from simple file test!") {
+    "✓ File write/read test PASSED".echo();
+} else {
+    "✗ File write/read test FAILED".echo();
+};
+"\n".echo();
+
+/* Check if file exists */
+"Checking file existence...".echo();
+"\n".echo();
+file_info = fs.info(test_file);
+if (file_info.type() != $ERR) {
+    "✓ File exists test PASSED".echo();
+} else {
+    "✗ File exists test FAILED".echo();
+};
+"\n".echo();
+
+/* ======================================== */
+/* Table Operations Test */
+/* ======================================== */
+"Testing table operations...".echo();
+"\n".echo();
+
+/* Try regular table approach first */
+"Creating table with fs.table()...".echo();
+"\n".echo();
+table = fs.table("ROW");
+table.mkfield("name", "STR");
+table.mkfield("age", "INT");
+table.mkfield("city", "STR");
+
+/* Insert data for one record */
+"Setting record data...".echo();
+"\n".echo();
+table.set("user1", "John Doe", "name");
+table.set("user1", 30, "age");
+table.set("user1", "New York", "city");
+
+/* Retrieve and verify data */
+"Retrieving record data...".echo();
+"\n".echo();
+name = table.get("user1", "name").str();
+age = table.get("user1", "age").int();
+city = table.get("user1", "city").str();
+
+("Record data - Name: " + name + ", Age: " + age + ", City: " + city).echo();
+"\n".echo();
+
+if (name == "John Doe" && age == 30 && city == "New York") {
+    "✓ Table operations test PASSED".echo();
+	"\n".echo();
+} else {
+    "✗ Table operations test FAILED - trying virtual $TABLE approach".echo();
+	"\n".echo();
+   
+    /* Try virtual $TABLE approach as fallback */
+    "Trying virtual $TABLE approach...".echo();
+	"\n".echo();
+    vtable = $TABLE();
+    vtable.mkfield("name", "STR");
+    vtable.mkfield("age", "INT");
+    vtable.mkfield("city", "STR");
+    
+    /* Insert data for one record */
+    "Setting record data with virtual table...".echo();
+	"\n".echo();
+    vtable.set("user1", "John Doe", "name");
+    vtable.set("user1", 30, "age");
+    vtable.set("user1", "New York", "city");
+    
+    /* Retrieve and verify data */
+    "Retrieving record data from virtual table...".echo();
+	"\n".echo();
+    vname = vtable.get("user1", "name").str();
+    vage = vtable.get("user1", "age").int();
+    vcity = vtable.get("user1", "city").str();
+    
+    ("Virtual table record data - Name: " + vname + ", Age: " + vage + ", City: " + vcity).echo();
+	"\n".echo();
+    
+    if (vname == "John Doe" && vage == 30 && vcity == "New York") {
+        "✓ Virtual table operations test PASSED".echo();
+    } else {
+        "✗ Virtual table operations test FAILED".echo();
+    };
+	"\n".echo();
+};
+
+/* Delete the file */
+"Deleting test file...".echo();
+"\n".echo();
+fs.rm(test_file);
+
+/* Verify file is deleted */
+file_info_after = fs.info(test_file);
+if (file_info_after.type() == $ERR) {
+    "✓ File deletion test PASSED".echo();
+} else {
+    "✗ File deletion test FAILED".echo();
+};
+"\n".echo();
+
+"=== SIMPLE FILE SYSTEM TEST COMPLETE ===".echo(); 
+"\n".echo();

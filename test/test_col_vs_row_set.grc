@@ -1,0 +1,53 @@
+/* Test comparing ROW vs COL set operations */
+
+"=== Testing ROW vs COL set operations ===".echo();
+"\n".echo();
+
+/* Test ROW table first */
+"Creating ROW table...".echo();
+"\n".echo();
+frow = $file().table("ROW");
+frow.mkfield("name", "STR", "VAR");
+"ROW table and field created".echo();
+"\n".echo();
+
+"Setting data in ROW table...".echo();
+"\n".echo();
+frow.set("1", "name", "Alice");
+"ROW table data set successfully".echo();
+"\n".echo();
+
+"Getting data from ROW table...".echo();
+"\n".echo();
+frow.get("1", "name").echo();
+"ROW table data retrieved successfully".echo();
+"\n".echo();
+
+"---".echo();
+"\n".echo();
+
+/* Test COL table */
+"Creating COL table...".echo();
+"\n".echo();
+fcol = $file().table("COL");
+fcol.mkfield("name", "STR", "VAR");
+"COL table and field created".echo();
+"\n".echo();
+
+"About to set data in COL table...".echo();
+"\n".echo();
+"Setting data in COL table...".echo();
+"\n".echo();
+fcol.set("1", "name", "Alice");
+"COL table data set successfully".echo();
+"\n".echo();
+
+"Getting data from COL table...".echo();
+"\n".echo();
+fcol.get("1", "name").echo();
+"\n".echo();
+"COL table data retrieved successfully".echo();
+"\n".echo();
+
+"Test completed".echo(); 
+"\n".echo();

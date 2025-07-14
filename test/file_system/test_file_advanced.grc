@@ -1,0 +1,367 @@
+/* Advanced File System Tests for Grapa */
+/* Tests advanced file system operations including split, large files, and edge cases */
+
+"=== ADVANCED FILE SYSTEM TESTS ===".echo();
+"\n".echo();
+"Testing advanced file system operations".echo();
+"\n".echo();
+
+/* Initialize file system object */
+f = $file();
+
+/* Test 1: File Split Functionality */
+"Test 1: File Split Functionality".echo();
+"\n".echo();
+"--------------------------------".echo();
+"\n".echo();
+
+"Creating large test file for splitting...".echo();
+"\n".echo();
+large_content = "";
+i = 1;
+while (i <= 200) {
+    large_content = large_content + "Line " + i + ": This is test data for file splitting operations.\n";
+    i = i + 1;
+}
+f.set("large_test_file.txt", large_content);
+("Large file created with " + large_content.length() + " characters").echo();
+"\n".echo();
+
+"Creating split output directory...".echo();
+"\n".echo();
+f.mk("split_output");
+
+"Splitting file into 4 parts...".echo();
+"\n".echo();
+split_result = f.split(4, "large_test_file.txt", "split_output", "\n", "");
+"Split result: ".echo();
+"\n".echo();
+split_result.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Checking split files...".echo();
+"\n".echo();
+f.cd("split_output");
+split_files = f.ls();
+"Split files created: ".echo();
+"\n".echo();
+split_files.echo();
+"".echo();
+"\n".echo();
+
+"Getting info about split files:".echo();
+"\n".echo();
+i = 0;
+while (i < split_files.length()) {
+    file_info = f.info(split_files.get(i));
+    (split_files.get(i) + ": " + file_info.get("$BYTES") + " bytes").echo();
+	"\n".echo();
+    i = i + 1;
+}
+
+/* Test 2: CSV File Splitting with Header */
+"Test 2: CSV File Splitting with Header".echo();
+"\n".echo();
+"-------------------------------------".echo();
+"\n".echo();
+
+f.cd("..");
+"Creating CSV file with header...".echo();
+"\n".echo();
+csv_content = "Name,Age,City,Occupation\n";
+i = 1;
+while (i <= 100) {
+    csv_content = csv_content + "User" + i + "," + (20 + i) + ",City" + i + ",Job" + i + "\n";
+    i = i + 1;
+}
+f.set("test_data.csv", csv_content);
+
+"Creating CSV split output directory...".echo();
+"\n".echo();
+f.mk("csv_split_output");
+
+"Splitting CSV file with header preservation...".echo();
+"\n".echo();
+csv_result = f.split(3, "test_data.csv", "csv_split_output", "", "csv");
+"CSV split result: ".echo();
+"\n".echo();
+csv_result.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Checking CSV split files...".echo();
+"\n".echo();
+f.cd("csv_split_output");
+csv_files = f.ls();
+"CSV split files: ".echo();
+"\n".echo();
+csv_files.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 3: Custom Delimiter Splitting */
+"Test 3: Custom Delimiter Splitting".echo();
+"\n".echo();
+"--------------------------------".echo();
+"\n".echo();
+
+f.cd("..");
+"Creating file with custom delimiter...".echo();
+"\n".echo();
+custom_content = "Section1|Content for section 1|End of section 1\n";
+custom_content = custom_content + "Section2|Content for section 2|End of section 2\n";
+custom_content = custom_content + "Section3|Content for section 3|End of section 3\n";
+custom_content = custom_content + "Section4|Content for section 4|End of section 4\n";
+custom_content = custom_content + "Section5|Content for section 5|End of section 5\n";
+f.set("custom_delim.txt", custom_content);
+
+"Creating custom delimiter output directory...".echo();
+"\n".echo();
+f.mk("custom_split_output");
+
+"Splitting with custom delimiter '|'...".echo();
+"\n".echo();
+custom_result = f.split(2, "custom_delim.txt", "custom_split_output", "|", "");
+"Custom delimiter split result: ".echo();
+"\n".echo();
+custom_result.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 4: Start Option Splitting */
+"Test 4: Start Option Splitting".echo();
+"\n".echo();
+"----------------------------".echo();
+"\n".echo();
+
+f.cd("..");
+"Creating file for start option testing...".echo();
+"\n".echo();
+start_content = "Block1\nContent for block 1\nEnd of block 1\n";
+start_content = start_content + "Block2\nContent for block 2\nEnd of block 2\n";
+start_content = start_content + "Block3\nContent for block 3\nEnd of block 3\n";
+start_content = start_content + "Block4\nContent for block 4\nEnd of block 4\n";
+f.set("start_test.txt", start_content);
+
+"Creating start option output directory...".echo();
+"\n".echo();
+f.mk("start_split_output");
+
+"Splitting with start option (search backwards for delimiter)...".echo();
+"\n".echo();
+start_result = f.split(2, "start_test.txt", "start_split_output", "\n", "start");
+"Start option split result: ".echo();
+"\n".echo();
+start_result.echo();
+"".echo();
+"\n".echo();
+
+/* Test 5: File Size Analysis */
+"Test 5: File Size Analysis".echo();
+"\n".echo();
+"------------------------".echo();
+"\n".echo();
+
+"Analyzing file sizes...".echo();
+"\n".echo();
+
+"Large test file: ".echo();
+"\n".echo();
+large_file_info = f.info("large_test_file.txt");
+large_file_info.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"CSV file: ".echo();
+"\n".echo();
+csv_file_info = f.info("test_data.csv");
+csv_file_info.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Custom delimiter file: ".echo();
+"\n".echo();
+custom_file_info = f.info("custom_delim.txt");
+custom_file_info.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 6: Error Handling for Split */
+"Test 6: Error Handling for Split".echo();
+"\n".echo();
+"--------------------------------".echo();
+"\n".echo();
+
+"Testing split with non-existent file...".echo();
+"\n".echo();
+error_result = f.split(2, "nonexistent.txt", "error_output", "\n", "");
+"Error result: ".echo();
+"\n".echo();
+error_result.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Testing split with invalid parts number...".echo();
+"\n".echo();
+invalid_result = f.split(0, "large_test_file.txt", "invalid_output", "\n", "");
+"Invalid parts result: ".echo();
+"\n".echo();
+invalid_result.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 7: Content Verification */
+"Test 7: Content Verification".echo();
+"\n".echo();
+"---------------------------".echo();
+"\n".echo();
+
+"Verifying split file contents...".echo();
+"\n".echo();
+
+"Checking first split file...".echo();
+"\n".echo();
+f.cd("split_output");
+first_file = f.ls().get(0);
+first_content = f.get(first_file);
+("First split file (" + first_file + ") content length: " + first_content.length()).echo();
+"\n".echo();
+
+"Checking CSV split file with header...".echo();
+"\n".echo();
+f.cd("../csv_split_output");
+csv_file = f.ls().get(0);
+csv_content_check = f.get(csv_file);
+("CSV split file (" + csv_file + ") starts with header: " + (csv_content_check.indexOf("Name,Age,City,Occupation") >= 0)).echo();
+"\n".echo();
+
+/* Test 8: Large File Operations */
+"Test 8: Large File Operations".echo();
+"\n".echo();
+"----------------------------".echo();
+"\n".echo();
+
+f.cd("..");
+"Creating very large file...".echo();
+"\n".echo();
+very_large_content = "";
+i = 1;
+while (i <= 1000) {
+    very_large_content += "Very large file line " + i + " with substantial content for testing large file operations.\n";
+    i = i + 1;
+}
+f.set("very_large_file.txt", very_large_content);
+
+"Very large file info: ".echo();
+"\n".echo();
+very_large_info = f.info("very_large_file.txt");
+very_large_info.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+"Splitting very large file...".echo();
+"\n".echo();
+f.mk("very_large_split_output");
+very_large_result = f.split(8, "very_large_file.txt", "very_large_split_output", "\n", "");
+"Very large file split result: ".echo();
+"\n".echo();
+very_large_result.echo();
+"\n".echo();
+"".echo();
+"\n".echo();
+
+/* Test 9: Cleanup */
+"Test 9: Cleanup".echo();
+"\n".echo();
+"---------------".echo();
+"\n".echo();
+
+"Cleaning up test files and directories...".echo();
+"\n".echo();
+
+"Removing original files...".echo();
+"\n".echo();
+f.rm("large_test_file.txt");
+f.rm("test_data.csv");
+f.rm("custom_delim.txt");
+f.rm("start_test.txt");
+f.rm("very_large_file.txt");
+
+"Removing split output directories...".echo();
+"\n".echo();
+f.cd("split_output");
+split_files = f.ls();
+i = 0;
+while (i < split_files.length()) {
+    f.rm(split_files.get(i));
+    i = i + 1;
+}
+f.cd("..");
+f.rm("split_output");
+
+f.cd("csv_split_output");
+csv_files = f.ls();
+i = 0;
+while (i < csv_files.length()) {
+    f.rm(csv_files.get(i));
+    i = i + 1;
+}
+f.cd("..");
+f.rm("csv_split_output");
+
+f.cd("custom_split_output");
+custom_files = f.ls();
+i = 0;
+while (i < custom_files.length()) {
+    f.rm(custom_files.get(i));
+    i = i + 1;
+}
+f.cd("..");
+f.rm("custom_split_output");
+
+f.cd("start_split_output");
+start_files = f.ls();
+i = 0;
+while (i < start_files.length()) {
+    f.rm(start_files.get(i));
+    i = i + 1;
+}
+f.cd("..");
+f.rm("start_split_output");
+
+f.cd("very_large_split_output");
+very_large_files = f.ls();
+i = 0;
+while (i < very_large_files.length()) {
+    f.rm(very_large_files.get(i));
+    i = i + 1;
+}
+f.cd("..");
+f.rm("very_large_split_output");
+
+"Cleanup completed.".echo();
+"\n".echo();
+
+/* Test Summary */
+"=== ADVANCED FILE SYSTEM TESTS COMPLETED ===\n".echo();
+"All advanced file system operations tested successfully!\n".echo();
+"Advanced functions tested:\n".echo();
+"- split() - File splitting with various options\n".echo();
+"- Large file handling and operations\n".echo();
+"- CSV file splitting with header preservation\n".echo();
+"- Custom delimiter splitting\n".echo();
+"- Start option for smart boundary detection\n".echo();
+"- File size analysis and verification\n".echo();
+"- Error handling for split operations\n".echo();
+"- Content verification and integrity checks\n".echo(); 

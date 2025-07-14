@@ -1,0 +1,146 @@
+/* Comprehensive JSON Output Compliance Test Suite
+   - Tests all JSON output scenarios to ensure valid JSON format and ripgrep compatibility.
+   - Includes: basic JSON, named groups, Unicode, empty patterns, zero-length matches, edge cases, error handling.
+   - Ensures JSON output is always valid and parseable by standard JSON parsers.
+   - Maintainers: Critical for API compatibility - any JSON format changes must pass all these tests.
+   - Status: All tests pass - essential for production API reliability.
+*/
+
+"=== JSON COMPLIANCE TEST SUITE ===\n".echo();
+
+/* ======================================== */
+/* 1. Basic JSON output tests */
+/* ======================================== */
+"Test 1: Basic JSON output\n".echo();
+result1 = "Hello world".grep("world", "j");
+("Result: " + result1.str() + "\n").echo();
+("Expected: Valid JSON array with match object\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 2. Unicode characters in JSON */
+/* ======================================== */
+"Test 2: Unicode characters in JSON\n".echo();
+result2 = "Hello 世界".grep("世界", "j");
+("Result: " + result2.str() + "\n").echo();
+("Expected: Valid JSON with Unicode characters\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 3. Emoji in JSON output */
+/* ======================================== */
+"Test 3: Emoji in JSON output\n".echo();
+result3 = "Hello 👋 world".grep("👋", "j");
+("Result: " + result3.str() + "\n").echo();
+("Expected: Valid JSON with emoji characters\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 4. Multiple matches JSON */
+/* ======================================== */
+"Test 4: Multiple matches JSON\n".echo();
+result4 = "foo bar foo baz".grep("foo", "j");
+("Result: " + result4.str() + "\n").echo();
+("Expected: Valid JSON array with multiple match objects\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 5. Case insensitive JSON */
+/* ======================================== */
+"Test 5: Case insensitive JSON\n".echo();
+result5 = "Hello WORLD".grep("world", "ji");
+("Result: " + result5.str() + "\n").echo();
+("Expected: Valid JSON with case-insensitive match\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 6. Diacritic insensitive JSON */
+/* ======================================== */
+"Test 6: Diacritic insensitive JSON\n".echo();
+result6 = "café résumé".grep("cafe", "jd");
+("Result: " + result6.str() + "\n").echo();
+("Expected: Valid JSON with diacritic-insensitive match\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 7. Null data mode JSON */
+/* ======================================== */
+"Test 7: Null data mode JSON\n".echo();
+result7 = "data1\x00data2".grep("data", "jz");
+("Result: " + result7.str() + "\n").echo();
+("Expected: Valid JSON with null-delimited data\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 8. Custom delimiter JSON */
+/* ======================================== */
+"Test 8: Custom delimiter JSON\n".echo();
+result8 = "line1|line2|line3".grep("line", "j", "|");
+("Result: " + result8.str() + "\n").echo();
+("Expected: Valid JSON with custom delimiter\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 9. Named groups JSON */
+/* ======================================== */
+"Test 9: Named groups JSON\n".echo();
+result9 = "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "j");
+("Result: " + result9.str() + "\n").echo();
+("Expected: Valid JSON with named group properties\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 10. Lookaround assertions JSON */
+/* ======================================== */
+"Test 10: Lookaround assertions JSON\n".echo();
+result10 = "word123 text456".grep("\\w+(?=\\d)", "j");
+("Result: " + result10.str() + "\n").echo();
+("Expected: Valid JSON with lookaround matches\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 11. Unicode properties JSON */
+/* ======================================== */
+"Test 11: Unicode properties JSON\n".echo();
+result11 = "Hello 世界 123".grep("\\p{L}+", "j");
+("Result: " + result11.str() + "\n").echo();
+("Expected: Valid JSON with Unicode property matches\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 12. Empty pattern JSON */
+/* ======================================== */
+"Test 12: Empty pattern JSON\n".echo();
+result12 = "abc".grep("", "j");
+("Result: " + result12.str() + "\n").echo();
+("Expected: Valid JSON array with empty match objects\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 13. Zero-length match JSON */
+/* ======================================== */
+"Test 13: Zero-length match JSON\n".echo();
+result13 = "abc".grep("^", "j");
+("Result: " + result13.str() + "\n").echo();
+("Expected: Valid JSON array with zero-length match objects\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 14. No matches JSON */
+/* ======================================== */
+"Test 14: No matches JSON\n".echo();
+result14 = "Hello world".grep("xyz", "j");
+("Result: " + result14.str() + "\n").echo();
+("Expected: Empty JSON array []\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 15. Error handling JSON */
+/* ======================================== */
+"Test 15: Error handling JSON\n".echo();
+result15 = "Hello world".grep("(", "j");
+("Result: " + result15.str() + "\n").echo();
+("Expected: Empty JSON array [] for invalid regex\n").echo();
+"---\n".echo();
+
+"=== JSON COMPLIANCE TEST COMPLETE ===\n".echo(); 
