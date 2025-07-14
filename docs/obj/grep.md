@@ -343,7 +343,7 @@ For better readability of regex patterns, you can use raw string literals by pre
 // Result: ["user@domain.com"]
 
 // Named groups with raw strings
-"John Doe (30)".grep(r"(?P<first>\w+) (?P<last>\w+) \((?P<age>\d+)\)", "oj")
+"John Doe (30)".grep(r"(?P<first>\\w+) (?P<last>\\w+) \((?P<age>\\d+)\)", "oj")
 // Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
 ```
 
@@ -1509,62 +1509,60 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
 
 > **This section is a living document tracking the current state of Grapa grep option flag support, test/code path coverage, and design philosophy. Update this section as new combinations are implemented or tested, or as the philosophy evolves.**
 
-## Option Flags: Full List
+## Testing and Implementation Priorities
 
-| Flag | Description |
-|------|-------------|
-| o    | Match-only (output only matched text) |
-| f    | Force full-segment returns (overrides match-only for some patterns) |
-| a    | All-mode (match across full input string, context options ignored) |
-| s    | Dot matches newline (multiline regex) |
-| i    | Case-insensitive matching |
-| d    | Diacritic-insensitive matching |
-| w    | Word boundary mode |
-| l    | Line number only output |
-| u    | Unique (deduplicate results) |
-| g    | Group results per line |
-| b    | Output byte offset |
-| j    | JSON output |
-| c    | Count of matches |
-| n    | Prefix matches with line numbers |
-| x    | Exact line match |
-| v    | Invert match |
-| N    | Normalize input and pattern to NFC |
-| z    | (Reserved for future use) |
-| T    | Output column numbers |
-| L    | Color output (ANSI) |
-| A<n>, B<n>, C<n> | Context lines (after, before, both) |
+1. **First Priority:**
+   - Ensure there are tests for **all valid combinations of options**.
+   - The code structure should cover every possible option combination, with minimal unique code paths (maximize code path sharing and composability).
+   - This prevents the need for major refactoring as new features or edge cases are added.
 
-## Philosophy for Option Combinations
+2. **Second Priority:**
+   - Once the above is complete, address **edge cases**.
+   - Edge case handling must be implemented in a way that is compatible with all possible option combinations that may reach the relevant code path.
+   - Edge cases are exceptions layered on top of the comprehensive option combination coverage.
 
-- **If multiple behaviors are rational, support both via options and test both.**
-- **If only one behavior is correct, default to ripgrep behavior and document the rationale.**
-- **If a combination is ambiguous or not yet implemented, document the gap and planned approach.**
-- **Precedence:** Some options override or disable others (e.g., `o` disables context, `c` disables output, etc.), following ripgrep-style precedence.
+> **This approach ensures maintainability, extensibility, and robust architecture.**
 
-## Coverage Matrix: Tested and Implemented Combinations
+## Coverage Matrix: Option Combinations
 
-- **Single options:** All core flags (`o`, `a`, `i`, `d`, `w`, `l`, `n`, `c`, `j`, `b`, `g`, `x`, `v`, `N`, `T`, `L`, context) are tested and have code paths.
-- **Common pairs:** All common pairs (e.g., `oi`, `od`, `oj`, `on`, `oa`, `ow`, `os`, `ox`, `ov`, `oN`, `oT`, `oL`, `oA1`, etc.) are tested and implemented.
-- **Precedence/override cases:** Combinations like `co`, `cl`, `cn`, `ca`, `cj`, etc., are tested for correct precedence (e.g., `c` disables output, only count is returned).
-- **Context + output:** All context options (`A`, `B`, `C`) are tested in combination with output flags, including with custom delimiters and JSON.
-- **Advanced Unicode:** All Unicode property, script, and grapheme cluster patterns are tested with all relevant output and context options.
-- **Multiline and lookaround:** All combinations of `s`, lookaround, and output/context options are tested.
-- **Custom flags:** The new `f` flag (force full-segment) is tested in all relevant scenarios.
-- **Parallel/worker options:** All options are tested with parallel processing (num_workers > 1).
+| Option(s)         | Description/Example                | Status      | Test File(s)                        |
+|-------------------|------------------------------------|-------------|-------------------------------------|
+| o                 | Match-only                         | ✅ Tested   | test/grep/test_option_based_behavior.grc |
+| f                 | Force full-segment                 | ✅ Tested   | test/grep/test_f_flag_combinations.grc   |
+| a                 | All-mode                           | ✅ Tested   | test/grep/test_comprehensive_grep_combinations.grc |
+| s                 | Dot matches newline                | ✅ Tested   | test/grep/test_multiline_and_rare_pcre2.grc |
+| i                 | Case-insensitive                   | ✅ Tested   | test/grep/test_case_insensitive_unicode.grc |
+| d                 | Diacritic-insensitive              | ✅ Tested   | test/grep/test_option_combinations_advanced.grc |
+| w                 | Word boundary                      | ✅ Tested   | test/grep/test_option_combinations_advanced.grc |
+| l                 | Line number only output            | ✅ Tested   | test/grep/test_basic_option_combinations.grc |
+| u                 | Unique (deduplicate)               | ✅ Tested   | test/grep/test_option_combinations_advanced.grc |
+| g                 | Group results per line             | ✅ Tested   | test/grep/test_option_combinations_advanced.grc |
+| b                 | Output byte offset                 | ✅ Tested   | test/grep/test_edge_case_precedence.grc |
+| j                 | JSON output                        | ✅ Tested   | test/grep/test_compositional_stress.grc |
+| c                 | Count of matches                   | ✅ Tested   | test/grep/test_edge_case_precedence.grc |
+| n                 | Prefix matches with line numbers   | ✅ Tested   | test/grep/test_basic_option_combinations.grc |
+| x                 | Exact line match                   | ✅ Tested   | test/grep/test_basic_option_combinations.grc |
+| v                 | Invert match                       | ✅ Tested   | test/grep/test_compositional_stress.grc |
+| N                 | Normalize to NFC                   | ✅ Tested   | test/grep/test_unicode_normalization.grc |
+| z                 | Reserved/future                    | ⚠️ Partial | test/grep/test_option_combinations_advanced.grc |
+| T                 | Output column numbers              | ✅ Tested   | test/grep/column_test.grc |
+| L                 | Color output (ANSI)                | ✅ Tested   | test/grep/test_edge_case_precedence.grc |
+| A<n>, B<n>, C<n>  | Context lines                      | ✅ Tested   | test/grep/test_context_lines.grc |
+| (combinations)    | All meaningful pairs/higher-order  | ⚠️ In Progress | test/grep/test_option_combinations_advanced.grc, test/grep/test_compositional_stress.grc, test/grep/test_f_flag_combinations.grc |
 
-## Known Gaps and Planned Work
+**Legend:**
+- ✅ = Fully tested and implemented
+- ⚠️ = Partially tested, planned, or reserved
 
-- **Higher-order combinations:** Some rare or high-order combinations (e.g., `ojA1B1f`, `odg`, `oibw`, etc.) are not yet explicitly tested, but code paths are designed to be composable.
-- **Edge-case precedence:** Some complex precedence cases (e.g., `c` with context and JSON) may not be fully tested in all permutations.
-- **Reserved/future flags:** `z` and other reserved flags are not yet implemented or tested.
-- **Test suite expansion:** The test suite is being expanded to cover all meaningful combinations, especially those involving new or custom flags.
-- **Documentation:** This section will be updated as new combinations are implemented, tested, or as the philosophy evolves.
+### Plan for Completing the Matrix
+- Systematically enumerate all valid option combinations (single, pairs, higher-order) that are not mutually exclusive or nonsensical.
+- For each, create or expand a test in `test/grep/` that documents the combination and expected behavior.
+- Update this matrix as each combination is covered.
+- Any gaps or untestable combinations will be explicitly noted here.
 
-## How to Use This Section
-
-- **To check if a flag or combination is supported:** Look for it in the lists above. If not listed, check the "Known Gaps" section.
-- **To see the philosophy for a combination:** See the "Philosophy" section above.
-- **To update:** When a new combination is implemented or tested, update this section to reflect the new status.
+### Edge Case Handling
+- Edge case tests will be added **after** the main option matrix is complete.
+- Edge case handling must be compatible with all option combinations that may reach the relevant code path.
+- Edge case test files will be clearly marked and cross-referenced here.
 
 > **This living section ensures that the current state of Grapa grep option support, test coverage, and design philosophy is always visible and up to date.**
