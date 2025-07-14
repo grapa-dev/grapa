@@ -128,6 +128,27 @@ python test/test_grep_python_examples.py
 python test/test_python_callback.py
 ```
 
+## Delimiter Handling and Test Rationalization (2025 Update)
+
+### Unified Delimiter Code Path
+- The Grapa grep engine now uses a unified code path for both the default delimiter (`\n`) and custom delimiters (e.g., `|||`).
+- All line splitting, matching, and output logic is based on the `effective_delimiter`, regardless of its length.
+- This eliminates the need to duplicate the entire test suite for custom delimiters.
+
+### Minimal Custom Delimiter Test Requirements
+- For each major feature (context, invert, match-only, multiline, rare PCRE2 features, etc.), at least one test uses a custom delimiter (multi-character, e.g., `|||`).
+- Edge cases are covered: delimiter at start/end, empty input, delimiter not present, delimiter as part of the pattern.
+- No need to duplicate every test for every delimiter; instead, ensure that for each major feature, at least one test uses a custom delimiter and passes.
+
+### Test Suite Rationalization
+- Redundant test files that only differ by delimiter have been removed or merged.
+- Tests are now grouped by feature, with custom delimiter coverage included in each group as appropriate.
+- The test matrix and documentation have been updated to reflect this streamlined structure.
+
+### Test Matrix (Current)
+- Each major feature and option combination is tested with the default delimiter and, where relevant, with a custom delimiter.
+- See the test list and categories above for details.
+
 ## Running Tests
 
 ### Complete Test Suite
