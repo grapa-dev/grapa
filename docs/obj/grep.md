@@ -1333,9 +1333,9 @@ This separation allows Grapa grep to focus on what it does best: advanced Unicod
 ### ⚠️ Known Limitations
 
 **File System Features:**
-- ❌ File searching (not implemented by design)
-- ❌ Directory traversal (not implemented by design)
-- ❌ File filtering (not implemented by design)
+- ✅ File searching, directory traversal, and file filtering are fully supported via the `$file()` API in the scripting layer.
+- ❌ These features are not built into the `.grep()` function itself, but are available for scripting flexible workflows.
+- **Design Note:** This separation allows for more powerful and programmable file processing, at the cost of not having a single "one-liner" CLI for recursive search.
 
 **Scripting Layer Issues:**
 - ⚠️ Unicode string functions (`len()`, `ord()`) count bytes not characters
@@ -1548,17 +1548,17 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
 | T                 | Output column numbers              | ✅ Tested   | test/grep/column_test.grc |
 | L                 | Color output (ANSI)                | ✅ Tested   | test/grep/test_edge_case_precedence.grc |
 | A<n>, B<n>, C<n>  | Context lines                      | ✅ Tested   | test/grep/test_context_lines.grc |
-| (combinations)    | All meaningful pairs/higher-order  | ⚠️ In Progress | test/grep/test_option_combinations_advanced.grc, test/grep/test_compositional_stress.grc, test/grep/test_f_flag_combinations.grc |
+| (pairs/triples)   | All meaningful pairs/triples        | ✅ Tested   | test/grep/test_option_combinations_matrix.grc |
+| (higher-order)    | Quadruple+ combinations            | ✅ Tested   | test/grep/test_option_combinations_higher_order.grc |
+| (parallel)        | All above with parallel/worker      | ✅ Tested   | test/grep/test_option_combinations_parallel.grc |
 
 **Legend:**
 - ✅ = Fully tested and implemented
 - ⚠️ = Partially tested, planned, or reserved
 
-### Plan for Completing the Matrix
-- Systematically enumerate all valid option combinations (single, pairs, higher-order) that are not mutually exclusive or nonsensical.
-- For each, create or expand a test in `test/grep/` that documents the combination and expected behavior.
-- Update this matrix as each combination is covered.
-- Any gaps or untestable combinations will be explicitly noted here.
+### Status
+- **All valid single, pair, triple, higher-order, and parallel option combinations are now systematically covered by dedicated test files.**
+- The next step is to proceed with edge case coverage, ensuring all edge case handling is compatible with the full option matrix.
 
 ### Edge Case Handling
 - Edge case tests will be added **after** the main option matrix is complete.
@@ -1566,3 +1566,92 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
 - Edge case test files will be clearly marked and cross-referenced here.
 
 > **This living section ensures that the current state of Grapa grep option support, test coverage, and design philosophy is always visible and up to date.**
+
+## Rules for Authoring .grc Files on Windows (Living Reference)
+
+> **This section collects essential rules and conventions for writing or modifying Grapa .grc files on Windows. Follow these to ensure compatibility, correct syntax, and maintainability. Update as new rules are discovered.**
+
+- **Comments:**
+  - Do **not** use `//` for comments. Use block comments for all comments (do not use //). Block comments should be written as in this header. Do not use the literal /* ... */ inside a block comment, as Grapa does not support nested block comments.
+- **Echo/Print:**
+  - Do **not** use `print` or `echo()` as a bare function.
+  - Always use the method form: `"string".echo();` or `(str1+str2).echo();`.
+- **Statement Endings:**
+  - End every command or statement with a `;` character.
+- **Loops:**
+  - Use `while` loops instead of `for` loops (Grapa does not support `for`).
+- **String Concatenation:**
+  - When concatenating strings, wrap the entire expression in parentheses: `(str1+str2).echo();`.
+- **Array Access:**
+  - Access arrays with `.get(index)`, not with square brackets: `arr.get(0);`.
+- **Object Property Access:**
+  - Access object properties with `.get("key")`, not with square brackets: `obj.get("key");`.
+- **General:**
+  - Validate syntax against known-good .grc files before adding new tests or code.
+  - Prefer simple, explicit constructs for maximum compatibility.
+
+> **Update this section as new rules or best practices are discovered.**
+
+- **Running .grc Files on Windows:**
+  - To run a .grc file, use the following command in PowerShell or Command Prompt:
+    - `.\grep.exe -q -cfile path/file.grc`
+  - This suppresses the version header (`-q`) and runs the specified .grc file (`-cfile`).
+
+- **Array and List Access:**
+  - Arrays (type $ARRAY) and lists (type $LIST) are accessed with `[index]` syntax, not `.get(index)`.
+  - Example:
+    /*
+    ar = [1,2,3];
+    ar[1]; // returns 2
+    ar = {"a":11,"b":22,"c":33};
+    ar[1]; // returns 22
+    ar["b"]; // returns 22
+    */
+  - Use `.get("key")` for object property access, not for arrays/lists.
+
+- **String Literals and Quotes:**
+  - If your string contains double quotes (`"`), use single quotes (`'`) for the outer string, or escape the inner double quotes as (`\"`).
+  - If your string contains single quotes (`'`), use double quotes (`"`) for the outer string, or escape the inner single quotes as (`\'`).
+  - **Examples:**
+    - `'Expected: ["", "a", "", "b", ""]\n'.echo();`  // single quotes outside, double quotes inside
+    - `(\"Expected: [\\\"\\\", \\\"a\\\", \\\"\\\", \\\"b\\\", \\\"\\\"]\\n\").echo();`  // double quotes outside, inner double quotes escaped
+
+## File System Integration for Grep Utilities (Grapa Scripting Layer)
+
+- Use `$file().ls()` to enumerate files in a directory.
+- Use `$file().info("path")` to check file type/existence.
+- Use `$file().get("path")` to read file contents. **Note:** `.get()` returns binary data (type `$BIN`); use `.str()` to convert to string format: `$file().get("file").str()`.
+- Use `$file().set("path", value)` to write file contents.
+- These commands provide all file system operations needed for scripting a command-line grep utility in Grapa.
+
+**Example workflow:**
+```grapa
+files = $file().ls();
+i = 0;
+while (i < files.len()) {
+    f = files[i];
+    info = $file().info(f["$KEY"]);
+    if (info["$TYPE"] == "FILE") {
+        content = $file().get(f["$KEY"]).str();
+        matches = content.grep("pattern", "o");
+        // process matches...
+    }
+    i = i + 1;
+}
+```
+- **Note:** File handling (enumeration, reading, writing) is performed in the scripting layer, not inside the `.grep()` function itself. This separation allows for flexible, programmable workflows.
+
+## Production-Readiness Edge Case Coverage (2024-06 Update)
+
+> **The following edge cases are now covered by dedicated test files to ensure Grapa grep is suitable for mission-critical production use and ripgrep parity.**
+
+| Edge Case Category         | Description/Examples                                 | Test File(s)                                 |
+|---------------------------|------------------------------------------------------|----------------------------------------------|
+| Pathological Patterns     | Catastrophic backtracking, large alternations, deep nesting | test/grep/test_pathological_patterns.grc     |
+| Malformed/Invalid Unicode | Invalid UTF-8, unpaired surrogates, noncharacters, BOM | test/grep/test_malformed_unicode.grc         |
+| Ultra-Large Lines         | Single line >1MB, only delimiters, no newline at EOF  | test/grep/test_ultra_large_lines.grc         |
+| (All other edge cases)    | Zero-length, Unicode, null bytes, context, overlap, etc. | See other test/grep/edge_case_*.grc files    |
+
+- These tests are critical for production reliability and ripgrep parity.
+- If any test causes a hang, crash, or error, document and update implementation.
+- See each test file for detailed scenarios and expected results.
