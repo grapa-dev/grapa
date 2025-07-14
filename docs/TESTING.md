@@ -53,7 +53,7 @@ test/
   - Unicode age properties (not supported) ⚠️
   - Unicode bidirectional classes (not supported) ⚠️
 
-#### 2. **Performance Test** (`test_performance_optimizations.grc`)
+#### 2. **Performance Test** (`test/grep/test_performance_optimizations.grc`)
 - **Purpose**: Validate performance optimizations are working
 - **Coverage**: 8 performance optimization tests
 - **Status**: ✅ **All performance optimizations working**
@@ -67,7 +67,7 @@ test/
   - Mixed pattern performance ✅
   - Edge case performance ✅
 
-#### 3. **Parallel Processing Test** (`test_parallel_grep_verification.grc`)
+#### 3. **Parallel Processing Test** (removed: test_parallel_grep_verification.grc)
 - **Purpose**: Validate parallel processing functionality and performance
 - **Coverage**: 8 parallel processing tests
 - **Status**: ✅ **Excellent performance - up to 11x speedup**
@@ -82,16 +82,16 @@ test/
   - Parallel function verification ✅
 
 #### 4. **Feature-Specific Tests**
-- **Atomic Groups** (`test_atomic_groups.grc`): 10 tests for atomic group functionality ✅
-- **Lookaround Assertions** (`test_lookaround_assertions.grc`): 8 tests for lookaround functionality ✅
+- **Atomic Groups** (`test/grep/test_atomic_groups.grc`): 10 tests for atomic group functionality ✅
+- **Lookaround Assertions** (`test/grep/test_lookaround_assertions.grc`): 8 tests for lookaround functionality ✅
 - **Unicode Grapheme Clusters** (`test_unicode_grapheme_clusters.grc`): 10 tests for grapheme cluster functionality ✅ **FIXED**
 - **Grapheme Cluster Pattern** (`test_grapheme_cluster_crash.grc`): Tests for the `\X` pattern and direct segmentation ✅ **FIXED**
-- **Invalid Regex Patterns** (`test_invalid_regex.grc`): Tests for graceful error handling of invalid patterns ✅
+- **Invalid Regex Patterns** (`test/grep/test_invalid_regex.grc`): Tests for graceful error handling of invalid patterns ✅
 - **Unicode Edge Cases** (`test_grep_edge_cases.grc`): Tests for complex Unicode boundary scenarios ✅ **FIXED**
 
 #### 5. **Ripgrep Compatibility Tests**
 - **Ripgrep Parity** (`test_ripgrep_compatibility.grc`): Tests for ripgrep feature parity including column output, word boundaries, null-data mode, color output, and context separators ✅ **FULL PARITY ACHIEVED**
-- **Ripgrep Features** (`test_ripgrep_parity_features.grc`): Comprehensive ripgrep feature compatibility testing ✅
+- **Ripgrep Features** (`test/grep/test_ripgrep_parity_features.grc`): Comprehensive ripgrep feature compatibility testing ✅
 - **Column Numbers** (`test_column_test.grc`): Tests for column number functionality with the T option ✅ **FIXED**
 - **Color Output** (`test_color_test.grc`): Tests for color output functionality with the L option ✅ **FIXED**
 - **Word Boundaries** (`test_word_boundary.grc`): Tests for word boundary functionality with the w option ✅ **FIXED**
@@ -100,18 +100,18 @@ test/
 
 #### 6. **Advanced Feature Tests**
 - **Context Lines** (`test_context_lines.grc`): Advanced context line functionality testing (A<n>, B<n>, C<n> options) ✅ **FIXED**
-- **Advanced Context** (`test_advanced_context.grc`): Complex context option combinations and edge cases ✅ **FIXED**
+- **Advanced Context** (removed: test_advanced_context.grc)
 - **Custom Delimiters** (`test_custom_delimiters.grc`): Custom line delimiter functionality testing ✅
 - **Unicode Normalization** (`test_unicode_normalization.grc`): Unicode normalization form testing ✅
 - **Unicode O Option** (`test_unicode_o_option.grc`): Unicode character handling with match-only output ✅
-- **Error Handling** (`test_error_handling.grc`): Graceful error handling testing for invalid patterns ✅
+- **Error Handling** (removed: test_error_handling.grc)
 - **Edge Cases** (`test_edge_cases.grc`): Edge case testing for various scenarios ✅ **FIXED**
 - **Binary Mode** (`test_binary_mode.grc`): Binary processing mode testing ✅
 
 #### 7. **Performance and Parallel Processing Tests**
 - **Parallel Grep** (`test_parallel_grep.grc`): Parallel processing functionality and performance testing ✅
-- **Parallel Verification** (`test_parallel_grep_verification.grc`): Parallel processing result consistency verification ✅
-- **Performance Optimizations** (`test_performance_optimizations.grc`): Performance optimization validation ✅
+- **Parallel Verification** (removed: test_parallel_grep_verification.grc)
+- **Performance Optimizations** (`test/grep/test_performance_optimizations.grc`): Performance optimization validation ✅
 
 #### 8. **Python Integration Tests**
 - **Python Examples** (`test_python_examples.py`): Comprehensive Python-Grapa integration and callback tests, including argument passing and return values ✅
@@ -185,19 +185,19 @@ Run specific test categories:
 .\grapa.exe -cfile "test/test_current_capabilities.grc"
 
 # Performance test
-.\grapa.exe -cfile "test/test_performance_optimizations.grc"
+.\grapa.exe -cfile "test/grep/test_performance_optimizations.grc"
 
 # Feature-specific tests
-.\grapa.exe -cfile "test/test_atomic_groups.grc"
-.\grapa.exe -cfile "test/test_lookaround_assertions.grc"
+.\grapa.exe -cfile "test/grep/test_atomic_groups.grc"
+.\grapa.exe -cfile "test/grep/test_lookaround_assertions.grc"
 .\grapa.exe -cfile "test/test_unicode_grapheme_clusters.grc"
 .\grapa.exe -cfile "test/test_grapheme_cluster_crash.grc"
-.\grapa.exe -cfile "test/test_invalid_regex.grc"
+.\grapa.exe -cfile "test/grep/test_invalid_regex.grc"
 .\grapa.exe -cfile "test/test_grep_edge_cases.grc"
 
 # Ripgrep compatibility tests
 .\grapa.exe -cfile "test/test_ripgrep_compatibility.grc"
-.\grapa.exe -cfile "test/test_ripgrep_parity_features.grc"
+.\grapa.exe -cfile "test/grep/test_ripgrep_parity_features.grc"
 .\grapa.exe -cfile "test/test_column_test.grc"
 .\grapa.exe -cfile "test/test_color_test.grc"
 .\grapa.exe -cfile "test/test_word_boundary.grc"
@@ -206,13 +206,11 @@ Run specific test categories:
 
 # Advanced feature tests
 .\grapa.exe -cfile "test/test_context_lines.grc"
-.\grapa.exe -cfile "test/test_advanced_context.grc"
+.\grapa.exe -cfile "test/test_custom_delimiters.grc"
 .\grapa.exe -cfile "test/test_context_merging.grc"
 .\grapa.exe -cfile "test/test_context_separators.grc"
-.\grapa.exe -cfile "test/test_custom_delimiters.grc"
 .\grapa.exe -cfile "test/test_unicode_normalization.grc"
 .\grapa.exe -cfile "test/test_unicode_o_option.grc"
-.\grapa.exe -cfile "test/test_error_handling.grc"
 .\grapa.exe -cfile "test/test_edge_cases.grc"
 .\grapa.exe -cfile "test/test_binary_mode.grc"
 
