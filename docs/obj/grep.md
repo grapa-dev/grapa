@@ -6,6 +6,82 @@
 
 The Unicode grep functionality in Grapa provides advanced text searching capabilities with full Unicode support, PCRE2-powered regular expressions, and comprehensive output options. It's designed to handle international text, emoji, and complex Unicode properties while maintaining high performance.
 
+## Output Formatting and Array Design
+
+### Why Arrays Instead of Strings?
+
+Grapa grep is designed as an **integrated programming language feature**, not a standalone console tool. This fundamental difference explains the output format:
+
+**Grapa Grep (Integrated Language):**
+- Returns **arrays of strings** for programmatic use
+- **Removes delimiters** from output strings (clean data for processing)
+- Designed for scripting and data manipulation
+- Example: `["line1", "line2", "line3"]` (no `\n` in strings)
+
+**ripgrep/GNU grep (Console Tools):**
+- Outputs **single string** with embedded delimiters
+- **Preserves delimiters** in output for console display
+- Designed for command-line text processing
+- Example: `"line1\nline2\nline3\n"` (with `\n` in string)
+
+### Delimiter Removal Behavior
+
+Grapa grep **automatically removes delimiters** from output strings:
+
+```grapa
+// Input with custom delimiter
+input = "line1|||line2|||line3";
+
+// Grapa grep removes delimiters from output
+result = input.grep("line", "o", "|||");
+// Result: ["line1", "line2", "line3"] (clean strings, no |||)
+
+// For console output, you can join with delimiter
+console_output = result.join("|||");
+// Result: "line1|||line2|||line3"
+```
+
+### Console Output Equivalence
+
+To get console-equivalent output in Grapa:
+
+```grapa
+// Grapa approach
+input = "line1\nline2\nline3";
+result = input.grep("line", "o");  // ["line1", "line2", "line3"]
+console_output = result.join("\n");  // "line1\nline2\nline3"
+
+// This matches ripgrep output: "line1\nline2\nline3"
+```
+
+### Benefits of Array Design
+
+1. **Programmatic Use**: Arrays are easier to process in scripts
+2. **Clean Data**: No delimiter artifacts in output strings
+3. **Flexible Output**: Can join with any delimiter for different formats
+4. **Language Integration**: Natural fit with Grapa's array-based design
+5. **Python Integration**: Arrays map naturally to Python lists
+
+### Custom Delimiter Support
+
+Grapa grep fully supports **multi-character delimiters**:
+
+```grapa
+// Single character delimiter
+"line1|line2|line3".grep("line", "o", "|")
+// Result: ["line1", "line2", "line3"]
+
+// Multi-character delimiter
+"line1|||line2|||line3".grep("line", "o", "|||")
+// Result: ["line1", "line2", "line3"]
+
+// Complex delimiter
+"line1<DELIM>line2<DELIM>line3".grep("line", "o", "<DELIM>")
+// Result: ["line1", "line2", "line3"]
+```
+
+**Note**: All delimiters are automatically removed from output strings, regardless of length or complexity.
+
 ## Key Features
 
 ### 🔍 **Unicode Support**
@@ -943,6 +1019,82 @@ grapa -cfile "test_performance_optimizations.grc"
 // Result: [1, "", 2]
 ```
 
+## Output Formatting and Array Design
+
+### Why Arrays Instead of Strings?
+
+Grapa grep is designed as an **integrated programming language feature**, not a standalone console tool. This fundamental difference explains the output format:
+
+**Grapa Grep (Integrated Language):**
+- Returns **arrays of strings** for programmatic use
+- **Removes delimiters** from output strings (clean data for processing)
+- Designed for scripting and data manipulation
+- Example: `["line1", "line2", "line3"]` (no `\n` in strings)
+
+**ripgrep/GNU grep (Console Tools):**
+- Outputs **single string** with embedded delimiters
+- **Preserves delimiters** in output for console display
+- Designed for command-line text processing
+- Example: `"line1\nline2\nline3\n"` (with `\n` in string)
+
+### Delimiter Removal Behavior
+
+Grapa grep **automatically removes delimiters** from output strings:
+
+```grapa
+// Input with custom delimiter
+input = "line1|||line2|||line3";
+
+// Grapa grep removes delimiters from output
+result = input.grep("line", "o", "|||");
+// Result: ["line1", "line2", "line3"] (clean strings, no |||)
+
+// For console output, you can join with delimiter
+console_output = result.join("|||");
+// Result: "line1|||line2|||line3"
+```
+
+### Console Output Equivalence
+
+To get console-equivalent output in Grapa:
+
+```grapa
+// Grapa approach
+input = "line1\nline2\nline3";
+result = input.grep("line", "o");  // ["line1", "line2", "line3"]
+console_output = result.join("\n");  // "line1\nline2\nline3"
+
+// This matches ripgrep output: "line1\nline2\nline3"
+```
+
+### Benefits of Array Design
+
+1. **Programmatic Use**: Arrays are easier to process in scripts
+2. **Clean Data**: No delimiter artifacts in output strings
+3. **Flexible Output**: Can join with any delimiter for different formats
+4. **Language Integration**: Natural fit with Grapa's array-based design
+5. **Python Integration**: Arrays map naturally to Python lists
+
+### Custom Delimiter Support
+
+Grapa grep fully supports **multi-character delimiters**:
+
+```grapa
+// Single character delimiter
+"line1|line2|line3".grep("line", "o", "|")
+// Result: ["line1", "line2", "line3"]
+
+// Multi-character delimiter
+"line1|||line2|||line3".grep("line", "o", "|||")
+// Result: ["line1", "line2", "line3"]
+
+// Complex delimiter
+"line1<DELIM>line2<DELIM>line3".grep("line", "o", "<DELIM>")
+// Result: ["line1", "line2", "line3"]
+```
+
+**Note**: All delimiters are automatically removed from output strings, regardless of length or complexity.
+
 ## Error Output
 
 > **Note:** Invalid regex patterns always return `"$ERR"` (not a JSON object or other format).
@@ -1232,6 +1384,58 @@ This separation allows Grapa grep to focus on what it does best: advanced Unicod
 - ✅ Up to 9.44x speedup with 16 workers (verified in tests)
 - ✅ Consistent results across all worker counts
 - ✅ Robust edge case handling for worker counts
+
+### Comprehensive Testing for Multiline Patterns and Rare PCRE2 Features (2024-12)
+
+**New Test Coverage:**
+- ✅ **Multiline patterns** with custom delimiters (`s` flag)
+- ✅ **Atomic groups** (`(?>...)`) with multi-character delimiters
+- ✅ **Possessive quantifiers** (`*+`, `++`, `?+`) with custom delimiters
+- ✅ **Conditional patterns** (`?(condition)...`) with edge cases
+- ✅ **Lookaround assertions** with multi-character delimiters
+- ✅ **Unicode properties** with custom delimiters
+- ✅ **Complex multiline patterns** with context lines
+- ✅ **Edge cases** with multi-character delimiters
+- ✅ **JSON output** with custom delimiters
+- ✅ **Performance testing** with large multi-character delimiters
+- ✅ **Rare PCRE2 features** with Unicode grapheme clusters
+- ✅ **Delimiter removal verification** for all scenarios
+
+**Test File:** `test/test_multiline_and_rare_pcre2.grc`
+
+**Key Improvements:**
+- ✅ **Multi-character delimiter support** - No longer assumes single-character delimiters
+- ✅ **Proper delimiter removal** - All output strings are clean (no delimiter artifacts)
+- ✅ **Context line processing** - Uses custom delimiters instead of hardcoded `\n`
+- ✅ **Comprehensive edge case coverage** - Tests for all rare PCRE2 features
+- ✅ **Performance validation** - Large inputs with complex delimiters
+- ✅ **Unicode integration** - Advanced Unicode features with custom delimiters
+
+**Example Test Cases:**
+```grapa
+// Multiline pattern with custom delimiter
+"start|||middle|||end".grep("start.*end", "s", "|||")
+// Result: ["start|||middle|||end"] (matches across delimiter)
+
+// Atomic group with custom delimiter
+"aaaa|bbbb|cccc".grep("(?>a+)a", "o", "|")
+// Result: [] (atomic group prevents backtracking)
+
+// Possessive quantifier with custom delimiter
+"aaa|bbb|ccc".grep("a++", "o", "|")
+// Result: ["aaa"] (matches all a's greedily)
+
+// Conditional pattern with custom delimiter
+"abc123|def456".grep("(a)?(?(1)b|c)", "o", "|")
+// Result: ["ab", "c"] (conditional branching)
+```
+
+**Benefits:**
+- **Robust delimiter handling** - Supports any delimiter length or complexity
+- **Clean output** - No delimiter artifacts in result strings
+- **Full PCRE2 compatibility** - All advanced regex features work with custom delimiters
+- **Performance optimized** - Efficient processing of multi-character delimiters
+- **Comprehensive testing** - Edge cases and rare features thoroughly tested
 
 ### Current Status and Known Issues
 

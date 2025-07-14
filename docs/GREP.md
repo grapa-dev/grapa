@@ -65,6 +65,8 @@ input.grep(pattern, options, delimiter, normalization, mode, num_workers)
 | Option | Description | Example |
 |--------|-------------|---------|
 | `o` | Match-only output (extract matches only) | `"Hello world".grep("\\w+", "o")` → `["Hello", "world"]` |
+| `f` | Full segments mode (return complete segments containing matches) | `"Hello world".grep("\\w+", "f")` → `["Hello world"]` |
+| `of` | Match-only + full segments (return full segments in match-only mode) | `"Hello world".grep("\\w+", "of")` → `["Hello world"]` |
 | `j` | JSON output format | `"Hello world".grep("world", "j")` → JSON object |
 | `n` | Include line numbers | `"Line 1\nLine 2".grep("Line", "n")` → `["1:Line 1", "2:Line 2"]` |
 | `l` | Files with matches only | Returns array of matching lines |
@@ -591,8 +593,8 @@ age = result[0]["age"]           // "30"
 - **Column numbers**: Fixed to work correctly with 1-based positioning
 - **Color output**: Fixed to properly add ANSI color codes
 - **Word boundaries**: Fixed to work correctly for all scenarios
-- **Invert match**: Fixed to properly return non-matching segments
-- **All mode**: Fixed to work correctly for single-line processing
+- **Invert match**: Fixed to return non-matching segments
+- **All mode**: Fixed single-line processing
 
 ### ⚠️ Known Issues
 
@@ -747,6 +749,86 @@ input.grep("Line 2|Line 4", "C1")
 "Hello WORLD hello123".grep("hello", "woi")
 ["Hello", "hello"]
 ```
+
+## Option-Based Output Control
+
+Grapa grep provides flexible control over output format through the `o` and `f` flags, allowing you to choose between matched portions and full segments for any pattern type.
+
+### Output Behavior Options
+
+| Options | Behavior | Description |
+|---------|----------|-------------|
+| No options | Full segments | Returns complete segments (lines) containing matches (default behavior) |
+| `f` | Full segments | Explicitly requests full segments (same as no options) |
+| `o` | Matched portions | Returns only the matched portions (ripgrep `-o` behavior) |
+| `of` | Full segments in match-only mode | Returns full segments even when using match-only mode |
+
+### Examples
+
+```grapa
+input = "Hello world\nGoodbye world\n";
+pattern = "\\w+";
+
+// Default behavior - full segments
+input.grep(pattern)
+["Hello world", "Goodbye world"]
+
+// Explicit full segments
+input.grep(pattern, "f")
+["Hello world", "Goodbye world"]
+
+// Match-only - matched portions
+input.grep(pattern, "o")
+["Hello", "world", "Goodbye", "world"]
+
+// Match-only + full segments
+input.grep(pattern, "of")
+["Hello world", "Goodbye world"]
+```
+
+### Pattern Type Independence
+
+The option-based approach works consistently across all pattern types:
+
+```grapa
+// Unicode script properties
+"Hello 世界 123".grep("\\p{L}+", "o")
+["Hello", "世界"]  // Matched portions
+
+"Hello 世界 123".grep("\\p{L}+", "of")
+["Hello 世界 123"]  // Full segments
+
+// Lookaround assertions
+"cat\nbat\nrat".grep("(?=a)", "o")
+["", "", ""]  // Empty matches for lookahead
+
+"cat\nbat\nrat".grep("(?=a)", "of")
+["cat", "bat", "rat"]  // Full segments
+
+// Conditional patterns
+"ab\nc".grep("(a)?(?(1)b|c)", "o")
+["ab", "c"]  // Matched portions
+
+"ab\nc".grep("(a)?(?(1)b|c)", "of")
+["ab", "c"]  // Full segments
+
+// Grapheme clusters
+"café\nnaïve".grep("\\X", "o")
+["c", "a", "f", "é", "n", "a", "ï", "v", "e"]  // Individual graphemes
+
+"café\nnaïve".grep("\\X", "of")
+["café", "naïve"]  // Full segments
+```
+
+### Benefits
+
+1. **Consistent Behavior**: All pattern types follow the same option-based rules
+2. **User Control**: Users can choose the output format regardless of pattern complexity
+3. **ripgrep Compatibility**: `o` flag matches ripgrep's `-o` behavior exactly
+4. **Flexibility**: `of` combination provides full segments even in match-only mode
+5. **No Hardcoded Logic**: Eliminates pattern-type-specific behavior decisions
+
+This approach replaces the previous hardcoded behavior where different pattern types (lookaround assertions, Unicode script properties, etc.) had different default behaviors. Now all pattern types respond consistently to the same options.
 
 ## Recent Improvements
 

@@ -153,27 +153,66 @@ compiled();
 
 **Note:** Compiled objects must be executed using `$sys().eval()` rather than direct function calls.
 
-### eval(script, params={}, rule="", profile="")
-Dynamically evaluates a Grapa script with optional parameters.
+### Relationship Between compile() and op()
+
+Both `$sys().compile()` and `op()` create execution trees, but with different interfaces:
+
+```grapa
+/* Using $sys().compile() */
+compiled = $sys().compile("a = 5 + 3; a.echo();");
+$sys().eval(compiled);
+/* Result: 8 */
+
+/* Using op() - direct execution */
+direct_op = op()("a = 5 + 3; a.echo();");
+direct_op();
+/* Result: 8 */
+
+/* Both create similar execution trees */
+compiled;
+/* Result: @<[op,@[@<assign,{a,@<add,{5,3}>}>,@<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}>]],{}> */
+
+direct_op;
+/* Result: @<[op,@[@<assign,{a,@<add,{5,3}>}>,@<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}>]],{}> */
+```
+
+**Key Differences:**
+- **`$sys().compile()`**: Creates compiled object that requires `$sys().eval()` for execution
+- **`op()`**: Creates function that can be called directly
+- **Both**: Generate the same underlying execution tree structure
+- **Performance**: Both benefit from compile-time optimization
+
+### eval(script, sparams={}, srule="", sprofile="")
+Evaluates a script with optional parameters, rules, and profile.
 
 **Parameters:**
-- `script` - Script text or compiled script object to execute
-- `params` - `$LIST` containing parameters to pass to the script (default: empty list)
-- `rule` - Starting rule name for text scripts (default: empty string)
-- `profile` - Execution profile for token generation (not yet implemented)
+- `script` - Script string or compiled $OP object
+- `sparams` - Parameter object (default: `{}`)
+- `srule` - Custom rule set (default: `""`)
+- `sprofile` - Profile configuration (default: `""`)
 
 **Returns:** Result of script execution
 
-**Example:**
+**Examples:**
 ```grapa
-$sys().eval("a", {"a": 33}, "$function");
-33
+/* Evaluate simple script */
+result = $sys().eval("x = 5 + 3; x");
+/* Result: 8 */
 
-$sys().eval("x + y", {"x": 10, "y": 20});
-30
+/* Evaluate with parameters */
+result = $sys().eval("x + y", {"x": 5, "y": 3});
+/* Result: 8 */
 
-$sys().eval("result = input * 2; result", {"input": 15});
-30
+/* Evaluate compiled $OP object */
+compiled = $sys().compile("a + b");
+result = $sys().eval(compiled, {"a": 10, "b": 20});
+/* Result: 30 */
+```
+
+**⚠️ Important Note:** `$sys().eval()` does NOT work with `.grz` files. To execute `.grz` files, use:
+```grapa
+/* Correct method for .grz files */
+$file().get("file.grz").decode("ZIP-GRAPA")["op"]();
 ```
 
 ### sleep(ms)
@@ -244,6 +283,52 @@ $sys().sleep(100);  /* Simulate work */
 end_time = $TIME().utc();
 elapsed_ms = ((end_time - start_time) / 1000000).int();
 ("Execution time: " + elapsed_ms + " ms").echo();
+```
+
+### Execution Tree Creation and Optimization
+```grapa
+/* Create execution trees with different methods */
+script = "result = input * 2 + 1; result";
+
+/* Method 1: Using $sys().compile() */
+compiled = $sys().compile(script);
+$sys().eval(compiled, {"input": 5});
+/* Result: 11 */
+
+/* Method 2: Using op() */
+direct_func = op("input"=0)(script);
+direct_func(5);
+/* Result: 11 */
+
+/* Method 3: Using op() with block syntax */
+block_func = op("input"=0){result = input * 2 + 1; result};
+block_func(5);
+/* Result: 11 */
+
+/* View execution trees */
+compiled;
+/* Shows: @<[op,@[@<assign,{result,@<add,{@<mul,{@<var,{input}>},2}>},1}>],@<var,{result}>]],{}> */
+
+direct_func;
+/* Shows: @<[op,@[@<assign,{result,@<add,{@<mul,{@<var,{input}>},2}>},1}>],@<var,{result}>]],{"input":0}> */
+```
+
+### Advanced Compilation Patterns
+```grapa
+/* Compile-time optimization examples */
+simple = $sys().compile("5 + 3");
+$sys().eval(simple);
+/* Result: 8 (constant folding applied) */
+
+complex = $sys().compile("x = 5; y = 3; x + y");
+$sys().eval(complex);
+/* Result: 8 (assignment and addition preserved) */
+
+/* Dynamic compilation with parameters */
+template = "result = base * multiplier + offset";
+dynamic_compiled = $sys().compile(template);
+$sys().eval(dynamic_compiled, {"base": 10, "multiplier": 2, "offset": 5});
+/* Result: 25 */
 ```
 
 ## Error Handling
