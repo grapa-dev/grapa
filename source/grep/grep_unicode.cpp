@@ -140,6 +140,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     }
     bool all_mode = (filtered_options.find('a') != std::string::npos);
     bool match_only = (filtered_options.find('o') != std::string::npos);
+    bool count_only = (filtered_options.find('c') != std::string::npos);
     if (all_mode) {
         before = 0;
         after = 0;
@@ -169,6 +170,17 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         // UNIFIED DESIGN: Always use a delimiter, with "\n" as default
         std::string effective_delimiter = line_delim.empty() ? "\n" : line_delim;
         working_input = input;
+    }
+    
+    // Handle invalid/null delimiter: if delimiter is a single null character, treat as invalid
+    if (line_delim.size() == 1 && line_delim[0] == '\0') {
+        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+        printf("DEBUG: Invalid delimiter (\\0) detected, returning empty array\n");
+        #endif // DEBUG_END
+        if (filtered_options.find('j') != std::string::npos) {
+            return {"[]"};
+        }
+        return {};
     }
     
     // Define json_output early for all special cases
@@ -547,23 +559,63 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             }
         }
         
+        // Handle count-only option early (before invert and context processing)
+        if (count_only) {
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: Count-only mode - returning count: %zu\n", extracted_matches.size());
+            #endif // DEBUG_END
+            return {std::to_string(extracted_matches.size())};
+        }
+        
         if (invert_match) {
             std::vector<std::string> non_matches;
-            size_t last_end = 0;
-            for (const auto& pos : match_positions) {
-                if (pos.offset != static_cast<size_t>(-1)) {
-                    if (pos.offset > last_end) {
-                        std::string non_match = working_input.substr(last_end, pos.offset - last_end);
-                        non_matches.push_back(non_match);
+            
+            // For custom delimiters, we need to process by segments
+            if (!line_delim.empty()) {
+                // Split input by delimiter to get segments
+                std::vector<std::string> segments = split_by_delimiter(working_input, line_delim);
+                
+                // Find which segments contain matches
+                std::set<size_t> matching_segments;
+                for (const auto& pos : match_positions) {
+                    if (pos.offset != static_cast<size_t>(-1)) {
+                        // Find which segment this match is in
+                        size_t current_offset = 0;
+                        for (size_t seg_num = 0; seg_num < segments.size(); ++seg_num) {
+                            size_t segment_length = segments[seg_num].length() + line_delim.length();
+                            if (pos.offset >= current_offset && pos.offset < current_offset + segment_length) {
+                                matching_segments.insert(seg_num);
+                                break;
+                            }
+                            current_offset += segment_length;
+                        }
                     }
-                    //last_end = std::max(last_end, pos.offset + pos.length);
-                    last_end = (pos.offset + pos.length > last_end) ? (pos.offset + pos.length) : last_end;
+                }
+                
+                // Return segments that don't contain matches
+                for (size_t i = 0; i < segments.size(); ++i) {
+                    if (matching_segments.find(i) == matching_segments.end()) {
+                        non_matches.push_back(segments[i]);
+                    }
+                }
+            } else {
+                // Original logic for newline delimiters
+                size_t last_end = 0;
+                for (const auto& pos : match_positions) {
+                    if (pos.offset != static_cast<size_t>(-1)) {
+                        if (pos.offset > last_end) {
+                            std::string non_match = working_input.substr(last_end, pos.offset - last_end);
+                            non_matches.push_back(non_match);
+                        }
+                        last_end = (pos.offset + pos.length > last_end) ? (pos.offset + pos.length) : last_end;
+                    }
+                }
+                if (last_end < working_input.size()) {
+                    std::string non_match = working_input.substr(last_end);
+                    non_matches.push_back(non_match);
                 }
             }
-            if (last_end < working_input.size()) {
-                std::string non_match = working_input.substr(last_end);
-                non_matches.push_back(non_match);
-            }
+            
             // Remove empty strings (for adjacent matches)
             non_matches.erase(std::remove_if(non_matches.begin(), non_matches.end(), [](const std::string& s){ return s.empty(); }), non_matches.end());
             if (json_output) {
@@ -580,62 +632,67 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         
         // Handle context lines if context options are present
         if (before > 0 || after > 0) {
-            // Split input into lines for context processing
-            std::vector<std::string> lines;
-            std::string line;
-            std::istringstream iss(working_input);
-            while (std::getline(iss, line)) {
-                lines.push_back(line);
+            // Split input into segments for context processing
+            std::vector<std::string> segments;
+            if (!line_delim.empty()) {
+                segments = split_by_delimiter(working_input, line_delim);
+            } else {
+                // Use newlines for default delimiter
+                std::string line;
+                std::istringstream iss(working_input);
+                while (std::getline(iss, line)) {
+                    segments.push_back(line);
+                }
             }
             
-            // Find which lines contain matches
-            std::set<size_t> match_lines;
+            // Find which segments contain matches
+            std::set<size_t> match_segments;
             for (const auto& pos : match_positions) {
                 if (pos.offset != static_cast<size_t>(-1)) {
-                    // Find which line this match is on
+                    // Find which segment this match is in
                     size_t current_offset = 0;
-                    for (size_t line_num = 0; line_num < lines.size(); ++line_num) {
-                        size_t line_length = lines[line_num].length() + 1; // +1 for newline
-                        if (pos.offset >= current_offset && pos.offset < current_offset + line_length) {
-                            match_lines.insert(line_num);
+                    for (size_t seg_num = 0; seg_num < segments.size(); ++seg_num) {
+                        size_t segment_length = segments[seg_num].length() + (line_delim.empty() ? 1 : line_delim.length());
+                        if (pos.offset >= current_offset && pos.offset < current_offset + segment_length) {
+                            match_segments.insert(seg_num);
                             break;
                         }
-                        current_offset += line_length;
+                        current_offset += segment_length;
                     }
                 }
             }
             
-            // Collect context lines
-            std::set<size_t> context_lines;
-            for (size_t match_line : match_lines) {
-                // Add lines before
-                for (int i = 1; i <= before && match_line - i >= 0; ++i) {
-                    context_lines.insert(match_line - i);
+            // Collect context segments
+            std::set<size_t> context_segments;
+            for (size_t match_segment : match_segments) {
+                // Add segments before
+                for (int i = 1; i <= before && match_segment - i >= 0; ++i) {
+                    context_segments.insert(match_segment - i);
                 }
-                // Add the match line itself
-                context_lines.insert(match_line);
-                // Add lines after
-                for (int i = 1; i <= after && match_line + i < lines.size(); ++i) {
-                    context_lines.insert(match_line + i);
+                // Add the match segment itself
+                context_segments.insert(match_segment);
+                // Add segments after
+                for (int i = 1; i <= after && match_segment + i < segments.size(); ++i) {
+                    context_segments.insert(match_segment + i);
                 }
             }
             
-            // Convert to sorted vector and extract lines with proper merging and separators
-            std::vector<size_t> sorted_context_lines(context_lines.begin(), context_lines.end());
-            std::sort(sorted_context_lines.begin(), sorted_context_lines.end());
+            // Convert to sorted vector and extract segments with proper merging and separators
+            std::vector<size_t> sorted_context_segments(context_segments.begin(), context_segments.end());
+            std::sort(sorted_context_segments.begin(), sorted_context_segments.end());
             
             extracted_matches.clear();
-            if (!sorted_context_lines.empty()) {
-                // Add first line
-                extracted_matches.push_back(lines[sorted_context_lines[0]]);
+            if (!sorted_context_segments.empty()) {
+                // Add first segment
+                extracted_matches.push_back(segments[sorted_context_segments[0]]);
                 
-                // Add remaining lines with separators for gaps
-                for (size_t i = 1; i < sorted_context_lines.size(); ++i) {
-                    size_t prev_line = sorted_context_lines[i-1];
-                    size_t curr_line = sorted_context_lines[i];
+                // Add remaining segments with separators for gaps
+                for (size_t i = 1; i < sorted_context_segments.size(); ++i) {
+                    size_t prev_segment = sorted_context_segments[i-1];
+                    size_t curr_segment = sorted_context_segments[i];
                     
-                    // If there's a gap of more than 1 line, add separator
-                    if (curr_line > prev_line + 1) {
+                    // If there's a gap of more than 1 segment, add separator
+                    if (curr_segment > prev_segment + 1) {
                         if (json_output) {
                             extracted_matches.push_back("---");
                         } else {
@@ -643,7 +700,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                         }
                     }
                     
-                    extracted_matches.push_back(lines[curr_line]);
+                    extracted_matches.push_back(segments[curr_segment]);
                 }
             }
         }

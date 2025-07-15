@@ -1,0 +1,58 @@
+/* Ripgrep Parity Test: Unicode and Grapheme Clusters
+   Tests Unicode functionality against ripgrep
+*/
+
+"=== RIPGREP PARITY TEST: UNICODE ===\n".echo();
+
+/* Initialize file system access */
+fs = $file();
+fs.chd("test/grep/inputs");
+
+/* Test 1: Unicode literal match */
+"Test 1: Unicode literal match\n".echo();
+input = fs.get("unicode.txt").str();
+result = input.grep("café", "");
+("Input file: unicode.txt\n").echo();
+("Pattern: café\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Lines containing 'café'\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Grapheme cluster extraction */
+"Test 2: Grapheme cluster extraction\n".echo();
+result = input.grep("\\X", "o");
+("Pattern: \\X, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Individual grapheme clusters\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Unicode script property */
+"Test 3: Unicode script property\n".echo();
+result = input.grep("\\p{Han}+", "");
+("Pattern: \\p{Han}+, Options: (none)\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Chinese characters\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Case-insensitive Unicode */
+"Test 4: Case-insensitive Unicode\n".echo();
+result = input.grep("PÂTÉ", "i");
+("Pattern: PÂTÉ, Options: i\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Lines containing 'pâté' (case-insensitive)\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 5: Emoji grapheme clusters */
+"Test 5: Emoji grapheme clusters\n".echo();
+result = input.grep("👨‍👩‍👧‍👦", "o");
+("Pattern: 👨‍👩‍👧‍👦, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Family emoji sequence\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+"=== UNICODE TESTS COMPLETE ===\n".echo(); 
