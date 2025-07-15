@@ -1,0 +1,48 @@
+/* Debug test for multiline pattern with custom delimiter */
+"=== DEBUG TEST: MULTILINE PATTERN WITH CUSTOM DELIMITER ===\n".echo();
+
+/* Test 1: Multiline pattern with s flag and custom delimiter */
+"Test 1: Multiline pattern with s flag and custom delimiter\n".echo();
+input1 = "start|middle|end";
+result1 = input1.grep("start.*end", "s", "|");
+("Input: " + input1 + "\n").echo();
+("Pattern: start.*end, Options: s, Delimiter: |\n").echo();
+("Result: " + result1.str() + "\n").echo();
+("Expected: [\"start|middle|end\"]\n").echo();
+("Status: " + (result1.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Multiline pattern without s flag and custom delimiter */
+"Test 2: Multiline pattern without s flag and custom delimiter\n".echo();
+input2 = "start|middle|end";
+result2 = input2.grep("start.*end", "", "|");
+("Input: " + input2 + "\n").echo();
+("Pattern: start.*end, Options: (none), Delimiter: |\n").echo();
+("Result: " + result2.str() + "\n").echo();
+("Expected: [\"start|middle|end\"] (should work without s flag)\n").echo();
+("Status: " + (result2.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Lookaround assertion with custom delimiter */
+"Test 3: Lookaround assertion with custom delimiter\n".echo();
+input3 = "word123|text456|word789";
+result3 = input3.grep("\\w+(?=\\d)", "o", "|");
+("Input: " + input3 + "\n").echo();
+("Pattern: \\w+(?=\\d), Options: o, Delimiter: |\n").echo();
+("Result: " + result3.str() + "\n").echo();
+("Expected: [\"word\", \"text\", \"word\"]\n").echo();
+("Status: " + (result3.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Unicode script property with custom delimiter */
+"Test 4: Unicode script property with custom delimiter\n".echo();
+input4 = "Hello|World|123|Test";
+result4 = input4.grep("\\p{sc=Latin}+", "o", "|");
+("Input: " + input4 + "\n").echo();
+("Pattern: \\p{sc=Latin}+, Options: o, Delimiter: |\n").echo();
+("Result: " + result4.str() + "\n").echo();
+("Expected: [\"Hello\", \"World\", \"Test\"]\n").echo();
+("Status: " + (result4.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+"=== DEBUG TEST COMPLETE ===\n".echo(); 

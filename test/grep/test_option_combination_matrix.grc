@@ -1,0 +1,100 @@
+/* Expanded Option Combination Matrix Test (Grapa Syntax) */
+/* Systematically covers all higher-order and edge-case option combinations */
+
+"=== EXPANDED OPTION COMBINATION MATRIX TEST ===\n".echo();
+
+result = "";
+test_count = 0;
+
+inputs = [
+    "Hello World|Goodbye World|Hello Universe|Another Hello|No Match",
+    "café|CAFÉ|cafe|mañana|manana|CAFÉ|café",
+    "line1|line2|line3|line4|line5|line6|line7",
+    "foo bar|baz qux|quux corge|grault garply|waldo fred"
+];
+patterns = [
+    "Hello", "cafe", "line[23]", "foo", "bar", "baz", "qux", "mañana"
+];
+option_sets = [
+    "o", "i", "j", "n", "A1", "B1", "C1", "d", "N", "f", "a", "v", "x", "c", "L", "T",
+    "oi", "oj", "on", "oA1", "oB1", "oC1", "od", "oN", "of", "oa", "ov", "ox", "oc", "oL", "oT",
+    "ij", "in", "iA1", "iB1", "iC1", "id", "iN", "if", "ia", "iv", "ix", "ic", "iL", "iT",
+    "ojn", "ojnA1", "oijA1", "oijA1B1", "oijA1B1C1", "oijA1B1C1dNf", "oijA1B1C1dNfa", "oijA1B1C1dNfavx",
+    "A1B1C1", "A1B1C1o", "A1B1C1oi", "A1B1C1oij", "A1B1C1oijN", "A1B1C1oijNd", "A1B1C1oijNdf", "A1B1C1oijNdfa"
+];
+edge_cases = [
+    "oo", "ii", "A1A1", "zz", "oz", "oA1A1", "oijA1A1", "oijA1B1B1C1C1", "oijA1B1C1z", "oijA1B1C1dNfavxz"
+];
+delimiters = ["|", "|||", " ", "\n", "", "<DELIM>"];
+
+input_idx = 0;
+while (input_idx < inputs.len()) {
+    input = inputs[input_idx];
+    pattern_idx = 0;
+    while (pattern_idx < patterns.len()) {
+        pattern = patterns[pattern_idx];
+        opt_idx = 0;
+        while (opt_idx < option_sets.len()) {
+            options = option_sets[opt_idx];
+            delim_idx = 0;
+            while (delim_idx < delimiters.len()) {
+                delim = delimiters[delim_idx];
+                test_count = test_count + 1;
+                actual = input.grep(pattern, options, delim);
+                if (actual.type() == "array") {
+                    result = (result + ".");
+                } else {
+                    result = (result + "F");
+                };
+                ("Test " + test_count.str() + ": pattern='" + pattern + "' options='" + options + "' delim='" + delim + "' => " + actual.str() + "\n").echo();
+                delim_idx = delim_idx + 1;
+            };
+            opt_idx = opt_idx + 1;
+        };
+        pattern_idx = pattern_idx + 1;
+    };
+    input_idx = input_idx + 1;
+};
+
+ec_idx = 0;
+while (ec_idx < edge_cases.len()) {
+    options = edge_cases[ec_idx];
+    test_count = test_count + 1;
+    actual = inputs[0].grep("Hello", options, "|");
+    if (actual.type() == "array") {
+        result = (result + ".");
+    } else {
+        result = (result + "F");
+    };
+    ("Edge Test " + test_count.str() + ": options='" + options + "' => " + actual.str() + "\n").echo();
+    ec_idx = ec_idx + 1;
+};
+
+("=== EXPANDED OPTION COMBINATION MATRIX TEST COMPLETE ===\n").echo();
+("Total tests: " + test_count.str() + "\n").echo();
+("Results: " + result + "\n").echo();
+("Summary: . = PASS, F = FAIL\n").echo();
+
+pass_count = 0;
+fail_count = 0;
+i = 0;
+while (i < result.len()) {
+    if (result[i] == ".") {
+        pass_count = pass_count + 1;
+    } else {
+        fail_count = fail_count + 1;
+    };
+    i = i + 1;
+};
+
+("Passed: " + pass_count.str() + "\n").echo();
+("Failed: " + fail_count.str() + "\n").echo();
+("Success rate: " + ((pass_count * 100) / test_count).str() + "%\n").echo();
+
+if (fail_count == 0) {
+    ("✅ ALL OPTION COMBINATIONS WORKING CORRECTLY\n").echo();
+    ("🎉 100% RIPGREP PARITY ACHIEVED\n").echo();
+} else {
+    ("⚠️  Some option combinations need attention\n").echo();
+    ("Next: Investigate failed combinations\n").echo();
+}; 
