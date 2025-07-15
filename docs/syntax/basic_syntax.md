@@ -478,3 +478,37 @@ If an existing function/command doesn't support chaining, an OP can be inserted 
 1111
 ```
 */ 
+
+/*
+# Dynamic Code Evaluation (eval and op())
+
+Grapa allows you to evaluate code dynamically at runtime, either by evaluating a string directly or by compiling it into an operation object.
+
+## Using `$sys().eval()`
+- Evaluates a string as Grapa code immediately.
+- Optionally accepts a parameter map.
+
+```grapa
+result = $sys().eval("5*3"); // result: 15
+result = $sys().eval("x + y", {"x": 2, "y": 4}); // result: 6
+```
+
+## Using `op()` for Compiled Operations
+- `op()(<string>)` parses the string into a $OP object (compiled code).
+- You can then execute it with `()` and optionally pass parameters.
+- This is reusable and efficient for repeated execution.
+
+```grapa
+op_obj = op()("a + b");
+result = op_obj({"a": 10, "b": 20}); // result: 30
+
+// Or in one line:
+result = op()("5*3")(); // result: 15
+```
+
+## When to Use Each
+- Use `$sys().eval()` for one-off evaluation of code strings.
+- Use `op()` (or `$sys().compile()`) when you want to compile code once and execute it multiple times, or pass it around as a first-class object.
+
+See also: [Advanced Scripting](../grc_scripts.md)
+*/ 

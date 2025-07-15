@@ -1,0 +1,15 @@
+/* Example: Extract all <a> tags with <img> children and collect hrefs */
+
+html = "<body><a href=\"/item1\"><img src=\"img1.jpg\"></a><a><img src=\"img2.jpg\"></a><a href=\"/item2\"></a></body>".html();
+
+anchors_with_images = html.body.findall({name:"a", has:{name:"img"}});
+
+// Collect hrefs, skipping <a> tags without href
+hrefs = anchors_with_images.reduce(op(acc, a) {
+    if (a.$LIST.href.type() != $ERR) {
+        acc += a.$LIST.href;
+    }
+}, []);
+
+("Anchors with images: " + anchors_with_images.str()).echo();
+("Hrefs found: " + hrefs.str()).echo(); 
