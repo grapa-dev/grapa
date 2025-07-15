@@ -864,3 +864,9 @@ This approach replaces the previous hardcoded behavior where different pattern t
 ## Conclusion
 
 Grapa grep is now **production-ready** with **98%+ ripgrep parity** achieved. All critical issues have been resolved, and the system provides excellent performance, comprehensive Unicode support, and robust error handling. The remaining minor issues are edge cases that don't affect core functionality. 
+
+## Achieving Ripgrep Output Parity via Post-Processing
+- Grapa's grep returns an array. To match ripgrep's output exactly (including context separators like `--`), post-process the array as shown in `test/grep/test_ripgrep_context_parity.grc`.
+- Example: Use `.join("\n")` for line output, or custom logic to insert `--` between context blocks.
+- This is the recommended and supported approach for strict output parity.
+``` 

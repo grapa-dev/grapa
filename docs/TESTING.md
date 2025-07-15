@@ -372,6 +372,23 @@ The test suite is comprehensive and robust, with all critical functionality thor
 
 # Grapa Grep Test Suite: Rationalization & Coverage Status (2025)
 
+## IMPORTANT: Grapa Script Syntax Compliance
+- **Every statement in Grapa must end with a semicolon (`;`), including after the closing brace of every block** (such as `if`, `else`, `while`, and function blocks).
+- **To append to an array, use the `+=` operator.**
+  - Example:
+    arr = [];
+    arr += "foo";
+    arr += "bar";
+    // arr is now ["foo", "bar"]
+  - Do not use `.push()` or `.append()`—these are not valid in Grapa.
+- For deterministic test output (when order is not guaranteed), use the `.sort()` function on arrays before comparison or output.
+  - Example:
+    result = input.grep(pattern, options);
+    result = result.sort();
+    (result.join("\n")).echo();
+  - See `docs/syntax/iterate.md` for more details on `.sort()` and other array methods.
+- For more syntax details, see the `docs/syntax/` folder.
+
 ## Summary & Status
 
 - **Ripgrep Parity (Excluding File System):** Complete. All major features and behaviors are covered and tested.

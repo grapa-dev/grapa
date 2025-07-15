@@ -374,3 +374,28 @@ value = table.get("key1", "value").float();
 ```
 
 This guide covers the essential syntax patterns for writing correct Grapa code. Follow these patterns to avoid common syntax errors and write maintainable code. 
+
+/*
+# Grapa Basic Syntax: Key Rules
+
+## Statement and Block Termination
+- Every statement must end with a semicolon (`;`), including after the closing brace of every block (such as `if`, `else`, `while`, and function blocks).
+- Example:
+  while (cond) {
+      ...
+  };
+  if (cond) {
+      ...
+  } else {
+      ...
+  };
+
+## Array Manipulation
+- To append to an array, use the `+=` operator.
+  - Example:
+    arr = [];
+    arr += "foo";
+    arr += "bar";
+    // arr is now ["foo", "bar"]
+- Do not use `.push()` or `.append()`—these are not valid in Grapa.
+*/ 
