@@ -1,9 +1,21 @@
 # Grapa Examples
 
-This document provides practical examples of Grapa usage, organized from basic to advanced. For a quick start, see [Getting Started](GETTING_STARTED.md).
+This document provides practical examples of Grapa usage, organized from basic to advanced.
+
+## How to use this file
+- Start with the basic examples and work your way down.
+- Copy/paste examples into the Grapa REPL or a `.grc` file to experiment.
+- For syntax rules, see the [Syntax Quick Reference](syntax/basic_syntax.md).
+
+## Syntax Reminders
+- Every statement and every block (including after closing braces) must end with a semicolon (`;`).
+- Use block comments (`/* ... */`), not line comments (`// ...`).
+- To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
+- See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
+
+---
 
 ## Table of Contents
-
 - [Basic Examples](#basic-examples)
 - [Data Processing](#data-processing)
 - [Pattern Matching (Grep)](#grep---pattern-matching)
@@ -14,21 +26,22 @@ This document provides practical examples of Grapa usage, organized from basic t
 
 ### Hello World
 ```grapa
-"Hello, Grapa!".echo()
+/* Hello World */
+"Hello, Grapa!".echo();
 ```
 
 ### Basic Arithmetic
 ```grapa
-// Unlimited precision arithmetic
-result = 123456789012345678901234567890 * 987654321098765432109876543210
-result.echo()
+/* Unlimited precision arithmetic */
+result = 123456789012345678901234567890 * 987654321098765432109876543210;
+result.echo();
 ```
 
 ### Working with Lists
 ```grapa
-numbers = [1, 2, 3, 4, 5]
-sum = numbers.reduce(op(a, b) { a + b }, 0)
-("Sum: " + sum).echo()
+numbers = [1, 2, 3, 4, 5];
+sum = numbers.reduce(op(a, b) { a + b; }, 0);
+("Sum: " + sum).echo();
 ```
 
 ## Data Processing
@@ -330,3 +343,8 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
 "café résumé naïve".grep("cafe", "od")
 ["café"]  // Diacritic-insensitive matching
 ```
+
+## Next Steps
+- Learn about [Testing](TESTING.md) your Grapa code
+- Check out the [Grep functionality](GREP.md) for advanced pattern matching
+- Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips

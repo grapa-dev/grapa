@@ -1,8 +1,28 @@
 # Grapa Grep Documentation
 
-## Overview
+## Who is this for?
+Anyone who wants to use Grapa's advanced pattern matching, achieve ripgrep parity, or understand Unicode/PCRE2 grep features in Grapa.
 
-Grapa grep provides comprehensive pattern matching functionality with full Unicode support, ripgrep compatibility, and advanced features like context lines, custom delimiters, and parallel processing. **All critical issues have been resolved** and the system achieves **98%+ ripgrep parity**.
+## Syntax Reminders
+- Every statement and every block (including after closing braces) must end with a semicolon (`;`).
+- Use block comments (`/* ... */`), not line comments (`// ...`).
+- To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
+- See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
+
+---
+
+## Overview & Minimal Example
+
+Grapa grep provides comprehensive pattern matching functionality with full Unicode support, ripgrep compatibility, and advanced features like context lines, custom delimiters, and parallel processing.
+
+**Minimal Example:**
+```grapa
+text = "Hello world\nGoodbye world\nHello again";
+matches = text.grep("Hello");
+matches.echo();  /* ["Hello world", "Hello again"] */
+```
+
+---
 
 ## Current Status
 
@@ -869,4 +889,12 @@ Grapa grep is now **production-ready** with **98%+ ripgrep parity** achieved. Al
 - Grapa's grep returns an array. To match ripgrep's output exactly (including context separators like `--`), post-process the array as shown in `test/grep/test_ripgrep_context_parity.grc`.
 - Example: Use `.join("\n")` for line output, or custom logic to insert `--` between context blocks.
 - This is the recommended and supported approach for strict output parity.
-``` 
+
+## Next Steps
+- Explore [Examples](EXAMPLES.md) for more usage patterns
+- Learn about [Testing](TESTING.md) your Grapa code
+- Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips 
+
+## Advanced/Binary Features
+- [GRZ Format Specification](GRZ_FORMAT.md) — Details on the GRZ binary format
+- [Binary Grep Guide](BINARY_GREP.md) — Using Grapa grep with binary data and advanced options 

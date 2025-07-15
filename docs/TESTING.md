@@ -1,6 +1,50 @@
 # Testing Documentation
 
-## Overview
+## Who is this for?
+Anyone who wants to validate Grapa functionality, run or write tests, or understand Grapa's test coverage and best practices.
+
+## Syntax Reminders
+- Every statement and every block (including after closing braces) must end with a semicolon (`;`).
+- Use block comments (`/* ... */`), not line comments (`// ...`).
+- To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
+- See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
+
+---
+
+## Running Tests (Quick Reference)
+
+### Complete Test Suite
+Run all tests in one command:
+```bash
+# Windows
+.\grapa.exe -cfile "test/run_tests.grc"
+
+# Linux/Mac
+./grapa -cfile "test/run_tests.grc"
+```
+
+### Individual Test Categories
+```bash
+# Capabilities test
+.\grapa.exe -cfile "test/grep/test_current_capabilities.grc"
+
+# Performance test
+.\grapa.exe -cfile "test/grep/test_performance_optimizations.grc"
+
+# Feature-specific tests
+.\grapa.exe -cfile "test/grep/test_atomic_groups.grc"
+.\grapa.exe -cfile "test/grep/test_lookaround_assertions.grc"
+.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
+```
+
+### Python Test Suite
+```bash
+python test/run_tests.py
+```
+
+---
+
+# Overview
 
 Grapa includes a comprehensive test suite for validating Unicode grep functionality, performance optimizations, and regression testing. All tests are organized in the `test/` directory for easy management and execution.
 
@@ -617,3 +661,8 @@ The project has made **excellent progress** with 90% of the original requirement
 **Note:** Attempting to run a .grc file with -ccmd will not work and may result in errors or no output. Always use -cfile for script files.
 
 ---
+
+## Next Steps
+- Explore [Examples](EXAMPLES.md) for more usage patterns
+- Check out the [Grep functionality](GREP.md) for advanced pattern matching
+- Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips

@@ -450,3 +450,6 @@ This architecture allows:
 - The system provides comprehensive coverage of programming needs
 - Functions are organized by domain for easy discovery
 - Each function has a specific handler implementation in the C++ code 
+
+## See Also
+- [System Include Reference](INCLUDE_SYSTEM.md) — Details on system include files and integration 

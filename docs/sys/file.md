@@ -1,5 +1,17 @@
 # $file()
 
+## Minimal Example
+```grapa
+f = $file();
+f.chd("C:/Users/user/Projects/MyProject");
+f.cd("src");
+f.ls();  /* List files in /src */
+f.get("README.md");  /* Read a file */
+f.set("test.txt", "Hello, World!");  /* Write a file */
+```
+
+---
+
 References:
 - [$file object](../../lib/grapa/$file.grc)
 - [GrapaDB.cpp source](../../source/grapa/GrapaDB.cpp)
@@ -633,3 +645,8 @@ For Python developers, Grapa's file system and database capabilities can be leve
 - **Data pipeline integration** for ETL workflows
 
 For detailed examples and best practices, see the [Python Integration Guide](../python_integration.md).
+
+## Related Topics
+- [Directory Navigation](../directory_navigation.md)
+- [Database Quick Reference](../database/quick_reference.md)
+- [Syntax Quick Reference](../syntax/basic_syntax.md)

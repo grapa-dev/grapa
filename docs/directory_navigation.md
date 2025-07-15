@@ -1,5 +1,24 @@
 # Directory Navigation in Grapa
 
+## Syntax Reminders
+- Every statement and every block (including after closing braces) must end with a semicolon (`;`).
+- Use block comments (`/* ... */`), not line comments (`// ...`).
+- To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
+- See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
+
+---
+
+## Minimal Example
+```grapa
+f = $file();
+f.chd("C:/Users/user/Projects/MyProject");
+f.cd("src");
+f.pwd();  /* Returns: /src */
+f.phd();  /* Returns: C:\Users\user\Projects\MyProject */
+```
+
+---
+
 ## Overview
 
 Grapa provides a dual-level directory navigation system that allows for flexible project management and navigation. This system consists of:
@@ -214,6 +233,38 @@ if (files.length > 0) {
 }
 ```
 
+## Using info() for Safe Navigation
+
+The `info` function returns metadata about a file or directory, such as its type (file, directory, database, etc.), size, and other attributes. This is useful for:
+- Checking if a directory exists before navigating
+- Determining if an entry is a file or directory
+- Making navigation and file operations more robust
+
+### Example: Check Before Navigating
+```grapa
+f = $file();
+dir_info = f.info("my_subdir");
+if (dir_info["$TYPE"] == "DIR") {
+    f.cd("my_subdir");
+};
+```
+
+### Example: List and Navigate Only to Directories
+```grapa
+f = $file();
+files = f.ls();
+for (i = 0; i < files.len(); i += 1;) {
+    entry = files[i];
+    entry_info = f.info(entry);
+    if (entry_info["$TYPE"] == "DIR") {
+        f.cd(entry);
+        // Do something in the directory
+    };
+};
+```
+
+Using `info` helps prevent errors and makes your navigation scripts more robust.
+
 ## Integration with Other Systems
 
 ### File System Integration
@@ -241,3 +292,11 @@ The dual-level directory navigation system in Grapa provides:
 4. **Consistency**: Unified interface for file system and database navigation
 
 This system enables efficient project management and database operations while maintaining clear navigation context. 
+
+---
+
+## Related Topics
+- [Syntax Quick Reference](syntax/basic_syntax.md)
+- [System Functions](SYSTEM_FUNCTIONS.md)
+- [Testing](TESTING.md)
+- [Examples](EXAMPLES.md) 

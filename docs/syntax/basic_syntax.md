@@ -2,6 +2,8 @@
 
 This guide covers the essential syntax patterns for writing Grapa code, based on working examples and best practices.
 
+**See also:** [Operator Precedence Table](precedence.md)
+
 ## Output and Echo
 
 ### Correct Echo Syntax
@@ -398,4 +400,81 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
     arr += "bar";
     // arr is now ["foo", "bar"]
 - Do not use `.push()` or `.append()`—these are not valid in Grapa.
+
+## Array Iteration and Sorting
+- The `.sort()` function is especially useful in tests to ensure deterministic output when order is not guaranteed.
+- Example:
+  result = input.grep(pattern, options);
+  result = result.sort();
+  (result.join("\n")).echo();
+*/ 
+
+/*
+# Grapa Syntax Quick Reference
+
+## Essential Syntax Rules (Summary Table)
+| Rule | Example |
+|------|---------|
+| Every statement ends with a semicolon (`;`) | `x = 5;` |
+| Every block (after `}`) ends with a semicolon | `if (x) { ... };` |
+| Use block comments only | `/* comment */` |
+| Do not use line comments (`// ...`) |  |
+| Append to arrays with `+=` | `arr += "foo";` |
+| No `.push()` or `.append()` |  |
+| Access arrays/lists with `[index]` | `arr[0];` |
+| Access object properties with `.get("key")` | `obj.get("foo");` |
+| Use `.echo()` for output | `"Hello".echo();` |
+| Use `while` loops, not `for` | `while (cond) { ... };` |
+| Wrap string concatenations in parentheses | `(str1 + str2).echo();` |
+
+---
+*/ 
+
+/*
+# Lexical Operators (Special Parsing Triggers)
+
+There are several predefined lexical operators, most of which define how $ID, $INT, $FLOAT, $STR, etc, are processed and generate the corresponding tokens. There are also a few other lexical operators that will trigger special handling of the input stream. The following are two examples. Currently there is no way to define/change the lexical operators - this will come in some future version of Grapa.
+
+## `$&`
+  * Wrap the XML data in $& on either side to have Grapa parse the input as XML. These characters are special lexical triggers that modify the parsing engine token generation. The first instance turns the mode on and the second turns the mode off. Or use the encode("XML") function, which does the same thing.
+
+## `$[` 
+  * Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on its own. Alternatively, put the code in a file, load the file contents, and execute the contents of the string.
+*/ 
+
+/*
+# Default Grammar Rules
+
+View a text version of the grammar rules loaded into Grapa on startup here:
+[Grapa Grammar](../../lib/grapa/$grapa.grc)
+
+The system will first check for a match on the "start" rule, which is a global variable. If that global variable is of type $RULE, then it will become the first rule for scripts. This is an easy way to provide an override on command processing. If the "start" rule does not provide a match, then the system will evaluate using the "$start" rule.
+
+The default rules may be subject to change.
+
+If you modify the file, you can try it out by placing it in "lib/grapa/" under the same directory that the above command would have written the file to, and then restart Grapa. If Grapa finds this file with this name in that location, it will use that file instead of the default.
+
+If you are familiar with YACC or BNF, following the grammar logic should be rather straightforward. Each rule is evaluated until a successful match, and all matches produce an execution plan where the code associated with each rule match is included in the execution plan. To optimize grammar resolution, rules are carefully constructed to avoid re-evaluating rules more than necessary by placing the most complex rules first and following with common rule patterns. It is also important to avoid infinite recursive situations—mostly this is avoided by not referencing the same rule as the first token to evaluate.
+
+There are a few standard tokens that are defined—mostly the tokens provide special handling for either the lexical engine or the rules engine. One example is the space character, which when found sets a bit in the token to skip the value for rules evaluation. This can be changed—but then would require including the space token in the rules.
+*/ 
+
+/*
+# Function Chaining
+Any object that returns an object can be chained.
+
+For example, "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit precision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit precision of pi to the power of 4.4.
+
+If an existing function/command doesn't support chaining, an OP can be inserted in the chain to make it work using the $$ variable for the result of the prior operation. For example, the following will get the length of a list, generate that many bits, and output the result in binary form. The 3 examples all accomplish the same result.
+```
+> {1,2,3,5}.{(@$$).len()}.genbits().bin();
+1111
+
+> {1,2,3,5}.{(op(a){a.len()})(@$$)}.genbits().bin();
+1111
+
+> f = op(a){a.len()};
+> {1,2,3,5}.{f(@$$)}.genbits().bin();
+1111
+```
 */ 

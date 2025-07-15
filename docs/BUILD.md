@@ -1,5 +1,10 @@
 # Build
 
+## Quick Links
+- [Troubleshooting Guide](TROUBLESHOOTING.md)
+- [Dependencies](DEPENDENCIES.md)
+- [AWS/Docker Setup](SETUPAWSDOCKER.md)
+
 ## Windows
 
 ### Setup
