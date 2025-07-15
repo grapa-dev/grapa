@@ -18,6 +18,8 @@ This file summarizes all internal (non-user-facing) docs in `docs/internal/`, wi
   - *Proposals for BNF-level changes to enable new language features, better error messages, or more robust grammars.*
 - **eval_error_handling_todo.md** (planned)
   - *Plan for improving C++ error handling in eval, preventing crashes, and making $ERR diagnostics more useful.*
+- **web_playground_wasm_planning.md** (planned)
+  - *Feasibility and planning for a Grapa web playground using WebAssembly. Notes the challenge of binary size and multi-platform dependencies, as seen in the large grapapy-0.0.25.tar.gz Python extension, which must bundle all C++ and third-party libraries for all platforms. This will be a key consideration for a browser-based Grapa.*
 
 ---
 
@@ -35,6 +37,8 @@ This file summarizes all internal (non-user-facing) docs in `docs/internal/`, wi
    - Use as a living reference and update as features are added or priorities shift.
 6. **Eval Error Handling**
    - Address as soon as possible if crashes are frequent, or after BNF/grammar improvements for more robust error reporting.
+7. **Web Playground/WASM Feasibility**
+   - Consider after core language and documentation improvements, as this will require addressing binary size and dependency bundling challenges.
 
 ---
 
