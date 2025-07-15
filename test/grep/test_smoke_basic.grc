@@ -1,0 +1,86 @@
+/* Smoke Test: Basic Grep Functionality
+   - Runs on every build to verify critical path functionality
+   - Execution time: < 30 seconds
+   - Purpose: Quick validation that basic grep is working
+   - Status: Critical for development workflow
+*/
+
+"=== SMOKE TEST: BASIC GREP FUNCTIONALITY ===\n".echo();
+"Running critical path validation...\n".echo();
+
+/* Test 1: Basic pattern matching */
+"Test 1: Basic pattern matching\n".echo();
+input = "Hello world\nGoodbye world\nHello universe";
+result = input.grep("Hello", "o");
+("Input: " + input + "\n").echo();
+("Pattern: Hello, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Hello\", \"Hello\"]\n").echo();
+("Status: " + (result.len() == 2 && result[0] == "Hello" && result[1] == "Hello" ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Case-insensitive matching */
+"Test 2: Case-insensitive matching\n".echo();
+result = input.grep("hello", "oi");
+("Pattern: hello, Options: oi\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Hello\", \"Hello\"]\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Invert match */
+"Test 3: Invert match\n".echo();
+result = input.grep("Hello", "ov");
+("Pattern: Hello, Options: ov\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Goodbye world\"]\n").echo();
+("Status: " + (result.len() == 1 && result[0].find("Goodbye") >= 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Line numbers */
+"Test 4: Line numbers\n".echo();
+result = input.grep("Hello", "on");
+("Pattern: Hello, Options: on\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"1:Hello world\", \"3:Hello universe\"]\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 5: Count only */
+"Test 5: Count only\n".echo();
+result = input.grep("Hello", "c");
+("Pattern: Hello, Options: c\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: 2\n").echo();
+("Status: " + (result == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 6: JSON output */
+"Test 6: JSON output\n".echo();
+result = input.grep("Hello", "oj");
+("Pattern: Hello, Options: oj\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Valid JSON array\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 7: Empty input handling */
+"Test 7: Empty input handling\n".echo();
+result = "".grep("pattern", "o");
+("Input: empty, Pattern: pattern, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
+("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 8: Invalid pattern handling */
+"Test 8: Invalid pattern handling\n".echo();
+result = "test".grep("(", "o");
+("Input: test, Pattern: (, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR or empty array\n").echo();
+("Status: " + (result == "$ERR" || result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+"=== SMOKE TEST COMPLETE ===\n".echo();
+"Basic grep functionality validation complete.\n".echo(); 

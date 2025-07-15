@@ -1,0 +1,112 @@
+/* Comprehensive Focused Test Suite for Grapa Grep */
+/* Minimal output: '.' for PASS, 'F' for FAIL */
+
+result = "";
+
+/* Test 1: Lookaround Assertions */
+test_input = "abc123def456ghi789";
+test_pattern = "(?<=abc)\\d+(?=def)";
+actual = test_input.grep(test_pattern, "o");
+if (actual.len() == 1) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 2: Unicode Script Properties */
+test_input = "Hello 世界 Привет";
+test_pattern = "\\p{Latin}";
+actual = test_input.grep(test_pattern, "o");
+if (actual.len() > 0) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 3: Multiline Patterns */
+test_input = "line1\nline2\nline3";
+test_pattern = "line[23]";
+actual = test_input.grep(test_pattern, "m");
+if (actual.len() == 2) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 4: Custom Delimiters */
+test_input = "word1|word2|word3";
+test_pattern = "word[23]";
+actual = test_input.grep(test_pattern, "d|");
+if (actual.len() == 2) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 5: Word Boundaries */
+test_input = "cat catch category";
+test_pattern = "\\bcat\\b";
+actual = test_input.grep(test_pattern, "o");
+if (actual.len() == 1) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 6: Unicode Grapheme Clusters */
+test_input = "café";
+test_pattern = "café";
+actual = test_input.grep(test_pattern, "o");
+if (actual.len() == 1) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 7: Performance Test */
+test_input = "";
+i = 0;
+while (i < 100) {
+    test_input = (test_input + "line" + i.str() + "\n");
+    i = (i + 1);
+}
+test_pattern = "line99";
+actual = test_input.grep(test_pattern, "o");
+if (actual.len() == 1) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 8: Complex Pattern Combinations */
+test_input = "abc123def456ghi789";
+test_pattern = "(?<=abc)\\d+(?=def)|(?<=ghi)\\d+";
+actual = test_input.grep(test_pattern, "o");
+if (actual.len() == 2) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 9: Special Pattern Features */
+test_input = "test123test456test789";
+test_pattern = "test(\\d+)";
+actual = test_input.grep(test_pattern, "o");
+if (actual.len() == 3) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+/* Test 10: Edge Cases */
+test_input = "";
+test_pattern = ".*";
+actual = test_input.grep(test_pattern, "o");
+if (actual.len() == 0) {
+    result = (result + ".");
+} else {
+    result = (result + "F");
+}
+
+result.echo();
+("\nSummary: . = PASS, F = FAIL").echo(); 

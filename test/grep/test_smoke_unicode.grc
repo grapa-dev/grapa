@@ -1,0 +1,120 @@
+/* Smoke Test: Basic Unicode Support
+   - Runs on every build to verify basic Unicode functionality
+   - Execution time: < 30 seconds
+   - Purpose: Quick validation of Unicode support
+   - Status: Critical for development workflow
+*/
+
+"=== SMOKE TEST: BASIC UNICODE SUPPORT ===\n".echo();
+"Running basic Unicode validation...\n".echo();
+
+/* Test 1: Basic Unicode characters */
+"Test 1: Basic Unicode characters\n".echo();
+input = "Hello 世界\nGoodbye 世界\nHello universe";
+result = input.grep("世界", "o");
+("Input: " + input + "\n").echo();
+("Pattern: 世界, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"世界\", \"世界\"]\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Unicode case-insensitive */
+"Test 2: Unicode case-insensitive\n".echo();
+input2 = "café\nCAFÉ\ncafe";
+result = input2.grep("café", "i");
+("Input: " + input2 + "\n").echo();
+("Pattern: café, Options: i\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: All café variations\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Diacritic-insensitive */
+"Test 3: Diacritic-insensitive\n".echo();
+result = input2.grep("cafe", "d");
+("Pattern: cafe, Options: d\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: All café variations\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 4: Unicode normalization */
+"Test 4: Unicode normalization\n".echo();
+input3 = "café\ncafe\u0301"; /* é vs e + combining acute */
+result = input3.grep("café", "N");
+("Input: " + input3 + "\n").echo();
+("Pattern: café, Options: N\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Both café forms\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 5: Emoji support */
+"Test 5: Emoji support\n".echo();
+input4 = "Hello 👋 world\nGoodbye 👋 universe";
+result = input4.grep("👋", "o");
+("Input: " + input4 + "\n").echo();
+("Pattern: 👋, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"👋\", \"👋\"]\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 6: Unicode word boundaries */
+"Test 6: Unicode word boundaries\n".echo();
+input5 = "Hello世界 world世界";
+result = input5.grep("世界", "w");
+("Input: " + input5 + "\n").echo();
+("Pattern: 世界, Options: w\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Word boundary matches\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 7: Unicode script properties */
+"Test 7: Unicode script properties\n".echo();
+input6 = "Hello 世界 123 €";
+result = input6.grep("\\p{Latin}", "o");
+("Input: " + input6 + "\n").echo();
+("Pattern: \\p{Latin}, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Latin script characters\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 8: Unicode combining marks */
+"Test 8: Unicode combining marks\n".echo();
+input7 = "e\u0301"; /* e + combining acute */
+result = input7.grep("é", "o");
+("Input: " + input7 + "\n").echo();
+("Pattern: é, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Match combining mark sequence\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 9: Unicode grapheme clusters */
+"Test 9: Unicode grapheme clusters\n".echo();
+input8 = "Hello 👋 world 🌍";
+result = input8.grep("\\X", "o");
+("Input: " + input8 + "\n").echo();
+("Pattern: \\X, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Grapheme clusters\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 10: Unicode error handling */
+"Test 10: Unicode error handling\n".echo();
+input9 = "Hello\xFF\xFEworld"; /* Invalid UTF-8 */
+result = input9.grep("world", "o");
+("Input: " + input9 + "\n").echo();
+("Pattern: world, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Graceful handling of invalid UTF-8\n").echo();
+("Status: " + (result == "$ERR" || result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+"=== SMOKE TEST COMPLETE ===\n".echo();
+"Basic Unicode support validation complete.\n".echo(); 

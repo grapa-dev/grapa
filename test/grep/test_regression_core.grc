@@ -1,0 +1,224 @@
+/* Regression Test: Core Functionality
+   - Runs daily to ensure no regressions in working functionality
+   - Execution time: < 5 minutes
+   - Purpose: Validate all core grep functionality
+   - Status: Consolidates existing working tests
+*/
+
+"=== REGRESSION TEST: CORE FUNCTIONALITY ===\n".echo();
+"Running core functionality regression tests...\n".echo();
+
+/* ======================================== */
+/* 1. Basic Pattern Matching */
+/* ======================================== */
+"Test 1: Basic pattern matching\n".echo();
+input = "Hello world\nGoodbye world\nHello universe";
+result = input.grep("Hello", "o");
+("Input: " + input + "\n").echo();
+("Pattern: Hello, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"Hello\", \"Hello\"]\n").echo();
+("Status: " + (result.len() == 2 && result[0] == "Hello" && result[1] == "Hello" ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 1b: Word pattern matching */
+result = input.grep("\\w+", "o");
+("Pattern: \\w+, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of word matches\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 2. Core Options */
+/* ======================================== */
+"Test 2: Core options\n".echo();
+
+/* Test 2a: Case-insensitive */
+result = input.grep("hello", "i");
+("Pattern: hello, Options: i\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Lines containing Hello (case-insensitive)\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 2b: Invert match */
+result = input.grep("Hello", "v");
+("Pattern: Hello, Options: v\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Lines not containing Hello\n").echo();
+("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 2c: Line numbers */
+result = input.grep("Hello", "n");
+("Pattern: Hello, Options: n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Lines with line numbers\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 2d: Count only */
+result = input.grep("Hello", "c");
+("Pattern: Hello, Options: c\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: 2\n").echo();
+("Status: " + (result == 2 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 2e: JSON output */
+result = input.grep("Hello", "j");
+("Pattern: Hello, Options: j\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: JSON array\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 3. Advanced Options */
+/* ======================================== */
+"Test 3: Advanced options\n".echo();
+
+/* Test 3a: All mode */
+result = input.grep("Hello", "a");
+("Pattern: Hello, Options: a\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Full input if matches found\n").echo();
+("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 3b: Word boundary */
+input2 = "foo bar foobar barfoo";
+result = input2.grep("foo", "w");
+("Input: " + input2 + "\n").echo();
+("Pattern: foo, Options: w\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Only whole word matches\n").echo();
+("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 3c: Exact match */
+input3 = "Hello\nHello world\nHello";
+result = input3.grep("Hello", "x");
+("Input: " + input3 + "\n").echo();
+("Pattern: Hello, Options: x\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Only exact matches\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 4. Context Options */
+/* ======================================== */
+"Test 4: Context options\n".echo();
+
+/* Test 4a: After context */
+input4 = "line1\nline2\nline3\nline4";
+result = input4.grep("line2", "A1");
+("Input: " + input4 + "\n").echo();
+("Pattern: line2, Options: A1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Match line plus 1 after\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 4b: Before context */
+result = input4.grep("line3", "B1");
+("Pattern: line3, Options: B1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Match line plus 1 before\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 4c: Context */
+result = input4.grep("line3", "C1");
+("Pattern: line3, Options: C1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Match line plus 1 before and after\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 5. Output Formatting */
+/* ======================================== */
+"Test 5: Output formatting\n".echo();
+
+/* Test 5a: Delimiter removal */
+input5 = "line1\nline2\nline3\n";
+result = input5.grep("line", "o", "\n");
+("Input: " + input5 + "\n").echo();
+("Pattern: line, Options: o, Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"line1\", \"line2\", \"line3\"] (no trailing \\n)\n").echo();
+("Status: " + (result.len() == 3 && result[0] == "line1" && result[1] == "line2" && result[2] == "line3" ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 5b: Custom delimiter removal */
+input6 = "word1|||word2|||word3|||";
+result = input6.grep("word", "o", "|||");
+("Input: " + input6 + "\n").echo();
+("Pattern: word, Options: o, Delimiter: |||\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"word1\", \"word2\", \"word3\"] (no trailing |||)\n").echo();
+("Status: " + (result.len() == 3 && result[0] == "word1" && result[1] == "word2" && result[2] == "word3" ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 6. Edge Cases */
+/* ======================================== */
+"Test 6: Edge cases\n".echo();
+
+/* Test 6a: Empty input */
+result = "".grep("pattern", "o");
+("Input: empty, Pattern: pattern, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
+("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 6b: Empty pattern */
+result = "test".grep("", "o");
+("Input: test, Pattern: empty, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"\"]\n").echo();
+("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 6c: No matches */
+result = "test".grep("nomatch", "o");
+("Input: test, Pattern: nomatch, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: []\n").echo();
+("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 7. Error Handling */
+/* ======================================== */
+"Test 7: Error handling\n".echo();
+
+/* Test 7a: Invalid pattern */
+result = "test".grep("(", "o");
+("Input: test, Pattern: (, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR or empty array\n").echo();
+("Status: " + (result == "$ERR" || result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
+
+/* Test 7b: Invalid quantifier */
+result = "test".grep("a{", "o");
+("Input: test, Pattern: a{, Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: $ERR or empty array\n").echo();
+("Status: " + (result == "$ERR" || result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 8. Performance Tests */
+/* ======================================== */
+"Test 8: Performance tests\n".echo();
+
+/* Test 8a: Large input */
+large_input = "";
+i = 0;
+while (i < 1000) {
+    large_input = large_input + "line " + i + "\n";
+    i = i + 1;
+}
+result = large_input.grep("line", "o");
+("Input: 1000 lines, Pattern: line, Options: o\n").echo();
+("Result count: " + result.len() + "\n").echo();
+("Expected: 1000 matches\n").echo();
+("Status: " + (result.len() == 1000 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+"=== REGRESSION TEST COMPLETE ===\n".echo();
+"Core functionality regression tests complete.\n".echo(); 

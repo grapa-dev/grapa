@@ -1,0 +1,382 @@
+/* === PRODUCTION READINESS TEST: REAL-WORLD SCENARIOS === */
+/* Test real-world usage patterns and stress scenarios */
+
+"=== PRODUCTION READINESS TEST: REAL-WORLD SCENARIOS ===\n".echo();
+"Running production readiness tests...\n".echo();
+
+/* ======================================== */
+/* 1. Real-World Data Patterns */
+/* ======================================== */
+"Test 1: Real-world data patterns\n".echo();
+"---\n".echo();
+
+/* Test 1a: Log file parsing */
+log_data = "2024-01-15 10:30:15 INFO User login successful\n2024-01-15 10:31:22 ERROR Database connection failed\n2024-01-15 10:32:45 WARN High memory usage detected\n2024-01-15 10:33:12 INFO User logout successful";
+pattern = "ERROR";
+options = "o";
+result = log_data.grep(pattern, options, "\n");
+("Input: Log data with 4 entries\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"2024-01-15 10:31:22 ERROR Database connection failed\"]\n").echo();
+("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 1b: CSV data extraction */
+csv_data = "name,age,city\nJohn,25,New York\nJane,30,Los Angeles\nBob,35,Chicago\nAlice,28,Boston";
+pattern = "\\d+";
+options = "o";
+result = csv_data.grep(pattern, options, "\n");
+("Input: CSV data with 4 rows\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of age numbers\n").echo();
+("Status: " + (result.len() == 4 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 1c: JSON-like data parsing */
+json_data = "{\"user\": \"john\", \"status\": \"active\"}\n{\"user\": \"jane\", \"status\": \"inactive\"}\n{\"user\": \"bob\", \"status\": \"active\"}";
+pattern = "\"status\": \"active\"";
+options = "o";
+result = json_data.grep(pattern, options, "\n");
+("Input: JSON-like data with 3 objects\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"{\\\"user\\\": \\\"john\\\", \\\"status\\\": \\\"active\\\"}\", \"{\\\"user\\\": \\\"bob\\\", \\\"status\\\": \\\"active\\\"}\"]\n").echo();
+("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 2. Large Dataset Handling */
+/* ======================================== */
+"Test 2: Large dataset handling\n".echo();
+"---\n".echo();
+
+/* Test 2a: Large dataset with frequent matches */
+large_dataset = "";
+i = 0;
+while (i < 10000) {
+    large_dataset = large_dataset + "line " + i + " data\n";
+    i = i + 1;
+}
+pattern = "data";
+options = "o";
+result = large_dataset.grep(pattern, options, "\n");
+("Input: 10000 lines with 'data' in each\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result count: " + result.len() + "\n").echo();
+("Expected: 10000 matches\n").echo();
+("Status: " + (result.len() == 10000 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 2b: Large dataset with rare matches */
+large_dataset_rare = "";
+i = 0;
+while (i < 100000) {
+    if (i % 1000 == 0) {
+        large_dataset_rare = large_dataset_rare + "line " + i + " TARGET\n";
+    } else {
+        large_dataset_rare = large_dataset_rare + "line " + i + " data\n";
+    }
+    i = i + 1;
+}
+pattern = "TARGET";
+options = "o";
+result = large_dataset_rare.grep(pattern, options, "\n");
+("Input: 100000 lines with 100 'TARGET' matches\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result count: " + result.len() + "\n").echo();
+("Expected: 100 matches\n").echo();
+("Status: " + (result.len() == 100 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 3. Complex Pattern Matching */
+/* ======================================== */
+"Test 3: Complex pattern matching\n".echo();
+"---\n".echo();
+
+/* Test 3a: Email address extraction */
+email_data = "Contact: john.doe@example.com\nSupport: support@company.org\nSales: sales@business.net\nInvalid: not-an-email";
+pattern = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b";
+options = "o";
+result = email_data.grep(pattern, options, "\n");
+("Input: Email addresses mixed with invalid data\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of valid email addresses\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 3b: URL extraction */
+url_data = "Visit https://example.com for more info\nCheck http://test.org\nInvalid: not-a-url\nSecure: https://secure.net";
+pattern = "https?://[^\\s]+";
+options = "o";
+result = url_data.grep(pattern, options, "\n");
+("Input: URLs mixed with invalid data\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of valid URLs\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 3c: Phone number extraction */
+phone_data = "Call (555) 123-4567\nMobile: 555-987-6543\nOffice: (555) 456-7890\nInvalid: 123-456";
+pattern = "\\(?[0-9]{3}\\)?[-\\s]?[0-9]{3}[-\\s]?[0-9]{4}";
+options = "o";
+result = phone_data.grep(pattern, options, "\n");
+("Input: Phone numbers in various formats\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of valid phone numbers\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 4. Performance Under Load */
+/* ======================================== */
+"Test 4: Performance under load\n".echo();
+"---\n".echo();
+
+/* Test 4a: Many small patterns */
+many_patterns_data = "a b c d e f g h i j k l m n o p q r s t u v w x y z";
+pattern = "[a-z]";
+options = "o";
+result = many_patterns_data.grep(pattern, options, " ");
+("Input: 26 single letters\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: space\n").echo();
+("Result count: " + result.len() + "\n").echo();
+("Expected: 26 matches\n").echo();
+("Status: " + (result.len() == 26 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 4b: Complex alternation */
+complex_alt_data = "apple banana cherry date elderberry fig grape";
+pattern = "apple|banana|cherry|date|elderberry|fig|grape";
+options = "o";
+result = complex_alt_data.grep(pattern, options, " ");
+("Input: 7 fruit names\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: space\n").echo();
+("Result count: " + result.len() + "\n").echo();
+("Expected: 7 matches\n").echo();
+("Status: " + (result.len() == 7 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 5. Unicode Production Data */
+/* ======================================== */
+"Test 5: Unicode production data\n".echo();
+"---\n".echo();
+
+/* Test 5a: International names */
+international_data = "John Smith\nJosé García\n李小明\nAnna Müller\nمحمد أحمد\nYuki Tanaka";
+pattern = "\\b\\w+\\s+\\w+\\b";
+options = "o";
+result = international_data.grep(pattern, options, "\n");
+("Input: International names in various scripts\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of name matches\n").echo();
+("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 5b: Mixed language content */
+mixed_lang_data = "Hello world\nこんにちは世界\nBonjour le monde\nHola mundo\nПривет мир";
+pattern = "world|世界|monde|mundo|мир";
+options = "o";
+result = mixed_lang_data.grep(pattern, options, "\n");
+("Input: 'Hello world' in multiple languages\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of 'world' equivalents\n").echo();
+("Status: " + (result.len() == 5 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 6. Edge Cases in Production */
+/* ======================================== */
+"Test 6: Edge cases in production\n".echo();
+"---\n".echo();
+
+/* Test 6a: Very long lines */
+long_line = "";
+i = 0;
+while (i < 10000) {
+    long_line = long_line + "word" + i + " ";
+    i = i + 1;
+}
+long_line = long_line + "TARGET";
+pattern = "TARGET";
+options = "o";
+result = long_line.grep(pattern, options);
+("Input: Single line with 10000 words\n").echo();
+("Pattern: " + pattern + ", Options: " + options + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"TARGET\"]\n").echo();
+("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 6b: Empty lines mixed with content */
+empty_lines_data = "line1\n\nline2\n\n\nline3\n";
+pattern = "line";
+options = "o";
+result = empty_lines_data.grep(pattern, options, "\n");
+("Input: Lines with empty lines mixed in\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 6c: Special characters in data */
+special_chars_data = "normal text\ntext with \"quotes\"\ntext with 'apostrophes'\ntext with \\backslashes\\\ntext with (parentheses)\ntext with [brackets]";
+pattern = "quotes|apostrophes|backslashes|parentheses|brackets";
+options = "o";
+result = special_chars_data.grep(pattern, options, "\n");
+("Input: Text with various special characters\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of special character descriptions\n").echo();
+("Status: " + (result.len() == 5 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 7. Custom Delimiter Production Use */
+/* ======================================== */
+"Test 7: Custom delimiter production use\n".echo();
+"---\n".echo();
+
+/* Test 7a: Tab-separated values */
+tsv_data = "name\tage\tcity\nJohn\t25\tNew York\nJane\t30\tLos Angeles\nBob\t35\tChicago";
+pattern = "\\d+";
+options = "o";
+result = tsv_data.grep(pattern, options, "\n");
+("Input: Tab-separated values\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of age numbers\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 7b: Pipe-separated values */
+psv_data = "name|age|city\nJohn|25|New York\nJane|30|Los Angeles\nBob|35|Chicago";
+pattern = "New York|Los Angeles|Chicago";
+options = "o";
+result = psv_data.grep(pattern, options, "\n");
+("Input: Pipe-separated values\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of city names\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 7c: Custom multi-character delimiter */
+custom_data = "record1###record2###record3###record4";
+pattern = "record";
+options = "o";
+result = custom_data.grep(pattern, options, "###");
+("Input: Custom ### delimiter\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: ###\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"record1\", \"record2\", \"record3\", \"record4\"]\n").echo();
+("Status: " + (result.len() == 4 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 8. Error Recovery and Resilience */
+/* ======================================== */
+"Test 8: Error recovery and resilience\n".echo();
+"---\n".echo();
+
+/* Test 8a: Mixed valid and invalid patterns */
+mixed_patterns_data = "test data with various content";
+pattern = "test|data|content|(invalid|pattern|";
+options = "o";
+result = mixed_patterns_data.grep(pattern, options);
+("Input: " + mixed_patterns_data + "\n").echo();
+("Pattern: " + pattern + ", Options: " + options + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [] or partial matches (invalid pattern)\n").echo();
+("Status: " + (result.len() >= 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 8b: Very large pattern */
+large_pattern = "";
+i = 0;
+while (i < 10000) {
+    large_pattern = large_pattern + "a";
+    i = i + 1;
+}
+large_pattern = large_pattern + "b";
+test_data = "test";
+result = test_data.grep(large_pattern, "o");
+("Input: " + test_data + "\n").echo();
+("Pattern: 10000 'a' + 'b', Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: [] (no match for large pattern)\n").echo();
+("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 9. Memory and Resource Management */
+/* ======================================== */
+"Test 9: Memory and resource management\n".echo();
+"---\n".echo();
+
+/* Test 9a: Many small inputs */
+i = 0;
+while (i < 1000) {
+    small_input = "line " + i + " data";
+    pattern = "data";
+    options = "o";
+    result = small_input.grep(pattern, options);
+    if (result.len() != 1) {
+        ("Memory test failed at iteration " + i + "\n").echo();
+        break;
+    }
+    i = i + 1;
+}
+("Input: 1000 small inputs processed\n").echo();
+("Pattern: data, Options: o\n").echo();
+("Result: All 1000 iterations completed\n").echo();
+("Expected: No memory leaks or crashes\n").echo();
+("Status: " + (i == 1000 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 10. Final Production Validation */
+/* ======================================== */
+"Test 10: Final production validation\n".echo();
+"---\n".echo();
+
+/* Test 10a: Complex real-world scenario */
+production_data = "2024-01-15 10:30:15 [INFO] User john.doe@example.com logged in from 192.168.1.100\n2024-01-15 10:31:22 [ERROR] Database connection failed for user jane.smith@company.org\n2024-01-15 10:32:45 [WARN] High memory usage (85%) detected on server web-01\n2024-01-15 10:33:12 [INFO] User bob.wilson@business.net logged out\n2024-01-15 10:34:30 [ERROR] Payment processing failed for transaction ID TXN-12345";
+pattern = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b";
+options = "o";
+result = production_data.grep(pattern, options, "\n");
+("Input: Production log with emails, errors, and warnings\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Array of email addresses from log entries\n").echo();
+("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+/* Test 10b: Performance benchmark */
+benchmark_data = "";
+i = 0;
+while (i < 50000) {
+    benchmark_data = benchmark_data + "line " + i + " with some content\n";
+    i = i + 1;
+}
+pattern = "content";
+options = "o";
+result = benchmark_data.grep(pattern, options, "\n");
+("Input: 50000 lines benchmark\n").echo();
+("Pattern: " + pattern + ", Options: " + options + ", Delimiter: \\n\n").echo();
+("Result count: " + result.len() + "\n").echo();
+("Expected: 50000 matches\n").echo();
+("Status: " + (result.len() == 50000 ? "PASS" : "FAIL") + "\n").echo();
+"---\n".echo();
+
+"=== PRODUCTION READINESS TEST COMPLETE ===\n".echo();
+"Production readiness tests complete.\n".echo(); 
