@@ -15,86 +15,86 @@ Grapa excels at Extract, Transform, Load (ETL) workflows, offering parallelism, 
 
 ### Example: Parallel CSV Processing
 ```grapa
-// Extract: Read multiple CSV files in parallel
-files = ["data1.csv", "data2.csv", "data3.csv"]
-data = map(files, {file => read(file).split("\n")})
+/* Extract: Read multiple CSV files in parallel */
+files = ["data1.csv", "data2.csv", "data3.csv"];
+data = files.map(op(file) { $file().read(file).split("\n"); });
 
-// Transform: Clean and validate data in parallel
-clean_data = map(data, {rows => 
-    filter(rows, {row => 
-        fields = row.split(",")
-        length(fields) == 5 && fields[0] != ""  // Validate row structure
-    })
-})
+/* Transform: Clean and validate data in parallel */
+clean_data = data.map(op(rows) { 
+    rows.filter(op(row) { 
+        fields = row.split(",");
+        fields.len() == 5 && fields.get(0) != "";  /* Validate row structure */
+    });
+});
 
-// Load: Aggregate results and save to database
-total_records = reduce(clean_data, 0, {sum, rows => sum + length(rows)})
-print("Processed", total_records, "records across", length(files), "files")
+/* Load: Aggregate results and save to database */
+total_records = clean_data.reduce(op(sum, rows) { sum + rows.len(); }, 0);
+("Processed " + total_records.str() + " records across " + files.len().str() + " files").echo();
 ```
 
 ### Example: Data Validation Pipeline
 ```grapa
-// Define validation rules
+/* Define validation rules */
 rules = {
-    "email": {pattern => "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"},
-    "age": {min => 0, max => 150},
-    "salary": {min => 0, max => 1000000}
-}
+    "email": {"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"},
+    "age": {"min": 0, "max": 150},
+    "salary": {"min": 0, "max": 1000000}
+};
 
-// Validate data in parallel
-validate_record = {record, rules =>
-    errors = []
-    if (!match(record.email, rules.email.pattern)) {
-        errors.push("Invalid email format")
-    }
-    if (record.age < rules.age.min || record.age > rules.age.max) {
-        errors.push("Age out of range")
-    }
-    if (record.salary < rules.salary.min || record.salary > rules.salary.max) {
-        errors.push("Salary out of range")
-    }
-    return {record, errors, valid => length(errors) == 0}
-}
+/* Validate data in parallel */
+validate_record = op(record, rules) {
+    errors = [];
+    if (!record.get("email").match(rules.get("email").get("pattern"))) {
+        errors += "Invalid email format";
+    };
+    if (record.get("age") < rules.get("age").get("min") || record.get("age") > rules.get("age").get("max")) {
+        errors += "Age out of range";
+    };
+    if (record.get("salary") < rules.get("salary").get("min") || record.get("salary") > rules.get("salary").get("max")) {
+        errors += "Salary out of range";
+    };
+    {"record": record, "errors": errors, "valid": errors.len() == 0};
+};
 
-// Process validation results
-results = map(data, {record => validate_record(record, rules)})
-valid_records = filter(results, {result => result.valid})
-invalid_records = filter(results, {result => !result.valid})
+/* Process validation results */
+results = data.map(op(record) { validate_record(record, rules); });
+valid_records = results.filter(op(result) { result.get("valid"); });
+invalid_records = results.filter(op(result) { !result.get("valid"); });
 
-print("Valid records:", length(valid_records))
-print("Invalid records:", length(invalid_records))
+("Valid records: " + valid_records.len().str()).echo();
+("Invalid records: " + invalid_records.len().str()).echo();
 ```
 
 ### Example: Time Series Data Processing
 ```grapa
-// Process time series data with unlimited precision
-process_timestamps = {data =>
-    map(data, {row =>
-        timestamp = parse_time(row.timestamp)
-        value = parse_float(row.value)
-        return {
-            timestamp: timestamp,
-            value: value,
-            hour: hour(timestamp),
-            day: day(timestamp),
-            month: month(timestamp)
-        }
-    })
-}
+/* Process time series data with unlimited precision */
+process_timestamps = op(data) {
+    data.map(op(row) {
+        timestamp = $TIME().parse(row.get("timestamp"));
+        value = row.get("value").float();
+        {
+            "timestamp": timestamp,
+            "value": value,
+            "hour": timestamp.hour(),
+            "day": timestamp.day(),
+            "month": timestamp.month()
+        };
+    });
+};
 
-// Aggregate by time periods
-aggregate_by_hour = {processed_data =>
-    grouped = group_by(processed_data, {record => record.hour})
-    map(grouped, {hour, records =>
-        return {
-            hour: hour,
-            count: length(records),
-            avg_value: reduce(records, 0, {sum, r => sum + r.value}) / length(records),
-            min_value: min(map(records, {r => r.value})),
-            max_value: max(map(records, {r => r.value}))
-        }
-    })
-}
+/* Aggregate by time periods */
+aggregate_by_hour = op(processed_data) {
+    grouped = processed_data.group(op(record) { record.get("hour"); });
+    grouped.map(op(hour, records) {
+        {
+            "hour": hour,
+            "count": records.len(),
+            "avg_value": records.reduce(op(sum, r) { sum + r.get("value"); }, 0) / records.len(),
+            "min_value": records.map(op(r) { r.get("value"); }).min(),
+            "max_value": records.map(op(r) { r.get("value"); }).max()
+        };
+    });
+};
 ```
 
 - **See also:** [Python ETL Examples](PYTHON_USE_CASES.md#1-etl--data-engineering)
@@ -110,43 +110,45 @@ With executable BNF and mutable grammar, Grapa is perfect for teaching and exper
 
 ### Example: Simple Expression Parser
 ```grapa
-// Define a simple arithmetic expression grammar
+/* Define a simple arithmetic expression grammar */
 expression_grammar = {
     "expression": "term (('+' | '-') term)*",
     "term": "factor (('*' | '/') factor)*", 
     "factor": "number | '(' expression ')'",
     "number": "[0-9]+"
-}
+};
 
-// Parse and evaluate expressions
-parse_expression = {expr =>
-    ast = parse(expr, expression_grammar)
-    return evaluate_ast(ast)
-}
+/* Parse and evaluate expressions */
+parse_expression = op(expr) {
+    ast = $rule().parse(expr, expression_grammar);
+    $rule().evaluate(ast);
+};
 
-// Test the parser
-test_expressions = ["2+3*4", "(1+2)*3", "10/2+5"]
-results = map(test_expressions, {expr => parse_expression(expr)})
+/* Test the parser */
+test_expressions = ["2+3*4", "(1+2)*3", "10/2+5"];
+results = test_expressions.map(op(expr) { parse_expression(expr); });
 ```
 
 ### Example: Custom Language Extension
 ```grapa
-// Extend Grapa with a custom "repeat" construct
+/* Extend Grapa with a custom "repeat" construct */
 extend_grammar = {
     "statement": "original_statement | repeat_statement",
     "repeat_statement": "'repeat' number 'times' '{' statement* '}'"
-}
+};
 
-// Implement the repeat functionality
-execute_repeat = {ast =>
-    if (ast.type == "repeat_statement") {
-        count = ast.count
-        body = ast.body
-        for (i = 0; i < count; i++) {
-            execute_statements(body)
-        }
-    }
-}
+/* Implement the repeat functionality */
+execute_repeat = op(ast) {
+    if (ast.get("type") == "repeat_statement") {
+        count = ast.get("count");
+        body = ast.get("body");
+        i = 0;
+        while (i < count) {
+            $rule().execute(body);
+            i = i + 1;
+        };
+    };
+};
 ```
 
 - **See also:** [Python BNF/Compiler Examples](PYTHON_USE_CASES.md#2-compilerbnf-learning)
@@ -162,66 +164,64 @@ Grapa's $INT, $FLOAT, and $TIME types support unlimited precision, making it val
 
 ### Example: Cryptographic Calculations
 ```grapa
-// Generate large prime numbers
-generate_prime = {bits =>
+/* Generate large prime numbers */
+generate_prime = op(bits) {
     while (true) {
-        candidate = random_int(2^(bits-1), 2^bits)
-        if (is_prime(candidate)) {
-            return candidate
-        }
-    }
-}
+        candidate = $random().genbits(bits);
+        if ($crypt().isprime(candidate)) {
+            candidate;
+        };
+    };
+};
 
-// RSA key generation
-generate_rsa_keys = {bits =>
-    p = generate_prime(bits/2)
-    q = generate_prime(bits/2)
-    n = p * q
-    phi = (p-1) * (q-1)
-    e = 65537  // Common public exponent
-    d = mod_inverse(e, phi)
+/* RSA key generation */
+generate_rsa_keys = op(bits) {
+    p = generate_prime(bits / 2);
+    q = generate_prime(bits / 2);
+    n = p * q;
+    phi = (p - 1) * (q - 1);
+    e = 65537;  /* Common public exponent */
+    d = $crypt().modinv(e, phi);
     
-    return {
-        public_key: {n: n, e: e},
-        private_key: {n: n, d: d}
-    }
-}
+    {
+        "public_key": {"n": n, "e": e},
+        "private_key": {"n": n, "d": d}
+    };
+};
 
-// Test with 1024-bit keys
-keys = generate_rsa_keys(1024)
-print("Generated RSA keys with", length(keys.public_key.n.str()), "bits")
+/* Test with 1024-bit keys */
+keys = generate_rsa_keys(1024);
+("Generated RSA keys with " + keys.get("public_key").get("n").str().len().str() + " bits").echo();
 ```
 
 ### Example: Financial Calculations
 ```grapa
-// Calculate compound interest with unlimited precision
-compound_interest = {principal, rate, time, periods =>
-    rate_per_period = rate / periods
-    total_periods = time * periods
-    amount = principal * (1 + rate_per_period)^total_periods
-    return amount
-}
+/* Calculate compound interest with unlimited precision */
+compound_interest = op(principal, rate, time, periods) {
+    rate_per_period = rate / periods;
+    total_periods = time * periods;
+    principal * (1 + rate_per_period).pow(total_periods);
+};
 
-// Calculate mortgage payments
-mortgage_payment = {principal, annual_rate, years =>
-    monthly_rate = annual_rate / 12 / 100
-    total_payments = years * 12
-    payment = principal * (monthly_rate * (1 + monthly_rate)^total_payments) / 
-              ((1 + monthly_rate)^total_payments - 1)
-    return payment
-}
+/* Calculate mortgage payments */
+mortgage_payment = op(principal, annual_rate, years) {
+    monthly_rate = annual_rate / 12 / 100;
+    total_payments = years * 12;
+    principal * (monthly_rate * (1 + monthly_rate).pow(total_payments)) / 
+              ((1 + monthly_rate).pow(total_payments) - 1);
+};
 
-// Example calculations
-loan_amount = 300000
-annual_rate = 3.5
-loan_years = 30
+/* Example calculations */
+loan_amount = 300000;
+annual_rate = 3.5;
+loan_years = 30;
 
-monthly_payment = mortgage_payment(loan_amount, annual_rate, loan_years)
-total_paid = monthly_payment * loan_years * 12
-total_interest = total_paid - loan_amount
+monthly_payment = mortgage_payment(loan_amount, annual_rate, loan_years);
+total_paid = monthly_payment * loan_years * 12;
+total_interest = total_paid - loan_amount;
 
-print("Monthly payment: $", monthly_payment.str())
-print("Total interest: $", total_interest.str())
+("Monthly payment: $" + monthly_payment.str()).echo();
+("Total interest: $" + total_interest.str()).echo();
 ```
 
 - **See also:** [Python Math Examples](PYTHON_USE_CASES.md#3-high-precision-math--scientific-computing)
@@ -237,67 +237,69 @@ Grapa's $thread, $net, and map/reduce/filter features enable true parallelism, o
 
 ### Example: Parallel Data Processing
 ```grapa
-// Process large dataset in parallel
-process_chunk = {chunk =>
-    return map(chunk, {item =>
-        // Expensive computation
-        result = complex_calculation(item)
-        return {input: item, result: result}
-    })
-}
+/* Process large dataset in parallel */
+process_chunk = op(chunk) {
+    chunk.map(op(item) {
+        /* Expensive computation */
+        result = complex_calculation(item);
+        {"input": item, "result": result};
+    });
+};
 
-// Split data and process in parallel
-parallel_process = {data, num_threads =>
-    chunk_size = length(data) / num_threads
-    chunks = []
+/* Split data and process in parallel */
+parallel_process = op(data, num_threads) {
+    chunk_size = data.len() / num_threads;
+    chunks = [];
     
-    for (i = 0; i < num_threads; i++) {
-        start = i * chunk_size
-        end = (i == num_threads-1) ? length(data) : (i+1) * chunk_size
-        chunks.push(slice(data, start, end))
-    }
+    i = 0;
+    while (i < num_threads) {
+        start = i * chunk_size;
+        end = (i == num_threads - 1) ? data.len() : (i + 1) * chunk_size;
+        chunks += data.slice(start, end);
+        i = i + 1;
+    };
     
-    // Process chunks in parallel
-    results = map(chunks, {chunk => process_chunk(chunk)})
+    /* Process chunks in parallel */
+    results = chunks.map(op(chunk) { process_chunk(chunk); });
     
-    // Combine results
-    return flatten(results)
-}
+    /* Combine results */
+    results.flatten();
+};
 
-// Example usage
-large_dataset = generate_test_data(1000000)
-processed_data = parallel_process(large_dataset, 8)
-print("Processed", length(processed_data), "items in parallel")
+/* Example usage */
+large_dataset = generate_test_data(1000000);
+processed_data = parallel_process(large_dataset, 8);
+("Processed " + processed_data.len().str() + " items in parallel").echo();
 ```
 
 ### Example: Concurrent Network Operations
 ```grapa
-// Fetch multiple URLs concurrently
-fetch_urls = {urls =>
-    responses = map(urls, {url =>
+/* Fetch multiple URLs concurrently */
+fetch_urls = op(urls) {
+    responses = urls.map(op(url) {
         try {
-            response = $net.get(url)
-            return {url: url, success: true, data: response.body}
+            response = $net().get(url);
+            {"url": url, "success": true, "data": response.get("body")};
         } catch (error) {
-            return {url: url, success: false, error: error.message}
-        }
-    })
-    return responses
-}
+            {"url": url, "success": false, "error": error.get("message")};
+        };
+    });
+    responses;
+};
 
-// Process API endpoints in parallel
+/* Process API endpoints in parallel */
 api_endpoints = [
     "https://api.example.com/users",
     "https://api.example.com/products", 
     "https://api.example.com/orders"
-]
+];
 
-results = fetch_urls(api_endpoints)
-successful = filter(results, {r => r.success})
-failed = filter(results, {r => !r.success})
+results = fetch_urls(api_endpoints);
+successful = results.filter(op(r) { r.get("success"); });
+failed = results.filter(op(r) { !r.get("success"); });
 
-print("Successful requests:", length(successful))
-print("Failed requests:", length(failed))
+("Successful requests: " + successful.len().str()).echo();
+("Failed requests: " + failed.len().str()).echo();
 ```
 
 - **See also:** [Python Parallelism Examples](PYTHON_USE_CASES.md#4-parallelconcurrent-programming)
@@ -313,61 +315,61 @@ Grapa's $net and parallelism features are powerful for web scraping, automation,
 
 ### Example: Web Scraper with Rate Limiting
 ```grapa
-// Scrape multiple pages with rate limiting
-scrape_pages = {urls, delay_ms =>
-    results = map(urls, {url, index =>
-        // Add delay between requests
+/* Scrape multiple pages with rate limiting */
+scrape_pages = op(urls, delay_ms) {
+    results = urls.map(op(url, index) {
+        /* Add delay between requests */
         if (index > 0) {
-            sleep(delay_ms)
-        }
+            $sys().sleep(delay_ms);
+        };
         
         try {
-            response = $net.get(url)
-            if (response.status == 200) {
-                return {
-                    url: url,
-                    success: true,
-                    content: response.body,
-                    size: length(response.body)
-                }
+            response = $net().get(url);
+            if (response.get("status") == 200) {
+                {
+                    "url": url,
+                    "success": true,
+                    "content": response.get("body"),
+                    "size": response.get("body").len()
+                };
             } else {
-                return {url: url, success: false, error: "HTTP " + response.status}
-            }
+                {"url": url, "success": false, "error": "HTTP " + response.get("status").str()};
+            };
         } catch (error) {
-            return {url: url, success: false, error: error.message}
-        }
-    })
-    return results
-}
+            {"url": url, "success": false, "error": error.get("message")};
+        };
+    });
+    results;
+};
 
-// Extract data from HTML
-extract_data = {html_content =>
-    // Parse HTML and extract specific elements
-    doc = parse_html(html_content)
-    titles = doc.select("h1, h2, h3")
-    links = doc.select("a[href]")
+/* Extract data from HTML */
+extract_data = op(html_content) {
+    /* Parse HTML and extract specific elements */
+    doc = $XML().parse(html_content);
+    titles = doc.select("h1, h2, h3");
+    links = doc.select("a[href]");
     
-    return {
-        titles: map(titles, {t => t.text}),
-        links: map(links, {l => l.attr("href")})
-    }
-}
+    {
+        "titles": titles.map(op(t) { t.get("text"); }),
+        "links": links.map(op(l) { l.get("href"); })
+    };
+};
 
-// Example usage
+/* Example usage */
 target_urls = [
     "https://example.com/page1",
     "https://example.com/page2",
     "https://example.com/page3"
-]
+];
 
-scraped_data = scrape_pages(target_urls, 1000)  // 1 second delay
-extracted_data = map(scraped_data, {page => 
-    if (page.success) {
-        return extract_data(page.content)
+scraped_data = scrape_pages(target_urls, 1000);  /* 1 second delay */
+extracted_data = scraped_data.map(op(page) { 
+    if (page.get("success")) {
+        extract_data(page.get("content"));
     } else {
-        return {error: page.error}
-    }
-})
+        {"error": page.get("error")};
+    };
+});
 ```
 
 - **See also:** [Python Web Scraping Examples](PYTHON_USE_CASES.md#5-webdata-scraping--automation)
@@ -383,47 +385,46 @@ Unified APIs for files and databases boost productivity for backend developers, 
 
 ### Example: File System Operations
 ```grapa
-// Recursive file processing
-process_files = {directory, file_pattern =>
-    files = find_files(directory, file_pattern)
+/* Recursive file processing */
+process_files = op(directory, file_pattern) {
+    files = $file().find(directory, file_pattern);
     
-    results = map(files, {file =>
+    results = files.map(op(file) {
         try {
-            content = read(file)
-            stats = file_stats(file)
+            content = $file().read(file);
+            stats = $file().stat(file);
             
-            return {
-                file: file,
-                size: stats.size,
-                modified: stats.modified,
-                lines: length(content.split("\n")),
-                words: length(content.split(" "))
-            }
+            {
+                "file": file,
+                "size": stats.get("size"),
+                "modified": stats.get("modified"),
+                "lines": content.split("\n").len(),
+                "words": content.split(" ").len()
+            };
         } catch (error) {
-            return {file: file, error: error.message}
-        }
-    })
+            {"file": file, "error": error.get("message")};
+        };
+    });
     
-    return results
-}
+    results;
+};
 
-// Database-like file queries
-query_files = {directory =>
-    // Find all Python files larger than 1KB
-    large_python_files = select * from directory 
-                         where name like "*.py" and size > 1024
+/* Database-like file queries */
+query_files = op(directory) {
+    /* Find all Python files larger than 1KB */
+    large_python_files = $file().select("* from " + directory + " where name like '*.py' and size > 1024");
     
-    // Group by directory
-    grouped = group_by(large_python_files, {file => dirname(file)})
+    /* Group by directory */
+    grouped = large_python_files.group(op(file) { $file().dirname(file); });
     
-    return map(grouped, {dir, files =>
-        return {
-            directory: dir,
-            file_count: length(files),
-            total_size: reduce(files, 0, {sum, f => sum + f.size})
-        }
-    })
-}
+    grouped.map(op(dir, files) {
+        {
+            "directory": dir,
+            "file_count": files.len(),
+            "total_size": files.reduce(op(sum, f) { sum + f.get("size"); }, 0)
+        };
+    });
+};
 ```
 
 - **See also:** [Python File/DB Examples](PYTHON_USE_CASES.md#6-database--file-system-integration)
@@ -439,30 +440,30 @@ Grapa's dynamic grammar and meta-programming are ideal for rapid prototyping and
 
 ### Example: Teaching Recursion
 ```grapa
-// Visualize recursive function execution
-factorial_with_trace = {n, depth =>
-    indent = repeat("  ", depth)
-    print(indent + "factorial(" + n + ")")
+/* Visualize recursive function execution */
+factorial_with_trace = op(n, depth) {
+    indent = "  ".repeat(depth);
+    (indent + "factorial(" + n.str() + ")").echo();
     
     if (n <= 1) {
-        print(indent + "return 1")
-        return 1
+        (indent + "return 1").echo();
+        1;
     } else {
-        result = n * factorial_with_trace(n-1, depth+1)
-        print(indent + "return " + n + " * " + (n-1) + "! = " + result)
-        return result
-    }
-}
+        result = n * factorial_with_trace(n - 1, depth + 1);
+        (indent + "return " + n.str() + " * " + (n - 1).str() + "! = " + result.str()).echo();
+        result;
+    };
+};
 
-// Example: Calculate 4! with trace
-print("Calculating 4! with execution trace:")
-result = factorial_with_trace(4, 0)
-print("Final result:", result)
+/* Example: Calculate 4! with trace */
+"Calculating 4! with execution trace:".echo();
+result = factorial_with_trace(4, 0);
+("Final result: " + result.str()).echo();
 ```
 
 ### Example: Custom DSL for Data Processing
 ```grapa
-// Define a simple data processing language
+/* Define a simple data processing language */
 data_dsl_grammar = {
     "pipeline": "command*",
     "command": "filter_command | map_command | reduce_command",
@@ -472,20 +473,20 @@ data_dsl_grammar = {
     "condition": "field operator value",
     "expression": "field | function_call",
     "operator": "'==' | '!=' | '>' | '<' | '>=' | '<='"
-}
+};
 
-// Example DSL usage
+/* Example DSL usage */
 dsl_script = "
 filter age > 18
 map salary * 1.1
 reduce sum with 0
-"
+";
 
-// Execute the DSL
-execute_dsl = {script, data =>
-    ast = parse(script, data_dsl_grammar)
-    return execute_pipeline(ast, data)
-}
+/* Execute the DSL */
+execute_dsl = op(script, data) {
+    ast = $rule().parse(script, data_dsl_grammar);
+    $rule().execute(ast, data);
+};
 ```
 
 - **See also:** [Python Education Examples](PYTHON_USE_CASES.md#7-education--prototyping)

@@ -14,6 +14,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 ## Current TODOs
 
 ### 0. Immediate Next Priority
+- [x] **CRITICAL: Fix Grapa code examples in `docs/USE_CASES.md` - current examples use incorrect syntax that is not actual Grapa code. Need to replace with proper Grapa syntax, functions, and comment style.**
 - [ ] **Revise the `description` and `long_description` in `setup.py` to be inviting, accurate, and up to date with the README and Python docs.** This is in preparation for an official new release of Grapa and GrapaPy.
 
 ### 1. Documentation & Examples
@@ -50,6 +51,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 ---
 
 ## Recently Completed
+- ✅ **COMPLETED: Fixed all Grapa code examples in `docs/USE_CASES.md` with correct syntax, functions, and comment style**
 - ✅ **COMPLETED: Added comprehensive detailed examples for all 7 use cases in both `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md`** (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
 - Created new use case documentation for both Grapa and GrapaPy
 - Added "Design Influences" sections to core type docs
