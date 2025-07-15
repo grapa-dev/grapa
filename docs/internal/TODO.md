@@ -26,7 +26,16 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 - [ ] Add BNF/compiler learning examples for professors and students
 - [ ] Document Grapa’s design influences (Lisp, Prolog) and unique strengths for educators
 
-### 4. General Improvements
+### 4. Advanced Data Interchange & Serialization
+- [ ] Document actual return type mapping from Grapa to Python as implemented in mainpy.cpp (not always string; depends on type and precision)
+- [ ] Clarify strategies for unlimited precision types and complex structures: use $global, serialization (.str()), and deserialization as needed
+- [ ] Explain limitations and workarounds for $XML/$HTML and other non-native types (e.g., return as string or dict, but not native Python XML/HTML)
+- [ ] Confirm and document Grapa’s ability to import any standard JSON/XML/HTML, and identify any gaps or edge cases
+- [ ] Document Grapa’s extended syntax for JSON/XML/HTML (e.g., $OP in $ARRAY/$LIST) and implications for round-tripping to Python
+- [ ] Provide examples of serialization/deserialization workflows for advanced users
+- [ ] Note that users can construct serialized Grapa data types in Python and have Grapa deserialize them
+
+### 5. General Improvements
 - [ ] Review and update all test files for consistency with new standards
 - [ ] Solicit and incorporate user feedback for further improvements
 
@@ -36,6 +45,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 - Created new use case documentation for both Grapa and GrapaPy
 - Added "Design Influences" sections to core type docs
 - Established persistent TODO tracking for crash recovery
+- Persisted advanced context on data interchange and serialization for robust recovery
 
 ---
 
