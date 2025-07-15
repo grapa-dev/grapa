@@ -1,4 +1,9 @@
 # $OP
+
+/*
+Design Influences:
+Grapa's $OP and $CODE types are inspired by Lisp's list-based, lambda/bytecode execution model, enabling flexible, composable, and introspectable code structures. This design supports advanced meta-programming and dynamic language features, making Grapa inviting and usable for a broad audience—including Python users, educators, and language researchers. The overarching goal is to make Grapa (and GrapaPy) as accessible and powerful as possible for the widest range of users.
+*/
 This is the core type at the base of grapa. It does not have a class associated. Consider it as both a high level version of byte code (but represented as a list) and similar to a lambda in other languages. It's a variable that includes executable instructions. 
 
 Understanding the inner workings of $OP is not necessary to use grapa - and this section can be skipped. This though is core to how grapa works, and an understanding is needed in order to extend the syntax of the language to support your own domain specific language extensions.

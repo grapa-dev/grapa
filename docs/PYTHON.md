@@ -1,5 +1,9 @@
 # Python
 
+/*
+For a quick overview of what you can do with GrapaPy, see the new [Python Use Cases](PYTHON_USE_CASES.md) guide. This covers ETL, compiler/BNF learning, high-precision math, parallelism, web scraping, file/database integration, and education/prototyping, with quickstarts and migration tips for Python users.
+*/
+
 For details on the grapa language, see [Grapa language](../README.md)
 
 **For comprehensive Python integration examples and use cases, see [Python Integration Guide](python_integration.md)**

@@ -1,4 +1,9 @@
 # $RULE
+
+/*
+Design Influences:
+Grapa's $RULE type is inspired by Prolog's executable BNF and logic programming paradigm, enabling dynamic, mutable grammars and rule-based execution. This design empowers users to experiment with language syntax and parsing, making Grapa especially valuable for educators, researchers, and anyone interested in language design. The overarching goal is to make Grapa (and GrapaPy) as inviting and usable as possible for the broadest audience.
+*/
 References:
 - [$RULE object](../../lib/grapa/$RULE.grc)
 
@@ -162,3 +167,5 @@ For those interested in how to modify a recursive decent parser to support left 
 https://medium.com/@gvanrossum_83706/left-recursive-peg-grammars-65dab3c580e1
 
 A simular approach is used for Grapa - but with a few improvements on the appropach to support more complex scenarios than what's required to support the Python syntax alone.
+
+```
