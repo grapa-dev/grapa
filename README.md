@@ -1,7 +1,20 @@
 
 # Grapa
 
-Grapa is a high-level grammar parser language and environment for data processing, ETL workflows, and language experimentation. It features a customizable runtime grammar, rich data types, and advanced pattern matching. **Note:** Only the `grep` feature is Unicode-aware; the rest of the language currently operates on byte-based strings (e.g., `len()` is byte-based). Full Unicode support is a future goal.
+/*
+Project Philosophy:
+Grapa is designed to be inviting and usable for the broadest audience—Python users, educators, researchers, data engineers, and anyone interested in data processing, language experimentation, or high-performance computing. Our mission is to make advanced grammar-based programming, unlimited precision, and parallelism accessible and productive for all.
+*/
+
+---
+
+## Why Grapa?
+- **Unlimited Precision:** $INT, $FLOAT, and $TIME types support arbitrary precision for scientific, cryptographic, and financial applications.
+- **Executable BNF & Mutable Grammar:** Define, modify, and experiment with grammars at runtime—ideal for language design, teaching, and research.
+- **Parallelism & Concurrency:** True parallel processing with $thread, $net, and map/reduce/filter, overcoming Python's GIL and enabling high-performance ETL and data workflows.
+- **Unified File/Database API:** Seamlessly navigate and process files and databases with a single, consistent interface.
+- **Python Integration:** Use GrapaPy to bring all these features to Python, with idiomatic APIs and migration tips for Python users.
+- **Education & Prototyping:** Rapidly prototype new languages, teach compiler concepts, and experiment with meta-programming.
 
 ---
 
@@ -13,14 +26,16 @@ Grapa is a high-level grammar parser language and environment for data processin
    ```sh
    ./grapa -cfile "examples/hello_world.grc"
    ```
-3. **Explore Examples**  
-   See [Examples](docs/EXAMPLES.md) for common tasks.
+3. **Explore Use Cases & Examples**  
+   See [Use Cases](docs/USE_CASES.md) and [Examples](docs/EXAMPLES.md) for real-world workflows in both Grapa and Python.
 
 ---
 
 ## 📖 Table of Contents
 
 - [Getting Started](docs/GETTING_STARTED.md)
+- [Why Grapa? (Use Cases)](docs/USE_CASES.md)
+- [Python Quickstart & Use Cases](docs/PYTHON_USE_CASES.md)
 - [Syntax Quick Reference](docs/syntax/basic_syntax.md)
 - [Examples](docs/EXAMPLES.md)
 - [Grep (Unicode-aware)](docs/GREP.md)
@@ -80,6 +95,7 @@ Grapa is a high-level grammar parser language and environment for data processin
 - [AWS/Docker Setup](docs/SETUPAWSDOCKER.md)
 
 ### Python & C++ Integration
+- [Python Quickstart & Use Cases](docs/PYTHON_USE_CASES.md)
 - [Python Setup](docs/PYTHON.md)
 - [Python Integration Guide](docs/python_integration.md)
 - [GrapaPy Integration](docs/GRAPAPY_INTEGRATION.md)
