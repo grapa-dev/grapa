@@ -7,6 +7,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 ## High-Priority Goals
 - Make Grapa and GrapaPy as inviting and usable as possible for the broadest audience (Python users, educators, researchers, data engineers, etc.)
 - **Ensure robust crash recovery by frequently persisting all in-progress work to disk (in docs/internal/WIP/), updating the persistent TODO with WIP references, and always resuming from the last save point after a crash. This is a core assistant responsibility to minimize lost work and maintain continuity, regardless of crash frequency.**
+- **CRITICAL: Due to Cursor app crash frequency, update files in docs/internal every 5 minutes (not 15 minutes) to ensure minimal work loss. This includes WIP files, TODO.md, and any other internal tracking documents.**
 
 ---
 
@@ -16,7 +17,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 - [ ] **Revise the `description` and `long_description` in `setup.py` to be inviting, accurate, and up to date with the README and Python docs.** This is in preparation for an official new release of Grapa and GrapaPy.
 
 ### 1. Documentation & Examples
-- [ ] Fill in detailed examples for each use case in `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md` (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
+- [x] Fill in detailed examples for each use case in `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md` (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
 - [ ] Update and modernize the webscrape example for current Grapa and GrapaPy best practices
 - [ ] Add migration tips and quickstarts for Python users in all relevant docs
 - [ ] Cross-link all new docs and examples for discoverability
@@ -49,6 +50,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 ---
 
 ## Recently Completed
+- ✅ **COMPLETED: Added comprehensive detailed examples for all 7 use cases in both `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md`** (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
 - Created new use case documentation for both Grapa and GrapaPy
 - Added "Design Influences" sections to core type docs
 - Established persistent TODO tracking for crash recovery
