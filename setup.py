@@ -14,7 +14,7 @@ from pathlib import Path
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
-grapapy_version = "0.0.25"
+grapapy_version = "0.0.26"
 is_aws = False
 is_apple = False
 from_os = ''
@@ -324,8 +324,14 @@ if sys.platform.startswith('linux') or sys.platform.startswith('win32'):
         version=grapapy_version,
         author="Chris Matichuk",
         author_email="matichuk@hotmail.com",
-        description="grammar parser language",
-        long_description="https://github.com/grapa-dev/grapa/blob/master/docs/PYTHON.md",
+        description="Grammar-based language and parser with unlimited precision, parallelism, and Python integration",
+        long_description=(
+            "Grapa is a modern grammar-based programming language and parser designed for Python users, educators, "
+            "researchers, and data engineers. It features unlimited precision math, runtime-mutable grammars, true parallelism, "
+            "and seamless Python integration via GrapaPy. Rapidly prototype languages, process data, and experiment with advanced grammars—all with a unified, high-performance toolset.\n\n"
+            "See the [Grapa project on GitHub](https://github.com/grapa-dev/grapa) for full documentation, examples, and installation instructions."
+        ),
+        long_description_content_type="text/markdown",
         ext_modules=[lib_grapa],
         cmdclass={
             'copy_grapalib': CopySharedLibrary,
@@ -347,8 +353,14 @@ else:
         name="grapapy",
         version=grapapy_version,
         author="Chris Matichuk",
-        description="grammar parser language",
-        long_description="https://github.com/grapa-dev/grapa/blob/master/docs/PYTHON.md",
+        description="Grammar-based language and parser with unlimited precision, parallelism, and Python integration",
+        long_description=(
+            "Grapa is a modern grammar-based programming language and parser designed for Python users, educators, "
+            "researchers, and data engineers. It features unlimited precision math, runtime-mutable grammars, true parallelism, "
+            "and seamless Python integration via GrapaPy. Rapidly prototype languages, process data, and experiment with advanced grammars—all with a unified, high-performance toolset.\n\n"
+            "See the [Grapa project on GitHub](https://github.com/grapa-dev/grapa) for full documentation, examples, and installation instructions."
+        ),
+        long_description_content_type="text/markdown",
         ext_modules=[CMakeExtension("grapapy")],
         cmdclass={"build_ext": CMakeBuild},
         zip_safe=False,
