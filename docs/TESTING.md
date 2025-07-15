@@ -577,3 +577,23 @@ The test suite has been significantly consolidated to improve maintainability an
 The project has made **excellent progress** with 90% of the original requirements either completed or well underway. The remaining 10% consists of critical fixes for custom delimiter functionality, which are essential for full production readiness. The test suite is comprehensive and well-organized, providing a solid foundation for identifying and fixing the remaining issues.
 
 **Next step**: Focus on completing the option combination matrix testing to achieve 100% ripgrep parity and full production readiness. 
+
+## Running Grapa Scripts: -cfile vs -ccmd
+
+- Use **-cfile <filename>** to run a Grapa script file (e.g., a .grc test file):
+  
+  ```powershell
+  .\grapa.exe -q -cfile "test/my_test.grc"
+  ```
+  This is the correct way to run all test files and multi-line scripts.
+
+- Use **-ccmd <code>** to run a single line or short inline Grapa code directly from the command line:
+  
+  ```powershell
+  .\grapa.exe -q -ccmd "'Hello'.echo();"
+  ```
+  This is for quick, one-off commands only.
+
+**Note:** Attempting to run a .grc file with -ccmd will not work and may result in errors or no output. Always use -cfile for script files.
+
+---

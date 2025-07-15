@@ -327,3 +327,18 @@ The system's integration with the execution tree architecture ensures that inclu
 - [System Functions](sys/sys.md) - Compilation and evaluation functions
 - [Base Types](BASETYPES.md) - Foundation of the execution model
 - [Build Process](BUILD.md) - Building and packaging Grapa applications 
+
+## Running Grapa Tests and Scripts
+
+- Use **-cfile <filename>** to run a Grapa script file (e.g., .grc test):
+  
+  ```powershell
+  .\grapa.exe -q -cfile "test/my_test.grc"
+  ```
+- Use **-ccmd <code>** for inline code only:
+  
+  ```powershell
+  .\grapa.exe -q -ccmd "'Hello'.echo();"
+  ```
+
+**Do not use -ccmd for .grc files.** 
