@@ -391,6 +391,9 @@ This status is maintained as of the latest rationalization and test suite update
 
 The following rules apply to all Grapa .grc test and script files:
 
+- Use block comments (`/* ... */`) for all comments in Grapa code and test files.
+- Do **not** nest block comments; Grapa does not support nested block comments. Always close a block comment before starting another.
+- Line comments (`// ...`) are not supported and will cause syntax errors.
 - Use block comments for all comments (do not use //). Block comments should be written as in this header.
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character.

@@ -51,8 +51,10 @@ result = input.grep("foo", "n");
 result = input.grep("foo", "c");
 ("Pattern: foo, Options: c\n").echo();
 ("Result: " + result.str() + "\n").echo();
+/* Grapa always returns arrays, so join() is used for parity with ripgrep's line output */
+joined = result.join("\n");
 ("Expected: Count of matches\n").echo();
-("Status: " + (result == "3" ? "PASS" : "FAIL") + "\n").echo();
+("Status: " + (joined == "3" ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
 "=== BASIC MATCHING TESTS COMPLETE ===\n".echo(); 

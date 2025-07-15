@@ -261,7 +261,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     #endif // DEBUG_END
     
     // For multiline patterns with custom delimiters, treat the entire input as one string
-    if ((is_multiline || has_s_flag) && !line_delim.empty()) {
+    // FIX: If a custom delimiter (not '\n') is present, treat as single string for multiline patterns, even without s flag
+    bool custom_delimiter = (!line_delim.empty() && line_delim != "\n");
+    if ((is_multiline || has_s_flag) && custom_delimiter) {
         #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
         printf("DEBUG: Multiline pattern handling block entered\n");
         printf("DEBUG: is_multiline: %s, has_s_flag: %s, line_delim: '%s'\n", is_multiline ? "true" : "false", has_s_flag ? "true" : "false", line_delim.c_str());
@@ -286,11 +288,12 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             // The regex engine should handle the delimiters as part of the pattern matching
             working_input = original_input_with_delimiters;
         } else if (is_multiline) {
-            // For multiline patterns without s flag, we should NOT match across delimiters
-            // So we need to process line by line instead of treating as one string
-            multiline_handled = false;
-            // Reset working_input to the original input for line-by-line processing
+            // FIX: For multiline patterns with a custom delimiter, treat as single string
+            // This allows patterns like 'start.*end' to match across custom delimiters (even multi-char)
+            // This is a Grapa extension beyond traditional grep/ripgrep
+            working_pattern = effective_pattern;
             working_input = original_input_with_delimiters;
+            // multiline_handled remains true
         }
         
         #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
@@ -564,6 +567,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
             printf("DEBUG: Count-only mode - returning count: %zu\n", extracted_matches.size());
             #endif // DEBUG_END
+            // Grapa always returns arrays, even for count-only mode, for consistency with all other grep outputs
             return {std::to_string(extracted_matches.size())};
         }
         

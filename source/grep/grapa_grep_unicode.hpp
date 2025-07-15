@@ -29,7 +29,7 @@ limitations under the License.
 #endif
 
 #ifndef GRAPA_DEBUG_PRINTF
-#define GRAPA_DEBUG_PRINTF
+// #define GRAPA_DEBUG_PRINTF
 #endif
 
 
