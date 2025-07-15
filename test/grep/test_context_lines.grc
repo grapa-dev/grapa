@@ -293,6 +293,34 @@ result = input.grep("Line 2", "A1c");
 ("Expected: [\"Line 2\\n\", \"Line 3\\n\"]\n").echo();
 "---\n".echo();
 
+/* ======================================== */
+/* 26. Debug Context Lines Output */
+/* ======================================== */
+"Test 26: Debug Context Lines Output\n".echo();
+input = "line1\nline2\nline3\nline4\nline5";
+("Input: " + input + "\n").echo();
+result = input.grep("line3", "oC");
+("Result (oC): " + result.str() + "\n").echo();
+resultj = input.grep("line3", "ojC");
+("Result (ojC): " + resultj.str() + "\n").echo();
+("Expected: Should return line2, line3, line4 (context around match)\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 27. Debug Context Lines Output Modes */
+/* ======================================== */
+"Test 27: Debug Context Lines Output Modes\n".echo();
+result_C = input.grep("line3", "C");
+("Result (C): " + result_C.str() + "\n").echo();
+result_oC = input.grep("line3", "oC");
+("Result (oC): " + result_oC.str() + "\n").echo();
+result_jC = input.grep("line3", "jC");
+("Result (jC): " + result_jC.str() + "\n").echo();
+result_ojC = input.grep("line3", "ojC");
+("Result (ojC): " + result_ojC.str() + "\n").echo();
+("Expected: All should return line2, line3, line4 (context around match)\n").echo();
+"---\n".echo();
+
 "=== CONTEXT LINES SUMMARY ===\n".echo();
 "All context lines tests completed.\n".echo();
 "Key features tested:\n".echo();

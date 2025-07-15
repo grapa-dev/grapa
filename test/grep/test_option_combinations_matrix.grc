@@ -21,14 +21,35 @@ Grapa .grc File Authoring Rules (Windows)
 
 "=== SYSTEMATIC OPTION COMBINATION MATRIX TEST SUITE ===\n".echo();
 
-/* === Advanced Combinations (from test_option_combinations_advanced.grc) === */
-/* [Insert unique advanced combination tests here] */
+/* === Advanced Combinations === */
+"\n-- Advanced Combinations --\n".echo();
+result_oid = input1.grep(pattern1, "oid");
+("oid: " + result_oid.str() + "\n").echo();
+result_odj = input1.grep(pattern1, "odj");
+("odj: " + result_odj.str() + "\n").echo();
+result_oNf = input1.grep(pattern1, "oNf");
+("oNf: " + result_oNf.str() + "\n").echo();
+"---\n".echo();
 
-/* === Higher-Order Combinations (from test_option_combinations_higher_order.grc) === */
-/* [Insert unique higher-order combination tests here] */
+/* === Higher-Order Combinations === */
+"\n-- Higher-Order Combinations --\n".echo();
+result_oidj = input1.grep(pattern1, "oidj");
+("oidj: " + result_oidj.str() + "\n").echo();
+result_odjA1 = input1.grep(pattern1, "odjA1");
+("odjA1: " + result_odjA1.str() + "\n").echo();
+result_oNfB1 = input1.grep(pattern1, "oNfB1");
+("oNfB1: " + result_oNfB1.str() + "\n").echo();
+"---\n".echo();
 
-/* === Basic Combinations (from test_basic_option_combinations.grc) === */
-/* [Insert unique basic combination tests here] */
+/* === Basic Combinations === */
+"\n-- Basic Combinations --\n".echo();
+result_oi = input1.grep(pattern1, "oi");
+("oi: " + result_oi.str() + "\n").echo();
+result_od = input1.grep(pattern1, "od");
+("od: " + result_od.str() + "\n").echo();
+result_ow = input1.grep(pattern1, "ow");
+("ow: " + result_ow.str() + "\n").echo();
+"---\n".echo();
 
 /* Section 1: Pairs with 'o' (match-only) */
 "\n-- 1. Pairs with 'o' (match-only) --\n".echo();

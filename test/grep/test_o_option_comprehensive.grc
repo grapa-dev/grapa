@@ -99,4 +99,32 @@ result14 = large_input.grep("line\\d+", "o");
 ("First few results: " + result14.str() + "\n").echo();
 "---\n".echo();
 
+/* Test 16: Unicode property extraction with 'o' */
+"Test 16: Unicode property extraction with 'o'\n".echo();
+result15 = "Hello 世界 123".grep("\\p{L}+", "o");
+("Result: " + result15.str() + "\n").echo();
+("Expected: [\"Hello\", \"世界\"]\n").echo();
+"---\n".echo();
+
+/* Test 17: Normalization with 'o' */
+"Test 17: Normalization with 'o'\n".echo();
+result16 = "café".grep("cafe", "oN");
+("Result: " + result16.str() + "\n").echo();
+("Expected: [\"café\"] (ripgrep returns original text span)\n").echo();
+"---\n".echo();
+
+/* Test 18: Diacritic-insensitive with 'o' */
+"Test 18: Diacritic-insensitive with 'o'\n".echo();
+result17 = "café résumé".grep("cafe", "od");
+("Result: " + result17.str() + "\n").echo();
+("Expected: [\"café\"] (ripgrep returns original text span)\n").echo();
+"---\n".echo();
+
+/* Test 19: Zero-length matches with 'o' */
+"Test 19: Zero-length matches with 'o'\n".echo();
+result18 = "abc".grep("(?=b)", "o");
+("Result: " + result18.str() + "\n").echo();
+("Expected: [\"\"]\n").echo();
+"---\n".echo();
+
 "=== COMPREHENSIVE 'o' OPTION TEST COMPLETE ===\n".echo(); 

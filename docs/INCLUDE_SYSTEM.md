@@ -119,7 +119,7 @@ include "test/test_atomic_groups.grc";
 include "test/test_lookaround_assertions.grc";
 include "test/test_unicode_grapheme_clusters.grc";
 include "test/test_parallel_grep_verification.grc";
-include "test/test_basic_option_combinations.grc";
+include "test/test_option_combinations_matrix.grc";
 include "test/test_error_handling.grc";
 
 /* Include new comprehensive test files */
@@ -128,6 +128,10 @@ include "test/test_custom_delimiters.grc";
 include "test/test_advanced_context.grc";
 include "test/test_unicode_normalization.grc";
 include "test/test_context_lines.grc";
+include "test/test_output_formats.grc";
+include "test/test_word_boundary.grc";
+include "test/test_zero_length_bug.grc";
+include "test/test_option_based_behavior.grc";
 
 "=== ALL TESTS COMPLETED ===\n".echo();
 "All test suites have been executed successfully!\n".echo();

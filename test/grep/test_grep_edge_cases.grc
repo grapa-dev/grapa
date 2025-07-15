@@ -21,8 +21,18 @@ result = input.grep("baz$", "o");
 ("Expected: [\"baz\"]\n").echo();
 "---\n".echo();
 
-/* === Overlapping Matches (from test_edge_case_overlapping_matches.grc) === */
-/* [Insert unique overlapping match tests here] */
+/* === Overlapping Matches === */
+"Test 2: Overlapping matches\n".echo();
+result = "ababa".grep("aba", "o");
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"aba\", \"aba\"]\n").echo();
+result = "aaaa".grep("aa", "o");
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"aa\", \"aa\", \"aa\"]\n").echo();
+result = "abcabc".grep("abc", "o");
+("Result: " + result.str() + "\n").echo();
+("Expected: [\"abc\", \"abc\"]\n").echo();
+"---\n".echo();
 
 /* ======================================== */
 /* 3. Zero-length matches */

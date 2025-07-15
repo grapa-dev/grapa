@@ -156,6 +156,24 @@ result12 = input.grep(pattern, "f", "\n");
 (("Status: " + (result12[0] == "line1" && result12[1] == "line2" && result12[2] == "line3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
+"Test 7: Debug All Mode Output\n".echo();
+input = "line1\nline2\nline3";
+("Input: " + input + "\n").echo();
+result = input.grep("line.*", "oa");
+("Result (oa): " + result.str() + "\n").echo();
+resultj = input.grep("line.*", "oja");
+("Result (oja): " + resultj.str() + "\n").echo();
+("Expected: Should return line1, line2, line3 (all lines matching)\n").echo();
+"---\n".echo();
+
+"Test 8: Debug Invert Match Output\n".echo();
+result = "hello world test".grep("hello", "ov");
+("Result (ov): " + result.str() + "\n").echo();
+resultj = "hello world test".grep("hello", "ojv");
+("Result (ojv): " + resultj.str() + "\n").echo();
+("Expected: Should return non-matching parts\n").echo();
+"---\n".echo();
+
 "=== OPTION-BASED BEHAVIOR TEST SUMMARY ===\n".echo();
 "The 'f' flag provides flexible control over grep output:\n".echo();
 "- 'o' alone: Return matched portions (ripgrep -o behavior)\n".echo();

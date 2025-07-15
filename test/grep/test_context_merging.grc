@@ -2,13 +2,24 @@
 
 "=== CONTEXT MERGING TEST ===\n".echo();
 
-/* === Basic Context Merging (from test_context_merging_simple.grc) === */
-/* [Insert unique tests from test_context_merging_simple.grc here] */
+/* === Basic Context Merging === */
+"Test 1: Context with non-consecutive matches\n".echo();
+input = "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\np\nq\nr\ns\nt\nu\nv\nw\nx\ny\nz";
+result = input.grep("d", "A1B1");
+("Result: " + result.str() + "\n").echo();
+("Expected: Should show context around 'd' match\n").echo();
+"---\n".echo();
 
-/* === Separator Logic and Edge Cases (from test_context_separator_corner_cases.grc) === */
-/* [Insert unique tests from test_context_separator_corner_cases.grc here] */
+/* === Multiple Matches with Context === */
+"Test 2: Multiple matches with context\n".echo();
+result = input.grep("[dj]", "A1B1");
+("Result: " + result.str() + "\n").echo();
+("Expected: Should show context around 'd' and 'j' matches\n").echo();
+"---\n".echo();
 
-/* === Custom Delimiter Context (from test_context_separator_corner_cases.grc) === */
-/* [Insert custom delimiter context tests here] */
+/* === Context Separators (Ripgrep Behavior) === */
+"Test 3: Context separators (ripgrep behavior)\n".echo();
+("Expected ripgrep output with '--' separators between non-consecutive context blocks\n").echo();
+"---\n".echo();
 
 "=== CONTEXT MERGING TEST COMPLETE ===\n".echo(); 

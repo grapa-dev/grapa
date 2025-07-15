@@ -128,4 +128,65 @@ result = input.grep("\\X", "o");
 ("Expected: [\"é\", \"\\n\", \"😀\"]\n").echo();
 "---\n".echo();
 
+/* ======================================== */
+/* 11. Simple grapheme cluster tests */
+/* ======================================== */
+"Test 11: Simple grapheme cluster tests\n".echo();
+input = "Hello";
+result = input.grep("\\X", "oj");
+("Basic ASCII: " + result.str() + "\n").echo();
+input = "café";
+result = input.grep("\\X", "oj");
+("Simple Unicode: " + result.str() + "\n").echo();
+input = "👋";
+result = input.grep("\\X", "oj");
+("Emoji: " + result.str() + "\n").echo();
+input = "👨‍👩‍👧‍👦";
+result = input.grep("\\X", "oj");
+("Complex Emoji: " + result.str() + "\n").echo();
+input = "Hello 👋";
+result = input.grep("\\X", "oj");
+("Mixed Content: " + result.str() + "\n").echo();
+"---\n".echo();
+
+/* ======================================== */
+/* 12. Debug grapheme cluster tests */
+/* ======================================== */
+"Test 12: Debug grapheme cluster tests\n".echo();
+input = "👨‍💻👩‍🏫👶‍👧";
+("Complex Unicode Sequences: " + input + "\n").echo();
+("Input length: " + input.len().str() + "\n").echo();
+result = input.grep("\\X", "oj");
+("Result type: " + result.type().str() + "\n").echo();
+("Result length: " + result.len().str() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+input = "Hello 👋 world 🌍 with café and mañana";
+("Mixed Content Debug: " + input + "\n").echo();
+("Input length: " + input.len().str() + "\n").echo();
+result = input.grep("\\X", "oj");
+("Result type: " + result.type().str() + "\n").echo();
+("Result length: " + result.len().str() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+input = "Hello 世界 👋 世界";
+("Unicode Scripts: " + input + "\n").echo();
+("Input length: " + input.len().str() + "\n").echo();
+result = input.grep("\\X", "oj");
+("Result type: " + result.type().str() + "\n").echo();
+("Result length: " + result.len().str() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
+input = "a\u0301b\u0302c\u0303";
+("Combining marks: " + input + "\n").echo();
+("Input length: " + input.len().str() + "\n").echo();
+result = input.grep("\\X", "oj");
+("Result type: " + result.type().str() + "\n").echo();
+("Result length: " + result.len().str() + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+"---\n".echo();
+
 "=== UNICODE GRAPHEME CLUSTERS TEST COMPLETE ===\n".echo(); 

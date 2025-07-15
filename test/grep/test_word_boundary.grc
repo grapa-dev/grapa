@@ -66,4 +66,35 @@ result8b = text5.grep("world", "wo");
 "End word 'world': " + result8b + "\n".echo();
 "Expected: ['hello'] and ['world']\n".echo();
 
+/* Test 9: Debug word boundary output */
+"Test 9: Debug word boundary output\n".echo();
+result9a = "hello hello hello".grep("hello", "ow");
+("Result (ow): " + result9a.str() + "\n").echo();
+result9b = "hello hello hello".grep("hello", "ojw");
+("Result (ojw): " + result9b.str() + "\n").echo();
+("Expected: Should return 2 matches, not 3 (no overlapping)\n").echo();
+"---\n".echo();
+
+/* Test 10: Simple word boundary cases */
+"Test 10: Simple word boundary cases\n".echo();
+result10a = "hello".grep("hello", "ow");
+("Result (single 'hello'): " + result10a.str() + "\n").echo();
+result10b = "hello world".grep("hello", "ow");
+("Result ('hello world'): " + result10b.str() + "\n").echo();
+result10c = "hello hello".grep("hello", "ow");
+("Result ('hello hello'): " + result10c.str() + "\n").echo();
+("Expected: Should find exactly one match per word\n").echo();
+"---\n".echo();
+
+/* Test 11: Unicode word boundary */
+"Test 11: Unicode word boundary\n".echo();
+result11a = "hello hello hello".grep("hello", "ow");
+("ASCII Result: " + result11a.str() + "\n").echo();
+result11b = "hello 世界 hello".grep("hello", "ow");
+("Unicode Result: " + result11b.str() + "\n").echo();
+result11c = "世界 hello 世界".grep("世界", "ow");
+("Unicode Pattern Result: " + result11c.str() + "\n").echo();
+("Expected: Should find non-overlapping matches in both cases\n").echo();
+"---\n".echo();
+
 "=== WORD BOUNDARY TEST COMPLETE ===\n".echo(); 

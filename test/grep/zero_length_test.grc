@@ -1,8 +1,0 @@
-/* Test zero-length match output with ^ pattern */
-"a\nb\n".grep("^", "o")
-
-/* Test with a simple pattern that should match */
-"hello".grep("o", "o")
-
-/* Test with empty string */
-"".grep("^", "o") 

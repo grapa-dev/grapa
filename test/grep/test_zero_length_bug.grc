@@ -54,4 +54,25 @@ control = ["", "test", ""];
 "Expected: [\"\", \"test\", \"\"]\n".echo();
 "---\n".echo();
 
+/* Test 8: Debug zero-length match output */
+"Test 8: Debug zero-length match output\n".echo();
+input = "abc";
+("Input: " + input + "\n").echo();
+result = input.grep("", "o");
+("Result (o): " + result.str() + "\n").echo();
+resultj = input.grep("", "oj");
+("Result (oj): " + resultj.str() + "\n").echo();
+("Expected: Should return a single empty string [\"\"] for zero-length match\n").echo();
+"---\n".echo();
+
+/* Test 9: Simple zero-length tests */
+"Test 9: Simple zero-length tests\n".echo();
+result9a = "a\nb\n".grep("^", "o");
+("Result (^ pattern): " + result9a.str() + "\n").echo();
+result9b = "hello".grep("o", "o");
+("Result (o pattern): " + result9b.str() + "\n").echo();
+result9c = "".grep("^", "o");
+("Result (empty input): " + result9c.str() + "\n").echo();
+"---\n".echo();
+
 "=== ZERO-LENGTH MATCH OUTPUT BUG TEST COMPLETED ===\n".echo(); 
