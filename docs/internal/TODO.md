@@ -6,6 +6,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 
 ## High-Priority Goals
 - Make Grapa and GrapaPy as inviting and usable as possible for the broadest audience (Python users, educators, researchers, data engineers, etc.)
+- **Ensure robust crash recovery by frequently persisting all in-progress work to disk (in docs/internal/WIP/), updating the persistent TODO with WIP references, and always resuming from the last save point after a crash. This is a core assistant responsibility to minimize lost work and maintain continuity, regardless of crash frequency.**
 
 ---
 
@@ -16,6 +17,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 - [ ] Update and modernize the webscrape example for current Grapa and GrapaPy best practices
 - [ ] Add migration tips and quickstarts for Python users in all relevant docs
 - [ ] Cross-link all new docs and examples for discoverability
+- [ ] **Keep the `description` and `long_description` in `setup.py` up to date and in sync with the README and Python docs.** This metadata is shown on PyPI and is important for discoverability and onboarding. Update whenever docs or project focus changes.
 
 ### 2. Python Integration
 - [ ] Highlight and document Grapa’s parallelism features ($thread, $net, map/reduce/filter) for Python users
@@ -38,6 +40,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 ### 5. General Improvements
 - [ ] Review and update all test files for consistency with new standards
 - [ ] Solicit and incorporate user feedback for further improvements
+- [ ] **Explore and document options for distributing the Grapa command-line tool (`grapa`) for easy installation and use on all supported platforms, including system setup and dependency management.** Research cross-platform packaging, dependency installation, and best practices for CLI tools.
 
 ---
 
