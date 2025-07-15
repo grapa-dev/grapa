@@ -12,6 +12,9 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 
 ## Current TODOs
 
+### 0. Immediate Next Priority
+- [ ] **Revise the `description` and `long_description` in `setup.py` to be inviting, accurate, and up to date with the README and Python docs.** This is in preparation for an official new release of Grapa and GrapaPy.
+
 ### 1. Documentation & Examples
 - [ ] Fill in detailed examples for each use case in `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md` (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
 - [ ] Update and modernize the webscrape example for current Grapa and GrapaPy best practices
@@ -41,6 +44,7 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 - [ ] Review and update all test files for consistency with new standards
 - [ ] Solicit and incorporate user feedback for further improvements
 - [ ] **Explore and document options for distributing the Grapa command-line tool (`grapa`) for easy installation and use on all supported platforms, including system setup and dependency management.** Research cross-platform packaging, dependency installation, and best practices for CLI tools.
+- [ ] **Design and implement a universal, simplified build process for Grapa binaries as described in BUILD.md.** The process should support separate commands for building Grapa, cleaning, and building GrapaPy, to streamline iterative development and testing.
 
 ---
 
