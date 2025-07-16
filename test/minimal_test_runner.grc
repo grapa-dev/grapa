@@ -1,0 +1,42 @@
+/* Minimal Test Runner */
+
+"=== MINIMAL TEST RUNNER ===".echo();
+"\n".echo();
+
+/* Simple test functions */
+test1 = op() {
+    "Test 1 running\n".echo();
+    true;
+};
+
+test2 = op() {
+    "Test 2 running\n".echo();
+    true;
+};
+
+/* Create test array */
+tests = [test1, test2];
+total = tests.len();
+("Total tests: " + total.str() + "\n").echo();
+
+/* Simple loop */
+passed = 0;
+i = 0;
+("Starting loop with i=" + i.str() + " and total=" + total.str() + "\n").echo();
+
+while (i < total) {
+    ("Loop iteration " + i.str() + "\n").echo();
+    test_name = "Test " + (i + 1).str();
+    result = tests[i]();
+    if (result) {
+        (test_name + ": PASSED\n").echo();
+        passed = passed + 1;
+    } else {
+        (test_name + ": FAILED\n").echo();
+    };
+    i = i + 1;
+    ("i is now " + i.str() + "\n").echo();
+};
+
+("Final result: " + passed.str() + "/" + total.str() + " passed\n").echo();
+"=== COMPLETE ===".echo(); 

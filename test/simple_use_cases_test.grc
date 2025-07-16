@@ -1,0 +1,497 @@
+/* Simple Use Cases Test */
+
+/*
+NOTE: In Grapa, use $local. only on the first assignment of a function-local variable. All subsequent references in the same function can use the variable name directly. This prevents variable shadowing and ensures variables are scoped to the current function, similar to 'var' in other languages.
+*/
+"=== SIMPLE USE CASES TEST ===".echo();
+"\n".echo();
+
+/* Test: Parallel CSV Processing */
+test_parallel_csv_processing = op() {
+    $local.test_files = ["test1.csv", "test2.csv", "test3.csv"];
+    $local.data = [];
+    $local.clean_data = [];
+    $local.total_records = 0;
+    $local.i = 0;
+    
+    "Starting test_parallel_csv_processing\n".echo();
+    ("test_files created: " + test_files.str() + "\n").echo();
+    
+    /* Create test files */
+    $file().set("test1.csv", "name,age,city\nJohn,30,NYC\nJane,25,LA");
+    $file().set("test2.csv", "name,age,city\nBob,35,Chicago\nAlice,28,Boston");
+    $file().set("test3.csv", "name,age,city\nCharlie,40,Seattle\nDiana,32,Portland");
+    "Files created\n".echo();
+    
+    /* Test the parallel processing */
+    $local.data = test_files.map(op(file) { $file().get(file).str().split("\n"); });
+    ("data created: " + $local.data.str() + "\n").echo();
+    
+    /* Transform: Clean and validate data */
+    $local.clean_data = $local.data.map(op(rows) {
+        rows.filter(op(row) { fields = row.split(","); fields.len() == 3 && fields[0] != "name"; });
+        });
+    ("clean_data created: " + $local.clean_data.str() + "\n").echo();
+    
+    /* Load: Aggregate results */
+    total_records = 0;
+    i = 0;
+    while (i < clean_data.len()) {
+        total_records = total_records + clean_data[i].len();
+        i = i + 1;
+    };
+    ("total_records calculated: " + total_records.str() + "\n").echo();
+    
+    ("Processed " + total_records.str() + " records across " + test_files.len().str() + " files\n").echo();
+    
+    /* Cleanup */
+    test_files.map(op(file) { $file().rm(file); });
+    "Cleanup completed\n".echo();
+    
+    /* Should have 6 records total */
+    total_records == 6;
+};
+
+/* Test: Data Validation Pipeline */
+test_data_validation = op() {
+    "Starting test_data_validation\n".echo();
+    
+    /* Define validation rules */
+    rules = {
+        "email": {"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"},
+        "age": {"min": 0, "max": 150},
+        "salary": {"min": 0, "max": 1000000}
+    };
+    "Rules defined\n".echo();
+    
+    /* Test data */
+    test_data = [
+        {"email": "john@example.com", "age": 30, "salary": 50000},
+        {"email": "invalid-email", "age": 200, "salary": 2000000},
+        {"email": "jane@test.org", "age": 25, "salary": 75000}
+    ];
+    "Test data created\n".echo();
+    
+    /* Validate data in parallel */
+    validate_record = op(record, rules) {
+        errors = [];
+        /* TODO: When a .match method is added to Grapa, use it here instead of .grep(..., "x") */
+        if (record["email"].grep(rules["email"]["pattern"], "x").len() == 0) {
+            errors += "Invalid email format";
+        };
+        if (record["age"] < rules["age"]["min"] || record["age"] > rules["age"]["max"]) {
+            errors += "Age out of range";
+        };
+        if (record["salary"] < rules["salary"]["min"] || record["salary"] > rules["salary"]["max"]) {
+            errors += "Salary out of range";
+        };
+        {"record": record, "errors": errors, "valid": errors.len() == 0};
+    };
+    "Validation function defined\n".echo();
+    
+    /* Process validation results */
+    results = test_data.map(op(record) { validate_record(record, rules); });
+    valid_records = results.filter(op(result) { result["valid"]; });
+    invalid_records = results.filter(op(result) { !(result["valid"]); });
+    "Validation completed\n".echo();
+    
+    ("Valid records: " + valid_records.len().str() + "\n").echo();
+    ("Invalid records: " + invalid_records.len().str() + "\n").echo();
+    
+    /* Debug: Show validation results */
+    "Debug validation results:\n".echo();
+    i = 0;
+    while (i < results.len()) {
+        result = results[i];
+        ("Record " + i.str() + ": valid=" + result["valid"].str() + ", errors=" + result["errors"].str() + "\n").echo();
+        i = i + 1;
+    };
+    
+    /* Check that we have exactly 1 valid and 2 invalid records */
+    valid_count = valid_records.len();
+    invalid_records = results.filter(op(result) { !(result["valid"]); });
+    /* Should have 2 valid, 1 invalid */
+    valid_count == 2 && invalid_records.len() == 1;
+};
+
+/* Test: Simple Expression Parser */
+test_expression_parser = op() {
+    "Starting test_expression_parser\n".echo();
+    
+    /* Test basic arithmetic evaluation */
+    /* Should be 14 */
+    result1 = 2 + 3 * 4;
+    /* Should be 9 */
+    result2 = (1 + 2) * 3;
+    /* Should be 10 */
+    result3 = 10 / 2 + 5;
+    
+    ("Expression results: " + result1.str() + ", " + result2.str() + ", " + result3.str() + "\n").echo();
+    
+    result1 == 14 && result2 == 9 && result3 == 10;
+};
+
+/* Test: Unlimited Precision Math */
+test_unlimited_precision = op() {
+    "Starting test_unlimited_precision\n".echo();
+    
+    large_number = 123456789012345678901234567890;
+    precise_float = 3.14159265358979323846264338327950288419716939937510;
+    
+    result = large_number * precise_float;
+    ("Large number result: " + result.str() + "\n").echo();
+    
+    /* Should be larger than original */
+    result > large_number;
+};
+
+/* Test: Financial Calculations */
+test_financial_calculations = op() {
+    "Starting test_financial_calculations\n".echo();
+    
+    /* Simple interest calculation */
+    simple_interest = op(principal, rate, time) {
+        principal * rate * time / 100;
+    };
+    
+    /* Test calculations */
+    $local.principal = 10000;
+    $local.rate = 5.0;
+    $local.time = 2;
+    
+    $local.interest = simple_interest($local.principal, $local.rate, $local.time);
+    $local.total = $local.principal + $local.interest;
+    
+    ("Principal: $" + $local.principal.str() + "\n").echo();
+    ("Interest: $" + $local.interest.str() + "\n").echo();
+    ("Total: $" + $local.total.str() + "\n").echo();
+    
+    /* Should be positive values */
+    $local.interest > 0 && $local.total > $local.principal;
+};
+
+/* Test: Parallel Data Processing */
+test_parallel_processing = op() {
+    "Starting test_parallel_processing\n".echo();
+    
+    /* Create test data */
+    test_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    
+    /* Process data in parallel */
+    results = test_data.map(op(x) { x * 2; });
+    
+    ("Parallel processing results: " + results.str() + "\n").echo();
+    
+    results.len() == 10 && results[0] == 2 && results[9] == 20;
+};
+
+/* Test: Map with parameters */
+test_map_with_params = op() {
+    "Starting test_map_with_params\n".echo();
+    
+    test_data = [1, 2, 3, 4, 5];
+    results = test_data.map(op(x, p) { x * 2 + p; }, 5);
+    
+    ("Map with params results: " + results.str() + "\n").echo();
+    
+    /* (1*2+5), (5*2+5) */
+    results[0] == 7 && results[4] == 15;
+};
+
+/* Test: String processing (simulating web scraping) */
+test_string_processing = op() {
+    "Starting test_string_processing\n".echo();
+    
+    /* Simulate HTML content */
+    html_content = "<h1>Title 1</h1><h2>Title 2</h2><a href='http://example.com'>Link</a>";
+    
+    /* Extract data using string operations */
+    titles = html_content.grep("<h[1-6][^>]*>.*?</h[1-6]>", "o");
+    links = html_content.grep("href=['\"][^'\"]*['\"]", "o");
+    
+    ("Extracted titles: " + titles.str() + "\n").echo();
+    ("Extracted links: " + links.str() + "\n").echo();
+    
+    titles.len() > 0 && links.len() > 0;
+};
+
+/* Test: File System Operations */
+test_file_system = op() {
+    "Starting test_file_system\n".echo();
+    
+    /* Create test file */
+    test_content = "line 1\nline 2\nline 3\nline 4\nline 5";
+    $file().set("test_file.txt", test_content);
+    
+    /* Read and process file */
+    content = $file().get("test_file.txt").str();
+    lines = content.split("\n");
+    filtered = lines.filter(op(line) { line.len() > 0; });
+    
+    ("File lines: " + filtered.len().str() + "\n").echo();
+    
+    /* Cleanup */
+    $file().rm("test_file.txt");
+    
+    /* Should have 5 non-empty lines */
+    filtered.len() == 5;
+};
+
+/* Test: Table Operations */
+test_table_operations = op() {
+    "Starting test_table_operations\n".echo();
+    
+    /* Create table */
+    table = $file().table("ROW");
+    table.mkfield("name", "STR", "VAR");
+    table.mkfield("age", "INT", "FIX", 4);
+    
+    /* Add data */
+    table.set("user1", "John", "name");
+    table.set("user1", 30, "age");
+    table.set("user2", "Jane", "name");
+    table.set("user2", 25, "age");
+    
+    /* Retrieve data */
+    name1 = table.get("user1", "name").str();
+    age1_raw = table.get("user1", "age");
+    name2 = table.get("user2", "name").str();
+    age2_raw = table.get("user2", "age");
+    /*
+    WORKAROUND: Table INT and FLOAT fields are returned as $STR containing raw bytes.
+    Use .raw().int() or .raw().float() to get the correct value.
+    This should be fixed in the C++ backend to return proper types.
+    */
+    age1 = age1_raw.raw().int();
+    age2 = age2_raw.raw().int();
+    
+    ("Raw age1 type: " + age1_raw.type() + ", value: " + age1_raw.str() + "\n").echo();
+    ("Raw age2 type: " + age2_raw.type() + ", value: " + age2_raw.str() + "\n").echo();
+    
+    ("User 1: " + name1 + ", Age: " + age1.str() + "\n").echo();
+    ("User 2: " + name2 + ", Age: " + age2.str() + "\n").echo();
+    
+    name1 == "John" && age1 == 30 && name2 == "Jane" && age2 == 25;
+};
+
+/* Test: Teaching Recursion */
+test_recursion = op() {
+    "Starting test_recursion\n".echo();
+    
+    /* Simple factorial function */
+    factorial = op(n) {
+        if (n <= 1) {
+            1;
+        } else {
+            n * factorial(n - 1);
+        };
+    };
+    
+    result = factorial(5);
+    ("Factorial of 5: " + result.str() + "\n").echo();
+    
+    /* 5! = 120 */
+    result == 120;
+};
+
+/* Test: Function composition */
+test_function_composition = op() {
+    "Starting test_function_composition\n".echo();
+    
+    /* Create base functions */
+    double = op(x) { x * 2; };
+    add_one = op(x) { x + 1; };
+    
+    /* Compose functions */
+    composed = op(x) { add_one(double(x)); };
+    
+    result = composed(5);
+    ("Composed function result: " + result.str() + "\n").echo();
+    
+    /* (5 * 2) + 1 = 11 */
+    result == 11;
+};
+
+test_minimal_filter_reduce = op() {
+    arr = [1,2,3,4];
+    filtered_gt2 = arr.filter(op(x) { x > 2; });
+    filtered_eq2 = arr.filter(op(x) { x == 2; });
+    filtered_none = arr.filter(op(x) { 0; });
+    reduced_sum = arr.reduce(op(acc, x) { acc += x; }, 0);
+
+    ("filtered_gt2: " + filtered_gt2.str() + "\n").echo();
+    ("filtered_eq2: " + filtered_eq2.str() + "\n").echo();
+    ("filtered_none: " + filtered_none.str() + "\n").echo();
+    ("reduced_sum: " + reduced_sum.str() + "\n").echo();
+
+    filtered_gt2 == [3,4] && filtered_eq2 == [2] && filtered_none.len() == 0 && reduced_sum == 10;
+};
+
+/* Run tests individually */
+"Running tests individually:\n".echo();
+"\n".echo();
+
+passed = 0;
+total = 12;
+
+/* Test 1 */
+"Test 1: ETL/Data Engineering\n".echo();
+result = test_parallel_csv_processing();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 2 */
+"Test 2: Data Validation\n".echo();
+result = test_data_validation();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 3 */
+"Test 3: Expression Parser\n".echo();
+result = test_expression_parser();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 4 */
+"Test 4: Unlimited Precision Math\n".echo();
+result = test_unlimited_precision();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 5 */
+"Test 5: Financial Calculations\n".echo();
+result = test_financial_calculations();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 6 */
+"Test 6: Parallel Processing\n".echo();
+result = test_parallel_processing();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 7 */
+"Test 7: Map with Parameters\n".echo();
+result = test_map_with_params();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 8 */
+"Test 8: String Processing\n".echo();
+result = test_string_processing();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 9 */
+"Test 9: File System Operations\n".echo();
+result = test_file_system();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 10 */
+"Test 10: Table Operations\n".echo();
+result = test_table_operations();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 11 */
+"Test 11: Recursion\n".echo();
+result = test_recursion();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Test 12 */
+"Test 12: Function Composition\n".echo();
+result = test_function_composition();
+if (result) {
+    "✓ PASSED\n".echo();
+    passed = passed + 1;
+} else {
+    "✗ FAILED\n".echo();
+    "(No exception details available; Grapa does not support try/catch)\n".echo();
+}
+"\n".echo();
+
+/* Optionally, call the test at the end for quick feedback */
+"Test: Minimal filter/reduce\n".echo();
+if (test_minimal_filter_reduce()) {
+    "✓ Minimal filter/reduce PASSED\n".echo();
+} else {
+    "✗ Minimal filter/reduce FAILED\n".echo();
+}
+
+/* Final Results */
+"=== FINAL RESULTS ===\n".echo();
+("Tests passed: " + passed.str() + "/" + total.str() + "\n").echo();
+
+if (passed == total) {
+    "🎉 All tests passed! USE_CASES.md examples are working correctly.\n".echo();
+} else {
+    "⚠️  Some tests failed. Please check the implementation.\n".echo();
+}; 

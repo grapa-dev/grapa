@@ -274,3 +274,27 @@ $OP and $CODE provide the foundation for Grapa's execution model. While most use
 - Understanding Grapa's architecture
 
 The execution tree model provides both the flexibility of interpreted code and the performance benefits of compiled code, making Grapa suitable for both rapid development and high-performance applications.
+
+## Function-Local Variables and $local.
+
+In Grapa, use the `$local.` prefix only on the first assignment of a variable that should be local to a function. All subsequent references in the same function can use the variable name directly. This ensures the variable is scoped to the current function and prevents accidental shadowing or overwriting of variables from parent or calling functions. This is especially important for common variable names like `total`, `sum`, `count`, etc.
+
+Example:
+
+```grapa
+test_sum = op() {
+    $local.total = 0;
+    $local.i = 0;
+    while (i < 10) {
+        total = total + i;
+        i = i + 1;
+    };
+    total;
+};
+```
+
+This is analogous to using `var` or `let` in JavaScript, or local variable declarations in other languages.
+
+**Best Practice:** Always use `$local.` for the first assignment of variables that should not leak outside the function or collide with variables in other scopes. After the first assignment, use the variable name directly.
+
+> **Warning:** Only use `$local.` on the first assignment at the top of a function. Do **not** use `$local.` inside loops, if-blocks, or other inner blocks. Each `{ ... }` block creates a new namespace in Grapa, so using `$local.` inside a loop or block will create a new variable that shadows the outer one, leading to bugs. Always declare all your function-local variables with `$local.` at the top of the function, and use the variable name directly everywhere else.

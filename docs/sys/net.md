@@ -1,9 +1,15 @@
 # $net
+
+/*
+Thread Safety:
+Grapa is fully thread safe in all supported environments (command line, Grapa shell, and Python/GrapaPy). All built-in operations—including map, filter, reduce, $thread, and $net—are safe to use concurrently. Users do not need to take any special precautions for thread safety in these environments.
+
+*Note: Only if Grapa is integrated directly into a non-thread-safe C++ host (not anticipated for normal users) would additional thread safety considerations arise.*
+*/
+
 Also see [$OBJ document](../obj/document.md)
 
 Provides a socket library, cross functional with all platforms supported. 
-
-Take caution on accessing shared resources from within a map or reduce or $thread or $net operation...ensure thread safe by using lock/unlock (any variable can be used for lock/unlock).
 
 ## type()
 Returns $net.

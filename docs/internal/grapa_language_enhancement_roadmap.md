@@ -3,6 +3,7 @@
 ## 1. General Language Feature Gaps
 - No `for`/`foreach` loops (only `while`)
 - No native exception handling (`try/catch`)
+    - **Note:** Grapa does not support `try`/`catch` or any structured exception handling. All error handling must be done via explicit checks (e.g., checking return values, using `if` statements). There is no built-in way to catch or recover from runtime exceptions.
 - Limited string formatting/interpolation
 - No module/import system for code reuse
 - User-defined classes/objects not fully documented or idiomatic

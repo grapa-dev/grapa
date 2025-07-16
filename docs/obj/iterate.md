@@ -1,14 +1,23 @@
 # Part of $OBJ
 
+/*
+Thread Safety:
+Grapa is fully thread safe in all supported environments (command line, Grapa shell, and Python/GrapaPy). All built-in operations—including map, filter, reduce, $thread, and $net—are safe to use concurrently. Users do not need to take any special precautions for thread safety in these environments.
+
+*Note: Only if Grapa is integrated directly into a non-thread-safe C++ host (not anticipated for normal users) would additional thread safety considerations arise.*
+*/
 
 ## map($OP [,params])
-See map in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel, so be sure $OP is thread safe. If not, use reduce instead of map. Result of $OP placed in a $LIST/$ARRAY which is returned at the completion.
+See [map in the Looping section](../operators/loop.md#map) for full documentation, canonical examples, and troubleshooting.
+Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel. Result of $OP placed in a $LIST/$ARRAY which is returned at the completion.
 
 ## filter($OP [,params])
-See filter in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel, so be sure $OP is thread safe. If not, use filter instead of map. If $OP of op is true, item is placed in a $LIST/$ARRAY which is returned at the completion. 
+See [filter in the Looping section](../operators/loop.md#filter) for full documentation, canonical examples, and troubleshooting.
+Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel. If $OP of op is true, item is placed in a $LIST/$ARRAY which is returned at the completion. 
 
 ## reduce($OP [,start [,params]])
-See reduce in the Looping section. Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
+See [reduce in the Looping section](../operators/loop.md#reduce) for full documentation, canonical examples, and troubleshooting.
+Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
 
 ## sort([axis],[order],[op])
 Sorts a $LIST.
@@ -26,10 +35,10 @@ Optionally pass in a compare routine.'''
 > ["b","a","B","c","b","A"].sort()
 ["A","B","a","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.upper()<=>b.upper();})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.upper()<= 3eb.upper();})
 ["a","A","B","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(0,0,op(a,b){$local.c=a.upper()<=>b.upper();if(c==0)c=a<=>b;c;})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){$local.c=a.upper()<= 3eb.upper();if(c==0)c=a<= 3eb;c;})
 [A,a,B,b,b,c]
 
 > ["b","a","B","c","b","A"].sort(0,[1,2])
@@ -48,7 +57,7 @@ Optionally pass in a compare routine.'''
 > ["b","a","B","c","b","A"].unique()
 ["A","B","a","b","c"]
 
-> ["b","a","B","c","b","A"].unique(op(a,b){a.upper()<=>b.upper();})
+> ["b","a","B","c","b","A"].unique(op(a,b){a.upper()<= 3eb.upper();})
 ["A","b","c"]
 ```
 
