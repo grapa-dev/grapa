@@ -68,6 +68,16 @@ python -c "import grapapy; g = grapapy.grapa(); result = g.grep('hello', 'hello 
 ### Setup
 ```
 brew install llvm
+
+* The following is needed for Mac Intel
+
+git clone https://github.com/llvm/llvm-project.git
+cd llvm-project
+mkdir build && cd build
+cmake -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_BUILD_TYPE=Release ../llvm
+make cxx
+
+* and then use the resulting *a files in the build
 ```
 
 ### Mac ARM64
