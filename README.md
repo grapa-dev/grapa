@@ -12,12 +12,14 @@
 
 ---
 
-## What is Grapa?
+## What is Grapa? 🧩
 Grapa is a modern, grammar-based programming language and data processing platform designed for unlimited precision, parallelism, and seamless Python integration. It is ideal for data engineers, educators, researchers, and anyone who needs high-performance ETL, language experimentation, or advanced scripting.
+
+[Back to Top](#grapa)
 
 ---
 
-## Key Features
+## Key Features 🚀
 - **Unlimited Precision:** Arbitrary-precision math for $INT, $FLOAT, $TIME
 - **True Parallelism:** Production-ready parallel ETL/data processing (map/reduce/filter, $thread, $net)
 - **Unified File/Database API:** Seamless navigation and processing of files and databases
@@ -26,22 +28,25 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 - **Education & Prototyping:** Rapidly prototype languages, teach compiler concepts, and experiment with meta-programming
 - **Cross-Platform:** Windows, Mac, Linux, AWS, and more
 
+[Back to Top](#grapa)
+
 ---
 
-## Table of Contents
+## Table of Contents 📚
 - [Quickstart](#quickstart)
 - [For Python Users](#for-python-users)
 - [For Newcomers/Non-Python-Users](#for-newcomersnon-python-users)
 - [Why Grapa?](#why-grapa)
 - [Explore More](#explore-more)
 - [Community & Support](#community--support)
+- [How to Contribute](#how-to-contribute)
 - [License](#license)
 
 [Back to Top](#grapa)
 
 ---
 
-## Quickstart
+## Quickstart ⚡
 
 ### Install
 ```bash
@@ -79,7 +84,7 @@ grapa -cfile "my_script.grc"
 
 ---
 
-## Why Grapa?
+## Why Grapa? 💡
 - **Data Engineering:** Run high-throughput ETL pipelines with true parallelism and unlimited precision.
 - **Education:** Teach and experiment with grammars, compilers, and language design.
 - **Python Integration:** Offload heavy data processing to Grapa from Python, bypassing the GIL.
@@ -90,7 +95,7 @@ grapa -cfile "my_script.grc"
 
 ---
 
-## Explore More
+## Explore More 🔎
 - [Getting Started](docs/GETTING_STARTED.md)
 - [Examples](docs/EXAMPLES.md)
 - [Migration Guides](docs/PYTHON_TO_GRAPA_MIGRATION.md)
@@ -102,17 +107,55 @@ grapa -cfile "my_script.grc"
 
 ---
 
-## Community & Support
+## Community & Support 🤝
 - [GitHub Issues](https://github.com/grapa-dev/grapa/issues)
 - [Discussions](https://github.com/grapa-dev/grapa/discussions)
-- [Contributing Guide](CONTRIBUTING.md)
 - [Contact](mailto:matichuk@hotmail.com)
 
 [Back to Top](#grapa)
 
 ---
 
-## License
+## How to Contribute 🛠️
+- See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing code, documentation, or feedback.
+- Join the [Discussions](https://github.com/grapa-dev/grapa/discussions) to ask questions, share ideas, or get help.
+- Open [GitHub Issues](https://github.com/grapa-dev/grapa/issues) for bugs, feature requests, or suggestions.
+
+[Back to Top](#grapa)
+
+---
+
+## License 📄
 See [LICENSE](LICENSE) file for details.
 
 [Back to Top](#grapa)
+
+---
+
+## Docs Site & Navigation (if applicable)
+> **Note:** If you use a static site generator (e.g., MkDocs, Sphinx, Docusaurus), ensure the sidebar/navigation groups docs as follows:
+> - Getting Started
+> - Quickstart
+> - Migration Guides
+> - Use Cases & Examples
+> - API Reference
+> - Python Integration
+> - Troubleshooting/FAQ
+> - Community & Contributing
+> - Advanced Topics
+> - Language Reference
+> - Type/Object Docs
+> - Build & Install
+> - License
+>
+> **Landing Page/Index:**
+> - Welcome message
+> - “Start Here” for new users
+> - “Python Quickstart” for Python users
+> - “Explore Examples”
+> - “API Reference”
+> - “Community & Support”
+
+---
+
+<!-- Search Optimization: Keywords: Grapa, GrapaPy, Python, migration, quickstart, ETL, parallelism, language, grammar, unlimited precision, data processing, onboarding, examples, API reference, contributing, community, support, documentation, static site, sidebar, navigation, troubleshooting, education, research, scripting, cross-platform, install, hello world, use cases, integration, reference, type docs, object docs, build, license -->
