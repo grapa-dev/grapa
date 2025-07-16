@@ -1,4 +1,12 @@
+/*
+  Supreme Droplist Window UI
+  - Provides a GUI for loading and displaying Supreme droplists
+  - Uses widgets for menu, scrollable items, and item display
+  - Integrates with scraping and data extraction logic
+*/
+
 $global.newSupremeDroplist = op(label) {
+	/* Create the main double window widget */
 	$WIDGET("double_window", 0, 0, 640, 130, label, {
 		namespace: "global",
 		on_hide: op(o){$global.supremedrop = null;},
@@ -41,6 +49,7 @@ $global.newSupremeDroplist = op(label) {
 	});
 };
 
+/* Add week menu items for Supreme droplists */
 $global.addSupremeDropWeeks = op()
 {
 	$local.items = supremeDropweeks();
@@ -68,6 +77,7 @@ $global.addSupremeDropWeeks = op()
 	},0);
 };
 
+/* Add a single item to the scrollable item list */
 $global.addSupremeDropItem = op(tr,width)
 {
 	$local.desc = tr.desc + "\n" + tr.vote.float().int().str() + "%" + " | $" + tr.price + " | " + tr.id + "\n";
@@ -97,6 +107,7 @@ $global.addSupremeDropItem = op(tr,width)
 	);
 };
 
+/* Fetch all available Supreme drop weeks */
 $global.supremeDropweeks = op()
 {
 	$local.cert = "client.crt";
@@ -128,6 +139,7 @@ $global.supremeDropweeks = op()
 	data2;
 };
 
+/* Fetch and process Supreme droplist for a given week */
 $global.supremeDroplist = op(week=0,threads=4)
 {
 	$local.cert = "client.crt";

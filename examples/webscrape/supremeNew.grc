@@ -1,9 +1,18 @@
+/*
+  Supreme New Items Scraper
+  - Connects to supremenewyork.com
+  - Fetches new items page and parses product links
+  - Uses threading for parallel data extraction
+  - Extracts product details, images, price, models, and add-to-cart info
+*/
 
 supremeNew = op(threads=4)
 {
+	/* Set up certificate and proxy for HTTPS connection */
 	local.cert = "client.crt";
 	local.proxy = "";
 	
+	/* Create network object and connect to site */
 	local.n2 = $net();
 	local.res = n2.connect("www.supremenewyork.com:443", cert, proxy);
 	local.header = {
@@ -15,9 +24,11 @@ supremeNew = op(threads=4)
 		Keep-Alive: "timeout=5, max=1000",
 		};
 	
+	/* Fetch the new items page */
 	res = n2.httpsend("GET","/shop/new",header,"");
 	local.r = n2.httpmessage();
 	
+	/* Find all <a> tags with <img> children (product links) */
 	local.data = r.body.html.body.findall({name:"a",has:{name:"img"}});
 	local.links1 = data
 		.reduce(op(a,b){
@@ -35,8 +46,10 @@ supremeNew = op(threads=4)
 
 	n2.disconnect();
 	
+	/* Split links for parallel processing by threads */
 	links2.split(threads)
 		.map(op(b){
+			/* Create a new network object for each thread */
 			local.n2 = $net();
 			local.res = n2.connect("www.supremenewyork.com:443", "client.crt", null);
 			local.header = {
@@ -55,9 +68,11 @@ supremeNew = op(threads=4)
 			{
 				local.url = b[i]+"/";
 				
+				/* Fetch product details page */
 				res = n2.httpsend("GET",url,header,"");
 				local.r2 = n2.httpmessage();
 				
+				/* Find product details in HTML */
 				local.data = r2.body.html.body.findall({name:"div",attr:{id="details"}});
 				
 				local.data2 = data.findall({attr:{"itemprop":"name"}});
@@ -78,6 +93,7 @@ supremeNew = op(threads=4)
 					.trim("$")
 					.replace(",","");
 				
+				/* Extract available models/colors */
 				local.models = 
 					data.findall({name:"ul",has:{name:"li"}})
 					.findall({name:"li"})
@@ -96,6 +112,7 @@ supremeNew = op(threads=4)
 							);
 						},{});
 					
+				/* For each model, fetch add-to-cart form details */
 				models22 = models
 					.reduce(op(a,b){
 						local.c = b;

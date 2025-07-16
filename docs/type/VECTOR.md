@@ -189,3 +189,6 @@ grapa: />#[[6, 3, 1, 5], [3, 0, 5, 1], [1, 5, 6, 2], [5, 1, 2, 2]]#.eigh()
 }
 ```
 
+> **Parallelism Note:**
+> Vector operations like `.map()` and `.filter()` are parallel by default and hardened for ETL/data processing workloads.
+

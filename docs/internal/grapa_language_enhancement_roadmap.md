@@ -15,6 +15,19 @@
 - No built-in documentation/help system
 - No native Unicode support outside grep
 - No direct async/concurrent programming support
+- **No `.get()` or `.set()` methods on lists/arrays:** Must use `[]` for access and assignment. This is a common Python/JavaScript habit that does not work in Grapa.
+- **No `.match()` method on strings:** Use `.grep()` for regex/pattern matching. `.match()` is not implemented.
+- **No `//` line comments:** Only block comments (`/* ... */`) are supported. Using `//` will cause syntax errors.
+- **End-of-line comments inside `{}` code blocks do not work:** Block comments at the end of a line within a code block can cause parsing errors.
+- **No `.append()` or `.push()` on arrays/lists:** Use `+=` for appending.
+- **No attribute-style access for list/dict keys:** Must use `[]` or explicit key lookup, not dot notation for dynamic keys.
+- **No automatic truthy/falsy conversion:** Explicit boolean checks are required; non-empty strings/lists are not automatically `true`.
+- **No implicit variable declaration:** All variables must be explicitly declared/assigned before use.
+- **No built-in `len()` function:** Use `.len()` method on arrays/lists/strings.
+- **No built-in `map()`/`filter()`/`reduce()` as global functions:** These are methods on arrays/lists, not standalone functions.
+- **No nested block comments:** Grapa does not support nested comments (e.g., `/* ... /* ... */ ... */`). Attempting to nest block comments will break parsing. This is a common expectation from other languages and a source of confusion/errors.
+
+*These gaps are common stumbling blocks for new users coming from Python, JavaScript, or similar languages, and are frequent sources of incorrect code generation or user confusion.*
 
 ## 2. Most Useful Additions for Usability
 - Add `for`/`foreach` loops

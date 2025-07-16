@@ -1,5 +1,11 @@
 # Grapa Use Cases
 
+> **See Also:**
+> - [Getting Started](GETTING_STARTED.md)
+> - [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users)
+> - [JS-to-Grapa Migration Guide](JS_TO_GRAPA_MIGRATION.md)
+> - [Examples](EXAMPLES.md)
+
 ## Thread Safety and Parallelism
 Grapa is fully thread safe by design. All variable and data structure updates are internally synchronized at the C++ level, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure, you may see *logical* race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.
 
@@ -113,6 +119,11 @@ aggregate_by_hour = op(processed_data) {
 ```
 
 - **See also:** [Python ETL Examples](PYTHON_USE_CASES.md#1-etl--data-engineering)
+
+> **Best Practice:**
+> Grapa's parallelism is a core, production-ready feature, specifically designed and hardened for ETL and high-throughput data processing. Users can confidently leverage `.map()`, `.filter()`, and related methods for robust, parallel ETL workloads.
+> **For Python Users:**
+> See the [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for guidance on using Grapa for ETL and data processing from Python.
 
 ## 2. Compiler/BNF Learning
 With executable BNF and mutable grammar, Grapa is perfect for teaching and experimenting with language design, parsing, and compiler construction.
@@ -322,26 +333,31 @@ failed = results.filter(op(r) { !r.get("success"); });
 - **See also:** [Python Parallelism Examples](PYTHON_USE_CASES.md#4-parallelconcurrent-programming)
 
 ## 5. Web/Data Scraping & Automation
-Grapa's $net and parallelism features are powerful for web scraping, automation, and API integration.
 
-### Key Features for Web Scraping:
-- **Concurrent Requests**: Multiple simultaneous network operations
-- **HTML/XML Parsing**: Built-in parsing capabilities
-- **Rate Limiting**: Control request frequency
-- **Error Handling**: Robust error recovery
+> **Best Practices:**
+> - Use `$net().get(url)` for HTTP requests; always check `.get("status")` for HTTP status.
+> - Parse HTML/XML with `$XML().parse(html)` or `.html()`.
+> - Use `.select()` or `.findall()` to extract elements or attributes.
+> - Rate limit requests with `$sys().sleep(ms)` to avoid overloading servers.
+> - Use public, stable endpoints (e.g., `https://httpbin.org/html`, `https://example.com`) in examples.
+> - Always check for `$ERR` when accessing attributes or elements that may not exist.
+> - See [Advanced Extraction Patterns](obj/document.md) for more on `.findall()` and complex queries.
 
 ### Example: Web Scraper with Rate Limiting
 ```grapa
-/* Scrape multiple pages with rate limiting */
+/* Define a function to scrape multiple pages with rate limiting */
 scrape_pages = op(urls, delay_ms) {
+    /* Map over each URL, with index for delay control */
     results = urls.map(op(url, index) {
-        /* Add delay between requests */
+        /* Add delay between requests except for the first */
         if (index > 0) {
             $sys().sleep(delay_ms);
         };
         
         try {
+            /* Perform HTTP GET request */
             response = $net().get(url);
+            /* Check for successful response */
             if (response.get("status") == 200) {
                 {
                     "url": url,
@@ -353,13 +369,14 @@ scrape_pages = op(urls, delay_ms) {
                 {"url": url, "success": false, "error": "HTTP " + response.get("status").str()};
             };
         } catch (error) {
+            /* Handle network or HTTP errors */
             {"url": url, "success": false, "error": error.get("message")};
         };
     });
     results;
 };
 
-/* Extract data from HTML */
+/* Define a function to extract data from HTML content */
 extract_data = op(html_content) {
     /* Parse HTML and extract specific elements */
     doc = $XML().parse(html_content);
@@ -372,14 +389,17 @@ extract_data = op(html_content) {
     };
 };
 
-/* Example usage */
+/* Example usage: list of target URLs to scrape */
 target_urls = [
     "https://example.com/page1",
     "https://example.com/page2",
     "https://example.com/page3"
 ];
 
-scraped_data = scrape_pages(target_urls, 1000);  /* 1 second delay */
+/* Scrape the pages with a 1 second delay between requests */
+scraped_data = scrape_pages(target_urls, 1000);
+
+/* Extract data from each successfully scraped page */
 extracted_data = scraped_data.map(op(page) { 
     if (page.get("success")) {
         extract_data(page.get("content"));

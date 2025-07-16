@@ -6,6 +6,8 @@ GrapaPy provides Python integration for the Grapa language, allowing you to exec
 
 ## Basic Usage
 
+> **Web Scraping Tip:** For web scraping, you can use Python's `requests` library to fetch web pages, then process the HTML or data using Grapa's parsing and extraction functions via GrapaPy. This is often more robust than relying on Grapa's built-in HTTP for complex sites.
+
 ```python
 import grapapy
 
@@ -59,6 +61,8 @@ xy.eval('table.mkfield("name", "STR")')  # Success
 ```
 
 ## Table Operations
+
+> **Tip:** When using GrapaPy, always create persistent objects (like file handles or tables) in the `$global` namespace. After initialization, you can use the variable name directly in subsequent calls.
 
 ### Creating Tables
 
@@ -187,85 +191,20 @@ except Exception as e:
     print("Exception:", e)
 ```
 
-## Common Patterns
+# Quickstart for Python Users
 
-### Helper Classes
+> **Essentials:**
+> - Always use `$global` for objects that need to persist across eval calls (file handles, tables, etc.).
+> - Use `.str()`, `.int()`, `.float()` for type conversion of results.
+> - Check for `$ERR` return values—no try/catch, handle errors explicitly.
+> - Use `[]` for list/array access, not `.get()`.
+> - See [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) and the upcoming [Python-to-Grapa Migration Guide](PYTHON_TO_GRAPA_MIGRATION.md) for more.
+> **Parallel ETL Advantage for Python Users:**
+> GrapaPy enables true, production-grade parallel ETL/data processing from Python. Unlike standard Python threading (limited by the GIL), GrapaPy leverages Grapa’s C++ backend for real parallelism, making high-throughput data workflows simple and robust. Use GrapaPy for large file processing, data transformation, analytics, and more.
 
-```python
-class GrapaTableHelper:
-    def __init__(self, grapa_instance, table_name):
-        self.xy = grapa_instance
-        self.table_name = table_name
-        self.xy.eval(f'$global.{table_name} = $file().table("ROW")')
-    
-    def mkfield(self, name, field_type, mode="VAR", size=None):
-        if size:
-            self.xy.eval(f'{self.table_name}.mkfield("{name}", "{field_type}", "{mode}", {size})')
-        else:
-            self.xy.eval(f'{self.table_name}.mkfield("{name}", "{field_type}")')
-    
-    def set(self, key, value, field):
-        self.xy.eval(f'{self.table_name}.set("{key}", "{value}", "{field}")')
-    
-    def get(self, key, field, convert_type="str"):
-        return self.xy.eval(f'{self.table_name}.get("{key}", "{field}").{convert_type}()')
-
-# Usage
-table = GrapaTableHelper(xy, "users")
-table.mkfield("name", "STR", "VAR")
-table.set("user1", "John Doe", "name")
-name = table.get("user1", "name")
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **`{"error":-1}` responses**: Usually indicate namespace issues - use `$global`
-2. **Object not found errors**: Ensure objects are created in global namespace
-3. **Type conversion errors**: Use `.str()`, `.int()`, `.float()` methods
-4. **Field type issues**: Use correct field creation syntax for integers
-
-### Debugging Tips
-
-```python
-# Check object types
-xy.eval('$global.debug_obj = some_operation()')
-obj_type = xy.eval('debug_obj.type()')
-print(f"Object type: {obj_type}")
-
-# Check namespace contents
-xy.eval('$global.test_var = "test"')
-result = xy.eval('test_var')
-print(f"Global variable: {result}")
-```
-
-## Examples
-
-### Complete Table Example
-
-```python
-import grapapy
-
-xy = grapapy.grapa()
-
-# Create table
-xy.eval('$global.users = $file().table("ROW")')
-xy.eval('users.mkfield("name", "STR", "VAR")')
-xy.eval('users.mkfield("age", "INT")')
-xy.eval('users.mkfield("salary", "FLOAT", "FIX", 8)')
-
-# Add data
-xy.eval('users.set("user1", "John Doe", "name")')
-xy.eval('users.set("user1", 30, "age")')
-xy.eval('users.set("user1", 75000.50, "salary")')
-
-# Retrieve data
-name = xy.eval('users.get("user1", "name").str()')
-age = xy.eval('users.get("user1", "age").int()')
-salary = xy.eval('users.get("user1", "salary").float()')
-
-print(f"User: {name}, Age: {age}, Salary: {salary}")
-```
-
-This guide covers the essential patterns and best practices for effective GrapaPy integration. Follow these guidelines to avoid common pitfalls and build robust Grapa-Python applications. 
+> **See Also:**
+> - [Getting Started](GETTING_STARTED.md)
+> - [Python Use Cases](PYTHON_USE_CASES.md)
+> - [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users)
+> - [Python-to-Grapa Migration Guide](PYTHON_TO_GRAPA_MIGRATION.md)
+> - [Examples](EXAMPLES.md)

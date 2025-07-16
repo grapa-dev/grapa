@@ -1,129 +1,118 @@
 
 # Grapa
 
-/*
-Project Philosophy:
-Grapa is designed to be inviting and usable for the broadest audience—Python users, educators, researchers, data engineers, and anyone interested in data processing, language experimentation, or high-performance computing. Our mission is to make advanced grammar-based programming, unlimited precision, and parallelism accessible and productive for all.
-*/
+<!-- Project Logo -->
+<!-- ![Grapa Logo](docs/assets/logo.png) -->
+
+<!-- Badges -->
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/grapa-dev/grapa/actions)
+[![PyPI](https://img.shields.io/pypi/v/grapapy)](https://pypi.org/project/grapapy/)
+[![Docs](https://img.shields.io/badge/docs-online-blue)](https://github.com/grapa-dev/grapa/tree/main/docs)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+---
+
+## What is Grapa?
+Grapa is a modern, grammar-based programming language and data processing platform designed for unlimited precision, parallelism, and seamless Python integration. It is ideal for data engineers, educators, researchers, and anyone who needs high-performance ETL, language experimentation, or advanced scripting.
+
+---
+
+## Key Features
+- **Unlimited Precision:** Arbitrary-precision math for $INT, $FLOAT, $TIME
+- **True Parallelism:** Production-ready parallel ETL/data processing (map/reduce/filter, $thread, $net)
+- **Unified File/Database API:** Seamless navigation and processing of files and databases
+- **Python Integration:** Use GrapaPy for idiomatic, high-performance scripting and data workflows
+- **Executable BNF & Mutable Grammar:** Define and experiment with grammars at runtime
+- **Education & Prototyping:** Rapidly prototype languages, teach compiler concepts, and experiment with meta-programming
+- **Cross-Platform:** Windows, Mac, Linux, AWS, and more
+
+---
+
+## Table of Contents
+- [Quickstart](#quickstart)
+- [For Python Users](#for-python-users)
+- [For Newcomers/Non-Python-Users](#for-newcomersnon-python-users)
+- [Why Grapa?](#why-grapa)
+- [Explore More](#explore-more)
+- [Community & Support](#community--support)
+- [License](#license)
+
+[Back to Top](#grapa)
+
+---
+
+## Quickstart
+
+### Install
+```bash
+pip install grapapy
+```
+
+### Hello World
+```python
+import grapapy
+xy = grapapy.grapa()
+print(xy.eval('"Hello, Grapa!".echo();'))
+```
+
+### Run a Script
+```bash
+grapa -cfile "my_script.grc"
+```
+
+[Back to Top](#grapa)
+
+---
+
+> **For Python Users:**
+> - [GrapaPy Quickstart](docs/GRAPAPY_INTEGRATION.md#quickstart-for-python-users)
+> - [Migration Tips for Python Users](docs/PYTHON_USE_CASES.md#migration-tips-for-python-users)
+> - [Python Use Cases](docs/PYTHON_USE_CASES.md)
+
+> **For Newcomers/Non-Python Users:**
+> - [Getting Started](docs/GETTING_STARTED.md)
+> - [Examples](docs/EXAMPLES.md)
+> - [JS-to-Grapa Migration Guide](docs/JS_TO_GRAPA_MIGRATION.md)
+> - [Language Reference](docs/FUNCTION_QUICK_REFERENCE.md)
+
+[Back to Top](#grapa)
 
 ---
 
 ## Why Grapa?
-- **Unlimited Precision:** $INT, $FLOAT, and $TIME types support arbitrary precision for scientific, cryptographic, and financial applications.
-- **Executable BNF & Mutable Grammar:** Define, modify, and experiment with grammars at runtime—ideal for language design, teaching, and research.
-- **Parallelism & Concurrency:** True parallel processing with $thread, $net, and map/reduce/filter, overcoming Python's GIL and enabling high-performance ETL and data workflows.
-- **Unified File/Database API:** Seamlessly navigate and process files and databases with a single, consistent interface.
-- **Python Integration:** Use GrapaPy to bring all these features to Python, with idiomatic APIs and migration tips for Python users.
-- **Education & Prototyping:** Rapidly prototype new languages, teach compiler concepts, and experiment with meta-programming.
+- **Data Engineering:** Run high-throughput ETL pipelines with true parallelism and unlimited precision.
+- **Education:** Teach and experiment with grammars, compilers, and language design.
+- **Python Integration:** Offload heavy data processing to Grapa from Python, bypassing the GIL.
+- **Research:** Prototype new languages, algorithms, and data workflows quickly.
+- **Cross-Platform:** Use the same code and tools on Windows, Mac, Linux, and cloud.
+
+[Back to Top](#grapa)
 
 ---
 
-## 🚀 Quickstart
-
-1. **Install Grapa**  
-   See [Getting Started](docs/GETTING_STARTED.md) for platform-specific instructions.
-2. **Run Your First Script**
-   ```sh
-   ./grapa -cfile "examples/hello_world.grc"
-   ```
-3. **Explore Use Cases & Examples**  
-   See [Use Cases](docs/USE_CASES.md) and [Examples](docs/EXAMPLES.md) for real-world workflows in both Grapa and Python.
-
----
-
-## 📖 Table of Contents
-
+## Explore More
 - [Getting Started](docs/GETTING_STARTED.md)
-- [Why Grapa? (Use Cases)](docs/USE_CASES.md)
-- [Python Quickstart & Use Cases](docs/PYTHON_USE_CASES.md)
-- [Syntax Quick Reference](docs/syntax/basic_syntax.md)
 - [Examples](docs/EXAMPLES.md)
-- [Grep (Unicode-aware)](docs/GREP.md)
-- [Testing](docs/TESTING.md)
-- [Writing & Running Grapa Scripts](docs/grc_scripts.md)
-- [Project & File Navigation](docs/directory_navigation.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Migration Guides](docs/PYTHON_TO_GRAPA_MIGRATION.md)
+- [Use Cases](docs/USE_CASES.md)
+- [API Reference](docs/FUNCTION_QUICK_REFERENCE.md)
+- [Community & Support](#community--support)
 
-### System Features
-- [$file (File I/O)](docs/sys/file.md)
-- [$math (Math)](docs/sys/math.md)
-- [$net (Networking)](docs/sys/net.md)
-- [$thread (Threading)](docs/sys/thread.md)
-- [$sys (System)](docs/sys/sys.md)
-
-### Data Types
-- [Base Types](docs/BASETYPES.md)
-- [System Types](docs/SYSTYPES.md)
-- [$OP](docs/type/OP.md)
-- [$CODE](docs/type/CODE.md)
-- [All Type Docs](docs/type/)
-
-### Operators
-- [Operator Quick Reference](docs/syntax/operator.md)
-- [Operator Precedence Table](docs/syntax/precedence.md)
-- [Conditionals (if, switch, ?)](docs/operators/condition.md)
-- [Assignment](docs/operators/assignment.md)
-- [Math](docs/operators/math.md)
-- [Bitwise](docs/operators/bit.md)
-- [Compare](docs/operators/compare.md)
-- [Loop](docs/operators/loop.md)
-- [Function](docs/operators/function.md)
-- [Command](docs/operators/command.md)
-- [Lexical](docs/operators/lexical.md)
-- [Constants](docs/operators/constants.md)
-
-### Database Features
-- [Database Quick Reference](docs/database/quick_reference.md)
-- [Column Store Guide](docs/database/column_store.md)
-- [Database Troubleshooting](docs/database/troubleshooting.md)
-
-### Advanced/Reference
-- [System Functions](docs/SYSTEM_FUNCTIONS.md)
-- [Function Quick Reference](docs/FUNCTION_QUICK_REFERENCE.md)
-- [GRZ Format Specification](docs/GRZ_FORMAT.md)
-- [Binary Grep Guide](docs/BINARY_GREP.md)
-- [System Include Reference](docs/INCLUDE_SYSTEM.md)
-- [Implementation Progress](docs/IMPLEMENTATION_PROGRESS.md)
-- [Unicode Grep Status](docs/UNICODE_GREP_STATUS.md)
-- [Ripgrep Parity Results](docs/RIPGREP_PARITY_RESULTS.md)
-- [Production Readiness Assessment](docs/PRODUCTION_READINESS_ASSESSMENT.md)
-
-### Build & Install
-- [Build from Source](docs/BUILD.md)
-- [Install from Binary](docs/BINARY.md)
-- [Dependencies](docs/DEPENDENCIES.md)
-- [AWS/Docker Setup](docs/SETUPAWSDOCKER.md)
-
-### Python & C++ Integration
-- [Python Quickstart & Use Cases](docs/PYTHON_USE_CASES.md)
-- [Python Setup](docs/PYTHON.md)
-- [Python Integration Guide](docs/python_integration.md)
-- [GrapaPy Integration](docs/GRAPAPY_INTEGRATION.md)
+[Back to Top](#grapa)
 
 ---
 
-## 🧩 Third-Party Libraries Used
+## Community & Support
+- [GitHub Issues](https://github.com/grapa-dev/grapa/issues)
+- [Discussions](https://github.com/grapa-dev/grapa/discussions)
+- [Contributing Guide](CONTRIBUTING.md)
+- [Contact](mailto:matichuk@hotmail.com)
 
-- **Cryptography:** [OpenSSL](https://www.openssl.org/), [blst](https://github.com/supranational/blst), [tiny-AES-c](https://github.com/kokke/tiny-AES-c)
-- **Unicode/Text Processing:** [utf8proc](https://github.com/JuliaStrings/utf8proc) (used in grep only)
-- **Regular Expressions:** [PCRE2](https://www.pcre.org/)
-- **GUI/Graphics:** [FLTK](https://www.fltk.org/)
-- **Python Bindings:** [pybind11](https://github.com/pybind/pybind11)
-- **Compression:** [miniz](https://github.com/richgel999/miniz)
-- **Other:** X11, libX11, libXft, libXext, libXinerama, libXcursor, libXrender, libfontconfig, libfreetype, libpng, libbrotlidec, pthread, libc, libdl, libm, libstdc++
-
----
-
-## ❓ Getting Help
-- [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
-- [Directory Navigation](docs/directory_navigation.md)
-
----
-
-## Contributing
-Interested in contributing? See [Implementation Progress](docs/IMPLEMENTATION_PROGRESS.md) and [Production Readiness Assessment](docs/PRODUCTION_READINESS_ASSESSMENT.md).
+[Back to Top](#grapa)
 
 ---
 
 ## License
-See LICENSE file for details.
+See [LICENSE](LICENSE) file for details.
+
+[Back to Top](#grapa)

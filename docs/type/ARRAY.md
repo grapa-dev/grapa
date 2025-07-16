@@ -30,3 +30,6 @@ If the elements are $ARRAY type, the first item of the array is used for the mat
 ```
 
 There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.
+
+> **Parallelism Note:**
+> Array operations like `.map()` and `.filter()` are parallel by default and hardened for ETL/data processing workloads.

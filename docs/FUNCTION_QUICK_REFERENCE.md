@@ -18,6 +18,8 @@
 ## Functional Programming
 `map`, `reduce`, `filter`, `range`
 
+> **Note:** `map` and `filter` are parallel by default and robust for ETL workloads; `reduce` is sequential. All are production-ready for high-throughput data processing.
+
 ## Type & I/O
 `isint`, `iferr`, `message`, `string`, `echo`, `console`, `prompt`
 
@@ -90,3 +92,8 @@ function = op(){@this.$sys.function_name(@var.{params});};
 ```
 
 **Total: 200+ system functions available** 
+
+> **See Also:**
+> - [Getting Started](GETTING_STARTED.md)
+> - [JS-to-Grapa Migration Guide](JS_TO_GRAPA_MIGRATION.md)
+> - [Examples](EXAMPLES.md) 

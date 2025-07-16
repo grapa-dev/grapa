@@ -428,3 +428,6 @@ Converts to binary.
 
 ## setconst(truefalse)
 Sets a bit to lock the variable from being modified. If set as const, the variable will not be locked when accessed. Useful for global variables accessed by multiple threads where if not a const will cause threads to block on access which is not needed if the variable doesn't change.
+
+> **Performance & Parallelism:**
+> All array/vector transformation methods (e.g., `.map()`, `.filter()`, `.reduce()`) are parallel by default, robust, and production-ready for ETL workloads. Grapa's parallelism is well tested for high-throughput data processing.

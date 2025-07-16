@@ -19,7 +19,8 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 
 ### 1. Documentation & Examples
 - [x] Fill in detailed examples for each use case in `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md` (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
-- [ ] Update and modernize the webscrape example for current Grapa and GrapaPy best practices
+- [x] Update and modernize the webscrape example for current Grapa and GrapaPy best practices
+- [x] Add best practices callouts and cross-links for data processing and web scraping in `EXAMPLES.md`, `USE_CASES.md`, `GRAPAPY_INTEGRATION.md`, and `obj/document.md`
 - [ ] Add migration tips and quickstarts for Python users in all relevant docs
 - [ ] Cross-link all new docs and examples for discoverability
 - [x] **Keep the `description` and `long_description` in `setup.py` up to date and in sync with the README and Python docs.** This metadata is shown on PyPI and is important for discoverability and onboarding. Update whenever docs or project focus changes.
@@ -77,3 +78,17 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 - Add migration tips and quickstarts for Python users in all relevant docs
 - Cross-link all new docs and examples for discoverability
 - Continue with Python integration, education/research, and advanced data interchange/serialization items as listed below 
+
+> Note: If new runnable examples are added to documentation, a corresponding `.grc` test script should be created in the `test/` folder to validate them. 
+
+### Backlog
+- Create a modern, runnable webscrape example:
+    - Place code in `examples/webscrape/`
+    - Add a `.grc` test script in `test/`
+    - Update or add .md documentation to help users perform web scraping with Grapa and GrapaPy
+    - Use a stable, public website (e.g., https://httpbin.org/html or https://example.com)
+    - Demonstrate best practices: data extraction, error handling, functional chaining
+- Create `.md` docs to help users map between coding in Python and JavaScript and coding in Grapa:
+    - Provide migration tips, idiom mapping, and common pitfalls
+    - Focus on helping users familiar with Python or JavaScript transition to Grapa
+    - Place these docs for easy discoverability and cross-link from quickstarts and migration guides 

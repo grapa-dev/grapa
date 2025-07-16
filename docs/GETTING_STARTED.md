@@ -160,3 +160,16 @@ matches.echo();  /* ["world", "world"] */
 - Dive into [System Functions](SYSTEM_FUNCTIONS.md) for advanced features
 - Check out the [Grep functionality](GREP.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips 
+
+> **Tip:** Use `.range()` to generate arrays of numbers: `(n).range(start, step)`. 
+
+> **Did you know?**
+> Grapa's parallel ETL/data processing is a core, production-ready feature. Parallelism is well tested and ideal for real-world, high-throughput data tasks. 
+
+> **For Newcomers/Non-Python Users:**
+> - [JS-to-Grapa Migration Guide](JS_TO_GRAPA_MIGRATION.md)
+> - [Language Reference](FUNCTION_QUICK_REFERENCE.md)
+> - [Examples](EXAMPLES.md)
+
+> **For Python Users:**
+> See the [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for essential guidance on using Grapa from Python. 

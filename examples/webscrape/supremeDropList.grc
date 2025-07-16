@@ -1,6 +1,14 @@
+/*
+  Supreme Drop List Scraper
+  - Connects to supremecommunity.com
+  - Fetches droplist overview and item details
+  - Uses threading for parallel data extraction
+  - Extracts item name, id, votes, price, description, image, colors, sizing
+*/
 
 supremeDroplist = op(week=1,threads=4)
 {
+	/* Set up certificate and proxy for HTTPS connection */
 	local.cert = "client.crt";
 	local.proxy = {type: "HTTP", id: "cmatic:KH4mzF2d", ip: "172.241.186.192:29842"};
 	
@@ -8,6 +16,7 @@ supremeDroplist = op(week=1,threads=4)
 	if (week.type()!="$ERR")
 		weekN = week;
 	
+	/* Create network object and connect to site */
 	local.n2 = $net();
 	local.res = n2.connect("www.supremecommunity.com:443", cert, proxy);
 	local.header = {
@@ -19,21 +28,27 @@ supremeDroplist = op(week=1,threads=4)
 		Keep-Alive: "timeout=5, max=1000",
 		};
 		
+	/* Fetch droplist overview page */
 	local.res = n2.httpsend("GET", "/season/fall-winter2020/droplists/",header,"");
 	local.r = n2.httpmessage();
 	
+	/* Find all droplist links for each week */
 	local.data = r.body.findall({name:"a",attr:{"class":"block"},has:{name:"h2",attr:{"class":"droplist-overview-title"}}});
 	local.data2 = data.reduce(op(a,b){a += b.$LIST.href;},[]);
 	local.z = data2[weekN];
 	
+	/* Fetch the selected week's droplist page */
 	local.res = n2.httpsend("GET", z, header, "");
 	local.r2 = n2.httpmessage();
 	
+	/* Find all item cards on the page */
 	local.data = r2.body.findall({name:"div",attr:{"class":"card card-2"}});
 
 	n2.disconnect();
 
+	/* Split data for parallel processing by threads */
 	data.split(threads).map(op(b){
+		/* Create a new network object for each thread */
 		local.n2 = $net();
 		local.res = n2.connect("www.supremecommunity.com:443", cert, proxy);
 		local.header = {
@@ -52,6 +67,7 @@ supremeDroplist = op(week=1,threads=4)
 		{
 			local.prec = b[i];
 			
+			/* Extract item details from card */
 			local.itemname = prec.div.$LIST."data-itemname".trim();
 			local.itemid = prec.div.$LIST."data-itemid";
 			local.upvotesratio = prec.findall({name:"p",attr:{"class":"upvotesratio hidden"}}).p[0];
@@ -68,6 +84,7 @@ supremeDroplist = op(week=1,threads=4)
 				img = imgData[0].$LIST.src;
 			};
 
+			/* Fetch item details page for colors and sizing */
 			local.res = n2.httpsend("GET", "/season/itemdetails/"+itemid+"/", header, "");
 			local.r = n2.httpmessage();
 			

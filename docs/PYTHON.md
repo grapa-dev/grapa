@@ -740,3 +740,8 @@ print(f"File system type: {fs_type}")
 ```
 
 This guide provides comprehensive coverage of using Grapa's features from Python. The key insight is using the global namespace to maintain object state across calls to the GrapaPy extension.
+
+## Quick Links
+- [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users)
+- [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users)
+- [Python Use Cases](PYTHON_USE_CASES.md)

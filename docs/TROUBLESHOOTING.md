@@ -2,6 +2,11 @@
 
 This guide covers common issues encountered when working with Grapa and GrapaPy, along with their solutions and debugging techniques.
 
+> **See Also:**
+> - [Getting Started](GETTING_STARTED.md)
+> - [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users)
+> - [GrapaPy Integration Guide](GRAPAPY_INTEGRATION.md)
+
 ## Common Error Patterns
 
 ### `{"error":-1}` Responses
@@ -356,3 +361,6 @@ xy.eval('fs.rm("test.txt")')
 ```
 
 This troubleshooting guide covers the most common issues and their solutions. When encountering problems, start with the namespace and type conversion issues, as these are the most frequent causes of `{"error":-1}` responses. 
+
+> **For Python Users:**
+> If you encounter issues with GrapaPy integration, see the [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for solutions to common problems and best practices. 

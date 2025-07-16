@@ -2,6 +2,27 @@
 
 GrapaPy brings the power of Grapa to Python users, making advanced data processing, parallelism, and language experimentation accessible from Python. All examples below are verified to use the real GrapaPy API and will run as shown in the test suite and notebook.
 
+> **See Also:**
+> - [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users)
+> - [Python-to-Grapa Migration Guide](PYTHON_TO_GRAPA_MIGRATION.md)
+> - [Getting Started](GETTING_STARTED.md)
+> - [Examples](EXAMPLES.md)
+
+# Migration Tips for Python Users
+
+> **Key Differences and Tips:**
+> - Use `$global` for persistent objects (file handles, tables, etc.)—local variables are lost between calls.
+> - No `for`/`foreach` loops—use `while` for iteration.
+> - No `try/catch`—check for `$ERR` return values and handle errors explicitly.
+> - Use `[]` for list/array access, not `.get()` (which is for objects/tables).
+> - Use `.map()`, `.reduce()`, `.filter()` as methods on arrays/lists, not as global functions.
+> - Every statement and block must end with a semicolon (`;`).
+> - Only block comments (`/* ... */`) are supported—no `//` line comments.
+> - Explicit type conversion is required for results (e.g., `.str()`, `.int()`, `.float()`).
+> - No implicit truthy/falsy—use explicit boolean checks.
+> - No attribute-style access for dict/list keys—use `[]` or `.get()` for objects.
+> - See the upcoming [Python-to-Grapa Migration Guide](PYTHON_TO_GRAPA_MIGRATION.md) for a full mapping and more examples.
+
 ## Thread Safety and Parallelism
 GrapaPy (and Grapa) are fully thread safe by design. All variable and data structure updates are internally synchronized, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure, you may see *logical* race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.
 

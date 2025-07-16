@@ -1,5 +1,12 @@
 # From $OBJ
 
+> **See also:** [Web/Data Scraping & Automation Best Practices](../USE_CASES.md#5-webdata-scraping--automation)
+>
+> **Best Practices:**
+> - Always check for `$ERR` when accessing attributes or elements that may not exist.
+> - Use functional chaining (`.map()`, `.reduce()`, `.filter()`) for processing extraction results.
+> - Prefer `.findall()` for complex queries and nested extraction patterns.
+
 # data = json(rawdata)
 
 # data = xml(rawxml)
@@ -65,3 +72,9 @@ hrefs = anchors_with_images.reduce(op(acc, a) {
 
 # Note on JSON and XML
 The same `.findall()` principles apply to complex JSON and XML documents. You can use the same query patterns to extract nested data, filter by attributes/keys, and process results with functional methods.
+
+> **See Also:**
+> - [Language Reference](../FUNCTION_QUICK_REFERENCE.md)
+> - [Python-to-Grapa Migration Guide](../PYTHON_TO_GRAPA_MIGRATION.md)
+> - [JS-to-Grapa Migration Guide](../JS_TO_GRAPA_MIGRATION.md)
+> - [Examples](../EXAMPLES.md)

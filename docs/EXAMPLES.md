@@ -2,6 +2,15 @@
 
 This document provides practical examples of Grapa usage, organized from basic to advanced.
 
+> **For Python Users:**
+> See the [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for help translating Python code and using Grapa from Python.
+
+> **See Also:**
+> - [Getting Started](GETTING_STARTED.md)
+> - [Python-to-Grapa Migration Guide](PYTHON_TO_GRAPA_MIGRATION.md)
+> - [JS-to-Grapa Migration Guide](JS_TO_GRAPA_MIGRATION.md)
+> - [Language Reference](FUNCTION_QUICK_REFERENCE.md)
+
 ## How to use this file
 - Start with the basic examples and work your way down.
 - Copy/paste examples into the Grapa REPL or a `.grc` file to experiment.
@@ -44,7 +53,65 @@ sum = numbers.reduce(op(a, b) { a + b; }, 0);
 ("Sum: " + sum).echo();
 ```
 
+### Generating a Sequence (Range)
+```grapa
+/* Generate an array of numbers 0..9 */
+seq = (10).range(0,1);
+seq.echo();  // Output: [0,1,2,3,4,5,6,7,8,9]
+```
+
+### For-Loop Equivalent with range() and reduce()
+
+You can use `.range()` and `.reduce()` together to replicate most for-loop behaviors, especially for accumulation or collecting values.
+
+**Sum numbers 0..9:**
+```grapa
+sum = (10).range(0,1).reduce(op(acc, x) { acc += x; }, 0);
+sum.echo();  // Output: 45
+```
+
+**Collect even numbers 0..9:**
+```grapa
+evens = (10).range(0,1).reduce(op(acc, x) {
+    if (x % 2 == 0) { acc += x; };
+}, []);
+evens.echo();  // Output: [0,2,4,6,8]
+```
+
+> **Note:** This is the idiomatic Grapa alternative to a classic for loop for accumulation and transformation tasks.
+
+### Parallel Sequence Processing with range() and map()/filter()
+
+You can use `.range()` with `.map()` or `.filter()` to generate or filter sequences in parallel. This is useful for data generation, transformation, or extracting subsets.
+
+**Example: Squares of 0..9**
+```grapa
+squares = (10).range(0,1).map(op(x) { x * x; });
+squares.echo();  // Output: [0,1,4,9,16,25,36,49,64,81]
+```
+
+**Example: Even numbers 0..9**
+```grapa
+evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
+evens.echo();  // Output: [0,2,4,6,8]
+```
+
+> **Warning:** `.map()` and `.filter()` are parallel by default and will create one thread per item. For large arrays, always specify a thread count to avoid resource exhaustion:
+> ```grapa
+> big = (1000000).range(0,1).map(op(x) { x * x; }, 8);  // Limit to 8 threads
+> ```
+
 ## Data Processing
+
+> **Best Practices:**
+> - Use `.range()` to generate a sequence array: e.g., `(10).range(0,1)` gives `[0,1,2,3,4,5,6,7,8,9]`.
+> - Use functional chaining: `.map()`, `.reduce()`, `.filter()` for processing lists, arrays, and parsed data.
+> - Always check for `$ERR` when accessing keys or attributes that may not exist (e.g., `if (item.type() != $ERR)`).
+> - Use `[]` for list/array access, not `.get()` (which is for objects/tables).
+> - Handle errors explicitly; Grapa does not support `try/catch`—check return values and use `if` statements for error handling.
+> - See [docs/obj/transform.md](obj/transform.md) for advanced range/sequence usage.
+> **Parallel ETL Advantage:**
+> Grapa's parallel data processing (e.g., with `.map()`, `.filter()`, `.reduce()`) is a core, production-ready feature. Parallelism is well tested and hardened for real-world ETL workloads, making Grapa especially powerful for high-throughput data tasks.
 
 ### String Word Length
 The following returns the length of each word in a string:
