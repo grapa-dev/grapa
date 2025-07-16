@@ -643,7 +643,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             } else {
                 // Use newlines for default delimiter
                 std::string line;
-                std::istringstream iss(working_input);
+                std::stringstream iss(working_input);
                 while (std::getline(iss, line)) {
                     segments.push_back(line);
                 }
