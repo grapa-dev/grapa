@@ -91,7 +91,6 @@ This document tracks possible advanced improvements and features for the Grapa d
 - Cursor crash reduction steps: keep app updated, increase memory limits, clear cache/state, monitor system resources, toggle hardware acceleration, check for conflicting software, check logs, reinstall if needed.
 - Reducing chat size/history can improve stability. All important context and next steps should be captured in docs/internal, so extensive chat history is not required.
 - After restart, rebuild context from docs/internal, which is updated frequently to ensure seamless task resumption.
-- Archived chat history is stored in docs/internal/chat_history with date-stamped filenames. The assistant can search these archives for additional context if needed, ensuring continuity even after chat is trimmed or cleared.
 
 ---
 

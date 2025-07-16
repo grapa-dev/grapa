@@ -1,0 +1,45 @@
+site_name: Grapa Documentation
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  language: en
+
+plugins:
+  - search
+  - tags
+
+extra_css:
+  - stylesheets/mobile-tweaks.css
+
+nav:
+  - Home: index.md
+  - Getting Started: GETTING_STARTED.md
+  - API Reference: FUNCTION_QUICK_REFERENCE.md
+  - Migration Guides:
+      - Python: PYTHON_TO_GRAPA_MIGRATION.md
+      - JavaScript: JS_TO_GRAPA_MIGRATION.md
+  - Use Cases: USE_CASES.md
+  - Examples: EXAMPLES.md
+  - Troubleshooting: TROUBLESHOOTING.md
+  - Contributing: ../../CONTRIBUTING.md
