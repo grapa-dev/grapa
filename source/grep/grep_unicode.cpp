@@ -642,10 +642,13 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                 segments = split_by_delimiter(working_input, line_delim);
             } else {
                 // Use newlines for default delimiter
-                std::string line;
-                std::stringstream iss(working_input);
-                while (std::getline(iss, line)) {
-                    segments.push_back(line);
+                size_t start = 0, end;
+                while ((end = working_input.find('\n', start)) != std::string::npos) {
+                    segments.push_back(working_input.substr(start, end - start));
+                    start = end + 1;
+                }
+                if (start < working_input.size()) {
+                    segments.push_back(working_input.substr(start));
                 }
             }
             
