@@ -23,6 +23,13 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 - [ ] Add migration tips and quickstarts for Python users in all relevant docs
 - [ ] Cross-link all new docs and examples for discoverability
 - [ ] **Keep the `description` and `long_description` in `setup.py` up to date and in sync with the README and Python docs.** This metadata is shown on PyPI and is important for discoverability and onboarding. Update whenever docs or project focus changes.
+- [ ] Clarify Grapa's thread safety model, shared state design considerations, and the roles of `static` and `const` in the documentation. 
+    - Clearly state that Grapa is fully thread safe by design (all variable and data structure updates are internally synchronized; no user locking needed for stability).
+    - Add guidance on logical race conditions when sharing mutable state between threads (design issue, not a stability issue).
+    - Clarify that `static` is for compile-time evaluation, not thread safety or immutability.
+    - Clarify that `const` is for performance (caching/optimization), not for locking, though it prevents modification unless `setconst` is used.
+    - Confirm and document (after C++ review) that all datatypes are lockable/unlockable, and update thread.md and relevant docs accordingly.
+    - Add best practices and examples for safe shared state and parallelism.
 
 ### 2. Python Integration
 - [ ] Highlight and document Grapa’s parallelism features ($thread, $net, map/reduce/filter) for Python users

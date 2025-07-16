@@ -46,8 +46,10 @@ x += (three:"th str");
 x.setconst(true);
 ```
 
+**Note:** `const` is intended for performance (caching/optimization), not for locking or thread safety. It prevents modification unless `setconst` is used, but does not synchronize access between threads. For explicit locking, see [$thread](../sys/thread.md).
+
 ## static
-Compile time option. In the example below, the code to construct the array would be executed every time the function is called. By using the const operator, the line to construct the array will be executed at compile time and the result of that used in the function.
+Compile-time option. The code to construct the array (or value) is executed at compile time (during script loading), not at runtime. This reduces repeated computation and improves performance, but does not affect thread safety or immutability.
 
 ```
 f = op(s)
@@ -70,8 +72,12 @@ Here is the compiled funciton without static:
 
 If the list needs to be constructed using a variable that is passed in, than do not use the static operator and the variable will be constructed at run time.
 
+**Note:** `static` is for compile-time evaluation only. It does not make a value immutable or thread safe. For thread safety and locking, see [$thread](../sys/thread.md).
+
 ## literal
 Any sequence starting with an ascii letter, and including numbers and '_'. 
 
 ## literal ([params])
 Assumes literal is a variable reference for $OP or $CODE, and runs the routine passing in parameters specified. See $OP and $CODE.
+
+```

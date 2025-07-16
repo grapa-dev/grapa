@@ -1,5 +1,20 @@
 # Grapa Grep Documentation
 
+## Thread Safety and Parallelism
+Grapa is fully thread safe by design. All variable and data structure updates are internally synchronized at the C++ level, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure (for example, when using parallel grep features), you may see *logical* race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.
+
+**Only `$thread()` objects provide explicit locking and unlocking via `lock()`, `unlock()`, and `trylock()`.** To protect access to a shared resource, create a `$thread()` lock object and use it to guard access. Calling `.lock()` or `.unlock()` on a regular variable (like an array or scalar) will return an error.
+
+**Canonical Example:**
+```grapa
+lock_obj = $thread();
+lock_obj.lock();
+// ... perform thread-safe operations on shared data ...
+lock_obj.unlock();
+```
+
+See [Threading and Locking](sys/thread.md) and [Function Operators: static and const](operators/function.md) for details and best practices.
+
 ## Who is this for?
 Anyone who wants to use Grapa's advanced pattern matching, achieve ripgrep parity, or understand Unicode/PCRE2 grep features in Grapa.
 
