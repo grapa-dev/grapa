@@ -15,15 +15,16 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 
 ### 0. Immediate Next Priority
 - [x] **CRITICAL: Fix Grapa code examples in `docs/USE_CASES.md` - current examples use incorrect syntax that is not actual Grapa code. Need to replace with proper Grapa syntax, functions, and comment style.**
-- [ ] **Revise the `description` and `long_description` in `setup.py` to be inviting, accurate, and up to date with the README and Python docs.** This is in preparation for an official new release of Grapa and GrapaPy.
+- [x] **Revise the `description` and `long_description` in `setup.py` to be inviting, accurate, and up to date with the README and Python docs.** This is in preparation for an official new release of Grapa and GrapaPy.
 
 ### 1. Documentation & Examples
 - [x] Fill in detailed examples for each use case in `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md` (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
 - [ ] Update and modernize the webscrape example for current Grapa and GrapaPy best practices
 - [ ] Add migration tips and quickstarts for Python users in all relevant docs
 - [ ] Cross-link all new docs and examples for discoverability
-- [ ] **Keep the `description` and `long_description` in `setup.py` up to date and in sync with the README and Python docs.** This metadata is shown on PyPI and is important for discoverability and onboarding. Update whenever docs or project focus changes.
-- [ ] Clarify Grapa's thread safety model, shared state design considerations, and the roles of `static` and `const` in the documentation. 
+- [x] **Keep the `description` and `long_description` in `setup.py` up to date and in sync with the README and Python docs.** This metadata is shown on PyPI and is important for discoverability and onboarding. Update whenever docs or project focus changes.
+- [x] Clarify Grapa's thread safety model, shared state design considerations, and the roles of `static` and `const` in the documentation. 
+    - All thread safety and locking documentation is now fully clarified and accepted. Only `$thread()` objects provide locking; all docs and examples are up to date.
     - Clearly state that Grapa is fully thread safe by design (all variable and data structure updates are internally synchronized; no user locking needed for stability).
     - Add guidance on logical race conditions when sharing mutable state between threads (design issue, not a stability issue).
     - Clarify that `static` is for compile-time evaluation, not thread safety or immutability.
@@ -68,3 +69,11 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 ---
 
 *Update this file as tasks are completed, reprioritized, or added. This ensures easy recovery and continuity after any crash or restart.* 
+
+---
+
+## Next Steps
+- Update and modernize the webscrape example for current Grapa and GrapaPy best practices
+- Add migration tips and quickstarts for Python users in all relevant docs
+- Cross-link all new docs and examples for discoverability
+- Continue with Python integration, education/research, and advanced data interchange/serialization items as listed below 
