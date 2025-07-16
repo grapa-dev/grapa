@@ -324,12 +324,27 @@ if sys.platform.startswith('linux') or sys.platform.startswith('win32'):
         version=grapapy_version,
         author="Chris Matichuk",
         author_email="matichuk@hotmail.com",
-        description="Grammar-based language and parser with unlimited precision, parallelism, and Python integration",
+        description="Grapa: Unlimited precision, parallel grammar-based programming, and seamless Python integration for data, language, and research",
         long_description=(
-            "Grapa is a modern grammar-based programming language and parser designed for Python users, educators, "
-            "researchers, and data engineers. It features unlimited precision math, runtime-mutable grammars, true parallelism, "
-            "and seamless Python integration via GrapaPy. Rapidly prototype languages, process data, and experiment with advanced grammars—all with a unified, high-performance toolset.\n\n"
-            "See the [Grapa project on GitHub](https://github.com/grapa-dev/grapa) for full documentation, examples, and installation instructions."
+            "Grapa is a modern grammar-based programming language and parser designed for Python users, educators, researchers, and data engineers. "
+            "It features unlimited precision math ($INT, $FLOAT, $TIME), runtime-mutable grammars, true parallelism (map/reduce/filter, $thread, $net), "
+            "and a unified file/database API. GrapaPy brings all these features to Python, enabling rapid prototyping, advanced data processing, language experimentation, and high-performance ETL workflows—all with a single, high-productivity toolset.\n\n"
+            "- 🚀 **Quickstart:**\n"
+            "  pip install grapapy\n"
+            "  import grapapy\n"
+            "  xy = grapapy.grapa()\n"
+            "  xy.eval(\"2 + 2;\")\n\n"
+            "- **Unlimited Precision:** Scientific, cryptographic, and financial math with arbitrary precision.\n"
+            "- **Executable BNF & Mutable Grammar:** Define and experiment with grammars at runtime.\n"
+            "- **Parallelism & Concurrency:** True parallel processing, overcoming Python's GIL.\n"
+            "- **Unified File/Database API:** Seamlessly navigate and process files and databases.\n"
+            "- **Python Integration:** Use GrapaPy for idiomatic, high-performance scripting and data workflows.\n"
+            "- **Education & Prototyping:** Rapidly prototype languages, teach compiler concepts, and experiment with meta-programming.\n\n"
+            "See the [Grapa project on GitHub](https://github.com/grapa-dev/grapa) for full documentation, examples, and installation instructions.\n\n"
+            "- [Getting Started](https://github.com/grapa-dev/grapa/blob/main/docs/GETTING_STARTED.md)\n"
+            "- [Python Use Cases](https://github.com/grapa-dev/grapa/blob/main/docs/PYTHON_USE_CASES.md)\n"
+            "- [Examples](https://github.com/grapa-dev/grapa/blob/main/docs/EXAMPLES.md)\n"
+            "- [Full Documentation](https://github.com/grapa-dev/grapa/tree/main/docs)\n"
         ),
         long_description_content_type="text/markdown",
         ext_modules=[lib_grapa],
