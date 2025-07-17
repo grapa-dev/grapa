@@ -29,6 +29,24 @@ This document tracks possible advanced improvements and features for the Grapa d
 
 > **Note:** Review/setup the static site generator (e.g., MkDocs Material) as a prerequisite if not already done. This will enable the above features and provide a foundation for further improvements.
 
+**Current Active Task (2024-07): Take actions to reduce crash occurrences in the Grapa documentation and development workflow.**
+
+**Next Priority: Create dedicated quickstart for High-Level Grapa Programmer (CLI, .grc)**
+- Focus on CLI/.grc users (most common user type)
+- Cover installation (manual binary extraction from bin/), basic setup, first .grc script, command line usage
+- Include basic syntax, common patterns, file operations, data processing examples
+
+**Backlog: Package Manager Installation Support**
+- Add support for Homebrew (macOS), apt-get (Linux), and Windows package managers
+- Replace manual binary extraction with proper installable packages
+- Update installation documentation accordingly
+
+**Backlog: Grapa vs Python Performance Testing**
+- Create a .grc script for Grapa language performance testing (excluding IO)
+- Cover scenarios: single-threaded, multi-threaded, different loop constructs, etc.
+- Create a matching pure Python script (no Grapa integration)
+- Run both and compare performance results
+
 ---
 
 ## Advanced Documentation Features & Enhancements (Backlog)

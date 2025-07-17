@@ -1,3 +1,8 @@
+---
+tags:
+  - user
+  - highlevel
+---
 # From $OBJ
 
 > **See also:** [Web/Data Scraping & Automation Best Practices](../USE_CASES.md#5-webdata-scraping--automation)
@@ -42,11 +47,11 @@ search = {
 # Advanced Usage: Extracting Data from HTML
 
 ```grapa
-// Parse HTML and extract all <a> tags with an <img> child
+/* Parse HTML and extract all <a> tags with an <img> child */
 html = $file().get("page.html").str().html();
 anchors_with_images = html.body.findall({name:"a", has:{name:"img"}});
 
-// Extract hrefs, filtering out any <a> without an href attribute
+/* Extract hrefs, filtering out any <a> without an href attribute */
 hrefs = anchors_with_images.reduce(op(acc, a) {
     if (a.$LIST.href.type() != $ERR) {
         acc += a.$LIST.href;

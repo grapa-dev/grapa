@@ -1,0 +1,39 @@
+/* Test .get() compatibility for various Grapa types */
+
+"=== $ARRAY ===\n".echo();
+my_arr = ["a", "b", "c"];
+("my_arr.get(1): " + my_arr.get(1).str() + "\n").echo();
+("my_arr[1]: " + my_arr[1].str() + "\n").echo();
+
+"=== $LIST ===\n".echo();
+my_list = {foo: 42, bar: 99};
+("my_list.get(0): " + my_list.get(0).str() + "\n").echo();
+("my_list.get(\"foo\"): ").echo();
+try { (my_list.get("foo").str() + "\n").echo(); } catch (e) { "[error]\n".echo(); }
+("my_list[0]: " + my_list[0].str() + "\n").echo();
+("my_list[\"foo\"]: " + my_list["foo"].str() + "\n").echo();
+("my_list.foo: " + my_list.foo.str() + "\n").echo();
+
+"=== $file ===\n".echo();
+my_fs = $file();
+my_fs.set("testfile.txt", "hello");
+("my_fs.get(\"testfile.txt\"): " + my_fs.get("testfile.txt").str() + "\n").echo();
+try { (my_fs.get(0).str() + "\n").echo(); } catch (e) { "[error]\n".echo(); }
+
+"=== $TABLE ===\n".echo();
+my_table = my_fs.table("ROW");
+my_table.mkfield("name", "STR", "VAR");
+my_table.set("row1", "Alice", "name");
+("my_table.get(\"row1\", \"name\"): " + my_table.get("row1", "name").str() + "\n").echo();
+try { (my_table.get(0).str() + "\n").echo(); } catch (e) { "[error]\n".echo(); }
+
+"=== $OBJ (class instance) ===\n".echo();
+myC = class {myV = 123;};
+myIns = obj myC;
+("myIns.get(\"myV\"): ").echo();
+try { (myIns.get("myV").str() + "\n").echo(); } catch (e) { "[error]\n".echo(); }
+("myIns[\"myV\"]: " + myIns["myV"].str() + "\n").echo();
+("myIns.myV: " + myIns.myV.str() + "\n").echo();
+
+/* Clean up */
+my_fs.rm("testfile.txt"); 

@@ -1,10 +1,7 @@
 # $FLOAT
 References:
-- [GrapaFloat.h header](../../source/grapa/GrapaFloat.h)
-- [GrapaFloat.cpp source](../../source/grapa/GrapaFloat.cpp)
-- [$FLOAT object](../../lib/grapa/$FLOAT.grc)
-- [$math object](../../lib/grapa/$math.grc)
-- [$OBJ object](../../lib/grapa/$OBJ.grc)
+
+
 
 Supports both fix and float format. Fix will apply the precision to just the decimal. Float will not restrict to the decimal, supporting large exponents with a specified precision. Each number maintains it's own precision, which is used in math operations with numbers of other precision. Some math operations may convert an input from one format to another. For example, passing in a float to a trig function will produce a fix format result. Floats also support specifying "extra" bits to apply to the calculations to reduce error propagation (the default is 10 bits). 
 
@@ -60,7 +57,7 @@ Bit shifts:
 492.0
 ```
 
-The binary represenation for a grapa $FLOAT includes the items returned from the decode method - sign, trunc, fix, exp, max, extra, data. For the binary format, see the source in [GrapaFloat.cpp](../../source/grapa/GrapaFloat.cpp) for GrapaFloat::FromBytes.
+The binary represenation for a grapa $FLOAT includes the items returned from the decode method - sign, trunc, fix, exp, max, extra, data. For more details on the binary format, see theGrapaFloat implementation.
 
 ```
 > (30.75).raw()

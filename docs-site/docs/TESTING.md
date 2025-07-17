@@ -1,668 +1,675 @@
-# Testing Documentation
+---
+tags:
+  - user
+  - highlevel
+  - testing
+---
 
-## Who is this for?
-Anyone who wants to validate Grapa functionality, run or write tests, or understand Grapa's test coverage and best practices.
+# Testing Grapa Scripts
+
+> **For Users:** Learn how to test your Grapa scripts effectively using Grapa's built-in capabilities.
+
+> **See Also:**
+> - [Getting Started](GETTING_STARTED.md)
+> - [Examples](EXAMPLES.md)
+> - [API Reference](API_REFERENCE.md)
+
+## Table of Contents
+- [Basic Testing](#basic-testing)
+- [Error Handling Tests](#error-handling-tests)
+- [Data Structure Testing](#data-structure-testing)
+- [File I/O Testing](#file-io-testing)
+- [Parallel Processing Tests](#parallel-processing-tests)
+- [Pattern Matching Tests](#pattern-matching-tests)
+- [Integration Testing](#integration-testing)
+- [Best Practices](#best-practices)
 
 ## Syntax Reminders
 - Every statement and every block (including after closing braces) must end with a semicolon (`;`).
 - Use block comments (`/* ... */`), not line comments (`// ...`).
 - To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
+- Use `[]` for list/array access, not `.get()` (which is for objects/tables).
+- Check for `$ERR` when accessing keys or attributes that may not exist.
 - See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
 
 ---
 
-## Running Tests (Quick Reference)
+## Basic Testing
 
-### Complete Test Suite
-Run all tests in one command:
-```bash
-# Windows
-.\grapa.exe -cfile "test/run_tests.grc"
-
-# Linux/Mac
-./grapa -cfile "test/run_tests.grc"
+### Simple Assertion Testing
+```grapa
+/* Test basic function */
+test_function = op(x) { x * 2; };
+result = test_function(5);
+if (result != 10) {
+    ("Test failed: expected 10, got " + result.str()).echo();
+} else {
+    "Test passed: function correctly doubles input".echo();
+};
 ```
 
-### Individual Test Categories
-```bash
-# Capabilities test
-.\grapa.exe -cfile "test/grep/test_current_capabilities.grc"
-
-# Performance test
-.\grapa.exe -cfile "test/grep/test_performance_optimizations.grc"
-
-# Feature-specific tests
-.\grapa.exe -cfile "test/grep/test_atomic_groups.grc"
-.\grapa.exe -cfile "test/grep/test_lookaround_assertions.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
+### Testing with Multiple Cases
+```grapa
+/* Test function with multiple inputs */
+test_cases = [0, 1, 5, 10, -3];
+expected_results = [0, 2, 10, 20, -6];
+i = 0;
+while (i < test_cases.len()) {
+    result = test_function(test_cases[i]);
+    expected = expected_results[i];
+    if (result != expected) {
+        ("Test failed for input " + test_cases[i].str() + ": expected " + expected.str() + ", got " + result.str()).echo();
+    } else {
+        ("Test passed for input " + test_cases[i].str()).echo();
+    };
+    i += 1;
+};
 ```
 
-### Python Test Suite
-```bash
-python test/run_tests.py
+### Testing String Operations
+```grapa
+/* Test string operations */
+test_string = "  Hello, World!  ";
+trimmed = test_string.trim();
+upper = trimmed.upper();
+
+if (trimmed != "Hello, World!") {
+    "String trim test failed".echo();
+} else {
+    "String trim test passed".echo();
+};
+
+if (upper != "HELLO, WORLD!") {
+    "String upper test failed".echo();
+} else {
+    "String upper test passed".echo();
+};
 ```
 
----
+## Error Handling Tests
 
-# Overview
+### Testing Error Conditions
+```grapa
+/* Test division by zero handling */
+test_division = op(a, b) {
+    if (b == 0) {
+        $ERR;
+    } else {
+        a / b;
+    };
+};
 
-Grapa includes a comprehensive test suite for validating Unicode grep functionality, performance optimizations, and regression testing. All tests are organized in the `test/` directory for easy management and execution.
+/* Test error case */
+result = test_division(10, 0);
+if (result.type() == $ERR) {
+    "Division by zero correctly caught".echo();
+} else {
+    "Division by zero test failed".echo();
+};
 
-**Current Status: All critical issues resolved, 98%+ ripgrep parity achieved**
-
-## Test Organization
-
-### Test Directory Structure
-```
-test/
-├── grep/           # Core and advanced grep feature tests (option combinations, edge cases, ripgrep parity, custom delimiters, etc.)
-│   ├── test_context_merging.grc
-│   ├── test_grep_edge_cases.grc
-│   ├── test_option_combinations_matrix.grc
-│   ├── test_o_option_edge_cases.grc
-│   └── [other feature-specific .grc files]
-├── python/         # Python integration and Grapa Python API tests
-├── integration/    # Integration tests (e.g., unified path system)
-├── database/       # Database-related tests (e.g., table operations)
-├── file_system/    # File system-related tests
-├── regression/     # Regression tests (currently empty)
-├── run_organized_tests.py
-├── run_tests.grz
-├── run_tests_comprehensive.grc
-├── run_tests.grc
-├── TEST_ORGANIZATION_SUMMARY.md
-├── README.md
-└── [various feature-specific .grc and .py test files]
+/* Test success case */
+result = test_division(10, 2);
+if (result.type() != $ERR && result == 5) {
+    "Division test passed".echo();
+} else {
+    "Division test failed".echo();
+};
 ```
 
-### Test Categories
+### Testing Object Property Access
+```grapa
+/* Test safe object property access */
+test_obj = {"name": "Alice", "age": 30};
 
-#### Capabilities
-- **Capabilities** (`test/grep/test_current_capabilities.grc`): Comprehensive Unicode and regex feature coverage
+/* Test existing property */
+name = test_obj.get("name");
+if (name != "Alice") {
+    "Object property test failed".echo();
+} else {
+    "Object property test passed".echo();
+};
 
-#### Performance
-- **Performance Optimizations** (`test/grep/test_performance_optimizations.grc`)
-- **Performance Debug** (`test/grep/test_performance_debug.grc`)
-
-#### Combinatorial and Option Matrix
-- **Option Combinations Matrix** (`test/grep/test_option_combinations_matrix.grc`)
-- **Comprehensive Grep Combinations** (`test/grep/test_comprehensive_grep_combinations.grc`)
-- **Option Based Behavior** (`test/grep/test_option_based_behavior.grc`)
-
-#### Context and Merging
-- **Context Lines** (`test/grep/test_context_lines.grc`) - Includes debug context tests
-- **Context Merging** (`test/grep/test_context_merging.grc`) - Includes separator tests
-
-#### Edge Cases and Stress
-- **Grep Edge Cases** (`test/grep/test_grep_edge_cases.grc`)
-- **Zero-Length Edge Cases** (`test/grep/test_edge_case_zero_length.grc`)
-- **Invalid Pattern Edge Cases** (`test/grep/test_edge_case_invalid_patterns.grc`)
-- **Context Boundaries** (`test/grep/test_edge_case_context_boundaries.grc`)
-- **Null Byte Edge Cases** (`test/grep/test_edge_case_null_bytes.grc`)
-- **Unicode Boundaries** (`test/grep/test_edge_case_unicode_boundaries.grc`)
-- **Precedence Edge Cases** (`test/grep/test_edge_case_precedence.grc`)
-- **Compositional Stress** (`test/grep/test_compositional_stress.grc`)
-- **Crash Fixes** (`test/grep/test_crash_fixes.grc`)
-
-#### PCRE2 and Rare Features
-- **Multiline and Rare PCRE2** (`test/grep/test_multiline_and_rare_pcre2.grc`)
-- **Atomic Groups** (`test/grep/test_atomic_groups.grc`)
-- **Lookaround Assertions** (`test/grep/test_lookaround_assertions.grc`)
-- **Basic PCRE2** (`test/grep/test_basic_pcre2.grc`)
-
-#### Delimiter and Unicode Normalization
-- **Custom Delimiters** (`test/grep/test_custom_delimiters.grc`)
-- **Unicode Normalization** (`test/grep/test_unicode_normalization.grc`)
-- **Unicode Grapheme Clusters** (`test/grep/test_unicode_grapheme_clusters.grc`)
-- **Unicode O Option** (`test/grep/test_unicode_o_option.grc`)
-- **Unicode Pattern Debug** (`test/grep/test_unicode_pattern_debug.grc`)
-- **Unicode Fix Verification** (`test/grep/test_unicode_fix_verification.grc`)
-- **Unicode Pattern Fix** (`test/grep/test_unicode_pattern_fix.grc`)
-- **Case Insensitive Unicode** (`test/grep/test_case_insensitive_unicode.grc`)
-- **Multiline Unicode** (`test/grep/test_multiline_unicode.grc`)
-
-#### Ripgrep Compatibility and Parity
-- **Ripgrep Compatibility** (`test/grep/test_ripgrep_compatibility.grc`)
-- **Ripgrep Parity Features** (`test/grep/test_ripgrep_parity_features.grc`)
-- **Comprehensive Ripgrep Parity** (`test/grep/test_comprehensive_ripgrep_parity.grc`)
-- **Missing Ripgrep Features** (`test/grep/test_missing_ripgrep_features.grc`)
-
-#### 'o' Option and Match-Only
-- **O Option Edge Cases** (`test/grep/test_o_option_edge_cases.grc`)
-- **O Option Comprehensive** (`test/grep/test_o_option_comprehensive.grc`) - Includes Unicode property, normalization, diacritic-insensitive, and zero-length tests
-- **O Option Advanced Regex** (`test/grep/test_o_option_advanced_regex.grc`)
-- **O Option Basic Fix** (`test/grep/test_o_option_basic_fix.grc`)
-
-#### Parallel and Performance
-- **Parallel Grep** (`test/grep/test_parallel_grep.grc`)
-- **Parallel Grep Basic** (`test/grep/test_parallel_grep_basic.grc`)
-
-#### JSON Compliance
-- **JSON Compliance** (`test/grep/test_json_compliance.grc`)
-
-#### Miscellaneous and Additional Features
-- **F Flag Combinations** (`test/grep/test_f_flag_combinations.grc`)
-- **Fixes Verification** (`test/grep/test_fixes_verification.grc`)
-- **Targeted Fixes** (`test/grep/test_targeted_fixes.grc`)
-- **File System Verification** (`test/grep/test_file_system_verification.grc`)
-- **Null Data Mode** (`test/grep/test_null_data_mode.grc`)
-- **Binary Mode** (`test/grep/test_binary_mode.grc`)
-- **Output Formats** (`test/grep/test_output_formats.grc`) - Includes color, column, JSON, and combined output tests
-- **Word Boundary** (`test/grep/test_word_boundary.grc`) - Includes comprehensive, Unicode, simple, and debug tests
-- **Word Boundary Comprehensive** (`test/grep/word_boundary_comprehensive.grc`)
-- **Zero-Length Match** (`test/grep/test_zero_length_bug.grc`) - Includes debug and simple tests
-- **Option-Based Behavior** (`test/grep/test_option_based_behavior.grc`) - Includes all-mode and invert match debug tests
-- **Unicode Grapheme Clusters** (`test/grep/test_unicode_grapheme_clusters.grc`) - Includes simple and debug tests
-- **Error Handling** (`test/grep/test_error_handling.grc`) - Includes invalid regex tests
-- **Pathological Patterns** (`test/grep/test_pathological_patterns.grc`)
-- **Malformed Unicode** (`test/grep/test_malformed_unicode.grc`)
-- **Ultra Large Lines** (`test/grep/test_ultra_large_lines.grc`)
-- **GRZ Execution Methods** (`test/grep/test_grz_execution_methods.grc`)
-- **GRZ Format** (`test/grep/test_grz_format.grc`)
-- **GRC vs GRZ Performance** (`test/grep/test_grc_vs_grz_performance.grc`)
-- **GRC vs GRZ Performance Corrected** (`test/grep/test_grc_vs_grz_performance_corrected.grc`)
-
-**Note:** All `.grc` files in `test/grep/` are required for full grep test coverage.
-
-### Running Python Tests
-Python tests require the `grapapy` module to be installed:
-```bash
-# Install grapapy module
-pip install -e .
-
-# Run Python integration tests
-python test/test_python_examples.py
-
-# Run Python grep tests
-python test/test_grep_python_examples.py
-
-# Run Python callback escaping tests
-python test/test_python_callback.py
+/* Test missing property */
+missing = test_obj.get("nonexistent");
+if (missing.type() == $ERR) {
+    "Missing property correctly returns $ERR".echo();
+} else {
+    "Missing property test failed".echo();
+};
 ```
 
-## Delimiter Handling and Test Rationalization (2025 Update)
+## Data Structure Testing
 
-### Unified Delimiter Code Path
-- The Grapa grep engine now uses a unified code path for both the default delimiter (`\n`) and custom delimiters (e.g., `|||`).
-- All line splitting, matching, and output logic is based on the `effective_delimiter`, regardless of its length.
-- This eliminates the need to duplicate the entire test suite for custom delimiters.
+### Testing Array Operations
+```grapa
+/* Test array operations */
+test_array = [1, 2, 3, 4, 5];
+doubled = test_array.map(op(x) { x * 2; });
+expected = [2, 4, 6, 8, 10];
 
-### Minimal Custom Delimiter Test Requirements
-- For each major feature (context, invert, match-only, multiline, rare PCRE2 features, etc.), at least one test uses a custom delimiter (multi-character, e.g., `|||`).
-- Edge cases are covered: delimiter at start/end, empty input, delimiter not present, delimiter as part of the pattern.
-- No need to duplicate every test for every delimiter; instead, ensure that for each major feature, at least one test uses a custom delimiter and passes.
+/* Compare arrays */
+if (doubled.len() != expected.len()) {
+    "Array length test failed".echo();
+} else {
+    "Array length test passed".echo();
+};
 
-### Test Suite Rationalization (2025)
-
-As of 2025, the test suite has been rationalized to reduce redundancy and improve clarity:
-- Overlapping and redundant test files have been merged.
-- The following files were merged or removed:
-  - test_context_merging_simple.grc and test_context_separator_corner_cases.grc → test_context_merging.grc
-  - test_edge_case_overlapping_matches.grc → test_grep_edge_cases.grc
-  - test_option_combinations_advanced.grc, test_option_combinations_higher_order.grc, test_basic_option_combinations.grc → test_option_combinations_matrix.grc
-  - test_o_option_critical_gaps.grc → test_o_option_edge_cases.grc
-  - test_o_option_unicode_property.grc, test_normalization_o.grc, test_diacritic_insensitive_o.grc, test_zero_length_o.grc → test_o_option_comprehensive.grc
-  - word_boundary_debug.grc, word_boundary_simple.grc, word_boundary_unicode_test.grc → test_word_boundary.grc
-  - color_test.grc, column_test.grc, color_column_test.grc → test_output_formats.grc
-  - zero_length_match_debug.grc, zero_length_test.grc → test_zero_length_bug.grc
-  - context_lines_debug.grc, context_lines_modes_debug.grc → test_context_lines.grc
-  - test_context_separators.grc → test_context_merging.grc
-  - all_mode_debug.grc, invert_match_debug.grc → test_option_based_behavior.grc
-  - test_grapheme_simple.grc, test_grapheme_debug.grc → test_unicode_grapheme_clusters.grc
-  - test_invalid_regex.grc → test_error_handling.grc
-- The test matrix and directory structure below reflect these changes.
-- This rationalization ensures all unique scenarios are preserved, while making the suite easier to maintain and extend.
-- **Result**: Reduced test file count from ~85 files to ~65 files (20% reduction) while maintaining comprehensive coverage.
-
-### Test Matrix (Current)
-- Each major feature and option combination is tested with the default delimiter and, where relevant, with a custom delimiter.
-- See the test list and categories above for details.
-
-## Running Tests
-
-### Complete Test Suite
-Run all tests in one command:
-```bash
-# Windows
-.\grapa.exe -cfile "test/run_tests.grc"
-
-# Linux/Mac
-./grapa -cfile "test/run_tests.grc"
+/* Compare each element */
+i = 0;
+while (i < doubled.len()) {
+    if (doubled[i] != expected[i]) {
+        ("Array element test failed at index " + i.str() + ": expected " + expected[i].str() + ", got " + doubled[i].str()).echo();
+    } else {
+        ("Array element test passed at index " + i.str()).echo();
+    };
+    i = i + 1;
+};
 ```
 
-### Individual Test Categories
-Run specific test categories:
-```bash
-# Capabilities test
-.\grapa.exe -cfile "test/grep/test_current_capabilities.grc"
+### Testing Array Filtering
+```grapa
+/* Test array filtering */
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+evens = numbers.filter(op(x) { x % 2 == 0; });
+expected_evens = [2, 4, 6, 8, 10];
 
-# Performance tests
-.\grapa.exe -cfile "test/grep/test_performance_optimizations.grc"
-.\grapa.exe -cfile "test/grep/test_performance_debug.grc"
+if (evens.len() != expected_evens.len()) {
+    "Filter length test failed".echo();
+} else {
+    "Filter length test passed".echo();
+};
 
-# Combinatorial and option matrix tests
-.\grapa.exe -cfile "test/grep/test_option_combinations_matrix.grc"
-.\grapa.exe -cfile "test/grep/test_comprehensive_grep_combinations.grc"
-.\grapa.exe -cfile "test/grep/test_option_based_behavior.grc"
+/* Sort for comparison (order may vary with parallel processing) */
+evens_sorted = evens.sort();
+expected_sorted = expected_evens.sort();
 
-# Context and merging tests
-.\grapa.exe -cfile "test/grep/test_context_lines.grc"
-.\grapa.exe -cfile "test/grep/test_context_merging.grc"
-
-# Edge case and stress tests
-.\grapa.exe -cfile "test/grep/test_grep_edge_cases.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_zero_length.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_invalid_patterns.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_context_boundaries.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_null_bytes.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_unicode_boundaries.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_precedence.grc"
-.\grapa.exe -cfile "test/grep/test_compositional_stress.grc"
-.\grapa.exe -cfile "test/grep/test_crash_fixes.grc"
-
-# PCRE2 and rare feature tests
-.\grapa.exe -cfile "test/grep/test_multiline_and_rare_pcre2.grc"
-.\grapa.exe -cfile "test/grep/test_atomic_groups.grc"
-.\grapa.exe -cfile "test/grep/test_lookaround_assertions.grc"
-.\grapa.exe -cfile "test/grep/test_basic_pcre2.grc"
-
-# Delimiter and Unicode normalization tests
-.\grapa.exe -cfile "test/grep/test_custom_delimiters.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_normalization.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_o_option.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_pattern_debug.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_fix_verification.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_pattern_fix.grc"
-.\grapa.exe -cfile "test/grep/test_case_insensitive_unicode.grc"
-.\grapa.exe -cfile "test/grep/test_multiline_unicode.grc"
-
-# Ripgrep compatibility and parity tests
-.\grapa.exe -cfile "test/grep/test_ripgrep_compatibility.grc"
-.\grapa.exe -cfile "test/grep/test_ripgrep_parity_features.grc"
-.\grapa.exe -cfile "test/grep/test_comprehensive_ripgrep_parity.grc"
-.\grapa.exe -cfile "test/grep/test_missing_ripgrep_features.grc"
-
-# 'o' option and match-only tests
-.\grapa.exe -cfile "test/grep/test_o_option_edge_cases.grc"
-.\grapa.exe -cfile "test/grep/test_o_option_comprehensive.grc"
-.\grapa.exe -cfile "test/grep/test_o_option_advanced_regex.grc"
-.\grapa.exe -cfile "test/grep/test_o_option_basic_fix.grc"
-
-# Parallel and performance tests
-.\grapa.exe -cfile "test/grep/test_parallel_grep.grc"
-.\grapa.exe -cfile "test/grep/test_parallel_grep_basic.grc"
-
-# JSON compliance test
-.\grapa.exe -cfile "test/grep/test_json_compliance.grc"
-
-# Miscellaneous and additional feature tests
-.\grapa.exe -cfile "test/grep/test_f_flag_combinations.grc"
-.\grapa.exe -cfile "test/grep/test_fixes_verification.grc"
-.\grapa.exe -cfile "test/grep/test_targeted_fixes.grc"
-.\grapa.exe -cfile "test/grep/test_file_system_verification.grc"
-.\grapa.exe -cfile "test/grep/test_null_data_mode.grc"
-.\grapa.exe -cfile "test/grep/test_binary_mode.grc"
-.\grapa.exe -cfile "test/grep/test_output_formats.grc"
-.\grapa.exe -cfile "test/grep/test_word_boundary.grc"
-.\grapa.exe -cfile "test/grep/word_boundary_comprehensive.grc"
-.\grapa.exe -cfile "test/grep/test_zero_length_bug.grc"
-.\grapa.exe -cfile "test/grep/test_option_based_behavior.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
-.\grapa.exe -cfile "test/grep/test_error_handling.grc"
-.\grapa.exe -cfile "test/grep/test_pathological_patterns.grc"
-.\grapa.exe -cfile "test/grep/test_malformed_unicode.grc"
-.\grapa.exe -cfile "test/grep/test_ultra_large_lines.grc"
-.\grapa.exe -cfile "test/grep/test_grz_execution_methods.grc"
-.\grapa.exe -cfile "test/grep/test_grz_format.grc"
-.\grapa.exe -cfile "test/grep/test_grc_vs_grz_performance.grc"
-.\grapa.exe -cfile "test/grep/test_grc_vs_grz_performance_corrected.grc"
-
-# Note: All .grc files in test/grep/ are required for full grep test coverage.
+if (evens_sorted.str() == expected_sorted.str()) {
+    "Filter test passed".echo();
+} else {
+    "Filter test failed".echo();
+};
 ```
 
-### Regression Testing
-For development and CI/CD, run the complete test suite:
-```bash
-# Quick regression test
-.\grapa.exe -cfile "test/run_tests.grc"
+### Testing Array Reduction
+```grapa
+/* Test array reduction */
+numbers = [1, 2, 3, 4, 5];
+sum = numbers.reduce(op(acc, x) { acc + x; }, 0);
+expected_sum = 15;
+
+if (sum == expected_sum) {
+    "Reduce test passed".echo();
+} else {
+    ("Reduce test failed: expected " + expected_sum.str() + ", got " + sum.str()).echo();
+};
 ```
 
-## Test Output
+## File I/O Testing
 
-### Expected Results
-- **Capabilities Test**: 12 PASS, 3 FAIL (expected failures for unsupported features)
-- **Performance Test**: 8 PASS
-- **Parallel Processing Test**: 8 PASS
-- **Atomic Groups Test**: 10 PASS
-- **Lookaround Assertions Test**: 8 PASS
-- **Unicode Grapheme Clusters Test**: 10 PASS ✅ **FIXED**
-- **Grapheme Cluster Pattern Test**: All tests PASS (direct segmentation working) ✅ **FIXED**
-- **Invalid Regex Patterns Test**: All tests PASS (graceful error handling working)
-- **Unicode Edge Cases Test**: All tests PASS (zero-length matches now working correctly) ✅ **FIXED**
-- **Ripgrep Compatibility Test**: All tests PASS (full ripgrep parity achieved) ✅ **FIXED**
-- **Column Numbers Test**: All tests PASS (column number functionality working) ✅ **FIXED**
-- **Color Output Test**: All tests PASS (color output functionality working) ✅ **FIXED**
-- **Word Boundary Test**: All tests PASS (word boundary functionality working) ✅ **FIXED**
-- **Context Lines Test**: All tests PASS (context line functionality working) ✅ **FIXED**
-- **JSON Compliance Test**: All tests PASS (JSON output format working) ✅ **FIXED**
+### Testing File Operations
+```grapa
+/* Test file operations */
+test_file = "test_data.txt";
+test_content = "Hello, Grapa!";
 
-## Recent Test Improvements
+/* Write test data */
+file_set(test_file, test_content);
 
-### Major Fixes (Latest Release)
+/* Read and verify */
+read_content = file_get(test_file);
+if (read_content != test_content) {
+    "File content test failed".echo();
+} else {
+    "File content test passed".echo();
+};
 
-1. **Unicode Grapheme Clusters**: Full implementation and testing of `\X` pattern with all quantifiers
-2. **Empty Pattern Handling**: Fixed to return `[""]` instead of `$SYSID`
-3. **Zero-Length Match Output**: Fixed to return `[""]` instead of multiple empty strings
-4. **JSON Output Format**: Fixed double-wrapped array issue
-5. **Context Lines**: Full implementation and testing with proper merging
-6. **Column Numbers**: Fixed and tested 1-based positioning
-7. **Color Output**: Fixed and tested ANSI color code implementation
-8. **Word Boundaries**: Fixed and tested for all scenarios
-9. **Invert Match**: Fixed and tested to return non-matching segments
-10. **All Mode**: Fixed and tested single-line processing
+/* Test file listing */
+files = file_ls(".");
+test_file_found = false;
+i = 0;
+while (i < files.len()) {
+    if (files[i].name == test_file) {
+        test_file_found = true;
+    };
+    i = i + 1;
+};
 
-### Test Coverage Enhancements
+if (test_file_found) {
+    "File listing test passed".echo();
+} else {
+    "File listing test failed".echo();
+};
 
-- **Comprehensive JSON Testing**: Added `test_json_compliance.grc` for thorough JSON output validation
-- **Edge Case Testing**: Enhanced edge case coverage for zero-length matches and empty patterns
-- **Performance Validation**: Comprehensive performance testing with real-world scenarios
-- **Parallel Processing Verification**: Thorough testing of parallel processing consistency and performance
+/* Cleanup */
+file_set(test_file, "");  /* Clear file */
+```
 
-## Performance Test Results
+### Testing JSON Processing
+```grapa
+/* Test JSON parsing and processing */
+json_text = '{"name": "Alice", "age": 30, "active": true}';
+parsed = json_text.json();
 
-### Parallel Processing Performance (50MB input)
-- **1 worker**: 9.59s baseline
-- **2 workers**: 3.25x speedup (2.95s)
-- **4 workers**: 6.91x speedup (1.39s)
-- **8 workers**: 8.91x speedup (1.08s)
-- **16 workers**: 11.28x speedup (0.85s)
+/* Test object access */
+name = parsed.get("name");
+age = parsed.get("age");
+active = parsed.get("active");
 
-### Unicode Performance
-- **Grapheme Cluster Extraction**: Direct segmentation bypassing regex engine for optimal performance
-- **Unicode Property Matching**: Optimized for common Unicode properties
-- **Normalization Caching**: LRU cache for improved performance on repeated operations
+if (name == "Alice" && age == 30 && active == true) {
+    "JSON parsing test passed".echo();
+} else {
+    "JSON parsing test failed".echo();
+};
 
-## Current Status Summary
+/* Test missing key */
+missing = parsed.get("nonexistent");
+if (missing.type() == $ERR) {
+    "JSON missing key test passed".echo();
+} else {
+    "JSON missing key test failed".echo();
+};
+```
 
-### ✅ **RESOLVED CRITICAL ISSUES**
-- **Unicode Grapheme Clusters**: Fully implemented and tested
-- **Empty Pattern Handling**: Fixed and tested
-- **Zero-Length Match Output**: Fixed and tested
-- **JSON Output Format**: Fixed and tested
-- **Context Lines**: Fully implemented and tested
-- **Column Numbers**: Fixed and tested
-- **Color Output**: Fixed and tested
-- **Word Boundaries**: Fixed and tested
-- **Invert Match**: Fixed and tested
-- **All Mode**: Fixed and tested
+## Parallel Processing Tests
 
-### ✅ **PRODUCTION READY**
-- **Overall Health**: Excellent - 98%+ of ripgrep parity achieved
-- **Critical Issues**: 0 (all resolved)
-- **Performance**: Excellent (up to 11x speedup with 16 workers)
-- **Test Coverage**: Comprehensive and robust
-- **Unicode Support**: Full Unicode property and script support
-- **Error Handling**: Robust - invalid patterns return empty results instead of crashing
+### Testing Parallel Operations
+```grapa
+/* Test parallel operations */
+test_data = (1000).range(0, 1);  /* Generate 0-999 */
+expected_sum = test_data.reduce(op(acc, x) { acc + x; }, 0);
 
-### ⚠️ **REMAINING MINOR ISSUES**
-- **Context Merging Edge Cases**: Some complex context combinations may not merge exactly as ripgrep does
-- **Unicode Normalization Edge Cases**: Some normalization scenarios may not work as expected with certain pattern combinations
-- **Test Documentation Updates**: Some test files may need updates to reflect current behavior
+/* Test parallel sum with limited threads */
+/* 4 threads */
+parallel_sum = test_data.reduce(op(acc, x) { acc + x; }, 0, 4);
 
-## Conclusion
+if (parallel_sum == expected_sum) {
+    "Parallel sum test passed".echo();
+} else {
+    ("Parallel sum test failed: expected " + expected_sum.str() + ", got " + parallel_sum.str()).echo();
+};
 
-The test suite is comprehensive and robust, with all critical functionality thoroughly tested and working correctly. The system achieves 98%+ ripgrep parity and is production-ready with excellent performance characteristics. 
+/* Test parallel mapping */
+/* 4 threads */
+doubled = test_data.map(op(x) { x * 2; }, 4);
+/* Sequential for comparison */
+expected_doubled = test_data.map(op(x) { x * 2; });
 
-# Grapa Grep Test Suite: Rationalization & Coverage Status (2025)
+/* Sort for comparison (parallel order may vary) */
+doubled_sorted = doubled.sort();
+expected_sorted = expected_doubled.sort();
 
-## IMPORTANT: Grapa Script Syntax Compliance
-- **Every statement in Grapa must end with a semicolon (`;`), including after the closing brace of every block** (such as `if`, `else`, `while`, and function blocks).
-- **To append to an array, use the `+=` operator.**
-  - Example:
-    arr = [];
-    arr += "foo";
-    arr += "bar";
-    // arr is now ["foo", "bar"]
-  - Do not use `.push()` or `.append()`—these are not valid in Grapa.
-- For deterministic test output (when order is not guaranteed), use the `.sort()` function on arrays before comparison or output.
-  - Example:
-    result = input.grep(pattern, options);
-    result = result.sort();
-    (result.join("\n")).echo();
-  - See `docs/syntax/iterate.md` for more details on `.sort()` and other array methods.
-- For more syntax details, see the `docs/syntax/` folder.
+if (doubled_sorted.str() == expected_sorted.str()) {
+    "Parallel map test passed".echo();
+} else {
+    "Parallel map test failed".echo();
+};
+```
 
-## Summary & Status
+### Testing Thread Safety
+```grapa
+/* Test thread safety with shared data */
+shared_counter = 0;
+lock_obj = $thread();
 
-- **Ripgrep Parity (Excluding File System):** Complete. All major features and behaviors are covered and tested.
-- **"o" Feature (Match-Only):** Complete. All logical scenarios and edge cases are tested.
-- **Multiline Patterns & Rare PCRE2 Features:** Complete. All advanced regex features are covered.
-- **Custom Delimiter Support:** Complete. Unified code path; targeted tests for all major features.
-- **Combinatorial Option Coverage:** Complete. All valid combinations are tested; no untested code paths remain.
-- **Edge Cases for Production:** Complete. All critical and subtle edge cases are covered.
-- **Debug Printf Pattern:** Complete. All debug output in C++ uses // DEBUG_START and // DEBUG_END.
-- **Grapa Coding Practices:** Complete. All .grc files follow best practices (see section below).
-- **Documentation:** Complete. TESTING.md and test matrix are up to date.
-- **No Regressions:** Complete. All tests pass after each change.
+/* Create multiple threads that increment counter */
+increment_worker = op() {
+    lock_obj.lock();
+    shared_counter = shared_counter + 1;
+    lock_obj.unlock();
+};
 
-This status is maintained as of the latest rationalization and test suite update.
+/* Run multiple increments */
+i = 0;
+while (i < 100) {
+    increment_worker();
+    i = i + 1;
+};
 
-# Grapa .grc Coding Best Practices
+if (shared_counter == 100) {
+    "Thread safety test passed".echo();
+} else {
+    ("Thread safety test failed: expected 100, got " + shared_counter.str()).echo();
+};
+```
 
-The following rules apply to all Grapa .grc test and script files:
+## Pattern Matching Tests
 
-- Use block comments (`/* ... */`) for all comments in Grapa code and test files.
-- Do **not** nest block comments; Grapa does not support nested block comments. Always close a block comment before starting another.
-- Line comments (`// ...`) are not supported and will cause syntax errors.
-- Use block comments for all comments (do not use //). Block comments should be written as in this header.
-- Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
-- End every command with a ; character.
-- Use while loops instead of for (Grapa does not support for).
-- Wrap string concatenations in parentheses: (str1+str2).echo();
-- Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
-  Example:
-    ar = [1,2,3];
-    ar[1]; // returns 2
-    ar = {"a":11,"b":22,"c":33};
-    ar[1]; // returns 22 
-    ar["b"]; // returns 22
-- Use .get("key") for object property access, not for arrays/lists.
-- Validate syntax against known-good .grc files before adding new code.
-- Prefer simple, explicit constructs for compatibility.
-- To run .grc files on Windows:
-    .\grapa.exe -q -cfile path/file.grc
-- See the living section in docs/obj/grep.md for updates (if present).
+### Testing Grep Patterns
+```grapa
+/* Test basic pattern matching */
+test_text = "Hello world\nGoodbye world\nHello again";
+matches = test_text.grep("Hello", "o");
 
-These practices ensure consistency, maintainability, and compatibility across all Grapa test and script files.
+expected_matches = ["Hello", "Hello"];
+if (matches.len() != expected_matches.len()) {
+    "Grep match count test failed".echo();
+} else {
+    "Grep match count test passed".echo();
+};
 
-## Debug Configuration
+/* Test case-insensitive matching */
+case_matches = test_text.grep("hello", "oi");
+if (case_matches.len() == 2) {
+    "Case-insensitive grep test passed".echo();
+} else {
+    "Case-insensitive grep test failed".echo();
+};
+```
 
-### Debug Printf Pattern
-- **Definition**: `GRAPA_DEBUG_PRINTF` in `source/grep/grapa_grep_unicode.hpp` (line 31)
-- **Pattern**: All debug printf statements are enclosed in `#ifdef GRAPA_DEBUG_PRINTF // DEBUG_START` and `#endif // DEBUG_END`
-- **Enable**: Uncomment `#define GRAPA_DEBUG_PRINTF` in the header file
-- **Disable**: Comment out the define or ensure it's not defined
+### Testing Complex Patterns
+```grapa
+/* Test complex regex patterns */
+test_text = "abc123\ndef456\nghi789";
+number_matches = test_text.grep("[0-9]+", "o");
 
-### Current Debugging Session (2025)
-**Issue**: `oa` option combination causes crashes in grep implementation
-- **Affected Tests**: 
-  - `test_o_option_comprehensive.grc` (Test 9: All-mode with 'o')
-  - `test_option_combinations_matrix.grc` (Section 1: Pairs with 'o')
-- **CRASH Files**: 
-  - `test_o_option_comprehensive-CRASH.grc`
-  - `test_option_combinations_matrix-CRASH.grc`
-- **Debug Status**: Debug output enabled for crash investigation
-- **Next Steps**: Analyze debug output to identify root cause of `oa` combination crash 
+if (number_matches.len() == 3) {
+    "Number pattern test passed".echo();
+} else {
+    "Number pattern test failed".echo();
+};
 
-## Recent Test Consolidation and Documentation Updates (2025)
+/* Test word boundaries */
+word_text = "hello world hello123 hello_test";
+word_matches = word_text.grep("hello", "wo");
 
-### Test Suite Consolidation Summary
-The test suite has been significantly consolidated to improve maintainability and reduce redundancy:
+if (word_matches.len() == 2) {
+    "Word boundary test passed".echo();
+} else {
+    "Word boundary test failed".echo();
+};
+```
 
-#### Consolidation Results
-- **Before**: ~85 individual test files
-- **After**: ~65 consolidated test files  
-- **Reduction**: 20% fewer files while maintaining comprehensive coverage
+### Testing Unicode Patterns
+```grapa
+/* Test Unicode pattern matching */
+unicode_text = "café résumé naïve";
+unicode_matches = unicode_text.grep("é", "o");
 
-#### Major Consolidations
-1. **Context and Merging**: `test_context_separators.grc` → `test_context_merging.grc`
-2. **'o' Option Tests**: Multiple specialized files → `test_o_option_comprehensive.grc`
-3. **Output Formats**: `color_test.grc`, `column_test.grc`, `color_column_test.grc` → `test_output_formats.grc`
-4. **Word Boundary**: Multiple debug/simple files → `test_word_boundary.grc`
-5. **Zero-Length Match**: Debug and simple tests → `test_zero_length_bug.grc`
-6. **Context Lines**: Multiple debug files → `test_context_lines.grc`
-7. **Option Combinations**: Multiple matrix files → `test_option_combinations_matrix.grc`
-8. **Error Handling**: Multiple error test files → `test_error_handling.grc`
-9. **Unicode Grapheme Clusters**: Multiple test files → `test_unicode_grapheme_clusters.grc`
+if (unicode_matches.len() == 3) {
+    "Unicode pattern test passed".echo();
+} else {
+    "Unicode pattern test failed".echo();
+};
 
-#### Benefits Achieved
-- **Better Organization**: Related tests grouped logically
-- **Reduced Maintenance**: Fewer files to maintain and update
-- **Improved Discoverability**: Clear test categories and purposes
-- **Eliminated Duplication**: No redundant test scenarios
-- **Comprehensive Coverage**: All unique scenarios preserved
+/* Test grapheme clusters */
+emoji_text = "Hello 👨‍👩‍👧‍👦 World";
+grapheme_matches = emoji_text.grep("\\X", "o");
 
-### Current Test Suite Status (2025)
+if (grapheme_matches.len() > 0) {
+    "Grapheme cluster test passed".echo();
+} else {
+    "Grapheme cluster test failed".echo();
+};
+```
 
-#### ✅ **FULLY COMPLETED ITEMS (60%)**
+## Integration Testing
 
-##### 1. **Ripgrep Parity Tests** - ✅ **100% COMPLETE**
-- **Performance optimizations**: JIT compilation, fast paths, LRU cache all working
-- **Atomic groups**: Full support tested and working
-- **Lookaround assertions**: All four types (positive/negative lookahead/lookbehind) working
-- **Unicode support**: Grapheme clusters, normalization, diacritic-insensitive matching
-- **PCRE2 features**: Comprehensive coverage of rare features
+### Testing Complete Workflows
+```grapa
+/* Test complete ETL workflow */
+test_etl_workflow = op() {
+    /* Setup test data */
+    test_data = [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}];
 
-##### 2. **"o" Feature Comprehensive Testing** - ✅ **100% COMPLETE**
-- **Match-only functionality**: Thoroughly tested with various patterns
-- **Edge cases**: Zero-length matches, Unicode properties, normalization
-- **Option combinations**: Tested with case-insensitive, diacritic-insensitive
-- **Crash fixes**: Previously identified `oa` combination crash has been fixed
+    /* Transform data */
+    processed = test_data.map(op(record) {
+        {"name": record.get("name").upper(), "age": record.get("age")};
+    });
 
-##### 3. **Test Suite Consolidation** - ✅ **100% COMPLETE**
-- **20% reduction**: From ~85 to ~65 test files
-- **Eliminated duplication**: Merged redundant test files
-- **Better organization**: Logical grouping of related tests
-- **Documentation updated**: All relevant docs reflect consolidation
+    /* Verify results */
+    if (processed.len() != 2) {
+        "ETL workflow test failed: expected 2 records".echo();
+        return false;
+    };
 
-##### 4. **Documentation Updates** - ✅ **100% COMPLETE**
-- **TESTING.md**: Updated with consolidation details
-- **INCLUDE_SYSTEM.md**: Updated test runner examples
-- **IMPLEMENTATION_PROGRESS.md**: Updated references
-- **UNICODE_GREP_STATUS.md**: Updated test references
-- **TEST_ORGANIZATION_SUMMARY.md**: Added consolidation documentation
+    if (processed[0].get("name") != "ALICE") {
+        "ETL workflow test failed: name not uppercased".echo();
+        return false;
+    };
 
-#### 🔄 **PARTIALLY COMPLETED ITEMS (30%)**
+    if (processed[1].get("name") != "BOB") {
+        "ETL workflow test failed: second name not uppercased".echo();
+        return false;
+    };
 
-##### 5. **Custom Delimiter Testing** - 🔄 **80% COMPLETE**
-**✅ WORKING:**
-- Basic custom delimiter functionality
-- Multi-character delimiters (`|||`, `###`, `<DELIM>`)
-- Unicode delimiters (`\u2028`, `\u2029`)
-- Context with custom delimiters
-- JSON output with custom delimiters
-- Case-insensitive with custom delimiters
-- Invert match with custom delimiters
-- Match-only with custom delimiters
-- Line numbers with custom delimiters
-- Large input with custom delimiters
-- Binary data with custom delimiters
-- Unicode text with custom delimiters
-- Diacritic-insensitive with custom delimiters
-- Parallel processing with custom delimiters
+    "ETL workflow test passed".echo();
+    return true;
+};
 
-**❌ ISSUES IDENTIFIED:**
-1. **Multiline patterns (s flag) not working with custom delimiters**
-2. **Lookaround assertions not working correctly with custom delimiters**
-3. **Unicode script properties matching individual characters instead of words**
-4. **Grapheme clusters including delimiter characters in output**
-5. **Word boundaries not working with custom delimiters**
+test_etl_workflow();
+```
 
-##### 6. **Option Combination Matrix** - 🔄 **70% COMPLETE**
-**✅ WORKING:**
-- Basic option combinations (`oi`, `oj`, `on`, `oa`, `ow`, `os`, `ox`, `ov`, `oN`, `oT`, `oL`, `oA1`, `of`)
-- Triple combinations (`oij`, `ojn`, `oA1f`, `ojA1`, `oA1B1`, `oA1B1f`)
-- Context combinations (`co`, `cj`, `cA1`, `coj`, `coA1`)
-- Unicode combinations (`od`, `odf`, `oN`, `oNd`, `oNdA1`)
-- Advanced combinations (`oid`, `odj`, `oNf`, `oidj`, `odjA1`, `oNfB1`)
+### Testing Data Validation Pipeline
+```grapa
+/* Test data validation pipeline */
+test_validation_pipeline = op() {
+    /* Define validation rules */
+    rules = {
+        "email": {"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"},
+        "age": {"min": 0, "max": 150},
+        "salary": {"min": 0, "max": 1000000}
+    };
 
-**❌ NEEDS TESTING:**
-- Some higher-order combinations
-- Edge case precedence combinations
-- Invalid option combinations
+    /* Test data */
+    test_records = [
+        {"email": "alice@example.com", "age": 30, "salary": 50000},
+        {"email": "invalid-email", "age": -5, "salary": 2000000},
+        {"email": "bob@test.org", "age": 25, "salary": 75000}
+    ];
 
-#### ❌ **NOT YET COMPLETED ITEMS (10%)**
+    /* Validate function */
+    validate_record = op(record, rules) {
+        errors = [];
 
-##### 7. **Multiline Patterns with Custom Delimiters** - ❌ **NEEDS FIXING**
-- The `s` flag (DOTALL) doesn't work with custom delimiters
-- This affects patterns like `start.*end` with custom delimiters
+        /* Check email pattern */
+        if (!record.get("email").grep(rules.get("email").get("pattern"), "o").len() > 0) {
+            errors += "Invalid email format";
+        };
 
-##### 8. **Lookaround Assertions with Custom Delimiters** - ❌ **NEEDS FIXING**
-- Positive/negative lookahead/lookbehind not working correctly
-- Matches include digits when they shouldn't
+        /* Check age range */
+        age = record.get("age");
+        if (age < rules.get("age").get("min") || age > rules.get("age").get("max")) {
+            errors += "Age out of range";
+        };
 
-##### 9. **Unicode Script Properties** - ❌ **NEEDS FIXING**
-- Matching individual characters instead of complete words
-- Should match full words containing the script
+        /* Check salary range */
+        salary = record.get("salary");
+        if (salary < rules.get("salary").get("min") || salary > rules.get("salary").get("max")) {
+            errors += "Salary out of range";
+        };
 
-##### 10. **Grapheme Cluster Delimiter Handling** - ❌ **NEEDS FIXING**
-- Includes delimiter characters in output
-- Should exclude delimiters from grapheme cluster results
+        {"record": record, "errors": errors, "valid": errors.len() == 0};
+    };
 
-##### 11. **Word Boundaries with Custom Delimiters** - ❌ **NEEDS FIXING**
-- Word boundary detection not working with custom delimiters
+    /* Process validation results */
+    results = test_records.map(op(record) { validate_record(record, rules); });
+    valid_records = results.filter(op(result) { result.get("valid"); });
+    invalid_records = results.filter(op(result) { !result.get("valid"); });
 
-### Priority Action Plan
+    /* Verify expected results */
+    if (valid_records.len() == 2 && invalid_records.len() == 1) {
+        "Validation pipeline test passed".echo();
+        return true;
+    } else {
+        "Validation pipeline test failed".echo();
+        return false;
+    };
+};
 
-#### **IMMEDIATE PRIORITIES (High Impact):**
-1. **Fix multiline pattern support with custom delimiters**
-2. **Fix lookaround assertion behavior with custom delimiters**
-3. **Fix Unicode script property matching**
+test_validation_pipeline();
+```
 
-#### **SECONDARY PRIORITIES (Medium Impact):**
-4. **Fix grapheme cluster delimiter handling**
-5. **Fix word boundary detection with custom delimiters**
-6. **Complete option combination matrix testing**
+## Best Practices
 
-#### **FINAL PRIORITIES (Low Impact):**
-7. **Add comprehensive edge case testing**
-8. **Add mission-critical production system tests**
-9. **Final validation against ripgrep parity**
+### 1. Use Descriptive Test Names
+```grapa
+/* Good: Descriptive test name */
+test_array_doubling_function = op() {
+    /* Test that array doubling function works correctly */
+    test_data = [1, 2, 3];
+    result = test_data.map(op(x) { x * 2; });
+    expected = [2, 4, 6];
 
-### Overall Completion Status
+    if (result.str() == expected.str()) {
+        "Array doubling test passed".echo();
+    } else {
+        "Array doubling test failed".echo();
+    };
+};
+```
 
-- **✅ Completed**: 60% (Ripgrep parity, "o" feature, consolidation, documentation)
-- **🔄 In Progress**: 30% (Custom delimiters, option combinations)
-- **❌ Remaining**: 10% (Critical fixes for custom delimiter issues)
+### 2. Test Edge Cases
+```grapa
+/* Test edge cases */
+test_edge_cases = op() {
+    /* Test empty array */
+    empty_result = [].map(op(x) { x * 2; });
+    if (empty_result.len() == 0) {
+        "Empty array test passed".echo();
+    } else {
+        "Empty array test failed".echo();
+    };
 
-### Recommendation
+    /* Test single element */
+    single_result = [5].map(op(x) { x * 2; });
+    if (single_result[0] == 10) {
+        "Single element test passed".echo();
+    } else {
+        "Single element test failed".echo();
+    };
 
-The project has made **excellent progress** with 90% of the original requirements either completed or well underway. The remaining 10% consists of critical fixes for custom delimiter functionality, which are essential for full production readiness. The test suite is comprehensive and well-organized, providing a solid foundation for identifying and fixing the remaining issues.
+    /* Test negative numbers */
+    negative_result = [-1, -2, -3].map(op(x) { x * 2; });
+    if (negative_result.str() == "[-2,-4,-6]") {
+        "Negative numbers test passed".echo();
+    } else {
+        "Negative numbers test failed".echo();
+    };
+};
+```
 
-**Next step**: Focus on completing the option combination matrix testing to achieve 100% ripgrep parity and full production readiness. 
+### 3. Clean Up Test Data
+```grapa
+/* Always clean up test files */
+test_with_cleanup = op() {
+    test_file = "temp_test.txt";
 
-## Running Grapa Scripts: -cfile vs -ccmd
+    /* Run test */
+    file_set(test_file, "test data");
+    content = file_get(test_file);
 
-- Use **-cfile <filename>** to run a Grapa script file (e.g., a .grc test file):
-  
-  ```powershell
-  .\grapa.exe -q -cfile "test/my_test.grc"
-  ```
-  This is the correct way to run all test files and multi-line scripts.
+    if (content == "test data") {
+        "File test passed".echo();
+    } else {
+        "File test failed".echo();
+    };
 
-- Use **-ccmd <code>** to run a single line or short inline Grapa code directly from the command line:
-  
-  ```powershell
-  .\grapa.exe -q -ccmd "'Hello'.echo();"
-  ```
-  This is for quick, one-off commands only.
+    /* Clean up */
+    file_set(test_file, "");
+    "Test cleanup completed".echo();
+};
+```
 
-**Note:** Attempting to run a .grc file with -ccmd will not work and may result in errors or no output. Always use -cfile for script files.
+### 4. Use Consistent Assertion Patterns
+```grapa
+/* Create reusable assertion functions */
+assert_equal = op(actual, expected, message) {
+    if (actual == expected) {
+        ("✓ " + message + " passed").echo();
+        return true;
+    } else {
+        ("✗ " + message + " failed: expected " + expected.str() + ", got " + actual.str()).echo();
+        return false;
+    };
+};
+
+assert_array_equal = op(actual, expected, message) {
+    if (actual.len() != expected.len()) {
+        ("✗ " + message + " failed: length mismatch").echo();
+        return false;
+    };
+
+    i = 0;
+    while (i < actual.len()) {
+        if (actual[i] != expected[i]) {
+            ("✗ " + message + " failed at index " + i.str()).echo();
+            return false;
+        };
+        i = i + 1;
+    };
+
+    ("✓ " + message + " passed").echo();
+    return true;
+};
+
+/* Use assertions in tests */
+test_with_assertions = op() {
+    result = 5 * 2;
+    assert_equal(result, 10, "Multiplication test");
+
+    array_result = [1, 2, 3].map(op(x) { x * 2; });
+    assert_array_equal(array_result, [2, 4, 6], "Array mapping test");
+};
+```
+
+### 5. Test Both Success and Failure Paths
+```grapa
+/* Test both success and failure scenarios */
+test_comprehensive = op() {
+    /* Test success case */
+    success_result = test_function(5);
+    if (success_result == 10) {
+        "Success case test passed".echo();
+    } else {
+        "Success case test failed".echo();
+    };
+
+    /* Test failure case */
+    error_result = test_function(null);
+    if (error_result.type() == $ERR) {
+        "Error case test passed".echo();
+    } else {
+        "Error case test failed".echo();
+    };
+};
+```
+
+### 6. Use Parallel Processing Carefully
+```grapa
+/* Test parallel operations with thread limits */
+test_parallel_safely = op() {
+    large_data = (10000).range(0, 1);
+
+    /* Use limited threads for large datasets */
+    /* Limit to 4 threads */
+result = large_data.map(op(x) { x * 2; }, 4);
+
+    if (result.len() == 10000) {
+        "Parallel processing test passed".echo();
+    } else {
+        "Parallel processing test failed".echo();
+    };
+};
+```
 
 ---
 
 ## Next Steps
-- Explore [Examples](EXAMPLES.md) for more usage patterns
-- Check out the [Grep functionality](GREP.md) for advanced pattern matching
+- Learn about [Testing](TESTING.md) your Grapa code
+- Check out the [Grep functionality](grep.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
+
+## Thread Safety and Parallelism
+Grapa is fully thread safe by design. All variable and data structure updates are internally synchronized at the C++ level, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure, you may see *logical* race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.
+
+**Only `$thread()` objects provide explicit locking and unlocking via `lock()`, `unlock()`, and `trylock()`.** To protect access to a shared resource, create a `$thread()` lock object and use it to guard access. Calling `.lock()` or `.unlock()` on a regular variable (like an array or scalar) will return an error.
+
+**Canonical Example:**
+```grapa
+lock_obj = $thread();
+lock_obj.lock();
+/* ... perform thread-safe operations on shared data ... */
+lock_obj.unlock();
+```
+
+See [Threading and Locking](sys/thread.md) and [Function Operators: static and const](operators/function.md) for details and best practices. 

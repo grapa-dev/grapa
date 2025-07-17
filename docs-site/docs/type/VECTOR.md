@@ -1,8 +1,6 @@
 # $VECTOR
-- [GrapaVector.h header](../../source/grapa/GrapaVector.h)
-- [GrapaVector.cpp source](../../source/grapa/GrapaVector.cpp)
-- [$VECTOR object](../../lib/grapa/$VECTOR.grc)
-- [$OBJ object](../../lib/grapa/$OBJ.grc)
+
+
  
 A $VECTOR is a multi-dimentional set of values. Most often either 1 or 2 dimentions. 
 

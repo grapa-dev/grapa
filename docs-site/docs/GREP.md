@@ -1,87 +1,301 @@
 # Grapa Grep Documentation
 
+> **Tip:** Use the tabs below to switch between CLI and Python examples throughout this documentation.
+
 ## Thread Safety and Parallelism
+
 Grapa is fully thread safe by design. All variable and data structure updates are internally synchronized at the C++ level, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure (for example, when using parallel grep features), you may see *logical* race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.
 
 **Only `$thread()` objects provide explicit locking and unlocking via `lock()`, `unlock()`, and `trylock()`.** To protect access to a shared resource, create a `$thread()` lock object and use it to guard access. Calling `.lock()` or `.unlock()` on a regular variable (like an array or scalar) will return an error.
 
 **Canonical Example:**
-```grapa
-lock_obj = $thread();
-lock_obj.lock();
-// ... perform thread-safe operations on shared data ...
-lock_obj.unlock();
-```
+
+=== "CLI"
+    ```grapa
+    lock_obj = $thread();
+    lock_obj.lock();
+    /* ... perform thread-safe operations on shared data ... */
+    lock_obj.unlock();
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+    
+    xy.eval("""
+    lock_obj = $thread();
+    lock_obj.lock();
+    /* ... perform thread-safe operations on shared data ... */
+    lock_obj.unlock();
+    """)
+    ```
 
 See [Threading and Locking](sys/thread.md) and [Function Operators: static and const](operators/function.md) for details and best practices.
 
 ## Who is this for?
+
 Anyone who wants to use Grapa's advanced pattern matching, achieve ripgrep parity, or understand Unicode/PCRE2 grep features in Grapa.
 
-## Syntax Reminders
-- Every statement and every block (including after closing braces) must end with a semicolon (`;`).
-- Use block comments (`/* ... */`), not line comments (`// ...`).
-- To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
-- See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
+## Key Syntax Rules
 
----
+=== "CLI"
+    - Use block comments (`/* ... */`), not line comments (`// ...`).
+    - To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
+    - All statements and blocks must end with a semicolon (`;`).
 
-## Overview & Minimal Example
-
-Grapa grep provides comprehensive pattern matching functionality with full Unicode support, ripgrep compatibility, and advanced features like context lines, custom delimiters, and parallel processing.
-
-**Minimal Example:**
-```grapa
-text = "Hello world\nGoodbye world\nHello again";
-matches = text.grep("Hello");
-matches.echo();  /* ["Hello world", "Hello again"] */
-```
-
----
-
-## Current Status
-
-### ✅ **RESOLVED CRITICAL ISSUES**
-- **Unicode Grapheme Clusters**: Fully implemented and working (`\X`, `\X+`, `\X*`, `\X?`, `\X{n,m}`)
-- **Empty Pattern Handling**: Now returns `[""]` instead of `$SYSID`
-- **Zero-Length Match Output**: Now correctly returns `[""]` instead of `["","",""]`
-- **JSON Output Format**: Fixed double-wrapped array issue
-- **Context Lines**: Fully implemented with proper merging
-- **Column Numbers**: Working correctly with 1-based positioning
-- **Color Output**: ANSI color codes working properly
-- **Word Boundaries**: Working correctly for all scenarios
-- **Invert Match**: Properly returns non-matching segments
-- **All Mode**: Working correctly for single-line processing
-
-### ✅ **PRODUCTION READY**
-- **Overall Health**: Excellent - 98%+ of ripgrep parity achieved
-- **Critical Issues**: 0 (all resolved)
-- **Performance**: Excellent (up to 11x speedup with 16 workers)
-- **Test Coverage**: Comprehensive and robust
-- **Unicode Support**: Full Unicode property and script support
-- **Error Handling**: Robust - invalid patterns return empty results instead of crashing
+=== "Python"
+    - Use raw strings (`r"..."`) for regex patterns to avoid escaping issues
+    - Convert binary data using `.decode('latin-1')` for Grapa processing
+    - Use the `xy.eval()` method to execute Grapa code from Python
 
 ## Basic Usage
 
+### Pattern Matching
+
+=== "CLI"
+    ```grapa
+    /* Basic pattern matching */
+    text = "Hello world\nGoodbye world";
+    matches = text.grep("world");
+    echo(matches);  /* ["Hello world", "Goodbye world"] */
+
+    /* Match-only output */
+    matches = text.grep("world", "o");
+    echo(matches);  /* ["world", "world"] */
+
+    /* Case-insensitive matching */
+    matches = text.grep("hello", "i");
+    echo(matches);  /* ["Hello world"] */
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Basic pattern matching
+    text = "Hello world\nGoodbye world"
+    matches = xy.eval("text.grep('world');", {"text": text})
+    print(matches)  # ['Hello world', 'Goodbye world']
+
+    # Match-only output
+    matches = xy.eval("text.grep('world', 'o');", {"text": text})
+    print(matches)  # ['world', 'world']
+
+    # Case-insensitive matching
+    matches = xy.eval("text.grep('hello', 'i');", {"text": text})
+    print(matches)  # ['Hello world']
+    ```
+
+## Unicode and Normalization
+
+Grapa's grep supports full Unicode processing with normalization options:
+
+=== "CLI"
+    ```grapa
+    /* NFC normalization (default) */
+    matches = text.grep("café", "N");
+
+    /* NFD normalization */
+    matches = text.grep("café", "NFD");
+
+    /* NFKC normalization */
+    matches = text.grep("café", "NFKC");
+
+    /* NFKD normalization */
+    matches = text.grep("café", "NFKD");
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # NFC normalization (default)
+    matches = xy.eval("text.grep('café', 'N');", {"text": "café"})
+
+    # NFD normalization
+    matches = xy.eval("text.grep('café', 'NFD');", {"text": "café"})
+
+    # NFKC normalization
+    matches = xy.eval("text.grep('café', 'NFKC');", {"text": "café"})
+
+    # NFKD normalization
+    matches = xy.eval("text.grep('café', 'NFKD');", {"text": "café"})
+    ```
+
+## Unicode Properties
+
+=== "CLI"
+    ```grapa
+    /* Match letters */
+    matches = text.grep("\\p{L}+");
+
+    /* Match numbers */
+    matches = text.grep("\\p{N}+");
+
+    /* Match word characters */
+    matches = text.grep("\\w+");
+
+    /* Match grapheme clusters (Unicode extended grapheme clusters) */
+    matches = text.grep("\\X+");
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Match letters
+    matches = xy.eval("text.grep(r'\\p{L}+');", {"text": "Hello 世界 123"})
+
+    # Match numbers
+    matches = xy.eval("text.grep(r'\\p{N}+');", {"text": "Hello 世界 123"})
+
+    # Match word characters
+    matches = xy.eval("text.grep(r'\\w+');", {"text": "Hello 世界 123"})
+
+    # Match grapheme clusters
+    matches = xy.eval("text.grep(r'\\X+');", {"text": "Hello 世界 123"})
+    ```
+
+## Grapheme Cluster Examples
+
+=== "CLI"
+    ```grapa
+    /* Basic grapheme cluster matching */
+    text = "café";
+    clusters = text.grep("\\X", "o");
+    echo(clusters);
+    /* ["c", "a", "f", "é"]  /* é is a single grapheme cluster (e + combining acute) */
+
+    /* Complex grapheme clusters */
+    text = "😀❤️";
+    clusters = text.grep("\\X", "o");
+    echo(clusters);
+    /* ["😀", "❤️"]  /* Heart with emoji modifier */
+
+    /* Grapheme clusters with newlines */
+    text = "é\n😀";
+    clusters = text.grep("\\X", "o");
+    echo(clusters);
+    /* ["é", "\n", "😀"]  /* Newlines are treated as separate clusters */
+
+    /* Grapheme clusters with quantifiers */
+    text = "café";
+    matches = text.grep("\\X+", "o");
+    echo(matches);
+    /* ["café"]  /* One or more grapheme clusters */
+
+    matches = text.grep("\\X*", "o");
+    echo(matches);
+    /* ["", "café", ""]  /* Zero or more grapheme clusters */
+
+    matches = text.grep("\\X?", "o");
+    echo(matches);
+    /* ["", "c", "", "a", "", "f", "", "é", ""]  /* Zero or one grapheme cluster */
+
+    matches = text.grep("\\X{2,3}", "o");
+    echo(matches);
+    /* ["ca", "fé"]  /* Between 2 and 3 grapheme clusters */
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Basic grapheme cluster matching
+    text = "café"
+    clusters = xy.eval("text.grep(r'\\X', 'o');", {"text": text})
+    print(clusters)  # ['c', 'a', 'f', 'é'] - é is a single grapheme cluster
+
+    # Complex grapheme clusters
+    text = "😀❤️"
+    clusters = xy.eval("text.grep(r'\\X', 'o');", {"text": text})
+    print(clusters)  # ['😀', '❤️'] - Heart with emoji modifier
+
+    # Grapheme clusters with newlines
+    text = "é\n😀"
+    clusters = xy.eval("text.grep(r'\\X', 'o');", {"text": text})
+    print(clusters)  # ['é', '\n', '😀'] - Newlines are treated as separate clusters
+
+    # Grapheme clusters with quantifiers
+    text = "café"
+    matches = xy.eval("text.grep(r'\\X+', 'o');", {"text": text})
+    print(matches)  # ['café'] - One or more grapheme clusters
+
+    matches = xy.eval("text.grep(r'\\X*', 'o');", {"text": text})
+    print(matches)  # ['', 'café', ''] - Zero or more grapheme clusters
+
+    matches = xy.eval("text.grep(r'\\X?', 'o');", {"text": text})
+    print(matches)  # ['', 'c', '', 'a', '', 'f', '', 'é', ''] - Zero or one grapheme cluster
+
+    matches = xy.eval("text.grep(r'\\X{2,3}', 'o');", {"text": text})
+    print(matches)  # ['ca', 'fé'] - Between 2 and 3 grapheme clusters
+    ```
+
+## Diacritic-Insensitive Matching
+
+=== "CLI"
+    ```grapa
+    /* Match café, cafe, café, etc. */
+    text = "café cafe café";
+    matches = text.grep("cafe", "d");
+    echo(matches);  /* ["café", "cafe", "café"] */
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Match café, cafe, café, etc.
+    text = "café cafe café"
+    matches = xy.eval("text.grep('cafe', 'd');", {"text": text})
+    print(matches)  # ['café', 'cafe', 'café']
+    ```
+
+## Edge Cases and Special Handling
+
 ```grapa
-// Basic pattern matching
-"Hello world".grep("world")
-["Hello world"]
+/* Zero-length matches (now working correctly) */
+text = "abc";
+matches = text.grep("", "o");
+echo(matches);
+/* [""]  /* Single empty string for zero-length match */
 
-// Match-only output
-"Hello world".grep("world", "o")
-["world"]
+/* Empty pattern (now working correctly) */
+matches = text.grep("", "o");
+echo(matches);
+/* [""]  /* Single empty string for empty pattern */
 
-// Case-insensitive matching
-"Hello WORLD".grep("world", "i")
-["Hello WORLD"]
+/* Unicode boundary handling */
+text = "café";
+matches = text.grep("\\b\\w+\\b", "o");
+echo(matches);  /* ["café"] */
 ```
 
 ## Function Signature
 
-```grapa
-input.grep(pattern, options, delimiter, normalization, mode, num_workers)
-```
+=== "CLI"
+    ```grapa
+    input.grep(pattern, options, delimiter, normalization, mode, num_workers)
+    ```
+
+=== "Python"
+    ```python
+    xy.eval("input.grep(pattern, options, delimiter, normalization, mode, num_workers);", {
+        "input": "input_text",
+        "pattern": "regex_pattern",
+        "options": "option_flags",
+        "delimiter": "line_delimiter",
+        "normalization": "normalization_form",
+        "mode": "processing_mode",
+        "num_workers": worker_count
+    })
+    ```
 
 ### Parameters
 
@@ -144,35 +358,35 @@ input.grep(pattern, options, delimiter, normalization, mode, num_workers)
 ### Normalization Forms
 
 ```grapa
-// NFC normalization (default)
+/* NFC normalization (default) */
 "café".grep("cafe", "NFC")
 
-// NFD normalization
+/* NFD normalization */
 "café".grep("cafe", "NFD")
 
-// NFKC normalization
+/* NFKC normalization */
 "café".grep("cafe", "NFKC")
 
-// NFKD normalization
+/* NFKD normalization */
 "café".grep("cafe", "NFKD")
 ```
 
 ### Unicode Properties
 
 ```grapa
-// Match letters
+/* Match letters */
 "Hello 世界 123".grep("\\p{L}+", "o")
 ["Hello", "世界"]
 
-// Match numbers
+/* Match numbers */
 "Hello 世界 123".grep("\\p{N}+", "o")
 ["123"]
 
-// Match word characters
+/* Match word characters */
 "Hello 世界 123".grep("\\w+", "o")
 ["Hello", "123"]
 
-// Match grapheme clusters (Unicode extended grapheme clusters)
+/* Match grapheme clusters (Unicode extended grapheme clusters) */
 "e\u0301\n😀\u2764\ufe0f".grep("\\X", "o")
 ["é", "\n", "😀", "❤️"]
 ```
@@ -182,30 +396,30 @@ input.grep(pattern, options, delimiter, normalization, mode, num_workers)
 The `\X` pattern matches Unicode extended grapheme clusters, which are user-perceived characters that may consist of multiple Unicode codepoints:
 
 ```grapa
-// Basic grapheme cluster matching
+/* Basic grapheme cluster matching */
 "café".grep("\\X", "o")
-["c", "a", "f", "é"]  // é is a single grapheme cluster (e + combining acute)
+["c", "a", "f", "é"]  /* é is a single grapheme cluster (e + combining acute) */
 
-// Complex grapheme clusters
+/* Complex grapheme clusters */
 "😀\u2764\ufe0f".grep("\\X", "o")
-["😀", "❤️"]  // Heart with emoji modifier
+["😀", "❤️"]  /* Heart with emoji modifier */
 
-// Grapheme clusters with newlines
+/* Grapheme clusters with newlines */
 "é\n😀".grep("\\X", "o")
-["é", "\n", "😀"]  // Newlines are treated as separate clusters
+["é", "\n", "😀"]  /* Newlines are treated as separate clusters */
 
-// Grapheme clusters with quantifiers
+/* Grapheme clusters with quantifiers */
 "café".grep("\\X+", "o")
-["café"]  // One or more grapheme clusters
+["café"]  /* One or more grapheme clusters */
 
 "café".grep("\\X*", "o")
-["", "café", ""]  // Zero or more grapheme clusters
+["", "café", ""]  /* Zero or more grapheme clusters */
 
 "café".grep("\\X?", "o")
-["", "c", "", "a", "", "f", "", "é", ""]  // Zero or one grapheme cluster
+["", "c", "", "a", "", "f", "", "é", ""]  /* Zero or one grapheme cluster */
 
 "café".grep("\\X{2,3}", "o")
-["ca", "fé"]  // Between 2 and 3 grapheme clusters
+["ca", "fé"]  /* Between 2 and 3 grapheme clusters */
 ```
 
 **Note:** The `\X` pattern uses direct Unicode grapheme cluster segmentation and bypasses the regex engine for optimal performance and accuracy. All quantifiers (`+`, `*`, `?`, `{n,m}`) are fully supported.
@@ -213,7 +427,7 @@ The `\X` pattern matches Unicode extended grapheme clusters, which are user-perc
 ### Diacritic-Insensitive Matching
 
 ```grapa
-// Match café, cafe, café, etc.
+/* Match café, cafe, café, etc. */
 "café résumé naïve".grep("cafe", "d")
 ["café résumé naïve"]
 ```
@@ -232,21 +446,21 @@ When using the `"o"` (match-only) option with Unicode normalization or case-inse
 ### Unicode Edge Cases
 
 ```grapa
-// Zero-length matches (now working correctly)
+/* Zero-length matches (now working correctly) */
 "abc".grep("^", "o")
-[""]  // Single empty string for zero-length match
+[""]  /* Single empty string for zero-length match */
 
-// Empty pattern (now working correctly)
+/* Empty pattern (now working correctly) */
 "abc".grep("", "o")
-[""]  // Single empty string for empty pattern
+[""]  /* Single empty string for empty pattern */
 
-// Unicode boundary handling
+/* Unicode boundary handling */
 "ÉÑÜ".grep(".", "o")
 ["É", "Ñ", "Ü"]
 
-// Case-insensitive Unicode (may group characters due to Unicode complexity)
+/* Case-insensitive Unicode (may group characters due to Unicode complexity) */
 "ÉÑÜ".grep(".", "oi")
-["ÉÑ", "Ü"]  // É and Ñ may be grouped together
+["ÉÑ", "Ü"]  /* É and Ñ may be grouped together */
 ```
 
 ## Word Boundaries
@@ -256,11 +470,11 @@ The `w` option adds word boundary anchors (`\b`) around the pattern, ensuring ma
 ### Basic Word Boundary Usage
 
 ```grapa
-// Match only standalone words
+/* Match only standalone words */
 "hello world hello123 hello_test hello-world hello".grep("hello", "w")
 ["hello world hello123 hello_test hello-world hello"]
 
-// Extract only the standalone word matches
+/* Extract only the standalone word matches */
 "hello world hello123 hello_test hello-world hello".grep("hello", "wo")
 ["hello", "hello"]
 ```
@@ -268,15 +482,15 @@ The `w` option adds word boundary anchors (`\b`) around the pattern, ensuring ma
 ### Word Boundary with Different Characters
 
 ```grapa
-// Word boundaries with underscores
+/* Word boundaries with underscores */
 "hello_test hello test_hello _hello_ hello".grep("hello", "wo")
 ["hello"]
 
-// Word boundaries with hyphens
+/* Word boundaries with hyphens */
 "hello-world hello world-hello -hello- hello".grep("hello", "wo")
 ["hello"]
 
-// Word boundaries with numbers
+/* Word boundaries with numbers */
 "hello123 hello 123hello hello123hello hello".grep("hello", "wo")
 ["hello"]
 ```
@@ -284,11 +498,11 @@ The `w` option adds word boundary anchors (`\b`) around the pattern, ensuring ma
 ### Word Boundary with Other Options
 
 ```grapa
-// Word boundary with case-insensitive matching
+/* Word boundary with case-insensitive matching */
 "Hello WORLD hello123 HELLO_test".grep("HELLO", "wi")
 ["Hello WORLD hello123 HELLO_test"]
 
-// Word boundary with match-only output
+/* Word boundary with match-only output */
 "Hello WORLD hello123 HELLO_test".grep("HELLO", "woi")
 ["Hello", "HELLO"]
 ```
@@ -296,15 +510,15 @@ The `w` option adds word boundary anchors (`\b`) around the pattern, ensuring ma
 ### Manual vs Automatic Word Boundaries
 
 ```grapa
-// Manual word boundary pattern
+/* Manual word boundary pattern */
 "hello world hello123".grep("\\bhello\\b", "o")
 ["hello"]
 
-// Automatic word boundary with 'w' option
+/* Automatic word boundary with 'w' option */
 "hello world hello123".grep("hello", "wo")
 ["hello"]
 
-// Both produce identical results
+/* Both produce identical results */
 ```
 
 **Note**: The `w` option automatically wraps the pattern with `\b` word boundary anchors. This is equivalent to manually adding `\b` at the start and end of the pattern.
@@ -332,11 +546,11 @@ input.grep("foo", "oT")
 ### Column Numbers with Other Options
 
 ```grapa
-// Column numbers with color output
+/* Column numbers with color output */
 input.grep("foo", "oTL")
 ["1:\x1b[1;31mfoo\x1b[0m", "5:\x1b[1;31mfoo\x1b[0m"]
 
-// Column numbers with line numbers
+/* Column numbers with line numbers */
 input.grep("foo", "nT")
 ["1:1:foo bar baz", "2:5:bar foo baz", "3:9:baz bar foo"]
 ```
@@ -436,25 +650,226 @@ input.grep("Line 2|Line 6", "A1B1")
 
 ## Binary Mode
 
-```grapa
-// Process as binary data (no Unicode processing)
-binary_data.grep("pattern", "", "", "", "BINARY")
-```
+Binary mode allows you to process raw binary data without Unicode processing, which is useful for:
+- **Binary files** (executables, images, compressed files)
+- **Network data** (raw packet analysis)
+- **Memory dumps** (forensic analysis)
+- **Data that should not be Unicode-processed**
+
+### Basic Binary Mode Usage
+
+=== "CLI"
+    ```grapa
+    /* Process as binary data (no Unicode processing) */
+    binary_data.grep("pattern", "", "", "", "BINARY")
+
+    /* Binary mode with hex patterns */
+    binary_data.grep("\\x48\\x65\\x6c\\x6c\\x6f", "o", "", "", "BINARY")
+    /* Result: ["Hello"] - Find "Hello" using hex representation */
+
+    /* Binary mode with custom delimiters */
+    binary_data.grep("data\\d+", "o", "\\x00", "", "BINARY")
+    /* Result: ["data1", "data2", "data3"] - Using null bytes as delimiters */
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Process as binary data (no Unicode processing)
+    xy.eval("binary_data.grep('pattern', '', '', '', 'BINARY');", {
+        "binary_data": b"Hello\x00World".decode('latin-1')  # Convert bytes to string
+    })
+
+    # Binary mode with hex patterns
+    xy.eval("binary_data.grep(r'\\x48\\x65\\x6c\\x6c\\x6f', 'o', '', '', 'BINARY');", {
+        "binary_data": b"Hello\x00World".decode('latin-1')
+    })
+    # Result: ['Hello'] - Find "Hello" using hex representation
+
+    # Binary mode with custom delimiters (null bytes)
+    xy.eval("binary_data.grep(r'data\\d+', 'o', '\\x00', '', 'BINARY');", {
+        "binary_data": "data1\x00data2\x00data3"
+    })
+    # Result: ['data1', 'data2', 'data3'] - Using null bytes as delimiters
+    ```
+
+### Binary vs Unicode Mode Comparison
+
+| Aspect | Unicode Mode (Default) | Binary Mode |
+|--------|----------------------|-------------|
+| **Processing** | Full Unicode normalization and case folding | Raw byte processing |
+| **Performance** | Slower due to Unicode overhead | Faster for binary data |
+| **Memory** | Higher due to normalization | Lower memory usage |
+| **Use case** | Text files, user input | Binary files, network data |
+
+### Common Binary Patterns
+
+=== "CLI"
+    ```grapa
+    /* Find null bytes in binary data */
+    binary_data.grep("\\x00", "o", "", "", "BINARY")
+    /* Result: ["", "", ""] - All null bytes found */
+
+    /* Find specific byte sequences */
+    binary_data.grep("\\x89\\x50\\x4e\\x47", "o", "", "", "BINARY")
+    /* Result: ["PNG"] - PNG file header */
+
+    /* Find text within binary data */
+    binary_data.grep("Hello", "o", "", "", "BINARY")
+    /* Result: ["Hello"] - Raw byte matching */
+
+    /* Find HTTP headers in network data */
+    network_data.grep("HTTP/[0-9.]+", "o", "", "", "BINARY")
+    /* Result: ["HTTP/1.1", "HTTP/2.0"] - HTTP version strings */
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Find null bytes in binary data
+    xy.eval("binary_data.grep(r'\\x00', 'o', '', '', 'BINARY');", {
+        "binary_data": "Hello\x00World\x00Test"
+    })
+    # Result: ['', '', ''] - All null bytes found
+
+    # Find specific byte sequences (PNG header)
+    xy.eval("file_data.grep(r'\\x89\\x50\\x4e\\x47', 'o', '', '', 'BINARY');", {
+        "file_data": b"\x89PNG\r\n\x1a\n...".decode('latin-1')
+    })
+    # Result: ['PNG'] - PNG file header
+
+    # Find text within binary data
+    xy.eval("binary_data.grep('Hello', 'o', '', '', 'BINARY');", {
+        "binary_data": b"Hello\x00World".decode('latin-1')
+    })
+    # Result: ['Hello'] - Raw byte matching
+
+    # Find HTTP headers in network data
+    xy.eval("network_data.grep(r'HTTP/[0-9.]+', 'o', '', '', 'BINARY');", {
+        "network_data": "Content-Type: text/html\r\nUser-Agent: Mozilla\r\n\r\n"
+    })
+    # Result: ['HTTP/1.1', 'HTTP/2.0'] - HTTP version strings
+    ```
+
+### Real-World Binary Processing Examples
+
+=== "CLI"
+    ```grapa
+    /* Extract strings from executable files */
+    executable_data.grep("[\\x20-\\x7e]{4,}", "o", "", "", "BINARY")
+    /* Result: All printable ASCII strings 4+ characters long */
+
+    /* Find file signatures */
+    file_data.grep("\\x89\\x50\\x4e\\x47\\x0d\\x0a\\x1a\\x0a", "o", "", "", "BINARY")
+    /* Result: PNG file signature */
+
+    /* Extract HTTP headers from network capture */
+    network_data.grep("^[A-Za-z-]+: .*$", "o", "\\r\\n", "", "BINARY")
+    /* Result: Individual HTTP header lines */
+
+    /* Find specific byte patterns in memory dump */
+    memory_dump.grep("\\x48\\x65\\x6c\\x6c\\x6f\\x20\\x57\\x6f\\x72\\x6c\\x64", "o", "", "", "BINARY")
+    /* Result: ["Hello World"] - Exact byte sequence match */
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Extract strings from executable files
+    with open('executable.bin', 'rb') as f:
+        executable_data = f.read().decode('latin-1')
+
+    xy.eval("executable_data.grep(r'[\\x20-\\x7e]{4,}', 'o', '', '', 'BINARY');", {
+        "executable_data": executable_data
+    })
+    # Result: All printable ASCII strings 4+ characters long
+
+    # Find file signatures
+    with open('file.bin', 'rb') as f:
+        file_data = f.read().decode('latin-1')
+
+    xy.eval("file_data.grep(r'\\x89\\x50\\x4e\\x47\\x0d\\x0a\\x1a\\x0a', 'o', '', '', 'BINARY');", {
+        "file_data": file_data
+    })
+    # Result: PNG file signature if present
+
+    # Extract HTTP headers from network capture
+    xy.eval("network_data.grep(r'^[A-Za-z-]+: .*$', 'o', '\\r\\n', '', 'BINARY');", {
+        "network_data": "Content-Type: text/html\r\nUser-Agent: Mozilla\r\n\r\n"
+    })
+    # Result: Individual HTTP header lines
+
+    # Find specific byte patterns in memory dump
+    xy.eval("memory_dump.grep(r'\\x48\\x65\\x6c\\x6c\\x6f\\x20\\x57\\x6f\\x72\\x6c\\x64', 'o', '', '', 'BINARY');", {
+        "memory_dump": b"Hello World".decode('latin-1')
+    })
+    # Result: ['Hello World'] - Exact byte sequence match
+    ```
+
+### Performance Considerations
+
+- **Binary mode is faster** for binary data since it skips Unicode processing
+- **Use binary mode** when you know your data is binary or when Unicode processing is not needed
+- **Memory usage is lower** in binary mode due to no normalization overhead
+- **Pattern matching is byte-exact** in binary mode
+
+### When to Use Binary Mode
+
+**Use Binary Mode When:**
+- Processing executable files, images, or compressed data
+- Analyzing network packets or binary protocols
+- Working with memory dumps or forensic data
+- Performance is critical and Unicode features aren't needed
+- You need exact byte-level pattern matching
+
+**Use Unicode Mode When:**
+- Processing text files or user input
+- Working with international text
+- Need Unicode normalization or case folding
+- Processing data that may contain Unicode characters
 
 ## Parallel Processing
 
 Grapa grep provides **massive performance improvements** through parallel processing, especially for large inputs:
 
-```grapa
-// Auto-detect number of workers (recommended)
-large_input.grep("pattern", "o", "", "", "", "", 0)
+=== "CLI"
+    ```grapa
+    /* Auto-detect number of workers (recommended) */
+    large_input.grep("pattern", "o", "", "", "", "", 0)
 
-// Use 4 workers for optimal performance
-large_input.grep("pattern", "o", "", "", "", "", 4)
+    /* Use 4 workers for optimal performance */
+    large_input.grep("pattern", "o", "", "", "", "", 4)
 
-// Sequential processing (single thread)
-large_input.grep("pattern", "o", "", "", "", "", 1)
-```
+    /* Sequential processing (single thread) */
+    large_input.grep("pattern", "o", "", "", "", "", 1)
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Auto-detect number of workers (recommended)
+    xy.eval("large_input.grep('pattern', 'o', '', '', '', '', 0);", {
+        "large_input": large_input
+    })
+
+    # Use 4 workers for optimal performance
+    xy.eval("large_input.grep('pattern', 'o', '', '', '', '', 4);", {
+        "large_input": large_input
+    })
+
+    # Sequential processing (single thread)
+    xy.eval("large_input.grep('pattern', 'o', '', '', '', '', 1);", {
+        "large_input": large_input
+    })
+    ```
 
 ### Performance Scaling
 
@@ -473,23 +888,46 @@ This represents a **massive advantage** over Python's single-threaded `re` modul
 
 Invalid patterns and errors are handled gracefully by returning empty results:
 
-```grapa
-// Invalid regex pattern - returns empty array instead of crashing
-"Hello world".grep("(", "o")
-[]
+=== "CLI"
+    ```grapa
+    /* Invalid regex pattern - returns empty array instead of crashing */
+    "Hello world".grep("(", "o")
+    /* Result: [] */
 
-// Unmatched closing parenthesis
-"Hello world".grep(")", "o")
-[]
+    /* Unmatched closing parenthesis */
+    "Hello world".grep(")", "o")
+    /* Result: [] */
 
-// Invalid quantifier
-"Hello world".grep("a{", "o")
-[]
+    /* Invalid quantifier */
+    "Hello world".grep("a{", "o")
+    /* Result: [] */
 
-// Empty pattern - returns single empty string (fixed)
-"Hello world".grep("", "o")
-[""]
-```
+    /* Empty pattern - returns single empty string (fixed) */
+    "Hello world".grep("", "o")
+    /* Result: [""] */
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Invalid regex pattern - returns empty array instead of crashing
+    result = xy.eval('"Hello world".grep("(", "o")')
+    print(result)  # []
+
+    # Unmatched closing parenthesis
+    result = xy.eval('"Hello world".grep(")", "o")')
+    print(result)  # []
+
+    # Invalid quantifier
+    result = xy.eval('"Hello world".grep("a{", "o")')
+    print(result)  # []
+
+    # Empty pattern - returns single empty string (fixed)
+    result = xy.eval('"Hello world".grep("", "o")')
+    print(result)  # [""]
+    ```
 
 ### Error Prevention
 
@@ -533,37 +971,56 @@ The `j` option produces JSON output with detailed match information. Each match 
 
 ### Examples
 
-```grapa
-// Basic JSON output
-"Hello world".grep("\\w+", "oj")
-// Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}]
+=== "CLI"
+    ```grapa
+    /* Basic JSON output */
+    text = "Hello world";
+    result = text.grep("\\w+", "oj");
+    echo(result);
+    /* Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}] */
 
-// JSON with named groups
-"John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
-// Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
+    /* JSON with named groups */
+    text = "John Doe (30)";
+    result = text.grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj");
+    echo(result);
+    /* Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}] */
 
-// Date parsing with named groups
-"2023-04-27\n2022-12-31".grep("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj")
-// Result: [
-//   {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
-//   {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
-// ]
+    /* Date parsing with named groups */
+    text = "2023-04-27\n2022-12-31";
+    result = text.grep("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj");
+    echo(result);
+    /* Result: [
+    /*   {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
+    /*   {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
+    /* ] */
+    ```
 
-// Single match JSON output
-"Hello World".grep("Hello", "j")
-// Result: [{"match":"Hello","offset":0,"line":1}]
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
 
-// No matches JSON output
-"Hello World".grep("xyz", "j")
-// Result: []
+    # Basic JSON output
+    text = "Hello world"
+    result = xy.eval("text.grep(r'\\w+', 'oj');", {"text": text})
+    print(result)
+    # Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}]
 
-// Complex JSON example with multiple patterns
-"Email: user@domain.com, Phone: +1-555-1234".grep("(?P<email>[\\w.-]+@[\\w.-]+)|(?P<phone>\\+\\d{1,3}-\\d{3}-\\d{4})", "oj")
-// Result: [
-//   {"match":"user@domain.com","email":"user@domain.com","phone":null,"offset":7,"line":1},
-//   {"match":"+1-555-1234","email":null,"phone":"+1-555-1234","offset":31,"line":1}
-// ]
-```
+    # JSON with named groups
+    text = "John Doe (30)"
+    result = xy.eval("text.grep(r'(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)', 'oj');", {"text": text})
+    print(result)
+    # Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
+
+    # Date parsing with named groups
+    text = "2023-04-27\n2022-12-31"
+    result = xy.eval("text.grep(r'(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})', 'oj');", {"text": text})
+    print(result)
+    # Result: [
+    #   {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
+    #   {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
+    # ]
+    ```
 
 ### Accessing Named Groups
 
@@ -672,120 +1129,294 @@ Large inputs are automatically processed in parallel for better performance. Gra
 
 ### Basic Examples
 
-```grapa
-// Find lines containing "error"
-log_content.grep("error")
+=== "CLI"
+    ```grapa
+    // Find lines containing "error"
+    log_content.grep("error")
 
-// Find lines containing "error" (case-insensitive)
-log_content.grep("error", "i")
+    // Find lines containing "error" (case-insensitive)
+    log_content.grep("error", "i")
 
-// Extract only the "error" matches
-log_content.grep("error", "o")
+    // Extract only the "error" matches
+    log_content.grep("error", "o")
 
-// Find lines NOT containing "error"
-log_content.grep("error", "v")
-```
+    // Find lines NOT containing "error"
+    log_content.grep("error", "v")
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Find lines containing "error"
+    log_content = "Error: Failed to connect to database\nError: File not found\nSuccess: Operation completed"
+    result = xy.eval("log_content.grep('error');", {"log_content": log_content})
+    print(result)
+
+    # Find lines containing "error" (case-insensitive)
+    result = xy.eval("log_content.grep('error', 'i');", {"log_content": log_content})
+    print(result)
+
+    # Extract only the "error" matches
+    result = xy.eval("log_content.grep('error', 'o');", {"log_content": log_content})
+    print(result)
+
+    # Find lines NOT containing "error"
+    result = xy.eval("log_content.grep('error', 'v');", {"log_content": log_content})
+    print(result)
+    ```
 
 ### Advanced Examples
 
-```grapa
-// Find "error" with 2 lines of context
-log_content.grep("error", "A2B2")
+=== "CLI"
+    ```grapa
+    // Find "error" with 2 lines of context
+    log_content.grep("error", "A2B2")
 
-// Find word "error" (word boundaries)
-log_content.grep("error", "w")
+    // Find word "error" (word boundaries)
+    log_content.grep("error", "w")
 
-// Find "error" in JSON format
-log_content.grep("error", "j")
+    // Find "error" in JSON format
+    log_content.grep("error", "j")
 
-// Find "error" with line numbers
-log_content.grep("error", "n")
+    // Find "error" with line numbers
+    log_content.grep("error", "n")
 
-// Count "error" occurrences
-log_content.grep("error", "c")
-```
+    // Count "error" occurrences
+    log_content.grep("error", "c")
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Find "error" with 2 lines of context
+    log_content = "Error: Failed to connect to database\nError: File not found\nSuccess: Operation completed"
+    result = xy.eval("log_content.grep('error', 'A2B2');", {"log_content": log_content})
+    print(result)
+
+    # Find word "error" (word boundaries)
+    result = xy.eval("log_content.grep('error', 'w');", {"log_content": log_content})
+    print(result)
+
+    # Find "error" in JSON format
+    result = xy.eval("log_content.grep('error', 'j');", {"log_content": log_content})
+    print(result)
+
+    # Find "error" with line numbers
+    result = xy.eval("log_content.grep('error', 'n');", {"log_content": log_content})
+    print(result)
+
+    # Count "error" occurrences
+    result = xy.eval("log_content.grep('error', 'c');", {"log_content": log_content})
+    print(result)
+    ```
 
 ### Unicode Examples
 
-```grapa
-// Match Unicode letters
-text.grep("\\p{L}+", "o")
+=== "CLI"
+    ```grapa
+    // Match Unicode letters
+    text.grep("\\p{L}+", "o")
 
-// Case-insensitive Unicode matching
-"Café RÉSUMÉ".grep("café", "i")
+    // Case-insensitive Unicode matching
+    "Café RÉSUMÉ".grep("café", "i")
 
-// Diacritic-insensitive matching
-"café résumé naïve".grep("cafe", "d")
+    // Diacritic-insensitive matching
+    "café résumé naïve".grep("cafe", "d")
 
-// Unicode normalization
-"café".grep("cafe", "NFC")
+    // Unicode normalization
+    "café".grep("cafe", "NFC")
 
-// Grapheme cluster extraction
-"e\u0301\n😀\u2764\ufe0f".grep("\\X", "o")
-["é", "\n", "😀", "❤️"]
+    // Grapheme cluster extraction
+    "e\u0301\n😀\u2764\ufe0f".grep("\\X", "o")
+    ["é", "\n", "😀", "❤️"]
 
-// Complex grapheme clusters
-"café résumé".grep("\\X", "o")
-["c", "a", "f", "é", " ", "r", "é", "s", "u", "m", "é"]
+    // Complex grapheme clusters
+    "café résumé".grep("\\X", "o")
+    ["c", "a", "f", "é", " ", "r", "é", "s", "u", "m", "é"]
 
-// Grapheme clusters with quantifiers
-"café".grep("\\X+", "o")
-["café"]
+    // Grapheme clusters with quantifiers
+    "café".grep("\\X+", "o")
+    ["café"]
 
-"café".grep("\\X{2,3}", "o")
-["ca", "fé"]
-```
+    "café".grep("\\X{2,3}", "o")
+    ["ca", "fé"]
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Match Unicode letters
+    text = "Hello 世界 123"
+    result = xy.eval("text.grep(r'\\p{L}+', 'o');", {"text": text})
+    print(result)
+
+    # Case-insensitive Unicode matching
+    text = "Café RÉSUMÉ"
+    result = xy.eval("text.grep('café', 'i');", {"text": text})
+    print(result)
+
+    # Diacritic-insensitive matching
+    text = "café résumé naïve"
+    result = xy.eval("text.grep('cafe', 'd');", {"text": text})
+    print(result)
+
+    # Unicode normalization
+    text = "café"
+    result = xy.eval("text.grep('cafe', 'NFC');", {"text": text})
+    print(result)
+
+    # Grapheme cluster extraction
+    text = "e\u0301\n😀\u2764\ufe0f"
+    result = xy.eval("text.grep(r'\\X', 'o');", {"text": text})
+    print(result)
+
+    # Complex grapheme clusters
+    text = "café résumé"
+    result = xy.eval("text.grep(r'\\X', 'o');", {"text": text})
+    print(result)
+
+    # Grapheme clusters with quantifiers
+    text = "café"
+    result = xy.eval("text.grep(r'\\X+', 'o');", {"text": text})
+    print(result)
+
+    text = "café"
+    result = xy.eval("text.grep(r'\\X{2,3}', 'o');", {"text": text})
+    print(result)
+    ```
 
 ### Error Handling Examples
 
-```grapa
-// Handle invalid patterns gracefully
-result = "Hello world".grep("(", "o");
-if (result.size() == 0) {
-    "Invalid pattern detected".echo();
-}
+=== "CLI"
+    ```grapa
+    // Handle invalid patterns gracefully
+    result = "Hello world".grep("(", "o");
+    if (result.size() == 0) {
+        "Invalid pattern detected".echo();
+    }
 
-// Handle empty patterns correctly
-result = "Hello world".grep("", "o");
-// Returns [""] - single empty string
-```
+    // Handle empty patterns correctly
+    result = "Hello world".grep("", "o");
+    // Returns [""] - single empty string
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Handle invalid patterns gracefully
+    result = xy.eval('"Hello world".grep("(", "o")')
+    if len(result) == 0:
+        "Invalid pattern detected".echo()
+
+    # Handle empty patterns correctly
+    result = xy.eval('"Hello world".grep("", "o")')
+    # Returns [""] - single empty string
+    ```
 
 ### Context Line Examples
 
-```grapa
-// Basic context
-input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5";
-input.grep("Line 3", "C1")
-["Line 2", "Line 3", "Line 4"]
+=== "CLI"
+    ```grapa
+    // Basic context
+    text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5";
+    result = text.grep("Line 3", "C1");
+    echo(result);
+    /* Result: ["Line 2", "Line 3", "Line 4"] */
 
-// Multiple matches with context
-input.grep("Line 2|Line 4", "C1")
-["Line 1", "Line 2", "Line 3", "--", "Line 3", "Line 4", "Line 5"]
-```
+    // Multiple matches with context
+    text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
+    result = text.grep("Line 3|Line 5", "C1");
+    echo(result);
+    /* Result: ["Line 1", "Line 2", "Line 3", "--", "Line 3", "Line 4", "Line 5"] */
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Basic context
+    text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5"
+    result = xy.eval("text.grep('Line 3', 'C1');", {"text": text})
+    print(result)
+    # Result: ['Line 2', 'Line 3', 'Line 4']
+
+    # Multiple matches with context
+    text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7"
+    result = xy.eval("text.grep('Line 3|Line 5', 'C1');", {"text": text})
+    print(result)
+    # Result: ['Line 1', 'Line 2', 'Line 3', '--', 'Line 3', 'Line 4', 'Line 5']
+    ```
 
 ### Column Number Examples
 
-```grapa
-// Basic column numbers
-"foo bar baz".grep("foo", "oT")
-["1:foo"]
+=== "CLI"
+    ```grapa
+    // Basic column numbers
+    "foo bar baz".grep("foo", "oT")
+    ["1:foo"]
 
-// Column numbers with color
-"foo bar baz".grep("foo", "oTL")
-["1:\x1b[1;31mfoo\x1b[0m"]
-```
+    // Column numbers with color
+    "foo bar baz".grep("foo", "oTL")
+    ["1:\x1b[1;31mfoo\x1b[0m"]
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Basic column numbers
+    text = "foo bar baz"
+    result = xy.eval("text.grep('foo', 'oT');", {"text": text})
+    print(result)
+    # Result: ['1:foo']
+
+    # Column numbers with color
+    text = "foo bar baz"
+    result = xy.eval("text.grep('foo', 'oTL');", {"text": text})
+    print(result)
+    # Result: ['1:\x1b[1;31mfoo\x1b[0m']
+    ```
 
 ### Word Boundary Examples
 
-```grapa
-// Basic word boundaries
-"hello world hello123".grep("hello", "wo")
-["hello"]
+=== "CLI"
+    ```grapa
+    // Basic word boundaries
+    "hello world hello123".grep("hello", "wo")
+    ["hello"]
 
-// Word boundaries with case-insensitive
-"Hello WORLD hello123".grep("hello", "woi")
-["Hello", "hello"]
-```
+    // Word boundaries with case-insensitive
+    "Hello WORLD hello123".grep("hello", "woi")
+    ["Hello", "hello"]
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    # Basic word boundaries
+    text = "hello world hello123"
+    result = xy.eval("text.grep('hello', 'wo');", {"text": text})
+    print(result)
+    # Result: ['hello']
+
+    # Word boundaries with case-insensitive
+    text = "Hello WORLD hello123"
+    result = xy.eval("text.grep('hello', 'woi');", {"text": text})
+    print(result)
+    # Result: ['Hello', 'hello']
+    ```
 
 ## Option-Based Output Control
 
@@ -802,26 +1433,56 @@ Grapa grep provides flexible control over output format through the `o` and `f` 
 
 ### Examples
 
-```grapa
-input = "Hello world\nGoodbye world\n";
-pattern = "\\w+";
+=== "CLI"
+    ```grapa
+    input = "Hello world\nGoodbye world\n";
+    pattern = "\\w+";
 
-// Default behavior - full segments
-input.grep(pattern)
-["Hello world", "Goodbye world"]
+    // Default behavior - full segments
+    input.grep(pattern)
+    ["Hello world", "Goodbye world"]
 
-// Explicit full segments
-input.grep(pattern, "f")
-["Hello world", "Goodbye world"]
+    // Explicit full segments
+    input.grep(pattern, "f")
+    ["Hello world", "Goodbye world"]
 
-// Match-only - matched portions
-input.grep(pattern, "o")
-["Hello", "world", "Goodbye", "world"]
+    // Match-only - matched portions
+    input.grep(pattern, "o")
+    ["Hello", "world", "Goodbye", "world"]
 
-// Match-only + full segments
-input.grep(pattern, "of")
-["Hello world", "Goodbye world"]
-```
+    // Match-only + full segments
+    input.grep(pattern, "of")
+    ["Hello world", "Goodbye world"]
+    ```
+
+=== "Python"
+    ```python
+    import grapapy
+    xy = grapapy.grapa()
+
+    input = "Hello world\nGoodbye world\n"
+    pattern = "\\w+"
+
+    # Default behavior - full segments
+    result = xy.eval("input.grep(pattern);", {"input": input})
+    print(result)
+    # Result: ['Hello world', 'Goodbye world']
+
+    # Explicit full segments
+    result = xy.eval("input.grep(pattern, 'f');", {"input": input})
+    print(result)
+    # Result: ['Hello world', 'Goodbye world']
+
+    # Match-only - matched portions
+    result = xy.eval("input.grep(pattern, 'o');", {"input": input})
+    print(result)
+    # Result: ['Hello', 'world', 'Goodbye', 'world']
+
+    # Match-only + full segments
+    result = xy.eval("input.grep(pattern, 'of');", {"input": input})
+    print(result)
+    # Result: ['Hello world', 'Goodbye world']
+    ```
 
 ### Pattern Type Independence
 
@@ -906,10 +1567,11 @@ Grapa grep is now **production-ready** with **98%+ ripgrep parity** achieved. Al
 - This is the recommended and supported approach for strict output parity.
 
 ## Next Steps
+
 - Explore [Examples](EXAMPLES.md) for more usage patterns
 - Learn about [Testing](TESTING.md) your Grapa code
-- Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips 
+- Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
 
 ## Advanced/Binary Features
 - [GRZ Format Specification](GRZ_FORMAT.md) — Details on the GRZ binary format
-- [Binary Grep Guide](BINARY_GREP.md) — Using Grapa grep with binary data and advanced options 
+- **Binary Grep**: For advanced binary data processing, see the [Maintainers & Internal](maintainers/) section 

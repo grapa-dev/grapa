@@ -1,7 +1,6 @@
 # $BOOL
 References:
-- [$BOOL object](../../lib/grapa/$BOOL.grc)
-- [$OBJ object](../../lib/grapa/$OBJ.grc)
+
 
 The following are equivalent in comparisons:
 - True: true, 1

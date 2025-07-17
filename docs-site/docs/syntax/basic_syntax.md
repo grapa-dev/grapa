@@ -1,4 +1,37 @@
+---
+tags:
+  - user
+  - highlevel
+---
 # Basic Grapa Syntax Guide
+
+> **Canonical Reference:**
+> This file is the canonical, empirically tested reference for Grapa syntax and access patterns. All code in documentation and tests must comply with these rules. If you discover any new rules or exceptions, update this file immediately.
+
+> **Important: Access Patterns for .get() and Indexing (Tested, v0.0.39)**
+>
+> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
+> |-----------|:-----------:|:-----------:|:----------------:|:------------:|
+> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |
+> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |
+> | $file     |      ✅      |     ❌      |        —         |      —       |
+> | $TABLE    |     ✅*      |     ❌      |        —         |      —       |
+> | $OBJ      |      ❌      |     ❌      |       ❌         |     ✅       |
+>
+> *$TABLE .get() requires two arguments: key and field.
+>
+> - For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key).
+> - For $ARRAY, use bracket notation (e.g., arr[1]).
+> - Only $file and $TABLE support .get().
+> - This is based on direct testing in Grapa v0.0.39.
+
+> **Clarification on .get() Usage:**
+> - `.get()` is **required** for `$file` and `$TABLE` access.
+> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` as of this writing.
+> - Use bracket and dot notation for `$ARRAY`, `$LIST`, and `$OBJ`.
+> - If more objects support `.get()` in the future, this guide will be updated.
+
+---
 
 This guide covers the essential syntax patterns for writing Grapa code, based on working examples and best practices.
 
@@ -54,6 +87,10 @@ for i in 1..10 {
 }
 ```
 
+- Only `while` loops and `.range()`+functional methods are valid for iteration in Grapa.
+- `for` loops are not supported.
+- If more objects support `.get()` in the future, this guide will be updated.
+
 ### Loop Examples
 
 ```grapa
@@ -83,13 +120,18 @@ name = "John Doe";
 age = 30;
 salary = 75000.50;
 
-/* Object creation */
-table = $file().table("ROW");
-fs = $file();
+/* Incrementing and appending */
+v = v + 1;   /* Valid */
+v += 1;      /* Idiomatic and preferred */
+s = s + "x";   /* Valid */
+s += "x";      /* Idiomatic and preferred */
 ```
 
-### Global Variables
+### Namespace System
 
+Grapa has a dynamic namespace system that's automatically managed by the execution tree:
+
+#### Global Namespace
 Use `$global` for variables that need to persist across function calls:
 
 ```grapa
@@ -98,6 +140,169 @@ $global.my_table = $file().table("ROW");
 
 /* Use global variable */
 my_table.mkfield("name", "STR", "VAR");
+```
+
+#### Local Namespace
+Each function execution creates its own namespace automatically:
+
+```grapa
+/* Function with local variables */
+func = op(x) {
+    local_var = x * 2;  /* This is in the function's local namespace */
+    local_var.echo();
+};
+
+func(5);  /* Output: 10 */
+```
+
+#### Namespace Hierarchy
+Variables can be accessed from parent namespaces:
+
+```grapa
+/* Global variable */
+$global.config = {"debug": true, "timeout": 30};
+
+/* Function can access global variables */
+func = op() {
+    if (config.debug) {
+        ("Debug mode enabled").echo();
+    }
+    /* Local override */
+local_config = {"debug": false};
+    local_config.debug.echo();  /* false */
+};
+
+func();
+```
+
+#### Dynamic Namespace Creation
+Namespaces are created automatically for each execution context:
+
+```grapa
+/* Each block creates a new namespace */
+if (condition) {
+    block_var = "value";  /* In block namespace */
+} else {
+    block_var = "other";  /* Different block namespace */
+}
+```
+
+### Const Protection
+
+Grapa provides runtime const protection that prevents variable modification:
+
+```grapa
+/* Create const variable */
+config = const {"debug": true, "port": 3000};
+
+/* Cannot modify (will error) */
+config.port = 8080;  /* Error: cannot modify const */
+
+/* Can toggle const protection */
+config.setconst(false);
+config.port = 8080;  /* Now works */
+config.setconst(true);  /* Make const again */
+
+/* Const arrays */
+colors = const ["red", "green", "blue"];
+colors += "yellow";  /* Error: cannot modify const */
+
+/* Performance optimization */
+static_config = static {"api_url": "https://api.example.com"};
+```
+
+**Benefits of Grapa's const:**
+- **Runtime protection**: Prevents actual modification at runtime
+- **Dynamic control**: Can toggle const on/off as needed
+- **Performance**: Optimized for caching and concurrent access
+- **Thread safety**: Prevents blocking on access for concurrent threads
+
+### Class System
+
+Grapa provides a full object-oriented programming system with classes, inheritance, and polymorphism:
+
+#### Basic Class Definition
+```grapa
+/* Define a class */
+Person = class {
+    name = "";
+    age = 0;
+    city = "";
+    
+    /* Constructor */
+    init = op(n, a, c) {
+        name = n;
+        age = a;
+        city = c;
+    };
+    
+    /* Method */
+    getInfo = op() {
+        ("Name: " + name + ", Age: " + age.str() + ", City: " + city).echo();
+    };
+};
+
+/* Create instance */
+person = obj Person;
+person.init("John", 30, "NYC");
+person.getInfo();
+```
+
+#### Inheritance
+```grapa
+/* Base class */
+Animal = class {
+    name = "";
+    speak = op() { ("Some sound").echo(); };
+};
+
+/* Derived class */
+Dog = class (Animal) {
+    breed = "";
+    /* Override method */
+speak = op() { ("Woof!").echo(); };
+    fetch = op() { ("Fetching ball").echo(); };
+};
+
+/* Usage */
+myDog = obj Dog;
+myDog.name = "Buddy";
+myDog.speak();  /* Output: Woof! */
+```
+
+#### Polymorphism
+```grapa
+/* Different animal types */
+animals = [obj Dog, obj Animal];
+i = 0;
+while (i < animals.len()) {
+    animals[i].speak();  /* Calls appropriate method */
+    i += 1;
+}
+```
+
+### Inheritance and Composition
+
+Grapa supports full object-oriented programming features:
+
+- **Inheritance**: Use `class (ParentClass)` to create subclasses
+- **Method overriding**: Subclasses can override parent methods
+- **Method sets**: Classes have sets of methods, similar to Go/Java
+- **Composition**: Classes and objects can include other objects as properties
+
+#### Example
+```grapa
+Animal = class {
+    speak = op() { "Some sound".echo(); };
+};
+Dog = class (Animal) {
+    /* Method override */
+    speak = op() { "Woof!".echo(); };
+    /* New method */
+    fetch = op() { "Fetching...".echo(); };
+};
+myDog = obj Dog;
+myDog.speak();  /* Outputs: Woof! */
 ```
 
 ## String Operations
@@ -113,6 +318,14 @@ full_name = first_name + " " + last_name;
 
 /* String with variables */
 message = ("Hello " + name + ", you are " + age.str() + " years old");
+```
+
+### String Concatenation
+
+```grapa
+/* Both forms are valid, but += is preferred */
+message = message + " world";
+message += "!";
 ```
 
 ### String Literals
@@ -133,48 +346,77 @@ message = Hello World;
 
 ### Array Access
 
-Arrays (`$ARRAY`) support both bracket notation and `.get()` method:
+Arrays (`$ARRAY`) support only bracket notation:
 
 ```grapa
-/* ✅ Both methods work for arrays */
-element = ["a", "b", "c"];
-value = element[1];        /* Returns "b" */
-value = element.get(1);    /* Returns "b" */
-index = element["b"];      /* Returns 1 */
+arr = ["a", "b", "c"];
+value = arr[1];        /* Returns "b" */
 ```
+
+- Use bracket notation for `$ARRAY`.
+- `.get()` is not supported for `$ARRAY`.
+
+### Array Concatenation
+
+Use the `+=` operator to concatenate arrays:
+
+```grapa
+arr1 = ["a", "b"];
+arr2 = ["c", "d"];
+arr1 += arr2;          /* arr1 is now ["a", "b", "c", "d"] */
+```
+
+- The `+=` operator appends all elements from the right array to the left array.
+- This is simpler than using `.reduce()` or other functional methods.
+- No spread operator (`...`) is needed or supported.
 
 ### List/Object Access
 
-Lists (`$LIST`) support bracket notation, `.get()` method, and `.getname()`:
+Lists (`$LIST`) and objects (`$OBJ`) support bracket and dot notation:
 
 ```grapa
-/* ✅ Multiple access methods for lists */
 obj = {"a": 11, "b": 22, "c": 33};
 value = obj["b"];          /* Returns 22 */
-value = obj.get("b");      /* Returns 22 */
-value = obj[1];            /* Returns 22 (numeric index) */
-name = obj.getname(1);     /* Returns "b" (key name) */
+value = obj.key;            /* Returns value for key 'key' if present */
+value = obj."b";           /* Returns 22 */
+
+/* $LIST only: */
+value = obj[1];             /* Returns 22 (by index) */
+name = obj.getname(1);      /* Returns "b" (key name) */
 ```
+
+- Use bracket and dot notation for `$LIST` and `$OBJ`.
+- `.get()` is not supported for `$LIST` or `$OBJ`.
 
 ### $file and $TABLE Access
 
 For `$file` and `$TABLE` objects, always use `.get()` method:
 
 ```grapa
-/* ✅ Correct: Use .get() for $file and $TABLE objects */
-files = fs.ls();
-file_info = files.get(0);
+files = $file().ls();
+file_info = files.get(0);   /* Correct */
 
-table_data = table.get("user1", "name");
-table_records = table.ls();
-record = table_records.get(0);
-
-/* ❌ Avoid bracket notation for $file and $TABLE objects */
-file_info = files[0];  /* May not work reliably */
-table_data = table["user1"];  /* May not work reliably */
+table = $file().table("ROW");
+table.mkfield("name", "STR", "VAR");
+table.set("user1", "Alice", "name");
+value = table.get("user1", "name");   /* Correct */
 ```
 
-### Type Checking
+- Always use `.get()` for `$file` and `$TABLE`.
+- Bracket and dot notation are not valid for `$file` and `$TABLE`.
+
+### Type System Philosophy
+
+Grapa uses **dynamic typing** as a fundamental design choice, not a limitation. This enables Grapa's core strengths:
+
+### Dynamic Type System Benefits
+- **Runtime flexibility**: Types are determined at execution time
+- **Dynamic code execution**: Enables meta-programming and code generation
+- **System integration**: Works with data of unknown types
+- **Data processing**: Ideal for ETL and analysis tasks
+
+### Type Safety Through Runtime Checking
+Grapa provides robust type safety through runtime checking and introspection:
 
 ```grapa
 /* Check object types */
@@ -186,6 +428,34 @@ obj.type();            /* Returns $LIST */
 
 table = $file().table("ROW");
 table.type();          /* Returns $TABLE */
+
+/* Runtime type checking */
+if (value.type() == $INT) {
+    ("Value is an integer").echo();
+} else if (value.type() == $STR) {
+    ("Value is a string").echo();
+}
+```
+
+### Type Conversion
+Grapa provides explicit type conversion methods:
+
+```grapa
+/* String conversion */
+value = 42;
+text = value.str();    /* Convert to string */
+
+/* Numeric conversion */
+text = "123";
+number = text.int();   /* Convert to integer */
+decimal = text.float(); /* Convert to float */
+
+/* Type checking before conversion */
+if (input.type() == $STR) {
+    result = input.int();
+} else {
+    result = input;    /* Already numeric */
+}
 ```
 
 ## Function Calls
@@ -216,28 +486,57 @@ table_obj = $file().table("ROW");
 
 ## Comments
 
-### Block Comments
+Grapa only supports block comments (`/* ... */`). Line comments (`// ...`) are not supported.
 
-Use block comments for documentation:
+### Comment Rules
+
+#### Outside Code Blocks
+Comments can be placed at the end of lines when not inside `{}` blocks:
 
 ```grapa
-/* This is a block comment
-   It can span multiple lines
-   and is useful for documentation */
-
-/* Single line comment */
+/* This is a block comment */
+x = 5;  /* This works outside {} blocks */
+y = 10; /* This also works */
 ```
 
-### Comment Examples
+#### Inside Code Blocks (`{}`)
+When inside `{}` blocks, comments **must** be on their own line:
 
 ```grapa
-/* Create a table for user data */
-$global.users = $file().table("ROW");
+/* ✅ Correct: Comments on their own line */
+if (condition) {
+    /* This comment is correct */
+    x = 5;
+    /* Another correct comment */
+    y = 10;
+}
 
-/* Add fields to the table */
-users.mkfield("name", "STR", "VAR");  /* Variable length string */
-users.mkfield("age", "INT");          /* Integer field */
-users.mkfield("salary", "FLOAT", "FIX", 8);  /* Fixed float */
+/* ❌ Incorrect: Comments at end of lines in {} blocks */
+if (condition) {
+    x = 5;  /* This will cause a syntax error */
+    y = 10; /* This will also cause a syntax error */
+}
+```
+
+#### Class and Function Definitions
+The same rule applies to class and function definitions:
+
+```grapa
+/* ✅ Correct */
+MyClass = class {
+    /* Method definition */
+    myMethod = op() {
+        /* Method body */
+        "Hello".echo();
+    };
+};
+
+/* ❌ Incorrect */
+MyClass = class {
+    myMethod = op() {
+        "Hello".echo();  /* This will cause a syntax error */
+    };
+};
 ```
 
 ## Control Structures
@@ -275,6 +574,115 @@ if (age < 18) { }
 /* Greater/Less than or equal */
 if (count >= 10) { }
 if (value <= 100) { }
+```
+
+### Switch Statements
+
+Grapa provides switch statements for multiple condition checking:
+
+#### Type Switching
+```grapa
+/* Switch based on type */
+switch (value.type()) {
+    case $STR: "String value".echo();
+    case $INT: "Integer value".echo();
+    case $ARRAY: "Array value".echo();
+    case $LIST: "List value".echo();
+    default: "Unknown type".echo();
+};
+```
+
+#### Value Switching
+```grapa
+/* Switch based on value */
+switch (status) {
+    case "active": "User is active".echo();
+    case "inactive": "User is inactive".echo();
+    case "pending": "User is pending".echo();
+    default: "Unknown status".echo();
+};
+```
+
+#### Boolean Switching
+```grapa
+/* Switch based on boolean conditions */
+switch(true) {
+    case (score >= 90): "Grade: A".echo();
+    case (score >= 80): "Grade: B".echo();
+    case (score >= 70): "Grade: C".echo();
+    case (score >= 60): "Grade: D".echo();
+    default: "Grade: F".echo();
+};
+```
+
+#### Switch with Complex Conditions
+```grapa
+/* Switch with complex expressions */
+switch(true) {
+    case (age < 18 && income < 30000): "Young and low income".echo();
+    case (age >= 65): "Senior citizen".echo();
+    case (income > 100000): "High income".echo();
+    default: "Standard category".echo();
+};
+```
+
+## Unsupported Syntax Operators
+
+Grapa does not support several modern JavaScript/TypeScript operators. Use explicit alternatives:
+
+### Logical Assignment Operators
+
+```grapa
+/* ❌ Not supported */
+x ||= y;    /* Logical OR assignment */
+x &&= y;    /* Logical AND assignment */
+
+/* ✅ Use explicit assignment */
+/* For ||= */
+if (!x) { x = y; }
+/* For &&= */
+if (x) { x = y; }
+```
+
+### Nullish Coalescing
+
+```grapa
+/* ❌ Not supported */
+x ?? y;     /* Nullish coalescing */
+
+/* ✅ Use explicit null check */
+if (x == null) { x = y; }
+```
+
+### Optional Chaining
+
+```grapa
+/* ❌ Not supported */
+obj?.prop?.sub;    /* Optional chaining */
+
+/* ✅ Use explicit null checks */
+if (obj && obj.prop) { obj.prop.sub; }
+```
+
+### Spread Operator
+
+```grapa
+/* ❌ Not supported */
+[...arr1, ...arr2];    /* Spread operator */
+
+/* ✅ Use += operator for arrays */
+arr1 += arr2;          /* Array concatenation */
+```
+
+### Walrus Operator (Python)
+
+```grapa
+/* ❌ Not supported in Python */
+if (x := f()) > 0:     /* Walrus operator */
+
+/* ✅ Use separate assignment */
+x = f();
+if (x > 0) { ... }
 ```
 
 ## Error Handling
@@ -398,7 +806,7 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
     arr = [];
     arr += "foo";
     arr += "bar";
-    // arr is now ["foo", "bar"]
+    /* arr is now ["foo", "bar"] */
 - Do not use `.push()` or `.append()`—these are not valid in Grapa.
 
 ## Array Iteration and Sorting
@@ -419,6 +827,8 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
 | Every block (after `}`) ends with a semicolon | `if (x) { ... };` |
 | Use block comments only | `/* comment */` |
 | Do not use line comments (`// ...`) |  |
+| Within `{}` blocks, comments must be on their own line | `{ /* comment */ x = 5; }` |
+| Do not put comments at the end of lines in `{}` blocks | `{ x = 5; /* wrong */ }` |
 | Append to arrays with `+=` | `arr += "foo";` |
 | No `.push()` or `.append()` |  |
 | Access arrays/lists with `[index]` | `arr[0];` |
@@ -426,6 +836,12 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
 | Use `.echo()` for output | `"Hello".echo();` |
 | Use `while` loops, not `for` | `while (cond) { ... };` |
 | Wrap string concatenations in parentheses | `(str1 + str2).echo();` |
+| Increment or append with += | `v += 1;`, `s += "x";` |
+| Both = x + y and += y are valid | `v = v + 1;`, `v += 1;` |
+| No logical assignment (`||=`, `&&=`) | Use explicit `if` statements |
+| No nullish coalescing (`??`) | Use explicit null checks |
+| No optional chaining (`?.`) | Use explicit null checks |
+| No spread operator (`...`) | Use `+=` for arrays |
 
 ---
 */ 
@@ -446,7 +862,7 @@ There are several predefined lexical operators, most of which define how $ID, $I
 # Default Grammar Rules
 
 View a text version of the grammar rules loaded into Grapa on startup here:
-[Grapa Grammar](../../lib/grapa/$grapa.grc)
+Grapa Grammar
 
 The system will first check for a match on the "start" rule, which is a global variable. If that global variable is of type $RULE, then it will become the first rule for scripts. This is an easy way to provide an override on command processing. If the "start" rule does not provide a match, then the system will evaluate using the "$start" rule.
 
@@ -480,35 +896,109 @@ If an existing function/command doesn't support chaining, an OP can be inserted 
 */ 
 
 /*
-# Dynamic Code Evaluation (eval and op())
+# Dynamic Code Execution (Grapa's Core Meta-Programming Capability)
 
-Grapa allows you to evaluate code dynamically at runtime, either by evaluating a string directly or by compiling it into an operation object.
+Grapa's most powerful feature is its ability to compile and execute code at runtime. Unlike most languages, Grapa provides **superior** dynamic code execution capabilities through execution trees that are both human-readable and directly executable.
 
-## Using `$sys().eval()`
-- Evaluates a string as Grapa code immediately.
-- Optionally accepts a parameter map.
+## Using `$sys().eval()` for Immediate Evaluation
+- Evaluates a string as Grapa code immediately
+- Optionally accepts a parameter map for dynamic execution
+- Perfect for one-off evaluations and user input processing
 
 ```grapa
+/* Simple evaluation */
 result = $sys().eval("5*3"); // result: 15
+
+/* Evaluation with parameters */
 result = $sys().eval("x + y", {"x": 2, "y": 4}); // result: 6
+
+/* Complex expressions */
+result = $sys().eval("(a + b) * c", {"a": 2, "b": 3, "c": 4}); // result: 20
+
+/* User input processing */
+user_input = "2 * (3 + 4)";
+result = $sys().eval(user_input); // result: 14
 ```
 
 ## Using `op()` for Compiled Operations
-- `op()(<string>)` parses the string into a $OP object (compiled code).
-- You can then execute it with `()` and optionally pass parameters.
-- This is reusable and efficient for repeated execution.
+- `op()(<string>)` parses the string into a $OP object (compiled execution tree)
+- Creates reusable, optimized functions that can be executed multiple times
+- Supports both positional and named parameters
+- Enables advanced meta-programming patterns
 
 ```grapa
+/* Basic compilation */
 op_obj = op()("a + b");
 result = op_obj({"a": 10, "b": 20}); // result: 30
 
-// Or in one line:
+/* One-line execution */
 result = op()("5*3")(); // result: 15
+
+/* With parameters */
+func = op("name"=0)("'Hello, ' + name + '!'.echo();");
+func("Grapa"); // Output: Hello, Grapa!
+
+/* Dynamic function generation */
+operations = ["add", "sub", "mul"];
+funcs = {};
+i = 0;
+while (i < operations.len()) {
+    op_name = operations.get(i);
+    code = "a " + op_name + " b";
+    funcs[op_name] = op("a"=0, "b"=0)(code);
+    i += 1;
+}
+
+/* Execute generated functions */
+funcs["add"](5, 3).echo();  // 8
+funcs["mul"](5, 3).echo();  // 15
 ```
 
-## When to Use Each
-- Use `$sys().eval()` for one-off evaluation of code strings.
-- Use `op()` (or `$sys().compile()`) when you want to compile code once and execute it multiple times, or pass it around as a first-class object.
+## Using `$sys().compile()` for Performance
+- Pre-compiles scripts for maximum performance
+- Creates $OP objects that can be executed with `$sys().eval()`
+- Ideal for frequently executed code
 
-See also: [Advanced Scripting](../grc_scripts.md)
+```grapa
+/* Compile once, execute many times */
+compiled = $sys().compile("input * 2 + offset");
+
+/* Execute with different parameters */
+result1 = $sys().eval(compiled, {"input": 10, "offset": 5}); // 25
+result2 = $sys().eval(compiled, {"input": 20, "offset": 10}); // 50
+```
+
+## Advanced Meta-Programming Patterns
+
+### Template-Based Code Generation
+```grapa
+/* Create reusable templates */
+template = "result = base * multiplier + offset; result";
+process = op("base"=0, "multiplier"=1, "offset"=0)(template);
+process(10, 2, 5).echo(); // 25
+```
+
+### Configuration-Driven Functions
+```grapa
+/* Generate functions from configuration */
+config = {"operation": "add", "default": 0};
+code = "a " + config.operation + " b";
+func = op("a"=config.default, "b"=config.default)(code);
+func(5, 3).echo(); // 8
+```
+
+## When to Use Each Method
+- **`$sys().eval()`**: One-off evaluation, user input processing, simple expressions
+- **`op()`**: Reusable functions, meta-programming, dynamic code generation
+- **`$sys().compile()`**: Performance-critical code, frequently executed operations
+
+## Why Grapa's Dynamic Execution is Superior
+1. **Human-readable execution trees**: Unlike bytecode, $OP objects can be examined and understood
+2. **Direct manipulation**: Execution trees can be created, modified, and executed directly
+3. **Compile-time optimization**: Constant folding and expression simplification
+4. **Parameter binding**: Both positional and named parameters with default values
+5. **Type safety**: Execution trees maintain type information
+6. **Performance**: Compiled execution trees are highly optimized
+
+See also: [Advanced Scripting](../grc_scripts.md), [$OP Type](../type/OP.md), [System Functions](../sys/sys.md)
 */ 

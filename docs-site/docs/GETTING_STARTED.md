@@ -1,3 +1,8 @@
+---
+tags:
+  - user
+  - highlevel
+---
 # Getting Started with Grapa
 
 ## Who is this for?
@@ -31,7 +36,9 @@ grapa -cfile "my_script.grc"
 ## Key Syntax Rules (Read This First!)
 - Every statement and every block (including after closing braces) must end with a semicolon (`;`).
 - Use block comments (`/* ... */`), not line comments (`// ...`).
+- Within `{}` blocks, comments must be on their own line, not at the end of a line.
 - To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
+- Grapa uses dynamic typing by design - types are determined at runtime for maximum flexibility.
 - See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
 
 ---
@@ -64,6 +71,30 @@ sum = numbers.reduce(op(a, b) { a + b; }, 0);
 
 ## Core Concepts
 
+### Dynamic Code Execution
+
+Grapa's most powerful feature is its ability to compile and execute code at runtime:
+
+```grapa
+/* Direct string execution */
+op()("'Hello, World!'.echo();")();
+/* Output: Hello, World! */
+
+/* With parameters */
+func = op("name"=0)("'Hello, ' + name + '!'.echo();");
+func("Grapa");
+/* Output: Hello, Grapa! */
+
+/* System-level evaluation */
+result = $sys().eval("x + y", {"x": 5, "y": 3});
+result.echo();  /* 8 */
+
+/* Compiled execution for performance */
+compiled = $sys().compile("result = input * 2 + offset; result");
+result = $sys().eval(compiled, {"input": 10, "offset": 5});
+result.echo();  /* 25 */
+```
+
 ### Data Types
 
 Grapa provides rich data types for modern data processing:
@@ -75,6 +106,24 @@ my_list = [1, 2, 3, "hello", true];
 my_array = {1, 2, 3, 4, 5};
 my_table = {"name": "John", "age": 30, "city": "New York"};
 my_vector = <1, 2, 3, 4, 5>;
+```
+
+### Namespace System
+
+Grapa automatically manages namespaces for variable scoping:
+
+```grapa
+/* Global variables persist across function calls */
+$global.config = {"debug": true, "timeout": 30};
+
+/* Function creates its own local namespace */
+func = op(x) {
+    local_var = x * 2;  /* Local to this function */
+    config.echo();      /* Access global variable */
+    local_var.echo();   /* Access local variable */
+};
+
+func(5);
 ```
 
 ### JSON and XML Support
@@ -111,6 +160,7 @@ matches.echo();  /* ["Hello world", "Hello again"] */
 ### Data Processing
 
 ```grapa
+/* Data processing example */
 content = $file().read("data.txt");
 lines = content.split("\n");
 filtered = lines.filter(op(line) { line.len() > 0; });
@@ -158,10 +208,15 @@ matches.echo();  /* ["world", "world"] */
 - Explore [Examples](EXAMPLES.md) for more complex use cases
 - Learn about [Testing](TESTING.md) your Grapa code
 - Dive into [System Functions](SYSTEM_FUNCTIONS.md) for advanced features
-- Check out the [Grep functionality](GREP.md) for advanced pattern matching
+- Check out the [Grep functionality](grep.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips 
 
 > **Tip:** Use `.range()` to generate arrays of numbers: `(n).range(start, step)`. 
+
+> **Comment Style:**
+> - Only block comments (`/* ... */`) are supported in Grapa, and must always be on their own line.
+> - `//` and `#` comments are not supported and will cause errors.
+> - Within `{}` blocks, comments must be on their own line, not at the end of a line.
 
 > **Did you know?**
 > Grapa's parallel ETL/data processing is a core, production-ready feature. Parallelism is well tested and ideal for real-world, high-throughput data tasks. 

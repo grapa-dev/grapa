@@ -1,0 +1,1417 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Operator - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#operator" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Operator
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING_STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CLI_QUICKSTART/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Python Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API_REFERENCE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../grep/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Grep Documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../USE_CASES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Use Cases
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EXAMPLES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../TROUBLESHOOTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING_STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI_QUICKSTART/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API_REFERENCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JS_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUST_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TYPESCRIPT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GO_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUBY_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KOTLIN_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SWIFT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../USE_CASES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EXAMPLES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TROUBLESHOOTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#basic-function-creation-and-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Function Creation and Execution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#direct-execution-tree-creation-and-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Direct Execution Tree Creation and Execution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameter-binding-and-namespace-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter Binding and Namespace Management
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternative-syntax-for-function-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternative Syntax for Function Creation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#script-and-rule-based-function-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Script and Rule-Based Function Creation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-based-function-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rule-Based Function Creation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-time-optimization-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compile-Time Optimization Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#execution-tree-interpretation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execution Tree Interpretation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution Tree Interpretation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tree-traversal-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tree Traversal Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-function-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Function Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Function Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#function-composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function Composition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-function-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Function Creation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-storage-and-retrieval" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function Storage and Retrieval
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-system-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with System Functions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-characteristics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Characteristics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debugging-execution-trees" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging Execution Trees
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="operator">Operator</h1>
+<p><strong>See also:</strong> <a href="../precedence/">Operator Precedence Table</a></p>
+<h2 id="basic-function-creation-and-execution">Basic Function Creation and Execution</h2>
+<table>
+<thead>
+<tr>
+<th>Commands</th>
+<th>Results</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f=op(){3%2};</br>f();</td>
+<td>1</td>
+</tr>
+<tr>
+<td>f=@&lt;[op,@<mod,{3,2}>],{}&gt;;</br>f();</td>
+<td>1</td>
+</tr>
+<tr>
+<td>f=op(a,b){a%b};</br>f();</td>
+<td>@&lt;[op,@&lt;mod,{@<var,{a}>,@<var,{b}>}&gt;],{a,b}&gt;</td>
+</tr>
+<tr>
+<td>f(842,5);</td>
+<td>2</td>
+</tr>
+<tr>
+<td>f=op(a,b,c){d=a%b;d*c;};</br>f();</td>
+<td>@&lt;[op,@[@&lt;assign,{d,@&lt;mod,{@<var,{a}>,@<var,{b}>}&gt;}&gt;,@&lt;mul,{@<var,{d}>,@<var,{c}>}&gt;]],{a,b,c}&gt;</td>
+</tr>
+<tr>
+<td>f(842,5,9);</td>
+<td>18</td>
+</tr>
+</tbody>
+</table>
+<h2 id="direct-execution-tree-creation-and-execution">Direct Execution Tree Creation and Execution</h2>
+<p>You can create and execute $OP trees directly:</p>
+<div class="highlight"><pre><span></span><code>/* Create function from string */
+compiled = op()(&quot;a = 5 + 3; a.echo();&quot;);
+
+/* Execute the function */
+compiled();
+/* Result: 8 */
+
+/* View the execution tree */
+compiled;
+/* Result: @&lt;[op,@[@&lt;assign,{a,@&lt;add,{5,3}&gt;}&gt;,@&lt;search,{@&lt;var,{a}&gt;,@&lt;createlist,{@&lt;name,{echo,null}&gt;}&gt;}&gt;]],{}&gt; */
+
+/* Execute the tree directly */
+@&lt;[op,@[@&lt;assign,{a,@&lt;add,{5,3}&gt;}&gt;,@&lt;search,{@&lt;var,{a}&gt;,@&lt;createlist,{@&lt;name,{echo,null}&gt;}&gt;}&gt;]],{}&gt;();
+/* Result: 8 */
+</code></pre></div>
+<h2 id="parameter-binding-and-namespace-management">Parameter Binding and Namespace Management</h2>
+<p>Functions can have parameters with default values:</p>
+<div class="highlight"><pre><span></span><code>/* Create function with parameters and default values */
+compiled = op(&quot;b&quot;=0,&quot;c&quot;=0)(&quot;a = 5 + b + c; a.echo();&quot;);
+
+/* Execute with different parameter combinations */
+compiled();      /* Uses defaults: b=0, c=0 → Result: 5 */
+compiled(3);     /* b=3, c=0 → Result: 8 */
+compiled(3,1);   /* b=3, c=1 → Result: 9 */
+
+/* View the execution tree with parameter namespace */
+compiled;
+/* Result: @&lt;[op,@[@&lt;assign,{a,@&lt;add,{@&lt;add,{5,@&lt;var,{b}&gt;}&gt;,@&lt;var,{c}&gt;}&gt;}&gt;,@&lt;search,{@&lt;var,{a}&gt;,@&lt;createlist,{@&lt;name,{echo,null}&gt;}&gt;}&gt;]],{&quot;b&quot;:0,&quot;c&quot;:0}&gt; */
+
+/* Execute the tree directly with parameters */
+@&lt;[op,@[@&lt;assign,{a,@&lt;add,{@&lt;add,{5,@&lt;var,{b}&gt;}&gt;,@&lt;var,{c}&gt;}&gt;}&gt;,@&lt;search,{@&lt;var,{a}&gt;,@&lt;createlist,{@&lt;name,{echo,null}&gt;}&gt;}&gt;]],{&quot;b&quot;:0,&quot;c&quot;:0}&gt;(3,2);
+/* Result: 10 */
+</code></pre></div>
+<h2 id="alternative-syntax-for-function-creation">Alternative Syntax for Function Creation</h2>
+<p>You can also create functions using block syntax:</p>
+<div class="highlight"><pre><span></span><code>/* Using block syntax */
+compiled = op(&quot;b&quot;=0,&quot;c&quot;=0){a = 5 + b + c; a.echo();};
+
+/* Execute with parameters */
+compiled(3,4);
+/* Result: 12 */
+
+/* View the execution tree */
+compiled;
+/* Result: @&lt;[op,@[@&lt;assign,{a,@&lt;add,{@&lt;add,{5,@&lt;var,{b}&gt;}&gt;,@&lt;var,{c}&gt;}&gt;}&gt;,@&lt;search,{@&lt;var,{a}&gt;,@&lt;createlist,{@&lt;name,{echo,null}&gt;}&gt;}&gt;]],{&quot;b&quot;:0,&quot;c&quot;:0}&gt; */
+</code></pre></div>
+<h2 id="script-and-rule-based-function-creation">Script and Rule-Based Function Creation</h2>
+<p>You can also define an operation by providing a script and a rule. If a rule is not specified, the "start" and "$start" rules are used (which is the default entry point for the grapa language).</p>
+<table>
+<thead>
+<tr>
+<th>Commands</th>
+<th>Results</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>op()("4*2");</td>
+<td>@&lt;[op,8],{}&gt;</td>
+</tr>
+<tr>
+<td>op()("4*2",@$start);</td>
+<td>@&lt;[op,8],{}&gt;</td>
+</tr>
+<tr>
+<td>op()("4<em>2", rule $INT '</em>' $INT {op(a:$1,b:$3){a**b}});</td>
+<td>@&lt;[op,@&lt;[op,@&lt;pow,{@<var,{a}>,@<var,{b}>}&gt;],{"a":4,"b":2}&gt;],{}&gt;</td>
+</tr>
+<tr>
+<td>f = op()("4<em>2", rule $INT '</em>' $INT {op(a:$1,b:$3){a**b}});</br>f();</td>
+<td>16</td>
+</tr>
+</tbody>
+</table>
+<p>Note in the last example the rule to use was defined and passed in as a parameter to the planer, the operation result assigned to a variable, and then the variable executed as a function.</p>
+<h2 id="rule-based-function-creation">Rule-Based Function Creation</h2>
+<p>If the rules have already been defined, the following options to generate the execution plan - for either storing as a function or for debugging the rules.</p>
+<table>
+<thead>
+<tr>
+<th>Commands</th>
+<th>Results</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>r = rule $INT '*' $INT {op(a:$1,b:$3){a**b}};</code></td>
+<td></td>
+<td>Rule for "int * int", with associated code that applies the power operator</td>
+</tr>
+<tr>
+<td>f = op()("4*2",r);</br>f();</td>
+<td>16</td>
+<td>Applying the rule to create a function, and running the function</td>
+</tr>
+<tr>
+<td>f = r.plan("4*2");</br>f();</td>
+<td>16</td>
+<td>Another way to apply the rule</td>
+</tr>
+<tr>
+<td>(r.plan("4*2"))();</td>
+<td>16</td>
+<td>Apply the rule and run the function in the same command</td>
+</tr>
+</tbody>
+</table>
+<h2 id="compile-time-optimization-examples">Compile-Time Optimization Examples</h2>
+<p>The Grapa compiler performs various optimizations during tree building:</p>
+<div class="highlight"><pre><span></span><code>/* Constant folding - arithmetic computed at compile time */
+op(){4*2}; | @&lt;[op,8],{}&gt;
+
+/* Expression simplification */
+op(){5+3}; | @&lt;[op,8],{}&gt;
+
+/* Variable assignment preserved for runtime */
+op(){a=5; a*2}; | @&lt;[op,@[@&lt;assign,{a,5}&gt;,@&lt;mul,{@&lt;var,{a}&gt;,2}&gt;]],{}&gt;
+
+/* Complex expression with variables */
+op(x){x*2+1}; | @&lt;[op,@&lt;add,{@&lt;mul,{@&lt;var,{x}&gt;,2}&gt;},1}&gt;],{x}&gt;
+</code></pre></div>
+<h2 id="execution-tree-interpretation">Execution Tree Interpretation</h2>
+<p>When a $OP is executed, the interpreter follows these steps:</p>
+<ol>
+<li><strong>Create namespace</strong> from the parameter list <code>{"b":0,"c":0}</code></li>
+<li><strong>Bind parameters</strong> passed during execution to the namespace</li>
+<li><strong>Traverse the tree</strong> executing each operation in sequence</li>
+<li><strong>Return the result</strong> of the last operation</li>
+</ol>
+<h3 id="tree-traversal-example">Tree Traversal Example</h3>
+<div class="highlight"><pre><span></span><code>/* Tree: @&lt;[op,@[@&lt;assign,{a,@&lt;add,{5,3}&gt;}&gt;,@&lt;search,{@&lt;var,{a}&gt;,@&lt;createlist,{@&lt;name,{echo,null}&gt;}&gt;}&gt;]],{}&gt; */
+
+/* Execution steps:
+   1. Create empty namespace {}
+   2. Execute @&lt;assign,{a,@&lt;add,{5,3}&gt;}&gt; → a = 8
+   3. Execute @&lt;search,{@&lt;var,{a}&gt;,@&lt;createlist,{@&lt;name,{echo,null}&gt;}&gt;}&gt; → 8.echo()
+   4. Return result: 8
+*/
+</code></pre></div>
+<h2 id="advanced-function-patterns">Advanced Function Patterns</h2>
+<h3 id="function-composition">Function Composition</h3>
+<div class="highlight"><pre><span></span><code>/* Create base functions */
+double = op(x){x * 2};
+add_one = op(x){x + 1};
+
+/* Compose functions */
+composed = op(x){add_one(double(x))};
+composed(5);
+/* Result: 11 */
+</code></pre></div>
+<h3 id="dynamic-function-creation">Dynamic Function Creation</h3>
+<div class="highlight"><pre><span></span><code>/* Create function from string */
+script = &quot;result = input * 2; result&quot;;
+dynamic_func = op(&quot;input&quot;=0)(script);
+
+/* Execute */
+dynamic_func(7);
+/* Result: 14 */
+</code></pre></div>
+<h3 id="function-storage-and-retrieval">Function Storage and Retrieval</h3>
+<div class="highlight"><pre><span></span><code>/* Store function in table */
+table = $file().table(&quot;ROW&quot;);
+table.mkfield(&quot;func&quot;, &quot;OP&quot;);
+table.set(&quot;my_func&quot;, op(x){x * x}, &quot;func&quot;);
+
+/* Retrieve and execute */
+stored_func = table.get(&quot;my_func&quot;, &quot;func&quot;);
+stored_func(4);
+/* Result: 16 */
+</code></pre></div>
+<h2 id="integration-with-system-functions">Integration with System Functions</h2>
+<p>$OP objects integrate with <code>$sys</code> functions:</p>
+<div class="highlight"><pre><span></span><code>/* Compile script to $OP */
+compiled = $sys().compile(&quot;a = 5 + 3; a.echo();&quot;);
+
+/* Execute compiled $OP */
+$sys().eval(compiled);
+/* Result: 8 */
+
+/* Direct $OP creation */
+direct_op = op()(&quot;a = 5 + 3; a.echo();&quot;);
+direct_op();
+/* Result: 8 */
+</code></pre></div>
+<h2 id="performance-characteristics">Performance Characteristics</h2>
+<ul>
+<li><strong>Compiled functions</strong> execute faster than interpreted scripts</li>
+<li><strong>Constant folding</strong> reduces runtime computation</li>
+<li><strong>Tree optimization</strong> improves execution efficiency</li>
+<li><strong>Parameter binding</strong> is efficient with namespace caching</li>
+<li><strong>Direct tree execution</strong> bypasses parsing overhead</li>
+</ul>
+<h2 id="debugging-execution-trees">Debugging Execution Trees</h2>
+<p>To debug execution trees:</p>
+<div class="highlight"><pre><span></span><code>/* View the tree structure */
+func = op(x,y){x * y + 1};
+func;
+/* Shows the complete execution tree */
+
+/* Execute step by step */
+simple = op(){5 + 3};
+simple;
+/* Shows: @&lt;[op,8],{}&gt; (optimized) */
+
+complex = op(x){x * 2 + 1};
+complex;
+/* Shows: @&lt;[op,@&lt;add,{@&lt;mul,{@&lt;var,{x}&gt;,2}&gt;},1}&gt;],{x}&gt; */
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Use high-level syntax</strong> for most programming tasks</li>
+<li><strong>Access execution trees</strong> for debugging and optimization</li>
+<li><strong>Leverage compile-time optimization</strong> by using constants where possible</li>
+<li><strong>Understand tree structure</strong> for language extension development</li>
+<li><strong>Use direct tree execution</strong> for performance-critical code</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>

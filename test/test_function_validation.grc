@@ -343,7 +343,7 @@ large_upper = large_string.upper();
 large_array = [];
 i = 0;
 while (i < 1000) {
-    large_array.push("item" + i);
+    large_array += ("item" + i);
     i = i + 1;
 }
 

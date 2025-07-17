@@ -272,7 +272,7 @@ This allows matches like:
 ```grapa
 input = "café\nCAFÉ\ncafe\u0301\nCafe\nCAFÉ\nmañana\nmañana\nİstanbul\nistanbul\nISTANBUL\nstraße\nSTRASSE\nStraße\nкофе\nКофе\nκαφές\nΚαφές\n";
 result = input.grep(r"cafe", "di");
-// Result: ["café", "CAFÉ", "café", "Cafe", "CAFÉ"]
+/* Result: ["café", "CAFÉ", "café", "Cafe", "CAFÉ"] */
 ```
 
 ## split(sep, max, axis)

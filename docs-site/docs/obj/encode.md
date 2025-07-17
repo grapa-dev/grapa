@@ -1,6 +1,5 @@
 References
-- [GrapaEncode.h header](../../source/grapa/GrapaEncode.h)
-- [GrapaEncode.cpp source](../../source/grapa/GrapaEncode.cpp)
+
 - [$math](../sys/math.md)
 
 ## key = method.genkeys(options)

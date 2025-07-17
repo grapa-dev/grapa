@@ -9,18 +9,16 @@ $TABLE (and all Grapa datatypes) are fully thread safe by design. All variable a
 ```grapa
 lock_obj = $thread();
 lock_obj.lock();
-// ... perform thread-safe operations on shared table or data ...
+/* ... perform thread-safe operations on shared table or data ... */
 lock_obj.unlock();
 ```
 
 See [Threading and Locking](../sys/thread.md) and [Function Operators: static and const](../operators/function.md) for details and best practices.
 
 References:
-- [$TABLE object](../../lib/grapa/$TABLE.grc)
-- [$file object](../../lib/grapa/$file.grc)
-- [GrapaDB.cpp](../../source/grapa/GrapaDB.cpp)
-- [GrapaDatabase.cpp](../../source/grapa/GrapaDatabase.cpp)
-- [GrapaBtree.cpp](../../source/grapa/GrapaBtree.cpp)
+- [$TABLE object](../lib/grapa/$TABLE.grc)
+- [$file object](../lib/grapa/$file.grc)
+
 
 A $TABLE is a hierarchical database with columns, rows, supporting both row store and column store architectures.
 

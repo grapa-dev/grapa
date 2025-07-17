@@ -51,8 +51,10 @@ if (result.type() != $ERR && result.len() > 0) {
 /* Test 5: LRU Cache Functionality */
 "Test 5: LRU Cache Functionality\n".echo();
 input = "café mañana test";
-result1 = input.grep("test", "N"); /* Should trigger normalization and cache */
-result2 = input.grep("test", "N"); /* Should use cached normalization */
+/* Should trigger normalization and cache */
+result1 = input.grep("test", "N");
+/* Should use cached normalization */
+result2 = input.grep("test", "N");
 if (result1.type() != $ERR && result2.type() != $ERR) {
     "PASS - LRU cache working for text normalization\n".echo();
 } else {

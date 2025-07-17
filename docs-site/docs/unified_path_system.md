@@ -99,28 +99,33 @@ f.cd("../../../../..");  /* Back 5 levels */
 ```grapa
 f = $file();
 
-// Start in file system
+/* Start in file system */
 f.pwd()  // Returns: /
+/* Returns: / */
 
 // Create database file in file system
 f.mk("my_database", "GROUP");
 f.cd("my_database");
 f.pwd()  // Returns: /my_database
+/* Returns: /my_database */
 
 // Create GROUP structure within database
 f.mk("users", "GROUP");
 f.cd("users");
 f.pwd()  // Returns: /my_database/users
+/* Returns: /my_database/users */
 
 // Create nested GROUP
 f.mk("admins", "GROUP");
 f.cd("admins");
 f.pwd()  // Returns: /my_database/users/admins
+/* Returns: /my_database/users/admins */
 
 // Create ROW database within GROUP
 f.mk("user_data", "ROW");
 f.cd("user_data");
 f.pwd()  // Returns: /my_database/users/admins/user_data
+/* Returns: /my_database/users/admins/user_data */
 
 // Add data to the ROW database
 f.mkfield("id", "INT", "FIX", 4);
@@ -134,13 +139,15 @@ f.set("user1", "John Doe", "name");
 ```grapa
 f = $file();
 
-// Navigate directly to deep location
+/* Navigate directly to deep location */
 f.cd("my_database/users/admins/user_data");
 f.pwd()  // Returns: /my_database/users/admins/user_data
+/* Returns: /my_database/users/admins/user_data */
 
 // Access data at deep location
 name = f.get("user1", "name");
 name.echo();  // Outputs: John Doe
+/* Outputs: John Doe */
 ```
 
 ### Navigation Back Through Path
@@ -148,21 +155,22 @@ name.echo();  // Outputs: John Doe
 ```grapa
 f = $file();
 
-// Start at deep location
+/* Start at deep location */
 f.cd("my_database/users/admins/user_data");
 
-// Navigate back through path
+/* Navigate back through path */
 f.cd("..");  // Back to admins GROUP
 f.pwd()  // Returns: /my_database/users/admins
-
+/* Returns: /my_database/users/admins */
 f.cd("..");  // Back to users GROUP
 f.pwd()  // Returns: /my_database/users
-
+/* Returns: /my_database/users */
 f.cd("..");  // Back to database root
 f.pwd()  // Returns: /my_database
-
+/* Returns: /my_database */
 f.cd("..");  // Back to file system
 f.pwd()  // Returns: /
+/* Returns: / */
 ```
 
 ### Multiple Parent Navigation
@@ -170,16 +178,18 @@ f.pwd()  // Returns: /
 ```grapa
 f = $file();
 
-// Navigate to deep location
+/* Navigate to deep location */
 f.cd("my_database/users/admins/user_data");
 
-// Go back multiple levels at once
+/* Go back multiple levels at once */
 f.cd("../../..");  // Back to database root
 f.pwd()  // Returns: /my_database
+/* Returns: /my_database */
 
-// Go back to file system
+/* Go back to file system */
 f.cd("..");  // Back to file system
 f.pwd()  // Returns: /
+/* Returns: / */
 ```
 
 ## Use Cases
@@ -190,11 +200,11 @@ f.pwd()  // Returns: /
 f.mk("project", "GROUP");
 f.cd("project");
 
-// File system components
+/* File system components */
 f.mk("src", "DIR");
 f.mk("docs", "DIR");
 
-// Database components
+/* Database components */
 f.mk("data", "GROUP");
 f.cd("data");
 f.mk("users", "ROW");
@@ -207,16 +217,16 @@ f.mk("analytics", "COL");
 f.mk("app", "GROUP");
 f.cd("app");
 
-// Configuration (file system)
+/* Configuration (file system) */
 f.set("config.json", '{"version": "1.0"}');
 
-// User data (database)
+/* User data (database) */
 f.mk("users", "ROW");
 f.cd("users");
 f.mkfield("id", "INT", "FIX", 4);
 f.mkfield("profile", "TABLE", "VAR");
 
-// Analytics (database)
+/* Analytics (database) */
 f.cd("..");
 f.mk("analytics", "COL");
 f.cd("analytics");

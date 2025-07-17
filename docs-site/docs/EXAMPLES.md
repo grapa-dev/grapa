@@ -27,9 +27,8 @@ This document provides practical examples of Grapa usage, organized from basic t
 ## Table of Contents
 - [Basic Examples](#basic-examples)
 - [Data Processing](#data-processing)
+- [Dynamic Code Execution](#dynamic-code-execution)
 - [Pattern Matching (Grep)](#grep---pattern-matching)
-- [Cryptography](#crypt)
-- [Advanced Patterns](#advanced-patterns)
 
 ## Basic Examples
 
@@ -57,7 +56,7 @@ sum = numbers.reduce(op(a, b) { a + b; }, 0);
 ```grapa
 /* Generate an array of numbers 0..9 */
 seq = (10).range(0,1);
-seq.echo();  // Output: [0,1,2,3,4,5,6,7,8,9]
+seq.echo();  /* Output: [0,1,2,3,4,5,6,7,8,9] */
 ```
 
 ### For-Loop Equivalent with range() and reduce()
@@ -67,7 +66,7 @@ You can use `.range()` and `.reduce()` together to replicate most for-loop behav
 **Sum numbers 0..9:**
 ```grapa
 sum = (10).range(0,1).reduce(op(acc, x) { acc += x; }, 0);
-sum.echo();  // Output: 45
+sum.echo();  /* Output: 45 */
 ```
 
 **Collect even numbers 0..9:**
@@ -75,7 +74,7 @@ sum.echo();  // Output: 45
 evens = (10).range(0,1).reduce(op(acc, x) {
     if (x % 2 == 0) { acc += x; };
 }, []);
-evens.echo();  // Output: [0,2,4,6,8]
+evens.echo();  /* Output: [0,2,4,6,8] */
 ```
 
 > **Note:** This is the idiomatic Grapa alternative to a classic for loop for accumulation and transformation tasks.
@@ -87,13 +86,13 @@ You can use `.range()` with `.map()` or `.filter()` to generate or filter sequen
 **Example: Squares of 0..9**
 ```grapa
 squares = (10).range(0,1).map(op(x) { x * x; });
-squares.echo();  // Output: [0,1,4,9,16,25,36,49,64,81]
+squares.echo();  /* Output: [0,1,4,9,16,25,36,49,64,81] */
 ```
 
 **Example: Even numbers 0..9**
 ```grapa
 evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
-evens.echo();  // Output: [0,2,4,6,8]
+evens.echo();  /* Output: [0,2,4,6,8] */
 ```
 
 > **Warning:** `.map()` and `.filter()` are parallel by default and will create one thread per item. For large arrays, always specify a thread count to avoid resource exhaustion:
@@ -116,28 +115,102 @@ evens.echo();  // Output: [0,2,4,6,8]
 ### String Word Length
 The following returns the length of each word in a string:
 ```grapa
-"this is a test".split(" ").reduce(op(a,b){a+=b.len();},[])
-[4,2,1,4]
+/* Returns the length of each word in a string */
+"this is a test".split(" ").reduce(op(a,b){a+=b.len();},[]);
+// Output: [4,2,1,4]
 ```
 
 ### File Processing
 ```grapa
-// Read and process a file
-content = $file().read("data.txt")
-lines = content.split("\n")
-filtered = lines.filter(op(line) { line.len() > 0 })
-result = filtered.map(op(line) { line.upper() })
-result.echo()
+/* Read and process a file */
+content = $file().read("data.txt");
+lines = content.split("\n");
+filtered = lines.filter(op(line) { line.len() > 0; });
+result = filtered.map(op(line) { line.upper(); });
+result.echo();
 ```
 
 ### JSON Processing
 ```grapa
-// Parse and process JSON data
-json_data = $file().read("data.json").json()
-users = json_data.users
-active_users = users.filter(op(user) { user.active == true })
-names = active_users.map(op(user) { user.name })
-names.echo()
+/* Parse and process JSON data */
+json_data = $file().read("data.json").json();
+users = json_data.users;
+active_users = users.filter(op(user) { user.active == true; });
+names = active_users.map(op(user) { user.name; });
+names.echo();
+```
+
+## Dynamic Code Execution
+
+Grapa's most powerful feature is its ability to compile and execute code at runtime. This enables advanced meta-programming patterns:
+
+### Basic Dynamic Execution
+```grapa
+/* Direct string execution */
+op()("'Hello, World!'.echo();")();
+/* Output: Hello, World! */
+
+/* With parameters */
+func = op("name"=0)("'Hello, ' + name + '!'.echo();");
+func("Grapa");
+/* Output: Hello, Grapa! */
+```
+
+### Dynamic Function Generation
+```grapa
+/* Generate functions from configuration */
+operations = ["add", "sub", "mul", "div"];
+funcs = {};
+i = 0;
+while (i < operations.len()) {
+    op_name = operations.get(i);
+    code = "a " + op_name + " b";
+    funcs[op_name] = op("a"=0, "b"=0)(code);
+    i += 1;
+}
+
+/* Execute generated functions */
+funcs["add"](10, 5).echo();  /* 15 */
+funcs["sub"](10, 5).echo();  /* 5 */
+funcs["mul"](10, 5).echo();  /* 50 */
+funcs["div"](10, 5).echo();  /* 2 */
+```
+
+### Template-Based Code Generation
+```grapa
+/* Create reusable templates */
+template = "result = base * multiplier + offset; result";
+process = op("base"=0, "multiplier"=1, "offset"=0)(template);
+process(10, 2, 5).echo();  /* 25 */
+
+/* Dynamic script evaluation */
+user_input = "2 * (3 + 4)";
+result = $sys().eval(user_input);
+("Result: " + result).echo();  /* Result: 14 */
+```
+
+### Compiled Execution for Performance
+```grapa
+/* Compile once, execute many times */
+compiled = $sys().compile("x = input * 2; y = x + offset; y");
+
+/* Execute with different parameters */
+result1 = $sys().eval(compiled, {"input": 10, "offset": 5});
+result1.echo();  /* 25 */
+
+result2 = $sys().eval(compiled, {"input": 20, "offset": 10});
+result2.echo();  /* 50 */
+```
+
+### System-Level Evaluation
+```grapa
+/* Evaluate expressions with parameters */
+result = $sys().eval("x + y", {"x": 5, "y": 3});
+result.echo();  /* 8 */
+
+/* Complex expressions */
+result = $sys().eval("(a + b) * c", {"a": 2, "b": 3, "c": 4});
+result.echo();  /* 20 */
 ```
 
 ## Grep - Pattern Matching
@@ -413,7 +486,7 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
 
 ## Next Steps
 - Learn about [Testing](TESTING.md) your Grapa code
-- Check out the [Grep functionality](GREP.md) for advanced pattern matching
+- Check out the [Grep functionality](grep.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
 
 ## Thread Safety and Parallelism

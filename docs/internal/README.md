@@ -1,6 +1,10 @@
-# Internal Documentation Index and Roadmap
+# ⚠️ DEPRECATED: Internal Documentation Location Changed
 
-This file summarizes all internal (non-user-facing) docs in `docs/internal/`, with brief descriptions and recommendations for the order in which to pursue enhancements or investigations.
+**As of December 2024, all current context, TODO, WIP, and internal documentation are now maintained in the `maintainers/` directory at the project root.**
+
+- `docs/internal/` is no longer updated and is kept only for historical reference during the transition.
+- For the latest context, TODOs, and work-in-progress, **always use `maintainers/`** (see `maintainers/INTERNAL_NOTES/`, `maintainers/DEVELOPMENT/TODO.md`, and related files).
+- If you landed here, please navigate to the `maintainers/` directory for all up-to-date internal documentation.
 
 ---
 

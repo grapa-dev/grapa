@@ -21,7 +21,7 @@ Grapa is fully thread safe in all supported environments (command line, Grapa sh
 ```grapa
 lock_obj = $thread();
 lock_obj.lock();
-// ... perform thread-safe operations on shared data ...
+/* ... perform thread-safe operations on shared data ... */
 lock_obj.unlock();
 ```
 

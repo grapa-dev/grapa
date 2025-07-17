@@ -10,6 +10,12 @@ theme:
     - content.code.copy
     - content.action.edit
     - content.action.view
+    - content.tabs.link
+  search:
+    exclude:
+      - maintainers/**
+      - "maintainers/**"
+      - "**/maintainers/**"
   palette:
     - scheme: default
       primary: indigo
@@ -25,20 +31,53 @@ theme:
     code: Roboto Mono
   language: en
 
-plugins:
-  - search
-  - tags
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
 
-extra_css:
-  - stylesheets/mobile-tweaks.css
+plugins:
+  - search:
+      lang: en
+      separator: \s\-,:!=\[\]()"/`|]+'
+  - exclude-search:
+      exclude:
+        - "maintainers/**"
+        - "maintainers/index.md"
+        - "maintainers/BINARY_GREP.md"
+        - "maintainers/README.md"
+        - "maintainers/ADVANCED_TOPICS/**"
+        - "maintainers/INTERNAL_NOTES/**"
+        - "maintainers/DEVELOPMENT/**"
+        - "maintainers/TESTING_AND_QUALITY/**"
+        - "maintainers/IMPLEMENTATION/**"
+        - "maintainers/BUILD_AND_DEPLOYMENT/**"
+        - "maintainers/WIP/**"
+        - "**/maintainers/**"
+        - "**/BUILD_AND_DEPLOYMENT/**"
+        - "**/IMPLEMENTATION/**"
+        - "**/TESTING_AND_QUALITY/**"
+        - "**/DEVELOPMENT/**"
+        - "**/INTERNAL_NOTES/**"
+        - "**/ADVANCED_TOPICS/**"
+  - tags
 
 nav:
   - Home: index.md
   - Getting Started: GETTING_STARTED.md
-  - API Reference: FUNCTION_QUICK_REFERENCE.md
+  - CLI Quickstart: CLI_QUICKSTART.md
+  - Python Quickstart: GRAPAPY_INTEGRATION.md
+  - API Reference: API_REFERENCE.md
+  - Grep Documentation: grep.md
   - Migration Guides:
       - Python: PYTHON_TO_GRAPA_MIGRATION.md
       - JavaScript: JS_TO_GRAPA_MIGRATION.md
+      - Rust: RUST_TO_GRAPA_MIGRATION.md
+      - TypeScript: TYPESCRIPT_TO_GRAPA_MIGRATION.md
+      - Go: GO_TO_GRAPA_MIGRATION.md
+      - Ruby: RUBY_TO_GRAPA_MIGRATION.md
+      - Kotlin: KOTLIN_TO_GRAPA_MIGRATION.md
+      - Swift: SWIFT_TO_GRAPA_MIGRATION.md
   - Use Cases: USE_CASES.md
   - Examples: EXAMPLES.md
   - Troubleshooting: TROUBLESHOOTING.md

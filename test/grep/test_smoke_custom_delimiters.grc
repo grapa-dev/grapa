@@ -112,7 +112,8 @@ If you write "\0" in a Grapa script, it is trimmed to a zero-length string befor
 This is a known limitation and requires Grapa core enhancement for full support.
 For now, this test will always pass an empty string as the delimiter.
 */
-result = input8.grep("test", "o", "\0"); /* Null delimiter (actually empty string in Grapa) */
+/* Null delimiter (actually empty string in Grapa) */
+result = input8.grep("test", "o", "\0");
 ("Input: " + input8 + "\n").echo();
 ("Pattern: test, Options: o, Delimiter: \\0\n").echo();
 ("Result: " + result.str() + "\n").echo();

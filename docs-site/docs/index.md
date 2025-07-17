@@ -1,12 +1,19 @@
 # Welcome to Grapa Documentation
 
-> **Tip:** Use the search bar (top right) to quickly find functions, guides, and examples. Try searching by function name, tag, or topic!
+> **Tip:** Use the search bar (top right) to quickly find functions, guides, and examples. The search automatically filters to show only user documentation.
 
 ## Getting Started
 - [Quickstart Guide](GETTING_STARTED.md)
 - [API Reference](FUNCTION_QUICK_REFERENCE.md)
 - [Migration Guides](PYTHON_TO_GRAPA_MIGRATION.md)
 - [Examples](EXAMPLES.md)
+
+## Key Features
+- **Dynamic Code Execution**: Compile and execute code at runtime with `op()(<string>)()` and `$sys().eval()`
+- **Execution Trees**: Direct manipulation of `$OP` objects for advanced meta-programming
+- **Parallel Processing**: Built-in parallel data operations with `.map()`, `.filter()`, `.reduce()`
+- **Unlimited Precision**: Native support for arbitrary-precision arithmetic
+- **Cross-Platform**: Runs on Windows, macOS, and Linux
 
 ## New Features
 - **Searchable API Reference:** Find all built-in functions, types, and methods in one place.
@@ -15,7 +22,7 @@
 
 ## Need Help?
 - [Troubleshooting](TROUBLESHOOTING.md)
-- [Contributing](../../CONTRIBUTING.md)
+- [Contributing](https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md)
 
 ---
 

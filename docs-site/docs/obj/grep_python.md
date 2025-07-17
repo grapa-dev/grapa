@@ -301,8 +301,197 @@ xy.eval('"large_text".grep("pattern", "o", "", "", "", 8)')
 1. **Use raw strings** for regex patterns to avoid escaping issues
 2. **Combine options** when possible (e.g., `"oi"` for match-only case-insensitive)
 3. **Use appropriate normalization** for your use case
-4. **Consider binary mode** for non-text data
+4. **Consider binary mode** for non-text data (see Binary Mode section below)
 5. **Use JSON output** for structured data processing
+
+## Binary Mode
+
+Binary mode allows you to process raw binary data without Unicode processing, which is essential for:
+- **Binary files** (executables, images, compressed files)
+- **Network data** (raw packet analysis)
+- **Memory dumps** (forensic analysis)
+- **Data that should not be Unicode-processed**
+
+### Basic Binary Mode Usage
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Process as binary data (no Unicode processing)
+xy.eval("binary_data.grep('pattern', '', '', '', 'BINARY');", {
+    "binary_data": b"Hello\x00World".decode('latin-1')  # Convert bytes to string
+})
+
+# Binary mode with hex patterns
+xy.eval("binary_data.grep(r'\\x48\\x65\\x6c\\x6c\\x6f', 'o', '', '', 'BINARY');", {
+    "binary_data": b"Hello\x00World".decode('latin-1')
+})
+# Result: ['Hello'] - Find "Hello" using hex representation
+
+# Binary mode with custom delimiters (null bytes)
+xy.eval("binary_data.grep(r'data\\d+', 'o', '\\x00', '', 'BINARY');", {
+    "binary_data": "data1\x00data2\x00data3"
+})
+# Result: ['data1', 'data2', 'data3'] - Using null bytes as delimiters
+```
+
+### Binary vs Unicode Mode Comparison
+
+| Aspect | Unicode Mode (Default) | Binary Mode |
+|--------|----------------------|-------------|
+| **Processing** | Full Unicode normalization and case folding | Raw byte processing |
+| **Performance** | Slower due to Unicode overhead | Faster for binary data |
+| **Memory** | Higher due to normalization | Lower memory usage |
+| **Use case** | Text files, user input | Binary files, network data |
+
+### Common Binary Patterns
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Find null bytes in binary data
+xy.eval("binary_data.grep(r'\\x00', 'o', '', '', 'BINARY');", {
+    "binary_data": "Hello\x00World\x00Test"
+})
+# Result: ['', '', ''] - All null bytes found
+
+# Find specific byte sequences (PNG header)
+xy.eval("file_data.grep(r'\\x89\\x50\\x4e\\x47', 'o', '', '', 'BINARY');", {
+    "file_data": b"\x89PNG\r\n\x1a\n...".decode('latin-1')
+})
+# Result: ['PNG'] - PNG file header
+
+# Find text within binary data
+xy.eval("binary_data.grep('Hello', 'o', '', '', 'BINARY');", {
+    "binary_data": b"Hello\x00World".decode('latin-1')
+})
+# Result: ['Hello'] - Raw byte matching
+
+# Find HTTP headers in network data
+xy.eval("network_data.grep(r'HTTP/[0-9.]+', 'o', '', '', 'BINARY');", {
+    "network_data": "HTTP/1.1 200 OK\r\nHTTP/2.0 404 Not Found"
+})
+# Result: ['HTTP/1.1', 'HTTP/2.0'] - HTTP version strings
+```
+
+### Binary Mode with Different Options
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Binary mode with JSON output
+xy.eval("binary_data.grep(r'\\x48\\x65\\x6c\\x6c\\x6f', 'oj', '', '', 'BINARY');", {
+    "binary_data": b"Hello\x00World".decode('latin-1')
+})
+# Result: [{"match":"Hello","offset":0,"line":1}]
+
+# Binary mode with context lines
+xy.eval("binary_data.grep('error', 'A2B1', '', '', 'BINARY');", {
+    "binary_data": "line1\nerror\nline3\nline4"
+})
+# Result: Context lines around "error" matches
+
+# Binary mode with custom delimiter and context
+xy.eval("binary_data.grep('data', 'A1B1', '\\x00', '', 'BINARY');", {
+    "binary_data": "context1\x00data\x00context2"
+})
+# Result: Context around "data" matches, using null delimiter
+```
+
+### Real-World Binary Processing Examples
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Extract strings from executable files
+with open('executable.bin', 'rb') as f:
+    executable_data = f.read().decode('latin-1')
+
+xy.eval("executable_data.grep(r'[\\x20-\\x7e]{4,}', 'o', '', '', 'BINARY');", {
+    "executable_data": executable_data
+})
+# Result: All printable ASCII strings 4+ characters long
+
+# Find file signatures
+with open('file.bin', 'rb') as f:
+    file_data = f.read().decode('latin-1')
+
+xy.eval("file_data.grep(r'\\x89\\x50\\x4e\\x47\\x0d\\x0a\\x1a\\x0a', 'o', '', '', 'BINARY');", {
+    "file_data": file_data
+})
+# Result: PNG file signature if present
+
+# Extract HTTP headers from network capture
+xy.eval("network_data.grep(r'^[A-Za-z-]+: .*$', 'o', '\\r\\n', '', 'BINARY');", {
+    "network_data": "Content-Type: text/html\r\nUser-Agent: Mozilla\r\n\r\n"
+})
+# Result: Individual HTTP header lines
+
+# Find specific byte patterns in memory dump
+xy.eval("memory_dump.grep(r'\\x48\\x65\\x6c\\x6c\\x6f\\x20\\x57\\x6f\\x72\\x6c\\x64', 'o', '', '', 'BINARY');", {
+    "memory_dump": b"Hello World".decode('latin-1')
+})
+# Result: ['Hello World'] - Exact byte sequence match
+```
+
+### Working with Binary Data in Python
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Convert bytes to string for Grapa processing
+def bytes_to_grapa_string(binary_data):
+    """Convert bytes to string format that Grapa can process"""
+    return binary_data.decode('latin-1')  # Preserves all byte values
+
+# Convert string back to bytes
+def grapa_string_to_bytes(grapa_string):
+    """Convert Grapa string back to bytes"""
+    return grapa_string.encode('latin-1')
+
+# Example: Process binary file
+with open('binary_file.bin', 'rb') as f:
+    binary_data = f.read()
+
+# Convert to Grapa-compatible string
+grapa_binary = bytes_to_grapa_string(binary_data)
+
+# Process with binary mode
+result = xy.eval("grapa_binary.grep(r'\\x48\\x65\\x6c\\x6c\\x6f', 'o', '', '', 'BINARY');", {
+    "grapa_binary": grapa_binary
+})
+
+# Convert back to bytes if needed
+if result:
+    matched_bytes = grapa_string_to_bytes(result[0])
+```
+
+### Performance Considerations
+
+- **Binary mode is faster** for binary data since it skips Unicode processing
+- **Use binary mode** when you know your data is binary or when Unicode processing is not needed
+- **Memory usage is lower** in binary mode due to no normalization overhead
+- **Pattern matching is byte-exact** in binary mode
+
+### When to Use Binary Mode
+
+**Use Binary Mode When:**
+- Processing executable files, images, or compressed data
+- Analyzing network packets or binary protocols
+- Working with memory dumps or forensic data
+- Performance is critical and Unicode features aren't needed
+- You need exact byte-level pattern matching
+
+**Use Unicode Mode When:**
+- Processing text files or user input
+- Working with international text
+- Need Unicode normalization or case folding
+- Processing data that may contain Unicode characters
 
 ## Error Handling
 

@@ -1,0 +1,1555 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Encode - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#key-methodgenkeysoptions" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Encode
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING_STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CLI_QUICKSTART/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Python Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API_REFERENCE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../grep/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Grep Documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../USE_CASES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Use Cases
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EXAMPLES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../TROUBLESHOOTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING_STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI_QUICKSTART/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API_REFERENCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JS_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUST_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TYPESCRIPT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GO_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUBY_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KOTLIN_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SWIFT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../USE_CASES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EXAMPLES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TROUBLESHOOTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#key-methodgenkeysoptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      key = method.genkeys(options)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="key = method.genkeys(options)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rsa" class="md-nav__link">
+    <span class="md-ellipsis">
+      "rsa"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dh-diffie-hellman-key-exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      "dh" - Diffie-Hellman key exchange
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ec" class="md-nav__link">
+    <span class="md-ellipsis">
+      "ec"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bc" class="md-nav__link">
+    <span class="md-ellipsis">
+      "bc"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#md" class="md-nav__link">
+    <span class="md-ellipsis">
+      "md"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rpk" class="md-nav__link">
+    <span class="md-ellipsis">
+      "rpk"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      "kdf"
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#encdata-rawdataencode-method-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      encdata = rawdata.encode (method, options)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rawdata-encdatadecode-method-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      rawdata = encdata.decode (method, options)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sig-rawdatasign-method-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      sig = rawdata.sign (method, options)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sig-sigsignadd-method-value-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      sig = sig.signadd (method, value, options)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ispass-sigverify-method-value-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      ispass = sig.verify (method, value, options)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rawdata-sigverifyrecover-method-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      rawdata = sig.verifyrecover (method, options)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#value-keysecret-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      value = key.secret (key)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Encode</h1>
+
+<p>References</p>
+<ul>
+<li><a href="../../sys/math/">$math</a></li>
+</ul>
+<h2 id="key-methodgenkeysoptions">key = method.genkeys(options)</h2>
+<h3 id="rsa">"rsa"</h3>
+<p><a href="https://www.openssl.org/docs/man1.0.2/man3/RSA_generate_key_ex.html">RSA_generate_key</a></p>
+<p>options
+- bits (default=1024)
+- e (default=65537)</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;&quot;rsa&quot;.genkeys({bits:1024, e:65537});
+{&quot;method&quot;:&quot;rsa&quot;,&quot;n&quot;:153343860242731826718997454922543948246319786484738710266065697186566851303969929744525118374830275413173691343298483355967655653707943038260978178989870480981813864975853444332967984168167971315164681129567478872720168346499340635885246889112254404613308384241361659956685429052350776397599870929204283799727,&quot;e&quot;:65537,&quot;d&quot;:79055022445659402007335810450096775552716887040295814635390111095145249324919236710228881006612913550893380981980039628730017876494656017726225944634797947775686645431513668671692142235308537648915581979668299541155091041081197126102417671890829285804060548022166826534910977714874080213766562525384158510233,&quot;p&quot;:12927549674691586875163180066905699166335405091224131481044213102404425715203497636737871644864054092888178130162387310855633573554296177378467548678038211,&quot;q&quot;:11861788513791973340894513760762175330214406628819766321709624619984772343399257289407679201931012919105862007733677390652191686844294289003006359142734757,&quot;dmp1&quot;:421535524281183471202888685825983476791106713458748019820734598773795836754655758574680435556624251895906688804141503018119366871927780201379146917389683,&quot;dmq1&quot;:2422782566269730917515509730405152493557075348785897919990311353328900660523711156690284782596831391964097667508781383817846985978877936930195814936366441,&quot;iqmp&quot;:4751564343152764182762436394942179636976979980491913680362394619885466773528151935033468867078538523266366855637186571425698958155097556787751966441250519}
+
+grapa: /&gt;nodeA = &quot;rsa&quot;.genkeys();
+grapa: /&gt;tstr = &quot;this is a test of this is a test&quot;.left(nodeA.n.bytes()-42);
+grapa: /&gt;enc = tstr.encode(nodeA);
+grapa: /&gt;enc;
+0xC492D258D8213815771868C08197E89834FD553EF26DE0FD1E957E37282B5F75805A0538EA47C93A0B767999CD0B034176FBEB85960211D9D12AB598FBBA0D54162E2AECE5F5DFB0168D8ADD5BC5CA33964216FDE2E5C7525AFABD7DE0111C4C2F253A1C6F14810EF30E93E99364220D58DF55A970994A9DFC0EBD3850000917
+grapa: /&gt;enc.decode(nodeA).str();
+this is a test of this is a test
+
+grapa: /&gt;nodeA = &quot;rsa&quot;.genkeys();
+grapa: /&gt;sig = &quot;test&quot;.sign(nodeA)
+grapa: /&gt;sig
+0xA86168258CCCAF03D502AF220D29C56DF689E29A881792203A30F55E9F5DC620D9BA72A69FA7BB8E5DB6DB40E74DC7F37AE10E94267EB69BD178310F9AE713E36559B789A2A1D88D80D7B7631C53C8F0D65DD74F2129F3C065F0CFB7982013625E22EF052AF829A44C07CDCA33334229B6A23058ECA50D6B7C7B8DCB54AD6402
+grapa: /&gt;sig.verify(nodeA,&quot;test&quot;)
+1
+grapa: /&gt;sig.verify(nodeA,&quot;test2&quot;)
+0
+grapa: /&gt;sig.verifyrecover(nodeA).str()
+test
+</code></pre></div>
+<h3 id="dh-diffie-hellman-key-exchange">"dh" - Diffie-Hellman key exchange</h3>
+<p><a href="https://www.openssl.org/docs/man1.0.2/man3/DH_generate_key.html">DH_generate_key</a></p>
+<p>options
+- bits (default=1024)
+- g (default=2)
+- p (from other node)</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;&quot;dh&quot;.genkeys({bits:1024, g:2});
+{&quot;method&quot;:&quot;dh&quot;,&quot;p&quot;:155060894798916672436294955495808726921562912418691946735299981488630632728917641139720322303293804373154953309741508291858037753320020908034625492504226207533520275246218001191529318164644965512204584496862649121961720039055278601771796332158129094227178861323999156687238560468911736859258982900594036495419,&quot;g&quot;:2,&quot;pub&quot;:32452604788320682188849350932531192941087970270462344515271303858654517731576279803429572719652061802609399632204622690115682073041731861373289670753479025573602436383635155882438039975820160596493133927013148569271558813144843665089688971452982482929762826761875748093517340605310796965292388347247601517927,&quot;prv&quot;:85108738216648176726657906323697936988639742459594685112244281495890189161229363404509137286685931354323324249119565623639407205879234061660167646352177376062162362276676470273884923897379280600025611946952284789763517326405782930856345819438343010650014807653972154357078710716080052243407709981947131030820}
+
+grapa: /&gt;nodeA = &quot;dh&quot;.genkeys();
+grapa: /&gt;nodeB = &quot;dh&quot;.genkeys({p:nodeA.p, g:nodeA.g});
+grapa: /&gt;nodeA.secret({method:nodeB.method, pub:nodeB.pub});
+41411399464032750193815617500918575158768059683378407298669269983997192654320169347707063521253943511427030448681025344568888491017373725518403783432343686587216160306110643977085792902295674526020669661500697334078419157529204684347818535354141358922052361205641014829108645061072280570433902877036291304733
+grapa: /&gt;nodeB.secret({method:nodeA.method, pub:nodeA.pub});
+41411399464032750193815617500918575158768059683378407298669269983997192654320169347707063521253943511427030448681025344568888491017373725518403783432343686587216160306110643977085792902295674526020669661500697334078419157529204684347818535354141358922052361205641014829108645061072280570433902877036291304733
+grapa: /&gt;nodeA.secret({method:b.method, pub:nodeB.pub}) == b.secret({method:nodeA.method, pub:nodeA.pub});
+true
+</code></pre></div>
+<h3 id="ec">"ec"</h3>
+<p><a href="https://www.openssl.org/docs/man1.0.2/man3/EC_KEY_generate_key.html">EC_KEY_generate_key</a></p>
+<p>options
+- curve (default="prime256v1")</p>
+<p>curve
+- "secp224r1"
+- "prime256v1"</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;&quot;ec&quot;.genkeys()
+{&quot;method&quot;:&quot;ec&quot;,&quot;curve&quot;:&quot;prime256v1&quot;,&quot;pub&quot;:349854664772403873294259339017252697866055805081789380369591127264988512574728,&quot;prv&quot;:109253108998027222598743004106159085619823908146992540608529858792290817953562}
+
+grapa: /&gt;&quot;ec&quot;.genkeys({curve:&quot;secp224r1&quot;, bits:256})
+{&quot;method&quot;:&quot;EC&quot;,&quot;curve&quot;:&quot;secp224r1&quot;,&quot;pub&quot;:94005469537357239932833357907049107441874311457299400778270964405582,&quot;prv&quot;:5192160124916624753659544220564622206602718051022940651336084962189}
+
+grapa: /&gt;nodeA = &quot;ec&quot;.genkeys({curve:&quot;prime256v1&quot;});
+grapa: /&gt;sig = &quot;test&quot;.sign(nodeA)
+grapa: /&gt;sig
+0x304402207601D7909310BC4DE38DB17D8FE52AB71B7A21CE2976238E1A4870CCD5EE8FE202207072F45DBF7C35D46CE23AAEC4BF89B2FA62E158DD1FA69B28FEF935ACC01807
+grapa: /&gt;sig.verify(nodeA,&quot;test&quot;)
+1
+grapa: /&gt;sig.verify(nodeA,&quot;test2&quot;)
+0
+
+grapa: /&gt;nodeA = &quot;ec&quot;.genkeys({curve:&quot;prime256v1&quot;});
+grapa: /&gt;nodeB = &quot;ec&quot;.genkeys({curve:nodeA.curve});
+grapa: /&gt;nodeA.secret({method:nodeB.method, curve:nodeB.curve, pub:nodeB.pub});
+-32833883556403339571501877545325088412797888782971835903758327481485027662328
+grapa: /&gt;nodeB.secret({method:nodeA.method, curve:nodeA.curve, pub:nodeA.pub});
+-32833883556403339571501877545325088412797888782971835903758327481485027662328
+grapa: /&gt;nodeA.secret({method:nodeB.method, curve:nodeB.curve, pub:nodeB.pub}) == nodeB.secret({method:nodeA.method, curve:nodeA.curve, pub:nodeA.pub});
+true
+</code></pre></div>
+<h3 id="bc">"bc"</h3>
+<p><a href="https://www.openssl.org/docs/man1.0.2/man3/EVP_CipherInit_ex.html">EVP_CipherInit_ex</a></p>
+<p>options
+- cipher (default="aes-256-cbc")
+- key
+- iv
+- digest (default="sha512")
+- count
+- salt
+- data</p>
+<p>cyper
+- "des-ecb"
+- "des-ede"
+- "des-ede3"
+- "des-ede-ecb"
+- "des-ede3-ecb"
+- "des-cfb64"
+- "des-cfb1"
+- "des-cfb8"
+- "des-ede-cfb64"
+- "des-ede3-cfb64"
+- "des-ede3-cfb1"
+- "des-ede3-cfb8"
+- "des-ofb"
+- "des-ede-ofb"
+- "des-ede3-ofb"
+- "des-cbc"
+- "des-ede-cbc"
+- "des-ede3-cbc"
+- "desx-cbc"
+- "des-ede3-wrap"
+- "rc4"
+- "rc4-40"
+- "rc4-hmac-md5"
+- "idea-ecb"
+- "idea-cfb64"
+- "idea-ofb"
+- "idea-cbc"
+- "rc2-ecb"
+- "rc2-cbc"
+- "rc2-40-cbc"
+- "rc2-64-cbc"
+- "rc2-cfb64"
+- "rc2-ofb"
+- "bf-ecb"
+- "bf-cbc"
+- "bf-cfb64"
+- "bf-ofb"
+- "cast5-ecb"
+- "cast5-cbc"
+- "cast5-cfb64"
+- "cast5-ofb"
+- "rc5-32-12-16-cbc"
+- "rc5-32-12-16-ecb"
+- "rc5-32-12-16-cfb64"
+- "rc5-32-12-16-ofb"
+- "aes-128-ecb"
+- "aes-128-cbc"
+- "aes-128-cfb1"
+- "aes-128-cfb8"
+- "aes-128-cfb128"
+- "aes-128-ofb"
+- "aes-128-ctr"
+- "aes-128-ccm"
+- "aes-128-gcm"
+- "aes-128-xts"
+- "aes-128-wrap"
+- "aes-128-wrap-pad"
+- "aes-128-ocb"
+- "aes-192-ecb"
+- "aes-192-cbc"
+- "aes-192-cfb1"
+- "aes-192-cfb8"
+- "aes-192-cfb128"
+- "aes-192-ofb"
+- "aes-192-ctr"
+- "aes-192-ccm"
+- "aes-192-gcm"
+- "aes-192-wrap"
+- "aes-192-wrap-pad"
+- "aes-192-ocb"
+- "aes-256-ecb"
+- "aes-256-cbc"
+- "aes-256-cfb1"
+- "aes-256-cfb8"
+- "aes-256-cfb128"
+- "aes-256-ofb"
+- "aes-256-ctr"
+- "aes-256-ccm"
+- "aes-256-gcm"
+- "aes-256-xts"
+- "aes-256-wrap"
+- "aes-256-wrap-pad"
+- "aes-256-ocb"
+- "aes-128-cbc-hmac-sha1"
+- "aes-256-cbc-hmac-sha1"
+- "aes-128-cbc-hmac-sha256"
+- "aes-256-cbc-hmac-sha256"
+- "aria-128-ecb"
+- "aria-128-cbc"
+- "aria-128-cfb1"
+- "aria-128-cfb8"
+- "aria-128-cfb128"
+- "aria-128-ctr"
+- "aria-128-ofb"
+- "aria-128-gcm"
+- "aria-128-ccm"
+- "aria-192-ecb"
+- "aria-192-cbc"
+- "aria-192-cfb1"
+- "aria-192-cfb8"
+- "aria-192-cfb128"
+- "aria-192-ctr"
+- "aria-192-ofb"
+- "aria-192-gcm"
+- "aria-192-ccm"
+- "aria-256-ecb"
+- "aria-256-cbc"
+- "aria-256-cfb1"
+- "aria-256-cfb8"
+- "aria-256-cfb128"
+- "aria-256-ctr"
+- "aria-256-ofb"
+- "aria-256-gcm"
+- "aria-256-ccm"
+- "camellia-128-ecb"
+- "camellia-128-cbc"
+- "camellia-128-cfb1"
+- "camellia-128-cfb8"
+- "camellia-128-cfb128"
+- "camellia-128-ofb"
+- "camellia-128-ctr"
+- "camellia-192-ecb"
+- "camellia-192-cbc"
+- "camellia-192-cfb1"
+- "camellia-192-cfb8"
+- "camellia-192-cfb128"
+- "camellia-192-ofb"
+- "camellia-192-ctr"
+- "camellia-256-ecb"
+- "camellia-256-cbc"
+- "camellia-256-cfb1"
+- "camellia-256-cfb8"
+- "camellia-256-cfb128"
+- "camellia-256-ofb"
+- "camellia-256-ctr"
+- "chacha20"
+- "chacha20-poly1305"
+- "seed-ecb"
+- "seed-cbc"
+- "seed-cfb128"
+- "seed-ofb"
+- "sm4-ecb"
+- "sm4-cbc"
+- "sm4-cfb128"
+- "sm4-ofb"
+- "sm4-ctr"</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;nodeA = &quot;bc&quot;.genkeys({cipher:&quot;aes-256-cbc&quot;, key:&quot;thisisatest&quot;})
+grapa: /&gt;nodeA
+{&quot;method&quot;:&quot;bc&quot;,&quot;cipher&quot;:&quot;aes-256-cbc&quot;,&quot;key&quot;:0x7468697369736174657374,&quot;iv&quot;:null}
+grapa: /&gt;enc = &quot;this is a test&quot;.encode(nodeA);
+grapa: /&gt;enc
+0x4E12DB388BBE0173A35A82D6972C0BBA
+grapa: /&gt;enc.decode(nodeA).str();
+this is a test
+
+grapa: /&gt;enc = &quot;this is a test&quot;.encode({method:&quot;bc&quot;, cipher:&quot;aes-256-cbc&quot;, key:&quot;thisisatest&quot;});
+grapa: /&gt;enc
+0x4E12DB388BBE0173A35A82D6972C0BBA
+grapa: /&gt;enc.decode({method:&quot;bc&quot;, cipher:&quot;aes-256-cbc&quot;, key:&quot;thisisatest&quot;}).str();
+this is a test
+</code></pre></div>
+<h3 id="md">"md"</h3>
+<p>digest
+- "md4"
+- "md5"
+- "md5-sha1"
+- "blake2b512"
+- "blake2s256"
+- "sha1"
+- "sha224"
+- "sha256"
+- "sha384"
+- "sha512"
+- "sha512-224"
+- "sha512-256"
+- "sha3-224"
+- "sha3-256"
+- "sha3-384"
+- "sha3-512"
+- "shake128"
+- "shake256"
+- "mdc2"
+- "ripemd160"
+- "whirlpool"
+- "sm3"</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;nodeA = &quot;md&quot;.genkeys({digest:&quot;sha3-256&quot;});
+grapa: /&gt;nodeA;
+{&quot;method&quot;:&quot;md&quot;,&quot;digest&quot;:&quot;sha3-256&quot;}
+grapa: /&gt;&quot;test&quot;.encode(nodeA);
+0x36F028580BB02CC8272A9A020F4200E346E276AE664E45EE80745574E2F5AB80
+
+grapa: /&gt;&quot;test&quot;.encode({method:&quot;md&quot;, digest:&quot;sha3-256&quot;});
+0x36F028580BB02CC8272A9A020F4200E346E276AE664E45EE80745574E2F5AB80
+</code></pre></div>
+<h3 id="rpk">"rpk"</h3>
+<p><a href="https://www.openssl.org/docs/man1.0.2/man3/EVP_PKEY_keygen_init.html">EVP_PKEY_keygen_init</a></p>
+<p>options
+- alg (default="ED25519")
+- pub
+- prv</p>
+<p>alg
+- "ED25519"
+- "X25519"
+- "ED448"
+- "X448"</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;&quot;rpk&quot;.genkeys({alg:&quot;ED25519&quot;})
+{&quot;method&quot;:&quot;rpk&quot;,&quot;alg&quot;:&quot;ed25519&quot;,&quot;pub&quot;:0x60BEEACB0D9B67B617E98B3DFFF047B0951413A5817685E6FD2125853B07DDB5,&quot;prv&quot;:0x1C8390953C4E0B5B5720E55C3C4A1C21FF4B105C61B69ADAA065C7E655722B59}
+
+grapa: /&gt;g=&quot;rpk&quot;.genkeys()
+grapa: /&gt;g
+{&quot;method&quot;:&quot;rpk&quot;,&quot;alg&quot;:&quot;ed25519&quot;,&quot;pub&quot;:0x1780BB5267C0EC8A10C2A99A836930991B909608045F123668596C9AF28F2FC,&quot;prv&quot;:0xF0A90D5C818DF2E62B0C3B49DF668501A77B3D6E1C8DAD98F7F49FDE5DE2C723}
+grapa: /&gt;&quot;test&quot;.sign(g)
+0xA3FDB87097F7ED99F5B1E15387E392DCF7870C32904544D9039941A1C9D6A111B48392931F6447BBEC6FDDB7CCB2E3408060E504379B3E19DC27F21F4E579A08
+grapa: /&gt;&quot;test&quot;.sign(g).verify(g,&quot;test&quot;)
+1
+grapa: /&gt;&quot;test&quot;.sign(g).verify(g,&quot;test2&quot;)
+0
+
+grapa: /&gt;nodeA = &quot;rpk&quot;.genkeys({alg:&quot;X25519&quot;});
+grapa: /&gt;nodeB = &quot;rpk&quot;.genkeys({alg:nodeA.alg});
+grapa: /&gt;nodeA.secret({method:nodeB.method, alg:nodeB.alg, pub:nodeB.pub});
+33649166166276908480251638309469536773081960395558481192191946345661575379713
+grapa: /&gt;nodeB.secret({method:nodeA.method, alg:nodeA.alg, pub:nodeA.pub});
+33649166166276908480251638309469536773081960395558481192191946345661575379713
+grapa: /&gt;nodeA.secret({method:nodeB.method, alg:nodeB.alg, pub:nodeB.pub}) == nodeB.secret({method:nodeA.method, alg:nodeA.alg, pub:nodeA.pub});
+true
+</code></pre></div>
+<h3 id="kdf">"kdf"</h3>
+<p>options:
+- alg (default="hkdf")
+- digest (default="sha256")
+- count
+- size
+- salt
+- secret
+- info</p>
+<p>alg
+- "hkdf"
+- "pbkdf2"</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;seed = (256).random();
+grapa: /&gt;&quot;kdf&quot;.genkeys({alg:&quot;hkdf&quot;,digest:&quot;blake2b512&quot;,salt:&quot;SIG-KEYGEN-SALT-&quot;,secret:((seed.uint()) &lt;&lt; 8),info:((&quot;test1&quot;.raw().uint()&lt;&lt;16)|48),count:5});
+{&quot;method&quot;:&quot;kdf&quot;,&quot;alg&quot;:&quot;hkdf&quot;,&quot;sk&quot;:0x9A11D899176B8AA59205D37295FC2492B55E93C7057FD765537488A96463851A2CCE6A1DE6397A3377F556A7EF21CA53BD7BD4880322643EA274812935D1F56BA5F43782DD46534B996A65D26AA15035F1586C79916B395D6A882174210D709F569700F0F4936BF831B9AD8F3CA4687220AE20E0DE2D5DEA28CDE582CD15F15F7823E95B15420DA8FCE8136EA88D060F5EED8D0743D3905CA65F5DA2C7798403A06E563CDA61A50E52977D9FB3541630E92F7A852EC56C3F9434D3875649DAD3A29B35E4C08759C10C2DD00A6E200474F678E135C8E2AE9BA7DA63E068C12583250EC87FD54744F412EF0CFA494A469CF07B5BE81DCC7CDB1C529D40D880E191}
+</code></pre></div>
+<h2 id="encdata-rawdataencode-method-options">encdata = rawdata.encode (method, options)</h2>
+<p>encode/decode types:
+Method | Options | Description
+------------ | ------------- | -------------
+"RSA" | {n,e,d [,p,q,dp,dq,qi]} | Data size must be exactly byte count of d  minus 32.
+"AES256" | {key [,iv]} | key is 32 bits and iv is 16 bits
+"ZIP-GRAPA" | |
+"BASE64" | |
+"ESCAPE" | |
+"FLOAT" | |
+"JSON" | | Only encode.
+"XML" | | Only encode.
+"SHAKE256" | | Only encode.
+"SHAKE128" | | Only encode.
+SHA3-256" | | Only encode.
+SHA3-384" | | Only encode.
+"SHA3-512" | | Only encode.
+"PEM" | | Only decode.</p>
+<p>Example of RSA using hard coded RSA key.</p>
+<div class="highlight"><pre><span></span><code>e = 65537;
+d = (0xA4954A19EA13D5FF06C86E7719AB6B6D5F37EF2D0A453713F08CD3FF2847C7BE80F2A3D0159C2EA862997DEE93DC08CD18CDFBD96DCC077B978904D05B2FCA5988A63).uraw();
+d = (d + (0x2CEB3B7286ACEF97682F418172B30509BD29A1C56E0244D79CFADD5A60C83D2F28A8B72643CB82AABA08871E094B36E6613B108166768B33F5C4860BD21).uraw()).uint();
+n = (0xB47D8ABBD7A33B5AD29C8EFD291433D62695BA043F4130F8E677CD179315FD0DD39989539EC710EB3BCBCACBDED2230DE8575FAEE3ED2835B256ADB1AAEF2F34C430E).uraw();
+n = (n + (0xAB9934FAF1977FA83E12B947806CE1F8D06692F02068FD18E4DE952895DDD2D9BDEE923E94257E84B63D21C92EC1F74B8AF4AF9A33608C7E8247F1C820F).uraw()).uint();
+g = {&quot;method&quot;:&quot;rsa&quot;,&quot;n&quot;:n,&quot;e&quot;:e, &quot;d&quot;:d};
+len = g.n.bytes()-42;
+v = &quot;this is a test of this is a test of 86 chars to see if we can encode with RSA. It needs to be exact size chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.&quot;.left(len);
+v.encode(g).decode(g).str();
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>v.encode(&quot;AES256&quot;,{key:&quot;12345678123456781234567812345678&quot;,iv:&quot;1234567812345678&quot;}).decode(&quot;AES256&quot;,{key:&quot;12345678123456781234567812345678&quot;,iv:&quot;1234567812345678&quot;}).str();
+v.encode(&quot;SHA3-256&quot;);
+v.encode(&quot;SHAKE128&quot;);
+{1,2,3}.encode(&quot;ZIP-GRAPA&quot;).decode(&quot;ZIP-GRAPA&quot;);
+v.encode(&quot;BASE64&quot;).decode(&quot;BASE64&quot;).str();
+</code></pre></div>
+<h2 id="rawdata-encdatadecode-method-options">rawdata = encdata.decode (method, options)</h2>
+<p>See encode.</p>
+<h2 id="sig-rawdatasign-method-options">sig = rawdata.sign (method, options)</h2>
+<div class="highlight"><pre><span></span><code>curve = &quot;prime256v1&quot;;
+pub = 0x25074E1882EF3F6230925ADFFEA56EC322F7EB4F23C3DECF12BFF5A24E11BA21C;
+prv = 0x5A44899AE665F34833146FD9805222B9E7C22B8BE94B7F9C34A54AA9B9D89890;
+g = {&quot;method&quot;:&quot;ec&quot;,&quot;curve&quot;:curve,&quot;pub&quot;:pub,&quot;prv&quot;:prv};
+&quot;test&quot;.sign(g).verify(g,&quot;test&quot;);
+</code></pre></div>
+<h2 id="sig-sigsignadd-method-value-options">sig = sig.signadd (method, value, options)</h2>
+<p>Not implemented yet. Used for pairwise eliptic curves where sigatures can be added.</p>
+<h2 id="ispass-sigverify-method-value-options">ispass = sig.verify (method, value, options)</h2>
+<p>See sign.</p>
+<h2 id="rawdata-sigverifyrecover-method-options">rawdata = sig.verifyrecover (method, options)</h2>
+<p>Recovers signed data.</p>
+<div class="highlight"><pre><span></span><code>a = &quot;rsa&quot;.genkeys();
+b = &quot;hello&quot;.sign(a);
+b.verifyrecover(a).str();
+</code></pre></div>
+<h2 id="value-keysecret-key">value = key.secret (key)</h2>
+<p>Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  </p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;nodeA = &quot;dh&quot;.genkeys();
+grapa: /&gt;nodeB = &quot;dh&quot;.genkeys({p:nodeA.p, g:nodeA.g});
+grapa: /&gt;nodeA.secret({method:nodeB.method, pub:nodeB.pub});
+41411399464032750193815617500918575158768059683378407298669269983997192654320169347707063521253943511427030448681025344568888491017373725518403783432343686587216160306110643977085792902295674526020669661500697334078419157529204684347818535354141358922052361205641014829108645061072280570433902877036291304733
+grapa: /&gt;nodeB.secret({method:nodeA.method, pub:nodeA.pub});
+41411399464032750193815617500918575158768059683378407298669269983997192654320169347707063521253943511427030448681025344568888491017373725518403783432343686587216160306110643977085792902295674526020669661500697334078419157529204684347818535354141358922052361205641014829108645061072280570433902877036291304733
+grapa: /&gt;nodeA.secret({method:b.method, pub:nodeB.pub}) == b.secret({method:nodeA.method, pub:nodeA.pub});
+true
+
+grapa: /&gt;nodeA = &quot;ec&quot;.genkeys({curve:&quot;prime256v1&quot;});
+grapa: /&gt;nodeB = &quot;ec&quot;.genkeys({curve:nodeA.curve});
+grapa: /&gt;nodeA.secret({method:nodeB.method, curve:nodeB.curve, pub:nodeB.pub});
+-32833883556403339571501877545325088412797888782971835903758327481485027662328
+grapa: /&gt;nodeB.secret({method:nodeA.method, curve:nodeA.curve, pub:nodeA.pub});
+-32833883556403339571501877545325088412797888782971835903758327481485027662328
+grapa: /&gt;nodeA.secret({method:nodeB.method, curve:nodeB.curve, pub:nodeB.pub}) == nodeB.secret({method:nodeA.method, curve:nodeA.curve, pub:nodeA.pub});
+true
+
+grapa: /&gt;nodeA = &quot;rpk&quot;.genkeys({alg:&quot;X25519&quot;});
+grapa: /&gt;nodeB = &quot;rpk&quot;.genkeys({alg:nodeA.alg});
+grapa: /&gt;nodeA.secret({method:nodeB.method, alg:nodeB.alg, pub:nodeB.pub});
+33649166166276908480251638309469536773081960395558481192191946345661575379713
+grapa: /&gt;nodeB.secret({method:nodeA.method, alg:nodeA.alg, pub:nodeA.pub});
+33649166166276908480251638309469536773081960395558481192191946345661575379713
+grapa: /&gt;nodeA.secret({method:nodeB.method, alg:nodeB.alg, pub:nodeB.pub}) == nodeB.secret({method:nodeA.method, alg:nodeA.alg, pub:nodeA.pub});
+true
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>

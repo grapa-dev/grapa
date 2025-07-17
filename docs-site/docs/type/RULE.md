@@ -5,7 +5,7 @@ Design Influences:
 Grapa's $RULE type is inspired by Prolog's executable BNF and logic programming paradigm, enabling dynamic, mutable grammars and rule-based execution. This design empowers users to experiment with language syntax and parsing, making Grapa especially valuable for educators, researchers, and anyone interested in language design. The overarching goal is to make Grapa (and GrapaPy) as inviting and usable as possible for the broadest audience.
 */
 References:
-- [$RULE object](../../lib/grapa/$RULE.grc)
+- [$RULE object](../lib/grapa/$RULE.grc)
 
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessible and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a language by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
 

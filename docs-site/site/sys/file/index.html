@@ -1,0 +1,1896 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>$file() - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#file" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              $file()
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING_STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CLI_QUICKSTART/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Python Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API_REFERENCE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../grep/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Grep Documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../USE_CASES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Use Cases
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EXAMPLES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../TROUBLESHOOTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING_STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI_QUICKSTART/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API_REFERENCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JS_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUST_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TYPESCRIPT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GO_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUBY_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KOTLIN_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SWIFT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../USE_CASES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EXAMPLES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TROUBLESHOOTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#minimal-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Minimal Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    <span class="md-ellipsis">
+      type()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table" class="md-nav__link">
+    <span class="md-ellipsis">
+      table()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directory-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Directory Navigation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Directory Navigation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pwd-print-working-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      pwd() - Print Working Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cdname-change-working-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      cd([name]) - Change Working Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phd-print-home-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      phd() - Print Home Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chdfilesystempath-change-home-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      chd(filesystempath) - Change Home Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directory-navigation-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Directory Navigation Comparison
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lsname" class="md-nav__link">
+    <span class="md-ellipsis">
+      ls([name])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mkname-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      mk(name [,type])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Table
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rmname" class="md-nav__link">
+    <span class="md-ellipsis">
+      rm(name)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setname-value-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      set(name, value [, field])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getname-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      get(name [, field])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infoname" class="md-nav__link">
+    <span class="md-ellipsis">
+      info(name)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#splitparts-name-path-delim-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      split(parts, name, path, delim, option)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mkfieldname-fieldtype-storetype-storesize-storegrow" class="md-nav__link">
+    <span class="md-ellipsis">
+      mkfield(name [, fieldType [, storeType [, storeSize [, storeGrow]]]])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rmfieldname" class="md-nav__link">
+    <span class="md-ellipsis">
+      rmfield(name)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      debug()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#row-store-vs-column-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      Row Store vs Column Store
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storage-type-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Storage Type Performance
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Information
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-file-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic File Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#row-store-vs-column-store-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Row Store vs Column Store Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Integration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Python Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-python-use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Python Use Cases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Topics
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+        <span class="md-tag">highlevel</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">user</span>
+      
+    
+  </nav>
+
+
+
+<h1 id="file">$file()</h1>
+<h2 id="minimal-example">Minimal Example</h2>
+<div class="highlight"><pre><span></span><code>f = $file();
+f.chd(&quot;C:/Users/user/Projects/MyProject&quot;);
+f.cd(&quot;src&quot;);
+f.ls();  /* List files in /src */
+f.get(&quot;README.md&quot;);  /* Read a file */
+f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);  /* Write a file */
+</code></pre></div>
+<hr />
+<p>References:</p>
+<p>Provides the ability to navigate either the file system or a database, querying data and updating data. This class/libraries will be enhanced over time to support navigating data types beyond the file system and the grapa database - such as JSON/XML and unstructured data where a mapping can be defined (maybe with a set of rules). With a few additional enhancements, this class/library will also enable extending the grapa syntax to include SQL with $file for the underlying data.</p>
+<p>Each example below assumes the following command has been issued:
+<div class="highlight"><pre><span></span><code>f = $file();
+</code></pre></div></p>
+<p>Which assigns f an instance of the $file class. The following are then operations that can be used from the $file class.</p>
+<p>The name field for the commands can include a path relative to the "working directory" (see pwd()). If the "working directory" is a OS filesystem directory, then the path must reference a file within the OS filesystem. If the "working directory" is a grapa table, then the path and data item would be within the grapa table. What is not currently supported is referencing a grapa table item when the "working directory" is not within a grapa table.</p>
+<h2 id="type">type()</h2>
+<p>Returns the type of the file object.
+<div class="highlight"><pre><span></span><code>f.type();
+$file
+</code></pre></div></p>
+<h2 id="table">table()</h2>
+<p>The table function creates an in-memory database. </p>
+<div class="highlight"><pre><span></span><code>t = f.table();
+t.type();
+$TABLE
+</code></pre></div>
+<p><strong>Database Types</strong>: The table can be configured as either:
+- <strong>Row Store (RTABLE_TREE)</strong>: Traditional row-oriented storage, optimized for transactional workloads
+- <strong>Column Store (CTABLE_TREE)</strong>: Column-oriented storage, optimized for analytical queries and aggregations</p>
+<p><strong>Note</strong>: Column store databases use fragmented data storage (FREC_DATA) for efficient handling of sparse data and dynamic growth.</p>
+<h2 id="directory-navigation">Directory Navigation</h2>
+<p>Grapa provides two levels of directory navigation: <strong>working directory</strong> (relative) and <strong>home directory</strong> (absolute). This dual-level system allows for flexible project management and navigation.</p>
+<h3 id="pwd-print-working-directory">pwd() - Print Working Directory</h3>
+<p>Returns the current working directory, relative to the current home directory.</p>
+<p><strong>Purpose</strong>: Shows where you are within the current project context
+<strong>Returns</strong>: Relative path (e.g., <code>/lib</code>, <code>/docs</code>)
+<strong>Use Case</strong>: Navigation within a project or database</p>
+<div class="highlight"><pre><span></span><code>f.pwd();
+/
+
+f.cd(&quot;lib&quot;);
+f.pwd();
+/lib
+
+f.cd(&quot;grapa&quot;);
+f.pwd();
+/lib/grapa
+</code></pre></div>
+<h3 id="cdname-change-working-directory">cd([name]) - Change Working Directory</h3>
+<p>Changes the current working directory, relative to the current home directory.</p>
+<p><strong>Parameters</strong>:
+- <code>name</code> (optional): Directory name or path to navigate to
+  - <code>".."</code>: Move up one level
+  - <code>"/"</code>: Move to root of current home directory
+  - <code>"path"</code>: Move to specific subdirectory</p>
+<div class="highlight"><pre><span></span><code>f.cd(&quot;lib&quot;);
+f.pwd();
+/lib
+
+f.cd(&quot;..&quot;);
+f.pwd();
+/
+
+f.cd(&quot;/docs&quot;);
+f.pwd();
+/docs
+
+f.cd(&quot;..&quot;);
+f.pwd();
+/
+</code></pre></div>
+<h3 id="phd-print-home-directory">phd() - Print Home Directory</h3>
+<p>Returns the current home directory (absolute path).</p>
+<p><strong>Purpose</strong>: Shows the base directory that serves as the root for relative navigation
+<strong>Returns</strong>: Absolute path (e.g., <code>C:\Users\matichuk\Documents\GitHub\grapa</code>)
+<strong>Use Case</strong>: Project switching and absolute path reference</p>
+<div class="highlight"><pre><span></span><code>f.phd();
+C:\Users\matichuk\Documents\GitHub\grapa
+
+f.chd(&quot;C:/Users/matichuk/Documents/NewProject&quot;);
+f.phd();
+C:\Users\matichuk\Documents\NewProject
+</code></pre></div>
+<h3 id="chdfilesystempath-change-home-directory">chd(filesystempath) - Change Home Directory</h3>
+<p>Changes the current home directory to a new absolute path.</p>
+<p><strong>Parameters</strong>:
+- <code>filesystempath</code>: Absolute or relative path to set as new home directory</p>
+<p><strong>Note</strong>: This resets the working directory to the root (<code>/</code>) of the new home directory.</p>
+<div class="highlight"><pre><span></span><code>/* Change to absolute path */
+f.chd(&quot;C:/Users/matichuk/Documents/NewProject&quot;);
+f.phd();
+C:\Users\matichuk\Documents\NewProject
+f.pwd();
+/
+
+/* Change to relative path from current home */
+f.chd(&quot;../sibling_project&quot;);
+f.phd();
+C:\Users\matichuk\Documents\sibling_project
+f.pwd();
+/
+</code></pre></div>
+<h3 id="directory-navigation-comparison">Directory Navigation Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+<th>Scope</th>
+<th>Change Method</th>
+<th>Example Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pwd()</code></td>
+<td>Show current location</td>
+<td>Relative to home</td>
+<td><code>cd()</code></td>
+<td><code>/lib/grapa</code></td>
+</tr>
+<tr>
+<td><code>phd()</code></td>
+<td>Show base directory</td>
+<td>Absolute system</td>
+<td><code>chd()</code></td>
+<td><code>C:\Users\matichuk\Documents\GitHub\grapa</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Typical Workflow</strong>:
+1. Use <code>chd()</code> to set your project's home directory
+2. Use <code>cd()</code> to navigate within the project
+3. Use <code>pwd()</code> to see your current location within the project
+4. Use <code>phd()</code> to see the absolute project location</p>
+<h2 id="lsname">ls([name])</h2>
+<p>Retrieves a list of files/directories in the current working directory.</p>
+<p><strong>Return Format</strong>: Returns a list of objects with the following properties:
+- <code>$KEY</code>: File or directory name
+- <code>$TYPE</code>: Type ("FILE", "GROUP", etc.)
+- <code>$BYTES</code>: File size in bytes (0 for directories)</p>
+<p><strong>Note:</strong>
+- When navigating a traditional file system, folders/directories will be listed as <code>$TYPE: "GROUP"</code>.
+- In a database context, <code>GROUP</code> also refers to hierarchical/grouped database structures.</p>
+<div class="highlight"><pre><span></span><code>f.ls();
+[
+  {&quot;$KEY&quot;:&quot;docs&quot;,&quot;$TYPE&quot;:&quot;GROUP&quot;,&quot;$BYTES&quot;:0},
+  {&quot;$KEY&quot;:&quot;README.md&quot;,&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:4302}
+]
+
+/* Check type of a directory */
+f.cd(&quot;docs&quot;);
+f.type();
+/* Returns: GROUP */
+</code></pre></div>
+<h2 id="mkname-type">mk(name [,type])</h2>
+<p>Creates a directory at the current working directory within the file system.</p>
+<p><strong>Parameters</strong>:
+- <code>name</code>: Directory name to create
+- <code>type</code> (optional): Type of directory/database to create</p>
+<p><strong>Type Options</strong>:
+- <code>""</code> or <code>"DIR"</code>: Creates a regular directory (default)
+- <code>"GROUP"</code>: Creates a database of GROUP type for hierarchical data, or a folder/directory in the file system
+- <code>"ROW"</code>: Creates a ROW store database optimized for transactional workloads
+- <code>"COL"</code>: Creates a COL store database optimized for analytical queries</p>
+<p><strong>Column Store (COL) Characteristics</strong>:
+- Uses fragmented data storage for efficient sparse data handling
+- Optimized for column-oriented queries and aggregations
+- Better performance for analytical workloads
+- Efficient storage of wide tables with many optional fields</p>
+<p><strong>Note:</strong>
+- When using <code>mk()</code> in a file system context, <code>GROUP</code> is equivalent to creating a folder/directory.
+- In a database context, <code>GROUP</code> creates a hierarchical/grouped database structure.</p>
+<div class="highlight"><pre><span></span><code>/* Create regular directory */
+f.mk(&quot;test&quot;);
+f.cd(&quot;test&quot;);
+f.ls();
+[]
+
+/* Create database directory */
+f.mk(&quot;testdb&quot;, &quot;GROUP&quot;);
+f.cd(&quot;testdb&quot;);
+f.ls();
+[]
+
+/* Create column store database */
+f.mk(&quot;analytics_db&quot;, &quot;COL&quot;);
+f.cd(&quot;analytics_db&quot;);
+</code></pre></div>
+<h2 id="type-table">Type Table</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description/Use Case</th>
+<th>Storage Model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GROUP</td>
+<td>Folder/directory in file system, or hierarchical/grouped database</td>
+<td>GROUP_TREE</td>
+</tr>
+<tr>
+<td>ROW</td>
+<td>Transactional, record-based, OLTP, point queries</td>
+<td>RTABLE_TREE, BYTE_DATA</td>
+</tr>
+<tr>
+<td>COL</td>
+<td>Analytical, column-based, sparse/large datasets</td>
+<td>CTABLE_TREE, FREC_DATA</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rmname">rm(name)</h2>
+<p>Removes a directory or file.
+<div class="highlight"><pre><span></span><code>f.rm(&quot;test&quot;);
+</code></pre></div></p>
+<p><strong>Note</strong>: This will recursively remove directories and their contents.</p>
+<h2 id="setname-value-field">set(name, value [, field])</h2>
+<p>Creates or updates a file with the specified content.</p>
+<p><strong>Parameters</strong>:
+- <code>name</code>: File name
+- <code>value</code>: Content to write to the file
+- <code>field</code> (optional): Field name (defaults to <code>$VALUE</code>)</p>
+<div class="highlight"><pre><span></span><code>f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
+f.set(&quot;config.json&quot;, &#39;{&quot;name&quot;: &quot;test&quot;, &quot;value&quot;: 123}&#39;);
+</code></pre></div>
+<h2 id="getname-field">get(name [, field])</h2>
+<p>Reads the content of a file.</p>
+<p><strong>Parameters</strong>:
+- <code>name</code>: File name
+- <code>field</code> (optional): Field name (defaults to <code>$VALUE</code>)</p>
+<p><strong>Return Format</strong>: Returns file content in hexadecimal format.</p>
+<div class="highlight"><pre><span></span><code>f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
+content = f.get(&quot;test.txt&quot;);
+/* Returns: 0x48656C6C6F2C20576F726C6421 */
+</code></pre></div>
+<p><strong>Note</strong>: File content is returned in hexadecimal format, not plain text. To convert to string, you may need to use additional processing.</p>
+<h2 id="infoname">info(name)</h2>
+<p>Returns detailed metadata information about a file or directory.</p>
+<p><strong>Parameters</strong>:
+- <code>name</code>: File or directory name to inspect</p>
+<p><strong>Return Format</strong>: Returns an object with file metadata containing:
+- <code>$TYPE</code>: Type of item (<code>"FILE"</code>, <code>"DIR"</code>, or <code>"ERR"</code> for errors/non-existent)
+- <code>$BYTES</code>: Size in bytes (0 for directories, actual size for files)
+- <code>error</code>: Error code (-1) if item doesn't exist or is inaccessible</p>
+<p><strong>Examples</strong>:
+<div class="highlight"><pre><span></span><code>/* File information */
+f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
+info = f.info(&quot;test.txt&quot;);
+/* Returns: {&quot;$TYPE&quot;:&quot;FILE&quot;,&quot;$BYTES&quot;:13} */
+
+/* Directory information */
+f.mk(&quot;test_dir&quot;);
+dir_info = f.info(&quot;test_dir&quot;);
+/* Returns: {&quot;$TYPE&quot;:&quot;DIR&quot;,&quot;$BYTES&quot;:0} */
+
+/* Non-existent item */
+error_info = f.info(&quot;nonexistent.txt&quot;);
+/* Returns: {&quot;error&quot;:-1} */
+</code></pre></div></p>
+<p><strong>Use Cases</strong>:</p>
+<p><strong>File Type Detection</strong>:
+<div class="highlight"><pre><span></span><code>info = f.info(&quot;document.txt&quot;);
+if (info[&quot;$TYPE&quot;] == &quot;FILE&quot;) {
+    &quot;This is a file\n&quot;.echo();
+} else if (info[&quot;$TYPE&quot;] == &quot;DIR&quot;) {
+    &quot;This is a directory\n&quot;.echo();
+} else {
+    &quot;Item doesn&#39;t exist\n&quot;.echo();
+}
+</code></pre></div></p>
+<p><strong>File Size Analysis</strong>:
+<div class="highlight"><pre><span></span><code>info = f.info(&quot;large_file.txt&quot;);
+if (info[&quot;$TYPE&quot;] == &quot;FILE&quot;) {
+    size = info[&quot;$BYTES&quot;];
+    if (size &gt; 1000000) {
+        &quot;File is larger than 1MB\n&quot;.echo();
+    }
+}
+</code></pre></div></p>
+<p><strong>Batch File Processing</strong>:
+<div class="highlight"><pre><span></span><code>files = [&quot;file1.txt&quot;, &quot;file2.txt&quot;, &quot;file3.txt&quot;];
+total_size = 0;
+i = 0;
+while (i &lt; files.length()) {
+    info = f.info(files[i]);
+    if (info[&quot;$TYPE&quot;] == &quot;FILE&quot;) {
+        total_size = total_size + info[&quot;$BYTES&quot;];
+    }
+    i = i + 1;
+}
+&quot;Total size: &quot; + total_size + &quot; bytes\n&quot;.echo();
+</code></pre></div></p>
+<p><strong>Key Benefits</strong>:
+- <strong>Lightweight</strong>: No need to open/read files to get metadata
+- <strong>Fast</strong>: Direct OS system calls for file system operations
+- <strong>Unified Interface</strong>: Same function works for files and directories
+- <strong>Cross-Platform</strong>: Works consistently across different operating systems
+- <strong>Error Handling</strong>: Clear error responses for non-existent items</p>
+<p><strong>Implementation Notes</strong>:
+- Uses <code>stat64()</code> on Unix/Linux systems
+- Uses <code>FindFirstFileA()</code> on Windows systems
+- Works in both file system and database contexts
+- Essential for file management, storage monitoring, and data validation</p>
+<h2 id="splitparts-name-path-delim-option">split(parts, name, path, delim, option)</h2>
+<p>Splits a large file into multiple smaller, manageable parts for processing, storage, or transfer.</p>
+<p><strong>Parameters</strong>:
+- <code>parts</code>: Number of files to split into (must be &gt; 0)
+- <code>name</code>: Input file name to split
+- <code>path</code>: Output directory path for the split files (created if needed)
+- <code>delim</code>: Delimiter to use for splitting (default: <code>"\n"</code>)
+- <code>option</code>: Special options
+  - <code>"csv"</code>: Copy header to each file (preserves CSV headers)
+  - <code>"start"</code>: Search backwards for delimiter on split (prevents content breaking)</p>
+<p><strong>Return Format</strong>: Returns an array of created file names.
+<div class="highlight"><pre><span></span><code>result = f.split(4, &quot;large_file.txt&quot;, &quot;split_output&quot;, &quot;\n&quot;, &quot;&quot;);
+/* Returns: [&quot;1.large_file.txt&quot;,&quot;2.large_file.txt&quot;,&quot;3.large_file.txt&quot;,&quot;4.large_file.txt&quot;] */
+</code></pre></div></p>
+<p><strong>Examples</strong>:</p>
+<p><strong>Basic File Splitting</strong>:
+<div class="highlight"><pre><span></span><code>/* Create a large file */
+large_content = &quot;&quot;;
+i = 1;
+while (i &lt;= 100) {
+    large_content = large_content + &quot;Line &quot; + i + &quot;\n&quot;;
+    i = i + 1;
+};
+f.set(&quot;large_file.txt&quot;, large_content);
+
+/* Split into 4 parts */
+result = f.split(4, &quot;large_file.txt&quot;, &quot;split_output&quot;, &quot;\n&quot;, &quot;&quot;);
+/* Creates: 1.large_file.txt, 2.large_file.txt, 3.large_file.txt, 4.large_file.txt */
+</code></pre></div></p>
+<p><strong>CSV File Splitting with Header Preservation</strong>:
+<div class="highlight"><pre><span></span><code>/* Split CSV file while preserving headers in each part */
+result = f.split(3, &quot;data.csv&quot;, &quot;csv_parts&quot;, &quot;&quot;, &quot;csv&quot;);
+/* Each split file includes the original header row */
+</code></pre></div></p>
+<p><strong>Custom Delimiter Splitting</strong>:
+<div class="highlight"><pre><span></span><code>/* Split on pipe character instead of newlines */
+result = f.split(2, &quot;custom_data.txt&quot;, &quot;output&quot;, &quot;|&quot;, &quot;&quot;);
+/* Splits content at pipe boundaries */
+</code></pre></div></p>
+<p><strong>Smart Boundary Detection</strong>:
+<div class="highlight"><pre><span></span><code>/* Use start option to avoid breaking content arbitrarily */
+result = f.split(2, &quot;log_file.txt&quot;, &quot;log_parts&quot;, &quot;\n&quot;, &quot;start&quot;);
+/* Searches backwards for delimiter to maintain logical boundaries */
+</code></pre></div></p>
+<p><strong>Use Cases</strong>:</p>
+<p><strong>Large File Management</strong>:
+<div class="highlight"><pre><span></span><code>/* Split large database export for processing */
+f.split(10, &quot;database_export.csv&quot;, &quot;exports&quot;, &quot;&quot;, &quot;csv&quot;);
+</code></pre></div></p>
+<p><strong>Log File Processing</strong>:
+<div class="highlight"><pre><span></span><code>/* Split large log files for parallel analysis */
+f.split(5, &quot;server.log&quot;, &quot;log_chunks&quot;, &quot;\n&quot;, &quot;&quot;);
+</code></pre></div></p>
+<p><strong>Data Pipeline Preparation</strong>:
+<div class="highlight"><pre><span></span><code>/* Prepare data for distributed processing */
+f.split(8, &quot;dataset.txt&quot;, &quot;chunks&quot;, &quot;\n&quot;, &quot;start&quot;);
+</code></pre></div></p>
+<p><strong>Key Features</strong>:
+- <strong>Automatic Naming</strong>: Files named as <code>1.filename</code>, <code>2.filename</code>, etc.
+- <strong>Size Distribution</strong>: Calculates optimal part sizes based on total file size
+- <strong>Memory Efficient</strong>: Processes files in chunks, not all at once
+- <strong>Flexible Delimiters</strong>: Supports any character or string as delimiter
+- <strong>Error Handling</strong>: Returns <code>{"error":-1}</code> for non-existent files, <code>null</code> for invalid parameters
+- <strong>Cross-Platform</strong>: Works consistently across operating systems</p>
+<p><strong>Implementation Notes</strong>:
+- Uses efficient block-based file I/O for memory management
+- Automatically creates output directory if it doesn't exist
+- Handles remainder content appropriately when file size doesn't divide evenly
+- Supports both file system and database contexts
+- Zero-padded numbering ensures proper file sorting</p>
+<h2 id="mkfieldname-fieldtype-storetype-storesize-storegrow">mkfield(name [, fieldType [, storeType [, storeSize [, storeGrow]]]])</h2>
+<p>Creates a field within the current working directory (database context).</p>
+<p><strong>Parameters</strong>:
+- <code>name</code>: Field name
+- <code>fieldType</code> (optional): Type of field (default: <code>"STR"</code>)
+- <code>storeType</code> (optional): Storage type (default: <code>"VAR"</code>)
+- <code>storeSize</code> (optional): Size for fixed fields
+- <code>storeGrow</code> (optional): Growth size for variable fields</p>
+<p><strong>Field Types</strong>:
+| Type | Description |
+|------|-------------|
+| <code>BOOL</code> | Fixed size for $BOOL |
+| <code>TIME</code> | Stores an $INT. Size depends on storeType and storeSize |
+| <code>INT</code> | Stores an $INT. Size depends on storeType and storeSize |
+| <code>FLOAT</code> | Stores a $FLOAT. Size depends on storeType and storeSize |
+| <code>STR</code> | Stores a $STR. Size depends on storeType and storeSize |
+| <code>TABLE</code> | Stores a $TABLE. Size depends on storeType and storeSize |
+| <code>RAW</code> | Stores a $RAW. Size depends on storeType and storeSize |</p>
+<p><strong>Storage Types</strong>:
+| Type | Description | Use Case |
+|------|-------------|----------|
+| <code>FIX</code> | Fixed field size, data embedded in row/col | Small, frequently accessed fields |
+| <code>VAR</code> | Variable field size, uses extra reference | Medium-sized variable data |
+| <code>PAR</code> | Partitioned field for large data updates | Large data requiring partial updates, COL store $TABLE types |</p>
+<p><strong>Important Notes</strong>:
+- <strong>Column Store Fixed Fields</strong>: Use fragmented data storage (FREC_DATA) for efficient sparse data handling
+- <strong>Growth Parameters</strong>: The <code>storeGrow</code> parameter is automatically set to <code>storeSize</code> for fixed fields if not specified
+- <strong>Performance</strong>: Column store is optimized for analytical queries across columns</p>
+<div class="highlight"><pre><span></span><code>f.mkfield(&quot;test&quot;);
+f.mkfield(&quot;age&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
+f.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+</code></pre></div>
+<h2 id="rmfieldname">rmfield(name)</h2>
+<p>Deletes a field within the current working directory (database context).</p>
+<div class="highlight"><pre><span></span><code>f.rmfield(&quot;test&quot;);
+</code></pre></div>
+<h2 id="debug">debug()</h2>
+<p>Used for debugging the database during development. Displays the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).</p>
+<div class="highlight"><pre><span></span><code>f.debug();
+</code></pre></div>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<h3 id="row-store-vs-column-store">Row Store vs Column Store</h3>
+<p><strong>Row Store (ROW)</strong>
+- <strong>Best for</strong>: Transactional workloads, frequent record updates, point queries
+- <strong>Storage</strong>: Contiguous data blocks per record
+- <strong>Performance</strong>: Fast record retrieval and updates</p>
+<p><strong>Column Store (COL)</strong>
+- <strong>Best for</strong>: Analytical queries, column scans, aggregations, sparse data
+- <strong>Storage</strong>: Fragmented data storage for efficient sparse data handling
+- <strong>Performance</strong>: Fast column-oriented operations, better compression</p>
+<h3 id="storage-type-performance">Storage Type Performance</h3>
+<p><strong>FIX (Fixed)</strong>
+- Fastest access for small, frequently used fields
+- Predictable storage requirements
+- Best for primary keys, status flags, small integers</p>
+<p><strong>VAR (Variable)</strong>
+- Flexible storage for variable-length data
+- Good for medium-sized text fields
+- Slight overhead for reference management</p>
+<p><strong>PAR (Partitioned)</strong>
+- Best for large data requiring partial updates
+- Efficient for very large fields
+- Used automatically for COL store $TABLE types</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<p><strong>Column Store Performance</strong>
+- <strong>Issue</strong>: Slow performance on small datasets
+- <strong>Solution</strong>: Consider row store for small, transactional workloads</p>
+<p><strong>Field Creation Errors</strong>
+- <strong>Issue</strong>: Fields not created properly
+- <strong>Solution</strong>: Ensure proper field type and storage parameters are specified</p>
+<p><strong>Storage Efficiency</strong>
+- <strong>Issue</strong>: High storage overhead
+- <strong>Solution</strong>: Use appropriate storage types and monitor growth parameters</p>
+<h3 id="debug-information">Debug Information</h3>
+<p>Use the <code>debug()</code> function to inspect database structure:
+<div class="highlight"><pre><span></span><code>f.debug();
+</code></pre></div></p>
+<p>This provides detailed information about:
+- Database type and structure
+- Field definitions and storage types
+- Data distribution and storage efficiency</p>
+<h2 id="error-handling">Error Handling</h2>
+<p>When operations fail, the system returns error objects:
+<div class="highlight"><pre><span></span><code>/* Non-existent file */
+result = f.get(&quot;non_existent.txt&quot;);
+/* Returns: {&quot;error&quot;:-1} */
+
+/* Non-existent directory */
+result = f.cd(&quot;non_existent_dir&quot;);
+/* Returns: {&quot;error&quot;:-1} */
+</code></pre></div></p>
+<h2 id="usage-examples">Usage Examples</h2>
+<h3 id="basic-file-operations">Basic File Operations</h3>
+<div class="highlight"><pre><span></span><code>f = $file();
+
+/* Create and write to a file */
+f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);
+
+/* Read file content */
+content = f.get(&quot;test.txt&quot;);
+
+/* List directory contents */
+files = f.ls();
+
+/* Navigate directories */
+f.cd(&quot;docs&quot;);
+f.pwd();  /* Returns: /docs */
+</code></pre></div>
+<h3 id="database-operations">Database Operations</h3>
+<div class="highlight"><pre><span></span><code>/* Create a column store database */
+f.mk(&quot;analytics_db&quot;, &quot;COL&quot;);
+f.cd(&quot;analytics_db&quot;);
+
+/* Create fields */
+f.mkfield(&quot;id&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
+f.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+f.mkfield(&quot;age&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
+
+/* Add data */
+f.set(&quot;user1&quot;, &quot;John Doe&quot;, &quot;name&quot;);
+f.set(&quot;user1&quot;, 30, &quot;age&quot;);
+
+/* Retrieve data */
+name = f.get(&quot;user1&quot;, &quot;name&quot;);
+age = f.get(&quot;user1&quot;, &quot;age&quot;);
+</code></pre></div>
+<h3 id="row-store-vs-column-store-example">Row Store vs Column Store Example</h3>
+<div class="highlight"><pre><span></span><code>/* Row store for transactional data */
+f.mk(&quot;transaction_db&quot;, &quot;ROW&quot;);
+f.cd(&quot;transaction_db&quot;);
+f.mkfield(&quot;order_id&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
+f.mkfield(&quot;customer_id&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
+f.mkfield(&quot;amount&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);
+
+/* Column store for analytical data */
+f.mk(&quot;analytics_db&quot;, &quot;COL&quot;);
+f.cd(&quot;analytics_db&quot;);
+f.mkfield(&quot;date&quot;, &quot;TIME&quot;, &quot;FIX&quot;, 8);
+f.mkfield(&quot;product_id&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
+f.mkfield(&quot;sales_amount&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);
+f.mkfield(&quot;region&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+</code></pre></div>
+<h2 id="python-integration">Python Integration</h2>
+<p>For Python developers, Grapa's file system and database capabilities can be leveraged through the Python integration. The unified API provides seamless access to both file systems and databases, making it ideal for data science, web development, and system administration workflows.</p>
+<h3 id="key-python-use-cases">Key Python Use Cases</h3>
+<p><strong>Data Science and Analytics</strong>:
+- <strong>Column store databases</strong> for analytical workloads
+- <strong>Large file management</strong> with built-in splitting capabilities
+- <strong>Unified data access</strong> across different storage types</p>
+<p><strong>Web Application Development</strong>:
+- <strong>Backend data management</strong> with row store for transactional data
+- <strong>Content management</strong> with flexible field types
+- <strong>API development</strong> with consistent data access patterns</p>
+<p><strong>System Administration</strong>:
+- <strong>Log file management</strong> with automatic splitting for large files
+- <strong>Configuration management</strong> with unified path navigation
+- <strong>Data pipeline integration</strong> for ETL workflows</p>
+<p>For detailed examples and best practices, see the <a href="../../python_integration/">Python Integration Guide</a>.</p>
+<h2 id="related-topics">Related Topics</h2>
+<ul>
+<li><a href="../../directory_navigation/">Directory Navigation</a></li>
+<li><a href="../../database/quick_reference/">Database Quick Reference</a></li>
+<li><a href="../../syntax/basic_syntax/">Syntax Quick Reference</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>

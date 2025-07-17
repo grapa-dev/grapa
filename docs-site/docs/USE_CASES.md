@@ -15,7 +15,7 @@ Grapa is fully thread safe by design. All variable and data structure updates ar
 ```grapa
 lock_obj = $thread();
 lock_obj.lock();
-// ... perform thread-safe operations on shared data ...
+/* ... perform thread-safe operations on shared data ... */
 lock_obj.unlock();
 ```
 
@@ -138,9 +138,9 @@ With executable BNF and mutable grammar, Grapa is perfect for teaching and exper
 ```grapa
 /* Define a simple arithmetic expression grammar */
 expression_grammar = {
-    "expression": "term (('+' | '-') term)*",
-    "term": "factor (('*' | '/') factor)*", 
-    "factor": "number | '(' expression ')'",
+    "expression": "term (( '+' | '-' ) term)*",
+    "term": "factor (( '*' | '/' ) factor)*",
+    "factor": "number | '(' expression ')',",
     "number": "[0-9]+"
 };
 
@@ -171,7 +171,7 @@ execute_repeat = op(ast) {
         i = 0;
         while (i < count) {
             $rule().execute(body);
-            i = i + 1;
+            i += 1;
         };
     };
 };
@@ -208,7 +208,6 @@ generate_rsa_keys = op(bits) {
     phi = (p - 1) * (q - 1);
     e = 65537;  /* Common public exponent */
     d = $crypt().modinv(e, phi);
-    
     {
         "public_key": {"n": n, "e": e},
         "private_key": {"n": n, "d": d}
@@ -233,7 +232,7 @@ compound_interest = op(principal, rate, time, periods) {
 mortgage_payment = op(principal, annual_rate, years) {
     monthly_rate = annual_rate / 12 / 100;
     total_payments = years * 12;
-    principal * (monthly_rate * (1 + monthly_rate).pow(total_payments)) / 
+    principal * (monthly_rate * (1 + monthly_rate).pow(total_payments)) /
               ((1 + monthly_rate).pow(total_payments) - 1);
 };
 
@@ -247,10 +246,9 @@ total_paid = monthly_payment * loan_years * 12;
 total_interest = total_paid - loan_amount;
 
 ("Monthly payment: $" + monthly_payment.str()).echo();
-("Total interest: $" + total_interest.str()).echo();
 ```
 
-- **See also:** [Python Math Examples](PYTHON_USE_CASES.md#3-high-precision-math--scientific-computing)
+- **See also:** [Python Math Examples](PYTHON_USE_CASES.md#3-high-precision-math-scientific-computing)
 
 ## 4. Parallel/Concurrent Programming
 Grapa's $thread, $net, and map/reduce/filter features enable true parallelism, overcoming Python's GIL and enabling high-performance data processing.
@@ -284,7 +282,7 @@ parallel_process = op(data, num_threads) {
         start = i * chunk_size;
         end = (i == num_threads - 1) ? data.len() : (i + 1) * chunk_size;
         chunks += data.slice(start, end);
-        i = i + 1;
+        i += 1;
     };
     
     /* Process chunks in parallel */
@@ -409,7 +407,7 @@ extracted_data = scraped_data.map(op(page) {
 });
 ```
 
-- **See also:** [Python Web Scraping Examples](PYTHON_USE_CASES.md#5-webdata-scraping--automation)
+- **See also:** [Python Web Scraping Examples](PYTHON_USE_CASES.md#5-webdata-scraping-automation)
 
 ## 6. Database & File System Integration
 Unified APIs for files and databases boost productivity for backend developers, sysadmins, and data engineers.
@@ -464,7 +462,7 @@ query_files = op(directory) {
 };
 ```
 
-- **See also:** [Python File/DB Examples](PYTHON_USE_CASES.md#6-database--file-system-integration)
+- **See also:** [Python File/DB Examples](PYTHON_USE_CASES.md#6-database-file-system-integration)
 
 ## 7. Education & Prototyping
 Grapa's dynamic grammar and meta-programming are ideal for rapid prototyping and teaching programming concepts.
@@ -481,7 +479,6 @@ Grapa's dynamic grammar and meta-programming are ideal for rapid prototyping and
 factorial_with_trace = op(n, depth) {
     indent = "  ".repeat(depth);
     (indent + "factorial(" + n.str() + ")").echo();
-    
     if (n <= 1) {
         (indent + "return 1").echo();
         1;
@@ -526,7 +523,7 @@ execute_dsl = op(script, data) {
 };
 ```
 
-- **See also:** [Python Education Examples](PYTHON_USE_CASES.md#7-education--prototyping)
+- **See also:** [Python Education Examples](PYTHON_USE_CASES.md#7-education-prototyping)
 
 ---
 

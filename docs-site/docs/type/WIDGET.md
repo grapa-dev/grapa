@@ -1,9 +1,9 @@
 # $WIDGET
-[$WIDGET.grc](../../lib/grapa/$WIDGET.grc)
+
 
 To try test scripts, run grapa in with the editor screen by either using "grapa -w" from the command line, or if in grapa console, enter ">".
 
-To run grapa from the command line with a custom widget script, use "grapa -wfile filename". See [$editor.grc](../../lib/grapa/$editor.grc) for the script for the included editor widget script. To speed up load time, compile the script using $sys().compile(infile, outfile). 
+To run grapa from the command line with a custom widget script, use "grapa -wfile filename". To speed up load time, compile the script using $sys().compile(infile, outfile). 
 
 The $WIDGET type includes an initialization method $new that is called when the widget object is created, passing in the widget type name, the screen boundaries, an optional label, and an optional set of attributes. The design is an implementation of the FTLK library, and so references included to the related library documentation. 
 

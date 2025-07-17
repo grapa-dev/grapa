@@ -1,0 +1,1920 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Basic Grapa Syntax Guide - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#basic-grapa-syntax-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Basic Grapa Syntax Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING_STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CLI_QUICKSTART/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Python Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API_REFERENCE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../grep/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Grep Documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../USE_CASES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Use Cases
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EXAMPLES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../TROUBLESHOOTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING_STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI_QUICKSTART/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API_REFERENCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JS_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUST_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TYPESCRIPT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GO_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUBY_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KOTLIN_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SWIFT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../USE_CASES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EXAMPLES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TROUBLESHOOTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#output-and-echo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output and Echo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Output and Echo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#correct-echo-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Correct Echo Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#string-concatenation" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Concatenation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loops
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Loops">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#while-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      While Loops
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#loop-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loop Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#variable-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variable Assignment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Variable Assignment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Assignment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#string-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="String Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#string-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#string-concatenation_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Concatenation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#string-literals" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Literals
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-and-object-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array and Object Access
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Array and Object Access">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#array-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#listobject-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      List/Object Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-and-table-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      $file and $TABLE Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-checking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Checking
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function Calls
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Calls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method Calls
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Functions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#block-comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Block Comments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comment-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comment Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#control-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Control Structures
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Control Structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#if-statements" class="md-nav__link">
+    <span class="md-ellipsis">
+      If Statements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison Operators
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-checking_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Checking
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complete Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#table-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+        <span class="md-tag">highlevel</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">user</span>
+      
+    
+  </nav>
+
+
+
+<h1 id="basic-grapa-syntax-guide">Basic Grapa Syntax Guide</h1>
+<blockquote>
+<p><strong>Canonical Reference:</strong>
+This file is the canonical, empirically tested reference for Grapa syntax and access patterns. All code in documentation and tests must comply with these rules. If you discover any new rules or exceptions, update this file immediately.</p>
+<p><strong>Important: Access Patterns for .get() and Indexing (Tested, v0.0.39)</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th style="text-align: center;">.get("key")</th>
+<th style="text-align: center;">.get(index)</th>
+<th style="text-align: center;">Bracket Notation</th>
+<th style="text-align: center;">Dot Notation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$ARRAY</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>$LIST</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>$file</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>$TABLE</td>
+<td style="text-align: center;">✅*</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td>$OBJ</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<p>*$TABLE .get() requires two arguments: key and field.</p>
+<ul>
+<li>For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key).</li>
+<li>For $ARRAY, use bracket notation (e.g., arr[1]).</li>
+<li>Only $file and $TABLE support .get().</li>
+<li>This is based on direct testing in Grapa v0.0.39.</li>
+</ul>
+<p><strong>Clarification on .get() Usage:</strong>
+- <code>.get()</code> is <strong>required</strong> for <code>$file</code> and <code>$TABLE</code> access.
+- <code>.get()</code> is <strong>not supported</strong> for <code>$ARRAY</code>, <code>$LIST</code>, or <code>$OBJ</code> as of this writing.
+- Use bracket and dot notation for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code>.
+- If more objects support <code>.get()</code> in the future, this guide will be updated.</p>
+</blockquote>
+<hr />
+<p>This guide covers the essential syntax patterns for writing Grapa code, based on working examples and best practices.</p>
+<p><strong>See also:</strong> <a href="../precedence/">Operator Precedence Table</a></p>
+<h2 id="output-and-echo">Output and Echo</h2>
+<h3 id="correct-echo-syntax">Correct Echo Syntax</h3>
+<p>Use the <code>.echo()</code> method on strings, not function calls:</p>
+<div class="highlight"><pre><span></span><code>/* ✅ Correct */
+&quot;Hello World&quot;.echo();
+(&quot;Result: &quot; + value.str()).echo();
+
+/* ❌ Incorrect */
+echo(&quot;Hello World&quot;);
+echo(&quot;Result: &quot; + value);
+</code></pre></div>
+<h3 id="string-concatenation">String Concatenation</h3>
+<p>Always wrap string concatenation expressions in parentheses:</p>
+<div class="highlight"><pre><span></span><code>/* ✅ Correct */
+(&quot;Name: &quot; + name.str() + &quot;, Age: &quot; + age.str()).echo();
+(&quot;File size: &quot; + size + &quot; bytes&quot;).echo();
+
+/* ❌ Incorrect */
+&quot;Name: &quot; + name.str() + &quot;, Age: &quot; + age.str().echo();
+&quot;File size: &quot; + size + &quot; bytes&quot;.echo();
+</code></pre></div>
+<h2 id="loops">Loops</h2>
+<h3 id="while-loops">While Loops</h3>
+<p>Use <code>while</code> loops with explicit increment:</p>
+<div class="highlight"><pre><span></span><code>/* ✅ Correct */
+i = 1;
+while (i &lt;= 10) {
+    (&quot;Processing item &quot; + i.str()).echo();
+    i = i + 1;
+}
+
+/* ❌ Incorrect */
+for i in 1..10 {
+    echo(&quot;Processing item &quot; + i);
+}
+</code></pre></div>
+<ul>
+<li>Only <code>while</code> loops and <code>.range()</code>+functional methods are valid for iteration in Grapa.</li>
+<li><code>for</code> loops are not supported.</li>
+<li>If more objects support <code>.get()</code> in the future, this guide will be updated.</li>
+</ul>
+<h3 id="loop-examples">Loop Examples</h3>
+<div class="highlight"><pre><span></span><code>/* Count from 1 to 5 */
+i = 1;
+while (i &lt;= 5) {
+    (&quot;Count: &quot; + i.str()).echo();
+    i = i + 1;
+}
+
+/* Process array elements */
+i = 0;
+while (i &lt; array.len()) {
+    element = array.get(i);
+    (&quot;Element &quot; + i.str() + &quot;: &quot; + element.str()).echo();
+    i = i + 1;
+}
+</code></pre></div>
+<h2 id="variable-assignment">Variable Assignment</h2>
+<h3 id="basic-assignment">Basic Assignment</h3>
+<div class="highlight"><pre><span></span><code>/* Simple variables */
+name = &quot;John Doe&quot;;
+age = 30;
+salary = 75000.50;
+
+/* Incrementing and appending */
+v = v + 1;   /* Valid */
+v += 1;      /* Idiomatic and preferred */
+s = s + &quot;x&quot;;   /* Valid */
+s += &quot;x&quot;;      /* Idiomatic and preferred */
+</code></pre></div>
+<h3 id="global-variables">Global Variables</h3>
+<p>Use <code>$global</code> for variables that need to persist across function calls:</p>
+<div class="highlight"><pre><span></span><code>/* Create global variable */
+$global.my_table = $file().table(&quot;ROW&quot;);
+
+/* Use global variable */
+my_table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+</code></pre></div>
+<h2 id="string-operations">String Operations</h2>
+<h3 id="string-methods">String Methods</h3>
+<div class="highlight"><pre><span></span><code>/* Convert to string */
+text = value.str();
+
+/* String concatenation */
+full_name = first_name + &quot; &quot; + last_name;
+
+/* String with variables */
+message = (&quot;Hello &quot; + name + &quot;, you are &quot; + age.str() + &quot; years old&quot;);
+</code></pre></div>
+<h3 id="string-concatenation_1">String Concatenation</h3>
+<div class="highlight"><pre><span></span><code>/* Both forms are valid, but += is preferred */
+message = message + &quot; world&quot;;
+message += &quot;!&quot;;
+</code></pre></div>
+<h3 id="string-literals">String Literals</h3>
+<p>Always use double quotes for string literals:</p>
+<div class="highlight"><pre><span></span><code>/* ✅ Correct */
+name = &quot;John Doe&quot;;
+message = &quot;Hello World&quot;;
+
+/* ❌ Incorrect */
+name = John Doe;
+message = Hello World;
+</code></pre></div>
+<h2 id="array-and-object-access">Array and Object Access</h2>
+<h3 id="array-access">Array Access</h3>
+<p>Arrays (<code>$ARRAY</code>) support only bracket notation:</p>
+<div class="highlight"><pre><span></span><code>arr = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
+value = arr[1];        /* Returns &quot;b&quot; */
+</code></pre></div>
+<ul>
+<li>Use bracket notation for <code>$ARRAY</code>.</li>
+<li><code>.get()</code> is not supported for <code>$ARRAY</code>.</li>
+</ul>
+<h3 id="listobject-access">List/Object Access</h3>
+<p>Lists (<code>$LIST</code>) and objects (<code>$OBJ</code>) support bracket and dot notation:</p>
+<div class="highlight"><pre><span></span><code>obj = {&quot;a&quot;: 11, &quot;b&quot;: 22, &quot;c&quot;: 33};
+value = obj[&quot;b&quot;];          /* Returns 22 */
+value = obj.key;            /* Returns value for key &#39;key&#39; if present */
+value = obj.&quot;b&quot;;           /* Returns 22 */
+
+/* $LIST only: */
+value = obj[1];             /* Returns 22 (by index) */
+name = obj.getname(1);      /* Returns &quot;b&quot; (key name) */
+</code></pre></div>
+<ul>
+<li>Use bracket and dot notation for <code>$LIST</code> and <code>$OBJ</code>.</li>
+<li><code>.get()</code> is not supported for <code>$LIST</code> or <code>$OBJ</code>.</li>
+</ul>
+<h3 id="file-and-table-access">$file and $TABLE Access</h3>
+<p>For <code>$file</code> and <code>$TABLE</code> objects, always use <code>.get()</code> method:</p>
+<div class="highlight"><pre><span></span><code>files = $file().ls();
+file_info = files.get(0);   /* Correct */
+
+table = $file().table(&quot;ROW&quot;);
+table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+table.set(&quot;user1&quot;, &quot;Alice&quot;, &quot;name&quot;);
+value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
+</code></pre></div>
+<ul>
+<li>Always use <code>.get()</code> for <code>$file</code> and <code>$TABLE</code>.</li>
+<li>Bracket and dot notation are not valid for <code>$file</code> and <code>$TABLE</code>.</li>
+</ul>
+<h3 id="type-checking">Type Checking</h3>
+<div class="highlight"><pre><span></span><code>/* Check object types */
+element = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
+element.type();        /* Returns $ARRAY */
+
+obj = {&quot;a&quot;: 11, &quot;b&quot;: 22, &quot;c&quot;: 33};
+obj.type();            /* Returns $LIST */
+
+table = $file().table(&quot;ROW&quot;);
+table.type();          /* Returns $TABLE */
+</code></pre></div>
+<h2 id="function-calls">Function Calls</h2>
+<h3 id="method-calls">Method Calls</h3>
+<div class="highlight"><pre><span></span><code>/* File operations */
+fs.set(&quot;file.txt&quot;, &quot;content&quot;);
+content = fs.get(&quot;file.txt&quot;).str();
+
+/* Table operations */
+table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+table.set(&quot;key&quot;, &quot;value&quot;, &quot;field&quot;);
+value = table.get(&quot;key&quot;, &quot;field&quot;).str();
+</code></pre></div>
+<h3 id="system-functions">System Functions</h3>
+<div class="highlight"><pre><span></span><code>/* Time functions */
+current_time = $TIME().utc();
+
+/* File functions */
+file_obj = $file();
+table_obj = $file().table(&quot;ROW&quot;);
+</code></pre></div>
+<h2 id="comments">Comments</h2>
+<h3 id="block-comments">Block Comments</h3>
+<p>Use block comments for documentation:</p>
+<div class="highlight"><pre><span></span><code>/* This is a block comment
+   It can span multiple lines
+   and is useful for documentation */
+
+/* Single line comment */
+</code></pre></div>
+<ul>
+<li>Only block comments are allowed.</li>
+<li>Do not use <code>//</code> or <code>#</code> comments.</li>
+</ul>
+<h3 id="comment-examples">Comment Examples</h3>
+<div class="highlight"><pre><span></span><code>/* Create a table for user data */
+$global.users = $file().table(&quot;ROW&quot;);
+
+/* Add fields to the table */
+users.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);  /* Variable length string */
+users.mkfield(&quot;age&quot;, &quot;INT&quot;);          /* Integer field */
+users.mkfield(&quot;salary&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);  /* Fixed float */
+</code></pre></div>
+<h2 id="control-structures">Control Structures</h2>
+<h3 id="if-statements">If Statements</h3>
+<div class="highlight"><pre><span></span><code>if (condition) {
+    (&quot;Condition is true&quot;).echo();
+} else {
+    (&quot;Condition is false&quot;).echo();
+}
+
+/* Example with comparison */
+if (age &gt;= 18) {
+    (&quot;User is an adult&quot;).echo();
+} else {
+    (&quot;User is a minor&quot;).echo();
+}
+</code></pre></div>
+<h3 id="comparison-operators">Comparison Operators</h3>
+<div class="highlight"><pre><span></span><code>/* Equality */
+if (name == &quot;John&quot;) { }
+
+/* Inequality */
+if (age != 0) { }
+
+/* Greater/Less than */
+if (salary &gt; 50000) { }
+if (age &lt; 18) { }
+
+/* Greater/Less than or equal */
+if (count &gt;= 10) { }
+if (value &lt;= 100) { }
+</code></pre></div>
+<h2 id="error-handling">Error Handling</h2>
+<h3 id="type-checking_1">Type Checking</h3>
+<div class="highlight"><pre><span></span><code>/* Check if result is an error */
+if (result.type() == $ERR) {
+    (&quot;Operation failed&quot;).echo();
+} else {
+    (&quot;Operation succeeded&quot;).echo();
+}
+
+/* Check for specific error responses */
+if (result == {&quot;error&quot;:-1}) {
+    (&quot;Operation returned error -1&quot;).echo();
+}
+</code></pre></div>
+<h2 id="complete-example">Complete Example</h2>
+<div class="highlight"><pre><span></span><code>/* User Management System Example */
+
+/* Create table in global namespace */
+$global.users = $file().table(&quot;ROW&quot;);
+
+/* Define table schema */
+users.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+users.mkfield(&quot;age&quot;, &quot;INT&quot;);
+users.mkfield(&quot;salary&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);
+
+/* Add user data */
+users.set(&quot;user1&quot;, &quot;John Doe&quot;, &quot;name&quot;);
+users.set(&quot;user1&quot;, 30, &quot;age&quot;);
+users.set(&quot;user1&quot;, 75000.50, &quot;salary&quot;);
+
+/* Retrieve and display user data */
+name = users.get(&quot;user1&quot;, &quot;name&quot;).str();
+age = users.get(&quot;user1&quot;, &quot;age&quot;).int();
+salary = users.get(&quot;user1&quot;, &quot;salary&quot;).float();
+
+(&quot;User: &quot; + name + &quot;, Age: &quot; + age.str() + &quot;, Salary: &quot; + salary.str()).echo();
+
+/* Process multiple users */
+i = 1;
+while (i &lt;= 5) {
+    user_id = &quot;user&quot; + i.str();
+    users.set(user_id, (&quot;User &quot; + i.str()), &quot;name&quot;);
+    users.set(user_id, (20 + i), &quot;age&quot;);
+    i = i + 1;
+}
+
+(&quot;Created &quot; + i.str() + &quot; users&quot;).echo();
+</code></pre></div>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="file-operations">File Operations</h3>
+<div class="highlight"><pre><span></span><code>/* File system operations */
+$global.fs = $file();
+
+/* Create and write file */
+fs.set(&quot;test.txt&quot;, &quot;Hello World&quot;);
+content = fs.get(&quot;test.txt&quot;).str();
+(&quot;File content: &quot; + content).echo();
+
+/* Directory operations */
+fs.mk(&quot;test_dir&quot;);
+fs.cd(&quot;test_dir&quot;);
+files = fs.ls();
+fs.cd(&quot;..&quot;);
+fs.rm(&quot;test_dir&quot;);
+</code></pre></div>
+<h3 id="table-operations">Table Operations</h3>
+<div class="highlight"><pre><span></span><code>/* Table operations */
+$global.table = $file().table(&quot;ROW&quot;);
+
+/* Create fields */
+table.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
+table.mkfield(&quot;age&quot;, &quot;INT&quot;);
+table.mkfield(&quot;value&quot;, &quot;FLOAT&quot;, &quot;FIX&quot;, 8);
+
+/* Add data */
+table.set(&quot;key1&quot;, &quot;John&quot;, &quot;name&quot;);
+table.set(&quot;key1&quot;, 30, &quot;age&quot;);
+table.set(&quot;key1&quot;, 100.5, &quot;value&quot;);
+
+/* Retrieve data */
+name = table.get(&quot;key1&quot;, &quot;name&quot;).str();
+age = table.get(&quot;key1&quot;, &quot;age&quot;).int();
+value = table.get(&quot;key1&quot;, &quot;value&quot;).float();
+</code></pre></div>
+<p>This guide covers the essential syntax patterns for writing correct Grapa code. Follow these patterns to avoid common syntax errors and write maintainable code. </p>
+<p>/*</p>
+<h1 id="grapa-basic-syntax-key-rules">Grapa Basic Syntax: Key Rules</h1>
+<h2 id="statement-and-block-termination">Statement and Block Termination</h2>
+<ul>
+<li>Every statement must end with a semicolon (<code>;</code>), including after the closing brace of every block (such as <code>if</code>, <code>else</code>, <code>while</code>, and function blocks).</li>
+<li>Example:
+  while (cond) {
+      ...
+  };
+  if (cond) {
+      ...
+  } else {
+      ...
+  };</li>
+</ul>
+<h2 id="array-manipulation">Array Manipulation</h2>
+<ul>
+<li>To append to an array, use the <code>+=</code> operator.</li>
+<li>Example:
+    arr = [];
+    arr += "foo";
+    arr += "bar";
+    /<em> arr is now ["foo", "bar"] </em>/</li>
+<li>Do not use <code>.push()</code> or <code>.append()</code>—these are not valid in Grapa.</li>
+</ul>
+<h2 id="array-iteration-and-sorting">Array Iteration and Sorting</h2>
+<ul>
+<li>The <code>.sort()</code> function is especially useful in tests to ensure deterministic output when order is not guaranteed.</li>
+<li>Example:
+  result = input.grep(pattern, options);
+  result = result.sort();
+  (result.join("\n")).echo();
+*/ </li>
+</ul>
+<p>/*</p>
+<h1 id="grapa-syntax-quick-reference">Grapa Syntax Quick Reference</h1>
+<h2 id="essential-syntax-rules-summary-table">Essential Syntax Rules (Summary Table)</h2>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Every statement ends with a semicolon (<code>;</code>)</td>
+<td><code>x = 5;</code></td>
+</tr>
+<tr>
+<td>Every block (after <code>}</code>) ends with a semicolon</td>
+<td><code>if (x) { ... };</code></td>
+</tr>
+<tr>
+<td>Use block comments only</td>
+<td><code>/* comment */</code></td>
+</tr>
+<tr>
+<td>Do not use line comments (<code>// ...</code>)</td>
+<td></td>
+</tr>
+<tr>
+<td>Append to arrays with <code>+=</code></td>
+<td><code>arr += "foo";</code></td>
+</tr>
+<tr>
+<td>No <code>.push()</code> or <code>.append()</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Access arrays/lists with <code>[index]</code></td>
+<td><code>arr[0];</code></td>
+</tr>
+<tr>
+<td>Access object properties with <code>.get("key")</code></td>
+<td><code>obj.get("foo");</code></td>
+</tr>
+<tr>
+<td>Use <code>.echo()</code> for output</td>
+<td><code>"Hello".echo();</code></td>
+</tr>
+<tr>
+<td>Use <code>while</code> loops, not <code>for</code></td>
+<td><code>while (cond) { ... };</code></td>
+</tr>
+<tr>
+<td>Wrap string concatenations in parentheses</td>
+<td><code>(str1 + str2).echo();</code></td>
+</tr>
+<tr>
+<td>Increment or append with +=</td>
+<td><code>v += 1;</code>, <code>s += "x";</code></td>
+</tr>
+<tr>
+<td>Both = x + y and += y are valid</td>
+<td><code>v = v + 1;</code>, <code>v += 1;</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>*/ </p>
+<p>/*</p>
+<h1 id="lexical-operators-special-parsing-triggers">Lexical Operators (Special Parsing Triggers)</h1>
+<p>There are several predefined lexical operators, most of which define how $ID, $INT, $FLOAT, $STR, etc, are processed and generate the corresponding tokens. There are also a few other lexical operators that will trigger special handling of the input stream. The following are two examples. Currently there is no way to define/change the lexical operators - this will come in some future version of Grapa.</p>
+<h2 id="_1"><code>$&amp;</code></h2>
+<ul>
+<li>Wrap the XML data in $&amp; on either side to have Grapa parse the input as XML. These characters are special lexical triggers that modify the parsing engine token generation. The first instance turns the mode on and the second turns the mode off. Or use the encode("XML") function, which does the same thing.</li>
+</ul>
+<h2 id="_2"><code>$[</code></h2>
+<ul>
+<li>Wrap input in these characters to have the entire code block parsed in a single instance. Otherwise a '\n' or '\r' will be used to trigger parsing/execution and an error would result if the line is not valid on its own. Alternatively, put the code in a file, load the file contents, and execute the contents of the string.
+*/ </li>
+</ul>
+<p>/*</p>
+<h1 id="default-grammar-rules">Default Grammar Rules</h1>
+<p>View a text version of the grammar rules loaded into Grapa on startup here:
+Grapa Grammar</p>
+<p>The system will first check for a match on the "start" rule, which is a global variable. If that global variable is of type $RULE, then it will become the first rule for scripts. This is an easy way to provide an override on command processing. If the "start" rule does not provide a match, then the system will evaluate using the "$start" rule.</p>
+<p>The default rules may be subject to change.</p>
+<p>If you modify the file, you can try it out by placing it in "lib/grapa/" under the same directory that the above command would have written the file to, and then restart Grapa. If Grapa finds this file with this name in that location, it will use that file instead of the default.</p>
+<p>If you are familiar with YACC or BNF, following the grammar logic should be rather straightforward. Each rule is evaluated until a successful match, and all matches produce an execution plan where the code associated with each rule match is included in the execution plan. To optimize grammar resolution, rules are carefully constructed to avoid re-evaluating rules more than necessary by placing the most complex rules first and following with common rule patterns. It is also important to avoid infinite recursive situations—mostly this is avoided by not referencing the same rule as the first token to evaluate.</p>
+<p>There are a few standard tokens that are defined—mostly the tokens provide special handling for either the lexical engine or the rules engine. One example is the space character, which when found sets a bit in the token to skip the value for rules evaluation. This can be changed—but then would require including the space token in the rules.
+*/ </p>
+<p>/*</p>
+<h1 id="function-chaining">Function Chaining</h1>
+<p>Any object that returns an object can be chained.</p>
+<p>For example, "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit precision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit precision of pi to the power of 4.4.</p>
+<p>If an existing function/command doesn't support chaining, an OP can be inserted in the chain to make it work using the $$ variable for the result of the prior operation. For example, the following will get the length of a list, generate that many bits, and output the result in binary form. The 3 examples all accomplish the same result.
+<div class="highlight"><pre><span></span><code>&gt; {1,2,3,5}.{(@$$).len()}.genbits().bin();
+1111
+
+&gt; {1,2,3,5}.{(op(a){a.len()})(@$$)}.genbits().bin();
+1111
+
+&gt; f = op(a){a.len()};
+&gt; {1,2,3,5}.{f(@$$)}.genbits().bin();
+1111
+</code></pre></div>
+*/ </p>
+<p>/*</p>
+<h1 id="dynamic-code-evaluation-eval-and-op">Dynamic Code Evaluation (eval and op())</h1>
+<p>Grapa allows you to evaluate code dynamically at runtime, either by evaluating a string directly or by compiling it into an operation object.</p>
+<h2 id="using-syseval">Using <code>$sys().eval()</code></h2>
+<ul>
+<li>Evaluates a string as Grapa code immediately.</li>
+<li>Optionally accepts a parameter map.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>result = $sys().eval(&quot;5*3&quot;); // result: 15
+result = $sys().eval(&quot;x + y&quot;, {&quot;x&quot;: 2, &quot;y&quot;: 4}); // result: 6
+</code></pre></div>
+<h2 id="using-op-for-compiled-operations">Using <code>op()</code> for Compiled Operations</h2>
+<ul>
+<li><code>op()(&lt;string&gt;)</code> parses the string into a $OP object (compiled code).</li>
+<li>You can then execute it with <code>()</code> and optionally pass parameters.</li>
+<li>This is reusable and efficient for repeated execution.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>op_obj = op()(&quot;a + b&quot;);
+result = op_obj({&quot;a&quot;: 10, &quot;b&quot;: 20}); // result: 30
+
+// Or in one line:
+result = op()(&quot;5*3&quot;)(); // result: 15
+</code></pre></div>
+<h2 id="when-to-use-each">When to Use Each</h2>
+<ul>
+<li>Use <code>$sys().eval()</code> for one-off evaluation of code strings.</li>
+<li>Use <code>op()</code> (or <code>$sys().compile()</code>) when you want to compile code once and execute it multiple times, or pass it around as a first-class object.</li>
+</ul>
+<p>See also: <a href="../../grc_scripts/">Advanced Scripting</a>
+*/ </p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>

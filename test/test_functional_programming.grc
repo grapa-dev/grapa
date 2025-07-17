@@ -219,7 +219,7 @@ filtered_strings = string_data.filter(op(s){s.len() > 5})
 large_array = [];
 i = 0;
 while (i < 1000) {
-    large_array.push(i);
+    large_array += i;
     i = i + 1;
 }
 

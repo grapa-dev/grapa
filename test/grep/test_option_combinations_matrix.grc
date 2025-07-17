@@ -8,10 +8,10 @@ Grapa .grc File Authoring Rules (Windows)
 - Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
   Example:
     ar = [1,2,3];
-    ar[1]; // returns 
+    ar[1];  /* returns */
     ar = {"a":11,"b":22,"c":33};
-    ar[1]; // returns 22
-    ar["b"]; // returns 22
+    ar[1];  /* returns 22 */
+    ar["b"];  /* returns 22 */
 - Use .get("key") for object property access, not for arrays/lists.
 - Validate syntax against known-good .grc files before adding new code
 - Prefer simple, explicit constructs for compatibility

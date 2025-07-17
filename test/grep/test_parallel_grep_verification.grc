@@ -7,11 +7,16 @@
 /* Test 1: Verify that num_workers = 0 uses auto-detection */
 "Test 1: Auto-detection with num_workers = 0\n".echo();
 test_input = "line1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10\n";
-test_input += test_input; /* Make it larger */
-test_input += test_input; /* Make it even larger */
-test_input += test_input; /* Make it very large */
-test_input += test_input; /* Make it very large */
-test_input += test_input; /* Make it very large */
+/* Make it larger */
+test_input += test_input;
+/* Make it even larger */
+test_input += test_input;
+/* Make it very large */
+test_input += test_input;
+/* Make it very large */
+test_input += test_input;
+/* Make it very large */
+test_input += test_input;
 
 matches1 = test_input.grep("line", "", "\n", 0, 0, 0);
 ("Auto-detection result: " + matches1.len().str() + " matches found\n").echo();

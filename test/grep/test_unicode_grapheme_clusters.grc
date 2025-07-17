@@ -24,7 +24,7 @@ result = input.grep("\\X", "o");
 /* 2. Combining marks */
 /* ======================================== */
 "Test 2: Combining marks\n".echo();
-input = "e\u0301";  // e + combining acute
+input = "e\u0301";  /* e + combining acute */
 result = input.grep("\\X", "o");
 ("Input: e\\u0301 (e + combining acute)\n").echo();
 ("Pattern: \\X, Options: o\n").echo();
@@ -36,7 +36,7 @@ result = input.grep("\\X", "o");
 /* 3. Emoji sequences */
 /* ======================================== */
 "Test 3: Emoji sequences\n".echo();
-input = "😀\u2764\ufe0f";  // smiley + heart + emoji modifier
+input = "😀\u2764\ufe0f";  /* smiley + heart + emoji modifier */
 result = input.grep("\\X", "o");
 ("Input: 😀\\u2764\\ufe0f (smiley + heart + emoji modifier)\n").echo();
 ("Pattern: \\X, Options: o\n").echo();
@@ -48,7 +48,7 @@ result = input.grep("\\X", "o");
 /* 4. Complex emoji sequences */
 /* ======================================== */
 "Test 4: Complex emoji sequences\n".echo();
-input = "👨‍👩‍👧‍👦";  // family emoji
+input = "👨‍👩‍👧‍👦";  /* family emoji */
 result = input.grep("\\X", "o");
 ("Input: 👨‍👩‍👧‍👦 (family emoji)\n").echo();
 ("Pattern: \\X, Options: o\n").echo();

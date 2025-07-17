@@ -1,9 +1,7 @@
 # $TIME
 References:
-- [GrapaTime.h header](../../source/grapa/GrapaTime.h)
-- [GrapaTime.cpp source](../../source/grapa/GrapaTime.cpp)
-- [$TIME object](../../lib/grapa/$TIME.grc)
-- [$OBJ object](../../lib/grapa/$OBJ.grc)
+
+
 
 Uses UTC timezone. $TIME is intended to be a timestamp starting at Jan 1 1970, and a timer for tracking the passage of time. The year is not bounded, in that it can be large negative numbers and large positive numbers. 
 

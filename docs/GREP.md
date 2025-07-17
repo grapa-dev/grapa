@@ -912,4 +912,4 @@ Grapa grep is now **production-ready** with **98%+ ripgrep parity** achieved. Al
 
 ## Advanced/Binary Features
 - [GRZ Format Specification](GRZ_FORMAT.md) — Details on the GRZ binary format
-- [Binary Grep Guide](BINARY_GREP.md) — Using Grapa grep with binary data and advanced options 
+- [Binary Grep Guide (Maintainers)](../docs-site/docs/maintainers/BINARY_GREP.md) — Using Grapa grep with binary data and advanced options (C++ implementation details) 

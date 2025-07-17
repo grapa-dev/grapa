@@ -29,16 +29,16 @@ Grapa grep is designed as an **integrated programming language feature**, not a 
 Grapa grep **automatically removes delimiters** from output strings:
 
 ```grapa
-// Input with custom delimiter
+/* Input with custom delimiter */
 input = "line1|||line2|||line3";
 
-// Grapa grep removes delimiters from output
+/* Grapa grep removes delimiters from output */
 result = input.grep("line", "o", "|||");
-// Result: ["line1", "line2", "line3"] (clean strings, no |||)
+/* Result: ["line1", "line2", "line3"] (clean strings, no |||) */
 
-// For console output, you can join with delimiter
+/* For console output, you can join with delimiter */
 console_output = result.join("|||");
-// Result: "line1|||line2|||line3"
+/* Result: "line1|||line2|||line3" */
 ```
 
 ### Console Output Equivalence
@@ -46,12 +46,12 @@ console_output = result.join("|||");
 To get console-equivalent output in Grapa:
 
 ```grapa
-// Grapa approach
+/* Grapa approach */
 input = "line1\nline2\nline3";
-result = input.grep("line", "o");  // ["line1", "line2", "line3"]
-console_output = result.join("\n");  // "line1\nline2\nline3"
+result = input.grep("line", "o");  /* ["line1", "line2", "line3"] */
+console_output = result.join("\n");  /* "line1\nline2\nline3" */
 
-// This matches ripgrep output: "line1\nline2\nline3"
+/* This matches ripgrep output: "line1\nline2\nline3" */
 ```
 
 ### Benefits of Array Design
@@ -67,17 +67,17 @@ console_output = result.join("\n");  // "line1\nline2\nline3"
 Grapa grep fully supports **multi-character delimiters**:
 
 ```grapa
-// Single character delimiter
+/* Single character delimiter */
 "line1|line2|line3".grep("line", "o", "|")
-// Result: ["line1", "line2", "line3"]
+/* Result: ["line1", "line2", "line3"] */
 
-// Multi-character delimiter
+/* Multi-character delimiter */
 "line1|||line2|||line3".grep("line", "o", "|||")
-// Result: ["line1", "line2", "line3"]
+/* Result: ["line1", "line2", "line3"] */
 
-// Complex delimiter
+/* Complex delimiter */
 "line1<DELIM>line2<DELIM>line3".grep("line", "o", "<DELIM>")
-// Result: ["line1", "line2", "line3"]
+/* Result: ["line1", "line2", "line3"] */
 ```
 
 **Note**: All delimiters are automatically removed from output strings, regardless of length or complexity.
@@ -201,7 +201,7 @@ This allows matches like:
 ```grapa
 input = "café\nCAFÉ\ncafe\u0301\nCafe\nCAFÉ\nmañana\nmañana\nİstanbul\nistanbul\nISTANBUL\nstraße\nSTRASSE\nStraße\nкофе\nКофе\nκαφές\nΚαφές\n";
 result = input.grep(r"cafe", "di");
-// Result: ["café", "CAFÉ", "café", "Cafe", "CAFÉ"]
+/* Result: ["café", "CAFÉ", "café", "Cafe", "CAFÉ"] */
 ```
 
 ### Output Options
@@ -330,21 +330,21 @@ The `mode` parameter controls how the input is processed:
 For better readability of regex patterns, you can use raw string literals by prefixing the string with `r`. This prevents escape sequence processing, making patterns much more readable:
 
 ```grapa
-// Without raw string (requires escaping)
+/* Without raw string (requires escaping) */
 "file.txt".grep("^[a-zA-Z0-9_]+\\.txt$", "x")
-// Result: ["file.txt"]
+/* Result: ["file.txt"] */
 
-// With raw string (no escaping needed)
+/* With raw string (no escaping needed) */
 "file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x")
-// Result: ["file.txt"] - Much cleaner!
+/* Result: ["file.txt"] - Much cleaner! */
 
-// Complex patterns benefit greatly
+/* Complex patterns benefit greatly */
 "user@domain.com".grep(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "x")
-// Result: ["user@domain.com"]
+/* Result: ["user@domain.com"] */
 
-// Named groups with raw strings
+/* Named groups with raw strings */
 "John Doe (30)".grep(r"(?P<first>\\w+) (?P<last>\\w+) \((?P<age>\\d+)\)", "oj")
-// Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
+/* Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}] */
 ```
 
 **Note**: Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string. This means `\x45` becomes the literal string `"\x45"` rather than the character `"E"`. If you need hex or Unicode escapes to be processed, use regular string literals.
@@ -373,37 +373,37 @@ The `j` option produces JSON output with detailed match information. Each match 
 #### Examples
 
 ```grapa
-// Basic JSON output
+/* Basic JSON output */
 "Hello world".grep("\\w+", "oj")
-// Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}]
+/* Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}] */
 
-// JSON with named groups
+/* JSON with named groups */
 "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
-// Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
+/* Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}] */
 
-// Date parsing with named groups
+/* Date parsing with named groups */
 "2023-04-27\n2022-12-31".grep("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj")
-// Result: [
-//   {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
-//   {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
-// ]
+/* Result: [
+  {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
+  {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
+] */
 
-// Complex JSON example with multiple patterns
+/* Complex JSON example with multiple patterns */
 "Email: user@domain.com, Phone: +1-555-1234".grep("(?P<email>[\\w.-]+@[\\w.-]+)|(?P<phone>\\+\\d{1,3}-\\d{3}-\\d{4})", "oj")
-// Result: [
-//   {"match":"user@domain.com","email":"user@domain.com","phone":null,"offset":7,"line":1},
-//   {"match":"+1-555-1234","email":null,"phone":"+1-555-1234","offset":31,"line":1}
-// ]
+/* Result: [
+  {"match":"user@domain.com","email":"user@domain.com","phone":null,"offset":7,"line":1},
+  {"match":"+1-555-1234","email":null,"phone":"+1-555-1234","offset":31,"line":1}
+] */
 ```
 
 #### Accessing Named Groups
 
 ```grapa
-// Extract specific groups from JSON output
+/* Extract specific groups from JSON output */
 result = "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
-first_name = result[0]["first"]  // "John"
-last_name = result[0]["last"]    // "Doe"
-age = result[0]["age"]           // "30"
+first_name = result[0]["first"]  /* "John" */
+last_name = result[0]["last"]    /* "Doe" */
+age = result[0]["age"]           /* "30" */
 ```
 
 #### Notes
@@ -417,22 +417,22 @@ age = result[0]["age"]           // "30"
 ### Named Groups
 
 ```grapa
-// Basic named groups
+/* Basic named groups */
 "John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
-// Result: [{"match":"John Doe","first":"John","last":"Doe","offset":0,"line":1}]
+/* Result: [{"match":"John Doe","first":"John","last":"Doe","offset":0,"line":1}] */
 
-// Email extraction
+/* Email extraction */
 "Contact: john@example.com".grep("(?P<email>[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,})", "oj")
-// Result: [{"match":"john@example.com","email":"john@example.com","offset":9,"line":1}]
+/* Result: [{"match":"john@example.com","email":"john@example.com","offset":9,"line":1}] */
 
-// Phone number parsing
+/* Phone number parsing */
 "Call +1-555-123-4567".grep("(?P<country>\\+\\d{1,3})-(?P<area>\\d{3})-(?P<prefix>\\d{3})-(?P<line>\\d{4})", "oj")
-// Result: [{"match":"+1-555-123-4567","country":"+1","area":"555","prefix":"123","line":"4567","offset":5,"line":1}]
+/* Result: [{"match":"+1-555-123-4567","country":"+1","area":"555","prefix":"123","line":"4567","offset":5,"line":1}] */
 
-// Direct access to named groups
+/* Direct access to named groups */
 result = "John Doe".grep("(?P<first>\\w+) (?P<last>\\w+)", "oj")
-first = result[0]["first"]  // "John"
-last = result[0]["last"]    // "Doe"
+first = result[0]["first"]  /* "John" */
+last = result[0]["last"]    /* "Doe" */
 ```
 
 ### Context Lines
@@ -442,22 +442,22 @@ Context lines provide surrounding context for matches, similar to ripgrep's `-A`
 ```grapa
 input = "Header\nLine 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nFooter";
 
-// After context (2 lines after match)
+/* After context (2 lines after match) */
 input.grep("Line 2", "A2")
 ["Line 2\n", "Line 3\n", "Line 4\n"]
 
-// Before context (2 lines before match)  
+/* Before context (2 lines before match) */
 input.grep("Line 5", "B2")
 ["Line 3\n", "Line 4\n", "Line 5\n"]
 
-// Combined context (1 line before and after)
+/* Combined context (1 line before and after) */
 input.grep("Line 4", "A1B1")
 ["Line 3\n", "Line 4\n", "Line 5\n"]
 
-// Context merging - overlapping regions are automatically merged
+/* Context merging - overlapping regions are automatically merged */
 input2 = "a\nb\nc\nd\ne\nf";
 input2.grep("c|d", "A1B1")
-["b\n", "c\n", "d\n", "e\n"]  // Overlapping context merged into single block
+["b\n", "c\n", "d\n", "e\n"]  /* Overlapping context merged into single block */
 ```
 
 **Context Merging**: Overlapping context regions are automatically merged into single blocks, ensuring all relevant context is shown without duplication. This matches ripgrep's behavior for optimal readability and prevents redundant context lines.
@@ -467,18 +467,18 @@ input2.grep("c|d", "A1B1")
 When multiple non-overlapping context blocks exist, they are separated by `--` lines (matching ripgrep/GNU grep behavior):
 
 ```grapa
-// Multiple matches with context - separated by -- lines
+/* Multiple matches with context - separated by -- lines */
 input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
 input.grep("Line 2|Line 6", "A1B1")
-// Result: ["Line 1\n", "Line 2\n", "Line 3\n", "--\n", "Line 5\n", "Line 6\n", "Line 7"]
+/* Result: ["Line 1\n", "Line 2\n", "Line 3\n", "--\n", "Line 5\n", "Line 6\n", "Line 7"] */
 
-// Context separators are not output in match-only mode
+/* Context separators are not output in match-only mode */
 input.grep("Line 2|Line 6", "oA1B1")
-// Result: ["Line 2", "Line 6"]  // Only matches, no context or separators
+/* Result: ["Line 2", "Line 6"]  - Only matches, no context or separators */
 
-// JSON output uses --- as separator
+/* JSON output uses --- as separator */
 input.grep("Line 2|Line 6", "jA1B1")
-// Result: ["Line 1\n", "Line 2\n", "Line 3\n", "---", "Line 5\n", "Line 6\n", "Line 7"]
+/* Result: ["Line 1\n", "Line 2\n", "Line 3\n", "---", "Line 5\n", "Line 6\n", "Line 7"] */
 ```
 
 **Note**: Context separators are only added between non-overlapping context blocks. When context blocks overlap or are adjacent, no separator is needed.
@@ -486,164 +486,164 @@ input.grep("Line 2|Line 6", "jA1B1")
 ### Advanced Regex Features
 
 ```grapa
-// Unicode categories
+/* Unicode categories */
 "Hello 世界 123 €".grep("\\p{L}+", "o")
-// Result: ["Hello", "世界"]
+/* Result: ["Hello", "世界"] */
 
-// Unicode scripts
+/* Unicode scripts */
 "Hello 世界".grep("\\p{sc=Latin}", "o")
-// Result: ["Hello"]
+/* Result: ["Hello"] */
 
-// Unicode script extensions
+/* Unicode script extensions */
 "Hello 世界".grep("\\p{scx:Han}", "o")
-// Result: ["世界"]
+/* Result: ["世界"] */
 
-// Unicode general categories
+/* Unicode general categories */
 "Hello World".grep("\\p{Lu}", "o")
-// Result: ["H", "W"]
+/* Result: ["H", "W"] */
 
-// Atomic groups
+/* Atomic groups */
 "aaaa".grep("(?>a+)a", "o")
-// Result: [] (atomic group prevents backtracking)
+/* Result: [] (atomic group prevents backtracking) */
 
-// Lookaround assertions
-// Positive lookahead - word followed by number
+/* Lookaround assertions */
+/* Positive lookahead - word followed by number */
 "word123 text456".grep("\\w+(?=\\d)", "o")
-// Result: ["word", "text"]
+/* Result: ["word", "text"] */
 
-// Negative lookahead - word not followed by number
+/* Negative lookahead - word not followed by number */
 "word123 text456".grep("\\w+(?!\\d)", "o")
-// Result: ["word123", "text456"]
+/* Result: ["word123", "text456"] */
 
-// Positive lookbehind - number preceded by word
+/* Positive lookbehind - number preceded by word */
 "word123 text456".grep("(?<=\\w)\\d+", "o")
-// Result: ["123", "456"]
+/* Result: ["123", "456"] */
 
-// Negative lookbehind - number not preceded by word
+/* Negative lookbehind - number not preceded by word */
 "123 word456".grep("(?<!\\w)\\d+", "o")
-// Result: ["123"]
+/* Result: ["123"] */
 
-// Complex password validation
+/* Complex password validation */
 "password123".grep("(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}", "o")
-// Result: [] (no uppercase letter)
+/* Result: [] (no uppercase letter) */
 
 "Password123".grep("(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}", "o")
-// Result: ["Password123"] (valid password)
+/* Result: ["Password123"] (valid password) */
 
-// Advanced Unicode properties
+/* Advanced Unicode properties */
 "Hello 😀 World 🌍".grep("\\p{Emoji}", "o")
-// Result: ["😀", "🌍"]
+/* Result: ["😀", "🌍"] */
 
 "Hello 👨‍👩‍👧‍👦 World".grep("\\p{So}", "o")
-// Result: ["👨‍👩‍👧‍👦"]
+/* Result: ["👨‍👩‍👧‍👦"] */
 
-// Advanced Unicode properties with mixed content
+/* Advanced Unicode properties with mixed content */
 "Hello 世界 😀 🌍".grep("\\p{So}", "o")
-// Result: ["😀", "🌍"] (symbols only, not Han characters)
+/* Result: ["😀", "🌍"] (symbols only, not Han characters) */
 
-// Emoji sequences as symbols
+/* Emoji sequences as symbols */
 "Family: 👨‍👩‍👧‍👦".grep("\\p{So}", "o")
-// Result: ["👨‍👩‍👧‍👦"] (entire family emoji as one symbol)
+/* Result: ["👨‍👩‍👧‍👦"] (entire family emoji as one symbol) */
 
-// Possessive quantifiers
+/* Possessive quantifiers */
 "aaaa".grep("a++a", "o")
-// Result: [] (possessive quantifier prevents backtracking)
+/* Result: [] (possessive quantifier prevents backtracking) */
 
 "aaa".grep("a++", "o")
-// Result: ["aaa"] (matches all a's greedily without backtracking)
+/* Result: ["aaa"] (matches all a's greedily without backtracking) */
 
-// Edge cases for possessive quantifiers
+/* Edge cases for possessive quantifiers */
 "a".grep("a?+", "o")
-// Result: ["a"] (possessive optional quantifier)
+/* Result: ["a"] (possessive optional quantifier) */
 
 "abc".grep("a*+b", "o")
-// Result: ["ab"] (possessive star with following character)
+/* Result: ["ab"] (possessive star with following character) */
 
-// Conditional patterns
+/* Conditional patterns */
 "abc123".grep("(a)?(?(1)b|c)", "o")
-// Result: ["ab"] (conditional pattern works)
+/* Result: ["ab"] (conditional pattern works) */
 
 "c123".grep("(a)?(?(1)b|c)", "o")
-// Result: ["c"] (alternative branch when 'a' is not present)
+/* Result: ["c"] (alternative branch when 'a' is not present) */
 
-// More complex conditional patterns
+/* More complex conditional patterns */
 "xyz".grep("(x)?(?(1)y|z)", "o")
-// Result: ["xy"] (first branch when 'x' is present)
+/* Result: ["xy"] (first branch when 'x' is present) */
 
 "yz".grep("(x)?(?(1)y|z)", "o")
-// Result: ["z"] (second branch when 'x' is not present)
+/* Result: ["z"] (second branch when 'x' is not present) */
 
-// Context lines
+/* Context lines */
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 3", "A1")
-// Result: ["Line 3", "Line 4"] (shows 1 line after)
+/* Result: ["Line 3", "Line 4"] (shows 1 line after) */
 
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 3", "B1")
-// Result: ["Line 2", "Line 3"] (shows 1 line before)
+/* Result: ["Line 2", "Line 3"] (shows 1 line before) */
 
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 3", "C1")
-// Result: ["Line 2", "Line 3", "Line 4"] (shows 1 line before and after)
+/* Result: ["Line 2", "Line 3", "Line 4"] (shows 1 line before and after) */
 
-// Named groups with JSON output
+/* Named groups with JSON output */
 "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
-// Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
+/* Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}] */
 ```
 
 ### JSON Output Examples
 
 ```grapa
-// Basic JSON output
+/* Basic JSON output */
 "Hello world".grep("\\w+", "oj")
-// Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}]
+/* Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}] */
 
-// JSON with named groups
+/* JSON with named groups */
 "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
-// Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}]
+/* Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}] */
 
-// Complex JSON example
+/* Complex JSON example */
 "Email: user@domain.com, Phone: +1-555-1234".grep("(?P<email>[\\w.-]+@[\\w.-]+)|(?P<phone>\\+\\d{1,3}-\\d{3}-\\d{4})", "oj")
-// Result: [
-//   {"match":"user@domain.com","email":"user@domain.com","offset":7,"line":1},
-//   {"match":"+1-555-1234","phone":"+1-555-1234","offset":31,"line":1}
-// ]
+/* Result: [
+  {"match":"user@domain.com","email":"user@domain.com","offset":7,"line":1},
+  {"match":"+1-555-1234","phone":"+1-555-1234","offset":31,"line":1}
+] */
 
-// Accessing named groups directly
+/* Accessing named groups directly */
 result = "John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
-first_name = result[0]["first"]  // "John"
-last_name = result[0]["last"]    // "Doe"
-age = result[0]["age"]           // "30"
+first_name = result[0]["first"]  /* "John" */
+last_name = result[0]["last"]    /* "Doe" */
+age = result[0]["age"]           /* "30" */
 ```
 
 ### Additional Parameters Examples
 
 ```grapa
-// Unicode normalization examples
+/* Unicode normalization examples */
 "café".grep("cafe", "o", "", "NFC")
-// Result: ["café"] - NFC normalization matches decomposed form
+/* Result: ["café"] - NFC normalization matches decomposed form */
 
 "café".grep("cafe", "o", "", "NFD")
-// Result: ["café"] - NFD normalization matches composed form
+/* Result: ["café"] - NFD normalization matches composed form */
 
-// Binary mode for raw byte processing
+/* Binary mode for raw byte processing */
 "\\x48\\x65\\x6c\\x6c\\x6f".grep("Hello", "o", "", "NONE", "BINARY")
-// Result: ["Hello"] - Binary mode processes raw bytes
+/* Result: ["Hello"] - Binary mode processes raw bytes */
 
-// Custom delimiter with normalization
+/* Custom delimiter with normalization */
 "apple|||pear|||banana".grep("\\w+", "o", "|||", "NFC")
-// Result: ["apple", "pear", "banana"] - Custom delimiter with NFC normalization
+/* Result: ["apple", "pear", "banana"] - Custom delimiter with NFC normalization */
 
-// More custom delimiter examples
+/* More custom delimiter examples */
 "section1###section2###section3".grep("section\\d+", "o", "###")
-// Result: ["section1", "section2", "section3"] - Using "###" as delimiter
+/* Result: ["section1", "section2", "section3"] - Using "###" as delimiter */
 
 "item1|item2|item3".grep("item\\d+", "o", "|")
-// Result: ["item1", "item2", "item3"] - Using "|" as delimiter
+/* Result: ["item1", "item2", "item3"] - Using "|" as delimiter */
 
 "record1---record2---record3".grep("record\\d+", "o", "---")
-// Result: ["record1", "record2", "record3"] - Using "---" as delimiter
+/* Result: ["record1", "record2", "record3"] - Using "---" as delimiter */
 
-// Binary mode with custom delimiter
+/* Binary mode with custom delimiter */
 "data1\\x00data2\\x00data3".grep("data\\d+", "o", "\\x00", "NONE", "BINARY")
-// Result: ["data1", "data2", "data3"] - Binary mode with null delimiter
+/* Result: ["data1", "data2", "data3"] - Binary mode with null delimiter */
 ```
 
 ## Performance Features
@@ -681,17 +681,17 @@ Grapa grep now supports parallel processing for large inputs:
 
 **Usage:**
 ```grapa
-// Automatic parallel processing (recommended)
+/* Automatic parallel processing (recommended) */
 "large_input".grep("pattern", "o")
 
-// Manual parallel processing with specific worker count
-"large_input".grep("pattern", "o", "", "", "", "", 4)  // 4 worker threads
+/* Manual parallel processing with specific worker count */
+"large_input".grep("pattern", "o", "", "", "", "", 4)  /* 4 worker threads */
 
-// Sequential processing (force single-threaded)
-"large_input".grep("pattern", "o", "", "", "", "", 1)  // 1 worker thread
+/* Sequential processing (force single-threaded) */
+"large_input".grep("pattern", "o", "", "", "", "", 1)  /* 1 worker thread */
 
-// Auto-detection (same as default)
-"large_input".grep("pattern", "o", "", "", "", "", 0)  // Auto-detect optimal threads
+/* Auto-detection (same as default) */
+"large_input".grep("pattern", "o", "", "", "", "", 0)  /* Auto-detect optimal threads */
 ```
 
 **num_workers Parameter Values:**
@@ -708,17 +708,17 @@ Grapa grep now supports parallel processing for large inputs:
 
 **Performance Examples:**
 ```grapa
-// Large file processing with parallel workers
+/* Large file processing with parallel workers */
 large_content.grep("pattern", "oj", "", "", "", "", 4)
-// Result: Faster processing with 4 worker threads
+/* Result: Faster processing with 4 worker threads */
 
-// Sequential processing for small inputs
+/* Sequential processing for small inputs */
 small_content.grep("pattern", "oj", "", "", "", "", 1)
-// Result: Sequential processing, no threading overhead
+/* Result: Sequential processing, no threading overhead */
 
-// Auto-detection for optimal performance
+/* Auto-detection for optimal performance */
 any_size_content.grep("pattern", "oj", "", "", "", "", 0)
-// Result: Automatically chooses best approach
+/* Result: Automatically chooses best approach */
 ```
 
 ### Binary Mode Processing
@@ -740,16 +740,16 @@ Binary mode is useful for:
 | **Use case** | Text files, user input | Binary files, network data |
 
 ```grapa
-// Unicode mode (default) - for text files
-"café".grep("cafe", "i")               // Case-insensitive with Unicode folding
+/* Unicode mode (default) - for text files */
+"café".grep("cafe", "i")               /* Case-insensitive with Unicode folding */
 
-// Binary mode - for binary data
+/* Binary mode - for binary data */
 "\\x48\\x65\\x6c\\x6c\\x6f".grep("Hello", "o", "", "NONE", "BINARY")
-// Result: ["Hello"] - Raw byte processing
+/* Result: ["Hello"] - Raw byte processing */
 
-// Binary data with null delimiters
+/* Binary data with null delimiters */
 "data1\\x00data2\\x00data3".grep("data\\d+", "o", "\\x00", "NONE", "BINARY")
-// Result: ["data1", "data2", "data3"] - Binary mode with null delimiter
+/* Result: ["data1", "data2", "data3"] - Binary mode with null delimiter */
 ```
 
 ### Advanced Usage Patterns
@@ -758,36 +758,36 @@ Binary mode is useful for:
 Context options can be combined flexibly for sophisticated output:
 
 ```grapa
-// Show 2 lines after, 1 line before, and 3 lines before/after
+/* Show 2 lines after, 1 line before, and 3 lines before/after */
 "Line 1\nLine 2\nLine 3\nLine 4\nLine 5".grep("Line 3", "A2B1C3")
-// Result: ["Line 2", "Line 3", "Line 4", "Line 5"] 
-// (B1: Line 2, A2: Line 4-5, C3: additional context)
-// Note: Overlapping context lines are allowed for complete coverage
+/* Result: ["Line 2", "Line 3", "Line 4", "Line 5"] 
+(B1: Line 2, A2: Line 4-5, C3: additional context)
+Note: Overlapping context lines are allowed for complete coverage */
 
-// Show 1 line before and 2 lines after
+/* Show 1 line before and 2 lines after */
 "Line 1\nLine 2\nLine 3\nLine 4".grep("Line 3", "B1A2")
-// Result: ["Line 2", "Line 3", "Line 4"]
+/* Result: ["Line 2", "Line 3", "Line 4"] */
 
-// Show 3 lines before and 1 line after
+/* Show 3 lines before and 1 line after */
 "Line 1\nLine 2\nLine 3\nLine 4\nLine 5".grep("Line 4", "B3A1")
-// Result: ["Line 1", "Line 2", "Line 3", "Line 4", "Line 5"]
+/* Result: ["Line 1", "Line 2", "Line 3", "Line 4", "Line 5"] */
 ```
 
 #### Performance Tuning for Large Datasets
 
 **For very large files (>100MB)**:
 ```grapa
-// Use 'a' option for single-string processing
-large_content.grep("pattern", "a")     // Process as single string
+/* Use 'a' option for single-string processing */
+large_content.grep("pattern", "a")     /* Process as single string */
 
-// Use specific Unicode properties instead of broad categories
-large_content.grep("\\p{Lu}", "o")     // Better than \\p{L} for uppercase only
+/* Use specific Unicode properties instead of broad categories */
+large_content.grep("\\p{Lu}", "o")     /* Better than \\p{L} for uppercase only */
 
-// Disable normalization if not needed
-large_content.grep("pattern", "o")     // No 'N' option unless required
+/* Disable normalization if not needed */
+large_content.grep("pattern", "o")     /* No 'N' option unless required */
 
-// Use fast path patterns when possible
-large_content.grep("\\w+", "o")        // Fast path for word matching
+/* Use fast path patterns when possible */
+large_content.grep("\\w+", "o")        /* Fast path for word matching */
 ```
 
 **Memory usage considerations**:
@@ -802,14 +802,14 @@ All grep operations are thread-safe:
 - **No shared state**: Each grep call is independent
 
 ```grapa
-// Thread-safe concurrent usage
-// Thread 1
+/* Thread-safe concurrent usage */
+/* Thread 1 */
 result1 = text.grep("pattern1", "oj")
 
-// Thread 2 (simultaneous)
+/* Thread 2 (simultaneous) */
 result2 = text.grep("pattern2", "oj")
 
-// Both operations are safe and independent
+/* Both operations are safe and independent */
 ```
 
 ### Troubleshooting
@@ -818,109 +818,109 @@ result2 = text.grep("pattern2", "oj")
 
 **Invalid pattern syntax**:
 ```grapa
-// Unmatched parentheses
-"text".grep("(", "j")                  // Error: Unmatched '('
+/* Unmatched parentheses */
+"text".grep("(", "j")                  /* Error: Unmatched '(' */
 
-// Invalid quantifier
-"text".grep("a{", "j")                 // Error: Invalid quantifier
+/* Invalid quantifier */
+"text".grep("a{", "j")                 /* Error: Invalid quantifier */
 
-// Invalid Unicode property
-"text".grep("\\p{Invalid}", "j")       // Error: Unknown property
+/* Invalid Unicode property */
+"text".grep("\\p{Invalid}", "j")       /* Error: Unknown property */
 ```
 
 **Solutions**:
 ```grapa
-// Fix unmatched parentheses
-"text".grep("(group)", "j")            // Valid: matched parentheses
+/* Fix unmatched parentheses */
+"text".grep("(group)", "j")            /* Valid: matched parentheses */
 
-// Fix invalid quantifier
-"text".grep("a{1,3}", "j")             // Valid: proper quantifier
+/* Fix invalid quantifier */
+"text".grep("a{1,3}", "j")             /* Valid: proper quantifier */
 
-// Use valid Unicode properties
-"text".grep("\\p{L}", "j")             // Valid: letter property
+/* Use valid Unicode properties */
+"text".grep("\\p{L}", "j")             /* Valid: letter property */
 ```
 
 #### Performance Issues
 
 **Slow pattern matching**:
 ```grapa
-// Problem: Catastrophic backtracking
-// Create long string manually (Grapa doesn't have repeat function)
+/* Problem: Catastrophic backtracking */
+/* Create long string manually (Grapa doesn't have repeat function) */
 long_string = "";
 i = 0;
 while (i < 10000) {
     long_string = long_string + "a";
     i = i + 1;
 }
-long_string.grep("(a+)+", "o")   // Very slow
+long_string.grep("(a+)+", "o")   /* Very slow */
 
-// Solution: Use atomic groups
-long_string.grep("(?>a+)+", "o") // Much faster
+/* Solution: Use atomic groups */
+long_string.grep("(?>a+)+", "o") /* Much faster */
 
-// Problem: Broad Unicode categories
-"text".grep("\\p{L}+", "o")            // Slower for large text
+/* Problem: Broad Unicode categories */
+"text".grep("\\p{L}+", "o")            /* Slower for large text */
 
-// Solution: Use specific properties
-"text".grep("\\p{Lu}+", "o")           // Faster for uppercase only
+/* Solution: Use specific properties */
+"text".grep("\\p{Lu}+", "o")           /* Faster for uppercase only */
 ```
 
 **Memory usage issues**:
 ```grapa
-// Problem: Large cache accumulation
-// Solution: Process in smaller chunks or restart application
+/* Problem: Large cache accumulation */
+/* Solution: Process in smaller chunks or restart application */
 
-// Problem: Large compiled patterns
-// Solution: Use simpler patterns or break into multiple searches
+/* Problem: Large compiled patterns */
+/* Solution: Use simpler patterns or break into multiple searches */
 ```
 
 #### Unicode Normalization Issues
 
 **Unexpected matches**:
 ```grapa
-// Problem: Different normalization forms
-"café".grep("cafe", "o")               // No match without normalization
+/* Problem: Different normalization forms */
+"café".grep("cafe", "o")               /* No match without normalization */
 
-// Solution: Use normalization
-"café".grep("cafe", "N")               // Matches with NFC normalization
+/* Solution: Use normalization */
+"café".grep("cafe", "N")               /* Matches with NFC normalization */
 
-// Problem: Case sensitivity with Unicode
-"İstanbul".grep("istanbul", "i")       // May not match due to Turkish 'İ'
+/* Problem: Case sensitivity with Unicode */
+"İstanbul".grep("istanbul", "i")       /* May not match due to Turkish 'İ' */
 
-// Solution: Use diacritic-insensitive matching
-"İstanbul".grep("istanbul", "di")      // Matches with diacritic stripping
+/* Solution: Use diacritic-insensitive matching */
+"İstanbul".grep("istanbul", "di")      /* Matches with diacritic stripping */
 ```
 
 #### Debugging Tips
 
 **Check pattern validity**:
 ```grapa
-// Test pattern compilation
+/* Test pattern compilation */
 result = text.grep("pattern", "j")
 if (result.type() == $ERR) {
     echo("Pattern compilation failed")
-    // Check pattern syntax
+    /* Check pattern syntax */
 }
 ```
 
 **Verify Unicode handling**:
 ```grapa
-// Test Unicode normalization
-"café".grep("cafe", "N")               // Should match with normalization
+/* Test Unicode normalization */
+"café".grep("cafe", "N")               /* Should match with normalization */
 
-// Test case folding
-"CAFÉ".grep("cafe", "i")               // Should match case-insensitive
+/* Test case folding */
+"CAFÉ".grep("cafe", "i")               /* Should match case-insensitive */
 
-// Test diacritic stripping
-"café".grep("cafe", "d")               // Should match diacritic-insensitive
+/* Test diacritic stripping */
+"café".grep("cafe", "d")               /* Should match diacritic-insensitive */
 ```
 
 **Performance profiling**:
 ```grapa
-// Test with small sample first
+/* Test with small sample first */
 sample = large_text.substring(0, 1000)
-result = sample.grep("pattern", "oj")   // Test pattern on small sample
+result = sample.grep("pattern", "oj")   /* Test pattern on small sample */
 
-// If successful, test on full text
+/* If successful, test on full text */
 if (result.type() != $ERR) {
     full_result = large_text.grep("pattern", "oj")
 }
@@ -932,7 +932,7 @@ if (result.type() != $ERR) {
 A comprehensive performance test file is available to verify optimizations:
 
 ```grapa
-// Run performance tests
+/* Run performance tests */
 grapa -cfile "test_performance_optimizations.grc"
 ```
 
@@ -948,7 +948,7 @@ grapa -cfile "test_performance_optimizations.grc"
 Verify current Unicode and regex capabilities:
 
 ```grapa
-// Run comprehensive capability tests
+/* Run comprehensive capability tests */
 grapa -cfile "test_current_capabilities.grc"
 ```
 
@@ -972,19 +972,19 @@ grapa -cfile "test_current_capabilities.grc"
 Individual test files for specific features:
 
 ```grapa
-// Test Unicode normalization and diacritic handling
+/* Test Unicode normalization and diacritic handling */
 grapa -cfile "test_grapheme_unicode_normalization.grc"
 
-// Test advanced Unicode features
+/* Test advanced Unicode features */
 grapa -cfile "test_unicode_advanced_features.grc"
 
-// Test lookaround assertions
+/* Test lookaround assertions */
 grapa -cfile "test_lookaround_assertions.grc"
 
-// Test atomic groups
+/* Test atomic groups */
 grapa -cfile "test_atomic_groups.grc"
 
-// Test Unicode grapheme clusters
+/* Test Unicode grapheme clusters */
 grapa -cfile "test_unicode_grapheme_clusters.grc"
 ```
 
@@ -992,14 +992,14 @@ grapa -cfile "test_unicode_grapheme_clusters.grc"
 To ensure no regressions after changes:
 
 ```grapa
-// Run core functionality tests
+/* Run core functionality tests */
 grapa -cfile "test_current_capabilities.grc"
 grapa -cfile "test_performance_optimizations.grc"
 
-// Verify basic functionality
-"Hello world".grep("world", "oj")       // Should return matches
-"café".grep("cafe", "N")               // Should match with normalization
-"Hello 世界".grep("\\p{L}+", "oj")      // Should match Unicode letters
+/* Verify basic functionality */
+"Hello world".grep("world", "oj")       /* Should return matches */
+"café".grep("cafe", "N")               /* Should match with normalization */
+"Hello 世界".grep("\\p{L}+", "oj")      /* Should match Unicode letters */
 ```
 
 ## Zero-Length Match and Empty String Output
@@ -1008,15 +1008,15 @@ grapa -cfile "test_performance_optimizations.grc"
 
 ### Example: Zero-Length Match
 ```grapa
-// Zero-length match example
+/* Zero-length match example */
 "a\nb\n".grep("^", "o")
-// Result: ["", "a", "", "b", ""]
+/* Result: ["", "a", "", "b", ""] */
 ```
 
 ### Example: Array Literal with Empty String
 ```grapa
 [1, "", 2]
-// Result: [1, "", 2]
+/* Result: [1, "", 2] */
 ```
 
 ## Output Formatting and Array Design
@@ -1042,16 +1042,16 @@ Grapa grep is designed as an **integrated programming language feature**, not a 
 Grapa grep **automatically removes delimiters** from output strings:
 
 ```grapa
-// Input with custom delimiter
+/* Input with custom delimiter */
 input = "line1|||line2|||line3";
 
-// Grapa grep removes delimiters from output
+/* Grapa grep removes delimiters from output */
 result = input.grep("line", "o", "|||");
-// Result: ["line1", "line2", "line3"] (clean strings, no |||)
+/* Result: ["line1", "line2", "line3"] (clean strings, no |||) */
 
-// For console output, you can join with delimiter
+/* For console output, you can join with delimiter */
 console_output = result.join("|||");
-// Result: "line1|||line2|||line3"
+/* Result: "line1|||line2|||line3" */
 ```
 
 ### Console Output Equivalence
@@ -1059,12 +1059,12 @@ console_output = result.join("|||");
 To get console-equivalent output in Grapa:
 
 ```grapa
-// Grapa approach
+/* Grapa approach */
 input = "line1\nline2\nline3";
-result = input.grep("line", "o");  // ["line1", "line2", "line3"]
-console_output = result.join("\n");  // "line1\nline2\nline3"
+result = input.grep("line", "o");  /* ["line1", "line2", "line3"] */
+console_output = result.join("\n");  /* "line1\nline2\nline3" */
 
-// This matches ripgrep output: "line1\nline2\nline3"
+/* This matches ripgrep output: "line1\nline2\nline3" */
 ```
 
 ### Benefits of Array Design
@@ -1080,17 +1080,17 @@ console_output = result.join("\n");  // "line1\nline2\nline3"
 Grapa grep fully supports **multi-character delimiters**:
 
 ```grapa
-// Single character delimiter
+/* Single character delimiter */
 "line1|line2|line3".grep("line", "o", "|")
-// Result: ["line1", "line2", "line3"]
+/* Result: ["line1", "line2", "line3"] */
 
-// Multi-character delimiter
+/* Multi-character delimiter */
 "line1|||line2|||line3".grep("line", "o", "|||")
-// Result: ["line1", "line2", "line3"]
+/* Result: ["line1", "line2", "line3"] */
 
-// Complex delimiter
+/* Complex delimiter */
 "line1<DELIM>line2<DELIM>line3".grep("line", "o", "<DELIM>")
-// Result: ["line1", "line2", "line3"]
+/* Result: ["line1", "line2", "line3"] */
 ```
 
 **Note**: All delimiters are automatically removed from output strings, regardless of length or complexity.
@@ -1174,29 +1174,29 @@ When you exclude file handling (since that's handled by the Grapa language), Gra
 
 ### **Case-Insensitive Matching**
 ```grapa
-// ripgrep: rg -i "hello" (explicit case-insensitive)
+/* ripgrep: rg -i "hello" (explicit case-insensitive) */
 "Hello WORLD".grep("hello", "i")
 
-// ripgrep: rg "HELLO" (case-sensitive for uppercase)  
+/* ripgrep: rg "HELLO" (case-sensitive for uppercase) */
 "Hello WORLD".grep("HELLO", "")
 
-// Note: Grapa uses explicit "i" flag rather than ripgrep's automatic smart-case behavior
-// This provides more predictable and explicit control over case sensitivity
+/* Note: Grapa uses explicit "i" flag rather than ripgrep's automatic smart-case behavior */
+/* This provides more predictable and explicit control over case sensitivity */
 ```
 
 ### **Word Boundary Mode**
 ```grapa
-// ripgrep: rg --word-regexp "hello"
-"hello world".grep("hello", "wo")  // Using 'w' option
-// or
-"hello world".grep("\\bhello\\b", "o")  // Manual word boundaries
+/* ripgrep: rg --word-regexp "hello" */
+"hello world".grep("hello", "wo")  /* Using 'w' option */
+/* or */
+"hello world".grep("\\bhello\\b", "o")  /* Manual word boundaries */
 ```
 
 ### **Column Numbers**
 ```grapa
-// ripgrep: rg --column "hello"
-"hello world".grep("hello", "oT")  // Shows column:match format
-// Result: ["1:hello"]
+/* ripgrep: rg --column "hello" */
+"hello world".grep("hello", "oT")  /* Shows column:match format */
+/* Result: ["1:hello"] */
 ```
 
 ## Grapa vs. ripgrep: Feature Comparison Summary
@@ -1277,11 +1277,11 @@ rg "pattern" --type python --max-filesize 1M --hidden
 
 **Grapa approach:**
 ```grapa
-// File operations handled by language
-files = file().ls("*.py", "h");  // Get Python files, including hidden
-filtered = files.filter(f => file().size(f) < 1024*1024);  // Size filter
-content = filtered.map(f => file().read(f));  // Read files
-matches = content.grep("pattern", "oj");  // Pure text processing
+/* File operations handled by language */
+files = file().ls("*.py", "h");  /* Get Python files, including hidden */
+filtered = files.filter(f => file().size(f) < 1024*1024);  /* Size filter */
+content = filtered.map(f => file().read(f));  /* Read files */
+matches = content.grep("pattern", "oj");  /* Pure text processing */
 ```
 
 This separation allows Grapa grep to focus on what it does best: advanced Unicode text processing with sophisticated regex features, while file operations are handled by the appropriate language constructs.
@@ -1413,21 +1413,21 @@ This separation allows Grapa grep to focus on what it does best: advanced Unicod
 
 **Example Test Cases:**
 ```grapa
-// Multiline pattern with custom delimiter
+/* Multiline pattern with custom delimiter */
 "start|||middle|||end".grep("start.*end", "s", "|||")
-// Result: ["start|||middle|||end"] (matches across delimiter)
+/* Result: ["start|||middle|||end"] (matches across delimiter) */
 
-// Atomic group with custom delimiter
+/* Atomic group with custom delimiter */
 "aaaa|bbbb|cccc".grep("(?>a+)a", "o", "|")
-// Result: [] (atomic group prevents backtracking)
+/* Result: [] (atomic group prevents backtracking) */
 
-// Possessive quantifier with custom delimiter
+/* Possessive quantifier with custom delimiter */
 "aaa|bbb|ccc".grep("a++", "o", "|")
-// Result: ["aaa"] (matches all a's greedily)
+/* Result: ["aaa"] (matches all a's greedily) */
 
-// Conditional pattern with custom delimiter
+/* Conditional pattern with custom delimiter */
 "abc123|def456".grep("(a)?(?(1)b|c)", "o", "|")
-// Result: ["ab", "c"] (conditional branching)
+/* Result: ["ab", "c"] (conditional branching) */
 ```
 
 **Benefits:**
@@ -1463,46 +1463,46 @@ This separation allows Grapa grep to focus on what it does best: advanced Unicod
 ### Advanced Context Examples
 
 ```grapa
-// Context merging - overlapping regions are automatically merged
+/* Context merging - overlapping regions are automatically merged */
 input = "a\nb\nc\nd\ne\nf";
 input.grep("c|d", "A1B1")
-["b\n", "c\n", "d\n", "e\n"]  // Overlapping context merged into single block
+["b\n", "c\n", "d\n", "e\n"]  /* Overlapping context merged into single block */
 
-// Context separators between non-overlapping blocks
+/* Context separators between non-overlapping blocks */
 input2 = "a\nb\nc\nd\ne\nf\ng\nh\ni\nj";
 input2.grep("c|i", "A1B1")
-["b\n", "c\n", "d\n", "--\n", "h\n", "i\n", "j\n"]  // -- separator between blocks
+["b\n", "c\n", "d\n", "--\n", "h\n", "i\n", "j\n"]  /* -- separator between blocks */
 
-// Complex context with multiple options
-log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, case-insensitive
+/* Complex context with multiple options */
+log_content.grep("error", "A2B1io")  /* 2 lines after, 1 before, match-only, case-insensitive */
 ```
 
 ### Advanced Unicode "o" Option Examples
 
 ```grapa
-// Comprehensive Unicode character extraction
+/* Comprehensive Unicode character extraction */
 "éñü".grep(".", "o")
-["é", "ñ", "ü"]  // Perfect Unicode character extraction
+["é", "ñ", "ü"]  /* Perfect Unicode character extraction */
 
-// Unicode with normalization and "o" option
+/* Unicode with normalization and "o" option */
 "café résumé".grep("\\X", "oN")
-["c", "a", "f", "é", " ", "r", "é", "s", "u", "m", "é"]  // Normalized grapheme clusters
+["c", "a", "f", "é", " ", "r", "é", "s", "u", "m", "é"]  /* Normalized grapheme clusters */
 
-// Complex Unicode scenarios with "o" option
+/* Complex Unicode scenarios with "o" option */
 "👨‍👩‍👧‍👦".grep("\\X", "o")
-["👨‍👩‍👧‍👦"]  // Family emoji as single grapheme cluster
+["👨‍👩‍👧‍👦"]  /* Family emoji as single grapheme cluster */
 
-// Unicode properties with "o" option
+/* Unicode properties with "o" option */
 "Hello 世界 123".grep("\\p{L}+", "o")
-["Hello", "世界"]  // Unicode letters only
+["Hello", "世界"]  /* Unicode letters only */
 
-// Diacritic-insensitive with "o" option
+/* Diacritic-insensitive with "o" option */
 "café résumé naïve".grep("cafe", "od")
-["café"]  // Diacritic-insensitive matching
+["café"]  /* Diacritic-insensitive matching */
 
-// Case-insensitive Unicode with "o" option
+/* Case-insensitive Unicode with "o" option */
 "ÉÑÜ".grep(".", "oi")
-["É", "Ñ", "Ü"]  // Case-insensitive Unicode character extraction
+["É", "Ñ", "Ü"]  /* Case-insensitive Unicode character extraction */
 ```
 
 # Option Flag Coverage, Test Status, and Implementation Philosophy (Living Status Section)
@@ -1602,10 +1602,10 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
   - Example:
     /*
     ar = [1,2,3];
-    ar[1]; // returns 2
+    ar[1]; /* returns 2 */
     ar = {"a":11,"b":22,"c":33};
-    ar[1]; // returns 22
-    ar["b"]; // returns 22
+    ar[1]; /* returns 22 */
+    ar["b"]; /* returns 22 */
     */
   - Use `.get("key")` for object property access, not for arrays/lists.
 
@@ -1613,8 +1613,8 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
   - If your string contains double quotes (`"`), use single quotes (`'`) for the outer string, or escape the inner double quotes as (`\"`).
   - If your string contains single quotes (`'`), use double quotes (`"`) for the outer string, or escape the inner single quotes as (`\'`).
   - **Examples:**
-    - `'Expected: ["", "a", "", "b", ""]\n'.echo();`  // single quotes outside, double quotes inside
-    - `(\"Expected: [\\\"\\\", \\\"a\\\", \\\"\\\", \\\"b\\\", \\\"\\\"]\\n\").echo();`  // double quotes outside, inner double quotes escaped
+    - `'Expected: ["", "a", "", "b", ""]\n'.echo();`  /* single quotes outside, double quotes inside */
+    - `(\"Expected: [\\\"\\\", \\\"a\\\", \\\"\\\", \\\"b\\\", \\\"\\\"]\\n\").echo();`  /* double quotes outside, inner double quotes escaped */
 
 ## File System Integration for Grep Utilities (Grapa Scripting Layer)
 
@@ -1634,7 +1634,7 @@ while (i < files.len()) {
     if (info["$TYPE"] == "FILE") {
         content = $file().get(f["$KEY"]).str();
         matches = content.grep("pattern", "o");
-        // process matches...
+        /* process matches... */
     }
     i = i + 1;
 }

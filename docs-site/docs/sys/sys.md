@@ -8,7 +8,7 @@ The `$sys` object provides general utility functions that are useful but don't b
 - **Type introspection** - Getting object types and descriptions
 - **Environment management** - Accessing system variables and platform information
 - **Script compilation** - Pre-compiling scripts for performance
-- **Dynamic evaluation** - Running scripts with parameters
+- **Dynamic evaluation** - Running scripts with parameters (Grapa's core meta-programming capability)
 - **System timing** - Sleep and delay operations
 
 ## Functions
@@ -183,7 +183,7 @@ direct_op;
 - **Performance**: Both benefit from compile-time optimization
 
 ### eval(script, sparams={}, srule="", sprofile="")
-Evaluates a script with optional parameters, rules, and profile.
+Evaluates a script with optional parameters, rules, and profile. This is one of Grapa's most powerful features, enabling dynamic code execution and meta-programming.
 
 **Parameters:**
 - `script` - Script string or compiled $OP object
@@ -202,6 +202,10 @@ result = $sys().eval("x = 5 + 3; x");
 /* Evaluate with parameters */
 result = $sys().eval("x + y", {"x": 5, "y": 3});
 /* Result: 8 */
+
+/* Evaluate complex expression */
+result = $sys().eval("(a + b) * c", {"a": 2, "b": 3, "c": 4});
+/* Result: 20 */
 
 /* Evaluate compiled $OP object */
 compiled = $sys().compile("a + b");

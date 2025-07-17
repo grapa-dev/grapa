@@ -1,0 +1,2224 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Grep python - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#unicode-grep-in-python" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Grep python
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING_STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CLI_QUICKSTART/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Python Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API_REFERENCE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../grep/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Grep Documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../USE_CASES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Use Cases
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EXAMPLES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../TROUBLESHOOTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING_STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI_QUICKSTART/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GRAPAPY_INTEGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API_REFERENCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../grep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PYTHON_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../JS_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUST_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TYPESCRIPT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GO_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../RUBY_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../KOTLIN_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../SWIFT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../USE_CASES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EXAMPLES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TROUBLESHOOTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../CONTRIBUTING.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unicode-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      🔍 Unicode Support
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-regex-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      🎯 Advanced Regex Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      📊 Output Formats
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-embedded-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: Embedded Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-parameter-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Parameter Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Syntax">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#options-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options Reference
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Options Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diacritic-insensitive-matching-d-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diacritic-Insensitive Matching (d option)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#processing-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Processing Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unicode-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unicode Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-unicode-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Unicode Support
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-unicode-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Unicode Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#raw-string-literals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Raw String Literals
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parallel-processing-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Processing Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimization-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optimization Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#binary-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Binary Mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Binary Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-binary-mode-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Binary Mode Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#binary-vs-unicode-mode-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Binary vs Unicode Mode Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-binary-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Binary Patterns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#binary-mode-with-different-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Binary Mode with Different Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#real-world-binary-processing-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Binary Processing Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-binary-data-in-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with Binary Data in Python
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-binary-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Binary Mode
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#zero-length-match-and-empty-string-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Zero-Length Match and Empty String Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Zero-Length Match and Empty String Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-zero-length-match" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Zero-Length Match
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-array-literal-with-empty-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Array Literal with Empty String
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-coverage-and-regression-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Coverage and Regression Testing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-with-other-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison with Other Tools
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Integration Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Processing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Analysis
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-test-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Test File
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-comparison-and-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Feature Comparison and Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ripgrep-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ripgrep Compatibility
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ripgrep Compatibility">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supported Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      Production Ready
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Limitations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<p><strong>See Also:</strong> <a href="../grep/">Main Grep Documentation (grep.md)</a></p>
+<blockquote>
+<p><strong>Note:</strong> All runnable code examples in this document are automatically tested in <a href="../../test/test_grep_python_doc_examples.py"><code>test/test_grep_python_doc_examples.py</code></a>.</p>
+</blockquote>
+<h1 id="unicode-grep-in-python">Unicode Grep in Python</h1>
+<h2 id="overview">Overview</h2>
+<p>The Unicode grep functionality in Grapa provides advanced text searching capabilities with full Unicode support, PCRE2-powered regular expressions, and comprehensive output options. This document focuses on using grep from Python via the GrapaPy extension.</p>
+<h2 id="key-features">Key Features</h2>
+<h3 id="unicode-support">🔍 <strong>Unicode Support</strong></h3>
+<ul>
+<li>Full Unicode character handling (Cyrillic, Chinese, Japanese, Korean, Arabic, Hebrew, Thai, etc.)</li>
+<li>Unicode normalization (NFC, NFD, NFKC, NFKD)</li>
+<li><strong>Advanced Unicode properties</strong> (<code>\p{L}</code>, <code>\p{N}</code>, <code>\p{Emoji}</code>, <code>\p{So}</code>, etc.)</li>
+<li><strong>Unicode grapheme clusters</strong> (<code>\X</code>)</li>
+<li>Case-insensitive matching with proper Unicode case folding</li>
+</ul>
+<h3 id="advanced-regex-features">🎯 <strong>Advanced Regex Features</strong></h3>
+<ul>
+<li>PCRE2-powered regular expressions</li>
+<li>Named groups (<code>(?P&lt;name&gt;...)</code>)</li>
+<li>Unicode properties and script extensions</li>
+<li>Atomic groups (<code>(?&gt;...)</code>)</li>
+<li><strong>Lookaround assertions</strong> (<code>(?=...)</code>, <code>(?&lt;=...)</code>, <code>(?!...)</code>, <code>(?&lt;!...)</code>)</li>
+<li><strong>Possessive quantifiers</strong> (<code>*+</code>, <code>++</code>, <code>?+</code>, <code>{n,m}+</code>)</li>
+<li><strong>Conditional patterns</strong> (<code>?(condition)...</code>)</li>
+<li>Unicode categories (<code>\p{L}</code>, <code>\p{N}</code>, <code>\p{Z}</code>, <code>\p{P}</code>, <code>\p{S}</code>, <code>\p{C}</code>, <code>\p{M}</code>)</li>
+<li>Unicode scripts (<code>\p{sc=Latin}</code>, <code>\p{sc=Han}</code>, etc.)</li>
+<li>Unicode script extensions (<code>\p{scx:Han}</code>, etc.)</li>
+<li>Unicode general categories (<code>\p{Lu}</code>, <code>\p{Ll}</code>, etc.)</li>
+</ul>
+<h3 id="output-formats">📊 <strong>Output Formats</strong></h3>
+<ul>
+<li>Standard text output</li>
+<li>JSON output with named groups, offsets, and line numbers</li>
+<li><strong>Context lines</strong> (before/after matches)</li>
+<li>Line numbers and byte offsets</li>
+<li>Match-only or full-line output</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>grapapy
+</code></pre></div>
+<h2 id="basic-usage">Basic Usage</h2>
+<h3 id="method-1-embedded-parameters">Method 1: Embedded Parameters</h3>
+<p>Pass parameters directly in the Grapa string:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Simple pattern matching</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Hello world&quot;.grep(&quot;world&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;Hello world&#39;]</span>
+
+<span class="c1"># Case-insensitive matching</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Hello WORLD&quot;.grep(&quot;world&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;Hello WORLD&#39;]</span>
+
+<span class="c1"># Match-only output</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Hello world&quot;.grep(r&quot;</span><span class="se">\\</span><span class="s1">w+&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;Hello&#39;, &#39;world&#39;]</span>
+</code></pre></div>
+<h3 id="method-2-parameter-variables">Method 2: Parameter Variables</h3>
+<p>Pass parameters as Python variables to be used in the Grapa string:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># For parameter variables, always provide the variables dictionary:</span>
+<span class="c1"># Basic grep with parameter variables</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;input.grep(pattern,options);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;apple 123 pear 456</span><span class="se">\n</span><span class="s2">banana 789&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;\d+&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="s2">&quot;o&quot;</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;123&#39;, &#39;456&#39;, &#39;789&#39;]</span>
+
+<span class="c1"># With all parameters as variables</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;input.grep(pattern,options,delimiter,normalization,mode);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;data1</span><span class="se">\\</span><span class="s2">x00data2</span><span class="se">\\</span><span class="s2">x00data3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;data</span><span class="se">\\</span><span class="s2">d+&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;delimiter&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">x00&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;normalization&quot;</span><span class="p">:</span> <span class="s2">&quot;NONE&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;BINARY&quot;</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;data1&#39;, &#39;data2&#39;, &#39;data3&#39;]</span>
+</code></pre></div>
+<h2 id="syntax">Syntax</h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># Method 1: Embedded parameters</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;string&quot;.grep(pattern, options, delimiter, normalization, mode)&#39;</span><span class="p">)</span>
+
+<span class="c1"># Method 2: Parameter variables</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;string.grep(pattern, options, delimiter, normalization, mode);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;string&quot;</span><span class="p">:</span> <span class="s2">&quot;input_text&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;regex_pattern&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="s2">&quot;option_flags&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;delimiter&quot;</span><span class="p">:</span> <span class="s2">&quot;line_delimiter&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;normalization&quot;</span><span class="p">:</span> <span class="s2">&quot;normalization_form&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;processing_mode&quot;</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="parameters">Parameters</h3>
+<p><strong>Required Parameters:</strong>
+- <strong>string</strong>: The input text to search
+- <strong>pattern</strong>: PCRE2 regular expression pattern with Unicode support</p>
+<p><strong>Optional Parameters (all have sensible defaults):</strong>
+- <strong>options</strong>: String containing option flags (default: <code>""</code> - no options)
+- <strong>delimiter</strong>: Custom line delimiter (default: <code>"\n"</code>)
+- <strong>normalization</strong>: Unicode normalization form: <code>"NONE"</code>, <code>"NFC"</code>, <code>"NFD"</code>, <code>"NFKC"</code>, <code>"NFKD"</code> (default: <code>"NONE"</code>)
+- <strong>mode</strong>: Processing mode: <code>"UNICODE"</code> for full Unicode processing, <code>"BINARY"</code> for raw byte processing (default: <code>"UNICODE"</code>)
+- <strong>num_workers</strong>: Number of worker threads for parallel processing: <code>0</code> for auto-detection, <code>1</code> for sequential, <code>2+</code> for parallel (default: <code>0</code>)</p>
+<h2 id="options-reference">Options Reference</h2>
+<h3 id="basic-options">Basic Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Python Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a</code></td>
+<td>All-mode (match across full input string, context options ignored)</td>
+<td><code>xy.eval('"text".grep("pattern", "a")')</code></td>
+</tr>
+<tr>
+<td><code>i</code></td>
+<td>Case-insensitive matching</td>
+<td><code>xy.eval('"Text".grep("text", "i")')</code></td>
+</tr>
+<tr>
+<td><code>v</code></td>
+<td>Invert match (return lines that do NOT match the pattern)</td>
+<td><code>xy.eval('"text".grep("pattern", "v")')</code></td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td>Exact line match (whole line must match)</td>
+<td><code>xy.eval('"text".grep("^text$", "x")')</code></td>
+</tr>
+<tr>
+<td><code>N</code></td>
+<td>Normalize input and pattern to NFC</td>
+<td><code>xy.eval('"caf\u00e9".grep("cafe", "N")')</code></td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>Diacritic-insensitive matching</td>
+<td><code>xy.eval('"caf\u00e9".grep("cafe", "d")')</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note:</strong> Unicode normalization (N, or normalization parameter) does <strong>not</strong> remove diacritics or accents. It only canonicalizes Unicode forms. To match characters with and without accents (e.g., <code>cafe</code> vs <code>café</code>), you must use the <code>d</code> option for diacritic-insensitive matching.</p>
+</blockquote>
+<h3 id="diacritic-insensitive-matching-d-option">Diacritic-Insensitive Matching (<code>d</code> option)</h3>
+<p>The <code>d</code> option enables <strong>diacritic-insensitive matching</strong>. When enabled, both the input and the pattern are:
+1. <strong>Unicode normalized</strong> (NFC by default, or as specified)
+2. <strong>Case folded</strong> (Unicode-aware, not just ASCII)
+3. <strong>Diacritics/accents are stripped</strong> (works for Latin, Greek, Cyrillic, Turkish, Vietnamese, and more)</p>
+<blockquote>
+<p><strong>Note:</strong> If you want <code>"cafe"</code> to match <code>"café"</code>, you must use the <code>d</code> option. Normalization alone is not sufficient.</p>
+</blockquote>
+<h3 id="output-options">Output Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Python Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>o</code></td>
+<td>Match-only (output only matched text)</td>
+<td><code>xy.eval('"Hello world".grep(r"\\w+", "o")')</code></td>
+</tr>
+<tr>
+<td><code>n</code></td>
+<td>Prefix matches with line numbers</td>
+<td><code>xy.eval('"text".grep("pattern", "n")')</code></td>
+</tr>
+<tr>
+<td><code>l</code></td>
+<td>Line number only output</td>
+<td><code>xy.eval('"text".grep("pattern", "l")')</code></td>
+</tr>
+<tr>
+<td><code>b</code></td>
+<td>Output byte offset with matches</td>
+<td><code>xy.eval('"text".grep("pattern", "b")')</code></td>
+</tr>
+<tr>
+<td><code>j</code></td>
+<td>JSON output format with named groups, offsets, and line numbers</td>
+<td><code>xy.eval('"text".grep("pattern", "oj")')</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="context-options">Context Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Python Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A&lt;n&gt;</code></td>
+<td>Show n lines after match</td>
+<td><code>xy.eval('"text".grep("pattern", "A2")')</code></td>
+</tr>
+<tr>
+<td><code>B&lt;n&gt;</code></td>
+<td>Show n lines before match</td>
+<td><code>xy.eval('"text".grep("pattern", "B1")')</code></td>
+</tr>
+<tr>
+<td><code>C&lt;n&gt;</code></td>
+<td>Show n lines before and after</td>
+<td><code>xy.eval('"text".grep("pattern", "C3")')</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="processing-options">Processing Options</h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Python Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>c</code></td>
+<td>Count of matches</td>
+<td><code>xy.eval('"text".grep("pattern", "c")')</code></td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>Deduplicate results</td>
+<td><code>xy.eval('"text".grep("pattern", "d")')</code></td>
+</tr>
+<tr>
+<td><code>g</code></td>
+<td>Group results per line</td>
+<td><code>xy.eval('"text".grep("pattern", "g")')</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="unicode-examples">Unicode Examples</h2>
+<h3 id="basic-unicode-support">Basic Unicode Support</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Unicode characters</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Привет мир&quot;.grep(&quot;мир&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;Привет мир&#39;]</span>
+
+<span class="c1"># Unicode properties</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Hello 世界 123 €&quot;.grep(r&quot;</span><span class="se">\\</span><span class="s1">p</span><span class="si">{L}</span><span class="s1">+&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;Hello&#39;, &#39;世界&#39;]</span>
+
+<span class="c1"># Emoji handling</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Hello 👋 world 🌍&quot;.grep(r&quot;(?:</span><span class="se">\\</span><span class="s1">p</span><span class="si">{So}</span><span class="s1">(?:</span><span class="se">\\</span><span class="s1">u200D</span><span class="se">\\</span><span class="s1">p</span><span class="si">{So}</span><span class="s1">)*)+&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;👋&#39;, &#39;🌍&#39;]</span>
+
+<span class="c1"># Unicode grapheme clusters</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;café mañana&quot;.grep(r&quot;</span><span class="se">\\</span><span class="s1">X&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;c&#39;, &#39;a&#39;, &#39;f&#39;, &#39;é&#39;, &#39; &#39;, &#39;m&#39;, &#39;a&#39;, &#39;ñ&#39;, &#39;a&#39;, &#39;n&#39;, &#39;a&#39;]</span>
+</code></pre></div>
+<h3 id="advanced-unicode-features">Advanced Unicode Features</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Named groups with JSON output</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;John Doe (30)&quot;.grep(r&quot;(?P&lt;first&gt;</span><span class="se">\\</span><span class="s1">w+) (?P&lt;last&gt;</span><span class="se">\\</span><span class="s1">w+) </span><span class="se">\\</span><span class="s1">((?P&lt;age&gt;</span><span class="se">\\</span><span class="s1">d+)</span><span class="se">\\</span><span class="s1">)&quot;, &quot;oj&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [{&quot;match&quot;:&quot;John Doe (30)&quot;,&quot;first&quot;:&quot;John&quot;,&quot;last&quot;:&quot;Doe&quot;,&quot;age&quot;:&quot;30&quot;,&quot;offset&quot;:0,&quot;line&quot;:1}]</span>
+
+<span class="c1"># Unicode scripts</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Hello 世界 こんにちは 안녕하세요&quot;.grep(r&quot;</span><span class="se">\\</span><span class="s1">p{sc=Han}+&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;世界&#39;]</span>
+
+<span class="c1"># Atomic groups</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;aaa&quot;.grep(r&quot;(?&gt;a+)a&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [] (atomic group prevents backtracking)</span>
+
+<span class="c1"># Lookaround assertions</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;abc123def456&quot;.grep(r&quot;(?&lt;=</span><span class="se">\\</span><span class="s1">d)(?=</span><span class="se">\\</span><span class="s1">d)&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;]</span>
+</code></pre></div>
+<h2 id="raw-string-literals">Raw String Literals</h2>
+<p>For better readability of regex patterns, use raw string literals by prefixing the string with <code>r</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Without raw string (requires escaping)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;file.txt&quot;.grep(&quot;^[a-zA-Z0-9_]+</span><span class="se">\\</span><span class="s1">.txt$&quot;, &quot;x&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;file.txt&#39;]</span>
+
+<span class="c1"># With raw string (no escaping needed)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;file.txt&quot;.grep(r&quot;^[a-zA-Z0-9_]+</span><span class="se">\\</span><span class="s1">.txt$&quot;, &quot;x&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;file.txt&#39;] - Much cleaner!</span>
+
+<span class="c1"># Complex patterns benefit greatly</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;user@domain.com&quot;.grep(r&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="se">\\</span><span class="s1">.[a-zA-Z]{2,}$&quot;, &quot;x&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;user@domain.com&#39;]</span>
+</code></pre></div>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<h3 id="parallel-processing-performance">Parallel Processing Performance</h3>
+<p>Grapa grep provides <strong>massive performance improvements</strong> over Python's built-in <code>re</code> module through parallel processing:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Large input (50MB) performance comparison:</span>
+<span class="c1"># Single worker: ~9.6 seconds</span>
+<span class="c1"># 16 workers: ~0.85 seconds (11.3x speedup!)</span>
+
+<span class="c1"># Test different worker counts</span>
+<span class="n">large_input</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span> <span class="c1"># 50MB of text</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;input.grep(pattern, options, delimiter, normalization, mode, num_workers);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">large_input</span><span class="p">,</span>
+    <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span> <span class="mi">16</span>  <span class="c1"># Parallel processing</span>
+<span class="p">})</span>
+</code></pre></div>
+<p><strong>Performance Scaling (50MB input):</strong>
+- <strong>1 worker</strong>: 9.59s baseline
+- <strong>2 workers</strong>: 3.25x speedup (2.95s)
+- <strong>4 workers</strong>: 6.91x speedup (1.39s)
+- <strong>8 workers</strong>: 8.91x speedup (1.08s)
+- <strong>16 workers</strong>: 11.28x speedup (0.85s)</p>
+<h3 id="optimization-features">Optimization Features</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># JIT compilation for complex patterns</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;large_text&quot;.grep(r&quot;complex_pattern&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Automatically uses PCRE2 JIT compilation</span>
+
+<span class="c1"># Fast path for simple patterns</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;text&quot;.grep(&quot;literal&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Uses optimized literal matching</span>
+
+<span class="c1"># LRU caching for repeated operations</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;text&quot;.grep(&quot;pattern&quot;, &quot;N&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Normalization results are cached</span>
+
+<span class="c1"># Parallel processing for large inputs</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;large_text&quot;.grep(&quot;pattern&quot;, &quot;o&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, 8)&#39;</span><span class="p">)</span>
+<span class="c1"># Uses 8 worker threads for optimal performance</span>
+</code></pre></div>
+<h3 id="best-practices">Best Practices</h3>
+<ol>
+<li><strong>Use raw strings</strong> for regex patterns to avoid escaping issues</li>
+<li><strong>Combine options</strong> when possible (e.g., <code>"oi"</code> for match-only case-insensitive)</li>
+<li><strong>Use appropriate normalization</strong> for your use case</li>
+<li><strong>Consider binary mode</strong> for non-text data (see Binary Mode section below)</li>
+<li><strong>Use JSON output</strong> for structured data processing</li>
+</ol>
+<h2 id="binary-mode">Binary Mode</h2>
+<p>Binary mode allows you to process raw binary data without Unicode processing, which is essential for:
+- <strong>Binary files</strong> (executables, images, compressed files)
+- <strong>Network data</strong> (raw packet analysis)
+- <strong>Memory dumps</strong> (forensic analysis)
+- <strong>Data that should not be Unicode-processed</strong></p>
+<h3 id="basic-binary-mode-usage">Basic Binary Mode Usage</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Process as binary data (no Unicode processing)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;binary_data.grep(&#39;pattern&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;binary_data&quot;</span><span class="p">:</span> <span class="sa">b</span><span class="s2">&quot;Hello</span><span class="se">\x00</span><span class="s2">World&quot;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>  <span class="c1"># Convert bytes to string</span>
+<span class="p">})</span>
+
+<span class="c1"># Binary mode with hex patterns</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;binary_data.grep(r&#39;</span><span class="se">\\</span><span class="s2">x48</span><span class="se">\\</span><span class="s2">x65</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x6f&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;binary_data&quot;</span><span class="p">:</span> <span class="sa">b</span><span class="s2">&quot;Hello</span><span class="se">\x00</span><span class="s2">World&quot;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;Hello&#39;] - Find &quot;Hello&quot; using hex representation</span>
+
+<span class="c1"># Binary mode with custom delimiters (null bytes)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;binary_data.grep(r&#39;data</span><span class="se">\\</span><span class="s2">d+&#39;, &#39;o&#39;, &#39;</span><span class="se">\\</span><span class="s2">x00&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;binary_data&quot;</span><span class="p">:</span> <span class="s2">&quot;data1</span><span class="se">\x00</span><span class="s2">data2</span><span class="se">\x00</span><span class="s2">data3&quot;</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;data1&#39;, &#39;data2&#39;, &#39;data3&#39;] - Using null bytes as delimiters</span>
+</code></pre></div>
+<h3 id="binary-vs-unicode-mode-comparison">Binary vs Unicode Mode Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Unicode Mode (Default)</th>
+<th>Binary Mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Processing</strong></td>
+<td>Full Unicode normalization and case folding</td>
+<td>Raw byte processing</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Slower due to Unicode overhead</td>
+<td>Faster for binary data</td>
+</tr>
+<tr>
+<td><strong>Memory</strong></td>
+<td>Higher due to normalization</td>
+<td>Lower memory usage</td>
+</tr>
+<tr>
+<td><strong>Use case</strong></td>
+<td>Text files, user input</td>
+<td>Binary files, network data</td>
+</tr>
+</tbody>
+</table>
+<h3 id="common-binary-patterns">Common Binary Patterns</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Find null bytes in binary data</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;binary_data.grep(r&#39;</span><span class="se">\\</span><span class="s2">x00&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;binary_data&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello</span><span class="se">\x00</span><span class="s2">World</span><span class="se">\x00</span><span class="s2">Test&quot;</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;&#39;, &#39;&#39;, &#39;&#39;] - All null bytes found</span>
+
+<span class="c1"># Find specific byte sequences (PNG header)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;file_data.grep(r&#39;</span><span class="se">\\</span><span class="s2">x89</span><span class="se">\\</span><span class="s2">x50</span><span class="se">\\</span><span class="s2">x4e</span><span class="se">\\</span><span class="s2">x47&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;file_data&quot;</span><span class="p">:</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x89</span><span class="s2">PNG</span><span class="se">\r\n\x1a\n</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;PNG&#39;] - PNG file header</span>
+
+<span class="c1"># Find text within binary data</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;binary_data.grep(&#39;Hello&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;binary_data&quot;</span><span class="p">:</span> <span class="sa">b</span><span class="s2">&quot;Hello</span><span class="se">\x00</span><span class="s2">World&quot;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;Hello&#39;] - Raw byte matching</span>
+
+<span class="c1"># Find HTTP headers in network data</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;network_data.grep(r&#39;HTTP/[0-9.]+&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;network_data&quot;</span><span class="p">:</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">HTTP/2.0 404 Not Found&quot;</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;HTTP/1.1&#39;, &#39;HTTP/2.0&#39;] - HTTP version strings</span>
+</code></pre></div>
+<h3 id="binary-mode-with-different-options">Binary Mode with Different Options</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Binary mode with JSON output</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;binary_data.grep(r&#39;</span><span class="se">\\</span><span class="s2">x48</span><span class="se">\\</span><span class="s2">x65</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x6f&#39;, &#39;oj&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;binary_data&quot;</span><span class="p">:</span> <span class="sa">b</span><span class="s2">&quot;Hello</span><span class="se">\x00</span><span class="s2">World&quot;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="c1"># Result: [{&quot;match&quot;:&quot;Hello&quot;,&quot;offset&quot;:0,&quot;line&quot;:1}]</span>
+
+<span class="c1"># Binary mode with context lines</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;binary_data.grep(&#39;error&#39;, &#39;A2B1&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;binary_data&quot;</span><span class="p">:</span> <span class="s2">&quot;line1</span><span class="se">\n</span><span class="s2">error</span><span class="se">\n</span><span class="s2">line3</span><span class="se">\n</span><span class="s2">line4&quot;</span>
+<span class="p">})</span>
+<span class="c1"># Result: Context lines around &quot;error&quot; matches</span>
+
+<span class="c1"># Binary mode with custom delimiter and context</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;binary_data.grep(&#39;data&#39;, &#39;A1B1&#39;, &#39;</span><span class="se">\\</span><span class="s2">x00&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;binary_data&quot;</span><span class="p">:</span> <span class="s2">&quot;context1</span><span class="se">\x00</span><span class="s2">data</span><span class="se">\x00</span><span class="s2">context2&quot;</span>
+<span class="p">})</span>
+<span class="c1"># Result: Context around &quot;data&quot; matches, using null delimiter</span>
+</code></pre></div>
+<h3 id="real-world-binary-processing-examples">Real-World Binary Processing Examples</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Extract strings from executable files</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;executable.bin&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">executable_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;executable_data.grep(r&#39;[</span><span class="se">\\</span><span class="s2">x20-</span><span class="se">\\</span><span class="s2">x7e]{4,}&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;executable_data&quot;</span><span class="p">:</span> <span class="n">executable_data</span>
+<span class="p">})</span>
+<span class="c1"># Result: All printable ASCII strings 4+ characters long</span>
+
+<span class="c1"># Find file signatures</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;file.bin&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">file_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;file_data.grep(r&#39;</span><span class="se">\\</span><span class="s2">x89</span><span class="se">\\</span><span class="s2">x50</span><span class="se">\\</span><span class="s2">x4e</span><span class="se">\\</span><span class="s2">x47</span><span class="se">\\</span><span class="s2">x0d</span><span class="se">\\</span><span class="s2">x0a</span><span class="se">\\</span><span class="s2">x1a</span><span class="se">\\</span><span class="s2">x0a&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;file_data&quot;</span><span class="p">:</span> <span class="n">file_data</span>
+<span class="p">})</span>
+<span class="c1"># Result: PNG file signature if present</span>
+
+<span class="c1"># Extract HTTP headers from network capture</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;network_data.grep(r&#39;^[A-Za-z-]+: .*$&#39;, &#39;o&#39;, &#39;</span><span class="se">\\</span><span class="s2">r</span><span class="se">\\</span><span class="s2">n&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;network_data&quot;</span><span class="p">:</span> <span class="s2">&quot;Content-Type: text/html</span><span class="se">\r\n</span><span class="s2">User-Agent: Mozilla</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span>
+<span class="p">})</span>
+<span class="c1"># Result: Individual HTTP header lines</span>
+
+<span class="c1"># Find specific byte patterns in memory dump</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;memory_dump.grep(r&#39;</span><span class="se">\\</span><span class="s2">x48</span><span class="se">\\</span><span class="s2">x65</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x6f</span><span class="se">\\</span><span class="s2">x20</span><span class="se">\\</span><span class="s2">x57</span><span class="se">\\</span><span class="s2">x6f</span><span class="se">\\</span><span class="s2">x72</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x64&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;memory_dump&quot;</span><span class="p">:</span> <span class="sa">b</span><span class="s2">&quot;Hello World&quot;</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="c1"># Result: [&#39;Hello World&#39;] - Exact byte sequence match</span>
+</code></pre></div>
+<h3 id="working-with-binary-data-in-python">Working with Binary Data in Python</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Convert bytes to string for Grapa processing</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bytes_to_grapa_string</span><span class="p">(</span><span class="n">binary_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert bytes to string format that Grapa can process&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">binary_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>  <span class="c1"># Preserves all byte values</span>
+
+<span class="c1"># Convert string back to bytes</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">grapa_string_to_bytes</span><span class="p">(</span><span class="n">grapa_string</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert Grapa string back to bytes&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">grapa_string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+
+<span class="c1"># Example: Process binary file</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;binary_file.bin&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">binary_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># Convert to Grapa-compatible string</span>
+<span class="n">grapa_binary</span> <span class="o">=</span> <span class="n">bytes_to_grapa_string</span><span class="p">(</span><span class="n">binary_data</span><span class="p">)</span>
+
+<span class="c1"># Process with binary mode</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;grapa_binary.grep(r&#39;</span><span class="se">\\</span><span class="s2">x48</span><span class="se">\\</span><span class="s2">x65</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x6c</span><span class="se">\\</span><span class="s2">x6f&#39;, &#39;o&#39;, &#39;&#39;, &#39;&#39;, &#39;BINARY&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;grapa_binary&quot;</span><span class="p">:</span> <span class="n">grapa_binary</span>
+<span class="p">})</span>
+
+<span class="c1"># Convert back to bytes if needed</span>
+<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+    <span class="n">matched_bytes</span> <span class="o">=</span> <span class="n">grapa_string_to_bytes</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<h3 id="performance-considerations_1">Performance Considerations</h3>
+<ul>
+<li><strong>Binary mode is faster</strong> for binary data since it skips Unicode processing</li>
+<li><strong>Use binary mode</strong> when you know your data is binary or when Unicode processing is not needed</li>
+<li><strong>Memory usage is lower</strong> in binary mode due to no normalization overhead</li>
+<li><strong>Pattern matching is byte-exact</strong> in binary mode</li>
+</ul>
+<h3 id="when-to-use-binary-mode">When to Use Binary Mode</h3>
+<p><strong>Use Binary Mode When:</strong>
+- Processing executable files, images, or compressed data
+- Analyzing network packets or binary protocols
+- Working with memory dumps or forensic data
+- Performance is critical and Unicode features aren't needed
+- You need exact byte-level pattern matching</p>
+<p><strong>Use Unicode Mode When:</strong>
+- Processing text files or user input
+- Working with international text
+- Need Unicode normalization or case folding
+- Processing data that may contain Unicode characters</p>
+<h2 id="error-handling">Error Handling</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Invalid regex pattern</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;text&quot;.grep(&quot;(&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Regex error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Invalid normalization</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;text&quot;.grep(&quot;pattern&quot;, &quot;&quot;, &quot;</span><span class="se">\\</span><span class="s1">n&quot;, &quot;INVALID&quot;, &quot;UNICODE&quot;)&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="zero-length-match-and-empty-string-output">Zero-Length Match and Empty String Output</h2>
+<blockquote>
+<p><strong>Update (2024-12):</strong> Zero-length matches and explicit empty strings in arrays are now correctly output as <code>""</code> (empty string), never as <code>null</code>. This matches ripgrep's behavior and ensures round-trip consistency and correct scripting semantics. The previous null output bug has been resolved.</p>
+</blockquote>
+<h3 id="example-zero-length-match">Example: Zero-Length Match</h3>
+<div class="highlight"><pre><span></span><code><span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;a</span><span class="se">\n</span><span class="s1">b</span><span class="se">\n</span><span class="s1">&quot;.grep(&quot;^&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&quot;&quot;, &quot;a&quot;, &quot;&quot;, &quot;b&quot;, &quot;&quot;]</span>
+</code></pre></div>
+<h3 id="example-array-literal-with-empty-string">Example: Array Literal with Empty String</h3>
+<div class="highlight"><pre><span></span><code><span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;[1, &quot;&quot;, 2]&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [1, &quot;&quot;, 2]</span>
+</code></pre></div>
+<h2 id="test-coverage-and-regression-testing">Test Coverage and Regression Testing</h2>
+<blockquote>
+<p><strong>Update (2024-12):</strong> The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See <a href="../../docs/TESTING.md">Testing Documentation</a> for details.</p>
+</blockquote>
+<h2 id="comparison-with-other-tools">Comparison with Other Tools</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Grapa Grep</th>
+<th>Python re</th>
+<th>grep</th>
+<th>ripgrep</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unicode support</td>
+<td>✅ Full</td>
+<td>✅ Basic</td>
+<td>❌ Limited</td>
+<td>✅ Good</td>
+</tr>
+<tr>
+<td>Diacritic-insensitive</td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+<td>❌ No</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td>Named groups</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>JSON output</td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td>Context lines</td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><strong>Parallel processing</strong></td>
+<td>✅ <strong>11x speedup</strong></td>
+<td>❌ <strong>Single-threaded</strong></td>
+<td>✅ Fast</td>
+<td>✅ Very Fast</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>✅ <strong>Very Fast</strong></td>
+<td>✅ Fast</td>
+<td>✅ Fast</td>
+<td>✅ Very Fast</td>
+</tr>
+</tbody>
+</table>
+<h2 id="integration-examples">Integration Examples</h2>
+<h3 id="file-processing">File Processing</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Read file and process with grep</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;data.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># Find all email addresses</span>
+<span class="n">emails</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;content.grep(r&#39;[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+</span><span class="se">\\</span><span class="s2">.[a-zA-Z]{2,}&#39;, &#39;o&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span>
+<span class="p">})</span>
+
+<span class="c1"># Find lines with context</span>
+<span class="n">matches</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;content.grep(r&#39;error|warning|critical&#39;, &#39;A2B1&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="data-analysis">Data Analysis</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Extract structured data</span>
+<span class="n">log_data</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">2024-01-15 10:30:15 INFO User login successful</span>
+<span class="s2">2024-01-15 10:31:22 ERROR Database connection failed</span>
+<span class="s2">2024-01-15 10:32:45 WARN High memory usage detected</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Extract timestamps and log levels</span>
+<span class="n">entries</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;log_data.grep(r&#39;(?P&lt;timestamp&gt;</span><span class="se">\\</span><span class="s2">d</span><span class="si">{4}</span><span class="s2">-</span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2">-</span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2"> </span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2">:</span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2">:</span><span class="se">\\</span><span class="s2">d</span><span class="si">{2}</span><span class="s2">) (?P&lt;level&gt;</span><span class="se">\\</span><span class="s2">w+) (?P&lt;message&gt;.*)&#39;, &#39;oj&#39;);&quot;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s2">&quot;log_data&quot;</span><span class="p">:</span> <span class="n">log_data</span>
+<span class="p">})</span>
+
+<span class="c1"># Result: [{&quot;timestamp&quot;:&quot;2024-01-15 10:30:15&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;message&quot;:&quot;User login successful&quot;,...}, ...]</span>
+</code></pre></div>
+<p>For more detailed information about grep functionality, see the main <a href="obj/grep_python.md">Grep Documentation</a>. </p>
+<h2 id="example-test-file">Example Test File</h2>
+<p>See <code>test/test_grep_python_examples.py</code> for a runnable example of grep usage from Python. </p>
+<p>For detailed grep documentation, see <a href="../grep/">Grep Documentation</a>.</p>
+<h2 id="feature-comparison-and-limitations">Feature Comparison and Limitations</h2>
+<p>For a comprehensive comparison of Grapa grep features with other tools like ripgrep, GNU grep, and Python's <code>re</code> module, including detailed feature matrices and use case recommendations, see the <a href="../grep/">Main Grep Documentation</a>.</p>
+<p>The Python interface provides access to all Grapa grep features, including:
+- ✅ <strong>Full Unicode support</strong> with grapheme clusters and normalization
+- ✅ <strong>Advanced regex features</strong> (atomic groups, lookarounds, possessive quantifiers)
+- ✅ <strong>Diacritic-insensitive matching</strong> (unique to Grapa)
+- ✅ <strong>JSON output</strong> with named groups and metadata
+- ✅ <strong>Context lines</strong> and flexible output options
+- ✅ <strong>Massive performance gains</strong> with parallel processing (up to 11x speedup over Python re)</p>
+<p><strong>Note:</strong> All search strategy features have functional equivalents in Grapa grep. Smart-case matching is achieved by using "i" flag for lowercase patterns and no flag for uppercase patterns. Column numbers are available via byte offsets with the "b" option. File handling features are intentionally handled by the Grapa language environment rather than within the grep function itself, providing more flexibility and control. </p>
+<h2 id="ripgrep-compatibility">Ripgrep Compatibility</h2>
+<p><strong>✅ FULL RIPGREP PARITY ACHIEVED</strong> - Grapa grep has achieved complete parity with ripgrep for all in-memory/streaming features (excluding file system features).</p>
+<h3 id="supported-features">Supported Features</h3>
+<p>All core grep functionality is fully implemented and tested:
+- ✅ <strong>Context lines</strong> with proper merging and separators
+- ✅ <strong>Match-only output</strong> with comprehensive Unicode support
+- ✅ <strong>Case-insensitive and diacritic-insensitive matching</strong>
+- ✅ <strong>Word boundaries, column numbers, and color output</strong>
+- ✅ <strong>Custom delimiters and Unicode normalization</strong>
+- ✅ <strong>Parallel processing and performance optimizations</strong>
+- ✅ <strong>Graceful error handling and robust edge case coverage</strong></p>
+<h3 id="production-ready">Production Ready</h3>
+<p>Grapa grep is production-ready and provides:
+- <strong>Robust error handling</strong> - Invalid patterns return empty results instead of crashing
+- <strong>High performance</strong> - JIT compilation, parallel processing, and fast path optimizations
+- <strong>Complete Unicode support</strong> - Full Unicode property and script support
+- <strong>Comprehensive testing</strong> - All features thoroughly tested with edge cases
+- <strong>Ripgrep compatibility</strong> - Matches ripgrep behavior for all supported features</p>
+<h3 id="known-limitations">Known Limitations</h3>
+<p><strong>File System Features:</strong>
+- ❌ File searching (not implemented by design)
+- ❌ Directory traversal (not implemented by design)</p>
+<p><strong>Scripting Layer Issues:</strong>
+- ⚠️ Unicode string functions (<code>len()</code>, <code>ord()</code>) count bytes not characters
+- ⚠️ Null-data mode limited by string parser (<code>\x00</code> not converted) </p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>

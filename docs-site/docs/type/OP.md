@@ -4,7 +4,54 @@
 Design Influences:
 Grapa's $OP and $CODE types are inspired by Lisp's list-based, lambda/bytecode execution model, enabling flexible, composable, and introspectable code structures. This design supports advanced meta-programming and dynamic language features, making Grapa inviting and usable for a broad audience—including Python users, educators, and language researchers. The overarching goal is to make Grapa (and GrapaPy) as accessible and powerful as possible for the widest range of users.
 */
-This is the core type at the base of grapa. It does not have a class associated. Consider it as both a high level version of byte code (but represented as a list) and similar to a lambda in other languages. It's a variable that includes executable instructions. 
+
+**$OP is Grapa's core execution type** - it represents both compiled code and executable functions. Unlike traditional bytecode, $OP objects are human-readable execution trees that can be directly created, manipulated, and executed. This makes Grapa's dynamic code execution capabilities superior to most other languages.
+
+## What is $OP?
+
+$OP is Grapa's equivalent of both a function and compiled bytecode, but represented as an executable tree structure. It's the foundation of Grapa's meta-programming capabilities, allowing you to:
+
+- **Compile code at runtime**: `op()("script")` creates an executable $OP
+- **Execute dynamic code**: `$sys().eval("expression")` evaluates strings as code
+- **Manipulate execution trees**: Direct access to the compiled representation
+- **Create functions from data**: Generate code based on configuration or user input
+- **Optimize at compile time**: Constant folding and expression simplification
+
+## Core Capabilities
+
+### Dynamic Code Execution
+```grapa
+/* Direct string-to-function compilation */
+func = op()("'Hello, World!'.echo();");
+func();  /* Output: Hello, World! */
+
+/* System-level evaluation */
+result = $sys().eval("x + y", {"x": 5, "y": 3});
+result.echo();  /* 8 */
+
+/* Compiled execution for performance */
+compiled = $sys().compile("input * 2 + offset");
+result = $sys().eval(compiled, {"input": 10, "offset": 5});
+result.echo();  /* 25 */
+```
+
+### Meta-Programming
+```grapa
+/* Generate functions from configuration */
+operations = ["add", "sub", "mul"];
+funcs = {};
+i = 0;
+while (i < operations.len()) {
+    op_name = operations.get(i);
+    code = "a " + op_name + " b";
+    funcs[op_name] = op("a"=0, "b"=0)(code);
+    i += 1;
+}
+
+/* Execute generated functions */
+funcs["add"](5, 3).echo();  /* 8 */
+funcs["mul"](5, 3).echo();  /* 15 */
+``` 
 
 Understanding the inner workings of $OP is not necessary to use grapa - and this section can be skipped. This though is core to how grapa works, and an understanding is needed in order to extend the syntax of the language to support your own domain specific language extensions.
 
