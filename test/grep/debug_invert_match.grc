@@ -1,0 +1,27 @@
+/* Debug invert match issue */
+
+"=== DEBUG INVERT MATCH ===\n".echo();
+
+input = "Hello world\nGoodbye world\nHello universe";
+pattern = "Hello";
+options = "ov";  /* match-only + invert */
+
+"Input: " + input.str() + "\n".echo();
+"Pattern: " + pattern.str() + "\n".echo();
+"Options: " + options.str() + "\n".echo();
+
+result = input.grep(pattern, options);
+
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type().str() + "\n".echo();
+"Result length: " + result.len().str() + "\n".echo();
+
+if (result.len() > 0) {
+    "Result[0]: " + result[0].str() + "\n".echo();
+    "Result[0] type: " + result[0].type().str() + "\n".echo();
+    "Result[0] contains 'Goodbye': " + (result[0].find("Goodbye") >= 0).str() + "\n".echo();
+    "Result[0].find('Goodbye'): " + result[0].find("Goodbye").str() + "\n".echo();
+}
+
+"Expected: [\"Goodbye world\"]\n".echo();
+"Test condition: " + (result.len() == 1 && result[0].find("Goodbye") >= 0).str() + "\n".echo(); 

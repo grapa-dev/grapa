@@ -174,6 +174,7 @@ See [Basic Syntax Guide](syntax/basic_syntax.md) for empirical test results and 
 - Use `.range()` with `.reduce()` for for-loop-like accumulation or collection tasks
 - Use `.range().map()` and `.range().filter()` for parallel sequence generation and filtering. For large arrays, always specify a thread count to avoid too many threads
 - Use `.iferr()` for simple error fallback; use `if (result.type() == $ERR)` only for explicit error handling
+- **Count-only grep returns array**: `text.grep(pattern, "c")` returns `["2"]` not `2` - use `text.grep(pattern, "c")[0].int()` to get the number
 
 ## Example Code Pairs
 

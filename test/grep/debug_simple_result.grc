@@ -1,0 +1,16 @@
+/* Debug simple result */
+
+"=== DEBUG SIMPLE RESULT ===\n".echo();
+
+input = "Hello world\nGoodbye world\nHello universe";
+result = input.grep("Hello", "ov");
+
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type().str() + "\n".echo();
+"Result length: " + result.len().str() + "\n".echo();
+
+if (result.len() > 0) {
+    "Result[0]: " + result[0].str() + "\n".echo();
+} else {
+    "Result is empty\n".echo();
+} 

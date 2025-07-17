@@ -28,7 +28,7 @@ limitations under the License.
 #define PCRE2_STATIC
 #endif
 
-//#define GRAPA_DEBUG_PRINTF
+#define GRAPA_DEBUG_PRINTF
 
 
 /*

@@ -7,7 +7,7 @@
 "=== SIMPLE RIPGREP COMPARISON TEST SUITE ===\n".echo();
 "Validating Grapa grep behavior against ripgrep expectations\n".echo();
 "Test started at: ".echo();
-$sys().time().echo();
+sys().time().echo();
 "\n".echo();
 
 test_count = 0;
@@ -37,7 +37,7 @@ if (result.len() == 2) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 1.2: Case-insensitive matching */
 test_count = test_count + 1;
@@ -57,7 +57,7 @@ if (result.len() == 3) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 1.3: Invert match */
 test_count = test_count + 1;
@@ -65,7 +65,8 @@ test_count = test_count + 1;
 input = "match1\nnomatch\nmatch2";
 pattern = "match";
 result = input.grep(pattern, "v");
-expected = []; // Updated: grep/ripgrep exclude any line containing the pattern as a substring
+expected = [];
+/* Updated: grep/ripgrep exclude any line containing the pattern as a substring */
 ("Input: " + input + "\n").echo();
 ("Pattern: " + pattern + "\n").echo();
 ("Options: v\n").echo();
@@ -77,7 +78,7 @@ if (result.len() == 0) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 1.4: Count only */
 test_count = test_count + 1;
@@ -97,7 +98,7 @@ if (result.len() == 1 && result[0] == "4") {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* ============================================================================
  * 2. UNICODE SUPPORT TESTS
@@ -123,7 +124,7 @@ if (result.len() == 3) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 2.2: Unicode properties */
 test_count = test_count + 1;
@@ -143,7 +144,7 @@ if (result.len() == 3) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 2.3: Grapheme clusters */
 test_count = test_count + 1;
@@ -163,7 +164,7 @@ if (result.len() == 4) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* ============================================================================
  * 3. CONTEXT LINES TESTS
@@ -189,7 +190,7 @@ if (result.len() == 2 && result[0] == "line2" && result[1] == "line3") {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 3.2: Before context */
 test_count = test_count + 1;
@@ -209,7 +210,7 @@ if (result.len() == 2 && result[0] == "line1" && result[1] == "line2") {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* ============================================================================
  * 4. OUTPUT FORMATS TESTS
@@ -235,7 +236,7 @@ if (result.len() == 4) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 4.2: Column numbers */
 test_count = test_count + 1;
@@ -249,13 +250,13 @@ expected = ["1:foo"];
 ("Options: oT\n").echo();
 ("Result: " + result.str() + "\n").echo();
 ("Expected: " + expected.str() + "\n").echo();
-if (result.len() == 1 && result[0].find("1:foo") != -1) {
+if (result.len() == 1 && result[0].grep("1:foo", "").len() > 0) {
     "Status: PASS\n".echo();
     pass_count = pass_count + 1;
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* ============================================================================
  * 5. CUSTOM DELIMITER TESTS
@@ -282,7 +283,7 @@ if (result.len() == 3) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 5.2: Custom delimiter with context */
 test_count = test_count + 1;
@@ -303,7 +304,7 @@ if (result.len() == 2 && result[0] == "line2" && result[1] == "line3") {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* ============================================================================
  * 6. ERROR HANDLING TESTS
@@ -328,17 +329,18 @@ if (result.len() == 0) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 6.2: Empty pattern */
-// Note: In grep/ripgrep, an empty pattern matches every position in every line, so for each line you get an empty string match.
-// For input with N lines, expect N empty strings in the result.
+/* Note: In grep/ripgrep, an empty pattern matches every position in every line, so for each line you get an empty string match.
+ * For input with N lines, expect N empty strings in the result.
+ */
 test_count = test_count + 1;
 ("--- Test " + test_count.str() + ": Empty pattern ---\n").echo();
 input = "Hello world";
 pattern = "";
 result = input.grep(pattern, "");
-expected = [""]; // For a single line, expect one empty string
+expected = [""]; /* For a single line, expect one empty string */
 ("Input: " + input + "\n").echo();
 ("Pattern: " + pattern + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
@@ -349,7 +351,7 @@ if (result.len() == 1 && result[0] == "") {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* ============================================================================
  * 7. PERFORMANCE VALIDATION TESTS
@@ -365,11 +367,11 @@ i = 1;
 while (i <= 1000) {
     large_input = large_input + "line" + i.str() + "\n";
     i = i + 1;
-};
+}
 
-start_time = $sys().time();
+start_time = sys().time();
 result = large_input.grep("line500", "");
-end_time = $sys().time();
+end_time = sys().time();
 duration = end_time - start_time;
 
 ("Input size: " + large_input.len().str() + " characters\n").echo();
@@ -381,14 +383,14 @@ if (result.len() == 1) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* Test 7.2: Parallel processing validation */
 test_count = test_count + 1;
 ("--- Test " + test_count.str() + ": Parallel processing ---\n").echo();
-start_time = $sys().time();
+start_time = sys().time();
 result_parallel = large_input.grep("line", "o", "", "", "", 4);
-end_time = $sys().time();
+end_time = sys().time();
 duration_parallel = end_time - start_time;
 
 ("Parallel search time (4 workers): " + duration_parallel.str() + " seconds\n").echo();
@@ -398,7 +400,7 @@ if (result_parallel.len() == 1000) {
 } else {
     "Status: FAIL\n".echo();
     fail_count = fail_count + 1;
-};
+}
 
 /* ============================================================================
  * SUMMARY AND RESULTS
@@ -414,8 +416,8 @@ if (fail_count == 0) {
     "✅ ALL TESTS PASSED - Grapa grep shows excellent ripgrep compatibility!\n".echo();
 } else {
     ("⚠️ " + fail_count.str() + " tests failed - review needed\n").echo();
-};
+}
 
 "Test completed at: ".echo();
-$sys().time().echo();
+sys().time().echo();
 "\n".echo(); 

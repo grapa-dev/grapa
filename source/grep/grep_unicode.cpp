@@ -591,7 +591,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
             printf("DEBUG: Count-only mode - returning count: %zu\n", extracted_matches.size());
             #endif // DEBUG_END
-            // Grapa always returns arrays, even for count-only mode, for consistency with all other grep outputs
+            // For count-only mode, return the count as a single item in an array
             return {std::to_string(extracted_matches.size())};
         }
         
@@ -662,20 +662,69 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                     }
                 }
             } else {
-                // Original logic for newline delimiters
-                size_t last_end = 0;
+                // For newline delimiters, split by newlines and check each line
+                std::vector<std::string> segments;
+                size_t start = 0, end;
+                while ((end = working_input.find('\n', start)) != std::string::npos) {
+                    segments.push_back(working_input.substr(start, end - start));
+                    start = end + 1;
+                }
+                if (start < working_input.size()) {
+                    segments.push_back(working_input.substr(start));
+                }
+                
+                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                printf("DEBUG: Split into %zu segments\n", segments.size());
+                for (size_t i = 0; i < segments.size(); ++i) {
+                    printf("DEBUG: segment[%zu]: '%s'\n", i, segments[i].c_str());
+                }
+                #endif // DEBUG_END
+                
+                // Find which segments contain matches
+                std::set<size_t> matching_segments;
                 for (const auto& pos : match_positions) {
                     if (pos.offset != static_cast<size_t>(-1)) {
-                        if (pos.offset > last_end) {
-                            std::string non_match = working_input.substr(last_end, pos.offset - last_end);
-                            non_matches.push_back(non_match);
+                        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                        printf("DEBUG: Processing match at offset %zu, length %zu\n", pos.offset, pos.length);
+                        #endif // DEBUG_END
+                        
+                        // Find which segment this match is in
+                        size_t current_offset = 0;
+                        for (size_t seg_num = 0; seg_num < segments.size(); ++seg_num) {
+                            size_t segment_length = segments[seg_num].length() + 1; // +1 for newline
+                            
+                            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                            printf("DEBUG: segment[%zu] spans offset %zu to %zu\n", seg_num, current_offset, current_offset + segment_length);
+                            #endif // DEBUG_END
+                            
+                            if (pos.offset >= current_offset && pos.offset < current_offset + segment_length) {
+                                matching_segments.insert(seg_num);
+                                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                                printf("DEBUG: Match found in segment %zu\n", seg_num);
+                                #endif // DEBUG_END
+                                break;
+                            }
+                            current_offset += segment_length;
                         }
-                        last_end = (pos.offset + pos.length > last_end) ? (pos.offset + pos.length) : last_end;
                     }
                 }
-                if (last_end < working_input.size()) {
-                    std::string non_match = working_input.substr(last_end);
-                    non_matches.push_back(non_match);
+                
+                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                printf("DEBUG: Matching segments: ");
+                for (size_t seg : matching_segments) {
+                    printf("%zu ", seg);
+                }
+                printf("\n");
+                #endif // DEBUG_END
+                
+                // Return segments that don't contain matches
+                for (size_t i = 0; i < segments.size(); ++i) {
+                    if (matching_segments.find(i) == matching_segments.end()) {
+                        non_matches.push_back(segments[i]);
+                        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                        printf("DEBUG: Adding non-match segment %zu: '%s'\n", i, segments[i].c_str());
+                        #endif // DEBUG_END
+                    }
                 }
             }
             
@@ -744,7 +793,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             std::set<size_t> context_segments;
             for (size_t match_segment : match_segments) {
                 // Add segments before
-                for (int i = 1; i <= before && match_segment - i >= 0; ++i) {
+                for (int i = 1; i <= before && i <= static_cast<int>(match_segment); ++i) {
                     context_segments.insert(match_segment - i);
                 }
                 // Add the match segment itself

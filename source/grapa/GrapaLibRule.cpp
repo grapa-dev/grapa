@@ -16143,6 +16143,7 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 			result->vQueue = new GrapaRuleQueue();
 			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("error"), GrapaCHAR("Invalid regex pattern")));
 		}
+
 		else if (options.find('j') != std::string::npos) {
 			if (matches.empty()) {
 				result = new GrapaRuleEvent();

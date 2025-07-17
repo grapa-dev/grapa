@@ -234,6 +234,12 @@ result = input.grep(r"cafe", "di");
 | `d` | Deduplicate results | `"text".grep("pattern", "d")` |
 | `g` | Group results per line | `"text".grep("pattern", "g")` |
 
+**Important: Count-Only Behavior**
+- The count-only option (`c`) returns the count as a **single item in an array**, not as a number
+- Example: `"Hello world\nGoodbye world".grep("Hello", "c")` returns `["2"]` not `2`
+- To get the count as a number: `"Hello world\nGoodbye world".grep("Hello", "c")[0].int()`
+- This design maintains consistency with Grapa's array-based return values
+
 ## Additional Parameters
 
 ### Unicode Normalization
@@ -444,20 +450,20 @@ input = "Header\nLine 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nFooter"
 
 /* After context (2 lines after match) */
 input.grep("Line 2", "A2")
-["Line 2\n", "Line 3\n", "Line 4\n"]
+["Line 2", "Line 3", "Line 4"]
 
 /* Before context (2 lines before match) */
 input.grep("Line 5", "B2")
-["Line 3\n", "Line 4\n", "Line 5\n"]
+["Line 3", "Line 4", "Line 5"]
 
 /* Combined context (1 line before and after) */
 input.grep("Line 4", "A1B1")
-["Line 3\n", "Line 4\n", "Line 5\n"]
+["Line 3", "Line 4", "Line 5"]
 
 /* Context merging - overlapping regions are automatically merged */
 input2 = "a\nb\nc\nd\ne\nf";
 input2.grep("c|d", "A1B1")
-["b\n", "c\n", "d\n", "e\n"]  /* Overlapping context merged into single block */
+["b", "c", "d", "e"]  /* Overlapping context merged into single block */
 ```
 
 **Context Merging**: Overlapping context regions are automatically merged into single blocks, ensuring all relevant context is shown without duplication. This matches ripgrep's behavior for optimal readability and prevents redundant context lines.
@@ -470,7 +476,7 @@ When multiple non-overlapping context blocks exist, they are separated by `--` l
 /* Multiple matches with context - separated by -- lines */
 input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
 input.grep("Line 2|Line 6", "A1B1")
-/* Result: ["Line 1\n", "Line 2\n", "Line 3\n", "--\n", "Line 5\n", "Line 6\n", "Line 7"] */
+/* Result: ["Line 1", "Line 2", "Line 3", "--", "Line 5", "Line 6", "Line 7"] */
 
 /* Context separators are not output in match-only mode */
 input.grep("Line 2|Line 6", "oA1B1")
@@ -478,7 +484,7 @@ input.grep("Line 2|Line 6", "oA1B1")
 
 /* JSON output uses --- as separator */
 input.grep("Line 2|Line 6", "jA1B1")
-/* Result: ["Line 1\n", "Line 2\n", "Line 3\n", "---", "Line 5\n", "Line 6\n", "Line 7"] */
+/* Result: ["Line 1", "Line 2", "Line 3", "---", "Line 5", "Line 6", "Line 7"] */
 ```
 
 **Note**: Context separators are only added between non-overlapping context blocks. When context blocks overlap or are adjacent, no separator is needed.

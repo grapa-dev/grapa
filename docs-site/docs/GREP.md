@@ -634,7 +634,7 @@ When multiple non-overlapping context blocks exist, they are separated by `--` l
 ```grapa
 input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
 input.grep("Line 2|Line 6", "A1B1")
-["Line 1\n", "Line 2\n", "Line 3\n", "--\n", "Line 5\n", "Line 6\n", "Line 7"]
+["Line 1", "Line 2", "Line 3", "--", "Line 5", "Line 6", "Line 7"]
 ```
 
 **Note**: Context separators are not output in match-only mode (`"o"` option) since only matches are returned.

@@ -1,0 +1,17 @@
+/* Debug .find() method */
+
+"=== DEBUG FIND METHOD ===\n".echo();
+
+result = ["Goodbye world"];
+
+"Result: " + result.str() + "\n".echo();
+"Result length: " + result.len().str() + "\n".echo();
+"Result[0]: " + result[0].str() + "\n".echo();
+"Result[0] type: " + result[0].type().str() + "\n".echo();
+
+find_result = result[0].find("Goodbye");
+"find_result: " + find_result.str() + "\n".echo();
+"find_result type: " + find_result.type().str() + "\n".echo();
+"find_result >= 0: " + (find_result >= 0).str() + "\n".echo();
+
+"Test condition: " + (result.len() == 1 && result[0].find("Goodbye") >= 0).str() + "\n".echo(); 

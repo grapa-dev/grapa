@@ -67,6 +67,8 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `map(f, arr)` | `arr.map(op(x) { f(x); })` |
 | `filter(f, arr)` | `arr.filter(op(x) { f(x); })` |
 | `reduce(f, arr, init)` | `arr.reduce(op(a, b) { f(a, b); }, init)` |
+| `re.findall(pattern, text)` | `text.grep(pattern, "o")` |
+| `len(re.findall(pattern, text))` | `text.grep(pattern, "c")[0].int()` |
 | `range(n)` | `(n).range(0,1)` |
 | `x = x + 1` | `x = x + 1;`<br>`x += 1;` (preferred) |
 | `s = s + "x"` | `s = s + "x";`<br>`s += "x";` (preferred) |
@@ -166,6 +168,7 @@ See [Basic Syntax Guide](syntax/basic_syntax.md) for empirical test results and 
 - Use `.range()` with `.reduce()` for for-loop-like accumulation or collection tasks
 - Use `.range().map()` and `.range().filter()` for parallel sequence generation and filtering. For large arrays, always specify a thread count to avoid too many threads
 - Use `.iferr()` for simple error fallback; use `if (result.type() == $ERR)` only for explicit error handling
+- **Count-only grep returns array**: `text.grep(pattern, "c")` returns `["2"]` not `2` - use `text.grep(pattern, "c")[0].int()` to get the number
 
 ## Example Code Pairs
 
