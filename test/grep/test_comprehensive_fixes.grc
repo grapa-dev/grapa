@@ -65,7 +65,7 @@ result1 = input1.grep("line", "o", "\n");
 "Pattern: 'line', Options: 'o', Delimiter: '\\n'\n".echo();
 (("Result: " + result1.str() + "\n")).echo();
 "Expected: ['line1', 'line2', 'line3'] (no trailing \\n)\n".echo();
-(("Status: " + (result1[0] == "line1" && result1[1] == "line2" && result1[2] == "line3" ? "PASS" : "FAIL") + "\n")).echo();
+(("Status: " + (result1.get(0) == "line1" && result1.get(1) == "line2" && result1.get(2) == "line3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
 /* Test with custom multi-character delimiter */
@@ -75,7 +75,7 @@ result2 = input2.grep("word", "o", "|||");
 "Pattern: 'word', Options: 'o', Delimiter: '|||'\n".echo();
 (("Result: " + result2.str() + "\n")).echo();
 "Expected: ['word1', 'word2', 'word3'] (no trailing |||)\n".echo();
-(("Status: " + (result2[0] == "word1" && result2[1] == "word2" && result2[2] == "word3" ? "PASS" : "FAIL") + "\n")).echo();
+(("Status: " + (result2.get(0) == "word1" && result2.get(1) == "word2" && result2.get(2) == "word3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
 /* Test 2: Multiline Patterns - All Flag Combinations */

@@ -432,7 +432,7 @@ input.grep("Line 2|Line 6", "A1B1")
 ["Line 2"]
 ```
 
-> **Warning:** Do not use Unicode combining marks (e.g., U+0301) as delimiters. Combining marks are intended to modify the preceding base character, forming a single grapheme cluster (e.g., 'a' + U+0301 = 'á'). Using a combining mark as a delimiter will split after every occurrence, resulting in segments that are not meaningful for text processing. See `test/debug_multiline_delimiter.grc` for an example and explanation.
+> **Warning:** Do not use Unicode combining marks (e.g., U+0301) as delimiters. Combining marks are intended to modify the preceding base character, forming a single grapheme cluster (e.g., 'a' + U+0301 = 'á'). Using a combining mark as a delimiter will split after every occurrence, resulting in segments that are not meaningful for text processing. See `test/grep/debug_multiline_delimiter.grc` for an example and explanation.
 
 ## Binary Mode
 

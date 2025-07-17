@@ -18,22 +18,25 @@
 - ✅ **Superior dynamic code execution** (human-readable execution trees)
 - ✅ **Runtime type safety** (no TypeScript compilation needed)
 
-> **Important: Access Patterns for .get() and Indexing (Tested, v0.0.39)**
+> **Important: Access Patterns for Data Types (Tested, v0.0.39)**
 >
-> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
-> |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |
-> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |
-> | $file     |      ✅      |     ❌      |        —         |      —       |
-> | $TABLE    |     ✅*      |     ❌      |        —         |      —       |
-> | $OBJ      |      ❌      |     ❌      |       ❌         |     ✅       |
+> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
+> |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
+> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
+> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $OBJ      |      ❌      |     ❌      |       ✅         |     ✅       |   ❌   |    ❌   |
+> | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
+> | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 >
 > *$TABLE .get() requires two arguments: key and field.
 >
-> - For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key).
-> - For $ARRAY, use bracket notation (e.g., arr[1]).
-> - Only $file and $TABLE support .get().
-> - This is based on direct testing in Grapa v0.0.39.
+> **Key Findings:**
+> - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
+> - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
+> - **Objects (class)**: Use `object.property` or `object[key]` for access
+> - **`.get()` method**: Only works on `$file` and `$TABLE` types
+> - **`.size()` method**: Not supported on any type (use `.len()` instead)
+> - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
 
 ---
 
@@ -82,8 +85,10 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
-> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` as of this writing.
+> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` (returns empty string).
 > - Use bracket and dot notation for `$ARRAY`, `$LIST`, and `$OBJ`.
+> - **Length**: Use `.len()` for arrays and lists, not `.size()`.
+> - **Keys**: For lists, iterate manually instead of using `.keys()`.
 > - If more objects support `.get()` in the future, this guide will be updated.
 
 > **Note:** `.get("key")` is only for `$file` (and possibly one other system object). For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (and `arr.get(index)` if supported).
@@ -145,13 +150,13 @@ value = table.get("user1", "name");   /* Correct */
 - Bracket and dot notation are NOT valid for $TABLE.
 
 > **Reference Table:**
-> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
-> |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |
-> | $file     |      ✓      |     ✗      |        —         |      —       |
-> | $TABLE    |     ✓*      |     ✗      |        —         |      —       |
-> | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
+> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
+> |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
+> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |   ✓   |    ✗   |
+> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |   ✗   |    ✗   |
+> | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
+> | $TABLE    |     ✓*      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > *$TABLE .get() requires two arguments: key and field.
 
 See [Basic Syntax Guide](syntax/basic_syntax.md) for empirical test results and future updates.

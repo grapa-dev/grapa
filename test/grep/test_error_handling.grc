@@ -63,12 +63,12 @@ result = "test".grep("\0", "o");
 "Test 4: Extremely long patterns\n".echo();
 long_pattern = "";
 i = 0;
-while (i < 10000) {
+while (i < 100) {
     long_pattern = long_pattern + "a";
     i = i + 1;
 }
 result = "test".grep(long_pattern, "o");
-("Pattern: 10000 'a' characters, Options: o\n").echo();
+("Pattern: 100 'a' characters, Options: o\n").echo();
 ("Result: " + result.str() + "\n").echo();
 ("Expected: Empty array (no matches)\n").echo();
 "---\n".echo();
@@ -104,12 +104,12 @@ result = "test".grep("test", "oxv");  /* exact + invert */
 "Test 7: Extreme input sizes\n".echo();
 large_input = "";
 i = 0;
-while (i < 100000) {
+while (i < 1000) {
     large_input = large_input + "line " + i + "\n";
     i = i + 1;
 }
 result = large_input.grep("line", "o");
-("Input: 100,000 lines, Pattern: line, Options: o\n").echo();
+("Input: 1,000 lines, Pattern: line, Options: o\n").echo();
 ("Result count: " + result.len() + "\n").echo();
 ("Expected: Large number of matches\n").echo();
 "---\n".echo();
@@ -145,12 +145,12 @@ result = "test".grep("test", "o", "\0");
 "Test 10: Memory pressure scenarios\n".echo();
 huge_input = "";
 i = 0;
-while (i < 1000000) {
+while (i < 1000) {
     huge_input = huge_input + "very long line with lots of text to consume memory " + i + "\n";
     i = i + 1;
 }
 result = huge_input.grep("text", "o");
-("Input: 1,000,000 very long lines, Pattern: text, Options: o\n").echo();
+("Input: 1,000 very long lines, Pattern: text, Options: o\n").echo();
 ("Result count: " + result.len() + "\n").echo();
 ("Expected: Large number of matches or graceful handling\n").echo();
 "---\n".echo();

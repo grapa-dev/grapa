@@ -1,0 +1,2 @@
+
+> **Note:** Grapa grep returns results as a structured array (list of strings), not a concatenated string. This allows for more precise, programmatic handling and affects edge cases (like empty pattern matches and invert matches). This is a deliberate design choice for language integration and should be considered when writing tests or integrating with other tools. 

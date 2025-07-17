@@ -8,27 +8,38 @@ tags:
 > **Canonical Reference:**
 > This file is the canonical, empirically tested reference for Grapa syntax and access patterns. All code in documentation and tests must comply with these rules. If you discover any new rules or exceptions, update this file immediately.
 
-> **Important: Access Patterns for .get() and Indexing (Tested, v0.0.39)**
+> **Important: Access Patterns for Data Types (Tested, v0.0.39)**
 >
-> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
-> |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |
-> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |
-> | $file     |      ✅      |     ❌      |        —         |      —       |
-> | $TABLE    |     ✅*      |     ❌      |        —         |      —       |
-> | $OBJ      |      ❌      |     ❌      |       ❌         |     ✅       |
+> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
+> |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
+> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
+> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $OBJ      |      ❌      |     ❌      |       ✅         |     ✅       |   ❌   |    ❌   |
+> | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
+> | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 >
 > *$TABLE .get() requires two arguments: key and field.
 >
-> - For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key).
-> - For $ARRAY, use bracket notation (e.g., arr[1]).
-> - Only $file and $TABLE support .get().
-> - This is based on direct testing in Grapa v0.0.39.
+> **Key Findings:**
+> - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
+> - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
+> - **Objects (class)**: Use `object.property` or `object[key]` for access
+> - **`.get()` method**: Only works on `$file` and `$TABLE` types
+> - **`.size()` method**: Not supported on any type (use `.len()` instead)
+> - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
+>
+> **Recommended Patterns:**
+> - For arrays: `array[index]` and `array.len()`
+> - For lists: `list[key]` (preferred) or `list.key`, and `list.len()`
+> - For objects: `object.property` (preferred) or `object[key]`
+> - Avoid `.get()`, `.size()`, and `.keys()` on arrays, lists, and objects
 
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
-> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` as of this writing.
+> - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` (returns empty string).
 > - Use bracket and dot notation for `$ARRAY`, `$LIST`, and `$OBJ`.
+> - **Length**: Use `.len()` for arrays and lists, not `.size()`.
+> - **Keys**: For lists, iterate manually instead of using `.keys()`.
 > - If more objects support `.get()` in the future, this guide will be updated.
 
 ---
@@ -104,11 +115,243 @@ while (i <= 5) {
 /* Process array elements */
 i = 0;
 while (i < array.len()) {
-    element = array.get(i);
+    element = array[i];  /* Use bracket notation for arrays */
     ("Element " + i.str() + ": " + element.str()).echo();
     i = i + 1;
 }
 ```
+
+### Sequence Generation with .range()
+
+Use `.range()` to generate sequences of numbers:
+
+```grapa
+/* Generate sequence 0 to 9 */
+seq = (10).range(0,1);  /* [0,1,2,3,4,5,6,7,8,9] */
+
+/* Generate sequence with custom start and step */
+seq = (10).range(1,2);  /* [1,3,5,7,9] */
+
+/* Use .range() with functional methods for iteration */
+sum = (10).range(0,1).reduce(op(acc, x) { acc += x; }, 0);  /* Sum 0-9 */
+
+/* Parallel processing with thread count */
+squares = (1000000).range(0,1).map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
+```
+
+- Use `.range()` instead of manual while loops for sequence generation
+- Combine with `.map()`, `.filter()`, `.reduce()` for functional iteration
+- Specify thread count for large arrays to avoid too many threads
+
+## Functional Programming Methods
+
+Grapa provides powerful functional programming methods for array and list processing:
+
+### .map() - Transform Elements
+
+```grapa
+/* Transform each element */
+numbers = [1, 2, 3, 4, 5];
+doubled = numbers.map(op(x) { x * 2; });  /* [2, 4, 6, 8, 10] */
+
+/* Transform with string operations */
+names = ["john", "jane", "bob"];
+uppercase = names.map(op(name) { name.upper(); });  /* ["JOHN", "JANE", "BOB"] */
+
+/* Parallel processing with thread count */
+large_data = (1000000).range(0,1);
+squares = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
+```
+
+### .filter() - Select Elements
+
+```grapa
+/* Filter even numbers */
+numbers = [1, 2, 3, 4, 5, 6];
+evens = numbers.filter(op(x) { x % 2 == 0; });  /* [2, 4, 6] */
+
+/* Filter non-empty strings */
+lines = ["hello", "", "world", "", "test"];
+non_empty = lines.filter(op(line) { line.len() > 0; });  /* ["hello", "world", "test"] */
+
+/* Parallel filtering */
+large_data = (1000000).range(0,1);
+filtered = large_data.filter(op(x) { x % 2 == 0; }, 8);  /* Limit to 8 threads */
+```
+
+### .reduce() - Accumulate Values
+
+```grapa
+/* Sum all numbers */
+numbers = [1, 2, 3, 4, 5];
+sum = numbers.reduce(op(acc, x) { acc + x; }, 0);  /* 15 */
+
+/* Build a string */
+words = ["hello", "world", "test"];
+sentence = words.reduce(op(acc, word) { acc + " " + word; }, "");  /* " hello world test" */
+
+/* Collect even numbers */
+numbers = [1, 2, 3, 4, 5, 6];
+evens = numbers.reduce(op(acc, x) {
+    if (x % 2 == 0) { acc += x; };
+    acc;
+}, []);  /* [2, 4, 6] */
+```
+
+### Method Chaining
+
+Combine multiple functional methods:
+
+```grapa
+/* Filter, transform, then sum */
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+result = numbers
+    .filter(op(x) { x % 2 == 0; })      /* [2, 4, 6, 8, 10] */
+    .map(op(x) { x * x; })              /* [4, 16, 36, 64, 100] */
+    .reduce(op(acc, x) { acc + x; }, 0); /* 220 */
+
+/* Process with .range() */
+result = (10).range(0,1)
+    .filter(op(x) { x % 2 == 0; })      /* [0, 2, 4, 6, 8] */
+    .map(op(x) { x * x; })              /* [0, 4, 16, 36, 64] */
+    .reduce(op(acc, x) { acc + x; }, 0); /* 120 */
+```
+
+### Parallel Processing
+
+Functional methods support parallel processing for large datasets:
+
+```grapa
+/* Large dataset processing */
+data = (1000000).range(0,1);
+
+/* Parallel map with 8 threads */
+squares = data.map(op(x) { x * x; }, 8);
+
+/* Parallel filter with 8 threads */
+evens = data.filter(op(x) { x % 2 == 0; }, 8);
+
+/* Parallel reduce with 4 threads */
+sum = data.reduce(op(acc, x) { acc + x; }, 0, 4);
+```
+
+**Important Notes:**
+- `.map()` and `.filter()` are parallel by default for large arrays
+- Always specify thread count for very large datasets to avoid too many threads
+- `.reduce()` can be parallel but requires careful consideration of the operation
+- Method chaining is efficient and readable
+
+## Data Types and Access Patterns
+
+### Array Type (`$ARRAY`)
+
+Arrays are created with square brackets and support index-based access:
+
+```grapa
+/* Create arrays */
+numbers = [1, 2, 3, 4, 5];
+names = ["Alice", "Bob", "Charlie"];
+mixed = [1, "text", true, 3.14];
+
+/* Access elements */
+first = numbers[0];      /* 1 */
+second = names[1];       /* "Bob" */
+length = numbers.len();  /* 5 */
+
+/* Iterate over arrays */
+i = 0;
+while (i < numbers.len()) {
+    ("Number " + i.str() + ": " + numbers[i]).echo();
+    i += 1;
+}
+```
+
+**Array Methods:**
+- `array[index]` - Access element by index
+- `array.len()` - Get array length
+- `array.size()` - **Not supported** (use `.len()` instead)
+- `array.get(index)` - **Not supported** (use bracket notation)
+
+### List Type (`$LIST`)
+
+Lists are created with curly braces and support key-based access:
+
+```grapa
+/* Create lists */
+config = {"debug": true, "port": 3000, "host": "localhost"};
+user = {"name": "John", "age": 30, "city": "NYC"};
+nested = {"level1": {"level2": "value"}};
+
+/* Access elements */
+debug_mode = config["debug"];    /* true */
+user_name = user.name;           /* "John" */
+deep_value = nested["level1"]["level2"];  /* "value" */
+length = config.len();           /* 3 */
+
+/* Iterate over lists */
+keys = ["debug", "port", "host"];
+i = 0;
+while (i < keys.len()) {
+    key = keys[i];
+    value = config[key];
+    (key + ": " + value.str()).echo();
+    i += 1;
+}
+```
+
+**List Methods:**
+- `list[key]` - Access element by key (preferred)
+- `list.key` - Access element by key (alternative)
+- `list.len()` - Get list length
+- `list.get(key)` - **Not supported** (use bracket notation)
+- `list.keys()` - **Not supported** (iterate manually)
+
+### Object Type (`$OBJ`)
+
+Objects are instances of classes and support property access:
+
+```grapa
+/* Define a class */
+Person = class {
+    name = "";
+    age = 0;
+    
+    init = op(n, a) {
+        name = n;
+        age = a;
+    };
+    
+    getInfo = op() {
+        ("Name: " + name + ", Age: " + age.str()).echo();
+    };
+};
+
+/* Create object instances */
+person1 = obj Person;
+person1.init("Alice", 25);
+person2 = obj Person;
+person2.init("Bob", 30);
+
+/* Access properties */
+name = person1.name;             /* "Alice" */
+age = person1["age"];            /* 25 */
+person1.getInfo();               /* Call method */
+```
+
+**Object Methods:**
+- `object.property` - Access property (preferred)
+- `object[key]` - Access property (alternative)
+- `object.method()` - Call object methods
+- `object.get(key)` - **Not supported** (use dot notation)
+
+### Type Comparison Summary
+
+| Feature | $ARRAY | $LIST | $OBJ |
+|---------|--------|-------|------|
+| Creation | `[1,2,3]` | `{"key":"value"}` | `obj Class` |
+| Access | `array[index]` | `list[key]` or `list.key` | `object.property` |
+| Length | `array.len()` | `list.len()` | Not available |
+| Iteration | Index-based | Key-based | Property-based |
 
 ## Variable Assignment
 
@@ -370,22 +613,74 @@ arr1 += arr2;          /* arr1 is now ["a", "b", "c", "d"] */
 - This is simpler than using `.reduce()` or other functional methods.
 - No spread operator (`...`) is needed or supported.
 
+### Array Slicing with .range()
+
+Use `.range()` for array slicing operations:
+
+```grapa
+arr = ["a", "b", "c", "d", "e"];
+
+/* Get elements from index 1 to end */
+slice1 = arr.range(1, arr.len());  /* ["b", "c", "d", "e"] */
+
+/* Get first 3 elements */
+slice2 = arr.range(0, 3);  /* ["a", "b", "c"] */
+
+/* Get elements from index 1 to 3 */
+slice3 = arr.range(1, 3);  /* ["b", "c"] */
+```
+
+- Use `.range(start, end)` for array slicing
+- This replaces slice notation like `arr[1:]`, `arr[:3]`, `arr[1:3]`
+
+### Array Methods
+
+Grapa provides several useful array methods:
+
+```grapa
+/* Basic array operations */
+arr = [3, 1, 4, 1, 5, 9, 2, 6];
+
+/* Sort array */
+sorted_arr = arr.sort();  /* [1, 1, 2, 3, 4, 5, 6, 9] */
+
+/* Get array length */
+length = arr.len();  /* 8 */
+
+/* Join array elements into string */
+words = ["hello", "world", "test"];
+sentence = words.join(" ");  /* "hello world test" */
+
+/* Split string into array */
+text = "hello,world,test";
+parts = text.split(",");  /* ["hello", "world", "test"] */
+```
+
+**Important Notes:**
+- Use `.sort()` for deterministic test output when order is not guaranteed
+- `.len()` returns the number of elements in an array
+- `.join(delimiter)` combines array elements with the specified delimiter
+- `.split(delimiter)` splits a string into an array using the delimiter
+
 ### List/Object Access
 
 Lists (`$LIST`) and objects (`$OBJ`) support bracket and dot notation:
 
 ```grapa
 obj = {"a": 11, "b": 22, "c": 33};
-value = obj["b"];          /* Returns 22 */
+value = obj["b"];          /* Returns 22 (key access) */
 value = obj.key;            /* Returns value for key 'key' if present */
-value = obj."b";           /* Returns 22 */
+value = obj."b";           /* Returns 22 (key access) */
 
-/* $LIST only: */
-value = obj[1];             /* Returns 22 (by index) */
+/* $LIST supports both key and index access: */
+value = obj[1];             /* Returns 22 (index access) */
+value = obj["a"];           /* Returns 11 (key access) */
+value = obj.a;              /* Returns 11 (dot notation key access) */
 name = obj.getname(1);      /* Returns "b" (key name) */
 ```
 
 - Use bracket and dot notation for `$LIST` and `$OBJ`.
+- $LIST supports both key access (obj["key"], obj.key) and index access (obj[2]).
 - `.get()` is not supported for `$LIST` or `$OBJ`.
 
 ### $file and $TABLE Access
@@ -472,6 +767,26 @@ table.mkfield("name", "STR", "VAR");
 table.set("key", "value", "field");
 value = table.get("key", "field").str();
 ```
+
+### Function Definitions with Default Parameters
+
+```grapa
+/* Function with default parameters */
+f = op("x"=1, "y"=0) { x + y; };
+
+/* Call with all parameters */
+result1 = f(5, 3);  /* 8 */
+
+/* Call with default for y */
+result2 = f(5);     /* 6 (y defaults to 0) */
+
+/* Call with defaults for both */
+result3 = f();      /* 1 (x defaults to 1, y defaults to 0) */
+```
+
+- Use `op("param"=default_value)` for default parameters
+- Parameters with defaults can be omitted when calling
+- Parameters without defaults must be provided
 
 ### System Functions
 
@@ -702,6 +1017,26 @@ if (result == {"error":-1}) {
     ("Operation returned error -1").echo();
 }
 ```
+
+### Error Fallback with .iferr()
+
+Grapa provides a built-in error fallback mechanism using `.iferr()`:
+
+```grapa
+/* Simple error fallback */
+result = risky_operation().iferr(0);  /* Returns 0 if operation fails */
+
+/* Error fallback with default value */
+value = (10/0).iferr(55);  /* Returns 55 since division by zero fails */
+
+/* Array access with fallback */
+months = ["Jan", "Feb", "Mar"];
+value = months["FFF"].iferr(-1);  /* Returns -1 for invalid key */
+```
+
+- Use `.iferr(fallback_value)` for simple error handling
+- Use `if (result.type() == $ERR)` for explicit error handling
+- `.iferr()` is preferred for simple fallback scenarios
 
 ## Complete Example
 

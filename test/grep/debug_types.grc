@@ -1,0 +1,33 @@
+/* Debug script to test data types and access patterns */
+
+"=== DEBUG DATA TYPES ===\n".echo();
+
+/* Test array vs list instantiation */
+arr = [1, 2, 3];
+list = {"a": 1, "b": 2, "c": 3};
+
+("arr type: " + arr.type() + "\n").echo();
+("list type: " + list.type() + "\n").echo();
+
+/* Test priorities structure */
+priorities = {
+    "CRITICAL": ["invert_match", "count_only"],
+    "HIGH": ["lookaround_assertions", "context_lines"]
+};
+
+("priorities type: " + priorities.type() + "\n").echo();
+("priorities[\"CRITICAL\"] type: " + priorities["CRITICAL"].type() + "\n").echo();
+("priorities[\"CRITICAL\"][0]: " + priorities["CRITICAL"][0] + "\n").echo();
+
+/* Test iteration */
+critical_features = priorities["CRITICAL"];
+("critical_features type: " + critical_features.type() + "\n").echo();
+("critical_features.len(): " + critical_features.len() + "\n").echo();
+
+i = 0;
+while (i < critical_features.len()) {
+    ("Feature " + i.str() + ": " + critical_features[i] + "\n").echo();
+    i += 1;
+}
+
+"=== DEBUG COMPLETE ===\n".echo(); 

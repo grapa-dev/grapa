@@ -17,22 +17,25 @@
 - ✅ **Native database operations** (no sqlite3/pandas needed)
 - ✅ **Superior dynamic code execution** (human-readable execution trees)
 
-> **Important: Access Patterns for .get() and Indexing (Tested, v0.0.39)**
+> **Important: Access Patterns for Data Types (Tested, v0.0.39)**
 >
-> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
-> |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |
-> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |
-> | $file     |      ✅      |     ❌      |        —         |      —       |
-> | $TABLE    |     ✅*      |     ❌      |        —         |      —       |
-> | $OBJ      |      ❌      |     ❌      |       ❌         |     ✅       |
+> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
+> |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
+> | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
+> | $LIST     |      ❌      |     ❌      |       ✅         |     ✅       |   ✅   |    ❌   |
+> | $OBJ      |      ❌      |     ❌      |       ✅         |     ✅       |   ❌   |    ❌   |
+> | $file     |      ✅      |     ❌      |        —         |      —       |   ❌   |    ❌   |
+> | $TABLE    |     ✅*      |     ❌      |        —         |      —       |   ❌   |    ❌   |
 >
 > *$TABLE .get() requires two arguments: key and field.
 >
-> - For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key).
-> - For $ARRAY, use bracket notation (e.g., arr[1]).
-> - Only $file and $TABLE support .get().
-> - This is based on direct testing in Grapa v0.0.39.
+> **Key Findings:**
+> - **Arrays (`[]`)**: Use `array[index]` and `array.len()` for access and length
+> - **Lists (`{}`)**: Use `list[key]` or `list.key` for access, `list.len()` for length
+> - **Objects (class)**: Use `object.property` or `object[key]` for access
+> - **`.get()` method**: Only works on `$file` and `$TABLE` types
+> - **`.size()` method**: Not supported on any type (use `.len()` instead)
+> - **`.keys()` method**: Not supported on `$LIST` (use iteration instead)
 
 ---
 
@@ -139,13 +142,13 @@ value = table.get("user1", "name");   /* Correct */
 - Bracket and dot notation are NOT valid for $TABLE.
 
 > **Reference Table:**
-> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation |
-> |-----------|:-----------:|:-----------:|:----------------:|:------------:|
-> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |
-> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |
-> | $file     |      ✓      |     ✗      |        —         |      —       |
-> | $TABLE    |     ✓*      |     ✗      |        —         |      —       |
-> | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
+> | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
+> |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
+> | $ARRAY    |      ✗      |     ✗      |       ✓         |      —       |   ✓   |    ✗   |
+> | $LIST     |      ✗      |     ✗      |       ✓         |     ✓       |   ✓   |    ✗   |
+> | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |   ✗   |    ✗   |
+> | $file     |      ✓      |     ✗      |        —         |      —       |   ✗   |    ✗   |
+> | $TABLE    |     ✓*      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > *$TABLE .get() requires two arguments: key and field.
 
 See [Basic Syntax Guide](syntax/basic_syntax.md) for empirical test results and future updates.
@@ -487,3 +490,5 @@ These are advanced features that most developers won't miss:
 - **Multiprocessing**: - Use Grapa's built-in parallelism
 
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, async/await patterns are replaced by Grapa's built-in parallel processing with `.map()` and `.filter()`.
+
+> **Note:** Grapa grep returns results as a structured array (list of strings), not a concatenated string. This is different from most CLI tools and allows for more precise, programmatic handling. This affects edge cases (like empty pattern matches and invert matches) and should be considered when migrating scripts or tests.

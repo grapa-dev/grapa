@@ -1,0 +1,63 @@
+/* Comprehensive Grapa Grep Test Runner
+   - Executes all .grc test files in the current directory
+   - Generates a summary report of pass/fail status
+   - Identifies critical failures and implementation gaps
+   - Provides actionable next steps for development
+*/
+
+"=== GRAPA GREP COMPREHENSIVE TEST RUNNER ===\n".echo();
+"Starting execution of all grep test files...\n".echo();
+
+/* Get all test files using shell command */
+test_files_cmd = "find . -name '*.grc' -not -name 'run_all_tests.grc' | sort";
+test_files_output = test_files_cmd.shell();
+test_files = test_files_output.split("\n").filter(op(file) { file.len() > 0; });
+total_files = test_files.len();
+("Found " + total_files.str() + " test files\n").echo();
+
+/* Initialize counters */
+passed_files = 0;
+failed_files = 0;
+
+/* Process each test file */
+i = 0;
+while (i < test_files.len()) {
+    test_file = test_files[i];
+    ("Processing: " + test_file + " ... ").echo();
+    
+    /* Execute test file using grapa command */
+    grapa_cmd = "../../grapa -q -cfile " + test_file;
+    result = grapa_cmd.shell();
+    
+    /* Check if execution was successful */
+    if (result.type() == $ERR) {
+        failed_files = failed_files + 1;
+        ("❌ FAILED\n").echo();
+    } else {
+        passed_files = passed_files + 1;
+        ("✅ SUCCESS\n").echo();
+    }
+    
+    i = i + 1;
+}
+
+/* Generate summary report */
+"\n=== TEST EXECUTION SUMMARY ===\n".echo();
+("Total test files: " + total_files.str() + "\n").echo();
+("Successfully executed: " + passed_files.str() + "\n").echo();
+("Failed to execute: " + failed_files.str() + "\n").echo();
+("Success rate: " + ((passed_files * 100) / total_files).str() + "%\n").echo();
+
+/* Recommendations */
+"\n=== NEXT STEPS ===\n".echo();
+if (failed_files == 0) {
+    "✅ All test files executed successfully!\n".echo();
+    "Next: Analyze individual test results for implementation gaps\n".echo();
+    "Next: Focus on failing assertions within passing test files\n".echo();
+} else {
+    "⚠️  Some test files failed to execute\n".echo();
+    "Next: Fix syntax errors in failed test files\n".echo();
+    "Next: Ensure all test files are syntactically correct\n".echo();
+}
+
+"=== TEST RUNNER COMPLETE ===\n".echo(); 

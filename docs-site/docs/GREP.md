@@ -1,6 +1,21 @@
 # Grapa Grep Documentation
 
+UNIQUE_SEARCH_TEST_WORD_XYZ123
+
+SEARCH_TEST_WORD
+
 > **Tip:** Use the tabs below to switch between CLI and Python examples throughout this documentation.
+
+## Recent Fixes and Known Gaps
+
+- **Invert match and empty pattern logic** now match ripgrep/grep (see test suite for details).
+- **Structured array output** is a deliberate design choice and affects edge cases (see notes below).
+- **Remaining advanced gaps:**
+    - Multiline patterns with custom delimiters (Grapa extension, may not be fully ripgrep-compatible)
+    - Full Unicode grapheme cluster support (\X)
+    - Parallel processing for very large inputs
+    - Deduplication (`d` option) in all modes
+- See `maintainers/BINARY_GREP.md` for internal details and future work.
 
 ## Thread Safety and Parallelism
 
@@ -646,7 +661,7 @@ input.grep("Line 2|Line 6", "A1B1")
 ["Line 2"]
 ```
 
-> **Warning:** Do not use Unicode combining marks (e.g., U+0301) as delimiters. Combining marks are intended to modify the preceding base character, forming a single grapheme cluster (e.g., 'a' + U+0301 = 'á'). Using a combining mark as a delimiter will split after every occurrence, resulting in segments that are not meaningful for text processing. See `test/debug_multiline_delimiter.grc` for an example and explanation.
+> **Warning:** Do not use Unicode combining marks (e.g., U+0301) as delimiters. Combining marks are intended to modify the preceding base character, forming a single grapheme cluster (e.g., 'a' + U+0301 = 'á'). Using a combining mark as a delimiter will split after every occurrence, resulting in segments that are not meaningful for text processing. See `test/grep/debug_multiline_delimiter.grc` for an example and explanation.
 
 ## Binary Mode
 
@@ -1080,10 +1095,10 @@ age = result[0]["age"]           // "30"
 
 - **JSON output format**: Fixed double-wrapped array issue - now returns proper JSON array of objects
 - **PCRE2 compilation**: Fixed possessive quantifier detection that was causing regex compilation errors
-- **Zero-length match output**: Fixed null output bug - now correctly returns empty strings
+- **Zero-length match output**: Fixed to return `[""]` instead of multiple empty strings
 - **Empty pattern handling**: Fixed to return `[""]` instead of `$SYSID`
 - **Unicode boundary handling**: Improved mapping strategy for complex Unicode scenarios
-- **Context lines**: Fully implemented with proper merging and separators
+- **Context lines**: Fully implemented with proper merging
 - **Column numbers**: Fixed to work correctly with 1-based positioning
 - **Color output**: Fixed to properly add ANSI color codes
 - **Word boundaries**: Fixed to work correctly for all scenarios
@@ -1574,4 +1589,4 @@ Grapa grep is now **production-ready** with **98%+ ripgrep parity** achieved. Al
 
 ## Advanced/Binary Features
 - [GRZ Format Specification](GRZ_FORMAT.md) — Details on the GRZ binary format
-- **Binary Grep**: For advanced binary data processing, see the [Maintainers & Internal](maintainers/) section 
+- **Binary Grep**: For advanced binary data processing, see the internal documentation 

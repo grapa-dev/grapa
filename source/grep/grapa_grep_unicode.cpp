@@ -60,25 +60,39 @@ std::string build_json_array(const std::vector<std::string>& items, bool already
 // Helper: Split string by custom delimiter (supports multi-character delimiters)
 std::vector<std::string> split_by_delimiter(const std::string& input, const std::string& delimiter) {
     std::vector<std::string> result;
-    if (delimiter.empty()) {
-        // If no delimiter, treat as single line
-        result.push_back(input);
-        return result;
-    }
+    std::string actual_delim = delimiter.empty() ? "\n" : delimiter;
+    
+    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+    printf("DEBUG: split_by_delimiter called with input length %zu, delimiter '%s' (length %zu)\n", 
+           input.length(), actual_delim.c_str(), actual_delim.length());
+    #endif // DEBUG_END
     
     size_t pos = 0;
     while (pos < input.size()) {
-        size_t found = input.find(delimiter, pos);
+        size_t found = input.find(actual_delim, pos);
         if (found == std::string::npos) {
             // Last line (no trailing delimiter)
-            result.push_back(input.substr(pos));
+            std::string segment = input.substr(pos);
+            result.push_back(segment);
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: split_by_delimiter - final segment: '%s' (length %zu)\n", segment.c_str(), segment.length());
+            #endif // DEBUG_END
             break;
         } else {
             // Line with trailing delimiter (will be removed later)
-            result.push_back(input.substr(pos, found - pos));
-            pos = found + delimiter.size();
+            std::string segment = input.substr(pos, found - pos);
+            result.push_back(segment);
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: split_by_delimiter - segment: '%s' (length %zu) at pos %zu\n", segment.c_str(), segment.length(), pos);
+            #endif // DEBUG_END
+            pos = found + actual_delim.size();
         }
     }
+    
+    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+    printf("DEBUG: split_by_delimiter - returning %zu segments\n", result.size());
+    #endif // DEBUG_END
+    
     return result;
 }
 
@@ -543,6 +557,16 @@ std::vector<MatchPosition> grep_unicode_impl(
         ++line_number;
     }
 
+    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+    printf("DEBUG: grep_unicode_impl returning match_positions: [");
+    for (size_t i = 0; i < results.size(); ++i) {
+        printf("{%zu, %zu}", results[i].offset, results[i].length);
+        if (i + 1 < results.size()) printf(", ");
+    }
+    printf("]\n");
+    fflush(stdout);
+    #endif // DEBUG_END
+
     return results;
 }
 
@@ -586,6 +610,80 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     // UNIFIED DESIGN: Always use a delimiter, with "\n" as default
     std::string effective_delimiter = line_delim.empty() ? "\n" : line_delim;
     
+    // Check for count-only and invert match options
+    bool count_only = (options.find('c') != std::string::npos);
+    bool invert_match = (options.find('v') != std::string::npos);
+    
+    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+    printf("DEBUG: count_only: %s\n", count_only ? "true" : "false");
+    printf("DEBUG: invert_match: %s\n", invert_match ? "true" : "false");
+    #endif // DEBUG_END
+    
+    // Handle count-only option early
+    if (count_only) {
+        size_t count = 0;
+        for (const auto& pos : match_positions) {
+            if (pos.offset != static_cast<size_t>(-1)) {
+                count++;
+            }
+        }
+        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+        printf("DEBUG: Count-only mode - returning count: %zu\n", count);
+        #endif // DEBUG_END
+        // Return count as a single string, not an array
+        return {std::to_string(count)};
+    }
+    
+    if (invert_match) {
+        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+        printf("DEBUG: Entered invert match block\n");
+        fflush(stdout);
+        #endif // DEBUG_END
+        // For invert match, we need to return segments that don't contain matches
+        std::vector<std::string> non_matches;
+        // Split input by delimiter to get segments
+        std::vector<std::string> segments = split_by_delimiter(input, effective_delimiter);
+        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+        printf("DEBUG: Invert match - split_by_delimiter returned %zu segments\n", segments.size());
+        printf("DEBUG: effective_delimiter: '%s' (length: %zu)\n", effective_delimiter.c_str(), effective_delimiter.length());
+        printf("DEBUG: input length: %zu\n", input.length());
+        for (size_t i = 0; i < segments.size(); ++i) {
+            printf("DEBUG: segment[%zu]: '%s' (length: %zu)\n", i, segments[i].c_str(), segments[i].length());
+        }
+        #endif // DEBUG_END
+        // For each segment, check if the pattern matches anywhere in the segment
+        for (size_t i = 0; i < segments.size(); ++i) {
+            const std::string& seg = segments[i];
+            bool has_match = false;
+            // Use the same regex logic as normal matching
+            std::vector<MatchPosition> seg_matches = grep_unicode_impl(seg, pattern, options, "", normalization, mode);
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: Invert match - segment[%zu] ('%s') has %zu matches\n", i, seg.c_str(), seg_matches.size());
+            #endif // DEBUG_END
+            for (const auto& pos : seg_matches) {
+                if (pos.offset != static_cast<size_t>(-1)) {
+                    has_match = true;
+                    break;
+                }
+            }
+            if (!has_match) {
+                non_matches.push_back(seg);
+                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                printf("DEBUG: Invert match - adding non-match segment[%zu]: '%s'\n", i, seg.c_str());
+                #endif // DEBUG_END
+            }
+        }
+        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+        printf("DEBUG: Invert match - returning %zu non-matches\n", non_matches.size());
+        for (size_t i = 0; i < non_matches.size(); ++i) {
+            printf("DEBUG: non_match[%zu]: '%s'\n", i, non_matches[i].c_str());
+        }
+        fflush(stdout);
+        #endif // DEBUG_END
+        return non_matches;
+    }
+    
+    // Normal processing for non-invert mode
     for (const auto& pos : match_positions) {
         if (pos.offset != static_cast<size_t>(-1)) { // Skip compilation errors
             std::string match_text = input.substr(pos.offset, pos.length);

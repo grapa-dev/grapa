@@ -54,7 +54,7 @@ python test/run_tests.py
 python test/test_grep_python_doc_examples.py
 python test/test_python_examples.py
 python test/test_python_callback.py
-python test/test_grep_python_examples.py
+python test/grep/test_grep_python_examples.py
 
 # Test Python integration
 python -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
@@ -188,7 +188,7 @@ python3 test/run_tests.py
 python3 test/test_grep_python_doc_examples.py
 python3 test/test_python_examples.py
 python3 test/test_python_callback.py
-python3 test/test_grep_python_examples.py
+python3 test/grep/test_grep_python_examples.py
 
 # Test Python integration
 python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
@@ -324,7 +324,7 @@ python3 test/run_tests.py
 python3 test/test_grep_python_doc_examples.py
 python3 test/test_python_examples.py
 python3 test/test_python_callback.py
-python3 test/test_grep_python_examples.py
+python3 test/grep/test_grep_python_examples.py
 
 # Test Python integration
 python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"
@@ -439,7 +439,7 @@ python3 test/run_tests.py
 python3 test/test_grep_python_doc_examples.py
 python3 test/test_python_examples.py
 python3 test/test_python_callback.py
-python3 test/test_grep_python_examples.py
+python3 test/grep/test_grep_python_examples.py
 
 # Test Python integration
 python3 -c "import grapapy; g = grapapy.grapa(); print('Python integration working')"

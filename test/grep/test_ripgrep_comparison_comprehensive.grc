@@ -1,0 +1,445 @@
+/* Comprehensive Ripgrep Comparison Test Suite
+ * 
+ * This test suite validates Grapa grep behavior against ripgrep for all major
+ * functionality areas. It serves as both a validation tool and a reference
+ * for expected behavior.
+ * 
+ * Test Categories:
+ * 1. Basic Pattern Matching
+ * 2. Unicode Support
+ * 3. Context Lines
+ * 4. Output Formats
+ * 5. Advanced Regex Features
+ * 6. Error Handling
+ * 7. Performance Validation
+ */
+
+"=== COMPREHENSIVE RIPGREP COMPARISON TEST SUITE ===\n".echo();
+"Validating Grapa grep behavior against ripgrep expectations\n".echo();
+"Test started at: ".echo();
+$sys().time().echo();
+"\n".echo();
+
+/* Test Configuration */
+test_count = 0;
+pass_count = 0;
+fail_count = 0;
+
+/* Helper function to run a test */
+run_test = op(test_name, input, pattern, options, delimiter, expected_result, expected_count) {
+    test_count++;
+    "\n--- Test " + test_count + ": " + test_name + " ---\n".echo();
+    
+    /* Run the test */
+    result = input.grep(pattern, options, delimiter);
+    
+    /* Validate result */
+    actual_count = result.len();
+    count_match = (actual_count == expected_count);
+    
+    /* For simple string comparisons, check if result contains expected */
+    result_match = false;
+    if (expected_result.type() == "ARRAY") {
+        /* Array comparison - check if arrays contain same elements */
+        if (actual_count == expected_result.len()) {
+            result_match = true;
+            for (i = 0; i < actual_count; i++) {
+                if (result[i] != expected_result[i]) {
+                    result_match = false;
+                    break;
+                }
+            }
+        }
+    } else {
+        /* String comparison - check if result contains expected string */
+        result_str = result.str();
+        result_match = (result_str.find(expected_result) != -1);
+    }
+    
+    /* Output results */
+    ("Input: " + input + "\n").echo();
+    ("Pattern: " + pattern + "\n").echo();
+    ("Options: " + options + "\n").echo();
+    if (delimiter.len() > 0) {
+        ("Delimiter: " + delimiter + "\n").echo();
+    }
+    ("Result: " + result.str() + "\n").echo();
+    ("Expected: " + expected_result + "\n").echo();
+    ("Count: " + actual_count + " (expected: " + expected_count + ")\n").echo();
+    
+    if (result_match && count_match) {
+        ("Status: PASS\n").echo();
+        pass_count++;
+    } else {
+        ("Status: FAIL\n").echo();
+        fail_count++;
+    }
+};
+
+/* ============================================================================
+ * 1. BASIC PATTERN MATCHING TESTS
+ * ============================================================================ */
+
+"=== 1. BASIC PATTERN MATCHING ===\n".echo();
+
+/* Test 1.1: Simple literal matching */
+run_test("Simple literal match", 
+         "Hello world\nGoodbye world\nHello again", 
+         "Hello", 
+         "", 
+         "", 
+         ["Hello world", "Hello again"], 
+         2);
+
+/* Test 1.2: Case-insensitive matching */
+run_test("Case-insensitive match", 
+         "Hello WORLD\nhello world\nHELLO World", 
+         "hello", 
+         "i", 
+         "", 
+         ["Hello WORLD", "hello world", "HELLO World"], 
+         3);
+
+/* Test 1.3: Word boundaries */
+run_test("Word boundary match", 
+         "hello world hello123 world456", 
+         "hello", 
+         "w", 
+         "", 
+         ["hello world hello123 world456"], 
+         1);
+
+/* Test 1.4: Invert match */
+run_test("Invert match", 
+         "match1\nnomatch\nmatch2", 
+         "match", 
+         "v", 
+         "", 
+         ["nomatch"], 
+         1);
+
+/* Test 1.5: Exact line match */
+run_test("Exact line match", 
+         "hello\nhello world\nworld", 
+         "hello", 
+         "x", 
+         "", 
+         ["hello"], 
+         1);
+
+/* Test 1.6: Count only */
+run_test("Count only", 
+         "line1\nline2\nline3\nline4", 
+         "line", 
+         "c", 
+         "", 
+         ["4"], 
+         1);
+
+/* ============================================================================
+ * 2. UNICODE SUPPORT TESTS
+ * ============================================================================ */
+
+"=== 2. UNICODE SUPPORT ===\n".echo();
+
+/* Test 2.1: Basic Unicode characters */
+run_test("Basic Unicode characters", 
+         "café résumé naïve", 
+         "é", 
+         "o", 
+         "", 
+         ["é", "é", "é"], 
+         3);
+
+/* Test 2.2: Unicode properties */
+run_test("Unicode properties", 
+         "Hello 世界 こんにちは 123", 
+         "\\p{L}+", 
+         "o", 
+         "", 
+         ["Hello", "世界", "こんにちは"], 
+         3);
+
+/* Test 2.3: Grapheme clusters */
+run_test("Grapheme clusters", 
+         "e\u0301\n😀\u2764\ufe0f", 
+         "\\X", 
+         "o", 
+         "", 
+         ["é", "\n", "😀", "❤️"], 
+         4);
+
+/* Test 2.4: Unicode normalization */
+run_test("Unicode normalization", 
+         "café", 
+         "cafe", 
+         "N", 
+         "", 
+         ["café"], 
+         1);
+
+/* Test 2.5: Diacritic-insensitive */
+run_test("Diacritic-insensitive", 
+         "café résumé naïve", 
+         "cafe", 
+         "d", 
+         "", 
+         ["café"], 
+         1);
+
+/* ============================================================================
+ * 3. CONTEXT LINES TESTS
+ * ============================================================================ */
+
+"=== 3. CONTEXT LINES ===\n".echo();
+
+/* Test 3.1: After context */
+run_test("After context (A1)", 
+         "header\nline1\nline2\nline3\nfooter", 
+         "line2", 
+         "A1", 
+         "", 
+         ["line2", "line3"], 
+         2);
+
+/* Test 3.2: Before context */
+run_test("Before context (B1)", 
+         "header\nline1\nline2\nline3\nfooter", 
+         "line2", 
+         "B1", 
+         "", 
+         ["line1", "line2"], 
+         2);
+
+/* Test 3.3: Both context */
+run_test("Both context (C1)", 
+         "header\nline1\nline2\nline3\nfooter", 
+         "line2", 
+         "C1", 
+         "", 
+         ["line1", "line2", "line3"], 
+         3);
+
+/* Test 3.4: Multiple matches with context */
+run_test("Multiple matches with context", 
+         "a\nb\nc\nd\ne\nf\ng\nh\ni\nj", 
+         "c|i", 
+         "A1B1", 
+         "", 
+         ["b", "c", "d", "--", "h", "i", "j"], 
+         7);
+
+/* ============================================================================
+ * 4. OUTPUT FORMATS TESTS
+ * ============================================================================ */
+
+"=== 4. OUTPUT FORMATS ===\n".echo();
+
+/* Test 4.1: Match-only output */
+run_test("Match-only output", 
+         "Hello world\nGoodbye world", 
+         "\\w+", 
+         "o", 
+         "", 
+         ["Hello", "world", "Goodbye", "world"], 
+         4);
+
+/* Test 4.2: Line numbers */
+run_test("Line numbers", 
+         "line1\nline2\nline3", 
+         "line", 
+         "n", 
+         "", 
+         ["line1", "line2", "line3"], 
+         3);
+
+/* Test 4.3: Column numbers */
+run_test("Column numbers", 
+         "foo bar baz", 
+         "foo", 
+         "oT", 
+         "", 
+         ["1:foo"], 
+         1);
+
+/* Test 4.4: JSON output */
+run_test("JSON output", 
+         "John Doe (30)", 
+         "(?P<first>\\w+) (?P<last>\\w+)", 
+         "oj", 
+         "", 
+         ["John Doe"], 
+         1);
+
+/* ============================================================================
+ * 5. ADVANCED REGEX FEATURES TESTS
+ * ============================================================================ */
+
+"=== 5. ADVANCED REGEX FEATURES ===\n".echo();
+
+/* Test 5.1: Lookaround assertions */
+run_test("Lookahead assertion", 
+         "abc123def456", 
+         "(?=\\d)", 
+         "o", 
+         "", 
+         ["", "", "", "", "", ""], 
+         6);
+
+/* Test 5.2: Atomic groups */
+run_test("Atomic groups", 
+         "aaa", 
+         "(?>a+)a", 
+         "o", 
+         "", 
+         [], 
+         0);
+
+/* Test 5.3: Possessive quantifiers */
+run_test("Possessive quantifiers", 
+         "aaa", 
+         "a++", 
+         "o", 
+         "", 
+         ["aaa"], 
+         1);
+
+/* Test 5.4: Conditional patterns */
+run_test("Conditional patterns", 
+         "ab\nc", 
+         "(a)?(?(1)b|c)", 
+         "o", 
+         "", 
+         ["ab", "c"], 
+         2);
+
+/* Test 5.5: Named groups */
+run_test("Named groups", 
+         "John Doe (30)", 
+         "(?P<name>\\w+ \\w+)", 
+         "o", 
+         "", 
+         ["John Doe"], 
+         1);
+
+/* ============================================================================
+ * 6. CUSTOM DELIMITER TESTS
+ * ============================================================================ */
+
+"=== 6. CUSTOM DELIMITERS ===\n".echo();
+
+/* Test 6.1: Multi-character delimiter */
+run_test("Multi-character delimiter", 
+         "line1|||line2|||line3", 
+         "line", 
+         "o", 
+         "|||", 
+         ["line1", "line2", "line3"], 
+         3);
+
+/* Test 6.2: Custom delimiter with context */
+run_test("Custom delimiter with context", 
+         "header|||line1|||line2|||line3|||footer", 
+         "line2", 
+         "A1", 
+         "|||", 
+         ["line2", "line3"], 
+         2);
+
+/* Test 6.3: Custom delimiter with invert */
+run_test("Custom delimiter with invert", 
+         "match1|||nomatch|||match2", 
+         "match", 
+         "v", 
+         "|||", 
+         [], 
+         0);
+
+/* ============================================================================
+ * 7. ERROR HANDLING TESTS
+ * ============================================================================ */
+
+"=== 7. ERROR HANDLING ===\n".echo();
+
+/* Test 7.1: Invalid pattern */
+run_test("Invalid pattern", 
+         "Hello world", 
+         "(", 
+         "", 
+         "", 
+         [], 
+         0);
+
+/* Test 7.2: Empty pattern */
+run_test("Empty pattern", 
+         "Hello world", 
+         "", 
+         "", 
+         "", 
+         [""], 
+         1);
+
+/* Test 7.3: Null bytes in input */
+run_test("Null bytes in input", 
+         "Hello\x00world", 
+         "Hello", 
+         "", 
+         "", 
+         ["Hello\x00world"], 
+         1);
+
+/* ============================================================================
+ * 8. PERFORMANCE VALIDATION TESTS
+ * ============================================================================ */
+
+"=== 8. PERFORMANCE VALIDATION ===\n".echo();
+
+/* Test 8.1: Large input performance */
+large_input = "";
+for (i = 1; i <= 10000; i++) {
+    large_input += "line" + i + "\n";
+}
+
+start_time = $sys().time();
+result = large_input.grep("line5000", "");
+end_time = $sys().time();
+duration = end_time - start_time;
+
+"Large input test (10,000 lines):\n".echo();
+("Input size: " + large_input.len() + " characters\n").echo();
+("Search time: " + duration + " seconds\n").echo();
+("Result count: " + result.len() + "\n").echo();
+("Performance: " + (large_input.len() / duration / 1000) + " KB/s\n").echo();
+
+/* Test 8.2: Parallel processing validation */
+"Parallel processing test:\n".echo();
+start_time = $sys().time();
+result_parallel = large_input.grep("line", "o", "", "", "", 8);
+end_time = $sys().time();
+duration_parallel = end_time - start_time;
+
+("Parallel search time (8 workers): " + duration_parallel + " seconds\n").echo();
+("Speedup: " + (duration / duration_parallel) + "x\n").echo();
+
+/* ============================================================================
+ * SUMMARY AND RESULTS
+ * ============================================================================ */
+
+"\n=== TEST SUMMARY ===\n".echo();
+("Total tests: " + test_count + "\n").echo();
+("Passed: " + pass_count + "\n").echo();
+("Failed: " + fail_count + "\n").echo();
+("Success rate: " + (pass_count * 100 / test_count) + "%\n").echo();
+
+if (fail_count == 0) {
+    "✅ ALL TESTS PASSED - Grapa grep shows excellent ripgrep compatibility!\n".echo();
+} else {
+    ("⚠️ " + fail_count + " tests failed - review needed\n").echo();
+}
+
+"Test completed at: ".echo();
+$sys().time().echo();
+"\n".echo();
+
+/* Return summary for external processing */
+{"total": test_count, "passed": pass_count, "failed": fail_count, "success_rate": pass_count * 100 / test_count} 

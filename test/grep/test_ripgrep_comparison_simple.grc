@@ -1,0 +1,421 @@
+/* Simple Ripgrep Comparison Test Suite
+ * 
+ * This test suite validates Grapa grep behavior against ripgrep expectations
+ * using simple, direct test cases.
+ */
+
+"=== SIMPLE RIPGREP COMPARISON TEST SUITE ===\n".echo();
+"Validating Grapa grep behavior against ripgrep expectations\n".echo();
+"Test started at: ".echo();
+$sys().time().echo();
+"\n".echo();
+
+test_count = 0;
+pass_count = 0;
+fail_count = 0;
+
+/* ============================================================================
+ * 1. BASIC PATTERN MATCHING TESTS
+ * ============================================================================ */
+
+"=== 1. BASIC PATTERN MATCHING ===\n".echo();
+
+/* Test 1.1: Simple literal matching */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Simple literal match ---\n").echo();
+input = "Hello world\nGoodbye world\nHello again";
+pattern = "Hello";
+result = input.grep(pattern, "");
+expected = ["Hello world", "Hello again"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 2) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 1.2: Case-insensitive matching */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Case-insensitive match ---\n").echo();
+input = "Hello WORLD\nhello world\nHELLO World";
+pattern = "hello";
+result = input.grep(pattern, "i");
+expected = ["Hello WORLD", "hello world", "HELLO World"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: i\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 3) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 1.3: Invert match */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Invert match ---\n").echo();
+input = "match1\nnomatch\nmatch2";
+pattern = "match";
+result = input.grep(pattern, "v");
+expected = []; // Updated: grep/ripgrep exclude any line containing the pattern as a substring
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: v\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 0) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 1.4: Count only */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Count only ---\n").echo();
+input = "line1\nline2\nline3\nline4";
+pattern = "line";
+result = input.grep(pattern, "c");
+expected = ["4"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: c\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 1 && result[0] == "4") {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* ============================================================================
+ * 2. UNICODE SUPPORT TESTS
+ * ============================================================================ */
+
+"=== 2. UNICODE SUPPORT ===\n".echo();
+
+/* Test 2.1: Basic Unicode characters */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Basic Unicode characters ---\n").echo();
+input = "café résumé naïve";
+pattern = "é";
+result = input.grep(pattern, "o");
+expected = ["é", "é", "é"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 3) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 2.2: Unicode properties */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Unicode properties ---\n").echo();
+input = "Hello 世界 こんにちは 123";
+pattern = "\\p{L}+";
+result = input.grep(pattern, "o");
+expected = ["Hello", "世界", "こんにちは"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 3) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 2.3: Grapheme clusters */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Grapheme clusters ---\n").echo();
+input = "e\u0301\n😀\u2764\ufe0f";
+pattern = "\\X";
+result = input.grep(pattern, "o");
+expected = ["é", "\n", "😀", "❤️"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 4) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* ============================================================================
+ * 3. CONTEXT LINES TESTS
+ * ============================================================================ */
+
+"=== 3. CONTEXT LINES ===\n".echo();
+
+/* Test 3.1: After context */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": After context (A1) ---\n").echo();
+input = "header\nline1\nline2\nline3\nfooter";
+pattern = "line2";
+result = input.grep(pattern, "A1");
+expected = ["line2", "line3"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: A1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 2 && result[0] == "line2" && result[1] == "line3") {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 3.2: Before context */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Before context (B1) ---\n").echo();
+input = "header\nline1\nline2\nline3\nfooter";
+pattern = "line2";
+result = input.grep(pattern, "B1");
+expected = ["line1", "line2"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: B1\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 2 && result[0] == "line1" && result[1] == "line2") {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* ============================================================================
+ * 4. OUTPUT FORMATS TESTS
+ * ============================================================================ */
+
+"=== 4. OUTPUT FORMATS ===\n".echo();
+
+/* Test 4.1: Match-only output */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Match-only output ---\n").echo();
+input = "Hello world\nGoodbye world";
+pattern = "\\w+";
+result = input.grep(pattern, "o");
+expected = ["Hello", "world", "Goodbye", "world"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: o\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 4) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 4.2: Column numbers */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Column numbers ---\n").echo();
+input = "foo bar baz";
+pattern = "foo";
+result = input.grep(pattern, "oT");
+expected = ["1:foo"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: oT\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 1 && result[0].find("1:foo") != -1) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* ============================================================================
+ * 5. CUSTOM DELIMITER TESTS
+ * ============================================================================ */
+
+"=== 5. CUSTOM DELIMITERS ===\n".echo();
+
+/* Test 5.1: Multi-character delimiter */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Multi-character delimiter ---\n").echo();
+input = "line1|||line2|||line3";
+pattern = "line";
+result = input.grep(pattern, "o", "|||");
+expected = ["line1", "line2", "line3"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: o\n").echo();
+("Delimiter: |||\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 3) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 5.2: Custom delimiter with context */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Custom delimiter with context ---\n").echo();
+input = "header|||line1|||line2|||line3|||footer";
+pattern = "line2";
+result = input.grep(pattern, "A1", "|||");
+expected = ["line2", "line3"];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Options: A1\n").echo();
+("Delimiter: |||\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 2 && result[0] == "line2" && result[1] == "line3") {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* ============================================================================
+ * 6. ERROR HANDLING TESTS
+ * ============================================================================ */
+
+"=== 6. ERROR HANDLING ===\n".echo();
+
+/* Test 6.1: Invalid pattern */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Invalid pattern ---\n").echo();
+input = "Hello world";
+pattern = "(";
+result = input.grep(pattern, "");
+expected = [];
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 0) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 6.2: Empty pattern */
+// Note: In grep/ripgrep, an empty pattern matches every position in every line, so for each line you get an empty string match.
+// For input with N lines, expect N empty strings in the result.
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Empty pattern ---\n").echo();
+input = "Hello world";
+pattern = "";
+result = input.grep(pattern, "");
+expected = [""]; // For a single line, expect one empty string
+("Input: " + input + "\n").echo();
+("Pattern: " + pattern + "\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: " + expected.str() + "\n").echo();
+if (result.len() == 1 && result[0] == "") {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* ============================================================================
+ * 7. PERFORMANCE VALIDATION TESTS
+ * ============================================================================ */
+
+"=== 7. PERFORMANCE VALIDATION ===\n".echo();
+
+/* Test 7.1: Large input performance */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Large input performance ---\n").echo();
+large_input = "";
+i = 1;
+while (i <= 1000) {
+    large_input = large_input + "line" + i.str() + "\n";
+    i = i + 1;
+};
+
+start_time = $sys().time();
+result = large_input.grep("line500", "");
+end_time = $sys().time();
+duration = end_time - start_time;
+
+("Input size: " + large_input.len().str() + " characters\n").echo();
+("Search time: " + duration.str() + " seconds\n").echo();
+("Result count: " + result.len().str() + "\n").echo();
+if (result.len() == 1) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* Test 7.2: Parallel processing validation */
+test_count = test_count + 1;
+("--- Test " + test_count.str() + ": Parallel processing ---\n").echo();
+start_time = $sys().time();
+result_parallel = large_input.grep("line", "o", "", "", "", 4);
+end_time = $sys().time();
+duration_parallel = end_time - start_time;
+
+("Parallel search time (4 workers): " + duration_parallel.str() + " seconds\n").echo();
+if (result_parallel.len() == 1000) {
+    "Status: PASS\n".echo();
+    pass_count = pass_count + 1;
+} else {
+    "Status: FAIL\n".echo();
+    fail_count = fail_count + 1;
+};
+
+/* ============================================================================
+ * SUMMARY AND RESULTS
+ * ============================================================================ */
+
+"\n=== TEST SUMMARY ===\n".echo();
+("Total tests: " + test_count.str() + "\n").echo();
+("Passed: " + pass_count.str() + "\n").echo();
+("Failed: " + fail_count.str() + "\n").echo();
+("Success rate: " + (pass_count * 100 / test_count).str() + "%\n").echo();
+
+if (fail_count == 0) {
+    "✅ ALL TESTS PASSED - Grapa grep shows excellent ripgrep compatibility!\n".echo();
+} else {
+    ("⚠️ " + fail_count.str() + " tests failed - review needed\n").echo();
+};
+
+"Test completed at: ".echo();
+$sys().time().echo();
+"\n".echo(); 

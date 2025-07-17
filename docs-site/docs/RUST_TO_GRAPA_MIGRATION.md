@@ -11,7 +11,7 @@
 > | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
 > *$TABLE .get() requires two arguments: key and field.
 >
-> - For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key).
+> - For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).
 > - For $ARRAY, use bracket notation (e.g., arr[1]).
 > - Only $file and $TABLE support .get().
 > - This is based on direct testing in Grapa v0.0.39.

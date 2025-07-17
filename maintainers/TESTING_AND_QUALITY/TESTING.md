@@ -182,7 +182,7 @@ pip install -e .
 python test/test_python_examples.py
 
 # Run Python grep tests
-python test/test_grep_python_examples.py
+python test/grep/test_grep_python_examples.py
 
 # Run Python callback escaping tests
 python test/test_python_callback.py

@@ -48,8 +48,8 @@ result = input4.grep("match", "ov", "|||");
 ("Input: " + input4 + "\n").echo();
 ("Pattern: match, Options: ov, Delimiter: |||\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: [\"nomatch\"]\n").echo();
-("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
+("Expected: [] (all segments contain 'match')\n").echo();
+("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
 /* Test 5: Custom delimiter with line numbers */
@@ -68,8 +68,8 @@ result = input5.grep("line", "on", "|||");
 result = input5.grep("line", "c", "|||");
 ("Pattern: line, Options: c, Delimiter: |||\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: 3\n").echo();
-("Status: " + (result == 3 ? "PASS" : "FAIL") + "\n").echo();
+("Expected: [\"3\"] (Grapa returns count as string array)\n").echo();
+("Status: " + (result.len() == 1 && result[0] == "3" ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
 /* Test 7: Custom delimiter with JSON output */

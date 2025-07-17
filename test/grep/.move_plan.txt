@@ -1,6 +1,21 @@
 # List of .grc files to move to test/grep/ (Unicode grep-related tests)
 # (This file is for planning and tracking the move operation)
 
+# COMPLETED MOVES (2024-12-19)
+# ✓ test_grep_python_examples.py - MOVED from test/ to test/grep/
+#   - Updated documentation references in:
+#     - docs/obj/grep_python.md
+#     - docs-site/docs/obj/grep_python.md
+#     - docs/TESTING.md
+#     - docs/BUILD.md
+#     - maintainers/TESTING_AND_QUALITY/TESTING.md
+#     - maintainers/BUILD_AND_DEPLOYMENT/BUILD.md
+# ✓ debug_multiline_delimiter.grc - MOVED from test/ to test/grep/
+#   - Updated documentation references in:
+#     - docs/GREP.md
+#     - docs-site/docs/GREP.md
+
+# REMAINING FILES TO MOVE:
 test_comprehensive_fixes.grc
 test_option_based_behavior.grc
 test_targeted_fixes.grc

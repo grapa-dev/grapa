@@ -30,11 +30,19 @@ std::vector<std::string> split_input_for_parallel(const std::string& input, size
 ContextOptions parse_context_options(const std::string& options, std::string& filtered_options) {
     ContextOptions ctx;
     filtered_options = options;
-    
-    // Parse -A (after context)
+    // Parse -A (after context) and A (short form)
     size_t pos = filtered_options.find("-A");
-    if (pos != std::string::npos && pos + 2 < filtered_options.size()) {
-        size_t num_start = pos + 2;
+    if (pos == std::string::npos) {
+        // Look for 'A' followed by a digit
+        for (size_t i = 0; i + 1 < filtered_options.size(); ++i) {
+            if (filtered_options[i] == 'A' && std::isdigit(filtered_options[i+1])) {
+                pos = i;
+                break;
+            }
+        }
+    }
+    if (pos != std::string::npos && pos + 2 <= filtered_options.size()) {
+        size_t num_start = pos + 1;
         size_t num_end = num_start;
         while (num_end < filtered_options.size() && std::isdigit(filtered_options[num_end])) {
             num_end++;
@@ -44,11 +52,18 @@ ContextOptions parse_context_options(const std::string& options, std::string& fi
             filtered_options.erase(pos, num_end - pos);
         }
     }
-    
-    // Parse -B (before context)
+    // Parse -B (before context) and B (short form)
     pos = filtered_options.find("-B");
-    if (pos != std::string::npos && pos + 2 < filtered_options.size()) {
-        size_t num_start = pos + 2;
+    if (pos == std::string::npos) {
+        for (size_t i = 0; i + 1 < filtered_options.size(); ++i) {
+            if (filtered_options[i] == 'B' && std::isdigit(filtered_options[i+1])) {
+                pos = i;
+                break;
+            }
+        }
+    }
+    if (pos != std::string::npos && pos + 2 <= filtered_options.size()) {
+        size_t num_start = pos + 1;
         size_t num_end = num_start;
         while (num_end < filtered_options.size() && std::isdigit(filtered_options[num_end])) {
             num_end++;
@@ -58,11 +73,18 @@ ContextOptions parse_context_options(const std::string& options, std::string& fi
             filtered_options.erase(pos, num_end - pos);
         }
     }
-    
-    // Parse -C (context)
+    // Parse -C (context) and C (short form)
     pos = filtered_options.find("-C");
-    if (pos != std::string::npos && pos + 2 < filtered_options.size()) {
-        size_t num_start = pos + 2;
+    if (pos == std::string::npos) {
+        for (size_t i = 0; i + 1 < filtered_options.size(); ++i) {
+            if (filtered_options[i] == 'C' && std::isdigit(filtered_options[i+1])) {
+                pos = i;
+                break;
+            }
+        }
+    }
+    if (pos != std::string::npos && pos + 2 <= filtered_options.size()) {
+        size_t num_start = pos + 1;
         size_t num_end = num_start;
         while (num_end < filtered_options.size() && std::isdigit(filtered_options[num_end])) {
             num_end++;
@@ -72,7 +94,6 @@ ContextOptions parse_context_options(const std::string& options, std::string& fi
             filtered_options.erase(pos, num_end - pos);
         }
     }
-    
     return ctx;
 }
 
@@ -138,6 +159,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         before = context;
         after = context;
     }
+    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+    printf("DEBUG: Context option values: before=%d, after=%d, context=%d\n", before, after, context);
+    #endif // DEBUG_END
     bool all_mode = (filtered_options.find('a') != std::string::npos);
     bool match_only = (filtered_options.find('o') != std::string::npos);
     bool count_only = (filtered_options.find('c') != std::string::npos);
@@ -574,21 +598,45 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         if (invert_match) {
             std::vector<std::string> non_matches;
             
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: Invert match logic - line_delim: '%s'\n", line_delim.c_str());
+            printf("DEBUG: match_positions.size(): %zu\n", match_positions.size());
+            #endif // DEBUG_END
+            
             // For custom delimiters, we need to process by segments
             if (!line_delim.empty()) {
                 // Split input by delimiter to get segments
                 std::vector<std::string> segments = split_by_delimiter(working_input, line_delim);
                 
+                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                printf("DEBUG: Split into %zu segments\n", segments.size());
+                for (size_t i = 0; i < segments.size(); ++i) {
+                    printf("DEBUG: segment[%zu]: '%s'\n", i, segments[i].c_str());
+                }
+                #endif // DEBUG_END
+                
                 // Find which segments contain matches
                 std::set<size_t> matching_segments;
                 for (const auto& pos : match_positions) {
                     if (pos.offset != static_cast<size_t>(-1)) {
+                        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                        printf("DEBUG: Processing match at offset %zu, length %zu\n", pos.offset, pos.length);
+                        #endif // DEBUG_END
+                        
                         // Find which segment this match is in
                         size_t current_offset = 0;
                         for (size_t seg_num = 0; seg_num < segments.size(); ++seg_num) {
                             size_t segment_length = segments[seg_num].length() + line_delim.length();
+                            
+                            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                            printf("DEBUG: segment[%zu] spans offset %zu to %zu\n", seg_num, current_offset, current_offset + segment_length);
+                            #endif // DEBUG_END
+                            
                             if (pos.offset >= current_offset && pos.offset < current_offset + segment_length) {
                                 matching_segments.insert(seg_num);
+                                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                                printf("DEBUG: Match found in segment %zu\n", seg_num);
+                                #endif // DEBUG_END
                                 break;
                             }
                             current_offset += segment_length;
@@ -596,10 +644,21 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                     }
                 }
                 
+                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                printf("DEBUG: Matching segments: ");
+                for (size_t seg : matching_segments) {
+                    printf("%zu ", seg);
+                }
+                printf("\n");
+                #endif // DEBUG_END
+                
                 // Return segments that don't contain matches
                 for (size_t i = 0; i < segments.size(); ++i) {
                     if (matching_segments.find(i) == matching_segments.end()) {
                         non_matches.push_back(segments[i]);
+                        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                        printf("DEBUG: Adding non-match segment %zu: '%s'\n", i, segments[i].c_str());
+                        #endif // DEBUG_END
                     }
                 }
             } else {
@@ -651,7 +710,12 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                     segments.push_back(working_input.substr(start));
                 }
             }
-            
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: Context mode - split into %zu segments\n", segments.size());
+            for (size_t i = 0; i < segments.size(); ++i) {
+                printf("DEBUG: segment[%zu]: '%s'\n", i, segments[i].c_str());
+            }
+            #endif // DEBUG_END
             // Find which segments contain matches
             std::set<size_t> match_segments;
             for (const auto& pos : match_positions) {
@@ -662,13 +726,20 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                         size_t segment_length = segments[seg_num].length() + (line_delim.empty() ? 1 : line_delim.length());
                         if (pos.offset >= current_offset && pos.offset < current_offset + segment_length) {
                             match_segments.insert(seg_num);
+                            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                            printf("DEBUG: Match at offset %zu in segment %zu\n", pos.offset, seg_num);
+                            #endif // DEBUG_END
                             break;
                         }
                         current_offset += segment_length;
                     }
                 }
             }
-            
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: Match segments: ");
+            for (size_t seg : match_segments) printf("%zu ", seg);
+            printf("\n");
+            #endif // DEBUG_END
             // Collect context segments
             std::set<size_t> context_segments;
             for (size_t match_segment : match_segments) {
@@ -683,21 +754,22 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                     context_segments.insert(match_segment + i);
                 }
             }
-            
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: Context segments: ");
+            for (size_t seg : context_segments) printf("%zu ", seg);
+            printf("\n");
+            #endif // DEBUG_END
             // Convert to sorted vector and extract segments with proper merging and separators
             std::vector<size_t> sorted_context_segments(context_segments.begin(), context_segments.end());
             std::sort(sorted_context_segments.begin(), sorted_context_segments.end());
-            
             extracted_matches.clear();
             if (!sorted_context_segments.empty()) {
                 // Add first segment
                 extracted_matches.push_back(segments[sorted_context_segments[0]]);
-                
                 // Add remaining segments with separators for gaps
                 for (size_t i = 1; i < sorted_context_segments.size(); ++i) {
                     size_t prev_segment = sorted_context_segments[i-1];
                     size_t curr_segment = sorted_context_segments[i];
-                    
                     // If there's a gap of more than 1 segment, add separator
                     if (curr_segment > prev_segment + 1) {
                         if (json_output) {
@@ -706,7 +778,6 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                             extracted_matches.push_back("--");
                         }
                     }
-                    
                     extracted_matches.push_back(segments[curr_segment]);
                 }
             }

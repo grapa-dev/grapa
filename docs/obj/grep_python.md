@@ -403,7 +403,7 @@ For more detailed information about grep functionality, see the main [Grep Docum
 
 ## Example Test File
 
-See `test/test_grep_python_examples.py` for a runnable example of grep usage from Python. 
+See `test/grep/test_grep_python_examples.py` for a runnable example of grep usage from Python. 
 
 For detailed grep documentation, see [Grep Documentation](grep.md).
 
