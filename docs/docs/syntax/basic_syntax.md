@@ -532,6 +532,7 @@ Grapa supports full object-oriented programming features:
 - **Method overriding**: Subclasses can override parent methods
 - **Method sets**: Classes have sets of methods, similar to Go/Java
 - **Composition**: Classes and objects can include other objects as properties
+- **Function chaining**: Class methods support dot notation chaining (see [Function Chaining](#function-chaining))
 
 #### Example
 ```grapa
@@ -1214,7 +1215,51 @@ There are a few standard tokens that are defined—mostly the tokens provide spe
 # Function Chaining
 Any object that returns an object can be chained.
 
+**Important**: For function chaining to work, the functions must be **class methods**. Functions defined outside of classes cannot be chained using the dot notation.
+
 For example, "4.4".float(300,4).pi() will convert the string 4.4 to a float with 300 bit precision and will return pi() to the power of the input, at the precision specified in the input. So, a 400 bit precision of pi to the power of 4.4.
+
+## Creating Chainable Functions
+
+To make your own functions chainable, define them as class methods:
+
+```grapa
+/* Define a class with chainable methods */
+StringProcessor = class {
+    process = op(text) {
+        text.trim().upper();  // Returns processed string
+    };
+    
+    reverse = op(text) {
+        text.reverse();  // Returns reversed string
+    };
+    
+    addPrefix = op(text, prefix) {
+        prefix + " " + text;  // Returns string with prefix
+    };
+};
+
+/* Create an instance and use chaining */
+processor = obj StringProcessor;
+result = processor.process("  hello world  ").reverse().addPrefix("Result:");
+result.echo();  // Output: Result: DLROW OLLEH
+```
+
+## Using Built-in Chainable Methods
+
+Many built-in types have chainable methods:
+
+```grapa
+/* String chaining */
+result = "  hello world  ".trim().upper().replace("WORLD", "GRAPA");
+result.echo();  // Output: HELLO GRAPA
+
+/* Array chaining */
+result = [1, 2, 3, 4, 5].filter(op(x) { x % 2 == 0; }).map(op(x) { x * 2; });
+result.echo();  // Output: [4, 8]
+```
+
+## Workaround for Non-Chainable Functions
 
 If an existing function/command doesn't support chaining, an OP can be inserted in the chain to make it work using the $$ variable for the result of the prior operation. For example, the following will get the length of a list, generate that many bits, and output the result in binary form. The 3 examples all accomplish the same result.
 ```
@@ -1228,6 +1273,8 @@ If an existing function/command doesn't support chaining, an OP can be inserted 
 > {1,2,3,5}.{f(@$$)}.genbits().bin();
 1111
 ```
+
+**Note**: The `$$` variable represents the result of the previous operation in the chain.
 */ 
 
 /*
