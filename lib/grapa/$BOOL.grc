@@ -1,3 +1,0 @@
-@global["$BOOL"]
-	= class ($OBJ) {
-	};

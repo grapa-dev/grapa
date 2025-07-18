@@ -1,3 +1,0 @@
-@global["$SYSSTR"]
-	= class ($OBJ) {}
-	;

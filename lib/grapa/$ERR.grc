@@ -1,3 +1,0 @@
-@global["$ERR"]
-	= class ($OBJ) {
-	};

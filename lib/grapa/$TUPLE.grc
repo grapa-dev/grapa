@@ -1,3 +1,0 @@
-@global["$TUPLE"]
-	= class ($ARRAY) {
-	};

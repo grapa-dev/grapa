@@ -1,4 +1,0 @@
-test = "Istanbul";
-folded = test.case_fold();
-("Original: " + test).echo();
-("Folded: " + folded).echo(); 

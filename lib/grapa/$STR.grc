@@ -1,3 +1,0 @@
-@global["$STR"]
-	= class ($OBJ) {
-	};

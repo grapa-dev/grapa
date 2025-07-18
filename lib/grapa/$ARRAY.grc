@@ -1,3 +1,0 @@
-@global["$ARRAY"]
-	= class ($LIST,$VECTOR) {
-	};

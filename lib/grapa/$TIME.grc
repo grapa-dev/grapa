@@ -1,6 +1,0 @@
-@global["$TIME"]
-	= class ($OBJ) {
-	utc = @<utc,{@<this>}>;
-	tz = @<tz,{@<this>}>;
-	delta = op(p){((@utc().int())-(@this.int()))/1000000000.0};
-	};

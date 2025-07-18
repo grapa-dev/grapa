@@ -1,5 +1,0 @@
-foo line 1
-bar line 2
-foo line 3
-bar line 4
-foo line 5 

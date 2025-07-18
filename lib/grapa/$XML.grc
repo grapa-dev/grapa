@@ -1,3 +1,0 @@
-@global["$XML"]
-	= class ($ARRAY) {
-	};
