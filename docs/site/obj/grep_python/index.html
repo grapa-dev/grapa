@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/docs/operators/loop/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/docs/obj/grep_python/">
       
       
       
@@ -18,7 +18,7 @@
     
     
       
-        <title>Loop and Functional Array Methods - Grapa Documentation</title>
+        <title>Grep python - Grapa Documentation</title>
       
     
     
@@ -69,11 +69,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#loop-and-functional-array-methods" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -104,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Loop and Functional Array Methods
+              Grep python
             
           </span>
         </div>
@@ -866,8 +861,6 @@
   
   
   
-    
-  
   
 </nav>
                   </div>
@@ -883,171 +876,9 @@
 
 
 
-<h1 id="loop-and-functional-array-methods">Loop and Functional Array Methods</h1>
-<p>/*</p>
-<h1 id="thread-safety">Thread Safety</h1>
-<p>Grapa is fully thread safe in all supported environments (command line, Grapa shell, and Python/GrapaPy). All built-in operations—including map, filter, reduce, $thread, and $net—are safe to use concurrently. Users do not need to take any special precautions for thread safety in these environments.</p>
-<p><em>Note: Only if Grapa is integrated directly into a non-thread-safe C++ host (not anticipated for normal users) would additional thread safety considerations arise.</em>
-*/</p>
-<p>/*</p>
-<h1 id="quick-reference-map-filter-reduce">Quick Reference: map, filter, reduce</h1>
-<table>
-<thead>
-<tr>
-<th>Method</th>
-<th>Signature</th>
-<th>Parallel?</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>map</td>
-<td>arr.map(op(x) { ... }, [params...])</td>
-<td>Yes</td>
-<td>Transform each item</td>
-</tr>
-<tr>
-<td>filter</td>
-<td>arr.filter(op(x) { ... }, [params...])</td>
-<td>Yes</td>
-<td>Select items matching a test</td>
-</tr>
-<tr>
-<td>reduce</td>
-<td>arr.reduce(op(acc, x) { ... }, init, [params])</td>
-<td>No</td>
-<td>Accumulate to a single value</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>All methods accept an operation (op) as the first argument.</li>
-<li>For map/filter, the op is called in parallel for each item.</li>
-<li>For reduce, the op is called sequentially, passing the accumulator.</li>
-<li>See also: <a href="../../EXAMPLES/">EXAMPLES.md</a>, <a href="../../USE_CASES/">USE_CASES.md</a>
-*/</li>
-</ul>
-<h2 id="while">while</h2>
-<p>Syntax:
-* while(bool) statement;</p>
-<p>Example:
-<div class="highlight"><pre><span></span><code>i = 0;
-while (i &lt; 5) {
-    i += 1;
-    (i.str() + &quot;:&quot;).echo();
-};
-&quot;\n&quot;.echo();
-/* Output: 1:2:3:4:5: */
-</code></pre></div></p>
-<h2 id="map">map</h2>
-<p>Syntax:
-* arr.map(op(x) { ... }, [params...]);</p>
-<ul>
-<li>Calls the operation for each item in the array, in parallel.</li>
-<li>Returns a new array with the results.</li>
-</ul>
-<p>Example:
-<div class="highlight"><pre><span></span><code>arr = [1,2,3];
-doubled = arr.map(op(n) { n * 2; });
-doubled.echo();
-/* Output: [2,4,6] */
-</code></pre></div></p>
-<h2 id="filter">filter</h2>
-<p>Syntax:
-* arr.filter(op(x) { ... }, [params...]);</p>
-<ul>
-<li>Calls the operation for each item in the array, in parallel.</li>
-<li>Returns a new array containing only items for which the op returns a non-null, non-zero, non-empty value.</li>
-</ul>
-<p>Minimal Example:
-<div class="highlight"><pre><span></span><code>arr = [1,2,3,4];
-filtered = arr.filter(op(x) { x &gt; 2; });
-filtered.echo();
-/* Output: [3,4] */
-</code></pre></div></p>
-<p>Edge Cases:
-<div class="highlight"><pre><span></span><code>arr = [1,2,3,4];
-filtered_none = arr.filter(op(x) { 0; });
-filtered_none.echo();
-/* Output: [] */
-</code></pre></div></p>
-<h2 id="reduce">reduce</h2>
-<p>Syntax:
-* arr.reduce(op(acc, x) { ... }, init, [params...]);</p>
-<ul>
-<li>Calls the operation sequentially for each item, passing the accumulator (acc) and the current item (x).</li>
-<li>The accumulator must be mutated inside the op (e.g., acc += x;), not just returned as a new value.</li>
-<li>Returns the final value of the accumulator.</li>
-<li>If init is omitted, the first item is used as the initial value.</li>
-<li>Reduce is always sequential (not parallel).</li>
-</ul>
-<p>Minimal Example (Sum):
-<div class="highlight"><pre><span></span><code>arr = [1,2,3,4];
-sum = arr.reduce(op(acc, x) { acc += x; }, 0);
-sum.echo();
-/* Output: 10 */
-</code></pre></div></p>
-<p>Canonical Example (All Together):
-<div class="highlight"><pre><span></span><code>arr = [1,2,3,4];
-filtered_gt2 = arr.filter(op(x) { x &gt; 2; });
-filtered_eq2 = arr.filter(op(x) { x == 2; });
-filtered_none = arr.filter(op(x) { 0; });
-reduced_sum = arr.reduce(op(acc, x) { acc += x; }, 0);
-(&quot;filtered_gt2: &quot; + filtered_gt2.str() + &quot;\n&quot;).echo();
-(&quot;filtered_eq2: &quot; + filtered_eq2.str() + &quot;\n&quot;).echo();
-(&quot;filtered_none: &quot; + filtered_none.str() + &quot;\n&quot;).echo();
-(&quot;reduced_sum: &quot; + reduced_sum.str() + &quot;\n&quot;).echo();
-/*
-Output:
-filtered_gt2: [3,4]
-filtered_eq2: [2]
-filtered_none: []
-reduced_sum: 10
-*/
-</code></pre></div></p>
-<h3 id="important-accumulator-mutation-in-reduce">Important: Accumulator Mutation in reduce</h3>
-<ul>
-<li>The accumulator variable (acc) must be mutated inside the op for reduce to work as expected.</li>
-<li>This means you must use <code>acc += x;</code> or similar, not just <code>acc + x;</code>.</li>
-<li>Returning a new value does NOT update the accumulator.</li>
-<li>Common mistake:
-<div class="highlight"><pre><span></span><code>arr = [1,2,3,4];
-sum = arr.reduce(op(acc, x) { acc + x; }, 0);
-sum.echo();
-/* Output: 0 (WRONG!) */
-</code></pre></div></li>
-<li>Correct:
-<div class="highlight"><pre><span></span><code>arr = [1,2,3,4];
-sum = arr.reduce(op(acc, x) { acc += x; }, 0);
-sum.echo();
-/* Output: 10 */
-</code></pre></div></li>
-</ul>
-<h3 id="troubleshooting-reduce">Troubleshooting reduce</h3>
-<ul>
-<li>If your reduce result is always the initial value, check that you are mutating the accumulator.</li>
-<li>Use <code>acc += x;</code> or <code>acc = acc * x;</code> as needed.</li>
-<li>If you want to build an array, use <code>acc += x;</code> with an array accumulator.</li>
-</ul>
-<h3 id="best-practices-for-mapfilterreduce">Best Practices for map/filter/reduce</h3>
-<ul>
-<li>Use map for transformations, filter for selection, reduce for aggregation.</li>
-<li>For side effects, prefer reduce (sequential) over map/filter (parallel).</li>
-<li>Always use block comments (<code>/* ... */</code>) for documentation.</li>
-<li>Test your op in the REPL with small arrays before using in scripts.</li>
-<li>For complex reductions, consider using an object or array as the accumulator.</li>
-</ul>
-<hr />
-<h2 id="see-also">See Also</h2>
-<ul>
-<li><a href="../../EXAMPLES/">EXAMPLES.md</a></li>
-<li><a href="../../USE_CASES/">USE_CASES.md</a></li>
-<li><a href="../../syntax/basic_syntax/">Basic Syntax Guide</a></li>
-<li><a href="../../type/ARRAY/">Array Type</a></li>
-</ul>
-<hr />
-<p>/<em> End of canonical map/filter/reduce documentation. </em>/</p>
+  <h1>Grep python</h1>
+
+
 
 
 

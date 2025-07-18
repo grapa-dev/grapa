@@ -8,6 +8,8 @@
       
       
       
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/docs/TROUBLESHOOTING/">
+      
       
         <link rel="prev" href="../EXAMPLES/">
       
@@ -70,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#troubleshooting-guide" class="md-skip">
+        <a href="#troubleshooting" class="md-skip">
           Skip to content
         </a>
       
@@ -258,7 +260,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../PYTHON_INTEGRATION/" class="md-tabs__link">
+      <a href="../python_integration/" class="md-tabs__link">
         
   
   
@@ -296,7 +298,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../grep/" class="md-tabs__link">
+      <a href="../GREP/" class="md-tabs__link">
         
   
   
@@ -494,7 +496,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../PYTHON_INTEGRATION/" class="md-nav__link">
+      <a href="../python_integration/" class="md-nav__link">
         
   
   
@@ -538,7 +540,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grep/" class="md-nav__link">
+      <a href="../GREP/" class="md-nav__link">
         
   
   
@@ -884,6 +886,39 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#critical-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Critical Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Critical Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#row-table-index-corruption-bug" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚨 ROW Table Index Corruption Bug
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#common-error-patterns" class="md-nav__link">
@@ -1271,6 +1306,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#critical-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Critical Issues
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Critical Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#row-table-index-corruption-bug" class="md-nav__link">
+    <span class="md-ellipsis">
+      🚨 ROW Table Index Corruption Bug
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Issues
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-error-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       Common Error Patterns
@@ -1637,13 +1705,29 @@
 
 
 
-<h1 id="troubleshooting-guide">Troubleshooting Guide</h1>
+<h1 id="troubleshooting">Troubleshooting</h1>
+<h2 id="critical-issues">Critical Issues</h2>
+<h3 id="row-table-index-corruption-bug">🚨 ROW Table Index Corruption Bug</h3>
+<p><strong>Issue</strong>: ROW tables have a critical bug where the first record's index becomes corrupted when the third record is added.</p>
+<p><strong>Symptoms</strong>:
+- First record returns <code>{"error":-1}</code> when retrieved
+- Subsequent records work correctly
+- Debug output shows empty RPTR entries for first record</p>
+<p><strong>Workaround</strong>: Use COL tables instead of ROW tables
+<div class="highlight"><pre><span></span><code>// Instead of:
+tbl = $file().table(&quot;ROW&quot;);
+
+// Use:
+tbl = $file().table(&quot;COL&quot;);
+</code></pre></div></p>
+<p><strong>Status</strong>: Under investigation. COL tables provide the same functionality and work correctly.</p>
+<h2 id="common-issues">Common Issues</h2>
 <p>This guide covers common issues encountered when working with Grapa and GrapaPy, along with their solutions and debugging techniques.</p>
 <blockquote>
 <p><strong>See Also:</strong>
 - <a href="../GETTING_STARTED/">Getting Started</a>
 - <a href="../PYTHON_USE_CASES/#migration-tips-for-python-users">Migration Tips for Python Users</a>
-- <a href="../PYTHON_INTEGRATION/">Python Integration Guide</a></p>
+- <a href="PYTHON_INTEGRATION.md">Python Integration Guide</a></p>
 </blockquote>
 <h2 id="common-error-patterns">Common Error Patterns</h2>
 <h3 id="error-1-responses"><code>{"error":-1}</code> Responses</h3>
