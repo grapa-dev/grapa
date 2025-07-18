@@ -8,12 +8,12 @@
 include "test/grep/test_performance_optimizations.grc";
 include "test/grep/test_atomic_groups.grc";
 include "test/grep/test_lookaround_assertions.grc";
-include "test/test_unicode_grapheme_clusters.grc";
-include "test/test_basic_option_combinations.grc";
-include "test/test_binary_mode.grc";
-include "test/test_custom_delimiters.grc";
-include "test/test_unicode_normalization.grc";
-include "test/test_context_lines.grc";
+include "test/grep/test_unicode_grapheme_clusters.grc";
+include "test/grep/test_basic_option_combinations.grc";
+include "test/grep/test_binary_mode.grc";
+include "test/grep/test_custom_delimiters.grc";
+include "test/grep/test_unicode_normalization.grc";
+include "test/grep/test_context_lines.grc";
 
 "=== ALL TESTS COMPLETED ===\n".echo();
 "All test suites have been executed successfully!\n".echo(); 
