@@ -50,11 +50,11 @@ export PATH="$PATH:/path/to/grapa/directory"
 Create a file named `hello.grc`:
 ```grapa
 /* Simple hello world */
-echo("Hello, Grapa!");
+"Hello, Grapa!".echo();
 
 /* Basic arithmetic */
 result = 4 * 3;
-echo("4 * 3 = " + result);
+("4 * 3 = " + result).echo();
 ```
 
 ### Step 2: Run the Script
@@ -87,21 +87,21 @@ config = { "host": "localhost", "port": 8080 };
 ```grapa
 /* If statements */
 if (count > 10) {
-    echo("Count is high");
+    "Count is high".echo();
 } else {
-    echo("Count is low");
+    "Count is low".echo();
 }
 
 /* While loops */
 i = 0;
 while (i < 5) {
-    echo("Iteration " + i);
+    ("Iteration " + i).echo();
     i = i + 1;
 }
 
 /* For loops (using range) */
 for (i in range(5)) {
-    echo("For loop iteration " + i);
+    ("For loop iteration " + i).echo();
 }
 ```
 
@@ -114,7 +114,7 @@ function = op(a, b) {
 
 /* Call the function */
 result = function(10, 20);
-echo("Sum: " + result);
+("Sum: " + result).echo();
 ```
 
 ## File Operations
@@ -122,23 +122,23 @@ echo("Sum: " + result);
 ### Reading Files
 ```grapa
 /* Read entire file */
-content = file_get("data.txt");
-echo("File content: " + content);
+content = $file().get("data.txt").str();
+("File content: " + content).echo();
 
 /* Read file as lines */
-lines = file_get("data.txt").split("\n");
+lines = $file().get("data.txt").str().split("\n");
 for (line in lines) {
-    echo("Line: " + line);
+    ("Line: " + line).echo();
 }
 ```
 
 ### Writing Files
 ```grapa
 /* Write to file */
-file_set("output.txt", "Hello from Grapa!");
+$file().set("output.txt", "Hello from Grapa!");
 
 /* Append to file */
-file_set("log.txt", "New entry\n", "a");
+$file().set("log.txt", "New entry\n", "a");
 ```
 
 ## Data Processing
@@ -149,16 +149,16 @@ file_set("log.txt", "New entry\n", "a");
 data = [1, 2, 3, 4, 5];
 
 /* Map operation (parallel by default) */
-doubled = map(data, op(x) { return x * 2; });
-echo("Doubled: " + doubled);
+doubled = data.map(op(x) { return x * 2; });
+("Doubled: " + doubled).echo();
 
 /* Filter operation */
-evens = filter(data, op(x) { return x % 2 == 0; });
-echo("Evens: " + evens);
+evens = data.filter(op(x) { return x % 2 == 0; });
+("Evens: " + evens).echo();
 
 /* Reduce operation */
-sum = reduce(data, op(acc, x) { return acc + x; }, 0);
-echo("Sum: " + sum);
+sum = data.reduce(op(acc, x) { return acc + x; }, 0);
+("Sum: " + sum).echo();
 ```
 
 ### String Operations
@@ -170,14 +170,14 @@ upper = text.upper();
 lower = text.lower();
 length = text.len();
 
-echo("Upper: " + upper);
-echo("Lower: " + lower);
-echo("Length: " + length);
+("Upper: " + upper).echo();
+("Lower: " + lower).echo();
+("Length: " + length).echo();
 
 /* String splitting and joining */
 words = text.split(", ");
 joined = words.join(" - ");
-echo("Joined: " + joined);
+("Joined: " + joined).echo();
 ```
 
 ## Command Line Options
@@ -205,7 +205,7 @@ args = $sys.argv;
 
 /* Get specific argument */
 first_arg = args[1];
-echo("First argument: " + first_arg);
+("First argument: " + first_arg).echo();
 ```
 
 ## Common Patterns
@@ -213,13 +213,13 @@ echo("First argument: " + first_arg);
 ### Configuration Files
 ```grapa
 /* Read JSON config */
-config_text = file_get("config.json");
+config_text = $file().get("config.json").str();
 config = config_text.json();
 
 /* Use configuration */
 host = config.host;
 port = config.port;
-echo("Connecting to " + host + ":" + port);
+("Connecting to " + host + ":" + port).echo();
 ```
 
 ### Error Handling
@@ -227,21 +227,21 @@ echo("Connecting to " + host + ":" + port);
 /* Try-catch equivalent */
 iferr {
     result = 10 / 0;
-    echo("This won't print");
+    "This won't print".echo();
 } {
-    echo("Error occurred: " + $sys.error);
+    ("Error occurred: " + $sys.error).echo();
 }
 ```
 
 ### Working with Directories
 ```grapa
 /* List files in directory */
-files = file_ls(".");
+files = $file().ls(".");
 for (file in files) {
     if (file.type == "file") {
-        echo("File: " + file.name);
+        ("File: " + file.name).echo();
     } else {
-        echo("Directory: " + file.name);
+        ("Directory: " + file.name).echo();
     }
 }
 ```
@@ -258,4 +258,4 @@ for (file in files) {
 - **Parallel Operations:** `map` and `filter` are parallel by default and great for data processing
 - **File Extensions:** Use `.grc` extension for Grapa script files
 - **Interactive Mode:** Run `grapa` without arguments for interactive experimentation
-- **Error Messages:** Grapa provides detailed error messages to help debug issues 
+- **Error Messages:** Grapa provides detailed error messages to help debug issues
