@@ -81,4 +81,9 @@ nav:
       - Swift: migrations/SWIFT_TO_GRAPA_MIGRATION.md
   - Use Cases: USE_CASES.md
   - Examples: EXAMPLES.md
+  - Syntax:
+      - Basic Syntax: syntax/basic_syntax.md
+      - Operators: syntax/operator.md
+      - Precedence: syntax/precedence.md
+      - Grammar Design: syntax/grammar_design.md
   - Troubleshooting: TROUBLESHOOTING.md
