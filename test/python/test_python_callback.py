@@ -27,4 +27,7 @@ try_callback('Triple quotes in Python', '''$py().eval("print(\\"hi\\")")''')
 # 3. Print a simple value (works)
 try_callback('Print a simple value', '$py().eval("print(123)")')
 
+# 4. Print a simple return (works)
+try_callback('Print a simple value', '$py().eval("123")')
+
 print('\n--- End of callback test ---')

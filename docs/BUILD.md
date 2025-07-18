@@ -366,6 +366,7 @@ dnf install -y tar
 Other
 ```
 dnf install -y make
+dnf install -y cmake
 dnf install -y gcc
 dnf install -y python3
 dnf install -y mesa-libGL-devel
