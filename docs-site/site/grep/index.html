@@ -266,7 +266,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -501,7 +501,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -2925,15 +2925,15 @@ lock_obj.unlock();
 <div class="highlight"><pre><span></span><code>/* Basic pattern matching */
 text = &quot;Hello world\nGoodbye world&quot;;
 matches = text.grep(&quot;world&quot;);
-echo(matches);  /* [&quot;Hello world&quot;, &quot;Goodbye world&quot;] */
+matches.echo();  /* [&quot;Hello world&quot;, &quot;Goodbye world&quot;] */
 
 /* Match-only output */
 matches = text.grep(&quot;world&quot;, &quot;o&quot;);
-echo(matches);  /* [&quot;world&quot;, &quot;world&quot;] */
+matches.echo();  /* [&quot;world&quot;, &quot;world&quot;] */
 
 /* Case-insensitive matching */
 matches = text.grep(&quot;hello&quot;, &quot;i&quot;);
-echo(matches);  /* [&quot;Hello world&quot;] */
+matches.echo();  /* [&quot;Hello world&quot;] */
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3036,37 +3036,37 @@ matches = text.grep(&quot;\\X+&quot;);
 <div class="highlight"><pre><span></span><code>/* Basic grapheme cluster matching */
 text = &quot;café&quot;;
 clusters = text.grep(&quot;\\X&quot;, &quot;o&quot;);
-echo(clusters);
+clusters.echo();
 /* [&quot;c&quot;, &quot;a&quot;, &quot;f&quot;, &quot;é&quot;]  /* é is a single grapheme cluster (e + combining acute) */
 
 /* Complex grapheme clusters */
 text = &quot;😀❤️&quot;;
 clusters = text.grep(&quot;\\X&quot;, &quot;o&quot;);
-echo(clusters);
+clusters.echo();
 /* [&quot;😀&quot;, &quot;❤️&quot;]  /* Heart with emoji modifier */
 
 /* Grapheme clusters with newlines */
 text = &quot;é\n😀&quot;;
 clusters = text.grep(&quot;\\X&quot;, &quot;o&quot;);
-echo(clusters);
+clusters.echo();
 /* [&quot;é&quot;, &quot;\n&quot;, &quot;😀&quot;]  /* Newlines are treated as separate clusters */
 
 /* Grapheme clusters with quantifiers */
 text = &quot;café&quot;;
 matches = text.grep(&quot;\\X+&quot;, &quot;o&quot;);
-echo(matches);
+matches.echo();
 /* [&quot;café&quot;]  /* One or more grapheme clusters */
 
 matches = text.grep(&quot;\\X*&quot;, &quot;o&quot;);
-echo(matches);
+matches.echo();
 /* [&quot;&quot;, &quot;café&quot;, &quot;&quot;]  /* Zero or more grapheme clusters */
 
 matches = text.grep(&quot;\\X?&quot;, &quot;o&quot;);
-echo(matches);
+matches.echo();
 /* [&quot;&quot;, &quot;c&quot;, &quot;&quot;, &quot;a&quot;, &quot;&quot;, &quot;f&quot;, &quot;&quot;, &quot;é&quot;, &quot;&quot;]  /* Zero or one grapheme cluster */
 
 matches = text.grep(&quot;\\X{2,3}&quot;, &quot;o&quot;);
-echo(matches);
+matches.echo();
 /* [&quot;ca&quot;, &quot;fé&quot;]  /* Between 2 and 3 grapheme clusters */
 </code></pre></div>
 </div>
@@ -3113,7 +3113,7 @@ echo(matches);
 <div class="highlight"><pre><span></span><code>/* Match café, cafe, café, etc. */
 text = &quot;café cafe café&quot;;
 matches = text.grep(&quot;cafe&quot;, &quot;d&quot;);
-echo(matches);  /* [&quot;café&quot;, &quot;cafe&quot;, &quot;café&quot;] */
+matches.echo();  /* [&quot;café&quot;, &quot;cafe&quot;, &quot;café&quot;] */
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -3132,18 +3132,18 @@ echo(matches);  /* [&quot;café&quot;, &quot;cafe&quot;, &quot;café&quot;] */
 <div class="highlight"><pre><span></span><code>/* Zero-length matches (now working correctly) */
 text = &quot;abc&quot;;
 matches = text.grep(&quot;&quot;, &quot;o&quot;);
-echo(matches);
+matches.echo();
 /* [&quot;&quot;]  /* Single empty string for zero-length match */
 
 /* Empty pattern (now working correctly) */
 matches = text.grep(&quot;&quot;, &quot;o&quot;);
-echo(matches);
+matches.echo();
 /* [&quot;&quot;]  /* Single empty string for empty pattern */
 
 /* Unicode boundary handling */
 text = &quot;café&quot;;
 matches = text.grep(&quot;\\b\\w+\\b&quot;, &quot;o&quot;);
-echo(matches);  /* [&quot;café&quot;] */
+matches.echo();  /* [&quot;café&quot;] */
 </code></pre></div>
 <h2 id="function-signature">Function Signature</h2>
 <div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">CLI</label><label for="__tabbed_8_2">Python</label></div>
@@ -3916,19 +3916,19 @@ large_input.grep(&quot;pattern&quot;, &quot;o&quot;, &quot;&quot;, &quot;&quot;,
 <div class="highlight"><pre><span></span><code>/* Basic JSON output */
 text = &quot;Hello world&quot;;
 result = text.grep(&quot;\\w+&quot;, &quot;oj&quot;);
-echo(result);
+result.echo();
 /* Result: [{&quot;match&quot;:&quot;Hello&quot;,&quot;offset&quot;:0,&quot;line&quot;:1},{&quot;match&quot;:&quot;world&quot;,&quot;offset&quot;:6,&quot;line&quot;:1}] */
 
 /* JSON with named groups */
 text = &quot;John Doe (30)&quot;;
 result = text.grep(&quot;(?P&lt;first&gt;\\w+) (?P&lt;last&gt;\\w+) \\((?P&lt;age&gt;\\d+)\\)&quot;, &quot;oj&quot;);
-echo(result);
+result.echo();
 /* Result: [{&quot;match&quot;:&quot;John Doe (30)&quot;,&quot;first&quot;:&quot;John&quot;,&quot;last&quot;:&quot;Doe&quot;,&quot;age&quot;:&quot;30&quot;,&quot;offset&quot;:0,&quot;line&quot;:1}] */
 
 /* Date parsing with named groups */
 text = &quot;2023-04-27\n2022-12-31&quot;;
 result = text.grep(&quot;(?&lt;year&gt;\\d{4})-(?&lt;month&gt;\\d{2})-(?&lt;day&gt;\\d{2})&quot;, &quot;oj&quot;);
-echo(result);
+result.echo();
 /* Result: [
 /*   {&quot;match&quot;:&quot;2023-04-27&quot;,&quot;year&quot;:&quot;2023&quot;,&quot;month&quot;:&quot;04&quot;,&quot;day&quot;:&quot;27&quot;,&quot;offset&quot;:0,&quot;line&quot;:1},
 /*   {&quot;match&quot;:&quot;2022-12-31&quot;,&quot;year&quot;:&quot;2022&quot;,&quot;month&quot;:&quot;12&quot;,&quot;day&quot;:&quot;31&quot;,&quot;offset&quot;:11,&quot;line&quot;:2}
@@ -4258,13 +4258,13 @@ result = &quot;Hello world&quot;.grep(&quot;&quot;, &quot;o&quot;);
 <div class="highlight"><pre><span></span><code>// Basic context
 text = &quot;Line 1\nLine 2\nLine 3\nLine 4\nLine 5&quot;;
 result = text.grep(&quot;Line 3&quot;, &quot;C1&quot;);
-echo(result);
+result.echo();
 /* Result: [&quot;Line 2&quot;, &quot;Line 3&quot;, &quot;Line 4&quot;] */
 
 // Multiple matches with context
 text = &quot;Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7&quot;;
 result = text.grep(&quot;Line 3|Line 5&quot;, &quot;C1&quot;);
-echo(result);
+result.echo();
 /* Result: [&quot;Line 1&quot;, &quot;Line 2&quot;, &quot;Line 3&quot;, &quot;--&quot;, &quot;Line 3&quot;, &quot;Line 4&quot;, &quot;Line 5&quot;] */
 </code></pre></div>
 </div>

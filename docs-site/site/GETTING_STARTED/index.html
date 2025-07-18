@@ -268,7 +268,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -557,6 +557,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#everything-is-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Everything is Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dynamic-code-execution" class="md-nav__link">
     <span class="md-ellipsis">
       Dynamic Code Execution
@@ -699,7 +708,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -1133,6 +1142,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#everything-is-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Everything is Data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dynamic-code-execution" class="md-nav__link">
     <span class="md-ellipsis">
       Dynamic Code Execution
@@ -1321,6 +1339,34 @@ sum = numbers.reduce(op(a, b) { a + b; }, 0);
 </code></pre></div>
 <hr />
 <h2 id="core-concepts">Core Concepts</h2>
+<h3 id="everything-is-data">Everything is Data</h3>
+<p>Grapa's most fundamental concept is that <strong>everything is data</strong>. Unlike traditional programming languages that distinguish between "data" and "code," Grapa treats functions, classes, primitives, and everything else as different types of data that can be manipulated, stored, and passed around.</p>
+<div class="highlight"><pre><span></span><code>/* Functions are data ($OP type) */
+my_function = op(x) { x * 2; };
+my_function.type().echo();  /* $OP */
+
+/* Numbers are data ($INT type) */
+my_number = 42;
+my_number.type().echo();    /* $INT */
+
+/* Strings are data ($STR type) */
+my_string = &quot;hello&quot;;
+my_string.type().echo();    /* $STR */
+
+/* Classes are data ($CLASS type) */
+MyClass = class { name = &quot;&quot;; };
+MyClass.type().echo();      /* $CLASS */
+
+/* You can store functions in variables */
+functions = [op(x) { x + 1; }, op(x) { x * 2; }];
+result1 = functions[0](5);  /* 6 */
+result2 = functions[1](5);  /* 10 */
+
+/* You can pass functions as parameters */
+apply_func = op(func, value) { func(value); };
+result = apply_func(op(x) { x * 3; }, 7);  /* 21 */
+</code></pre></div>
+<p>This unified data model enables powerful metaprogramming, code generation, and flexible data structures that would be complex in other languages.</p>
 <h3 id="dynamic-code-execution">Dynamic Code Execution</h3>
 <p>Grapa's most powerful feature is its ability to compile and execute code at runtime:</p>
 <div class="highlight"><pre><span></span><code>/* Direct string execution */

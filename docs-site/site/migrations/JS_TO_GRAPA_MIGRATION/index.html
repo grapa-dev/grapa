@@ -266,7 +266,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -501,7 +501,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -768,6 +768,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#work-in-progress-wip-items" class="md-nav__link">
     <span class="md-ellipsis">
       Work-in-Progress (WIP) Items
@@ -947,6 +956,21 @@
       See Also
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="See Also">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-match-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom match() Function for Regex
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1284,6 +1308,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#work-in-progress-wip-items" class="md-nav__link">
     <span class="md-ellipsis">
       Work-in-Progress (WIP) Items
@@ -1463,6 +1496,21 @@
       See Also
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="See Also">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-match-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom match() Function for Regex
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1887,6 +1935,16 @@ value = obj.&quot;key&quot;;
 </code></pre></div></p>
 <p><strong>Tip:</strong> Grapa's parallel ETL/data processing is robust, production-ready, and a core design goal. Unlike JavaScript, you can use parallel methods like <code>.map()</code> and <code>.filter()</code> out of the box for high-throughput data tasks.</p>
 </blockquote>
+<h2 id="customizing-grapa-for-familiar-syntax">Customizing Grapa for Familiar Syntax</h2>
+<p>If you prefer JavaScript-style function calls, you can define your own <code>console_log()</code> function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>// Define a console_log function similar to JavaScript
+console_log = op(&quot;value&quot;=&quot;&quot;){value.echo();};
+console_log(&quot;Hello from Grapa!&quot;);
+</code></pre></div>
+<p>This can make migration easier for those used to JavaScript's <code>console.log()</code> or similar functions.</p>
+<blockquote>
+<p><strong>Advanced:</strong> Grapa also allows advanced users to customize or extend the language syntax using <code>$RULE</code> or by modifying <code>$global</code> rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.</p>
+</blockquote>
 <h2 id="work-in-progress-wip-items">Work-in-Progress (WIP) Items</h2>
 <p>Some JavaScript idioms don't have direct Grapa equivalents yet. These are categorized by priority:</p>
 <h3 id="core-gaps-true-language-gaps">Core Gaps (True Language Gaps)</h3>
@@ -2064,6 +2122,21 @@ if (value.type() == $INT) {
 </ul>
 <hr />
 <p><em>If you have more JavaScript idioms you want mapped to Grapa, please open an issue or PR!</em></p>
+<h3 id="custom-match-function-for-regex">Custom match() Function for Regex</h3>
+<p>JavaScript users often use <code>str.match</code> for regex checks. You can define a similar function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>// Define a match function that returns true if the pattern is found
+match = op(&quot;text&quot;=&quot;&quot;, &quot;pattern&quot;=&quot;&quot;) {
+    text.grep(pattern, &quot;x&quot;).len() &gt; 0;
+};
+
+// Usage
+if (match(&quot;hello world&quot;, &quot;world&quot;)) {
+    &quot;Found!&quot;.echo();
+} else {
+    &quot;Not found.&quot;.echo();
+}
+</code></pre></div>
+<p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
 
 
 

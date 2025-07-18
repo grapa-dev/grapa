@@ -266,7 +266,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -501,7 +501,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -887,6 +887,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1197,6 +1206,15 @@
   <a href="#see-also_1" class="md-nav__link">
     <span class="md-ellipsis">
       See Also
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
     </span>
   </a>
   
@@ -1715,6 +1733,16 @@ myDog.fetch();  /* Outputs: Fetching... */
 </ul>
 <hr />
 <p><em>If you have more Go idioms you want mapped to Grapa, please open an issue or PR!</em></p>
+<h2 id="customizing-grapa-for-familiar-syntax">Customizing Grapa for Familiar Syntax</h2>
+<p>If you prefer Go-style function calls, you can define your own <code>fmt_Println()</code> function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>// Define a fmt_Println function similar to Go
+fmt_Println = op(&quot;value&quot;=&quot;&quot;){value.echo();};
+fmt_Println(&quot;Hello from Grapa!&quot;);
+</code></pre></div>
+<p>This can make migration easier for those used to Go's <code>fmt.Println()</code> or similar functions.</p>
+<blockquote>
+<p><strong>Advanced:</strong> Grapa also allows advanced users to customize or extend the language syntax using <code>$RULE</code> or by modifying <code>$global</code> rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.</p>
+</blockquote>
 
 
 

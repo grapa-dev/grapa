@@ -268,7 +268,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -819,7 +819,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -1557,11 +1557,11 @@ sudo<span class="w"> </span>mv<span class="w"> </span>grapa<span class="w"> </sp
 <h3 id="step-1-create-a-script-file">Step 1: Create a Script File</h3>
 <p>Create a file named <code>hello.grc</code>:
 <div class="highlight"><pre><span></span><code>/* Simple hello world */
-echo(&quot;Hello, Grapa!&quot;);
+&quot;Hello, Grapa!&quot;.echo();
 
 /* Basic arithmetic */
 result = 4 * 3;
-echo(&quot;4 * 3 = &quot; + result);
+(&quot;4 * 3 = &quot; + result).echo();
 </code></pre></div></p>
 <h3 id="step-2-run-the-script">Step 2: Run the Script</h3>
 <div class="highlight"><pre><span></span><code>grapa<span class="w"> </span>-cfile<span class="w"> </span>hello.grc
@@ -1585,21 +1585,21 @@ config = { &quot;host&quot;: &quot;localhost&quot;, &quot;port&quot;: 8080 };
 <h3 id="control-flow">Control Flow</h3>
 <div class="highlight"><pre><span></span><code>/* If statements */
 if (count &gt; 10) {
-    echo(&quot;Count is high&quot;);
+    &quot;Count is high&quot;.echo();
 } else {
-    echo(&quot;Count is low&quot;);
+    &quot;Count is low&quot;.echo();
 }
 
 /* While loops */
 i = 0;
 while (i &lt; 5) {
-    echo(&quot;Iteration &quot; + i);
+    (&quot;Iteration &quot; + i).echo();
     i = i + 1;
 }
 
 /* For loops (using range) */
 for (i in range(5)) {
-    echo(&quot;For loop iteration &quot; + i);
+    (&quot;For loop iteration &quot; + i).echo();
 }
 </code></pre></div>
 <h3 id="functions">Functions</h3>
@@ -1610,26 +1610,26 @@ function = op(a, b) {
 
 /* Call the function */
 result = function(10, 20);
-echo(&quot;Sum: &quot; + result);
+(&quot;Sum: &quot; + result).echo();
 </code></pre></div>
 <h2 id="file-operations">File Operations</h2>
 <h3 id="reading-files">Reading Files</h3>
 <div class="highlight"><pre><span></span><code>/* Read entire file */
-content = file_get(&quot;data.txt&quot;);
-echo(&quot;File content: &quot; + content);
+content = $file().get(&quot;data.txt&quot;).str();
+(&quot;File content: &quot; + content).echo();
 
 /* Read file as lines */
-lines = file_get(&quot;data.txt&quot;).split(&quot;\n&quot;);
+lines = $file().get(&quot;data.txt&quot;).str().split(&quot;\n&quot;);
 for (line in lines) {
-    echo(&quot;Line: &quot; + line);
+    (&quot;Line: &quot; + line).echo();
 }
 </code></pre></div>
 <h3 id="writing-files">Writing Files</h3>
 <div class="highlight"><pre><span></span><code>/* Write to file */
-file_set(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
+$file().set(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
 
 /* Append to file */
-file_set(&quot;log.txt&quot;, &quot;New entry\n&quot;, &quot;a&quot;);
+$file().set(&quot;log.txt&quot;, &quot;New entry\n&quot;, &quot;a&quot;);
 </code></pre></div>
 <h2 id="data-processing">Data Processing</h2>
 <h3 id="working-with-arrays">Working with Arrays</h3>
@@ -1637,16 +1637,16 @@ file_set(&quot;log.txt&quot;, &quot;New entry\n&quot;, &quot;a&quot;);
 data = [1, 2, 3, 4, 5];
 
 /* Map operation (parallel by default) */
-doubled = map(data, op(x) { return x * 2; });
-echo(&quot;Doubled: &quot; + doubled);
+doubled = data.map(op(x) { return x * 2; });
+(&quot;Doubled: &quot; + doubled).echo();
 
 /* Filter operation */
-evens = filter(data, op(x) { return x % 2 == 0; });
-echo(&quot;Evens: &quot; + evens);
+evens = data.filter(op(x) { return x % 2 == 0; });
+(&quot;Evens: &quot; + evens).echo();
 
 /* Reduce operation */
-sum = reduce(data, op(acc, x) { return acc + x; }, 0);
-echo(&quot;Sum: &quot; + sum);
+sum = data.reduce(op(acc, x) { return acc + x; }, 0);
+(&quot;Sum: &quot; + sum).echo();
 </code></pre></div>
 <h3 id="string-operations">String Operations</h3>
 <div class="highlight"><pre><span></span><code>text = &quot;Hello, World!&quot;;
@@ -1656,14 +1656,14 @@ upper = text.upper();
 lower = text.lower();
 length = text.len();
 
-echo(&quot;Upper: &quot; + upper);
-echo(&quot;Lower: &quot; + lower);
-echo(&quot;Length: &quot; + length);
+(&quot;Upper: &quot; + upper).echo();
+(&quot;Lower: &quot; + lower).echo();
+(&quot;Length: &quot; + length).echo();
 
 /* String splitting and joining */
 words = text.split(&quot;, &quot;);
 joined = words.join(&quot; - &quot;);
-echo(&quot;Joined: &quot; + joined);
+(&quot;Joined: &quot; + joined).echo();
 </code></pre></div>
 <h2 id="command-line-options">Command Line Options</h2>
 <h3 id="basic-usage">Basic Usage</h3>
@@ -1686,36 +1686,36 @@ args = $sys.argv;
 
 /* Get specific argument */
 first_arg = args[1];
-echo(&quot;First argument: &quot; + first_arg);
+(&quot;First argument: &quot; + first_arg).echo();
 </code></pre></div></p>
 <h2 id="common-patterns">Common Patterns</h2>
 <h3 id="configuration-files">Configuration Files</h3>
 <div class="highlight"><pre><span></span><code>/* Read JSON config */
-config_text = file_get(&quot;config.json&quot;);
+config_text = $file().get(&quot;config.json&quot;).str();
 config = config_text.json();
 
 /* Use configuration */
 host = config.host;
 port = config.port;
-echo(&quot;Connecting to &quot; + host + &quot;:&quot; + port);
+(&quot;Connecting to &quot; + host + &quot;:&quot; + port).echo();
 </code></pre></div>
 <h3 id="error-handling">Error Handling</h3>
 <div class="highlight"><pre><span></span><code>/* Try-catch equivalent */
 iferr {
     result = 10 / 0;
-    echo(&quot;This won&#39;t print&quot;);
+    &quot;This won&#39;t print&quot;.echo();
 } {
-    echo(&quot;Error occurred: &quot; + $sys.error);
+    (&quot;Error occurred: &quot; + $sys.error).echo();
 }
 </code></pre></div>
 <h3 id="working-with-directories">Working with Directories</h3>
 <div class="highlight"><pre><span></span><code>/* List files in directory */
-files = file_ls(&quot;.&quot;);
+files = $file().ls(&quot;.&quot;);
 for (file in files) {
     if (file.type == &quot;file&quot;) {
-        echo(&quot;File: &quot; + file.name);
+        (&quot;File: &quot; + file.name).echo();
     } else {
-        echo(&quot;Directory: &quot; + file.name);
+        (&quot;Directory: &quot; + file.name).echo();
     }
 }
 </code></pre></div>
@@ -1731,7 +1731,7 @@ for (file in files) {
 <li><strong>Parallel Operations:</strong> <code>map</code> and <code>filter</code> are parallel by default and great for data processing</li>
 <li><strong>File Extensions:</strong> Use <code>.grc</code> extension for Grapa script files</li>
 <li><strong>Interactive Mode:</strong> Run <code>grapa</code> without arguments for interactive experimentation</li>
-<li><strong>Error Messages:</strong> Grapa provides detailed error messages to help debug issues </li>
+<li><strong>Error Messages:</strong> Grapa provides detailed error messages to help debug issues</li>
 </ul>
 
 

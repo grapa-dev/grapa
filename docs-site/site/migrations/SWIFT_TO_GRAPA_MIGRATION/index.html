@@ -266,7 +266,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -501,7 +501,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -920,6 +920,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1125,6 +1134,15 @@
   <a href="#notes" class="md-nav__link">
     <span class="md-ellipsis">
       Notes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
     </span>
   </a>
   
@@ -1557,6 +1575,12 @@
 <li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
 <li>Use <code>op(){}</code> for lambdas and function definitions. </li>
 </ul>
+<h2 id="customizing-grapa-for-familiar-syntax">Customizing Grapa for Familiar Syntax</h2>
+<p>If you prefer Swift-style function calls, you can define your own <code>print()</code> function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>// Define a print function similar to Swift
+print = op(&quot;value&quot;=&quot;&quot;){value.echo();};
+print(&quot;Hello from Grapa!&quot;);
+</code></pre></div>
 
 
 

@@ -2,6 +2,49 @@
 
 **See also:** [Operator Precedence Table](precedence.md)
 
+## Object and Table Merging Operators
+
+Grapa provides two different operators for combining objects/tables:
+
+### `+=` (Append/Nest)
+Appends the second object as a nested structure within the first:
+
+```grapa
+a = {"name": "John"};
+b = {"age": 30};
+a += b;
+a.echo();  /* {"name":"John",{"age":30}} */
+```
+
+### `++=` (Merge/Flatten)
+Merges the properties from both objects into a single flat object:
+
+```grapa
+a = {"name": "John"};
+b = {"age": 30};
+a ++= b;
+a.echo();  /* {"name":"John","age":30} */
+```
+
+### Key Differences
+- **`+=`** - Creates nested structure: `{"key1":"value1",{"key2":"value2"}}`
+- **`++=`** - Flattens properties: `{"key1":"value1","key2":"value2"}`
+
+### Practical Examples
+```grapa
+/* Building nested configurations */
+config = {"debug": true};
+logging = {"level": "info"};
+config += logging;
+config.echo();  /* {"debug":true,{"level":"info"}} */
+
+/* Merging user data */
+user = {"name": "Alice"};
+profile = {"email": "alice@example.com", "role": "admin"};
+user ++= profile;
+user.echo();  /* {"name":"Alice","email":"alice@example.com","role":"admin"} */
+```
+
 ## Basic Function Creation and Execution
 
 Commands | Results

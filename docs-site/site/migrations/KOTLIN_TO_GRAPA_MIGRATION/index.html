@@ -266,7 +266,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -501,7 +501,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -880,11 +880,35 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-kotlin-to-grapa-mappings" class="md-nav__link">
     <span class="md-ellipsis">
       Common Kotlin-to-Grapa Mappings
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Common Kotlin-to-Grapa Mappings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-checking-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Checking Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -894,6 +918,30 @@
       Notes
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-matches-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom matches() Function for Regex
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#late-initialization-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Late Initialization Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1113,11 +1161,35 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-kotlin-to-grapa-mappings" class="md-nav__link">
     <span class="md-ellipsis">
       Common Kotlin-to-Grapa Mappings
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Common Kotlin-to-Grapa Mappings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-checking-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Checking Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1127,6 +1199,30 @@
       Notes
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-matches-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom matches() Function for Regex
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#late-initialization-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Late Initialization Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1414,6 +1510,15 @@
 <blockquote>
 <p><strong>Note:</strong> Many "missing" features are actually available in Grapa through different mechanisms. For example, Kotlin's coroutines are replaced by Grapa's built-in parallel processing with <code>.map()</code> and <code>.filter()</code>, and Kotlin's null safety is replaced by Grapa's explicit null checking with <code>.isnull()</code>.</p>
 </blockquote>
+<h2 id="customizing-grapa-for-familiar-syntax">Customizing Grapa for Familiar Syntax</h2>
+<p>If you prefer Kotlin-style function calls, you can define your own <code>println()</code> function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>println = op(&quot;value&quot;=&quot;&quot;){value.echo();};
+println(&quot;Hello from Grapa!&quot;);
+</code></pre></div>
+<p>This can make migration easier for those used to Kotlin's <code>println()</code> or similar functions.</p>
+<blockquote>
+<p><strong>Advanced:</strong> Grapa also allows advanced users to customize or extend the language syntax using <code>$RULE</code> or by modifying <code>$global</code> rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.</p>
+</blockquote>
 <h2 id="common-kotlin-to-grapa-mappings">Common Kotlin-to-Grapa Mappings</h2>
 <table>
 <thead>
@@ -1497,7 +1602,7 @@
 </tr>
 <tr>
 <td><code>::foo</code> (function ref)</td>
-<td><code>@"foo"</code> (variable/function reference)</td>
+<td>Not relevant (functions are data, pass directly)</td>
 </tr>
 <tr>
 <td><code>x!!</code> (non-null assert)</td>
@@ -1509,7 +1614,7 @@
 </tr>
 <tr>
 <td><code>is</code> (type check)</td>
-<td><code>x.type() == $STR</code> (type comparison)</td>
+<td><code>text.type() == $STR</code> (type comparison)</td>
 </tr>
 <tr>
 <td><code>as</code> (type cast)</td>
@@ -1517,23 +1622,99 @@
 </tr>
 <tr>
 <td><code>data class</code></td>
-<td><code>class ... {}</code></td>
+<td><code>class ... {}</code> or objects/lists (everything is data in Grapa)</td>
 </tr>
 <tr>
 <td><code>companion object</code></td>
 <td><code>$global</code> or <code>$root</code> for static/global</td>
 </tr>
+<tr>
+<td><code>lateinit var</code></td>
+<td>Regular variables (assign when ready, no special syntax)</td>
+</tr>
 </tbody>
 </table>
+<h3 id="type-checking-examples">Type Checking Examples</h3>
+<p>Grapa provides type checking using <code>.type()</code> method and type constants:</p>
+<div class="highlight"><pre><span></span><code>/* Kotlin: if (value is String) { ... } */
+/* Grapa equivalent: */
+if (value.type() == $STR) {
+    &quot;Value is a string&quot;.echo();
+}
+
+/* Kotlin: when (value) { is String -&gt; ... is Int -&gt; ... } */
+/* Grapa equivalent: */
+switch (value.type()) {
+    case $STR: &quot;String value&quot;.echo();
+    case $INT: &quot;Integer value&quot;.echo();
+    case $FLOAT: &quot;Float value&quot;.echo();
+    case $ARRAY: &quot;Array value&quot;.echo();
+    case $LIST: &quot;List value&quot;.echo();
+    default: &quot;Unknown type&quot;.echo();
+}
+
+/* Check multiple types */
+if (value.type() == $STR || value.type() == $INT) {
+    &quot;Value is string or integer&quot;.echo();
+}
+</code></pre></div>
+<p>Common type constants: <code>$STR</code>, <code>$INT</code>, <code>$FLOAT</code>, <code>$BOOL</code>, <code>$ARRAY</code>, <code>$LIST</code>, <code>$TABLE</code>, <code>$TIME</code>, <code>$ERR</code></p>
 <h2 id="notes">Notes</h2>
 <ul>
 <li>See <a href="../operators/">Operators</a> and <a href="../sys/">System</a> docs for more details.</li>
 <li>Grapa supports variable scoping with <code>$global</code>, <code>$local</code>, and <code>$root</code>.</li>
-<li>Use <code>@x</code> to reference a variable by name.</li>
 <li>Use <code>$sys().getenv()</code> for environment variables.</li>
 <li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
 <li>Use <code>op(){}</code> for lambdas and function definitions. </li>
 </ul>
+<h3 id="custom-matches-function-for-regex">Custom matches() Function for Regex</h3>
+<p>Kotlin users often use <code>str.matches</code> for regex checks. You can define a similar function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>// Define a matches function that returns true if the pattern is found
+matches = op(&quot;text&quot;=&quot;&quot;, &quot;pattern&quot;=&quot;&quot;) {
+    text.grep(pattern, &quot;x&quot;).len() &gt; 0;
+};
+
+// Usage
+if (matches(&quot;hello world&quot;, &quot;world&quot;)) {
+    &quot;Found!&quot;.echo();
+} else {
+    &quot;Not found.&quot;.echo();
+}
+</code></pre></div>
+<p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
+<p><strong>Note:</strong> While not as concise as Kotlin's operator syntax, this approach is explicit and clear about what operations are being performed.</p>
+<h3 id="late-initialization-examples">Late Initialization Examples</h3>
+<p>Grapa doesn't need special <code>lateinit</code> syntax because variables can be assigned at any time:</p>
+<div class="highlight"><pre><span></span><code>/* Kotlin: lateinit var name: String */
+/* Grapa equivalent: Just declare and assign later */
+
+MyClass = class {
+    name = &quot;&quot;;  /* Can be empty initially */
+
+    /* Initialize when ready */
+    init = op() {
+        name = &quot;John&quot;;  /* Assign when convenient */
+    };
+
+    /* Or assign conditionally */
+    setup = op(condition) {
+        if (condition) {
+            name = &quot;Active User&quot;;
+        } else {
+            name = &quot;Inactive User&quot;;
+        }
+    };
+};
+
+/* Usage */
+obj = obj MyClass;
+obj.init();  /* name is now &quot;John&quot; */
+</code></pre></div>
+<p><strong>Key differences:</strong>
+- <strong>No special syntax</strong> - Just use regular variables
+- <strong>No null safety concerns</strong> - Grapa's dynamic typing handles this naturally
+- <strong>Flexible assignment</strong> - Assign whenever convenient
+- <strong>No compile-time constraints</strong> - Runtime assignment is always possible</p>
 
 
 

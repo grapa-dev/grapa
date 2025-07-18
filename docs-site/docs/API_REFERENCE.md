@@ -202,6 +202,10 @@ Create and manipulate arrays, lists, and objects.
 - `.keys()` - Get object keys
 - `.values()` - Get object values
 
+### Object Merging Operators
+- `+=` - Append/nest second object within first
+- `++=` - Merge/flatten properties from both objects
+
 ### Examples
 ```grapa
 /* Arrays */
@@ -213,6 +217,19 @@ average = numbers.mean();
 /* Objects */
 config = {"host": "localhost", "port": 8080};
 host = config.host;
+
+/* Object merging */
+user = {"name": "John"};
+profile = {"age": 30, "email": "john@example.com"};
+
+/* Append (nested) */
+user += profile;
+user.echo();  /* {"name":"John",{"age":30,"email":"john@example.com"}} */
+
+/* Merge (flattened) */
+user = {"name": "John"};
+user ++= profile;
+user.echo();  /* {"name":"John","age":30,"email":"john@example.com"} */
 ```
 
 [Back to Top](#grapa-api-reference)

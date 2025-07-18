@@ -266,7 +266,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -501,7 +501,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -725,6 +725,15 @@
   <a href="#listobject-operations" class="md-nav__link">
     <span class="md-ellipsis">
       List/Object Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#object-merging-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Merging Operators
     </span>
   </a>
   
@@ -1067,6 +1076,15 @@
   <a href="#time-functions" class="md-nav__link">
     <span class="md-ellipsis">
       Time Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
     </span>
   </a>
   
@@ -1595,6 +1613,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#object-merging-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Object Merging Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#examples_2" class="md-nav__link">
     <span class="md-ellipsis">
       Examples
@@ -1936,6 +1963,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#examples_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2024,7 +2060,7 @@ if (condition) {
 }
 </code></pre></div>
 <h3 id="type-system">Type System</h3>
-<p>Grapa uses dynamic typing with rich runtime type introspection:</p>
+<p>Grapa uses dynamic typing with rich runtime type introspection. <strong>Everything in Grapa is data</strong> - functions, classes, primitives, and everything else are just different data types that can be manipulated, stored, and passed around.</p>
 <ul>
 <li><code>.type()</code> - Get the type of an object (returns <code>$STR</code>)</li>
 <li><code>.str()</code> - Convert to string</li>
@@ -2036,10 +2072,16 @@ if (condition) {
 if (value.type() == $INT) { ... }
 if (value.type() == $STR) { ... }
 if (value.type() == $ARRAY) { ... }
+if (value.type() == $OP) { ... }    /* Functions are data */
+if (value.type() == $CLASS) { ... } /* Classes are data */
 
 /* Type conversion */
 text = number.str();
 number = text.int();
+
+/* Functions as data */
+my_func = op(x) { x * 2; };
+my_func.type().echo();  /* $OP */
 </code></pre></div>
 <h3 id="namespace-system">Namespace System</h3>
 <p>Grapa has a dynamic namespace system managed by the execution tree:</p>
@@ -2061,8 +2103,8 @@ func = op(x) {
 </code></pre></div>
 <h3 id="basic-operations">Basic Operations</h3>
 <ul>
-<li><code>echo()</code> - Output text to console</li>
-<li><code>exit()</code> - Exit the program</li>
+<li><code>.echo()</code> - Output text to console (method on strings/values)</li>
+<li><code>.\n</code> - Exit console (in interactive mode)</li>
 <li><code>sleep(seconds)</code> - Pause execution</li>
 </ul>
 <h3 id="comments_1">Comments</h3>
@@ -2150,6 +2192,11 @@ numbers += 4;  /* Append to array */
 <li><code>.keys()</code> - Get object keys</li>
 <li><code>.values()</code> - Get object values</li>
 </ul>
+<h3 id="object-merging-operators">Object Merging Operators</h3>
+<ul>
+<li><code>+=</code> - Append/nest second object within first</li>
+<li><code>++=</code> - Merge/flatten properties from both objects</li>
+</ul>
 <h3 id="examples_2">Examples</h3>
 <div class="highlight"><pre><span></span><code>/* Arrays */
 numbers = [1, 2, 3, 4, 5];
@@ -2160,6 +2207,19 @@ average = numbers.mean();
 /* Objects */
 config = {&quot;host&quot;: &quot;localhost&quot;, &quot;port&quot;: 8080};
 host = config.host;
+
+/* Object merging */
+user = {&quot;name&quot;: &quot;John&quot;};
+profile = {&quot;age&quot;: 30, &quot;email&quot;: &quot;john@example.com&quot;};
+
+/* Append (nested) */
+user += profile;
+user.echo();  /* {&quot;name&quot;:&quot;John&quot;,{&quot;age&quot;:30,&quot;email&quot;:&quot;john@example.com&quot;}} */
+
+/* Merge (flattened) */
+user = {&quot;name&quot;: &quot;John&quot;};
+user ++= profile;
+user.echo();  /* {&quot;name&quot;:&quot;John&quot;,&quot;age&quot;:30,&quot;email&quot;:&quot;john@example.com&quot;} */
 </code></pre></div>
 <p><a href="#grapa-api-reference">Back to Top</a></p>
 <h2 id="search-analysis">Search &amp; Analysis</h2>
@@ -2251,7 +2311,7 @@ sum = data.reduce(op(acc, x) { acc + x; }, 0);
 </ul>
 <h3 id="io-functions">I/O Functions</h3>
 <ul>
-<li><code>echo(text)</code> - Output to console</li>
+<li><code>.echo()</code> - Output to console (method on strings/values)</li>
 <li><code>prompt(message)</code> - Get user input</li>
 </ul>
 <h3 id="examples_5">Examples</h3>
@@ -2260,7 +2320,7 @@ number = int(value);
 text = str(number);
 
 name = prompt(&quot;Enter your name: &quot;);
-echo(&quot;Hello, &quot; + name);
+(&quot;Hello, &quot; + name).echo();
 </code></pre></div>
 <p><a href="#grapa-api-reference">Back to Top</a></p>
 <h2 id="math-operations">Math Operations</h2>
@@ -2329,22 +2389,22 @@ transposed = t(matrix);
 <p>File and directory operations.</p>
 <h3 id="file-operations">File Operations</h3>
 <ul>
-<li><code>file_get(path)</code> - Read file content</li>
-<li><code>file_set(path, content)</code> - Write to file</li>
-<li><code>file_ls(path)</code> - List directory contents</li>
-<li><code>file_info(path)</code> - Get file information</li>
+<li><code>$file().get(path)</code> - Read file content</li>
+<li><code>$file().set(path, content)</code> - Write to file</li>
+<li><code>$file().ls(path)</code> - List directory contents</li>
+<li><code>$file().info(path)</code> - Get file information</li>
 </ul>
 <h3 id="examples_9">Examples</h3>
 <div class="highlight"><pre><span></span><code>/* Read file */
-content = file_get(&quot;data.txt&quot;);
+content = $file().get(&quot;data.txt&quot;).str();
 
 /* Write file */
-file_set(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
+$file().set(&quot;output.txt&quot;, &quot;Hello from Grapa!&quot;);
 
 /* List files */
-files = file_ls(&quot;.&quot;);
+files = $file().ls(&quot;.&quot;);
 for (file in files) {
-    echo(&quot;File: &quot; + file.name);
+    (&quot;File: &quot; + file.name).echo();
 }
 </code></pre></div>
 <p><a href="#grapa-api-reference">Back to Top</a></p>
@@ -2352,8 +2412,17 @@ for (file in files) {
 <p>Time and date utilities.</p>
 <h3 id="time-functions">Time Functions</h3>
 <ul>
-<li>`</li>
+<li><code>$time()</code> - Get current timestamp</li>
+<li><code>$time().format(format)</code> - Format timestamp</li>
+<li><code>$time().add(seconds)</code> - Add time</li>
+<li><code>$time().sub(seconds)</code> - Subtract time</li>
 </ul>
+<h3 id="examples_10">Examples</h3>
+<div class="highlight"><pre><span></span><code>now = $time();
+formatted = now.format(&quot;%Y-%m-%d %H:%M:%S&quot;);
+tomorrow = now.add(86400);  /* Add 24 hours */
+</code></pre></div>
+<p><a href="#grapa-api-reference">Back to Top</a></p>
 
 
 

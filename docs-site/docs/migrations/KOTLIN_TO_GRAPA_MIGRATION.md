@@ -142,18 +142,48 @@ This can make migration easier for those used to Kotlin's `println()` or similar
 | `x = if (cond) a else b`      | `x = (cond) ? a : b`                              |
 | `try { ... } catch { ... }`   | `try { ... } catch (err) { ... }`                 |
 | `finally`                     | WIP                                               |
-| `::foo` (function ref)        | `@"foo"` (variable/function reference)            |
+| `::foo` (function ref)        | Not relevant (functions are data, pass directly) |
 | `x!!` (non-null assert)       | `x.isnull() ? error : x` (explicit null check)    |
 | `x?.foo()` (safe call)        | `x.isnull() ? null : x.foo()` (explicit null check) |
-| `is` (type check)             | `x.type() == $STR` (type comparison)               |
+| `is` (type check)             | `text.type() == $STR` (type comparison)               |
 | `as` (type cast)              | `x.str()`, `x.int()`, `x.float()` (explicit conversion) |
-| `data class`                  | `class ... {}`                                    |
+| `data class`                  | `class ... {}` or objects/lists (everything is data in Grapa) |
 | `companion object`            | `$global` or `$root` for static/global            |
+| `lateinit var`                | Regular variables (assign when ready, no special syntax) |
+
+### Type Checking Examples
+
+Grapa provides type checking using `.type()` method and type constants:
+
+```grapa
+/* Kotlin: if (value is String) { ... } */
+/* Grapa equivalent: */
+if (value.type() == $STR) {
+    "Value is a string".echo();
+}
+
+/* Kotlin: when (value) { is String -> ... is Int -> ... } */
+/* Grapa equivalent: */
+switch (value.type()) {
+    case $STR: "String value".echo();
+    case $INT: "Integer value".echo();
+    case $FLOAT: "Float value".echo();
+    case $ARRAY: "Array value".echo();
+    case $LIST: "List value".echo();
+    default: "Unknown type".echo();
+}
+
+/* Check multiple types */
+if (value.type() == $STR || value.type() == $INT) {
+    "Value is string or integer".echo();
+}
+```
+
+Common type constants: `$STR`, `$INT`, `$FLOAT`, `$BOOL`, `$ARRAY`, `$LIST`, `$TABLE`, `$TIME`, `$ERR`
 
 ## Notes
 - See [Operators](../operators/) and [System](../sys/) docs for more details.
 - Grapa supports variable scoping with `$global`, `$local`, and `$root`.
-- Use `@x` to reference a variable by name.
 - Use `$sys().getenv()` for environment variables.
 - Use `$thread()` for threading and `$sys().sleep()` for sleep.
 - Use `op(){}` for lambdas and function definitions. 
@@ -177,3 +207,42 @@ if (matches("hello world", "world")) {
 ```
 
 This is a handy workaround until Grapa adds a native `.match()` method.
+
+**Note:** While not as concise as Kotlin's operator syntax, this approach is explicit and clear about what operations are being performed.
+
+### Late Initialization Examples
+
+Grapa doesn't need special `lateinit` syntax because variables can be assigned at any time:
+
+```grapa
+/* Kotlin: lateinit var name: String */
+/* Grapa equivalent: Just declare and assign later */
+
+MyClass = class {
+    name = "";  /* Can be empty initially */
+    
+    /* Initialize when ready */
+    init = op() {
+        name = "John";  /* Assign when convenient */
+    };
+    
+    /* Or assign conditionally */
+    setup = op(condition) {
+        if (condition) {
+            name = "Active User";
+        } else {
+            name = "Inactive User";
+        }
+    };
+};
+
+/* Usage */
+obj = obj MyClass;
+obj.init();  /* name is now "John" */
+```
+
+**Key differences:**
+- **No special syntax** - Just use regular variables
+- **No null safety concerns** - Grapa's dynamic typing handles this naturally
+- **Flexible assignment** - Assign whenever convenient
+- **No compile-time constraints** - Runtime assignment is always possible

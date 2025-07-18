@@ -266,7 +266,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -501,7 +501,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -836,6 +836,15 @@
   <a href="#see-also_1" class="md-nav__link">
     <span class="md-ellipsis">
       See Also
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
     </span>
   </a>
   
@@ -1197,6 +1206,15 @@
   <a href="#see-also_1" class="md-nav__link">
     <span class="md-ellipsis">
       See Also
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
     </span>
   </a>
   
@@ -1614,6 +1632,12 @@ Grapa's dynamic typing is a <strong>fundamental design choice</strong>, not a li
 </ul>
 <hr />
 <p><em>If you have more Rust idioms you want mapped to Grapa, please open an issue or PR!</em></p>
+<h2 id="customizing-grapa-for-familiar-syntax">Customizing Grapa for Familiar Syntax</h2>
+<p>If you prefer Rust-style macro calls, you can define your own <code>println()</code> function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>// Define a println function similar to Rust
+println = op(&quot;value&quot;=&quot;&quot;){value.echo();};
+println(&quot;Hello from Grapa!&quot;);
+</code></pre></div>
 
 
 

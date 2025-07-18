@@ -266,7 +266,7 @@
   
     
   
-  Python Integration
+  Python Quickstart
 
       </a>
     </li>
@@ -501,7 +501,7 @@
   
   
   <span class="md-ellipsis">
-    Python Integration
+    Python Quickstart
     
   </span>
   
@@ -754,6 +754,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#work-in-progress-wip-items" class="md-nav__link">
     <span class="md-ellipsis">
       Work-in-Progress (WIP) Items
@@ -908,6 +917,15 @@
   <a href="#rarely-used" class="md-nav__link">
     <span class="md-ellipsis">
       Rarely Used
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-match-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom match() Function for Regex
     </span>
   </a>
   
@@ -1284,6 +1302,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#customizing-grapa-for-familiar-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customizing Grapa for Familiar Syntax
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#work-in-progress-wip-items" class="md-nav__link">
     <span class="md-ellipsis">
       Work-in-Progress (WIP) Items
@@ -1438,6 +1465,15 @@
   <a href="#rarely-used" class="md-nav__link">
     <span class="md-ellipsis">
       Rarely Used
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-match-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom match() Function for Regex
     </span>
   </a>
   
@@ -1885,6 +1921,16 @@ value = obj.&quot;key&quot;;
 - Only block comments (<code>/* ... */</code>) are supported in Grapa, and must always be on their own line.
 - <code>//</code> and <code>#</code> comments are not supported and will cause errors. </p>
 </blockquote>
+<h2 id="customizing-grapa-for-familiar-syntax">Customizing Grapa for Familiar Syntax</h2>
+<p>If you prefer Python-style function calls, you can define your own <code>print()</code> function in Grapa:</p>
+<div class="highlight"><pre><span></span><code># Define a print function similar to Python
+print = op(&quot;value&quot;=&quot;&quot;){value.echo();};
+print(&quot;Hello from Grapa!&quot;);
+</code></pre></div>
+<p>This can make migration easier for those used to Python's <code>print()</code> or similar functions.</p>
+<blockquote>
+<p><strong>Advanced:</strong> Grapa also allows advanced users to customize or extend the language syntax using <code>$RULE</code> or by modifying <code>$global</code> rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.</p>
+</blockquote>
 <h2 id="work-in-progress-wip-items">Work-in-Progress (WIP) Items</h2>
 <p>Some Python idioms don't have direct Grapa equivalents yet. These are categorized by priority:</p>
 <h3 id="core-gaps-true-language-gaps">Core Gaps (True Language Gaps)</h3>
@@ -2034,6 +2080,21 @@ platform = $sys().getenv($PLATFORM);
 <p><strong>Note:</strong> Many "missing" features are actually available in Grapa through different mechanisms. For example, async/await patterns are replaced by Grapa's built-in parallel processing with <code>.map()</code> and <code>.filter()</code>.</p>
 <p><strong>Note:</strong> Grapa grep returns results as a structured array (list of strings), not a concatenated string. This is different from most CLI tools and allows for more precise, programmatic handling. This affects edge cases (like empty pattern matches and invert matches) and should be considered when migrating scripts or tests.</p>
 </blockquote>
+<h3 id="custom-match-function-for-regex">Custom match() Function for Regex</h3>
+<p>Python users often use <code>re.match</code> or <code>re.search</code> for regex checks. You can define a similar function in Grapa:</p>
+<div class="highlight"><pre><span></span><code># Define a match function that returns true if the pattern is found
+match = op(&quot;text&quot;=&quot;&quot;, &quot;pattern&quot;=&quot;&quot;) {
+    text.grep(pattern, &quot;x&quot;).len() &gt; 0;
+};
+
+# Usage
+if (match(&quot;hello world&quot;, &quot;world&quot;)) {
+    &quot;Found!&quot;.echo();
+} else {
+    &quot;Not found.&quot;.echo();
+}
+</code></pre></div>
+<p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
 
 
 
