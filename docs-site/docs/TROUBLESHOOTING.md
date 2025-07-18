@@ -1,4 +1,28 @@
-# Troubleshooting Guide
+# Troubleshooting
+
+## Critical Issues
+
+### 🚨 ROW Table Index Corruption Bug
+
+**Issue**: ROW tables have a critical bug where the first record's index becomes corrupted when the third record is added.
+
+**Symptoms**:
+- First record returns `{"error":-1}` when retrieved
+- Subsequent records work correctly
+- Debug output shows empty RPTR entries for first record
+
+**Workaround**: Use COL tables instead of ROW tables
+```grapa
+// Instead of:
+tbl = $file().table("ROW");
+
+// Use:
+tbl = $file().table("COL");
+```
+
+**Status**: Under investigation. COL tables provide the same functionality and work correctly.
+
+## Common Issues
 
 This guide covers common issues encountered when working with Grapa and GrapaPy, along with their solutions and debugging techniques.
 
