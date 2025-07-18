@@ -961,27 +961,27 @@
 <h3 id="complete-test-suite">Complete Test Suite</h3>
 <p>Run all tests in one command:
 <div class="highlight"><pre><span></span><code><span class="c1"># Windows</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/run_tests.grc&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/infrastructure/run_tests.grc&quot;</span>
 
 <span class="c1"># Linux/Mac</span>
-./grapa<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/run_tests.grc&quot;</span>
+./grapa<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/infrastructure/run_tests.grc&quot;</span>
 </code></pre></div></p>
 <h3 id="individual-test-categories">Individual Test Categories</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Capabilities test</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/test_current_capabilities.grc&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/grep/test_current_capabilities.grc&quot;</span>
 
 <span class="c1"># Performance test</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/test_performance_optimizations.grc&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/grep/test_performance_optimizations.grc&quot;</span>
 
 <span class="c1"># Feature-specific tests</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/test_atomic_groups.grc&quot;</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/test_lookaround_assertions.grc&quot;</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/test_unicode_grapheme_clusters.grc&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/grep/test_atomic_groups.grc&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/grep/test_lookaround_assertions.grc&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/grep/test_unicode_grapheme_clusters.grc&quot;</span>
 </code></pre></div>
 <h3 id="regression-testing">Regression Testing</h3>
 <p>For development and CI/CD:
 <div class="highlight"><pre><span></span><code><span class="c1"># Quick regression test</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/run_tests.grc&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;test/infrastructure/run_tests.grc&quot;</span>
 </code></pre></div></p>
 <p>For detailed testing information, see <a href="../TESTING/">Testing Documentation</a>.</p>
 <h1 id="editor">Editor</h1>

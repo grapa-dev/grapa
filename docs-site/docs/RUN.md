@@ -56,31 +56,31 @@ Grapa includes a comprehensive test suite for validating functionality and perfo
 Run all tests in one command:
 ```bash
 # Windows
-.\grapa.exe -cfile "test/run_tests.grc"
+.\grapa.exe -cfile "test/infrastructure/run_tests.grc"
 
 # Linux/Mac
-./grapa -cfile "test/run_tests.grc"
+./grapa -cfile "test/infrastructure/run_tests.grc"
 ```
 
 ### Individual Test Categories
 ```bash
 # Capabilities test
-.\grapa.exe -cfile "test/test_current_capabilities.grc"
+.\grapa.exe -cfile "test/grep/test_current_capabilities.grc"
 
 # Performance test
-.\grapa.exe -cfile "test/test_performance_optimizations.grc"
+.\grapa.exe -cfile "test/grep/test_performance_optimizations.grc"
 
 # Feature-specific tests
-.\grapa.exe -cfile "test/test_atomic_groups.grc"
-.\grapa.exe -cfile "test/test_lookaround_assertions.grc"
-.\grapa.exe -cfile "test/test_unicode_grapheme_clusters.grc"
+.\grapa.exe -cfile "test/grep/test_atomic_groups.grc"
+.\grapa.exe -cfile "test/grep/test_lookaround_assertions.grc"
+.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
 ```
 
 ### Regression Testing
 For development and CI/CD:
 ```bash
 # Quick regression test
-.\grapa.exe -cfile "test/run_tests.grc"
+.\grapa.exe -cfile "test/infrastructure/run_tests.grc"
 ```
 
 For detailed testing information, see [Testing Documentation](TESTING.md).

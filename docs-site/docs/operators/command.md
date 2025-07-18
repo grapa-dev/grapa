@@ -70,8 +70,8 @@ $sys().compilef("lib/custom/string_utils.grc", "lib/custom/string_utils.grz");
 #### Test Suite Organization
 ```grapa
 /* Include multiple test files */
-include "test/test_basic.grc";
-include "test/test_advanced.grc";
+include "test/core/test_basic.grc";
+include "test/core/test_advanced.grc";
 include "test/test_performance.grz";
 ```
 
