@@ -71,6 +71,39 @@ sum = numbers.reduce(op(a, b) { a + b; }, 0);
 
 ## Core Concepts
 
+### Everything is Data
+
+Grapa's most fundamental concept is that **everything is data**. Unlike traditional programming languages that distinguish between "data" and "code," Grapa treats functions, classes, primitives, and everything else as different types of data that can be manipulated, stored, and passed around.
+
+```grapa
+/* Functions are data ($OP type) */
+my_function = op(x) { x * 2; };
+my_function.type().echo();  /* $OP */
+
+/* Numbers are data ($INT type) */
+my_number = 42;
+my_number.type().echo();    /* $INT */
+
+/* Strings are data ($STR type) */
+my_string = "hello";
+my_string.type().echo();    /* $STR */
+
+/* Classes are data ($CLASS type) */
+MyClass = class { name = ""; };
+MyClass.type().echo();      /* $CLASS */
+
+/* You can store functions in variables */
+functions = [op(x) { x + 1; }, op(x) { x * 2; }];
+result1 = functions[0](5);  /* 6 */
+result2 = functions[1](5);  /* 10 */
+
+/* You can pass functions as parameters */
+apply_func = op(func, value) { func(value); };
+result = apply_func(op(x) { x * 3; }, 7);  /* 21 */
+```
+
+This unified data model enables powerful metaprogramming, code generation, and flexible data structures that would be complex in other languages.
+
 ### Dynamic Code Execution
 
 Grapa's most powerful feature is its ability to compile and execute code at runtime:

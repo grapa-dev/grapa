@@ -57,7 +57,7 @@ if (condition) {
 ```
 
 ### Type System
-Grapa uses dynamic typing with rich runtime type introspection:
+Grapa uses dynamic typing with rich runtime type introspection. **Everything in Grapa is data** - functions, classes, primitives, and everything else are just different data types that can be manipulated, stored, and passed around.
 
 - `.type()` - Get the type of an object (returns `$STR`)
 - `.str()` - Convert to string
@@ -70,10 +70,16 @@ Grapa uses dynamic typing with rich runtime type introspection:
 if (value.type() == $INT) { ... }
 if (value.type() == $STR) { ... }
 if (value.type() == $ARRAY) { ... }
+if (value.type() == $OP) { ... }    /* Functions are data */
+if (value.type() == $CLASS) { ... } /* Classes are data */
 
 /* Type conversion */
 text = number.str();
 number = text.int();
+
+/* Functions as data */
+my_func = op(x) { x * 2; };
+my_func.type().echo();  /* $OP */
 ```
 
 ### Namespace System
