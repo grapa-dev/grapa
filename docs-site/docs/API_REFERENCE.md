@@ -407,21 +407,21 @@ transposed = t(matrix);
 File and directory operations.
 
 ### File Operations
-- `file_get(path)` - Read file content
-- `file_set(path, content)` - Write to file
-- `file_ls(path)` - List directory contents
-- `file_info(path)` - Get file information
+- `$file().get(path)` - Read file content
+- `$file().set(path, content)` - Write to file
+- `$file().ls(path)` - List directory contents
+- `$file().info(path)` - Get file information
 
 ### Examples
 ```grapa
 /* Read file */
-content = file_get("data.txt");
+content = $file().get("data.txt").str();
 
 /* Write file */
-file_set("output.txt", "Hello from Grapa!");
+$file().set("output.txt", "Hello from Grapa!");
 
 /* List files */
-files = file_ls(".");
+files = $file().ls(".");
 for (file in files) {
     ("File: " + file.name).echo();
 }
@@ -434,4 +434,16 @@ for (file in files) {
 Time and date utilities.
 
 ### Time Functions
-- `
+- `$time()` - Get current timestamp
+- `$time().format(format)` - Format timestamp
+- `$time().add(seconds)` - Add time
+- `$time().sub(seconds)` - Subtract time
+
+### Examples
+```grapa
+now = $time();
+formatted = now.format("%Y-%m-%d %H:%M:%S");
+tomorrow = now.add(86400);  /* Add 24 hours */
+```
+
+[Back to Top](#grapa-api-reference)
