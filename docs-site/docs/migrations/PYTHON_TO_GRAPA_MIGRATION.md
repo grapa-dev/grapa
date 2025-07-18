@@ -310,6 +310,20 @@ result = some_operation().iferr(0);
 > - Only block comments (`/* ... */`) are supported in Grapa, and must always be on their own line.
 > - `//` and `#` comments are not supported and will cause errors. 
 
+## Customizing Grapa for Familiar Syntax
+
+If you prefer Python-style function calls, you can define your own `print()` function in Grapa:
+
+```grapa
+# Define a print function similar to Python
+print = op("value"=""){value.echo();};
+print("Hello from Grapa!");
+```
+
+This can make migration easier for those used to Python's `print()` or similar functions.
+
+> **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.
+
 ## Work-in-Progress (WIP) Items
 
 Some Python idioms don't have direct Grapa equivalents yet. These are categorized by priority:
@@ -495,3 +509,23 @@ These are advanced features that most developers won't miss:
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, async/await patterns are replaced by Grapa's built-in parallel processing with `.map()` and `.filter()`.
 
 > **Note:** Grapa grep returns results as a structured array (list of strings), not a concatenated string. This is different from most CLI tools and allows for more precise, programmatic handling. This affects edge cases (like empty pattern matches and invert matches) and should be considered when migrating scripts or tests.
+
+### Custom match() Function for Regex
+
+Python users often use `re.match` or `re.search` for regex checks. You can define a similar function in Grapa:
+
+```grapa
+# Define a match function that returns true if the pattern is found
+match = op("text"="", "pattern"="") {
+    text.grep(pattern, "x").len() > 0;
+};
+
+# Usage
+if (match("hello world", "world")) {
+    "Found!".echo();
+} else {
+    "Not found.".echo();
+}
+```
+
+This is a handy workaround until Grapa adds a native `.match()` method.

@@ -318,3 +318,13 @@ These are advanced features that most developers won't miss:
 ---
 
 *If you have more Rust idioms you want mapped to Grapa, please open an issue or PR!*
+
+## Customizing Grapa for Familiar Syntax
+
+If you prefer Rust-style macro calls, you can define your own `println()` function in Grapa:
+
+```grapa
+// Define a println function similar to Rust
+println = op("value"=""){value.echo();};
+println("Hello from Grapa!");
+```

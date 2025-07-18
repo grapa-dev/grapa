@@ -303,6 +303,20 @@ result = some_operation().iferr(0);
 
 > **Tip:** Grapa's parallel ETL/data processing is robust, production-ready, and a core design goal. Unlike JavaScript, you can use parallel methods like `.map()` and `.filter()` out of the box for high-throughput data tasks.
 
+## Customizing Grapa for Familiar Syntax
+
+If you prefer JavaScript-style function calls, you can define your own `console_log()` function in Grapa:
+
+```grapa
+// Define a console_log function similar to JavaScript
+console_log = op("value"=""){value.echo();};
+console_log("Hello from Grapa!");
+```
+
+This can make migration easier for those used to JavaScript's `console.log()` or similar functions.
+
+> **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.
+
 ## Work-in-Progress (WIP) Items
 
 Some JavaScript idioms don't have direct Grapa equivalents yet. These are categorized by priority:
@@ -519,3 +533,23 @@ These are advanced features that most developers won't miss:
 ---
 
 *If you have more JavaScript idioms you want mapped to Grapa, please open an issue or PR!*
+
+### Custom match() Function for Regex
+
+JavaScript users often use `str.match` for regex checks. You can define a similar function in Grapa:
+
+```grapa
+// Define a match function that returns true if the pattern is found
+match = op("text"="", "pattern"="") {
+    text.grep(pattern, "x").len() > 0;
+};
+
+// Usage
+if (match("hello world", "world")) {
+    "Found!".echo();
+} else {
+    "Not found.".echo();
+}
+```
+
+This is a handy workaround until Grapa adds a native `.match()` method.

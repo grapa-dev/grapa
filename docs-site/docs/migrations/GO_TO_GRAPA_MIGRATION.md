@@ -401,3 +401,17 @@ These are advanced features that most developers won't miss:
 ---
 
 *If you have more Go idioms you want mapped to Grapa, please open an issue or PR!*
+
+## Customizing Grapa for Familiar Syntax
+
+If you prefer Go-style function calls, you can define your own `fmt_Println()` function in Grapa:
+
+```grapa
+// Define a fmt_Println function similar to Go
+fmt_Println = op("value"=""){value.echo();};
+fmt_Println("Hello from Grapa!");
+```
+
+This can make migration easier for those used to Go's `fmt.Println()` or similar functions.
+
+> **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.

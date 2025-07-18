@@ -107,6 +107,19 @@ These are advanced features that most developers won't miss:
 
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, Kotlin's coroutines are replaced by Grapa's built-in parallel processing with `.map()` and `.filter()`, and Kotlin's null safety is replaced by Grapa's explicit null checking with `.isnull()`.
 
+## Customizing Grapa for Familiar Syntax
+
+If you prefer Kotlin-style function calls, you can define your own `println()` function in Grapa:
+
+```grapa
+println = op("value"=""){value.echo();};
+println("Hello from Grapa!");
+```
+
+This can make migration easier for those used to Kotlin's `println()` or similar functions.
+
+> **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.
+
 ## Common Kotlin-to-Grapa Mappings
 
 | Kotlin                        | Grapa Equivalent                                  |
@@ -144,3 +157,23 @@ These are advanced features that most developers won't miss:
 - Use `$sys().getenv()` for environment variables.
 - Use `$thread()` for threading and `$sys().sleep()` for sleep.
 - Use `op(){}` for lambdas and function definitions. 
+
+### Custom matches() Function for Regex
+
+Kotlin users often use `str.matches` for regex checks. You can define a similar function in Grapa:
+
+```grapa
+// Define a matches function that returns true if the pattern is found
+matches = op("text"="", "pattern"="") {
+    text.grep(pattern, "x").len() > 0;
+};
+
+// Usage
+if (matches("hello world", "world")) {
+    "Found!".echo();
+} else {
+    "Not found.".echo();
+}
+```
+
+This is a handy workaround until Grapa adds a native `.match()` method.

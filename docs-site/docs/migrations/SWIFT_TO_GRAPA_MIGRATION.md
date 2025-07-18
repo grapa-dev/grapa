@@ -149,3 +149,13 @@ These are advanced features that most developers won't miss:
 - Use `$sys().getenv()` for environment variables.
 - Use `$thread()` for threading and `$sys().sleep()` for sleep.
 - Use `op(){}` for lambdas and function definitions. 
+
+## Customizing Grapa for Familiar Syntax
+
+If you prefer Swift-style function calls, you can define your own `print()` function in Grapa:
+
+```grapa
+// Define a print function similar to Swift
+print = op("value"=""){value.echo();};
+print("Hello from Grapa!");
+```

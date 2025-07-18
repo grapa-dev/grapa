@@ -145,6 +145,20 @@ These are advanced features that most developers won't miss:
 
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, Ruby's meta-programming is replaced by Grapa's built-in code generation, and Ruby's blocks are replaced by Grapa's function composition.
 
+## Customizing Grapa for Familiar Syntax
+
+If you prefer Ruby-style function calls, you can define your own `puts()` function in Grapa:
+
+```grapa
+# Define a puts function similar to Ruby
+puts = op("value"=""){value.echo();};
+puts("Hello from Grapa!");
+```
+
+This can make migration easier for those used to Ruby's `puts()` or similar functions.
+
+> **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.
+
 ## See Also
 - [Basic Syntax Guide](syntax/basic_syntax.md)
 - [Operator Reference](syntax/operator.md)
@@ -152,3 +166,23 @@ These are advanced features that most developers won't miss:
 ---
 
 *If you have more Ruby idioms you want mapped to Grapa, please open an issue or PR!*
+
+### Custom match() Function for Regex
+
+Ruby users often use `str.match` for regex checks. You can define a similar function in Grapa:
+
+```grapa
+# Define a match function that returns true if the pattern is found
+match = op("text"="", "pattern"="") {
+    text.grep(pattern, "x").len() > 0;
+};
+
+# Usage
+if (match("hello world", "world")) {
+    "Found!".echo();
+} else {
+    "Not found.".echo();
+}
+```
+
+This is a handy workaround until Grapa adds a native `.match()` method.
