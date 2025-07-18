@@ -23,6 +23,7 @@ Internal notes include:
 ### Internal Resources
 - [Documentation Ideas](DOCS_IMPROVEMENT_IDEAS.md) - Documentation improvement plans
 - [XML BNF Analysis](xml_bnf_analysis.md) - XML grammar analysis
+- [Test Runner Global Variables](TEST_RUNNER_GLOBAL_VARIABLES.md) - Include vs Shell execution for test runners
 - [WIP Documentation](WIP/) - Work-in-progress files
 
 ## Work-in-Progress Files
