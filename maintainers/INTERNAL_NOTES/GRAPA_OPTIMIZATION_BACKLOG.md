@@ -204,7 +204,119 @@ if (pParam && pParam->vQueue && pParam->vQueue->mCount == 1) {
 
 **Expected Benefit**: Reduce array processing overhead
 
-### 7. Control Flow Functions (Low-Medium Impact)
+### 7. Operator-Specific Optimizations (High Impact)
+Based on comprehensive operator analysis, the following operators need optimization:
+
+#### Arithmetic Operators
+**Operators**: `+`, `-`, `*`, `/`, `%`, `**`, `*/`
+
+**Type Combinations to Optimize**:
+- `INT + INT` → Constant folding
+- `FLOAT + FLOAT` → Constant folding  
+- `STR + STR` → String concatenation optimization
+- `VECTOR + VECTOR` → Vector operation optimization
+- `ARRAY + ARRAY` → Array operation optimization
+
+**Optimization Strategy**: Type-aware constant folding
+```cpp
+// Example for add optimization with type checking
+if (pParam && pParam->vQueue && pParam->vQueue->mCount == 2) {
+    GrapaRuleEvent* v1 = (GrapaRuleEvent*)pParam->vQueue->Head(0);
+    GrapaRuleEvent* v2 = (GrapaRuleEvent*)pParam->vQueue->Head(1);
+    
+    // INT + INT optimization
+    if (v1->mValue.mToken == GrapaTokenType::INT && v2->mValue.mToken == GrapaTokenType::INT) {
+        GrapaInt a1, a2;
+        a1.FromBytes(v1->mValue);
+        a2.FromBytes(v2->mValue);
+        GrapaInt result = a1 + a2;
+        pOperation->CLEAR();
+        delete pOperation;
+        pOperation = new GrapaRuleEvent(0, GrapaCHAR(), result.getBytes());
+    }
+    // STR + STR optimization
+    else if (v1->mValue.mToken == GrapaTokenType::STR && v2->mValue.mToken == GrapaTokenType::STR) {
+        GrapaCHAR result;
+        result.FROM(v1->mValue);
+        result.Append(v2->mValue);
+        pOperation->CLEAR();
+        delete pOperation;
+        pOperation = new GrapaRuleEvent(0, GrapaCHAR(), result);
+    }
+}
+```
+
+#### Comparison Operators
+**Operators**: `==`, `!=`, `<`, `<=`, `>`, `>=`, `<=>`
+
+**Optimization Strategy**: Constant comparison folding
+```cpp
+// Example for eq optimization
+if (pParam && pParam->vQueue && pParam->vQueue->mCount == 2) {
+    GrapaRuleEvent* v1 = (GrapaRuleEvent*)pParam->vQueue->Head(0);
+    GrapaRuleEvent* v2 = (GrapaRuleEvent*)pParam->vQueue->Head(1);
+    
+    if (v1->mValue.mToken == GrapaTokenType::INT && v2->mValue.mToken == GrapaTokenType::INT) {
+        GrapaInt a1, a2;
+        a1.FromBytes(v1->mValue);
+        a2.FromBytes(v2->mValue);
+        bool result = (a1 == a2);
+        pOperation->CLEAR();
+        delete pOperation;
+        pOperation = new GrapaRuleEvent(GrapaTokenType::BOOL, 0, "", result ? "\1" : "");
+    }
+}
+```
+
+#### Bitwise Operators
+**Operators**: `&`, `|`, `^`, `<<`, `>>`, `~`
+
+**Optimization Strategy**: Integer constant folding
+```cpp
+// Example for bsl optimization
+if (pParam && pParam->vQueue && pParam->vQueue->mCount == 2) {
+    GrapaRuleEvent* val = (GrapaRuleEvent*)pParam->vQueue->Head(0);
+    GrapaRuleEvent* shift = (GrapaRuleEvent*)pParam->vQueue->Head(1);
+    
+    if (val->mValue.mToken == GrapaTokenType::INT && shift->mValue.mToken == GrapaTokenType::INT) {
+        GrapaInt v, s;
+        v.FromBytes(val->mValue);
+        s.FromBytes(shift->mValue);
+        GrapaInt result = v << s.LongValue();
+        pOperation->CLEAR();
+        delete pOperation;
+        pOperation = new GrapaRuleEvent(0, GrapaCHAR(), result.getBytes());
+    }
+}
+```
+
+#### Assignment Operators
+**Operators**: `=`, `+=`, `++=`, `-=`
+
+**Optimization Strategy**: Assignment optimization for constant values
+```cpp
+// Example for assignappend optimization
+if (pParam && pParam->vQueue && pParam->vQueue->mCount == 2) {
+    GrapaRuleEvent* target = (GrapaRuleEvent*)pParam->vQueue->Head(0);
+    GrapaRuleEvent* value = (GrapaRuleEvent*)pParam->vQueue->Head(1);
+    
+    // Optimize string append assignments
+    if (target->mValue.mToken == GrapaTokenType::STR && value->mValue.mToken == GrapaTokenType::STR) {
+        GrapaCHAR result;
+        result.FROM(target->mValue);
+        result.Append(value->mValue);
+        // Update target with result
+        target->mValue = result;
+        pOperation->CLEAR();
+        delete pOperation;
+        pOperation = target;
+    }
+}
+```
+
+**Expected Benefit**: 50-80% runtime reduction for constant expressions
+
+### 8. Control Flow Functions (Low-Medium Impact)
 **Functions**: `if`, `while`, `switch`, `case`
 
 **Optimization Strategy**: Dead code elimination and constant condition evaluation
@@ -251,19 +363,23 @@ if (pParam && pParam->vQueue && pParam->vQueue->mCount == 1) {
 ## Implementation Priority
 
 ### Phase 1 (High Impact, Easy Implementation)
-1. Mathematical functions (`add`, `sub`, `mul`, `div`)
-2. Bitwise operations (`bsl`, `bsr`, `bor`, `band`)
-3. Type conversions (`int`, `float`, `str`)
+1. **Arithmetic operators** (`+`, `-`, `*`, `/`, `%`, `**`, `*/`)
+2. **Bitwise operators** (`&`, `|`, `^`, `<<`, `>>`, `~`)
+3. **Comparison operators** (`==`, `!=`, `<`, `<=`, `>`, `>=`, `<=>`)
+4. **Assignment operators** (`=`, `+=`, `++=`, `-=`)
+5. **Type conversions** (`int`, `float`, `str`)
 
 ### Phase 2 (Medium Impact, Moderate Implementation)
-1. String operations (`left`, `right`, `trim`)
-2. Comparison operations (`eq`, `neq`, `gt`, `lt`)
-3. Array operations (`len`, `sum`)
+1. **String operations** (`left`, `right`, `trim`, `upper`, `lower`)
+2. **Array/Vector operations** (`len`, `sum`, `mean`, `dot`)
+3. **Logical operators** (`&&`, `||`, `!`)
+4. **Mathematical functions** (`abs`, `neg`, `inv`)
 
 ### Phase 3 (Lower Impact, Complex Implementation)
-1. Control flow optimization
-2. File system caching
-3. Advanced mathematical functions
+1. **Control flow optimization** (`if`, `while`, `switch`)
+2. **File system caching** (`file_pwd`, `file_info`)
+3. **Advanced mathematical functions** (`sin`, `cos`, `log`)
+4. **Vector/Array complex operations** (matrix operations, advanced linear algebra)
 
 ## Implementation Guidelines
 
