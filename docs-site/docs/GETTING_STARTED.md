@@ -222,9 +222,9 @@ matches.echo();  /* ["world", "world"] */
 > Grapa's parallel ETL/data processing is a core, production-ready feature. Parallelism is well tested and ideal for real-world, high-throughput data tasks. 
 
 > **For Newcomers/Non-Python Users:**
-> - [JS-to-Grapa Migration Guide](JS_TO_GRAPA_MIGRATION.md)
+> - [JS-to-Grapa Migration Guide](migrations/JS_TO_GRAPA_MIGRATION.md)
 > - [Language Reference](FUNCTION_QUICK_REFERENCE.md)
 > - [Examples](EXAMPLES.md)
 
 > **For Python Users:**
-> See the [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for essential guidance on using Grapa from Python. 
+> See the [Python Integration Guide](PYTHON_INTEGRATION.md) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for essential guidance on using Grapa from Python. 

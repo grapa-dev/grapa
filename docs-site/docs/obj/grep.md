@@ -1,6 +1,6 @@
 # Unicode Grep Documentation
 
-**See Also:** [Grapa Grep from Python (grep_python.md)](grep_python.md)
+**See Also:** [Python Integration Guide](../PYTHON_INTEGRATION.md) for Python grep examples
 
 ## Overview
 

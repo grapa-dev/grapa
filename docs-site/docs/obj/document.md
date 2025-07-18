@@ -80,6 +80,6 @@ The same `.findall()` principles apply to complex JSON and XML documents. You ca
 
 > **See Also:**
 > - [Language Reference](../FUNCTION_QUICK_REFERENCE.md)
-> - [Python-to-Grapa Migration Guide](../PYTHON_TO_GRAPA_MIGRATION.md)
-> - [JS-to-Grapa Migration Guide](../JS_TO_GRAPA_MIGRATION.md)
+> - [Python-to-Grapa Migration Guide](../migrations/PYTHON_TO_GRAPA_MIGRATION.md)
+> - [JS-to-Grapa Migration Guide](../migrations/JS_TO_GRAPA_MIGRATION.md)
 > - [Examples](../EXAMPLES.md)

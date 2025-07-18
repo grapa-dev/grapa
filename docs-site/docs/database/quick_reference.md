@@ -308,7 +308,7 @@ f.info("field_name")
 
 ## Python Integration
 
-For Python developers working with Grapa databases, see the [Python Integration Guide](../python_integration.md) for comprehensive examples of:
+For Python developers working with Grapa databases, see the [Python Integration Guide](../PYTHON_INTEGRATION.md) for comprehensive examples of:
 - Data science workflows with column store databases
 - Web application development with row store databases
 - System administration and data pipeline integration

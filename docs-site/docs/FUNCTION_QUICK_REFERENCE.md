@@ -100,5 +100,5 @@ function = op(){@this.$sys.function_name(@var.{params});};
 
 > **See Also:**
 > - [Getting Started](GETTING_STARTED.md)
-> - [JS-to-Grapa Migration Guide](JS_TO_GRAPA_MIGRATION.md)
+> - [JS-to-Grapa Migration Guide](migrations/JS_TO_GRAPA_MIGRATION.md)
 > - [Examples](EXAMPLES.md) 

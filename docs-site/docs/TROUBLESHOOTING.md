@@ -5,7 +5,7 @@ This guide covers common issues encountered when working with Grapa and GrapaPy,
 > **See Also:**
 > - [Getting Started](GETTING_STARTED.md)
 > - [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users)
-> - [GrapaPy Integration Guide](GRAPAPY_INTEGRATION.md)
+> - [Python Integration Guide](PYTHON_INTEGRATION.md)
 
 ## Common Error Patterns
 

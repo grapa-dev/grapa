@@ -5,7 +5,7 @@
 ## Getting Started
 - [Quickstart Guide](GETTING_STARTED.md)
 - [API Reference](FUNCTION_QUICK_REFERENCE.md)
-- [Migration Guides](PYTHON_TO_GRAPA_MIGRATION.md)
+- [Migration Guides](migrations/PYTHON_TO_GRAPA_MIGRATION.md)
 - [Examples](EXAMPLES.md)
 
 ## Key Features

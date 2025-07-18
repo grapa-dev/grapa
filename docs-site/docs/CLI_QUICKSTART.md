@@ -250,7 +250,7 @@ for (file in files) {
 
 - **API Reference:** See [Function Quick Reference](FUNCTION_QUICK_REFERENCE.md) for all available functions
 - **Examples:** Check out [Examples](EXAMPLES.md) for more complex use cases
-- **Python Integration:** If you also use Python, see [GrapaPy Integration](GRAPAPY_INTEGRATION.md)
+- **Python Integration:** If you also use Python, see [Python Integration Guide](PYTHON_INTEGRATION.md)
 - **Troubleshooting:** For common issues, see [Troubleshooting](TROUBLESHOOTING.md)
 
 ## Tips

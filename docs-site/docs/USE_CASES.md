@@ -2,8 +2,8 @@
 
 > **See Also:**
 > - [Getting Started](GETTING_STARTED.md)
-> - [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users)
-> - [JS-to-Grapa Migration Guide](JS_TO_GRAPA_MIGRATION.md)
+> - [Python Integration Guide](PYTHON_INTEGRATION.md)
+> - [JS-to-Grapa Migration Guide](migrations/JS_TO_GRAPA_MIGRATION.md)
 > - [Examples](EXAMPLES.md)
 
 ## Thread Safety and Parallelism
@@ -123,7 +123,7 @@ aggregate_by_hour = op(processed_data) {
 > **Best Practice:**
 > Grapa's parallelism is a core, production-ready feature, specifically designed and hardened for ETL and high-throughput data processing. Users can confidently leverage `.map()`, `.filter()`, and related methods for robust, parallel ETL workloads.
 > **For Python Users:**
-> See the [GrapaPy Quickstart](GRAPAPY_INTEGRATION.md#quickstart-for-python-users) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for guidance on using Grapa for ETL and data processing from Python.
+> See the [Python Integration Guide](PYTHON_INTEGRATION.md) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for guidance on using Grapa for ETL and data processing from Python.
 
 ## 2. Compiler/BNF Learning
 With executable BNF and mutable grammar, Grapa is perfect for teaching and experimenting with language design, parsing, and compiler construction.

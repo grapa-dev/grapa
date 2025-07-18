@@ -66,18 +66,18 @@ nav:
   - Home: index.md
   - Getting Started: GETTING_STARTED.md
   - CLI Quickstart: CLI_QUICKSTART.md
-  - Python Quickstart: GRAPAPY_INTEGRATION.md
+  - Python Integration: PYTHON_INTEGRATION.md
   - API Reference: API_REFERENCE.md
   - Grep Documentation: grep.md
   - Migration Guides:
-      - Python: PYTHON_TO_GRAPA_MIGRATION.md
-      - JavaScript: JS_TO_GRAPA_MIGRATION.md
-      - Rust: RUST_TO_GRAPA_MIGRATION.md
-      - TypeScript: TYPESCRIPT_TO_GRAPA_MIGRATION.md
-      - Go: GO_TO_GRAPA_MIGRATION.md
-      - Ruby: RUBY_TO_GRAPA_MIGRATION.md
-      - Kotlin: KOTLIN_TO_GRAPA_MIGRATION.md
-      - Swift: SWIFT_TO_GRAPA_MIGRATION.md
+      - Python: migrations/PYTHON_TO_GRAPA_MIGRATION.md
+      - JavaScript: migrations/JS_TO_GRAPA_MIGRATION.md
+      - Rust: migrations/RUST_TO_GRAPA_MIGRATION.md
+      - TypeScript: migrations/TYPESCRIPT_TO_GRAPA_MIGRATION.md
+      - Go: migrations/GO_TO_GRAPA_MIGRATION.md
+      - Ruby: migrations/RUBY_TO_GRAPA_MIGRATION.md
+      - Kotlin: migrations/KOTLIN_TO_GRAPA_MIGRATION.md
+      - Swift: migrations/SWIFT_TO_GRAPA_MIGRATION.md
   - Use Cases: USE_CASES.md
   - Examples: EXAMPLES.md
   - Troubleshooting: TROUBLESHOOTING.md
