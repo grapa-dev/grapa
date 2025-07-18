@@ -6,6 +6,26 @@ Grapa was originally designed as a **language for creating languages**. The curr
 
 > **Note**: This guide uses Grapa syntax for action codes (e.g., `{$1 + $3}`) which can contain any valid Grapa code. The action codes are processed through Grapa's full compilation and execution pipeline.
 
+## Parameter Persistence Best Practice
+
+**Important**: The `$1`, `$2`, `$3` parameters get reset as the code runs. For complex action codes, assign them to local variables first:
+
+```grapa
+@global["$complex_rule"]
+    = rule <$value1> '+' <$value2> {
+        @local.p1 = $1;  // Save $1 before it gets reset
+        @local.p2 = $3;  // Save $3 before it gets reset
+        
+        // Now use the saved values for complex operations
+        if (p1.type() == $STR && p2.type() == $STR) {
+            p1 + p2  // String concatenation
+        } else {
+            p1.int() + p2.int()  // Numeric addition
+        }
+    }
+    ;
+```
+
 ## Key Concepts
 
 ### 1. **Left Recursion is Your Friend**
