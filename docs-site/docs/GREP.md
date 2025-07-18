@@ -70,15 +70,15 @@ Anyone who wants to use Grapa's advanced pattern matching, achieve ripgrep parit
     /* Basic pattern matching */
     text = "Hello world\nGoodbye world";
     matches = text.grep("world");
-    echo(matches);  /* ["Hello world", "Goodbye world"] */
+    matches.echo();  /* ["Hello world", "Goodbye world"] */
 
     /* Match-only output */
     matches = text.grep("world", "o");
-    echo(matches);  /* ["world", "world"] */
+    matches.echo();  /* ["world", "world"] */
 
     /* Case-insensitive matching */
     matches = text.grep("hello", "i");
-    echo(matches);  /* ["Hello world"] */
+    matches.echo();  /* ["Hello world"] */
     ```
 
 === "Python"
@@ -179,37 +179,37 @@ Grapa's grep supports full Unicode processing with normalization options:
     /* Basic grapheme cluster matching */
     text = "café";
     clusters = text.grep("\\X", "o");
-    echo(clusters);
+    clusters.echo();
     /* ["c", "a", "f", "é"]  /* é is a single grapheme cluster (e + combining acute) */
 
     /* Complex grapheme clusters */
     text = "😀❤️";
     clusters = text.grep("\\X", "o");
-    echo(clusters);
+    clusters.echo();
     /* ["😀", "❤️"]  /* Heart with emoji modifier */
 
     /* Grapheme clusters with newlines */
     text = "é\n😀";
     clusters = text.grep("\\X", "o");
-    echo(clusters);
+    clusters.echo();
     /* ["é", "\n", "😀"]  /* Newlines are treated as separate clusters */
 
     /* Grapheme clusters with quantifiers */
     text = "café";
     matches = text.grep("\\X+", "o");
-    echo(matches);
+    matches.echo();
     /* ["café"]  /* One or more grapheme clusters */
 
     matches = text.grep("\\X*", "o");
-    echo(matches);
+    matches.echo();
     /* ["", "café", ""]  /* Zero or more grapheme clusters */
 
     matches = text.grep("\\X?", "o");
-    echo(matches);
+    matches.echo();
     /* ["", "c", "", "a", "", "f", "", "é", ""]  /* Zero or one grapheme cluster */
 
     matches = text.grep("\\X{2,3}", "o");
-    echo(matches);
+    matches.echo();
     /* ["ca", "fé"]  /* Between 2 and 3 grapheme clusters */
     ```
 
@@ -255,7 +255,7 @@ Grapa's grep supports full Unicode processing with normalization options:
     /* Match café, cafe, café, etc. */
     text = "café cafe café";
     matches = text.grep("cafe", "d");
-    echo(matches);  /* ["café", "cafe", "café"] */
+    matches.echo();  /* ["café", "cafe", "café"] */
     ```
 
 === "Python"
@@ -275,18 +275,18 @@ Grapa's grep supports full Unicode processing with normalization options:
 /* Zero-length matches (now working correctly) */
 text = "abc";
 matches = text.grep("", "o");
-echo(matches);
+matches.echo();
 /* [""]  /* Single empty string for zero-length match */
 
 /* Empty pattern (now working correctly) */
 matches = text.grep("", "o");
-echo(matches);
+matches.echo();
 /* [""]  /* Single empty string for empty pattern */
 
 /* Unicode boundary handling */
 text = "café";
 matches = text.grep("\\b\\w+\\b", "o");
-echo(matches);  /* ["café"] */
+matches.echo();  /* ["café"] */
 ```
 
 ## Function Signature
@@ -988,19 +988,19 @@ The `j` option produces JSON output with detailed match information. Each match 
     /* Basic JSON output */
     text = "Hello world";
     result = text.grep("\\w+", "oj");
-    echo(result);
+    result.echo();
     /* Result: [{"match":"Hello","offset":0,"line":1},{"match":"world","offset":6,"line":1}] */
 
     /* JSON with named groups */
     text = "John Doe (30)";
     result = text.grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj");
-    echo(result);
+    result.echo();
     /* Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}] */
 
     /* Date parsing with named groups */
     text = "2023-04-27\n2022-12-31";
     result = text.grep("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})", "oj");
-    echo(result);
+    result.echo();
     /* Result: [
     /*   {"match":"2023-04-27","year":"2023","month":"04","day":"27","offset":0,"line":1},
     /*   {"match":"2022-12-31","year":"2022","month":"12","day":"31","offset":11,"line":2}
@@ -1340,13 +1340,13 @@ Large inputs are automatically processed in parallel for better performance. Gra
     // Basic context
     text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5";
     result = text.grep("Line 3", "C1");
-    echo(result);
+    result.echo();
     /* Result: ["Line 2", "Line 3", "Line 4"] */
 
     // Multiple matches with context
     text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
     result = text.grep("Line 3|Line 5", "C1");
-    echo(result);
+    result.echo();
     /* Result: ["Line 1", "Line 2", "Line 3", "--", "Line 3", "Line 4", "Line 5"] */
     ```
 
