@@ -22,7 +22,6 @@
 
 ## Need Help?
 - [Troubleshooting](TROUBLESHOOTING.md)
-- [Contributing](https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md)
 
 ---
 

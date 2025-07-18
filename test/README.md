@@ -278,19 +278,6 @@ For debugging test issues, run individual tests with verbose output:
 ./grapa -cfile "test/file_system/test_file_basic.grc" -v
 ```
 
-## Contributing
-
-When adding new tests:
-
-1. **Follow file type separation**: `.grc` for Grapa code, `.py` for Python code
-2. **No cross-calling**: Don't mix execution methods
-3. **Follow existing naming conventions**
-4. **Include comprehensive error handling**
-5. **Add proper cleanup procedures**
-6. **Update this README if adding new categories**
-7. **Ensure tests are self-contained**
-8. **Add performance benchmarks where appropriate**
-
 ## Test Results
 
 The test suite provides:

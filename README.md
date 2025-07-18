@@ -81,7 +81,6 @@ grapa -cfile "my_script.grc"
 
 - **[GitHub Issues](https://github.com/grapa-dev/grapa/issues)** - Report bugs and request features
 - **[Discussions](https://github.com/grapa-dev/grapa/discussions)** - Ask questions and share ideas
-- **[Contributing](https://grapa-dev.github.io/grapa/CONTRIBUTING/)** - How to contribute to Grapa
 
 ---
 
