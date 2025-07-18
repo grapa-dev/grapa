@@ -97,8 +97,8 @@ func = op(x) {
 ```
 
 ### Basic Operations
-- `echo()` - Output text to console
-- `exit()` - Exit the program
+- `.echo()` - Output text to console (method on strings/values)
+- `.\n` - Exit console (in interactive mode)
 - `sleep(seconds)` - Pause execution
 
 ### Comments
@@ -315,7 +315,7 @@ Type checking, conversion, and input/output operations.
 - `bool(value)` - Convert to boolean
 
 ### I/O Functions
-- `echo(text)` - Output to console
+- `.echo()` - Output to console (method on strings/values)
 - `prompt(message)` - Get user input
 
 ### Examples
@@ -325,7 +325,7 @@ number = int(value);
 text = str(number);
 
 name = prompt("Enter your name: ");
-echo("Hello, " + name);
+("Hello, " + name).echo();
 ```
 
 [Back to Top](#grapa-api-reference)
@@ -423,7 +423,7 @@ file_set("output.txt", "Hello from Grapa!");
 /* List files */
 files = file_ls(".");
 for (file in files) {
-    echo("File: " + file.name);
+    ("File: " + file.name).echo();
 }
 ```
 
