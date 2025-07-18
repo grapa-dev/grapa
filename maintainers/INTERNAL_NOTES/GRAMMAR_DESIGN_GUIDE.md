@@ -4,6 +4,8 @@
 
 This guide provides practical insights for anyone defining their own grammar using Grapa's `$RULE` system, based on learnings from the core compilation and execution process.
 
+> **Note**: This guide uses Grapa syntax for action codes (e.g., `{$1 + $3}`) instead of internal action codes (e.g., `{@<add,{$1,$3}>}`). This makes the examples more accessible and allows this guide to be included in user documentation.
+
 ## Key Learnings for Grammar Authors
 
 ### 1. **Left Recursion is Your Friend (But Tricky)**
@@ -28,20 +30,20 @@ Grapa automatically detects and handles left recursion using a sophisticated two
 ```grapa
 // ✅ GOOD: Natural left-associative expressions
 @global["$additive"]
-    = rule <$additive> '+' <$multiplicative> {@<add,{$1,$3}>}
-    | <$additive> '-' <$multiplicative> {@<sub,{$1,$3}>}
+    = rule <$additive> '+' <$multiplicative> {$1 + $3}
+    | <$additive> '-' <$multiplicative> {$1 - $3}
     | <$multiplicative>
     ;
 
 // ✅ GOOD: Clear precedence hierarchy
 @global["$multiplicative"]
-    = rule <$multiplicative> '*' <$power> {@<mul,{$1,$3}>}
-    | <$multiplicative> '/' <$power> {@<div,{$1,$3}>}
+    = rule <$multiplicative> '*' <$power> {$1 * $3}
+    | <$multiplicative> '/' <$power> {$1 / $3}
     | <$power>
     ;
 
 @global["$power"]
-    = rule <$power> '**' <$primary> {@<pow,{$1,$3}>}
+    = rule <$power> '**' <$primary> {$1 ** $3}
     | <$primary>
     ;
 ```
@@ -54,18 +56,18 @@ Operator precedence is **not hardcoded** but emerges from grammar structure:
 ```grapa
 // ✅ CORRECT: Precedence through grammar levels
 @global["$expr_or"]      // Lowest precedence
-    = rule <$expr_or> '||' <$expr_and> {@<or,{$1,$3}>}
+    = rule <$expr_or> '||' <$expr_and> {$1 || $3}
     | <$expr_and>
     ;
 
 @global["$expr_and"]     // Higher precedence
-    = rule <$expr_and> '&&' <$expr_equality> {@<and,{$1,$3}>}
+    = rule <$expr_and> '&&' <$expr_equality> {$1 && $3}
     | <$expr_equality>
     ;
 
 @global["$expr_equality"] // Even higher precedence
-    = rule <$expr_equality> '==' <$expr_comparison> {@<eq,{$1,$3}>}
-    | <$expr_equality> '!=' <$expr_comparison> {@<neq,{$1,$3}>}
+    = rule <$expr_equality> '==' <$expr_comparison> {$1 == $3}
+    | <$expr_equality> '!=' <$expr_comparison> {$1 != $3}
     | <$expr_comparison>
     ;
 ```
@@ -81,9 +83,9 @@ Operator precedence is **not hardcoded** but emerges from grammar structure:
 When a rule matches, Grapa creates execution tree nodes:
 
 ```grapa
-// Action code format: {@<operation,{parameters}>}
+// Action code format: {grapa_expression}
 @global["$addition"]
-    = rule <$term> '+' <$addition> {@<add,{$1,$3}>}
+    = rule <$term> '+' <$addition> {$1 + $3}
     | <$term>
     ;
 ```
@@ -92,19 +94,19 @@ When a rule matches, Grapa creates execution tree nodes:
 ```grapa
 // ✅ GOOD: Clear operation names
 @global["$string_concat"]
-    = rule <$string> '+' <$string_concat> {@<concat,{$1,$3}>}
+    = rule <$string> '+' <$string_concat> {$1 + $3}
     | <$string>
     ;
 
 // ✅ GOOD: Multiple parameters
 @global["$function_call"]
-    = rule <$identifier> '(' <$argument_list> ')' {@<call,{$1,$3}>}
-    | <$identifier> '(' ')' {@<call,{$1,null}>}
+    = rule <$identifier> '(' <$argument_list> ')' {$1($3)}
+    | <$identifier> '(' ')' {$1()}
     ;
 
 // ✅ GOOD: Conditional operations
 @global["$conditional"]
-    = rule <$condition> '?' <$true_expr> ':' <$false_expr> {@<if,{$1,$3,$5}>}
+    = rule <$condition> '?' <$true_expr> ':' <$false_expr> {$1 ? $3 : $5}
     | <$condition>
     ;
 ```
@@ -192,12 +194,12 @@ Grapa's parser is designed to handle errors gracefully:
 ```grapa
 // ❌ BAD: Direct left recursion without base case
 @global["$bad_rule"]
-    = rule <$bad_rule> '+' <$term>
+    = rule <$bad_rule> '+' <$term> {$1 + $3}
     ;
 
 // ✅ GOOD: Include base case
 @global["$good_rule"]
-    = rule <$good_rule> '+' <$term>
+    = rule <$good_rule> '+' <$term> {$1 + $3}
     | <$term>  // Base case
     ;
 ```
@@ -206,13 +208,13 @@ Grapa's parser is designed to handle errors gracefully:
 ```grapa
 // ❌ BAD: Ambiguous - both rules can match same input
 @global["$ambiguous"]
-    = rule <$expr> '+' <$expr>
-    | <$expr> '*' <$expr>
+    = rule <$expr> '+' <$expr> {$1 + $3}
+    | <$expr> '*' <$expr> {$1 * $3}
     ;
 
 // ✅ GOOD: Clear precedence hierarchy
 @global["$unambiguous"]
-    = rule <$additive> '+' <$multiplicative>
+    = rule <$additive> '+' <$multiplicative> {$1 + $3}
     | <$multiplicative>
     ;
 ```
@@ -283,19 +285,19 @@ Here's a complete example of a simple calculator grammar:
 ```grapa
 // calculator.grc
 @global["$expression"]
-    = rule <$expression> '+' <$term> {@<add,{$1,$3}>}
-    | <$expression> '-' <$term> {@<sub,{$1,$3}>}
+    = rule <$expression> '+' <$term> {$1 + $3}
+    | <$expression> '-' <$term> {$1 - $3}
     | <$term>
     ;
 
 @global["$term"]
-    = rule <$term> '*' <$factor> {@<mul,{$1,$3}>}
-    | <$term> '/' <$factor> {@<div,{$1,$3}>}
+    = rule <$term> '*' <$factor> {$1 * $3}
+    | <$term> '/' <$factor> {$1 / $3}
     | <$factor>
     ;
 
 @global["$factor"]
-    = rule '(' <$expression> ')' {@<paren,{$2}>}
+    = rule '(' <$expression> ')' {$2}
     | <$number>
     ;
 
@@ -315,4 +317,15 @@ Key takeaways for grammar authors:
 5. **Test thoroughly** - precedence and associativity are critical
 6. **Performance matters** - avoid ambiguous or inefficient patterns
 
-The Grapa grammar system is surprisingly powerful and flexible, but understanding these principles will help you create effective, maintainable grammars. 
+The Grapa grammar system is surprisingly powerful and flexible, but understanding these principles will help you create effective, maintainable grammars.
+
+## User Documentation Potential
+
+This guide has been written using Grapa syntax instead of internal action codes, making it suitable for inclusion in user documentation. The examples are:
+
+- **Immediately understandable** to Grapa users
+- **Directly executable** as grammar definitions
+- **Self-contained** with complete working examples
+- **Educational** for learning grammar design principles
+
+This approach bridges the gap between internal implementation details and user-facing documentation, providing valuable insights while remaining accessible. 
