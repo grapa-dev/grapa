@@ -63,6 +63,33 @@ When a rule matches, Grapa creates execution tree nodes:
     ;
 ```
 
+#### **Parameter Access with `$1`, `$2`, `$3`, etc.**
+
+Action codes can access matched parameters using `$` followed by a number:
+
+```grapa
+@global["$example_rule"]
+    = rule <$term> '+' <$expression> {$1 + $3}
+    | <$term>
+    ;
+```
+
+**Parameter Mapping:**
+- `$1` = First parameter (`<$term>`) 
+- `$2` = Second parameter (`'+'`) 
+- `$3` = Third parameter (`<$expression>`)
+
+**Important Notes:**
+- **Indexing starts at `$1`** (not `$0`)
+- **`$0` does not exist** in Grapa's parameter system
+- **Parameters are 0-based internally** but 1-based in action codes
+- **Any valid Grapa code** can be used in action codes
+
+**How It Works:**
+1. During rule matching, tokens are collected into a parameter queue
+2. When action codes execute, `$1`, `$2`, `$3` map to `pInput->Head(0)`, `pInput->Head(1)`, `pInput->Head(2)`
+3. Parameters are wrapped in `GrapaLibraryParam` for safe access and evaluation
+
 **Action Code Best Practices:**
 ```grapa
 // ✅ GOOD: Clear operation names
@@ -82,9 +109,78 @@ When a rule matches, Grapa creates execution tree nodes:
     = rule <$condition> '?' <$true_expr> ':' <$false_expr> {$1 ? $3 : $5}
     | <$condition>
     ;
+
+// ✅ GOOD: Complex parameter access
+@global["$complex_operation"]
+    = rule <$value1> '+' <$value2> {
+        if ($1.type() == $STR && $3.type() == $STR) {
+            $1 + $3  // String concatenation
+        } else {
+            $1.int() + $3.int()  // Numeric addition
+        }
+    }
+    | <$value1>
+    ;
 ```
 
-### 4. **Token Types and Matching**
+### 4. **Parameter Types and Advanced Usage**
+
+#### **Parameter Types**
+
+Parameters in action codes can be various types:
+
+```grapa
+// Different parameter types
+@global["$mixed_parameters"]
+    = rule <$identifier> '=' <$expression> ';' {
+        // $1 = identifier (string)
+        // $2 = '=' (literal)
+        // $3 = expression (could be any type)
+        // $4 = ';' (literal)
+        $1 + " = " + $3.str()
+    }
+    ;
+```
+
+**Parameter Type Handling:**
+```grapa
+// ✅ GOOD: Type-aware parameter processing
+@global["$smart_concat"]
+    = rule <$value1> '+' <$value2> {
+        if ($1.type() == $STR) {
+            $1 + $3.str()  // String concatenation
+        } else if ($1.type() == $INT) {
+            $1.int() + $3.int()  // Numeric addition
+        } else {
+            $1.str() + $3.str()  // Convert to strings
+        }
+    }
+    | <$value1>
+    ;
+```
+
+#### **Advanced Parameter Access**
+
+**Skipping Parameters:**
+```grapa
+// ✅ GOOD: Skip literal tokens, focus on meaningful parameters
+@global["$function_call"]
+    = rule <$identifier> '(' <$arguments> ')' {$1($3)}
+    | <$identifier> '(' ')' {$1()}
+    ;
+// $1 = function name, $3 = arguments (skipping '(' and ')')
+```
+
+**Conditional Parameter Access:**
+```grapa
+// ✅ GOOD: Handle optional parameters
+@global["$optional_param"]
+    = rule <$required> ',' <$optional> {$1 + $3}
+    | <$required> {$1}
+    ;
+```
+
+### 5. **Token Types and Matching**
 
 Grapa uses a sophisticated token type system:
 
@@ -110,7 +206,7 @@ Grapa uses a sophisticated token type system:
     = rule 'if' | 'while' | 'for' | 'return'  // Reserved words
 ```
 
-### 5. **Error Handling and Recovery**
+### 6. **Error Handling and Recovery**
 
 Grapa's parser is designed for graceful error recovery:
 
@@ -127,7 +223,24 @@ Grapa's parser is designed for graceful error recovery:
 
 ## Common Problems and Solutions
 
-### **Problem 1: Infinite Recursion**
+### **Problem 1: Parameter Access Issues**
+```grapa
+// ❌ BAD: Using $0 (doesn't exist)
+@global["$bad_rule"]
+    = rule <$term> '+' <$term> {$0 + $2}  // $0 is invalid!
+
+// ✅ GOOD: Start with $1
+@global["$good_rule"]
+    = rule <$term> '+' <$term> {$1 + $3}  // $1 and $3 are valid
+    ;
+```
+
+**Parameter Troubleshooting:**
+- **`$0` doesn't exist** - indexing starts at `$1`
+- **Parameter count mismatch** - ensure you have enough parameters
+- **Type errors** - use `.str()`, `.int()`, `.type()` for type conversion
+
+### **Problem 2: Infinite Recursion**
 ```grapa
 // ❌ BAD: Direct left recursion without base case
 @global["$bad_rule"]
