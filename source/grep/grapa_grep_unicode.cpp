@@ -1139,9 +1139,11 @@ void UnicodeRegex::compile(const std::string& input) {
         int error_code = 0;
         PCRE2_SIZE error_offset = 0;
         uint32_t compile_flags = PCRE2_UTF | PCRE2_UCP | PCRE2_JIT_COMPLETE;
-        if (case_insensitive_) {
-            compile_flags |= PCRE2_CASELESS;
-        }
+        // Only use PCRE2_CASELESS if we haven't already case-folded the strings
+        // The case folding is handled in the calling code for better control
+        // if (case_insensitive_) {
+        //     compile_flags |= PCRE2_CASELESS;
+        // }
         // Always enable multiline and dotall for ripgrep parity
         // Note: PCRE2 supports lookbehind assertions by default when UTF and UCP are enabled
         compile_flags |= PCRE2_DOTALL | PCRE2_MULTILINE;

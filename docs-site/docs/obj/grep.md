@@ -1,6 +1,6 @@
 # Unicode Grep Documentation
 
-**See Also:** [Grapa Grep from Python (grep_python.md)](obj/grep_python.md)
+**See Also:** [Grapa Grep from Python (grep_python.md)](grep_python.md)
 
 ## Overview
 
@@ -1107,7 +1107,7 @@ Grapa grep fully supports **multi-character delimiters**:
 
 ## Test Coverage and Regression Testing
 
-> **Update (2024-12):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See [Testing Documentation](../../docs/TESTING.md) for details.
+> **Update (2024-12):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See [Testing Documentation](../TESTING.md) for details.
 
 ## Comprehensive Features Summary
 

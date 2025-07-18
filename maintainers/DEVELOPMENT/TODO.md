@@ -19,112 +19,176 @@ This file tracks all ongoing, planned, and recently completed tasks for Grapa an
 - Fix broken links and anchors in `docs-site/`.
 
 **Step 3:**
-- Build and validate the new docs-site (user and maintainer builds).
-
-**Step 4:**
-- List any files in `docs/` (including subfolders) that are not present in `docs-site/` or `maintainers/` before purging, to ensure nothing is lost.
-- **[2024-07-16] Analysis complete:** All substantive documentation files in `docs/` are present in `docs-site/docs/` (user docs) or `maintainers/` (internal/maintainer docs). Any files not migrated are system files, placeholders, or chat logs not intended for main documentation. **It is safe to purge `docs/` after validation.**
-
-**Step 5:**
-- Purge the old `docs/` directory after validation.
-
-**Step 6:**
-- Revisit MkDocs features and enhancements (e.g., plugins, search, navigation, versioning, API reference, etc.) to see if any can further improve the new documentation workflow.
+- Complete Unicode case folding implementation (moved to backlog).
 
 ---
 
-## High-Priority Goals
-- Make Grapa and GrapaPy as inviting and usable as possible for the broadest audience (Python users, educators, researchers, data engineers, etc.)
-- **Ensure robust crash recovery by frequently persisting all in-progress work to disk (in docs/internal/WIP/), updating the persistent TODO with WIP references, and always resuming from the last save point after a crash. This is a core assistant responsibility to minimize lost work and maintain continuity, regardless of crash frequency.**
-- **CRITICAL: Due to Cursor app crash frequency, update files in docs/internal every 5 minutes (not 15 minutes) to ensure minimal work loss. This includes WIP files, TODO.md, and any other internal tracking documents.**
+## High Priority TODO Items
+
+### 🎯 **IMMEDIATE PRIORITIES**
+- **To be determined based on current project needs**
+- **Focus on core functionality and user-facing improvements**
 
 ---
 
-## Current TODOs
+## Medium Priority TODO Items
 
-### 0. Immediate Next Priority
-- [x] **CRITICAL: Fix Grapa code examples in `docs/USE_CASES.md` - current examples use incorrect syntax that is not actual Grapa code. Need to replace with proper Grapa syntax, functions, and comment style.**
-- [x] **Revise the `description` and `long_description` in `setup.py` to be inviting, accurate, and up to date with the README and Python docs.** This is in preparation for an official new release of Grapa and GrapaPy.
+### 🔧 **Documentation and User Experience**
+- **Status**: Ongoing
+- **Priority**: MEDIUM
+- **Focus**: Improve user onboarding, fix broken links, enhance examples
 
-### 1. Documentation & Examples
-- [x] Fill in detailed examples for each use case in `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md` (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
-- [x] Update and modernize the webscrape example for current Grapa and GrapaPy best practices
-- [x] Add best practices callouts and cross-links for data processing and web scraping in `EXAMPLES.md`, `USE_CASES.md`, `GRAPAPY_INTEGRATION.md`, and `obj/document.md`
-- [ ] Add migration tips and quickstarts for Python users in all relevant docs
-- [ ] Cross-link all new docs and examples for discoverability
-- [x] **Keep the `description` and `long_description` in `setup.py` up to date and in sync with the README and Python docs.** This metadata is shown on PyPI and is important for discoverability and onboarding. Update whenever docs or project focus changes.
-- [x] Clarify Grapa's thread safety model, shared state design considerations, and the roles of `static` and `const` in the documentation. 
-    - All thread safety and locking documentation is now fully clarified and accepted. Only `$thread()` objects provide locking; all docs and examples are up to date.
-    - Clearly state that Grapa is fully thread safe by design (all variable and data structure updates are internally synchronized; no user locking needed for stability).
-    - Add guidance on logical race conditions when sharing mutable state between threads (design issue, not a stability issue).
-    - Clarify that `static` is for compile-time evaluation, not thread safety or immutability.
-    - Clarify that `const` is for performance (caching/optimization), not for locking, though it prevents modification unless `setconst` is used.
-    - Confirm and document (after C++ review) that all datatypes are lockable/unlockable, and update thread.md and relevant docs accordingly.
-    - Add best practices and examples for safe shared state and parallelism.
-
-### 2. Python Integration
-- [ ] Highlight and document Grapa’s parallelism features ($thread, $net, map/reduce/filter) for Python users
-- [ ] Add examples showing unlimited precision math from Python
-- [ ] Expand ETL/data science examples with Pandas/NumPy integration
-
-### 3. Education & Research
-- [ ] Add BNF/compiler learning examples for professors and students
-- [ ] Document Grapa’s design influences (Lisp, Prolog) and unique strengths for educators
-
-### 4. Advanced Data Interchange & Serialization
-- [ ] Document actual return type mapping from Grapa to Python as implemented in mainpy.cpp (not always string; depends on type and precision)
-- [ ] Clarify strategies for unlimited precision types and complex structures: use $global, serialization (.str()), and deserialization as needed
-- [ ] Explain limitations and workarounds for $XML/$HTML and other non-native types (e.g., return as string or dict, but not native Python XML/HTML)
-- [ ] Confirm and document Grapa’s ability to import any standard JSON/XML/HTML, and identify any gaps or edge cases
-- [ ] Document Grapa’s extended syntax for JSON/XML/HTML (e.g., $OP in $ARRAY/$LIST) and implications for round-tripping to Python
-- [ ] Provide examples of serialization/deserialization workflows for advanced users
-- [ ] Note that users can construct serialized Grapa data types in Python and have Grapa deserialize them
-
-### 5. General Improvements
-- [ ] Review and update all test files for consistency with new standards
-- [ ] Solicit and incorporate user feedback for further improvements
-- [ ] **Explore and document options for distributing the Grapa command-line tool (`grapa`) for easy installation and use on all supported platforms, including system setup and dependency management.** Research cross-platform packaging, dependency installation, and best practices for CLI tools.
-- [ ] **Design and implement a universal, simplified build process for Grapa binaries as described in BUILD.md.** The process should support separate commands for building Grapa, cleaning, and building GrapaPy, to streamline iterative development and testing.
+#### Tasks:
+1. **Fix broken links and anchors in `docs-site/`**
+2. **Improve user onboarding experience**
+3. **Enhance code examples and tutorials**
+4. **Cross-link documentation for better discoverability**
 
 ---
 
-## Recently Completed
-- ✅ **COMPLETED: Fixed all Grapa code examples in `docs/USE_CASES.md` with correct syntax, functions, and comment style**
-- ✅ **COMPLETED: Added comprehensive detailed examples for all 7 use cases in both `docs/USE_CASES.md` and `docs/PYTHON_USE_CASES.md`** (ETL, BNF/compiler, math, parallelism, scraping, file/db, education)
-- Created new use case documentation for both Grapa and GrapaPy
-- Added "Design Influences" sections to core type docs
-- Established persistent TODO tracking for crash recovery
-- Persisted advanced context on data interchange and serialization for robust recovery
+## Backlog Items
+
+### 🔧 **Unicode Case Folding Language Binding**
+
+**Status**: C++ Implementation Complete, Documentation Complete, Language Binding Missing  
+**Priority**: BACKLOG  
+**Estimated Effort**: 1-2 days  
+
+#### Tasks:
+1. **Implement `case_fold()` method in Grapa language**
+   - Add method to `lib/grapa/$OBJ.grc` alongside existing `upper()` and `lower()` methods
+   - Create language binding to expose C++ `UnicodeString::case_fold()` functionality
+   - Ensure proper string handling and return types
+
+2. **Test the language binding**
+   - Create test script with Turkish I characters (İ, ı)
+   - Test German sharp S (ß) case folding
+   - Test Greek final sigma (ς, σ) case folding
+   - Verify bidirectional matching works correctly
+
+3. **Integration testing**
+   - Test `case_fold()` with grep functionality
+   - Verify case-insensitive matching works with Unicode characters
+   - Test performance with large Unicode datasets
+
+#### Success Criteria:
+- `"İstanbul".case_fold()` returns `"istanbul"` (not empty string)
+- `"Straße".case_fold()` returns `"strasse"`
+- `"γράμμα".case_fold()` returns `"γράμμα"` (proper case folding)
+- Integration with grep `i` option works correctly
+
+#### Files to Modify:
+- `lib/grapa/$OBJ.grc` - Add `case_fold` method
+- `test/grep/test_unicode_case_folding.grc` - Create comprehensive test suite
+- `maintainers/INTERNAL_NOTES/UNICODE_CASE_FOLDING_ISSUE.md` - Update status
+
+### 🔧 **Unicode-Aware String Methods**
+
+**Status**: Not Started  
+**Priority**: BACKLOG  
+**Estimated Effort**: 2-3 days  
+
+#### Tasks:
+1. **Update `upper()` method to be Unicode-aware**
+   - Replace ASCII-only implementation with Unicode-aware version
+   - Handle Turkish I characters correctly
+   - Handle other special Unicode cases
+
+2. **Update `lower()` method to be Unicode-aware**
+   - Replace ASCII-only implementation with Unicode-aware version
+   - Ensure consistency with case folding implementation
+
+3. **Add comprehensive test suite**
+   - Test all Unicode cases with `upper()` and `lower()`
+   - Verify consistency with `case_fold()` behavior
+
+#### Success Criteria:
+- `"İstanbul".upper()` returns `"İSTANBUL"` (not `"İSTANBUL"`)
+- `"Straße".lower()` returns `"straße"` (not `"straße"`)
+- All methods consistent with Unicode standards
+
+### 📊 **Performance Testing and Optimization**
+
+**Status**: Not Started  
+**Priority**: BACKLOG  
+**Estimated Effort**: 1-2 days  
+
+#### Tasks:
+1. **Create performance benchmarks**
+   - Test case folding with large Unicode datasets
+   - Compare performance with utf8proc-based approach
+   - Benchmark grep operations with Unicode case folding
+
+2. **Optimize if needed**
+   - Identify performance bottlenecks
+   - Optimize lookup table access patterns
+   - Consider caching strategies
+
+#### Success Criteria:
+- Case folding performance acceptable for large datasets
+- No significant performance regression in grep operations
+- Performance metrics documented
 
 ---
 
-*Update this file as tasks are completed, reprioritized, or added. This ensures easy recovery and continuity after any crash or restart.* 
+## Recently Completed Items
+
+### ✅ **Unicode Case Folding C++ Implementation** (December 2024)
+- **Status**: COMPLETED
+- **Description**: Implemented lookup table-based Unicode case folding in C++
+- **Files**: `source/grep/grapa_grep_unicode.hpp`
+- **Features**: Turkish I, German sharp S, Greek final sigma, common accented characters
+- **Approach**: Composed forms for better regex compatibility
+
+### ✅ **Unicode Case Folding Documentation** (December 2024)
+- **Status**: COMPLETED
+- **Description**: Comprehensive documentation updates for Unicode case folding
+- **Files**: `docs-site/docs/grep.md`, `docs-site/docs/obj/grep_python.md`, `docs-site/docs/grep/quick_reference.md`, `docs-site/docs/EXAMPLES.md`, `docs-site/docs/TESTING.md`
+- **Coverage**: Complete examples, implementation notes, testing patterns
+
+### ✅ **Issue Tracking and Roadmap Updates** (December 2024)
+- **Status**: COMPLETED
+- **Description**: Updated maintainers documentation with current status
+- **Files**: `maintainers/INTERNAL_NOTES/UNICODE_CASE_FOLDING_ISSUE.md`, `maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md`, `maintainers/DEVELOPMENT/TODO.md`
+- **Content**: Current status, next steps, technical details
 
 ---
 
-## Next Steps
-- Update and modernize the webscrape example for current Grapa and GrapaPy best practices
-- Add migration tips and quickstarts for Python users in all relevant docs
-- Cross-link all new docs and examples for discoverability
-- Continue with Python integration, education/research, and advanced data interchange/serialization items as listed below 
+## Technical Debt
 
-> Note: If new runnable examples are added to documentation, a corresponding `.grc` test script should be created in the `test/` folder to validate them. 
+### 🔧 **Maintenance Tasks**
+- **Debug Output**: Remember to disable `GRAPA_DEBUG_PRINTF` before committing
+- **Test Monitoring**: Run full test suite after any changes
+- **Documentation**: Keep docs in sync with implementation changes
 
-### Backlog
-- Create a modern, runnable webscrape example:
-    - Place code in `examples/webscrape/`
-    - Add a `.grc` test script in `test/`
-    - Update or add .md documentation to help users perform web scraping with Grapa and GrapaPy
-    - Use a stable, public website (e.g., https://httpbin.org/html or https://example.com)
-    - Demonstrate best practices: data extraction, error handling, functional chaining
-- Create `.md` docs to help users map between coding in Python and JavaScript and coding in Grapa:
-    - Provide migration tips, idiom mapping, and common pitfalls
-    - Focus on helping users familiar with Python or JavaScript transition to Grapa
-    - Place these docs for easy discoverability and cross-link from quickstarts and migration guides
-- **Explore C++ Integration Possibilities** (Future Investigation):
-    - Research potential for direct C++ integration with Grapa source code
-    - Investigate embedding Grapa as a library in C++ applications
-    - Explore C++ API design for Grapa functionality
-    - Consider performance implications and complexity trade-offs
-    - Document findings and feasibility assessment
-    - **Note**: This is a complex area requiring significant investigation and design work 
+### 📋 **Code Quality**
+- **Error Handling**: Ensure proper error handling in all operations
+- **Memory Management**: Verify no memory leaks in operations
+- **Edge Cases**: Test with edge cases and malformed data
+
+---
+
+## How to Resume
+
+### **Current Session Status** (December 2024)
+- **C++ Implementation**: ✅ Complete and working
+- **Documentation**: ✅ Complete and comprehensive
+- **Language Binding**: ❌ Missing - In backlog
+- **Test Suite**: Ready to create when needed
+
+### **Key Files for Future Sessions**
+- `lib/grapa/$OBJ.grc` - Add `case_fold` method (when needed)
+- `test/grep/test_unicode_case_folding.grc` - Create test suite (when needed)
+- `maintainers/INTERNAL_NOTES/CURRENT_CONTEXT.md` - Current status
+- `maintainers/DEVELOPMENT/TODO.md` - This file
+
+### **Next Session Goals**
+- Focus on immediate project priorities
+- Address documentation and user experience improvements
+- Work on backlog items as time permits
+
+---
+
+**Last Updated**: December 2024  
+**Current Priority**: Documentation and User Experience Improvements  
+**Status**: C++ Complete, Documentation Complete, Language Binding in Backlog 

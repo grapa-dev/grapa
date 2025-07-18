@@ -59,16 +59,39 @@
 - **Integrated data processing pipelines**
 - **Native JSON/XML round-tripping via eval/.str()**
 
-## 5. Next Steps / TODO (for future tracking)
+## 5. Unicode Enhancement Progress - UPDATED
+
+### ✅ Completed
+- **Unicode Case Folding C++ Implementation**: Lookup table-based case folding implemented in `source/grep/grapa_grep_unicode.hpp`
+- **Turkish I Support**: İ (U+0130) → i (U+0069), ı (U+0131) → i (U+0069)
+- **German Sharp S Support**: ß (U+00DF) → s (U+0073)
+- **Greek Final Sigma Support**: ς (U+03C2) → σ (U+03C3)
+- **Common Accented Characters**: À→à, Á→á, etc.
+- **Composed Form Output**: Produces composed forms instead of decomposed forms, avoiding regex matching issues
+
+### 🔄 In Progress
+- **Grapa Language Binding**: Need to add `case_fold()` method to `lib/grapa/$OBJ.grc`
+- **Integration Testing**: Verify end-to-end functionality from Grapa scripts
+
+### 📋 Next Steps
+- Add `case_fold = @<"case_fold",{@<this>}>;` to `lib/grapa/$OBJ.grc`
+- Connect to C++ `UnicodeString::case_fold()` implementation
+- Test Turkish I case folding from Grapa scripts
+- Make existing `upper()` and `lower()` methods Unicode-aware
+- Add Unicode normalization methods to Grapa language
+
+## 6. Next Steps / TODO (for future tracking)
 - [ ] Prioritize enhancements based on user feedback and target audience
 - [ ] Design and prototype new language features (loops, exceptions, modules)
 - [ ] Expand and document Python integration patterns
 - [ ] Develop test cases and examples for new features
 - [ ] Review and update documentation as features are added
+- [ ] **Implement Grapa language binding for Unicode case folding** (High Priority)
+- [ ] **Make all string operations Unicode-aware** (Medium Priority)
 
 *This document is for internal planning and is not linked from user-facing documentation.* 
 
-## 2. Language Gaps Identified from Migration Guides (2024)
+## 7. Language Gaps Identified from Migration Guides (2024)
 
 - **Meta-programming (alias, undef, defined?)**: Needed for dynamic method aliasing, method removal, and runtime introspection (Ruby, Kotlin, Swift).
 - **File/line macros (__FILE__, __LINE__, #file, #line)**: Useful for debugging, error reporting, and meta-programming (Ruby, Swift).

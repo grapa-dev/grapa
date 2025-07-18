@@ -1,0 +1,42 @@
+/* Test Unicode Code Points */
+/* Test to see the actual Unicode code points of Turkish I characters */
+
+"=== UNICODE CODE POINTS TEST ===\n".echo();
+
+/* Test 1: Check Unicode code points */
+"Test 1: Unicode Code Points\n".echo();
+input1 = "İ";
+input2 = "i";
+input3 = "I";
+input4 = "ı";
+("İ (U+0130): " + input1.hex() + "\n").echo();
+("i (U+0069): " + input2.hex() + "\n").echo();
+("I (U+0049): " + input3.hex() + "\n").echo();
+("ı (U+0131): " + input4.hex() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Check case folded code points */
+"Test 2: Case Folded Code Points\n".echo();
+folded1 = input1.case_fold();
+folded2 = input2.case_fold();
+folded3 = input3.case_fold();
+folded4 = input4.case_fold();
+("İ case folded: " + folded1.hex() + "\n").echo();
+("i case folded: " + folded2.hex() + "\n").echo();
+("I case folded: " + folded3.hex() + "\n").echo();
+("ı case folded: " + folded4.hex() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Check full word case folding */
+"Test 3: Full Word Case Folding\n".echo();
+word1 = "İstanbul";
+word2 = "istanbul";
+folded_word1 = word1.case_fold();
+folded_word2 = word2.case_fold();
+("İstanbul case folded: " + folded_word1.hex() + "\n").echo();
+("istanbul case folded: " + folded_word2.hex() + "\n").echo();
+("İstanbul case folded length: " + folded_word1.len().str() + "\n").echo();
+("istanbul case folded length: " + folded_word2.len().str() + "\n").echo();
+"---\n".echo();
+
+"=== UNICODE CODE POINTS TEST SUMMARY ===\n".echo(); 

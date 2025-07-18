@@ -1,0 +1,145 @@
+/* Test Unicode Case Folding Enhancements */
+/* This test focuses specifically on case folding issues identified in the enhancement plan */
+
+"=== UNICODE CASE FOLDING ENHANCEMENT TEST ===\n".echo();
+"Testing specific Unicode case folding issues\n".echo();
+
+/* Test 1: Turkish Dotted/Dotless I */
+"Test 1: Turkish Dotted/Dotless I\n".echo();
+input = "İstanbul istanbul I ı";
+result1 = input.grep("istanbul", "i");
+result2 = input.grep("İstanbul", "i");
+result3 = input.grep("I", "i");
+result4 = input.grep("ı", "i");
+("Input: " + input + "\n").echo();
+("Pattern: istanbul (case-insensitive)\n").echo();
+("Result: " + result1.str() + "\n").echo();
+("Pattern: İstanbul (case-insensitive)\n").echo();
+("Result: " + result2.str() + "\n").echo();
+("Pattern: I (case-insensitive)\n").echo();
+("Result: " + result3.str() + "\n").echo();
+("Pattern: ı (case-insensitive)\n").echo();
+("Result: " + result4.str() + "\n").echo();
+("Expected: Should handle Turkish dotted/dotless I properly\n").echo();
+"---\n".echo();
+
+/* Test 2: German Sharp S */
+"Test 2: German Sharp S\n".echo();
+input = "ß SS ss";
+result1 = input.grep("ss", "i");
+result2 = input.grep("SS", "i");
+result3 = input.grep("ß", "i");
+("Input: " + input + "\n").echo();
+("Pattern: ss (case-insensitive)\n").echo();
+("Result: " + result1.str() + "\n").echo();
+("Pattern: SS (case-insensitive)\n").echo();
+("Result: " + result2.str() + "\n").echo();
+("Pattern: ß (case-insensitive)\n").echo();
+("Result: " + result3.str() + "\n").echo();
+("Expected: Should handle German sharp S properly\n").echo();
+"---\n".echo();
+
+/* Test 3: Greek Final Sigma */
+"Test 3: Greek Final Sigma\n".echo();
+input = "ς σ Σ";
+result1 = input.grep("σ", "i");
+result2 = input.grep("ς", "i");
+result3 = input.grep("Σ", "i");
+("Input: " + input + "\n").echo();
+("Pattern: σ (case-insensitive)\n").echo();
+("Result: " + result1.str() + "\n").echo();
+("Pattern: ς (case-insensitive)\n").echo();
+("Result: " + result2.str() + "\n").echo();
+("Pattern: Σ (case-insensitive)\n").echo();
+("Result: " + result3.str() + "\n").echo();
+("Expected: Should handle Greek final sigma properly\n").echo();
+"---\n".echo();
+
+/* Test 4: Lithuanian Dot Above */
+"Test 4: Lithuanian Dot Above\n".echo();
+input = "į i I";
+result1 = input.grep("i", "i");
+result2 = input.grep("į", "i");
+result3 = input.grep("I", "i");
+("Input: " + input + "\n").echo();
+("Pattern: i (case-insensitive)\n").echo();
+("Result: " + result1.str() + "\n").echo();
+("Pattern: į (case-insensitive)\n").echo();
+("Result: " + result2.str() + "\n").echo();
+("Pattern: I (case-insensitive)\n").echo();
+("Result: " + result3.str() + "\n").echo();
+("Expected: Should handle Lithuanian dot above properly\n").echo();
+"---\n".echo();
+
+/* Test 5: Mixed Case Folding */
+"Test 5: Mixed Case Folding\n".echo();
+input = "İstanbul ß ς į";
+result = input.grep("istanbul|ss|sigma|i", "i");
+("Input: " + input + "\n").echo();
+("Pattern: istanbul|ss|sigma|i (case-insensitive)\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Should handle mixed case folding properly\n").echo();
+"---\n".echo();
+
+/* Test 6: Case Folding with Unicode Properties */
+"Test 6: Case Folding with Unicode Properties\n".echo();
+input = "İstanbul ß ς į";
+result = input.grep("\\p{L}+", "i");
+("Input: " + input + "\n").echo();
+("Pattern: \\p{L}+ (letters with case-insensitive)\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Should handle case folding with Unicode properties\n").echo();
+"---\n".echo();
+
+/* Test 7: Case Folding with Grapheme Clusters */
+"Test 7: Case Folding with Grapheme Clusters\n".echo();
+input = "İstanbul ß ς į";
+result = input.grep("\\X+", "i");
+("Input: " + input + "\n").echo();
+("Pattern: \\X+ (grapheme clusters with case-insensitive)\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Should handle case folding with grapheme clusters\n").echo();
+"---\n".echo();
+
+/* Test 8: Case Folding with Word Boundaries */
+"Test 8: Case Folding with Word Boundaries\n".echo();
+input = "İstanbul ß ς į";
+result = input.grep("\\b\\w+\\b", "i");
+("Input: " + input + "\n").echo();
+("Pattern: \\b\\w+\\b (word boundaries with case-insensitive)\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Should handle case folding with word boundaries\n").echo();
+"---\n".echo();
+
+/* Test 9: Case Folding with Normalization */
+"Test 9: Case Folding with Normalization\n".echo();
+input = "İstanbul ß ς į";
+result = input.grep("istanbul", "iNFC");
+("Input: " + input + "\n").echo();
+("Pattern: istanbul (case-insensitive with NFC normalization)\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Should handle case folding with normalization\n").echo();
+"---\n".echo();
+
+/* Test 10: Case Folding with Diacritic Insensitive */
+"Test 10: Case Folding with Diacritic Insensitive\n".echo();
+input = "İstanbul ß ς į";
+result = input.grep("istanbul", "id");
+("Input: " + input + "\n").echo();
+("Pattern: istanbul (case-insensitive and diacritic-insensitive)\n").echo();
+("Result: " + result.str() + "\n").echo();
+("Expected: Should handle case folding with diacritic insensitive\n").echo();
+"---\n".echo();
+
+"=== UNICODE CASE FOLDING SUMMARY ===\n".echo();
+"Based on test results, specific case folding issues:\n".echo();
+"1. Turkish dotted/dotless I (İ ↔ i, I ↔ ı)\n".echo();
+"2. German sharp S (ß ↔ ss)\n".echo();
+"3. Greek final sigma (ς ↔ σ)\n".echo();
+"4. Lithuanian dot above (į ↔ i)\n".echo();
+"5. Mixed case folding scenarios\n".echo();
+"6. Case folding with Unicode properties\n".echo();
+"7. Case folding with grapheme clusters\n".echo();
+"8. Case folding with word boundaries\n".echo();
+"9. Case folding with normalization\n".echo();
+"10. Case folding with diacritic insensitive\n".echo(); 

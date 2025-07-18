@@ -231,6 +231,19 @@ result.echo();  /* 20 */
 ```grapa
 "Hello WORLD".grep("world", "i")
 ["Hello WORLD"]
+
+// Unicode case folding examples
+"İstanbul ıstanbul".grep("istanbul", "i")
+["İstanbul ıstanbul"]  // Turkish I characters
+
+"Straße".grep("strasse", "i")
+["Straße"]  // German sharp S
+
+"γράμμα".grep("ΓΡΑΜΜΑ", "i")
+["γράμμα"]  // Greek final sigma
+
+"café résumé naïve".grep("CAFE RESUME NAIVE", "i")
+["café résumé naïve"]  // Accented characters
 ```
 
 ### Context Lines

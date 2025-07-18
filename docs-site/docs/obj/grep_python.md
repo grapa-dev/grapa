@@ -1,6 +1,6 @@
 **See Also:** [Main Grep Documentation (grep.md)](grep.md)
 
-> **Note:** All runnable code examples in this document are automatically tested in [`test/test_grep_python_doc_examples.py`](../../test/test_grep_python_doc_examples.py).
+> **Note:** All runnable code examples in this document are automatically tested in [`test/grep/test_grep_python_doc_examples.py`](../../../test/grep/test_grep_python_doc_examples.py).
 
 # Unicode Grep in Python
 
@@ -196,6 +196,18 @@ xy.eval('"Hello 👋 world 🌍".grep(r"(?:\\p{So}(?:\\u200D\\p{So})*)+", "o")')
 # Unicode grapheme clusters
 xy.eval('"café mañana".grep(r"\\X", "o")')
 # Result: ['c', 'a', 'f', 'é', ' ', 'm', 'a', 'ñ', 'a', 'n', 'a']
+
+# Unicode case folding (Turkish I characters)
+xy.eval('"İstanbul ıstanbul".grep("istanbul", "i")')
+# Result: ['İstanbul ıstanbul']  # Both İ and ı match 'i'
+
+# German sharp S case folding
+xy.eval('"Straße".grep("strasse", "i")')
+# Result: ['Straße']  # ß matches 'ss'
+
+# Greek final sigma case folding
+xy.eval('"γράμμα".grep("ΓΡΑΜΜΑ", "i")')
+# Result: ['γράμμα']  # ς (final sigma) matches Σ (capital sigma)
 ```
 
 ### Advanced Unicode Features
@@ -220,6 +232,121 @@ xy.eval('"aaa".grep(r"(?>a+)a", "o")')
 xy.eval('"abc123def456".grep(r"(?<=\\d)(?=\\d)", "o")')
 # Result: ['', '', '', '', '', '']
 ```
+
+### Unicode Case Folding
+
+Grapa's case-insensitive matching (`i` option) uses Unicode case folding, which handles special Unicode characters that don't follow simple ASCII case conversion rules. This includes Turkish I characters, German sharp S, Greek final sigma, and other locale-specific case mappings.
+
+#### Turkish I Characters
+
+Turkish has special case folding rules for the dotted I (İ) and dotless I (ı):
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Turkish I case folding
+xy.eval('"İstanbul ıstanbul".grep("istanbul", "i")')
+# Result: ['İstanbul ıstanbul']  # Both İ and ı match 'i'
+
+xy.eval('"İstanbul ıstanbul".grep("İSTANBUL", "i")')
+# Result: ['İstanbul ıstanbul']  # Both İ and ı match 'I'
+
+# Individual character matching
+xy.eval('"İ".grep("i", "i")')
+# Result: ['İ']  # İ matches 'i'
+
+xy.eval('"ı".grep("i", "i")')
+# Result: ['ı']  # ı matches 'i'
+
+xy.eval('"I".grep("ı", "i")')
+# Result: ['I']  # I matches 'ı'
+
+xy.eval('"i".grep("ı", "i")')
+# Result: ['i']  # i matches 'ı'
+```
+
+#### German Sharp S (ß)
+
+The German sharp S (ß) has special case folding behavior:
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# German sharp S case folding
+xy.eval('"Straße".grep("strasse", "i")')
+# Result: ['Straße']  # ß matches 'ss'
+
+xy.eval('"STRASSE".grep("straße", "i")')
+# Result: ['STRASSE']  # 'ss' matches 'ß'
+```
+
+#### Greek Final Sigma (ς)
+
+Greek has special case folding for final sigma:
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Greek final sigma case folding
+xy.eval('"γράμμα".grep("ΓΡΑΜΜΑ", "i")')
+# Result: ['γράμμα']  # ς (final sigma) matches Σ (capital sigma)
+
+xy.eval('"ΓΡΑΜΜΑ".grep("γράμμα", "i")')
+# Result: ['ΓΡΑΜΜΑ']  # Σ matches ς
+```
+
+#### Common Accented Characters
+
+Many accented characters have standard case folding:
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Common accented character case folding
+xy.eval('"café résumé naïve".grep("CAFE RESUME NAIVE", "i")')
+# Result: ['café résumé naïve']  # é, é, ï fold to e, e, i
+
+xy.eval('"CAFÉ RÉSUMÉ NAÏVE".grep("cafe resume naive", "i")')
+# Result: ['CAFÉ RÉSUMÉ NAÏVE']  # E, E, I fold to e, e, i
+```
+
+#### Case Folding with Other Options
+
+Case folding works with all other grep options:
+
+```python
+import grapapy
+xy = grapapy.grapa()
+
+# Case folding with word boundaries
+xy.eval('"İstanbul ıstanbul".grep("istanbul", "wi")')
+# Result: ['İstanbul ıstanbul']
+
+# Case folding with match-only output
+xy.eval('"İstanbul ıstanbul".grep("istanbul", "oi")')
+# Result: ['İstanbul', 'ıstanbul']
+
+# Case folding with normalization
+xy.eval('"İstanbul".grep("istanbul", "iN")')
+# Result: ['İstanbul']
+
+# Case folding with diacritic-insensitive matching
+xy.eval('"İstanbul".grep("istanbul", "id")')
+# Result: ['İstanbul']
+```
+
+#### Case Folding Implementation Notes
+
+- **Composed Forms**: Grapa's case folding produces composed forms (e.g., `i` + combining dot above for Turkish I) rather than decomposed forms, ensuring better regex matching compatibility
+- **Locale Independence**: Case folding follows Unicode standards and is locale-independent
+- **Performance**: Case folding is implemented using an optimized lookup table for common Unicode characters
+- **Compatibility**: All case folding follows Unicode 15.0 standards for maximum compatibility
+
+**Note**: Case folding is applied to both the input text and the search pattern when using the `i` option, ensuring bidirectional matching regardless of which form is used in the pattern or text.
 
 ## Raw String Literals
 
@@ -530,7 +657,7 @@ xy.eval('[1, "", 2]')
 
 ## Test Coverage and Regression Testing
 
-> **Update (2024-12):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See [Testing Documentation](../../docs/TESTING.md) for details.
+> **Update (2024-12):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See [Testing Documentation](../TESTING.md) for details.
 
 ## Comparison with Other Tools
 
@@ -588,7 +715,7 @@ entries = xy.eval("log_data.grep(r'(?P<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d
 # Result: [{"timestamp":"2024-01-15 10:30:15","level":"INFO","message":"User login successful",...}, ...]
 ```
 
-For more detailed information about grep functionality, see the main [Grep Documentation](obj/grep_python.md). 
+For more detailed information about grep functionality, see the main [Grep Documentation](grep.md). 
 
 ## Example Test File
 

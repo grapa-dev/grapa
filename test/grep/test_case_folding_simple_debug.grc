@@ -1,0 +1,38 @@
+/* Test Case Folding Simple Debug */
+/* Simple test to see if case folding is working at all */
+
+"=== CASE FOLDING SIMPLE DEBUG ===\n".echo();
+
+/* Test 1: Simple ASCII case folding */
+"Test 1: Simple ASCII Case Folding\n".echo();
+input = "HELLO";
+("Input: " + input + "\n").echo();
+("Input hex: " + input.hex() + "\n").echo();
+folded = input.case_fold();
+("Folded: " + folded + "\n").echo();
+("Folded hex: " + folded.hex() + "\n").echo();
+("Folded length: " + folded.len().str() + "\n").echo();
+("Folded == 'hello': " + (folded == "hello").str() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Turkish I case folding */
+"Test 2: Turkish I Case Folding\n".echo();
+input = "İ";
+("Input: " + input + "\n").echo();
+("Input hex: " + input.hex() + "\n").echo();
+folded = input.case_fold();
+("Folded: " + folded + "\n").echo();
+("Folded hex: " + folded.hex() + "\n").echo();
+("Folded length: " + folded.len().str() + "\n").echo();
+("Folded == 'i': " + (folded == "i").str() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Compare with expected */
+"Test 3: Compare with Expected\n".echo();
+expected = "i";
+("Expected: " + expected + "\n").echo();
+("Expected hex: " + expected.hex() + "\n").echo();
+("Folded == Expected: " + (folded == expected).str() + "\n").echo();
+"---\n".echo();
+
+"=== CASE FOLDING SIMPLE DEBUG SUMMARY ===\n".echo(); 

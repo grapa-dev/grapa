@@ -390,7 +390,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../CONTRIBUTING.md" class="md-tabs__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-tabs__link">
         
   
   
@@ -873,7 +873,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../CONTRIBUTING.md" class="md-nav__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-nav__link">
         
   
   
@@ -1129,7 +1129,7 @@
 - <strong>Type introspection</strong> - Getting object types and descriptions
 - <strong>Environment management</strong> - Accessing system variables and platform information
 - <strong>Script compilation</strong> - Pre-compiling scripts for performance
-- <strong>Dynamic evaluation</strong> - Running scripts with parameters
+- <strong>Dynamic evaluation</strong> - Running scripts with parameters (Grapa's core meta-programming capability)
 - <strong>System timing</strong> - Sleep and delay operations</p>
 <h2 id="functions">Functions</h2>
 <h3 id="typeobject">type(object)</h3>
@@ -1322,7 +1322,7 @@ direct_op;
 - <strong>Both</strong>: Generate the same underlying execution tree structure
 - <strong>Performance</strong>: Both benefit from compile-time optimization</p>
 <h3 id="evalscript-sparams-srule-sprofile">eval(script, sparams={}, srule="", sprofile="")</h3>
-<p>Evaluates a script with optional parameters, rules, and profile.</p>
+<p>Evaluates a script with optional parameters, rules, and profile. This is one of Grapa's most powerful features, enabling dynamic code execution and meta-programming.</p>
 <p><strong>Parameters:</strong>
 - <code>script</code> - Script string or compiled $OP object
 - <code>sparams</code> - Parameter object (default: <code>{}</code>)
@@ -1337,6 +1337,10 @@ result = $sys().eval(&quot;x = 5 + 3; x&quot;);
 /* Evaluate with parameters */
 result = $sys().eval(&quot;x + y&quot;, {&quot;x&quot;: 5, &quot;y&quot;: 3});
 /* Result: 8 */
+
+/* Evaluate complex expression */
+result = $sys().eval(&quot;(a + b) * c&quot;, {&quot;a&quot;: 2, &quot;b&quot;: 3, &quot;c&quot;: 4});
+/* Result: 20 */
 
 /* Evaluate compiled $OP object */
 compiled = $sys().compile(&quot;a + b&quot;);

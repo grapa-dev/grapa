@@ -28,7 +28,7 @@ limitations under the License.
 #define PCRE2_STATIC
 #endif
 
-#define GRAPA_DEBUG_PRINTF
+// #define GRAPA_DEBUG_PRINTF
 
 
 /*
@@ -215,6 +215,11 @@ namespace GrapaUnicode {
         BINARY_MODE      // Raw byte processing (no Unicode processing)
     };
 
+    // Forward declarations for helper functions
+    char32_t case_fold_codepoint(char32_t c);
+    char32_t strip_latin_diacritic(char32_t c);
+    bool is_combining_mark(char32_t cp);
+
     /**
      * Unicode-aware string utilities
      */
@@ -239,6 +244,10 @@ namespace GrapaUnicode {
          */
         UnicodeString normalize(NormalizationForm form) const {
             if (data_.empty()) return UnicodeString();
+
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: normalize() called with input: '%s' (length: %zu), form: %d\n", data_.c_str(), data_.size(), static_cast<int>(form));
+            #endif // DEBUG_END
 
             utf8proc_option_t options = UTF8PROC_STABLE;
             switch (form) {
@@ -267,12 +276,24 @@ namespace GrapaUnicode {
                 options
             );
 
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: normalize() utf8proc_map returned result_len: %zd\n", result_len);
+            #endif // DEBUG_END
+
             if (result_len < 0) {
                 // Error occurred, return original string
+                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                printf("DEBUG: normalize() utf8proc_map error, returning original string\n");
+                #endif // DEBUG_END
                 return UnicodeString(data_);
             }
 
             UnicodeString normalized(reinterpret_cast<const char*>(result));
+            
+            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+            printf("DEBUG: normalize() result: '%s' (length: %zu)\n", normalized.data_.c_str(), normalized.data_.size());
+            #endif // DEBUG_END
+            
             free(result);
             return normalized;
         }
@@ -283,22 +304,44 @@ namespace GrapaUnicode {
         UnicodeString case_fold() const {
             if (data_.empty()) return UnicodeString();
 
-            utf8proc_uint8_t* result = nullptr;
-            utf8proc_ssize_t result_len = utf8proc_map(
-                reinterpret_cast<const utf8proc_uint8_t*>(data_.c_str()),
-                static_cast<utf8proc_ssize_t>(data_.size()),
-                &result,
-                static_cast<utf8proc_option_t>(UTF8PROC_STABLE | UTF8PROC_CASEFOLD)
-            );
-
-            if (result_len < 0) {
-                // Error occurred, return original string
-                return UnicodeString(data_);
+            // Use lookup table for reliable case folding, especially for Turkish I
+            std::string result;
+            size_t i = 0;
+            while (i < data_.size()) {
+                unsigned char c = data_[i];
+                char32_t cp = 0;
+                size_t len = 0;
+                
+                // Decode UTF-8
+                if (c < 0x80) { cp = c; len = 1; }
+                else if ((c & 0xE0) == 0xC0) { cp = ((c & 0x1F) << 6) | (data_[i+1] & 0x3F); len = 2; }
+                else if ((c & 0xF0) == 0xE0) { cp = ((c & 0x0F) << 12) | ((data_[i+1] & 0x3F) << 6) | (data_[i+2] & 0x3F); len = 3; }
+                else if ((c & 0xF8) == 0xF0) { cp = ((c & 0x07) << 18) | ((data_[i+1] & 0x3F) << 12) | ((data_[i+2] & 0x3F) << 6) | (data_[i+3] & 0x3F); len = 4; }
+                else { cp = c; len = 1; }
+                
+                // Apply case folding using lookup table
+                char32_t folded = case_fold_codepoint(cp);
+                
+                // Re-encode as UTF-8
+                if (folded < 0x80) result += static_cast<char>(folded);
+                else if (folded < 0x800) {
+                    result += static_cast<char>(0xC0 | (folded >> 6));
+                    result += static_cast<char>(0x80 | (folded & 0x3F));
+                } else if (folded < 0x10000) {
+                    result += static_cast<char>(0xE0 | (folded >> 12));
+                    result += static_cast<char>(0x80 | ((folded >> 6) & 0x3F));
+                    result += static_cast<char>(0x80 | (folded & 0x3F));
+                } else {
+                    result += static_cast<char>(0xF0 | (folded >> 18));
+                    result += static_cast<char>(0x80 | ((folded >> 12) & 0x3F));
+                    result += static_cast<char>(0x80 | ((folded >> 6) & 0x3F));
+                    result += static_cast<char>(0x80 | (folded & 0x3F));
+                }
+                
+                i += len;
             }
-
-            UnicodeString folded(reinterpret_cast<const char*>(result));
-            free(result);
-            return folded;
+            
+            return UnicodeString(result);
         }
 
         /**
@@ -1102,6 +1145,88 @@ namespace GrapaUnicode {
     inline bool is_combining_mark(char32_t cp) {
         return (cp >= 0x0300 && cp <= 0x036F);
     }
+    // Case folding lookup table for reliable Unicode case folding
+    // Handles special cases like Turkish I (İ↔i, I↔ı) and German sharp S (ß↔ss)
+    inline char32_t case_fold_codepoint(char32_t c) {
+        switch (c) {
+            // Basic Latin uppercase to lowercase
+            case 0x0041: return 0x0061; // A -> a
+            case 0x0042: return 0x0062; // B -> b
+            case 0x0043: return 0x0063; // C -> c
+            case 0x0044: return 0x0064; // D -> d
+            case 0x0045: return 0x0065; // E -> e
+            case 0x0046: return 0x0066; // F -> f
+            case 0x0047: return 0x0067; // G -> g
+            case 0x0048: return 0x0068; // H -> h
+            case 0x0049: return 0x0069; // I -> i
+            case 0x004A: return 0x006A; // J -> j
+            case 0x004B: return 0x006B; // K -> k
+            case 0x004C: return 0x006C; // L -> l
+            case 0x004D: return 0x006D; // M -> m
+            case 0x004E: return 0x006E; // N -> n
+            case 0x004F: return 0x006F; // O -> o
+            case 0x0050: return 0x0070; // P -> p
+            case 0x0051: return 0x0071; // Q -> q
+            case 0x0052: return 0x0072; // R -> r
+            case 0x0053: return 0x0073; // S -> s
+            case 0x0054: return 0x0074; // T -> t
+            case 0x0055: return 0x0075; // U -> u
+            case 0x0056: return 0x0076; // V -> v
+            case 0x0057: return 0x0077; // W -> w
+            case 0x0058: return 0x0078; // X -> x
+            case 0x0059: return 0x0079; // Y -> y
+            case 0x005A: return 0x007A; // Z -> z
+            
+            // Basic Latin lowercase to lowercase (no change)
+            case 0x0061: case 0x0062: case 0x0063: case 0x0064: case 0x0065: case 0x0066: case 0x0067: case 0x0068: case 0x0069: case 0x006A: case 0x006B: case 0x006C: case 0x006D: case 0x006E: case 0x006F: case 0x0070: case 0x0071: case 0x0072: case 0x0073: case 0x0074: case 0x0075: case 0x0076: case 0x0077: case 0x0078: case 0x0079: case 0x007A: return c;
+            
+            // Turkish I - special case folding
+            case 0x0130: return 0x0069; // İ -> i (Turkish dotted I to lowercase i)
+            case 0x0131: return 0x0069; // ı -> i (Turkish dotless I to lowercase i)
+            
+            // German sharp S - special case folding
+            case 0x00DF: return 0x0073; // ß -> s (sharp S to lowercase s)
+            
+            // Greek final sigma
+            case 0x03C2: return 0x03C3; // ς -> σ (final sigma to lowercase sigma)
+            
+            // Lithuanian dot above
+            case 0x012F: return 0x0069; // į -> i (i with ogonek to lowercase i)
+            
+            // Common accented characters
+            case 0x00C0: return 0x00E0; // À -> à
+            case 0x00C1: return 0x00E1; // Á -> á
+            case 0x00C2: return 0x00E2; // Â -> â
+            case 0x00C3: return 0x00E3; // Ã -> ã
+            case 0x00C4: return 0x00E4; // Ä -> ä
+            case 0x00C5: return 0x00E5; // Å -> å
+            case 0x00C8: return 0x00E8; // È -> è
+            case 0x00C9: return 0x00E9; // É -> é
+            case 0x00CA: return 0x00EA; // Ê -> ê
+            case 0x00CB: return 0x00EB; // Ë -> ë
+            case 0x00CC: return 0x00EC; // Ì -> ì
+            case 0x00CD: return 0x00ED; // Í -> í
+            case 0x00CE: return 0x00EE; // Î -> î
+            case 0x00CF: return 0x00EF; // Ï -> ï
+            case 0x00D2: return 0x00F2; // Ò -> ò
+            case 0x00D3: return 0x00F3; // Ó -> ó
+            case 0x00D4: return 0x00F4; // Ô -> ô
+            case 0x00D5: return 0x00F5; // Õ -> õ
+            case 0x00D6: return 0x00F6; // Ö -> ö
+            case 0x00D9: return 0x00F9; // Ù -> ù
+            case 0x00DA: return 0x00FA; // Ú -> ú
+            case 0x00DB: return 0x00FB; // Û -> û
+            case 0x00DC: return 0x00FC; // Ü -> ü
+            case 0x00C7: return 0x00E7; // Ç -> ç
+            case 0x00D1: return 0x00F1; // Ñ -> ñ
+            case 0x00DD: return 0x00FD; // Ý -> ý
+            case 0x00FF: return 0x00FF; // ÿ -> ÿ (no change)
+            
+            // Default: no change
+            default: return c;
+        }
+    }
+
     // Helper: convert UTF-8 string to codepoints, strip diacritics (table and combining marks), and re-encode
     inline std::string strip_diacritics(const std::string& input) {
         std::string out;

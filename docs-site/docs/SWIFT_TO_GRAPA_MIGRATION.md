@@ -15,24 +15,24 @@
 
 ## Swift-to-Grapa Migration Guide (WIP Features)
 
-> **Note:** All core language gaps are tracked in the [Grapa Language Enhancement Roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md) for future development.
+> **Note:** All core language gaps are tracked internally for future development.
 
 ### Main Table: Core Gaps (Tracked for Enhancement)
 | Swift Feature               | Grapa Equivalent | Status/Note |
 |-----------------------------|------------------|-------------|
-| `import Foundation`         | —                | **GAP**: No module/import system ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `protocol Baz {}`           | —                | **GAP**: No protocol/interface ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `extension Foo {}`          | —                | **GAP**: No extension support ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `defer`                     | —                | **GAP**: No defer/finally ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `#file`                     | —                | **GAP**: No file macro ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `#line`                     | —                | **GAP**: No line macro ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `typealias Foo = Bar`       | —                | **GAP**: No typealias ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `Any`                       | —                | **GAP**: No Any/advanced type ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `as?` (optional cast)       | —                | **GAP**: No optional cast ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `is` (type check)           | —                | **GAP**: No direct type check ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `guard`                     | —                | **GAP**: No guard statement ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `@escaping`                 | —                | **GAP**: No annotation/meta-programming ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `@objc`                     | —                | **GAP**: No annotation/meta-programming ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
+| `import Foundation`         | —                | **GAP**: No module/import system |
+| `protocol Baz {}`           | —                | **GAP**: No protocol/interface |
+| `extension Foo {}`          | —                | **GAP**: No extension support |
+| `defer`                     | —                | **GAP**: No defer/finally |
+| `#file`                     | —                | **GAP**: No file macro |
+| `#line`                     | —                | **GAP**: No line macro |
+| `typealias Foo = Bar`       | —                | **GAP**: No typealias |
+| `Any`                       | —                | **GAP**: No Any/advanced type |
+| `as?` (optional cast)       | —                | **GAP**: No optional cast |
+| `is` (type check)           | —                | **GAP**: No direct type check |
+| `guard`                     | —                | **GAP**: No guard statement |
+| `@escaping`                 | —                | **GAP**: No annotation/meta-programming |
+| `@objc`                     | —                | **GAP**: No annotation/meta-programming |
 
 ### Nice to Have
 | Swift Feature               | Grapa Equivalent | Note |

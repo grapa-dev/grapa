@@ -390,7 +390,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../CONTRIBUTING.md" class="md-tabs__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-tabs__link">
         
   
   
@@ -873,7 +873,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../CONTRIBUTING.md" class="md-nav__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-nav__link">
         
   
   
@@ -1116,6 +1116,75 @@
       Advanced Unicode Features
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-case-folding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Case Folding
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unicode Case Folding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#turkish-i-characters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Turkish I Characters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#german-sharp-s" class="md-nav__link">
+    <span class="md-ellipsis">
+      German Sharp S (ß)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greek-final-sigma" class="md-nav__link">
+    <span class="md-ellipsis">
+      Greek Final Sigma (ς)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-accented-characters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Accented Characters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-folding-with-other-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Folding with Other Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-folding-implementation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Case Folding Implementation Notes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1433,7 +1502,7 @@
 
 <p><strong>See Also:</strong> <a href="../grep/">Main Grep Documentation (grep.md)</a></p>
 <blockquote>
-<p><strong>Note:</strong> All runnable code examples in this document are automatically tested in <a href="../../test/test_grep_python_doc_examples.py"><code>test/test_grep_python_doc_examples.py</code></a>.</p>
+<p><strong>Note:</strong> All runnable code examples in this document are automatically tested in <a href="../../../test/grep/test_grep_python_doc_examples.py"><code>test/grep/test_grep_python_doc_examples.py</code></a>.</p>
 </blockquote>
 <h1 id="unicode-grep-in-python">Unicode Grep in Python</h1>
 <h2 id="overview">Overview</h2>
@@ -1704,6 +1773,18 @@
 <span class="c1"># Unicode grapheme clusters</span>
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;café mañana&quot;.grep(r&quot;</span><span class="se">\\</span><span class="s1">X&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
 <span class="c1"># Result: [&#39;c&#39;, &#39;a&#39;, &#39;f&#39;, &#39;é&#39;, &#39; &#39;, &#39;m&#39;, &#39;a&#39;, &#39;ñ&#39;, &#39;a&#39;, &#39;n&#39;, &#39;a&#39;]</span>
+
+<span class="c1"># Unicode case folding (Turkish I characters)</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;İstanbul ıstanbul&quot;.grep(&quot;istanbul&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;İstanbul ıstanbul&#39;]  # Both İ and ı match &#39;i&#39;</span>
+
+<span class="c1"># German sharp S case folding</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Straße&quot;.grep(&quot;strasse&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;Straße&#39;]  # ß matches &#39;ss&#39;</span>
+
+<span class="c1"># Greek final sigma case folding</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;γράμμα&quot;.grep(&quot;ΓΡΑΜΜΑ&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;γράμμα&#39;]  # ς (final sigma) matches Σ (capital sigma)</span>
 </code></pre></div>
 <h3 id="advanced-unicode-features">Advanced Unicode Features</h3>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
@@ -1725,6 +1806,98 @@
 <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;abc123def456&quot;.grep(r&quot;(?&lt;=</span><span class="se">\\</span><span class="s1">d)(?=</span><span class="se">\\</span><span class="s1">d)&quot;, &quot;o&quot;)&#39;</span><span class="p">)</span>
 <span class="c1"># Result: [&#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;, &#39;&#39;]</span>
 </code></pre></div>
+<h3 id="unicode-case-folding">Unicode Case Folding</h3>
+<p>Grapa's case-insensitive matching (<code>i</code> option) uses Unicode case folding, which handles special Unicode characters that don't follow simple ASCII case conversion rules. This includes Turkish I characters, German sharp S, Greek final sigma, and other locale-specific case mappings.</p>
+<h4 id="turkish-i-characters">Turkish I Characters</h4>
+<p>Turkish has special case folding rules for the dotted I (İ) and dotless I (ı):</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Turkish I case folding</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;İstanbul ıstanbul&quot;.grep(&quot;istanbul&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;İstanbul ıstanbul&#39;]  # Both İ and ı match &#39;i&#39;</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;İstanbul ıstanbul&quot;.grep(&quot;İSTANBUL&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;İstanbul ıstanbul&#39;]  # Both İ and ı match &#39;I&#39;</span>
+
+<span class="c1"># Individual character matching</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;İ&quot;.grep(&quot;i&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;İ&#39;]  # İ matches &#39;i&#39;</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;ı&quot;.grep(&quot;i&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;ı&#39;]  # ı matches &#39;i&#39;</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;I&quot;.grep(&quot;ı&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;I&#39;]  # I matches &#39;ı&#39;</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;i&quot;.grep(&quot;ı&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;i&#39;]  # i matches &#39;ı&#39;</span>
+</code></pre></div>
+<h4 id="german-sharp-s">German Sharp S (ß)</h4>
+<p>The German sharp S (ß) has special case folding behavior:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># German sharp S case folding</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;Straße&quot;.grep(&quot;strasse&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;Straße&#39;]  # ß matches &#39;ss&#39;</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;STRASSE&quot;.grep(&quot;straße&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;STRASSE&#39;]  # &#39;ss&#39; matches &#39;ß&#39;</span>
+</code></pre></div>
+<h4 id="greek-final-sigma">Greek Final Sigma (ς)</h4>
+<p>Greek has special case folding for final sigma:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Greek final sigma case folding</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;γράμμα&quot;.grep(&quot;ΓΡΑΜΜΑ&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;γράμμα&#39;]  # ς (final sigma) matches Σ (capital sigma)</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;ΓΡΑΜΜΑ&quot;.grep(&quot;γράμμα&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;ΓΡΑΜΜΑ&#39;]  # Σ matches ς</span>
+</code></pre></div>
+<h4 id="common-accented-characters">Common Accented Characters</h4>
+<p>Many accented characters have standard case folding:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Common accented character case folding</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;café résumé naïve&quot;.grep(&quot;CAFE RESUME NAIVE&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;café résumé naïve&#39;]  # é, é, ï fold to e, e, i</span>
+
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;CAFÉ RÉSUMÉ NAÏVE&quot;.grep(&quot;cafe resume naive&quot;, &quot;i&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;CAFÉ RÉSUMÉ NAÏVE&#39;]  # E, E, I fold to e, e, i</span>
+</code></pre></div>
+<h4 id="case-folding-with-other-options">Case Folding with Other Options</h4>
+<p>Case folding works with all other grep options:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
+<span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
+
+<span class="c1"># Case folding with word boundaries</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;İstanbul ıstanbul&quot;.grep(&quot;istanbul&quot;, &quot;wi&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;İstanbul ıstanbul&#39;]</span>
+
+<span class="c1"># Case folding with match-only output</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;İstanbul ıstanbul&quot;.grep(&quot;istanbul&quot;, &quot;oi&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;İstanbul&#39;, &#39;ıstanbul&#39;]</span>
+
+<span class="c1"># Case folding with normalization</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;İstanbul&quot;.grep(&quot;istanbul&quot;, &quot;iN&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;İstanbul&#39;]</span>
+
+<span class="c1"># Case folding with diacritic-insensitive matching</span>
+<span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;&quot;İstanbul&quot;.grep(&quot;istanbul&quot;, &quot;id&quot;)&#39;</span><span class="p">)</span>
+<span class="c1"># Result: [&#39;İstanbul&#39;]</span>
+</code></pre></div>
+<h4 id="case-folding-implementation-notes">Case Folding Implementation Notes</h4>
+<ul>
+<li><strong>Composed Forms</strong>: Grapa's case folding produces composed forms (e.g., <code>i</code> + combining dot above for Turkish I) rather than decomposed forms, ensuring better regex matching compatibility</li>
+<li><strong>Locale Independence</strong>: Case folding follows Unicode standards and is locale-independent</li>
+<li><strong>Performance</strong>: Case folding is implemented using an optimized lookup table for common Unicode characters</li>
+<li><strong>Compatibility</strong>: All case folding follows Unicode 15.0 standards for maximum compatibility</li>
+</ul>
+<p><strong>Note</strong>: Case folding is applied to both the input text and the search pattern when using the <code>i</code> option, ensuring bidirectional matching regardless of which form is used in the pattern or text.</p>
 <h2 id="raw-string-literals">Raw String Literals</h2>
 <p>For better readability of regex patterns, use raw string literals by prefixing the string with <code>r</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">grapapy</span>
@@ -2017,7 +2190,7 @@
 </code></pre></div>
 <h2 id="test-coverage-and-regression-testing">Test Coverage and Regression Testing</h2>
 <blockquote>
-<p><strong>Update (2024-12):</strong> The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See <a href="../../docs/TESTING.md">Testing Documentation</a> for details.</p>
+<p><strong>Update (2024-12):</strong> The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See <a href="../../TESTING/">Testing Documentation</a> for details.</p>
 </blockquote>
 <h2 id="comparison-with-other-tools">Comparison with Other Tools</h2>
 <table>
@@ -2119,9 +2292,9 @@
 
 <span class="c1"># Result: [{&quot;timestamp&quot;:&quot;2024-01-15 10:30:15&quot;,&quot;level&quot;:&quot;INFO&quot;,&quot;message&quot;:&quot;User login successful&quot;,...}, ...]</span>
 </code></pre></div>
-<p>For more detailed information about grep functionality, see the main <a href="obj/grep_python.md">Grep Documentation</a>. </p>
+<p>For more detailed information about grep functionality, see the main <a href="../grep/">Grep Documentation</a>. </p>
 <h2 id="example-test-file">Example Test File</h2>
-<p>See <code>test/test_grep_python_examples.py</code> for a runnable example of grep usage from Python. </p>
+<p>See <code>test/grep/test_grep_python_examples.py</code> for a runnable example of grep usage from Python. </p>
 <p>For detailed grep documentation, see <a href="../grep/">Grep Documentation</a>.</p>
 <h2 id="feature-comparison-and-limitations">Feature Comparison and Limitations</h2>
 <p>For a comprehensive comparison of Grapa grep features with other tools like ripgrep, GNU grep, and Python's <code>re</code> module, including detailed feature matrices and use case recommendations, see the <a href="../grep/">Main Grep Documentation</a>.</p>

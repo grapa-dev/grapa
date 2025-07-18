@@ -1,0 +1,37 @@
+/* Test Normalization Debug */
+/* Test to see if normalization has the same issue as case folding */
+
+"=== NORMALIZATION DEBUG TEST ===\n".echo();
+
+/* Test 1: Normalization */
+"Test 1: Normalization\n".echo();
+input = "İstanbul";
+normalized = input.normalize("NFC");
+("İstanbul normalized: '" + normalized + "'\n").echo();
+("İstanbul normalized length: " + normalized.len().str() + "\n").echo();
+("İstanbul normalized == İstanbul: " + (normalized == input).str() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Case folding with debug */
+"Test 2: Case Folding with Debug\n".echo();
+input = "İstanbul";
+folded = input.case_fold();
+("İstanbul case folded: '" + folded + "'\n").echo();
+("İstanbul case folded length: " + folded.len().str() + "\n").echo();
+("İstanbul case folded bytes: ");
+for (i = 0; i < folded.len(); i++) {
+    (" " + folded[i].ord().str());
+}
+"\n".echo();
+"---\n".echo();
+
+/* Test 3: Simple ASCII case folding */
+"Test 3: Simple ASCII Case Folding\n".echo();
+input = "HELLO";
+folded = input.case_fold();
+("HELLO case folded: '" + folded + "'\n").echo();
+("HELLO case folded length: " + folded.len().str() + "\n").echo();
+("HELLO case folded == hello: " + (folded == "hello").str() + "\n").echo();
+"---\n".echo();
+
+"=== NORMALIZATION DEBUG SUMMARY ===\n".echo(); 

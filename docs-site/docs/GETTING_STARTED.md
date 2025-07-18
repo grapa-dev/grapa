@@ -207,7 +207,7 @@ matches.echo();  /* ["world", "world"] */
 ## Next Steps
 - Explore [Examples](EXAMPLES.md) for more complex use cases
 - Learn about [Testing](TESTING.md) your Grapa code
-- Dive into [System Functions](SYSTEM_FUNCTIONS.md) for advanced features
+- Dive into [System Functions](../maintainers/IMPLEMENTATION/SYSTEM_FUNCTIONS.md) for advanced features
 - Check out the [Grep functionality](grep.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips 
 

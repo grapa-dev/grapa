@@ -396,7 +396,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../CONTRIBUTING.md" class="md-tabs__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-tabs__link">
         
   
   
@@ -576,9 +576,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#dynamic-code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Code Execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#data-types" class="md-nav__link">
     <span class="md-ellipsis">
       Data Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespace-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Namespace System
     </span>
   </a>
   
@@ -1059,7 +1077,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../CONTRIBUTING.md" class="md-nav__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-nav__link">
         
   
   
@@ -1156,9 +1174,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#dynamic-code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Code Execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#data-types" class="md-nav__link">
     <span class="md-ellipsis">
       Data Types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#namespace-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Namespace System
     </span>
   </a>
   
@@ -1298,7 +1334,9 @@ grapa<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quo
 <ul>
 <li>Every statement and every block (including after closing braces) must end with a semicolon (<code>;</code>).</li>
 <li>Use block comments (<code>/* ... */</code>), not line comments (<code>// ...</code>).</li>
+<li>Within <code>{}</code> blocks, comments must be on their own line, not at the end of a line.</li>
 <li>To append to arrays, use the <code>+=</code> operator (not <code>.push()</code> or <code>.append()</code>).</li>
+<li>Grapa uses dynamic typing by design - types are determined at runtime for maximum flexibility.</li>
 <li>See <a href="../syntax/basic_syntax/">Syntax Quick Reference</a> for more.</li>
 </ul>
 <hr />
@@ -1324,6 +1362,26 @@ sum = numbers.reduce(op(a, b) { a + b; }, 0);
 </code></pre></div>
 <hr />
 <h2 id="core-concepts">Core Concepts</h2>
+<h3 id="dynamic-code-execution">Dynamic Code Execution</h3>
+<p>Grapa's most powerful feature is its ability to compile and execute code at runtime:</p>
+<div class="highlight"><pre><span></span><code>/* Direct string execution */
+op()(&quot;&#39;Hello, World!&#39;.echo();&quot;)();
+/* Output: Hello, World! */
+
+/* With parameters */
+func = op(&quot;name&quot;=0)(&quot;&#39;Hello, &#39; + name + &#39;!&#39;.echo();&quot;);
+func(&quot;Grapa&quot;);
+/* Output: Hello, Grapa! */
+
+/* System-level evaluation */
+result = $sys().eval(&quot;x + y&quot;, {&quot;x&quot;: 5, &quot;y&quot;: 3});
+result.echo();  /* 8 */
+
+/* Compiled execution for performance */
+compiled = $sys().compile(&quot;result = input * 2 + offset; result&quot;);
+result = $sys().eval(compiled, {&quot;input&quot;: 10, &quot;offset&quot;: 5});
+result.echo();  /* 25 */
+</code></pre></div>
 <h3 id="data-types">Data Types</h3>
 <p>Grapa provides rich data types for modern data processing:</p>
 <div class="highlight"><pre><span></span><code>text = &quot;Hello, world!&quot;;
@@ -1332,6 +1390,20 @@ my_list = [1, 2, 3, &quot;hello&quot;, true];
 my_array = {1, 2, 3, 4, 5};
 my_table = {&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30, &quot;city&quot;: &quot;New York&quot;};
 my_vector = &lt;1, 2, 3, 4, 5&gt;;
+</code></pre></div>
+<h3 id="namespace-system">Namespace System</h3>
+<p>Grapa automatically manages namespaces for variable scoping:</p>
+<div class="highlight"><pre><span></span><code>/* Global variables persist across function calls */
+$global.config = {&quot;debug&quot;: true, &quot;timeout&quot;: 30};
+
+/* Function creates its own local namespace */
+func = op(x) {
+    local_var = x * 2;  /* Local to this function */
+    config.echo();      /* Access global variable */
+    local_var.echo();   /* Access local variable */
+};
+
+func(5);
 </code></pre></div>
 <h3 id="json-and-xml-support">JSON and XML Support</h3>
 <div class="highlight"><pre><span></span><code>json_text = &#39;{&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30, &quot;hobbies&quot;: [&quot;reading&quot;, &quot;coding&quot;]}&#39;;
@@ -1397,12 +1469,16 @@ matches.echo();  /* [&quot;world&quot;, &quot;world&quot;] */
 <ul>
 <li>Explore <a href="../EXAMPLES/">Examples</a> for more complex use cases</li>
 <li>Learn about <a href="../TESTING/">Testing</a> your Grapa code</li>
-<li>Dive into <a href="SYSTEM_FUNCTIONS.md">System Functions</a> for advanced features</li>
+<li>Dive into <a href="../maintainers/IMPLEMENTATION/SYSTEM_FUNCTIONS.md">System Functions</a> for advanced features</li>
 <li>Check out the <a href="../grep/">Grep functionality</a> for advanced pattern matching</li>
 <li>Review the <a href="../syntax/basic_syntax/">Syntax Quick Reference</a> for more syntax rules and tips </li>
 </ul>
 <blockquote>
 <p><strong>Tip:</strong> Use <code>.range()</code> to generate arrays of numbers: <code>(n).range(start, step)</code>. </p>
+<p><strong>Comment Style:</strong>
+- Only block comments (<code>/* ... */</code>) are supported in Grapa, and must always be on their own line.
+- <code>//</code> and <code>#</code> comments are not supported and will cause errors.
+- Within <code>{}</code> blocks, comments must be on their own line, not at the end of a line.</p>
 <p><strong>Did you know?</strong>
 Grapa's parallel ETL/data processing is a core, production-ready feature. Parallelism is well tested and ideal for real-world, high-throughput data tasks. </p>
 <p><strong>For Newcomers/Non-Python Users:</strong>

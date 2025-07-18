@@ -396,7 +396,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../CONTRIBUTING.md" class="md-tabs__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-tabs__link">
         
   
   
@@ -1028,7 +1028,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../CONTRIBUTING.md" class="md-nav__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-nav__link">
         
   
   
@@ -1249,7 +1249,7 @@
 </blockquote>
 <h2 id="swift-to-grapa-migration-guide-wip-features">Swift-to-Grapa Migration Guide (WIP Features)</h2>
 <blockquote>
-<p><strong>Note:</strong> All core language gaps are tracked in the <a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">Grapa Language Enhancement Roadmap</a> for future development.</p>
+<p><strong>Note:</strong> All core language gaps are tracked internally for future development.</p>
 </blockquote>
 <h3 id="main-table-core-gaps-tracked-for-enhancement">Main Table: Core Gaps (Tracked for Enhancement)</h3>
 <table>
@@ -1264,67 +1264,67 @@
 <tr>
 <td><code>import Foundation</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No module/import system (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No module/import system</td>
 </tr>
 <tr>
 <td><code>protocol Baz {}</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No protocol/interface (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No protocol/interface</td>
 </tr>
 <tr>
 <td><code>extension Foo {}</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No extension support (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No extension support</td>
 </tr>
 <tr>
 <td><code>defer</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No defer/finally (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No defer/finally</td>
 </tr>
 <tr>
 <td><code>#file</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No file macro (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No file macro</td>
 </tr>
 <tr>
 <td><code>#line</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No line macro (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No line macro</td>
 </tr>
 <tr>
 <td><code>typealias Foo = Bar</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No typealias (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No typealias</td>
 </tr>
 <tr>
 <td><code>Any</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No Any/advanced type (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No Any/advanced type</td>
 </tr>
 <tr>
 <td><code>as?</code> (optional cast)</td>
 <td>—</td>
-<td><strong>GAP</strong>: No optional cast (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No optional cast</td>
 </tr>
 <tr>
 <td><code>is</code> (type check)</td>
 <td>—</td>
-<td><strong>GAP</strong>: No direct type check (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No direct type check</td>
 </tr>
 <tr>
 <td><code>guard</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No guard statement (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No guard statement</td>
 </tr>
 <tr>
 <td><code>@escaping</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No annotation/meta-programming (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No annotation/meta-programming</td>
 </tr>
 <tr>
 <td><code>@objc</code></td>
 <td>—</td>
-<td><strong>GAP</strong>: No annotation/meta-programming (<a href="../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md">see roadmap</a>)</td>
+<td><strong>GAP</strong>: No annotation/meta-programming</td>
 </tr>
 </tbody>
 </table>
@@ -1377,6 +1377,56 @@
 <td><code>@available(iOS 13, *)</code></td>
 <td>—</td>
 <td>Rarely needed, not blocking</td>
+</tr>
+<tr>
+<td><code>struct Bar {}</code></td>
+<td><code>obj Bar {}</code></td>
+<td>Use object constructors</td>
+</tr>
+<tr>
+<td><code>class Foo {}</code></td>
+<td><code>class Foo {}</code></td>
+<td>Use object constructors</td>
+</tr>
+<tr>
+<td><code>inheritance</code></td>
+<td><code>class (ParentClass)</code></td>
+<td>Grapa supports inheritance</td>
+</tr>
+<tr>
+<td><code>method overriding</code></td>
+<td>—</td>
+<td>Use regular method definitions</td>
+</tr>
+<tr>
+<td><code>method overloading</code></td>
+<td>—</td>
+<td>Use different function names</td>
+</tr>
+<tr>
+<td><code>default parameters</code></td>
+<td>—</td>
+<td>Use explicit checks</td>
+</tr>
+<tr>
+<td><code>variadic parameters</code></td>
+<td>—</td>
+<td>Use array arguments</td>
+</tr>
+<tr>
+<td><code>inout parameters</code></td>
+<td>—</td>
+<td>Use regular parameters</td>
+</tr>
+<tr>
+<td><code>autoclosure</code></td>
+<td>—</td>
+<td>Use regular closures</td>
+</tr>
+<tr>
+<td><code>escaping closures</code></td>
+<td>—</td>
+<td>Use regular closures</td>
 </tr>
 </tbody>
 </table>

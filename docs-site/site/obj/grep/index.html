@@ -390,7 +390,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../../CONTRIBUTING.md" class="md-tabs__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-tabs__link">
         
   
   
@@ -873,7 +873,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../CONTRIBUTING.md" class="md-nav__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-nav__link">
         
   
   
@@ -1999,7 +1999,7 @@
 
 
 <h1 id="unicode-grep-documentation">Unicode Grep Documentation</h1>
-<p><strong>See Also:</strong> <a href="obj/grep_python.md">Grapa Grep from Python (grep_python.md)</a></p>
+<p><strong>See Also:</strong> <a href="../grep_python/">Grapa Grep from Python (grep_python.md)</a></p>
 <h2 id="overview">Overview</h2>
 <p>The Unicode grep functionality in Grapa provides advanced text searching capabilities with full Unicode support, PCRE2-powered regular expressions, and comprehensive output options. It's designed to handle international text, emoji, and complex Unicode properties while maintaining high performance.</p>
 <h2 id="output-formatting-and-array-design">Output Formatting and Array Design</h2>
@@ -2303,6 +2303,11 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 </tr>
 </tbody>
 </table>
+<p><strong>Important: Count-Only Behavior</strong>
+- The count-only option (<code>c</code>) returns the count as a <strong>single item in an array</strong>, not as a number
+- Example: <code>"Hello world\nGoodbye world".grep("Hello", "c")</code> returns <code>["2"]</code> not <code>2</code>
+- To get the count as a number: <code>"Hello world\nGoodbye world".grep("Hello", "c")[0].int()</code>
+- This design maintains consistency with Grapa's array-based return values</p>
 <h2 id="additional-parameters">Additional Parameters</h2>
 <h3 id="unicode-normalization">Unicode Normalization</h3>
 <p>The <code>normalization</code> parameter controls Unicode normalization:</p>
@@ -2525,20 +2530,20 @@ last = result[0][&quot;last&quot;]    /* &quot;Doe&quot; */
 
 /* After context (2 lines after match) */
 input.grep(&quot;Line 2&quot;, &quot;A2&quot;)
-[&quot;Line 2\n&quot;, &quot;Line 3\n&quot;, &quot;Line 4\n&quot;]
+[&quot;Line 2&quot;, &quot;Line 3&quot;, &quot;Line 4&quot;]
 
 /* Before context (2 lines before match) */
 input.grep(&quot;Line 5&quot;, &quot;B2&quot;)
-[&quot;Line 3\n&quot;, &quot;Line 4\n&quot;, &quot;Line 5\n&quot;]
+[&quot;Line 3&quot;, &quot;Line 4&quot;, &quot;Line 5&quot;]
 
 /* Combined context (1 line before and after) */
 input.grep(&quot;Line 4&quot;, &quot;A1B1&quot;)
-[&quot;Line 3\n&quot;, &quot;Line 4\n&quot;, &quot;Line 5\n&quot;]
+[&quot;Line 3&quot;, &quot;Line 4&quot;, &quot;Line 5&quot;]
 
 /* Context merging - overlapping regions are automatically merged */
 input2 = &quot;a\nb\nc\nd\ne\nf&quot;;
 input2.grep(&quot;c|d&quot;, &quot;A1B1&quot;)
-[&quot;b\n&quot;, &quot;c\n&quot;, &quot;d\n&quot;, &quot;e\n&quot;]  /* Overlapping context merged into single block */
+[&quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;]  /* Overlapping context merged into single block */
 </code></pre></div>
 <p><strong>Context Merging</strong>: Overlapping context regions are automatically merged into single blocks, ensuring all relevant context is shown without duplication. This matches ripgrep's behavior for optimal readability and prevents redundant context lines.</p>
 <h3 id="context-separators">Context Separators</h3>
@@ -2546,7 +2551,7 @@ input2.grep(&quot;c|d&quot;, &quot;A1B1&quot;)
 <div class="highlight"><pre><span></span><code>/* Multiple matches with context - separated by -- lines */
 input = &quot;Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7&quot;;
 input.grep(&quot;Line 2|Line 6&quot;, &quot;A1B1&quot;)
-/* Result: [&quot;Line 1\n&quot;, &quot;Line 2\n&quot;, &quot;Line 3\n&quot;, &quot;--\n&quot;, &quot;Line 5\n&quot;, &quot;Line 6\n&quot;, &quot;Line 7&quot;] */
+/* Result: [&quot;Line 1&quot;, &quot;Line 2&quot;, &quot;Line 3&quot;, &quot;--&quot;, &quot;Line 5&quot;, &quot;Line 6&quot;, &quot;Line 7&quot;] */
 
 /* Context separators are not output in match-only mode */
 input.grep(&quot;Line 2|Line 6&quot;, &quot;oA1B1&quot;)
@@ -2554,7 +2559,7 @@ input.grep(&quot;Line 2|Line 6&quot;, &quot;oA1B1&quot;)
 
 /* JSON output uses --- as separator */
 input.grep(&quot;Line 2|Line 6&quot;, &quot;jA1B1&quot;)
-/* Result: [&quot;Line 1\n&quot;, &quot;Line 2\n&quot;, &quot;Line 3\n&quot;, &quot;---&quot;, &quot;Line 5\n&quot;, &quot;Line 6\n&quot;, &quot;Line 7&quot;] */
+/* Result: [&quot;Line 1&quot;, &quot;Line 2&quot;, &quot;Line 3&quot;, &quot;---&quot;, &quot;Line 5&quot;, &quot;Line 6&quot;, &quot;Line 7&quot;] */
 </code></pre></div>
 <p><strong>Note</strong>: Context separators are only added between non-overlapping context blocks. When context blocks overlap or are adjacent, no separator is needed.</p>
 <h3 id="advanced-regex-features_1">Advanced Regex Features</h3>
@@ -3108,7 +3113,7 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 </blockquote>
 <h2 id="test-coverage-and-regression-testing">Test Coverage and Regression Testing</h2>
 <blockquote>
-<p><strong>Update (2024-12):</strong> The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See <a href="../../docs/TESTING.md">Testing Documentation</a> for details.</p>
+<p><strong>Update (2024-12):</strong> The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See <a href="../../TESTING/">Testing Documentation</a> for details.</p>
 </blockquote>
 <h2 id="comprehensive-features-summary">Comprehensive Features Summary</h2>
 <blockquote>

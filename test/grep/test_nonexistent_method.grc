@@ -1,0 +1,33 @@
+/* Test Non-existent Method */
+/* Test to see what happens when calling a non-existent method */
+
+"=== NON-EXISTENT METHOD TEST ===\n".echo();
+
+/* Test 1: Call a non-existent method */
+"Test 1: Call Non-existent Method\n".echo();
+input = "test";
+("Input: " + input + "\n").echo();
+result = input.nonexistent_method();
+("Result: " + result + "\n").echo();
+("Result type: " + result.type() + "\n").echo();
+"---\n".echo();
+
+/* Test 2: Call case_fold method */
+"Test 2: Call case_fold Method\n".echo();
+input = "test";
+("Input: " + input + "\n").echo();
+result = input.case_fold();
+("Result: " + result + "\n").echo();
+("Result type: " + result.type() + "\n").echo();
+"---\n".echo();
+
+/* Test 3: Call upper method (should exist) */
+"Test 3: Call upper Method (should exist)\n".echo();
+input = "test";
+("Input: " + input + "\n").echo();
+result = input.upper();
+("Result: " + result + "\n").echo();
+("Result type: " + result.type() + "\n").echo();
+"---\n".echo();
+
+"=== NON-EXISTENT METHOD TEST SUMMARY ===\n".echo(); 

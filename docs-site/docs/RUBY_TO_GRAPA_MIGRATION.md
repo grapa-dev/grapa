@@ -63,14 +63,14 @@
 ### Main Table: Core Gaps (Tracked for Enhancement)
 | Ruby Feature                | Grapa Equivalent | Status/Note |
 |-----------------------------|------------------|-------------|
-| `alias :foo :bar`           | —                | **GAP**: Meta-programming not yet supported ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `undef :foo`                | —                | **GAP**: Meta-programming not yet supported ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `defined?(foo)`             | —                | **GAP**: Meta-programming not yet supported ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `__FILE__`                  | —                | **GAP**: No file macro ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `__LINE__`                  | —                | **GAP**: No line macro ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `yield`                     | —                | **GAP**: Block/yield not supported ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `block_given?`              | —                | **GAP**: Block/yield not supported ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `begin ... ensure ... end`  | —                | **GAP**: No ensure/finally ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
+| `alias :foo :bar`           | —                | **GAP**: Meta-programming not yet supported |
+| `undef :foo`                | —                | **GAP**: Meta-programming not yet supported |
+| `defined?(foo)`             | —                | **GAP**: Meta-programming not yet supported |
+| `__FILE__`                  | —                | **GAP**: No file macro |
+| `__LINE__`                  | —                | **GAP**: No line macro |
+| `yield`                     | —                | **GAP**: Block/yield not supported |
+| `block_given?`              | —                | **GAP**: Block/yield not supported |
+| `begin ... ensure ... end`  | —                | **GAP**: No ensure/finally |
 
 ### Nice to Have
 | Ruby Feature                | Grapa Equivalent | Note |

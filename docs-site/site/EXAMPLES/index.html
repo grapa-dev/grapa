@@ -396,7 +396,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../CONTRIBUTING.md" class="md-tabs__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-tabs__link">
         
   
   
@@ -1023,6 +1023,66 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dynamic-code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Code Execution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Code Execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-dynamic-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Dynamic Execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-function-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Function Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-based-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Template-Based Code Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiled-execution-for-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compiled Execution for Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-level-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Evaluation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#grep-pattern-matching" class="md-nav__link">
     <span class="md-ellipsis">
       Grep - Pattern Matching
@@ -1260,7 +1320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../CONTRIBUTING.md" class="md-nav__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-nav__link">
         
   
   
@@ -1429,6 +1489,66 @@
   <a href="#json-processing" class="md-nav__link">
     <span class="md-ellipsis">
       JSON Processing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-code-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Code Execution
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Code Execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-dynamic-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Dynamic Execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-function-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Function Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#template-based-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Template-Based Code Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiled-execution-for-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compiled Execution for Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-level-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Evaluation
     </span>
   </a>
   
@@ -1685,6 +1805,7 @@ See the <a href="../GRAPAPY_INTEGRATION/#quickstart-for-python-users">GrapaPy Qu
 <ul>
 <li><a href="#basic-examples">Basic Examples</a></li>
 <li><a href="#data-processing">Data Processing</a></li>
+<li><a href="#dynamic-code-execution">Dynamic Code Execution</a></li>
 <li><a href="#grep---pattern-matching">Pattern Matching (Grep)</a></li>
 </ul>
 <h2 id="basic-examples">Basic Examples</h2>
@@ -1771,6 +1892,67 @@ active_users = users.filter(op(user) { user.active == true; });
 names = active_users.map(op(user) { user.name; });
 names.echo();
 </code></pre></div>
+<h2 id="dynamic-code-execution">Dynamic Code Execution</h2>
+<p>Grapa's most powerful feature is its ability to compile and execute code at runtime. This enables advanced meta-programming patterns:</p>
+<h3 id="basic-dynamic-execution">Basic Dynamic Execution</h3>
+<div class="highlight"><pre><span></span><code>/* Direct string execution */
+op()(&quot;&#39;Hello, World!&#39;.echo();&quot;)();
+/* Output: Hello, World! */
+
+/* With parameters */
+func = op(&quot;name&quot;=0)(&quot;&#39;Hello, &#39; + name + &#39;!&#39;.echo();&quot;);
+func(&quot;Grapa&quot;);
+/* Output: Hello, Grapa! */
+</code></pre></div>
+<h3 id="dynamic-function-generation">Dynamic Function Generation</h3>
+<div class="highlight"><pre><span></span><code>/* Generate functions from configuration */
+operations = [&quot;add&quot;, &quot;sub&quot;, &quot;mul&quot;, &quot;div&quot;];
+funcs = {};
+i = 0;
+while (i &lt; operations.len()) {
+    op_name = operations.get(i);
+    code = &quot;a &quot; + op_name + &quot; b&quot;;
+    funcs[op_name] = op(&quot;a&quot;=0, &quot;b&quot;=0)(code);
+    i += 1;
+}
+
+/* Execute generated functions */
+funcs[&quot;add&quot;](10, 5).echo();  /* 15 */
+funcs[&quot;sub&quot;](10, 5).echo();  /* 5 */
+funcs[&quot;mul&quot;](10, 5).echo();  /* 50 */
+funcs[&quot;div&quot;](10, 5).echo();  /* 2 */
+</code></pre></div>
+<h3 id="template-based-code-generation">Template-Based Code Generation</h3>
+<div class="highlight"><pre><span></span><code>/* Create reusable templates */
+template = &quot;result = base * multiplier + offset; result&quot;;
+process = op(&quot;base&quot;=0, &quot;multiplier&quot;=1, &quot;offset&quot;=0)(template);
+process(10, 2, 5).echo();  /* 25 */
+
+/* Dynamic script evaluation */
+user_input = &quot;2 * (3 + 4)&quot;;
+result = $sys().eval(user_input);
+(&quot;Result: &quot; + result).echo();  /* Result: 14 */
+</code></pre></div>
+<h3 id="compiled-execution-for-performance">Compiled Execution for Performance</h3>
+<div class="highlight"><pre><span></span><code>/* Compile once, execute many times */
+compiled = $sys().compile(&quot;x = input * 2; y = x + offset; y&quot;);
+
+/* Execute with different parameters */
+result1 = $sys().eval(compiled, {&quot;input&quot;: 10, &quot;offset&quot;: 5});
+result1.echo();  /* 25 */
+
+result2 = $sys().eval(compiled, {&quot;input&quot;: 20, &quot;offset&quot;: 10});
+result2.echo();  /* 50 */
+</code></pre></div>
+<h3 id="system-level-evaluation">System-Level Evaluation</h3>
+<div class="highlight"><pre><span></span><code>/* Evaluate expressions with parameters */
+result = $sys().eval(&quot;x + y&quot;, {&quot;x&quot;: 5, &quot;y&quot;: 3});
+result.echo();  /* 8 */
+
+/* Complex expressions */
+result = $sys().eval(&quot;(a + b) * c&quot;, {&quot;a&quot;: 2, &quot;b&quot;: 3, &quot;c&quot;: 4});
+result.echo();  /* 20 */
+</code></pre></div>
 <h2 id="grep-pattern-matching">Grep - Pattern Matching</h2>
 <h3 id="basic-pattern-matching">Basic Pattern Matching</h3>
 <div class="highlight"><pre><span></span><code>&quot;Hello world&quot;.grep(&quot;world&quot;)
@@ -1783,6 +1965,19 @@ names.echo();
 <h3 id="case-insensitive-matching">Case-Insensitive Matching</h3>
 <div class="highlight"><pre><span></span><code>&quot;Hello WORLD&quot;.grep(&quot;world&quot;, &quot;i&quot;)
 [&quot;Hello WORLD&quot;]
+
+// Unicode case folding examples
+&quot;İstanbul ıstanbul&quot;.grep(&quot;istanbul&quot;, &quot;i&quot;)
+[&quot;İstanbul ıstanbul&quot;]  // Turkish I characters
+
+&quot;Straße&quot;.grep(&quot;strasse&quot;, &quot;i&quot;)
+[&quot;Straße&quot;]  // German sharp S
+
+&quot;γράμμα&quot;.grep(&quot;ΓΡΑΜΜΑ&quot;, &quot;i&quot;)
+[&quot;γράμμα&quot;]  // Greek final sigma
+
+&quot;café résumé naïve&quot;.grep(&quot;CAFE RESUME NAIVE&quot;, &quot;i&quot;)
+[&quot;café résumé naïve&quot;]  // Accented characters
 </code></pre></div>
 <h3 id="context-lines">Context Lines</h3>
 <div class="highlight"><pre><span></span><code>input = &quot;Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7&quot;;

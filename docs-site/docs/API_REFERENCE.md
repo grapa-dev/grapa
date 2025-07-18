@@ -9,7 +9,7 @@ tags:
 
 > **For High-Level Grapa Programmers:** This reference covers the functions and types you'll use most often when writing Grapa scripts and applications.
 
-> **For Advanced Users:** See [System Functions (Advanced)](SYSTEM_FUNCTIONS.md) for low-level functions, grammar development, and internal APIs.
+> **For Advanced Users:** See [System Functions (Advanced)](../maintainers/IMPLEMENTATION/SYSTEM_FUNCTIONS.md) for low-level functions, grammar development, and internal APIs.
 
 ## Table of Contents
 - [Core Language](#core-language)

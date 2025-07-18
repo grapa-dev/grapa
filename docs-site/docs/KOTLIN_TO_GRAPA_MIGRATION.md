@@ -18,14 +18,14 @@
 ### Main Table: Core Gaps (Tracked for Enhancement)
 | Kotlin Feature              | Grapa Equivalent | Status/Note |
 |-----------------------------|------------------|-------------|
-| `import kotlin.math.*`      | —                | **GAP**: No module/import system ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `@file:JvmName("Foo")`     | —                | **GAP**: No annotation/meta-programming ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `coroutineScope { ... }`    | —                | **GAP**: No coroutine/async support ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `finally`                   | —                | **GAP**: No finally/ensure ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `x!!` (non-null assert)     | —                | **GAP**: No null assertion ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `x?.foo()` (safe call)      | —                | **GAP**: No safe call operator ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `is` (type check)           | —                | **GAP**: No direct type check operator ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
-| `as` (type cast)            | —                | **GAP**: No direct type cast operator ([see roadmap](../maintainers/DEVELOPMENT/grapa_language_enhancement_roadmap.md)) |
+| `import kotlin.math.*`      | —                | **GAP**: No module/import system |
+| `@file:JvmName("Foo")`     | —                | **GAP**: No annotation/meta-programming |
+| `coroutineScope { ... }`    | —                | **GAP**: No coroutine/async support |
+| `finally`                   | —                | **GAP**: No finally/ensure |
+| `x!!` (non-null assert)     | —                | **GAP**: No null assertion |
+| `x?.foo()` (safe call)      | —                | **GAP**: No safe call operator |
+| `is` (type check)           | —                | **GAP**: No direct type check operator |
+| `as` (type cast)            | —                | **GAP**: No direct type cast operator |
 
 ### Nice to Have
 | Kotlin Feature              | Grapa Equivalent | Note |

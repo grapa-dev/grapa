@@ -396,7 +396,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../CONTRIBUTING.md" class="md-tabs__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-tabs__link">
         
   
   
@@ -1064,7 +1064,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../CONTRIBUTING.md" class="md-nav__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-nav__link">
         
   
   
@@ -1318,7 +1318,7 @@
 </tbody>
 </table>
 <ul>
-<li>For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key).</li>
+<li>For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).</li>
 <li>For $ARRAY, use bracket notation (e.g., arr[1]).</li>
 <li>Only $file and $TABLE support .get().</li>
 <li>This is based on direct testing in Grapa v0.0.39.</li>
@@ -1586,6 +1586,7 @@ value = obj.&quot;key&quot;;
 <p>These represent fundamental language features that genuinely cannot be accomplished in Grapa:</p>
 <ul>
 <li><strong>Ownership system</strong>: <code>let x = String::new();</code> - Grapa has automatic memory management</li>
+<li><strong>Static typing</strong>: <code>let x: i32</code> - Grapa uses dynamic typing by design (see note below)</li>
 <li><strong>Borrowing</strong>: <code>&amp;mut x</code> - Grapa has no borrowing, all values are owned</li>
 <li><strong>Lifetimes</strong>: <code>'a</code> - Grapa has automatic lifetime management</li>
 <li><strong>Unsafe blocks</strong>: <code>unsafe { }</code> - Grapa is memory-safe by design</li>
@@ -1596,6 +1597,15 @@ value = obj.&quot;key&quot;;
 <li><strong>Inline assembly</strong>: <code>asm!()</code> - No inline assembly</li>
 <li><strong>Global allocators</strong>: - No custom allocator support</li>
 </ul>
+<blockquote>
+<p><strong>Important Note on Dynamic Typing:</strong>
+Grapa's dynamic typing is a <strong>fundamental design choice</strong>, not a limitation. It enables Grapa's core strengths:
+- <strong>Dynamic code execution</strong> and meta-programming capabilities
+- <strong>Runtime type introspection</strong> with <code>.type()</code> method
+- <strong>Flexible data processing</strong> without compile-time type constraints
+- <strong>System integration</strong> that doesn't require type definitions</p>
+<p>Grapa provides type safety through runtime checking and rich type introspection, which is often more flexible than static typing for data processing and system integration tasks.</p>
+</blockquote>
 <h3 id="nice-to-have">Nice to Have</h3>
 <p>These would improve developer experience but aren't essential:</p>
 <ul>

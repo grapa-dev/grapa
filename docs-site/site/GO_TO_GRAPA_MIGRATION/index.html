@@ -396,7 +396,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../CONTRIBUTING.md" class="md-tabs__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-tabs__link">
         
   
   
@@ -1064,7 +1064,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../CONTRIBUTING.md" class="md-nav__link">
+      <a href="https://github.com/grapa-dev/grapa/blob/main/CONTRIBUTING.md" class="md-nav__link">
         
   
   
@@ -1318,7 +1318,7 @@
 </tbody>
 </table>
 <ul>
-<li>For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key).</li>
+<li>For $LIST and $OBJ, use bracket or dot notation (e.g., obj["key"], obj.key, obj[2]).</li>
 <li>For $ARRAY, use bracket notation (e.g., arr[1]).</li>
 <li>Only $file and $TABLE support .get().</li>
 <li>This is based on direct testing in Grapa v0.0.39.</li>
@@ -1620,7 +1620,7 @@ value = obj.&quot;key&quot;;
 <h3 id="core-gaps-true-language-gaps">Core Gaps (True Language Gaps)</h3>
 <p>These represent fundamental language features that genuinely cannot be accomplished in Grapa:</p>
 <ul>
-<li><strong>Static typing</strong>: <code>var x int</code> - Grapa has dynamic typing</li>
+<li><strong>Static typing</strong>: <code>var x int</code> - Grapa uses dynamic typing by design (see note below)</li>
 <li><strong>Pointers</strong>: <code>*int</code> - Grapa has no pointers, all values are owned</li>
 <li><strong>Channels</strong>: <code>chan int</code> - No channel-based concurrency</li>
 <li><strong>Goroutines</strong>: <code>go func()</code> - No goroutine-based concurrency</li>
@@ -1635,24 +1635,102 @@ value = obj.&quot;key&quot;;
 <li><strong>Assembly</strong>: - No assembly support</li>
 <li><strong>Reflection</strong>: <code>reflect</code> - Limited reflection capabilities</li>
 </ul>
+<blockquote>
+<p><strong>Important Note on Dynamic Typing:</strong>
+Grapa's dynamic typing is a <strong>fundamental design choice</strong>, not a limitation. It enables Grapa's core strengths:
+- <strong>Dynamic code execution</strong> and meta-programming capabilities
+- <strong>Runtime type introspection</strong> with <code>.type()</code> method
+- <strong>Flexible data processing</strong> without compile-time type constraints
+- <strong>System integration</strong> that doesn't require type definitions</p>
+<p>Grapa provides type safety through runtime checking and rich type introspection, which is often more flexible than static typing for data processing and system integration tasks.</p>
+<p><strong>Important Note on Class System:</strong>
+Grapa's class system is <strong>superior</strong> to Go's structs, providing full object-oriented programming capabilities:
+- <strong>Classes with methods</strong>: Define data structures with attached functions
+- <strong>Inheritance</strong>: Create class hierarchies with <code>class (ParentClass)</code>
+- <strong>Polymorphism</strong>: Method overriding and dynamic dispatch
+- <strong>Constructors</strong>: Custom initialization functions
+- <strong>Runtime modification</strong>: Add methods and properties dynamically
+- <strong>Type safety</strong>: Runtime type checking and introspection</p>
+<p><strong>Important Note on Switch Statements:</strong>
+Grapa <strong>does have switch statements</strong> that can be used for type switching:
+<div class="highlight"><pre><span></span><code>/* Type switching with switch statement */
+switch (x.type()) {
+    case $STR: &quot;string&quot;.echo();
+    case $INT: &quot;int&quot;.echo();
+    case $ARRAY: &quot;array&quot;.echo();
+    default: &quot;unknown type&quot;.echo();
+};
+
+/* Boolean switching (alternative to if/else chains) */
+switch(true) {
+    case (x &gt; 10): &quot;large&quot;.echo();
+    case (x &gt; 5): &quot;medium&quot;.echo();
+    default: &quot;small&quot;.echo();
+};
+</code></pre></div></p>
+<p><strong>Important Note on Class System:</strong>
+Grapa's class system is <strong>comprehensive</strong> and provides all OOP features:
+- <strong>Methods</strong>: Classes can have methods attached to them
+- <strong>Method sets</strong>: Classes have method sets for interface-like behavior
+- <strong>Inheritance</strong>: Use <code>class (ParentClass)</code> for inheritance hierarchies
+- <strong>Polymorphism</strong>: Method overriding and dynamic dispatch
+- <strong>Embedding</strong>: Inheritance provides embedding-like functionality
+- <strong>Composition</strong>: Object composition is also supported</p>
+<div class="highlight"><pre><span></span><code>/* Example: Class with methods and inheritance */
+Animal = class {
+    name = &quot;&quot;;
+    speak = op() { &quot;Some sound&quot;.echo(); };
+};
+
+Dog = class (Animal) {
+    /* Method override */
+    speak = op() { &quot;Woof!&quot;.echo(); };
+    /* New method */
+    fetch = op() { &quot;Fetching...&quot;.echo(); };
+};
+
+myDog = obj Dog;
+myDog.name = &quot;Rex&quot;;
+myDog.speak();  /* Outputs: Woof! */
+myDog.fetch();  /* Outputs: Fetching... */
+</code></pre></div>
+</blockquote>
 <h3 id="nice-to-have">Nice to Have</h3>
 <p>These would improve developer experience but aren't essential:</p>
 <ul>
 <li><strong>Interfaces</strong>: <code>type MyInterface interface</code> - Use object composition and duck typing</li>
-<li><strong>Structs</strong>: <code>type MyStruct struct</code> - Use object constructors</li>
-<li><strong>Methods</strong>: <code>func (r Receiver) Method()</code> - Use regular functions</li>
+<li><strong>Structs</strong>: <code>type MyStruct struct</code> - Grapa has superior class system<blockquote>
+<p><strong>Note:</strong> Grapa's class system provides full OOP capabilities including inheritance, polymorphism, methods, and runtime modification. See the "Important Note on Class System" section above for details and examples.</p>
+</blockquote>
+</li>
+<li><strong>Methods</strong>: <code>func (r Receiver) Method()</code> - Grapa classes have methods<blockquote>
+<p><strong>Note:</strong> Grapa classes support methods with full OOP capabilities. See the "Important Note on Class System" section above for details and examples.</p>
+</blockquote>
+</li>
 <li><strong>Type assertions</strong>: <code>x.(string)</code> - Use <code>.type()</code> checks</li>
-<li><strong>Type switches</strong>: <code>switch x.(type)</code> - Use <code>if/else</code> chains with <code>.type()</code></li>
+<li><strong>Type switches</strong>: <code>switch x.(type)</code> - Use <code>switch</code> with <code>.type()</code><blockquote>
+<p><strong>Note:</strong> Grapa supports type switching using <code>switch</code> statements with <code>.type()</code> method. See the "Important Note on Switch Statements" section above for examples.</p>
+</blockquote>
+</li>
 <li><strong>Generics</strong>: <code>func F[T any](x T)</code> - Grapa has dynamic typing</li>
 <li><strong>Type constraints</strong>: <code>T comparable</code> - Use runtime checks</li>
 <li><strong>Type sets</strong>: <code>~int</code> - Use regular types</li>
 <li><strong>Union types</strong>: <code>int | string</code> - Use dynamic typing</li>
 <li><strong>Type inference</strong>: - Use explicit types</li>
-<li><strong>Method sets</strong>: - Use regular methods</li>
+<li><strong>Method sets</strong>: - Grapa classes have method sets<blockquote>
+<p><strong>Note:</strong> Grapa classes support method sets for interface-like behavior. See the "Important Note on Class System" section above for details.</p>
+</blockquote>
+</li>
 <li><strong>Interface satisfaction</strong>: - Use duck typing</li>
-<li><strong>Embedding</strong>: - Use object composition</li>
+<li><strong>Embedding</strong>: - Grapa classes support inheritance<blockquote>
+<p><strong>Note:</strong> Grapa classes support inheritance which provides embedding-like functionality. See the "Important Note on Class System" section above for details.</p>
+</blockquote>
+</li>
 <li><strong>Composition</strong>: - Use object composition</li>
-<li><strong>Inheritance</strong>: - Use object composition</li>
+<li><strong>Inheritance</strong>: - Grapa classes support inheritance<blockquote>
+<p><strong>Note:</strong> Grapa classes support full inheritance hierarchies. See the "Important Note on Class System" section above for details and examples.</p>
+</blockquote>
+</li>
 </ul>
 <h3 id="rarely-used">Rarely Used</h3>
 <p>These are advanced features that most developers won't miss:</p>

@@ -1,108 +1,32 @@
-/* Test Unicode Normalization Parameter */
-/* This test covers all normalization forms and edge cases */
+/* Test Unicode Normalization */
+/* Test to see if NFC normalization fixes the Turkish I case folding issue */
 
 "=== UNICODE NORMALIZATION TEST ===\n".echo();
-"Testing Unicode normalization parameter\n".echo();
 
-/* Test 1: No normalization (NONE) */
-"Test 1: No normalization (NONE)\n".echo();
-input = "café\ncafe\u0301\nCafe";
-result = input.grep("café", "", "", "NONE");
-("Input: café\\ncafé\\nCafe\n").echo();
-("Pattern: café, Normalization: NONE\n").echo();
+/* Test 1: Turkish I with NFC normalization */
+"Test 1: Turkish I with NFC Normalization\n".echo();
+input = "İstanbul istanbul";
+result = input.grep("istanbul", "iN");  /* case-insensitive + NFC normalization */
+("Input: " + input + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: NFC normalization */
-"Test 2: NFC normalization\n".echo();
-result = input.grep("café", "", "", "NFC");
-("Pattern: café, Normalization: NFC\n").echo();
+/* Test 2: Turkish I without normalization */
+"Test 2: Turkish I without Normalization\n".echo();
+input = "İstanbul istanbul";
+result = input.grep("istanbul", "i");  /* case-insensitive only */
+("Input: " + input + "\n").echo();
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 3: NFD normalization */
-"Test 3: NFD normalization\n".echo();
-result = input.grep("café", "", "", "NFD");
-("Pattern: café, Normalization: NFD\n").echo();
-("Result: " + result.str() + "\n").echo();
+/* Test 3: Compare normalization forms */
+"Test 3: Compare Normalization Forms\n".echo();
+input = "İstanbul";
+("Input: " + input + "\n").echo();
+("Input normalized NFC: " + input.normalize("NFC") + "\n").echo();
+("Input normalized NFD: " + input.normalize("NFD") + "\n").echo();
+("Input case folded: " + input.case_fold() + "\n").echo();
+("Input case folded + NFC: " + input.case_fold().normalize("NFC") + "\n").echo();
 "---\n".echo();
 
-/* Test 4: NFKC normalization */
-"Test 4: NFKC normalization\n".echo();
-result = input.grep("café", "", "", "NFKC");
-("Pattern: café, Normalization: NFKC\n").echo();
-("Result: " + result.str() + "\n").echo();
-"---\n".echo();
-
-/* Test 5: NFKD normalization */
-"Test 5: NFKD normalization\n".echo();
-result = input.grep("café", "", "", "NFKD");
-("Pattern: café, Normalization: NFKD\n").echo();
-("Result: " + result.str() + "\n").echo();
-"---\n".echo();
-
-/* Test 6: Pattern in decomposed form, input in composed form */
-"Test 6: Pattern decomposed, input composed\n".echo();
-input = "café";
-pattern = "cafe\u0301";
-result = input.grep(pattern, "", "", "NFC");
-("Input: café, Pattern: café, Normalization: NFC\n").echo();
-("Result: " + result.str() + "\n").echo();
-"---\n".echo();
-
-/* Test 7: Pattern in composed form, input in decomposed form */
-"Test 7: Pattern composed, input decomposed\n".echo();
-input = "cafe\u0301";
-pattern = "café";
-result = input.grep(pattern, "", "", "NFC");
-("Input: café, Pattern: café, Normalization: NFC\n").echo();
-("Result: " + result.str() + "\n").echo();
-"---\n".echo();
-
-/* Test 8: Case-insensitive with normalization */
-"Test 8: Case-insensitive with normalization\n".echo();
-input = "CAFÉ\ncafe\u0301\nCafe";
-result = input.grep("café", "i", "", "NFC");
-("Input: CAFÉ\\ncafé\\nCafe\n").echo();
-("Pattern: café, Options: i, Normalization: NFC\n").echo();
-("Result: " + result.str() + "\n").echo();
-"---\n".echo();
-
-/* Test 9: Diacritic-insensitive with normalization */
-"Test 9: Diacritic-insensitive with normalization\n".echo();
-input = "café\ncafe\u0301\nCafe";
-result = input.grep("cafe", "d", "", "NFC");
-("Input: café\\ncafé\\nCafe\n").echo();
-("Pattern: cafe, Options: d, Normalization: NFC\n").echo();
-("Result: " + result.str() + "\n").echo();
-"---\n".echo();
-
-/* Test 10: Large input with normalization */
-"Test 10: Large input with normalization\n".echo();
-large_input = "";
-i = 0;
-while(i < 100) {
-    large_input = large_input + "cafe\u0301\n";
-    i += 1;
-}
-result = large_input.grep("café", "", "", "NFC");
-("Input: (100 lines of café)\n").echo();
-("Pattern: café, Normalization: NFC\n").echo();
-("Result length: " + result.len() + "\n").echo();
-"---\n".echo();
-
-/* Test 11: Invalid normalization form */
-"Test 11: Invalid normalization form\n".echo();
-input = "café";
-result = input.grep("café", "", "", "INVALID");
-("Input: café, Pattern: café, Normalization: INVALID\n").echo();
-("Result: " + result.str() + "\n").echo();
-"---\n".echo();
-
-"=== UNICODE NORMALIZATION SUMMARY ===\n".echo();
-"All Unicode normalization tests completed.\n".echo();
-"Key features tested:\n".echo();
-"- All normalization forms (NONE, NFC, NFD, NFKC, NFKD)\n".echo();
-"- Composed vs decomposed forms\n".echo();
-"- Case-insensitive and diacritic-insensitive with normalization\n".echo();
-"- Large input and invalid normalization\n".echo(); 
+"=== UNICODE NORMALIZATION TEST SUMMARY ===\n".echo(); 

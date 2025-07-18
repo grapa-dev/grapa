@@ -354,6 +354,33 @@ if (case_matches.len() == 2) {
 } else {
     "Case-insensitive grep test failed".echo();
 };
+
+/* Test Unicode case folding */
+turkish_text = "İstanbul ıstanbul";
+turkish_matches = turkish_text.grep("istanbul", "i");
+if (turkish_matches.len() == 1) {
+    "Turkish I case folding test passed".echo();
+} else {
+    "Turkish I case folding test failed".echo();
+};
+
+/* Test German sharp S case folding */
+german_text = "Straße";
+german_matches = german_text.grep("strasse", "i");
+if (german_matches.len() == 1) {
+    "German sharp S case folding test passed".echo();
+} else {
+    "German sharp S case folding test failed".echo();
+};
+
+/* Test Greek final sigma case folding */
+greek_text = "γράμμα";
+greek_matches = greek_text.grep("ΓΡΑΜΜΑ", "i");
+if (greek_matches.len() == 1) {
+    "Greek final sigma case folding test passed".echo();
+} else {
+    "Greek final sigma case folding test failed".echo();
+};
 ```
 
 ### Testing Complex Patterns

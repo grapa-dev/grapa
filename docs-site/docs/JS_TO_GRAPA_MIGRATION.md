@@ -513,7 +513,7 @@ These are advanced features that most developers won't miss:
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, async/await patterns are replaced by Grapa's built-in parallel processing with `.map()` and `.filter()`.
 
 ## See Also
-- [Migration Tips for JavaScript Users](JS_USE_CASES.md#migration-tips-for-javascript-users)
+- [Migration Tips for JavaScript Users](USE_CASES.md#javascript-use-cases)
 - [Quickstart for JavaScript Users](GRAPAPY_INTEGRATION.md#quickstart-for-javascript-users)
 
 ---
