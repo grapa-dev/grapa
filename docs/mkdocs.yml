@@ -66,9 +66,9 @@ nav:
   - Home: index.md
   - Getting Started: GETTING_STARTED.md
   - CLI Quickstart: CLI_QUICKSTART.md
-  - Python Quickstart: PYTHON_INTEGRATION.md
+  - Python Quickstart: python_integration.md
   - API Reference: API_REFERENCE.md
-  - Grep Documentation: grep.md
+  - Grep Documentation: GREP.md
   - Migration Guides:
       - Python: migrations/PYTHON_TO_GRAPA_MIGRATION.md
       - JavaScript: migrations/JS_TO_GRAPA_MIGRATION.md
