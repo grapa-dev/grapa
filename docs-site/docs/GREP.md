@@ -1,8 +1,5 @@
 # Grapa Grep Documentation
 
-UNIQUE_SEARCH_TEST_WORD_XYZ123
-
-SEARCH_TEST_WORD
 
 > **Tip:** Use the tabs below to switch between CLI and Python examples throughout this documentation.
 
