@@ -145,4 +145,27 @@ git reset --hard <previous-commit-hash>
 git push origin gh-pages --force
 ```
 
+## Documentation Cleanup Notes
+
+### Legacy Directory Cleanup (July 19, 2024)
+
+**Action**: Deleted `docs-site/` directory  
+**Reason**: Redundant legacy documentation directory
+
+**Analysis Performed**:
+- `docs-site/` contained only 2 outdated markdown files (`GREP.md`, `python_integration.md`)
+- `docs/` contains 84 complete, up-to-date markdown files
+- `docs-site/` had no MkDocs configuration or build system
+- Content in `docs-site/` was older versions of files that exist in `docs/`
+
+**Verification**:
+- ✅ All content preserved in `docs/` with newer versions
+- ✅ No unique files lost
+- ✅ No configuration or build artifacts affected
+- ✅ `docs/` remains the single source of truth for documentation
+
+**Impact**: None - `docs-site/` was unused legacy directory
+
+---
+
 ## Examples Directory Management 
