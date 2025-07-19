@@ -57,6 +57,56 @@ std::string build_json_array(const std::vector<std::string>& items, bool already
     return json_array;
 }
 
+// Helper: Build proper JSON objects with match, offset, and line fields
+std::string build_json_objects_array(const std::vector<std::string>& matches, const std::vector<MatchPosition>& positions, const std::string& input, const std::string& line_delim) {
+    std::string json_array = "[";
+    
+    // Split input into segments to calculate line numbers
+    std::vector<std::string> segments;
+    if (!line_delim.empty()) {
+        segments = split_by_delimiter(input, line_delim);
+    } else {
+        // Use newlines for default delimiter
+        size_t start = 0, end;
+        while ((end = input.find('\n', start)) != std::string::npos) {
+            segments.push_back(input.substr(start, end - start));
+            start = end + 1;
+        }
+        if (start < input.size()) {
+            segments.push_back(input.substr(start));
+        }
+    }
+    
+    for (size_t i = 0; i < matches.size(); ++i) {
+        // Calculate line number
+        size_t line_number = 1;
+        if (i < positions.size() && positions[i].offset != static_cast<size_t>(-1)) {
+            size_t current_offset = 0;
+            for (size_t seg_num = 0; seg_num < segments.size(); ++seg_num) {
+                size_t segment_length = segments[seg_num].length() + (line_delim.empty() ? 1 : line_delim.length());
+                if (positions[i].offset >= current_offset && positions[i].offset < current_offset + segment_length) {
+                    line_number = seg_num + 1; // 1-based line numbers
+                    break;
+                }
+                current_offset += segment_length;
+            }
+        }
+        
+        // Build JSON object
+        std::string json_obj = "{";
+        json_obj += "\"match\":\"" + matches[i] + "\",";
+        json_obj += "\"offset\":" + std::to_string(i < positions.size() ? positions[i].offset : 0) + ",";
+        json_obj += "\"line\":" + std::to_string(line_number);
+        json_obj += "}";
+        
+        json_array += json_obj;
+        if (i + 1 < matches.size()) json_array += ",";
+    }
+    
+    json_array += "]";
+    return json_array;
+}
+
 // Helper: Split string by custom delimiter (supports multi-character delimiters)
 std::vector<std::string> split_by_delimiter(const std::string& input, const std::string& delimiter) {
     std::vector<std::string> result;
@@ -1300,12 +1350,12 @@ std::string extract_grapheme_cluster(const std::string& input, size_t offset) {
     // If the current codepoint is a newline, return it as its own cluster
     if (cp == '\n') return input.substr(start, char_len);
     end = start + char_len;
-    // Extend to full grapheme cluster, but stop at newline
+    // Extend to full grapheme cluster, including newlines as separate clusters
     while (end < input_len) {
         utf8proc_int32_t next_cp;
         utf8proc_ssize_t next_len = utf8proc_iterate(reinterpret_cast<const utf8proc_uint8_t*>(input.c_str()) + end, input_len - end, &next_cp);
         if (next_len <= 0) break;
-        // If the next codepoint is a newline, stop BEFORE including it
+        // If the next codepoint is a newline, stop here (newline will be its own cluster)
         if (next_cp == '\n') break;
         if (utf8proc_grapheme_break(cp, next_cp) != 0) break;
         end += next_len;

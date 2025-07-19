@@ -235,17 +235,16 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     if (match_only && effective_pattern == "\\X") {
         std::vector<std::string> graphemes;
         
-        // Split input by delimiter and process each line separately to exclude delimiters
-        std::vector<std::string> lines = split_by_delimiter(working_input, line_delim);
+        // Process the entire input as one string to include newlines as separate grapheme clusters
+        // Use the original input with delimiters to preserve newlines
+        std::string full_input = original_input_with_delimiters;
         
-        for (const auto& line : lines) {
-            size_t offset = 0;
-            while (offset < line.size()) {
-                std::string cluster = extract_grapheme_cluster(line, offset);
-                if (cluster.empty()) break;
-                graphemes.push_back(GrapaUnicode::UnicodeRegex::get_normalized_text(cluster, false, GrapaUnicode::NormalizationForm::NFC));
-                offset += cluster.size();
-            }
+        size_t offset = 0;
+        while (offset < full_input.size()) {
+            std::string cluster = extract_grapheme_cluster(full_input, offset);
+            if (cluster.empty()) break;
+            graphemes.push_back(GrapaUnicode::UnicodeRegex::get_normalized_text(cluster, false, GrapaUnicode::NormalizationForm::NFC));
+            offset += cluster.size();
         }
         
         if (json_output) {
@@ -359,7 +358,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                     #endif // DEBUG_END
                     std::vector<std::string> full_result = {original_input};
                     if (json_output) {
-                        return {build_json_array(full_result)};
+                        // Create a single JSON object for the full input
+                        std::string json_obj = "[{\"match\":\"" + original_input + "\",\"offset\":0,\"line\":1}]";
+                        return {json_obj};
                     }
                     return full_result;
                 }
@@ -412,7 +413,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                 #endif // DEBUG_END
                 std::vector<std::string> full_result = {original_input};
                 if (json_output) {
-                    return {build_json_array(full_result)};
+                    // Create a single JSON object for the full input
+                    std::string json_obj = "[{\"match\":\"" + original_input + "\",\"offset\":0,\"line\":1}]";
+                    return {json_obj};
                 }
                 return full_result;
             } else {
@@ -464,7 +467,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                 #endif // DEBUG_END
                 std::vector<std::string> full_result = {original_input_with_delimiters};
                 if (json_output) {
-                    return {build_json_array(full_result)};
+                    // Create a single JSON object for the full input
+                    std::string json_obj = "[{\"match\":\"" + original_input_with_delimiters + "\",\"offset\":0,\"line\":1}]";
+                    return {json_obj};
                 }
                 return full_result;
             }
@@ -536,7 +541,14 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
                     #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
                     printf("DEBUG: Lookaround assertions - returning full lines JSON\n");
                     #endif // DEBUG_END
-                    return {build_json_array(full_lines)};
+                    // Create JSON objects for the full lines
+                    std::string json_array = "[";
+                    for (size_t i = 0; i < full_lines.size(); ++i) {
+                        json_array += "{\"match\":\"" + full_lines[i] + "\",\"offset\":0,\"line\":" + std::to_string(i + 1) + "}";
+                        if (i + 1 < full_lines.size()) json_array += ",";
+                    }
+                    json_array += "]";
+                    return {json_array};
                 }
                 #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
                 printf("DEBUG: Lookaround assertions - returning full lines array\n");
@@ -894,7 +906,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             #endif // DEBUG_END
             
             if (json_output) {
-                return {build_json_array(full_segments)};
+                return {build_json_objects_array(full_segments, match_positions, working_input, line_delim)};
             }
             return full_segments;
         } else if (has_lookaround || has_unicode_script || has_conditional) {
@@ -914,7 +926,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             #endif // DEBUG_END
             
             if (json_output) {
-                return {build_json_array(matched_portions)};
+                return {build_json_objects_array(matched_portions, match_positions, working_input, line_delim)};
             }
             return matched_portions;
         } else {
@@ -934,26 +946,113 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             #endif // DEBUG_END
             
             if (json_output) {
-                return {build_json_array(full_segments)};
+                return {build_json_objects_array(full_segments, match_positions, working_input, line_delim)};
             }
             return full_segments;
         }
     }
     
     // Final return for non-match-only mode
+    
+    // Handle line numbers option
+    bool line_numbers = (options.find('n') != std::string::npos);
+    if (line_numbers && !extracted_matches.empty()) {
+        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+        printf("DEBUG: Processing line numbers option\n");
+        #endif // DEBUG_END
+        
+        // Split input into segments to calculate line numbers
+        std::vector<std::string> segments;
+        if (!line_delim.empty()) {
+            segments = split_by_delimiter(working_input, line_delim);
+        } else {
+            // Use newlines for default delimiter
+            size_t start = 0, end;
+            while ((end = working_input.find('\n', start)) != std::string::npos) {
+                segments.push_back(working_input.substr(start, end - start));
+                start = end + 1;
+            }
+            if (start < working_input.size()) {
+                segments.push_back(working_input.substr(start));
+            }
+        }
+        
+        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+        printf("DEBUG: Split into %zu segments for line number calculation\n", segments.size());
+        #endif // DEBUG_END
+        
+        // Find which segments contain matches and add line numbers
+        std::vector<std::string> numbered_matches;
+        
+        // For match-only mode, we need to use the original match positions to determine line numbers
+        if (match_only) {
+            for (size_t i = 0; i < match_positions.size() && i < extracted_matches.size(); ++i) {
+                const auto& pos = match_positions[i];
+                if (pos.offset != static_cast<size_t>(-1)) {
+                    // Find which segment this match position corresponds to
+                    size_t line_number = 1;
+                    size_t current_offset = 0;
+                    
+                    for (size_t seg_num = 0; seg_num < segments.size(); ++seg_num) {
+                        size_t segment_length = segments[seg_num].length() + (line_delim.empty() ? 1 : line_delim.length());
+                        
+                        if (pos.offset >= current_offset && pos.offset < current_offset + segment_length) {
+                            line_number = seg_num + 1; // 1-based line numbers
+                            break;
+                        }
+                        current_offset += segment_length;
+                    }
+                    
+                    std::string numbered_match = std::to_string(line_number) + ":" + extracted_matches[i];
+                    numbered_matches.push_back(numbered_match);
+                    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                    printf("DEBUG: Added line number %zu for match-only: '%s'\n", line_number, numbered_match.c_str());
+                    #endif // DEBUG_END
+                }
+            }
+        } else {
+            // For non-match-only mode, find which segment each match corresponds to
+            for (const auto& match : extracted_matches) {
+                // Find which segment this match corresponds to
+                size_t line_number = 1;
+                bool found = false;
+                
+                for (size_t seg_num = 0; seg_num < segments.size(); ++seg_num) {
+                    if (segments[seg_num] == match) {
+                        line_number = seg_num + 1; // 1-based line numbers
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (found) {
+                    std::string numbered_match = std::to_string(line_number) + ":" + match;
+                    numbered_matches.push_back(numbered_match);
+                    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                    printf("DEBUG: Added line number %zu: '%s'\n", line_number, numbered_match.c_str());
+                    #endif // DEBUG_END
+                } else {
+                    // If we can't find the exact match, just add the original
+                    numbered_matches.push_back(match);
+                    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                    printf("DEBUG: Could not find line number for match: '%s'\n", match.c_str());
+                    #endif // DEBUG_END
+                }
+            }
+        }
+        
+        extracted_matches = numbered_matches;
+    }
+    
     if (json_output) {
         if (extracted_matches.empty()) {
             return {"[]"};
-        }
-        bool already_json_objects = false;
-        if (!extracted_matches.empty() && extracted_matches[0].find("\"match\"") != std::string::npos) {
-            already_json_objects = true;
         }
         #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
         printf("DEBUG: Final return, extracted_matches.size(): %zu\n", extracted_matches.size());
         printf("DEBUG: ===== FUNCTION EXITING =====\n");
         #endif // DEBUG_END
-        return {build_json_array(extracted_matches, already_json_objects)};
+        return {build_json_objects_array(extracted_matches, match_positions, working_input, line_delim)};
     }
     #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
     printf("DEBUG: ===== FUNCTION EXITING =====\n");

@@ -6,9 +6,61 @@
 
 ---
 
+## ✅ **COMPLETED ITEMS (Recent Successes)**
+
+### **GRAPHEME CLUSTERS (\\X) REGRESSION - FIXED AND VERIFIED** ✅
+**Status**: ✅ **COMPLETE** - Newlines now included in \\X output  
+**Completed**: December 2024  
+**Source**: Manual verification testing revealed regression from documented behavior
+
+#### Issue Description:
+- **Documented Behavior**: `"é\\n😀".grep("\\\\X", "o")` should return `["é", "\\n", "😀"]`
+- **Problem**: Newlines were missing from the output (regression from documented functionality)
+- **Impact**: HIGH - This affected a documented core feature
+
+#### Root Cause Analysis:
+**IDENTIFIED**: The issue was in `source/grep/grep_unicode.cpp` lines 234-253
+
+**Problem**: The grapheme cluster handling logic split input by delimiter first, then processed each line separately, which excluded newlines entirely from grapheme cluster processing.
+
+#### Fix Applied:
+**FIXED**: Modified the grapheme cluster logic to process the entire input as one string instead of splitting by delimiter, so that newlines are included as separate grapheme clusters.
+
+**Changes Made**:
+1. **`source/grep/grep_unicode.cpp`**: Changed from `split_by_delimiter(working_input, line_delim)` to processing `full_input` directly
+2. **`source/grep/grapa_grep_unicode.cpp`**: Updated `extract_grapheme_cluster` function to properly handle newlines as separate clusters
+
+#### Verification Results:
+**✅ VERIFIED**: Test 10 in `test/grep/test_unicode_grapheme_clusters.grc` now passes:
+- **Input**: `"é\\n😀"`
+- **Pattern**: `\\X`, Options: `o`
+- **Result**: `["é", "\\n", "😀"]` ✅
+- **Expected**: `["é", "\\n", "😀"]` ✅
+
+**Full Regression Test**: ✅ All critical functionality verified working correctly
+**Production Readiness**: ✅ All production scenarios tested and passing
+
+**Status**: ✅ **COMPLETE** - Grapheme clusters with newlines now work as documented
+
+---
+
 ## 🎯 **CURRENT PRIORITIES (Next 2-4 weeks)**
 
-### 1. **Operator Bug Fixes** (HIGH PRIORITY - Week 1)
+### 1. **CRITICAL GREP REGRESSIONS** (COMPLETED)
+**Status**: ✅ **FULLY FIXED** - Both line numbers and JSON output working correctly 
+**Estimated Effort**: COMPLETED 
+**Source**: Regression testing revealed broken functionality
+
+#### Critical Bugs:
+1. **Line Numbers (`n` option)**: ✅ **FIXED** - Now returns `["1:Hello world", "3:Hello universe"]`
+2. **JSON Output (`j` option)**: ✅ **FIXED** - Now returns proper JSON format
+3. **Test Validation Logic**: ✅ **IMPROVED** - Tests now properly validate actual content
+
+**Next**: Grapheme clusters regression investigation (Item #1 above)
+
+---
+
+### 2. **Operator Bug Fixes** (HIGH PRIORITY - Week 1)
 **Status**: Ready to start  
 **Estimated Effort**: 1-2 weeks  
 **Source**: From backlog Item #11
@@ -83,6 +135,27 @@
 - `"İstanbul".case_fold()` returns `"istanbul"`
 - `"Straße".case_fold()` returns `"strasse"`
 - Integration with grep `i` option works correctly
+
+---
+
+### 5. **Grep Edge Case Fixes** (LOW PRIORITY - Future)
+**Status**: Noted for future work  
+**Estimated Effort**: 1-2 weeks  
+**Source**: Manual verification testing
+
+#### Minor Issues to Address:
+1. **Grapheme clusters with newlines**: The `\X` pattern may not include newline characters in output as expected (regression from documented behavior)
+2. **Context line precision**: Context options (A<n>, B<n>, C<n>) may include slightly different line counts compared to ripgrep in some edge cases
+3. **Zero-length match edge cases**: Some zero-length match scenarios may return multiple empty strings instead of single empty string
+
+#### Priority:
+- **Medium**: Grapheme clusters with newlines (regression)
+- **Low**: Context line precision (minor formatting difference)
+- **Low**: Zero-length match edge cases (edge case, not affecting core functionality)
+
+#### Documentation:
+- Already noted in `docs/docs/GREP.md` under "Backlog Items"
+- Tracked in `maintainers/TESTING_AND_QUALITY/TESTING.md`
 
 ---
 

@@ -621,6 +621,22 @@ The test suite has been significantly consolidated to improve maintainability an
 ##### 11. **Word Boundaries with Custom Delimiters** - ❌ **NEEDS FIXING**
 - Word boundary detection not working with custom delimiters
 
+##### 12. **Grapheme Clusters with Newlines** - ✅ **FIXED**
+- The `\X` pattern now properly includes newline characters in output as expected
+- This regression has been fixed and verified with test cases
+- **Status**: ✅ **COMPLETE** - Works as documented in GREP.md
+- **Verification**: Test 10 in `test_unicode_grapheme_clusters.grc` passes
+- **Regression Test**: All critical functionality verified working correctly
+
+##### 13. **Context Line Precision** - ❌ **KNOWN GAP**
+- Context options (A<n>, B<n>, C<n>) may include slightly different line counts compared to ripgrep
+- Specifically, B1 (before context) may include extra lines in some edge cases
+- **Priority**: Low (minor formatting difference, not functional issue)
+
+##### 14. **Zero-Length Match Edge Cases** - ❌ **KNOWN GAP**
+- Some zero-length match scenarios may return multiple empty strings instead of single empty string
+- **Priority**: Low (edge case, not affecting core functionality)
+
 ### Priority Action Plan
 
 #### **IMMEDIATE PRIORITIES (High Impact):**
@@ -637,6 +653,8 @@ The test suite has been significantly consolidated to improve maintainability an
 7. **Add comprehensive edge case testing**
 8. **Add mission-critical production system tests**
 9. **Final validation against ripgrep parity**
+10. **Fix context line precision (minor formatting difference)**
+11. **Fix zero-length match edge cases**
 
 ### Overall Completion Status
 

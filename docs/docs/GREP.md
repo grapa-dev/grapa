@@ -1087,6 +1087,7 @@ age = result[0]["age"]           // "30"
 - **Unicode boundary precision**: In complex Unicode scenarios with normalization/case-insensitive matching, match boundaries may differ slightly from ripgrep due to fundamental Unicode mapping complexities
 - **File system features**: Not implemented (file searching, directory traversal, etc.)
 - **Smart case behavior**: Grapa uses explicit "i" flag rather than ripgrep's automatic smart-case behavior
+- **Context line formatting**: Context options (A<n>, B<n>, C<n>) may include slightly different line counts compared to ripgrep in some edge cases (noted for future improvement)
 
 ### ✅ Recently Fixed Issues
 
@@ -1106,6 +1107,11 @@ age = result[0]["age"]           // "30"
 
 - **Unicode string functions**: `len()` and `ord()` functions don't properly handle Unicode characters (count bytes instead of characters)
 - **Null-data mode**: The "z" option is implemented but limited by Grapa's string parser not handling `\x00` escape sequences properly. Use custom delimiters as a workaround.
+
+### 📋 Backlog Items (Noted for Future Improvement)
+
+- **Zero-length match edge cases**: Some zero-length match scenarios may return multiple empty strings instead of single empty string in specific edge cases
+- **Context line precision**: Fine-tuning context line counting to match ripgrep exactly in all scenarios
 
 ### ✅ Production Ready
 

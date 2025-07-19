@@ -194,6 +194,9 @@ struct ContextOptions {
     int context = 0;
 };
 
+// Forward declaration for build_json_objects_array (after MatchPosition is defined)
+std::string build_json_objects_array(const std::vector<std::string>& matches, const std::vector<MatchPosition>& positions, const std::string& input, const std::string& line_delim);
+
 namespace GrapaUnicode {
 
     /**
