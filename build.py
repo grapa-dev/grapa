@@ -36,7 +36,11 @@ class BuildConfig:
     def __init__(self, platform: str, arch: str):
         self.platform = platform
         self.arch = arch
-        self.target = f"{platform}-{arch}"
+        # Map platform names to directory names
+        if platform == "windows":
+            self.target = f"win-{arch}"
+        else:
+            self.target = f"{platform}-{arch}"
         
         # Platform-specific settings
         self.compiler = self._get_compiler()
@@ -465,6 +469,8 @@ class GrapaBuilder:
         for obj_file in Path(".").glob("*.o"):
             obj_file.unlink()
     
+
+    
     def _clean_windows_build(self):
         """Clean Windows build artifacts"""
         build_dirs = [
@@ -544,7 +550,7 @@ class GrapaBuilder:
             shutil.rmtree("grapapy.egg-info")
         
         # Build package
-        subprocess.run(["python3", "setup.py", "sdist"], check=True)
+        subprocess.run(["python", "setup.py", "sdist"], check=True)
         
         # Find the built package file
         dist_files = list(Path("dist").glob("*.tar.gz"))
@@ -566,13 +572,13 @@ class GrapaBuilder:
             try:
                 # Try with explicit filename
                 subprocess.run([
-                    "pip3", "install", f"dist/{package_file}"
+                    "pip", "install", f"dist/{package_file}"
                 ], check=True)
             except subprocess.CalledProcessError:
                 # Fallback to using grapa to find the filename
                 subprocess.run([
                     "./grapa", "-q", "-ccmd",
-                    f"f=$file().ls('dist')[0].$KEY;$sys().shell('pip3 install dist/'+f);"
+                    f"f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
                 ], check=True)
     
     def run_tests(self, config: BuildConfig):
@@ -582,7 +588,7 @@ class GrapaBuilder:
         # Run Grapa tests
         test_commands = [
             ["./grapa" if config.platform != "windows" else "grapa.exe", "-cfile", "test/run_tests.grc"],
-            ["python3", "test/run_tests.py"]
+            ["python", "test/run_tests.py"]
         ]
         
         for cmd in test_commands:

@@ -261,6 +261,8 @@ source/grapa-lib/linux-arm64/libgrapa.so
 source/grapa-lib/mac-amd64/libgrapa.a
 source/grapa-lib/mac-arm64/libgrapa.a
 source/grapa-lib/win-amd64/grapa.lib
+source/openssl/__DECC_INCLUDE_EPILOGUE.H
+source/openssl/__DECC_INCLUDE_PROLOGUE.H
 source/openssl/aes.h
 source/openssl/asn1.h
 source/openssl/asn1_mac.h

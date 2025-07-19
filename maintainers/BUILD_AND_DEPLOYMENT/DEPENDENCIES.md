@@ -235,3 +235,16 @@ cp *.a ~/Documents/GitHub/grapa/source/pcre2-lib/linux-arm64/
 ## OpenSSL
 Navigate to OpenSSL source folder and complete the following. If the compile freezes on building the test app, this is ok...just abort the build at that point as the libraries should be built.
 ```
+```
+
+# aws-amd64
+
+## pcre2
+```
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-fPIC" -DCMAKE_CXX_FLAGS="-fPIC" ..
+make
+cp *.a /data/GitHub/grapa/source/pcre2-lib/aws-amd64/
+```
