@@ -58,6 +58,30 @@ rmdir /s /q grapapy.egg-info
 grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
 ```
 
+### Windows ARM64
+```
+msbuild prj/win-arm64/grapa.sln /p:Configuration=Release
+del grapa.exe
+copy prj\win-arm64\ARM64\Release\grapa.exe grapa.exe
+rmdir /S /q prj\win-arm64\ARM64
+rmdir /S /q prj\win-arm64\grapa
+
+msbuild prj/winlib-arm64/grapalib.sln /p:Configuration=Release
+del grapa.lib
+copy prj\winlib-arm64\ARM64\Release\grapa.lib grapa.lib
+del source\grapa-lib\win-arm64\grapa.lib
+copy prj\winlib-arm64\ARM64\Release\grapa.lib source\grapa-lib\win-arm64\grapa.lib
+rmdir /S /q prj\winlib-arm64\ARM64
+rmdir /S /q prj\winlib-arm64\grapalib
+
+7z a bin/grapa-win-arm64.zip grapa.exe grapa.lib
+
+rmdir /s /q dist
+python setup.py sdist
+rmdir /s /q grapapy.egg-info
+grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
+```
+
 ### Test
 ```bash
 # Run complete test suite

@@ -101,7 +101,13 @@ class GrapaBuilder:
         machine = platform.machine().lower()
         
         if system == "windows":
-            return "windows", "amd64"
+            # On Windows, machine can be "amd64" or "arm64"
+            if machine == "arm64":
+                return "windows", "arm64"
+            elif machine == "amd64":
+                return "windows", "amd64"
+            else:
+                raise RuntimeError(f"Unsupported Windows architecture: {machine}")
         elif system == "darwin":
             # On Mac, machine can be "arm64" or "x86_64"
             if machine == "arm64":
@@ -124,27 +130,39 @@ class GrapaBuilder:
         """Build for Windows using Visual Studio"""
         print(f"Building for {config.target} using Visual Studio...")
         
+        # Determine project paths based on architecture
+        if config.arch == "arm64":
+            grapa_project = "prj/win-arm64/grapa.sln"
+            grapalib_project = "prj/winlib-arm64/grapalib.sln"
+            output_dir = "prj/win-arm64/ARM64/Release"
+            lib_output_dir = "prj/winlib-arm64/ARM64/Release"
+        else:  # amd64
+            grapa_project = "prj/win-amd64/grapa.sln"
+            grapalib_project = "prj/winlib-amd64/grapalib.sln"
+            output_dir = "prj/win-amd64/x64/Release"
+            lib_output_dir = "prj/winlib-amd64/x64/Release"
+        
         try:
             # Build main executable
             subprocess.run([
-                "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
+                "msbuild", grapa_project, "/p:Configuration=Release"
             ], check=True)
             
             # Copy executable
             if os.path.exists("grapa.exe"):
                 os.remove("grapa.exe")
-            shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
+            shutil.copy(f"{output_dir}/grapa.exe", "grapa.exe")
             
             # Build library
             subprocess.run([
-                "msbuild", "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
+                "msbuild", grapalib_project, "/p:Configuration=Release"
             ], check=True)
             
             # Copy library
             if os.path.exists("grapa.lib"):
                 os.remove("grapa.lib")
-            shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", "grapa.lib")
-            shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"source/grapa-lib/{config.target}/grapa.lib")
+            shutil.copy(f"{lib_output_dir}/grapa.lib", "grapa.lib")
+            shutil.copy(f"{lib_output_dir}/grapa.lib", f"source/grapa-lib/{config.target}/grapa.lib")
             
             # Clean build artifacts
             self._clean_windows_build()
@@ -510,10 +528,16 @@ class GrapaBuilder:
     def _clean_windows_build(self):
         """Clean Windows build artifacts"""
         build_dirs = [
+            # AMD64 directories
             "prj/win-amd64/x64",
             "prj/win-amd64/grapa",
             "prj/winlib-amd64/x64",
-            "prj/winlib-amd64/grapalib"
+            "prj/winlib-amd64/grapalib",
+            # ARM64 directories
+            "prj/win-arm64/ARM64",
+            "prj/win-arm64/grapa",
+            "prj/winlib-arm64/ARM64",
+            "prj/winlib-arm64/grapalib"
         ]
         for dir_path in build_dirs:
             if os.path.exists(dir_path):
