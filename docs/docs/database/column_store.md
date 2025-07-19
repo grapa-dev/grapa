@@ -1,10 +1,30 @@
-# Column Store Database
+# Database Storage Types
 
 ## Overview
 
-Column store databases in Grapa are optimized for analytical workloads and large datasets. Unlike row store databases that store data record-by-record, column stores organize data by columns, making them ideal for queries that access specific fields across many records.
+Grapa supports three distinct database storage types, each optimized for different workloads and use cases:
 
-## Architecture
+- **COL (Column Store)**: Optimized for analytical workloads and large datasets
+- **ROW (Row Store)**: Optimized for transactional workloads and frequent updates
+- **GROUP**: Optimized for grouped data operations and hierarchical structures
+
+## Storage Type Comparison
+
+| Aspect | Column Store (COL) | Row Store (ROW) | Group Store (GROUP) |
+|--------|-------------------|-----------------|-------------------|
+| **Storage Pattern** | Column-oriented | Row-oriented | Group-oriented |
+| **Best For** | Analytical queries | Transactional workloads | Hierarchical data |
+| **Sparse Data** | Very efficient | Less efficient | Moderate efficiency |
+| **Point Queries** | Slower | Faster | Moderate |
+| **Column Scans** | Very fast | Slower | Moderate |
+| **Updates** | Block-level | Record-level | Group-level |
+| **Compression** | Excellent | Good | Moderate |
+
+## Column Store (COL) - Innovative Implementation
+
+### Architecture
+
+Column store databases in Grapa are optimized for analytical workloads and large datasets. Unlike row store databases that store data record-by-record, column stores organize data by columns, making them ideal for queries that access specific fields across many records.
 
 ### Storage Model
 - **Fragmented Data Storage**: Uses FREC_DATA for efficient handling of sparse data
@@ -18,69 +38,52 @@ Column store databases in Grapa are optimized for analytical workloads and large
 - **SDATA_TREE**: Tree structure for variable fields
 - **Growth Parameters**: Configurable growth sizes for efficient storage management
 
-## Use Cases
+### Use Cases
 
-### Ideal For
+#### Ideal For
 - **Analytical Queries**: Aggregations, sums, averages across columns
 - **Data Warehousing**: Large datasets with many columns
 - **Time-Series Data**: Historical data analysis
 - **Sparse Data**: Tables with many optional fields
 - **Column Scans**: Queries that access specific fields across records
 
-### Not Ideal For
+#### Not Ideal For
 - **Frequent Record Updates**: Row store is better for transactional workloads
 - **Point Queries**: Individual record lookups
 - **Small Datasets**: Overhead may not be justified
 
-## Performance Optimizations
+### Performance Optimizations
 
-### Storage Efficiency
+#### Storage Efficiency
 - **Sparse Data Handling**: Only allocates space for actual data
 - **Compression**: Similar data types can be compressed efficiently
 - **Block-Level Access**: Loads only relevant data blocks into memory
 
-### Query Performance
+#### Query Performance
 - **Column Scans**: Fast access to all values in a column
 - **Aggregations**: Efficient computation of sums, averages, etc.
 - **Cache Locality**: Better memory cache utilization for column-oriented access
 
-## Field Types and Storage
+### Field Types and Storage
 
-### Fixed Fields (STORE_FIX)
+#### Fixed Fields (STORE_FIX)
 - Use FREC_DATA for fragmented storage
 - Automatically set growth size to field size if not specified
 - Efficient for small, frequently accessed fields
 
-### Variable Fields (STORE_VAR)
+#### Variable Fields (STORE_VAR)
 - Use SDATA_TREE for tree-based storage
 - Good for medium-sized variable data
 - Supports efficient updates and deletions
 
-### Partitioned Fields (STORE_PAR)
+#### Partitioned Fields (STORE_PAR)
 - Use FREC_DATA for large data requiring partial updates
 - Ideal for very large data that needs incremental updates
 - Used for COL store $TABLE types
 
-## Best Practices
+### Implementation Details
 
-### Schema Design
-- Choose appropriate field types and storage options
-- Consider data sparsity when designing schemas
-- Use fixed fields for small, frequently accessed data
-
-### Query Optimization
-- Design queries to access columns rather than individual records
-- Use aggregations and column scans when possible
-- Consider data distribution for optimal performance
-
-### Storage Management
-- Monitor growth parameters for optimal storage efficiency
-- Consider data compression for similar data types
-- Plan for data growth and distribution patterns
-
-## Implementation Details
-
-### Fragmented Data Storage (FREC_DATA)
+#### Fragmented Data Storage (FREC_DATA)
 Column store fixed fields use fragmented data storage for several key reasons:
 
 1. **Sparse Data Efficiency**: Only creates data blocks when needed, avoiding wasted space for NULL values
@@ -88,80 +91,100 @@ Column store fixed fields use fragmented data storage for several key reasons:
 3. **Update Efficiency**: Individual blocks can be updated without affecting the entire column
 4. **Memory Efficiency**: Only relevant blocks need to be loaded into memory for queries
 
-### Growth Parameter Management
+#### Growth Parameter Management
 The system automatically sets growth parameters for optimal performance:
 - **Fixed Fields**: `storeGrow` defaults to `storeSize` if not specified
 - **Variable Fields**: Uses configurable growth sizes for tree-based storage
 - **Dynamic Adjustment**: Growth parameters can be tuned based on usage patterns
 
-## Performance Characteristics
+## Row Store (ROW)
 
-### Storage Overhead
-- **Minimal for Sparse Data**: Only stores actual data values
-- **Efficient for Dense Data**: Good compression for similar data types
-- **Predictable Growth**: Linear growth based on data volume
+### Overview
+Row store databases store data record-by-record, making them ideal for transactional workloads where you frequently access complete records.
 
-### Query Performance
-- **Column Scans**: O(n) where n is the number of records in the column
-- **Aggregations**: Efficient computation across column values
-- **Point Queries**: Requires accessing specific blocks, may be slower than row store
+### Use Cases
+- **Transactional Applications**: Banking, e-commerce, user management
+- **Frequent Updates**: Applications with many INSERT/UPDATE operations
+- **Point Queries**: Individual record lookups
+- **Small to Medium Datasets**: Where analytical performance isn't critical
 
-### Memory Usage
-- **Block-Level Loading**: Only loads relevant data blocks
-- **Cache Efficiency**: Better cache utilization for column-oriented access
-- **Compression**: Reduced memory footprint for similar data
+### Performance Characteristics
+- **Fast Point Queries**: Quick access to individual records
+- **Efficient Updates**: Record-level updates without affecting other data
+- **Good for OLTP**: Online transaction processing workloads
 
-## Comparison with Row Store
+## Group Store (GROUP)
 
-| Aspect | Column Store | Row Store |
-|--------|-------------|-----------|
-| **Storage Pattern** | Column-oriented | Row-oriented |
-| **Best For** | Analytical queries | Transactional workloads |
-| **Sparse Data** | Very efficient | Less efficient |
-| **Point Queries** | Slower | Faster |
-| **Column Scans** | Very fast | Slower |
-| **Updates** | Block-level | Record-level |
-| **Compression** | Excellent | Good |
+### Overview
+Group store databases are optimized for hierarchical data structures and grouped operations.
 
-## Advanced Features
+### Use Cases
+- **Hierarchical Data**: Organizational charts, file systems, nested structures
+- **Grouped Operations**: Data that naturally forms groups or categories
+- **Tree-like Structures**: Data with parent-child relationships
 
-### Dynamic Schema Evolution
-- Add new columns without affecting existing data
-- Remove columns with minimal overhead
-- Modify column types with data migration support
+### Performance Characteristics
+- **Efficient Group Operations**: Fast access to grouped data
+- **Hierarchical Queries**: Good performance for tree-like data structures
+- **Moderate Flexibility**: Balanced between row and column stores
 
-### Data Distribution
-- Efficient handling of skewed data distributions
-- Support for partitioning strategies
-- Automatic data rebalancing
+## Best Practices
+
+### Choosing the Right Storage Type
+
+#### Use Column Store (COL) When:
+- You have analytical workloads with aggregations
+- Your data is sparse (many NULL values)
+- You perform column scans frequently
+- You have large datasets (>1M records)
+- You need excellent compression
+
+#### Use Row Store (ROW) When:
+- You have transactional workloads
+- You frequently update individual records
+- You perform many point queries
+- You have small to medium datasets
+- You need fast individual record access
+
+#### Use Group Store (GROUP) When:
+- Your data has natural hierarchical structure
+- You perform grouped operations frequently
+- You have tree-like data relationships
+- You need balanced performance characteristics
+
+### Schema Design
+- Choose appropriate field types and storage options
+- Consider data sparsity when designing schemas
+- Use fixed fields for small, frequently accessed data
 
 ### Query Optimization
-- Column pruning for unused columns
-- Predicate pushdown for early filtering
-- Join optimization for column-oriented operations
+- Design queries to match your storage type's strengths
+- Use aggregations and column scans for column stores
+- Use point queries for row stores
+- Use grouped operations for group stores
 
 ## Monitoring and Maintenance
 
 ### Performance Monitoring
-- Track column access patterns
+- Track access patterns for each storage type
 - Monitor storage efficiency
 - Analyze query performance
 
 ### Storage Optimization
-- Regular compression analysis
+- Regular compression analysis for column stores
 - Growth parameter tuning
 - Data distribution optimization
 
 ### Maintenance Tasks
-- Block-level defragmentation
+- Block-level defragmentation for column stores
 - Index maintenance
 - Statistics updates
 
 ## Future Enhancements
 
 ### Planned Features
-- Advanced compression algorithms
-- Column-level indexing
+- Advanced compression algorithms for all storage types
+- Cross-storage-type query optimization
 - Materialized views
 - Query result caching
 

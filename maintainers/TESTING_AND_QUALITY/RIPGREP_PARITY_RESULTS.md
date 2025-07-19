@@ -31,7 +31,13 @@ Unicode functionality shows strong parity with ripgrep:
 - **Grapheme cluster extraction**: ✅ PASS (\\X pattern works correctly)
 - **Unicode script properties**: ✅ PASS (\\p{Han}+ for Chinese characters)
 - **Case-insensitive Unicode**: ✅ PASS (PÂTÉ matches pâté)
-- **Emoji grapheme clusters**: ✅ PASS (👨‍👩‍👧‍👦 family emoji)
+- **Emoji grapheme clusters**: ✅ PASS (👨‍👩‍👧‍�� family emoji)
+
+### Grapheme Clusters (\X)
+- **Basic grapheme clusters**: ✅ FULL PARITY
+- **Complex emoji sequences**: ✅ FULL PARITY  
+- **Grapheme clusters with newlines**: ✅ **FIXED** - Now includes newlines as separate clusters
+- **Quantifiers with grapheme clusters**: ✅ FULL PARITY
 
 ### ⚠️ ADVANCED FEATURES - PARTIAL PARITY
 Some advanced features work well, others need verification:

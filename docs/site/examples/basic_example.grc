@@ -1,0 +1,17 @@
+/* Basic Grapa Example */
+/* This file demonstrates basic Grapa syntax and operations */
+
+/* Basic variable assignment */
+x = 42;
+
+/* Basic array operations */
+arr = [1, 2, 3, 4, 5];
+
+/* Basic string operations */
+str = "Grapa is awesome!";
+
+/* Basic math operations */
+result = 10 + 5 * 2;
+
+/* Return the result for testing */
+result 

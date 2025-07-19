@@ -65,12 +65,77 @@ plugins:
 
 nav:
   - Home: index.md
-  - Getting Started: GETTING_STARTED.md
-  - CLI Quickstart: CLI_QUICKSTART.md
-  - Python Quickstart: python_integration.md
-  - API Reference: API_REFERENCE.md
-  - Function Quick Reference: FUNCTION_QUICK_REFERENCE.md
-  - Grep Documentation: GREP.md
+  - Getting Started:
+      - Overview: GETTING_STARTED.md
+      - CLI Quickstart: CLI_QUICKSTART.md
+      - Python Integration: python_integration.md
+  - Language Reference:
+      - Basic Syntax: syntax/basic_syntax.md
+      - Operators: syntax/operator.md
+      - Precedence: syntax/precedence.md
+      - Grammar Design: syntax/grammar_design.md
+      - Data Types:
+          - Array: type/ARRAY.md
+          - Boolean: type/BOOL.md
+          - Code: type/CODE.md
+          - Error: type/ERR.md
+          - Float: type/FLOAT.md
+          - ID: type/ID.md
+          - Integer: type/INT.md
+          - List: type/LIST.md
+          - Operation: type/OP.md
+          - Raw: type/RAW.md
+          - Rule: type/RULE.md
+          - String: type/STR.md
+          - System ID: type/SYSID.md
+          - System Integer: type/SYSINT.md
+          - System String: type/SYSSTR.md
+          - Table: type/TABLE.md
+          - Tag: type/TAG.md
+          - Time: type/TIME.md
+          - Vector: type/VECTOR.md
+          - Widget: type/WIDGET.md
+          - XML: type/XML.md
+  - API Reference:
+      - Overview: API_REFERENCE.md
+      - Function Quick Reference: FUNCTION_QUICK_REFERENCE.md
+      - Grep Documentation: GREP.md
+      - System Functions:
+          - File Operations: sys/file.md
+          - Math Functions: sys/math.md
+          - Network Functions: sys/net.md
+          - System Functions: sys/sys.md
+          - Thread Functions: sys/thread.md
+      - Object Types:
+          - Document: obj/document.md
+          - Encode: obj/encode.md
+          - Grep: obj/grep.md
+          - Grep Python: obj/grep_python.md
+          - Iterate: obj/iterate.md
+          - Transform: obj/transform.md
+      - Operators:
+          - Assignment: operators/assignment.md
+          - Bit Operations: operators/bit.md
+          - Command: operators/command.md
+          - Comparison: operators/compare.md
+          - Condition: operators/condition.md
+          - Constants: operators/constants.md
+          - Function: operators/function.md
+          - Loop: operators/loop.md
+          - Math: operators/math.md
+      - Database:
+          - Quick Reference: database/quick_reference.md
+          - Storage Types: database/column_store.md
+          - Troubleshooting: database/troubleshooting.md
+  - Use Cases:
+      - Overview: use_cases/index.md
+      - ETL / Data Engineering: use_cases/etl_data_engineering.md
+      - Compiler/BNF Learning: use_cases/compiler_bnf_learning.md
+      - High-Precision Math: use_cases/high_precision_math.md
+      - Parallel Programming: use_cases/parallel_concurrent_programming.md
+      - Web Scraping: use_cases/web_data_scraping.md
+      - Education & Prototyping: use_cases/education_prototyping.md
+      - Cryptography: use_cases/cryptography.md
   - Migration Guides:
       - Python: migrations/PYTHON_TO_GRAPA_MIGRATION.md
       - JavaScript: migrations/JS_TO_GRAPA_MIGRATION.md
@@ -80,78 +145,15 @@ nav:
       - Ruby: migrations/RUBY_TO_GRAPA_MIGRATION.md
       - Kotlin: migrations/KOTLIN_TO_GRAPA_MIGRATION.md
       - Swift: migrations/SWIFT_TO_GRAPA_MIGRATION.md
-  - Use Cases:
-      - Overview: use_cases/index.md
-      - ETL / Data Engineering: use_cases/etl_data_engineering.md
-      - Compiler/BNF Learning: use_cases/compiler_bnf_learning.md
-      - High-Precision Math: use_cases/high_precision_math.md
-      - Parallel Programming: use_cases/parallel_concurrent_programming.md
-      - Web Scraping: use_cases/web_data_scraping.md
-      - Database & File System: use_cases/database_file_system.md
-      - Education & Prototyping: use_cases/education_prototyping.md
-      - Cryptography: use_cases/cryptography.md
-  - Examples: EXAMPLES.md
-  - Code Examples:
-      - Overview: examples/README.md
-      - Basic Example: examples/basic_example.grc
-      - Advanced Example: examples/advanced_example.grc
-      - Performance Example: examples/performance_example.grc
-      - Python Integration: examples/python_integration_example.py
-  - Syntax:
-      - Basic Syntax: syntax/basic_syntax.md
-      - Operators: syntax/operator.md
-      - Precedence: syntax/precedence.md
-      - Grammar Design: syntax/grammar_design.md
-  - System Functions:
-      - File Operations: sys/file.md
-      - Math Functions: sys/math.md
-      - Network Functions: sys/net.md
-      - System Functions: sys/sys.md
-      - Thread Functions: sys/thread.md
-  - Object Types:
-      - Document: obj/document.md
-      - Encode: obj/encode.md
-      - Grep: obj/grep.md
-      - Grep Python: obj/grep_python.md
-      - Iterate: obj/iterate.md
-      - Transform: obj/transform.md
-  - Operators:
-      - Assignment: operators/assignment.md
-      - Bit Operations: operators/bit.md
-      - Command: operators/command.md
-      - Comparison: operators/compare.md
-      - Condition: operators/condition.md
-      - Constants: operators/constants.md
-      - Function: operators/function.md
-      - Loop: operators/loop.md
-      - Math: operators/math.md
-  - Data Types:
-      - Array: type/ARRAY.md
-      - Boolean: type/BOOL.md
-      - Code: type/CODE.md
-      - Error: type/ERR.md
-      - Float: type/FLOAT.md
-      - ID: type/ID.md
-      - Integer: type/INT.md
-      - List: type/LIST.md
-      - Operation: type/OP.md
-      - Raw: type/RAW.md
-      - Rule: type/RULE.md
-      - String: type/STR.md
-      - System ID: type/SYSID.md
-      - System Integer: type/SYSINT.md
-      - System String: type/SYSSTR.md
-      - Table: type/TABLE.md
-      - Tag: type/TAG.md
-      - Time: type/TIME.md
-      - Vector: type/VECTOR.md
-      - Widget: type/WIDGET.md
-      - XML: type/XML.md
-  - Database:
-      - Column Store: database/column_store.md
-      - Quick Reference: database/quick_reference.md
-      - Troubleshooting: database/troubleshooting.md
-  - Additional Tools:
+  - Examples:
+      - Overview: EXAMPLES.md
+      - Code Examples:
+          - Overview: examples/README.md
+          - Basic Example: examples/basic_example.grc
+          - Advanced Example: examples/advanced_example.grc
+          - Performance Example: examples/performance_example.grc
+          - Python Integration: examples/python_integration_example.py
+  - Tools & Utilities:
       - Directory Navigation: directory_navigation.md
       - GRC Scripts: grc_scripts.md
       - GRZ Format: GRZ_FORMAT.md

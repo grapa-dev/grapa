@@ -58,16 +58,7 @@ Grapa provides powerful tools for web scraping, API integration, and automation 
 - Rate limiting and error handling
 - Concurrent scraping operations
 
-### [6. Database & File System Integration](database_file_system.md)
-Unified APIs for files and databases boost productivity for backend developers, sysadmins, and data engineers.
-
-**Key Features:**
-- Unified interface for files and databases
-- SQL-like syntax for file operations
-- ACID transaction support
-- Parallel read/write operations
-
-### [7. Education & Prototyping](education_prototyping.md)
+### [6. Education & Prototyping](education_prototyping.md)
 Grapa's dynamic grammar and meta-programming are ideal for rapid prototyping and teaching programming concepts.
 
 **Key Features:**
@@ -76,7 +67,7 @@ Grapa's dynamic grammar and meta-programming are ideal for rapid prototyping and
 - Custom language and DSL creation
 - Algorithm visualization
 
-### [8. Cryptography](cryptography.md)
+### [7. Cryptography](cryptography.md)
 Comprehensive cryptographic capabilities through OpenSSL integration and custom implementations for production-ready security applications.
 
 **Key Features:**

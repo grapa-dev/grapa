@@ -1,0 +1,12 @@
+/* Advanced Grapa Example */
+/* This file demonstrates more complex Grapa operations */
+
+/* String processing */
+text = "Hello World Grapa Programming";
+words = text.split(" ");
+
+/* Array operations */
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+/* Return results for testing */
+[words, numbers.len()] 

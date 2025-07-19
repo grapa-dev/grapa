@@ -2,6 +2,8 @@
 
 ## Database Creation
 
+> **For detailed information about storage types and their use cases, see [Storage Types](column_store.md).**
+
 ### Basic Database Types
 ```grapa
 # Row Store (Transactional)
@@ -10,12 +12,12 @@ f.mk("db_name", "ROW")
 # Column Store (Analytical)
 f.mk("db_name", "COL")
 
-# Group Database (Hierarchical)
-f.mk("db_name", "GROUP")
-
-# Regular Directory
-f.mk("dir_name", "DIR")
+# Group Database (Hierarchical) - Two equivalent ways:
+f.mk("db_name", "GROUP")    # Explicit group database
+f.mk("dir_name", "DIR")     # Directory alias (same as GROUP internally)
 ```
+
+**Note**: `"DIR"` and `"GROUP"` are equivalent - both create the same hierarchical database type internally. Use whichever naming convention makes more sense for your use case.
 
 ### In-Memory Database
 ```grapa
