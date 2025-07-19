@@ -1,18 +1,25 @@
 Metadata-Version: 2.4
 Name: grapapy
 Version: 0.0.26
-Summary: Grammar-based language and parser with unlimited precision, parallelism, and Python integration
+Summary: GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa’s C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python’s GIL and making advanced data processing simple and fast.
 Author: Chris Matichuk
+Author-email: matichuk@hotmail.com
 Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Dynamic: author
+Dynamic: author-email
 Dynamic: description
 Dynamic: description-content-type
 Dynamic: license-file
 Dynamic: requires-python
 Dynamic: summary
 
-Grapa is a modern grammar-based programming language and parser designed for Python users, educators, researchers, and data engineers. It features unlimited precision math, runtime-mutable grammars, true parallelism, and seamless Python integration via GrapaPy. Rapidly prototype languages, process data, and experiment with advanced grammars—all with a unified, high-performance toolset.
 
-See the [Grapa project on GitHub](https://github.com/grapa-dev/grapa) for full documentation, examples, and installation instructions.
+GrapaPy is a Python extension for the Grapa language, designed for advanced data processing, ETL, and language experimentation. GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa’s C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python’s GIL and making advanced data processing simple and fast.
+
+Features:
+- True parallel ETL/data processing from Python
+- Hardened, production-ready parallelism
+- High performance for large file processing, data transformation, analytics, and more
+- Simple, functional API
