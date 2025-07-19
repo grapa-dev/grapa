@@ -913,15 +913,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#thread-safety-and-parallelism" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Safety and Parallelism
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#use-case-categories" class="md-nav__link">
     <span class="md-ellipsis">
       Use Case Categories
@@ -1419,15 +1410,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#thread-safety-and-parallelism" class="md-nav__link">
-    <span class="md-ellipsis">
-      Thread Safety and Parallelism
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#use-case-categories" class="md-nav__link">
     <span class="md-ellipsis">
       Use Case Categories
@@ -1538,16 +1520,6 @@
 - <a href="../migrations/JS_TO_GRAPA_MIGRATION/">JS-to-Grapa Migration Guide</a>
 - <a href="../EXAMPLES/">Examples</a></p>
 </blockquote>
-<h2 id="thread-safety-and-parallelism">Thread Safety and Parallelism</h2>
-<p>Grapa is fully thread safe by design. All variable and data structure updates are internally synchronized at the C++ level, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure, you may see <em>logical</em> race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.</p>
-<p><strong>Only <code>$thread()</code> objects provide explicit locking and unlocking via <code>lock()</code>, <code>unlock()</code>, and <code>trylock()</code>.</strong> To protect access to a shared resource, create a <code>$thread()</code> lock object and use it to guard access. Calling <code>.lock()</code> or <code>.unlock()</code> on a regular variable (like an array or scalar) will return an error.</p>
-<p><strong>Canonical Example:</strong>
-<div class="highlight"><pre><span></span><code>lock_obj = $thread();
-lock_obj.lock();
-/* ... perform thread-safe operations on shared data ... */
-lock_obj.unlock();
-</code></pre></div></p>
-<p>See <a href="../sys/thread/">Threading and Locking</a> and <a href="../operators/function/">Function Operators: static and const</a> for details and best practices.</p>
 <p>Grapa is designed to be inviting and usable for the broadest audience, from data engineers and scientists to educators and language researchers. Below are key use cases, each with a high-level overview and links to examples in both Grapa and Python (GrapaPy).</p>
 <hr />
 <h2 id="use-case-categories">Use Case Categories</h2>
@@ -1573,12 +1545,13 @@ lock_obj.unlock();
 - Parallel mathematical computation
 - Memory-efficient large number handling</p>
 <h3 id="4-parallelconcurrent-programming"><a href="parallel_concurrent_programming/">4. Parallel/Concurrent Programming</a></h3>
-<p>Grapa's $thread, $net, and map/reduce/filter features enable true parallelism, overcoming Python's GIL and enabling high-performance data processing.</p>
+<p>Grapa's $thread, $net, and map/reduce/filter features enable true parallelism, overcoming Python's GIL and enabling high-performance data processing. Includes comprehensive thread safety and synchronization primitives.</p>
 <p><strong>Key Features:</strong>
 - True parallelism bypassing GIL limitations
 - Concurrent network operations
 - Functional programming with map/reduce/filter
-- Built-in thread safety primitives</p>
+- Built-in thread safety primitives
+- Thread synchronization and locking mechanisms</p>
 <h3 id="5-webdata-scraping-automation"><a href="web_data_scraping/">5. Web/Data Scraping &amp; Automation</a></h3>
 <p>Grapa provides powerful tools for web scraping, API integration, and automation tasks with built-in rate limiting and error handling.</p>
 <p><strong>Key Features:</strong>

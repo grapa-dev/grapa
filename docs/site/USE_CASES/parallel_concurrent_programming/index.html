@@ -1005,6 +1005,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#thread-safety-and-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread Safety and Parallelism
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-features-for-parallel-programming" class="md-nav__link">
     <span class="md-ellipsis">
       Key Features for Parallel Programming:
@@ -1359,6 +1368,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#thread-safety-and-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread Safety and Parallelism
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#key-features-for-parallel-programming" class="md-nav__link">
     <span class="md-ellipsis">
       Key Features for Parallel Programming:
@@ -1411,6 +1429,16 @@
 
 
 <h1 id="parallelconcurrent-programming">Parallel/Concurrent Programming</h1>
+<h2 id="thread-safety-and-parallelism">Thread Safety and Parallelism</h2>
+<p>Grapa is fully thread safe by design. All variable and data structure updates are internally synchronized at the C++ level, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure, you may see <em>logical</em> race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.</p>
+<p><strong>Only <code>$thread()</code> objects provide explicit locking and unlocking via <code>lock()</code>, <code>unlock()</code>, and <code>trylock()</code>.</strong> To protect access to a shared resource, create a <code>$thread()</code> lock object and use it to guard access. Calling <code>.lock()</code> or <code>.unlock()</code> on a regular variable (like an array or scalar) will return an error.</p>
+<p><strong>Canonical Example:</strong>
+<div class="highlight"><pre><span></span><code>lock_obj = $thread();
+lock_obj.lock();
+/* ... perform thread-safe operations on shared data ... */
+lock_obj.unlock();
+</code></pre></div></p>
+<p>See <a href="../../sys/thread/">Threading and Locking</a> and <a href="../../operators/function/">Function Operators: static and const</a> for details and best practices.</p>
 <p>Grapa's $thread, $net, and map/reduce/filter features enable true parallelism, overcoming Python's GIL and enabling high-performance data processing.</p>
 <p><strong>Note:</strong> Grapa is fully thread safe, but if you share mutable state between threads, you are responsible for the logic. Use a <code>$thread()</code> lock object if needed, or prefer immutable data and thread-local variables. See <a href="../../sys/thread/">Threading and Locking</a> for examples and best practices.</p>
 <h2 id="key-features-for-parallel-programming">Key Features for Parallel Programming:</h2>
