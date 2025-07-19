@@ -3,7 +3,7 @@
 This document provides practical examples of Grapa usage, organized from basic to advanced.
 
 > **For Python Users:**
-> See the [Python Integration Guide](PYTHON_INTEGRATION.md) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for help translating Python code and using Grapa from Python.
+> See the [Python Integration Guide](python_integration.md) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for help translating Python code and using Grapa from Python.
 
 > **See Also:**
 > - [Getting Started](GETTING_STARTED.md)
@@ -499,7 +499,7 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
 
 ## Next Steps
 - Learn about [Testing](TESTING.md) your Grapa code
-- Check out the [Grep functionality](grep.md) for advanced pattern matching
+- Check out the [Grep functionality](GREP.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
 
 ## Thread Safety and Parallelism

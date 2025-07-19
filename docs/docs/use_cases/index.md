@@ -2,7 +2,7 @@
 
 > **See Also:**
 > - [Getting Started](../GETTING_STARTED.md)
-> - [Python Integration Guide](../PYTHON_INTEGRATION.md)
+> - [Python Integration Guide](../python_integration.md)
 > - [JS-to-Grapa Migration Guide](../migrations/JS_TO_GRAPA_MIGRATION.md)
 > - [Examples](../EXAMPLES.md)
 

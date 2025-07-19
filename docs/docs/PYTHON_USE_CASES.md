@@ -3,7 +3,7 @@
 GrapaPy brings the power of Grapa to Python users, making advanced data processing, parallelism, and language experimentation accessible from Python. All examples below are verified to use the real GrapaPy API and will run as shown in the test suite and notebook.
 
 > **See Also:**
-> - [Python Integration Guide](PYTHON_INTEGRATION.md)
+> - [Python Integration Guide](python_integration.md)
 > - [Python-to-Grapa Migration Guide](migrations/PYTHON_TO_GRAPA_MIGRATION.md)
 > - [Getting Started](GETTING_STARTED.md)
 > - [Examples](EXAMPLES.md)

@@ -42,7 +42,7 @@
 This guide helps Python users transition to Grapa by mapping common Python idioms, patterns, and code to their Grapa equivalents.
 
 > **See Also:**
-> - [Python Integration Guide](../PYTHON_INTEGRATION.md)
+> - [Python Integration Guide](../python_integration.md)
 > - [Python Use Cases](PYTHON_USE_CASES.md)
 
 ## Syntax Mapping Table
@@ -294,7 +294,7 @@ result = some_operation().iferr(0);
 
 ## See Also
 - [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users)
-- [Python Integration Guide](../PYTHON_INTEGRATION.md)
+- [Python Integration Guide](../python_integration.md)
 
 ---
 
