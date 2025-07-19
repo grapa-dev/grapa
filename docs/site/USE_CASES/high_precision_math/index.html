@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/docs/syntax/precedence/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/docs/use_cases/high_precision_math/">
       
       
-        <link rel="prev" href="../operator/">
+        <link rel="prev" href="../compiler_bnf_learning/">
       
       
-        <link rel="next" href="../grammar_design/">
+        <link rel="next" href="../parallel_concurrent_programming/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Precedence - Grapa Documentation</title>
+        <title>High-Precision Math - Grapa Documentation</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#operator-precedence-in-grapa" class="md-skip">
+        <a href="#high-precision-math-scientific-computing" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Precedence
+              High-Precision Math
             
           </span>
         </div>
@@ -337,11 +337,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../use_cases/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -376,13 +378,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../basic_syntax/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../syntax/basic_syntax/" class="md-tabs__link">
           
   
   
@@ -814,24 +814,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
             
   
   
@@ -844,7 +849,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             Use Cases
@@ -858,7 +863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -881,7 +886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+      <a href="../etl_data_engineering/" class="md-nav__link">
         
   
   
@@ -904,7 +909,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+      <a href="../compiler_bnf_learning/" class="md-nav__link">
         
   
   
@@ -924,10 +929,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    High-Precision Math
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -938,6 +965,188 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#key-features-for-mathscientific-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features for Math/Scientific Work:
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-mathematical-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Mathematical Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Mathematical Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#root-calculations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Root Calculations (*/)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matrix-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matrix Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modular-arithmetic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modular Arithmetic (%)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#number-theory-and-prime-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Number Theory and Prime Numbers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Number Theory and Prime Numbers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prime-number-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prime Number Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#primality-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primality Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greatest-common-divisor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Greatest Common Divisor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-format-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Format Conversion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Format Conversion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-format-conversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Format Conversions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-financial-calculations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Financial Calculations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-scientific-computing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Scientific Computing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-number-theory-research" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Number Theory Research
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-time-series-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Time Series Analysis
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-linear-algebra" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Linear Algebra
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -950,7 +1159,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+      <a href="../parallel_concurrent_programming/" class="md-nav__link">
         
   
   
@@ -973,7 +1182,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+      <a href="../web_data_scraping/" class="md-nav__link">
         
   
   
@@ -996,7 +1205,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+      <a href="../database_file_system/" class="md-nav__link">
         
   
   
@@ -1019,7 +1228,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+      <a href="../education_prototyping/" class="md-nav__link">
         
   
   
@@ -1042,7 +1251,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/cryptography/" class="md-nav__link">
+      <a href="../cryptography/" class="md-nav__link">
         
   
   
@@ -1091,29 +1300,24 @@
       
   
   
-    
   
   
-  
     
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
             
   
   
@@ -1126,7 +1330,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             Syntax
@@ -1140,7 +1344,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../basic_syntax/" class="md-nav__link">
+      <a href="../../syntax/basic_syntax/" class="md-nav__link">
         
   
   
@@ -1163,7 +1367,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../operator/" class="md-nav__link">
+      <a href="../../syntax/operator/" class="md-nav__link">
         
   
   
@@ -1183,32 +1387,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Precedence
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../syntax/precedence/" class="md-nav__link">
         
   
   
@@ -1219,62 +1401,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#how-to-read-this-table" class="md-nav__link">
-    <span class="md-ellipsis">
-      How to Read This Table
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#grapa-specific-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      Grapa-Specific Notes
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#related-documentation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Related Documentation
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1287,7 +1413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grammar_design/" class="md-nav__link">
+      <a href="../../syntax/grammar_design/" class="md-nav__link">
         
   
   
@@ -1359,36 +1485,162 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-to-read-this-table" class="md-nav__link">
+  <a href="#key-features-for-mathscientific-work" class="md-nav__link">
     <span class="md-ellipsis">
-      How to Read This Table
+      Key Features for Math/Scientific Work:
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
+  <a href="#advanced-mathematical-operators" class="md-nav__link">
     <span class="md-ellipsis">
-      Examples
+      Advanced Mathematical Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Mathematical Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#root-calculations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Root Calculations (*/)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matrix-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matrix Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modular-arithmetic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modular Arithmetic (%)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#number-theory-and-prime-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Number Theory and Prime Numbers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Number Theory and Prime Numbers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prime-number-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prime Number Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#primality-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primality Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greatest-common-divisor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Greatest Common Divisor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-format-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Format Conversion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Format Conversion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-format-conversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Format Conversions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-financial-calculations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Financial Calculations
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#grapa-specific-notes" class="md-nav__link">
+  <a href="#example-scientific-computing" class="md-nav__link">
     <span class="md-ellipsis">
-      Grapa-Specific Notes
+      Example: Scientific Computing
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#related-documentation" class="md-nav__link">
+  <a href="#example-number-theory-research" class="md-nav__link">
     <span class="md-ellipsis">
-      Related Documentation
+      Example: Number Theory Research
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-time-series-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Time Series Analysis
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-linear-algebra" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Linear Algebra
     </span>
   </a>
   
@@ -1410,138 +1662,256 @@
 
 
 
-<h1 id="operator-precedence-in-grapa">Operator Precedence in Grapa</h1>
-<p>Operator precedence determines the order in which parts of an expression are evaluated. Understanding precedence is essential for writing correct and predictable Grapa code, especially in complex expressions.</p>
-<p><strong>Key Points:</strong>
-- Higher precedence operators are evaluated before lower precedence ones.
-- Parentheses <code>()</code> can always be used to override precedence and clarify intent.
-- All statements and blocks in Grapa must end with a semicolon (<code>;</code>).
-- Only block comments (<code>/* ... */</code>) are allowed.</p>
-<hr />
-<h2 id="how-to-read-this-table">How to Read This Table</h2>
+<h1 id="high-precision-math-scientific-computing">High-Precision Math &amp; Scientific Computing</h1>
+<p>Grapa's $INT, $FLOAT, and $TIME types support unlimited precision, making it valuable for scientific, cryptographic, and financial applications. Grapa includes sophisticated mathematical operators and functions that go far beyond basic arithmetic.</p>
+<h2 id="key-features-for-mathscientific-work">Key Features for Math/Scientific Work:</h2>
 <ul>
-<li><strong>Operator:</strong> The symbol(s) or syntax for the operation.</li>
-<li><strong>Description:</strong> What the operator does.</li>
-<li><strong>Associativity:</strong> The direction in which operators of the same precedence are evaluated (left-to-right or right-to-left).</li>
+<li><strong>Unlimited Precision</strong>: Handle arbitrarily large numbers and precise calculations</li>
+<li><strong>Advanced Mathematical Operators</strong>: Root calculations, matrix operations, modular arithmetic</li>
+<li><strong>Number Theory Functions</strong>: Prime generation, primality testing, GCD calculations</li>
+<li><strong>Time Series</strong>: Built-in time manipulation and analysis</li>
+<li><strong>Parallel Computation</strong>: Distribute mathematical workloads across threads</li>
+<li><strong>Memory Efficiency</strong>: Process large datasets without precision loss</li>
 </ul>
-<hr />
-<table>
-<thead>
-<tr>
-<th>Operator</th>
-<th>Description</th>
-<th>Associativity</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>a</code> <code>@a</code></td>
-<td>token, contents of token</td>
-<td>right-to-left</td>
-</tr>
-<tr>
-<td><code>a()</code></td>
-<td>function call</td>
-<td>right-to-left</td>
-</tr>
-<tr>
-<td><code>a.b</code> <code>a[b]</code></td>
-<td>lookup</td>
-<td>right-to-left</td>
-</tr>
-<tr>
-<td><code>+a</code> <code>-a</code> <code>!a</code> <code>~a</code></td>
-<td>Unary plus, minus, not, bitwise not</td>
-<td>right-to-left</td>
-</tr>
-<tr>
-<td><code>a*b</code> <code>a/b</code> <code>a%b</code></td>
-<td>multiply, divide, remainder</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>a+b</code> <code>a-b</code></td>
-<td>add, subtract</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>&lt;&lt;</code> <code>&gt;&gt;</code></td>
-<td>bitwise shift</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>&lt;=&gt;</code></td>
-<td>3-way compare</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code></td>
-<td>less/greater than (or equal)</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>==</code> <code>!=</code></td>
-<td>equal, not equal</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>&amp;</code></td>
-<td>bitwise and</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>^</code></td>
-<td>bitwise xor</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>|</code></td>
-<td>bitwise or</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>&amp;&amp;</code></td>
-<td>logical and</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>||</code></td>
-<td>logical or</td>
-<td>left-to-right</td>
-</tr>
-<tr>
-<td><code>a?b:c</code> <code>a?b:c:d</code></td>
-<td>ternary conditionals</td>
-<td>right-to-left</td>
-</tr>
-<tr>
-<td><code>=</code> <code>+=</code> <code>-=</code> <code>++=</code></td>
-<td>assignments</td>
-<td>right-to-left</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code>result = 2 + 3 * 4;      /* result is 14, not 20 */
-result = (2 + 3) * 4;    /* result is 20 */
-value = 5;
-value += 2 * 3;          /* value is 11, not 21 */
-flag = 1 &lt; 2 &amp;&amp; 3 &gt; 2;   /* flag is true */
+<h2 id="advanced-mathematical-operators">Advanced Mathematical Operators</h2>
+<h3 id="root-calculations">Root Calculations (<code>*/</code>)</h3>
+<div class="highlight"><pre><span></span><code>/* Calculate nth roots with unlimited precision */
+square_root = 16 */ 2;        /* 4 (square root) */
+cube_root = 27 */ 3;          /* 3 (cube root) */
+fourth_root = 256 */ 4;       /* 4 (fourth root) */
+
+/* Large number roots */
+large_number = 123456789012345678901234567890;
+large_root = large_number */ 5;  /* Fifth root of large number */
+(&quot;Fifth root: &quot; + large_root.str()).echo();
 </code></pre></div>
-<hr />
-<h2 id="grapa-specific-notes">Grapa-Specific Notes</h2>
+<h3 id="matrix-operations">Matrix Operations</h3>
+<div class="highlight"><pre><span></span><code>/* Matrix multiplication */
+matrix1 = [[1,2],[3,4]];
+matrix2 = [[5,6],[7,8]];
+product = matrix1 * matrix2;  /* [[19,22],[43,50]] */
+
+/* Matrix inversion using bitwise NOT */
+inverse = ~matrix1;           /* Matrix inverse */
+
+/* Vector operations */
+vector = [1,2,3,4,5];
+scaled = vector * 2;          /* [2,4,6,8,10] */
+</code></pre></div>
+<h3 id="modular-arithmetic">Modular Arithmetic (<code>%</code>)</h3>
+<div class="highlight"><pre><span></span><code>/* Basic modulo operations */
+result = 17 % 5;              /* 2 */
+
+/* Modular exponentiation */
+base = 7;
+exponent = 13;
+modulus = 11;
+result = base.modpow(exponent, modulus);  /* 2 */
+
+/* Modular multiplicative inverse */
+value = 3;
+modulus = 11;
+inverse = value.modinv(modulus);  /* 4 */
+(&quot;Modular inverse: &quot; + inverse.str()).echo();
+</code></pre></div>
+<h2 id="number-theory-and-prime-numbers">Number Theory and Prime Numbers</h2>
+<h3 id="prime-number-generation">Prime Number Generation</h3>
+<div class="highlight"><pre><span></span><code>/* Generate large prime numbers for mathematical research */
+prime_256 = 256.genprime();   /* 256-bit prime */
+prime_512 = 512.genprime();   /* 512-bit prime */
+prime_1024 = 1024.genprime(); /* 1024-bit prime */
+
+(&quot;Generated 256-bit prime: &quot; + prime_256.str()).echo();
+
+/* Generate safe primes (p-1)/2 is also prime */
+safe_prime = 256.genprime(1);
+(&quot;Safe prime: &quot; + safe_prime.str()).echo();
+</code></pre></div>
+<h3 id="primality-testing">Primality Testing</h3>
+<div class="highlight"><pre><span></span><code>/* Test numbers for primality with high confidence */
+is_prime = 17.isprime();      /* true */
+is_prime = 100.isprime();     /* false */
+
+/* Test large numbers */
+large_number = 123456789012345678901234567890123456789;
+is_large_prime = large_number.isprime();
+(&quot;Is large number prime? &quot; + is_large_prime.str()).echo();
+
+/* Test with custom confidence level */
+is_prime = 17.isprime(100);   /* Test with confidence 100 */
+</code></pre></div>
+<h3 id="greatest-common-divisor">Greatest Common Divisor</h3>
+<div class="highlight"><pre><span></span><code>/* Find GCD of two numbers */
+a = 48;
+b = 18;
+gcd_result = a.gcd(b);        /* 6 */
+
+/* Large number GCD */
+large_a = 123456789012345678901234567890;
+large_b = 987654321098765432109876543210;
+large_gcd = large_a.gcd(large_b);
+(&quot;Large GCD: &quot; + large_gcd.str()).echo();
+</code></pre></div>
+<h2 id="data-format-conversion">Data Format Conversion</h2>
+<h3 id="mathematical-format-conversions">Mathematical Format Conversions</h3>
+<div class="highlight"><pre><span></span><code>/* Convert between mathematical formats */
+number = 123456789;
+
+/* Raw byte representation */
+raw_bytes = number.raw();
+(&quot;Raw bytes: &quot; + raw_bytes.str()).echo();
+
+/* Hexadecimal representation */
+hex_string = number.hex();
+(&quot;Hex: &quot; + hex_string).echo();
+
+/* Binary representation */
+binary_string = number.bin();
+(&quot;Binary: &quot; + binary_string).echo();
+
+/* Unsigned integer (important for mathematical operations) */
+unsigned_int = number.uint();
+(&quot;Unsigned: &quot; + unsigned_int.str()).echo();
+</code></pre></div>
+<h2 id="example-financial-calculations">Example: Financial Calculations</h2>
+<div class="highlight"><pre><span></span><code>/* Calculate compound interest with unlimited precision */
+compound_interest = op(principal, rate, time, periods) {
+    rate_per_period = rate / periods;
+    total_periods = time * periods;
+    principal * (1 + rate_per_period).pow(total_periods);
+};
+
+/* Calculate mortgage payments */
+mortgage_payment = op(principal, annual_rate, years) {
+    monthly_rate = annual_rate / 12 / 100;
+    total_payments = years * 12;
+    principal * (monthly_rate * (1 + monthly_rate).pow(total_payments)) /
+              ((1 + monthly_rate).pow(total_payments) - 1);
+};
+
+/* Example calculations */
+loan_amount = 300000;
+annual_rate = 3.5;
+loan_years = 30;
+
+monthly_payment = mortgage_payment(loan_amount, annual_rate, loan_years);
+total_paid = monthly_payment * loan_years * 12;
+total_interest = total_paid - loan_amount;
+
+(&quot;Monthly payment: $&quot; + monthly_payment.str()).echo();
+</code></pre></div>
+<h2 id="example-scientific-computing">Example: Scientific Computing</h2>
+<div class="highlight"><pre><span></span><code>/* Calculate pi using infinite series with unlimited precision */
+calculate_pi = op(iterations) {
+    pi = 0;
+    i = 0;
+    while (i &lt; iterations) {
+        term = 4 / (2 * i + 1);
+        if (i % 2 == 0) {
+            pi += term;
+        } else {
+            pi -= term;
+        };
+        i += 1;
+    };
+    pi;
+};
+
+/* Calculate with high precision */
+pi_approximation = calculate_pi(1000000);
+(&quot;Pi approximation: &quot; + pi_approximation.str()).echo();
+</code></pre></div>
+<h2 id="example-number-theory-research">Example: Number Theory Research</h2>
+<div class="highlight"><pre><span></span><code>/* Research prime number patterns */
+find_prime_patterns = op(range_start, range_end) {
+    primes = [];
+    i = range_start;
+    while (i &lt;= range_end) {
+        if (i.isprime()) {
+            primes += i;
+        };
+        i += 1;
+    };
+    primes;
+};
+
+/* Analyze prime gaps */
+analyze_prime_gaps = op(primes) {
+    gaps = [];
+    i = 1;
+    while (i &lt; primes.len()) {
+        gap = primes.get(i) - primes.get(i - 1);
+        gaps += gap;
+        i += 1;
+    };
+    {
+        &quot;gaps&quot;: gaps,
+        &quot;avg_gap&quot;: gaps.reduce(op(sum, g) { sum + g; }, 0) / gaps.len(),
+        &quot;max_gap&quot;: gaps.max(),
+        &quot;min_gap&quot;: gaps.min()
+    };
+};
+
+/* Example usage */
+primes = find_prime_patterns(1000, 2000);
+analysis = analyze_prime_gaps(primes);
+(&quot;Average prime gap: &quot; + analysis.get(&quot;avg_gap&quot;).str()).echo();
+</code></pre></div>
+<h2 id="example-time-series-analysis">Example: Time Series Analysis</h2>
+<div class="highlight"><pre><span></span><code>/* Process time series data with unlimited precision */
+process_timestamps = op(data) {
+    data.map(op(row) {
+        timestamp = $TIME().parse(row.get(&quot;timestamp&quot;));
+        value = row.get(&quot;value&quot;).float();
+        {
+            &quot;timestamp&quot;: timestamp,
+            &quot;value&quot;: value,
+            &quot;hour&quot;: timestamp.hour(),
+            &quot;day&quot;: timestamp.day(),
+            &quot;month&quot;: timestamp.month()
+        };
+    });
+};
+
+/* Aggregate by time periods */
+aggregate_by_hour = op(processed_data) {
+    grouped = processed_data.group(op(record) { record.get(&quot;hour&quot;); });
+    grouped.map(op(hour, records) {
+        {
+            &quot;hour&quot;: hour,
+            &quot;count&quot;: records.len(),
+            &quot;avg_value&quot;: records.reduce(op(sum, r) { sum + r.get(&quot;value&quot;); }, 0) / records.len(),
+            &quot;min_value&quot;: records.map(op(r) { r.get(&quot;value&quot;); }).min(),
+            &quot;max_value&quot;: records.map(op(r) { r.get(&quot;value&quot;); }).max()
+        };
+    });
+};
+</code></pre></div>
+<h2 id="example-linear-algebra">Example: Linear Algebra</h2>
+<div class="highlight"><pre><span></span><code>/* Solve linear systems using matrix operations */
+solve_linear_system = op(coefficients, constants) {
+    /* Convert to matrix form: Ax = b */
+    A = coefficients;
+    b = constants;
+
+    /* Calculate inverse of A */
+    A_inv = ~A;
+
+    /* Solution: x = A^(-1) * b */
+    solution = A_inv * b;
+    solution;
+};
+
+/* Example: Solve 2x + 3y = 8, 4x + y = 7 */
+coefficients = [[2,3],[4,1]];
+constants = [8,7];
+solution = solve_linear_system(coefficients, constants);
+(&quot;Solution: x = &quot; + solution.get(0).str() + &quot;, y = &quot; + solution.get(1).str()).echo();
+</code></pre></div>
 <ul>
-<li>Every statement and block must end with a semicolon (<code>;</code>).</li>
-<li>Only block comments (<code>/* ... */</code>) are allowed.</li>
-<li>Use parentheses to clarify precedence in complex expressions.</li>
-<li>For more on syntax, see the <a href="../basic_syntax/">Syntax Quick Reference</a>.</li>
-</ul>
-<hr />
-<h2 id="related-documentation">Related Documentation</h2>
-<ul>
-<li><a href="../basic_syntax/">Syntax Quick Reference</a></li>
-<li><a href="../operator/">Operator Reference</a></li>
+<li><strong>See also:</strong> <a href="../../PYTHON_USE_CASES/#3-high-precision-math-scientific-computing">Python Math Examples</a></li>
+<li><strong>See also:</strong> <a href="../cryptography/">Cryptography</a> for cryptographic mathematical operations</li>
+<li><strong>See also:</strong> <a href="../../syntax/operator/">Operators</a> for advanced mathematical operators </li>
 </ul>
 
 
