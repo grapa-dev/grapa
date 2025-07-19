@@ -9,7 +9,6 @@ grapapy.egg-info/SOURCES.txt
 grapapy.egg-info/dependency_links.txt
 grapapy.egg-info/not-zip-safe
 grapapy.egg-info/top_level.txt
-pcre2-10.45/CMakeLists.txt
 source/mainpy.cpp
 source/FL/Enumerations.H
 source/FL/Fl.H
