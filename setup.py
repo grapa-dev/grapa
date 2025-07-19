@@ -324,18 +324,20 @@ if sys.platform.startswith('linux') or sys.platform.startswith('win32'):
         version=grapapy_version,
         author="Chris Matichuk",
         author_email="matichuk@hotmail.com",
-        description="GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa’s C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python’s GIL and making advanced data processing simple and fast.",
+        description="GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa's C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python's GIL and making advanced data processing simple and fast.",
         long_description="""
-GrapaPy is a Python extension for the Grapa language, designed for advanced data processing, ETL, and language experimentation. GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa’s C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python’s GIL and making advanced data processing simple and fast.
+GrapaPy is a Python extension for the Grapa language, designed for advanced data processing, ETL, and language experimentation. GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa's C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python's GIL and making advanced data processing simple and fast.
 
 Features:
 - True parallel ETL/data processing from Python
 - Hardened, production-ready parallelism
 - High performance for large file processing, data transformation, analytics, and more
 - Simple, functional API
-"""
-        ,
+
+For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/
+""",
         long_description_content_type="text/markdown",
+        url="https://grapa-dev.github.io/grapa/",
         ext_modules=[lib_grapa],
         cmdclass={
             'copy_grapalib': CopySharedLibrary,
@@ -362,9 +364,11 @@ else:
             "Grapa is a modern grammar-based programming language and parser designed for Python users, educators, "
             "researchers, and data engineers. It features unlimited precision math, runtime-mutable grammars, true parallelism, "
             "and seamless Python integration via GrapaPy. Rapidly prototype languages, process data, and experiment with advanced grammars—all with a unified, high-performance toolset.\n\n"
+            "For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/\n\n"
             "See the [Grapa project on GitHub](https://github.com/grapa-dev/grapa) for full documentation, examples, and installation instructions."
         ),
         long_description_content_type="text/markdown",
+        url="https://grapa-dev.github.io/grapa/",
         ext_modules=[CMakeExtension("grapapy")],
         cmdclass={"build_ext": CMakeBuild},
         zip_safe=False,
