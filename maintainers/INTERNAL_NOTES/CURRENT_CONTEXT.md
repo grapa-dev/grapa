@@ -179,6 +179,8 @@ The `docs/docs/examples/` directory contains test examples and sample files that
 - **Working examples** - all examples must be tested and functional
 - **Clear organization** - logical grouping of examples by purpose
 - **Documentation links** - all examples must be referenced in documentation
+- **Testing requirements** - all .grc and .py files must be tested before deployment
+- **Expected outputs** - all examples must have documented expected results
 
 ## Document Workflow
 

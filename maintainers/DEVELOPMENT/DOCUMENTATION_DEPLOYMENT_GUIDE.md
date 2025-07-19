@@ -90,6 +90,46 @@ The `docs/docs/examples/` directory contains test examples and sample files that
 #### Dependency System
 **⚠️ IMPORTANT**: Files in the examples directory are referenced by documentation. Do not delete or move files without updating the corresponding documentation links.
 
+#### Testing Requirements
+**🔬 CRITICAL**: All .grc and .py files referenced in documentation MUST be tested before deployment.
+
+##### Test Commands
+```bash
+# Test all .grc examples
+./grapa -cfile "docs/docs/examples/basic_example.grc" -q
+./grapa -cfile "docs/docs/examples/advanced_example.grc" -q
+./grapa -cfile "docs/docs/examples/performance_example.grc" -q
+
+# Test Python examples
+python3 docs/docs/examples/python_integration_example.py
+```
+
+##### Expected Results
+- **Basic Example**: Should return `20` (result of 10 + 5 * 2)
+- **Advanced Example**: Should return `[["Hello","World","Grapa","Programming"],10]` (words array and array length)
+- **Performance Example**: Should return `[4950,10]` (sum of 0-99, array length)
+- **Python Example**: Should run without errors (may show "module not installed" message)
+
+#### Current Examples
+- `basic_example.grc` - Basic Grapa syntax and operations
+- `advanced_example.grc` - Complex Grapa operations and functions
+- `performance_example.grc` - Performance testing examples
+- `python_integration_example.py` - Python integration examples
+
+#### Maintenance Rules
+1. **Search before changes**: Use `grep -r "examples/filename.grc" docs/docs/`
+2. **Document dependencies**: Add `<!-- DEPENDENCY: examples/filename.grc -->` comments
+3. **Update all references**: When moving/deleting files, update all documentation links
+4. **Test examples**: Ensure all examples work correctly before committing
+5. **Test before deployment**: Run all example tests before deploying documentation
+
+#### Benefits
+- **Self-contained documentation**: No external dependencies on test files
+- **Guaranteed availability**: All referenced examples are always present
+- **Clear maintenance**: Explicit dependency tracking prevents broken links
+- **Easy discovery**: Centralized location for all documentation examples
+- **Tested examples**: All examples are verified to work correctly
+
 #### File Organization
 - **`.grc` files**: Grapa source code examples
 - **`.grz` files**: Compiled Grapa examples  

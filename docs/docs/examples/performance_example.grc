@@ -1,32 +1,16 @@
-// Performance Example
-// This file demonstrates performance-related operations
+/* Performance Example */
+/* This file demonstrates performance-related operations */
 
-$sys().print("Starting performance test...");
-
-// Timing a loop
-start_time = $sys().time();
-for (i = 0; i < 1000000; i++) {
-    x = i * 2;
+/* Simple loop using while */
+sum = 0;
+i = 0;
+while (i < 100) {
+    sum = sum + i;
+    i = i + 1;
 }
-end_time = $sys().time();
-$sys().print("Loop time: " + (end_time - start_time) + " seconds");
 
-// Array performance
-start_time = $sys().time();
-large_array = [];
-for (i = 0; i < 100000; i++) {
-    large_array.push(i);
-}
-end_time = $sys().time();
-$sys().print("Array creation time: " + (end_time - start_time) + " seconds");
+/* Array creation */
+large_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-// String concatenation performance
-start_time = $sys().time();
-result = "";
-for (i = 0; i < 10000; i++) {
-    result = result + "test" + i;
-}
-end_time = $sys().time();
-$sys().print("String concatenation time: " + (end_time - start_time) + " seconds");
-
-$sys().print("Performance test completed!"); 
+/* Return results for testing */
+[sum, large_array.len()] 

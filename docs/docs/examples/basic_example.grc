@@ -1,22 +1,17 @@
-// Basic Grapa Example
-// This file demonstrates basic Grapa syntax and operations
+/* Basic Grapa Example */
+/* This file demonstrates basic Grapa syntax and operations */
 
-$sys().print("Hello, Grapa!");
-
-// Basic variable assignment
+/* Basic variable assignment */
 x = 42;
-$sys().print("x = " + x);
 
-// Basic array operations
+/* Basic array operations */
 arr = [1, 2, 3, 4, 5];
-$sys().print("Array: " + arr);
 
-// Basic string operations
+/* Basic string operations */
 str = "Grapa is awesome!";
-$sys().print("String: " + str);
 
-// Basic math operations
+/* Basic math operations */
 result = 10 + 5 * 2;
-$sys().print("Result: " + result);
 
-$sys().print("Basic example completed!"); 
+/* Return the result for testing */
+result 
