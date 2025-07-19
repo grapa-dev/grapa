@@ -16,8 +16,7 @@ lock_obj.unlock();
 See [Threading and Locking](../sys/thread.md) and [Function Operators: static and const](../operators/function.md) for details and best practices.
 
 References:
-- [$TABLE object](../lib/grapa/$TABLE.grc)
-- [$file object](../lib/grapa/$file.grc)
+
 
 
 A $TABLE is a hierarchical database with columns, rows, supporting both row store and column store architectures.

@@ -297,6 +297,6 @@ This system enables efficient project management and database operations while m
 
 ## Related Topics
 - [Syntax Quick Reference](syntax/basic_syntax.md)
-- [System Functions](../maintainers/IMPLEMENTATION/SYSTEM_FUNCTIONS.md)
+- System Functions (see maintainer documentation)
 - [Testing](TESTING.md)
 - [Examples](EXAMPLES.md) 

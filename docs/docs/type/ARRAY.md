@@ -5,10 +5,8 @@ tags:
 ---
 # $ARRAY
 References:
-- [$ARRAY object](../lib/grapa/$ARRAY.grc)
-- [$LIST object](../lib/grapa/$LIST.grc)
-- [$VECTOR object](../lib/grapa/$VECTOR.grc)
-- [$OBJ object](../lib/grapa/$OBJ.grc)
+- [$LIST object](LIST.md)
+- [$VECTOR object](VECTOR.md)
 
 Same as $LIST, but without the entry labels.
 

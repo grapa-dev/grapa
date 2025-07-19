@@ -150,4 +150,4 @@ if (result.get("success")) {
 }
 ```
 
-- **See also:** [Python Web Scraping Examples](../PYTHON_USE_CASES.md#5-webdata-scraping-automation) 
+- **See also:** [Python Web Scraping Examples](../PYTHON_USE_CASES.md#5-webdata-scraping-automation-verified) 

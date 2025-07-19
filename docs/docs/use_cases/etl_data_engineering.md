@@ -92,7 +92,7 @@ aggregate_by_hour = op(processed_data) {
 };
 ```
 
-- **See also:** [Python ETL Examples](../PYTHON_USE_CASES.md#1-etl--data-engineering)
+- **See also:** [Python ETL Examples](../PYTHON_USE_CASES.md#1-etl-data-engineering-verified)
 
 > **Best Practice:**
 > Grapa's parallelism is a core, production-ready feature, specifically designed and hardened for ETL and high-throughput data processing. Users can confidently leverage `.map()`, `.filter()`, and related methods for robust, parallel ETL workloads.

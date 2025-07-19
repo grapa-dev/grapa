@@ -11,7 +11,7 @@
 > | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |
 > | $STR      |      ✗      |     ✗      |       ✓         |      —       |
 >
-> See [Basic Syntax Guide](syntax/basic_syntax.md) for details.
+> See [Basic Syntax Guide](../syntax/basic_syntax.md) for details.
 
 ## Kotlin-to-Grapa Migration Guide (WIP Features)
 

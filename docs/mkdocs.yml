@@ -95,6 +95,7 @@ nav:
           - Time: type/TIME.md
           - Vector: type/VECTOR.md
           - Widget: type/WIDGET.md
+          - Widget Attributes: type/widget/attributes.md
           - XML: type/XML.md
   - API Reference:
       - Overview: API_REFERENCE.md
@@ -134,6 +135,7 @@ nav:
       - High-Precision Math: use_cases/high_precision_math.md
       - Parallel Programming: use_cases/parallel_concurrent_programming.md
       - Web Scraping: use_cases/web_data_scraping.md
+      - Database & File System: use_cases/database_file_system.md
       - Education & Prototyping: use_cases/education_prototyping.md
       - Cryptography: use_cases/cryptography.md
   - Migration Guides:
@@ -157,6 +159,7 @@ nav:
       - Directory Navigation: directory_navigation.md
       - GRC Scripts: grc_scripts.md
       - GRZ Format: GRZ_FORMAT.md
+      - GrapaPy Namespace Solution: GRAPAPY_NAMESPACE_SOLUTION.md
       - Python Use Cases: PYTHON_USE_CASES.md
       - Run: RUN.md
       - Testing: TESTING.md

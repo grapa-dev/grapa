@@ -43,7 +43,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 
 > **See Also:**
 > - [Python Integration Guide](../python_integration.md)
-> - [Python Use Cases](PYTHON_USE_CASES.md)
+> - [Python Use Cases](../PYTHON_USE_CASES.md)
 
 ## Syntax Mapping Table
 
@@ -89,7 +89,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
-Below are all valid ways to access elements in Grapa data structures. See the canonical [Basic Syntax Guide](syntax/basic_syntax.md) for the latest tested rules.
+Below are all valid ways to access elements in Grapa data structures. See the canonical [Basic Syntax Guide](../syntax/basic_syntax.md) for the latest tested rules.
 
 ### $LIST and $OBJ
 
@@ -153,7 +153,7 @@ value = table.get("user1", "name");   /* Correct */
 > | $TABLE    |     ✓*      |     ✗      |        —         |      —       |   ✗   |    ✗   |
 > *$TABLE .get() requires two arguments: key and field.
 
-See [Basic Syntax Guide](syntax/basic_syntax.md) for empirical test results and future updates.
+See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
 - No `for`/`foreach` loops—use `while` or `.range()`+functional methods
@@ -293,7 +293,7 @@ result = some_operation().iferr(0);
 > **Tip:** Grapa's parallel ETL/data processing is robust, production-ready, and a core design goal. Unlike Python, you can use parallel methods like `.map()` and `.filter()` out of the box for high-throughput data tasks.
 
 ## See Also
-- [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users)
+- [Migration Tips for Python Users](../PYTHON_USE_CASES.md#migration-tips-for-python-users)
 - [Python Integration Guide](../python_integration.md)
 
 ---

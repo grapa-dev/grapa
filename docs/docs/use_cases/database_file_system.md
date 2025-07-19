@@ -225,4 +225,4 @@ restore_database = op(backup_file) {
 };
 ```
 
-- **See also:** [Python File/DB Examples](../PYTHON_USE_CASES.md#6-database-file-system-integration) 
+- **See also:** [Python File/DB Examples](../PYTHON_USE_CASES.md#6-database-file-system-integration-verified) 

@@ -28,7 +28,7 @@ This document provides practical examples of Grapa usage, organized from basic t
 - [Basic Examples](#basic-examples)
 - [Data Processing](#data-processing)
 - [Dynamic Code Execution](#dynamic-code-execution)
-- [Pattern Matching (Grep)](#grep---pattern-matching)
+- [Pattern Matching (Grep)](#grep-pattern-matching)
 
 ## Basic Examples
 

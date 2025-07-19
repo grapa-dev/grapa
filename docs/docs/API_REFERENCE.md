@@ -9,23 +9,22 @@ tags:
 
 > **For High-Level Grapa Programmers:** This reference covers the functions and types you'll use most often when writing Grapa scripts and applications.
 
-> **For Advanced Users:** See [System Functions (Advanced)](../maintainers/IMPLEMENTATION/SYSTEM_FUNCTIONS.md) for low-level functions, grammar development, and internal APIs.
+> **For Advanced Users:** See the maintainer documentation for low-level functions, grammar development, and internal APIs.
 
 ## Table of Contents
 - [Core Language](#core-language)
 - [Dynamic Code Execution](#dynamic-code-execution)
 - [Variables & Scope](#variables-scope)
 - [Data Structures](#data-structures)
-- [Search & Analysis](#search--analysis)
+- [Search & Analysis](#search-analysis)
 - [Control Flow](#control-flow)
 - [Functional Programming](#functional-programming)
-- [Type & I/O](#type--io)
+- [Type & I/O](#type-io)
 - [Math Operations](#math-operations)
 - [String Operations](#string-operations)
 - [Array/Matrix Operations](#arraymatrix-operations)
 - [File System](#file-system)
-- [Time & Date](#time--date)
-- [Usage Examples](#usage-examples)
+- [Time & Date](#time-date)
 
 ---
 

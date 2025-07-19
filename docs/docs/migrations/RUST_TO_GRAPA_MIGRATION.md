@@ -21,8 +21,8 @@
 This guide helps Rust users transition to Grapa by mapping common Rust idioms, patterns, and code to their Grapa equivalents.
 
 > **See Also:**
-> - [Basic Syntax Guide](syntax/basic_syntax.md)
-> - [Operator Reference](syntax/operator.md)
+> - [Basic Syntax Guide](../syntax/basic_syntax.md)
+> - [Operator Reference](../syntax/operator.md)
 
 ## Syntax Mapping Table
 
@@ -55,7 +55,7 @@ This guide helps Rust users transition to Grapa by mapping common Rust idioms, p
 
 ## Access Patterns: Objects, Lists, Arrays, Files, and Tables
 
-Below are all valid ways to access elements in Grapa data structures. See the canonical [Basic Syntax Guide](syntax/basic_syntax.md) for the latest tested rules.
+Below are all valid ways to access elements in Grapa data structures. See the canonical [Basic Syntax Guide](../syntax/basic_syntax.md) for the latest tested rules.
 
 ### $LIST and $OBJ
 
@@ -119,7 +119,7 @@ value = table.get("user1", "name");   /* Correct */
 > | $OBJ      |      ✗      |     ✗      |       ✗         |     ✓       |
 > *$TABLE .get() requires two arguments: key and field.
 
-See [Basic Syntax Guide](syntax/basic_syntax.md) for empirical test results and future updates.
+See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
 - No `for`/`foreach` loops—use `while` or `.range()`+functional methods
@@ -225,8 +225,8 @@ result = some_operation().iferr(0);
 > ```
 
 ## See Also
-- [Basic Syntax Guide](syntax/basic_syntax.md)
-- [Operator Reference](syntax/operator.md)
+- [Basic Syntax Guide](../syntax/basic_syntax.md)
+- [Operator Reference](../syntax/operator.md)
 
 ---
 
@@ -312,8 +312,8 @@ These are advanced features that most developers won't miss:
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, Rust's ownership system is replaced by Grapa's automatic memory management, and Rust's async/await is replaced by Grapa's built-in parallel processing.
 
 ## See Also
-- [Basic Syntax Guide](syntax/basic_syntax.md)
-- [Operator Reference](syntax/operator.md)
+- [Basic Syntax Guide](../syntax/basic_syntax.md)
+- [Operator Reference](../syntax/operator.md)
 
 ---
 

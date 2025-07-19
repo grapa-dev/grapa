@@ -272,6 +272,6 @@ solution = solve_linear_system(coefficients, constants);
 ("Solution: x = " + solution.get(0).str() + ", y = " + solution.get(1).str()).echo();
 ```
 
-- **See also:** [Python Math Examples](../PYTHON_USE_CASES.md#3-high-precision-math-scientific-computing)
+- **See also:** [Python Math Examples](../PYTHON_USE_CASES.md#3-high-precision-math-scientific-computing-verified)
 - **See also:** [Cryptography](cryptography.md) for cryptographic mathematical operations
 - **See also:** [Operators](../syntax/operator.md) for advanced mathematical operators 

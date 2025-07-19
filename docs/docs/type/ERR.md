@@ -1,7 +1,6 @@
 # $ERR
 References:
-- [$ERR object](../lib/grapa/$ERR.grc)
-- [$OBJ object](../lib/grapa/$OBJ.grc)
+
 
 If an operation results in an error, the $ERR data type is returned. Check using the type function: if (@result.type()==$ERR) something;
 

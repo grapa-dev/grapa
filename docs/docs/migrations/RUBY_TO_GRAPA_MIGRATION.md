@@ -11,7 +11,7 @@
 > | $OBJ      |      ✗      |     ✗      |       ✓         |     ✓       |
 > | $STR      |      ✗      |     ✗      |       ✓         |      —       |
 >
-> See [Basic Syntax Guide](syntax/basic_syntax.md) for details.
+> See [Basic Syntax Guide](../syntax/basic_syntax.md) for details.
 
 ## Common Ruby-to-Grapa Mappings
 
@@ -160,8 +160,8 @@ This can make migration easier for those used to Ruby's `puts()` or similar func
 > **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.
 
 ## See Also
-- [Basic Syntax Guide](syntax/basic_syntax.md)
-- [Operator Reference](syntax/operator.md)
+- [Basic Syntax Guide](../syntax/basic_syntax.md)
+- [Operator Reference](../syntax/operator.md)
 
 ---
 
