@@ -8,7 +8,7 @@ Loads referenced file during compile time. Also useful for testing a library or 
 
 ```grapa
 include "lib/grapa/grapa.grc";
-include "test/test_basic.grz";
+include "examples/basic_example.grc";
 ```
 
 ### File Types and Compilation Behavior
@@ -70,9 +70,9 @@ $sys().compilef("lib/custom/string_utils.grc", "lib/custom/string_utils.grz");
 #### Test Suite Organization
 ```grapa
 /* Include multiple test files */
-include "test/core/test_basic.grc";
-include "test/core/test_advanced.grc";
-include "test/test_performance.grz";
+include "examples/basic_example.grc";
+include "examples/advanced_example.grc";
+include "examples/performance_example.grc";
 ```
 
 #### Library Development

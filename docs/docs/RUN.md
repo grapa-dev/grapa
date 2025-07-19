@@ -64,16 +64,14 @@ Run all tests in one command:
 
 ### Individual Test Categories
 ```bash
-# Capabilities test
-.\grapa.exe -cfile "test/grep/test_current_capabilities.grc"
+# Basic examples
+.\grapa.exe -cfile "examples/basic_example.grc"
 
-# Performance test
-.\grapa.exe -cfile "test/grep/test_performance_optimizations.grc"
+# Advanced examples
+.\grapa.exe -cfile "examples/advanced_example.grc"
 
-# Feature-specific tests
-.\grapa.exe -cfile "test/grep/test_atomic_groups.grc"
-.\grapa.exe -cfile "test/grep/test_lookaround_assertions.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
+# Performance examples
+.\grapa.exe -cfile "examples/performance_example.grc"
 ```
 
 ### Regression Testing

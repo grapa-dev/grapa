@@ -73,6 +73,62 @@ find . -name "*.md" -exec sed -i '' 's/USE_CASES\.md/use_cases\/index.md/g' {} \
 find . -name "*.md" -exec sed -i '' 's/PYTHON_use_cases\/index\.md/PYTHON_USE_CASES.md/g' {} \;
 ```
 
+#### Fix External Test File References
+```bash
+# Replace missing test file references with examples
+find . -name "*.md" -exec sed -i '' 's/test\/test_basic\.grc/examples\/basic_example.grc/g' {} \;
+find . -name "*.md" -exec sed -i '' 's/test\/test_basic\.grz/examples\/basic_example.grc/g' {} \;
+find . -name "*.md" -exec sed -i '' 's/test\/test_advanced\.grc/examples\/advanced_example.grc/g' {} \;
+find . -name "*.md" -exec sed -i '' 's/test\/test_performance\.grz/examples\/performance_example.grc/g' {} \;
+```
+
+### Examples Directory Management
+
+#### Purpose
+The `docs/docs/examples/` directory contains test examples and sample files that are referenced by the Grapa documentation. This ensures that documentation examples are always available and properly maintained.
+
+#### Dependency System
+**⚠️ IMPORTANT**: Files in the examples directory are referenced by documentation. Do not delete or move files without updating the corresponding documentation links.
+
+#### File Organization
+- **`.grc` files**: Grapa source code examples
+- **`.grz` files**: Compiled Grapa examples  
+- **`.py` files**: Python integration examples
+- **`.md` files**: Example documentation
+
+#### Adding New Examples
+1. Place your example file in `docs/docs/examples/`
+2. Update the documentation to reference the new file
+3. Add a comment in the documentation indicating the dependency
+
+#### Example Documentation Reference
+```markdown
+<!-- DEPENDENCY: examples/basic_example.grc -->
+```grapa
+include "examples/basic_example.grc";
+```
+
+#### Moving/Deleting Examples
+Before moving or deleting any file in the examples directory:
+1. Search the documentation for references to the file
+2. Update all documentation links
+3. Consider if the example should be preserved elsewhere
+
+#### Search Commands
+```bash
+# Search for references to a specific example
+grep -r "examples/filename.grc" docs/docs/
+
+# Search for all example references
+grep -r "examples/" docs/docs/
+```
+
+#### Current Examples
+- `basic_example.grc` - Basic Grapa syntax and operations
+- `advanced_example.grc` - Complex Grapa operations and functions
+- `performance_example.grc` - Performance testing examples
+- `python_integration_example.py` - Python integration examples
+
 #### Complete Navigation Structure
 The navigation in `docs/mkdocs.yml` should include all sections:
 

@@ -288,10 +288,10 @@ class GrapaTableHelper:
 
 ```powershell
 # ✅ Correct: Use -cfile for .grc files
-.\grapa.exe -cfile "test/core/test_file.grc"
+.\grapa.exe -cfile "examples/basic_example.grc"
 
 # ❌ Incorrect: -ccmd may cause parsing issues
-.\grapa.exe -ccmd "test/core/test_file.grc"
+.\grapa.exe -ccmd "examples/basic_example.grc"
 ```
 
 ### Quiet Mode
@@ -301,7 +301,7 @@ class GrapaTableHelper:
 **Solution**: Use `-q` flag to suppress version output:
 
 ```powershell
-.\grapa.exe -cfile "test/core/test_file.grc" -q
+.\grapa.exe -cfile "examples/basic_example.grc" -q
 ```
 
 ## Best Practices for Debugging

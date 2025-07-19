@@ -91,6 +91,12 @@ nav:
       - Education & Prototyping: use_cases/education_prototyping.md
       - Cryptography: use_cases/cryptography.md
   - Examples: EXAMPLES.md
+  - Code Examples:
+      - Overview: examples/README.md
+      - Basic Example: examples/basic_example.grc
+      - Advanced Example: examples/advanced_example.grc
+      - Performance Example: examples/performance_example.grc
+      - Python Integration: examples/python_integration_example.py
   - Syntax:
       - Basic Syntax: syntax/basic_syntax.md
       - Operators: syntax/operator.md
