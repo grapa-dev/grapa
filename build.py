@@ -351,7 +351,7 @@ class GrapaBuilder:
                 
                 cmd = ["g++", "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["utf8proc.o"]
                 cmd.extend(lib_files)
-                cmd.extend([f"-L{lib_path}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext",
+                cmd.extend([f"-L{lib_path}", "-std=c++17", "-lX11", "-lXfixes", "-lXft", "-lXext",
                     "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl",
                     "-lm", "-static-libgcc", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"])
                 
@@ -369,7 +369,7 @@ class GrapaBuilder:
             cmd = [
                 "g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
             ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + [
-                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
+                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", 
                 "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
                 "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
                 "-O3", "-pthread", "-o", config.output_name
@@ -446,7 +446,7 @@ class GrapaBuilder:
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
                 cmd = ["g++", "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto",
+                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17",
                     "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                     "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc",
                     "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
@@ -467,7 +467,7 @@ class GrapaBuilder:
             cmd = [
                 "g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
             ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + [
-                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
+                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", 
                 "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
                 "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
                 "-O3", "-pthread", "-o", config.output_name
