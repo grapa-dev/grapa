@@ -2,6 +2,8 @@
 
 This directory now contains an automated build system that replaces the manual copy-paste process from `maintainers/BUILD_AND_DEPLOYMENT/BUILD.md`.
 
+**IMPORTANT: This build system builds for the CURRENT platform only. It does NOT support cross-compilation. You must run this script on each target platform independently.**
+
 ## Quick Start
 
 ### Build for Current Platform
@@ -13,30 +15,9 @@ python3 build.py
 ./build.sh
 ```
 
-### Build for Specific Platform
-```bash
-# Mac ARM64
-python3 build.py mac arm64
-
-# Linux AMD64
-python3 build.py linux amd64
-
-# Windows AMD64
-python3 build.py windows amd64
-
-# AWS ARM64
-python3 build.py aws arm64
-```
-
-### Build for All Platforms
-```bash
-python3 build.py --all
-```
-
 ### Build with Tests
 ```bash
 python3 build.py --test
-python3 build.py mac arm64 --test
 ```
 
 ## Supported Platforms
@@ -103,27 +84,17 @@ python3 build.py --test
 
 ### Release Build
 ```bash
-# Build for all platforms
-python3 build.py --all
+# Build for current platform
+python3 build.py
 
-# This creates packages for:
-# - grapa-windows-amd64.zip
-# - grapa-mac-arm64.tar.gz
-# - grapa-mac-amd64.tar.gz
-# - grapa-linux-arm64.tar.gz
-# - grapa-linux-amd64.tar.gz
-# - grapa-aws-arm64.tar.gz
-# - grapa-aws-amd64.tar.gz
-```
-
-### Cross-Platform Development
-```bash
-# Build for specific target
-python3 build.py linux amd64
-
-# Build for multiple targets
-python3 build.py mac arm64 --test
-python3 build.py linux amd64 --test
+# This creates packages for your current platform:
+# - grapa-windows-amd64.zip (on Windows)
+# - grapa-mac-arm64.tar.gz (on Mac ARM64)
+# - grapa-mac-amd64.tar.gz (on Mac AMD64)
+# - grapa-linux-arm64.tar.gz (on Linux ARM64)
+# - grapa-linux-amd64.tar.gz (on Linux AMD64)
+# - grapa-aws-arm64.tar.gz (on AWS ARM64)
+# - grapa-aws-amd64.tar.gz (on AWS AMD64)
 ```
 
 ## File Structure
@@ -186,12 +157,6 @@ grapa/
 ```bash
 # Show help
 python3 build.py --help
-
-# Verbose output
-python3 build.py --verbose
-
-# Debug mode
-python3 build.py --debug
 ```
 
 ## Migration from Manual Build
@@ -208,7 +173,7 @@ clang++ -Isource source/main.cpp source/grapa/*.cpp utf8proc.o source/openssl-li
 ### After (Automated)
 ```bash
 # Single command
-python3 build.py mac arm64 --test
+python3 build.py --test
 ```
 
 ## Contributing
@@ -226,4 +191,5 @@ To modify the build system:
 - It automatically handles platform-specific compiler flags and libraries
 - AWS builds use the same commands as Linux but with different library paths
 - All build artifacts are cleaned up automatically
-- Python packages are built and installed automatically 
+- Python packages are built and installed automatically
+- **This script builds only for the current platform. For multi-platform builds, run the script on each target platform.** 

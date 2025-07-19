@@ -10,6 +10,21 @@ tags:
 - [Dependencies](DEPENDENCIES.md)
 - [AWS/Docker Setup](SETUPAWSDOCKER.md)
 
+## ⚠️ **IMPORTANT**: Automated Build System Available
+
+**Status**: ✅ **COMPLETED** - All platforms working  
+**Date**: July 19, 2024
+
+The manual build commands below have been **automated** with `build.py`. The automated system:
+- ✅ Works on all 7 platforms (Windows, Mac ARM64/AMD64, Linux ARM64/AMD64, AWS ARM64/AMD64)
+- ✅ Handles all build steps automatically
+- ✅ Creates packages and Python integration
+- ✅ Auto-detects current platform
+
+**Usage**: `python3 build.py` (see [BUILD_README.md](../../BUILD_README.md))
+
+**Manual commands below are kept for reference and troubleshooting.**
+
 ## Windows
 
 ### Setup

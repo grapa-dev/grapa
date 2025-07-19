@@ -9,6 +9,7 @@ grapapy.egg-info/SOURCES.txt
 grapapy.egg-info/dependency_links.txt
 grapapy.egg-info/not-zip-safe
 grapapy.egg-info/top_level.txt
+pcre2-10.45/CMakeLists.txt
 source/mainpy.cpp
 source/FL/Enumerations.H
 source/FL/Fl.H
@@ -399,7 +400,11 @@ source/pcre2/pcre2_jit_simd_inc.h
 source/pcre2/pcre2_ucp.h
 source/pcre2/pcre2_util.h
 source/pcre2/pcre2posix.h
+source/pcre2-lib/aws-amd64/libpcre2-16.a
+source/pcre2-lib/aws-amd64/libpcre2-32.a
 source/pcre2-lib/aws-amd64/libpcre2-8.a
+source/pcre2-lib/aws-amd64/libpcre2-8.a.backup
+source/pcre2-lib/aws-amd64/libpcre2-posix.a
 source/pcre2-lib/aws-arm64/libpcre2-8.a
 source/pcre2-lib/linux-amd64/libpcre2-8.a
 source/pcre2-lib/linux-arm64/libpcre2-8.a

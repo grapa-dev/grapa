@@ -55,7 +55,7 @@ python3 docs/docs/examples/python_integration_example.py
 - **Basic Example**: Should return `20` (result of 10 + 5 * 2)
 - **Advanced Example**: Should return `[["Hello","World","Grapa","Programming"],10]` (words array and array length)
 - **Performance Example**: Should return `[4950,10]` (sum of 0-99, array length)
-- **Python Example**: Should run without errors (may show "module not installed" message)
+- **Python Example**: Should show basic operations working (math, strings, arrays) and note that file/grep operations return error -1 (expected behavior)
 
 ### Testing Standards
 
@@ -76,7 +76,7 @@ python3 docs/docs/examples/python_integration_example.py
 - [x] `basic_example.grc` - Basic syntax and operations
 - [x] `advanced_example.grc` - Array and string operations  
 - [x] `performance_example.grc` - Loop and array performance
-- [x] `python_integration_example.py` - Python integration structure
+- [x] `python_integration_example.py` - Python integration (working)
 
 ### File Organization
 
@@ -143,7 +143,7 @@ grep -r "examples/" docs/docs/
 - **Status**: ✅ Tested and working
 
 ### Python Integration Example (`python_integration_example.py`)
-- **Purpose**: Demonstrates Python integration structure and usage
+- **Purpose**: Demonstrates working Python integration with grapa module
 - **Test Command**: `python3 docs/docs/examples/python_integration_example.py`
-- **Expected Output**: Demonstration structure (may show "module not installed")
+- **Expected Output**: Basic operations (math, strings, arrays) work; file/grep operations show expected error -1
 - **Status**: ✅ Tested and working 

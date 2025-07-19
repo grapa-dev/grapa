@@ -10,9 +10,9 @@ Grapa provides powerful Python integration capabilities, offering a unified inte
 Grapa provides a single API that seamlessly navigates between file systems and databases:
 
 ```python
-import grapa
+import grapapy
 
-f = grapa.file()
+f = grapapy.grapa().file()
 # Navigate from file system into database seamlessly
 f.cd("project_data")  # Could be file system directory
 f.cd("users")         # Could be database table
@@ -31,9 +31,10 @@ Optimized for analytical workloads and data science:
 
 ```python
 # Python data science workflows with column store
-f = grapa.file()
+f = grapapy.grapa().file()
 f.mk("analytics_db", "COL")  # Column store for analytical queries
 f.cd("analytics_db")
+```
 
 # Define schema optimized for analytics
 f.mkfield("timestamp", "TIME", "FIX", 8)
@@ -57,6 +58,7 @@ Optimized for transactional workloads and frequent updates:
 # Transactional data with row store
 f.mk("user_sessions", "ROW")
 f.cd("user_sessions")
+```
 
 # Fast point queries and updates
 f.set("session_123", "user_456", "user_id")

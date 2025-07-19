@@ -6,6 +6,35 @@
 
 ---
 
+## 🚀 **IMMEDIATE PRIORITY (Current Session)**
+
+### **Setup.py Metadata Update for Official Release** (IMMEDIATE)
+**Status**: Ready to start  
+**Estimated Effort**: 1-2 hours  
+**Source**: WIP_context_snapshot.md - Preparation for official new release
+
+#### Tasks:
+1. **Revise `description` and `long_description`** in `setup.py` to be inviting, accurate, and up-to-date
+2. **Draw content from README and Python docs** for consistency
+3. **Keep metadata in sync** with docs and PyPI
+4. **Explore CLI distribution options** for easy installation and dependency management
+5. **Design universal build process** for Grapa binaries with separate commands for build, clean, and GrapaPy build
+
+#### Files to Update:
+- `setup.py` - Update metadata fields
+- `README.md` - Ensure consistency with setup.py
+- `docs-site/docs/python_integration.md` - Verify alignment
+
+#### Success Criteria:
+- `setup.py` metadata accurately reflects current Grapa capabilities
+- Description is inviting and professional for PyPI listing
+- All metadata fields are consistent across documentation
+- Ready for official release deployment
+
+---
+
+---
+
 ## ✅ **COMPLETED ITEMS (Recent Successes)**
 
 ### **GRAPHEME CLUSTERS (\\X) REGRESSION - FIXED AND VERIFIED** ✅
