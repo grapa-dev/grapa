@@ -1,0 +1,3349 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/docs/syntax/operator/">
+      
+      
+        <link rel="prev" href="../basic_syntax/">
+      
+      
+        <link rel="next" href="../precedence/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Operators - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#operators" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Operators
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING_STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CLI_QUICKSTART/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../python_integration/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Python Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API_REFERENCE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GREP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Grep Documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../migrations/PYTHON_TO_GRAPA_MIGRATION/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../use_cases/" class="md-tabs__link">
+          
+  
+  
+  Use Cases
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EXAMPLES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../basic_syntax/" class="md-tabs__link">
+          
+  
+  
+  Syntax
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../TROUBLESHOOTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING_STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI_QUICKSTART/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API_REFERENCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GREP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/PYTHON_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/JS_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/RUST_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/TYPESCRIPT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/GO_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/RUBY_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/KOTLIN_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/SWIFT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Use Cases
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ETL / Data Engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Compiler/BNF Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    High-Precision Math
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parallel Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Scraping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database & File System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Education & Prototyping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/cryptography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cryptography
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EXAMPLES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Syntax
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Syntax
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic_syntax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Syntax
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Operators
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operators
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operator-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operator Categories
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operator Categories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-arithmetic-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Arithmetic Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-comparison-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Comparison Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-logical-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Logical Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-bitwise-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Bitwise Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-assignment-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Assignment Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-special-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Special Operators
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type-support-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Support Matrix
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arithmetic-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arithmetic Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Arithmetic Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Addition (+)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subtraction-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subtraction (-)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiplication (*)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#division" class="md-nav__link">
+    <span class="md-ellipsis">
+      Division (/)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modulo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modulo (%)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exponentiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exponentiation (**)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#root" class="md-nav__link">
+    <span class="md-ellipsis">
+      Root (*/)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparison Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equality" class="md-nav__link">
+    <span class="md-ellipsis">
+      Equality (==)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inequality" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inequality (!=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#less-than" class="md-nav__link">
+    <span class="md-ellipsis">
+      Less Than (&lt;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#less-than-or-equal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Less Than or Equal (&lt;=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greater-than" class="md-nav__link">
+    <span class="md-ellipsis">
+      Greater Than (&gt;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greater-than-or-equal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Greater Than or Equal (&gt;=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spaceship" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spaceship (&lt;=&gt;)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logical-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Logical Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logical-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical AND (&amp;&amp;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-or" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical OR (||)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical NOT (!)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitwise-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bitwise Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bitwise-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise AND (&amp;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitwise-or" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise OR (|)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitwise-xor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise XOR (^)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitwise-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise NOT (~)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#left-shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      Left Shift (&lt;&lt;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#right-shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      Right Shift (&gt;&gt;)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assignment-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Assignment Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Assignment Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Assignment (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add Assignment (+=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subtract-assignment-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subtract Assignment (-=)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Special Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ternary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ternary (? :)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Conversion
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Issues
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matrix Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cryptographic-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cryptographic Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-sophistication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Sophistication
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../precedence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Precedence
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../grammar_design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TROUBLESHOOTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operator-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      Operator Categories
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operator Categories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-arithmetic-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Arithmetic Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-comparison-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Comparison Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-logical-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Logical Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-bitwise-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Bitwise Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-assignment-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Assignment Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-special-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Special Operators
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type-support-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Support Matrix
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arithmetic-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arithmetic Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Arithmetic Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Addition (+)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subtraction-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subtraction (-)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiplication (*)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#division" class="md-nav__link">
+    <span class="md-ellipsis">
+      Division (/)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modulo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modulo (%)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exponentiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exponentiation (**)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#root" class="md-nav__link">
+    <span class="md-ellipsis">
+      Root (*/)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparison Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equality" class="md-nav__link">
+    <span class="md-ellipsis">
+      Equality (==)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inequality" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inequality (!=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#less-than" class="md-nav__link">
+    <span class="md-ellipsis">
+      Less Than (&lt;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#less-than-or-equal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Less Than or Equal (&lt;=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greater-than" class="md-nav__link">
+    <span class="md-ellipsis">
+      Greater Than (&gt;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greater-than-or-equal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Greater Than or Equal (&gt;=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spaceship" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spaceship (&lt;=&gt;)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logical-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Logical Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#logical-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical AND (&amp;&amp;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-or" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical OR (||)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical NOT (!)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitwise-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bitwise Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bitwise-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise AND (&amp;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitwise-or" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise OR (|)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitwise-xor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise XOR (^)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bitwise-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bitwise NOT (~)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#left-shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      Left Shift (&lt;&lt;)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#right-shift" class="md-nav__link">
+    <span class="md-ellipsis">
+      Right Shift (&gt;&gt;)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#assignment-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Assignment Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Assignment Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Assignment (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add Assignment (+=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subtract-assignment-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subtract Assignment (-=)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Operators
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Special Operators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ternary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ternary (? :)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Conversion
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Issues
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matrix Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cryptographic-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cryptographic Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-sophistication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mathematical Sophistication
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="operators">Operators</h1>
+<p><strong>See also:</strong> <a href="../precedence/">Operator Precedence Table</a></p>
+<h2 id="overview">Overview</h2>
+<p>Grapa provides 26 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.</p>
+<h2 id="operator-categories">Operator Categories</h2>
+<h3 id="1-arithmetic-operators">1. Arithmetic Operators</h3>
+<p>Addition, subtraction, multiplication, division, modulo, exponentiation, and root operations with smart type promotion.</p>
+<h3 id="2-comparison-operators">2. Comparison Operators</h3>
+<p>Equality, inequality, and relational operators with type-aware comparison behavior.</p>
+<h3 id="3-logical-operators">3. Logical Operators</h3>
+<p>Boolean logic operations with sophisticated truthiness conversion.</p>
+<h3 id="4-bitwise-operators">4. Bitwise Operators</h3>
+<p>Bit-level operations with strict type requirements and advanced matrix support.</p>
+<h3 id="5-assignment-operators">5. Assignment Operators</h3>
+<p>Variable assignment and compound assignment operations.</p>
+<h3 id="6-special-operators">6. Special Operators</h3>
+<p>Extend, remove, dot operations, and ternary conditional expressions.</p>
+<h2 id="type-support-matrix">Type Support Matrix</h2>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>INT</th>
+<th>FLOAT</th>
+<th>STR</th>
+<th>BOOL</th>
+<th>ARRAY</th>
+<th>LIST</th>
+<th>OBJ</th>
+<th>ERR</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>Smart type promotion</td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>String difference calculation</td>
+</tr>
+<tr>
+<td><code>+=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Append assignment</td>
+</tr>
+<tr>
+<td><code>-=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Remove by index/key</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Matrix multiplication support</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Smart type promotion</td>
+</tr>
+<tr>
+<td><code>%</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Modulo with modpow/modinv</td>
+</tr>
+<tr>
+<td><code>**</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Exponentiation</td>
+</tr>
+<tr>
+<td><code>*/</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Root operator (nth root)</td>
+</tr>
+<tr>
+<td><code>==</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Object ID for complex types</td>
+</tr>
+<tr>
+<td><code>!=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Object ID for complex types</td>
+</tr>
+<tr>
+<td><code>&lt;</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>No type conversion</td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>No type conversion</td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>STR &gt; INT bug</td>
+</tr>
+<tr>
+<td><code>&gt;=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>STR &gt;= INT bug</td>
+</tr>
+<tr>
+<td><code>&lt;=&gt;</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>STR &lt;=&gt; INT bug</td>
+</tr>
+<tr>
+<td><code>&amp;&amp;</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Perfect implementation</td>
+</tr>
+<tr>
+<td><code>\|\|</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Perfect implementation</td>
+</tr>
+<tr>
+<td><code>!</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>FLOAT bugs</td>
+</tr>
+<tr>
+<td><code>&amp;</code></td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Strict INT/RAW only</td>
+</tr>
+<tr>
+<td><code>\|</code></td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Strict INT/RAW only</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Strict INT/RAW only</td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Matrix inversion support</td>
+</tr>
+<tr>
+<td><code>&lt;&lt;</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>FLOAT support</td>
+</tr>
+<tr>
+<td><code>&gt;&gt;</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>FLOAT support</td>
+</tr>
+<tr>
+<td><code>=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Perfect assignment</td>
+</tr>
+<tr>
+<td><code>? :</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>Implementation quirks</td>
+</tr>
+</tbody>
+</table>
+<h2 id="arithmetic-operators">Arithmetic Operators</h2>
+<h3 id="addition">Addition (<code>+</code>)</h3>
+<p>Performs addition with smart type promotion and string concatenation.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric addition */
+5 + 3;                    /* 8 (INT) */
+5 + 3.14;                 /* 8.14... (FLOAT) */
+3.14 + 5;                 /* 8.14... (FLOAT) */
+
+/* String concatenation */
+&quot;hello&quot; + &quot;world&quot;;        /* &quot;helloworld&quot; */
+&quot;hello&quot; + 5;              /* &quot;hello5&quot; */
+5 + &quot;world&quot;;              /* 5 (asymmetric - should be &quot;5world&quot;) */
+
+/* Boolean addition */
+true + 5;                 /* 5 (boolean converted to number) */
+false + 3.14;             /* 3.14... (boolean converted to number) */
+
+/* Array operations */
+[1,2,3] + [4,5,6];       /* [] (empty array - should concatenate) */
+[1,2,3] + 4;              /* [] (empty array - should append) */
+
+/* Error handling */
+$ERR + 5;                 /* &quot;ERR5&quot; (error converted to string) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, ERR<br />
+<strong>Gaps</strong>: 12 gaps identified (asymmetric behavior, array operations)</p>
+<h3 id="subtraction-">Subtraction (<code>-</code>)</h3>
+<p>Performs subtraction with type-aware behavior.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric subtraction */
+10 - 3;                   /* 7 (INT) */
+10.5 - 3;                 /* 7.5 (FLOAT) */
+10 - 3.5;                 /* 6.5 (FLOAT) */
+
+/* String subtraction (character difference) */
+&quot;hello&quot; - &quot;world&quot;;        /* -15 (character difference calculation) */
+
+/* Array subtraction (remove by index) */
+[1,2,3,4,5] - 2;         /* [1,2,4,5] (removes element at index 2) */
+[1,2,3,4,5] - 2.0;       /* [1,2,4,5] (float index converted to int) */
+
+/* Error cases */
+5 - &quot;hello&quot;;              /* $ERR (no string to number conversion) */
+[1,2,3] - [4,5,6];       /* $ERR (no array subtraction) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR-STR, ARRAY-INT/FLOAT<br />
+<strong>Gaps</strong>: 12 gaps identified (most combinations return $ERR)</p>
+<h3 id="multiplication">Multiplication (<code>*</code>)</h3>
+<p>Performs multiplication with matrix support and string repetition.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric multiplication */
+5 * 3;                    /* 15 (INT) */
+5 * 3.14;                 /* 15.7... (FLOAT) */
+3.14 * 5;                 /* 15.7... (FLOAT) */
+
+/* String repetition */
+&quot;hello&quot; * 3;              /* &quot;hellohellohello&quot; */
+3 * &quot;world&quot;;              /* 3 (asymmetric - should be &quot;worldworldworld&quot;) */
+
+/* Array operations */
+[1,2,3] * 2;              /* [1,2,3,1,2,3] (array repetition) */
+2 * [1,2,3];              /* 2 (asymmetric - should repeat array) */
+
+/* Matrix multiplication (advanced) */
+matrix1 = [[1,2],[3,4]];
+matrix2 = [[5,6],[7,8]];
+matrix1 * matrix2;        /* [[19,22],[43,50]] (matrix multiplication) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, ARRAY<br />
+<strong>Gaps</strong>: 18 gaps identified (asymmetric behavior, missing type combinations)</p>
+<h3 id="division">Division (<code>/</code>)</h3>
+<p>Performs division with smart type promotion.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric division */
+10 / 3;                   /* 3.333... (FLOAT) */
+10.0 / 3;                 /* 3.333... (FLOAT) */
+10 / 3.0;                 /* 3.333... (FLOAT) */
+
+/* Array division */
+[1,2,3,4,5] / 2;         /* [0.5,1,1.5,2,2.5] (element-wise division) */
+
+/* Error cases */
+5 / &quot;hello&quot;;              /* $ERR (no string to number conversion) */
+[1,2,3] / [4,5,6];       /* $ERR (no array division) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, ARRAY<br />
+<strong>Gaps</strong>: 15 gaps identified (most combinations return $ERR)</p>
+<h3 id="modulo">Modulo (<code>%</code>)</h3>
+<p>Performs modulo operation with cryptographic features.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric modulo */
+10 % 3;                   /* 1 (INT) */
+10.5 % 3;                 /* 1.5 (FLOAT) */
+10 % 3.5;                 /* 3.0 (FLOAT) */
+
+/* Cryptographic features */
+base = 7;
+exponent = 13;
+modulus = 11;
+base.modpow(exponent, modulus);  /* 2 (modular exponentiation) */
+
+value = 3;
+modulus = 11;
+value.modinv(modulus);    /* 4 (modular multiplicative inverse) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Gaps</strong>: 16 gaps identified (strict numeric types only)</p>
+<h3 id="exponentiation">Exponentiation (<code>**</code>)</h3>
+<p>Performs exponentiation with smart type promotion.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric exponentiation */
+2 ** 3;                   /* 8 (INT) */
+2 ** 3.5;                 /* 11.313... (FLOAT) */
+2.5 ** 3;                 /* 15.625 (FLOAT) */
+
+/* Array exponentiation */
+[1,2,3] ** 2;             /* [1,4,9] (element-wise exponentiation) */
+
+/* Error cases */
+5 ** &quot;hello&quot;;             /* $ERR (no string to number conversion) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, ARRAY<br />
+<strong>Gaps</strong>: 15 gaps identified (most combinations return $ERR)</p>
+<h3 id="root">Root (<code>*/</code>)</h3>
+<p>Performs nth root calculations with advanced mathematical support.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric root */
+8 */ 3;                   /* 2 (cube root of 8) */
+16 */ 2;                  /* 4 (square root of 16) */
+27 */ 3.5;                /* 2.884... (3.5th root of 27) */
+
+/* Array root */
+[8,27,64] */ 3;          /* [2,3,4] (element-wise cube root) */
+
+/* Advanced mathematical operations */
+vector = [1,2,3];
+vector */ 2;              /* Vector operations (advanced) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, ARRAY<br />
+<strong>Gaps</strong>: 13 gaps identified (strict numeric types only)</p>
+<h2 id="comparison-operators">Comparison Operators</h2>
+<h3 id="equality">Equality (<code>==</code>)</h3>
+<p>Performs equality comparison with object ID comparison for complex types.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric equality */
+5 == 5;                   /* true */
+5.0 == 5;                 /* true */
+5 == 5.0;                 /* true */
+
+/* String equality */
+&quot;hello&quot; == &quot;hello&quot;;       /* true */
+&quot;hello&quot; == &quot;world&quot;;       /* false */
+
+/* Boolean equality */
+true == true;             /* true */
+true == 1;                /* true (truthiness conversion) */
+
+/* Array/List equality (object ID comparison) */
+[1,2,3] == [1,2,3];      /* true (same object) */
+a = [1,2,3];
+b = [1,2,3];
+a == b;                   /* false (different objects) */
+
+/* Object equality */
+{a:1,b:2} == {a:1,b:2};  /* true (same object) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<strong>Gaps</strong>: 7 gaps identified (object ID vs content comparison)</p>
+<h3 id="inequality">Inequality (<code>!=</code>)</h3>
+<p>Performs inequality comparison with object ID comparison for complex types.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric inequality */
+5 != 3;                   /* true */
+5.0 != 5;                 /* false */
+
+/* String inequality */
+&quot;hello&quot; != &quot;world&quot;;       /* true */
+&quot;hello&quot; != &quot;hello&quot;;       /* false */
+
+/* Array/List inequality (object ID comparison) */
+[1,2,3] != [1,2,4];      /* false (same object ID) */
+a = [1,2,3];
+b = [1,2,4];
+a != b;                   /* true (different objects) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<strong>Gaps</strong>: 7 gaps identified (object ID vs content comparison)</p>
+<h3 id="less-than">Less Than (<code>&lt;</code>)</h3>
+<p>Performs less than comparison without type conversion.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric comparison */
+3 &lt; 5;                    /* true */
+3.14 &lt; 5;                 /* true */
+5 &lt; 3.14;                 /* false */
+
+/* String comparison */
+&quot;apple&quot; &lt; &quot;banana&quot;;       /* true (lexicographic) */
+&quot;hello&quot; &lt; &quot;world&quot;;        /* true */
+
+/* Error cases */
+5 &lt; &quot;hello&quot;;              /* false (no type conversion) */
+&quot;hello&quot; &lt; 5;              /* false (no type conversion) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR<br />
+<strong>Gaps</strong>: 8 gaps identified (no type conversion)</p>
+<h3 id="less-than-or-equal">Less Than or Equal (<code>&lt;=</code>)</h3>
+<p>Performs less than or equal comparison without type conversion.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric comparison */
+3 &lt;= 5;                   /* true */
+3 &lt;= 3;                   /* true */
+5 &lt;= 3;                   /* false */
+
+/* String comparison */
+&quot;apple&quot; &lt;= &quot;banana&quot;;      /* true */
+&quot;hello&quot; &lt;= &quot;hello&quot;;       /* true */
+
+/* Error cases */
+5 &lt;= &quot;hello&quot;;             /* false (no type conversion) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR<br />
+<strong>Gaps</strong>: 8 gaps identified (no type conversion)</p>
+<h3 id="greater-than">Greater Than (<code>&gt;</code>)</h3>
+<p>Performs greater than comparison with known bug in STR &gt; INT.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric comparison */
+5 &gt; 3;                    /* true */
+5.14 &gt; 3;                 /* true */
+3 &gt; 5;                    /* false */
+
+/* String comparison */
+&quot;banana&quot; &gt; &quot;apple&quot;;       /* true */
+&quot;world&quot; &gt; &quot;hello&quot;;        /* true */
+
+/* Known bug: STR &gt; INT */
+&quot;hello&quot; &gt; 5;              /* true (BUG: should be false) */
+5 &gt; &quot;hello&quot;;              /* false (correct) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR<br />
+<strong>Gaps</strong>: 8 gaps identified (STR &gt; INT bug)</p>
+<h3 id="greater-than-or-equal">Greater Than or Equal (<code>&gt;=</code>)</h3>
+<p>Performs greater than or equal comparison with known bug in STR &gt;= INT.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric comparison */
+5 &gt;= 3;                   /* true */
+5 &gt;= 5;                   /* true */
+3 &gt;= 5;                   /* false */
+
+/* String comparison */
+&quot;banana&quot; &gt;= &quot;apple&quot;;      /* true */
+&quot;hello&quot; &gt;= &quot;hello&quot;;       /* true */
+
+/* Known bug: STR &gt;= INT */
+&quot;hello&quot; &gt;= 5;             /* true (BUG: should be false) */
+5 &gt;= &quot;hello&quot;;             /* false (correct) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR<br />
+<strong>Gaps</strong>: 8 gaps identified (STR &gt;= INT bug)</p>
+<h3 id="spaceship">Spaceship (<code>&lt;=&gt;</code>)</h3>
+<p>Performs three-way comparison with known bug in STR &lt;=&gt; INT.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric comparison */
+5 &lt;=&gt; 3;                  /* 1 (greater) */
+3 &lt;=&gt; 5;                  /* -1 (less) */
+5 &lt;=&gt; 5;                  /* 0 (equal) */
+
+/* String comparison */
+&quot;banana&quot; &lt;=&gt; &quot;apple&quot;;     /* 1 (greater) */
+&quot;apple&quot; &lt;=&gt; &quot;banana&quot;;     /* -1 (less) */
+&quot;hello&quot; &lt;=&gt; &quot;hello&quot;;      /* 0 (equal) */
+
+/* Known bug: STR &lt;=&gt; INT */
+&quot;hello&quot; &lt;=&gt; 5;            /* 44 (BUG: should be error) */
+5 &lt;=&gt; &quot;hello&quot;;            /* 99 (BUG: should be error) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR<br />
+<strong>Gaps</strong>: 7 gaps identified (STR &lt;=&gt; INT bug)</p>
+<h2 id="logical-operators">Logical Operators</h2>
+<h3 id="logical-and">Logical AND (<code>&amp;&amp;</code>)</h3>
+<p>Performs logical AND with perfect truthiness conversion.</p>
+<div class="highlight"><pre><span></span><code>/* Boolean logic */
+true &amp;&amp; true;             /* true */
+true &amp;&amp; false;            /* false */
+false &amp;&amp; true;            /* false */
+false &amp;&amp; false;           /* false */
+
+/* Truthiness conversion */
+5 &amp;&amp; 3;                   /* 3 (both truthy) */
+0 &amp;&amp; 5;                   /* 0 (first falsy) */
+5 &amp;&amp; 0;                   /* 0 (second falsy) */
+&quot;&quot; &amp;&amp; &quot;hello&quot;;            /* &quot;&quot; (first falsy) */
+&quot;hello&quot; &amp;&amp; &quot;&quot;;            /* &quot;&quot; (second falsy) */
+
+/* Short-circuit evaluation */
+false &amp;&amp; (5/0);           /* false (short-circuits) */
+true &amp;&amp; (5/0);            /* $ERR (evaluates second operand) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
+<h3 id="logical-or">Logical OR (<code>||</code>)</h3>
+<p>Performs logical OR with perfect truthiness conversion.</p>
+<div class="highlight"><pre><span></span><code>/* Boolean logic */
+true || true;             /* true */
+true || false;            /* true */
+false || true;            /* true */
+false || false;           /* false */
+
+/* Truthiness conversion */
+5 || 3;                   /* 5 (first truthy) */
+0 || 5;                   /* 5 (second truthy) */
+0 || 0;                   /* 0 (both falsy) */
+&quot;&quot; || &quot;hello&quot;;            /* &quot;hello&quot; (second truthy) */
+&quot;hello&quot; || &quot;&quot;;            /* &quot;hello&quot; (first truthy) */
+
+/* Short-circuit evaluation */
+true || (5/0);            /* true (short-circuits) */
+false || (5/0);           /* $ERR (evaluates second operand) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
+<h3 id="logical-not">Logical NOT (<code>!</code>)</h3>
+<p>Performs logical NOT with known bugs in FLOAT handling.</p>
+<div class="highlight"><pre><span></span><code>/* Boolean logic */
+!true;                     /* false */
+!false;                    /* true */
+
+/* Truthiness conversion */
+!5;                        /* false (truthy) */
+!0;                        /* true (falsy) */
+!&quot;hello&quot;;                  /* false (truthy) */
+!&quot;&quot;;                       /* true (falsy) */
+
+/* Known bugs: FLOAT behavior */
+!5.0;                      /* true (BUG: should be false) */
+!(-5.0);                   /* false (BUG: should be true) */
+
+/* Complex expressions */
+!(5 &amp;&amp; 3);                 /* false (BUG: should be true) */
+!(0 || 5);                 /* false (BUG: should be true) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<strong>Gaps</strong>: 0 gaps (but has FLOAT bugs)</p>
+<h2 id="bitwise-operators">Bitwise Operators</h2>
+<h3 id="bitwise-and">Bitwise AND (<code>&amp;</code>)</h3>
+<p>Performs bitwise AND with strict INT/RAW type requirements.</p>
+<div class="highlight"><pre><span></span><code>/* Integer bitwise operations */
+5 &amp; 3;                     /* 1 (101 &amp; 011 = 001) */
+10 &amp; 6;                    /* 2 (1010 &amp; 0110 = 0010) */
+
+/* Error cases */
+5.5 &amp; 3;                   /* $ERR (FLOAT not supported) */
+&quot;hello&quot; &amp; &quot;world&quot;;         /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT only<br />
+<strong>Gaps</strong>: 12 gaps identified (strict INT/RAW only)</p>
+<h3 id="bitwise-or">Bitwise OR (<code>|</code>)</h3>
+<p>Performs bitwise OR with strict INT/RAW type requirements.</p>
+<div class="highlight"><pre><span></span><code>/* Integer bitwise operations */
+5 | 3;                     /* 7 (101 | 011 = 111) */
+10 | 6;                    /* 14 (1010 | 0110 = 1110) */
+
+/* Error cases */
+5.5 | 3;                   /* $ERR (FLOAT not supported) */
+&quot;hello&quot; | &quot;world&quot;;         /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT only<br />
+<strong>Gaps</strong>: 12 gaps identified (strict INT/RAW only)</p>
+<h3 id="bitwise-xor">Bitwise XOR (<code>^</code>)</h3>
+<p>Performs bitwise XOR with strict INT/RAW type requirements.</p>
+<div class="highlight"><pre><span></span><code>/* Integer bitwise operations */
+5 ^ 3;                     /* 6 (101 ^ 011 = 110) */
+10 ^ 6;                    /* 12 (1010 ^ 0110 = 1100) */
+
+/* Error cases */
+5.5 ^ 3;                   /* $ERR (FLOAT not supported) */
+&quot;hello&quot; ^ &quot;world&quot;;         /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT only<br />
+<strong>Gaps</strong>: 12 gaps identified (strict INT/RAW only)</p>
+<h3 id="bitwise-not">Bitwise NOT (<code>~</code>)</h3>
+<p>Performs bitwise NOT with advanced matrix inversion support.</p>
+<div class="highlight"><pre><span></span><code>/* Integer bitwise operations */
+~5;                        /* -6 (bitwise complement) */
+~0;                        /* -1 (bitwise complement) */
+
+/* Matrix inversion (advanced) */
+matrix = [[1,2],[3,4]];
+~matrix;                   /* Matrix inversion operations */
+
+/* Error cases */
+~5.5;                      /* $ERR (FLOAT not supported) */
+~&quot;hello&quot;;                  /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, ARRAY (matrix operations)<br />
+<strong>Gaps</strong>: 12 gaps identified (strict INT/RAW only, except matrix support)</p>
+<h3 id="left-shift">Left Shift (<code>&lt;&lt;</code>)</h3>
+<p>Performs left shift with FLOAT support.</p>
+<div class="highlight"><pre><span></span><code>/* Integer left shift */
+5 &lt;&lt; 2;                    /* 20 (5 * 2^2) */
+10 &lt;&lt; 1;                   /* 20 (10 * 2^1) */
+
+/* Float left shift */
+5.5 &lt;&lt; 2;                  /* 22.0 (5.5 * 2^2) */
+
+/* Error cases */
+5 &lt;&lt; &quot;hello&quot;;              /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Gaps</strong>: 7 gaps identified (no STR support)</p>
+<h3 id="right-shift">Right Shift (<code>&gt;&gt;</code>)</h3>
+<p>Performs right shift with FLOAT support.</p>
+<div class="highlight"><pre><span></span><code>/* Integer right shift */
+20 &gt;&gt; 2;                   /* 5 (20 / 2^2) */
+10 &gt;&gt; 1;                   /* 5 (10 / 2^1) */
+
+/* Float right shift */
+22.0 &gt;&gt; 2;                 /* 5.5 (22.0 / 2^2) */
+
+/* Error cases */
+20 &gt;&gt; &quot;hello&quot;;             /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Gaps</strong>: 7 gaps identified (no STR support)</p>
+<h2 id="assignment-operators">Assignment Operators</h2>
+<h3 id="assignment">Assignment (<code>=</code>)</h3>
+<p>Performs variable assignment with perfect implementation.</p>
+<div class="highlight"><pre><span></span><code>/* Basic assignment */
+a = 5;                     /* 5 */
+b = &quot;hello&quot;;               /* &quot;hello&quot; */
+c = [1,2,3];               /* [1,2,3] */
+
+/* Multiple assignment */
+a = b = c = 5;             /* 5 (all variables set to 5) */
+
+/* Object assignment */
+obj = {name: &quot;John&quot;, age: 30};  /* {name:&quot;John&quot;, age:30} */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
+<h3 id="add-assignment">Add Assignment (<code>+=</code>)</h3>
+<p>Performs append assignment with comprehensive support.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric addition */
+a = 5;
+a += 3;                    /* 8 */
+
+/* String concatenation */
+s = &quot;hello&quot;;
+s += &quot;world&quot;;              /* &quot;helloworld&quot; */
+
+/* Array append */
+arr = [1,2,3];
+arr += 4;                  /* [1,2,3,4] */
+
+/* List append */
+list = [1,2,3];
+list += 4;                 /* [1,2,3,4] */
+
+/* Object append (nested) */
+obj = {name: &quot;John&quot;};
+obj += {age: 30};          /* {name:&quot;John&quot;,{age:30}} */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<strong>Gaps</strong>: 12 gaps identified (asymmetric behavior)</p>
+<h3 id="subtract-assignment-">Subtract Assignment (<code>-=</code>)</h3>
+<p>Performs remove assignment with limited support.</p>
+<div class="highlight"><pre><span></span><code>/* Numeric subtraction */
+a = 10;
+a -= 3;                    /* 7 */
+
+/* Array remove by index */
+arr = [1,2,3,4,5];
+arr -= 2;                  /* [1,2,4,5] (removes element at index 2) */
+
+/* Error cases */
+s = &quot;hello&quot;;
+s -= &quot;world&quot;;              /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, ARRAY<br />
+<strong>Gaps</strong>: 12 gaps identified (severely limited support)</p>
+<h2 id="special-operators">Special Operators</h2>
+<h3 id="ternary">Ternary (<code>? :</code>)</h3>
+<p>Performs conditional expressions with implementation quirks.</p>
+<div class="highlight"><pre><span></span><code>/* Standard ternary */
+true ? &quot;yes&quot; : &quot;no&quot;;       /* &quot;yes&quot; */
+false ? &quot;yes&quot; : &quot;no&quot;;      /* &quot;no&quot; */
+
+/* Numeric conditions */
+5 ? &quot;positive&quot; : &quot;zero&quot;;   /* &quot;positive&quot; */
+0 ? &quot;positive&quot; : &quot;zero&quot;;   /* &quot;zero&quot; */
+
+/* String conditions */
+&quot;hello&quot; ? &quot;non-empty&quot; : &quot;empty&quot;;  /* &quot;non-empty&quot; */
+&quot;&quot; ? &quot;non-empty&quot; : &quot;empty&quot;;       /* &quot;empty&quot; */
+
+/* Complex conditions */
+(5 &gt; 3) ? &quot;greater&quot; : &quot;less&quot;;     /* &quot;greater&quot; */
+
+/* Nested ternary */
+5 &gt; 3 ? &quot;big&quot; : 5 &gt; 1 ? &quot;medium&quot; : &quot;small&quot;;  /* &quot;big&quot; */
+
+/* Implementation quirks */
+true ? : &quot;yes&quot;;            /* &quot;&quot; (Form 1: inverted logic) */
+false ? : &quot;yes&quot;;           /* &quot;yes&quot; (Form 1: inverted logic) */
+true ? &quot;yes&quot; : &quot;no&quot; : &quot;maybe&quot;;  /* &quot;maybe&quot; (Form 3: unexpected) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<strong>Gaps</strong>: 0 gaps (but has implementation quirks)</p>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="type-conversion">Type Conversion</h3>
+<ul>
+<li><strong>Addition (<code>+</code>)</strong>: Converts numbers to strings for concatenation</li>
+<li><strong>Comparison operators</strong>: Generally don't convert types (maintains mathematical purity)</li>
+<li><strong>Logical operators</strong>: Perfect truthiness conversion</li>
+<li><strong>Bitwise operators</strong>: Strict INT/RAW only (except <code>~</code> with matrix support)</li>
+</ul>
+<h3 id="error-handling">Error Handling</h3>
+<ul>
+<li><strong>Most operators</strong>: Return $ERR for unsupported type combinations</li>
+<li><strong>Array operations</strong>: Often return empty arrays instead of errors</li>
+<li><strong>String operations</strong>: May return unexpected results for unsupported combinations</li>
+</ul>
+<h3 id="performance-considerations">Performance Considerations</h3>
+<ul>
+<li><strong>Object ID comparison</strong>: Arrays and lists use object ID comparison for performance</li>
+<li><strong>Short-circuit evaluation</strong>: Logical operators use short-circuit evaluation</li>
+<li><strong>Matrix operations</strong>: Advanced linear algebra capabilities available</li>
+</ul>
+<h3 id="known-issues">Known Issues</h3>
+<ul>
+<li><strong>STR &gt; INT bug</strong>: <code>"hello" &gt; 5</code> returns true (should be false)</li>
+<li><strong>Logical NOT FLOAT bugs</strong>: <code>!5.0</code> returns true (should be false)</li>
+<li><strong>Ternary quirks</strong>: Form 1 has inverted logic, Form 3 has unexpected behavior</li>
+<li><strong>Array comparison</strong>: Uses object ID instead of content comparison</li>
+</ul>
+<h2 id="advanced-features">Advanced Features</h2>
+<h3 id="matrix-operations">Matrix Operations</h3>
+<ul>
+<li><strong>Multiplication (<code>*</code>)</strong>: Supports matrix multiplication</li>
+<li><strong>Bitwise NOT (<code>~</code>)</strong>: Supports matrix inversion</li>
+<li><strong>Root (<code>*/</code>)</strong>: Supports vector operations</li>
+</ul>
+<h3 id="cryptographic-features">Cryptographic Features</h3>
+<ul>
+<li><strong>Modulo (<code>%</code>)</strong>: Built-in modpow and modinv for cryptographic operations</li>
+<li><strong>Bitwise operators</strong>: Strict integer handling for cryptographic applications</li>
+</ul>
+<h3 id="mathematical-sophistication">Mathematical Sophistication</h3>
+<ul>
+<li><strong>Root operator (<code>*/</code>)</strong>: nth root calculations</li>
+<li><strong>Type promotion</strong>: Smart type conversion for mathematical operations</li>
+<li><strong>Truthiness conversion</strong>: Sophisticated boolean conversion rules</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<p>Grapa provides 26 operators with sophisticated type handling and mathematical capabilities. While most operators work as expected, there are some known bugs and design decisions that users should be aware of. The operators are designed with a balance between mathematical purity and user convenience, with some intentionally not converting types to maintain mathematical correctness.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>

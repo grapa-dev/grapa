@@ -1,0 +1,98 @@
+site_name: Grapa Documentation
+site_url: https://grapa-dev.github.io/grapa/docs/
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+    - content.action.view
+    - content.tabs.link
+  search:
+    exclude:
+      - maintainers/**
+      - "maintainers/**"
+      - "**/maintainers/**"
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  language: en
+
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search:
+      lang: en
+      separator: \s\-,:!=\[\]()"/`|]+'
+  - exclude-search:
+      exclude:
+        - "maintainers/**"
+        - "maintainers/index.md"
+        - "maintainers/BINARY_GREP.md"
+        - "maintainers/README.md"
+        - "maintainers/ADVANCED_TOPICS/**"
+        - "maintainers/INTERNAL_NOTES/**"
+        - "maintainers/DEVELOPMENT/**"
+        - "maintainers/TESTING_AND_QUALITY/**"
+        - "maintainers/IMPLEMENTATION/**"
+        - "maintainers/BUILD_AND_DEPLOYMENT/**"
+        - "maintainers/WIP/**"
+        - "**/maintainers/**"
+        - "**/BUILD_AND_DEPLOYMENT/**"
+        - "**/IMPLEMENTATION/**"
+        - "**/TESTING_AND_QUALITY/**"
+        - "**/DEVELOPMENT/**"
+        - "**/INTERNAL_NOTES/**"
+        - "**/ADVANCED_TOPICS/**"
+  - tags
+
+nav:
+  - Home: index.md
+  - Getting Started: GETTING_STARTED.md
+  - CLI Quickstart: CLI_QUICKSTART.md
+  - Python Quickstart: python_integration.md
+  - API Reference: API_REFERENCE.md
+  - Grep Documentation: GREP.md
+  - Migration Guides:
+      - Python: migrations/PYTHON_TO_GRAPA_MIGRATION.md
+      - JavaScript: migrations/JS_TO_GRAPA_MIGRATION.md
+      - Rust: migrations/RUST_TO_GRAPA_MIGRATION.md
+      - TypeScript: migrations/TYPESCRIPT_TO_GRAPA_MIGRATION.md
+      - Go: migrations/GO_TO_GRAPA_MIGRATION.md
+      - Ruby: migrations/RUBY_TO_GRAPA_MIGRATION.md
+      - Kotlin: migrations/KOTLIN_TO_GRAPA_MIGRATION.md
+      - Swift: migrations/SWIFT_TO_GRAPA_MIGRATION.md
+  - Use Cases:
+      - Overview: use_cases/index.md
+      - ETL / Data Engineering: use_cases/etl_data_engineering.md
+      - Compiler/BNF Learning: use_cases/compiler_bnf_learning.md
+      - High-Precision Math: use_cases/high_precision_math.md
+      - Parallel Programming: use_cases/parallel_concurrent_programming.md
+      - Web Scraping: use_cases/web_data_scraping.md
+      - Database & File System: use_cases/database_file_system.md
+      - Education & Prototyping: use_cases/education_prototyping.md
+      - Cryptography: use_cases/cryptography.md
+  - Examples: EXAMPLES.md
+  - Syntax:
+      - Basic Syntax: syntax/basic_syntax.md
+      - Operators: syntax/operator.md
+      - Precedence: syntax/precedence.md
+      - Grammar Design: syntax/grammar_design.md
+  - Troubleshooting: TROUBLESHOOTING.md

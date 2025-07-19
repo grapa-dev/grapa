@@ -1,0 +1,2078 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/docs/obj/transform/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>From $OBJ - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#from-obj" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              From $OBJ
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING_STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CLI_QUICKSTART/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../python_integration/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Python Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API_REFERENCE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GREP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Grep Documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../migrations/PYTHON_TO_GRAPA_MIGRATION/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../use_cases/" class="md-tabs__link">
+          
+  
+  
+  Use Cases
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EXAMPLES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../syntax/basic_syntax/" class="md-tabs__link">
+          
+  
+  
+  Syntax
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../TROUBLESHOOTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING_STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI_QUICKSTART/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API_REFERENCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GREP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/PYTHON_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/JS_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/RUST_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/TYPESCRIPT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/GO_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/RUBY_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/KOTLIN_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/SWIFT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Use Cases
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ETL / Data Engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Compiler/BNF Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    High-Precision Math
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parallel Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Scraping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database & File System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Education & Prototyping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/cryptography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cryptography
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EXAMPLES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Syntax
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Syntax
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/basic_syntax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Syntax
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/operator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/precedence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Precedence
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/grammar_design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TROUBLESHOOTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#len" class="md-nav__link">
+    <span class="md-ellipsis">
+      len()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#leftcount" class="md-nav__link">
+    <span class="md-ellipsis">
+      left(count)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rightcount" class="md-nav__link">
+    <span class="md-ellipsis">
+      right(count)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#midstartlen" class="md-nav__link">
+    <span class="md-ellipsis">
+      mid(start,len)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#midtrimitems-offset-blocksize" class="md-nav__link">
+    <span class="md-ellipsis">
+      midtrim(items, offset, blocksize)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rtrimstr" class="md-nav__link">
+    <span class="md-ellipsis">
+      rtrim([str])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ltrimstr" class="md-nav__link">
+    <span class="md-ellipsis">
+      ltrim([str])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trimstr" class="md-nav__link">
+    <span class="md-ellipsis">
+      trim([str])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lpadnstr" class="md-nav__link">
+    <span class="md-ellipsis">
+      lpad(n,[str])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rpadnstr" class="md-nav__link">
+    <span class="md-ellipsis">
+      rpad(n,[str])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lrotn" class="md-nav__link">
+    <span class="md-ellipsis">
+      lrot([n])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rrotn" class="md-nav__link">
+    <span class="md-ellipsis">
+      rrot([n])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reverse" class="md-nav__link">
+    <span class="md-ellipsis">
+      reverse()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replaceoldnew" class="md-nav__link">
+    <span class="md-ellipsis">
+      replace(old,new)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#greppattern-options-delimiter-normalization-mode-num_workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      grep(pattern, options, delimiter, normalization, mode, num_workers)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="grep(pattern, options, delimiter, normalization, mode, num_workers)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diacritic-insensitive-matching-d-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diacritic-Insensitive Matching (d option)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Diacritic-Insensitive Matching (d option)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#special-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Capabilities
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#splitsep-max-axis" class="md-nav__link">
+    <span class="md-ellipsis">
+      split(sep, max, axis)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#joinitem" class="md-nav__link">
+    <span class="md-ellipsis">
+      join(item)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upper" class="md-nav__link">
+    <span class="md-ellipsis">
+      upper()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lower" class="md-nav__link">
+    <span class="md-ellipsis">
+      lower()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-stoprangestartstep" class="md-nav__link">
+    <span class="md-ellipsis">
+      data = (stop).range(start,step)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sortaxisorderkind" class="md-nav__link">
+    <span class="md-ellipsis">
+      sort(axis,order,kind)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#argsortaxisorderkind" class="md-nav__link">
+    <span class="md-ellipsis">
+      argsort(axis,order,kind)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uniqueop" class="md-nav__link">
+    <span class="md-ellipsis">
+      unique(op)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groupop1op2op3" class="md-nav__link">
+    <span class="md-ellipsis">
+      group(op1,op2,op3)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#raw" class="md-nav__link">
+    <span class="md-ellipsis">
+      raw()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uraw" class="md-nav__link">
+    <span class="md-ellipsis">
+      uraw()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bool" class="md-nav__link">
+    <span class="md-ellipsis">
+      bool()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#int" class="md-nav__link">
+    <span class="md-ellipsis">
+      int()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uint" class="md-nav__link">
+    <span class="md-ellipsis">
+      uint()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#floatbits-extra" class="md-nav__link">
+    <span class="md-ellipsis">
+      float([bits [,extra]])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixbits-extra" class="md-nav__link">
+    <span class="md-ellipsis">
+      fix([bits [,extra]])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setfloatbits-extra" class="md-nav__link">
+    <span class="md-ellipsis">
+      setfloat([bits [,extra]])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setfixbits-extra" class="md-nav__link">
+    <span class="md-ellipsis">
+      setfix([bits [,extra]])
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#str" class="md-nav__link">
+    <span class="md-ellipsis">
+      str()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basebase" class="md-nav__link">
+    <span class="md-ellipsis">
+      base(base)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hex" class="md-nav__link">
+    <span class="md-ellipsis">
+      hex()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bin" class="md-nav__link">
+    <span class="md-ellipsis">
+      bin()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setconsttruefalse" class="md-nav__link">
+    <span class="md-ellipsis">
+      setconst(truefalse)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="from-obj">From $OBJ</h1>
+<h2 id="len">len()</h2>
+<p>Gets the length of the item.</p>
+<div class="highlight"><pre><span></span><code>&quot;hi&quot;.len() -&gt; 2
+{1,2,3}.len() -&gt; 3
+</code></pre></div>
+<h2 id="leftcount">left(count)</h2>
+<p>Gets the left bytes of an item.</p>
+<div class="highlight"><pre><span></span><code>&quot;testing&quot;.left(2) -&gt; &quot;te&quot;
+</code></pre></div>
+<p>Use a negative number to truncate right.</p>
+<div class="highlight"><pre><span></span><code>&quot;testing&quot;.left(-2) -&gt; &quot;testi&quot;
+</code></pre></div>
+<h2 id="rightcount">right(count)</h2>
+<p>Gets the right bytes of an item.</p>
+<div class="highlight"><pre><span></span><code>&quot;testing&quot;.right(2) -&gt; &quot;ng&quot;
+</code></pre></div>
+<p>Use a negative number to truncate left.</p>
+<div class="highlight"><pre><span></span><code>&quot;testing&quot;.right(-2) -&gt; &quot;sting&quot;
+</code></pre></div>
+<h2 id="midstartlen">mid(start,len)</h2>
+<p>Gets the middle bytes of an item.</p>
+<div class="highlight"><pre><span></span><code>&quot;testing&quot;.mid(2,3) -&gt; &quot;sti&quot;
+</code></pre></div>
+<h2 id="midtrimitems-offset-blocksize">midtrim(items, offset, blocksize)</h2>
+<div class="highlight"><pre><span></span><code>items = array of [label, offset, len, ltrim, rtrim, op]
+
+&quot;this is a test to see&quot;.midtrim([[&quot;a&quot;,2,1,&quot; &quot;,&quot; &quot;],[&quot;b&quot;,10,5,&quot; &quot;,&quot; &quot;,op(a){a.len();}]],1,13);
+{&quot;a&quot;:&quot;s&quot;,&quot;b&quot;:3}
+</code></pre></div>
+<h2 id="rtrimstr">rtrim([str])</h2>
+<p>Trims right.</p>
+<div class="highlight"><pre><span></span><code>&quot;  testing  &quot;.rtrim() -&gt; &quot;  testing&quot;
+&quot;bbbtestingbbb&quot;.rtrim(b) -&gt; &quot;bbbtesting&quot;
+</code></pre></div>
+<h2 id="ltrimstr">ltrim([str])</h2>
+<p>Trims left.</p>
+<div class="highlight"><pre><span></span><code>&quot;  testing  &quot;.ltrim() -&gt; &quot;testing  &quot;
+&quot;bbbtestingbbb&quot;.ltrim(b) -&gt; &quot;testingbbb&quot;
+</code></pre></div>
+<h2 id="trimstr">trim([str])</h2>
+<p>Trims both left and right.</p>
+<div class="highlight"><pre><span></span><code>&quot;  testing  &quot;.trim() -&gt; &quot;testing&quot;
+&quot;bbbtestingbbb&quot;.trim(b) -&gt; &quot;testing&quot;
+</code></pre></div>
+<h2 id="lpadnstr">lpad(n,[str])</h2>
+<p>Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. </p>
+<p>Will left truncate input if length of input is less than n.</p>
+<div class="highlight"><pre><span></span><code>&quot;test&quot;.lpad(7,&quot;X&quot;) -&gt; &quot;XXXtest&quot;
+</code></pre></div>
+<h2 id="rpadnstr">rpad(n,[str])</h2>
+<p>Pads left to bring the total size up to n characters. Defaults to pad with a space, but will use str for padding if provided. </p>
+<p>Will right truncate input if length of input is less than n.</p>
+<div class="highlight"><pre><span></span><code>&quot;test&quot;.rpad(7,&quot;X&quot;) -&gt; &quot;testXXX&quot;
+</code></pre></div>
+<h2 id="lrotn">lrot([n])</h2>
+<p>For $LIST, $ARRAY, $XML.</p>
+<p>Moves n (defaul=1) items from the start of the list to the end of the list, 1 at a time.</p>
+<div class="highlight"><pre><span></span><code>[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;].lrot(2) -&gt; [&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;a&quot;,&quot;b&quot;]
+</code></pre></div>
+<h2 id="rrotn">rrot([n])</h2>
+<p>For $LIST, $ARRAY, $XML.</p>
+<p>Moves n (defaul=1) items from the end of the list to the start of the list, 1 at a time.</p>
+<div class="highlight"><pre><span></span><code>[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;].rrot(2) -&gt; [&quot;d&quot;,&quot;e&quot;,&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]
+</code></pre></div>
+<h2 id="reverse">reverse()</h2>
+<p>Reverses the older of a list.</p>
+<div class="highlight"><pre><span></span><code>{z:1,m:2,p:3,b:4}.reverse() -&gt; {&quot;b&quot;:4,&quot;p&quot;:3,&quot;m&quot;:2,&quot;z&quot;:1}
+&quot;testing&quot;.reverse() -&gt; &quot;gnitset&quot;
+</code></pre></div>
+<h2 id="replaceoldnew">replace(old,new)</h2>
+<p>Replaces iteems.</p>
+<div class="highlight"><pre><span></span><code>&quot;testing&quot;.replace(&quot;t&quot;,&quot;g&quot;) -&gt; &quot;gesging&quot;
+</code></pre></div>
+<h2 id="greppattern-options-delimiter-normalization-mode-num_workers">grep(pattern, options, delimiter, normalization, mode, num_workers)</h2>
+<p>Extracts matches from a string using PCRE2-powered regular expressions with full Unicode support. Returns an array of results or JSON format with named groups.</p>
+<blockquote>
+<p><strong>For comprehensive Unicode, advanced regex, diacritic-insensitive, and output option documentation, see <a href="../grep/">Unicode Grep Documentation</a>.</strong></p>
+</blockquote>
+<h3 id="parameters">Parameters:</h3>
+<ul>
+<li><code>pattern</code> — PCRE2 regular expression string with Unicode support, named groups, and advanced features.</li>
+<li><code>options</code> — Combination of the following flags:</li>
+</ul>
+<p><strong>Matching Options:</strong>
+  - <code>a</code> – All mode: treat the entire input as one block (no line splitting).
+  - <code>i</code> – Case-insensitive match with Unicode case folding.
+  - <code>d</code> – Diacritic-insensitive match (strip accents/diacritics from both input and pattern, robust Unicode-aware).
+  - <code>v</code> – Invert match (select non-matching lines or spans).
+  - <code>x</code> – Match entire line exactly (equivalent to anchoring with <code>^</code> and <code>$</code>).
+  - <code>N</code> – Normalize input and pattern to NFC Unicode form.</p>
+<p><strong>Output Options:</strong>
+  - <code>o</code> – Output only matched substrings.
+  - <code>n</code> – Prefix matches with line number.
+  - <code>l</code> – Return only matching line numbers.
+  - <code>b</code> – Prefix results with byte offset.
+  - <code>j</code> – JSON output format with named groups, offsets, and line numbers.</p>
+<p><strong>Processing Options:</strong>
+  - <code>c</code> – Return count of matches (or count of deduplicated matches if <code>d</code> is also set).
+  - <code>d</code> – Deduplicate results (line-level by default, or substring-level when combined with <code>o</code>, <code>g</code>, or <code>b</code>).
+  - <code>g</code> – Group matches per line.</p>
+<p><strong>Parallel Processing:</strong>
+  - <code>num_workers</code> – Number of worker threads: <code>0</code> for auto-detection, <code>1</code> for sequential, <code>2+</code> for parallel processing.</p>
+<p><strong>Unicode Support:</strong>
+  - Unicode categories: <code>\p{L}</code>, <code>\p{N}</code>, <code>\p{Z}</code>, <code>\p{P}</code>, <code>\p{S}</code>, <code>\p{C}</code>, <code>\p{M}</code>
+  - Unicode scripts: <code>\p{sc=Latin}</code>, <code>\p{sc=Han}</code>, etc.
+  - Unicode script extensions: <code>\p{scx:Han}</code>, etc.
+  - Unicode general categories: <code>\p{Lu}</code>, <code>\p{Ll}</code>, etc.
+  - Named groups: <code>(?P&lt;name&gt;...)</code>
+  - Atomic groups: <code>(?&gt;...)</code>
+  - Lookaround assertions: <code>(?=...)</code>, <code>(?&lt;=...)</code>, <code>(?!...)</code>, <code>(?&lt;!...)</code>
+  - Unicode grapheme clusters: <code>\X</code>
+  - Advanced Unicode properties: <code>\p{Emoji}</code>, <code>\p{So}</code>, etc.
+  - Possessive quantifiers: <code>*+</code>, <code>++</code>, <code>?+</code>, <code>{n,m}+</code>
+  - Conditional patterns: <code>?(condition)...</code>
+  - Context lines: <code>A</code>, <code>B</code>, <code>C</code> options</p>
+<p><strong>Not Supported:</strong>
+  - Unicode blocks: <code>\p{In_Basic_Latin}</code>, etc.
+  - Unicode age properties: <code>\p{Age=...}</code>
+  - Unicode bidirectional classes: <code>\p{Bidi_Class:...}</code></p>
+<h3 id="examples">Examples:</h3>
+<div class="highlight"><pre><span></span><code>/* Basic pattern matching */
+&quot;apple 123 pear 456\nbanana 789&quot;.grep(&quot;\\d+&quot;, &quot;o&quot;);
+/* → [&quot;123&quot;, &quot;456&quot;, &quot;789&quot;] */
+
+/* With line numbers */
+&quot;apple 123 pear 456\nbanana 789&quot;.grep(&quot;\\d+&quot;, &quot;on&quot;);
+/* → [&quot;1:123&quot;, &quot;1:456&quot;, &quot;2:789&quot;] */
+
+/* Unicode support */
+&quot;Hello 世界 123 €&quot;.grep(&quot;\\p{L}+&quot;, &quot;o&quot;);
+/* → [&quot;Hello&quot;, &quot;世界&quot;] */
+
+/* Named groups with JSON output */
+&quot;John Doe&quot;.grep(&quot;(?P&lt;first&gt;\\w+) (?P&lt;last&gt;\\w+)&quot;, &quot;oj&quot;);
+/* → [{&quot;match&quot;:&quot;John Doe&quot;,&quot;first&quot;:&quot;John&quot;,&quot;last&quot;:&quot;Doe&quot;,&quot;offset&quot;:0,&quot;line&quot;:1}] */
+
+/* Date parsing with JSON output */
+&quot;2023-04-27\n2022-12-31&quot;.grep(&quot;(?&lt;year&gt;\\d{4})-(?&lt;month&gt;\\d{2})-(?&lt;day&gt;\\d{2})&quot;, &quot;oj&quot;);
+/* → [
+    {&quot;match&quot;:&quot;2023-04-27&quot;,&quot;year&quot;:&quot;2023&quot;,&quot;month&quot;:&quot;04&quot;,&quot;day&quot;:&quot;27&quot;,&quot;offset&quot;:0,&quot;line&quot;:1},
+    {&quot;match&quot;:&quot;2022-12-31&quot;,&quot;year&quot;:&quot;2022&quot;,&quot;month&quot;:&quot;12&quot;,&quot;day&quot;:&quot;31&quot;,&quot;offset&quot;:11,&quot;line&quot;:2}
+  ] */
+
+/* Raw string literals for better readability */
+&quot;file.txt&quot;.grep(r&quot;^[a-zA-Z0-9_]+\.txt$&quot;, &quot;x&quot;);
+/* → [&quot;file.txt&quot;] - No need to escape backslashes */
+
+&quot;user@domain.com&quot;.grep(r&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$&quot;, &quot;x&quot;);
+/* → [&quot;user@domain.com&quot;] - Much cleaner than escaped version */
+
+/* Raw strings preserve literal escape sequences */
+&quot;\\x45&quot;.grep(r&quot;\x45&quot;, &quot;o&quot;);
+/* → [&quot;\\x45&quot;] - Literal string, not character &quot;E&quot; */
+
+/* Context lines */
+&quot;Line 1\nLine 2\nLine 3\nLine 4&quot;.grep(&quot;Line 2&quot;, &quot;A1B1&quot;);
+/* → [&quot;Line 1&quot;, &quot;Line 2&quot;, &quot;Line 3&quot;] */
+
+/* Unicode normalization (NFC) */
+&quot;café&quot;.grep(&quot;cafe&quot;, &quot;o&quot;, &quot;&quot;, &quot;NFC&quot;);
+/* → [&quot;café&quot;] */
+
+/* Binary mode for raw byte processing */
+&quot;\\x48\\x65\\x6c\\x6c\\x6f&quot;.grep(&quot;Hello&quot;, &quot;o&quot;, &quot;&quot;, &quot;NONE&quot;, &quot;BINARY&quot;);
+/* → [&quot;Hello&quot;] */
+
+/* Custom delimiter examples */
+&quot;apple|||pear|||banana&quot;.grep(&quot;\\w+&quot;, &quot;o&quot;, &quot;|||&quot;);
+/* → [&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;] */
+
+&quot;section1###section2###section3&quot;.grep(&quot;section\\d+&quot;, &quot;o&quot;, &quot;###&quot;);
+/* → [&quot;section1&quot;, &quot;section2&quot;, &quot;section3&quot;] */
+</code></pre></div>
+<blockquote>
+<p><strong>📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see <a href="../grep/">Unicode Grep Documentation</a>.</strong></p>
+<p><strong>💡 Tip</strong>: Use raw string literals (prefix with <code>r</code>) for better regex pattern readability. For example, <code>r"\w+"</code> instead of <code>"\\w+"</code>. Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string.</p>
+</blockquote>
+<hr />
+<h3 id="diacritic-insensitive-matching-d-option">Diacritic-Insensitive Matching (<code>d</code> option)</h3>
+<p>The <code>d</code> option enables <strong>diacritic-insensitive matching</strong>. When enabled, both the input and the pattern are:
+1. <strong>Unicode normalized</strong> (NFC by default, or as specified)
+2. <strong>Case folded</strong> (Unicode-aware, not just ASCII)
+3. <strong>Diacritics/accents are stripped</strong> (works for Latin, Greek, Cyrillic, Turkish, Vietnamese, and more)</p>
+<p>This allows matches like:
+- <code>"café".grep("cafe", "d")</code> → <code>["café"]</code>
+- <code>"CAFÉ".grep("cafe", "di")</code> → <code>["CAFÉ"]</code>
+- <code>"mañana".grep("manana", "d")</code> → <code>["mañana"]</code>
+- <code>"İstanbul".grep("istanbul", "di")</code> → <code>["İstanbul"]</code>
+- <code>"καφές".grep("καφες", "d")</code> → <code>["καφές"]</code>
+- <code>"кофе".grep("кофе", "di")</code> → <code>["кофе"]</code></p>
+<h4 id="special-capabilities">Special Capabilities</h4>
+<ul>
+<li>Handles both precomposed (NFC) and decomposed (NFD) Unicode forms</li>
+<li>Supports diacritic-insensitive matching for Latin, Greek, Cyrillic, Turkish, Vietnamese, and more</li>
+<li>Works with case-insensitive (<code>i</code>) and normalization (<code>N</code>, or normalization parameter) options</li>
+<li>Robust for international text, including combining marks</li>
+</ul>
+<h4 id="limitations">Limitations</h4>
+<ul>
+<li>Only covers scripts and diacritics explicitly mapped (Latin, Greek, Cyrillic, Turkish, Vietnamese, etc.)</li>
+<li>Does <strong>not</strong> transliterate between scripts (e.g., Greek to Latin)</li>
+<li>Does <strong>not</strong> remove all possible Unicode marks outside supported ranges (e.g., rare/archaic scripts)</li>
+<li>For full Unicode normalization, use with the normalization parameter (e.g., <code>"NFC"</code>, <code>"NFD"</code>)</li>
+<li>Does <strong>not</strong> perform locale-specific collation (e.g., German ß vs ss)</li>
+</ul>
+<h4 id="example">Example</h4>
+<div class="highlight"><pre><span></span><code>input = &quot;café\nCAFÉ\ncafe\u0301\nCafe\nCAFÉ\nmañana\nmañana\nİstanbul\nistanbul\nISTANBUL\nstraße\nSTRASSE\nStraße\nкофе\nКофе\nκαφές\nΚαφές\n&quot;;
+result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
+/* Result: [&quot;café&quot;, &quot;CAFÉ&quot;, &quot;café&quot;, &quot;Cafe&quot;, &quot;CAFÉ&quot;] */
+</code></pre></div>
+<h2 id="splitsep-max-axis">split(sep, max, axis)</h2>
+<p>Splits into an array.</p>
+<div class="highlight"><pre><span></span><code>&quot;one\ntwo\nthree&quot;.split(&quot;\n&quot;) -&gt; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;]
+&quot;this is a test&quot;.split(&quot; &quot;) -&gt; [&quot;this&quot;,&quot;is&quot;,&quot;a&quot;,&quot;test&quot;]
+&quot;this is a test split into parts&quot;.split(3) -&gt; [&quot;this is a t&quot;,&quot;est split i&quot;,&quot;nto parts&quot;]
+&quot;this is a test split into parts&quot;.split(&quot; &quot;, 3) -&gt; [&quot;this is a test &quot;,&quot;split into &quot;,&quot;parts&quot;]
+</code></pre></div>
+<h2 id="joinitem">join(item)</h2>
+<p>Joins what has been split.</p>
+<div class="highlight"><pre><span></span><code>[&quot;this is a test &quot;,&quot;split into &quot;,&quot;parts&quot;].join(&quot;&quot;) -&gt; &quot;this is a test split into part&quot;
+</code></pre></div>
+<h2 id="upper">upper()</h2>
+<p>Converts to upper case.</p>
+<div class="highlight"><pre><span></span><code>&quot;hi&quot;.upper() -&gt; &quot;HI&quot;
+</code></pre></div>
+<h2 id="lower">lower()</h2>
+<p>Converts to lower.</p>
+<div class="highlight"><pre><span></span><code>&quot;HI&quot;.lower() -&gt; &quot;hi&quot;
+</code></pre></div>
+<h2 id="data-stoprangestartstep">data = (stop).range(start,step)</h2>
+<div class="highlight"><pre><span></span><code>(9).range(1,2);
+[1,3,5,7]
+</code></pre></div>
+<h2 id="sortaxisorderkind">sort(axis,order,kind)</h2>
+<h2 id="argsortaxisorderkind">argsort(axis,order,kind)</h2>
+<h2 id="uniqueop">unique(op)</h2>
+<h2 id="groupop1op2op3">group(op1,op2,op3)</h2>
+<h2 id="raw">raw()</h2>
+<p>Converts a value into it's raw bytes. Displays in hex form, but is stored in raw. Required in many cases as an intermediate form. For example, converting from a $STR to an $INT, you have two choices.</p>
+<div class="highlight"><pre><span></span><code>&gt; &quot;34&quot;.int();
+34
+
+&gt; &quot;34&quot;.raw();
+3334
+
+&gt; &quot;34&quot;.raw().int();
+13108
+</code></pre></div>
+<h2 id="uraw">uraw()</h2>
+<p>Converts to an unsigned raw value. To avoid sign issues, a leading zero is added to raw/int. To remove, used uraw and uint.</p>
+<div class="highlight"><pre><span></span><code>&gt; (0xFF).raw();
+0x0FF
+
+&gt; (0xFF).uraw();
+FF
+
+&gt; (0xFF).raw().int();
+255
+
+&gt; (0xFF).raw().uint();
+255
+
+&gt; (0xFF).uraw().int();
+-1
+
+&gt; (0xFF).uraw().uint();
+255
+</code></pre></div>
+<h2 id="bool">bool()</h2>
+<p>Converts to what the system sees as true/false.</p>
+<div class="highlight"><pre><span></span><code>&gt; &quot;1&quot;.bool();
+true
+
+&gt; (0).bool();
+false
+</code></pre></div>
+<h2 id="int">int()</h2>
+<p>Converts to $INT.</p>
+<div class="highlight"><pre><span></span><code>&quot;44&quot;.int() -&gt; 44
+</code></pre></div>
+<h2 id="uint">uint()</h2>
+<p>Converts to unsigned $INT.</p>
+<p>See $INT.</p>
+<h2 id="floatbits-extra">float([bits [,extra]])</h2>
+<p>Converts to $FLOAT. Sets bit count for the entire number. Calculations are performed with "extra" bits and truncated for display.</p>
+<div class="highlight"><pre><span></span><code>&quot;4.21&quot;.float() -&gt; 4.21
+
+&quot;4.21&quot;.float(300,7) / &quot;10412.42&quot;.float(300,7) -&gt; 0.00040432483514879346011782083319727786624050893068085997299379010835137268761728
+
+(&quot;4.21&quot;.float(300,7) / &quot;10412.42&quot;.float(300,7)).float(50) -&gt; 0.00040432483514879
+</code></pre></div>
+<h2 id="fixbits-extra">fix([bits [,extra]])</h2>
+<p>Converts to fixed float. Sets bit count after the decimal to bits. Calculations are performed with "extra" bits and truncated for display.</p>
+<h2 id="setfloatbits-extra">setfloat([bits [,extra]])</h2>
+<p>Sets the default float type to float, and the default bits and extra.</p>
+<h2 id="setfixbits-extra">setfix([bits [,extra]])</h2>
+<p>Sets the default float type to fix, and the default bits and extra.</p>
+<h2 id="str">str()</h2>
+<p>Converts to string. </p>
+<div class="highlight"><pre><span></span><code>(44).str() -&gt; &quot;44&quot;
+</code></pre></div>
+<h2 id="basebase">base(base)</h2>
+<p>Converts number to base. Base of power of 2 works well. Have not fully tested others. Performed as a series of mods and divisions. So can become expensive on very large numbers. Split large numbers into parts before using - but careful on the split. </p>
+<div class="highlight"><pre><span></span><code>(15).base(8) -&gt; 17
+(15).base(7) -&gt; 21
+</code></pre></div>
+<h2 id="hex">hex()</h2>
+<p>Converts item to hex. The hex value is stored as an ascii representation of '0'-'F' characters.</p>
+<h2 id="bin">bin()</h2>
+<p>Converts to binary. </p>
+<div class="highlight"><pre><span></span><code>(0xC).bin() -&gt; 1100
+</code></pre></div>
+<h2 id="setconsttruefalse">setconst(truefalse)</h2>
+<p>Sets a bit to lock the variable from being modified. If set as const, the variable will not be locked when accessed. Useful for global variables accessed by multiple threads where if not a const will cause threads to block on access which is not needed if the variable doesn't change.</p>
+<blockquote>
+<p><strong>Performance &amp; Parallelism:</strong>
+All array/vector transformation methods (e.g., <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>) are parallel by default, robust, and production-ready for ETL workloads. Grapa's parallelism is well tested for high-throughput data processing.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>
