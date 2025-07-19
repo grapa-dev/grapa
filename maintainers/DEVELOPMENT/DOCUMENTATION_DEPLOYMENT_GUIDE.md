@@ -53,6 +53,164 @@ git push origin gh-pages
 ### 5. Wait for Deployment
 GitHub Pages typically takes 2-5 minutes to update after a push.
 
+## Link Fixing and Navigation Structure
+
+### Common Link Issues and Fixes
+When updating documentation, you may encounter broken links. Here are the most common fixes:
+
+#### Fix Case Sensitivity Issues
+```bash
+# Fix Python integration links (uppercase to lowercase)
+find . -name "*.md" -exec sed -i '' 's/PYTHON_INTEGRATION\.md/python_integration.md/g' {} \;
+
+# Fix grep links (lowercase to uppercase)
+find . -name "*.md" -exec sed -i '' 's/grep\.md/GREP.md/g' {} \;
+
+# Fix USE_CASES links to new structure
+find . -name "*.md" -exec sed -i '' 's/USE_CASES\.md/use_cases\/index.md/g' {} \;
+
+# Fix PYTHON_use_cases links
+find . -name "*.md" -exec sed -i '' 's/PYTHON_use_cases\/index\.md/PYTHON_USE_CASES.md/g' {} \;
+```
+
+#### Complete Navigation Structure
+The navigation in `docs/mkdocs.yml` should include all sections:
+
+```yaml
+nav:
+  - Home: index.md
+  - Getting Started: GETTING_STARTED.md
+  - CLI Quickstart: CLI_QUICKSTART.md
+  - Python Quickstart: python_integration.md
+  - API Reference: API_REFERENCE.md
+  - Function Quick Reference: FUNCTION_QUICK_REFERENCE.md
+  - Grep Documentation: GREP.md
+  - Migration Guides:
+      - Python: migrations/PYTHON_TO_GRAPA_MIGRATION.md
+      - JavaScript: migrations/JS_TO_GRAPA_MIGRATION.md
+      - Rust: migrations/RUST_TO_GRAPA_MIGRATION.md
+      - TypeScript: migrations/TYPESCRIPT_TO_GRAPA_MIGRATION.md
+      - Go: migrations/GO_TO_GRAPA_MIGRATION.md
+      - Ruby: migrations/RUBY_TO_GRAPA_MIGRATION.md
+      - Kotlin: migrations/KOTLIN_TO_GRAPA_MIGRATION.md
+      - Swift: migrations/SWIFT_TO_GRAPA_MIGRATION.md
+  - Use Cases:
+      - Overview: use_cases/index.md
+      - ETL / Data Engineering: use_cases/etl_data_engineering.md
+      - Compiler/BNF Learning: use_cases/compiler_bnf_learning.md
+      - High-Precision Math: use_cases/high_precision_math.md
+      - Parallel Programming: use_cases/parallel_concurrent_programming.md
+      - Web Scraping: use_cases/web_data_scraping.md
+      - Database & File System: use_cases/database_file_system.md
+      - Education & Prototyping: use_cases/education_prototyping.md
+      - Cryptography: use_cases/cryptography.md
+  - Examples: EXAMPLES.md
+  - Syntax:
+      - Basic Syntax: syntax/basic_syntax.md
+      - Operators: syntax/operator.md
+      - Precedence: syntax/precedence.md
+      - Grammar Design: syntax/grammar_design.md
+  - System Functions:
+      - File Operations: sys/file.md
+      - Math Functions: sys/math.md
+      - Network Functions: sys/net.md
+      - System Functions: sys/sys.md
+      - Thread Functions: sys/thread.md
+  - Object Types:
+      - Document: obj/document.md
+      - Encode: obj/encode.md
+      - Grep: obj/grep.md
+      - Grep Python: obj/grep_python.md
+      - Iterate: obj/iterate.md
+      - Transform: obj/transform.md
+  - Operators:
+      - Assignment: operators/assignment.md
+      - Bit Operations: operators/bit.md
+      - Command: operators/command.md
+      - Comparison: operators/compare.md
+      - Condition: operators/condition.md
+      - Constants: operators/constants.md
+      - Function: operators/function.md
+      - Loop: operators/loop.md
+      - Math: operators/math.md
+  - Data Types:
+      - Array: type/ARRAY.md
+      - Boolean: type/BOOL.md
+      - Code: type/CODE.md
+      - Error: type/ERR.md
+      - Float: type/FLOAT.md
+      - ID: type/ID.md
+      - Integer: type/INT.md
+      - List: type/LIST.md
+      - Operation: type/OP.md
+      - Raw: type/RAW.md
+      - Rule: type/RULE.md
+      - String: type/STR.md
+      - System ID: type/SYSID.md
+      - System Integer: type/SYSINT.md
+      - System String: type/SYSSTR.md
+      - Table: type/TABLE.md
+      - Tag: type/TAG.md
+      - Time: type/TIME.md
+      - Vector: type/VECTOR.md
+      - Widget: type/WIDGET.md
+      - XML: type/XML.md
+  - Database:
+      - Column Store: database/column_store.md
+      - Quick Reference: database/quick_reference.md
+      - Troubleshooting: database/troubleshooting.md
+  - Additional Tools:
+      - Directory Navigation: directory_navigation.md
+      - GRC Scripts: grc_scripts.md
+      - GRZ Format: GRZ_FORMAT.md
+      - Python Use Cases: PYTHON_USE_CASES.md
+      - Run: RUN.md
+      - Testing: TESTING.md
+      - Unified Path System: unified_path_system.md
+  - Troubleshooting: TROUBLESHOOTING.md
+```
+
+### Comprehensive Documentation Check Process
+When doing a full documentation review and update:
+
+#### 1. Build and Check for Issues
+```bash
+cd docs
+python3 -m mkdocs build --clean
+```
+
+#### 2. Analyze Build Output
+Look for:
+- **WARNING** messages about broken links
+- **INFO** messages about missing anchors
+- Files not included in navigation
+
+#### 3. Fix Link Issues
+Use the sed commands above to fix common case sensitivity issues.
+
+#### 4. Update Navigation
+Ensure all documentation files are included in the navigation structure.
+
+#### 5. Rebuild and Verify
+```bash
+python3 -m mkdocs build --clean
+```
+
+#### 6. Deploy Changes
+Follow the standard deployment process.
+
+### Expected Build Warnings
+Some warnings are expected and acceptable:
+- Migration guide links to syntax files (these are relative links within migration docs)
+- Links to maintainer documentation (these are intentionally excluded)
+- Some anchor links to specific sections (these may be missing anchors)
+
+### Target Build Quality
+A good build should show:
+- **0-2 files not in navigation** (minor files like widget attributes)
+- **< 20 broken link warnings** (mostly migration guide relative links)
+- **All major sections accessible** via navigation
+
 ## Important Notes
 
 ### File Structure
@@ -80,12 +238,17 @@ The navigation is configured in `docs/mkdocs.yml` and includes:
 - **Cause**: Navigation not updated in mkdocs.yml
 - **Solution**: Check navigation configuration and rebuild
 
+#### Issue: Broken links after reorganization
+- **Cause**: File names changed or structure reorganized
+- **Solution**: Use sed commands to fix case sensitivity and path issues
+
 ### Verification
 To verify deployment worked:
 1. Check that `use_cases/` (lowercase) exists in `docs/` folder
 2. Check that `syntax/` directory exists in `docs/` folder
 3. Visit https://grapa-dev.github.io/grapa/ and verify navigation
 4. Check that all subsections are accessible
+5. Verify that broken links are minimized in build output
 
 ## Quick Deployment Script
 For future automation, here's a complete deployment script:
@@ -96,6 +259,15 @@ For future automation, here's a complete deployment script:
 
 echo "Building documentation..."
 cd docs
+python3 -m mkdocs build --clean
+
+echo "Fixing common link issues..."
+find . -name "*.md" -exec sed -i '' 's/PYTHON_INTEGRATION\.md/python_integration.md/g' {} \;
+find . -name "*.md" -exec sed -i '' 's/grep\.md/GREP.md/g' {} \;
+find . -name "*.md" -exec sed -i '' 's/USE_CASES\.md/use_cases\/index.md/g' {} \;
+find . -name "*.md" -exec sed -i '' 's/PYTHON_use_cases\/index\.md/PYTHON_USE_CASES.md/g' {} \;
+
+echo "Rebuilding with fixes..."
 python3 -m mkdocs build --clean
 
 echo "Switching to gh-pages branch..."
@@ -114,7 +286,7 @@ cp -r site/sitemap* .
 echo "Committing and pushing..."
 cd ..
 git add docs/
-git commit -m "Deploy documentation updates"
+git commit -m "Deploy documentation updates with link fixes"
 git push origin gh-pages
 
 echo "Deployment complete! Site will update in 2-5 minutes."
@@ -132,4 +304,5 @@ If deployment fails:
 2. Verify the `/docs` folder contains the built site
 3. Ensure all files are committed and pushed
 4. Wait for GitHub Pages to update (2-5 minutes)
-5. Clear browser cache if needed 
+5. Clear browser cache if needed
+6. Check for broken links in build output and fix them 
