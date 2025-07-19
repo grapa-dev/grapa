@@ -79,7 +79,16 @@ nav:
       - Ruby: migrations/RUBY_TO_GRAPA_MIGRATION.md
       - Kotlin: migrations/KOTLIN_TO_GRAPA_MIGRATION.md
       - Swift: migrations/SWIFT_TO_GRAPA_MIGRATION.md
-  - Use Cases: USE_CASES.md
+  - Use Cases:
+      - Overview: use_cases/index.md
+      - ETL / Data Engineering: use_cases/etl_data_engineering.md
+      - Compiler/BNF Learning: use_cases/compiler_bnf_learning.md
+      - High-Precision Math: use_cases/high_precision_math.md
+      - Parallel Programming: use_cases/parallel_concurrent_programming.md
+      - Web Scraping: use_cases/web_data_scraping.md
+      - Database & File System: use_cases/database_file_system.md
+      - Education & Prototyping: use_cases/education_prototyping.md
+      - Cryptography: use_cases/cryptography.md
   - Examples: EXAMPLES.md
   - Syntax:
       - Basic Syntax: syntax/basic_syntax.md

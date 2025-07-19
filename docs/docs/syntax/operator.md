@@ -1,273 +1,738 @@
-# Operator
+# Operators
 
 **See also:** [Operator Precedence Table](precedence.md)
 
-## Object and Table Merging Operators
+## Overview
 
-Grapa provides two different operators for combining objects/tables:
+Grapa provides 26 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.
 
-### `+=` (Append/Nest)
-Appends the second object as a nested structure within the first:
+## Operator Categories
 
-```grapa
-a = {"name": "John"};
-b = {"age": 30};
-a += b;
-a.echo();  /* {"name":"John",{"age":30}} */
-```
+### 1. Arithmetic Operators
+Addition, subtraction, multiplication, division, modulo, exponentiation, and root operations with smart type promotion.
 
-### `++=` (Merge/Flatten)
-Merges the properties from both objects into a single flat object:
+### 2. Comparison Operators  
+Equality, inequality, and relational operators with type-aware comparison behavior.
 
-```grapa
-a = {"name": "John"};
-b = {"age": 30};
-a ++= b;
-a.echo();  /* {"name":"John","age":30} */
-```
+### 3. Logical Operators
+Boolean logic operations with sophisticated truthiness conversion.
 
-### Key Differences
-- **`+=`** - Creates nested structure: `{"key1":"value1",{"key2":"value2"}}`
-- **`++=`** - Flattens properties: `{"key1":"value1","key2":"value2"}`
+### 4. Bitwise Operators
+Bit-level operations with strict type requirements and advanced matrix support.
 
-### Practical Examples
-```grapa
-/* Building nested configurations */
-config = {"debug": true};
-logging = {"level": "info"};
-config += logging;
-config.echo();  /* {"debug":true,{"level":"info"}} */
+### 5. Assignment Operators
+Variable assignment and compound assignment operations.
 
-/* Merging user data */
-user = {"name": "Alice"};
-profile = {"email": "alice@example.com", "role": "admin"};
-user ++= profile;
-user.echo();  /* {"name":"Alice","email":"alice@example.com","role":"admin"} */
-```
+### 6. Special Operators
+Extend, remove, dot operations, and ternary conditional expressions.
 
-## Basic Function Creation and Execution
+## Type Support Matrix
 
-Commands | Results
------------- | -------------
-f=op(){3%2};</br>f(); | 1
-f=@<[op,@<mod,{3,2}>],{}>;</br>f(); | 1
-f=op(a,b){a%b};</br>f(); | @<[op,@<mod,{@<var,{a}>,@<var,{b}>}>],{a,b}>
-f(842,5); | 2
-f=op(a,b,c){d=a%b;d*c;};</br>f(); | @<[op,@[@<assign,{d,@<mod,{@<var,{a}>,@<var,{b}>}>}>,@<mul,{@<var,{d}>,@<var,{c}>}>]],{a,b,c}>
-f(842,5,9); | 18
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | Notes |
+|----------|-----|-------|-----|------|-------|------|-----|-----|-------|
+| `+` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | Smart type promotion |
+| `-` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | String difference calculation |
+| `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Append assignment |
+| `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Remove by index/key |
+| `*` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | Matrix multiplication support |
+| `/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Smart type promotion |
+| `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
+| `**` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Exponentiation |
+| `*/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Root operator (nth root) |
+| `==` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
+| `!=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
+| `<` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
+| `<=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
+| `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | STR > INT bug |
+| `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | STR >= INT bug |
+| `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | STR <=> INT bug |
+| `&&` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `\|\|` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | FLOAT bugs |
+| `&` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `\|` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `^` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `~` | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Matrix inversion support |
+| `<<` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+| `>>` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+| `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
+| `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
 
-## Direct Execution Tree Creation and Execution
+## Arithmetic Operators
 
-You can create and execute $OP trees directly:
+### Addition (`+`)
 
-```grapa
-/* Create function from string */
-compiled = op()("a = 5 + 3; a.echo();");
-
-/* Execute the function */
-compiled();
-/* Result: 8 */
-
-/* View the execution tree */
-compiled;
-/* Result: @<[op,@[@<assign,{a,@<add,{5,3}>}>,@<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}>]],{}> */
-
-/* Execute the tree directly */
-@<[op,@[@<assign,{a,@<add,{5,3}>}>,@<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}>]],{}>();
-/* Result: 8 */
-```
-
-## Parameter Binding and Namespace Management
-
-Functions can have parameters with default values:
+Performs addition with smart type promotion and string concatenation.
 
 ```grapa
-/* Create function with parameters and default values */
-compiled = op("b"=0,"c"=0)("a = 5 + b + c; a.echo();");
+/* Numeric addition */
+5 + 3;                    /* 8 (INT) */
+5 + 3.14;                 /* 8.14... (FLOAT) */
+3.14 + 5;                 /* 8.14... (FLOAT) */
 
-/* Execute with different parameter combinations */
-compiled();      /* Uses defaults: b=0, c=0 → Result: 5 */
-compiled(3);     /* b=3, c=0 → Result: 8 */
-compiled(3,1);   /* b=3, c=1 → Result: 9 */
+/* String concatenation */
+"hello" + "world";        /* "helloworld" */
+"hello" + 5;              /* "hello5" */
+5 + "world";              /* 5 (asymmetric - should be "5world") */
 
-/* View the execution tree with parameter namespace */
-compiled;
-/* Result: @<[op,@[@<assign,{a,@<add,{@<add,{5,@<var,{b}>}>,@<var,{c}>}>}>,@<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}>]],{"b":0,"c":0}> */
+/* Boolean addition */
+true + 5;                 /* 5 (boolean converted to number) */
+false + 3.14;             /* 3.14... (boolean converted to number) */
 
-/* Execute the tree directly with parameters */
-@<[op,@[@<assign,{a,@<add,{@<add,{5,@<var,{b}>}>,@<var,{c}>}>}>,@<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}>]],{"b":0,"c":0}>(3,2);
-/* Result: 10 */
+/* Array operations */
+[1,2,3] + [4,5,6];       /* [] (empty array - should concatenate) */
+[1,2,3] + 4;              /* [] (empty array - should append) */
+
+/* Error handling */
+$ERR + 5;                 /* "ERR5" (error converted to string) */
 ```
 
-## Alternative Syntax for Function Creation
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, ERR  
+**Gaps**: 12 gaps identified (asymmetric behavior, array operations)
 
-You can also create functions using block syntax:
+### Subtraction (`-`)
+
+Performs subtraction with type-aware behavior.
 
 ```grapa
-/* Using block syntax */
-compiled = op("b"=0,"c"=0){a = 5 + b + c; a.echo();};
+/* Numeric subtraction */
+10 - 3;                   /* 7 (INT) */
+10.5 - 3;                 /* 7.5 (FLOAT) */
+10 - 3.5;                 /* 6.5 (FLOAT) */
 
-/* Execute with parameters */
-compiled(3,4);
-/* Result: 12 */
+/* String subtraction (character difference) */
+"hello" - "world";        /* -15 (character difference calculation) */
 
-/* View the execution tree */
-compiled;
-/* Result: @<[op,@[@<assign,{a,@<add,{@<add,{5,@<var,{b}>}>,@<var,{c}>}>}>,@<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}>]],{"b":0,"c":0}> */
+/* Array subtraction (remove by index) */
+[1,2,3,4,5] - 2;         /* [1,2,4,5] (removes element at index 2) */
+[1,2,3,4,5] - 2.0;       /* [1,2,4,5] (float index converted to int) */
+
+/* Error cases */
+5 - "hello";              /* $ERR (no string to number conversion) */
+[1,2,3] - [4,5,6];       /* $ERR (no array subtraction) */
 ```
 
-## Script and Rule-Based Function Creation
+**Type Support**: INT, FLOAT, STR-STR, ARRAY-INT/FLOAT  
+**Gaps**: 12 gaps identified (most combinations return $ERR)
 
-You can also define an operation by providing a script and a rule. If a rule is not specified, the "start" and "$start" rules are used (which is the default entry point for the grapa language).
+### Multiplication (`*`)
 
-Commands | Results
------------- | -------------
-op()("4*2"); | @<[op,8],{}>
-op()("4*2",@$start); | @<[op,8],{}>
-op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){a**b}}); | @<[op,@<[op,@<pow,{@<var,{a}>,@<var,{b}>}>],{"a":4,"b":2}>],{}>
-f = op()("4*2", rule $INT '*' $INT {op(a:$1,b:$3){a**b}});</br>f(); | 16
-
-Note in the last example the rule to use was defined and passed in as a parameter to the planer, the operation result assigned to a variable, and then the variable executed as a function.
-
-## Rule-Based Function Creation
-
-If the rules have already been defined, the following options to generate the execution plan - for either storing as a function or for debugging the rules.
-
-Commands | Results | Description
------------- | ------------- | -------------
-`r = rule $INT '*' $INT {op(a:$1,b:$3){a**b}};` |  | Rule for "int * int", with associated code that applies the power operator
-f = op()("4*2",r);</br>f(); | 16 | Applying the rule to create a function, and running the function
-f = r.plan("4*2");</br>f(); | 16 | Another way to apply the rule
-(r.plan("4*2"))(); | 16 | Apply the rule and run the function in the same command
-
-## Compile-Time Optimization Examples
-
-The Grapa compiler performs various optimizations during tree building:
+Performs multiplication with matrix support and string repetition.
 
 ```grapa
-/* Constant folding - arithmetic computed at compile time */
-op(){4*2}; | @<[op,8],{}>
+/* Numeric multiplication */
+5 * 3;                    /* 15 (INT) */
+5 * 3.14;                 /* 15.7... (FLOAT) */
+3.14 * 5;                 /* 15.7... (FLOAT) */
 
-/* Expression simplification */
-op(){5+3}; | @<[op,8],{}>
+/* String repetition */
+"hello" * 3;              /* "hellohellohello" */
+3 * "world";              /* 3 (asymmetric - should be "worldworldworld") */
 
-/* Variable assignment preserved for runtime */
-op(){a=5; a*2}; | @<[op,@[@<assign,{a,5}>,@<mul,{@<var,{a}>,2}>]],{}>
+/* Array operations */
+[1,2,3] * 2;              /* [1,2,3,1,2,3] (array repetition) */
+2 * [1,2,3];              /* 2 (asymmetric - should repeat array) */
 
-/* Complex expression with variables */
-op(x){x*2+1}; | @<[op,@<add,{@<mul,{@<var,{x}>,2}>},1}>],{x}>
+/* Matrix multiplication (advanced) */
+matrix1 = [[1,2],[3,4]];
+matrix2 = [[5,6],[7,8]];
+matrix1 * matrix2;        /* [[19,22],[43,50]] (matrix multiplication) */
 ```
 
-## Execution Tree Interpretation
+**Type Support**: INT, FLOAT, STR, ARRAY  
+**Gaps**: 18 gaps identified (asymmetric behavior, missing type combinations)
 
-When a $OP is executed, the interpreter follows these steps:
+### Division (`/`)
 
-1. **Create namespace** from the parameter list `{"b":0,"c":0}`
-2. **Bind parameters** passed during execution to the namespace
-3. **Traverse the tree** executing each operation in sequence
-4. **Return the result** of the last operation
-
-### Tree Traversal Example
+Performs division with smart type promotion.
 
 ```grapa
-/* Tree: @<[op,@[@<assign,{a,@<add,{5,3}>}>,@<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}>]],{}> */
+/* Numeric division */
+10 / 3;                   /* 3.333... (FLOAT) */
+10.0 / 3;                 /* 3.333... (FLOAT) */
+10 / 3.0;                 /* 3.333... (FLOAT) */
 
-/* Execution steps:
-   1. Create empty namespace {}
-   2. Execute @<assign,{a,@<add,{5,3}>}> → a = 8
-   3. Execute @<search,{@<var,{a}>,@<createlist,{@<name,{echo,null}>}>}> → 8.echo()
-   4. Return result: 8
-*/
+/* Array division */
+[1,2,3,4,5] / 2;         /* [0.5,1,1.5,2,2.5] (element-wise division) */
+
+/* Error cases */
+5 / "hello";              /* $ERR (no string to number conversion) */
+[1,2,3] / [4,5,6];       /* $ERR (no array division) */
 ```
 
-## Advanced Function Patterns
+**Type Support**: INT, FLOAT, ARRAY  
+**Gaps**: 15 gaps identified (most combinations return $ERR)
 
-### Function Composition
-```grapa
-/* Create base functions */
-double = op(x){x * 2};
-add_one = op(x){x + 1};
+### Modulo (`%`)
 
-/* Compose functions */
-composed = op(x){add_one(double(x))};
-composed(5);
-/* Result: 11 */
-```
-
-### Dynamic Function Creation
-```grapa
-/* Create function from string */
-script = "result = input * 2; result";
-dynamic_func = op("input"=0)(script);
-
-/* Execute */
-dynamic_func(7);
-/* Result: 14 */
-```
-
-### Function Storage and Retrieval
-```grapa
-/* Store function in table */
-table = $file().table("ROW");
-table.mkfield("func", "OP");
-table.set("my_func", op(x){x * x}, "func");
-
-/* Retrieve and execute */
-stored_func = table.get("my_func", "func");
-stored_func(4);
-/* Result: 16 */
-```
-
-## Integration with System Functions
-
-$OP objects integrate with `$sys` functions:
+Performs modulo operation with cryptographic features.
 
 ```grapa
-/* Compile script to $OP */
-compiled = $sys().compile("a = 5 + 3; a.echo();");
+/* Numeric modulo */
+10 % 3;                   /* 1 (INT) */
+10.5 % 3;                 /* 1.5 (FLOAT) */
+10 % 3.5;                 /* 3.0 (FLOAT) */
 
-/* Execute compiled $OP */
-$sys().eval(compiled);
-/* Result: 8 */
+/* Cryptographic features */
+base = 7;
+exponent = 13;
+modulus = 11;
+base.modpow(exponent, modulus);  /* 2 (modular exponentiation) */
 
-/* Direct $OP creation */
-direct_op = op()("a = 5 + 3; a.echo();");
-direct_op();
-/* Result: 8 */
+value = 3;
+modulus = 11;
+value.modinv(modulus);    /* 4 (modular multiplicative inverse) */
 ```
 
-## Performance Characteristics
+**Type Support**: INT, FLOAT  
+**Gaps**: 16 gaps identified (strict numeric types only)
 
-- **Compiled functions** execute faster than interpreted scripts
-- **Constant folding** reduces runtime computation
-- **Tree optimization** improves execution efficiency
-- **Parameter binding** is efficient with namespace caching
-- **Direct tree execution** bypasses parsing overhead
+### Exponentiation (`**`)
 
-## Debugging Execution Trees
-
-To debug execution trees:
+Performs exponentiation with smart type promotion.
 
 ```grapa
-/* View the tree structure */
-func = op(x,y){x * y + 1};
-func;
-/* Shows the complete execution tree */
+/* Numeric exponentiation */
+2 ** 3;                   /* 8 (INT) */
+2 ** 3.5;                 /* 11.313... (FLOAT) */
+2.5 ** 3;                 /* 15.625 (FLOAT) */
 
-/* Execute step by step */
-simple = op(){5 + 3};
-simple;
-/* Shows: @<[op,8],{}> (optimized) */
+/* Array exponentiation */
+[1,2,3] ** 2;             /* [1,4,9] (element-wise exponentiation) */
 
-complex = op(x){x * 2 + 1};
-complex;
-/* Shows: @<[op,@<add,{@<mul,{@<var,{x}>,2}>},1}>],{x}> */
+/* Error cases */
+5 ** "hello";             /* $ERR (no string to number conversion) */
 ```
+
+**Type Support**: INT, FLOAT, ARRAY  
+**Gaps**: 15 gaps identified (most combinations return $ERR)
+
+### Root (`*/`)
+
+Performs nth root calculations with advanced mathematical support.
+
+```grapa
+/* Numeric root */
+8 */ 3;                   /* 2 (cube root of 8) */
+16 */ 2;                  /* 4 (square root of 16) */
+27 */ 3.5;                /* 2.884... (3.5th root of 27) */
+
+/* Array root */
+[8,27,64] */ 3;          /* [2,3,4] (element-wise cube root) */
+
+/* Advanced mathematical operations */
+vector = [1,2,3];
+vector */ 2;              /* Vector operations (advanced) */
+```
+
+**Type Support**: INT, FLOAT, ARRAY  
+**Gaps**: 13 gaps identified (strict numeric types only)
+
+## Comparison Operators
+
+### Equality (`==`)
+
+Performs equality comparison with object ID comparison for complex types.
+
+```grapa
+/* Numeric equality */
+5 == 5;                   /* true */
+5.0 == 5;                 /* true */
+5 == 5.0;                 /* true */
+
+/* String equality */
+"hello" == "hello";       /* true */
+"hello" == "world";       /* false */
+
+/* Boolean equality */
+true == true;             /* true */
+true == 1;                /* true (truthiness conversion) */
+
+/* Array/List equality (object ID comparison) */
+[1,2,3] == [1,2,3];      /* true (same object) */
+a = [1,2,3];
+b = [1,2,3];
+a == b;                   /* false (different objects) */
+
+/* Object equality */
+{a:1,b:2} == {a:1,b:2};  /* true (same object) */
+```
+
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Gaps**: 7 gaps identified (object ID vs content comparison)
+
+### Inequality (`!=`)
+
+Performs inequality comparison with object ID comparison for complex types.
+
+```grapa
+/* Numeric inequality */
+5 != 3;                   /* true */
+5.0 != 5;                 /* false */
+
+/* String inequality */
+"hello" != "world";       /* true */
+"hello" != "hello";       /* false */
+
+/* Array/List inequality (object ID comparison) */
+[1,2,3] != [1,2,4];      /* false (same object ID) */
+a = [1,2,3];
+b = [1,2,4];
+a != b;                   /* true (different objects) */
+```
+
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Gaps**: 7 gaps identified (object ID vs content comparison)
+
+### Less Than (`<`)
+
+Performs less than comparison without type conversion.
+
+```grapa
+/* Numeric comparison */
+3 < 5;                    /* true */
+3.14 < 5;                 /* true */
+5 < 3.14;                 /* false */
+
+/* String comparison */
+"apple" < "banana";       /* true (lexicographic) */
+"hello" < "world";        /* true */
+
+/* Error cases */
+5 < "hello";              /* false (no type conversion) */
+"hello" < 5;              /* false (no type conversion) */
+```
+
+**Type Support**: INT, FLOAT, STR  
+**Gaps**: 8 gaps identified (no type conversion)
+
+### Less Than or Equal (`<=`)
+
+Performs less than or equal comparison without type conversion.
+
+```grapa
+/* Numeric comparison */
+3 <= 5;                   /* true */
+3 <= 3;                   /* true */
+5 <= 3;                   /* false */
+
+/* String comparison */
+"apple" <= "banana";      /* true */
+"hello" <= "hello";       /* true */
+
+/* Error cases */
+5 <= "hello";             /* false (no type conversion) */
+```
+
+**Type Support**: INT, FLOAT, STR  
+**Gaps**: 8 gaps identified (no type conversion)
+
+### Greater Than (`>`)
+
+Performs greater than comparison with known bug in STR > INT.
+
+```grapa
+/* Numeric comparison */
+5 > 3;                    /* true */
+5.14 > 3;                 /* true */
+3 > 5;                    /* false */
+
+/* String comparison */
+"banana" > "apple";       /* true */
+"world" > "hello";        /* true */
+
+/* Known bug: STR > INT */
+"hello" > 5;              /* true (BUG: should be false) */
+5 > "hello";              /* false (correct) */
+```
+
+**Type Support**: INT, FLOAT, STR  
+**Gaps**: 8 gaps identified (STR > INT bug)
+
+### Greater Than or Equal (`>=`)
+
+Performs greater than or equal comparison with known bug in STR >= INT.
+
+```grapa
+/* Numeric comparison */
+5 >= 3;                   /* true */
+5 >= 5;                   /* true */
+3 >= 5;                   /* false */
+
+/* String comparison */
+"banana" >= "apple";      /* true */
+"hello" >= "hello";       /* true */
+
+/* Known bug: STR >= INT */
+"hello" >= 5;             /* true (BUG: should be false) */
+5 >= "hello";             /* false (correct) */
+```
+
+**Type Support**: INT, FLOAT, STR  
+**Gaps**: 8 gaps identified (STR >= INT bug)
+
+### Spaceship (`<=>`)
+
+Performs three-way comparison with known bug in STR <=> INT.
+
+```grapa
+/* Numeric comparison */
+5 <=> 3;                  /* 1 (greater) */
+3 <=> 5;                  /* -1 (less) */
+5 <=> 5;                  /* 0 (equal) */
+
+/* String comparison */
+"banana" <=> "apple";     /* 1 (greater) */
+"apple" <=> "banana";     /* -1 (less) */
+"hello" <=> "hello";      /* 0 (equal) */
+
+/* Known bug: STR <=> INT */
+"hello" <=> 5;            /* 44 (BUG: should be error) */
+5 <=> "hello";            /* 99 (BUG: should be error) */
+```
+
+**Type Support**: INT, FLOAT, STR  
+**Gaps**: 7 gaps identified (STR <=> INT bug)
+
+## Logical Operators
+
+### Logical AND (`&&`)
+
+Performs logical AND with perfect truthiness conversion.
+
+```grapa
+/* Boolean logic */
+true && true;             /* true */
+true && false;            /* false */
+false && true;            /* false */
+false && false;           /* false */
+
+/* Truthiness conversion */
+5 && 3;                   /* 3 (both truthy) */
+0 && 5;                   /* 0 (first falsy) */
+5 && 0;                   /* 0 (second falsy) */
+"" && "hello";            /* "" (first falsy) */
+"hello" && "";            /* "" (second falsy) */
+
+/* Short-circuit evaluation */
+false && (5/0);           /* false (short-circuits) */
+true && (5/0);            /* $ERR (evaluates second operand) */
+```
+
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Gaps**: 0 gaps (perfect implementation)
+
+### Logical OR (`||`)
+
+Performs logical OR with perfect truthiness conversion.
+
+```grapa
+/* Boolean logic */
+true || true;             /* true */
+true || false;            /* true */
+false || true;            /* true */
+false || false;           /* false */
+
+/* Truthiness conversion */
+5 || 3;                   /* 5 (first truthy) */
+0 || 5;                   /* 5 (second truthy) */
+0 || 0;                   /* 0 (both falsy) */
+"" || "hello";            /* "hello" (second truthy) */
+"hello" || "";            /* "hello" (first truthy) */
+
+/* Short-circuit evaluation */
+true || (5/0);            /* true (short-circuits) */
+false || (5/0);           /* $ERR (evaluates second operand) */
+```
+
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Gaps**: 0 gaps (perfect implementation)
+
+### Logical NOT (`!`)
+
+Performs logical NOT with known bugs in FLOAT handling.
+
+```grapa
+/* Boolean logic */
+!true;                     /* false */
+!false;                    /* true */
+
+/* Truthiness conversion */
+!5;                        /* false (truthy) */
+!0;                        /* true (falsy) */
+!"hello";                  /* false (truthy) */
+!"";                       /* true (falsy) */
+
+/* Known bugs: FLOAT behavior */
+!5.0;                      /* true (BUG: should be false) */
+!(-5.0);                   /* false (BUG: should be true) */
+
+/* Complex expressions */
+!(5 && 3);                 /* false (BUG: should be true) */
+!(0 || 5);                 /* false (BUG: should be true) */
+```
+
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Gaps**: 0 gaps (but has FLOAT bugs)
+
+## Bitwise Operators
+
+### Bitwise AND (`&`)
+
+Performs bitwise AND with strict INT/RAW type requirements.
+
+```grapa
+/* Integer bitwise operations */
+5 & 3;                     /* 1 (101 & 011 = 001) */
+10 & 6;                    /* 2 (1010 & 0110 = 0010) */
+
+/* Error cases */
+5.5 & 3;                   /* $ERR (FLOAT not supported) */
+"hello" & "world";         /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT only  
+**Gaps**: 12 gaps identified (strict INT/RAW only)
+
+### Bitwise OR (`|`)
+
+Performs bitwise OR with strict INT/RAW type requirements.
+
+```grapa
+/* Integer bitwise operations */
+5 | 3;                     /* 7 (101 | 011 = 111) */
+10 | 6;                    /* 14 (1010 | 0110 = 1110) */
+
+/* Error cases */
+5.5 | 3;                   /* $ERR (FLOAT not supported) */
+"hello" | "world";         /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT only  
+**Gaps**: 12 gaps identified (strict INT/RAW only)
+
+### Bitwise XOR (`^`)
+
+Performs bitwise XOR with strict INT/RAW type requirements.
+
+```grapa
+/* Integer bitwise operations */
+5 ^ 3;                     /* 6 (101 ^ 011 = 110) */
+10 ^ 6;                    /* 12 (1010 ^ 0110 = 1100) */
+
+/* Error cases */
+5.5 ^ 3;                   /* $ERR (FLOAT not supported) */
+"hello" ^ "world";         /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT only  
+**Gaps**: 12 gaps identified (strict INT/RAW only)
+
+### Bitwise NOT (`~`)
+
+Performs bitwise NOT with advanced matrix inversion support.
+
+```grapa
+/* Integer bitwise operations */
+~5;                        /* -6 (bitwise complement) */
+~0;                        /* -1 (bitwise complement) */
+
+/* Matrix inversion (advanced) */
+matrix = [[1,2],[3,4]];
+~matrix;                   /* Matrix inversion operations */
+
+/* Error cases */
+~5.5;                      /* $ERR (FLOAT not supported) */
+~"hello";                  /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT, ARRAY (matrix operations)  
+**Gaps**: 12 gaps identified (strict INT/RAW only, except matrix support)
+
+### Left Shift (`<<`)
+
+Performs left shift with FLOAT support.
+
+```grapa
+/* Integer left shift */
+5 << 2;                    /* 20 (5 * 2^2) */
+10 << 1;                   /* 20 (10 * 2^1) */
+
+/* Float left shift */
+5.5 << 2;                  /* 22.0 (5.5 * 2^2) */
+
+/* Error cases */
+5 << "hello";              /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT, FLOAT  
+**Gaps**: 7 gaps identified (no STR support)
+
+### Right Shift (`>>`)
+
+Performs right shift with FLOAT support.
+
+```grapa
+/* Integer right shift */
+20 >> 2;                   /* 5 (20 / 2^2) */
+10 >> 1;                   /* 5 (10 / 2^1) */
+
+/* Float right shift */
+22.0 >> 2;                 /* 5.5 (22.0 / 2^2) */
+
+/* Error cases */
+20 >> "hello";             /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT, FLOAT  
+**Gaps**: 7 gaps identified (no STR support)
+
+## Assignment Operators
+
+### Assignment (`=`)
+
+Performs variable assignment with perfect implementation.
+
+```grapa
+/* Basic assignment */
+a = 5;                     /* 5 */
+b = "hello";               /* "hello" */
+c = [1,2,3];               /* [1,2,3] */
+
+/* Multiple assignment */
+a = b = c = 5;             /* 5 (all variables set to 5) */
+
+/* Object assignment */
+obj = {name: "John", age: 30};  /* {name:"John", age:30} */
+```
+
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Gaps**: 0 gaps (perfect implementation)
+
+### Add Assignment (`+=`)
+
+Performs append assignment with comprehensive support.
+
+```grapa
+/* Numeric addition */
+a = 5;
+a += 3;                    /* 8 */
+
+/* String concatenation */
+s = "hello";
+s += "world";              /* "helloworld" */
+
+/* Array append */
+arr = [1,2,3];
+arr += 4;                  /* [1,2,3,4] */
+
+/* List append */
+list = [1,2,3];
+list += 4;                 /* [1,2,3,4] */
+
+/* Object append (nested) */
+obj = {name: "John"};
+obj += {age: 30};          /* {name:"John",{age:30}} */
+```
+
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Gaps**: 12 gaps identified (asymmetric behavior)
+
+### Subtract Assignment (`-=`)
+
+Performs remove assignment with limited support.
+
+```grapa
+/* Numeric subtraction */
+a = 10;
+a -= 3;                    /* 7 */
+
+/* Array remove by index */
+arr = [1,2,3,4,5];
+arr -= 2;                  /* [1,2,4,5] (removes element at index 2) */
+
+/* Error cases */
+s = "hello";
+s -= "world";              /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT, FLOAT, ARRAY  
+**Gaps**: 12 gaps identified (severely limited support)
+
+## Special Operators
+
+### Ternary (`? :`)
+
+Performs conditional expressions with implementation quirks.
+
+```grapa
+/* Standard ternary */
+true ? "yes" : "no";       /* "yes" */
+false ? "yes" : "no";      /* "no" */
+
+/* Numeric conditions */
+5 ? "positive" : "zero";   /* "positive" */
+0 ? "positive" : "zero";   /* "zero" */
+
+/* String conditions */
+"hello" ? "non-empty" : "empty";  /* "non-empty" */
+"" ? "non-empty" : "empty";       /* "empty" */
+
+/* Complex conditions */
+(5 > 3) ? "greater" : "less";     /* "greater" */
+
+/* Nested ternary */
+5 > 3 ? "big" : 5 > 1 ? "medium" : "small";  /* "big" */
+
+/* Implementation quirks */
+true ? : "yes";            /* "" (Form 1: inverted logic) */
+false ? : "yes";           /* "yes" (Form 1: inverted logic) */
+true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
+```
+
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Gaps**: 0 gaps (but has implementation quirks)
 
 ## Best Practices
 
-1. **Use high-level syntax** for most programming tasks
-2. **Access execution trees** for debugging and optimization
-3. **Leverage compile-time optimization** by using constants where possible
-4. **Understand tree structure** for language extension development
-5. **Use direct tree execution** for performance-critical code
+### Type Conversion
+- **Addition (`+`)**: Converts numbers to strings for concatenation
+- **Comparison operators**: Generally don't convert types (maintains mathematical purity)
+- **Logical operators**: Perfect truthiness conversion
+- **Bitwise operators**: Strict INT/RAW only (except `~` with matrix support)
+
+### Error Handling
+- **Most operators**: Return $ERR for unsupported type combinations
+- **Array operations**: Often return empty arrays instead of errors
+- **String operations**: May return unexpected results for unsupported combinations
+
+### Performance Considerations
+- **Object ID comparison**: Arrays and lists use object ID comparison for performance
+- **Short-circuit evaluation**: Logical operators use short-circuit evaluation
+- **Matrix operations**: Advanced linear algebra capabilities available
+
+### Known Issues
+- **STR > INT bug**: `"hello" > 5` returns true (should be false)
+- **Logical NOT FLOAT bugs**: `!5.0` returns true (should be false)
+- **Ternary quirks**: Form 1 has inverted logic, Form 3 has unexpected behavior
+- **Array comparison**: Uses object ID instead of content comparison
+
+## Advanced Features
+
+### Matrix Operations
+- **Multiplication (`*`)**: Supports matrix multiplication
+- **Bitwise NOT (`~`)**: Supports matrix inversion
+- **Root (`*/`)**: Supports vector operations
+
+### Cryptographic Features
+- **Modulo (`%`)**: Built-in modpow and modinv for cryptographic operations
+- **Bitwise operators**: Strict integer handling for cryptographic applications
+
+### Mathematical Sophistication
+- **Root operator (`*/`)**: nth root calculations
+- **Type promotion**: Smart type conversion for mathematical operations
+- **Truthiness conversion**: Sophisticated boolean conversion rules
+
+## Summary
+
+Grapa provides 26 operators with sophisticated type handling and mathematical capabilities. While most operators work as expected, there are some known bugs and design decisions that users should be aware of. The operators are designed with a balance between mathematical purity and user convenience, with some intentionally not converting types to maintain mathematical correctness.
