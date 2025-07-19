@@ -1,0 +1,91 @@
+/* Spaceship Operator (<=>) Test */
+
+"=== SPACESHIP OPERATOR (<=>) TEST ===\n".echo();
+
+/* Test 1: INT <=> INT */
+"Test 1: INT <=> INT\n".echo();
+result1 = 5 <=> 3;
+("5 <=> 3 = " + result1 + "\n").echo();
+result1b = 3 <=> 5;
+("3 <=> 5 = " + result1b + "\n").echo();
+result1c = 5 <=> 5;
+("5 <=> 5 = " + result1c + "\n").echo();
+
+/* Test 2: INT <=> FLOAT */
+"Test 2: INT <=> FLOAT\n".echo();
+result2 = 5 <=> 3.0;
+("5 <=> 3.0 = " + result2 + "\n").echo();
+result2b = 3 <=> 5.0;
+("3 <=> 5.0 = " + result2b + "\n").echo();
+result2c = 5 <=> 5.0;
+("5 <=> 5.0 = " + result2c + "\n").echo();
+
+/* Test 3: FLOAT <=> INT */
+"Test 3: FLOAT <=> INT\n".echo();
+result3 = 5.0 <=> 3;
+("5.0 <=> 3 = " + result3 + "\n").echo();
+result3b = 3.0 <=> 5;
+("3.0 <=> 5 = " + result3b + "\n").echo();
+result3c = 5.0 <=> 5;
+("5.0 <=> 5 = " + result3c + "\n").echo();
+
+/* Test 4: FLOAT <=> FLOAT */
+"Test 4: FLOAT <=> FLOAT\n".echo();
+result4 = 5.0 <=> 3.0;
+("5.0 <=> 3.0 = " + result4 + "\n").echo();
+result4b = 3.0 <=> 5.0;
+("3.0 <=> 5.0 = " + result4b + "\n").echo();
+result4c = 5.0 <=> 5.0;
+("5.0 <=> 5.0 = " + result4c + "\n").echo();
+
+/* Test 5: STR <=> STR */
+"Test 5: STR <=> STR\n".echo();
+result5 = "def" <=> "abc";
+("'def' <=> 'abc' = " + result5 + "\n").echo();
+result5b = "abc" <=> "def";
+("'abc' <=> 'def' = " + result5b + "\n").echo();
+result5c = "abc" <=> "abc";
+("'abc' <=> 'abc' = " + result5c + "\n").echo();
+
+/* Test 6: INT <=> STR */
+"Test 6: INT <=> STR\n".echo();
+result6 = 10 <=> "5";
+("10 <=> '5' = " + result6 + "\n").echo();
+result6b = 5 <=> "hello";
+("5 <=> 'hello' = " + result6b + "\n").echo();
+
+/* Test 7: STR <=> INT */
+"Test 7: STR <=> INT\n".echo();
+result7 = "10" <=> 5;
+("'10' <=> 5 = " + result7 + "\n").echo();
+result7b = "hello" <=> 5;
+("'hello' <=> 5 = " + result7b + "\n").echo();
+
+/* Test 8: BOOL <=> BOOL */
+"Test 8: BOOL <=> BOOL\n".echo();
+result8 = true <=> false;
+("true <=> false = " + result8 + "\n").echo();
+result8b = false <=> true;
+("false <=> true = " + result8b + "\n").echo();
+result8c = true <=> true;
+("true <=> true = " + result8c + "\n").echo();
+
+/* Test 9: ARRAY <=> ARRAY */
+"Test 9: ARRAY <=> ARRAY\n".echo();
+result9 = [1, 2, 4] <=> [1, 2, 3];
+("[1,2,4] <=> [1,2,3] = " + result9 + "\n").echo();
+result9b = [1, 2, 3] <=> [1, 2, 4];
+("[1,2,3] <=> [1,2,4] = " + result9b + "\n").echo();
+result9c = [1, 2, 3] <=> [1, 2, 3];
+("[1,2,3] <=> [1,2,3] = " + result9c + "\n").echo();
+
+/* Test 10: LIST <=> LIST */
+"Test 10: LIST <=> LIST\n".echo();
+result10 = {a: 1, b: 3} <=> {a: 1, b: 2};
+("{a:1,b:3} <=> {a:1,b:2} = " + result10 + "\n").echo();
+result10b = {a: 1, b: 2} <=> {a: 1, b: 3};
+("{a:1,b:2} <=> {a:1,b:3} = " + result10b + "\n").echo();
+result10c = {a: 1, b: 2} <=> {a: 1, b: 2};
+("{a:1,b:2} <=> {a:1,b:2} = " + result10c + "\n").echo();
+
+"=== SPACESHIP OPERATOR (<=>) TEST COMPLETE ===\n".echo(); 

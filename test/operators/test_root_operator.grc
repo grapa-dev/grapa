@@ -1,0 +1,130 @@
+/* Root Operator (*/) Test */
+
+"=== ROOT OPERATOR (*/) TEST ===\n".echo();
+
+/* Test 1: INT */ INT */
+"Test 1: INT */ INT\n".echo();
+result1 = 8 */ 3;
+("8 */ 3 = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: FLOAT */ INT */
+"Test 2: FLOAT */ INT\n".echo();
+result2 = 8.0 */ 3;
+("8.0 */ 3 = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: INT */ FLOAT */
+"Test 3: INT */ FLOAT\n".echo();
+result3 = 8 */ 3.0;
+("8 */ 3.0 = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: FLOAT */ FLOAT */
+"Test 4: FLOAT */ FLOAT\n".echo();
+result4 = 8.0 */ 3.0;
+("8.0 */ 3.0 = " + result4 + " (type: " + result4.type() + ")\n").echo();
+
+/* Test 5: STR */ INT */
+"Test 5: STR */ INT\n".echo();
+result5 = "8" */ 3;
+("'8' */ 3 = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+/* Test 6: INT */ STR */
+"Test 6: INT */ STR\n".echo();
+result6 = 8 */ "3";
+("8 */ '3' = " + result6 + " (type: " + result6.type() + ")\n").echo();
+
+/* Test 7: FLOAT */ STR */
+"Test 7: FLOAT */ STR\n".echo();
+result7 = 8.0 */ "3";
+("8.0 */ '3' = " + result7 + " (type: " + result7.type() + ")\n").echo();
+
+/* Test 8: STR */ FLOAT */
+"Test 8: STR */ FLOAT\n".echo();
+result8 = "8" */ 3.0;
+("'8' */ 3.0 = " + result8 + " (type: " + result8.type() + ")\n").echo();
+
+/* Test 9: ARRAY */ INT */
+"Test 9: ARRAY */ INT\n".echo();
+result9 = [8, 27, 64] */ 3;
+("[8,27,64] */ 3 = " + result9 + " (type: " + result9.type() + ")\n").echo();
+
+/* Test 10: INT */ ARRAY */
+"Test 10: INT */ ARRAY\n".echo();
+result10 = 8 */ [2, 3, 4];
+("8 */ [2,3,4] = " + result10 + " (type: " + result10.type() + ")\n").echo();
+
+/* Test 11: ARRAY */ ARRAY */
+"Test 11: ARRAY */ ARRAY\n".echo();
+result11 = [8, 27, 64] */ [2, 3, 4];
+("[8,27,64] */ [2,3,4] = " + result11 + " (type: " + result11.type() + ")\n").echo();
+
+/* Test 12: LIST */ INT */
+"Test 12: LIST */ INT\n".echo();
+result12 = {"a": 8, "b": 27} */ 3;
+("{'a':8,'b':27} */ 3 = " + result12 + " (type: " + result12.type() + ")\n").echo();
+
+/* Test 13: INT */ LIST */
+"Test 13: INT */ LIST\n".echo();
+result13 = 8 */ {"a": 2, "b": 3};
+("8 */ {'a':2,'b':3} = " + result13 + " (type: " + result13.type() + ")\n").echo();
+
+/* Test 14: BOOL */ INT */
+"Test 14: BOOL */ INT\n".echo();
+result14 = true */ 3;
+("true */ 3 = " + result14 + " (type: " + result14.type() + ")\n").echo();
+
+/* Test 15: INT */ BOOL */
+"Test 15: INT */ BOOL\n".echo();
+result15 = 8 */ true;
+("8 */ true = " + result15 + " (type: " + result15.type() + ")\n").echo();
+
+/* Test 16: FLOAT */ BOOL */
+"Test 16: FLOAT */ BOOL\n".echo();
+result16 = 8.0 */ false;
+("8.0 */ false = " + result16 + " (type: " + result16.type() + ")\n").echo();
+
+/* Test 17: BOOL */ FLOAT */
+"Test 17: BOOL */ FLOAT\n".echo();
+result17 = true */ 3.0;
+("true */ 3.0 = " + result17 + " (type: " + result17.type() + ")\n").echo();
+
+/* Test 18: STR */ BOOL */
+"Test 18: STR */ BOOL\n".echo();
+result18 = "8" */ true;
+("'8' */ true = " + result18 + " (type: " + result18.type() + ")\n").echo();
+
+/* Test 19: BOOL */ STR */
+"Test 19: BOOL */ STR\n".echo();
+result19 = true */ "3";
+("true */ '3' = " + result19 + " (type: " + result19.type() + ")\n").echo();
+
+/* Test 20: ARRAY */ BOOL */
+"Test 20: ARRAY */ BOOL\n".echo();
+result20 = [8, 27, 64] */ true;
+("[8,27,64] */ true = " + result20 + " (type: " + result20.type() + ")\n").echo();
+
+/* Test 21: BOOL */ ARRAY */
+"Test 21: BOOL */ ARRAY\n".echo();
+result21 = true */ [2, 3, 4];
+("true */ [2,3,4] = " + result21 + " (type: " + result21.type() + ")\n").echo();
+
+/* Test 22: LIST */ BOOL */
+"Test 22: LIST */ BOOL\n".echo();
+result22 = {"a": 8, "b": 27} */ true;
+("{'a':8,'b':27} */ true = " + result22 + " (type: " + result22.type() + ")\n").echo();
+
+/* Test 23: BOOL */ LIST */
+"Test 23: BOOL */ LIST\n".echo();
+result23 = true */ {"a": 2, "b": 3};
+("true */ {'a':2,'b':3} = " + result23 + " (type: " + result23.type() + ")\n").echo();
+
+/* Test 24: ERR */ INT */
+"Test 24: ERR */ INT\n".echo();
+result24 = $ERR */ 3;
+("$ERR */ 3 = " + result24 + " (type: " + result24.type() + ")\n").echo();
+
+/* Test 25: INT */ ERR */
+"Test 25: INT */ ERR\n".echo();
+result25 = 8 */ $ERR;
+("8 */ $ERR = " + result25 + " (type: " + result25.type() + ")\n").echo();
+
+"=== ROOT OPERATOR (*/) TEST COMPLETE ===\n".echo(); 

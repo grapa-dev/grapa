@@ -1,0 +1,171 @@
+/* Test Modular Arithmetic */
+/* Tests for modpow, modinv, and gcd functions */
+
+"=== Testing Modular Arithmetic ===".echo();
+
+/* Test 1: Basic modular exponentiation */
+"\n1. Testing basic modular exponentiation".echo();
+base = 7;
+exponent = 13;
+modulus = 23;
+result = base.modpow(exponent, modulus);
+expected = 10;
+("7^13 mod 23 = " + result.str()).echo();
+("Expected: " + expected.str()).echo();
+("Correct: " + (result == expected).str()).echo();
+
+/* Test 2: Modular exponentiation with large numbers */
+"\n2. Testing large number modular exponentiation".echo();
+base = 123456789;
+exponent = 987654321;
+modulus = 1000000007;
+result = base.modpow(exponent, modulus);
+("Large modpow result: " + result.str()).echo();
+("Result is within modulus: " + (result < modulus).str()).echo();
+
+/* Test 3: Modular multiplicative inverse */
+"\n3. Testing modular multiplicative inverse".echo();
+value = 7;
+modulus = 23;
+inverse = value.modinv(modulus);
+verification = (value * inverse) % modulus;
+("7^(-1) mod 23 = " + inverse.str()).echo();
+("Verification (7 * inverse) mod 23 = " + verification.str()).echo();
+("Inverse is correct: " + (verification == 1).str()).echo();
+
+/* Test 4: Modular inverse with large numbers */
+"\n4. Testing large number modular inverse".echo();
+value = 123456789;
+modulus = 1000000007;
+inverse = value.modinv(modulus);
+verification = (value * inverse) % modulus;
+("Large modinv verification: " + verification.str()).echo();
+("Inverse is correct: " + (verification == 1).str()).echo();
+
+/* Test 5: Greatest common divisor */
+"\n5. Testing greatest common divisor".echo();
+a = 48;
+b = 18;
+result = a.gcd(b);
+expected = 6;
+("gcd(48, 18) = " + result.str()).echo();
+("Expected: " + expected.str()).echo();
+("Correct: " + (result == expected).str()).echo();
+
+/* Test 6: GCD with coprime numbers */
+"\n6. Testing GCD with coprime numbers".echo();
+a = 17;
+b = 23;
+result = a.gcd(b);
+("gcd(17, 23) = " + result.str()).echo();
+("Numbers are coprime: " + (result == 1).str()).echo();
+
+/* Test 7: GCD with zero */
+"\n7. Testing GCD with zero".echo();
+a = 42;
+b = 0;
+result = a.gcd(b);
+("gcd(42, 0) = " + result.str()).echo();
+("Result equals non-zero number: " + (result == a).str()).echo();
+
+/* Test 8: GCD with large numbers */
+"\n8. Testing GCD with large numbers".echo();
+a = 1234567890123456789;
+b = 9876543210987654321;
+result = a.gcd(b);
+("Large GCD result: " + result.str()).echo();
+("Result is positive: " + (result > 0).str()).echo();
+
+/* Test 9: Modular exponentiation edge cases */
+"\n9. Testing modular exponentiation edge cases".echo();
+/* Test with exponent 0 */
+result = 5.modpow(0, 23);
+("5^0 mod 23 = " + result.str()).echo();
+("Result is 1: " + (result == 1).str()).echo();
+
+/* Test with exponent 1 */
+result = 5.modpow(1, 23);
+("5^1 mod 23 = " + result.str()).echo();
+("Result equals base: " + (result == 5).str()).echo();
+
+/* Test with base 0 */
+result = 0.modpow(5, 23);
+("0^5 mod 23 = " + result.str()).echo();
+("Result is 0: " + (result == 0).str()).echo();
+
+/* Test 10: Modular inverse edge cases */
+"\n10. Testing modular inverse edge cases".echo();
+/* Test with value 1 */
+inverse = 1.modinv(23);
+("1^(-1) mod 23 = " + inverse.str()).echo();
+("Inverse is 1: " + (inverse == 1).str()).echo();
+
+/* Test with value equal to modulus - 1 */
+inverse = 22.modinv(23);
+("22^(-1) mod 23 = " + inverse.str()).echo();
+("Inverse is correct: " + ((22 * inverse) % 23 == 1).str()).echo();
+
+/* Test 11: RSA-like key generation simulation */
+"\n11. Testing RSA-like key generation".echo();
+/* Generate two small primes for testing */
+p = 61;
+q = 53;
+n = p * q;
+phi = (p - 1) * (q - 1);
+e = 17;
+
+/* Calculate private exponent */
+d = e.modinv(phi);
+("Public key (n, e): " + n.str() + " " + e.str()).echo();
+("Private key (n, d): " + n.str() + " " + d.str()).echo();
+("Verification: (e * d) mod phi = " + ((e * d) % phi).str()).echo();
+
+/* Test 12: RSA encryption/decryption simulation */
+"\n12. Testing RSA encryption/decryption simulation".echo();
+message = 42;
+encrypted = message.modpow(e, n);
+decrypted = encrypted.modpow(d, n);
+("Original message: " + message.str()).echo();
+("Encrypted: " + encrypted.str()).echo();
+("Decrypted: " + decrypted.str()).echo();
+("Encryption/decryption successful: " + (message == decrypted).str()).echo();
+
+/* Test 13: Diffie-Hellman key exchange simulation */
+"\n13. Testing Diffie-Hellman key exchange".echo();
+/* Public parameters */
+p = 23;
+g = 5;
+
+/* Alice's private key */
+a = 6;
+/* Bob's private key */
+b = 15;
+
+/* Public keys */
+A = g.modpow(a, p);
+B = g.modpow(b, p);
+
+/* Shared secret */
+alice_secret = B.modpow(a, p);
+bob_secret = A.modpow(b, p);
+
+("Alice's public key: " + A.str()).echo();
+("Bob's public key: " + B.str()).echo();
+("Alice's shared secret: " + alice_secret.str()).echo();
+("Bob's shared secret: " + bob_secret.str()).echo();
+("Key exchange successful: " + (alice_secret == bob_secret).str()).echo();
+
+/* Test 14: Performance test with multiple operations */
+"\n14. Testing performance with multiple operations".echo();
+start_time = $TIME().utc();
+i = 0;
+while (i < 100) {
+    result = (i + 1).modpow(100, 1000000007);
+    i += 1;
+}
+end_time = $TIME().utc();
+elapsed_ns = end_time - start_time;
+elapsed_ms = (elapsed_ns / 1000000).int();
+("100 modpow operations completed in: " + elapsed_ms.str() + " ms").echo();
+
+"=== Modular Arithmetic Tests Complete ===".echo(); 

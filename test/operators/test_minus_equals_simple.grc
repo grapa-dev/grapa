@@ -1,0 +1,15 @@
+/* Simple -= test */
+
+"Testing -= operator\n".echo();
+
+arr = [1, 2, 3, 4, 5];
+("Original array: " + arr + "\n").echo();
+
+arr -= arr[2];
+("After arr -= arr[2]: " + arr + "\n").echo();
+
+list = {"a": 1, "b": 2, "c": 3};
+("Original list: " + list + "\n").echo();
+
+list -= list["b"];
+("After list -= list['b']: " + list + "\n").echo(); 

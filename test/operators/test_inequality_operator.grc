@@ -1,0 +1,185 @@
+/* Inequality Operator (!=) Test */
+
+"=== INEQUALITY OPERATOR (!=) TEST ===\n".echo();
+
+/* Test 1: INT != INT */
+"Test 1: INT != INT\n".echo();
+result1 = 5 != 5;
+if (result1) {
+    "5 != 5 is TRUE\n".echo();
+} else {
+    "5 != 5 is FALSE\n".echo();
+}
+result1b = 5 != 3;
+if (result1b) {
+    "5 != 3 is TRUE\n".echo();
+} else {
+    "5 != 3 is FALSE\n".echo();
+}
+
+/* Test 2: INT != FLOAT */
+"Test 2: INT != FLOAT\n".echo();
+result2 = 5 != 5.0;
+if (result2) {
+    "5 != 5.0 is TRUE\n".echo();
+} else {
+    "5 != 5.0 is FALSE\n".echo();
+}
+result2b = 5 != 5.1;
+if (result2b) {
+    "5 != 5.1 is TRUE\n".echo();
+} else {
+    "5 != 5.1 is FALSE\n".echo();
+}
+
+/* Test 3: FLOAT != INT */
+"Test 3: FLOAT != INT\n".echo();
+result3 = 5.0 != 5;
+if (result3) {
+    "5.0 != 5 is TRUE\n".echo();
+} else {
+    "5.0 != 5 is FALSE\n".echo();
+}
+result3b = 5.1 != 5;
+if (result3b) {
+    "5.1 != 5 is TRUE\n".echo();
+} else {
+    "5.1 != 5 is FALSE\n".echo();
+}
+
+/* Test 4: FLOAT != FLOAT */
+"Test 4: FLOAT != FLOAT\n".echo();
+result4 = 5.0 != 5.0;
+if (result4) {
+    "5.0 != 5.0 is TRUE\n".echo();
+} else {
+    "5.0 != 5.0 is FALSE\n".echo();
+}
+result4b = 5.0 != 5.1;
+if (result4b) {
+    "5.0 != 5.1 is TRUE\n".echo();
+} else {
+    "5.0 != 5.1 is FALSE\n".echo();
+}
+
+/* Test 5: STR != STR */
+"Test 5: STR != STR\n".echo();
+result5 = "hello" != "hello";
+if (result5) {
+    "'hello' != 'hello' is TRUE\n".echo();
+} else {
+    "'hello' != 'hello' is FALSE\n".echo();
+}
+result5b = "hello" != "world";
+if (result5b) {
+    "'hello' != 'world' is TRUE\n".echo();
+} else {
+    "'hello' != 'world' is FALSE\n".echo();
+}
+
+/* Test 6: INT != STR */
+"Test 6: INT != STR\n".echo();
+result6 = 5 != "5";
+if (result6) {
+    "5 != '5' is TRUE\n".echo();
+} else {
+    "5 != '5' is FALSE\n".echo();
+}
+result6b = 5 != "hello";
+if (result6b) {
+    "5 != 'hello' is TRUE\n".echo();
+} else {
+    "5 != 'hello' is FALSE\n".echo();
+}
+
+/* Test 7: STR != INT */
+"Test 7: STR != INT\n".echo();
+result7 = "5" != 5;
+if (result7) {
+    "'5' != 5 is TRUE\n".echo();
+} else {
+    "'5' != 5 is FALSE\n".echo();
+}
+result7b = "hello" != 5;
+if (result7b) {
+    "'hello' != 5 is TRUE\n".echo();
+} else {
+    "'hello' != 5 is FALSE\n".echo();
+}
+
+/* Test 8: BOOL != BOOL */
+"Test 8: BOOL != BOOL\n".echo();
+result8 = true != true;
+if (result8) {
+    "true != true is TRUE\n".echo();
+} else {
+    "true != true is FALSE\n".echo();
+}
+result8b = true != false;
+if (result8b) {
+    "true != false is TRUE\n".echo();
+} else {
+    "true != false is FALSE\n".echo();
+}
+
+/* Test 9: INT != BOOL */
+"Test 9: INT != BOOL\n".echo();
+result9 = 1 != true;
+if (result9) {
+    "1 != true is TRUE\n".echo();
+} else {
+    "1 != true is FALSE\n".echo();
+}
+result9b = 0 != false;
+if (result9b) {
+    "0 != false is TRUE\n".echo();
+} else {
+    "0 != false is FALSE\n".echo();
+}
+
+/* Test 10: BOOL != INT */
+"Test 10: BOOL != INT\n".echo();
+result10 = true != 1;
+if (result10) {
+    "true != 1 is TRUE\n".echo();
+} else {
+    "true != 1 is FALSE\n".echo();
+}
+result10b = false != 0;
+if (result10b) {
+    "false != 0 is TRUE\n".echo();
+} else {
+    "false != 0 is FALSE\n".echo();
+}
+
+/* Test 11: ARRAY != ARRAY */
+"Test 11: ARRAY != ARRAY\n".echo();
+result11 = [1, 2, 3] != [1, 2, 3];
+if (result11) {
+    "[1,2,3] != [1,2,3] is TRUE\n".echo();
+} else {
+    "[1,2,3] != [1,2,3] is FALSE\n".echo();
+}
+result11b = [1, 2, 3] != [1, 2, 4];
+if (result11b) {
+    "[1,2,3] != [1,2,4] is TRUE\n".echo();
+} else {
+    "[1,2,3] != [1,2,4] is FALSE\n".echo();
+}
+
+/* Test 12: LIST != LIST */
+"Test 12: LIST != LIST\n".echo();
+result12 = {a: 1, b: 2} != {a: 1, b: 2};
+if (result12) {
+    "{a:1,b:2} != {a:1,b:2} is TRUE\n".echo();
+} else {
+    "{a:1,b:2} != {a:1,b:2} is FALSE\n".echo();
+}
+result12b = {a: 1, b: 2} != {a: 1, b: 3};
+if (result12b) {
+    "{a:1,b:2} != {a:1,b:3} is TRUE\n".echo();
+} else {
+    "{a:1,b:2} != {a:1,b:3} is FALSE\n".echo();
+}
+
+"=== INEQUALITY OPERATOR (!=) TEST COMPLETE ===\n".echo(); 

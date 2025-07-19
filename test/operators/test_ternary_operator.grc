@@ -1,0 +1,66 @@
+/* Ternary Operator (? :) Test */
+
+"=== TERNARY OPERATOR (? :) TEST ===\n".echo();
+
+/* Test 1: condition ? : value (if true, return value; otherwise return null) */
+"Test 1: condition ? : value\n".echo();
+result1 = true ? : "yes";
+("true ? : 'yes' = " + result1 + "\n").echo();
+result1b = false ? : "yes";
+("false ? : 'yes' = " + result1b + "\n").echo();
+
+/* Test 2: condition ? true_value : false_value (standard ternary) */
+"Test 2: condition ? true_value : false_value\n".echo();
+result2 = true ? "yes" : "no";
+("true ? 'yes' : 'no' = " + result2 + "\n").echo();
+result2b = false ? "yes" : "no";
+("false ? 'yes' : 'no' = " + result2b + "\n").echo();
+
+/* Test 3: condition ? true_value : false_value : else_value (ternary with else) */
+"Test 3: condition ? true_value : false_value : else_value\n".echo();
+result3 = true ? "yes" : "no" : "maybe";
+("true ? 'yes' : 'no' : 'maybe' = " + result3 + "\n").echo();
+result3b = false ? "yes" : "no" : "maybe";
+("false ? 'yes' : 'no' : 'maybe' = " + result3b + "\n").echo();
+
+/* Test 4: Numeric conditions */
+"Test 4: Numeric conditions\n".echo();
+result4 = 5 ? "positive" : "zero";
+("5 ? 'positive' : 'zero' = " + result4 + "\n").echo();
+result4b = 0 ? "positive" : "zero";
+("0 ? 'positive' : 'zero' = " + result4b + "\n").echo();
+
+/* Test 5: String conditions */
+"Test 5: String conditions\n".echo();
+result5 = "hello" ? "non-empty" : "empty";
+("'hello' ? 'non-empty' : 'empty' = " + result5 + "\n").echo();
+result5b = "" ? "non-empty" : "empty";
+("'' ? 'non-empty' : 'empty' = " + result5b + "\n").echo();
+
+/* Test 6: Complex conditions */
+"Test 6: Complex conditions\n".echo();
+result6 = (5 > 3) ? "greater" : "less";
+("(5 > 3) ? 'greater' : 'less' = " + result6 + "\n").echo();
+result6b = (5 < 3) ? "greater" : "less";
+("(5 < 3) ? 'greater' : 'less' = " + result6b + "\n").echo();
+
+/* Test 7: Nested ternary */
+"Test 7: Nested ternary\n".echo();
+result7 = 5 > 3 ? "big" : 5 > 1 ? "medium" : "small";
+("5 > 3 ? 'big' : 5 > 1 ? 'medium' : 'small' = " + result7 + "\n").echo();
+
+/* Test 8: Array conditions */
+"Test 8: Array conditions\n".echo();
+result8 = [1, 2, 3] ? "non-empty array" : "empty array";
+("[1,2,3] ? 'non-empty array' : 'empty array' = " + result8 + "\n").echo();
+result8b = [] ? "non-empty array" : "empty array";
+("[] ? 'non-empty array' : 'empty array' = " + result8b + "\n").echo();
+
+/* Test 9: List conditions */
+"Test 9: List conditions\n".echo();
+result9 = {a: 1, b: 2} ? "non-empty list" : "empty list";
+("{a:1,b:2} ? 'non-empty list' : 'empty list' = " + result9 + "\n").echo();
+result9b = {} ? "non-empty list" : "empty list";
+("{} ? 'non-empty list' : 'empty list' = " + result9b + "\n").echo();
+
+"=== TERNARY OPERATOR (? :) TEST COMPLETE ===\n".echo(); 

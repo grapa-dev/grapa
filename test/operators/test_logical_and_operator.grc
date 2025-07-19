@@ -1,0 +1,227 @@
+/* Logical AND Operator (&&) Test */
+
+"=== LOGICAL AND OPERATOR (&&) TEST ===\n".echo();
+
+/* Test 1: BOOL && BOOL */
+"Test 1: BOOL && BOOL\n".echo();
+result1 = true && true;
+if (result1) {
+    "true && true is TRUE\n".echo();
+} else {
+    "true && true is FALSE\n".echo();
+}
+result1b = true && false;
+if (result1b) {
+    "true && false is TRUE\n".echo();
+} else {
+    "true && false is FALSE\n".echo();
+}
+result1c = false && true;
+if (result1c) {
+    "false && true is TRUE\n".echo();
+} else {
+    "false && true is FALSE\n".echo();
+}
+result1d = false && false;
+if (result1d) {
+    "false && false is TRUE\n".echo();
+} else {
+    "false && false is FALSE\n".echo();
+}
+
+/* Test 2: INT && INT */
+"Test 2: INT && INT\n".echo();
+result2 = 5 && 3;
+if (result2) {
+    "5 && 3 is TRUE\n".echo();
+} else {
+    "5 && 3 is FALSE\n".echo();
+}
+result2b = 0 && 5;
+if (result2b) {
+    "0 && 5 is TRUE\n".echo();
+} else {
+    "0 && 5 is FALSE\n".echo();
+}
+result2c = 5 && 0;
+if (result2c) {
+    "5 && 0 is TRUE\n".echo();
+} else {
+    "5 && 0 is FALSE\n".echo();
+}
+result2d = 0 && 0;
+if (result2d) {
+    "0 && 0 is TRUE\n".echo();
+} else {
+    "0 && 0 is FALSE\n".echo();
+}
+
+/* Test 3: FLOAT && FLOAT */
+"Test 3: FLOAT && FLOAT\n".echo();
+result3 = 5.0 && 3.0;
+if (result3) {
+    "5.0 && 3.0 is TRUE\n".echo();
+} else {
+    "5.0 && 3.0 is FALSE\n".echo();
+}
+result3b = 0.0 && 5.0;
+if (result3b) {
+    "0.0 && 5.0 is TRUE\n".echo();
+} else {
+    "0.0 && 5.0 is FALSE\n".echo();
+}
+
+/* Test 4: STR && STR */
+"Test 4: STR && STR\n".echo();
+result4 = "hello" && "world";
+if (result4) {
+    "'hello' && 'world' is TRUE\n".echo();
+} else {
+    "'hello' && 'world' is FALSE\n".echo();
+}
+result4b = "" && "world";
+if (result4b) {
+    "'' && 'world' is TRUE\n".echo();
+} else {
+    "'' && 'world' is FALSE\n".echo();
+}
+result4c = "hello" && "";
+if (result4c) {
+    "'hello' && '' is TRUE\n".echo();
+} else {
+    "'hello' && '' is FALSE\n".echo();
+}
+
+/* Test 5: INT && BOOL */
+"Test 5: INT && BOOL\n".echo();
+result5 = 5 && true;
+if (result5) {
+    "5 && true is TRUE\n".echo();
+} else {
+    "5 && true is FALSE\n".echo();
+}
+result5b = 0 && true;
+if (result5b) {
+    "0 && true is TRUE\n".echo();
+} else {
+    "0 && true is FALSE\n".echo();
+}
+result5c = 5 && false;
+if (result5c) {
+    "5 && false is TRUE\n".echo();
+} else {
+    "5 && false is FALSE\n".echo();
+}
+
+/* Test 6: BOOL && INT */
+"Test 6: BOOL && INT\n".echo();
+result6 = true && 5;
+if (result6) {
+    "true && 5 is TRUE\n".echo();
+} else {
+    "true && 5 is FALSE\n".echo();
+}
+result6b = false && 5;
+if (result6b) {
+    "false && 5 is TRUE\n".echo();
+} else {
+    "false && 5 is FALSE\n".echo();
+}
+result6c = true && 0;
+if (result6c) {
+    "true && 0 is TRUE\n".echo();
+} else {
+    "true && 0 is FALSE\n".echo();
+}
+
+/* Test 7: STR && INT */
+"Test 7: STR && INT\n".echo();
+result7 = "hello" && 5;
+if (result7) {
+    "'hello' && 5 is TRUE\n".echo();
+} else {
+    "'hello' && 5 is FALSE\n".echo();
+}
+result7b = "" && 5;
+if (result7b) {
+    "'' && 5 is TRUE\n".echo();
+} else {
+    "'' && 5 is FALSE\n".echo();
+}
+result7c = "hello" && 0;
+if (result7c) {
+    "'hello' && 0 is TRUE\n".echo();
+} else {
+    "'hello' && 0 is FALSE\n".echo();
+}
+
+/* Test 8: INT && STR */
+"Test 8: INT && STR\n".echo();
+result8 = 5 && "hello";
+if (result8) {
+    "5 && 'hello' is TRUE\n".echo();
+} else {
+    "5 && 'hello' is FALSE\n".echo();
+}
+result8b = 0 && "hello";
+if (result8b) {
+    "0 && 'hello' is TRUE\n".echo();
+} else {
+    "0 && 'hello' is FALSE\n".echo();
+}
+result8c = 5 && "";
+if (result8c) {
+    "5 && '' is TRUE\n".echo();
+} else {
+    "5 && '' is FALSE\n".echo();
+}
+
+/* Test 9: ARRAY && ARRAY */
+"Test 9: ARRAY && ARRAY\n".echo();
+result9 = [1, 2, 3] && [4, 5, 6];
+if (result9) {
+    "[1,2,3] && [4,5,6] is TRUE\n".echo();
+} else {
+    "[1,2,3] && [4,5,6] is FALSE\n".echo();
+}
+result9b = [] && [4, 5, 6];
+if (result9b) {
+    "[] && [4,5,6] is TRUE\n".echo();
+} else {
+    "[] && [4,5,6] is FALSE\n".echo();
+}
+
+/* Test 10: LIST && LIST */
+"Test 10: LIST && LIST\n".echo();
+result10 = {a: 1, b: 2} && {c: 3, d: 4};
+if (result10) {
+    "{a:1,b:2} && {c:3,d:4} is TRUE\n".echo();
+} else {
+    "{a:1,b:2} && {c:3,d:4} is FALSE\n".echo();
+}
+result10b = {} && {c: 3, d: 4};
+if (result10b) {
+    "{} && {c:3,d:4} is TRUE\n".echo();
+} else {
+    "{} && {c:3,d:4} is FALSE\n".echo();
+}
+
+/* Test 11: ERR && INT */
+"Test 11: ERR && INT\n".echo();
+result11 = ERR && 5;
+if (result11) {
+    "$ERR && 5 is TRUE\n".echo();
+} else {
+    "$ERR && 5 is FALSE\n".echo();
+}
+
+/* Test 12: INT && ERR */
+"Test 12: INT && ERR\n".echo();
+result12 = 5 && ERR;
+if (result12) {
+    "5 && $ERR is TRUE\n".echo();
+} else {
+    "5 && $ERR is FALSE\n".echo();
+}
+
+"=== LOGICAL AND OPERATOR (&&) TEST COMPLETE ===\n".echo(); 

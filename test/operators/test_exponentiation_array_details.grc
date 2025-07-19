@@ -1,0 +1,33 @@
+/* Exponentiation Array Details Test */
+
+"=== EXPONENTIATION ARRAY DETAILS TEST ===\n".echo();
+
+/* Test 1: ARRAY ** INT */
+"Test 1: ARRAY ** INT\n".echo();
+result1 = [1, 2, 3] ** 2;
+("Result: " + result1 + "\n").echo();
+("Type: " + result1.type() + "\n").echo();
+("Length: " + result1.len() + "\n").echo();
+
+/* Test 2: ARRAY ** ARRAY */
+"Test 2: ARRAY ** ARRAY\n".echo();
+result2 = [1, 2, 3] ** [2, 3, 4];
+("Result: " + result2 + "\n").echo();
+("Type: " + result2.type() + "\n").echo();
+("Length: " + result2.len() + "\n").echo();
+
+/* Test 3: Another ARRAY ** INT */
+"Test 3: Another ARRAY ** INT\n".echo();
+result3 = [2, 3, 4] ** 3;
+("Result: " + result3 + "\n").echo();
+("Type: " + result3.type() + "\n").echo();
+("Length: " + result3.len() + "\n").echo();
+
+/* Test 4: ARRAY ** FLOAT */
+"Test 4: ARRAY ** FLOAT\n".echo();
+result4 = [1, 2, 3] ** 2.5;
+("Result: " + result4 + "\n").echo();
+("Type: " + result4.type() + "\n").echo();
+("Length: " + result4.len() + "\n").echo();
+
+"=== EXPONENTIATION ARRAY DETAILS TEST COMPLETE ===\n".echo(); 

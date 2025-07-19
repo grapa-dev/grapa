@@ -1,0 +1,135 @@
+/* Multiplication Operator (*) Test */
+
+"=== MULTIPLICATION OPERATOR (*) TEST ===\n".echo();
+
+/* Test 1: INT * INT */
+"Test 1: INT * INT\n".echo();
+result1 = 5 * 3;
+("5 * 3 = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: FLOAT * FLOAT */
+"Test 2: FLOAT * FLOAT\n".echo();
+result2 = 2.5 * 3.0;
+("2.5 * 3.0 = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: INT * FLOAT */
+"Test 3: INT * FLOAT\n".echo();
+result3 = 4 * 2.5;
+("4 * 2.5 = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: FLOAT * INT */
+"Test 4: FLOAT * INT\n".echo();
+result4 = 1.5 * 6;
+("1.5 * 6 = " + result4 + " (type: " + result4.type() + ")\n").echo();
+
+/* Test 5: STR * INT */
+"Test 5: STR * INT\n".echo();
+result5 = "abc" * 3;
+("'abc' * 3 = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+/* Test 6: INT * STR */
+"Test 6: INT * STR\n".echo();
+result6 = 2 * "xyz";
+("2 * 'xyz' = " + result6 + " (type: " + result6.type() + ")\n").echo();
+
+/* Test 7: STR * FLOAT */
+"Test 7: STR * FLOAT\n".echo();
+result7 = "test" * 2.5;
+("'test' * 2.5 = " + result7 + " (type: " + result7.type() + ")\n").echo();
+
+/* Test 8: FLOAT * STR */
+"Test 8: FLOAT * STR\n".echo();
+result8 = 1.5 * "repeat";
+("1.5 * 'repeat' = " + result8 + " (type: " + result8.type() + ")\n").echo();
+
+/* Test 9: BOOL * INT */
+"Test 9: BOOL * INT\n".echo();
+result9 = true * 4;
+("true * 4 = " + result9 + " (type: " + result9.type() + ")\n").echo();
+
+/* Test 10: INT * BOOL */
+"Test 10: INT * BOOL\n".echo();
+result10 = 3 * false;
+("3 * false = " + result10 + " (type: " + result10.type() + ")\n").echo();
+
+/* Test 11: BOOL * FLOAT */
+"Test 11: BOOL * FLOAT\n".echo();
+result11 = true * 2.5;
+("true * 2.5 = " + result11 + " (type: " + result11.type() + ")\n").echo();
+
+/* Test 12: FLOAT * BOOL */
+"Test 12: FLOAT * BOOL\n".echo();
+result12 = 3.0 * true;
+("3.0 * true = " + result12 + " (type: " + result12.type() + ")\n").echo();
+
+/* Test 13: ARRAY * INT */
+"Test 13: ARRAY * INT\n".echo();
+result13 = [1, 2, 3] * 2;
+("[1,2,3] * 2 = " + result13 + " (type: " + result13.type() + ")\n").echo();
+
+/* Test 14: INT * ARRAY */
+"Test 14: INT * ARRAY\n".echo();
+result14 = 2 * [10, 20];
+("2 * [10,20] = " + result14 + " (type: " + result14.type() + ")\n").echo();
+
+/* Test 15: ARRAY * FLOAT */
+"Test 15: ARRAY * FLOAT\n".echo();
+result15 = [1, 2] * 1.5;
+("[1,2] * 1.5 = " + result15 + " (type: " + result15.type() + ")\n").echo();
+
+/* Test 16: FLOAT * ARRAY */
+"Test 16: FLOAT * ARRAY\n".echo();
+result16 = 2.5 * [3, 4];
+("2.5 * [3,4] = " + result16 + " (type: " + result16.type() + ")\n").echo();
+
+/* Test 17: LIST * INT */
+"Test 17: LIST * INT\n".echo();
+result17 = {"a": 1, "b": 2} * 2;
+("{'a':1,'b':2} * 2 = " + result17 + " (type: " + result17.type() + ")\n").echo();
+
+/* Test 18: INT * LIST */
+"Test 18: INT * LIST\n".echo();
+result18 = 3 * {"x": 10};
+("3 * {'x':10} = " + result18 + " (type: " + result18.type() + ")\n").echo();
+
+/* Test 19: ARRAY * ARRAY */
+"Test 19: ARRAY * ARRAY\n".echo();
+result19 = [1, 2, 3] * [4, 5, 6];
+("[1,2,3] * [4,5,6] = " + result19 + " (type: " + result19.type() + ")\n").echo();
+
+/* Test 20: LIST * LIST */
+"Test 20: LIST * LIST\n".echo();
+result20 = {"a": 1} * {"b": 2};
+("{'a':1} * {'b':2} = " + result20 + " (type: " + result20.type() + ")\n").echo();
+
+/* Test 21: STR * STR */
+"Test 21: STR * STR\n".echo();
+result21 = "hello" * "world";
+("'hello' * 'world' = " + result21 + " (type: " + result21.type() + ")\n").echo();
+
+/* Test 22: BOOL * BOOL */
+"Test 22: BOOL * BOOL\n".echo();
+result22 = true * false;
+("true * false = " + result22 + " (type: " + result22.type() + ")\n").echo();
+
+/* Test 23: ARRAY * LIST */
+"Test 23: ARRAY * LIST\n".echo();
+result23 = [1, 2] * {"a": 10};
+("[1,2] * {'a':10} = " + result23 + " (type: " + result23.type() + ")\n").echo();
+
+/* Test 24: LIST * ARRAY */
+"Test 24: LIST * ARRAY\n".echo();
+result24 = {"x": 1} * [5, 6];
+("{'x':1} * [5,6] = " + result24 + " (type: " + result24.type() + ")\n").echo();
+
+/* Test 25: STR * ARRAY */
+"Test 25: STR * ARRAY\n".echo();
+result25 = "test" * [1, 2, 3];
+("'test' * [1,2,3] = " + result25 + " (type: " + result25.type() + ")\n").echo();
+
+/* Test 26: ARRAY * STR */
+"Test 26: ARRAY * STR\n".echo();
+result26 = [1, 2] * "xyz";
+("[1,2] * 'xyz' = " + result26 + " (type: " + result26.type() + ")\n").echo();
+
+"=== MULTIPLICATION OPERATOR TEST COMPLETE ===\n".echo(); 

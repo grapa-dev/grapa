@@ -1,0 +1,163 @@
+# Test Large Number Support and Unsigned Operations
+# Tests for arbitrary precision integers, unsigned operations, and bit manipulation
+
+print("=== Testing Large Number Support ===")
+
+# Test 1: Large number arithmetic
+print("\n1. Testing large number arithmetic")
+a = 123456789012345678901234567890
+b = 987654321098765432109876543210
+sum = a + b
+product = a * b
+power = a ^ 3
+
+print("Large number a:", a)
+print("Large number b:", b)
+print("Sum:", sum)
+print("Product:", product)
+print("a^3:", power)
+
+# Test 2: Bit operations
+print("\n2. Testing bit operations")
+number = 42
+bit_count = number.bitCount()
+print("Number:", number)
+print("Bit count:", bit_count)
+print("Binary representation:", number.bin())
+
+# Test specific bits
+for i in range(8) {
+    is_set = number.testBit(i)
+    print("Bit", i, "is set:", is_set)
+}
+
+# Test 3: Bit manipulation
+print("\n3. Testing bit manipulation")
+number = 42
+print("Original number:", number, "(", number.bin(), ")")
+
+# Set a bit
+number.setBit(7)
+print("After setting bit 7:", number, "(", number.bin(), ")")
+
+# Unset a bit
+number.unsetBit(1)
+print("After unsetting bit 1:", number, "(", number.bin(), ")")
+
+# Test 4: Base conversion
+print("\n4. Testing base conversion")
+number = 255
+hex_str = number.hex()
+bin_str = number.bin()
+oct_str = number.oct()
+
+print("Number:", number)
+print("Hexadecimal:", hex_str)
+print("Binary:", bin_str)
+print("Octal:", oct_str)
+
+# Test 5: Unsigned integer handling
+print("\n5. Testing unsigned integer handling")
+signed_number = -42
+print("Signed number:", signed_number)
+
+# Convert to unsigned representations
+unsigned_raw = signed_number.uraw()
+unsigned_int = signed_number.uint()
+unsigned_hex = signed_number.uhex()
+unsigned_bin = signed_number.ubin()
+
+print("Unsigned raw:", unsigned_raw)
+print("Unsigned int:", unsigned_int)
+print("Unsigned hex:", unsigned_hex)
+print("Unsigned binary:", unsigned_bin)
+
+# Test 6: Raw byte manipulation
+print("\n6. Testing raw byte manipulation")
+number = 255
+raw_bytes = number.raw(1)
+print("Number:", number)
+print("Raw bytes:", raw_bytes)
+print("Raw bytes length:", raw_bytes.len())
+
+# Test with negative number
+negative_number = -255
+raw_bytes_neg = negative_number.raw(1)
+print("Negative number:", negative_number)
+print("Raw bytes:", raw_bytes_neg)
+
+# Test 7: Large number bit operations
+print("\n7. Testing large number bit operations")
+large_number = 123456789012345678901234567890
+bit_count_large = large_number.bitCount()
+print("Large number:", large_number)
+print("Bit count:", bit_count_large)
+print("Binary (first 64 bits):", large_number.bin().substr(0, 64))
+
+# Test 8: Cryptographic operations with large numbers
+print("\n8. Testing cryptographic operations with large numbers")
+# Generate a large random number
+large_random = random_bytes(32)
+large_int = large_random.uint()
+print("Large random number:", large_int)
+print("Bit count:", large_int.bitCount())
+
+# Hash the large number
+hash_result = large_int.raw(1).hash("SHA3-256")
+print("Hash of large number:", hash_result.hex())
+
+# Test 9: Modular arithmetic with large numbers
+print("\n9. Testing modular arithmetic with large numbers")
+base = 123456789012345678901234567890
+exponent = 987654321098765432109876543210
+modulus = 1000000000000000000000000000007
+
+result = modpow(base, exponent, modulus)
+print("Large modpow result:", result)
+print("Result is within modulus:", result < modulus)
+
+# Test 10: Performance with large numbers
+print("\n10. Testing performance with large numbers")
+start_time = time()
+for i in range(100) {
+    large_num = i * 123456789012345678901234567890
+    bit_count = large_num.bitCount()
+}
+end_time = time()
+print("100 large number operations completed in:", end_time - start_time, "seconds")
+
+# Test 11: Edge cases for unsigned operations
+print("\n11. Testing edge cases for unsigned operations")
+edge_cases = [0, 1, -1, 255, -255, 65535, -65535]
+for num in edge_cases {
+    unsigned = num.uraw()
+    print(num, "-> unsigned:", unsigned)
+}
+
+# Test 12: Integration with cryptographic functions
+print("\n12. Testing integration with cryptographic functions")
+# Create a large prime for RSA
+p = generatePrime(256)
+q = generatePrime(256)
+n = p * q
+
+print("Generated large prime p:", p)
+print("Generated large prime q:", q)
+print("Modulus n:", n)
+print("Modulus bit count:", n.bitCount())
+
+# Test RSA operations
+e = 65537
+phi = (p - 1) * (q - 1)
+d = modinv(e, phi)
+
+message = 123456789
+encrypted = modpow(message, e, n)
+decrypted = modpow(encrypted, d, n)
+
+print("Original message:", message)
+print("Encrypted:", encrypted)
+print("Decrypted:", decrypted)
+print("RSA round-trip successful:", message == decrypted)
+
+print("\n=== Large Number Support Tests Complete ===") 

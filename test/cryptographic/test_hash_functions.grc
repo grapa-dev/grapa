@@ -1,0 +1,87 @@
+/* Test Hash Functions */
+/* Tests for SHA3 family and SHAKE functions */
+
+"=== Testing Hash Functions ===".echo();
+
+/* Test 1: SHA3-224 with known test vector */
+"\n1. Testing SHA3-224".echo();
+test_data = "";
+expected_hash = "6b4e03423667dbb73b6e15454f0eb1abd4597f9a1b078e3f5b5a6bc7";
+hash_result = test_data.encode("SHA3-224");
+("Empty string SHA3-224: " + hash_result.hex()).echo();
+("Expected: " + expected_hash).echo();
+("Match: " + (hash_result.hex().lower() == expected_hash).str()).echo();
+
+/* Test 2: SHA3-256 with known test vector */
+"\n2. Testing SHA3-256".echo();
+test_data = "abc";
+expected_hash = "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532";
+hash_result = test_data.encode("SHA3-256");
+("'abc' SHA3-256: " + hash_result.hex()).echo();
+("Expected: " + expected_hash).echo();
+("Match: " + (hash_result.hex().lower() == expected_hash).str()).echo();
+
+/* Test 3: SHA3-384 with known test vector */
+"\n3. Testing SHA3-384".echo();
+test_data = "abc";
+expected_hash = "ec01498288516fc926459f58e2c6ad8df9b473cb0fc08c2596da7cf0e49be4b298d88cea927ac7f539f1edf228376d25";
+hash_result = test_data.encode("SHA3-384");
+("'abc' SHA3-384: " + hash_result.hex()).echo();
+("Expected: " + expected_hash).echo();
+("Match: " + (hash_result.hex().lower() == expected_hash).str()).echo();
+
+/* Test 4: SHA3-512 with known test vector */
+"\n4. Testing SHA3-512".echo();
+test_data = "abc";
+expected_hash = "b751850b1a57168a5693cd924b6b096e08f621827444f70d884f5d0240d2712e10e116e9192af3c91a7ec57647e3934057340b4cf408d5a56592f8274eec53f0";
+hash_result = test_data.encode("SHA3-512");
+("'abc' SHA3-512: " + hash_result.hex()).echo();
+("Expected: " + expected_hash).echo();
+("Match: " + (hash_result.hex().lower() == expected_hash).str()).echo();
+
+/* Test 5: SHAKE128 with default length (32 bytes) */
+"\n5. Testing SHAKE128 (default 32 bytes)".echo();
+test_data = "abc";
+hash_result = test_data.encode("SHAKE128");
+("'abc' SHAKE128 length: " + hash_result.len().str() + " bytes").echo();
+("Expected length: 32 bytes").echo();
+("Length correct: " + (hash_result.len() == 32).str()).echo();
+
+/* Test 6: SHAKE256 with default length (64 bytes) */
+"\n6. Testing SHAKE256 (default 64 bytes)".echo();
+test_data = "abc";
+hash_result = test_data.encode("SHAKE256");
+("'abc' SHAKE256 length: " + hash_result.len().str() + " bytes").echo();
+("Expected length: 64 bytes").echo();
+("Length correct: " + (hash_result.len() == 64).str()).echo();
+
+/* Test 7: Deterministic property */
+"\n7. Testing deterministic property".echo();
+test_data = "test_string";
+hash1 = test_data.encode("SHA3-256");
+hash2 = test_data.encode("SHA3-256");
+("Same input produces same output: " + (hash1 == hash2).str()).echo();
+
+/* Test 8: Avalanche effect */
+"\n8. Testing avalanche effect".echo();
+data1 = "Hello, World!";
+data2 = "Hello, World";
+hash1 = data1.encode("SHA3-256");
+hash2 = data2.encode("SHA3-256");
+("Different inputs produce different outputs: " + (hash1 != hash2).str()).echo();
+
+/* Test 9: Large data hashing */
+"\n9. Testing large data hashing".echo();
+large_data = "x".repeat(10000);
+hash_result = large_data.encode("SHA3-256");
+("Large data hash length: " + hash_result.len().str()).echo();
+("Expected length (32 bytes): " + (hash_result.len() == 32).str()).echo();
+
+/* Test 10: Binary data hashing */
+"\n10. Testing binary data hashing".echo();
+binary_data = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05];
+hash_result = binary_data.encode("SHA3-256");
+("Binary data hash: " + hash_result.hex()).echo();
+("Hash length: " + hash_result.len().str()).echo();
+
+"=== Hash Function Tests Complete ===".echo(); 

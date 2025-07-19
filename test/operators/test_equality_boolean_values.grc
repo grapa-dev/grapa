@@ -1,0 +1,101 @@
+/* Equality Operator Boolean Values Test */
+
+"=== EQUALITY OPERATOR BOOLEAN VALUES TEST ===\n".echo();
+
+/* Test 1: Check if true values are truthy */
+"Test 1: True values should be truthy\n".echo();
+result1 = 5 == 5;
+if (result1) {
+    "5 == 5 is TRUE\n".echo();
+} else {
+    "5 == 5 is FALSE\n".echo();
+}
+
+result1b = 5 == 3;
+if (result1b) {
+    "5 == 3 is TRUE\n".echo();
+} else {
+    "5 == 3 is FALSE\n".echo();
+}
+
+/* Test 2: Check string equality */
+"Test 2: String equality\n".echo();
+result2 = "hello" == "hello";
+if (result2) {
+    "'hello' == 'hello' is TRUE\n".echo();
+} else {
+    "'hello' == 'hello' is FALSE\n".echo();
+}
+
+result2b = "hello" == "world";
+if (result2b) {
+    "'hello' == 'world' is TRUE\n".echo();
+} else {
+    "'hello' == 'world' is FALSE\n".echo();
+}
+
+/* Test 3: Check boolean equality */
+"Test 3: Boolean equality\n".echo();
+result3 = true == true;
+if (result3) {
+    "true == true is TRUE\n".echo();
+} else {
+    "true == true is FALSE\n".echo();
+}
+
+result3b = true == false;
+if (result3b) {
+    "true == false is TRUE\n".echo();
+} else {
+    "true == false is FALSE\n".echo();
+}
+
+/* Test 4: Check type conversion */
+"Test 4: Type conversion\n".echo();
+result4 = 5 == "5";
+if (result4) {
+    "5 == '5' is TRUE\n".echo();
+} else {
+    "5 == '5' is FALSE\n".echo();
+}
+
+result4b = 1 == true;
+if (result4b) {
+    "1 == true is TRUE\n".echo();
+} else {
+    "1 == true is FALSE\n".echo();
+}
+
+/* Test 5: Check array equality */
+"Test 5: Array equality\n".echo();
+result5 = [1, 2, 3] == [1, 2, 3];
+if (result5) {
+    "[1,2,3] == [1,2,3] is TRUE\n".echo();
+} else {
+    "[1,2,3] == [1,2,3] is FALSE\n".echo();
+}
+
+result5b = [1, 2, 3] == [1, 2, 4];
+if (result5b) {
+    "[1,2,3] == [1,2,4] is TRUE\n".echo();
+} else {
+    "[1,2,3] == [1,2,4] is FALSE\n".echo();
+}
+
+/* Test 6: Check list equality */
+"Test 6: List equality\n".echo();
+result6 = {a: 1, b: 2} == {a: 1, b: 2};
+if (result6) {
+    "{a:1,b:2} == {a:1,b:2} is TRUE\n".echo();
+} else {
+    "{a:1,b:2} == {a:1,b:2} is FALSE\n".echo();
+}
+
+result6b = {a: 1, b: 2} == {a: 1, b: 3};
+if (result6b) {
+    "{a:1,b:2} == {a:1,b:3} is TRUE\n".echo();
+} else {
+    "{a:1,b:2} == {a:1,b:3} is FALSE\n".echo();
+}
+
+"=== EQUALITY OPERATOR BOOLEAN VALUES TEST COMPLETE ===\n".echo(); 

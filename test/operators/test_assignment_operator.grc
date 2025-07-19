@@ -1,0 +1,54 @@
+/* Assignment Operator (=) Test */
+
+"=== ASSIGNMENT OPERATOR (=) TEST ===\n".echo();
+
+/* Test 1: Basic assignment */
+"Test 1: Basic assignment\n".echo();
+x = 5;
+("x = 5, x = " + x + "\n").echo();
+y = "hello";
+("y = 'hello', y = " + y + "\n").echo();
+z = true;
+("z = true, z = " + z + "\n").echo();
+
+/* Test 2: Variable to variable assignment */
+"Test 2: Variable to variable assignment\n".echo();
+a = x;
+("a = x, a = " + a + "\n").echo();
+b = y;
+("b = y, b = " + b + "\n").echo();
+
+/* Test 3: Expression assignment */
+"Test 3: Expression assignment\n".echo();
+result1 = 5 + 3;
+("result1 = 5 + 3, result1 = " + result1 + "\n").echo();
+result2 = "hello" + " world";
+("result2 = 'hello' + ' world', result2 = " + result2 + "\n").echo();
+
+/* Test 4: Array assignment */
+"Test 4: Array assignment\n".echo();
+arr = [1, 2, 3];
+("arr = [1,2,3], arr = " + arr + "\n").echo();
+arr2 = arr;
+("arr2 = arr, arr2 = " + arr2 + "\n").echo();
+
+/* Test 5: List assignment */
+"Test 5: List assignment\n".echo();
+list = {a: 1, b: 2};
+("list = {a:1,b:2}, list = " + list + "\n").echo();
+list2 = list;
+("list2 = list, list2 = " + list2 + "\n").echo();
+
+/* Test 6: Reassignment */
+"Test 6: Reassignment\n".echo();
+x = 10;
+("x = 10, x = " + x + "\n").echo();
+x = "changed";
+("x = 'changed', x = " + x + "\n").echo();
+
+/* Test 7: Complex expression assignment */
+"Test 7: Complex expression assignment\n".echo();
+complex = (5 + 3) * 2;
+("complex = (5 + 3) * 2, complex = " + complex + "\n").echo();
+
+"=== ASSIGNMENT OPERATOR (=) TEST COMPLETE ===\n".echo(); 

@@ -1,0 +1,70 @@
+/* Matrix Operations Test */
+
+"=== MATRIX OPERATIONS TEST ===\n".echo();
+
+/* Test 1: Matrix Row Reversal using ~ operator (NOT matrix inversion) */
+"Test 1: Matrix Row Reversal (~ operator)\n".echo();
+matrix1 = [[1, 2], [3, 4]];
+("Original matrix: " + matrix1 + "\n").echo();
+reversed1 = ~matrix1;
+("Row-reversed matrix: " + reversed1 + "\n").echo();
+
+/* Test 2: Determinant */
+"Test 2: Determinant\n".echo();
+matrix2 = [[2, 1], [1, 3]];
+("Matrix: " + matrix2 + "\n").echo();
+det2 = matrix2.det();
+("Determinant: " + det2 + "\n").echo();
+
+/* Test 3: Matrix Rank */
+"Test 3: Matrix Rank\n".echo();
+matrix3 = [[1, 2, 3], [2, 4, 6], [1, 1, 1]];
+("Matrix: " + matrix3 + "\n").echo();
+rank3 = matrix3.rank();
+("Rank: " + rank3 + "\n").echo();
+
+/* Test 4: Row Reduced Echelon Form */
+"Test 4: Row Reduced Echelon Form\n".echo();
+matrix4 = [[1, 2, 3], [4, 5, 6]];
+("Original matrix: " + matrix4 + "\n").echo();
+rref4 = matrix4.rref();
+("RREF: " + rref4 + "\n").echo();
+
+/* Test 5: Linear System Solving */
+"Test 5: Linear System Solving\n".echo();
+matrix5 = [[2, 1], [1, 3]];
+vector5 = [5, 6];
+("Coefficient matrix: " + matrix5 + "\n").echo();
+("Constant vector: " + vector5 + "\n").echo();
+solution5 = matrix5.solve(vector5);
+("Solution: " + solution5 + "\n").echo();
+
+/* Test 6: Covariance Matrix */
+"Test 6: Covariance Matrix\n".echo();
+data6 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+("Data matrix: " + data6 + "\n").echo();
+cov6 = data6.cov();
+("Covariance matrix: " + cov6 + "\n").echo();
+
+/* Test 7: Vector operations */
+"Test 7: Vector operations\n".echo();
+vector7 = [1, 2, 3];
+("Vector: " + vector7 + "\n").echo();
+reversed7 = ~vector7;
+("Reversed vector: " + reversed7 + "\n").echo();
+
+/* Test 8: Matrix Transpose (if available) */
+"Test 8: Matrix Transpose\n".echo();
+matrix8 = [[1, 2, 3], [4, 5, 6]];
+("Original matrix: " + matrix8 + "\n").echo();
+transposed8 = matrix8.transpose();
+("Transposed matrix: " + transposed8 + "\n").echo();
+
+/* Test 9: Matrix Inversion (if available) */
+"Test 9: Matrix Inversion\n".echo();
+matrix9 = [[1, 2], [3, 4]];
+("Original matrix: " + matrix9 + "\n").echo();
+inverted9 = matrix9.inv();
+("Inverted matrix: " + inverted9 + "\n").echo();
+
+"=== MATRIX OPERATIONS TEST COMPLETE ===\n".echo(); 

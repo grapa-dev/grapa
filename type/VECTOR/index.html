@@ -1,0 +1,1633 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/docs/type/VECTOR/">
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>$VECTOR - Grapa Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#vector" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grapa Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              $VECTOR
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GETTING_STARTED/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../CLI_QUICKSTART/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  CLI Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../python_integration/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Python Quickstart
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../API_REFERENCE/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../GREP/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Grep Documentation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../migrations/PYTHON_TO_GRAPA_MIGRATION/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../use_cases/" class="md-tabs__link">
+          
+  
+  
+  Use Cases
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EXAMPLES/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../syntax/basic_syntax/" class="md-tabs__link">
+          
+  
+  
+  Syntax
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../TROUBLESHOOTING/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Troubleshooting
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grapa Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GETTING_STARTED/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CLI_QUICKSTART/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CLI Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../API_REFERENCE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GREP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Migration Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Migration Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/PYTHON_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/JS_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    JavaScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/RUST_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Rust
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/TYPESCRIPT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    TypeScript
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/GO_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Go
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/RUBY_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ruby
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/KOTLIN_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Kotlin
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migrations/SWIFT_TO_GRAPA_MIGRATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Swift
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Use Cases
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            Use Cases
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ETL / Data Engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Compiler/BNF Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    High-Precision Math
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parallel Programming
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Scraping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Database & File System
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Education & Prototyping
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/cryptography/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cryptography
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EXAMPLES/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Syntax
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Syntax
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/basic_syntax/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Basic Syntax
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/operator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Operators
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/precedence/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Precedence
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../syntax/grammar_design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grammar Design
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../TROUBLESHOOTING/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Troubleshooting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#t" class="md-nav__link">
+    <span class="md-ellipsis">
+      t()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rref" class="md-nav__link">
+    <span class="md-ellipsis">
+      rref()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inv" class="md-nav__link">
+    <span class="md-ellipsis">
+      inv()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#det" class="md-nav__link">
+    <span class="md-ellipsis">
+      det()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      rank()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solve" class="md-nav__link">
+    <span class="md-ellipsis">
+      solve()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#covaxis" class="md-nav__link">
+    <span class="md-ellipsis">
+      cov(axis)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sumaxis" class="md-nav__link">
+    <span class="md-ellipsis">
+      sum(axis)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#meanaxis" class="md-nav__link">
+    <span class="md-ellipsis">
+      mean(axis)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      shape()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reshapedim" class="md-nav__link">
+    <span class="md-ellipsis">
+      reshape(dim)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#norm" class="md-nav__link">
+    <span class="md-ellipsis">
+      norm()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dotb" class="md-nav__link">
+    <span class="md-ellipsis">
+      dot(b)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#triub" class="md-nav__link">
+    <span class="md-ellipsis">
+      triu(b)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trilb" class="md-nav__link">
+    <span class="md-ellipsis">
+      tril(b)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eigh" class="md-nav__link">
+    <span class="md-ellipsis">
+      eigh()
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="vector">$VECTOR</h1>
+<p>A $VECTOR is a multi-dimentional set of values. Most often either 1 or 2 dimentions. </p>
+<p>The syntax for a $VECTOR is the same as an $ARRAY, but uses a '#' before and after the array, and requires all values for each dimention to be specified (for a 2 dimentional vector, all rows much have the same number of columns). Structually, both $ARRAY and $LIST use linked lists, and $VECTOR uses arrays - and so a $VECTOR is faster to manipulate large tabels of data. But they are all in memory - for a large table on disk use $file and $TABLE which is based on a BTree. </p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt; [&quot;a&quot;,&quot;b&quot;,&quot;c&quot;].vector();
+#[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]#
+
+grapa: /&gt;#[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]#.array();
+[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]
+</code></pre></div>
+<p>Several math operations are supported.
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[2,5],[3,8]]# + 2;
+#[[4,7],[5,10]]#
+grapa: /&gt;#[[2,5],[3,8]]# * 2;
+#[[4,10],[6,16]]#
+grapa: /&gt;#[[2,5],[3,8]]# * 2 + 1;
+#[[5,11],[7,17]]#
+grapa: /&gt;#[[2,5],[3,8]]# ** 2;
+#[[4,25],[9,64]]#
+grapa: /&gt;#[[2,5],[3,8]]# * [op(x){x*3;}]
+#[[6,15],[9,24]]#
+</code></pre></div></p>
+<h2 id="t">t()</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt; #[[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;],[&quot;d&quot;,&quot;e&quot;,&quot;f&quot;]]#.t();
+#[[&quot;a&quot;,&quot;d&quot;],[&quot;b&quot;,&quot;e&quot;],[&quot;c&quot;,&quot;f&quot;]]#
+</code></pre></div>
+<h2 id="rref">rref()</h2>
+<p>Row-Echelon Form.
+<a href="https://www.geeksforgeeks.org/row-echelon-form/">Example reference</a></p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt; #[[4,0,1],[2,0,2],[3,0,3]]#.rref();
+#[[1,0.0,0.0],[0,0,1]]#
+
+grapa: /&gt; #[[1,2,-1,-4],[2,3,-1,-11],[-2,0,-3,22]]#.rref();
+#[[1,0.0,0.0,-8],[0,1,0.0,1],[0,0,1,-2]]#
+</code></pre></div>
+<h2 id="inv">inv()</h2>
+<p><a href="https://www.tutorialspoint.com/numpy/numpy_inv.htm">Example reference</a>
+x
+<div class="highlight"><pre><span></span><code>grapa: /&gt; #[[1,2],[3,4]]#.inv()
+#[[-2,1],[1.5,-0.5]]#
+
+grapa: /&gt; #[[1.0,1.0,1.0],[0.0,2.0,5.0],[2.0,5.0,-1.0]]#.inv();
+#[[1.2857142857142857142857142857142,-0.28571428571428571428571428571428,-0.14285714285714285714285714285714],[-0.47619047619047619047619047619047,0.14285714285714285714285714285714,0.23809523809523809523809523809523],[0.19047619047619047619047619047619,0.14285714285714285714285714285714,-0.095238095238095238095238095238095]]#
+</code></pre></div></p>
+<h2 id="det">det()</h2>
+<p><a href="https://www.codesansar.com/c-programming-examples/matrix-determinant.htm">Algorithm used</a>
+<a href="https://www.math10.com/en/algebra/matrices/determinant.html">Examples</a></p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[1,2],[0,0],[3,4]]#.det();
+0.0
+grapa: /&gt;#[[2,5],[3,8]]#.det();
+1.0
+grapa: /&gt;#[[-4,7],[-2,9]]#.det();
+-22.0
+grapa: /&gt;#[[1,4,3],[2,1,5],[3,2,1]]#.det();
+46.0
+grapa: /&gt;#[[4,-3,5],[1,0,3],[-1,5,2]]#.det();
+-20.0
+grapa: /&gt;#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1],[-1,4,2,1]]#.det();
+-47.0
+</code></pre></div>
+<h2 id="rank">rank()</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[1,2],[0,0],[3,4]]#.rank();
+2
+grapa: /&gt;#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1],[-1,4,2,1]]#.rank();
+4
+</code></pre></div>
+<h2 id="solve">solve()</h2>
+<p>x = [A].inv().dot([B]) = ([A][B]).solve()</p>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1]]#.solve();
+#[[-12],[5],[8]]#
+grapa: /&gt;#[[2, 1, 1, 4], [1, 3, 2, 5], [1, 0, 0, 6]]#.solve();
+#[[6],[15],[-23]]#
+grapa: /&gt;#[[2, 1, 1], [1, 3, 2], [1, 0, 0]]#.inv().dot(#[4, 5, 6]#)
+#[6,15,-23]#
+</code></pre></div>
+<h2 id="covaxis">cov(axis)</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[1.23, 2.12, 3.34, 4.5],[2.56, 2.89, 3.76, 3.95]]#.t().cov();
+#[[0.88445,0.51205,0.2793,-0.36575],[0.51205,0.29645,0.1617,-0.21175],[0.2793,0.1617,0.0882,-0.1155],[-0.36575,-0.21175,-0.1155,0.15125]]#
+</code></pre></div>
+<h2 id="sumaxis">sum(axis)</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[2,5],[3,8]]#.sum();
+#[[7],[11]]#
+grapa: /&gt;#[[2,5],[3,8]]#.sum().t();
+#[[7,11]]#
+grapa: /&gt;#[[2,5],[3,8]]#.sum().t().array()[0]
+[7,11]
+grapa: /&gt;#[[2,5],[3,8]]#.t().sum();
+#[[5],[13]]#
+</code></pre></div>
+<h2 id="meanaxis">mean(axis)</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[2,5],[3,8]]#.mean();
+#[[3.5],[5.5]]#
+</code></pre></div>
+<h2 id="shape">shape()</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[1,4,3],[2,1,5]]#.shape();
+[2,3]
+</code></pre></div>
+<h2 id="reshapedim">reshape(dim)</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[1,4,3],[2,1,5]]#.reshape([3,2]);
+#[[1,4],[3,2],[1,5]]#
+grapa: /&gt;#[[1,4,3],[2,1,5]]#.reshape([6]);
+#[1,4,3,2,1,5]#
+grapa: /&gt;#[[1,4,3],[2,1,5]]#.{$local.x=@$$;x.reshape([x.shape().reduce(op(a,b){a=a*b;})])};
+#[1,4,3,2,1,5]#
+grapa: /&gt;#[[1,4,3],[2,1,5]]#.{(op(x){x.reshape([x.shape().reduce(op(a,b){a=a*b;})])})(@$$)}
+#[1,4,3,2,1,5]#
+</code></pre></div>
+<h2 id="norm">norm()</h2>
+<h2 id="dotb">dot(b)</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[2, 1, 1], [1, 3, 2], [1, 0, 0]]#.inv().dot(#[4, 5, 6]#)
+#[6,15,-23]#
+</code></pre></div>
+<h2 id="triub">triu(b)</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.triu()
+#[[1,2,3],[0,5,6],[0,0,9],[0,0,0]]#
+grapa: /&gt;#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.triu(1)
+#[[0,2,3],[0,0,6],[0,0,0],[0,0,0]]#
+grapa: /&gt;#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.triu(-1)
+#[[1,2,3],[4,5,6],[0,8,9],[0,0,12]]#
+</code></pre></div>
+<h2 id="trilb">tril(b)</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.tril()
+#[[1,0,0],[4,5,0],[7,8,9],[10,11,12]]#
+grapa: /&gt;#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.tril(1)
+#[[1,2,0],[4,5,6],[7,8,9],[10,11,12]]#
+grapa: /&gt;#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.tril(-1)
+#[[0,0,0],[4,0,0],[7,8,0],[10,11,12]]#
+</code></pre></div>
+<h2 id="eigh">eigh()</h2>
+<div class="highlight"><pre><span></span><code>grapa: /&gt;#[[6, 3, 1, 5], [3, 0, 5, 1], [1, 5, 6, 2], [5, 1, 2, 2]]#.eigh()
+{
+&quot;w&quot;:#[12.4239907890616464924713508305119,6.08502335890130921036471092299038,-3.7463749135825172968593735552929,-0.76263923438043840597668819820936]#,
+&quot;v&quot;:#[[0.6052988843640131280361831993622,-0.5817702414644647099139978118819,-0.35986577234737391199231188198498,-0.40700524889353398084503792722898],[0.39738915975762869140758200141676,0.24929195307290747781102421814306,0.7648182321448360641845574152262,-0.44157496489165778818545163353957],[0.53791858576868022927941662675911,0.71285959705633858556555681416766,-0.42255936025156366780457229626123,0.1546556724892004570750742828433],[0.4316696785499647957071509135133,-0.30203990326469830609292066132899,0.32709827993351621988757318389964,0.78449977738744885696548737926574]]#
+}
+</code></pre></div>
+<blockquote>
+<p><strong>Parallelism Note:</strong>
+Vector operations like <code>.map()</code> and <code>.filter()</code> are parallel by default and hardened for ETL/data processing workloads.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>

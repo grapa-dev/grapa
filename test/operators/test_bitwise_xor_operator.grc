@@ -1,0 +1,121 @@
+/* Bitwise XOR Operator (^) Test */
+
+"=== BITWISE XOR OPERATOR (^) TEST ===\n".echo();
+
+/* Test 1: INT ^ INT */
+"Test 1: INT ^ INT\n".echo();
+result1 = 5 ^ 3;
+("5 ^ 3 = " + result1 + "\n").echo();
+result1b = 10 ^ 6;
+("10 ^ 6 = " + result1b + "\n").echo();
+result1c = 15 ^ 7;
+("15 ^ 7 = " + result1c + "\n").echo();
+
+/* Test 2: INT ^ FLOAT */
+"Test 2: INT ^ FLOAT\n".echo();
+result2 = 5 ^ 3.0;
+("5 ^ 3.0 = " + result2 + "\n").echo();
+result2b = 10 ^ 6.5;
+("10 ^ 6.5 = " + result2b + "\n").echo();
+
+/* Test 3: FLOAT ^ INT */
+"Test 3: FLOAT ^ INT\n".echo();
+result3 = 5.0 ^ 3;
+("5.0 ^ 3 = " + result3 + "\n").echo();
+result3b = 10.5 ^ 6;
+("10.5 ^ 6 = " + result3b + "\n").echo();
+
+/* Test 4: FLOAT ^ FLOAT */
+"Test 4: FLOAT ^ FLOAT\n".echo();
+result4 = 5.0 ^ 3.0;
+("5.0 ^ 3.0 = " + result4 + "\n").echo();
+result4b = 10.5 ^ 6.5;
+("10.5 ^ 6.5 = " + result4b + "\n").echo();
+
+/* Test 5: INT ^ STR */
+"Test 5: INT ^ STR\n".echo();
+result5 = 5 ^ "3";
+("5 ^ '3' = " + result5 + "\n").echo();
+result5b = 10 ^ "hello";
+("10 ^ 'hello' = " + result5b + "\n").echo();
+
+/* Test 6: STR ^ INT */
+"Test 6: STR ^ INT\n".echo();
+result6 = "5" ^ 3;
+("'5' ^ 3 = " + result6 + "\n").echo();
+result6b = "hello" ^ 6;
+("'hello' ^ 6 = " + result6b + "\n").echo();
+
+/* Test 7: STR ^ STR */
+"Test 7: STR ^ STR\n".echo();
+result7 = "5" ^ "3";
+("'5' ^ '3' = " + result7 + "\n").echo();
+result7b = "hello" ^ "world";
+("'hello' ^ 'world' = " + result7b + "\n").echo();
+
+/* Test 8: BOOL ^ BOOL */
+"Test 8: BOOL ^ BOOL\n".echo();
+result8 = true ^ true;
+("true ^ true = " + result8 + "\n").echo();
+result8b = true ^ false;
+("true ^ false = " + result8b + "\n").echo();
+result8c = false ^ true;
+("false ^ true = " + result8c + "\n").echo();
+result8d = false ^ false;
+("false ^ false = " + result8d + "\n").echo();
+
+/* Test 9: INT ^ BOOL */
+"Test 9: INT ^ BOOL\n".echo();
+result9 = 5 ^ true;
+("5 ^ true = " + result9 + "\n").echo();
+result9b = 5 ^ false;
+("5 ^ false = " + result9b + "\n").echo();
+
+/* Test 10: BOOL ^ INT */
+"Test 10: BOOL ^ INT\n".echo();
+result10 = true ^ 5;
+("true ^ 5 = " + result10 + "\n").echo();
+result10b = false ^ 5;
+("false ^ 5 = " + result10b + "\n").echo();
+
+/* Test 11: ARRAY ^ ARRAY */
+"Test 11: ARRAY ^ ARRAY\n".echo();
+result11 = [1, 2, 3] ^ [4, 5, 6];
+("[1,2,3] ^ [4,5,6] = " + result11 + "\n").echo();
+result11b = [1, 2] ^ [3, 4, 5];
+("[1,2] ^ [3,4,5] = " + result11b + "\n").echo();
+
+/* Test 12: LIST ^ LIST */
+"Test 12: LIST ^ LIST\n".echo();
+result12 = {a: 1, b: 2} ^ {c: 3, d: 4};
+("{a:1,b:2} ^ {c:3,d:4} = " + result12 + "\n").echo();
+result12b = {a: 1} ^ {b: 2, c: 3};
+("{a:1} ^ {b:2,c:3} = " + result12b + "\n").echo();
+
+/* Test 13: ERR ^ INT */
+"Test 13: ERR ^ INT\n".echo();
+result13 = ERR ^ 5;
+("$ERR ^ 5 = " + result13 + "\n").echo();
+
+/* Test 14: INT ^ ERR */
+"Test 14: INT ^ ERR\n".echo();
+result14 = 5 ^ ERR;
+("5 ^ $ERR = " + result14 + "\n").echo();
+
+/* Test 15: Large numbers */
+"Test 15: Large numbers\n".echo();
+result15 = 255 ^ 15;
+("255 ^ 15 = " + result15 + "\n").echo();
+result15b = 1024 ^ 255;
+("1024 ^ 255 = " + result15b + "\n").echo();
+
+/* Test 16: XOR properties */
+"Test 16: XOR properties\n".echo();
+result16 = 5 ^ 5;
+("5 ^ 5 = " + result16 + " (should be 0)\n").echo();
+result16b = 5 ^ 0;
+("5 ^ 0 = " + result16b + " (should be 5)\n").echo();
+result16c = 5 ^ (5 ^ 3);
+("5 ^ (5 ^ 3) = " + result16c + " (should be 3)\n").echo();
+
+"=== BITWISE XOR OPERATOR (^) TEST COMPLETE ===\n".echo(); 

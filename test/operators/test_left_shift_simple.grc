@@ -1,0 +1,46 @@
+/* Simple Left Shift Operator (<<) Test */
+
+"=== SIMPLE LEFT SHIFT OPERATOR (<<) TEST ===\n".echo();
+
+/* Test 1: Basic INT << INT */
+"Test 1: Basic INT << INT\n".echo();
+result1 = 5 << 2;
+("5 << 2 = " + result1 + "\n").echo();
+result1b = 10 << 3;
+("10 << 3 = " + result1b + "\n").echo();
+result1c = 1 << 8;
+("1 << 8 = " + result1c + "\n").echo();
+
+/* Test 2: INT << FLOAT */
+"Test 2: INT << FLOAT\n".echo();
+result2 = 5 << 2.0;
+("5 << 2.0 = " + result2 + "\n").echo();
+
+/* Test 3: FLOAT << INT */
+"Test 3: FLOAT << INT\n".echo();
+result3 = 5.0 << 2;
+("5.0 << 2 = " + result3 + "\n").echo();
+
+/* Test 4: STR << INT */
+"Test 4: STR << INT\n".echo();
+result4 = "5" << 2;
+("'5' << 2 = " + result4 + "\n").echo();
+
+/* Test 5: INT << STR */
+"Test 5: INT << STR\n".echo();
+result5 = 5 << "2";
+("5 << '2' = " + result5 + "\n").echo();
+
+/* Test 6: Large shifts */
+"Test 6: Large shifts\n".echo();
+result6 = 1 << 16;
+("1 << 16 = " + result6 + "\n").echo();
+
+/* Test 7: Zero shifts */
+"Test 7: Zero shifts\n".echo();
+result7 = 5 << 0;
+("5 << 0 = " + result7 + "\n").echo();
+result7b = 0 << 5;
+("0 << 5 = " + result7b + "\n").echo();
+
+"=== SIMPLE LEFT SHIFT OPERATOR (<<) TEST COMPLETE ===\n".echo(); 

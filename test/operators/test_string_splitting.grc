@@ -1,0 +1,30 @@
+/* Test string splitting with newlines */
+
+"=== STRING SPLITTING TEST ===\n".echo();
+
+/* Test 1: String with newlines split by newline */
+"Test 1: String with newlines split by newline\n".echo();
+result1 = "this is\na test" / "\n";
+("'this is\\na test' / '\\n' = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: String with spaces split by space */
+"Test 2: String with spaces split by space\n".echo();
+result2 = "hello world test" / " ";
+("'hello world test' / ' ' = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: String with commas split by comma */
+"Test 3: String with commas split by comma\n".echo();
+result3 = "apple,banana,cherry" / ",";
+("'apple,banana,cherry' / ',' = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: String split by empty string */
+"Test 4: String split by empty string\n".echo();
+result4 = "hello" / "";
+("'hello' / '' = " + result4 + " (type: " + result4.type() + ")\n").echo();
+
+/* Test 5: String split into chunks by number */
+"Test 5: String split into chunks by number\n".echo();
+result5 = "abcdefghijklmnop" / 4;
+("'abcdefghijklmnop' / 4 = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+"=== STRING SPLITTING TEST COMPLETE ===\n".echo(); 

@@ -1,0 +1,196 @@
+/* Subtraction Operator (-) Type Support Test
+   Testing all type combinations to identify gaps and document actual behavior */
+
+"=== SUBTRACTION OPERATOR (-) TYPE SUPPORT TEST ===\n".echo();
+
+/* Test 1: INT - INT */
+"Test 1: INT - INT\n".echo();
+result = 10 - 3;
+("10 - 3 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 2: INT - FLOAT */
+"Test 2: INT - FLOAT\n".echo();
+result = 10 - 3.14;
+("10 - 3.14 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 3: FLOAT - INT */
+"Test 3: FLOAT - INT\n".echo();
+result = 10.5 - 3;
+("10.5 - 3 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 4: FLOAT - FLOAT */
+"Test 4: FLOAT - FLOAT\n".echo();
+result = 10.5 - 3.14;
+("10.5 - 3.14 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 5: INT - STR */
+"Test 5: INT - STR\n".echo();
+result = 10 - "hello";
+("10 - 'hello' = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 6: STR - INT */
+"Test 6: STR - INT\n".echo();
+result = "hello" - 3;
+("'hello' - 3 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 7: FLOAT - STR */
+"Test 7: FLOAT - STR\n".echo();
+result = 10.5 - "world";
+("10.5 - 'world' = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 8: STR - FLOAT */
+"Test 8: STR - FLOAT\n".echo();
+result = "world" - 3.14;
+("'world' - 3.14 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 9: STR - STR */
+"Test 9: STR - STR\n".echo();
+result = "hello" - "world";
+("'hello' - 'world' = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 10: INT - ARRAY */
+"Test 10: INT - ARRAY\n".echo();
+result = 10 - [1, 2, 3];
+("10 - [1,2,3] = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 11: ARRAY - INT */
+"Test 11: ARRAY - INT\n".echo();
+result = [1, 2, 3] - 1;
+("[1,2,3] - 1 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 12: FLOAT - ARRAY */
+"Test 12: FLOAT - ARRAY\n".echo();
+result = 10.5 - [1, 2, 3];
+("10.5 - [1,2,3] = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 13: ARRAY - FLOAT */
+"Test 13: ARRAY - FLOAT\n".echo();
+result = [1, 2, 3] - 1.5;
+("[1,2,3] - 1.5 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 14: STR - ARRAY */
+"Test 14: STR - ARRAY\n".echo();
+result = "hello" - [1, 2, 3];
+("'hello' - [1,2,3] = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 15: ARRAY - STR */
+"Test 15: ARRAY - STR\n".echo();
+result = [1, 2, 3] - "hello";
+("[1,2,3] - 'hello' = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 16: ARRAY - ARRAY */
+"Test 16: ARRAY - ARRAY\n".echo();
+result = [1, 2, 3, 4, 5] - [2, 4];
+("[1,2,3,4,5] - [2,4] = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 17: INT - LIST */
+"Test 17: INT - LIST\n".echo();
+result = 10 - {"a": 1, "b": 2};
+("10 - {a:1,b:2} = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 18: LIST - INT */
+"Test 18: LIST - INT\n".echo();
+result = {"a": 1, "b": 2} - 1;
+("{a:1,b:2} - 1 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 19: FLOAT - LIST */
+"Test 19: FLOAT - LIST\n".echo();
+result = 10.5 - {"a": 1, "b": 2};
+("10.5 - {a:1,b:2} = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 20: LIST - FLOAT */
+"Test 20: LIST - FLOAT\n".echo();
+result = {"a": 1, "b": 2} - 1.5;
+("{a:1,b:2} - 1.5 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 21: STR - LIST */
+"Test 21: STR - LIST\n".echo();
+result = "hello" - {"a": 1, "b": 2};
+("'hello' - {a:1,b:2} = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 22: LIST - STR */
+"Test 22: LIST - STR\n".echo();
+result = {"a": 1, "b": 2} - "hello";
+("{a:1,b:2} - 'hello' = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 23: ARRAY - LIST */
+"Test 23: ARRAY - LIST\n".echo();
+result = [1, 2, 3] - {"a": 1, "b": 2};
+("[1,2,3] - {a:1,b:2} = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 24: LIST - ARRAY */
+"Test 24: LIST - ARRAY\n".echo();
+result = {"a": 1, "b": 2} - [1, 2, 3];
+("{a:1,b:2} - [1,2,3] = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 25: LIST - LIST */
+"Test 25: LIST - LIST\n".echo();
+result = {"a": 1, "b": 2, "c": 3} - {"b": 2, "d": 4};
+("{a:1,b:2,c:3} - {b:2,d:4} = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 26: INT - BOOL */
+"Test 26: INT - BOOL\n".echo();
+result = 10 - true;
+("10 - true = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 27: BOOL - INT */
+"Test 27: BOOL - INT\n".echo();
+result = true - 5;
+("true - 5 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 28: FLOAT - BOOL */
+"Test 28: FLOAT - BOOL\n".echo();
+result = 10.5 - false;
+("10.5 - false = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 29: BOOL - FLOAT */
+"Test 29: BOOL - FLOAT\n".echo();
+result = false - 3.14;
+("false - 3.14 = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 30: STR - BOOL */
+"Test 30: STR - BOOL\n".echo();
+result = "hello" - true;
+("'hello' - true = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 31: BOOL - STR */
+"Test 31: BOOL - STR\n".echo();
+result = true - "hello";
+("true - 'hello' = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 32: ARRAY - BOOL */
+"Test 32: ARRAY - BOOL\n".echo();
+result = [1, 2, 3] - true;
+("[1,2,3] - true = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 33: BOOL - ARRAY */
+"Test 33: BOOL - ARRAY\n".echo();
+result = true - [1, 2, 3];
+("true - [1,2,3] = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 34: LIST - BOOL */
+"Test 34: LIST - BOOL\n".echo();
+result = {"a": 1, "b": 2} - true;
+("{a:1,b:2} - true = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 35: BOOL - LIST */
+"Test 35: BOOL - LIST\n".echo();
+result = true - {"a": 1, "b": 2};
+("true - {a:1,b:2} = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 36: BOOL - BOOL */
+"Test 36: BOOL - BOOL\n".echo();
+result = true - false;
+("true - false = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 37: Error handling - INT - ERR */
+"Test 37: INT - ERR (Error handling)\n".echo();
+result = 10 - $ERR;
+("10 - $ERR = " + result + " (type: " + result.type() + ")\n").echo();
+
+/* Test 38: Error handling - ERR - INT */
+"Test 38: ERR - INT (Error handling)\n".echo();
+result = $ERR - 5;
+("$ERR - 5 = " + result + " (type: " + result.type() + ")\n").echo();
+
+"=== SUBTRACTION OPERATOR TEST COMPLETE ===\n".echo(); 

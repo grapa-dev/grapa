@@ -1,0 +1,71 @@
+/* AKS Debug Test */
+/* Test to see what specific error occurs with AKS function */
+
+"=== AKS Debug Test ===".echo();
+
+/* Test 1: Try with very small numbers */
+"\n1. Testing with very small numbers".echo();
+small_numbers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31];
+i = 0;
+while (i < small_numbers.len()) {
+    num = small_numbers[i];
+    ("Testing AKS with " + num.str() + "...").echo();
+    try {
+        result = num.isaks();
+        ("Result: " + result.str()).echo();
+    } catch (error) {
+        ("Error: " + error.str()).echo();
+    }
+    i += 1;
+}
+
+/* Test 2: Try with composite numbers */
+"\n2. Testing with composite numbers".echo();
+composite_numbers = [4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20];
+i = 0;
+while (i < composite_numbers.len()) {
+    num = composite_numbers[i];
+    ("Testing AKS with composite " + num.str() + "...").echo();
+    try {
+        result = num.isaks();
+        ("Result: " + result.str()).echo();
+    } catch (error) {
+        ("Error: " + error.str()).echo();
+    }
+    i += 1;
+}
+
+/* Test 3: Try with larger prime */
+"\n3. Testing with larger prime".echo();
+("Testing AKS with 97...").echo();
+try {
+    result = 97.isaks();
+    ("Result: " + result.str()).echo();
+} catch (error) {
+    ("Error: " + error.str()).echo();
+}
+
+/* Test 4: Try with generated prime */
+"\n4. Testing with generated prime".echo();
+("Generating 16-bit prime...").echo();
+gen_prime = 16.genprime();
+("Generated prime: " + gen_prime.str()).echo();
+("Testing AKS with generated prime...").echo();
+try {
+    result = gen_prime.isaks();
+    ("Result: " + result.str()).echo();
+} catch (error) {
+    ("Error: " + error.str()).echo();
+}
+
+/* Test 5: Check if the issue is with threading */
+"\n5. Testing if issue is with threading".echo();
+("Testing with 2 (smallest prime)...").echo();
+try {
+    result = 2.isaks();
+    ("Result: " + result.str()).echo();
+} catch (error) {
+    ("Error: " + error.str()).echo();
+}
+
+"=== AKS Debug Test Complete ===".echo(); 

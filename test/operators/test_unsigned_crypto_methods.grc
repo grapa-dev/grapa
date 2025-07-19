@@ -1,0 +1,55 @@
+/* Test built-in unsigned methods for crypto operations */
+
+"=== UNSIGNED CRYPTO METHODS TEST ===\n".echo();
+
+/* Test 1: uraw method */
+"Test 1: uraw method\n".echo();
+result1 = (123456789).uraw();
+("(123456789).uraw() = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: uint method */
+"Test 2: uint method\n".echo();
+result2 = (123456789).uint();
+("(123456789).uint() = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: uhex method */
+"Test 3: uhex method\n".echo();
+result3 = (123456789).uhex();
+("(123456789).uhex() = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: ubin method */
+"Test 4: ubin method\n".echo();
+result4 = (123456789).ubin();
+("(123456789).ubin() = " + result4 + " (type: " + result4.type() + ")\n").echo();
+
+/* Test 5: Large number with uraw */
+"Test 5: Large number with uraw\n".echo();
+result5 = (4294967295).uraw();  /* Max 32-bit unsigned int */
+("(4294967295).uraw() = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+/* Test 6: Large number with uint */
+"Test 6: Large number with uint\n".echo();
+result6 = (4294967295).uint();
+("(4294967295).uint() = " + result6 + " (type: " + result6.type() + ")\n").echo();
+
+/* Test 7: Large number with uhex */
+"Test 7: Large number with uhex\n".echo();
+result7 = (4294967295).uhex();
+("(4294967295).uhex() = " + result7 + " (type: " + result7.type() + ")\n").echo();
+
+/* Test 8: Large number with ubin */
+"Test 8: Large number with ubin\n".echo();
+result8 = (4294967295).ubin();
+("(4294967295).ubin() = " + result8 + " (type: " + result8.type() + ")\n").echo();
+
+/* Test 9: Negative number with uraw */
+"Test 9: Negative number with uraw\n".echo();
+result9 = (-123456789).uraw();
+("(-123456789).uraw() = " + result9 + " (type: " + result9.type() + ")\n").echo();
+
+/* Test 10: Negative number with uint */
+"Test 10: Negative number with uint\n".echo();
+result10 = (-123456789).uint();
+("(-123456789).uint() = " + result10 + " (type: " + result10.type() + ")\n").echo();
+
+"=== UNSIGNED CRYPTO METHODS TEST COMPLETE ===\n".echo(); 

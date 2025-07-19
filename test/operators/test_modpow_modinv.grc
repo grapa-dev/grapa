@@ -1,0 +1,40 @@
+/* Test modpow/modinv relationship */
+
+"=== MODPOW/MODINV RELATIONSHIP TEST ===\n".echo();
+
+/* Test 1: Regular modpow */
+"Test 1: Regular modpow\n".echo();
+result1 = modpow(3, 4, 7);
+("modpow(3, 4, 7) = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: modpow with -1 exponent (should give modinv) */
+"Test 2: modpow with -1 exponent (should give modinv)\n".echo();
+result2 = modpow(3, -1, 7);
+("modpow(3, -1, 7) = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: Direct modinv for comparison */
+"Test 3: Direct modinv for comparison\n".echo();
+result3 = modinv(3, 7);
+("modinv(3, 7) = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: Verify the relationship */
+"Test 4: Verify the relationship\n".echo();
+result4 = (3 * result2) % 7;
+("(3 * modinv(3, 7)) % 7 = " + result4 + " (should be 1)\n").echo();
+
+/* Test 5: Another modpow with -1 */
+"Test 5: Another modpow with -1\n".echo();
+result5 = modpow(5, -1, 11);
+("modpow(5, -1, 11) = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+/* Test 6: Direct modinv for comparison */
+"Test 6: Direct modinv for comparison\n".echo();
+result6 = modinv(5, 11);
+("modinv(5, 11) = " + result6 + " (type: " + result6.type() + ")\n").echo();
+
+/* Test 7: Verify the relationship */
+"Test 7: Verify the relationship\n".echo();
+result7 = (5 * result6) % 11;
+("(5 * modinv(5, 11)) % 11 = " + result7 + " (should be 1)\n").echo();
+
+"=== MODPOW/MODINV RELATIONSHIP TEST COMPLETE ===\n".echo(); 

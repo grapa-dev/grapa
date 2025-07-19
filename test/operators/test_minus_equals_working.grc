@@ -1,0 +1,31 @@
+/* Working -= test based on functional programming example */
+
+"Testing -= operator with working pattern\n".echo();
+
+/* Test 1: List -= list[key] */
+list1 = {"a": 1, "b": 2, "c": 3, "d": 4};
+("Original list1: " + list1.str() + "\n").echo();
+
+list1 -= list1["b"];
+("After list1 -= list1['b']: " + list1.str() + " (expected: {\"a\":1,\"c\":3,\"d\":4})\n").echo();
+
+/* Test 2: Array -= array[index] */
+arr1 = [10, 20, 30, 40, 50];
+("Original arr1: " + arr1.str() + "\n").echo();
+
+arr1 -= arr1[2];
+("After arr1 -= arr1[2]: " + arr1.str() + " (expected: [10,20,40,50])\n").echo();
+
+/* Test 3: Another list test */
+list2 = {"x": 100, "y": 200, "z": 300};
+("Original list2: " + list2.str() + "\n").echo();
+
+list2 -= list2["y"];
+("After list2 -= list2['y']: " + list2.str() + " (expected: {\"x\":100,\"z\":300})\n").echo();
+
+/* Test 4: Another array test */
+arr2 = [1, 2, 3];
+("Original arr2: " + arr2.str() + "\n").echo();
+
+arr2 -= arr2[0];
+("After arr2 -= arr2[0]: " + arr2.str() + " (expected: [2,3])\n").echo(); 

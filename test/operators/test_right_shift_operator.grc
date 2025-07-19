@@ -1,0 +1,53 @@
+/* Right Shift Operator (>>) Test */
+
+"=== RIGHT SHIFT OPERATOR (>>) TEST ===\n".echo();
+
+/* Test 1: Basic INT >> INT */
+"Test 1: Basic INT >> INT\n".echo();
+result1 = 20 >> 2;
+("20 >> 2 = " + result1 + "\n").echo();
+result1b = 80 >> 3;
+("80 >> 3 = " + result1b + "\n").echo();
+result1c = 256 >> 8;
+("256 >> 8 = " + result1c + "\n").echo();
+
+/* Test 2: INT >> FLOAT */
+"Test 2: INT >> FLOAT\n".echo();
+result2 = 20 >> 2.0;
+("20 >> 2.0 = " + result2 + "\n").echo();
+
+/* Test 3: FLOAT >> INT */
+"Test 3: FLOAT >> INT\n".echo();
+result3 = 20.0 >> 2;
+("20.0 >> 2 = " + result3 + "\n").echo();
+
+/* Test 4: STR >> INT */
+"Test 4: STR >> INT\n".echo();
+result4 = "20" >> 2;
+("'20' >> 2 = " + result4 + "\n").echo();
+
+/* Test 5: INT >> STR */
+"Test 5: INT >> STR\n".echo();
+result5 = 20 >> "2";
+("20 >> '2' = " + result5 + "\n").echo();
+
+/* Test 6: Large shifts */
+"Test 6: Large shifts\n".echo();
+result6 = 65536 >> 16;
+("65536 >> 16 = " + result6 + "\n").echo();
+
+/* Test 7: Zero shifts */
+"Test 7: Zero shifts\n".echo();
+result7 = 5 >> 0;
+("5 >> 0 = " + result7 + "\n").echo();
+result7b = 0 >> 5;
+("0 >> 5 = " + result7b + "\n").echo();
+
+/* Test 8: Negative numbers */
+"Test 8: Negative numbers\n".echo();
+result8 = -20 >> 2;
+("-20 >> 2 = " + result8 + "\n").echo();
+result8b = -80 >> 3;
+("-80 >> 3 = " + result8b + "\n").echo();
+
+"=== RIGHT SHIFT OPERATOR (>>) TEST COMPLETE ===\n".echo(); 

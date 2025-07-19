@@ -1,0 +1,148 @@
+/* Enhanced Cryptographic Test */
+/* Tests for advanced cryptographic features and data conversions */
+
+"=== Enhanced Cryptographic Test ===".echo();
+
+/* Test 1: Proper time measurement */
+"\n1. Testing proper time measurement".echo();
+start_time = $TIME().utc();
+("Start time: " + start_time.str()).echo();
+
+/* Test 2: Data conversion methods for crypto */
+"\n2. Testing data conversion methods".echo();
+test_data = "Hello, Crypto World!";
+("Original: " + test_data).echo();
+
+/* Raw bytes */
+raw_data = test_data.raw();
+("Raw bytes length: " + raw_data.len().str()).echo();
+("Raw hex: " + raw_data.hex()).echo();
+
+/* Unsigned raw bytes */
+uraw_data = test_data.uraw();
+("Unsigned raw length: " + uraw_data.len().str()).echo();
+("Unsigned raw hex: " + uraw_data.hex()).echo();
+
+/* Hex conversion */
+hex_data = test_data.hex();
+("Hex: " + hex_data).echo();
+("Hex upper: " + hex_data.upper()).echo();
+("Hex lower: " + hex_data.lower()).echo();
+
+/* Binary conversion */
+bin_data = test_data.bin();
+("Binary: " + bin_data).echo();
+("Binary upper: " + bin_data.upper()).echo();
+
+/* Unsigned binary */
+ubin_data = test_data.ubin();
+("Unsigned binary: " + ubin_data).echo();
+
+/* Test 3: Hash with different output formats */
+"\n3. Testing hash with different output formats".echo();
+hash_input = "test_data";
+hash_result = hash_input.encode("SHA3-256");
+
+/* Different hex formats */
+("Hash hex: " + hash_result.hex()).echo();
+("Hash hex upper: " + hash_result.hex().upper()).echo();
+("Hash hex lower: " + hash_result.hex().lower()).echo();
+
+/* Raw and binary formats */
+("Hash raw length: " + hash_result.raw().len().str()).echo();
+("Hash binary: " + hash_result.bin()).echo();
+("Hash unsigned binary: " + hash_result.ubin()).echo();
+
+/* Test 4: Bit operations for crypto */
+"\n4. Testing bit operations".echo();
+test_number = 42;
+("Original number: " + test_number.str()).echo();
+("Binary: " + test_number.bin()).echo();
+("Hex: " + test_number.hex()).echo();
+
+/* Set and clear bits */
+set_bit = test_number.setbit(0);
+("After setting bit 0: " + set_bit.str() + " (" + set_bit.bin() + ")").echo();
+
+clear_bit = test_number.clearbit(1);
+("After clearing bit 1: " + clear_bit.str() + " (" + clear_bit.bin() + ")").echo();
+
+/* Test 5: Generate random bits and keys */
+"\n5. Testing random generation".echo();
+/* Generate random bits */
+random_bits = "".genbits();
+("Random bits length: " + random_bits.len().str()).echo();
+("Random bits hex: " + random_bits.hex()).echo();
+
+/* Generate keys (experimental) */
+random_keys = "".genkeys();
+("Random keys: " + random_keys.str()).echo();
+
+/* Test 6: Sign and verify (experimental) */
+"\n6. Testing sign and verify (experimental)".echo();
+message = "Hello, World!";
+("Message: " + message).echo();
+
+/* Try to sign the message */
+signature = message.sign();
+("Signature result: " + signature.str()).echo();
+
+/* Try to verify the signature */
+verification = message.verify(signature);
+("Verification result: " + verification.str()).echo();
+
+/* Test 7: Secret operations (experimental) */
+"\n7. Testing secret operations (experimental)".echo();
+secret_data = "secret_message";
+key = "secret_key";
+("Secret data: " + secret_data).echo();
+
+/* Try secret operation */
+secret_result = secret_data.secret(key);
+("Secret result: " + secret_result.str()).echo();
+
+/* Test 8: Performance measurement with proper time */
+"\n8. Testing performance with proper time".echo();
+start_time = $TIME().utc();
+i = 0;
+while (i < 100) {
+    result = (i + 1).modpow(100, 1000000007);
+    i += 1;
+}
+end_time = $TIME().utc();
+elapsed_ns = end_time - start_time;
+elapsed_ms = (elapsed_ns / 1000000).int();
+("100 modpow operations completed in: " + elapsed_ms.str() + " ms").echo();
+
+/* Test 9: Large number operations with proper formatting */
+"\n9. Testing large number operations".echo();
+large_number = 1234567890123456789;
+("Large number: " + large_number.str()).echo();
+("Large number hex: " + large_number.hex()).echo();
+("Large number binary: " + large_number.bin()).echo();
+
+/* Test 10: String case operations for crypto */
+"\n10. Testing string case operations".echo();
+mixed_case = "Hello World 123 !@#";
+("Original: " + mixed_case).echo();
+("Upper: " + mixed_case.upper()).echo();
+("Lower: " + mixed_case.lower()).echo();
+
+/* Test 11: Hash comparison with case handling */
+"\n11. Testing hash comparison with case handling".echo();
+data1 = "test";
+data2 = "TEST";
+hash1 = data1.encode("SHA3-256");
+hash2 = data2.encode("SHA3-256");
+("Hash1 (lowercase): " + hash1.hex().lower()).echo();
+("Hash2 (uppercase): " + hash2.hex().upper()).echo();
+("Hashes equal (case-insensitive): " + (hash1.hex().lower() == hash2.hex().lower()).str()).echo();
+
+/* Test 12: Final time measurement */
+"\n12. Final time measurement".echo();
+end_time = $TIME().utc();
+total_elapsed_ns = end_time - start_time;
+total_elapsed_ms = (total_elapsed_ns / 1000000).int();
+("Total test time: " + total_elapsed_ms.str() + " ms").echo();
+
+"=== Enhanced Cryptographic Test Complete ===".echo(); 

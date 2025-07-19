@@ -1,0 +1,39 @@
+/* Simple Cryptographic Test */
+/* Basic test to verify Grapa syntax and function calls */
+
+"=== Simple Cryptographic Test ===".echo();
+
+/* Test 1: Basic string operations */
+"\n1. Testing basic string operations".echo();
+test_string = "Hello, World!";
+("Test string: " + test_string).echo();
+("String length: " + test_string.len().str()).echo();
+
+/* Test 2: Basic math operations */
+"\n2. Testing basic math operations".echo();
+a = 7;
+b = 13;
+c = 23;
+result = a.modpow(b, c);
+("7^13 mod 23 = " + result.str()).echo();
+
+/* Test 3: Basic hash function */
+"\n3. Testing basic hash function".echo();
+data = "test";
+hash_result = data.encode("SHA3-256");
+("SHA3-256 hash length: " + hash_result.len().str()).echo();
+("Hash hex: " + hash_result.hex()).echo();
+
+/* Test 4: Basic array operations */
+"\n4. Testing basic array operations".echo();
+arr = [1, 2, 3, 4, 5];
+("Array length: " + arr.len().str()).echo();
+("First element: " + arr[0].str()).echo();
+
+/* Test 5: Basic list operations */
+"\n5. Testing basic list operations".echo();
+list_data = {"key1": "value1", "key2": "value2"};
+("List length: " + list_data.len().str()).echo();
+("Key1 value: " + list_data["key1"]).echo();
+
+"=== Simple Test Complete ===".echo(); 

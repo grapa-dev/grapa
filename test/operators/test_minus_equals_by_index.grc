@@ -1,0 +1,47 @@
+/* Minus Equals Operator (-=) by Index/Key Test */
+
+"=== MINUS EQUALS OPERATOR (-=) BY INDEX/KEY TEST ===\n".echo();
+
+/* Test 1: Array -= array[index] */
+"Test 1: Array -= array[index]\n".echo();
+arr1 = [1, 2, 3, 4, 5];
+arr1 -= arr1[2];  // Remove element at index 2 (value 3)
+("After arr1 -= arr1[2], arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 2: Array -= array[1] */
+"Test 2: Array -= array[1]\n".echo();
+arr2 = [10, 20, 30, 40, 50];
+arr2 -= arr2[1];  // Remove element at index 1 (value 20)
+("After arr2 -= arr2[1], arr2 = " + arr2 + " (type: " + arr2.type() + ")\n").echo();
+
+/* Test 3: List -= list[key] */
+"Test 3: List -= list[key]\n".echo();
+list1 = {"a": 1, "b": 2, "c": 3, "d": 4};
+list1 -= list1["b"];  // Remove key "b"
+("After list1 -= list1['b'], list1 = " + list1 + " (type: " + list1.type() + ")\n").echo();
+
+/* Test 4: List -= list["c"] */
+"Test 4: List -= list['c']\n".echo();
+list2 = {"x": 10, "y": 20, "z": 30};
+list2 -= list2["y"];  // Remove key "y"
+("After list2 -= list2['y'], list2 = " + list2 + " (type: " + list2.type() + ")\n").echo();
+
+/* Test 5: Array -= array[0] */
+"Test 5: Array -= array[0]\n".echo();
+arr3 = [100, 200, 300];
+arr3 -= arr3[0];  // Remove first element
+("After arr3 -= arr3[0], arr3 = " + arr3 + " (type: " + arr3.type() + ")\n").echo();
+
+/* Test 6: Array -= array[-1] (last element) */
+"Test 6: Array -= array[-1]\n".echo();
+arr4 = [1000, 2000, 3000, 4000];
+arr4 -= arr4[-1];  // Remove last element
+("After arr4 -= arr4[-1], arr4 = " + arr4 + " (type: " + arr4.type() + ")\n").echo();
+
+/* Test 7: List -= list["a"] */
+"Test 7: List -= list['a']\n".echo();
+list3 = {"first": 1, "second": 2, "third": 3};
+list3 -= list3["first"];  // Remove first key
+("After list3 -= list3['first'], list3 = " + list3 + " (type: " + list3.type() + ")\n").echo();
+
+"=== MINUS EQUALS BY INDEX/KEY TEST COMPLETE ===\n".echo(); 

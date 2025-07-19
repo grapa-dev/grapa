@@ -1,0 +1,88 @@
+/* Array Assignment Operators Test
+   Testing the difference between +, +=, and ++= for arrays */
+
+"=== ARRAY ASSIGNMENT OPERATORS TEST ===\n".echo();
+
+/* Test 1: Array + Array */
+"Test 1: Array + Array\n".echo();
+arr1 = [1, 2, 3];
+arr2 = [4, 5, 6];
+result = arr1 + arr2;
+("arr1 + arr2 = " + result + " (type: " + result.type() + ")\n").echo();
+("arr1 is still: " + arr1 + "\n").echo();
+
+/* Test 2: Array += Array */
+"Test 2: Array += Array\n".echo();
+arr1 = [1, 2, 3];
+arr2 = [4, 5, 6];
+arr1 += arr2;
+("After arr1 += arr2, arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 3: Array ++= Array */
+"Test 3: Array ++= Array\n".echo();
+arr1 = [1, 2, 3];
+arr2 = [4, 5, 6];
+arr1 ++= arr2;
+("After arr1 ++= arr2, arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 4: Array + Value */
+"Test 4: Array + Value\n".echo();
+arr1 = [1, 2, 3];
+result = arr1 + 4;
+("arr1 + 4 = " + result + " (type: " + result.type() + ")\n").echo();
+("arr1 is still: " + arr1 + "\n").echo();
+
+/* Test 5: Array += Value */
+"Test 5: Array += Value\n".echo();
+arr1 = [1, 2, 3];
+arr1 += 4;
+("After arr1 += 4, arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 6: Array ++= Value */
+"Test 6: Array ++= Value\n".echo();
+arr1 = [1, 2, 3];
+arr1 ++= 4;
+("After arr1 ++= 4, arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 7: Array + String */
+"Test 7: Array + String\n".echo();
+arr1 = [1, 2, 3];
+result = arr1 + "hello";
+("arr1 + 'hello' = " + result + " (type: " + result.type() + ")\n").echo();
+("arr1 is still: " + arr1 + "\n").echo();
+
+/* Test 8: Array += String */
+"Test 8: Array += String\n".echo();
+arr1 = [1, 2, 3];
+arr1 += "hello";
+("After arr1 += 'hello', arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 9: Array ++= String */
+"Test 9: Array ++= String\n".echo();
+arr1 = [1, 2, 3];
+arr1 ++= "hello";
+("After arr1 ++= 'hello', arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 10: Array + List */
+"Test 10: Array + List\n".echo();
+arr1 = [1, 2, 3];
+list1 = {"a": 1, "b": 2};
+result = arr1 + list1;
+("arr1 + list1 = " + result + " (type: " + result.type() + ")\n").echo();
+("arr1 is still: " + arr1 + "\n").echo();
+
+/* Test 11: Array += List */
+"Test 11: Array += List\n".echo();
+arr1 = [1, 2, 3];
+list1 = {"a": 1, "b": 2};
+arr1 += list1;
+("After arr1 += list1, arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 12: Array ++= List */
+"Test 12: Array ++= List\n".echo();
+arr1 = [1, 2, 3];
+list1 = {"a": 1, "b": 2};
+arr1 ++= list1;
+("After arr1 ++= list1, arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+"=== ARRAY ASSIGNMENT OPERATORS TEST COMPLETE ===\n".echo(); 

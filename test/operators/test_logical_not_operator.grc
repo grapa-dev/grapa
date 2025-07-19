@@ -1,0 +1,164 @@
+/* Logical NOT Operator (!) Test */
+
+"=== LOGICAL NOT OPERATOR (!) TEST ===\n".echo();
+
+/* Test 1: !BOOL */
+"Test 1: !BOOL\n".echo();
+result1 = !true;
+if (result1) {
+    "!true is TRUE\n".echo();
+} else {
+    "!true is FALSE\n".echo();
+}
+result1b = !false;
+if (result1b) {
+    "!false is TRUE\n".echo();
+} else {
+    "!false is FALSE\n".echo();
+}
+
+/* Test 2: !INT */
+"Test 2: !INT\n".echo();
+result2 = !5;
+if (result2) {
+    "!5 is TRUE\n".echo();
+} else {
+    "!5 is FALSE\n".echo();
+}
+result2b = !0;
+if (result2b) {
+    "!0 is TRUE\n".echo();
+} else {
+    "!0 is FALSE\n".echo();
+}
+result2c = !(-5);
+if (result2c) {
+    "!(-5) is TRUE\n".echo();
+} else {
+    "!(-5) is FALSE\n".echo();
+}
+
+/* Test 3: !FLOAT */
+"Test 3: !FLOAT\n".echo();
+result3 = !5.0;
+if (result3) {
+    "!5.0 is TRUE\n".echo();
+} else {
+    "!5.0 is FALSE\n".echo();
+}
+result3b = !0.0;
+if (result3b) {
+    "!0.0 is TRUE\n".echo();
+} else {
+    "!0.0 is FALSE\n".echo();
+}
+result3c = !(-5.0);
+if (result3c) {
+    "!(-5.0) is TRUE\n".echo();
+} else {
+    "!(-5.0) is FALSE\n".echo();
+}
+
+/* Test 4: !STR */
+"Test 4: !STR\n".echo();
+result4 = !"hello";
+if (result4) {
+    "!'hello' is TRUE\n".echo();
+} else {
+    "!'hello' is FALSE\n".echo();
+}
+result4b = !"";
+if (result4b) {
+    "!'' is TRUE\n".echo();
+} else {
+    "!'' is FALSE\n".echo();
+}
+result4c = !"0";
+if (result4c) {
+    "!'0' is TRUE\n".echo();
+} else {
+    "!'0' is FALSE\n".echo();
+}
+
+/* Test 5: !ARRAY */
+"Test 5: !ARRAY\n".echo();
+result5 = ![1, 2, 3];
+if (result5) {
+    "![1,2,3] is TRUE\n".echo();
+} else {
+    "![1,2,3] is FALSE\n".echo();
+}
+result5b = ![];
+if (result5b) {
+    "![] is TRUE\n".echo();
+} else {
+    "![] is FALSE\n".echo();
+}
+
+/* Test 6: !LIST */
+"Test 6: !LIST\n".echo();
+result6 = !{a: 1, b: 2};
+if (result6) {
+    "!{a:1,b:2} is TRUE\n".echo();
+} else {
+    "!{a:1,b:2} is FALSE\n".echo();
+}
+result6b = !{};
+if (result6b) {
+    "!{} is TRUE\n".echo();
+} else {
+    "!{} is FALSE\n".echo();
+}
+
+/* Test 7: !ERR */
+"Test 7: !ERR\n".echo();
+result7 = !ERR;
+if (result7) {
+    "!$ERR is TRUE\n".echo();
+} else {
+    "!$ERR is FALSE\n".echo();
+}
+
+/* Test 8: Double negation */
+"Test 8: Double negation\n".echo();
+result8 = !!true;
+if (result8) {
+    "!!true is TRUE\n".echo();
+} else {
+    "!!true is FALSE\n".echo();
+}
+result8b = !!false;
+if (result8b) {
+    "!!false is TRUE\n".echo();
+} else {
+    "!!false is FALSE\n".echo();
+}
+result8c = !!5;
+if (result8c) {
+    "!!5 is TRUE\n".echo();
+} else {
+    "!!5 is FALSE\n".echo();
+}
+result8d = !!0;
+if (result8d) {
+    "!!0 is TRUE\n".echo();
+} else {
+    "!!0 is FALSE\n".echo();
+}
+
+/* Test 9: Complex expressions */
+"Test 9: Complex expressions\n".echo();
+result9 = !(5 && 3);
+if (result9) {
+    "!(5 && 3) is TRUE\n".echo();
+} else {
+    "!(5 && 3) is FALSE\n".echo();
+}
+result9b = !(0 || 5);
+if (result9b) {
+    "!(0 || 5) is TRUE\n".echo();
+} else {
+    "!(0 || 5) is FALSE\n".echo();
+}
+
+"=== LOGICAL NOT OPERATOR (!) TEST COMPLETE ===\n".echo(); 

@@ -1,0 +1,77 @@
+/* Bitwise NOT Operator (~) Test */
+
+"=== BITWISE NOT OPERATOR (~) TEST ===\n".echo();
+
+/* Test 1: ~INT */
+"Test 1: ~INT\n".echo();
+result1 = ~5;
+("~5 = " + result1 + "\n").echo();
+result1b = ~0;
+("~0 = " + result1b + "\n").echo();
+result1c = ~(-5);
+("~(-5) = " + result1c + "\n").echo();
+
+/* Test 2: ~FLOAT */
+"Test 2: ~FLOAT\n".echo();
+result2 = ~5.0;
+("~5.0 = " + result2 + "\n").echo();
+result2b = ~0.0;
+("~0.0 = " + result2b + "\n").echo();
+result2c = ~(-5.0);
+("~(-5.0) = " + result2c + "\n").echo();
+
+/* Test 3: ~STR */
+"Test 3: ~STR\n".echo();
+result3 = ~"5";
+("~'5' = " + result3 + "\n").echo();
+result3b = ~"hello";
+("~'hello' = " + result3b + "\n").echo();
+
+/* Test 4: ~BOOL */
+"Test 4: ~BOOL\n".echo();
+result4 = ~true;
+("~true = " + result4 + "\n").echo();
+result4b = ~false;
+("~false = " + result4b + "\n").echo();
+
+/* Test 5: ~ARRAY */
+"Test 5: ~ARRAY\n".echo();
+result5 = ~[1, 2, 3];
+("~[1,2,3] = " + result5 + "\n").echo();
+result5b = ~[];
+("~[] = " + result5b + "\n").echo();
+
+/* Test 6: ~LIST */
+"Test 6: ~LIST\n".echo();
+result6 = ~{a: 1, b: 2};
+("~{a:1,b:2} = " + result6 + "\n").echo();
+result6b = ~{};
+("~{} = " + result6b + "\n").echo();
+
+/* Test 7: ~ERR */
+"Test 7: ~ERR\n".echo();
+result7 = ~ERR;
+("~$ERR = " + result7 + "\n").echo();
+
+/* Test 8: Double negation */
+"Test 8: Double negation\n".echo();
+result8 = ~~5;
+("~~5 = " + result8 + "\n").echo();
+result8b = ~~0;
+("~~0 = " + result8b + "\n").echo();
+
+/* Test 9: Large numbers */
+"Test 9: Large numbers\n".echo();
+result9 = ~255;
+("~255 = " + result9 + "\n").echo();
+result9b = ~1024;
+("~1024 = " + result9b + "\n").echo();
+
+/* Test 10: Edge cases */
+"Test 10: Edge cases\n".echo();
+result10 = ~(-1);
+("~(-1) = " + result10 + "\n").echo();
+result10b = ~2147483647;
+("~2147483647 = " + result10b + "\n").echo();
+
+"=== BITWISE NOT OPERATOR (~) TEST COMPLETE ===\n".echo(); 

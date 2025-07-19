@@ -1,0 +1,221 @@
+/* Equality Operator (==) Test */
+
+"=== EQUALITY OPERATOR (==) TEST ===\n".echo();
+
+/* Test 1: INT == INT */
+"Test 1: INT == INT\n".echo();
+result1 = 5 == 5;
+("5 == 5 = " + result1 + " (type: " + result1.type() + ")\n").echo();
+result1b = 5 == 3;
+("5 == 3 = " + result1b + " (type: " + result1b.type() + ")\n").echo();
+
+/* Test 2: INT == FLOAT */
+"Test 2: INT == FLOAT\n".echo();
+result2 = 5 == 5.0;
+("5 == 5.0 = " + result2 + " (type: " + result2.type() + ")\n").echo();
+result2b = 5 == 5.1;
+("5 == 5.1 = " + result2b + " (type: " + result2b.type() + ")\n").echo();
+
+/* Test 3: FLOAT == INT */
+"Test 3: FLOAT == INT\n".echo();
+result3 = 5.0 == 5;
+("5.0 == 5 = " + result3 + " (type: " + result3.type() + ")\n").echo();
+result3b = 5.1 == 5;
+("5.1 == 5 = " + result3b + " (type: " + result3b.type() + ")\n").echo();
+
+/* Test 4: FLOAT == FLOAT */
+"Test 4: FLOAT == FLOAT\n".echo();
+result4 = 5.0 == 5.0;
+("5.0 == 5.0 = " + result4 + " (type: " + result4.type() + ")\n").echo();
+result4b = 5.0 == 5.1;
+("5.0 == 5.1 = " + result4b + " (type: " + result4b.type() + ")\n").echo();
+
+/* Test 5: STR == STR */
+"Test 5: STR == STR\n".echo();
+result5 = "hello" == "hello";
+("'hello' == 'hello' = " + result5 + " (type: " + result5.type() + ")\n").echo();
+result5b = "hello" == "world";
+("'hello' == 'world' = " + result5b + " (type: " + result5b.type() + ")\n").echo();
+
+/* Test 6: INT == STR */
+"Test 6: INT == STR\n".echo();
+result6 = 5 == "5";
+("5 == '5' = " + result6 + " (type: " + result6.type() + ")\n").echo();
+result6b = 5 == "hello";
+("5 == 'hello' = " + result6b + " (type: " + result6b.type() + ")\n").echo();
+
+/* Test 7: STR == INT */
+"Test 7: STR == INT\n".echo();
+result7 = "5" == 5;
+("'5' == 5 = " + result7 + " (type: " + result7.type() + ")\n").echo();
+result7b = "hello" == 5;
+("'hello' == 5 = " + result7b + " (type: " + result7b.type() + ")\n").echo();
+
+/* Test 8: FLOAT == STR */
+"Test 8: FLOAT == STR\n".echo();
+result8 = 5.0 == "5.0";
+("5.0 == '5.0' = " + result8 + " (type: " + result8.type() + ")\n").echo();
+result8b = 5.0 == "hello";
+("5.0 == 'hello' = " + result8b + " (type: " + result8b.type() + ")\n").echo();
+
+/* Test 9: STR == FLOAT */
+"Test 9: STR == FLOAT\n".echo();
+result9 = "5.0" == 5.0;
+("'5.0' == 5.0 = " + result9 + " (type: " + result9.type() + ")\n").echo();
+result9b = "hello" == 5.0;
+("'hello' == 5.0 = " + result9b + " (type: " + result9b.type() + ")\n").echo();
+
+/* Test 10: BOOL == BOOL */
+"Test 10: BOOL == BOOL\n".echo();
+result10 = true == true;
+("true == true = " + result10 + " (type: " + result10.type() + ")\n").echo();
+result10b = true == false;
+("true == false = " + result10b + " (type: " + result10b.type() + ")\n").echo();
+
+/* Test 11: INT == BOOL */
+"Test 11: INT == BOOL\n".echo();
+result11 = 1 == true;
+("1 == true = " + result11 + " (type: " + result11.type() + ")\n").echo();
+result11b = 0 == false;
+("0 == false = " + result11b + " (type: " + result11b.type() + ")\n").echo();
+
+/* Test 12: BOOL == INT */
+"Test 12: BOOL == INT\n".echo();
+result12 = true == 1;
+("true == 1 = " + result12 + " (type: " + result12.type() + ")\n").echo();
+result12b = false == 0;
+("false == 0 = " + result12b + " (type: " + result12b.type() + ")\n").echo();
+
+/* Test 13: FLOAT == BOOL */
+"Test 13: FLOAT == BOOL\n".echo();
+result13 = 1.0 == true;
+("1.0 == true = " + result13 + " (type: " + result13.type() + ")\n").echo();
+result13b = 0.0 == false;
+("0.0 == false = " + result13b + " (type: " + result13b.type() + ")\n").echo();
+
+/* Test 14: BOOL == FLOAT */
+"Test 14: BOOL == FLOAT\n".echo();
+result14 = true == 1.0;
+("true == 1.0 = " + result14 + " (type: " + result14.type() + ")\n").echo();
+result14b = false == 0.0;
+("false == 0.0 = " + result14b + " (type: " + result14b.type() + ")\n").echo();
+
+/* Test 15: STR == BOOL */
+"Test 15: STR == BOOL\n".echo();
+result15 = "true" == true;
+("'true' == true = " + result15 + " (type: " + result15.type() + ")\n").echo();
+result15b = "false" == false;
+("'false' == false = " + result15b + " (type: " + result15b.type() + ")\n").echo();
+
+/* Test 16: BOOL == STR */
+"Test 16: BOOL == STR\n".echo();
+result16 = true == "true";
+("true == 'true' = " + result16 + " (type: " + result16.type() + ")\n").echo();
+result16b = false == "false";
+("false == 'false' = " + result16b + " (type: " + result16b.type() + ")\n").echo();
+
+/* Test 17: ARRAY == ARRAY */
+"Test 17: ARRAY == ARRAY\n".echo();
+result17 = [1, 2, 3] == [1, 2, 3];
+("[1,2,3] == [1,2,3] = " + result17 + " (type: " + result17.type() + ")\n").echo();
+result17b = [1, 2, 3] == [1, 2, 4];
+("[1,2,3] == [1,2,4] = " + result17b + " (type: " + result17b.type() + ")\n").echo();
+
+/* Test 18: INT == ARRAY */
+"Test 18: INT == ARRAY\n".echo();
+result18 = 5 == [1, 2, 3];
+("5 == [1,2,3] = " + result18 + " (type: " + result18.type() + ")\n").echo();
+
+/* Test 19: ARRAY == INT */
+"Test 19: ARRAY == INT\n".echo();
+result19 = [1, 2, 3] == 5;
+("[1,2,3] == 5 = " + result19 + " (type: " + result19.type() + ")\n").echo();
+
+/* Test 20: FLOAT == ARRAY */
+"Test 20: FLOAT == ARRAY\n".echo();
+result20 = 5.0 == [1, 2, 3];
+("5.0 == [1,2,3] = " + result20 + " (type: " + result20.type() + ")\n").echo();
+
+/* Test 21: ARRAY == FLOAT */
+"Test 21: ARRAY == FLOAT\n".echo();
+result21 = [1, 2, 3] == 5.0;
+("[1,2,3] == 5.0 = " + result21 + " (type: " + result21.type() + ")\n").echo();
+
+/* Test 22: STR == ARRAY */
+"Test 22: STR == ARRAY\n".echo();
+result22 = "hello" == [1, 2, 3];
+("'hello' == [1,2,3] = " + result22 + " (type: " + result22.type() + ")\n").echo();
+
+/* Test 23: ARRAY == STR */
+"Test 23: ARRAY == STR\n".echo();
+result23 = [1, 2, 3] == "hello";
+("[1,2,3] == 'hello' = " + result23 + " (type: " + result23.type() + ")\n").echo();
+
+/* Test 24: LIST == LIST */
+"Test 24: LIST == LIST\n".echo();
+result24 = {a: 1, b: 2} == {a: 1, b: 2};
+("{a:1,b:2} == {a:1,b:2} = " + result24 + " (type: " + result24.type() + ")\n").echo();
+result24b = {a: 1, b: 2} == {a: 1, b: 3};
+("{a:1,b:2} == {a:1,b:3} = " + result24b + " (type: " + result24b.type() + ")\n").echo();
+
+/* Test 25: INT == LIST */
+"Test 25: INT == LIST\n".echo();
+result25 = 5 == {a: 1, b: 2};
+("5 == {a:1,b:2} = " + result25 + " (type: " + result25.type() + ")\n").echo();
+
+/* Test 26: LIST == INT */
+"Test 26: LIST == INT\n".echo();
+result26 = {a: 1, b: 2} == 5;
+("{a:1,b:2} == 5 = " + result26 + " (type: " + result26.type() + ")\n").echo();
+
+/* Test 27: FLOAT == LIST */
+"Test 27: FLOAT == LIST\n".echo();
+result27 = 5.0 == {a: 1, b: 2};
+("5.0 == {a:1,b:2} = " + result27 + " (type: " + result27.type() + ")\n").echo();
+
+/* Test 28: LIST == FLOAT */
+"Test 28: LIST == FLOAT\n".echo();
+result28 = {a: 1, b: 2} == 5.0;
+("{a:1,b:2} == 5.0 = " + result28 + " (type: " + result28.type() + ")\n").echo();
+
+/* Test 29: STR == LIST */
+"Test 29: STR == LIST\n".echo();
+result29 = "hello" == {a: 1, b: 2};
+("'hello' == {a:1,b:2} = " + result29 + " (type: " + result29.type() + ")\n").echo();
+
+/* Test 30: LIST == STR */
+"Test 30: LIST == STR\n".echo();
+result30 = {a: 1, b: 2} == "hello";
+("{a:1,b:2} == 'hello' = " + result30 + " (type: " + result30.type() + ")\n").echo();
+
+/* Test 31: BOOL == LIST */
+"Test 31: BOOL == LIST\n".echo();
+result31 = true == {a: 1, b: 2};
+("true == {a:1,b:2} = " + result31 + " (type: " + result31.type() + ")\n").echo();
+
+/* Test 32: LIST == BOOL */
+"Test 32: LIST == BOOL\n".echo();
+result32 = {a: 1, b: 2} == true;
+("{a:1,b:2} == true = " + result32 + " (type: " + result32.type() + ")\n").echo();
+
+/* Test 33: ARRAY == LIST */
+"Test 33: ARRAY == LIST\n".echo();
+result33 = [1, 2, 3] == {a: 1, b: 2};
+("[1,2,3] == {a:1,b:2} = " + result33 + " (type: " + result33.type() + ")\n").echo();
+
+/* Test 34: LIST == ARRAY */
+"Test 34: LIST == ARRAY\n".echo();
+result34 = {a: 1, b: 2} == [1, 2, 3];
+("{a:1,b:2} == [1,2,3] = " + result34 + " (type: " + result34.type() + ")\n").echo();
+
+/* Test 35: ERR == INT */
+"Test 35: ERR == INT\n".echo();
+result35 = ERR == 5;
+("$ERR == 5 = " + result35 + " (type: " + result35.type() + ")\n").echo();
+
+/* Test 36: INT == ERR */
+"Test 36: INT == ERR\n".echo();
+result36 = 5 == ERR;
+("5 == $ERR = " + result36 + " (type: " + result36.type() + ")\n").echo();
+
+"=== EQUALITY OPERATOR (==) TEST COMPLETE ===\n".echo(); 

@@ -1,0 +1,72 @@
+# Test AES-256 Encryption
+# Tests for AES-256 encryption and decryption functionality
+
+("=== Testing AES-256 Encryption ===").echo();
+
+# Test 1: Basic encryption/decryption round-trip
+("\n1. Testing basic encryption/decryption").echo();
+original_data = "Hello, World! This is a test message.";
+key = "my_secret_key_32_bytes_long_key!";
+iv = "initialization_vector_16_bytes";
+
+encrypted = original_data.encode("AES256", {"key": key, "iv": iv});
+decrypted = encrypted.decode("AES256", {"key": key, "iv": iv});
+
+("Original: " + original_data).echo();
+("Encrypted length: " + encrypted.len().str()).echo();
+("Decrypted: " + decrypted).echo();
+("Round-trip successful: " + (original_data == decrypted).str()).echo();
+
+# Test 2: Empty string encryption
+("\n2. Testing empty string encryption").echo();
+empty_data = "";
+encrypted_empty = empty_data.encode("AES256", {"key": key, "iv": iv});
+decrypted_empty = encrypted_empty.decode("AES256", {"key": key, "iv": iv});
+("Empty string round-trip successful: " + (empty_data == decrypted_empty).str()).echo();
+
+# Test 3: Large data encryption
+("\n3. Testing large data encryption").echo();
+large_data = "x".repeat(1000);
+encrypted_large = large_data.encode("AES256", {"key": key, "iv": iv});
+decrypted_large = encrypted_large.decode("AES256", {"key": key, "iv": iv});
+("Large data round-trip successful: " + (large_data == decrypted_large).str()).echo();
+
+# Test 4: Binary data encryption
+("\n4. Testing binary data encryption").echo();
+binary_data = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F];
+encrypted_binary = binary_data.encode("AES256", {"key": key, "iv": iv});
+decrypted_binary = encrypted_binary.decode("AES256", {"key": key, "iv": iv});
+("Binary data round-trip successful: " + (binary_data == decrypted_binary).str()).echo();
+
+# Test 5: Different IVs produce different ciphertexts
+("\n5. Testing IV uniqueness").echo();
+iv1 = "initialization_vector_16_bytes";
+iv2 = "different_iv_16_bytes_long";
+encrypted1 = original_data.encode("AES256", {"key": key, "iv": iv1});
+encrypted2 = original_data.encode("AES256", {"key": key, "iv": iv2});
+("Different IVs produce different ciphertexts: " + (encrypted1 != encrypted2).str()).echo();
+
+# Test 6: Same IV produces same ciphertext (deterministic)
+("\n6. Testing deterministic encryption").echo();
+encrypted3 = original_data.encode("AES256", {"key": key, "iv": iv1});
+("Same IV produces same ciphertext: " + (encrypted1 == encrypted3).str()).echo();
+
+# Test 7: Unicode data encryption
+("\n7. Testing Unicode data encryption").echo();
+unicode_data = "Hello, 世界! 🌍 Unicode test: ñáéíóú";
+encrypted_unicode = unicode_data.encode("AES256", {"key": key, "iv": iv});
+decrypted_unicode = encrypted_unicode.decode("AES256", {"key": key, "iv": iv});
+("Unicode data round-trip successful: " + (unicode_data == decrypted_unicode).str()).echo();
+
+# Test 8: Integration with hash functions for key derivation
+("\n8. Testing key derivation with hash functions").echo();
+password = "my_password";
+salt = "random_salt_16_bytes";
+derived_key = (password + salt).encode("SHAKE256");
+derived_iv = (password + salt + "iv").encode("SHAKE256");
+
+encrypted_derived = original_data.encode("AES256", {"key": derived_key, "iv": derived_iv});
+decrypted_derived = encrypted_derived.decode("AES256", {"key": derived_key, "iv": derived_iv});
+("Key derivation round-trip successful: " + (original_data == decrypted_derived).str()).echo();
+
+("\n=== AES-256 Encryption Tests Complete ===").echo(); 

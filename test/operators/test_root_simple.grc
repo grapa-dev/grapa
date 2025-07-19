@@ -1,0 +1,20 @@
+/* Simple Root Operator Test */
+
+"=== SIMPLE ROOT OPERATOR TEST ===\n".echo();
+
+/* Test 1: Basic root operation */
+"Test 1: Basic root operation\n".echo();
+result1 = 8 */ 3;
+("8 */ 3 = " + result1 + "\n").echo();
+
+/* Test 2: Another root operation */
+"Test 2: Another root operation\n".echo();
+result2 = 27 */ 3;
+("27 */ 3 = " + result2 + "\n").echo();
+
+/* Test 3: Float root operation */
+"Test 3: Float root operation\n".echo();
+result3 = 8.0 */ 3;
+("8.0 */ 3 = " + result3 + "\n").echo();
+
+"=== SIMPLE ROOT OPERATOR TEST COMPLETE ===\n".echo(); 

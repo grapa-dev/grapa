@@ -1,0 +1,62 @@
+/* Simple Prime Number Test */
+/* Debug test for prime number functions */
+
+"=== Simple Prime Number Test ===".echo();
+
+/* Test 1: Basic prime generation */
+"\n1. Basic prime generation".echo();
+("Calling 16.genprime()...").echo();
+result = 16.genprime();
+("Result: " + result.str()).echo();
+("Result type: " + result.type().str()).echo();
+("Result hex: " + result.hex()).echo();
+
+/* Test 2: Test with different bit sizes */
+"\n2. Testing different bit sizes".echo();
+bit_sizes = [8, 16, 32, 64];
+i = 0;
+while (i < bit_sizes.len()) {
+    bits = bit_sizes[i];
+    ("Testing " + bits.str() + " bits...").echo();
+    prime = bits.genprime();
+    ("Result: " + prime.str()).echo();
+    i += 1;
+}
+
+/* Test 3: Test isprime function */
+"\n3. Testing isprime function".echo();
+test_nums = [2, 3, 4, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+i = 0;
+while (i < test_nums.len()) {
+    num = test_nums[i];
+    is_prime = num.isprime();
+    ("Number " + num.str() + " is prime: " + is_prime.str()).echo();
+    i += 1;
+}
+
+/* Test 4: Test staticprime function */
+"\n4. Testing staticprime function".echo();
+("Calling 16.staticprime()...").echo();
+static_result = 16.staticprime();
+("Static result: " + static_result.str()).echo();
+("Static result hex: " + static_result.hex()).echo();
+
+/* Test 5: Test isaks function */
+"\n5. Testing isaks function".echo();
+aks_test_nums = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+i = 0;
+while (i < aks_test_nums.len()) {
+    num = aks_test_nums[i];
+    is_aks = num.isaks();
+    ("Number " + num.str() + " passes AKS: " + is_aks.str()).echo();
+    i += 1;
+}
+
+/* Test 6: Test with safe parameter */
+"\n6. Testing safe prime generation".echo();
+("Calling 16.genprime(1) for safe prime...").echo();
+safe_result = 16.genprime(1);
+("Safe result: " + safe_result.str()).echo();
+("Safe result hex: " + safe_result.hex()).echo();
+
+"=== Simple Prime Number Test Complete ===".echo(); 

@@ -1,0 +1,47 @@
+/* Simple Equality Operator Test */
+
+"=== SIMPLE EQUALITY OPERATOR TEST ===\n".echo();
+
+/* Test basic equality */
+"Test 1: Basic equality\n".echo();
+result1 = 5 == 5;
+("5 == 5 = " + result1 + " (type: " + result1.type() + ")\n").echo();
+result1b = 5 == 3;
+("5 == 3 = " + result1b + " (type: " + result1b.type() + ")\n").echo();
+
+/* Test string equality */
+"Test 2: String equality\n".echo();
+result2 = "hello" == "hello";
+("'hello' == 'hello' = " + result2 + " (type: " + result2.type() + ")\n").echo();
+result2b = "hello" == "world";
+("'hello' == 'world' = " + result2b + " (type: " + result2b.type() + ")\n").echo();
+
+/* Test boolean equality */
+"Test 3: Boolean equality\n".echo();
+result3 = true == true;
+("true == true = " + result3 + " (type: " + result3.type() + ")\n").echo();
+result3b = true == false;
+("true == false = " + result3b + " (type: " + result3b.type() + ")\n").echo();
+
+/* Test type conversion */
+"Test 4: Type conversion\n".echo();
+result4 = 5 == "5";
+("5 == '5' = " + result4 + " (type: " + result4.type() + ")\n").echo();
+result4b = 1 == true;
+("1 == true = " + result4b + " (type: " + result4b.type() + ")\n").echo();
+
+/* Test array equality */
+"Test 5: Array equality\n".echo();
+result5 = [1, 2, 3] == [1, 2, 3];
+("[1,2,3] == [1,2,3] = " + result5 + " (type: " + result5.type() + ")\n").echo();
+result5b = [1, 2, 3] == [1, 2, 4];
+("[1,2,3] == [1,2,4] = " + result5b + " (type: " + result5b.type() + ")\n").echo();
+
+/* Test list equality */
+"Test 6: List equality\n".echo();
+result6 = {a: 1, b: 2} == {a: 1, b: 2};
+("{a:1,b:2} == {a:1,b:2} = " + result6 + " (type: " + result6.type() + ")\n").echo();
+result6b = {a: 1, b: 2} == {a: 1, b: 3};
+("{a:1,b:2} == {a:1,b:3} = " + result6b + " (type: " + result6b.type() + ")\n").echo();
+
+"=== SIMPLE EQUALITY OPERATOR TEST COMPLETE ===\n".echo(); 

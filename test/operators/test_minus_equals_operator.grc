@@ -1,0 +1,53 @@
+/* Minus Equals Operator (-=) Test */
+
+"=== MINUS EQUALS OPERATOR (-=) TEST ===\n".echo();
+
+/* Test 1: Array -= value */
+"Test 1: Array -= value\n".echo();
+arr1 = [1, 2, 3, 4, 5];
+arr1 -= 3;
+("After arr1 -= 3, arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 2: Array -= array */
+"Test 2: Array -= array\n".echo();
+arr2 = [1, 2, 3, 4, 5];
+arr2 -= [2, 4];
+("After arr2 -= [2,4], arr2 = " + arr2 + " (type: " + arr2.type() + ")\n").echo();
+
+/* Test 3: List -= key */
+"Test 3: List -= key\n".echo();
+list1 = {"a": 1, "b": 2, "c": 3, "d": 4};
+list1 -= "b";
+("After list1 -= 'b', list1 = " + list1 + " (type: " + list1.type() + ")\n").echo();
+
+/* Test 4: List -= array of keys */
+"Test 4: List -= array of keys\n".echo();
+list2 = {"a": 1, "b": 2, "c": 3, "d": 4};
+list2 -= ["b", "d"];
+("After list2 -= ['b','d'], list2 = " + list2 + " (type: " + list2.type() + ")\n").echo();
+
+/* Test 5: INT -= INT */
+"Test 5: INT -= INT\n".echo();
+num1 = 10;
+num1 -= 3;
+("After num1 -= 3, num1 = " + num1 + " (type: " + num1.type() + ")\n").echo();
+
+/* Test 6: FLOAT -= FLOAT */
+"Test 6: FLOAT -= FLOAT\n".echo();
+num2 = 10.5;
+num2 -= 3.2;
+("After num2 -= 3.2, num2 = " + num2 + " (type: " + num2.type() + ")\n").echo();
+
+/* Test 7: STR -= STR */
+"Test 7: STR -= STR\n".echo();
+str1 = "hello world";
+str1 -= "world";
+("After str1 -= 'world', str1 = " + str1 + " (type: " + str1.type() + ")\n").echo();
+
+/* Test 8: STR -= array */
+"Test 8: STR -= array\n".echo();
+str2 = "hello world test";
+str2 -= ["world", "test"];
+("After str2 -= ['world','test'], str2 = " + str2 + " (type: " + str2.type() + ")\n").echo();
+
+"=== MINUS EQUALS OPERATOR TEST COMPLETE ===\n".echo(); 

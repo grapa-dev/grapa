@@ -1,0 +1,347 @@
+/* Less Than Operator (<) Test */
+
+"=== LESS THAN OPERATOR (<) TEST ===\n".echo();
+
+/* Test 1: INT < INT */
+"Test 1: INT < INT\n".echo();
+result1 = 3 < 5;
+if (result1) {
+    "3 < 5 is TRUE\n".echo();
+} else {
+    "3 < 5 is FALSE\n".echo();
+}
+result1b = 5 < 3;
+if (result1b) {
+    "5 < 3 is TRUE\n".echo();
+} else {
+    "5 < 3 is FALSE\n".echo();
+}
+result1c = 5 < 5;
+if (result1c) {
+    "5 < 5 is TRUE\n".echo();
+} else {
+    "5 < 5 is FALSE\n".echo();
+}
+
+/* Test 2: INT < FLOAT */
+"Test 2: INT < FLOAT\n".echo();
+result2 = 3 < 5.0;
+if (result2) {
+    "3 < 5.0 is TRUE\n".echo();
+} else {
+    "3 < 5.0 is FALSE\n".echo();
+}
+result2b = 5 < 3.0;
+if (result2b) {
+    "5 < 3.0 is TRUE\n".echo();
+} else {
+    "5 < 3.0 is FALSE\n".echo();
+}
+
+/* Test 3: FLOAT < INT */
+"Test 3: FLOAT < INT\n".echo();
+result3 = 3.0 < 5;
+if (result3) {
+    "3.0 < 5 is TRUE\n".echo();
+} else {
+    "3.0 < 5 is FALSE\n".echo();
+}
+result3b = 5.0 < 3;
+if (result3b) {
+    "5.0 < 3 is TRUE\n".echo();
+} else {
+    "5.0 < 3 is FALSE\n".echo();
+}
+
+/* Test 4: FLOAT < FLOAT */
+"Test 4: FLOAT < FLOAT\n".echo();
+result4 = 3.0 < 5.0;
+if (result4) {
+    "3.0 < 5.0 is TRUE\n".echo();
+} else {
+    "3.0 < 5.0 is FALSE\n".echo();
+}
+result4b = 5.0 < 3.0;
+if (result4b) {
+    "5.0 < 3.0 is TRUE\n".echo();
+} else {
+    "5.0 < 3.0 is FALSE\n".echo();
+}
+
+/* Test 5: STR < STR */
+"Test 5: STR < STR\n".echo();
+result5 = "abc" < "def";
+if (result5) {
+    "'abc' < 'def' is TRUE\n".echo();
+} else {
+    "'abc' < 'def' is FALSE\n".echo();
+}
+result5b = "def" < "abc";
+if (result5b) {
+    "'def' < 'abc' is TRUE\n".echo();
+} else {
+    "'def' < 'abc' is FALSE\n".echo();
+}
+result5c = "abc" < "abc";
+if (result5c) {
+    "'abc' < 'abc' is TRUE\n".echo();
+} else {
+    "'abc' < 'abc' is FALSE\n".echo();
+}
+
+/* Test 6: INT < STR */
+"Test 6: INT < STR\n".echo();
+result6 = 5 < "10";
+if (result6) {
+    "5 < '10' is TRUE\n".echo();
+} else {
+    "5 < '10' is FALSE\n".echo();
+}
+result6b = 5 < "hello";
+if (result6b) {
+    "5 < 'hello' is TRUE\n".echo();
+} else {
+    "5 < 'hello' is FALSE\n".echo();
+}
+
+/* Test 7: STR < INT */
+"Test 7: STR < INT\n".echo();
+result7 = "5" < 10;
+if (result7) {
+    "'5' < 10 is TRUE\n".echo();
+} else {
+    "'5' < 10 is FALSE\n".echo();
+}
+result7b = "hello" < 5;
+if (result7b) {
+    "'hello' < 5 is TRUE\n".echo();
+} else {
+    "'hello' < 5 is FALSE\n".echo();
+}
+
+/* Test 8: FLOAT < STR */
+"Test 8: FLOAT < STR\n".echo();
+result8 = 5.0 < "10.0";
+if (result8) {
+    "5.0 < '10.0' is TRUE\n".echo();
+} else {
+    "5.0 < '10.0' is FALSE\n".echo();
+}
+result8b = 5.0 < "hello";
+if (result8b) {
+    "5.0 < 'hello' is TRUE\n".echo();
+} else {
+    "5.0 < 'hello' is FALSE\n".echo();
+}
+
+/* Test 9: STR < FLOAT */
+"Test 9: STR < FLOAT\n".echo();
+result9 = "5.0" < 10.0;
+if (result9) {
+    "'5.0' < 10.0 is TRUE\n".echo();
+} else {
+    "'5.0' < 10.0 is FALSE\n".echo();
+}
+result9b = "hello" < 5.0;
+if (result9b) {
+    "'hello' < 5.0 is TRUE\n".echo();
+} else {
+    "'hello' < 5.0 is FALSE\n".echo();
+}
+
+/* Test 10: BOOL < BOOL */
+"Test 10: BOOL < BOOL\n".echo();
+result10 = false < true;
+if (result10) {
+    "false < true is TRUE\n".echo();
+} else {
+    "false < true is FALSE\n".echo();
+}
+result10b = true < false;
+if (result10b) {
+    "true < false is TRUE\n".echo();
+} else {
+    "true < false is FALSE\n".echo();
+}
+result10c = true < true;
+if (result10c) {
+    "true < true is TRUE\n".echo();
+} else {
+    "true < true is FALSE\n".echo();
+}
+
+/* Test 11: INT < BOOL */
+"Test 11: INT < BOOL\n".echo();
+result11 = 0 < true;
+if (result11) {
+    "0 < true is TRUE\n".echo();
+} else {
+    "0 < true is FALSE\n".echo();
+}
+result11b = 1 < false;
+if (result11b) {
+    "1 < false is TRUE\n".echo();
+} else {
+    "1 < false is FALSE\n".echo();
+}
+
+/* Test 12: BOOL < INT */
+"Test 12: BOOL < INT\n".echo();
+result12 = false < 1;
+if (result12) {
+    "false < 1 is TRUE\n".echo();
+} else {
+    "false < 1 is FALSE\n".echo();
+}
+result12b = true < 0;
+if (result12b) {
+    "true < 0 is TRUE\n".echo();
+} else {
+    "true < 0 is FALSE\n".echo();
+}
+
+/* Test 13: FLOAT < BOOL */
+"Test 13: FLOAT < BOOL\n".echo();
+result13 = 0.0 < true;
+if (result13) {
+    "0.0 < true is TRUE\n".echo();
+} else {
+    "0.0 < true is FALSE\n".echo();
+}
+result13b = 1.0 < false;
+if (result13b) {
+    "1.0 < false is TRUE\n".echo();
+} else {
+    "1.0 < false is FALSE\n".echo();
+}
+
+/* Test 14: BOOL < FLOAT */
+"Test 14: BOOL < FLOAT\n".echo();
+result14 = false < 1.0;
+if (result14) {
+    "false < 1.0 is TRUE\n".echo();
+} else {
+    "false < 1.0 is FALSE\n".echo();
+}
+result14b = true < 0.0;
+if (result14b) {
+    "true < 0.0 is TRUE\n".echo();
+} else {
+    "true < 0.0 is FALSE\n".echo();
+}
+
+/* Test 15: STR < BOOL */
+"Test 15: STR < BOOL\n".echo();
+result15 = "0" < true;
+if (result15) {
+    "'0' < true is TRUE\n".echo();
+} else {
+    "'0' < true is FALSE\n".echo();
+}
+result15b = "1" < false;
+if (result15b) {
+    "'1' < false is TRUE\n".echo();
+} else {
+    "'1' < false is FALSE\n".echo();
+}
+
+/* Test 16: BOOL < STR */
+"Test 16: BOOL < STR\n".echo();
+result16 = false < "1";
+if (result16) {
+    "false < '1' is TRUE\n".echo();
+} else {
+    "false < '1' is FALSE\n".echo();
+}
+result16b = true < "0";
+if (result16b) {
+    "true < '0' is TRUE\n".echo();
+} else {
+    "true < '0' is FALSE\n".echo();
+}
+
+/* Test 17: ARRAY < ARRAY */
+"Test 17: ARRAY < ARRAY\n".echo();
+result17 = [1, 2, 3] < [1, 2, 4];
+if (result17) {
+    "[1,2,3] < [1,2,4] is TRUE\n".echo();
+} else {
+    "[1,2,3] < [1,2,4] is FALSE\n".echo();
+}
+result17b = [1, 2, 4] < [1, 2, 3];
+if (result17b) {
+    "[1,2,4] < [1,2,3] is TRUE\n".echo();
+} else {
+    "[1,2,4] < [1,2,3] is FALSE\n".echo();
+}
+
+/* Test 18: INT < ARRAY */
+"Test 18: INT < ARRAY\n".echo();
+result18 = 5 < [1, 2, 3];
+if (result18) {
+    "5 < [1,2,3] is TRUE\n".echo();
+} else {
+    "5 < [1,2,3] is FALSE\n".echo();
+}
+
+/* Test 19: ARRAY < INT */
+"Test 19: ARRAY < INT\n".echo();
+result19 = [1, 2, 3] < 5;
+if (result19) {
+    "[1,2,3] < 5 is TRUE\n".echo();
+} else {
+    "[1,2,3] < 5 is FALSE\n".echo();
+}
+
+/* Test 20: LIST < LIST */
+"Test 20: LIST < LIST\n".echo();
+result20 = {a: 1, b: 2} < {a: 1, b: 3};
+if (result20) {
+    "{a:1,b:2} < {a:1,b:3} is TRUE\n".echo();
+} else {
+    "{a:1,b:2} < {a:1,b:3} is FALSE\n".echo();
+}
+result20b = {a: 1, b: 3} < {a: 1, b: 2};
+if (result20b) {
+    "{a:1,b:3} < {a:1,b:2} is TRUE\n".echo();
+} else {
+    "{a:1,b:3} < {a:1,b:2} is FALSE\n".echo();
+}
+
+/* Test 21: INT < LIST */
+"Test 21: INT < LIST\n".echo();
+result21 = 5 < {a: 1, b: 2};
+if (result21) {
+    "5 < {a:1,b:2} is TRUE\n".echo();
+} else {
+    "5 < {a:1,b:2} is FALSE\n".echo();
+}
+
+/* Test 22: LIST < INT */
+"Test 22: LIST < INT\n".echo();
+result22 = {a: 1, b: 2} < 5;
+if (result22) {
+    "{a:1,b:2} < 5 is TRUE\n".echo();
+} else {
+    "{a:1,b:2} < 5 is FALSE\n".echo();
+}
+
+/* Test 23: ERR < INT */
+"Test 23: ERR < INT\n".echo();
+result23 = ERR < 5;
+if (result23) {
+    "$ERR < 5 is TRUE\n".echo();
+} else {
+    "$ERR < 5 is FALSE\n".echo();
+}
+
+/* Test 24: INT < ERR */
+"Test 24: INT < ERR\n".echo();
+result24 = 5 < ERR;
+if (result24) {
+    "5 < $ERR is TRUE\n".echo();
+} else {
+    "5 < $ERR is FALSE\n".echo();
+}
+
+"=== LESS THAN OPERATOR (<) TEST COMPLETE ===\n".echo(); 

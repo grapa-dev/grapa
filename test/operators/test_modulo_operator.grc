@@ -1,0 +1,130 @@
+/* Modulo Operator (%) Test */
+
+"=== MODULO OPERATOR (%) TEST ===\n".echo();
+
+/* Test 1: INT % INT */
+"Test 1: INT % INT\n".echo();
+result1 = 17 % 5;
+("17 % 5 = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: FLOAT % FLOAT */
+"Test 2: FLOAT % FLOAT\n".echo();
+result2 = 17.5 % 5.0;
+("17.5 % 5.0 = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: INT % FLOAT */
+"Test 3: INT % FLOAT\n".echo();
+result3 = 17 % 5.5;
+("17 % 5.5 = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: FLOAT % INT */
+"Test 4: FLOAT % INT\n".echo();
+result4 = 17.5 % 5;
+("17.5 % 5 = " + result4 + " (type: " + result4.type() + ")\n").echo();
+
+/* Test 5: Modulo by zero */
+"Test 5: Modulo by zero\n".echo();
+result5 = 17 % 0;
+("17 % 0 = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+/* Test 6: STR % INT */
+"Test 6: STR % INT\n".echo();
+result6 = "hello world" % 3;
+("'hello world' % 3 = " + result6 + " (type: " + result6.type() + ")\n").echo();
+
+/* Test 7: INT % STR */
+"Test 7: INT % STR\n".echo();
+result7 = 17 % "5";
+("17 % '5' = " + result7 + " (type: " + result7.type() + ")\n").echo();
+
+/* Test 8: BOOL % INT */
+"Test 8: BOOL % INT\n".echo();
+result8 = true % 3;
+("true % 3 = " + result8 + " (type: " + result8.type() + ")\n").echo();
+
+/* Test 9: INT % BOOL */
+"Test 9: INT % BOOL\n".echo();
+result9 = 17 % true;
+("17 % true = " + result9 + " (type: " + result9.type() + ")\n").echo();
+
+/* Test 10: ARRAY % INT */
+"Test 10: ARRAY % INT\n".echo();
+result10 = [10, 20, 30, 40] % 3;
+("[10,20,30,40] % 3 = " + result10 + " (type: " + result10.type() + ")\n").echo();
+
+/* Test 11: INT % ARRAY */
+"Test 11: INT % ARRAY\n".echo();
+result11 = 17 % [3, 5];
+("17 % [3,5] = " + result11 + " (type: " + result11.type() + ")\n").echo();
+
+/* Test 12: ARRAY % ARRAY */
+"Test 12: ARRAY % ARRAY\n".echo();
+result12 = [10, 20, 30, 40] % [3, 5, 7, 9];
+("[10,20,30,40] % [3,5,7,9] = " + result12 + " (type: " + result12.type() + ")\n").echo();
+
+/* Test 13: LIST % INT */
+"Test 13: LIST % INT\n".echo();
+result13 = {"a": 10, "b": 20, "c": 30} % 3;
+("{'a':10,'b':20,'c':30} % 3 = " + result13 + " (type: " + result13.type() + ")\n").echo();
+
+/* Test 14: INT % LIST */
+"Test 14: INT % LIST\n".echo();
+result14 = 17 % {"mod": 5};
+("17 % {'mod':5} = " + result14 + " (type: " + result14.type() + ")\n").echo();
+
+/* Test 15: BOOL % BOOL */
+"Test 15: BOOL % BOOL\n".echo();
+result15 = true % false;
+("true % false = " + result15 + " (type: " + result15.type() + ")\n").echo();
+
+/* Test 16: STR % STR */
+"Test 16: STR % STR\n".echo();
+result16 = "hello world" % "world";
+("'hello world' % 'world' = " + result16 + " (type: " + result16.type() + ")\n").echo();
+
+/* Test 17: ARRAY % LIST */
+"Test 17: ARRAY % LIST\n".echo();
+result17 = [1, 2, 3, 4] % {"mod": 2};
+("[1,2,3,4] % {'mod':2} = " + result17 + " (type: " + result17.type() + ")\n").echo();
+
+/* Test 18: LIST % ARRAY */
+"Test 18: LIST % ARRAY\n".echo();
+result18 = {"a": 10, "b": 20} % [3, 5];
+("{'a':10,'b':20} % [3,5] = " + result18 + " (type: " + result18.type() + ")\n").echo();
+
+/* Test 19: STR % ARRAY */
+"Test 19: STR % ARRAY\n".echo();
+result19 = "hello world" % [3, 5];
+("'hello world' % [3,5] = " + result19 + " (type: " + result19.type() + ")\n").echo();
+
+/* Test 20: ARRAY % STR */
+"Test 20: ARRAY % STR\n".echo();
+result20 = [1, 2, 3, 4] % "2";
+("[1,2,3,4] % '2' = " + result20 + " (type: " + result20.type() + ")\n").echo();
+
+/* Test 21: Special modpow operation - INT * INT % INT */
+"Test 21: Special modpow operation - INT * INT % INT\n".echo();
+result21 = 3 * 4 % 7;
+("3 * 4 % 7 = " + result21 + " (type: " + result21.type() + ")\n").echo();
+
+/* Test 22: Special modpow operation - INT ** INT % INT */
+"Test 22: Special modpow operation - INT ** INT % INT\n".echo();
+result22 = 3 ** 4 % 7;
+("3 ** 4 % 7 = " + result22 + " (type: " + result22.type() + ")\n").echo();
+
+/* Test 23: Special modinv operation - INT / INT % INT */
+"Test 23: Special modinv operation - INT / INT % INT\n".echo();
+result23 = 15 / 3 % 7;
+("15 / 3 % 7 = " + result23 + " (type: " + result23.type() + ")\n").echo();
+
+/* Test 24: Complex modpow - FLOAT * FLOAT % FLOAT */
+"Test 24: Complex modpow - FLOAT * FLOAT % FLOAT\n".echo();
+result24 = 3.5 * 2.5 % 4.0;
+("3.5 * 2.5 % 4.0 = " + result24 + " (type: " + result24.type() + ")\n").echo();
+
+/* Test 25: Complex modinv - FLOAT / FLOAT % FLOAT */
+"Test 25: Complex modinv - FLOAT / FLOAT % FLOAT\n".echo();
+result25 = 10.5 / 2.5 % 3.0;
+("10.5 / 2.5 % 3.0 = " + result25 + " (type: " + result25.type() + ")\n").echo();
+
+"=== MODULO OPERATOR TEST COMPLETE ===\n".echo(); 

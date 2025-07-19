@@ -1,0 +1,45 @@
+/* Test unsigned integer handling for crypto operations */
+
+"=== UNSIGNED INTEGER CRYPTO TEST ===\n".echo();
+
+/* Test 1: Regular signed integer */
+"Test 1: Regular signed integer\n".echo();
+result1 = (123456789).raw;
+("(123456789).raw = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: Unsigned integer (second parameter = 1) */
+"Test 2: Unsigned integer (second parameter = 1)\n".echo();
+result2 = (123456789).raw(1);
+("(123456789).raw(1) = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: Large number that might have sign bit issues */
+"Test 3: Large number that might have sign bit issues\n".echo();
+result3 = (2147483647).raw;  /* Max 32-bit signed int */
+("(2147483647).raw = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: Large number as unsigned */
+"Test 4: Large number as unsigned\n".echo();
+result4 = (2147483647).raw(1);
+("(2147483647).raw(1) = " + result4 + " (type: " + result4.type() + ")\n").echo();
+
+/* Test 5: Even larger number */
+"Test 5: Even larger number\n".echo();
+result5 = (4294967295).raw;  /* Max 32-bit unsigned int */
+("(4294967295).raw = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+/* Test 6: Even larger number as unsigned */
+"Test 6: Even larger number as unsigned\n".echo();
+result6 = (4294967295).raw(1);
+("(4294967295).raw(1) = " + result6 + " (type: " + result6.type() + ")\n").echo();
+
+/* Test 7: Negative number */
+"Test 7: Negative number\n".echo();
+result7 = (-123456789).raw;
+("(-123456789).raw = " + result7 + " (type: " + result7.type() + ")\n").echo();
+
+/* Test 8: Negative number as unsigned */
+"Test 8: Negative number as unsigned\n".echo();
+result8 = (-123456789).raw(1);
+("(-123456789).raw(1) = " + result8 + " (type: " + result8.type() + ")\n").echo();
+
+"=== UNSIGNED INTEGER CRYPTO TEST COMPLETE ===\n".echo(); 

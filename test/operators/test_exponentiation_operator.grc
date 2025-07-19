@@ -1,0 +1,135 @@
+/* Exponentiation Operator (**) Test */
+
+"=== EXPONENTIATION OPERATOR (**) TEST ===\n".echo();
+
+/* Test 1: INT ** INT */
+"Test 1: INT ** INT\n".echo();
+result1 = 2 ** 3;
+("2 ** 3 = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: INT ** INT (negative exponent) */
+"Test 2: INT ** INT (negative exponent)\n".echo();
+result2 = 2 ** -3;
+("2 ** -3 = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: FLOAT ** INT */
+"Test 3: FLOAT ** INT\n".echo();
+result3 = 2.5 ** 3;
+("2.5 ** 3 = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: INT ** FLOAT */
+"Test 4: INT ** FLOAT\n".echo();
+result4 = 2 ** 3.5;
+("2 ** 3.5 = " + result4 + " (type: " + result4.type() + ")\n").echo();
+
+/* Test 5: FLOAT ** FLOAT */
+"Test 5: FLOAT ** FLOAT\n".echo();
+result5 = 2.5 ** 2.5;
+("2.5 ** 2.5 = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+/* Test 6: STR ** INT */
+"Test 6: STR ** INT\n".echo();
+result6 = "abc" ** 3;
+("'abc' ** 3 = " + result6 + " (type: " + result6.type() + ")\n").echo();
+
+/* Test 7: INT ** STR */
+"Test 7: INT ** STR\n".echo();
+result7 = 2 ** "3";
+("2 ** '3' = " + result7 + " (type: " + result7.type() + ")\n").echo();
+
+/* Test 8: FLOAT ** STR */
+"Test 8: FLOAT ** STR\n".echo();
+result8 = 2.5 ** "2";
+("2.5 ** '2' = " + result8 + " (type: " + result8.type() + ")\n").echo();
+
+/* Test 9: STR ** FLOAT */
+"Test 9: STR ** FLOAT\n".echo();
+result9 = "abc" ** 2.5;
+("'abc' ** 2.5 = " + result9 + " (type: " + result9.type() + ")\n").echo();
+
+/* Test 10: ARRAY ** INT */
+"Test 10: ARRAY ** INT\n".echo();
+result10 = [1, 2, 3] ** 2;
+("[1,2,3] ** 2 = " + result10 + " (type: " + result10.type() + ")\n").echo();
+
+/* Test 11: INT ** ARRAY */
+"Test 11: INT ** ARRAY\n".echo();
+result11 = 2 ** [1, 2, 3];
+("2 ** [1,2,3] = " + result11 + " (type: " + result11.type() + ")\n").echo();
+
+/* Test 12: ARRAY ** ARRAY */
+"Test 12: ARRAY ** ARRAY\n".echo();
+result12 = [1, 2, 3] ** [2, 3, 4];
+("[1,2,3] ** [2,3,4] = " + result12 + " (type: " + result12.type() + ")\n").echo();
+
+/* Test 13: LIST ** INT */
+"Test 13: LIST ** INT\n".echo();
+result13 = {"a": 1, "b": 2} ** 2;
+("{'a':1,'b':2} ** 2 = " + result13 + " (type: " + result13.type() + ")\n").echo();
+
+/* Test 14: INT ** LIST */
+"Test 14: INT ** LIST\n".echo();
+result14 = 2 ** {"a": 1, "b": 2};
+("2 ** {'a':1,'b':2} = " + result14 + " (type: " + result14.type() + ")\n").echo();
+
+/* Test 15: BOOL ** INT */
+"Test 15: BOOL ** INT\n".echo();
+result15 = true ** 3;
+("true ** 3 = " + result15 + " (type: " + result15.type() + ")\n").echo();
+
+/* Test 16: INT ** BOOL */
+"Test 16: INT ** BOOL\n".echo();
+result16 = 2 ** true;
+("2 ** true = " + result16 + " (type: " + result16.type() + ")\n").echo();
+
+/* Test 17: FLOAT ** BOOL */
+"Test 17: FLOAT ** BOOL\n".echo();
+result17 = 2.5 ** false;
+("2.5 ** false = " + result17 + " (type: " + result17.type() + ")\n").echo();
+
+/* Test 18: BOOL ** FLOAT */
+"Test 18: BOOL ** FLOAT\n".echo();
+result18 = true ** 2.5;
+("true ** 2.5 = " + result18 + " (type: " + result18.type() + ")\n").echo();
+
+/* Test 19: STR ** BOOL */
+"Test 19: STR ** BOOL\n".echo();
+result19 = "abc" ** true;
+("'abc' ** true = " + result19 + " (type: " + result19.type() + ")\n").echo();
+
+/* Test 20: BOOL ** STR */
+"Test 20: BOOL ** STR\n".echo();
+result20 = true ** "2";
+("true ** '2' = " + result20 + " (type: " + result20.type() + ")\n").echo();
+
+/* Test 21: ARRAY ** BOOL */
+"Test 21: ARRAY ** BOOL\n".echo();
+result21 = [1, 2, 3] ** true;
+("[1,2,3] ** true = " + result21 + " (type: " + result21.type() + ")\n").echo();
+
+/* Test 22: BOOL ** ARRAY */
+"Test 22: BOOL ** ARRAY\n".echo();
+result22 = true ** [1, 2, 3];
+("true ** [1,2,3] = " + result22 + " (type: " + result22.type() + ")\n").echo();
+
+/* Test 23: LIST ** BOOL */
+"Test 23: LIST ** BOOL\n".echo();
+result23 = {"a": 1, "b": 2} ** true;
+("{'a':1,'b':2} ** true = " + result23 + " (type: " + result23.type() + ")\n").echo();
+
+/* Test 24: BOOL ** LIST */
+"Test 24: BOOL ** LIST\n".echo();
+result24 = true ** {"a": 1, "b": 2};
+("true ** {'a':1,'b':2} = " + result24 + " (type: " + result24.type() + ")\n").echo();
+
+/* Test 25: ERR ** INT */
+"Test 25: ERR ** INT\n".echo();
+result25 = $ERR ** 2;
+("$ERR ** 2 = " + result25 + " (type: " + result25.type() + ")\n").echo();
+
+/* Test 26: INT ** ERR */
+"Test 26: INT ** ERR\n".echo();
+result26 = 2 ** $ERR;
+("2 ** $ERR = " + result26 + " (type: " + result26.type() + ")\n").echo();
+
+"=== EXPONENTIATION OPERATOR (**) TEST COMPLETE ===\n".echo(); 

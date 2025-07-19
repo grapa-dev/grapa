@@ -1,0 +1,38 @@
+/* Simple Array Test */
+
+"=== SIMPLE ARRAY TEST ===\n".echo();
+
+/* Test 1: Create and display array */
+"Test 1: Create and display array\n".echo();
+arr1 = [1, 2, 3];
+("arr1 = " + arr1 + " (type: " + arr1.type() + ")\n").echo();
+
+/* Test 2: Array length */
+"Test 2: Array length\n".echo();
+("arr1.len() = " + arr1.len() + "\n").echo();
+
+/* Test 3: Array += value */
+"Test 3: Array += value\n".echo();
+arr1 += 4;
+("After arr1 += 4, arr1 = " + arr1 + " (length: " + arr1.len() + ")\n").echo();
+
+/* Test 4: Array += array */
+"Test 4: Array += array\n".echo();
+arr2 = [5, 6];
+arr1 += arr2;
+("After arr1 += [5,6], arr1 = " + arr1 + " (length: " + arr1.len() + ")\n").echo();
+
+/* Test 5: Array ++= array */
+"Test 5: Array ++= array\n".echo();
+arr3 = [7, 8];
+arr1 ++= arr3;
+("After arr1 ++= [7,8], arr1 = " + arr1 + " (length: " + arr1.len() + ")\n").echo();
+
+/* Test 6: Array + array (non-assignment) */
+"Test 6: Array + array (non-assignment)\n".echo();
+arr4 = [9, 10];
+result = arr1 + arr4;
+("arr1 + [9,10] = " + result + " (type: " + result.type() + ")\n").echo();
+("arr1 is still: " + arr1 + " (length: " + arr1.len() + ")\n").echo();
+
+"=== SIMPLE ARRAY TEST COMPLETE ===\n".echo(); 

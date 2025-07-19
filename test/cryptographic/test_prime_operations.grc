@@ -1,0 +1,134 @@
+# Test Prime Number Operations
+# Tests for prime testing, generation, and coprime operations
+
+print("=== Testing Prime Number Operations ===")
+
+# Test 1: Basic prime testing
+print("\n1. Testing basic prime testing")
+primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+composites = [4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25]
+
+print("Testing known primes:")
+for prime in primes {
+    is_prime = prime.isPrime()
+    print(prime, "is prime:", is_prime)
+}
+
+print("\nTesting known composites:")
+for composite in composites {
+    is_prime = composite.isPrime()
+    print(composite, "is prime:", is_prime)
+}
+
+# Test 2: Large prime testing
+print("\n2. Testing large prime numbers")
+large_primes = [1009, 1013, 1019, 1021, 1031, 1033, 1039, 1049, 1051, 1061]
+for prime in large_primes {
+    is_prime = prime.isPrime()
+    print(prime, "is prime:", is_prime)
+}
+
+# Test 3: Prime generation
+print("\n3. Testing prime generation")
+print("Generating 16-bit prime...")
+prime_16 = generatePrime(16)
+print("Generated 16-bit prime:", prime_16)
+print("Is prime:", prime_16.isPrime())
+print("Bit length:", prime_16.bitCount())
+
+print("\nGenerating 32-bit prime...")
+prime_32 = generatePrime(32)
+print("Generated 32-bit prime:", prime_32)
+print("Is prime:", prime_32.isPrime())
+print("Bit length:", prime_32.bitCount())
+
+# Test 4: Coprime generation
+print("\n4. Testing coprime generation")
+modulus = 60
+coprime = generateCoprime(modulus)
+gcd_result = gcd(coprime, modulus)
+print("Modulus:", modulus)
+print("Generated coprime:", coprime)
+print("GCD(coprime, modulus):", gcd_result)
+print("Coprime is correct:", gcd_result == 1)
+
+# Test 5: Multiple coprime generation
+print("\n5. Testing multiple coprime generation")
+modulus = 100
+for i in range(5) {
+    coprime = generateCoprime(modulus)
+    gcd_result = gcd(coprime, modulus)
+    print("Coprime", i+1, ":", coprime, "GCD:", gcd_result)
+}
+
+# Test 6: Edge cases for prime testing
+print("\n6. Testing edge cases")
+edge_cases = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+for num in edge_cases {
+    is_prime = num.isPrime()
+    print(num, "is prime:", is_prime)
+}
+
+# Test 7: Performance test with prime generation
+print("\n7. Testing prime generation performance")
+start_time = time()
+for i in range(5) {
+    prime = generatePrime(64)
+    print("Generated 64-bit prime:", prime)
+}
+end_time = time()
+print("5 prime generations completed in:", end_time - start_time, "seconds")
+
+# Test 8: RSA key generation simulation
+print("\n8. Testing RSA key generation simulation")
+# Generate two primes
+p = generatePrime(128)
+q = generatePrime(128)
+n = p * q
+phi = (p - 1) * (q - 1)
+
+# Choose public exponent
+e = 65537
+
+# Calculate private exponent
+d = modinv(e, phi)
+
+print("Generated prime p:", p)
+print("Generated prime q:", q)
+print("Modulus n = p * q:", n)
+print("Euler's totient phi:", phi)
+print("Public exponent e:", e)
+print("Private exponent d:", d)
+
+# Verify RSA properties
+verification = (e * d) % phi
+print("Verification (e * d) mod phi =", verification)
+print("RSA key generation successful:", verification == 1)
+
+# Test 9: Prime factorization
+print("\n9. Testing prime factorization")
+test_numbers = [12, 24, 36, 48, 60, 72, 84, 96, 108, 120]
+for num in test_numbers {
+    factors = []
+    temp = num
+    for i in range(2, num + 1) {
+        while temp % i == 0 {
+            factors.append(i)
+            temp = temp / i
+        }
+        if temp == 1 {
+            break
+        }
+    }
+    print(num, "factors:", factors)
+}
+
+# Test 10: Large number prime testing
+print("\n10. Testing large number prime testing")
+large_test_numbers = [1000000007, 1000000009, 1000000021, 1000000033, 1000000087]
+for num in large_test_numbers {
+    is_prime = num.isPrime()
+    print(num, "is prime:", is_prime)
+}
+
+print("\n=== Prime Number Operations Tests Complete ===") 

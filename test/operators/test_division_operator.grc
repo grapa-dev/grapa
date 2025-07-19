@@ -1,0 +1,150 @@
+/* Division Operator (/) Test */
+
+"=== DIVISION OPERATOR (/) TEST ===\n".echo();
+
+/* Test 1: INT / INT */
+"Test 1: INT / INT\n".echo();
+result1 = 15 / 3;
+("15 / 3 = " + result1 + " (type: " + result1.type() + ")\n").echo();
+
+/* Test 2: INT / INT (fractional result) */
+"Test 2: INT / INT (fractional result)\n".echo();
+result2 = 7 / 2;
+("7 / 2 = " + result2 + " (type: " + result2.type() + ")\n").echo();
+
+/* Test 3: FLOAT / FLOAT */
+"Test 3: FLOAT / FLOAT\n".echo();
+result3 = 10.5 / 2.5;
+("10.5 / 2.5 = " + result3 + " (type: " + result3.type() + ")\n").echo();
+
+/* Test 4: INT / FLOAT */
+"Test 4: INT / FLOAT\n".echo();
+result4 = 8 / 2.5;
+("8 / 2.5 = " + result4 + " (type: " + result4.type() + ")\n").echo();
+
+/* Test 5: FLOAT / INT */
+"Test 5: FLOAT / INT\n".echo();
+result5 = 12.5 / 4;
+("12.5 / 4 = " + result5 + " (type: " + result5.type() + ")\n").echo();
+
+/* Test 6: Division by zero - INT */
+"Test 6: Division by zero - INT\n".echo();
+result6 = 10 / 0;
+("10 / 0 = " + result6 + " (type: " + result6.type() + ")\n").echo();
+
+/* Test 7: Division by zero - FLOAT */
+"Test 7: Division by zero - FLOAT\n".echo();
+result7 = 10.5 / 0.0;
+("10.5 / 0.0 = " + result7 + " (type: " + result7.type() + ")\n").echo();
+
+/* Test 8: STR / INT (string splitting?) */
+"Test 8: STR / INT (string splitting?)\n".echo();
+result8 = "hello world test" / 3;
+("'hello world test' / 3 = " + result8 + " (type: " + result8.type() + ")\n").echo();
+
+/* Test 9: INT / STR */
+"Test 9: INT / STR\n".echo();
+result9 = 15 / "3";
+("15 / '3' = " + result9 + " (type: " + result9.type() + ")\n").echo();
+
+/* Test 10: STR / FLOAT */
+"Test 10: STR / FLOAT\n".echo();
+result10 = "abcdefghijklmnop" / 2.5;
+("'abcdefghijklmnop' / 2.5 = " + result10 + " (type: " + result10.type() + ")\n").echo();
+
+/* Test 11: FLOAT / STR */
+"Test 11: FLOAT / STR\n".echo();
+result11 = 10.5 / "2";
+("10.5 / '2' = " + result11 + " (type: " + result11.type() + ")\n").echo();
+
+/* Test 12: BOOL / INT */
+"Test 12: BOOL / INT\n".echo();
+result12 = true / 4;
+("true / 4 = " + result12 + " (type: " + result12.type() + ")\n").echo();
+
+/* Test 13: INT / BOOL */
+"Test 13: INT / BOOL\n".echo();
+result13 = 12 / true;
+("12 / true = " + result13 + " (type: " + result13.type() + ")\n").echo();
+
+/* Test 14: BOOL / FLOAT */
+"Test 14: BOOL / FLOAT\n".echo();
+result14 = true / 2.5;
+("true / 2.5 = " + result14 + " (type: " + result14.type() + ")\n").echo();
+
+/* Test 15: FLOAT / BOOL */
+"Test 15: FLOAT / BOOL\n".echo();
+result15 = 10.0 / false;
+("10.0 / false = " + result15 + " (type: " + result15.type() + ")\n").echo();
+
+/* Test 16: ARRAY / INT (array splitting?) */
+"Test 16: ARRAY / INT (array splitting?)\n".echo();
+result16 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] / 3;
+("[1,2,3,4,5,6,7,8,9,10] / 3 = " + result16 + " (type: " + result16.type() + ")\n").echo();
+
+/* Test 17: INT / ARRAY */
+"Test 17: INT / ARRAY\n".echo();
+result17 = 20 / [2, 4];
+("20 / [2,4] = " + result17 + " (type: " + result17.type() + ")\n").echo();
+
+/* Test 18: ARRAY / FLOAT */
+"Test 18: ARRAY / FLOAT\n".echo();
+result18 = [10, 20, 30, 40] / 2.5;
+("[10,20,30,40] / 2.5 = " + result18 + " (type: " + result18.type() + ")\n").echo();
+
+/* Test 19: FLOAT / ARRAY */
+"Test 19: FLOAT / ARRAY\n".echo();
+result19 = 15.0 / [3, 5];
+("15.0 / [3,5] = " + result19 + " (type: " + result19.type() + ")\n").echo();
+
+/* Test 20: LIST / INT */
+"Test 20: LIST / INT\n".echo();
+result20 = {"a": 10, "b": 20, "c": 30, "d": 40} / 2;
+("{'a':10,'b':20,'c':30,'d':40} / 2 = " + result20 + " (type: " + result20.type() + ")\n").echo();
+
+/* Test 21: INT / LIST */
+"Test 21: INT / LIST\n".echo();
+result21 = 100 / {"x": 2, "y": 5};
+("100 / {'x':2,'y':5} = " + result21 + " (type: " + result21.type() + ")\n").echo();
+
+/* Test 22: ARRAY / ARRAY */
+"Test 22: ARRAY / ARRAY\n".echo();
+result22 = [10, 20, 30, 40] / [2, 4, 6, 8];
+("[10,20,30,40] / [2,4,6,8] = " + result22 + " (type: " + result22.type() + ")\n").echo();
+
+/* Test 23: LIST / LIST */
+"Test 23: LIST / LIST\n".echo();
+result23 = {"a": 10, "b": 20} / {"c": 2, "d": 4};
+("{'a':10,'b':20} / {'c':2,'d':4} = " + result23 + " (type: " + result23.type() + ")\n").echo();
+
+/* Test 24: STR / STR */
+"Test 24: STR / STR\n".echo();
+result24 = "hello world test" / " ";
+("'hello world test' / ' ' = " + result24 + " (type: " + result24.type() + ")\n").echo();
+
+/* Test 25: BOOL / BOOL */
+"Test 25: BOOL / BOOL\n".echo();
+result25 = true / false;
+("true / false = " + result25 + " (type: " + result25.type() + ")\n").echo();
+
+/* Test 26: ARRAY / LIST */
+"Test 26: ARRAY / LIST\n".echo();
+result26 = [1, 2, 3, 4] / {"divisor": 2};
+("[1,2,3,4] / {'divisor':2} = " + result26 + " (type: " + result26.type() + ")\n").echo();
+
+/* Test 27: LIST / ARRAY */
+"Test 27: LIST / ARRAY\n".echo();
+result27 = {"a": 10, "b": 20} / [2, 4];
+("{'a':10,'b':20} / [2,4] = " + result27 + " (type: " + result27.type() + ")\n").echo();
+
+/* Test 28: STR / ARRAY */
+"Test 28: STR / ARRAY\n".echo();
+result28 = "abcdefghijklmnop" / [2, 4, 8];
+("'abcdefghijklmnop' / [2,4,8] = " + result28 + " (type: " + result28.type() + ")\n").echo();
+
+/* Test 29: ARRAY / STR */
+"Test 29: ARRAY / STR\n".echo();
+result29 = [1, 2, 3, 4, 5] / "2";
+("[1,2,3,4,5] / '2' = " + result29 + " (type: " + result29.type() + ")\n").echo();
+
+"=== DIVISION OPERATOR TEST COMPLETE ===\n".echo(); 
