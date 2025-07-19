@@ -19,11 +19,35 @@ The build system supports multiple platforms and deployment scenarios:
 
 ## Quick Start
 
+### 🚀 **NEW: Automated Build System**
+For most builds, use the new automated build system:
+```bash
+# Build for current platform
+python3 build.py
+
+# Build for specific platform
+python3 build.py mac arm64
+python3 build.py linux amd64
+python3 build.py windows amd64
+python3 build.py aws arm64
+
+# Build for all platforms
+python3 build.py --all
+
+# Build with tests
+python3 build.py --test
+```
+
+See [BUILD_README.md](../../BUILD_README.md) for complete documentation.
+
+### 📋 **Manual Build Process** (Legacy)
+For reference or troubleshooting:
 1. **First time setup**: [Dependencies](DEPENDENCIES.md) - Install required libraries
-2. **Build process**: [Build Instructions](BUILD.md) - Complete build guide
+2. **Build process**: [Build Instructions](BUILD.md) - Complete manual build guide
 3. **Cloud deployment**: [AWS/Docker Setup](SETUPAWSDOCKER.md) - Cloud deployment
 4. **Production**: [Deployment](DEPLOYMENT.md) - Production deployment (coming soon)
 5. **Packaging**: [Packaging](PACKAGING.md) - Package manager support (coming soon)
+6. **Debugging**: [Build Debugging Guide](BUILD_DEBUGGING.md) - Troubleshooting and learnings
 
 ## Build System Architecture
 
@@ -40,21 +64,20 @@ lib/
 ├── grapa/           # Pre-compiled Grapa libraries (.grz files)
 └── grapa/           # Source files (.grc files)
 
-bin/                 # Compiled executables
+bin/                 # Compiled executables and packages
 ```
 
 ## Platform Support
 
-| Platform | Architecture | Status | Notes |
-|----------|-------------|--------|-------|
-| Windows | AMD64 | ✅ | Visual Studio 2022 |
-| Windows | ARM64 | ✅ | Visual Studio 2022 |
-| macOS | AMD64 | ✅ | Xcode/Clang |
-| macOS | ARM64 | ✅ | Xcode/Clang |
-| Linux | AMD64 | ✅ | GCC/Clang |
-| Linux | ARM64 | ✅ | GCC/Clang |
-| AWS | AMD64 | ✅ | Docker support |
-| AWS | ARM64 | ✅ | Docker support |
+| Platform | Architecture | Status | Build Method | Notes |
+|----------|-------------|--------|--------------|-------|
+| Windows | AMD64 | ✅ | `python3 build.py windows amd64` | Visual Studio 2022 |
+| macOS | AMD64 | ✅ | `python3 build.py mac amd64` | Xcode/Clang |
+| macOS | ARM64 | ✅ | `python3 build.py mac arm64` | Xcode/Clang |
+| Linux | AMD64 | ✅ | `python3 build.py linux amd64` | GCC/Clang |
+| Linux | ARM64 | ✅ | `python3 build.py linux arm64` | GCC/Clang |
+| AWS | AMD64 | ✅ | `python3 build.py aws amd64` | Docker support |
+| AWS | ARM64 | ✅ | `python3 build.py aws arm64` | Docker support |
 
 ## Dependencies
 
@@ -83,8 +106,21 @@ See [Dependencies](DEPENDENCIES.md) for detailed installation instructions.
 - **Libraries**: Install development packages
 - **Threading**: Use `-pthread` flag
 
+## Build System Comparison
+
+| Feature | Automated Build | Manual Build |
+|---------|----------------|--------------|
+| **Ease of Use** | Single command | Copy-paste 50+ lines |
+| **Error Handling** | Automatic fallbacks | Manual troubleshooting |
+| **Cross-Platform** | Auto-detection | Platform-specific commands |
+| **Python Package** | Automatic build/install | Manual steps |
+| **Testing** | `--test` flag | Manual test execution |
+| **Packaging** | Automatic | Manual tar/zip creation |
+| **Cleanup** | Automatic | Manual cleanup |
+
 ## Next Steps
 
+- [x] ✅ Automated build system
 - [ ] Package manager support (Homebrew, apt-get, Chocolatey)
 - [ ] CI/CD pipeline setup
 - [ ] Automated testing in build process
