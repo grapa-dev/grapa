@@ -72,11 +72,11 @@ cd docs && python3 -m mkdocs build --clean
 # 2. Stash any changes
 cd .. && git stash
 
-# 3. Clean workspace
-git clean -fdx
-
-# 4. Switch to gh-pages
+# 3. Switch to gh-pages (DO NOT clean while on main branch!)
 git checkout gh-pages
+
+# 4. Clean workspace (ONLY after switching to gh-pages)
+git clean -fdx
 
 # 5. Copy built site
 cd docs && cp -r site/* . && cp -r site/.nojekyll . 2>/dev/null || true
@@ -88,6 +88,34 @@ cd .. && git add docs/ && git commit -m "Deploy latest documentation" && git pus
 git checkout main && git stash pop
 ```
 
+**🚨 CRITICAL WARNING**: Never run `git clean -fdx` while on the main branch! This will delete all source files. Only clean the gh-pages branch after switching to it.
+
+#### 5. Main Branch Deletion Prevention
+**🚨 CRITICAL ISSUE**: Running `git clean -fdx` on the main branch will delete all source files.
+
+**What Happened**: During deployment, `git clean -fdx` was run while on the main branch, deleting all source files.
+
+**Prevention**:
+```bash
+# ❌ NEVER DO THIS on main branch
+git clean -fdx  # This deletes all untracked files including source!
+
+# ✅ ONLY do this after switching to gh-pages
+git checkout gh-pages
+git clean -fdx  # Safe to clean deployment branch
+```
+
+**Recovery**: If this happens, immediately run:
+```bash
+git reset --hard HEAD  # Restores all tracked files
+```
+
+**Best Practice**: Always verify current branch before running destructive commands:
+```bash
+git branch  # Check current branch
+git clean -fdx  # Only if on gh-pages branch
+```
+
 ### Deployment Best Practices
 
 #### Pre-Deployment Checklist
@@ -96,6 +124,8 @@ git checkout main && git stash pop
 - [ ] MkDocs build completes without errors
 - [ ] No broken links in build output
 - [ ] Workspace is clean (no uncommitted changes)
+- [ ] **VERIFY**: Currently on main branch before starting deployment
+- [ ] **VERIFY**: All source files present before deployment
 
 #### Post-Deployment Verification
 - [ ] GitHub Pages site loads correctly
