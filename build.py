@@ -579,8 +579,11 @@ class GrapaBuilder:
         """Build Python package"""
         print("Building Python package...")
         
+        # Use correct Python command for platform
+        python_cmd = "python" if config.platform == "windows" else "python3"
+        
         # Build package
-        subprocess.run(["python3", "setup.py", "sdist"], check=True)
+        subprocess.run([python_cmd, "setup.py", "sdist"], check=True)
         
         # Find the built package file
         dist_files = list(Path("dist").glob("*.tar.gz"))
@@ -615,10 +618,13 @@ class GrapaBuilder:
         """Run tests"""
         print("Running tests...")
         
+        # Use correct Python command for platform
+        python_cmd = "python" if config.platform == "windows" else "python3"
+        
         # Run Grapa tests
         test_commands = [
             ["./grapa" if config.platform != "windows" else "grapa.exe", "-cfile", "test/run_tests.grc"],
-            ["python3", "test/run_tests.py"]
+            [python_cmd, "test/run_tests.py"]
         ]
         
         for cmd in test_commands:
