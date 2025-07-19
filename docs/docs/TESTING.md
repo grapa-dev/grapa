@@ -683,7 +683,7 @@ result = large_data.map(op(x) { x * 2; }, 4);
 
 ## Next Steps
 - Learn about [Testing](TESTING.md) your Grapa code
-- Check out the [Grep functionality](grep.md) for advanced pattern matching
+- Check out the [Grep functionality](GREP.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
 
 ## Thread Safety and Parallelism

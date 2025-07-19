@@ -647,7 +647,7 @@ For Python developers, Grapa's file system and database capabilities can be leve
 - **Configuration management** with unified path navigation
 - **Data pipeline integration** for ETL workflows
 
-For detailed examples and best practices, see the [Python Integration Guide](../PYTHON_INTEGRATION.md).
+For detailed examples and best practices, see the [Python Integration Guide](../python_integration.md).
 
 ## Related Topics
 - [Directory Navigation](../directory_navigation.md)

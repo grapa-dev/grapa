@@ -5,7 +5,7 @@ tags:
 ---
 # From $OBJ
 
-> **See also:** [Web/Data Scraping & Automation Best Practices](../USE_CASES.md#5-webdata-scraping--automation)
+> **See also:** [Web/Data Scraping & Automation Best Practices](../use_cases/index.md#5-webdata-scraping--automation)
 >
 > **Best Practices:**
 > - Always check for `$ERR` when accessing attributes or elements that may not exist.

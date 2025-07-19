@@ -1,5 +1,5 @@
 site_name: Grapa Documentation
-site_url: https://grapa-dev.github.io/grapa/docs/
+site_url: https://grapa-dev.github.io/grapa/
 
 theme:
   name: material
@@ -69,6 +69,7 @@ nav:
   - CLI Quickstart: CLI_QUICKSTART.md
   - Python Quickstart: python_integration.md
   - API Reference: API_REFERENCE.md
+  - Function Quick Reference: FUNCTION_QUICK_REFERENCE.md
   - Grep Documentation: GREP.md
   - Migration Guides:
       - Python: migrations/PYTHON_TO_GRAPA_MIGRATION.md
@@ -95,4 +96,61 @@ nav:
       - Operators: syntax/operator.md
       - Precedence: syntax/precedence.md
       - Grammar Design: syntax/grammar_design.md
+  - System Functions:
+      - File Operations: sys/file.md
+      - Math Functions: sys/math.md
+      - Network Functions: sys/net.md
+      - System Functions: sys/sys.md
+      - Thread Functions: sys/thread.md
+  - Object Types:
+      - Document: obj/document.md
+      - Encode: obj/encode.md
+      - Grep: obj/grep.md
+      - Grep Python: obj/grep_python.md
+      - Iterate: obj/iterate.md
+      - Transform: obj/transform.md
+  - Operators:
+      - Assignment: operators/assignment.md
+      - Bit Operations: operators/bit.md
+      - Command: operators/command.md
+      - Comparison: operators/compare.md
+      - Condition: operators/condition.md
+      - Constants: operators/constants.md
+      - Function: operators/function.md
+      - Loop: operators/loop.md
+      - Math: operators/math.md
+  - Data Types:
+      - Array: type/ARRAY.md
+      - Boolean: type/BOOL.md
+      - Code: type/CODE.md
+      - Error: type/ERR.md
+      - Float: type/FLOAT.md
+      - ID: type/ID.md
+      - Integer: type/INT.md
+      - List: type/LIST.md
+      - Operation: type/OP.md
+      - Raw: type/RAW.md
+      - Rule: type/RULE.md
+      - String: type/STR.md
+      - System ID: type/SYSID.md
+      - System Integer: type/SYSINT.md
+      - System String: type/SYSSTR.md
+      - Table: type/TABLE.md
+      - Tag: type/TAG.md
+      - Time: type/TIME.md
+      - Vector: type/VECTOR.md
+      - Widget: type/WIDGET.md
+      - XML: type/XML.md
+  - Database:
+      - Column Store: database/column_store.md
+      - Quick Reference: database/quick_reference.md
+      - Troubleshooting: database/troubleshooting.md
+  - Additional Tools:
+      - Directory Navigation: directory_navigation.md
+      - GRC Scripts: grc_scripts.md
+      - GRZ Format: GRZ_FORMAT.md
+      - Python Use Cases: PYTHON_USE_CASES.md
+      - Run: RUN.md
+      - Testing: TESTING.md
+      - Unified Path System: unified_path_system.md
   - Troubleshooting: TROUBLESHOOTING.md

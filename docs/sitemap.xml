@@ -1,335 +1,335 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/</loc>
+         <loc>https://grapa-dev.github.io/grapa/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/API_REFERENCE/</loc>
+         <loc>https://grapa-dev.github.io/grapa/API_REFERENCE/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/CLI_QUICKSTART/</loc>
+         <loc>https://grapa-dev.github.io/grapa/CLI_QUICKSTART/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/EXAMPLES/</loc>
+         <loc>https://grapa-dev.github.io/grapa/EXAMPLES/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/FUNCTION_QUICK_REFERENCE/</loc>
+         <loc>https://grapa-dev.github.io/grapa/FUNCTION_QUICK_REFERENCE/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/GETTING_STARTED/</loc>
+         <loc>https://grapa-dev.github.io/grapa/GETTING_STARTED/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/GRAPAPY_NAMESPACE_SOLUTION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/GRAPAPY_NAMESPACE_SOLUTION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/GREP/</loc>
+         <loc>https://grapa-dev.github.io/grapa/GREP/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/GRZ_FORMAT/</loc>
+         <loc>https://grapa-dev.github.io/grapa/GRZ_FORMAT/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/PYTHON_USE_CASES/</loc>
+         <loc>https://grapa-dev.github.io/grapa/PYTHON_USE_CASES/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/RUN/</loc>
+         <loc>https://grapa-dev.github.io/grapa/RUN/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/TESTING/</loc>
+         <loc>https://grapa-dev.github.io/grapa/TESTING/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/TROUBLESHOOTING/</loc>
+         <loc>https://grapa-dev.github.io/grapa/TROUBLESHOOTING/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/directory_navigation/</loc>
+         <loc>https://grapa-dev.github.io/grapa/directory_navigation/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/grc_scripts/</loc>
+         <loc>https://grapa-dev.github.io/grapa/grc_scripts/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/python_integration/</loc>
+         <loc>https://grapa-dev.github.io/grapa/python_integration/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/unified_path_system/</loc>
+         <loc>https://grapa-dev.github.io/grapa/unified_path_system/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/database/column_store/</loc>
+         <loc>https://grapa-dev.github.io/grapa/database/column_store/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/database/quick_reference/</loc>
+         <loc>https://grapa-dev.github.io/grapa/database/quick_reference/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/database/troubleshooting/</loc>
+         <loc>https://grapa-dev.github.io/grapa/database/troubleshooting/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/migrations/GO_TO_GRAPA_MIGRATION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/migrations/GO_TO_GRAPA_MIGRATION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/migrations/JS_TO_GRAPA_MIGRATION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/migrations/JS_TO_GRAPA_MIGRATION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/migrations/KOTLIN_TO_GRAPA_MIGRATION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/migrations/KOTLIN_TO_GRAPA_MIGRATION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/migrations/PYTHON_TO_GRAPA_MIGRATION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/migrations/PYTHON_TO_GRAPA_MIGRATION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/migrations/RUBY_TO_GRAPA_MIGRATION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/migrations/RUBY_TO_GRAPA_MIGRATION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/migrations/RUST_TO_GRAPA_MIGRATION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/migrations/RUST_TO_GRAPA_MIGRATION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/migrations/SWIFT_TO_GRAPA_MIGRATION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/migrations/SWIFT_TO_GRAPA_MIGRATION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/migrations/TYPESCRIPT_TO_GRAPA_MIGRATION/</loc>
+         <loc>https://grapa-dev.github.io/grapa/migrations/TYPESCRIPT_TO_GRAPA_MIGRATION/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/obj/document/</loc>
+         <loc>https://grapa-dev.github.io/grapa/obj/document/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/obj/encode/</loc>
+         <loc>https://grapa-dev.github.io/grapa/obj/encode/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/obj/grep/</loc>
+         <loc>https://grapa-dev.github.io/grapa/obj/grep/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/obj/grep_python/</loc>
+         <loc>https://grapa-dev.github.io/grapa/obj/grep_python/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/obj/iterate/</loc>
+         <loc>https://grapa-dev.github.io/grapa/obj/iterate/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/obj/transform/</loc>
+         <loc>https://grapa-dev.github.io/grapa/obj/transform/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/assignment/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/assignment/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/bit/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/bit/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/command/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/command/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/compare/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/compare/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/condition/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/condition/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/constants/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/constants/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/function/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/function/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/loop/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/loop/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/operators/math/</loc>
+         <loc>https://grapa-dev.github.io/grapa/operators/math/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/syntax/basic_syntax/</loc>
+         <loc>https://grapa-dev.github.io/grapa/syntax/basic_syntax/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/syntax/grammar_design/</loc>
+         <loc>https://grapa-dev.github.io/grapa/syntax/grammar_design/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/syntax/operator/</loc>
+         <loc>https://grapa-dev.github.io/grapa/syntax/operator/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/syntax/precedence/</loc>
+         <loc>https://grapa-dev.github.io/grapa/syntax/precedence/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/sys/file/</loc>
+         <loc>https://grapa-dev.github.io/grapa/sys/file/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/sys/math/</loc>
+         <loc>https://grapa-dev.github.io/grapa/sys/math/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/sys/net/</loc>
+         <loc>https://grapa-dev.github.io/grapa/sys/net/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/sys/sys/</loc>
+         <loc>https://grapa-dev.github.io/grapa/sys/sys/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/sys/thread/</loc>
+         <loc>https://grapa-dev.github.io/grapa/sys/thread/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/ARRAY/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/ARRAY/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/BOOL/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/BOOL/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/CODE/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/CODE/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/ERR/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/ERR/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/FLOAT/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/FLOAT/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/ID/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/ID/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/INT/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/INT/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/LIST/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/LIST/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/OP/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/OP/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/RAW/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/RAW/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/RULE/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/RULE/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/STR/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/STR/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/SYSID/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/SYSID/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/SYSINT/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/SYSINT/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/SYSSTR/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/SYSSTR/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/TABLE/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/TABLE/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/TAG/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/TAG/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/TIME/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/TIME/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/VECTOR/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/VECTOR/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/WIDGET/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/WIDGET/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/XML/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/XML/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/type/widget/attributes/</loc>
+         <loc>https://grapa-dev.github.io/grapa/type/widget/attributes/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/compiler_bnf_learning/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/compiler_bnf_learning/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/cryptography/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/cryptography/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/database_file_system/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/database_file_system/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/education_prototyping/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/education_prototyping/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/etl_data_engineering/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/etl_data_engineering/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/high_precision_math/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/high_precision_math/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/parallel_concurrent_programming/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/parallel_concurrent_programming/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
     <url>
-         <loc>https://grapa-dev.github.io/grapa/docs/use_cases/web_data_scraping/</loc>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/web_data_scraping/</loc>
          <lastmod>2025-07-19</lastmod>
     </url>
 </urlset>

@@ -241,7 +241,7 @@ matches.echo();  /* ["world", "world"] */
 - Explore [Examples](EXAMPLES.md) for more complex use cases
 - Learn about [Testing](TESTING.md) your Grapa code
 - Dive into [System Functions](../maintainers/IMPLEMENTATION/SYSTEM_FUNCTIONS.md) for advanced features
-- Check out the [Grep functionality](grep.md) for advanced pattern matching
+- Check out the [Grep functionality](GREP.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips 
 
 > **Tip:** Use `.range()` to generate arrays of numbers: `(n).range(start, step)`. 
@@ -260,4 +260,4 @@ matches.echo();  /* ["world", "world"] */
 > - [Examples](EXAMPLES.md)
 
 > **For Python Users:**
-> See the [Python Integration Guide](PYTHON_INTEGRATION.md) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for essential guidance on using Grapa from Python. 
+> See the [Python Integration Guide](python_integration.md) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for essential guidance on using Grapa from Python. 
