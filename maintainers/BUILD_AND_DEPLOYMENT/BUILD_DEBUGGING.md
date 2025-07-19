@@ -423,4 +423,44 @@ This fix affects:
 
 ✅ **COMPLETED**: All 7 platforms are now working correctly with robust, consistent build processes.
 
-**Final Status**: The automated build system successfully replaces manual copy-paste from BUILD.md and works reliably across all supported platforms. 
+**Final Status**: The automated build system successfully replaces manual copy-paste from BUILD.md and works reliably across all supported platforms.
+
+## Key Issue Resolution
+
+**Problem**: Executable removal logic was running for ALL build types, including library builds.
+
+**Solution**: Made executable removal conditional on `is_library` parameter:
+```python
+# Before (problematic)
+if os.path.exists(config.output_name):
+    os.remove(config.output_name)  # Ran for ALL builds
+
+# After (fixed)
+if not is_library and os.path.exists(config.output_name):
+    os.remove(config.output_name)  # Only for executable builds
+```
+
+## Additional Fixes Applied
+
+### 1. Tar Glob Expansion Issue (Linux/AWS)
+**Problem**: Linux package creation was using hardcoded glob patterns that failed in some environments.
+
+**Solution**: Updated Linux package creation to use Python's `glob.glob()` for robust file detection.
+
+### 2. PCRE2 Linking Issues (AWS)
+**Problem**: Static PCRE2 library linking conflicts with system shared library.
+
+**Solution**: Rebuilt PCRE2 with `-fPIC` and adjusted linking flags to use static library directly.
+
+### 3. AWS Platform Detection
+**Problem**: AWS Linux was being detected as regular Linux.
+
+**Solution**: Added detection for `/etc/system-release` containing "Amazon Linux" to properly identify AWS platforms.
+
+## Key Learnings
+
+1. **Cross-Platform Consistency**: All platforms now use robust, consistent build methods
+2. **Python Integration**: The `grapapy` module provides Python access to Grapa functionality
+3. **Package Creation**: Different approaches needed for different platforms (tar vs zip)
+4. **Error Handling**: Robust error handling and debugging output improves reliability
+5. **Library Dependencies**: Static libraries must be built with `-fPIC` for shared library compatibility 

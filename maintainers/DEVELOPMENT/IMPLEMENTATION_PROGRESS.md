@@ -102,6 +102,64 @@
 - **Impact:** Tests for null delimiter error handling cannot be fully validated until Grapa core supports raw strings with embedded nulls.
 - **Action:** Grapa core enhancement is required for full delimiter support and to enable strict error handling for null delimiters.
 
+## Recent Investigations and Resolutions
+
+### Database String Key Retrieval Issue (RESOLVED)
+**Status:** RESOLVED - Workaround implemented  
+**Date:** July 2024  
+**Issue:** String key retrieval fails in ROW tables after first record  
+**Root Cause:** Index corruption bug in `SetRecordField` when updating indexes  
+**Workaround:** Use COL tables instead of ROW tables for string key operations  
+**Documentation:** Added warning in `docs/docs/TROUBLESHOOTING.md`
+
+### Documentation Site Deployment (RESOLVED)
+**Status:** RESOLVED - All pages working  
+**Date:** July 18, 2024  
+**Issue:** GitHub Pages deployment issues, EXAMPLES page returning 404  
+**Root Cause:** GitHub Pages configured to serve from `/docs` folder in gh-pages branch, but files were in wrong location  
+**Solution:** 
+- Moved EXAMPLES directory to root of gh-pages branch
+- Cleaned up gh-pages branch (removed development files)
+- Cleaned up main branch (removed docs-old backup)
+**Result:** All documentation pages now accessible at https://grapa-dev.github.io/grapa/
+
+### Build System Automation (RESOLVED)
+**Status:** RESOLVED - All platforms working  
+**Date:** July 19, 2024  
+**Issue:** Manual build process was error-prone and time-consuming  
+**Solution:** Implemented automated `build.py` system  
+**Result:** All 7 platforms (Windows, Mac ARM64/AMD64, Linux ARM64/AMD64, AWS ARM64/AMD64) now build automatically
+
+## Deployment Lessons Learned
+- **Git checkout conflicts** - Use `git clean -fdx` before switching branches
+- **Case sensitivity issues** - Remove `docs/site` completely before committing
+- **Built site cleanup** - Always use `--clean` flag with mkdocs build
+- **Branch switching workflow** - Stash changes, clean workspace, switch, copy, commit, push, return
+- **Emergency rollback** - Use `git reset --hard` to previous commit if needed
+- **Pre-deployment checklist** - Verify all changes committed, examples tested, build clean
+- **Post-deployment verification** - Check site loads, navigation works, examples accessible
+
+## Backlog Items
+
+### 1. $KEY Field Datatype Investigation
+**Priority:** Medium  
+**Description:** Investigate allowing any datatype for the $KEY field instead of hardcoded string type  
+**Status:** Pending  
+**Notes:** Current workaround is to use .raw().int() or .raw().float() for numeric keys
+
+### 2. .match Method Implementation
+**Priority:** Low  
+**Description:** Add .match method for strings/regex to replace .grep(pattern, "x").len() > 0 workaround  
+**Status:** Pending  
+**Notes:** Current workaround works but is not ergonomic
+
+## Current System Status
+- All test files have been organized into logical subdirectories
+- Documentation system is fully functional with user/maintainer separation
+- GitHub Pages deployment is working correctly
+- Database workaround is documented for users
+- Build system is automated and working across all platforms
+
 ---
-*Last Updated: [Current Date]*
+*Last Updated: July 19, 2024*
 *Phase: Production Readiness* 

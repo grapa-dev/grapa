@@ -103,7 +103,13 @@ class GrapaBuilder:
         if system == "windows":
             return "windows", "amd64"
         elif system == "darwin":
-            return "mac", "arm64" if machine == "arm64" else "amd64"
+            # On Mac, machine can be "arm64" or "x86_64"
+            if machine == "arm64":
+                return "mac", "arm64"
+            elif machine == "x86_64":
+                return "mac", "amd64"
+            else:
+                raise RuntimeError(f"Unsupported Mac architecture: {machine}")
         elif system == "linux":
             # Check if this is AWS Linux by looking for Amazon Linux specific files
             if (os.path.exists("/etc/system-release") and 
@@ -271,8 +277,8 @@ class GrapaBuilder:
             # Step 2: Build executable using utf8proc.o - use shell globs like manual command
             cmd = [
                 "clang++", "-Isource", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
-                "source/openssl-lib/mac-arm64/*.a", "source/fl-lib/mac-arm64/*.a", 
-                "source/blst-lib/mac-arm64/*.a", "source/pcre2-lib/mac-arm64/libpcre2-8.a",
+                f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
+                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
                 "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                 "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
             ]

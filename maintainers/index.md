@@ -72,7 +72,8 @@ When referencing maintainer content, use these paths:
 ### Internal Notes
 - [Documentation Ideas](INTERNAL_NOTES/DOCS_IMPROVEMENT_IDEAS.md) - Docs improvement plans
 - [XML BNF Analysis](INTERNAL_NOTES/xml_bnf_analysis.md) - XML grammar analysis
-- [WIP Documentation](INTERNAL_NOTES/WIP/) - Work-in-progress files
+- [BNF Review Notes](INTERNAL_NOTES/bnf_review_notes.md) - Grammar enhancement ideas
+- [Archived WIP](INTERNAL_NOTES/ARCHIVED_WIP/) - Historical work-in-progress files
 
 ### Advanced Topics
 - [Binary Grep Implementation](ADVANCED_TOPICS/BINARY_GREP.md) - Binary data processing
