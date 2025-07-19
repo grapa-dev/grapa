@@ -93,6 +93,26 @@ The `docs/docs/examples/` directory contains test examples and sample files that
 #### Testing Requirements
 **🔬 CRITICAL**: All .grc and .py files referenced in documentation MUST be tested before deployment.
 
+##### Pre-Testing Review
+**📋 IMPORTANT: Before testing any .grc or .py files, review them against the full basic syntax documentation.**
+
+###### Syntax Review Checklist
+1. **Comments**: Use block comments `/* ... */`, not line comments `// ...`
+2. **Loops**: Use `while` loops, not `for` loops (Grapa doesn't support for loops)
+3. **String concatenation**: Wrap in parentheses `("Hello " + name)`
+4. **Array access**: Use bracket notation `array[index]` and `array.len()`
+5. **List access**: Use bracket or dot notation `list[key]` or `list.key`
+6. **Object access**: Use dot notation `object.property`
+7. **Echo statements**: Use `.echo()` method, not function calls
+8. **Control structures**: Use proper `if`, `while`, `switch` syntax
+9. **Function definitions**: Use `op()` syntax for functions
+10. **Type conversions**: Use `.str()`, `.int()`, `.float()` methods
+
+###### Reference Documentation
+- **Primary Reference**: `docs/docs/syntax/basic_syntax.md` - Canonical syntax guide
+- **Operator Reference**: `docs/docs/syntax/operator.md` - Operator usage
+- **Precedence Reference**: `docs/docs/syntax/precedence.md` - Operator precedence
+
 ##### Test Commands
 ```bash
 # Test all .grc examples
@@ -397,8 +417,4 @@ echo "Deployment complete! Site will update in 2-5 minutes."
 ## Troubleshooting
 If deployment fails:
 1. Check that you're on the gh-pages branch
-2. Verify the `/docs` folder contains the built site
-3. Ensure all files are committed and pushed
-4. Wait for GitHub Pages to update (2-5 minutes)
-5. Clear browser cache if needed
-6. Check for broken links in build output and fix them 
+2. Verify the `/docs`
