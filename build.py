@@ -359,19 +359,39 @@ class GrapaBuilder:
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
-            # Build executable
+            # Build executable - match AWS pattern exactly
             cpp_files = glob.glob("source/grapa/*.cpp")
-            lib_files = []
-            for lib_path in config.libs:
-                lib_files.extend(glob.glob(lib_path))
+            openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
+            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+            blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
+            pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            cmd = ["g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"] + cpp_files + ["utf8proc.o"]
-            cmd.extend(lib_files)
-            cmd.extend([f"-L{lib_path}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext",
-                "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl",
-                "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name])
+            cmd = [
+                "g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
+            ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + [
+                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
+                "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
+                "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
+                "-O3", "-pthread", "-o", config.output_name
+            ]
             
-            subprocess.run(cmd, check=True)
+            print(f"Current working directory: {os.getcwd()}")
+            print(f"Executing executable build command: {' '.join(cmd)}")
+            try:
+                # Try os.system() first - it might be faster than subprocess
+                result = os.system(" ".join(cmd))
+                if result != 0:
+                    raise RuntimeError(f"Build failed with exit code {result}")
+            except Exception as e:
+                print(f"❌ Build failed: {e}")
+                raise
+            
+            # Check if executable was created
+            if os.path.exists(config.output_name):
+                print(f"✅ Executable created: {config.output_name}")
+            else:
+                print(f"❌ Executable not found: {config.output_name}")
+                raise RuntimeError(f"Executable {config.output_name} was not created")
         
         # Clean object files (but preserve executable)
         for obj_file in Path(".").glob("*.o"):
@@ -556,7 +576,7 @@ class GrapaBuilder:
             shutil.rmtree("grapapy.egg-info")
         
         # Build package
-        subprocess.run(["python", "setup.py", "sdist"], check=True)
+        subprocess.run(["python3", "setup.py", "sdist"], check=True)
         
         # Find the built package file
         dist_files = list(Path("dist").glob("*.tar.gz"))
@@ -578,13 +598,13 @@ class GrapaBuilder:
             try:
                 # Try with explicit filename
                 subprocess.run([
-                    "pip", "install", f"dist/{package_file}"
+                    "pip3", "install", f"dist/{package_file}"
                 ], check=True)
             except subprocess.CalledProcessError:
                 # Fallback to using grapa to find the filename
                 subprocess.run([
                     "./grapa", "-q", "-ccmd",
-                    f"f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
+                    f"f=$file().ls('dist')[0].$KEY;$sys().shell('pip3 install dist/'+f);"
                 ], check=True)
     
     def run_tests(self, config: BuildConfig):
@@ -594,7 +614,7 @@ class GrapaBuilder:
         # Run Grapa tests
         test_commands = [
             ["./grapa" if config.platform != "windows" else "grapa.exe", "-cfile", "test/run_tests.grc"],
-            ["python", "test/run_tests.py"]
+            ["python3", "test/run_tests.py"]
         ]
         
         for cmd in test_commands:
