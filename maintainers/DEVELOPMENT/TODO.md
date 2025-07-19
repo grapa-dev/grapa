@@ -8,10 +8,34 @@
 
 ## 🚀 **IMMEDIATE PRIORITY (Current Session)**
 
-### **Setup.py Metadata Update for Official Release** (IMMEDIATE)
+### **Main Branch Stabilization and Documentation Update** (IMMEDIATE)
+**Status**: In Progress  
+**Estimated Effort**: 2-3 hours  
+**Source**: Main branch now contains 0.0.39c (latest known good build)
+
+#### Tasks:
+1. **Update BUILD.md** with current platform support (Windows ARM64 excluded)
+2. **Remove Windows ARM64 references** from all documentation
+3. **Update TODO.md** with current priorities and next steps
+4. **Verify build system** works on all supported platforms
+5. **Consider version tagging** for 0.0.39c as stable release
+
+#### Files to Update:
+- `maintainers/BUILD_AND_DEPLOYMENT/BUILD.md` - Update platform support
+- `maintainers/DEVELOPMENT/TODO.md` - Update priorities
+- `maintainers/INTERNAL_NOTES/CURRENT_CONTEXT.md` - Document current state
+- Remove any Windows ARM64 references from docs
+
+#### Success Criteria:
+- All documentation reflects current build system state
+- Windows ARM64 references removed from all docs
+- Build system verified working on all supported platforms
+- Next development phase clearly defined
+
+### **Setup.py Metadata Update for Official Release** (NEXT)
 **Status**: Ready to start  
 **Estimated Effort**: 1-2 hours  
-**Source**: WIP_context_snapshot.md - Preparation for official new release
+**Source**: Preparation for official new release
 
 #### Tasks:
 1. **Revise `description` and `long_description`** in `setup.py` to be inviting, accurate, and up-to-date
@@ -23,7 +47,7 @@
 #### Files to Update:
 - `setup.py` - Update metadata fields
 - `README.md` - Ensure consistency with setup.py
-- `docs-site/docs/python_integration.md` - Verify alignment
+- `docs/docs/python_integration.md` - Verify alignment
 
 #### Success Criteria:
 - `setup.py` metadata accurately reflects current Grapa capabilities
