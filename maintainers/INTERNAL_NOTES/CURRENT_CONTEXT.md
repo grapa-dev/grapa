@@ -1,136 +1,216 @@
-# Current Context - Grapa Development Status (July 2024)
+# Current Context - Grapa Development
 
-## Recent Accomplishments ✅
+## Recent Accomplishments (Latest Session)
 
-### Documentation System (COMPLETED - July 2024)
-- **GitHub Pages Deployment**: Fixed deployment issues, all pages working at https://grapa-dev.github.io/grapa/
-- **Test Organization**: All test files organized into logical subdirectories (database, file_system, core, infrastructure, use_cases, python, grep)
-- **Documentation Accuracy**: All Grapa syntax examples corrected and empirically validated
-- **User/Maintainer Separation**: Strict segregation with separate build configurations
+### ✅ **Examples Directory and Dependency Management System Established**
+- **Created `docs/docs/examples/` directory** for documentation test examples
+- **Established dependency management system** to prevent broken external links
+- **Created example files**: `basic_example.grc`, `advanced_example.grc`, `performance_example.grc`, `python_integration_example.py`
+- **Fixed external test file dependencies** - removed broken links to missing test files
+- **Updated documentation**: `operators/command.md`, `RUN.md`, `TROUBLESHOOTING.md` to use examples
+- **Added to navigation**: "Code Examples" section in mkdocs.yml
+- **Documented dependency system**: Clear rules for maintaining example files
+- **Benefits**: Self-contained documentation, no external dependencies, clear maintenance guidelines
 
-### Database Investigation (COMPLETED - July 2024)
-- **String Key Retrieval Issue**: Resolved with documented workaround for ROW tables
-- **Root Cause Identified**: Index corruption bug in `SetRecordField` when updating indexes
-- **Workaround Documented**: Use COL tables instead of ROW tables for string key operations
-- **User Documentation**: Added warning in `docs-site/docs/TROUBLESHOOTING.md`
+### ✅ **Documentation Site Reorganization Completed**
+- **Broke out USE_CASES into individual subsections** for better navigation
+- **Created `use_cases/` directory** with 8 individual use case files:
+  - ETL / Data Engineering
+  - Compiler/BNF Learning  
+  - High-Precision Math & Scientific Computing
+  - Parallel/Concurrent Programming
+  - Web/Data Scraping & Automation
+  - Database & File System Integration
+  - Education & Prototyping
+  - Cryptography
+- **Moved Cryptography from top menu** to USE_CASES subsection
+- **Updated navigation structure** for improved user experience
+- **Removed old monolithic USE_CASES.md** file
+- **Benefits**: Better navigation, easier to find specific use cases, cleaner organization
 
-### Internal Analysis (COMPLETED - July 2024)
-- **Internal Function Discovery**: Comprehensive analysis of 200+ internal Grapa functions from source code
-- **Function Table Located**: Complete `handlerMap` in `source/grapa/GrapaLibRule.cpp` (lines 2282-2569)
-- **Optimization System Analysis**: Compile-time optimization via `Optimize()` methods documented
-- **Operator Analysis**: Complete inventory of 25 operators with type support analysis
-- **Optimization Backlog**: Created detailed roadmap with 50+ high-priority opportunities
+### ✅ **Documentation and Organization Reorganization**
+- **Reorganized TODO and Backlog documents** for clear separation of concerns
+- **TODO.md**: Now focuses only on items committed to work on in near term (2-4 weeks)
+- **backlog.md**: Now focuses only on items planned but not committed to soon (2-12 months)
+- **Eliminated overlap and confusion** between the two documents
+- **Established clear workflow** for moving items between documents
 
-## Current Status
+### ✅ **Operator Documentation Audit Completed**
+- **100% Complete**: All 26 operators audited with comprehensive analysis
+- **243 gaps identified** across all operators with categorization system
+- **5 potential bugs tracked** and documented for fixing
+- **Documentation updated**: `docs-site/docs/syntax/operator.md` fully rewritten
+- **Hidden mathematical sophistication discovered**: modular arithmetic, smart type promotion
 
-### Documentation Site
-- ✅ **Fully Functional**: All pages accessible and working correctly
-- ✅ **Deployed**: Changes live at https://grapa-dev.github.io/grapa/
-- ✅ **Clean Structure**: No unnecessary files in gh-pages branch
+### ✅ **Cryptographic Features Discovery**
+- **Unsigned integer handling**: Built-in methods `uraw()`, `uint()`, `uhex()`, `ubin()` for crypto operations
+- **Raw byte manipulation**: `(number).raw(1)` for unsigned byte representation
+- **Sign bit handling**: Critical for crypto where highest order bit must be data, not sign
+- **Large number support**: Proper handling of 32-bit+ unsigned integers
+- **Mathematical relationships**: `modpow(base, -1, mod)` → `modinv(base, mod)` built into operator system
 
-### Analysis Status
-- ✅ **Internal Functions**: Complete analysis in `GRAPA_INTERNAL_FUNCTIONS_ANALYSIS.md`
-- ✅ **Operator Analysis**: Complete analysis in `GRAPA_OPERATORS_ANALYSIS.md`
-- ✅ **Optimization Backlog**: Detailed roadmap in `GRAPA_OPTIMIZATION_BACKLOG.md`
+## Current Priority: Operator Bug Fixes
 
-## 🎯 **IMMEDIATE PRIORITIES**
+### **Goal**: Fix critical operator bugs identified in audit
 
-### 1. **Operator Documentation Audit** (HIGH PRIORITY)
-**Status**: Ready to start  
-**Dependencies**: Core functionality understanding (pending code review)
+**Key Focus Areas:**
+1. **STR > INT behavior**: `"hello" > 5` returns TRUE (should be FALSE)
+2. **Logical NOT FLOAT**: `!5.0` returns TRUE (should be FALSE)
+3. **Logical NOT complex**: `!(5 && 3)` returns FALSE (should be TRUE)
+4. **STR <=> INT**: Returns numbers instead of errors
 
-#### Key Findings from Analysis:
-- **Missing Documentation**: 5 operators not documented: `*/` (root), `<=>` (cmp), `++` (extend), `--` (remove), `.*` (dot)
-- **Type Support Gaps**: Incomplete type support tables for operators
-- **Array Assignment Behavior**: `+=` (nesting) vs `++=` (flattening) not documented
-- **Operator Precedence**: Needs update based on BNF grammar
+### **Current Status**:
+- **Examples Directory**: ✅ Complete and deployed
+- **Documentation Reorganization**: ✅ Complete
+- **Documentation**: ✅ Complete and deployed
+- **Audit**: ✅ Complete (26/26 operators)
+- **Bug Fixes**: ❌ Ready to start (Priority #1 in TODO.md)
+- **Crypto Stabilization**: ❌ Ready to start (Priority #2 in TODO.md)
 
-#### Files to Update:
-- `docs-site/docs/operators/assignment.md` - Add array examples and type behavior
-- `docs-site/docs/API_REFERENCE.md` - Expand operator sections with type support tables
-- `docs-site/docs/syntax/operator.md` - Add comprehensive operator precedence and type rules
-- `docs-site/docs/EXAMPLES.md` - Add operator examples
+## Document Organization (New Structure)
 
-#### Context References:
-- `maintainers/INTERNAL_NOTES/GRAPA_OPERATORS_ANALYSIS.md` - Complete operator analysis
-- `lib/grapa/$grapa.grc` (lines 540-630) - BNF operator definitions
-- `source/grapa/GrapaLibRule.cpp` - Operator implementations
+### **TODO.md** - "Committed to work on in near term (2-4 weeks)"
+**Current Priorities:**
+1. **Operator Bug Fixes** (Week 1) - Fix STR > INT, Logical NOT, STR <=> INT issues
+2. **Cryptographic Features Stabilization** (Week 2) - Fix AKS routing, document working features
+3. **Optimization Implementation** (Week 3) - Phase 1 performance improvements
+4. **Unicode Language Binding** (Week 4) - Complete Unicode implementation
 
-### 2. **Optimization Implementation** (Phase 1)
-**Status**: Ready to start  
-**Priority**: MEDIUM
+### **backlog.md** - "Planned but not committed to soon (2-12 months)"
+**Medium-term Items:**
+- Advanced Mathematical Features Documentation
+- Type Conversion Philosophy Documentation
+- Operator Performance and Best Practices Guide
+- Language Feature Enhancements
 
-#### Phase 1 Optimizations (High Impact, Easy Implementation):
-1. **Arithmetic operators** (`+`, `-`, `*`, `/`, `%`, `**`, `*/`) - 50-80% runtime reduction
-2. **Bitwise operators** (`&`, `|`, `^`, `<<`, `>>`, `~`) - 70-90% runtime reduction
-3. **Comparison operators** (`==`, `!=`, `<`, `<=`, `>`, `>=`, `<=>`) - Constant folding
-4. **Assignment operators** (`=`, `+=`, `++=`, `-=`) - String and numeric optimization
-5. **Type conversions** (`int`, `float`, `str`) - Compile-time conversion
+**Investigation Items:**
+- $KEY Field Datatype Investigation
+- String Splitting Functionality Investigation
+- Array/List Comparison Behavior Confirmation
 
-#### Reference:
-- `maintainers/INTERNAL_NOTES/GRAPA_OPTIMIZATION_BACKLOG.md` - Detailed implementation roadmap
+**Long-term Enhancements:**
+- Finite Field Educational Modules
+- Operator Implementation Quirks Documentation
 
-### 3. **Unicode Language Binding**
-**Status**: C++ Implementation Complete, Language Binding Missing  
-**Priority**: MEDIUM  
+## Examples Directory Management
 
-#### Tasks:
-1. **Add `case_fold()` method** to `lib/grapa/$OBJ.grc`
-2. **Connect to C++ implementation** in `source/grep/grapa_grep_unicode.hpp`
-3. **Test Turkish I case folding** from Grapa scripts
-4. **Make `upper()` and `lower()` Unicode-aware**
+### **Purpose**
+The `docs/docs/examples/` directory contains test examples and sample files that are referenced by the Grapa documentation. This ensures that documentation examples are always available and properly maintained.
 
-## Technical Insights
+### **Dependency System**
+**⚠️ IMPORTANT**: Files in the examples directory are referenced by documentation. Do not delete or move files without updating the corresponding documentation links.
 
-### Grapa Internal Architecture
-- **Function Registration**: All internal functions in `handlerMap` table in `GrapaLibRule.cpp`
-- **Optimization System**: Compile-time tree optimization via `Optimize()` methods
-- **Execution Model**: Bottom-up recursive optimization with careful order-of-operations handling
-- **Operator System**: 25 operators with sophisticated type support and automatic conversions
+### **Current Examples**
+- `basic_example.grc` - Basic Grapa syntax and operations
+- `advanced_example.grc` - Complex Grapa operations and functions
+- `performance_example.grc` - Performance testing examples
+- `python_integration_example.py` - Python integration examples
 
-### Grapa Operator Capabilities
-- **Comprehensive Type Support**: Arithmetic operators work with INT, FLOAT, STR, VECTOR, ARRAY, WIDGET
-- **Vector/Array Operations**: Full arithmetic support for vector and array types
-- **Type Conversion**: Automatic promotion (INT → FLOAT) and string conversion
-- **Widget Operations**: Widget combination via addition operator
-- **Time Arithmetic**: Full support for time-based calculations
+### **Maintenance Rules**
+1. **Search before changes**: Use `grep -r "examples/filename.grc" docs/docs/`
+2. **Document dependencies**: Add `<!-- DEPENDENCY: examples/filename.grc -->` comments
+3. **Update all references**: When moving/deleting files, update all documentation links
+4. **Test examples**: Ensure all examples work correctly before committing
 
-### Documentation Strategy
-- **User/Maintainer Separation**: Strict segregation with separate build configurations
-- **Empirical Validation**: All code examples tested against actual Grapa implementation
-- **Canonical Reference**: `docs-site/docs/syntax/basic_syntax.md` as primary syntax guide
-- **Source-Driven Analysis**: All documentation based on actual BNF grammar and source code
+### **Benefits**
+- **Self-contained documentation**: No external dependencies on test files
+- **Guaranteed availability**: All referenced examples are always present
+- **Clear maintenance**: Explicit dependency tracking prevents broken links
+- **Easy discovery**: Centralized location for all documentation examples
 
-## Optimization Roadmap
+## Next Steps
 
-### Phase 1 (High Impact, Easy Implementation) - READY TO START
-1. **Arithmetic operators** (`+`, `-`, `*`, `/`, `%`, `**`, `*/`) - 50-80% runtime reduction potential
-2. **Bitwise operators** (`&`, `|`, `^`, `<<`, `>>`, `~`) - 70-90% runtime reduction potential
-3. **Comparison operators** (`==`, `!=`, `<`, `<=`, `>`, `>=`, `<=>`) - Constant folding
-4. **Assignment operators** (`=`, `+=`, `++=`, `-=`) - String and numeric optimization
-5. **Type conversions** (`int`, `float`, `str`) - Compile-time conversion
+### **Immediate (Current Session)**:
+1. **Start Operator Bug Fixes** - Priority #1 from TODO.md
+2. **Fix STR > INT behavior** - Likely simple logic error in GrapaLibraryRuleGtEvent
+3. **Fix Logical NOT issues** - FLOAT and complex expression handling
+4. **Test fixes** - Ensure all operator behavior is correct
 
-### Phase 2 (Medium Impact, Moderate Implementation)
-1. **String operations** (`left`, `right`, `trim`, `upper`, `lower`) - 30-60% runtime reduction
-2. **Array/Vector operations** (`len`, `sum`, `mean`, `dot`) - 40-70% runtime reduction
-3. **Logical operators** (`&&`, `||`, `!`) - Short-circuiting optimization
-4. **Mathematical functions** (`abs`, `neg`, `inv`) - Constant folding
+### **Short Term (Next 2-4 weeks)**:
+1. **Complete Operator Bug Fixes** - All 4 critical bugs
+2. **Start Crypto Stabilization** - Fix AKS routing, document features
+3. **Begin Optimization Implementation** - Phase 1 performance improvements
+4. **Complete Unicode Language Binding** - Add case_fold() method
 
-### Phase 3 (Lower Impact, Complex Implementation)
-1. **Control flow optimization** (`if`, `while`, `switch`) - Dead code elimination
-2. **File system caching** (`file_pwd`, `file_info`) - Reduce system calls
-3. **Advanced mathematical functions** (`sin`, `cos`, `log`) - Constant folding
-4. **Vector/Array complex operations** - Matrix operations, advanced linear algebra
+### **Medium Term (Next 2-6 months)**:
+1. **Advanced Math Documentation** - Document matrix operations, crypto features
+2. **Type Conversion Philosophy** - Clarify design decisions and user guidance
+3. **Performance Guide** - Document operator performance characteristics
+4. **Language Enhancements** - Add for/foreach loops, exception handling
 
-## Notes
-- All analysis documents are source-driven and empirically validated
-- Optimization backlog provides clear roadmap for performance improvements with implementation examples
-- Internal function analysis reveals Grapa's extensive capabilities across multiple domains
-- Operator analysis shows sophisticated type support with significant optimization opportunities
-- Documentation system is fully functional and ready for content updates
+## Technical Context
 
-## Next Session Goals
-1. **Operator Documentation Audit** - Primary focus
-2. **Core functionality understanding** - Review code you'll point me to
-3. **Optimization implementation** - Phase 1 items
-4. **Unicode language binding** - Complete implementation 
+### **Grapa's Type Philosophy**:
+- **Universal compatibility** - operators should work with all relevant data types
+- **No type casting burden** - developers shouldn't need to worry about type conversion
+- **Intelligent defaults** - sensible behavior for different type combinations
+- **Consistent patterns** - similar operators should have similar type support
+
+### **Operator Categories Audited**:
+1. **Arithmetic operators** (`+`, `-`, `*`, `/`, `%`, `**`) - ✅ Complete
+2. **Comparison operators** (`==`, `!=`, `<`, `<=`, `>`, `>=`) - ✅ Complete
+3. **Logical operators** (`&&`, `||`, `!`) - ✅ Complete
+4. **Bitwise operators** (`&`, `|`, `^`, `<<`, `>>`) - ✅ Complete
+5. **Assignment operators** (`=`, `+=`, `-=`, `*=`, `/=` etc.) - ✅ Complete
+6. **Special operators** (`++`, `--`, `.*`, `<=>`) - ✅ Complete
+
+### **Data Types Considered**:
+- **Primitive types**: `$INT`, `$FLOAT`, `$STR`, `$BOOL` - ✅ Complete
+- **Complex types**: `$ARRAY`, `$LIST`, `$OBJ` - ✅ Complete
+- **Special types**: `$file`, `$TABLE`, `$XML`, `$HTML` - ✅ Complete
+- **Error types**: `$ERR`, `$NULL` - ✅ Complete
+
+## Maintenance Notes
+
+### **Documentation Standards**:
+- **Empirical testing required** - all examples must be tested
+- **Type support tables** - clear indication of what works with what
+- **Error handling** - document what happens with unsupported combinations
+- **Performance notes** - mention any performance considerations
+
+### **Code Quality**:
+- **Consistent patterns** - similar operators should behave similarly
+- **Error messages** - clear, helpful error messages for unsupported operations
+- **Backward compatibility** - changes must not break existing code
+- **Testing coverage** - comprehensive tests for all type combinations
+
+### **Examples Directory Standards**:
+- **Dependency tracking** - all examples must be documented as dependencies
+- **Working examples** - all examples must be tested and functional
+- **Clear organization** - logical grouping of examples by purpose
+- **Documentation links** - all examples must be referenced in documentation
+
+## Document Workflow
+
+### **How Items Move Between Documents**:
+- **From Backlog to TODO**: When committing to work on in next 2-4 weeks
+- **From TODO to Backlog**: When de-prioritizing or blocking
+- **From TODO to Completed**: When finished and documented
+
+### **Current Session Recovery**:
+- **Primary Focus**: Operator Bug Fixes (TODO.md Priority #1)
+- **Secondary Focus**: Crypto Stabilization (TODO.md Priority #2)
+- **Documentation**: All operator documentation complete
+- **Audit**: All 26 operators fully analyzed
+- **Examples**: All documentation examples established and working
+
+## Post-Evaluation Considerations
+
+### Documentation Structure
+- **Consider dedicated crypto section**: The discovery of comprehensive crypto features suggests a dedicated section may be warranted
+- **Operator mathematical relationships**: Document hidden mathematical sophistication (modpow/modinv, type promotion)
+- **Unsigned operations**: Document crypto-specific methods and their importance
+
+### Code Organization
+- **Crypto utilities**: Consider if crypto features should be grouped/structured differently
+- **Operator system**: The mathematical relationships built into operators are sophisticated - document this design philosophy
+
+### Examples Management
+- **Expand examples**: Consider adding more comprehensive examples for each use case
+- **Interactive examples**: Consider adding interactive examples that users can run
+- **Performance examples**: Add more performance testing examples for optimization work
+
+---
+
+**Last Updated**: Current session - Examples directory established, ready for operator bug fixes
+**Next Review**: After operator bug fixes completion 
