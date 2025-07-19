@@ -299,10 +299,6 @@ class GrapaBuilder:
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
-        
-        # Clean object files (but preserve executable)
-        for obj_file in Path(".").glob("*.o"):
-            obj_file.unlink()
     
     def _run_linux_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
         """Run Linux build command (Ubuntu)"""
@@ -394,10 +390,6 @@ class GrapaBuilder:
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
-        
-        # Clean object files (but preserve executable)
-        for obj_file in Path(".").glob("*.o"):
-            obj_file.unlink()
     
     def _run_aws_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
         """Run AWS build command (Amazon Linux)"""
@@ -492,12 +484,28 @@ class GrapaBuilder:
             else:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
+    
+    def _clean_build_artifacts(self):
+        """Clean build artifacts that should be removed after build"""
+        print("Cleaning build artifacts...")
+        
+        # Clean Python package artifacts
+        if os.path.exists("dist"):
+            print("Removing dist/ directory...")
+            shutil.rmtree("dist")
+        
+        if os.path.exists("grapapy.egg-info"):
+            print("Removing grapapy.egg-info/ directory...")
+            shutil.rmtree("grapapy.egg-info")
+        
+        # Clean Python bytecode cache
+        for pycache_dir in Path(".").glob("**/__pycache__"):
+            print(f"Removing {pycache_dir}...")
+            shutil.rmtree(pycache_dir)
         
         # Clean object files (but preserve executable)
         for obj_file in Path(".").glob("*.o"):
             obj_file.unlink()
-    
-
     
     def _clean_windows_build(self):
         """Clean Windows build artifacts"""
@@ -571,12 +579,6 @@ class GrapaBuilder:
         """Build Python package"""
         print("Building Python package...")
         
-        # Clean previous builds
-        if os.path.exists("dist"):
-            shutil.rmtree("dist")
-        if os.path.exists("grapapy.egg-info"):
-            shutil.rmtree("grapapy.egg-info")
-        
         # Build package
         subprocess.run(["python3", "setup.py", "sdist"], check=True)
         
@@ -635,34 +637,38 @@ class GrapaBuilder:
         
         print(f"Building Grapa for {config.target}...")
         
-        # Build based on platform
-        success = False
-        if config.platform == "windows":
-            success = self.build_windows(config)
-        elif config.platform == "mac":
-            success = self.build_mac(config)
-        elif config.platform == "linux":
-            success = self.build_linux_aws(config)
-        elif config.platform == "aws":
-            success = self.build_linux_aws(config)
-        else:
-            print(f"Unsupported platform: {config.platform}")
-            return False
-        
-        if success:
-            print(f"Build successful for {config.target}")
+        try:
+            # Build based on platform
+            success = False
+            if config.platform == "windows":
+                success = self.build_windows(config)
+            elif config.platform == "mac":
+                success = self.build_mac(config)
+            elif config.platform == "linux":
+                success = self.build_linux_aws(config)
+            elif config.platform == "aws":
+                success = self.build_linux_aws(config)
+            else:
+                print(f"Unsupported platform: {config.platform}")
+                return False
             
-            # Build Python package
-            self.build_python_package(config)
-            
-            # Run tests if requested
-            if run_tests:
-                self.run_tests(config)
-            
-            return True
-        else:
-            print(f"Build failed for {config.target}")
-            return False
+            if success:
+                print(f"Build successful for {config.target}")
+                
+                # Build Python package
+                self.build_python_package(config)
+                
+                # Run tests if requested
+                if run_tests:
+                    self.run_tests(config)
+                
+                return True
+            else:
+                print(f"Build failed for {config.target}")
+                return False
+        finally:
+            # Always clean up build artifacts, regardless of success or failure
+            self._clean_build_artifacts()
 
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
