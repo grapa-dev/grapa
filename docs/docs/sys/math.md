@@ -1,8 +1,8 @@
 # $math()
 
-Inherits [$OBJ()](../obj/).
+Inherits [$OBJ()](../obj/transform.md).
 
-Also see [Operators](../operators/)
+Also see [Operators](../syntax/operator.md)
 
 Command | Example | Result
 ------------ | ------------- | -------------

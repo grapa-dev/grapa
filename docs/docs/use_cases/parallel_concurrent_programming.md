@@ -14,7 +14,7 @@ lock_obj.lock();
 lock_obj.unlock();
 ```
 
-See [Threading and Locking](../sys/thread.md) and [Function Operators: static and const](../operators/function.md) for details and best practices.
+See [Threading and Locking](../sys/thread.md) and [Function Operators: static and const](../syntax/operator.md) for details and best practices.
 
 Grapa's $thread, $net, and map/reduce/filter features enable true parallelism, overcoming Python's GIL and enabling high-performance data processing.
 

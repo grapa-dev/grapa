@@ -33,7 +33,7 @@ If you want to protect access to a shared variable, use a `$thread()` lock objec
 - Prefer passing data by value or using thread-local variables.
 - Minimize shared mutable state between threads. If you must share, use a `$thread()` lock object to guard access.
 - Immutable data (or data marked `const`) is safe to share, but note that `const` is for performance/caching, not for locking (see below).
-- For compile-time constants, use `static` (see [Function Operators](../operators/function.md)).
+- For compile-time constants, use `static` (see [Function Operators](../syntax/operator.md)).
 
 ---
 
@@ -88,5 +88,5 @@ The input parameter is passed to both the run op and done op. The done op also r
 ---
 
 ## See Also
-- [Function Operators: static and const](../operators/function.md)
+- [Function Operators: static and const](../syntax/operator.md)
 - [Parallelism Examples](../use_cases/index.md)

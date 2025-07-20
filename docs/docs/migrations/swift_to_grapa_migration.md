@@ -143,7 +143,7 @@ These are advanced features that most developers won't miss:
 | `@objc`                      | WIP                                               |
 
 ## Notes
-- See [Operators](../operators/) and [System](../sys/) docs for more details.
+- See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
 - Grapa supports variable scoping with `$global`, `$local`, and `$root`.
 - Use `@x` to reference a variable by name.
 - Use `$sys().getenv()` for environment variables.
