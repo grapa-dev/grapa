@@ -232,6 +232,26 @@ result = some_operation().iferr(0);
 
 *If you have more Rust idioms you want mapped to Grapa, please open an issue or PR!* 
 
+### Custom match() Function for Regex
+
+Rust users often use `regex::Regex::is_match` for regex checks. You can define a similar function in Grapa:
+
+```grapa
+// Define a match function that returns true if the pattern is found
+match = op("text"="", "pattern"="") {
+    text.grep(pattern, "x").len() > 0;
+};
+
+// Usage
+if (match("hello world", "world")) {
+    "Found!".echo();
+} else {
+    "Not found.".echo();
+}
+```
+
+This is a handy workaround until Grapa adds a native `.match()` method.
+
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
 > - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` as of this writing.

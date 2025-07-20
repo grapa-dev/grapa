@@ -221,6 +221,13 @@ result = someOperation().iferr(0);
 > big = (1000000).range(0,1).map(op(x) { x * x; }, 8);  // Limit to 8 threads
 > ```
 
+## Notes
+- See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
+- Grapa supports variable scoping with `$global`, `$local`, and `$root`.
+- Use `$sys().getenv()` for environment variables.
+- Use `$thread()` for threading and `$sys().sleep()` for sleep.
+- Use `op(){}` for lambdas and function definitions.
+
 ## See Also
 - [Basic Syntax Guide](../syntax/basic_syntax.md)
 - [Operator Reference](../syntax/operator.md)
@@ -228,6 +235,26 @@ result = someOperation().iferr(0);
 ---
 
 *If you have more TypeScript idioms you want mapped to Grapa, please open an issue or PR!* 
+
+### Custom match() Function for Regex
+
+TypeScript users often use `str.match()` for regex checks. You can define a similar function in Grapa:
+
+```grapa
+// Define a match function that returns true if the pattern is found
+match = op("text"="", "pattern"="") {
+    text.grep(pattern, "x").len() > 0;
+};
+
+// Usage
+if (match("hello world", "world")) {
+    "Found!".echo();
+} else {
+    "Not found.".echo();
+}
+```
+
+This is a handy workaround until Grapa adds a native `.match()` method.
 
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
@@ -298,33 +325,4 @@ These would improve developer experience but aren't essential:
 - **Access modifiers**: `private`, `public` - Use naming conventions
 - **Abstract classes**: `abstract class` - Use regular classes
 - **Method overloading**: - Use different function names
-- **Index signatures**: `[key: string]: any` - Use regular objects
-- **Call signatures**: - Use regular functions
-- **Construct signatures**: - Use object constructors
-- **Generic constraints**: `T extends U` - Use runtime checks
-- **Default type parameters**: `<T = string>` - Use default values
-- **Infer types**: `infer U` - Use dynamic typing
-
-### Rarely Used
-These are advanced features that most developers won't miss:
-
-- **Conditional types**: - Use runtime checks
-- **Template literal types**: - Use regular strings
-- **Mapped types**: - Use object manipulation
-- **Utility types**: - Use object manipulation
-- **Declaration merging**: - Use object composition
-- **Ambient declarations**: `declare` - Use regular definitions
-- **Triple-slash directives**: - Use regular imports
-- **Module augmentation**: - Use object composition
-- **Type-only imports**: `import type` - Use regular imports
-- **Satisfies operator**: - Use regular assignment
-
-> **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, TypeScript's static typing is replaced by Grapa's dynamic typing with runtime type checking via `.type()`.
-
-## See Also
-- [Basic Syntax Guide](../syntax/basic_syntax.md)
-- [Operator Reference](../syntax/operator.md)
-
----
-
-*If you have more TypeScript idioms you want mapped to Grapa, please open an issue or PR!*
+- **Index signatures**: `[key: string]: any`

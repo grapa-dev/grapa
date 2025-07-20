@@ -182,7 +182,7 @@ if (value.type() == $STR || value.type() == $INT) {
 Common type constants: `$STR`, `$INT`, `$FLOAT`, `$BOOL`, `$ARRAY`, `$LIST`, `$TABLE`, `$TIME`, `$ERR`
 
 ## Notes
-- See [Operators](../operators/) and [System](../sys/) docs for more details.
+- See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
 - Grapa supports variable scoping with `$global`, `$local`, and `$root`.
 - Use `$sys().getenv()` for environment variables.
 - Use `$thread()` for threading and `$sys().sleep()` for sleep.
