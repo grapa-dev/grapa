@@ -1,0 +1,24 @@
+"Debugging operator behavior".echo()
+
+"Test 1: Direct float literal vs string float".echo()
+val1 = 55.3;
+val2 = "55.3".float();
+val1.echo();
+val2.echo();
+
+"Test 2: Both using float() method".echo()
+val3 = (55.3).float();
+val4 = "55.3".float();
+val3.echo();
+val4.echo();
+
+"Test 3: Test the actual comparison".echo()
+if (val1 == val2)
+    "PASS: Direct comparison works".echo()
+else
+    "FAIL: Direct comparison fails".echo()
+
+if (val3 == val4)
+    "PASS: Float method comparison works".echo()
+else
+    "FAIL: Float method comparison fails".echo() 

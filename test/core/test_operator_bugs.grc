@@ -1,0 +1,64 @@
+/* Test file for operator bugs identified in documentation */
+
+/* Bug 1: STR > INT behavior */
+"=== Testing STR > INT bug ===".echo();
+"Expected: 'hello' > 5 should be FALSE".echo();
+"Actual:".echo();
+("hello" > 5).echo();
+
+"Expected: 5 > 'hello' should be FALSE".echo();
+"Actual:".echo();
+(5 > "hello").echo();
+
+/* Bug 2: Logical NOT FLOAT behavior */
+"=== Testing Logical NOT FLOAT bug ===".echo();
+"Expected: !5.0 should be FALSE".echo();
+"Actual:".echo();
+(!5.0).echo();
+
+"Expected: !(-5.0) should be TRUE".echo();
+"Actual:".echo();
+(!(-5.0)).echo();
+
+/* Bug 3: Logical NOT complex behavior */
+"=== Testing Logical NOT complex bug ===".echo();
+"Expected: !(5 && 3) should be TRUE".echo();
+"Actual:".echo();
+(!(5 && 3)).echo();
+
+"Expected: !(0 || 5) should be TRUE".echo();
+"Actual:".echo();
+(!(0 || 5)).echo();
+
+/* Bug 4: STR <=> INT behavior */
+"=== Testing STR <=> INT bug ===".echo();
+"Expected: 'hello' <=> 5 should be ERROR".echo();
+"Actual:".echo();
+("hello" <=> 5).echo();
+
+"Expected: 5 <=> 'hello' should be ERROR".echo();
+"Actual:".echo();
+(5 <=> "hello").echo();
+
+/* Control tests - these should work correctly */
+"=== Control tests (should work correctly) ===".echo();
+"5 > 3:".echo();
+(5 > 3).echo();
+
+"3 > 5:".echo();
+(3 > 5).echo();
+
+"!5:".echo();
+(!5).echo();
+
+"!0:".echo();
+(!0).echo();
+
+"5 <=> 3:".echo();
+(5 <=> 3).echo();
+
+"3 <=> 5:".echo();
+(3 <=> 5).echo();
+
+"5 <=> 5:".echo();
+(5 <=> 5).echo(); 

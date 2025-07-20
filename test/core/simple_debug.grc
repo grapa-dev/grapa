@@ -1,0 +1,10 @@
+/* Simple debug script to test number parsing */
+
+"Testing 'hello' parsing:".echo();
+"hello".echo();
+
+"Testing '123' parsing:".echo();
+"123".echo();
+
+"Testing '5' parsing:".echo();
+"5".echo(); 

@@ -1,0 +1,25 @@
+"Debugging .float() method behavior".echo();
+
+"Test 1: 55.3.float()".echo();
+result1 = 55.3.float();
+"Result: ".echo(); result1.echo();
+
+"Test 2: 123.456.float()".echo();
+result2 = 123.456.float();
+"Result: ".echo(); result2.echo();
+
+"Test 3: -42.0.float()".echo();
+result3 = -42.0.float();
+"Result: ".echo(); result3.echo();
+
+"Test 4: 55.3 (literal)".echo();
+literal1 = 55.3;
+"Result: ".echo(); literal1.echo();
+
+"Test 5: 123.456 (literal)".echo();
+literal2 = 123.456;
+"Result: ".echo(); literal2.echo();
+
+"Test 6: -42.0 (literal)".echo();
+literal3 = -42.0;
+"Result: ".echo(); literal3.echo(); 

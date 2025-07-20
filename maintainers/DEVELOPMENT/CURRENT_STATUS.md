@@ -40,25 +40,41 @@
 
 ## 🚀 **IMMEDIATE PRIORITY (Current Session)**
 
-### **Operator Bug Fixes** (HIGH PRIORITY - Week 1)
-**Status**: Ready to start  
-**Estimated Effort**: 1-2 weeks  
+### **Operator Bug Fixes** (IN PROGRESS - Week 1)
+**Status**: Partially complete - Float comparison bugs FIXED ✅  
+**Estimated Effort**: 3-5 days remaining  
 **Source**: From backlog Item #11
 
-#### Critical Bugs to Fix:
-1. **STR > INT behavior**: `"hello" > 5` returns TRUE (should be FALSE)
-2. **Logical NOT FLOAT**: `!5.0` returns TRUE (should be FALSE)  
-3. **Logical NOT complex**: `!(5 && 3)` returns FALSE (should be TRUE)
-4. **STR <=> INT**: Returns numbers instead of errors
+#### ✅ COMPLETED FIXES:
+1. **Float comparison bugs**: `"55.3".float() == 55.3` now returns TRUE ✅
+   - Implemented precision normalization in equality operators
+   - Updated documentation with float comparison behavior
+   - All float comparison tests now passing
+
+#### ❌ REMAINING CRITICAL BUGS:
+1. **Logical NOT FLOAT negative**: `!(-5.0)` returns FALSE (should be TRUE)
+2. **Logical NOT complex**: `!(5 && 3)` returns FALSE (should be TRUE)
+3. **Logical NOT complex**: `!(0 || 5)` returns FALSE (should be TRUE)
+4. **STR > INT behavior**: `"hello" > 5` returns TRUE (should be FALSE)
+5. **STR <=> INT**: Returns numbers instead of errors
 
 #### Design Decisions to Confirm:
 - Array/List object ID comparison vs content comparison
 - Type conversion philosophy across operators
 
 #### Files to Update:
-- `source/grapa/GrapaLibRule.cpp` - Fix operator implementations
-- `test/operators/` - Add test cases for fixes
-- `docs/docs/syntax/operator.md` - Update with fixes
+- `source/grapa/GrapaLibRule.cpp` - Fix remaining operator implementations
+- `test/core/test_operator_bugs.grc` - Test script for remaining bugs
+- `docs/docs/syntax/operator.md` - Updated with float comparison fixes
+- `docs/docs/type/float.md` - Added float comparison documentation
+
+#### Next Session Priority:
+1. **Fix Logical NOT bugs** (highest priority - affects boolean logic)
+   - `!(-5.0)` should return TRUE
+   - `!(5 && 3)` should return TRUE  
+   - `!(0 || 5)` should return TRUE
+2. **Fix STR > INT comparison** - `"hello" > 5` should return FALSE
+3. **Fix STR <=> INT comparison** - Should return errors, not numbers
 
 ### **Cryptographic Features Stabilization** (HIGH PRIORITY - Week 2)
 **Status**: Ready to start  

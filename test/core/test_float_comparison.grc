@@ -1,0 +1,37 @@
+"Testing float comparison fixes".echo()
+
+"Test 1: isint() on float string".echo()
+"55.3".isint().echo()
+
+"Test 2: float conversion".echo()
+"55.3".float().echo()
+
+"Test 3: float comparison with literal".echo()
+if ("55.3".float()==55.3)
+    "PASS: 55.3.float()==55.3 returns true".echo()
+else
+    "FAIL: 55.3.float()==55.3 returns false".echo()
+
+"Test 4: string comparison".echo()
+if ("55.3".float().str()=="55.3")
+    "PASS: 55.3.float().str()==55.3 returns true".echo()
+else
+    "FAIL: 55.3.float().str()==55.3 returns false".echo()
+
+"Test 5: other float comparisons".echo()
+if ("123.456".float()==123.456)
+    "PASS: 123.456.float()==123.456 returns true".echo()
+else
+    "FAIL: 123.456.float()==123.456 returns false".echo()
+
+"Test 6: negative float".echo()
+if ("-42.0".float()==-42.0)
+    "PASS: -42.0.float()==-42.0 returns true".echo()
+else
+    "FAIL: -42.0.float()==-42.0 returns false".echo()
+
+"Test 7: non-numeric string should not match".echo()
+if ("hello".float()==5.0)
+    "FAIL: hello.float()==5.0 returns true (should be false)".echo()
+else
+    "PASS: hello.float()==5.0 returns false".echo() 

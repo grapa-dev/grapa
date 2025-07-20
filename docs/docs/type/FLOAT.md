@@ -82,5 +82,41 @@ The binary represenation for a grapa $FLOAT includes the items returned from the
 0x6D96CB65B2D96CB65B2D96CB65B2D96CB65B2D96CB65B3AAB
 ```
 
+## Float Comparisons
+
+Grapa handles float comparisons intelligently by normalizing precision settings during comparison operations. This ensures consistent behavior when comparing float literals with string-converted floats.
+
+### Comparison Behavior
+
+```grapa
+/* Direct float comparisons work correctly */
+55.3 == 55.3;                    /* true */
+123.456 == 123.456;              /* true */
+
+/* String-to-float comparisons work correctly */
+"55.3".float() == 55.3;          /* true */
+"123.456".float() == 123.456;    /* true */
+
+/* Mixed type comparisons work correctly */
+55.3 == "55.3".float();          /* true */
+"123.456".float() == 123.456;    /* true */
+
+/* Non-numeric strings don't match */
+"hello".float() == 5.0;          /* false */
+```
+
+### Precision Normalization
+
+When comparing floats, Grapa automatically normalizes both operands to use the same precision settings as the `.float()` method. This ensures that:
+
+- Float literals and string-converted floats compare correctly
+- Precision differences don't cause unexpected comparison failures
+- The same precision settings are applied to both operands
+
+### Best Practices
+
+- Use the `.float()` method when converting strings to floats for consistent precision
+- Float comparisons work correctly regardless of how the values were created
+- Non-numeric strings converted to floats will not match numeric values
 
 

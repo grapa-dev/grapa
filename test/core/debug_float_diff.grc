@@ -1,0 +1,16 @@
+"Debugging float precision differences".echo();
+
+"Test 1: 55.3.float() - 55.3".echo();
+diff1 = 55.3.float() - 55.3;
+"Difference: ".echo(); diff1.echo();
+"Absolute difference: ".echo(); (diff1 < 0 ? -diff1 : diff1).echo();
+
+"Test 2: 123.456.float() - 123.456".echo();
+diff2 = 123.456.float() - 123.456;
+"Difference: ".echo(); diff2.echo();
+"Absolute difference: ".echo(); (diff2 < 0 ? -diff2 : diff2).echo();
+
+"Test 3: -42.0.float() - (-42.0)".echo();
+diff3 = -42.0.float() - (-42.0);
+"Difference: ".echo(); diff3.echo();
+"Absolute difference: ".echo(); (diff3 < 0 ? -diff3 : diff3).echo(); 

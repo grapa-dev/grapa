@@ -1,0 +1,31 @@
+"Debugging string comparison for floats".echo()
+
+"Test 1: String conversion of float literal".echo()
+float_literal = 55.3;
+float_literal_str = float_literal.str();
+float_literal_str.echo();
+
+"Test 2: String conversion of string-to-float".echo()
+string_float = "55.3".float();
+string_float_str = string_float.str();
+string_float_str.echo();
+
+"Test 3: Direct comparison of strings".echo()
+if (float_literal_str == string_float_str)
+    "PASS: String representations match".echo()
+else
+    "FAIL: String representations don't match".echo()
+
+"Test 4: Another example".echo()
+float_literal2 = 123.456;
+string_float2 = "123.456".float();
+float_literal2_str = float_literal2.str();
+string_float2_str = string_float2.str();
+
+float_literal2_str.echo();
+string_float2_str.echo();
+
+if (float_literal2_str == string_float2_str)
+    "PASS: String representations match".echo()
+else
+    "FAIL: String representations don't match".echo() 

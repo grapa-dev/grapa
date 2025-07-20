@@ -1,0 +1,18 @@
+/* Test to check if isdigit is working correctly */
+
+"Testing isdigit function:".echo();
+"isdigit('h'): ".echo();
+isdigit('h').echo();
+"\n".echo();
+
+"isdigit('5'): ".echo();
+isdigit('5').echo();
+"\n".echo();
+
+"isdigit('0'): ".echo();
+isdigit('0').echo();
+"\n".echo();
+
+"isdigit('9'): ".echo();
+isdigit('9').echo();
+"\n".echo(); 

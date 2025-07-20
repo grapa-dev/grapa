@@ -1,0 +1,23 @@
+"Debugging float precision".echo()
+
+"Test 1: Direct float comparison".echo()
+(123.456==123.456).echo()
+
+"Test 2: Float conversion and comparison".echo()
+"123.456".float().echo()
+(123.456).echo()
+("123.456".float()==123.456).echo()
+
+"Test 3: String representation".echo()
+"123.456".float().str().echo()
+(123.456).str().echo()
+
+"Test 4: Test with simpler numbers".echo()
+"5.0".float().echo()
+(5.0).echo()
+("5.0".float()==5.0).echo()
+
+"Test 5: Test with integers".echo()
+"42".float().echo()
+(42.0).echo()
+("42".float()==42.0).echo() 

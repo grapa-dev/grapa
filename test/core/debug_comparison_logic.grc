@@ -1,0 +1,25 @@
+"Debugging comparison logic".echo()
+
+"Test 1: Direct comparison".echo()
+if (55.3=="55.3".float())
+    "PASS: 55.3==55.3.float() returns true".echo()
+else
+    "FAIL: 55.3==55.3.float() returns false".echo()
+
+"Test 2: Both using float() method".echo()
+if ((55.3).float()=="55.3".float())
+    "PASS: (55.3).float()==55.3.float() returns true".echo()
+else
+    "FAIL: (55.3).float()==55.3.float() returns false".echo()
+
+"Test 3: Test the actual values".echo()
+val1 = 55.3;
+val2 = "55.3".float();
+val1.echo();
+val2.echo();
+
+"Test 4: Test string representations".echo()
+val1_str = val1.str();
+val2_str = val2.str();
+val1_str.echo();
+val2_str.echo(); 

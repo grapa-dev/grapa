@@ -240,6 +240,11 @@ Performs equality comparison with object ID comparison for complex types.
 5.0 == 5;                 /* true */
 5 == 5.0;                 /* true */
 
+/* Float comparisons with precision normalization */
+55.3 == 55.3;             /* true */
+"55.3".float() == 55.3;   /* true (normalized precision) */
+55.3 == "55.3".float();   /* true (normalized precision) */
+
 /* String equality */
 "hello" == "hello";       /* true */
 "hello" == "world";       /* false */
@@ -716,6 +721,11 @@ true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
 - **Logical NOT FLOAT bugs**: `!5.0` returns true (should be false)
 - **Ternary quirks**: Form 1 has inverted logic, Form 3 has unexpected behavior
 - **Array comparison**: Uses object ID instead of content comparison
+
+### Float Comparison Behavior
+- **Precision normalization**: Float comparisons automatically normalize precision settings
+- **String-to-float**: `"55.3".float() == 55.3` works correctly due to precision normalization
+- **Mixed comparisons**: Float literals and string-converted floats compare consistently
 
 ## Advanced Features
 
