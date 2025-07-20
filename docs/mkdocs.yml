@@ -63,6 +63,9 @@ plugins:
         - "**/ADVANCED_TOPICS/**"
   - tags
 
+extra_javascript:
+  - javascripts/search-fix.js
+
 nav:
   - Home: index.md
   - Getting Started:
