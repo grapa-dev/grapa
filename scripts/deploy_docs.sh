@@ -150,11 +150,45 @@ build_user_docs() {
         exit 1
     fi
     
+    # Validate case sensitivity - check for uppercase files/folders
+    validate_case_sensitivity
+    
     # Generate deployment fingerprint for verification
     generate_deployment_fingerprint
     
     log_info "Build verification completed"
     cd "$REPO_ROOT"
+}
+
+# Function to validate case sensitivity
+validate_case_sensitivity() {
+    log_info "Validating case sensitivity - checking for uppercase files/folders..."
+    
+    # Find all files and directories in the site directory
+    local uppercase_items=()
+    
+    # Check for uppercase directories and files
+    while IFS= read -r -d '' item; do
+        local basename=$(basename "$item")
+        # Check if the basename contains any uppercase letters
+        if [[ "$basename" =~ [A-Z] ]]; then
+            uppercase_items+=("$item")
+        fi
+    done < <(find "$SITE_DIR" -mindepth 1 -maxdepth 1 -print0)
+    
+    # If we found uppercase items, report them and fail
+    if [ ${#uppercase_items[@]} -gt 0 ]; then
+        log_error "Found uppercase files/folders in build output:"
+        for item in "${uppercase_items[@]}"; do
+            local relative_path="${item#$SITE_DIR/}"
+            log_error "  - $relative_path"
+        done
+        log_error "All files and folders must use lowercase naming for case-sensitive compatibility."
+        log_error "Please fix the navigation configuration in mkdocs.yml to use lowercase keys."
+        exit 1
+    fi
+    
+    log_success "Case sensitivity validation passed - all files/folders use lowercase naming"
 }
 
 # Function to generate deployment fingerprint
