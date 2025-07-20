@@ -235,11 +235,10 @@ copy_site_files() {
     # Copy site files from main branch
     git checkout "$MAIN_BRANCH" -- "$SITE_DIR/"
     
-    # Create docs directory and move files there (where GitHub Pages expects them)
+    # Move files to root of gh-pages branch (where GitHub Pages expects them)
     if [ -d "$SITE_DIR" ]; then
-        log_info "Creating docs directory and moving site files..."
-        mkdir -p docs
-        mv "$SITE_DIR"/* docs/ 2>/dev/null || true
+        log_info "Moving site files to root of deployment branch..."
+        mv "$SITE_DIR"/* . 2>/dev/null || true
         rmdir "$SITE_DIR" 2>/dev/null || true
         rmdir "$DOCS_DIR" 2>/dev/null || true
     else
@@ -248,8 +247,8 @@ copy_site_files() {
     fi
     
     # Verify key files exist
-    if [ ! -f "docs/index.html" ]; then
-        log_error "index.html not found in docs directory"
+    if [ ! -f "index.html" ]; then
+        log_error "index.html not found in root directory"
         exit 1
     fi
     
