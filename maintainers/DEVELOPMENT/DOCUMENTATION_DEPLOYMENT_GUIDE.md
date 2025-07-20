@@ -51,6 +51,29 @@ git add docs/
 git commit -m "Deploy latest documentation"
 ```
 
+**✅ RESOLVED (July 19, 2024)**: All documentation files now use consistent lowercase naming to prevent case sensitivity conflicts.
+
+#### 2a. Case Sensitivity Best Practices
+**✅ IMPLEMENTED**: All documentation files follow consistent lowercase naming convention.
+
+**Rules**:
+- All markdown files use lowercase with underscores: `api_reference.md`, `getting_started.md`
+- All directory names use lowercase with underscores: `use_cases/`, `migrations/`
+- All internal links use lowercase references
+- MkDocs configuration references lowercase filenames
+
+**Prevention**:
+```bash
+# Check for any remaining uppercase files
+find docs/docs -name "*[A-Z]*.md"
+
+# Check for any remaining uppercase directories
+find docs/docs -type d -name "*[A-Z]*"
+
+# Verify all links are lowercase
+grep -r "\.md" docs/docs/ | grep -i "[A-Z]"
+```
+
 #### 3. Built Site Cleanup
 **Problem**: Previous build artifacts interfere with deployment.
 
@@ -181,23 +204,31 @@ git push origin gh-pages --force
 
 ## Recent Deployment Work (July 19, 2024)
 
-### Documentation Consolidation & Navigation Updates
+### Case Sensitivity Fixes & Navigation Link Resolution
 **Status**: ✅ Successfully deployed  
-**Commit**: `a68f82b` on gh-pages branch  
+**Commit**: `c67155b` on gh-pages branch  
 **URL**: https://grapa-dev.github.io/grapa/
 
-#### Changes Deployed:
-1. **Operator Navigation Updates**:
-   - Updated operator page title to "Overview & Complete Reference: Operators"
-   - Fixed navigation structure in mkdocs.yml
-   - Enhanced user navigation experience
+#### Problem Identified:
+- Navigation links pointed to lowercase URLs (e.g., `/api_reference/`, `/examples/`)
+- Live site directories were uppercase (e.g., `/API_REFERENCE/`, `/EXAMPLES/`)
+- This caused "file not found" errors when users clicked navigation links
 
-2. **Maintainer Documentation Consolidation**:
-   - Consolidated 6 maintainer files into 3 unified files
-   - Created `CURRENT_STATUS.md` (unified development status)
-   - Created `LANGUAGE_ENHANCEMENT_ROADMAP.md` (unified language planning)
-   - Created `BUILD_SYSTEM.md` (unified build reference)
-   - Archived deprecated files to `INTERNAL_NOTES/ARCHIVED_WIP/consolidation_2024/`
+#### Changes Deployed:
+1. **File Renaming**:
+   - All root documentation files: `API_REFERENCE.md` → `api_reference.md`
+   - All migration files: `PYTHON_TO_GRAPA_MIGRATION.md` → `python_to_grapa_migration.md`
+   - All type files: `ARRAY.md` → `array.md`, `BOOL.md` → `bool.md`, etc.
+
+2. **Configuration Updates**:
+   - Updated `mkdocs.yml` to reference lowercase filenames
+   - Updated `mkdocs-maintainers.yml` for maintainer builds
+   - Fixed all internal markdown links to use lowercase references
+
+3. **Site Deployment**:
+   - Deployed corrected site with lowercase directory names
+   - All navigation links now work correctly
+   - No more "file not found" errors
 
 #### ✅ CORRECTED Deployment Process Used:
 ```bash
