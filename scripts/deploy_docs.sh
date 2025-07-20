@@ -232,11 +232,25 @@ prepare_deployment_branch() {
 copy_site_files() {
     log_info "Copying site files to deployment branch..."
     
+    # Debug: Show current directory and site directory
+    log_info "Current directory: $(pwd)"
+    log_info "Site directory: $SITE_DIR"
+    log_info "Site directory exists: $([ -d "$SITE_DIR" ] && echo "YES" || echo "NO")"
+    
     # Copy site files from current build (not committed files)
     if [ -d "$SITE_DIR" ]; then
         log_info "Moving site files to root of deployment branch..."
+        # List what's in the site directory
+        log_info "Contents of site directory:"
+        ls -la "$SITE_DIR" | head -10
+        
         # Use cp -r to copy all files including hidden ones
         cp -r "$SITE_DIR"/. . 2>/dev/null || true
+        
+        # Debug: Show what was copied
+        log_info "Contents after copy:"
+        ls -la | head -10
+        
         rm -rf "$SITE_DIR" 2>/dev/null || true
         rmdir "$DOCS_DIR" 2>/dev/null || true
     else
