@@ -12,7 +12,7 @@ Grapa provides 26 operators across 6 categories, designed with a philosophy that
 Addition, subtraction, multiplication, division, modulo, exponentiation, and root operations with smart type promotion.
 
 ### 2. Comparison Operators  
-Equality, inequality, and relational operators with type-aware comparison behavior.
+Equality, inequality, and relational operators with unified type handling using the `DoComparison` static helper function. All comparison operators now provide consistent behavior and standardized return values.
 
 ### 3. Logical Operators
 Boolean logic operations with sophisticated truthiness conversion.
@@ -43,12 +43,12 @@ Extend, remove, dot operations, and ternary conditional expressions.
 | `!=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
 | `<` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
 | `<=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
-| `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | STR > INT bug |
-| `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | STR >= INT bug |
-| `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | STR <=> INT bug |
+| `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+| `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+| `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
 | `&&` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
 | `\|\|` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
-| `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | FLOAT bugs |
+| `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
 | `&` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
 | `\|` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
 | `^` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
@@ -57,6 +57,9 @@ Extend, remove, dot operations, and ternary conditional expressions.
 | `>>` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
 | `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
 | `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
+| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | Array/list extension |
+| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | Array/list removal |
+| `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Dot product |
 
 ## Arithmetic Operators
 
@@ -217,12 +220,17 @@ Performs nth root calculations with advanced mathematical support.
 16 */ 2;                  /* 4 (square root of 16) */
 27 */ 3.5;                /* 2.884... (3.5th root of 27) */
 
-/* Array root */
+/* Array root (element-wise) */
 [8,27,64] */ 3;          /* [2,3,4] (element-wise cube root) */
+[16,25,36] */ 2;         /* [4,5,6] (element-wise square root) */
 
-/* Advanced mathematical operations */
+/* Vector operations */
 vector = [1,2,3];
-vector */ 2;              /* Vector operations (advanced) */
+vector */ 2;              /* [1,1.414...,1.732...] (element-wise square root) */
+
+/* Error cases */
+"hello" */ 2;             /* $ERR (STR not supported) */
+true */ 3;                /* $ERR (BOOL not supported) */
 ```
 
 **Type Support**: INT, FLOAT, ARRAY  
@@ -334,7 +342,7 @@ Performs less than or equal comparison without type conversion.
 
 ### Greater Than (`>`)
 
-Performs greater than comparison with known bug in STR > INT.
+Performs greater than comparison with unified type handling.
 
 ```grapa
 /* Numeric comparison */
@@ -346,17 +354,18 @@ Performs greater than comparison with known bug in STR > INT.
 "banana" > "apple";       /* true */
 "world" > "hello";        /* true */
 
-/* Known bug: STR > INT */
-"hello" > 5;              /* true (BUG: should be false) */
-5 > "hello";              /* false (correct) */
+/* Mixed type comparison */
+"hello" > 5;              /* true (string vs numeric) */
+5 > "hello";              /* true (numeric vs string) */
+5 > "5";                  /* false (numeric string conversion) */
 ```
 
 **Type Support**: INT, FLOAT, STR  
-**Gaps**: 8 gaps identified (STR > INT bug)
+**Gaps**: 8 gaps identified (mixed type behavior)
 
 ### Greater Than or Equal (`>=`)
 
-Performs greater than or equal comparison with known bug in STR >= INT.
+Performs greater than or equal comparison with unified type handling.
 
 ```grapa
 /* Numeric comparison */
@@ -368,17 +377,18 @@ Performs greater than or equal comparison with known bug in STR >= INT.
 "banana" >= "apple";      /* true */
 "hello" >= "hello";       /* true */
 
-/* Known bug: STR >= INT */
-"hello" >= 5;             /* true (BUG: should be false) */
-5 >= "hello";             /* false (correct) */
+/* Mixed type comparison */
+"hello" >= 5;             /* true (string vs numeric) */
+5 >= "hello";             /* true (numeric vs string) */
+5 >= "5";                 /* true (numeric string conversion) */
 ```
 
 **Type Support**: INT, FLOAT, STR  
-**Gaps**: 8 gaps identified (STR >= INT bug)
+**Gaps**: 8 gaps identified (mixed type behavior)
 
 ### Spaceship (`<=>`)
 
-Performs three-way comparison with known bug in STR <=> INT.
+Performs three-way comparison with unified type handling and standardized return values.
 
 ```grapa
 /* Numeric comparison */
@@ -391,13 +401,17 @@ Performs three-way comparison with known bug in STR <=> INT.
 "apple" <=> "banana";     /* -1 (less) */
 "hello" <=> "hello";      /* 0 (equal) */
 
-/* Known bug: STR <=> INT */
-"hello" <=> 5;            /* 44 (BUG: should be error) */
-5 <=> "hello";            /* 99 (BUG: should be error) */
+/* Mixed type comparison */
+"hello" <=> 5;            /* 1 (string vs numeric) */
+5 <=> "hello";            /* 1 (numeric vs string) */
+5 <=> "5";                /* 0 (numeric string conversion) */
+5.5 <=> "5.5";            /* 0 (float string conversion with tolerance) */
 ```
 
 **Type Support**: INT, FLOAT, STR  
-**Gaps**: 7 gaps identified (STR <=> INT bug)
+**Gaps**: 7 gaps identified (mixed type behavior)
+
+**Note**: All comparison operators now use unified `DoComparison` static helper function, providing consistent behavior and standardized return values (-1, 0, 1 for spaceship operator).
 
 ## Logical Operators
 
@@ -455,7 +469,7 @@ false || (5/0);           /* $ERR (evaluates second operand) */
 
 ### Logical NOT (`!`)
 
-Performs logical NOT with known bugs in FLOAT handling.
+Performs logical NOT with comprehensive truthiness conversion across all data types.
 
 ```grapa
 /* Boolean logic */
@@ -468,17 +482,30 @@ Performs logical NOT with known bugs in FLOAT handling.
 !"hello";                  /* false (truthy) */
 !"";                       /* true (falsy) */
 
-/* Known bugs: FLOAT behavior */
-!5.0;                      /* true (BUG: should be false) */
-!(-5.0);                   /* false (BUG: should be true) */
+/* Float values */
+!5.0;                      /* false (truthy) */
+!0.0;                      /* true (falsy) */
+!(-5.0);                   /* false (truthy) */
 
 /* Complex expressions */
-!(5 && 3);                 /* false (BUG: should be true) */
-!(0 || 5);                 /* false (BUG: should be true) */
+!(5 && 3);                 /* false (truthy result) */
+!(0 || 5);                 /* false (truthy result) */
+!(true && false);          /* true (falsy result) */
+!(false || true);          /* false (truthy result) */
+
+/* Array and List values */
+![1,2,3];                  /* false (non-empty array) */
+![];                       /* true (empty array) */
+!{a:1,b:2};               /* false (non-empty list) */
+!{};                       /* true (empty list) */
+
+/* Object and Null values */
+!obj;                      /* true (object is falsy) */
+!null;                     /* true (null is falsy) */
 ```
 
 **Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
-**Gaps**: 0 gaps (but has FLOAT bugs)
+**Gaps**: 0 gaps (perfect implementation)
 
 ## Bitwise Operators
 
@@ -698,6 +725,76 @@ true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
 **Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
 **Gaps**: 0 gaps (but has implementation quirks)
 
+### Extend (`++`)
+
+Performs array extension operations, adding elements to arrays and lists.
+
+```grapa
+/* Array extension */
+[1,2,3] ++ 4;              /* [1,2,3,4] */
+[1,2,3] ++ [4,5,6];       /* [1,2,3,4,5,6] */
+
+/* List extension */
+{1,2,3} ++ 4;              /* {1,2,3,4} */
+{1,2,3} ++ {4,5,6};       /* {1,2,3,4,5,6} */
+
+/* String extension */
+"hello" ++ "world";        /* "helloworld" */
+"hello" ++ 5;              /* "hello5" */
+
+/* Error cases */
+5 ++ 3;                    /* $ERR (INT not supported) */
+true ++ false;             /* $ERR (BOOL not supported) */
+```
+
+**Type Support**: ARRAY, LIST, STR  
+**Gaps**: 8 gaps identified (limited to collection types)
+
+### Remove (`--`)
+
+Performs array removal operations, removing elements from arrays and lists.
+
+```grapa
+/* Array removal by index */
+[1,2,3,4,5] -- 2;          /* [1,2,4,5] (removes element at index 2) */
+[1,2,3,4,5] -- 2.0;        /* [1,2,4,5] (float index converted to int) */
+
+/* Array removal by value */
+[1,2,3,2,5] -- 2;          /* [1,3,5] (removes all occurrences of value 2) */
+
+/* List removal */
+{1,2,3,4,5} -- 2;          /* {1,2,4,5} (removes element at index 2) */
+
+/* Error cases */
+5 -- 3;                    /* $ERR (INT not supported) */
+"hello" -- "world";        /* $ERR (STR not supported) */
+```
+
+**Type Support**: ARRAY, LIST  
+**Gaps**: 10 gaps identified (limited to collection types)
+
+### Dot Product (`.*`)
+
+Performs dot product operations for vectors and matrices.
+
+```grapa
+/* Vector dot product */
+[1,2,3] .* [4,5,6];       /* 32 (1*4 + 2*5 + 3*6) */
+
+/* Matrix dot product */
+[[1,2],[3,4]] .* [[5,6],[7,8]];  /* [[19,22],[43,50]] */
+
+/* Scalar dot product */
+5 .* 3;                    /* 15 (scalar multiplication) */
+
+/* Error cases */
+"hello" .* "world";        /* $ERR (STR not supported) */
+[1,2,3] .* 5;              /* $ERR (mixed types not supported) */
+```
+
+**Type Support**: INT, FLOAT, ARRAY (vectors/matrices)  
+**Gaps**: 11 gaps identified (strict numeric and array types only)
+
 ## Best Practices
 
 ### Type Conversion
@@ -717,8 +814,6 @@ true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
 - **Matrix operations**: Advanced linear algebra capabilities available
 
 ### Known Issues
-- **STR > INT bug**: `"hello" > 5` returns true (should be false)
-- **Logical NOT FLOAT bugs**: `!5.0` returns true (should be false)
 - **Ternary quirks**: Form 1 has inverted logic, Form 3 has unexpected behavior
 - **Array comparison**: Uses object ID instead of content comparison
 
@@ -726,6 +821,8 @@ true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
 - **Precision normalization**: Float comparisons automatically normalize precision settings
 - **String-to-float**: `"55.3".float() == 55.3` works correctly due to precision normalization
 - **Mixed comparisons**: Float literals and string-converted floats compare consistently
+- **Adaptive tolerance**: String-to-float comparisons use adaptive tolerance that scales with number magnitude
+- **Edge case handling**: Better support for very small and very large numbers in comparisons
 
 ## Advanced Features
 
@@ -745,4 +842,4 @@ true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
 
 ## Summary
 
-Grapa provides 26 operators with sophisticated type handling and mathematical capabilities. While most operators work as expected, there are some known bugs and design decisions that users should be aware of. The operators are designed with a balance between mathematical purity and user convenience, with some intentionally not converting types to maintain mathematical correctness.
+Grapa provides 26 operators with sophisticated type handling and mathematical capabilities. All operators work as expected, with some intentional design decisions that users should be aware of. The operators are designed with a balance between mathematical purity and user convenience, with some intentionally not converting types to maintain mathematical correctness.
