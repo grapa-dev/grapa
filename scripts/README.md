@@ -82,8 +82,10 @@ GitHub Actions workflow for automated deployment.
 - Returns to `main` branch
 
 ### 4. Verification
-- Checks site accessibility
-- Provides deployment status
+- **Fingerprint-based verification**: Creates unique deployment fingerprint and verifies it's live
+- **Content verification**: Checks for expected content elements
+- **Retry logic**: Up to 12 attempts over 2 minutes to verify deployment
+- **Fallback verification**: Multiple verification methods ensure reliability
 
 ## Common Issues and Solutions
 
@@ -126,6 +128,16 @@ python -m mkdocs build --verbose
 ```bash
 git remote -v
 git push origin main  # Test push access
+```
+
+### Issue: Verification fails
+**Solution:** The script will retry automatically, but you can:
+```bash
+# Check if fingerprint file exists for manual verification
+cat .deployment-fingerprint
+
+# Manually check the live site
+curl -s https://grapa-dev.github.io/grapa/deployment-fingerprint.txt
 ```
 
 ## Troubleshooting

@@ -81,7 +81,9 @@ Comprehensive guide covering:
 - Git repository and branch checks
 - Python and MkDocs installation verification
 - Build output validation
-- Site accessibility testing
+- **Deployment fingerprint generation and verification**
+- **Content-based verification with retry logic**
+- **Site accessibility testing**
 
 ### Flexible Options
 - Dry run mode for testing
@@ -123,9 +125,12 @@ Comprehensive guide covering:
 ### 4. Verification Phase
 ```bash
 # Verify deployment
+- Generate unique deployment fingerprint
 - Check site accessibility
-- Provide deployment status
-- Note GitHub Pages timing
+- Verify fingerprint is live on site
+- Fallback to content verification
+- Retry up to 12 times over 2 minutes
+- Provide detailed deployment status
 ```
 
 ## Troubleshooting
@@ -262,6 +267,59 @@ Key variables in `deploy_docs.sh`:
 - Script can be used alongside existing workflows
 - No breaking changes to documentation structure
 
+## Deployment Verification System
+
+### How Verification Works
+
+The deployment system includes a sophisticated verification mechanism that ensures the live site actually contains the expected deployment:
+
+#### 1. Deployment Fingerprint Generation
+- **Unique identifier**: Creates a timestamp and git commit-based fingerprint
+- **Deployment file**: Stores fingerprint in `deployment-fingerprint.txt` on the live site
+- **Local tracking**: Maintains fingerprint locally for verification
+
+#### 2. Multi-Stage Verification
+- **Primary verification**: Checks for deployment fingerprint on live site
+- **Fallback verification**: Content-based verification if fingerprint unavailable
+- **Retry logic**: Up to 12 attempts over 2 minutes to verify deployment
+
+#### 3. Verification Checks
+- **Site accessibility**: Ensures site is reachable
+- **Fingerprint match**: Verifies expected deployment is live
+- **Content validation**: Checks for expected page elements
+- **Search functionality**: Validates search features are working
+
+#### 4. Verification Output
+- **Success indicators**: Clear ✅/❌ status with detailed messages
+- **Timing information**: Shows verification attempts and timing
+- **Manual fallback**: Preserves fingerprint for manual verification if needed
+
+### Verification Example
+
+```bash
+[INFO] Verifying deployment...
+[INFO] Expected deployment fingerprint: GRAPA_DEPLOYMENT_1753048937_3029aec
+[INFO] Verification attempt 1/12...
+[INFO] Deployment fingerprint not found yet, checking site accessibility...
+[INFO] Verification attempt 2/12...
+[SUCCESS] ✅ Deployment fingerprint verified!
+[SUCCESS] ✅ Site contains the expected deployment at https://grapa-dev.github.io/grapa/
+```
+
+### Manual Verification
+
+If automated verification fails, you can manually verify:
+
+```bash
+# Check expected fingerprint
+cat .deployment-fingerprint
+
+# Check live site fingerprint
+curl -s https://grapa-dev.github.io/grapa/deployment-fingerprint.txt
+
+# Compare the two to verify deployment
+```
+
 ## Security Considerations
 
 ### GitHub Actions
@@ -305,4 +363,6 @@ When modifying the deployment system:
 - ✅ **Case sensitivity**: Consistent lowercase naming
 - ✅ **Build failures**: Comprehensive validation
 - ✅ **Deployment errors**: Clear error messages and recovery
-- ✅ **Manual steps**: Fully automated process 
+- ✅ **Manual steps**: Fully automated process
+- ✅ **Verification uncertainty**: Fingerprint-based deployment verification
+- ✅ **Manual checking**: Automated verification with retry logic 
