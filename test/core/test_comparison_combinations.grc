@@ -1,0 +1,93 @@
+# Test all comparison combinations for spaceship operator (<=>)
+# This tests both directions: INT vs STR and STR vs INT, etc.
+
+echo("=== Testing Spaceship Operator (<=>) Combinations ===")
+
+# Test INT vs INT
+echo("\n--- INT vs INT ---")
+echo("5 <=> 3 = ", 5 <=> 3)
+echo("3 <=> 5 = ", 3 <=> 5)
+echo("5 <=> 5 = ", 5 <=> 5)
+
+# Test FLOAT vs FLOAT
+echo("\n--- FLOAT vs FLOAT ---")
+echo("5.5 <=> 3.3 = ", 5.5 <=> 3.3)
+echo("3.3 <=> 5.5 = ", 3.3 <=> 5.5)
+echo("5.5 <=> 5.5 = ", 5.5 <=> 5.5)
+
+# Test STR vs STR
+echo("\n--- STR vs STR ---")
+echo("'hello' <=> 'world' = ", 'hello' <=> 'world')
+echo("'world' <=> 'hello' = ", 'world' <=> 'hello')
+echo("'hello' <=> 'hello' = ", 'hello' <=> 'hello')
+
+# Test INT vs FLOAT
+echo("\n--- INT vs FLOAT ---")
+echo("5 <=> 3.3 = ", 5 <=> 3.3)
+echo("3 <=> 5.5 = ", 3 <=> 5.5)
+echo("5 <=> 5.0 = ", 5 <=> 5.0)
+
+# Test FLOAT vs INT
+echo("\n--- FLOAT vs INT ---")
+echo("5.5 <=> 3 = ", 5.5 <=> 3)
+echo("3.3 <=> 5 = ", 3.3 <=> 5)
+echo("5.0 <=> 5 = ", 5.0 <=> 5)
+
+# Test INT vs STR (numeric string)
+echo("\n--- INT vs STR (numeric) ---")
+echo("5 <=> '3' = ", 5 <=> '3')
+echo("3 <=> '5' = ", 3 <=> '5')
+echo("5 <=> '5' = ", 5 <=> '5')
+
+# Test STR vs INT (numeric string)
+echo("\n--- STR vs INT (numeric) ---")
+echo("'5' <=> 3 = ", '5' <=> 3)
+echo("'3' <=> 5 = ", '3' <=> 5)
+echo("'5' <=> 5 = ", '5' <=> 5)
+
+# Test FLOAT vs STR (numeric string)
+echo("\n--- FLOAT vs STR (numeric) ---")
+echo("5.5 <=> '3.3' = ", 5.5 <=> '3.3')
+echo("3.3 <=> '5.5' = ", 3.3 <=> '5.5')
+echo("5.5 <=> '5.5' = ", 5.5 <=> '5.5')
+
+# Test STR vs FLOAT (numeric string)
+echo("\n--- STR vs FLOAT (numeric) ---")
+echo("'5.5' <=> 3.3 = ", '5.5' <=> 3.3)
+echo("'3.3' <=> 5.5 = ", '3.3' <=> 5.5)
+echo("'5.5' <=> 5.5 = ", '5.5' <=> 5.5)
+
+# Test INT vs STR (non-numeric string)
+echo("\n--- INT vs STR (non-numeric) ---")
+echo("5 <=> 'hello' = ", 5 <=> 'hello')
+echo("3 <=> 'world' = ", 3 <=> 'world')
+
+# Test STR vs INT (non-numeric string)
+echo("\n--- STR vs INT (non-numeric) ---")
+echo("'hello' <=> 5 = ", 'hello' <=> 5)
+echo("'world' <=> 3 = ", 'world' <=> 3)
+
+# Test FLOAT vs STR (non-numeric string)
+echo("\n--- FLOAT vs STR (non-numeric) ---")
+echo("5.5 <=> 'hello' = ", 5.5 <=> 'hello')
+echo("3.3 <=> 'world' = ", 3.3 <=> 'world')
+
+# Test STR vs FLOAT (non-numeric string)
+echo("\n--- STR vs FLOAT (non-numeric) ---")
+echo("'hello' <=> 5.5 = ", 'hello' <=> 5.5)
+echo("'world' <=> 3.3 = ", 'world' <=> 3.3)
+
+# Test BOOL comparisons
+echo("\n--- BOOL comparisons ---")
+echo("true <=> false = ", true <=> false)
+echo("false <=> true = ", false <=> true)
+echo("true <=> true = ", true <=> true)
+echo("false <=> false = ", false <=> false)
+
+# Test null comparisons
+echo("\n--- NULL comparisons ---")
+echo("null <=> null = ", null <=> null)
+echo("5 <=> null = ", 5 <=> null)
+echo("null <=> 5 = ", null <=> 5)
+
+echo("\n=== Test Complete ===") 

@@ -1,0 +1,237 @@
+/* Test script for float-to-float comparison operators */
+/* This tests the ==, !=, >, <, >=, <= operators between float values */
+
+("=== Testing Float-to-Float Comparison Operators ===").echo();
+
+/* Test 1: Basic equality comparisons */
+("\nTest 1: Basic equality comparisons").echo();
+f1 = 55.3;
+f2 = 55.3;
+f3 = 55.4;
+
+result1 = f1 == f2;
+("55.3 == 55.3 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Basic equality").echo();
+} else {
+    ("❌ FAIL: Basic equality").echo();
+}
+
+result2 = f1 == f3;
+("55.3 == 55.4 = " + result2.str()).echo();
+if (!result2) {
+    ("✅ PASS: Basic inequality").echo();
+} else {
+    ("❌ FAIL: Basic inequality").echo();
+}
+
+/* Test 2: Inequality operators */
+("\nTest 2: Inequality operators").echo();
+result1 = f1 != f2;
+("55.3 != 55.3 = " + result1.str()).echo();
+if (!result1) {
+    ("✅ PASS: Inequality with equal values").echo();
+} else {
+    ("❌ FAIL: Inequality with equal values").echo();
+}
+
+result2 = f1 != f3;
+("55.3 != 55.4 = " + result2.str()).echo();
+if (result2) {
+    ("✅ PASS: Inequality with different values").echo();
+} else {
+    ("❌ FAIL: Inequality with different values").echo();
+}
+
+/* Test 3: Greater than and less than */
+("\nTest 3: Greater than and less than").echo();
+result1 = f3 > f1;
+("55.4 > 55.3 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Greater than").echo();
+} else {
+    ("❌ FAIL: Greater than").echo();
+}
+
+result2 = f1 < f3;
+("55.3 < 55.4 = " + result2.str()).echo();
+if (result2) {
+    ("✅ PASS: Less than").echo();
+} else {
+    ("❌ FAIL: Less than").echo();
+}
+
+result3 = f1 > f3;
+("55.3 > 55.4 = " + result3.str()).echo();
+if (!result3) {
+    ("✅ PASS: Greater than (false case)").echo();
+} else {
+    ("❌ FAIL: Greater than (false case)").echo();
+}
+
+/* Test 4: Greater/less than or equal */
+("\nTest 4: Greater/less than or equal").echo();
+result1 = f1 >= f2;
+("55.3 >= 55.3 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Greater than or equal (equal case)").echo();
+} else {
+    ("❌ FAIL: Greater than or equal (equal case)").echo();
+}
+
+result2 = f3 >= f1;
+("55.4 >= 55.3 = " + result2.str()).echo();
+if (result2) {
+    ("✅ PASS: Greater than or equal (greater case)").echo();
+} else {
+    ("❌ FAIL: Greater than or equal (greater case)").echo();
+}
+
+result3 = f1 <= f2;
+("55.3 <= 55.3 = " + result3.str()).echo();
+if (result3) {
+    ("✅ PASS: Less than or equal (equal case)").echo();
+} else {
+    ("❌ FAIL: Less than or equal (equal case)").echo();
+}
+
+result4 = f1 <= f3;
+("55.3 <= 55.4 = " + result4.str()).echo();
+if (result4) {
+    ("✅ PASS: Less than or equal (less case)").echo();
+} else {
+    ("❌ FAIL: Less than or equal (less case)").echo();
+}
+
+/* Test 5: Precision edge cases */
+("\nTest 5: Precision edge cases").echo();
+f4 = 55.300;
+f5 = 55.300000;
+
+result1 = f1 == f4;
+("55.3 == 55.300 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Precision normalization (55.3 == 55.300)").echo();
+} else {
+    ("❌ FAIL: Precision normalization (55.3 == 55.300)").echo();
+}
+
+result2 = f1 == f5;
+("55.3 == 55.300000 = " + result2.str()).echo();
+if (result2) {
+    ("✅ PASS: Precision normalization (55.3 == 55.300000)").echo();
+} else {
+    ("❌ FAIL: Precision normalization (55.3 == 55.300000)").echo();
+}
+
+/* Test 6: Zero comparisons */
+("\nTest 6: Zero comparisons").echo();
+f6 = 0.0;
+f7 = 0.000;
+
+result1 = f6 == f7;
+("0.0 == 0.000 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Zero precision normalization").echo();
+} else {
+    ("❌ FAIL: Zero precision normalization").echo();
+}
+
+result2 = f6 > f7;
+("0.0 > 0.000 = " + result2.str()).echo();
+if (!result2) {
+    ("✅ PASS: Zero comparison (not greater)").echo();
+} else {
+    ("❌ FAIL: Zero comparison (not greater)").echo();
+}
+
+/* Test 7: Negative numbers */
+("\nTest 7: Negative numbers").echo();
+f8 = -55.3;
+f9 = -55.4;
+
+result1 = f8 == f8;
+("-55.3 == -55.3 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Negative equality").echo();
+} else {
+    ("❌ FAIL: Negative equality").echo();
+}
+
+result2 = f8 > f9;
+("-55.3 > -55.4 = " + result2.str()).echo();
+if (result2) {
+    ("✅ PASS: Negative greater than").echo();
+} else {
+    ("❌ FAIL: Negative greater than").echo();
+}
+
+result3 = f8 < f1;
+("-55.3 < 55.3 = " + result3.str()).echo();
+if (result3) {
+    ("✅ PASS: Negative vs positive").echo();
+} else {
+    ("❌ FAIL: Negative vs positive").echo();
+}
+
+/* Test 8: Very small numbers (testing adaptive tolerance) */
+("\nTest 8: Very small numbers (adaptive tolerance)").echo();
+f10 = 0.0000000001;
+f11 = 0.00000000010000000001;  // Very close to f10
+
+result1 = f10 == f11;
+("0.0000000001 == 0.00000000010000000001 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Adaptive tolerance for very small numbers").echo();
+} else {
+    ("❌ FAIL: Adaptive tolerance for very small numbers").echo();
+}
+
+/* Test 9: Large numbers (testing adaptive tolerance) */
+("\nTest 9: Large numbers (adaptive tolerance)").echo();
+f12 = 1000000.0;
+f13 = 1000000.0000000001;  // Very close to f12
+
+result1 = f12 == f13;
+("1000000.0 == 1000000.0000000001 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Adaptive tolerance for large numbers").echo();
+} else {
+    ("❌ FAIL: Adaptive tolerance for large numbers").echo();
+}
+
+/* Test 10: Complex calculations */
+("\nTest 10: Complex calculations").echo();
+f14 = (22).float() / 7;  // Pi approximation
+f15 = 3.14159;
+
+result1 = f14 == f15;
+("22/7 == 3.14159 = " + result1.str()).echo();
+if (result1) {
+    ("✅ PASS: Complex calculation equality").echo();
+} else {
+    ("❌ FAIL: Complex calculation equality").echo();
+}
+
+/* Test 11: Edge case - very close but not equal */
+("\nTest 11: Edge case - very close but not equal").echo();
+f16 = 1.0;
+f17 = 1.0000001;  // Should be different enough to not be equal
+
+result1 = f16 == f17;
+("1.0 == 1.0000001 = " + result1.str()).echo();
+if (!result1) {
+    ("✅ PASS: Close but not equal").echo();
+} else {
+    ("❌ FAIL: Close but not equal").echo();
+}
+
+result2 = f16 < f17;
+("1.0 < 1.0000001 = " + result2.str()).echo();
+if (result2) {
+    ("✅ PASS: Correct ordering for close values").echo();
+} else {
+    ("❌ FAIL: Correct ordering for close values").echo();
+}
+
+("=== Float-to-Float Comparison Testing Complete ===").echo(); 

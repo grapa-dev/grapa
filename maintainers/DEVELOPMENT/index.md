@@ -12,8 +12,8 @@ This directory contains all development-related documentation for the Grapa proj
 ## 📋 **Current Status & Planning**
 
 ### **🎯 Single Source of Truth**
-- **[CURRENT_STATUS.md](CURRENT_STATUS.md)** - **NEW**: Unified development status, priorities, and progress tracking
-- **[LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md)** - **NEW**: Comprehensive language development planning
+- **[CURRENT_STATUS.md](CURRENT_STATUS.md)** - **AUTHORITATIVE**: Single source of truth for all development status, priorities, and progress tracking
+- **[LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md)** - **DEPRECATED**: Content consolidated into CURRENT_STATUS.md
 
 ### **📚 Reference Documentation**
 - **[DOCUMENTATION_DEPLOYMENT_GUIDE.md](DOCUMENTATION_DEPLOYMENT_GUIDE.md)** - Complete documentation deployment process
@@ -36,14 +36,28 @@ All deprecated files have been moved to:
 ## 🎯 **Quick Start**
 
 1. **Check Current Status**: Read [CURRENT_STATUS.md](CURRENT_STATUS.md) for immediate priorities
-2. **Review Language Plans**: See [LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md) for development roadmap
+2. **Review Language Plans**: See [CURRENT_STATUS.md](CURRENT_STATUS.md) for language development roadmap
 3. **Build System**: Use [BUILD_SYSTEM.md](../BUILD_AND_DEPLOYMENT/BUILD_SYSTEM.md) for build instructions
 
 ## 📞 **Maintenance**
 
 - **Status Updates**: Update [CURRENT_STATUS.md](CURRENT_STATUS.md) when priorities change
-- **Language Planning**: Update [LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md) for new features
+- **Language Planning**: Update [CURRENT_STATUS.md](CURRENT_STATUS.md) for new features
 - **Build Changes**: Update [BUILD_SYSTEM.md](../BUILD_AND_DEPLOYMENT/BUILD_SYSTEM.md) for build system changes
+
+## 🛠️ **Code Creation Guidelines**
+
+### **📝 Grapa Code Creation Checklist**
+**CRITICAL**: Before creating any Grapa code (scripts, tests, examples), always:
+
+1. **Review Syntax Rules**: Check `docs/docs/syntax/basic_syntax.md` for current Grapa syntax
+2. **Use Block Comments**: Use `/* */` format, not `#` for comments
+3. **String Concatenation**: Wrap concatenation expressions in parentheses: `("text" + var.str()).echo()`
+4. **Escape Sequences**: Use proper escaping for special characters
+5. **Operator Precedence**: Use parentheses to ensure correct evaluation order
+6. **Test Syntax**: Validate syntax before running complex scripts
+
+**Reference**: The canonical syntax reference is `docs/docs/syntax/basic_syntax.md` - always consult this before writing Grapa code.
 
 ---
 

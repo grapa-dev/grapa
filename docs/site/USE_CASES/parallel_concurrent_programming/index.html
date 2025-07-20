@@ -3276,7 +3276,7 @@ lock_obj.lock();
 /* ... perform thread-safe operations on shared data ... */
 lock_obj.unlock();
 </code></pre></div></p>
-<p>See <a href="../../sys/thread/">Threading and Locking</a> and <a href="../../operators/function/">Function Operators: static and const</a> for details and best practices.</p>
+<p>See <a href="../../sys/thread/">Threading and Locking</a> and <a href="../../syntax/operator/">Function Operators: static and const</a> for details and best practices.</p>
 <p>Grapa's $thread, $net, and map/reduce/filter features enable true parallelism, overcoming Python's GIL and enabling high-performance data processing.</p>
 <p><strong>Note:</strong> Grapa is fully thread safe, but if you share mutable state between threads, you are responsible for the logic. Use a <code>$thread()</code> lock object if needed, or prefer immutable data and thread-local variables. See <a href="../../sys/thread/">Threading and Locking</a> for examples and best practices.</p>
 <h2 id="key-features-for-parallel-programming">Key Features for Parallel Programming:</h2>
@@ -3458,6 +3458,8 @@ threads.map(op(t) { t.join(); });
     
     
       <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="../../javascripts/search-fix.js"></script>
       
     
   </body>

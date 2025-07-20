@@ -25,24 +25,24 @@ Anyone who wants to validate Grapa functionality, run or write tests, or underst
 Run all tests in one command:
 ```bash
 # Windows
-.\grapa.exe -cfile "test/run_tests.grc"
+.\grapa.exe -f "test/infrastructure/run_tests.grc"
 
 # Linux/Mac
-./grapa -cfile "test/run_tests.grc"
+./grapa -f "test/infrastructure/run_tests.grc"
 ```
 
 ### Individual Test Categories
 ```bash
 # Capabilities test
-.\grapa.exe -cfile "test/grep/test_current_capabilities.grc"
+.\grapa.exe -f "test/grep/test_current_capabilities.grc"
 
 # Performance test
-.\grapa.exe -cfile "test/grep/test_performance_optimizations.grc"
+.\grapa.exe -f "test/grep/test_performance_optimizations.grc"
 
 # Feature-specific tests
-.\grapa.exe -cfile "test/grep/test_atomic_groups.grc"
-.\grapa.exe -cfile "test/grep/test_lookaround_assertions.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
+.\grapa.exe -f "test/grep/test_atomic_groups.grc"
+.\grapa.exe -f "test/grep/test_lookaround_assertions.grc"
+.\grapa.exe -f "test/grep/test_unicode_grapheme_clusters.grc"
 ```
 
 ### Python Test Suite
@@ -232,99 +232,99 @@ As of 2025, the test suite has been rationalized to reduce redundancy and improv
 Run all tests in one command:
 ```bash
 # Windows
-.\grapa.exe -cfile "test/run_tests.grc"
+.\grapa.exe -f "test/infrastructure/run_tests.grc"
 
 # Linux/Mac
-./grapa -cfile "test/run_tests.grc"
+./grapa -f "test/infrastructure/run_tests.grc"
 ```
 
 ### Individual Test Categories
 Run specific test categories:
 ```bash
 # Capabilities test
-.\grapa.exe -cfile "test/grep/test_current_capabilities.grc"
+.\grapa.exe -f "test/grep/test_current_capabilities.grc"
 
 # Performance tests
-.\grapa.exe -cfile "test/grep/test_performance_optimizations.grc"
-.\grapa.exe -cfile "test/grep/test_performance_debug.grc"
+.\grapa.exe -f "test/grep/test_performance_optimizations.grc"
+.\grapa.exe -f "test/grep/test_performance_debug.grc"
 
 # Combinatorial and option matrix tests
-.\grapa.exe -cfile "test/grep/test_option_combinations_matrix.grc"
-.\grapa.exe -cfile "test/grep/test_comprehensive_grep_combinations.grc"
-.\grapa.exe -cfile "test/grep/test_option_based_behavior.grc"
+.\grapa.exe -f "test/grep/test_option_combinations_matrix.grc"
+.\grapa.exe -f "test/grep/test_comprehensive_grep_combinations.grc"
+.\grapa.exe -f "test/grep/test_option_based_behavior.grc"
 
 # Context and merging tests
-.\grapa.exe -cfile "test/grep/test_context_lines.grc"
-.\grapa.exe -cfile "test/grep/test_context_merging.grc"
+.\grapa.exe -f "test/grep/test_context_lines.grc"
+.\grapa.exe -f "test/grep/test_context_merging.grc"
 
 # Edge case and stress tests
-.\grapa.exe -cfile "test/grep/test_grep_edge_cases.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_zero_length.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_invalid_patterns.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_context_boundaries.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_null_bytes.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_unicode_boundaries.grc"
-.\grapa.exe -cfile "test/grep/test_edge_case_precedence.grc"
-.\grapa.exe -cfile "test/grep/test_compositional_stress.grc"
-.\grapa.exe -cfile "test/grep/test_crash_fixes.grc"
+.\grapa.exe -f "test/grep/test_grep_edge_cases.grc"
+.\grapa.exe -f "test/grep/test_edge_case_zero_length.grc"
+.\grapa.exe -f "test/grep/test_edge_case_invalid_patterns.grc"
+.\grapa.exe -f "test/grep/test_edge_case_context_boundaries.grc"
+.\grapa.exe -f "test/grep/test_edge_case_null_bytes.grc"
+.\grapa.exe -f "test/grep/test_edge_case_unicode_boundaries.grc"
+.\grapa.exe -f "test/grep/test_edge_case_precedence.grc"
+.\grapa.exe -f "test/grep/test_compositional_stress.grc"
+.\grapa.exe -f "test/grep/test_crash_fixes.grc"
 
 # PCRE2 and rare feature tests
-.\grapa.exe -cfile "test/grep/test_multiline_and_rare_pcre2.grc"
-.\grapa.exe -cfile "test/grep/test_atomic_groups.grc"
-.\grapa.exe -cfile "test/grep/test_lookaround_assertions.grc"
-.\grapa.exe -cfile "test/grep/test_basic_pcre2.grc"
+.\grapa.exe -f "test/grep/test_multiline_and_rare_pcre2.grc"
+.\grapa.exe -f "test/grep/test_atomic_groups.grc"
+.\grapa.exe -f "test/grep/test_lookaround_assertions.grc"
+.\grapa.exe -f "test/grep/test_basic_pcre2.grc"
 
 # Delimiter and Unicode normalization tests
-.\grapa.exe -cfile "test/grep/test_custom_delimiters.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_normalization.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_o_option.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_pattern_debug.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_fix_verification.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_pattern_fix.grc"
-.\grapa.exe -cfile "test/grep/test_case_insensitive_unicode.grc"
-.\grapa.exe -cfile "test/grep/test_multiline_unicode.grc"
+.\grapa.exe -f "test/grep/test_custom_delimiters.grc"
+.\grapa.exe -f "test/grep/test_unicode_normalization.grc"
+.\grapa.exe -f "test/grep/test_unicode_grapheme_clusters.grc"
+.\grapa.exe -f "test/grep/test_unicode_o_option.grc"
+.\grapa.exe -f "test/grep/test_unicode_pattern_debug.grc"
+.\grapa.exe -f "test/grep/test_unicode_fix_verification.grc"
+.\grapa.exe -f "test/grep/test_unicode_pattern_fix.grc"
+.\grapa.exe -f "test/grep/test_case_insensitive_unicode.grc"
+.\grapa.exe -f "test/grep/test_multiline_unicode.grc"
 
 # Ripgrep compatibility and parity tests
-.\grapa.exe -cfile "test/grep/test_ripgrep_compatibility.grc"
-.\grapa.exe -cfile "test/grep/test_ripgrep_parity_features.grc"
-.\grapa.exe -cfile "test/grep/test_comprehensive_ripgrep_parity.grc"
-.\grapa.exe -cfile "test/grep/test_missing_ripgrep_features.grc"
+.\grapa.exe -f "test/grep/test_ripgrep_compatibility.grc"
+.\grapa.exe -f "test/grep/test_ripgrep_parity_features.grc"
+.\grapa.exe -f "test/grep/test_comprehensive_ripgrep_parity.grc"
+.\grapa.exe -f "test/grep/test_missing_ripgrep_features.grc"
 
 # 'o' option and match-only tests
-.\grapa.exe -cfile "test/grep/test_o_option_edge_cases.grc"
-.\grapa.exe -cfile "test/grep/test_o_option_comprehensive.grc"
-.\grapa.exe -cfile "test/grep/test_o_option_advanced_regex.grc"
-.\grapa.exe -cfile "test/grep/test_o_option_basic_fix.grc"
+.\grapa.exe -f "test/grep/test_o_option_edge_cases.grc"
+.\grapa.exe -f "test/grep/test_o_option_comprehensive.grc"
+.\grapa.exe -f "test/grep/test_o_option_advanced_regex.grc"
+.\grapa.exe -f "test/grep/test_o_option_basic_fix.grc"
 
 # Parallel and performance tests
-.\grapa.exe -cfile "test/grep/test_parallel_grep.grc"
-.\grapa.exe -cfile "test/grep/test_parallel_grep_basic.grc"
+.\grapa.exe -f "test/grep/test_parallel_grep.grc"
+.\grapa.exe -f "test/grep/test_parallel_grep_basic.grc"
 
 # JSON compliance test
-.\grapa.exe -cfile "test/grep/test_json_compliance.grc"
+.\grapa.exe -f "test/grep/test_json_compliance.grc"
 
 # Miscellaneous and additional feature tests
-.\grapa.exe -cfile "test/grep/test_f_flag_combinations.grc"
-.\grapa.exe -cfile "test/grep/test_fixes_verification.grc"
-.\grapa.exe -cfile "test/grep/test_targeted_fixes.grc"
-.\grapa.exe -cfile "test/grep/test_file_system_verification.grc"
-.\grapa.exe -cfile "test/grep/test_null_data_mode.grc"
-.\grapa.exe -cfile "test/grep/test_binary_mode.grc"
-.\grapa.exe -cfile "test/grep/test_output_formats.grc"
-.\grapa.exe -cfile "test/grep/test_word_boundary.grc"
-.\grapa.exe -cfile "test/grep/word_boundary_comprehensive.grc"
-.\grapa.exe -cfile "test/grep/test_zero_length_bug.grc"
-.\grapa.exe -cfile "test/grep/test_option_based_behavior.grc"
-.\grapa.exe -cfile "test/grep/test_unicode_grapheme_clusters.grc"
-.\grapa.exe -cfile "test/grep/test_error_handling.grc"
-.\grapa.exe -cfile "test/grep/test_pathological_patterns.grc"
-.\grapa.exe -cfile "test/grep/test_malformed_unicode.grc"
-.\grapa.exe -cfile "test/grep/test_ultra_large_lines.grc"
-.\grapa.exe -cfile "test/grep/test_grz_execution_methods.grc"
-.\grapa.exe -cfile "test/grep/test_grz_format.grc"
-.\grapa.exe -cfile "test/grep/test_grc_vs_grz_performance.grc"
-.\grapa.exe -cfile "test/grep/test_grc_vs_grz_performance_corrected.grc"
+.\grapa.exe -f "test/grep/test_f_flag_combinations.grc"
+.\grapa.exe -f "test/grep/test_fixes_verification.grc"
+.\grapa.exe -f "test/grep/test_targeted_fixes.grc"
+.\grapa.exe -f "test/grep/test_file_system_verification.grc"
+.\grapa.exe -f "test/grep/test_null_data_mode.grc"
+.\grapa.exe -f "test/grep/test_binary_mode.grc"
+.\grapa.exe -f "test/grep/test_output_formats.grc"
+.\grapa.exe -f "test/grep/test_word_boundary.grc"
+.\grapa.exe -f "test/grep/word_boundary_comprehensive.grc"
+.\grapa.exe -f "test/grep/test_zero_length_bug.grc"
+.\grapa.exe -f "test/grep/test_option_based_behavior.grc"
+.\grapa.exe -f "test/grep/test_unicode_grapheme_clusters.grc"
+.\grapa.exe -f "test/grep/test_error_handling.grc"
+.\grapa.exe -f "test/grep/test_pathological_patterns.grc"
+.\grapa.exe -f "test/grep/test_malformed_unicode.grc"
+.\grapa.exe -f "test/grep/test_ultra_large_lines.grc"
+.\grapa.exe -f "test/grep/test_grz_execution_methods.grc"
+.\grapa.exe -f "test/grep/test_grz_format.grc"
+.\grapa.exe -f "test/grep/test_grc_vs_grz_performance.grc"
+.\grapa.exe -f "test/grep/test_grc_vs_grz_performance_corrected.grc"
 
 # Note: All .grc files in test/grep/ are required for full grep test coverage.
 ```
@@ -333,7 +333,7 @@ Run specific test categories:
 For development and CI/CD, run the complete test suite:
 ```bash
 # Quick regression test
-.\grapa.exe -cfile "test/run_tests.grc"
+.\grapa.exe -f "test/run_tests.grc"
 ```
 
 ## Test Output

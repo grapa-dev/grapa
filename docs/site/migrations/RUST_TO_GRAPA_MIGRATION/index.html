@@ -2599,6 +2599,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="See Also">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-match-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom match() Function for Regex
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3392,6 +3407,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="See Also">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-match-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom match() Function for Regex
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3781,6 +3811,21 @@ value = obj.&quot;key&quot;;
 </ul>
 <hr />
 <p><em>If you have more Rust idioms you want mapped to Grapa, please open an issue or PR!</em> </p>
+<h3 id="custom-match-function-for-regex">Custom match() Function for Regex</h3>
+<p>Rust users often use <code>regex::Regex::is_match</code> for regex checks. You can define a similar function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>// Define a match function that returns true if the pattern is found
+match = op(&quot;text&quot;=&quot;&quot;, &quot;pattern&quot;=&quot;&quot;) {
+    text.grep(pattern, &quot;x&quot;).len() &gt; 0;
+};
+
+// Usage
+if (match(&quot;hello world&quot;, &quot;world&quot;)) {
+    &quot;Found!&quot;.echo();
+} else {
+    &quot;Not found.&quot;.echo();
+}
+</code></pre></div>
+<p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
 <blockquote>
 <p><strong>Clarification on .get() Usage:</strong>
 - <code>.get()</code> is <strong>required</strong> for <code>$file</code> and <code>$TABLE</code> access.
@@ -3932,6 +3977,8 @@ println(&quot;Hello from Grapa!&quot;);
     
     
       <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="../../javascripts/search-fix.js"></script>
       
     
   </body>

@@ -939,7 +939,7 @@ A comprehensive performance test file is available to verify optimizations:
 
 ```grapa
 /* Run performance tests */
-grapa -cfile "test_performance_optimizations.grc"
+grapa -f "test_performance_optimizations.grc"
 ```
 
 **Test Coverage**:
@@ -955,7 +955,7 @@ Verify current Unicode and regex capabilities:
 
 ```grapa
 /* Run comprehensive capability tests */
-grapa -cfile "test_current_capabilities.grc"
+grapa -f "test_current_capabilities.grc"
 ```
 
 **Test Coverage**:
@@ -979,19 +979,19 @@ Individual test files for specific features:
 
 ```grapa
 /* Test Unicode normalization and diacritic handling */
-grapa -cfile "test_grapheme_unicode_normalization.grc"
+grapa -f "test_grapheme_unicode_normalization.grc"
 
 /* Test advanced Unicode features */
-grapa -cfile "test_unicode_advanced_features.grc"
+grapa -f "test_unicode_advanced_features.grc"
 
 /* Test lookaround assertions */
-grapa -cfile "test_lookaround_assertions.grc"
+grapa -f "test_lookaround_assertions.grc"
 
 /* Test atomic groups */
-grapa -cfile "test_atomic_groups.grc"
+grapa -f "test_atomic_groups.grc"
 
 /* Test Unicode grapheme clusters */
-grapa -cfile "test_unicode_grapheme_clusters.grc"
+grapa -f "test_unicode_grapheme_clusters.grc"
 ```
 
 ### Regression Testing
@@ -999,8 +999,8 @@ To ensure no regressions after changes:
 
 ```grapa
 /* Run core functionality tests */
-grapa -cfile "test_current_capabilities.grc"
-grapa -cfile "test_performance_optimizations.grc"
+grapa -f "test_current_capabilities.grc"
+grapa -f "test_performance_optimizations.grc"
 
 /* Verify basic functionality */
 "Hello world".grep("world", "oj")       /* Should return matches */
@@ -1600,8 +1600,8 @@ log_content.grep("error", "A2B1io")  /* 2 lines after, 1 before, match-only, cas
 
 - **Running .grc Files on Windows:**
   - To run a .grc file, use the following command in PowerShell or Command Prompt:
-    - `.\grep.exe -q -cfile path/file.grc`
-  - This suppresses the version header (`-q`) and runs the specified .grc file (`-cfile`).
+    - `.\grapa.exe -q -f path/file.grc`
+  - This suppresses the version header (`-q`) and runs the specified .grc file (`-f`).
 
 - **Array and List Access:**
   - Arrays (type $ARRAY) and lists (type $LIST) are accessed with `[index]` syntax, not `.get(index)`.

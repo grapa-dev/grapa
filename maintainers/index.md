@@ -65,7 +65,7 @@ When referencing maintainer content, use these paths:
 ### Development
 - [Implementation Progress](DEVELOPMENT/IMPLEMENTATION_PROGRESS.md) - Progress tracking
 - [Language Roadmap](DEVELOPMENT/grapa_language_enhancement_roadmap.md) - Feature roadmap
-- [Development TODO](DEVELOPMENT/TODO.md) - Current tasks
+- [Development Status](DEVELOPMENT/CURRENT_STATUS.md) - **AUTHORITATIVE**: Single source of truth for all development status
 - [Contributing Guidelines](DEVELOPMENT/CONTRIBUTING.md) - How to contribute
 - [Code Review Process](DEVELOPMENT/CODE_REVIEW.md) - Review guidelines
 

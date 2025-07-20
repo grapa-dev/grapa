@@ -52,10 +52,31 @@ path = r"C:\Users\Name\Documents\file.txt";  /* No escaping needed for backslash
 pattern = r"\w+\s+\d+";  /* No escaping needed for regex */
 ```
 
-Examples:
+## Common String Operations
+
+### Basic Operations
 Commands | Results
 ------------ | -------------
 "this is a test".len(); | 14
 "this is a test".split(""); | ["t","h","i","s"," ","i","s"," ","a"," ","t","e","s","t"]
 "this is a test".raw(); | 0x7468697320697320612074657374
 "this is a test".raw().int(); | 2361031878030638688519054699098996
+
+### Trimming Operations
+```grapa
+/* Basic trimming */
+"  hello world  ".trim() -> "hello world"
+
+/* Trim specific characters */
+"bbbtestingbbb".trim("b") -> "testing"
+
+/* Trim multiple whitespace characters */
+whitespace = [" ", "\t", "\n", "\r"];
+"  \t\n\r  hello world  \t\n\r  ".trim(whitespace) -> "hello world"
+
+/* Left and right trimming */
+"  hello world  ".ltrim() -> "hello world  "
+"  hello world  ".rtrim() -> "  hello world"
+```
+
+> **See Also:** [String Transform Functions](../obj/transform.md#trimchars) for comprehensive trimming documentation including array-based multi-character trimming.

@@ -1,0 +1,200 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'maintainers/**'
+      - '.github/workflows/deploy-docs.yml'
+      - 'scripts/deploy_docs.sh'
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for git operations
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install mkdocs-material
+        pip install pymdown-extensions
+    
+    - name: Validate prerequisites
+      run: |
+        # Check if we're in a git repository
+        git rev-parse --git-dir
+        
+        # Check if we're on the main branch
+        if [ "$(git branch --show-current)" != "main" ]; then
+          echo "Error: Not on main branch"
+          exit 1
+        fi
+        
+        # Check if working directory is clean
+        if ! git diff-index --quiet HEAD -- || ! git diff-files --quiet; then
+          echo "Error: Working directory is not clean"
+          git status --porcelain
+          exit 1
+        fi
+        
+        # Check if required directories exist
+        if [ ! -d "docs" ]; then
+          echo "Error: docs directory not found"
+          exit 1
+        fi
+        
+        if [ ! -f "docs/mkdocs.yml" ]; then
+          echo "Error: mkdocs.yml not found"
+          exit 1
+        fi
+        
+        echo "Prerequisites validated successfully"
+    
+    - name: Build user documentation
+      run: |
+        cd docs
+        python -m mkdocs build --clean
+        
+        # Verify build output
+        if [ ! -f "site/index.html" ]; then
+          echo "Error: Build failed - index.html not found"
+          exit 1
+        fi
+        
+        echo "User documentation built successfully"
+    
+    - name: Build maintainer documentation (if config exists)
+      run: |
+        cd docs
+        
+        if [ -f "mkdocs-maintainers.yml" ]; then
+          echo "Building maintainer documentation..."
+          
+          # Create symlink for maintainer docs if it doesn't exist
+          if [ ! -L "docs/maintainers" ]; then
+            ln -sf "../../maintainers" "docs/maintainers"
+          fi
+          
+          # Build maintainer site
+          python -m mkdocs build -f mkdocs-maintainers.yml --clean -d site-maintainers
+          
+          # Copy maintainer docs to main site if needed
+          if [ -d "site-maintainers" ]; then
+            cp -r site-maintainers/* site/ 2>/dev/null || true
+          fi
+          
+          echo "Maintainer documentation built successfully"
+        else
+          echo "Maintainer config not found, skipping maintainer docs build"
+        fi
+    
+    - name: Prepare deployment branch
+      run: |
+        # Check if remote branch exists and delete it
+        if git ls-remote --heads origin gh-pages | grep -q gh-pages; then
+          echo "Remote gh-pages branch exists, deleting..."
+          git push origin --delete gh-pages 2>/dev/null || true
+        fi
+        
+        # Delete local branch if it exists
+        if git show-ref --verify --quiet refs/heads/gh-pages; then
+          echo "Local gh-pages branch exists, deleting..."
+          git branch -D gh-pages 2>/dev/null || true
+        fi
+        
+        # Create fresh orphan branch
+        echo "Creating fresh orphan gh-pages branch..."
+        git checkout --orphan gh-pages
+        
+        # Clear the branch completely (safe on orphan branch)
+        echo "Clearing branch contents..."
+        git rm -rf . 2>/dev/null || true
+    
+    - name: Copy site files
+      run: |
+        # Copy site files from main branch
+        git checkout main -- docs/site/
+        
+        # Move files to root (where GitHub Pages expects them)
+        if [ -d "docs/site" ]; then
+          echo "Moving site files to root..."
+          mv docs/site/* . 2>/dev/null || true
+          rmdir docs/site 2>/dev/null || true
+          rmdir docs 2>/dev/null || true
+        else
+          echo "Error: Site directory not found after checkout"
+          exit 1
+        fi
+        
+        # Verify key files exist
+        if [ ! -f "index.html" ]; then
+          echo "Error: index.html not found in deployment directory"
+          exit 1
+        fi
+        
+        echo "Site files copied successfully"
+    
+    - name: Commit and push deployment
+      run: |
+        # Configure git for deployment
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Add all files
+        git add .
+        
+        # Check if there are changes to commit
+        if git diff-index --quiet HEAD --; then
+          echo "No changes to commit"
+        else
+          # Commit with timestamp
+          commit_message="Deploy documentation site - $(date '+%Y-%m-%d %H:%M:%S')"
+          git commit -m "$commit_message"
+          
+          # Push to remote
+          echo "Pushing to remote gh-pages branch..."
+          git push origin gh-pages
+        fi
+    
+    - name: Return to main branch
+      run: |
+        git checkout main
+    
+    - name: Verify deployment
+      run: |
+        echo "Deployment verification completed"
+        echo "Note: GitHub Pages updates can take 5-10 minutes to appear"
+        echo "Site URL: https://grapa-dev.github.io/grapa/"
+    
+    - name: Comment on PR (if applicable)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '📚 Documentation has been deployed to https://grapa-dev.github.io/grapa/'
+          }) 

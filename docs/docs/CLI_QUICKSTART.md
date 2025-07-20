@@ -59,7 +59,11 @@ result = 4 * 3;
 
 ### Step 2: Run the Script
 ```bash
-grapa -cfile hello.grc
+# Direct script execution (new)
+grapa hello.grc
+
+# Standard method with -f flag
+grapa -f hello.grc
 ```
 
 **Output:**
@@ -184,11 +188,19 @@ joined = words.join(" - ");
 
 ### Basic Usage
 ```bash
-# Run a script file
-grapa -cfile script.grc
+# Direct command execution (new)
+grapa "'Hello, World!'.echo()"
+grapa "'Testing'.echo(); 'Multiple commands'.echo()"
 
-# Run with arguments
-grapa -cfile script.grc arg1 arg2
+# Direct script execution (new)
+grapa script.grc
+grapa script.grz
+
+# Standard command execution
+grapa -c "'Hello, World!'.echo()"
+
+# Standard script execution
+grapa -f script.grc
 
 # Interactive mode
 grapa
@@ -206,6 +218,33 @@ args = $sys.argv;
 /* Get specific argument */
 first_arg = args[1];
 ("First argument: " + first_arg).echo();
+```
+
+### Advanced Command Line Options
+```bash
+# Execute command from stdin
+echo "'Hello from stdin!'.echo()" | grapa -s
+
+# Store stdin in $ARGCIN variable
+echo "data" | grapa -S -c "$sys().getenv('$ARGCIN').echo()"
+
+# Execute command
+grapa -c "'Hello'.echo()"
+
+# Execute script file
+grapa -f script.grc
+
+# Quiet mode (suppress header)
+grapa -q -c "'Hello'.echo()"
+
+# Debug mode
+grapa -d -c "'Hello'.echo()"
+
+# Output to file
+grapa -o output.txt -c "'Hello'.echo()"
+
+# Append to file
+grapa -a -o log.txt -c "'New entry'.echo()"
 ```
 
 ## Common Patterns
@@ -255,7 +294,8 @@ for (file in files) {
 
 ## Tips
 
+- **Direct Execution:** You can now run commands and scripts directly without flags: `grapa "'hello'.echo()"` or `grapa script.grc`
 - **Parallel Operations:** `map` and `filter` are parallel by default and great for data processing
-- **File Extensions:** Use `.grc` extension for Grapa script files
+- **File Extensions:** Use `.grc` extension for Grapa script files, `.grz` for compiled scripts
 - **Interactive Mode:** Run `grapa` without arguments for interactive experimentation
 - **Error Messages:** Grapa provides detailed error messages to help debug issues

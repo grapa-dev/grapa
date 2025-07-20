@@ -30,6 +30,10 @@ limitations under the License.
 #include <signal.h>
 #endif
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 //GrapaLinkCallback gGrapaLinkCallback;
 
 class GrapaSystem2 : public GrapaSystem
@@ -56,9 +60,19 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	bool showVersion = true;
 	bool showHelp = false;
 	bool showEnv = false;
+	bool suppressHeader = false;
+	bool interactiveMode = false;
 
 	inStr.SetLength(0);
 	outStr.SetLength(0);
+
+	// Check if input is from pipe (for Unix-like systems)
+	bool isPipeInput = false;
+#ifndef WIN32
+	if (!isatty(STDIN_FILENO)) {
+		isPipeInput = true;
+	}
+#endif
 
 	GrapaRuleEvent* e = gSystem->mArgv->Head();
 	while (e)
@@ -73,40 +87,47 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			showVersion = true;
 			needExit = true;
 		}
-		else if ((e->mValue.Cmp("-q") == 0) || (e->mValue.Cmp("--quite") == 0))
+		else if ((e->mValue.Cmp("-q") == 0) || (e->mValue.Cmp("--quiet") == 0))
 		{
-			showVersion = false;
+			suppressHeader = true;
 		}
-		else if ((e->mValue.Cmp("-e") == 0) || (e->mValue.Cmp("--env") == 0))
+		else if ((e->mValue.Cmp("-d") == 0) || (e->mValue.Cmp("--debug") == 0))
 		{
-			showEnv = true;
+			// TODO: Implement debug mode
+			// For now, just set a flag that can be used later
+			gSystem->mDebugMode = true;
 		}
-		else if ((e->mValue.Cmp("-c") == 0) || (e->mValue.Cmp("--console") == 0))
+		else if ((e->mValue.Cmp("-o") == 0) || (e->mValue.Cmp("--output") == 0))
 		{
+			e = e->Next();
+			if (e)
+			{
+				// TODO: Implement output redirection
+				// For now, just store the output file name
+				gSystem->mOutputFile.FROM(e->mValue);
+			}
+		}
+		else if ((e->mValue.Cmp("-a") == 0) || (e->mValue.Cmp("--append") == 0))
+		{
+			// TODO: Implement append mode
+			gSystem->mAppendMode = true;
+		}
+		else if ((e->mValue.Cmp("-i") == 0) || (e->mValue.Cmp("--interactive") == 0))
+		{
+			interactiveMode = true;
 			showConsole = true;
 		}
-        else if ((e->mValue.Cmp("-w") == 0) || (e->mValue.Cmp("--widget") == 0))
-        {
-            inStr.FROM("widget.grz");
-            showWidget = true;
-        }
-        else if (e->mValue.Cmp("-wfile") == 0)
-        {
-            e = e->Next();
-            if (e)
-                inStr.FROM(e->mValue);
-            if (inStr.mLength==0)
-                inStr.FROM("widget.grz");
-            showWidget = true;
-        }
-		else if (e->mValue.Cmp("-ccmd") == 0)
+		// Removed -e/--env (conflicts with -e for eval/expression execution)
+		// Removed -c/--console (conflicts with -c for command execution)
+        // Removed -w and -wfile (GUI options should be in separate tool)
+		else if (e->mValue.Cmp("-c") == 0)
 		{
 			e = e->Next();
 			if (e)
 				runStr.FROM(e->mValue);
 			needExit = true;
 		}
-		else if (e->mValue.Cmp("-cfile") == 0)
+		else if (e->mValue.Cmp("-f") == 0)
 		{
 			e = e->Next();
 			GrapaCHAR fn;
@@ -128,7 +149,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			}
 			needExit = true;
 		}
-		else if (e->mValue.Cmp("-ccin") == 0)
+		else if (e->mValue.Cmp("-s") == 0)
 		{
 			needExit = true;
 			char c;
@@ -136,7 +157,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			while (std::cin >> c && !std::cin.eof())
 				runStr.Append((char)c);
 		}
-		else if (e->mValue.Cmp("-argcin") == 0)
+		else if (e->mValue.Cmp("-S") == 0)
 		{
 			needExit = true;
 			char c;
@@ -144,43 +165,69 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			while (std::cin >> c && !std::cin.eof())
 				gSystem->mArgcin.Append((char)c);
 		}
-		else if (e->mValue.Cmp("-argv") == 0)
-		{
-			e = e->Next();
-			while (gSystem->mArgv->Head() != e)
-			{
-				delete gSystem->mArgv->PopHead();
-			}
-			break;
-		}
-		else if (e->mValue.Cmp("-") == 0)
-		{
-			needExit = false;
-		}
+		// Removed -argv and - (internal implementation details)
 		else
 		{
-			if (inStr.mLength == 0 && e->mValue.mLength > 4)
+			// Handle direct command execution or script files
+			// Reset inStr if it contains the executable name (first argument)
+			if (inStr.mLength > 0 && strstr((char*)inStr.mBytes, "grapa") != NULL)
 			{
-				inStr.FROM(e->mValue);
-				//if ((GrapaMem::StrLwrCmp(".txt", 4, (char*)&e->mValue.mBytes[e->mValue.mLength - 4], 4) == 0) ||
-				//	(GrapaMem::StrLwrCmp(".grc", 4, (char*)&e->mValue.mBytes[e->mValue.mLength - 4], 4) == 0)
-				//	)
-				//{
-				//	GrapaFileIO gf;
-				//	GrapaError err = gf.Open((char*)e->mValue.mBytes);
-				//	if (err == 0)
-				//	{
-				//		u64 fsize = 0;
-				//		err = gf.GetSize(fsize);
-				//		inStr.SetLength(fsize);
-				//		err = gf.Read(0, 1, 0, fsize, inStr.mBytes);
-				//		gf.Close();
-				//		inStr.SetLength(fsize);
-				//	}
-				//}
+				inStr.SetLength(0);
+			}
+			if (inStr.mLength == 0)
+			{
+						// Check if this looks like a quoted command (starts and ends with quotes)
+		if (e->mValue.mLength >= 2 && 
+			((e->mValue.mBytes[0] == '"' && e->mValue.mBytes[e->mValue.mLength - 1] == '"') ||
+			 (e->mValue.mBytes[0] == '\'' && e->mValue.mBytes[e->mValue.mLength - 1] == '\'')))
+		{
+			// Extract the command (remove quotes)
+			GrapaCHAR cmd;
+			cmd.FROM((char*)&e->mValue.mBytes[1], e->mValue.mLength - 2);
+			runStr.FROM(cmd);
+			needExit = true;
+		}
+		// Check if this looks like a command (contains Grapa method calls)
+		else if (e->mValue.mLength > 0 && 
+			(strstr((char*)e->mValue.mBytes, ".echo()") != NULL ||
+			 strstr((char*)e->mValue.mBytes, ".print()") != NULL ||
+			 strstr((char*)e->mValue.mBytes, ".len()") != NULL ||
+			 strstr((char*)e->mValue.mBytes, ".get(") != NULL))
+		{
+			// Treat as direct command
+			runStr.FROM(e->mValue);
+			needExit = true;
+		}
+		// Check if this looks like a script file (.grc or .grz extension)
+		else if (e->mValue.mLength > 4 && 
+			(strstr((char*)e->mValue.mBytes, ".grc") != NULL ||
+			 strstr((char*)e->mValue.mBytes, ".grz") != NULL))
+		{
+			// Treat as script file - set inStr so main.cpp can handle it
+			inStr.FROM(e->mValue);
+			needExit = true;
+		}
+				else
+				{
+					// Treat as regular argument
+					inStr.FROM(e->mValue);
+				}
 			}
 		}
 		e = e->Next();
+	}
+
+	// Auto-detect pipe input if no explicit stdin option and no script file
+	if (isPipeInput && runStr.mLength == 0 && !interactiveMode && !showWidget)
+	{
+		char c;
+		runStr.SetLength(0);
+		while (std::cin >> c && !std::cin.eof())
+			runStr.Append((char)c);
+		if (runStr.mLength > 0)
+		{
+			needExit = true;
+		}
 	}
 
 #if defined(__MINGW32__) || defined(__GNUC__)
@@ -366,7 +413,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	//if (err) Stop();
 	//if (gSystem->mGrammar.mLength) grresult = Send(gSystem->mGrammar);
 
-	if (showVersion)
+	if (showVersion && !suppressHeader)
 	{
 		outStr.Append("Version: ");
 		outStr.Append(gSystem->mVersion);
@@ -399,15 +446,22 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		outStr.Append("Options:\n");
 		outStr.Append("\t-h,--help\t:Show this help message\n");
 		outStr.Append("\t-v,--version \t:Show version\n");
-		outStr.Append("\t-q,--quite\t:Suppress header\n");
-		outStr.Append("\t-c,--console\t:Show console\n");
-		outStr.Append("\t-e,--env\t:Show environment details\n");
-		outStr.Append("\t-ccmd script\t:Run from script\n");
-		outStr.Append("\t-cfile file\t:Run from file\n");
-		outStr.Append("\t-w\t\t:Editor\n");
-		outStr.Append("\t-wfile file\t:Editor from file\n");
-		outStr.Append("\t-ccin\t\t:Run from stdin\n");
-		outStr.Append("\t-argcin\t\t:Places std:cin into $ARGCIN environment variable (use with -ccmd|-cfile)\n");
+		outStr.Append("\t-q,--quiet\t:Suppress header\n");
+		outStr.Append("\t-i,--interactive\t:Run in interactive mode\n");
+		outStr.Append("\t-d,--debug\t:Debug mode\n");
+		outStr.Append("\t-o,--output <file>\t:Output to file\n");
+		outStr.Append("\t-a,--append\t:Append to output file\n");
+		outStr.Append("\n");
+		outStr.Append("Execution:\n");
+		outStr.Append("\t-c <script>\t:Execute command/script (e.g., grapa -c \"'hello'.echo()\")\n");
+		outStr.Append("\t-f <file>\t:Execute file (e.g., grapa -f script.grc)\n");
+		outStr.Append("\t-s\t\t:Execute from stdin (e.g., echo \"'hello'.echo()\" | grapa -s)\n");
+		outStr.Append("\t-S\t\t:Store stdin in $ARGCIN variable (e.g., echo \"data\" | grapa -S -c \"$ARGCIN.echo()\")\n");
+		outStr.Append("\n");
+		outStr.Append("Direct Execution (no flags needed):\n");
+		outStr.Append("\tcommand\t\t:Execute command directly (e.g., grapa \"'hello'.echo()\")\n");
+		outStr.Append("\tscript.grc\t:Execute script file directly (e.g., grapa script.grc)\n");
+		outStr.Append("\tscript.grz\t:Execute compiled script directly (e.g., grapa script.grz)\n");
 	}
 
 	if (grresult.mLength)

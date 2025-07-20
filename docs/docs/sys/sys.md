@@ -61,7 +61,7 @@ Gets environment variables and system information.
 |------|-------------|----------------|
 | `$PATH` | System PATH environment variable | `"C:\Windows\System32;C:\Windows"` |
 | `$STATICLIB` | Static library path | `"lib/grapa"` |
-| `$ARGCIN` | Command line argument count | `3` |
+| `$ARGCIN` | Stdin data (when using -S option) | `"data from stdin"` |
 | `$ARGV` | Command line arguments array | `["grapa.exe", "script.grc", "param"]` |
 | `$LIB` | Library directory path | `"lib"` |
 | `$BIN` | Binary directory path | `"bin"` |
@@ -85,6 +85,10 @@ $sys().getenv($HOME);
 
 $sys().getenv("USERNAME");
 /* Returns: matichuk */
+
+$sys().getenv($ARGCIN);
+/* Returns stdin data when using -S option */
+/* Example: echo "data" | grapa -S -c "$sys().getenv('$ARGCIN').echo()" */
 ```
 
 **Platform Values for $PLATFORM:**

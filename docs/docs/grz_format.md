@@ -34,10 +34,10 @@ $file().set("my_script.grz", compiled);
 
 ```bash
 # Windows
-.\grapa.exe -q -ccmd "$sys().compilef('my_script.grc', 'my_script.grz')"
+.\grapa.exe -q -c "$sys().compilef('my_script.grc', 'my_script.grz')"
 
 # Linux/Mac
-./grapa -q -ccmd "$sys().compilef('my_script.grc', 'my_script.grz')"
+./grapa -q -c "$sys().compilef('my_script.grc', 'my_script.grz')"
 ```
 
 ## Running GRZ Files
@@ -105,10 +105,10 @@ echo("Version:", version_info);
 
 ```bash
 # Windows
-.\grapa.exe -q -ccmd "grz=$file().get('my_script.grz'); decoded=grz.decode('ZIP-GRAPA'); echo('Script:',decoded.op); echo('Version:',decoded.version)"
+.\grapa.exe -q -c "grz=$file().get('my_script.grz'); decoded=grz.decode('ZIP-GRAPA'); echo('Script:',decoded.op); echo('Version:',decoded.version)"
 
 # Linux/Mac
-./grapa -q -ccmd "grz=$file().get('my_script.grz'); decoded=grz.decode('ZIP-GRAPA'); echo('Script:',decoded.op); echo('Version:',decoded.version)"
+./grapa -q -c "grz=$file().get('my_script.grz'); decoded=grz.decode('ZIP-GRAPA'); echo('Script:',decoded.op); echo('Version:',decoded.version)"
 ```
 
 ## File Structure

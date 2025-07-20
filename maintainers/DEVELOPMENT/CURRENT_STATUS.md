@@ -28,7 +28,8 @@
 ## Next Steps (Current Priority)
 - **✅ ALL CRITICAL OPERATOR BUGS RESOLVED** - Operator bug fixes completed
 - **✅ MISSING OPERATOR DOCUMENTATION COMPLETED** - All 5 missing operators documented
-- **Ready for next priority items** - All identified operator issues have been successfully addressed
+- **✅ CLI EXECUTABLE ENHANCEMENT COMPLETED** - Command-line interface enhanced with direct command/script execution
+- **Ready for next priority items** - All identified operator issues and CLI enhancements have been successfully addressed
 
 ---
 
@@ -64,7 +65,81 @@
 
 ## 🚀 **IMMEDIATE PRIORITY (Current Session)**
 
-### **Operator System Status** - COMPLETED ✅
+### **1. Language Enhancement Status** - ACTIVE DEVELOPMENT
+**Status**: Language features and improvements in progress  
+**Source**: `maintainers/DEVELOPMENT/LANGUAGE_ENHANCEMENT_ROADMAP.md` (being consolidated)
+
+#### ✅ **COMPLETED Language Features:**
+- **Operator System**: All 26 operators fully functional and tested ✅
+- **Unicode Support**: Comprehensive Unicode grep/regex with case folding ✅
+- **Database Integration**: Native database operations ✅
+- **File System**: Complete file system operations ✅
+- **Network Operations**: HTTP, TCP, UDP support ✅
+- **Mathematical Functions**: Unlimited precision math ✅
+- **String Manipulation**: Advanced string operations ✅
+- **JSON/XML**: Native round-tripping support ✅
+
+#### 🔄 **ACTIVE DEVELOPMENT AREAS:**
+
+**A. Unicode Language Binding** (MEDIUM PRIORITY - Week 3)
+- **Status**: Ready to start  
+- **Estimated Effort**: 1-2 days  
+- **Tasks**:
+  - Add `case_fold()` method to `lib/grapa/$OBJ.grc`
+  - Connect to C++ implementation in `source/grep/grapa_grep_unicode.hpp`
+  - Test Turkish I case folding from Grapa scripts
+  - Make `upper()` and `lower()` Unicode-aware
+- **Success Criteria**:
+  - `"İstanbul".case_fold()` returns `"istanbul"`
+  - `"Straße".case_fold()` returns `"strasse"`
+  - Integration with grep `i` option works correctly
+
+**B. String Interpolation** (MEDIUM PRIORITY - Week 3)
+- **Status**: Planning phase  
+- **Estimated Effort**: 1 week  
+- **Design Goals**:
+  - Template literal-style interpolation: `"Hello ${name}!"`
+  - Expression evaluation within strings
+  - Backward compatibility with existing string operations
+- **Implementation Plan**:
+  - Extend string literal parsing in BNF grammar
+  - Add interpolation evaluation in GrapaLibRule.cpp
+  - Create comprehensive test suite
+
+#### 📋 **MEDIUM-TERM ENHANCEMENTS (Next 2-6 months):**
+
+**C. Loop Constructs** (HIGH IMPACT)
+- **Status**: Design phase  
+- **Estimated Effort**: 2-3 weeks  
+- **Proposed Features**:
+  - `for` loop: `for (i = 0; i < 10; i++) { ... }`
+  - `foreach` loop: `foreach (item in array) { ... }`
+  - Range-based loops: `for (i in 1..10) { ... }`
+
+**D. Exception Handling** (HIGH IMPACT)
+- **Status**: Design phase  
+- **Estimated Effort**: 2-3 weeks  
+- **Proposed Features**:
+  - `try/catch` blocks: `try { ... } catch (error) { ... }`
+  - Exception types: Built-in exception hierarchy
+  - Error propagation: Automatic error bubbling
+
+**E. Module System** (MEDIUM IMPACT)
+- **Status**: Planning phase  
+- **Estimated Effort**: 3-4 weeks  
+- **Proposed Features**:
+  - Import/export: `import "module.grc"`, `export function`
+  - Namespace management: Module-scoped variables
+  - Dependency resolution: Automatic module loading
+
+#### 🚫 **CRITICAL LANGUAGE GAPS IDENTIFIED:**
+- **No `for`/`foreach` loops** (only `while`)
+- **No native exception handling** (`try/catch`)
+- **Limited string formatting/interpolation**
+- **No module/import system** for code reuse
+- **User-defined classes/objects** not fully documented or idiomatic
+
+### **2. Operator System Status** - COMPLETED ✅
 **Status**: All critical operator bugs resolved and tested  
 **Verification**: Live testing confirms all operators working correctly  
 **Source**: `maintainers/INTERNAL_NOTES/OPERATOR_BUG_FIXES_STATUS.md`
@@ -118,22 +193,65 @@
 ./grapa -cfile test/core/test_logical_not_all_types.grc
 ```
 
-### **Missing Operator Documentation** (HIGH PRIORITY - Week 1)
-**Status**: Ready to start  
-**Estimated Effort**: 2-3 days  
-**Source**: From operator audit results
+### **CLI Executable Enhancement** (COMPLETED ✅)
+**Status**: ✅ COMPLETED  
+**Completed**: January 2025  
+**Source**: User request for improved CLI usability
 
-#### Missing Documentation:
-1. **`*/` (root)** - Mathematical root operation
-2. **`<=>` (cmp)** - Three-way comparison operator  
-3. **`++` (extend)** - Array extension
-4. **`--` (remove)** - Array removal
-5. **`.*` (dot)** - Dot product
+#### Completed Enhancements:
+1. **Direct Command Execution**: `grapa "'hello'.echo()"` now works without flags
+2. **Direct Script Execution**: `grapa script.grc` and `grapa script.grz` now work without flags
+3. **Command Detection**: Added logic to detect quoted commands and Grapa method calls
+4. **Script Detection**: Added logic to detect `.grc` and `.grz` file extensions
+5. **Backward Compatibility**: All traditional options (`-ccmd`, `-cfile`, etc.) still work
+6. **Interactive Mode**: `grapa` still enters interactive shell correctly
 
-#### Files to Update:
-- `docs/docs/syntax/operator.md` - Add missing operator documentation
-- `docs/docs/type/` - Add type support tables for operators
-- `docs/docs/examples/` - Add operator usage examples
+#### Technical Implementation:
+- **Entry Point**: `source/main.cpp` parses command line arguments
+- **Option Parsing**: `GrapaLink::Start()` handles CLI options and sets execution flags
+- **Command Detection**: Detects quoted commands and method calls, sets `runStr` and `needExit=true`
+- **Script Detection**: Detects script files, sets `inStr` and `needExit=true`
+- **Execution Flow**: Commands execute via `runStr`, scripts execute via `inStr`
+
+#### Documentation Updates:
+- **CLI Quickstart**: Updated with new direct execution capabilities
+- **Option Names**: Corrected to use proper option names (`-ccmd`, `-cfile`, `-ccin`, etc.)
+- **Examples**: Added examples for direct command and script execution
+
+#### Test Results:
+✅ **Direct command execution**: `grapa "'hello'.echo()"` executes and exits  
+✅ **Direct script execution**: `grapa script.grc` executes and exits  
+✅ **Traditional options**: `grapa -ccmd`, `grapa -cfile` still work  
+✅ **Interactive mode**: `grapa` enters shell correctly  
+✅ **Multiple commands**: `grapa "'cmd1'.echo(); 'cmd2'.echo()"` works
+
+### **Next Priority Items** (Ready to Start)
+**Status**: Ready for next priority  
+**Estimated Effort**: Varies by item  
+**Source**: From language enhancement roadmap
+
+#### Current Session Priority:
+1. **CLI Redesign Phase 1** - ✅ COMPLETED
+   - Replaced `-ccmd` → `-c`, `-cfile` → `-f`, `-ccin` → `-s`, `-argcin` → `-S`
+   - Added `-d` (debug), `-o` (output), `-a` (append)
+   - Removed GUI options (`-w`, `-wfile`) and conflicting options (`-c/--console`, `-e/--env`)
+   - Updated help text and documentation
+   - Fixed `$ARGCIN` usage documentation (correct syntax: `$sys().getenv('$ARGCIN')`)
+   - Preserved all cool features (direct execution, pipe detection, etc.)
+   - **Reference**: `maintainers/DEVELOPMENT/CLI_REDESIGN_PLAN.md`
+
+2. **Language Enhancement** - 🔄 ACTIVE
+   - Unicode Language Binding (1-2 days)
+   - String Interpolation (1 week)
+   - Loop Constructs design (2-3 weeks)
+   - **Reference**: `maintainers/DEVELOPMENT/LANGUAGE_ENHANCEMENT_ROADMAP.md` (being consolidated)
+
+#### Future Priorities:
+1. **Unicode Language Binding** - Add `case_fold()` method to Grapa scripts
+2. **String Interpolation** - Implement template literal-style interpolation
+3. **Cryptographic Features Stabilization** - Fix AKS routing, document working features
+4. **Optimization Implementation** - Implement arithmetic and bitwise operator optimizations
+5. **CLI Enhancement Phase 2** - Performance options, environment management, error handling (added to backlog)
 
 ### **Unicode Language Binding** (MEDIUM PRIORITY - Week 2)
 **Status**: Ready to start  
@@ -457,6 +575,30 @@ This document should be updated whenever:
 
 ---
 
+## 📚 **REFERENCE DOCUMENTS**
+
+### **Detailed Plans and Analysis**
+- **[CLI Redesign Plan](CLI_REDESIGN_PLAN.md)** - Comprehensive CLI redesign strategy and implementation details
+- **[CLI Options Analysis](CURRENT_CLI_ANALYSIS.md)** - Detailed analysis of all current CLI options (historical reference)
+- **[Language Enhancement Roadmap](LANGUAGE_ENHANCEMENT_ROADMAP.md)** - Detailed language development planning (being consolidated)
+- **[Consolidation Plan](CONSOLIDATION_PLAN.md)** - Plan to consolidate all status tracking into this file
+
+### **Implementation Documentation**
+- **[Operator Bug Fixes Status](../INTERNAL_NOTES/OPERATOR_BUG_FIXES_STATUS.md)** - Complete operator system implementation details
+- **[Optimization Backlog](../INTERNAL_NOTES/GRAPA_OPTIMIZATION_BACKLOG.md)** - Performance optimization roadmap
+- **[Documentation Deployment Guide](DOCUMENTATION_DEPLOYMENT_GUIDE.md)** - How to build and deploy documentation
+
+### **Archived Historical Information**
+- **[Archived WIP Files](../INTERNAL_NOTES/ARCHIVED_WIP/)** - Historical work-in-progress files
+- **[Deprecated TODO](../INTERNAL_NOTES/ARCHIVED_WIP/consolidation_2024/TODO.md)** - Outdated TODO document (DEPRECATED)
+
+### **External References**
+- **[Python CLI Options](https://docs.python.org/3/using/cmdline.html)** - Reference implementation for CLI design
+- **[Node.js CLI Options](https://nodejs.org/api/cli.html)** - Reference implementation for CLI design
+- **[Bash CLI Options](https://www.gnu.org/software/bash/manual/html_node/Invoking-Bash.html)** - Reference implementation for CLI design
+
+---
+
 **Last Updated**: December 2024  
-**Current Priority**: Missing Operator Documentation  
-**Status**: Operator System Complete, Ready for Documentation & Language Enhancements 
+**Current Focus**: Language Enhancement (Unicode binding, String interpolation)  
+**Status**: CLI Redesign Complete, Language Enhancements Active, Operator System Complete 

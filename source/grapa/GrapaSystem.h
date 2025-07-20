@@ -164,6 +164,9 @@ public:
 	GrapaRuleQueue* mStaticLib;
 	GrapaRuleQueue* mArgv;
 	GrapaCHAR mArgcin;
+	GrapaCHAR mOutputFile;
+	bool mDebugMode;
+	bool mAppendMode;
 	time_t mStartTime;
 	clock_t mStartClock;
 	GrapaGroupQueue mGroupQueue;

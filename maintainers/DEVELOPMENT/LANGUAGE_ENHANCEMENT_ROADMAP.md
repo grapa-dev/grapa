@@ -1,12 +1,14 @@
-# Grapa Language Enhancement Roadmap (Internal)
+# Grapa Language Enhancement Roadmap (Internal) - DEPRECATED
 
 **Last Updated**: December 2024  
-**Status**: Active planning document for language development  
+**Status**: DEPRECATED - Content consolidated into CURRENT_STATUS.md  
 **Scope**: All language features, gaps, and enhancement priorities
 
-> **NOTE**: This is the single source of truth for language development planning. All other language planning files are deprecated.
+> **⚠️ DEPRECATED (December 2024):** This document is **DEPRECATED** and no longer maintained.
 >
-> **Note**: The old TODO document (`maintainers/INTERNAL_NOTES/ARCHIVED_WIP/consolidation_2024/TODO.md`) is **DEPRECATED** and contains outdated information. This LANGUAGE_ENHANCEMENT_ROADMAP.md is the authoritative source for current language development priorities.
+> **📋 CURRENT STATUS:** All language enhancement information has been consolidated into **[CURRENT_STATUS.md](CURRENT_STATUS.md)**.
+>
+> **🔗 GO TO:** [CURRENT_STATUS.md](CURRENT_STATUS.md) for current language development priorities and status.
 
 ---
 
@@ -51,7 +53,28 @@
 - Type Support Matrix - Updated to include all 5 operators ✅
 - Examples and Error Cases - Documented for all operators ✅
 
-### **2. Unicode Language Binding** (MEDIUM PRIORITY - Week 2)
+### **2. CLI Executable Enhancement** (HIGH PRIORITY - Week 2)
+**Status**: Ready to start  
+**Estimated Effort**: 3-5 days  
+**Source**: User experience improvement priority
+
+#### Tasks:
+1. **Evaluate current main.cpp implementation** for Windows vs non-Windows parameter handling
+2. **Add standard CLI options** (help, version, file input, pipe support) - ✅ COMPLETED
+3. **Implement pipe support** for Linux/Mac command line workflows
+4. **Add script execution modes** (file, stdin, interactive)
+5. **Update build scripts** to ensure source/main.cpp is used consistently
+6. **Update CLI Quickstart documentation** with new capabilities
+
+#### Success Criteria:
+- `grapa --help` shows comprehensive usage information
+- `grapa script.grc` executes script files
+- `echo "print('hello')" | grapa` works on Linux/Mac
+- `grapa -i` starts interactive mode
+- `grapa -v` shows version information
+- Windows and non-Windows platforms handled appropriately
+
+### **3. Unicode Language Binding** (MEDIUM PRIORITY - Week 3)
 **Status**: Ready to start  
 **Estimated Effort**: 1-2 days  
 **Source**: From Unicode enhancement progress

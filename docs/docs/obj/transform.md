@@ -50,28 +50,83 @@ items = array of [label, offset, len, ltrim, rtrim, op]
 {"a":"s","b":3}
 ```
 
-## rtrim([str])
-Trims right.
+## rtrim([chars])
+Trims characters from the right side of a string.
 
-```
+### Parameters:
+- `chars` (optional) - Character(s) to trim. Can be:
+  - **Single character**: `"x"` - trims that specific character
+  - **String**: `"xyz"` - trims that specific string pattern
+  - **Array**: `[" ", "\t", "\n", "\r"]` - trims any of the characters in the array
+  - **Omitted**: defaults to space `" "`
+
+### Examples:
+```grapa
+/* Default: trim spaces */
 "  testing  ".rtrim() -> "  testing"
-"bbbtestingbbb".rtrim(b) -> "bbbtesting"
+
+/* Single character */
+"bbbtestingbbb".rtrim("b") -> "bbbtesting"
+
+/* Multiple whitespace characters */
+"  \t\n\rhello world  ".rtrim([" ", "\t", "\n", "\r"]) -> "  \t\n\rhello world"
+
+/* String pattern */
+"helloworldworld".rtrim("world") -> "hello"
 ```
 
-## ltrim([str])
-Trims left.
+## ltrim([chars])
+Trims characters from the left side of a string.
 
-```
+### Parameters:
+- `chars` (optional) - Character(s) to trim. Can be:
+  - **Single character**: `"x"` - trims that specific character
+  - **String**: `"xyz"` - trims that specific string pattern
+  - **Array**: `[" ", "\t", "\n", "\r"]` - trims any of the characters in the array
+  - **Omitted**: defaults to space `" "`
+
+### Examples:
+```grapa
+/* Default: trim spaces */
 "  testing  ".ltrim() -> "testing  "
-"bbbtestingbbb".ltrim(b) -> "testingbbb"
+
+/* Single character */
+"bbbtestingbbb".ltrim("b") -> "testingbbb"
+
+/* Multiple whitespace characters */
+"  \t\n\rhello world  ".ltrim([" ", "\t", "\n", "\r"]) -> "hello world  "
+
+/* String pattern */
+"worldworldhello".ltrim("world") -> "hello"
 ```
 
-## trim([str])
-Trims both left and right.
+## trim([chars])
+Trims characters from both left and right sides of a string.
 
-```
+### Parameters:
+- `chars` (optional) - Character(s) to trim. Can be:
+  - **Single character**: `"x"` - trims that specific character
+  - **String**: `"xyz"` - trims that specific string pattern
+  - **Array**: `[" ", "\t", "\n", "\r"]` - trims any of the characters in the array
+  - **Omitted**: defaults to space `" "`
+
+### Examples:
+```grapa
+/* Default: trim spaces */
 "  testing  ".trim() -> "testing"
-"bbbtestingbbb".trim(b) -> "testing"
+
+/* Single character */
+"bbbtestingbbb".trim("b") -> "testing"
+
+/* Multiple whitespace characters */
+"  \t\n\rhello world  ".trim([" ", "\t", "\n", "\r"]) -> "hello world"
+
+/* String pattern */
+"worldworldhelloworldworld".trim("world") -> "hello"
+
+/* Common whitespace trimming */
+whitespace = [" ", "\t", "\n", "\r"];
+"  \t\n\r  hello world  \t\n\r  ".trim(whitespace) -> "hello world"
 ```
 
 ## lpad(n,[str])

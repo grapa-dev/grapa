@@ -3361,7 +3361,7 @@ lock_obj.unlock();
 <li>Prefer passing data by value or using thread-local variables.</li>
 <li>Minimize shared mutable state between threads. If you must share, use a <code>$thread()</code> lock object to guard access.</li>
 <li>Immutable data (or data marked <code>const</code>) is safe to share, but note that <code>const</code> is for performance/caching, not for locking (see below).</li>
-<li>For compile-time constants, use <code>static</code> (see <a href="../../operators/function/">Function Operators</a>).</li>
+<li>For compile-time constants, use <code>static</code> (see <a href="../../syntax/operator/">Function Operators</a>).</li>
 </ul>
 <hr />
 <h2 id="reference-locking-methods-on-thread-objects">Reference: Locking Methods (on $thread objects)</h2>
@@ -3403,7 +3403,7 @@ myDone:{&quot;input&quot;:{&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3},&quo
 <hr />
 <h2 id="see-also">See Also</h2>
 <ul>
-<li><a href="../../operators/function/">Function Operators: static and const</a></li>
+<li><a href="../../syntax/operator/">Function Operators: static and const</a></li>
 <li><a href="../../use_cases/">Parallelism Examples</a></li>
 </ul>
 
@@ -3466,6 +3466,8 @@ myDone:{&quot;input&quot;:{&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3},&quo
     
     
       <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="../../javascripts/search-fix.js"></script>
       
     
   </body>

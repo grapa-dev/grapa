@@ -1,0 +1,110 @@
+/* Comprehensive test of Logical NOT operator with all Grapa data types */
+
+"=== Testing Logical NOT with All Grapa Data Types ===".echo();
+"".echo();
+
+/* Boolean values */
+"--- Boolean Values ---".echo();
+"!true:".echo();
+(!true).echo();
+"!false:".echo();
+(!false).echo();
+
+/* Integer values */
+"--- Integer Values ---".echo();
+"!5:".echo();
+(!5).echo();
+"!0:".echo();
+(!0).echo();
+"!(-5):".echo();
+(!(-5)).echo();
+
+/* Float values */
+"--- Float Values ---".echo();
+"!5.0:".echo();
+(!5.0).echo();
+"!0.0:".echo();
+(!0.0).echo();
+"!(-5.0):".echo();
+(!(-5.0)).echo();
+"!3.14:".echo();
+(!3.14).echo();
+
+/* String values */
+"--- String Values ---".echo();
+"!'hello':".echo();
+(!"hello").echo();
+"!'':".echo();
+(!"").echo();
+"!'0':".echo();
+(!"0").echo();
+"!'false':".echo();
+(!"false").echo();
+
+/* Array values */
+"--- Array Values ---".echo();
+"![1,2,3]:".echo();
+(![1,2,3]).echo();
+"![]:".echo();
+(![]).echo();
+
+/* List values */
+"--- List Values ---".echo();
+"!{'a':1,'b':2}:".echo();
+(!{'a':1,'b':2}).echo();
+"!{}:".echo();
+(!{}).echo();
+
+/* Object values */
+"--- Object Values ---".echo();
+"obj = obj Person; !obj:".echo();
+obj = obj Person;
+(!obj).echo();
+
+/* Error values */
+"--- Error Values ---".echo();
+"!$ERR:".echo();
+(!$ERR).echo();
+
+/* Null values */
+"--- Null Values ---".echo();
+"!null:".echo();
+(!null).echo();
+
+/* Complex expressions */
+"--- Complex Expressions ---".echo();
+"!(5 && 3):".echo();
+(!(5 && 3)).echo();
+"!(0 || 5):".echo();
+(!(0 || 5)).echo();
+"!(true && false):".echo();
+(!(true && false)).echo();
+"!(false || true):".echo();
+(!(false || true)).echo();
+
+/* Mixed type expressions */
+"--- Mixed Type Expressions ---".echo();
+"!(5 && 'hello'):".echo();
+(!(5 && "hello")).echo();
+"!(0 || 'world'):".echo();
+(!(0 || "world")).echo();
+"!('' && 5):".echo();
+(!("" && 5)).echo();
+
+/* Expected behavior summary */
+"".echo();
+"=== Expected Behavior Summary ===".echo();
+"True values should return FALSE when negated:".echo();
+"- Non-zero numbers (5, -5, 3.14, -3.14)".echo();
+"- Non-empty strings ('hello', 'false')".echo();
+"- Non-empty arrays/lists".echo();
+"- Objects".echo();
+"- Complex expressions that evaluate to true".echo();
+"".echo();
+"False values should return TRUE when negated:".echo();
+"- Zero (0, 0.0)".echo();
+"- Empty strings ('')".echo();
+"- Empty arrays/lists ([])".echo();
+"- Null values".echo();
+"- Error values".echo();
+"- Complex expressions that evaluate to false".echo(); 

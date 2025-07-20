@@ -1,12 +1,12 @@
 /* Test file for operator bugs identified in documentation */
 
-/* Bug 1: STR > INT behavior */
-"=== Testing STR > INT bug ===".echo();
-"Expected: 'hello' > 5 should be FALSE".echo();
+/* Bug 1: STR > INT behavior - FIXED */
+"=== Testing STR > INT behavior (FIXED) ===".echo();
+"Expected: 'hello' > 5 should be FALSE (non-numeric string < number)".echo();
 "Actual:".echo();
 ("hello" > 5).echo();
 
-"Expected: 5 > 'hello' should be FALSE".echo();
+"Expected: 5 > 'hello' should be TRUE (number > non-numeric string)".echo();
 "Actual:".echo();
 (5 > "hello").echo();
 

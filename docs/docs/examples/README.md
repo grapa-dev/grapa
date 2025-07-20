@@ -36,13 +36,13 @@ This directory contains test examples and sample files that are referenced by th
 #### 1. Test .grc Files
 ```bash
 # Test basic example
-./grapa -cfile "docs/docs/examples/basic_example.grc" -q
+./grapa -f "docs/docs/examples/basic_example.grc" -q
 
 # Test advanced example  
-./grapa -cfile "docs/docs/examples/advanced_example.grc" -q
+./grapa -f "docs/docs/examples/advanced_example.grc" -q
 
 # Test performance example
-./grapa -cfile "docs/docs/examples/performance_example.grc" -q
+./grapa -f "docs/docs/examples/performance_example.grc" -q
 ```
 
 #### 2. Test .py Files
@@ -126,19 +126,19 @@ grep -r "examples/" docs/docs/
 
 ### Basic Example (`basic_example.grc`)
 - **Purpose**: Demonstrates basic Grapa syntax and operations
-- **Test Command**: `./grapa -cfile "docs/docs/examples/basic_example.grc" -q`
+- **Test Command**: `./grapa -f "docs/docs/examples/basic_example.grc" -q`
 - **Expected Output**: `20` (result of 10 + 5 * 2)
 - **Status**: ✅ Tested and working
 
 ### Advanced Example (`advanced_example.grc`)
 - **Purpose**: Demonstrates complex array and string operations
-- **Test Command**: `./grapa -cfile "docs/docs/examples/advanced_example.grc" -q`
+- **Test Command**: `./grapa -f "docs/docs/examples/advanced_example.grc" -q`
 - **Expected Output**: Array filtering and string splitting results
 - **Status**: ✅ Tested and working
 
 ### Performance Example (`performance_example.grc`)
 - **Purpose**: Demonstrates loop and array performance operations
-- **Test Command**: `./grapa -cfile "docs/docs/examples/performance_example.grc" -q`
+- **Test Command**: `./grapa -f "docs/docs/examples/performance_example.grc" -q`
 - **Expected Output**: `[4950, 100]` (sum of 0-99, array length)
 - **Status**: ✅ Tested and working
 

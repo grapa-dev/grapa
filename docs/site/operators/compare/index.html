@@ -1906,7 +1906,7 @@
         <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
-      ||
+      ==
     </span>
   </a>
   
@@ -1915,7 +1915,7 @@
         <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
-      &amp;&amp;
+      !=
     </span>
   </a>
   
@@ -1924,7 +1924,7 @@
         <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
-      ==
+      &lt;=&gt;
     </span>
   </a>
   
@@ -1933,7 +1933,7 @@
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
-      '&lt;=&gt;'
+      &lt;=
     </span>
   </a>
   
@@ -1942,7 +1942,7 @@
         <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
-      !=
+      &gt;=
     </span>
   </a>
   
@@ -1951,7 +1951,7 @@
         <li class="md-nav__item">
   <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
-      &lt;=
+      &gt;
     </span>
   </a>
   
@@ -1960,7 +1960,7 @@
         <li class="md-nav__item">
   <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
-      &gt;=
+      &lt;
     </span>
   </a>
   
@@ -1969,7 +1969,7 @@
         <li class="md-nav__item">
   <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
-      &gt;
+      &amp;&amp;
     </span>
   </a>
   
@@ -1978,7 +1978,7 @@
         <li class="md-nav__item">
   <a href="#_9" class="md-nav__link">
     <span class="md-ellipsis">
-      &lt;
+      ||
     </span>
   </a>
   
@@ -3246,7 +3246,7 @@
         <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
-      ||
+      ==
     </span>
   </a>
   
@@ -3255,7 +3255,7 @@
         <li class="md-nav__item">
   <a href="#_2" class="md-nav__link">
     <span class="md-ellipsis">
-      &amp;&amp;
+      !=
     </span>
   </a>
   
@@ -3264,7 +3264,7 @@
         <li class="md-nav__item">
   <a href="#_3" class="md-nav__link">
     <span class="md-ellipsis">
-      ==
+      &lt;=&gt;
     </span>
   </a>
   
@@ -3273,7 +3273,7 @@
         <li class="md-nav__item">
   <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
-      '&lt;=&gt;'
+      &lt;=
     </span>
   </a>
   
@@ -3282,7 +3282,7 @@
         <li class="md-nav__item">
   <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
-      !=
+      &gt;=
     </span>
   </a>
   
@@ -3291,7 +3291,7 @@
         <li class="md-nav__item">
   <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
-      &lt;=
+      &gt;
     </span>
   </a>
   
@@ -3300,7 +3300,7 @@
         <li class="md-nav__item">
   <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
-      &gt;=
+      &lt;
     </span>
   </a>
   
@@ -3309,7 +3309,7 @@
         <li class="md-nav__item">
   <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
-      &gt;
+      &amp;&amp;
     </span>
   </a>
   
@@ -3318,7 +3318,7 @@
         <li class="md-nav__item">
   <a href="#_9" class="md-nav__link">
     <span class="md-ellipsis">
-      &lt;
+      ||
     </span>
   </a>
   
@@ -3341,44 +3341,100 @@
 
 
 <h1 id="compare-operators">Compare Operators</h1>
-<h2 id="_1"><code>||</code></h2>
-<p>If either of two conditions are true.</p>
-<div class="highlight"><pre><span></span><code>((1==1) &amp;&amp; (2==2)) -&gt; true
-((1==1) &amp;&amp; (2==3)) -&gt; true
-((1==2) &amp;&amp; (2==3)) -&gt; false
+<h2 id="_1"><code>==</code></h2>
+<p>Equal to. Returns <code>true</code> if operands are equal, <code>false</code> otherwise.</p>
+<div class="highlight"><pre><span></span><code>5 == 5        // true
+5 == 3        // false
+&quot;hello&quot; == &quot;hello&quot;  // true
+5 == &quot;5&quot;      // true (numeric string conversion)
 </code></pre></div>
-<h2 id="_2"><code>&amp;&amp;</code></h2>
-<p>Two conditions must be true.</p>
+<h2 id="_2"><code>!=</code></h2>
+<p>Not equal to. Returns <code>true</code> if operands are not equal, <code>false</code> otherwise.</p>
+<div class="highlight"><pre><span></span><code>5 != 3        // true
+5 != 5        // false
+&quot;hello&quot; != &quot;world&quot;  // true
+5 != &quot;5&quot;      // false (numeric string conversion)
+</code></pre></div>
+<h2 id="_3"><code>&lt;=&gt;</code></h2>
+<p>Spaceship operator. Returns -1 if left &lt; right, 0 if equal, 1 if left &gt; right.</p>
+<div class="highlight"><pre><span></span><code>5 &lt;=&gt; 3       // 1 (5 is greater than 3)
+3 &lt;=&gt; 5       // -1 (3 is less than 5)
+5 &lt;=&gt; 5       // 0 (equal)
+&quot;hello&quot; &lt;=&gt; &quot;world&quot;  // -1 (lexicographic comparison)
+&quot;world&quot; &lt;=&gt; &quot;hello&quot;  // 1 (lexicographic comparison)
+5 &lt;=&gt; &quot;5&quot;     // 0 (numeric string conversion)
+5 &lt;=&gt; &quot;hello&quot; // 1 (numeric vs string comparison)
+</code></pre></div>
+<p><strong>Note</strong>: All comparison operators now use unified logic and return standardized values. String comparisons return -1/0/1 instead of varying string comparison distances.</p>
+<h2 id="_4"><code>&lt;=</code></h2>
+<p>Less than or equal to.</p>
+<div class="highlight"><pre><span></span><code>3 &lt;= 5        // true
+5 &lt;= 5        // true
+5 &lt;= 3        // false
+&quot;abc&quot; &lt;= &quot;def&quot;  // true
+</code></pre></div>
+<h2 id="_5"><code>&gt;=</code></h2>
+<p>Greater than or equal to.</p>
+<div class="highlight"><pre><span></span><code>5 &gt;= 3        // true
+5 &gt;= 5        // true
+3 &gt;= 5        // false
+&quot;def&quot; &gt;= &quot;abc&quot;  // true
+</code></pre></div>
+<h2 id="_6"><code>&gt;</code></h2>
+<p>Greater than.</p>
+<div class="highlight"><pre><span></span><code>5 &gt; 3         // true
+5 &gt; 5         // false
+3 &gt; 5         // false
+&quot;def&quot; &gt; &quot;abc&quot; // true
+</code></pre></div>
+<h2 id="_7"><code>&lt;</code></h2>
+<p>Less than.</p>
+<div class="highlight"><pre><span></span><code>3 &lt; 5         // true
+5 &lt; 5         // false
+5 &lt; 3         // false
+&quot;abc&quot; &lt; &quot;def&quot; // true
+</code></pre></div>
+<h2 id="_8"><code>&amp;&amp;</code></h2>
+<p>Logical AND. Two conditions must be true.</p>
 <div class="highlight"><pre><span></span><code>((1==1) &amp;&amp; (2==2)) -&gt; true
 ((1==1) &amp;&amp; (2==3)) -&gt; false
+((1==2) &amp;&amp; (2==3)) -&gt; false
 </code></pre></div>
-<h2 id="_3"><code>==</code></h2>
-<p>Equal to.</p>
-<h2 id="_4">'&lt;=&gt;'</h2>
-<p>Returns -1 if a<b, 0 if a=b, and 1 if a>b.</p>
-<div class="highlight"><pre><span></span><code>&gt; &quot;a&quot;&lt;=&gt;&quot;b&quot;
--1
+<h2 id="_9"><code>||</code></h2>
+<p>Logical OR. If either of two conditions are true.</p>
+<div class="highlight"><pre><span></span><code>((1==1) || (2==2)) -&gt; true
+((1==1) || (2==3)) -&gt; true
+((1==2) || (2==3)) -&gt; false
 </code></pre></div>
-<h2 id="_5"><code>!=</code></h2>
-<p>Not equal to.</p>
-<h2 id="_6"><code>&lt;=</code></h2>
-<p>Less than or equal to.</p>
-<h2 id="_7"><code>&gt;=</code></h2>
-<p>Greater than or equal to.</p>
-<h2 id="_8"><code>&gt;</code></h2>
-<p>Greater than.</p>
-<h2 id="_9"><code>&lt;</code></h2>
-<p>Less than</p>
 <h1 id="modifier-operators">Modifier Operators</h1>
 <h2 id="-"><code>-</code></h2>
 <p>Negate.</p>
-<p>-(4+2) -&gt; -6</p>
+<div class="highlight"><pre><span></span><code>-(4+2) -&gt; -6
+</code></pre></div>
 <h2 id="_10"><code>!</code></h2>
 <p>Not.</p>
-<p>!true -&gt; false</p>
+<div class="highlight"><pre><span></span><code>!true -&gt; false
+!false -&gt; true
+</code></pre></div>
 <h2 id="_11"><code>~</code></h2>
 <p>Bitwise not.</p>
-<p>(~0x6C).hex() -&gt; FFFFFF93</p>
+<div class="highlight"><pre><span></span><code>(~0x6C).hex() -&gt; FFFFFF93
+</code></pre></div>
+<h1 id="type-handling">Type Handling</h1>
+<p>All comparison operators now support mixed type comparisons with intelligent type conversion:</p>
+<ul>
+<li><strong>Numeric strings</strong>: Automatically converted to numbers for comparison</li>
+<li><strong>Non-numeric strings</strong>: Fall back to string comparison</li>
+<li><strong>Float vs String</strong>: Uses adaptive tolerance for numeric strings</li>
+<li><strong>Bool comparisons</strong>: Handled with proper truthiness logic</li>
+<li><strong>Null comparisons</strong>: Properly handled for equality and ordering</li>
+</ul>
+<p><strong>Examples</strong>:
+<div class="highlight"><pre><span></span><code>5 == &quot;5&quot;      // true (numeric conversion)
+5.5 == &quot;5.5&quot;  // true (float conversion with tolerance)
+5 &gt; &quot;hello&quot;   // true (numeric vs string)
+&quot;hello&quot; &gt; 5   // true (string vs numeric)
+</code></pre></div></p>
 
 
 
@@ -3439,6 +3495,8 @@
     
     
       <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="../../javascripts/search-fix.js"></script>
       
     
   </body>

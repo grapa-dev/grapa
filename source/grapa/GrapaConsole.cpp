@@ -91,7 +91,8 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 
                 echo = echo->vRulePointer;
             //if (echo->mValue.mToken == GrapaTokenType::ERR)
             //    send.Send("ERR: ");
-			if (echo)
+			// Only output if we have a valid result (echo() returns NULL)
+			if (echo && echo->mValue.mToken != GrapaTokenType::ERR)
 			{
 				if (echo->vQueue) tokenExec.EchoList(&send, echo, false, false, false);
 				else tokenExec.EchoValue(&send, echo, false, false, false);

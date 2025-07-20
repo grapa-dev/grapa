@@ -114,6 +114,55 @@ bits = mBits;         // All bits count toward limit
 - **`Equals()`**: Exact equality check
 - **`operator==`, `operator!=`, etc.**: Standard comparison operators
 
+#### Float-String Equality Comparison with Adaptive Tolerance
+The `Comp()` method includes enhanced handling for float-string equality comparisons with adaptive tolerance to address precision differences between float literals and string-converted floats:
+
+```cpp
+// In Comp() method - string comparison branch
+if (IsValidNumericString(strVal)) {
+    // Convert string to float using *this precision settings
+    GrapaFloat b(mFix, mMax, mExtra, 0);
+    b.FromString(strVal, 10);
+    
+    // Use normalized subtraction for comparison
+    GrapaFloat result_normalized(mFix, mMax, mExtra, result);
+    GrapaFloat b_normalized(mFix, mMax, mExtra, b);
+    GrapaFloat diff = result_normalized - b_normalized;
+    diff.Truncate(false);
+    
+    // Adaptive tolerance check that scales with magnitude
+    GrapaFloat abs_result = result_normalized.Abs();
+    GrapaFloat abs_b = b_normalized.Abs();
+    GrapaFloat max_magnitude = (abs_result > abs_b) ? abs_result : abs_b;
+    
+    // Base tolerance: 10^-10, but scale with magnitude
+    GrapaFloat base_tolerance(mFix, mMax, mExtra, 0);
+    base_tolerance.FromString("0.0000000001", 10);  // 10^-10
+    
+    // For very small numbers, use the base tolerance
+    // For larger numbers, scale the tolerance proportionally
+    GrapaFloat tolerance = base_tolerance;
+    if (max_magnitude > base_tolerance) {
+        // Scale tolerance to be proportional to the larger number
+        // Use a relative tolerance of 10^-10
+        tolerance = max_magnitude * base_tolerance;
+    }
+    
+    if (diff.Abs() < tolerance) {
+        return GrapaFloat(0.0); // treat as equal
+    }
+    return diff;
+}
+```
+
+**Key Features:**
+- **Precision normalization**: Both operands use the same precision settings from `*this`
+- **Adaptive tolerance**: Scales tolerance proportionally with the magnitude of the numbers being compared
+- **Enhanced string validation**: Validates numeric strings before conversion with improved whitespace handling
+- **Magnitude-aware comparison**: Uses relative tolerance for large numbers, absolute tolerance for small numbers
+
+**Purpose**: Ensures that `(55.3 == '55.3')` evaluates to `true` while still correctly distinguishing between actually different values like `(55.3 == '55.4')`. The adaptive tolerance provides better handling for both very small and very large numbers.
+
 ### Arithmetic Operations
 - **`Add()`**: Core addition algorithm with alignment
 - **`operator+`, `operator-`, `operator*`, `operator/`**: Standard arithmetic
@@ -188,6 +237,129 @@ GrapaFloat result(false, 0, 0, 0);  // No limits (unlimited precision)
 - **String parsing**: More complex for high-precision decimal values
 - **Truncation**: O(n) where n is number of excess bits
 
+## Precision Handling Patterns
+
+### Core Design Principle
+GrapaFloat follows a consistent pattern where **the first operand (`*this`) determines the precision settings** for the operation. This ensures predictable behavior and prevents precision mismatches.
+
+### Operator Precision Patterns
+
+#### Arithmetic Operators (`+`, `-`, `*`, `/`)
+```cpp
+// Pattern: Use higher precision between operands for result
+GrapaFloat result(mFix && bi.mFix ? true : false, 
+                  mMax > bi.mMax ? mMax : bi.mMax, 
+                  mExtra > bi.mExtra ? mExtra : bi.mExtra, 0);
+```
+- **Result precision**: Uses the higher precision between `*this` and the other operand
+- **Purpose**: Preserves maximum available precision in calculations
+- **Example**: `high_precision + low_precision` → result uses `high_precision` settings
+
+#### Comparison Operators (`==`, `!=`, `>`, `<`, `>=`, `<=`)
+```cpp
+// Pattern: Convert other operand to *this precision, then compare
+GrapaFloat bi2(mFix, mMax, mExtra, other_value);
+return *this == bi2;  // Uses *this precision for comparison
+```
+- **Comparison precision**: Uses `*this` precision settings
+- **Purpose**: Ensures consistent comparison behavior regardless of operand precision
+- **Example**: `high_precision == low_precision` → comparison uses `high_precision` settings
+
+#### String Conversion
+```cpp
+// Pattern: Convert string using *this precision settings
+GrapaFloat b(mFix, mMax, mExtra, 0);  // Use *this precision
+b.FromString(strBytes, 10);
+```
+- **String precision**: Uses `*this` precision settings for conversion
+- **Purpose**: Ensures string-to-float conversions match the expected precision context
+- **Example**: `high_precision == "55.3"` → string converted to `high_precision` settings
+
+#### Adaptive Tolerance-Based Equality
+```cpp
+// Pattern: Use adaptive tolerance for float-string equality comparisons
+GrapaFloat abs_result = result_normalized.Abs();
+GrapaFloat abs_b = b_normalized.Abs();
+GrapaFloat max_magnitude = (abs_result > abs_b) ? abs_result : abs_b;
+
+// Base tolerance: 10^-10, but scale with magnitude
+GrapaFloat base_tolerance(mFix, mMax, mExtra, 0);
+base_tolerance.FromString("0.0000000001", 10);  // 10^-10
+
+// For very small numbers, use the base tolerance
+// For larger numbers, scale the tolerance proportionally
+GrapaFloat tolerance = base_tolerance;
+if (max_magnitude > base_tolerance) {
+    // Scale tolerance to be proportional to the larger number
+    // Use a relative tolerance of 10^-10
+    tolerance = max_magnitude * base_tolerance;
+}
+
+if (diff.Abs() < tolerance) {
+    return GrapaFloat(0.0); // treat as equal
+}
+```
+- **Adaptive tolerance**: Scales tolerance proportionally with the magnitude of the numbers being compared
+- **Purpose**: Distinguishes between precision differences and actual value differences, with better handling for both very small and very large numbers
+- **Example**: `(55.3 == '55.3')` → `true`, `(55.3 == '55.4')` → `false`, `(1e100 == '1e100')` → `true`
+
+### Three-Way Comparison (`Comp()`)
+The `Comp()` method follows the same pattern:
+```cpp
+// For string comparisons: use *this precision
+GrapaFloat b(mFix, mMax, mExtra, 0);
+b.FromString(strBytes, 10);
+
+// For float comparisons: use higher precision
+GrapaFloat result_normalized(mFix, mMax, mExtra, result);
+GrapaFloat b_normalized(mFix, mMax, mExtra, b);
+```
+
+### Precision Inheritance Strategy
+
+#### When `*this` Has Higher Precision
+- **Arithmetic**: Result uses `*this` precision (higher)
+- **Comparison**: Other operand converted to `*this` precision
+- **String conversion**: String converted to `*this` precision
+
+#### When `*this` Has Lower Precision  
+- **Arithmetic**: Result uses other operand precision (higher)
+- **Comparison**: Other operand converted to `*this` precision
+- **String conversion**: String converted to `*this` precision
+
+#### Benefits of This Approach
+1. **Predictable behavior**: `*this` always determines the precision context
+2. **Precision preservation**: Arithmetic operations don't lose precision unnecessarily
+3. **Consistent comparisons**: Same values always compare equal regardless of original precision
+4. **String compatibility**: String literals adapt to the expected precision context
+
+### Implementation Examples
+
+#### Addition with Different Precisions
+```cpp
+GrapaFloat high_prec(false, 128, 10, 0);   // 128-bit precision
+GrapaFloat low_prec(false, 64, 10, 0);     // 64-bit precision
+
+// high_prec + low_prec → result uses 128-bit precision
+GrapaFloat result = high_prec + low_prec;  // result.mMax = 128
+```
+
+#### String Comparison
+```cpp
+GrapaFloat precise(false, 180, 10, 55.3);  // High precision float
+// precise == "55.3" → string converted to 180-bit precision for comparison
+bool equal = (precise == "55.3");  // Uses precise's precision settings
+```
+
+#### Mixed-Type Operations
+```cpp
+GrapaFloat base(false, 96, 10, 0);         // 96-bit precision
+// All operations use base's precision context
+GrapaFloat result1 = base + 42;            // 42 converted to 96-bit
+GrapaFloat result2 = base * "3.14";        // "3.14" converted to 96-bit
+bool check = (base == "55.3");             // "55.3" converted to 96-bit
+```
+
 ## Integration Notes
 
 ### Grapa Language Integration
@@ -199,6 +371,72 @@ GrapaFloat result(false, 0, 0, 0);  // No limits (unlimited precision)
 - **vs `double`**: Unlimited precision vs 53-bit precision
 - **vs `float`**: Configurable precision vs 24-bit precision
 - **vs `decimal`**: Binary vs decimal representation
+
+## Known Limitations
+
+### Scientific Notation Support
+**Status**: Not currently supported  
+**Impact**: Scientific notation like `1e-10`, `1.5e+3`, `2.3E-5` cannot be parsed  
+**Workaround**: Use decimal notation (e.g., `0.0000000001` instead of `1e-10`)  
+**Future Enhancement**: Scientific notation parsing should be implemented at the tokenization/parsing level, not in GrapaFloat itself
+
+**Technical Details**:
+- `FromString()` method only handles decimal point parsing (splits on `.`)
+- No `e` or `E` exponent parsing in string conversion
+- `GrapaFloat(double)` constructor limited by double precision (53 bits)
+- Would require changes to base-level byte parsing and tokenization step or higher-level rules in `$grapa.grc`
+
+## Encode/Decode Methods
+
+### Internal Structure Access
+GrapaFloat provides bidirectional access to its internal structure through `.encode("FLOAT")` and `.decode("FLOAT")` methods.
+
+#### Decode Method (Extract Components)
+```grapa
+> "30.75".float(300,6).decode("FLOAT")
+{"sign":false,"trunc":false,"fix":false,"exp":4,"max":300,"extra":6,"data":123}
+```
+
+**Implementation**: Located in `GrapaLibraryRuleDecodeEvent::Run()` in `GrapaLibRule.cpp`
+- Creates a new GrapaFloat with script state precision settings
+- Calls `FromBytes()` to populate the float from binary data
+- Returns a list object with all internal components
+
+#### Encode Method (Create from Components)
+```grapa
+components = {
+    "sign": false,
+    "trunc": false, 
+    "fix": false,
+    "exp": 4,
+    "max": 300,
+    "extra": 6,
+    "data": 123
+};
+float_value = components.encode("FLOAT");
+```
+
+**Implementation**: Located in `GrapaLibraryRuleEncodeEvent::Run()` in `GrapaLibRule.cpp`
+- Extracts components from the input list object
+- Creates a new GrapaFloat with specified precision settings
+- Sets internal flags and values from component data
+- Returns the float as binary bytes
+
+### Component Structure
+Both methods work with the same component structure:
+- **`sign`**: Boolean for negative numbers
+- **`trunc`**: Boolean for truncation flag
+- **`fix`**: Boolean for fixed-point mode
+- **`exp`**: Integer exponent value
+- **`max`**: Integer maximum bit precision
+- **`extra`**: Integer extra bits for calculation
+- **`data`**: Integer/raw data representing the numeric value
+
+### Use Cases
+- **Debugging**: Inspect internal float state during development
+- **Serialization**: Convert floats to/from structured data
+- **Precision Analysis**: Examine precision settings and truncation
+- **Binary Analysis**: Access raw binary representation via `.data.raw()`
 
 ---
 

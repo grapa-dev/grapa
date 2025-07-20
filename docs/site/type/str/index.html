@@ -1074,6 +1074,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#common-string-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common String Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common String Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trimming-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trimming Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3228,6 +3261,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#common-string-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common String Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common String Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trimming-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trimming Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3285,13 +3351,52 @@ text = r&#39;This \&#39;is\&#39; a test&#39;;  /* Escape single quotes when usin
 path = r&quot;C:\Users\Name\Documents\file.txt&quot;;  /* No escaping needed for backslashes */
 pattern = r&quot;\w+\s+\d+&quot;;  /* No escaping needed for regex */
 </code></pre></div>
-<p>Examples:
-Commands | Results
------------- | -------------
-"this is a test".len(); | 14
-"this is a test".split(""); | ["t","h","i","s"," ","i","s"," ","a"," ","t","e","s","t"]
-"this is a test".raw(); | 0x7468697320697320612074657374
-"this is a test".raw().int(); | 2361031878030638688519054699098996</p>
+<h2 id="common-string-operations">Common String Operations</h2>
+<h3 id="basic-operations">Basic Operations</h3>
+<table>
+<thead>
+<tr>
+<th>Commands</th>
+<th>Results</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"this is a test".len();</td>
+<td>14</td>
+</tr>
+<tr>
+<td>"this is a test".split("");</td>
+<td>["t","h","i","s"," ","i","s"," ","a"," ","t","e","s","t"]</td>
+</tr>
+<tr>
+<td>"this is a test".raw();</td>
+<td>0x7468697320697320612074657374</td>
+</tr>
+<tr>
+<td>"this is a test".raw().int();</td>
+<td>2361031878030638688519054699098996</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trimming-operations">Trimming Operations</h3>
+<div class="highlight"><pre><span></span><code>/* Basic trimming */
+&quot;  hello world  &quot;.trim() -&gt; &quot;hello world&quot;
+
+/* Trim specific characters */
+&quot;bbbtestingbbb&quot;.trim(&quot;b&quot;) -&gt; &quot;testing&quot;
+
+/* Trim multiple whitespace characters */
+whitespace = [&quot; &quot;, &quot;\t&quot;, &quot;\n&quot;, &quot;\r&quot;];
+&quot;  \t\n\r  hello world  \t\n\r  &quot;.trim(whitespace) -&gt; &quot;hello world&quot;
+
+/* Left and right trimming */
+&quot;  hello world  &quot;.ltrim() -&gt; &quot;hello world  &quot;
+&quot;  hello world  &quot;.rtrim() -&gt; &quot;  hello world&quot;
+</code></pre></div>
+<blockquote>
+<p><strong>See Also:</strong> <a href="../../obj/transform/#trimchars">String Transform Functions</a> for comprehensive trimming documentation including array-based multi-character trimming.</p>
+</blockquote>
 
 
 
@@ -3352,6 +3457,8 @@ Commands | Results
     
     
       <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="../../javascripts/search-fix.js"></script>
       
     
   </body>

@@ -90,8 +90,6 @@ int main(int argc, const char* argv[])
     {
         My_Console mConsole;
         mConsole.Start(inStr, outStr, runStr);
-        GrapaCHAR runStr("10;"),profile("");
-        GrapaCHAR grresult = mConsole.mConsoleSend.SendSync(runStr, NULL, 0, profile);
         if (!needExit || showConsole)
             mConsole.Run(NULL, NULL);
         mConsole.Stop();

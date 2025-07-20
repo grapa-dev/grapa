@@ -2616,11 +2616,35 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See Also
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="See Also">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-match-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom match() Function for Regex
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2652,26 +2676,8 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#rarely-used" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rarely Used
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      See Also
-    </span>
-  </a>
   
 </li>
       
@@ -3377,11 +3383,35 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See Also
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="See Also">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-match-function-for-regex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom match() Function for Regex
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3413,26 +3443,8 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#rarely-used" class="md-nav__link">
-    <span class="md-ellipsis">
-      Rarely Used
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      See Also
-    </span>
-  </a>
   
 </li>
       
@@ -3750,6 +3762,14 @@ value = obj.&quot;key&quot;;
 <div class="highlight"><pre><span></span><code>big = (1000000).range(0,1).map(op(x) { x * x; }, 8);  // Limit to 8 threads
 </code></pre></div></p>
 </blockquote>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>See <a href="../../syntax/operator/">Operators</a> and <a href="../../sys/sys/">System</a> docs for more details.</li>
+<li>Grapa supports variable scoping with <code>$global</code>, <code>$local</code>, and <code>$root</code>.</li>
+<li>Use <code>$sys().getenv()</code> for environment variables.</li>
+<li>Use <code>$thread()</code> for threading and <code>$sys().sleep()</code> for sleep.</li>
+<li>Use <code>op(){}</code> for lambdas and function definitions.</li>
+</ul>
 <h2 id="see-also">See Also</h2>
 <ul>
 <li><a href="../../syntax/basic_syntax/">Basic Syntax Guide</a></li>
@@ -3757,6 +3777,21 @@ value = obj.&quot;key&quot;;
 </ul>
 <hr />
 <p><em>If you have more TypeScript idioms you want mapped to Grapa, please open an issue or PR!</em> </p>
+<h3 id="custom-match-function-for-regex">Custom match() Function for Regex</h3>
+<p>TypeScript users often use <code>str.match()</code> for regex checks. You can define a similar function in Grapa:</p>
+<div class="highlight"><pre><span></span><code>// Define a match function that returns true if the pattern is found
+match = op(&quot;text&quot;=&quot;&quot;, &quot;pattern&quot;=&quot;&quot;) {
+    text.grep(pattern, &quot;x&quot;).len() &gt; 0;
+};
+
+// Usage
+if (match(&quot;hello world&quot;, &quot;world&quot;)) {
+    &quot;Found!&quot;.echo();
+} else {
+    &quot;Not found.&quot;.echo();
+}
+</code></pre></div>
+<p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
 <blockquote>
 <p><strong>Clarification on .get() Usage:</strong>
 - <code>.get()</code> is <strong>required</strong> for <code>$file</code> and <code>$TABLE</code> access.
@@ -3822,37 +3857,8 @@ Grapa's <code>const</code> operator provides <strong>superior runtime protection
 <li><strong>Access modifiers</strong>: <code>private</code>, <code>public</code> - Use naming conventions</li>
 <li><strong>Abstract classes</strong>: <code>abstract class</code> - Use regular classes</li>
 <li><strong>Method overloading</strong>: - Use different function names</li>
-<li><strong>Index signatures</strong>: <code>[key: string]: any</code> - Use regular objects</li>
-<li><strong>Call signatures</strong>: - Use regular functions</li>
-<li><strong>Construct signatures</strong>: - Use object constructors</li>
-<li><strong>Generic constraints</strong>: <code>T extends U</code> - Use runtime checks</li>
-<li><strong>Default type parameters</strong>: <code>&lt;T = string&gt;</code> - Use default values</li>
-<li><strong>Infer types</strong>: <code>infer U</code> - Use dynamic typing</li>
+<li><strong>Index signatures</strong>: <code>[key: string]: any</code></li>
 </ul>
-<h3 id="rarely-used">Rarely Used</h3>
-<p>These are advanced features that most developers won't miss:</p>
-<ul>
-<li><strong>Conditional types</strong>: - Use runtime checks</li>
-<li><strong>Template literal types</strong>: - Use regular strings</li>
-<li><strong>Mapped types</strong>: - Use object manipulation</li>
-<li><strong>Utility types</strong>: - Use object manipulation</li>
-<li><strong>Declaration merging</strong>: - Use object composition</li>
-<li><strong>Ambient declarations</strong>: <code>declare</code> - Use regular definitions</li>
-<li><strong>Triple-slash directives</strong>: - Use regular imports</li>
-<li><strong>Module augmentation</strong>: - Use object composition</li>
-<li><strong>Type-only imports</strong>: <code>import type</code> - Use regular imports</li>
-<li><strong>Satisfies operator</strong>: - Use regular assignment</li>
-</ul>
-<blockquote>
-<p><strong>Note:</strong> Many "missing" features are actually available in Grapa through different mechanisms. For example, TypeScript's static typing is replaced by Grapa's dynamic typing with runtime type checking via <code>.type()</code>.</p>
-</blockquote>
-<h2 id="see-also_1">See Also</h2>
-<ul>
-<li><a href="../../syntax/basic_syntax/">Basic Syntax Guide</a></li>
-<li><a href="../../syntax/operator/">Operator Reference</a></li>
-</ul>
-<hr />
-<p><em>If you have more TypeScript idioms you want mapped to Grapa, please open an issue or PR!</em></p>
 
 
 
@@ -3913,6 +3919,8 @@ Grapa's <code>const</code> operator provides <strong>superior runtime protection
     
     
       <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="../../javascripts/search-fix.js"></script>
       
     
   </body>

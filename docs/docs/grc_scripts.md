@@ -28,11 +28,11 @@ matches.echo();
 ---
 
 ## Running .grc Files
-- Use the `-cfile` option to run a Grapa script file:
-  - Windows: `.\grapa.exe -q -cfile "my_script.grc"`
-  - Linux/Mac: `./grapa -q -cfile "my_script.grc"`
-- Use `-ccmd` for short, inline commands (not for files).
-- Always use `-cfile` for multi-line scripts and tests.
+- Use the `-f` option to run a Grapa script file:
+- Windows: `.\grapa.exe -q -f "my_script.grc"`
+- Linux/Mac: `./grapa -q -f "my_script.grc"`
+- Use `-c` for short, inline commands (not for files).
+- Always use `-f` for multi-line scripts and tests.
 
 ---
 
@@ -44,8 +44,8 @@ matches.echo();
   $file().set("my_script.grz", compiled);
   ```
 - To run a `.grz` file:
-  - Windows: `.\grapa.exe -q -cfile "my_script.grz"`
-  - Linux/Mac: `./grapa -q -cfile "my_script.grz"`
+  - Windows: `.\grapa.exe -q -f "my_script.grz"`
+- Linux/Mac: `./grapa -q -f "my_script.grz"`
 - `.grz` files are portable and can be distributed for faster loading and execution.
 - See [GRZ Format Specification](grz_format.md) for technical details.
 

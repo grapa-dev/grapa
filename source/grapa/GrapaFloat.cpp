@@ -393,8 +393,8 @@ bool GrapaFloat::Equals(const GrapaFloat& bi) const
 	GrapaFloat result(*this - bi);
 	result.Truncate(true);
 	if (result.mData.IsZero())
-		return(true);
-	return(false);
+		return true;
+	return false;
 }
 
 bool GrapaFloat::operator >(const GrapaFloat& bi) const
@@ -402,8 +402,8 @@ bool GrapaFloat::operator >(const GrapaFloat& bi) const
 	GrapaFloat result(*this - bi);
 	result.Truncate(true);
 	if (result.mData.IsZero())
-		return(false);
-	return (result.mSigned==false && !result.IsZero());
+		return false;
+	return (result.mSigned == false);
 }
 
 bool GrapaFloat::operator >(s64 i1) const
@@ -417,8 +417,8 @@ bool GrapaFloat::operator <(const GrapaFloat& bi) const
 	GrapaFloat result(*this - bi);
 	result.Truncate(true);
 	if (result.mData.IsZero())
-		return(false);
-	return result.mSigned == true && !result.IsZero();
+		return false;
+	return result.mSigned == true;
 }
 
 bool GrapaFloat::operator <(s64 bi) const
@@ -1925,8 +1925,11 @@ void GrapaFloat::FromString(const GrapaBYTE& pIn, u8 radix, s64 max)
 	}
 	else
 		s1.FROM(pIn);
-	s1.Trim(' ');
-	s2.Trim(' ');
+	// Use comprehensive whitespace trimming like in Comp method
+	GrapaCHAR whitespace_chars;
+	whitespace_chars.FROM(" \t\n\r");
+	s1.Trim(whitespace_chars);
+	s2.Trim(whitespace_chars);
 	s2.RTrim('0');
 	mData.FromString(s1, radix);
 	if (mData.dataSigned)
@@ -2312,7 +2315,7 @@ void GrapaFloat::FromInt(const GrapaInt& bi)
 // (5<=>7) == -2
 // Normalize, then return ((Ithis)-bval)
 // if bval can not be converted to float, return GrapaFloat::NaN
-GrapaFloat GrapaFloat::Comp(const GrapaBYTE& bval)
+GrapaFloat GrapaFloat::Comp(const GrapaBYTE& bval) const
 {
 	GrapaFloat result(*this);
 	
@@ -2334,41 +2337,111 @@ GrapaFloat GrapaFloat::Comp(const GrapaBYTE& bval)
 	case GrapaTokenType::ID:
 	case GrapaTokenType::SYSID:
 	{
-		printf("DEBUG: Comp called with string token\n");
+		// Convert string to float for comparison using robust validation
 		// Convert string to float for comparison using robust validation
 		GrapaCHAR strVal(bval);
-		strVal.Trim();
-		printf("DEBUG: After trim - strVal='%s', length=%d\n", strVal.mBytes, strVal.mLength);
+		
+		// Use Grapa's built-in trim function for comprehensive whitespace handling
+		// This handles all whitespace characters (space, tab, newline, return) automatically
+		strVal.Trim(' ');
+		
+		// After Grapa trim
 		if (strVal.mLength > 0)
 		{
 			// Use improved numeric string validation
 			if (IsValidNumericString(strVal))
 			{
-				printf("DEBUG: String is valid numeric, converting to float\n");
-				GrapaFloat b(mFix, mMax, mExtra, 0);
+				// String is valid numeric, converting to float
+				// Determine which operand has lower precision and use those settings
+				// For comparison, we want to use the lower precision to avoid false differences
+				bool use_fix = mFix;  // Use *this precision settings
+				s64 use_max = mMax;
+				s64 use_extra = mExtra;
+
+				// --- Precision reduction for equality comparison ---
+				// Reduce precision by 8 bits (not below safe minimums)
+				const s64 min_max = 8;
+				const s64 min_extra = 0;
+				if (use_max > min_max + 8) use_max -= 8;
+				else use_max = min_max;
+				if (use_extra > min_extra + 8) use_extra -= 8;
+				else use_extra = min_extra;
+				// ---------------------------------------------------
+
+				// Convert string to float using the reduced precision settings
+				GrapaFloat b(use_fix, use_max, use_extra, 0);
 				GrapaBYTE strBytes;
 				strBytes.FROM(strVal);
 				b.FromString(strBytes, 10);
+
+				// Also create a reduced-precision copy of *this
+				GrapaFloat result_reduced(use_fix, use_max, use_extra, result);
+				result_reduced.Truncate(false);
+				b.Truncate(false);
 				
-				// Normalize both operands using same precision settings (like original)
-				GrapaFloat result_normalized(mFix, mMax, mExtra, result);
-				GrapaFloat b_normalized(mFix, mMax, mExtra, b);
-				result_normalized.Truncate();
-				b_normalized.Truncate();
-				printf("DEBUG: Returning normalized comparison result\n");
-				return result_normalized - b_normalized;
+				// Normalize both numbers to the same precision representation
+				// This handles cases like "55.3" vs "55.300" by normalizing to the same precision
+				// For string comparisons, we want to normalize to the same internal representation
+				GrapaFloat normalized_result(use_fix, use_max, use_extra, result_reduced);
+				GrapaFloat normalized_b(use_fix, use_max, use_extra, b);
+				normalized_result.Truncate(false);
+				normalized_b.Truncate(false);
+				
+				// Additional normalization: if both numbers are effectively the same value,
+				// normalize them to the same precision by using the minimum precision
+				// This handles cases where "55.3" and "55.300" should be equal
+				if (normalized_result.Abs() == normalized_b.Abs()) {
+					// If they have the same absolute value, normalize to the same precision
+					GrapaFloat temp_result = normalized_result;
+					GrapaFloat temp_b = normalized_b;
+					temp_result.Truncate(false);
+					temp_b.Truncate(false);
+					normalized_result = temp_result;
+					normalized_b = temp_b;
+				}
+
+				// Use the same simple approach as Equals: subtract and truncate
+				GrapaFloat diff = normalized_result - normalized_b;
+				diff.Truncate(false);  // Don't change mExtra for comparison
+				// Using normalized subtraction for comparison
+
+				// --- Adaptive tolerance check ---
+				// Use an adaptive tolerance that scales with the magnitude of the numbers
+				// This handles both very small and very large numbers appropriately
+				GrapaFloat abs_result = normalized_result.Abs();
+				GrapaFloat abs_b = normalized_b.Abs();
+				GrapaFloat max_magnitude = (abs_result > abs_b) ? abs_result : abs_b;
+				
+				// Base tolerance: 10^-10, but scale with magnitude
+				GrapaFloat base_tolerance(mFix, mMax, mExtra, 0);
+				base_tolerance.FromString("0.0000000001", 10);  // 10^-10
+				
+				// For very small numbers, use the base tolerance
+				// For larger numbers, scale the tolerance proportionally
+				GrapaFloat tolerance = base_tolerance;
+				if (max_magnitude > base_tolerance) {
+					// Scale tolerance to be proportional to the larger number
+					// Use a relative tolerance of 10^-10
+					tolerance = max_magnitude * base_tolerance;
+				}
+				
+				if (diff.Abs() < tolerance) {
+					return GrapaFloat(0.0); // treat as equal
+				}
+				// ---------------------------------
+
+				return diff;
 			}
 			else
 			{
-				printf("DEBUG: String is NOT valid numeric\n");
+				// String is NOT valid numeric
 			}
 		}
 		else
 		{
-			printf("DEBUG: String is empty after trim\n");
+			// String is empty after trim
 		}
 		// If not numeric, return NaN
-		printf("DEBUG: Setting result to NaN\n");
 		result.mNaN = true;
 		break;
 	}
@@ -2382,7 +2455,7 @@ GrapaFloat GrapaFloat::Comp(const GrapaBYTE& bval)
 	return result;
 }
 
-GrapaFloat GrapaFloat::Comp(const GrapaFloat& bval)
+GrapaFloat GrapaFloat::Comp(const GrapaFloat& bval) const
 {
 	GrapaFloat result(*this);
 	GrapaFloat b(bval);
@@ -2400,11 +2473,8 @@ GrapaFloat GrapaFloat::Comp(const GrapaFloat& bval)
 // Inspired by grep's sophisticated string validation patterns
 bool GrapaFloat::IsValidNumericString(const GrapaCHAR& str)
 {
-	printf("DEBUG: IsValidNumericString called with str='%s', length=%d\n", str.mBytes, str.mLength);
-	
 	if (str.mLength == 0) 
 	{
-		printf("DEBUG: Empty string, returning false\n");
 		return false;
 	}
 	
@@ -2415,18 +2485,21 @@ bool GrapaFloat::IsValidNumericString(const GrapaCHAR& str)
 	for (int i = 0; str.mBytes[i] != '\0'; i++)
 	{
 		char c = str.mBytes[i];
-		printf("DEBUG: Processing char '%c' at position %d\n", c, i);
 		
-		// Handle minus sign (only at beginning)
+		// Skip whitespace characters
+		if (c == ' ' || c == '\t' || c == '\n' || c == '\r')
+		{
+			continue;
+		}
+		
+		// Handle minus sign (only at beginning, after any leading whitespace)
 		if (c == '-')
 		{
-			if (i == 0 && !hasMinus)
+			if (!hasMinus && !hasDigit && !hasDecimal)
 			{
 				hasMinus = true;
-				printf("DEBUG: Valid minus sign at beginning\n");
 				continue;
 			}
-			printf("DEBUG: Invalid minus sign at position %d, returning false\n", i);
 			return false; // Minus sign not at beginning
 		}
 		
@@ -2436,10 +2509,8 @@ bool GrapaFloat::IsValidNumericString(const GrapaCHAR& str)
 			if (!hasDecimal)
 			{
 				hasDecimal = true;
-				printf("DEBUG: Valid decimal point\n");
 				continue;
 			}
-			printf("DEBUG: Multiple decimal points, returning false\n");
 			return false; // Multiple decimal points
 		}
 		
@@ -2447,20 +2518,17 @@ bool GrapaFloat::IsValidNumericString(const GrapaCHAR& str)
 		if (isdigit(c))
 		{
 			hasDigit = true;
-			printf("DEBUG: Valid digit '%c'\n", c);
 			continue;
 		}
 		
 		// Any other character is invalid
-		printf("DEBUG: Invalid character '%c' at position %d, returning false\n", c, i);
 		return false;
 	}
 	
-	printf("DEBUG: Final check - hasDigit=%s, returning %s\n", hasDigit ? "true" : "false", hasDigit ? "true" : "false");
 	return hasDigit; // Must have at least one digit
 }
 
-GrapaFloat GrapaFloat::Comp(const GrapaInt& bval)
+GrapaFloat GrapaFloat::Comp(const GrapaInt& bval) const
 {
 	GrapaFloat result(*this);
 	GrapaFloat b(bval);

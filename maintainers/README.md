@@ -86,4 +86,19 @@ This section is for Grapa maintainers and advanced contributors. It contains doc
 ### Quality Assurance
 - [ ] **Link validation** - Automated checking for broken internal links
 - [ ] **Syntax validation** - Ensure all Grapa code examples are correct
-- [ ] **Cross-reference validation** - Verify all internal references are accurate 
+- [ ] **Cross-reference validation** - Verify all internal references are accurate
+
+### Documentation Search Issue (Priority: After Operator Issues)
+- [ ] **Investigate search "undefined" issue** - Users report seeing "undefined([bits [,extra]])" instead of "float([bits [,extra]])" when searching for "float" and clicking search results
+- [ ] **Root cause analysis** - Determine if this is a caching issue, search plugin problem, or JavaScript replacement
+- [ ] **Fix search functionality** - Ensure search results display correct function names
+- [ ] **Test across browsers** - Verify fix works in Safari, Chrome, and other browsers
+- [ ] **Update search index** - Rebuild search index if needed after fix
+
+### Scientific Notation Support (Future Enhancement)
+- [ ] **Add scientific notation parsing** - Support for `1e-10`, `1.5e+3`, `2.3E-5` format
+- [ ] **Implement at tokenization level** - Add parsing in base-level byte parsing and tokenization step
+- [ ] **Alternative: Higher-level rules** - Or implement in `$grapa.grc` rules
+- [ ] **Update GrapaFloat integration** - Ensure proper conversion to GrapaFloat objects
+- [ ] **Add test cases** - Comprehensive testing of scientific notation parsing
+- [ ] **Update documentation** - Remove limitation notes once implemented 

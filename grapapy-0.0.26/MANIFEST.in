@@ -1,0 +1,24 @@
+include LICENSE source/pybind11/LICENSE
+
+graft source/pybind11/include
+graft source/pybind11/tools
+
+global-include CMakeLists.txt source/mainpy.cpp 
+
+recursive-include source/grapa *.h
+graft source/grapa-lib 
+
+recursive-include source/openssl *.h 
+graft source/openssl-lib 
+
+recursive-include source/FL *.h *.H 
+graft source/fl-lib 
+
+recursive-include source/blst *.h
+graft source/blst-lib 
+
+recursive-include source/utf8proc *.h
+recursive-include source/utf8proc *.c
+
+recursive-include source/pcre2 *.h
+graft source/pcre2-lib 

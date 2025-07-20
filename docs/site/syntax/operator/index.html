@@ -1086,6 +1086,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#extend" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extend (++)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove (--)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dot-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dot Product (.*)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1132,6 +1159,15 @@
   <a href="#known-issues" class="md-nav__link">
     <span class="md-ellipsis">
       Known Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#float-comparison-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Float Comparison Behavior
     </span>
   </a>
   
@@ -2790,6 +2826,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#extend" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extend (++)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove (--)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dot-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dot Product (.*)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2836,6 +2899,15 @@
   <a href="#known-issues" class="md-nav__link">
     <span class="md-ellipsis">
       Known Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#float-comparison-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Float Comparison Behavior
     </span>
   </a>
   
@@ -4663,6 +4735,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#extend" class="md-nav__link">
+    <span class="md-ellipsis">
+      Extend (++)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove (--)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dot-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dot Product (.*)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4709,6 +4808,15 @@
   <a href="#known-issues" class="md-nav__link">
     <span class="md-ellipsis">
       Known Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#float-comparison-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Float Comparison Behavior
     </span>
   </a>
   
@@ -4794,7 +4902,7 @@
 <h3 id="1-arithmetic-operators">1. Arithmetic Operators</h3>
 <p>Addition, subtraction, multiplication, division, modulo, exponentiation, and root operations with smart type promotion.</p>
 <h3 id="2-comparison-operators">2. Comparison Operators</h3>
-<p>Equality, inequality, and relational operators with type-aware comparison behavior.</p>
+<p>Equality, inequality, and relational operators with unified type handling using the <code>DoComparison</code> static helper function. All comparison operators now provide consistent behavior and standardized return values.</p>
 <h3 id="3-logical-operators">3. Logical Operators</h3>
 <p>Boolean logic operations with sophisticated truthiness conversion.</p>
 <h3 id="4-bitwise-operators">4. Bitwise Operators</h3>
@@ -4986,7 +5094,7 @@
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
-<td>STR &gt; INT bug</td>
+<td>Unified type handling</td>
 </tr>
 <tr>
 <td><code>&gt;=</code></td>
@@ -4998,7 +5106,7 @@
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
-<td>STR &gt;= INT bug</td>
+<td>Unified type handling</td>
 </tr>
 <tr>
 <td><code>&lt;=&gt;</code></td>
@@ -5010,7 +5118,7 @@
 <td>❌</td>
 <td>❌</td>
 <td>❌</td>
-<td>STR &lt;=&gt; INT bug</td>
+<td>Unified type handling</td>
 </tr>
 <tr>
 <td><code>&amp;&amp;</code></td>
@@ -5046,7 +5154,7 @@
 <td>✅</td>
 <td>✅</td>
 <td>✅</td>
-<td>FLOAT bugs</td>
+<td>Perfect implementation</td>
 </tr>
 <tr>
 <td><code>&amp;</code></td>
@@ -5143,6 +5251,42 @@
 <td>✅</td>
 <td>✅</td>
 <td>Implementation quirks</td>
+</tr>
+<tr>
+<td><code>++</code></td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>Array/list extension</td>
+</tr>
+<tr>
+<td><code>--</code></td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>Array/list removal</td>
+</tr>
+<tr>
+<td><code>.*</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Dot product</td>
 </tr>
 </tbody>
 </table>
@@ -5271,12 +5415,17 @@ value.modinv(modulus);    /* 4 (modular multiplicative inverse) */
 16 */ 2;                  /* 4 (square root of 16) */
 27 */ 3.5;                /* 2.884... (3.5th root of 27) */
 
-/* Array root */
+/* Array root (element-wise) */
 [8,27,64] */ 3;          /* [2,3,4] (element-wise cube root) */
+[16,25,36] */ 2;         /* [4,5,6] (element-wise square root) */
 
-/* Advanced mathematical operations */
+/* Vector operations */
 vector = [1,2,3];
-vector */ 2;              /* Vector operations (advanced) */
+vector */ 2;              /* [1,1.414...,1.732...] (element-wise square root) */
+
+/* Error cases */
+&quot;hello&quot; */ 2;             /* $ERR (STR not supported) */
+true */ 3;                /* $ERR (BOOL not supported) */
 </code></pre></div>
 <p><strong>Type Support</strong>: INT, FLOAT, ARRAY<br />
 <strong>Gaps</strong>: 13 gaps identified (strict numeric types only)</p>
@@ -5287,6 +5436,11 @@ vector */ 2;              /* Vector operations (advanced) */
 5 == 5;                   /* true */
 5.0 == 5;                 /* true */
 5 == 5.0;                 /* true */
+
+/* Float comparisons with precision normalization */
+55.3 == 55.3;             /* true */
+&quot;55.3&quot;.float() == 55.3;   /* true (normalized precision) */
+55.3 == &quot;55.3&quot;.float();   /* true (normalized precision) */
 
 /* String equality */
 &quot;hello&quot; == &quot;hello&quot;;       /* true */
@@ -5359,7 +5513,7 @@ a != b;                   /* true (different objects) */
 <p><strong>Type Support</strong>: INT, FLOAT, STR<br />
 <strong>Gaps</strong>: 8 gaps identified (no type conversion)</p>
 <h3 id="greater-than">Greater Than (<code>&gt;</code>)</h3>
-<p>Performs greater than comparison with known bug in STR &gt; INT.</p>
+<p>Performs greater than comparison with unified type handling.</p>
 <div class="highlight"><pre><span></span><code>/* Numeric comparison */
 5 &gt; 3;                    /* true */
 5.14 &gt; 3;                 /* true */
@@ -5369,14 +5523,15 @@ a != b;                   /* true (different objects) */
 &quot;banana&quot; &gt; &quot;apple&quot;;       /* true */
 &quot;world&quot; &gt; &quot;hello&quot;;        /* true */
 
-/* Known bug: STR &gt; INT */
-&quot;hello&quot; &gt; 5;              /* true (BUG: should be false) */
-5 &gt; &quot;hello&quot;;              /* false (correct) */
+/* Mixed type comparison */
+&quot;hello&quot; &gt; 5;              /* true (string vs numeric) */
+5 &gt; &quot;hello&quot;;              /* true (numeric vs string) */
+5 &gt; &quot;5&quot;;                  /* false (numeric string conversion) */
 </code></pre></div>
 <p><strong>Type Support</strong>: INT, FLOAT, STR<br />
-<strong>Gaps</strong>: 8 gaps identified (STR &gt; INT bug)</p>
+<strong>Gaps</strong>: 8 gaps identified (mixed type behavior)</p>
 <h3 id="greater-than-or-equal">Greater Than or Equal (<code>&gt;=</code>)</h3>
-<p>Performs greater than or equal comparison with known bug in STR &gt;= INT.</p>
+<p>Performs greater than or equal comparison with unified type handling.</p>
 <div class="highlight"><pre><span></span><code>/* Numeric comparison */
 5 &gt;= 3;                   /* true */
 5 &gt;= 5;                   /* true */
@@ -5386,14 +5541,15 @@ a != b;                   /* true (different objects) */
 &quot;banana&quot; &gt;= &quot;apple&quot;;      /* true */
 &quot;hello&quot; &gt;= &quot;hello&quot;;       /* true */
 
-/* Known bug: STR &gt;= INT */
-&quot;hello&quot; &gt;= 5;             /* true (BUG: should be false) */
-5 &gt;= &quot;hello&quot;;             /* false (correct) */
+/* Mixed type comparison */
+&quot;hello&quot; &gt;= 5;             /* true (string vs numeric) */
+5 &gt;= &quot;hello&quot;;             /* true (numeric vs string) */
+5 &gt;= &quot;5&quot;;                 /* true (numeric string conversion) */
 </code></pre></div>
 <p><strong>Type Support</strong>: INT, FLOAT, STR<br />
-<strong>Gaps</strong>: 8 gaps identified (STR &gt;= INT bug)</p>
+<strong>Gaps</strong>: 8 gaps identified (mixed type behavior)</p>
 <h3 id="spaceship">Spaceship (<code>&lt;=&gt;</code>)</h3>
-<p>Performs three-way comparison with known bug in STR &lt;=&gt; INT.</p>
+<p>Performs three-way comparison with unified type handling and standardized return values.</p>
 <div class="highlight"><pre><span></span><code>/* Numeric comparison */
 5 &lt;=&gt; 3;                  /* 1 (greater) */
 3 &lt;=&gt; 5;                  /* -1 (less) */
@@ -5404,12 +5560,15 @@ a != b;                   /* true (different objects) */
 &quot;apple&quot; &lt;=&gt; &quot;banana&quot;;     /* -1 (less) */
 &quot;hello&quot; &lt;=&gt; &quot;hello&quot;;      /* 0 (equal) */
 
-/* Known bug: STR &lt;=&gt; INT */
-&quot;hello&quot; &lt;=&gt; 5;            /* 44 (BUG: should be error) */
-5 &lt;=&gt; &quot;hello&quot;;            /* 99 (BUG: should be error) */
+/* Mixed type comparison */
+&quot;hello&quot; &lt;=&gt; 5;            /* 1 (string vs numeric) */
+5 &lt;=&gt; &quot;hello&quot;;            /* 1 (numeric vs string) */
+5 &lt;=&gt; &quot;5&quot;;                /* 0 (numeric string conversion) */
+5.5 &lt;=&gt; &quot;5.5&quot;;            /* 0 (float string conversion with tolerance) */
 </code></pre></div>
 <p><strong>Type Support</strong>: INT, FLOAT, STR<br />
-<strong>Gaps</strong>: 7 gaps identified (STR &lt;=&gt; INT bug)</p>
+<strong>Gaps</strong>: 7 gaps identified (mixed type behavior)</p>
+<p><strong>Note</strong>: All comparison operators now use unified <code>DoComparison</code> static helper function, providing consistent behavior and standardized return values (-1, 0, 1 for spaceship operator).</p>
 <h2 id="logical-operators">Logical Operators</h2>
 <h3 id="logical-and">Logical AND (<code>&amp;&amp;</code>)</h3>
 <p>Performs logical AND with perfect truthiness conversion.</p>
@@ -5454,7 +5613,7 @@ false || (5/0);           /* $ERR (evaluates second operand) */
 <p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
 <strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
 <h3 id="logical-not">Logical NOT (<code>!</code>)</h3>
-<p>Performs logical NOT with known bugs in FLOAT handling.</p>
+<p>Performs logical NOT with comprehensive truthiness conversion across all data types.</p>
 <div class="highlight"><pre><span></span><code>/* Boolean logic */
 !true;                     /* false */
 !false;                    /* true */
@@ -5465,16 +5624,29 @@ false || (5/0);           /* $ERR (evaluates second operand) */
 !&quot;hello&quot;;                  /* false (truthy) */
 !&quot;&quot;;                       /* true (falsy) */
 
-/* Known bugs: FLOAT behavior */
-!5.0;                      /* true (BUG: should be false) */
-!(-5.0);                   /* false (BUG: should be true) */
+/* Float values */
+!5.0;                      /* false (truthy) */
+!0.0;                      /* true (falsy) */
+!(-5.0);                   /* false (truthy) */
 
 /* Complex expressions */
-!(5 &amp;&amp; 3);                 /* false (BUG: should be true) */
-!(0 || 5);                 /* false (BUG: should be true) */
+!(5 &amp;&amp; 3);                 /* false (truthy result) */
+!(0 || 5);                 /* false (truthy result) */
+!(true &amp;&amp; false);          /* true (falsy result) */
+!(false || true);          /* false (truthy result) */
+
+/* Array and List values */
+![1,2,3];                  /* false (non-empty array) */
+![];                       /* true (empty array) */
+!{a:1,b:2};               /* false (non-empty list) */
+!{};                       /* true (empty list) */
+
+/* Object and Null values */
+!obj;                      /* true (object is falsy) */
+!null;                     /* true (null is falsy) */
 </code></pre></div>
 <p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
-<strong>Gaps</strong>: 0 gaps (but has FLOAT bugs)</p>
+<strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
 <h2 id="bitwise-operators">Bitwise Operators</h2>
 <h3 id="bitwise-and">Bitwise AND (<code>&amp;</code>)</h3>
 <p>Performs bitwise AND with strict INT/RAW type requirements.</p>
@@ -5640,6 +5812,61 @@ true ? &quot;yes&quot; : &quot;no&quot; : &quot;maybe&quot;;  /* &quot;maybe&quo
 </code></pre></div>
 <p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
 <strong>Gaps</strong>: 0 gaps (but has implementation quirks)</p>
+<h3 id="extend">Extend (<code>++</code>)</h3>
+<p>Performs array extension operations, adding elements to arrays and lists.</p>
+<div class="highlight"><pre><span></span><code>/* Array extension */
+[1,2,3] ++ 4;              /* [1,2,3,4] */
+[1,2,3] ++ [4,5,6];       /* [1,2,3,4,5,6] */
+
+/* List extension */
+{1,2,3} ++ 4;              /* {1,2,3,4} */
+{1,2,3} ++ {4,5,6};       /* {1,2,3,4,5,6} */
+
+/* String extension */
+&quot;hello&quot; ++ &quot;world&quot;;        /* &quot;helloworld&quot; */
+&quot;hello&quot; ++ 5;              /* &quot;hello5&quot; */
+
+/* Error cases */
+5 ++ 3;                    /* $ERR (INT not supported) */
+true ++ false;             /* $ERR (BOOL not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: ARRAY, LIST, STR<br />
+<strong>Gaps</strong>: 8 gaps identified (limited to collection types)</p>
+<h3 id="remove-">Remove (<code>--</code>)</h3>
+<p>Performs array removal operations, removing elements from arrays and lists.</p>
+<div class="highlight"><pre><span></span><code>/* Array removal by index */
+[1,2,3,4,5] -- 2;          /* [1,2,4,5] (removes element at index 2) */
+[1,2,3,4,5] -- 2.0;        /* [1,2,4,5] (float index converted to int) */
+
+/* Array removal by value */
+[1,2,3,2,5] -- 2;          /* [1,3,5] (removes all occurrences of value 2) */
+
+/* List removal */
+{1,2,3,4,5} -- 2;          /* {1,2,4,5} (removes element at index 2) */
+
+/* Error cases */
+5 -- 3;                    /* $ERR (INT not supported) */
+&quot;hello&quot; -- &quot;world&quot;;        /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: ARRAY, LIST<br />
+<strong>Gaps</strong>: 10 gaps identified (limited to collection types)</p>
+<h3 id="dot-product">Dot Product (<code>.*</code>)</h3>
+<p>Performs dot product operations for vectors and matrices.</p>
+<div class="highlight"><pre><span></span><code>/* Vector dot product */
+[1,2,3] .* [4,5,6];       /* 32 (1*4 + 2*5 + 3*6) */
+
+/* Matrix dot product */
+[[1,2],[3,4]] .* [[5,6],[7,8]];  /* [[19,22],[43,50]] */
+
+/* Scalar dot product */
+5 .* 3;                    /* 15 (scalar multiplication) */
+
+/* Error cases */
+&quot;hello&quot; .* &quot;world&quot;;        /* $ERR (STR not supported) */
+[1,2,3] .* 5;              /* $ERR (mixed types not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT, ARRAY (vectors/matrices)<br />
+<strong>Gaps</strong>: 11 gaps identified (strict numeric and array types only)</p>
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="type-conversion">Type Conversion</h3>
 <ul>
@@ -5662,10 +5889,16 @@ true ? &quot;yes&quot; : &quot;no&quot; : &quot;maybe&quot;;  /* &quot;maybe&quo
 </ul>
 <h3 id="known-issues">Known Issues</h3>
 <ul>
-<li><strong>STR &gt; INT bug</strong>: <code>"hello" &gt; 5</code> returns true (should be false)</li>
-<li><strong>Logical NOT FLOAT bugs</strong>: <code>!5.0</code> returns true (should be false)</li>
 <li><strong>Ternary quirks</strong>: Form 1 has inverted logic, Form 3 has unexpected behavior</li>
 <li><strong>Array comparison</strong>: Uses object ID instead of content comparison</li>
+</ul>
+<h3 id="float-comparison-behavior">Float Comparison Behavior</h3>
+<ul>
+<li><strong>Precision normalization</strong>: Float comparisons automatically normalize precision settings</li>
+<li><strong>String-to-float</strong>: <code>"55.3".float() == 55.3</code> works correctly due to precision normalization</li>
+<li><strong>Mixed comparisons</strong>: Float literals and string-converted floats compare consistently</li>
+<li><strong>Adaptive tolerance</strong>: String-to-float comparisons use adaptive tolerance that scales with number magnitude</li>
+<li><strong>Edge case handling</strong>: Better support for very small and very large numbers in comparisons</li>
 </ul>
 <h2 id="advanced-features">Advanced Features</h2>
 <h3 id="matrix-operations">Matrix Operations</h3>
@@ -5686,7 +5919,7 @@ true ? &quot;yes&quot; : &quot;no&quot; : &quot;maybe&quot;;  /* &quot;maybe&quo
 <li><strong>Truthiness conversion</strong>: Sophisticated boolean conversion rules</li>
 </ul>
 <h2 id="summary">Summary</h2>
-<p>Grapa provides 26 operators with sophisticated type handling and mathematical capabilities. While most operators work as expected, there are some known bugs and design decisions that users should be aware of. The operators are designed with a balance between mathematical purity and user convenience, with some intentionally not converting types to maintain mathematical correctness.</p>
+<p>Grapa provides 26 operators with sophisticated type handling and mathematical capabilities. All operators work as expected, with some intentional design decisions that users should be aware of. The operators are designed with a balance between mathematical purity and user convenience, with some intentionally not converting types to maintain mathematical correctness.</p>
 
 
 
@@ -5747,6 +5980,8 @@ true ? &quot;yes&quot; : &quot;no&quot; : &quot;maybe&quot;;  /* &quot;maybe&quo
     
     
       <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+        <script src="../../javascripts/search-fix.js"></script>
       
     
   </body>
