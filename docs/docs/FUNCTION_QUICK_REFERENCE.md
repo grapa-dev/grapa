@@ -99,6 +99,6 @@ function = op(){@this.$sys.function_name(@var.{params});};
 **Total: 200+ system functions available** 
 
 > **See Also:**
-> - [Getting Started](GETTING_STARTED.md)
-> - [JS-to-Grapa Migration Guide](migrations/JS_TO_GRAPA_MIGRATION.md)
-> - [Examples](EXAMPLES.md) 
+> - [Getting Started](getting_started.md)
+> - [JS-to-Grapa Migration Guide](migrations/js_to_grapa_migration.md)
+> - [Examples](examples.md) 

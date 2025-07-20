@@ -3,13 +3,13 @@
 This document provides practical examples of Grapa usage, organized from basic to advanced.
 
 > **For Python Users:**
-> See the [Python Integration Guide](python_integration.md) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for help translating Python code and using Grapa from Python.
+> See the [Python Integration Guide](python_integration.md) and [Migration Tips for Python Users](python_use_cases.md#migration-tips-for-python-users) for help translating Python code and using Grapa from Python.
 
 > **See Also:**
-> - [Getting Started](GETTING_STARTED.md)
-> - [Python-to-Grapa Migration Guide](migrations/PYTHON_TO_GRAPA_MIGRATION.md)
-> - [JS-to-Grapa Migration Guide](migrations/JS_TO_GRAPA_MIGRATION.md)
-> - [Language Reference](FUNCTION_QUICK_REFERENCE.md)
+> - [Getting Started](getting_started.md)
+> - [Python-to-Grapa Migration Guide](migrations/python_to_grapa_migration.md)
+> - [JS-to-Grapa Migration Guide](migrations/js_to_grapa_migration.md)
+> - [Language Reference](function_quick_reference.md)
 
 ## How to use this file
 - Start with the basic examples and work your way down.
@@ -498,8 +498,8 @@ log_content.grep("error", "A2B1io")  // 2 lines after, 1 before, match-only, cas
 ```
 
 ## Next Steps
-- Learn about [Testing](TESTING.md) your Grapa code
-- Check out the [Grep functionality](GREP.md) for advanced pattern matching
+- Learn about [Testing](testing.md) your Grapa code
+- Check out the [Grep functionality](grep.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
 
 ## Thread Safety and Parallelism

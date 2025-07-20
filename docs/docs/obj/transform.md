@@ -128,7 +128,7 @@ Replaces iteems.
 ## grep(pattern, options, delimiter, normalization, mode, num_workers) 
 Extracts matches from a string using PCRE2-powered regular expressions with full Unicode support. Returns an array of results or JSON format with named groups.
 
-> **For comprehensive Unicode, advanced regex, diacritic-insensitive, and output option documentation, see [Unicode Grep Documentation](../GREP.md).**
+> **For comprehensive Unicode, advanced regex, diacritic-insensitive, and output option documentation, see [Unicode Grep Documentation](../grep.md).**
 
 ### Parameters:
 
@@ -234,7 +234,7 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 /* → ["section1", "section2", "section3"] */
 ```
 
-> **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](../GREP.md).**
+> **📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see [Unicode Grep Documentation](../grep.md).**
 
 > **💡 Tip**: Use raw string literals (prefix with `r`) for better regex pattern readability. For example, `r"\w+"` instead of `"\\w+"`. Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string.
 

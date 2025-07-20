@@ -114,13 +114,13 @@ plugins:
 
 nav:
   - Home: index.md
-  - Getting Started: GETTING_STARTED.md
-  - API Reference: FUNCTION_QUICK_REFERENCE.md
-  - Python Integration: PYTHON.md
-  - Migration Guides: PYTHON_TO_GRAPA_MIGRATION.md
-  - Use Cases: USE_CASES.md
-  - Examples: EXAMPLES.md
-  - Troubleshooting: TROUBLESHOOTING.md
+  - Getting Started: getting_started.md
+  - API Reference: function_quick_reference.md
+  - Python Integration: python_integration.md
+  - Migration Guides: migrations/python_to_grapa_migration.md
+  - Use Cases: use_cases/index.md
+  - Examples: examples.md
+  - Troubleshooting: troubleshooting.md
   - Maintainers & Internal:
     - Maintainers Home: maintainers/index.md
     - Build & Deployment:

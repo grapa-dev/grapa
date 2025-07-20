@@ -43,7 +43,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 
 > **See Also:**
 > - [Python Integration Guide](../python_integration.md)
-> - [Python Use Cases](../PYTHON_USE_CASES.md)
+> - [Python Use Cases](../python_use_cases.md)
 
 ## Syntax Mapping Table
 
@@ -293,7 +293,7 @@ result = some_operation().iferr(0);
 > **Tip:** Grapa's parallel ETL/data processing is robust, production-ready, and a core design goal. Unlike Python, you can use parallel methods like `.map()` and `.filter()` out of the box for high-throughput data tasks.
 
 ## See Also
-- [Migration Tips for Python Users](../PYTHON_USE_CASES.md#migration-tips-for-python-users)
+- [Migration Tips for Python Users](../python_use_cases.md#migration-tips-for-python-users)
 - [Python Integration Guide](../python_integration.md)
 
 ---

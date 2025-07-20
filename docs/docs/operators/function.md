@@ -1,6 +1,6 @@
 # Function Operators
 ## op
-Creating an $OP. See [$OP type](../type/OP.md).
+Creating an $OP. See [$OP type](../type/op.md).
 
 ## class
 Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified variable is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other classes. 
@@ -30,7 +30,7 @@ Creating an instance of a class. See class.
 Used to define lexical rules. Currently only used to define special character handling like space and tab, where the default handling is to skip these characters so they do not need to be specified in the grammar. 
 
 ## rule
-See [$RULE type](../type/RULE.md)
+See [$RULE type](../type/rule.md)
 
 ## const
 Sets a bit in the variable that prevents it from being changed. Will not be locked when accessed, which is useful for a global variable accssed by concurent threads.

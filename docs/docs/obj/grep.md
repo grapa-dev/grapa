@@ -1107,7 +1107,7 @@ Grapa grep fully supports **multi-character delimiters**:
 
 ## Test Coverage and Regression Testing
 
-> **Update (2024-12):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See [Testing Documentation](../TESTING.md) for details.
+> **Update (2024-12):** The test suite now includes explicit checks for empty string vs null output, zero-length matches, and all advanced edge cases to ensure full ripgrep parity (excluding file system features). The previous null output bug is now fixed. See [Testing Documentation](../testing.md) for details.
 
 ## Comprehensive Features Summary
 

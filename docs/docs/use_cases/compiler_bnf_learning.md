@@ -51,4 +51,4 @@ execute_repeat = op(ast) {
 };
 ```
 
-- **See also:** [Python BNF/Compiler Examples](../PYTHON_USE_CASES.md#2-compilerbnf-learning-verified) 
+- **See also:** [Python BNF/Compiler Examples](../python_use_cases.md#2-compilerbnf-learning-verified) 

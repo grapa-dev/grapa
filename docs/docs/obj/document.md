@@ -79,7 +79,7 @@ hrefs = anchors_with_images.reduce(op(acc, a) {
 The same `.findall()` principles apply to complex JSON and XML documents. You can use the same query patterns to extract nested data, filter by attributes/keys, and process results with functional methods.
 
 > **See Also:**
-> - [Language Reference](../FUNCTION_QUICK_REFERENCE.md)
-> - [Python-to-Grapa Migration Guide](../migrations/PYTHON_TO_GRAPA_MIGRATION.md)
-> - [JS-to-Grapa Migration Guide](../migrations/JS_TO_GRAPA_MIGRATION.md)
-> - [Examples](../EXAMPLES.md)
+> - [Language Reference](../function_quick_reference.md)
+> - [Python-to-Grapa Migration Guide](../migrations/python_to_grapa_migration.md)
+> - [JS-to-Grapa Migration Guide](../migrations/js_to_grapa_migration.md)
+> - [Examples](../examples.md)

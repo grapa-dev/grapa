@@ -10,9 +10,9 @@ tags:
 > **For Users:** Learn how to test your Grapa scripts effectively using Grapa's built-in capabilities.
 
 > **See Also:**
-> - [Getting Started](GETTING_STARTED.md)
-> - [Examples](EXAMPLES.md)
-> - [API Reference](API_REFERENCE.md)
+> - [Getting Started](getting_started.md)
+> - [Examples](examples.md)
+> - [API Reference](api_reference.md)
 
 ## Table of Contents
 - [Basic Testing](#basic-testing)
@@ -682,8 +682,8 @@ result = large_data.map(op(x) { x * 2; }, 4);
 ---
 
 ## Next Steps
-- Learn about [Testing](TESTING.md) your Grapa code
-- Check out the [Grep functionality](GREP.md) for advanced pattern matching
+- Learn about [Testing](testing.md) your Grapa code
+- Check out the [Grep functionality](grep.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
 
 ## Thread Safety and Parallelism

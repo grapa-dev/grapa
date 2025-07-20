@@ -81,7 +81,7 @@ For development and CI/CD:
 .\grapa.exe -cfile "test/infrastructure/run_tests.grc"
 ```
 
-For detailed testing information, see [Testing Documentation](TESTING.md).
+For detailed testing information, see [Testing Documentation](testing.md).
 
 # Editor
 Grapa includes a widget library that can be used create create a GUI. Grapa can be run with simple editor (see lib/grapa/editor.grc) writen using this library.

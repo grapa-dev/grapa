@@ -12,7 +12,7 @@
     - Full Unicode grapheme cluster support (\X)
     - Parallel processing for very large inputs
     - Deduplication (`d` option) in all modes
-- See `maintainers/BINARY_GREP.md` for internal details and future work.
+- See `maintainers/BINARY_grep.md` for internal details and future work.
 
 ## Thread Safety and Parallelism
 
@@ -1586,10 +1586,10 @@ Grapa grep is now **production-ready** with **98%+ ripgrep parity** achieved. Al
 
 ## Next Steps
 
-- Explore [Examples](EXAMPLES.md) for more usage patterns
-- Learn about [Testing](TESTING.md) your Grapa code
+- Explore [Examples](examples.md) for more usage patterns
+- Learn about [Testing](testing.md) your Grapa code
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips
 
 ## Advanced/Binary Features
-- [GRZ Format Specification](GRZ_FORMAT.md) — Details on the GRZ binary format
+- [GRZ Format Specification](grz_format.md) — Details on the GRZ binary format
 - **Binary Grep**: For advanced binary data processing, see the internal documentation 

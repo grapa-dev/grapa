@@ -5,8 +5,8 @@ tags:
 ---
 # $ARRAY
 References:
-- [$LIST object](LIST.md)
-- [$VECTOR object](VECTOR.md)
+- [$LIST object](list.md)
+- [$VECTOR object](vector.md)
 
 Same as $LIST, but without the entry labels.
 

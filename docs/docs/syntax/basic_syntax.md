@@ -1382,5 +1382,5 @@ func(5, 3).echo(); // 8
 5. **Type safety**: Execution trees maintain type information
 6. **Performance**: Compiled execution trees are highly optimized
 
-See also: [Advanced Scripting](../grc_scripts.md), [$OP Type](../type/OP.md), [System Functions](../sys/sys.md)
+See also: [Advanced Scripting](../grc_scripts.md), [$OP Type](../type/op.md), [System Functions](../sys/sys.md)
 */ 

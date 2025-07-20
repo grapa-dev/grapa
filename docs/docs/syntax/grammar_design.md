@@ -439,8 +439,8 @@ The Grapa grammar system is surprisingly powerful and flexible, but understandin
 
 - **Try the calculator example** above
 - **Experiment with your own grammars**
-- **Check the [API Reference](../API_REFERENCE.md)** for available functions
-- **Look at [Examples](../EXAMPLES.md)** for more complex patterns
+- **Check the [API Reference](../api_reference.md)** for available functions
+- **Look at [Examples](../examples.md)** for more complex patterns
 - **Join the community** to share your grammar designs
 
 ---

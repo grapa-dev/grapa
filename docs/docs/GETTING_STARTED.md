@@ -238,10 +238,10 @@ matches.echo();  /* ["world", "world"] */
 ---
 
 ## Next Steps
-- Explore [Examples](EXAMPLES.md) for more complex use cases
-- Learn about [Testing](TESTING.md) your Grapa code
+- Explore [Examples](examples.md) for more complex use cases
+- Learn about [Testing](testing.md) your Grapa code
 - Dive into advanced system functions for advanced features
-- Check out the [Grep functionality](GREP.md) for advanced pattern matching
+- Check out the [Grep functionality](grep.md) for advanced pattern matching
 - Review the [Syntax Quick Reference](syntax/basic_syntax.md) for more syntax rules and tips 
 
 > **Tip:** Use `.range()` to generate arrays of numbers: `(n).range(start, step)`. 
@@ -255,9 +255,9 @@ matches.echo();  /* ["world", "world"] */
 > Grapa's parallel ETL/data processing is a core, production-ready feature. Parallelism is well tested and ideal for real-world, high-throughput data tasks. 
 
 > **For Newcomers/Non-Python Users:**
-> - [JS-to-Grapa Migration Guide](migrations/JS_TO_GRAPA_MIGRATION.md)
-> - [Language Reference](FUNCTION_QUICK_REFERENCE.md)
-> - [Examples](EXAMPLES.md)
+> - [JS-to-Grapa Migration Guide](migrations/js_to_grapa_migration.md)
+> - [Language Reference](function_quick_reference.md)
+> - [Examples](examples.md)
 
 > **For Python Users:**
-> See the [Python Integration Guide](python_integration.md), [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users), and [GrapaPy Namespace Solution](GRAPAPY_NAMESPACE_SOLUTION.md) for essential guidance on using Grapa from Python. 
+> See the [Python Integration Guide](python_integration.md), [Migration Tips for Python Users](python_use_cases.md#migration-tips-for-python-users), and [GrapaPy Namespace Solution](grapapy_namespace_solution.md) for essential guidance on using Grapa from Python. 

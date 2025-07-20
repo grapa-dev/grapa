@@ -209,4 +209,4 @@ response2 = app.handle_request("POST", "/echo", {"message": "Hello from Grapa!"}
 ("Response 2: " + response2.get("body")).echo();
 ```
 
-- **See also:** [Python Education Examples](../PYTHON_USE_CASES.md#7-education-prototyping-verified) 
+- **See also:** [Python Education Examples](../python_use_cases.md#7-education-prototyping-verified) 

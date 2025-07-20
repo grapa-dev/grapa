@@ -3,10 +3,10 @@
 > **Tip:** Use the search bar (top right) to quickly find functions, guides, and examples. The search automatically filters to show only user documentation.
 
 ## Getting Started
-- [Quickstart Guide](GETTING_STARTED.md)
-- [API Reference](FUNCTION_QUICK_REFERENCE.md)
-- [Migration Guides](migrations/PYTHON_TO_GRAPA_MIGRATION.md)
-- [Examples](EXAMPLES.md)
+- [Quickstart Guide](getting_started.md)
+- [API Reference](function_quick_reference.md)
+- [Migration Guides](migrations/python_to_grapa_migration.md)
+- [Examples](examples.md)
 
 ## Advanced Topics
 - [Grammar Design](syntax/grammar_design.md) - Create your own languages with Grapa
@@ -24,7 +24,7 @@
 - **Mobile-Friendly:** This site is fully responsive—try it on your phone or tablet!
 
 ## Need Help?
-- [Troubleshooting](TROUBLESHOOTING.md)
+- [Troubleshooting](troubleshooting.md)
 
 ---
 

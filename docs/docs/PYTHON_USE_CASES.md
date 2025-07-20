@@ -4,9 +4,9 @@ GrapaPy brings the power of Grapa to Python users, making advanced data processi
 
 > **See Also:**
 > - [Python Integration Guide](python_integration.md)
-> - [Python-to-Grapa Migration Guide](migrations/PYTHON_TO_GRAPA_MIGRATION.md)
-> - [Getting Started](GETTING_STARTED.md)
-> - [Examples](EXAMPLES.md)
+> - [Python-to-Grapa Migration Guide](migrations/python_to_grapa_migration.md)
+> - [Getting Started](getting_started.md)
+> - [Examples](examples.md)
 
 # Migration Tips for Python Users
 
@@ -21,7 +21,7 @@ GrapaPy brings the power of Grapa to Python users, making advanced data processi
 > - Explicit type conversion is required for results (e.g., `.str()`, `.int()`, `.float()`).
 > - No implicit truthy/falsy—use explicit boolean checks.
 > - No attribute-style access for dict/list keys—use `[]` or `.get()` for objects.
-> - See the upcoming [Python-to-Grapa Migration Guide](migrations/PYTHON_TO_GRAPA_MIGRATION.md) for a full mapping and more examples.
+> - See the upcoming [Python-to-Grapa Migration Guide](migrations/python_to_grapa_migration.md) for a full mapping and more examples.
 
 ## Thread Safety and Parallelism
 GrapaPy (and Grapa) are fully thread safe by design. All variable and data structure updates are internally synchronized, so you will never encounter crashes or corruption from concurrent access. However, if your program logic allows multiple threads to read and write the same variable or data structure, you may see *logical* race conditions (unexpected values, overwrites, etc.). This is a design consideration, not a stability issue. Minimize shared mutable state between threads unless intentional.

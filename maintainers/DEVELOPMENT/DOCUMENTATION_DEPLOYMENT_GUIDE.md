@@ -64,28 +64,39 @@ rm -rf docs/site
 ```
 
 #### 4. Branch Switching Workflow
-**Recommended Process**:
+**✅ CORRECTED Process**:
 ```bash
-# 1. Build the site
+# 1. Build the site (on main branch)
 cd docs && python3 -m mkdocs build --clean
 
-# 2. Stash any changes
-cd .. && git stash
+# 2. Verify build completed successfully
+ls -la site/  # Should show index.html and other files
 
-# 3. Switch to gh-pages (DO NOT clean while on main branch!)
-git checkout gh-pages
+# 3. Delete old gh-pages branch (both local and remote)
+git branch -D gh-pages
+git push origin --delete gh-pages
 
-# 4. Clean workspace (ONLY after switching to gh-pages)
-git clean -fdx
+# 4. Create fresh orphan gh-pages branch
+git checkout --orphan gh-pages
 
-# 5. Copy built site
-cd docs && cp -r site/* . && cp -r site/.nojekyll . 2>/dev/null || true
+# 5. Clear the branch completely (safe on orphan branch)
+git rm -rf .
 
-# 6. Commit and push
-cd .. && git add docs/ && git commit -m "Deploy latest documentation" && git push origin gh-pages
+# 6. Copy site files from main branch
+git checkout main -- docs/site/
 
-# 7. Return to main branch
-git checkout main && git stash pop
+# 7. Move files to root (where GitHub Pages expects them)
+mv docs/site/* . && rmdir docs/site docs
+
+# 8. Add all files and commit
+git add .
+git commit -m "Deploy documentation site - $(date)"
+
+# 9. Push to GitHub
+git push origin gh-pages
+
+# 10. Return to main branch
+git checkout main
 ```
 
 **🚨 CRITICAL WARNING**: Never run `git clean -fdx` while on the main branch! This will delete all source files. Only clean the gh-pages branch after switching to it.
@@ -188,34 +199,44 @@ git push origin gh-pages --force
    - Created `BUILD_SYSTEM.md` (unified build reference)
    - Archived deprecated files to `INTERNAL_NOTES/ARCHIVED_WIP/consolidation_2024/`
 
-#### Deployment Process Used:
+#### ✅ CORRECTED Deployment Process Used:
 ```bash
 # 1. Build documentation with latest changes
 cd docs && python3 -m mkdocs build --clean
 
-# 2. Copy built site to temporary location
-cd .. && cp -r docs/site /tmp/grapa_docs_updated
+# 2. Delete old gh-pages branch
+git branch -D gh-pages
+git push origin --delete gh-pages
 
-# 3. Switch to gh-pages branch
-git checkout gh-pages
+# 3. Create fresh orphan gh-pages branch
+git checkout --orphan gh-pages
 
-# 4. Clean gh-pages branch (safe to do here)
-git rm -rf . && git clean -fxd
+# 4. Clear the branch completely
+git rm -rf .
 
-# 5. Copy new documentation
-cp -r /tmp/grapa_docs_updated/* .
+# 5. Copy site files from main branch
+git checkout main -- docs/site/
 
-# 6. Commit and push
+# 6. Move files to root (where GitHub Pages expects them)
+mv docs/site/* . && rmdir docs/site docs
+
+# 7. Add and commit
 git add .
-git commit -m "Deploy updated documentation with operator navigation improvements"
+git commit -m "Deploy documentation site - $(date)"
+
+# 8. Push to GitHub
 git push origin gh-pages
+
+# 9. Return to main branch
+git checkout main
 ```
 
 #### Lessons Learned:
-- **Safe Cleanup**: Using `git rm -rf . && git clean -fxd` on gh-pages branch is safe
-- **Temporary Storage**: Copying built site to `/tmp/` prevents conflicts during branch switching
-- **Verification**: Always verify changes are included in the build before deployment
-- **GitHub Pages Timing**: Updates can take 5-10 minutes to appear on live site
+- **✅ Correct Directory Structure**: Files must be at root of gh-pages branch for GitHub Pages `/docs` source
+- **✅ Orphan Branch**: Creating fresh orphan branch prevents conflicts and ensures clean deployment
+- **✅ Proper Git Commands**: Use `git add .` not `git add docs/` when files are at root
+- **✅ Verification**: Always verify changes are included in the build before deployment
+- **✅ GitHub Pages Timing**: Updates can take 5-10 minutes to appear on live site
 
 ---
 
