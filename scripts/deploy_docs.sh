@@ -117,6 +117,10 @@ build_user_docs() {
     
     cd "$DOCS_DIR"
     
+    # Debug: Show current directory and config
+    log_info "Build directory: $(pwd)"
+    log_info "MkDocs config: $(ls -la mkdocs.yml)"
+    
     # Clean previous build
     if [ -d "$SITE_DIR" ]; then
         log_info "Cleaning previous build..."
@@ -130,6 +134,14 @@ build_user_docs() {
     else
         log_error "Failed to build user documentation"
         exit 1
+    fi
+    
+    # Debug: Show what was built
+    log_info "Build output directory: $SITE_DIR"
+    log_info "Build output exists: $([ -d "$SITE_DIR" ] && echo "YES" || echo "NO")"
+    if [ -d "$SITE_DIR" ]; then
+        log_info "Build output contents:"
+        ls -la "$SITE_DIR" | head -10
     fi
     
     # Verify build output
