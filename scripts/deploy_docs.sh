@@ -232,17 +232,14 @@ prepare_deployment_branch() {
 copy_site_files() {
     log_info "Copying site files to deployment branch..."
     
-    # Copy site files from main branch
-    git checkout "$MAIN_BRANCH" -- "$SITE_DIR/"
-    
-    # Move files to root of gh-pages branch (where GitHub Pages expects them)
+    # Copy site files from current build (not committed files)
     if [ -d "$SITE_DIR" ]; then
         log_info "Moving site files to root of deployment branch..."
         mv "$SITE_DIR"/* . 2>/dev/null || true
         rmdir "$SITE_DIR" 2>/dev/null || true
         rmdir "$DOCS_DIR" 2>/dev/null || true
     else
-        log_error "Site directory not found after checkout"
+        log_error "Site directory not found. Please build documentation first."
         exit 1
     fi
     
