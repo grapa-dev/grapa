@@ -7,72 +7,45 @@ tags:
 
 # Development Documentation
 
-This section contains development workflow, progress tracking, roadmaps, and contribution guidelines.
+This directory contains all development-related documentation for the Grapa project.
 
-## Quick Navigation
+## 📋 **Current Status & Planning**
 
-### 📋 **Current Tasks**
-- **[Operator Documentation Audit](operator_documentation_audit.md)** - **HIGH PRIORITY** - Comprehensive audit and update of operator documentation
-- **[Development TODO](TODO.md)** - Current development priorities and backlog
-- **[Current Investigation Status](current_investigation_status.md)** - Status of ongoing investigations
+### **🎯 Single Source of Truth**
+- **[CURRENT_STATUS.md](CURRENT_STATUS.md)** - **NEW**: Unified development status, priorities, and progress tracking
+- **[LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md)** - **NEW**: Comprehensive language development planning
 
-### 🗺️ **Planning & Roadmaps**
-- **[Language Enhancement Roadmap](grapa_language_enhancement_roadmap.md)** - Feature roadmap and language gaps
-- **[Implementation Progress](IMPLEMENTATION_PROGRESS.md)** - Progress tracking for implementation work
+### **📚 Reference Documentation**
+- **[DOCUMENTATION_DEPLOYMENT_GUIDE.md](DOCUMENTATION_DEPLOYMENT_GUIDE.md)** - Complete documentation deployment process
+- **[IMPLEMENTATION_PROGRESS.md](IMPLEMENTATION_PROGRESS.md)** - **DEPRECATED**: Moved to CURRENT_STATUS.md
+- **[TODO.md](TODO.md)** - **DEPRECATED**: Moved to CURRENT_STATUS.md
 
-## Current Status (July 2024)
+## 🔧 **Build & Deployment**
 
-### ✅ **Recently Completed**
-- **Documentation Site Deployment**: Fixed GitHub Pages deployment issues
-- **Database Issue Investigation**: Resolved string key retrieval issue with documented workaround
-- **Internal Analysis**: Complete analysis of 200+ internal functions and 25 operators
-- **Optimization Backlog**: Created detailed optimization roadmap
+### **🏗️ Build System**
+- **[BUILD_SYSTEM.md](../BUILD_AND_DEPLOYMENT/BUILD_SYSTEM.md)** - **NEW**: Complete build system reference
+- **[BUILD.md](../BUILD_AND_DEPLOYMENT/BUILD.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
+- **[BUILD_DEBUGGING.md](../BUILD_AND_DEPLOYMENT/BUILD_DEBUGGING.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
+- **[DEPENDENCIES.md](../BUILD_AND_DEPLOYMENT/DEPENDENCIES.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
 
-### 🎯 **Immediate Priorities**
-1. **Operator Documentation Audit** - Primary focus
-2. **Optimization Implementation** (Phase 1) - Ready to start
-3. **Unicode Language Binding** - C++ complete, needs language binding
+## 📖 **Archived Documentation**
 
-### 📊 **Backlog Items**
-- Language feature enhancements (loops, exceptions, modules)
-- $KEY field datatype investigation
-- Documentation link fixes
-- Test organization documentation
+All deprecated files have been moved to:
+- **[ARCHIVED_WIP/consolidation_2024/](../INTERNAL_NOTES/ARCHIVED_WIP/consolidation_2024/)**
 
-## Key Documents
+## 🎯 **Quick Start**
 
-### Current Work
-- **[Operator Documentation Audit](operator_documentation_audit.md)** - Active audit of operator documentation
-- **[Development TODO](TODO.md)** - Updated priorities and current tasks
+1. **Check Current Status**: Read [CURRENT_STATUS.md](CURRENT_STATUS.md) for immediate priorities
+2. **Review Language Plans**: See [LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md) for development roadmap
+3. **Build System**: Use [BUILD_SYSTEM.md](../BUILD_AND_DEPLOYMENT/BUILD_SYSTEM.md) for build instructions
 
-### Analysis & Planning
-- **[Language Enhancement Roadmap](grapa_language_enhancement_roadmap.md)** - Feature analysis and gaps
-- **[Implementation Progress](IMPLEMENTATION_PROGRESS.md)** - Progress tracking
+## 📞 **Maintenance**
 
-### Status Tracking
-- **[Current Investigation Status](current_investigation_status.md)** - Investigation status and resolutions
-- **[CURRENT_CONTEXT](../INTERNAL_NOTES/CURRENT_CONTEXT.md)** - Overall development context
+- **Status Updates**: Update [CURRENT_STATUS.md](CURRENT_STATUS.md) when priorities change
+- **Language Planning**: Update [LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md) for new features
+- **Build Changes**: Update [BUILD_SYSTEM.md](../BUILD_AND_DEPLOYMENT/BUILD_SYSTEM.md) for build system changes
 
-## Development Workflow
+---
 
-### For New Features
-1. Check **[Language Enhancement Roadmap](grapa_language_enhancement_roadmap.md)** for existing analysis
-2. Update **[Implementation Progress](IMPLEMENTATION_PROGRESS.md)** with new work
-3. Track progress in **[Development TODO](TODO.md)**
-
-### For Bug Fixes
-1. Document investigation in **[Current Investigation Status](current_investigation_status.md)**
-2. Update **[Development TODO](TODO.md)** with resolution
-3. Update user documentation if needed
-
-### For Documentation Updates
-1. Use **[Operator Documentation Audit](operator_documentation_audit.md)** as template for comprehensive updates
-2. Ensure all examples are empirically validated
-3. Update cross-references and links
-
-## Notes
-
-- All documentation must be empirically validated against actual Grapa implementation
-- Source-driven analysis is preferred over assumptions
-- User and maintainer documentation should be strictly separated
-- Regular updates to status documents ensure easy recovery after interruptions 
+**Last Updated**: July 19, 2024  
+**Consolidation**: Complete - Single source of truth established 
