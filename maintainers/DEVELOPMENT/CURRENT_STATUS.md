@@ -231,7 +231,15 @@
 **Source**: From language enhancement roadmap
 
 #### Current Session Priority:
-1. **CLI Redesign Phase 1** - ✅ COMPLETED
+1. **🚨 ROW Table Index Corruption Bug** - 🔥 IMMEDIATE PRIORITY
+   - **Status**: CRITICAL BUG - First record becomes unreadable after adding third record
+   - **Impact**: HIGH - ROW tables unusable for production with >2 records
+   - **Test Script**: `test_row_bug_demo.grc` demonstrates the issue
+   - **Debug Output**: Shows empty RPTR entries for first record after corruption
+   - **Workaround**: Use COL tables instead of ROW tables
+   - **Priority**: IMMEDIATE - blocking database functionality
+
+2. **CLI Redesign Phase 1** - ✅ COMPLETED
    - Replaced `-ccmd` → `-c`, `-cfile` → `-f`, `-ccin` → `-s`, `-argcin` → `-S`
    - Added `-d` (debug), `-o` (output), `-a` (append)
    - Removed GUI options (`-w`, `-wfile`) and conflicting options (`-c/--console`, `-e/--env`)
@@ -246,7 +254,7 @@
    - Loop Constructs design (2-3 weeks)
    - **Reference**: `maintainers/DEVELOPMENT/LANGUAGE_ENHANCEMENT_ROADMAP.md` (being consolidated)
 
-#### Future Priorities:
+#### Future Priorities (After ROW Bug Fix):
 1. **Unicode Language Binding** - Add `case_fold()` method to Grapa scripts
 2. **String Interpolation** - Implement template literal-style interpolation
 3. **Cryptographic Features Stabilization** - Fix AKS routing, document working features
@@ -568,10 +576,11 @@ This document should be updated whenever:
 - `maintainers/DEVELOPMENT/CURRENT_STATUS.md` - This file (committed items only)
 
 ### **Next Session Goals**
-1. **Missing Operator Documentation** - Document the 5 missing operators
-2. **Unicode Language Binding** - Add case_fold() method
-3. **String Interpolation** - Implement template literal-style interpolation
-4. **Crypto Stabilization** - Fix AKS routing, document working features
+1. **🚨 ROW Table Index Corruption Bug** - Fix critical database bug (IMMEDIATE)
+2. **Missing Operator Documentation** - Document the 5 missing operators
+3. **Unicode Language Binding** - Add case_fold() method
+4. **String Interpolation** - Implement template literal-style interpolation
+5. **Crypto Stabilization** - Fix AKS routing, document working features
 
 ---
 
@@ -599,6 +608,6 @@ This document should be updated whenever:
 
 ---
 
-**Last Updated**: December 2024  
-**Current Focus**: Language Enhancement (Unicode binding, String interpolation)  
-**Status**: CLI Redesign Complete, Language Enhancements Active, Operator System Complete 
+**Last Updated**: January 2025  
+**Current Focus**: 🚨 ROW Table Index Corruption Bug (IMMEDIATE PRIORITY)  
+**Status**: CLI Redesign Complete, ROW Bug Critical, Operator System Complete 

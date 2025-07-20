@@ -64,7 +64,15 @@ This document captures the assessment of Grapa grep's readiness to replace ripgr
 
 ### 🔴 CRITICAL GAPS for Production
 
-#### 1. Custom Delimiter Edge Cases
+#### 1. 🚨 ROW Table Index Corruption Bug
+- **Known Issue**: ROW tables first record becomes unreadable after adding third record
+- **Impact**: CRITICAL - ROW tables unusable for production with >2 records
+- **Test Script**: `test_row_bug_demo.grc` demonstrates the issue
+- **Debug Output**: Shows empty RPTR entries for first record after corruption
+- **Workaround**: Use COL tables instead of ROW tables
+- **Priority**: IMMEDIATE - blocking database functionality
+
+#### 2. Custom Delimiter Edge Cases
 - **Known Issue**: Custom delimiter test currently fails
 - **Impact**: High - affects any production use with custom delimiters
 - **Need**: Fix the underlying implementation
@@ -95,9 +103,10 @@ This document captures the assessment of Grapa grep's readiness to replace ripgr
 ## Action Plan
 
 ### Immediate Actions (Critical) - Week 1
-1. **Fix the custom delimiter bug** - This is blocking production use
-2. **Create ripgrep comparison tests** - Side-by-side output validation
-3. **Add performance benchmarks** - Ensure competitive performance
+1. **🚨 Fix the ROW table index corruption bug** - This is blocking database functionality
+2. **Fix the custom delimiter bug** - This is blocking production use
+3. **Create ripgrep comparison tests** - Side-by-side output validation
+4. **Add performance benchmarks** - Ensure competitive performance
 
 ### Short-term (1-2 weeks) - Week 2-3
 1. **Expand multiline + lookaround tests** - Add complex scenarios
@@ -109,9 +118,9 @@ This document captures the assessment of Grapa grep's readiness to replace ripgr
 2. **Regression testing automation** - CI/CD integration
 3. **Documentation updates** - Known differences from ripgrep
 
-## Current Status: 90% Production Ready
+## Current Status: 85% Production Ready
 
-The test suite is **very comprehensive** for Unicode and error handling, and the documentation overhaul has removed a major barrier to production deployment. **Critical gaps remain** in custom delimiter handling and performance benchmarking, but these are now the primary blockers.
+The test suite is **very comprehensive** for Unicode and error handling, and the documentation overhaul has removed a major barrier to production deployment. **Critical gaps remain** in ROW table functionality, custom delimiter handling and performance benchmarking, but these are now the primary blockers.
 
 **✅ NEW ACHIEVEMENT: Full File System Parity & Documentation Parity**
 - **Status**: Complete file system parity with ripgrep achieved
@@ -130,18 +139,20 @@ The test suite is **very comprehensive** for Unicode and error handling, and the
 - [x] Documentation is accurate, comprehensive, and user-friendly
 
 ## Risk Assessment
+- **Critical Risk**: ROW table index corruption (blocking database functionality)
 - **High Risk**: Custom delimiter functionality (blocking)
 - **Medium Risk**: Performance parity with ripgrep
 - **Low Risk**: Unicode handling (well tested)
 - **Low Risk**: Documentation and onboarding (now excellent)
 
 ## Next Steps
-1. Prioritize custom delimiter fix
-2. Create comprehensive ripgrep comparison suite
-3. Establish performance baseline and targets
-4. Implement automated regression testing
-5. Maintain documentation quality and update as features evolve
+1. **🚨 Prioritize ROW table index corruption fix** (IMMEDIATE)
+2. Prioritize custom delimiter fix
+3. Create comprehensive ripgrep comparison suite
+4. Establish performance baseline and targets
+5. Implement automated regression testing
+6. Maintain documentation quality and update as features evolve
 
 ---
-*Last Updated: 2024-06-19*
-*Status: In Progress* 
+*Last Updated: 2025-01-20*
+*Status: ROW Bug Critical - In Progress* 

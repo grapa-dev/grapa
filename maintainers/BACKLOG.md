@@ -2,6 +2,15 @@
 
 ## High Priority
 
+### 🚨 CRITICAL: ROW Table Index Corruption Bug
+- [ ] **ROW Table Index Corruption Fix**: Fix critical bug where first record becomes unreadable after adding third record to ROW tables
+  - **Issue**: `$file().table("ROW")` first record returns `{"error":-1}` after third record added
+  - **Impact**: HIGH - ROW tables are unusable for production with more than 2 records
+  - **Workaround**: Use COL tables instead of ROW tables (documented in troubleshooting)
+  - **Test Script**: `test_row_bug_demo.grc` demonstrates the bug
+  - **Debug Output**: Shows empty RPTR entries for first record after corruption
+  - **Priority**: IMMEDIATE - blocking database functionality
+
 ### CLI Enhancement (Phase 2)
 - [ ] **Performance Options**: Add `-j/--jobs <N>` for parallel worker control and `--no-parallel` to disable parallelism
 - [ ] **Environment Management**: Add `-E/--env <VAR=value>` for setting environment variables and `--env-file <file>` for loading environment files
