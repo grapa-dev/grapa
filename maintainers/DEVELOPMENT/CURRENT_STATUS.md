@@ -27,6 +27,7 @@
 
 ## Next Steps (Current Priority)
 - **✅ ALL CRITICAL OPERATOR BUGS RESOLVED** - Operator bug fixes completed
+- **✅ MISSING OPERATOR DOCUMENTATION COMPLETED** - All 5 missing operators documented
 - **Ready for next priority items** - All identified operator issues have been successfully addressed
 
 ---
@@ -98,6 +99,15 @@
    - Complex expressions working correctly
 5. **STR > INT comparison**: Behavior resolved ✅
    - `"hello" > 5` returns `false` (correct: non-numeric strings < numbers)
+
+6. **Missing Operator Documentation**: All 5 operators documented ✅
+   - **Extend (`++`)**: Array/list extension operations documented
+   - **Remove (`--`)**: Array/list removal operations documented  
+   - **Dot Product (`.*`)**: Vector/matrix dot product operations documented
+   - **Root (`*/`)**: Enhanced with more examples and error cases
+   - **Spaceship (`<=>`)**: Already had comprehensive documentation
+   - **Type Support Matrix**: Updated to include all 5 operators
+   - **Documentation Quality**: All examples, error cases, and type support documented
    - `5 > "hello"` returns `true` (correct: numbers > non-numeric strings)
    - Consistent and logical mixed type comparison behavior
 
