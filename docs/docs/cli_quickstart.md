@@ -186,6 +186,27 @@ joined = words.join(" - ");
 
 ## Command Line Options
 
+### Complete CLI Options Reference
+
+```bash
+# Basic Options
+grapa [options] [script_or_command]
+
+# Standard Options
+-c, --command <script>     Execute Grapa command/script
+-f, --file <file>          Execute Grapa script file (.grc or .grz)
+-s, --stdin                Execute command from stdin
+-S, --stdin-var            Store stdin in $ARGCIN environment variable
+-q, --quiet                Suppress version header output
+-v, --version              Show version information
+-h, --help                 Show help message
+-d, --debug                Enable debug mode
+-o, --output <file>        Redirect output to file
+-a, --append               Append output to file (use with -o)
+-w, --window               Open in window mode (GUI)
+-wf, --window-file <file>  Open file in window mode
+```
+
 ### Basic Usage
 ```bash
 # Direct command execution (new)
@@ -291,6 +312,7 @@ for (file in files) {
 - **Examples:** Check out [Examples](examples.md) for more complex use cases
 - **Python Integration:** If you also use Python, see [Python Integration Guide](python_integration.md)
 - **Troubleshooting:** For common issues, see [Troubleshooting](troubleshooting.md)
+- **Command Line Reference:** For detailed CLI options and examples, see [Run](run.md)
 
 ## Tips
 
