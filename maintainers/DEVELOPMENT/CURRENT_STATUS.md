@@ -1,10 +1,31 @@
-# Current Development Status - Grapa & GrapaPy
+# Current Status (Paused)
 
-**Last Updated**: July 19, 2024  
-**Current Version**: 0.0.39c (main branch)  
-**Status**: Stable release with working build system across all platforms
+## Context
+- Investigating float/string comparison bugs in Grapa equality operators and GrapaFloat::Comp methods.
+- Issue: `55.3 == '55.3'` returns false, but `55.0 == '55.0'` and `55.0 == '55'` return true.
+- Both the original operator logic and the new Comp method logic fail for decimal strings like '55.3'.
+- Root cause: Numeric string detection uses a simple isdigit() check, which does not robustly handle decimal points ('.') or minus signs ('-').
+- Confirmed that string parsing logic is the bottleneck for decimal numbers.
+- **Grep Insights**: Analyzed grep C++ source and found sophisticated string validation patterns that can be applied to fix numeric string detection.
+- **Reference**: See `maintainers/IMPLEMENTATION/GRAPAFLOAT_IMPLEMENTATION.md` for complete GrapaFloat data structure and precision management details.
 
-> **NOTE**: This is the single source of truth for current development status. All other status files are deprecated.
+## Next Steps (when resuming)
+- **Fix GrapaFloat::Comp functions** using grep-inspired string validation:
+  - Implement robust numeric string detection (one decimal point, optional leading minus)
+  - Use proper validation logic instead of simple isdigit() checks
+  - Test with various decimal string formats
+- **Fix equality operators** (==, !=) for float/string comparisons:
+  - Update operator logic to use improved Comp methods
+  - Ensure consistent behavior across all comparison types
+  - Test float/int/string equality scenarios
+- **Integration testing**: Verify all float comparison code paths work correctly
+
+## TODO
+- [ ] Refactor numeric string detection logic as above
+- [ ] Retest all float/string/int comparison cases
+- [ ] Document any further findings or edge cases
+
+**Work is paused here. Resume from this point.**
 
 ---
 

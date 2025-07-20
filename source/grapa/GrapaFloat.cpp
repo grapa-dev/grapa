@@ -2307,3 +2307,169 @@ void GrapaFloat::FromInt(const GrapaInt& bi)
 	Truncate();
 
 }
+
+// Normalized compare
+// (5<=>7) == -2
+// Normalize, then return ((Ithis)-bval)
+// if bval can not be converted to float, return GrapaFloat::NaN
+GrapaFloat GrapaFloat::Comp(const GrapaBYTE& bval)
+{
+	GrapaFloat result(*this);
+	
+	switch (bval.mToken)
+	{
+	case GrapaTokenType::FLOAT:
+	case GrapaTokenType::INT:
+	{
+		GrapaFloat b(bval);
+		// Normalize both operands using same precision settings
+		GrapaFloat result_normalized(mFix, mMax, mExtra, result);
+		GrapaFloat b_normalized(mFix, mMax, mExtra, b);
+		result_normalized.Truncate();
+		b_normalized.Truncate();
+		return result_normalized - b_normalized;
+	}
+	case GrapaTokenType::STR:
+	case GrapaTokenType::SYSSTR:
+	case GrapaTokenType::ID:
+	case GrapaTokenType::SYSID:
+	{
+		printf("DEBUG: Comp called with string token\n");
+		// Convert string to float for comparison using robust validation
+		GrapaCHAR strVal(bval);
+		strVal.Trim();
+		printf("DEBUG: After trim - strVal='%s', length=%d\n", strVal.mBytes, strVal.mLength);
+		if (strVal.mLength > 0)
+		{
+			// Use improved numeric string validation
+			if (IsValidNumericString(strVal))
+			{
+				printf("DEBUG: String is valid numeric, converting to float\n");
+				GrapaFloat b(mFix, mMax, mExtra, 0);
+				GrapaBYTE strBytes;
+				strBytes.FROM(strVal);
+				b.FromString(strBytes, 10);
+				
+				// Normalize both operands using same precision settings (like original)
+				GrapaFloat result_normalized(mFix, mMax, mExtra, result);
+				GrapaFloat b_normalized(mFix, mMax, mExtra, b);
+				result_normalized.Truncate();
+				b_normalized.Truncate();
+				printf("DEBUG: Returning normalized comparison result\n");
+				return result_normalized - b_normalized;
+			}
+			else
+			{
+				printf("DEBUG: String is NOT valid numeric\n");
+			}
+		}
+		else
+		{
+			printf("DEBUG: String is empty after trim\n");
+		}
+		// If not numeric, return NaN
+		printf("DEBUG: Setting result to NaN\n");
+		result.mNaN = true;
+		break;
+	}
+	default:
+	{
+		result.mNaN = true;
+		break;
+	}
+	}
+
+	return result;
+}
+
+GrapaFloat GrapaFloat::Comp(const GrapaFloat& bval)
+{
+	GrapaFloat result(*this);
+	GrapaFloat b(bval);
+	
+	// Normalize both operands using same precision settings
+	GrapaFloat result_normalized(mFix, mMax, mExtra, result);
+	GrapaFloat b_normalized(mFix, mMax, mExtra, b);
+	result_normalized.Truncate();
+	b_normalized.Truncate();
+	
+	return result_normalized - b_normalized;
+}
+
+// Helper function for robust numeric string validation
+// Inspired by grep's sophisticated string validation patterns
+bool GrapaFloat::IsValidNumericString(const GrapaCHAR& str)
+{
+	printf("DEBUG: IsValidNumericString called with str='%s', length=%d\n", str.mBytes, str.mLength);
+	
+	if (str.mLength == 0) 
+	{
+		printf("DEBUG: Empty string, returning false\n");
+		return false;
+	}
+	
+	bool hasDecimal = false;
+	bool hasMinus = false;
+	bool hasDigit = false;
+	
+	for (int i = 0; str.mBytes[i] != '\0'; i++)
+	{
+		char c = str.mBytes[i];
+		printf("DEBUG: Processing char '%c' at position %d\n", c, i);
+		
+		// Handle minus sign (only at beginning)
+		if (c == '-')
+		{
+			if (i == 0 && !hasMinus)
+			{
+				hasMinus = true;
+				printf("DEBUG: Valid minus sign at beginning\n");
+				continue;
+			}
+			printf("DEBUG: Invalid minus sign at position %d, returning false\n", i);
+			return false; // Minus sign not at beginning
+		}
+		
+		// Handle decimal point (only one allowed)
+		if (c == '.')
+		{
+			if (!hasDecimal)
+			{
+				hasDecimal = true;
+				printf("DEBUG: Valid decimal point\n");
+				continue;
+			}
+			printf("DEBUG: Multiple decimal points, returning false\n");
+			return false; // Multiple decimal points
+		}
+		
+		// Check for digits
+		if (isdigit(c))
+		{
+			hasDigit = true;
+			printf("DEBUG: Valid digit '%c'\n", c);
+			continue;
+		}
+		
+		// Any other character is invalid
+		printf("DEBUG: Invalid character '%c' at position %d, returning false\n", c, i);
+		return false;
+	}
+	
+	printf("DEBUG: Final check - hasDigit=%s, returning %s\n", hasDigit ? "true" : "false", hasDigit ? "true" : "false");
+	return hasDigit; // Must have at least one digit
+}
+
+GrapaFloat GrapaFloat::Comp(const GrapaInt& bval)
+{
+	GrapaFloat result(*this);
+	GrapaFloat b(bval);
+	
+	// Normalize both operands using same precision settings
+	GrapaFloat result_normalized(mFix, mMax, mExtra, result);
+	GrapaFloat b_normalized(mFix, mMax, mExtra, b);
+	result_normalized.Truncate();
+	b_normalized.Truncate();
+	
+	return result_normalized - b_normalized;
+}

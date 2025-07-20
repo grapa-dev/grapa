@@ -1,8 +1,11 @@
-# Operator Bug Fixes Status
+# Operator Bug Fixes Status (Paused)
 
-**Last Updated**: December 2024  
-**Status**: Partially Complete - Float comparison bugs FIXED ✅  
-**Next Session**: Logical NOT bugs (highest priority)
+**Paused Context:**
+- Currently investigating float/string comparison bugs in equality operators and GrapaFloat::Comp.
+- `55.3 == '55.3'` fails due to numeric string detection using isdigit(), which does not robustly handle decimal points or minus signs.
+- Next step: Refactor numeric string detection logic to allow one decimal point and an optional leading minus sign.
+- See `maintainers/DEVELOPMENT/CURRENT_STATUS.md` for full context and resume instructions.
+- **Reference**: See `maintainers/IMPLEMENTATION/GRAPAFLOAT_IMPLEMENTATION.md` for complete GrapaFloat implementation details.
 
 ---
 

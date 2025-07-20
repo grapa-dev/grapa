@@ -56,6 +56,9 @@ public:
 	bool operator <(s64 bi) const;
 	bool operator >=(const GrapaFloat& bi2) const;
 	bool operator <=(const GrapaFloat& bi2) const;
+	GrapaFloat Comp(const GrapaBYTE& bval);
+	GrapaFloat Comp(const GrapaFloat& bval);
+	GrapaFloat Comp(const GrapaInt& bval);
 	GrapaInt Div(const GrapaFloat& bi2, GrapaFloat& remainder) const;
 	GrapaFloat operator /(const GrapaFloat& bi2);
 	GrapaFloat operator /(const GrapaInt& bi);
@@ -113,6 +116,9 @@ public:
 	void FromBytes(const GrapaBYTE& result);
 	GrapaBYTE getBytes() const;
 	void Truncate(bool display=false);
+	
+	// Helper function for robust numeric string validation
+	static bool IsValidNumericString(const GrapaCHAR& str);
 };
 
 #endif //_GrapaFloat_

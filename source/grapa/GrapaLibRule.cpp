@@ -17507,72 +17507,38 @@ GrapaRuleEvent* GrapaLibraryRuleEqEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 		}
 		else if (r1.vVal->mValue.mToken == GrapaTokenType::FLOAT && (r2.vVal->mValue.mToken == GrapaTokenType::STR || r2.vVal->mValue.mToken == GrapaTokenType::SYSSTR || r2.vVal->mValue.mToken == GrapaTokenType::ID || r2.vVal->mValue.mToken == GrapaTokenType::SYSID))
 		{
-			// Convert string to float for comparison
+			// Use improved GrapaFloat::Comp method for FLOAT == STR comparison
 			GrapaFloat a(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			a.FromBytes(r1.vVal->mValue);
 			
-			GrapaCHAR strVal(r2.vVal->mValue);
-			strVal.Trim();
-			if (strVal.mLength > 0)
+			GrapaFloat compResult = a.Comp(r2.vVal->mValue);
+			if (compResult.mNaN)
 			{
-				// Check if string is numeric (digits only)
-				bool isNumeric = true;
-				for (int i = 0; strVal.mBytes[i] != '\0'; i++)
-				{
-					if (isdigit(strVal.mBytes[i]) == 0 && strVal.mBytes[i] != '.' && strVal.mBytes[i] != '-')
-					{
-						isNumeric = false;
-						break;
-					}
-				}
-				if (isNumeric)
-				{
-					GrapaFloat b(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
-					GrapaBYTE strBytes;
-					strBytes.FROM(strVal);
-					b.FromString(strBytes, 10);
-					
-					// Convert the float literal using the same approach as .float() method
-					GrapaFloat a_normalized(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, a);
-					a_normalized.Truncate();
-					
-					result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(a_normalized == b));
-				}
+				// String is not numeric, return false
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(false));
+			}
+			else
+			{
+				// Compare result should be 0 for equality
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(compResult.IsZero()));
 			}
 		}
 		else if (r2.vVal->mValue.mToken == GrapaTokenType::FLOAT && (r1.vVal->mValue.mToken == GrapaTokenType::STR || r1.vVal->mValue.mToken == GrapaTokenType::SYSSTR || r1.vVal->mValue.mToken == GrapaTokenType::ID || r1.vVal->mValue.mToken == GrapaTokenType::SYSID))
 		{
-			// Convert string to float for comparison
+			// Use improved GrapaFloat::Comp method for STR == FLOAT comparison
 			GrapaFloat b(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
 			b.FromBytes(r2.vVal->mValue);
 			
-			GrapaCHAR strVal(r1.vVal->mValue);
-			strVal.Trim();
-			if (strVal.mLength > 0)
+			GrapaFloat compResult = b.Comp(r1.vVal->mValue);
+			if (compResult.mNaN)
 			{
-				// Check if string is numeric (digits only)
-				bool isNumeric = true;
-				for (int i = 0; strVal.mBytes[i] != '\0'; i++)
-				{
-					if (isdigit(strVal.mBytes[i]) == 0 && strVal.mBytes[i] != '.' && strVal.mBytes[i] != '-')
-					{
-						isNumeric = false;
-						break;
-					}
-				}
-				if (isNumeric)
-				{
-					GrapaFloat a(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
-					GrapaBYTE strBytes;
-					strBytes.FROM(strVal);
-					a.FromString(strBytes, 10);
-					
-					// Convert the float literal using the same approach as .float() method
-					GrapaFloat b_normalized(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, b);
-					b_normalized.Truncate();
-					
-					result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(a == b_normalized));
-				}
+				// String is not numeric, return false
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(false));
+			}
+			else
+			{
+				// Compare result should be 0 for equality
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(compResult.IsZero()));
 			}
 		}
 		else if ((r1.vVal->mValue.mToken == GrapaTokenType::INT || r1.vVal->mValue.mToken == GrapaTokenType::FLOAT) && (r2.vVal->mValue.mToken == GrapaTokenType::INT || r2.vVal->mValue.mToken == GrapaTokenType::FLOAT))

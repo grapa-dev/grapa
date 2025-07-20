@@ -1,0 +1,96 @@
+# Test script for GrapaFloat::Comp methods
+# This tests the three-way comparison functionality with float comparison logic applied
+
+("=== Testing GrapaFloat::Comp Methods ===").echo();
+
+# Test 1: Basic float comparison
+("Test 1: Basic float comparison").echo();
+a = 5.0;
+b = 7.0;
+result = a.Comp(b);
+("5.0 <=> 7.0 = " + result.str()).echo();
+expected = -2.0;
+if (result == expected) {
+    ("✅ PASS: Basic float comparison").echo();
+} else {
+    ("❌ FAIL: Expected " + expected.str() + ", got " + result.str()).echo();
+}
+
+# Test 2: String to float comparison
+("\nTest 2: String to float comparison").echo();
+a = 55.3;
+b = "55.3";
+result = a.Comp(b);
+("55.3 <=> \"55.3\" = " + result.str()).echo();
+expected = 0.0;
+if (result == expected) {
+    ("✅ PASS: String to float comparison").echo();
+} else {
+    ("❌ FAIL: Expected " + expected.str() + ", got " + result.str()).echo();
+}
+
+# Test 3: String to float comparison (different values)
+("\nTest 3: String to float comparison (different values)").echo();
+a = 55.3;
+b = "55.4";
+result = a.Comp(b);
+("55.3 <=> \"55.4\" = " + result.str()).echo();
+expected = -0.1;
+if (result < 0) {
+    ("✅ PASS: String to float comparison (negative result)").echo();
+} else {
+    ("❌ FAIL: Expected negative result, got " + result.str()).echo();
+}
+
+# Test 4: Non-numeric string should return NaN
+("\nTest 4: Non-numeric string should return NaN").echo();
+a = 55.3;
+b = "hello";
+result = a.Comp(b);
+("55.3 <=> \"hello\" = " + result.str()).echo();
+if (result.mNaN) {
+    ("✅ PASS: Non-numeric string returns NaN").echo();
+} else {
+    ("❌ FAIL: Expected NaN, got " + result.str()).echo();
+}
+
+# Test 5: Integer comparison
+("\nTest 5: Integer comparison").echo();
+a = 5.0;
+b = 3;
+result = a.Comp(b);
+("5.0 <=> 3 = " + result.str()).echo();
+expected = 2.0;
+if (result == expected) {
+    ("✅ PASS: Integer comparison").echo();
+} else {
+    ("❌ FAIL: Expected " + expected.str() + ", got " + result.str()).echo();
+}
+
+# Test 6: Negative float comparison
+("\nTest 6: Negative float comparison").echo();
+a = -5.0;
+b = 5.0;
+result = a.Comp(b);
+("-5.0 <=> 5.0 = " + result.str()).echo();
+expected = -10.0;
+if (result == expected) {
+    ("✅ PASS: Negative float comparison").echo();
+} else {
+    ("❌ FAIL: Expected " + expected.str() + ", got " + result.str()).echo();
+}
+
+# Test 7: Precision normalization test
+("\nTest 7: Precision normalization test").echo();
+a = "123.456";
+b = 123.456;
+result = a.Comp(b);
+("\"123.456\" <=> 123.456 = " + result.str()).echo();
+expected = 0.0;
+if (result == expected) {
+    ("✅ PASS: Precision normalization").echo();
+} else {
+    ("❌ FAIL: Expected " + expected.str() + ", got " + result.str()).echo();
+}
+
+("\n=== Comp Method Tests Complete ===").echo(); 
