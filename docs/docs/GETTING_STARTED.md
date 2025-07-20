@@ -260,4 +260,4 @@ matches.echo();  /* ["world", "world"] */
 > - [Examples](EXAMPLES.md)
 
 > **For Python Users:**
-> See the [Python Integration Guide](python_integration.md) and [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users) for essential guidance on using Grapa from Python. 
+> See the [Python Integration Guide](python_integration.md), [Migration Tips for Python Users](PYTHON_USE_CASES.md#migration-tips-for-python-users), and [GrapaPy Namespace Solution](GRAPAPY_NAMESPACE_SOLUTION.md) for essential guidance on using Grapa from Python. 

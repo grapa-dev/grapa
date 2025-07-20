@@ -314,4 +314,8 @@ For Python developers working with Grapa databases, see the [Python Integration 
 - Data science workflows with column store databases
 - Web application development with row store databases
 - System administration and data pipeline integration
-- Integration with pandas, NumPy, and machine learning frameworks 
+- Integration with pandas, NumPy, and machine learning frameworks
+
+## Related Documentation
+
+- [Unified Path System](../unified_path_system.md) - Navigate seamlessly between file systems and databases 

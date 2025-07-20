@@ -299,4 +299,5 @@ This system enables efficient project management and database operations while m
 - [Syntax Quick Reference](syntax/basic_syntax.md)
 - System Functions (see maintainer documentation)
 - [Testing](TESTING.md)
-- [Examples](EXAMPLES.md) 
+- [Examples](EXAMPLES.md)
+- [Unified Path System](unified_path_system.md) - Navigate seamlessly between file systems and databases 

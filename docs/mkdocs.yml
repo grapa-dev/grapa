@@ -115,6 +115,7 @@ nav:
           - Iterate: obj/iterate.md
           - Transform: obj/transform.md
       - Operators:
+          - Overview & Complete Reference: syntax/operator.md
           - Assignment: operators/assignment.md
           - Bit Operations: operators/bit.md
           - Command: operators/command.md

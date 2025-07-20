@@ -346,4 +346,5 @@ This makes Grapa particularly valuable for Python applications that need to hand
 > **See Also:**
 
 > - [Python-to-Grapa Migration Guide](migrations/PYTHON_TO_GRAPA_MIGRATION.md)
-> - [Python Use Cases](PYTHON_USE_CASES.md) 
+> - [Python Use Cases](PYTHON_USE_CASES.md)
+> - [GrapaPy Namespace Solution](GRAPAPY_NAMESPACE_SOLUTION.md) 
