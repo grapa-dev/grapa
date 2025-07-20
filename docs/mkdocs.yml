@@ -68,16 +68,16 @@ extra_javascript:
 
 nav:
   - Home: index.md
-  - Getting Started:
+  - getting_started:
       - Overview: getting_started.md
       - CLI Quickstart: cli_quickstart.md
       - Python Integration: python_integration.md
-  - Language Reference:
+  - language_reference:
       - Basic Syntax: syntax/basic_syntax.md
       - Operators: syntax/operator.md
       - Precedence: syntax/precedence.md
       - Grammar Design: syntax/grammar_design.md
-      - Data Types:
+      - data_types:
           - Array: type/array.md
           - Boolean: type/bool.md
           - Code: type/code.md
@@ -100,24 +100,24 @@ nav:
           - Widget: type/widget.md
           - Widget Attributes: type/widget/attributes.md
           - XML: type/xml.md
-  - API Reference:
+  - api_reference:
       - Overview: api_reference.md
       - Function Quick Reference: function_quick_reference.md
       - Grep Documentation: grep.md
-      - System Functions:
+      - system_functions:
           - File Operations: sys/file.md
           - Math Functions: sys/math.md
           - Network Functions: sys/net.md
           - System Functions: sys/sys.md
           - Thread Functions: sys/thread.md
-      - Object Types:
+      - object_types:
           - Document: obj/document.md
           - Encode: obj/encode.md
           - Grep: obj/grep.md
           - Grep Python: obj/grep_python.md
           - Iterate: obj/iterate.md
           - Transform: obj/transform.md
-      - Operators:
+      - operators:
           - Overview & Complete Reference: syntax/operator.md
           - Assignment: operators/assignment.md
           - Bit Operations: operators/bit.md
@@ -128,11 +128,11 @@ nav:
           - Function: operators/function.md
           - Loop: operators/loop.md
           - Math: operators/math.md
-      - Database:
+      - database:
           - Quick Reference: database/quick_reference.md
           - Storage Types: database/column_store.md
           - Troubleshooting: database/troubleshooting.md
-  - Use Cases:
+  - use_cases:
       - Overview: use_cases/index.md
       - ETL / Data Engineering: use_cases/etl_data_engineering.md
       - Compiler/BNF Learning: use_cases/compiler_bnf_learning.md
@@ -142,7 +142,7 @@ nav:
       - Database & File System: use_cases/database_file_system.md
       - Education & Prototyping: use_cases/education_prototyping.md
       - Cryptography: use_cases/cryptography.md
-  - Migration Guides:
+  - migration_guides:
       - Python: migrations/python_to_grapa_migration.md
       - JavaScript: migrations/js_to_grapa_migration.md
       - Rust: migrations/rust_to_grapa_migration.md
@@ -151,15 +151,15 @@ nav:
       - Ruby: migrations/ruby_to_grapa_migration.md
       - Kotlin: migrations/kotlin_to_grapa_migration.md
       - Swift: migrations/swift_to_grapa_migration.md
-  - Examples:
+  - examples:
       - Overview: examples.md
-      - Code Examples:
+      - code_examples:
           - Overview: examples/README.md
           - Basic Example: examples/basic_example.grc
           - Advanced Example: examples/advanced_example.grc
           - Performance Example: examples/performance_example.grc
           - Python Integration: examples/python_integration_example.py
-  - Tools & Utilities:
+  - tools_and_utilities:
       - Directory Navigation: directory_navigation.md
       - GRC Scripts: grc_scripts.md
       - GRZ Format: grz_format.md
@@ -168,4 +168,4 @@ nav:
       - Run: run.md
       - Testing: testing.md
       - Unified Path System: unified_path_system.md
-  - Troubleshooting: troubleshooting.md
+  - troubleshooting: troubleshooting.md

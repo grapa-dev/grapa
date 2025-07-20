@@ -272,9 +272,9 @@ commit_and_push() {
     local commit_message="Deploy documentation site - $(date '+%Y-%m-%d %H:%M:%S')"
     git commit -m "$commit_message"
     
-    # Push to remote
-    log_info "Pushing to remote $DEPLOY_BRANCH branch..."
-    if git push origin "$DEPLOY_BRANCH"; then
+    # Push to remote with force to handle case changes
+    log_info "Pushing to remote $DEPLOY_BRANCH branch (force push for case changes)..."
+    if git push origin "$DEPLOY_BRANCH" --force; then
         log_success "Deployment pushed successfully"
     else
         log_error "Failed to push deployment"
