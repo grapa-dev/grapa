@@ -3442,10 +3442,10 @@ $file().set(&quot;my_script.grz&quot;, compiled);
 </code></pre></div>
 <h3 id="command-line">Command Line</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Windows</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-q<span class="w"> </span>-ccmd<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$sys</span><span class="s2">().compilef(&#39;my_script.grc&#39;, &#39;my_script.grz&#39;)&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-q<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$sys</span><span class="s2">().compilef(&#39;my_script.grc&#39;, &#39;my_script.grz&#39;)&quot;</span>
 
 <span class="c1"># Linux/Mac</span>
-./grapa<span class="w"> </span>-q<span class="w"> </span>-ccmd<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$sys</span><span class="s2">().compilef(&#39;my_script.grc&#39;, &#39;my_script.grz&#39;)&quot;</span>
+./grapa<span class="w"> </span>-q<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$sys</span><span class="s2">().compilef(&#39;my_script.grc&#39;, &#39;my_script.grz&#39;)&quot;</span>
 </code></pre></div>
 <h2 id="running-grz-files">Running GRZ Files</h2>
 <p>GRZ files can be executed directly by Grapa:</p>
@@ -3497,10 +3497,10 @@ echo(&quot;Version:&quot;, version_info);
 </code></pre></div>
 <h3 id="command-line-decoding">Command Line Decoding</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Windows</span>
-.<span class="se">\g</span>rapa.exe<span class="w"> </span>-q<span class="w"> </span>-ccmd<span class="w"> </span><span class="s2">&quot;grz=</span><span class="nv">$file</span><span class="s2">().get(&#39;my_script.grz&#39;); decoded=grz.decode(&#39;ZIP-GRAPA&#39;); echo(&#39;Script:&#39;,decoded.op); echo(&#39;Version:&#39;,decoded.version)&quot;</span>
+.<span class="se">\g</span>rapa.exe<span class="w"> </span>-q<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;grz=</span><span class="nv">$file</span><span class="s2">().get(&#39;my_script.grz&#39;); decoded=grz.decode(&#39;ZIP-GRAPA&#39;); echo(&#39;Script:&#39;,decoded.op); echo(&#39;Version:&#39;,decoded.version)&quot;</span>
 
 <span class="c1"># Linux/Mac</span>
-./grapa<span class="w"> </span>-q<span class="w"> </span>-ccmd<span class="w"> </span><span class="s2">&quot;grz=</span><span class="nv">$file</span><span class="s2">().get(&#39;my_script.grz&#39;); decoded=grz.decode(&#39;ZIP-GRAPA&#39;); echo(&#39;Script:&#39;,decoded.op); echo(&#39;Version:&#39;,decoded.version)&quot;</span>
+./grapa<span class="w"> </span>-q<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;grz=</span><span class="nv">$file</span><span class="s2">().get(&#39;my_script.grz&#39;); decoded=grz.decode(&#39;ZIP-GRAPA&#39;); echo(&#39;Script:&#39;,decoded.op); echo(&#39;Version:&#39;,decoded.version)&quot;</span>
 </code></pre></div>
 <h2 id="file-structure">File Structure</h2>
 <p>A decoded GRZ file contains an array with:

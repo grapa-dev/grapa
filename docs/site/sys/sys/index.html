@@ -3624,8 +3624,8 @@ $ARRAY
 </tr>
 <tr>
 <td><code>$ARGCIN</code></td>
-<td>Command line argument count</td>
-<td><code>3</code></td>
+<td>Stdin data (when using -S option)</td>
+<td><code>"data from stdin"</code></td>
 </tr>
 <tr>
 <td><code>$ARGV</code></td>
@@ -3689,6 +3689,10 @@ $sys().getenv($HOME);
 
 $sys().getenv(&quot;USERNAME&quot;);
 /* Returns: matichuk */
+
+$sys().getenv($ARGCIN);
+/* Returns stdin data when using -S option */
+/* Example: echo &quot;data&quot; | grapa -S -c &quot;$sys().getenv(&#39;$ARGCIN&#39;).echo()&quot; */
 </code></pre></div></p>
 <p><strong>Platform Values for $PLATFORM:</strong>
 - <strong>Operating Systems:</strong> <code>__APPLE__</code>, <code>_WIN32</code>, <code>_WIN64</code>, <code>__linux__</code>, <code>__ANDROID__</code>

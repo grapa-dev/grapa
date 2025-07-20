@@ -1,0 +1,308 @@
+# Documentation Deployment System
+
+## Overview
+
+The Grapa documentation deployment system has been completely automated to eliminate the problematic manual deployment process. This system provides both automated GitHub Actions deployment and a robust local deployment script.
+
+## Quick Start
+
+### Automated Deployment (Recommended)
+
+The documentation is automatically deployed when changes are pushed to the `main` branch. No manual intervention required.
+
+**What triggers deployment:**
+- Push to `main` branch
+- Changes to files in `docs/` or `maintainers/` directories
+- Manual trigger via GitHub Actions UI
+
+### Manual Deployment
+
+For testing or manual deployment:
+
+```bash
+# Basic deployment
+./scripts/deploy_docs.sh
+
+# Dry run (build only, no deployment)
+./scripts/deploy_docs.sh --dry-run
+
+# Include maintainer documentation
+./scripts/deploy_docs.sh --maintainers
+
+# Verbose output for debugging
+./scripts/deploy_docs.sh --verbose
+```
+
+## System Components
+
+### 1. Deployment Script (`scripts/deploy_docs.sh`)
+
+A comprehensive bash script that handles:
+- **Prerequisite validation**: Git repository, branch checks, Python/MkDocs installation
+- **Documentation building**: User and maintainer docs with proper symlinks
+- **Branch management**: Safe orphan branch creation and cleanup
+- **Deployment**: File copying, committing, and pushing
+- **Error handling**: Comprehensive error checking and recovery
+- **Verification**: Site accessibility testing
+
+### 2. GitHub Actions Workflow (`.github/workflows/deploy-docs.yml`)
+
+Automated deployment pipeline that:
+- Triggers on documentation changes
+- Runs in isolated environment
+- Handles all deployment steps automatically
+- Provides detailed logging
+- Includes PR comments for documentation updates
+
+### 3. Documentation (`scripts/README.md`)
+
+Comprehensive guide covering:
+- Usage instructions
+- Troubleshooting
+- Best practices
+- Configuration options
+
+## Key Features
+
+### Robust Error Handling
+- Validates all prerequisites before starting
+- Checks for clean working directory
+- Verifies build output
+- Handles git branch conflicts safely
+- Provides clear error messages
+
+### Safe Branch Management
+- Creates fresh orphan `gh-pages` branch
+- Deletes old branches to prevent conflicts
+- Safely clears branch contents
+- Returns to main branch after deployment
+
+### Comprehensive Validation
+- Git repository and branch checks
+- Python and MkDocs installation verification
+- Build output validation
+- Site accessibility testing
+
+### Flexible Options
+- Dry run mode for testing
+- Maintainer documentation inclusion
+- Verbose output for debugging
+- Skip verification option
+
+## Deployment Process
+
+### 1. Validation Phase
+```bash
+# Check prerequisites
+- Git repository exists
+- On main branch
+- Working directory clean
+- Python/MkDocs installed
+- Required directories exist
+```
+
+### 2. Building Phase
+```bash
+# Build documentation
+- Clean previous build
+- Build user docs (mkdocs.yml)
+- Optionally build maintainer docs (mkdocs-maintainers.yml)
+- Verify build output (index.html exists)
+```
+
+### 3. Deployment Phase
+```bash
+# Deploy to GitHub Pages
+- Delete existing gh-pages branch
+- Create fresh orphan branch
+- Copy site files to branch root
+- Commit and push changes
+- Return to main branch
+```
+
+### 4. Verification Phase
+```bash
+# Verify deployment
+- Check site accessibility
+- Provide deployment status
+- Note GitHub Pages timing
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### "Working directory is not clean"
+**Solution**: Commit or stash your changes
+```bash
+git add .
+git commit -m "Your changes"
+# OR
+git stash
+./scripts/deploy_docs.sh
+git stash pop
+```
+
+#### "MkDocs is not installed"
+**Solution**: Install required packages
+```bash
+pip install mkdocs-material pymdown-extensions
+```
+
+#### Build fails
+**Solution**: Check for syntax errors
+```bash
+cd docs
+python -m mkdocs build --verbose
+```
+
+#### Deployment fails
+**Solution**: Check git permissions
+```bash
+git remote -v
+git push origin main  # Test push access
+```
+
+### Manual Recovery
+
+If deployment fails and leaves inconsistent state:
+
+```bash
+# Return to main branch
+git checkout main
+
+# Clean up
+git clean -fdx
+git reset --hard HEAD
+
+# Try again
+./scripts/deploy_docs.sh
+```
+
+## Configuration
+
+### Script Configuration
+Key variables in `deploy_docs.sh`:
+- `DEPLOY_BRANCH`: Branch for deployment (default: `gh-pages`)
+- `MAIN_BRANCH`: Source branch (default: `main`)
+- `SITE_URL`: Live site URL
+
+### GitHub Pages Configuration
+- **Source**: Deploy from a branch
+- **Branch**: `gh-pages`
+- **Folder**: `/ (root)`
+
+### MkDocs Configuration
+- **User docs**: `docs/mkdocs.yml`
+- **Maintainer docs**: `docs/mkdocs-maintainers.yml`
+
+## Best Practices
+
+### Before Deployment
+1. **Test locally first**:
+   ```bash
+   ./scripts/deploy_docs.sh --dry-run
+   ```
+
+2. **Review changes**:
+   ```bash
+   git diff HEAD~1 docs/
+   ```
+
+3. **Check for broken links**:
+   ```bash
+   cd docs
+   python -m mkdocs build --strict
+   ```
+
+### During Development
+1. **Use dry runs for testing**:
+   ```bash
+   ./scripts/deploy_docs.sh --dry-run --verbose
+   ```
+
+2. **Keep working directory clean**:
+   ```bash
+   git status
+   git add .
+   git commit -m "Your changes"
+   ```
+
+3. **Test maintainer docs separately**:
+   ```bash
+   ./scripts/deploy_docs.sh --maintainers --dry-run
+   ```
+
+### After Deployment
+1. **Verify the deployment**:
+   - Check: https://grapa-dev.github.io/grapa/
+   - Test navigation links
+   - Verify search functionality
+
+2. **Monitor for issues**:
+   - Check GitHub Actions logs
+   - Monitor for 404 errors
+   - Verify all examples work
+
+## Migration from Manual Process
+
+### What Changed
+- **Before**: Manual git commands, error-prone branch management
+- **After**: Automated script with comprehensive error handling
+
+### Benefits
+- **Reliability**: Consistent deployment process
+- **Safety**: Prevents accidental file deletion
+- **Speed**: Automated workflow saves time
+- **Debugging**: Clear error messages and logging
+- **Recovery**: Built-in recovery mechanisms
+
+### Backward Compatibility
+- Old manual process still works if needed
+- Script can be used alongside existing workflows
+- No breaking changes to documentation structure
+
+## Security Considerations
+
+### GitHub Actions
+- Uses minimal required permissions
+- Runs in isolated environment
+- Uses GitHub's built-in security features
+
+### Local Deployment
+- Requires push access to repository
+- Validates prerequisites before execution
+- Includes error handling and recovery
+
+## Support
+
+### Getting Help
+1. Check `scripts/README.md` for detailed usage
+2. Review this deployment guide
+3. Check GitHub Actions logs for detailed error messages
+4. Use `--verbose` flag for debugging
+
+### Contributing
+When modifying the deployment system:
+1. Test changes locally first
+2. Use dry runs to validate
+3. Update documentation if needed
+4. Consider backward compatibility
+
+## Changelog
+
+### Version 1.0.0 (Current)
+- **Initial deployment script** with comprehensive error handling
+- **GitHub Actions workflow** for automated deployment
+- **Support for both user and maintainer documentation**
+- **Robust branch management** and cleanup
+- **Comprehensive validation** and verification
+- **Detailed documentation** and troubleshooting guides
+
+### Previous Manual Process Issues Resolved
+- ✅ **Branch conflicts**: Fresh orphan branch creation
+- ✅ **File deletion**: Safe cleanup procedures
+- ✅ **Case sensitivity**: Consistent lowercase naming
+- ✅ **Build failures**: Comprehensive validation
+- ✅ **Deployment errors**: Clear error messages and recovery
+- ✅ **Manual steps**: Fully automated process 

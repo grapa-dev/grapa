@@ -138,8 +138,31 @@ build_user_docs() {
         exit 1
     fi
     
+    # Generate deployment fingerprint for verification
+    generate_deployment_fingerprint
+    
     log_info "Build verification completed"
     cd "$REPO_ROOT"
+}
+
+# Function to generate deployment fingerprint
+generate_deployment_fingerprint() {
+    log_info "Generating deployment fingerprint..."
+    
+    # Create a unique fingerprint based on current deployment
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local fingerprint="GRAPA_DEPLOYMENT_$(date +%s)_$(git rev-parse --short HEAD)"
+    
+    # Store fingerprint in a file that will be deployed
+    echo "$fingerprint" > "$SITE_DIR/deployment-fingerprint.txt"
+    echo "Deployment timestamp: $timestamp" >> "$SITE_DIR/deployment-fingerprint.txt"
+    echo "Git commit: $(git rev-parse HEAD)" >> "$SITE_DIR/deployment-fingerprint.txt"
+    echo "Build completed: $(date)" >> "$SITE_DIR/deployment-fingerprint.txt"
+    
+    # Store fingerprint for verification
+    echo "$fingerprint" > "$REPO_ROOT/.deployment-fingerprint"
+    
+    log_info "Deployment fingerprint: $fingerprint"
 }
 
 # Function to build maintainer documentation (optional)
@@ -270,21 +293,112 @@ return_to_main() {
 verify_deployment() {
     log_info "Verifying deployment..."
     
-    # Wait a moment for GitHub Pages to process
-    sleep 5
+    # Wait for GitHub Pages to process
+    log_info "Waiting for GitHub Pages to process deployment..."
+    sleep 10
     
     # Check if site is accessible
-    if command_exists curl; then
-        log_info "Checking site accessibility..."
-        if curl -s -f "$SITE_URL" > /dev/null; then
-            log_success "Site is accessible at $SITE_URL"
-        else
-            log_warning "Site may not be accessible yet (GitHub Pages can take 5-10 minutes to update)"
-        fi
+    if ! command_exists curl; then
+        log_warning "curl not available, skipping verification"
+        return 0
     fi
     
-    log_info "Deployment verification completed"
-    log_info "Note: GitHub Pages updates can take 5-10 minutes to appear"
+    # Function to check if content matches expected deployment
+    check_content_verification() {
+        local max_attempts=12  # 2 minutes total (12 * 10 seconds)
+        local attempt=1
+        
+        # Get expected fingerprint
+        local expected_fingerprint=""
+        if [ -f "$REPO_ROOT/.deployment-fingerprint" ]; then
+            expected_fingerprint=$(head -n 1 "$REPO_ROOT/.deployment-fingerprint")
+            log_info "Expected deployment fingerprint: $expected_fingerprint"
+        else
+            log_warning "No deployment fingerprint found, falling back to content verification"
+        fi
+        
+        while [ $attempt -le $max_attempts ]; do
+            log_info "Verification attempt $attempt/$max_attempts..."
+            
+            # First, try to verify using deployment fingerprint
+            if [ -n "$expected_fingerprint" ]; then
+                local fingerprint_url="$SITE_URL/deployment-fingerprint.txt"
+                local fingerprint_content=$(curl -s -f "$fingerprint_url" 2>/dev/null)
+                
+                if [ $? -eq 0 ] && echo "$fingerprint_content" | grep -q "$expected_fingerprint"; then
+                    log_success "✅ Deployment fingerprint verified!"
+                    log_success "✅ Site contains the expected deployment at $SITE_URL"
+                    return 0
+                else
+                    log_info "Deployment fingerprint not found yet, checking site accessibility..."
+                fi
+            fi
+            
+            # Fallback: Get the current site content
+            local site_content=$(curl -s -f "$SITE_URL" 2>/dev/null)
+            if [ $? -ne 0 ]; then
+                log_warning "Site not accessible yet, waiting 10 seconds..."
+                sleep 10
+                attempt=$((attempt + 1))
+                continue
+            fi
+            
+            # Check for key content that should be present
+            local verification_passed=true
+            
+            # Check for main page content
+            if ! echo "$site_content" | grep -q "Grapa Documentation"; then
+                log_warning "Main page content not found, waiting 10 seconds..."
+                verification_passed=false
+            fi
+            
+            # Check for navigation elements
+            if ! echo "$site_content" | grep -q "Getting Started"; then
+                log_warning "Navigation elements not found, waiting 10 seconds..."
+                verification_passed=false
+            fi
+            
+            # Check for search functionality
+            if ! echo "$site_content" | grep -q "search"; then
+                log_warning "Search functionality not found, waiting 10 seconds..."
+                verification_passed=false
+            fi
+            
+            # If all checks pass, deployment is verified
+            if [ "$verification_passed" = true ]; then
+                log_success "✅ Deployment verification successful!"
+                log_success "✅ Site is live and contains expected content at $SITE_URL"
+                return 0
+            fi
+            
+            sleep 10
+            attempt=$((attempt + 1))
+        done
+        
+        log_error "❌ Deployment verification failed after $max_attempts attempts"
+        log_error "❌ Site may not be fully updated yet"
+        return 1
+    }
+    
+    # Run content verification
+    if check_content_verification; then
+        log_success "Deployment verification completed successfully"
+        
+        # Clean up fingerprint file
+        if [ -f "$REPO_ROOT/.deployment-fingerprint" ]; then
+            rm "$REPO_ROOT/.deployment-fingerprint"
+            log_info "Cleaned up deployment fingerprint"
+        fi
+    else
+        log_warning "Deployment verification incomplete - site may still be updating"
+        log_info "Note: GitHub Pages can take up to 10 minutes to fully update"
+        log_info "You can manually check: $SITE_URL"
+        
+        # Keep fingerprint for manual verification
+        if [ -f "$REPO_ROOT/.deployment-fingerprint" ]; then
+            log_info "Deployment fingerprint preserved for manual verification: $REPO_ROOT/.deployment-fingerprint"
+        fi
+    fi
 }
 
 # Function to show usage

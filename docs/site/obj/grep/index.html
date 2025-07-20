@@ -6295,7 +6295,7 @@ if (result.type() != $ERR) {
 <h3 id="performance-testing">Performance Testing</h3>
 <p>A comprehensive performance test file is available to verify optimizations:</p>
 <div class="highlight"><pre><span></span><code>/* Run performance tests */
-grapa -cfile &quot;test_performance_optimizations.grc&quot;
+grapa -f &quot;test_performance_optimizations.grc&quot;
 </code></pre></div>
 <p><strong>Test Coverage</strong>:
 - JIT compilation detection and functionality
@@ -6307,7 +6307,7 @@ grapa -cfile &quot;test_performance_optimizations.grc&quot;
 <h3 id="capability-testing">Capability Testing</h3>
 <p>Verify current Unicode and regex capabilities:</p>
 <div class="highlight"><pre><span></span><code>/* Run comprehensive capability tests */
-grapa -cfile &quot;test_current_capabilities.grc&quot;
+grapa -f &quot;test_current_capabilities.grc&quot;
 </code></pre></div>
 <p><strong>Test Coverage</strong>:
 - Basic Unicode properties (<code>\p{L}</code>, <code>\p{N}</code>, etc.)
@@ -6327,25 +6327,25 @@ grapa -cfile &quot;test_current_capabilities.grc&quot;
 <h3 id="feature-specific-tests">Feature-Specific Tests</h3>
 <p>Individual test files for specific features:</p>
 <div class="highlight"><pre><span></span><code>/* Test Unicode normalization and diacritic handling */
-grapa -cfile &quot;test_grapheme_unicode_normalization.grc&quot;
+grapa -f &quot;test_grapheme_unicode_normalization.grc&quot;
 
 /* Test advanced Unicode features */
-grapa -cfile &quot;test_unicode_advanced_features.grc&quot;
+grapa -f &quot;test_unicode_advanced_features.grc&quot;
 
 /* Test lookaround assertions */
-grapa -cfile &quot;test_lookaround_assertions.grc&quot;
+grapa -f &quot;test_lookaround_assertions.grc&quot;
 
 /* Test atomic groups */
-grapa -cfile &quot;test_atomic_groups.grc&quot;
+grapa -f &quot;test_atomic_groups.grc&quot;
 
 /* Test Unicode grapheme clusters */
-grapa -cfile &quot;test_unicode_grapheme_clusters.grc&quot;
+grapa -f &quot;test_unicode_grapheme_clusters.grc&quot;
 </code></pre></div>
 <h3 id="regression-testing">Regression Testing</h3>
 <p>To ensure no regressions after changes:</p>
 <div class="highlight"><pre><span></span><code>/* Run core functionality tests */
-grapa -cfile &quot;test_current_capabilities.grc&quot;
-grapa -cfile &quot;test_performance_optimizations.grc&quot;
+grapa -f &quot;test_current_capabilities.grc&quot;
+grapa -f &quot;test_performance_optimizations.grc&quot;
 
 /* Verify basic functionality */
 &quot;Hello world&quot;.grep(&quot;world&quot;, &quot;oj&quot;)       /* Should return matches */
@@ -7035,11 +7035,11 @@ log_content.grep(&quot;error&quot;, &quot;A2B1io&quot;)  /* 2 lines after, 1 bef
 <ul>
 <li><strong>Running .grc Files on Windows:</strong></li>
 <li>To run a .grc file, use the following command in PowerShell or Command Prompt:<ul>
-<li><code>.\grep.exe -q -cfile path/file.grc</code></li>
+<li><code>.\grapa.exe -q -f path/file.grc</code></li>
 </ul>
 </li>
 <li>
-<p>This suppresses the version header (<code>-q</code>) and runs the specified .grc file (<code>-cfile</code>).</p>
+<p>This suppresses the version header (<code>-q</code>) and runs the specified .grc file (<code>-f</code>).</p>
 </li>
 <li>
 <p><strong>Array and List Access:</strong></p>

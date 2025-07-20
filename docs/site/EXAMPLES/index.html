@@ -3682,13 +3682,13 @@
 <h3 id="testing-process">Testing Process</h3>
 <h4 id="1-test-grc-files">1. Test .grc Files</h4>
 <div class="highlight"><pre><span></span><code><span class="c1"># Test basic example</span>
-./grapa<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;docs/docs/examples/basic_example.grc&quot;</span><span class="w"> </span>-q
+./grapa<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;docs/docs/examples/basic_example.grc&quot;</span><span class="w"> </span>-q
 
 <span class="c1"># Test advanced example  </span>
-./grapa<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;docs/docs/examples/advanced_example.grc&quot;</span><span class="w"> </span>-q
+./grapa<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;docs/docs/examples/advanced_example.grc&quot;</span><span class="w"> </span>-q
 
 <span class="c1"># Test performance example</span>
-./grapa<span class="w"> </span>-cfile<span class="w"> </span><span class="s2">&quot;docs/docs/examples/performance_example.grc&quot;</span><span class="w"> </span>-q
+./grapa<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;docs/docs/examples/performance_example.grc&quot;</span><span class="w"> </span>-q
 </code></pre></div>
 <h4 id="2-test-py-files">2. Test .py Files</h4>
 <div class="highlight"><pre><span></span><code><span class="c1"># Test Python integration example</span>
@@ -3763,21 +3763,21 @@ grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;exa
 <h3 id="basic-example-basic_examplegrc">Basic Example (<code>basic_example.grc</code>)</h3>
 <ul>
 <li><strong>Purpose</strong>: Demonstrates basic Grapa syntax and operations</li>
-<li><strong>Test Command</strong>: <code>./grapa -cfile "docs/docs/examples/basic_example.grc" -q</code></li>
+<li><strong>Test Command</strong>: <code>./grapa -f "docs/docs/examples/basic_example.grc" -q</code></li>
 <li><strong>Expected Output</strong>: <code>20</code> (result of 10 + 5 * 2)</li>
 <li><strong>Status</strong>: ✅ Tested and working</li>
 </ul>
 <h3 id="advanced-example-advanced_examplegrc">Advanced Example (<code>advanced_example.grc</code>)</h3>
 <ul>
 <li><strong>Purpose</strong>: Demonstrates complex array and string operations</li>
-<li><strong>Test Command</strong>: <code>./grapa -cfile "docs/docs/examples/advanced_example.grc" -q</code></li>
+<li><strong>Test Command</strong>: <code>./grapa -f "docs/docs/examples/advanced_example.grc" -q</code></li>
 <li><strong>Expected Output</strong>: Array filtering and string splitting results</li>
 <li><strong>Status</strong>: ✅ Tested and working</li>
 </ul>
 <h3 id="performance-example-performance_examplegrc">Performance Example (<code>performance_example.grc</code>)</h3>
 <ul>
 <li><strong>Purpose</strong>: Demonstrates loop and array performance operations</li>
-<li><strong>Test Command</strong>: <code>./grapa -cfile "docs/docs/examples/performance_example.grc" -q</code></li>
+<li><strong>Test Command</strong>: <code>./grapa -f "docs/docs/examples/performance_example.grc" -q</code></li>
 <li><strong>Expected Output</strong>: <code>[4950, 100]</code> (sum of 0-99, array length)</li>
 <li><strong>Status</strong>: ✅ Tested and working</li>
 </ul>

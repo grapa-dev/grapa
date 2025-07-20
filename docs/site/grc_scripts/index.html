@@ -3342,11 +3342,11 @@ matches.echo();
 <hr />
 <h2 id="running-grc-files">Running .grc Files</h2>
 <ul>
-<li>Use the <code>-cfile</code> option to run a Grapa script file:</li>
-<li>Windows: <code>.\grapa.exe -q -cfile "my_script.grc"</code></li>
-<li>Linux/Mac: <code>./grapa -q -cfile "my_script.grc"</code></li>
-<li>Use <code>-ccmd</code> for short, inline commands (not for files).</li>
-<li>Always use <code>-cfile</code> for multi-line scripts and tests.</li>
+<li>Use the <code>-f</code> option to run a Grapa script file:</li>
+<li>Windows: <code>.\grapa.exe -q -f "my_script.grc"</code></li>
+<li>Linux/Mac: <code>./grapa -q -f "my_script.grc"</code></li>
+<li>Use <code>-c</code> for short, inline commands (not for files).</li>
+<li>Always use <code>-f</code> for multi-line scripts and tests.</li>
 </ul>
 <hr />
 <h2 id="creating-and-using-grz-files">Creating and Using .grz Files</h2>
@@ -3357,8 +3357,8 @@ matches.echo();
 $file().set(&quot;my_script.grz&quot;, compiled);
 </code></pre></div></li>
 <li>To run a <code>.grz</code> file:</li>
-<li>Windows: <code>.\grapa.exe -q -cfile "my_script.grz"</code></li>
-<li>Linux/Mac: <code>./grapa -q -cfile "my_script.grz"</code></li>
+<li>Windows: <code>.\grapa.exe -q -f "my_script.grz"</code></li>
+<li>Linux/Mac: <code>./grapa -q -f "my_script.grz"</code></li>
 <li><code>.grz</code> files are portable and can be distributed for faster loading and execution.</li>
 <li>See <a href="../grz_format/">GRZ Format Specification</a> for technical details.</li>
 </ul>
