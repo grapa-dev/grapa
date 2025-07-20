@@ -235,7 +235,8 @@ copy_site_files() {
     # Copy site files from current build (not committed files)
     if [ -d "$SITE_DIR" ]; then
         log_info "Moving site files to root of deployment branch..."
-        # Use cp -r to copy all files, then remove the source
+        # Use cp -r to copy all files including hidden ones, then remove the source
+        cp -r "$SITE_DIR"/. . 2>/dev/null || true
         cp -r "$SITE_DIR"/* . 2>/dev/null || true
         rm -rf "$SITE_DIR" 2>/dev/null || true
         rmdir "$DOCS_DIR" 2>/dev/null || true
