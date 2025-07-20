@@ -1,12 +1,38 @@
-# Grapa & GrapaPy Development TODO (Internal)
+# Grapa & GrapaPy Development TODO (Internal) - DEPRECATED
 
-> **NOTE (July 2024):** As of July 2024, `maintainers/` is the single source of truth for all context, TODO, and WIP. The old `docs/internal/` directory is deprecated and no longer updated. For all current internal documentation, use `maintainers/` only.
+> **⚠️ DEPRECATED (December 2024):** This TODO document is **OUTDATED** and no longer maintained. 
+> 
+> **For current status and priorities, see:**
+> - **[CURRENT_STATUS.md](../DEVELOPMENT/CURRENT_STATUS.md)** - Current project status and completed items
+> - **[LANGUAGE_ENHANCEMENT_ROADMAP.md](../DEVELOPMENT/LANGUAGE_ENHANCEMENT_ROADMAP.md)** - Current language development priorities
+> - **[BACKLOG.md](../BACKLOG.md)** - Long-term backlog items
+>
+> **This document is kept for historical reference only.**
 
-**PURPOSE**: This file tracks items **committed to work on in the near term** (next 2-4 weeks). For items planned but not committed to soon, see `backlog.md`.
+**PURPOSE**: This file tracked items **committed to work on in the near term** (next 2-4 weeks). For items planned but not committed to soon, see `backlog.md`.
 
 ---
 
-## 🚀 **IMMEDIATE PRIORITY (Current Session)**
+## 🚨 **IMPORTANT: THIS DOCUMENT IS OUTDATED**
+
+### **What's Changed Since This Document Was Last Updated:**
+- ✅ **Operator Bug Fixes**: All critical operator bugs have been **COMPLETED** (not "ready to start")
+- ✅ **Documentation Link Fixes**: All broken links have been **FIXED**
+- ✅ **Search Highlighting Bug**: Material theme search bug has been **RESOLVED**
+- ✅ **Migration Guide Standardization**: All migration guides now have consistent structure
+- ✅ **Grapheme Clusters Regression**: Fixed and verified working correctly
+
+### **Current Status (December 2024):**
+- **Operator System**: ✅ **FULLY FUNCTIONAL** - All 26 operators working correctly
+- **Documentation**: ✅ **COMPLETE AND FUNCTIONAL** - All links working, search working
+- **Next Priority**: Missing operator documentation for 5 operators (`*/`, `<=>`, `++`, `--`, `.*`)
+
+### **For Current Information:**
+Please refer to the **current status documents** listed above for accurate, up-to-date information about project status and priorities.
+
+---
+
+## 🚀 **IMMEDIATE PRIORITY (Current Session) - OUTDATED**
 
 ### **Main Branch Stabilization and Documentation Update** (IMMEDIATE)
 **Status**: In Progress  
