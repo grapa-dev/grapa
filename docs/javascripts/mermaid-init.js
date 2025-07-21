@@ -15,13 +15,13 @@ function initMermaid() {
         'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7'
       ];
       const links = [
-        '/cli_quickstart/',
-        '/api_reference/',
-        '/examples/',
-        '/use_cases/',
-        '/migrations/',
-        '/run/',
-        '/troubleshooting/'
+        'cli_quickstart/',
+        'api_reference/',
+        'examples/',
+        'use_cases/',
+        'migrations/',
+        'run/',
+        'troubleshooting/'
       ];
       clickableIds.forEach((id, idx) => {
         const node = document.querySelector('.mermaid [id^="' + id + '-"]');
