@@ -82,6 +82,25 @@ jobs:
           exit 1
         fi
         
+        # Validate case sensitivity - check for uppercase files/folders
+        echo "Validating case sensitivity - checking for uppercase files/folders..."
+        uppercase_items=()
+        while IFS= read -r -d '' item; do
+          basename=$(basename "$item")
+          if [[ "$basename" =~ [A-Z] ]]; then
+            uppercase_items+=("$item")
+          fi
+        done < <(find "site" -mindepth 1 -maxdepth 1 -print0)
+        
+        if [ ${#uppercase_items[@]} -gt 0 ]; then
+          echo "Error: Found uppercase files/folders that will cause 404 errors:"
+          printf '%s\n' "${uppercase_items[@]}"
+          echo "Fix navigation configuration in mkdocs.yml to use lowercase keys"
+          exit 1
+        fi
+        
+        echo "Case sensitivity validation passed"
+        
         # Generate deployment fingerprint for verification
         echo "Generating deployment fingerprint..."
         timestamp=$(date '+%Y-%m-%d %H:%M:%S')
