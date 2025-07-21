@@ -1,3 +1,15 @@
+# Build & Deployment Quick Reference (for AI/maintainers)
+
+- **Build Grapa binaries:**
+  - `./build.sh`
+  - (This wraps `python3 build.py` and rebuilds the CLI after any C++ code changes.)
+
+- **Build & deploy documentation to live:**
+  - `./scripts/deploy_docs.sh`
+  - (This builds the docs and pushes them to GitHub Pages.)
+
+---
+
 # Current Status (Updated - December 2024)
 
 ## Context

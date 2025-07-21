@@ -59,10 +59,9 @@ result = 4 * 3;
 
 ### Step 2: Run the Script
 ```bash
-# Direct script execution (new)
+# Direct script execution (preferred)
 grapa hello.grc
-
-# Standard method with -f flag
+# Or, using the standard flag
 grapa -f hello.grc
 ```
 
@@ -321,3 +320,6 @@ for (file in files) {
 - **File Extensions:** Use `.grc` extension for Grapa script files, `.grz` for compiled scripts
 - **Interactive Mode:** Run `grapa` without arguments for interactive experimentation
 - **Error Messages:** Grapa provides detailed error messages to help debug issues
+> **Full CLI options:**
+> - See [Run](run.md) for all parameters and examples
+> - Or run `grapa -h` for the latest help

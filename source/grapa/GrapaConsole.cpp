@@ -98,6 +98,7 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 
 				else tokenExec.EchoValue(&send, echo, false, false, false);
 			}
 			send.GetStr(s);
+			if (s.mLength) std::cout << (char*)s.mBytes;
 			result->CLEAR();
 			delete result;
 			result = NULL;

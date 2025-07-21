@@ -16,7 +16,7 @@ Grapa .grc File Authoring Rules (Windows)
 - Validate syntax against known-good .grc files before adding new code
 - Prefer simple, explicit constructs for compatibility
 - To run this file on Windows:
-    .\grep.exe -q -cfile path/file.grc
+    ./grapa -q -f path/file.grc
 */
 
 "=== SYSTEMATIC OPTION COMBINATION MATRIX TEST SUITE ===\n".echo();

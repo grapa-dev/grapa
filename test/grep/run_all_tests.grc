@@ -27,7 +27,7 @@ while (i < test_files.len()) {
     ("Processing: " + test_file + " ... ").echo();
     
     /* Execute test file using grapa command */
-    grapa_cmd = "../../grapa -q -cfile " + test_file;
+    grapa_cmd = "../../grapa -q -f " + test_file;
     result = grapa_cmd.shell();
     
     /* Check if execution was successful */

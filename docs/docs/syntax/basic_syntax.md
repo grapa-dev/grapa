@@ -855,6 +855,8 @@ MyClass = class {
 };
 ```
 
+> **Important:** Block comments (`/* ... */`) are **NOT supported inside class definitions** in Grapa. Any comment inside a `class { ... }` block will cause a syntax error. Place comments only outside class definitions or between top-level statements.
+
 ## Control Structures
 
 ### If Statements
@@ -1168,7 +1170,7 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
 | Append to arrays with `+=` | `arr += "foo";` |
 | No `.push()` or `.append()` |  |
 | Access arrays/lists with `[index]` | `arr[0];` |
-| Access object properties with `.get("key")` | `obj.get("foo");` |
+| Access object properties with dot or bracket notation | `obj.foo;`, `obj["foo"]` |
 | Use `.echo()` for output | `"Hello".echo();` |
 | Use `while` loops, not `for` | `while (cond) { ... };` |
 | Wrap string concatenations in parentheses | `(str1 + str2).echo();` |
@@ -1384,3 +1386,72 @@ func(5, 3).echo(); // 8
 
 See also: [Advanced Scripting](../grc_scripts.md), [$OP Type](../type/op.md), [System Functions](../sys/sys.md)
 */ 
+
+## Object Access Patterns and Behaviors (Empirical)
+
+Grapa objects ($OBJ) behave differently from typical objects/maps in other languages. Here are key findings and best practices:
+
+- **Property Access:**
+  - Dot notation: `p.name` (preferred)
+  - Bracket notation: `p["name"]` (preferred)
+  - Both return the property value (e.g., `Alice`).
+- **Print Method vs Getter:**
+  - `.getInfo()` prints a formatted string (side-effect, not a getter).
+  - `.get()` is NOT a built-in method for $OBJ. If you want a `.get()` method, you must define it yourself as a member function in your class. Its behavior is entirely determined by your implementation.
+  - Example:
+    ```grapa
+    Person = class {
+        name = "";
+        age = 0;
+        // You must define get() yourself if you want it
+        get = op() { {"name": name, "age": age}; };
+    };
+    p = obj Person;
+    p.get(); // Works only because you defined it
+    ```
+  - If you do NOT define a `.get()` method, calling `p.get()` will result in an error.
+  - `.get()` is not like Python or JavaScript, where it is built-in for objects/dicts.
+- **Type and Length:**
+  - `p.get().type()` returns `$LIST`.
+  - `info = p.get(); info.len()` returns the number of properties (e.g., 3).
+  - `p.len()` returns `{ "error":-1 }` (not supported on $OBJ).
+  - `p.type()` returns `{ "error":-1 }` (not supported on $OBJ).
+- **Index Access:**
+  - `p[0]` returns the first property value (e.g., `Alice`). This is a side effect and not idiomatic.
+- **Special Methods:**
+  - `p.getThis()` returns a $LIST of the object's properties, not a true $OBJ.
+  - `p.getLocal()` returns a $LIST of local variables (e.g., `{ "t":4 }`), not the property table.
+- **Type Checks:**
+  - `.type()` works on $LIST, not on $OBJ.
+
+**Example:**
+```grapa
+Person = class {
+    name = "";
+    age = 0;
+    city = "";
+    getInfo = op() { ("Name: " + name + ", Age: " + age.str() + ", City: " + city).echo(); };
+    get = op() { {"name": name, "age": age, "city": city}; };
+    getLocal = op() { t = 4; $local; };
+    getThis = op() { $this; };
+};
+p = obj Person;
+p.name = "Alice";
+p.age = 25;
+p.city = "New York";
+
+p.name.echo();        // Alice
+p["name"].echo();     // Alice
+p.getInfo();           // Name: Alice, Age: 25, City: New York
+info = p.get();
+info.len();            // 3
+info["name"].echo();   // Alice
+p[0].echo();           // Alice (side effect)
+p.getThis();           // {"name":"Alice","age":25,"city":"New York"}
+p.getLocal();          // {"t":4}
+p.len();               // {"error":-1}
+p.type();              // {"error":-1}
+info.type();           // $LIST
+```
+
+> **Note:** Grapa $OBJ is not a true map/object as in other languages. It is more like a class instance with $LIST-like property access. Use explicit getters for structured data, and prefer dot or bracket notation for property access. 

@@ -78,6 +78,26 @@ hrefs = anchors_with_images.reduce(op(acc, a) {
 # Note on JSON and XML
 The same `.findall()` principles apply to complex JSON and XML documents. You can use the same query patterns to extract nested data, filter by attributes/keys, and process results with functional methods.
 
+## Note on .get() for $OBJ
+
+There is **no built-in `.get()` method for $OBJ** in Grapa. If you want a `.get()` method, you must define it yourself as a member function in your class. Its behavior is entirely determined by your implementation.
+
+**Example:**
+/* You must define get() yourself if you want it */
+```grapa
+Person = class {
+    name = "";
+    age = 0;
+    get = op() { {"name": name, "age": age}; };
+};
+p = obj Person;
+p.get();
+```
+
+If you do **not** define a `.get()` method, calling `p.get()` will result in an error.
+
+`.get()` is not like Python or JavaScript, where it is built-in for objects/dicts.
+
 > **See Also:**
 > - [Language Reference](../function_quick_reference.md)
 > - [Python-to-Grapa Migration Guide](../migrations/python_to_grapa_migration.md)

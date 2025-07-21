@@ -1,0 +1,86 @@
+/* Grapa Object Access Patterns Test */
+
+"=== OBJECT ACCESS PATTERNS TEST ===\n".echo();
+
+Person = class {
+    name = "";
+    age = 0;
+    city = "";
+    getInfo = op() {
+        ("Name: " + name + ", Age: " + age.str() + ", City: " + city).echo();
+    };
+    get = op() {
+        {"name": name, "age": age, "city": city};
+    };
+    getLocal = op() {
+        t = 4;
+        $local;
+    };
+    getThis = op() {
+        $this;
+    };
+};
+
+p = obj Person;
+p.name = "Alice";
+p.age = 25;
+p.city = "New York";
+
+"-- Direct property access (dot notation) --\n".echo();
+p.name.echo();
+"\n".echo();
+
+"-- Direct property access (bracket notation) --\n".echo();
+p["name"].echo();
+"\n".echo();
+
+"-- getInfo() (print method) --\n".echo();
+p.getInfo();
+"\n".echo();
+
+"-- get() (getter method, returns object) --\n".echo();
+info = p.get();
+info.echo();
+"\n".echo();
+
+"-- Accessing fields from get() result --\n".echo();
+info["name"].echo();
+info["age"].echo();
+info["city"].echo();
+"\n".echo();
+
+"-- person[0] access --\n".echo();
+p[0].echo();
+"\n".echo();
+
+"-- Print the object directly --\n".echo();
+p.echo();
+"\n".echo();
+
+"-- Object internal property table via member (p.getLocal().echo()) --".echo();
+p.getThis().echo();
+"\n".echo();
+
+"-- Nested object test --\n".echo();
+Address = class {
+    street = "";
+    zip = 0;
+};
+address = obj Address;
+address.street = "123 Main St";
+address.zip = 12345;
+p.address = address;
+
+"-- Access nested object property (dot) --\n".echo();
+p.address.street.echo();
+"\n".echo();
+
+"-- Access nested object property (bracket) --\n".echo();
+p["address"]["zip"].echo();
+"\n".echo();
+
+"-- Print nested object --\n".echo();
+p.address.echo();
+"\n".echo();
+
+"=== END OF TEST ===\n".echo();

@@ -80,3 +80,8 @@
 - [x] Network operations
 - [x] Mathematical functions
 - [x] String manipulation functions 
+
+- **Review and improve comment handling in Grapa**
+  - See DEVELOPMENT/COMMENT_HANDLING_GUIDE.md for current rules, BNF analysis, and empirical findings.
+  - Ensure block comments are handled consistently with the BNF and user expectations.
+  - Address any parser bugs or inconsistencies discovered during empirical testing. 
