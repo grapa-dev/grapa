@@ -75,6 +75,16 @@ nav:
   - Language Reference:
       - Basic Syntax: syntax/basic_syntax.md
       - Operators: syntax/operator.md
+      - Operator Details:
+          - Assignment: operators/assignment.md
+          - Bit Operations: operators/bit.md
+          - Command: operators/command.md
+          - Comparison: operators/compare.md
+          - Condition: operators/condition.md
+          - Constants: operators/constants.md
+          - Function: operators/function.md
+          - Loop: operators/loop.md
+          - Math: operators/math.md
       - Precedence: syntax/precedence.md
       - Grammar Design: syntax/grammar_design.md
       - Data Types:
@@ -100,7 +110,7 @@ nav:
           - Widget: type/widget.md
           - Widget Attributes: type/widget/attributes.md
           - XML: type/xml.md
-  - "API Reference":
+  - API Reference:
       - Overview: api_reference.md
       - Function Quick Reference: function_quick_reference.md
       - Grep Documentation: grep.md
@@ -117,22 +127,11 @@ nav:
           - Grep Python: obj/grep_python.md
           - Iterate: obj/iterate.md
           - Transform: obj/transform.md
-      - Operators:
-          - Overview & Complete Reference: syntax/operator.md
-          - Assignment: operators/assignment.md
-          - Bit Operations: operators/bit.md
-          - Command: operators/command.md
-          - Comparison: operators/compare.md
-          - Condition: operators/condition.md
-          - Constants: operators/constants.md
-          - Function: operators/function.md
-          - Loop: operators/loop.md
-          - Math: operators/math.md
       - Database:
           - Quick Reference: database/quick_reference.md
           - Storage Types: database/column_store.md
           - Troubleshooting: database/troubleshooting.md
-  - "Use Cases":
+  - Use Cases:
       - Overview: use_cases/index.md
       - ETL / Data Engineering: use_cases/etl_data_engineering.md
       - Compiler/BNF Learning: use_cases/compiler_bnf_learning.md
