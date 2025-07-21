@@ -100,7 +100,7 @@ nav:
           - Widget: type/widget.md
           - Widget Attributes: type/widget/attributes.md
           - XML: type/xml.md
-  - apireference:
+  - "API Reference":
       - Overview: api_reference.md
       - Function Quick Reference: function_quick_reference.md
       - Grep Documentation: grep.md
@@ -132,7 +132,7 @@ nav:
           - Quick Reference: database/quick_reference.md
           - Storage Types: database/column_store.md
           - Troubleshooting: database/troubleshooting.md
-  - usecases:
+  - "Use Cases":
       - Overview: use_cases/index.md
       - ETL / Data Engineering: use_cases/etl_data_engineering.md
       - Compiler/BNF Learning: use_cases/compiler_bnf_learning.md
