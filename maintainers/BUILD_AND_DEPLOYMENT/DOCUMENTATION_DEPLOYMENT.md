@@ -81,6 +81,7 @@ Comprehensive guide covering:
 - Git repository and branch checks
 - Python and MkDocs installation verification
 - Build output validation
+- **Case sensitivity validation** - Ensures all files/folders use lowercase naming
 - **Deployment fingerprint generation and verification**
 - **Content-based verification with retry logic**
 - **Site accessibility testing**
@@ -110,6 +111,7 @@ Comprehensive guide covering:
 - Build user docs (mkdocs.yml)
 - Optionally build maintainer docs (mkdocs-maintainers.yml)
 - Verify build output (index.html exists)
+- Validate case sensitivity (all files/folders must be lowercase)
 ```
 
 ### 3. Deployment Phase
@@ -159,6 +161,17 @@ pip install mkdocs-material pymdown-extensions
 ```bash
 cd docs
 python -m mkdocs build --verbose
+```
+
+#### Case sensitivity validation fails
+**Solution**: Fix navigation configuration in mkdocs.yml
+```bash
+# Check for uppercase directories
+find docs/site -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' item; do basename "$item"; done | grep -E '[A-Z]'
+
+# Fix navigation keys to use lowercase
+# Change: - API_Reference: to: - apireference:
+# Change: - Use_Cases: to: - usecases:
 ```
 
 #### Deployment fails
@@ -267,6 +280,73 @@ Key variables in `deploy_docs.sh`:
 - Script can be used alongside existing workflows
 - No breaking changes to documentation structure
 
+## Case Sensitivity Validation
+
+### Overview
+
+The deployment system includes automated case sensitivity validation to prevent 404 errors caused by uppercase file/folder names on GitHub Pages. This validation ensures all generated directories use lowercase naming for cross-platform compatibility.
+
+### How Validation Works
+
+The validation runs after the build step and before deployment:
+
+1. **Scans build output**: Checks all files and directories in the site directory
+2. **Detects uppercase**: Identifies any items with uppercase letters in their names
+3. **Fails deployment**: Stops the process if uppercase items are found
+4. **Provides guidance**: Lists problematic files and suggests fixes
+
+### Validation Example
+
+```bash
+[INFO] Validating case sensitivity - checking for uppercase files/folders...
+[ERROR] Found uppercase files/folders in build output:
+[ERROR]   - API_REFERENCE
+[ERROR]   - USE_CASES
+[ERROR] All files and folders must use lowercase naming for case-sensitive compatibility.
+[ERROR] Please fix the navigation configuration in mkdocs.yml to use lowercase keys.
+```
+
+### Fixing Case Sensitivity Issues
+
+When validation fails, the issue is typically in the MkDocs navigation configuration:
+
+#### Problematic Configuration
+```yaml
+nav:
+  - API_Reference:
+      - Overview: api_reference.md
+  - Use_Cases:
+      - Overview: use_cases/index.md
+```
+
+#### Correct Configuration
+```yaml
+nav:
+  - apireference:
+      - Overview: api_reference.md
+  - usecases:
+      - Overview: use_cases/index.md
+```
+
+### Manual Validation
+
+You can manually check for case sensitivity issues:
+
+```bash
+# Check for uppercase directories
+find docs/site -mindepth 1 -maxdepth 1 -print0 | while IFS= read -r -d '' item; do basename "$item"; done | grep -E '[A-Z]'
+
+# If no output, validation passes
+# If output shows directories, fix navigation configuration
+```
+
+### Best Practices
+
+1. **Use lowercase navigation keys**: Always use lowercase for navigation section names
+2. **Avoid spaces and special characters**: Use underscores or hyphens instead
+3. **Test before deployment**: Run validation manually if unsure
+4. **Rebuild after changes**: Always rebuild after fixing navigation configuration
+
 ## Deployment Verification System
 
 ### How Verification Works
@@ -360,7 +440,7 @@ When modifying the deployment system:
 ### Previous Manual Process Issues Resolved
 - ✅ **Branch conflicts**: Fresh orphan branch creation
 - ✅ **File deletion**: Safe cleanup procedures
-- ✅ **Case sensitivity**: Consistent lowercase naming
+- ✅ **Case sensitivity**: Automated validation prevents uppercase files/folders
 - ✅ **Build failures**: Comprehensive validation
 - ✅ **Deployment errors**: Clear error messages and recovery
 - ✅ **Manual steps**: Fully automated process
