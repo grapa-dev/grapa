@@ -7,7 +7,7 @@ theme:
     - navigation.tabs
     - navigation.top
     - search.suggest
-    - search.highlight
+    # - search.highlight  # TEMPORARILY DISABLED - Testing search corruption fix
     - content.code.copy
     - content.action.edit
     - content.action.view
