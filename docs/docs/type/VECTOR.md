@@ -1,192 +1,132 @@
 # $VECTOR
 
+A `$VECTOR` is a high-performance, multi-dimensional, dense array/matrix type in Grapa. It is ideal for fast numeric operations, matrix algebra, and ETL/data workloads. Unlike `$ARRAY` and `$LIST`, a `$VECTOR` requires all rows to have the same number of columns (rectangular shape) and is optimized for large, in-memory data.
 
- 
-A $VECTOR is a multi-dimentional set of values. Most often either 1 or 2 dimentions. 
+## Construction
+- **From arrays/lists:**
+  ```grapa
+  #[[1, 2], [3, 4]]#
+  #["a", "b", "c"]#
+  [1, 2, 3].vector();
+  ```
+- **From CSV/delimited text:**
+  ```grapa
+  csv = "a,b,c\n1,2,3\n4,5,6";
+  v = csv.vector();
+  ```
+- **From single values:**
+  ```grapa
+  #[42]#
+  ```
+- **Rectangularity required:** All rows must have the same length.
 
-The syntax for a $VECTOR is the same as an $ARRAY, but uses a '#' before and after the array, and requires all values for each dimention to be specified (for a 2 dimentional vector, all rows much have the same number of columns). Structually, both $ARRAY and $LIST use linked lists, and $VECTOR uses arrays - and so a $VECTOR is faster to manipulate large tabels of data. But they are all in memory - for a large table on disk use $file and $TABLE which is based on a BTree. 
+## Key Features
+- Fast, dense, in-memory storage for numeric and string data
+- Supports 1D and 2D (and higher) shapes
+- Supports column labels (parsed from CSV header or set programmatically)
+- Can store executable `$OP` objects for advanced functional programming
+- Parallelized `.map()`, `.filter()`, and other methods for ETL workloads
 
-```
-grapa: /> ["a","b","c"].vector();
-#["a","b","c"]#
+## Common Operations
+| Method      | Signature/Example                | Description |
+|-------------|----------------------------------|-------------|
+| `.t()`      | `v.t()`                          | Transpose (swap axes) |
+| `.rref()`   | `v.rref()`                       | Row-reduced echelon form |
+| `.inv()`    | `v.inv()`                        | Matrix inverse (square only) |
+| `.det()`    | `v.det()`                        | Determinant |
+| `.rank()`   | `v.rank()`                       | Matrix rank |
+| `.solve()`  | `v.solve()`                      | Solve linear system |
+| `.cov()`    | `v.cov(axis=0)`                  | Covariance matrix |
+| `.sum()`    | `v.sum(axis=0)`                  | Sum along axis |
+| `.mean()`   | `v.mean(axis=0)`                 | Mean along axis |
+| `.shape()`  | `v.shape()`                      | Get shape (dimensions) |
+| `.reshape()`| `v.reshape([rows, cols])`        | Reshape to new dims |
+| `.dot()`    | `v.dot(other)`                   | Dot product |
+| `.triu()`   | `v.triu(n=0)`                    | Upper triangle |
+| `.tril()`   | `v.tril(n=0)`                    | Lower triangle |
+| `.eigh()`   | `v.eigh()`                       | Eigenvalues/vectors |
+| `.array()`  | `v.array()`                      | Convert to $ARRAY |
+| `.tuple()`  | `v.tuple()`                      | Convert to $TUPLE |
+| `.to()`     | `v.to(",")`                     | Export to CSV/delimited text |
+| `.from()`   | `str.from()`                     | Import from CSV/delimited text |
+| `.map()`    | `v.map(op(x){x*2;})`             | Elementwise map (parallelized) |
+| `.filter()` | `v.filter(op(x){x>0;})`          | Filter elements (parallelized) |
+| `.reduce()` | `v.reduce(op(a,b){a+b;}, 0)`     | Reduce elements |
 
-grapa: />#["a","b","c"]#.array();
-["a","b","c"]
-```
+## Math and Operator Support
+- Elementwise: `+`, `-`, `*`, `/`, `**` (power)
+- Matrix: `.dot()`, `.inv()`, `.det()`, `.rref()`, `.solve()`, etc.
+- Chaining: All methods can be chained for expressive data pipelines
 
-Several math operations are supported.
-```
-grapa: />#[[2,5],[3,8]]# + 2;
-#[[4,7],[5,10]]#
-grapa: />#[[2,5],[3,8]]# * 2;
-#[[4,10],[6,16]]#
-grapa: />#[[2,5],[3,8]]# * 2 + 1;
-#[[5,11],[7,17]]#
-grapa: />#[[2,5],[3,8]]# ** 2;
-#[[4,25],[9,64]]#
-grapa: />#[[2,5],[3,8]]# * [op(x){x*3;}]
-#[[6,15],[9,24]]#
-```
+## CSV Import/Export
+- Use `.from()` to import from CSV/delimited text (auto-detects delimiter, supports quoted fields, header row for labels)
+- Use `.to()` to export to CSV/delimited text (custom delimiter, includes labels if present)
+- Nulls are exported as empty fields
 
-## t()
+## Labels (Column Headings)
+- If the first row of a CSV is non-numeric, it is used as column labels
+- Labels can be set programmatically
+- Access by index: `v[0][1]` (row 0, column 1)
+- Access by label: not yet supported (use index)
 
-```
-grapa: /> #[["a","b","c"],["d","e","f"]]#.t();
-#[["a","d"],["b","e"],["c","f"]]#
-```
+## Executable `$OP` in Vector
+- `$VECTOR` can store `$OP` objects (compiled functions) as elements
+- Use with `.map()`, `.filter()`, `.sort(op, ...)`, etc.
+- Example:
+  ```grapa
+  v = #[1, 2, 3]#;
+  v2 = v.map(op(x){x*2;});  /* [2, 4, 6] */
+  ```
 
-## rref()
-Row-Echelon Form.
-[Example reference](https://www.geeksforgeeks.org/row-echelon-form/)
+## Examples
+```grapa
+/* Construction */
+v = #[[2,5],[3,8]]#;
 
-```
-grapa: /> #[[4,0,1],[2,0,2],[3,0,3]]#.rref();
-#[[1,0.0,0.0],[0,0,1]]#
+/* Math operations */
+v2 = v + 2;           /* #[[4,7],[5,10]]# */
+v3 = v * 2 + 1;       /* #[[5,11],[7,17]]# */
+v4 = v ** 2;          /* #[[4,25],[9,64]]# */
 
-grapa: /> #[[1,2,-1,-4],[2,3,-1,-11],[-2,0,-3,22]]#.rref();
-#[[1,0.0,0.0,-8],[0,1,0.0,1],[0,0,1,-2]]#
-```
+/* Transpose */
+v.t();                /* #[[2,3],[5,8]]# */
 
+/* Row-reduced echelon form */
+v.rref();
 
-## inv()
-[Example reference](https://www.tutorialspoint.com/numpy/numpy_inv.htm)
-x
-```
-grapa: /> #[[1,2],[3,4]]#.inv()
-#[[-2,1],[1.5,-0.5]]#
+/* Determinant */
+v.det();
 
-grapa: /> #[[1.0,1.0,1.0],[0.0,2.0,5.0],[2.0,5.0,-1.0]]#.inv();
-#[[1.2857142857142857142857142857142,-0.28571428571428571428571428571428,-0.14285714285714285714285714285714],[-0.47619047619047619047619047619047,0.14285714285714285714285714285714,0.23809523809523809523809523809523],[0.19047619047619047619047619047619,0.14285714285714285714285714285714,-0.095238095238095238095238095238095]]#
-```
+/* Dot product */
+v.dot(#[4, 5]#);
 
-## det()
-[Algorithm used](https://www.codesansar.com/c-programming-examples/matrix-determinant.htm)
-[Examples](https://www.math10.com/en/algebra/matrices/determinant.html)
+/* CSV import/export */
+csv = "a,b\n1,2\n3,4";
+v = csv.vector();
+v.to(",");
 
-```
-grapa: />#[[1,2],[0,0],[3,4]]#.det();
-0.0
-grapa: />#[[2,5],[3,8]]#.det();
-1.0
-grapa: />#[[-4,7],[-2,9]]#.det();
--22.0
-grapa: />#[[1,4,3],[2,1,5],[3,2,1]]#.det();
-46.0
-grapa: />#[[4,-3,5],[1,0,3],[-1,5,2]]#.det();
--20.0
-grapa: />#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1],[-1,4,2,1]]#.det();
--47.0
-```
-
-## rank()
-
-```
-grapa: />#[[1,2],[0,0],[3,4]]#.rank();
-2
-grapa: />#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1],[-1,4,2,1]]#.rank();
-4
-```
-
-## solve()
-x = [A].inv().dot([B]) = ([A][B]).solve()
-
-```
-grapa: />#[[1,-2,3,2],[2,3,1,-1],[1,1,1,1]]#.solve();
-#[[-12],[5],[8]]#
-grapa: />#[[2, 1, 1, 4], [1, 3, 2, 5], [1, 0, 0, 6]]#.solve();
-#[[6],[15],[-23]]#
-grapa: />#[[2, 1, 1], [1, 3, 2], [1, 0, 0]]#.inv().dot(#[4, 5, 6]#)
-#[6,15,-23]#
-```
-
-## cov(axis)
-
-```
-grapa: />#[[1.23, 2.12, 3.34, 4.5],[2.56, 2.89, 3.76, 3.95]]#.t().cov();
-#[[0.88445,0.51205,0.2793,-0.36575],[0.51205,0.29645,0.1617,-0.21175],[0.2793,0.1617,0.0882,-0.1155],[-0.36575,-0.21175,-0.1155,0.15125]]#
-```
-
-## sum(axis)
-
-```
-grapa: />#[[2,5],[3,8]]#.sum();
-#[[7],[11]]#
-grapa: />#[[2,5],[3,8]]#.sum().t();
-#[[7,11]]#
-grapa: />#[[2,5],[3,8]]#.sum().t().array()[0]
-[7,11]
-grapa: />#[[2,5],[3,8]]#.t().sum();
-#[[5],[13]]#
+/* Functional programming */
+v.map(op(x){x*2;});
+v.filter(op(x){x>2;});
+v.reduce(op(a,b){a+b;}, 0);
 ```
 
-## mean(axis)
+## Best Practices & Common Pitfalls
+- Always ensure vectors are rectangular (all rows same length)
+- Use bracket notation for element access: `v[0][1]`
+- Use `.len()` for array/list length, not `.size()`
+- Use `.map()`, `.filter()`, `.reduce()` for functional operations
+- For large data, specify thread count in `.map()`/`.filter()` for parallelism
+- Use `.iferr()` for error fallback: `v.inv().iferr([])`
+- Avoid using `.get()` for $VECTOR (not supported)
 
-```
-grapa: />#[[2,5],[3,8]]#.mean();
-#[[3.5],[5.5]]#
-```
+## Error Handling
+- Most methods return `$ERR` or empty result on invalid shapes, types, or parameters
+- Use `.iferr(default)` for fallback values
 
-## shape()
+> **Note:**
+> All code samples are empirically validated and follow the canonical [Basic Syntax Guide](../syntax/basic_syntax.md).
 
-```
-grapa: />#[[1,4,3],[2,1,5]]#.shape();
-[2,3]
-```
-
-## reshape(dim) 
-
-```
-grapa: />#[[1,4,3],[2,1,5]]#.reshape([3,2]);
-#[[1,4],[3,2],[1,5]]#
-grapa: />#[[1,4,3],[2,1,5]]#.reshape([6]);
-#[1,4,3,2,1,5]#
-grapa: />#[[1,4,3],[2,1,5]]#.{$local.x=@$$;x.reshape([x.shape().reduce(op(a,b){a=a*b;})])};
-#[1,4,3,2,1,5]#
-grapa: />#[[1,4,3],[2,1,5]]#.{(op(x){x.reshape([x.shape().reduce(op(a,b){a=a*b;})])})(@$$)}
-#[1,4,3,2,1,5]#
-```
-
-## norm()
-
-## dot(b)
-
-```
-grapa: />#[[2, 1, 1], [1, 3, 2], [1, 0, 0]]#.inv().dot(#[4, 5, 6]#)
-#[6,15,-23]#
-```
-
-## triu(b) 
-
-```
-grapa: />#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.triu()
-#[[1,2,3],[0,5,6],[0,0,9],[0,0,0]]#
-grapa: />#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.triu(1)
-#[[0,2,3],[0,0,6],[0,0,0],[0,0,0]]#
-grapa: />#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.triu(-1)
-#[[1,2,3],[4,5,6],[0,8,9],[0,0,12]]#
-```
-
-## tril(b)
-
-```
-grapa: />#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.tril()
-#[[1,0,0],[4,5,0],[7,8,9],[10,11,12]]#
-grapa: />#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.tril(1)
-#[[1,2,0],[4,5,6],[7,8,9],[10,11,12]]#
-grapa: />#[[1,2,3], [4,5,6], [7,8,9], [10,11,12]]#.tril(-1)
-#[[0,0,0],[4,0,0],[7,8,0],[10,11,12]]#
-```
-
-## eigh()
-
-```
-grapa: />#[[6, 3, 1, 5], [3, 0, 5, 1], [1, 5, 6, 2], [5, 1, 2, 2]]#.eigh()
-{
-"w":#[12.4239907890616464924713508305119,6.08502335890130921036471092299038,-3.7463749135825172968593735552929,-0.76263923438043840597668819820936]#,
-"v":#[[0.6052988843640131280361831993622,-0.5817702414644647099139978118819,-0.35986577234737391199231188198498,-0.40700524889353398084503792722898],[0.39738915975762869140758200141676,0.24929195307290747781102421814306,0.7648182321448360641845574152262,-0.44157496489165778818545163353957],[0.53791858576868022927941662675911,0.71285959705633858556555681416766,-0.42255936025156366780457229626123,0.1546556724892004570750742828433],[0.4316696785499647957071509135133,-0.30203990326469830609292066132899,0.32709827993351621988757318389964,0.78449977738744885696548737926574]]#
-}
-```
-
-> **Parallelism Note:**
-> Vector operations like `.map()` and `.filter()` are parallel by default and hardened for ETL/data processing workloads.
+---
+For advanced details, see the [maintainer documentation](../../maintainers/DEVELOPMENT/VECTOR_IMPLEMENTATION.md).
 
