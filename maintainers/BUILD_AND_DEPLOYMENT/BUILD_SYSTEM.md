@@ -370,3 +370,55 @@ This document should be updated whenever:
 **Last Updated**: July 19, 2024  
 **Build System Version**: 0.0.39c  
 **Status**: All platforms working correctly 
+
+---
+
+## 🐛 **Troubleshooting: Git/GitHub Case-Sensitivity Issue (Uppercase/Lowercase File Names)**
+
+### **Scenario: Duplicate Uppercase/Lowercase Files in Documentation**
+
+**Problem:**
+- On case-insensitive filesystems (macOS, Windows), renaming a file (e.g., `README.md` → `readme.md`) may not be detected by Git as a change.
+- When pushed to GitHub (which is case-sensitive), both the uppercase and lowercase versions can exist in the same directory.
+- This can result in both `README.md` and `readme.md` (or similar pairs) appearing in the remote repository, even if only one is visible locally.
+
+**Symptoms:**
+- GitHub web UI shows both uppercase and lowercase versions of a file in the same directory ([example](https://github.com/grapa-dev/grapa/tree/main/docs/docs)).
+- Local filesystem only shows one version (usually the most recently checked out or updated).
+- Cloning on a case-insensitive system may result in only one file, or unpredictable behavior.
+
+### **How to Detect**
+- Use `git ls-tree -r HEAD --name-only | grep '/[A-Z]'` to list all files with uppercase letters in their names as tracked by Git.
+- Compare with local directory listing to see if both versions exist.
+- Check the GitHub web UI for duplicate files.
+
+### **How to Fix**
+1. **For each uppercase file:**
+   - Check if a lowercase version exists and is up to date.
+   - If so, you can safely delete the uppercase file from the repository.
+2. **Delete the uppercase file using Git:**
+   ```sh
+   git rm path/to/UPPERCASE_FILE.md
+   git commit -m "Remove obsolete uppercase file to enforce lowercase standard"
+   git push
+   ```
+3. **If the lowercase file is missing locally:**
+   - Restore it from a previous commit or from the remote repository before deleting the uppercase version.
+4. **If both files are needed:**
+   - Manually merge content as needed before deleting.
+
+### **Prevention**
+- Always use lowercase file names for documentation and source files.
+- When renaming files for case changes, use `git mv` to ensure Git tracks the change:
+  ```sh
+  git mv README.md readme.md
+  git commit -m "Rename README.md to readme.md for case consistency"
+  git push
+  ```
+- Regularly scan the repository for case issues, especially after bulk renames or migrations.
+
+### **References**
+- [GitHub repo directory view](https://github.com/grapa-dev/grapa/tree/main/docs/docs)
+- [Stack Overflow: Git and case-insensitive filesystems](https://stackoverflow.com/questions/6839694/how-to-delete-a-git-file-case-insensitively)
+
+--- 
