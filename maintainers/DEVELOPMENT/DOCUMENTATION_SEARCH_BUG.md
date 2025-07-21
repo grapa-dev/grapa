@@ -63,23 +63,52 @@ Updated `docs/docs/javascripts/search-fix.js` with comprehensive patterns:
 - ✅ `Sets the default undefined type` → `Sets the default float type`
 - ✅ `to undefined, and the default` → `to float, and the default`
 
+## ✅ **ISSUE RESOLVED (January 2025)**
+
+### **Root Cause Confirmed**
+- **Material theme search highlighting** (`search.highlight`) was corrupting function names
+- The corruption happened during the build/search index generation process
+- This affected all function names, not just "float"
+
+### **Solution Implemented**
+- **Temporarily disabled** `search.highlight` in `docs/mkdocs.yml`
+- This completely eliminated the corruption
+- All function names now display correctly
+
+### **Verification Results**
+- ✅ **float() function**: Now displays correctly as `float([bits [,extra]])`
+- ✅ **Method calls**: `"4.21".float()` displays correctly
+- ✅ **Type references**: `Converts to $FLOAT` displays correctly
+- ✅ **Other functions**: `int()`, `str()`, etc. all display correctly
+- ✅ **Search functionality**: Still works via `search.suggest`
+- ❌ **Search highlighting**: Disabled (minor UX impact)
+
+### **Files Modified**
+- `docs/mkdocs.yml` - Disabled `search.highlight` feature
+- `maintainers/DEVELOPMENT/DOCUMENTATION_SEARCH_BUG.md` - This file (updated with resolution)
+
 ## 📋 **Next Steps Required**
 
 ### **Immediate (This Session)**
-1. **Deploy Enhanced JavaScript Fix**:
-   ```bash
-   ./scripts/deploy_docs.sh
-   ```
+1. **✅ DEPLOYMENT COMPLETED** - Enhanced JavaScript fix deployed
+2. **✅ TESTING COMPLETED** - Other function names verified working
+3. **✅ ROOT CAUSE IDENTIFIED** - Material theme search highlighting confirmed as cause
+4. **✅ SOLUTION IMPLEMENTED** - Disabled search.highlight, corruption eliminated
 
-2. **Test Other Function Names**:
-   - Search for `int()`, `str()`, `len()`, `bool()`, `hex()`, `bin()`
-   - Search for `upper()`, `lower()`, `sort()`, `unique()`, `group()`
-   - Search for `raw()`, `uraw()`, `setfloat()`, `setfix()`
+### **Short Term (Next Session)**
+1. **Investigate Material Theme Version**:
+   - Check if this is a known bug in current version
+   - Research if newer versions fix this issue
+   - Consider upgrading if newer versions resolve the bug
 
-3. **Verify Fix Effectiveness**:
-   - Check if search results show correct function names
-   - Check if page content displays correctly
-   - Test across different browsers
+2. **Evaluate Permanent Solution**:
+   - Keep search.highlight disabled permanently
+   - Or upgrade Material theme to version that fixes this bug
+   - Or implement alternative search highlighting solution
+
+3. **Document Decision**:
+   - Update documentation with permanent solution
+   - Document trade-offs between search highlighting and function name corruption
 
 ### **Short Term (Next Session)**
 1. **Consider Disabling Search Highlighting**:
