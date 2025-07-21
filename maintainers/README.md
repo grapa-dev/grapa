@@ -88,12 +88,14 @@ This section is for Grapa maintainers and advanced contributors. It contains doc
 - [ ] **Syntax validation** - Ensure all Grapa code examples are correct
 - [ ] **Cross-reference validation** - Verify all internal references are accurate
 
-### Documentation Search Issue (Priority: After Operator Issues)
-- [ ] **Investigate search "undefined" issue** - Users report seeing "undefined([bits [,extra]])" instead of "float([bits [,extra]])" when searching for "float" and clicking search results
-- [ ] **Root cause analysis** - Determine if this is a caching issue, search plugin problem, or JavaScript replacement
-- [ ] **Fix search functionality** - Ensure search results display correct function names
-- [ ] **Test across browsers** - Verify fix works in Safari, Chrome, and other browsers
-- [ ] **Update search index** - Rebuild search index if needed after fix
+### 🚨 CRITICAL: Documentation Search Bug (IMMEDIATE PRIORITY)
+- [ ] **🚨 CRITICAL ISSUE IDENTIFIED** - Material theme search highlighting corrupting function names across entire documentation
+- [ ] **Deploy enhanced JavaScript fix** - Enhanced `search-fix.js` with comprehensive patterns ready for deployment
+- [ ] **Test other function names** - Verify if `int()`, `str()`, `len()`, etc. are also affected
+- [ ] **Consider disabling search highlighting** - Temporary fix by commenting out `search.highlight` in mkdocs.yml
+- [ ] **Investigate Material theme version** - Check if this is a known bug in current version
+- [ ] **Systematic testing** - Test search for all major function categories
+- **Reference**: `maintainers/DEVELOPMENT/DOCUMENTATION_SEARCH_BUG.md` - Comprehensive documentation of the issue
 
 ### Scientific Notation Support (Future Enhancement)
 - [ ] **Add scientific notation parsing** - Support for `1e-10`, `1.5e+3`, `2.3E-5` format

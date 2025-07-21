@@ -25,7 +25,56 @@
 - **Documentation Updates**: Updated both implementation docs and public-facing documentation
 - **Testing**: Created and validated comprehensive float-to-float comparison tests
 
+## 🚨 **CRITICAL DOCUMENTATION SEARCH BUG** - IMMEDIATE PRIORITY
+
+### **🚨 CRITICAL ISSUE IDENTIFIED (January 2025)**
+**Status**: 🔥 **IMMEDIATE PRIORITY** - Documentation search corruption affecting all function names  
+**Impact**: HIGH - Entire documentation search experience corrupted for users  
+**Scope**: All function names across all documentation pages  
+
+#### **Problem Description:**
+- **Search for "float"** → Shows "undefined([bits [,extra]])" instead of "float([bits [,extra]])"
+- **Live Page Content**: `"4.21".undefined()` instead of `"4.21".float()`
+- **Source Files**: All correct (contain proper "float" references)
+- **Root Cause**: Material theme search highlighting corrupting content during build/search index generation
+
+#### **Evidence from Live Site:**
+- [Live Documentation Page](https://grapa-dev.github.io/grapa/obj/transform/?h=float#floatbits-extra)
+- Search results show: `undefined([bits [,extra]])` instead of `float([bits [,extra]])`
+- Page content shows: `"4.21".undefined()` instead of `"4.21".float()`
+- Multiple patterns corrupted: `setundefined()`, `Converts to $undefined`, etc.
+
+#### **Systemic Impact:**
+- **Not Limited to "float"**: Could affect ANY function name
+- **Affects All Documents**: Could corrupt search across entire documentation
+- **Affects All Users**: Anyone searching documentation sees corrupted results
+- **Build Process Issue**: Happens during MkDocs Material theme search processing
+
+#### **Immediate Actions Taken:**
+1. **Enhanced JavaScript Fix**: Updated `docs/docs/javascripts/search-fix.js` with comprehensive patterns
+2. **Pattern Coverage**: Added fixes for method calls, function names, type references
+3. **Multiple Timing**: Added dual-pass fixes at 100ms and 500ms delays
+4. **Additional Targets**: Extended to code blocks and pre blocks
+
+#### **Next Steps Required:**
+1. **Deploy Enhanced JavaScript Fix**: `./scripts/deploy_docs.sh`
+2. **Test Other Function Names**: Verify if `int()`, `str()`, `len()`, etc. are also affected
+3. **Consider Disabling Search Highlighting**: Temporary fix by commenting out `search.highlight` in mkdocs.yml
+4. **Investigate Material Theme Version**: Check if this is a known bug in current version
+5. **Systematic Testing**: Test search for all major function categories
+
+#### **Files Modified:**
+- `docs/docs/javascripts/search-fix.js` - Enhanced with comprehensive patterns
+- `maintainers/DEVELOPMENT/CURRENT_STATUS.md` - This file (documenting the issue)
+
+#### **Context for Future Sessions:**
+- **Issue**: Material theme search highlighting corrupting function names
+- **Scope**: Potentially all function names across all documentation
+- **Status**: Enhanced JavaScript fix created, needs deployment and testing
+- **Priority**: IMMEDIATE - affects entire documentation user experience
+
 ## Next Steps (Current Priority)
+- **🚨 CRITICAL DOCUMENTATION SEARCH BUG** - Material theme search corruption (IMMEDIATE)
 - **✅ ALL CRITICAL OPERATOR BUGS RESOLVED** - Operator bug fixes completed
 - **✅ MISSING OPERATOR DOCUMENTATION COMPLETED** - All 5 missing operators documented
 - **✅ CLI EXECUTABLE ENHANCEMENT COMPLETED** - Command-line interface enhanced with direct command/script execution
