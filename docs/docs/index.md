@@ -4,38 +4,51 @@
 
 ---
 
-## 📚 Documentation Structure Map
+## 📚 Documentation Structure Map (Interactive)
 
-```mermaid
+<div class="mermaid">
 graph TD;
     A[Start Here]
-    A --> B[Quickstart]
-    A --> C[API Reference]
-    A --> D[Examples]
-    C --> C1[Data Types]
-    C --> C2[Operators]
-    C --> C3[System Functions]
-    C --> C4[Object Types]
-    C --> C5[Database]
-    B -.-> E[Language Reference]
-    C -.-> E
-    D -.-> E
-    E --> E1[Basic Syntax]
-    E --> E2[Operators]
-    E --> E3[Precedence]
-    E --> E4[Grammar Design]
-    E --> E5[Data Types]
-    F[Use Cases]
-    G[Migration Guides]
-    H[Tools & Utilities]
-    I[Troubleshooting]
-    A --> F
-    A --> G
-    A --> H
-    A --> I
-```
+    B1[Quickstart]
+    B2[API Reference]
+    B3[Examples]
+    B4[Use Cases]
+    B5[Migration Guides]
+    B6[Tools & Utilities]
+    B7[Troubleshooting]
+    A --> B1
+    A --> B2
+    A --> B3
+    A --> B4
+    A --> B5
+    A --> B6
+    A --> B7
+    %% API Reference children
+    B2 --> C1[Data Types]
+    B2 --> C2[Operators]
+    B2 --> C3[System Functions]
+    B2 --> C4[Object Types]
+    B2 --> C5[Database]
+    %% Language Reference branch
+    B1 -.-> D1[Language Reference]
+    B2 -.-> D1
+    B3 -.-> D1
+    D1 --> D2[Basic Syntax]
+    D1 --> D3[Operators]
+    D1 --> D4[Precedence]
+    D1 --> D5[Grammar Design]
+    D1 --> D6[Data Types]
+    %% Clickable links
+    click B1 "/cli_quickstart/" "Go to Quickstart"
+    click B2 "/api_reference/" "Go to API Reference"
+    click B3 "/examples/" "Go to Examples"
+    click B4 "/use_cases/" "Go to Use Cases"
+    click B5 "/migrations/" "Go to Migration Guides"
+    click B6 "/run/" "Go to Tools & Utilities"
+    click B7 "/troubleshooting/" "Go to Troubleshooting"
+</div>
 
-*This map shows the main sections and their relationships. Use it to quickly orient yourself and navigate the docs.*
+*This map is now interactive. Click any main section to jump to that part of the docs!*
 
 ---
 
