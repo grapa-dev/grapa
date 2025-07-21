@@ -38,17 +38,17 @@ graph TD;
     D1 --> D4[Precedence]
     D1 --> D5[Grammar Design]
     D1 --> D6[Data Types]
-    %% Clickable links
-    click B1 "/cli_quickstart/" "Go to Quickstart"
-    click B2 "/api_reference/" "Go to API Reference"
-    click B3 "/examples/" "Go to Examples"
-    click B4 "/use_cases/" "Go to Use Cases"
-    click B5 "/migrations/" "Go to Migration Guides"
-    click B6 "/run/" "Go to Tools & Utilities"
-    click B7 "/troubleshooting/" "Go to Troubleshooting"
+    %% Clickable links (relative)
+    click B1 "cli_quickstart/" "Go to Quickstart"
+    click B2 "api_reference/" "Go to API Reference"
+    click B3 "examples/" "Go to Examples"
+    click B4 "use_cases/" "Go to Use Cases"
+    click B5 "migrations/" "Go to Migration Guides"
+    click B6 "run/" "Go to Tools & Utilities"
+    click B7 "troubleshooting/" "Go to Troubleshooting"
 </div>
 
-*This map is now interactive. Click any main section to jump to that part of the docs!*
+*This map is interactive. Click any major section to navigate.*
 
 ---
 
