@@ -16,3 +16,11 @@ When displayed, the value is printed in hex form, but the value in memory is in 
 > (0x6869).raw().str();
 hi
 ```
+
+---
+
+## See also
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Use Cases](../use_cases/)
+- [Language Reference](../syntax/basic_syntax.md)

@@ -13,3 +13,11 @@ Bitwise and.
 
 ## `^`
 Bitwise xor.
+
+---
+
+## See also
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Use Cases](../use_cases/)
+- [Language Reference](../syntax/basic_syntax.md)

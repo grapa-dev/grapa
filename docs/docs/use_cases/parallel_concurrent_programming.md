@@ -142,3 +142,10 @@ threads.map(op(t) { t.join(); });
 ```
 
 - **See also:** [Python Parallelism Examples](../python_use_cases.md#4-parallelconcurrent-programming-verified) 
+
+---
+
+## Related topics
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Language Reference](../syntax/basic_syntax.md) 

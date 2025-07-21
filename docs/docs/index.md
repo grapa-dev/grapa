@@ -2,9 +2,46 @@
 
 > **Tip:** Use the search bar (top right) to quickly find functions, guides, and examples. The search automatically filters to show only user documentation.
 
+---
+
+## 📚 Documentation Structure Map
+
+```mermaid
+graph TD;
+    A[Start Here]
+    A --> B[Quickstart]
+    A --> C[API Reference]
+    A --> D[Examples]
+    C --> C1[Data Types]
+    C --> C2[Operators]
+    C --> C3[System Functions]
+    C --> C4[Object Types]
+    C --> C5[Database]
+    B -.-> E[Language Reference]
+    C -.-> E
+    D -.-> E
+    E --> E1[Basic Syntax]
+    E --> E2[Operators]
+    E --> E3[Precedence]
+    E --> E4[Grammar Design]
+    E --> E5[Data Types]
+    F[Use Cases]
+    G[Migration Guides]
+    H[Tools & Utilities]
+    I[Troubleshooting]
+    A --> F
+    A --> G
+    A --> H
+    A --> I
+```
+
+*This map shows the main sections and their relationships. Use it to quickly orient yourself and navigate the docs.*
+
+---
+
 ## Getting Started
 - [Quickstart Guide](getting_started.md)
-- [API Reference](function_quick_reference.md)
+- [API Reference](api_reference.md)
 - [Migration Guides](migrations/python_to_grapa_migration.md)
 - [Examples](examples.md)
 
@@ -29,3 +66,7 @@
 ---
 
 *Grapa: High-performance scripting for data, ETL, and automation.*
+
+---
+
+> **Note:** After this round of improvements, we will review all documentation to determine where additional visuals, diagrams, or flowcharts would be most helpful for users.

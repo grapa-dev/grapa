@@ -134,3 +134,11 @@ All comparison operators now support mixed type comparisons with intelligent typ
 5 > "hello"   // true (numeric vs string)
 "hello" > 5   // true (string vs numeric)
 ```
+
+---
+
+## See also
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Use Cases](../use_cases/)
+- [Language Reference](../syntax/basic_syntax.md)

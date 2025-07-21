@@ -343,8 +343,11 @@ Grapa's Python integration provides a powerful combination of:
 
 This makes Grapa particularly valuable for Python applications that need to handle diverse data types, large datasets, or complex data workflows. The unified path system and efficient storage options provide significant advantages over traditional file system + database combinations. 
 
-> **See Also:**
+---
 
-> - [Python-to-Grapa Migration Guide](migrations/python_to_grapa_migration.md)
-> - [Python Use Cases](python_use_cases.md)
-> - [GrapaPy Namespace Solution](grapapy_namespace_solution.md) 
+## See also
+- [API Reference](api_reference.md)
+- [Language Reference](syntax/basic_syntax.md)
+- [Use Cases](use_cases/)
+- [Examples](examples/)
+- [Advanced Topics](advanced_topics.md) 

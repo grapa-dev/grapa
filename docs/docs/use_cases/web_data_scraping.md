@@ -151,3 +151,10 @@ if (result.get("success")) {
 ```
 
 - **See also:** [Python Web Scraping Examples](../python_use_cases.md#5-webdata-scraping-automation-verified) 
+
+---
+
+## Related topics
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Language Reference](../syntax/basic_syntax.md) 

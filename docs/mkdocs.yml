@@ -68,10 +68,63 @@ extra_javascript:
 
 nav:
   - Home: index.md
-  - Getting Started:
-      - Overview: getting_started.md
-      - CLI Quickstart: cli_quickstart.md
-      - Python Integration: python_integration.md
+  - Start Here:
+      - Quickstart: cli_quickstart.md
+      - API Reference: api_reference.md
+      - Examples: examples.md
+  - API Reference:
+      - Overview: api_reference.md
+      - Data Types:
+          - Array: type/array.md
+          - Boolean: type/bool.md
+          - Code: type/code.md
+          - Error: type/err.md
+          - Float: type/float.md
+          - ID: type/id.md
+          - Integer: type/int.md
+          - List: type/list.md
+          - Operation: type/op.md
+          - Raw: type/raw.md
+          - Rule: type/rule.md
+          - String: type/str.md
+          - System ID: type/sysid.md
+          - System Integer: type/sysint.md
+          - System String: type/sysstr.md
+          - Table: type/table.md
+          - Tag: type/tag.md
+          - Time: type/time.md
+          - Vector: type/vector.md
+          - Widget: type/widget.md
+          - Widget Attributes: type/widget/attributes.md
+          - XML: type/xml.md
+      - Operators:
+          - Function Operators: operators/function.md
+          - Assignment Operators: operators/assignment.md
+          - Math Operators: operators/math.md
+          - Bitwise Operators: operators/bit.md
+          - Comparison Operators: operators/compare.md
+          - Condition Operators: operators/condition.md
+          - Loop Operators: operators/loop.md
+          - Command Operators: operators/command.md
+          - Constants: operators/constants.md
+      - System Functions:
+          - File Operations: sys/file.md
+          - Math Functions: sys/math.md
+          - Network Functions: sys/net.md
+          - System Functions: sys/sys.md
+          - Thread Functions: sys/thread.md
+      - Object Types:
+          - Document: obj/document.md
+          - Encode: obj/encode.md
+          - Grep: obj/grep.md
+          - Grep Python: obj/grep_python.md
+          - Iterate: obj/iterate.md
+          - Transform: obj/transform.md
+      - Database:
+          - Quick Reference: database/quick_reference.md
+          - Storage Types: database/column_store.md
+          - Troubleshooting: database/troubleshooting.md
+  - Advanced Topics: advanced_topics.md
   - Language Reference:
       - Basic Syntax: syntax/basic_syntax.md
       - Operators: syntax/operator.md
@@ -110,27 +163,6 @@ nav:
           - Widget: type/widget.md
           - Widget Attributes: type/widget/attributes.md
           - XML: type/xml.md
-  - API Reference:
-      - Overview: api_reference.md
-      - Function Quick Reference: function_quick_reference.md
-      - Grep Documentation: grep.md
-      - System Functions:
-          - File Operations: sys/file.md
-          - Math Functions: sys/math.md
-          - Network Functions: sys/net.md
-          - System Functions: sys/sys.md
-          - Thread Functions: sys/thread.md
-      - Object Types:
-          - Document: obj/document.md
-          - Encode: obj/encode.md
-          - Grep: obj/grep.md
-          - Grep Python: obj/grep_python.md
-          - Iterate: obj/iterate.md
-          - Transform: obj/transform.md
-      - Database:
-          - Quick Reference: database/quick_reference.md
-          - Storage Types: database/column_store.md
-          - Troubleshooting: database/troubleshooting.md
   - Use Cases:
       - Overview: use_cases/index.md
       - ETL / Data Engineering: use_cases/etl_data_engineering.md

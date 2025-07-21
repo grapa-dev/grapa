@@ -210,3 +210,10 @@ response2 = app.handle_request("POST", "/echo", {"message": "Hello from Grapa!"}
 ```
 
 - **See also:** [Python Education Examples](../python_use_cases.md#7-education-prototyping-verified) 
+
+---
+
+## Related topics
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Language Reference](../syntax/basic_syntax.md) 

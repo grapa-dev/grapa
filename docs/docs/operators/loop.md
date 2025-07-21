@@ -146,11 +146,11 @@ sum.echo();
 
 ---
 
-## See Also
-- [examples.md](../examples.md)
-- [use_cases/index.md](../use_cases/index.md)
-- [Basic Syntax Guide](../syntax/basic_syntax.md)
-- [Array Type](../type/array.md)
+## See also
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Use Cases](../use_cases/)
+- [Language Reference](../syntax/basic_syntax.md)
 
 ---
 

@@ -14,3 +14,11 @@ null==false; | true
 1==false; | false
 "55"==(55).str(); | true
 "5.54"==(5.54).str(); | true
+
+---
+
+## See also
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Use Cases](../use_cases/)
+- [Language Reference](../syntax/basic_syntax.md)

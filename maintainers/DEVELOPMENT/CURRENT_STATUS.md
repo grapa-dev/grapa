@@ -1,3 +1,24 @@
+## 🚨 **CURRENT PRIORITY: Documentation Structure Improvement Plan**
+
+**Status:** IMMEDIATE PRIORITY - Comprehensive review and enhancement of documentation structure, navigation, and discoverability
+**Reference:** See [DOCS_STRUCTURE_IMPROVEMENT_PLAN.md](DOCS_STRUCTURE_IMPROVEMENT_PLAN.md) for full plan and action items
+
+### **Plan Overview:**
+- Review and update MkDocs navigation for consistency
+- Add a visual map/diagram to `index.md`
+- Audit and improve cross-linking between major sections
+- Add “See also”/“Related topics” to key pages
+- Create/expand “Advanced Topics” section if needed
+- Review maintainer/internal docs for separation
+- Add onboarding/quick links section for new users
+
+**This task takes precedence over the ROW Table Index Corruption Bug until completed.**
+
+**Next Task (after this improvement):**
+- Review all documentation to determine where additional visuals, diagrams, or flowcharts would be most helpful for users, and implement them.
+
+---
+
 # Build & Deployment Quick Reference (for AI/maintainers)
 
 - **Build Grapa binaries:**

@@ -275,3 +275,10 @@ solution = solve_linear_system(coefficients, constants);
 - **See also:** [Python Math Examples](../python_use_cases.md#3-high-precision-math-scientific-computing-verified)
 - **See also:** [Cryptography](cryptography.md) for cryptographic mathematical operations
 - **See also:** [Operators](../syntax/operator.md) for advanced mathematical operators 
+
+---
+
+## Related topics
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Language Reference](../syntax/basic_syntax.md) 

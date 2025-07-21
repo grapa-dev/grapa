@@ -56,3 +56,11 @@ To convert $XML or $TAG to JSON format, use the list method. This produces the u
 > x.test.list();
 {"test":[{"one":1},["data"]]}
 ```
+
+---
+
+## See also
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Use Cases](../use_cases/)
+- [Language Reference](../syntax/basic_syntax.md)

@@ -154,3 +154,11 @@ Causes the command line shell / console to exit. Primarily used for a script tha
 If used in the console, the exit will not happen until another command is issued from the shell. This is because everything is handled async.
 
 To exit while in the console, enter a '.' character.
+
+---
+
+## See also
+- [API Reference](../api_reference.md)
+- [Examples](../examples/)
+- [Use Cases](../use_cases/)
+- [Language Reference](../syntax/basic_syntax.md)
