@@ -254,6 +254,26 @@ result = someOperation().iferr(0);
 
 *If you have more Go idioms you want mapped to Grapa, please open an issue or PR!* 
 
+### Custom match() Function for Regex
+
+Go users often use `regexp.MustCompile().MatchString()` for regex checks. You can define a similar function in Grapa:
+
+```grapa
+// Define a match function that returns true if the pattern is found
+match = op("text"="", "pattern"="") {
+    text.grep(pattern, "x").len() > 0;
+};
+
+// Usage
+if (match("hello world", "world")) {
+    "Found!".echo();
+} else {
+    "Not found.".echo();
+}
+```
+
+This is a handy workaround until Grapa adds a native `.match()` method.
+
 > **Clarification on .get() Usage:**
 > - `.get()` is **required** for `$file` and `$TABLE` access.
 > - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` as of this writing.
@@ -415,3 +435,12 @@ fmt_Println("Hello from Grapa!");
 This can make migration easier for those used to Go's `fmt.Println()` or similar functions.
 
 > **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.
+
+## Notes
+- See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
+- Grapa supports variable scoping with `$global`, `$local`, and `$root`.
+- Use `$sys().getenv()` for environment variables.
+- Use `$thread()` for threading and `$sys().sleep()` for sleep.
+- Use `op(){}` for lambdas and function definitions.
+
+## See Also

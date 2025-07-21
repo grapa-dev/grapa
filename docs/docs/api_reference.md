@@ -384,7 +384,9 @@ String manipulation and analysis.
 - `.len()` - Get string length
 - `.upper()` - Convert to uppercase
 - `.lower()` - Convert to lowercase
-- `.trim()` - Remove whitespace
+- `.trim([chars])` - Remove characters from both ends (default: space)
+- `.ltrim([chars])` - Remove characters from left end (default: space)  
+- `.rtrim([chars])` - Remove characters from right end (default: space)
 - `.split(delimiter)` - Split string
 - `.join(array)` - Join array into string
 - `.replace(old, new)` - Replace text

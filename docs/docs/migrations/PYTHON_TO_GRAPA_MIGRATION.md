@@ -292,6 +292,13 @@ result = some_operation().iferr(0);
 
 > **Tip:** Grapa's parallel ETL/data processing is robust, production-ready, and a core design goal. Unlike Python, you can use parallel methods like `.map()` and `.filter()` out of the box for high-throughput data tasks.
 
+## Notes
+- See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
+- Grapa supports variable scoping with `$global`, `$local`, and `$root`.
+- Use `$sys().getenv()` for environment variables.
+- Use `$thread()` for threading and `$sys().sleep()` for sleep.
+- Use `op(){}` for lambdas and function definitions.
+
 ## See Also
 - [Migration Tips for Python Users](../python_use_cases.md#migration-tips-for-python-users)
 - [Python Integration Guide](../python_integration.md)
@@ -529,3 +536,10 @@ if (match("hello world", "world")) {
 ```
 
 This is a handy workaround until Grapa adds a native `.match()` method.
+
+## Notes
+- See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
+- Grapa supports variable scoping with `$global`, `$local`, and `$root`.
+- Use `$sys().getenv()` for environment variables.
+- Use `$thread()` for threading and `$sys().sleep()` for sleep.
+- Use `op(){}` for lambdas and function definitions.

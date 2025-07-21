@@ -287,11 +287,11 @@ class GrapaTableHelper:
 **Solution**: Use correct command line options:
 
 ```powershell
-# ✅ Correct: Use -cfile for .grc files
-.\grapa.exe -cfile "examples/basic_example.grc"
+# ✅ Correct: Use -f for .grc files
+.\grapa.exe -f "examples/basic_example.grc"
 
-# ❌ Incorrect: -ccmd may cause parsing issues
-.\grapa.exe -ccmd "examples/basic_example.grc"
+# ❌ Incorrect: -c may cause parsing issues
+.\grapa.exe -c "examples/basic_example.grc"
 ```
 
 ### Quiet Mode
@@ -301,7 +301,7 @@ class GrapaTableHelper:
 **Solution**: Use `-q` flag to suppress version output:
 
 ```powershell
-.\grapa.exe -cfile "examples/basic_example.grc" -q
+.\grapa.exe -f "examples/basic_example.grc" -q
 ```
 
 ## Best Practices for Debugging

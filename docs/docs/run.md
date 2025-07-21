@@ -25,24 +25,24 @@ Other command line options:
         -v,--version    :Show version
         -q,--quite      :Suppress header
         -env            :Show environment details
-        -ccmd script    :Run from script
-        -cfile file     :Run from file
+        -c script       :Run from script
+-f file         :Run from file
 	-w		:Editor
 	-wfile file	:Editor from file
-        -ccin           :Run from stdin
-        -argcin         :Places std:cin into $ARGCIN environment variable (use with -ccmd|-cfile)
+        -s              :Run from stdin
+-S              :Places stdin into $ARGCIN environment variable (use with -c|-f)
         -argv           :Places proceeding args into $ARGV environment variable
 ```
 
 Example: Performs a SHAKE256 hash of the string "thisisatest".
 ```
-grapa -ccmd "'thisisatest'.encode('SHAKE256')" -q
+grapa -c "'thisisatest'.encode('SHAKE256')" -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 ```
 
 Example: Same, but takes input from cin. 
 ```
-echo "thisisatest".encode('SHAKE256') | grapa -ccin -q
+echo "thisisatest".encode('SHAKE256') | grapa -s -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 ```
 
@@ -56,29 +56,29 @@ Grapa includes a comprehensive test suite for validating functionality and perfo
 Run all tests in one command:
 ```bash
 # Windows
-.\grapa.exe -cfile "test/infrastructure/run_tests.grc"
+.\grapa.exe -f "test/infrastructure/run_tests.grc"
 
 # Linux/Mac
-./grapa -cfile "test/infrastructure/run_tests.grc"
+./grapa -f "test/infrastructure/run_tests.grc"
 ```
 
 ### Individual Test Categories
 ```bash
 # Basic examples
-.\grapa.exe -cfile "examples/basic_example.grc"
+.\grapa.exe -f "examples/basic_example.grc"
 
 # Advanced examples
-.\grapa.exe -cfile "examples/advanced_example.grc"
+.\grapa.exe -f "examples/advanced_example.grc"
 
 # Performance examples
-.\grapa.exe -cfile "examples/performance_example.grc"
+.\grapa.exe -f "examples/performance_example.grc"
 ```
 
 ### Regression Testing
 For development and CI/CD:
 ```bash
 # Quick regression test
-.\grapa.exe -cfile "test/infrastructure/run_tests.grc"
+.\grapa.exe -f "test/infrastructure/run_tests.grc"
 ```
 
 For detailed testing information, see [Testing Documentation](testing.md).

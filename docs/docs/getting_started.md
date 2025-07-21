@@ -23,10 +23,10 @@ Anyone new to Grapa, or looking for a quick refresher on installation, basic syn
 grapa
 
 # Run a command directly
-grapa -ccmd "'Hello, Grapa!'.echo();"
+grapa -c "'Hello, Grapa!'.echo();"
 
 # Run from a file
-grapa -cfile "my_script.grc"
+grapa -f "my_script.grc"
 ```
 
 **See also:** [Syntax Quick Reference](syntax/basic_syntax.md)

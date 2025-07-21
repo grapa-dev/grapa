@@ -526,8 +526,14 @@ These are advanced features that most developers won't miss:
 
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, async/await patterns are replaced by Grapa's built-in parallel processing with `.map()` and `.filter()`.
 
-## See Also
+## Notes
+- See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
+- Grapa supports variable scoping with `$global`, `$local`, and `$root`.
+- Use `$sys().getenv()` for environment variables.
+- Use `$thread()` for threading and `$sys().sleep()` for sleep.
+- Use `op(){}` for lambdas and function definitions.
 
+## See Also
 - [Python Integration Guide](../python_integration.md)
 
 ---
