@@ -28,9 +28,10 @@
 - [ ] Add caching for frequently accessed data structures
 
 ### Documentation
-- [ ] Complete API documentation
-- [ ] Add more examples to user guide
-- [ ] Create performance tuning guide
+- [ ] Maintain and periodically audit API documentation for completeness and cross-linking (major sections are now complete; ongoing improvements only)
+- [ ] Continue to add more real-world examples and user recipes to the user guide and examples section
+- [ ] Create a dedicated performance tuning guide for advanced users
+- [ ] Ensure onboarding and About pages remain up-to-date as the public docs evolve (see About page and onboarding map)
 
 ## Medium Priority
 

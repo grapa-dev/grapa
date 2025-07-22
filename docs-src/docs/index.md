@@ -1,54 +1,11 @@
 # Welcome to Grapa Documentation
 
-> **Tip:** Use the search bar (top right) to quickly find functions, guides, and examples. The search automatically filters to show only user documentation.
-
----
-
-## 📚 Documentation Structure Map (Interactive)
-
-<div class="mermaid">
-graph TD;
-    A[Start Here]
-    B1[Quickstart]
-    B2[API Reference]
-    B3[Examples]
-    B4[Use Cases]
-    B5[Migration Guides]
-    B6[Tools & Utilities]
-    B7[Troubleshooting]
-    A --> B1
-    A --> B2
-    A --> B3
-    A --> B4
-    A --> B5
-    A --> B6
-    A --> B7
-    %% API Reference children
-    B2 --> C1[Data Types]
-    B2 --> C2[Operators]
-    B2 --> C3[System Functions]
-    B2 --> C4[Object Types]
-    B2 --> C5[Database]
-    %% Language Reference branch
-    B1 -.-> D1[Language Reference]
-    B2 -.-> D1
-    B3 -.-> D1
-    D1 --> D2[Basic Syntax]
-    D1 --> D3[Operators]
-    D1 --> D4[Precedence]
-    D1 --> D5[Grammar Design]
-    D1 --> D6[Data Types]
-    %% Clickable links (relative)
-    click B1 "cli_quickstart/" "Go to Quickstart"
-    click B2 "api_reference/" "Go to API Reference"
-    click B3 "examples/" "Go to Examples"
-    click B4 "use_cases/" "Go to Use Cases"
-    click B5 "migrations/" "Go to Migration Guides"
-    click B6 "run/" "Go to Tools & Utilities"
-    click B7 "troubleshooting/" "Go to Troubleshooting"
-</div>
-
-*This map is interactive. Click any major section to navigate.*
+## How to Use This Documentation
+- Use the search bar (top right) to quickly find functions, guides, and examples.
+- The navigation menu groups all reference material under 'Reference', guides under 'Guides', and support under 'Support'.
+- For advanced features, see [Advanced Topics](advanced_topics.md).
+- For troubleshooting, see [Troubleshooting](troubleshooting.md).
+- For a full API and type reference, see [Reference](api_reference.md).
 
 ---
 

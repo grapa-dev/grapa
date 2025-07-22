@@ -1,26 +1,29 @@
-# Grapa Examples
+# Examples
 
-This document provides practical examples of Grapa usage, organized from basic to advanced.
+Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scripts and code snippets demonstrating Grapa's core features, from basic syntax to advanced data processing and Python integration.
 
-> **For Python Users:**
-> See the [Python Integration Guide](python_integration.md) and [Migration Tips for Python Users](python_use_cases.md#migration-tips-for-python-users) for help translating Python code and using Grapa from Python.
+## Example Scripts
 
-> **See Also:**
-> - [Getting Started](getting_started.md)
-> - [Python-to-Grapa Migration Guide](migrations/python_to_grapa_migration.md)
-> - [JS-to-Grapa Migration Guide](migrations/js_to_grapa_migration.md)
-> - [Language Reference](function_quick_reference.md)
+| Example | Description |
+|---------|-------------|
+| [Basic Example](examples/basic_example.grc) | Demonstrates basic Grapa syntax, variable assignment, arrays, strings, and math operations. |
+| [Advanced Example](examples/advanced_example.grc) | Shows more complex operations: string processing, array manipulation, and returning multiple results. |
+| [Performance Example](examples/performance_example.grc) | Illustrates performance-related operations, including loops and array creation. |
+| [Python Integration Example](examples/python_integration_example.py) | Demonstrates how to use Grapa from Python, including math, strings, arrays, file, and grep operations. |
 
-## How to use this file
-- Start with the basic examples and work your way down.
-- Copy/paste examples into the Grapa REPL or a `.grc` file to experiment.
-- For syntax rules, see the [Syntax Quick Reference](syntax/basic_syntax.md).
+> **How to use these examples:**
+> - Click any example to view the source.
+> - Copy/paste `.grc` scripts into the Grapa REPL or save and run them with the CLI.
+> - For Python, run the `.py` script with Python 3 and the `grapapy` module installed.
 
-## Syntax Reminders
-- Every statement and every block (including after closing braces) must end with a semicolon (`;`).
-- Use block comments (`/* ... */`), not line comments (`// ...`).
-- To append to arrays, use the `+=` operator (not `.push()` or `.append()`).
-- See [Syntax Quick Reference](syntax/basic_syntax.md) for more.
+## See Also
+- [Getting Started](getting_started.md)
+- [API Reference](api_reference.md)
+- [Python Integration Guide](python_integration.md)
+- [Migration Guides](migrations/python_to_grapa_migration.md)
+- [Language Reference](function_quick_reference.md)
+- [Use Cases](use_cases/index.md)
+- [Testing](testing.md)
 
 ---
 

@@ -1,274 +1,36 @@
-## Deployment Troubleshooting
-
-### Common Deployment Issues
-
-#### 1. Git Checkout Conflicts
-**Problem**: Cannot switch to gh-pages branch due to untracked files or local changes.
-
-**Symptoms**:
-```
-error: The following untracked working tree files would be overwritten by checkout
-error: Your local changes to the following files would be overwritten by checkout
-```
-
-**Solutions**:
-```bash
-# Option 1: Stash changes and clean
-git stash
-git clean -fdx
-git checkout gh-pages
-
-# Option 2: Force clean everything
-git clean -fdx
-git checkout gh-pages
-
-# Option 3: Remove specific conflicting directories
-rm -rf docs/site
-rm -rf *.html
-rm -rf assets
-rm -rf database
-rm -rf directory_navigation
-rm -rf examples
-git checkout gh-pages
-```
-
-#### 2. Case Sensitivity Conflicts
-**Problem**: Git reports file alias conflicts due to case sensitivity differences.
-
-**Symptoms**:
-```
-fatal: will not add file alias 'docs/site/USE_CASES/compiler_bnf_learning/index.html' 
-('docs/site/use_cases/compiler_bnf_learning/index.html' already exists in index)
-```
-
-**Solutions**:
-```bash
-# Remove the built site directory completely
-rm -rf docs/site
-
-# Then add and commit
-git add docs/
-git commit -m "Deploy latest documentation"
-```
-
-**✅ RESOLVED (July 19, 2024)**: All documentation files now use consistent lowercase naming to prevent case sensitivity conflicts.
-
-#### 2a. Case Sensitivity Best Practices
-**✅ IMPLEMENTED**: All documentation files follow consistent lowercase naming convention.
-
-**Rules**:
-- All markdown files use lowercase with underscores: `api_reference.md`, `getting_started.md`
-- All directory names use lowercase with underscores: `use_cases/`, `migrations/`
-- All internal links use lowercase references
-- MkDocs configuration references lowercase filenames
-
-**Prevention**:
-```bash
-# Check for any remaining uppercase files
-find docs/docs -name "*[A-Z]*.md"
-
-# Check for any remaining uppercase directories
-find docs/docs -type d -name "*[A-Z]*"
-
-# Verify all links are lowercase
-grep -r "\.md" docs/docs/ | grep -i "[A-Z]"
-```
-
-#### 3. Built Site Cleanup
-**Problem**: Previous build artifacts interfere with deployment.
-
-**Prevention**:
-```bash
-# Always clean before building
-cd docs && python3 -m mkdocs build --clean
-
-# Remove any existing site directory before copying
-rm -rf docs/site
-```
-
-#### 4. Branch Switching Workflow
-**✅ CORRECTED Process**:
-```bash
-# 1. Build the site (on main branch)
-cd docs && python3 -m mkdocs build --clean
-
-# 2. Verify build completed successfully
-ls -la site/  # Should show index.html and other files
-
-# 3. Delete old gh-pages branch (both local and remote)
-git branch -D gh-pages
-git push origin --delete gh-pages
-
-# 4. Create fresh orphan gh-pages branch
-git checkout --orphan gh-pages
-
-# 5. Clear the branch completely (safe on orphan branch)
-git rm -rf .
-
-# 6. Copy site files from main branch
-git checkout main -- docs/site/
-
-# 7. Move files to root (where GitHub Pages expects them)
-mv docs/site/* . && rmdir docs/site docs
-
-# 8. Add all files and commit
-git add .
-git commit -m "Deploy documentation site - $(date)"
-
-# 9. Push to GitHub
-git push origin gh-pages
-
-# 10. Return to main branch
-git checkout main
-```
-
-**🚨 CRITICAL WARNING**: Never run `git clean -fdx` while on the main branch! This will delete all source files. Only clean the gh-pages branch after switching to it.
-
-#### 5. Main Branch Deletion Prevention
-**🚨 CRITICAL ISSUE**: Running `git clean -fdx` on the main branch will delete all source files.
-
-**What Happened**: During deployment, `git clean -fdx` was run while on the main branch, deleting all source files.
-
-**Prevention**:
-```bash
-# ❌ NEVER DO THIS on main branch
-git clean -fdx  # This deletes all untracked files including source!
-
-# ✅ ONLY do this after switching to gh-pages
-git checkout gh-pages
-git clean -fdx  # Safe to clean deployment branch
-```
-
-**Recovery**: If this happens, immediately run:
-```bash
-git reset --hard HEAD  # Restores all tracked files
-```
-
-**Best Practice**: Always verify current branch before running destructive commands:
-```bash
-git branch  # Check current branch
-git clean -fdx  # Only if on gh-pages branch
-```
-
-### Deployment Best Practices
-
-#### Pre-Deployment Checklist
-- [ ] All documentation changes committed to main branch
-- [ ] All examples tested and syntax-reviewed
-- [ ] MkDocs build completes without errors
-- [ ] No broken links in build output
-- [ ] Workspace is clean (no uncommitted changes)
-- [ ] **VERIFY**: Currently on main branch before starting deployment
-- [ ] **VERIFY**: All source files present before deployment
-
-#### Post-Deployment Verification
-- [ ] GitHub Pages site loads correctly
-- [ ] All navigation links work
-- [ ] Examples directory is accessible
-- [ ] Search functionality works
-- [ ] No 404 errors on key pages
-
-### Emergency Rollback
-If deployment causes issues:
-
-```bash
-# Revert to previous version
-git checkout gh-pages
-git log --oneline -5  # Find previous good commit
-git reset --hard <previous-commit-hash>
-git push origin gh-pages --force
-```
-
-## Documentation Cleanup Notes
-
-### Legacy Directory Cleanup (July 19, 2024)
-
-**Action**: Deleted `docs-site/` directory  
-**Reason**: Redundant legacy documentation directory
-
-**Analysis Performed**:
-- `docs-site/` contained only 2 outdated markdown files (`GREP.md`, `python_integration.md`)
-- `docs/` contains 84 complete, up-to-date markdown files
-- `docs-site/` had no MkDocs configuration or build system
-- Content in `docs-site/` was older versions of files that exist in `docs/`
-
-**Verification**:
-- ✅ All content preserved in `docs/` with newer versions
-- ✅ No unique files lost
-- ✅ No configuration or build artifacts affected
-- ✅ `docs/` remains the single source of truth for documentation
-
-**Impact**: None - `docs-site/` was unused legacy directory
-
----
-
-## Recent Deployment Work (July 19, 2024)
-
-### Case Sensitivity Fixes & Navigation Link Resolution
-**Status**: ✅ Successfully deployed  
-**Commit**: `c67155b` on gh-pages branch  
-**URL**: https://grapa-dev.github.io/grapa/
-
-#### Problem Identified:
-- Navigation links pointed to lowercase URLs (e.g., `/api_reference/`, `/examples/`)
-- Live site directories were uppercase (e.g., `/API_REFERENCE/`, `/EXAMPLES/`)
-- This caused "file not found" errors when users clicked navigation links
-
-#### Changes Deployed:
-1. **File Renaming**:
-   - All root documentation files: `API_REFERENCE.md` → `api_reference.md`
-   - All migration files: `PYTHON_TO_GRAPA_MIGRATION.md` → `python_to_grapa_migration.md`
-   - All type files: `ARRAY.md` → `array.md`, `BOOL.md` → `bool.md`, etc.
-
-2. **Configuration Updates**:
-   - Updated `mkdocs.yml` to reference lowercase filenames
-   - Updated `mkdocs-maintainers.yml` for maintainer builds
-   - Fixed all internal markdown links to use lowercase references
-
-3. **Site Deployment**:
-   - Deployed corrected site with lowercase directory names
-   - All navigation links now work correctly
-   - No more "file not found" errors
-
-#### ✅ CORRECTED Deployment Process Used:
-```bash
-# 1. Build documentation with latest changes
-cd docs && python3 -m mkdocs build --clean
-
-# 2. Delete old gh-pages branch
-git branch -D gh-pages
-git push origin --delete gh-pages
-
-# 3. Create fresh orphan gh-pages branch
-git checkout --orphan gh-pages
-
-# 4. Clear the branch completely
-git rm -rf .
-
-# 5. Copy site files from main branch
-git checkout main -- docs/site/
-
-# 6. Move files to root (where GitHub Pages expects them)
-mv docs/site/* . && rmdir docs/site docs
-
-# 7. Add and commit
-git add .
-git commit -m "Deploy documentation site - $(date)"
-
-# 8. Push to GitHub
-git push origin gh-pages
-
-# 9. Return to main branch
-git checkout main
-```
-
-#### Lessons Learned:
-- **✅ Correct Directory Structure**: Files must be at root of gh-pages branch for GitHub Pages `/docs` source
-- **✅ Orphan Branch**: Creating fresh orphan branch prevents conflicts and ensures clean deployment
-- **✅ Proper Git Commands**: Use `git add .` not `git add docs/` when files are at root
-- **✅ Verification**: Always verify changes are included in the build before deployment
-- **✅ GitHub Pages Timing**: Updates can take 5-10 minutes to appear on live site
-
----
-
-## Examples Directory Management 
+## Documentation Deployment Guide
+
+### Overview
+
+The Grapa documentation deployment process is now streamlined and automated. User documentation is built from `/docs-src` and output to `/docs`. Deployment to the live site is handled automatically by GitHub Pages when `/docs` is committed and pushed to the `main` branch. No branch switching or manual deployment is required.
+
+### Step-by-Step Deployment
+
+1. **Build the documentation:**
+   ```bash
+   ./scripts/deploy_docs.sh
+   ```
+   - This builds the user documentation from `/docs-src` and outputs to `/docs`.
+   - All validation (case sensitivity, link checks, etc.) is performed automatically.
+
+2. **Commit and push the built docs:**
+   ```bash
+   git add docs/
+   git commit -m "docs: Update user documentation"
+   git push origin main
+   ```
+   - This will trigger GitHub Pages to update the live site from `/docs` on the `main` branch.
+
+3. **Check the live site:**
+   - Visit: https://grapa-dev.github.io/grapa/
+   - Changes may take a few minutes to appear.
+
+### Notes
+- Maintainer documentation is not built or deployed by this script.
+- No branch switching or manual deployment is required.
+- All deployment is handled automatically by GitHub Pages.
+
+### Troubleshooting
+- If the build fails, check for errors in your Markdown or MkDocs config in `/docs-src`.
+- If the site does not update, ensure you have committed and pushed `/docs` to `main`.
+- For more details, see `maintainers/BUILD_AND_DEPLOYMENT/DOCUMENTATION_DEPLOYMENT.md`. 

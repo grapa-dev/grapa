@@ -4,8 +4,9 @@ function initMermaid() {
     mermaid.initialize({
       startOnLoad: true,
       themeVariables: {
-        fontSize: '22px',
+        fontSize: '28px',
         fontFamily: 'inherit',
+        nodePadding: 30
       },
       securityLevel: 'loose',
     });

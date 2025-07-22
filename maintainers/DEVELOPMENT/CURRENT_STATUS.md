@@ -1,21 +1,19 @@
-## 🚨 **CURRENT PRIORITY: Documentation Structure Improvement Plan**
+# 🏁 Agent Handoff Checklist
 
-**Status:** IMMEDIATE PRIORITY - Comprehensive review and enhancement of documentation structure, navigation, and discoverability
-**Reference:** See [DOCS_STRUCTURE_IMPROVEMENT_PLAN.md](DOCS_STRUCTURE_IMPROVEMENT_PLAN.md) for full plan and action items
+**For all maintainers and AI assistants:**
+- Always ingest and review this file (`CURRENT_STATUS.md`) for the latest project status, priorities, and progress.
+- Review `maintainers/README.md` for onboarding and maintainer guidance.
+- Check for any in-progress plans or session summaries at the top of this file or in a `SESSION_SUMMARY.md` if present.
+- After an agent swap or context loss, reload this checklist and the session summary before proceeding.
+- Update the Session Summary below at logical breakpoints or after major steps.
 
-### **Plan Overview:**
-- Review and update MkDocs navigation for consistency
-- Add a visual map/diagram to `index.md`
-- Audit and improve cross-linking between major sections
-- Add “See also”/“Related topics” to key pages
-- Create/expand “Advanced Topics” section if needed
-- Review maintainer/internal docs for separation
-- Add onboarding/quick links section for new users
+# 📝 Session Summary (Update at each logical breakpoint)
 
-**This task takes precedence over the ROW Table Index Corruption Bug until completed.**
+> _[Add a brief summary of what has been done, what is in progress, and what the next steps are. Use this section for agent handoff or after context loss.]_
 
-**Next Task (after this improvement):**
-- Review all documentation to determine where additional visuals, diagrams, or flowcharts would be most helpful for users, and implement them.
+---
+
+**Note:** All ongoing and future documentation structure improvements are now tracked in [DOCS_STRUCTURE_IMPROVEMENT_PLAN.md](DOCS_STRUCTURE_IMPROVEMENT_PLAN.md) and referenced in the backlog. See that document for the current plan, remaining action items, and maintenance checklist.
 
 ---
 
@@ -107,7 +105,9 @@
 - **Priority**: IMMEDIATE - affects entire documentation user experience
 
 ## Next Steps (Current Priority)
-- **🚨 CRITICAL DOCUMENTATION SEARCH BUG** - Material theme search corruption (IMMEDIATE)
+- **🚨 ROW Table Index Corruption Bug** - 🔥 IMMEDIATE PRIORITY
+   - **Status**: Isolated debug project approach ABANDONED due to impractical external library dependencies (OpenSSL, FLTK, BLST, etc.). Debugging will continue in the main project where all dependencies are properly configured.
+   - **Debug Context Doc**: See [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) for full context and decision rationale.
 - **✅ ALL CRITICAL OPERATOR BUGS RESOLVED** - Operator bug fixes completed
 - **✅ MISSING OPERATOR DOCUMENTATION COMPLETED** - All 5 missing operators documented
 - **✅ CLI EXECUTABLE ENHANCEMENT COMPLETED** - Command-line interface enhanced with direct command/script execution
@@ -320,6 +320,7 @@
    - **Debug Output**: Shows empty RPTR entries for first record after corruption
    - **Workaround**: Use COL tables instead of ROW tables
    - **Priority**: IMMEDIATE - blocking database functionality
+   - **Debug Context Doc**: See [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) for full agent handoff, debug setup, and technical notes for this task.
 
 2. **CLI Redesign Phase 1** - ✅ COMPLETED
    - Replaced `-ccmd` → `-c`, `-cfile` → `-f`, `-ccin` → `-s`, `-argcin` → `-S`

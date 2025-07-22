@@ -1,5 +1,14 @@
 # Maintainers & News
 
+**Note for contributors:**
+
+> For onboarding, project status, and maintainer documentation, see [`maintainers/README.md`](maintainers/README.md) and [`maintainers/DEVELOPMENT/CURRENT_STATUS.md`](maintainers/DEVELOPMENT/CURRENT_STATUS.md).
+
+**Project Status and Priorities**
+
+> **Always consult [`maintainers/DEVELOPMENT/CURRENT_STATUS.md`](DEVELOPMENT/CURRENT_STATUS.md) for the authoritative, up-to-date project status, priorities, and progress tracking.**  
+> This file is the single source of truth for all ongoing work, TODOs, and development focus. All maintainers and contributors should review CURRENT_STATUS.md before starting new work or making major changes.
+
 This section is for Grapa maintainers and advanced contributors. It contains documentation and resources related to:
 
 - Building Grapa (C++ and Python) from source
