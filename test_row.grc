@@ -1,0 +1,32 @@
+frow = $file().table("ROW");
+frow.mkfield("name", "STR", "VAR");
+frow.mkfield("age", "INT", "FIX", 4);
+frow.mkfield("city", "STR", "VAR");
+
+frow.set("user1", "Alice", "name");
+frow.set("user1", 25, "age");
+frow.set("user1", "New York", "city");
+("user1.name: " + frow.get("user1", "name").str() + "\n").echo();
+("user1.age: " + frow.get("user1", "age").raw().int() + "\n").echo();
+("user1.city: " + frow.get("user1", "city").str() + "\n").echo();
+frow.debug();
+"\n".echo();
+
+frow.set("user2", "Bob", "name");
+frow.set("user2", 30, "age");
+frow.set("user2", "Los Angeles", "city");
+("user2.name: " + frow.get("user2", "name").str() + "\n").echo();
+("user2.age: " + frow.get("user2", "age").raw().int() + "\n").echo();
+("user2.city: " + frow.get("user2", "city").str() + "\n").echo();
+frow.debug();
+"\n".echo();
+
+frow.set("user3", "Charlie", "name");
+frow.set("user3", 35, "age");
+frow.set("user3", "Chicago", "city");
+("user3.name: " + frow.get("user3", "name").str() + "\n").echo();
+("user3.age: " + frow.get("user3", "age").raw().int() + "\n").echo();
+("user3.city: " + frow.get("user3", "city").str() + "\n").echo();
+frow.debug();
+"\n".echo();
+
