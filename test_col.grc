@@ -1,8 +1,8 @@
 "================================================================================\n".echo();
-"Get $file().table('ROW')\n".echo();
+"Get $file().table('COL')\n".echo();
 "================================================================================\n".echo();
 "Create and initialize name,age,city\n".echo();
-fdata = $file().table("ROW");
+fdata = $file().table("COL");
 fdata.mkfield("name", "STR", "VAR");
 fdata.mkfield("age", "INT", "FIX", 4);
 fdata.mkfield("city", "STR", "VAR");

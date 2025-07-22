@@ -1,0 +1,166 @@
+================================================================================
+Get $file().table('ROW')
+================================================================================
+Create and initialize name,age,city
+================================================================================
+Set user1 {"name":"Alice","age":25,"city":"New York"}
+Get user1 {"name":"Alice","age":25,"city":"New York"}
+{"name":"Alice","age":25,"city":"New York"}
+--------------------------
+LIST start (3) key=0 type=RTABLE parent=0 size=1
+| | RREC (55) key=1 node=(58,0) weight=1: 1=416C696365 2= 3=4E657720596F726B 4=user1
+LIST ended (3) key=0 type=RTABLE
+INDEX start (5) key=0
+| LIST start (5) key=0 type=SU64 parent=3 size=2
+| | | TREE start (7) key=0
+| | | | LIST start (7) key=0 type=RTABLE parent=5 size=5
+| | | | | | FIELD (17) key=0 id=0 name=$DICT rec=ROW type=DICT store=FIX doffset=4 dsize=282 size=0 grow=1
+| | | | | | FIELD (31) key=1 id=1 name=name rec=ROW type=TABLE store=VAR doffset=0 dsize=8 size=32 grow=8
+| | | | | | FIELD (39) key=2 id=2 name=age rec=ROW type=STR store=VAR doffset=8 dsize=8 size=4 grow=8
+| | | | | | FIELD (47) key=3 id=3 name=city rec=ROW type=TABLE store=VAR doffset=16 dsize=8 size=32 grow=8
+| | | | | | FIELD (64) key=4 id=4 name=$KEY rec=ROW type=STR store=FIX doffset=24 dsize=258 size=256 grow=0
+| | | | LIST ended (7) key=0 type=RTABLE
+| | | TREE ended (7) key=0
+| | | TREE start (74) key=1
+| | | | LIST start (74) key=1 type=RTABLE parent=5 size=1
+| | | | | | RPTR (0) key=1 node=(84,0) weight=1: RREC (55) key=1 node=(58,0) weight=1: 1=416C696365 2= 3=4E657720596F726B 4=user1
+| | | | LIST ended (74) key=1 type=RTABLE
+| | | | STORE (3) key=1 type=IPTR
+| | | | INDEX start (76) key=1
+| | | | | LIST start (76) key=1 type=SU64 parent=74 size=1
+| | | | | | | SU64 key=1 value=4
+| | | | | LIST ended (76) key=1 type=SU64
+| | | | INDEX ended (76) key=1
+| | | TREE ended (74) key=1
+| LIST ended (5) key=0 type=SU64
+| INDEX start (15) key=0
+| INDEX ended (15) key=0
+INDEX ended (5) key=0
+
+================================================================================
+Set user2 {"name":"Bob","age":30,"city":"Los Angeles"}
+Get user1 {"name":"Alice","age":25,"city":"New York"}
+{"name":"Alice","age":25,"city":"New York"}
+Get user2 {"name":"Bob","age":30,"city":"Los Angeles"}
+{"name":"Bob","age":30,"city":"Los Angeles"}
+--------------------------
+LIST start (3) key=0 type=RTABLE parent=0 size=2
+| | RREC (55) key=1 node=(58,0) weight=2: 1=416C696365 2= 3=4E657720596F726B 4=user1
+| | RREC (113) key=2 node=(58,1) weight=2: 1=426F62 2= 3=4C6F7320416E67656C6573 4=user2
+LIST ended (3) key=0 type=RTABLE
+INDEX start (5) key=0
+| LIST start (5) key=0 type=SU64 parent=3 size=2
+| | | TREE start (7) key=0
+| | | | LIST start (7) key=0 type=RTABLE parent=5 size=5
+| | | | | | FIELD (17) key=0 id=0 name=$DICT rec=ROW type=DICT store=FIX doffset=4 dsize=282 size=0 grow=1
+| | | | | | FIELD (31) key=1 id=1 name=name rec=ROW type=TABLE store=VAR doffset=0 dsize=8 size=32 grow=8
+| | | | | | FIELD (39) key=2 id=2 name=age rec=ROW type=STR store=VAR doffset=8 dsize=8 size=4 grow=8
+| | | | | | FIELD (47) key=3 id=3 name=city rec=ROW type=TABLE store=VAR doffset=16 dsize=8 size=32 grow=8
+| | | | | | FIELD (64) key=4 id=4 name=$KEY rec=ROW type=STR store=FIX doffset=24 dsize=258 size=256 grow=0
+| | | | LIST ended (7) key=0 type=RTABLE
+| | | TREE ended (7) key=0
+| | | TREE start (74) key=1
+| | | | LIST start (74) key=1 type=RTABLE parent=5 size=2
+| | | | | | RPTR (0) key=1 node=(84,0) weight=2: RREC (55) key=1 node=(58,0) weight=2: 1=416C696365 2= 3=4E657720596F726B 4=user1
+| | | | | | RPTR (0) key=2 node=(84,1) weight=2: RREC (113) key=2 node=(58,1) weight=2: 1=426F62 2= 3=4C6F7320416E67656C6573 4=user2
+| | | | LIST ended (74) key=1 type=RTABLE
+| | | | STORE (3) key=1 type=IPTR
+| | | | INDEX start (76) key=1
+| | | | | LIST start (76) key=1 type=SU64 parent=74 size=1
+| | | | | | | SU64 key=1 value=4
+| | | | | LIST ended (76) key=1 type=SU64
+| | | | INDEX ended (76) key=1
+| | | TREE ended (74) key=1
+| LIST ended (5) key=0 type=SU64
+| INDEX start (15) key=0
+| INDEX ended (15) key=0
+INDEX ended (5) key=0
+================================================================================
+Set user3 {"name":"Charlie","age":35,"city":"Chicago"}
+Get user1 {"name":"Alice","age":25,"city":"New York"}
+{"name":"{\"error\":-1}","age":"","city":"{\"error\":-1}"}
+Get user2 {"name":"Bob","age":30,"city":"Los Angeles"}
+{"name":"Bob","age":30,"city":"Los Angeles"}
+Get user3 {"name":"Charlie","age":35,"city":"Chicago"}
+{"name":"Charlie","age":35,"city":"Chicago"}
+--------------------------
+LIST start (3) key=0 type=RTABLE parent=0 size=3
+| | RREC (55) key=1 node=(58,0) weight=3: 1=416C696365 2= 3=4E657720596F726B 4=user1
+| | RREC (113) key=2 node=(58,1) weight=3: 1=426F62 2= 3=4C6F7320416E67656C6573 4=user2
+| | RREC (147) key=3 node=(58,2) weight=3: 1=436861726C6965 2=# 3=4368696361676F 4=user3
+LIST ended (3) key=0 type=RTABLE
+INDEX start (5) key=0
+| LIST start (5) key=0 type=SU64 parent=3 size=2
+| | | TREE start (7) key=0
+| | | | LIST start (7) key=0 type=RTABLE parent=5 size=5
+| | | | | | FIELD (17) key=0 id=0 name=$DICT rec=ROW type=DICT store=FIX doffset=4 dsize=282 size=0 grow=1
+| | | | | | FIELD (31) key=1 id=1 name=name rec=ROW type=TABLE store=VAR doffset=0 dsize=8 size=32 grow=8
+| | | | | | FIELD (39) key=2 id=2 name=age rec=ROW type=STR store=VAR doffset=8 dsize=8 size=4 grow=8
+| | | | | | FIELD (47) key=3 id=3 name=city rec=ROW type=TABLE store=VAR doffset=16 dsize=8 size=32 grow=8
+| | | | | | FIELD (64) key=4 id=4 name=$KEY rec=ROW type=STR store=FIX doffset=24 dsize=258 size=256 grow=0
+| | | | LIST ended (7) key=0 type=RTABLE
+| | | TREE ended (7) key=0
+| | | TREE start (74) key=1
+| | | | LIST start (74) key=1 type=RTABLE parent=5 size=3
+| | | | | | RPTR (0) key=1 node=(84,0) weight=3: RREC (0) key=0 node=(0,0) weight=3:
+| | | | | | RPTR (0) key=2 node=(84,1) weight=3: RREC (113) key=2 node=(58,1) weight=3: 1=426F62 2= 3=4C6F7320416E67656C6573 4=user2
+| | | | | | RPTR (0) key=3 node=(84,2) weight=3: RREC (147) key=3 node=(58,2) weight=3: 1=436861726C6965 2=# 3=4368696361676F 4=user3
+| | | | LIST ended (74) key=1 type=RTABLE
+| | | | STORE (3) key=1 type=IPTR
+| | | | INDEX start (76) key=1
+| | | | | LIST start (76) key=1 type=SU64 parent=74 size=1
+| | | | | | | SU64 key=1 value=4
+| | | | | LIST ended (76) key=1 type=SU64
+| | | | INDEX ended (76) key=1
+| | | TREE ended (74) key=1
+| LIST ended (5) key=0 type=SU64
+| INDEX start (15) key=0
+| INDEX ended (15) key=0
+INDEX ended (5) key=0
+================================================================================
+Set user4 {"name":"Jack","age":41,"city":"Dallas"}
+Get user1 {"name":"Alice","age":25,"city":"New York"}
+{"name":"{\"error\":-1}","age":"","city":"{\"error\":-1}"}
+Get user2 {"name":"Bob","age":30,"city":"Los Angeles"}
+{"name":"Bob","age":30,"city":"Los Angeles"}
+Get user3 {"name":"Charlie","age":35,"city":"Chicago"}
+{"name":"Charlie","age":35,"city":"Chicago"}
+Get user4 {"name":"Jack","age":41,"city":"Dallas"}
+{"name":"Jack","age":41,"city":"Dallas"}
+--------------------------
+LIST start (3) key=0 type=RTABLE parent=0 size=4
+| | RREC (55) key=1 node=(58,0) weight=4: 1=416C696365 2= 3=4E657720596F726B 4=user1
+| | RREC (113) key=2 node=(58,1) weight=4: 1=426F62 2= 3=4C6F7320416E67656C6573 4=user2
+| | RREC (147) key=3 node=(58,2) weight=4: 1=436861726C6965 2=# 3=4368696361676F 4=user3
+| | RREC (181) key=4 node=(58,3) weight=4: 1=4A61636B 2=) 3=44616C6C6173 4=user4
+LIST ended (3) key=0 type=RTABLE
+INDEX start (5) key=0
+| LIST start (5) key=0 type=SU64 parent=3 size=2
+| | | TREE start (7) key=0
+| | | | LIST start (7) key=0 type=RTABLE parent=5 size=5
+| | | | | | FIELD (17) key=0 id=0 name=$DICT rec=ROW type=DICT store=FIX doffset=4 dsize=282 size=0 grow=1
+| | | | | | FIELD (31) key=1 id=1 name=name rec=ROW type=TABLE store=VAR doffset=0 dsize=8 size=32 grow=8
+| | | | | | FIELD (39) key=2 id=2 name=age rec=ROW type=STR store=VAR doffset=8 dsize=8 size=4 grow=8
+| | | | | | FIELD (47) key=3 id=3 name=city rec=ROW type=TABLE store=VAR doffset=16 dsize=8 size=32 grow=8
+| | | | | | FIELD (64) key=4 id=4 name=$KEY rec=ROW type=STR store=FIX doffset=24 dsize=258 size=256 grow=0
+| | | | LIST ended (7) key=0 type=RTABLE
+| | | TREE ended (7) key=0
+| | | TREE start (74) key=1
+| | | | LIST start (74) key=1 type=RTABLE parent=5 size=4
+| | | | | | RPTR (0) key=1 node=(84,0) weight=4: RREC (0) key=0 node=(0,0) weight=3:
+| | | | | | RPTR (0) key=2 node=(84,1) weight=4: RREC (113) key=2 node=(58,1) weight=4: 1=426F62 2= 3=4C6F7320416E67656C6573 4=user2
+| | | | | | RPTR (0) key=3 node=(84,2) weight=4: RREC (147) key=3 node=(58,2) weight=4: 1=436861726C6965 2=# 3=4368696361676F 4=user3
+| | | | | | RPTR (0) key=4 node=(84,3) weight=4: RREC (181) key=4 node=(58,3) weight=4: 1=4A61636B 2=) 3=44616C6C6173 4=user4
+| | | | LIST ended (74) key=1 type=RTABLE
+| | | | STORE (3) key=1 type=IPTR
+| | | | INDEX start (76) key=1
+| | | | | LIST start (76) key=1 type=SU64 parent=74 size=1
+| | | | | | | SU64 key=1 value=4
+| | | | | LIST ended (76) key=1 type=SU64
+| | | | INDEX ended (76) key=1
+| | | TREE ended (74) key=1
+| LIST ended (5) key=0 type=SU64
+| INDEX start (15) key=0
+| INDEX ended (15) key=0
+INDEX ended (5) key=0
+================================================================================

@@ -3200,6 +3200,14 @@ GrapaError GrapaDB::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 	else printf((char*)dbWrite.mBytes,"");
 	GrapaCursor recCursor = cursor;
 	PtrToRec(cursor,recCursor);
+
+	u64 weight2;
+	DumpGetItemWeight(recCursor, weight2);
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "RREC (%llu) key=%llu node=(%llu,%d) weight=%llu: ", recCursor.mValue, recCursor.mKey, recCursor.mNodeRef, recCursor.mNodeIndex, weight2);
+	if (mDumpFile) mDumpFile->Append(dbWrite.mLength, dbWrite.mBytes);
+	else printf((char*)dbWrite.mBytes, "");
+
+
 	switch(cursor.mValueType)
 	{
 		case GPTR_ITEM:	DumpTheGroupStructure(dbWrite,recCursor); break;
