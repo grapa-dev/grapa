@@ -58,9 +58,11 @@ Grapa includes a comprehensive test suite for validating Unicode grep functional
 
 **Current Status: All critical issues resolved, 98%+ ripgrep parity achieved**
 
-## Test Organization
+### Test Organization
 
-### Test Directory Structure
+Grapa's test suite is organized for discoverability, maintainability, and ease of execution. All tests are located in the `test/` directory, grouped by feature or subsystem.
+
+#### Directory Structure
 ```
 test/
 ├── grep/           # Core and advanced grep feature tests (option combinations, edge cases, ripgrep parity, custom delimiters, etc.)
@@ -78,10 +80,39 @@ test/
 ├── run_tests.grz
 ├── run_tests_comprehensive.grc
 ├── run_tests.grc
-├── TEST_ORGANIZATION_SUMMARY.md
 ├── README.md
 └── [various feature-specific .grc and .py test files]
 ```
+
+#### Historical Note: Grep Test Reorganization
+In 2024, all grep-related test files were moved from the test root to `test/grep/` to improve discoverability and organization. This included:
+- test_error_handling.grc
+- test_invalid_regex.grc
+- test_normalization_o.grc
+- test_diacritic_insensitive_o.grc
+- test_zero_length_o.grc
+- test_o_option_comprehensive.grc
+- test_missing_ripgrep_features.grc
+- test_ripgrep_parity_features.grc
+- test_advanced_context.grc
+- test_parallel_grep_verification.grc
+- test_search_strategy_features.grc
+- test_performance_optimizations.grc
+- test_lookaround_assertions.grc
+- test_atomic_groups.grc
+- test_grep_advanced.py
+- test_grep_python_doc_examples.py
+
+**Action Items (if not already completed):**
+- [ ] Move all grep-related test files to `test/grep/` directory
+- [ ] Update any references to these files in other documentation
+- [ ] Verify all tests still pass after reorganization
+- [ ] Update CI/CD scripts if they reference specific test file locations
+
+**Rationale:**
+- Improves test discoverability and organization
+- Co-locates all grep functionality tests for easier maintenance
+- Enables future subdirectory organization if the number of files grows
 
 ### Test Categories
 

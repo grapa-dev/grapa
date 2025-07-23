@@ -1,15 +1,29 @@
-# Grapa Backlog
+# BACKLOG
 
-## High Priority
+This backlog tracks all future, long-term, and queued tasks for the Grapa project. For active and in-progress work, see [`DEVELOPMENT/CURRENT_STATUS.md`](DEVELOPMENT/CURRENT_STATUS.md). Items are grouped by priority and area. Completed items are listed at the end for reference.
 
-### 🚨 CRITICAL: ROW Table Index Corruption Bug
-- [ ] **ROW Table Index Corruption Fix**: Fix critical bug where first record becomes unreadable after adding third record to ROW tables
-  - **Issue**: `$file().table("ROW")` first record returns `{"error":-1}` after third record added
-  - **Impact**: HIGH - ROW tables are unusable for production with more than 2 records
-  - **Workaround**: Use COL tables instead of ROW tables (documented in troubleshooting)
-  - **Test Script**: `test_row_bug_demo.grc` demonstrates the bug
-  - **Debug Output**: Shows empty RPTR entries for first record after corruption
-  - **Priority**: IMMEDIATE - blocking database functionality
+---
+
+## 📋 Future/Long-Term Tasks
+- User-defined classes/objects: Improve documentation and idiomatic usage
+- CLI Enhancement Phase 2: Performance options, environment management, error handling
+- Continue documentation structure improvements: See [DOCS_STRUCTURE_IMPROVEMENT_PLAN.md](DEVELOPMENT/DOCS_STRUCTURE_IMPROVEMENT_PLAN.md)
+
+---
+
+## 🚨 Immediate/High Priority
+
+### Unicode Language Binding
+- [ ] **Unicode Language Binding**: Add `case_fold()`, Unicode-aware string methods, Turkish I support.
+
+### String Interpolation
+- [ ] **String Interpolation**: Implement template literal-style interpolation and expression evaluation in strings.
+
+### Cryptographic Features Stabilization (AKS, etc.)
+- [ ] **Cryptographic Features Stabilization (AKS, etc.)**: Fix AKS routing logic, improve error handling, document crypto features, update docs and code.
+
+### Optimization Implementation
+- [ ] **Optimization Implementation**: Performance improvements for arithmetic, bitwise, comparison, and assignment operators.
 
 ### CLI Enhancement (Phase 2)
 - [ ] **Performance Options**: Add `-j/--jobs <N>` for parallel worker control and `--no-parallel` to disable parallelism
@@ -32,8 +46,13 @@
 - [ ] Continue to add more real-world examples and user recipes to the user guide and examples section
 - [ ] Create a dedicated performance tuning guide for advanced users
 - [ ] Ensure onboarding and About pages remain up-to-date as the public docs evolve (see About page and onboarding map)
+- [ ] Review and improve comment handling in Grapa (see DEVELOPMENT/COMMENT_HANDLING_GUIDE.md for current rules, BNF analysis, and empirical findings)
+  - Ensure block comments are handled consistently with the BNF and user expectations.
+  - Address any parser bugs or inconsistencies discovered during empirical testing.
 
-## Medium Priority
+---
+
+## 🟡 Medium Priority
 
 ### Language Features
 - [ ] Add support for more mathematical functions
@@ -53,7 +72,9 @@
 - [ ] Implement better error reporting
 - [ ] Create IDE plugins
 
-## Low Priority
+---
+
+## 🟢 Low Priority
 
 ### Experimental Features
 - [ ] Consider adding support for async/await patterns
@@ -65,7 +86,9 @@
 - [ ] Create bindings for popular frameworks
 - [ ] Implement plugin system
 
-## Completed Items
+---
+
+## ✅ Completed Items
 
 ### Recent Achievements
 - [x] **Missing Operator Documentation**: Completed comprehensive documentation for all 5 missing operators (`++`, `--`, `.*`, `*/`, `<=>`) with examples, error cases, and type support matrices
@@ -82,7 +105,10 @@
 - [x] Mathematical functions
 - [x] String manipulation functions 
 
-- **Review and improve comment handling in Grapa**
-  - See DEVELOPMENT/COMMENT_HANDLING_GUIDE.md for current rules, BNF analysis, and empirical findings.
-  - Ensure block comments are handled consistently with the BNF and user expectations.
-  - Address any parser bugs or inconsistencies discovered during empirical testing. 
+---
+
+# 📄 Backlog Summary
+
+- This backlog is the source for all queued, future, and long-term tasks.
+- For active and in-progress work, see [`DEVELOPMENT/CURRENT_STATUS.md`](DEVELOPMENT/CURRENT_STATUS.md).
+- Completed items are retained for historical context and release notes. 

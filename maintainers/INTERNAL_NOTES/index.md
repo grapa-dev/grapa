@@ -20,125 +20,46 @@ Internal notes include:
 
 ## Quick Navigation
 
-### Internal Resources
-- [Documentation Ideas](DOCS_IMPROVEMENT_IDEAS.md) - Documentation improvement plans
-- [XML BNF Analysis](xml_bnf_analysis.md) - XML grammar analysis
-- [Test Runner Global Variables](TEST_RUNNER_GLOBAL_VARIABLES.md) - Include vs Shell execution for test runners
-- [WIP Documentation](WIP/) - Work-in-progress files
-- [ROW Pointer/Index Corruption Investigation](DB_DEBUGGING_ROW_POINTER_CORRUPTION.md) - Ongoing root cause analysis of ROW mode index corruption (May 2024)
+### Operator & Optimization Analysis
+- [Grapa Operators Analysis](GRAPA_OPERATORS_ANALYSIS.md) — Comprehensive reference and type support analysis for all operators (BNF, source mapping)
+- [Operator Bug Fixes Status](OPERATOR_BUG_FIXES_STATUS.md) — Status log and technical changelog for operator bugs/fixes
+- [Grapa Optimization Backlog](GRAPA_OPTIMIZATION_BACKLOG.md) — Forward-looking backlog and technical plan for optimizations
 
-## Work-in-Progress Files
+> **Note:** These three docs are intentionally separate: analysis/reference, bug status/changelog, and optimization backlog.
 
-### Current WIP Items
-- [Documentation Progress](WIP/documentation_progress.md) - Documentation development status
-- [BNF Review Notes](WIP/bnf_review_notes.md) - Grammar review and analysis
-- [Context Snapshot](WIP/WIP_context_snapshot.md) - Development context capture
+### Internal Functions & Helpers
+- [Grapa Internal Functions Analysis](GRAPA_INTERNAL_FUNCTIONS_ANALYSIS.md) — Catalog of all internal functions
+- [Static Helper Function Documentation](STATIC_HELPER_FUNCTION_DOCUMENTATION.md) — Documentation for static helper functions
+- [Test Runner Global Variables](TEST_RUNNER_GLOBAL_VARIABLES.md) — Test runner internals
+- [Unicode Case Folding Issue](UNICODE_CASE_FOLDING_ISSUE.md) — Unicode case folding analysis
 
-## Documentation Improvement Ideas
+### Grammar & BNF Analysis
+- [BNF Review Notes](bnf_review_notes.md) — Review notes and analysis of Grapa's BNF grammar
+- [XML BNF Analysis](xml_bnf_analysis.md) — XML grammar implementation analysis
+- [Grammar Design Guide](GRAMMAR_DESIGN_GUIDE.md) — Full guide to grammar and BNF design
 
-### Planned Enhancements
-- **Search Improvements**: Advanced search and filtering
-- **Mobile Optimization**: Better mobile experience
-- **API Reference**: Comprehensive API documentation
-- **Examples Expansion**: More comprehensive examples
-- **Tutorial Series**: Step-by-step tutorials
+### Compilation & Execution
+- [Grapa Compilation and Execution](GRAPA_COMPILATION_AND_EXECUTION.md) — Compilation and execution internals
 
-### User Experience Improvements
-- **Navigation**: Better site navigation and structure
-- **Tagging**: Enhanced content tagging and filtering
-- **Responsive Design**: Improved responsive layout
-- **Performance**: Faster page loading and search
+### Documentation Improvement & WIP
+- [Documentation Ideas](DOCS_IMPROVEMENT_IDEAS.md) — Documentation improvement plans
+- [ARCHIVED_WIP/](ARCHIVED_WIP/) — Historical work-in-progress files
 
-## Internal Analysis
+> For stable documentation, see the main documentation sections. For operator/optimization/analysis, see the above cross-linked docs for their distinct roles. 
 
-### Technical Analysis
-- **XML BNF Analysis**: XML grammar implementation analysis
-- **Performance Analysis**: Performance optimization research
-- **Architecture Review**: System architecture analysis
-- **Compatibility Studies**: Cross-platform compatibility research
+## How to Add or Update Documentation
 
-### Research Areas
-- **Unicode Implementation**: Unicode standard compliance
-- **Performance Optimization**: Performance improvement strategies
-- **Platform Support**: Extended platform compatibility
-- **Language Features**: New language feature investigation
+- Before creating a new doc, check if it fits as a section in an existing canonical doc (e.g., GRAPA_OPERATORS_ANALYSIS.md).
+- Every new doc must be added to this index.md with a one-line summary.
+- Use clear, descriptive filenames and place docs in the most relevant folder.
+- Cross-link related docs in other folders as needed.
+- Archive superseded or outdated docs in ARCHIVED_WIP/ and update the index.
 
-## Development Context
+**Contributor Checklist:**
+- [ ] Purpose and scope stated at the top of the doc
+- [ ] Cross-links to related docs
+- [ ] Added to this index.md
+- [ ] Filename and placement appropriate
+- [ ] Old/superseded docs archived if needed
 
-### Current Focus Areas
-- **Documentation**: Comprehensive documentation coverage
-- **Testing**: Test suite expansion and improvement
-- **Performance**: Performance optimization and benchmarking
-- **User Experience**: Improved user interface and experience
-
-### Research Priorities
-- **Advanced Unicode**: Complex Unicode feature implementation
-- **Performance Analysis**: Performance profiling and optimization
-- **Platform Expansion**: Additional platform support
-- **Feature Investigation**: New feature feasibility studies
-
-## Quality Standards
-
-### Documentation Quality
-- **Accuracy**: All information must be accurate and up-to-date
-- **Completeness**: Comprehensive coverage of topics
-- **Clarity**: Clear and understandable presentation
-- **Consistency**: Consistent style and format
-- **Accessibility**: Accessible to target audience
-
-### Review Process
-- **Technical Review**: Technical accuracy validation
-- **Content Review**: Content quality and completeness
-- **User Review**: User experience and usability
-- **Accessibility Review**: Accessibility compliance
-
-## Future Plans
-
-### Short-term Goals
-- [ ] Complete documentation improvement plan
-- [ ] Implement search enhancements
-- [ ] Add mobile optimization
-- [ ] Expand API reference
-
-### Medium-term Goals
-- [ ] Comprehensive tutorial series
-- [ ] Advanced search features
-- [ ] Performance optimization
-- [ ] Extended platform support
-
-### Long-term Goals
-- [ ] Interactive documentation
-- [ ] Community contribution system
-- [ ] Automated documentation generation
-- [ ] Multi-language support
-
-## Contributing to Internal Notes
-
-### Guidelines
-- **Clear Purpose**: Document the purpose and scope
-- **Current Status**: Indicate current status and progress
-- **Next Steps**: Outline next steps and priorities
-- **References**: Include relevant references and sources
-- **Review Schedule**: Plan for regular review and updates
-
-### Review Process
-1. **Initial Review**: Technical accuracy and completeness
-2. **Content Review**: Content quality and presentation
-3. **User Review**: User experience and accessibility
-4. **Final Approval**: Final review and approval
-
-## Archive
-
-### Completed Work
-- **Completed Analysis**: Moved to appropriate sections
-- **Implemented Features**: Integrated into main documentation
-- **Resolved Issues**: Closed and archived
-
-### Historical Context
-- **Previous Versions**: Historical documentation versions
-- **Design Decisions**: Previous design decision records
-- **Implementation History**: Implementation timeline and history
-
----
-
-**Note**: This section contains work-in-progress and internal analysis. Content may be incomplete, outdated, or subject to change. For stable documentation, see the main documentation sections. 
+> For global guidelines, see the main maintainers/index.md. 

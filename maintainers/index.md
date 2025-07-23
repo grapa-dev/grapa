@@ -7,6 +7,29 @@ tags:
 
 # Maintainers & Internal Documentation
 
+## 📂 Maintainers Directory Organization
+
+This section documents the organization and purpose of the `maintainers/` directory:
+
+- **README.md**: Maintainer onboarding, project overview, and navigation. *Should remain at top level.*
+- **index.md**: Quick navigation and category summary for all maintainer docs. *Should remain at top level for discoverability.*
+- **BACKLOG.md**: Historical or long-term backlog. If not referenced in current workflows, consider moving to `DEVELOPMENT/` or `INTERNAL_NOTES/`.
+- **.DS_Store**: System file, can be deleted.
+
+### Subfolders:
+- **BUILD_AND_DEPLOYMENT/**: Build instructions, dependency management, packaging, deployment, and cloud setup.
+- **DEVELOPMENT/**: Development workflow, progress tracking, roadmaps, session context, and contribution guidelines. (Key doc: `CURRENT_STATUS.md`)
+- **IMPLEMENTATION/**: Core technical implementation details, system functions, type system, execution model, and technical specs.
+- **TESTING_AND_QUALITY/**: Testing frameworks, production readiness, performance benchmarks, and quality assurance.
+- **INTERNAL_NOTES/**: Work-in-progress docs, internal analysis, improvement ideas, operator/optimization analysis, and archived WIP.
+- **ADVANCED_TOPICS/**: Specialized or advanced topics (e.g., binary grep, grammar/BNF development, core extensions, debugging).
+
+> **Note:** Each subfolder contains its own `index.md` for navigation and document summaries specific to that area.
+
+> For a summary of current status, priorities, and tasks, see [`DEVELOPMENT/CURRENT_STATUS.md`](DEVELOPMENT/CURRENT_STATUS.md).
+
+---
+
 Welcome to the maintainers section. This area contains all documentation relevant to building, maintaining, and extending Grapa. **General users do not need these files.**
 
 ## Quick Navigation
@@ -84,3 +107,21 @@ When referencing maintainer content, use these paths:
 ---
 
 **Note:** This section is organized to provide clear separation between user-facing documentation and internal/maintainer content. The search automatically filters to show only maintainer documentation. For user documentation, return to the [main documentation](../). 
+
+## How to Add or Update Documentation
+
+- Before creating a new doc, check if it fits as a section in an existing canonical doc.
+- Every new doc must be added to the relevant `index.md` with a one-line summary.
+- Use clear, descriptive filenames and place docs in the most relevant folder.
+- Cross-link related docs in other folders as needed.
+- If a doc is experimental or WIP, mark it as such in the index.
+- Archive superseded or outdated docs in `ARCHIVED_WIP/` and update the index.
+
+**Contributor Checklist:**
+- [ ] Purpose and scope stated at the top of the doc
+- [ ] Cross-links to related docs
+- [ ] Added to the relevant index.md
+- [ ] Filename and placement appropriate
+- [ ] Old/superseded docs archived if needed
+
+> For folder-specific guidelines, see the `index.md` in each subfolder. 

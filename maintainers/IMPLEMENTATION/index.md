@@ -28,6 +28,11 @@ Grapa's implementation is built on several key components:
 - [Include System](INCLUDE_SYSTEM.md) - Module system and code organization
 - [GRZ Format](GRZ_FORMAT.md) - Binary format specification
 - [Unicode Grep Status](UNICODE_GREP_STATUS.md) - Unicode implementation details
+- [BTree Implementation](GRAPA_BTREE_IMPLEMENTATION.md) - Low-level BTree data structure and algorithms (used by the database)
+- [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
+- [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation (formerly in ADVANCED_TOPICS)
+
+> **Note:** Advanced topics are now consolidated into implementation, as the entire implementation is inherently advanced.
 
 ## Architecture Overview
 
@@ -137,6 +142,23 @@ Grapa uses execution trees to represent compiled code:
 - **Type System Debugging**: Validate type operations
 - **Performance Profiling**: Identify bottlenecks
 - **Memory Profiling**: Track memory usage
+
+## How to Add or Update Documentation
+
+- Before creating a new doc, check if it fits as a section in an existing canonical doc (e.g., GRAPA_DB_IMPLEMENTATION.md).
+- Every new doc must be added to this index.md with a one-line summary.
+- Use clear, descriptive filenames and place docs in the most relevant folder.
+- Cross-link related docs in other folders as needed.
+- Archive superseded or outdated docs in ARCHIVED_WIP/ and update the index.
+
+**Contributor Checklist:**
+- [ ] Purpose and scope stated at the top of the doc
+- [ ] Cross-links to related docs
+- [ ] Added to this index.md
+- [ ] Filename and placement appropriate
+- [ ] Old/superseded docs archived if needed
+
+> For global guidelines, see the main maintainers/index.md.
 
 ---
 

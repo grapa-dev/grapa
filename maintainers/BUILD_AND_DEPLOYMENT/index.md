@@ -41,6 +41,23 @@ All deprecated files have been moved to:
 - **Platform Support**: Update platform support matrix as needed
 - **Dependencies**: Update dependency versions and requirements
 
+## How to Add or Update Documentation
+
+- Before creating a new doc, check if it fits as a section in an existing canonical doc (e.g., BUILD_SYSTEM.md).
+- Every new doc must be added to this index.md with a one-line summary.
+- Use clear, descriptive filenames and place docs in the most relevant folder.
+- Cross-link related docs in other folders as needed.
+- Archive superseded or outdated docs in ARCHIVED_WIP/ and update the index.
+
+**Contributor Checklist:**
+- [ ] Purpose and scope stated at the top of the doc
+- [ ] Cross-links to related docs
+- [ ] Added to this index.md
+- [ ] Filename and placement appropriate
+- [ ] Old/superseded docs archived if needed
+
+> For global guidelines, see the main maintainers/index.md.
+
 ---
 
 **Last Updated**: July 19, 2024  

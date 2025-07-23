@@ -1,19 +1,19 @@
-# Documentation Deployment System
+# Documentation Deployment System (Canonical Guide)
+
+> **Note:** This is the single canonical guide for documentation deployment. The previous `DEVELOPMENT/DOCUMENTATION_DEPLOYMENT_GUIDE.md` is now deprecated. For deployment instructions, always use this file. If you find a reference to the old guide, update it to point here.
 
 ## Overview
 
-The Grapa documentation deployment system is now fully automated and simplified. Documentation is built from `/docs-src` and output to `/docs`. Deployment to the live site is handled automatically by GitHub Pages when `/docs` is committed and pushed to the `main` branch. No branch switching or manual deployment is required.
+The Grapa documentation deployment system is fully automated and streamlined. User documentation is built from `/docs-src` and output to `/docs`. Deployment to the live site is handled automatically by GitHub Pages when `/docs` is committed and pushed to the `main` branch. No branch switching or manual deployment is required.
 
-## Quick Start
-
-### Build and Deploy User Documentation
+## Quick Start / Step-by-Step Deployment
 
 1. **Build the documentation:**
    ```bash
    ./scripts/deploy_docs.sh
    ```
-   - This builds the user documentation from `/docs-src` and outputs to `/docs`.
-   - All validation (case sensitivity, link checks, etc.) is performed automatically.
+   - Builds user documentation from `/docs-src` and outputs to `/docs`.
+   - Performs validation (case sensitivity, link checks, etc.) automatically.
 
 2. **Commit and push the built docs:**
    ```bash
@@ -21,7 +21,7 @@ The Grapa documentation deployment system is now fully automated and simplified.
    git commit -m "docs: Update user documentation"
    git push origin main
    ```
-   - This will trigger GitHub Pages to update the live site from `/docs` on the `main` branch.
+   - This triggers GitHub Pages to update the live site from `/docs` on the `main` branch.
 
 3. **Check the live site:**
    - Visit: https://grapa-dev.github.io/grapa/
@@ -46,4 +46,5 @@ The Grapa documentation deployment system is now fully automated and simplified.
 ## Troubleshooting
 - If the build fails, check for errors in your Markdown or MkDocs config in `/docs-src`.
 - If the site does not update, ensure you have committed and pushed `/docs` to `main`.
-- For more details, see `maintainers/DEVELOPMENT/DOCUMENTATION_DEPLOYMENT_GUIDE.md`. 
+- For more details, see this file (`BUILD_AND_DEPLOYMENT/DOCUMENTATION_DEPLOYMENT.md`).
+- If you find a reference to `DEVELOPMENT/DOCUMENTATION_DEPLOYMENT_GUIDE.md`, update it to point here. 
