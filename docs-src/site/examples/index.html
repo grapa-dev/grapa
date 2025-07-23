@@ -2920,6 +2920,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#example-code-viewer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Code Viewer
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#database-examples" class="md-nav__link">
     <span class="md-ellipsis">
       Database Examples
@@ -2957,12 +2966,72 @@
 <p>This directory contains practical examples demonstrating Grapa's capabilities.</p>
 <h2 id="available-examples">Available Examples</h2>
 <ul>
-<li><strong>basic_example.grc</strong>: Basic Grapa syntax and operations</li>
-<li><strong>advanced_example.grc</strong>: Complex string and array operations  </li>
-<li><strong>performance_example.grc</strong>: Performance-related operations and loops</li>
-<li><strong>database_examples.grc</strong>: Comprehensive database examples for all three types (ROW, COL, GROUP)</li>
-<li><strong>python_integration_example.py</strong>: Python integration examples</li>
+<li><a href="basic_example.grc">basic_example.grc</a></li>
+<li><a href="advanced_example.grc">advanced_example.grc</a></li>
+<li><a href="performance_example.grc">performance_example.grc</a></li>
+<li><a href="database_examples.grc">database_examples.grc</a></li>
+<li><a href="python_integration_example.py">python_integration_example.py</a></li>
 </ul>
+<hr />
+<h2 id="example-code-viewer">Example Code Viewer</h2>
+<p>???+ example "basic_example.grc"
+    <div class="highlight"><pre><span></span><code>/* Basic Grapa Example */
+/* This file demonstrates basic Grapa syntax and operations */
+
+/* Basic variable assignment */
+x = 42;
+
+/* Basic array operations */
+arr = [1, 2, 3, 4, 5];
+
+/* Basic string operations */
+str = &quot;Grapa is awesome!&quot;;
+
+/* Basic math operations */
+result = 10 + 5 * 2;
+
+/* Return the result for testing */
+result 
+</code></pre></div></p>
+<p>???+ example "advanced_example.grc"
+    <div class="highlight"><pre><span></span><code>/* Advanced Grapa Example */
+/* This file demonstrates more complex Grapa operations */
+
+/* String processing */
+text = &quot;Hello World Grapa Programming&quot;;
+words = text.split(&quot; &quot;);
+
+/* Array operations */
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+/* Return results for testing */
+[words, numbers.len()] 
+</code></pre></div></p>
+<p>???+ example "performance_example.grc"
+    <div class="highlight"><pre><span></span><code>/* Performance Example */
+/* This file demonstrates performance-related operations */
+
+/* Simple loop using while */
+sum = 0;
+i = 0;
+while (i &lt; 100) {
+    sum = sum + i;
+    i = i + 1;
+}
+
+/* Array creation */
+large_array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+/* Return results for testing */
+[sum, large_array.len()] 
+</code></pre></div></p>
+<p>???+ example "database_examples.grc"
+    <div class="highlight"><pre><span></span><code>/* Database Examples - Comprehensive Guide */
+/* This file demonstrates all three database types: ROW, COL, and GROUP */
+// ... (file is long, so consider truncating or linking to the full file if needed) ...
+</code></pre></div>
+    <a href="database_examples.grc">View full database_examples.grc</a></p>
+<hr />
 <h2 id="database-examples">Database Examples</h2>
 <p>The <code>database_examples.grc</code> file demonstrates:
 - <strong>ROW databases</strong>: Transactional workloads, user management
@@ -2970,6 +3039,7 @@
 - <strong>GROUP databases</strong>: Hierarchical structures, nested databases
 - <strong>Cross-database operations</strong>: Data integrity validation
 - <strong>Database type selection guidelines</strong>: When to use each type</p>
+<hr />
 <h2 id="related-topics">Related topics</h2>
 <ul>
 <li><a href="../api_reference/">API Reference</a></li>

@@ -1,17 +1,17 @@
-# Database Examples - Comprehensive Guide
-# This file demonstrates all three database types: ROW, COL, and GROUP
+/* Database Examples - Comprehensive Guide */
+/* This file demonstrates all three database types: ROW, COL, and GROUP */
 
-# ================================================================================
-# Example 1: ROW Database (Transactional Workloads)
-# ================================================================================
+/* ================================================================================ */
+/* Example 1: ROW Database (Transactional Workloads) */
+/* ================================================================================ */
 
 "=== ROW Database Example (Transactional) ===\n".echo();
 
-# Create ROW database for transactional workloads
+/* Create ROW database for transactional workloads */
 $row_db = $file().table("ROW");
 "✓ ROW database created\n".echo();
 
-# Create fields for user management
+/* Create fields for user management */
 $row_db.mkfield("id", "INT", "FIX", 4);
 $row_db.mkfield("name", "STR", "VAR");
 $row_db.mkfield("email", "STR", "VAR");
@@ -19,7 +19,7 @@ $row_db.mkfield("age", "INT", "FIX", 4);
 $row_db.mkfield("active", "BOOL", "FIX", 1);
 "✓ Fields created for user management\n".echo();
 
-# Insert user records (transactional operations)
+/* Insert user records (transactional operations) */
 $row_db.set("user1", 1, "id");
 $row_db.set("user1", "Alice Johnson", "name");
 $row_db.set("user1", "alice@example.com", "email");
@@ -39,38 +39,38 @@ $row_db.set("user3", 25, "age");
 $row_db.set("user3", 0, "active");
 "✓ 3 user records inserted\n".echo();
 
-# Retrieve user data (point queries)
+/* Retrieve user data (point queries) */
 $user1_name = $row_db.get("user1", "name").str();
 $user1_age = $row_db.get("user1", "age").raw().int();
 ("✓ Retrieved user1: " + $user1_name + ", age " + $user1_age.str() + "\n").echo();
 
-# Update user data (transactional update)
+/* Update user data (transactional update) */
 $row_db.set("user1", 29, "age");
 $updated_age = $row_db.get("user1", "age").raw().int();
 ("✓ Updated user1 age to: " + $updated_age.str() + "\n").echo();
 
-# List all records
+/* List all records */
 $row_records = $row_db.ls();
 ("✓ Total ROW records: " + $row_records.len().str() + "\n").echo();
 
-# ================================================================================
-# Example 2: COL Database (Analytical Workloads)
-# ================================================================================
+/* ================================================================================ */
+/* Example 2: COL Database (Analytical Workloads) */
+/* ================================================================================ */
 
-"\\n=== COL Database Example (Analytical) ===\n".echo();
+"\n=== COL Database Example (Analytical) ===\n".echo();
 
-# Create COL database for analytical workloads
+/* Create COL database for analytical workloads */
 $col_db = $file().table("COL");
 "✓ COL database created\n".echo();
 
-# Create fields for analytics data
+/* Create fields for analytics data */
 $col_db.mkfield("metric", "STR", "VAR");
 $col_db.mkfield("value", "FLT", "FIX", 8);
 $col_db.mkfield("timestamp", "INT", "FIX", 8);
 $col_db.mkfield("category", "STR", "VAR");
 "✓ Fields created for analytics\n".echo();
 
-# Insert analytics data (column-oriented storage)
+/* Insert analytics data (column-oriented storage) */
 $col_db.set("metric1", "page_views", "metric");
 $col_db.set("metric1", 1250.5, "value");
 $col_db.set("metric1", 1640995200, "timestamp");
@@ -87,78 +87,78 @@ $col_db.set("metric3", 1640995200, "timestamp");
 $col_db.set("metric3", "engagement", "category");
 "✓ 3 analytics records inserted\n".echo();
 
-# Retrieve analytics data
+/* Retrieve analytics data */
 $page_views = $col_db.get("metric1", "value").raw().flt();
 $conversion_rate = $col_db.get("metric2", "value").raw().flt();
 ("✓ Analytics data: page_views=" + $page_views.str() + ", conversion_rate=" + $conversion_rate.str() + "\n").echo();
 
-# List all records
+/* List all records */
 $col_records = $col_db.ls();
 ("✓ Total COL records: " + $col_records.len().str() + "\n").echo();
 
-# ================================================================================
-# Example 3: GROUP Database (Hierarchical Structures)
-# ================================================================================
+/* ================================================================================ */
+/* Example 3: GROUP Database (Hierarchical Structures) */
+/* ================================================================================ */
 
-"\\n=== GROUP Database Example (Hierarchical) ===\n".echo();
+"\n=== GROUP Database Example (Hierarchical) ===\n".echo();
 
-# Create GROUP database for hierarchical structures
+/* Create GROUP database for hierarchical structures */
 $group_db = $file().table("GROUP");
 "✓ GROUP database created\n".echo();
 
-# Create nested databases within the group
+/* Create nested databases within the group */
 $group_db.mk("users", "ROW");
 $group_db.mk("analytics", "COL");
 $group_db.mk("config", "GROUP");
 "✓ Nested databases created\n".echo();
 
-# Navigate to users database
+/* Navigate to users database */
 $users_db = $group_db.cd("users");
 "✓ Navigated to users database\n".echo();
 
-# Create fields in users database
+/* Create fields in users database */
 $users_db.mkfield("id", "INT", "FIX", 4);
 $users_db.mkfield("name", "STR", "VAR");
 $users_db.mkfield("role", "STR", "VAR");
 "✓ Users fields created\n".echo();
 
-# Insert user data in nested database
+/* Insert user data in nested database */
 $users_db.set("admin1", 1, "id");
 $users_db.set("admin1", "Admin User", "name");
 $users_db.set("admin1", "administrator", "role");
 "✓ Admin user inserted in nested database\n".echo();
 
-# Navigate to analytics database
+/* Navigate to analytics database */
 $analytics_db = $group_db.cd("analytics");
 "✓ Navigated to analytics database\n".echo();
 
-# Create fields in analytics database
+/* Create fields in analytics database */
 $analytics_db.mkfield("metric", "STR", "VAR");
 $analytics_db.mkfield("value", "FLT", "FIX", 8);
 "✓ Analytics fields created\n".echo();
 
-# Insert analytics data in nested database
+/* Insert analytics data in nested database */
 $analytics_db.set("metric1", "system_uptime", "metric");
 $analytics_db.set("metric1", 99.95, "value");
 "✓ System metric inserted in nested database\n".echo();
 
-# Navigate back to root and list contents
+/* Navigate back to root and list contents */
 $group_db.cd("..");
 $group_contents = $group_db.ls();
 ("✓ GROUP contents: " + $group_contents.len().str() + " items\n").echo();
 
-# Navigate back to users and retrieve data
+/* Navigate back to users and retrieve data */
 $users_db = $group_db.cd("users");
 $admin_name = $users_db.get("admin1", "name").str();
 ("✓ Retrieved from nested users DB: " + $admin_name + "\n").echo();
 
-# ================================================================================
-# Example 4: Cross-Database Operations
-# ================================================================================
+/* ================================================================================ */
+/* Example 4: Cross-Database Operations */
+/* ================================================================================ */
 
-"\\n=== Cross-Database Operations ===\n".echo();
+"\n=== Cross-Database Operations ===\n".echo();
 
-# Demonstrate data integrity across all database types
+/* Demonstrate data integrity across all database types */
 $row_user2_name = $row_db.get("user2", "name").str();
 $col_metric_name = $col_db.get("metric1", "metric").str();
 $group_admin_role = $users_db.get("admin1", "role").str();
@@ -168,11 +168,11 @@ $group_admin_role = $users_db.get("admin1", "role").str();
 ("  COL: " + $col_metric_name + "\n").echo();
 ("  GROUP: " + $group_admin_role + "\n").echo();
 
-# ================================================================================
-# Example 5: Database Type Selection Guidelines
-# ================================================================================
+/* ================================================================================ */
+/* Example 5: Database Type Selection Guidelines */
+/* ================================================================================ */
 
-"\\n=== Database Type Selection Guidelines ===\n".echo();
+"\n=== Database Type Selection Guidelines ===\n".echo();
 
 "Use ROW databases when:\n".echo();
 "- You need fast point queries on specific records\n".echo();
@@ -192,4 +192,4 @@ $group_admin_role = $users_db.get("admin1", "role").str();
 "- You need to nest different database types\n".echo();
 "- You're building file system-like structures\n".echo();
 
-"\\n=== Database Examples Complete ===\n".echo(); 
+"\n=== Database Examples Complete ===\n".echo(); 
