@@ -1,5 +1,9 @@
 # Database Troubleshooting Guide
 
+> **⚠️ WARNING: ROW Table Index Corruption Bug**
+> 
+> There is a known, unresolved issue with ROW table index corruption. If you encounter unexpected behavior or data integrity problems when using ROW tables, please use COL tables instead. This issue is under active investigation and will be updated when resolved.
+
 ## Common Issues and Solutions
 
 ### Column Store Performance Issues

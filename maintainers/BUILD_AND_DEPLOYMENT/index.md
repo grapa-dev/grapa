@@ -13,9 +13,9 @@ This directory contains all build system and deployment documentation for the Gr
 
 ### **🎯 Single Source of Truth**
 - **[BUILD_SYSTEM.md](BUILD_SYSTEM.md)** - **NEW**: Complete build system reference covering all aspects
+- **[BUILD_DEPENDANCIES.md](BUILD_DEPENDANCIES.md)** - Essential build and setup information. Do NOT delete or modify unless updating build documentation.
 
 ### **📚 Legacy Files (Deprecated)**
-- **[BUILD.md](BUILD.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
 - **[BUILD_DEBUGGING.md](BUILD_DEBUGGING.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
 - **[DEPENDENCIES.md](DEPENDENCIES.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
 

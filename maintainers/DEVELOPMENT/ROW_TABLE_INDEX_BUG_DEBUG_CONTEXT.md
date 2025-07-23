@@ -1,90 +1,71 @@
-# BTree Core Functionality Validation – Debug Context
+# ROW Table Index Corruption Bug – Investigation & Debug Log
 
-**Last Updated:** January 2025
+## 🚨 Executive Summary / TL;DR
+- **ROW tables are broken:** Data corruption after multiple inserts; do not use for production.
+- **COL tables work:** No corruption observed; use as a workaround.
+- **Bug is not fixed.** Investigation is ongoing. See below for what’s been tried, what’s next, and how to reproduce.
 
-## Purpose
-This document tracks the ongoing validation of core BTree functionality in GrapaDB, following the resolution of the ROW Table Index Corruption Bug. The focus has shifted from bug investigation to comprehensive validation of the foundational BTree implementation.
+---
 
-## New Debug Project: debug-btree
+## ✅ What Works / ❌ What Fails
 
-- A new project `prj/debug-btree` has been created as a copy of `prj/win-amd64`.
-- A new `maindebug.cpp` has been added in `source/` as the entry point for BTree investigation.
-- The project files in `prj/debug-btree` have been updated to use `maindebug.cpp`.
-- A new build script `builddebug.py` has been created (copied from `build.py`) to build this project on all platforms.
-- The test harness in `maindebug.cpp` will allow direct, isolated testing of BTree insert, delete, merge, and underflow logic, independent of the full GrapaDB system.
-- This setup is intended to reproduce and debug the suspected BTree bug in a minimal environment, making it easier to instrument and analyze.
+### What Works
+- **COL tables:** All tested operations (insert, retrieve, debug) work as expected (see test_col.grc).
+- **GROUP tables:** (If tested) No known corruption issues.
 
-## Current Investigation Status
+### What Fails
+- **ROW tables:**
+  - After inserting a third record, retrieval of the first record fails (see test_row.grc output).
+  - Debug output shows index pointers for earlier records become invalid or point to the wrong data.
+  - All attempted fixes to date have failed to resolve the underlying issue.
 
-### ROW Table Index Corruption Bug - RESOLVED ✅
-- **Status**: ✅ **FIXED** - BTree leaf move bug resolved in July 2024
-- **Root Cause**: Leaf movement during deletion was overwriting data due to incorrect loop order
-- **Fix Applied**: Changed leaf movement loop to move from higher to lower positions in correct order
-- **Verification**: All BTree operations now work correctly, no more index corruption
+---
 
-### Current Priority: Core BTree Functionality Validation
-- **Target**: `source/grapa/GrapaBtree.cpp` implementation
-- **Method**: Isolated test harness in `source/maindebug.cpp`
-- **Build**: `python builddebug.py` for debug-btree project
-- **Goal**: Comprehensive validation of foundational BTree functionality
-- **Status**: 🔄 **IN PROGRESS** - BTree insertion bug identified
+## 🧪 History of Attempts / Key Learnings
 
-## Current Investigation Findings (January 2025)
-- **✅ INITIALIZATION FIXED**: File object setup working correctly
-- **✅ ROW TABLE INDEX CORRUPTION BUG FIXED**: RPTR entries now properly maintained
-- **✅ BTREE CORE FUNCTIONALITY VALIDATED**: Comprehensive testing via `grapadb_validation_suite.grc` confirms all BTree operations working correctly
-- **✅ GRAPADB INTEGRATION VALIDATED**: Full database operations working correctly with proper BTree integration
-- **✅ ALL DATABASE TYPES VALIDATED**: ROW, COL, and GROUP database types all working correctly via `comprehensive_database_validation.grc`
-- **✅ NESTED OPERATIONS VALIDATED**: GROUP database nesting and navigation working correctly
-- **🔄 ISOLATED TEST ISSUE**: Infinite recursion in BTree `InsertRc` method (isolated test harness only)
-- **Debug Output**: Shows `InsertRc` calling itself with same `rootNode=5` repeatedly
-- **Root Cause**: Test harness initialization issue, not core BTree bug
-- **Evidence**: ROW table operations work correctly in real database (`test_row.grc` successful)
-- **Evidence**: Full GrapaDB operations work correctly (`grapadb_validation_suite.grc` successful)
-- **Evidence**: All database types work correctly (`comprehensive_database_validation.grc` successful)
-- **Impact**: **LOW** - Main database functionality proven working, only isolated testing affected
-- **Status**: Core BTree functionality validated through real usage, isolated test needs different approach
+| Date       | Attempted Fix / Theory                        | Result      | Key Learning / Next Action                |
+|------------|-----------------------------------------------|-------------|-------------------------------------------|
+| 2024-07    | Commit 466cb55: 'ROW bug fix and doc changes' | Failure     | Attempted fix did not resolve bug; index corruption persisted. Reinforced need for deeper root cause analysis. |
+| 2024-07    | BTree node merge/leaf move logic changes      | Failure     | Broke DB header updates, index corruption |
+| 2024-07    | Index pointer handling tweaks                 | Failure     | Index management is fragile               |
+| 2024-07    | File header/tree creation logic adjustments   | Failure     | File/block structure integrity is critical|
+| ...        | ...                                           | ...         | ...                                       |
 
-## Next Steps
-- **Phase 1**: 🔄 **CURRENT** - Fix infinite recursion bug in BTree `InsertRc` method
-- **Phase 2**: Implement comprehensive BTree test suite in isolated harness
-- **Phase 3**: Validate all core BTree operations (insert, delete, search, traversal)
-- **Phase 4**: Test edge cases (node splits, merges, underflow, root changes)
-- **Phase 5**: Document findings in `GRAPA_BTREE_IMPLEMENTATION.md`
+- **Note:** The primary regression in commit 466cb55 was likely caused by changing the leaf move loop in `PurgeRc` (Delete logic) to move leaves from higher to lower positions (from `pos+1` to end), which resulted in index corruption. This change was intended to avoid overwriting data but instead broke index pointer correctness.
 
-## How to Use
-- Build with: `python builddebug.py`
-- Run the debug harness executable for your platform.
+- **Failed fixes are valuable:** Each failed attempt narrows the search space and reveals new edge cases.
+- **COL tables are robust** under current test scenarios; ROW tables are not.
+- **Debug output and test scripts are essential** for catching subtle corruption.
+- **Documentation must be kept up to date** with every new finding, failed fix, or theory.
 
-## Build & Test Instructions
+---
 
-### Current Investigation Setup
-- **Build Debug Harness:** `python builddebug.py` (creates isolated BTree test executable)
-- **Build Main Grapa:** `python build.py` (for GrapaDB testing with .grc scripts)
-- **Run BTree Tests:** Execute debug harness to validate core BTree functionality
-- **Run GrapaDB Tests:** `./grapa.exe -f [file.grc]` for database-level testing
+## 🔍 Next Steps / Open Questions
+- Continue to test new theories and document both failures and learnings here.
+- Focus on:
+  - Index pointer update logic during record insert/delete in ROW tables.
+  - Differences in cursor setup and index management between COL and ROW tables.
+  - File/block structure integrity after multiple operations.
+- Add new findings, failed/successful attempts, and debug output to this log as the investigation continues.
+- **Open Questions:**
+  - What is the minimal change that causes the ROW bug to appear/disappear?
+  - Are there edge cases in COL tables that could reveal related issues?
+  - Is there a reliable way to detect/correct index corruption post-facto?
 
-### Historical Context (ROW Bug Investigation)
-- **Build Grapa:** `python build.py`
-- **Run a test:** `./grapa.exe -f [file.grc]`
-- **Run this specific test:** `./grapa.exe -f test_row.grc`
+---
 
-## Test Scenario (`test_row.grc`)
-- Creates a ROW table with fields: name, age, city.
-- Adds three records (user1, user2, user3).
-- After each addition, outputs the state of record 1 and table debug info.
-- **Bug:** After adding the third record, record 1’s index reference becomes 0 (invalid).
+## 🧪 Minimal Repro / Test Coverage
+- **Minimal Repro:**
+  - Run `./grapa test/test_row.grc` to reproduce the bug (ROW table corruption after third insert).
+  - Run `./grapa test/test_col.grc` to confirm COL tables work correctly.
+- **Other scripts:**
+  - Add here any other scripts that pass/fail or reveal edge cases as they are discovered.
 
-## Current Status
-- The file/cache is unchanged between the end of CreateRecord and before the delete in SetRecordField, confirming no background or delayed modification.
-- Both Insert (in CreateRecord) and Delete (in SetRecordField) now use the same parameters for tableCursor (indexCursor.mValue, RPTR_ITEM, record key), but the bug persists.
-- The Delete(tableCursor) pattern is used in multiple places in GrapaDB (e.g., SetRecordField, DeleteRecord, DeleteTableField, DeleteTable). Correctness depends on matching parameters.
+---
 
-## Next Steps
-1. **Test delete in isolation:** Create 2 records, then delete 1, and check if the index and data are updated as expected.
-2. Add debug prints to other delete contexts (e.g., DeleteRecord) to compare behavior and parameters.
-3. If deletes work elsewhere but not in SetRecordField, focus on differences in cursor setup, index structure, or BTree logic.
-4. Continue to update this document with findings and next steps. 
+## 📚 Appendix: Deep Technical Logs & Historical Context
+
+<!-- All previous deep-dive logs, technical details, and historical investigation context are preserved here for reference. Keep the main doc focused on actionable findings and learnings. -->
 
 ## Isolated BTree Debug Harness: Current State and Findings (2024-06-09)
 

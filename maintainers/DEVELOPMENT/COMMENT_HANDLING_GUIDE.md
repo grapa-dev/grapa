@@ -31,7 +31,7 @@
 - If you encounter issues with comments in locations allowed by the BNF, review and improve the parser implementation.
 
 ## See Also
-- [Backlog: Review and improve comment handling](../BACKLOG.md)
+- [Backlog: Review and improve comment handling](BACKLOG.md)
 - [BNF: lib/grapa/$grapa.grc]
 
 ---

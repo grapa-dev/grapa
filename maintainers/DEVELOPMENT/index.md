@@ -19,6 +19,7 @@ This directory contains all development-related documentation for the Grapa proj
 - **[DOCUMENTATION_DEPLOYMENT_GUIDE.md](../BUILD_AND_DEPLOYMENT/DOCUMENTATION_DEPLOYMENT.md)** - Complete documentation deployment process
 - **[IMPLEMENTATION_PROGRESS.md](IMPLEMENTATION_PROGRESS.md)** - **DEPRECATED**: Moved to CURRENT_STATUS.md
 - **[TODO.md](TODO.md)** - **DEPRECATED**: Moved to CURRENT_STATUS.md
+- **BACKLOG.md**: Historical or long-term backlog. Now located in this folder.
 
 ## 🔧 **Build & Deployment**
 

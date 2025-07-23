@@ -30,14 +30,14 @@
 ## 🚀 Next-Up Tasks (Ready to Start)
 
 1. **Fix $file (and $TABLE) .get() Return Types:**  
-   Ensure that INT and FLOAT fields from .get() return the correct type instead of $STR/raw bytes. (Current workaround: use `.raw().int()` or `.raw().float()`. See known issue.)
+   ~~Ensure that INT and FLOAT fields from .get() return the correct type instead of $STR/raw bytes. (Current workaround: use `.raw().int()` or `.raw().float()`. See known issue.)~~ **[COMPLETED]**
 2. **Language System Enhancements:**  
    Design and implement loop constructs, exception handling, and a module system.
 
 ---
 
 # 📋 MEDIUM/LONG-TERM ROADMAP
-- See [BACKLOG.md](../BACKLOG.md) for additional future and long-term tasks to pull from.
+- See [BACKLOG.md](BACKLOG.md) for additional future and long-term tasks to pull from.
 
 ---
 

@@ -13,7 +13,7 @@ This section documents the organization and purpose of the `maintainers/` direct
 
 - **README.md**: Maintainer onboarding, project overview, and navigation. *Should remain at top level.*
 - **index.md**: Quick navigation and category summary for all maintainer docs. *Should remain at top level for discoverability.*
-- **BACKLOG.md**: Historical or long-term backlog. If not referenced in current workflows, consider moving to `DEVELOPMENT/` or `INTERNAL_NOTES/`.
+- **DEVELOPMENT/BACKLOG.md**: Historical or long-term backlog. Now located in the DEVELOPMENT folder.
 - **.DS_Store**: System file, can be deleted.
 
 ### Subfolders:

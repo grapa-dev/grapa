@@ -5,11 +5,11 @@
 > **For current status and priorities, see:**
 > - **[CURRENT_STATUS.md](../DEVELOPMENT/CURRENT_STATUS.md)** - Current project status and completed items
 > - **[LANGUAGE_ENHANCEMENT_ROADMAP.md](../DEVELOPMENT/LANGUAGE_ENHANCEMENT_ROADMAP.md)** - Current language development priorities
-> - **[BACKLOG.md](../BACKLOG.md)** - Long-term backlog items
+> - **[BACKLOG.md](../../DEVELOPMENT/BACKLOG.md)** - Long-term backlog items
 >
 > **This document is kept for historical reference only.**
 
-**PURPOSE**: This file tracked items **committed to work on in the near term** (next 2-4 weeks). For items planned but not committed to soon, see `backlog.md`.
+**PURPOSE**: This file tracked items **committed to work on in the near term** (next 2-4 weeks). For items planned but not committed to soon, see `DEVELOPMENT/backlog.md`.
 
 ---
 

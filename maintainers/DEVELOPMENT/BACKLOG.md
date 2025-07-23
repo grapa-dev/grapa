@@ -50,6 +50,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
   - Ensure block comments are handled consistently with the BNF and user expectations.
   - Address any parser bugs or inconsistencies discovered during empirical testing.
 - Audit and update all code paths for correct field metadata lifecycle handling. See [IMPLEMENTATION/FIELD_METADATA_LIFECYCLE.md] for details and open items.
+- [ ] **Review, validate, and formalize all build and runtime dependencies from BUILD_DEPENDANCIES.md for inclusion in public-facing and onboarding documentation.**
 
 ---
 

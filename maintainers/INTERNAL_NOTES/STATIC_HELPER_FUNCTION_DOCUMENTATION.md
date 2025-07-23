@@ -46,7 +46,7 @@ Successfully implemented and documented the `DoComparison` static helper functio
 - Removed STR <=> INT from remaining bugs list
 - Added technical implementation details
 
-#### C. `maintainers/BACKLOG.md`
+#### C. `maintainers/DEVELOPMENT/BACKLOG.md`
 **Status**: ✅ ALREADY UPDATED
 **Changes**: Added two new backlog items as requested:
 - String comparison distance function for future consideration
@@ -127,7 +127,7 @@ All documentation updates have been verified against actual Grapa behavior:
 ### Maintainer Documentation
 - ✅ `maintainers/INTERNAL_NOTES/OPERATOR_BUG_FIXES_STATUS.md` - Updated
 - ✅ `maintainers/DEVELOPMENT/CURRENT_STATUS.md` - Updated  
-- ✅ `maintainers/BACKLOG.md` - Already updated
+- ✅ `maintainers/DEVELOPMENT/BACKLOG.md` - Already updated
 - ✅ `maintainers/INTERNAL_NOTES/STATIC_HELPER_FUNCTION_DOCUMENTATION.md` - Created (this file)
 
 ### Public Documentation
