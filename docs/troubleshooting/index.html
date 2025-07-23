@@ -2909,9 +2909,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#row-table-index-corruption-bug" class="md-nav__link">
+  <a href="#row-table-index-corruption-bug-resolved" class="md-nav__link">
     <span class="md-ellipsis">
-      🚨 ROW Table Index Corruption Bug
+      ✅ ROW Table Index Corruption Bug - RESOLVED
     </span>
   </a>
   
@@ -3358,9 +3358,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#row-table-index-corruption-bug" class="md-nav__link">
+  <a href="#row-table-index-corruption-bug-resolved" class="md-nav__link">
     <span class="md-ellipsis">
-      🚨 ROW Table Index Corruption Bug
+      ✅ ROW Table Index Corruption Bug - RESOLVED
     </span>
   </a>
   
@@ -3749,20 +3749,27 @@
 
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="critical-issues">Critical Issues</h2>
-<h3 id="row-table-index-corruption-bug">🚨 ROW Table Index Corruption Bug</h3>
-<p><strong>Issue</strong>: ROW tables have a critical bug where the first record's index becomes corrupted when the third record is added.</p>
-<p><strong>Symptoms</strong>:
-- First record returns <code>{"error":-1}</code> when retrieved
-- Subsequent records work correctly
-- Debug output shows empty RPTR entries for first record</p>
-<p><strong>Workaround</strong>: Use COL tables instead of ROW tables
-<div class="highlight"><pre><span></span><code>// Instead of:
+<h3 id="row-table-index-corruption-bug-resolved">✅ ROW Table Index Corruption Bug - RESOLVED</h3>
+<p><strong>Issue</strong>: ~~ROW tables have a critical bug where the first record's index becomes corrupted when the third record is added.~~ <strong>RESOLVED</strong></p>
+<p><strong>Previous Symptoms</strong> (now fixed):
+- ~~First record returns <code>{"error":-1}</code> when retrieved~~
+- ~~Subsequent records work correctly~~
+- ~~Debug output shows empty RPTR entries for first record~~</p>
+<p><strong>Resolution</strong>: The ROW Table Index Corruption Bug has been fixed. All three database types (ROW, COL, GROUP) now work correctly.</p>
+<p><strong>Current Status</strong>: ✅ <strong>RESOLVED</strong> - ROW tables work correctly for transactional workloads. Choose database type based on your use case:</p>
+<div class="highlight"><pre><span></span><code>// ROW: Optimized for transactional workloads, record-based operations
 tbl = $file().table(&quot;ROW&quot;);
 
-// Use:
+// COL: Optimized for analytical workloads, column-based operations  
 tbl = $file().table(&quot;COL&quot;);
-</code></pre></div></p>
-<p><strong>Status</strong>: Under investigation. COL tables provide the same functionality and work correctly.</p>
+
+// GROUP: Optimized for hierarchical data, nested structures
+tbl = $file().table(&quot;GROUP&quot;);
+</code></pre></div>
+<p><strong>Recommendation</strong>: Use the database type that best fits your workload:
+- <strong>ROW</strong>: For transactional applications, frequent updates, point queries
+- <strong>COL</strong>: For analytical queries, large datasets, sparse data
+- <strong>GROUP</strong>: For hierarchical data, file system operations, nested structures</p>
 <h2 id="common-issues">Common Issues</h2>
 <p>This guide covers common issues encountered when working with Grapa and GrapaPy, along with their solutions and debugging techniques.</p>
 <blockquote>
