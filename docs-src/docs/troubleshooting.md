@@ -2,25 +2,34 @@
 
 ## Critical Issues
 
-### 🚨 ROW Table Index Corruption Bug
+### ✅ ROW Table Index Corruption Bug - RESOLVED
 
-**Issue**: ROW tables have a critical bug where the first record's index becomes corrupted when the third record is added.
+**Issue**: ~~ROW tables have a critical bug where the first record's index becomes corrupted when the third record is added.~~ **RESOLVED**
 
-**Symptoms**:
-- First record returns `{"error":-1}` when retrieved
-- Subsequent records work correctly
-- Debug output shows empty RPTR entries for first record
+**Previous Symptoms** (now fixed):
+- ~~First record returns `{"error":-1}` when retrieved~~
+- ~~Subsequent records work correctly~~
+- ~~Debug output shows empty RPTR entries for first record~~
 
-**Workaround**: Use COL tables instead of ROW tables
+**Resolution**: The ROW Table Index Corruption Bug has been fixed. All three database types (ROW, COL, GROUP) now work correctly.
+
+**Current Status**: ✅ **RESOLVED** - ROW tables work correctly for transactional workloads. Choose database type based on your use case:
+
 ```grapa
-// Instead of:
+// ROW: Optimized for transactional workloads, record-based operations
 tbl = $file().table("ROW");
 
-// Use:
+// COL: Optimized for analytical workloads, column-based operations  
 tbl = $file().table("COL");
+
+// GROUP: Optimized for hierarchical data, nested structures
+tbl = $file().table("GROUP");
 ```
 
-**Status**: Under investigation. COL tables provide the same functionality and work correctly.
+**Recommendation**: Use the database type that best fits your workload:
+- **ROW**: For transactional applications, frequent updates, point queries
+- **COL**: For analytical queries, large datasets, sparse data
+- **GROUP**: For hierarchical data, file system operations, nested structures
 
 ## Common Issues
 

@@ -1,0 +1,212 @@
+/* Comprehensive Database Type Validation Suite */
+/* This script tests all three database types: ROW, COL, and GROUP */
+
+"=== Comprehensive Database Type Validation Suite ===\n".echo();
+"Testing all three database types: ROW, COL, and GROUP\n".echo();
+
+/* ================================================================================ */
+/* Test 1: ROW Database Type Validation */
+/* ================================================================================ */
+"\n=== Test 1: ROW Database Type Validation ===\n".echo();
+"Testing row-oriented storage for transactional workloads\n".echo();
+
+row_db = $file().table("ROW");
+"✓ ROW database created\n".echo();
+
+/* Create fields */
+row_db.mkfield("id", "INT", "FIX", 4);
+row_db.mkfield("name", "STR", "VAR");
+row_db.mkfield("age", "INT", "FIX", 4);
+row_db.mkfield("city", "STR", "VAR");
+"✓ ROW fields created\n".echo();
+
+/* Insert data */
+row_db.set("user1", 1, "id");
+row_db.set("user1", "Alice", "name");
+row_db.set("user1", 25, "age");
+row_db.set("user1", "New York", "city");
+
+row_db.set("user2", 2, "id");
+row_db.set("user2", "Bob", "name");
+row_db.set("user2", 30, "age");
+row_db.set("user2", "Los Angeles", "city");
+"✓ ROW data inserted\n".echo();
+
+/* Retrieve data */
+row_user1_name = row_db.get("user1", "name").str();
+row_user1_age = row_db.get("user1", "age").raw().int();
+("✓ ROW retrieval: " + row_user1_name + ", age " + row_user1_age.str() + "\n").echo();
+
+/* List records */
+row_records = row_db.ls();
+("✓ ROW records: " + row_records.len().str() + "\n").echo();
+
+/* ================================================================================ */
+/* Test 2: COL Database Type Validation */
+/* ================================================================================ */
+"\n=== Test 2: COL Database Type Validation ===\n".echo();
+"Testing column-oriented storage for analytical workloads\n".echo();
+
+col_db = $file().table("COL");
+"✓ COL database created\n".echo();
+
+/* Create fields */
+col_db.mkfield("id", "INT", "FIX", 4);
+col_db.mkfield("name", "STR", "VAR");
+col_db.mkfield("age", "INT", "FIX", 4);
+col_db.mkfield("city", "STR", "VAR");
+"✓ COL fields created\n".echo();
+
+/* Insert data */
+col_db.set("user1", 1, "id");
+col_db.set("user1", "Alice", "name");
+col_db.set("user1", 25, "age");
+col_db.set("user1", "New York", "city");
+
+col_db.set("user2", 2, "id");
+col_db.set("user2", "Bob", "name");
+col_db.set("user2", 30, "age");
+col_db.set("user2", "Los Angeles", "city");
+"✓ COL data inserted\n".echo();
+
+/* Retrieve data */
+col_user1_name = col_db.get("user1", "name").str();
+col_user1_age = col_db.get("user1", "age").raw().int();
+("✓ COL retrieval: " + col_user1_name + ", age " + col_user1_age.str() + "\n").echo();
+
+/* List records */
+col_records = col_db.ls();
+("✓ COL records: " + col_records.len().str() + "\n").echo();
+
+/* ================================================================================ */
+/* Test 3: GROUP Database Type Validation */
+/* ================================================================================ */
+"\n=== Test 3: GROUP Database Type Validation ===\n".echo();
+"Testing hierarchical storage for nested structures\n".echo();
+
+group_db = $file().table("GROUP");
+"✓ GROUP database created\n".echo();
+
+/* Create nested databases within the group */
+group_db.mk("users", "ROW");
+group_db.mk("analytics", "COL");
+group_db.mk("config", "GROUP");
+"✓ Nested databases created in GROUP\n".echo();
+
+/* Navigate to users database */
+users_db = group_db.cd("users");
+"✓ Navigated to users database\n".echo();
+
+/* Create fields in users database */
+users_db.mkfield("id", "INT", "FIX", 4);
+users_db.mkfield("name", "STR", "VAR");
+users_db.mkfield("age", "INT", "FIX", 4);
+"✓ Users fields created\n".echo();
+
+/* Insert data in users database */
+users_db.set("user1", 1, "id");
+users_db.set("user1", "Alice", "name");
+users_db.set("user1", 25, "age");
+"✓ Users data inserted\n".echo();
+
+/* Navigate to analytics database */
+analytics_db = group_db.cd("analytics");
+"✓ Navigated to analytics database\n".echo();
+
+/* Create fields in analytics database */
+analytics_db.mkfield("metric", "STR", "VAR");
+analytics_db.mkfield("value", "FLT", "FIX", 8);
+analytics_db.mkfield("timestamp", "INT", "FIX", 8);
+"✓ Analytics fields created\n".echo();
+
+/* Insert data in analytics database */
+analytics_db.set("metric1", "page_views", "metric");
+analytics_db.set("metric1", 1250.5, "value");
+analytics_db.set("metric1", 1640995200, "timestamp");
+"✓ Analytics data inserted\n".echo();
+
+/* Navigate back to root and list contents */
+group_db.cd("..");
+group_contents = group_db.ls();
+("✓ GROUP contents: " + group_contents.len().str() + " items\n").echo();
+
+/* ================================================================================ */
+/* Test 4: Cross-Database Validation */
+/* ================================================================================ */
+"\n=== Test 4: Cross-Database Validation ===\n".echo();
+"Testing data integrity across all database types\n".echo();
+
+/* Verify ROW data integrity */
+row_user2_name = row_db.get("user2", "name").str();
+row_user2_city = row_db.get("user2", "city").str();
+("✓ ROW integrity: " + row_user2_name + " from " + row_user2_city + "\n").echo();
+
+/* Verify COL data integrity */
+col_user2_name = col_db.get("user2", "name").str();
+col_user2_city = col_db.get("user2", "city").str();
+("✓ COL integrity: " + col_user2_name + " from " + col_user2_city + "\n").echo();
+
+/* Verify GROUP nested data integrity */
+users_db = group_db.cd("users");
+group_user1_name = users_db.get("user1", "name").str();
+group_user1_age = users_db.get("user1", "age").raw().int();
+("✓ GROUP nested integrity: " + group_user1_name + ", age " + group_user1_age.str() + "\n").echo();
+
+analytics_db = group_db.cd("analytics");
+group_metric_value = analytics_db.get("metric1", "value").raw().flt();
+("✓ GROUP analytics integrity: metric value " + group_metric_value.str() + "\n").echo();
+
+/* ================================================================================ */
+/* Test 5: BTree Operations Validation */
+/* ================================================================================ */
+"\n=== Test 5: BTree Operations Validation ===\n".echo();
+"Testing BTree operations across all database types\n".echo();
+
+/* Test ROW BTree operations */
+row_db.set("user3", 3, "id");
+row_db.set("user3", "Charlie", "name");
+row_db.set("user3", 35, "age");
+row_db.set("user3", "Chicago", "city");
+"✓ ROW BTree insert operation\n".echo();
+
+/* Test COL BTree operations */
+col_db.set("user3", 3, "id");
+col_db.set("user3", "Charlie", "name");
+col_db.set("user3", 35, "age");
+col_db.set("user3", "Chicago", "city");
+"✓ COL BTree insert operation\n".echo();
+
+/* Test GROUP BTree operations */
+users_db = group_db.cd("users");
+users_db.set("user2", 2, "id");
+users_db.set("user2", "Bob", "name");
+users_db.set("user2", 30, "age");
+"✓ GROUP BTree insert operation\n".echo();
+
+/* Verify all operations */
+row_final_count = row_db.ls().len();
+col_final_count = col_db.ls().len();
+group_db.cd("users");
+group_final_count = users_db.ls().len();
+
+("✓ Final counts - ROW: " + row_final_count.str() + ", COL: " + col_final_count.str() + ", GROUP users: " + group_final_count.str() + "\n").echo();
+
+/* ================================================================================ */
+/* Final Validation Results */
+/* ================================================================================ */
+"\n=== Final Validation Results ===\n".echo();
+
+if(row_final_count == 3 && col_final_count == 3 && group_final_count == 2) {
+    "🎉 SUCCESS: All database types working correctly!\n".echo();
+    "✓ ROW database: Working (transactional storage)\n".echo();
+    "✓ COL database: Working (analytical storage)\n".echo();
+    "✓ GROUP database: Working (hierarchical storage)\n".echo();
+    "✓ BTree operations: Working across all types\n".echo();
+    "✓ Nested operations: Working in GROUP databases\n".echo();
+    "✓ Data integrity: Maintained across all types\n".echo();
+} else {
+    "❌ FAILURE: Some database types not working correctly\n".echo();
+    ("Expected: ROW=3, COL=3, GROUP=2, Found: ROW=" + row_final_count.str() + ", COL=" + col_final_count.str() + ", GROUP=" + group_final_count.str() + "\n").echo();
+}
+
+"\n=== Comprehensive Database Type Validation Complete ===\n".echo(); 

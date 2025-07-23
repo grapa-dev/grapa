@@ -106,12 +106,14 @@ protected:
 
 	GrapaError PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor);
 
+public: // Made public for investigation
 	GrapaError FirstFreeId(u64 tableRef, u64 pMinId, u64& resId);
+	GrapaError InsertIntoIndex(u64 tableRef, u8 pValueType, u64 resId, u64 recordRef);
 
+protected:
 	//GrapaError SetupDataTypeField(u64 indexRef, u64 fieldId, char *fieldName, u8 fieldType, u64 fieldSize);
 
 	GrapaError LocateIndex(GrapaCursor& cursor, u64 indexRef, u64 fieldId);
-	GrapaError InsertIntoIndex(u64 tableRef, u8 pValueType, u64 resId, u64 recordRef);
 
 	bool IndexHasField(GrapaCursor& cursor, u64 fieldId);
 
@@ -132,6 +134,8 @@ protected:
 	GrapaError DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
 	GrapaError DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
 	GrapaError DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tableId, u64 firstTree);
+    void DebugPrintIndexPointerAndRecord(u64 tableRef, u64 key);
+    void DebugPrintAllIndexPointers(u64 tableRef);
 };
 
 // need a way for user to extend the dict field definition

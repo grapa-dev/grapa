@@ -25,6 +25,6 @@ hi test
 
 ## See also
 - [API Reference](../api_reference.md)
-- [Examples](../examples/)
-- [Use Cases](../use_cases/)
+- [Examples](../examples/README.md)
+- [Use Cases](../use_cases/index.md)
 - [Language Reference](../syntax/basic_syntax.md)

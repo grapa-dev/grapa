@@ -1,0 +1,3 @@
+"Hello World Test\n".echo();
+"Testing basic script execution\n".echo();
+"Script should complete successfully\n".echo(); 

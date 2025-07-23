@@ -1,0 +1,27 @@
+/* Simple BTree Test */
+"=== Simple BTree Test ===\n".echo();
+
+/* Create database */
+$db = $file().table("ROW");
+"✓ Database created\n".echo();
+
+/* Create fields */
+$db.mkfield("name", "STR", "VAR");
+$db.mkfield("age", "INT", "FIX", 4);
+"✓ Fields created\n".echo();
+
+/* Insert data */
+$db.set("user1", "Alice", "name");
+$db.set("user1", 25, "age");
+"✓ Data inserted\n".echo();
+
+/* Retrieve data */
+$name = $db.get("user1", "name").str();
+$age = $db.get("user1", "age").raw().int();
+("✓ Data retrieved: " + $name + ", age: " + $age.str() + "\n").echo();
+
+/* List records */
+$records = $db.ls();
+("✓ Records found: " + $records.len().str() + "\n").echo();
+
+"=== Test Complete ===\n".echo(); 

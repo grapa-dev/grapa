@@ -198,13 +198,26 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			runStr.FROM(e->mValue);
 			needExit = true;
 		}
-		// Check if this looks like a script file (.grc or .grz extension)
-		else if (e->mValue.mLength > 4 && 
-			(strstr((char*)e->mValue.mBytes, ".grc") != NULL ||
-			 strstr((char*)e->mValue.mBytes, ".grz") != NULL))
+		// Check if this looks like a script file (ends with .grc or .grz)
+		else if (e->mValue.mLength > 4 &&
+			((strcmp((char*)&e->mValue.mBytes[e->mValue.mLength - 4], ".grc") == 0) ||
+			 (strcmp((char*)&e->mValue.mBytes[e->mValue.mLength - 4], ".grz") == 0)))
 		{
-			// Treat as script file - set inStr so main.cpp can handle it
-			inStr.FROM(e->mValue);
+			// Treat as -f <file>
+			GrapaCHAR fn;
+			fn.FROM(e->mValue);
+			GrapaFileIO fp;
+			if (fp.Open((char*)fn.mBytes) == 0)
+			{
+				u64 sz = 0;
+				fp.GetSize(sz);
+				runStr.SetLength(sz);
+				if (sz)
+				{
+					if (fp.Read(0, 0, 0, sz, runStr.mBytes))
+						runStr.SetLength(0);
+				}
+			}
 			needExit = true;
 		}
 				else

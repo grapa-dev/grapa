@@ -25,6 +25,7 @@ Internal notes include:
 - [XML BNF Analysis](xml_bnf_analysis.md) - XML grammar analysis
 - [Test Runner Global Variables](TEST_RUNNER_GLOBAL_VARIABLES.md) - Include vs Shell execution for test runners
 - [WIP Documentation](WIP/) - Work-in-progress files
+- [ROW Pointer/Index Corruption Investigation](DB_DEBUGGING_ROW_POINTER_CORRUPTION.md) - Ongoing root cause analysis of ROW mode index corruption (May 2024)
 
 ## Work-in-Progress Files
 

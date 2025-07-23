@@ -28,16 +28,28 @@ limitations under the License.
 #include "GrapaTime.h"
 #include "GrapaFloat.h"
 #include "GrapaMem.h"
+//#include <stdio.h>
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
 GrapaError GrapaDB::Create(const char *fileName, u8 treeType, u64& firstTree)
 {
 	firstTree = 0;
+	
+	
 	GrapaError err = GrapaBtree::Create(fileName);
+	
+	
 	if (err) return(err);
+	
+	
 	err = CreateRoot(treeType, firstTree);
+	
+	
 	if (err) RemoveFile(fileName);
+	
+	
 	return(err);
 }
 
@@ -187,7 +199,8 @@ GrapaError GrapaDB::CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, Grapa
 
 	if (firstTree)
 	{
-		tableNames.Set(firstTree, GREC_ITEM, pTableId, pTable.mRef);
+		// FIXED: Use TREE_ITEM instead of GREC_ITEM to match OpenTable's search pattern
+		tableNames.Set(firstTree, TREE_ITEM, pTableId, pTable.mRef);
 		err = Insert(tableNames);
 		if (err)
 		{
@@ -1209,6 +1222,7 @@ GrapaError GrapaDB::OpenIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u64&
 
 ////////////////////////////////////////////////////////////////////////////////
 
+
 GrapaError GrapaDB::FindFreeRecordId(GrapaDBTable& pTable, u64& pRecordId)
 {
 	return LastTableId(pTable.mRef, pRecordId);
@@ -1273,39 +1287,39 @@ GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
 			return(-1); // dict should not be a group tree
 
 		case RTABLE_TREE:
+		{
+			indexCursor.Set(indexTree);
+			err = First(indexCursor);
+			if (err) return(err);
+
+			dtField.Set(indexCursor.mValue);
+			err = First(dtField); //This is the DICT field
+			if (err) return(err);
+
+			err = dbField.Read(this, dtField.mValue);
+			if (err) return(err);
+
+			err = NewData(BYTE_DATA, pTable.mRecRef, dbField.mDictSize, dbField.mDictSize, 1, newRecordRef, true);
+			if (err) return(err);
+			tableCursor.Set(pTable.mRecRef, RREC_ITEM, pCursor.mKey, newRecordRef);
+			err = Insert(tableCursor);
+			if (err) return(err);
+
+			pCursor.mValue = newRecordRef;
+
+			indexCursor.Set(indexTree);
+			err = First(indexCursor);
+			if (!err && indexCursor.mKey == 0)
+				err = Next(indexCursor);
+			while (!err)
 			{
-				indexCursor.Set(indexTree);
-				err = First(indexCursor);
-				if (err) return(err);
-
-				dtField.Set(indexCursor.mValue);
-				err = First(dtField); //This is the DICT field
-				if (err) return(err);
-
-				err = dbField.Read(this,dtField.mValue);
-				if (err) return(err);
-
-				err = NewData(BYTE_DATA, pTable.mRecRef, dbField.mDictSize, dbField.mDictSize, 1, newRecordRef, true);
-				if (err) return(err);
-				tableCursor.Set(pTable.mRecRef,RREC_ITEM,pCursor.mKey,newRecordRef);
+				tableCursor.Set(indexCursor.mValue, RPTR_ITEM, pCursor.mKey);
 				err = Insert(tableCursor);
-				if (err) return(err);
-
-				pCursor.mValue = newRecordRef;
-
-				indexCursor.Set(indexTree);
-				err = First(indexCursor);
-				if (!err && indexCursor.mKey==0)
+				err = Next(indexCursor);
+				if (!err && indexCursor.mKey == 0)
 					err = Next(indexCursor);
-				while (!err)
-				{
-					tableCursor.Set(indexCursor.mValue,RPTR_ITEM,pCursor.mKey);
-					err = Insert(tableCursor);
-					err = Next(indexCursor);
-					if (!err && indexCursor.mKey==0)
-						err = Next(indexCursor);
-				}
 			}
+		}
 			break;
 
 		case CTABLE_TREE:
@@ -1375,7 +1389,10 @@ GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
 			break;
 	}
 
-	return(0);
+	tableCursor.Set(pTable.mRecRef);
+	err = SetTreeDirty(tableCursor,false);
+
+	return 0;
 }
 
 GrapaError GrapaDB::DeleteRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
@@ -1491,12 +1508,12 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey);
 						err = Delete(tableCursor);
 						break;
-					case RTABLE_TREE: 
-						tableCursor.Set(indexCursor.mValue,RPTR_ITEM,recCursor.mKey);
+					case RTABLE_TREE:
+						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
 						err = Delete(tableCursor);
 						break;
 					case CTABLE_TREE:
-						tableCursor.Set(indexCursor.mValue,CPTR_ITEM,recCursor.mKey);
+						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
 						err = Delete(tableCursor);
 						break;
 				}
@@ -1850,25 +1867,25 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 		err = Next(indexCursor);
 	while (!err)
 	{
-		for(i=0;i<fieldCount;i++)
+		for (i = 0; i < fieldCount; i++)
 		{
 			dbFieldValue = pFieldList.GetFieldAt(i);
-			if (IndexHasField(indexCursor,dbFieldValue->mId))
+			if (IndexHasField(indexCursor, dbFieldValue->mId))
 			{
 				switch (recCursor.mTreeType)
 				{
-					case GROUP_TREE: 
-						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey);
-						err = Insert(tableCursor);
-						break;
-					case RTABLE_TREE: 
-						tableCursor.Set(indexCursor.mValue,RPTR_ITEM,recCursor.mKey);
-						err = Insert(tableCursor);
-						break;
-					case CTABLE_TREE: 
-						tableCursor.Set(indexCursor.mValue,CPTR_ITEM,recCursor.mKey);
-						err = Insert(tableCursor);
-						break;
+				case GROUP_TREE:
+					tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey);
+					err = Insert(tableCursor);
+					break;
+				case RTABLE_TREE:
+					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+					err = Insert(tableCursor);
+					break;
+				case CTABLE_TREE:
+					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
+					err = Insert(tableCursor);
+					break;
 				}
 				break;
 			}
@@ -2121,7 +2138,8 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, Gra
 			}
 			else if (field.mDictSize <= (0x8001 + isRaw))
 			{
-				err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength, 2, h, &returnSize);
+				// err = GetDataValue(fieldCursor.mValue, field.mDictSize*recCursor.mLength, 2, h, &bytesWriten); // DEBUG: incorrect variable, causes build error
+				err = GetDataValue(fieldCursor.mValue, field.mDictSize * recCursor.mLength, 2, h, &returnSize); // DEBUG: corrected variable
 				if ((h[0] & 0x80) == 0)
 					buffer.SetSize(0);
 				else
@@ -2389,6 +2407,7 @@ GrapaError GrapaDB::InsertIntoIndex(u64 tableRef, u8 pValueType, u64 resId, u64 
 	GrapaError err=0;
 	GrapaCursor indexTableCursor,indexCursor;
 	u64 indexRef;
+
 
 	indexTableCursor.Set(tableRef);
 	err = GetTreeIndex(indexTableCursor,indexRef);
@@ -2729,7 +2748,8 @@ GrapaError GrapaDB::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 			recCursor.mTreeType = CTABLE_TREE;
 			break;
 	}
-	return Search(recCursor);
+	GrapaError searchErr = Search(recCursor);
+	return searchErr;
 }
 
 GrapaError GrapaDB::Delete(GrapaCursor& treeCursor)
@@ -3186,7 +3206,7 @@ GrapaError GrapaDB::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 	char* itemTypeStr=(char*)"";
 	u64 weight;
 
-	DumpGetItemWeight(cursor,weight);
+	DumpGetItemWeight(cursor, weight);
 
 	switch(cursor.mValueType)
 	{
@@ -3530,4 +3550,64 @@ GrapaError GrapaDBFieldValueArray::Append(GrapaDB *pDb, GrapaDBTable& pTable, u6
 
 ////////////////////////////////////////////////////////////////////////////////
 //	20-Jun-01	cmatichuk	Created
+
+void GrapaDB::DebugPrintIndexPointerAndRecord(u64 tableRef, u64 key)
+{
+	GrapaError err = 0;
+    u64 indexRef = 0;
+    GrapaCursor indexCursor, ptrCursor, recCursor;
+    u64 weight = 0, recWeight = 0;
+
+    // Locate the index tree for the table
+    indexCursor.Set(tableRef);
+    err = GetTreeIndex(indexCursor, indexRef);
+    if (err || indexRef == 0) {
+        printf("DEBUG: Could not find index tree for tableRef=%llu\n", tableRef);
+        return;
+    }
+
+    // Search for the RPTR_ITEM with the given key
+    ptrCursor.Set(indexRef, RPTR_ITEM, key);
+    err = Search(ptrCursor);
+    if (err) {
+        printf("DEBUG: Could not find RPTR_ITEM for key=%llu in indexRef=%llu\n", key, indexRef);
+        return;
+    }
+
+    DumpGetItemWeight(ptrCursor, weight);
+    printf("DEBUG: RPTR_ITEM: value=%llu key=%llu node=(%llu,%d) weight=%llu\n", ptrCursor.mValue, ptrCursor.mKey, ptrCursor.mNodeRef, ptrCursor.mNodeIndex, weight);
+
+    // Convert pointer to record
+    recCursor = ptrCursor;
+    err = PtrToRec(ptrCursor, recCursor);
+    if (err) {
+        printf("DEBUG: PtrToRec failed for key=%llu (err=%lld)\n", key, (long long)err);
+        return;
+    }
+    DumpGetItemWeight(recCursor, recWeight);
+    printf("DEBUG: RREC: value=%llu key=%llu node=(%llu,%d) weight=%llu\n", recCursor.mValue, recCursor.mKey, recCursor.mNodeRef, recCursor.mNodeIndex, recWeight);
+}
+
+void GrapaDB::DebugPrintAllIndexPointers(u64 tableRef) {
+    u64 indexRef = 0;
+    GrapaCursor indexCursor;
+    GrapaError err;
+    indexCursor.Set(tableRef);
+    err = GetTreeIndex(indexCursor, indexRef);
+    if (err || indexRef == 0) {
+        printf("DEBUG: Could not find index tree for tableRef=%llu\n", tableRef);
+        return;
+    }
+    GrapaCursor ptrCursor;
+    ptrCursor.Set(indexRef);
+    err = First(ptrCursor);
+    int count = 0;
+    while (!err) {
+        printf("DEBUG: Index entry: valueType=%d key=%llu value=%llu node=(%llu,%d)\n",
+            ptrCursor.mValueType, ptrCursor.mKey, ptrCursor.mValue, ptrCursor.mNodeRef, ptrCursor.mNodeIndex);
+        count++;
+        err = Next(ptrCursor);
+    }
+    printf("DEBUG: Total index entries: %d\n", count);
+}
 
