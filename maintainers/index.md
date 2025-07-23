@@ -99,10 +99,10 @@ When referencing maintainer content, use these paths:
 - [Archived WIP](INTERNAL_NOTES/ARCHIVED_WIP/) - Historical work-in-progress files
 
 ### Advanced Topics
-- [Binary Grep Implementation](ADVANCED_TOPICS/BINARY_GREP.md) - Binary data processing
-- [Grammar Development](ADVANCED_TOPICS/GRAMMAR_DEVELOPMENT.md) - BNF/grammar work
-- [Core Extensions](ADVANCED_TOPICS/CORE_EXTENSIONS.md) - Extending the core
-- [Debugging Guide](ADVANCED_TOPICS/DEBUGGING.md) - Debugging techniques
+- [Binary Grep Implementation](IMPLEMENTATION/BINARY_GREP.md) - Binary data processing (now in Implementation)
+- [Grammar Development] - (planned/future)
+- [Core Extensions] - (planned/future)
+- [Debugging Guide] - (planned/future)
 
 ---
 

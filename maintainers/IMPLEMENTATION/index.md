@@ -30,9 +30,7 @@ Grapa's implementation is built on several key components:
 - [Unicode Grep Status](UNICODE_GREP_STATUS.md) - Unicode implementation details
 - [BTree Implementation](GRAPA_BTREE_IMPLEMENTATION.md) - Low-level BTree data structure and algorithms (used by the database)
 - [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
-- [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation (formerly in ADVANCED_TOPICS)
-
-> **Note:** Advanced topics are now consolidated into implementation, as the entire implementation is inherently advanced.
+- [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation
 
 ## Architecture Overview
 

@@ -3,7 +3,7 @@
 ## How to Use This Documentation
 - Use the search bar (top right) to quickly find functions, guides, and examples.
 - The navigation menu groups all reference material under 'Reference', guides under 'Guides', and support under 'Support'.
-- For advanced features, see [Advanced Topics](advanced_topics.md).
+<!-- Advanced Topics link removed: content consolidated or planned/future -->
 - For troubleshooting, see [Troubleshooting](troubleshooting.md).
 - For a full API and type reference, see [Reference](api_reference.md).
 

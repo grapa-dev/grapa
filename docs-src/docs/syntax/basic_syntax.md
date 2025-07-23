@@ -1462,4 +1462,4 @@ info.type();           // $LIST
 - [API Reference](../api_reference.md)
 - [Use Cases](../use_cases/)
 - [Examples](../examples/)
-- [Advanced Topics](../advanced_topics.md) 
+<!-- Advanced Topics link removed: content consolidated or planned/future --> 

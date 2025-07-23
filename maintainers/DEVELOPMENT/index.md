@@ -16,7 +16,7 @@ This directory contains all development-related documentation for the Grapa proj
 - **[LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md)** - **DEPRECATED**: Content consolidated into CURRENT_STATUS.md
 
 ### **📚 Reference Documentation**
-- **[DOCUMENTATION_DEPLOYMENT_GUIDE.md](DOCUMENTATION_DEPLOYMENT_GUIDE.md)** - Complete documentation deployment process
+- **[DOCUMENTATION_DEPLOYMENT_GUIDE.md](../BUILD_AND_DEPLOYMENT/DOCUMENTATION_DEPLOYMENT.md)** - Complete documentation deployment process
 - **[IMPLEMENTATION_PROGRESS.md](IMPLEMENTATION_PROGRESS.md)** - **DEPRECATED**: Moved to CURRENT_STATUS.md
 - **[TODO.md](TODO.md)** - **DEPRECATED**: Moved to CURRENT_STATUS.md
 

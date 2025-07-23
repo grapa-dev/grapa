@@ -10,7 +10,10 @@
 **Build Grapa binaries:**
 - `./build.sh` (wraps `python3 build.py`)
 **Build & deploy documentation:**
-- `./scripts/deploy_docs.sh` (builds docs and pushes to GitHub Pages)
+- On Linux/Mac: `./scripts/deploy_docs.sh`
+- On Windows:   `.\scripts\deploy_docs.ps1`
+(Both scripts build docs and push to GitHub Pages)
+- For more details or troubleshooting, see the deployment guide in `BUILD_AND_DEPLOYMENT/`.
 
 ---
 
@@ -76,7 +79,7 @@
 - **[Language Enhancement Roadmap](LANGUAGE_ENHANCEMENT_ROADMAP.md)**
 - **[Operator Bug Fixes Status](../INTERNAL_NOTES/OPERATOR_BUG_FIXES_STATUS.md)**
 - **[Optimization Backlog](../INTERNAL_NOTES/GRAPA_OPTIMIZATION_BACKLOG.md)**
-- **[Documentation Deployment Guide](DOCUMENTATION_DEPLOYMENT_GUIDE.md)**
+- **[Documentation Deployment Guide](../BUILD_AND_DEPLOYMENT/DOCUMENTATION_DEPLOYMENT.md)**
 - **[Archived WIP Files](../INTERNAL_NOTES/ARCHIVED_WIP/)**
 
 ---
