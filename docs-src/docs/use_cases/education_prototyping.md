@@ -215,5 +215,5 @@ response2 = app.handle_request("POST", "/echo", {"message": "Hello from Grapa!"}
 
 ## Related topics
 - [API Reference](../api_reference.md)
-- [Examples](../examples/)
+- [Examples](../examples/README.md)
 - [Language Reference](../syntax/basic_syntax.md) 

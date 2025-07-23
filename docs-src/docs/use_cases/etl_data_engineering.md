@@ -103,5 +103,5 @@ aggregate_by_hour = op(processed_data) {
 
 ## Related topics
 - [API Reference](../api_reference.md)
-- [Examples](../examples/)
+- [Examples](../examples/README.md)
 - [Language Reference](../syntax/basic_syntax.md) 

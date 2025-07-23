@@ -579,5 +579,5 @@ All examples are production-ready and use industry-standard cryptographic practi
 
 ## Related topics
 - [API Reference](../api_reference.md)
-- [Examples](../examples/)
+- [Examples](../examples/README.md)
 - [Language Reference](../syntax/basic_syntax.md) 

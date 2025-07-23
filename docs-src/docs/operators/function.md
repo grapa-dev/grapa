@@ -86,6 +86,6 @@ Assumes literal is a variable reference for $OP or $CODE, and runs the routine p
 
 ## See also
 - [API Reference](../api_reference.md)
-- [Examples](../examples/)
-- [Use Cases](../use_cases/)
+- [Examples](../examples/README.md)
+- [Use Cases](../use_cases/index.md)
 - [Language Reference](../syntax/basic_syntax.md)

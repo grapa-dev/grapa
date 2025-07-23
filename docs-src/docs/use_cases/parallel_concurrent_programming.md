@@ -147,5 +147,5 @@ threads.map(op(t) { t.join(); });
 
 ## Related topics
 - [API Reference](../api_reference.md)
-- [Examples](../examples/)
+- [Examples](../examples/README.md)
 - [Language Reference](../syntax/basic_syntax.md) 

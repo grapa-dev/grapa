@@ -578,38 +578,23 @@ class GrapaBuilder:
     def build_python_package(self, config: BuildConfig):
         """Build Python package"""
         print("Building Python package...")
-        
+
         # Build package
-        subprocess.run(["python3", "setup.py", "sdist"], check=True)
-        
+        python_cmd = "python" if config.platform == "windows" else "python3"
+        pip_cmd = "pip" if config.platform == "windows" else "pip3"
+        subprocess.run([python_cmd, "setup.py", "sdist"], check=True)
+
         # Find the built package file
         dist_files = list(Path("dist").glob("*.tar.gz"))
         if not dist_files:
             raise RuntimeError("No Python package found in dist/ directory")
-        
+
         package_file = dist_files[0].name
         print(f"Found package: {package_file}")
-        
-        # Install package - handle systems that don't support wildcards
-        if config.platform == "windows":
-            # On Windows, use grapa to find the filename
-            subprocess.run([
-                "grapa.exe", "-q", "-ccmd", 
-                f"f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
-            ], check=True)
-        else:
-            # On Unix systems, try direct filename first, fallback to wildcard
-            try:
-                # Try with explicit filename
-                subprocess.run([
-                    "pip3", "install", f"dist/{package_file}"
-                ], check=True)
-            except subprocess.CalledProcessError:
-                # Fallback to using grapa to find the filename
-                subprocess.run([
-                    "./grapa", "-q", "-ccmd",
-                    f"f=$file().ls('dist')[0].$KEY;$sys().shell('pip3 install dist/'+f);"
-                ], check=True)
+
+        # Install package
+        package_path = os.path.join("dist", package_file)
+        subprocess.run([pip_cmd, "install", package_path], check=True)
     
     def run_tests(self, config: BuildConfig):
         """Run tests"""

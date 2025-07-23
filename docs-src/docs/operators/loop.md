@@ -19,7 +19,7 @@ Grapa is fully thread safe in all supported environments (command line, Grapa sh
 - All methods accept an operation (op) as the first argument.
 - For map/filter, the op is called in parallel for each item.
 - For reduce, the op is called sequentially, passing the accumulator.
-- See also: [examples.md](../examples.md), [use_cases/index.md](../use_cases/index.md)
+- See also: [examples.md](../examples/README.md), [use_cases/index.md](../use_cases/index.md)
 */
 
 ## while
@@ -148,8 +148,8 @@ sum.echo();
 
 ## See also
 - [API Reference](../api_reference.md)
-- [Examples](../examples/)
-- [Use Cases](../use_cases/)
+- [Examples](../examples/README.md)
+- [Use Cases](../use_cases/index.md)
 - [Language Reference](../syntax/basic_syntax.md)
 
 ---

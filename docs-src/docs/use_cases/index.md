@@ -4,7 +4,7 @@
 > - [Getting Started](../getting_started.md)
 > - [Python Integration Guide](../python_integration.md)
 > - [JS-to-Grapa Migration Guide](../migrations/js_to_grapa_migration.md)
-> - [Examples](../examples.md)
+> - [Examples](../examples/README.md)
 
 Grapa is designed to be inviting and usable for the broadest audience, from data engineers and scientists to educators and language researchers. Below are key use cases, each with a high-level overview and links to examples in both Grapa and Python (GrapaPy).
 
