@@ -2643,6 +2643,7 @@ GrapaError GrapaDB::CompareSearchKey(s16 compareType, GrapaCursor& dataCursor, G
 	for(i=0;i<count;i++)
 	{
 		fv = fvList->GetFieldAt(i);
+
 		GrapaCursor treeItemCursor;
 		err = PtrToRec(treeCursor, treeItemCursor);
 

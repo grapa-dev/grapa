@@ -31,6 +31,7 @@ Grapa's implementation is built on several key components:
 - [BTree Implementation](GRAPA_BTREE_IMPLEMENTATION.md) - Low-level BTree data structure and algorithms (used by the database)
 - [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
 - [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation
+- [Field Metadata Lifecycle and Requirements](FIELD_METADATA_LIFECYCLE.md)
 
 ## Architecture Overview
 

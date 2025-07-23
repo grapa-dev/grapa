@@ -109,21 +109,12 @@ GrapaError GrapaBtree::Create(const char *fileName)
 {
 	GrapaError err;
 
+	if (!mFile) return(-1);
 
-	if (!mFile) {
-		return(-1);
-	}
-
-	if (FileOpened()) {
-		return(-1);
-	}
-
+	if (FileOpened()) return(-1);
 
 	err = mFile->Create(fileName);
-	if (err) {
-		return(err);
-	}
-
+	if (err) return(err);
 
 	err = ClearFile();
 
@@ -133,7 +124,6 @@ GrapaError GrapaBtree::Create(const char *fileName)
 		mFile->Delete(fileName);
 		return(err);
 	}
-
 
 	return(0);
 }
@@ -169,45 +159,29 @@ GrapaError GrapaBtree::ClearFile()
 	GrapaBlockFileHeader hdr;
 	GrapaBlockFirst fst;
 
+	if (!mFile) return(-1);
 
-	if (!mFile) {
-		return(-1);
-	}
-
-	if (!FileOpened()) {
-		return(-1);
-	}
+	if (!FileOpened()) return(-1);
 
 	hdr.Init();
 	mFlags &= 0x7F;
 	if (IsLittleEndianS()) mFlags |= 0x80;
 	hdr.flags = mFlags;
 	hdr.firstBlock = hdr.GetBlocks();
-	
 	err = hdr.Write(mFile,0);
-	
-	if (err) return(err);
 
 	fst.Init();
 	fst.blockCount = ((u64)hdr.GetBlocks()) + fst.GetBlocks();
-	
 	err = fst.Write(mFile,hdr.firstBlock);
-	
-	if (err) return(err);
 
 	err = hdr.Read(mFile,0);
-	if (err) {
-		return(err);
-	}
+	if (err) return(err);
 
 	err = fst.Read(mFile,hdr.firstBlock);
-	if (err) {
-		return(err);
-	}
+	if (err) return(err);
 
-	if (fst.blockCount != (((u64)hdr.GetBlocks()) + fst.GetBlocks())) {
+	if (fst.blockCount != (((u64)hdr.GetBlocks()) + fst.GetBlocks()))
 		return(-1);
-	}
 
 	return(0);
 }
@@ -1076,42 +1050,25 @@ GrapaError GrapaBtree::Insert(GrapaCursor& cursor)
 	GrapaBlockTree head;
 	GrapaBlockNodeLeaf pKey,fKey;
 
-
-	if (cursor.mTreeRef==0L) {
-		return(-1);
-	}
-
+	if (cursor.mTreeRef==0L) return(-1);
 
 	err = head.Read(mFile,cursor.mTreeRef);
-	if (err) {
-		return(err);
-	}
+	if (err) return(err);
 	cursor.mTreeType = head.treeType;
 
-
-
-	if (head.blockType!=GrapaBlock::TREE_BLOCK) {
-		return(-1);
-	}
+	if (head.blockType!=GrapaBlock::TREE_BLOCK) return(-1);
 
 	if (head.firstItem)
 	{
 		err = InsertRc(cursor.mTreeRef, head, head.firstItem, cursor, pKey, fKey, result);
-		if (err) {
-			return(err);
-		}
+		if (err) return(err);
 
-
-		if (result<0) {
-			return(-1);
-		}
+		if (result<0) return(-1);
 
 		if (result==1)
 		{
 			err = AppendNode(cursor.mTreeRef,head,pKey);
-			if (err) {
-				return(err);
-			}
+			if (err) return(err);
 		}
 	}
 	else
@@ -1119,17 +1076,13 @@ GrapaError GrapaBtree::Insert(GrapaCursor& cursor)
 		GrapaBlockNodeLeaf appendLeaf;
 		SetKey(head,appendLeaf,cursor);
 		err = AppendNode(cursor.mTreeRef,head,appendLeaf);
-		if (err) {
-			return(err);
-		}
+		if (err) return(err);
 	}
 
 	head.itemCount++;
 
 	err = head.Write(mFile,cursor.mTreeRef);
-	if (err) {
-		return(err);
-	}
+	if (err) return(err);
 
 	return(0);
 }
@@ -1154,7 +1107,6 @@ GrapaError GrapaBtree::Update(GrapaCursor& cursor)
 
 GrapaError	GrapaBtree::Delete(GrapaCursor& cursor)
 {
-	
 	GrapaError err = 0;
 	GrapaBlockTree head;
 	GrapaBlockNodeHeader rootTree;
@@ -1454,6 +1406,7 @@ bool GrapaBtree::SearchNode(u64 rootNode, GrapaCursor& key, s8& pos, u64& child,
 			case SU64_ITEM:
 			case TREE_ITEM:
 			case SDATA_ITEM:
+				//match = foundKey.key - key.mKey;
 				match = GrapaBtree::CompareKey(foundKey.key, key.mKey);
 				break;
 			default:
@@ -1590,13 +1543,6 @@ GrapaError GrapaBtree::InsInPage(GrapaBlockTree& head, GrapaCursor& treekey, u64
 	GrapaError err;
 	s8 i;
 	GrapaCursor cursor;
-	
-	// FIX: Re-read the page to ensure we have the most current state
-	// This prevents corruption when multiple insertions happen to the same page
-	err = page.Read(mFile, rootNode);
-	if (err) {
-		return(err);
-	}
 
 	for (i=page.leafCount;i>pos;i--)
 	{
@@ -1604,9 +1550,7 @@ GrapaError GrapaBtree::InsInPage(GrapaBlockTree& head, GrapaCursor& treekey, u64
 	}
 
 	err = UpdateLeafInfo(&key,rootNode,pos);
-	if (err) {
-		return(err);
-	}
+	if (err) return(err);
 
 	page.leafCount++;
 
@@ -1668,7 +1612,6 @@ GrapaError GrapaBtree::SetKey(GrapaBlockTree& head, GrapaBlockNodeLeaf& leaf, Gr
 GrapaError GrapaBtree::InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 		GrapaCursor& key, GrapaBlockNodeLeaf& pKey, GrapaBlockNodeLeaf& fKey, s8& result)
 {
-	
 	GrapaBlockNodeLeaf pbKey,tempLeaf;
 	GrapaBlockNodeHeader page;
 	GrapaError err;
@@ -1691,18 +1634,12 @@ GrapaError GrapaBtree::InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 	}
 
 	err = InsertRc(headRef,head,child,key,pbKey,fKey,result);
-	if (err) {
-		return(err);
-	}
+	if (err) return(err);
 
-	if (result!=1) {
-		return(0);
-	}
+	if (result!=1) return(0);
 
 	err = page.Read(mFile,rootNode);
-	if (err) {
-		return(err);
-	}
+	if (err) return(err);
 
 	if (page.leafCount!=head.nodeCount)
 	{
@@ -1894,10 +1831,9 @@ GrapaError GrapaBtree::MoveLeaf(u64 headRef, GrapaBlockTree& head, GrapaBlockNod
 	return(0);
 }
 
-void GrapaBtree::Split(u64 headRef, GrapaBlockTree& head, u64 rootNode,
+void GrapaBtree::Split(u64 headRef, GrapaBlockTree& head, u64 rootNode, 
 		GrapaBlockNodeHeader& oldPage, GrapaBlockNodeLeaf& key, s8 inPos, GrapaBlockNodeLeaf& pKey)
 {
-	
 	s8 i;
 	u64 newBlock;
 	GrapaBlockNodeHeader newPage;
@@ -2019,12 +1955,9 @@ GrapaError GrapaBtree::PurgeRc(u64 headRef, GrapaBlockTree& head, u64 rootNode, 
 
 			rootTree.leafCount--;
 
-			// FIX: When moving leaves within the same block, we need to be careful about the order
-			// to avoid overwriting data that hasn't been moved yet
-			// Move from the position after the deleted position to the end
-			for(i=pos+1;i<rootTree.leafCount;i++)
+			for(i=pos;i<rootTree.leafCount;i++)
 			{
-				MoveLeaf(headRef,head,rootTree,rootNode,i,rootTree,rootNode,i-1);
+				MoveLeaf(headRef,head,rootTree,rootNode,i+1,rootTree,rootNode,i);
 			}
 
 			err = rootTree.Write(mFile,rootNode);
@@ -3277,7 +3210,7 @@ GrapaError GrapaBtree::MoveDataValueByte(u64 toPtr, GrapaBlockDataHeader& toData
 		}
 		else if (toOffset < fromOffset && (toOffset+moveSize) > fromOffset)
 		{
-			err = MoveDataValueByte(toPtr,toData,fromOffset+moveSize,toPtr,toData,toOffset,fromOffset-toOffset,&bytesMoved);
+			err = MoveDataValueByte(toPtr,toData,toOffset+moveSize,toPtr,toData,toOffset,fromOffset-toOffset,&bytesMoved);
 			/*
 			// Put the smaller part into the temp location and shift the larger part
 			shiftSize = fromOffset - toOffset;

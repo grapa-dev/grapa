@@ -49,6 +49,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] Review and improve comment handling in Grapa (see DEVELOPMENT/COMMENT_HANDLING_GUIDE.md for current rules, BNF analysis, and empirical findings)
   - Ensure block comments are handled consistently with the BNF and user expectations.
   - Address any parser bugs or inconsistencies discovered during empirical testing.
+- Audit and update all code paths for correct field metadata lifecycle handling. See [IMPLEMENTATION/FIELD_METADATA_LIFECYCLE.md] for details and open items.
 
 ---
 

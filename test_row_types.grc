@@ -1,6 +1,0 @@
-fdata = $file().table("ROW");
-fdata.mkfield("name", "STR", "VAR");
-fdata.mkfield("age", "INT", "FIX", 4);
-fdata.set("user1", "Alice", "name");
-fdata.set("user1", 31, "age");
-fdata.get("user1", "age").type().str().echo();

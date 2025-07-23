@@ -1033,12 +1033,21 @@ GrapaError GrapaLocalDatabase::FieldCreate(GrapaCHAR& pName, GrapaCHAR& fieldTyp
 		else if (fieldType.StrCmp("TABLE") == 0) listType = GrapaTokenType::TABLE;
 		else if (fieldType.StrCmp("RAW") == 0) listType = GrapaTokenType::RAW;
 	}
+	/* This was a bug causing everything to be STORE_VAR and resetting the data type.
 	if (storeType.mLength)
 	{
 
 		if (storeType.StrCmp("FIX") == 0) { listType = GrapaTokenType::STR; listStore = GrapaDBField::STORE_VAR; }
 		else if (storeType.StrCmp("VAR") == 0) { listType = GrapaTokenType::TABLE; listStore = GrapaDBField::STORE_VAR; }
 		else if (storeType.StrCmp("PAR") == 0) { listType = GrapaTokenType::RAW; listStore = GrapaDBField::STORE_VAR; }
+	}
+	*/
+	if (storeType.mLength)
+	{
+
+		if (storeType.StrCmp("FIX") == 0) { listStore = GrapaDBField::STORE_FIX; }
+		else if (storeType.StrCmp("VAR") == 0) { listStore = GrapaDBField::STORE_VAR; }
+		else if (storeType.StrCmp("PAR") == 0) { listStore = GrapaDBField::STORE_PAR; }
 	}
 	if (storeSize == 0) storeSize = 32;
 	if (storeGrow == 0) storeGrow = 8;
