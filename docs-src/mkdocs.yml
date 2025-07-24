@@ -81,6 +81,7 @@ nav:
   - Getting Started:
       - Overview: getting_started.md
       - CLI Integration: cli_integration.md
+      - Run Command: run.md
       - Python Integration: python_integration.md
   - Quickstart: cli_quickstart.md
   - Reference:
@@ -152,6 +153,7 @@ nav:
           - Kotlin: migrations/kotlin_to_grapa_migration.md
           - Swift: migrations/swift_to_grapa_migration.md
       - Examples: examples.md
+      - Examples Overview: examples/README.md
       - Python Use Cases: python_use_cases.md
       - GRC Scripts: grc_scripts.md
       - GRZ Format: grz_format.md

@@ -19,13 +19,16 @@ This section covers advanced features and techniques in Grapa for power users an
 
 ## Performance Tuning and Parallelism
 - **Parallel Operations:** Use `.map()`, `.filter()`, and `.reduce()` with thread counts for parallel data processing.
-- **Performance Optimization:** See [Performance Tuning](../../maintainers/INTERNAL_NOTES/GRAPA_OPTIMIZATION_BACKLOG.md) (maintainer docs).
+- **Performance Optimization:** For deeper performance tuning or engine internals, see the [Deep Expert Implementation Overview](deep_expert_implementation_overview.md).
 
 ## Advanced Error Handling and Debugging
 - **Error Handling:** Use `.iferr()` for fallback, and advanced error patterns for robust scripts.
 - **Debugging:** Enable debug output and use advanced logging for troubleshooting.
 
 ---
+
+## For Deep Experts and Contributors
+- [Deep Expert Implementation Overview](deep_expert_implementation_overview.md) – How to access and navigate maintainer/implementation documentation (for contributors/maintainers only)
 
 ## See also
 - [API Reference](api_reference.md)

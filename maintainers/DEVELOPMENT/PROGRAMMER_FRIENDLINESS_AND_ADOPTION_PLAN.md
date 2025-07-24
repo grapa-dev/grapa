@@ -1,5 +1,7 @@
 # Grapa Language Programmer Friendliness & Adoption Plan
 
+> **Note:** Per project policy, do not add links or references from user-facing docs (`docs-src`) to this plan or any other maintainer/internal documentation. All roadmap/process content must remain in `maintainers/`.
+
 ## Introduction & Goals
 
 This document outlines a comprehensive plan to make the Grapa language more programmer friendly and to increase adoption. The goal is to audit the current language, summarize migration findings, identify pain points, and propose concrete improvements for syntax, usability, and onboarding.
@@ -84,6 +86,40 @@ This document outlines a comprehensive plan to make the Grapa language more prog
 - Solicit user feedback and pain points via issues/PRs.
 - Document all new features and idioms in the canonical syntax guide and onboarding docs.
 - Provide clear upgrade/migration paths for breaking changes.
+
+## Canonical Syntax Reference & Ongoing Maintenance
+
+- The [Basic Syntax Guide](../../docs-src/docs/syntax/basic_syntax.md) is the canonical, empirically tested reference for all Grapa syntax and access patterns. The access patterns table and unsupported syntax summary in that file are authoritative for all type access, loop, comment, and syntax rules.
+- As the Grapa language improves with the recommendations in this plan, this document, the Basic Syntax Guide, and all code samples throughout `docs-src` must be updated to reflect new syntax and features.
+- **All Grapa code samples in documentation must be empirically tested as .grc scripts.**
+- After any language change, perform a full scan of all samples in `docs-src` for possible revisions and re-test all .grc scripts to ensure compliance and correctness.
+- Periodically review and update all documentation and samples to maintain strict alignment with the latest language rules and best practices.
+
+## Documentation & Sample Maintenance Policy
+
+- **Policy:** Any change to the Grapa language (syntax, semantics, features, or deprecations) requires:
+  - Immediate update of the [Basic Syntax Guide](../../docs-src/docs/syntax/basic_syntax.md) and any other canonical syntax docs.
+  - Full scan of all `.md` files in `docs-src` for Grapa code samples that may need revision.
+  - Empirical re-testing of all `.grc` code samples to ensure compliance and correctness.
+  - Update of migration docs and this plan if new features address previous pain points.
+  - A checklist or sign-off step in the PR/release process for documentation and sample updates.
+
+- **Automation Recommendation:**
+  - Consider creating a script or CI job to extract all Grapa code blocks from `docs-src` `.md` files, run them as `.grc` scripts, and report failures or outdated patterns.
+
+- **Maintainer Checklist:**
+  - After any language change, you must:
+    - Update `basic_syntax.md` and migration docs.
+    - Scan and update all code samples in documentation.
+    - Re-test all `.grc` scripts.
+    - Update this plan if new features address previous pain points.
+    - Cross-link all relevant docs.
+
+- **Periodic Review:**
+  - Schedule a periodic (e.g., quarterly) review of all documentation and samples, even if no major language changes have occurred, to catch any drift or missed updates.
+
+- **Cross-linking:**
+  - Ensure `basic_syntax.md`, this plan, migration docs, and the comment handling guide all reference each other for rationale, canonical rules, and roadmap.
 
 ## References
 - [COMMENT_HANDLING_GUIDE.md](COMMENT_HANDLING_GUIDE.md)

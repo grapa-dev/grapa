@@ -128,5 +128,5 @@ v.reduce(op(a,b){a+b;}, 0);
 > All code samples are empirically validated and follow the canonical [Basic Syntax Guide](../syntax/basic_syntax.md).
 
 ---
-For advanced details, see the [maintainer documentation](../../maintainers/DEVELOPMENT/VECTOR_IMPLEMENTATION.md).
+For advanced details, see the [Deep Expert Implementation Overview](../deep_expert_implementation_overview.md).
 

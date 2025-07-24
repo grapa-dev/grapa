@@ -2,6 +2,8 @@
 
 Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scripts and code snippets demonstrating Grapa's core features, from basic syntax to advanced data processing and Python integration.
 
+[See the Examples Overview](examples/README.md)
+
 ## Example Scripts
 
 | Example | Description |

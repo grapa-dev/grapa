@@ -113,3 +113,21 @@ This section is for Grapa maintainers and advanced contributors. It contains doc
 - [ ] **Update GrapaFloat integration** - Ensure proper conversion to GrapaFloat objects
 - [ ] **Add test cases** - Comprehensive testing of scientific notation parsing
 - [ ] **Update documentation** - Remove limitation notes once implemented 
+
+## Maintainer Checklist for Language Changes
+
+After any change to the Grapa language (syntax, semantics, features, or deprecations), you must:
+- Update [Basic Syntax Guide](../docs-src/docs/syntax/basic_syntax.md) and migration docs.
+- Scan and update all code samples in documentation (`docs-src`).
+- Empirically re-test all `.grc` scripts.
+- Update the [Programmer Friendliness & Adoption Plan](DEVELOPMENT/PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md) if new features address previous pain points.
+- Cross-link all relevant docs (basic_syntax.md, migration docs, comment handling guide, this plan).
+- Ensure a sign-off step in the PR/release process for documentation and sample updates. 
+
+## Documentation Separation Policy
+
+- All user-facing documentation must reside in `docs-src` (and ultimately `docs/` for the site build).
+- User-facing docs in `docs-src` must **never** link to or reference anything outside of `docs-src` (including `maintainers/`).
+- Maintainer/internal documentation must reside in `maintainers/` and must **not** be placed in `docs-src`.
+- This strict separation is mandatory for all contributors and agents to ensure clean user/maintainer boundaries and prevent accidental exposure of internal content.
+- The only exception: clickable links to maintainer docs are allowed in docs-src/docs/deep_expert_implementation_overview.md, which is a dedicated bridge for deep expert users. All other docs in docs-src must not link outside docs-src. 
