@@ -152,6 +152,44 @@ This document provides a comprehensive reference for the `GrapaBtree` class, its
 
 ---
 
+## Custom Node Width (NODE_WIDTH) per BTree
+
+A unique feature of GrapaBtree is the ability to specify a custom node width (number of leafs per node) for each BTree instance at creation time.
+
+### How to Specify Node Width
+- The `NewTree` function allows you to set a custom node width via the `nodeCount` parameter:
+  ```cpp
+  GrapaError NewTree(u64& treePtr, u8 treeType, u64 parentTree = 0LL, u8 nodeCount = NODE_WIDTH);
+  ```
+- If `nodeCount` is not specified, the global `NODE_WIDTH` constant is used (default is 5).
+- This lets you tune the BTree structure for specific workloads or storage scenarios.
+
+### Example: Creating a BTree with Custom Node Width
+```cpp
+u64 myTree;
+GrapaBtree btree;
+btree.NewTree(myTree, SU64_TREE, 0, 9); // Creates a BTree with node width 9
+```
+
+### Trade-offs: Small vs. Large Node Width
+- **Smaller NODE_WIDTH (e.g., 3–5):**
+  - Shallower nodes, more frequent splits/merges
+  - Less memory per node
+  - Can be better for small, random updates
+  - Deeper trees (more pointer traversals)
+- **Larger NODE_WIDTH (e.g., 8–64+):**
+  - Fewer levels in the tree (shallower)
+  - Fewer splits/merges, better for large, sequential workloads
+  - More memory per node
+  - Can be more cache/disk block friendly
+
+### When to Use
+- For most general use, the default (5) is a safe, balanced choice.
+- For large, disk-backed, or bulk-insert workloads, a larger node width may improve performance.
+- You can experiment with different values to optimize for your specific data and access patterns.
+
+---
+
 ## How to Properly Use GrapaBtree
 
 ### Initialization
