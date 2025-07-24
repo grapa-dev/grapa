@@ -223,6 +223,65 @@ GrapaDB maintains consistency through:
 
 ---
 
+## GrapaDB Storage Architecture: Table Layouts and Indexing
+
+GrapaDB organizes all persistent data using BTrees, leveraging them for both record/column storage and for all indexes. The storage architecture varies by table type (ROW, COL, GROUP), but all share a common foundation:
+- **Data BTrees**: Store the actual user data (records or columns)
+- **Index BTrees**: Store pointers to data BTrees for fast lookup/search
+- **Metadata/Dictionary BTrees**: Store field definitions, types, and schema info
+
+### Table Layouts
+
+#### ROW Table
+- **Data Organization**: Each record (row) is stored as a single entry in the data BTree; all fields for a record are together.
+- **Indexes**: One or more index BTrees point to record locations in the data BTree (using RPTR_ITEM, etc.).
+- **Metadata**: Dictionary/field definitions are stored in a DICT field (key==0) in the index BTree.
+
+#### COL Table
+- **Data Organization**: Each column is stored separately, often as its own BTree (using FREC_DATA for fragmentation).
+- **Indexes**: Indexes may be per-column or global, depending on configuration; pointers link index BTrees to column BTrees.
+- **Fragmentation**: FREC_DATA and weighted BTree are used for efficient column storage and updates.
+- **Metadata**: Dictionary/field definitions as in ROW.
+
+#### GROUP Table
+- **Data Organization**: Hierarchical or nested records (like a directory tree or JSON object); may use a BTree per group or nested structure.
+- **Indexes**: Can be hierarchical or flat; pointers link parent/child groups and their indexes.
+- **Metadata**: As above, with possible extensions for nested/grouped fields.
+
+### Diagram: High-Level Storage Layout
+
+```
++-------------------+         +-------------------+
+|   Data BTree(s)   | <------ |   Index BTree(s)  |
+| (records/columns) |         | (pointers to data)|
++-------------------+         +-------------------+
+         ^                           ^
+         |                           |
+         +-----------+   +-----------+
+                     |   |
+             +-------------------+
+             |  Metadata/DICT    |
+             |  (field defs, etc)|
+             +-------------------+
+```
+- For COL tables, there may be multiple data BTrees (one per column), each with its own index or shared indexes.
+- GROUP tables may have a tree of data/index BTrees linked by parent/child pointers.
+
+### Comparison Table: Table Layouts
+
+| Table Type | Data Storage         | Indexing                | Metadata/DICT         |
+|------------|---------------------|-------------------------|-----------------------|
+| ROW        | One BTree for rows  | Index BTrees point to records | DICT field in index BTree |
+| COL        | BTree per column (FREC_DATA) | Index per column or global | DICT field in index BTree |
+| GROUP      | BTree per group/nested structure | Hierarchical or flat indexes | DICT, possibly nested    |
+
+### Why This Matters
+- **For maintainers**: Understanding the mapping from high-level tables to BTrees is essential for debugging, extending, or recovering GrapaDB files.
+- **For debugging/forensics**: Knowing how data and indexes are linked allows for manual recovery and low-level analysis.
+- **For extensibility**: Enables future contributors to add new table types, optimize storage, or build tools for migration and analysis.
+
+---
+
 ## How to Properly Use GrapaDB
 
 ### Database Initialization
