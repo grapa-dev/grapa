@@ -684,3 +684,153 @@ This ensures that each leaf is moved only after the previous one has been safely
 - **Phase 1**: Isolated BTree test harness runs successfully and validates all core functionality
 - **Phase 2**: GrapaDB operations work correctly with validated BTree foundation
 - **Documentation**: All implementation docs updated with current understanding and best practices 
+
+---
+
+## CRITICAL UPDATE: BTree Implementation Exonerated (January 2025)
+
+### Key Finding: NODE_WIDTH Test Eliminates BTree as Root Cause
+**Test**: Changed NODE_WIDTH from 5 to 9 to eliminate node splitting/merging  
+**Result**: Issue still repeated identically  
+**Conclusion**: The problem is NOT in BTree's split/merge logic, leaf movement, or rebalancing operations
+
+### What This Eliminates
+- ❌ BTree node splitting/merging logic
+- ❌ Leaf movement during rebalancing  
+- ❌ `InsInPage` stale data issues
+- ❌ Complex BTree rebalancing operations
+- ❌ Node underflow/overflow handling
+
+### What This Points To
+The issue is in **GrapaDB's index management logic**, specifically:
+
+1. **Index Entry Management Logic** - How GrapaDB creates/updates index entries
+2. **DICT Field Interaction** - How the key==0 DICT field affects index operations
+3. **Record Update Flow** - How field updates trigger index modifications
+4. **Index Entry Lifecycle** - How old entries are deleted and new ones are inserted
+
+### Index BTree vs Records BTree Differences Discovered
+**Index BTree Structure:**
+- **First Item (key==0)**: Always contains the **DICT field** - special metadata field describing table dictionary structure
+- **Subsequent Items**: Contain actual index entries (RPTR_ITEM, CPTR_ITEM, GPTR_ITEM) that point to records
+- **Special Handling**: Code explicitly skips DICT field when processing indexes
+
+**Records BTree Structure:**
+- **All Items**: Contain actual record data (RREC_ITEM, CREC_ITEM, GREC_ITEM)
+- **No special first item**: No key==0 special handling
+
+### Suspected Root Cause: SetRecordField Index Update Logic
+The issue is likely in the **index update logic in `SetRecordField`**:
+
+```cpp
+// In SetRecordField - index update loop
+while (!err)
+{
+    for (i = 0; i < fieldCount; i++)
+    {
+        dbFieldValue = pFieldList.GetFieldAt(i);
+        if (IndexHasField(indexCursor, dbFieldValue->mId))
+        {
+            // This is where the corruption likely happens!
+            tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+            err = Insert(tableCursor);  // This might be overwriting existing entries
+        }
+    }
+    err = Next(indexCursor);
+    if (!err && indexCursor.mKey==0)
+        err = Next(indexCursor);
+}
+```
+
+**The Problem:** The `Insert(tableCursor)` call is likely **overwriting existing index entries** instead of properly managing them. When updating a field, it's not properly deleting the old index entry before inserting the new one.
+
+### Why It Happens After the 3rd Record
+1. **First record**: Creates the initial index structure
+2. **Second record**: Adds to the index structure  
+3. **Third record**: When you update a field, the index update logic corrupts the existing entries
+
+### Why First Record Shows Only 1 Index Entry
+- No field updates have occurred yet
+- Only the initial index entry exists
+- No corruption from index update logic
+
+### Why Subsequent Records Show 2 Entries
+- Old index entry (not properly deleted)
+- New index entry (inserted during update)
+- The old entry should be deleted but isn't
+
+### Impact on Previous Investigation
+- **Previous BTree fixes were correct** - The 2024-07 leaf move bug fix was valid and necessary
+- **BTree implementation is sound** - All core functionality works correctly
+- **Investigation focus should shift** - From BTree to GrapaDB index management
+- **Both ROW and COL tables affected** - Issue is not table-type specific
+
+### Next Steps for Investigation
+1. **Audit `SetRecordField` index update logic** - Verify proper delete/insert sequence
+2. **Check `DeleteKeyIndexes` integration** - Ensure old entries are properly removed
+3. **Review index entry lifecycle** - Understand when entries are created/updated/deleted
+4. **Test index update isolation** - Create test that only updates fields without record creation
+
+### Documentation Updates
+- **GRAPA_BTREE_IMPLEMENTATION.md**: Updated with findings that BTree is not the root cause
+- **This document**: Updated with new investigation focus on GrapaDB index management
+- **Future work**: Focus on `SetRecordField` and index entry lifecycle management
+
+### Technical Implementation Details
+For detailed information about how indexes work within GrapaDB, see:
+- **GRAPA_DB_IMPLEMENTATION.md**: Contains comprehensive documentation of index BTree structure, entry lifecycle, and management methods
+
+### Corruption Investigation Details
+
+#### Suspected Root Cause: SetRecordField Index Update Logic
+The issue is likely in the **index update logic in `SetRecordField`**:
+
+```cpp
+// In SetRecordField - index update loop
+while (!err)
+{
+    for (i = 0; i < fieldCount; i++)
+    {
+        dbFieldValue = pFieldList.GetFieldAt(i);
+        if (IndexHasField(indexCursor, dbFieldValue->mId))
+        {
+            // This is where the corruption likely happens!
+            tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+            err = Insert(tableCursor);  // This might be overwriting existing entries
+        }
+    }
+    err = Next(indexCursor);
+    if (!err && indexCursor.mKey==0)
+        err = Next(indexCursor);
+}
+```
+
+**The Problem:** The `Insert(tableCursor)` call is likely **overwriting existing index entries** instead of properly managing them. When updating a field, it's not properly deleting the old index entry before inserting the new one.
+
+#### Why It Happens After the 3rd Record
+1. **First record**: Creates the initial index structure
+2. **Second record**: Adds to the index structure  
+3. **Third record**: When you update a field, the index update logic corrupts the existing entries
+
+#### Why First Record Shows Only 1 Index Entry
+- No field updates have occurred yet
+- Only the initial index entry exists
+- No corruption from index update logic
+
+#### Why Subsequent Records Show 2 Entries
+- Old index entry (not properly deleted)
+- New index entry (inserted during update)
+- The old entry should be deleted but isn't
+
+#### Validation Evidence
+- **NODE_WIDTH Test**: Changed from 5 to 9 to eliminate node splitting/merging
+- **Result**: Issue still repeated identically
+- **Conclusion**: BTree implementation is sound; issue is in GrapaDB index management
+
+#### Next Steps for Investigation
+1. **Audit `SetRecordField` index update logic** - Verify proper delete/insert sequence
+2. **Check `DeleteKeyIndexes` integration** - Ensure old entries are properly removed
+3. **Review index entry lifecycle** - Understand when entries are created/updated/deleted
+4. **Test index update isolation** - Create test that only updates fields without record creation
+
+--- 

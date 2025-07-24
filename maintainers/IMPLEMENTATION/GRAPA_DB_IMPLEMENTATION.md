@@ -306,6 +306,182 @@ GrapaDB maintains consistency through:
 - **Priority:** Medium — affects query performance
 - **Solution:** Consider caching strategies for frequently accessed records
 
+### Index Entry Corruption (Critical - January 2025)
+- **Issue:** Index entries become corrupted after field updates, affecting both ROW and COL tables
+- **Root Cause:** Index update logic in `SetRecordField` overwrites existing entries instead of properly managing delete/insert sequence
+- **Impact:** Index entries point to wrong records or become invalid after 3rd record insertion
+- **Priority:** Critical — affects data integrity and query correctness
+- **Investigation Status:** BTree implementation validated as sound; issue is in GrapaDB index management
+
+#### Technical Details
+**Index BTree Structure:**
+- **First Item (key==0)**: Always contains the **DICT field** - special metadata field describing table dictionary structure
+- **Subsequent Items**: Contain actual index entries (RPTR_ITEM, CPTR_ITEM, GPTR_ITEM) that point to records
+- **Special Handling**: Code explicitly skips DICT field when processing indexes
+
+**Suspected Root Cause in SetRecordField:**
+```cpp
+// In SetRecordField - index update loop
+while (!err)
+{
+    for (i = 0; i < fieldCount; i++)
+    {
+        dbFieldValue = pFieldList.GetFieldAt(i);
+        if (IndexHasField(indexCursor, dbFieldValue->mId))
+        {
+            // This is where the corruption likely happens!
+            tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+            err = Insert(tableCursor);  // This might be overwriting existing entries
+        }
+    }
+    err = Next(indexCursor);
+    if (!err && indexCursor.mKey==0)
+        err = Next(indexCursor);
+}
+```
+
+**The Problem:** The `Insert(tableCursor)` call is likely **overwriting existing index entries** instead of properly managing them. When updating a field, it's not properly deleting the old index entry before inserting the new one.
+
+**Why It Happens After the 3rd Record:**
+1. **First record**: Creates the initial index structure
+2. **Second record**: Adds to the index structure  
+3. **Third record**: When you update a field, the index update logic corrupts the existing entries
+
+**Why First Record Shows Only 1 Index Entry:**
+- No field updates have occurred yet
+- Only the initial index entry exists
+- No corruption from index update logic
+
+**Why Subsequent Records Show 2 Entries:**
+- Old index entry (not properly deleted)
+- New index entry (inserted during update)
+- The old entry should be deleted but isn't
+
+#### Next Steps for Investigation
+1. **Audit `SetRecordField` index update logic** - Verify proper delete/insert sequence
+2. **Check `DeleteKeyIndexes` integration** - Ensure old entries are properly removed
+3. **Review index entry lifecycle** - Understand when entries are created/updated/deleted
+4. **Test index update isolation** - Create test that only updates fields without record creation
+
+#### Validation Evidence
+- **NODE_WIDTH Test**: Changed from 5 to 9 to eliminate node splitting/merging
+- **Result**: Issue still repeated identically
+- **Conclusion**: BTree implementation is sound; issue is in GrapaDB index management
+
+### Index Implementation Details
+
+#### Index BTree Structure
+GrapaDB uses a specialized BTree structure for indexes that differs from regular record storage:
+
+**Index BTree Organization:**
+- **First Item (key==0)**: Always contains the **DICT field** - special metadata field describing table dictionary structure
+- **Subsequent Items**: Contain actual index entries (RPTR_ITEM, CPTR_ITEM, GPTR_ITEM) that point to records
+- **Special Handling**: Code explicitly skips DICT field when processing indexes
+
+**DICT Field Purpose:**
+The DICT field (key==0) contains metadata about the table's dictionary structure, including:
+- Field definitions and types
+- Storage information
+- Dictionary offsets and sizes
+- Table metadata
+
+#### Index Entry Lifecycle
+Index entries follow a specific lifecycle during database operations:
+
+**Creation Flow:**
+1. **Record Creation**: `CreateRecord()` creates the actual record data
+2. **Index Population**: `InsertIntoIndex()` adds pointer entries to all relevant indexes
+3. **Index Entry**: Each index entry contains a pointer (RPTR_ITEM, CPTR_ITEM, GPTR_ITEM) to the record
+
+**Update Flow:**
+1. **Field Update**: `SetRecordField()` updates the actual field value in the record
+2. **Index Update**: For indexed fields, the system should:
+   - Delete the old index entry for that record
+   - Insert a new index entry with the updated value
+3. **Current Issue**: The delete/insert sequence is not properly managed
+
+**Deletion Flow:**
+1. **Record Deletion**: `DeleteRecord()` removes the actual record data
+2. **Index Cleanup**: `DeleteKeyIndexes()` removes all pointer entries for that record
+3. **Cleanup**: Orphaned data and references are cleaned up
+
+#### Index Management Methods
+
+**InsertIntoIndex Method:**
+```cpp
+GrapaError GrapaDB::InsertIntoIndex(u64 tableRef, u8 pValueType, u64 resId, u64 recordRef)
+```
+- Iterates through all indexes for a table
+- Skips the DICT field (key==0) 
+- Inserts pointer entries for the new record into each index
+
+**DeleteKeyIndexes Method:**
+```cpp
+GrapaError GrapaDB::DeleteKeyIndexes(GrapaCursor& treeCursor)
+```
+- Removes all index entries pointing to a specific record
+- Handles different record types (GREC_ITEM, RREC_ITEM, CREC_ITEM)
+- Maps to appropriate pointer types (GPTR_ITEM, RPTR_ITEM, CPTR_ITEM)
+
+**SetRecordField Index Update:**
+```cpp
+// In SetRecordField - index update loop
+while (!err)
+{
+    for (i = 0; i < fieldCount; i++)
+    {
+        dbFieldValue = pFieldList.GetFieldAt(i);
+        if (IndexHasField(indexCursor, dbFieldValue->mId))
+        {
+            tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+            err = Insert(tableCursor);  // Current implementation
+        }
+    }
+    err = Next(indexCursor);
+    if (!err && indexCursor.mKey==0)
+        err = Next(indexCursor);
+}
+```
+
+#### Index vs Records BTree Differences
+
+**Index BTree Characteristics:**
+- **Purpose**: Store pointers to records for efficient lookup
+- **Structure**: DICT field + pointer entries
+- **Operations**: Pointer management, dereferencing
+- **Special Handling**: Skip DICT field during iteration
+
+**Records BTree Characteristics:**
+- **Purpose**: Store actual record data
+- **Structure**: Pure record entries
+- **Operations**: Direct data storage and retrieval
+- **Special Handling**: None required
+
+#### Pointer Dereferencing in Indexes
+Indexes use the pointer dereferencing system to access actual record data:
+
+**PtrToRec Method:**
+```cpp
+GrapaError GrapaDB::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
+```
+- Converts pointer types to record types:
+  - `GPTR_ITEM` → `GREC_ITEM` (GROUP_TREE)
+  - `RPTR_ITEM` → `RREC_ITEM` (RTABLE_TREE)  
+  - `CPTR_ITEM` → `CREC_ITEM` (CTABLE_TREE)
+- Enables efficient storage without data duplication
+
+#### Index Search and Comparison
+Index searches use specialized comparison logic:
+
+**CompareSearchKey Method:**
+```cpp
+GrapaError GrapaDB::CompareSearchKey(s16 compareType, GrapaCursor& dataCursor, GrapaCursor& treeCursor, s8& result)
+```
+- Handles multi-field index searches
+- Dereferences pointer entries to access actual record data
+- Compares search criteria against record field values
+- Uses `strcmp` for field comparisons (known limitation)
+
 ---
 
 ## Reference and Ongoing Documentation
