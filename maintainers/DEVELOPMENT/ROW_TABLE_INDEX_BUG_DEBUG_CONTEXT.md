@@ -839,3 +839,58 @@ while (!err)
 - [GRAPA_BTREE_FILE_STRUCTURE.md](../IMPLEMENTATION/GRAPA_BTREE_FILE_STRUCTURE.md) — Canonical reference for the on-disk BTree file/block structure and manual traversal. Essential for low-level forensics or manual debugging of BTree/DB files.
 - [GRAPA_BTREE_IMPLEMENTATION.md](../IMPLEMENTATION/GRAPA_BTREE_IMPLEMENTATION.md) — Main BTree implementation reference
 - [GRAPA_DB_IMPLEMENTATION.md](../IMPLEMENTATION/GRAPA_DB_IMPLEMENTATION.md) — Database layer implementation 
+
+---
+
+## New Hypothesis: First Index Entry Compare Corner Case
+
+**Hypothesis:**
+The ROW (and COL) table index corruption may be caused by a corner case in the index compare logic during the insertion of the very first item into the index BTree. Specifically, when the index is empty, there is nothing to compare to, and the compare function may return a value (or behave in a way) that causes the wrong thing to happen—such as an incorrect insert, pointer, or index state.
+
+- This could explain why the first record appears correct, but subsequent records show corruption or duplicate index entries.
+- The issue may be triggered only on the very first insert, when the compare function is called with no valid existing entry.
+
+### Investigation Steps
+- [ ] Review the compare logic used during index BTree insertion, especially for the first entry (empty tree or node).
+- [ ] Identify what value is returned by the compare function when there is nothing to compare to.
+- [ ] Trace the code path for the first index insert and see if any special handling (or lack thereof) could cause a bad state.
+- [ ] Check if this logic differs from subsequent inserts, and if so, how.
+- [ ] Add debug output or assertions to the compare function to capture its behavior on the first insert.
+
+**Status:** Hypothesis added for investigation. Pending code review and further testing.
+
+--- 
+
+## Technical Note: Reserved mKey=0 (DICT) Entry in Index BTree
+
+**Background:**
+- The index BTree for every GrapaDB table reserves the first entry (`mKey==0`) for the DICT (dictionary/metadata) field.
+- This DICT entry is created as part of table/index initialization, before any user records are inserted.
+- All index traversal and update logic is designed to skip this entry, treating it as special and not as a user data/index entry.
+
+**Expected State:**
+- **After table/index creation, before any user records:**
+  - The index BTree contains exactly one entry: `mKey==0` (the DICT).
+- **After the first user record is inserted:**
+  - The index BTree contains two entries: `mKey==0` (DICT) and `mKey==1` (first user index entry).
+- **After N user records:**
+  - The index BTree contains: `mKey==0` (DICT), `mKey==1..N` (user index entries).
+
+**Implications for First User Index Insert:**
+- The BTree is not empty when the first user index entry is inserted; it already contains the DICT entry.
+- The BTree insert/search logic will compare the new key to `mKey==0` and determine the correct position for the new entry.
+- All traversal code must skip `mKey==0` to avoid treating the DICT as a user record.
+
+**Potential Side Effects / Edge Cases:**
+- If insert, delete, or update logic does not properly skip or protect the `mKey==0` entry, it could:
+  - Overwrite the DICT entry with a user index entry (corrupting the schema).
+  - Fail to insert the first user index entry in the correct position.
+  - Cause off-by-one errors in traversal, leading to missing or duplicated index entries.
+- If the DICT entry is missing or overwritten after the first user record is inserted, this indicates a bug in index management.
+
+**Debugging Guidance:**
+- After table creation, traverse the index BTree to confirm the presence of `mKey==0`.
+- After the first user record is inserted, confirm both `mKey==0` and the new user key are present and in the correct order.
+- Watch for any logic that could delete, overwrite, or misplace the DICT entry during index operations.
+
+--- 
