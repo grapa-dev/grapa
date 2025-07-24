@@ -369,7 +369,7 @@ GrapaDB organizes all persistent data using BTrees, leveraging them for both rec
 - **ROW and COL Table Index Corruption:**
   - There is a known issue where index entries may become corrupted after field updates, affecting both ROW and COL tables.
   - For full investigation details, root cause analysis, and debugging history, see:
-    - [ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](../DEVELOPMENT/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)
+    - [archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) (archived, closed investigation)
 - **CompareSearchKey Field Comparison:**
   - Uses `strcmp` for all field comparisons; see investigation doc for impact and future work.
 - **Index Consistency:**
@@ -381,7 +381,7 @@ GrapaDB organizes all persistent data using BTrees, leveraging them for both rec
 - This summary and all future details are maintained in this file.
 - As new edge cases, bugs, or usage patterns are discovered, update this doc to keep it as the canonical reference.
 - Cross-reference with `GRAPA_BTREE_IMPLEMENTATION.md` for BTree-specific details.
-- Update the investigation document (`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`) with any findings related to the current bug investigation.
+- Update the investigation document (`archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`) with any findings related to the historical bug investigation (now closed).
 
 ---
 
@@ -499,26 +499,4 @@ The architecture supports extensions through:
 
 #### Debug Output System
 The system includes comprehensive debug output for investigation:
-```cpp
-#define DEBUG_BTREE_INVESTIGATION 1
-#define DEBUG_COMPARE_KEY 1
-#define DEBUG_INDEX_OPERATIONS 1
 ```
-
-#### Monitoring Points
-1. **Comparison Operations**: Track all key comparison operations
-2. **Pointer Dereferencing**: Monitor pointer resolution and record access
-3. **Index Operations**: Track index insertions, deletions, and searches
-4. **Error Conditions**: Monitor and log error conditions
-
-### Future Architecture Considerations
-
-#### Scalability Improvements
-1. **Distributed Indexing**: Support for distributed index operations
-2. **Parallel Processing**: Concurrent index operations for improved performance
-3. **Memory-Mapped Files**: Efficient large database handling
-
-#### Feature Extensions
-1. **Advanced Query Language**: SQL-like query support
-2. **Full-Text Search**: Text indexing and search capabilities
-3. **Temporal Data**: Support for time-series data and historical queries 

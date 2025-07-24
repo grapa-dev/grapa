@@ -8,6 +8,8 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - User-defined classes/objects: Improve documentation and idiomatic usage
 - CLI Enhancement Phase 2: Performance options, environment management, error handling
 - Continue documentation structure improvements: See [DOCS_STRUCTURE_IMPROVEMENT_PLAN.md](DEVELOPMENT/DOCS_STRUCTURE_IMPROVEMENT_PLAN.md)
+- Evaluate all instances of null, true, and false handling in Grapa (especially for .get(), .set(), and field assignment) to ensure consistency across all types and operations. Reference the recent RAW/null test as an example.
+- Automate running the full regression suite (run_tests_comprehensive.grc and Python integration tests) as part of CI to ensure all features and integrations are validated on every change.
 
 ---
 

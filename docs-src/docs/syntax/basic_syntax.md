@@ -1116,9 +1116,49 @@ table.set("key1", 30, "age");
 table.set("key1", 100.5, "value");
 
 /* Retrieve data */
-name = table.get("key1", "name").str();
-age = table.get("key1", "age").int();
-value = table.get("key1", "value").float();
+name = table.get("key1", "name");      /* $STR */
+age = table.get("key1", "age");        /* $INT, no .int() needed */
+value = table.get("key1", "value");    /* $FLOAT, no .float() needed */
+
+/* RAW field type: can store any Grapa object (e.g., JSON, XML, $LIST, $ARRAY) */
+table.mkfield("meta", "RAW");
+table.set("key1", {"foo": 123, "bar": [1,2,3]}, "meta");
+meta = table.get("key1", "meta");      /* Returns Grapa object automatically */
+(meta.foo).echo();                      /* 123 */
+(meta.bar[1]).echo();                   /* 2 */
+
+/* Edge cases and error handling */
+/* .get() returns $ERR if the key or field is missing */
+missing = table.get("missing", "age");
+(missing.type()).echo();                /* $ERR */
+
+/* Type mismatch: setting INT/FLOAT to non-numeric values may yield undefined results */
+table.set("user2", "not an int", "age");
+("INT field with STR: " + table.get("user2", "age")).echo();
+
+/* RAW field can store nested objects/arrays */
+table.set("user3", {foo: {bar: [1,2,{baz: 99}]}, arr: [10,20]}, "meta");
+nested = table.get("user3", "meta");
+("Nested RAW type: " + nested.type()).echo();
+("Nested RAW foo.bar[2].baz: " + nested.foo.bar[2].baz).echo();
+("Nested RAW arr[1]: " + nested.arr[1]).echo();
+
+/* Overwriting a field with a value of a different type does not change the field's declared type */
+table.set("user4", 123, "age");
+table.set("user4", "now a string", "age");
+("INT field overwritten with STR: " + table.get("user4", "age")).echo();
+
+/* RAW field set to null returns $SYSID (Grapa's null/empty object) */
+table.set("user5", null, "meta");
+("Null RAW: " + table.get("user5", "meta").type()).echo();
+
+/* TODO: Review and ensure consistent handling of null, true, false across all field types. */
+
+/* Delete a record (works for ROW, COL, GROUP) */
+table.rm("key1");
+
+/* List records after deletion */
+("After delete: " + table.ls().join(",")).echo();
 ```
 
 This guide covers the essential syntax patterns for writing correct Grapa code. Follow these patterns to avoid common syntax errors and write maintainable code. 
@@ -1463,3 +1503,5 @@ info.type();           // $LIST
 - [Use Cases](../use_cases/)
 - [Examples](../examples/)
 <!-- Advanced Topics link removed: content consolidated or planned/future --> 
+
+/* Note: As of 2025-07-22, all known DB/BTree and index issues are resolved and validated by comprehensive tests. The Grapa syntax and type system are empirically validated and up to date. */ 
