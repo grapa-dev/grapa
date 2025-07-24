@@ -35,6 +35,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ### Core Language Features
 - [ ] **String Comparison Distance Function**: Consider creating a dedicated function that returns detailed string comparison distance information (like current `<=>` operator behavior) for applications that need fuzzy matching or detailed string analysis
 - [ ] **GrapaDB Float Comparison Support**: Add float comparison support to GrapaDB so that float values can be used as index keys. Investigate if current raw binary data comparison is sufficient or if specialized float comparison logic is needed
+- [ ] Grapa Language Programmer Friendliness & Adoption Plan: See [PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md](PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md) for a comprehensive audit, migration review, pain points, and proposals to improve comment handling, loop syntax, string interpolation, onboarding, and overall language adoption.
 
 ### Performance & Optimization
 - [ ] Optimize large array operations

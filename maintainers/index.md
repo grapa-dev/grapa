@@ -91,6 +91,7 @@ When referencing maintainer content, use these paths:
 - [Development Status](DEVELOPMENT/CURRENT_STATUS.md) - **AUTHORITATIVE**: Single source of truth for all development status
 - [Contributing Guidelines](DEVELOPMENT/CONTRIBUTING.md) - How to contribute
 - [Code Review Process](DEVELOPMENT/CODE_REVIEW.md) - Review guidelines
+- [Programmer Friendliness & Adoption Plan](DEVELOPMENT/PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md) - Comprehensive audit, migration review, pain points, and proposals to improve Grapa's usability and adoption.
 
 ### Internal Notes
 - [Documentation Ideas](INTERNAL_NOTES/DOCS_IMPROVEMENT_IDEAS.md) - Docs improvement plans

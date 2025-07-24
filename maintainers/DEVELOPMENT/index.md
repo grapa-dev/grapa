@@ -19,6 +19,7 @@ This folder is for all in-progress, investigation, planning, and debug documenta
 - **[DOCUMENTATION_DEPLOYMENT_GUIDE.md](../BUILD_AND_DEPLOYMENT/DOCUMENTATION_DEPLOYMENT.md)** - Complete documentation deployment process
 - **[IMPLEMENTATION_PROGRESS.md](IMPLEMENTATION_PROGRESS.md)** - **DEPRECATED**: Moved to CURRENT_STATUS.md
 - **[TODO.md](TODO.md)** - **DEPRECATED**: Moved to CURRENT_STATUS.md
+- **[PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md](PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md)** - Comprehensive audit, migration review, pain points, and proposals to improve comment handling, loop syntax, string interpolation, onboarding, and overall language adoption.
 - **BACKLOG.md**: Historical or long-term backlog. Now located in this folder.
 
 ## 🔧 **Build & Deployment**
