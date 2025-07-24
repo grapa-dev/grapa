@@ -253,9 +253,9 @@ test_table_operations = op() {
     table.set("user2", 25, "age");
     
     /* Retrieve data */
-    name1 = table.get("user1", "name").str();
+    name1 = table.get("user1", "name");
     age1_raw = table.get("user1", "age");
-    name2 = table.get("user2", "name").str();
+    name2 = table.get("user2", "name");
     age2_raw = table.get("user2", "age");
     /*
     WORKAROUND: Table INT and FLOAT fields are returned as $STR containing raw bytes.

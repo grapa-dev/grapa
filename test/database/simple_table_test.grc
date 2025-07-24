@@ -13,8 +13,8 @@ table.set("user1", "John", "name");
 table.set("user1", 25, "age");
 
 /* Get data */
-name = table.get("user1", "name").str();
-age = table.get("user1", "age").int();
+name = table.get("user1", "name");
+age = table.get("user1", "age");
 
 ("Name: " + name + ", Age: " + age).echo();
 "\n".echo();

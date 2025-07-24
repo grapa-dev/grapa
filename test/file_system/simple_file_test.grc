@@ -68,9 +68,9 @@ table.set("user1", "New York", "city");
 /* Retrieve and verify data */
 "Retrieving record data...".echo();
 "\n".echo();
-name = table.get("user1", "name").str();
-age = table.get("user1", "age").int();
-city = table.get("user1", "city").str();
+name = table.get("user1", "name");
+age = table.get("user1", "age");
+city = table.get("user1", "city");
 
 ("Record data - Name: " + name + ", Age: " + age + ", City: " + city).echo();
 "\n".echo();
@@ -100,9 +100,9 @@ if (name == "John Doe" && age == 30 && city == "New York") {
     /* Retrieve and verify data */
     "Retrieving record data from virtual table...".echo();
 	"\n".echo();
-    vname = vtable.get("user1", "name").str();
-    vage = vtable.get("user1", "age").int();
-    vcity = vtable.get("user1", "city").str();
+    vname = vtable.get("user1", "name");
+    vage = vtable.get("user1", "age");
+    vcity = vtable.get("user1", "city");
     
     ("Virtual table record data - Name: " + vname + ", Age: " + vage + ", City: " + vcity).echo();
 	"\n".echo();

@@ -12,7 +12,7 @@ setFields = op(pData,rName,pName,pAge,pCity) {
 	pData.set(rName, pCity, "city");
 };
 getFields = op(pData,rName) {
-	{"name":pData.get(rName, "name").str(),"age":pData.get(rName, "age").raw().int(), "city":pData.get(rName, "city").str()};
+	{"name":pData.get(rName, "name"),"age":pData.get(rName, "age"), "city":pData.get(rName, "city")};
 };
 "================================================================================\n".echo();
 ("Set user1 " + {"name":"Alice","age":25,"city":"New York"}.str() + "\n").echo();

@@ -40,7 +40,7 @@ $row_db.set("user3", 0, "active");
 "✓ 3 user records inserted\n".echo();
 
 # Retrieve user data (point queries)
-$user1_name = $row_db.get("user1", "name").str();
+$user1_name = $row_db.get("user1", "name");
 $user1_age = $row_db.get("user1", "age").raw().int();
 ("✓ Retrieved user1: " + $user1_name + ", age " + $user1_age.str() + "\n").echo();
 
@@ -149,7 +149,7 @@ $group_contents = $group_db.ls();
 
 # Navigate back to users and retrieve data
 $users_db = $group_db.cd("users");
-$admin_name = $users_db.get("admin1", "name").str();
+$admin_name = $users_db.get("admin1", "name");
 ("✓ Retrieved from nested users DB: " + $admin_name + "\n").echo();
 
 # ================================================================================
@@ -159,9 +159,9 @@ $admin_name = $users_db.get("admin1", "name").str();
 "\\n=== Cross-Database Operations ===\n".echo();
 
 # Demonstrate data integrity across all database types
-$row_user2_name = $row_db.get("user2", "name").str();
-$col_metric_name = $col_db.get("metric1", "metric").str();
-$group_admin_role = $users_db.get("admin1", "role").str();
+$row_user2_name = $row_db.get("user2", "name");
+$col_metric_name = $col_db.get("metric1", "metric");
+$group_admin_role = $users_db.get("admin1", "role");
 
 ("✓ Cross-database validation:\n").echo();
 ("  ROW: " + $row_user2_name + "\n").echo();

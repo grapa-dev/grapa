@@ -39,8 +39,8 @@ table.mkfield("age", "INT");
 table.set("user1", "John", "name");
 table.set("user1", 25, "age");
 
-name = table.get("user1", "name").str();
-age = table.get("user1", "age").int();
+name = table.get("user1", "name");
+age = table.get("user1", "age");
 
 ("Table data - Name: " + name + ", Age: " + age + "\n").echo();
 
