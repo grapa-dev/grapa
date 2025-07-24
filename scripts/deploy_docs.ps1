@@ -161,4 +161,89 @@ function Main {
     Write-Host "`nGitHub Pages will update automatically from /docs on main."
 }
 
+# Verify documentation separation policy: no links from docs-src to maintainers or outside docs-src, except in deep_expert_implementation_overview.md
+$allDocs = Get-ChildItem -Path 'docs-src/**/*.md' -Recurse
+$docsToCheck = $allDocs | Where-Object { $_.Name -ne 'deep_expert_implementation_overview.md' }
+$violations = Select-String -Path $docsToCheck.FullName -Pattern '\.\./maintainers/|\.\./\.\./maintainers/|/maintainers/'
+if ($violations) {
+    Write-Host "ERROR: User-facing docs in docs-src must not link to or reference anything outside docs-src (including maintainers/), except in deep_expert_implementation_overview.md." -ForegroundColor Red
+    $violations | ForEach-Object { Write-Host $_.Path ':' $_.LineNumber ':' $_.Line }
+    exit 1
+}
+
+# Check for orphan docs (not linked from index.md or any other .md in docs-src, or included in mkdocs.yml nav)
+$allDocs = Get-ChildItem -Path 'docs-src/docs/' -Filter *.md -Recurse | Where-Object { $_.Name -ne 'index.md' }
+$docsRoot = (Resolve-Path 'docs-src/docs/').Path.ToLower()
+
+# Print debug info for path resolution
+if ($allDocs.Count -gt 0) {
+    Write-Host "DEBUG: Sample $allDocs[0].FullName = $($allDocs[0].FullName)" -ForegroundColor Yellow
+}
+
+# Extract all .md files linked from Markdown files
+$linkedDocs = Select-String -Path 'docs-src/docs/**/*.md' -Pattern '\(([^)]+\.md)\)' | ForEach-Object { $_.Matches.Groups[1].Value.TrimStart('./') } | Select-Object -Unique
+
+# Extract all .md files listed in mkdocs.yml nav (recursively, robust to nesting)
+function Get-MkdocsNavDocs {
+    param([object[]]$navTree, [string]$prefix = "")
+    $result = @()
+    foreach ($item in $navTree) {
+        if ($item -is [System.Collections.Hashtable]) {
+            foreach ($key in $item.Keys) {
+                $value = $item[$key]
+                if ($value -is [string] -and $value.ToLower().EndsWith('.md')) {
+                    if ($prefix) {
+                        $result += (Join-Path $prefix $value).Replace('/', '\').ToLower()
+                    } else {
+                        $result += $value.Replace('/', '\').ToLower()
+                    }
+                } elseif ($value -is [System.Collections.IEnumerable]) {
+                    $result += Get-MkdocsNavDocs -navTree $value -prefix $prefix
+                }
+            }
+        } elseif ($item -is [string] -and $item.ToLower().EndsWith('.md')) {
+            if ($prefix) {
+                $result += (Join-Path $prefix $item).Replace('/', '\').ToLower()
+            } else {
+                $result += $item.Replace('/', '\').ToLower()
+            }
+        }
+    }
+    return $result
+}
+
+# Parse mkdocs.yml nav section robustly
+$mkdocsYaml = Get-Content 'docs-src/mkdocs.yml' -Raw
+$mkdocsObj = ConvertFrom-Yaml $mkdocsYaml
+$mkdocsNavDocs = Get-MkdocsNavDocs -navTree $mkdocsObj.nav
+$mkdocsNavDocs = $mkdocsNavDocs | ForEach-Object { $_ -replace '^docs[\\/]*', '' } | Select-Object -Unique
+
+# Merge both sets for discoverable docs
+$linkedDocsLower = $linkedDocs | ForEach-Object { $_.ToLower() }
+$discoverableDocs = $linkedDocsLower + $mkdocsNavDocs | Select-Object -Unique
+
+# Normalize $docName and $discoverableDocs to be relative to docs-src/docs/
+$allDocs | Select-Object -First 10 | ForEach-Object {
+    $docName = $_.FullName.ToLower() -replace [regex]::Escape($docsRoot), ''
+    $docName = $docName.TrimStart('\','/')
+    Write-Host $docName
+}
+$discoverableDocsNormalized = $discoverableDocs | ForEach-Object {
+    $_ -replace '^docs-src/docs[\\/]*', ''
+}
+Write-Host "DEBUG: Sample discoverableDocsNormalized values:" -ForegroundColor Yellow
+$discoverableDocsNormalized | Select-Object -First 20 | ForEach-Object { Write-Host $_ }
+
+# Check for orphans (case-insensitive)
+$orphans = $allDocs | Where-Object {
+    $docName = $_.FullName.ToLower() -replace [regex]::Escape($docsRoot), ''
+    $docName = $docName.TrimStart('\','/')
+    $discoverableDocsNormalized -notcontains $docName
+}
+if ($orphans) {
+    Write-Host "ERROR: The following docs in docs-src are not discoverable (not linked from index.md, any other .md, or mkdocs.yml nav):" -ForegroundColor Red
+    $orphans | ForEach-Object { Write-Host $_.FullName }
+    exit 1
+}
+
 Main 
