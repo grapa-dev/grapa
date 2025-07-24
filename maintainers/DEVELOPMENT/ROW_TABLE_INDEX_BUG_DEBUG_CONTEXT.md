@@ -893,4 +893,30 @@ The ROW (and COL) table index corruption may be caused by a corner case in the i
 - After the first user record is inserted, confirm both `mKey==0` and the new user key are present and in the correct order.
 - Watch for any logic that could delete, overwrite, or misplace the DICT entry during index operations.
 
---- 
+---
+
+---
+
+## 🔎 Updated Hypothesis (2025-07-20)
+
+### The Issue Isn't the 3rd Record — It's the First Index Entry
+
+Further investigation suggests that the corruption is rooted in the very first index entry created for the first user record, rather than anything triggered by the "third record".
+
+### Why This Matters
+- The index BTree is **not empty** before inserting user records — it contains the reserved `mKey == 0` DICT field.
+- When inserting the first user record (`mKey == 1`), **if CompareKey or Insert doesn't properly skip mKey==0**, it may:
+  - Overwrite the DICT,
+  - Insert the entry at the wrong place,
+  - Or corrupt the tree structure from the start.
+
+### Evidence from Debugging
+- Commenting out the `Delete()` at the top of `SetRecordField()` caused duplication **only in records after the first one** — indicating the first index entry is treated differently.
+- Additional logging added to `InsertIntoIndex()` and `CompareKey()` will confirm whether `mKey==0` is being compared against and handled incorrectly.
+
+### Action Items
+- [x] Add debug logging before inserting the first user record into the index.
+- [x] Add logging inside `CompareKey()` if `treeCursor.mKey == 0`.
+- [ ] Confirm that DICT (`mKey==0`) is preserved after the first insert.
+- [ ] Validate that the corruption doesn't stem from overwriting `mKey==0`.
+

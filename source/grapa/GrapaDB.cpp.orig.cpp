@@ -1510,16 +1510,7 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 						break;
 					case RTABLE_TREE:
 						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
-						
-			
-			// Defensive: delete any stale index entry before inserting
-			GrapaCursor oldCursor;
-			oldCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
-			Delete(oldCursor);
-if (recCursor.mKey == 1) {
-				fprintf(stderr, "[DEBUG] Inserting first user record into index. Key=%%llu, treeRef=%%llu\n", recCursor.mKey, indexCursor.mValue);
-			}
-err = Delete(tableCursor);
+						err = Delete(tableCursor);
 						break;
 					case CTABLE_TREE:
 						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
@@ -2527,9 +2518,6 @@ GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCu
 
 GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, GrapaCursor& treeCursor, s8& result)
 {
-	if (treeCursor.mKey == 0) {
-		fprintf(stderr, "[DEBUG] CompareRecordKey: Skipping DICT entry (mKey == 0)\n");
-	}
 	GrapaError err;
 	GrapaCursor cursor;
 	u64 indexRef;
