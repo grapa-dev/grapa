@@ -120,7 +120,7 @@ class GrapaBuilder:
         else:
             raise RuntimeError(f"Unsupported platform: {system}")
     
-    def build_windows(self, config: BuildConfig) -> bool:
+    def build_windows(self, config: BuildConfig, exe_only: bool = False) -> bool:
         """Build for Windows using Visual Studio"""
         print(f"Building for {config.target} using Visual Studio...")
         
@@ -135,22 +135,20 @@ class GrapaBuilder:
                 os.remove("grapa.exe")
             shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
             
-            # Build library
-            subprocess.run([
-                "msbuild", "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
-            ], check=True)
-            
-            # Copy library
-            if os.path.exists("grapa.lib"):
-                os.remove("grapa.lib")
-            shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", "grapa.lib")
-            shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"source/grapa-lib/{config.target}/grapa.lib")
-            
-            # Clean build artifacts
-            self._clean_windows_build()
-            
-            # Create package
-            self._create_windows_package(config)
+            if not exe_only:
+                # Build library
+                subprocess.run([
+                    "msbuild", "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
+                ], check=True)
+                # Copy library
+                if os.path.exists("grapa.lib"):
+                    os.remove("grapa.lib")
+                shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", "grapa.lib")
+                shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"source/grapa-lib/{config.target}/grapa.lib")
+                # Clean build artifacts
+                self._clean_windows_build()
+                # Create package
+                self._create_windows_package(config)
             
             return True
             
@@ -158,7 +156,7 @@ class GrapaBuilder:
             print(f"Windows build failed: {e}")
             return False
     
-    def build_mac(self, config: BuildConfig) -> bool:
+    def build_mac(self, config: BuildConfig, exe_only: bool = False) -> bool:
         """Build for Mac using clang/clang++"""
         print(f"Building for {config.target} using clang++...")
         
@@ -172,8 +170,9 @@ class GrapaBuilder:
             # Build shared library
             self._run_mac_build_command(config, is_library=True, is_static=False)
             
-            # Create package
-            self._create_mac_package(config)
+            if not exe_only:
+                # Create package
+                self._create_mac_package(config)
             
             return True
             
@@ -181,7 +180,7 @@ class GrapaBuilder:
             print(f"Mac build failed: {e}")
             return False
     
-    def build_linux_aws(self, config: BuildConfig) -> bool:
+    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False) -> bool:
         """Build for Linux/AWS using g++"""
         print(f"Building for {config.target} using g++...")
         
@@ -204,8 +203,9 @@ class GrapaBuilder:
             else:
                 self._run_linux_build_command(config, is_library=True, is_static=False)
             
-            # Create package
-            self._create_linux_package(config)
+            if not exe_only:
+                # Create package
+                self._create_linux_package(config)
             
             return True
             
@@ -615,7 +615,7 @@ class GrapaBuilder:
         
         return True
     
-    def build(self, run_tests: bool = False) -> bool:
+    def build(self, run_tests: bool = False, exe_only: bool = False) -> bool:
         """Build for the current platform and architecture"""
         platform, arch = self.detect_platform()
         config = BuildConfig(platform, arch)
@@ -626,13 +626,13 @@ class GrapaBuilder:
             # Build based on platform
             success = False
             if config.platform == "windows":
-                success = self.build_windows(config)
+                success = self.build_windows(config, exe_only=exe_only)
             elif config.platform == "mac":
-                success = self.build_mac(config)
+                success = self.build_mac(config, exe_only=exe_only)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config)
+                success = self.build_linux_aws(config, exe_only=exe_only)
             elif config.platform == "aws":
-                success = self.build_linux_aws(config)
+                success = self.build_linux_aws(config, exe_only=exe_only)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -640,12 +640,12 @@ class GrapaBuilder:
             if success:
                 print(f"Build successful for {config.target}")
                 
-                # Build Python package
-                self.build_python_package(config)
-                
-                # Run tests if requested
-                if run_tests:
-                    self.run_tests(config)
+                if not exe_only:
+                    # Build Python package
+                    self.build_python_package(config)
+                    # Run tests if requested
+                    if run_tests:
+                        self.run_tests(config)
                 
                 return True
             else:
@@ -659,6 +659,7 @@ def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
+    parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip library, Python package, and packaging steps). Useful for fast iterative development and investigation.")
     
     args = parser.parse_args()
     
@@ -668,7 +669,7 @@ def main():
     platform, arch = builder.detect_platform()
     print(f"Building for {platform} {arch}")
     
-    if builder.build(args.test):
+    if builder.build(args.test, exe_only=args.exe_only):
         print(f"\n{'='*50}")
         print(f"Build successful for {platform} {arch}")
         print(f"{'='*50}")
