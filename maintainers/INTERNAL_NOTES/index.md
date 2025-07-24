@@ -43,7 +43,7 @@ Internal notes include:
 
 ### Documentation Improvement & WIP
 - [Documentation Ideas](DOCS_IMPROVEMENT_IDEAS.md) — Documentation improvement plans
-- [ARCHIVED_WIP/](ARCHIVED_WIP/) — Historical work-in-progress files
+- [ARCHIVED/**](ARCHIVED/) — Historical work-in-progress and archived files
 
 > For stable documentation, see the main documentation sections. For operator/optimization/analysis, see the above cross-linked docs for their distinct roles. 
 
@@ -53,7 +53,7 @@ Internal notes include:
 - Every new doc must be added to this index.md with a one-line summary.
 - Use clear, descriptive filenames and place docs in the most relevant folder.
 - Cross-link related docs in other folders as needed.
-- Archive superseded or outdated docs in ARCHIVED_WIP/ and update the index.
+- Archive superseded or outdated docs in ARCHIVED/ and update the index.
 
 **Contributor Checklist:**
 - [ ] Purpose and scope stated at the top of the doc

@@ -96,7 +96,7 @@ $VECTOR is Grapa's high-performance, multi-dimensional, dense array/matrix type.
 
 ## Executable $OP in Vector
 - $VECTOR can store $OP (operation/function) objects as elements
-- $OP is parsed from CSV using special quoting (=""..."")
+- $OP is parsed from CSV using special quoting (=\"...\")
 - $OP is executed in functional methods (map, filter, sort, etc.)
 - $OP elements are not valid for numeric operations (error/null)
 

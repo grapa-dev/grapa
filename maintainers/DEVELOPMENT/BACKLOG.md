@@ -51,6 +51,10 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
   - Address any parser bugs or inconsistencies discovered during empirical testing.
 - Audit and update all code paths for correct field metadata lifecycle handling. See [IMPLEMENTATION/FIELD_METADATA_LIFECYCLE.md] for details and open items.
 - [ ] **Review, validate, and formalize all build and runtime dependencies from BUILD_DEPENDANCIES.md for inclusion in public-facing and onboarding documentation.**
+- [ ] Add a high-level architecture and feature map diagram to the About or Home page (currently a placeholder exists in about.md)
+- [x] Audit and improve cross-linking between major sections (API Reference, Language Reference, Use Cases, Examples); add “See also”/“Related topics” to key pages – Complete as of July 2024
+- [x] Create/expand “Advanced Topics” section for advanced features (meta-programming, custom grammar, etc.) – Complete as of July 2024
+- [ ] Ongoing: Periodically review maintainer/internal docs to ensure no internal details leak into user-facing docs as new content is added
 
 ---
 
@@ -67,6 +71,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] Implement connection pooling
 - [ ] Add support for transactions
 - [ ] Improve query optimization
+- [ ] Multi-Field Set/Get for Records: Investigate and implement a way to set and get multiple fields at once for a record (batch .set()/.get()). This will improve performance for records with many fields. Consider supporting $LIST or similar structures for batch operations. Note: RAW field type can store any Grapa data type, including $LIST (enhanced JSON), which may be leveraged for this feature. Not immediate priority; to be reviewed after ROW corruption issue is fixed.
 
 ### Development Tools
 - [ ] Create debugging tools

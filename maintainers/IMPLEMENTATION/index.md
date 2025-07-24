@@ -33,6 +33,7 @@ Grapa's implementation is built on several key components:
 - [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
 - [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation
 - [Field Metadata Lifecycle and Requirements](FIELD_METADATA_LIFECYCLE.md)
+- [VECTOR Implementation](GRAPA_VECTOR_IMPLEMENTATION.md) - Canonical reference for the $VECTOR type, methods, construction, and edge cases
 
 ## Architecture Overview
 

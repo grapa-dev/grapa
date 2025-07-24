@@ -96,7 +96,7 @@ When referencing maintainer content, use these paths:
 - [Documentation Ideas](INTERNAL_NOTES/DOCS_IMPROVEMENT_IDEAS.md) - Docs improvement plans
 - [XML BNF Analysis](INTERNAL_NOTES/xml_bnf_analysis.md) - XML grammar analysis
 - [BNF Review Notes](INTERNAL_NOTES/bnf_review_notes.md) - Grammar enhancement ideas
-- [Archived WIP](INTERNAL_NOTES/ARCHIVED_WIP/) - Historical work-in-progress files
+- [Archived WIP](INTERNAL_NOTES/ARCHIVED/) - Historical work-in-progress files
 
 ### Advanced Topics
 - [Binary Grep Implementation](IMPLEMENTATION/BINARY_GREP.md) - Binary data processing (now in Implementation)
@@ -115,7 +115,7 @@ When referencing maintainer content, use these paths:
 - Use clear, descriptive filenames and place docs in the most relevant folder.
 - Cross-link related docs in other folders as needed.
 - If a doc is experimental or WIP, mark it as such in the index.
-- Archive superseded or outdated docs in `ARCHIVED_WIP/` and update the index.
+- Archive superseded or outdated docs in `ARCHIVED/` and update the index.
 
 **Contributor Checklist:**
 - [ ] Purpose and scope stated at the top of the doc

@@ -7,7 +7,7 @@ tags:
 
 # Development Documentation
 
-This directory contains all development-related documentation for the Grapa project.
+This folder is for all in-progress, investigation, planning, and debug documentation for the Grapa project. For stable, canonical implementation references, see IMPLEMENTATION/.
 
 ## 📋 **Current Status & Planning**
 
@@ -32,7 +32,7 @@ This directory contains all development-related documentation for the Grapa proj
 ## 📖 **Archived Documentation**
 
 All deprecated files have been moved to:
-- **[ARCHIVED_WIP/consolidation_2024/](../INTERNAL_NOTES/ARCHIVED_WIP/consolidation_2024/)**
+- **[ARCHIVED/consolidation_2024/](../INTERNAL_NOTES/ARCHIVED/consolidation_2024/)**
 
 ## 🎯 **Quick Start**
 
@@ -60,13 +60,23 @@ All deprecated files have been moved to:
 
 **Reference**: The canonical syntax reference is `docs/docs/syntax/basic_syntax.md` - always consult this before writing Grapa code.
 
+## 🔎 Quick Links to Major Investigations
+
+- [ROW Table Index Corruption Investigation](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) – Full debug log and root cause analysis for the ROW table index bug
+
 ## How to Add or Update Documentation
 
 - Before creating a new doc, check if it fits as a section in an existing canonical doc (e.g., CURRENT_STATUS.md).
 - Every new doc must be added to this index.md with a one-line summary.
 - Use clear, descriptive filenames and place docs in the most relevant folder.
 - Cross-link related docs in other folders as needed.
-- Archive superseded or outdated docs in ARCHIVED_WIP/ and update the index.
+- Archive superseded or outdated docs in ARCHIVED/ and update the index.
+
+### How to Add a New Investigation or Debug Log
+- Check if your topic fits as a section in an existing doc (especially CURRENT_STATUS.md).
+- If not, create a new file in this folder, add a one-line summary to index.md, and cross-link from any relevant implementation docs.
+- Use a descriptive name like FEATURE_OR_AREA_BUG_INVESTIGATION.md (e.g., ROW_TABLE_INDEX_CORRUPTION_INVESTIGATION.md).
+- Follow the contributor checklist below for naming, placement, and cross-linking.
 
 **Contributor Checklist:**
 - [ ] Purpose and scope stated at the top of the doc

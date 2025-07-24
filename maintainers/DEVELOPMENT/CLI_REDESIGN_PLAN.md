@@ -1,6 +1,6 @@
 # Grapa CLI Redesign Plan
 
-**Status:** Phase 1 Completed ✅, Phase 2 in Backlog  
+**Status:** Reference – Phase 1 complete, Phase 2 in backlog.
 **Created:** January 2025  
 **Objective:** Redesign Grapa CLI to follow standard conventions and improve usability
 

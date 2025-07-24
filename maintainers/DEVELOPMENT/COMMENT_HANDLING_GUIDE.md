@@ -1,5 +1,7 @@
 # Grapa Comment Handling Guide
 
+**Status:** Active – Update as new findings or improvements are made.
+
 ## Supported Comment Style
 - Only block comments (`/* ... */`) are supported in Grapa.
 - Line comments (`// ...`) are NOT supported.

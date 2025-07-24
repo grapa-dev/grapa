@@ -1,6 +1,6 @@
 # Current CLI Options Analysis
 
-**Status:** Reference Document  
+**Status:** Reference – Used for CLI redesign planning.
 **Created:** January 2025  
 **Purpose:** Comprehensive analysis of current CLI options before redesign
 
