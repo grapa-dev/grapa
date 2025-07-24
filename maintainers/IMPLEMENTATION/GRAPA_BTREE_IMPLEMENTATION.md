@@ -113,6 +113,45 @@ This document provides a comprehensive reference for the `GrapaBtree` class, its
 
 ---
 
+## BYTE_DATA and FREC_DATA: Standard and Fragmented Data Support
+
+### BYTE_DATA
+- **BYTE_DATA** is the standard data type for BTree values in GrapaBtree.
+- It is used for storing contiguous, non-fragmented data blocks—suitable for most small-to-medium-sized values.
+- Operations on BYTE_DATA are straightforward: insert, search, update, and delete work on a single, contiguous data block.
+
+### FREC_DATA (Fragmented Data)
+- **FREC_DATA** is a specialized, fragmented data type designed for efficient handling of large data items.
+- Inspired by file system page-linking, FREC_DATA uses a *weighted BTree* to index and manage data fragments (pages).
+- Each fragment/page is a node in the BTree, and the tree maintains a "weight" for each node, representing the size or count of data items beneath it.
+- This design allows for:
+  - **Rapid locate**: Quickly find the position of any fragment or byte offset in a large data item.
+  - **Efficient inserts/deletes**: Insert or delete data at any point without reading or writing the entire data item—only the affected fragments/pages are modified.
+  - **Scalability**: Supports very large data items by breaking them into manageable pieces, avoiding memory and I/O bottlenecks.
+
+### Weighted BTree and FREC_DATA
+- The *weighted BTree* is central to FREC_DATA:
+  - Each node's weight is updated as fragments are inserted or deleted.
+  - The BTree can efficiently traverse to the correct fragment/page for any given offset by comparing weights, similar to how file systems locate blocks.
+  - This enables O(log n) access, insert, and delete operations for large, fragmented data.
+- The weight system is also used to maintain balance and optimize performance during BTree operations.
+
+### Relationship to COL Store
+- FREC_DATA was specifically created to support the COL store (columnar storage) model in GrapaDB.
+- COL store requires efficient, file-system-based storage of large columns, which may be updated or accessed in fragments.
+- FREC_DATA, with its weighted BTree, enables COL store to:
+  - Store columns as fragmented data efficiently on disk
+  - Support rapid updates, appends, and partial reads
+  - Avoid the need to rewrite entire columns for small changes
+
+### Best Practices and Notes
+- Use BYTE_DATA for small, simple values where fragmentation is unnecessary.
+- Use FREC_DATA for large, growing, or frequently updated data items—especially in COL store scenarios.
+- When working with FREC_DATA, always update weights correctly during insert/delete to maintain BTree efficiency.
+- The weighted BTree approach is extensible and can be adapted for other use cases requiring efficient fragmented data management.
+
+---
+
 ## How to Properly Use GrapaBtree
 
 ### Initialization
