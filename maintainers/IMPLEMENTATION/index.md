@@ -29,6 +29,7 @@ Grapa's implementation is built on several key components:
 - [GRZ Format](GRZ_FORMAT.md) - Binary format specification
 - [Unicode Grep Status](UNICODE_GREP_STATUS.md) - Unicode implementation details
 - [BTree Implementation](GRAPA_BTREE_IMPLEMENTATION.md) - Low-level BTree data structure and algorithms (used by the database)
+- [BTree File Structure & Traversal](GRAPA_BTREE_FILE_STRUCTURE.md) - On-disk file/block structure and manual traversal for Grapa BTree files (for forensics, debugging, and tool authors)
 - [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
 - [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation
 - [Field Metadata Lifecycle and Requirements](FIELD_METADATA_LIFECYCLE.md)

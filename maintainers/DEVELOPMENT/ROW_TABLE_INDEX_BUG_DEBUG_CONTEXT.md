@@ -834,3 +834,8 @@ while (!err)
 4. **Test index update isolation** - Create test that only updates fields without record creation
 
 --- 
+
+## Related Documentation
+- [GRAPA_BTREE_FILE_STRUCTURE.md](../IMPLEMENTATION/GRAPA_BTREE_FILE_STRUCTURE.md) — Canonical reference for the on-disk BTree file/block structure and manual traversal. Essential for low-level forensics or manual debugging of BTree/DB files.
+- [GRAPA_BTREE_IMPLEMENTATION.md](../IMPLEMENTATION/GRAPA_BTREE_IMPLEMENTATION.md) — Main BTree implementation reference
+- [GRAPA_DB_IMPLEMENTATION.md](../IMPLEMENTATION/GRAPA_DB_IMPLEMENTATION.md) — Database layer implementation 

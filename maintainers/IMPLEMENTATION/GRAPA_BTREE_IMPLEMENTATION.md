@@ -3,6 +3,8 @@
 ## Purpose
 This document provides a comprehensive reference for the `GrapaBtree` class, its methods, enums, and associated data structures. It is intended as the authoritative source for understanding and maintaining the BTree/indexing layer in GrapaDB and related components.
 
+> For a deep dive into the on-disk file/block structure and manual traversal of Grapa BTree files, see [GRAPA_BTREE_FILE_STRUCTURE.md](./GRAPA_BTREE_FILE_STRUCTURE.md).
+
 ---
 
 ## Class: GrapaBtree
@@ -229,4 +231,8 @@ btree.NewTree(myTree, SU64_TREE, 0, 9); // Creates a BTree with node width 9
 
 As of January 2025, there are no known open issues with the BTree implementation itself. All core BTree functionality (insert, delete, search, update, node splitting/merging, traversal, and file I/O) has been validated and is working as intended. Any current database index or corruption issues are tracked in separate investigation documentation and are not attributed to the BTree implementation.
 
---- 
+---
+
+## Related Documentation
+- [GRAPA_BTREE_FILE_STRUCTURE.md](./GRAPA_BTREE_FILE_STRUCTURE.md) — Canonical reference for the on-disk BTree file/block structure and manual traversal
+- [GRAPA_DB_IMPLEMENTATION.md](./GRAPA_DB_IMPLEMENTATION.md) — Database layer implementation 
