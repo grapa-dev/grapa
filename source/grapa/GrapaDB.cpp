@@ -1505,26 +1505,30 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 				switch (recCursor.mTreeType)
 				{
 					case GROUP_TREE: 
+					{
 						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey);
 						err = Delete(tableCursor);
 						break;
+					}
 					case RTABLE_TREE:
+					{
 						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
-						
-			
-			// Defensive: delete any stale index entry before inserting
-			GrapaCursor oldCursor;
-			oldCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
-			Delete(oldCursor);
-if (recCursor.mKey == 1) {
-				fprintf(stderr, "[DEBUG] Inserting first user record into index. Key=%%llu, treeRef=%%llu\n", recCursor.mKey, indexCursor.mValue);
-			}
-err = Delete(tableCursor);
+						// Defensive: delete any stale index entry before inserting
+						GrapaCursor oldCursor;
+						oldCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+						Delete(oldCursor);
+						if (recCursor.mKey == 1) {
+							fprintf(stderr, "[DEBUG] Inserting first user record into index. Key=%%llu, treeRef=%%llu\n", recCursor.mKey, indexCursor.mValue);
+						}
+						err = Delete(tableCursor);
 						break;
+					}
 					case CTABLE_TREE:
+					{
 						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
 						err = Delete(tableCursor);
 						break;
+					}
 				}
 				break;
 			}
