@@ -13,15 +13,15 @@ This page is for advanced Grapa users and deep experts who want to understand th
 The following documentation is available to contributors and maintainers (not part of the user-facing docs):
 
 - **Implementation Details:**
-  - `maintainers/IMPLEMENTATION/GRAPA_DB_IMPLEMENTATION.md` – Database architecture, table/index design
-  - `maintainers/IMPLEMENTATION/GRAPA_BTREE_IMPLEMENTATION.md` – BTree file structure and algorithms
-  - `maintainers/IMPLEMENTATION/FIELD_METADATA_LIFECYCLE.md` – Field metadata lifecycle and best practices
-  - ...and more in the `maintainers/IMPLEMENTATION/` directory
+  - [GRAPA_DB_IMPLEMENTATION.md](../../maintainers/IMPLEMENTATION/GRAPA_DB_IMPLEMENTATION.md) – Database architecture, table/index design
+  - [GRAPA_BTREE_IMPLEMENTATION.md](../../maintainers/IMPLEMENTATION/GRAPA_BTREE_IMPLEMENTATION.md) – BTree file structure and algorithms
+  - [FIELD_METADATA_LIFECYCLE.md](../../maintainers/IMPLEMENTATION/FIELD_METADATA_LIFECYCLE.md) – Field metadata lifecycle and best practices
+  - ...and more in the [maintainers/IMPLEMENTATION/](../../maintainers/IMPLEMENTATION/) directory
 - **Development & Debugging:**
-  - `maintainers/DEVELOPMENT/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md` – Ongoing investigations and bug analysis
-  - `maintainers/DEVELOPMENT/PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md` – Language improvement roadmap
+  - [ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](../../maintainers/DEVELOPMENT/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) – Ongoing investigations and bug analysis
+  - [PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md](../../maintainers/DEVELOPMENT/PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md) – Language improvement roadmap
 - **Backlog, Testing, and Internal Notes:**
-  - `maintainers/BACKLOG.md`, `maintainers/TESTING_AND_QUALITY/`, `maintainers/INTERNAL_NOTES/`
+  - [BACKLOG.md](../../maintainers/BACKLOG.md), [TESTING_AND_QUALITY/](../../maintainers/TESTING_AND_QUALITY/), [INTERNAL_NOTES/](../../maintainers/INTERNAL_NOTES/)
 
 > **Note:** These docs are for contributors/maintainers only. If you wish to contribute or need access, contact the project maintainers.
 
