@@ -100,34 +100,39 @@ f.cd("../../../../..");  /* Back 5 levels */
 f = $file();
 
 /* Start in file system */
-f.pwd()  // Returns: /
-/* Returns: / */
+// f.pwd()  // Returns: /
+f.pwd(); /* Returns: / */
 
 // Create database file in file system
+/* Create database file in file system */
 f.mk("my_database", "GROUP");
 f.cd("my_database");
-f.pwd()  // Returns: /my_database
-/* Returns: /my_database */
+// f.pwd()  // Returns: /my_database
+f.pwd(); /* Returns: /my_database */
 
 // Create GROUP structure within database
+/* Create GROUP structure within database */
 f.mk("users", "GROUP");
 f.cd("users");
-f.pwd()  // Returns: /my_database/users
-/* Returns: /my_database/users */
+// f.pwd()  // Returns: /my_database/users
+f.pwd(); /* Returns: /my_database/users */
 
 // Create nested GROUP
+/* Create nested GROUP */
 f.mk("admins", "GROUP");
 f.cd("admins");
-f.pwd()  // Returns: /my_database/users/admins
-/* Returns: /my_database/users/admins */
+// f.pwd()  // Returns: /my_database/users/admins
+f.pwd(); /* Returns: /my_database/users/admins */
 
 // Create ROW database within GROUP
+/* Create ROW database within GROUP */
 f.mk("user_data", "ROW");
 f.cd("user_data");
-f.pwd()  // Returns: /my_database/users/admins/user_data
-/* Returns: /my_database/users/admins/user_data */
+// f.pwd()  // Returns: /my_database/users/admins/user_data
+f.pwd(); /* Returns: /my_database/users/admins/user_data */
 
 // Add data to the ROW database
+/* Add data to the ROW database */
 f.mkfield("id", "INT", "FIX", 4);
 f.mkfield("name", "STR", "VAR");
 f.set("user1", 1001, "id");
@@ -145,9 +150,10 @@ f.pwd()  // Returns: /my_database/users/admins/user_data
 /* Returns: /my_database/users/admins/user_data */
 
 // Access data at deep location
+/* Access data at deep location */
 name = f.get("user1", "name");
-name.echo();  // Outputs: John Doe
-/* Outputs: John Doe */
+// name.echo();  // Outputs: John Doe
+name.echo(); /* Outputs: John Doe */
 ```
 
 ### Navigation Back Through Path
@@ -197,6 +203,7 @@ f.pwd()  // Returns: /
 ### 1. Project Organization
 ```grapa
 // Organize project with mixed file system and database
+/* Organize project with mixed file system and database */
 f.mk("project", "GROUP");
 f.cd("project");
 
@@ -214,6 +221,7 @@ f.mk("analytics", "COL");
 ### 2. Application Data Management
 ```grapa
 // Application with hierarchical data
+/* Application with hierarchical data */
 f.mk("app", "GROUP");
 f.cd("app");
 
@@ -237,10 +245,12 @@ f.mkfield("metrics", "RAW", "VAR");
 ### 3. Multi-Tenant Applications
 ```grapa
 // Multi-tenant structure
+/* Multi-tenant structure */
 f.mk("tenants", "GROUP");
 f.cd("tenants");
 
 // Each tenant gets their own structure
+/* Each tenant gets their own structure */
 f.mk("tenant1", "GROUP");
 f.cd("tenant1");
 f.mk("users", "ROW");

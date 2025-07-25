@@ -13,8 +13,8 @@
 f = $file();
 f.chd("C:/Users/user/Projects/MyProject");
 f.cd("src");
-f.pwd();  /* Returns: /src */
-f.phd();  /* Returns: C:\Users\user\Projects\MyProject */
+f.pwd().echo();  /* Shows: /src */
+f.phd().echo();  /* Shows: C:\Users\user\Projects\MyProject */
 ```
 
 ---
@@ -47,9 +47,9 @@ Returns the current working directory relative to the home directory.
 
 ```grapa
 f = $file();
-f.pwd()  // Returns: /
+f.pwd().echo();  /* Returns: / */
 f.cd("lib");
-f.pwd()  // Returns: /lib
+f.pwd().echo();  /* Returns: /lib */
 ```
 
 ### `cd([name])` - Change Working Directory
@@ -62,17 +62,17 @@ Changes the current working directory within the home directory context.
   - `"path"`: Move to specific subdirectory
 
 ```grapa
-f.cd("lib")      // Move to lib subdirectory
-f.cd("..")       // Move up one level
-f.cd("/")        // Move to root of home directory
-f.cd("/docs")    // Move to docs subdirectory
+f.cd("lib");      /* Move to lib subdirectory */
+f.cd(".." );      /* Move up one level */
+f.cd("/");        /* Move to root of home directory */
+f.cd("/docs");    /* Move to docs subdirectory */
 ```
 
 ### `phd()` - Print Home Directory
 Returns the current home directory (absolute path).
 
 ```grapa
-f.phd()  // Returns: C:\Users\matichuk\Documents\GitHub\grapa
+f.phd().echo();  /* Returns: C:\Users\user\Documents\GitHub\grapa */
 ```
 
 ### `chd(filesystempath)` - Change Home Directory
@@ -84,8 +84,8 @@ Changes the current home directory to a new absolute path.
 **Note**: This resets the working directory to the root (`/`) of the new home directory.
 
 ```grapa
-f.chd("C:/Users/user/NewProject")  // Change to absolute path
-f.chd("../sibling_project")        // Change using relative path
+f.chd("C:/Users/user/NewProject");  /* Change to absolute path */
+f.chd("../sibling_project");        /* Change using relative path */
 ```
 
 ## Navigation Examples
@@ -94,56 +94,56 @@ f.chd("../sibling_project")        // Change using relative path
 ```grapa
 f = $file();
 
-// Set project home directory
+/* Set project home directory */
 f.chd("C:/Users/user/Projects/MyProject");
-f.phd()  // Returns: C:\Users\user\Projects\MyProject
-f.pwd()  // Returns: /
+f.phd().echo();  /* Returns: C:\Users\user\Projects\MyProject */
+f.pwd().echo();  /* Returns: / */
 
-// Navigate within project
+/* Navigate within project */
 f.cd("database");
-f.pwd()  // Returns: /database
+f.pwd().echo();  /* Returns: /database */
 
 f.cd("users");
-f.pwd()  // Returns: /database/users
+f.pwd().echo();  /* Returns: /database/users */
 
 f.cd("..");
-f.pwd()  // Returns: /database
+f.pwd().echo();  /* Returns: /database */
 
 f.cd("/");
-f.pwd()  // Returns: /
+f.pwd().echo();  /* Returns: / */
 ```
 
 ### Project Switching
 ```grapa
 f = $file();
 
-// Work on first project
+/* Work on first project */
 f.chd("C:/Users/user/Projects/ProjectA");
 f.cd("src");
-f.pwd()  // Returns: /src
+f.pwd().echo();  /* Returns: /src */
 
-// Switch to different project
+/* Switch to different project */
 f.chd("C:/Users/user/Projects/ProjectB");
-f.pwd()  // Returns: / (reset to root of new project)
-f.phd()  // Returns: C:\Users\user\Projects\ProjectB
+f.pwd().echo();  /* Returns: / (reset to root of new project) */
+f.phd().echo();  /* Returns: C:\Users\user\Projects\ProjectB */
 ```
 
 ### Database Navigation
 ```grapa
 f = $file();
 
-// Create and navigate database
+/* Create and navigate database */
 f.mk("my_database", "ROW");
 f.cd("my_database");
-f.pwd()  // Returns: /my_database
+f.pwd().echo();  /* Returns: /my_database */
 
-// Create fields
+/* Create fields */
 f.mkfield("id", "INT", "FIX", 4);
 f.mkfield("name", "STR", "VAR");
 
-// Navigate within database
+/* Navigate within database */
 f.cd("users");
-f.pwd()  // Returns: /my_database/users
+f.pwd().echo();  /* Returns: /my_database/users */
 ```
 
 ## Comparison Table
@@ -157,10 +157,10 @@ f.pwd()  // Returns: /my_database/users
 
 ### 1. Project Organization
 ```grapa
-// Set project home directory
+/* Set project home directory */
 f.chd("C:/Users/user/Projects/MyProject");
 
-// Organize project structure
+/* Organize project structure */
 f.mk("src", "GROUP");
 f.mk("docs", "GROUP");
 f.mk("data", "COL");
@@ -169,11 +169,11 @@ f.mk("config", "GROUP");
 
 ### 2. Database Management
 ```grapa
-// Create project database
+/* Create project database */
 f.mk("project_db", "ROW");
 f.cd("project_db");
 
-// Define schema
+/* Define schema */
 f.mkfield("id", "INT", "FIX", 4);
 f.mkfield("name", "STR", "VAR");
 f.mkfield("created", "TIME", "FIX", 8);
@@ -181,14 +181,14 @@ f.mkfield("created", "TIME", "FIX", 8);
 
 ### 3. File System Operations
 ```grapa
-// Set project directory
+/* Set project directory */
 f.chd("C:/Users/user/Projects/MyProject");
 
-// Create project files
+/* Create project files */
 f.set("README.md", "# My Project\n\nProject description...");
 f.set("config.json", '{"version": "1.0", "debug": false}');
 
-// Navigate and list files
+/* Navigate and list files */
 f.cd("src");
 files = f.ls();
 ```
@@ -198,7 +198,7 @@ files = f.ls();
 ### Development Workflow
 1. **Set Project Context**: Use `chd()` to set project home directory
 2. **Navigate Within Project**: Use `cd()` for relative navigation
-3. **Monitor Location**: Use `pwd()` to see current position
+3. **Monitor Location**: Use `pwd().echo()` to see current position
 4. **Switch Projects**: Use `chd()` to change project context
 
 ### Database Workflow
@@ -211,15 +211,15 @@ files = f.ls();
 
 ### Common Issues
 ```grapa
-// Directory doesn't exist
-f.cd("nonexistent")  // May return error
+/* Directory doesn't exist */
+f.cd("nonexistent");  /* May return error */
 
-// Invalid home directory
-f.chd("invalid/path")  // May return error
+/* Invalid home directory */
+f.chd("invalid/path");  /* May return error */
 
-// Check current state
-f.pwd()  // Verify current working directory
-f.phd()  // Verify current home directory
+/* Check current state */
+f.pwd().echo();  /* Verify current working directory */
+f.phd().echo();  /* Verify current home directory */
 ```
 
 ### Safe Navigation
