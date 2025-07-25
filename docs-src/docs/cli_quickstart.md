@@ -194,16 +194,13 @@ grapa [options] [script_or_command]
 # Standard Options
 -c, --command <script>     Execute Grapa command/script
 -f, --file <file>          Execute Grapa script file (.grc or .grz)
--s, --stdin                Execute command from stdin
--S, --stdin-var            Store stdin in $ARGCIN environment variable
+-                          Execute command from stdin (standard Python/Node.js behavior)
 -q, --quiet                Suppress version header output
 -v, --version              Show version information
 -h, --help                 Show help message
--d, --debug                Enable debug mode
--o, --output <file>        Redirect output to file
--a, --append               Append output to file (use with -o)
--w, --window               Open in window mode (GUI)
--wf, --window-file <file>  Open file in window mode
+--verbose                  Show version header (default: hidden)
+-i, --interactive          Run in interactive mode
+-d, --debug                Enable debug mode (shows debug output)
 ```
 
 ### Basic Usage
@@ -242,11 +239,8 @@ first_arg = args[1];
 
 ### Advanced Command Line Options
 ```bash
-# Execute command from stdin
-echo "'Hello from stdin!'.echo()" | grapa -s
-
-# Store stdin in $ARGCIN variable
-echo "data" | grapa -S -c "$sys().getenv('$ARGCIN').echo()"
+# Execute command from stdin (standard Python/Node.js behavior)
+echo "'Hello from stdin!'.echo()" | grapa -
 
 # Execute command
 grapa -c "'Hello'.echo()"
@@ -257,14 +251,14 @@ grapa -f script.grc
 # Quiet mode (suppress header)
 grapa -q -c "'Hello'.echo()"
 
-# Debug mode
+# Verbose mode (show version header)
+grapa --verbose -c "'Hello'.echo()"
+
+# Debug mode (shows debug output)
 grapa -d -c "'Hello'.echo()"
 
-# Output to file
-grapa -o output.txt -c "'Hello'.echo()"
-
-# Append to file
-grapa -a -o log.txt -c "'New entry'.echo()"
+# Interactive mode
+grapa -i
 ```
 
 ## Common Patterns
@@ -316,10 +310,17 @@ for (file in files) {
 ## Tips
 
 - **Direct Execution:** You can now run commands and scripts directly without flags: `grapa "'hello'.echo()"` or `grapa script.grc`
+- **Clean Output:** By default, Grapa runs without showing version headers (like Python/Node.js)
+- **Verbose Mode:** Use `--verbose` to show version headers when needed
 - **Parallel Operations:** `map` and `filter` are parallel by default and great for data processing
 - **File Extensions:** Use `.grc` extension for Grapa script files, `.grz` for compiled scripts
 - **Interactive Mode:** Run `grapa` without arguments for interactive experimentation
 - **Error Messages:** Grapa provides detailed error messages to help debug issues
+- **Debug Mode:** Use `-d` to see detailed debug information about CLI operations
+
+## Known Limitations
+
+- **Error Handling:** Invalid syntax or missing files are handled silently without error messages
 > **Full CLI options:**
 > - See [Run](run.md) for all parameters and examples
 > - Or run `grapa -h` for the latest help

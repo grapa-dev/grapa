@@ -3784,8 +3784,8 @@
 <div class="highlight"><pre><span></span><code>f = $file();
 f.chd(&quot;C:/Users/user/Projects/MyProject&quot;);
 f.cd(&quot;src&quot;);
-f.pwd();  /* Returns: /src */
-f.phd();  /* Returns: C:\Users\user\Projects\MyProject */
+f.pwd().echo();  /* Shows: /src */
+f.phd().echo();  /* Shows: C:\Users\user\Projects\MyProject */
 </code></pre></div>
 <hr />
 <h2 id="overview">Overview</h2>
@@ -3813,9 +3813,9 @@ f.phd();  /* Returns: C:\Users\user\Projects\MyProject */
 <h3 id="pwd-print-working-directory"><code>pwd()</code> - Print Working Directory</h3>
 <p>Returns the current working directory relative to the home directory.</p>
 <div class="highlight"><pre><span></span><code>f = $file();
-f.pwd()  // Returns: /
+f.pwd().echo();  /* Returns: / */
 f.cd(&quot;lib&quot;);
-f.pwd()  // Returns: /lib
+f.pwd().echo();  /* Returns: /lib */
 </code></pre></div>
 <h3 id="cdname-change-working-directory"><code>cd([name])</code> - Change Working Directory</h3>
 <p>Changes the current working directory within the home directory context.</p>
@@ -3824,73 +3824,73 @@ f.pwd()  // Returns: /lib
   - <code>".."</code>: Move up one level
   - <code>"/"</code>: Move to root of current home directory
   - <code>"path"</code>: Move to specific subdirectory</p>
-<div class="highlight"><pre><span></span><code>f.cd(&quot;lib&quot;)      // Move to lib subdirectory
-f.cd(&quot;..&quot;)       // Move up one level
-f.cd(&quot;/&quot;)        // Move to root of home directory
-f.cd(&quot;/docs&quot;)    // Move to docs subdirectory
+<div class="highlight"><pre><span></span><code>f.cd(&quot;lib&quot;);      /* Move to lib subdirectory */
+f.cd(&quot;..&quot; );      /* Move up one level */
+f.cd(&quot;/&quot;);        /* Move to root of home directory */
+f.cd(&quot;/docs&quot;);    /* Move to docs subdirectory */
 </code></pre></div>
 <h3 id="phd-print-home-directory"><code>phd()</code> - Print Home Directory</h3>
 <p>Returns the current home directory (absolute path).</p>
-<div class="highlight"><pre><span></span><code>f.phd()  // Returns: C:\Users\matichuk\Documents\GitHub\grapa
+<div class="highlight"><pre><span></span><code>f.phd().echo();  /* Returns: C:\Users\user\Documents\GitHub\grapa */
 </code></pre></div>
 <h3 id="chdfilesystempath-change-home-directory"><code>chd(filesystempath)</code> - Change Home Directory</h3>
 <p>Changes the current home directory to a new absolute path.</p>
 <p><strong>Parameters</strong>:
 - <code>filesystempath</code>: Absolute or relative path to set as new home directory</p>
 <p><strong>Note</strong>: This resets the working directory to the root (<code>/</code>) of the new home directory.</p>
-<div class="highlight"><pre><span></span><code>f.chd(&quot;C:/Users/user/NewProject&quot;)  // Change to absolute path
-f.chd(&quot;../sibling_project&quot;)        // Change using relative path
+<div class="highlight"><pre><span></span><code>f.chd(&quot;C:/Users/user/NewProject&quot;);  /* Change to absolute path */
+f.chd(&quot;../sibling_project&quot;);        /* Change using relative path */
 </code></pre></div>
 <h2 id="navigation-examples">Navigation Examples</h2>
 <h3 id="basic-project-navigation">Basic Project Navigation</h3>
 <div class="highlight"><pre><span></span><code>f = $file();
 
-// Set project home directory
+/* Set project home directory */
 f.chd(&quot;C:/Users/user/Projects/MyProject&quot;);
-f.phd()  // Returns: C:\Users\user\Projects\MyProject
-f.pwd()  // Returns: /
+f.phd().echo();  /* Returns: C:\Users\user\Projects\MyProject */
+f.pwd().echo();  /* Returns: / */
 
-// Navigate within project
+/* Navigate within project */
 f.cd(&quot;database&quot;);
-f.pwd()  // Returns: /database
+f.pwd().echo();  /* Returns: /database */
 
 f.cd(&quot;users&quot;);
-f.pwd()  // Returns: /database/users
+f.pwd().echo();  /* Returns: /database/users */
 
 f.cd(&quot;..&quot;);
-f.pwd()  // Returns: /database
+f.pwd().echo();  /* Returns: /database */
 
 f.cd(&quot;/&quot;);
-f.pwd()  // Returns: /
+f.pwd().echo();  /* Returns: / */
 </code></pre></div>
 <h3 id="project-switching">Project Switching</h3>
 <div class="highlight"><pre><span></span><code>f = $file();
 
-// Work on first project
+/* Work on first project */
 f.chd(&quot;C:/Users/user/Projects/ProjectA&quot;);
 f.cd(&quot;src&quot;);
-f.pwd()  // Returns: /src
+f.pwd().echo();  /* Returns: /src */
 
-// Switch to different project
+/* Switch to different project */
 f.chd(&quot;C:/Users/user/Projects/ProjectB&quot;);
-f.pwd()  // Returns: / (reset to root of new project)
-f.phd()  // Returns: C:\Users\user\Projects\ProjectB
+f.pwd().echo();  /* Returns: / (reset to root of new project) */
+f.phd().echo();  /* Returns: C:\Users\user\Projects\ProjectB */
 </code></pre></div>
 <h3 id="database-navigation">Database Navigation</h3>
 <div class="highlight"><pre><span></span><code>f = $file();
 
-// Create and navigate database
+/* Create and navigate database */
 f.mk(&quot;my_database&quot;, &quot;ROW&quot;);
 f.cd(&quot;my_database&quot;);
-f.pwd()  // Returns: /my_database
+f.pwd().echo();  /* Returns: /my_database */
 
-// Create fields
+/* Create fields */
 f.mkfield(&quot;id&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
 f.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
 
-// Navigate within database
+/* Navigate within database */
 f.cd(&quot;users&quot;);
-f.pwd()  // Returns: /my_database/users
+f.pwd().echo();  /* Returns: /my_database/users */
 </code></pre></div>
 <h2 id="comparison-table">Comparison Table</h2>
 <table>
@@ -3922,34 +3922,34 @@ f.pwd()  // Returns: /my_database/users
 </table>
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="1-project-organization">1. Project Organization</h3>
-<div class="highlight"><pre><span></span><code>// Set project home directory
+<div class="highlight"><pre><span></span><code>/* Set project home directory */
 f.chd(&quot;C:/Users/user/Projects/MyProject&quot;);
 
-// Organize project structure
+/* Organize project structure */
 f.mk(&quot;src&quot;, &quot;GROUP&quot;);
 f.mk(&quot;docs&quot;, &quot;GROUP&quot;);
 f.mk(&quot;data&quot;, &quot;COL&quot;);
 f.mk(&quot;config&quot;, &quot;GROUP&quot;);
 </code></pre></div>
 <h3 id="2-database-management">2. Database Management</h3>
-<div class="highlight"><pre><span></span><code>// Create project database
+<div class="highlight"><pre><span></span><code>/* Create project database */
 f.mk(&quot;project_db&quot;, &quot;ROW&quot;);
 f.cd(&quot;project_db&quot;);
 
-// Define schema
+/* Define schema */
 f.mkfield(&quot;id&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4);
 f.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
 f.mkfield(&quot;created&quot;, &quot;TIME&quot;, &quot;FIX&quot;, 8);
 </code></pre></div>
 <h3 id="3-file-system-operations">3. File System Operations</h3>
-<div class="highlight"><pre><span></span><code>// Set project directory
+<div class="highlight"><pre><span></span><code>/* Set project directory */
 f.chd(&quot;C:/Users/user/Projects/MyProject&quot;);
 
-// Create project files
+/* Create project files */
 f.set(&quot;README.md&quot;, &quot;# My Project\n\nProject description...&quot;);
 f.set(&quot;config.json&quot;, &#39;{&quot;version&quot;: &quot;1.0&quot;, &quot;debug&quot;: false}&#39;);
 
-// Navigate and list files
+/* Navigate and list files */
 f.cd(&quot;src&quot;);
 files = f.ls();
 </code></pre></div>
@@ -3958,7 +3958,7 @@ files = f.ls();
 <ol>
 <li><strong>Set Project Context</strong>: Use <code>chd()</code> to set project home directory</li>
 <li><strong>Navigate Within Project</strong>: Use <code>cd()</code> for relative navigation</li>
-<li><strong>Monitor Location</strong>: Use <code>pwd()</code> to see current position</li>
+<li><strong>Monitor Location</strong>: Use <code>pwd().echo()</code> to see current position</li>
 <li><strong>Switch Projects</strong>: Use <code>chd()</code> to change project context</li>
 </ol>
 <h3 id="database-workflow">Database Workflow</h3>
@@ -3970,15 +3970,15 @@ files = f.ls();
 </ol>
 <h2 id="error-handling">Error Handling</h2>
 <h3 id="common-issues">Common Issues</h3>
-<div class="highlight"><pre><span></span><code>// Directory doesn&#39;t exist
-f.cd(&quot;nonexistent&quot;)  // May return error
+<div class="highlight"><pre><span></span><code>/* Directory doesn&#39;t exist */
+f.cd(&quot;nonexistent&quot;);  /* May return error */
 
-// Invalid home directory
-f.chd(&quot;invalid/path&quot;)  // May return error
+/* Invalid home directory */
+f.chd(&quot;invalid/path&quot;);  /* May return error */
 
-// Check current state
-f.pwd()  // Verify current working directory
-f.phd()  // Verify current home directory
+/* Check current state */
+f.pwd().echo();  /* Verify current working directory */
+f.phd().echo();  /* Verify current home directory */
 </code></pre></div>
 <h3 id="safe-navigation">Safe Navigation</h3>
 <div class="highlight"><pre><span></span><code>// Check if directory exists before navigating

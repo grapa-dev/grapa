@@ -57,6 +57,15 @@ grapa --version
 **Status**: ✅ **VERIFIED WORKING** - Displays "Version: 0.0.41"
 **Tested**: macOS - Outputs version information correctly
 
+#### Verbose Mode
+```bash
+grapa --verbose
+```
+**Implementation**: Sets `showVersion = true` to display version header
+**Status**: ✅ **VERIFIED WORKING** - Shows version header (default: hidden)
+**Tested**: macOS - `./grapa --verbose -c "'hello'.echo()"` shows version header
+**Behavior**: Displays "Version: 0.0.41" before command output
+
 #### Quiet Mode
 ```bash
 grapa -q
@@ -101,6 +110,16 @@ grapa '"hello world"'
 **Status**: ✅ **VERIFIED WORKING** - Executes quoted commands correctly
 **Tested**: macOS - `./grapa -c "'hello world'.echo()"` outputs "hello world"
 
+#### Standard Stdin Execution
+```bash
+echo "data" | grapa -
+cat file.txt | grapa -
+```
+**Implementation**: Standard `-` option for reading from stdin
+**Status**: ✅ **VERIFIED WORKING** - Standard Python/Node.js behavior
+**Tested**: macOS - `echo "'hello'.echo()" | ./grapa -` outputs "hello"
+**Error Handling**: Shows clear error when used without pipe input
+
 ### Smart Input Detection
 
 #### Pipe Input Auto-Detection
@@ -121,18 +140,37 @@ grapa 'data'.get(0)
 **Implementation**: Detects common method patterns
 **Status**: ⚠️ **NEEDS TESTING** - Not yet verified
 
-## Known Broken Features
+## Error Handling
+
+### Unknown Options
+```bash
+grapa -s
+grapa --invalid-option
+```
+**Status**: ✅ **VERIFIED WORKING** - Shows clear error message and exits cleanly
+**Implementation**: Detects unknown flags starting with `-` and shows helpful error
+**Behavior**: Prints error to stderr and exits with error code
+**Example**: `./grapa -s` outputs "Error: Unknown option '-s'" and exits
+
+### Invalid Stdin Usage
+```bash
+grapa -
+```
+**Status**: ✅ **VERIFIED WORKING** - Shows helpful error when used without pipe input
+**Implementation**: Checks for pipe input before reading from stdin
+**Behavior**: Shows clear usage example and exits cleanly
+**Example**: `./grapa -` outputs "Error: - option requires pipe input (e.g., echo 'command' | grapa -)"
+
+## Removed Features (Non-Standard)
 
 ### Script Options (-s, -S)
 ```bash
 grapa -s
 grapa -S
 ```
-**Status**: ❌ **BROKEN** - Hangs and requires process termination
-**Issue**: Both options cause the CLI to hang and not respond
-**Implementation**: Both read from stdin in infinite loops without proper termination
-**Workaround**: Use `-f` option or direct file execution instead
-**Priority**: Medium - These options appear to be legacy/unused
+**Status**: ❌ **REMOVED** - Replaced with standard `-` option
+**Reason**: Non-standard options that don't align with Python/Node.js CLI conventions
+**Replacement**: Use `grapa -` for stdin reading (standard behavior)
 
 ## Partially Implemented Features
 
@@ -140,28 +178,14 @@ grapa -S
 ```bash
 grapa -d
 ```
-**Status**: ⚠️ **PARTIAL** - Sets debug mode but drops to interactive
-**Implementation**: Sets `gSystem->mDebugMode = true` but no debug instrumentation exists
-**Behavior**: Drops into interactive mode (same as `-i`)
-**Priority**: Low - Debug instrumentation not yet implemented
-
-### Output File (-o)
-```bash
-grapa -o filename
-```
-**Status**: ⚠️ **PARTIAL** - Sets output file but drops to interactive
-**Implementation**: Sets `gSystem->mOutputFile` but output redirection not fully implemented
-**Behavior**: Drops into interactive mode
-**Priority**: Low - Output redirection not yet implemented
-
-### Append Mode (-a)
-```bash
-grapa -a
-```
-**Status**: ⚠️ **PARTIAL** - Sets append mode but drops to interactive
-**Implementation**: Sets `gSystem->mAppendMode = true` but append functionality not implemented
-**Behavior**: Drops into interactive mode
-**Priority**: Low - Append functionality not yet implemented
+**Status**: ✅ **VERIFIED WORKING** - Provides debug output for CLI operations
+**Implementation**: Sets `gSystem->mDebugMode = true` and calls `gSystem->DebugPrint()`
+**Behavior**: Shows debug information for command execution, file loading, and pipe detection
+**Examples**:
+- `./grapa -d -c "'hello'.echo()"` shows "[DEBUG] Debug mode enabled" and "[DEBUG] Executing command: ..."
+- `./grapa -d -f script.grc` shows debug info for file execution
+- `./grapa -d -` shows debug info for stdin execution
+**Output**: Debug messages prefixed with "[DEBUG]" sent to stderr
 
 ## Implementation Details
 

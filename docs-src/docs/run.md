@@ -23,15 +23,13 @@ Other command line options:
 ```
         -h,--help       :Show this help message
         -v,--version    :Show version
-        -q,--quite      :Suppress header
-        -env            :Show environment details
-        -c script       :Run from script
--f file         :Run from file
-	-w		:Editor
-	-wfile file	:Editor from file
-        -s              :Run from stdin
--S              :Places stdin into $ARGCIN environment variable (use with -c|-f)
-        -argv           :Places proceeding args into $ARGV environment variable
+        -q,--quiet      :Suppress header
+        --verbose       :Show version header (default: hidden)
+        -i,--interactive:Run in interactive mode
+        -d,--debug      :Enable debug mode (shows debug output)
+        -c <script>     :Execute command/script
+        -f <file>       :Execute file
+        -               :Execute from stdin (standard Python/Node.js behavior)
 ```
 
 Example: Performs a SHAKE256 hash of the string "thisisatest".
@@ -40,11 +38,15 @@ grapa -c "'thisisatest'.encode('SHAKE256')" -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 ```
 
-Example: Same, but takes input from cin. 
+Example: Same, but takes input from stdin. 
 ```
-echo "thisisatest".encode('SHAKE256') | grapa -s -q
+echo "thisisatest".encode('SHAKE256') | grapa - -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 ```
+
+**Note:** The `-` option requires pipe input. Using `grapa -` without pipe input will show an error message.
+
+**Note:** By default, Grapa runs without showing version headers (like Python/Node.js). Use `--verbose` to show version headers when needed.
 
 # Testing
 

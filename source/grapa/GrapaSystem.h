@@ -191,6 +191,8 @@ public:
 	//void Print(const GrapaSU64& pValue, bool flush = true);
 	//void Print(u64 pValue, bool flush = true);
 	void PrintTimeLine(const char* pChar, bool flush = true);
+	void DebugPrint(const char* pStr, bool flush = true);
+	void DebugPrint(const GrapaCHAR& pValue, bool flush = true);
 	int GetCharOLD();
 	std::string GetUtf8Char();
 	void SetEcho(bool enable = true);

@@ -60,6 +60,13 @@
 - **Minimal Repro:**
   - Run `./grapa test/test_row.grc` to reproduce the bug (ROW table corruption after third insert).
   - Run `./grapa test/test_col.grc` to confirm COL tables work correctly.
+- **Debug Mode Available (v0.0.42+):**
+  - Use `./grapa -d -f test/test_row_bug_demo.grc` for detailed debug output
+  - Debug mode provides step-by-step execution tracking for database operations
+  - Shows table creation, record insertion, index updates, and retrieval failures
+  - Outputs debug messages to stderr with "[DEBUG]" prefix
+  - Valuable for understanding the exact point where corruption occurs
+  - **Note:** Consider creating internal debug options (not documented in -h or docs-src) for verbose database investigation to avoid cluttering the public debug mode for regular users
 - **Other scripts:**
   - Add here any other scripts that pass/fail or reveal edge cases as they are discovered.
 

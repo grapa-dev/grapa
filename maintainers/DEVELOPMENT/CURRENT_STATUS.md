@@ -19,17 +19,33 @@
 
 # 🚨 IMMEDIATE PRIORITY TASKS
 
-## 1. Improve CLI Interface
+## 1. ROW Table Index Corruption Bug
 - **Status:** HIGH PRIORITY, ready to start
+- **Focus:** Investigate and fix ROW table index corruption issue
+- **Reference:** [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)
+- **Scope:** Database system investigation, bug reproduction, fix implementation
+- **Goal:** Resolve critical database corruption issue affecting ROW table functionality
+- **Success Criteria:** 
+  - Bug reliably reproduced and understood
+  - Root cause identified and documented
+  - Fix implemented and tested
+  - Workaround documented for users
+
+---
+
+## 2. Improve CLI Interface
+- **Status:** ✅ COMPLETED
 - **Focus:** Create best-in-class CLI interface matching Python standards and user expectations
 - **Reference:** [`GRAPA_CLI_COMPREHENSIVE.md`](GRAPA_CLI_COMPREHENSIVE.md)
 - **Scope:** Standard option alignment, user experience enhancement, comprehensive documentation
 - **Goal:** Achieve CLI interface that users of Python, Node.js, and other tools would find intuitive and powerful
 - **Success Criteria:** 
-  - All standard options work as expected (`-c`, `-f`, `-s`, `-h`, `-v`, `-d`, etc.)
-  - Cross-platform compatibility verified
-  - User-facing docs-src updated with accurate examples
-  - Implementation docs reflect actual working functionality
+  - ✅ All standard options work as expected (`-c`, `-f`, `-`, `-h`, `-v`, `-d`, `--verbose`, etc.)
+  - ✅ Cross-platform compatibility verified (Mac + Windows testing sufficient)
+  - ✅ User-facing docs-src updated with accurate examples
+  - ✅ Implementation docs reflect actual working functionality
+  - ✅ Debug mode implemented with comprehensive output
+  - ✅ Version header behavior aligned with Python/Node.js standards (hidden by default, `--verbose` to show)
 
 ---
 
@@ -38,7 +54,7 @@
 1. **Fix $file (and $TABLE) .get() Return Types:**  
    ~~Ensure that INT and FLOAT fields from .get() return the correct type instead of $STR/raw bytes. (Current workaround: use `.raw().int()` or `.raw().float()`. See known issue.)~~ **[COMPLETED]**
 2. **ROW Table Index Corruption Bug:**  
-   - **Status:** MEDIUM PRIORITY, investigation needed
+   - **Status:** HIGH PRIORITY, investigation needed
    - **Reference:** [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)
    - **Test Script:** `test_row_bug_demo.grc`
    - **Workaround:** Use COL tables instead of ROW tables

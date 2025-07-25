@@ -59,7 +59,7 @@ GrapaSystem* GrapaLink::GetGrapaSystem() {return gSystem;}
 
 GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, GrapaCHAR& inStr, GrapaCHAR& outStr, GrapaCHAR& runStr)
 {
-	bool showVersion = true;
+	bool showVersion = false;
 	bool showHelp = false;
 	bool showEnv = false;
 	bool suppressHeader = false;
@@ -107,11 +107,11 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			suppressHeader = true;
 		} else if ((e->mValue.Cmp("-d") == 0) || (e->mValue.Cmp("--debug") == 0)) {
 			gSystem->mDebugMode = true;
-		} else if ((e->mValue.Cmp("-o") == 0) || (e->mValue.Cmp("--output") == 0)) {
-			e = e->Next();
-			if (e) gSystem->mOutputFile.FROM(e->mValue);
-		} else if ((e->mValue.Cmp("-a") == 0) || (e->mValue.Cmp("--append") == 0)) {
-			gSystem->mAppendMode = true;
+			gSystem->DebugPrint("Debug mode enabled\n");
+		} else if (e->mValue.Cmp("--verbose") == 0) {
+			showVersion = true;
+			gSystem->DebugPrint("Verbose mode enabled (showing version header)\n");
+		/* Removed non-standard options: -o, -a */
 		} else if ((e->mValue.Cmp("-i") == 0) || (e->mValue.Cmp("--interactive") == 0)) {
 			interactiveMode = true;
 			showConsole = true;
@@ -135,20 +135,26 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			}
 			if (next) f_arg.FROM(next->mValue);
 			needExit = true;
-		} else if (e->mValue.Cmp("-s") == 0) {
+		/* Removed non-standard options: -s, -S (replaced with standard - option) */
+		} else if (e->mValue.Cmp("-") == 0) {
+			/* Standard stdin option (like Python/Node.js) */
+			gSystem->DebugPrint("Executing from stdin (- option)\n");
 			needExit = true;
-			char c;
-			runStr.SetLength(0);
-			while (std::cin >> c && !std::cin.eof())
-				runStr.Append((char)c);
-		} else if (e->mValue.Cmp("-S") == 0) {
-			needExit = true;
-			char c;
-			gSystem->mArgcin.SetLength(0);
-			while (std::cin >> c && !std::cin.eof())
-				gSystem->mArgcin.Append((char)c);
+			if (isPipeInput) {
+				char c;
+				runStr.SetLength(0);
+				while (std::cin >> c && !std::cin.eof())
+					runStr.Append((char)c);
+			} else {
+				fprintf(stderr, "Error: - option requires pipe input (e.g., echo 'command' | grapa -)\n");
+				return GrapaCHAR("Error: - option requires pipe input");
+			}
 		} else if (e->mValue.mLength > 0 && e->mValue.mBytes[0] == '-') {
-			// Unknown flag, skip
+			/* Unknown flag - show error and exit */
+			fprintf(stderr, "Error: Unknown option '%s'\n", (char*)e->mValue.mBytes);
+			fprintf(stderr, "Use 'grapa -h' for help\n");
+			needExit = true;
+			return GrapaCHAR("Error: Unknown option");
 		} else {
 			positional_args.push_back(e);
 		}
@@ -159,6 +165,9 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	GrapaRuleQueue* argvList = new GrapaRuleQueue();
 	int used_script_arg_index = -1;
 	if (found_c && c_arg.mLength) {
+		gSystem->DebugPrint("Executing command: ");
+		gSystem->DebugPrint(c_arg);
+		gSystem->DebugPrint("\n");
 		runStr.FROM(c_arg);
 		needExit = true;
 		// Find which positional arg was used for -c (if any)
@@ -169,6 +178,9 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			}
 		}
 	} else if (found_f && f_arg.mLength) {
+		gSystem->DebugPrint("Executing file: ");
+		gSystem->DebugPrint(f_arg);
+		gSystem->DebugPrint("\n");
 		GrapaFileIO fp;
 		if (fp.Open((char*)f_arg.mBytes) == 0) {
 			u64 sz = 0;
@@ -189,6 +201,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		}
 	} else {
 		// Look for first positional .grc/.grz
+		gSystem->DebugPrint("Looking for positional script file\n");
 		for (size_t i = 0; i < positional_args.size(); ++i) {
 			auto* arg = positional_args[i];
 			if (arg->mValue.mLength > 4 &&
@@ -196,6 +209,9 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 				 strcmp((char*)&arg->mValue.mBytes[arg->mValue.mLength - 4], ".grz") == 0)) {
 				GrapaFileIO fp;
 				if (fp.Open((char*)arg->mValue.mBytes) == 0) {
+					gSystem->DebugPrint("Found script file: ");
+					gSystem->DebugPrint(arg->mValue);
+					gSystem->DebugPrint("\n");
 					u64 sz = 0;
 					fp.GetSize(sz);
 					runStr.SetLength(sz);
@@ -231,6 +247,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	// Auto-detect pipe input if no explicit stdin option and no script file
 	if (isPipeInput && runStr.mLength == 0 && !interactiveMode && !showWidget)
 	{
+		gSystem->DebugPrint("Auto-detected pipe input\n");
 		char c;
 		runStr.SetLength(0);
 		while (std::cin >> c && !std::cin.eof())
@@ -458,16 +475,14 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		outStr.Append("\t-h,--help\t:Show this help message\n");
 		outStr.Append("\t-v,--version \t:Show version\n");
 		outStr.Append("\t-q,--quiet\t:Suppress header\n");
+		outStr.Append("\t--verbose\t:Show version header (default: hidden)\n");
 		outStr.Append("\t-i,--interactive\t:Run in interactive mode\n");
-		outStr.Append("\t-d,--debug\t:Debug mode\n");
-		outStr.Append("\t-o,--output <file>\t:Output to file\n");
-		outStr.Append("\t-a,--append\t:Append to output file\n");
+		outStr.Append("\t-d,--debug\t:Debug mode (shows debug output)\n");
 		outStr.Append("\n");
 		outStr.Append("Execution:\n");
 		outStr.Append("\t-c <script>\t:Execute command/script (e.g., grapa -c \"'hello'.echo()\")\n");
 		outStr.Append("\t-f <file>\t:Execute file (e.g., grapa -f script.grc)\n");
-		outStr.Append("\t-s\t\t:Execute from stdin (e.g., echo \"'hello'.echo()\" | grapa -s)\n");
-		outStr.Append("\t-S\t\t:Store stdin in $ARGCIN variable (e.g., echo \"data\" | grapa -S -c \"$ARGCIN.echo()\")\n");
+		outStr.Append("\t-\t\t:Execute from stdin (e.g., echo \"'hello'.echo()\" | grapa -)\n");
 		outStr.Append("\n");
 		outStr.Append("Direct Execution (no flags needed):\n");
 		outStr.Append("\tcommand\t\t:Execute command directly (e.g., grapa \"'hello'.echo()\")\n");

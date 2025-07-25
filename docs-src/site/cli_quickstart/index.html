@@ -936,6 +936,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See also
@@ -3602,6 +3611,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Known Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       See also
@@ -3813,16 +3831,13 @@ grapa<span class="w"> </span><span class="o">[</span>options<span class="o">]</s
 <span class="c1"># Standard Options</span>
 -c,<span class="w"> </span>--command<span class="w"> </span>&lt;script&gt;<span class="w">     </span>Execute<span class="w"> </span>Grapa<span class="w"> </span>command/script
 -f,<span class="w"> </span>--file<span class="w"> </span>&lt;file&gt;<span class="w">          </span>Execute<span class="w"> </span>Grapa<span class="w"> </span>script<span class="w"> </span>file<span class="w"> </span><span class="o">(</span>.grc<span class="w"> </span>or<span class="w"> </span>.grz<span class="o">)</span>
--s,<span class="w"> </span>--stdin<span class="w">                </span>Execute<span class="w"> </span><span class="nb">command</span><span class="w"> </span>from<span class="w"> </span>stdin
--S,<span class="w"> </span>--stdin-var<span class="w">            </span>Store<span class="w"> </span>stdin<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$ARGCIN</span><span class="w"> </span>environment<span class="w"> </span>variable
+-<span class="w">                          </span>Execute<span class="w"> </span><span class="nb">command</span><span class="w"> </span>from<span class="w"> </span>stdin<span class="w"> </span><span class="o">(</span>standard<span class="w"> </span>Python/Node.js<span class="w"> </span>behavior<span class="o">)</span>
 -q,<span class="w"> </span>--quiet<span class="w">                </span>Suppress<span class="w"> </span>version<span class="w"> </span>header<span class="w"> </span>output
 -v,<span class="w"> </span>--version<span class="w">              </span>Show<span class="w"> </span>version<span class="w"> </span>information
 -h,<span class="w"> </span>--help<span class="w">                 </span>Show<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message
--d,<span class="w"> </span>--debug<span class="w">                </span>Enable<span class="w"> </span>debug<span class="w"> </span>mode
--o,<span class="w"> </span>--output<span class="w"> </span>&lt;file&gt;<span class="w">        </span>Redirect<span class="w"> </span>output<span class="w"> </span>to<span class="w"> </span>file
--a,<span class="w"> </span>--append<span class="w">               </span>Append<span class="w"> </span>output<span class="w"> </span>to<span class="w"> </span>file<span class="w"> </span><span class="o">(</span>use<span class="w"> </span>with<span class="w"> </span>-o<span class="o">)</span>
--w,<span class="w"> </span>--window<span class="w">               </span>Open<span class="w"> </span><span class="k">in</span><span class="w"> </span>window<span class="w"> </span>mode<span class="w"> </span><span class="o">(</span>GUI<span class="o">)</span>
--wf,<span class="w"> </span>--window-file<span class="w"> </span>&lt;file&gt;<span class="w">  </span>Open<span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>window<span class="w"> </span>mode
+--verbose<span class="w">                  </span>Show<span class="w"> </span>version<span class="w"> </span>header<span class="w"> </span><span class="o">(</span>default:<span class="w"> </span>hidden<span class="o">)</span>
+-i,<span class="w"> </span>--interactive<span class="w">          </span>Run<span class="w"> </span><span class="k">in</span><span class="w"> </span>interactive<span class="w"> </span>mode
+-d,<span class="w"> </span>--debug<span class="w">                </span>Enable<span class="w"> </span>debug<span class="w"> </span>mode<span class="w"> </span><span class="o">(</span>shows<span class="w"> </span>debug<span class="w"> </span>output<span class="o">)</span>
 </code></pre></div>
 <h3 id="basic-usage">Basic Usage</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Direct command execution (new)</span>
@@ -3855,11 +3870,8 @@ first_arg = args[1];
 (&quot;First argument: &quot; + first_arg).echo();
 </code></pre></div></p>
 <h3 id="advanced-command-line-options">Advanced Command Line Options</h3>
-<div class="highlight"><pre><span></span><code><span class="c1"># Execute command from stdin</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&#39;Hello from stdin!&#39;.echo()&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grapa<span class="w"> </span>-s
-
-<span class="c1"># Store stdin in $ARGCIN variable</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grapa<span class="w"> </span>-S<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$sys</span><span class="s2">().getenv(&#39;</span><span class="nv">$ARGCIN</span><span class="s2">&#39;).echo()&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Execute command from stdin (standard Python/Node.js behavior)</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&#39;Hello from stdin!&#39;.echo()&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grapa<span class="w"> </span>-
 
 <span class="c1"># Execute command</span>
 grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello&#39;.echo()&quot;</span>
@@ -3870,14 +3882,14 @@ grapa<span class="w"> </span>-f<span class="w"> </span>script.grc
 <span class="c1"># Quiet mode (suppress header)</span>
 grapa<span class="w"> </span>-q<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello&#39;.echo()&quot;</span>
 
-<span class="c1"># Debug mode</span>
+<span class="c1"># Verbose mode (show version header)</span>
+grapa<span class="w"> </span>--verbose<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello&#39;.echo()&quot;</span>
+
+<span class="c1"># Debug mode (shows debug output)</span>
 grapa<span class="w"> </span>-d<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello&#39;.echo()&quot;</span>
 
-<span class="c1"># Output to file</span>
-grapa<span class="w"> </span>-o<span class="w"> </span>output.txt<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello&#39;.echo()&quot;</span>
-
-<span class="c1"># Append to file</span>
-grapa<span class="w"> </span>-a<span class="w"> </span>-o<span class="w"> </span>log.txt<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;New entry&#39;.echo()&quot;</span>
+<span class="c1"># Interactive mode</span>
+grapa<span class="w"> </span>-i
 </code></pre></div>
 <h2 id="common-patterns">Common Patterns</h2>
 <h3 id="configuration-files">Configuration Files</h3>
@@ -3921,10 +3933,17 @@ for (file in files) {
 <h2 id="tips">Tips</h2>
 <ul>
 <li><strong>Direct Execution:</strong> You can now run commands and scripts directly without flags: <code>grapa "'hello'.echo()"</code> or <code>grapa script.grc</code></li>
+<li><strong>Clean Output:</strong> By default, Grapa runs without showing version headers (like Python/Node.js)</li>
+<li><strong>Verbose Mode:</strong> Use <code>--verbose</code> to show version headers when needed</li>
 <li><strong>Parallel Operations:</strong> <code>map</code> and <code>filter</code> are parallel by default and great for data processing</li>
 <li><strong>File Extensions:</strong> Use <code>.grc</code> extension for Grapa script files, <code>.grz</code> for compiled scripts</li>
 <li><strong>Interactive Mode:</strong> Run <code>grapa</code> without arguments for interactive experimentation</li>
-<li><strong>Error Messages:</strong> Grapa provides detailed error messages to help debug issues<blockquote>
+<li><strong>Error Messages:</strong> Grapa provides detailed error messages to help debug issues</li>
+<li><strong>Debug Mode:</strong> Use <code>-d</code> to see detailed debug information about CLI operations</li>
+</ul>
+<h2 id="known-limitations">Known Limitations</h2>
+<ul>
+<li><strong>Error Handling:</strong> Invalid syntax or missing files are handled silently without error messages<blockquote>
 <p><strong>Full CLI options:</strong>
 - See <a href="../run/">Run</a> for all parameters and examples
 - Or run <code>grapa -h</code> for the latest help</p>
