@@ -131,14 +131,15 @@ cat file.txt | grapa
 **Status**: ✅ **VERIFIED WORKING** - Automatically reads from stdin when piped
 **Tested**: macOS - `echo "'hello'.echo()" | ./grapa` outputs "hello"
 
-#### Method Call Detection
+#### Direct File Execution (No -f flag)
 ```bash
-grapa 'hello'.echo()
-grapa 'test'.len()
-grapa 'data'.get(0)
+grapa script.grc
+grapa script.grz
 ```
-**Implementation**: Detects common method patterns
-**Status**: ⚠️ **NEEDS TESTING** - Not yet verified
+**Implementation**: Automatically detects .grc/.grz files as scripts
+**Status**: ✅ **VERIFIED WORKING** - Executes script files without -f flag
+**Behavior**: Looks for first positional argument ending in .grc/.grz and executes it
+**Note**: Grapa does not support direct quoted command execution like `grapa 'hello'.echo()` - use `grapa -c "'hello'.echo()"` instead
 
 ## Error Handling
 
