@@ -76,6 +76,7 @@ When referencing maintainer content, use these paths:
 - [Base Types](IMPLEMENTATION/BASETYPES.md) - Core type system
 - [Execution Trees](IMPLEMENTATION/EXECUTION_TREES.md) - Execution model
 - [Include System](IMPLEMENTATION/INCLUDE_SYSTEM.md) - Module system
+- [CLI Implementation](IMPLEMENTATION/GRAPA_CLI_IMPLEMENTATION.md) - Command line interface implementation
 - [GRZ Format](IMPLEMENTATION/GRZ_FORMAT.md) - Binary format specification
 - [Unicode Grep Status](IMPLEMENTATION/UNICODE_GREP_STATUS.md) - Unicode implementation
 

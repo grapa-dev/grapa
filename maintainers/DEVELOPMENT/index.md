@@ -63,7 +63,8 @@ All deprecated files have been moved to:
 
 ## 🔎 Quick Links to Major Investigations
 
-- ROW Table Index Corruption Investigation – See [ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) and [ROW_INDEX_BUG_TODO.md](ROW_INDEX_BUG_TODO.md) for full debug log, root cause analysis, and current status.
+- **CLI Functionality Investigation** – See [CLI_FUNCTIONALITY_INVESTIGATION.md](CLI_FUNCTIONALITY_INVESTIGATION.md) for systematic testing plan to verify current CLI features and update implementation documentation.
+- **ROW Table Index Corruption Investigation** – See [ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) and [ROW_INDEX_BUG_TODO.md](ROW_INDEX_BUG_TODO.md) for full debug log, root cause analysis, and current status.
 
 ## 📦 Archived/Closed Investigations
 

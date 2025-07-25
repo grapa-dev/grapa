@@ -19,11 +19,17 @@
 
 # 🚨 IMMEDIATE PRIORITY TASKS
 
-## 1. ROW Table Index Corruption Bug
-- **Status:** CRITICAL, in progress (debug in main project)
-- **Reference:** [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) (active investigation)
-- **Test Script:** `test_row_bug_demo.grc`
-- **Workaround:** Use COL tables instead of ROW tables
+## 1. Improve CLI Interface
+- **Status:** HIGH PRIORITY, ready to start
+- **Focus:** Create best-in-class CLI interface matching Python standards and user expectations
+- **Reference:** [`GRAPA_CLI_COMPREHENSIVE.md`](GRAPA_CLI_COMPREHENSIVE.md)
+- **Scope:** Standard option alignment, user experience enhancement, comprehensive documentation
+- **Goal:** Achieve CLI interface that users of Python, Node.js, and other tools would find intuitive and powerful
+- **Success Criteria:** 
+  - All standard options work as expected (`-c`, `-f`, `-s`, `-h`, `-v`, `-d`, etc.)
+  - Cross-platform compatibility verified
+  - User-facing docs-src updated with accurate examples
+  - Implementation docs reflect actual working functionality
 
 ---
 
@@ -31,7 +37,12 @@
 
 1. **Fix $file (and $TABLE) .get() Return Types:**  
    ~~Ensure that INT and FLOAT fields from .get() return the correct type instead of $STR/raw bytes. (Current workaround: use `.raw().int()` or `.raw().float()`. See known issue.)~~ **[COMPLETED]**
-2. **Language System Enhancements:**  
+2. **ROW Table Index Corruption Bug:**  
+   - **Status:** MEDIUM PRIORITY, investigation needed
+   - **Reference:** [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)
+   - **Test Script:** `test_row_bug_demo.grc`
+   - **Workaround:** Use COL tables instead of ROW tables
+3. **Language System Enhancements:**  
    Design and implement loop constructs, exception handling, and a module system.
 
 ---
@@ -75,7 +86,7 @@
 ---
 
 # 📚 REFERENCE DOCUMENTS
-- **[CLI Redesign Plan](../CLI_REDESIGN_PLAN.md)**
+- **[Grapa CLI Comprehensive Guide](GRAPA_CLI_COMPREHENSIVE.md)**
 <!-- [Language Enhancement Roadmap](../INTERNAL_NOTES/ARCHIVED/LANGUAGE_ENHANCEMENT_ROADMAP.md) (archived; see CURRENT_STATUS.md for all language priorities) -->
 - **[Operator Bug Fixes Status](../INTERNAL_NOTES/OPERATOR_BUG_FIXES_STATUS.md)**
 - **[Optimization Backlog](../INTERNAL_NOTES/GRAPA_OPTIMIZATION_BACKLOG.md)**
@@ -101,5 +112,5 @@ This document provides a single authoritative source for:
 - Contact and coordination guidance for maintainers and AI agents
 
 **Last Updated:** January 2025
-**Current Focus:** 🚨 ROW Table Index Corruption Bug (IMMEDIATE PRIORITY)
-**Status:** CLI Redesign Complete, ROW Bug Critical, Operator System Complete 
+**Current Focus:** 🚨 Improve CLI Interface (IMMEDIATE PRIORITY)
+**Status:** CLI Redesign Complete, ROW Bug Moved to Next-Up, Operator System Complete 
