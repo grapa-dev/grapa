@@ -205,11 +205,7 @@ grapa [options] [script_or_command]
 
 ### Basic Usage
 ```bash
-# Direct command execution (new)
-grapa "'Hello, World!'.echo()"
-grapa "'Testing'.echo(); 'Multiple commands'.echo()"
-
-# Direct script execution (new)
+# Direct script execution (automatic .grc/.grz detection)
 grapa script.grc
 grapa script.grz
 
@@ -309,7 +305,7 @@ for (file in files) {
 
 ## Tips
 
-- **Direct Execution:** You can now run commands and scripts directly without flags: `grapa "'hello'.echo()"` or `grapa script.grc`
+- **Direct Script Execution:** You can run script files directly without the -f flag: `grapa script.grc`
 - **Clean Output:** By default, Grapa runs without showing version headers (like Python/Node.js)
 - **Verbose Mode:** Use `--verbose` to show version headers when needed
 - **Parallel Operations:** `map` and `filter` are parallel by default and great for data processing
