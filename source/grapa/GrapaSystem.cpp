@@ -532,7 +532,7 @@ void My_Console::Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run)
     GrapaError err = mConsoleSend.Start();
     GrapaCHAR grresult;
     if (gSystem->mGrammar.mLength) grresult = mConsoleSend.SendSync(gSystem->mGrammar,NULL,0,GrapaCHAR());
-    // printf("[DEBUG] After grammar, grresult.mLength=%llu: '%.*s'\n", (unsigned long long)grresult.mLength, (int)grresult.mLength, (char*)grresult.mBytes);
+    //printf("[DEBUG] After grammar, grresult.mLength=%llu: '%.*s'\n", (unsigned long long)grresult.mLength, (int)grresult.mLength, (char*)grresult.mBytes);
     if (grresult.mLength)
     {
         // printf("[DEBUG] About to print grresult.mBytes (grammar)\n");
@@ -543,23 +543,26 @@ void My_Console::Start(GrapaCHAR& in, GrapaCHAR& out, GrapaCHAR& run)
     bool printedOut = false;
     if (out.mLength)
     {
-        // printf("[DEBUG] About to print out.mBytes\n");
+        //printf("[DEBUG] About to print out.mBytes\n");
         std::cout << (char*)out.mBytes;
         // printf("[DEBUG] About to print newline after out\n");
         std::cout << (char*)"\n";
         printedOut = true;
     }
     if (run.mLength) grresult = mConsoleSend.SendSync(run,NULL,0,GrapaCHAR());
-    // printf("[DEBUG] After run, grresult.mLength=%llu: '%.*s'\n", (unsigned long long)grresult.mLength, (int)grresult.mLength, (char*)grresult.mBytes);
+    //printf("[DEBUG] After run, grresult.mLength=%llu: '%.*s'\n", (unsigned long long)grresult.mLength, (int)grresult.mLength, (char*)grresult.mBytes);
+	//printedOut = true;
+	/*
     if (grresult.mLength) {
         // Only print if grresult.mBytes is not already in out.mBytes
         if (!printedOut || strstr((char*)out.mBytes, (char*)grresult.mBytes) == NULL) {
-            // printf("[DEBUG] About to print grresult.mBytes (run)\n");
+            //printf("[DEBUG] About to print grresult.mBytes (run)\n%s\n%s\n", (char*)out.mBytes,(char*)grresult.mBytes);
             std::cout << (char*)grresult.mBytes;
             // printf("[DEBUG] About to print newline after grresult (run)\n");
             std::cout << (char*)"\n";
         }
     }
+	*/
     // printf("[DEBUG] Exiting My_Console::Start\n");
 }
 

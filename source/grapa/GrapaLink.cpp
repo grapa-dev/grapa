@@ -216,6 +216,8 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			argvList->PushTail(new GrapaRuleEvent(positional_args[i]->mValue));
 		}
 	}
+
+	/*
 	// Debug output for $ARGV
 	// printf("[DEBUG] $ARGV: ");
 	GrapaRuleEvent* argEv = argvList->Head();
@@ -224,6 +226,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		argEv = argEv->Next();
 	}
 	printf("\n");
+	*/
 
 	// Auto-detect pipe input if no explicit stdin option and no script file
 	if (isPipeInput && runStr.mLength == 0 && !interactiveMode && !showWidget)

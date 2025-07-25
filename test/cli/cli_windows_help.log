@@ -1,0 +1,21 @@
+'' 
+Version: 0.0.41
+Options:
+	-h,--help	:Show this help message
+	-v,--version 	:Show version
+	-q,--quiet	:Suppress header
+	-i,--interactive	:Run in interactive mode
+	-d,--debug	:Debug mode
+	-o,--output <file>	:Output to file
+	-a,--append	:Append to output file
+
+Execution:
+	-c <script>	:Execute command/script (e.g., grapa -c "'hello'.echo()")
+	-f <file>	:Execute file (e.g., grapa -f script.grc)
+	-s		:Execute from stdin (e.g., echo "'hello'.echo()" | grapa -s)
+	-S		:Store stdin in $ARGCIN variable (e.g., echo "data" | grapa -S -c "$ARGCIN.echo()")
+
+Direct Execution (no flags needed):
+	command		:Execute command directly (e.g., grapa "'hello'.echo()")
+	script.grc	:Execute script file directly (e.g., grapa script.grc)
+	script.grz	:Execute compiled script directly (e.g., grapa script.grz)
