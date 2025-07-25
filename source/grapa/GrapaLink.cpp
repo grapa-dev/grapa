@@ -485,7 +485,6 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		outStr.Append("\t-\t\t:Execute from stdin (e.g., echo \"'hello'.echo()\" | grapa -)\n");
 		outStr.Append("\n");
 		outStr.Append("Direct Execution (no flags needed):\n");
-		outStr.Append("\tcommand\t\t:Execute command directly (e.g., grapa \"'hello'.echo()\")\n");
 		outStr.Append("\tscript.grc\t:Execute script file directly (e.g., grapa script.grc)\n");
 		outStr.Append("\tscript.grz\t:Execute compiled script directly (e.g., grapa script.grz)\n");
 	}
