@@ -3840,11 +3840,7 @@ grapa<span class="w"> </span><span class="o">[</span>options<span class="o">]</s
 -d,<span class="w"> </span>--debug<span class="w">                </span>Enable<span class="w"> </span>debug<span class="w"> </span>mode<span class="w"> </span><span class="o">(</span>shows<span class="w"> </span>debug<span class="w"> </span>output<span class="o">)</span>
 </code></pre></div>
 <h3 id="basic-usage">Basic Usage</h3>
-<div class="highlight"><pre><span></span><code><span class="c1"># Direct command execution (new)</span>
-grapa<span class="w"> </span><span class="s2">&quot;&#39;Hello, World!&#39;.echo()&quot;</span>
-grapa<span class="w"> </span><span class="s2">&quot;&#39;Testing&#39;.echo(); &#39;Multiple commands&#39;.echo()&quot;</span>
-
-<span class="c1"># Direct script execution (new)</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Direct script execution (automatic .grc/.grz detection)</span>
 grapa<span class="w"> </span>script.grc
 grapa<span class="w"> </span>script.grz
 
@@ -3932,7 +3928,7 @@ for (file in files) {
 </ul>
 <h2 id="tips">Tips</h2>
 <ul>
-<li><strong>Direct Execution:</strong> You can now run commands and scripts directly without flags: <code>grapa "'hello'.echo()"</code> or <code>grapa script.grc</code></li>
+<li><strong>Direct Script Execution:</strong> You can run script files directly without the -f flag: <code>grapa script.grc</code></li>
 <li><strong>Clean Output:</strong> By default, Grapa runs without showing version headers (like Python/Node.js)</li>
 <li><strong>Verbose Mode:</strong> Use <code>--verbose</code> to show version headers when needed</li>
 <li><strong>Parallel Operations:</strong> <code>map</code> and <code>filter</code> are parallel by default and great for data processing</li>

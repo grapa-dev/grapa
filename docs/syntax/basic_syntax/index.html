@@ -5632,9 +5632,49 @@ table.set(&quot;key1&quot;, 30, &quot;age&quot;);
 table.set(&quot;key1&quot;, 100.5, &quot;value&quot;);
 
 /* Retrieve data */
-name = table.get(&quot;key1&quot;, &quot;name&quot;).str();
-age = table.get(&quot;key1&quot;, &quot;age&quot;).int();
-value = table.get(&quot;key1&quot;, &quot;value&quot;).float();
+name = table.get(&quot;key1&quot;, &quot;name&quot;);      /* $STR */
+age = table.get(&quot;key1&quot;, &quot;age&quot;);        /* $INT, no .int() needed */
+value = table.get(&quot;key1&quot;, &quot;value&quot;);    /* $FLOAT, no .float() needed */
+
+/* RAW field type: can store any Grapa object (e.g., JSON, XML, $LIST, $ARRAY) */
+table.mkfield(&quot;meta&quot;, &quot;RAW&quot;);
+table.set(&quot;key1&quot;, {&quot;foo&quot;: 123, &quot;bar&quot;: [1,2,3]}, &quot;meta&quot;);
+meta = table.get(&quot;key1&quot;, &quot;meta&quot;);      /* Returns Grapa object automatically */
+(meta.foo).echo();                      /* 123 */
+(meta.bar[1]).echo();                   /* 2 */
+
+/* Edge cases and error handling */
+/* .get() returns $ERR if the key or field is missing */
+missing = table.get(&quot;missing&quot;, &quot;age&quot;);
+(missing.type()).echo();                /* $ERR */
+
+/* Type mismatch: setting INT/FLOAT to non-numeric values may yield undefined results */
+table.set(&quot;user2&quot;, &quot;not an int&quot;, &quot;age&quot;);
+(&quot;INT field with STR: &quot; + table.get(&quot;user2&quot;, &quot;age&quot;)).echo();
+
+/* RAW field can store nested objects/arrays */
+table.set(&quot;user3&quot;, {foo: {bar: [1,2,{baz: 99}]}, arr: [10,20]}, &quot;meta&quot;);
+nested = table.get(&quot;user3&quot;, &quot;meta&quot;);
+(&quot;Nested RAW type: &quot; + nested.type()).echo();
+(&quot;Nested RAW foo.bar[2].baz: &quot; + nested.foo.bar[2].baz).echo();
+(&quot;Nested RAW arr[1]: &quot; + nested.arr[1]).echo();
+
+/* Overwriting a field with a value of a different type does not change the field&#39;s declared type */
+table.set(&quot;user4&quot;, 123, &quot;age&quot;);
+table.set(&quot;user4&quot;, &quot;now a string&quot;, &quot;age&quot;);
+(&quot;INT field overwritten with STR: &quot; + table.get(&quot;user4&quot;, &quot;age&quot;)).echo();
+
+/* RAW field set to null returns $SYSID (Grapa&#39;s null/empty object) */
+table.set(&quot;user5&quot;, null, &quot;meta&quot;);
+(&quot;Null RAW: &quot; + table.get(&quot;user5&quot;, &quot;meta&quot;).type()).echo();
+
+/* TODO: Review and ensure consistent handling of null, true, false across all field types. */
+
+/* Delete a record (works for ROW, COL, GROUP) */
+table.rm(&quot;key1&quot;);
+
+/* List records after deletion */
+(&quot;After delete: &quot; + table.ls().join(&quot;,&quot;)).echo();
 </code></pre></div>
 <p>This guide covers the essential syntax patterns for writing correct Grapa code. Follow these patterns to avoid common syntax errors and write maintainable code. </p>
 <p>/*</p>
@@ -6008,6 +6048,8 @@ info.type();           // $LIST
 <li><a href="../examples/">Examples</a></li>
 </ul>
 <!-- Advanced Topics link removed: content consolidated or planned/future -->
+
+<p>/<em> Note: As of 2025-07-22, all known DB/BTree and index issues are resolved and validated by comprehensive tests. The Grapa syntax and type system are empirically validated and up to date. </em>/ </p>
 
 
 

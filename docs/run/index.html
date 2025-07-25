@@ -3000,24 +3000,24 @@
 <p>Other command line options:
 <div class="highlight"><pre><span></span><code>        -h,--help       :Show this help message
         -v,--version    :Show version
-        -q,--quite      :Suppress header
-        -env            :Show environment details
-        -c script       :Run from script
--f file         :Run from file
-    -w      :Editor
-    -wfile file :Editor from file
-        -s              :Run from stdin
--S              :Places stdin into $ARGCIN environment variable (use with -c|-f)
-        -argv           :Places proceeding args into $ARGV environment variable
+        -q,--quiet      :Suppress header
+        --verbose       :Show version header (default: hidden)
+        -i,--interactive:Run in interactive mode
+        -d,--debug      :Enable debug mode (shows debug output)
+        -c &lt;script&gt;     :Execute command/script
+        -f &lt;file&gt;       :Execute file
+        -               :Execute from stdin (standard Python/Node.js behavior)
 </code></pre></div></p>
 <p>Example: Performs a SHAKE256 hash of the string "thisisatest".
 <div class="highlight"><pre><span></span><code>grapa -c &quot;&#39;thisisatest&#39;.encode(&#39;SHAKE256&#39;)&quot; -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 </code></pre></div></p>
-<p>Example: Same, but takes input from cin. 
-<div class="highlight"><pre><span></span><code>echo &quot;thisisatest&quot;.encode(&#39;SHAKE256&#39;) | grapa -s -q
+<p>Example: Same, but takes input from stdin. 
+<div class="highlight"><pre><span></span><code>echo &quot;thisisatest&quot;.encode(&#39;SHAKE256&#39;) | grapa - -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 </code></pre></div></p>
+<p><strong>Note:</strong> The <code>-</code> option requires pipe input. Using <code>grapa -</code> without pipe input will show an error message.</p>
+<p><strong>Note:</strong> By default, Grapa runs without showing version headers (like Python/Node.js). Use <code>--verbose</code> to show version headers when needed.</p>
 <h1 id="testing">Testing</h1>
 <p>Grapa includes a comprehensive test suite for validating functionality and performance. All tests are organized in the <code>test/</code> directory.</p>
 <h2 id="running-tests">Running Tests</h2>
