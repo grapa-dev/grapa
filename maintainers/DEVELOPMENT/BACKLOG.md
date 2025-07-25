@@ -75,6 +75,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] Add support for transactions
 - [ ] Improve query optimization
 - [ ] Multi-Field Set/Get for Records: Investigate and implement a way to set and get multiple fields at once for a record (batch .set()/.get()). This will improve performance for records with many fields. Consider supporting $LIST or similar structures for batch operations. Note: RAW field type can store any Grapa data type, including $LIST (enhanced JSON), which may be leveraged for this feature. Not immediate priority; to be reviewed after ROW corruption issue is fixed.
+- [ ] Expose custom index creation and management (including multi-field indexes) to the Grapa language and CLI. Currently, only the default $KEY index is created automatically; custom indexes can only be created via the C++ API. Add Grapa language/CLI commands for user-defined indexes.
 
 ### Development Tools
 - [ ] Create debugging tools
@@ -106,6 +107,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [x] **Comparison Operator Refactoring**: Refactored all comparison event classes to use the static helper function, reducing code duplication and improving maintainability
 - [x] **Float Comparison Fixes**: Fixed float comparison bugs including precision normalization and mixed type comparisons
 - [x] **String vs Number Comparison**: Improved handling of string vs number comparisons with proper numeric conversion attempts
+- [Completed] ROW table index bug: Root cause was index entry value not set to record reference (recCursor.mValue). Fixed in SetRecordField for ROW, COL, and GROUP tables. Tests confirm no corruption after multiple inserts.
 
 ### Previous Releases
 - [x] Basic language implementation

@@ -21,7 +21,7 @@
 
 ## 1. ROW Table Index Corruption Bug
 - **Status:** CRITICAL, in progress (debug in main project)
-- **Reference:** [`archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) (archived, closed investigation)
+- **Reference:** [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) (active investigation)
 - **Test Script:** `test_row_bug_demo.grc`
 - **Workaround:** Use COL tables instead of ROW tables
 

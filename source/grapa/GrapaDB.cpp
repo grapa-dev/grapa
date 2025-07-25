@@ -1313,49 +1313,8 @@ GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
 				err = Next(indexCursor);
 			while (!err)
 			{
-				// Deep debug: before Insert
-				GrapaCHAR dbWrite;
-				dbWrite.GrowSize(4096, false);
-				dbWrite.SetLength(0);
-				// printf("[DEBUG][CreateRecord] Before Insert: indexCursor=(treeRef=%llu, valueType=%d, key=%llu, value=%llu) tableCursor=(treeRef=%llu, valueType=%d, key=%llu, value=%llu)\n", indexCursor.mTreeRef, ind
-				// if (dbWrite.mBytes && dbWrite.mLength > 0) printf("%.*s", (int)dbWrite.mLength, dbWrite.mBytes);
-				DebugPrintAllIndexPointers(indexTree);
-				DumpTheTree(dbWrite, "[DEBUG][CreateRecord] IndexTree", indexTree, indexTree);
-				if (dbWrite.mBytes && dbWrite.mLength > 0) printf("%.*s", (int)dbWrite.mLength, dbWrite.mBytes);
 				tableCursor.Set(indexCursor.mValue, RPTR_ITEM, pCursor.mKey);
-				GrapaError insertErr = Insert(tableCursor);
-				// Deep debug: after Insert
-				dbWrite.SetLength(0);
-				// printf("[DEBUG][CreateRecord] After Insert: insertErr=%lld, tableCursor=(treeRef=%llu, valueType=%d, key=%llu, value=%llu)\n", (long long)insertErr, tableCursor.mTreeRef, tableCursor.mValueType, tableCursor.mValue, table
-				// if (dbWrite.mBytes && dbWrite.mLength > 0) printf("%.*s", (int)dbWrite.mLength, dbWrite.mBytes);
-				DebugPrintAllIndexPointers(indexTree);
-				DumpTheTree(dbWrite, "[DEBUG][CreateRecord] IndexTree", indexTree, indexTree);
-				if (dbWrite.mBytes && dbWrite.mLength > 0) printf("%.*s", (int)dbWrite.mLength, dbWrite.mBytes);
-				// Forensic check: interrogate raw file data for index BTree after each insert
-				if (mFile) {
-					u64 fileSize = 0;
-					mFile->GetSize(fileSize);
-					u64 blockSize = GrapaBlock::BLOCKSIZE;
-					// printf("[DEBUG][Forensic] File size: %llu, Block size: %llu\n", fileSize, blockSize);
-					GrapaCursor checkCursor;
-					checkCursor.Set(indexTree);
-					GrapaError checkErr = First(checkCursor);
-					while (!checkErr) {
-						if (checkCursor.mValueType == RPTR_ITEM) {
-							u64 ref = checkCursor.mValue;
-							u64 offset = ref * blockSize;
-							if (offset + blockSize <= fileSize) {
-								char blockBuf[256];
-								u64 toRead = (blockSize < 256) ? blockSize : 256;
-								mFile->Read(ref, (u16)blockSize, 0, toRead, blockBuf);
-								// printf("[DEBUG][Forensic] RPTR value=%llu, block offset=%llu, first bytes:", ref, offset);
-								// for (u64 i=0; i<toRead; ++i) printf(" %02X", (unsigned char)blockBuf[i]);
-								// printf("\n");
-							}
-						}
-						checkErr = Next(checkCursor);
-					}
-				}
+				err = Insert(tableCursor);
 				err = Next(indexCursor);
 				if (!err && indexCursor.mKey == 0)
 					err = Next(indexCursor);
@@ -1546,30 +1505,17 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 				switch (recCursor.mTreeType)
 				{
 					case GROUP_TREE: 
-					{
 						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey);
 						err = Delete(tableCursor);
 						break;
-					}
 					case RTABLE_TREE:
-					{
 						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
-						// Defensive: delete any stale index entry before inserting
-						GrapaCursor oldCursor;
-						oldCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
-						Delete(oldCursor);
-						if (recCursor.mKey == 1) {
-							// printf("[DEBUG][SetRecordField] About to Delete and Insert index entry: key=%llu, value=%llu, valueType=%d, treeRef=%llu\n", recCursor.mKey, tableCursor.mValue, tableCursor.mValueType, tableCursor.mTreeRef);
-						}
 						err = Delete(tableCursor);
 						break;
-					}
 					case CTABLE_TREE:
-					{
 						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
 						err = Delete(tableCursor);
 						break;
-					}
 				}
 				break;
 			}
@@ -1929,18 +1875,15 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 				switch (recCursor.mTreeType)
 				{
 				case GROUP_TREE:
-					tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey, recCursor.mValue);
-					// printf("[DEBUG][SetRecordField] Inserting index entry: key=%llu, value=%llu, valueType=%d, treeRef=%llu\n", recCursor.mKey, tableCursor.mValue, tableCursor.mValueType, tableCursor.mTreeRef);
+					tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey);
 					err = Insert(tableCursor);
 					break;
 				case RTABLE_TREE:
-					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mValue);
-					// printf("[DEBUG][SetRecordField] Inserting index entry: key=%llu, value=%llu, valueType=%d, treeRef=%llu\n", recCursor.mKey, tableCursor.mValue, tableCursor.mValueType, tableCursor.mTreeRef);
+					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
 					err = Insert(tableCursor);
 					break;
 				case CTABLE_TREE:
-					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey, recCursor.mValue);
-					// printf("[DEBUG][SetRecordField] Inserting index entry: key=%llu, value=%llu, valueType=%d, treeRef=%llu\n", recCursor.mKey, tableCursor.mValue, tableCursor.mValueType, tableCursor.mTreeRef);
+					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
 					err = Insert(tableCursor);
 					break;
 				}
@@ -2575,113 +2518,106 @@ GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCu
 
 GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, GrapaCursor& treeCursor, s8& result)
 {
-    if (treeCursor.mKey == 0) {
-        // printf("[DEBUG][CompareRecordKey] Skipping DICT entry (mKey == 0)\n");
-    }
-    // ROW index bug investigation: print to console, not stderr
-    // printf("[DEBUG][CompareRecordKey] dataCursor=(key=%llu, valueType=%d, nodeRef=%llu) treeCursor=(key=%llu, valueType=%d, nodeRef=%llu)\n", dataCursor.mKey, dataCursor.mValueType, dataCursor.mNodeRef, treeCursor.mKey, treeCursor.mValueType, treeCursor.mNodeRef);
-    GrapaError err;
-    GrapaCursor cursor;
-    u64 indexRef;
-    GrapaCHAR name1,name2;
-    result = -1;
+	GrapaError err;
+	GrapaCursor cursor;
+	u64 indexRef;
+	GrapaCHAR name1,name2;
 
-    switch(treeCursor.mValueType)
-    {
-        case GREC_ITEM: 
-        case RREC_ITEM:
-        case CREC_ITEM:
-        case GPTR_ITEM: 
-        case RPTR_ITEM:
-        case CPTR_ITEM:
-            switch(dataCursor.mValueType)
-            {
-                case GREC_ITEM: 
-                case RREC_ITEM:
-                case CREC_ITEM:
-                    if (dataCursor.mKey==treeCursor.mKey) 
-                    {
-                        result = 0;
-                        return(0);
-                    }
-                    break;
-                case GPTR_ITEM: 
-                case RPTR_ITEM:
-                case CPTR_ITEM:
-                    break;
-                case SEARCH_ITEM:
-                    return CompareSearchKey(compareType, dataCursor, treeCursor, result);
-                default:
-                    return(-1);
-            }
-            break;
-        default:
-            return(-1);
-    }
+	result = -1;
 
-    cursor.Set(treeCursor.mTreeRef);
-    err = GetTreeIndex(cursor,indexRef);
-    if (err) return(err);
+	switch(treeCursor.mValueType)
+	{
+		case GREC_ITEM: 
+		case RREC_ITEM:
+		case CREC_ITEM:
+		case GPTR_ITEM: 
+		case RPTR_ITEM:
+		case CPTR_ITEM:
+			switch(dataCursor.mValueType)
+			{
+				case GREC_ITEM: 
+				case RREC_ITEM:
+				case CREC_ITEM:
+					if (dataCursor.mKey==treeCursor.mKey) 
+					{
+						result = 0;
+						return(0);
+					}
+					break;
+				case GPTR_ITEM: 
+				case RPTR_ITEM:
+				case CPTR_ITEM:
+					break;
+				case SEARCH_ITEM:
+					return CompareSearchKey(compareType, dataCursor, treeCursor, result);
+				default:
+					return(-1);
+			}
+			break;
+		default:
+			return(-1);
+	}
 
-    GrapaCursor treeItemCursor,dataItemCursor;
-    err = PtrToRec(treeCursor, treeItemCursor);
-    if (err) return(err);
-    err = PtrToRec(dataCursor, dataItemCursor);
-    if (err) return(err);
+	cursor.Set(treeCursor.mTreeRef);
+	err = GetTreeIndex(cursor,indexRef);
+	if (err) return(err);
 
-    switch(treeCursor.mValueType)
-    {
-        case GREC_ITEM: 
-        case RREC_ITEM:
-        case GPTR_ITEM: 
-        case RPTR_ITEM:
-            if (dataItemCursor.mValue==treeItemCursor.mValue) 
-            {
-                result = 0;
-                return(0);
-            }
-            break;
+	GrapaCursor treeItemCursor,dataItemCursor;
+	err = PtrToRec(treeCursor, treeItemCursor);
+	if (err) return(err);
+	err = PtrToRec(dataCursor, dataItemCursor);
+	if (err) return(err);
 
-        case CREC_ITEM:
-        case CPTR_ITEM:
-            if (dataItemCursor.mLength==treeItemCursor.mLength) 
-            {
-                result = 0;
-                return(0);
-            }
-            break;
-    }
+	switch(treeCursor.mValueType)
+	{
+		case GREC_ITEM: 
+		case RREC_ITEM:
+		case GPTR_ITEM: 
+		case RPTR_ITEM:
+			if (dataItemCursor.mValue==treeItemCursor.mValue) 
+			{
+				result = 0;
+				return(0);
+			}
+			break;
 
-    cursor.Set(indexRef);
-    err = First(cursor);
-    while(!err)
-    {
-        // need to pull these into the treeItemCursor datatype for the comparison
-        err = GetRecordField(dataItemCursor,cursor.mValue,name1);
-        err = GetRecordField(treeItemCursor,cursor.mValue,name2);
+		case CREC_ITEM:
+		case CPTR_ITEM:
+			if (dataItemCursor.mLength==treeItemCursor.mLength) 
+			{
+				result = 0;
+				return(0);
+			}
+			break;
+	}
 
-        char* n1 = (char*)name1.mBytes;
-        char* n2 = (char*)name2.mBytes;
+	cursor.Set(indexRef);
+	err = First(cursor);
+	while(!err)
+	{
+		// need to pull these into the treeItemCursor datatype for the comparison
+		err = GetRecordField(dataItemCursor,cursor.mValue,name1);
+		err = GetRecordField(treeItemCursor,cursor.mValue,name2);
 
-        // the following conditions should never happen...unless the value really is NULL
-        if (name1.mBytes==NULL  || name1.mLength==0) n1 = (char*)"";
-        if (name2.mBytes==NULL  || name2.mLength==0) n2 = (char*)"";
-        
-        // need to compare based on the treeItemCursor datatype
-        int cr = strcmp(n2, n1);
-        if (cr)
-        {
-            result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
-            break;
-        }
+		char* n1 = (char*)name1.mBytes;
+		char* n2 = (char*)name2.mBytes;
 
-        err = Next(cursor);
-    }
+		// the following conditions should never happen...unless the value really is NULL
+		if (name1.mBytes==NULL  || name1.mLength==0) n1 = (char*)"";
+		if (name2.mBytes==NULL  || name2.mLength==0) n2 = (char*)"";
+		
+		// need to compare based on the treeItemCursor datatype
+		int cr = strcmp(n2, n1);
+		if (cr)
+		{
+			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
+			break;
+		}
 
-    // After each comparison, log the result and block offset
-    // printf("[DEBUG][CompareRecordKey] result=%d (dataNodeRef=%llu, treeNodeRef=%llu)\n", result, dataCursor.mNodeRef, treeCursor.mNodeRef);
+		err = Next(cursor);
+	}
 
-    return(0);
+	return(0);
 }
 
 GrapaError GrapaDB::CompareSearchKey(s16 compareType, GrapaCursor& dataCursor, GrapaCursor& treeCursor, s8& result)
@@ -3668,17 +3604,8 @@ void GrapaDB::DebugPrintAllIndexPointers(u64 tableRef) {
     err = First(ptrCursor);
     int count = 0;
     while (!err) {
-        printf("DEBUG: Index entry: valueType=%d key=%llu value=%llu node=(%llu,%d) blockOffset=%llu\n",
-            ptrCursor.mValueType, ptrCursor.mKey, ptrCursor.mValue, ptrCursor.mNodeRef, ptrCursor.mNodeIndex, ptrCursor.mNodeRef);
-        // Print raw bytes of the node (if possible)
-        GrapaBlockNodeHeader node;
-        if (node.Read(mFile, ptrCursor.mNodeRef) == 0) {
-            printf("DEBUG: Node raw bytes: ");
-            for (int i = 0; i < sizeof(node); ++i) {
-                printf("%02X ", ((unsigned char*)&node)[i]);
-            }
-            printf("\n");
-        }
+        printf("DEBUG: Index entry: valueType=%d key=%llu value=%llu node=(%llu,%d)\n",
+            ptrCursor.mValueType, ptrCursor.mKey, ptrCursor.mValue, ptrCursor.mNodeRef, ptrCursor.mNodeIndex);
         count++;
         err = Next(ptrCursor);
     }

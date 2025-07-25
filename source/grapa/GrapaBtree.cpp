@@ -1045,7 +1045,6 @@ GrapaError	GrapaBtree::Search(GrapaCursor& cursor)
 
 GrapaError GrapaBtree::Insert(GrapaCursor& cursor)
 {
-	// printf("[DEBUG][BTree::Insert] Called with key=%llu value=%llu valueType=%d treeRef=%llu\n", cursor.mKey, cursor.mValue, cursor.mValueType, cursor.mTreeRef);
 	GrapaError err = 0;
 	s8 result=1;
 	GrapaBlockTree head;
@@ -1061,7 +1060,6 @@ GrapaError GrapaBtree::Insert(GrapaCursor& cursor)
 
 	if (head.firstItem)
 	{
-		// printf("[DEBUG][BTree::Insert] Non-empty tree, firstItem=%llu\n", head.firstItem);
 		err = InsertRc(cursor.mTreeRef, head, head.firstItem, cursor, pKey, fKey, result);
 		if (err) return(err);
 
@@ -1069,17 +1067,14 @@ GrapaError GrapaBtree::Insert(GrapaCursor& cursor)
 
 		if (result==1)
 		{
-			// printf("[DEBUG][BTree::Insert] Appending node after InsertRc, key=%llu\n", cursor.mKey);
 			err = AppendNode(cursor.mTreeRef,head,pKey);
 			if (err) return(err);
 		}
 	}
 	else
 	{
-		// printf("[DEBUG][BTree::Insert] Empty tree, first insert.\n");
 		GrapaBlockNodeLeaf appendLeaf;
 		SetKey(head,appendLeaf,cursor);
-		// printf("[DEBUG][BTree::Insert] SetKey for first insert: key=%llu value=%llu\n", cursor.mKey, cursor.mValue);
 		err = AppendNode(cursor.mTreeRef,head,appendLeaf);
 		if (err) return(err);
 	}
@@ -1545,12 +1540,6 @@ bool GrapaBtree::SearchNodeFrag(u64 rootNode, GrapaCursor& key, s8& pos, u64& ch
 
 GrapaError GrapaBtree::InsInPage(GrapaBlockTree& head, GrapaCursor& treekey, u64 rootNode, GrapaBlockNodeHeader& page, GrapaBlockNodeLeaf& key, s8 pos)
 {
-	// printf("[DEBUG][BTree::InsInPage] BEFORE insert: rootNode=%llu, leafCount=%d\n", rootNode, page.leafCount);
-	for (int i = 0; i < page.leafCount; ++i) {
-		GrapaBlockNodeLeaf tmp;
-		tmp.Read(mFile, rootNode+1+i);
-		// printf("  [DEBUG][BTree::InsInPage] key[%d]=%llu value=%llu child=%llu\n", i, tmp.key, tmp.value, tmp.child);
-	}
 	GrapaError err;
 	s8 i;
 	GrapaCursor cursor;
@@ -1572,12 +1561,6 @@ GrapaError GrapaBtree::InsInPage(GrapaBlockTree& head, GrapaCursor& treekey, u64
 	err = page.Write(mFile,rootNode);
 	if (err) return(err);
 
-	// printf("[DEBUG][BTree::InsInPage] AFTER insert: rootNode=%llu, leafCount=%d\n", rootNode, page.leafCount);
-	for (int i = 0; i < page.leafCount; ++i) {
-		GrapaBlockNodeLeaf tmp;
-		tmp.Read(mFile, rootNode+1+i);
-		// printf("  [DEBUG][BTree::InsInPage] key[%d]=%llu value=%llu child=%llu\n", i, tmp.key, tmp.value, tmp.child);
-	}
 	return(0);
 }
 
@@ -1629,7 +1612,6 @@ GrapaError GrapaBtree::SetKey(GrapaBlockTree& head, GrapaBlockNodeLeaf& leaf, Gr
 GrapaError GrapaBtree::InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 		GrapaCursor& key, GrapaBlockNodeLeaf& pKey, GrapaBlockNodeLeaf& fKey, s8& result)
 {
-	// printf("[DEBUG][BTree::InsertRc] rootNode=%llu key=%llu value=%llu\n", rootNode, key.mKey, key.mValue);
 	GrapaBlockNodeLeaf pbKey,tempLeaf;
 	GrapaBlockNodeHeader page;
 	GrapaError err;
@@ -1639,20 +1621,13 @@ GrapaError GrapaBtree::InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 
 	if (rootNode==0L)
 	{
-		// printf("[DEBUG][BTree::InsertRc] rootNode==0, first insert in this subtree.\n");
 		SetKey(head,pKey,key);
-		// printf("[DEBUG][BTree::InsertRc] SetKey: key=%llu value=%llu\n", key.mKey, key.mValue);
 		result = 1;
 		return(0);
 	}
 
-	// printf("[DEBUG][BTree::InsertRc] Calling SearchNode for key=%llu\n", key.mKey);
 	if (SearchNode(rootNode,key,pos,child,fKey,INSERT_MODE))
 	{
-		// printf("[DEBUG][BTree::InsertRc] SearchNode found a match for key=%llu\n", key.mKey);
-		if (fKey.key == 0) {
-			// printf("[DEBUG][BTree::InsertRc] WARNING: Matched DICT entry (key==0) during insert!\n");
-		}
 		// if exact matching, then return an error
 		//return(-1);
 		err = 0;
@@ -1668,7 +1643,6 @@ GrapaError GrapaBtree::InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 
 	if (page.leafCount!=head.nodeCount)
 	{
-		// printf("[DEBUG][BTree::InsertRc] Inserting in page (InsInPage), pos=%d\n", pos);
 		InsInPage(head,key,rootNode,page,pbKey,pos);
 		result = 0;
 		return(0);
@@ -1676,7 +1650,6 @@ GrapaError GrapaBtree::InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 
 	if (rootNode == head.firstItem)
 	{
-		// printf("[DEBUG][BTree::InsertRc] Splitting root node (Split)\n");
 		Split(headRef,head,rootNode,page,pbKey,pos,pKey);
 		result = 1;
 		return(0);
@@ -1699,12 +1672,10 @@ GrapaError GrapaBtree::InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 		pos--;
 	}
 
-	// printf("[DEBUG][BTree::InsertRc] Rotating parent right (RotateParrentRight)\n");
 	RotateParrentRight(headRef,head,rootNode,page);
 
 	if (page.leafCount!=head.nodeCount)
 	{
-		// printf("[DEBUG][BTree::InsertRc] Inserting in page (InsInPage) after right rotation, pos=%d\n", pos);
 		InsInPage(head,key,rootNode,page,pbKey,pos);
 		result = 0;
 		return(0);
@@ -1727,18 +1698,15 @@ GrapaError GrapaBtree::InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 		pos++;
 	}
 
-	// printf("[DEBUG][BTree::InsertRc] Rotating parent left (RotateParrentLeft)\n");
 	RotateParrentLeft(headRef,head,rootNode,page);
 
 	if (page.leafCount!=head.nodeCount)
 	{
-		// printf("[DEBUG][BTree::InsertRc] Inserting in page (InsInPage) after left rotation, pos=%d\n", pos-1);
 		InsInPage(head,key,rootNode,page,pbKey,pos-1);
 		result = 0;
 		return(0);
 	}
 
-	// printf("[DEBUG][BTree::InsertRc] Splitting node (Split)\n");
 	Split(headRef,head,rootNode,page,pbKey,pos,pKey);
 	result = 1;
 	return(0);
@@ -1800,79 +1768,45 @@ void GrapaBtree::RotateParrentLeft(u64 headRef, GrapaBlockTree& head, u64 middle
 
 GrapaError GrapaBtree::UpdateChildInfo(u64 childBlock, u64 newBlock, s8 newIndex)
 {
-    // printf("[DEBUG][BTree::UpdateChildInfo] childBlock=%llu, newBlock=%llu, newIndex=%d\n", childBlock, newBlock, newIndex);
-    GrapaError err = 0;
-    GrapaBlockNodeHeader child;
+	GrapaError err = 0;
+	GrapaBlockNodeHeader child;
 
-    if (childBlock)
-    {
-        err = child.Read(mFile,childBlock);
-        if (err) return(err);
+	if (childBlock)
+	{
+		err = child.Read(mFile,childBlock);
+		if (err) return(err);
 
-        if (child.blockType==GrapaBlock::NODE_BLOCK)
-        {
-            child.parent = newBlock;
-            child.parentIndex = newIndex;
-            if (childBlock == 92 || newBlock == 92) {
-                // printf("[DEBUG][Node92] UpdateChildInfo: childBlock=%llu, newBlock=%llu, newIndex=%d, parent=%llu, parentIndex=%d\n", childBlock, newBlock, newIndex, child.parent, child.parentIndex);
-            }
-            err = child.Write(mFile,childBlock);
-            if (err) return(err);
-        }
-    }
+		if (child.blockType==GrapaBlock::NODE_BLOCK)
+		{
+			child.parent = newBlock;
+			child.parentIndex = newIndex;
+			err = child.Write(mFile,childBlock);
+			if (err) return(err);
+		}
+	}
 
-    // printf("[DEBUG][BTree::UpdateChildInfo] updated child parent to %llu, parentIndex to %d\n", child.parent, child.parentIndex);
-
-    return(0);
+	return(0);
 }
 
 GrapaError GrapaBtree::UpdateLeafInfo(GrapaBlockNodeLeaf* key, u64 newBlock, s8 newIndex)
 {
-    // printf("[DEBUG][BTree::UpdateLeafInfo] key->child=%llu, newBlock=%llu, newIndex=%d\n", key ? key->child : 0, newBlock, newIndex);
-    GrapaError err = 0;
-    GrapaBlockNodeLeaf tempKey;
+	GrapaError err = 0;
+	GrapaBlockNodeLeaf tempKey;
 
-    if (key==0L)
-    {
-        err = tempKey.Read(mFile,newBlock+1+newIndex);
-        if (err) return(err);
-        key = &tempKey;
-    }
+	if (key==0L)
+	{
+		err = tempKey.Read(mFile,newBlock+1+newIndex);
+		if (err) return(err);
+		key = &tempKey;
+	}
 
-    if (key->child == 92 || newBlock == 92) {
-        // printf("[DEBUG][Node92] UpdateLeafInfo: key->child=%llu, newBlock=%llu, newIndex=%d, key=%llu, value=%llu\n", key->child, newBlock, newIndex, key->key, key->value);
-    }
+	err = UpdateChildInfo(key->child,newBlock,newIndex+1);
+	if (err) return(err);
 
-    err = UpdateChildInfo(key->child,newBlock,newIndex+1);
-    if (err) return(err);
+	err = key->Write(mFile,newBlock+1+newIndex);
+	if (err) return(err);
 
-    if (newBlock == 92) {
-        // printf("[DEBUG][Node92] UpdateLeafInfo: Writing to newBlock=92, key=%llu, value=%llu, child=%llu\n", key->key, key->value, key->child);
-    }
-    err = key->Write(mFile,newBlock+1+newIndex);
-    if (err) return(err);
-
-    // printf("[DEBUG][BTree::UpdateLeafInfo] updated leaf at block %llu, index %d\n", newBlock, newIndex);
-
-    // Enhanced: After writing to nodeRef=92, print all leafs in node 92
-    if (newBlock == 92) {
-        GrapaBlockNodeHeader nodeHeader;
-        err = nodeHeader.Read(mFile, 92);
-        if (err) return(err);
-        // printf("[DEBUG][Node92] Dumping all leafs in nodeRef=92 after write (leafCount=%d):\n", nodeHeader.leafCount);
-        for (int i = 0; i < nodeHeader.leafCount; ++i) {
-            GrapaBlockNodeLeaf leaf;
-            err = leaf.Read(mFile, 92+1+i);
-            if (err) continue;
-            if (leaf.key == 1) {
-                // printf("  [DEBUG][Node92][KEY=1] leaf[%d]: key=%llu value=%llu child=%llu\n", i, leaf.key, leaf.value, leaf.child);
-            } else {
-                // printf("  [DEBUG][Node92] leaf[%d]: key=%llu value=%llu child=%llu\n", i, leaf.key, leaf.value, leaf.child);
-            }
-        }
-    }
-
-    return(0);
+	return(0);
 }
 
 GrapaError GrapaBtree::MoveLeaf(u64 headRef, GrapaBlockTree& head, GrapaBlockNodeHeader& oldPage, u64 rootNode, s8 rootIndex, GrapaBlockNodeHeader& newPage, u64 newBlock, s8 newIndex)
@@ -1900,12 +1834,6 @@ GrapaError GrapaBtree::MoveLeaf(u64 headRef, GrapaBlockTree& head, GrapaBlockNod
 void GrapaBtree::Split(u64 headRef, GrapaBlockTree& head, u64 rootNode, 
 		GrapaBlockNodeHeader& oldPage, GrapaBlockNodeLeaf& key, s8 inPos, GrapaBlockNodeLeaf& pKey)
 {
-	// printf("[DEBUG][BTree::Split] BEFORE split: rootNode=%llu, leafCount=%d\n", rootNode, oldPage.leafCount);
-	for (int i = 0; i < oldPage.leafCount; ++i) {
-		GrapaBlockNodeLeaf tmp;
-		tmp.Read(mFile, rootNode+1+i);
-		// printf("  [DEBUG][BTree::Split] oldPage key[%d]=%llu value=%llu child=%llu\n", i, tmp.key, tmp.value, tmp.child);
-	}
 	s8 i;
 	u64 newBlock;
 	GrapaBlockNodeHeader newPage;
@@ -1992,21 +1920,6 @@ void GrapaBtree::Split(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 
 	theErr = oldPage.Write(mFile,rootNode);
 	theErr = newPage.Write(mFile,newBlock);
-
-	// After split
-	// printf("[DEBUG][BTree::Split] AFTER split: rootNode=%llu, leafCount=%d\n", rootNode, oldPage.leafCount);
-	for (int i = 0; i < oldPage.leafCount; ++i) {
-		GrapaBlockNodeLeaf tmp;
-		tmp.Read(mFile, rootNode+1+i);
-		// printf("  [DEBUG][BTree::Split] oldPage key[%d]=%llu value=%llu child=%llu\n", i, tmp.key, tmp.value, tmp.child);
-	}
-	// printf("[DEBUG][BTree::Split] newBlock=%llu, newPage.leafCount=%d\n", newBlock, newPage.leafCount);
-	for (int i = 0; i < newPage.leafCount; ++i) {
-		GrapaBlockNodeLeaf tmp;
-		tmp.Read(mFile, newBlock+1+i);
-		// printf("  [DEBUG][BTree::Split] newPage key[%d]=%llu value=%llu child=%llu\n", i, tmp.key, tmp.value, tmp.child);
-	}
-	// printf("[DEBUG][BTree::Split] promoted key: key=%llu value=%llu child=%llu\n", pKey.key, pKey.value, pKey.child);
 }
 
 GrapaError GrapaBtree::PurgeRc(u64 headRef, GrapaBlockTree& head, u64 rootNode, GrapaCursor& key, GrapaBlockNodeHeader& rootTree, s8& result)
@@ -3297,7 +3210,7 @@ GrapaError GrapaBtree::MoveDataValueByte(u64 toPtr, GrapaBlockDataHeader& toData
 		}
 		else if (toOffset < fromOffset && (toOffset+moveSize) > fromOffset)
 		{
-			err = MoveDataValueByte(toPtr,toData,fromOffset+moveSize,toPtr,toData,toOffset,fromOffset-toOffset,&bytesMoved);
+			err = MoveDataValueByte(toPtr,toData,toOffset+moveSize,toPtr,toData,toOffset,fromOffset-toOffset,&bytesMoved);
 			/*
 			// Put the smaller part into the temp location and shift the larger part
 			shiftSize = fromOffset - toOffset;

@@ -4,8 +4,10 @@ This file tracks actionable investigation and fix tasks for the ROW Table Index 
 
 ---
 
-## Current TODOs (2025-07-22)
+## Current TODOs (2024-07-22)
 
+- **[REOPENED]** ROW Table Index Corruption Bug is NOT fixed; bug still reproduces as of latest test. Investigation is active.
+- Revalidate the fix (recCursor.mValue for index entries), add debug output to SetRecordField and index update logic, and rerun test/test_row_bug_demo.grc.
 - **[Completed]** All index corruption and GROUP issues resolved; all table types pass their tests.
 - **[Completed]** All DB/BTree edge cases validated; no outstanding issues remain.
 
@@ -13,7 +15,7 @@ This file tracks actionable investigation and fix tasks for the ROW Table Index 
 
 ## Next Steps
 
-- **[Completed]** DB/BTree investigation is closed. No further action required unless new issues are discovered.
+- Continue investigation and debugging until the bug is resolved and validated by passing tests.
 
 ---
 
@@ -26,4 +28,4 @@ This file tracks actionable investigation and fix tasks for the ROW Table Index 
 
 ## Closing Note
 
-All index corruption, GROUP, and DB/BTree issues are resolved and validated. Investigation is closed. No open DB/BTree bugs remain as of 2025-07-22. 
+The ROW Table Index Corruption Bug is NOT fixed as of 2024-07-22. Investigation is active and ongoing. See the main investigation log for details and next steps. 

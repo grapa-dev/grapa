@@ -63,7 +63,7 @@ All deprecated files have been moved to:
 
 ## 🔎 Quick Links to Major Investigations
 
-- (Archived) ROW Table Index Corruption Investigation – See archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md and archive/ROW_INDEX_BUG_TODO.md for full debug log, root cause analysis, and closure summary.
+- ROW Table Index Corruption Investigation – See [ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) and [ROW_INDEX_BUG_TODO.md](ROW_INDEX_BUG_TODO.md) for full debug log, root cause analysis, and current status.
 
 ## 📦 Archived/Closed Investigations
 

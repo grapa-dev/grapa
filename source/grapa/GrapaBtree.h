@@ -20,8 +20,7 @@ public:
 	enum { DATA_STORE=0, LAST_STORE, };
 	enum { SEARCH_MODE=0, INSERT_MODE, DELETE_MODE, LAST_MODE, };
 	enum { ENCODE_NONE = 0, ENCODE_ZIP = 0x01, ENCODE_AES = 0x02, };
-	// enum { NODE_WIDTH=5 };
-    enum { NODE_WIDTH=7 };
+	enum { NODE_WIDTH=5 };
 	enum { CMP_LT=-1, CMP_EQ=0, CMP_GT=1, };
 
 	u8 mFlags;
