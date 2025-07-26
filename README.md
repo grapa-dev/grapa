@@ -1,6 +1,15 @@
 
 # Grapa
 
+🧪 **Grapa** is an experimental language and storage system built around two core research contributions:
+
+1. **Runtime grammar mutation** — Syntax rules defined via mutable `$RULE` variables, enabling scoped language evolution.
+2. **Weighted BTree** — A new index structure allowing fragmented column-store access and in-place updates (COL, ROW, GROUP models).
+
+Currently in active development with a working CLI, Python integration, and comprehensive test suite. This project supports academic exploration in PL, DSLs, interpreters, and database internals. Feedback, forks, and collaborations are welcome.
+
+➡️ [Docs](https://grapa-dev.github.io/grapa/about/) | [GitHub](https://github.com/grapa-dev/grapa)
+
 <!-- Project Logo -->
 <!-- ![Grapa Logo](docs/assets/logo.png) -->
 
