@@ -10,64 +10,70 @@ I didn’t know if it was possible. So I built it to find out.
 
 ## 🎯 Where It Started
 
-In the early 1990s, while co-running CEL Software, I needed to simulate a mainframe environment to build a scraping solution — but we had no access to the mainframe itself. So I wrote a simple BTree engine to store screen captures and replay the terminal session.
+In the early 1990s, while co-running CEL Software, I needed to simulate a mainframe environment in order to build a screen-scraping solution — but we didn’t have access to the actual mainframe. So I created a BTree-based system to store snapshots of mainframe screens and simulate interactions.
 
-That BTree system:
-- Ran on 16-bit systems
-- Supported both big-endian and little-endian architectures
-- Was eventually upgraded to 32-bit, then 64-bit over time
+That BTree engine had to:
+- Run on **Mac**, **Windows**, and **OS/2** (very different platforms at the time)
+- Be fully **cross-platform** at the file level
+- Handle both **BigEndian and LittleEndian** formats to make files portable across systems
 
-The core of that early system still lives in Grapa’s BTree implementation today.
+The core of that early implementation still exists today in the Grapa BTree engine — including its endian-handling logic.
 
 ---
 
 ## 🧱 Column Store and the Weighted BTree
 
-Years later, I needed that engine to support columnar storage. That led to a new question:  
-> *How can I handle fragmented data updates without rewriting the entire column?*
+As the use cases grew, I needed a way to store large datasets column-wise and still support efficient updates. That led to a new question:
 
-The answer became **FREC_DATA** and a **weighted BTree**, where each node tracks a weight (e.g. byte length) rather than just key count. Balancing and lookup are based on fragment offsets, enabling fast partial reads and in-place updates.
+> *How can I store fragmented columnar data and update it in place, without rewriting entire blocks?*
 
-This became the basis for GrapaDB’s COL table mode.
+The result was **FREC_DATA** and a **weighted BTree**:
+- Nodes carry a “weight” (e.g., byte length or number of items) instead of just a count
+- Balancing and traversal are done using those weights
+- This allows efficient partial reads, fast inserts and deletes, and update-in-place semantics
+
+This model became the backbone of the COL table support in GrapaDB and is inspired more by file system design than by traditional database index structures.
 
 ---
 
 ## 🧠 Building the Language
 
-In 2001, when I began building the DB engine in earnest, I needed a way to test it. I started with hardcoded strings, then basic `if` statements, but it quickly became unmanageable. I considered mimicking an existing language — but couldn’t pick one.
+In 2001, as I further developed the DB engine, I needed a better way to **test** it. At first I used hardcoded strings and `if` statements to drive commands — but it quickly became unwieldy. I considered mimicking an existing language, but couldn’t decide which direction to take.
 
-So I built a system to define a language — *and decided I’d define the language later.*
+So I created a system to define a language — and figured I’d decide on the high-level syntax later.
 
-That system became the original version of Grapa:  
-> A language for building languages — driven by runtime-defined grammar rules.
+That became the original version of Grapa:
+> A language for **building languages** — using a self-hosted syntax system defined in `$RULE` variables.
 
-The syntax system was inspired by what I remembered from a compiler design class at the University of Alberta in the 1980s, taught by Professor Jonathan Schaeffer. He also taught the OS class that helped inspire the BTree internals.
+The Grapa language bootstraps itself by compiling its own syntax rules. It was inspired in part by what I remembered from a compiler design class taught by **Professor Jonathan Schaeffer** at the University of Alberta in the 1980s — the same class that gave me the foundational understanding I later applied to both the execution tree and grammar mutation model. His OS course similarly influenced the BTree internals.
 
 ---
 
 ## 🧪 What Grapa Is Today
 
-Grapa is now:
-- A grammar-mutable, self-hosting language defined via `$RULE` global variables
-- An execution tree interpreter (`$OP` structures) that supports optimized and direct evaluation
-- A data engine (GrapaDB) supporting COL, ROW, and GROUP tables
-- A fragmented column-store engine built around a weighted BTree
+Grapa today includes:
+- A **runtime-mutable grammar system** driven by `$RULE` global variables
+- A **bootstrapped parser** that compiles high-level code into `$OP` execution trees
+- A flexible **interpreter** that can optimize or directly execute those trees
+- A full **data engine (GrapaDB)** supporting COL, ROW, and GROUP table types
+- A **fragment-aware, weighted BTree engine** designed for fast, update-in-place columnar data access
 
-It’s open source, documented, and under review as part of a broader academic exploration.
+It’s open source, documented, and under review for academic research consideration.
 
 ---
 
 ## 📚 Why This Matters
 
-This project is grounded in:
-- Real-world engineering needs
-- Curiosity-driven exploration
-- Technical persistence over decades
+Grapa is the product of:
+- Engineering persistence
+- Real-world systems design
+- Curiosity-driven exploration — not compliance with current trends
 
-And now it’s a platform for:
-- Research in language mutation, DSLs, and runtime syntax systems
-- Storage research on update-in-place columnar databases
-- Practical experimentation for system-level developers and students
+It now provides a foundation for:
+- Language prototyping and DSL composition
+- Runtime-evolving syntax systems
+- Research in hybrid execution models
+- Fragmented column-store storage research
 
 ---
 
