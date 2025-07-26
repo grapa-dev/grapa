@@ -465,9 +465,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#research-contributions" class="md-nav__link">
+  <a href="#core-innovations" class="md-nav__link">
     <span class="md-ellipsis">
-      Research Contributions
+      Core Innovations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-design-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture &amp; Design Philosophy
     </span>
   </a>
   
@@ -3084,9 +3093,18 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#research-contributions" class="md-nav__link">
+  <a href="#core-innovations" class="md-nav__link">
     <span class="md-ellipsis">
-      Research Contributions
+      Core Innovations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-design-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture &amp; Design Philosophy
     </span>
   </a>
   
@@ -3165,17 +3183,21 @@
 <h1 id="about-grapa">About Grapa</h1>
 <h2 id="what-is-grapa">What is Grapa?</h2>
 <p>Grapa is a modern, grammar-based programming language and data processing platform designed for unlimited precision, true parallelism, and seamless Python integration. It is ideal for data engineers, educators, researchers, and anyone who needs high-performance ETL, language experimentation, or advanced scripting.</p>
-<h2 id="research-contributions">Research Contributions</h2>
-<p>🧪 <strong>Grapa</strong> is an experimental language and storage system built around two core research innovations:</p>
+<h2 id="core-innovations">Core Innovations</h2>
+<p>🧪 <strong>Grapa</strong> was built around a fundamental question: <em>"Could I build a language that can mutate its own grammar at runtime, with a storage engine to support fragmented, update-efficient columnar access?"</em></p>
+<p>The result is a system with two groundbreaking innovations:</p>
 <ol>
 <li>
-<p><strong>Runtime Grammar Mutation</strong> — Syntax rules defined via mutable <code>$RULE</code> variables, enabling scoped language evolution and meta-programming at runtime.</p>
+<p><strong>Runtime Grammar Mutation</strong> — Syntax rules defined via mutable <code>$RULE</code> variables, enabling scoped language evolution and meta-programming at runtime. Grapa is a <strong>language for building languages</strong>, using executable runtime syntax-mutable grammar — the first of its kind.</p>
 </li>
 <li>
-<p><strong>Weighted BTree Storage Engine</strong> — A novel index structure supporting fragmented column-store access with in-place updates across COL, ROW, and GROUP storage models.</p>
+<p><strong>Weighted BTree Storage Engine</strong> — A novel index structure supporting fragmented column-store access with in-place updates. Nodes carry "weight" (byte length) instead of just count, enabling fast partial reads, inserts, and in-place updates across COL, ROW, and GROUP storage models.</p>
 </li>
 </ol>
-<p>This project supports academic exploration in programming languages, domain-specific languages, interpreters, and database internals. The working implementation demonstrates feasibility of these concepts in practice.</p>
+<h2 id="architecture-design-philosophy">Architecture &amp; Design Philosophy</h2>
+<p><strong>Cross-Platform Foundation:</strong> Built from the ground up to support both BigEndian and LittleEndian formats, ensuring true cross-platform compatibility across Windows, Mac, and Linux.</p>
+<p><strong>Selective Open Source Integration:</strong> While Grapa is entirely original in architecture and execution model, it selectively integrates established libraries (OpenSSL, PCRE2, BLST, FLTK) to avoid reinventing well-tested systems — allowing focus on core innovations.</p>
+<p><strong>Production-Ready:</strong> Used in production-grade ETL and AWS Lambda workflows, demonstrating real-world applicability of these research concepts.</p>
 <p><strong>Research Applications:</strong>
 - Language extensibility and meta-programming
 - Columnar storage and database systems
