@@ -53,12 +53,28 @@ At the time, I didn’t know if there would be a real use for it. I did it becau
 
 ---
 
+## 🔧 Use of Open Source Libraries
+
+While Grapa is entirely original in architecture, design, and execution model, it selectively integrates established open source libraries to support certain capabilities:
+
+- **OpenSSL**, **Tiny-AES** – encryption and secure hashing  
+- **PCRE2** – regular expression parsing  
+- **BLST** – cryptographic primitives  
+- **FLTK** – basic UI prototyping  
+- **MiniZ**, **UTF8** – compression and Unicode support  
+
+These are intentionally adopted to avoid reinventing common, well-tested systems — allowing Grapa to focus on its core innovations: grammar mutation, execution trees, and weighted BTree storage.
+
+Grapa remains a completely self-authored project, but is built with awareness and respect for the broader open source ecosystem.
+
+---
+
 ## 📚 Why This Matters
 
 Grapa is the result of long-term engineering, curiosity, and persistence. It is:
 
-- A real-world alternative to traditional language and storage design
-- A research-grade system for DSLs, storage, and runtime composition
+- A real-world alternative to traditional language and storage design  
+- A research-grade system for DSLs, storage, and runtime composition  
 - A foundation for academic and production-grade exploration
 
 ---
