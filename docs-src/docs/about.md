@@ -3,6 +3,22 @@
 ## What is Grapa?
 Grapa is a modern, grammar-based programming language and data processing platform designed for unlimited precision, true parallelism, and seamless Python integration. It is ideal for data engineers, educators, researchers, and anyone who needs high-performance ETL, language experimentation, or advanced scripting.
 
+## Research Contributions
+
+🧪 **Grapa** is an experimental language and storage system built around two core research innovations:
+
+1. **Runtime Grammar Mutation** — Syntax rules defined via mutable `$RULE` variables, enabling scoped language evolution and meta-programming at runtime.
+
+2. **Weighted BTree Storage Engine** — A novel index structure supporting fragmented column-store access with in-place updates across COL, ROW, and GROUP storage models.
+
+This project supports academic exploration in programming languages, domain-specific languages, interpreters, and database internals. The working implementation demonstrates feasibility of these concepts in practice.
+
+**Research Applications:**
+- Language extensibility and meta-programming
+- Columnar storage and database systems
+- Compiler theory and grammar evolution
+- Parallel data processing architectures
+
 ## Key Features
 - **Unlimited Precision:** Arbitrary-precision math for $INT, $FLOAT, $TIME
 - **True Parallelism:** Production-ready parallel ETL/data processing (map/reduce/filter, $thread, $net)

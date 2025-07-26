@@ -19,8 +19,22 @@
 
 # 🚨 IMMEDIATE PRIORITY TASKS
 
-## 1. ROW Table Index Corruption Bug
-- **Status:** HIGH PRIORITY, ready to start
+## 1. Academic Outreach Documentation Enhancement
+- **Status:** ✅ COMPLETED
+- **Focus:** Enhanced implementation documentation to support academic collaboration
+- **Reference:** [`ACADEMIC_OUTREACH/IMPLEMENTATION_GAPS_ANALYSIS.md`](../ACADEMIC_OUTREACH/IMPLEMENTATION_GAPS_ANALYSIS.md)
+- **Scope:** Grammar mutation system documentation, weighted BTree performance analysis, storage model comparison
+- **Goal:** Ensure comprehensive technical documentation for academic research questions
+- **Success Criteria:** 
+  - ✅ Grammar mutation system fully documented with implementation details
+  - ✅ Weighted BTree performance analysis and complexity analysis completed
+  - ✅ Storage model comparison (COL/ROW/GROUP) documented with benchmarks
+  - ✅ Academic outreach materials ready for university collaboration
+
+---
+
+## 2. ROW Table Index Corruption Bug
+- **Status:** MEDIUM PRIORITY, investigation needed
 - **Focus:** Investigate and fix ROW table index corruption issue
 - **Reference:** [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)
 - **Scope:** Database system investigation, bug reproduction, fix implementation
@@ -33,7 +47,7 @@
 
 ---
 
-## 2. Improve CLI Interface
+## 3. Improve CLI Interface
 - **Status:** ✅ COMPLETED
 - **Focus:** Create best-in-class CLI interface matching Python standards and user expectations
 - **Reference:** [`GRAPA_CLI_COMPREHENSIVE.md`](GRAPA_CLI_COMPREHENSIVE.md)
@@ -54,7 +68,7 @@
 1. **Fix $file (and $TABLE) .get() Return Types:**  
    ~~Ensure that INT and FLOAT fields from .get() return the correct type instead of $STR/raw bytes. (Current workaround: use `.raw().int()` or `.raw().float()`. See known issue.)~~ **[COMPLETED]**
 2. **ROW Table Index Corruption Bug:**  
-   - **Status:** HIGH PRIORITY, investigation needed
+   - **Status:** MEDIUM PRIORITY, investigation needed
    - **Reference:** [`ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)
    - **Test Script:** `test_row_bug_demo.grc`
    - **Workaround:** Use COL tables instead of ROW tables
@@ -128,5 +142,5 @@ This document provides a single authoritative source for:
 - Contact and coordination guidance for maintainers and AI agents
 
 **Last Updated:** January 2025
-**Current Focus:** 🚨 Improve CLI Interface (IMMEDIATE PRIORITY)
-**Status:** CLI Redesign Complete, ROW Bug Moved to Next-Up, Operator System Complete 
+**Current Focus:** 🚨 ROW Table Index Corruption Bug (IMMEDIATE PRIORITY)
+**Status:** Academic Outreach Documentation Complete, CLI Redesign Complete, Operator System Complete 
