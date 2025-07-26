@@ -6504,3 +6504,31 @@ tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mValue)
 ### **Expanded Bug Scope**
 - The index corruption bug is not limited to ROW tables. The same logic is used for COL (CTABLE_TREE) and GROUP (GROUP_TREE) tables, so all three are potentially affected.
 - Investigation and fixes must be applied to all table types.
+---
+
+## 2025-07-25: Parameter Fixes Applied - Bug Persists
+
+### Latest Investigation (July 2025)
+- Status: All missing fourth parameters have been identified and fixed throughout the codebase
+- Result: Bug persists despite parameter corrections
+- Next Phase: Deeper investigation into B-tree operations and index update mechanism
+
+### Key Findings
+1. user1's RPTR: Points to node=(84,0) but should point to node=(58,0)
+2. user2 and user3: Index pointers are correct
+3. Corruption timing: Occurs after adding the third record
+4. Data integrity: All record data is preserved, only index is corrupted
+5. Parameter fixes: All missing fourth parameters have been added, but bug persists
+
+### Next Investigation Steps
+1. Trace index update flow: Follow the complete path from SetRecordField to index insertion
+2. Examine B-tree operations: Check if the issue is in the underlying B-tree insert/delete operations
+3. Compare with COL tables: Understand why COL tables don't have this issue
+4. Memory allocation: Investigate if there's a memory allocation issue affecting index pointers
+5. Node pointer analysis: Investigate why node=(84,0) is being used instead of node=(58,0)
+
+---
+
+Last Updated: July 2025
+Investigation Status: Active - Root cause not yet identified despite parameter fixes
+Priority: High - Critical database functionality affected
