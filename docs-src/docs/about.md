@@ -3,15 +3,23 @@
 ## What is Grapa?
 Grapa is a modern, grammar-based programming language and data processing platform designed for unlimited precision, true parallelism, and seamless Python integration. It is ideal for data engineers, educators, researchers, and anyone who needs high-performance ETL, language experimentation, or advanced scripting.
 
-## Research Contributions
+## Core Innovations
 
-🧪 **Grapa** is an experimental language and storage system built around two core research innovations:
+🧪 **Grapa** was built around a fundamental question: *"Could I build a language that can mutate its own grammar at runtime, with a storage engine to support fragmented, update-efficient columnar access?"*
 
-1. **Runtime Grammar Mutation** — Syntax rules defined via mutable `$RULE` variables, enabling scoped language evolution and meta-programming at runtime.
+The result is a system with two groundbreaking innovations:
 
-2. **Weighted BTree Storage Engine** — A novel index structure supporting fragmented column-store access with in-place updates across COL, ROW, and GROUP storage models.
+1. **Runtime Grammar Mutation** — Syntax rules defined via mutable `$RULE` variables, enabling scoped language evolution and meta-programming at runtime. Grapa is a **language for building languages**, using executable runtime syntax-mutable grammar — the first of its kind.
 
-This project supports academic exploration in programming languages, domain-specific languages, interpreters, and database internals. The working implementation demonstrates feasibility of these concepts in practice.
+2. **Weighted BTree Storage Engine** — A novel index structure supporting fragmented column-store access with in-place updates. Nodes carry "weight" (byte length) instead of just count, enabling fast partial reads, inserts, and in-place updates across COL, ROW, and GROUP storage models.
+
+## Architecture & Design Philosophy
+
+**Cross-Platform Foundation:** Built from the ground up to support both BigEndian and LittleEndian formats, ensuring true cross-platform compatibility across Windows, Mac, and Linux.
+
+**Selective Open Source Integration:** While Grapa is entirely original in architecture and execution model, it selectively integrates established libraries (OpenSSL, PCRE2, BLST, FLTK) to avoid reinventing well-tested systems — allowing focus on core innovations.
+
+**Production-Ready:** Used in production-grade ETL and AWS Lambda workflows, demonstrating real-world applicability of these research concepts.
 
 **Research Applications:**
 - Language extensibility and meta-programming
