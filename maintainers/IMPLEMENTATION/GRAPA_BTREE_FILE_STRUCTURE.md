@@ -109,12 +109,57 @@ A deep technical reference for the on-disk (and in-memory) structure of Grapa BT
 
 ---
 
-## Debugging and Forensics Tips
-- Use a hex editor to inspect file offsets and block headers.
-- Check invariants: parent/child pointers must be consistent, weights must add up.
-- If corruption is suspected, walk the tree manually from the root and verify all links.
-- Free page list should not overlap with allocated blocks.
-- Data blocks should be referenced by at least one leaf or node.
+## Debugging and Forensics Capabilities
+
+### Comprehensive Dump System
+- **DumpFile**: Dump entire database structure for debugging
+- **DumpTree**: Dump specific tree structures with detailed information
+- **Structure Visualization**: Visual representation of BTree structure and relationships
+- **Debug Output**: Detailed debug information for troubleshooting
+
+### Manual File Traversal Tools
+- **Low-level Analysis**: Tools for inspecting individual blocks and nodes
+- **File Structure Analysis**: Manual traversal of BTree file structure
+- **Block-level Debugging**: Ability to inspect individual blocks and nodes
+- **Forensic Capabilities**: Tools for data recovery and corruption analysis
+
+### Debug Information Available
+- **Tree Structure**: Complete tree hierarchy and relationships
+- **Data Distribution**: Information about data distribution and storage efficiency
+- **Index Information**: Details about index structure and performance
+- **Storage Statistics**: Information about storage usage and efficiency
+
+### Forensic Analysis Tools
+- **Corruption Detection**: Identify corrupted blocks and data structures
+- **Data Recovery**: Tools for recovering data from partially corrupted files
+- **Structure Validation**: Verify BTree structure integrity
+- **Performance Analysis**: Analyze file structure for optimization opportunities
+
+### Debugging Examples
+```cpp
+// Dump entire database structure
+GrapaFile dumpFile;
+dumpFile.Create("debug_dump.txt");
+db.DumpFile(&dumpFile);
+
+// Dump specific tree
+db.DumpTree(treeRef, &dumpFile);
+
+// Manual block inspection
+GrapaBlockTree tree;
+tree.Read(file, blockOffset);
+// Inspect tree structure...
+
+GrapaBlockNodeHeader node;
+node.Read(file, nodeOffset);
+// Inspect node structure...
+```
+
+### Performance Analysis
+- **Block Usage Analysis**: Identify block usage patterns and fragmentation
+- **Cache Performance**: Analyze cache hit rates and optimization opportunities
+- **I/O Pattern Analysis**: Understand read/write patterns for optimization
+- **Memory Usage**: Track memory usage and allocation patterns
 
 ---
 

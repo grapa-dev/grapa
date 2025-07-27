@@ -1,0 +1,51 @@
+/* GROUP Database Capabilities Summary */
+"=== GROUP Database Capabilities Summary ===".echo();
+
+/* Create a simple demonstration of GROUP capabilities */
+group_db = $file().table("GROUP");
+
+/* 1. GROUP can contain other databases (ROW, COL, GROUP) */
+group_db.mk("users", "ROW");
+group_db.mk("analytics", "COL");
+group_db.mk("nested", "GROUP");
+"✓ 1. GROUP can contain ROW, COL, and nested GROUP databases".echo();
+
+/* 2. GROUP can store data records directly */
+group_db.set("app_name", "DemoApp");
+group_db.set("version", "1.0");
+group_db.set("status", "active");
+"✓ 2. GROUP can store data records directly (like a key-value store)".echo();
+
+/* 3. Navigate to nested GROUP and add more structure */
+nested_group = group_db.cd("nested");
+nested_group.mk("deep_row", "ROW");
+nested_group.mk("deep_col", "COL");
+nested_group.set("nested_data", "This is nested data");
+"✓ 3. GROUP supports unlimited nesting levels".echo();
+
+/* 4. Navigate to ROW database and add structured data */
+users_db = group_db.cd("users");
+users_db.mkfield("id", "INT", "FIX", 4);
+users_db.mkfield("name", "STR", "VAR");
+users_db.set("user1", 1, "id");
+users_db.set("user1", "Alice", "name");
+"✓ 4. GROUP can contain ROW databases with structured fields".echo();
+
+/* 5. Navigate to COL database and add columnar data */
+analytics_db = group_db.cd("analytics");
+analytics_db.mkfield("metric", "STR", "VAR");
+analytics_db.mkfield("value", "FLT", "FIX", 8);
+analytics_db.set("metric1", "page_views", "metric");
+analytics_db.set("metric1", 1250.5, "value");
+"✓ 5. GROUP can contain COL databases for analytical data".echo();
+
+/* 6. Navigate back and show the complete structure */
+group_db.cd("..");
+contents = group_db.ls();
+("✓ 6. GROUP root contains " + contents.len().str() + " items").echo();
+
+/* 7. Show the tree structure */
+"=== GROUP Database Tree Structure ===".echo();
+group_db.dump();
+
+"=== GROUP Database Capabilities Summary Complete ===".echo(); 

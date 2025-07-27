@@ -1,0 +1,14 @@
+/* Simple GrapaDB2 Index Test */
+
+"Testing GrapaDB2...\n".echo();
+
+db2 = $unified();
+result = db2.create("grapadb2://simple_test.db");
+
+"Create result: " + result + "\n".echo();
+
+if (result == 0) {
+    "Database created successfully\n".echo();
+} else {
+    "Failed to create database\n".echo();
+} 

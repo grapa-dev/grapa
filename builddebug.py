@@ -30,7 +30,13 @@ if PLATFORM == 'windows':
 else:
     # For Linux/Mac, use g++/clang++ to build maindebug.cpp and all needed sources
     exe_name = 'grapa-debug'
-    cpp_files = [os.path.join(SRC_DIR, 'maindebug.cpp')]
+    cpp_files = [
+        os.path.join(SRC_DIR, 'maindebug.cpp'),
+        os.path.join(SRC_DIR, 'grapa', 'GrapaBtree.cpp'),
+        os.path.join(SRC_DIR, 'grapa', 'GrapaFileIO.cpp'),
+        os.path.join(SRC_DIR, 'grapa', 'GrapaValue.cpp'),
+        os.path.join(SRC_DIR, 'grapa', 'GrapaBtreeBlock.cpp')
+    ]
     # Add any additional required source files here if needed
     cmd = ['g++', '-std=c++17', '-O2', '-pthread', '-Isource', '-o', exe_name] + cpp_files
     print(f"Building debug-btree ({PLATFORM}) with command: {' '.join(cmd)}")

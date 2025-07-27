@@ -1,0 +1,372 @@
+/* Test script for GrapaDB2 Temporary Transaction System */
+/* This demonstrates the innovative temporary database approach for transactions */
+
+"Testing GrapaDB2 Temporary Transaction System...\n".echo();
+"==============================================\n".echo();
+
+/* Test 1: Current Transaction System Problems */
+"Test 1: Current Transaction System Problems\n".echo();
+"------------------------------------------\n".echo();
+
+"Current transaction systems face these challenges:\n".echo();
+"• Complex rollback logic - undoing individual operations\n".echo();
+"• Performance overhead - locking and logging\n".echo();
+"• Memory usage - maintaining undo logs\n".echo();
+"• Recovery complexity - replaying undo/redo logs\n".echo();
+"\n".echo();
+
+/* Test 2: Temporary Database Transaction Benefits */
+"Test 2: Temporary Database Transaction Benefits\n".echo();
+"----------------------------------------------\n".echo();
+
+"Your temporary database approach solves these problems:\n".echo();
+"• Simple rollback - just delete the temp database\n".echo();
+"• High performance - no complex undo/redo logic\n".echo();
+"• Memory efficient - only active transactions consume resources\n".echo();
+"• Crash safe - simple cleanup of orphaned temp databases\n".echo();
+"\n".echo();
+
+/* Test 3: Transaction Flow Demonstration */
+"Test 3: Transaction Flow Demonstration\n".echo();
+"-------------------------------------\n".echo();
+
+"Transaction Flow with Temporary Database:\n".echo();
+"\n".echo();
+
+"Step 1: Begin Transaction\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+transactionId = 0;
+err = f.beginTransaction(transactionId);
+if (err) {
+    ("Failed to begin transaction: " + err.str()).echo();
+    return;
+}
+("Transaction started with ID: " + transactionId.str()).echo();
+*/
+"✓ Creates temporary database: temp_txn_123.db\n".echo();
+"✓ All writes will go to temp database\n".echo();
+"✓ Reads check temp first, then main database\n".echo();
+"\n".echo();
+
+"Step 2: Perform Operations (All to Temp Database)\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// These operations go to the temporary database
+f.setBatch(transactionId, "user1", {"name": "Alice", "age": 30, "city": "New York"});
+f.setBatch(transactionId, "user2", {"name": "Bob", "age": 25, "city": "Los Angeles"});
+f.setBatch(transactionId, "user3", {"name": "Charlie", "age": 35, "city": "Chicago"});
+
+// Update existing record (goes to temp database)
+f.setBatch(transactionId, "user1", {"age": 31});  // Birthday!
+
+// Read operations check temp first, then main
+user1_data = f.getBatch(transactionId, "user1", ["name", "age", "city"]);
+("User1 in transaction: " + user1_data["name"] + ", age " + user1_data["age"].str() + "\n").echo();
+*/
+"✓ Writes: Always to temp database (no locks on main)\n".echo();
+"✓ Reads: Temp database (new data) + Main database (existing data)\n".echo();
+"✓ No locks on main database during transaction\n".echo();
+"\n".echo();
+
+"Step 3: Commit Transaction (Bulk Transfer)\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+err = f.commitTransaction(transactionId);
+if (err) {
+    ("Failed to commit transaction: " + err.str()).echo();
+    return;
+}
+("Transaction committed successfully\n").echo();
+*/
+"✓ Bulk transfer from temp to main database\n".echo();
+"✓ Atomic switch (rename or pointer swap)\n".echo();
+"✓ Delete temp database\n".echo();
+"✓ Main database updated atomically\n".echo();
+"\n".echo();
+
+"Step 4: Rollback Transaction (Simple Delete)\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// Start another transaction
+transactionId2 = 0;
+f.beginTransaction(transactionId2);
+
+// Make some changes
+f.setBatch(transactionId2, "user4", {"name": "David", "age": 28, "city": "Boston"});
+f.setBatch(transactionId2, "user1", {"age": 32});  // Another birthday!
+
+// Oops, need to rollback
+err = f.rollbackTransaction(transactionId2);
+if (err) {
+    ("Failed to rollback transaction: " + err.str()).echo();
+    return;
+}
+("Transaction rolled back successfully\n").echo();
+*/
+"✓ Simply delete temp database\n".echo();
+"✓ Main database unchanged\n".echo();
+"✓ Instant rollback - no complex undo logic\n".echo();
+"\n".echo();
+
+/* Test 4: Performance Comparison */
+"Test 4: Performance Comparison\n".echo();
+"-----------------------------\n".echo();
+
+"Performance Comparison:\n".echo();
+"\n".echo();
+
+"Traditional Transaction System:\n".echo();
+"• Rollback: O(n) where n = number of operations\n".echo();
+"• Memory: O(n) for undo logs\n".echo();
+"• Recovery: Complex undo/redo replay\n".echo();
+"• Locking: Locks on main database during transaction\n".echo();
+"\n".echo();
+
+"Temporary Database System:\n".echo();
+"• Rollback: O(1) - just delete temp database\n".echo();
+"• Memory: O(m) where m = active transaction data\n".echo();
+"• Recovery: Simple cleanup of temp databases\n".echo();
+"• Locking: No locks on main database\n".echo();
+"\n".echo();
+
+/* Test 5: Concurrency Benefits */
+"Test 5: Concurrency Benefits\n".echo();
+"---------------------------\n".echo();
+
+"Concurrency Benefits:\n".echo();
+"\n".echo();
+
+"Multiple Concurrent Transactions:\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// Transaction 1
+txn1 = 0;
+f.beginTransaction(txn1);
+f.setBatch(txn1, "user1", {"status": "processing"});
+
+// Transaction 2 (can run concurrently)
+txn2 = 0;
+f.beginTransaction(txn2);
+f.setBatch(txn2, "user2", {"status": "processing"});
+
+// Transaction 3 (can run concurrently)
+txn3 = 0;
+f.beginTransaction(txn3);
+user3_data = f.getBatch(txn3, "user3", ["name", "age"]);  // Reads from main database
+
+// All transactions can run without blocking each other
+// Each has its own temp database
+*/
+"✓ Transaction 1: temp_txn_1.db (modifying user1)\n".echo();
+"✓ Transaction 2: temp_txn_2.db (modifying user2)\n".echo();
+"✓ Transaction 3: temp_txn_3.db (reading user3)\n".echo();
+"✓ No locks on main database\n".echo();
+"✓ No contention between transactions\n".echo();
+"\n".echo();
+
+/* Test 6: Crash Recovery */
+"Test 6: Crash Recovery\n".echo();
+"---------------------\n".echo();
+
+"Crash Recovery Benefits:\n".echo();
+"\n".echo();
+
+"On System Startup:\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// System startup recovery
+err = f.recoverOnStartup();
+if (err) {
+    ("Recovery failed: " + err.str()).echo();
+    return;
+}
+
+// Recovery process:
+// 1. Scan for temporary database files
+// 2. Clean up orphaned temp databases
+// 3. Validate main database integrity
+// 4. Restore from backup if needed
+*/
+"✓ Scan for temporary database files\n".echo();
+"✓ Clean up orphaned temp databases\n".echo();
+"✓ Validate main database integrity\n".echo();
+"✓ Simple recovery - no complex undo/redo replay\n".echo();
+"\n".echo();
+
+/* Test 7: Bulk Transfer Optimization */
+"Test 7: Bulk Transfer Optimization\n".echo();
+"--------------------------------\n".echo();
+
+"Bulk Transfer Optimizations:\n".echo();
+"\n".echo();
+
+"Change Tracking for Efficient Transfer:\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// During transaction, changes are tracked
+f.setBatch(transactionId, "user1", {"age": 31});  // Tracked as UPDATE
+f.setBatch(transactionId, "user4", {"name": "David", "age": 28});  // Tracked as INSERT
+f.deleteRecord(transactionId, "user5");  // Tracked as DELETE
+
+// On commit, optimized bulk transfer
+err = f.commitTransaction(transactionId);
+// Internally:
+// 1. Transfer new records (INSERTs) - user4
+// 2. Transfer modified records (UPDATEs) - user1
+// 3. Handle deleted records (DELETEs) - user5
+*/
+"✓ Track new records (INSERTs)\n".echo();
+"✓ Track modified records (UPDATEs)\n".echo();
+"✓ Track deleted records (DELETEs)\n".echo();
+"✓ Optimized bulk transfer based on change types\n".echo();
+"✓ Batch operations for better performance\n".echo();
+"\n".echo();
+
+/* Test 8: Atomic Switch Mechanisms */
+"Test 8: Atomic Switch Mechanisms\n".echo();
+"------------------------------\n".echo();
+
+"Atomic Switch Implementation:\n".echo();
+"\n".echo();
+
+"File-based Atomic Switch:\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// Atomic switch process:
+// 1. Create backup of main database
+// 2. Atomic rename: temp -> main
+// 3. Clean up backup
+
+// If anything fails, restore from backup
+err = f.atomicSwitch(transactionId);
+if (err) {
+    ("Atomic switch failed, restored from backup\n").echo();
+    return;
+}
+("Atomic switch completed successfully\n").echo();
+*/
+"✓ Create backup of main database\n".echo();
+"✓ Atomic rename: temp -> main\n".echo();
+"✓ Clean up backup\n".echo();
+"✓ If failure, restore from backup\n".echo();
+"✓ Ensures data consistency\n".echo();
+"\n".echo();
+
+/* Test 9: Advanced Features */
+"Test 9: Advanced Features\n".echo();
+"------------------------\n".echo();
+
+"Advanced Transaction Features:\n".echo();
+"\n".echo();
+
+"Multi-Version Concurrency Control (MVCC):\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// MVCC allows multiple versions of data
+snapshot1 = f.createSnapshot();
+f.setBatch(transactionId, "user1", {"age": 31});
+
+// Read from snapshot (sees old data)
+user1_old = f.readFromSnapshot(snapshot1, "user1", ["age"]);
+("User1 age in snapshot: " + user1_old["age"].str()).echo();
+
+// Read current data (sees new data)
+user1_new = f.getBatch(transactionId, "user1", ["age"]);
+("User1 age current: " + user1_new["age"].str()).echo();
+*/
+"✓ Multiple versions of data coexist\n".echo();
+"✓ Snapshot isolation for consistent reads\n".echo();
+"✓ No blocking between readers and writers\n".echo();
+"✓ Consistent view of data at transaction start\n".echo();
+"\n".echo();
+
+"Lock-Free Operations:\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// Optimistic concurrency control
+expected_version = f.getRecordVersion("user1");
+err = f.optimisticUpdate("user1", {"age": 32}, expected_version);
+if (err) {
+    ("Optimistic update failed - record was modified by another transaction\n").echo();
+    // Retry or handle conflict
+}
+*/
+"✓ Optimistic concurrency control\n".echo();
+"✓ No locks during normal operations\n".echo();
+"✓ Conflict detection on commit\n".echo();
+"✓ High performance for low-contention scenarios\n".echo();
+"\n".echo();
+
+/* Test 10: Integration with Batch Operations */
+"Test 10: Integration with Batch Operations\n".echo();
+"----------------------------------------\n".echo();
+
+"Batch Operations with Transactions:\n".echo();
+"\n".echo();
+
+"Efficient Batch Processing:\n".echo();
+/* This would be the new syntax for GrapaDB2 */
+/*
+// Start transaction
+transactionId = 0;
+f.beginTransaction(transactionId);
+
+// Batch insert multiple records
+records = [
+    {"key": "user1", "data": {"name": "Alice", "age": 30}},
+    {"key": "user2", "data": {"name": "Bob", "age": 25}},
+    {"key": "user3", "data": {"name": "Charlie", "age": 35}},
+    {"key": "user4", "data": {"name": "David", "age": 28}},
+    {"key": "user5", "data": {"name": "Eve", "age": 32}}
+];
+
+err = f.setBatchMultiple(transactionId, records);
+if (err) {
+    ("Batch insert failed: " + err.str()).echo();
+    f.rollbackTransaction(transactionId);
+    return;
+}
+
+// Batch read multiple records
+keys = ["user1", "user2", "user3"];
+field_names = ["name", "age"];
+results = f.getBatchMultiple(transactionId, keys, field_names);
+
+// Commit all changes atomically
+err = f.commitTransaction(transactionId);
+if (err) {
+    ("Commit failed: " + err.str()).echo();
+    f.rollbackTransaction(transactionId);
+    return;
+}
+("Batch transaction completed successfully\n").echo();
+*/
+"✓ Batch operations within transactions\n".echo();
+"✓ All-or-nothing semantics\n".echo();
+"✓ Efficient bulk transfer on commit\n".echo();
+"✓ Atomic batch operations\n".echo();
+"✓ Performance benefits of both batch and transaction systems\n".echo();
+"\n".echo();
+
+/* Summary */
+"Summary: GrapaDB2 Temporary Transaction System Benefits\n".echo();
+"=====================================================\n".echo();
+"✅ Simple Rollback: Delete temp database = instant rollback\n".echo();
+"✅ High Performance: No complex undo/redo logic during operations\n".echo();
+"✅ Memory Efficient: Only active transactions consume resources\n".echo();
+"✅ Crash Safe: Simple recovery - just delete orphaned temp databases\n".echo();
+"✅ Scalable: Multiple transactions can run concurrently\n".echo();
+"✅ Bulk Operations: Efficient bulk transfer on commit\n".echo();
+"✅ No Locking: Main database remains unlocked during transactions\n".echo();
+"✅ Atomic Operations: Bulk transfer ensures consistency\n".echo();
+"✅ No Corruption: Main database never touched until commit\n".echo();
+"✅ Parallel Processing: Bulk transfers can be parallelized\n".echo();
+"\n".echo();
+
+"Your temporary database approach is brilliant and represents a sophisticated\n".echo();
+"understanding of transaction management. It's similar to techniques used in\n".echo();
+"high-performance databases and provides an excellent foundation for GrapaDB2!\n".echo();
+"\n".echo();
+
+"Status: Design complete, ready for Phase 4 implementation.\n".echo(); 

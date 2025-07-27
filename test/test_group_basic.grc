@@ -1,0 +1,65 @@
+/* Basic GROUP Database Test */
+"=== Basic GROUP Database Test ===".echo()
+
+/* Create GROUP database */
+group_db = $file().table("GROUP")
+"✓ GROUP database created".echo()
+
+/* Create nested databases within the group */
+group_db.mk("users", "ROW")
+group_db.mk("analytics", "COL")
+group_db.mk("config", "GROUP")
+"✓ Nested databases created: users (ROW), analytics (COL), config (GROUP)".echo()
+
+/* Navigate to users database and add data */
+users_db = group_db.cd("users")
+"✓ Navigated to users database".echo()
+
+/* Create fields in users database */
+users_db.mkfield("id", "INT", "FIX", 4)
+users_db.mkfield("name", "STR", "VAR")
+users_db.mkfield("role", "STR", "VAR")
+"✓ Users fields created".echo()
+
+/* Insert user data */
+users_db.set("admin1", 1, "id")
+users_db.set("admin1", "Admin User", "name")
+users_db.set("admin1", "administrator", "role")
+"✓ Admin user inserted".echo()
+
+/* Navigate to analytics database */
+analytics_db = group_db.cd("analytics")
+"✓ Navigated to analytics database".echo()
+
+/* Create fields in analytics database */
+analytics_db.mkfield("metric", "STR", "VAR")
+analytics_db.mkfield("value", "FLT", "FIX", 8)
+"✓ Analytics fields created".echo()
+
+/* Insert analytics data */
+analytics_db.set("metric1", "system_uptime", "metric")
+analytics_db.set("metric1", 99.95, "value")
+"✓ System metric inserted".echo()
+
+/* Navigate back to root and list contents */
+group_db.cd("..")
+group_contents = group_db.ls()
+("✓ GROUP root contents: " + group_contents.len().str() + " items").echo()
+
+/* Navigate back to users and retrieve data */
+users_db = group_db.cd("users")
+admin_name = users_db.get("admin1", "name")
+("✓ Retrieved from nested users DB: " + admin_name.str()).echo()
+
+/* Show the structure by listing contents at each level */
+"=== GROUP Structure Summary ===".echo()
+"Root level contents:".echo()
+group_db.ls()
+
+"Users database contents:".echo()
+group_db.cd("users").ls()
+
+"Analytics database contents:".echo()
+group_db.cd("analytics").ls()
+
+"=== GROUP Database Test Complete ===".echo() 

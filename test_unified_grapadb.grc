@@ -1,0 +1,92 @@
+/* Test GrapaDB backend integration with unified storage */
+
+/* Test instantiation and basic operations */
+"Testing GrapaDB backend integration...\n".echo();
+
+/* Create unified storage object with GrapaDB */
+u = $unified();
+"Created unified storage object\n".echo();
+
+/* Test create with GrapaDB */
+"Testing create with grapadb://testdb.gdb...\n".echo();
+result = u.create("grapadb://testdb.gdb");
+"Create result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test getType */
+"Storage type: ".echo();
+result = u.getType();
+result.echo();
+"\n".echo();
+
+/* Test getInfo */
+"Storage info: ".echo();
+result = u.getInfo();
+result.echo();
+"\n".echo();
+
+/* Test mk (create record) */
+"Testing mk (create record)...\n".echo();
+result = u.mk("testrecord", "RECORD");
+"Make result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test set (set field value) */
+"Testing set (set field value)...\n".echo();
+result = u.set("testrecord", "$VALUE", "This is test content");
+"Set result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test get (get field value) */
+"Testing get (get field value)...\n".echo();
+result = u.get("testrecord", "$VALUE");
+"Get result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test ls (list records) */
+"Testing ls (list records)...\n".echo();
+result = u.ls();
+"List result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test mk (create another record) */
+"Testing mk (create another record)...\n".echo();
+result = u.mk("another_record", "RECORD");
+"Make result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test set (set field value for second record) */
+"Testing set (set field value for second record)...\n".echo();
+result = u.set("another_record", "$VALUE", "Second record content");
+"Set result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test ls again to see both records */
+"Testing ls again (should show both records)...\n".echo();
+result = u.ls();
+"List result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test rm (remove record) */
+"Testing rm (remove record)...\n".echo();
+result = u.rm("testrecord");
+"Remove result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Test ls after removal */
+"Testing ls after removal...\n".echo();
+result = u.ls();
+"List result: ".echo();
+result.echo();
+"\n".echo();
+
+"GrapaDB backend integration test completed!\n".echo(); 

@@ -1,0 +1,75 @@
+/* Comprehensive GROUP Database Test */
+"=== Comprehensive GROUP Database Test ===".echo();
+
+/* Create GROUP database */
+group_db = $file().table("GROUP");
+"✓ GROUP database created".echo();
+
+/* Create nested databases within the group */
+group_db.mk("users", "ROW");
+group_db.mk("analytics", "COL");
+group_db.mk("config", "GROUP");
+"✓ Nested databases created: users (ROW), analytics (COL), config (GROUP)".echo();
+
+/* Navigate to users database and add data */
+users_db = group_db.cd("users");
+"✓ Navigated to users database".echo();
+
+/* Create fields in users database */
+users_db.mkfield("id", "INT", "FIX", 4);
+users_db.mkfield("name", "STR", "VAR");
+users_db.mkfield("role", "STR", "VAR");
+"✓ Users fields created".echo();
+
+/* Insert user data */
+users_db.set("admin1", 1, "id");
+users_db.set("admin1", "Admin User", "name");
+users_db.set("admin1", "administrator", "role");
+
+users_db.set("user1", 2, "id");
+users_db.set("user1", "Regular User", "name");
+users_db.set("user1", "user", "role");
+"✓ User data inserted".echo();
+
+/* Navigate to analytics database */
+analytics_db = group_db.cd("analytics");
+"✓ Navigated to analytics database".echo();
+
+/* Create fields in analytics database */
+analytics_db.mkfield("metric", "STR", "VAR");
+analytics_db.mkfield("value", "FLT", "FIX", 8);
+"✓ Analytics fields created".echo();
+
+/* Insert analytics data */
+analytics_db.set("metric1", "system_uptime", "metric");
+analytics_db.set("metric1", 99.95, "value");
+
+analytics_db.set("metric2", "response_time", "metric");
+analytics_db.set("metric2", 0.125, "value");
+"✓ Analytics data inserted".echo();
+
+/* Navigate to config database and add nested structure */
+config_db = group_db.cd("config");
+"✓ Navigated to config database".echo();
+
+/* Add data to config */
+config_db.set("debug", true);
+config_db.set("log_level", "INFO");
+config_db.set("version", "1.0.0");
+"✓ Config data inserted".echo();
+
+/* Navigate back to root and show structure */
+group_db.cd("..");
+group_contents = group_db.ls();
+("✓ GROUP root contents: " + group_contents.len().str() + " items").echo();
+
+/* Navigate back to users and retrieve data */
+users_db = group_db.cd("users");
+admin_name = users_db.get("admin1", "name");
+("✓ Retrieved from nested users DB: " + admin_name.str()).echo();
+
+/* Show the complete tree structure */
+"=== GROUP Database Tree Structure ===".echo();
+group_db.dump();
+
+"=== GROUP Database Test Complete ===".echo(); 

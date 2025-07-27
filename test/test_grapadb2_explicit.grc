@@ -1,0 +1,38 @@
+/* Test GrapaDB2 with explicit URL */
+"================================================================================\n".echo();
+"Testing GrapaDB2 Explicit URL\n".echo();
+"================================================================================\n".echo();
+
+"Test 1: Create GrapaDB2 database with explicit URL\n".echo();
+"Expected: Should use GrapaDB2 implementation\n".echo();
+
+/* Use relative path instead of absolute path */
+u = $unified();
+err = u.create("grapadb2://test_db2");
+"Result: Database creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 2: Create table in GrapaDB2\n".echo();
+"Expected: Should use GrapaDB2 implementation\n".echo();
+err = u.mk("users", "ROW");
+"Result: Table creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 3: Try to set data\n".echo();
+"Expected: Should use GrapaDB2 implementation\n".echo();
+err = u.set("user1", "Alice", "name");
+"Result: Data set " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 4: Try to get data\n".echo();
+"Expected: Should use GrapaDB2 implementation\n".echo();
+value = u.get("user1", "name");
+"Result: Data get " + (value ? "SUCCESS" : "FAILED").str() + " - Value: " + value.str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 5: List contents\n".echo();
+"Expected: Should show GrapaDB2 structure\n".echo();
+u.ls();
+
+"================================================================================\n".echo();
+"Explicit GrapaDB2 Test Complete\n".echo(); 

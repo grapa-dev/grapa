@@ -1,0 +1,38 @@
+/* Basic Database Test */
+/* Testing ROW, COL, and GROUP database types */
+
+"=== Basic Database Test ===".echo();
+
+/* Test ROW database */
+row_db = $file().table("ROW");
+row_db.mkfield("name", "STR", "VAR");
+row_db.mkfield("age", "INT", "FIX", 4);
+row_db.set("user1", "Alice", "name");
+row_db.set("user1", 25, "age");
+name = row_db.get("user1", "name");
+age = row_db.get("user1", "age").raw().int();
+("ROW: " + name.str() + ", age " + age.str()).echo();
+
+/* Test COL database */
+col_db = $file().table("COL");
+col_db.mkfield("name", "STR", "VAR");
+col_db.mkfield("age", "INT", "FIX", 4);
+col_db.set("user1", "Bob", "name");
+col_db.set("user1", 30, "age");
+name = col_db.get("user1", "name");
+age = col_db.get("user1", "age").raw().int();
+("COL: " + name.str() + ", age " + age.str()).echo();
+
+/* Test GROUP database */
+group_db = $file().table("GROUP");
+group_db.mk("users", "ROW");
+users_db = group_db.cd("users");
+users_db.mkfield("name", "STR", "VAR");
+users_db.mkfield("age", "INT", "FIX", 4);
+users_db.set("user1", "Charlie", "name");
+users_db.set("user1", 35, "age");
+name = users_db.get("user1", "name");
+age = users_db.get("user1", "age").raw().int();
+("GROUP: " + name.str() + ", age " + age.str()).echo();
+
+"=== Test Complete ===".echo(); 

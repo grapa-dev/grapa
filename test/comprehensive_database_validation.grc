@@ -7,18 +7,18 @@
 /* ================================================================================ */
 /* Test 1: ROW Database Type Validation */
 /* ================================================================================ */
-"\n=== Test 1: ROW Database Type Validation ===\n".echo();
+"=== Test 1: ROW Database Type Validation ===\n".echo();
 "Testing row-oriented storage for transactional workloads\n".echo();
 
 row_db = $file().table("ROW");
-"✓ ROW database created\n".echo();
+"✓ ROW database created".echo();
 
 /* Create fields */
 row_db.mkfield("id", "INT", "FIX", 4);
 row_db.mkfield("name", "STR", "VAR");
 row_db.mkfield("age", "INT", "FIX", 4);
 row_db.mkfield("city", "STR", "VAR");
-"✓ ROW fields created\n".echo();
+"✓ ROW fields created".echo();
 
 /* Insert data */
 row_db.set("user1", 1, "id");
@@ -30,22 +30,22 @@ row_db.set("user2", 2, "id");
 row_db.set("user2", "Bob", "name");
 row_db.set("user2", 30, "age");
 row_db.set("user2", "Los Angeles", "city");
-"✓ ROW data inserted\n".echo();
+"✓ ROW data inserted".echo();
 
 /* Retrieve data */
 row_user1_name = row_db.get("user1", "name");
 row_user1_age = row_db.get("user1", "age").raw().int();
-("✓ ROW retrieval: " + row_user1_name + ", age " + row_user1_age.str() + "\n").echo();
+("✓ ROW retrieval: " + row_user1_name.str() + ", age " + row_user1_age.str() + "\n").echo();
 
 /* List records */
 row_records = row_db.ls();
-("✓ ROW records: " + row_records.len().str() + "\n").echo();
+("✓ ROW records: " + row_records.len().str()).echo();
 
 /* ================================================================================ */
 /* Test 2: COL Database Type Validation */
 /* ================================================================================ */
-"\n=== Test 2: COL Database Type Validation ===\n".echo();
-"Testing column-oriented storage for analytical workloads\n".echo();
+"=== Test 2: COL Database Type Validation ===".echo();
+"Testing column-oriented storage for analytical workloads".echo();
 
 col_db = $file().table("COL");
 "✓ COL database created\n".echo();
@@ -72,7 +72,7 @@ col_db.set("user2", "Los Angeles", "city");
 /* Retrieve data */
 col_user1_name = col_db.get("user1", "name");
 col_user1_age = col_db.get("user1", "age").raw().int();
-("✓ COL retrieval: " + col_user1_name + ", age " + col_user1_age.str() + "\n").echo();
+("✓ COL retrieval: " + col_user1_name.str() + ", age " + col_user1_age.str() + "\n").echo();
 
 /* List records */
 col_records = col_db.ls();
@@ -139,18 +139,18 @@ group_contents = group_db.ls();
 /* Verify ROW data integrity */
 row_user2_name = row_db.get("user2", "name");
 row_user2_city = row_db.get("user2", "city");
-("✓ ROW integrity: " + row_user2_name + " from " + row_user2_city + "\n").echo();
+("✓ ROW integrity: " + row_user2_name.str() + " from " + row_user2_city.str() + "\n").echo();
 
 /* Verify COL data integrity */
 col_user2_name = col_db.get("user2", "name");
 col_user2_city = col_db.get("user2", "city");
-("✓ COL integrity: " + col_user2_name + " from " + col_user2_city + "\n").echo();
+("✓ COL integrity: " + col_user2_name.str() + " from " + col_user2_city.str() + "\n").echo();
 
 /* Verify GROUP nested data integrity */
 users_db = group_db.cd("users");
 group_user1_name = users_db.get("user1", "name");
 group_user1_age = users_db.get("user1", "age").raw().int();
-("✓ GROUP nested integrity: " + group_user1_name + ", age " + group_user1_age.str() + "\n").echo();
+("✓ GROUP nested integrity: " + group_user1_name.str() + ", age " + group_user1_age.str() + "\n").echo();
 
 analytics_db = group_db.cd("analytics");
 group_metric_value = analytics_db.get("metric1", "value").raw().flt();

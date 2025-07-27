@@ -1,0 +1,23 @@
+/* Compare Backends Test */
+
+"=== BACKEND COMPARISON TEST ===\n".echo();
+
+/* Test File System Backend */
+"Testing File System Backend...\n".echo();
+fs = $unified();
+fs_result = fs.create("file://test_fs");
+"FS Create result: " + fs_result + "\n".echo();
+
+/* Test Memory Backend */
+"Testing Memory Backend...\n".echo();
+mem = $unified();
+mem_result = mem.create("memory://test_mem");
+"Memory Create result: " + mem_result + "\n".echo();
+
+/* Test GrapaDB2 Backend */
+"Testing GrapaDB2 Backend...\n".echo();
+db2 = $unified();
+db2_result = db2.create("grapadb2://test_db2");
+"GrapaDB2 Create result: " + db2_result + "\n".echo();
+
+"=== TEST COMPLETE ===\n".echo(); 

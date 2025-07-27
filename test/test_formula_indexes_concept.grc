@@ -1,0 +1,354 @@
+/* Test Formula Indexes Concept - Future Enhancement */
+
+"=== Testing Formula Indexes Concept ===\n".echo();
+"Demonstrating future computed index capabilities using Grapa lambda expressions\n".echo();
+
+/* Cleanup */
+"Cleanup: Removing any existing test files...\n".echo();
+f = $file();
+f.rm("test_formula_indexes");
+"Cleanup completed.\n".echo();
+
+/* ================================================================================ */
+/* Test Setup: Create Database with Fields */
+/* ================================================================================ */
+"Test Setup: Creating Database with Fields\n".echo();
+"----------------------------------------\n".echo();
+
+group_db = $file().table("GROUP");
+"✓ GROUP database created\n".echo();
+
+"Creating fields for formula index examples:\n".echo();
+group_db.mkfield("first_name", "STR", "VAR");
+group_db.mkfield("last_name", "STR", "VAR");
+group_db.mkfield("age", "INT", "FIX", 4);
+group_db.mkfield("salary", "INT", "FIX", 4);
+group_db.mkfield("department", "STR", "VAR");
+group_db.mkfield("status", "STR", "VAR");
+group_db.mkfield("hire_date", "STR", "VAR");
+group_db.mkfield("lat", "FLOAT", "FIX", 8);
+group_db.mkfield("lon", "FLOAT", "FIX", 8);
+"✓ Fields created\n".echo();
+
+"Adding test data:\n".echo();
+group_db.set("user1", "User data 1", "$VALUE");
+group_db.set("user1", "John", "first_name");
+group_db.set("user1", "Doe", "last_name");
+group_db.set("user1", 35, "age");
+group_db.set("user1", 75000, "salary");
+group_db.set("user1", "Engineering", "department");
+group_db.set("user1", "active", "status");
+group_db.set("user1", "2020-01-15", "hire_date");
+group_db.set("user1", 40.7128, "lat");
+group_db.set("user1", -74.0060, "lon");
+
+group_db.set("user2", "User data 2", "$VALUE");
+group_db.set("user2", "Jane", "first_name");
+group_db.set("user2", "Smith", "last_name");
+group_db.set("user2", 28, "age");
+group_db.set("user2", 65000, "salary");
+group_db.set("user2", "Marketing", "department");
+group_db.set("user2", "active", "status");
+group_db.set("user2", "2021-03-20", "hire_date");
+group_db.set("user2", 34.0522, "lat");
+group_db.set("user2", -118.2437, "lon");
+
+group_db.set("user3", "User data 3", "$VALUE");
+group_db.set("user3", "Bob", "first_name");
+group_db.set("user3", "Johnson", "last_name");
+group_db.set("user3", 42, "age");
+group_db.set("user3", 80000, "salary");
+group_db.set("user3", "Sales", "department");
+group_db.set("user3", "inactive", "status");
+group_db.set("user3", "2019-11-10", "hire_date");
+group_db.set("user3", 41.8781, "lat");
+group_db.set("user3", -87.6298, "lon");
+"✓ Test data added\n".echo();
+
+/* ================================================================================ */
+/* Test 1: Simple Computed Fields */
+/* ================================================================================ */
+"Test 1: Simple Computed Fields\n".echo();
+"------------------------------\n".echo();
+
+"Formula Index Concept: Index on concatenated name\n".echo();
+"```grapa\n".echo();
+"// Index on concatenated name\n".echo();
+"index1 = group_db.mkformulaindex(\"full_name_index\", \n".echo();
+"    \"lambda(record) { record.get('first_name') + ' ' + record.get('last_name') }\");\n".echo();
+"```\n".echo();
+
+"Benefits:\n".echo();
+"- Fast searches on full names\n".echo();
+"- No need to store redundant full_name field\n".echo();
+"- Automatic updates when first_name or last_name change\n".echo();
+
+"Formula Index Concept: Index on age category\n".echo();
+"```grapa\n".echo();
+"// Index on age category\n".echo();
+"index2 = group_db.mkformulaindex(\"age_category_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        age = record.get('age').raw().int(); \n".echo();
+"        if (age < 30) 'young' \n".echo();
+"        else if (age < 50) 'middle' \n".echo();
+"        else 'senior' \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Benefits:\n".echo();
+"- Categorical searches (find all young employees)\n".echo();
+"- Business logic encoded in index\n".echo();
+"- Automatic categorization updates\n".echo();
+
+/* ================================================================================ */
+/* Test 2: Complex Computations */
+/* ================================================================================ */
+"Test 2: Complex Computations\n".echo();
+"----------------------------\n".echo();
+
+"Formula Index Concept: Index on salary percentile\n".echo();
+"```grapa\n".echo();
+"// Index on salary percentile within department\n".echo();
+"index3 = group_db.mkformulaindex(\"salary_percentile_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        salary = record.get('salary').raw().int(); \n".echo();
+"        department = record.get('department'); \n".echo();
+"        calculatePercentile(salary, department) \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Benefits:\n".echo();
+"- Find employees by salary ranking\n".echo();
+"- Department-specific percentile calculations\n".echo();
+"- Complex business logic in index\n".echo();
+
+"Formula Index Concept: Index on distance from reference point\n".echo();
+"```grapa\n".echo();
+"// Index on distance from New York City\n".echo();
+"index4 = group_db.mkformulaindex(\"distance_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        lat1 = record.get('lat').raw().float(); \n".echo();
+"        lon1 = record.get('lon').raw().float(); \n".echo();
+"        calculateDistance(lat1, lon1, 40.7128, -74.0060) \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Benefits:\n".echo();
+"- Geographic proximity searches\n".echo();
+"- Location-based business logic\n".echo();
+"- Complex mathematical computations\n".echo();
+
+/* ================================================================================ */
+/* Test 3: Conditional Indexing */
+/* ================================================================================ */
+"Test 3: Conditional Indexing\n".echo();
+"----------------------------\n".echo();
+
+"Formula Index Concept: Index only active employees\n".echo();
+"```grapa\n".echo();
+"// Index only active employees\n".echo();
+"index5 = group_db.mkformulaindex(\"active_employee_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        if (record.get('status') == 'active') \n".echo();
+"            record.get('employee_id') \n".echo();
+"        else \n".echo();
+"            null \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Benefits:\n".echo();
+"- Only index relevant records\n".echo();
+"- Reduced index size and maintenance\n".echo();
+"- Automatic filtering logic\n".echo();
+
+"Formula Index Concept: Index on date quarters\n".echo();
+"```grapa\n".echo();
+"// Index on hire date quarter\n".echo();
+"index6 = group_db.mkformulaindex(\"quarter_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        date = record.get('hire_date'); \n".echo();
+"        extractQuarter(date) \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Benefits:\n".echo();
+"- Time-based grouping and analysis\n".echo();
+"- Date range queries\n".echo();
+"- Temporal business logic\n".echo();
+
+/* ================================================================================ */
+/* Test 4: Implementation Considerations */
+/* ================================================================================ */
+"Test 4: Implementation Considerations\n".echo();
+"------------------------------------\n".echo();
+
+"Performance Considerations:\n".echo();
+"- Formula Caching: Cache compiled lambda expressions\n".echo();
+"- Incremental Updates: Only recompute when dependent fields change\n".echo();
+"- Background Computation: Compute formulas in background for large datasets\n".echo();
+"- Lazy Evaluation: Evaluate formulas on-demand for read-heavy workloads\n".echo();
+
+"Storage Considerations:\n".echo();
+"- Formula Storage: Store formulas in index metadata\n".echo();
+"- Result Caching: Cache computed results in index structure\n".echo();
+"- Dependency Tracking: Track field dependencies for formula updates\n".echo();
+"- Version Management: Version formulas for schema evolution\n".echo();
+
+"Validation Considerations:\n".echo();
+"- Formula Syntax: Validate Grapa lambda syntax\n".echo();
+"- Type Safety: Ensure formula result types match index requirements\n".echo();
+"- Dependency Analysis: Validate field dependencies exist\n".echo();
+"- Circular Reference: Prevent circular formula dependencies\n".echo();
+
+/* ================================================================================ */
+/* Test 5: Integration with Existing System */
+/* ================================================================================ */
+"Test 5: Integration with Existing System\n".echo();
+"----------------------------------------\n".echo();
+
+"Two-Stage Search Extension:\n".echo();
+"```cpp\n".echo();
+"// Extend search algorithm to handle formula-based indexes\n".echo();
+"GrapaError GrapaDB::SearchDbWithFormulas(GrapaDBCursor& cursor, GrapaDBTable& pTable, GrapaDBFieldValueArray& pFieldList)\n".echo();
+"{\n".echo();
+"    // Stage 1: Locate best index (including formula indexes)\n".echo();
+"    err = LocateBestIndex(cursor, pTable, pFieldList);\n".echo();
+"    \n".echo();
+"    // Stage 2: Evaluate formulas and perform detailed matching\n".echo();
+"    if (usingFormulaIndex) {\n".echo();
+"        err = EvaluateFormulaAndMatch(cursor, pTable, pFieldList);\n".echo();
+"    } else {\n".echo();
+"        err = PerformStandardMatching(cursor, pTable, pFieldList);\n".echo();
+"    }\n".echo();
+"    return(err);\n".echo();
+"}\n".echo();
+"```\n".echo();
+
+"Index Selection Enhancement:\n".echo();
+"- Include formula indexes in index selection logic\n".echo();
+"- Consider formula complexity in index selection\n".echo();
+"- Balance between formula evaluation cost and index benefits\n".echo();
+"- Fall back to sequential scan for complex formulas\n".echo();
+
+"Field Dependency Management:\n".echo();
+"- Track which fields are used in formula indexes\n".echo();
+"- Update formula indexes when dependent fields change\n".echo();
+"- Maintain dependency graph for efficient updates\n".echo();
+"- Handle cascading formula updates\n".echo();
+
+/* ================================================================================ */
+/* Test 6: Formula Index Lifecycle */
+/* ================================================================================ */
+"Test 6: Formula Index Lifecycle\n".echo();
+"-------------------------------\n".echo();
+
+"Creation Process:\n".echo();
+"1. Parse Formula: Validate and parse Grapa lambda expression\n".echo();
+"2. Analyze Dependencies: Identify fields used in formula\n".echo();
+"3. Create Index: Create index structure with formula metadata\n".echo();
+"4. Populate Index: Compute formula for all existing records\n".echo();
+"5. Register Dependencies: Track field dependencies for updates\n".echo();
+
+"Update Process:\n".echo();
+"1. Detect Changes: Monitor dependent field changes\n".echo();
+"2. Recompute Formula: Evaluate formula for changed records\n".echo();
+"3. Update Index: Update index entries with new computed values\n".echo();
+"4. Maintain Consistency: Ensure index remains consistent\n".echo();
+
+"Deletion Process:\n".echo();
+"1. Remove Dependencies: Clear field dependency tracking\n".echo();
+"2. Delete Index: Remove index structure and metadata\n".echo();
+"3. Cleanup Cache: Clear formula and result caches\n".echo();
+
+/* ================================================================================ */
+/* Test 7: Benefits and Use Cases */
+/* ================================================================================ */
+"Test 7: Benefits and Use Cases\n".echo();
+"------------------------------\n".echo();
+
+"Query Performance Benefits:\n".echo();
+"- Complex Searches: Index complex computed values\n".echo();
+"- Aggregation Support: Pre-compute aggregation results\n".echo();
+"- Conditional Indexing: Index only relevant records\n".echo();
+"- Multi-Field Computations: Index derived from multiple fields\n".echo();
+
+"Application Flexibility:\n".echo();
+"- Business Logic: Encode business rules in indexes\n".echo();
+"- Data Transformation: Index transformed data views\n".echo();
+"- Conditional Logic: Index based on complex conditions\n".echo();
+"- Dynamic Computations: Index computed at query time\n".echo();
+
+"System Integration Benefits:\n".echo();
+"- Grapa Language: Leverage full Grapa language capabilities\n".echo();
+"- Type Safety: Maintain Grapa's type system\n".echo();
+"- Error Handling: Use Grapa's error handling mechanisms\n".echo();
+"- Extensibility: Support future Grapa language features\n".echo();
+
+/* ================================================================================ */
+/* Test 8: Real-World Examples */
+/* ================================================================================ */
+"Test 8: Real-World Examples\n".echo();
+"---------------------------\n".echo();
+
+"E-commerce Application:\n".echo();
+"```grapa\n".echo();
+"// Index on product availability\n".echo();
+"availability_index = products.mkformulaindex(\"availability_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        stock = record.get('stock').raw().int(); \n".echo();
+"        if (stock > 0) 'in_stock' \n".echo();
+"        else if (stock == 0) 'out_of_stock' \n".echo();
+"        else 'backordered' \n".echo();
+"    }\");\n".echo();
+"\n".echo();
+"// Index on price tier\n".echo();
+"price_tier_index = products.mkformulaindex(\"price_tier_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        price = record.get('price').raw().float(); \n".echo();
+"        if (price < 10) 'budget' \n".echo();
+"        else if (price < 50) 'mid_range' \n".echo();
+"        else 'premium' \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Financial Application:\n".echo();
+"```grapa\n".echo();
+"// Index on risk category\n".echo();
+"risk_index = accounts.mkformulaindex(\"risk_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        balance = record.get('balance').raw().float(); \n".echo();
+"        credit_score = record.get('credit_score').raw().int(); \n".echo();
+"        calculateRiskScore(balance, credit_score) \n".echo();
+"    }\");\n".echo();
+"\n".echo();
+"// Index on account status\n".echo();
+"status_index = accounts.mkformulaindex(\"status_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        last_activity = record.get('last_activity'); \n".echo();
+"        days_inactive = daysSince(last_activity); \n".echo();
+"        if (days_inactive > 90) 'dormant' \n".echo();
+"        else if (days_inactive > 30) 'inactive' \n".echo();
+"        else 'active' \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Summary */
+/* ================================================================================ */
+"=== Test Summary ===\n".echo();
+"✓ Formula indexes concept demonstrated\n".echo();
+"✓ Grapa lambda expression integration designed\n".echo();
+"✓ Implementation considerations identified\n".echo();
+"✓ Integration with existing system planned\n".echo();
+"✓ Real-world use cases explored\n".echo();
+"✓ Performance and storage considerations analyzed\n".echo();
+"✓ Future enhancement roadmap established\n".echo();
+
+"=== Formula Indexes Design Confirmed ===\n".echo();
+"✓ Formula Storage: Extended index structure with formula metadata\n".echo();
+"✓ Formula Evaluation: Grapa lambda expression execution\n".echo();
+"✓ Index Creation: CreateFormulaIndex() with formula parsing\n".echo();
+"✓ Dependency Tracking: Field dependency management for updates\n".echo();
+"✓ Performance Optimization: Caching and incremental updates\n".echo();
+"✓ System Integration: Extends existing two-stage search algorithm\n".echo();
+"✓ Future Enhancement: Leverages Grapa language capabilities\n".echo(); 

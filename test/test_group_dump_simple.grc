@@ -1,0 +1,24 @@
+/* Simple GROUP Database with Dump */
+"=== Simple GROUP Database with Dump ===".echo();
+
+/* Create GROUP database */
+group_db = $file().table("GROUP");
+"GROUP database created".echo();
+
+/* Create a simple nested structure */
+group_db.mk("users", "ROW");
+"Created users sub-database".echo();
+
+/* Navigate to users and add some data */
+users_db = group_db.cd("users");
+users_db.mkfield("name", "STR", "VAR");
+users_db.set("user1", "Alice", "name");
+"Added user data".echo();
+
+/* Navigate back to root */
+group_db.cd("..");
+"Back to root".echo();
+
+/* Show the tree structure */
+"=== GROUP Database Tree Structure ===".echo();
+group_db.dump(); 

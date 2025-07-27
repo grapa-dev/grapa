@@ -1,0 +1,24 @@
+/* Test GrapaDB2 specifically via unified storage */
+
+/* Create a GrapaDB2 database explicitly */
+db2 = $unified();
+result = db2.create("grapadb2://testdb2");
+"Create result: ".echo();
+result.echo();
+
+/* Create a field first */
+field_result = db2.mkfield("name", "STR", "VAR");
+"Field creation result: ".echo();
+field_result.echo();
+
+/* Set a value */
+set_result = db2.set("test", "test_value", "name");
+"Set result: ".echo();
+set_result.echo();
+
+/* Get the value */
+result = db2.get("test", "name");
+"Get result: ".echo();
+result.echo();
+
+"Test complete".echo(); 

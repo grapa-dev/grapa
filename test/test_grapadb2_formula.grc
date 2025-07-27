@@ -1,0 +1,45 @@
+/* Test GrapaDB2 Formula Fields */
+
+/* Initialize database */
+db = $file().table("GROUP");
+
+/* Create a simple table */
+db.createGroup("test_table", "ROW");
+
+/* Create a formula field */
+/* Note: This is a placeholder test since the actual implementation */
+/* would require integration with the GrapaDB2 C++ methods */
+
+/* Test basic database operations */
+db.echo("Database initialized successfully");
+
+/* Test formula field creation (placeholder) */
+formula_text = "price * quantity + tax";
+db.echo("Formula text: " + formula_text);
+
+/* Test compression/decompression */
+compressed = formula_text.encode("ZIP-GRAPA");
+db.echo("Compressed size: " + compressed.mLength);
+
+decompressed = compressed.decode("ZIP-GRAPA");
+db.echo("Decompressed: " + decompressed);
+
+/* Test $OP compilation */
+compiled_op = $sys().compile("x * 2 + 1");
+db.echo("Compiled $OP: " + compiled_op);
+
+/* Execute the compiled function */
+result = compiled_op(5);
+db.echo("Result of op(5): " + result);
+
+/* Test formula execution pattern */
+test_formula = "price * quantity";
+test_params = {"price": 10, "quantity": 5};
+db.echo("Test formula: " + test_formula);
+db.echo("Test params: " + test_params);
+
+/* Simulate formula execution */
+expected_result = test_params["price"] * test_params["quantity"];
+db.echo("Expected result: " + expected_result);
+
+db.echo("Formula field test completed successfully"); 

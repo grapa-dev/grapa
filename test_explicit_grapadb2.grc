@@ -1,0 +1,24 @@
+/* Explicit GrapaDB2 test using grapadb2:// protocol */
+
+/* Create a GrapaDB2 database explicitly */
+db2 = $unified();
+result = db2.create("grapadb2://testdb2");
+"Create result: ".echo();
+result.echo();
+
+/* Try to get a simple value */
+result = db2.get("test", "$VALUE");
+"Simple get result: ".echo();
+result.echo();
+
+/* Try to set a value first */
+set_result = db2.set("test", "$VALUE", "test_value");
+"Set result: ".echo();
+set_result.echo();
+
+/* Try to get it again */
+result = db2.get("test", "$VALUE");
+"After set, get result: ".echo();
+result.echo();
+
+"Test complete".echo(); 

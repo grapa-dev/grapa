@@ -32,6 +32,8 @@ Grapa's implementation is built on several key components:
 - [BTree Implementation](GRAPA_BTREE_IMPLEMENTATION.md) - Low-level BTree data structure and algorithms (used by the database)
 - [BTree File Structure & Traversal](GRAPA_BTREE_FILE_STRUCTURE.md) - On-disk file/block structure and manual traversal for Grapa BTree files (for forensics, debugging, and tool authors)
 - [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
+- [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md) - Cross-platform compatibility and endian conversion implementation
+- [GrapaDB2 Index Design](GRAPA_DB2_INDEX_DESIGN.md) - Index structure, field mapping, and BTree integration design
 - [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation
 - [Field Metadata Lifecycle and Requirements](FIELD_METADATA_LIFECYCLE.md)
 - [VECTOR Implementation](GRAPA_VECTOR_IMPLEMENTATION.md) - Canonical reference for the $VECTOR type, methods, construction, and edge cases
@@ -165,3 +167,14 @@ Grapa uses execution trees to represent compiled code:
 ---
 
 **For users**: If you're looking for how to use Grapa, see the main [API Reference](../API_REFERENCE.md) and [Examples](../EXAMPLES.md). 
+
+## Core Implementation Documentation
+
+- [GrapaDB Implementation](GRAPA_DB_IMPLEMENTATION.md) - Comprehensive database system design
+- [GrapaDB2 Development Status](DEVELOPMENT/CURRENT_STATUS.md) - New database system development and progress
+- [GrapaDB2 Index Design](GRAPA_DB2_INDEX_DESIGN.md) - Index system architecture
+- [GrapaDB2 Formula Fields](GRAPA_DB2_FORMULA_FIELDS.md) - Formula and computed fields system
+- [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md) - Cross-platform compatibility
+- [Base Types](BASETYPES.md) - Foundation type system
+- [Execution Trees](EXECUTION_TREES.md) - Code execution model
+- [GRZ Format](GRZ_FORMAT.md) - Binary format specification 

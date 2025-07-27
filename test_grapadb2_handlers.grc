@@ -1,0 +1,51 @@
+/* Test script for GrapaDB2 C++ handlers */
+"=== TESTING GRAPADB2 HANDLERS ===\n".echo();
+
+/* Test 1: Create GrapaDB2 instance */
+"Test 1: Creating GrapaDB2 instance...\n".echo();
+db = $grapadb();
+"✓ Successfully created GrapaDB2 instance\n".echo();
+
+/* Test 2: Test database creation (should return error -1 for now) */
+"Test 2: Testing database creation...\n".echo();
+result = db.create("testdb.gdb", "ROW");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type().str() + "\n".echo();
+
+/* Test 3: Test table creation (should return error -1 for now) */
+"Test 3: Testing table creation...\n".echo();
+result = db.createTable("test_table", "ROW");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type().str() + "\n".echo();
+
+/* Test 4: Test field addition (should return error -1 for now) */
+"Test 4: Testing field addition...\n".echo();
+result = db.addField("test_table", "name", "STR", "ROW", 100);
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type().str() + "\n".echo();
+
+/* Test 5: Test record creation (should return error -1 for now) */
+"Test 5: Testing record creation...\n".echo();
+result = db.createRecord("test_table");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type().str() + "\n".echo();
+
+/* Test 6: Test search (should return error -1 for now) */
+"Test 6: Testing search...\n".echo();
+result = db.search("test_table", "name = 'test'");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type().str() + "\n".echo();
+
+/* Test 7: Test debug (should return error -1 for now) */
+"Test 7: Testing debug...\n".echo();
+result = db.debug("verbose");
+"Result: " + result.str() + "\n".echo();
+"Result type: " + result.type().str() + "\n".echo();
+
+/* Test 8: List available methods */
+"Test 8: Listing available methods...\n".echo();
+methods = db.keys();
+"Available methods: ".echo();
+methods.echo();
+
+"=== TEST COMPLETE ===\n".echo(); 

@@ -1,12 +1,62 @@
-# Grapa Cross-Platform Objects Reference
+# Grapa Cross-Platform Objects
 
-> **Note:** GrapaDB2 is being developed as a complete rewrite of GrapaDB, motivated by a persistent, unfixable index bug in the original engine. This new architecture leverages robust cross-platform objects to ensure reliability, extensibility, and maintainability for the next generation of Grapa database systems.
+## **Grapa's Parallel-by-Design Architecture**
 
-## Overview
+Grapa was designed from the ground up to be **parallel by design**. This fundamental architectural decision manifests in several key ways:
 
-This document catalogs all the cross-platform C++ objects available in Grapa for the enhanced LocalDatabase implementation. These objects provide 100% cross-platform functionality and should be used instead of platform-specific implementations.
+### **Universal Locking System**
+Many Grapa C++ objects inherit from `GrapaCritical`, providing built-in thread safety:
+- `GrapaInt` - Arbitrary precision integers with locking
+- `GrapaQueue` - Queue data structures with locking  
+- `GrapaNet` - Network operations with locking
+- `GrapaThread` - Thread management with locking
+- `GrapaConsoleResponse` - Console I/O with locking
+- `GrapaWidgetLock` - UI widget locking
 
-## Core Cross-Platform Objects
+### **Automatic Variable Locking**
+**CRITICAL IMPLEMENTATION DETAIL**: Every access to a Grapa variable automatically locks/unlocks the underlying object. This was extensively stress-tested with hundreds of threads to ensure:
+- No crashes under extreme concurrent access
+- Cross-platform thread safety
+- Worker object reliability
+- Predictable behavior under load
+
+### **Built-in Parallel Processing**
+**`.map()`, `.filter()`, and `.reduce()` are parallel by default** and will create one thread per item. For large arrays, always specify a thread count to avoid resource exhaustion:
+
+```grapa
+/* Parallel by default - creates one thread per item */
+small_data = [1, 2, 3, 4, 5];
+squares = small_data.map(op(x) { x * x; });
+
+/* For large datasets, limit threads to avoid resource exhaustion */
+large_data = (1000000).range(0,1);
+squares = large_data.map(op(x) { x * x; }, 8);  /* Limit to 8 threads */
+```
+
+### **Thread Safety Methods**
+All `GrapaCritical` objects provide:
+- `TryCritical()` - Try to acquire lock
+- `WaitCritical()` - Wait for lock
+- `LeaveCritical()` - Release lock
+- `WaitCondition()` - Wait for condition
+- `SendCondition()` - Signal condition
+
+### **Worker Pattern Integration**
+The `GrapaWorker`/`GrapaWorkEvent`/`GrapaWorkQueue` pattern is deeply integrated throughout the system, enabling parallel processing across various subsystems (grep, unified storage, etc.).
+
+### **Documentation References**
+- **Threading Documentation**: `docs-src/docs/sys/thread.md` - Comprehensive guide to `$thread` objects and locking
+- **Parallel Processing**: `docs-src/docs/use_cases/parallel_concurrent_programming.md` - Examples and best practices
+- **Functional Methods**: `docs-src/docs/syntax/basic_syntax.md` - `.map()`, `.filter()`, `.reduce()` with threading
+
+### **Implications**
+This design means that Grapa objects are inherently thread-safe at the C++ level, even if the language syntax doesn't currently expose locking primitives. Future language enhancements could leverage this built-in capability.
+
+**The automatic locking system makes Grapa one of the most thread-safe languages ever designed, with built-in protection against race conditions at the variable access level.**
+
+---
+
+## Core C++ Objects
 
 ### 1. **Threading & Parallelism**
 
@@ -321,103 +371,3 @@ bool matches = regex.search(normalized);
 // Case-insensitive, diacritic-insensitive matching
 GrapaUnicode::UnicodeRegex search_pattern("café", true, true, GrapaUnicode::NormalizationForm::NFC);
 ```
-
-### **GrapaHash** for Cryptographic Operations
-```cpp
-// For secure hashing in GrapaDB2
-GrapaBYTE data("Hello, World!");
-GrapaBYTE hash;
-GrapaHash::SHA3_256(data, hash);
-
-// For data integrity verification
-u32 quick_hash = GrapaHash::SHAKE128_u32(data);
-```
-
-### **GrapaFloat** for High-Precision Math
-```cpp
-// For mathematical operations in GrapaDB2
-GrapaFloat pi = GrapaFloat::Pi(GrapaFloat(3.14159));
-GrapaFloat result = pi.Sin() + pi.Cos();
-
-// For statistical calculations
-GrapaFloat mean = GrapaFloat(0);
-// ... statistical operations
-```
-
-## Implementation Guidelines
-
-### 1. **Always Use Cross-Platform Objects**
-- Never use platform-specific APIs directly
-- Use Grapa's abstraction layers
-- Leverage existing cross-platform implementations
-
-### 2. **Prefer Higher-Level Abstractions**
-- Use `GrapaWorker` over `GrapaThread`
-- Use `GrapaFileCache` over `GrapaFileIO` for database operations
-- Use `GrapaNetConnect` over `GrapaNet` for network operations
-- Use `GrapaUnicode::UnicodeString` and `GrapaUnicode::UnicodeRegex` for text processing
-
-### 3. **Follow Established Patterns**
-- Study `source/grep/` for parallelization patterns
-- Study `source/grapa/GrapaDatabase.cpp` for LocalDatabase patterns
-- Follow existing error handling and resource management patterns
-
-### 4. **Leverage Existing Infrastructure**
-- Use `GrapaLocalDatabase` as the foundation for unified storage
-- Extend existing patterns rather than creating new ones
-- Maintain backward compatibility with existing APIs
-
-## Future Considerations
-
-### **Parallelization in GrapaDB2**
-- Follow the `source/grep/` pattern using `GrapaWorker`
-- Consider parallel index building
-- Parallel query execution
-- Background maintenance operations
-
-### **Unicode Support in GrapaDB2**
-- Use `GrapaUnicode::UnicodeString` for all text field storage
-- Use `GrapaUnicode::UnicodeRegex` for advanced text searching
-- Implement Unicode-aware indexing for better performance
-- Support normalization forms for consistent text comparison
-- Enable diacritic-insensitive matching for user-friendly searches
-
-### **Cryptographic Support in GrapaDB2**
-- Use `GrapaHash` for data integrity verification
-- Use `GrapaEncode` for secure data encryption
-- Use `GrapaPrime` for cryptographic key generation
-- Use `GrapaTinyAES` for lightweight encryption
-
-### **Mathematical Support in GrapaDB2**
-- Use `GrapaFloat` for high-precision calculations
-- Use `GrapaVector` for statistical operations
-- Use `GrapaInt` for arbitrary precision arithmetic
-- Support mathematical functions in database queries
-
-### **Network Storage Integration**
-- Use `GrapaNetConnect` for remote storage operations
-- SSL/TLS for secure network storage
-- Proxy support for enterprise environments
-
-### **Memory Storage**
-- Use `GrapaFileCache` for in-memory database operations
-- Leverage existing caching infrastructure
-- Consider memory-mapped files for large datasets
-
-## References
-
-- **Threading**: `source/grep/grapa_grep_unicode.cpp` - Parallel grep implementation
-- **Unicode**: `source/grep/grapa_grep_unicode.hpp/cpp` - Best-in-class Unicode implementation
-- **File Operations**: `source/grapa/GrapaDatabase.cpp` - LocalDatabase file system integration
-- **Networking**: `source/grapa/GrapaNetConnect.cpp` - Network connection management
-- **Storage**: `source/grapa/GrapaBtree.cpp` - Core storage engine
-- **Cryptography**: `source/grapa/GrapaHash.cpp` - SHA3 hashing implementation
-- **Mathematics**: `source/grapa/GrapaFloat.cpp` - High-precision arithmetic
-- **Compression**: `source/grapa/GrapaCompress.cpp` - Data compression utilities
-- **Time**: `source/grapa/GrapaTime.cpp` - Cross-platform time operations
-
-## Conclusion
-
-Grapa provides a comprehensive set of cross-platform objects that should be used for all enhanced LocalDatabase implementation work. The existing patterns in `source/grep/` and `source/grapa/GrapaDatabase.cpp` provide excellent examples of how to leverage these objects effectively while maintaining 100% cross-platform compatibility.
-
-The Unicode implementation in `source/grep/` represents a best-in-class example that should be leveraged for all text processing in GrapaDB2 and other areas requiring Unicode support. This includes proper normalization, case folding, diacritic handling, and grapheme cluster support. 

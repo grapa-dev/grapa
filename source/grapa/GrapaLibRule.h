@@ -287,6 +287,56 @@ public:
 	GrapaLibraryEvent* HandleWidgetAppend(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleWidgetPost(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleWidgetClear(GrapaCHAR& pName);
+	
+	/* Template-based Database Management */
+	GrapaLibraryEvent* HandleDatabaseCreate(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDatabaseOpen(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDatabaseClose(GrapaCHAR& pName);
+	
+	/* Template-based Table Management */
+	GrapaLibraryEvent* HandleDatabaseCreateTable(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDatabaseOpenTable(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDatabaseDeleteTable(GrapaCHAR& pName);
+	
+	/* Template-based Field Management */
+	GrapaLibraryEvent* HandleDatabaseAddField(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDatabaseRemoveField(GrapaCHAR& pName);
+	
+	/* Template-based Record Management */
+	GrapaLibraryEvent* HandleDatabaseCreateRecord(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDatabaseDeleteRecord(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDatabaseUpdateRecord(GrapaCHAR& pName);
+	
+	/* Template-based Search and Debug */
+	GrapaLibraryEvent* HandleDatabaseSearch(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDatabaseDebug(GrapaCHAR& pName);
+	
+	/* Enhanced LocalDatabase Management */
+	GrapaLibraryEvent* HandleUnifiedCreate(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedCd(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedLs(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedPwd(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedMk(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedRm(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedSet(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedGet(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedMkfield(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedRmfield(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedGetType(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedGetInfo(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedSwitchType(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedCompare(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedDebug(GrapaCHAR& pName);
+	
+	/* Index Management Functions */
+	GrapaLibraryEvent* HandleUnifiedCreateIndex(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedRemoveIndex(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedListIndexes(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedRefreshIndex(GrapaCHAR& pName);
+	
+	/* Output formatting handlers */
+	GrapaLibraryEvent* HandleFormatTable(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleFormatSimple(GrapaCHAR& pName);
 };
 
 #endif //_GrapaLibRule_

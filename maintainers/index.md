@@ -31,6 +31,28 @@ This section documents the organization and purpose of the `maintainers/` direct
 
 ---
 
+## 🚨 **NEW AGENT ONBOARDING**
+
+**If you are a new AI agent taking over this project:**
+
+### **Start Here**:
+1. **Read [`DEVELOPMENT/CURRENT_STATUS.md`](DEVELOPMENT/CURRENT_STATUS.md) FIRST** - Contains complete current state and agent onboarding
+2. **Review [`IMPLEMENTATION/GRAPA_DB2_FORMULA_FIELDS.md`](IMPLEMENTATION/GRAPA_DB2_FORMULA_FIELDS.md)** - Formula system design
+3. **Review [`IMPLEMENTATION/GRAPA_ENDIAN_SAFETY.md`](IMPLEMENTATION/GRAPA_ENDIAN_SAFETY.md)** - Cross-platform compatibility
+
+### **Critical Rules**:
+- **NO printf calls** in dump functions - use `mDumpFile->Append()` and `pNameSpace->GetResponse()->Send()`
+- **Follow GrapaDB patterns exactly** for consistency
+- **All output must go through Send/Response system** for distributed architecture
+- **Maintain endian safety** across all platforms
+
+### **Current Status**:
+- ✅ Step 1: BTree Integration (COMPLETED)
+- ✅ Step 2: Enhanced Dump System (COMPLETED)  
+- 📋 Step 3: Formula Execution Enhancement (NEXT)
+
+---
+
 Welcome to the maintainers section. This area contains all documentation relevant to building, maintaining, and extending Grapa. **General users do not need these files.**
 
 ## Quick Navigation

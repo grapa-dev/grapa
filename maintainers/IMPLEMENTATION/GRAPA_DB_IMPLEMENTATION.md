@@ -345,35 +345,201 @@ GrapaDB organizes all persistent data using BTrees, leveraging them for both rec
 
 ---
 
+## Performance Architecture
+
+### Caching System
+- **GrapaFileCache**: Multi-level caching with LRU eviction
+  - Configurable cache sizes (`DEFAULT_SIZE=(1024*8*4)`)
+  - Block-based caching (`BLOCKSIZE=32`, `BLOCKSPERPAGE=8`)
+  - Thread-safe cache management
+- **Block-based Caching**: Configurable cache sizes and block management
+- **Thread-safe Caching**: Concurrent access support with proper synchronization
+
+### Compression and Encryption
+- **ZIP Compression**: Built-in compression for data storage (`ENCODE_ZIP`)
+- **AES Encryption**: Optional encryption for sensitive data (`ENCODE_AES`)
+- **Compression Size**: Configurable compression block sizes
+- **Combined Encoding**: Support for both compression and encryption simultaneously
+
+### Optimization Framework
+- **Constant Folding**: Pre-compute constant expressions during compilation
+- **Structure Flattening**: Combine nested structures when possible
+- **Pattern Caching**: Cache compiled patterns and expressions for reuse
+- **Background Computation**: Compute expensive operations in background threads
+
+### Performance Optimization Details
+- **Index Compilation Caching**: Compiled patterns cached for reuse
+- **PCRE2 JIT Compilation**: Just-In-Time compilation for fast pattern matching
+- **Fast Path Expansions**: Optimized paths for simple literal, word, and digit patterns
+- **LRU Cache Management**: Thread-safe LRU cache for text normalization
+
+---
+
+## Storage Architecture
+
+### Data Types and Storage Methods
+- **BYTE_DATA**: Contiguous data storage for small/fixed data
+  - Single data block per value
+  - Direct storage without fragmentation
+  - Suitable for most small-to-medium values
+- **FREC_DATA**: Fragmented data storage with weighted BTree
+  - Uses weighted BTree for efficient fragment management
+  - Supports very large data items by breaking into manageable pieces
+  - Enables O(log n) access, insert, and delete operations for large data
+  - Inspired by file system page-linking for efficient handling of sparse data
+
+### Storage Types
+- **STORE_FIX**: Fixed-size storage for predictable data sizes
+- **STORE_VAR**: Variable-size storage for dynamic data
+- **STORE_PAR**: Partial storage for large data requiring incremental updates
+
+### Data Block Management
+- **Dynamic Allocation**: Allocate storage with configurable growth parameters
+- **Fragmentation Handling**: Efficient handling of large/fragmented data
+- **Automatic Cleanup**: Clean up orphaned data blocks automatically
+- **Weight-based Navigation**: Use weights for efficient fragment location in FREC_DATA
+
+### Column Store Optimization
+- **Fragmented Data Storage**: Uses FREC_DATA for efficient handling of sparse data
+- **Column-Oriented**: Each field stored as separate column
+- **Dynamic Growth**: Columns grow incrementally as new records added
+- **Sparse Data Support**: Only stores data where it actually exists
+
+---
+
+## Transaction Safety and Consistency
+
+### Dirty Bit Management
+- **SetTreeDirty/GetTreeDirty**: Track transaction state across tree operations
+- **Atomic Operations**: Multi-step operations with rollback capability
+- **Consistency Guarantees**: Maintain data integrity during complex operations
+
+### Index Synchronization
+- **Automatic Updates**: Indexes automatically updated when records change
+- **Pointer Validation**: `PtrToRec` ensures pointer validity before dereferencing
+- **Transaction Wrapping**: Index operations wrapped in atomic transactions
+- **Rollback Capability**: Support for transaction rollback on failure
+
+### Field Change Propagation
+- **Index Dependency Checks**: Validate field usage before deletion
+- **Data Migration**: Sophisticated handling of schema changes across all table types
+- **Atomic Field Operations**: Field changes are atomic across the entire table
+- **Consistency Maintenance**: Ensure all indexes remain consistent during field changes
+
+### Implementation Details
+```cpp
+// Example: Dirty bit management during field operations
+indexCursor.Set(pTable.mRecRef);
+err = SetTreeDirty(indexCursor, true);  // Mark as dirty during operation
+
+// Perform field operations...
+
+indexCursor.Set(pTable.mRecRef);
+err = SetTreeDirty(indexCursor, false); // Clear dirty bit after completion
+```
+
+---
+
+## Thread Safety and Concurrency
+
+### Built-in Thread Safety
+- **Internal Synchronization**: All variable and data structure updates internally synchronized at C++ level
+- **No Crashes**: Never encounter crashes or corruption from concurrent access
+- **Logical Race Conditions**: May see logical race conditions (unexpected values, overwrites) but no stability issues
+- **Design Consideration**: Minimize shared mutable state between threads unless intentional
+
+### Lock Objects
+- **`$thread()` Objects**: Only `$thread()` objects provide explicit locking via `lock()`, `unlock()`, and `trylock()`
+- **Resource Protection**: Use `$thread()` lock objects to guard access to shared resources
+- **Error Prevention**: Calling `.lock()` or `.unlock()` on regular variables returns an error
+
+### Cache Thread Safety
+- **Thread-safe Caching**: All caching mechanisms are thread-safe
+- **Concurrent Access**: Multiple threads can safely access cached data
+- **LRU Cache Management**: Thread-safe LRU cache for text normalization and pattern compilation
+
+### Best Practices for Parallelism
+- **Prefer Value Passing**: Pass data by value or use thread-local variables
+- **Minimize Shared State**: Minimize shared mutable state between threads
+- **Use Lock Objects**: If sharing is necessary, use `$thread()` lock objects to guard access
+- **Design for Concurrency**: Design applications with thread safety in mind from the start
+
+---
+
+## Debugging and Forensics
+
+### Comprehensive Dump System
+- **DumpFile**: Dump entire database structure for debugging
+- **DumpTree**: Dump specific tree structures with detailed information
+- **Structure Visualization**: Visual representation of BTree structure and relationships
+- **Debug Output**: Detailed debug information for troubleshooting
+
+### Manual File Traversal
+- **Low-level Analysis**: Tools for inspecting individual blocks and nodes
+- **File Structure Analysis**: Manual traversal of BTree file structure
+- **Block-level Debugging**: Ability to inspect individual blocks and nodes
+- **Forensic Capabilities**: Tools for data recovery and corruption analysis
+
+### Debug Information Available
+- **Tree Structure**: Complete tree hierarchy and relationships
+- **Data Distribution**: Information about data distribution and storage efficiency
+- **Index Information**: Details about index structure and performance
+- **Storage Statistics**: Information about storage usage and efficiency
+
+### Debugging Examples
+```cpp
+// Dump entire database structure
+GrapaFile dumpFile;
+dumpFile.Create("debug_dump.txt");
+db.DumpFile(&dumpFile);
+
+// Dump specific tree
+db.DumpTree(treeRef, &dumpFile);
+```
+
+---
+
 ## Known Issues and Limitations
 
 ### CompareSearchKey Field Comparison
-- **Issue:** Uses `strcmp` for all field comparisons
-- **Impact:** Incorrect results for numeric, date, and other non-string types
-- **Priority:** High — affects query correctness
-- **Solution:** Refactor to use `DoComparison` for type-aware comparisons
+- **Issue**: Uses `strcmp` for all field comparisons
+- **Impact**: Incorrect results for numeric, date, and other non-string types
+- **Priority**: High — affects query correctness
+- **Solution**: Refactor to use `DoComparison` for type-aware comparisons
 
 ### Index Consistency
-- **Issue:** Complex scenarios may lead to index inconsistencies
-- **Impact:** Incorrect search results or data corruption
-- **Priority:** High — affects data integrity
-- **Solution:** Implement index validation and repair mechanisms
+- **Issue**: Complex scenarios may lead to index inconsistencies
+- **Impact**: Incorrect search results or data corruption
+- **Priority**: High — affects data integrity
+- **Solution**: Implement index validation and repair mechanisms
+
+### File Fragmentation Limitation
+- **Issue**: File size may not reduce even when all data is deleted
+- **Root Cause**: Hole management system limitations with end-of-file blocks
+- **Impact**: Storage waste when files are frequently created and deleted
+- **Current Status**: No built-in defragmentation or file transfer utilities
+- **Workaround**: Manual file recreation or external file system tools
+- **Future Enhancement**: Implement `DefragmentFile()` and `TransferToNewFile()` utilities
 
 ### Pointer Dereferencing Performance
-- **Issue:** Each index lookup requires pointer dereferencing
-- **Impact:** Performance overhead for complex queries
-- **Priority:** Medium — affects query performance
-- **Solution:** Consider caching strategies for frequently accessed records
+- **Issue**: Each index lookup requires pointer dereferencing overhead
+- **Impact**: Performance overhead for complex queries
+- **Priority**: Medium — affects query performance
+- **Solution**: Consider caching strategies for frequently accessed records
 
-### Open Issues
-- **ROW and COL Table Index Corruption:**
-  - There is a known issue where index entries may become corrupted after field updates, affecting both ROW and COL tables.
-  - For full investigation details, root cause analysis, and debugging history, see:
-    - [archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) (archived, closed investigation)
-- **CompareSearchKey Field Comparison:**
-  - Uses `strcmp` for all field comparisons; see investigation doc for impact and future work.
-- **Index Consistency:**
-  - Complex scenarios may lead to index inconsistencies; see investigation doc for details.
+### ROW Table Index Corruption (Historical)
+- **Issue**: Historical bug where index entries became corrupted after field updates
+- **Status**: Investigation completed, root cause identified
+- **Impact**: Affected both ROW and COL tables
+- **Resolution**: Fixes implemented, but monitoring recommended
+- **Documentation**: Full investigation details in `ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`
+
+### Open Issues for Future Work
+- **Type-Aware Comparisons**: Implement proper type-aware field comparisons
+- **Index Validation**: Add automatic index validation and repair mechanisms
+- **Defragmentation**: Implement file defragmentation utilities
+- **Performance Monitoring**: Add performance monitoring and optimization tools
+- **Advanced Caching**: Implement more sophisticated caching strategies
 
 ---
 

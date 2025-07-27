@@ -1,0 +1,34 @@
+"================================================================================\n".echo();
+"Testing GrapaDB2 Basic Infrastructure\n".echo();
+"================================================================================\n".echo();
+
+"Test 1: Create GrapaDB2 database\n".echo();
+"Expected: Should not crash, should return success\n".echo();
+fdata = $file().table("ROW");
+"Result: Database creation " + (fdata ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 2: Create table in GrapaDB2\n".echo();
+"Expected: Should not crash, should return success\n".echo();
+err = fdata.mkfield("name", "STR", "VAR");
+"Result: Field creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 3: Try to set data\n".echo();
+"Expected: Should not crash, may not store data yet\n".echo();
+err = fdata.set("user1", "Alice", "name");
+"Result: Data set " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 4: Try to get data\n".echo();
+"Expected: Should not crash, may return empty or error\n".echo();
+value = fdata.get("user1", "name");
+"Result: Data get " + (value ? "SUCCESS" : "FAILED").str() + " - Value: " + value.str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 5: Debug dump\n".echo();
+"Expected: Should show database structure (may be empty)\n".echo();
+fdata.debug();
+
+"================================================================================\n".echo();
+"Basic Infrastructure Test Complete\n".echo(); 

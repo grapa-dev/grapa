@@ -1,0 +1,32 @@
+/* Enhanced LocalDatabase class that extends the existing pattern */
+@global["$unified"]
+    = class ($OBJ) {
+    /* Constructor - uses existing LocalDatabase pattern */
+    create = @<[op,@<"unified_create",{this,@<var,{storageUrl}>}>],{storageUrl}>;
+    
+    /* Enhanced navigation that spans storage types (extends existing .cd()) */
+    cd = @<[op,@<"unified_cd",{this,@<var,{path}>}>],{path}>;
+    ls = @<[op,@<"unified_ls",{this,@<var,{path}>}>],{path}>;
+    pwd = @<"unified_pwd",{@<this>}>;
+    
+    /* Enhanced operations that work across storage types */
+    mk = @<[op,@<"unified_mk",{this,@<var,{name}>,@<var,{type}>}>],{name,type}>;
+    rm = @<[op,@<"unified_rm",{this,@<var,{name}>}>],{name}>;
+    set = @<[op,@<"unified_set",{this,@<var,{name}>,@<var,{value}>,@<var,{field}>}>],{name,value,field}>;
+    get = @<[op,@<"unified_get",{this,@<var,{name}>,@<var,{field}>}>],{name,field}>;
+    
+    /* Database-specific operations (when storage type supports it) */
+    mkfield = @<[op,@<"unified_mkfield",{this,@<var,{name}>,@<var,{fieldType}>,@<var,{storeType}>,@<var,{size}>,@<var,{grow}>}>],{name,fieldType,storeType,size,grow}>;
+    rmfield = @<[op,@<"unified_rmfield",{this,@<var,{name}>}>],{name}>;
+    
+    /* Storage type information and management */
+    getType = @<"unified_get_type",{@<this>}>;
+    getInfo = @<"unified_get_info",{@<this>}>;
+    switchType = @<[op,@<"unified_switch_type",{this,@<var,{newType}>}>],{newType}>;
+    
+    /* Performance comparison */
+    compare = @<[op,@<"unified_compare",{this,@<var,{operation}>,@<var,{params}>}>],{operation,params}>;
+    
+    /* Debug operations */
+    debug = @<[op,@<"unified_debug",{this,@<var,{options}>}>],{options}>;
+    }; 

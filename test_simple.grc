@@ -1,0 +1,19 @@
+/* Simple test to verify Grapa is working */
+"Hello from Grapa!\n".echo();
+"Testing basic functionality...\n".echo();
+
+/* Test if $unified can be instantiated */
+"Testing $unified instantiation...\n".echo();
+u = $unified("file:///tmp/test")
+"Created $unified object: ".echo();
+u.echo();
+"\n".echo();
+
+/* Test if $file can be instantiated */
+"Testing $file instantiation...\n".echo();
+f = $file()
+"Created $file object: ".echo();
+f.echo();
+"\n".echo();
+
+"Test completed!\n".echo(); 

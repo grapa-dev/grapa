@@ -1,0 +1,28 @@
+/* Basic Automatic Locking Test */
+
+"=== BASIC LOCKING TEST ===\n".echo();
+
+/* Create shared counter */
+counter = 0;
+
+/* Simple thread that increments counter */
+thread_func = @<[op,@<code,{
+    i = 0;
+    while (i < 100) {
+        counter = counter + 1;
+        i = i + 1;
+    }
+}>],{}>;
+
+/* Launch thread */
+thread = thread_func();
+thread.wait();
+
+/* Check result */
+"Final counter: " + counter + "\n".echo();
+
+if (counter == 100) {
+    "✓ Basic locking test passed\n".echo();
+} else {
+    "✗ Basic locking test failed\n".echo();
+} 

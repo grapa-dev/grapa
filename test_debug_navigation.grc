@@ -1,0 +1,24 @@
+/* Debug navigation test */
+
+/* Create unified storage object */
+db2 = $unified();
+
+/* Create GrapaDB2 database */
+result = db2.create("grapadb2://testdb2");
+
+/* Create field */
+result = db2.mk("$VALUE", "STR");
+"mk result: ".echo();
+result.echo();
+
+/* Set value */
+result = db2.set("test", "test_value", "$VALUE");
+"set result: ".echo();
+result.echo();
+
+/* Get value */
+result = db2.get("test", "$VALUE");
+"get result: ".echo();
+result.echo();
+
+"Test complete".echo(); 

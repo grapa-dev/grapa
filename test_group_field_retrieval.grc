@@ -1,0 +1,77 @@
+/* Test GROUP Database Field Retrieval */
+/* This test verifies that GROUP database field retrieval works properly */
+
+"=== Testing GROUP Database Field Retrieval ===\n".echo();
+
+/* Create a GROUP database */
+group_db = $file().table("GROUP");
+"✓ GROUP database created\n".echo();
+
+/* Create nested databases within the group */
+group_db.mk("users", "ROW");
+group_db.mk("analytics", "COL");
+group_db.mk("config", "GROUP");
+"✓ Nested databases created\n".echo();
+
+/* Navigate to users database */
+users_db = group_db.cd("users");
+"✓ Navigated to users database\n".echo();
+
+/* Create fields in users database */
+users_db.mkfield("id", "INT", "FIX", 4);
+users_db.mkfield("name", "STR", "VAR");
+users_db.mkfield("role", "STR", "VAR");
+"✓ Users fields created\n".echo();
+
+/* Insert user data in nested database */
+users_db.set("admin1", 1, "id");
+users_db.set("admin1", "Admin User", "name");
+users_db.set("admin1", "administrator", "role");
+"✓ Admin user inserted in nested database\n".echo();
+
+/* Test field retrieval from nested database */
+admin_name = users_db.get("admin1", "name");
+("✓ Retrieved from nested users DB: " + admin_name.str() + "\n").echo();
+
+/* Navigate back to root and test root-level operations */
+group_db.cd("..");
+"✓ Navigated back to root\n".echo();
+
+/* Test root-level field operations */
+group_db.set("root_config", "root_value", "$VALUE");
+root_value = group_db.get("root_config", "$VALUE");
+("✓ Retrieved from root level: " + root_value.str() + "\n").echo();
+
+/* List contents to verify structure */
+group_contents = group_db.ls();
+("✓ GROUP contents: " + group_contents.len().str() + " items\n").echo();
+
+/* Test navigation to analytics database */
+analytics_db = group_db.cd("analytics");
+"✓ Navigated to analytics database\n".echo();
+
+/* Create fields in analytics database */
+analytics_db.mkfield("metric", "STR", "VAR");
+analytics_db.mkfield("value", "FLT", "FIX", 8);
+"✓ Analytics fields created\n".echo();
+
+/* Insert analytics data */
+analytics_db.set("metric1", "system_uptime", "metric");
+analytics_db.set("metric1", 99.95, "value");
+"✓ Analytics data inserted\n".echo();
+
+/* Test analytics field retrieval */
+metric_name = analytics_db.get("metric1", "metric");
+("✓ Retrieved metric name: " + metric_name.str() + "\n").echo();
+
+/* Navigate to config database */
+config_db = group_db.cd("config");
+"✓ Navigated to config database\n".echo();
+
+/* Test nested GROUP operations */
+config_db.set("app_version", "1.0.0", "$VALUE");
+version = config_db.get("app_version", "$VALUE");
+("✓ Retrieved config value: " + version.str() + "\n").echo();
+
+"=== GROUP Database Field Retrieval Test Complete ===\n".echo();
+"✓ All field retrieval operations completed successfully\n".echo(); 

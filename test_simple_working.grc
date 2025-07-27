@@ -1,0 +1,17 @@
+/* Simple working test following the comprehensive test pattern */
+
+/* Create a GROUP database */
+db = $file().table("GROUP");
+
+/* Create a field first */
+db.mkfield("name", "STR", "VAR");
+
+/* Set a value */
+db.set("test", "test_value", "name");
+
+/* Get the value */
+result = db.get("test", "name");
+"Result: ".echo();
+result.echo();
+
+"Test complete".echo(); 

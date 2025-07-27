@@ -1,0 +1,33 @@
+/* Test GrapaDB2 Dump System */
+"=== Testing GrapaDB2 Dump System ===".echo();
+
+/* Create a simple GROUP database */
+group_db = $file().table("GROUP");
+"✓ Created GROUP database".echo();
+
+/* Add some data records directly to the GROUP */
+group_db.set("app_name", "DumpTestApp");
+group_db.set("version", "1.0.0");
+group_db.set("status", "testing");
+"✓ Added data records to GROUP".echo();
+
+/* Create a nested structure */
+group_db.mk("users", "ROW");
+group_db.mk("config", "GROUP");
+"✓ Created nested databases".echo();
+
+/* Navigate to config and add more data */
+config_db = group_db.cd("config");
+config_db.set("debug", true);
+config_db.set("log_level", "INFO");
+"✓ Added data to nested config GROUP".echo();
+
+/* Navigate back to root */
+group_db.cd("..");
+"✓ Back to root".echo();
+
+/* Test the dump system */
+"=== Dumping GROUP Database Structure ===".echo();
+group_db.dump();
+
+"=== Dump System Test Complete ===".echo(); 

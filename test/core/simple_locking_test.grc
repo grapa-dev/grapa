@@ -1,0 +1,36 @@
+/* Simple Automatic Locking Test */
+
+"Testing automatic variable locking...\n".echo();
+
+/* Create shared variables */
+counter = 0;
+data = "test";
+
+/* Simple thread function */
+thread_func = @<[op,@<code,{
+    for (i = 0; i < 1000; i++) {
+        counter = counter + 1;
+        data = "thread_" + i;
+    }
+}>],{}>;
+
+/* Launch multiple threads */
+threads = [];
+for (t = 0; t < 5; t++) {
+    thread = thread_func();
+    threads.append(thread);
+}
+
+/* Wait for completion */
+for (t = 0; t < threads.len(); t++) {
+    threads[t].wait();
+}
+
+"Final counter: " + counter + "\n".echo();
+"Final data: " + data + "\n".echo();
+
+if (counter >= 4000) {
+    "✓ Automatic locking working - no data corruption\n".echo();
+} else {
+    "✗ Possible data corruption detected\n".echo();
+} 

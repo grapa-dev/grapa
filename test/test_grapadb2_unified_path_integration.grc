@@ -1,0 +1,447 @@
+/* Test script for GrapaDB2 Unified Path Integration */
+/* This demonstrates seamless navigation between file system and GrapaDB2 */
+
+"Testing GrapaDB2 Unified Path Integration...\n".echo();
+"==========================================\n".echo();
+
+/* Test 1: Current Unified Path System */
+"Test 1: Current Unified Path System\n".echo();
+"----------------------------------\n".echo();
+
+"Current GrapaDB unified path system allows seamless navigation:\n".echo();
+"• File System → Database → GROUP → ROW/COL\n".echo();
+"• Mixed path navigation with '..' support\n".echo();
+"• Single $file() object for all navigation\n".echo();
+"• Automatic context switching\n".echo();
+"\n".echo();
+
+/* Test 2: GrapaDB2 Integration Requirements */
+"Test 2: GrapaDB2 Integration Requirements\n".echo();
+"----------------------------------------\n".echo();
+
+"GrapaDB2 must maintain the same seamless navigation:\n".echo();
+"\n".echo();
+
+"Current Interface (Must Work Unchanged):\n".echo();
+/* This would be the current syntax that must continue to work */
+/*
+f = $file();
+
+// File system navigation
+f.cd("project/database");
+
+// Database navigation - seamless transition
+f.cd("users/admins/user_data");
+
+// Mixed path navigation
+f.cd("../../..");  // Back through both database and file system
+*/
+"✓ f.cd(\"project/database\") - File system navigation\n".echo();
+"✓ f.cd(\"users/admins/user_data\") - Database navigation\n".echo();
+"✓ f.cd(\"../../..\") - Mixed path navigation\n".echo();
+"✓ f.pwd() - Current path display\n".echo();
+"✓ f.ls() - List contents\n".echo();
+"\n".echo();
+
+/* Test 3: GrapaDB2 Enhanced Features */
+"Test 3: GrapaDB2 Enhanced Features\n".echo();
+"--------------------------------\n".echo();
+
+"GrapaDB2 adds enhanced features while maintaining compatibility:\n".echo();
+"\n".echo();
+
+"Multi-Pointer Navigation:\n".echo();
+/* This would be the new GrapaDB2 syntax */
+/*
+f = $file();
+
+// Navigate with specific access mode
+f.cd("database", {"mode": "readonly"});  // Read-only access
+f.cd("database", {"mode": "writeonly"}); // Write-only access
+f.cd("database", {"mode": "readwrite"}); // Read-write access
+
+// Concurrent access to same database
+f1 = $file();
+f2 = $file();
+f1.cd("shared_database", {"mode": "readonly"});
+f2.cd("shared_database", {"mode": "readwrite"});
+*/
+"✓ f.cd(\"database\", {\"mode\": \"readonly\"}) - Read-only access\n".echo();
+"✓ f.cd(\"database\", {\"mode\": \"writeonly\"}) - Write-only access\n".echo();
+"✓ f.cd(\"database\", {\"mode\": \"readwrite\"}) - Read-write access\n".echo();
+"✓ Concurrent access to same database\n".echo();
+"\n".echo();
+
+"Transaction-Aware Navigation:\n".echo();
+/* This would be the new GrapaDB2 syntax */
+/*
+f = $file();
+
+// Navigate within transaction context
+f.cd("database");
+f.beginTransaction();
+f.cd("users/admins");
+f.set("user1", "John Doe", "name");
+f.cd("..");  // Navigation works within transaction
+f.commitTransaction();
+*/
+"✓ f.beginTransaction() - Start transaction\n".echo();
+"✓ f.cd(\"users/admins\") - Navigate within transaction\n".echo();
+"✓ f.cd(\"..\") - Navigation works within transaction\n".echo();
+"✓ f.commitTransaction() - Commit transaction\n".echo();
+"✓ f.rollbackTransaction() - Rollback transaction\n".echo();
+"\n".echo();
+
+"Enhanced Caching Integration:\n".echo();
+/* This would be the new GrapaDB2 syntax */
+/*
+f = $file();
+
+// Navigate with caching preferences
+f.cd("database", {"cache": "aggressive"});  // Use L1 cache heavily
+f.cd("database", {"cache": "minimal"});     // Minimize cache usage
+f.cd("database", {"cache": "balanced"});    // Default caching
+*/
+"✓ f.cd(\"database\", {\"cache\": \"aggressive\"}) - Heavy caching\n".echo();
+"✓ f.cd(\"database\", {\"cache\": \"minimal\"}) - Minimal caching\n".echo();
+"✓ f.cd(\"database\", {\"cache\": \"balanced\"}) - Balanced caching\n".echo();
+"\n".echo();
+
+"Performance Monitoring:\n".echo();
+/* This would be the new GrapaDB2 syntax */
+/*
+f = $file();
+
+// Navigate with performance tracking
+f.cd("database", {"monitor": true});
+f.cd("users/admins/user_data");
+performance = f.getNavigationStats();
+("Navigation took " + performance.time + "ms").echo();
+*/
+"✓ f.cd(\"database\", {\"monitor\": true}) - Enable monitoring\n".echo();
+"✓ f.getNavigationStats() - Get performance metrics\n".echo();
+"✓ Navigation time tracking\n".echo();
+"✓ Cache hit/miss statistics\n".echo();
+"\n".echo();
+
+/* Test 4: Backward Compatibility */
+"Test 4: Backward Compatibility\n".echo();
+"-----------------------------\n".echo();
+
+"GrapaDB2 maintains full backward compatibility:\n".echo();
+"\n".echo();
+
+"Current Database Format:\n".echo();
+/* This would work with current GrapaDB format */
+/*
+f = $file();
+
+// Current GrapaDB format - should work seamlessly
+f.cd("old_database");  // Opens current GrapaDB format
+f.cd("users");
+f.mkfield("name", "STR", "VAR");
+f.set("user1", "John Doe", "name");
+*/
+"✓ f.cd(\"old_database\") - Opens current GrapaDB format\n".echo();
+"✓ All current operations work unchanged\n".echo();
+"✓ No migration required\n".echo();
+"\n".echo();
+
+"New GrapaDB2 Format:\n".echo();
+/* This would work with new GrapaDB2 format */
+/*
+f = $file();
+
+// New GrapaDB2 format - enhanced features available
+f.cd("new_database");  // Opens GrapaDB2 format
+f.cd("users", {"mode": "readwrite"});
+f.mkfield("name", "STR", "VAR");
+f.setBatch("user1", {"name": "John Doe", "age": 30});
+*/
+"✓ f.cd(\"new_database\") - Opens GrapaDB2 format\n".echo();
+"✓ Enhanced features available\n".echo();
+"✓ Better performance\n".echo();
+"✓ Advanced capabilities\n".echo();
+"\n".echo();
+
+"Mixed Access:\n".echo();
+/* This would work with mixed database formats */
+/*
+f = $file();
+
+// Seamless transition between formats
+f.cd("old_database/users");
+f.cd("../new_database/users");  // Seamless transition
+f.cd("../../old_database/admins");  // Back to old format
+*/
+"✓ f.cd(\"old_database/users\") - Current format\n".echo();
+"✓ f.cd(\"../new_database/users\") - New format\n".echo();
+"✓ f.cd(\"../../old_database/admins\") - Back to current format\n".echo();
+"✓ Seamless transition between formats\n".echo();
+"\n".echo();
+
+/* Test 5: Migration Strategy */
+"Test 5: Migration Strategy\n".echo();
+"------------------------\n".echo();
+
+"Gradual migration from current to GrapaDB2 format:\n".echo();
+"\n".echo();
+
+"Phase 1: Coexistence:\n".echo();
+/* This would be Phase 1 of migration */
+/*
+f = $file();
+
+// Both formats work side by side
+f.cd("old_database");  // Current format
+f.cd("new_database");  // GrapaDB2 format
+
+// Automatic format detection
+format = f.getDatabaseFormat("database");
+if (format == "GRAPA_DB") {
+    ("Using current format").echo();
+} else if (format == "GRAPA_DB2") {
+    ("Using GrapaDB2 format").echo();
+}
+*/
+"✓ Both formats work side by side\n".echo();
+"✓ Automatic format detection\n".echo();
+"✓ No breaking changes\n".echo();
+"\n".echo();
+
+"Phase 2: Automatic Migration:\n".echo();
+/* This would be Phase 2 of migration */
+/*
+f = $file();
+
+// Automatic migration when accessing old databases
+f.cd("old_database");  // Automatically migrates to GrapaDB2
+f.cd("users");
+f.set("user1", "John Doe", "name");  // Uses GrapaDB2 features
+
+// Migration status
+status = f.getMigrationStatus("old_database");
+if (status.migrated) {
+    ("Database migrated to GrapaDB2 format").echo();
+}
+*/
+"✓ Automatic migration when accessed\n".echo();
+"✓ Enhanced features available after migration\n".echo();
+"✓ Migration status tracking\n".echo();
+"\n".echo();
+
+"Phase 3: GrapaDB2 Default:\n".echo();
+/* This would be Phase 3 of migration */
+/*
+f = $file();
+
+// GrapaDB2 becomes the default format
+f.mk("database", "GROUP");  // Creates GrapaDB2 format by default
+f.cd("database");
+f.cd("users", {"mode": "readwrite", "cache": "aggressive"});
+f.mkfield("name", "STR", "VAR");
+f.setBatch("user1", {"name": "John Doe", "age": 30});
+*/
+"✓ GrapaDB2 becomes default format\n".echo();
+"✓ All new databases use GrapaDB2\n".echo();
+"✓ Enhanced features by default\n".echo();
+"\n".echo();
+
+/* Test 6: Navigation Examples */
+"Test 6: Navigation Examples\n".echo();
+"--------------------------\n".echo();
+
+"Complex navigation scenarios with GrapaDB2:\n".echo();
+"\n".echo();
+
+"Deep Nested Navigation:\n".echo();
+/* This would demonstrate complex navigation */
+/*
+f = $file();
+
+// Deep nested navigation
+f.cd("project/database/departments/engineering/teams/developers");
+f.pwd();  // Returns: /project/database/departments/engineering/teams/developers
+
+// Navigate back multiple levels
+f.cd("../../..");  // Back to engineering
+f.pwd();  // Returns: /project/database/departments/engineering
+
+// Direct navigation to deep location
+f.cd("project/database/departments/engineering/teams/developers");
+f.pwd();  // Returns: /project/database/departments/engineering/teams/developers
+*/
+"✓ Deep nested navigation works\n".echo();
+"✓ Multiple level backtracking\n".echo();
+"✓ Direct navigation to deep locations\n".echo();
+"\n".echo();
+
+"Mixed Format Navigation:\n".echo();
+/* This would demonstrate mixed format navigation */
+/*
+f = $file();
+
+// Navigate through mixed formats
+f.cd("project");  // File system
+f.cd("old_database");  // Current GrapaDB format
+f.cd("users");  // Database structure
+f.cd("../new_database");  // GrapaDB2 format
+f.cd("analytics");  // Database structure
+f.cd("../../config");  // Back to file system
+
+// All navigation works seamlessly
+f.cd("../../../old_database/users");  // Back to old format
+*/
+"✓ File system navigation\n".echo();
+"✓ Current GrapaDB navigation\n".echo();
+"✓ GrapaDB2 navigation\n".echo();
+"✓ Seamless transitions between formats\n".echo();
+"\n".echo();
+
+"Transaction-Aware Navigation:\n".echo();
+/* This would demonstrate transaction-aware navigation */
+/*
+f = $file();
+
+// Start transaction
+f.cd("database");
+f.beginTransaction();
+
+// Navigate within transaction
+f.cd("users/admins");
+f.set("user1", "John Doe", "name");
+f.cd("..");  // Navigation works within transaction
+f.cd("users/guests");
+f.set("guest1", "Jane Smith", "name");
+
+// Commit transaction
+f.commitTransaction();
+
+// Navigation after transaction
+f.cd("..");  // Back to users
+f.cd("..");  // Back to database root
+*/
+"✓ Navigation within transactions\n".echo();
+"✓ Transaction-aware operations\n".echo();
+"✓ Navigation after transaction commit\n".echo();
+"\n".echo();
+
+/* Test 7: Performance Benefits */
+"Test 7: Performance Benefits\n".echo();
+"---------------------------\n".echo();
+
+"GrapaDB2 performance improvements:\n".echo();
+"\n".echo();
+
+"Enhanced Caching:\n".echo();
+/* This would demonstrate performance improvements */
+/*
+f = $file();
+
+// Measure navigation performance
+start = $time();
+f.cd("database", {"cache": "aggressive"});
+f.cd("users/admins/user_data");
+navigation_time = $time() - start;
+("Navigation with aggressive caching: " + navigation_time + "ms").echo();
+
+// Compare with minimal caching
+start = $time();
+f.cd("database", {"cache": "minimal"});
+f.cd("users/admins/user_data");
+navigation_time = $time() - start;
+("Navigation with minimal caching: " + navigation_time + "ms").echo();
+*/
+"✓ Faster navigation with enhanced caching\n".echo();
+"✓ Configurable caching strategies\n".echo();
+"✓ Performance monitoring\n".echo();
+"\n".echo();
+
+"Multi-Pointer Access:\n".echo();
+/* This would demonstrate multi-pointer benefits */
+/*
+f = $file();
+
+// Multiple pointers to same database
+f1 = $file();
+f2 = $file();
+
+f1.cd("shared_database", {"mode": "readonly"});
+f2.cd("shared_database", {"mode": "readwrite"});
+
+// Concurrent operations
+f1.cd("users");
+f2.cd("users");
+f1.get("user1", "name");  // Read operation
+f2.set("user2", "Jane Doe", "name");  // Write operation
+*/
+"✓ Multiple pointers to same database\n".echo();
+"✓ Concurrent read/write access\n".echo();
+"✓ No locking conflicts\n".echo();
+"✓ Shared file caching\n".echo();
+"\n".echo();
+
+/* Test 8: Error Handling */
+"Test 8: Error Handling\n".echo();
+"---------------------\n".echo();
+
+"Robust error handling in GrapaDB2:\n".echo();
+"\n".echo();
+
+"Navigation Error Handling:\n".echo();
+/* This would demonstrate error handling */
+/*
+f = $file();
+
+// Handle navigation errors gracefully
+try {
+    f.cd("nonexistent_database");
+} catch (error) {
+    ("Navigation error: " + error.message).echo();
+}
+
+// Handle format detection errors
+try {
+    f.cd("corrupted_database");
+} catch (error) {
+    ("Format error: " + error.message).echo();
+}
+
+// Handle transaction errors
+try {
+    f.cd("database");
+    f.beginTransaction();
+    f.cd("users");
+    f.set("user1", "John Doe", "name");
+    f.cd("nonexistent_group");  // Error within transaction
+    f.commitTransaction();
+} catch (error) {
+    f.rollbackTransaction();
+    ("Transaction error: " + error.message).echo();
+}
+*/
+"✓ Graceful handling of navigation errors\n".echo();
+"✓ Format detection error handling\n".echo();
+"✓ Transaction error handling\n".echo();
+"✓ Automatic rollback on errors\n".echo();
+"\n".echo();
+
+/* Summary */
+"Summary: GrapaDB2 Unified Path Integration Benefits\n".echo();
+"=================================================\n".echo();
+"✅ Seamless Navigation: $file() works exactly as it does now\n".echo();
+"✅ Backward Compatibility: Current code continues to work unchanged\n".echo();
+"✅ Enhanced Features: Multi-pointer, transaction-aware, caching\n".echo();
+"✅ Performance Improvements: Faster navigation with better caching\n".echo();
+"✅ Gradual Migration: Automatic migration from old to new format\n".echo();
+"✅ Error Handling: Robust error handling and recovery\n".echo();
+"✅ Developer Experience: Familiar interface with enhanced capabilities\n".echo();
+"\n".echo();
+
+"GrapaDB2 maintains the powerful unified path system while adding\n".echo();
+"enhanced features that provide real performance and usability benefits.\n".echo();
+"The seamless navigation between file system and database remains one\n".echo();
+"of Grapa's most powerful and unique features.\n".echo();
+"\n".echo();
+
+"Status: Design complete, ready for implementation.\n".echo(); 

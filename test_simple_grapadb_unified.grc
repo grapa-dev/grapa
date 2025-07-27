@@ -1,0 +1,34 @@
+/* Test GrapaDB through unified interface */
+
+/* Create unified storage object */
+db1 = $unified();
+
+/* Create GrapaDB database */
+grapadb_url = "grapadb://testdb1";
+"GrapaDB URL: ".echo();
+grapadb_url.echo();
+"GrapaDB URL length: ".echo();
+grapadb_url.len().echo();
+result1 = db1.create(grapadb_url);
+
+/* Check storage type */
+storage_type = db1.getType();
+"GrapaDB storage type: ".echo();
+storage_type.echo();
+
+/* Create field */
+result = db1.mk("$VALUE", "STR");
+"mkfield result: ".echo();
+result.echo();
+
+/* Set value */
+result = db1.set("test", "test_value", "$VALUE");
+"set result: ".echo();
+result.echo();
+
+/* Get value */
+result = db1.get("test", "$VALUE");
+"get result: ".echo();
+result.echo();
+
+"Test complete".echo(); 

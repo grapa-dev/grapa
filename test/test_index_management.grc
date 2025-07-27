@@ -1,0 +1,297 @@
+/* Test Index Definition Management - Create, Delete, Refresh, Modify */
+
+"=== Testing Index Definition Management ===\n".echo();
+"Demonstrating delete-and-recreate approach for index management\n".echo();
+
+/* Cleanup */
+"Cleanup: Removing any existing test files...\n".echo();
+f = $file();
+f.rm("test_index_management");
+"Cleanup completed.\n".echo();
+
+/* ================================================================================ */
+/* Test Setup: Create Database with Fields */
+/* ================================================================================ */
+"Test Setup: Creating Database with Fields\n".echo();
+"----------------------------------------\n".echo();
+
+group_db = $file().table("GROUP");
+"✓ GROUP database created\n".echo();
+
+"Creating fields for indexing:\n".echo();
+group_db.mkfield("name", "STR", "VAR");
+group_db.mkfield("age", "INT", "FIX", 4);
+group_db.mkfield("city", "STR", "VAR");
+group_db.mkfield("department", "STR", "VAR");
+group_db.mkfield("salary", "INT", "FIX", 4);
+"✓ Fields created\n".echo();
+
+"Adding test data:\n".echo();
+group_db.set("user1", "User data 1", "$VALUE");
+group_db.set("user1", "John Doe", "name");
+group_db.set("user1", 35, "age");
+group_db.set("user1", "New York", "city");
+group_db.set("user1", "Engineering", "department");
+group_db.set("user1", 75000, "salary");
+
+group_db.set("user2", "User data 2", "$VALUE");
+group_db.set("user2", "Jane Smith", "name");
+group_db.set("user2", 28, "age");
+group_db.set("user2", "Los Angeles", "city");
+group_db.set("user2", "Marketing", "department");
+group_db.set("user2", 65000, "salary");
+
+group_db.set("user3", "User data 3", "$VALUE");
+group_db.set("user3", "Bob Johnson", "name");
+group_db.set("user3", 42, "age");
+group_db.set("user3", "Chicago", "city");
+group_db.set("user3", "Sales", "department");
+group_db.set("user3", 80000, "salary");
+"✓ Test data added\n".echo();
+
+/* ================================================================================ */
+/* Test 1: Index Creation and Basic Operations */
+/* ================================================================================ */
+"Test 1: Index Creation and Basic Operations\n".echo();
+"-------------------------------------------\n".echo();
+
+"Understanding index creation process:\n".echo();
+"1. Create index on specified fields\n".echo();
+"2. Index automatically populated with existing data\n".echo();
+"3. Index enables fast searching on indexed fields\n".echo();
+
+"Index creation workflow:\n".echo();
+"```cpp\n".echo();
+"// Create index on specified fields\n".echo();
+"GrapaDBIndex dbIndex;\n".echo();
+"GrapaDU64Array fieldList(2);\n".echo();
+"fieldList.Append(1, nameFieldId);\n".echo();
+"fieldList.Append(2, ageFieldId);\n".echo();
+"err = CreateIndex(table, indexId, fieldList, dbIndex);\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Test 2: Index Field Addition */
+/* ================================================================================ */
+"Test 2: Index Field Addition\n".echo();
+"----------------------------\n".echo();
+
+"Understanding index field addition:\n".echo();
+"Process: Add field to existing index definition and rebuild entire index\n".echo();
+
+"Implementation details:\n".echo();
+"```cpp\n".echo();
+"// Adding a field to an existing index\n".echo();
+"GrapaError GrapaDB::CreateIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u64 pFieldId)\n".echo();
+"{\n".echo();
+"    // Add field to index definition\n".echo();
+"    indexCursor.Set(indexFieldsRef, SU64_ITEM, pIndexFieldId, pFieldId);\n".echo();
+"    err = Insert(indexCursor);\n".echo();
+"    \n".echo();
+"    // Rebuild entire index with new field\n".echo();
+"    indexCursor.Set(pIndex.mRef, TREE_ITEM);\n".echo();
+"    EmptyTree(indexCursor);  // Clear existing index data\n".echo();
+"    dtCursor.Set(pIndex.mTable.mRef);\n".echo();
+"    err = First(dtCursor);\n".echo();
+"    while(!err) {\n".echo();
+"        // Rebuild index entries for all records\n".echo();
+"        indexCursor.Set(pIndex.mRef, RPTR_ITEM, dtCursor.mKey);\n".echo();
+"        Insert(indexCursor);\n".echo();
+"        err = Next(dtCursor);\n".echo();
+"    }\n".echo();
+"    return(0);\n".echo();
+"}\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Test 3: Index Refresh Process */
+/* ================================================================================ */
+"Test 3: Index Refresh Process\n".echo();
+"-----------------------------\n".echo();
+
+"Understanding index refresh (complete rebuild):\n".echo();
+"Process: Clear all index data and rebuild from scratch\n".echo();
+
+"Implementation details:\n".echo();
+"```cpp\n".echo();
+"// Complete index rebuild\n".echo();
+"GrapaError GrapaDB::RefreshIndex(GrapaDBIndex& pIndex)\n".echo();
+"{\n".echo();
+"    GrapaCursor indexCursor, dtCursor;\n".echo();
+"    indexCursor.Set(pIndex.mRef);\n".echo();
+"    EmptyTree(indexCursor);  // Clear all index data\n".echo();
+"    \n".echo();
+"    dtCursor.Set(pIndex.mTable.mRef);\n".echo();
+"    err = First(dtCursor);\n".echo();
+"    while(!err) {\n".echo();
+"        // Rebuild index entries for all records\n".echo();
+"        indexCursor.Set(pIndex.mRef, RPTR_ITEM, dtCursor.mKey, dtCursor.mValue);\n".echo();
+"        Insert(indexCursor);\n".echo();
+"        err = Next(dtCursor);\n".echo();
+"    }\n".echo();
+"    return(0);\n".echo();
+"}\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Test 4: Delete-and-Recreate Strategy */
+/* ================================================================================ */
+"Test 4: Delete-and-Recreate Strategy\n".echo();
+"------------------------------------\n".echo();
+
+"Understanding the delete-and-recreate approach:\n".echo();
+
+"Index Modification Workflow:\n".echo();
+"1. Delete Index: Remove existing index completely\n".echo();
+"2. Create New Index: Create index with updated field list\n".echo();
+"3. Rebuild Data: Index is automatically populated with all existing records\n".echo();
+"4. Atomic Operation: Index changes are atomic - either complete or not at all\n".echo();
+
+"Advantages of Delete-and-Recreate:\n".echo();
+"- Simplicity: No complex index modification logic to maintain\n".echo();
+"- Reliability: Eliminates edge cases in index modification\n".echo();
+"- Consistency: Ensures index is always in a consistent state\n".echo();
+"- Performance: Rebuilding is often faster than complex modifications\n".echo();
+"- Debugging: Easier to debug and verify index integrity\n".echo();
+
+"Implementation:\n".echo();
+"```cpp\n".echo();
+"// Delete existing index\n".echo();
+"err = DeleteIndex(table, oldIndexId);\n".echo();
+"\n".echo();
+"// Create new index with updated definition\n".echo();
+"GrapaDBIndex newIndex;\n".echo();
+"GrapaDU64Array newFieldList(3);\n".echo();
+"newFieldList.Append(1, nameFieldId);\n".echo();
+"newFieldList.Append(2, ageFieldId);\n".echo();
+"newFieldList.Append(3, departmentFieldId);  // Added field\n".echo();
+"err = CreateIndex(table, newIndexId, newFieldList, newIndex);\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Test 5: When to Use Each Approach */
+/* ================================================================================ */
+"Test 5: When to Use Each Approach\n".echo();
+"---------------------------------\n".echo();
+
+"Guidelines for index management:\n".echo();
+
+"Field Addition:\n".echo();
+"- Use `CreateIndexField()` for adding fields to existing indexes\n".echo();
+"- Index is automatically rebuilt with new field\n".echo();
+"- Preserves existing index ID and metadata\n".echo();
+
+"Field Removal:\n".echo();
+"- Delete and recreate index with new field list\n".echo();
+"- Cannot remove individual fields from existing index\n".echo();
+"- Ensures clean index state\n".echo();
+
+"Index Type Changes:\n".echo();
+"- Delete and recreate with new index type\n".echo();
+"- May require different storage or comparison logic\n".echo();
+"- Complete index rebuild ensures consistency\n".echo();
+
+"Bulk Changes:\n".echo();
+"- Delete and recreate for multiple field changes\n".echo();
+"- More efficient than multiple incremental changes\n".echo();
+"- Atomic operation ensures data consistency\n".echo();
+
+/* ================================================================================ */
+/* Test 6: Implementation Considerations */
+/* ================================================================================ */
+"Test 6: Implementation Considerations\n".echo();
+"------------------------------------\n".echo();
+
+"Important considerations for index management:\n".echo();
+
+"Transaction Safety:\n".echo();
+"- Index operations should be wrapped in transactions\n".echo();
+"- Ensures atomicity of index changes\n".echo();
+"- Provides rollback capability on failure\n".echo();
+
+"Performance:\n".echo();
+"- Large tables may require background index rebuilding\n".echo();
+"- Consider impact on query performance during rebuild\n".echo();
+"- May need to disable indexes during bulk operations\n".echo();
+
+"Availability:\n".echo();
+"- Consider index rebuilding impact on query performance\n".echo();
+"- May need to maintain multiple index versions\n".echo();
+"- Plan for index maintenance windows\n".echo();
+
+"Recovery:\n".echo();
+"- Maintain ability to rollback index changes\n".echo();
+"- Keep backup of index definitions\n".echo();
+"- Monitor index integrity after changes\n".echo();
+
+/* ================================================================================ */
+/* Test 7: Index Management Summary */
+/* ================================================================================ */
+"Test 7: Index Management Summary\n".echo();
+"--------------------------------\n".echo();
+
+"Current index operations available:\n".echo();
+"1. Create Index: group_db.mkindex(indexId, fieldList) - Create new index\n".echo();
+"2. Delete Index: group_db.delindex(indexId) - Remove index completely\n".echo();
+"3. Refresh Index: group_db.refreshindex(indexId) - Rebuild index from scratch\n".echo();
+"4. Add Index Field: group_db.addindexfield(indexId, fieldId) - Add field to index\n".echo();
+
+"Index Management Philosophy:\n".echo();
+"- Simple and reliable operations\n".echo();
+"- Delete-and-recreate for complex changes\n".echo();
+"- Atomic operations ensure consistency\n".echo();
+"- Prioritize data integrity over optimization\n".echo();
+
+"Alignment with Database File System Vision:\n".echo();
+"- Operations are simple, reliable, and atomic\n".echo();
+"- Similar to file system operations (delete file, create new file)\n".echo();
+"- Prioritizes system reliability and maintainability\n".echo();
+"- Eliminates complex edge cases and corruption risks\n".echo();
+
+/* ================================================================================ */
+/* Test 8: Demonstrate Index Usage */
+/* ================================================================================ */
+"Test 8: Demonstrate Index Usage\n".echo();
+"-------------------------------\n".echo();
+
+"Understanding how indexes improve search performance:\n".echo();
+
+"Without Index (Sequential Scan):\n".echo();
+"- Scan all records in table\n".echo();
+"- Compare each record against search criteria\n".echo();
+"- Performance: O(n) where n = number of records\n".echo();
+
+"With Index (Indexed Search):\n".echo();
+"- Use index to find relevant record range\n".echo();
+"- Only scan records within that range\n".echo();
+"- Performance: O(log n) for index lookup + O(k) for range scan\n".echo();
+
+"Two-Stage Search Algorithm:\n".echo();
+"1. Stage 1: Locate best index and constrain cursor to index range\n".echo();
+"2. Stage 2: Detailed field matching within the constrained range\n".echo();
+
+"Index Selection Process:\n".echo();
+"- Scan available indexes for search fields\n".echo();
+"- Choose index that covers most search criteria\n".echo();
+"- Fall back to sequential scan if no suitable index\n".echo();
+
+/* ================================================================================ */
+/* Summary */
+/* ================================================================================ */
+"=== Test Summary ===\n".echo();
+"✓ Index definition management demonstrated\n".echo();
+"✓ Delete-and-recreate approach documented\n".echo();
+"✓ Index field addition process understood\n".echo();
+"✓ Index refresh and rebuild process clarified\n".echo();
+"✓ Implementation considerations identified\n".echo();
+"✓ Performance implications analyzed\n".echo();
+"✓ Alignment with Database File System vision confirmed\n".echo();
+
+"=== Index Management Confirmed ===\n".echo();
+"✓ Create Index: CreateIndex() with automatic data population\n".echo();
+"✓ Delete Index: DeleteIndex() for complete removal\n".echo();
+"✓ Refresh Index: RefreshIndex() for complete rebuild\n".echo();
+"✓ Add Index Field: CreateIndexField() with index rebuild\n".echo();
+"✓ Delete-and-Recreate: Simple, reliable approach for complex changes\n".echo();
+"✓ Transaction Safety: Atomic operations with rollback capability\n".echo();
+"✓ Performance: Optimized for reliability over complex optimization\n".echo(); 

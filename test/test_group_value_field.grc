@@ -1,0 +1,120 @@
+/* Test GROUP Database $VALUE Field Behavior */
+
+"=== Testing GROUP Database $VALUE Field ===\n".echo();
+
+/* Cleanup */
+"Cleanup: Removing any existing test files...\n".echo();
+f = $file();
+f.rm("test_group_value");
+"Cleanup completed.\n".echo();
+
+/* Test 1: Create GROUP database */
+"Test 1: Creating GROUP Database\n".echo();
+"------------------------------\n".echo();
+
+group_db = $file().table("GROUP");
+"✓ GROUP database created\n".echo();
+
+/* Test 2: Demonstrate $VALUE field auto-creation */
+"Test 2: $VALUE Field Auto-Creation\n".echo();
+"---------------------------------\n".echo();
+
+"Setting data without specifying a field (uses $VALUE by default):\n".echo();
+group_db.set("file1", "This is file content");
+group_db.set("file2", "Another file content");
+group_db.set("config", "Configuration data");
+"✓ Data set using default $VALUE field\n".echo();
+
+"Retrieving data from $VALUE field:\n".echo();
+file1_content = group_db.get("file1");
+("file1 content: " + file1_content.str() + "\n").echo();
+
+file2_content = group_db.get("file2");
+("file2 content: " + file2_content.str() + "\n").echo();
+
+config_content = group_db.get("config");
+("config content: " + config_content.str() + "\n").echo();
+
+/* Test 3: Explicit $VALUE field usage */
+"Test 3: Explicit $VALUE Field Usage\n".echo();
+"----------------------------------\n".echo();
+
+"Setting data explicitly using $VALUE field:\n".echo();
+group_db.set("explicit1", "Explicit value 1", "$VALUE");
+group_db.set("explicit2", "Explicit value 2", "$VALUE");
+"✓ Data set explicitly using $VALUE field\n".echo();
+
+"Retrieving data explicitly from $VALUE field:\n".echo();
+explicit1_content = group_db.get("explicit1", "$VALUE");
+("explicit1 $VALUE: " + explicit1_content.str() + "\n").echo();
+
+explicit2_content = group_db.get("explicit2", "$VALUE");
+("explicit2 $VALUE: " + explicit2_content.str() + "\n").echo();
+
+/* Test 4: Custom fields alongside $VALUE */
+"Test 4: Custom Fields with $VALUE\n".echo();
+"--------------------------------\n".echo();
+
+"Creating custom fields in GROUP database:\n".echo();
+group_db.mkfield("name", "STR", "VAR");
+group_db.mkfield("size", "INT", "FIX", 4);
+group_db.mkfield("type", "STR", "VAR");
+"✓ Custom fields created\n".echo();
+
+"Setting data with both $VALUE and custom fields:\n".echo();
+group_db.set("document1", "Document content here", "$VALUE");
+group_db.set("document1", "report.pdf", "name");
+group_db.set("document1", 1024, "size");
+group_db.set("document1", "PDF", "type");
+"✓ Mixed field data set\n".echo();
+
+"Retrieving all field data:\n".echo();
+doc_value = group_db.get("document1", "$VALUE");
+doc_name = group_db.get("document1", "name");
+doc_size = group_db.get("document1", "size");
+doc_type = group_db.get("document1", "type");
+
+("document1 $VALUE: " + doc_value.str() + "\n").echo();
+("document1 name: " + doc_name.str() + "\n").echo();
+("document1 size: " + doc_size.raw().int().str() + "\n").echo();
+("document1 type: " + doc_type.str() + "\n").echo();
+
+/* Test 5: List all records */
+"Test 5: Listing All Records\n".echo();
+"--------------------------\n".echo();
+
+all_records = group_db.ls();
+("Total records in GROUP: " + all_records.len().str() + "\n").echo();
+
+"Record list:\n".echo();
+all_records.echo();
+
+/* Test 6: Demonstrate $VALUE as default for get() */
+"Test 6: $VALUE as Default for get()\n".echo();
+"----------------------------------\n".echo();
+
+"Getting data without specifying field (should use $VALUE):\n".echo();
+default_value = group_db.get("file1");
+("file1 (default): " + default_value.str() + "\n").echo();
+
+explicit_value = group_db.get("file1", "$VALUE");
+("file1 (explicit $VALUE): " + explicit_value.str() + "\n").echo();
+
+"These should be identical!\n".echo();
+
+/* Test 7: Binary data in $VALUE field */
+"Test 7: Binary Data in $VALUE Field\n".echo();
+"----------------------------------\n".echo();
+
+"Setting binary data in $VALUE field:\n".echo();
+binary_data = "Binary\x00\x01\x02\x03Data";
+group_db.set("binary_file", binary_data, "$VALUE");
+"✓ Binary data set\n".echo();
+
+"Retrieving binary data:\n".echo();
+retrieved_binary = group_db.get("binary_file", "$VALUE");
+("Binary data length: " + retrieved_binary.length().str() + "\n").echo();
+("Binary data (hex): " + retrieved_binary.raw().hex().str() + "\n").echo();
+
+"=== Test Complete ===\n".echo();
+"✓ GROUP database $VALUE field behavior demonstrated\n".echo(); 

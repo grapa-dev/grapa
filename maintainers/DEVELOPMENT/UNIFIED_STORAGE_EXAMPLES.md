@@ -1,263 +1,275 @@
-# Unified Storage Architecture Examples
+# Unified Storage Examples
+
+This document provides examples and usage patterns for the unified storage system that allows seamless navigation between file systems, databases, and other storage types.
 
 ## Overview
 
-The Grapa unified storage architecture allows seamless navigation and operations across different storage types:
-- **File Systems** - Traditional file/directory structure
-- **GrapaDB** - Current database implementation
-- **GrapaDB2** - New high-performance database
-- **Network Objects** - Remote storage that appears local
-- **Memory/Cloud** - Other storage backends
+The unified storage system provides a single interface for accessing different storage types:
+- **File System**: `file://` URLs for local file system access
+- **GrapaDB**: `grapadb://` URLs for database access
+- **GrapaDB2**: `grapadb2://` URLs for enhanced database access
+- **Network**: `network://` URLs for remote storage (planned)
+- **Memory**: `memory://` URLs for in-memory storage (planned)
+- **Cloud**: `cloud://` URLs for cloud storage (planned)
 
-All accessible through the same unified interface with `.cd()`, path navigation, and consistent operations.
+## Basic Usage
 
-## Current Implementation Status
-
-- `unified_cd`, `unified_ls`, `unified_mk`, `unified_rm`, `unified_set`, `unified_get` are implemented for the file system backend.
-- TODOs are in place for GrapaDB, GrapaDB2, network, memory, and cloud backends.
-- Incremental expansion and documentation are ongoing.
-
-### Example: Listing and Navigating the File System
+### Creating and Initializing Storage
 
 ```grapa
-u = $unified()
-u.create("file:///tmp/test")
-u.ls()        /* Lists directory contents */
+/* Create unified storage object */
+u = $unified();
+
+/* Initialize with file system */
+u.create("file:///path/to/files");
+
+/* Initialize with database */
+u.create("grapadb://database.gdb");
+
+/* Initialize with enhanced database */
+u.create("grapadb2://database2.gdb");
+```
+
+### Basic Operations
+
+```grapa
+/* Navigation */
+u.cd("subdirectory")    /* Change directory */
+u.pwd()                 /* Get current path */
+
+/* Listing */
+u.ls()                  /* List contents */
+u.ls("subdir")          /* List specific directory */
+
+/* Creation and Deletion */
+u.mk("newdir", "DIR")   /* Create directory */
+u.mk("record", "RECORD") /* Create record */
+u.rm("item")            /* Remove item */
+
+/* Data Operations */
+u.set("file.txt", "content")           /* Set file content */
+u.set("record", "value", "$VALUE")     /* Set field value */
+u.get("file.txt")                      /* Get file content */
+u.get("record", "$VALUE")              /* Get field value */
+```
+
+## Output Formatting Methods
+
+The unified storage system now supports multiple output formats for listing operations:
+
+### Default Output
+```grapa
+/* Default format - structured array */
+result = u.ls();
+result.echo();
+/* Output: [{"$KEY":"file.txt","$TYPE":"FILE","$BYTES":1024}, ...] */
+```
+
+### JSON Output
+```grapa
+/* JSON format for API integration */
+result = u.ls().json();
+result.echo();
+/* Output: [{"$KEY":"file.txt","$TYPE":"FILE","$BYTES":1024}, ...] */
+```
+
+### ASCII Table Output
+```grapa
+/* ASCII table format for human reading */
+result = u.ls().table();
+result.echo();
+/* Output:
+$KEY      $TYPE  $BYTES
+file.txt  FILE   1024
+dir1      DIR    0
+*/
+```
+
+### Simple List Output
+```grapa
+/* Simple list format - just names */
+result = u.ls().simple();
+result.echo();
+/* Output: ["file.txt", "dir1", ...] */
+```
+
+## Field Selection
+
+You can specify which fields to include in the output:
+
+```grapa
+/* Select specific fields */
+u.ls("$KEY,$TYPE")              /* Only name and type */
+u.ls("$KEY,$BYTES").json()      /* Only name and size in JSON */
+u.ls("$KEY,$TYPE").table()      /* Only name and type in table */
+u.ls("$KEY").simple()           /* Only names in simple list */
+```
+
+## Cross-Storage Navigation
+
+The unified system allows seamless navigation between different storage types:
+
+```grapa
+/* Start with file system */
+u = $unified();
+u.create("file:///home/user");
+
+/* Navigate to database */
+u.cd("database")
+u.ls()        /* Lists database contents */
+
+/* Navigate to subdirectory */
 u.cd("subdir")
 u.ls()        /* Lists contents of subdir */
 ```
 
+## Storage Type Information
+
+```grapa
+/* Get storage type */
+storage_type = u.getType();
+storage_type.echo();  /* Output: "FILESYSTEM", "GRAPADB", etc. */
+
+/* Get detailed information */
+info = u.getInfo();
+info.echo();  /* Output: "type:FILESYSTEM,url:file:///path,path:/current" */
+```
+
+## Complete Example
+
+```grapa
+/* Complete workflow example */
+u = $unified();
+
+/* Initialize with file system */
+u.create("file:///tmp/test");
+
+/* Create some content */
+u.set("readme.txt", "This is a test file");
+u.mk("docs", "DIR");
+u.cd("docs");
+u.set("api.md", "# API Documentation");
+
+/* List with different formats */
+"Default format:\n".echo();
+u.ls().echo();
+
+"JSON format:\n".echo();
+u.ls().json().echo();
+
+"Table format:\n".echo();
+u.ls().table().echo();
+
+"Simple format:\n".echo();
+u.ls().simple().echo();
+
+/* Navigate back and list parent */
+u.cd("..");
+"Parent directory:\n".echo();
+u.ls().table().echo();
+```
+
+## Current Implementation Status
+
+**✅ COMPLETED:**
+- All unified handlers (`unified_cd`, `unified_ls`, `unified_mk`, `unified_rm`, `unified_set`, `unified_get`) implemented with full file system logic
+- GrapaDB backend fully implemented and integrated
+- GrapaDB2 backend fully implemented and integrated
+- **NEW: Output formatting methods (`.json()`, `.table()`, `.simple()`) implemented**
+- **NEW: Field selection support in `.ls()` method**
+- Clear TODOs and detailed comments for network, memory, and cloud backends
+- Comprehensive test script (`test_unified_handlers.grc`, `test_unified_grapadb.grc`, `test_unified_grapadb2.grc`) created to verify all operations
+- **NEW: Comprehensive output formatting test script (`test_unified_output_formats.grc`)**
+- Error handling and parameter validation implemented
+- Proper Grapa syntax with semicolons in all test scripts
+- File system backend fully functional with real file operations
+
 **🚧 IN PROGRESS:**
-- `unified_cd` - Directory navigation across storage types
-- `unified_ls` - Directory listing (unified format for file system and database)
-- `unified_mk` - Create files/directories/tables
-- `unified_rm` - Remove files/directories/tables
-- `unified_set` - Set values/fields (with default $KEY/$VALUE for file-like operations)
-- `unified_get` - Get values/fields (with default $KEY/$VALUE for file-like operations)
-- Integration with actual GrapaDB/GrapaDB2 backends
+- Network storage backend integration
+- Memory storage backend integration
+- Cloud storage backend integration
 
-**🎯 KEY DESIGN INSIGHT:**
-- **Default $KEY/$VALUE**: GrapaDB2 will support default `$KEY` (mimics filename) and `$VALUE` (mimics file content) for seamless file-like operations within databases
-- **Unified .ls() Output**: Same format whether in file system or database - `[name, size, type, date]`
-- **Seamless Navigation**: `.cd()` and path operations work identically across storage types
+**📋 TODO:**
+- Add network storage support
+- Add memory storage support
+- Add cloud storage support
+- Add comprehensive error handling for all backends
+- Performance testing and optimization
 
-## Enhanced LocalDatabase Pattern
+### Example: Listing and Navigating the File System
 
 ```grapa
-/* Different storage types via URLs - extends existing LocalDatabase */
-fs = $unified()
-fs.create("file:///home/user/documents")
-db1 = $unified()
-db1.create("grapadb://mydb.gdb")
-db2 = $unified()
-db2.create("grapadb2://mydb2.gdb") 
-net = $unified()
-net.create("network://remote-server/data")
-mem = $unified()
-mem.create("memory://temp-data")
-cloud = $unified()
-cloud.create("cloud://aws-s3/bucket-name")
+/* Create unified storage for file system */
+u = $unified();
+u.create("file:///tmp");
 
-/* Or use existing $file pattern with enhanced capabilities */
-f = $file()
-f.cd("/home/user/documents")     /* File system */
-f.cd("mydb://users")             /* Database - seamless transition! */
+/* Create some test content */
+u.set("file1.txt", "Content 1");
+u.set("file2.txt", "Content 2");
+u.mk("subdir", "DIR");
+
+/* List with different formats */
+"Default format:\n".echo();
+u.ls().echo();
+
+"JSON format:\n".echo();
+u.ls().json().echo();
+
+"Table format:\n".echo();
+u.ls().table().echo();
+
+"Simple format:\n".echo();
+u.ls().simple().echo();
+
+/* Navigate to subdirectory */
+u.cd("subdir");
+u.set("nested.txt", "Nested content");
+
+"Subdirectory contents:\n".echo();
+u.ls().table().echo();
 ```
 
-## Seamless Navigation Across Storage Types
+### Example: Database Operations with Output Formatting
 
 ```grapa
-/* Navigate seamlessly between file system and database */
-.cd("/home/user/documents")           /* File system */
-.cd("mydb://users")                   /* Database */
-.cd("network://remote-server/data")   /* Network object */
+/* Create unified storage for database */
+u = $unified();
+u.create("grapadb://testdb.gdb");
 
-/* A path can span multiple storage types */
-.cd("/home/user/documents/mydb://users/network://cloud/backups")
+/* Create records */
+u.mk("user1", "RECORD");
+u.set("user1", "John Doe", "$VALUE");
+u.mk("user2", "RECORD");
+u.set("user2", "Jane Smith", "$VALUE");
 
-/* Unified interface - same operations work everywhere */
-storage = $unified()
-storage.create("file:///home/user/documents")
-files = storage.ls()                  /* File system listing */
+/* List with different formats */
+"Database records - default:\n".echo();
+u.ls().echo();
 
-storage.create("grapadb2://mydb.gdb")
-files = storage.ls()                  /* Database listing - same format! */
+"Database records - JSON:\n".echo();
+u.ls().json().echo();
 
-/* Default $KEY/$VALUE makes databases feel like file systems */
-storage.set("config.json", '{"key": "value"}', "$VALUE")  /* Works in both contexts */
+"Database records - table:\n".echo();
+u.ls().table().echo();
+
+"Database records - simple:\n".echo();
+u.ls().simple().echo();
 ```
 
-## Enhanced LocalDatabase Operations
+## Key Benefits
 
-```grapa
-/* Same operations work across all storage types - extends existing pattern */
-storage = $unified()
-storage.create("grapadb2://mydb.gdb")
+1. **Unified Interface**: Same methods work across all storage types
+2. **Seamless Navigation**: `.cd()` works between file systems and databases
+3. **Flexible Output**: Multiple output formats for different use cases
+4. **Field Selection**: Choose which fields to include in listings
+5. **Backward Compatibility**: Existing code continues to work
+6. **Extensible**: Easy to add new storage types and output formats
 
-/* Navigation - same as existing $file */
-storage.cd("users")
-storage.ls()
-current_path = storage.pwd()
+## Design Philosophy
 
-/* Enhanced operations that work across storage types */
-storage.mk("config.json", "FILE")
-storage.set("data.txt", "content", "$VALUE")
-data = storage.get("data.txt", "$VALUE")
-storage.rm("temp.txt")
+The unified storage system follows the principle of **"everything is a file"** but extends it to **"everything is accessible through the same interface"**. This allows for:
 
-/* Database-specific operations (when supported) */
-storage.mk("users", "ROW")
-storage.mkfield("users", "name", "STR", "VAR")
-storage.set("user1", "John Doe", "name")
-storage.get("user1", "name")
-```
-
-## Seamless File System / Database Interface
-
-```grapa
-/* GrapaDB2 supports default $KEY and $VALUE for file-like operations */
-db = $unified()
-db.create("grapadb2://mydb.gdb")
-
-/* File-like operations within database */
-db.set("document.txt", "This is file content", "$VALUE")     /* Mimics file creation */
-content = db.get("document.txt", "$VALUE")                   /* Mimics file reading */
-db.rm("document.txt")                                         /* Mimics file deletion */
-
-/* Directory-like operations */
-db.set("folder/", "", "$VALUE")                              /* Mimics directory creation */
-db.cd("folder")
-db.set("nested.txt", "Nested content", "$VALUE")
-
-/* Unified .ls() output - same format as file system */
-files = db.ls()  /* Returns same format whether in file system or database */
-/* Output format: [name, size, type, date] - consistent across storage types */
-```
-
-## Performance Comparison
-
-```grapa
-/* Easy performance comparison between storage types */
-db1 = $unified()
-db1.create("grapadb://test1.gdb")
-db2 = $unified()
-db2.create("grapadb2://test2.gdb")
-
-/* Both work identically */
-db1.createTable("users", "ROW")
-db2.createTable("users", "ROW")
-
-/* Performance testing */
-start1 = time()
-db1.search("name = 'John'")
-end1 = time()
-
-start2 = time()
-db2.search("name = 'John'")
-end2 = time()
-
-"GrapaDB: " + (end1 - start1).str() + "ms\n".echo();
-"GrapaDB2: " + (end2 - start2).str() + "ms\n".echo();
-```
-
-## Cross-Storage Data Operations
-
-```grapa
-/* Read from file system, process, store in database */
-fs = $unified()
-fs.create("file:///home/user/data")
-db = $unified()
-db.create("grapadb2://processed.gdb")
-
-/* Read CSV from file system */
-csv_data = fs.read("users.csv")
-lines = csv_data.split("\n")
-
-/* Process and store in database */
-db.createTable("users", "ROW")
-db.addField("users", "name", "STR", "ROW", 100)
-db.addField("users", "email", "STR", "ROW", 200)
-
-/* Import data */
-lines.range().each(line => {
-    if (line.len() > 0) {
-        fields = line.split(",")
-        record = db.createRecord("users")
-        db.updateRecord("users", record, "name", fields[0])
-        db.updateRecord("users", record, "email", fields[1])
-    }
-})
-```
-
-## Network Storage Integration
-
-```grapa
-/* Network storage appears as local */
-remote = $storage("network://server.example.com/data")
-
-/* Same operations as local storage */
-remote.cd("users")
-remote.ls()
-remote.read("config.json")
-remote.write("log.txt", "Remote log entry")
-
-/* Seamless integration with local operations */
-local = $storage("file:///home/user")
-local.write("remote_data.txt", remote.read("data.json"))
-```
-
-## Storage Type Detection and Fallback
-
-```grapa
-/* Automatic storage type detection */
-storage = $storage("auto://path/to/resource")
-
-/* Storage type information */
-type = storage.getType()
-info = storage.getInfo()
-
-/* Fallback mechanisms */
-if (type == "NETWORK" && !network_available()) {
-    storage = $storage("file:///local/fallback")
-}
-```
-
-## Advanced Path Navigation
-
-```grapa
-/* Complex path spanning multiple storage types */
-storage = $storage("file:///home/user")
-
-/* Navigate through file system */
-storage.cd("documents")
-
-/* Jump to database */
-storage.cd("grapadb://mydb/users")
-
-/* Jump to network */
-storage.cd("network://cloud/backups")
-
-/* Current path shows the full journey */
-full_path = storage.pwd()
-/* Result: "/home/user/documents/grapadb://mydb/users/network://cloud/backups" */
-```
-
-## Benefits of This Architecture
-
-1. **Unified Interface** - Same operations work across all storage types
-2. **Seamless Navigation** - `.cd()` works across file systems, databases, and networks
-3. **Performance Flexibility** - Easy swapping between storage implementations
-4. **Backward Compatibility** - Existing code continues to work
-5. **Future Extensibility** - Easy to add new storage types
-6. **Cross-Storage Operations** - Data can flow between different storage types
-7. **Network Transparency** - Remote storage appears local
-8. **Path Spanning** - Single path can reference multiple storage types
-
-## Implementation Notes
-
-- All storage types use the GrapaFile pattern for cross-platform compatibility
-- URL parsing determines storage type and connection parameters
-- Template-based implementation allows easy addition of new storage types
-- Unified error handling across all storage types
-- Performance monitoring and comparison built-in
-- Network storage includes caching and offline capabilities 
+- **Consistent API**: Same methods regardless of storage type
+- **Seamless Migration**: Easy to move between storage types
+- **Flexible Output**: Choose the format that best fits your needs
+- **Future Extensibility**: New storage types can be added without changing the interface 

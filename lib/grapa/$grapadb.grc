@@ -1,0 +1,16 @@
+@global["$grapadb"]
+	= class ($OBJ) {
+	create = @<[op,@<"grapadb2_create",{this,@<var,{filename}>,@<var,{type}>}>],{filename,type}>; 
+	open = @<[op,@<"grapadb2_open",{this,@<var,{filename}>,@<var,{mode}>}>],{filename,mode}>; 
+	close = @<"grapadb2_close",{@<this>}>; 
+	createTable = @<[op,@<"grapadb2_create_table",{this,@<var,{tableName}>,@<var,{tableType}>}>],{tableName,tableType}>; 
+	openTable = @<[op,@<"grapadb2_open_table",{this,@<var,{tableName}>}>],{tableName}>; 
+	deleteTable = @<[op,@<"grapadb2_delete_table",{this,@<var,{tableName}>}>],{tableName}>; 
+	addField = @<[op,@<"grapadb2_add_field",{this,@<var,{tableName}>,@<var,{fieldName}>,@<var,{fieldType}>,@<var,{storageType}>,@<var,{size}>}>],{tableName,fieldName,fieldType,storageType,size}>; 
+	removeField = @<[op,@<"grapadb2_remove_field",{this,@<var,{tableName}>,@<var,{fieldName}>}>],{tableName,fieldName}>; 
+	createRecord = @<[op,@<"grapadb2_create_record",{this,@<var,{tableName}>}>],{tableName}>; 
+	deleteRecord = @<[op,@<"grapadb2_delete_record",{this,@<var,{tableName}>,@<var,{recordId}>}>],{tableName,recordId}>; 
+	updateRecord = @<[op,@<"grapadb2_update_record",{this,@<var,{tableName}>,@<var,{recordId}>,@<var,{fieldName}>,@<var,{value}>}>],{tableName,recordId,fieldName,value}>; 
+	search = @<[op,@<"grapadb2_search",{this,@<var,{tableName}>,@<var,{query}>}>],{tableName,query}>; 
+	debug = @<[op,@<"grapadb2_debug",{this,@<var,{options}>}>],{options}>;
+	}; 

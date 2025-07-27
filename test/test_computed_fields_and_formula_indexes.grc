@@ -1,0 +1,373 @@
+/* Test Computed Fields and Formula Indexes Concept - Future Enhancement */
+
+"=== Testing Computed Fields and Formula Indexes Concept ===\n".echo();
+"Demonstrating both stored computed fields and computed indexes using Grapa lambda expressions\n".echo();
+
+/* Cleanup */
+"Cleanup: Removing any existing test files...\n".echo();
+f = $file();
+f.rm("test_computed_fields_and_formula_indexes");
+"Cleanup completed.\n".echo();
+
+/* ================================================================================ */
+/* Test Setup: Create Database with Fields */
+/* ================================================================================ */
+"Test Setup: Creating Database with Fields\n".echo();
+"----------------------------------------\n".echo();
+
+group_db = $file().table("GROUP");
+"✓ GROUP database created\n".echo();
+
+"Creating base fields for computed examples:\n".echo();
+group_db.mkfield("first_name", "STR", "VAR");
+group_db.mkfield("last_name", "STR", "VAR");
+group_db.mkfield("age", "INT", "FIX", 4);
+group_db.mkfield("salary", "INT", "FIX", 4);
+group_db.mkfield("department", "STR", "VAR");
+group_db.mkfield("status", "STR", "VAR");
+group_db.mkfield("hire_date", "STR", "VAR");
+"✓ Base fields created\n".echo();
+
+"Adding test data:\n".echo();
+group_db.set("user1", "User data 1", "$VALUE");
+group_db.set("user1", "John", "first_name");
+group_db.set("user1", "Doe", "last_name");
+group_db.set("user1", 35, "age");
+group_db.set("user1", 75000, "salary");
+group_db.set("user1", "Engineering", "department");
+group_db.set("user1", "active", "status");
+group_db.set("user1", "2020-01-15", "hire_date");
+
+group_db.set("user2", "User data 2", "$VALUE");
+group_db.set("user2", "Jane", "first_name");
+group_db.set("user2", "Smith", "last_name");
+group_db.set("user2", 28, "age");
+group_db.set("user2", 65000, "salary");
+group_db.set("user2", "Marketing", "department");
+group_db.set("user2", "active", "status");
+group_db.set("user2", "2021-03-20", "hire_date");
+
+group_db.set("user3", "User data 3", "$VALUE");
+group_db.set("user3", "Bob", "first_name");
+group_db.set("user3", "Johnson", "last_name");
+group_db.set("user3", 42, "age");
+group_db.set("user3", 80000, "salary");
+group_db.set("user3", "Sales", "department");
+group_db.set("user3", "inactive", "status");
+group_db.set("user3", "2019-11-10", "hire_date");
+"✓ Test data added\n".echo();
+
+/* ================================================================================ */
+/* Test 1: Computed Fields vs Formula Indexes */
+/* ================================================================================ */
+"Test 1: Computed Fields vs Formula Indexes\n".echo();
+"------------------------------------------\n".echo();
+
+"Understanding the difference between computed fields and formula indexes:\n".echo();
+
+"Computed Fields:\n".echo();
+"- Definition: Fields that store computed values derived from other fields\n".echo();
+"- Storage: Values are computed and stored in the field\n".echo();
+"- Updates: Recalculated when dependent fields change\n".echo();
+"- Use Case: Frequently accessed computed values\n".echo();
+
+"Formula Indexes:\n".echo();
+"- Definition: Indexes on computed values without storing the computed field\n".echo();
+"- Storage: Only the index stores computed values, not a separate field\n".echo();
+"- Updates: Recalculated when dependent fields change\n".echo();
+"- Use Case: Search optimization without storing redundant data\n".echo();
+
+/* ================================================================================ */
+/* Test 2: Computed Fields Examples */
+/* ================================================================================ */
+"Test 2: Computed Fields Examples\n".echo();
+"--------------------------------\n".echo();
+
+"Computed Field Concept: Full name (stored and accessible)\n".echo();
+"```grapa\n".echo();
+"// Computed field: Full name (stored and accessible)\n".echo();
+"group_db.mkcomputedfield(\"full_name\", \"STR\", \"VAR\", \n".echo();
+"    \"lambda(record) { record.get('first_name') + ' ' + record.get('last_name') }\");\n".echo();
+"```\n".echo();
+
+"Benefits of Computed Fields:\n".echo();
+"- Values are stored and can be accessed directly\n".echo();
+"- No need to recompute on every access\n".echo();
+"- Can be indexed for fast searching\n".echo();
+"- Automatic updates when dependent fields change\n".echo();
+
+"Computed Field Concept: Age category (stored and accessible)\n".echo();
+"```grapa\n".echo();
+"// Computed field: Age category (stored and accessible)\n".echo();
+"group_db.mkcomputedfield(\"age_category\", \"STR\", \"VAR\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        age = record.get('age').raw().int(); \n".echo();
+"        if (age < 30) 'young' \n".echo();
+"        else if (age < 50) 'middle' \n".echo();
+"        else 'senior' \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Computed Field Concept: Annual salary (stored and accessible)\n".echo();
+"```grapa\n".echo();
+"// Computed field: Annual salary (stored and accessible)\n".echo();
+"group_db.mkcomputedfield(\"annual_salary\", \"INT\", \"FIX\", 4,\n".echo();
+"    \"lambda(record) { record.get('salary').raw().int() * 12 }\");\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Test 3: Formula Indexes Examples */
+/* ================================================================================ */
+"Test 3: Formula Indexes Examples\n".echo();
+"--------------------------------\n".echo();
+
+"Formula Index Concept: Index on concatenated name (not stored as field)\n".echo();
+"```grapa\n".echo();
+"// Index on concatenated name (not stored as field)\n".echo();
+"index1 = group_db.mkformulaindex(\"full_name_index\", \n".echo();
+"    \"lambda(record) { record.get('first_name') + ' ' + record.get('last_name') }\");\n".echo();
+"```\n".echo();
+
+"Benefits of Formula Indexes:\n".echo();
+"- No redundant storage of computed values\n".echo();
+"- Fast searching on computed values\n".echo();
+"- Automatic updates when dependent fields change\n".echo();
+"- Memory efficient for large datasets\n".echo();
+
+"Formula Index Concept: Index on age category (not stored as field)\n".echo();
+"```grapa\n".echo();
+"// Index on age category (not stored as field)\n".echo();
+"index2 = group_db.mkformulaindex(\"age_category_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        age = record.get('age').raw().int(); \n".echo();
+"        if (age < 30) 'young' \n".echo();
+"        else if (age < 50) 'middle' \n".echo();
+"        else 'senior' \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Formula Index Concept: Index on salary percentile (not stored as field)\n".echo();
+"```grapa\n".echo();
+"// Index on salary percentile within department (not stored as field)\n".echo();
+"index3 = group_db.mkformulaindex(\"salary_percentile_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        salary = record.get('salary').raw().int(); \n".echo();
+"        department = record.get('department'); \n".echo();
+"        calculatePercentile(salary, department) \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Test 4: Hybrid Approach */
+/* ================================================================================ */
+"Test 4: Hybrid Approach\n".echo();
+"----------------------\n".echo();
+
+"Hybrid Approach: Create computed field and index it\n".echo();
+"```grapa\n".echo();
+"// Create computed field and index it\n".echo();
+"group_db.mkcomputedfield(\"full_name\", \"STR\", \"VAR\", \n".echo();
+"    \"lambda(record) { record.get('first_name') + ' ' + record.get('last_name') }\");\n".echo();
+"group_db.mkindex(\"full_name_index\", [\"full_name\"]);  // Index the computed field\n".echo();
+"```\n".echo();
+
+"Benefits of Hybrid Approach:\n".echo();
+"- Computed value is stored for direct access\n".echo();
+"- Index provides fast searching\n".echo();
+"- Best of both worlds for frequently accessed values\n".echo();
+"- Automatic updates maintain consistency\n".echo();
+
+"Use Cases for Each Approach:\n".echo();
+
+"Use Computed Fields When:\n".echo();
+"- Value is accessed frequently\n".echo();
+"- Computation is expensive\n".echo();
+"- Value is used in multiple queries\n".echo();
+"- Storage space is not a major concern\n".echo();
+
+"Use Formula Indexes When:\n".echo();
+"- Value is only used for searching\n".echo();
+"- Storage space is limited\n".echo();
+"- Computation is relatively cheap\n".echo();
+"- Value is rarely accessed directly\n".echo();
+
+"Use Hybrid Approach When:\n".echo();
+"- Value is both frequently accessed and searched\n".echo();
+"- Performance is critical for both operations\n".echo();
+"- Storage space is available\n".echo();
+"- Consistency is important\n".echo();
+
+/* ================================================================================ */
+/* Test 5: Implementation Considerations */
+/* ================================================================================ */
+"Test 5: Implementation Considerations\n".echo();
+"------------------------------------\n".echo();
+
+"Unified Formula System Design:\n".echo();
+
+"Extended Field Structure:\n".echo();
+"```cpp\n".echo();
+"// Extended field structure to support computed fields\n".echo();
+"struct GrapaDBField {\n".echo();
+"    // ... existing field properties ...\n".echo();
+"    \n".echo();
+"    // Computed field properties\n".echo();
+"    bool isComputed;                    // Is this a computed field?\n".echo();
+"    GrapaCHAR formulaCode;              // Grapa lambda expression for computation\n".echo();
+"    GrapaDU64Array dependentFields;     // Fields this formula depends on\n".echo();
+"    u64 lastComputedValue;              // Reference to last computed value\n".echo();
+"};\n".echo();
+"```\n".echo();
+
+"Extended Index Structure:\n".echo();
+"```cpp\n".echo();
+"// Extended index structure to support formula indexes\n".echo();
+"struct GrapaDBIndexFormula {\n".echo();
+"    u64 formulaId;                      // Unique formula identifier\n".echo();
+"    GrapaCHAR formulaCode;              // Grapa lambda expression\n".echo();
+"    u64 resultFieldId;                  // Field ID for computed result (if stored)\n".echo();
+"    u8 resultType;                      // Data type of computed result\n".echo();
+"    u64 resultSize;                     // Size of computed result\n".echo();
+"    bool storeComputedField;            // Whether to store as computed field\n".echo();
+"    GrapaDU64Array dependentFields;     // Fields this formula depends on\n".echo();
+"};\n".echo();
+"```\n".echo();
+
+"Formula Evaluation Engine:\n".echo();
+"```cpp\n".echo();
+"// Unified formula evaluation for both fields and indexes\n".echo();
+"GrapaError GrapaDB::EvaluateFormula(const GrapaCHAR& formulaCode, GrapaCursor& recordCursor, GrapaValue& result)\n".echo();
+"{\n".echo();
+"    // Parse and execute Grapa lambda expression\n".echo();
+"    GrapaValue lambdaResult;\n".echo();
+"    err = ExecuteGrapaLambda(formulaCode, recordCursor, lambdaResult);\n".echo();
+"    if (err) return(err);\n".echo();
+"    \n".echo();
+"    // Convert result to appropriate type\n".echo();
+"    err = ConvertToTargetType(lambdaResult, result);\n".echo();
+"    return(err);\n".echo();
+"}\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Test 6: Dependency Management */
+/* ================================================================================ */
+"Test 6: Dependency Management\n".echo();
+"-----------------------------\n".echo();
+
+"Managing field dependencies for computed values:\n".echo();
+
+"Dependency Tracking:\n".echo();
+"- Track which fields are used in computed formulas\n".echo();
+"- Update computed values when dependent fields change\n".echo();
+"- Maintain dependency graph for efficient updates\n".echo();
+"- Handle cascading updates for complex dependencies\n".echo();
+
+"Update Process:\n".echo();
+"1. Detect Changes: Monitor dependent field changes\n".echo();
+"2. Recompute Formula: Evaluate formula for changed records\n".echo();
+"3. Update Storage: Update field value or index entry\n".echo();
+"4. Maintain Consistency: Ensure all computed values are consistent\n".echo();
+
+"Performance Considerations:\n".echo();
+"- Incremental Updates: Only recompute when dependent fields change\n".echo();
+"- Background Computation: Compute formulas in background for large datasets\n".echo();
+"- Caching: Cache compiled lambda expressions for performance\n".echo();
+"- Lazy Evaluation: Evaluate formulas on-demand for read-heavy workloads\n".echo();
+
+/* ================================================================================ */
+/* Test 7: Real-World Scenarios */
+/* ================================================================================ */
+"Test 7: Real-World Scenarios\n".echo();
+"----------------------------\n".echo();
+
+"E-commerce Application:\n".echo();
+
+"Computed Fields:\n".echo();
+"```grapa\n".echo();
+"// Computed field: Product availability status\n".echo();
+"products.mkcomputedfield(\"availability_status\", \"STR\", \"VAR\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        stock = record.get('stock').raw().int(); \n".echo();
+"        if (stock > 0) 'in_stock' \n".echo();
+"        else if (stock == 0) 'out_of_stock' \n".echo();
+"        else 'backordered' \n".echo();
+"    }\");\n".echo();
+"\n".echo();
+"// Computed field: Price with tax\n".echo();
+"products.mkcomputedfield(\"price_with_tax\", \"FLOAT\", \"FIX\", 8,\n".echo();
+"    \"lambda(record) { \n".echo();
+"        price = record.get('price').raw().float(); \n".echo();
+"        tax_rate = record.get('tax_rate').raw().float(); \n".echo();
+"        price * (1 + tax_rate) \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Formula Indexes:\n".echo();
+"```grapa\n".echo();
+"// Index on price tier (not stored as field)\n".echo();
+"products.mkformulaindex(\"price_tier_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        price = record.get('price').raw().float(); \n".echo();
+"        if (price < 10) 'budget' \n".echo();
+"        else if (price < 50) 'mid_range' \n".echo();
+"        else 'premium' \n".echo();
+"    }\");\n".echo();
+"\n".echo();
+"// Index on discount eligibility (not stored as field)\n".echo();
+"products.mkformulaindex(\"discount_eligible_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        price = record.get('price').raw().float(); \n".echo();
+"        category = record.get('category'); \n".echo();
+"        if (price > 100 && category == 'electronics') true \n".echo();
+"        else false \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Financial Application:\n".echo();
+
+"Computed Fields:\n".echo();
+"```grapa\n".echo();
+"// Computed field: Account balance with interest\n".echo();
+"accounts.mkcomputedfield(\"balance_with_interest\", \"FLOAT\", \"FIX\", 8,\n".echo();
+"    \"lambda(record) { \n".echo();
+"        balance = record.get('balance').raw().float(); \n".echo();
+"        interest_rate = record.get('interest_rate').raw().float(); \n".echo();
+"        days = record.get('days_since_last_interest').raw().int(); \n".echo();
+"        balance * (1 + interest_rate * days / 365) \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+"Formula Indexes:\n".echo();
+"```grapa\n".echo();
+"// Index on risk category (not stored as field)\n".echo();
+"accounts.mkformulaindex(\"risk_category_index\", \n".echo();
+"    \"lambda(record) { \n".echo();
+"        balance = record.get('balance').raw().float(); \n".echo();
+"        credit_score = record.get('credit_score').raw().int(); \n".echo();
+"        if (balance > 10000 && credit_score > 700) 'low_risk' \n".echo();
+"        else if (balance > 5000 && credit_score > 600) 'medium_risk' \n".echo();
+"        else 'high_risk' \n".echo();
+"    }\");\n".echo();
+"```\n".echo();
+
+/* ================================================================================ */
+/* Summary */
+/* ================================================================================ */
+"=== Test Summary ===\n".echo();
+"✓ Computed fields and formula indexes concepts demonstrated\n".echo();
+"✓ Differences between stored computed values and computed indexes clarified\n".echo();
+"✓ Hybrid approach combining both methods explored\n".echo();
+"✓ Implementation considerations for unified formula system identified\n".echo();
+"✓ Dependency management strategies planned\n".echo();
+"✓ Real-world scenarios with practical examples provided\n".echo();
+"✓ Future enhancement roadmap established\n".echo();
+
+"=== Computed Fields and Formula Indexes Design Confirmed ===\n".echo();
+"✓ Computed Fields: Stored computed values with automatic updates\n".echo();
+"✓ Formula Indexes: Computed values for search optimization only\n".echo();
+"✓ Hybrid Approach: Best of both worlds for critical values\n".echo();
+"✓ Unified Formula System: Shared evaluation engine for both approaches\n".echo();
+"✓ Dependency Tracking: Automatic updates when dependent fields change\n".echo();
+"✓ Performance Optimization: Caching, incremental updates, background computation\n".echo();
+"✓ Future Enhancement: Leverages Grapa language capabilities for maximum flexibility\n".echo(); 

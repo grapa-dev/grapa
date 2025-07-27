@@ -1,0 +1,26 @@
+"================================================================================\n".echo();
+"Testing GrapaDB2 Simple Data Storage\n".echo();
+"================================================================================\n".echo();
+
+"Test 1: Create GrapaDB2 database\n".echo();
+u = $unified();
+err = u.create("grapadb2://simple_test");
+"Result: Database creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 2: Create a simple table\n".echo();
+err = u.mk("test_table", "ROW");
+"Result: Table creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 3: Try to set a simple value\n".echo();
+err = u.set("test_key", "test_value", "test_field");
+"Result: Simple set " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Test 4: Try to get the value back\n".echo();
+value = u.get("test_key", "test_field");
+"Result: Simple get " + (value ? "SUCCESS" : "FAILED").str() + " - Value: " + value.str() + "\n".echo();
+
+"================================================================================\n".echo();
+"Simple Test Complete\n".echo(); 
