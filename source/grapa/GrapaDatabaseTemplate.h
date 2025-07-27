@@ -171,7 +171,7 @@ public:
     
     /* GrapaDBX-specific helper methods - moved to public for library access */
     	        virtual GrapaError GrapaDBXNavigateToTable(const GrapaCHAR& tableName, GrapaDBXTable& table);
-        virtual GrapaError GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaDBXCursor& cursor);
+        virtual GrapaError GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaCursor& cursor);
     
     /* Parallel processing support - moved to public for library access */
     virtual GrapaError GetOptimalWorkerCount(const GrapaCHAR& operation, s64 dataSize);

@@ -891,12 +891,6 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIfErr(GrapaCHAR& pName) { return
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-class GrapaLibraryRuleTableEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
-};
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleTable(GrapaCHAR& pName) { return new GrapaLibraryRuleTableEvent(pName); }
 
 class GrapaLibraryRulePwdEvent : public GrapaLibraryEvent
@@ -961,7 +955,7 @@ public:
 	GrapaLibraryRuleMkFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMkField(GrapaCHAR& pName) { return new GrapaLibraryRuleMkFieldEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMkfield(GrapaCHAR& pName) { return new GrapaLibraryRuleMkFieldEvent(pName); }
 
 class GrapaLibraryRuleRmFieldEvent : public GrapaLibraryEvent
 {
@@ -969,7 +963,7 @@ public:
 	GrapaLibraryRuleRmFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRmField(GrapaCHAR& pName) { return new GrapaLibraryRuleRmFieldEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleRmfield(GrapaCHAR& pName) { return new GrapaLibraryRuleRmFieldEvent(pName); }
 
 //class GrapaLibraryRuleCpEvent : public GrapaLibraryEvent
 //{
@@ -2790,8 +2784,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "file_ls", &GrapaLibraryRuleEvent::HandleLs },
 		{ "file_mk", &GrapaLibraryRuleEvent::HandleMk },
 		{ "file_rm", &GrapaLibraryRuleEvent::HandleRm },
-		{ "file_mkfield", &GrapaLibraryRuleEvent::HandleMkField },
-		{ "file_rmfield", &GrapaLibraryRuleEvent::HandleRmField },
+		{ "file_mkfield", &GrapaLibraryRuleEvent::HandleMkfield },
+		{ "file_rmfield", &GrapaLibraryRuleEvent::HandleRmfield },
 		{ "file_info", &GrapaLibraryRuleEvent::HandleInfo },
 		{ "file_set", &GrapaLibraryRuleEvent::HandleSet },
 		{ "file_get", &GrapaLibraryRuleEvent::HandleGet },
@@ -9929,6 +9923,11 @@ GrapaRuleEvent* GrapaLibraryRuleSetEvent::Run(GrapaScriptExec *vScriptExec, Grap
 
 		GrapaCHAR setField;
 		if (fieldName.vVal) setField.FROM(fieldName.vVal->mValue);
+
+		printf("[DEBUG] GrapaLibraryRuleSetEvent::Run: objEvent=%p, database=%p, r2='%s', setField='%s'\n", 
+		       objEvent, objEvent ? objEvent->vDatabase : NULL, 
+		       r2.vVal ? (char*)r2.vVal->mValue.mBytes : "NULL",
+		       (char*)setField.mBytes);
 
 		if (r2.vVal->mValue.mToken == GrapaTokenType::INT)
 		{
@@ -19142,10 +19141,18 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCreateEvent::Run(GrapaScriptExec* vScript
 		if (unifiedDB && r2.vVal)
 		{
 			GrapaCHAR storageUrl = r2.vVal->mValue;
+			printf("[DEBUG] Unified Create: storageUrl='%s'\n", (char*)storageUrl.mBytes);
 			err = unifiedDB->InitializeStorage(storageUrl);
 			if (err == 0)
 			{
+				/* Establish database context - CRITICAL FIX */
+				// unifiedDB->DatabaseSet(storageUrl);
+				printf("[DEBUG] Unified Create: Database context established\n");
 				result = new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("created"));
+			}
+			else
+			{
+				printf("[DEBUG] Unified Create: InitializeStorage failed with err=%d\n", err);
 			}
 		}
 	}

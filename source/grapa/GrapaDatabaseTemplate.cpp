@@ -16,10 +16,14 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
     err = ParseStorageUrl(storageUrl);
     if (err) return err;
     
+    printf("[DEBUG] InitializeStorage: After ParseStorageUrl, mStorageType='%s'\n", (char*)mStorageType.mBytes);
+    
     // Initialize based on storage type
     if (mStorageType.StrCmp("FILESYSTEM") == 0) {
         // File system is always available
+        printf("[DEBUG] InitializeStorage: Using FILESYSTEM storage\n");
     } else if (mStorageType.StrCmp("GRAPADB") == 0) {
+        printf("[DEBUG] InitializeStorage: Using GRAPADB storage\n");
         if (!mGrapaDB) {
             mGrapaDB = new GrapaGroup();
             if (!mGrapaDB) return -1;
@@ -32,6 +36,7 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
             mGrapaDBRootType = GrapaDB::GROUP_TREE;
         }
     } else if (mStorageType.StrCmp("GRAPADBX") == 0) {
+        printf("[DEBUG] InitializeStorage: Using GRAPADBX storage\n");
         if (!mGrapaDBX) {
             mGrapaDBX = new GrapaGroup2(&mFile);
             if (!mGrapaDBX) return -1;
@@ -44,21 +49,26 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
             mGrapaDBXRootType = GrapaDB::GROUP_TREE;
         }
     } else if (mStorageType.StrCmp("NETWORK") == 0) {
+        printf("[DEBUG] InitializeStorage: Using NETWORK storage\n");
         if (!mNetwork) {
             mNetwork = new GrapaNet();
             if (!mNetwork) return -1;
         }
     } else if (mStorageType.StrCmp("MEMORY") == 0) {
+        printf("[DEBUG] InitializeStorage: Using MEMORY storage\n");
         // Memory storage is always available
     } else if (mStorageType.StrCmp("CLOUD") == 0) {
+        printf("[DEBUG] InitializeStorage: Using CLOUD storage\n");
         if (!mNetwork) {
             mNetwork = new GrapaNet();
             if (!mNetwork) return -1;
         }
     } else {
+        printf("[DEBUG] InitializeStorage: Unknown storage type '%s'\n", (char*)mStorageType.mBytes);
         return -1; // Unknown storage type
     }
     
+    printf("[DEBUG] InitializeStorage: Final mStorageType='%s'\n", (char*)mStorageType.mBytes);
     return 0;
 }
 
@@ -83,7 +93,8 @@ GrapaError GrapaUnifiedLocalDatabase::ParseStorageUrl(const GrapaCHAR& storageUr
                url.StrCmp("ftp://") == 0 || url.StrCmp("sftp://") == 0) {
         mStorageType.FROM("NETWORK");
         mStoragePath = url;
-    } else if (url.StrCmp("memory://") == 0) {
+    } else if (url.StrNCmp("memory://", 9) == 0) {
+        printf("[DEBUG] ParseStorageUrl: memory:// comparison returned 0, setting MEMORY type\n");
         mStorageType.FROM("MEMORY");
         mStoragePath.FROM((char*)url.mBytes + 9, url.mLength - 9);
     } else if (url.StrCmp("s3://") == 0 || url.StrCmp("gs://") == 0 || 
@@ -113,6 +124,8 @@ GrapaError GrapaUnifiedLocalDatabase::ParseStorageUrl(const GrapaCHAR& storageUr
             mCloudBucket = pathCopy;
             mStoragePath.FROM("");
         }
+    } else {
+        printf("[DEBUG] ParseStorageUrl: memory:// comparison returned %d\n", url.StrNCmp("memory://", 9));
     }
     printf("[DEBUG] ParseStorageUrl: mStorageType='%s', mStoragePath='%s'\n", (char*)mStorageType.mBytes, (char*)mStoragePath.mBytes);
     return 0;
@@ -162,14 +175,240 @@ GrapaError GrapaUnifiedLocalDatabase::DataDelete(const GrapaCHAR& pName)
 
 GrapaError GrapaUnifiedLocalDatabase::FieldSet(const GrapaCHAR& pName, const GrapaCHAR& pField, const GrapaCHAR& pValue)
 {
-    /* TODO: Implement enhanced field setting */
-    return GrapaLocalDatabase::FieldSet(pName, pField, pValue);
+    printf("[DEBUG] GrapaUnifiedLocalDatabase::FieldSet: pName='%s', pField='%s', pValue='%s', mStorageType='%s'\n", 
+           (char*)pName.mBytes, (char*)pField.mBytes, (char*)pValue.mBytes, (char*)mStorageType.mBytes);
+    
+    // Route based on storage type
+    if (mStorageType.StrCmp("MEMORY") == 0) {
+        printf("[DEBUG] FieldSet: Using MEMORY storage\n");
+        if (!mGrapaDBX) {
+            printf("[DEBUG] FieldSet: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        // For memory storage, use GrapaDBX with in-memory file
+        GrapaDBXTable table;
+        GrapaCHAR tableName("$");
+        GrapaError err = GrapaDBXNavigateToTable(tableName, table);
+        if (err) {
+            printf("[DEBUG] FieldSet: GrapaDBXNavigateToTable failed with error %d\n", err);
+            return err;
+        }
+        
+        // Create or find the record
+        u64 recordId;
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+        if (group2) {
+            err = group2->CreateEntry(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, recordId);
+            if (err) {
+                printf("[DEBUG] FieldSet: CreateEntry failed with error %d\n", err);
+                return err;
+            }
+            
+            // Set the field value
+            GrapaCHAR fieldName(pField);
+            if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
+            
+            // Convert GrapaCHAR to GrapaBYTE
+            GrapaBYTE fieldValue;
+            fieldValue.FROM(pValue.mLength, pValue.mBytes);
+            fieldValue.mToken = pValue.mToken;
+            
+            err = group2->SetField(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, fieldName, fieldValue);
+            if (err) {
+                printf("[DEBUG] FieldSet: SetField failed with error %d\n", err);
+                return err;
+            }
+            
+            printf("[DEBUG] FieldSet: Successfully set field\n");
+        } else {
+            printf("[DEBUG] FieldSet: mGrapaDBX is not a GrapaGroup2\n");
+            return -1;
+        }
+        
+    } else if (mStorageType.StrCmp("GRAPADBX") == 0) {
+        printf("[DEBUG] FieldSet: Using GRAPADBX storage\n");
+        if (!mGrapaDBX) {
+            printf("[DEBUG] FieldSet: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        // For GrapaDBX storage, use file-based GrapaDBX
+        GrapaDBXTable table;
+        GrapaCHAR tableName("$");
+        GrapaError err = GrapaDBXNavigateToTable(tableName, table);
+        if (err) {
+            printf("[DEBUG] FieldSet: GrapaDBXNavigateToTable failed with error %d\n", err);
+            return err;
+        }
+        
+        // Create or find the record
+        u64 recordId;
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+        if (group2) {
+            err = group2->CreateEntry(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, recordId);
+            if (err) {
+                printf("[DEBUG] FieldSet: CreateEntry failed with error %d\n", err);
+                return err;
+            }
+            
+            // Set the field value
+            GrapaCHAR fieldName(pField);
+            if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
+            
+            // Convert GrapaCHAR to GrapaBYTE
+            GrapaBYTE fieldValue;
+            fieldValue.FROM(pValue.mLength, pValue.mBytes);
+            fieldValue.mToken = pValue.mToken;
+            
+            err = group2->SetField(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, fieldName, fieldValue);
+            if (err) {
+                printf("[DEBUG] FieldSet: SetField failed with error %d\n", err);
+                return err;
+            }
+            
+            printf("[DEBUG] FieldSet: Successfully set field\n");
+        } else {
+            printf("[DEBUG] FieldSet: mGrapaDBX is not a GrapaGroup2\n");
+            return -1;
+        }
+        
+    } else {
+        // Fall back to parent implementation for FILESYSTEM and other types
+        printf("[DEBUG] FieldSet: Using parent implementation for storage type '%s'\n", (char*)mStorageType.mBytes);
+        return GrapaLocalDatabase::FieldSet(pName, pField, pValue);
+    }
+    
+    return 0;
 }
 
 GrapaError GrapaUnifiedLocalDatabase::FieldGet(const GrapaCHAR& pName, const GrapaCHAR& pField, GrapaCHAR& pValue)
 {
-    /* TODO: Implement enhanced field getting */
-    return GrapaLocalDatabase::FieldGet(pName, pField, pValue);
+    printf("[DEBUG] GrapaUnifiedLocalDatabase::FieldGet: pName='%s', pField='%s', mStorageType='%s'\n", 
+           (char*)pName.mBytes, (char*)pField.mBytes, (char*)mStorageType.mBytes);
+    
+    pValue.SetLength(0);
+    
+    // Route based on storage type
+    if (mStorageType.StrCmp("MEMORY") == 0) {
+        printf("[DEBUG] FieldGet: Using MEMORY storage\n");
+        if (!mGrapaDBX) {
+            printf("[DEBUG] FieldGet: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        // For memory storage, use GrapaDBX with in-memory file
+        GrapaDBXTable table;
+        GrapaCHAR tableName("$");
+        GrapaError err = GrapaDBXNavigateToTable(tableName, table);
+        if (err) {
+            printf("[DEBUG] FieldGet: GrapaDBXNavigateToTable failed with error %d\n", err);
+            return err;
+        }
+        
+        // Find the record
+        GrapaCursor cursor;
+        err = GrapaDBXFindRecord(pName, table, cursor);
+        if (err) {
+            printf("[DEBUG] FieldGet: GrapaDBXFindRecord failed with error %d\n", err);
+            return err;
+        }
+        
+        // Get the field value
+        GrapaBYTE fieldValue;
+        GrapaCHAR fieldName(pField);
+        if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
+        
+        // Find field ID
+        GrapaDBXField field;
+        u64 maxId;
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+        if (group2) {
+            err = group2->FindField(mGrapaDBXFirstTree, mGrapaDBXRootType, fieldName, field, maxId);
+            if (err) {
+                printf("[DEBUG] FieldGet: FindField failed with error %d\n", err);
+                return err;
+            }
+            
+            // Get the field value using GrapaDBX's GetField
+            err = group2->GetField(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, fieldName, fieldValue);
+            if (err) {
+                printf("[DEBUG] FieldGet: GetField failed with error %d\n", err);
+                return err;
+            }
+            
+            // Convert GrapaBYTE to GrapaCHAR
+            pValue.FROM((char*)fieldValue.mBytes, fieldValue.mLength);
+            pValue.mToken = fieldValue.mToken;
+            printf("[DEBUG] FieldGet: Retrieved value length=%llu\n", pValue.mLength);
+        } else {
+            printf("[DEBUG] FieldGet: mGrapaDBX is not a GrapaGroup2\n");
+            return -1;
+        }
+        
+    } else if (mStorageType.StrCmp("GRAPADBX") == 0) {
+        printf("[DEBUG] FieldGet: Using GRAPADBX storage\n");
+        if (!mGrapaDBX) {
+            printf("[DEBUG] FieldGet: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        // For GrapaDBX storage, use file-based GrapaDBX
+        GrapaDBXTable table;
+        GrapaCHAR tableName("$");
+        GrapaError err = GrapaDBXNavigateToTable(tableName, table);
+        if (err) {
+            printf("[DEBUG] FieldGet: GrapaDBXNavigateToTable failed with error %d\n", err);
+            return err;
+        }
+        
+        // Find the record
+        GrapaCursor cursor;
+        err = GrapaDBXFindRecord(pName, table, cursor);
+        if (err) {
+            printf("[DEBUG] FieldGet: GrapaDBXFindRecord failed with error %d\n", err);
+            return err;
+        }
+        
+        // Get the field value
+        GrapaBYTE fieldValue;
+        GrapaCHAR fieldName(pField);
+        if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
+        
+        // Find field ID
+        GrapaDBXField field;
+        u64 maxId;
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+        if (group2) {
+            err = group2->FindField(mGrapaDBXFirstTree, mGrapaDBXRootType, fieldName, field, maxId);
+            if (err) {
+                printf("[DEBUG] FieldGet: FindField failed with error %d\n", err);
+                return err;
+            }
+            
+            // Get the field value using GrapaDBX's GetField
+            err = group2->GetField(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, fieldName, fieldValue);
+            if (err) {
+                printf("[DEBUG] FieldGet: GetField failed with error %d\n", err);
+                return err;
+            }
+            
+            // Convert GrapaBYTE to GrapaCHAR
+            pValue.FROM((char*)fieldValue.mBytes, fieldValue.mLength);
+            pValue.mToken = fieldValue.mToken;
+            printf("[DEBUG] FieldGet: Retrieved value length=%llu\n", pValue.mLength);
+        } else {
+            printf("[DEBUG] FieldGet: mGrapaDBX is not a GrapaGroup2\n");
+            return -1;
+        }
+        
+    } else {
+        // Fall back to parent implementation for FILESYSTEM and other types
+        printf("[DEBUG] FieldGet: Using parent implementation for storage type '%s'\n", (char*)mStorageType.mBytes);
+        return GrapaLocalDatabase::FieldGet(pName, pField, pValue);
+    }
+    
+    return 0;
 }
 
 GrapaError GrapaUnifiedLocalDatabase::GetStorageInfo(GrapaRuleEvent* pTable)
@@ -292,7 +531,7 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBXNavigateToTable(const GrapaCHAR& t
 }
 
 /* Helper method for GrapaDBX record finding */
-GrapaError GrapaUnifiedLocalDatabase::GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaDBXCursor& cursor)
+GrapaError GrapaUnifiedLocalDatabase::GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaCursor& cursor)
 {
 	if (!mGrapaDBX) return -1;
 	
@@ -304,20 +543,20 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBXFindRecord(const GrapaCHAR& record
 	u64 recordId;
 	
 	// Try to find the record using hierarchical navigation
-	        // Use GrapaGroup2 for hierarchical operations
-        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
-        if (group2) {
-            err = group2->FindEntry(table.mRef, table.mRefType, recordName, recordId);
-        } else {
-            err = -1; // Not a GrapaGroup2
-        }
+	// Use GrapaGroup2 for hierarchical operations
+	GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+	if (group2) {
+		err = group2->FindEntry(table.mRef, table.mRefType, recordName, recordId);
+	} else {
+		err = -1; // Not a GrapaGroup2
+	}
 	if (err) {
 		// Record doesn't exist
 		return err;
 	}
 	
 	// Set up the cursor with the found record
-	        cursor.Set(table.mRef, GrapaDB::RREC_ITEM, recordId);
+	cursor.Set(table.mRef, GrapaDB::RREC_ITEM, recordId);
 	
 	return 0;
 }
