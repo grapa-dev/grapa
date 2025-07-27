@@ -19206,10 +19206,10 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCdEvent::Run(GrapaScriptExec* vScriptExec
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
-				/* Implement GrapaDB2 directory switching */
+				/* Implement GrapaDBX directory switching */
 				/* This navigates to a different table or group within GrapaDBX */
-				GrapaDBX* db2 = unifiedDB->GetGrapaDBX();
-				if (db2)
+				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				if (dbx)
 				{
 					                                        					GrapaDBXTable table;
 					GrapaError tableErr = unifiedDB->GrapaDBXNavigateToTable(dirName, table);
@@ -19226,7 +19226,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCdEvent::Run(GrapaScriptExec* vScriptExec
 				}
 				else
 				{
-					err = -1; /* No GrapaDB2 instance */
+					err = -1; /* No GrapaDBX instance */
 				}
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("NETWORK") == 0)
@@ -19401,8 +19401,8 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 			{
 				/* Implement GrapaDBX listing */
 				/* This lists tables, records, or fields within GrapaDBX */
-				GrapaDBX* db2 = unifiedDB->GetGrapaDBX();
-				if (db2)
+				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				if (dbx)
 				{
 					/* Create a table to hold the listing results */
 					GrapaRuleEvent* table = new GrapaRuleEvent(GrapaTokenType::ARRAY, 0, "", "");
@@ -19416,10 +19416,10 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 						/* List all records in the current table */
 						GrapaDBXCursor cursor;
 						GrapaDBXFieldValueArray searchValues;
-						GrapaError searchErr = db2->SearchDb(cursor, currentTable, searchValues);
+						GrapaError searchErr = dbx->SearchDb(cursor, currentTable, searchValues);
 						if (!searchErr)
 						{
-							GrapaError firstErr = db2->FirstDb(cursor);
+							GrapaError firstErr = dbx->FirstDb(cursor);
 							if (!firstErr)
 							{
 								/* Add each record to the listing table */
@@ -19430,7 +19430,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 									GrapaCHAR keyField;
 									keyField.FROM("$KEY");
 									GrapaBYTE value;
-									GrapaError nameErr = db2->GetRecordField(cursor, 0, value);
+									GrapaError nameErr = dbx->GetRecordField(cursor, 0, value);
 									if (!nameErr)
 									{
 										/* Add record to listing with default $KEY/$VALUE structure */
@@ -19447,7 +19447,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 										table->vQueue->PushTail(row);
 									}
 									
-									GrapaError nextErr = db2->NextDb(cursor);
+									GrapaError nextErr = dbx->NextDb(cursor);
 									if (nextErr) break;
 								} while (true);
 							}
@@ -19467,7 +19467,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 				}
 				else
 				{
-					err = -1; /* No GrapaDB2 instance */
+					err = -1; /* No GrapaDBX instance */
 				}
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("NETWORK") == 0)
@@ -19682,7 +19682,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedMkEvent::Run(GrapaScriptExec* vScriptExec
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
-				/* Implement GrapaDB2 mk */
+				/* Implement GrapaDBX mk */
 				/* This creates a new table, record, or field in GrapaDBX */
 				GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(unifiedDB->GetGrapaDBX());
 				if (group2)
@@ -19854,14 +19854,14 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedRmEvent::Run(GrapaScriptExec* vScriptExec
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
-				/* Implement GrapaDB2 rm */
+				/* Implement GrapaDBX rm */
 				/* This deletes a table, record, or field from GrapaDBX */
-				GrapaDBX* db2 = unifiedDB->GetGrapaDBX();
-				if (db2)
+				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				if (dbx)
 				{
 					/* Try to delete as a record first */
 					GrapaDBXTable currentTable;
-					GrapaError tableErr = db2->OpenTable(unifiedDB->GetGrapaDBXFirstTree(), 0, currentTable);
+					GrapaError tableErr = dbx->OpenTable(unifiedDB->GetGrapaDBXFirstTree(), 0, currentTable);
 					if (!tableErr)
 					{
 						GrapaDBXCursor cursor;
@@ -19869,13 +19869,13 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedRmEvent::Run(GrapaScriptExec* vScriptExec
 						if (!findErr)
 						{
 							/* Found record, delete it */
-							err = db2->DeleteRecord(currentTable, cursor);
+							err = dbx->DeleteRecord(currentTable, cursor);
 						}
 						else
 						{
 							/* Not a record, try to delete as table */
 							u64 tableId = 0;
-							GrapaError deleteTableErr = db2->DeleteTable(unifiedDB->GetGrapaDBXFirstTree(), tableId);
+							GrapaError deleteTableErr = dbx->DeleteTable(unifiedDB->GetGrapaDBXFirstTree(), tableId);
 							if (!deleteTableErr)
 							{
 								err = 0;
@@ -19893,7 +19893,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedRmEvent::Run(GrapaScriptExec* vScriptExec
 				}
 				else
 				{
-					err = -1; /* No GrapaDB2 instance */
+					err = -1; /* No GrapaDBX instance */
 				}
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("NETWORK") == 0)
@@ -20060,13 +20060,13 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
 				printf("[DEBUG] GrapaLibRule Set: Storage type is GRAPADBX\n");
-				/* Implement GrapaDB2 set using proper database navigation */
-				/* This sets a field value in a GrapaDB2 record */
+				/* Implement GrapaDBX set using proper database navigation */
+				/* This sets a field value in a GrapaDBX record */
 				err = 0; /* Initialize err to 0 */
-				GrapaDBX* db2 = unifiedDB->GetGrapaDBX();
-				printf("[DEBUG] GrapaLibRule: db2 pointer = %p\n", (void*)db2);
-				printf("[DEBUG] GrapaLibRule: db2 typeid = %s\n", typeid(*db2).name());
-				if (db2)
+				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				printf("[DEBUG] GrapaLibRule: dbx pointer = %p\n", (void*)dbx);
+				printf("[DEBUG] GrapaLibRule: dbx typeid = %s\n", typeid(*dbx).name());
+				if (dbx)
 				{
 					/* Use the same approach as GrapaDB - navigate through the database path */
 					u64 dirId = unifiedDB->GetGrapaDBXFirstTree();
@@ -20094,7 +20094,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 							u8 newDirType = 0;
 							u64 tableId = 0;
 													// Use GrapaGroup2 for hierarchical operations
-						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(db2);
+						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(dbx);
 						printf("[DEBUG] GrapaLibRule: static_cast result = %p\n", (void*)group2);
 						GrapaError navErr = -1;
 						if (group2) {
@@ -20133,7 +20133,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 						if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
 						
 						// Use GrapaGroup2 for hierarchical operations
-						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(db2);
+						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(dbx);
 						printf("[DEBUG] GrapaLibRule: SetField static_cast result = %p\n", (void*)group2);
 						if (group2) {
 							printf("[DEBUG] GrapaLibRule: Calling group2->SetField\n");
@@ -20150,8 +20150,8 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 				}
 				else
 				{
-					printf("[DEBUG] GrapaLibRule: No GrapaDB2 instance\n");
-					err = -1; /* No GrapaDB2 instance */
+					printf("[DEBUG] GrapaLibRule: No GrapaDBX instance\n");
+					err = -1; /* No GrapaDBX instance */
 				}
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("NETWORK") == 0)
@@ -20340,13 +20340,13 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
 				printf("[DEBUG] GrapaLibRule Get: Storage type is GRAPADBX\n");
-				/* Implement GrapaDB2 get using proper database navigation */
-				/* This gets a field value from a GrapaDB2 record */
+				/* Implement GrapaDBX get using proper database navigation */
+				/* This gets a field value from a GrapaDBX record */
 				err = 0; /* Initialize err to 0 */
-				GrapaDBX* db2 = unifiedDB->GetGrapaDBX();
-				printf("[DEBUG] GrapaLibRule Get: db2 pointer = %p\n", (void*)db2);
-				printf("[DEBUG] GrapaLibRule Get: db2 typeid = %s\n", typeid(*db2).name());
-				if (db2)
+				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				printf("[DEBUG] GrapaLibRule Get: dbx pointer = %p\n", (void*)dbx);
+				printf("[DEBUG] GrapaLibRule Get: dbx typeid = %s\n", typeid(*dbx).name());
+				if (dbx)
 				{
 					/* Use the same approach as GrapaDB - navigate through the database path */
 					u64 dirId = unifiedDB->GetGrapaDBXFirstTree();
@@ -20374,7 +20374,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 							u8 newDirType = 0;
 							u64 tableId = 0;
 							// Use GrapaGroup2 for hierarchical operations
-							GrapaGroup2* group2 = static_cast<GrapaGroup2*>(db2);
+							GrapaGroup2* group2 = static_cast<GrapaGroup2*>(dbx);
 							printf("[DEBUG] GrapaLibRule Get: static_cast result = %p\n", (void*)group2);
 							GrapaError navErr = -1;
 							if (group2) {
@@ -20413,7 +20413,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 						
 						GrapaBYTE value;
 						// Use GrapaGroup2 for hierarchical operations
-						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(db2);
+						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(dbx);
 						printf("[DEBUG] GrapaLibRule Get: GetField static_cast result = %p\n", (void*)group2);
 						if (group2) {
 							printf("[DEBUG] GrapaLibRule Get: Calling group2->GetField\n");
@@ -20433,7 +20433,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 				}
 				else
 				{
-					err = -1; /* No GrapaDB2 instance */
+					err = -1; /* No GrapaDBX instance */
 				}
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("NETWORK") == 0)

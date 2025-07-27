@@ -239,7 +239,7 @@ GrapaError GrapaDBX::UpdateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFi
 // Field operations - placeholder implementation since GrapaBtree doesn't have these methods
 GrapaError GrapaDBX::CreateTableField(GrapaDBXTable& pTable, GrapaDBXField& pField, const GrapaCHAR& pName)
 {
-	/* Simplified implementation for GrapaDB2 - just store the field info */
+	/* Simplified implementation for GrapaDBX - just store the field info */
 	// For now, just return success without doing the complex GrapaDB field management
 	// This will need to be enhanced to actually store field information
 	return 0;
@@ -1193,7 +1193,7 @@ GrapaError GrapaDBX::DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// GrapaGroup2 implementation - inherits from GrapaDB2
+// GrapaGroup2 implementation - inherits from GrapaDBX
 GrapaGroup2::GrapaGroup2() : GrapaDBX()
 {
 	mRootTable = 0;
@@ -1905,7 +1905,7 @@ GrapaError GrapaGroup2::GetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 	}
 	printf("[DEBUG] GetField: GetDataTypeRecord succeeded\n");
 	
-	/* For now, since GrapaDB2 is a placeholder implementation, 
+	/* For now, since GrapaDBX is a placeholder implementation, 
 	   we'll skip the complex BTree search and just use a simple approach */
 	
 	/* Initialize the dict field with default values for placeholder */
@@ -2338,7 +2338,7 @@ void GrapaGroup2Queue::CloseFile(GrapaGroup2Event* pEvent)
 } 
 
 ////////////////////////////////////////////////////////////////////////////////
-// GrapaDB2 Data Structure Method Implementations
+// GrapaDBX Data Structure Method Implementations
 ////////////////////////////////////////////////////////////////////////////////
 
 // GrapaDBXField implementations
@@ -2625,7 +2625,7 @@ void GrapaDBXIndex::BigEndian()
 	mRef = BE_S64(mRef);
 }
 
-// Formula field operations - new functionality for GrapaDB2
+// Formula field operations - new functionality for GrapaDBX
 GrapaError GrapaDBX::CreateFormulaField(GrapaDBXTable& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType)
 {
 	GrapaError err;

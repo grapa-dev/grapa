@@ -79,7 +79,7 @@ class GrapaUnifiedLocalDatabase;
 class GrapaUnifiedLocalDatabase : public GrapaLocalDatabase
 {
 private:
-    GrapaCHAR mStorageType;      /* "FILESYSTEM", "GRAPADB", "GRAPADB2", "NETWORK", "MEMORY", "CLOUD" */
+    GrapaCHAR mStorageType;      /* "FILESYSTEM", "GRAPADB", "GRAPADBX", "NETWORK", "MEMORY", "CLOUD" */
     GrapaCHAR mStorageUrl;       /* Full storage URL */
     GrapaCHAR mStorageHost;      /* Host/server for network/cloud */
     GrapaCHAR mStoragePath;      /* Path within storage */
@@ -169,7 +169,7 @@ public:
     virtual GrapaError GrapaDBNavigateToTable(const GrapaCHAR& tableName, GrapaDBTable& table);
     virtual GrapaError GrapaDBFindRecord(const GrapaCHAR& recordName, GrapaDBTable& table, GrapaCursor& cursor);
     
-    /* GrapaDB2-specific helper methods - moved to public for library access */
+    /* GrapaDBX-specific helper methods - moved to public for library access */
     	        virtual GrapaError GrapaDBXNavigateToTable(const GrapaCHAR& tableName, GrapaDBXTable& table);
         virtual GrapaError GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaDBXCursor& cursor);
     

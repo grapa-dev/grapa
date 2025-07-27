@@ -1,6 +1,6 @@
 /* Test GrapaDBX Indexes */
 
-"=== GRAPADB2 INDEX TEST ===\n".echo();
+"=== GRAPADBX INDEX TEST ===\n".echo();
 
 /* Test 1: Create GrapaDBX Database with Indexes */
 "Test 1: Creating GrapaDBX database with indexes...\n".echo();
@@ -215,7 +215,7 @@ if (table_output.len() > 0) {
 }
 
 /* Final Summary */
-"=== GRAPADB2 INDEX TEST COMPLETE ===\n".echo();
+"=== GRAPADBX INDEX TEST COMPLETE ===\n".echo();
 "✓ All index tests completed\n".echo();
 "✓ Index creation and maintenance working\n".echo();
 "✓ Index-based search functional\n".echo();

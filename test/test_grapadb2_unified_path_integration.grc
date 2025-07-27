@@ -200,7 +200,7 @@ f.cd("new_database");  // GrapaDBX format
 format = f.getDatabaseFormat("database");
 if (format == "GRAPA_DB") {
     ("Using current format").echo();
-} else if (format == "GRAPA_DB2") {
+} else if (format == "GRAPA_DBX") {
     ("Using GrapaDBX format").echo();
 }
 */

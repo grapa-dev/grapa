@@ -251,14 +251,14 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBFindRecord(const GrapaCHAR& recordN
 	return err;
 }
 
-/* Helper method for GrapaDB2 table navigation */
+/* Helper method for GrapaDBX table navigation */
 GrapaError GrapaUnifiedLocalDatabase::GrapaDBXNavigateToTable(const GrapaCHAR& tableName, GrapaDBXTable& table)
 {
     if (!mGrapaDBX) return -1;
     
     GrapaError err;
     
-    // Use GrapaDB2's hierarchical navigation methods to properly handle nested structures
+    // Use GrapaDBX's hierarchical navigation methods to properly handle nested structures
     // This mirrors how GrapaDB handles it with OpenGroup
     
     u64 newTree;
@@ -291,14 +291,14 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBXNavigateToTable(const GrapaCHAR& t
     return 0;
 }
 
-/* Helper method for GrapaDB2 record finding */
+/* Helper method for GrapaDBX record finding */
 GrapaError GrapaUnifiedLocalDatabase::GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaDBXCursor& cursor)
 {
 	if (!mGrapaDBX) return -1;
 	
 	GrapaError err = 0;
 	
-	// Use GrapaDB2's hierarchical navigation methods to find records
+	// Use GrapaDBX's hierarchical navigation methods to find records
 	// This mirrors how GrapaDB handles it with FindEntry
 	
 	u64 recordId;
@@ -551,7 +551,7 @@ GrapaError GrapaUnifiedLocalDatabase::NetworkWriteFile(const GrapaCHAR& path, co
 
 GrapaError GrapaUnifiedLocalDatabase::GrapaDBXOperation(const GrapaCHAR& operation, const GrapaCHAR& params)
 {
-    /* TODO: Implement GrapaDB2 operations */
+    /* TODO: Implement GrapaDBX operations */
     return 0;
 }
 

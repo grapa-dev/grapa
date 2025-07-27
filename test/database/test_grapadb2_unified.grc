@@ -1,6 +1,6 @@
 /* Test GrapaDBX Backend with Unified Storage System */
 
-"=== GRAPADB2 UNIFIED STORAGE TEST ===\n".echo();
+"=== GRAPADBX UNIFIED STORAGE TEST ===\n".echo();
 
 /* Test 1: Create GrapaDBX Database */
 "Test 1: Creating GrapaDBX database...\n".echo();
@@ -185,7 +185,7 @@ if (listing.len() > 0) {
 }
 
 /* Final Summary */
-"=== GRAPADB2 UNIFIED STORAGE TEST COMPLETE ===\n".echo();
+"=== GRAPADBX UNIFIED STORAGE TEST COMPLETE ===\n".echo();
 "✓ All GrapaDBX backend tests completed\n".echo();
 "✓ GrapaDBX integration with unified storage system working\n".echo();
 "✓ Core database operations functional\n".echo();
