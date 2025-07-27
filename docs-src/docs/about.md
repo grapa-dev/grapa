@@ -1,3 +1,9 @@
+---
+title: About Grapa - Grammar-based Programming Language
+description: Learn about Grapa's core innovations in runtime grammar mutation and weighted BTree storage engine. Discover how this modern programming language enables unlimited precision, true parallelism, and seamless Python integration.
+keywords: [grapa, about, grammar-based programming, runtime grammar mutation, weighted BTree, unlimited precision, parallelism, Python integration, data engineering]
+---
+
 # About Grapa
 
 ## What is Grapa?

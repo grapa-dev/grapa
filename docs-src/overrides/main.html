@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  
+  <!-- Enhanced Open Graph Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ config.site_name }}">
+  <meta property="og:description" content="{% if page.meta and page.meta.description %}{{ page.meta.description }}{% else %}{{ config.site_description }}{% endif %}">
+  <meta property="og:url" content="{{ page.canonical_url }}">
+  <meta property="og:site_name" content="{{ config.site_name }}">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ config.site_name }}">
+  <meta name="twitter:description" content="{% if page.meta and page.meta.description %}{{ page.meta.description }}{% else %}{{ config.site_description }}{% endif %}">
+  <meta name="twitter:site" content="@grapa_dev">
+  <meta name="twitter:creator" content="@grapa_dev">
+  
+  <!-- Additional SEO Meta Tags -->
+  <meta name="keywords" content="programming language, grammar, data processing, ETL, Python integration, unlimited precision, parallelism, database, column store, weighted BTree, runtime grammar mutation">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <meta name="language" content="en">
+  <meta name="revisit-after" content="7 days">
+  <meta name="distribution" content="global">
+  <meta name="rating" content="general">
+  
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Grapa",
+    "description": "{{ config.site_description }}",
+    "url": "{{ config.site_url }}",
+    "applicationCategory": "ProgrammingLanguage",
+    "operatingSystem": "Windows, macOS, Linux",
+    "programmingLanguage": "C++",
+    "author": {
+      "@type": "Organization",
+      "name": "{{ config.site_author }}",
+      "url": "https://github.com/grapa-dev"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "{{ config.site_author }}",
+      "url": "https://github.com/grapa-dev"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "softwareVersion": "0.0.41",
+    "downloadUrl": "https://github.com/grapa-dev/grapa/releases",
+    "codeRepository": "https://github.com/grapa-dev/grapa",
+    "license": "https://github.com/grapa-dev/grapa/blob/main/LICENSE",
+    "keywords": ["programming language", "grammar", "data processing", "ETL", "Python integration", "unlimited precision", "parallelism", "database", "column store", "weighted BTree", "runtime grammar mutation"],
+    "featureList": [
+      "Runtime grammar mutation",
+      "Weighted BTree storage engine", 
+      "Unlimited precision math",
+      "True parallelism",
+      "Python integration",
+      "Cross-platform compatibility"
+    ]
+  }
+  </script>
+  
+  <!-- Additional Structured Data for Documentation -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "{{ config.site_name }}",
+    "url": "{{ config.site_url }}",
+    "description": "{{ config.site_description }}",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "{{ config.site_url }}search.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+  
+{% endblock %} 

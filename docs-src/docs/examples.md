@@ -1,3 +1,9 @@
+---
+title: Grapa Examples - Practical Scripts and Code Samples
+description: Comprehensive collection of practical Grapa examples including grep pattern matching, database operations, ETL workflows, file processing, and data analysis. Learn by example with real-world code samples.
+keywords: [grapa, examples, code samples, grep, pattern matching, database, ETL, file processing, data analysis, practical examples, tutorials]
+---
+
 # Examples
 
 Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scripts and code snippets demonstrating Grapa's core features, from basic syntax to advanced data processing and Python integration.

@@ -1,0 +1,5 @@
+# Disable Jekyll processing for GitHub Pages
+# This allows custom MkDocs templates to work without interference
+markdown: kramdown
+plugins: []
+exclude: [] 

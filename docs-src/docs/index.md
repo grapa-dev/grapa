@@ -1,3 +1,9 @@
+---
+title: Welcome to Grapa Documentation
+description: Comprehensive documentation for Grapa - a modern grammar-based programming language with unlimited precision, true parallelism, and seamless Python integration. Perfect for data engineering, ETL, and language experimentation.
+keywords: [grapa, programming language, grammar, data processing, ETL, Python integration, unlimited precision, parallelism, documentation]
+---
+
 # Welcome to Grapa Documentation
 
 ## How to Use This Documentation

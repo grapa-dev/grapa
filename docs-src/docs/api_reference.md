@@ -1,4 +1,7 @@
 ---
+title: Grapa API Reference - Complete Function and Type Documentation
+description: Comprehensive API reference for all Grapa functions, types, operators, and system objects. Complete documentation for grep, database operations, file system, math, and more. Essential for developers and advanced users.
+keywords: [grapa, api, reference, functions, types, operators, system objects, documentation, grep, database, file system, math, pattern matching, ETL]
 tags:
   - user
   - highlevel

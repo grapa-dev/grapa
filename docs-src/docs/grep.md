@@ -1,3 +1,9 @@
+---
+title: Grapa Grep - Advanced Pattern Matching and Text Search
+description: Powerful grep functionality in Grapa with full Unicode support, PCRE2 regex, case-insensitive matching, and parallel processing. Perfect alternative to traditional grep with enhanced features for data processing and text analysis.
+keywords: [grep, pattern matching, text search, regex, PCRE2, Unicode, case-insensitive, parallel grep, text processing, search functionality, ripgrep alternative]
+---
+
 # Grapa Grep Documentation
 
 

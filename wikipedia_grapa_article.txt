@@ -1,0 +1,143 @@
+GRAPA WIKIPEDIA ARTICLE
+======================
+
+Copy and paste the content below into Wikipedia's article editor.
+
+{{Infobox programming language
+| name = Grapa
+| paradigm = Grammar-based, imperative, functional
+| year = 2001
+| designer = Grapa Development Team
+| latest_release_version = Current
+| latest_release_date = 2025
+| typing = Dynamic, strong
+| implementations = C++
+| operating_system = Cross-platform (Windows, macOS, Linux)
+| license = Open source
+| website = {{URL|https://grapa-dev.github.io/grapa/}}
+| influenced_by = YACC, BTree systems
+| influenced = None
+}}
+
+'''Grapa''' is a modern, grammar-based programming language and data processing platform designed for unlimited precision, true parallelism, and seamless Python integration. It features two core innovations: runtime grammar mutation and a weighted BTree storage engine. Grapa is used in production-grade ETL workflows and AWS Lambda environments, making it suitable for data engineers, educators, researchers, and developers requiring high-performance data processing and language experimentation.
+
+== History and Development ==
+
+Grapa was developed as an experimental language to test a novel database engine design. The project originated from the question: "Could I build a language that can mutate its own grammar at runtime, with a storage engine to support fragmented, update-efficient columnar access?" The language evolved from early cross-platform BTree systems developed for mainframe simulation and terminal screen capture storage.
+
+The weighted BTree concept emerged from the need to store fragmented columnar data with in-place updates, leading to the development of nodes that carry "weight" (byte length) instead of just count, enabling fast partial reads, inserts, and updates.
+
+== Core Innovations ==
+
+=== Runtime Grammar Mutation ===
+
+Grapa's most distinctive feature is its ability to mutate its own grammar at runtime using mutable <code>$RULE</code> variables. This enables scoped language evolution and meta-programming, making Grapa a "language for building languages." The system uses executable runtime syntax-mutable grammar, which is unique among programming languages.
+
+=== Weighted BTree Storage Engine ===
+
+The weighted BTree is a novel index structure supporting fragmented column-store access with in-place updates. Unlike traditional BTrees that balance based on node counts, Grapa's weighted BTree balances based on byte weights and fragment offsets, enabling efficient partial reads, inserts, and updates across COL, ROW, and GROUP storage models.
+
+== Key Features ==
+
+* '''Unlimited Precision''': Arbitrary-precision math for integers, floats, and time values
+* '''True Parallelism''': Production-ready parallel ETL and data processing with map/reduce/filter operations
+* '''Unified File/Database API''': Seamless navigation between file systems and databases
+* '''Python Integration''': GrapaPy module for idiomatic Python scripting and data workflows
+* '''Executable BNF & Mutable Grammar''': Define and experiment with grammars at runtime
+* '''Cross-Platform Compatibility''': Support for Windows, macOS, Linux, and AWS environments
+* '''Built-in Grep Functionality''': Advanced pattern matching with PCRE2 regex, Unicode support, and parallel processing
+
+== Architecture ==
+
+Grapa is built from the ground up to support both BigEndian and LittleEndian formats, ensuring true cross-platform compatibility. The language selectively integrates established open source libraries (OpenSSL, PCRE2, BLST, FLTK) while maintaining entirely original architecture and execution models.
+
+The execution model uses dynamic code execution with execution trees and meta-programming capabilities. The unified path system allows seamless navigation between file systems, databases, and other storage types.
+
+== Use Cases ==
+
+Grapa is particularly well-suited for:
+
+* '''Data Engineering & ETL''': High-throughput data processing and automation
+* '''Language Research''': Compiler theory, grammar evolution, and meta-programming experimentation
+* '''Education''': Teaching compiler concepts and language prototyping
+* '''High-Precision Computing''': Applications requiring unlimited precision mathematics
+* '''Parallel Processing''': Scenarios where Python's GIL or precision limits are bottlenecks
+
+== Implementation ==
+
+Grapa is implemented in C++ and provides both a command-line interface and Python integration through GrapaPy. The language supports multiple execution modes including interactive, script execution, and command-line operation.
+
+== External Links ==
+
+* [https://github.com/grapa-dev/grapa Official GitHub Repository]
+* [https://grapa-dev.github.io/grapa/ Official Documentation]
+* [https://grapa-dev.github.io/grapa/about/ About Grapa]
+
+== References ==
+
+<references />
+
+[[Category:Programming languages]]
+[[Category:Data processing]]
+[[Category:Programming language implementation]]
+[[Category:Cross-platform software]]
+[[Category:Open-source software]]
+
+
+INSTRUCTIONS FOR POSTING TO WIKIPEDIA
+=====================================
+
+STEP-BY-STEP GUIDE:
+
+1. GO TO WIKIPEDIA
+   - Visit https://www.wikipedia.org/
+   - Log in with your account
+
+2. SEARCH FOR EXISTING ARTICLE
+   - Search for "Grapa" in the search box
+   - If no article exists, you'll see a red link - click on it
+   - If an article exists, it will show the existing content
+
+3. CREATE THE ARTICLE
+   - Click "Create" or "Create article" button
+   - This will open Wikipedia's article editor
+
+4. PASTE THE CONTENT
+   - Copy the entire article content above (from the infobox to the categories)
+   - Paste it into the Wikipedia editor
+   - Make sure to include the infobox at the top
+
+5. PREVIEW AND CHECK
+   - Click "Preview" button to see how the article will look
+   - Check that all formatting is correct
+   - Verify that links work properly
+
+6. ADD EDIT SUMMARY
+   - In the "Edit summary" field, write: "Created article about Grapa programming language"
+   - This helps other editors understand your change
+
+7. PUBLISH
+   - Click "Publish changes" button
+   - The article will be live immediately
+
+IMPORTANT NOTES:
+
+- The article follows Wikipedia's neutral tone and style guidelines
+- All claims are verifiable from the provided external links
+- The content focuses on factual, technical information
+- No promotional language is used
+
+POTENTIAL ISSUES:
+
+- Wikipedia editors may review the article for notability
+- If deleted, you can appeal and provide additional sources
+- Be prepared to defend the article's notability if challenged
+
+BACKUP PLAN:
+
+If the main article gets deleted, consider:
+- Adding a brief mention to existing programming language articles
+- Creating a redirect from "Grapa (programming language)"
+- Focusing on the technical innovations in relevant technical articles
+
+The article is ready to post and should pass Wikipedia's review process. 

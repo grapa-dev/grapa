@@ -4,8 +4,27 @@ site_dir: site
 site_name: Grapa Documentation
 site_url: https://grapa-dev.github.io/grapa/
 
+# Open Graph meta tags for social media sharing
+site_description: Modern grammar-based programming language with unlimited precision, true parallelism, and seamless Python integration. Ideal for data engineering, ETL, and language experimentation.
+site_author: Grapa Development Team
+
+# SEO and social media optimization
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/grapa-dev/grapa
+  analytics:
+    provider: google
+    property: !ENV GOOGLE_ANALYTICS_KEY
+  version:
+    provider: mike
+  git:
+    revision_date_localized: true
+    creation_date_localized: true
+
 theme:
   name: material
+  custom_dir: overrides  # Re-enabled with Jekyll config fix
   features:
     - navigation.tabs
     - navigation.top
@@ -69,6 +88,10 @@ plugins:
         - "**/INTERNAL_NOTES/**"
         - "**/ADVANCED_TOPICS/**"
   - tags
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      enable_creation_date: true
 
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js

@@ -1,4 +1,7 @@
 ---
+title: Getting Started with Grapa - Installation and First Steps
+description: Complete beginner's guide to installing and using Grapa for data processing, ETL, automation, and pattern matching. Learn grep, database operations, and Python integration with practical examples.
+keywords: [grapa, getting started, installation, setup, beginner, tutorial, data processing, ETL, automation, grep, pattern matching, database, Python integration]
 tags:
   - user
   - highlevel
