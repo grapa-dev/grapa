@@ -101,10 +101,13 @@ f.setBatchMultiple({
 /* This would be the new syntax for GrapaDBX */
 /*
 users_data = f.getBatchMultiple(["user3", "user4", "user5"], ["name", "age", "department"]);
-for (user_key in users_data) {
+i = 0;
+while (i < users_data.len()) {
+    user_key = users_data.get(i);
     user_data = users_data[user_key];
     (user_key + ": " + user_data["name"] + ", age " + user_data["age"].raw().int().str() + 
      ", dept " + user_data["department"] + "\n").echo();
+    i = i + 1;
 }
 */
 
@@ -168,7 +171,7 @@ f.setBatch("order_456", {
 "Example 3: Analytics Data Retrieval\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-analytics_data = f.getBatchMultiple(["user1", "user2", "user3", "user4", "user5"], 
+analytics_data = f.getBatchMultiple(["user1", "user2", "user3", "user4", "user5"], ;
                                    ["age", "salary", "department"]);
 */
 "✓ Single batch operation instead of 15 individual operations\n".echo();

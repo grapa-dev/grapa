@@ -54,7 +54,7 @@ if (upper != "HELLO, WORLD!") {
 "=== Error Handling Tests ===".echo();
 
 /* Test division by zero handling */
-test_division = op(a, b) {
+test_division = op(a, b) {;
     if (b == 0) { 
         $ERR; 
     } else { 
@@ -345,7 +345,7 @@ test_etl_workflow = op() {
     test_data = [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}];
     
     /* Transform data */
-    processed = test_data.map(op(record) { 
+processed = test_data.map(op(record) { ;
         {"name": record.get("name").upper(), "age": record.get("age")}; 
     });
     
@@ -374,21 +374,21 @@ test_etl_workflow();
 /* Test data validation pipeline */
 test_validation_pipeline = op() {
     /* Define validation rules */
-    rules = {
+rules = {;
         "email": {"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"},
         "age": {"min": 0, "max": 150},
         "salary": {"min": 0, "max": 1000000}
     };
     
     /* Test data */
-    test_records = [
+test_records = [;
         {"email": "alice@example.com", "age": 30, "salary": 50000},
         {"email": "invalid-email", "age": -5, "salary": 2000000},
         {"email": "bob@test.org", "age": 25, "salary": 75000}
     ];
     
     /* Validate function */
-    validate_record = op(record, rules) {
+validate_record = op(record, rules) {;
         errors = [];
         
         /* Check email pattern */
@@ -432,7 +432,7 @@ test_validation_pipeline();
 "=== Best Practices Demonstration ===".echo();
 
 /* Create reusable assertion functions */
-assert_equal = op(actual, expected, message) {
+assert_equal = op(actual, expected, message) {;
     if (actual == expected) {
         ("✓ " + message + " passed").echo();
         return true;
@@ -442,7 +442,7 @@ assert_equal = op(actual, expected, message) {
     };
 };
 
-assert_array_equal = op(actual, expected, message) {
+assert_array_equal = op(actual, expected, message) {;
     if (actual.len() != expected.len()) {
         ("✗ " + message + " failed: length mismatch").echo();
         return false;

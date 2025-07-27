@@ -9,7 +9,7 @@
 /* Create unified storage object with HTTP */
 u1 = $unified();
 "Testing HTTP storage...\n".echo();
-result = u1.create("http://example.com");
+result = u1.create("http: /* example.com"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -53,7 +53,7 @@ result.echo();
 /* Create unified storage object with FTP */
 u2 = $unified();
 "Testing FTP storage...\n".echo();
-result = u2.create("ftp://ftp.example.com");
+result = u2.create("ftp: /* ftp.example.com"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -119,7 +119,7 @@ result.echo();
 /* Create unified storage object with SFTP */
 u3 = $unified();
 "Testing SFTP storage...\n".echo();
-result = u3.create("sftp://sftp.example.com");
+result = u3.create("sftp: /* sftp.example.com"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -185,7 +185,7 @@ result.echo();
 /* Create unified storage object with HTTPS */
 u4 = $unified();
 "Testing HTTPS storage...\n".echo();
-result = u4.create("https://secure.example.com");
+result = u4.create("https: /* secure.example.com"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -223,7 +223,7 @@ result.echo();
 /* Test invalid network URL */
 "Testing invalid network URL...\n".echo();
 u5 = $unified();
-result = u5.create("invalid://invalid-url");
+result = u5.create("invalid: /* invalid-url"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -254,7 +254,7 @@ result.echo();
 
 /* Create local file system storage */
 local = $unified();
-local.create("file:///tmp");
+local.create("file: /* /tmp"); */
 
 /* Create local test file */
 local.set("local_file.txt", "This is local content", "$VALUE");
@@ -262,7 +262,7 @@ local.set("local_file.txt", "This is local content", "$VALUE");
 
 /* Create network storage */
 remote = $unified();
-remote.create("ftp://ftp.example.com");
+remote.create("ftp: /* ftp.example.com"); */
 
 /* Upload local file to remote */
 "Uploading local file to remote...\n".echo();

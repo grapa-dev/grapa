@@ -263,14 +263,14 @@ if (grapheme_matches.len() == 4) {
 "\n=== Integration Testing ===\n".echo();
 
 /* Test ETL workflow */
-data = [
+data = [;
     {"name": "john", "age": 25, "city": "new york"},
     {"name": "jane", "age": 30, "city": "los angeles"},
     {"name": "bob", "age": 35, "city": "chicago"}
 ];
 
 /* Transform: uppercase names */
-transformed = data.map(op(record) {
+transformed = data.map(op(record) {;
     record.name = record.name.upper();
     record;
 });

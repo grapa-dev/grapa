@@ -4,7 +4,7 @@
 db1 = $unified();
 
 /* Create GrapaDB database */
-grapadb_url = "grapadb://testdb1";
+grapadb_url = "grapadb: /* testdb1"; */
 "GrapaDB URL: ".echo();
 grapadb_url.echo();
 "GrapaDB URL length: ".echo();

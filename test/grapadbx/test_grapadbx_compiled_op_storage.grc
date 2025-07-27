@@ -62,7 +62,7 @@ print("Compiled $OP:", compiled);
 print("\n=== Test 4: Formula Caching ===");
 
 /* Create multiple compiled formulas */
-formulas = [
+formulas = [;
     "_record.getField('price') * 1.1",
     "_record.getField('quantity') * 2",
     "_record.getField('price') * _record.getField('quantity') * 0.9"
@@ -86,7 +86,7 @@ largeData = largeData.repeat(50);
 db.setField(cursor, "largeData", largeData);
 
 /* Create a complex formula that uses partial field access */
-complexFormula = "
+complexFormula = ";
     basePrice = _record.getField('price');
     quantity = _record.getField('quantity');
     

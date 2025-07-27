@@ -1,18 +1,18 @@
 /* Simple GrapaDBX test to isolate the issue */
 
-/* Create a GrapaDBX database using the grapadbx:// protocol */
+/* Create a GrapaDBX database using the grapadbx: /* protocol */ */
 dbx = $unified();
 
 /* Debug: show the URL we're about to use */
-url = "grapadbx://testdbx";
+url = "grapadbx: /* testdbx"; */
 "URL: ".echo();
 url.echo();
 "URL length: ".echo();
 url.len().echo();
 
-/* Try a different approach - use grapadb:// first to see if that works */
+/* Try a different approach - use grapadb: /* first to see if that works */ */
 db1 = $unified();
-grapadb_url = "grapadb://testdb1";
+grapadb_url = "grapadb: /* testdb1"; */
 "GrapaDB URL: ".echo();
 grapadb_url.echo();
 "GrapaDB URL length: ".echo();

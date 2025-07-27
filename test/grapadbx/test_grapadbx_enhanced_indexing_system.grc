@@ -43,10 +43,10 @@
 "Basic Index (Backward Compatible):\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Current syntax still works
+/* Current syntax still works
 f.mkindex("users", ["name", "email"]);
 
-// Enhanced syntax with options
+/* Enhanced syntax with options
 f.mkindex("users", ["name", "email"], {
     "type": "btree",
     "unique": false,
@@ -61,12 +61,12 @@ f.mkindex("users", ["name", "email"], {
 "Unique Index:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Create unique index on email
+/* Create unique index on email
 f.mkindex("users", ["email"], {"unique": true});
 
-// This would prevent duplicate emails
-f.set("user1", "john@example.com", "email");  // Works
-f.set("user2", "john@example.com", "email");  // Fails - duplicate email
+/* This would prevent duplicate emails
+f.set("user1", "john@example.com", "email"); /* Works */
+f.set("user2", "john@example.com", "email"); /* Fails - duplicate email */
 */
 "✓ Unique constraint: f.mkindex(\"users\", [\"email\"], {\"unique\": true})\n".echo();
 "✓ Prevents duplicate values automatically\n".echo();
@@ -76,13 +76,13 @@ f.set("user2", "john@example.com", "email");  // Fails - duplicate email
 "Sparse Index:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Create sparse index on phone (skip NULL values)
+/* Create sparse index on phone (skip NULL values)
 f.mkindex("users", ["phone"], {"sparse": true});
 
-// Only users with phone numbers are indexed
-f.set("user1", "555-1234", "phone");  // Indexed
-f.set("user2", "", "phone");          // Not indexed (NULL/empty)
-f.set("user3", null, "phone");        // Not indexed (NULL)
+/* Only users with phone numbers are indexed
+f.set("user1", "555-1234", "phone"); /* Indexed */
+f.set("user2", "", "phone"); /* Not indexed (NULL/empty) */
+f.set("user3", null, "phone"); /* Not indexed (NULL) */
 */
 "✓ Sparse indexing: f.mkindex(\"users\", [\"phone\"], {\"sparse\": true})\n".echo();
 "✓ Skips NULL/empty values\n".echo();
@@ -92,15 +92,15 @@ f.set("user3", null, "phone");        // Not indexed (NULL)
 "Partial Index:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Create partial index only for active users
+/* Create partial index only for active users
 f.mkindex("users", ["last_login"], {"partial": "status = 'active'"});
 
-// Only active users are indexed
+/* Only active users are indexed
 f.set("user1", "active", "status");
-f.set("user1", "2024-01-15", "last_login");  // Indexed (active user)
+f.set("user1", "2024-01-15", "last_login"); /* Indexed (active user) */
 
 f.set("user2", "inactive", "status");
-f.set("user2", "2024-01-10", "last_login");  // Not indexed (inactive user)
+f.set("user2", "2024-01-10", "last_login"); /* Not indexed (inactive user) */
 */
 "✓ Partial indexing: f.mkindex(\"users\", [\"last_login\"], {\"partial\": \"status = 'active'\"})\n".echo();
 "✓ Only indexes records matching condition\n".echo();
@@ -110,15 +110,15 @@ f.set("user2", "2024-01-10", "last_login");  // Not indexed (inactive user)
 "Functional Index:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Create functional index on email domain
+/* Create functional index on email domain
 f.mkindex("users", ["email_domain"], {"functional": "SUBSTRING(email, LOCATE('@', email) + 1)"});
 
-// Indexes the domain part of email addresses
-f.set("user1", "john@example.com", "email");  // Indexes "example.com"
-f.set("user2", "jane@gmail.com", "email");    // Indexes "gmail.com"
+/* Indexes the domain part of email addresses
+f.set("user1", "john@example.com", "email"); /* Indexes "example.com" */
+f.set("user2", "jane@gmail.com", "email"); /* Indexes "gmail.com" */
 
-// Search by domain
-results = f.search({"email_domain": "example.com"});  // Uses functional index
+/* Search by domain
+results = f.search({"email_domain": "example.com"}); /* Uses functional index */
 */
 "✓ Functional indexing: f.mkindex(\"users\", [\"email_domain\"], {\"functional\": \"SUBSTRING(email, LOCATE('@', email) + 1)\"})\n".echo();
 "✓ Indexes computed/derived values\n".echo();
@@ -135,7 +135,7 @@ results = f.search({"email_domain": "example.com"});  // Uses functional index
 "Current Simple Mapping:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Current: Just field ID to field ID
+/* Current: Just field ID to field ID
 f.mkindex("users", ["name", "age"]);
 */
 "✓ Current: Simple field ID mapping\n".echo();
@@ -145,7 +145,7 @@ f.mkindex("users", ["name", "age"]);
 "Enhanced Field Mapping:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Enhanced: Field with options
+/* Enhanced: Field with options
 f.mkindex("users", [
     {"field": "name", "descending": false, "transform": "UPPER()"},
     {"field": "age", "descending": true, "weight": 2},
@@ -169,13 +169,13 @@ f.mkindex("users", [
 "Current Comparison Issues:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Current: strcmp for all field types
+/* Current: strcmp for all field types
 f.mkindex("users", ["age", "salary", "created"]);
 
-// Problems:
-// • "100" < "20" (string comparison)
-// • "5.5" < "10.2" (string comparison)
-// • Date comparisons are wrong
+/* Problems:
+/* • "100" < "20" (string comparison)
+/* • "5.5" < "10.2" (string comparison)
+/* • Date comparisons are wrong
 */
 "❌ Current: strcmp for all field types\n".echo();
 "❌ \"100\" < \"20\" (string comparison)\n".echo();
@@ -186,17 +186,17 @@ f.mkindex("users", ["age", "salary", "created"]);
 "Enhanced Database-Aware Comparison:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Enhanced: Type-aware comparison
+/* Enhanced: Type-aware comparison
 f.mkindex("users", [
     {"field": "age", "dataType": "INT"},
     {"field": "salary", "dataType": "FLOAT"},
     {"field": "created", "dataType": "TIME"}
 ]);
 
-// Now comparisons are correct:
-// • 20 < 100 (numeric comparison)
-// • 5.5 < 10.2 (numeric comparison)
-// • Date comparisons work correctly
+/* Now comparisons are correct:
+/* • 20 < 100 (numeric comparison)
+/* • 5.5 < 10.2 (numeric comparison)
+/* • Date comparisons work correctly
 */
 "✅ Enhanced: Type-aware comparison\n".echo();
 "✅ 20 < 100 (numeric comparison)\n".echo();
@@ -215,7 +215,7 @@ f.mkindex("users", [
 "Index Statistics:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Get index statistics
+/* Get index statistics
 stats = f.indexStats("users_name_email_index");
 ("Index entries: " + stats.totalEntries).echo();
 ("Unique entries: " + stats.uniqueEntries).echo();
@@ -231,17 +231,17 @@ stats = f.indexStats("users_name_email_index");
 "Index Maintenance:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Validate index consistency
+/* Validate index consistency
 isValid = f.validateIndex("users_name_email_index");
 if (!isValid) {
     ("Index is corrupted, rebuilding...").echo();
     f.rebuildIndex("users_name_email_index");
 }
 
-// Optimize index
+/* Optimize index
 f.optimizeIndex("users_name_email_index");
 
-// Analyze usage
+/* Analyze usage
 usageStats = f.analyzeIndexUsage("users_name_email_index");
 ("Index used " + usageStats.queryCount + " times").echo();
 ("Average query time: " + usageStats.avgQueryTime + " ms").echo();
@@ -262,15 +262,15 @@ usageStats = f.analyzeIndexUsage("users_name_email_index");
 "Query Optimization:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Create multiple indexes
+/* Create multiple indexes
 f.mkindex("users", ["name"], {"type": "btree"});
 f.mkindex("users", ["email"], {"unique": true});
 f.mkindex("users", ["status", "age"], {"type": "composite"});
 
-// Search with automatic index selection
-results = f.search({"name": "John"});  // Uses name index
-results = f.search({"email": "john@example.com"});  // Uses email index
-results = f.search({"status": "active", "age": {"$gt": 25}});  // Uses composite index
+/* Search with automatic index selection
+results = f.search({"name": "John"}); /* Uses name index */
+results = f.search({"email": "john@example.com"}); /* Uses email index */
+results = f.search({"status": "active", "age": {"$gt": 25}}); /* Uses composite index */
 */
 "✓ Automatic index selection for queries\n".echo();
 "✓ Chooses best index based on search criteria\n".echo();
@@ -280,7 +280,7 @@ results = f.search({"status": "active", "age": {"$gt": 25}});  // Uses composite
 "Query Plan Analysis:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Analyze query plan
+/* Analyze query plan
 plan = f.analyzeQuery({"status": "active", "age": {"$gt": 25}});
 ("Query will use index: " + plan.indexId).echo();
 ("Estimated rows: " + plan.estimatedRows).echo();
@@ -295,13 +295,16 @@ plan = f.analyzeQuery({"status": "active", "age": {"$gt": 25}});
 "Index Suggestions:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Get index suggestions
+/* Get index suggestions
 suggestions = f.indexSuggestions("users");
-for (suggestion in suggestions) {
+i = 0;
+while (i < suggestions.len()) {
+    suggestion = suggestions[i];
     ("Suggested index: " + suggestion.fields.join(", ")).echo();
     ("Reason: " + suggestion.reason).echo();
     ("Estimated benefit: " + suggestion.estimatedBenefit).echo();
     ("Priority: " + (suggestion.isHighPriority ? "High" : "Medium")).echo();
+    i = i + 1;
 }
 */
 "✓ Automatic index suggestions\n".echo();
@@ -320,8 +323,8 @@ for (suggestion in suggestions) {
 "Batch Index Creation:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Create multiple indexes in batch
-indexes = [
+/* Create multiple indexes in batch
+indexes = [;
     {"table": "users", "fields": ["name"], "options": {"type": "btree"}},
     {"table": "users", "fields": ["email"], "options": {"unique": true}},
     {"table": "users", "fields": ["status", "age"], "options": {"type": "composite"}},
@@ -339,16 +342,16 @@ f.createIndexesBatch(indexes);
 "Index-Aware Batch Operations:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Batch operations with index optimization
+/* Batch operations with index optimization
 f.setBatchMultiple([
     {"key": "user1", "data": {"name": "John", "email": "john@example.com", "age": 30}},
     {"key": "user2", "data": {"name": "Jane", "email": "jane@example.com", "age": 25}},
     {"key": "user3", "data": {"name": "Bob", "email": "bob@example.com", "age": 35}}
 ], {"updateIndexes": true});
 
-// Disable indexes for bulk operations
+/* Disable indexes for bulk operations
 f.disableIndexes("users");
-// ... bulk operations ...
+/* ... bulk operations ...
 f.enableIndexes("users");
 f.refreshIndexes("users");
 */
@@ -368,14 +371,17 @@ f.refreshIndexes("users");
 "Usage Statistics:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Get index usage statistics
+/* Get index usage statistics
 stats = f.indexUsageStats();
-for (stat in stats) {
+i = 0;
+while (i < stats.len()) {
+    stat = stats[i];
     ("Index " + stat.indexId + ":").echo();
     ("  Query count: " + stat.queryCount).echo();
     ("  Last used: " + stat.lastUsed).echo();
     ("  Avg query time: " + stat.avgQueryTime + " ms").echo();
     ("  Recommended: " + (stat.isRecommended ? "Yes" : "No")).echo();
+    i = i + 1;
 }
 */
 "✓ Index usage tracking\n".echo();
@@ -387,15 +393,18 @@ for (stat in stats) {
 "Performance Monitoring:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Monitor index performance
+/* Monitor index performance
 f.monitorIndexPerformance("users_name_email_index");
 
-// Get performance alerts
+/* Get performance alerts
 alerts = f.getIndexAlerts();
-for (alert in alerts) {
+i = 0;
+while (i < alerts.len()) {
+    alert = alerts[i];
     ("Alert: " + alert.message).echo();
     ("Index: " + alert.indexId).echo();
     ("Severity: " + alert.severity).echo();
+    i = i + 1;
 }
 */
 "✓ Performance monitoring\n".echo();
@@ -414,11 +423,11 @@ for (alert in alerts) {
 "Enhanced Search with Index Selection:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Search with automatic index selection
+/* Search with automatic index selection
 results = f.searchWithIndex({"status": "active", "age": {"$gt": 25}});
 
-// Multi-index search for complex queries
-results = f.searchMultiIndex([
+/* Multi-index search for complex queries
+results = f.searchMultiIndex([;
     {"index": "users_status_age", "criteria": {"status": "active", "age": {"$gt": 25}}},
     {"index": "users_email", "criteria": {"email": {"$like": "%@example.com"}}}
 ]);
@@ -431,10 +440,10 @@ results = f.searchMultiIndex([
 "Integration with Batch Operations:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Batch operations with index optimization
+/* Batch operations with index optimization
 f.setBatchWithIndex("user1", {"name": "John", "age": 30}, {"updateIndexes": true});
 
-// Batch operations with index selection
+/* Batch operations with index selection
 f.setBatchMultipleWithIndex([
     {"key": "user1", "data": {"name": "John", "age": 30}},
     {"key": "user2", "data": {"name": "Jane", "age": 25}}

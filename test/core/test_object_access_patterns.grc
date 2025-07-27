@@ -6,17 +6,17 @@ Person = class {
     name = "";
     age = 0;
     city = "";
-    getInfo = op() {
+getInfo = op() {
         ("Name: " + name + ", Age: " + age.str() + ", City: " + city).echo();
     };
-    get = op() {
+get = op() {
         {"name": name, "age": age, "city": city};
     };
-    getLocal = op() {
+getLocal = op() {
         t = 4;
         $local;
     };
-    getThis = op() {
+getThis = op() {
         $this;
     };
 };

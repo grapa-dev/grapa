@@ -23,7 +23,7 @@ result3 = xml_data.findall({"attr": {"id": "1"}});
 /* Test 4: Complex AND search */
 "Test 4: Complex AND search\n".echo();
 complex_data = {"name": "test", "value": 42, "items": [1, 2, 3]};
-result4 = complex_data.findall({
+result4 = complex_data.findall({;
   "and": [
     {"name": "test"},
     {"value": 42}
@@ -33,7 +33,7 @@ result4 = complex_data.findall({
 
 /* Test 5: Search with HAS condition */
 "Test 5: Search with HAS condition\n".echo();
-result5 = complex_data.findall({
+result5 = complex_data.findall({;
   "has": [
     {"name": "test"},
     {"value": 42}
@@ -43,7 +43,7 @@ result5 = complex_data.findall({
 
 /* Test 6: Search with OR condition */
 "Test 6: Search with OR condition\n".echo();
-result6 = complex_data.findall({
+result6 = complex_data.findall({;
   "or": [
     {"name": "test"},
     {"value": 100}

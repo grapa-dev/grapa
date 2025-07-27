@@ -7,79 +7,79 @@
 
 /* Create GROUP database */
 .echo("Step 1: Create GROUP database\n")
-group_db = $file().table("GROUP")
+group_db = $file().table("GROUP");
 .echo("✓ GROUP database created\n")
 
 /* Create nested databases within the group */
 .echo("\nStep 2: Create nested databases within the group\n")
-group_db.mk("users", "ROW")
-group_db.mk("analytics", "COL")
-group_db.mk("config", "GROUP")
+group_db.mk("users", "ROW");
+group_db.mk("analytics", "COL");
+group_db.mk("config", "GROUP");
 .echo("✓ Nested databases created: users (ROW), analytics (COL), config (GROUP)\n")
 
 /* Navigate to users database and add data */
 .echo("Step 3: Add data to users database\n")
-users_db = group_db.cd("users")
-users_db.mkfield("id", "INT", "FIX", 4)
-users_db.mkfield("name", "STR", "VAR")
-users_db.mkfield("role", "STR", "VAR")
+users_db = group_db.cd("users");
+users_db.mkfield("id", "INT", "FIX", 4);
+users_db.mkfield("name", "STR", "VAR");
+users_db.mkfield("role", "STR", "VAR");
 .echo("✓ Users fields created\n")
 
 /* Insert user data */
-users_db.set("admin1", 1, "id")
-users_db.set("admin1", "Admin User", "name")
-users_db.set("admin1", "administrator", "role")
+users_db.set("admin1", 1, "id");
+users_db.set("admin1", "Admin User", "name");
+users_db.set("admin1", "administrator", "role");
 
-users_db.set("user1", 2, "id")
-users_db.set("user1", "Regular User", "name")
-users_db.set("user1", "user", "role")
+users_db.set("user1", 2, "id");
+users_db.set("user1", "Regular User", "name");
+users_db.set("user1", "user", "role");
 .echo("✓ User data inserted\n")
 
 /* Navigate to analytics database and add data */
 .echo("\nStep 4: Add data to analytics database\n")
-analytics_db = group_db.cd("analytics")
-analytics_db.mkfield("metric", "STR", "VAR")
-analytics_db.mkfield("value", "FLT", "FIX", 8)
+analytics_db = group_db.cd("analytics");
+analytics_db.mkfield("metric", "STR", "VAR");
+analytics_db.mkfield("value", "FLT", "FIX", 8);
 .echo("✓ Analytics fields created\n")
 
 /* Insert analytics data */
-analytics_db.set("metric1", "system_uptime", "metric")
-analytics_db.set("metric1", 99.95, "value")
+analytics_db.set("metric1", "system_uptime", "metric");
+analytics_db.set("metric1", 99.95, "value");
 
-analytics_db.set("metric2", "response_time", "metric")
-analytics_db.set("metric2", 0.125, "value")
+analytics_db.set("metric2", "response_time", "metric");
+analytics_db.set("metric2", 0.125, "value");
 .echo("✓ Analytics data inserted\n")
 
 /* Navigate to config database and add nested structure */
 .echo("\nStep 5: Add nested structure to config database\n")
-config_db = group_db.cd("config")
-config_db.mk("database", "GROUP")
-config_db.mk("application", "GROUP")
+config_db = group_db.cd("config");
+config_db.mk("database", "GROUP");
+config_db.mk("application", "GROUP");
 .echo("✓ Config sub-groups created\n")
 
 /* Add data to config sub-groups */
-db_config = config_db.cd("database")
-db_config.set("host", "localhost")
-db_config.set("port", 5432)
-db_config.set("timeout", 30)
+db_config = config_db.cd("database");
+db_config.set("host", "localhost");
+db_config.set("port", 5432);
+db_config.set("timeout", 30);
 
-app_config = config_db.cd("application")
-app_config.set("debug", true)
-app_config.set("log_level", "INFO")
-app_config.set("version", "1.0.0")
+app_config = config_db.cd("application");
+app_config.set("debug", true);
+app_config.set("log_level", "INFO");
+app_config.set("version", "1.0.0");
 .echo("✓ Config data inserted\n")
 
 /* Navigate back to root and show structure */
 .echo("\nStep 6: Navigate back to root and show structure\n")
-group_db.cd("..")
-group_contents = group_db.ls()
+group_db.cd("..");
+group_contents = group_db.ls();
 .echo("✓ GROUP root contents: " + group_contents.len().str() + " items\n")
 
 /* Show the complete tree structure */
 .echo("\n================================================================================\n")
 .echo("COMPLETE GROUP DATABASE TREE STRUCTURE\n")
 .echo("================================================================================\n")
-group_db.dump()
+group_db.dump();
 
 .echo("\n================================================================================\n")
 .echo("GROUP Database Test Complete\n")

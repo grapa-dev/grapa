@@ -22,7 +22,7 @@ result2 = json_data.findall({});
 
 /* Test 2: Array of JSON objects */
 "Test 2: Array of JSON objects\n".echo();
-array_data = [
+array_data = [;
   {"id": 1, "name": "Alice", "age": 25},
   {"id": 2, "name": "Bob", "age": 30},
   {"id": 3, "name": "Charlie", "age": 35}
@@ -44,7 +44,7 @@ result4 = array_data.findall({"name": "Alice"});
 
 /* Test 3: Nested JSON structure */
 "Test 3: Nested JSON structure\n".echo();
-nested_data = {
+nested_data = {;
   "user": {
     "name": "John",
     "age": 30,
@@ -75,7 +75,7 @@ result6 = nested_data.findall({"theme": "dark"});
 
 /* Test 4: Complex search with AND condition */
 "Test 4: Complex search with AND condition\n".echo();
-complex_data = {
+complex_data = {;
   "users": [
     {"name": "Alice", "role": "admin", "active": true},
     {"name": "Bob", "role": "user", "active": true},
@@ -86,7 +86,7 @@ complex_data = {
 ("Complex type: " + complex_data.type() + "\n").echo();
 
 /* Search for active admins using AND */
-result7 = complex_data.findall({
+result7 = complex_data.findall({;
   "and": [
     {"role": "admin"},
     {"active": true}
@@ -96,7 +96,7 @@ result7 = complex_data.findall({
 ("Result type: " + result7.type() + "\n").echo();
 
 /* Search for users with name Alice OR Bob using OR */
-result8 = complex_data.findall({
+result8 = complex_data.findall({;
   "or": [
     {"name": "Alice"},
     {"name": "Bob"}

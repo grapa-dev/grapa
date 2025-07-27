@@ -5,19 +5,19 @@
 /* Test File System Backend */
 "Testing File System Backend...\n".echo();
 fs = $unified();
-fs_result = fs.create("file://test_fs");
+fs_result = fs.create("file: /* test_fs"); */
 "FS Create result: " + fs_result + "\n".echo();
 
 /* Test Memory Backend */
 "Testing Memory Backend...\n".echo();
 mem = $unified();
-mem_result = mem.create("memory://test_mem");
+mem_result = mem.create("memory: /* test_mem"); */
 "Memory Create result: " + mem_result + "\n".echo();
 
 /* Test GrapaDBX Backend */
 "Testing GrapaDBX Backend...\n".echo();
 dbx = $unified();
-dbx_result = dbx.create("grapadbx://test_dbx");
+dbx_result = dbx.create("grapadbx: /* test_dbx"); */
 "GrapaDBX Create result: " + dbx_result + "\n".echo();
 
 "=== TEST COMPLETE ===\n".echo(); 

@@ -1,6 +1,6 @@
 /*
 Grapa .grc File Authoring Rules (Windows)
-- Use only block comments: the type of coment brackets this comment block uses (do not use //)
+- Use only block comments: the type of coment brackets this comment block uses (do not use /* ) */
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)

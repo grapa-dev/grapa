@@ -8,8 +8,8 @@ u.echo();
 "\n".echo();
 
 /* Call create with a storage URL */
-"Calling create with file:///tmp/test...\n".echo();
-result = u.create("file:///tmp/test");
+"Calling create with file: /* /tmp/test...\n".echo(); */
+result = u.create("file: /* /tmp/test"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();

@@ -8,7 +8,7 @@
 
 /* Use relative path instead of absolute path */
 u = $unified();
-err = u.create("grapadbx://test_dbx");
+err = u.create("grapadbx: /* test_dbx"); */
 "Result: Database creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
 
 "================================================================================\n".echo();

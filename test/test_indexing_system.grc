@@ -122,23 +122,27 @@ emp2_dept = group_db.get("employee2", "department");
 "Creating multiple records to demonstrate indexing benefits:\n".echo();
 
 /* Create many records to show indexing benefits */
-for (i = 1; i <= 10; i++) {
+i = 1;
+while (i <= 10) {
     record_name = "record" + i.str();
     group_db.set(record_name, "Data for record " + i.str(), "$VALUE");
     group_db.set(record_name, "key" + i.str(), "$KEY");
     group_db.set(record_name, "Name " + i.str(), "name");
     group_db.set(record_name, i * 10, "age");
+    i = i + 1;
 }
 
 "✓ 10 additional records created\n".echo();
 
 "Testing retrieval by $KEY (should be fast with index):\n".echo();
-for (i = 1; i <= 5; i++) {
+i = 1;
+while (i <= 5) {
     record_name = "record" + i.str();
     key_value = group_db.get(record_name, "$KEY");
     name_value = group_db.get(record_name, "name");
     age_value = group_db.get(record_name, "age").raw().int();
     ("Record " + i.str() + " - $KEY: " + key_value.str() + ", name: " + name_value.str() + ", age: " + age_value.str() + "\n").echo();
+    i = i + 1;
 }
 
 /* ================================================================================ */

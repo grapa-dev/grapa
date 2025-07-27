@@ -11,7 +11,7 @@ pure_func.echo();
 "Result: " + pure_func(5,3).str() + "\n".echo();
 
 /* Create .grz object manually */
-grz_object = {
+grz_object = {;
     op: pure_func,
     version: $sys().getenv($VERSION)
 };
@@ -89,7 +89,7 @@ loaded_func = loaded_decoded.op;
 "7. Version extraction utility\n".echo();
 
 /* Create utility function */
-get_grz_version = op(filename) {
+get_grz_version = op(filename) {;
     grz_data = $file().get(filename);
     decoded = grz_data.decode("ZIP-GRAPA");
     decoded.version;

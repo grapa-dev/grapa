@@ -6,7 +6,7 @@
 "Test 1: Creating GrapaDBX database with indexes...\n".echo();
 
 dbx = $unified();
-result = dbx.create("grapadbx://test_indexes.db");
+result = dbx.create("grapadbx: /* test_indexes.db"); */
 
 if (result == 0) {
     "✓ GrapaDBX database created successfully\n".echo();

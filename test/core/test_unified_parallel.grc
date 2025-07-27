@@ -9,7 +9,7 @@
 /* Create unified storage object with file system */
 fs = $unified();
 "Testing file system with parallel processing...\n".echo();
-result = fs.create("file:///tmp");
+result = fs.create("file: /* /tmp"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -28,7 +28,7 @@ listing.echo();
 /* Create unified storage object with GrapaDB */
 db = $unified();
 "Testing GrapaDB with parallel processing...\n".echo();
-result = db.create("grapadb://test_parallel.db");
+result = db.create("grapadb: /* test_parallel.db"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -118,7 +118,7 @@ try {
 /* Create unified storage object with memory backend */
 mem = $unified();
 "Testing memory backend with parallel processing...\n".echo();
-result = mem.create("memory://test_parallel");
+result = mem.create("memory: /* test_parallel"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();

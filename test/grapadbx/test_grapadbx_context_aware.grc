@@ -86,7 +86,7 @@ print("Large field formula:", largeFieldFormula);
 /* Test 6: Complex formula with multiple field access */
 print("\n=== Test 6: Complex Formula ===");
 
-complexFormula = "
+complexFormula = ";
     basePrice = _record.getField('price');
     quantity = _record.getField('quantity');
     

@@ -16,31 +16,31 @@
 f = $file();
 f.cd("test_database");
 
-// Create RAW field
+/* Create RAW field
 f.mkfield("binary_data", "RAW", "VAR");
 
-// Store raw bytes
+/* Store raw bytes
 f.set("test1", "hello".raw(), "binary_data");
 f.set("test2", (0x6869).raw(), "binary_data");
 f.set("test3", (12345).raw(), "binary_data");
 
-// Retrieve and convert
+/* Retrieve and convert
 raw1 = f.get("test1", "binary_data");
 raw2 = f.get("test2", "binary_data");
 raw3 = f.get("test3", "binary_data");
 
-// Verify conversion methods
-hex1 = raw1.hex();  // "0x6869"
-str1 = raw1.str();  // "hi"
-int1 = raw1.int();  // 26729
+/* Verify conversion methods
+hex1 = raw1.hex(); /* "0x6869" */
+str1 = raw1.str(); /* "hi" */
+int1 = raw1.int(); /* 26729 */
 */
 "✓ f.mkfield(\"binary_data\", \"RAW\", \"VAR\");\n".echo();
 "✓ f.set(\"test1\", \"hello\".raw(), \"binary_data\");\n".echo();
 "✓ f.set(\"test2\", (0x6869).raw(), \"binary_data\");\n".echo();
 "✓ raw1 = f.get(\"test1\", \"binary_data\");\n".echo();
-"✓ hex1 = raw1.hex();  // \"0x6869\"\n".echo();
-"✓ str1 = raw1.str();  // \"hi\"\n".echo();
-"✓ int1 = raw1.int();  // 26729\n".echo();
+"✓ hex1 = raw1.hex(); /* \"0x6869\"\n".echo(); */
+"✓ str1 = raw1.str(); /* \"hi\"\n".echo(); */
+"✓ int1 = raw1.int(); /* 26729\n".echo(); */
 "\n".echo();
 
 /* Test 2: RAW Field SQL Integration */
@@ -55,7 +55,7 @@ int1 = raw1.int();  // 26729
 f = $file();
 f.cd("binary_database");
 
-// Create table with RAW fields using SQL
+/* Create table with RAW fields using SQL
 CREATE TABLE binary_data (
     id INT,
     name STR,
@@ -64,17 +64,17 @@ CREATE TABLE binary_data (
     file_size INT
 );
 
-// Insert RAW data using SQL
+/* Insert RAW data using SQL
 INSERT INTO binary_data (id, name, binary_content, metadata, file_size) VALUES 
     (1, 'file1', 'hello'.raw(), (0x6869).raw(), 5),
     (2, 'file2', 'world'.raw(), (0x776f).raw(), 5),
     (3, 'file3', (12345).raw(), (0x3039).raw(), 4);
 
-// Query RAW data with byte-by-byte comparison
+/* Query RAW data with byte-by-byte comparison
 SELECT * FROM binary_data WHERE binary_content = 'hello'.raw();
 SELECT * FROM binary_data WHERE metadata > (0x5000).raw();
 
-// RAW field functions in SQL
+/* RAW field functions in SQL
 SELECT id, name, binary_content.hex() as hex_content FROM binary_data;
 SELECT id, name, binary_content.str() as string_content FROM binary_data;
 SELECT id, name, binary_content.int() as int_content FROM binary_data;
@@ -95,28 +95,28 @@ SELECT id, name, binary_content.int() as int_content FROM binary_data;
 
 /* This would show different RAW field comparison modes */
 /*
-// Byte-by-byte comparison (default)
+/* Byte-by-byte comparison (default)
 SELECT * FROM binary_data WHERE binary_content = 'hello'.raw();
 
-// Type-aware comparison
+/* Type-aware comparison
 SELECT * FROM binary_data WHERE binary_content.str() = 'hello';
 SELECT * FROM binary_data WHERE binary_content.int() > 1000;
 
-// Hex pattern matching
+/* Hex pattern matching
 SELECT * FROM binary_data WHERE binary_content.hex() LIKE '0x68%';
 
-// Length-based comparison
+/* Length-based comparison
 SELECT * FROM binary_data WHERE binary_content.len() > 10;
 
-// Range comparison
+/* Range comparison
 SELECT * FROM binary_data WHERE metadata >= (0x1000).raw() AND metadata <= (0xFFFF).raw();
 */
-"✓ SELECT * FROM binary_data WHERE binary_content = 'hello'.raw();  // Byte-by-byte\n".echo();
-"✓ SELECT * FROM binary_data WHERE binary_content.str() = 'hello';  // Type-aware\n".echo();
-"✓ SELECT * FROM binary_data WHERE binary_content.int() > 1000;     // Type-aware\n".echo();
-"✓ SELECT * FROM binary_data WHERE binary_content.hex() LIKE '0x68%';  // Hex pattern\n".echo();
-"✓ SELECT * FROM binary_data WHERE binary_content.len() > 10;       // Length-based\n".echo();
-"✓ SELECT * FROM binary_data WHERE metadata >= (0x1000).raw() AND metadata <= (0xFFFF).raw();  // Range\n".echo();
+"✓ SELECT * FROM binary_data WHERE binary_content = 'hello'.raw(); /* Byte-by-byte\n".echo(); */
+"✓ SELECT * FROM binary_data WHERE binary_content.str() = 'hello'; /* Type-aware\n".echo(); */
+"✓ SELECT * FROM binary_data WHERE binary_content.int() > 1000; /* Type-aware\n".echo(); */
+"✓ SELECT * FROM binary_data WHERE binary_content.hex() LIKE '0x68%'; /* Hex pattern\n".echo(); */
+"✓ SELECT * FROM binary_data WHERE binary_content.len() > 10; /* Length-based\n".echo(); */
+"✓ SELECT * FROM binary_data WHERE metadata >= (0x1000).raw() AND metadata <= (0xFFFF).raw(); /* Range\n".echo(); */
 "\n".echo();
 
 /* Test 4: RAW Field Functions */
@@ -128,7 +128,7 @@ SELECT * FROM binary_data WHERE metadata >= (0x1000).raw() AND metadata <= (0xFF
 
 /* This would show advanced RAW field functions */
 /*
-// RAW field functions
+/* RAW field functions
 SELECT 
     id,
     name,
@@ -139,7 +139,7 @@ SELECT
     binary_content.len() as byte_length
 FROM binary_data;
 
-// RAW field aggregations
+/* RAW field aggregations
 SELECT 
     COUNT(*) as total_records,
     AVG(binary_content.len()) as avg_size,
@@ -148,7 +148,7 @@ SELECT
     SUM(binary_content.len()) as total_size
 FROM binary_data;
 
-// RAW conversion functions
+/* RAW conversion functions
 SELECT 
     id,
     name,
@@ -172,13 +172,13 @@ FROM binary_data;
 
 /* This would show RAW field pattern matching */
 /*
-// RAW pattern matching
+/* RAW pattern matching
 SELECT * FROM binary_data WHERE RAW_STARTS_WITH(binary_content, 'hello'.raw());
 SELECT * FROM binary_data WHERE RAW_ENDS_WITH(binary_content, 'world'.raw());
 SELECT * FROM binary_data WHERE RAW_CONTAINS(binary_content, 'test'.raw());
-SELECT * FROM binary_data WHERE RAW_MATCHES(binary_content, '0x68%');  // Hex pattern
+SELECT * FROM binary_data WHERE RAW_MATCHES(binary_content, '0x68%'); /* Hex pattern */
 
-// RAW field creation functions
+/* RAW field creation functions
 SELECT 
     id,
     name,
@@ -190,7 +190,7 @@ FROM binary_data;
 "✓ SELECT * FROM binary_data WHERE RAW_STARTS_WITH(binary_content, 'hello'.raw());\n".echo();
 "✓ SELECT * FROM binary_data WHERE RAW_ENDS_WITH(binary_content, 'world'.raw());\n".echo();
 "✓ SELECT * FROM binary_data WHERE RAW_CONTAINS(binary_content, 'test'.raw());\n".echo();
-"✓ SELECT * FROM binary_data WHERE RAW_MATCHES(binary_content, '0x68%');  // Hex pattern\n".echo();
+"✓ SELECT * FROM binary_data WHERE RAW_MATCHES(binary_content, '0x68%'); /* Hex pattern\n".echo(); */
 "✓ SELECT id, name, STR_TO_RAW('hello') as from_string, INT_TO_RAW(12345) as from_int, HEX_TO_RAW('0x6869') as from_hex FROM binary_data;\n".echo();
 "\n".echo();
 
@@ -203,20 +203,20 @@ FROM binary_data;
 
 /* This would show RAW field storage optimization */
 /*
-// RAW field storage types in SQL
+/* RAW field storage types in SQL
 CREATE TABLE optimized_binary (
     id INT,
-    small_data RAW FIX 16,      // Fixed size for small data
-    medium_data RAW VAR,        // Variable size for medium data
-    large_data RAW PAR          // Partitioned for large data
+    small_data RAW FIX 16, /* Fixed size for small data */
+    medium_data RAW VAR, /* Variable size for medium data */
+    large_data RAW PAR /* Partitioned for large data */
 );
 
-// Insert with different storage types
+/* Insert with different storage types
 INSERT INTO optimized_binary (id, small_data, medium_data, large_data) VALUES 
     (1, (0x1234).raw(), 'medium'.raw(), 'large_binary_data'.raw()),
     (2, (0x5678).raw(), 'another'.raw(), 'more_large_data'.raw());
 
-// Query with storage optimization
+/* Query with storage optimization
 SELECT * FROM optimized_binary WHERE small_data = (0x1234).raw();
 SELECT * FROM optimized_binary WHERE medium_data.len() > 5;
 SELECT * FROM optimized_binary WHERE large_data.len() > 100;
@@ -237,25 +237,25 @@ SELECT * FROM optimized_binary WHERE large_data.len() > 100;
 
 /* This would show RAW fields with transactions */
 /*
-// RAW fields with transactions
+/* RAW fields with transactions
 BEGIN TRANSACTION;
 
-// Insert RAW data
+/* Insert RAW data
 INSERT INTO binary_data (id, name, binary_content, metadata) VALUES 
     (4, 'file4', 'transaction_test'.raw(), (0x7478).raw());
 
-// Update RAW data
+/* Update RAW data
 UPDATE binary_data SET binary_content = 'updated_content'.raw() WHERE id = 1;
 
-// Query RAW data
+/* Query RAW data
 SELECT * FROM binary_data WHERE binary_content = 'transaction_test'.raw();
 
 COMMIT;
 
-// Rollback example
+/* Rollback example
 BEGIN TRANSACTION;
 INSERT INTO binary_data (id, name, binary_content) VALUES (5, 'file5', 'will_be_rolled_back'.raw());
-ROLLBACK;  // This RAW data will not be saved
+ROLLBACK; /* This RAW data will not be saved */
 */
 "✓ BEGIN TRANSACTION;\n".echo();
 "✓ INSERT INTO binary_data (id, name, binary_content, metadata) VALUES (4, 'file4', 'transaction_test'.raw(), (0x7478).raw());\n".echo();
@@ -264,7 +264,7 @@ ROLLBACK;  // This RAW data will not be saved
 "✓ COMMIT;\n".echo();
 "✓ BEGIN TRANSACTION;\n".echo();
 "✓ INSERT INTO binary_data (id, name, binary_content) VALUES (5, 'file5', 'will_be_rolled_back'.raw());\n".echo();
-"✓ ROLLBACK;  // This RAW data will not be saved\n".echo();
+"✓ ROLLBACK; /* This RAW data will not be saved\n".echo(); */
 "\n".echo();
 
 /* Test 8: RAW Field with Batch Operations */
@@ -276,20 +276,20 @@ ROLLBACK;  // This RAW data will not be saved
 
 /* This would show RAW fields with batch operations */
 /*
-// Batch insert RAW data
+/* Batch insert RAW data
 INSERT INTO binary_data (id, name, binary_content, metadata) VALUES 
     (6, 'file6', 'batch1'.raw(), (0x1234).raw()),
     (7, 'file7', 'batch2'.raw(), (0x5678).raw()),
     (8, 'file8', 'batch3'.raw(), (0x9ABC).raw()),
     (9, 'file9', 'batch4'.raw(), (0xDEF0).raw());
 
-// Batch update RAW data
+/* Batch update RAW data
 UPDATE binary_data SET 
-    binary_content = 'updated_batch'.raw(),
-    metadata = (0x9999).raw()
+binary_content = 'updated_batch'.raw(),;
+metadata = (0x9999).raw();
 WHERE id IN (6, 7, 8, 9);
 
-// Batch query RAW data
+/* Batch query RAW data
 SELECT * FROM binary_data WHERE binary_content IN ('batch1'.raw(), 'batch2'.raw(), 'batch3'.raw());
 */
 "✓ INSERT INTO binary_data (id, name, binary_content, metadata) VALUES (6, 'file6', 'batch1'.raw(), (0x1234).raw()), (7, 'file7', 'batch2'.raw(), (0x5678).raw()), (8, 'file8', 'batch3'.raw(), (0x9ABC).raw()), (9, 'file9', 'batch4'.raw(), (0xDEF0).raw());\n".echo();
@@ -306,24 +306,24 @@ SELECT * FROM binary_data WHERE binary_content IN ('batch1'.raw(), 'batch2'.raw(
 
 /* This would show RAW fields with unified paths */
 /*
-// RAW fields across file system and databases
+/* RAW fields across file system and databases
 f = $file();
 
-// Navigate to database
+/* Navigate to database
 f.cd("binary_database");
 SELECT * FROM binary_data WHERE binary_content = 'hello'.raw();
 
-// Navigate to file system
+/* Navigate to file system
 f.cd("/documents");
-file_stats = SELECT 
+file_stats = SELECT ;
     file_name,
     file_content.hex() as hex_content,
     file_content.len() as file_size
 FROM . WHERE file_content.len() > 100;
 
-// Cross-reference between file system and database
+/* Cross-reference between file system and database
 f.cd("binary_database");
-cross_ref = SELECT 
+cross_ref = SELECT ;
     b.id,
     b.name,
     b.binary_content.hex() as db_hex,
@@ -347,23 +347,23 @@ FROM binary_data/b JOIN /documents/f ON b.name = f.file_name;
 
 /* This would show RAW field performance monitoring */
 /*
-// Enable performance monitoring for RAW fields
+/* Enable performance monitoring for RAW fields
 SET QUERY_MONITORING = true;
 
-// Execute RAW field queries with performance tracking
+/* Execute RAW field queries with performance tracking
 start_time = $time();
 raw_results = SELECT * FROM binary_data WHERE binary_content = 'hello'.raw();
 query_time = $time() - start_time;
 
 ("RAW field query took " + query_time + "ms").echo();
 
-// Get RAW field statistics
+/* Get RAW field statistics
 raw_stats = GET_QUERY_STATS();
 ("RAW field index usage: " + raw_stats.index_usage).echo();
 ("RAW field cache hits: " + raw_stats.cache_hits).echo();
 ("RAW field bytes processed: " + raw_stats.bytes_processed).echo();
 
-// RAW field optimization suggestions
+/* RAW field optimization suggestions
 optimization_suggestions = ANALYZE_RAW_FIELD_PERFORMANCE("binary_data", "binary_content");
 ("RAW field optimization suggestions: " + optimization_suggestions).echo();
 */

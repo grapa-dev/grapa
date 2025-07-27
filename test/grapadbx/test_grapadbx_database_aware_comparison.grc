@@ -49,13 +49,13 @@ f = $file().table("ROW");
 f.mkfield("id", "INT", "FIX", 4);
 f.mkfield("score", "INT", "FIX", 4);
 
-// Insert data
+/* Insert data
 f.setBatch("user1", {"id": 100, "score": 85});
 f.setBatch("user2", {"id": 20, "score": 95});
 f.setBatch("user3", {"id": 5, "score": 75});
 
-// Search with correct numeric comparison
-results = f.search({"score": {"$gt": 80}});  // Should find user1 and user2
+/* Search with correct numeric comparison
+results = f.search({"score": {"$gt": 80}}); /* Should find user1 and user2 */
 ("Found " + results.len().str() + " users with score > 80\n").echo();
 */
 "✓ Correct numeric comparison: 85 > 80, 95 > 80, 75 <= 80\n".echo();
@@ -69,7 +69,7 @@ f.setBatch("product1", {"price": 19.99});
 f.setBatch("product2", {"price": 5.50});
 f.setBatch("product3", {"price": 25.75});
 
-// Search with correct float comparison
+/* Search with correct float comparison
 results = f.search({"price": {"$between": [10.0, 30.0]}});
 ("Found " + results.len().str() + " products between $10-$30\n").echo();
 */
@@ -81,15 +81,15 @@ results = f.search({"price": {"$between": [10.0, 30.0]}});
 /*
 f.mkfield("name", "STR", "VAR");
 f.setBatch("user1", {"name": "Alice"});
-f.setBatch("user2", {"name": "alice"});  // lowercase
+f.setBatch("user2", {"name": "alice"}); /* lowercase */
 f.setBatch("user3", {"name": "Bob"});
 
-// Case-sensitive search
-results = f.search({"name": "Alice"});  // Should find only user1
+/* Case-sensitive search
+results = f.search({"name": "Alice"}); /* Should find only user1 */
 ("Case-sensitive search found " + results.len().str() + " results\n").echo();
 
-// Case-insensitive search
-results = f.search({"name": {"$ieq": "alice"}});  // Should find user1 and user2
+/* Case-insensitive search
+results = f.search({"name": {"$ieq": "alice"}}); /* Should find user1 and user2 */
 ("Case-insensitive search found " + results.len().str() + " results\n").echo();
 */
 "✓ Correct string comparison with collation support\n".echo();
@@ -99,12 +99,12 @@ results = f.search({"name": {"$ieq": "alice"}});  // Should find user1 and user2
 /* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("created", "TIME", "FIX", 8);
-f.setBatch("order1", {"created": 1640995200});  // 2022-01-01
-f.setBatch("order2", {"created": 1643673600});  // 2022-02-01
-f.setBatch("order3", {"created": 1646092800});  // 2022-03-01
+f.setBatch("order1", {"created": 1640995200}); /* 2022-01-01 */
+f.setBatch("order2", {"created": 1643673600}); /* 2022-02-01 */
+f.setBatch("order3", {"created": 1646092800}); /* 2022-03-01 */
 
-// Search with correct time comparison
-results = f.search({"created": {"$gte": 1643673600}});  // After Feb 1
+/* Search with correct time comparison
+results = f.search({"created": {"$gte": 1643673600}}); /* After Feb 1 */
 ("Found " + results.len().str() + " orders after Feb 1, 2022\n").echo();
 */
 "✓ Correct time comparison: 2022-03-01 > 2022-02-01 > 2022-01-01\n".echo();
@@ -118,8 +118,8 @@ f.setBatch("user1", {"active": true});
 f.setBatch("user2", {"active": false});
 f.setBatch("user3", {"active": true});
 
-// Search with correct boolean comparison
-results = f.search({"active": true});  // Should find user1 and user3
+/* Search with correct boolean comparison
+results = f.search({"active": true}); /* Should find user1 and user3 */
 ("Found " + results.len().str() + " active users\n").echo();
 */
 "✓ Correct boolean comparison: true > false\n".echo();
@@ -133,8 +133,8 @@ f.setBatch("user1", {"user_id": "USER001"});
 f.setBatch("user2", {"user_id": "USER002"});
 f.setBatch("user3", {"user_id": "ADMIN001"});
 
-// Search with correct ID comparison (case-sensitive)
-results = f.search({"user_id": {"$gte": "USER"}});  // Should find user1 and user2
+/* Search with correct ID comparison (case-sensitive)
+results = f.search({"user_id": {"$gte": "USER"}}); /* Should find user1 and user2 */
 ("Found " + results.len().str() + " users with USER prefix\n").echo();
 */
 "✓ Correct ID comparison: case-sensitive string comparison\n".echo();
@@ -148,8 +148,8 @@ f.setBatch("file1", {"binary_data": [0x01, 0x02, 0x03]});
 f.setBatch("file2", {"binary_data": [0x01, 0x02, 0x04]});
 f.setBatch("file3", {"binary_data": [0x01, 0x02]});
 
-// Search with correct binary comparison
-results = f.search({"binary_data": {"$gt": [0x01, 0x02]}});  // Should find file1 and file2
+/* Search with correct binary comparison
+results = f.search({"binary_data": {"$gt": [0x01, 0x02]}}); /* Should find file1 and file2 */
 ("Found " + results.len().str() + " files with longer binary data\n").echo();
 */
 "✓ Correct raw data comparison: length + content comparison\n".echo();
@@ -164,8 +164,8 @@ f.setBatch("post1", {"tags": ["tech", "programming"]});
 f.setBatch("post2", {"tags": ["tech", "ai"]});
 f.setBatch("post3", {"tags": ["tech"]});
 
-// Search with correct array comparison (element-wise)
-results = f.search({"tags": {"$contains": "tech"}});  // Should find all posts
+/* Search with correct array comparison (element-wise)
+results = f.search({"tags": {"$contains": "tech"}}); /* Should find all posts */
 ("Found " + results.len().str() + " posts with tech tag\n").echo();
 */
 "✓ Correct array comparison: element-wise comparison\n".echo();
@@ -179,8 +179,8 @@ f.setBatch("item1", {"categories": {"electronics", "computers"}});
 f.setBatch("item2", {"categories": {"electronics", "phones"}});
 f.setBatch("item3", {"categories": {"books"}});
 
-// Search with correct list comparison
-results = f.search({"categories": {"$contains": "electronics"}});  // Should find item1 and item2
+/* Search with correct list comparison
+results = f.search({"categories": {"$contains": "electronics"}}); /* Should find item1 and item2 */
 ("Found " + results.len().str() + " items in electronics category\n").echo();
 */
 "✓ Correct list comparison: element-wise comparison\n".echo();
@@ -194,8 +194,8 @@ f.setBatch("point1", {"coordinates": [1.0, 2.0, 3.0]});
 f.setBatch("point2", {"coordinates": [1.0, 2.0, 4.0]});
 f.setBatch("point3", {"coordinates": [1.0, 2.0]});
 
-// Search with correct vector comparison (mathematical)
-results = f.search({"coordinates": {"$dim": 3}});  // Should find point1 and point2
+/* Search with correct vector comparison (mathematical)
+results = f.search({"coordinates": {"$dim": 3}}); /* Should find point1 and point2 */
 ("Found " + results.len().str() + " 3D points\n").echo();
 */
 "✓ Correct vector comparison: mathematical vector comparison\n".echo();
@@ -209,8 +209,8 @@ f.setBatch("doc1", {"metadata": {"author": "Alice", "version": 1}});
 f.setBatch("doc2", {"metadata": {"author": "Bob", "version": 2}});
 f.setBatch("doc3", {"metadata": {"author": "Alice", "version": 1}});
 
-// Search with correct table comparison
-results = f.search({"metadata": {"author": "Alice"}});  // Should find doc1 and doc3
+/* Search with correct table comparison
+results = f.search({"metadata": {"author": "Alice"}}); /* Should find doc1 and doc3 */
 ("Found " + results.len().str() + " documents by Alice\n").echo();
 */
 "✓ Correct table comparison: reference + content comparison\n".echo();
@@ -224,8 +224,8 @@ f.setBatch("app1", {"config": "<config><name>App1</name><version>1.0</version></
 f.setBatch("app2", {"config": "<config><name>App2</name><version>1.0</version></config>"});
 f.setBatch("app3", {"config": "<config><name>App1</name><version>2.0</version></config>"});
 
-// Search with correct XML comparison (canonical)
-results = f.search({"config": {"$xpath": "//name[text()='App1']"}});  // Should find app1 and app3
+/* Search with correct XML comparison (canonical)
+results = f.search({"config": {"$xpath": " /* name[text()='App1']"}});  /* Should find app1 and app3 */
 ("Found " + results.len().str() + " apps named App1\n").echo();
 */
 "✓ Correct XML comparison: canonical XML comparison\n".echo();
@@ -240,8 +240,8 @@ f.setBatch("event1", {"handler": op(x) { x * 2; }});
 f.setBatch("event2", {"handler": op(x) { x + 1; }});
 f.setBatch("event3", {"handler": op(x) { x * 2; }});
 
-// Search with correct operation comparison (signature-based)
-results = f.search({"handler": {"$signature": "op(x)"}});  // Should find all handlers
+/* Search with correct operation comparison (signature-based)
+results = f.search({"handler": {"$signature": "op(x)"}}); /* Should find all handlers */
 ("Found " + results.len().str() + " handlers with matching signature\n").echo();
 */
 "✓ Correct operation comparison: function signature comparison\n".echo();
@@ -255,8 +255,8 @@ f.setBatch("obj1", {"type": class { name = ""; age = 0; }});
 f.setBatch("obj2", {"type": class { name = ""; }});
 f.setBatch("obj3", {"type": class { name = ""; age = 0; }});
 
-// Search with correct class comparison (definition-based)
-results = f.search({"type": {"$has_property": "age"}});  // Should find obj1 and obj3
+/* Search with correct class comparison (definition-based)
+results = f.search({"type": {"$has_property": "age"}}); /* Should find obj1 and obj3 */
 ("Found " + results.len().str() + " objects with age property\n").echo();
 */
 "✓ Correct class comparison: class definition comparison\n".echo();
@@ -270,8 +270,8 @@ f.setBatch("obj1", {"instance": {"name": "Alice", "age": 30}});
 f.setBatch("obj2", {"instance": {"name": "Bob", "age": 25}});
 f.setBatch("obj3", {"instance": {"name": "Alice", "age": 30}});
 
-// Search with correct object comparison (property-based)
-results = f.search({"instance": {"name": "Alice"}});  // Should find obj1 and obj3
+/* Search with correct object comparison (property-based)
+results = f.search({"instance": {"name": "Alice"}}); /* Should find obj1 and obj3 */
 ("Found " + results.len().str() + " objects with name Alice\n").echo();
 */
 "✓ Correct object comparison: object property comparison\n".echo();
@@ -285,14 +285,14 @@ results = f.search({"instance": {"name": "Alice"}});  // Should find obj1 and ob
 /* This would be the new syntax for GrapaDBX */
 /*
 f = $file().table("ROW");
-f.mkfield("id", "INT", "FIX", 4);      // Fixed storage
-f.mkfield("name", "STR", "FIX", 20);   // Fixed storage
+f.mkfield("id", "INT", "FIX", 4); /* Fixed storage */
+f.mkfield("name", "STR", "FIX", 20); /* Fixed storage */
 
-// Direct memory comparison for fixed fields
-f.setBatch("user1", {"id": 100, "name": "Alice Johnson    "});  // Padded to 20 chars
-f.setBatch("user2", {"id": 200, "name": "Bob Smith        "});  // Padded to 20 chars
+/* Direct memory comparison for fixed fields
+f.setBatch("user1", {"id": 100, "name": "Alice Johnson    "}); /* Padded to 20 chars */
+f.setBatch("user2", {"id": 200, "name": "Bob Smith        "}); /* Padded to 20 chars */
 
-// Fast direct memory comparison
+/* Fast direct memory comparison
 results = f.search({"id": {"$gt": 150}});
 */
 "✓ Direct memory comparison for fixed storage fields\n".echo();
@@ -301,11 +301,11 @@ results = f.search({"id": {"$gt": 150}});
 "Example 2: Variable Storage Comparison\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-f.mkfield("description", "STR", "VAR");  // Variable storage
+f.mkfield("description", "STR", "VAR"); /* Variable storage */
 f.setBatch("product1", {"description": "Short"});
 f.setBatch("product2", {"description": "Very long description"});
 
-// Length + data comparison for variable fields
+/* Length + data comparison for variable fields
 results = f.search({"description": {"$len": {"$gt": 10}}});
 */
 "✓ Length + data comparison for variable storage fields\n".echo();
@@ -322,11 +322,11 @@ frow = $file().table("ROW");
 frow.mkfield("id", "INT", "FIX", 4);
 frow.mkfield("name", "STR", "VAR");
 
-// ROW storage: compare entire records as units
+/* ROW storage: compare entire records as units
 frow.setBatch("user1", {"id": 100, "name": "Alice"});
 frow.setBatch("user2", {"id": 200, "name": "Bob"});
 
-// Record-based comparison for ROW storage
+/* Record-based comparison for ROW storage
 results = frow.search({"id": {"$gt": 150}});
 */
 "✓ Record-based comparison for ROW storage\n".echo();
@@ -339,11 +339,11 @@ fcol = $file().table("COL");
 fcol.mkfield("id", "INT", "FIX", 4);
 fcol.mkfield("name", "STR", "VAR");
 
-// COL storage: compare column values directly
+/* COL storage: compare column values directly
 fcol.setBatch("user1", {"id": 100, "name": "Alice"});
 fcol.setBatch("user2", {"id": 200, "name": "Bob"});
 
-// Column-based comparison for COL storage
+/* Column-based comparison for COL storage
 results = fcol.search({"id": {"$gt": 150}});
 */
 "✓ Column-based comparison for COL storage\n".echo();
@@ -361,16 +361,16 @@ f.mkfield("last_name", "STR", "VAR");
 f.mkfield("first_name", "STR", "VAR");
 f.mkfield("age", "INT", "FIX", 4);
 
-// Create composite index on (last_name, first_name, age)
+/* Create composite index on (last_name, first_name, age)
 f.createIndex("name_age_idx", ["last_name", "first_name", "age"]);
 
-// Insert data
+/* Insert data
 f.setBatch("user1", {"last_name": "Smith", "first_name": "Alice", "age": 30});
 f.setBatch("user2", {"last_name": "Smith", "first_name": "Bob", "age": 25});
 f.setBatch("user3", {"last_name": "Johnson", "first_name": "Carol", "age": 35});
 
-// Multi-field search with correct comparison order
-results = f.search({
+/* Multi-field search with correct comparison order
+results = f.search({;
     "last_name": "Smith",
     "first_name": {"$gte": "A"},
     "age": {"$gt": 25}
@@ -394,12 +394,12 @@ results = f.search({
 "Example: Cached Comparison Results\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// First comparison: full evaluation
+/* First comparison: full evaluation
 start_time = $time();
 results1 = f.search({"age": {"$gt": 25}});
 first_time = $time() - start_time;
 
-// Second comparison: cached result
+/* Second comparison: cached result
 start_time = $time();
 results2 = f.search({"age": {"$gt": 25}});
 second_time = $time() - start_time;
@@ -426,23 +426,23 @@ second_time = $time() - start_time;
 "Example: Custom Comparison Plugin\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Custom comparison for geographic coordinates
+/* Custom comparison for geographic coordinates
 class GeoComparison : public GrapaDBXComparison {
     virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
-        // Custom logic for geographic distance comparison
+/* Custom logic for geographic distance comparison
         return CompareGeographicDistance(context, result);
     }
 };
 
-// Register custom comparison
+/* Register custom comparison
 f.registerComparison("GEO", new GeoComparison());
 
-// Use custom comparison
+/* Use custom comparison
 f.mkfield("location", "GEO", "VAR");
-f.setBatch("store1", {"location": {"lat": 40.7128, "lng": -74.0060}});  // NYC
-f.setBatch("store2", {"location": {"lat": 34.0522, "lng": -118.2437}}); // LA
+f.setBatch("store1", {"location": {"lat": 40.7128, "lng": -74.0060}}); /* NYC */
+f.setBatch("store2", {"location": {"lat": 34.0522, "lng": -118.2437}}); /* LA */
 
-// Geographic search
+/* Geographic search
 results = f.search({"location": {"$near": {"lat": 40.0, "lng": -74.0, "radius": 100}}});
 */
 "✓ Custom comparison plugins for specialized data types\n".echo();

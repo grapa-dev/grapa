@@ -73,7 +73,7 @@ group_db.set("user3", -87.6298, "lon");
 
 "Formula Index Concept: Index on concatenated name\n".echo();
 "```grapa\n".echo();
-"// Index on concatenated name\n".echo();
+" /* Index on concatenated name\n".echo(); */
 "index1 = group_db.mkformulaindex(\"full_name_index\", \n".echo();
 "    \"lambda(record) { record.get('first_name') + ' ' + record.get('last_name') }\");\n".echo();
 "```\n".echo();
@@ -85,7 +85,7 @@ group_db.set("user3", -87.6298, "lon");
 
 "Formula Index Concept: Index on age category\n".echo();
 "```grapa\n".echo();
-"// Index on age category\n".echo();
+" /* Index on age category\n".echo(); */
 "index2 = group_db.mkformulaindex(\"age_category_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        age = record.get('age').raw().int(); \n".echo();
@@ -108,7 +108,7 @@ group_db.set("user3", -87.6298, "lon");
 
 "Formula Index Concept: Index on salary percentile\n".echo();
 "```grapa\n".echo();
-"// Index on salary percentile within department\n".echo();
+" /* Index on salary percentile within department\n".echo(); */
 "index3 = group_db.mkformulaindex(\"salary_percentile_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        salary = record.get('salary').raw().int(); \n".echo();
@@ -124,7 +124,7 @@ group_db.set("user3", -87.6298, "lon");
 
 "Formula Index Concept: Index on distance from reference point\n".echo();
 "```grapa\n".echo();
-"// Index on distance from New York City\n".echo();
+" /* Index on distance from New York City\n".echo(); */
 "index4 = group_db.mkformulaindex(\"distance_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        lat1 = record.get('lat').raw().float(); \n".echo();
@@ -146,7 +146,7 @@ group_db.set("user3", -87.6298, "lon");
 
 "Formula Index Concept: Index only active employees\n".echo();
 "```grapa\n".echo();
-"// Index only active employees\n".echo();
+" /* Index only active employees\n".echo(); */
 "index5 = group_db.mkformulaindex(\"active_employee_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        if (record.get('status') == 'active') \n".echo();
@@ -163,7 +163,7 @@ group_db.set("user3", -87.6298, "lon");
 
 "Formula Index Concept: Index on date quarters\n".echo();
 "```grapa\n".echo();
-"// Index on hire date quarter\n".echo();
+" /* Index on hire date quarter\n".echo(); */
 "index6 = group_db.mkformulaindex(\"quarter_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        date = record.get('hire_date'); \n".echo();
@@ -208,13 +208,13 @@ group_db.set("user3", -87.6298, "lon");
 
 "Two-Stage Search Extension:\n".echo();
 "```cpp\n".echo();
-"// Extend search algorithm to handle formula-based indexes\n".echo();
+" /* Extend search algorithm to handle formula-based indexes\n".echo(); */
 "GrapaError GrapaDB::SearchDbWithFormulas(GrapaDBCursor& cursor, GrapaDBTable& pTable, GrapaDBFieldValueArray& pFieldList)\n".echo();
 "{\n".echo();
-"    // Stage 1: Locate best index (including formula indexes)\n".echo();
+" /* Stage 1: Locate best index (including formula indexes)\n".echo(); */
 "    err = LocateBestIndex(cursor, pTable, pFieldList);\n".echo();
 "    \n".echo();
-"    // Stage 2: Evaluate formulas and perform detailed matching\n".echo();
+" /* Stage 2: Evaluate formulas and perform detailed matching\n".echo(); */
 "    if (usingFormulaIndex) {\n".echo();
 "        err = EvaluateFormulaAndMatch(cursor, pTable, pFieldList);\n".echo();
 "    } else {\n".echo();
@@ -292,7 +292,7 @@ group_db.set("user3", -87.6298, "lon");
 
 "E-commerce Application:\n".echo();
 "```grapa\n".echo();
-"// Index on product availability\n".echo();
+" /* Index on product availability\n".echo(); */
 "availability_index = products.mkformulaindex(\"availability_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        stock = record.get('stock').raw().int(); \n".echo();
@@ -301,7 +301,7 @@ group_db.set("user3", -87.6298, "lon");
 "        else 'backordered' \n".echo();
 "    }\");\n".echo();
 "\n".echo();
-"// Index on price tier\n".echo();
+" /* Index on price tier\n".echo(); */
 "price_tier_index = products.mkformulaindex(\"price_tier_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        price = record.get('price').raw().float(); \n".echo();
@@ -313,7 +313,7 @@ group_db.set("user3", -87.6298, "lon");
 
 "Financial Application:\n".echo();
 "```grapa\n".echo();
-"// Index on risk category\n".echo();
+" /* Index on risk category\n".echo(); */
 "risk_index = accounts.mkformulaindex(\"risk_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        balance = record.get('balance').raw().float(); \n".echo();
@@ -321,7 +321,7 @@ group_db.set("user3", -87.6298, "lon");
 "        calculateRiskScore(balance, credit_score) \n".echo();
 "    }\");\n".echo();
 "\n".echo();
-"// Index on account status\n".echo();
+" /* Index on account status\n".echo(); */
 "status_index = accounts.mkformulaindex(\"status_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        last_activity = record.get('last_activity'); \n".echo();

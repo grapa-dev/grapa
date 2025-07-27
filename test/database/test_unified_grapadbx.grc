@@ -1,15 +1,15 @@
-/* Test GrapaDB backend integration with unified storage */
+/* Test GrapaDBX backend integration with unified storage */
 
 /* Test instantiation and basic operations */
-"Testing GrapaDB backend integration...\n".echo();
+"Testing GrapaDBX backend integration...\n".echo();
 
-/* Create unified storage object with GrapaDB */
+/* Create unified storage object with GrapaDBX */
 u = $unified();
 "Created unified storage object\n".echo();
 
-/* Test create with GrapaDB */
-"Testing create with grapadb://testdb.gdb...\n".echo();
-result = u.create("grapadb://testdb.gdb");
+/* Test create with GrapaDBX */
+"Testing create with grapadbx: /* testdbx.gdb...\n".echo(); */
+result = u.create("grapadbx: /* testdbx.gdb"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -35,7 +35,7 @@ result.echo();
 
 /* Test set (set field value) */
 "Testing set (set field value)...\n".echo();
-result = u.set("testrecord", "$VALUE", "This is test content");
+result = u.set("testrecord", "$VALUE", "This is test content for GrapaDBX");
 "Set result: ".echo();
 result.echo();
 "\n".echo();
@@ -63,7 +63,7 @@ result.echo();
 
 /* Test set (set field value for second record) */
 "Testing set (set field value for second record)...\n".echo();
-result = u.set("another_record", "$VALUE", "Second record content");
+result = u.set("another_record", "$VALUE", "Second record content for GrapaDBX");
 "Set result: ".echo();
 result.echo();
 "\n".echo();
@@ -89,4 +89,4 @@ result = u.ls();
 result.echo();
 "\n".echo();
 
-"GrapaDB backend integration test completed!\n".echo(); 
+"GrapaDBX backend integration test completed!\n".echo(); 

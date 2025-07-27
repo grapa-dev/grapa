@@ -31,11 +31,28 @@ public:
 	enum { GROUP_TREE=LAST_TREE, RTABLE_TREE, CTABLE_TREE, };
 	enum { IPTR_STORE=LAST_STORE, };
 	enum { NULL_CMP=0, LT_CMP, LTEQ_CMP, EQ_CMP, GTEQ_CMP, GT_CMP, };
+	
+	// Caching configuration options
+	enum CachingMode { 
+		CACHE_DISABLED = 0,    // No caching (current behavior)
+		CACHE_ENABLED = 1,     // Always use caching
+		CACHE_AUTO = 2         // Auto-detect based on file size/type
+	};
+	
 public:
 	GrapaDBX();
 	GrapaDBX(GrapaFile* pFile);
 	virtual ~GrapaDBX();
 	void INIT(GrapaFile* pFile);
+	
+	// Caching configuration methods
+	virtual void SetCachingMode(CachingMode mode);
+	virtual CachingMode GetCachingMode() const { return mCachingMode; }
+	virtual void SetCacheSize(u64 size);
+	virtual u64 GetCacheSize() const { return mCacheSize; }
+	virtual bool IsCachingEnabled() const;
+	virtual GrapaError EnableCaching();
+	virtual GrapaError DisableCaching();
 	
 	// Core database operations - same interface as GrapaDB
 	virtual GrapaError Create(const char *pFileName, u8 treeType, u64& firstTree);
@@ -126,6 +143,11 @@ public:
 	virtual GrapaError PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor);
 	
 protected:
+	// Caching system - same architecture as GrapaGroup
+	GrapaFileCache mTree;           // Caching layer for BTree operations
+	CachingMode mCachingMode;       // Current caching mode
+	u64 mCacheSize;                 // Cache size in bytes
+	
 	GrapaFile *mDumpFile;
 	
 	// Dump system methods for debugging and visualization

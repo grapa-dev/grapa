@@ -128,7 +128,8 @@ emp2_dept = group_db.get("emp002", "department");
 "Creating additional records to demonstrate search performance differences:\n".echo();
 
 /* Create more records to show performance differences */
-for (i = 4; i <= 10; i++) {
+i = 4;
+while (i <= 10) {
     emp_id = "emp" + ("00" + i.str()).right(3);
     group_db.set(emp_id, "Employee data " + i.str(), "$VALUE");
     group_db.set(emp_id, emp_id, "$KEY");
@@ -137,23 +138,28 @@ for (i = 4; i <= 10; i++) {
     group_db.set(emp_id, "City " + i.str(), "city");
     group_db.set(emp_id, "Dept " + i.str(), "department");
     group_db.set(emp_id, 50000 + i * 5000, "salary");
+    i = i + 1;
 }
 
 "✓ 7 additional records created\n".echo();
 
 "Demonstrating search performance:\n".echo();
 "1. $KEY search (indexed - fast):\n".echo();
-for (i = 1; i <= 3; i++) {
+i = 1;
+while (i <= 3) {
     emp_id = "emp" + ("00" + i.str()).right(3);
     key_value = group_db.get(emp_id, "$KEY");
     ("$KEY search for " + emp_id + ": " + key_value.str() + "\n").echo();
+    i = i + 1;
 }
 
 "2. Custom field search (sequential - slower):\n".echo();
-for (i = 1; i <= 3; i++) {
+i = 1;
+while (i <= 3) {
     emp_id = "emp" + ("00" + i.str()).right(3);
     name_value = group_db.get(emp_id, "name");
     ("Name search for " + emp_id + ": " + name_value.str() + "\n").echo();
+    i = i + 1;
 }
 
 /* ================================================================================ */

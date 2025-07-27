@@ -83,16 +83,16 @@ while (i < keys.len()) {
 "Creating objects with class syntax:\n".echo();
 
 /* Define a simple class */
-TestClass = class {
+TestClass = class {;
     name = "";
     value = 0;
     
-    init = op(n, v) {
+init = op(n, v) {;
         name = n;
         value = v;
     };
     
-    getInfo = op() {
+getInfo = op() {
         ("Name: " + name + ", Value: " + value.str()).echo();
     };
 };
@@ -169,7 +169,7 @@ test_object.init("test_obj", 999);
 /* ======================================== */
 "Test 6: Nested Structures\n".echo();
 
-nested_list = {
+nested_list = {;
     "level1": {
         "level2": {
             "level3": "deep_value"

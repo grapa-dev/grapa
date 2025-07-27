@@ -103,10 +103,10 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 
 "Implementation details:\n".echo();
 "```cpp\n".echo();
-"// Check all indexes for field usage before deletion\n".echo();
+" /* Check all indexes for field usage before deletion\n".echo(); */
 "while (!err) {\n".echo();
 "    if (indexFieldCursor.mValue == pFieldId)\n".echo();
-"        return(-1);  // Field used in index - cannot delete\n".echo();
+"        return(-1); /* Field used in index - cannot delete\n".echo(); */
 "    err = Next(indexFieldCursor);\n".echo();
 "}\n".echo();
 "```\n".echo();
@@ -132,13 +132,13 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 
 "ROW Table Field Management:\n".echo();
 "```cpp\n".echo();
-"// Bit-shift all records to remove deleted field\n".echo();
+" /* Bit-shift all records to remove deleted field\n".echo(); */
 "err = CopyDataValue(tableCursor.mValue, toOffset, tableCursor.mValue, fromOffset, moveSize, &bytesWriten);\n".echo();
 "```\n".echo();
 
 "COL Table Field Management:\n".echo();
 "```cpp\n".echo();
-"// Delete field's column storage based on type and storage method\n".echo();
+" /* Delete field's column storage based on type and storage method\n".echo(); */
 "switch (fieldStore) {\n".echo();
 "    case STORE_VAR:\n".echo();
 "    case STORE_PAR:\n".echo();
@@ -168,14 +168,14 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 
 "Implementation:\n".echo();
 "```cpp\n".echo();
-"// Set tree dirty during field operations\n".echo();
+" /* Set tree dirty during field operations\n".echo(); */
 "indexCursor.Set(pTable.mRecRef);\n".echo();
 "err = SetTreeDirty(indexCursor, true);\n".echo();
 "\n".echo();
-"// Perform field operations\n".echo();
-"// ... field modification code ...\n".echo();
+" /* Perform field operations\n".echo(); */
+" /* ... field modification code ...\n".echo(); */
 "\n".echo();
-"// Clear dirty bit when complete\n".echo();
+" /* Clear dirty bit when complete\n".echo(); */
 "indexCursor.Set(pTable.mRecRef);\n".echo();
 "err = SetTreeDirty(indexCursor, false);\n".echo();
 "```\n".echo();
@@ -220,12 +220,14 @@ all_records = group_db.ls();
 all_records.echo();
 
 "Demonstrating field access across all records:\n".echo();
-for (i = 0; i < all_records.len(); i++) {
+i = 0;
+while (i < all_records.len()) {
     record_name = all_records.get(i);
     name_value = group_db.get(record_name, "name");
     age_value = group_db.get(record_name, "age").raw().int();
     dept_value = group_db.get(record_name, "department");
     ("Record " + i.str() + " (" + record_name.str() + ") - name: " + name_value.str() + ", age: " + age_value.str() + ", dept: " + dept_value.str() + "\n").echo();
+    i = i + 1;
 }
 
 /* ================================================================================ */

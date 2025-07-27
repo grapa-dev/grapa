@@ -9,7 +9,7 @@
 "Analyzing test results to identify implementation gaps...\n".echo();
 
 /* Test categories and their status */
-categories = {
+categories = {;
     "basic_pattern_matching": "WORKING",
     "case_insensitive": "WORKING", 
     "invert_match": "BROKEN",
@@ -30,7 +30,7 @@ categories = {
 };
 
 /* Implementation priorities */
-priorities = {
+priorities = {;
     "CRITICAL": ["invert_match", "count_only"],
     "HIGH": ["lookaround_assertions", "context_lines"],
     "MEDIUM": ["unicode_properties", "word_boundaries"],

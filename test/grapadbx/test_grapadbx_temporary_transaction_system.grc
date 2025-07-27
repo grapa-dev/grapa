@@ -52,15 +52,15 @@ if (err) {
 "Step 2: Perform Operations (All to Temp Database)\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// These operations go to the temporary database
+/* These operations go to the temporary database
 f.setBatch(transactionId, "user1", {"name": "Alice", "age": 30, "city": "New York"});
 f.setBatch(transactionId, "user2", {"name": "Bob", "age": 25, "city": "Los Angeles"});
 f.setBatch(transactionId, "user3", {"name": "Charlie", "age": 35, "city": "Chicago"});
 
-// Update existing record (goes to temp database)
-f.setBatch(transactionId, "user1", {"age": 31});  // Birthday!
+/* Update existing record (goes to temp database)
+f.setBatch(transactionId, "user1", {"age": 31}); /* Birthday! */
 
-// Read operations check temp first, then main
+/* Read operations check temp first, then main
 user1_data = f.getBatch(transactionId, "user1", ["name", "age", "city"]);
 ("User1 in transaction: " + user1_data["name"] + ", age " + user1_data["age"].str() + "\n").echo();
 */
@@ -88,15 +88,15 @@ if (err) {
 "Step 4: Rollback Transaction (Simple Delete)\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Start another transaction
+/* Start another transaction
 transactionId2 = 0;
 f.beginTransaction(transactionId2);
 
-// Make some changes
+/* Make some changes
 f.setBatch(transactionId2, "user4", {"name": "David", "age": 28, "city": "Boston"});
-f.setBatch(transactionId2, "user1", {"age": 32});  // Another birthday!
+f.setBatch(transactionId2, "user1", {"age": 32}); /* Another birthday! */
 
-// Oops, need to rollback
+/* Oops, need to rollback
 err = f.rollbackTransaction(transactionId2);
 if (err) {
     ("Failed to rollback transaction: " + err.str()).echo();
@@ -140,23 +140,23 @@ if (err) {
 "Multiple Concurrent Transactions:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Transaction 1
+/* Transaction 1
 txn1 = 0;
 f.beginTransaction(txn1);
 f.setBatch(txn1, "user1", {"status": "processing"});
 
-// Transaction 2 (can run concurrently)
+/* Transaction 2 (can run concurrently)
 txn2 = 0;
 f.beginTransaction(txn2);
 f.setBatch(txn2, "user2", {"status": "processing"});
 
-// Transaction 3 (can run concurrently)
+/* Transaction 3 (can run concurrently)
 txn3 = 0;
 f.beginTransaction(txn3);
-user3_data = f.getBatch(txn3, "user3", ["name", "age"]);  // Reads from main database
+user3_data = f.getBatch(txn3, "user3", ["name", "age"]); /* Reads from main database */
 
-// All transactions can run without blocking each other
-// Each has its own temp database
+/* All transactions can run without blocking each other
+/* Each has its own temp database
 */
 "✓ Transaction 1: temp_txn_1.db (modifying user1)\n".echo();
 "✓ Transaction 2: temp_txn_2.db (modifying user2)\n".echo();
@@ -175,18 +175,18 @@ user3_data = f.getBatch(txn3, "user3", ["name", "age"]);  // Reads from main dat
 "On System Startup:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// System startup recovery
+/* System startup recovery
 err = f.recoverOnStartup();
 if (err) {
     ("Recovery failed: " + err.str()).echo();
     return;
 }
 
-// Recovery process:
-// 1. Scan for temporary database files
-// 2. Clean up orphaned temp databases
-// 3. Validate main database integrity
-// 4. Restore from backup if needed
+/* Recovery process:
+/* 1. Scan for temporary database files
+/* 2. Clean up orphaned temp databases
+/* 3. Validate main database integrity
+/* 4. Restore from backup if needed
 */
 "✓ Scan for temporary database files\n".echo();
 "✓ Clean up orphaned temp databases\n".echo();
@@ -204,17 +204,17 @@ if (err) {
 "Change Tracking for Efficient Transfer:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// During transaction, changes are tracked
-f.setBatch(transactionId, "user1", {"age": 31});  // Tracked as UPDATE
-f.setBatch(transactionId, "user4", {"name": "David", "age": 28});  // Tracked as INSERT
-f.deleteRecord(transactionId, "user5");  // Tracked as DELETE
+/* During transaction, changes are tracked
+f.setBatch(transactionId, "user1", {"age": 31}); /* Tracked as UPDATE */
+f.setBatch(transactionId, "user4", {"name": "David", "age": 28}); /* Tracked as INSERT */
+f.deleteRecord(transactionId, "user5"); /* Tracked as DELETE */
 
-// On commit, optimized bulk transfer
+/* On commit, optimized bulk transfer
 err = f.commitTransaction(transactionId);
-// Internally:
-// 1. Transfer new records (INSERTs) - user4
-// 2. Transfer modified records (UPDATEs) - user1
-// 3. Handle deleted records (DELETEs) - user5
+/* Internally:
+/* 1. Transfer new records (INSERTs) - user4
+/* 2. Transfer modified records (UPDATEs) - user1
+/* 3. Handle deleted records (DELETEs) - user5
 */
 "✓ Track new records (INSERTs)\n".echo();
 "✓ Track modified records (UPDATEs)\n".echo();
@@ -233,12 +233,12 @@ err = f.commitTransaction(transactionId);
 "File-based Atomic Switch:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Atomic switch process:
-// 1. Create backup of main database
-// 2. Atomic rename: temp -> main
-// 3. Clean up backup
+/* Atomic switch process:
+/* 1. Create backup of main database
+/* 2. Atomic rename: temp -> main
+/* 3. Clean up backup
 
-// If anything fails, restore from backup
+/* If anything fails, restore from backup
 err = f.atomicSwitch(transactionId);
 if (err) {
     ("Atomic switch failed, restored from backup\n").echo();
@@ -263,15 +263,15 @@ if (err) {
 "Multi-Version Concurrency Control (MVCC):\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// MVCC allows multiple versions of data
+/* MVCC allows multiple versions of data
 snapshot1 = f.createSnapshot();
 f.setBatch(transactionId, "user1", {"age": 31});
 
-// Read from snapshot (sees old data)
+/* Read from snapshot (sees old data)
 user1_old = f.readFromSnapshot(snapshot1, "user1", ["age"]);
 ("User1 age in snapshot: " + user1_old["age"].str()).echo();
 
-// Read current data (sees new data)
+/* Read current data (sees new data)
 user1_new = f.getBatch(transactionId, "user1", ["age"]);
 ("User1 age current: " + user1_new["age"].str()).echo();
 */
@@ -284,12 +284,12 @@ user1_new = f.getBatch(transactionId, "user1", ["age"]);
 "Lock-Free Operations:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Optimistic concurrency control
+/* Optimistic concurrency control
 expected_version = f.getRecordVersion("user1");
 err = f.optimisticUpdate("user1", {"age": 32}, expected_version);
 if (err) {
     ("Optimistic update failed - record was modified by another transaction\n").echo();
-    // Retry or handle conflict
+/* Retry or handle conflict
 }
 */
 "✓ Optimistic concurrency control\n".echo();
@@ -308,12 +308,12 @@ if (err) {
 "Efficient Batch Processing:\n".echo();
 /* This would be the new syntax for GrapaDBX */
 /*
-// Start transaction
+/* Start transaction
 transactionId = 0;
 f.beginTransaction(transactionId);
 
-// Batch insert multiple records
-records = [
+/* Batch insert multiple records
+records = [;
     {"key": "user1", "data": {"name": "Alice", "age": 30}},
     {"key": "user2", "data": {"name": "Bob", "age": 25}},
     {"key": "user3", "data": {"name": "Charlie", "age": 35}},
@@ -328,12 +328,12 @@ if (err) {
     return;
 }
 
-// Batch read multiple records
+/* Batch read multiple records
 keys = ["user1", "user2", "user3"];
 field_names = ["name", "age"];
 results = f.getBatchMultiple(transactionId, keys, field_names);
 
-// Commit all changes atomically
+/* Commit all changes atomically
 err = f.commitTransaction(transactionId);
 if (err) {
     ("Commit failed: " + err.str()).echo();

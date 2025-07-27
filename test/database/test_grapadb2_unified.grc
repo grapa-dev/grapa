@@ -6,7 +6,7 @@
 "Test 1: Creating GrapaDBX database...\n".echo();
 
 dbx = $unified();
-result = dbx.create("grapadbx://test_grapadbx.db");
+result = dbx.create("grapadbx: /* test_grapadbx.db"); */
 
 if (result == 0) {
     "✓ GrapaDBX database created successfully\n".echo();
@@ -134,7 +134,7 @@ if (simple_output.len() > 0) {
 
 /* Create a memory storage instance */
 mem = $unified();
-result = mem.create("memory://test_cross");
+result = mem.create("memory: /* test_cross"); */
 
 if (result == 0) {
     /* Copy data from GrapaDBX to memory */

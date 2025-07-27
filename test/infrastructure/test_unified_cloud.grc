@@ -9,7 +9,7 @@
 /* Create unified storage object with S3 */
 s3 = $unified();
 "Testing S3 storage...\n".echo();
-result = s3.create("s3://test-bucket");
+result = s3.create("s3: /* test-bucket"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -59,7 +59,7 @@ result.echo();
 /* Create unified storage object with Google Cloud Storage */
 gs = $unified();
 "Testing Google Cloud Storage...\n".echo();
-result = gs.create("gs://test-bucket");
+result = gs.create("gs: /* test-bucket"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -90,7 +90,7 @@ result.echo();
 /* Create unified storage object with Azure */
 azure = $unified();
 "Testing Azure Blob Storage...\n".echo();
-result = azure.create("azure://test-container");
+result = azure.create("azure: /* test-container"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -321,7 +321,7 @@ azure_content.echo();
 
 /* Create local file system storage */
 local = $unified();
-local.create("file:///tmp");
+local.create("file: /* /tmp"); */
 
 /* Copy from S3 to local file system */
 "Copying from S3 to local file system...\n".echo();
@@ -358,11 +358,13 @@ s3_verification.echo();
 "Creating 50 files for performance test...\n".echo();
 start_time = $time().now();
 
-for (i = 0; i < 50; i++) {
+i = 0;
+while (i < 50) {
     filename = "perf_file_" + i + ".txt";
     content = "Performance test content for cloud file " + i;
     s3.mk(filename, "FILE");
     s3.set(filename, content, "$VALUE");
+    i = i + 1;
 }
 
 end_time = $time().now();
@@ -451,9 +453,11 @@ s3.rm("s3_from_local.txt");
 
 /* Cleanup performance test files */
 "Cleaning up performance test files...\n".echo();
-for (i = 0; i < 50; i++) {
+i = 0;
+while (i < 50) {
     filename = "perf_file_" + i + ".txt";
     s3.rm(filename);
+    i = i + 1;
 }
 
 /* Test ls after cleanup */

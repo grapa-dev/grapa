@@ -8,22 +8,28 @@ data = "test";
 
 /* Simple thread function */
 thread_func = @<[op,@<code,{
-    for (i = 0; i < 1000; i++) {
+    i = 0;
+    while (i < 1000) {
         counter = counter + 1;
         data = "thread_" + i;
+        i = i + 1;
     }
 }>],{}>;
 
 /* Launch multiple threads */
 threads = [];
-for (t = 0; t < 5; t++) {
+t = 0;
+while (t < 5) {
     thread = thread_func();
     threads.append(thread);
+    t = t + 1;
 }
 
 /* Wait for completion */
-for (t = 0; t < threads.len(); t++) {
+t = 0;
+while (t < threads.len()) {
     threads[t].wait();
+    t = t + 1;
 }
 
 "Final counter: " + counter + "\n".echo();

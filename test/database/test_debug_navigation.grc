@@ -4,7 +4,7 @@
 dbx = $unified();
 
 /* Create GrapaDBX database */
-result = dbx.create("grapadbx://testdbx");
+result = dbx.create("grapadbx: /* testdbx"); */
 
 /* Create field */
 result = dbx.mk("$VALUE", "STR");

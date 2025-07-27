@@ -27,14 +27,14 @@
 /*
 f = $file();
 
-// File system navigation
+/* File system navigation
 f.cd("project/database");
 
-// Database navigation - seamless transition
+/* Database navigation - seamless transition
 f.cd("users/admins/user_data");
 
-// Mixed path navigation
-f.cd("../../..");  // Back through both database and file system
+/* Mixed path navigation
+f.cd("../../.."); /* Back through both database and file system */
 */
 "✓ f.cd(\"project/database\") - File system navigation\n".echo();
 "✓ f.cd(\"users/admins/user_data\") - Database navigation\n".echo();
@@ -55,12 +55,12 @@ f.cd("../../..");  // Back through both database and file system
 /*
 f = $file();
 
-// Navigate with specific access mode
-f.cd("database", {"mode": "readonly"});  // Read-only access
-f.cd("database", {"mode": "writeonly"}); // Write-only access
-f.cd("database", {"mode": "readwrite"}); // Read-write access
+/* Navigate with specific access mode
+f.cd("database", {"mode": "readonly"}); /* Read-only access */
+f.cd("database", {"mode": "writeonly"}); /* Write-only access */
+f.cd("database", {"mode": "readwrite"}); /* Read-write access */
 
-// Concurrent access to same database
+/* Concurrent access to same database
 f1 = $file();
 f2 = $file();
 f1.cd("shared_database", {"mode": "readonly"});
@@ -77,12 +77,12 @@ f2.cd("shared_database", {"mode": "readwrite"});
 /*
 f = $file();
 
-// Navigate within transaction context
+/* Navigate within transaction context
 f.cd("database");
 f.beginTransaction();
 f.cd("users/admins");
 f.set("user1", "John Doe", "name");
-f.cd("..");  // Navigation works within transaction
+f.cd(".."); /* Navigation works within transaction */
 f.commitTransaction();
 */
 "✓ f.beginTransaction() - Start transaction\n".echo();
@@ -97,10 +97,10 @@ f.commitTransaction();
 /*
 f = $file();
 
-// Navigate with caching preferences
-f.cd("database", {"cache": "aggressive"});  // Use L1 cache heavily
-f.cd("database", {"cache": "minimal"});     // Minimize cache usage
-f.cd("database", {"cache": "balanced"});    // Default caching
+/* Navigate with caching preferences
+f.cd("database", {"cache": "aggressive"}); /* Use L1 cache heavily */
+f.cd("database", {"cache": "minimal"}); /* Minimize cache usage */
+f.cd("database", {"cache": "balanced"}); /* Default caching */
 */
 "✓ f.cd(\"database\", {\"cache\": \"aggressive\"}) - Heavy caching\n".echo();
 "✓ f.cd(\"database\", {\"cache\": \"minimal\"}) - Minimal caching\n".echo();
@@ -112,7 +112,7 @@ f.cd("database", {"cache": "balanced"});    // Default caching
 /*
 f = $file();
 
-// Navigate with performance tracking
+/* Navigate with performance tracking
 f.cd("database", {"monitor": true});
 f.cd("users/admins/user_data");
 performance = f.getNavigationStats();
@@ -136,8 +136,8 @@ performance = f.getNavigationStats();
 /*
 f = $file();
 
-// Current GrapaDB format - should work seamlessly
-f.cd("old_database");  // Opens current GrapaDB format
+/* Current GrapaDB format - should work seamlessly
+f.cd("old_database"); /* Opens current GrapaDB format */
 f.cd("users");
 f.mkfield("name", "STR", "VAR");
 f.set("user1", "John Doe", "name");
@@ -152,8 +152,8 @@ f.set("user1", "John Doe", "name");
 /*
 f = $file();
 
-// New GrapaDBX format - enhanced features available
-f.cd("new_database");  // Opens GrapaDBX format
+/* New GrapaDBX format - enhanced features available
+f.cd("new_database"); /* Opens GrapaDBX format */
 f.cd("users", {"mode": "readwrite"});
 f.mkfield("name", "STR", "VAR");
 f.setBatch("user1", {"name": "John Doe", "age": 30});
@@ -169,10 +169,10 @@ f.setBatch("user1", {"name": "John Doe", "age": 30});
 /*
 f = $file();
 
-// Seamless transition between formats
+/* Seamless transition between formats
 f.cd("old_database/users");
-f.cd("../new_database/users");  // Seamless transition
-f.cd("../../old_database/admins");  // Back to old format
+f.cd("../new_database/users"); /* Seamless transition */
+f.cd("../../old_database/admins"); /* Back to old format */
 */
 "✓ f.cd(\"old_database/users\") - Current format\n".echo();
 "✓ f.cd(\"../new_database/users\") - New format\n".echo();
@@ -192,11 +192,11 @@ f.cd("../../old_database/admins");  // Back to old format
 /*
 f = $file();
 
-// Both formats work side by side
-f.cd("old_database");  // Current format
-f.cd("new_database");  // GrapaDBX format
+/* Both formats work side by side
+f.cd("old_database"); /* Current format */
+f.cd("new_database"); /* GrapaDBX format */
 
-// Automatic format detection
+/* Automatic format detection
 format = f.getDatabaseFormat("database");
 if (format == "GRAPA_DB") {
     ("Using current format").echo();
@@ -214,12 +214,12 @@ if (format == "GRAPA_DB") {
 /*
 f = $file();
 
-// Automatic migration when accessing old databases
-f.cd("old_database");  // Automatically migrates to GrapaDBX
+/* Automatic migration when accessing old databases
+f.cd("old_database"); /* Automatically migrates to GrapaDBX */
 f.cd("users");
-f.set("user1", "John Doe", "name");  // Uses GrapaDBX features
+f.set("user1", "John Doe", "name"); /* Uses GrapaDBX features */
 
-// Migration status
+/* Migration status
 status = f.getMigrationStatus("old_database");
 if (status.migrated) {
     ("Database migrated to GrapaDBX format").echo();
@@ -235,8 +235,8 @@ if (status.migrated) {
 /*
 f = $file();
 
-// GrapaDBX becomes the default format
-f.mk("database", "GROUP");  // Creates GrapaDBX format by default
+/* GrapaDBX becomes the default format
+f.mk("database", "GROUP"); /* Creates GrapaDBX format by default */
 f.cd("database");
 f.cd("users", {"mode": "readwrite", "cache": "aggressive"});
 f.mkfield("name", "STR", "VAR");
@@ -259,17 +259,17 @@ f.setBatch("user1", {"name": "John Doe", "age": 30});
 /*
 f = $file();
 
-// Deep nested navigation
+/* Deep nested navigation
 f.cd("project/database/departments/engineering/teams/developers");
-f.pwd();  // Returns: /project/database/departments/engineering/teams/developers
+f.pwd(); /* Returns: /project/database/departments/engineering/teams/developers */
 
-// Navigate back multiple levels
-f.cd("../../..");  // Back to engineering
-f.pwd();  // Returns: /project/database/departments/engineering
+/* Navigate back multiple levels
+f.cd("../../.."); /* Back to engineering */
+f.pwd(); /* Returns: /project/database/departments/engineering */
 
-// Direct navigation to deep location
+/* Direct navigation to deep location
 f.cd("project/database/departments/engineering/teams/developers");
-f.pwd();  // Returns: /project/database/departments/engineering/teams/developers
+f.pwd(); /* Returns: /project/database/departments/engineering/teams/developers */
 */
 "✓ Deep nested navigation works\n".echo();
 "✓ Multiple level backtracking\n".echo();
@@ -281,16 +281,16 @@ f.pwd();  // Returns: /project/database/departments/engineering/teams/developers
 /*
 f = $file();
 
-// Navigate through mixed formats
-f.cd("project");  // File system
-f.cd("old_database");  // Current GrapaDB format
-f.cd("users");  // Database structure
-f.cd("../new_database");  // GrapaDBX format
-f.cd("analytics");  // Database structure
-f.cd("../../config");  // Back to file system
+/* Navigate through mixed formats
+f.cd("project"); /* File system */
+f.cd("old_database"); /* Current GrapaDB format */
+f.cd("users"); /* Database structure */
+f.cd("../new_database"); /* GrapaDBX format */
+f.cd("analytics"); /* Database structure */
+f.cd("../../config"); /* Back to file system */
 
-// All navigation works seamlessly
-f.cd("../../../old_database/users");  // Back to old format
+/* All navigation works seamlessly
+f.cd("../../../old_database/users"); /* Back to old format */
 */
 "✓ File system navigation\n".echo();
 "✓ Current GrapaDB navigation\n".echo();
@@ -303,23 +303,23 @@ f.cd("../../../old_database/users");  // Back to old format
 /*
 f = $file();
 
-// Start transaction
+/* Start transaction
 f.cd("database");
 f.beginTransaction();
 
-// Navigate within transaction
+/* Navigate within transaction
 f.cd("users/admins");
 f.set("user1", "John Doe", "name");
-f.cd("..");  // Navigation works within transaction
+f.cd(".."); /* Navigation works within transaction */
 f.cd("users/guests");
 f.set("guest1", "Jane Smith", "name");
 
-// Commit transaction
+/* Commit transaction
 f.commitTransaction();
 
-// Navigation after transaction
-f.cd("..");  // Back to users
-f.cd("..");  // Back to database root
+/* Navigation after transaction
+f.cd(".."); /* Back to users */
+f.cd(".."); /* Back to database root */
 */
 "✓ Navigation within transactions\n".echo();
 "✓ Transaction-aware operations\n".echo();
@@ -338,14 +338,14 @@ f.cd("..");  // Back to database root
 /*
 f = $file();
 
-// Measure navigation performance
+/* Measure navigation performance
 start = $time();
 f.cd("database", {"cache": "aggressive"});
 f.cd("users/admins/user_data");
 navigation_time = $time() - start;
 ("Navigation with aggressive caching: " + navigation_time + "ms").echo();
 
-// Compare with minimal caching
+/* Compare with minimal caching
 start = $time();
 f.cd("database", {"cache": "minimal"});
 f.cd("users/admins/user_data");
@@ -362,18 +362,18 @@ navigation_time = $time() - start;
 /*
 f = $file();
 
-// Multiple pointers to same database
+/* Multiple pointers to same database
 f1 = $file();
 f2 = $file();
 
 f1.cd("shared_database", {"mode": "readonly"});
 f2.cd("shared_database", {"mode": "readwrite"});
 
-// Concurrent operations
+/* Concurrent operations
 f1.cd("users");
 f2.cd("users");
-f1.get("user1", "name");  // Read operation
-f2.set("user2", "Jane Doe", "name");  // Write operation
+f1.get("user1", "name"); /* Read operation */
+f2.set("user2", "Jane Doe", "name"); /* Write operation */
 */
 "✓ Multiple pointers to same database\n".echo();
 "✓ Concurrent read/write access\n".echo();
@@ -393,27 +393,27 @@ f2.set("user2", "Jane Doe", "name");  // Write operation
 /*
 f = $file();
 
-// Handle navigation errors gracefully
+/* Handle navigation errors gracefully
 try {
     f.cd("nonexistent_database");
 } catch (error) {
     ("Navigation error: " + error.message).echo();
 }
 
-// Handle format detection errors
+/* Handle format detection errors
 try {
     f.cd("corrupted_database");
 } catch (error) {
     ("Format error: " + error.message).echo();
 }
 
-// Handle transaction errors
+/* Handle transaction errors
 try {
     f.cd("database");
     f.beginTransaction();
     f.cd("users");
     f.set("user1", "John Doe", "name");
-    f.cd("nonexistent_group");  // Error within transaction
+    f.cd("nonexistent_group"); /* Error within transaction */
     f.commitTransaction();
 } catch (error) {
     f.rollbackTransaction();

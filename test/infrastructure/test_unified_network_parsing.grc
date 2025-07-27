@@ -8,7 +8,7 @@
 
 /* Create unified storage object with HTTP */
 u = $unified();
-u.create("http://example.com");
+u.create("http: /* example.com"); */
 
 /* Get content from HTTP */
 "Fetching content from HTTP...\n".echo();
@@ -31,7 +31,7 @@ links.len().echo();
 
 /* Use .map() to extract href attributes */
 "Extracting href attributes with .map()...\n".echo();
-hrefs = links.map(op(link) {
+hrefs = links.map(op(link) {;
     if (link.$LIST.href.type() != $ERR) {
         link.$LIST.href;
     } else {
@@ -58,18 +58,18 @@ valid_hrefs.range(0, 4).map(op(href) { href.echo(); "\n".echo(); });
 "--------------------------\n".echo();
 
 /* Create sample XML content */
-xml_content = '<?xml version="1.0" encoding="UTF-8"?>
+xml_content = '<?xml version="1.0" encoding="UTF-8"?>;
 <rss version="2.0">
     <channel>
         <title>Sample RSS Feed</title>
         <item>
             <title>First Article</title>
-            <link>http://example.com/1</link>
+            <link>http: /* example.com/1</link> */
             <description>First article description</description>
         </item>
         <item>
             <title>Second Article</title>
-            <link>http://example.com/2</link>
+            <link>http: /* example.com/2</link> */
             <description>Second article description</description>
         </item>
     </channel>
@@ -89,7 +89,7 @@ items.len().echo();
 
 /* Use .map() to extract titles and links */
 "Extracting titles and links with .map()...\n".echo();
-item_data = items.map(op(item) {
+item_data = items.map(op(item) {;
     title = item.findall({name:"title"});
     link = item.findall({name:"link"});
     if (title.len() > 0 && link.len() > 0) {
@@ -117,7 +117,7 @@ item_data.map(op(item) {
 "---------------------------\n".echo();
 
 /* Create sample JSON content */
-json_content = '{
+json_content = '{;
     "users": [
         {"id": 1, "name": "John", "email": "john@example.com"},
         {"id": 2, "name": "Jane", "email": "jane@example.com"},
@@ -157,7 +157,7 @@ example_users.len().echo();
 "----------------------------\n".echo();
 
 /* Create complex HTML content */
-complex_html = '<html>
+complex_html = '<html>;
 <head><title>Complex Page</title></head>
 <body>
     <div class="header">
@@ -223,12 +223,12 @@ sidebar_links.len().echo();
 "-----------------------------\n".echo();
 
 /* Create a list of URLs to process */
-urls = ["http://example.com/1", "http://example.com/2", "https://secure.example.com/3", "ftp://ftp.example.com/4"];
+urls = ["http: /* example.com/1", "http://example.com/2", "https://secure.example.com/3", "ftp://ftp.example.com/4"]; */
 
 /* Use method chaining to process URLs */
 "Processing URLs with method chaining...\n".echo();
-processed_urls = urls
-    .filter(op(url) { url.grep("https://").len() > 0; })  /* Filter HTTPS URLs */
+processed_urls = urls;
+    .filter(op(url) { url.grep("https: /* ").len() > 0; })  /* Filter HTTPS URLs */ */
     .map(op(url) { url.upper(); })                        /* Convert to uppercase */
     .reduce(op(acc, url) { acc + " | " + url; }, "");     /* Join with separators */
 

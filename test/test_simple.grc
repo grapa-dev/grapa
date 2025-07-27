@@ -1,11 +1,9 @@
-.echo("=== Simple BTree Test ===")
+/* Create a simple table with one record */
 
-// Create a simple table with one record
-table = $TABLE("simple_test")
-table.set("user1", {"name":"Alice","age":25,"city":"New York"})
+"=== Simple Test ===".echo();
 
-.echo("=== After inserting user1 ===")
-.echo("Get user1 " + table.get("user1"))
+table = $file().table("ROW");
+table.mkfield("name", "STR", "VAR");
+table.set("user1", "Alice", "name");
 
-.echo("=== Final state ===")
-table.dump() 
+"✓ Simple test completed".echo(); 

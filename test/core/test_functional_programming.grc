@@ -197,14 +197,14 @@ html_result = html_string.encode("HTML");
 complex_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 /* Filter even numbers, double them, then sum */
-pipeline_result = complex_data.filter(op(x){x % 2 == 0}, null, 2)
+pipeline_result = complex_data.filter(op(x){x % 2 == 0}, null, 2);
                               .map(op(x){x * 2}, null, 2)
                               .reduce(op(acc, x){acc += x});
 ("Complex pipeline: " + pipeline_result + " (expected: 60)\n").echo();
 
 /* Test with string data */
 string_data = ["apple", "banana", "cherry", "date", "elderberry"];
-filtered_strings = string_data.filter(op(s){s.len() > 5})
+filtered_strings = string_data.filter(op(s){s.len() > 5});
                               .map(op(s){s.upper()});
 ("String pipeline: " + filtered_strings.str() + " (expected: [\"BANANA\", \"ELDERBERRY\"])\n").echo();
 

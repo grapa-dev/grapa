@@ -8,7 +8,7 @@
 
 /* Create unified storage object with file system */
 u = $unified();
-u.create("file:///tmp");
+u.create("file: /* /tmp"); */
 
 /* Create some test files */
 u.set("test1.txt", "Content 1");
@@ -45,7 +45,7 @@ result.echo();
 
 /* Create unified storage object with GrapaDB */
 u2 = $unified();
-u2.create("grapadb://testdb.gdb");
+u2.create("grapadb: /* testdb.gdb"); */
 
 /* Create some test records */
 u2.mk("record1", "RECORD");
@@ -83,7 +83,7 @@ result.echo();
 
 /* Create unified storage object with GrapaDBX */
 u3 = $unified();
-u3.create("grapadbx://testdbx.gdb");
+u3.create("grapadbx: /* testdbx.gdb"); */
 
 /* Create some test records */
 u3.mk("record1", "RECORD");
@@ -143,7 +143,7 @@ result.echo();
 
 /* Create empty directory */
 u4 = $unified();
-u4.create("file:///tmp/empty");
+u4.create("file: /* /tmp/empty"); */
 
 /* Test empty results with different formats */
 "Empty results - default:\n".echo();

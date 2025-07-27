@@ -1,8 +1,8 @@
-/* Explicit GrapaDBX test using grapadbx:// protocol */
+/* Explicit GrapaDBX test using grapadbx: /* protocol */ */
 
 /* Create a GrapaDBX database explicitly */
 dbx = $unified();
-result = dbx.create("grapadbx://testdbx");
+result = dbx.create("grapadbx: /* testdbx"); */
 "Create result: ".echo();
 result.echo();
 

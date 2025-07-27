@@ -4,7 +4,7 @@
 
 "Test 1: Create GrapaDBX database\n".echo();
 u = $unified();
-err = u.create("grapadbx://simple_test");
+err = u.create("grapadbx: /* simple_test"); */
 "Result: Database creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
 
 "================================================================================\n".echo();

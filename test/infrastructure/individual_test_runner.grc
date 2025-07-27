@@ -59,7 +59,7 @@ test_data_validation = op() {
     "Starting test_data_validation\n".echo();
     
     /* Define validation rules */
-    rules = {
+rules = {;
         "email": {"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"},
         "age": {"min": 0, "max": 150},
         "salary": {"min": 0, "max": 1000000}
@@ -67,7 +67,7 @@ test_data_validation = op() {
     "Rules defined\n".echo();
     
     /* Test data */
-    test_data = [
+test_data = [;
         {"email": "john@example.com", "age": 30, "salary": 50000},
         {"email": "invalid-email", "age": 200, "salary": 2000000},
         {"email": "jane@test.org", "age": 25, "salary": 75000}
@@ -75,7 +75,7 @@ test_data_validation = op() {
     "Test data created\n".echo();
     
     /* Validate data in parallel */
-    validate_record = op(record, rules) {
+validate_record = op(record, rules) {;
         errors = [];
         if (!record.get("email").match(rules.get("email").get("pattern"))) {
             errors += "Invalid email format";
@@ -108,7 +108,7 @@ test_expression_parser = op() {
     
     /* Test basic arithmetic evaluation */
     test_expressions = ["2+3*4", "(1+2)*3", "10/2+5"];
-    results = test_expressions.map(op(expr) { 
+results = test_expressions.map(op(expr) { ;
         $sys().eval(expr); 
     });
     ("Expression results: " + results.str() + "\n").echo();
@@ -134,7 +134,7 @@ test_financial_calculations = op() {
     "Starting test_financial_calculations\n".echo();
     
     /* Simple interest calculation */
-    simple_interest = op(principal, rate, time) {
+simple_interest = op(principal, rate, time) {;
         principal * rate * time / 100;
     };
     
@@ -185,7 +185,7 @@ test_string_processing = op() {
     "Starting test_string_processing\n".echo();
     
     /* Simulate HTML content */
-    html_content = "<h1>Title 1</h1><h2>Title 2</h2><a href='http://example.com'>Link</a>";
+    html_content = "<h1>Title 1</h1><h2>Title 2</h2><a href='http: /* example.com'>Link</a>"; */
     
     /* Extract data using string operations */
     titles = html_content.grep("<h[1-6][^>]*>.*?</h[1-6]>", "o");
@@ -258,7 +258,7 @@ test_recursion = op() {
     "Starting test_recursion\n".echo();
     
     /* Simple factorial function */
-    factorial = op(n) {
+factorial = op(n) {;
         if (n <= 1) {
             1;
         } else {

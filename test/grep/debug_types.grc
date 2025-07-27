@@ -10,7 +10,7 @@ list = {"a": 1, "b": 2, "c": 3};
 ("list type: " + list.type() + "\n").echo();
 
 /* Test priorities structure */
-priorities = {
+priorities = {;
     "CRITICAL": ["invert_match", "count_only"],
     "HIGH": ["lookaround_assertions", "context_lines"]
 };

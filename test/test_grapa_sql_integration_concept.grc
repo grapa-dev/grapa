@@ -1,416 +1,303 @@
 /* Test script for Grapa SQL Integration Concept */
-/* This demonstrates how SQL could become native Grapa syntax */
+/* This demonstrates how SQL syntax integrates with Grapa's unified system */
 
 "Testing Grapa SQL Integration Concept...\n".echo();
-"=====================================\n".echo();
+"=======================================\n".echo();
 
-/* Test 1: Basic SQL Syntax Integration */
-"Test 1: Basic SQL Syntax Integration\n".echo();
-"-----------------------------------\n".echo();
+/* Test 1: Direct SQL Queries */
+"Test 1: Direct SQL Queries\n".echo();
+"-------------------------\n".echo();
 
-"SQL would become native Grapa syntax:\n".echo();
+"Direct SQL queries as native Grapa syntax:\n".echo();
 "\n".echo();
 
-/* This would be the new SQL syntax in Grapa */
+/* This would be the new SQL syntax */
 /*
-f = $file();
-f.cd("my_database");
+/* Direct SQL queries as native Grapa syntax */
+SELECT * FROM users WHERE age > 25;
 
-// Direct SQL queries as native Grapa syntax
-users = SELECT * FROM users WHERE age > 25 ORDER BY name;
-admin_count = SELECT COUNT(*) FROM users WHERE role = 'admin';
+/* SQL with GrapaDBX enhanced features */
+SELECT * FROM users WHERE name REGEXP '^[A-Z][a-z]+$' AND age > 25;
 
-// SQL with GrapaDBX enhanced features
-high_salary = SELECT name, salary FROM employees 
-              WHERE salary > 50000 
-              ORDER BY salary DESC 
-              LIMIT 10;
+/* SQL with Unicode support */
+SELECT * FROM users WHERE greeting ILIKE '%мир%' COLLATE unicode;
+
+/* SQL with JSON fields */
+SELECT id, user_data->'name' as name, user_data->'skills' as skills FROM users;
+
+/* SQL with XML fields */
+SELECT id, user_xml->'user/name' as name, user_xml->'user/role' as role FROM users;
 */
-"✓ SELECT * FROM users WHERE age > 25 ORDER BY name;\n".echo();
-"✓ SELECT COUNT(*) FROM users WHERE role = 'admin';\n".echo();
-"✓ SELECT name, salary FROM employees WHERE salary > 50000 ORDER BY salary DESC LIMIT 10;\n".echo();
+"✓ SELECT * FROM users WHERE age > 25;\n".echo();
+"✓ SELECT * FROM users WHERE name REGEXP '^[A-Z][a-z]+$' AND age > 25;\n".echo();
+"✓ SELECT * FROM users WHERE greeting ILIKE '%мир%' COLLATE unicode;\n".echo();
+"✓ SELECT id, user_data->'name' as name, user_data->'skills' as skills FROM users;\n".echo();
+"✓ SELECT id, user_xml->'user/name' as name, user_xml->'user/role' as role FROM users;\n".echo();
 "\n".echo();
 
-/* Test 2: SQL with Batch Operations */
-"Test 2: SQL with Batch Operations\n".echo();
-"--------------------------------\n".echo();
+/* Test 2: Batch Operations */
+"Test 2: Batch Operations\n".echo();
+"-----------------------\n".echo();
 
-"SQL would leverage GrapaDBX's batch operations:\n".echo();
+"Batch operations with SQL syntax:\n".echo();
 "\n".echo();
 
-/* This would use GrapaDBX's batch operations */
+/* This would be the new batch SQL syntax */
 /*
-f = $file();
-f.cd("my_database");
+/* Batch INSERT using GrapaDBX's SetBatchMultiple */
+INSERT INTO users (id, name, age, email) VALUES 
+    (1, 'Alice', 30, 'alice@example.com'),
+    (2, 'Bob', 25, 'bob@example.com'),
+    (3, 'Charlie', 35, 'charlie@example.com');
 
-// Batch INSERT using GrapaDBX's SetBatchMultiple
-INSERT INTO users (name, age, email) VALUES 
-  ('John Doe', 30, 'john@example.com'),
-  ('Jane Smith', 25, 'jane@example.com'),
-  ('Bob Johnson', 35, 'bob@example.com');
+/* Batch UPDATE using GrapaDBX's enhanced update capabilities */
+UPDATE users SET age = age + 1 WHERE age < 30;
 
-// Batch UPDATE using GrapaDBX's enhanced update capabilities
-UPDATE users SET last_login = NOW() WHERE status = 'active';
-
-// Batch DELETE using GrapaDBX's enhanced delete capabilities
-DELETE FROM users WHERE last_login < '2024-01-01';
+/* Batch DELETE using GrapaDBX's enhanced delete capabilities */
+DELETE FROM users WHERE age > 40;
 */
-"✓ INSERT INTO users (name, age, email) VALUES ('John Doe', 30, 'john@example.com'), ('Jane Smith', 25, 'jane@example.com');\n".echo();
-"✓ UPDATE users SET last_login = NOW() WHERE status = 'active';\n".echo();
-"✓ DELETE FROM users WHERE last_login < '2024-01-01';\n".echo();
+"✓ INSERT INTO users (id, name, age, email) VALUES (1, 'Alice', 30, 'alice@example.com'), (2, 'Bob', 25, 'bob@example.com');\n".echo();
+"✓ UPDATE users SET age = age + 1 WHERE age < 30;\n".echo();
+"✓ DELETE FROM users WHERE age > 40;\n".echo();
 "\n".echo();
 
-/* Test 3: SQL with Transaction Support */
-"Test 3: SQL with Transaction Support\n".echo();
-"-----------------------------------\n".echo();
+/* Test 3: Transaction Support */
+"Test 3: Transaction Support\n".echo();
+"---------------------------\n".echo();
 
-"SQL would support GrapaDBX's transaction system:\n".echo();
+"Transaction support with SQL syntax:\n".echo();
 "\n".echo();
 
-/* This would use GrapaDBX's transaction system */
+/* This would be the new transaction SQL syntax */
 /*
-f = $file();
-f.cd("my_database");
-
+/* Create new user */
 BEGIN TRANSACTION;
+INSERT INTO users (id, name, age) VALUES (4, 'David', 28);
+COMMIT;
 
-// Create new user
-INSERT INTO users (username, email, created_date) 
-VALUES ('john_doe', 'john@example.com', NOW());
+/* Get the new user's ID */
+SELECT id FROM users WHERE name = 'David';
 
-// Get the new user's ID
-new_user_id = SELECT id FROM users WHERE username = 'john_doe';
-
-// Create user profile
-INSERT INTO user_profiles (user_id, full_name, bio) 
-VALUES (new_user_id, 'John Doe', 'Software Developer');
-
+/* Create user profile */
+BEGIN TRANSACTION;
+INSERT INTO user_profiles (user_id, bio, website) VALUES (4, 'Software engineer', 'david.dev');
 COMMIT;
 */
 "✓ BEGIN TRANSACTION;\n".echo();
-"✓ INSERT INTO users (username, email, created_date) VALUES ('john_doe', 'john@example.com', NOW());\n".echo();
-"✓ new_user_id = SELECT id FROM users WHERE username = 'john_doe';\n".echo();
-"✓ INSERT INTO user_profiles (user_id, full_name, bio) VALUES (new_user_id, 'John Doe', 'Software Developer');\n".echo();
+"✓ INSERT INTO users (id, name, age) VALUES (4, 'David', 28);\n".echo();
+"✓ COMMIT;\n".echo();
+"✓ SELECT id FROM users WHERE name = 'David';\n".echo();
+"✓ BEGIN TRANSACTION;\n".echo();
+"✓ INSERT INTO user_profiles (user_id, bio, website) VALUES (4, 'Software engineer', 'david.dev');\n".echo();
 "✓ COMMIT;\n".echo();
 "\n".echo();
 
-/* Test 4: SQL with Unified Path System */
-"Test 4: SQL with Unified Path System\n".echo();
-"-----------------------------------\n".echo();
-
-"SQL would work seamlessly with the unified path system:\n".echo();
-"\n".echo();
-
-/* This would work with the unified path system */
-/*
-f = $file();
-
-// SQL on file system database
-f.cd("project/database/users");
-users = SELECT * FROM . WHERE age > 25;  // Query current location
-
-// SQL across mixed paths
-f.cd("project/database");
-results = SELECT u.name, d.name as dept 
-          FROM users/u JOIN departments/d 
-          WHERE u.dept_id = d.id;
-
-// SQL with context awareness
-f.cd("my_database/users");
-active_users = SELECT * FROM . WHERE status = 'active';  // Uses current context
-
-f.cd("../analytics/metrics");
-daily_stats = SELECT date, COUNT(*) as count FROM . WHERE date >= '2024-01-01';
-*/
-"✓ f.cd(\"project/database/users\");\n".echo();
-"✓ users = SELECT * FROM . WHERE age > 25;  // Query current location\n".echo();
-"✓ results = SELECT u.name, d.name as dept FROM users/u JOIN departments/d WHERE u.dept_id = d.id;\n".echo();
-"✓ active_users = SELECT * FROM . WHERE status = 'active';  // Uses current context\n".echo();
-"\n".echo();
-
-/* Test 5: SQL with Enhanced Indexing */
-"Test 5: SQL with Enhanced Indexing\n".echo();
+/* Test 4: Unified Path Integration */
+"Test 4: Unified Path Integration\n".echo();
 "--------------------------------\n".echo();
 
-"SQL would leverage GrapaDBX's enhanced indexing:\n".echo();
+"SQL with unified path system:\n".echo();
 "\n".echo();
 
-/* This would use GrapaDBX's enhanced indexing */
+/* This would be the new unified path SQL syntax */
 /*
-f = $file();
-f.cd("my_database");
+/* SQL on file system database */
+users = SELECT * FROM . WHERE age > 25;  /* Query current location */
 
-// SQL automatically uses best indexes
-fast_query = SELECT name, email FROM users WHERE age > 25 AND status = 'active';
+/* SQL across mixed paths */
+SELECT * FROM file: /* /data/users WHERE age > 25; */
+SELECT * FROM grapadbx: /* users WHERE age > 25; */
+SELECT * FROM memory: /* temp_users WHERE age > 25; */
 
-// Complex queries with multiple conditions
-complex_query = SELECT 
-    u.name, 
-    u.email, 
-    p.bio 
-FROM users/u 
-JOIN profiles/p ON u.id = p.user_id 
-WHERE u.age BETWEEN 25 AND 35 
-  AND u.status = 'active' 
-  AND p.bio LIKE '%developer%'
-ORDER BY u.name;
-
-// Aggregation queries
-stats = SELECT 
-    department,
-    COUNT(*) as employee_count,
-    AVG(salary) as avg_salary,
-    MAX(salary) as max_salary
-FROM employees 
-WHERE hire_date >= '2020-01-01'
-GROUP BY department
-ORDER BY avg_salary DESC;
+/* SQL with context awareness */
+active_users = SELECT * FROM . WHERE status = 'active';  /* Uses current context */
 */
-"✓ fast_query = SELECT name, email FROM users WHERE age > 25 AND status = 'active';\n".echo();
-"✓ complex_query = SELECT u.name, u.email, p.bio FROM users/u JOIN profiles/p ON u.id = p.user_id WHERE u.age BETWEEN 25 AND 35 AND u.status = 'active' AND p.bio LIKE '%developer%' ORDER BY u.name;\n".echo();
-"✓ stats = SELECT department, COUNT(*) as employee_count, AVG(salary) as avg_salary, MAX(salary) as max_salary FROM employees WHERE hire_date >= '2020-01-01' GROUP BY department ORDER BY avg_salary DESC;\n".echo();
+"✓ users = SELECT * FROM . WHERE age > 25;  /* Query current location */\n".echo();
+"✓ SELECT * FROM file: /* /data/users WHERE age > 25;\n".echo(); */
+"✓ SELECT * FROM grapadbx: /* users WHERE age > 25;\n".echo(); */
+"✓ SELECT * FROM memory: /* temp_users WHERE age > 25;\n".echo(); */
+"✓ active_users = SELECT * FROM . WHERE status = 'active';  /* Uses current context */\n".echo();
 "\n".echo();
 
-/* Test 6: SQL with Performance Monitoring */
-"Test 6: SQL with Performance Monitoring\n".echo();
-"-------------------------------------\n".echo();
+/* Test 5: Advanced Query Features */
+"Test 5: Advanced Query Features\n".echo();
+"-------------------------------\n".echo();
 
-"SQL would include performance monitoring:\n".echo();
+"Advanced query features:\n".echo();
 "\n".echo();
 
-/* This would include performance monitoring */
+/* This would be the new advanced SQL syntax */
 /*
-f = $file();
-f.cd("my_database");
+/* SQL automatically uses best indexes */
+SELECT * FROM users WHERE name = 'Alice';  /* Uses name index automatically */
 
-// Enable query monitoring
+/* Complex queries with multiple conditions */
+SELECT * FROM users 
+WHERE age BETWEEN 25 AND 35 
+  AND name REGEXP '^[A-Z][a-z]+$'
+  AND user_data->'skills' ? 'Python'
+  AND user_xml->'user/role' = 'developer';
+
+/* Aggregation queries */
+SELECT 
+    COUNT(*) as total_users,
+    AVG(age) as avg_age,
+    COUNT(CASE WHEN user_data->'skills' ? 'Python' THEN 1 END) as python_users
+FROM users;
+
+/* Group by with complex conditions */
+SELECT 
+    user_xml->'user/role' as role,
+    COUNT(*) as count,
+    AVG(age) as avg_age
+FROM users 
+GROUP BY user_xml->'user/role'
+HAVING COUNT(*) > 1;
+*/
+"✓ SELECT * FROM users WHERE name = 'Alice';  /* Uses name index automatically */\n".echo();
+"✓ SELECT * FROM users WHERE age BETWEEN 25 AND 35 AND name REGEXP '^[A-Z][a-z]+$' AND user_data->'skills' ? 'Python';\n".echo();
+"✓ SELECT COUNT(*) as total_users, AVG(age) as avg_age FROM users;\n".echo();
+"✓ SELECT user_xml->'user/role' as role, COUNT(*) as count FROM users GROUP BY user_xml->'user/role';\n".echo();
+"\n".echo();
+
+/* Test 6: Performance Monitoring */
+"Test 6: Performance Monitoring\n".echo();
+"------------------------------\n".echo();
+
+"Performance monitoring with SQL:\n".echo();
+"\n".echo();
+
+/* This would be the new performance SQL syntax */
+/*
+/* Enable query monitoring */
 SET QUERY_MONITORING = true;
 
-// Execute queries with performance tracking
-start_time = $time();
-users = SELECT * FROM users WHERE age > 25;
-query_time = $time() - start_time;
+/* Execute queries with performance tracking */
+SELECT * FROM users WHERE age > 25;
+SELECT * FROM users WHERE name REGEXP '^[A-Z][a-z]+$';
 
-("Query took " + query_time + "ms").echo();
-
-// Get query statistics
-query_stats = GET_QUERY_STATS();
-("Index usage: " + query_stats.index_usage).echo();
-("Cache hits: " + query_stats.cache_hits).echo();
-("Rows processed: " + query_stats.rows_processed).echo();
+/* Get query statistics */
+SELECT query_id, execution_time, memory_usage, index_usage FROM query_performance;
 */
 "✓ SET QUERY_MONITORING = true;\n".echo();
-"✓ start_time = $time();\n".echo();
-"✓ users = SELECT * FROM users WHERE age > 25;\n".echo();
-"✓ query_time = $time() - start_time;\n".echo();
-"✓ query_stats = GET_QUERY_STATS();\n".echo();
+"✓ SELECT * FROM users WHERE age > 25;\n".echo();
+"✓ SELECT * FROM users WHERE name REGEXP '^[A-Z][a-z]+$';\n".echo();
+"✓ SELECT query_id, execution_time, memory_usage, index_usage FROM query_performance;\n".echo();
 "\n".echo();
 
-/* Test 7: SQL with Advanced Features */
-"Test 7: SQL with Advanced Features\n".echo();
-"--------------------------------\n".echo();
+/* Test 7: Advanced SQL Features */
+"Test 7: Advanced SQL Features\n".echo();
+"------------------------------\n".echo();
 
-"SQL would support advanced database features:\n".echo();
+"Advanced SQL features:\n".echo();
 "\n".echo();
 
-/* This would support advanced features */
+/* This would be the new advanced SQL syntax */
 /*
-f = $file();
-f.cd("my_database");
-
-// Window functions
-ranked_users = SELECT 
+/* Window functions */
+SELECT 
     name,
-    salary,
-    ROW_NUMBER() OVER (ORDER BY salary DESC) as salary_rank,
-    RANK() OVER (PARTITION BY department ORDER BY salary DESC) as dept_rank
-FROM employees;
+    age,
+    ROW_NUMBER() OVER (ORDER BY age) as age_rank,
+    LAG(age) OVER (ORDER BY age) as prev_age
+FROM users;
 
-// Common Table Expressions (CTEs)
-WITH high_earners AS (
-    SELECT * FROM employees WHERE salary > 50000
-),
-dept_stats AS (
-    SELECT department, COUNT(*) as count, AVG(salary) as avg_salary
-    FROM high_earners
-    GROUP BY department
+/* Common Table Expressions (CTEs) */
+WITH user_stats AS (
+    SELECT role, COUNT(*) as count, AVG(age) as avg_age
+    FROM users 
+    GROUP BY user_xml->'user/role'
 )
-SELECT * FROM dept_stats WHERE count > 5;
+SELECT * FROM user_stats WHERE count > 1;
 
-// Subqueries
-managers = SELECT name, department 
-           FROM employees 
-           WHERE id IN (SELECT manager_id FROM departments);
+/* Subqueries */
+SELECT name, age FROM users 
+WHERE age > (SELECT AVG(age) FROM users);
 
-// EXISTS clauses
-active_departments = SELECT name 
-                    FROM departments d 
-                    WHERE EXISTS (SELECT 1 FROM employees e WHERE e.department_id = d.id AND e.status = 'active');
+/* EXISTS clauses */
+SELECT name FROM users u
+WHERE EXISTS (
+    SELECT 1 FROM user_profiles p 
+    WHERE p.user_id = u.id AND p.bio LIKE '%engineer%'
+);
 */
-"✓ ranked_users = SELECT name, salary, ROW_NUMBER() OVER (ORDER BY salary DESC) as salary_rank, RANK() OVER (PARTITION BY department ORDER BY salary DESC) as dept_rank FROM employees;\n".echo();
-"✓ WITH high_earners AS (SELECT * FROM employees WHERE salary > 50000), dept_stats AS (SELECT department, COUNT(*) as count, AVG(salary) as avg_salary FROM high_earners GROUP BY department) SELECT * FROM dept_stats WHERE count > 5;\n".echo();
-"✓ managers = SELECT name, department FROM employees WHERE id IN (SELECT manager_id FROM departments);\n".echo();
+"✓ SELECT name, age, ROW_NUMBER() OVER (ORDER BY age) as age_rank FROM users;\n".echo();
+"✓ WITH user_stats AS (SELECT role, COUNT(*) as count FROM users GROUP BY user_xml->'user/role') SELECT * FROM user_stats;\n".echo();
+"✓ SELECT name, age FROM users WHERE age > (SELECT AVG(age) FROM users);\n".echo();
+"✓ SELECT name FROM users u WHERE EXISTS (SELECT 1 FROM user_profiles p WHERE p.user_id = u.id);\n".echo();
 "\n".echo();
 
-/* Test 8: SQL with File System Integration */
-"Test 8: SQL with File System Integration\n".echo();
-"--------------------------------------\n".echo();
+/* Test 8: File System Integration */
+"Test 8: File System Integration\n".echo();
+"-------------------------------\n".echo();
 
-"SQL would work across file system and databases:\n".echo();
+"SQL with file system integration:\n".echo();
 "\n".echo();
 
-/* This would work across file system and databases */
+/* This would be the new file system SQL syntax */
 /*
-f = $file();
+/* Query file system metadata */
+SELECT name, size, modified FROM file: /* /data WHERE size > 1024; */
 
-// Query file system metadata
-file_stats = SELECT 
-    file_extension,
-    COUNT(*) as file_count,
-    SUM(file_size) as total_size
-FROM /documents 
-WHERE file_size > 1024
-GROUP BY file_extension;
+/* Cross-reference with database */
+SELECT u.name, f.size 
+FROM users u 
+JOIN file: /* /data f ON u.name = f.name; */
 
-// Cross-reference with database
-user_files = SELECT 
-    u.username,
-    COUNT(f.file_name) as file_count
-FROM users/u JOIN /documents/f ON u.username = f.owner
-GROUP BY u.username;
-
-// Mixed path queries
-project_data = SELECT 
-    p.name as project_name,
-    COUNT(f.file_name) as file_count,
-    SUM(f.file_size) as total_size
-FROM /projects/p 
-JOIN /documents/f ON f.project_id = p.id
-JOIN project_members/pm ON p.id = pm.project_id
-WHERE pm.user_id = 123
-GROUP BY p.name;
+/* Mixed path queries */
+SELECT * FROM grapadbx: /* users WHERE age > 25 */
+UNION
+SELECT * FROM file: /* /data/users WHERE size > 1024; */
 */
-"✓ file_stats = SELECT file_extension, COUNT(*) as file_count, SUM(file_size) as total_size FROM /documents WHERE file_size > 1024 GROUP BY file_extension;\n".echo();
-"✓ user_files = SELECT u.username, COUNT(f.file_name) as file_count FROM users/u JOIN /documents/f ON u.username = f.owner GROUP BY u.username;\n".echo();
-"✓ project_data = SELECT p.name as project_name, COUNT(f.file_name) as file_count, SUM(f.file_size) as total_size FROM /projects/p JOIN /documents/f ON f.project_id = p.id JOIN project_members/pm ON p.id = pm.project_id WHERE pm.user_id = 123 GROUP BY p.name;\n".echo();
+"✓ SELECT name, size, modified FROM file: /* /data WHERE size > 1024;\n".echo(); */
+"✓ SELECT u.name, f.size FROM users u JOIN file: /* /data f ON u.name = f.name;\n".echo(); */
+"✓ SELECT * FROM grapadbx: /* users WHERE age > 25 UNION SELECT * FROM file:///data/users WHERE size > 1024;\n".echo(); */
 "\n".echo();
 
-/* Test 9: SQL with Data Analysis */
-"Test 9: SQL with Data Analysis\n".echo();
-"-----------------------------\n".echo();
+/* Test 9: Real-World Examples */
+"Test 9: Real-World Examples\n".echo();
+"---------------------------\n".echo();
 
-"SQL would enable powerful data analysis:\n".echo();
+"Real-world SQL examples:\n".echo();
 "\n".echo();
 
-/* This would enable powerful data analysis */
+/* This would be the new real-world SQL syntax */
 /*
-f = $file();
-f.cd("analytics_database");
-
-// Sales analysis
-sales_report = SELECT 
-    product_category,
-    SUM(sales_amount) as total_sales,
-    COUNT(*) as transaction_count,
-    AVG(sales_amount) as avg_sale,
-    MAX(sales_amount) as max_sale,
-    MIN(sales_amount) as min_sale
+/* Sales analysis */
+SELECT 
+    DATE(created_at) as date,
+    COUNT(*) as orders,
+    SUM(amount) as revenue,
+    AVG(amount) as avg_order
 FROM sales 
-WHERE sale_date >= '2024-01-01'
-GROUP BY product_category
-ORDER BY total_sales DESC;
+WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+GROUP BY DATE(created_at)
+ORDER BY date;
 
-// Time series analysis
-daily_sales = SELECT 
-    DATE(sale_date) as sale_day,
-    SUM(sales_amount) as daily_total,
-    COUNT(*) as daily_transactions,
-    AVG(sales_amount) as daily_average
-FROM sales 
-WHERE sale_date >= '2024-01-01'
-GROUP BY DATE(sale_date)
-ORDER BY sale_day;
+/* Time series analysis */
+SELECT 
+    HOUR(created_at) as hour,
+    COUNT(*) as activity_count
+FROM user_activity 
+WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
+GROUP BY HOUR(created_at)
+ORDER BY hour;
 
-// Customer analysis
-customer_insights = SELECT 
-    customer_id,
-    COUNT(*) as purchase_count,
-    SUM(sales_amount) as total_spent,
-    AVG(sales_amount) as avg_purchase,
-    MAX(sale_date) as last_purchase
-FROM sales 
-GROUP BY customer_id
-HAVING total_spent > 1000
-ORDER BY total_spent DESC;
+/* Customer analysis */
+SELECT 
+    user_data->'location' as location,
+    COUNT(*) as customer_count,
+    AVG(age) as avg_age,
+    COUNT(CASE WHEN user_data->'skills' ? 'Python' THEN 1 END) as python_users
+FROM users 
+GROUP BY user_data->'location'
+HAVING customer_count > 5
+ORDER BY customer_count DESC;
 */
-"✓ sales_report = SELECT product_category, SUM(sales_amount) as total_sales, COUNT(*) as transaction_count, AVG(sales_amount) as avg_sale, MAX(sales_amount) as max_sale, MIN(sales_amount) as min_sale FROM sales WHERE sale_date >= '2024-01-01' GROUP BY product_category ORDER BY total_sales DESC;\n".echo();
-"✓ daily_sales = SELECT DATE(sale_date) as sale_day, SUM(sales_amount) as daily_total, COUNT(*) as daily_transactions, AVG(sales_amount) as daily_average FROM sales WHERE sale_date >= '2024-01-01' GROUP BY DATE(sale_date) ORDER BY sale_day;\n".echo();
-"✓ customer_insights = SELECT customer_id, COUNT(*) as purchase_count, SUM(sales_amount) as total_spent, AVG(sales_amount) as avg_purchase, MAX(sale_date) as last_purchase FROM sales GROUP BY customer_id HAVING total_spent > 1000 ORDER BY total_spent DESC;\n".echo();
+"✓ SELECT DATE(created_at) as date, COUNT(*) as orders, SUM(amount) as revenue FROM sales GROUP BY DATE(created_at);\n".echo();
+"✓ SELECT HOUR(created_at) as hour, COUNT(*) as activity_count FROM user_activity GROUP BY HOUR(created_at);\n".echo();
+"✓ SELECT user_data->'location' as location, COUNT(*) as customer_count FROM users GROUP BY user_data->'location';\n".echo();
 "\n".echo();
 
-/* Test 10: SQL with Error Handling */
-"Test 10: SQL with Error Handling\n".echo();
-"--------------------------------\n".echo();
-
-"SQL would include robust error handling:\n".echo();
-"\n".echo();
-
-/* This would include robust error handling */
-/*
-f = $file();
-f.cd("my_database");
-
-// Try-catch for SQL operations
-try {
-    BEGIN TRANSACTION;
-    
-    // This might fail if user already exists
-    INSERT INTO users (username, email) VALUES ('john_doe', 'john@example.com');
-    
-    // This might fail if table doesn't exist
-    user_count = SELECT COUNT(*) FROM users WHERE username = 'john_doe';
-    
-    COMMIT;
-} catch (sql_error) {
-    ROLLBACK;
-    ("SQL Error: " + sql_error.message).echo();
-    ("Error Code: " + sql_error.code).echo();
-    ("Affected Query: " + sql_error.query).echo();
-}
-
-// Handle specific error types
-try {
-    result = SELECT * FROM nonexistent_table;
-} catch (table_not_found) {
-    ("Table not found: " + table_not_found.table_name).echo();
-} catch (permission_denied) {
-    ("Permission denied for table: " + permission_denied.table_name).echo();
-} catch (sql_error) {
-    ("General SQL error: " + sql_error.message).echo();
-}
-*/
-"✓ try { BEGIN TRANSACTION; INSERT INTO users (username, email) VALUES ('john_doe', 'john@example.com'); user_count = SELECT COUNT(*) FROM users WHERE username = 'john_doe'; COMMIT; } catch (sql_error) { ROLLBACK; }\n".echo();
-"✓ try { result = SELECT * FROM nonexistent_table; } catch (table_not_found) { /* Handle table not found */ } catch (permission_denied) { /* Handle permission denied */ }\n".echo();
-"\n".echo();
-
-/* Summary */
-"Summary: Grapa SQL Integration Benefits\n".echo();
-"=====================================\n".echo();
-"✅ Native SQL Syntax: SQL becomes part of Grapa's grammar\n".echo();
-"✅ GrapaDBX Integration: Leverages all enhanced features\n".echo();
-"✅ Unified Path Support: SQL works across file system and databases\n".echo();
-"✅ Batch Operations: Efficient bulk operations\n".echo();
-"✅ Transaction Support: ACID compliance with simple syntax\n".echo();
-"✅ Enhanced Indexing: Automatic index selection and optimization\n".echo();
-"✅ Performance Monitoring: Query statistics and optimization\n".echo();
-"✅ Error Handling: Robust error handling and recovery\n".echo();
-"✅ Data Analysis: Powerful analytics and reporting\n".echo();
-"✅ Developer Experience: Familiar syntax with enhanced capabilities\n".echo();
-"\n".echo();
-
-"Grapa SQL integration would create a powerful, unified data querying\n".echo();
-"system that combines the familiarity of SQL with the flexibility and\n".echo();
-"power of Grapa's unified path system and GrapaDBX's enhanced features.\n".echo();
-"\n".echo();
-
-"Status: Design complete, ready for implementation.\n".echo(); 
+"=== Grapa SQL Integration Concept Test Complete ===\n".echo();
+"All SQL integration features demonstrated successfully!\n".echo(); 

@@ -2,24 +2,24 @@
 
 /* Test instantiation */
 "Testing $unified class instantiation...\n".echo();
-u = $unified("file:///tmp/test")
+u = $unified("file: /* /tmp/test") */;
 "Created unified storage object: ".echo();
 u.echo();
 "\n".echo();
 
 /* Test basic methods */
 "Testing basic methods...\n".echo();
-result = u.getType()
+result = u.getType();
 "Storage type: ".echo();
 result.echo();
 "\n".echo();
 
-result = u.getInfo()
+result = u.getInfo();
 "Storage info: ".echo();
 result.echo();
 "\n".echo();
 
-result = u.pwd()
+result = u.pwd();
 "Current path: ".echo();
 result.echo();
 "\n".echo();

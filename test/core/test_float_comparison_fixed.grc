@@ -1,35 +1,35 @@
-"Testing float comparison with consistent precision".echo()
+"Testing float comparison with consistent precision".echo();
 
-"Test 1: Using same precision settings".echo()
-// Create both values with the same precision settings
-str_float = "55.3".float(128, 10);  // Use explicit precision
-lit_float = (55.3).float(128, 10);  // Use same precision for literal
+"Test 1: Using same precision settings".echo();
+/* Create both values with the same precision settings
+str_float = "55.3".float(128, 10); /* Use explicit precision */
+lit_float = (55.3).float(128, 10); /* Use same precision for literal */
 
 if (str_float == lit_float)
-    "PASS: 55.3.float(128,10) == (55.3).float(128,10) returns true".echo()
+    "PASS: 55.3.float(128,10) == (55.3).float(128,10) returns true".echo();
 else
-    "FAIL: 55.3.float(128,10) == (55.3).float(128,10) returns false".echo()
+    "FAIL: 55.3.float(128,10) == (55.3).float(128,10) returns false".echo();
 
-"Test 2: Another float with same precision".echo()
+"Test 2: Another float with same precision".echo();
 str_float2 = "123.456".float(128, 10);
 lit_float2 = (123.456).float(128, 10);
 
 if (str_float2 == lit_float2)
-    "PASS: 123.456.float(128,10) == (123.456).float(128,10) returns true".echo()
+    "PASS: 123.456.float(128,10) == (123.456).float(128,10) returns true".echo();
 else
-    "FAIL: 123.456.float(128,10) == (123.456).float(128,10) returns false".echo()
+    "FAIL: 123.456.float(128,10) == (123.456).float(128,10) returns false".echo();
 
-"Test 3: Negative float with same precision".echo()
+"Test 3: Negative float with same precision".echo();
 str_float3 = "-42.0".float(128, 10);
 lit_float3 = (-42.0).float(128, 10);
 
 if (str_float3 == lit_float3)
-    "PASS: -42.0.float(128,10) == (-42.0).float(128,10) returns true".echo()
+    "PASS: -42.0.float(128,10) == (-42.0).float(128,10) returns true".echo();
 else
-    "FAIL: -42.0.float(128,10) == (-42.0).float(128,10) returns false".echo()
+    "FAIL: -42.0.float(128,10) == (-42.0).float(128,10) returns false".echo();
 
-"Test 4: String comparison still works".echo()
+"Test 4: String comparison still works".echo();
 if (str_float.str() == "55.3")
-    "PASS: 55.3.float(128,10).str() == 55.3 returns true".echo()
+    "PASS: 55.3.float(128,10).str() == 55.3 returns true".echo();
 else
     "FAIL: 55.3.float(128,10).str() == 55.3 returns false".echo() 

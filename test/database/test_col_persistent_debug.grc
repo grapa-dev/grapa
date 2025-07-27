@@ -1,23 +1,23 @@
 /* Test COL (column store) database operations with persistent storage and debug output */
 
 /* Cleanup any existing test database */
-f = $file()
-f.rm("test_col_db")
+f = $file();
+f.rm("test_col_db");
 
 /* Create a persistent column store database */
 echo("=== COL Database Test (Persistent) ===")
 echo("Creating persistent column store database...")
-f.mk("test_col_db", "COL")
-f.cd("test_col_db")
+f.mk("test_col_db", "COL");
+f.cd("test_col_db");
 echo("Database type:", f.type())
 echo("---")
 
 /* Define fields for the table */
 echo("Creating fields...")
-f.mkfield("name", "STR", "VAR")
-f.mkfield("age", "INT", "FIX", 4)
-f.mkfield("city", "STR", "VAR")
-f.mkfield("salary", "FLOAT", "FIX", 8)
+f.mkfield("name", "STR", "VAR");
+f.mkfield("age", "INT", "FIX", 4);
+f.mkfield("city", "STR", "VAR");
+f.mkfield("salary", "FLOAT", "FIX", 8);
 
 echo("Fields defined")
 echo("Fields:", f.fields())
@@ -25,24 +25,24 @@ echo("---")
 
 /* Create first record */
 echo("Creating first record...")
-f.set("1", "name", "Alice")
-f.set("1", "age", 30)
-f.set("1", "city", "New York")
-f.set("1", "salary", 75000.50)
+f.set("1", "name", "Alice");
+f.set("1", "age", 30);
+f.set("1", "city", "New York");
+f.set("1", "salary", 75000.50);
 
 echo("First record created")
-f.debug()
+f.debug();
 echo("---")
 
 /* Create second record */
 echo("Creating second record...")
-f.set("2", "name", "Bob")
-f.set("2", "age", 25)
-f.set("2", "city", "Los Angeles")
-f.set("2", "salary", 65000.75)
+f.set("2", "name", "Bob");
+f.set("2", "age", 25);
+f.set("2", "city", "Los Angeles");
+f.set("2", "salary", 65000.75);
 
 echo("Second record created")
-f.debug()
+f.debug();
 echo("---")
 
 /* Test getting field values */
@@ -66,18 +66,18 @@ echo("---")
 
 /* Update a field */
 echo("Updating record 1 age to 31...")
-f.set("1", "age", 31)
+f.set("1", "age", 31);
 echo("Record 1 - updated age:", f.get("1", "age"))
 echo("---")
 
 /* Final database state */
 echo("Final database state:")
-f.debug()
+f.debug();
 echo("---")
 
 /* List database contents */
 echo("Database contents:")
-f.ls()
+f.ls();
 echo("---")
 
 echo("COL test completed") 

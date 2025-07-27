@@ -8,8 +8,8 @@ u = $unified();
 "Created unified storage object\n".echo();
 
 /* Test create with file system */
-"Testing create with file:///tmp/test...\n".echo();
-result = u.create("file:///tmp/test");
+"Testing create with file: /* /tmp/test...\n".echo(); */
+result = u.create("file: /* /tmp/test"); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();

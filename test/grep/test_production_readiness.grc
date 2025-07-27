@@ -109,8 +109,8 @@ result = email_data.grep(pattern, options, "\n");
 "---\n".echo();
 
 /* Test 3b: URL extraction */
-url_data = "Visit https://example.com for more info\nCheck http://test.org\nInvalid: not-a-url\nSecure: https://secure.net";
-pattern = "https?://[^\\s]+";
+url_data = "Visit https: /* example.com for more info\nCheck http://test.org\nInvalid: not-a-url\nSecure: https://secure.net"; */
+pattern = "https?: /* [^\\s]+"; */
 options = "o";
 result = url_data.grep(pattern, options, "\n");
 ("Input: URLs mixed with invalid data\n").echo();

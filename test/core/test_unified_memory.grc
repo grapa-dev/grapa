@@ -9,7 +9,7 @@
 /* Create unified storage object with memory */
 u = $unified();
 "Testing memory storage...\n".echo();
-result = u.create("memory://");
+result = u.create("memory: /* "); */
 "Create result: ".echo();
 result.echo();
 "\n".echo();
@@ -255,11 +255,13 @@ result.echo();
 "Creating 100 files for performance test...\n".echo();
 start_time = $time().now();
 
-for (i = 0; i < 100; i++) {
+i = 0;
+while (i < 100) {
     filename = "perf_file_" + i + ".txt";
     content = "Performance test content for file " + i;
     u.mk(filename, "FILE");
     u.set(filename, content, "$VALUE");
+    i = i + 1;
 }
 
 end_time = $time().now();
@@ -317,7 +319,7 @@ simple_time.echo();
 
 /* Create local file system storage */
 local = $unified();
-local.create("file:///tmp");
+local.create("file: /* /tmp"); */
 
 /* Create memory test file */
 u.set("memory_file.txt", "This is memory content", "$VALUE");
@@ -356,9 +358,11 @@ u.rm("downloaded_file.txt");
 
 /* Cleanup performance test files */
 "Cleaning up performance test files...\n".echo();
-for (i = 0; i < 100; i++) {
+i = 0;
+while (i < 100) {
     filename = "perf_file_" + i + ".txt";
     u.rm(filename);
+    i = i + 1;
 }
 
 "=== MEMORY STORAGE BACKEND TEST COMPLETE ===\n".echo(); 

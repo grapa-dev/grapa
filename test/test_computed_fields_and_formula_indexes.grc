@@ -85,7 +85,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Computed Field Concept: Full name (stored and accessible)\n".echo();
 "```grapa\n".echo();
-"// Computed field: Full name (stored and accessible)\n".echo();
+" /* Computed field: Full name (stored and accessible)\n".echo(); */
 "group_db.mkcomputedfield(\"full_name\", \"STR\", \"VAR\", \n".echo();
 "    \"lambda(record) { record.get('first_name') + ' ' + record.get('last_name') }\");\n".echo();
 "```\n".echo();
@@ -98,7 +98,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Computed Field Concept: Age category (stored and accessible)\n".echo();
 "```grapa\n".echo();
-"// Computed field: Age category (stored and accessible)\n".echo();
+" /* Computed field: Age category (stored and accessible)\n".echo(); */
 "group_db.mkcomputedfield(\"age_category\", \"STR\", \"VAR\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        age = record.get('age').raw().int(); \n".echo();
@@ -110,7 +110,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Computed Field Concept: Annual salary (stored and accessible)\n".echo();
 "```grapa\n".echo();
-"// Computed field: Annual salary (stored and accessible)\n".echo();
+" /* Computed field: Annual salary (stored and accessible)\n".echo(); */
 "group_db.mkcomputedfield(\"annual_salary\", \"INT\", \"FIX\", 4,\n".echo();
 "    \"lambda(record) { record.get('salary').raw().int() * 12 }\");\n".echo();
 "```\n".echo();
@@ -123,7 +123,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Formula Index Concept: Index on concatenated name (not stored as field)\n".echo();
 "```grapa\n".echo();
-"// Index on concatenated name (not stored as field)\n".echo();
+" /* Index on concatenated name (not stored as field)\n".echo(); */
 "index1 = group_db.mkformulaindex(\"full_name_index\", \n".echo();
 "    \"lambda(record) { record.get('first_name') + ' ' + record.get('last_name') }\");\n".echo();
 "```\n".echo();
@@ -136,7 +136,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Formula Index Concept: Index on age category (not stored as field)\n".echo();
 "```grapa\n".echo();
-"// Index on age category (not stored as field)\n".echo();
+" /* Index on age category (not stored as field)\n".echo(); */
 "index2 = group_db.mkformulaindex(\"age_category_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        age = record.get('age').raw().int(); \n".echo();
@@ -148,7 +148,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Formula Index Concept: Index on salary percentile (not stored as field)\n".echo();
 "```grapa\n".echo();
-"// Index on salary percentile within department (not stored as field)\n".echo();
+" /* Index on salary percentile within department (not stored as field)\n".echo(); */
 "index3 = group_db.mkformulaindex(\"salary_percentile_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        salary = record.get('salary').raw().int(); \n".echo();
@@ -165,10 +165,10 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Hybrid Approach: Create computed field and index it\n".echo();
 "```grapa\n".echo();
-"// Create computed field and index it\n".echo();
+" /* Create computed field and index it\n".echo(); */
 "group_db.mkcomputedfield(\"full_name\", \"STR\", \"VAR\", \n".echo();
 "    \"lambda(record) { record.get('first_name') + ' ' + record.get('last_name') }\");\n".echo();
-"group_db.mkindex(\"full_name_index\", [\"full_name\"]);  // Index the computed field\n".echo();
+"group_db.mkindex(\"full_name_index\", [\"full_name\"]); /* Index the computed field\n".echo(); */
 "```\n".echo();
 
 "Benefits of Hybrid Approach:\n".echo();
@@ -207,43 +207,43 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Extended Field Structure:\n".echo();
 "```cpp\n".echo();
-"// Extended field structure to support computed fields\n".echo();
+" /* Extended field structure to support computed fields\n".echo(); */
 "struct GrapaDBField {\n".echo();
-"    // ... existing field properties ...\n".echo();
+" /* ... existing field properties ...\n".echo(); */
 "    \n".echo();
-"    // Computed field properties\n".echo();
-"    bool isComputed;                    // Is this a computed field?\n".echo();
-"    GrapaCHAR formulaCode;              // Grapa lambda expression for computation\n".echo();
-"    GrapaDU64Array dependentFields;     // Fields this formula depends on\n".echo();
-"    u64 lastComputedValue;              // Reference to last computed value\n".echo();
+" /* Computed field properties\n".echo(); */
+"    bool isComputed; /* Is this a computed field?\n".echo(); */
+"    GrapaCHAR formulaCode; /* Grapa lambda expression for computation\n".echo(); */
+"    GrapaDU64Array dependentFields; /* Fields this formula depends on\n".echo(); */
+"    u64 lastComputedValue; /* Reference to last computed value\n".echo(); */
 "};\n".echo();
 "```\n".echo();
 
 "Extended Index Structure:\n".echo();
 "```cpp\n".echo();
-"// Extended index structure to support formula indexes\n".echo();
+" /* Extended index structure to support formula indexes\n".echo(); */
 "struct GrapaDBIndexFormula {\n".echo();
-"    u64 formulaId;                      // Unique formula identifier\n".echo();
-"    GrapaCHAR formulaCode;              // Grapa lambda expression\n".echo();
-"    u64 resultFieldId;                  // Field ID for computed result (if stored)\n".echo();
-"    u8 resultType;                      // Data type of computed result\n".echo();
-"    u64 resultSize;                     // Size of computed result\n".echo();
-"    bool storeComputedField;            // Whether to store as computed field\n".echo();
-"    GrapaDU64Array dependentFields;     // Fields this formula depends on\n".echo();
+"    u64 formulaId; /* Unique formula identifier\n".echo(); */
+"    GrapaCHAR formulaCode; /* Grapa lambda expression\n".echo(); */
+"    u64 resultFieldId; /* Field ID for computed result (if stored)\n".echo(); */
+"    u8 resultType; /* Data type of computed result\n".echo(); */
+"    u64 resultSize; /* Size of computed result\n".echo(); */
+"    bool storeComputedField; /* Whether to store as computed field\n".echo(); */
+"    GrapaDU64Array dependentFields; /* Fields this formula depends on\n".echo(); */
 "};\n".echo();
 "```\n".echo();
 
 "Formula Evaluation Engine:\n".echo();
 "```cpp\n".echo();
-"// Unified formula evaluation for both fields and indexes\n".echo();
+" /* Unified formula evaluation for both fields and indexes\n".echo(); */
 "GrapaError GrapaDB::EvaluateFormula(const GrapaCHAR& formulaCode, GrapaCursor& recordCursor, GrapaValue& result)\n".echo();
 "{\n".echo();
-"    // Parse and execute Grapa lambda expression\n".echo();
+" /* Parse and execute Grapa lambda expression\n".echo(); */
 "    GrapaValue lambdaResult;\n".echo();
 "    err = ExecuteGrapaLambda(formulaCode, recordCursor, lambdaResult);\n".echo();
 "    if (err) return(err);\n".echo();
 "    \n".echo();
-"    // Convert result to appropriate type\n".echo();
+" /* Convert result to appropriate type\n".echo(); */
 "    err = ConvertToTargetType(lambdaResult, result);\n".echo();
 "    return(err);\n".echo();
 "}\n".echo();
@@ -285,7 +285,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Computed Fields:\n".echo();
 "```grapa\n".echo();
-"// Computed field: Product availability status\n".echo();
+" /* Computed field: Product availability status\n".echo(); */
 "products.mkcomputedfield(\"availability_status\", \"STR\", \"VAR\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        stock = record.get('stock').raw().int(); \n".echo();
@@ -294,7 +294,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 "        else 'backordered' \n".echo();
 "    }\");\n".echo();
 "\n".echo();
-"// Computed field: Price with tax\n".echo();
+" /* Computed field: Price with tax\n".echo(); */
 "products.mkcomputedfield(\"price_with_tax\", \"FLOAT\", \"FIX\", 8,\n".echo();
 "    \"lambda(record) { \n".echo();
 "        price = record.get('price').raw().float(); \n".echo();
@@ -305,7 +305,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Formula Indexes:\n".echo();
 "```grapa\n".echo();
-"// Index on price tier (not stored as field)\n".echo();
+" /* Index on price tier (not stored as field)\n".echo(); */
 "products.mkformulaindex(\"price_tier_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        price = record.get('price').raw().float(); \n".echo();
@@ -314,7 +314,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 "        else 'premium' \n".echo();
 "    }\");\n".echo();
 "\n".echo();
-"// Index on discount eligibility (not stored as field)\n".echo();
+" /* Index on discount eligibility (not stored as field)\n".echo(); */
 "products.mkformulaindex(\"discount_eligible_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        price = record.get('price').raw().float(); \n".echo();
@@ -328,7 +328,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Computed Fields:\n".echo();
 "```grapa\n".echo();
-"// Computed field: Account balance with interest\n".echo();
+" /* Computed field: Account balance with interest\n".echo(); */
 "accounts.mkcomputedfield(\"balance_with_interest\", \"FLOAT\", \"FIX\", 8,\n".echo();
 "    \"lambda(record) { \n".echo();
 "        balance = record.get('balance').raw().float(); \n".echo();
@@ -340,7 +340,7 @@ group_db.set("user3", "2019-11-10", "hire_date");
 
 "Formula Indexes:\n".echo();
 "```grapa\n".echo();
-"// Index on risk category (not stored as field)\n".echo();
+" /* Index on risk category (not stored as field)\n".echo(); */
 "accounts.mkformulaindex(\"risk_category_index\", \n".echo();
 "    \"lambda(record) { \n".echo();
 "        balance = record.get('balance').raw().float(); \n".echo();

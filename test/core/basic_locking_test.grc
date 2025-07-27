@@ -6,7 +6,7 @@
 counter = 0;
 
 /* Simple thread that increments counter */
-thread_func = @<[op,@<code,{
+thread_func = @<[op,@<code,{;
     i = 0;
     while (i < 100) {
         counter = counter + 1;

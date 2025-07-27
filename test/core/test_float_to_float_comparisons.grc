@@ -177,7 +177,7 @@ if (result3) {
 /* Test 8: Very small numbers (testing adaptive tolerance) */
 ("\nTest 8: Very small numbers (adaptive tolerance)").echo();
 f10 = 0.0000000001;
-f11 = 0.00000000010000000001;  // Very close to f10
+f11 = 0.00000000010000000001; /* Very close to f10 */
 
 result1 = f10 == f11;
 ("0.0000000001 == 0.00000000010000000001 = " + result1.str()).echo();
@@ -190,7 +190,7 @@ if (result1) {
 /* Test 9: Large numbers (testing adaptive tolerance) */
 ("\nTest 9: Large numbers (adaptive tolerance)").echo();
 f12 = 1000000.0;
-f13 = 1000000.0000000001;  // Very close to f12
+f13 = 1000000.0000000001; /* Very close to f12 */
 
 result1 = f12 == f13;
 ("1000000.0 == 1000000.0000000001 = " + result1.str()).echo();
@@ -202,7 +202,7 @@ if (result1) {
 
 /* Test 10: Complex calculations */
 ("\nTest 10: Complex calculations").echo();
-f14 = (22).float() / 7;  // Pi approximation
+f14 = (22).float() / 7; /* Pi approximation */
 f15 = 3.14159;
 
 result1 = f14 == f15;
@@ -216,7 +216,7 @@ if (result1) {
 /* Test 11: Edge case - very close but not equal */
 ("\nTest 11: Edge case - very close but not equal").echo();
 f16 = 1.0;
-f17 = 1.0000001;  // Should be different enough to not be equal
+f17 = 1.0000001; /* Should be different enough to not be equal */
 
 result1 = f16 == f17;
 ("1.0 == 1.0000001 = " + result1.str()).echo();

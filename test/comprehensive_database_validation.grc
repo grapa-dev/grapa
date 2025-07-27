@@ -186,7 +186,7 @@ users_db.set("user2", 30, "age");
 /* Verify all operations */
 row_final_count = row_db.ls().len();
 col_final_count = col_db.ls().len();
-// Ensure users_db is set to the GROUP's users table before counting
+/* Ensure users_db is set to the GROUP's users table before counting
 users_db = group_db.cd("users");
 group_final_count = users_db.ls().len();
 
