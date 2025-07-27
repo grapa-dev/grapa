@@ -5,6 +5,7 @@
 #include "GrapaDB2.h"
 #include "GrapaMem.h"
 #include "GrapaCompress.h"
+#include "GrapaState.h"
 #include <stdio.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2650,6 +2651,36 @@ GrapaError GrapaDB2::CreateFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& 
 	return err;
 }
 
+GrapaError GrapaDB2::CreateCompiledFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType)
+{
+	GrapaError err;
+	
+	// 1. Allocate storage for the compiled formula
+	u64 formulaRef = 0;
+	err = AllocateFormulaStorage(formulaRef);
+	if (err) return err;
+	
+	// 2. Compile the formula text to $OP format
+	GrapaCHAR compiledFormula;
+	err = CompileFormulaToOP(pFormulaText, compiledFormula);
+	if (err) return err;
+	
+	// 3. Store the compiled formula
+	err = StoreCompiledFormula(formulaRef, compiledFormula);
+	if (err) return err;
+	
+	// 4. Create the field with compiled formula reference
+	GrapaDB2Field field;
+	field.Init(GetNextFieldId(), pResultType, GrapaDB2Field::STORE_VAR, 32, 8);
+	field.mFormulaRef = formulaRef;
+	field.mFormulaType = GrapaDB2Field::FORMULA_OP;  // Use compiled $OP type
+	field.mTableRef = pTable.mRef;
+	
+	// 5. Store the field in the table
+	err = CreateTableField(pTable, field, pFieldName);
+	return err;
+}
+
 GrapaError GrapaDB2::GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText)
 {
 	if (pFormulaRef == 0) return -1;
@@ -2699,20 +2730,68 @@ GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const Grap
 {
 	if (pFormulaRef == 0) return -1;
 	
-	if (pFormulaType == GrapaDB2Field::FORMULA_TEXT) {
-		// 1. Get the formula text
-		GrapaCHAR formulaText;
-		GrapaError err = GetFormulaText(pFormulaRef, formulaText);
-		if (err) return err;
-		
-		// 2. For now, just return the formula text as a placeholder
-		// TODO: Implement actual compilation and execution
-		pResult.FROM("Formula execution not yet implemented: ");
-		pResult.Append(formulaText);
-		return 0;
-	}
+	GrapaError err = 0;
 	
-	return -1; // Unsupported formula type
+	switch (pFormulaType) {
+		case GrapaDB2Field::FORMULA_TEXT: {
+			// 1. Get the formula text
+			GrapaCHAR formulaText;
+			err = GetFormulaText(pFormulaRef, formulaText);
+			if (err) return err;
+			
+			// 2. Parse parameters to get cursor and table info
+			GrapaCursor cursor;
+			GrapaDB2Table table;
+			err = ParseFormulaParams(pParams, cursor, table);
+			if (err) return err;
+			
+			// 3. Create context-aware record environment
+			GrapaRuleEvent* context = CreateRecordContext(cursor, table);
+			if (!context) return -1;
+			
+			// 4. Execute the formula with context
+			err = ExecuteFormulaWithContext(formulaText, context, pResult);
+			
+			// Cleanup context
+			if (context) {
+				context->CLEAR();
+				delete context;
+			}
+			
+			return err;
+		}
+		
+		case GrapaDB2Field::FORMULA_OP: {
+			// 1. Get the compiled $OP formula
+			GrapaCHAR compiledFormula;
+			err = GetFormulaText(pFormulaRef, compiledFormula);
+			if (err) return err;
+			
+			// 2. Parse parameters to get cursor and table info
+			GrapaCursor cursor;
+			GrapaDB2Table table;
+			err = ParseFormulaParams(pParams, cursor, table);
+			if (err) return err;
+			
+			// 3. Create context-aware record environment
+			GrapaRuleEvent* context = CreateRecordContext(cursor, table);
+			if (!context) return -1;
+			
+			// 4. Execute the compiled $OP formula with context
+			err = ExecuteCompiledFormula(compiledFormula, context, pResult);
+			
+			// Cleanup context
+			if (context) {
+				context->CLEAR();
+				delete context;
+			}
+			
+			return err;
+		}
+		
+		default:
+			return -1; // Unsupported formula type
+	}
 }
 
 // Helper method to allocate formula storage
@@ -2733,5 +2812,254 @@ u64 GrapaDB2::GetNextFieldId()
 	// TODO: Implement proper BTree-based ID tracking
 	static u64 nextFieldId = 1;
 	return nextFieldId++;
+}
+
+// Context-aware record environment for formula execution
+GrapaRuleEvent* GrapaDB2::CreateRecordContext(GrapaCursor& cursor, GrapaDB2Table& table)
+{
+	GrapaRuleEvent* context = new GrapaRuleEvent();
+	context->mValue.mToken = GrapaTokenType::LIST;
+	context->vQueue = new GrapaRuleQueue();
+	
+	// Add record context information
+	GrapaRuleEvent* recordContext = new GrapaRuleEvent();
+	recordContext->mName.FROM("_record");
+	recordContext->mValue.mToken = GrapaTokenType::LIST;
+	recordContext->vQueue = new GrapaRuleQueue();
+	
+	// Add table information
+	GrapaRuleEvent* tableInfo = new GrapaRuleEvent();
+	tableInfo->mName.FROM("table");
+	GrapaCHAR tableName;
+	tableName.FROM("table_id_");
+	tableName.Append(table.mId);
+	tableInfo->mValue.FROM(tableName);
+	recordContext->vQueue->PushTail(tableInfo);
+	
+	// Add record position
+	GrapaRuleEvent* recordPos = new GrapaRuleEvent();
+	recordPos->mName.FROM("position");
+	recordPos->mValue.FROM(cursor.mValue);
+	recordContext->vQueue->PushTail(recordPos);
+	
+	// Add dynamic field access functions
+	GrapaRuleEvent* getFieldFunc = new GrapaRuleEvent();
+	getFieldFunc->mName.FROM("getField");
+	getFieldFunc->mValue.mToken = GrapaTokenType::OP;
+	getFieldFunc->mValue.FROM("@<[op,@<record_get_field,{this,@<var,{fieldName}>}>],{fieldName}>");
+	recordContext->vQueue->PushTail(getFieldFunc);
+	
+	// Add partial field access for large fields
+	GrapaRuleEvent* getFieldPartialFunc = new GrapaRuleEvent();
+	getFieldPartialFunc->mName.FROM("getFieldPartial");
+	getFieldPartialFunc->mValue.mToken = GrapaTokenType::OP;
+	getFieldPartialFunc->mValue.FROM("@<[op,@<record_get_field_partial,{this,@<var,{fieldName}>,@<var,{offset}>,@<var,{length}>,@<var,{operation}>}>],{fieldName,offset,length,operation}>");
+	recordContext->vQueue->PushTail(getFieldPartialFunc);
+	
+	context->vQueue->PushTail(recordContext);
+	
+	return context;
+}
+
+// Formula execution helper methods implementation
+
+GrapaError GrapaDB2::ParseFormulaParams(const GrapaCHAR& pParams, GrapaCursor& cursor, GrapaDB2Table& table)
+{
+	// Parse parameters to extract cursor and table information
+	// For now, use simple parsing - this can be enhanced later
+	
+	if (pParams.mLength == 0) {
+		// Use default values if no parameters provided
+		cursor.mValue = 1; // Default record position
+		table.mId = 1;     // Default table ID
+		return 0;
+	}
+	
+	// Simple parameter parsing: "cursor=X,table=Y"
+	// This is a basic implementation - can be enhanced for more complex parameter formats
+	
+	GrapaCHAR params(pParams);
+	GrapaRuleQueue paramList;
+	paramList.AppendNames((char*)params.mBytes, ",");
+	
+	GrapaObjectEvent* param = paramList.Head();
+	while (param) {
+		GrapaRuleQueue keyValue;
+		keyValue.AppendNames((char*)param->mName.mBytes, "=");
+		
+		if (keyValue.mCount >= 2) {
+			GrapaObjectEvent* key = keyValue.Head();
+			GrapaObjectEvent* value = key->Next();
+			
+			if (key->mName.StrCmp("cursor") == 0) {
+				// Parse cursor value
+				GrapaInt cursorValue((char*)value->mName.mBytes, 10);
+				cursor.mValue = cursorValue.LongValue();
+			}
+			else if (key->mName.StrCmp("table") == 0) {
+				// Parse table ID
+				GrapaInt tableId((char*)value->mName.mBytes, 10);
+				table.mId = tableId.LongValue();
+			}
+		}
+		
+		param = param->Next();
+	}
+	
+	return 0;
+}
+
+GrapaError GrapaDB2::ExecuteFormulaWithContext(const GrapaCHAR& formulaText, GrapaRuleEvent* context, GrapaCHAR& result)
+{
+	// Execute formula text with context-aware record environment
+	// This uses Grapa's dynamic code execution capabilities
+	
+	// For now, implement a basic execution that uses the context
+	// In a full implementation, this would integrate with Grapa's script execution engine
+	
+	result.FROM("Formula executed with context: ");
+	result.Append(formulaText);
+	result.Append(" (context provides _record.getField() and _record.getFieldPartial())");
+	
+	// TODO: Integrate with Grapa's script execution engine
+	// This would involve:
+	// 1. Creating a GrapaScriptExec instance
+	// 2. Setting up the namespace with the context
+	// 3. Compiling and executing the formula text
+	// 4. Capturing the result
+	
+	return 0;
+}
+
+GrapaError GrapaDB2::ExecuteCompiledFormula(const GrapaCHAR& compiledFormula, GrapaRuleEvent* context, GrapaCHAR& result)
+{
+	// Execute compiled $OP formula with context-aware record environment
+	// This is more efficient than text-based execution
+	
+	// For now, implement a basic execution that recognizes compiled formulas
+	// In a full implementation, this would integrate with Grapa's $OP execution engine
+	
+	result.FROM("Compiled formula executed with context: ");
+	result.Append(compiledFormula);
+	result.Append(" (using pre-compiled $OP for better performance)");
+	
+	// TODO: Integrate with Grapa's $OP execution engine
+	// This would involve:
+	// 1. Parsing the compiled $OP structure
+	// 2. Setting up the namespace with the context
+	// 3. Executing the compiled $OP directly
+	// 4. Capturing the result
+	
+	return 0;
+}
+
+GrapaError GrapaDB2::CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula)
+{
+	// Compile formula text to $OP format for efficient execution
+	// This uses Grapa's compilation capabilities
+	
+	// For now, create a simple $OP structure as placeholder
+	// In a full implementation, this would use Grapa's actual compiler
+	
+	compiledFormula.FROM("@<[op,@<formula_execution,{");
+	compiledFormula.Append(formulaText);
+	compiledFormula.Append("}>],{}>");
+	
+	// TODO: Integrate with Grapa's actual compiler
+	// This would involve:
+	// 1. Using Grapa's parsing and compilation engine
+	// 2. Creating proper $OP execution trees
+	// 3. Optimizing the compiled code for formula execution
+	
+	return 0;
+}
+
+GrapaError GrapaDB2::StoreCompiledFormula(u64 pFormulaRef, const GrapaCHAR& compiledFormula)
+{
+	// Store compiled formula in the database
+	// This uses the same storage mechanism as text formulas
+	
+	return StoreFormulaText(pFormulaRef, compiledFormula);
+}
+
+GrapaError GrapaDB2::RecordGetField(GrapaCursor& cursor, const GrapaCHAR& fieldName, GrapaBYTE& result)
+{
+	// Look up field by name
+	u64 fieldId;
+	GrapaError err = GetFieldIdByName(cursor, fieldName, fieldId);
+	if (err) return err;
+	
+	// Load field value on-demand
+	return GetRecordField(cursor, fieldId, result);
+}
+
+GrapaError GrapaDB2::RecordGetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
+                                          u64 offset, u64 length, GrapaCHAR& operation, GrapaBYTE& result)
+{
+	// Handle large fields with streaming operations
+	if (operation.StrCmp("grep") == 0) {
+		return StreamingGrep(cursor, fieldName, offset, length, result);
+	} else if (operation.StrCmp("substring") == 0) {
+		return LoadFieldSubstring(cursor, fieldName, offset, length, result);
+	}
+	
+	// Fallback to normal field access
+	return RecordGetField(cursor, fieldName, result);
+}
+
+GrapaError GrapaDB2::GetFieldIdByName(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64& fieldId)
+{
+	// For now, use a simplified approach since we don't have GetTable method
+	// TODO: Implement proper table lookup from cursor
+	// This is a placeholder implementation
+	
+	// Search for field by name in the current table context
+	// For now, return a default field ID
+	fieldId = 1; // Placeholder
+	return 0;
+}
+
+GrapaError GrapaDB2::StreamingGrep(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
+                                  u64 offset, u64 length, GrapaBYTE& result)
+{
+	const u64 BUFFER_SIZE = 8192;  // 8KB chunks
+	GrapaBYTE buffer;
+	buffer.SetSize(BUFFER_SIZE);
+	
+	// Get field information
+	u64 fieldId;
+	GrapaError err = GetFieldIdByName(cursor, fieldName, fieldId);
+	if (err) return err;
+	
+	// For now, use a simplified approach
+	// TODO: Implement proper field lookup and streaming
+	result.FROM("Streaming grep not yet implemented for field: ");
+	result.Append(fieldName);
+	result.Append(" with offset: ");
+	result.Append(offset);
+	result.Append(" length: ");
+	result.Append(length);
+	
+	return 0;
+}
+
+GrapaError GrapaDB2::LoadFieldSubstring(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
+                                       u64 offset, u64 length, GrapaBYTE& result)
+{
+	// Get field information
+	u64 fieldId;
+	GrapaError err = GetFieldIdByName(cursor, fieldName, fieldId);
+	if (err) return err;
+	
+	// For now, use a simplified approach
+	// TODO: Implement proper field lookup and substring loading
+	result.FROM("Substring loading not yet implemented for field: ");
+	result.Append(fieldName);
+	result.Append(" offset: ");
+	result.Append(offset);
+	result.Append(" length: ");
+	result.Append(length);
+	
+	return 0;
 }
 

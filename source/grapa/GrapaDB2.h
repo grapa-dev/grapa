@@ -63,13 +63,29 @@ public:
 
 	// Formula field operations - new functionality for GrapaDB2
 	virtual GrapaError CreateFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType);
+	virtual GrapaError CreateCompiledFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType);
 	virtual GrapaError GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText);
 	virtual GrapaError StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormulaText);
 	virtual GrapaError ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const GrapaCHAR& pParams, GrapaCHAR& pResult);
 	
+	// Context-aware record environment for formula execution
+	virtual GrapaRuleEvent* CreateRecordContext(GrapaCursor& cursor, GrapaDB2Table& table);
+	virtual GrapaError RecordGetField(GrapaCursor& cursor, const GrapaCHAR& fieldName, GrapaBYTE& result);
+	virtual GrapaError RecordGetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64 offset, u64 length, GrapaCHAR& operation, GrapaBYTE& result);
+	virtual GrapaError GetFieldIdByName(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64& fieldId);
+	virtual GrapaError StreamingGrep(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64 offset, u64 length, GrapaBYTE& result);
+	virtual GrapaError LoadFieldSubstring(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64 offset, u64 length, GrapaBYTE& result);
+	
 	// Helper methods for formula operations
 	virtual GrapaError AllocateFormulaStorage(u64& pFormulaRef);
 	virtual u64 GetNextFieldId();
+	
+	// Formula execution helper methods
+	virtual GrapaError ParseFormulaParams(const GrapaCHAR& pParams, GrapaCursor& cursor, GrapaDB2Table& table);
+	virtual GrapaError ExecuteFormulaWithContext(const GrapaCHAR& formulaText, GrapaRuleEvent* context, GrapaCHAR& result);
+	virtual GrapaError ExecuteCompiledFormula(const GrapaCHAR& compiledFormula, GrapaRuleEvent* context, GrapaCHAR& result);
+	virtual GrapaError CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula);
+	virtual GrapaError StoreCompiledFormula(u64 pFormulaRef, const GrapaCHAR& compiledFormula);
 
 	// Record operations - same interface as GrapaDB
 	virtual GrapaError FindFreeRecordId(GrapaDB2Table& pTable, u64& pRecordId);
