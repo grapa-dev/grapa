@@ -64,6 +64,7 @@ public:
 
 	// Table operations - same interface as GrapaDB
 	virtual GrapaError LastTableId(u64 firstTree, u64& pTableId);
+	virtual GrapaError FirstFreeId(u64 tableRef, u64 minId, u64& resId);
 	virtual GrapaError CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, GrapaDBXTable& pTable);
 	virtual GrapaError OpenTable(u64 firstTree, u64 pTableId, GrapaDBXTable& pTable);
 	virtual GrapaError DeleteTable(u64 firstTree, u64 pTableId);
@@ -136,6 +137,8 @@ public:
 
 	// Utility operations - same interface as GrapaDB
 	virtual GrapaError CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
+	virtual GrapaError CompareRecordKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
+	virtual GrapaError CompareSearchKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
 	virtual GrapaError DumpTree(u64 pTreeRef = 0, GrapaFile* pDumpFile = NULL);
 
 	// Additional methods for GrapaDBX-specific functionality
@@ -169,6 +172,17 @@ protected:
 	
 	// Helper functions - same interface as GrapaDB
 	virtual GrapaError GetDataTypeRecord(u64 tableRef, u64& tableDT);
+	
+	// Index helper methods - same interface as GrapaDB
+	virtual GrapaError LocateIndex(GrapaCursor& cursor, u64 indexRef, u64 fieldId);
+	virtual bool IndexHasField(GrapaCursor& cursor, u64 fieldId);
+	
+	// Debug functions for index validation and testing
+	virtual void DebugPrintIndexPointerAndRecord(u64 tableRef, u64 key);
+	virtual void DebugPrintAllIndexPointers(u64 tableRef);
+	
+	// Debug utility methods
+	virtual GrapaError DumpGetItemWeight(GrapaCursor& cursor, u64& weight);
 };
 
 // GrapaDBX-specific data structures (duplicated from GrapaDB.h with "X" suffix)

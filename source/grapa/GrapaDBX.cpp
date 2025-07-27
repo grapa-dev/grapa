@@ -28,11 +28,15 @@
 GrapaDBX::GrapaDBX() : GrapaBtree()
 {
 	mDumpFile = NULL;
+	mCachingMode = CACHE_ENABLED;  // Default to enabled caching
+	mCacheSize = GrapaFileCache::DEFAULT_SIZE;  // Use default cache size
 }
 
 GrapaDBX::GrapaDBX(GrapaFile* pFile) : GrapaBtree()
 {
 	mDumpFile = NULL;
+	mCachingMode = CACHE_ENABLED;  // Default to enabled caching
+	mCacheSize = GrapaFileCache::DEFAULT_SIZE;  // Use default cache size
 	INIT(pFile);
 }
 
@@ -42,7 +46,9 @@ GrapaDBX::~GrapaDBX()
 
 void GrapaDBX::INIT(GrapaFile* pFile)
 {
-	SetFile(pFile);
+	// Set up caching layer - same architecture as GrapaGroup
+	mTree.SetFile(pFile);
+	SetFile(&mTree);  // Use mTree as the file for GrapaBtree operations
 }
 
 // Core database operations - delegate to GrapaBtree for now (placeholder implementation)
@@ -282,12 +288,17 @@ GrapaError GrapaDBX::CreateRecord(GrapaDBXTable& pTable, GrapaCursor& pCursor)
 {
 	GrapaError err;
 	u64 newTree;
+	u64 uniqueKey;
+
+	// Generate a unique key for this record
+	err = FirstFreeId(pTable.mRecRef, 1, uniqueKey);
+	if (err) return(err);
 
 	err = NewTree(newTree,RREC_ITEM,pTable.mRecRef);
 	if (err) return(err);
 
 	pCursor.mValue = newTree;
-	pCursor.mKey = pCursor.mKey;
+	pCursor.mKey = uniqueKey;  // Use the generated unique key
 
 	err = Insert(pCursor);
 	if (err)
@@ -382,20 +393,82 @@ GrapaError GrapaDBX::SetRecordField(GrapaCursor& pCursor, GrapaDBXFieldValueArra
 	printf("[DEBUG] SetDataSize succeeded\n");
 	
 	printf("[DEBUG] SetRecordField completed successfully\n");
+	
+	/* Now insert the record into the B-tree index */
+	printf("[DEBUG] Inserting record into B-tree index\n");
+	GrapaBlockTree head;
+	GrapaBlockNodeLeaf key;
+	s8 result;
+	
+	/* Read the tree header */
+	err = head.Read(mFile, pCursor.mTreeRef);
+	if (err) {
+		printf("[DEBUG] Failed to read tree header: %d\n", err);
+		return err;
+	}
+	
+	/* Set up the key for insertion */
+	key.valueType = pCursor.mValueType;
+	key.key = pCursor.mKey;
+	key.value = pCursor.mValue;
+	key.flags = pCursor.mFlags;
+	key.child = 0; // No child for data records
+	
+	/* Check if tree is empty */
+	if (head.firstItem == 0) {
+		printf("[DEBUG] Tree is empty, using AppendNode\n");
+		err = AppendNode(pCursor.mTreeRef, head, key);
+		if (err) {
+			printf("[DEBUG] AppendNode failed with error %d\n", err);
+			return err;
+		}
+		/* Write the updated tree header back to disk */
+		printf("[DEBUG] Writing updated tree header, firstItem=%llu\n", head.firstItem);
+		err = head.Write(mFile, pCursor.mTreeRef);
+		if (err) {
+			printf("[DEBUG] Failed to write updated tree header: %d\n", err);
+			return err;
+		}
+		printf("[DEBUG] Tree header successfully written to disk\n");
+	} else {
+		printf("[DEBUG] Tree has items, using InsertRc\n");
+		/* Insert the record into the B-tree */
+		err = InsertRc(pCursor.mTreeRef, head, head.firstItem, pCursor, key, key, result);
+		if (err) {
+			printf("[DEBUG] InsertRc failed with error %d\n", err);
+			return err;
+		}
+	}
+	
+	printf("[DEBUG] Record successfully inserted into B-tree index\n");
 	return 0;
 }
 
 GrapaError GrapaDBX::GetRecordField(GrapaCursor& pCursor, u64 pFieldId, GrapaBYTE& pValue)
 {
-	/* For now, use a simple placeholder implementation */
-	/* In a real implementation, this would retrieve the actual field value */
 	printf("[DEBUG] GetRecordField: called with fieldId=%llu, cursor.mValue=%llu\n", pFieldId, pCursor.mValue);
 	
-	/* Placeholder: return a simple test value */
-	pValue.FROM("test_value");
+	/* Get the actual field value from the record */
+	GrapaError err;
+	GrapaDBXField field;
+	GrapaCursor recCursor;
 	
-	printf("[DEBUG] GetRecordField: returning placeholder value, length=%llu\n", pValue.mLength);
-	return(0);
+	/* Find the record field */
+	err = FindRecordField(pCursor, pFieldId, recCursor, field);
+	if (err) {
+		printf("[DEBUG] GetRecordField: FindRecordField failed with error %d\n", err);
+		return err;
+	}
+	
+	/* Get the field value using the field information */
+	err = GetRecordField(recCursor, field, pValue);
+	if (err) {
+		printf("[DEBUG] GetRecordField: GetRecordField(field) failed with error %d\n", err);
+		return err;
+	}
+	
+	printf("[DEBUG] GetRecordField: Retrieved actual value, length=%llu\n", pValue.mLength);
+	return 0;
 }
 
 GrapaError GrapaDBX::GetDataTypeRecord(u64 tableRef, u64& tableDT)
@@ -416,6 +489,9 @@ GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 	GrapaError err;
 	u64 tableRef;
 	
+	printf("[DEBUG] FindRecordField: fieldId=%llu, cursor.mValue=%llu, cursor.mTreeRef=%llu\n", 
+	       fieldId, cursor.mValue, cursor.mTreeRef);
+	
 	if (mDumpFile) {
 		GrapaCHAR debugMsg;
 		debugMsg.mLength = snprintf((char*)debugMsg.mBytes, debugMsg.mSize, 
@@ -426,6 +502,7 @@ GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 	/* Convert pointer to record if needed */
 	err = PtrToRec(cursor, recCursor);
 	if (err) {
+		printf("[DEBUG] FindRecordField: PtrToRec failed with error %d\n", err);
 		if (mDumpFile) {
 			GrapaCHAR debugMsg;
 			debugMsg.mLength = snprintf((char*)debugMsg.mBytes, debugMsg.mSize, 
@@ -435,10 +512,14 @@ GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 		return(err);
 	}
 	
+	printf("[DEBUG] FindRecordField: PtrToRec succeeded, recCursor.mValue=%llu, recCursor.mTreeRef=%llu\n", 
+	       recCursor.mValue, recCursor.mTreeRef);
+	
 	/* Read the tree structure to get tree type */
 	GrapaBlockTree tree;
 	err = tree.Read(mFile, recCursor.mTreeRef);
 	if (err) {
+		printf("[DEBUG] FindRecordField: tree.Read failed with error %d\n", err);
 		if (mDumpFile) {
 			GrapaCHAR debugMsg;
 			debugMsg.mLength = snprintf((char*)debugMsg.mBytes, debugMsg.mSize, 
@@ -449,6 +530,7 @@ GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 	}
 	
 	recCursor.mTreeType = tree.treeType;
+	printf("[DEBUG] FindRecordField: tree type = %d\n", recCursor.mTreeType);
 	
 	/* Get field information based on tree type */
 	switch (recCursor.mTreeType)
@@ -468,6 +550,7 @@ GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 		if (err) return(err);
 		break;
 	default:
+		printf("[DEBUG] FindRecordField: unknown tree type %d\n", recCursor.mTreeType);
 		if (mDumpFile) {
 			GrapaCHAR debugMsg;
 			debugMsg.mLength = snprintf((char*)debugMsg.mBytes, debugMsg.mSize, 
@@ -475,6 +558,13 @@ GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 			mDumpFile->Append(debugMsg.mLength, debugMsg.mBytes);
 		}
 		return(-1);
+	}
+	
+	if (err) {
+		printf("[DEBUG] FindRecordField: field.Get failed with error %d\n", err);
+	} else {
+		printf("[DEBUG] FindRecordField: success, treeType=%d, tableRef=%llu, fieldId=%llu\n", 
+		       recCursor.mTreeType, tableRef, fieldId);
 	}
 	
 	if (mDumpFile) {
@@ -691,9 +781,257 @@ GrapaError GrapaDBX::GetRecordField(GrapaCursor& pCursor, GrapaDBXField& field, 
 // Placeholder implementations for virtual methods
 GrapaError GrapaDBX::CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult)
 {
-	/* Placeholder implementation */
-	pResult = 0;
-	return 0;
+	GrapaError err = 0;
+	GrapaCursor cursor;
+
+	pResult = -1;
+
+	switch(pTreeCursor.mValueType)
+	{
+		case DTYPE_ITEM:
+			// this item is the same as a DbData item, but for the data type dictionary
+			pResult = GrapaBtree::CompareKey(pTreeCursor.mKey, pUserCursor.mKey);
+			break;
+
+		case GREC_ITEM: 
+		case RREC_ITEM:
+		case CREC_ITEM:
+		case GPTR_ITEM:
+		case RPTR_ITEM:
+		case CPTR_ITEM:
+			switch(pUserCursor.mValueType)
+			{
+				case SEARCH_ITEM: // Searching an index using a set of search fields
+					err = CompareSearchKey(pCompareType, pUserCursor, pTreeCursor, pResult);
+					break;
+
+				case GREC_ITEM: 
+				case RREC_ITEM:
+				case CREC_ITEM:
+				case GPTR_ITEM:
+				case RPTR_ITEM:
+				case CPTR_ITEM:
+					err = CompareRecordKey(pCompareType, pUserCursor, pTreeCursor, pResult);
+					break;
+
+				case DTYPE_ITEM:
+				default:
+					return(-1);
+			}
+			break;
+
+		case SEARCH_ITEM:
+		default:
+			return(-1);
+	}
+
+	if (err)
+		pResult = GrapaBtree::CompareKey(pTreeCursor.mKey, pUserCursor.mKey);
+
+	if (pResult == 0)
+	{
+		// if the values end up to be the same, then lets compare the key's just to be sure.
+		switch(pUserCursor.mValueType)
+		{
+			case GREC_ITEM:
+			case RREC_ITEM:
+			case CREC_ITEM:
+			case GPTR_ITEM:
+			case RPTR_ITEM:
+			case CPTR_ITEM:
+				switch (pCompareType)
+				{
+					case SEARCH_MODE:
+						if (pUserCursor.mKey)
+							pResult = GrapaBtree::CompareKey(pTreeCursor.mKey, pUserCursor.mKey);
+						break;
+					case INSERT_MODE:
+					case DELETE_MODE:
+						pResult = GrapaBtree::CompareKey(pTreeCursor.mKey, pUserCursor.mKey);
+						break;
+				}
+				break;
+		}
+	}
+	
+	return(0);
+}
+
+GrapaError GrapaDBX::CompareRecordKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult)
+{
+	GrapaError err;
+	GrapaCursor cursor;
+	u64 indexRef;
+	GrapaCHAR name1, name2;
+
+	pResult = -1;
+
+	switch(pTreeCursor.mValueType)
+	{
+		case GREC_ITEM: 
+		case RREC_ITEM:
+		case CREC_ITEM:
+		case GPTR_ITEM: 
+		case RPTR_ITEM:
+		case CPTR_ITEM:
+			switch(pUserCursor.mValueType)
+			{
+				case GREC_ITEM: 
+				case RREC_ITEM:
+				case CREC_ITEM:
+					if (pUserCursor.mKey == pTreeCursor.mKey) 
+					{
+						pResult = 0;
+						return(0);
+					}
+					break;
+				case GPTR_ITEM: 
+				case RPTR_ITEM:
+				case CPTR_ITEM:
+					break;
+				case SEARCH_ITEM:
+					return CompareSearchKey(pCompareType, pUserCursor, pTreeCursor, pResult);
+				default:
+					return(-1);
+			}
+			break;
+		default:
+			return(-1);
+	}
+
+	cursor.Set(pTreeCursor.mTreeRef);
+	err = GetTreeIndex(cursor, indexRef);
+	if (err) return(err);
+
+	GrapaCursor treeItemCursor, userItemCursor;
+	err = PtrToRec(pTreeCursor, treeItemCursor);
+	if (err) return(err);
+	err = PtrToRec(pUserCursor, userItemCursor);
+	if (err) return(err);
+
+	switch(pTreeCursor.mValueType)
+	{
+		case GREC_ITEM: 
+		case RREC_ITEM:
+		case GPTR_ITEM: 
+		case RPTR_ITEM:
+			if (userItemCursor.mValue == treeItemCursor.mValue) 
+			{
+				pResult = 0;
+				return(0);
+			}
+			break;
+
+		case CREC_ITEM:
+		case CPTR_ITEM:
+			if (userItemCursor.mLength == treeItemCursor.mLength) 
+			{
+				pResult = 0;
+				return(0);
+			}
+			break;
+	}
+
+	// For now, use simple key comparison as fallback
+	pResult = GrapaBtree::CompareKey(pTreeCursor.mKey, pUserCursor.mKey);
+	return(0);
+}
+
+GrapaError GrapaDBX::CompareSearchKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult)
+{
+	GrapaError err;
+	GrapaDBXFieldValueArray *fvList;
+	GrapaDBXFieldValue *fv;
+	u32 i, count;
+	GrapaCHAR name2;
+
+	pResult = -1;
+
+	if (pUserCursor.mValueType != SEARCH_ITEM) return(-1);
+
+	// user specified this
+	// parse based on all of the values in GrapaDBXCursor
+	// cycle through all the fields included in the user pointer
+	// use the order specified in the index
+
+	fvList = ((GrapaDBXCursor&)pUserCursor).mData;
+	if (!fvList) return(-1);
+	
+	count = fvList->Count();
+	pResult = 0; // if no fields, then the compare indicates an equal
+	for(i = 0; i < count; i++)
+	{
+		fv = fvList->GetFieldAt(i);
+		if (!fv) continue;
+
+		GrapaCursor treeItemCursor;
+		err = PtrToRec(pTreeCursor, treeItemCursor);
+		if (err) continue;
+
+		// need to pull this into the treeItemCursor datatype for the comparison
+		err = GetRecordField(treeItemCursor, *fv, name2);
+		if (err) continue;
+
+		char* n1 = (char*)fv->mValue.mBytes;
+		char* n2 = (char*)name2.mBytes;
+
+		// the following conditions should never happen...unless the value really is NULL
+		if (fv->mValue.mBytes == NULL || fv->mValue.mLength == 0) n1 = (char*)"";
+		if (name2.mBytes == NULL || name2.mLength == 0) n2 = (char*)"";
+
+		// need to compare based on the treeItemCursor datatype
+		int cr = strcmp(n2, n1);
+		pResult = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
+		if (pResult < 0)
+		{
+			switch(fv->mCmp)
+			{
+			case LT_CMP:
+			case LTEQ_CMP:
+				pResult = 0;
+				break;
+			case EQ_CMP:
+			case GT_CMP:
+			case GTEQ_CMP:
+				pResult = -1;
+				break;
+			}
+		}
+		else if (pResult > 0)
+		{
+			switch(fv->mCmp)
+			{
+			case LT_CMP:
+			case LTEQ_CMP:
+			case EQ_CMP:
+				pResult = 1;
+				break;
+			case GT_CMP:
+			case GTEQ_CMP:
+				pResult = 0;
+				break;
+			}
+		}
+		else
+		{
+			switch(fv->mCmp)
+			{
+			case LT_CMP:
+				pResult = 1;
+				break;
+			case LTEQ_CMP:
+			case EQ_CMP:
+			case GTEQ_CMP:
+				pResult = 0;
+				break;
+			case GT_CMP:
+				pResult = -1;
+				break;
+			}
+		}
+		if (pResult) break;
+	}
+	return(0);
 }
 
 GrapaError GrapaDBX::GetDataValue(u64 itemPtr, u64 offset, u64 length, char* data, u64* returnSize)
@@ -786,37 +1124,273 @@ GrapaError GrapaDBX::FindFreeIndexId(GrapaDBXIndex& pIndex, u64 pMinId, u64& pIn
 
 GrapaError GrapaDBX::SearchDb(GrapaCursor& pCursor, GrapaDBXTable& pTable, GrapaDBXFieldValueArray& pFieldList)
 {
-	/* Basic database search */
-	// TODO: Implement full search with BTree operations and field matching
+	GrapaError err;
+	u64 indexRef = 0;
+	GrapaCursor indexCursor;
+	bool usingIndex = false;
+	GrapaDBXField* field;
+	u64 bestIndexField = 0;
+	u64 bestIndexRef = 0;
+
+	printf("[DEBUG] SearchDb called with fieldCount=%d\n", pFieldList.Count());
+
+	// Step 1: Find the best available index for the search fields
+	if (pFieldList.Count() > 0)
+	{
+		// Try to find an index that contains any of the search fields
+		indexCursor.Set(pTable.mRecRef);
+		err = GetTreeIndex(indexCursor, indexRef);
+		if (!err && indexRef != 0)
+		{
+			// Check each search field to see if it's in an index
+			for (int i = 0; i < pFieldList.Count(); i++)
+			{
+				field = pFieldList.GetFieldAt(i);
+				if (field)
+				{
+					err = LocateIndex(indexCursor, indexRef, field->mId);
+					if (!err)
+					{
+						// Found an index for this field
+						usingIndex = true;
+						bestIndexField = field->mId;
+						bestIndexRef = indexRef;
+						printf("[DEBUG] Found index for field %llu, using index-based search\n", field->mId);
+						break; // Use the first matching index
+					}
+				}
+			}
+		}
+	}
+
+	// Step 2: If no specific index found, default to $KEY index (field 4 for ROW/COL, field 1 for GROUP)
+	if (!usingIndex)
+	{
+		// Determine the $KEY field based on table type
+		u64 keyField = 4; // Default for ROW/COL
+		if (pTable.mRefType == GROUP_TREE)
+		{
+			keyField = 1; // GROUP uses field 1 as $KEY
+		}
+
+		indexCursor.Set(pTable.mRecRef);
+		err = GetTreeIndex(indexCursor, indexRef);
+		if (!err && indexRef != 0)
+		{
+			err = LocateIndex(indexCursor, indexRef, keyField);
+			if (!err)
+			{
+				usingIndex = true;
+				bestIndexField = keyField;
+				bestIndexRef = indexRef;
+				printf("[DEBUG] Using default $KEY index (field %llu) for search\n", keyField);
+			}
+		}
+	}
+
+	// Step 3: Set up the search cursor
+	GrapaDBXCursor* dbxCursor = dynamic_cast<GrapaDBXCursor*>(&pCursor);
+	if (dbxCursor) {
+		// Set up search cursor with index information
+		dbxCursor->SetSearch(this, pTable.mRecRef, usingIndex, &pFieldList);
+	} else {
+		// Fallback: just set the cursor to the table reference
+		pCursor.Set(pTable.mRecRef);
+	}
+
+	// Step 4: Perform the search based on available index
+	if (usingIndex)
+	{
+		printf("[DEBUG] Using index-based search with field %llu\n", bestIndexField);
+		
+		// Use index-based search
+		err = Search(pCursor);
+		if (err) 
+		{
+			printf("[DEBUG] Index-based search failed, falling back to table scan\n");
+			usingIndex = false;
+		}
+		else
+		{
+			// Index search succeeded, position cursor at first matching record
+			err = FirstDb(pCursor);
+			if (err) 
+			{
+				printf("[DEBUG] Failed to position cursor after index search\n");
+				return err;
+			}
+			return 0; // Success - cursor is positioned at first matching record
+		}
+	}
+
+	// Step 5: Fallback to table scan if no index available or index search failed
+	if (!usingIndex)
+	{
+		printf("[DEBUG] Using table scan search\n");
+		
+		// Configure the cursor with search criteria if available
+		GrapaDBXCursor* dbxCursor = dynamic_cast<GrapaDBXCursor*>(&pCursor);
+		if (dbxCursor && pFieldList.Count() > 0) {
+			// Set up the cursor with search data for table scan
+			dbxCursor->SetSearch(this, pTable.mRecRef, false, &pFieldList);
+		} else {
+			// Fallback: just set the cursor to the table reference
+			pCursor.Set(pTable.mRecRef);
+		}
+		
+		// Start from the first record
+		err = First(pCursor);
+		if (err) {
+			printf("[DEBUG] First() failed with error %d\n", err);
+			return(err);
+		}
+		printf("[DEBUG] First() succeeded, cursor positioned at first record\n");
+		
+		err = FirstDb(pCursor);
+		if (err) {
+			printf("[DEBUG] FirstDb() failed with error %d\n", err);
+			return(err);
+		}
+		printf("[DEBUG] FirstDb() succeeded\n");
+
+		// If we have search criteria, find the first matching record
+		if (pFieldList.Count() > 0)
+		{
+			GrapaCursor cursorCompare = pCursor;
+			s8 result;
+			cursorCompare.mValueType = GrapaDBX::SEARCH_ITEM;
+			
+			printf("[DEBUG] Starting table scan with %d search fields\n", pFieldList.Count());
+			
+			// Search for the first matching record
+			err = CompareKey(GrapaBtree::SEARCH_MODE, cursorCompare, pCursor, result);
+			printf("[DEBUG] CompareKey result: err=%d, result=%d\n", err, result);
+			if (!err && result == 0)
+			{
+				printf("[DEBUG] Found first match\n");
+				return 0; // Found first match
+			}
+			
+			// Continue searching through records
+			int recordCount = 0;
+			while (!err)
+			{
+				err = NextDb(pCursor);
+				if (err) {
+					printf("[DEBUG] NextDb() failed with error %d after %d records\n", err, recordCount);
+					break;
+				}
+				recordCount++;
+				
+				err = CompareKey(GrapaBtree::SEARCH_MODE, cursorCompare, pCursor, result);
+				printf("[DEBUG] CompareKey result: err=%d, result=%d (record %d)\n", err, result, recordCount);
+				if (!err && result == 0)
+				{
+					printf("[DEBUG] Found match after %d records\n", recordCount);
+					return 0; // Found match
+				}
+			}
+			printf("[DEBUG] Table scan completed, no match found\n");
+		}
+		else
+		{
+			// No search criteria, just position at first record
+			printf("[DEBUG] No search criteria, positioned at first record\n");
+			return 0;
+		}
+	}
+
 	return 0;
 }
 
-GrapaError GrapaDBX::FirstDb(GrapaCursor& pCursor)
+GrapaError GrapaDBX::FirstDb(GrapaCursor& cursor)
 {
-	/* Get first record in database */
-	// TODO: Implement full first record retrieval with BTree operations
-	return 0;
+	GrapaError err = 0;
+	GrapaCursor cursorCompare = cursor;
+	while(!err)
+	{
+		err = PrevDb(cursorCompare);
+		if (err) return(0);
+		cursor = cursorCompare;
+	}
+	return(0);
 }
 
-GrapaError GrapaDBX::LastDb(GrapaCursor& pCursor)
+GrapaError GrapaDBX::LastDb(GrapaCursor& cursor)
 {
-	/* Get last record in database */
-	// TODO: Implement full last record retrieval with BTree operations
-	return 0;
+	GrapaError err = 0;
+	GrapaCursor cursorCompare = cursor;
+	while(!err)
+	{
+		err = NextDb(cursorCompare);
+		if (err) return(0);
+		cursor = cursorCompare;
+	}
+	return(0);
 }
 
-GrapaError GrapaDBX::NextDb(GrapaCursor& pCursor)
+GrapaError GrapaDBX::NextDb(GrapaCursor& cursor)
 {
-	/* Get next record in database */
-	// TODO: Implement full next record retrieval with BTree operations
-	return 0;
+	GrapaError err = 0;
+	s8 result;
+	//s8 valueType = cursor.mValueType;
+	while(true)
+	{
+		GrapaCursor cursorCompare = cursor;
+		err = Next(cursor);
+		// do we need to check mKey for 0?
+		if (err) return(err);
+	
+		//cursor.mValueType = RPTR_ITEM;
+		err = CompareKey(SEARCH_MODE, cursorCompare, cursor, result);
+		if (err) return(err);
+		//cursor.mValueType = valueType;
+		if (result==0) return(0);
+		
+		// Check if using index - cast to GrapaDBXCursor to access mUsingIndex
+		GrapaDBXCursor* dbxCursor = dynamic_cast<GrapaDBXCursor*>(&cursor);
+		if (dbxCursor && dbxCursor->mUsingIndex)
+		{
+			return((GrapaError)-1);
+		}
+	}
+	return(0);
 }
 
-GrapaError GrapaDBX::PrevDb(GrapaCursor& pCursor)
+GrapaError GrapaDBX::PrevDb(GrapaCursor& cursor)
 {
-	/* Get previous record in database */
-	// TODO: Implement full previous record retrieval with BTree operations
-	return 0;
+	GrapaError err = 0;
+	s8 result;
+	//s8 valueType = cursor.mValueType;
+	while(true)
+	{
+		GrapaCursor cursorCompare = cursor;
+		err = Prev(cursor);
+		if (err) return(err);
+		cursorCompare.mValueType = SEARCH_ITEM;
+		//cursor.mValueType = RPTR_ITEM;
+		err = CompareKey(SEARCH_MODE, cursorCompare, cursor, result);
+		if (err) return(err);
+		//cursor.mValueType = valueType;
+		if (result==0) return(0);
+		
+		// Check if using index - cast to GrapaDBXCursor to access mUsingIndex
+		GrapaDBXCursor* dbxCursor = dynamic_cast<GrapaDBXCursor*>(&cursor);
+		if (dbxCursor && dbxCursor->mUsingIndex)
+		{
+			return((GrapaError)-1);
+		}
+	}
+	return(0);
+}
+
+// Add the missing FirstFreeId method
+GrapaError GrapaDBX::FirstFreeId(u64 tableRef, u64 minId, u64& resId)
+{
+	GrapaError err = LastTableId(tableRef, resId);
+	if (resId < minId) resId = minId;
+	if (err) return(err);
+	return(0);
 }
 
 GrapaError GrapaDBX::DumpTree(u64 pTreeRef, GrapaFile* pDumpFile)
@@ -1494,16 +2068,20 @@ GrapaError GrapaGroup2::OpenGroup(u64 parentTree, u8 parentType, u64 pId, u64& p
 
 GrapaError GrapaGroup2::CreateEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, u64& pId)
 {
-
 	GrapaError err;
 	GrapaDBXCursor cursor;
 	GrapaDBXTable parentDict;
 	GrapaDBXFieldValueArray data;
+	GrapaCHAR dataName(pDataName);
+
+	printf("[DEBUG] GrapaGroup2::CreateEntry: parentTree=%llu, parentType=%d, dataName='%s'\n", 
+	       parentTree, parentType, (char*)dataName.mBytes);
 
 	pId = 0;
 
 	if (pDataName.mLength == 0 || pDataName.mBytes == NULL)
 	{
+		printf("[DEBUG] GrapaGroup2::CreateEntry: Invalid data name\n");
 		return(-1);
 	}
 
@@ -1515,6 +2093,7 @@ GrapaError GrapaGroup2::CreateEntry(u64 parentTree, u8 parentType, const GrapaCH
 		err = OpenTable(parentTree, 0, parentDict);
 		if (err)
 		{
+			printf("[DEBUG] GrapaGroup2::CreateEntry: OpenTable failed with error %d\n", err);
 			return(err);
 		}
 	}
@@ -1523,10 +2102,12 @@ GrapaError GrapaGroup2::CreateEntry(u64 parentTree, u8 parentType, const GrapaCH
 	err = GetNameId(parentTree, parentType, nameId);
 	if (err)
 	{
+		printf("[DEBUG] GrapaGroup2::CreateEntry: GetNameId failed with error %d\n", err);
 		return(err);
 	}
 	if (nameId == 0)
 	{
+		printf("[DEBUG] GrapaGroup2::CreateEntry: nameId is 0\n");
 		return(-1);
 	}
 
@@ -1535,15 +2116,17 @@ GrapaError GrapaGroup2::CreateEntry(u64 parentTree, u8 parentType, const GrapaCH
 	if (!err)
 	{
 		pId = cursor.mKey;
+		printf("[DEBUG] GrapaGroup2::CreateEntry: Entry already exists with ID=%llu\n", pId);
 		return(0);
 	}
 
 	err = CreateRecord(parentDict, cursor);
 	if (err)
 	{
+		printf("[DEBUG] GrapaGroup2::CreateEntry: CreateRecord failed with error %d\n", err);
 		return(err);
 	}
-
+	
 	pId = cursor.mKey;
 
 	{
@@ -1552,25 +2135,31 @@ GrapaError GrapaGroup2::CreateEntry(u64 parentTree, u8 parentType, const GrapaCH
 		err = SetRecordField(cursor, data2);
 		if (err)
 		{
+			printf("[DEBUG] GrapaGroup2::CreateEntry: SetRecordField failed with error %d\n", err);
 			return(err);
 		}
 	}
 
+	printf("[DEBUG] GrapaGroup2::CreateEntry: Successfully created entry with ID=%llu\n", pId);
 	return(0);
 }
 
 GrapaError GrapaGroup2::FindEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, u64& pId)
 {
-
 	GrapaError err;
 	GrapaDBXCursor cursor;
 	GrapaDBXTable parentDict;
 	GrapaDBXFieldValueArray data;
+	GrapaCHAR dataName(pDataName);
+
+	printf("[DEBUG] GrapaGroup2::FindEntry: parentTree=%llu, parentType=%d, dataName='%s'\n", 
+	       parentTree, parentType, (char*)dataName.mBytes);
 
 	pId = 0;
 
 	if (pDataName.mLength == 0 || pDataName.mBytes == NULL)
 	{
+		printf("[DEBUG] GrapaGroup2::FindEntry: Invalid data name\n");
 		return(-1);
 	}
 
@@ -1582,6 +2171,7 @@ GrapaError GrapaGroup2::FindEntry(u64 parentTree, u8 parentType, const GrapaCHAR
 		err = OpenTable(parentTree, 0, parentDict);
 		if (err)
 		{
+			printf("[DEBUG] GrapaGroup2::FindEntry: OpenTable failed with error %d\n", err);
 			return(err);
 		}
 	}
@@ -1590,10 +2180,12 @@ GrapaError GrapaGroup2::FindEntry(u64 parentTree, u8 parentType, const GrapaCHAR
 	err = GetNameId(parentTree, parentType, nameId);
 	if (err)
 	{
+		printf("[DEBUG] GrapaGroup2::FindEntry: GetNameId failed with error %d\n", err);
 		return(err);
 	}
 	if (nameId == 0)
 	{
+		printf("[DEBUG] GrapaGroup2::FindEntry: nameId is 0\n");
 		return(-1);
 	}
 
@@ -1601,10 +2193,12 @@ GrapaError GrapaGroup2::FindEntry(u64 parentTree, u8 parentType, const GrapaCHAR
 	err = SearchDb(cursor, parentDict, data);
 	if (err)
 	{
+		printf("[DEBUG] GrapaGroup2::FindEntry: SearchDb failed with error %d\n", err);
 		return(err);
 	}
 
 	pId = cursor.mKey;
+	printf("[DEBUG] GrapaGroup2::FindEntry: Successfully found entry with ID=%llu\n", pId);
 
 	return(0);
 }
@@ -1919,16 +2513,13 @@ GrapaError GrapaGroup2::GetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 	err = GetNameId(parentTree, parentType, nameId);
 	printf("[DEBUG] GetField: GetNameId returned err=%d, nameId=%llu\n", err, nameId);
 
-	if (nameId)
-	{
-		/* For now, since SearchDb is a placeholder, we'll use a simpler approach */
-		/* In a real implementation, this would search for the record by name */
-		dataId = 1; /* Placeholder - assume record ID 1 for now */
+	/* Find the actual record by name */
+	err = FindEntry(parentTree, parentType, pDataName, dataId);
+	if (err) {
+		printf("[DEBUG] GetField: FindEntry failed with error %d\n", err);
+		return(err);
 	}
-	else
-	{
-		dataId = 1; /* Placeholder - assume record ID 1 for now */
-	}
+	printf("[DEBUG] GetField: FindEntry succeeded, dataId=%llu\n", dataId);
 
 	cursor.Set(parentDict.mRecRef, RREC_ITEM, dataId);
 	/* For placeholder implementation, we'll skip the complex record search
@@ -2529,10 +3120,48 @@ GrapaError GrapaDBX::DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u
 
 GrapaError GrapaDBX::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 {
-	/* Convert pointer cursor to record cursor */
-	/* For now, use placeholder implementation since we don't have full BTree implementation */
-	recCursor.Set(ptrCursor.mTreeRef, ptrCursor.mValueType, ptrCursor.mKey, ptrCursor.mValue);
-	return(0);
+	GrapaError err = 0;
+	u64 tableRef;
+	u8 storeType;
+	
+	recCursor = ptrCursor;
+	
+	switch(ptrCursor.mValueType)
+	{
+		case GREC_ITEM:
+		case RREC_ITEM:
+		case CREC_ITEM:
+			return(0);
+		case GPTR_ITEM:
+		case RPTR_ITEM:
+		case CPTR_ITEM:
+			break;
+		default:
+			return(-1);
+			break;
+	}
+	
+	err = GetTreeStore(ptrCursor, tableRef, storeType);
+	if (err) return(err);
+	
+	switch(ptrCursor.mValueType)
+	{
+		case GPTR_ITEM:
+			recCursor.Set(tableRef, GREC_ITEM, ptrCursor.mKey);
+			recCursor.mTreeType = GROUP_TREE;
+			break;
+		case RPTR_ITEM:
+			recCursor.Set(tableRef, RREC_ITEM, ptrCursor.mKey);
+			recCursor.mTreeType = RTABLE_TREE;
+			break;
+		case CPTR_ITEM:
+			recCursor.Set(tableRef, CREC_ITEM, ptrCursor.mKey);
+			recCursor.mTreeType = CTABLE_TREE;
+			break;
+	}
+	
+	GrapaError searchErr = Search(recCursor);
+	return searchErr;
 }
 
 GrapaError GrapaDBX::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
@@ -3061,5 +3690,178 @@ GrapaError GrapaDBX::LoadFieldSubstring(GrapaCursor& cursor, const GrapaCHAR& fi
 	result.Append(length);
 	
 	return 0;
+}
+
+// Caching configuration methods
+void GrapaDBX::SetCachingMode(CachingMode mode)
+{
+	mCachingMode = mode;
+	if (mode == CACHE_DISABLED) {
+		DisableCaching();
+	} else if (mode == CACHE_ENABLED) {
+		EnableCaching();
+	}
+}
+
+void GrapaDBX::SetCacheSize(u64 size)
+{
+	mCacheSize = size;
+	if (IsCachingEnabled()) {
+		mTree.SetCache(size);
+	}
+}
+
+bool GrapaDBX::IsCachingEnabled() const
+{
+	return mCachingMode != CACHE_DISABLED;
+}
+
+GrapaError GrapaDBX::EnableCaching()
+{
+	mCachingMode = CACHE_ENABLED;
+	return mTree.SetCache(mCacheSize);
+}
+
+GrapaError GrapaDBX::DisableCaching()
+{
+	mCachingMode = CACHE_DISABLED;
+	return mTree.SetCache(0);  // Set cache size to 0 to disable
+}
+
+// Implement SetSearch for GrapaDBXCursor
+void GrapaDBXCursor::SetSearch(GrapaDBX* pDb, u64 pTreeRef, bool pUsingIndex, GrapaDBXFieldValueArray* pData)
+{
+	mTreeRef = pTreeRef;
+	mUsingIndex = pUsingIndex;
+	mData = pData;
+	mValueType = GrapaDBX::SEARCH_ITEM; // Fixed scope
+}
+
+// Index helper methods - same interface as GrapaDB
+GrapaError GrapaDBX::LocateIndex(GrapaCursor& cursor, u64 indexRef, u64 fieldId)
+{
+	GrapaError err;
+	GrapaCursor indexCursor;
+	GrapaCursor indexField;
+	u64 indexFieldsRef;
+
+	cursor.Set(indexRef);
+	err = First(cursor);
+	if (!err && cursor.mKey==0)
+		err = Next(cursor);
+	while (!err)
+	{
+		indexCursor.Set(cursor.mValue);
+		err = GetTreeIndex(indexCursor,indexFieldsRef);
+		if (err) return(err);
+		if (indexFieldsRef==0) return(-1);
+		indexField.Set(indexFieldsRef);
+		err = First(indexField);
+		if ((!err) && (indexField.mValue == fieldId))
+		{
+			return(0);
+		}
+		err = Next(cursor);
+		if (!err && cursor.mKey==0)
+			err = Next(cursor);
+	}
+	return((GrapaError)-1);
+}
+
+bool GrapaDBX::IndexHasField(GrapaCursor& cursor, u64 fieldId)
+{
+	GrapaError err;
+	GrapaCursor indexCursor;
+	GrapaCursor indexField;
+	u64 indexFieldsRef;
+
+	indexCursor.Set(cursor.mValue);
+	err = GetTreeIndex(indexCursor,indexFieldsRef);
+	if (err) return(false);
+	indexField.Set(indexFieldsRef);
+	err = First(indexField);
+	while(!err)
+	{
+		if (indexField.mValue == fieldId)
+			return(true);
+		err = Next(indexField);
+	}
+	return(false);
+}
+
+// Debug functions for index validation and testing
+void GrapaDBX::DebugPrintIndexPointerAndRecord(u64 tableRef, u64 key)
+{
+    u64 indexRef = 0;
+    GrapaCursor indexCursor;
+    GrapaError err;
+    u64 weight, recWeight;
+    
+    // Get index tree reference
+    indexCursor.Set(tableRef);
+    err = GetTreeIndex(indexCursor, indexRef);
+    if (err || indexRef == 0) {
+        printf("DEBUG: Could not find index tree for tableRef=%llu\n", tableRef);
+        return;
+    }
+    
+    // Search for the RPTR_ITEM with the given key
+    GrapaCursor ptrCursor;
+    ptrCursor.Set(indexRef, RPTR_ITEM, key);
+    err = Search(ptrCursor);
+    if (err) {
+        printf("DEBUG: Could not find RPTR_ITEM for key=%llu in indexRef=%llu\n", key, indexRef);
+        return;
+    }
+    
+    DumpGetItemWeight(ptrCursor, weight);
+    printf("DEBUG: RPTR_ITEM: value=%llu key=%llu node=(%llu,%d) weight=%llu\n", 
+           ptrCursor.mValue, ptrCursor.mKey, ptrCursor.mNodeRef, ptrCursor.mNodeIndex, weight);
+    
+    // Convert pointer to record
+    GrapaCursor recCursor = ptrCursor;
+    err = PtrToRec(ptrCursor, recCursor);
+    if (err) {
+        printf("DEBUG: PtrToRec failed for key=%llu (err=%lld)\n", key, (long long)err);
+        return;
+    }
+    DumpGetItemWeight(recCursor, recWeight);
+    printf("DEBUG: RREC: value=%llu key=%llu node=(%llu,%d) weight=%llu\n", 
+           recCursor.mValue, recCursor.mKey, recCursor.mNodeRef, recCursor.mNodeIndex, recWeight);
+}
+
+void GrapaDBX::DebugPrintAllIndexPointers(u64 tableRef) {
+    u64 indexRef = 0;
+    GrapaCursor indexCursor;
+    GrapaError err;
+    
+    indexCursor.Set(tableRef);
+    err = GetTreeIndex(indexCursor, indexRef);
+    if (err || indexRef == 0) {
+        printf("DEBUG: Could not find index tree for tableRef=%llu\n", tableRef);
+        return;
+    }
+    
+    GrapaCursor ptrCursor;
+    ptrCursor.Set(indexRef);
+    err = First(ptrCursor);
+    int count = 0;
+    
+    while (!err) {
+        printf("DEBUG: Index entry: valueType=%d key=%llu value=%llu node=(%llu,%d)\n",
+               ptrCursor.mValueType, ptrCursor.mKey, ptrCursor.mValue, ptrCursor.mNodeRef, ptrCursor.mNodeIndex);
+        count++;
+        err = Next(ptrCursor);
+    }
+    printf("DEBUG: Total index entries: %d\n", count);
+}
+
+// Debug utility methods
+GrapaError GrapaDBX::DumpGetItemWeight(GrapaCursor& cursor, u64& weight)
+{
+    // For now, return a default weight of 1
+    // This can be enhanced later to get actual weight from the cursor
+    weight = 1;
+    return(0);
 }
 
