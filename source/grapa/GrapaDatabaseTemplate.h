@@ -10,7 +10,7 @@
 #include "GrapaDatabase.h"
 #include "GrapaState.h"
 #include "GrapaDB.h"
-#include "GrapaDB2.h"
+#include "GrapaDBX.h"
 #include "GrapaNet.h"
 
 /* Forward declarations */
@@ -90,9 +90,9 @@ private:
     u64 mGrapaDBFirstTree;       /* First tree reference for GrapaDB */
     u8 mGrapaDBRootType;         /* Root tree type for GrapaDB */
     
-    GrapaGroup2* mGrapaDB2;      /* GrapaGroup2 instance for database operations */
-            u64 mGrapaDB2FirstTree;      /* First tree reference for GrapaDB2 */
-        u8 mGrapaDB2RootType;        /* Root tree type for GrapaDB2 */
+    GrapaGroup2* mGrapaDBX;      /* GrapaGroup2 instance for database operations */
+            u64 mGrapaDBXFirstTree;      /* First tree reference for GrapaDBX */
+        u8 mGrapaDBXRootType;        /* Root tree type for GrapaDBX */
     
     				/* Network storage members */
 				GrapaNet* mNetwork;          /* Network connection for remote storage */
@@ -117,10 +117,10 @@ private:
 				/* Thread safety - using existing GrapaThread mechanisms */
     
 public:
-    				            GrapaUnifiedLocalDatabase(GrapaScriptState* pTokenState) : GrapaLocalDatabase(pTokenState), mGrapaDB(NULL), mGrapaDBFirstTree(0), mGrapaDBRootType(0), mGrapaDB2(NULL), mGrapaDB2FirstTree(0), mGrapaDB2RootType(0), mNetwork(NULL), mNetworkConnected(false), mMaxWorkers(16) {}
+    				            GrapaUnifiedLocalDatabase(GrapaScriptState* pTokenState) : GrapaLocalDatabase(pTokenState), mGrapaDB(NULL), mGrapaDBFirstTree(0), mGrapaDBRootType(0), mGrapaDBX(NULL), mGrapaDBXFirstTree(0), mGrapaDBXRootType(0), mNetwork(NULL), mNetworkConnected(false), mMaxWorkers(16) {}
         virtual ~GrapaUnifiedLocalDatabase() {
             if (mGrapaDB) { mGrapaDB->CloseFile(); delete mGrapaDB; mGrapaDB = NULL; }
-            if (mGrapaDB2) { mGrapaDB2->CloseFile(); delete mGrapaDB2; mGrapaDB2 = NULL; }
+            if (mGrapaDBX) { mGrapaDBX->CloseFile(); delete mGrapaDBX; mGrapaDBX = NULL; }
             if (mNetwork) { delete mNetwork; mNetwork = NULL; }
         }
     
@@ -151,9 +151,9 @@ public:
     virtual u64 GetGrapaDBFirstTree() { return mGrapaDBFirstTree; }
     virtual u8 GetGrapaDBRootType() { return mGrapaDBRootType; }
     
-    virtual GrapaGroup2* GetGrapaDB2() { return mGrapaDB2; }
-    virtual u64 GetGrapaDB2FirstTree() { return mGrapaDB2FirstTree; }
-    virtual u8 GetGrapaDB2RootType() { return mGrapaDB2RootType; }
+    virtual GrapaGroup2* GetGrapaDBX() { return mGrapaDBX; }
+    virtual u64 GetGrapaDBXFirstTree() { return mGrapaDBXFirstTree; }
+    virtual u8 GetGrapaDBXRootType() { return mGrapaDBXRootType; }
     
     /* Network storage accessors */
     virtual GrapaNet* GetNetwork() { return mNetwork; }
@@ -170,8 +170,8 @@ public:
     virtual GrapaError GrapaDBFindRecord(const GrapaCHAR& recordName, GrapaDBTable& table, GrapaCursor& cursor);
     
     /* GrapaDB2-specific helper methods - moved to public for library access */
-    	virtual GrapaError GrapaDB2NavigateToTable(const GrapaCHAR& tableName, GrapaDB2Table& table);
-	virtual GrapaError GrapaDB2FindRecord(const GrapaCHAR& recordName, GrapaDB2Table& table, GrapaDB2Cursor& cursor);
+    	        virtual GrapaError GrapaDBXNavigateToTable(const GrapaCHAR& tableName, GrapaDBXTable& table);
+        virtual GrapaError GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaDBXCursor& cursor);
     
     /* Parallel processing support - moved to public for library access */
     virtual GrapaError GetOptimalWorkerCount(const GrapaCHAR& operation, s64 dataSize);
@@ -200,7 +200,7 @@ protected:
     /* Storage type-specific implementations */
     virtual GrapaError FileSystemOperation(const GrapaCHAR& operation, const GrapaCHAR& params);
     virtual GrapaError GrapaDBOperation(const GrapaCHAR& operation, const GrapaCHAR& params);
-    virtual GrapaError GrapaDB2Operation(const GrapaCHAR& operation, const GrapaCHAR& params);
+    virtual GrapaError GrapaDBXOperation(const GrapaCHAR& operation, const GrapaCHAR& params);
     virtual GrapaError NetworkOperation(const GrapaCHAR& operation, const GrapaCHAR& params);
     virtual GrapaError CloudOperation(const GrapaCHAR& operation, const GrapaCHAR& params);
     
@@ -227,7 +227,7 @@ public:
     enum StorageType {
         FILESYSTEM = 0,
         GRAPADB = 1,
-        GRAPADB2 = 2,
+        GRAPADBX = 2,
         NETWORK = 3,
         MEMORY = 4,
         CLOUD = 5

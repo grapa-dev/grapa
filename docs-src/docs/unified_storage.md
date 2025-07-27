@@ -26,8 +26,8 @@ The unified storage system supports the following storage types:
 - **Use Case**: Traditional Grapa database operations
 - **Features**: ROW, COL, and GROUP database types with hierarchical navigation
 
-### GrapaDB2 Storage
-- **Protocol**: `grapadb2://`
+### GrapaDBX Storage
+- **Protocol**: `grapadbx://`
 - **Use Case**: Enhanced Grapa database operations (under development)
 - **Features**: Improved index system and enhanced performance (basic operations working, full hierarchical navigation in progress)
 
@@ -57,7 +57,7 @@ u = $unified();
 /* Specify storage type via URL */
 u.create("file:///path/to/files");
 u.create("grapadb:///path/to/database");
-u.create("grapadb2:///path/to/database2");
+u.create("grapadbx:///path/to/database2");
 u.create("network://https://example.com");
 u.create("memory://temp_data");
 u.create("cloud://bucket-name");
@@ -122,11 +122,11 @@ u.set("user1", 1001, "id");
 u.set("user1", "John Doe", "name");
 ```
 
-### GrapaDB2 Storage
+### GrapaDBX Storage
 
 ```grapa
 u = $unified();
-u.create("grapadb2:///path/to/database2");
+u.create("grapadbx:///path/to/database2");
 
 /* Database operations (basic functionality working) */
 u.mk("users", "GROUP");
@@ -138,7 +138,7 @@ u.set("user1", "John Doe", "name");
 value = u.get("user1", "name");
 ```
 
-**Note**: GrapaDB2 is under active development. Basic operations (mk, set, get) are working, but full hierarchical navigation and advanced features are still in progress.
+**Note**: GrapaDBX is under active development. Basic operations (mk, set, get) are working, but full hierarchical navigation and advanced features are still in progress.
 
 ### Network Storage
 
@@ -209,7 +209,7 @@ if (result.error != 0) {
 
 - **File System**: Best for large files and parallel operations
 - **GrapaDB**: Best for structured data with hierarchical relationships
-- **GrapaDB2**: Enhanced performance and improved index system (under development)
+- **GrapaDBX**: Enhanced performance and improved index system (under development)
 - **Network**: Best for web data and API access
 - **Memory**: Best for temporary data and high-speed access
 - **Cloud**: Best for distributed storage and backup
@@ -227,12 +227,12 @@ if (result.error != 0) {
 The unified interface makes it easy to migrate between storage types:
 
 ```grapa
-/* Migrate from GrapaDB to GrapaDB2 */
+/* Migrate from GrapaDB to GrapaDBX */
 old_db = $unified();
 old_db.create("grapadb:///old/database");
 
 new_db = $unified();
-new_db.create("grapadb2:///new/database");
+new_db.create("grapadbx:///new/database");
 
 /* Copy data */
 records = old_db.ls();

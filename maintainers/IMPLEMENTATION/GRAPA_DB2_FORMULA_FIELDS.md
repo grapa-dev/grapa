@@ -7,7 +7,7 @@ tags:
   - computed-fields
 ---
 
-# GrapaDB2 Formula Fields Implementation
+# GrapaDBX Formula Fields Implementation
 
 ## 🚨 **AGENT CONTEXT**
 
@@ -26,7 +26,7 @@ tags:
 
 ## Overview
 
-GrapaDB2 implements a **Formula Field System** that allows storing and executing Grapa code as database fields. This system provides the foundation for computed fields, derived values, and dynamic calculations within the database.
+GrapaDBX implements a **Formula Field System** that allows storing and executing Grapa code as database fields. This system provides the foundation for computed fields, derived values, and dynamic calculations within the database.
 
 ## Design Philosophy
 
@@ -39,7 +39,7 @@ The formula field system follows the same elegant simplicity as the core Grapa l
 
 ### Formula Field Structure
 
-The `GrapaDB2Field` structure has been extended to support formula fields:
+The `GrapaDBXField` structure has been extended to support formula fields:
 
 ```cpp
 struct {
@@ -79,7 +79,7 @@ struct GrapaCompressHeader {
 
 **`CreateFormulaField()`**: Creates a new field with formula reference
 ```cpp
-GrapaError GrapaDB2::CreateFormulaField(GrapaDB2Table& pTable, 
+GrapaError GrapaDBX::CreateFormulaField(GrapaDBXTable& pTable, 
                                        const GrapaCHAR& pFieldName, 
                                        const GrapaCHAR& pFormulaText, 
                                        u8 pResultType)
@@ -92,10 +92,10 @@ GrapaError GrapaDB2::CreateFormulaField(GrapaDB2Table& pTable,
     err = StoreFormulaText(formulaRef, pFormulaText);
     
     // 3. Create the field with formula reference
-    GrapaDB2Field field;
-    field.Init(GetNextFieldId(), pResultType, GrapaDB2Field::STORE_VAR, 32, 8);
+    GrapaDBXField field;
+    field.Init(GetNextFieldId(), pResultType, GrapaDBXField::STORE_VAR, 32, 8);
     field.mFormulaRef = formulaRef;
-    field.mFormulaType = GrapaDB2Field::FORMULA_TEXT;
+    field.mFormulaType = GrapaDBXField::FORMULA_TEXT;
     field.mTableRef = pTable.mRef;
     
     // 4. Store the field in the table
@@ -105,7 +105,7 @@ GrapaError GrapaDB2::CreateFormulaField(GrapaDB2Table& pTable,
 
 **`GetFormulaText()`**: Retrieves and decompresses formula text
 ```cpp
-GrapaError GrapaDB2::GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText)
+GrapaError GrapaDBX::GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText)
 {
     // 1. Get the compressed formula data
     u64 returnSize = 0;
@@ -129,7 +129,7 @@ GrapaError GrapaDB2::GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText)
 
 **`StoreFormulaText()`**: Compresses and stores formula text
 ```cpp
-GrapaError GrapaDB2::StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormulaText)
+GrapaError GrapaDBX::StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormulaText)
 {
     // 1. Prepare the formula data for compression
     GrapaBYTE compressed;
@@ -146,10 +146,10 @@ GrapaError GrapaDB2::StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormula
 
 **`ExecuteFormula()`**: Executes formula with parameters (Phase 1 placeholder)
 ```cpp
-GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, 
+GrapaError GrapaDBX::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, 
                                    const GrapaCHAR& pParams, GrapaCHAR& pResult)
 {
-    if (pFormulaType == GrapaDB2Field::FORMULA_TEXT) {
+    if (pFormulaType == GrapaDBXField::FORMULA_TEXT) {
         // 1. Get the formula text
         GrapaCHAR formulaText;
         GrapaError err = GetFormulaText(pFormulaRef, formulaText);
@@ -170,7 +170,7 @@ GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType,
 Formula fields are fully integrated into the endian safety system:
 
 ```cpp
-void GrapaDB2Field::BigEndian()
+void GrapaDBXField::BigEndian()
 {
     // ... existing fields ...
     mFormulaRef = BE_S64(mFormulaRef);
@@ -185,10 +185,10 @@ void GrapaDB2Field::BigEndian()
 1. **Complete Formula Execution**:
    ```cpp
    // Enhanced ExecuteFormula with actual compilation
-   GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, 
+   GrapaError GrapaDBX::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, 
                                       const GrapaCHAR& pParams, GrapaCHAR& pResult)
    {
-       if (pFormulaType == GrapaDB2Field::FORMULA_TEXT) {
+       if (pFormulaType == GrapaDBXField::FORMULA_TEXT) {
            // 1. Get the formula text
            GrapaCHAR formulaText;
            GetFormulaText(pFormulaRef, formulaText);
@@ -337,7 +337,7 @@ Formula fields are fully endian-safe:
 
 ## Conclusion
 
-The GrapaDB2 Formula Field System provides a solid foundation for computed fields and dynamic calculations. Phase 1 delivers efficient storage and retrieval using the proven GrapaCompress format, while Phase 2 will add high-performance execution capabilities.
+The GrapaDBX Formula Field System provides a solid foundation for computed fields and dynamic calculations. Phase 1 delivers efficient storage and retrieval using the proven GrapaCompress format, while Phase 2 will add high-performance execution capabilities.
 
 The implementation follows Grapa's design philosophy of simplicity and elegance, building on the foundation of `@<[op,8],{}>` execution trees and leveraging existing systems like GrapaCompress and BTree storage.
 
@@ -345,7 +345,7 @@ The implementation follows Grapa's design philosophy of simplicity and elegance,
 
 ## Related Documentation
 
-- [GrapaDB2 Development Status](DEVELOPMENT/CURRENT_STATUS.md)
+- [GrapaDBX Development Status](DEVELOPMENT/CURRENT_STATUS.md)
 - [GrapaCompress Format](GRAPA_COMPRESS.md)
 - [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md)
 - [Execution Trees](EXECUTION_TREES.md)

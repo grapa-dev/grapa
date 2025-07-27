@@ -1,8 +1,8 @@
-// GrapaDB2.cpp
+// GrapaDBX.cpp
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "GrapaDB2.h"
+#include "GrapaDBX.h"
 #include "GrapaMem.h"
 #include "GrapaCompress.h"
 #include "GrapaState.h"
@@ -15,69 +15,69 @@
 #define NAME_INDEX_FIELD_NAME_ID 1
 
 #define NAME_FIELD_TYPE GrapaTokenType::STR
-#define NAME_FIELD_STORE GrapaDB2Field::STORE_FIX
+#define NAME_FIELD_STORE GrapaDBXField::STORE_FIX
 #define NAME_FIELD_SIZE 256
 #define NAME_FIELD_GROW 0
 
 #define VALUE_FIELD_TYPE GrapaTokenType::RAW
-#define VALUE_FIELD_STORE GrapaDB2Field::STORE_VAR
+#define VALUE_FIELD_STORE GrapaDBXField::STORE_VAR
 #define VALUE_FIELD_SIZE 32
 #define VALUE_FIELD_GROW 8
 
-// GrapaDB2 implementation - inherits from GrapaBtree
-GrapaDB2::GrapaDB2() : GrapaBtree()
+// GrapaDBX implementation - inherits from GrapaBtree
+GrapaDBX::GrapaDBX() : GrapaBtree()
 {
 	mDumpFile = NULL;
 }
 
-GrapaDB2::GrapaDB2(GrapaFile* pFile) : GrapaBtree()
+GrapaDBX::GrapaDBX(GrapaFile* pFile) : GrapaBtree()
 {
 	mDumpFile = NULL;
 	INIT(pFile);
 }
 
-GrapaDB2::~GrapaDB2()
+GrapaDBX::~GrapaDBX()
 {
 }
 
-void GrapaDB2::INIT(GrapaFile* pFile)
+void GrapaDBX::INIT(GrapaFile* pFile)
 {
 	SetFile(pFile);
 }
 
 // Core database operations - delegate to GrapaBtree for now (placeholder implementation)
-GrapaError GrapaDB2::Create(const char *pFileName, u8 treeType, u64& firstTree)
+GrapaError GrapaDBX::Create(const char *pFileName, u8 treeType, u64& firstTree)
 {
-	printf("[DEBUG] GrapaDB2::Create called with fileName='%s', treeType=%d\n", pFileName, treeType);
+	printf("[DEBUG] GrapaDBX::Create called with fileName='%s', treeType=%d\n", pFileName, treeType);
 	/* Placeholder implementation - GrapaBtree::Create only takes fileName */
 	firstTree = 1; /* Default first tree */
 	GrapaError err = GrapaBtree::Create(pFileName);
-	printf("[DEBUG] GrapaDB2::Create result: %d, firstTree=%llu\n", err, firstTree);
+	printf("[DEBUG] GrapaDBX::Create result: %d, firstTree=%llu\n", err, firstTree);
 	return err;
 }
 
-GrapaError GrapaDB2::CreateRoot(u8 treeType, u64& firstTree)
+GrapaError GrapaDBX::CreateRoot(u8 treeType, u64& firstTree)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have CreateRoot */
 	firstTree = 1; /* Default first tree */
 	return 0;
 }
 
-GrapaError GrapaDB2::OpenFile(const char *fileName, char mode)
+GrapaError GrapaDBX::OpenFile(const char *fileName, char mode)
 {
-	printf("[DEBUG] GrapaDB2::OpenFile called with fileName='%s', mode='%c'\n", fileName, mode);
+	printf("[DEBUG] GrapaDBX::OpenFile called with fileName='%s', mode='%c'\n", fileName, mode);
 	GrapaError err = GrapaBtree::OpenFile(fileName, mode);
-	printf("[DEBUG] GrapaDB2::OpenFile result: %d, FileOpened()=%s\n", err, FileOpened() ? "YES" : "NO");
+	printf("[DEBUG] GrapaDBX::OpenFile result: %d, FileOpened()=%s\n", err, FileOpened() ? "YES" : "NO");
 	return err;
 }
 
-u64 GrapaDB2::RootTree(u8& pRootType)
+u64 GrapaDBX::RootTree(u8& pRootType)
 {
 	/* Delegate to GrapaBtree for now */
 	return GrapaBtree::RootTree(pRootType);
 }
 
-u64 GrapaDB2::RootTree(GrapaCHAR& pRootType)
+u64 GrapaDBX::RootTree(GrapaCHAR& pRootType)
 {
 	/* Delegate to GrapaBtree for now */
 	u8 rootType;
@@ -92,26 +92,26 @@ u64 GrapaDB2::RootTree(GrapaCHAR& pRootType)
 	return rootTree;
 }
 
-GrapaError GrapaDB2::CloseFile()
+GrapaError GrapaDBX::CloseFile()
 {
 	return GrapaBtree::CloseFile();
 }
 
 // Table operations - placeholder implementation since GrapaBtree doesn't have these methods
-GrapaError GrapaDB2::LastTableId(u64 firstTree, u64& pTableId)
+GrapaError GrapaDBX::LastTableId(u64 firstTree, u64& pTableId)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have LastTableId */
 	pTableId = 0;
 	return 0;
 }
 
-GrapaError GrapaDB2::CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, GrapaDB2Table& pTable)
+GrapaError GrapaDBX::CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, GrapaDBXTable& pTable)
 {
 	GrapaError err;
 	GrapaCursor tableNames,tableNamesDT;
-	GrapaDB2Field dbField;
-	GrapaDB2Index dbIndex;
-	GrapaDB2Table parentDict;
+	GrapaDBXField dbField;
+	GrapaDBXIndex dbIndex;
+	GrapaDBXTable parentDict;
 
 	pTable.mId = pTableId;
 	pTable.mRef = 0;
@@ -181,12 +181,12 @@ GrapaError GrapaDB2::CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, Grap
 	return(0);
 }
 
-GrapaError GrapaDB2::OpenTable(u64 firstTree, u64 pTableId, GrapaDB2Table& pTable)
+GrapaError GrapaDBX::OpenTable(u64 firstTree, u64 pTableId, GrapaDBXTable& pTable)
 {
 	GrapaError err;
 	GrapaCursor tableCursor,indexTableCursor,indexCursor;
-	GrapaDB2Table dictTable;
-	GrapaDB2FieldValueArray data;
+	GrapaDBXTable dictTable;
+	GrapaDBXFieldValueArray data;
 	u64 indexRef;
 
 	pTable.mId = pTableId;
@@ -215,13 +215,13 @@ GrapaError GrapaDB2::OpenTable(u64 firstTree, u64 pTableId, GrapaDB2Table& pTabl
 	return(0);
 }
 
-GrapaError GrapaDB2::DeleteTable(u64 firstTree, u64 pTableId)
+GrapaError GrapaDBX::DeleteTable(u64 firstTree, u64 pTableId)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have DeleteTable */
 	return 0;
 }
 
-GrapaError GrapaDB2::CreateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDB2Table& pTable)
+GrapaError GrapaDBX::CreateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDBXTable& pTable)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have CreateAlias */
 	pTable.mRef = pTableId;
@@ -230,14 +230,14 @@ GrapaError GrapaDB2::CreateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFi
 	return 0;
 }
 
-GrapaError GrapaDB2::UpdateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDB2Table& pTable)
+GrapaError GrapaDBX::UpdateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDBXTable& pTable)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have UpdateAlias */
 	return 0;
 }
 
 // Field operations - placeholder implementation since GrapaBtree doesn't have these methods
-GrapaError GrapaDB2::CreateTableField(GrapaDB2Table& pTable, GrapaDB2Field& pField, const GrapaCHAR& pName)
+GrapaError GrapaDBX::CreateTableField(GrapaDBXTable& pTable, GrapaDBXField& pField, const GrapaCHAR& pName)
 {
 	/* Simplified implementation for GrapaDB2 - just store the field info */
 	// For now, just return success without doing the complex GrapaDB field management
@@ -245,40 +245,40 @@ GrapaError GrapaDB2::CreateTableField(GrapaDB2Table& pTable, GrapaDB2Field& pFie
 	return 0;
 }
 
-GrapaError GrapaDB2::OpenTableField(GrapaDB2Table& pTable, u64 pFieldId, GrapaDB2Field& pField)
+GrapaError GrapaDBX::OpenTableField(GrapaDBXTable& pTable, u64 pFieldId, GrapaDBXField& pField)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have OpenTableField */
 	pField.mId = pFieldId;
 	return 0;
 }
 
-GrapaError GrapaDB2::OpenTableFieldList(GrapaDB2Table& pTable, GrapaDB2FieldArray& pFieldList)
+GrapaError GrapaDBX::OpenTableFieldList(GrapaDBXTable& pTable, GrapaDBXFieldArray& pFieldList)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have OpenTableFieldList */
 	return 0;
 }
 
-GrapaError GrapaDB2::DeleteTableField(GrapaDB2Table& pTable, u64 pFieldId)
+GrapaError GrapaDBX::DeleteTableField(GrapaDBXTable& pTable, u64 pFieldId)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have DeleteTableField */
 	return 0;
 }
 
-GrapaError GrapaDB2::FlushTableFields(GrapaDB2Table& pTable)
+GrapaError GrapaDBX::FlushTableFields(GrapaDBXTable& pTable)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have FlushTableFields */
 	return 0;
 }
 
 // Record operations - placeholder implementation since GrapaBtree doesn't have these methods
-GrapaError GrapaDB2::FindFreeRecordId(GrapaDB2Table& pTable, u64& pRecordId)
+GrapaError GrapaDBX::FindFreeRecordId(GrapaDBXTable& pTable, u64& pRecordId)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have FindFreeRecordId */
 	pRecordId = 1;
 	return 0;
 }
 
-GrapaError GrapaDB2::CreateRecord(GrapaDB2Table& pTable, GrapaCursor& pCursor)
+GrapaError GrapaDBX::CreateRecord(GrapaDBXTable& pTable, GrapaCursor& pCursor)
 {
 	GrapaError err;
 	u64 newTree;
@@ -299,14 +299,14 @@ GrapaError GrapaDB2::CreateRecord(GrapaDB2Table& pTable, GrapaCursor& pCursor)
 	return(0);
 }
 
-GrapaError GrapaDB2::DeleteRecord(GrapaDB2Table& pTable, GrapaCursor& pCursor)
+GrapaError GrapaDBX::DeleteRecord(GrapaDBXTable& pTable, GrapaCursor& pCursor)
 {
 	/* Placeholder implementation - GrapaBtree doesn't have DeleteRecord */
 	return 0;
 }
 
 // Field value operations - placeholder implementation since GrapaBtree doesn't have these methods
-GrapaError GrapaDB2::SetRecordField(GrapaCursor& pCursor, GrapaDB2FieldValueArray& pFieldList)
+GrapaError GrapaDBX::SetRecordField(GrapaCursor& pCursor, GrapaDBXFieldValueArray& pFieldList)
 {
 	/* Enhanced implementation using GrapaBtree's SetDataValue */
 	/* Store all field values in the record */
@@ -320,7 +320,7 @@ GrapaError GrapaDB2::SetRecordField(GrapaCursor& pCursor, GrapaDB2FieldValueArra
 	/* Calculate total size needed for all fields */
 	u64 totalSize = 0;
 	for (s32 i = 0; i < fieldCount; i++) {
-		GrapaDB2FieldValue* dbFieldValue = pFieldList.GetFieldAt(i);
+		GrapaDBXFieldValue* dbFieldValue = pFieldList.GetFieldAt(i);
 		if (dbFieldValue) {
 			totalSize += dbFieldValue->mValue.GetSize() + sizeof(u64); // value + size prefix
 		}
@@ -346,7 +346,7 @@ GrapaError GrapaDB2::SetRecordField(GrapaCursor& pCursor, GrapaDB2FieldValueArra
 	/* Store all field values */
 	u64 currentOffset = 0;
 	for (s32 i = 0; i < fieldCount; i++) {
-		GrapaDB2FieldValue* dbFieldValue = pFieldList.GetFieldAt(i);
+		GrapaDBXFieldValue* dbFieldValue = pFieldList.GetFieldAt(i);
 		if (!dbFieldValue) continue;
 		
 		u64 valueSize = dbFieldValue->mValue.GetSize();
@@ -385,7 +385,7 @@ GrapaError GrapaDB2::SetRecordField(GrapaCursor& pCursor, GrapaDB2FieldValueArra
 	return 0;
 }
 
-GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, u64 pFieldId, GrapaBYTE& pValue)
+GrapaError GrapaDBX::GetRecordField(GrapaCursor& pCursor, u64 pFieldId, GrapaBYTE& pValue)
 {
 	/* For now, use a simple placeholder implementation */
 	/* In a real implementation, this would retrieve the actual field value */
@@ -398,7 +398,7 @@ GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, u64 pFieldId, GrapaBYT
 	return(0);
 }
 
-GrapaError GrapaDB2::GetDataTypeRecord(u64 tableRef, u64& tableDT)
+GrapaError GrapaDBX::GetDataTypeRecord(u64 tableRef, u64& tableDT)
 {
 	/* For now, use a simple placeholder implementation */
 	/* In a real implementation, this would retrieve the dictionary tree reference */
@@ -411,7 +411,7 @@ GrapaError GrapaDB2::GetDataTypeRecord(u64 tableRef, u64& tableDT)
 	return(0);
 }
 
-GrapaError GrapaDB2::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCursor& recCursor, GrapaDB2Field& field)
+GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCursor& recCursor, GrapaDBXField& field)
 {
 	GrapaError err;
 	u64 tableRef;
@@ -488,7 +488,7 @@ GrapaError GrapaDB2::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 	return(err);
 }
 
-GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, GrapaBYTE& pValue)
+GrapaError GrapaDBX::GetRecordField(GrapaCursor& pCursor, GrapaDBXField& field, GrapaBYTE& pValue)
 {
 	/* Proper BTree-based implementation following GrapaDB pattern */
 	GrapaError err;
@@ -558,7 +558,7 @@ GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, 
 		/* Group tree - handle based on storage type */
 		switch (field.mStore)
 		{
-		case GrapaDB2Field::STORE_FIX:
+		case GrapaDBXField::STORE_FIX:
 			if (field.mDictSize == 1)
 			{
 				err = GetDataValue(dataRef, field.mDictOffset, 1, (char*)h, &returnSize);
@@ -579,8 +579,8 @@ GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, 
 			}
 			break;
 			
-		case GrapaDB2Field::STORE_VAR:
-		case GrapaDB2Field::STORE_PAR:
+		case GrapaDBXField::STORE_VAR:
+		case GrapaDBXField::STORE_PAR:
 			err = GetDataValue(dataRef, field.mDictOffset, sizeof(dataPtr), (char*)&dataPtr, &returnSize);
 			if (!err && dataPtr)
 			{
@@ -596,7 +596,7 @@ GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, 
 		/* Row table tree - similar to group but with row-specific handling */
 		switch (field.mStore)
 		{
-		case GrapaDB2Field::STORE_FIX:
+		case GrapaDBXField::STORE_FIX:
 			if (field.mDictSize == 1)
 			{
 				err = GetDataValue(dataRef, field.mDictOffset, 1, (char*)h, &returnSize);
@@ -617,8 +617,8 @@ GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, 
 			}
 			break;
 			
-		case GrapaDB2Field::STORE_VAR:
-		case GrapaDB2Field::STORE_PAR:
+		case GrapaDBXField::STORE_VAR:
+		case GrapaDBXField::STORE_PAR:
 			err = GetDataValue(dataRef, field.mDictOffset, sizeof(dataPtr), (char*)&dataPtr, &returnSize);
 			if (!err && dataPtr)
 			{
@@ -634,7 +634,7 @@ GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, 
 		/* Column table tree - column-specific handling */
 		switch (field.mStore)
 		{
-		case GrapaDB2Field::STORE_FIX:
+		case GrapaDBXField::STORE_FIX:
 			if (field.mDictSize == 1)
 			{
 				err = GetDataValue(dataRef, field.mDictOffset, 1, (char*)h, &returnSize);
@@ -655,8 +655,8 @@ GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, 
 			}
 			break;
 			
-		case GrapaDB2Field::STORE_VAR:
-		case GrapaDB2Field::STORE_PAR:
+		case GrapaDBXField::STORE_VAR:
+		case GrapaDBXField::STORE_PAR:
 			err = GetDataValue(dataRef, field.mDictOffset, sizeof(dataPtr), (char*)&dataPtr, &returnSize);
 			if (!err && dataPtr)
 			{
@@ -689,32 +689,32 @@ GrapaError GrapaDB2::GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, 
 }
 
 // Placeholder implementations for virtual methods
-GrapaError GrapaDB2::CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult)
+GrapaError GrapaDBX::CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult)
 {
 	/* Placeholder implementation */
 	pResult = 0;
 	return 0;
 }
 
-GrapaError GrapaDB2::GetDataValue(u64 itemPtr, u64 offset, u64 length, char* data, u64* returnSize)
+GrapaError GrapaDBX::GetDataValue(u64 itemPtr, u64 offset, u64 length, char* data, u64* returnSize)
 {
 	/* Delegate to parent GrapaBtree implementation */
 	return GrapaBtree::GetDataValue(itemPtr, offset, length, data, returnSize);
 }
 
-GrapaError GrapaDB2::SetDataValue(u64 itemPtr, u64 offset, u64 length, const char* data)
+GrapaError GrapaDBX::SetDataValue(u64 itemPtr, u64 offset, u64 length, const char* data)
 {
 	/* Delegate to parent GrapaBtree implementation */
 	return GrapaBtree::SetDataValue(itemPtr, offset, length, (void*)data);
 }
 
-GrapaError GrapaDB2::GetDataSize(u64 itemPtr, u64 growBlockSize, u64& dataSize, u64& dataLength, u8& compressType)
+GrapaError GrapaDBX::GetDataSize(u64 itemPtr, u64 growBlockSize, u64& dataSize, u64& dataLength, u8& compressType)
 {
 	/* Delegate to parent GrapaBtree implementation */
 	return GrapaBtree::GetDataSize(itemPtr, growBlockSize, dataSize, dataLength, compressType);
 }
 
-GrapaError GrapaDB2::GetData(u64 itemPtr, GrapaCHAR& pValue)
+GrapaError GrapaDBX::GetData(u64 itemPtr, GrapaCHAR& pValue)
 {
 	/* Implement using BTree methods */
 	u64 dataSize = 0, dataLength = 0;
@@ -742,7 +742,7 @@ GrapaError GrapaDB2::GetData(u64 itemPtr, GrapaCHAR& pValue)
 	return 0;
 }
 
-GrapaError GrapaDB2::CreateIndex(GrapaDB2Table& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDB2Index& pIndex)
+GrapaError GrapaDBX::CreateIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDBXIndex& pIndex)
 {
 	/* Basic BTree-based index creation */
 	// TODO: Implement full index creation with proper BTree operations
@@ -752,7 +752,7 @@ GrapaError GrapaDB2::CreateIndex(GrapaDB2Table& pTable, u64 pIndexId, GrapaDU64A
 	return 0;
 }
 
-GrapaError GrapaDB2::OpenIndex(GrapaDB2Table& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDB2Index& pIndex)
+GrapaError GrapaDBX::OpenIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDBXIndex& pIndex)
 {
 	/* Basic index opening */
 	// TODO: Implement full index opening with BTree operations
@@ -762,21 +762,21 @@ GrapaError GrapaDB2::OpenIndex(GrapaDB2Table& pTable, u64 pIndexId, GrapaDU64Arr
 	return 0;
 }
 
-GrapaError GrapaDB2::DeleteIndex(GrapaDB2Table& pTable, u64 pIndexId)
+GrapaError GrapaDBX::DeleteIndex(GrapaDBXTable& pTable, u64 pIndexId)
 {
 	/* Basic index deletion */
 	// TODO: Implement full index deletion with BTree operations
 	return 0;
 }
 
-GrapaError GrapaDB2::RefreshIndex(GrapaDB2Index& pIndex)
+GrapaError GrapaDBX::RefreshIndex(GrapaDBXIndex& pIndex)
 {
 	/* Basic index refresh */
 	// TODO: Implement full index refresh with BTree operations
 	return 0;
 }
 
-GrapaError GrapaDB2::FindFreeIndexId(GrapaDB2Index& pIndex, u64 pMinId, u64& pIndexId)
+GrapaError GrapaDBX::FindFreeIndexId(GrapaDBXIndex& pIndex, u64 pMinId, u64& pIndexId)
 {
 	/* Simple index ID allocation */
 	// TODO: Implement proper BTree-based ID tracking
@@ -784,42 +784,42 @@ GrapaError GrapaDB2::FindFreeIndexId(GrapaDB2Index& pIndex, u64 pMinId, u64& pIn
 	return 0;
 }
 
-GrapaError GrapaDB2::SearchDb(GrapaCursor& pCursor, GrapaDB2Table& pTable, GrapaDB2FieldValueArray& pFieldList)
+GrapaError GrapaDBX::SearchDb(GrapaCursor& pCursor, GrapaDBXTable& pTable, GrapaDBXFieldValueArray& pFieldList)
 {
 	/* Basic database search */
 	// TODO: Implement full search with BTree operations and field matching
 	return 0;
 }
 
-GrapaError GrapaDB2::FirstDb(GrapaCursor& pCursor)
+GrapaError GrapaDBX::FirstDb(GrapaCursor& pCursor)
 {
 	/* Get first record in database */
 	// TODO: Implement full first record retrieval with BTree operations
 	return 0;
 }
 
-GrapaError GrapaDB2::LastDb(GrapaCursor& pCursor)
+GrapaError GrapaDBX::LastDb(GrapaCursor& pCursor)
 {
 	/* Get last record in database */
 	// TODO: Implement full last record retrieval with BTree operations
 	return 0;
 }
 
-GrapaError GrapaDB2::NextDb(GrapaCursor& pCursor)
+GrapaError GrapaDBX::NextDb(GrapaCursor& pCursor)
 {
 	/* Get next record in database */
 	// TODO: Implement full next record retrieval with BTree operations
 	return 0;
 }
 
-GrapaError GrapaDB2::PrevDb(GrapaCursor& pCursor)
+GrapaError GrapaDBX::PrevDb(GrapaCursor& pCursor)
 {
 	/* Get previous record in database */
 	// TODO: Implement full previous record retrieval with BTree operations
 	return 0;
 }
 
-GrapaError GrapaDB2::DumpTree(u64 pTreeRef, GrapaFile* pDumpFile)
+GrapaError GrapaDBX::DumpTree(u64 pTreeRef, GrapaFile* pDumpFile)
 {
 	GrapaError err = 0;
 	GrapaFile *oldDumpFile = mDumpFile;
@@ -840,7 +840,7 @@ GrapaError GrapaDB2::DumpTree(u64 pTreeRef, GrapaFile* pDumpFile)
 }
 
 // Dump helper methods - placeholder implementations
-GrapaError GrapaDB2::DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tableId, u64 firstTree)
+GrapaError GrapaDBX::DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tableId, u64 firstTree)
 {
 	GrapaError err=0;
 	GrapaCursor cursor;
@@ -916,7 +916,7 @@ GrapaError GrapaDB2::DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tab
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	char leadbuf[201];
 
@@ -967,14 +967,14 @@ GrapaError GrapaDB2::DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor&
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sSU64 key=%llu value=%llu\n",leader,cursor.mKey,cursor.mValue);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	u64 weight;
 	/* Get real weight from BTree */
@@ -1024,7 +1024,7 @@ GrapaError GrapaDB2::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	char leadbuf[201];
 	u64 weight;
@@ -1047,7 +1047,7 @@ GrapaError GrapaDB2::DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaCurs
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	u64 weight;
 	/* Get real weight from BTree */
@@ -1066,7 +1066,7 @@ GrapaError GrapaDB2::DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	u64 weight;
 	/* Get real weight from BTree */
@@ -1085,7 +1085,7 @@ GrapaError GrapaDB2::DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	char leadbuf[201];
 	strcpy(leadbuf,leader);
@@ -1098,10 +1098,10 @@ GrapaError GrapaDB2::DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCurs
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	GrapaError err = 0;
-	GrapaDB2Field dbField;
+	GrapaDBXField dbField;
 	char nameBlock[201];
 	u64 growBlockSize, dataSize, dataLength, returnLen;
 	u8 compressType=0;
@@ -1168,7 +1168,7 @@ GrapaError GrapaDB2::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cu
 
 
 
-GrapaError GrapaDB2::DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
 {
 	GrapaError err;
 	u64 tableRef,tableDT;
@@ -1194,13 +1194,13 @@ GrapaError GrapaDB2::DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor
 ////////////////////////////////////////////////////////////////////////////////
 
 // GrapaGroup2 implementation - inherits from GrapaDB2
-GrapaGroup2::GrapaGroup2() : GrapaDB2()
+GrapaGroup2::GrapaGroup2() : GrapaDBX()
 {
 	mRootTable = 0;
 	mRootType = 0;
 }
 
-GrapaGroup2::GrapaGroup2(GrapaFile* pFile) : GrapaDB2(pFile)
+GrapaGroup2::GrapaGroup2(GrapaFile* pFile) : GrapaDBX(pFile)
 {
 	mRootTable = 0;
 	mRootType = 0;
@@ -1239,11 +1239,11 @@ GrapaError GrapaGroup2::OpenFile(const GrapaCHAR& fileName, char mode)
 {
 	GrapaError err = 0;
 	mCritical.WaitCritical();
-	err = GrapaDB2::OpenFile((const char*)fileName.mBytes, mode);
+	err = GrapaDBX::OpenFile((const char*)fileName.mBytes, mode);
 	mRootTable = RootTree(mRootType);
 	if (mRootType == GROUP_TREE)
 	{
-		GrapaDB2Table parentDict;
+		GrapaDBXTable parentDict;
 		err = OpenTable(mRootTable, 0, parentDict);
 		if (!err)
 		{
@@ -1258,7 +1258,7 @@ GrapaError GrapaGroup2::OpenFile(const GrapaCHAR& fileName, char mode)
 GrapaError GrapaGroup2::CloseFile()
 {
 	mCritical.WaitCritical();
-	GrapaError err = GrapaDB2::CloseFile();
+	GrapaError err = GrapaDBX::CloseFile();
 	mRootTable = 0;
 	mRootType = 0;
 	mCritical.LeaveCritical();
@@ -1270,10 +1270,10 @@ GrapaError GrapaGroup2::CreateGroup(u64 parentTree, u8 parentType, GrapaCHAR pTa
 {
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
-	GrapaDB2Table newTable;
-	GrapaDB2FieldValueArray data;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXTable newTable;
+	GrapaDBXFieldValueArray data;
 
 	pNewTree = 0;
 
@@ -1335,7 +1335,7 @@ GrapaError GrapaGroup2::CreateGroup(u64 parentTree, u8 parentType, GrapaCHAR pTa
 	}
 
 	{
-		GrapaDB2FieldValueArray data2;
+		GrapaDBXFieldValueArray data2;
 		data2.Append(this, parentDict, nameId, pTableName, EQ_CMP);
 		err = SetRecordField(cursor, data2);
 		if (err)
@@ -1364,10 +1364,10 @@ GrapaError GrapaGroup2::OpenGroup(u64 parentTree, u8 parentType, const GrapaCHAR
 {
 
 	GrapaError err;
-	GrapaDB2FieldValueArray data;
-	GrapaDB2Table parentDict;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table table;
+	GrapaDBXFieldValueArray data;
+	GrapaDBXTable parentDict;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable table;
 
 	pNewTree = 0;
 	pNewType = 0;
@@ -1434,8 +1434,8 @@ GrapaError GrapaGroup2::OpenGroup(u64 parentTree, u8 parentType, u64 pId, u64& p
 {
 
 	GrapaError err;
-	GrapaDB2Table parentDict;
-	GrapaDB2Table table;
+	GrapaDBXTable parentDict;
+	GrapaDBXTable table;
 
 	pNewTree = 0;
 	pNewType = 0;
@@ -1473,8 +1473,8 @@ GrapaError GrapaGroup2::OpenGroup(u64 parentTree, u8 parentType, u64 pId, u64& p
 	err = GetNameId(parentTree, parentType, nameId);
 	if (!err && nameId)
 	{
-		GrapaDB2Cursor cursor;
-		GrapaDB2FieldValueArray data;
+		GrapaDBXCursor cursor;
+		GrapaDBXFieldValueArray data;
 		data.Append(this, parentDict, nameId, "", EQ_CMP);
 		err = SearchDb(cursor, parentDict, data);
 		if (!err)
@@ -1496,9 +1496,9 @@ GrapaError GrapaGroup2::CreateEntry(u64 parentTree, u8 parentType, const GrapaCH
 {
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
-	GrapaDB2FieldValueArray data;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXFieldValueArray data;
 
 	pId = 0;
 
@@ -1547,7 +1547,7 @@ GrapaError GrapaGroup2::CreateEntry(u64 parentTree, u8 parentType, const GrapaCH
 	pId = cursor.mKey;
 
 	{
-		GrapaDB2FieldValueArray data2;
+		GrapaDBXFieldValueArray data2;
 		data2.Append(this, parentDict, nameId, pDataName, EQ_CMP);
 		err = SetRecordField(cursor, data2);
 		if (err)
@@ -1563,9 +1563,9 @@ GrapaError GrapaGroup2::FindEntry(u64 parentTree, u8 parentType, const GrapaCHAR
 {
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
-	GrapaDB2FieldValueArray data;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXFieldValueArray data;
 
 	pId = 0;
 
@@ -1613,9 +1613,9 @@ GrapaError GrapaGroup2::DeleteEntry(u64 parentTree, u8 parentType, const GrapaCH
 {
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
-	GrapaDB2FieldValueArray data;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXFieldValueArray data;
 
 	if (pDataName.mLength == 0 || pDataName.mBytes == NULL)
 	{
@@ -1665,8 +1665,8 @@ GrapaError GrapaGroup2::DeleteEntry(u64 parentTree, u8 parentType, u64 pId)
 {
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
 
 	parentDict.mRef = parentTree;
 	parentDict.mRecRef = parentTree;
@@ -1706,10 +1706,10 @@ GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 {
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
-	GrapaDB2Field dbFieldName;
-	GrapaDB2Index dbIndexName;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXField dbFieldName;
+	GrapaDBXIndex dbIndexName;
 	u64 indexRef;
 	u64 fieldId;
 
@@ -1758,7 +1758,7 @@ GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 		return(-1);
 	}
 
-	GrapaDB2FieldValueArray data;
+	GrapaDBXFieldValueArray data;
 	data.Append(this, parentDict, nameId, pFieldName, EQ_CMP);
 	err = SearchDb(cursor, parentDict, data);
 	if (!err)
@@ -1782,7 +1782,7 @@ GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 	}
 
 	{
-		GrapaDB2FieldValueArray data2;
+		GrapaDBXFieldValueArray data2;
 		data2.Append(this, parentDict, nameId, pFieldName, EQ_CMP);
 		err = SetRecordField(cursor, data2);
 		if (err)
@@ -1798,9 +1798,9 @@ GrapaError GrapaGroup2::DeleteField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 {
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
-	GrapaDB2FieldValueArray data;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXFieldValueArray data;
 
 	if (pFieldName.mLength == 0 || pFieldName.mBytes == NULL)
 	{
@@ -1859,10 +1859,10 @@ GrapaError GrapaGroup2::GetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 		pFieldNameX.mBytes ? (char*)pFieldNameX.mBytes : "NULL");
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
-	GrapaDB2Field dbFieldName, dbFieldValue;
-	GrapaDB2Index dbIndexName;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXField dbFieldName, dbFieldValue;
+	GrapaDBXIndex dbIndexName;
 	u64 indexRef;
 	u64 dataId;
     GrapaCHAR fldName(pFieldNameX);
@@ -1950,7 +1950,7 @@ GrapaError GrapaGroup2::GetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 	else
 	{
 		printf("[DEBUG] GetField: About to call FindField for field '%s'\n", fldName.mBytes ? (char*)fldName.mBytes : "NULL");
-		GrapaDB2Field field;
+		GrapaDBXField field;
 		u64 maxId;
 		err = FindField(parentTree, parentType, fldName, field, maxId);
 		if (err)
@@ -1978,10 +1978,10 @@ GrapaError GrapaGroup2::GetField(u64 parentTree, u8 parentType, u64 pId, const G
 {
 
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
-	GrapaDB2Field dbFieldName, dbFieldValue;
-	GrapaDB2Index dbIndexName;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXField dbFieldName, dbFieldValue;
+	GrapaDBXIndex dbIndexName;
 	u64 indexRef;
     GrapaCHAR fldName(pFieldNameX);
     
@@ -2046,7 +2046,7 @@ GrapaError GrapaGroup2::GetField(u64 parentTree, u8 parentType, u64 pId, const G
 	}
 	else
 	{
-		GrapaDB2Field field;
+		GrapaDBXField field;
 		u64 maxId;
 		err = FindField(parentTree, parentType, fldName, field, maxId);
 		if (err)
@@ -2069,8 +2069,8 @@ GrapaError GrapaGroup2::DumpGroup(u64 parentTree, u8 parentType, u64 pId, GrapaF
 {
 
 	GrapaError err;
-	GrapaDB2Table parentDict;
-	GrapaDB2Cursor cursor;
+	GrapaDBXTable parentDict;
+	GrapaDBXCursor cursor;
 
 	parentDict.mRef = parentTree;
 	parentDict.mRecRef = parentTree;
@@ -2106,15 +2106,15 @@ GrapaError GrapaGroup2::DumpGroup(u64 parentTree, u8 parentType, u64 pId, GrapaF
 
 GrapaError GrapaGroup2::SetField(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, const GrapaCHAR& pFieldNameX, const GrapaBYTE& pDataValue)
 {
-	/* Simplified implementation for GrapaDB2 */
+	/* Simplified implementation for GrapaDBX */
 	/* This bypasses the complex GrapaGroup logic and directly stores data */
 	
 	printf("[DEBUG] GrapaGroup2::SetField called with parentTree=%llu, parentType=%d\n", parentTree, parentType);
 	printf("[DEBUG] Data name: %s, Field name: %s\n", (char*)pDataName.mBytes, (char*)pFieldNameX.mBytes);
 	
 	GrapaError err;
-	GrapaDB2Cursor cursor;
-	GrapaDB2Table parentDict;
+	GrapaDBXCursor cursor;
+	GrapaDBXTable parentDict;
 	
 	/* Basic validation */
 	if (pDataName.mLength == 0 || pDataName.mBytes == NULL)
@@ -2149,8 +2149,8 @@ GrapaError GrapaGroup2::SetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 	printf("[DEBUG] Created cursor with mTreeRef=%llu, mValue=%llu\n", cursor.mTreeRef, cursor.mValue);
 	
 	/* Create a field value array with the data */
-	GrapaDB2FieldValueArray data;
-	GrapaDB2FieldValue fieldValue;
+	GrapaDBXFieldValueArray data;
+	GrapaDBXFieldValue fieldValue;
 	fieldValue.mValue = pDataValue;
 	printf("[DEBUG] About to call data.Append\n");
 	data.Append(this, parentDict, 1, fieldValue.mValue, 0); /* Use field ID 1 for simplicity */
@@ -2169,13 +2169,13 @@ GrapaError GrapaGroup2::SetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 	return(0);
 }
 
-GrapaDB2FieldArray* GrapaGroup2::ListFields(u64 parentTree, u8 parentType)
+GrapaDBXFieldArray* GrapaGroup2::ListFields(u64 parentTree, u8 parentType)
 {
 
 	GrapaError err;
-	GrapaDB2Table parentDict;
-	GrapaDB2Cursor cursor;
-	GrapaDB2FieldArray* pFieldList = new GrapaDB2FieldArray();
+	GrapaDBXTable parentDict;
+	GrapaDBXCursor cursor;
+	GrapaDBXFieldArray* pFieldList = new GrapaDBXFieldArray();
 
 	parentDict.mRef = parentTree;
 	parentDict.mRecRef = parentTree;
@@ -2200,13 +2200,13 @@ GrapaDB2FieldArray* GrapaGroup2::ListFields(u64 parentTree, u8 parentType)
 	return(pFieldList);
 }
 
-GrapaError GrapaGroup2::FindField(u64 parentTree, u8 parentType, const GrapaCHAR& pFieldNameX, GrapaDB2Field& pField, u64& pMaxId)
+GrapaError GrapaGroup2::FindField(u64 parentTree, u8 parentType, const GrapaCHAR& pFieldNameX, GrapaDBXField& pField, u64& pMaxId)
 {
 
 	GrapaError err;
-	GrapaDB2Table parentDict;
-	GrapaDB2Cursor cursor;
-	GrapaDB2FieldValueArray data;
+	GrapaDBXTable parentDict;
+	GrapaDBXCursor cursor;
+	GrapaDBXFieldValueArray data;
     GrapaCHAR fldName(pFieldNameX);
 
 	pMaxId = 0;
@@ -2316,9 +2316,9 @@ GrapaGroup2Event* GrapaGroup2Queue::Create(const GrapaCHAR& fileName, GrapaFile*
 	e = new GrapaGroup2Event(fileName, pFile);
 	if (e) {
 		u64 firstTree;
-		u8 type = GrapaDB2::GROUP_TREE;
-		if (pType.StrCmp("ROW") == 0) type = GrapaDB2::RTABLE_TREE;
-		else if (pType.StrCmp("COL") == 0) type = GrapaDB2::CTABLE_TREE;
+		u8 type = GrapaDBX::GROUP_TREE;
+		if (pType.StrCmp("ROW") == 0) type = GrapaDBX::RTABLE_TREE;
+		else if (pType.StrCmp("COL") == 0) type = GrapaDBX::CTABLE_TREE;
 		e->mValue.Create((char*)fileName.mBytes, type, firstTree);
 		PushTail((GrapaEvent*)e);
 	}
@@ -2341,13 +2341,13 @@ void GrapaGroup2Queue::CloseFile(GrapaGroup2Event* pEvent)
 // GrapaDB2 Data Structure Method Implementations
 ////////////////////////////////////////////////////////////////////////////////
 
-// GrapaDB2Field implementations
-GrapaDB2Field::GrapaDB2Field()
+// GrapaDBXField implementations
+GrapaDBXField::GrapaDBXField()
 {
-	memset(this, 0, sizeof(GrapaDB2Field));
+	memset(this, 0, sizeof(GrapaDBXField));
 }
 
-void GrapaDB2Field::Init(u64 pFieldId, u8 pType, u8 pStore, u64 pSize, u64 pGrow)
+void GrapaDBXField::Init(u64 pFieldId, u8 pType, u8 pStore, u64 pSize, u64 pGrow)
 {
 	mId = pFieldId;
 	mType = pType;
@@ -2365,7 +2365,7 @@ void GrapaDB2Field::Init(u64 pFieldId, u8 pType, u8 pStore, u64 pSize, u64 pGrow
 	memset(mReserved2, 0, sizeof(mReserved2));
 }
 
-void GrapaDB2Field::BigEndian()
+void GrapaDBXField::BigEndian()
 {
 	mId = BE_S64(mId);
 	mRef = BE_S64(mRef);
@@ -2380,40 +2380,40 @@ void GrapaDB2Field::BigEndian()
 	// mFormulaType is u8, no endian conversion needed
 }
 
-void* GrapaDB2Field::GetPtr()
+void* GrapaDBXField::GetPtr()
 {
 	return (void*)this;
 }
 
-u16 GrapaDB2Field::GetSize()
+u16 GrapaDBXField::GetSize()
 {
-	return sizeof(GrapaDB2Field);
+	return sizeof(GrapaDBXField);
 }
 
-GrapaError GrapaDB2Field::Write(GrapaDB2 *pDb, u64 fieldRef)
+GrapaError GrapaDBXField::Write(GrapaDBX *pDb, u64 fieldRef)
 {
 	// Write field data to database using GrapaBtree operations
 	if (!pDb || fieldRef == 0) return -1;
 	
 	BigEndian();  // Convert to big-endian for storage
-	GrapaError err = pDb->SetDataValue(fieldRef, 0, sizeof(GrapaDB2Field), (const char*)this);
+	GrapaError err = pDb->SetDataValue(fieldRef, 0, sizeof(GrapaDBXField), (const char*)this);
 	BigEndian();  // Convert back to native endian
 	return err;
 }
 
-GrapaError GrapaDB2Field::Read(GrapaDB2 *pDb, u64 fieldRef)
+GrapaError GrapaDBXField::Read(GrapaDBX *pDb, u64 fieldRef)
 {
 	// Read field data from database using GrapaBtree operations
 	if (!pDb || fieldRef == 0) return -1;
 	
 	// Read the field structure from the database
 	u64 returnSize = 0;
-	GrapaError err = pDb->GetDataValue(fieldRef, 0, sizeof(GrapaDB2Field), (char*)this, &returnSize);
+	GrapaError err = pDb->GetDataValue(fieldRef, 0, sizeof(GrapaDBXField), (char*)this, &returnSize);
 	BigEndian();  // Convert from big-endian to native endian
 	return err;
 }
 
-GrapaError GrapaDB2Field::Get(GrapaDB2 *pDb, u64 tableRef, u64 fieldId)
+GrapaError GrapaDBXField::Get(GrapaDBX *pDb, u64 tableRef, u64 fieldId)
 {
 	// Get field from table - simplified implementation
 	if (!pDb || tableRef == 0) return -1;
@@ -2424,23 +2424,23 @@ GrapaError GrapaDB2Field::Get(GrapaDB2 *pDb, u64 tableRef, u64 fieldId)
 	return 0;
 }
 
-// GrapaDB2FieldArray implementations
-GrapaDB2FieldArray::~GrapaDB2FieldArray()
+// GrapaDBXFieldArray implementations
+GrapaDBXFieldArray::~GrapaDBXFieldArray()
 {
 	// Clean up any allocated resources
 	// GrapaVoidArray handles most cleanup automatically
 }
 
-GrapaError GrapaDB2FieldArray::Append(GrapaDB2 *pDb, GrapaDB2Table& pTable, u64 pFieldId)
+GrapaError GrapaDBXFieldArray::Append(GrapaDBX *pDb, GrapaDBXTable& pTable, u64 pFieldId)
 {
 	// Append field to array - simplified implementation
 	if (!pDb) return -1;
 	
 	// Create a new field and add it to the array
-	GrapaDB2Field* newField = new GrapaDB2Field();
+	GrapaDBXField* newField = new GrapaDBXField();
 	if (!newField) return -1;
 	
-	newField->Init(pFieldId, GrapaTokenType::STR, GrapaDB2Field::STORE_VAR, 32, 8);
+	newField->Init(pFieldId, GrapaTokenType::STR, GrapaDBXField::STORE_VAR, 32, 8);
 	newField->mRef = pTable.mRef;
 	
 	// Add to the array using base class method
@@ -2448,7 +2448,7 @@ GrapaError GrapaDB2FieldArray::Append(GrapaDB2 *pDb, GrapaDB2Table& pTable, u64 
 	return 0;
 }
 
-GrapaError GrapaDB2FieldArray::Append(GrapaDB2Field *pField)
+GrapaError GrapaDBXFieldArray::Append(GrapaDBXField *pField)
 {
 	// Append field to array
 	if (!pField) return -1;
@@ -2458,33 +2458,33 @@ GrapaError GrapaDB2FieldArray::Append(GrapaDB2Field *pField)
 	return 0;
 }
 
-// GrapaDB2FieldValue implementations
-void GrapaDB2FieldValue::BigEndian()
+// GrapaDBXFieldValue implementations
+void GrapaDBXFieldValue::BigEndian()
 {
-	GrapaDB2Field::BigEndian();
+	GrapaDBXField::BigEndian();
 	mValue.mLength = BE_S64(mValue.mLength);
 	mValue.mSize = BE_S64(mValue.mSize);
 	mCmp = BE_S16(mCmp);
 }
 
-// GrapaDB2FieldValueArray implementations
-GrapaDB2FieldValueArray::~GrapaDB2FieldValueArray()
+// GrapaDBXFieldValueArray implementations
+GrapaDBXFieldValueArray::~GrapaDBXFieldValueArray()
 {
 	// Clean up any allocated resources
 	// GrapaVoidArray handles most cleanup automatically
 }
 
-GrapaError GrapaDB2FieldValueArray::Append(GrapaDB2 *pDb, GrapaDB2Table& pTable, u64 pFieldId, const GrapaBYTE& pValue, s16 pCmp)
+GrapaError GrapaDBXFieldValueArray::Append(GrapaDBX *pDb, GrapaDBXTable& pTable, u64 pFieldId, const GrapaBYTE& pValue, s16 pCmp)
 {
 	// Append field value to array - simplified implementation
 	if (!pDb) return -1;
 	
 	// Create a new field value and add it to the array
-	GrapaDB2FieldValue* newFieldValue = new GrapaDB2FieldValue();
+	GrapaDBXFieldValue* newFieldValue = new GrapaDBXFieldValue();
 	if (!newFieldValue) return -1;
 	
 	// Initialize the field value
-	newFieldValue->Init(pFieldId, GrapaTokenType::STR, GrapaDB2Field::STORE_VAR, 32, 8);
+	newFieldValue->Init(pFieldId, GrapaTokenType::STR, GrapaDBXField::STORE_VAR, 32, 8);
 	newFieldValue->mValue = pValue;
 	newFieldValue->mCmp = pCmp;
 	newFieldValue->mRef = pTable.mRef;
@@ -2494,7 +2494,7 @@ GrapaError GrapaDB2FieldValueArray::Append(GrapaDB2 *pDb, GrapaDB2Table& pTable,
 	return 0;
 } 
 
-GrapaError GrapaDB2::DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
 {
 	GrapaError err;
 	u64 tableRef,tableDT;
@@ -2514,11 +2514,11 @@ GrapaError GrapaDB2::DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaCursor& curs
 	return DumpTheStructure(dbWrite,itemCursor,tableDT);
 }
 
-GrapaError GrapaDB2::DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u64 tableDT)
+GrapaError GrapaDBX::DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u64 tableDT)
 {
 	GrapaError err;
 	GrapaCursor dataTypeCursor;
-	GrapaDB2Field dbField;
+	GrapaDBXField dbField;
 	GrapaBYTE dbChar;
 
 	/* For now, use placeholder implementation since we don't have full BTree implementation */
@@ -2527,7 +2527,7 @@ GrapaError GrapaDB2::DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u
 	return(0);
 }
 
-GrapaError GrapaDB2::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
+GrapaError GrapaDBX::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 {
 	/* Convert pointer cursor to record cursor */
 	/* For now, use placeholder implementation since we don't have full BTree implementation */
@@ -2535,7 +2535,7 @@ GrapaError GrapaDB2::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	GrapaError err;
 	GrapaBlockDataHeader dataHeader;
@@ -2580,7 +2580,7 @@ GrapaError GrapaDB2::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCurs
 	return(0);
 }
 
-GrapaError GrapaDB2::DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
 {
 	/* Dump group record - recursively dump the tree */
 	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sGREC [weight: %d]", leader, 0);
@@ -2588,7 +2588,7 @@ GrapaError GrapaDB2::DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaCurs
 	return DumpTheTree(dbWrite, leader, 0, cursor.mValue);
 }
 
-GrapaError GrapaDB2::DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
+GrapaError GrapaDBX::DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
 {
 	GrapaError err;
 	u64 tableRef,tableDT;
@@ -2608,8 +2608,8 @@ GrapaError GrapaDB2::DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor
 	return DumpTheStructure(dbWrite,itemCursor,tableDT);
 }
 
-// GrapaDB2Table BigEndian implementation
-void GrapaDB2Table::BigEndian()
+// GrapaDBXTable BigEndian implementation
+void GrapaDBXTable::BigEndian()
 {
 	mDictField.BigEndian();
 	mId = BE_S64(mId);
@@ -2617,8 +2617,8 @@ void GrapaDB2Table::BigEndian()
 	mRecRef = BE_S64(mRecRef);
 }
 
-// GrapaDB2Index BigEndian implementation
-void GrapaDB2Index::BigEndian()
+// GrapaDBXIndex BigEndian implementation
+void GrapaDBXIndex::BigEndian()
 {
 	mTable.BigEndian();
 	mId = BE_S64(mId);
@@ -2626,7 +2626,7 @@ void GrapaDB2Index::BigEndian()
 }
 
 // Formula field operations - new functionality for GrapaDB2
-GrapaError GrapaDB2::CreateFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType)
+GrapaError GrapaDBX::CreateFormulaField(GrapaDBXTable& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType)
 {
 	GrapaError err;
 	
@@ -2640,10 +2640,10 @@ GrapaError GrapaDB2::CreateFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& 
 	if (err) return err;
 	
 	// 3. Create the field with formula reference
-	GrapaDB2Field field;
-	field.Init(GetNextFieldId(), pResultType, GrapaDB2Field::STORE_VAR, 32, 8);
+	GrapaDBXField field;
+	field.Init(GetNextFieldId(), pResultType, GrapaDBXField::STORE_VAR, 32, 8);
 	field.mFormulaRef = formulaRef;
-	field.mFormulaType = GrapaDB2Field::FORMULA_TEXT;
+	field.mFormulaType = GrapaDBXField::FORMULA_TEXT;
 	field.mTableRef = pTable.mRef;
 	
 	// 4. Store the field in the table
@@ -2651,7 +2651,7 @@ GrapaError GrapaDB2::CreateFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& 
 	return err;
 }
 
-GrapaError GrapaDB2::CreateCompiledFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType)
+GrapaError GrapaDBX::CreateCompiledFormulaField(GrapaDBXTable& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType)
 {
 	GrapaError err;
 	
@@ -2670,10 +2670,10 @@ GrapaError GrapaDB2::CreateCompiledFormulaField(GrapaDB2Table& pTable, const Gra
 	if (err) return err;
 	
 	// 4. Create the field with compiled formula reference
-	GrapaDB2Field field;
-	field.Init(GetNextFieldId(), pResultType, GrapaDB2Field::STORE_VAR, 32, 8);
+	GrapaDBXField field;
+	field.Init(GetNextFieldId(), pResultType, GrapaDBXField::STORE_VAR, 32, 8);
 	field.mFormulaRef = formulaRef;
-	field.mFormulaType = GrapaDB2Field::FORMULA_OP;  // Use compiled $OP type
+	field.mFormulaType = GrapaDBXField::FORMULA_OP;  // Use compiled $OP type
 	field.mTableRef = pTable.mRef;
 	
 	// 5. Store the field in the table
@@ -2681,7 +2681,7 @@ GrapaError GrapaDB2::CreateCompiledFormulaField(GrapaDB2Table& pTable, const Gra
 	return err;
 }
 
-GrapaError GrapaDB2::GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText)
+GrapaError GrapaDBX::GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText)
 {
 	if (pFormulaRef == 0) return -1;
 	
@@ -2708,7 +2708,7 @@ GrapaError GrapaDB2::GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText)
 	return 0;
 }
 
-GrapaError GrapaDB2::StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormulaText)
+GrapaError GrapaDBX::StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormulaText)
 {
 	if (pFormulaRef == 0) return -1;
 	
@@ -2726,14 +2726,14 @@ GrapaError GrapaDB2::StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormula
 	return err;
 }
 
-GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const GrapaCHAR& pParams, GrapaCHAR& pResult)
+GrapaError GrapaDBX::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const GrapaCHAR& pParams, GrapaCHAR& pResult)
 {
 	if (pFormulaRef == 0) return -1;
 	
 	GrapaError err = 0;
 	
 	switch (pFormulaType) {
-		case GrapaDB2Field::FORMULA_TEXT: {
+		case GrapaDBXField::FORMULA_TEXT: {
 			// 1. Get the formula text
 			GrapaCHAR formulaText;
 			err = GetFormulaText(pFormulaRef, formulaText);
@@ -2741,7 +2741,7 @@ GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const Grap
 			
 			// 2. Parse parameters to get cursor and table info
 			GrapaCursor cursor;
-			GrapaDB2Table table;
+			GrapaDBXTable table;
 			err = ParseFormulaParams(pParams, cursor, table);
 			if (err) return err;
 			
@@ -2761,7 +2761,7 @@ GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const Grap
 			return err;
 		}
 		
-		case GrapaDB2Field::FORMULA_OP: {
+		case GrapaDBXField::FORMULA_OP: {
 			// 1. Get the compiled $OP formula
 			GrapaCHAR compiledFormula;
 			err = GetFormulaText(pFormulaRef, compiledFormula);
@@ -2769,7 +2769,7 @@ GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const Grap
 			
 			// 2. Parse parameters to get cursor and table info
 			GrapaCursor cursor;
-			GrapaDB2Table table;
+			GrapaDBXTable table;
 			err = ParseFormulaParams(pParams, cursor, table);
 			if (err) return err;
 			
@@ -2795,7 +2795,7 @@ GrapaError GrapaDB2::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const Grap
 }
 
 // Helper method to allocate formula storage
-GrapaError GrapaDB2::AllocateFormulaStorage(u64& pFormulaRef)
+GrapaError GrapaDBX::AllocateFormulaStorage(u64& pFormulaRef)
 {
 	// For now, use a simple allocation strategy
 	// TODO: Implement proper BTree-based allocation
@@ -2805,7 +2805,7 @@ GrapaError GrapaDB2::AllocateFormulaStorage(u64& pFormulaRef)
 }
 
 // Helper method to get next field ID
-u64 GrapaDB2::GetNextFieldId()
+u64 GrapaDBX::GetNextFieldId()
 {
 	/* BTree-based field ID allocation */
 	// For now, use a simple counter approach
@@ -2815,7 +2815,7 @@ u64 GrapaDB2::GetNextFieldId()
 }
 
 // Context-aware record environment for formula execution
-GrapaRuleEvent* GrapaDB2::CreateRecordContext(GrapaCursor& cursor, GrapaDB2Table& table)
+GrapaRuleEvent* GrapaDBX::CreateRecordContext(GrapaCursor& cursor, GrapaDBXTable& table)
 {
 	GrapaRuleEvent* context = new GrapaRuleEvent();
 	context->mValue.mToken = GrapaTokenType::LIST;
@@ -2863,7 +2863,7 @@ GrapaRuleEvent* GrapaDB2::CreateRecordContext(GrapaCursor& cursor, GrapaDB2Table
 
 // Formula execution helper methods implementation
 
-GrapaError GrapaDB2::ParseFormulaParams(const GrapaCHAR& pParams, GrapaCursor& cursor, GrapaDB2Table& table)
+GrapaError GrapaDBX::ParseFormulaParams(const GrapaCHAR& pParams, GrapaCursor& cursor, GrapaDBXTable& table)
 {
 	// Parse parameters to extract cursor and table information
 	// For now, use simple parsing - this can be enhanced later
@@ -2909,7 +2909,7 @@ GrapaError GrapaDB2::ParseFormulaParams(const GrapaCHAR& pParams, GrapaCursor& c
 	return 0;
 }
 
-GrapaError GrapaDB2::ExecuteFormulaWithContext(const GrapaCHAR& formulaText, GrapaRuleEvent* context, GrapaCHAR& result)
+GrapaError GrapaDBX::ExecuteFormulaWithContext(const GrapaCHAR& formulaText, GrapaRuleEvent* context, GrapaCHAR& result)
 {
 	// Execute formula text with context-aware record environment
 	// This uses Grapa's dynamic code execution capabilities
@@ -2931,7 +2931,7 @@ GrapaError GrapaDB2::ExecuteFormulaWithContext(const GrapaCHAR& formulaText, Gra
 	return 0;
 }
 
-GrapaError GrapaDB2::ExecuteCompiledFormula(const GrapaCHAR& compiledFormula, GrapaRuleEvent* context, GrapaCHAR& result)
+GrapaError GrapaDBX::ExecuteCompiledFormula(const GrapaCHAR& compiledFormula, GrapaRuleEvent* context, GrapaCHAR& result)
 {
 	// Execute compiled $OP formula with context-aware record environment
 	// This is more efficient than text-based execution
@@ -2953,7 +2953,7 @@ GrapaError GrapaDB2::ExecuteCompiledFormula(const GrapaCHAR& compiledFormula, Gr
 	return 0;
 }
 
-GrapaError GrapaDB2::CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula)
+GrapaError GrapaDBX::CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula)
 {
 	// Compile formula text to $OP format for efficient execution
 	// This uses Grapa's compilation capabilities
@@ -2974,7 +2974,7 @@ GrapaError GrapaDB2::CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR&
 	return 0;
 }
 
-GrapaError GrapaDB2::StoreCompiledFormula(u64 pFormulaRef, const GrapaCHAR& compiledFormula)
+GrapaError GrapaDBX::StoreCompiledFormula(u64 pFormulaRef, const GrapaCHAR& compiledFormula)
 {
 	// Store compiled formula in the database
 	// This uses the same storage mechanism as text formulas
@@ -2982,7 +2982,7 @@ GrapaError GrapaDB2::StoreCompiledFormula(u64 pFormulaRef, const GrapaCHAR& comp
 	return StoreFormulaText(pFormulaRef, compiledFormula);
 }
 
-GrapaError GrapaDB2::RecordGetField(GrapaCursor& cursor, const GrapaCHAR& fieldName, GrapaBYTE& result)
+GrapaError GrapaDBX::RecordGetField(GrapaCursor& cursor, const GrapaCHAR& fieldName, GrapaBYTE& result)
 {
 	// Look up field by name
 	u64 fieldId;
@@ -2993,7 +2993,7 @@ GrapaError GrapaDB2::RecordGetField(GrapaCursor& cursor, const GrapaCHAR& fieldN
 	return GetRecordField(cursor, fieldId, result);
 }
 
-GrapaError GrapaDB2::RecordGetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
+GrapaError GrapaDBX::RecordGetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
                                           u64 offset, u64 length, GrapaCHAR& operation, GrapaBYTE& result)
 {
 	// Handle large fields with streaming operations
@@ -3007,7 +3007,7 @@ GrapaError GrapaDB2::RecordGetFieldPartial(GrapaCursor& cursor, const GrapaCHAR&
 	return RecordGetField(cursor, fieldName, result);
 }
 
-GrapaError GrapaDB2::GetFieldIdByName(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64& fieldId)
+GrapaError GrapaDBX::GetFieldIdByName(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64& fieldId)
 {
 	// For now, use a simplified approach since we don't have GetTable method
 	// TODO: Implement proper table lookup from cursor
@@ -3019,7 +3019,7 @@ GrapaError GrapaDB2::GetFieldIdByName(GrapaCursor& cursor, const GrapaCHAR& fiel
 	return 0;
 }
 
-GrapaError GrapaDB2::StreamingGrep(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
+GrapaError GrapaDBX::StreamingGrep(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
                                   u64 offset, u64 length, GrapaBYTE& result)
 {
 	const u64 BUFFER_SIZE = 8192;  // 8KB chunks
@@ -3043,7 +3043,7 @@ GrapaError GrapaDB2::StreamingGrep(GrapaCursor& cursor, const GrapaCHAR& fieldNa
 	return 0;
 }
 
-GrapaError GrapaDB2::LoadFieldSubstring(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
+GrapaError GrapaDBX::LoadFieldSubstring(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
                                        u64 offset, u64 length, GrapaBYTE& result)
 {
 	// Get field information

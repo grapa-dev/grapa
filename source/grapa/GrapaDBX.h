@@ -1,9 +1,9 @@
-// GrapaDB2.h
+// GrapaDBX.h
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _GrapaDB2_
-#define _GrapaDB2_
+#ifndef _GrapaDBX_
+#define _GrapaDBX_
 
 #include "GrapaBtree.h"
 #include "GrapaFileCache.h"
@@ -15,16 +15,16 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// Forward declarations for GrapaDB2 data structures
-class GrapaDB2Field;
-class GrapaDB2FieldArray;
-class GrapaDB2FieldValue;
-class GrapaDB2FieldValueArray;
-class GrapaDB2Table;
-class GrapaDB2Index;
-class GrapaDB2Cursor;
+// Forward declarations for GrapaDBX data structures
+class GrapaDBXField;
+class GrapaDBXFieldArray;
+class GrapaDBXFieldValue;
+class GrapaDBXFieldValueArray;
+class GrapaDBXTable;
+class GrapaDBXIndex;
+class GrapaDBXCursor;
 
-class GrapaDB2 : public GrapaBtree
+class GrapaDBX : public GrapaBtree
 {
 public:
 	enum { SEARCH_ITEM=LAST_ITEM, DTYPE_ITEM, GREC_ITEM, RREC_ITEM, CREC_ITEM, GPTR_ITEM, RPTR_ITEM, CPTR_ITEM, };
@@ -32,9 +32,9 @@ public:
 	enum { IPTR_STORE=LAST_STORE, };
 	enum { NULL_CMP=0, LT_CMP, LTEQ_CMP, EQ_CMP, GTEQ_CMP, GT_CMP, };
 public:
-	GrapaDB2();
-	GrapaDB2(GrapaFile* pFile);
-	virtual ~GrapaDB2();
+	GrapaDBX();
+	GrapaDBX(GrapaFile* pFile);
+	virtual ~GrapaDBX();
 	void INIT(GrapaFile* pFile);
 	
 	// Core database operations - same interface as GrapaDB
@@ -47,29 +47,29 @@ public:
 
 	// Table operations - same interface as GrapaDB
 	virtual GrapaError LastTableId(u64 firstTree, u64& pTableId);
-	virtual GrapaError CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, GrapaDB2Table& pTable);
-	virtual GrapaError OpenTable(u64 firstTree, u64 pTableId, GrapaDB2Table& pTable);
+	virtual GrapaError CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, GrapaDBXTable& pTable);
+	virtual GrapaError OpenTable(u64 firstTree, u64 pTableId, GrapaDBXTable& pTable);
 	virtual GrapaError DeleteTable(u64 firstTree, u64 pTableId);
 
-	virtual GrapaError CreateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDB2Table& pTable);
-	virtual GrapaError UpdateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDB2Table& pTable);
+	virtual GrapaError CreateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDBXTable& pTable);
+	virtual GrapaError UpdateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDBXTable& pTable);
 
 	// Field operations - same interface as GrapaDB
-	virtual GrapaError CreateTableField(GrapaDB2Table& pTable, GrapaDB2Field& pField, const GrapaCHAR& pName);
-	virtual GrapaError OpenTableField(GrapaDB2Table& pTable, u64 pFieldId, GrapaDB2Field& pField);
-	virtual GrapaError OpenTableFieldList(GrapaDB2Table& pTable, GrapaDB2FieldArray& pFieldList);
-	virtual GrapaError DeleteTableField(GrapaDB2Table& pTable, u64 pFieldId);
-	virtual GrapaError FlushTableFields(GrapaDB2Table& pTable);
+	virtual GrapaError CreateTableField(GrapaDBXTable& pTable, GrapaDBXField& pField, const GrapaCHAR& pName);
+	virtual GrapaError OpenTableField(GrapaDBXTable& pTable, u64 pFieldId, GrapaDBXField& pField);
+	virtual GrapaError OpenTableFieldList(GrapaDBXTable& pTable, GrapaDBXFieldArray& pFieldList);
+	virtual GrapaError DeleteTableField(GrapaDBXTable& pTable, u64 pFieldId);
+	virtual GrapaError FlushTableFields(GrapaDBXTable& pTable);
 
-	// Formula field operations - new functionality for GrapaDB2
-	virtual GrapaError CreateFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType);
-	virtual GrapaError CreateCompiledFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType);
+	// Formula field operations - new functionality for GrapaDBX
+	virtual GrapaError CreateFormulaField(GrapaDBXTable& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType);
+	virtual GrapaError CreateCompiledFormulaField(GrapaDBXTable& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType);
 	virtual GrapaError GetFormulaText(u64 pFormulaRef, GrapaCHAR& pFormulaText);
 	virtual GrapaError StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormulaText);
 	virtual GrapaError ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, const GrapaCHAR& pParams, GrapaCHAR& pResult);
 	
 	// Context-aware record environment for formula execution
-	virtual GrapaRuleEvent* CreateRecordContext(GrapaCursor& cursor, GrapaDB2Table& table);
+	virtual GrapaRuleEvent* CreateRecordContext(GrapaCursor& cursor, GrapaDBXTable& table);
 	virtual GrapaError RecordGetField(GrapaCursor& cursor, const GrapaCHAR& fieldName, GrapaBYTE& result);
 	virtual GrapaError RecordGetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64 offset, u64 length, GrapaCHAR& operation, GrapaBYTE& result);
 	virtual GrapaError GetFieldIdByName(GrapaCursor& cursor, const GrapaCHAR& fieldName, u64& fieldId);
@@ -81,35 +81,35 @@ public:
 	virtual u64 GetNextFieldId();
 	
 	// Formula execution helper methods
-	virtual GrapaError ParseFormulaParams(const GrapaCHAR& pParams, GrapaCursor& cursor, GrapaDB2Table& table);
+	virtual GrapaError ParseFormulaParams(const GrapaCHAR& pParams, GrapaCursor& cursor, GrapaDBXTable& table);
 	virtual GrapaError ExecuteFormulaWithContext(const GrapaCHAR& formulaText, GrapaRuleEvent* context, GrapaCHAR& result);
 	virtual GrapaError ExecuteCompiledFormula(const GrapaCHAR& compiledFormula, GrapaRuleEvent* context, GrapaCHAR& result);
 	virtual GrapaError CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula);
 	virtual GrapaError StoreCompiledFormula(u64 pFormulaRef, const GrapaCHAR& compiledFormula);
 
 	// Record operations - same interface as GrapaDB
-	virtual GrapaError FindFreeRecordId(GrapaDB2Table& pTable, u64& pRecordId);
-	virtual GrapaError CreateRecord(GrapaDB2Table& pTable, GrapaCursor& pCursor);
-	virtual GrapaError DeleteRecord(GrapaDB2Table& pTable, GrapaCursor& pCursor);
+	virtual GrapaError FindFreeRecordId(GrapaDBXTable& pTable, u64& pRecordId);
+	virtual GrapaError CreateRecord(GrapaDBXTable& pTable, GrapaCursor& pCursor);
+	virtual GrapaError DeleteRecord(GrapaDBXTable& pTable, GrapaCursor& pCursor);
 
 	// Field value operations - same interface as GrapaDB
-	virtual GrapaError SetRecordField(GrapaCursor& pCursor, GrapaDB2FieldValueArray& pFieldList);
+	virtual GrapaError SetRecordField(GrapaCursor& pCursor, GrapaDBXFieldValueArray& pFieldList);
 	virtual GrapaError GetRecordField(GrapaCursor& pCursor, u64 pFieldId, GrapaBYTE& pValue);
-	virtual GrapaError GetRecordField(GrapaCursor& pCursor, GrapaDB2Field& field, GrapaBYTE& pValue);
+	virtual GrapaError GetRecordField(GrapaCursor& pCursor, GrapaDBXField& field, GrapaBYTE& pValue);
 
 	// Search operations - same interface as GrapaDB
-	virtual GrapaError SearchDb(GrapaCursor& pCursor, GrapaDB2Table& pTable, GrapaDB2FieldValueArray& pFieldList);
+	virtual GrapaError SearchDb(GrapaCursor& pCursor, GrapaDBXTable& pTable, GrapaDBXFieldValueArray& pFieldList);
 	virtual GrapaError FirstDb(GrapaCursor& pCursor);
 	virtual GrapaError LastDb(GrapaCursor& pCursor);
 	virtual GrapaError NextDb(GrapaCursor& pCursor);
 	virtual GrapaError PrevDb(GrapaCursor& pCursor);
 
 	// Index operations - same interface as GrapaDB
-	virtual GrapaError FindFreeIndexId(GrapaDB2Index& pIndex, u64 pMinId, u64& pIndexId);
-	virtual GrapaError CreateIndex(GrapaDB2Table& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDB2Index& pIndex);
-	virtual GrapaError OpenIndex(GrapaDB2Table& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDB2Index& pIndex);
-	virtual GrapaError DeleteIndex(GrapaDB2Table& pTable, u64 pIndexId);
-	virtual GrapaError RefreshIndex(GrapaDB2Index& pIndex);
+	virtual GrapaError FindFreeIndexId(GrapaDBXIndex& pIndex, u64 pMinId, u64& pIndexId);
+	virtual GrapaError CreateIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDBXIndex& pIndex);
+	virtual GrapaError OpenIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDBXIndex& pIndex);
+	virtual GrapaError DeleteIndex(GrapaDBXTable& pTable, u64 pIndexId);
+	virtual GrapaError RefreshIndex(GrapaDBXIndex& pIndex);
 
 	// Data operations - same interface as GrapaDB
 	virtual GrapaError GetData(u64 itemPtr, GrapaCHAR& pValue);
@@ -121,8 +121,8 @@ public:
 	virtual GrapaError CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
 	virtual GrapaError DumpTree(u64 pTreeRef = 0, GrapaFile* pDumpFile = NULL);
 
-	// Additional methods for GrapaDB2-specific functionality
-	virtual GrapaError FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCursor& recCursor, GrapaDB2Field& field);
+	// Additional methods for GrapaDBX-specific functionality
+	virtual GrapaError FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCursor& recCursor, GrapaDBXField& field);
 	virtual GrapaError PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor);
 	
 protected:
@@ -149,8 +149,8 @@ protected:
 	virtual GrapaError GetDataTypeRecord(u64 tableRef, u64& tableDT);
 };
 
-// GrapaDB2-specific data structures (duplicated from GrapaDB.h with "2" suffix)
-class GrapaDB2Field
+// GrapaDBX-specific data structures (duplicated from GrapaDB.h with "X" suffix)
+class GrapaDBXField
 {
 public:
 	enum { STORE_FIX = 0, STORE_VAR, STORE_PAR, };
@@ -178,84 +178,84 @@ public:
 		u8 mReserved2[7];   // Reduced from 8 to 7 bytes
 	};
 public:
-	GrapaDB2Field();
+	GrapaDBXField();
 	void BigEndian();
 	void Init(u64 pFieldId, u8 pType, u8 pStore, u64 pSize, u64 pGrow);
 	void* GetPtr();
 	inline static u16 GetSize();
-	GrapaError Write(GrapaDB2 *pDb, u64 fieldRef);
-	GrapaError Read(GrapaDB2 *pDb, u64 fieldRef);
-	GrapaError Get(GrapaDB2 *pDb, u64 tableRef, u64 fieldId);
+	GrapaError Write(GrapaDBX *pDb, u64 fieldRef);
+	GrapaError Read(GrapaDBX *pDb, u64 fieldRef);
+	GrapaError Get(GrapaDBX *pDb, u64 tableRef, u64 fieldId);
 };
 
-class GrapaDB2FieldArray : public GrapaVoidArray
+class GrapaDBXFieldArray : public GrapaVoidArray
 {
 public:
-	GrapaDB2FieldArray(u32 pCount=0) : GrapaVoidArray(pCount) {};
-	~GrapaDB2FieldArray();
+	GrapaDBXFieldArray(u32 pCount=0) : GrapaVoidArray(pCount) {};
+	~GrapaDBXFieldArray();
 public:
-	GrapaError Append(GrapaDB2 *pDb, GrapaDB2Table& pTable, u64 pFieldId);
-	GrapaError Append(GrapaDB2Field *pField);
-	GrapaDB2Field* GetFieldAt(u32 i) { return((GrapaDB2Field*)GetAt(i)); }
+	GrapaError Append(GrapaDBX *pDb, GrapaDBXTable& pTable, u64 pFieldId);
+	GrapaError Append(GrapaDBXField *pField);
+	GrapaDBXField* GetFieldAt(u32 i) { return((GrapaDBXField*)GetAt(i)); }
 };
 
-class GrapaDB2FieldValue : public GrapaDB2Field
+class GrapaDBXFieldValue : public GrapaDBXField
 {
 public:
 	GrapaCHAR mValue;
 	s16 mCmp;
 public:
-	GrapaDB2FieldValue() : mCmp(0) {}
+	GrapaDBXFieldValue() : mCmp(0) {}
 	void BigEndian();
 };
 
-class GrapaDB2FieldValueArray : public GrapaVoidArray
+class GrapaDBXFieldValueArray : public GrapaVoidArray
 {
 public:
-	GrapaDB2FieldValueArray(u32 pCount=0) : GrapaVoidArray(pCount) {};
-	~GrapaDB2FieldValueArray();
+	GrapaDBXFieldValueArray(u32 pCount=0) : GrapaVoidArray(pCount) {};
+	~GrapaDBXFieldValueArray();
 public:
-	GrapaError Append(GrapaDB2 *pDb, GrapaDB2Table& pTable, u64 pFieldId, const GrapaBYTE& pValue, s16 pCmp = 3); // EQ_CMP = 3
-	GrapaDB2FieldValue* GetFieldAt(u32 i) {return((GrapaDB2FieldValue*)GetAt(i));}
+	GrapaError Append(GrapaDBX *pDb, GrapaDBXTable& pTable, u64 pFieldId, const GrapaBYTE& pValue, s16 pCmp = 3); // EQ_CMP = 3
+	GrapaDBXFieldValue* GetFieldAt(u32 i) {return((GrapaDBXFieldValue*)GetAt(i));}
 };
 
-class GrapaDB2Table
+class GrapaDBXTable
 {
 public:
-	GrapaDB2Field mDictField;
+	GrapaDBXField mDictField;
 	u64 mId;
 	u64 mRef;
 	u64 mRecRef;
 	u8 mRefType;
 	// add the name
 public:
-	GrapaDB2Table() { mId = 0; mRef = 0; mRecRef = 0; mRefType = 0; }
+	GrapaDBXTable() { mId = 0; mRef = 0; mRecRef = 0; mRefType = 0; }
 	void BigEndian();
 };
 
-class GrapaDB2Index
+class GrapaDBXIndex
 {
 public:
-	GrapaDB2Table mTable;
+	GrapaDBXTable mTable;
 	u64 mId;
 	u64 mRef;
 	// add the name
 public:
-	GrapaDB2Index() { mId = 0; mRef = 0; }
+	GrapaDBXIndex() { mId = 0; mRef = 0; }
 	void BigEndian();
 };
 
-class GrapaDB2Cursor : public GrapaCursor
+class GrapaDBXCursor : public GrapaCursor
 {
 public:
-	GrapaDB2FieldValueArray* mData;
+	GrapaDBXFieldValueArray* mData;
 	bool mUsingIndex;
 public:
-	GrapaDB2Cursor() { mUsingIndex = false; mData = NULL; GrapaCursor(); }
-    void SetSearch(GrapaDB2* pDb, u64 pTreeRef, bool pUsingIndex, GrapaDB2FieldValueArray* pData);
+	GrapaDBXCursor() { mUsingIndex = false; mData = NULL; GrapaCursor(); }
+    void SetSearch(GrapaDBX* pDb, u64 pTreeRef, bool pUsingIndex, GrapaDBXFieldValueArray* pData);
 };
 
-class GrapaGroup2 : public GrapaDB2
+class GrapaGroup2 : public GrapaDBX
 {
 public:
 	u64 mRootTable;
@@ -286,8 +286,8 @@ public:
 	GrapaError DeleteEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName);
 	GrapaError DeleteEntry(u64 parentTree, u8 parentType, u64 pId);
 
-	GrapaError CreateField(u64 parentTree, u8 parentType, const char* pFieldName, u8 pType = GrapaTokenType::RAW, u8 pStore = GrapaDB2Field::STORE_VAR, u64 pSize = 32, u64 pGrow = 8);
-	GrapaError CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pFieldName, u8 pType = GrapaTokenType::RAW, u8 pStore = GrapaDB2Field::STORE_VAR, u64 pSize = 32, u64 pGrow = 8);
+	GrapaError CreateField(u64 parentTree, u8 parentType, const char* pFieldName, u8 pType = GrapaTokenType::RAW, u8 pStore = GrapaDBXField::STORE_VAR, u64 pSize = 32, u64 pGrow = 8);
+	GrapaError CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pFieldName, u8 pType = GrapaTokenType::RAW, u8 pStore = GrapaDBXField::STORE_VAR, u64 pSize = 32, u64 pGrow = 8);
 	GrapaError DeleteField(u64 parentTree, u8 parentType, GrapaCHAR& pField);
 
 	GrapaError SetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, const char* pField, const GrapaBYTE& pValue);
@@ -300,8 +300,8 @@ public:
 
 	GrapaError DumpGroup(u64 parentTree, u8 parentType, u64 pId=0, GrapaFile *pDumpFile=NULL);
 
-	GrapaDB2FieldArray* ListFields(u64 parentTree, u8 parentType);
-	GrapaError FindField(u64 parentTree, u8 parentType, const GrapaCHAR& pFieldName, GrapaDB2Field& field, u64& pMaxId);
+	GrapaDBXFieldArray* ListFields(u64 parentTree, u8 parentType);
+	GrapaError FindField(u64 parentTree, u8 parentType, const GrapaCHAR& pFieldName, GrapaDBXField& field, u64& pMaxId);
 	GrapaError GetNameId(u64 parentTree, u8 parentType, u64& pNameId);
 	GrapaError SetNameId(u64 parentTree, u8 parentType, u64 pNameId);
 	GrapaError NextNameId(u64 parentTree, u8 parentType, u64& pNameId);
@@ -343,4 +343,4 @@ protected:
 	GrapaCritical mCritical;
 };
 
-#endif // _GrapaDB2_ 
+#endif // _GrapaDBX_ 

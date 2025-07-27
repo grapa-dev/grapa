@@ -1,11 +1,11 @@
-/* Test script for GrapaDB2 Step 4: Compiled $OP Storage */
+/* Test script for GrapaDBX Step 4: Compiled $OP Storage */
 
 /* Test 1: Create formula fields with both text and compiled types */
 print("=== Test 1: Create Formula Fields ===");
 
 /* Create a test database */
-db = $db2("test_compiled_op.db2");
-db.create("test_compiled_op.db2", 1, rootTree);
+db = $dbx("test_compiled_op.dbx");
+db.create("test_compiled_op.dbx", 1, rootTree);
 
 /* Create a table */
 table = {};

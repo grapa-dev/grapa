@@ -19,14 +19,14 @@ f.mk("dir_name", "DIR")     # Directory alias (same as GROUP internally)
 
 **Note**: `"DIR"` and `"GROUP"` are equivalent - both create the same hierarchical database type internally. Use whichever naming convention makes more sense for your use case.
 
-### GrapaDB2 Enhanced Database (Under Development)
+### GrapaDBX Enhanced Database (Under Development)
 
-GrapaDB2 is an enhanced version of GrapaDB with improved index system and performance. It's accessible through the unified storage system:
+GrapaDBX is an enhanced version of GrapaDB with improved index system and performance. It's accessible through the unified storage system:
 
 ```grapa
-/* Using GrapaDB2 via unified storage */
+/* Using GrapaDBX via unified storage */
 u = $unified();
-u.create("grapadb2:///path/to/database2");
+u.create("grapadbx:///path/to/database2");
 
 /* Basic operations (working) */
 u.mk("users", "GROUP");

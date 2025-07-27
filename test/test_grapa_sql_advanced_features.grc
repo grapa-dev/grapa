@@ -438,7 +438,7 @@ SET CACHE_XML_PARSING = true;
 "✅ Caching and Indexing: Optimized performance for all data types\n".echo();
 "\n".echo();
 
-"These advanced features make GrapaDB2 competitive with modern database systems\n".echo();
+"These advanced features make GrapaDBX competitive with modern database systems\n".echo();
 "while maintaining Grapa's unique capabilities. Unicode support ensures proper\n".echo();
 "internationalization, regex searching provides powerful pattern matching,\n".echo();
 "and JSON/XML field querying enables complex structured data operations.\n".echo();

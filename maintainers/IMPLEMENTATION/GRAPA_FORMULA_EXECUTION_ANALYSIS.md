@@ -12,7 +12,7 @@ tags:
 
 ## 🚨 **AGENT CONTEXT**
 
-**Purpose**: Comprehensive analysis of all formula execution mechanisms available in Grapa for implementing GrapaDB2 formula fields.
+**Purpose**: Comprehensive analysis of all formula execution mechanisms available in Grapa for implementing GrapaDBX formula fields.
 
 **Current Status**: ✅ **CONTEXT-AWARE RECORD ENVIRONMENT IMPLEMENTED**
 - Phase 1 (Text Formula Storage): ✅ COMPLETED
@@ -32,7 +32,7 @@ tags:
 
 ## Overview
 
-This document captures a comprehensive analysis of all available formula execution mechanisms in Grapa, conducted to determine the optimal approach for implementing formula fields in GrapaDB2. The analysis covers compilation, evaluation, threading, callbacks, and version compatibility considerations.
+This document captures a comprehensive analysis of all available formula execution mechanisms in Grapa, conducted to determine the optimal approach for implementing formula fields in GrapaDBX. The analysis covers compilation, evaluation, threading, callbacks, and version compatibility considerations.
 
 ## Core Grapa Execution Mechanisms
 
@@ -194,13 +194,13 @@ GrapaError GrapaWidget::Post(GrapaRuleEvent* pRunCode, GrapaRuleEvent* pParam, G
 - ❌ More complex than direct namespace injection
 - ❌ Thread synchronization overhead
 
-### 3. Context-Aware Record Environment (Recommended for GrapaDB2)
+### 3. Context-Aware Record Environment (Recommended for GrapaDBX)
 **Mechanism**: Provide rich record/table context that callbacks can use for dynamic field access
 **Implementation**: Similar to $WIDGET pattern but with database record context
 
 ```cpp
 // Create context-aware environment for formula execution
-GrapaRuleEvent* GrapaDB2::CreateRecordContext(GrapaCursor& cursor, GrapaDB2Table& table)
+GrapaRuleEvent* GrapaDBX::CreateRecordContext(GrapaCursor& cursor, GrapaDBXTable& table)
 {
     GrapaRuleEvent* context = new GrapaRuleEvent();
     context->mValue.mToken = GrapaTokenType::LIST;
@@ -273,7 +273,7 @@ formula = "_record.getField('basePrice') * (1 + _record.getField('taxRate'))";
 
 ### 4. Dynamic Field Access
 **Mechanism**: Formula can access any field in the current record
-**Implementation**: GrapaDB2 would provide record context to formula execution
+**Implementation**: GrapaDBX would provide record context to formula execution
 
 **Patterns from Existing Codebase**:
 
@@ -320,7 +320,7 @@ for (each field in current record) {
 - ✅ Follows existing Grapa patterns
 
 **Cons**: 
-- ❌ Requires GrapaDB2 to provide record context
+- ❌ Requires GrapaDBX to provide record context
 - ❌ Potential performance overhead for field lookups
 - ❌ More complex implementation
 
@@ -364,7 +364,7 @@ compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),versio
 - ❌ Storage overhead for version information
 - ❌ Requires version comparison logic
 - ❌ May be overkill for simple formulas
-- ❌ Additional complexity in GrapaDB2 formula fields
+- ❌ Additional complexity in GrapaDBX formula fields
 
 #### Option 2: Lazy Validation
 **Mechanism**: Validate formula on first execution attempt
@@ -429,7 +429,7 @@ compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),versio
 - **Bulk**: Vector-based parallel execution
 
 ### Data Access Strategy
-- **Record Fields**: Dynamic access through GrapaDB2 context
+- **Record Fields**: Dynamic access through GrapaDBX context
 - **Environment Variables**: Namespace injection
 - **External Data**: Callback requests to environment
 
@@ -452,8 +452,8 @@ compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),versio
 
 #### 1. Record Context Provider (Optimized for Large Field Counts)
 ```cpp
-// In GrapaDB2.cpp
-GrapaError GrapaDB2::GetFormulaContext(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaRuleEvent*& context)
+// In GrapaDBX.cpp
+GrapaError GrapaDBX::GetFormulaContext(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaRuleEvent*& context)
 {
     // Create context namespace for formula execution
     context = new GrapaRuleEvent();
@@ -466,13 +466,13 @@ GrapaError GrapaDB2::GetFormulaContext(GrapaCursor& cursor, const GrapaCHAR& for
     if (err) return err;
     
     // Get table structure
-    GrapaDB2Table table;
+    GrapaDBXTable table;
     err = GetTable(cursor, table);
     if (err) return err;
     
     // OPTIMIZATION: Only load fields that are actually used in formula
     for (u64 fieldId = 0; fieldId < table.mFieldCount; fieldId++) {
-        GrapaDB2Field field;
+        GrapaDBXField field;
         err = GetField(table, fieldId, field);
         if (err) continue;
         
@@ -499,7 +499,7 @@ GrapaError GrapaDB2::GetFormulaContext(GrapaCursor& cursor, const GrapaCHAR& for
 }
 
 // OPTIMIZATION: Parse formula to extract field names
-GrapaError GrapaDB2::ParseFormulaFields(const GrapaCHAR& formula, GrapaCHARSet& requiredFields)
+GrapaError GrapaDBX::ParseFormulaFields(const GrapaCHAR& formula, GrapaCHARSet& requiredFields)
 {
     // Use Grapa's existing tokenizer to identify field references
     GrapaScriptState scriptState;
@@ -529,8 +529,8 @@ GrapaError GrapaDB2::ParseFormulaFields(const GrapaCHAR& formula, GrapaCHARSet& 
 
 #### 2. Formula Execution with Context
 ```cpp
-// In GrapaDB2.cpp
-GrapaError GrapaDB2::ExecuteFormula(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaBYTE& result)
+// In GrapaDBX.cpp
+GrapaError GrapaDBX::ExecuteFormula(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaBYTE& result)
 {
     // Get record context
     GrapaRuleEvent* context = NULL;
@@ -646,7 +646,7 @@ GrapaRuleEvent* GrapaScriptState::SearchVariable(GrapaNames* pNameSpace, const G
 #### Strategy 1: Formula Analysis and Selective Loading
 ```cpp
 // OPTIMIZATION: Only load fields referenced in formula
-GrapaError GrapaDB2::ExecuteFormulaOptimized(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaBYTE& result)
+GrapaError GrapaDBX::ExecuteFormulaOptimized(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaBYTE& result)
 {
     // Step 1: Parse formula to identify required fields
     GrapaCHARSet requiredFields;
@@ -669,7 +669,7 @@ GrapaError GrapaDB2::ExecuteFormulaOptimized(GrapaCursor& cursor, const GrapaCHA
 #### Strategy 2: Lazy Field Access Function
 ```cpp
 // OPTIMIZATION: Provide getField() function for dynamic access
-GrapaError GrapaDB2::ExecuteFormulaLazy(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaBYTE& result)
+GrapaError GrapaDBX::ExecuteFormulaLazy(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaBYTE& result)
 {
     // Create context with getField() function instead of all fields
     GrapaRuleEvent* context = CreateLazyContext(cursor);
@@ -684,7 +684,7 @@ GrapaError GrapaDB2::ExecuteFormulaLazy(GrapaCursor& cursor, const GrapaCHAR& fo
 }
 
 // Lazy field access function
-GrapaRuleEvent* GrapaDB2::GetFieldLazy(GrapaCursor& cursor, const GrapaCHAR& fieldName)
+GrapaRuleEvent* GrapaDBX::GetFieldLazy(GrapaCursor& cursor, const GrapaCHAR& fieldName)
 {
     // Look up field by name and load on-demand
     u64 fieldId = GetFieldIdByName(cursor, fieldName);
@@ -712,7 +712,7 @@ struct CompiledFormula {
     GrapaCHAR version;            // Version for compatibility
 };
 
-GrapaError GrapaDB2::ExecuteCompiledFormula(GrapaCursor& cursor, CompiledFormula& formula, GrapaBYTE& result)
+GrapaError GrapaDBX::ExecuteCompiledFormula(GrapaCursor& cursor, CompiledFormula& formula, GrapaBYTE& result)
 {
     // Use cached field requirements for fast loading
     GrapaRuleEvent* context = NULL;
@@ -731,7 +731,7 @@ GrapaError GrapaDB2::ExecuteCompiledFormula(GrapaCursor& cursor, CompiledFormula
 #### Strategy 4: Field Name Indexing
 ```cpp
 // OPTIMIZATION: Use field name indexes for fast lookup
-class GrapaDB2FieldIndex {
+class GrapaDBXFieldIndex {
 private:
     std::map<GrapaCHAR, u64> fieldNameToId;  // Fast name→ID lookup
     
@@ -741,9 +741,9 @@ public:
         return (it != fieldNameToId.end()) ? it->second : -1;
     }
     
-    void BuildIndex(GrapaDB2Table& table) {
+    void BuildIndex(GrapaDBXTable& table) {
         for (u64 fieldId = 0; fieldId < table.mFieldCount; fieldId++) {
-            GrapaDB2Field field;
+            GrapaDBXField field;
             GetField(table, fieldId, field);
             fieldNameToId[field.mName] = fieldId;
         }
@@ -785,7 +785,7 @@ public:
 #### Strategy 5: Partial Field Access for Large Data
 ```cpp
 // OPTIMIZATION: Access large fields partially based on formula logic
-GrapaError GrapaDB2::ExecuteFormulaWithLargeFields(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaBYTE& result)
+GrapaError GrapaDBX::ExecuteFormulaWithLargeFields(GrapaCursor& cursor, const GrapaCHAR& formula, GrapaBYTE& result)
 {
     // Step 1: Parse formula to identify field access patterns
     GrapaFieldAccessPattern accessPattern;
@@ -801,11 +801,11 @@ GrapaError GrapaDB2::ExecuteFormulaWithLargeFields(GrapaCursor& cursor, const Gr
 }
 
 // Partial field access for large data
-GrapaRuleEvent* GrapaDB2::GetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
+GrapaRuleEvent* GrapaDBX::GetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
                                          u64 offset, u64 length, const GrapaCHAR& operation)
 {
     // Check if this is a large field that needs partial access
-    GrapaDB2Field field;
+    GrapaDBXField field;
     GetFieldByName(cursor, fieldName, field);
     
     if (field.mType == FREC_DATA && field.mSize > LARGE_FIELD_THRESHOLD) {
@@ -818,7 +818,7 @@ GrapaRuleEvent* GrapaDB2::GetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& 
 }
 
 // Smart partial access for large fields
-GrapaRuleEvent* GrapaDB2::GetFieldPartialLarge(GrapaCursor& cursor, GrapaDB2Field& field,
+GrapaRuleEvent* GrapaDBX::GetFieldPartialLarge(GrapaCursor& cursor, GrapaDBXField& field,
                                               u64 offset, u64 length, const GrapaCHAR& operation)
 {
     if (operation == "grep") {
@@ -840,7 +840,7 @@ GrapaRuleEvent* GrapaDB2::GetFieldPartialLarge(GrapaCursor& cursor, GrapaDB2Fiel
 #### Strategy 6: Streaming Operations for Large Fields
 ```cpp
 // OPTIMIZATION: Streaming grep on large fields without full load
-GrapaRuleEvent* GrapaDB2::ExecuteStreamingGrep(GrapaCursor& cursor, GrapaDB2Field& field, 
+GrapaRuleEvent* GrapaDBX::ExecuteStreamingGrep(GrapaCursor& cursor, GrapaDBXField& field, 
                                               u64 offset, u64 length)
 {
     // Create streaming grep function in context
@@ -860,7 +860,7 @@ GrapaRuleEvent* GrapaDB2::ExecuteStreamingGrep(GrapaCursor& cursor, GrapaDB2Fiel
 }
 
 // C++ implementation of streaming grep
-GrapaError GrapaDB2::StreamingGrep(GrapaCursor& cursor, GrapaDB2Field& field, 
+GrapaError GrapaDBX::StreamingGrep(GrapaCursor& cursor, GrapaDBXField& field, 
                                   const GrapaCHAR& pattern, GrapaCHAR& result)
 {
     const u64 BUFFER_SIZE = 8192;  // 8KB chunks
@@ -910,7 +910,7 @@ struct GrapaFieldAccessPattern {
     bool requiresFullLoad;
 };
 
-GrapaError GrapaDB2::ParseFieldAccessPattern(const GrapaCHAR& formula, GrapaFieldAccessPattern& pattern)
+GrapaError GrapaDBX::ParseFieldAccessPattern(const GrapaCHAR& formula, GrapaFieldAccessPattern& pattern)
 {
     // Tokenize formula to identify field access patterns
     GrapaScriptState scriptState;
@@ -956,7 +956,7 @@ GrapaError GrapaDB2::ParseFieldAccessPattern(const GrapaCHAR& formula, GrapaFiel
 #### Strategy 8: Hybrid Access Context
 ```cpp
 // OPTIMIZATION: Create context with different access strategies for different fields
-GrapaRuleEvent* GrapaDB2::CreatePartialAccessContext(GrapaCursor& cursor, 
+GrapaRuleEvent* GrapaDBX::CreatePartialAccessContext(GrapaCursor& cursor, 
                                                     const GrapaFieldAccessPattern& pattern)
 {
     GrapaRuleEvent* context = new GrapaRuleEvent();
@@ -1043,8 +1043,8 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, u64 fieldId, GrapaBYTE& 
     return GetDataValue(cursor, fieldId, value);
 }
 
-// Pattern to follow in GrapaDB2
-GrapaError GrapaDB2::GetRecordField(GrapaCursor& cursor, u64 fieldId, GrapaBYTE& value)
+// Pattern to follow in GrapaDBX
+GrapaError GrapaDBX::GetRecordField(GrapaCursor& cursor, u64 fieldId, GrapaBYTE& value)
 {
     return GetDataValue(cursor, fieldId, value);
 }
@@ -1086,7 +1086,7 @@ GrapaRuleEvent* GrapaScriptState::SearchVariable(GrapaNames* pNameSpace, const G
 }
 
 // Pattern to follow for field lookup in formula context
-GrapaRuleEvent* GrapaDB2::GetFieldFromContext(GrapaRuleEvent* context, const GrapaCHAR& fieldName)
+GrapaRuleEvent* GrapaDBX::GetFieldFromContext(GrapaRuleEvent* context, const GrapaCHAR& fieldName)
 {
     if (context && context->vQueue) {
         GrapaRuleEvent* field = context->vQueue->Search(fieldName);
@@ -1130,7 +1130,7 @@ switch (fieldType) {
 ## File Structure for Implementation
 
 ```
-source/grapa/GrapaDB2.cpp
+source/grapa/GrapaDBX.cpp
 ├── ExecuteFormula()           # Main formula execution entry point
 ├── ExecuteTextFormula()       # Phase 1: Direct string evaluation
 ├── ExecuteCompiledFormula()   # Phase 2: Compiled $OP execution
@@ -1165,11 +1165,11 @@ source/grapa/GrapaDB2.cpp
 
 ## Related Documentation
 
-- [GrapaDB2 Formula Fields Implementation](GRAPA_DB2_FORMULA_FIELDS.md)
-- [GrapaDB2 Development Status](DEVELOPMENT/CURRENT_STATUS.md)
+- [GrapaDBX Formula Fields Implementation](GRAPA_DB2_FORMULA_FIELDS.md)
+- [GrapaDBX Development Status](DEVELOPMENT/CURRENT_STATUS.md)
 - [Grapa Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md)
 - [GrapaDB Implementation](GRAPA_DB_IMPLEMENTATION.md)
 
 ---
 
-*Last updated: December 2024 - Comprehensive formula execution analysis for GrapaDB2* 
+*Last updated: December 2024 - Comprehensive formula execution analysis for GrapaDBX* 

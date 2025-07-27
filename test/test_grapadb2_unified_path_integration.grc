@@ -1,7 +1,7 @@
-/* Test script for GrapaDB2 Unified Path Integration */
-/* This demonstrates seamless navigation between file system and GrapaDB2 */
+/* Test script for GrapaDBX Unified Path Integration */
+/* This demonstrates seamless navigation between file system and GrapaDBX */
 
-"Testing GrapaDB2 Unified Path Integration...\n".echo();
+"Testing GrapaDBX Unified Path Integration...\n".echo();
 "==========================================\n".echo();
 
 /* Test 1: Current Unified Path System */
@@ -15,11 +15,11 @@
 "• Automatic context switching\n".echo();
 "\n".echo();
 
-/* Test 2: GrapaDB2 Integration Requirements */
-"Test 2: GrapaDB2 Integration Requirements\n".echo();
+/* Test 2: GrapaDBX Integration Requirements */
+"Test 2: GrapaDBX Integration Requirements\n".echo();
 "----------------------------------------\n".echo();
 
-"GrapaDB2 must maintain the same seamless navigation:\n".echo();
+"GrapaDBX must maintain the same seamless navigation:\n".echo();
 "\n".echo();
 
 "Current Interface (Must Work Unchanged):\n".echo();
@@ -43,15 +43,15 @@ f.cd("../../..");  // Back through both database and file system
 "✓ f.ls() - List contents\n".echo();
 "\n".echo();
 
-/* Test 3: GrapaDB2 Enhanced Features */
-"Test 3: GrapaDB2 Enhanced Features\n".echo();
+/* Test 3: GrapaDBX Enhanced Features */
+"Test 3: GrapaDBX Enhanced Features\n".echo();
 "--------------------------------\n".echo();
 
-"GrapaDB2 adds enhanced features while maintaining compatibility:\n".echo();
+"GrapaDBX adds enhanced features while maintaining compatibility:\n".echo();
 "\n".echo();
 
 "Multi-Pointer Navigation:\n".echo();
-/* This would be the new GrapaDB2 syntax */
+/* This would be the new GrapaDBX syntax */
 /*
 f = $file();
 
@@ -73,7 +73,7 @@ f2.cd("shared_database", {"mode": "readwrite"});
 "\n".echo();
 
 "Transaction-Aware Navigation:\n".echo();
-/* This would be the new GrapaDB2 syntax */
+/* This would be the new GrapaDBX syntax */
 /*
 f = $file();
 
@@ -93,7 +93,7 @@ f.commitTransaction();
 "\n".echo();
 
 "Enhanced Caching Integration:\n".echo();
-/* This would be the new GrapaDB2 syntax */
+/* This would be the new GrapaDBX syntax */
 /*
 f = $file();
 
@@ -108,7 +108,7 @@ f.cd("database", {"cache": "balanced"});    // Default caching
 "\n".echo();
 
 "Performance Monitoring:\n".echo();
-/* This would be the new GrapaDB2 syntax */
+/* This would be the new GrapaDBX syntax */
 /*
 f = $file();
 
@@ -128,7 +128,7 @@ performance = f.getNavigationStats();
 "Test 4: Backward Compatibility\n".echo();
 "-----------------------------\n".echo();
 
-"GrapaDB2 maintains full backward compatibility:\n".echo();
+"GrapaDBX maintains full backward compatibility:\n".echo();
 "\n".echo();
 
 "Current Database Format:\n".echo();
@@ -147,18 +147,18 @@ f.set("user1", "John Doe", "name");
 "✓ No migration required\n".echo();
 "\n".echo();
 
-"New GrapaDB2 Format:\n".echo();
-/* This would work with new GrapaDB2 format */
+"New GrapaDBX Format:\n".echo();
+/* This would work with new GrapaDBX format */
 /*
 f = $file();
 
-// New GrapaDB2 format - enhanced features available
-f.cd("new_database");  // Opens GrapaDB2 format
+// New GrapaDBX format - enhanced features available
+f.cd("new_database");  // Opens GrapaDBX format
 f.cd("users", {"mode": "readwrite"});
 f.mkfield("name", "STR", "VAR");
 f.setBatch("user1", {"name": "John Doe", "age": 30});
 */
-"✓ f.cd(\"new_database\") - Opens GrapaDB2 format\n".echo();
+"✓ f.cd(\"new_database\") - Opens GrapaDBX format\n".echo();
 "✓ Enhanced features available\n".echo();
 "✓ Better performance\n".echo();
 "✓ Advanced capabilities\n".echo();
@@ -184,7 +184,7 @@ f.cd("../../old_database/admins");  // Back to old format
 "Test 5: Migration Strategy\n".echo();
 "------------------------\n".echo();
 
-"Gradual migration from current to GrapaDB2 format:\n".echo();
+"Gradual migration from current to GrapaDBX format:\n".echo();
 "\n".echo();
 
 "Phase 1: Coexistence:\n".echo();
@@ -194,14 +194,14 @@ f = $file();
 
 // Both formats work side by side
 f.cd("old_database");  // Current format
-f.cd("new_database");  // GrapaDB2 format
+f.cd("new_database");  // GrapaDBX format
 
 // Automatic format detection
 format = f.getDatabaseFormat("database");
 if (format == "GRAPA_DB") {
     ("Using current format").echo();
 } else if (format == "GRAPA_DB2") {
-    ("Using GrapaDB2 format").echo();
+    ("Using GrapaDBX format").echo();
 }
 */
 "✓ Both formats work side by side\n".echo();
@@ -215,14 +215,14 @@ if (format == "GRAPA_DB") {
 f = $file();
 
 // Automatic migration when accessing old databases
-f.cd("old_database");  // Automatically migrates to GrapaDB2
+f.cd("old_database");  // Automatically migrates to GrapaDBX
 f.cd("users");
-f.set("user1", "John Doe", "name");  // Uses GrapaDB2 features
+f.set("user1", "John Doe", "name");  // Uses GrapaDBX features
 
 // Migration status
 status = f.getMigrationStatus("old_database");
 if (status.migrated) {
-    ("Database migrated to GrapaDB2 format").echo();
+    ("Database migrated to GrapaDBX format").echo();
 }
 */
 "✓ Automatic migration when accessed\n".echo();
@@ -230,20 +230,20 @@ if (status.migrated) {
 "✓ Migration status tracking\n".echo();
 "\n".echo();
 
-"Phase 3: GrapaDB2 Default:\n".echo();
+"Phase 3: GrapaDBX Default:\n".echo();
 /* This would be Phase 3 of migration */
 /*
 f = $file();
 
-// GrapaDB2 becomes the default format
-f.mk("database", "GROUP");  // Creates GrapaDB2 format by default
+// GrapaDBX becomes the default format
+f.mk("database", "GROUP");  // Creates GrapaDBX format by default
 f.cd("database");
 f.cd("users", {"mode": "readwrite", "cache": "aggressive"});
 f.mkfield("name", "STR", "VAR");
 f.setBatch("user1", {"name": "John Doe", "age": 30});
 */
-"✓ GrapaDB2 becomes default format\n".echo();
-"✓ All new databases use GrapaDB2\n".echo();
+"✓ GrapaDBX becomes default format\n".echo();
+"✓ All new databases use GrapaDBX\n".echo();
 "✓ Enhanced features by default\n".echo();
 "\n".echo();
 
@@ -251,7 +251,7 @@ f.setBatch("user1", {"name": "John Doe", "age": 30});
 "Test 6: Navigation Examples\n".echo();
 "--------------------------\n".echo();
 
-"Complex navigation scenarios with GrapaDB2:\n".echo();
+"Complex navigation scenarios with GrapaDBX:\n".echo();
 "\n".echo();
 
 "Deep Nested Navigation:\n".echo();
@@ -285,7 +285,7 @@ f = $file();
 f.cd("project");  // File system
 f.cd("old_database");  // Current GrapaDB format
 f.cd("users");  // Database structure
-f.cd("../new_database");  // GrapaDB2 format
+f.cd("../new_database");  // GrapaDBX format
 f.cd("analytics");  // Database structure
 f.cd("../../config");  // Back to file system
 
@@ -294,7 +294,7 @@ f.cd("../../../old_database/users");  // Back to old format
 */
 "✓ File system navigation\n".echo();
 "✓ Current GrapaDB navigation\n".echo();
-"✓ GrapaDB2 navigation\n".echo();
+"✓ GrapaDBX navigation\n".echo();
 "✓ Seamless transitions between formats\n".echo();
 "\n".echo();
 
@@ -330,7 +330,7 @@ f.cd("..");  // Back to database root
 "Test 7: Performance Benefits\n".echo();
 "---------------------------\n".echo();
 
-"GrapaDB2 performance improvements:\n".echo();
+"GrapaDBX performance improvements:\n".echo();
 "\n".echo();
 
 "Enhanced Caching:\n".echo();
@@ -385,7 +385,7 @@ f2.set("user2", "Jane Doe", "name");  // Write operation
 "Test 8: Error Handling\n".echo();
 "---------------------\n".echo();
 
-"Robust error handling in GrapaDB2:\n".echo();
+"Robust error handling in GrapaDBX:\n".echo();
 "\n".echo();
 
 "Navigation Error Handling:\n".echo();
@@ -427,7 +427,7 @@ try {
 "\n".echo();
 
 /* Summary */
-"Summary: GrapaDB2 Unified Path Integration Benefits\n".echo();
+"Summary: GrapaDBX Unified Path Integration Benefits\n".echo();
 "=================================================\n".echo();
 "✅ Seamless Navigation: $file() works exactly as it does now\n".echo();
 "✅ Backward Compatibility: Current code continues to work unchanged\n".echo();
@@ -438,7 +438,7 @@ try {
 "✅ Developer Experience: Familiar interface with enhanced capabilities\n".echo();
 "\n".echo();
 
-"GrapaDB2 maintains the powerful unified path system while adding\n".echo();
+"GrapaDBX maintains the powerful unified path system while adding\n".echo();
 "enhanced features that provide real performance and usability benefits.\n".echo();
 "The seamless navigation between file system and database remains one\n".echo();
 "of Grapa's most powerful and unique features.\n".echo();

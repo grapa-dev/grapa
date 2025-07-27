@@ -1,7 +1,7 @@
-/* Test script for GrapaDB2 Temporary Transaction System */
+/* Test script for GrapaDBX Temporary Transaction System */
 /* This demonstrates the innovative temporary database approach for transactions */
 
-"Testing GrapaDB2 Temporary Transaction System...\n".echo();
+"Testing GrapaDBX Temporary Transaction System...\n".echo();
 "==============================================\n".echo();
 
 /* Test 1: Current Transaction System Problems */
@@ -34,7 +34,7 @@
 "\n".echo();
 
 "Step 1: Begin Transaction\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 transactionId = 0;
 err = f.beginTransaction(transactionId);
@@ -50,7 +50,7 @@ if (err) {
 "\n".echo();
 
 "Step 2: Perform Operations (All to Temp Database)\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // These operations go to the temporary database
 f.setBatch(transactionId, "user1", {"name": "Alice", "age": 30, "city": "New York"});
@@ -70,7 +70,7 @@ user1_data = f.getBatch(transactionId, "user1", ["name", "age", "city"]);
 "\n".echo();
 
 "Step 3: Commit Transaction (Bulk Transfer)\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 err = f.commitTransaction(transactionId);
 if (err) {
@@ -86,7 +86,7 @@ if (err) {
 "\n".echo();
 
 "Step 4: Rollback Transaction (Simple Delete)\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Start another transaction
 transactionId2 = 0;
@@ -138,7 +138,7 @@ if (err) {
 "\n".echo();
 
 "Multiple Concurrent Transactions:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Transaction 1
 txn1 = 0;
@@ -173,7 +173,7 @@ user3_data = f.getBatch(txn3, "user3", ["name", "age"]);  // Reads from main dat
 "\n".echo();
 
 "On System Startup:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // System startup recovery
 err = f.recoverOnStartup();
@@ -202,7 +202,7 @@ if (err) {
 "\n".echo();
 
 "Change Tracking for Efficient Transfer:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // During transaction, changes are tracked
 f.setBatch(transactionId, "user1", {"age": 31});  // Tracked as UPDATE
@@ -231,7 +231,7 @@ err = f.commitTransaction(transactionId);
 "\n".echo();
 
 "File-based Atomic Switch:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Atomic switch process:
 // 1. Create backup of main database
@@ -261,7 +261,7 @@ if (err) {
 "\n".echo();
 
 "Multi-Version Concurrency Control (MVCC):\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // MVCC allows multiple versions of data
 snapshot1 = f.createSnapshot();
@@ -282,7 +282,7 @@ user1_new = f.getBatch(transactionId, "user1", ["age"]);
 "\n".echo();
 
 "Lock-Free Operations:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Optimistic concurrency control
 expected_version = f.getRecordVersion("user1");
@@ -306,7 +306,7 @@ if (err) {
 "\n".echo();
 
 "Efficient Batch Processing:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Start transaction
 transactionId = 0;
@@ -350,7 +350,7 @@ if (err) {
 "\n".echo();
 
 /* Summary */
-"Summary: GrapaDB2 Temporary Transaction System Benefits\n".echo();
+"Summary: GrapaDBX Temporary Transaction System Benefits\n".echo();
 "=====================================================\n".echo();
 "✅ Simple Rollback: Delete temp database = instant rollback\n".echo();
 "✅ High Performance: No complex undo/redo logic during operations\n".echo();
@@ -366,7 +366,7 @@ if (err) {
 
 "Your temporary database approach is brilliant and represents a sophisticated\n".echo();
 "understanding of transaction management. It's similar to techniques used in\n".echo();
-"high-performance databases and provides an excellent foundation for GrapaDB2!\n".echo();
+"high-performance databases and provides an excellent foundation for GrapaDBX!\n".echo();
 "\n".echo();
 
 "Status: Design complete, ready for Phase 4 implementation.\n".echo(); 

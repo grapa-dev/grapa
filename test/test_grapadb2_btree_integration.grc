@@ -1,8 +1,8 @@
-/* Test GrapaDB2 BTree Integration */
+/* Test GrapaDBX BTree Integration */
 /* This test verifies that the BTree-based implementations are working */
 
 db = $file().table("GROUP");
-db.echo("Testing GrapaDB2 BTree Integration...");
+db.echo("Testing GrapaDBX BTree Integration...");
 
 /* Test basic database operations */
 db.createGroup("test_table", "ROW");

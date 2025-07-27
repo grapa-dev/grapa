@@ -1,10 +1,10 @@
-/* Test script for GrapaDB2 Context-Aware Record Environment */
+/* Test script for GrapaDBX Context-Aware Record Environment */
 
 /* Test 1: Basic formula field creation and execution */
 print("=== Test 1: Basic Formula Field Creation ===");
 
 /* Create a test database */
-db = $db2("test_context_aware.db2");
+db = $dbx("test_context_aware.dbx");
 if (db.error()) {
     print("Failed to create database:", db.error());
     exit(1);

@@ -1,10 +1,10 @@
 "================================================================================\n".echo();
-"Testing GrapaDB2 Simple Data Storage\n".echo();
+"Testing GrapaDBX Simple Data Storage\n".echo();
 "================================================================================\n".echo();
 
-"Test 1: Create GrapaDB2 database\n".echo();
+"Test 1: Create GrapaDBX database\n".echo();
 u = $unified();
-err = u.create("grapadb2://simple_test");
+err = u.create("grapadbx://simple_test");
 "Result: Database creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
 
 "================================================================================\n".echo();

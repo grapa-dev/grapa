@@ -1,24 +1,24 @@
-/* Test GrapaDB2 Indexes */
+/* Test GrapaDBX Indexes */
 
 "=== GRAPADB2 INDEX TEST ===\n".echo();
 
-/* Test 1: Create GrapaDB2 Database with Indexes */
-"Test 1: Creating GrapaDB2 database with indexes...\n".echo();
+/* Test 1: Create GrapaDBX Database with Indexes */
+"Test 1: Creating GrapaDBX database with indexes...\n".echo();
 
-db2 = $unified();
-result = db2.create("grapadb2://test_indexes.db");
+dbx = $unified();
+result = dbx.create("grapadbx://test_indexes.db");
 
 if (result == 0) {
-    "✓ GrapaDB2 database created successfully\n".echo();
+    "✓ GrapaDBX database created successfully\n".echo();
 } else {
-    "✗ Failed to create GrapaDB2 database: " + result + "\n".echo();
+    "✗ Failed to create GrapaDBX database: " + result + "\n".echo();
 }
 
 /* Test 2: Create Table with Index */
 "Test 2: Creating table with index...\n".echo();
 
 /* Create a table */
-result = db2.mk("users");
+result = dbx.mk("users");
 if (result == 0) {
     "✓ Table created successfully\n".echo();
 } else {
@@ -29,21 +29,21 @@ if (result == 0) {
 "Test 3: Adding records with indexed fields...\n".echo();
 
 /* Add records with different values */
-result = db2.set("users/user1", "Alice", "$VALUE");
+result = dbx.set("users/user1", "Alice", "$VALUE");
 if (result == 0) {
     "✓ User1 added successfully\n".echo();
 } else {
     "✗ Failed to add user1: " + result + "\n".echo();
 }
 
-result = db2.set("users/user2", "Bob", "$VALUE");
+result = dbx.set("users/user2", "Bob", "$VALUE");
 if (result == 0) {
     "✓ User2 added successfully\n".echo();
 } else {
     "✗ Failed to add user2: " + result + "\n".echo();
 }
 
-result = db2.set("users/user3", "Charlie", "$VALUE");
+result = dbx.set("users/user3", "Charlie", "$VALUE");
 if (result == 0) {
     "✓ User3 added successfully\n".echo();
 } else {
@@ -53,7 +53,7 @@ if (result == 0) {
 /* Test 4: List Records */
 "Test 4: Listing records...\n".echo();
 
-listing = db2.ls("users");
+listing = dbx.ls("users");
 if (listing.len() > 0) {
     "✓ Listing successful, found " + listing.len() + " users\n".echo();
     listing.echo();
@@ -65,14 +65,14 @@ if (listing.len() > 0) {
 "Test 5: Testing index-based search...\n".echo();
 
 /* Search for specific user */
-content = db2.get("users/user1", "$VALUE");
+content = dbx.get("users/user1", "$VALUE");
 if (content == "Alice") {
     "✓ Index-based search successful for user1\n".echo();
 } else {
     "✗ Index-based search failed for user1, got: " + content + "\n".echo();
 }
 
-content = db2.get("users/user2", "$VALUE");
+content = dbx.get("users/user2", "$VALUE");
 if (content == "Bob") {
     "✓ Index-based search successful for user2\n".echo();
 } else {
@@ -83,7 +83,7 @@ if (content == "Bob") {
 "Test 6: Testing index maintenance during updates...\n".echo();
 
 /* Update a record */
-result = db2.set("users/user1", "Alice Updated", "$VALUE");
+result = dbx.set("users/user1", "Alice Updated", "$VALUE");
 if (result == 0) {
     "✓ User1 updated successfully\n".echo();
 } else {
@@ -91,7 +91,7 @@ if (result == 0) {
 }
 
 /* Verify the update */
-content = db2.get("users/user1", "$VALUE");
+content = dbx.get("users/user1", "$VALUE");
 if (content == "Alice Updated") {
     "✓ Index maintained correctly after update\n".echo();
 } else {
@@ -102,7 +102,7 @@ if (content == "Alice Updated") {
 "Test 7: Testing index cleanup during deletion...\n".echo();
 
 /* Delete a record */
-result = db2.rm("users/user3");
+result = dbx.rm("users/user3");
 if (result == 0) {
     "✓ User3 deleted successfully\n".echo();
 } else {
@@ -110,7 +110,7 @@ if (result == 0) {
 }
 
 /* Verify the deletion */
-listing = db2.ls("users");
+listing = dbx.ls("users");
 if (listing.len() == 2) {
     "✓ Index cleanup successful, remaining users: " + listing.len() + "\n".echo();
 } else {
@@ -121,7 +121,7 @@ if (listing.len() == 2) {
 "Test 8: Testing multiple field index...\n".echo();
 
 /* Create a more complex table with multiple fields */
-result = db2.mk("employees");
+result = dbx.mk("employees");
 if (result == 0) {
     "✓ Employees table created successfully\n".echo();
 } else {
@@ -129,14 +129,14 @@ if (result == 0) {
 }
 
 /* Add employee records with multiple fields */
-result = db2.set("employees/emp1", "John,30,Engineer", "$VALUE");
+result = dbx.set("employees/emp1", "John,30,Engineer", "$VALUE");
 if (result == 0) {
     "✓ Employee1 added successfully\n".echo();
 } else {
     "✗ Failed to add employee1: " + result + "\n".echo();
 }
 
-result = db2.set("employees/emp2", "Jane,25,Designer", "$VALUE");
+result = dbx.set("employees/emp2", "Jane,25,Designer", "$VALUE");
 if (result == 0) {
     "✓ Employee2 added successfully\n".echo();
 } else {
@@ -149,7 +149,7 @@ if (result == 0) {
 /* Add many records to test index performance */
 i = 1;
 while (i <= 10) {
-    result = db2.set("users/user" + i + "_perf", "User" + i + "_Performance", "$VALUE");
+    result = dbx.set("users/user" + i + "_perf", "User" + i + "_Performance", "$VALUE");
     if (result != 0) {
         ("✗ Failed to add performance user " + i + ": " + result + "\n").echo();
     }
@@ -162,7 +162,7 @@ while (i <= 10) {
 "Test 10: Testing index integrity...\n".echo();
 
 /* Verify all records are still accessible */
-listing = db2.ls("users");
+listing = dbx.ls("users");
 if (listing.len() >= 10) {
     "✓ Index integrity maintained, all records accessible\n".echo();
 } else {
@@ -173,11 +173,11 @@ if (listing.len() >= 10) {
 "Test 11: Testing cross-table index operations...\n".echo();
 
 /* Navigate between tables */
-result = db2.cd("users");
+result = dbx.cd("users");
 if (result == 0) {
     "✓ Navigation to users table successful\n".echo();
     
-    listing = db2.ls("");
+    listing = dbx.ls("");
     if (listing.len() > 0) {
         "✓ Index-based listing from users table successful\n".echo();
     } else {
@@ -188,7 +188,7 @@ if (result == 0) {
 }
 
 /* Navigate back to root */
-result = db2.cd("");
+result = dbx.cd("");
 if (result == 0) {
     "✓ Navigation back to root successful\n".echo();
 } else {
@@ -199,7 +199,7 @@ if (result == 0) {
 "Test 12: Testing index output formatting...\n".echo();
 
 /* Test JSON output with indexes */
-json_output = db2.ls("users").json();
+json_output = dbx.ls("users").json();
 if (json_output.len() > 0) {
     "✓ JSON output with indexes working\n".echo();
 } else {
@@ -207,7 +207,7 @@ if (json_output.len() > 0) {
 }
 
 /* Test table output with indexes */
-table_output = db2.ls("users").table();
+table_output = dbx.ls("users").table();
 if (table_output.len() > 0) {
     "✓ Table output with indexes working\n".echo();
 } else {
@@ -222,4 +222,4 @@ if (table_output.len() > 0) {
 "✓ Index integrity maintained\n".echo();
 "✓ Performance with indexes acceptable\n".echo();
 "✓ Cross-table index operations working\n".echo();
-"✓ Indexes are now fully functional in GrapaDB2\n".echo(); 
+"✓ Indexes are now fully functional in GrapaDBX\n".echo(); 

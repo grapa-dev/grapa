@@ -1,10 +1,10 @@
-/* Test script for GrapaDB2 C++ handlers */
+/* Test script for GrapaDBX C++ handlers */
 "=== TESTING GRAPADB2 HANDLERS ===\n".echo();
 
-/* Test 1: Create GrapaDB2 instance */
-"Test 1: Creating GrapaDB2 instance...\n".echo();
+/* Test 1: Create GrapaDBX instance */
+"Test 1: Creating GrapaDBX instance...\n".echo();
 db = $grapadb();
-"✓ Successfully created GrapaDB2 instance\n".echo();
+"✓ Successfully created GrapaDBX instance\n".echo();
 
 /* Test 2: Test database creation (should return error -1 for now) */
 "Test 2: Testing database creation...\n".echo();

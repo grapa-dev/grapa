@@ -1,24 +1,24 @@
-/* Test GrapaDB2 Backend with Unified Storage System */
+/* Test GrapaDBX Backend with Unified Storage System */
 
 "=== GRAPADB2 UNIFIED STORAGE TEST ===\n".echo();
 
-/* Test 1: Create GrapaDB2 Database */
-"Test 1: Creating GrapaDB2 database...\n".echo();
+/* Test 1: Create GrapaDBX Database */
+"Test 1: Creating GrapaDBX database...\n".echo();
 
-db2 = $unified();
-result = db2.create("grapadb2://test_grapadb2.db");
+dbx = $unified();
+result = dbx.create("grapadbx://test_grapadbx.db");
 
 if (result == 0) {
-    "✓ GrapaDB2 database created successfully\n".echo();
+    "✓ GrapaDBX database created successfully\n".echo();
 } else {
-    "✗ Failed to create GrapaDB2 database: " + result + "\n".echo();
+    "✗ Failed to create GrapaDBX database: " + result + "\n".echo();
 }
 
 /* Test 2: Basic Operations */
 "Test 2: Testing basic operations...\n".echo();
 
 /* Create a table */
-result = db2.mk("test_table");
+result = dbx.mk("test_table");
 if (result == 0) {
     "✓ Table created successfully\n".echo();
 } else {
@@ -26,7 +26,7 @@ if (result == 0) {
 }
 
 /* Set a record */
-result = db2.set("test_table/file1.txt", "Content of file 1", "$VALUE");
+result = dbx.set("test_table/file1.txt", "Content of file 1", "$VALUE");
 if (result == 0) {
     "✓ Record set successfully\n".echo();
 } else {
@@ -34,7 +34,7 @@ if (result == 0) {
 }
 
 /* Set another record */
-result = db2.set("test_table/file2.txt", "Content of file 2", "$VALUE");
+result = dbx.set("test_table/file2.txt", "Content of file 2", "$VALUE");
 if (result == 0) {
     "✓ Second record set successfully\n".echo();
 } else {
@@ -45,7 +45,7 @@ if (result == 0) {
 "Test 3: Testing list operations...\n".echo();
 
 /* List the table contents */
-listing = db2.ls("test_table");
+listing = dbx.ls("test_table");
 if (listing.len() > 0) {
     "✓ Listing successful, found " + listing.len() + " items\n".echo();
     listing.echo();
@@ -57,7 +57,7 @@ if (listing.len() > 0) {
 "Test 4: Testing get operations...\n".echo();
 
 /* Get a record */
-content = db2.get("test_table/file1.txt", "$VALUE");
+content = dbx.get("test_table/file1.txt", "$VALUE");
 if (content == "Content of file 1") {
     "✓ Get operation successful\n".echo();
 } else {
@@ -68,12 +68,12 @@ if (content == "Content of file 1") {
 "Test 5: Testing navigation...\n".echo();
 
 /* Navigate to the table */
-result = db2.cd("test_table");
+result = dbx.cd("test_table");
 if (result == 0) {
     "✓ Navigation successful\n".echo();
     
     /* List contents from within the table */
-    listing = db2.ls("");
+    listing = dbx.ls("");
     if (listing.len() > 0) {
         "✓ Listing from within table successful\n".echo();
     } else {
@@ -87,7 +87,7 @@ if (result == 0) {
 "Test 6: Testing remove operations...\n".echo();
 
 /* Remove a record */
-result = db2.rm("test_table/file2.txt");
+result = dbx.rm("test_table/file2.txt");
 if (result == 0) {
     "✓ Remove operation successful\n".echo();
 } else {
@@ -95,7 +95,7 @@ if (result == 0) {
 }
 
 /* Verify the record was removed */
-listing = db2.ls("test_table");
+listing = dbx.ls("test_table");
 if (listing.len() == 1) {
     "✓ Record removal verified\n".echo();
 } else {
@@ -106,7 +106,7 @@ if (listing.len() == 1) {
 "Test 7: Testing output formatting...\n".echo();
 
 /* Test JSON output */
-json_output = db2.ls("test_table").json();
+json_output = dbx.ls("test_table").json();
 if (json_output.len() > 0) {
     "✓ JSON output working\n".echo();
 } else {
@@ -114,7 +114,7 @@ if (json_output.len() > 0) {
 }
 
 /* Test table output */
-table_output = db2.ls("test_table").table();
+table_output = dbx.ls("test_table").table();
 if (table_output.len() > 0) {
     "✓ Table output working\n".echo();
 } else {
@@ -122,7 +122,7 @@ if (table_output.len() > 0) {
 }
 
 /* Test simple output */
-simple_output = db2.ls("test_table").simple();
+simple_output = dbx.ls("test_table").simple();
 if (simple_output.len() > 0) {
     "✓ Simple output working\n".echo();
 } else {
@@ -137,8 +137,8 @@ mem = $unified();
 result = mem.create("memory://test_cross");
 
 if (result == 0) {
-    /* Copy data from GrapaDB2 to memory */
-    content = db2.get("test_table/file1.txt", "$VALUE");
+    /* Copy data from GrapaDBX to memory */
+    content = dbx.get("test_table/file1.txt", "$VALUE");
     result = mem.set("copied_file.txt", content, "$VALUE");
     
     if (result == 0) {
@@ -163,7 +163,7 @@ if (result == 0) {
 
 /* Try to get a non-existent record */
 try {
-    non_existent = db2.get("test_table/non_existent.txt", "$VALUE");
+    non_existent = dbx.get("test_table/non_existent.txt", "$VALUE");
     if (non_existent == "") {
         "✓ Error handling for non-existent record working\n".echo();
     } else {
@@ -173,11 +173,11 @@ try {
     "✓ Error handling working (exception caught)\n".echo();
 }
 
-/* Test 10: Thread Safety (Sequential for GrapaDB2) */
-"Test 10: Testing thread safety (sequential for GrapaDB2)...\n".echo();
+/* Test 10: Thread Safety (Sequential for GrapaDBX) */
+"Test 10: Testing thread safety (sequential for GrapaDBX)...\n".echo();
 
 /* Test with thread count parameter (should use sequential processing) */
-listing = db2.ls("test_table", "", 4);
+listing = dbx.ls("test_table", "", 4);
 if (listing.len() > 0) {
     "✓ Thread-safe listing working (sequential mode)\n".echo();
 } else {
@@ -186,8 +186,8 @@ if (listing.len() > 0) {
 
 /* Final Summary */
 "=== GRAPADB2 UNIFIED STORAGE TEST COMPLETE ===\n".echo();
-"✓ All GrapaDB2 backend tests completed\n".echo();
-"✓ GrapaDB2 integration with unified storage system working\n".echo();
+"✓ All GrapaDBX backend tests completed\n".echo();
+"✓ GrapaDBX integration with unified storage system working\n".echo();
 "✓ Core database operations functional\n".echo();
 "✓ Cross-storage operations working\n".echo();
 "✓ Thread safety implemented (sequential for BTree safety)\n".echo(); 

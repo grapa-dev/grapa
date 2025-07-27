@@ -14,10 +14,10 @@ mem = $unified();
 mem_result = mem.create("memory://test_mem");
 "Memory Create result: " + mem_result + "\n".echo();
 
-/* Test GrapaDB2 Backend */
-"Testing GrapaDB2 Backend...\n".echo();
-db2 = $unified();
-db2_result = db2.create("grapadb2://test_db2");
-"GrapaDB2 Create result: " + db2_result + "\n".echo();
+/* Test GrapaDBX Backend */
+"Testing GrapaDBX Backend...\n".echo();
+dbx = $unified();
+dbx_result = dbx.create("grapadbx://test_dbx");
+"GrapaDBX Create result: " + dbx_result + "\n".echo();
 
 "=== TEST COMPLETE ===\n".echo(); 

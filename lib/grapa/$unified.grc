@@ -5,7 +5,7 @@
  * This class provides a unified interface for accessing different storage types:
  * - file:// (file system)
  * - grapadb:// (GrapaDB database)
- * - grapadb2:// (GrapaDB2 database) 
+ * - grapadbx:// (GrapaDBX database) 
  * - network:// (remote storage)
  * - memory:// (in-memory storage)
  * - cloud:// (cloud storage)
@@ -13,7 +13,7 @@
  * Current Implementation Status:
  * ✅ File system backend fully implemented
  * ✅ GrapaDB backend fully implemented
- * ✅ GrapaDB2 backend fully implemented
+ * ✅ GrapaDBX backend fully implemented
  * 📋 Network, memory, and cloud backends planned
  * 
  * Available Methods:

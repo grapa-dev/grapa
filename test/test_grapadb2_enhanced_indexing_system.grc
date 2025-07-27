@@ -1,7 +1,7 @@
-/* Test script for GrapaDB2 Enhanced Indexing System */
+/* Test script for GrapaDBX Enhanced Indexing System */
 /* This demonstrates practical enhancements to the current simple indexing approach */
 
-"Testing GrapaDB2 Enhanced Indexing System...\n".echo();
+"Testing GrapaDBX Enhanced Indexing System...\n".echo();
 "==========================================\n".echo();
 
 /* Test 1: Current Indexing Limitations */
@@ -21,7 +21,7 @@
 "Test 2: Enhanced Index Types\n".echo();
 "---------------------------\n".echo();
 
-"GrapaDB2 Enhanced Indexing adds practical index types:\n".echo();
+"GrapaDBX Enhanced Indexing adds practical index types:\n".echo();
 "\n".echo();
 
 "Basic Index Types:\n".echo();
@@ -41,7 +41,7 @@
 "\n".echo();
 
 "Basic Index (Backward Compatible):\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Current syntax still works
 f.mkindex("users", ["name", "email"]);
@@ -59,7 +59,7 @@ f.mkindex("users", ["name", "email"], {
 "\n".echo();
 
 "Unique Index:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Create unique index on email
 f.mkindex("users", ["email"], {"unique": true});
@@ -74,7 +74,7 @@ f.set("user2", "john@example.com", "email");  // Fails - duplicate email
 "\n".echo();
 
 "Sparse Index:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Create sparse index on phone (skip NULL values)
 f.mkindex("users", ["phone"], {"sparse": true});
@@ -90,7 +90,7 @@ f.set("user3", null, "phone");        // Not indexed (NULL)
 "\n".echo();
 
 "Partial Index:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Create partial index only for active users
 f.mkindex("users", ["last_login"], {"partial": "status = 'active'"});
@@ -108,7 +108,7 @@ f.set("user2", "2024-01-10", "last_login");  // Not indexed (inactive user)
 "\n".echo();
 
 "Functional Index:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Create functional index on email domain
 f.mkindex("users", ["email_domain"], {"functional": "SUBSTRING(email, LOCATE('@', email) + 1)"});
@@ -133,7 +133,7 @@ results = f.search({"email_domain": "example.com"});  // Uses functional index
 "\n".echo();
 
 "Current Simple Mapping:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Current: Just field ID to field ID
 f.mkindex("users", ["name", "age"]);
@@ -143,7 +143,7 @@ f.mkindex("users", ["name", "age"]);
 "\n".echo();
 
 "Enhanced Field Mapping:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Enhanced: Field with options
 f.mkindex("users", [
@@ -167,7 +167,7 @@ f.mkindex("users", [
 "\n".echo();
 
 "Current Comparison Issues:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Current: strcmp for all field types
 f.mkindex("users", ["age", "salary", "created"]);
@@ -184,7 +184,7 @@ f.mkindex("users", ["age", "salary", "created"]);
 "\n".echo();
 
 "Enhanced Database-Aware Comparison:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Enhanced: Type-aware comparison
 f.mkindex("users", [
@@ -213,7 +213,7 @@ f.mkindex("users", [
 "\n".echo();
 
 "Index Statistics:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Get index statistics
 stats = f.indexStats("users_name_email_index");
@@ -229,7 +229,7 @@ stats = f.indexStats("users_name_email_index");
 "\n".echo();
 
 "Index Maintenance:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Validate index consistency
 isValid = f.validateIndex("users_name_email_index");
@@ -260,7 +260,7 @@ usageStats = f.analyzeIndexUsage("users_name_email_index");
 "\n".echo();
 
 "Query Optimization:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Create multiple indexes
 f.mkindex("users", ["name"], {"type": "btree"});
@@ -278,7 +278,7 @@ results = f.search({"status": "active", "age": {"$gt": 25}});  // Uses composite
 "\n".echo();
 
 "Query Plan Analysis:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Analyze query plan
 plan = f.analyzeQuery({"status": "active", "age": {"$gt": 25}});
@@ -293,7 +293,7 @@ plan = f.analyzeQuery({"status": "active", "age": {"$gt": 25}});
 "\n".echo();
 
 "Index Suggestions:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Get index suggestions
 suggestions = f.indexSuggestions("users");
@@ -318,7 +318,7 @@ for (suggestion in suggestions) {
 "\n".echo();
 
 "Batch Index Creation:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Create multiple indexes in batch
 indexes = [
@@ -337,7 +337,7 @@ f.createIndexesBatch(indexes);
 "\n".echo();
 
 "Index-Aware Batch Operations:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Batch operations with index optimization
 f.setBatchMultiple([
@@ -366,7 +366,7 @@ f.refreshIndexes("users");
 "\n".echo();
 
 "Usage Statistics:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Get index usage statistics
 stats = f.indexUsageStats();
@@ -385,7 +385,7 @@ for (stat in stats) {
 "\n".echo();
 
 "Performance Monitoring:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Monitor index performance
 f.monitorIndexPerformance("users_name_email_index");
@@ -412,7 +412,7 @@ for (alert in alerts) {
 "\n".echo();
 
 "Enhanced Search with Index Selection:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Search with automatic index selection
 results = f.searchWithIndex({"status": "active", "age": {"$gt": 25}});
@@ -429,7 +429,7 @@ results = f.searchMultiIndex([
 "\n".echo();
 
 "Integration with Batch Operations:\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Batch operations with index optimization
 f.setBatchWithIndex("user1", {"name": "John", "age": 30}, {"updateIndexes": true});
@@ -446,7 +446,7 @@ f.setBatchMultipleWithIndex([
 "\n".echo();
 
 /* Summary */
-"Summary: GrapaDB2 Enhanced Indexing System Benefits\n".echo();
+"Summary: GrapaDBX Enhanced Indexing System Benefits\n".echo();
 "=================================================\n".echo();
 "✅ Backward Compatible: Current code continues to work\n".echo();
 "✅ Enhanced Index Types: Unique, sparse, partial, functional indexes\n".echo();
@@ -458,7 +458,7 @@ f.setBatchMultipleWithIndex([
 "✅ Practical Enhancements: Real value without overwhelming complexity\n".echo();
 "\n".echo();
 
-"GrapaDB2 Enhanced Indexing builds on your practical approach while adding\n".echo();
+"GrapaDBX Enhanced Indexing builds on your practical approach while adding\n".echo();
 "valuable features that provide real performance and usability benefits.\n".echo();
 "The enhancements are designed to be immediately useful and easy to use,\n".echo();
 "not overly complex or academic.\n".echo();

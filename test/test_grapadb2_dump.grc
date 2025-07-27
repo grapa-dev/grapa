@@ -1,8 +1,8 @@
-/* Test GrapaDB2 Dump Functionality */
+/* Test GrapaDBX Dump Functionality */
 
-"=== GrapaDB2 Dump Test ===".echo();
+"=== GrapaDBX Dump Test ===".echo();
 
-/* Create a GrapaDB2 database */
+/* Create a GrapaDBX database */
 db = $file().table("GROUP");
 "✓ Database created".echo();
 

@@ -31,17 +31,17 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
             if (err) return err;
             mGrapaDBRootType = GrapaDB::GROUP_TREE;
         }
-    } else if (mStorageType.StrCmp("GRAPADB2") == 0) {
-        if (!mGrapaDB2) {
-            mGrapaDB2 = new GrapaGroup2(&mFile);
-            if (!mGrapaDB2) return -1;
+    } else if (mStorageType.StrCmp("GRAPADBX") == 0) {
+        if (!mGrapaDBX) {
+            mGrapaDBX = new GrapaGroup2(&mFile);
+            if (!mGrapaDBX) return -1;
         }
-        err = mGrapaDB2->Create((char*)mStoragePath.mBytes, GrapaDB::GROUP_TREE, mGrapaDB2FirstTree);
+        err = mGrapaDBX->Create((char*)mStoragePath.mBytes, GrapaDB::GROUP_TREE, mGrapaDBXFirstTree);
         if (err) {
             // Try to open existing database
-            err = mGrapaDB2->OpenFile(mStoragePath, 'r');
+            err = mGrapaDBX->OpenFile(mStoragePath, 'r');
             if (err) return err;
-            mGrapaDB2RootType = GrapaDB::GROUP_TREE;
+            mGrapaDBXRootType = GrapaDB::GROUP_TREE;
         }
     } else if (mStorageType.StrCmp("NETWORK") == 0) {
         if (!mNetwork) {
@@ -72,12 +72,12 @@ GrapaError GrapaUnifiedLocalDatabase::ParseStorageUrl(const GrapaCHAR& storageUr
     // Check for database protocols
     printf("[DEBUG] ParseStorageUrl: url='%s' (len=%llu)\n", (char*)url.mBytes, (unsigned long long)url.mLength);
     printf("[DEBUG] Compare to 'grapadb://': %d\n", url.StrNCmp("grapadb://", 10));
-    printf("[DEBUG] Compare to 'grapadb2://': %d\n", url.StrNCmp("grapadb2://", 11));
+    printf("[DEBUG] Compare to 'grapadbx://': %d\n", url.StrNCmp("grapadbx://", 11));
     if (url.StrNCmp("grapadb://", 10) == 0) {
         mStorageType.FROM("GRAPADB");
         mStoragePath.FROM((char*)url.mBytes + 10, url.mLength - 10);
-    } else if (url.StrNCmp("grapadb2://", 11) == 0) {
-        mStorageType.FROM("GRAPADB2");
+    } else if (url.StrNCmp("grapadbx://", 11) == 0) {
+        mStorageType.FROM("GRAPADBX");
         mStoragePath.FROM((char*)url.mBytes + 11, url.mLength - 11);
     } else if (url.StrCmp("http://") == 0 || url.StrCmp("https://") == 0 || 
                url.StrCmp("ftp://") == 0 || url.StrCmp("sftp://") == 0) {
@@ -252,9 +252,9 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBFindRecord(const GrapaCHAR& recordN
 }
 
 /* Helper method for GrapaDB2 table navigation */
-GrapaError GrapaUnifiedLocalDatabase::GrapaDB2NavigateToTable(const GrapaCHAR& tableName, GrapaDB2Table& table)
+GrapaError GrapaUnifiedLocalDatabase::GrapaDBXNavigateToTable(const GrapaCHAR& tableName, GrapaDBXTable& table)
 {
-    if (!mGrapaDB2) return -1;
+    if (!mGrapaDBX) return -1;
     
     GrapaError err;
     
@@ -267,24 +267,24 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDB2NavigateToTable(const GrapaCHAR& t
     
     // Try to open the group/table using hierarchical navigation
     // Use GrapaGroup2 for hierarchical operations
-    GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDB2);
+    GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
     if (group2) {
-        err = group2->OpenGroup(mGrapaDB2FirstTree, mGrapaDB2RootType, tableName, newTree, newType, tableId);
+        err = group2->OpenGroup(mGrapaDBXFirstTree, mGrapaDBXRootType, tableName, newTree, newType, tableId);
     } else {
         err = -1; // Not a GrapaGroup2
     }
     if (err) {
         // Group/table doesn't exist, we need to create it
         // For now, default to GROUP_TREE - this should be enhanced to detect table type
-        err = mGrapaDB2->LastTableId(mGrapaDB2FirstTree, tableId);
+        err = mGrapaDBX->LastTableId(mGrapaDBXFirstTree, tableId);
         if (err) return err;
         tableId++;
         
-        err = mGrapaDB2->CreateTable(mGrapaDB2FirstTree, GrapaDB::GROUP_TREE, tableId, table);
+        err = mGrapaDBX->CreateTable(mGrapaDBXFirstTree, GrapaDB::GROUP_TREE, tableId, table);
         if (err) return err;
     } else {
-        // Successfully opened existing group/table, now open it as a GrapaDB2Table
-        err = mGrapaDB2->OpenTable(mGrapaDB2FirstTree, tableId, table);
+        // Successfully opened existing group/table, now open it as a GrapaDBXTable
+        err = mGrapaDBX->OpenTable(mGrapaDBXFirstTree, tableId, table);
         if (err) return err;
     }
     
@@ -292,9 +292,9 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDB2NavigateToTable(const GrapaCHAR& t
 }
 
 /* Helper method for GrapaDB2 record finding */
-GrapaError GrapaUnifiedLocalDatabase::GrapaDB2FindRecord(const GrapaCHAR& recordName, GrapaDB2Table& table, GrapaDB2Cursor& cursor)
+GrapaError GrapaUnifiedLocalDatabase::GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaDBXCursor& cursor)
 {
-	if (!mGrapaDB2) return -1;
+	if (!mGrapaDBX) return -1;
 	
 	GrapaError err = 0;
 	
@@ -305,7 +305,7 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDB2FindRecord(const GrapaCHAR& record
 	
 	// Try to find the record using hierarchical navigation
 	        // Use GrapaGroup2 for hierarchical operations
-        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDB2);
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
         if (group2) {
             err = group2->FindEntry(table.mRef, table.mRefType, recordName, recordId);
         } else {
@@ -549,7 +549,7 @@ GrapaError GrapaUnifiedLocalDatabase::NetworkWriteFile(const GrapaCHAR& path, co
 	return -1; /* Unsupported for HTTP/HTTPS */
 }
 
-GrapaError GrapaUnifiedLocalDatabase::GrapaDB2Operation(const GrapaCHAR& operation, const GrapaCHAR& params)
+GrapaError GrapaUnifiedLocalDatabase::GrapaDBXOperation(const GrapaCHAR& operation, const GrapaCHAR& params)
 {
     /* TODO: Implement GrapaDB2 operations */
     return 0;
@@ -802,7 +802,7 @@ GrapaError GrapaUnifiedLocalDatabase::ParallelListDirectory(const GrapaCHAR& pat
 	
 	/* For BTree databases, use sequential processing to avoid conflicts */
 	/* Multiple threads accessing the same BTree file can cause corruption */
-	if (mStorageType.StrCmp("GRAPADB") == 0 || mStorageType.StrCmp("GRAPADB2") == 0) {
+	if (mStorageType.StrCmp("GRAPADB") == 0 || mStorageType.StrCmp("GRAPADBX") == 0) {
 		/* Use sequential processing for database operations */
 		GrapaCHAR pathCopy;
 		pathCopy.FROM(path);
@@ -855,7 +855,7 @@ GrapaError GrapaUnifiedLocalDatabase::ParallelBatchOperation(const GrapaCHAR& op
 	
 	/* For BTree databases, use sequential processing to avoid conflicts */
 	/* Multiple threads accessing the same BTree file can cause corruption */
-	if (mStorageType.StrCmp("GRAPADB") == 0 || mStorageType.StrCmp("GRAPADB2") == 0) {
+	if (mStorageType.StrCmp("GRAPADB") == 0 || mStorageType.StrCmp("GRAPADBX") == 0) {
 		/* Use sequential processing for database operations */
 		/* TODO: Implement sequential batch processing for databases */
 		return 0;

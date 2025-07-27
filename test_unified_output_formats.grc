@@ -77,13 +77,13 @@ result = u2.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Test 3: GrapaDB2 with Different Output Formats */
-"Test 3: GrapaDB2 Output Formats\n".echo();
+/* Test 3: GrapaDBX with Different Output Formats */
+"Test 3: GrapaDBX Output Formats\n".echo();
 "------------------------------\n".echo();
 
-/* Create unified storage object with GrapaDB2 */
+/* Create unified storage object with GrapaDBX */
 u3 = $unified();
-u3.create("grapadb2://testdb2.gdb");
+u3.create("grapadbx://testdbx.gdb");
 
 /* Create some test records */
 u3.mk("record1", "RECORD");

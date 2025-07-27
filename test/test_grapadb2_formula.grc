@@ -1,4 +1,4 @@
-/* Test GrapaDB2 Formula Fields */
+/* Test GrapaDBX Formula Fields */
 
 /* Initialize database */
 db = $file().table("GROUP");
@@ -8,7 +8,7 @@ db.createGroup("test_table", "ROW");
 
 /* Create a formula field */
 /* Note: This is a placeholder test since the actual implementation */
-/* would require integration with the GrapaDB2 C++ methods */
+/* would require integration with the GrapaDBX C++ methods */
 
 /* Test basic database operations */
 db.echo("Database initialized successfully");

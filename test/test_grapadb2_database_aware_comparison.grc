@@ -1,7 +1,7 @@
-/* Test script for GrapaDB2 Database-Aware Comparison System */
+/* Test script for GrapaDBX Database-Aware Comparison System */
 /* This demonstrates the enhanced comparison logic for different data types and storage models */
 
-"Testing GrapaDB2 Database-Aware Comparison System...\n".echo();
+"Testing GrapaDBX Database-Aware Comparison System...\n".echo();
 "==================================================\n".echo();
 
 /* Test 1: Current Comparison Issues (strcmp for everything) */
@@ -26,7 +26,7 @@
 "Test 2: Database-Aware Comparison Benefits\n".echo();
 "-----------------------------------------\n".echo();
 
-"GrapaDB2 will provide correct comparisons:\n".echo();
+"GrapaDBX will provide correct comparisons:\n".echo();
 "• Type-aware: ALL Grapa data types supported\n".echo();
 "• Storage-aware: FIX, VAR, PAR storage handling\n".echo();
 "• Tree-aware: ROW, COL, GROUP storage models\n".echo();
@@ -38,12 +38,12 @@
 "Test 3: Comprehensive Grapa Data Type Comparison Examples\n".echo();
 "--------------------------------------------------------\n".echo();
 
-"GrapaDB2 will support comparison for ALL Grapa data types:\n".echo();
+"GrapaDBX will support comparison for ALL Grapa data types:\n".echo();
 "\n".echo();
 
 "=== Primitive Types ===\n".echo();
 "Example 1: Integer Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f = $file().table("ROW");
 f.mkfield("id", "INT", "FIX", 4);
@@ -62,7 +62,7 @@ results = f.search({"score": {"$gt": 80}});  // Should find user1 and user2
 "\n".echo();
 
 "Example 2: Float Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("price", "FLOAT", "FIX", 8);
 f.setBatch("product1", {"price": 19.99});
@@ -77,7 +77,7 @@ results = f.search({"price": {"$between": [10.0, 30.0]}});
 "\n".echo();
 
 "Example 3: String Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("name", "STR", "VAR");
 f.setBatch("user1", {"name": "Alice"});
@@ -96,7 +96,7 @@ results = f.search({"name": {"$ieq": "alice"}});  // Should find user1 and user2
 "\n".echo();
 
 "Example 4: Time Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("created", "TIME", "FIX", 8);
 f.setBatch("order1", {"created": 1640995200});  // 2022-01-01
@@ -111,7 +111,7 @@ results = f.search({"created": {"$gte": 1643673600}});  // After Feb 1
 "\n".echo();
 
 "Example 5: Boolean Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("active", "BOOL", "FIX", 1);
 f.setBatch("user1", {"active": true});
@@ -126,7 +126,7 @@ results = f.search({"active": true});  // Should find user1 and user3
 "\n".echo();
 
 "Example 6: ID Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("user_id", "ID", "VAR");
 f.setBatch("user1", {"user_id": "USER001"});
@@ -141,7 +141,7 @@ results = f.search({"user_id": {"$gte": "USER"}});  // Should find user1 and use
 "\n".echo();
 
 "Example 7: Raw Data Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("binary_data", "RAW", "VAR");
 f.setBatch("file1", {"binary_data": [0x01, 0x02, 0x03]});
@@ -157,7 +157,7 @@ results = f.search({"binary_data": {"$gt": [0x01, 0x02]}});  // Should find file
 
 "=== Composite Types ===\n".echo();
 "Example 8: Array Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("tags", "ARRAY", "VAR");
 f.setBatch("post1", {"tags": ["tech", "programming"]});
@@ -172,7 +172,7 @@ results = f.search({"tags": {"$contains": "tech"}});  // Should find all posts
 "\n".echo();
 
 "Example 9: List Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("categories", "LIST", "VAR");
 f.setBatch("item1", {"categories": {"electronics", "computers"}});
@@ -187,7 +187,7 @@ results = f.search({"categories": {"$contains": "electronics"}});  // Should fin
 "\n".echo();
 
 "Example 10: Vector Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("coordinates", "VECTOR", "VAR");
 f.setBatch("point1", {"coordinates": [1.0, 2.0, 3.0]});
@@ -202,7 +202,7 @@ results = f.search({"coordinates": {"$dim": 3}});  // Should find point1 and poi
 "\n".echo();
 
 "Example 11: Table Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("metadata", "TABLE", "VAR");
 f.setBatch("doc1", {"metadata": {"author": "Alice", "version": 1}});
@@ -217,7 +217,7 @@ results = f.search({"metadata": {"author": "Alice"}});  // Should find doc1 and 
 "\n".echo();
 
 "Example 12: XML Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("config", "XML", "VAR");
 f.setBatch("app1", {"config": "<config><name>App1</name><version>1.0</version></config>"});
@@ -233,7 +233,7 @@ results = f.search({"config": {"$xpath": "//name[text()='App1']"}});  // Should 
 
 "=== System Types ===\n".echo();
 "Example 13: Operation Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("handler", "OP", "VAR");
 f.setBatch("event1", {"handler": op(x) { x * 2; }});
@@ -248,7 +248,7 @@ results = f.search({"handler": {"$signature": "op(x)"}});  // Should find all ha
 "\n".echo();
 
 "Example 14: Class Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("type", "CLASS", "VAR");
 f.setBatch("obj1", {"type": class { name = ""; age = 0; }});
@@ -263,7 +263,7 @@ results = f.search({"type": {"$has_property": "age"}});  // Should find obj1 and
 "\n".echo();
 
 "Example 15: Object Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("instance", "OBJ", "VAR");
 f.setBatch("obj1", {"instance": {"name": "Alice", "age": 30}});
@@ -282,7 +282,7 @@ results = f.search({"instance": {"name": "Alice"}});  // Should find obj1 and ob
 "----------------------------------------\n".echo();
 
 "Example 1: Fixed Storage Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f = $file().table("ROW");
 f.mkfield("id", "INT", "FIX", 4);      // Fixed storage
@@ -299,7 +299,7 @@ results = f.search({"id": {"$gt": 150}});
 "\n".echo();
 
 "Example 2: Variable Storage Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f.mkfield("description", "STR", "VAR");  // Variable storage
 f.setBatch("product1", {"description": "Short"});
@@ -316,7 +316,7 @@ results = f.search({"description": {"$len": {"$gt": 10}}});
 "------------------------------------------\n".echo();
 
 "Example 1: ROW Storage Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 frow = $file().table("ROW");
 frow.mkfield("id", "INT", "FIX", 4);
@@ -333,7 +333,7 @@ results = frow.search({"id": {"$gt": 150}});
 "\n".echo();
 
 "Example 2: COL Storage Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 fcol = $file().table("COL");
 fcol.mkfield("id", "INT", "FIX", 4);
@@ -354,7 +354,7 @@ results = fcol.search({"id": {"$gt": 150}});
 "-----------------------------------\n".echo();
 
 "Example: Composite Index Comparison\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 f = $file().table("ROW");
 f.mkfield("last_name", "STR", "VAR");
@@ -392,7 +392,7 @@ results = f.search({
 "\n".echo();
 
 "Example: Cached Comparison Results\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // First comparison: full evaluation
 start_time = $time();
@@ -424,11 +424,11 @@ second_time = $time() - start_time;
 "\n".echo();
 
 "Example: Custom Comparison Plugin\n".echo();
-/* This would be the new syntax for GrapaDB2 */
+/* This would be the new syntax for GrapaDBX */
 /*
 // Custom comparison for geographic coordinates
-class GeoComparison : public GrapaDB2Comparison {
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+class GeoComparison : public GrapaDBXComparison {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         // Custom logic for geographic distance comparison
         return CompareGeographicDistance(context, result);
     }
@@ -449,7 +449,7 @@ results = f.search({"location": {"$near": {"lat": 40.0, "lng": -74.0, "radius": 
 "\n".echo();
 
 /* Summary */
-"Summary: GrapaDB2 Comprehensive Data Type Comparison Benefits\n".echo();
+"Summary: GrapaDBX Comprehensive Data Type Comparison Benefits\n".echo();
 "============================================================\n".echo();
 "✅ ALL Grapa Data Types Supported:\n".echo();
 "   • Primitive: BOOL, INT, FLOAT, STR, TIME, ID, RAW, ERR, SYSID, SYSSTR, SYSINT\n".echo();
@@ -467,5 +467,5 @@ results = f.search({"location": {"$near": {"lat": 40.0, "lng": -74.0, "radius": 
 "✅ Canonical comparisons for XML and structured data\n".echo();
 "\n".echo();
 
-"GrapaDB2 database-aware comparison will eliminate all current comparison issues!\n".echo();
+"GrapaDBX database-aware comparison will eliminate all current comparison issues!\n".echo();
 "Status: Design complete, ready for Phase 2 implementation.\n".echo(); 

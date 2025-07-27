@@ -374,19 +374,19 @@ The system automatically handles the transitions between different storage types
 
 ---
 
-## [INTERNAL] GrapaDB2 Unified Path System Compliance Checklist
+## [INTERNAL] GrapaDBX Unified Path System Compliance Checklist
 
-**As of [current date], GrapaDB2 is under active development to achieve full compliance with the unified path system as described above.**
+**As of [current date], GrapaDBX is under active development to achieve full compliance with the unified path system as described above.**
 
 ### ✅ COMPLETED FEATURES
-- **Basic Unified Storage Integration**: GrapaDB2 is fully integrated with the `$unified()` interface
-- **URL Protocol Support**: `grapadb2://` protocol is properly parsed and handled
+- **Basic Unified Storage Integration**: GrapaDBX is fully integrated with the `$unified()` interface
+- **URL Protocol Support**: `grapadbx://` protocol is properly parsed and handled
 - **Basic Operations**: `mk`, `set`, and `get` operations are working via the unified interface
-- **Parallel Hierarchy Architecture**: GrapaDB2 inherits from GrapaBtree, GrapaGroup2 inherits from GrapaDB2
-- **Rule Engine Integration**: GrapaLibRule.cpp properly handles GrapaDB2 operations for mk, set, and get
-- **Field Creation**: `mk` operation can create fields (STR, INT, FLOAT, RAW types) in GrapaDB2
-- **Data Storage**: `set` operation can store data in GrapaDB2 fields
-- **Data Retrieval**: `get` operation can retrieve data from GrapaDB2 fields
+- **Parallel Hierarchy Architecture**: GrapaDBX inherits from GrapaBtree, GrapaGroup2 inherits from GrapaDBX
+- **Rule Engine Integration**: GrapaLibRule.cpp properly handles GrapaDBX operations for mk, set, and get
+- **Field Creation**: `mk` operation can create fields (STR, INT, FLOAT, RAW types) in GrapaDBX
+- **Data Storage**: `set` operation can store data in GrapaDBX fields
+- **Data Retrieval**: `get` operation can retrieve data from GrapaDBX fields
 
 ### 🔄 IN PROGRESS
 - **Hierarchical Navigation**: Basic `OpenGroup` and `GetField` methods implemented as placeholders
@@ -395,11 +395,11 @@ The system automatically handles the transitions between different storage types
 
 ### ❌ REQUIRED UPDATES FOR FULL COMPLIANCE
 - **Complete Hierarchical Navigation**: Implement full `OpenGroup`, `CreateGroup`, `CreateEntry`, `DeleteGroup`, `DeleteEntry`, `FindEntry`, `CreateField`, `DeleteField`, `SetField`, `GetField`, `DumpGroup`, `ListFields`, `FindField`, `GetNameId`, `SetNameId`, `NextNameId` methods in GrapaGroup2 with actual logic (currently placeholders)
-- **Full Database Operations**: Implement complete `CreateTable`, `OpenTable`, `CreateTableField`, `SetRecordField`, `GetRecordField`, `SearchDb`, `CreateIndex`, `GetData`, `SetDataValue`, `CompareKey`, `DumpTree`, `FindRecordField` methods in GrapaDB2 with actual logic (currently placeholders)
+- **Full Database Operations**: Implement complete `CreateTable`, `OpenTable`, `CreateTableField`, `SetRecordField`, `GetRecordField`, `SearchDb`, `CreateIndex`, `GetData`, `SetDataValue`, `CompareKey`, `DumpTree`, `FindRecordField` methods in GrapaDBX with actual logic (currently placeholders)
 - **Seamless Traversal**: Ensure seamless traversal and access between GROUP, ROW, COL, and file system layers
 - **Index Support**: Support index creation, removal, and lookup at GROUP, ROW, and COL levels
-- **Path Operations**: All path-based operations (`cd`, `ls`, `get`, `set`, `mkfield`, etc.) must work identically for GrapaDB2 as for GrapaDB
-- **Test Coverage**: All test scripts and usage patterns in this document must pass with GrapaDB2 (zero regression)
+- **Path Operations**: All path-based operations (`cd`, `ls`, `get`, `set`, `mkfield`, etc.) must work identically for GrapaDBX as for GrapaDB
+- **Test Coverage**: All test scripts and usage patterns in this document must pass with GrapaDBX (zero regression)
 
 ### 🧪 TESTING STATUS
 - **Basic Operations Test**: `test_debug_navigation.grc` - ✅ PASSING (mk, set, get operations working)
@@ -408,15 +408,15 @@ The system automatically handles the transitions between different storage types
 
 ### 📋 NEXT STEPS
 1. **Implement Full GrapaGroup2 Methods**: Replace placeholder implementations with actual hierarchical navigation logic
-2. **Implement Full GrapaDB2 Methods**: Replace placeholder implementations with actual database operations
+2. **Implement Full GrapaDBX Methods**: Replace placeholder implementations with actual database operations
 3. **Add Index Language Integration**: Expose index creation/removal functions to Grapa language
 4. **Comprehensive Testing**: Create and run full test suite for all unified path system features
-5. **Performance Optimization**: Ensure GrapaDB2 performance matches or exceeds GrapaDB
+5. **Performance Optimization**: Ensure GrapaDBX performance matches or exceeds GrapaDB
 
-**Until these are complete, GrapaDB2 should not be considered a drop-in replacement for GrapaDB in production.**
+**Until these are complete, GrapaDBX should not be considered a drop-in replacement for GrapaDB in production.**
 
 ### 🏗️ ARCHITECTURE NOTES
-- **Current Approach**: Parallel Hierarchy (GrapaDB2 inherits from GrapaBtree, GrapaGroup2 inherits from GrapaDB2)
+- **Current Approach**: Parallel Hierarchy (GrapaDBX inherits from GrapaBtree, GrapaGroup2 inherits from GrapaDBX)
 - **Previous Attempts**: Wrapper Pattern (abandoned due to complexity), GrapaStorageEngine interface (abandoned due to compilation issues)
-- **Integration Method**: Via `$unified()` interface with `grapadb2://` protocol
-- **Rule Engine**: Modified `GrapaLibRule.cpp` to handle GrapaDB2 operations alongside existing GrapaDB support 
+- **Integration Method**: Via `$unified()` interface with `grapadbx://` protocol
+- **Rule Engine**: Modified `GrapaLibRule.cpp` to handle GrapaDBX operations alongside existing GrapaDB support 

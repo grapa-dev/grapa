@@ -382,7 +382,7 @@ optimization_suggestions = ANALYZE_RAW_FIELD_PERFORMANCE("binary_data", "binary_
 "✅ Byte-by-Byte Comparison: Maintains current GrapaDB behavior\n".echo();
 "✅ SQL Integration: RAW fields work seamlessly with SQL syntax\n".echo();
 "✅ Enhanced Functions: New SQL functions for RAW field manipulation\n".echo();
-"✅ Performance Optimization: Leverages GrapaDB2's enhanced features\n".echo();
+"✅ Performance Optimization: Leverages GrapaDBX's enhanced features\n".echo();
 "✅ Backward Compatibility: All existing RAW field functionality preserved\n".echo();
 "✅ Advanced Features: Pattern matching, aggregation, and conversion functions\n".echo();
 "✅ Transaction Support: RAW fields work with ACID transactions\n".echo();
@@ -393,7 +393,7 @@ optimization_suggestions = ANALYZE_RAW_FIELD_PERFORMANCE("binary_data", "binary_
 
 "RAW fields are fully supported in the SQL integration, maintaining all\n".echo();
 "current functionality while gaining the benefits of SQL syntax and\n".echo();
-"GrapaDB2's enhanced capabilities. This ensures that existing RAW field\n".echo();
+"GrapaDBX's enhanced capabilities. This ensures that existing RAW field\n".echo();
 "code continues to work exactly as it does now.\n".echo();
 "\n".echo();
 

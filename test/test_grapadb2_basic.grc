@@ -1,14 +1,14 @@
 "================================================================================\n".echo();
-"Testing GrapaDB2 Basic Infrastructure\n".echo();
+"Testing GrapaDBX Basic Infrastructure\n".echo();
 "================================================================================\n".echo();
 
-"Test 1: Create GrapaDB2 database\n".echo();
+"Test 1: Create GrapaDBX database\n".echo();
 "Expected: Should not crash, should return success\n".echo();
 fdata = $file().table("ROW");
 "Result: Database creation " + (fdata ? "SUCCESS" : "FAILED").str() + "\n".echo();
 
 "================================================================================\n".echo();
-"Test 2: Create table in GrapaDB2\n".echo();
+"Test 2: Create table in GrapaDBX\n".echo();
 "Expected: Should not crash, should return success\n".echo();
 err = fdata.mkfield("name", "STR", "VAR");
 "Result: Field creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();

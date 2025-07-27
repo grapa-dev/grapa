@@ -20,7 +20,7 @@ f.cd("my_database");
 users = SELECT * FROM users WHERE age > 25 ORDER BY name;
 admin_count = SELECT COUNT(*) FROM users WHERE role = 'admin';
 
-// SQL with GrapaDB2 enhanced features
+// SQL with GrapaDBX enhanced features
 high_salary = SELECT name, salary FROM employees 
               WHERE salary > 50000 
               ORDER BY salary DESC 
@@ -35,24 +35,24 @@ high_salary = SELECT name, salary FROM employees
 "Test 2: SQL with Batch Operations\n".echo();
 "--------------------------------\n".echo();
 
-"SQL would leverage GrapaDB2's batch operations:\n".echo();
+"SQL would leverage GrapaDBX's batch operations:\n".echo();
 "\n".echo();
 
-/* This would use GrapaDB2's batch operations */
+/* This would use GrapaDBX's batch operations */
 /*
 f = $file();
 f.cd("my_database");
 
-// Batch INSERT using GrapaDB2's SetBatchMultiple
+// Batch INSERT using GrapaDBX's SetBatchMultiple
 INSERT INTO users (name, age, email) VALUES 
   ('John Doe', 30, 'john@example.com'),
   ('Jane Smith', 25, 'jane@example.com'),
   ('Bob Johnson', 35, 'bob@example.com');
 
-// Batch UPDATE using GrapaDB2's enhanced update capabilities
+// Batch UPDATE using GrapaDBX's enhanced update capabilities
 UPDATE users SET last_login = NOW() WHERE status = 'active';
 
-// Batch DELETE using GrapaDB2's enhanced delete capabilities
+// Batch DELETE using GrapaDBX's enhanced delete capabilities
 DELETE FROM users WHERE last_login < '2024-01-01';
 */
 "✓ INSERT INTO users (name, age, email) VALUES ('John Doe', 30, 'john@example.com'), ('Jane Smith', 25, 'jane@example.com');\n".echo();
@@ -64,10 +64,10 @@ DELETE FROM users WHERE last_login < '2024-01-01';
 "Test 3: SQL with Transaction Support\n".echo();
 "-----------------------------------\n".echo();
 
-"SQL would support GrapaDB2's transaction system:\n".echo();
+"SQL would support GrapaDBX's transaction system:\n".echo();
 "\n".echo();
 
-/* This would use GrapaDB2's transaction system */
+/* This would use GrapaDBX's transaction system */
 /*
 f = $file();
 f.cd("my_database");
@@ -132,10 +132,10 @@ daily_stats = SELECT date, COUNT(*) as count FROM . WHERE date >= '2024-01-01';
 "Test 5: SQL with Enhanced Indexing\n".echo();
 "--------------------------------\n".echo();
 
-"SQL would leverage GrapaDB2's enhanced indexing:\n".echo();
+"SQL would leverage GrapaDBX's enhanced indexing:\n".echo();
 "\n".echo();
 
-/* This would use GrapaDB2's enhanced indexing */
+/* This would use GrapaDBX's enhanced indexing */
 /*
 f = $file();
 f.cd("my_database");
@@ -397,7 +397,7 @@ try {
 "Summary: Grapa SQL Integration Benefits\n".echo();
 "=====================================\n".echo();
 "✅ Native SQL Syntax: SQL becomes part of Grapa's grammar\n".echo();
-"✅ GrapaDB2 Integration: Leverages all enhanced features\n".echo();
+"✅ GrapaDBX Integration: Leverages all enhanced features\n".echo();
 "✅ Unified Path Support: SQL works across file system and databases\n".echo();
 "✅ Batch Operations: Efficient bulk operations\n".echo();
 "✅ Transaction Support: ACID compliance with simple syntax\n".echo();
@@ -410,7 +410,7 @@ try {
 
 "Grapa SQL integration would create a powerful, unified data querying\n".echo();
 "system that combines the familiarity of SQL with the flexibility and\n".echo();
-"power of Grapa's unified path system and GrapaDB2's enhanced features.\n".echo();
+"power of Grapa's unified path system and GrapaDBX's enhanced features.\n".echo();
 "\n".echo();
 
 "Status: Design complete, ready for implementation.\n".echo(); 

@@ -1,5 +1,5 @@
-/* Simple GrapaDB2 Test */
-"=== Simple GrapaDB2 Test ===".echo();
+/* Simple GrapaDBX Test */
+"=== Simple GrapaDBX Test ===".echo();
 
 /* Create a simple GROUP database */
 group_db = $file().table("GROUP");

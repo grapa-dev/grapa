@@ -1,8 +1,8 @@
-/* Test GrapaDB2 Enhanced Dump System */
+/* Test GrapaDBX Enhanced Dump System */
 /* This test demonstrates the enhanced dump functionality with real BTree information */
 
 db = $file().table("GROUP");
-db.echo("Testing GrapaDB2 Enhanced Dump System...");
+db.echo("Testing GrapaDBX Enhanced Dump System...");
 
 /* Create a more complex database structure */
 db.createGroup("test_table", "ROW");
