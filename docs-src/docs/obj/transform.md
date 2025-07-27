@@ -43,12 +43,79 @@ Gets the middle bytes of an item.
 
 ## midtrim(items, offset, blocksize)
 
-```
-items = array of [label, offset, len, ltrim, rtrim, op]
+Extracts data from padded tables using references with optional follow-on Grapa lambda code execution.
 
-"this is a test to see".midtrim([["a",2,1," "," "],["b",10,5," "," ",op(a){a.len();}]],1,13);
-{"a":"s","b":3}
+### Parameters:
+- `items` - Array of extraction rules, each containing:
+  - `[0]` - **label** (string) - Name for the extracted field
+  - `[1]` - **offset** (integer) - Position within the block (0-based, negative values relative to end)
+  - `[2]` - **length** (integer) - Number of characters to extract (negative values relative to end)
+  - `[3]` - **ltrim** (optional, string) - Characters to trim from left side
+  - `[4]` - **rtrim** (optional, string) - Characters to trim from right side  
+  - `[5]` - **lambda** (optional, function) - Follow-on Grapa code to execute on extracted value
+- `offset` - Starting position in the source string
+- `blocksize` - Size of the block to process
+
+### Behavior:
+- Processes the source string in blocks of specified size
+- For each extraction rule, extracts the specified substring
+- Applies left/right trimming if specified
+- Executes optional lambda function on the extracted value
+- Returns a dictionary with labels as keys and extracted/processed values as values
+
+### Examples:
+
+```grapa
+/* Basic extraction from padded table */
+data = "this is a test to see";
+result = data.midtrim([["a",2,1," "," "],["b",10,5," "," ",op(a){a.len();}]],1,13);
+/* Result: {"a":"s","b":3} */
+
+/* Fixed-width record parsing */
+record = "John    Doe     25      Engineer";
+fields = record.midtrim([
+    ["first", 0, 8, " ", ""],     /* Extract first name, trim spaces */
+    ["last",  8, 8, " ", ""],     /* Extract last name, trim spaces */
+    ["age",   16, 2, " ", ""],    /* Extract age */
+    ["job",   18, 10, " ", ""]    /* Extract job title, trim spaces */
+], 0, 28);
+/* Result: {"first":"John","last":"Doe","age":"25","job":"Engineer"} */
+
+/* CSV-like parsing with data transformation */
+csv_line = "  apple,  banana,  cherry  ";
+parsed = csv_line.midtrim([
+    ["fruit1", 0, 6, " ,", ""],                    /* Extract first fruit */
+    ["fruit2", 7, 8, " ,", "", op(x){x.upper();}], /* Extract second fruit, convert to uppercase */
+    ["fruit3", 16, 8, " ,", ""]                    /* Extract third fruit */
+], 0, 24);
+/* Result: {"fruit1":"apple","fruit2":"BANANA","fruit3":"cherry"} */
+
+/* Log file parsing with numeric conversion */
+log_entry = "2024-01-15 14:30:25 [INFO] User login successful";
+log_data = log_entry.midtrim([
+    ["date", 0, 10, "", ""],                                    /* Extract date */
+    ["time", 11, 8, "", ""],                                    /* Extract time */
+    ["level", 20, 5, "[", "]"],                                 /* Extract log level */
+    ["message", 26, 25, " ", ""],                               /* Extract message */
+    ["word_count", 26, 25, " ", "", op(msg){msg.split(" ").len();}] /* Count words in message */
+], 0, 51);
+/* Result: {"date":"2024-01-15","time":"14:30:25","level":"INFO","message":"User login successful","word_count":3} */
 ```
+
+### Advanced Features:
+
+1. **Relative Positioning**: Use negative offsets/lengths for relative positioning from end of block
+2. **Conditional Processing**: Lambda functions can perform validation, transformation, or conditional logic
+3. **Nested Processing**: Lambda functions can call other Grapa methods on the extracted data
+4. **Error Handling**: Use `.iferr()` in lambda functions for robust error handling
+
+### Use Cases:
+- **Fixed-width file parsing** (COBOL, legacy data formats)
+- **Log file analysis** with structured extraction
+- **CSV/TSV processing** with custom delimiters
+- **Database dump parsing** with field extraction
+- **Network protocol parsing** with structured message formats
+- **Document parsing** with position-based extraction
 
 ## rtrim([chars])
 Trims characters from the right side of a string.
