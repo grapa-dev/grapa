@@ -1,8 +1,8 @@
-# GrapaDB2: New Database Engine Design
+# GrapaDBX: New Database Engine Design
 
 ## Project Rationale
 
-GrapaDB2 is a ground-up rewrite of the original GrapaDB engine. The primary motivation is to address a persistent and elusive bug in GrapaDB’s index management, which has proven resistant to all attempted fixes. Rather than continuing to patch the legacy code, we chose to reimplement the database engine, using the lessons learned from GrapaDB to create a more robust, performant, and extensible system. GrapaDB2 aims to:
+GrapaDBX is a ground-up rewrite of the original GrapaDB engine. The primary motivation is to address a persistent and elusive bug in GrapaDB’s index management, which has proven resistant to all attempted fixes. Rather than continuing to patch the legacy code, we chose to reimplement the database engine, using the lessons learned from GrapaDB to create a more robust, performant, and extensible system. GrapaDBX aims to:
 - Eliminate index corruption issues
 - Improve performance and scalability
 - Add advanced features (Unicode, regex, object/graph DB, etc.)
@@ -12,7 +12,7 @@ GrapaDB2 is a ground-up rewrite of the original GrapaDB engine. The primary moti
 ## Current Implementation Status
 
 **✅ COMPLETED:**
-- **Core GrapaDB2 Engine**: All core methods implemented (`SearchDb`, `FirstDb`, `CreateTable`, `OpenTable`, `DeleteTable`, etc.)
+- **Core GrapaDBX Engine**: All core methods implemented (`SearchDb`, `FirstDb`, `CreateTable`, `OpenTable`, `DeleteTable`, etc.)
 - **Unified Storage Integration**: Full integration with unified storage system, tested and working
 - **Basic CRUD Operations**: Create, read, update, delete operations functional
 - **Table Management**: Table creation, opening, and deletion working
@@ -41,10 +41,10 @@ GrapaDB2 is a ground-up rewrite of the original GrapaDB engine. The primary moti
 ## Naming Convention
 
 Following the existing Grapa naming pattern:
-- **Header**: `GrapaDB2.h`
-- **Implementation**: `GrapaDB2.cpp`
-- **Class**: `GrapaDB2`
-- **Related Classes**: `GrapaDB2Table`, `GrapaDB2Index`, `GrapaDB2Field`, etc.
+- **Header**: `GrapaDBX.h`
+- **Implementation**: `GrapaDBX.cpp`
+- **Class**: `GrapaDBX`
+- **Related Classes**: `GrapaDBXTable`, `GrapaDBXIndex`, `GrapaDBXField`, etc.
 
 ## Core Design Principles
 
@@ -127,17 +127,17 @@ Following the existing Grapa naming pattern:
 ## Architecture Overview
 
 ```
-GrapaDB2 (Main Database Class)
+GrapaDBX (Main Database Class)
 ├── Storage Layer (GrapaBtree-based)
 │   ├── File Management
 │   ├── Block Allocation
 │   └── Data Persistence
 ├── Schema Layer
-│   ├── Table Management (GrapaDB2Table)
-│   ├── Field Management (GrapaDB2Field)
+│   ├── Table Management (GrapaDBXTable)
+│   ├── Field Management (GrapaDBXField)
 │   └── Type System
 ├── Index Layer
-│   ├── Index Management (GrapaDB2Index)
+│   ├── Index Management (GrapaDBXIndex)
 │   ├── Index Operations
 │   └── Query Optimization
 ├── Record Layer
@@ -154,9 +154,9 @@ GrapaDB2 (Main Database Class)
 
 ### Core Classes
 
-#### GrapaDB2 (Main Database Class)
+#### GrapaDBX (Main Database Class)
 ```cpp
-class GrapaDB2 : public GrapaBtree
+class GrapaDBX : public GrapaBtree
 {
 public:
     // File Operations
@@ -165,8 +165,8 @@ public:
     virtual GrapaError CloseFile();
     
     // Table Operations
-    virtual GrapaError CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, GrapaDB2Table& pTable);
-    virtual GrapaError OpenTable(u64 firstTree, u64 pTableId, GrapaDB2Table& pTable);
+    virtual GrapaError CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, GrapaDBXTable& pTable);
+    virtual GrapaError OpenTable(u64 firstTree, u64 pTableId, GrapaDBXTable& pTable);
     virtual GrapaError DeleteTable(u64 firstTree, u64 pTableId);
     
     // Transaction Operations
@@ -175,27 +175,27 @@ public:
     virtual GrapaError RollbackTransaction();
     
     // Record Operations
-    virtual GrapaError CreateRecord(GrapaDB2Table& pTable, GrapaDB2Cursor& pCursor);
-    virtual GrapaError DeleteRecord(GrapaDB2Table& pTable, GrapaDB2Cursor& pCursor);
-    virtual GrapaError UpdateRecord(GrapaDB2Table& pTable, GrapaDB2Cursor& pCursor);
+    virtual GrapaError CreateRecord(GrapaDBXTable& pTable, GrapaDBXCursor& pCursor);
+    virtual GrapaError DeleteRecord(GrapaDBXTable& pTable, GrapaDBXCursor& pCursor);
+    virtual GrapaError UpdateRecord(GrapaDBXTable& pTable, GrapaDBXCursor& pCursor);
     
     // Search Operations
-    virtual GrapaError Search(GrapaDB2Cursor& pCursor, GrapaDB2Table& pTable, GrapaDB2FieldValueArray& pFieldList);
+    virtual GrapaError Search(GrapaDBXCursor& pCursor, GrapaDBXTable& pTable, GrapaDBXFieldValueArray& pFieldList);
     
 protected:
     // Simplified pointer management
-    virtual GrapaError UpdateIndexes(GrapaDB2Table& pTable, u64 recordId, bool isDelete = false);
-    virtual GrapaError ValidateIndexes(GrapaDB2Table& pTable);
+    virtual GrapaError UpdateIndexes(GrapaDBXTable& pTable, u64 recordId, bool isDelete = false);
+    virtual GrapaError ValidateIndexes(GrapaDBXTable& pTable);
     
 private:
-    GrapaDB2Transaction* mCurrentTransaction;
-    GrapaDB2LockManager* mLockManager;
+    GrapaDBXTransaction* mCurrentTransaction;
+    GrapaDBXLockManager* mLockManager;
 };
 ```
 
-#### GrapaDB2Table (Table Management)
+#### GrapaDBXTable (Table Management)
 ```cpp
-class GrapaDB2Table
+class GrapaDBXTable
 {
 public:
     // Table metadata
@@ -204,8 +204,8 @@ public:
     GrapaCHAR mTableName;
     
     // Schema management
-    GrapaDB2FieldArray mFields;
-    GrapaDB2IndexArray mIndexes;
+    GrapaDBXFieldArray mFields;
+    GrapaDBXIndexArray mIndexes;
     
     // Storage references
     u64 mDataTreeRef;      // Main data storage
@@ -225,9 +225,9 @@ private:
 };
 ```
 
-#### GrapaDB2Index (Index Management)
+#### GrapaDBXIndex (Index Management)
 ```cpp
-class GrapaDB2Index
+class GrapaDBXIndex
 {
 public:
     u64 mIndexId;
@@ -239,20 +239,20 @@ public:
     u64 mIndexTreeRef;     // BTree for index entries
     
 public:
-    virtual GrapaError InsertEntry(u64 recordId, GrapaDB2FieldValueArray& values);
-    virtual GrapaError DeleteEntry(u64 recordId, GrapaDB2FieldValueArray& values);
-    virtual GrapaError UpdateEntry(u64 recordId, GrapaDB2FieldValueArray& oldValues, GrapaDB2FieldValueArray& newValues);
-    virtual GrapaError FindEntries(GrapaDB2FieldValueArray& searchValues, GrapaDU64Array& recordIds);
+    virtual GrapaError InsertEntry(u64 recordId, GrapaDBXFieldValueArray& values);
+    virtual GrapaError DeleteEntry(u64 recordId, GrapaDBXFieldValueArray& values);
+    virtual GrapaError UpdateEntry(u64 recordId, GrapaDBXFieldValueArray& oldValues, GrapaDBXFieldValueArray& newValues);
+    virtual GrapaError FindEntries(GrapaDBXFieldValueArray& searchValues, GrapaDU64Array& recordIds);
     
 private:
     // Simplified key generation
-    virtual GrapaError GenerateIndexKey(GrapaDB2FieldValueArray& values, GrapaBYTE& key);
+    virtual GrapaError GenerateIndexKey(GrapaDBXFieldValueArray& values, GrapaBYTE& key);
 };
 ```
 
-#### GrapaDB2Field (Field Management)
+#### GrapaDBXField (Field Management)
 ```cpp
-class GrapaDB2Field
+class GrapaDBXField
 {
 public:
     u64 mFieldId;
@@ -269,14 +269,14 @@ public:
 };
 ```
 
-#### GrapaDB2Cursor (Record Navigation)
+#### GrapaDBXCursor (Record Navigation)
 ```cpp
-class GrapaDB2Cursor : public GrapaCursor
+class GrapaDBXCursor : public GrapaCursor
 {
 public:
-    GrapaDB2Table* mTable;
+    GrapaDBXTable* mTable;
     u64 mCurrentRecordId;
-    GrapaDB2FieldValueArray mCurrentValues;
+    GrapaDBXFieldValueArray mCurrentValues;
     
 public:
     virtual GrapaError First();
@@ -291,19 +291,19 @@ public:
 };
 ```
 
-#### GrapaDB2Transaction (Transaction Management)
+#### GrapaDBXTransaction (Transaction Management)
 ```cpp
-class GrapaDB2Transaction
+class GrapaDBXTransaction
 {
 public:
     enum TransactionState { ACTIVE, COMMITTED, ROLLED_BACK };
     
     TransactionState mState;
-    GrapaDB2OperationArray mOperations;
-    GrapaDB2LockSet mLocks;
+    GrapaDBXOperationArray mOperations;
+    GrapaDBXLockSet mLocks;
     
 public:
-    virtual GrapaError AddOperation(GrapaDB2Operation* operation);
+    virtual GrapaError AddOperation(GrapaDBXOperation* operation);
     virtual GrapaError Commit();
     virtual GrapaError Rollback();
     
@@ -315,9 +315,9 @@ private:
 };
 ```
 
-#### GrapaDB2MultiPointer (Multi-Pointer Access - Inspired by GrapaGroup)
+#### GrapaDBXMultiPointer (Multi-Pointer Access - Inspired by GrapaGroup)
 ```cpp
-class GrapaDB2MultiPointer
+class GrapaDBXMultiPointer
 {
 public:
     GrapaCHAR mFileName;
@@ -327,8 +327,8 @@ public:
     GrapaCritical mLock;
     
 public:
-    GrapaDB2MultiPointer();
-    virtual ~GrapaDB2MultiPointer();
+    GrapaDBXMultiPointer();
+    virtual ~GrapaDBXMultiPointer();
 
     virtual GrapaError OpenFile(const GrapaCHAR& fileName, GrapaFile* file, char mode);
     virtual GrapaError CloseFile();
@@ -341,17 +341,17 @@ private:
 };
 ```
 
-#### GrapaDB2PointerQueue (Multi-Pointer Management)
+#### GrapaDBXPointerQueue (Multi-Pointer Management)
 ```cpp
-class GrapaDB2PointerQueue : public GrapaQueue
+class GrapaDBXPointerQueue : public GrapaQueue
 {
 public:
-    GrapaDB2MultiPointer* OpenFile(const GrapaCHAR& fileName, GrapaFile* file, char mode);
-    GrapaDB2MultiPointer* Create(const GrapaCHAR& fileName, GrapaFile* file, u8 type);
-    void CloseFile(GrapaDB2MultiPointer* pointer);
+    GrapaDBXMultiPointer* OpenFile(const GrapaCHAR& fileName, GrapaFile* file, char mode);
+    GrapaDBXMultiPointer* Create(const GrapaCHAR& fileName, GrapaFile* file, u8 type);
+    void CloseFile(GrapaDBXMultiPointer* pointer);
     
 protected:
-    virtual GrapaDB2MultiPointer* Search(const GrapaCHAR& fileName);
+    virtual GrapaDBXMultiPointer* Search(const GrapaCHAR& fileName);
     GrapaCritical mCritical;
 };
 ```
@@ -364,16 +364,16 @@ The multi-pointer concept allows multiple logical file pointers to reference the
 
 ```cpp
 // Example: Multiple pointers to same database
-GrapaDB2PointerQueue pointerQueue;
+GrapaDBXPointerQueue pointerQueue;
 
 // Read-only pointer for analytics
-GrapaDB2MultiPointer* analyticsPtr = pointerQueue.OpenFile("database.db", file1, 'r');
+GrapaDBXMultiPointer* analyticsPtr = pointerQueue.OpenFile("database.db", file1, 'r');
 
 // Write pointer for logging
-GrapaDB2MultiPointer* loggingPtr = pointerQueue.OpenFile("database.db", file2, 'w');
+GrapaDBXMultiPointer* loggingPtr = pointerQueue.OpenFile("database.db", file2, 'w');
 
 // Read-write pointer for main application
-GrapaDB2MultiPointer* appPtr = pointerQueue.OpenFile("database.db", file3, 'rw');
+GrapaDBXMultiPointer* appPtr = pointerQueue.OpenFile("database.db", file3, 'rw');
 
 // All point to same physical file, but with different access modes
 ```
@@ -399,7 +399,7 @@ GrapaDB2MultiPointer* appPtr = pointerQueue.OpenFile("database.db", file3, 'rw')
 
 #### File Pointer Management
 ```cpp
-class GrapaDB2MultiPointer {
+class GrapaDBXMultiPointer {
     GrapaCHAR mFileName;        // Physical file name
     GrapaFile* mPhysicalFile;   // Shared file handle
     char mAccessMode;           // 'r', 'w', 'rw'
@@ -451,22 +451,22 @@ Schema Storage (BTree)
 
 ### Storage Types
 
-#### ROW Storage (GrapaDB2RowTable)
+#### ROW Storage (GrapaDBXRowTable)
 ```cpp
-class GrapaDB2RowTable : public GrapaDB2Table
+class GrapaDBXRowTable : public GrapaDBXTable
 {
 private:
     // Contiguous record storage
-    virtual GrapaError StoreRecord(u64 recordId, GrapaDB2FieldValueArray& values);
-    virtual GrapaError LoadRecord(u64 recordId, GrapaDB2FieldValueArray& values);
-    virtual GrapaError UpdateRecord(u64 recordId, GrapaDB2FieldValueArray& values);
+    virtual GrapaError StoreRecord(u64 recordId, GrapaDBXFieldValueArray& values);
+    virtual GrapaError LoadRecord(u64 recordId, GrapaDBXFieldValueArray& values);
+    virtual GrapaError UpdateRecord(u64 recordId, GrapaDBXFieldValueArray& values);
     virtual GrapaError DeleteRecord(u64 recordId);
 };
 ```
 
-#### COL Storage (GrapaDB2ColTable)
+#### COL Storage (GrapaDBXColTable)
 ```cpp
-class GrapaDB2ColTable : public GrapaDB2Table
+class GrapaDBXColTable : public GrapaDBXTable
 {
 private:
     // Column-oriented storage
@@ -479,15 +479,15 @@ private:
 };
 ```
 
-#### GROUP Storage (GrapaDB2GroupTable)
+#### GROUP Storage (GrapaDBXGroupTable)
 ```cpp
-class GrapaDB2GroupTable : public GrapaDB2Table
+class GrapaDBXGroupTable : public GrapaDBXTable
 {
 private:
     // Hierarchical storage
-    virtual GrapaError StoreGroup(u64 groupId, GrapaDB2FieldValueArray& values);
-    virtual GrapaError LoadGroup(u64 groupId, GrapaDB2FieldValueArray& values);
-    virtual GrapaError UpdateGroup(u64 groupId, GrapaDB2FieldValueArray& values);
+    virtual GrapaError StoreGroup(u64 groupId, GrapaDBXFieldValueArray& values);
+    virtual GrapaError LoadGroup(u64 groupId, GrapaDBXFieldValueArray& values);
+    virtual GrapaError UpdateGroup(u64 groupId, GrapaDBXFieldValueArray& values);
     virtual GrapaError DeleteGroup(u64 groupId);
 };
 ```
@@ -496,9 +496,9 @@ private:
 
 ### 1. Unicode Support Implementation
 
-#### GrapaDB2UnicodeField (Unicode-Aware Field)
+#### GrapaDBXUnicodeField (Unicode-Aware Field)
 ```cpp
-class GrapaDB2UnicodeField : public GrapaDB2Field
+class GrapaDBXUnicodeField : public GrapaDBXField
 {
 public:
     enum UnicodeEncoding { UTF8, UTF16, UTF32 };
@@ -521,10 +521,10 @@ private:
 
 #### Unicode Index Support
 ```cpp
-class GrapaDB2UnicodeIndex : public GrapaDB2Index
+class GrapaDBXUnicodeIndex : public GrapaDBXIndex
 {
 public:
-    GrapaDB2UnicodeField::NormalizationForm mNormalization;
+    GrapaDBXUnicodeField::NormalizationForm mNormalization;
     GrapaCHAR mLocale;
     
 public:
@@ -536,9 +536,9 @@ public:
 
 ### 2. Regex Searching Implementation
 
-#### GrapaDB2RegexField (Regex-Aware Field)
+#### GrapaDBXRegexField (Regex-Aware Field)
 ```cpp
-class GrapaDB2RegexField : public GrapaDB2Field
+class GrapaDBXRegexField : public GrapaDBXField
 {
 public:
     struct RegexPattern {
@@ -564,10 +564,10 @@ private:
 
 #### Regex Index Support
 ```cpp
-class GrapaDB2RegexIndex : public GrapaDB2Index
+class GrapaDBXRegexIndex : public GrapaDBXIndex
 {
 public:
-    GrapaArray<GrapaDB2RegexField::RegexPattern> mIndexedPatterns;
+    GrapaArray<GrapaDBXRegexField::RegexPattern> mIndexedPatterns;
     
 public:
     virtual GrapaError AddRegexPattern(const GrapaCHAR& pattern, u32 flags);
@@ -579,9 +579,9 @@ public:
 
 ### 3. JSON/XML Field Querying Implementation
 
-#### GrapaDB2JSONField (JSON-Aware Field)
+#### GrapaDBXJSONField (JSON-Aware Field)
 ```cpp
-class GrapaDB2JSONField : public GrapaDB2Field
+class GrapaDBXJSONField : public GrapaDBXField
 {
 public:
     struct JSONPath {
@@ -599,9 +599,9 @@ public:
 };
 ```
 
-#### GrapaDB2XMLField (XML-Aware Field)
+#### GrapaDBXXMLField (XML-Aware Field)
 ```cpp
-class GrapaDB2XMLField : public GrapaDB2Field
+class GrapaDBXXMLField : public GrapaDBXField
 {
 public:
     struct XMLPath {
@@ -621,7 +621,7 @@ public:
 
 #### JSON/XML Index Support
 ```cpp
-class GrapaDB2StructuredDataIndex : public GrapaDB2Index
+class GrapaDBXStructuredDataIndex : public GrapaDBXIndex
 {
 public:
     enum IndexType { JSON_PATH, XML_XPATH };
@@ -639,9 +639,9 @@ public:
 
 ### 4. Enhanced RAW Type Implementation
 
-#### GrapaDB2RawField (Enhanced RAW Field)
+#### GrapaDBXRawField (Enhanced RAW Field)
 ```cpp
-class GrapaDB2RawField : public GrapaDB2Field
+class GrapaDBXRawField : public GrapaDBXField
 {
 public:
     enum ComparisonMode { BINARY, TYPE_AWARE, FLEXIBLE };
@@ -660,9 +660,9 @@ public:
 
 ### 5. Debug Visualization Implementation
 
-#### GrapaDB2DebugVisualizer (Database Structure Viewer)
+#### GrapaDBXDebugVisualizer (Database Structure Viewer)
 ```cpp
-class GrapaDB2DebugVisualizer
+class GrapaDBXDebugVisualizer
 {
 public:
     struct VisualNode {
@@ -680,9 +680,9 @@ public:
     };
     
 public:
-    virtual GrapaError GenerateDatabaseGraph(GrapaDB2& database, GrapaArray<VisualNode>& nodes, GrapaArray<VisualEdge>& edges);
+    virtual GrapaError GenerateDatabaseGraph(GrapaDBX& database, GrapaArray<VisualNode>& nodes, GrapaArray<VisualEdge>& edges);
     virtual GrapaError GenerateBTreeVisualization(GrapaBtree& btree, GrapaCHAR& visualization);
-    virtual GrapaError GenerateIndexAnalysis(GrapaDB2Table& table, GrapaCHAR& analysis);
+    virtual GrapaError GenerateIndexAnalysis(GrapaDBXTable& table, GrapaCHAR& analysis);
     virtual GrapaError GenerateQueryExecutionPlan(const GrapaCHAR& query, GrapaCHAR& plan);
     virtual GrapaError ExportVisualization(const GrapaCHAR& format, const GrapaCHAR& output);
     
@@ -694,9 +694,9 @@ private:
 
 ### 6. Crash Recovery & Rollback Implementation
 
-#### GrapaDB2WriteAheadLog (WAL System)
+#### GrapaDBXWriteAheadLog (WAL System)
 ```cpp
-class GrapaDB2WriteAheadLog
+class GrapaDBXWriteAheadLog
 {
 public:
     struct LogEntry {
@@ -717,7 +717,7 @@ public:
     virtual GrapaError WriteLogEntry(const LogEntry& entry);
     virtual GrapaError ReadLogEntries(GrapaArray<LogEntry>& entries);
     virtual GrapaError TruncateLog(u64 sequenceNumber);
-    virtual GrapaError RecoverFromLog(GrapaDB2& database);
+    virtual GrapaError RecoverFromLog(GrapaDBX& database);
     virtual GrapaError Checkpoint(const GrapaCHAR& checkpointFile);
     
 private:
@@ -726,9 +726,9 @@ private:
 };
 ```
 
-#### GrapaDB2CrashRecovery (Recovery System)
+#### GrapaDBXCrashRecovery (Recovery System)
 ```cpp
-class GrapaDB2CrashRecovery
+class GrapaDBXCrashRecovery
 {
 public:
     virtual GrapaError DetectCrash(const GrapaCHAR& databaseFile, bool& crashed);
@@ -738,29 +738,29 @@ public:
     virtual GrapaError CreateRecoveryCheckpoint(const GrapaCHAR& databaseFile);
     
 private:
-    virtual GrapaError ApplyLogEntries(GrapaDB2& database, const GrapaArray<GrapaDB2WriteAheadLog::LogEntry>& entries);
-    virtual GrapaError RollbackIncompleteTransactions(GrapaDB2& database);
+    virtual GrapaError ApplyLogEntries(GrapaDBX& database, const GrapaArray<GrapaDBXWriteAheadLog::LogEntry>& entries);
+    virtual GrapaError RollbackIncompleteTransactions(GrapaDBX& database);
 };
 ```
 
 ### 7. Object Database & Graph Database Implementation
 
-#### GrapaDB2ObjectField (Object Storage)
+#### GrapaDBXObjectField (Object Storage)
 ```cpp
-class GrapaDB2ObjectField : public GrapaDB2Field
+class GrapaDBXObjectField : public GrapaDBXField
 {
 public:
     struct ObjectSchema {
         GrapaCHAR mClassName;
         GrapaCHAR mParentClass;
-        GrapaDB2FieldArray mFields;
+        GrapaDBXFieldArray mFields;
         GrapaCHARArray mMethods;
     };
     
     GrapaArray<ObjectSchema> mObjectSchemas;
     
 public:
-    virtual GrapaError DefineObjectClass(const GrapaCHAR& className, const GrapaCHAR& parentClass, const GrapaDB2FieldArray& fields);
+    virtual GrapaError DefineObjectClass(const GrapaCHAR& className, const GrapaCHAR& parentClass, const GrapaDBXFieldArray& fields);
     virtual GrapaError CreateObject(const GrapaCHAR& className, GrapaValue& object);
     virtual GrapaError QueryObjects(const GrapaCHAR& className, const GrapaCHAR& query, GrapaDU64Array& objectIds);
     virtual GrapaError PolymorphicQuery(const GrapaCHAR& baseClass, const GrapaCHAR& query, GrapaDU64Array& objectIds);
@@ -768,9 +768,9 @@ public:
 };
 ```
 
-#### GrapaDB2GraphField (Graph Storage)
+#### GrapaDBXGraphField (Graph Storage)
 ```cpp
-class GrapaDB2GraphField : public GrapaDB2Field
+class GrapaDBXGraphField : public GrapaDBXField
 {
 public:
     struct GraphNode {
@@ -800,7 +800,7 @@ public:
 
 #### Object/Graph Index Support
 ```cpp
-class GrapaDB2ObjectGraphIndex : public GrapaDB2Index
+class GrapaDBXObjectGraphIndex : public GrapaDBXIndex
 {
 public:
     enum IndexType { OBJECT_CLASS, OBJECT_RELATIONSHIP, GRAPH_NODE, GRAPH_EDGE, GRAPH_PATH };
@@ -914,7 +914,7 @@ table.addField("content", "XML", "VAR", 5000)
 table.addIndex("content", "XML_XPATH", ["//title", "//author", "//section"])
 
 /* XPath queries */
-results = table.search("content//title = 'GrapaDB2 Guide'")
+results = table.search("content//title = 'GrapaDBX Guide'")
 results = table.search("content//section[@type='introduction']")
 ```
 
@@ -942,7 +942,7 @@ results = table.search("data BETWEEN 3.0 AND 4.0")  /* Finds float data */
 ```grapa
 /* Generate database structure visualization */
 db = $file("test.db")
-visualizer = $GrapaDB2DebugVisualizer()
+visualizer = $GrapaDBXDebugVisualizer()
 
 /* Generate database graph */
 nodes, edges = visualizer.generateDatabaseGraph(db)
@@ -983,7 +983,7 @@ try {
 }
 
 /* Automatic crash recovery */
-recovery = $GrapaDB2CrashRecovery()
+recovery = $GrapaDBXCrashRecovery()
 if (recovery.detectCrash("reliable.db")) {
     recovery.recoverDatabase("reliable.db", "reliable.db.wal")
 }
@@ -1055,124 +1055,124 @@ centrality = graphField.graphAnalytics("betweenness_centrality", {})
 communities = graphField.graphAnalytics("community_detection", {"algorithm": "louvain"})
 ```
 
-## GrapaDB2 Language Integration
+## GrapaDBX Language Integration
 
 ### C++ Library Event Handlers
 
-To integrate GrapaDB2 with the Grapa language, we need to add new handlers to the existing `GrapaLibraryRuleEvent::LoadLib` system. This follows the established pattern used for file operations.
+To integrate GrapaDBX with the Grapa language, we need to add new handlers to the existing `GrapaLibraryRuleEvent::LoadLib` system. This follows the established pattern used for file operations.
 
 #### New Handler Classes (to be added to GrapaLibRule.cpp)
 
 ```cpp
-/* GrapaDB2 Database Management */
-class GrapaLibraryRuleGrapaDB2CreateEvent : public GrapaLibraryEvent
+/* GrapaDBX Database Management */
+class GrapaLibraryRuleGrapaDBXCreateEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2CreateEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXCreateEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2Create(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2CreateEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXCreate(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXCreateEvent(pName); }
 
-class GrapaLibraryRuleGrapaDB2OpenEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleGrapaDBXOpenEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2OpenEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXOpenEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2Open(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2OpenEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXOpen(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXOpenEvent(pName); }
 
-class GrapaLibraryRuleGrapaDB2CloseEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleGrapaDBXCloseEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2CloseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXCloseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2Close(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2CloseEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXClose(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXCloseEvent(pName); }
 
-/* GrapaDB2 Table Management */
-class GrapaLibraryRuleGrapaDB2CreateTableEvent : public GrapaLibraryEvent
+/* GrapaDBX Table Management */
+class GrapaLibraryRuleGrapaDBXCreateTableEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2CreateTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXCreateTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2CreateTable(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2CreateTableEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXCreateTable(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXCreateTableEvent(pName); }
 
-class GrapaLibraryRuleGrapaDB2OpenTableEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleGrapaDBXOpenTableEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2OpenTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXOpenTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2OpenTable(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2OpenTableEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXOpenTable(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXOpenTableEvent(pName); }
 
-class GrapaLibraryRuleGrapaDB2DeleteTableEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleGrapaDBXDeleteTableEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2DeleteTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXDeleteTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2DeleteTable(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2DeleteTableEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXDeleteTable(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXDeleteTableEvent(pName); }
 
-/* GrapaDB2 Field Management */
-class GrapaLibraryRuleGrapaDB2AddFieldEvent : public GrapaLibraryEvent
+/* GrapaDBX Field Management */
+class GrapaLibraryRuleGrapaDBXAddFieldEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2AddFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXAddFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2AddField(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2AddFieldEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXAddField(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXAddFieldEvent(pName); }
 
-class GrapaLibraryRuleGrapaDB2RemoveFieldEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleGrapaDBXRemoveFieldEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2RemoveFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXRemoveFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2RemoveField(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2RemoveFieldEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXRemoveField(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXRemoveFieldEvent(pName); }
 
-/* GrapaDB2 Record Operations */
-class GrapaLibraryRuleGrapaDB2CreateRecordEvent : public GrapaLibraryEvent
+/* GrapaDBX Record Operations */
+class GrapaLibraryRuleGrapaDBXCreateRecordEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2CreateRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXCreateRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2CreateRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2CreateRecordEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXCreateRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXCreateRecordEvent(pName); }
 
-class GrapaLibraryRuleGrapaDB2DeleteRecordEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleGrapaDBXDeleteRecordEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2DeleteRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXDeleteRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2DeleteRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2DeleteRecordEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXDeleteRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXDeleteRecordEvent(pName); }
 
-class GrapaLibraryRuleGrapaDB2UpdateRecordEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleGrapaDBXUpdateRecordEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2UpdateRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXUpdateRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2UpdateRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2UpdateRecordEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXUpdateRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXUpdateRecordEvent(pName); }
 
-/* GrapaDB2 Search Operations */
-class GrapaLibraryRuleGrapaDB2SearchEvent : public GrapaLibraryEvent
+/* GrapaDBX Search Operations */
+class GrapaLibraryRuleGrapaDBXSearchEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2SearchEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXSearchEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2Search(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2SearchEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXSearch(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXSearchEvent(pName); }
 
-/* GrapaDB2 Advanced Features */
-class GrapaLibraryRuleGrapaDB2DebugEvent : public GrapaLibraryEvent
+/* GrapaDBX Advanced Features */
+class GrapaLibraryRuleGrapaDBXDebugEvent : public GrapaLibraryEvent
 {
 public:
-    GrapaLibraryRuleGrapaDB2DebugEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleGrapaDBXDebugEvent(GrapaCHAR& pName) { mName.FROM(pName); };
     virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2Debug(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDB2DebugEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDBXDebug(GrapaCHAR& pName) { return new GrapaLibraryRuleGrapaDBXDebugEvent(pName); }
 ```
 
 #### Handler Registration (to be added to LoadLib function)
@@ -1182,30 +1182,30 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrapaDB2Debug(GrapaCHAR& pName) 
 static const std::unordered_map<std::string, Handler> handlerMap = {
     // ... existing handlers ...
     
-    /* GrapaDB2 Database Management */
-    { "grapadb2_create", &GrapaLibraryRuleEvent::HandleGrapaDB2Create },
-    { "grapadb2_open", &GrapaLibraryRuleEvent::HandleGrapaDB2Open },
-    { "grapadb2_close", &GrapaLibraryRuleEvent::HandleGrapaDB2Close },
+    /* GrapaDBX Database Management */
+    { "grapadbx_create", &GrapaLibraryRuleEvent::HandleGrapaDBXCreate },
+    { "grapadbx_open", &GrapaLibraryRuleEvent::HandleGrapaDBXOpen },
+    { "grapadbx_close", &GrapaLibraryRuleEvent::HandleGrapaDBXClose },
     
-    /* GrapaDB2 Table Management */
-    { "grapadb2_create_table", &GrapaLibraryRuleEvent::HandleGrapaDB2CreateTable },
-    { "grapadb2_open_table", &GrapaLibraryRuleEvent::HandleGrapaDB2OpenTable },
-    { "grapadb2_delete_table", &GrapaLibraryRuleEvent::HandleGrapaDB2DeleteTable },
+    /* GrapaDBX Table Management */
+    { "grapadbx_create_table", &GrapaLibraryRuleEvent::HandleGrapaDBXCreateTable },
+    { "grapadbx_open_table", &GrapaLibraryRuleEvent::HandleGrapaDBXOpenTable },
+    { "grapadbx_delete_table", &GrapaLibraryRuleEvent::HandleGrapaDBXDeleteTable },
     
-    /* GrapaDB2 Field Management */
-    { "grapadb2_add_field", &GrapaLibraryRuleEvent::HandleGrapaDB2AddField },
-    { "grapadb2_remove_field", &GrapaLibraryRuleEvent::HandleGrapaDB2RemoveField },
+    /* GrapaDBX Field Management */
+    { "grapadbx_add_field", &GrapaLibraryRuleEvent::HandleGrapaDBXAddField },
+    { "grapadbx_remove_field", &GrapaLibraryRuleEvent::HandleGrapaDBXRemoveField },
     
-    /* GrapaDB2 Record Operations */
-    { "grapadb2_create_record", &GrapaLibraryRuleEvent::HandleGrapaDB2CreateRecord },
-    { "grapadb2_delete_record", &GrapaLibraryRuleEvent::HandleGrapaDB2DeleteRecord },
-    { "grapadb2_update_record", &GrapaLibraryRuleEvent::HandleGrapaDB2UpdateRecord },
+    /* GrapaDBX Record Operations */
+    { "grapadbx_create_record", &GrapaLibraryRuleEvent::HandleGrapaDBXCreateRecord },
+    { "grapadbx_delete_record", &GrapaLibraryRuleEvent::HandleGrapaDBXDeleteRecord },
+    { "grapadbx_update_record", &GrapaLibraryRuleEvent::HandleGrapaDBXUpdateRecord },
     
-    /* GrapaDB2 Search Operations */
-    { "grapadb2_search", &GrapaLibraryRuleEvent::HandleGrapaDB2Search },
+    /* GrapaDBX Search Operations */
+    { "grapadbx_search", &GrapaLibraryRuleEvent::HandleGrapaDBXSearch },
     
-    /* GrapaDB2 Advanced Features */
-    { "grapadb2_debug", &GrapaLibraryRuleEvent::HandleGrapaDB2Debug },
+    /* GrapaDBX Advanced Features */
+    { "grapadbx_debug", &GrapaLibraryRuleEvent::HandleGrapaDBXDebug },
 };
 ```
 
@@ -1213,24 +1213,24 @@ static const std::unordered_map<std::string, Handler> handlerMap = {
 
 **Status**: Successfully implemented and integrated into Grapa static library
 
-**File**: `lib/grapa/$grapadb.grc` (renamed from `$db2.grc` to avoid IBM DB2 confusion)
+**File**: `lib/grapa/$grapadb.grc` (renamed from `$dbx.grc` to avoid IBM DB2 confusion)
 
 ```grapa
 @global["$grapadb"]
     = class ($OBJ) {
-    create = @<[op,@<"grapadb2_create",{this,@<var,{filename}>,@<var,{type}>}>],{filename,type}>; 
-    open = @<[op,@<"grapadb2_open",{this,@<var,{filename}>,@<var,{mode}>}>],{filename,mode}>; 
-    close = @<"grapadb2_close",{@<this>}>; 
-    createTable = @<[op,@<"grapadb2_create_table",{this,@<var,{tableName}>,@<var,{tableType}>}>],{tableName,tableType}>; 
-    openTable = @<[op,@<"grapadb2_open_table",{this,@<var,{tableName}>}>],{tableName}>; 
-    deleteTable = @<[op,@<"grapadb2_delete_table",{this,@<var,{tableName}>}>],{tableName}>; 
-    addField = @<[op,@<"grapadb2_add_field",{this,@<var,{tableName}>,@<var,{fieldName}>,@<var,{fieldType}>,@<var,{storageType}>,@<var,{size}>}>],{tableName,fieldName,fieldType,storageType,size}>; 
-    removeField = @<[op,@<"grapadb2_remove_field",{this,@<var,{tableName}>,@<var,{fieldName}>}>],{tableName,fieldName}>; 
-    createRecord = @<[op,@<"grapadb2_create_record",{this,@<var,{tableName}>}>],{tableName}>; 
-    deleteRecord = @<[op,@<"grapadb2_delete_record",{this,@<var,{tableName}>,@<var,{recordId}>}>],{tableName,recordId}>; 
-    updateRecord = @<[op,@<"grapadb2_update_record",{this,@<var,{tableName}>,@<var,{recordId}>,@<var,{fieldName}>,@<var,{value}>}>],{tableName,recordId,fieldName,value}>; 
-    search = @<[op,@<"grapadb2_search",{this,@<var,{tableName}>,@<var,{query}>}>],{tableName,query}>; 
-    debug = @<[op,@<"grapadb2_debug",{this,@<var,{options}>}>],{options}>;
+    create = @<[op,@<"grapadbx_create",{this,@<var,{filename}>,@<var,{type}>}>],{filename,type}>; 
+    open = @<[op,@<"grapadbx_open",{this,@<var,{filename}>,@<var,{mode}>}>],{filename,mode}>; 
+    close = @<"grapadbx_close",{@<this>}>; 
+    createTable = @<[op,@<"grapadbx_create_table",{this,@<var,{tableName}>,@<var,{tableType}>}>],{tableName,tableType}>; 
+    openTable = @<[op,@<"grapadbx_open_table",{this,@<var,{tableName}>}>],{tableName}>; 
+    deleteTable = @<[op,@<"grapadbx_delete_table",{this,@<var,{tableName}>}>],{tableName}>; 
+    addField = @<[op,@<"grapadbx_add_field",{this,@<var,{tableName}>,@<var,{fieldName}>,@<var,{fieldType}>,@<var,{storageType}>,@<var,{size}>}>],{tableName,fieldName,fieldType,storageType,size}>; 
+    removeField = @<[op,@<"grapadbx_remove_field",{this,@<var,{tableName}>,@<var,{fieldName}>}>],{tableName,fieldName}>; 
+    createRecord = @<[op,@<"grapadbx_create_record",{this,@<var,{tableName}>}>],{tableName}>; 
+    deleteRecord = @<[op,@<"grapadbx_delete_record",{this,@<var,{tableName}>,@<var,{recordId}>}>],{tableName,recordId}>; 
+    updateRecord = @<[op,@<"grapadbx_update_record",{this,@<var,{tableName}>,@<var,{recordId}>,@<var,{fieldName}>,@<var,{value}>}>],{tableName,recordId,fieldName,value}>; 
+    search = @<[op,@<"grapadbx_search",{this,@<var,{tableName}>,@<var,{query}>}>],{tableName,query}>; 
+    debug = @<[op,@<"grapadbx_debug",{this,@<var,{options}>}>],{options}>;
     };
 ```
 
@@ -1243,7 +1243,7 @@ static const std::unordered_map<std::string, Handler> handlerMap = {
 ### Example Usage
 
 ```grapa
-/* Create a new GrapaDB2 database */
+/* Create a new GrapaDBX database */
 db = $grapadb().create("test.db", "ROW");
 
 /* Create a table */
@@ -1316,7 +1316,7 @@ This approach provides:
 
 #### Implementation Workflow:
 
-1. **Create `lib/grapa/$grapadb.grc`** with GrapaDB2 class definition ✅ **COMPLETED**
+1. **Create `lib/grapa/$grapadb.grc`** with GrapaDBX class definition ✅ **COMPLETED**
 2. **Run bootstrap**: `cd source && grapa buildgrapalib.grc` ✅ **COMPLETED**
 3. **Add C++ handlers** to `GrapaLibRule.cpp` and `GrapaLibRule.h` 🚨 **NEXT STEP**
 4. **Register handlers** in `LoadLib` function
@@ -1333,19 +1333,19 @@ source/grapa/GrapaStaticLib.c
 grapa executable
 ```
 
-This ensures that the new GrapaDB2 functionality is properly integrated into the Grapa bootstrap system and available immediately when Grapa starts.
+This ensures that the new GrapaDBX functionality is properly integrated into the Grapa bootstrap system and available immediately when Grapa starts.
 
 ## Implementation Plan
 
 ### Phase 1: Core Infrastructure ✅ COMPLETED
-1. **Basic Classes**: ✅ Implement GrapaDB2, GrapaDB2Table, GrapaDB2Field
+1. **Basic Classes**: ✅ Implement GrapaDBX, GrapaDBXTable, GrapaDBXField
 2. **Storage Layer**: ✅ Basic BTree-based storage
 3. **File Operations**: ✅ Create, open, close database files
 4. **Basic Testing**: ✅ Unit tests for core functionality
 5. **Files Created**: 
-   - `source/grapa/GrapaDB2.h` - Complete class definitions
-   - `source/grapa/GrapaDB2.cpp` - Basic implementation framework
-   - `test/test_grapadb2_basic.grc` - Basic test script
+   - `source/grapa/GrapaDBX.h` - Complete class definitions
+   - `source/grapa/GrapaDBX.cpp` - Basic implementation framework
+   - `test/test_grapadbx_basic.grc` - Basic test script
 
 ### Phase 2: Record Operations & Enhanced RAW Types (2-3 weeks)
 1. **Record Management**: Create, read, update, delete records
@@ -1417,7 +1417,7 @@ This ensures that the new GrapaDB2 functionality is properly integrated into the
 
 ### 1. **Parallel Development**
 - Keep current GrapaDB working during development
-- New GrapaDB2 runs alongside existing implementation
+- New GrapaDBX runs alongside existing implementation
 - Gradual migration path for users
 
 ### 2. **Backward Compatibility**
@@ -1483,6 +1483,6 @@ This ensures that the new GrapaDB2 functionality is properly integrated into the
 
 ## Conclusion
 
-The new GrapaDB2 implementation addresses the critical index corruption bug while providing a cleaner, more maintainable, and more performant database system. The modular design makes it easier to test, debug, and extend, while the simplified architecture eliminates the complex pointer management that caused the original bug.
+The new GrapaDBX implementation addresses the critical index corruption bug while providing a cleaner, more maintainable, and more performant database system. The modular design makes it easier to test, debug, and extend, while the simplified architecture eliminates the complex pointer management that caused the original bug.
 
 The implementation plan provides a clear path forward with realistic timelines and risk mitigation strategies. The parallel development approach ensures that users can continue using the current system while the new implementation is being developed and tested. 

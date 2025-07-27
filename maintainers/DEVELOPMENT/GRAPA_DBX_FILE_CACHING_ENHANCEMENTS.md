@@ -1,4 +1,4 @@
-# GrapaDB2 File Caching Enhancements
+# GrapaDBX File Caching Enhancements
 
 ## Current GrapaFileCache Architecture Analysis
 
@@ -21,13 +21,13 @@ class GrapaFileCache {
 };
 ```
 
-## Enhanced Caching Strategies for GrapaDB2
+## Enhanced Caching Strategies for GrapaDBX
 
 ### **1. Multi-Tier Caching System**
 
 #### **L1 Cache (Hot Data)**
 ```cpp
-class GrapaDB2L1Cache {
+class GrapaDBXL1Cache {
     // In-memory cache for frequently accessed data
     enum { L1_SIZE = 64 * 1024 * 1024 };  // 64MB L1 cache
     
@@ -44,7 +44,7 @@ class GrapaDB2L1Cache {
 
 #### **L2 Cache (Warm Data)**
 ```cpp
-class GrapaDB2L2Cache {
+class GrapaDBXL2Cache {
     // Larger cache for less frequently accessed data
     enum { L2_SIZE = 512 * 1024 * 1024 };  // 512MB L2 cache
     
@@ -53,13 +53,13 @@ class GrapaDB2L2Cache {
     u32* mCompressionMap;  // Track compression ratios
     
     // Predictive loading
-    GrapaDB2AccessPattern* mAccessPatterns;
+    GrapaDBXAccessPattern* mAccessPatterns;
 };
 ```
 
 #### **L3 Cache (Cold Data)**
 ```cpp
-class GrapaDB2L3Cache {
+class GrapaDBXL3Cache {
     // Disk-based cache for rarely accessed data
     enum { L3_SIZE = 4 * 1024 * 1024 * 1024 };  // 4GB L3 cache
     
@@ -68,7 +68,7 @@ class GrapaDB2L3Cache {
     void* mL3MemoryMap;
     
     // Background prefetching
-    GrapaDB2PrefetchQueue* mPrefetchQueue;
+    GrapaDBXPrefetchQueue* mPrefetchQueue;
 };
 ```
 
@@ -76,14 +76,14 @@ class GrapaDB2L3Cache {
 
 #### **Access Pattern Analysis**
 ```cpp
-class GrapaDB2AccessPattern {
+class GrapaDBXAccessPattern {
     // Track access patterns for predictive loading
     struct PatternEntry {
         u64 blockId;
         u64 accessCount;
         u64 lastAccess;
         u64 nextPredicted;
-        GrapaDB2AccessType type;  // SEQUENTIAL, RANDOM, STRIDED
+        GrapaDBXAccessType type;  // SEQUENTIAL, RANDOM, STRIDED
     };
     
     // Pattern detection algorithms
@@ -95,14 +95,14 @@ class GrapaDB2AccessPattern {
 
 #### **Background Prefetching**
 ```cpp
-class GrapaDB2PrefetchQueue {
+class GrapaDBXPrefetchQueue {
     // Background thread for prefetching
     GrapaThread mPrefetchThread;
     GrapaQueue mPrefetchQueue;
     
     // Prefetch strategies
     virtual GrapaError SequentialPrefetch(u64 startBlock, u64 count);
-    virtual GrapaError IndexPrefetch(u64 indexBlock, GrapaDB2FieldValueArray& searchValues);
+    virtual GrapaError IndexPrefetch(u64 indexBlock, GrapaDBXFieldValueArray& searchValues);
     virtual GrapaError SchemaPrefetch(u64 tableId);
 };
 ```
@@ -111,7 +111,7 @@ class GrapaDB2PrefetchQueue {
 
 #### **Adaptive Compression**
 ```cpp
-class GrapaDB2CompressionCache {
+class GrapaDBXCompressionCache {
     // Compress data based on access patterns
     enum CompressionLevel { NONE, LIGHT, MEDIUM, HEAVY };
     
@@ -133,22 +133,22 @@ class GrapaDB2CompressionCache {
 
 #### **Shared Cache for Multi-Pointer Access**
 ```cpp
-class GrapaDB2SharedCache {
+class GrapaDBXSharedCache {
     // Shared cache for multiple file pointers
-    GrapaDB2L1Cache* mSharedL1Cache;
-    GrapaDB2L2Cache* mSharedL2Cache;
-    GrapaDB2L3Cache* mSharedL3Cache;
+    GrapaDBXL1Cache* mSharedL1Cache;
+    GrapaDBXL2Cache* mSharedL2Cache;
+    GrapaDBXL3Cache* mSharedL3Cache;
     
     // Pointer-specific cache views
     struct CacheView {
-        GrapaDB2MultiPointer* pointer;
-        GrapaDB2CachePolicy policy;  // READ_ONLY, WRITE_BACK, WRITE_THROUGH
+        GrapaDBXMultiPointer* pointer;
+        GrapaDBXCachePolicy policy;  // READ_ONLY, WRITE_BACK, WRITE_THROUGH
         u64 cacheSize;
     };
     
     // Cache coherency
-    virtual GrapaError InvalidateCache(u64 blockId, GrapaDB2MultiPointer* exceptPointer);
-    virtual GrapaError SyncCache(GrapaDB2MultiPointer* pointer);
+    virtual GrapaError InvalidateCache(u64 blockId, GrapaDBXMultiPointer* exceptPointer);
+    virtual GrapaError SyncCache(GrapaDBXMultiPointer* pointer);
 };
 ```
 
@@ -156,37 +156,37 @@ class GrapaDB2SharedCache {
 
 #### **Record-Oriented Caching**
 ```cpp
-class GrapaDB2RecordCache {
+class GrapaDBXRecordCache {
     // Optimize for record access patterns
     struct RecordCacheEntry {
         u64 recordId;
         u64 tableId;
-        GrapaDB2FieldValueArray* values;
+        GrapaDBXFieldValueArray* values;
         u64 accessCount;
         u64 lastAccess;
     };
     
     // Record-specific optimizations
-    virtual GrapaError CacheRecord(u64 recordId, u64 tableId, GrapaDB2FieldValueArray& values);
-    virtual GrapaError GetCachedRecord(u64 recordId, u64 tableId, GrapaDB2FieldValueArray& values);
+    virtual GrapaError CacheRecord(u64 recordId, u64 tableId, GrapaDBXFieldValueArray& values);
+    virtual GrapaError GetCachedRecord(u64 recordId, u64 tableId, GrapaDBXFieldValueArray& values);
     virtual GrapaError InvalidateRecord(u64 recordId, u64 tableId);
 };
 ```
 
 #### **Index-Oriented Caching**
 ```cpp
-class GrapaDB2IndexCache {
+class GrapaDBXIndexCache {
     // Optimize for index access patterns
     struct IndexCacheEntry {
         u64 indexId;
-        GrapaDB2FieldValueArray* keyValues;
+        GrapaDBXFieldValueArray* keyValues;
         GrapaDU64Array* recordIds;
         u64 accessCount;
     };
     
     // Index-specific optimizations
-    virtual GrapaError CacheIndexRange(u64 indexId, GrapaDB2FieldValueArray& startKey, GrapaDB2FieldValueArray& endKey);
-    virtual GrapaError GetCachedIndexRange(u64 indexId, GrapaDB2FieldValueArray& key, GrapaDU64Array& recordIds);
+    virtual GrapaError CacheIndexRange(u64 indexId, GrapaDBXFieldValueArray& startKey, GrapaDBXFieldValueArray& endKey);
+    virtual GrapaError GetCachedIndexRange(u64 indexId, GrapaDBXFieldValueArray& key, GrapaDU64Array& recordIds);
 };
 ```
 
@@ -194,7 +194,7 @@ class GrapaDB2IndexCache {
 
 #### **Cache Performance Metrics**
 ```cpp
-class GrapaDB2CacheMetrics {
+class GrapaDBXCacheMetrics {
     // Comprehensive performance tracking
     struct CacheStats {
         u64 totalAccesses;
@@ -208,7 +208,7 @@ class GrapaDB2CacheMetrics {
     };
     
     // Per-tier statistics
-    GrapaDB2CacheStats mL1Stats, mL2Stats, mL3Stats;
+    GrapaDBXCacheStats mL1Stats, mL2Stats, mL3Stats;
     
     // Performance tuning
     virtual GrapaError OptimizeCacheSizes();
@@ -239,7 +239,7 @@ class GrapaDB2CacheMetrics {
 2. Implement performance monitoring
 3. Add automatic cache tuning
 
-## Benefits for GrapaDB2
+## Benefits for GrapaDBX
 
 ### **Performance Improvements**
 - **10-100x faster** for frequently accessed data
@@ -265,4 +265,4 @@ The enhanced caching system builds on your existing GrapaFileCache architecture:
 3. **Adds database-specific optimizations** on top of general caching
 4. **Leverages existing block structure** for seamless integration
 
-This approach preserves your excellent foundation while adding database-specific enhancements that will make GrapaDB2 significantly faster and more efficient. 
+This approach preserves your excellent foundation while adding database-specific enhancements that will make GrapaDBX significantly faster and more efficient. 

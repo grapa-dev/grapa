@@ -1165,7 +1165,7 @@ source/grapa/GrapaDBX.cpp
 
 ## Related Documentation
 
-- [GrapaDBX Formula Fields Implementation](GRAPA_DB2_FORMULA_FIELDS.md)
+- [GrapaDBX Formula Fields Implementation](GRAPA_DBX_FORMULA_FIELDS.md)
 - [GrapaDBX Development Status](DEVELOPMENT/CURRENT_STATUS.md)
 - [Grapa Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md)
 - [GrapaDB Implementation](GRAPA_DB_IMPLEMENTATION.md)

@@ -43,7 +43,7 @@ tags:
 - `maintainers/IMPLEMENTATION/GRAPA_FORMULA_EXECUTION_ANALYSIS.md` - Formula execution design
 - `maintainers/IMPLEMENTATION/GRAPA_RAW_AND_NAMESPACE_ANALYSIS.md` - Technical foundation
 - `source/grapa/GrapaDBX.h` and `source/grapa/GrapaDBX.cpp` - Implementation
-- `test/test_grapadb2_compiled_op_storage.grc` - Test script
+- `test/test_grapadbx_compiled_op_storage.grc` - Test script
 
 ### 6. Response Template
 When user asks for next steps, respond with:

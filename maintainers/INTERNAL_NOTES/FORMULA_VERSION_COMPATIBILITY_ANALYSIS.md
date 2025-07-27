@@ -6,7 +6,7 @@
 
 ## Overview
 
-This document analyzes the current state of version compatibility in Grapa's formula system and provides recommendations for implementing best practices in GrapaDB2 formula fields.
+This document analyzes the current state of version compatibility in Grapa's formula system and provides recommendations for implementing best practices in GrapaDBX formula fields.
 
 ## Current Version System Analysis
 
@@ -81,7 +81,7 @@ compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),versio
 - **Pros**: Simple, no upfront overhead
 - **Cons**: Runtime failures, poor user experience
 
-## Current GrapaDB2 Formula Implementation
+## Current GrapaDBX Formula Implementation
 
 ### **Current State**
 - ✅ **Step 4 Completed**: Compiled $OP Storage implemented
@@ -95,22 +95,22 @@ compile = op(script,srule="",sprofile=""){{op:op()(script,srule,sprofile),versio
 
 ### **Current Version Handling**
 ```cpp
-// In GrapaDB2::CompileFormulaToOP()
+// In GrapaDBX::CompileFormulaToOP()
 compiledFormula.FROM("@<[op,@<formula_execution,{");
 compiledFormula.Append(formulaText);
 compiledFormula.Append("}>],{}>");
 ```
 
-**Issue**: Current implementation doesn't embed version information in GrapaDB2 formulas.
+**Issue**: Current implementation doesn't embed version information in GrapaDBX formulas.
 
-## Recommendations for GrapaDB2
+## Recommendations for GrapaDBX
 
 ### **Immediate Implementation (Minimal Overhead)**
 
 #### **1. Basic Version Embedding**
 ```cpp
 // Enhanced CompileFormulaToOP()
-GrapaError GrapaDB2::CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula)
+GrapaError GrapaDBX::CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula)
 {
     // Create versioned formula structure
     GrapaCHAR versionedFormula;
@@ -130,7 +130,7 @@ GrapaError GrapaDB2::CompileFormulaToOP(const GrapaCHAR& formulaText, GrapaCHAR&
 #### **2. Version Compatibility Check**
 ```cpp
 // Add to ExecuteFormula()
-GrapaError GrapaDB2::CheckFormulaVersion(const GrapaCHAR& compiledFormula)
+GrapaError GrapaDBX::CheckFormulaVersion(const GrapaCHAR& compiledFormula)
 {
     // Extract version from compiled formula
     GrapaCHAR version;
@@ -212,7 +212,7 @@ GrapaError GrapaDB2::CheckFormulaVersion(const GrapaCHAR& compiledFormula)
 
 #### **Enhanced CreateCompiledFormulaField()**
 ```cpp
-GrapaError GrapaDB2::CreateCompiledFormulaField(GrapaDB2Table& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType)
+GrapaError GrapaDBX::CreateCompiledFormulaField(GrapaDBXTable& pTable, const GrapaCHAR& pFieldName, const GrapaCHAR& pFormulaText, u8 pResultType)
 {
     GrapaError err;
     
@@ -231,10 +231,10 @@ GrapaError GrapaDB2::CreateCompiledFormulaField(GrapaDB2Table& pTable, const Gra
     if (err) return err;
     
     // 4. Create the field with compiled formula reference
-    GrapaDB2Field field;
-    field.Init(GetNextFieldId(), pResultType, GrapaDB2Field::STORE_VAR, 32, 8);
+    GrapaDBXField field;
+    field.Init(GetNextFieldId(), pResultType, GrapaDBXField::STORE_VAR, 32, 8);
     field.mFormulaRef = formulaRef;
-    field.mFormulaType = GrapaDB2Field::FORMULA_OP;
+    field.mFormulaType = GrapaDBXField::FORMULA_OP;
     field.mTableRef = pTable.mRef;
     
     // 5. Store the field in the table
@@ -245,7 +245,7 @@ GrapaError GrapaDB2::CreateCompiledFormulaField(GrapaDB2Table& pTable, const Gra
 
 #### **Version-Aware Compilation**
 ```cpp
-GrapaError GrapaDB2::CompileFormulaToOPWithVersion(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula)
+GrapaError GrapaDBX::CompileFormulaToOPWithVersion(const GrapaCHAR& formulaText, GrapaCHAR& compiledFormula)
 {
     // Use existing $sys().compile() mechanism
     GrapaCHAR compileScript;
@@ -316,12 +316,12 @@ GrapaError GrapaDB2::CompileFormulaToOPWithVersion(const GrapaCHAR& formulaText,
 
 ## Conclusion
 
-The current Grapa system has a basic version embedding mechanism in place through `$sys().compile()`, but GrapaDB2 formula fields are not currently leveraging this. 
+The current Grapa system has a basic version embedding mechanism in place through `$sys().compile()`, but GrapaDBX formula fields are not currently leveraging this. 
 
-**Recommendation**: Implement minimal version embedding in GrapaDB2 using the existing `$sys().compile()` mechanism, with graceful degradation for version mismatches. This provides immediate compatibility checking without significant overhead, while maintaining a clear path for future enhancements.
+**Recommendation**: Implement minimal version embedding in GrapaDBX using the existing `$sys().compile()` mechanism, with graceful degradation for version mismatches. This provides immediate compatibility checking without significant overhead, while maintaining a clear path for future enhancements.
 
 **Priority**: Medium - should be implemented as part of Step 5 (Performance Optimization) to ensure formula reliability and user experience.
 
 ---
 
-*This analysis provides the foundation for implementing version compatibility in GrapaDB2 formula fields while maintaining minimal overhead and clear upgrade paths.* 
+*This analysis provides the foundation for implementing version compatibility in GrapaDBX formula fields while maintaining minimal overhead and clear upgrade paths.* 

@@ -1,20 +1,20 @@
-# GrapaDB2 Testing Results - Infrastructure Validation
+# GrapaDBX Testing Results - Infrastructure Validation
 
 ## **Testing Overview**
 
-This document captures the results of systematic testing of GrapaDB2 to understand its current implementation status and identify gaps.
+This document captures the results of systematic testing of GrapaDBX to understand its current implementation status and identify gaps.
 
 ## **Test Scripts Created**
 
-### **1. Basic Infrastructure Test (`test_grapadb2_basic.grc`)**
-**Purpose**: Test basic GrapaDB2 functionality using `$file().table("ROW")`  
+### **1. Basic Infrastructure Test (`test_grapadbx_basic.grc`)**
+**Purpose**: Test basic GrapaDBX functionality using `$file().table("ROW")`  
 **Expected**: Should not crash, should return success  
 **Actual Result**: ✅ **SUCCESS** - Database creation, table creation, and data operations worked  
-**Key Finding**: This test was actually using **GrapaDB**, not GrapaDB2, because `$file().table()` doesn't specify a URL
+**Key Finding**: This test was actually using **GrapaDB**, not GrapaDBX, because `$file().table()` doesn't specify a URL
 
-### **2. Explicit URL Test (`test_grapadb2_explicit.grc`)**
-**Purpose**: Test GrapaDB2 functionality using explicit `grapadb2://` URL  
-**Expected**: Should use GrapaDB2 implementation  
+### **2. Explicit URL Test (`test_grapadbx_explicit.grc`)**
+**Purpose**: Test GrapaDBX functionality using explicit `grapadbx://` URL  
+**Expected**: Should use GrapaDBX implementation  
 **Actual Result**: ✅ **FULLY WORKING** - URL routing, database creation, table creation, and data storage all successful; ✅ **Segmentation fault on exit FIXED**
 
 ## **Detailed Test Results**
@@ -23,27 +23,27 @@ This document captures the results of systematic testing of GrapaDB2 to understa
 
 #### **URL Routing System**
 ```
-[DEBUG] ParseStorageUrl: url='grapadb2:///test_db' (len=19)
-[DEBUG] Compare to 'grapadb2://': 0
-[DEBUG] ParseStorageUrl: mStorageType='GRAPADB2', mStoragePath='/test_db'
+[DEBUG] ParseStorageUrl: url='grapadbx:///test_db' (len=19)
+[DEBUG] Compare to 'grapadbx://': 0
+[DEBUG] ParseStorageUrl: mStorageType='GRAPADBX', mStoragePath='/test_db'
 ```
-- ✅ Correctly identifies `grapadb2://` URLs
-- ✅ Sets storage type to `GRAPADB2`
-- ✅ Routes to GrapaDB2 implementation
+- ✅ Correctly identifies `grapadbx://` URLs
+- ✅ Sets storage type to `GRAPADBX`
+- ✅ Routes to GrapaDBX implementation
 
 #### **Database Creation**
 ```
-[DEBUG] GrapaLibRule Set: UnifiedDB found, storage type = 'GRAPADB2'
-[DEBUG] GrapaLibRule Set: Storage type is GRAPADB2
-[DEBUG] GrapaLibRule: db2 pointer = 0x12380d400
-[DEBUG] GrapaLibRule: db2 typeid = 11GrapaGroup2
+[DEBUG] GrapaLibRule Set: UnifiedDB found, storage type = 'GRAPADBX'
+[DEBUG] GrapaLibRule Set: Storage type is GRAPADBX
+[DEBUG] GrapaLibRule: dbx pointer = 0x12380d400
+[DEBUG] GrapaLibRule: dbx typeid = 11GrapaGroup2
 ```
-- ✅ Successfully creates GrapaDB2 databases
+- ✅ Successfully creates GrapaDBX databases
 - ✅ Correctly instantiates GrapaGroup2
 - ✅ No crashes during creation
 
 #### **Table Creation**
-- ✅ Successfully creates tables in GrapaDB2
+- ✅ Successfully creates tables in GrapaDBX
 - ✅ Proper method routing to GrapaGroup2
 
 #### **Method Routing**
@@ -80,8 +80,8 @@ This document captures the results of systematic testing of GrapaDB2 to understa
 - ✅ Program exits cleanly without segmentation fault
 
 #### **Absolute Path Handling**
-- ❌ Absolute paths (e.g., `grapadb2:///path`) fail
-- ✅ Relative paths (e.g., `grapadb2://path`) work correctly
+- ❌ Absolute paths (e.g., `grapadbx:///path`) fail
+- ✅ Relative paths (e.g., `grapadbx://path`) work correctly
 
 ## **Root Cause Analysis**
 
@@ -98,18 +98,18 @@ The problem was in the **file initialization** - GrapaGroup2 wasn't properly set
 **After Fix:**
 - Changed to `GrapaFileTree mTree` (proper B-tree file layer)
 - Added `INIT(pFile)` call in constructor
-- Proper file hierarchy: `GrapaFileIO` → `GrapaFileTree` → `GrapaBtree` → `GrapaDB2`
+- Proper file hierarchy: `GrapaFileIO` → `GrapaFileTree` → `GrapaBtree` → `GrapaDBX`
 
 #### **Issue 2: File Object Lifecycle Management**
 The segmentation fault was caused by improper file object lifecycle management:
 
 **Before Fix:**
-- `mGrapaDB2` declared as `GrapaDB2*` but created as `GrapaGroup2`
+- `mGrapaDBX` declared as `GrapaDBX*` but created as `GrapaGroup2`
 - No file object passed to `GrapaGroup2` constructor
 - Dynamically allocated file objects not properly managed
 
 **After Fix:**
-- `mGrapaDB2` declared as `GrapaGroup2*` to match what we create
+- `mGrapaDBX` declared as `GrapaGroup2*` to match what we create
 - File object passed from `GrapaLocalDatabase::mFile` to `GrapaGroup2`
 - Proper ownership model: `GrapaLocalDatabase` owns the file object
 
@@ -160,7 +160,7 @@ The segmentation fault was caused by improper file object lifecycle management:
 - **Error Handling**: Proper error responses
 
 ### **How We Tested**
-- **Explicit URL Testing**: Used `grapadb2://` to ensure GrapaDB2 is used
+- **Explicit URL Testing**: Used `grapadbx://` to ensure GrapaDBX is used
 - **Debug Output Analysis**: Used debug output to trace execution flow
 - **Error Code Analysis**: Analyzed return codes and error messages
 - **Infrastructure Validation**: Verified each component works independently
@@ -173,6 +173,6 @@ The segmentation fault was caused by improper file object lifecycle management:
 
 ## **Conclusion**
 
-The testing revealed that **GrapaDB2 has solid infrastructure but needs core data operation implementation**. The URL routing, database creation, and method routing all work correctly. The bottleneck is in the placeholder implementations of `GetRecordField` and `SetRecordField`.
+The testing revealed that **GrapaDBX has solid infrastructure but needs core data operation implementation**. The URL routing, database creation, and method routing all work correctly. The bottleneck is in the placeholder implementations of `GetRecordField` and `SetRecordField`.
 
-**Next Action**: Implement actual data storage and retrieval in these core methods to enable basic GrapaDB2 functionality. 
+**Next Action**: Implement actual data storage and retrieval in these core methods to enable basic GrapaDBX functionality. 

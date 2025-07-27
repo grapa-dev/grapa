@@ -6,14 +6,14 @@ This document tracks the progress of implementing the unified storage architectu
 
 ## Project Rationale
 
-GrapaDB2 is being developed as a complete rewrite of GrapaDB to address a persistent, unfixable index corruption bug. The unified storage architecture extends this vision by creating a single abstraction layer that treats all storage types as interchangeable backends.
+GrapaDBX is being developed as a complete rewrite of GrapaDB to address a persistent, unfixable index corruption bug. The unified storage architecture extends this vision by creating a single abstraction layer that treats all storage types as interchangeable backends.
 
 ## Completed Work
 
 ### ✅ Core Architecture
 - **GrapaUnifiedLocalDatabase**: Extended `GrapaLocalDatabase` to support multiple storage types
 - **GrapaStorageFactory**: Factory class for creating different storage instances
-- **URL Parsing**: Successfully parses `file://`, `grapadb://`, `grapadb2://`, `network://`, `memory://`, `cloud://` schemes
+- **URL Parsing**: Successfully parses `file://`, `grapadb://`, `grapadbx://`, `network://`, `memory://`, `cloud://` schemes
 - **Storage Type Detection**: Automatic detection and initialization based on URL scheme
 
 ### ✅ C++ Handlers Implementation
@@ -23,12 +23,12 @@ All unified handlers implemented in `source/grapa/GrapaLibRule.cpp`:
 2. **unified_get_type** - Get current storage type
 3. **unified_get_info** - Get storage information (type, URL, path)
 4. **unified_pwd** - Get current working path
-5. **unified_cd** - Change directory/path (file system, GrapaDB & GrapaDB2 backends complete)
-6. **unified_ls** - List contents (file system, GrapaDB & GrapaDB2 backends complete)
-7. **unified_mk** - Create directory/object (file system, GrapaDB & GrapaDB2 backends complete)
-8. **unified_rm** - Remove file/object (file system, GrapaDB & GrapaDB2 backends complete)
-9. **unified_set** - Set field value (file system, GrapaDB & GrapaDB2 backends complete)
-10. **unified_get** - Get field value (file system, GrapaDB & GrapaDB2 backends complete)
+5. **unified_cd** - Change directory/path (file system, GrapaDB & GrapaDBX backends complete)
+6. **unified_ls** - List contents (file system, GrapaDB & GrapaDBX backends complete)
+7. **unified_mk** - Create directory/object (file system, GrapaDB & GrapaDBX backends complete)
+8. **unified_rm** - Remove file/object (file system, GrapaDB & GrapaDBX backends complete)
+9. **unified_set** - Set field value (file system, GrapaDB & GrapaDBX backends complete)
+10. **unified_get** - Get field value (file system, GrapaDB & GrapaDBX backends complete)
 
 ### ✅ File System Backend
 - **Full Implementation**: All handlers work with real file system operations
@@ -46,15 +46,15 @@ All unified handlers implemented in `source/grapa/GrapaLibRule.cpp`:
 - **Parameter Validation**: Checks for required parameters and object existence
 - **Helper Methods**: `GrapaDBNavigateToTable()` and `GrapaDBFindRecord()` for common operations
 
-### ✅ GrapaDB2 Backend
-- **Full Implementation**: All handlers work with real GrapaDB2 operations
-- **Leverages Existing Code**: Uses `GrapaDB2` class methods for database operations
+### ✅ GrapaDBX Backend
+- **Full Implementation**: All handlers work with real GrapaDBX operations
+- **Leverages Existing Code**: Uses `GrapaDBX` class methods for database operations
 - **Default $KEY/$VALUE**: Implements file-like operations within database
 - **Table Navigation**: Supports navigating between tables and groups
 - **Record Operations**: Create, read, update, delete records with field access
 - **Error Handling**: Proper error codes and validation
 - **Parameter Validation**: Checks for required parameters and object existence
-- **Helper Methods**: `GrapaDB2NavigateToTable()` and `GrapaDB2FindRecord()` for common operations
+- **Helper Methods**: `GrapaDBXNavigateToTable()` and `GrapaDBXFindRecord()` for common operations
 - **Enhanced Features**: Simplified interface, better performance, transaction support (planned)
 
 ### ✅ Grapa Language Integration
@@ -89,7 +89,7 @@ All unified handlers implemented in `source/grapa/GrapaLibRule.cpp`:
 4. **Performance optimization** using `GrapaWorker` for parallel operations
 5. **Caching implementation** using `GrapaFileCache`
 6. **Unicode support** leveraging `GrapaUnicode` from grep implementation
-7. **Transaction support** in GrapaDB2 (Phase 2 features)
+7. **Transaction support** in GrapaDBX (Phase 2 features)
 
 ## Key Design Decisions
 
@@ -138,4 +138,4 @@ All unified handlers implemented in `source/grapa/GrapaLibRule.cpp`:
 
 ## Next Major Milestone
 
-**Network Storage Backend Integration**: Replace `err = -2` placeholders in handlers with actual network operations, enabling seamless remote storage navigation through the unified interface. GrapaDB and GrapaDB2 integrations are now complete and functional. 
+**Network Storage Backend Integration**: Replace `err = -2` placeholders in handlers with actual network operations, enabling seamless remote storage navigation through the unified interface. GrapaDB and GrapaDBX integrations are now complete and functional. 

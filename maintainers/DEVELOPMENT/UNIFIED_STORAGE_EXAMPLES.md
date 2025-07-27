@@ -7,7 +7,7 @@ This document provides examples and usage patterns for the unified storage syste
 The unified storage system provides a single interface for accessing different storage types:
 - **File System**: `file://` URLs for local file system access
 - **GrapaDB**: `grapadb://` URLs for database access
-- **GrapaDB2**: `grapadb2://` URLs for enhanced database access
+- **GrapaDBX**: `grapadbx://` URLs for enhanced database access
 - **Network**: `network://` URLs for remote storage (planned)
 - **Memory**: `memory://` URLs for in-memory storage (planned)
 - **Cloud**: `cloud://` URLs for cloud storage (planned)
@@ -27,7 +27,7 @@ u.create("file:///path/to/files");
 u.create("grapadb://database.gdb");
 
 /* Initialize with enhanced database */
-u.create("grapadb2://database2.gdb");
+u.create("grapadbx://database2.gdb");
 ```
 
 ### Basic Operations
@@ -174,11 +174,11 @@ u.ls().table().echo();
 **✅ COMPLETED:**
 - All unified handlers (`unified_cd`, `unified_ls`, `unified_mk`, `unified_rm`, `unified_set`, `unified_get`) implemented with full file system logic
 - GrapaDB backend fully implemented and integrated
-- GrapaDB2 backend fully implemented and integrated
+- GrapaDBX backend fully implemented and integrated
 - **NEW: Output formatting methods (`.json()`, `.table()`, `.simple()`) implemented**
 - **NEW: Field selection support in `.ls()` method**
 - Clear TODOs and detailed comments for network, memory, and cloud backends
-- Comprehensive test script (`test_unified_handlers.grc`, `test_unified_grapadb.grc`, `test_unified_grapadb2.grc`) created to verify all operations
+- Comprehensive test script (`test_unified_handlers.grc`, `test_unified_grapadb.grc`, `test_unified_grapadbx.grc`) created to verify all operations
 - **NEW: Comprehensive output formatting test script (`test_unified_output_formats.grc`)**
 - Error handling and parameter validation implemented
 - Proper Grapa syntax with semicolons in all test scripts

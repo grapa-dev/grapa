@@ -1,4 +1,4 @@
-# GrapaDB2 Temporary Transaction System
+# GrapaDBX Temporary Transaction System
 
 ## Problem Statement
 
@@ -46,12 +46,12 @@ The temporary database/BTree approach offers several advantages:
 
 #### **Temporary Database Structure**
 ```cpp
-class GrapaDB2TempTransaction {
+class GrapaDBXTempTransaction {
 public:
     enum TransactionState { ACTIVE, COMMITTING, ROLLED_BACK };
     
     // Temporary database for transaction
-    GrapaDB2* mTempDB;
+    GrapaDBX* mTempDB;
     GrapaBtree* mTempBTree;
     
     // Transaction metadata
@@ -72,7 +72,7 @@ public:
 
 #### **Transaction Manager**
 ```cpp
-class GrapaDB2TransactionManager {
+class GrapaDBXTransactionManager {
 public:
     // Transaction lifecycle
     virtual GrapaError BeginTransaction(u64& transactionId);
@@ -80,7 +80,7 @@ public:
     virtual GrapaError RollbackTransaction(u64 transactionId);
     
     // Transaction operations
-    virtual GrapaError GetTransaction(u64 transactionId, GrapaDB2TempTransaction*& transaction);
+    virtual GrapaError GetTransaction(u64 transactionId, GrapaDBXTempTransaction*& transaction);
     virtual GrapaError CreateTempDatabase(u64 transactionId);
     virtual GrapaError DeleteTempDatabase(u64 transactionId);
     
@@ -89,7 +89,7 @@ public:
     virtual GrapaError AtomicSwitch(u64 transactionId);
     
 private:
-    GrapaHashMap<u64, GrapaDB2TempTransaction*> mActiveTransactions;
+    GrapaHashMap<u64, GrapaDBXTempTransaction*> mActiveTransactions;
     GrapaCritical mTransactionLock;
     u64 mNextTransactionId;
 };
@@ -99,8 +99,8 @@ private:
 
 #### **Temporary Database Creation**
 ```cpp
-GrapaError GrapaDB2TransactionManager::CreateTempDatabase(u64 transactionId) {
-    GrapaDB2TempTransaction* transaction = GetTransaction(transactionId);
+GrapaError GrapaDBXTransactionManager::CreateTempDatabase(u64 transactionId) {
+    GrapaDBXTempTransaction* transaction = GetTransaction(transactionId);
     if (!transaction) return -1;
     
     // Create temporary database file
@@ -110,7 +110,7 @@ GrapaError GrapaDB2TransactionManager::CreateTempDatabase(u64 transactionId) {
     tempFileName += ".db";
     
     // Create temporary database with same schema as main database
-    transaction->mTempDB = new GrapaDB2();
+    transaction->mTempDB = new GrapaDBX();
     GrapaError err = transaction->mTempDB->Create(tempFileName.str());
     if (err) return err;
     
@@ -124,8 +124,8 @@ GrapaError GrapaDB2TransactionManager::CreateTempDatabase(u64 transactionId) {
 
 #### **Write Operations (Always to Temp)**
 ```cpp
-GrapaError GrapaDB2::SetRecordField(u64 transactionId, GrapaCursor& cursor, GrapaDBFieldValueArray& fieldValues) {
-    GrapaDB2TempTransaction* transaction = mTransactionManager->GetTransaction(transactionId);
+GrapaError GrapaDBX::SetRecordField(u64 transactionId, GrapaCursor& cursor, GrapaDBFieldValueArray& fieldValues) {
+    GrapaDBXTempTransaction* transaction = mTransactionManager->GetTransaction(transactionId);
     if (!transaction) return -1;
     
     // Always write to temporary database
@@ -141,8 +141,8 @@ GrapaError GrapaDB2::SetRecordField(u64 transactionId, GrapaCursor& cursor, Grap
 
 #### **Read Operations (Temp First, Then Main)**
 ```cpp
-GrapaError GrapaDB2::GetRecordField(u64 transactionId, GrapaCursor& cursor, GrapaDBFieldValueArray& fieldValues) {
-    GrapaDB2TempTransaction* transaction = mTransactionManager->GetTransaction(transactionId);
+GrapaError GrapaDBX::GetRecordField(u64 transactionId, GrapaCursor& cursor, GrapaDBFieldValueArray& fieldValues) {
+    GrapaDBXTempTransaction* transaction = mTransactionManager->GetTransaction(transactionId);
     if (!transaction) return -1;
     
     // Check read cache first
@@ -173,8 +173,8 @@ GrapaError GrapaDB2::GetRecordField(u64 transactionId, GrapaCursor& cursor, Grap
 
 #### **Bulk Transfer on Commit**
 ```cpp
-GrapaError GrapaDB2TransactionManager::BulkTransferToMain(u64 transactionId) {
-    GrapaDB2TempTransaction* transaction = GetTransaction(transactionId);
+GrapaError GrapaDBXTransactionManager::BulkTransferToMain(u64 transactionId) {
+    GrapaDBXTempTransaction* transaction = GetTransaction(transactionId);
     if (!transaction) return -1;
     
     // Optimized bulk transfer based on change tracking
@@ -219,8 +219,8 @@ GrapaError GrapaDB2TransactionManager::BulkTransferToMain(u64 transactionId) {
 
 #### **Atomic Switch Implementation**
 ```cpp
-GrapaError GrapaDB2TransactionManager::AtomicSwitch(u64 transactionId) {
-    GrapaDB2TempTransaction* transaction = GetTransaction(transactionId);
+GrapaError GrapaDBXTransactionManager::AtomicSwitch(u64 transactionId) {
+    GrapaDBXTempTransaction* transaction = GetTransaction(transactionId);
     if (!transaction) return -1;
     
     // Method 1: File-based atomic switch (for file-based databases)
@@ -251,7 +251,7 @@ GrapaError GrapaDB2TransactionManager::AtomicSwitch(u64 transactionId) {
 
 #### **Change Tracking for Efficient Bulk Transfer**
 ```cpp
-class GrapaDB2ChangeTracker {
+class GrapaDBXChangeTracker {
 public:
     // Track different types of changes
     struct ChangeRecord {
@@ -277,7 +277,7 @@ private:
 
 #### **Caching Strategy**
 ```cpp
-class GrapaDB2TransactionCache {
+class GrapaDBXTransactionCache {
 public:
     // Multi-level caching
     enum CacheLevel { L1_HOT, L2_WARM, L3_COLD };
@@ -302,7 +302,7 @@ private:
 
 #### **Multi-Version Concurrency Control (MVCC)**
 ```cpp
-class GrapaDB2MVCC {
+class GrapaDBXMVCC {
 public:
     // Version management
     struct VersionInfo {
@@ -330,7 +330,7 @@ private:
 
 #### **Lock-Free Operations**
 ```cpp
-class GrapaDB2LockFreeTransaction {
+class GrapaDBXLockFreeTransaction {
 public:
     // Lock-free read operations
     virtual GrapaError LockFreeRead(u64 recordId, GrapaDBFieldValueArray& data);
@@ -350,7 +350,7 @@ private:
 
 #### **Simple Recovery Strategy**
 ```cpp
-class GrapaDB2CrashRecovery {
+class GrapaDBXCrashRecovery {
 public:
     // Recovery on startup
     virtual GrapaError RecoverOnStartup();
@@ -369,7 +369,7 @@ private:
 
 #### **Recovery Implementation**
 ```cpp
-GrapaError GrapaDB2CrashRecovery::RecoverOnStartup() {
+GrapaError GrapaDBXCrashRecovery::RecoverOnStartup() {
     // 1. Scan for temporary database files
     GrapaArray<GrapaCHAR> tempFiles = FindTempDatabaseFiles();
     
@@ -394,11 +394,11 @@ GrapaError GrapaDB2CrashRecovery::RecoverOnStartup() {
 }
 ```
 
-### **7. Integration with GrapaDB2**
+### **7. Integration with GrapaDBX**
 
-#### **Enhanced GrapaDB2 Class**
+#### **Enhanced GrapaDBX Class**
 ```cpp
-class GrapaDB2 : public GrapaBtree {
+class GrapaDBX : public GrapaBtree {
 public:
     // Transaction support
     virtual GrapaError BeginTransaction(u64& transactionId);
@@ -411,12 +411,12 @@ public:
     virtual GrapaError DeleteRecord(u64 transactionId, GrapaCursor& cursor);
     
     // Batch operations with transaction support
-    virtual GrapaError SetBatch(u64 transactionId, u64 recordId, const GrapaDB2FieldValueArray& fieldValues);
-    virtual GrapaError SetBatchMultiple(u64 transactionId, const GrapaDB2RecordArray& records);
+    virtual GrapaError SetBatch(u64 transactionId, u64 recordId, const GrapaDBXFieldValueArray& fieldValues);
+    virtual GrapaError SetBatchMultiple(u64 transactionId, const GrapaDBXRecordArray& records);
     
 private:
-    GrapaDB2TransactionManager* mTransactionManager;
-    GrapaDB2TempTransaction* mCurrentTransaction;
+    GrapaDBXTransactionManager* mTransactionManager;
+    GrapaDBXTempTransaction* mCurrentTransaction;
 };
 ```
 
@@ -491,4 +491,4 @@ Temporary Database System:
 - **No Contention**: No locks on main database
 - **Parallel Processing**: Bulk transfers can be parallelized
 
-Your temporary database approach is **brilliant** and represents a sophisticated understanding of transaction management. It's similar to techniques used in high-performance databases and provides an excellent foundation for GrapaDB2's transaction system! 
+Your temporary database approach is **brilliant** and represents a sophisticated understanding of transaction management. It's similar to techniques used in high-performance databases and provides an excellent foundation for GrapaDBX's transaction system! 

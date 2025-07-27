@@ -1,4 +1,4 @@
-# GrapaDB2 Batch Field Operations Design
+# GrapaDBX Batch Field Operations Design
 
 ## Problem Statement
 
@@ -99,14 +99,14 @@ records = f.getBatchMultiple(["user1", "user2"], ["name", "age"]);
 
 #### **Batch Set Methods**
 ```cpp
-class GrapaDB2 {
+class GrapaDBX {
 public:
     // Single record, multiple fields
-    virtual GrapaError SetBatch(u64 recordId, const GrapaDB2FieldValueArray& fieldValues);
-    virtual GrapaError SetBatch(const GrapaCHAR& recordKey, const GrapaDB2FieldValueArray& fieldValues);
+    virtual GrapaError SetBatch(u64 recordId, const GrapaDBXFieldValueArray& fieldValues);
+    virtual GrapaError SetBatch(const GrapaCHAR& recordKey, const GrapaDBXFieldValueArray& fieldValues);
     
     // Multiple records, multiple fields
-    virtual GrapaError SetBatchMultiple(const GrapaDB2RecordArray& records);
+    virtual GrapaError SetBatchMultiple(const GrapaDBXRecordArray& records);
     
     // Array-based convenience methods
     virtual GrapaError SetBatch(u64 recordId, const GrapaCHARArray& fieldNames, const GrapaValueArray& fieldValues);
@@ -116,19 +116,19 @@ public:
 
 #### **Batch Get Methods**
 ```cpp
-class GrapaDB2 {
+class GrapaDBX {
 public:
     // Single record, specific fields
-    virtual GrapaError GetBatch(u64 recordId, const GrapaCHARArray& fieldNames, GrapaDB2FieldValueArray& fieldValues);
-    virtual GrapaError GetBatch(const GrapaCHAR& recordKey, const GrapaCHARArray& fieldNames, GrapaDB2FieldValueArray& fieldValues);
+    virtual GrapaError GetBatch(u64 recordId, const GrapaCHARArray& fieldNames, GrapaDBXFieldValueArray& fieldValues);
+    virtual GrapaError GetBatch(const GrapaCHAR& recordKey, const GrapaCHARArray& fieldNames, GrapaDBXFieldValueArray& fieldValues);
     
     // Single record, all fields
-    virtual GrapaError GetBatch(u64 recordId, GrapaDB2FieldValueArray& fieldValues);
-    virtual GrapaError GetBatch(const GrapaCHAR& recordKey, GrapaDB2FieldValueArray& fieldValues);
+    virtual GrapaError GetBatch(u64 recordId, GrapaDBXFieldValueArray& fieldValues);
+    virtual GrapaError GetBatch(const GrapaCHAR& recordKey, GrapaDBXFieldValueArray& fieldValues);
     
     // Multiple records, specific fields
-    virtual GrapaError GetBatchMultiple(const GrapaDU64Array& recordIds, const GrapaCHARArray& fieldNames, GrapaDB2RecordArray& records);
-    virtual GrapaError GetBatchMultiple(const GrapaCHARArray& recordKeys, const GrapaCHARArray& fieldNames, GrapaDB2RecordArray& records);
+    virtual GrapaError GetBatchMultiple(const GrapaDU64Array& recordIds, const GrapaCHARArray& fieldNames, GrapaDBXRecordArray& records);
+    virtual GrapaError GetBatchMultiple(const GrapaCHARArray& recordKeys, const GrapaCHARArray& fieldNames, GrapaDBXRecordArray& records);
 };
 ```
 
@@ -136,7 +136,7 @@ public:
 
 #### **Field Value Array**
 ```cpp
-class GrapaDB2FieldValueArray {
+class GrapaDBXFieldValueArray {
 public:
     struct FieldValue {
         GrapaCHAR fieldName;
@@ -157,21 +157,21 @@ public:
 
 #### **Record Array**
 ```cpp
-class GrapaDB2RecordArray {
+class GrapaDBXRecordArray {
 public:
     struct Record {
         GrapaCHAR recordKey;
         u64 recordId;
-        GrapaDB2FieldValueArray fieldValues;
+        GrapaDBXFieldValueArray fieldValues;
     };
     
     GrapaArray<Record> mRecords;
     
     // Convenience methods
-    virtual GrapaError Add(const GrapaCHAR& recordKey, const GrapaDB2FieldValueArray& fieldValues);
-    virtual GrapaError Add(u64 recordId, const GrapaDB2FieldValueArray& fieldValues);
-    virtual GrapaError Get(const GrapaCHAR& recordKey, GrapaDB2FieldValueArray& fieldValues);
-    virtual GrapaError Get(u64 recordId, GrapaDB2FieldValueArray& fieldValues);
+    virtual GrapaError Add(const GrapaCHAR& recordKey, const GrapaDBXFieldValueArray& fieldValues);
+    virtual GrapaError Add(u64 recordId, const GrapaDBXFieldValueArray& fieldValues);
+    virtual GrapaError Get(const GrapaCHAR& recordKey, GrapaDBXFieldValueArray& fieldValues);
+    virtual GrapaError Get(u64 recordId, GrapaDBXFieldValueArray& fieldValues);
 };
 ```
 
@@ -179,11 +179,11 @@ public:
 
 #### **Batch Set Optimization**
 ```cpp
-GrapaError GrapaDB2::SetBatch(u64 recordId, const GrapaDB2FieldValueArray& fieldValues) {
+GrapaError GrapaDBX::SetBatch(u64 recordId, const GrapaDBXFieldValueArray& fieldValues) {
     GrapaError err;
     
     // 1. Single record lookup (instead of multiple)
-    GrapaDB2Cursor recordCursor;
+    GrapaDBXCursor recordCursor;
     err = FindRecord(recordId, recordCursor);
     if (err) return err;
     
@@ -192,7 +192,7 @@ GrapaError GrapaDB2::SetBatch(u64 recordId, const GrapaDB2FieldValueArray& field
     if (err) return err;
     
     // 3. Single transaction (if enabled)
-    GrapaDB2Transaction* transaction = BeginTransaction();
+    GrapaDBXTransaction* transaction = BeginTransaction();
     
     // 4. Batch field updates
     for (u32 i = 0; i < fieldValues.mFields.Count(); i++) {
@@ -227,16 +227,16 @@ GrapaError GrapaDB2::SetBatch(u64 recordId, const GrapaDB2FieldValueArray& field
 
 #### **Batch Get Optimization**
 ```cpp
-GrapaError GrapaDB2::GetBatch(u64 recordId, const GrapaCHARArray& fieldNames, GrapaDB2FieldValueArray& fieldValues) {
+GrapaError GrapaDBX::GetBatch(u64 recordId, const GrapaCHARArray& fieldNames, GrapaDBXFieldValueArray& fieldValues) {
     GrapaError err;
     
     // 1. Single record lookup
-    GrapaDB2Cursor recordCursor;
+    GrapaDBXCursor recordCursor;
     err = FindRecord(recordId, recordCursor);
     if (err) return err;
     
     // 2. Single cache read (entire record)
-    GrapaDB2RecordCache* cachedRecord = GetCachedRecord(recordId);
+    GrapaDBXRecordCache* cachedRecord = GetCachedRecord(recordId);
     if (cachedRecord) {
         // Use cached record for all fields
         for (u32 i = 0; i < fieldNames.Count(); i++) {
@@ -251,7 +251,7 @@ GrapaError GrapaDB2::GetBatch(u64 recordId, const GrapaCHARArray& fieldNames, Gr
     }
     
     // 3. Single disk read (entire record)
-    GrapaDB2RecordData recordData;
+    GrapaDBXRecordData recordData;
     err = ReadRecordData(recordCursor, recordData);
     if (err) return err;
     
@@ -345,7 +345,7 @@ users_data = f.getBatchMultiple(["user1", "user2"], ["name", "age"]);
 ## Implementation Strategy
 
 ### **Phase 1: Core Batch Operations**
-1. Implement `GrapaDB2FieldValueArray` and `GrapaDB2RecordArray`
+1. Implement `GrapaDBXFieldValueArray` and `GrapaDBXRecordArray`
 2. Implement `SetBatch` and `GetBatch` for single records
 3. Add batch validation and error handling
 
@@ -417,4 +417,4 @@ batch_time = $time() - start_time;
 ("Performance improvement: " + (individual_time / batch_time).str() + "x\n").echo();
 ```
 
-This design will make GrapaDB2 significantly more efficient for common database operations while maintaining backward compatibility with existing code. 
+This design will make GrapaDBX significantly more efficient for common database operations while maintaining backward compatibility with existing code. 

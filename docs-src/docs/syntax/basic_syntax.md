@@ -1167,16 +1167,26 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
 # Grapa Basic Syntax: Key Rules
 
 ## Statement and Block Termination
-- Every statement must end with a semicolon (`;`), including after the closing brace of every block (such as `if`, `else`, `while`, and function blocks).
+- Every **statement** must end with a semicolon (`;`)
+- **Block statements** (if, else, while, function blocks) do NOT require semicolons after the closing brace
+- Semicolons are **optional** for block statements - both forms are valid
 - Example:
   while (cond) {
       ...
-  };
+  }  /* No semicolon required */
   if (cond) {
       ...
   } else {
       ...
-  };
+  }  /* No semicolon required */
+  
+  /* These are also valid: */
+  while (cond) {
+      ...
+  };  /* With semicolon */
+  if (cond) {
+      ...
+  };  /* With semicolon */
 
 ## Array Manipulation
 - To append to an array, use the `+=` operator.
@@ -1202,7 +1212,8 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
 | Rule | Example |
 |------|---------|
 | Every statement ends with a semicolon (`;`) | `x = 5;` |
-| Every block (after `}`) ends with a semicolon | `if (x) { ... };` |
+| Block statements (after `}`) can omit semicolon | `if (x) { ... }` |
+| Block statements can include semicolon | `if (x) { ... };` |
 | Use block comments only | `/* comment */` |
 | Do not use line comments (`// ...`) |  |
 | Within `{}` blocks, comments must be on their own line | `{ /* comment */ x = 5; }` |
@@ -1212,7 +1223,7 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
 | Access arrays/lists with `[index]` | `arr[0];` |
 | Access object properties with dot or bracket notation | `obj.foo;`, `obj["foo"]` |
 | Use `.echo()` for output | `"Hello".echo();` |
-| Use `while` loops, not `for` | `while (cond) { ... };` |
+| Use `while` loops, not `for` | `while (cond) { ... }` |
 | Wrap string concatenations in parentheses | `(str1 + str2).echo();` |
 | Increment or append with += | `v += 1;`, `s += "x";` |
 | Both = x + y and += y are valid | `v = v + 1;`, `v += 1;` |

@@ -1,32 +1,32 @@
-# GrapaDB2 Index Design
+# GrapaDBX Index Design
 
 ## Overview
 
-GrapaDB2 uses a unified index design that follows the same principles as the field dictionary system. Indexes are stored using the same BTree patterns and field structures, ensuring consistency across the entire database system.
+GrapaDBX uses a unified index design that follows the same principles as the field dictionary system. Indexes are stored using the same BTree patterns and field structures, ensuring consistency across the entire database system.
 
 ## Index Structure
 
 ### Core Index Class
 ```cpp
-class GrapaDB2Index
+class GrapaDBXIndex
 {
 public:
-    GrapaDB2Table mTable;  // Contains dictionary field for index metadata
+    GrapaDBXTable mTable;  // Contains dictionary field for index metadata
     u64 mId;               // Index ID
     u64 mRef;              // Reference to the index BTree
     // add the name
 public:
-    GrapaDB2Index() { mId = 0; mRef = 0; }
+    GrapaDBXIndex() { mId = 0; mRef = 0; }
     void BigEndian();
 };
 ```
 
 ### Index Table Integration
 ```cpp
-class GrapaDB2Table
+class GrapaDBXTable
 {
 public:
-    GrapaDB2Field mDictField;  // Dictionary field for table/index metadata
+    GrapaDBXField mDictField;  // Dictionary field for table/index metadata
     u64 mId;
     u64 mRef;
     u64 mRecRef;
@@ -97,8 +97,8 @@ enum {
 
 ### Field Mapping
 ```cpp
-GrapaError CreateIndex(GrapaDB2Table& pTable, u64 pIndexId, 
-                      GrapaDU64Array& pIndexList, GrapaDB2Index& pIndex)
+GrapaError CreateIndex(GrapaDBXTable& pTable, u64 pIndexId, 
+                      GrapaDU64Array& pIndexList, GrapaDBXIndex& pIndex)
 {
     // pIndexList contains (indexFieldId, fieldId) pairs
     // Each pair defines which table field is indexed at which position
@@ -114,7 +114,7 @@ GrapaError CreateIndex(GrapaDB2Table& pTable, u64 pIndexId,
 ## Design Principles
 
 ### 1. Unified Structure
-- Same `GrapaDB2Field` structure for index definitions
+- Same `GrapaDBXField` structure for index definitions
 - Same BTree patterns for index storage
 - Same endian safety and I/O patterns
 
@@ -197,4 +197,4 @@ GrapaError CreateIndex(GrapaDB2Table& pTable, u64 pIndexId,
 
 ---
 
-*Last updated: Current session - Documented GrapaDB2 index design based on codebase analysis* 
+*Last updated: Current session - Documented GrapaDBX index design based on codebase analysis* 

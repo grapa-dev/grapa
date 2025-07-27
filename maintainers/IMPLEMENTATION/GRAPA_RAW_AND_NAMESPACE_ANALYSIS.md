@@ -11,7 +11,7 @@ tags:
 ## Overview
 
 This document provides a comprehensive analysis of two critical aspects of Grapa's architecture:
-1. **RAW Data Handling**: How GrapaDB and GrapaDB2 handle RAW data types, including compression and storage
+1. **RAW Data Handling**: How GrapaDB and GrapaDBX handle RAW data types, including compression and storage
 2. **Namespace Stack Mechanism**: How Grapa's namespace hierarchy works and how variables trace back to the global namespace
 
 ## RAW Data Handling Analysis
@@ -73,18 +73,18 @@ pEnc.mBytes[3] = tk;  // Store type in GRZ header
 - **Compressed Data**: ZIP-compressed RAW content
 - **Type Preservation**: Original type stored in header
 
-### RAW Data in GrapaDB2
+### RAW Data in GrapaDBX
 
 #### Current Implementation
-GrapaDB2 inherits the same RAW handling mechanisms from GrapaDB:
+GrapaDBX inherits the same RAW handling mechanisms from GrapaDB:
 
 ```cpp
-// From GrapaDB2.cpp - Context-aware environment
+// From GrapaDBX.cpp - Context-aware environment
 virtual GrapaError RecordGetFieldPartial(GrapaCursor& cursor, const GrapaCHAR& fieldName, 
                                         u64 offset, u64 length, GrapaCHAR& operation, GrapaBYTE& result);
 ```
 
-**Recommendations for GrapaDB2:**
+**Recommendations for GrapaDBX:**
 1. **No Changes Needed**: RAW data handling is already optimal
 2. **GRZ Integration**: RAW data already uses compressed GRZ format
 3. **Streaming Support**: Current `RecordGetFieldPartial` supports streaming operations
@@ -216,11 +216,11 @@ objEvent->vNetConnect->mNames.SetParrent(vNames);
 
 ### Context-Aware Record Environment
 
-#### Implementation in GrapaDB2
+#### Implementation in GrapaDBX
 The context-aware environment leverages namespace injection:
 
 ```cpp
-GrapaRuleEvent* GrapaDB2::CreateRecordContext(GrapaCursor& cursor, GrapaDB2Table& table)
+GrapaRuleEvent* GrapaDBX::CreateRecordContext(GrapaCursor& cursor, GrapaDBXTable& table)
 {
     GrapaRuleEvent* context = new GrapaRuleEvent();
     context->mValue.mToken = GrapaTokenType::LIST;
@@ -250,7 +250,7 @@ GrapaRuleEvent* GrapaDB2::CreateRecordContext(GrapaCursor& cursor, GrapaDB2Table
 }
 ```
 
-## Implications for GrapaDB2 Formula Fields
+## Implications for GrapaDBX Formula Fields
 
 ### Formula Execution Context
 Formulas execute within a rich context that provides:
@@ -290,7 +290,7 @@ The namespace system enables:
 3. **Context Isolation**: Ensure formula variables don't leak
 4. **Performance Optimization**: Use selective loading and streaming operations
 
-### For GrapaDB2 Implementation
+### For GrapaDBX Implementation
 1. **Continue Current Approach**: The context-aware record environment is well-designed
 2. **Extend Streaming**: Implement full `StreamingGrep` and `LoadFieldSubstring` functionality
 3. **Optimize Performance**: Add field name indexing for faster lookups
@@ -300,10 +300,10 @@ The namespace system enables:
 
 The investigation reveals that:
 
-1. **RAW Data Handling**: GrapaDB already has excellent RAW data support with GRZ compression and streaming capabilities. No changes needed for GrapaDB2.
+1. **RAW Data Handling**: GrapaDB already has excellent RAW data support with GRZ compression and streaming capabilities. No changes needed for GrapaDBX.
 
 2. **Namespace Stack**: Grapa's namespace hierarchy is sophisticated and well-designed, providing automatic variable lookup through parent namespaces while maintaining proper isolation.
 
-3. **Formula Fields**: The current context-aware record environment approach in GrapaDB2 is well-aligned with existing Grapa patterns and provides the necessary functionality for efficient formula execution.
+3. **Formula Fields**: The current context-aware record environment approach in GrapaDBX is well-aligned with existing Grapa patterns and provides the necessary functionality for efficient formula execution.
 
-The existing architecture provides a solid foundation for GrapaDB2's formula field implementation, with the namespace system enabling rich context provision and the RAW data handling supporting efficient large field operations. 
+The existing architecture provides a solid foundation for GrapaDBX's formula field implementation, with the namespace system enabling rich context provision and the RAW data handling supporting efficient large field operations. 

@@ -273,7 +273,7 @@ void GrapaScriptExec::LoadLib(GrapaRuleEvent *libName)
 }
 ```
 
-## Implications for GrapaDB2
+## Implications for GrapaDBX
 
 ### **Current State Analysis**
 
@@ -288,29 +288,29 @@ void GrapaScriptExec::LoadLib(GrapaRuleEvent *libName)
 - ✅ **Dynamic**: Automatic namespace creation
 - ✅ **Flexible**: Support for global and local scoping
 
-### **GrapaDB2 Integration Opportunities**
+### **GrapaDBX Integration Opportunities**
 
 **1. Formula Field Integration**:
 ```cpp
 // Potential formula field registration
-if (pName.Cmp("db2_formula") == 0) lib = new GrapaLibraryRuleDB2FormulaEvent(pName);
-if (pName.Cmp("db2_execute") == 0) lib = new GrapaLibraryRuleDB2ExecuteEvent(pName);
+if (pName.Cmp("dbx_formula") == 0) lib = new GrapaLibraryRuleDBXFormulaEvent(pName);
+if (pName.Cmp("dbx_execute") == 0) lib = new GrapaLibraryRuleDBXExecuteEvent(pName);
 ```
 
 **2. Database Class Registration**:
 ```cpp
 // Potential database class registration
-if (pName.Cmp("db2_create") == 0) lib = new GrapaLibraryRuleDB2CreateEvent(pName);
-if (pName.Cmp("db2_open") == 0) lib = new GrapaLibraryRuleDB2OpenEvent(pName);
-if (pName.Cmp("db2_query") == 0) lib = new GrapaLibraryRuleDB2QueryEvent(pName);
+if (pName.Cmp("dbx_create") == 0) lib = new GrapaLibraryRuleDBXCreateEvent(pName);
+if (pName.Cmp("dbx_open") == 0) lib = new GrapaLibraryRuleDBXOpenEvent(pName);
+if (pName.Cmp("dbx_query") == 0) lib = new GrapaLibraryRuleDBXQueryEvent(pName);
 ```
 
 **3. Dynamic Formula Registration**:
 ```grapa
 // Potential dynamic formula registration
-$global["$db2"] = class {
-    formula = op(name, expression) { @<"db2","formula",{@<var,{name}>,@<var,{expression}>}>(); };
-    execute = op(formula, params) { @<"db2","execute",{@<var,{formula}>,@<var,{params}>}>(); };
+$global["$dbx"] = class {
+    formula = op(name, expression) { @<"dbx","formula",{@<var,{name}>,@<var,{expression}>}>(); };
+    execute = op(formula, params) { @<"dbx","execute",{@<var,{formula}>,@<var,{params}>}>(); };
 };
 ```
 
@@ -324,9 +324,9 @@ $global["$db2"] = class {
 
 ### **Future Enhancements**
 
-**1. GrapaDB2 Class Registration**:
-- Register GrapaDB2 functions as built-in classes
-- Follow existing naming patterns (`db2_*`)
+**1. GrapaDBX Class Registration**:
+- Register GrapaDBX functions as built-in classes
+- Follow existing naming patterns (`dbx_*`)
 - Use established inheritance hierarchy
 
 **2. Formula Class Integration**:
@@ -360,10 +360,10 @@ $global["$db2"] = class {
 
 The current Grapa built-in namespace system is well-designed and provides a solid foundation for extending functionality. The library function registration pattern is consistent, extensible, and supports both static and dynamic class registration.
 
-**Recommendation**: Continue using the existing built-in class registration patterns for GrapaDB2 integration. The current system provides all necessary infrastructure for adding new database and formula functionality.
+**Recommendation**: Continue using the existing built-in class registration patterns for GrapaDBX integration. The current system provides all necessary infrastructure for adding new database and formula functionality.
 
-**Priority**: Low - this investigation provides valuable context for future development but doesn't impact current GrapaDB2 work.
+**Priority**: Low - this investigation provides valuable context for future development but doesn't impact current GrapaDBX work.
 
 ---
 
-*This analysis provides the foundation for understanding Grapa's built-in namespace system and its implications for future GrapaDB2 integration.* 
+*This analysis provides the foundation for understanding Grapa's built-in namespace system and its implications for future GrapaDBX integration.* 

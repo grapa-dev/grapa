@@ -1,12 +1,12 @@
-# GrapaDB2 Dump System Implementation
+# GrapaDBX Dump System Implementation
 
 ## Overview
 
-The GrapaDB2 dump system provides comprehensive debugging and visualization capabilities for the database file system architecture. It allows developers to inspect the complete tree-of-trees structure, understand data organization, and debug database operations.
+The GrapaDBX dump system provides comprehensive debugging and visualization capabilities for the database file system architecture. It allows developers to inspect the complete tree-of-trees structure, understand data organization, and debug database operations.
 
 ## Vision Context
 
-GrapaDB2 implements a **Database File System** inspired by Microsoft's failed Longhorn/WinFS project. The dump system is essential for understanding how this unified storage system works:
+GrapaDBX implements a **Database File System** inspired by Microsoft's failed Longhorn/WinFS project. The dump system is essential for understanding how this unified storage system works:
 
 - **GROUP** = **Folders/Directories** (can contain other folders, tables, and data files)
 - **ROW/COL** = **Tables** (structured data storage like spreadsheets)  
@@ -124,9 +124,9 @@ LIST ended (1) key=0 type=GROUP
 - **Navigation**: Understand how GROUP, ROW, and COL databases relate
 - **Indexing**: Visualize PTR relationships and index structures
 
-## Integration with GrapaDB2
+## Integration with GrapaDBX
 
-The dump system is fully integrated with GrapaDB2's database file system architecture:
+The dump system is fully integrated with GrapaDBX's database file system architecture:
 
 - **Unified Interface**: Same `.dump()` method works across all database types
 - **Hierarchical Support**: Properly handles nested GROUP structures
@@ -145,6 +145,6 @@ Potential improvements for the dump system:
 
 ## Conclusion
 
-The GrapaDB2 dump system provides essential visibility into the database file system architecture. It enables developers to understand, debug, and visualize the complex tree-of-trees structure that makes GrapaDB2 a working database file system - the solution that Microsoft's WinFS project failed to deliver.
+The GrapaDBX dump system provides essential visibility into the database file system architecture. It enables developers to understand, debug, and visualize the complex tree-of-trees structure that makes GrapaDBX a working database file system - the solution that Microsoft's WinFS project failed to deliver.
 
 This implementation demonstrates the power and flexibility of the database file system approach, where hierarchical organization (folders) combines seamlessly with database capabilities (tables and queries). 

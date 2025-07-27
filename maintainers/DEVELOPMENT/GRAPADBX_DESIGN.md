@@ -1,8 +1,8 @@
-# GrapaDB2 Design Document: Database File System
+# GrapaDBX Design Document: Database File System
 
 ## Vision and Inspiration
 
-GrapaDB2 implements a **Database File System** - a unified storage system that combines file system and database capabilities seamlessly. This vision was inspired by Microsoft's failed Longhorn/WinFS project, which attempted to create a relational file system but failed due to complexity and performance issues.
+GrapaDBX implements a **Database File System** - a unified storage system that combines file system and database capabilities seamlessly. This vision was inspired by Microsoft's failed Longhorn/WinFS project, which attempted to create a relational file system but failed due to complexity and performance issues.
 
 ### The WinFS Problem and Solution
 
@@ -11,7 +11,7 @@ GrapaDB2 implements a **Database File System** - a unified storage system that c
 - Failed due to over-engineering and performance issues
 - Never delivered on the promise of unified storage
 
-**What GrapaDB2 Delivers:**
+**What GrapaDBX Delivers:**
 - A working database file system that actually functions
 - Hierarchical organization (folders) with database power (tables)
 - Seamless navigation between file system and database operations
@@ -19,11 +19,303 @@ GrapaDB2 implements a **Database File System** - a unified storage system that c
 
 ## Core Philosophy
 
-GrapaDB2 treats the database as a file system where:
+GrapaDBX treats the database as a file system where:
 - **GROUP** = **Folders/Directories** (can contain other folders, tables, and data files)
 - **ROW/COL** = **Tables** (structured data storage like spreadsheets)  
 - **DATA/FREC** = **Files** (actual data content)
 - **BTree** = **Memory Management System** (handles storage, holes, allocation)
+
+## Unicode Support (Fundamental Requirement)
+
+### Design Principle
+GrapaDBX is **Unicode by design** - all text operations use the existing GrapaUnicode infrastructure from `source/grep/grapa_grep_unicode.hpp/cpp`. This ensures international support, proper text handling, and modern standards compliance.
+
+### Key Components
+
+#### **1. String Storage and Encoding**
+- **UTF-8 Everywhere**: All strings stored as UTF-8 encoded data
+- **GrapaCHAR Integration**: All `GrapaCHAR` fields use UTF-8 encoding
+- **RAW Field Support**: RAW fields can contain UTF-8 encoded text data
+- **Endian Safety**: Unicode data maintains cross-platform compatibility
+
+#### **2. Unicode-Aware Comparisons**
+- **Replace ASCII strcmp()**: All string comparisons use `GrapaUnicode::UnicodeString`
+- **Normalization**: Automatic Unicode normalization (NFC, NFD, NFKC, NFKD)
+- **Case Folding**: Unicode-aware case-insensitive operations
+- **Collation**: Locale-aware string ordering and comparison
+
+#### **3. Index and Search Operations**
+- **BTree Integration**: Unicode-aware BTree key comparisons
+- **Index Creation**: Unicode-normalized index keys for consistent searching
+- **Search Optimization**: Unicode-aware search with caching
+- **Formula Fields**: Unicode support in formula execution and evaluation
+
+#### **4. Performance Optimization**
+- **Caching**: Thread-safe LRU cache for normalized Unicode strings
+- **Lazy Normalization**: Only normalize when needed for comparison
+- **Index Storage**: Store normalized versions in indexes for faster lookups
+- **Memory Efficiency**: UTF-8 encoding is space-efficient for international text
+
+### Integration Points
+
+#### **Core Database Operations**
+```cpp
+// Replace ASCII comparison with Unicode-aware comparison
+// OLD: int cr = strcmp(n2, n1);
+// NEW:
+GrapaUnicode::UnicodeString unicode_n1(n1);
+GrapaUnicode::UnicodeString unicode_n2(n2);
+std::string norm1 = unicode_n1.normalize(GrapaUnicode::NormalizationForm::NFC)
+                              .case_fold()
+                              .data();
+std::string norm2 = unicode_n2.normalize(GrapaUnicode::NormalizationForm::NFC)
+                              .case_fold()
+                              .data();
+int cr = norm2.compare(norm1);
+```
+
+#### **Formula Field Execution**
+```cpp
+// Unicode-aware formula field evaluation
+GrapaUnicode::UnicodeString formulaText(formula);
+GrapaUnicode::UnicodeString fieldValue(fieldData);
+std::string normalizedFormula = formulaText.normalize(GrapaUnicode::NormalizationForm::NFC).data();
+std::string normalizedField = fieldValue.normalize(GrapaUnicode::NormalizationForm::NFC).data();
+```
+
+#### **Search and Indexing**
+```cpp
+// Unicode-aware search with caching
+GrapaUnicode::UnicodeString searchText(searchPattern);
+std::string normalizedSearch = GrapaUnicode::get_normalized_text(
+    searchText.data(), 
+    case_insensitive, 
+    GrapaUnicode::NormalizationForm::NFC
+);
+```
+
+### Benefits
+
+#### **1. International Support**
+- **Multi-language databases**: Chinese, Japanese, Arabic, Cyrillic, etc.
+- **Proper sorting**: Unicode collation for international data
+- **Accent handling**: é = e for search purposes (diacritic-insensitive)
+- **Grapheme clusters**: Proper handling of complex Unicode sequences (emojis, combining characters)
+
+#### **2. Modern Standards Compliance**
+- **UTF-8 everywhere**: Consistent encoding throughout the system
+- **Unicode normalization**: Canonical forms for consistent comparison
+- **Case folding**: Proper case-insensitive operations for all languages
+- **PCRE2 integration**: Advanced regex patterns with Unicode properties
+
+#### **3. Performance and Reliability**
+- **95%+ ripgrep parity**: Leverages proven Unicode infrastructure
+- **Thread-safe caching**: LRU cache for normalized strings
+- **Memory efficiency**: UTF-8 encoding is space-efficient
+- **Cross-platform**: Endian-independent Unicode handling
+
+### Implementation Strategy
+
+#### **Phase 1: Core Integration**
+1. **Replace ASCII comparisons** in `GrapaDBX::CompareRecordKey()`
+2. **Update BTree operations** to use Unicode-aware comparison
+3. **Integrate GrapaUnicode classes** into core database operations
+
+#### **Phase 2: Advanced Features**
+1. **Formula field Unicode support** for text operations
+2. **Unicode-aware indexing** with normalized keys
+3. **Search optimization** with Unicode caching
+
+#### **Phase 3: Performance Optimization**
+1. **Unicode caching** for frequently accessed strings
+2. **Index optimization** for Unicode data
+3. **Memory management** for large Unicode datasets
+
+This Unicode-by-design approach gives GrapaDBX a significant competitive advantage over databases that struggle with proper Unicode support, while leveraging Grapa's existing world-class Unicode infrastructure.
+
+---
+
+## Caching and In-Memory Support (Critical Requirements)
+
+### Design Principle
+GrapaDBX must provide **zero regression performance** compared to GrapaDB/GrapaGroup while adding enhanced features. This requires implementing the same caching and in-memory capabilities that make GrapaDB production-ready.
+
+### Critical Requirements
+
+#### **1. BTree Read/Write Caching**
+
+**Requirement**: Option to add or not add BTree read/write caching via option on which GrapaFile object is used, or use one that can switch between various options.
+
+**Technical Design**:
+- **GrapaFileCache Integration**: Must integrate with GrapaFileCache system for file access caching
+- **Configurable Caching**: Ability to enable/disable caching based on GrapaFile object configuration
+- **BTree-based Caching**: Cache must be based on BTree read/write operations (same as GrapaDB)
+- **Switchable Modes**: Support for enabled/disabled/auto caching modes
+- **Performance Parity**: Must achieve same or better performance than GrapaDB/GrapaGroup
+
+**Implementation Strategy**:
+```cpp
+// GrapaFile configuration for caching
+class GrapaFileConfig {
+public:
+    enum CacheMode {
+        CACHE_DISABLED = 0,
+        CACHE_ENABLED = 1,
+        CACHE_AUTO = 2
+    };
+    
+    CacheMode cacheMode;
+    u64 cacheSize;
+    bool btreeCaching;
+    
+    // Configuration methods
+    void SetCacheMode(CacheMode mode);
+    void SetCacheSize(u64 size);
+    void EnableBTreeCaching(bool enable);
+};
+
+// GrapaDBX integration with caching
+class GrapaDBX : public GrapaBtree {
+private:
+    GrapaFileCache* mCache;
+    GrapaFileConfig mConfig;
+    
+public:
+    // Constructor with caching configuration
+    GrapaDBX(GrapaFile* pFile, const GrapaFileConfig& config);
+    
+    // Caching-aware operations
+    virtual GrapaError GetDataValue(u64 itemPtr, u64 offset, u64 length, char* data, u64* returnSize);
+    virtual GrapaError SetDataValue(u64 itemPtr, u64 offset, u64 length, const char* data);
+};
+```
+
+#### **2. In-Memory Database Support**
+
+**Requirement**: Option to have on file or in memory DBX, like can be done with DB. This is a key feature. Many will use on file. But there is a huge benefit to doing this in memory, like when access to the file system is not allowed but a temporary DB is needed.
+
+**Technical Design**:
+- **Memory-Only Operation**: Support databases that operate entirely in memory without file system access
+- **File System Operation**: Support traditional file-based databases
+- **Seamless Switching**: Ability to switch between in-memory and file-based modes
+- **Temporary Database Support**: Support temporary databases for restricted environments
+- **Memory Management**: Proper memory allocation/deallocation for in-memory databases
+- **Performance Optimization**: In-memory databases must be faster than file-based for appropriate workloads
+
+**Implementation Strategy**:
+```cpp
+// In-memory GrapaFile implementation
+class GrapaMemoryFile : public GrapaFile {
+private:
+    std::map<u64, GrapaCHAR> mMemoryBlocks;
+    u64 mNextBlockId;
+    
+public:
+    GrapaMemoryFile();
+    virtual ~GrapaMemoryFile();
+    
+    // Override file operations for memory-only storage
+    virtual GrapaError Read(u64 offset, u64 length, char* data);
+    virtual GrapaError Write(u64 offset, u64 length, const char* data);
+    virtual GrapaError Flush();
+    virtual bool Opened() { return true; } // Always "open" in memory
+};
+
+// GrapaDBX with in-memory support
+class GrapaDBX : public GrapaBtree {
+public:
+    // Constructor for in-memory database
+    GrapaDBX(bool inMemory = false);
+    
+    // Constructor for file-based database
+    GrapaDBX(GrapaFile* pFile);
+    
+    // Temporary database creation
+    static GrapaDBX* CreateTemporary();
+    
+    // Memory usage monitoring
+    u64 GetMemoryUsage();
+    void SetMemoryLimit(u64 limit);
+};
+```
+
+### Performance Requirements
+
+#### **Zero Regression Guarantee**
+- **BTree Operations**: Must perform at least as well as GrapaDB for all BTree operations
+- **Caching Efficiency**: BTree read/write caching must provide same benefits as GrapaDB
+- **Memory Efficiency**: In-memory databases must use memory efficiently
+- **File System Parity**: File-based databases must perform same as GrapaDB
+
+#### **Performance Benchmarks**
+```cpp
+// Performance comparison framework
+class GrapaDBXPerformanceTest {
+public:
+    // Compare GrapaDB vs GrapaDBX performance
+    static void CompareBTreeOperations();
+    static void CompareCachingPerformance();
+    static void CompareInMemoryPerformance();
+    static void CompareFileBasedPerformance();
+    
+    // Verify zero regressions
+    static bool VerifyZeroRegressions();
+};
+```
+
+### Compatibility Requirements
+
+#### **API Compatibility**
+- **Same Interface**: Must maintain same API as GrapaDB for caching and in-memory operations
+- **Configuration Compatibility**: Must support same configuration options as GrapaDB
+- **Data Format Compatibility**: Must be able to read/write same data formats as GrapaDB
+
+#### **Use Case Compatibility**
+- **Production Workloads**: Must support production database workloads
+- **Temporary Databases**: Must support temporary in-memory databases
+- **Restricted Environments**: Must work in environments without file system access
+- **Development/Testing**: Must support development and testing scenarios
+
+### Implementation Priority
+
+#### **Phase 1: Foundation (CRITICAL)**
+1. **GrapaFileCache Integration**: Integrate GrapaFileCache system into GrapaDBX
+2. **Configurable Caching**: Add caching configuration options to GrapaFile objects
+3. **BTree Caching**: Implement BTree read/write caching with same patterns as GrapaDB
+4. **Performance Testing**: Verify zero regressions against GrapaDB
+
+#### **Phase 2: In-Memory Support (CRITICAL)**
+1. **Memory-Only GrapaFile**: Implement GrapaMemoryFile for in-memory operation
+2. **Temporary Database Creation**: Add methods for creating temporary databases
+3. **Memory Management**: Implement proper memory allocation and cleanup
+4. **Performance Optimization**: Optimize BTree operations for in-memory performance
+
+#### **Phase 3: Advanced Features**
+1. **Seamless Mode Switching**: Allow switching between in-memory and file-based modes
+2. **Memory Usage Monitoring**: Add memory usage tracking and limits
+3. **Advanced Caching**: Implement advanced caching strategies beyond basic BTree caching
+
+### Success Criteria
+
+#### **Performance Metrics**
+- ✅ **BTree Operations**: Same or better performance than GrapaDB
+- ✅ **Caching Efficiency**: Same cache hit rates as GrapaDB
+- ✅ **Memory Usage**: Efficient memory usage for in-memory databases
+- ✅ **File Operations**: Same performance as GrapaDB for file-based operations
+
+#### **Compatibility Metrics**
+- ✅ **API Compatibility**: 100% API compatibility with GrapaDB caching and in-memory operations
+- ✅ **Data Compatibility**: 100% data format compatibility with GrapaDB
+- ✅ **Configuration Compatibility**: Same configuration options as GrapaDB
+
+#### **Use Case Validation**
+- ✅ **Production Readiness**: Must pass all production workload tests
+- ✅ **Temporary Database Support**: Must work in restricted environments
+- ✅ **Development Support**: Must support development and testing workflows
+
+This caching and in-memory support is **critical for GrapaDBX production readiness** and must be implemented before any performance optimization work can proceed.
+
+---
 
 ## Universal Default Fields
 
@@ -585,11 +877,11 @@ This design reflects the "Database File System" philosophy where every record ca
 
 ## Overview
 
-GrapaDB2 is a complete rewrite of GrapaDB that maintains the same tree-of-trees architecture but with improved implementation. This document outlines the complete data structure design before any implementation begins.
+GrapaDBX is a complete rewrite of GrapaDB that maintains the same tree-of-trees architecture but with improved implementation. This document outlines the complete data structure design before any implementation begins.
 
 ## Tree-of-Trees Architecture
 
-GrapaDB2 uses a hierarchical BTree structure where each tree serves a specific purpose in the database system. The architecture is designed to support ROW, COL, and GROUP storage types with proper indexing and data management.
+GrapaDBX uses a hierarchical BTree structure where each tree serves a specific purpose in the database system. The architecture is designed to support ROW, COL, and GROUP storage types with proper indexing and data management.
 
 ### Core Tree Structure
 
@@ -1069,4 +1361,4 @@ This design maintains full compatibility with GrapaDB's tree structure while pro
     └── completed_tasks: 150
 ```
 
-This design provides a solid foundation for implementing GrapaDB2 with full compatibility to GrapaDB while improving maintainability and performance. The GROUP table design is now comprehensive and covers all the hierarchical data management needs that make GrapaDB2 a powerful database system. 
+This design provides a solid foundation for implementing GrapaDBX with full compatibility to GrapaDB while improving maintainability and performance. The GROUP table design is now comprehensive and covers all the hierarchical data management needs that make GrapaDBX a powerful database system. 

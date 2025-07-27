@@ -1,4 +1,4 @@
-# GrapaDB2 Database-Aware Comparison System
+# GrapaDBX Database-Aware Comparison System
 
 ## Problem Statement
 
@@ -11,8 +11,8 @@ The existing GrapaDB comparison system has several critical limitations:
 4. **Complex Pointer Logic**: Requires complex `PtrToRec` dereferencing for pointer types
 5. **Limited Extensibility**: Hard to extend for new data types or comparison logic
 
-### **Impact on GrapaDB2**
-For GrapaDB2 to be truly robust and performant, it needs a **database-aware comparison system** that understands:
+### **Impact on GrapaDBX**
+For GrapaDBX to be truly robust and performant, it needs a **database-aware comparison system** that understands:
 - **Data Types**: INT, FLOAT, STR, TIME, BOOL, etc.
 - **Tree Types**: ROW, COL, GROUP storage models
 - **Storage Types**: FIX, VAR, PAR storage strategies
@@ -25,12 +25,12 @@ For GrapaDB2 to be truly robust and performant, it needs a **database-aware comp
 
 #### **Base Comparison Interface**
 ```cpp
-class GrapaDB2Comparison {
+class GrapaDBXComparison {
 public:
     enum ComparisonMode { SEARCH, INSERT, DELETE, UPDATE };
     enum ComparisonResult { LESS_THAN = -1, EQUAL = 0, GREATER_THAN = 1 };
     
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) = 0;
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) = 0;
     virtual bool SupportsDataType(u8 dataType) const = 0;
     virtual bool SupportsTreeType(u8 treeType) const = 0;
     virtual bool SupportsStorageType(u8 storageType) const = 0;
@@ -39,18 +39,18 @@ public:
 
 #### **Comparison Context**
 ```cpp
-struct GrapaDB2ComparisonContext {
+struct GrapaDBXComparisonContext {
     // Operation context
     ComparisonMode mode;
-    GrapaDB2Table* table;
-    GrapaDB2Index* index;
+    GrapaDBXTable* table;
+    GrapaDBXIndex* index;
     
     // Data to compare
-    GrapaDB2FieldValueArray& leftValues;
-    GrapaDB2FieldValueArray& rightValues;
+    GrapaDBXFieldValueArray& leftValues;
+    GrapaDBXFieldValueArray& rightValues;
     
     // Field metadata
-    GrapaDB2FieldArray& fields;
+    GrapaDBXFieldArray& fields;
     GrapaDU64Array& fieldOrder;  // For composite indexes
     
     // Storage context
@@ -66,10 +66,10 @@ struct GrapaDB2ComparisonContext {
 ### **2. Comprehensive Grapa Data Type Comparison**
 
 #### **All Grapa Data Types Support**
-Based on `GrapaTokenType` enum, GrapaDB2 will support comparison for **all Grapa data types**:
+Based on `GrapaTokenType` enum, GrapaDBX will support comparison for **all Grapa data types**:
 
 ```cpp
-enum GrapaDB2FieldType {
+enum GrapaDBXFieldType {
     // Primitive Types
     FIELD_TYPE_ERR = GrapaTokenType::ERR,           // Error values
     FIELD_TYPE_RAW = GrapaTokenType::RAW,           // Raw binary data
@@ -112,12 +112,12 @@ enum GrapaDB2FieldType {
 
 #### **Comprehensive Type-Aware Comparison**
 ```cpp
-class GrapaDB2ComprehensiveComparison : public GrapaDB2Comparison {
+class GrapaDBXComprehensiveComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         for (u32 i = 0; i < context.fieldOrder.Count(); i++) {
             u64 fieldId = context.fieldOrder.GetAt(i);
-            GrapaDB2Field& field = context.fields.GetFieldById(fieldId);
+            GrapaDBXField& field = context.fields.GetFieldById(fieldId);
             
             GrapaValue leftValue = context.leftValues.GetValue(fieldId);
             GrapaValue rightValue = context.rightValues.GetValue(fieldId);
@@ -632,12 +632,12 @@ private:
 
 #### **String Comparison**
 ```cpp
-class GrapaDB2StringComparison : public GrapaDB2Comparison {
+class GrapaDBXStringComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         for (u32 i = 0; i < context.fieldOrder.Count(); i++) {
             u64 fieldId = context.fieldOrder.GetAt(i);
-            GrapaDB2Field& field = context.fields.GetFieldById(fieldId);
+            GrapaDBXField& field = context.fields.GetFieldById(fieldId);
             
             GrapaValue leftValue = context.leftValues.GetValue(fieldId);
             GrapaValue rightValue = context.rightValues.GetValue(fieldId);
@@ -673,9 +673,9 @@ private:
 
 #### **ROW Storage Comparison**
 ```cpp
-class GrapaDB2RowComparison : public GrapaDB2Comparison {
+class GrapaDBXRowComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         // ROW storage: compare entire records as units
         if (context.mode == SEARCH) {
             // For search, compare only indexed fields
@@ -687,13 +687,13 @@ public:
     }
     
 private:
-    GrapaError CompareIndexedFields(const GrapaDB2ComparisonContext& context, ComparisonResult& result) {
+    GrapaError CompareIndexedFields(const GrapaDBXComparisonContext& context, ComparisonResult& result) {
         // Use field-specific comparison for indexed fields
-        GrapaDB2FieldComparison fieldComp;
+        GrapaDBXFieldComparison fieldComp;
         return fieldComp.CompareFields(context, result);
     }
     
-    GrapaError CompareRecordIds(const GrapaDB2ComparisonContext& context, ComparisonResult& result) {
+    GrapaError CompareRecordIds(const GrapaDBXComparisonContext& context, ComparisonResult& result) {
         // Simple record ID comparison for ROW storage
         u64 leftId = context.leftValues.GetRecordId();
         u64 rightId = context.rightValues.GetRecordId();
@@ -709,9 +709,9 @@ private:
 
 #### **COL Storage Comparison**
 ```cpp
-class GrapaDB2ColumnComparison : public GrapaDB2Comparison {
+class GrapaDBXColumnComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         // COL storage: compare column values directly
         if (context.mode == SEARCH) {
             // For search, compare column values
@@ -723,13 +723,13 @@ public:
     }
     
 private:
-    GrapaError CompareColumnValues(const GrapaDB2ComparisonContext& context, ComparisonResult& result) {
+    GrapaError CompareColumnValues(const GrapaDBXComparisonContext& context, ComparisonResult& result) {
         // Direct column value comparison
-        GrapaDB2FieldComparison fieldComp;
+        GrapaDBXFieldComparison fieldComp;
         return fieldComp.CompareFields(context, result);
     }
     
-    GrapaError CompareRowPositions(const GrapaDB2ComparisonContext& context, ComparisonResult& result) {
+    GrapaError CompareRowPositions(const GrapaDBXComparisonContext& context, ComparisonResult& result) {
         // Compare row positions in column storage
         u64 leftPos = context.leftValues.GetRowPosition();
         u64 rightPos = context.rightValues.GetRowPosition();
@@ -747,13 +747,13 @@ private:
 
 #### **Fixed Storage Comparison**
 ```cpp
-class GrapaDB2FixedComparison : public GrapaDB2Comparison {
+class GrapaDBXFixedComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         // Fixed storage: direct memory comparison
         for (u32 i = 0; i < context.fieldOrder.Count(); i++) {
             u64 fieldId = context.fieldOrder.GetAt(i);
-            GrapaDB2Field& field = context.fields.GetFieldById(fieldId);
+            GrapaDBXField& field = context.fields.GetFieldById(fieldId);
             
             if (field.mStorageType == STORAGE_TYPE_FIX) {
                 result = CompareFixedField(context.leftValues, context.rightValues, field);
@@ -764,9 +764,9 @@ public:
     }
     
 private:
-    ComparisonResult CompareFixedField(const GrapaDB2FieldValueArray& left, 
-                                      const GrapaDB2FieldValueArray& right,
-                                      const GrapaDB2Field& field) {
+    ComparisonResult CompareFixedField(const GrapaDBXFieldValueArray& left, 
+                                      const GrapaDBXFieldValueArray& right,
+                                      const GrapaDBXField& field) {
         // Direct memory comparison for fixed fields
         const u8* leftData = left.GetFixedData(field.mFieldId);
         const u8* rightData = right.GetFixedData(field.mFieldId);
@@ -778,13 +778,13 @@ private:
 
 #### **Variable Storage Comparison**
 ```cpp
-class GrapaDB2VariableComparison : public GrapaDB2Comparison {
+class GrapaDBXVariableComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         // Variable storage: length + data comparison
         for (u32 i = 0; i < context.fieldOrder.Count(); i++) {
             u64 fieldId = context.fieldOrder.GetAt(i);
-            GrapaDB2Field& field = context.fields.GetFieldById(fieldId);
+            GrapaDBXField& field = context.fields.GetFieldById(fieldId);
             
             if (field.mStorageType == STORAGE_TYPE_VAR) {
                 result = CompareVariableField(context.leftValues, context.rightValues, field);
@@ -795,9 +795,9 @@ public:
     }
     
 private:
-    ComparisonResult CompareVariableField(const GrapaDB2FieldValueArray& left,
-                                         const GrapaDB2FieldValueArray& right,
-                                         const GrapaDB2Field& field) {
+    ComparisonResult CompareVariableField(const GrapaDBXFieldValueArray& left,
+                                         const GrapaDBXFieldValueArray& right,
+                                         const GrapaDBXField& field) {
         // Variable field comparison with length prefix
         u32 leftLen = left.GetVariableLength(field.mFieldId);
         u32 rightLen = right.GetVariableLength(field.mFieldId);
@@ -818,39 +818,39 @@ private:
 
 #### **Comparison Strategy Factory**
 ```cpp
-class GrapaDB2ComparisonStrategy {
+class GrapaDBXComparisonStrategy {
 public:
-    static GrapaDB2Comparison* CreateStrategy(const GrapaDB2ComparisonContext& context) {
+    static GrapaDBXComparison* CreateStrategy(const GrapaDBXComparisonContext& context) {
         // Create composite strategy based on context
-        GrapaDB2CompositeComparison* strategy = new GrapaDB2CompositeComparison();
+        GrapaDBXCompositeComparison* strategy = new GrapaDBXCompositeComparison();
         
         // Add type-aware comparison
-        strategy->AddComparison(new GrapaDB2NumericComparison());
-        strategy->AddComparison(new GrapaDB2StringComparison());
+        strategy->AddComparison(new GrapaDBXNumericComparison());
+        strategy->AddComparison(new GrapaDBXStringComparison());
         
         // Add tree-type aware comparison
         switch (context.treeType) {
             case TREE_TYPE_ROW:
-                strategy->AddComparison(new GrapaDB2RowComparison());
+                strategy->AddComparison(new GrapaDBXRowComparison());
                 break;
             case TREE_TYPE_COL:
-                strategy->AddComparison(new GrapaDB2ColumnComparison());
+                strategy->AddComparison(new GrapaDBXColumnComparison());
                 break;
             case TREE_TYPE_GROUP:
-                strategy->AddComparison(new GrapaDB2GroupComparison());
+                strategy->AddComparison(new GrapaDBXGroupComparison());
                 break;
         }
         
         // Add storage-type aware comparison
         switch (context.storageType) {
             case STORAGE_TYPE_FIX:
-                strategy->AddComparison(new GrapaDB2FixedComparison());
+                strategy->AddComparison(new GrapaDBXFixedComparison());
                 break;
             case STORAGE_TYPE_VAR:
-                strategy->AddComparison(new GrapaDB2VariableComparison());
+                strategy->AddComparison(new GrapaDBXVariableComparison());
                 break;
             case STORAGE_TYPE_PAR:
-                strategy->AddComparison(new GrapaDB2PartitionedComparison());
+                strategy->AddComparison(new GrapaDBXPartitionedComparison());
                 break;
         }
         
@@ -861,16 +861,16 @@ public:
 
 #### **Composite Comparison**
 ```cpp
-class GrapaDB2CompositeComparison : public GrapaDB2Comparison {
+class GrapaDBXCompositeComparison : public GrapaDBXComparison {
 public:
-    void AddComparison(GrapaDB2Comparison* comparison) {
+    void AddComparison(GrapaDBXComparison* comparison) {
         mComparisons.Append(comparison);
     }
     
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         // Try each comparison strategy in order
         for (u32 i = 0; i < mComparisons.Count(); i++) {
-            GrapaDB2Comparison* comp = mComparisons.GetAt(i);
+            GrapaDBXComparison* comp = mComparisons.GetAt(i);
             
             if (comp->SupportsDataType(context.fields.GetFieldType()) &&
                 comp->SupportsTreeType(context.treeType) &&
@@ -886,9 +886,9 @@ public:
     }
     
 private:
-    GrapaArray<GrapaDB2Comparison*> mComparisons;
+    GrapaArray<GrapaDBXComparison*> mComparisons;
     
-    GrapaError DefaultComparison(const GrapaDB2ComparisonContext& context, ComparisonResult& result) {
+    GrapaError DefaultComparison(const GrapaDBXComparisonContext& context, ComparisonResult& result) {
         // Fallback comparison logic
         result = EQUAL;
         return 0;
@@ -896,16 +896,16 @@ private:
 };
 ```
 
-### **6. Enhanced GrapaDB2 Integration**
+### **6. Enhanced GrapaDBX Integration**
 
-#### **GrapaDB2 Comparison Override**
+#### **GrapaDBX Comparison Override**
 ```cpp
-class GrapaDB2 : public GrapaBtree {
+class GrapaDBX : public GrapaBtree {
 public:
     // Override BTree comparison for database-aware logic
     virtual GrapaError CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCursor& treeCursor, s8& result) override {
         // Create comparison context
-        GrapaDB2ComparisonContext context;
+        GrapaDBXComparisonContext context;
         context.mode = ConvertCompareType(compareType);
         context.table = GetCurrentTable();
         context.index = GetCurrentIndex();
@@ -923,7 +923,7 @@ public:
         context.storageType = GetStorageType(context.fields);
         
         // Create and execute comparison strategy
-        GrapaDB2Comparison* strategy = GrapaDB2ComparisonStrategy::CreateStrategy(context);
+        GrapaDBXComparison* strategy = GrapaDBXComparisonStrategy::CreateStrategy(context);
         GrapaError err = strategy->Compare(context, result);
         delete strategy;
         
@@ -940,14 +940,14 @@ private:
         }
     }
     
-    void ExtractValuesFromCursor(GrapaCursor& cursor, GrapaDB2FieldValueArray& values) {
+    void ExtractValuesFromCursor(GrapaCursor& cursor, GrapaDBXFieldValueArray& values) {
         // Extract field values from cursor based on table schema
         // This replaces the complex PtrToRec logic
-        GrapaDB2Table* table = GetCurrentTable();
-        GrapaDB2FieldArray& fields = table->GetFields();
+        GrapaDBXTable* table = GetCurrentTable();
+        GrapaDBXFieldArray& fields = table->GetFields();
         
         for (u32 i = 0; i < fields.Count(); i++) {
-            GrapaDB2Field& field = fields.GetFieldAt(i);
+            GrapaDBXField& field = fields.GetFieldAt(i);
             GrapaValue value = ExtractFieldValue(cursor, field);
             values.Add(field.mFieldId, value);
         }
@@ -959,15 +959,15 @@ private:
 
 #### **Comparison Caching**
 ```cpp
-class GrapaDB2ComparisonCache {
+class GrapaDBXComparisonCache {
 public:
     struct CachedComparison {
-        GrapaDB2ComparisonContext context;
+        GrapaDBXComparisonContext context;
         ComparisonResult result;
         u64 timestamp;
     };
     
-    GrapaError GetCachedResult(const GrapaDB2ComparisonContext& context, ComparisonResult& result) {
+    GrapaError GetCachedResult(const GrapaDBXComparisonContext& context, ComparisonResult& result) {
         u64 hash = HashContext(context);
         CachedComparison* cached = mCache.Search(hash);
         
@@ -979,7 +979,7 @@ public:
         return -1; // Cache miss
     }
     
-    GrapaError CacheResult(const GrapaDB2ComparisonContext& context, ComparisonResult result) {
+    GrapaError CacheResult(const GrapaDBXComparisonContext& context, ComparisonResult result) {
         u64 hash = HashContext(context);
         CachedComparison* cached = new CachedComparison();
         cached->context = context;
@@ -998,13 +998,13 @@ private:
 
 #### **Optimized Field Access**
 ```cpp
-class GrapaDB2OptimizedFieldAccess {
+class GrapaDBXOptimizedFieldAccess {
 public:
     // Pre-compute field offsets for fixed storage
-    virtual GrapaError PrecomputeOffsets(const GrapaDB2FieldArray& fields) {
+    virtual GrapaError PrecomputeOffsets(const GrapaDBXFieldArray& fields) {
         u64 offset = 0;
         for (u32 i = 0; i < fields.Count(); i++) {
-            GrapaDB2Field& field = fields.GetFieldAt(i);
+            GrapaDBXField& field = fields.GetFieldAt(i);
             if (field.mStorageType == STORAGE_TYPE_FIX) {
                 mFieldOffsets[field.mFieldId] = offset;
                 offset += field.mSize;
@@ -1052,14 +1052,14 @@ string_value = raw_data.str(); /* "hi" */
 int_value = raw_data.int();   /* 26729 */
 ```
 
-### **GrapaDB2 RAW Field Comparison**
+### **GrapaDBX RAW Field Comparison**
 
 #### **1. RAW Field Comparison Implementation**
 ```cpp
-// GrapaDB2 RAW field comparison
-class GrapaDB2RawComparison : public GrapaDB2Comparison {
+// GrapaDBX RAW field comparison
+class GrapaDBXRawComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaBYTE& left = context.leftValue;
         GrapaBYTE& right = context.rightValue;
         
@@ -1104,8 +1104,8 @@ private:
 
 #### **2. RAW Field Type Preservation**
 ```cpp
-// RAW field type preservation in GrapaDB2
-class GrapaDB2RawTypePreservation {
+// RAW field type preservation in GrapaDBX
+class GrapaDBXRawTypePreservation {
 public:
     // Store RAW field with type preservation
     virtual GrapaError StoreRawField(const GrapaCHAR& tableName, const GrapaCHAR& fieldName, 
@@ -1115,7 +1115,7 @@ public:
         storedData.mToken = GrapaTokenType::RAW;  // Set as RAW type
         
         // Store the original type in metadata
-        GrapaDB2FieldMetadata metadata;
+        GrapaDBXFieldMetadata metadata;
         metadata.originalType = originalType;
         metadata.isRawField = true;
         
@@ -1125,7 +1125,7 @@ public:
     // Retrieve RAW field with type restoration
     virtual GrapaError RetrieveRawField(const GrapaCHAR& tableName, const GrapaCHAR& fieldName,
                                        GrapaBYTE& rawData, u8& originalType) {
-        GrapaDB2FieldMetadata metadata;
+        GrapaDBXFieldMetadata metadata;
         GrapaError err = RetrieveFieldWithMetadata(tableName, fieldName, rawData, metadata);
         if (err) return err;
         
@@ -1142,7 +1142,7 @@ public:
 #### **3. RAW Field Conversion Support**
 ```cpp
 // RAW field conversion functions
-class GrapaDB2RawConversion {
+class GrapaDBXRawConversion {
 public:
     // Convert to RAW
     virtual GrapaError ToRaw(const GrapaValue& value, GrapaBYTE& rawData) {
@@ -1261,13 +1261,13 @@ SELECT * FROM binary_data WHERE binary_content.len() > 10;
 
 #### **1. RAW Field Indexing**
 ```cpp
-// RAW field indexing in GrapaDB2
-class GrapaDB2RawIndexing {
+// RAW field indexing in GrapaDBX
+class GrapaDBXRawIndexing {
 public:
     // Create index on RAW field
     virtual GrapaError CreateRawIndex(const GrapaCHAR& tableName, const GrapaCHAR& fieldName) {
         // RAW fields can be indexed for efficient byte-by-byte comparison
-        GrapaDB2IndexOptions options;
+        GrapaDBXIndexOptions options;
         options.type = INDEX_TYPE_RAW;
         options.isByteOrdered = true;  // Maintain byte order for comparison
         
@@ -1276,9 +1276,9 @@ public:
     
     // Search using RAW field index
     virtual GrapaError SearchRawIndex(const GrapaCHAR& tableName, const GrapaCHAR& fieldName, 
-                                     const GrapaBYTE& searchValue, GrapaDB2ResultSet& results) {
+                                     const GrapaBYTE& searchValue, GrapaDBXResultSet& results) {
         // Use byte-by-byte comparison for RAW field searches
-        GrapaDB2ComparisonContext context;
+        GrapaDBXComparisonContext context;
         context.comparisonMode = COMPARISON_MODE_RAW;
         context.leftValue = searchValue;
         
@@ -1290,12 +1290,12 @@ public:
 #### **2. RAW Field Performance Optimization**
 ```cpp
 // RAW field performance optimization
-class GrapaDB2RawPerformance {
+class GrapaDBXRawPerformance {
 public:
     // Optimize RAW field storage
     virtual GrapaError OptimizeRawStorage(const GrapaCHAR& tableName, const GrapaCHAR& fieldName) {
         // Analyze RAW field usage patterns
-        GrapaDB2FieldStats stats = GetFieldStats(tableName, fieldName);
+        GrapaDBXFieldStats stats = GetFieldStats(tableName, fieldName);
         
         // Optimize storage based on patterns
         if (stats.avgLength < 16) {
@@ -1323,17 +1323,17 @@ public:
 #### **1. Backward Compatibility**
 ```cpp
 // Ensure backward compatibility with existing RAW fields
-class GrapaDB2RawCompatibility {
+class GrapaDBXRawCompatibility {
 public:
     // Migrate existing RAW fields
     virtual GrapaError MigrateRawFields(const GrapaCHAR& tableName) {
         // Detect existing RAW fields
-        GrapaArray<GrapaDB2Field> fields = GetTableFields(tableName);
+        GrapaArray<GrapaDBXField> fields = GetTableFields(tableName);
         
         for (const auto& field : fields) {
             if (field.type == GrapaTokenType::RAW) {
                 // Preserve existing RAW field behavior
-                GrapaDB2FieldMetadata metadata;
+                GrapaDBXFieldMetadata metadata;
                 metadata.isRawField = true;
                 metadata.originalType = field.originalType;
                 
@@ -1419,13 +1419,13 @@ FROM binary_data;
 
 ### **Summary**
 
-RAW fields are fully supported in the GrapaDB2 database-aware comparison system with:
+RAW fields are fully supported in the GrapaDBX database-aware comparison system with:
 
 1. **Complete Type Preservation**: Original data types preserved in RAW fields
 2. **Byte-by-Byte Comparison**: Maintains current GrapaDB behavior
 3. **SQL Integration**: RAW fields work seamlessly with SQL syntax
 4. **Enhanced Functions**: New SQL functions for RAW field manipulation
-5. **Performance Optimization**: Leverages GrapaDB2's enhanced features
+5. **Performance Optimization**: Leverages GrapaDBX's enhanced features
 6. **Backward Compatibility**: All existing RAW field functionality preserved
 7. **Advanced Features**: Pattern matching, aggregation, and conversion functions
 
@@ -1437,10 +1437,10 @@ This ensures that RAW fields work exactly as they do now, while gaining the bene
 
 #### **1. Unicode-Aware String Comparison**
 ```cpp
-// Unicode-aware string comparison in GrapaDB2
-class GrapaDB2UnicodeComparison : public GrapaDB2Comparison {
+// Unicode-aware string comparison in GrapaDBX
+class GrapaDBXUnicodeComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& left = context.leftValue;
         GrapaCHAR& right = context.rightValue;
         
@@ -1475,7 +1475,7 @@ private:
 #### **2. Unicode Collation Support**
 ```cpp
 // Unicode collation support
-class GrapaDB2UnicodeCollation {
+class GrapaDBXUnicodeCollation {
 public:
     // Create collation for specific locale
     virtual GrapaError CreateCollation(const GrapaCHAR& name, const GrapaCHAR& locale) {
@@ -1502,10 +1502,10 @@ public:
 
 #### **1. Regex Pattern Comparison**
 ```cpp
-// Regex pattern comparison in GrapaDB2
-class GrapaDB2RegexComparison : public GrapaDB2Comparison {
+// Regex pattern comparison in GrapaDBX
+class GrapaDBXRegexComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& text = context.leftValue;
         GrapaCHAR& pattern = context.rightValue;
         
@@ -1535,9 +1535,9 @@ private:
 #### **2. Regex with Flags Support**
 ```cpp
 // Regex with flags support
-class GrapaDB2RegexFlagsComparison : public GrapaDB2Comparison {
+class GrapaDBXRegexFlagsComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& text = context.leftValue;
         GrapaCHAR& pattern = context.rightValue;
         GrapaCHAR& flags = context.regexFlags;
@@ -1564,9 +1564,9 @@ private:
 #### **3. Regex Capture Group Support**
 ```cpp
 // Regex capture group support
-class GrapaDB2RegexCaptureComparison : public GrapaDB2Comparison {
+class GrapaDBXRegexCaptureComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& text = context.leftValue;
         GrapaCHAR& pattern = context.rightValue;
         u32 captureGroup = context.captureGroup;
@@ -1591,7 +1591,7 @@ private:
     
     ComparisonResult StringCompare(const GrapaCHAR& left, const GrapaCHAR& right) {
         // Standard string comparison
-        return GrapaDB2StringComparison::Compare(left, right);
+        return GrapaDBXStringComparison::Compare(left, right);
     }
 };
 ```
@@ -1600,10 +1600,10 @@ private:
 
 #### **1. JSON Path Comparison**
 ```cpp
-// JSON path comparison in GrapaDB2
-class GrapaDB2JsonPathComparison : public GrapaDB2Comparison {
+// JSON path comparison in GrapaDBX
+class GrapaDBXJsonPathComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& json = context.leftValue;
         GrapaCHAR& path = context.jsonPath;
         GrapaCHAR& compareValue = context.rightValue;
@@ -1630,7 +1630,7 @@ private:
     }
     
     ComparisonResult StringCompare(const GrapaCHAR& left, const GrapaCHAR& right) {
-        return GrapaDB2StringComparison::Compare(left, right);
+        return GrapaDBXStringComparison::Compare(left, right);
     }
 };
 ```
@@ -1638,9 +1638,9 @@ private:
 #### **2. JSON Array Contains Comparison**
 ```cpp
 // JSON array contains comparison
-class GrapaDB2JsonArrayContainsComparison : public GrapaDB2Comparison {
+class GrapaDBXJsonArrayContainsComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& json = context.leftValue;
         GrapaCHAR& path = context.jsonPath;
         GrapaCHAR& searchValue = context.rightValue;
@@ -1667,9 +1667,9 @@ private:
 #### **3. JSON Object Key Comparison**
 ```cpp
 // JSON object key comparison
-class GrapaDB2JsonKeyComparison : public GrapaDB2Comparison {
+class GrapaDBXJsonKeyComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& json = context.leftValue;
         GrapaCHAR& key = context.jsonKey;
         
@@ -1695,10 +1695,10 @@ private:
 
 #### **1. XPath Comparison**
 ```cpp
-// XPath comparison in GrapaDB2
-class GrapaDB2XPathComparison : public GrapaDB2Comparison {
+// XPath comparison in GrapaDBX
+class GrapaDBXXPathComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& xml = context.leftValue;
         GrapaCHAR& xpath = context.xpathExpression;
         GrapaCHAR& compareValue = context.rightValue;
@@ -1729,7 +1729,7 @@ private:
     }
     
     ComparisonResult StringCompare(const GrapaCHAR& left, const GrapaCHAR& right) {
-        return GrapaDB2StringComparison::Compare(left, right);
+        return GrapaDBXStringComparison::Compare(left, right);
     }
 };
 ```
@@ -1737,9 +1737,9 @@ private:
 #### **2. XML Element Comparison**
 ```cpp
 // XML element comparison
-class GrapaDB2XmlElementComparison : public GrapaDB2Comparison {
+class GrapaDBXXmlElementComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         GrapaCHAR& xml = context.leftValue;
         GrapaCHAR& elementPath = context.xmlElementPath;
         GrapaCHAR& compareValue = context.rightValue;
@@ -1762,7 +1762,7 @@ private:
     }
     
     ComparisonResult StringCompare(const GrapaCHAR& left, const GrapaCHAR& right) {
-        return GrapaDB2StringComparison::Compare(left, right);
+        return GrapaDBXStringComparison::Compare(left, right);
     }
 };
 ```
@@ -1772,7 +1772,7 @@ private:
 #### **1. Extended Comparison Context**
 ```cpp
 // Enhanced comparison context for Unicode, regex, and JSON/XML
-struct GrapaDB2ComparisonContext {
+struct GrapaDBXComparisonContext {
     // Basic comparison data
     GrapaValue leftValue;
     GrapaValue rightValue;
@@ -1811,46 +1811,46 @@ struct GrapaDB2ComparisonContext {
 #### **2. Comparison Strategy Factory**
 ```cpp
 // Enhanced comparison strategy factory
-class GrapaDB2ComparisonStrategyFactory {
+class GrapaDBXComparisonStrategyFactory {
 public:
     // Get appropriate comparison strategy
-    static GrapaDB2Comparison* GetStrategy(const GrapaDB2ComparisonContext& context) {
+    static GrapaDBXComparison* GetStrategy(const GrapaDBXComparisonContext& context) {
         // Unicode comparison
         if (context.unicodeCollation.mLength > 0) {
-            return new GrapaDB2UnicodeComparison();
+            return new GrapaDBXUnicodeComparison();
         }
         
         // Regex comparison
         if (context.regexPattern.mLength > 0) {
             if (context.regexFlags.mLength > 0) {
-                return new GrapaDB2RegexFlagsComparison();
+                return new GrapaDBXRegexFlagsComparison();
             } else if (context.captureGroup > 0) {
-                return new GrapaDB2RegexCaptureComparison();
+                return new GrapaDBXRegexCaptureComparison();
             } else {
-                return new GrapaDB2RegexComparison();
+                return new GrapaDBXRegexComparison();
             }
         }
         
         // JSON comparison
         if (context.jsonPath.mLength > 0) {
             if (context.jsonOperator.StrCmp("?") == 0) {
-                return new GrapaDB2JsonArrayContainsComparison();
+                return new GrapaDBXJsonArrayContainsComparison();
             } else if (context.jsonOperator.StrCmp("?") == 0) {
-                return new GrapaDB2JsonKeyComparison();
+                return new GrapaDBXJsonKeyComparison();
             } else {
-                return new GrapaDB2JsonPathComparison();
+                return new GrapaDBXJsonPathComparison();
             }
         }
         
         // XML comparison
         if (context.xpathExpression.mLength > 0) {
-            return new GrapaDB2XPathComparison();
+            return new GrapaDBXXPathComparison();
         } else if (context.xmlElementPath.mLength > 0) {
-            return new GrapaDB2XmlElementComparison();
+            return new GrapaDBXXmlElementComparison();
         }
         
         // Default to comprehensive comparison
-        return new GrapaDB2ComprehensiveComparison();
+        return new GrapaDBXComprehensiveComparison();
     }
 };
 ```
@@ -1860,7 +1860,7 @@ public:
 #### **1. Unicode Performance**
 ```cpp
 // Unicode performance optimizations
-class GrapaDB2UnicodePerformance {
+class GrapaDBXUnicodePerformance {
 public:
     // Cache normalized Unicode strings
     virtual GrapaError CacheNormalizedString(const GrapaCHAR& original, const GrapaCHAR& normalized) {
@@ -1884,7 +1884,7 @@ public:
 #### **2. Regex Performance**
 ```cpp
 // Regex performance optimizations
-class GrapaDB2RegexPerformance {
+class GrapaDBXRegexPerformance {
 public:
     // Compile and cache regex patterns
     virtual GrapaError CompileRegex(const GrapaCHAR& pattern, u64& patternId) {
@@ -1907,7 +1907,7 @@ public:
 #### **3. JSON/XML Performance**
 ```cpp
 // JSON/XML performance optimizations
-class GrapaDB2StructuredDataPerformance {
+class GrapaDBXStructuredDataPerformance {
 public:
     // Index common JSON paths
     virtual GrapaError IndexJsonPath(const GrapaCHAR& tableName, const GrapaCHAR& fieldName, 
@@ -1998,4 +1998,4 @@ The enhanced database-aware comparison system now supports:
 5. **Performance Optimization**: Caching, indexing, and compilation for all comparison types
 6. **SQL Integration**: Seamless integration with SQL syntax for all comparison types
 
-These enhancements make GrapaDB2's comparison system competitive with modern database systems while maintaining Grapa's unique capabilities and performance characteristics. 
+These enhancements make GrapaDBX's comparison system competitive with modern database systems while maintaining Grapa's unique capabilities and performance characteristics. 

@@ -1,8 +1,8 @@
-# GrapaDB2 Unified Path Integration
+# GrapaDBX Unified Path Integration
 
 ## Overview
 
-The `$file()` function's ability to seamlessly navigate between the file system and GrapaDB databases is one of Grapa's most powerful features. This **unified path system** must be preserved and enhanced in GrapaDB2 to maintain the same seamless navigation experience.
+The `$file()` function's ability to seamlessly navigate between the file system and GrapaDB databases is one of Grapa's most powerful features. This **unified path system** must be preserved and enhanced in GrapaDBX to maintain the same seamless navigation experience.
 
 ## Current Unified Path System
 
@@ -40,7 +40,7 @@ if (mDb == NULL && !mVar) {
 }
 ```
 
-## GrapaDB2 Integration Requirements
+## GrapaDBX Integration Requirements
 
 ### **1. Maintain Current Interface**
 The `$file()` function must work exactly as it does now:
@@ -58,14 +58,14 @@ f.cd("users/admins/user_data");
 f.cd("../../..");  /* Back through both database and file system */
 ```
 
-### **2. GrapaDB2 Database Detection**
-GrapaDB2 databases must be detected and opened seamlessly:
+### **2. GrapaDBX Database Detection**
+GrapaDBX databases must be detected and opened seamlessly:
 
 ```cpp
-// Enhanced detection for GrapaDB2
-if (isFile && isGrapaDB2File(path)) {
-    // Open GrapaDB2 database
-    mDb = gSystem->mGrapaDB2Queue.OpenFile(path, &mFile, GrapaReadWrite);
+// Enhanced detection for GrapaDBX
+if (isFile && isGrapaDBXFile(path)) {
+    // Open GrapaDBX database
+    mDb = gSystem->mGrapaDBXQueue.OpenFile(path, &mFile, GrapaReadWrite);
     if (mDb) {
         mDirId = mDb->mValue.RootTree(mDirType);
         // Track database path
@@ -77,12 +77,12 @@ if (isFile && isGrapaDB2File(path)) {
 }
 ```
 
-### **3. GrapaDB2 Navigation Methods**
-GrapaDB2 must provide the same navigation interface as current GrapaDB:
+### **3. GrapaDBX Navigation Methods**
+GrapaDBX must provide the same navigation interface as current GrapaDB:
 
 ```cpp
-// GrapaDB2 must implement these methods
-class GrapaDB2 {
+// GrapaDBX must implement these methods
+class GrapaDBX {
 public:
     // Navigation methods (same interface as GrapaDB)
     virtual GrapaError OpenGroup(u64 dirId, u8 dirType, const GrapaCHAR& name, 
@@ -98,59 +98,59 @@ public:
 ```
 
 ### **4. Backward Compatibility**
-GrapaDB2 must support both old and new database formats:
+GrapaDBX must support both old and new database formats:
 
 ```cpp
 // Enhanced file detection
-bool isGrapaDB2File(const GrapaCHAR& path) {
-    // Check for GrapaDB2 signature/format
+bool isGrapaDBXFile(const GrapaCHAR& path) {
+    // Check for GrapaDBX signature/format
     // Fall back to current GrapaDB detection
-    return isGrapaDBFile(path) || isGrapaDB2File(path);
+    return isGrapaDBFile(path) || isGrapaDBXFile(path);
 }
 ```
 
 ## Implementation Strategy
 
 ### **Phase 1: Interface Compatibility**
-1. **Implement Required Methods**: Ensure GrapaDB2 has all methods used by `DirectorySwitchSingle`
-2. **File Detection**: Add GrapaDB2 file format detection
+1. **Implement Required Methods**: Ensure GrapaDBX has all methods used by `DirectorySwitchSingle`
+2. **File Detection**: Add GrapaDBX file format detection
 3. **Navigation Methods**: Implement `OpenGroup`, `RootTree`, etc.
 4. **Path Tracking**: Maintain `mDatabasePath` for navigation history
 
 ### **Phase 2: Enhanced Features**
-1. **Multi-Pointer Support**: Integrate with GrapaDB2's multi-pointer access
+1. **Multi-Pointer Support**: Integrate with GrapaDBX's multi-pointer access
 2. **Transaction Awareness**: Navigate within transaction contexts
-3. **Enhanced Caching**: Leverage GrapaDB2's multi-tier caching
-4. **Performance Optimization**: Use GrapaDB2's optimized operations
+3. **Enhanced Caching**: Leverage GrapaDBX's multi-tier caching
+4. **Performance Optimization**: Use GrapaDBX's optimized operations
 
 ### **Phase 3: Advanced Integration**
-1. **Batch Operations**: Integrate with GrapaDB2's batch field operations
-2. **Database-Aware Comparison**: Use GrapaDB2's enhanced comparison system
-3. **Index Integration**: Leverage GrapaDB2's enhanced indexing
-4. **Monitoring**: Use GrapaDB2's performance monitoring
+1. **Batch Operations**: Integrate with GrapaDBX's batch field operations
+2. **Database-Aware Comparison**: Use GrapaDBX's enhanced comparison system
+3. **Index Integration**: Leverage GrapaDBX's enhanced indexing
+4. **Monitoring**: Use GrapaDBX's performance monitoring
 
-## GrapaDB2 Integration Points
+## GrapaDBX Integration Points
 
 ### **1. File System Integration**
 ```cpp
-// GrapaDB2 must integrate with existing file system detection
-class GrapaDB2FileSystem {
+// GrapaDBX must integrate with existing file system detection
+class GrapaDBXFileSystem {
 public:
     // File format detection
-    static bool IsGrapaDB2File(const GrapaCHAR& path);
+    static bool IsGrapaDBXFile(const GrapaCHAR& path);
     
     // File opening
-    static GrapaError OpenGrapaDB2File(const GrapaCHAR& path, GrapaDB2*& db);
+    static GrapaError OpenGrapaDBXFile(const GrapaCHAR& path, GrapaDBX*& db);
     
     // File closing
-    static GrapaError CloseGrapaDB2File(GrapaDB2* db);
+    static GrapaError CloseGrapaDBXFile(GrapaDBX* db);
 };
 ```
 
 ### **2. Navigation Integration**
 ```cpp
-// GrapaDB2 must provide navigation methods
-class GrapaDB2 {
+// GrapaDBX must provide navigation methods
+class GrapaDBX {
 public:
     // Group navigation (same interface as GrapaDB)
     virtual GrapaError OpenGroup(u64 dirId, u8 dirType, const GrapaCHAR& name, 
@@ -167,10 +167,10 @@ public:
 
 ### **3. Context Management**
 ```cpp
-// Enhanced context management for GrapaDB2
-class GrapaDB2Context {
+// Enhanced context management for GrapaDBX
+class GrapaDBXContext {
 public:
-    GrapaDB2* mDb;                    // Current database
+    GrapaDBX* mDb;                    // Current database
     u64 mDirId;                       // Current directory ID
     u8 mDirType;                      // Current directory type
     GrapaArray<GrapaObjectEvent>* mDatabasePath;  // Navigation history
@@ -180,12 +180,12 @@ public:
     bool mInTransaction;
     
     // Multi-pointer context
-    GrapaDB2MultiPointer* mMultiPointer;
+    GrapaDBXMultiPointer* mMultiPointer;
     u8 mAccessMode;  // Read, Write, ReadWrite
 };
 ```
 
-## Enhanced Features for GrapaDB2
+## Enhanced Features for GrapaDBX
 
 ### **1. Multi-Pointer Navigation**
 ```grapa
@@ -240,9 +240,9 @@ performance = f.getNavigationStats();
 ## Migration Strategy
 
 ### **1. Gradual Migration**
-- **Phase 1**: GrapaDB2 works alongside current GrapaDB
+- **Phase 1**: GrapaDBX works alongside current GrapaDB
 - **Phase 2**: Automatic migration of databases when accessed
-- **Phase 3**: GrapaDB2 becomes the default format
+- **Phase 3**: GrapaDBX becomes the default format
 
 ### **2. Format Detection**
 ```cpp
@@ -250,7 +250,7 @@ performance = f.getNavigationStats();
 enum DatabaseFormat {
     FORMAT_UNKNOWN,
     FORMAT_GRAPA_DB,      // Current format
-    FORMAT_GRAPA_DB2,     // New format
+    FORMAT_GRAPA_DBX,     // New format
     FORMAT_MIGRATED       // Migrated format
 };
 
@@ -261,8 +261,8 @@ DatabaseFormat DetectDatabaseFormat(const GrapaCHAR& path);
 ```cpp
 // Automatic migration when accessing old databases
 if (format == FORMAT_GRAPA_DB) {
-    // Migrate to GrapaDB2 format
-    GrapaError err = MigrateToGrapaDB2(path);
+    // Migrate to GrapaDBX format
+    GrapaError err = MigrateToGrapaDBX(path);
     if (!err) {
         format = FORMAT_MIGRATED;
     }
@@ -318,7 +318,7 @@ f.cd("deep/nested/database/structure");
 navigation_time = $time() - start;
 
 /* Compare with current system */
-("GrapaDB2 navigation: " + navigation_time + "ms").echo();
+("GrapaDBX navigation: " + navigation_time + "ms").echo();
 ```
 
 ## Success Criteria
@@ -349,13 +349,13 @@ navigation_time = $time() - start;
 
 ## Summary
 
-GrapaDB2 must maintain the **seamless unified path navigation** that makes Grapa so powerful. The `$file()` function should work exactly as it does now, with the added benefit of GrapaDB2's enhanced features when available.
+GrapaDBX must maintain the **seamless unified path navigation** that makes Grapa so powerful. The `$file()` function should work exactly as it does now, with the added benefit of GrapaDBX's enhanced features when available.
 
 **Key Principles:**
 1. **Backward Compatibility**: Current code continues to work unchanged
-2. **Seamless Integration**: GrapaDB2 databases work just like current databases
+2. **Seamless Integration**: GrapaDBX databases work just like current databases
 3. **Enhanced Features**: New capabilities available when needed
 4. **Performance**: Better performance with same interface
 5. **Migration**: Gradual migration path from old to new format
 
-This ensures that GrapaDB2 enhances the unified path system rather than breaking it, maintaining one of Grapa's most powerful and unique features. 
+This ensures that GrapaDBX enhances the unified path system rather than breaking it, maintaining one of Grapa's most powerful and unique features. 

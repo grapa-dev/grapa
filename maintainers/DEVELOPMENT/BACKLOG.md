@@ -10,10 +10,15 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - Continue documentation structure improvements: See [DOCS_STRUCTURE_IMPROVEMENT_PLAN.md](DEVELOPMENT/DOCS_STRUCTURE_IMPROVEMENT_PLAN.md)
 - Evaluate all instances of null, true, and false handling in Grapa (especially for .get(), .set(), and field assignment) to ensure consistency across all types and operations. Reference the recent RAW/null test as an example.
 - Automate running the full regression suite (run_tests_comprehensive.grc and Python integration tests) as part of CI to ensure all features and integrations are validated on every change.
+- **DB Refactoring - BTree Block Compaction**: Evaluate the possibility of compacting BTree blocks to reduce file size. This will be challenging if we want to do this because it requires that all feature work we do on DBX ensure that record pointers are the only thing we need to factor in. If there are other nuanced items, doing something like this could be a challenge. Requires careful design to maintain record pointer integrity across all DBX features.
 
 ---
 
 ## 🚨 Immediate/High Priority
+
+### GrapaDBX Critical Requirements
+- [ ] **🚨 CRITICAL: BTree Read/Write Caching**: Implement configurable BTree read/write caching via GrapaFile object options. Must maintain zero regressions from GrapaDB performance. Support switchable caching modes (enabled/disabled/auto) with GrapaFileCache integration.
+- [x] **✅ COMPLETED: In-Memory Database Support**: In-memory database support is already available in GrapaDBX through inheritance from GrapaBtree. Use `GrapaDBX()` constructor for in-memory databases and `GrapaDBX(GrapaFile* pFile)` for file-based databases.
 
 ### Unicode Language Binding
 - [ ] **Unicode Language Binding**: Add `case_fold()`, Unicode-aware string methods, Turkish I support.
@@ -77,10 +82,10 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] Multi-Field Set/Get for Records: Investigate and implement a way to set and get multiple fields at once for a record (batch .set()/.get()). This will improve performance for records with many fields. Consider supporting $LIST or similar structures for batch operations. Note: RAW field type can store any Grapa data type, including $LIST (enhanced JSON), which may be leveraged for this feature. Not immediate priority; to be reviewed after ROW corruption issue is fixed.
 - [ ] Expose custom index creation and management (including multi-field indexes) to the Grapa language and CLI. Currently, only the default $KEY index is created automatically; custom indexes can only be created via the C++ API. Add Grapa language/CLI commands for user-defined indexes.
 
-### GrapaDB2 Formula System Enhancements
+### GrapaDBX Formula System Enhancements
 - [ ] **Formula Field Search**: Extend GrapaDB search to handle formula fields, enabling searches on computed values. Implement formula evaluation during search operations with proper caching.
 - [ ] **Formula Indexes**: Create indexes on computed values using Grapa lambda expressions. Support complex business logic in indexes for fast searches on derived data. See [INTERNAL_NOTES/FORMULA_SEARCH_INDEXING_ANALYSIS.md](INTERNAL_NOTES/FORMULA_SEARCH_INDEXING_ANALYSIS.md) for detailed design.
-- [ ] **Formula Version Compatibility**: Implement version embedding in GrapaDB2 formula fields using existing `$sys().compile()` mechanism. Add compatibility checking for formula execution across different Grapa versions. See [INTERNAL_NOTES/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md](INTERNAL_NOTES/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md) for implementation details.
+- [ ] **Formula Version Compatibility**: Implement version embedding in GrapaDBX formula fields using existing `$sys().compile()` mechanism. Add compatibility checking for formula execution across different Grapa versions. See [INTERNAL_NOTES/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md](INTERNAL_NOTES/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md) for implementation details.
 - [ ] **Dynamic Library Loading**: Extend the existing library specification system to support dynamic loading of libraries at runtime. Leverage the three-pattern $OP syntax infrastructure for future dynamic library support. See [INTERNAL_NOTES/LIBRARY_SPECIFICATION_ANALYSIS.md](INTERNAL_NOTES/LIBRARY_SPECIFICATION_ANALYSIS.md) for technical foundation.
 
 ### Development Tools
@@ -106,7 +111,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ### Advanced Formula Features
 - [ ] **Formula Caching System**: Implement intelligent caching of compiled $OP formulas and computed results for performance optimization. Add dependency tracking for formula updates.
 - [ ] **Advanced Formula Search**: Support complex formula-based search criteria using full Grapa language capabilities. Enable dynamic search logic and formula-based filtering.
-- [ ] **Built-in Database Classes**: Register GrapaDB2 functions as built-in classes following established patterns. Create `$db2` namespace with formula and database operations. See [INTERNAL_NOTES/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md](INTERNAL_NOTES/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md) for integration patterns.
+- [ ] **Built-in Database Classes**: Register GrapaDBX functions as built-in classes following established patterns. Create `$dbx` namespace with formula and database operations. See [INTERNAL_NOTES/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md](INTERNAL_NOTES/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md) for integration patterns.
 
 ---
 

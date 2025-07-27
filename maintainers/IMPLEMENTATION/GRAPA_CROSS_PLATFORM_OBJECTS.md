@@ -80,7 +80,7 @@ This design means that Grapa objects are inherently thread-safe at the C++ level
   - Easier to use than raw GrapaThread
   - Built-in Grapa context and variable management
 
-**Recommendation**: Use `GrapaWorker` for parallelization in GrapaDB2, following the pattern established in `source/grep/`.
+**Recommendation**: Use `GrapaWorker` for parallelization in GrapaDBX, following the pattern established in `source/grep/`.
 
 ### 2. **File System Operations**
 
@@ -183,7 +183,7 @@ This design means that Grapa objects are inherently thread-safe at the C++ level
 - **PCRE2 Integration**: Advanced regex patterns with Unicode properties
 - **Performance Optimization**: Caching and parallel processing
 
-**Recommendation**: Use `GrapaUnicode` classes for all text processing in GrapaDB2, following the pattern established in `source/grep/`.
+**Recommendation**: Use `GrapaUnicode` classes for all text processing in GrapaDBX, following the pattern established in `source/grep/`.
 
 ### 6. **Cryptography & Security**
 
@@ -360,7 +360,7 @@ net->Connect("network://remote-server/data");
 
 ### **GrapaUnicode** for Text Processing
 ```cpp
-// For Unicode-aware text operations in GrapaDB2
+// For Unicode-aware text operations in GrapaDBX
 GrapaUnicode::UnicodeString text("Hello, 世界! 👋");
 GrapaUnicode::UnicodeString normalized = text.normalize(GrapaUnicode::NormalizationForm::NFC);
 

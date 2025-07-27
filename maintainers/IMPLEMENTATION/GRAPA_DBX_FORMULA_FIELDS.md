@@ -2,7 +2,7 @@
 tags:
   - maintainer
   - implementation
-  - grapadb2
+  - grapadbx
   - formula
   - computed-fields
 ---
@@ -49,6 +49,179 @@ struct {
     u8 mReserved2[7];   // Reduced from 8 to 7 bytes
 };
 ```
+
+## Unicode Support in Formula Fields
+
+### Design Principle
+Formula fields are **Unicode-aware by design**, leveraging Grapa's existing `GrapaUnicode` infrastructure for all text operations within formulas.
+
+### Unicode Integration Points
+
+#### **1. Formula Text Storage**
+- **UTF-8 Encoding**: All formula text is stored as UTF-8 encoded data
+- **GrapaCompress Integration**: Unicode text is properly compressed and decompressed
+- **Endian Safety**: Unicode data maintains cross-platform compatibility
+
+#### **2. Formula Execution Context**
+- **Unicode String Handling**: All formula strings use `GrapaUnicode::UnicodeString`
+- **Field Access**: Unicode-aware field retrieval and comparison
+- **String Operations**: Normalization and case folding in formulas
+
+#### **3. Formula Field Access**
+```cpp
+// Unicode-aware formula field execution
+GrapaError GrapaDBX::ExecuteFormula(u64 pFormulaRef, u8 pFormulaType, 
+                                   const GrapaCHAR& pParams, GrapaCHAR& pResult)
+{
+    if (pFormulaType == GrapaDBXField::FORMULA_TEXT) {
+        // Get formula text (UTF-8 encoded)
+        GrapaCHAR formulaText;
+        GetFormulaText(pFormulaRef, formulaText);
+        
+        // Convert to UnicodeString for processing
+        GrapaUnicode::UnicodeString unicodeFormula(formulaText);
+        
+        // Normalize formula text for consistent execution
+        std::string normalizedFormula = unicodeFormula.normalize(
+            GrapaUnicode::NormalizationForm::NFC
+        ).data();
+        
+        // Execute with Unicode-aware context
+        return ExecuteFormulaWithUnicodeContext(normalizedFormula, pParams, pResult);
+    }
+    return -1;
+}
+```
+
+#### **4. Unicode-Aware Formula Examples**
+```grapa
+// Unicode-aware formula field examples
+formula1 = "greeting.normalize('NFC').case_fold().contains('мир')"
+formula2 = "name.normalize('NFC').case_fold() == 'café'"
+formula3 = "description.grep('\\p{Han}+', 'o').len() > 0"  // Contains Chinese characters
+formula4 = "title.normalize('NFC').case_fold().contains('résumé')"
+```
+
+#### **5. Field Access in Formulas**
+```cpp
+// Unicode-aware field access within formulas
+GrapaError GrapaDBX::RecordGetField(GrapaCursor& cursor, const GrapaCHAR& fieldName, GrapaBYTE& result)
+{
+    // Convert field name to UnicodeString for comparison
+    GrapaUnicode::UnicodeString unicodeFieldName(fieldName);
+    
+    // Normalize field name for consistent lookup
+    std::string normalizedFieldName = unicodeFieldName.normalize(
+        GrapaUnicode::NormalizationForm::NFC
+    ).case_fold().data();
+    
+    // Look up field by normalized name
+    u64 fieldId;
+    GrapaError err = GetFieldIdByName(cursor, normalizedFieldName, fieldId);
+    if (err) return err;
+    
+    // Load field value with Unicode support
+    return GetRecordField(cursor, fieldId, result);
+}
+```
+
+#### **6. String Operations in Formulas**
+```cpp
+// Unicode-aware string operations for formula execution
+class GrapaDBXFormulaUnicodeSupport {
+public:
+    // Unicode-aware string comparison
+    static bool UnicodeEquals(const GrapaCHAR& a, const GrapaCHAR& b, bool case_insensitive = false) {
+        GrapaUnicode::UnicodeString unicode_a(a);
+        GrapaUnicode::UnicodeString unicode_b(b);
+        
+        if (case_insensitive) {
+            return GrapaUnicode::unicode_equals(unicode_a, unicode_b, true);
+        }
+        return GrapaUnicode::unicode_equals(unicode_a, unicode_b, false);
+    }
+    
+    // Unicode-aware string contains
+    static bool UnicodeContains(const GrapaCHAR& haystack, const GrapaCHAR& needle, bool case_insensitive = false) {
+        GrapaUnicode::UnicodeString unicode_haystack(haystack);
+        GrapaUnicode::UnicodeString unicode_needle(needle);
+        
+        return GrapaUnicode::unicode_contains(unicode_haystack, unicode_needle, case_insensitive);
+    }
+    
+    // Unicode-aware string length (character count, not bytes)
+    static u64 UnicodeLength(const GrapaCHAR& str) {
+        GrapaUnicode::UnicodeString unicode_str(str);
+        return unicode_str.size(); // Returns character count, not byte count
+    }
+};
+```
+
+### Performance Optimization
+
+#### **1. Unicode Caching**
+```cpp
+// Cache normalized Unicode strings for formula execution
+class GrapaDBXFormulaUnicodeCache {
+private:
+    static GrapaUnicode::LRUCache formula_cache_;
+    
+public:
+    static std::string GetNormalizedFormula(const GrapaCHAR& formula) {
+        std::string key = std::string((char*)formula.mBytes, formula.mLength);
+        std::string cached = formula_cache_.get(key);
+        if (!cached.empty()) {
+            return cached;
+        }
+        
+        // Normalize and cache
+        GrapaUnicode::UnicodeString unicode_formula(formula);
+        std::string normalized = unicode_formula.normalize(
+            GrapaUnicode::NormalizationForm::NFC
+        ).data();
+        
+        formula_cache_.put(key, normalized);
+        return normalized;
+    }
+};
+```
+
+#### **2. Unicode-Aware Indexing**
+```cpp
+// Unicode-aware index creation for formula fields
+GrapaError GrapaDBX::CreateUnicodeFormulaIndex(GrapaDBXTable& table, const GrapaCHAR& fieldName) {
+    // Create index with Unicode-normalized keys
+    GrapaUnicode::UnicodeString unicodeFieldName(fieldName);
+    std::string normalizedFieldName = unicodeFieldName.normalize(
+        GrapaUnicode::NormalizationForm::NFC
+    ).case_fold().data();
+    
+    // Store normalized field name in index
+    return CreateIndex(table, normalizedFieldName);
+}
+```
+
+### Benefits
+
+#### **1. International Formula Support**
+- **Multi-language formulas**: Chinese, Japanese, Arabic, Cyrillic, etc.
+- **Unicode string operations**: Proper handling of international text
+- **Accent-insensitive matching**: é = e for search purposes
+- **Grapheme cluster support**: Proper handling of complex Unicode sequences
+
+#### **2. Consistent Text Handling**
+- **UTF-8 everywhere**: Consistent encoding throughout formula execution
+- **Unicode normalization**: Canonical forms for consistent comparison
+- **Case folding**: Proper case-insensitive operations for all languages
+- **PCRE2 integration**: Advanced regex patterns with Unicode properties
+
+#### **3. Performance and Reliability**
+- **Leverages existing infrastructure**: Uses proven GrapaUnicode system
+- **Thread-safe caching**: LRU cache for normalized formula strings
+- **Memory efficiency**: UTF-8 encoding is space-efficient
+- **Cross-platform**: Endian-independent Unicode handling
+
+This Unicode-by-design approach ensures that formula fields can handle international text properly while maintaining performance and reliability.
 
 ### Formula Storage Format
 

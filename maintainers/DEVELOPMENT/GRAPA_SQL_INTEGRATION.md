@@ -2,11 +2,11 @@
 
 ## Overview
 
-This document outlines the design for adding SQL syntax to Grapa's language, making SQL a first-class part of the Grapa grammar. This will enable powerful database querying capabilities that integrate seamlessly with GrapaDB2 and the unified path system.
+This document outlines the design for adding SQL syntax to Grapa's language, making SQL a first-class part of the Grapa grammar. This will enable powerful database querying capabilities that integrate seamlessly with GrapaDBX and the unified path system.
 
 ## Vision
 
-**Goal**: Make SQL a native part of Grapa's language, allowing developers to write SQL queries directly in Grapa scripts that seamlessly integrate with GrapaDB2 databases through the unified path system.
+**Goal**: Make SQL a native part of Grapa's language, allowing developers to write SQL queries directly in Grapa scripts that seamlessly integrate with GrapaDBX databases through the unified path system.
 
 **Example Usage**:
 ```grapa
@@ -18,7 +18,7 @@ f.cd("my_database");
 users = SELECT * FROM users WHERE age > 25 ORDER BY name;
 admin_count = SELECT COUNT(*) FROM users WHERE role = 'admin';
 
-/* SQL with GrapaDB2 enhanced features */
+/* SQL with GrapaDBX enhanced features */
 high_salary = SELECT name, salary FROM employees 
               WHERE salary > 50000 
               ORDER BY salary DESC 
@@ -44,8 +44,8 @@ Extend `lib/grapa/$grapa.grc` to include SQL syntax as native Grapa grammar rule
 ### **2. SQL Parser Integration**
 Integrate SQL parsing with Grapa's existing BNF grammar system using `$RULE`.
 
-### **3. GrapaDB2 Integration**
-Connect SQL queries to GrapaDB2's enhanced features (batch operations, transactions, etc.).
+### **3. GrapaDBX Integration**
+Connect SQL queries to GrapaDBX's enhanced features (batch operations, transactions, etc.).
 
 ### **4. Unified Path System Integration**
 Leverage the unified path system to make SQL work seamlessly across file system and database contexts.
@@ -314,7 +314,7 @@ Create SQL-specific AST nodes that integrate with Grapa's execution system:
 
 ### **2. SQL Execution Functions**
 
-Implement SQL execution functions that integrate with GrapaDB2:
+Implement SQL execution functions that integrate with GrapaDBX:
 
 ```grapa
 /* SQL Execution Functions */
@@ -329,7 +329,7 @@ Implement SQL execution functions that integrate with GrapaDB2:
         /* Navigate to table */
         f.cd(table_path);
         
-        /* Build query using GrapaDB2 features */
+        /* Build query using GrapaDBX features */
         query = {
             "type": "select",
             "columns": ast.select_list,
@@ -338,7 +338,7 @@ Implement SQL execution functions that integrate with GrapaDB2:
             "limit": ast.limit_clause
         };
         
-        /* Execute using GrapaDB2's enhanced query engine */
+        /* Execute using GrapaDBX's enhanced query engine */
         result = f.query(query);
         
         result;
@@ -349,7 +349,7 @@ Implement SQL execution functions that integrate with GrapaDB2:
         f = $file();
         f.cd(ast.table_name);
         
-        /* Use GrapaDB2 batch operations for efficiency */
+        /* Use GrapaDBX batch operations for efficiency */
         if (ast.columns) {
             /* Explicit columns specified */
             for (i = 0; i < ast.values.len(); i += 1;) {
@@ -380,7 +380,7 @@ Implement SQL execution functions that integrate with GrapaDB2:
             update_data[set_item.column] = set_item.value;
         }
         
-        /* Use GrapaDB2's enhanced update capabilities */
+        /* Use GrapaDBX's enhanced update capabilities */
         if (ast.where_clause) {
             /* Update with WHERE clause */
             affected = f.updateBatch(ast.where_clause, update_data);
@@ -397,7 +397,7 @@ Implement SQL execution functions that integrate with GrapaDB2:
         f = $file();
         f.cd(ast.table_name);
         
-        /* Use GrapaDB2's enhanced delete capabilities */
+        /* Use GrapaDBX's enhanced delete capabilities */
         if (ast.where_clause) {
             /* Delete with WHERE clause */
             affected = f.deleteBatch(ast.where_clause);
@@ -410,82 +410,82 @@ Implement SQL execution functions that integrate with GrapaDB2:
     };
 ```
 
-## GrapaDB2 Integration
+## GrapaDBX Integration
 
 ### **1. Enhanced Query Engine**
 
-Extend GrapaDB2 with SQL-aware query capabilities:
+Extend GrapaDBX with SQL-aware query capabilities:
 
 ```cpp
-// GrapaDB2 SQL Query Engine
-class GrapaDB2SQLQueryEngine {
+// GrapaDBX SQL Query Engine
+class GrapaDBXSQLQueryEngine {
 public:
     // Execute SQL queries
-    virtual GrapaError ExecuteSelect(const GrapaDB2SelectQuery& query, GrapaDB2ResultSet& results);
-    virtual GrapaError ExecuteInsert(const GrapaDB2InsertQuery& query, u64& affectedRows);
-    virtual GrapaError ExecuteUpdate(const GrapaDB2UpdateQuery& query, u64& affectedRows);
-    virtual GrapaError ExecuteDelete(const GrapaDB2DeleteQuery& query, u64& affectedRows);
+    virtual GrapaError ExecuteSelect(const GrapaDBXSelectQuery& query, GrapaDBXResultSet& results);
+    virtual GrapaError ExecuteInsert(const GrapaDBXInsertQuery& query, u64& affectedRows);
+    virtual GrapaError ExecuteUpdate(const GrapaDBXUpdateQuery& query, u64& affectedRows);
+    virtual GrapaError ExecuteDelete(const GrapaDBXDeleteQuery& query, u64& affectedRows);
     
     // Query optimization
-    virtual GrapaError OptimizeQuery(GrapaDB2Query& query);
-    virtual GrapaError SelectBestIndex(const GrapaDB2Query& query, GrapaDB2Index*& bestIndex);
+    virtual GrapaError OptimizeQuery(GrapaDBXQuery& query);
+    virtual GrapaError SelectBestIndex(const GrapaDBXQuery& query, GrapaDBXIndex*& bestIndex);
     
     // Transaction support
-    virtual GrapaError ExecuteInTransaction(u64 transactionId, const GrapaDB2Query& query);
+    virtual GrapaError ExecuteInTransaction(u64 transactionId, const GrapaDBXQuery& query);
 };
 
 // Query structures
-struct GrapaDB2SelectQuery {
+struct GrapaDBXSelectQuery {
     GrapaArray<GrapaCHAR> selectColumns;
     GrapaCHAR tableName;
-    GrapaDB2WhereClause whereClause;
-    GrapaDB2OrderClause orderClause;
-    GrapaDB2LimitClause limitClause;
+    GrapaDBXWhereClause whereClause;
+    GrapaDBXOrderClause orderClause;
+    GrapaDBXLimitClause limitClause;
 };
 
-struct GrapaDB2WhereClause {
+struct GrapaDBXWhereClause {
     enum ConditionType { AND, OR, COMPARISON };
     ConditionType type;
-    GrapaDB2Comparison comparison;
-    GrapaArray<GrapaDB2WhereClause> subConditions;
+    GrapaDBXComparison comparison;
+    GrapaArray<GrapaDBXWhereClause> subConditions;
 };
 ```
 
 ### **2. SQL-Aware Indexing**
 
-Leverage GrapaDB2's enhanced indexing for SQL optimization:
+Leverage GrapaDBX's enhanced indexing for SQL optimization:
 
 ```cpp
 // SQL-aware index selection
-class GrapaDB2SQLIndexOptimizer {
+class GrapaDBXSQLIndexOptimizer {
 public:
     // Select best index for SQL query
-    virtual GrapaDB2Index* SelectBestIndex(const GrapaDB2SelectQuery& query);
+    virtual GrapaDBXIndex* SelectBestIndex(const GrapaDBXSelectQuery& query);
     
     // Analyze query plan
-    virtual GrapaError AnalyzeQueryPlan(const GrapaDB2Query& query, GrapaDB2QueryPlan& plan);
+    virtual GrapaError AnalyzeQueryPlan(const GrapaDBXQuery& query, GrapaDBXQueryPlan& plan);
     
     // Suggest indexes for query optimization
-    virtual GrapaError SuggestIndexes(const GrapaDB2Query& query, GrapaArray<GrapaDB2IndexSuggestion>& suggestions);
+    virtual GrapaError SuggestIndexes(const GrapaDBXQuery& query, GrapaArray<GrapaDBXIndexSuggestion>& suggestions);
 };
 ```
 
 ### **3. Batch Operations Integration**
 
-Use GrapaDB2's batch operations for SQL efficiency:
+Use GrapaDBX's batch operations for SQL efficiency:
 
 ```cpp
 // SQL batch operations
-class GrapaDB2SQLBatchOperations {
+class GrapaDBXSQLBatchOperations {
 public:
-    // Batch INSERT using GrapaDB2's SetBatchMultiple
-    virtual GrapaError BatchInsert(const GrapaDB2InsertQuery& query);
+    // Batch INSERT using GrapaDBX's SetBatchMultiple
+    virtual GrapaError BatchInsert(const GrapaDBXInsertQuery& query);
     
-    // Batch UPDATE using GrapaDB2's enhanced update capabilities
-    virtual GrapaError BatchUpdate(const GrapaDB2UpdateQuery& query);
+    // Batch UPDATE using GrapaDBX's enhanced update capabilities
+    virtual GrapaError BatchUpdate(const GrapaDBXUpdateQuery& query);
     
-    // Batch DELETE using GrapaDB2's enhanced delete capabilities
-    virtual GrapaError BatchDelete(const GrapaDB2DeleteQuery& query);
+    // Batch DELETE using GrapaDBX's enhanced delete capabilities
+    virtual GrapaError BatchDelete(const GrapaDBXDeleteQuery& query);
 };
 ```
 
@@ -544,7 +544,7 @@ daily_stats = SELECT date, COUNT(*) as count FROM . WHERE date >= '2024-01-01';
 1. **Extend Grammar**: Add basic SQL grammar rules to `$grapa.grc`
 2. **AST Creation**: Implement SQL AST nodes
 3. **Basic Execution**: Simple SELECT, INSERT, UPDATE, DELETE
-4. **GrapaDB2 Integration**: Connect to GrapaDB2's basic operations
+4. **GrapaDBX Integration**: Connect to GrapaDBX's basic operations
 
 ### **Phase 2: Advanced SQL Features**
 1. **Complex Queries**: JOINs, subqueries, aggregations
@@ -554,8 +554,8 @@ daily_stats = SELECT date, COUNT(*) as count FROM . WHERE date >= '2024-01-01';
 
 ### **Phase 3: Enhanced Integration**
 1. **Unified Path Support**: SQL across file system and databases
-2. **Batch Operations**: Leverage GrapaDB2's batch capabilities
-3. **Advanced Indexing**: Use GrapaDB2's enhanced indexing
+2. **Batch Operations**: Leverage GrapaDBX's batch capabilities
+3. **Advanced Indexing**: Use GrapaDBX's enhanced indexing
 4. **Performance Tuning**: Query optimization and caching
 
 ### **Phase 4: Advanced Features**
@@ -573,7 +573,7 @@ daily_stats = SELECT date, COUNT(*) as count FROM . WHERE date >= '2024-01-01';
 - **Productivity**: Rapid database operations and queries
 
 ### **2. Performance**
-- **Optimized Execution**: Leverage GrapaDB2's enhanced features
+- **Optimized Execution**: Leverage GrapaDBX's enhanced features
 - **Batch Operations**: Efficient bulk operations
 - **Index Optimization**: Automatic index selection
 - **Caching**: Intelligent query result caching
@@ -662,8 +662,8 @@ GROUP BY u.username;
 - ✅ Extensible for future SQL features
 - ✅ Proper precedence and associativity
 
-### **2. GrapaDB2 Integration**
-- ✅ Leverages all GrapaDB2 enhanced features
+### **2. GrapaDBX Integration**
+- ✅ Leverages all GrapaDBX enhanced features
 - ✅ Uses batch operations for efficiency
 - ✅ Supports transactions and rollback
 - ✅ Utilizes enhanced indexing
@@ -688,7 +688,7 @@ GROUP BY u.username;
 
 ## Summary
 
-Adding SQL syntax to Grapa's language will create a powerful, integrated database querying system that leverages GrapaDB2's enhanced features while maintaining the flexibility of the unified path system. This will make Grapa an even more compelling platform for data processing, analysis, and application development.
+Adding SQL syntax to Grapa's language will create a powerful, integrated database querying system that leverages GrapaDBX's enhanced features while maintaining the flexibility of the unified path system. This will make Grapa an even more compelling platform for data processing, analysis, and application development.
 
 The SQL integration will be implemented as a natural extension of Grapa's grammar system, ensuring seamless integration with existing code while providing powerful new capabilities for database operations. 
 
@@ -832,14 +832,14 @@ INSERT INTO optimized_binary (id, small_data, medium_data, large_data) VALUES
     (1, (0x1234).raw(), 'medium'.raw(), 'large_binary_data'.raw());
 ```
 
-### **GrapaDB2 RAW Field Integration**
+### **GrapaDBX RAW Field Integration**
 
 #### **1. Enhanced RAW Field Support**
 ```cpp
-// GrapaDB2 RAW field comparison
-class GrapaDB2RawComparison : public GrapaDB2Comparison {
+// GrapaDBX RAW field comparison
+class GrapaDBXRawComparison : public GrapaDBXComparison {
 public:
-    virtual GrapaError Compare(const GrapaDB2ComparisonContext& context, ComparisonResult& result) override {
+    virtual GrapaError Compare(const GrapaDBXComparisonContext& context, ComparisonResult& result) override {
         // Byte-by-byte comparison for RAW fields
         GrapaBYTE& left = context.leftValue;
         GrapaBYTE& right = context.rightValue;
@@ -881,11 +881,11 @@ private:
 
 #### **2. RAW Field Batch Operations**
 ```cpp
-// GrapaDB2 RAW field batch operations
-class GrapaDB2RawBatchOperations {
+// GrapaDBX RAW field batch operations
+class GrapaDBXRawBatchOperations {
 public:
     // Batch insert RAW data
-    virtual GrapaError BatchInsertRaw(const GrapaDB2InsertQuery& query) {
+    virtual GrapaError BatchInsertRaw(const GrapaDBXInsertQuery& query) {
         for (const auto& value : query.values) {
             if (value.type == GrapaTokenType::RAW) {
                 // Handle RAW field insertion with type preservation
@@ -898,7 +898,7 @@ public:
     }
     
     // Batch update RAW data
-    virtual GrapaError BatchUpdateRaw(const GrapaDB2UpdateQuery& query) {
+    virtual GrapaError BatchUpdateRaw(const GrapaDBXUpdateQuery& query) {
         for (const auto& setItem : query.setList) {
             if (setItem.value.type == GrapaTokenType::RAW) {
                 // Handle RAW field updates with type preservation
@@ -914,8 +914,8 @@ public:
 
 #### **3. RAW Field Indexing**
 ```cpp
-// GrapaDB2 RAW field indexing
-class GrapaDB2RawIndexing {
+// GrapaDBX RAW field indexing
+class GrapaDBXRawIndexing {
 public:
     // Create index on RAW field
     virtual GrapaError CreateRawIndex(const GrapaCHAR& tableName, const GrapaCHAR& fieldName) {
@@ -926,7 +926,7 @@ public:
     
     // Search using RAW field index
     virtual GrapaError SearchRawIndex(const GrapaCHAR& tableName, const GrapaCHAR& fieldName, 
-                                     const GrapaBYTE& searchValue, GrapaDB2ResultSet& results) {
+                                     const GrapaBYTE& searchValue, GrapaDBXResultSet& results) {
         // Use byte-by-byte comparison for RAW field searches
         return SearchIndex(tableName, fieldName, searchValue, results, COMPARISON_MODE_RAW);
     }
@@ -1018,7 +1018,7 @@ FROM binary_data;
 #### **3. Enhanced Features**
 - **SQL Integration**: RAW fields work seamlessly with SQL syntax
 - **Advanced Functions**: New SQL functions for RAW field manipulation
-- **Performance**: Leverages GrapaDB2's enhanced features for better performance
+- **Performance**: Leverages GrapaDBX's enhanced features for better performance
 
 ### **Summary**
 
@@ -1027,11 +1027,11 @@ RAW fields are fully supported in the SQL integration with:
 1. **Complete Grammar Support**: RAW field syntax integrated into SQL grammar
 2. **Type Preservation**: Original data types preserved in RAW fields
 3. **Enhanced Functions**: New SQL functions for RAW field manipulation
-4. **Performance Optimization**: Leverages GrapaDB2's enhanced features
+4. **Performance Optimization**: Leverages GrapaDBX's enhanced features
 5. **Backward Compatibility**: All existing RAW field functionality preserved
 6. **Advanced Features**: Pattern matching, aggregation, and conversion functions
 
-This ensures that RAW fields work exactly as they do now, while gaining the benefits of SQL syntax and GrapaDB2's enhanced capabilities. 
+This ensures that RAW fields work exactly as they do now, while gaining the benefits of SQL syntax and GrapaDBX's enhanced capabilities. 
 
 ## Unicode Support
 
@@ -1459,12 +1459,12 @@ SELECT
 FROM xml_data;
 ```
 
-### **GrapaDB2 Implementation for Unicode, Regex, and JSON/XML**
+### **GrapaDBX Implementation for Unicode, Regex, and JSON/XML**
 
-#### **1. Unicode Support in GrapaDB2**
+#### **1. Unicode Support in GrapaDBX**
 ```cpp
-// Unicode support in GrapaDB2
-class GrapaDB2UnicodeSupport {
+// Unicode support in GrapaDBX
+class GrapaDBXUnicodeSupport {
 public:
     // Unicode-aware string comparison
     virtual GrapaError CompareUnicode(const GrapaCHAR& left, const GrapaCHAR& right, s8& result) {
@@ -1492,10 +1492,10 @@ private:
 };
 ```
 
-#### **2. Regex Support in GrapaDB2**
+#### **2. Regex Support in GrapaDBX**
 ```cpp
-// Regex support in GrapaDB2
-class GrapaDB2RegexSupport {
+// Regex support in GrapaDBX
+class GrapaDBXRegexSupport {
 public:
     // Regex pattern matching
     virtual GrapaError RegexMatch(const GrapaCHAR& text, const GrapaCHAR& pattern, bool& matches) {
@@ -1526,10 +1526,10 @@ public:
 };
 ```
 
-#### **3. JSON Support in GrapaDB2**
+#### **3. JSON Support in GrapaDBX**
 ```cpp
-// JSON support in GrapaDB2
-class GrapaDB2JsonSupport {
+// JSON support in GrapaDBX
+class GrapaDBXJsonSupport {
 public:
     // JSON path queries
     virtual GrapaError JsonPathQuery(const GrapaCHAR& json, const GrapaCHAR& path, GrapaCHAR& result) {
@@ -1558,10 +1558,10 @@ public:
 };
 ```
 
-#### **4. XML Support in GrapaDB2**
+#### **4. XML Support in GrapaDBX**
 ```cpp
-// XML support in GrapaDB2
-class GrapaDB2XmlSupport {
+// XML support in GrapaDBX
+class GrapaDBXXmlSupport {
 public:
     // XPath queries
     virtual GrapaError XPathQuery(const GrapaCHAR& xml, const GrapaCHAR& xpath, GrapaArray<GrapaCHAR>& results) {
@@ -1617,4 +1617,4 @@ The enhanced SQL integration now supports:
 5. **Performance Optimization**: Efficient implementations for all features
 6. **Backward Compatibility**: All existing functionality preserved
 
-These features make GrapaDB2 competitive with modern database systems while maintaining Grapa's unique capabilities. 
+These features make GrapaDBX competitive with modern database systems while maintaining Grapa's unique capabilities. 
