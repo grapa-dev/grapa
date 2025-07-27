@@ -13,6 +13,7 @@ This folder is for all in-progress, investigation, planning, and debug documenta
 
 ### **🎯 Single Source of Truth**
 - **[CURRENT_STATUS.md](CURRENT_STATUS.md)** - **AUTHORITATIVE**: Single source of truth for all development status, priorities, and progress tracking
+- **[AGENT_CONTEXT_LOADING.md](AGENT_CONTEXT_LOADING.md)** - **CRITICAL**: Process for loading context when agent doesn't have full context
 - **[GRAPA_DB2_ACTUAL_STATUS.md](GRAPA_DB2_ACTUAL_STATUS.md)** - **CRITICAL**: GrapaDB2 actual implementation status and zero regressions requirements
 - **[GRAPA_DB2_TESTING_RESULTS.md](GRAPA_DB2_TESTING_RESULTS.md)** - **NEW**: Detailed testing results and infrastructure validation for GrapaDB2
 - **[LANGUAGE_ENHANCEMENT_ROADMAP.md](LANGUAGE_ENHANCEMENT_ROADMAP.md)** - **DEPRECATED**: Content consolidated into CURRENT_STATUS.md

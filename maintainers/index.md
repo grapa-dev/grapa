@@ -33,6 +33,8 @@ This section documents the organization and purpose of the `maintainers/` direct
 
 ## 🚨 **NEW AGENT ONBOARDING**
 
+**IF YOU DO NOT HAVE CONTEXT: Load current status and all related docs for the GrapaDB2 sub-project we are working on. You should find "agent context" or some type of agent onboarding notes through that process.**
+
 **If you are a new AI agent taking over this project:**
 
 ### **Start Here**:
@@ -46,10 +48,16 @@ This section documents the organization and purpose of the `maintainers/` direct
 - **All output must go through Send/Response system** for distributed architecture
 - **Maintain endian safety** across all platforms
 
-### **Current Status**:
+### **Current GrapaDB2 Sub-Project Status**:
 - ✅ Step 1: BTree Integration (COMPLETED)
 - ✅ Step 2: Enhanced Dump System (COMPLETED)  
-- 📋 Step 3: Formula Execution Enhancement (NEXT)
+- ✅ Step 3: Context-Aware Record Environment (COMPLETED)
+- ✅ Step 4: Compiled $OP Storage (COMPLETED)
+- 📋 Step 5: Performance Optimization (NEXT)
+
+**For detailed context loading, see [`DEVELOPMENT/AGENT_CONTEXT_LOADING.md`](DEVELOPMENT/AGENT_CONTEXT_LOADING.md)**
+
+**Note**: This is just ONE sub-project within the broader Grapa ecosystem.
 
 ---
 

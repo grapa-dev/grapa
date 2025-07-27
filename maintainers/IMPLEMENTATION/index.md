@@ -174,6 +174,7 @@ Grapa uses execution trees to represent compiled code:
 - [GrapaDB2 Development Status](DEVELOPMENT/CURRENT_STATUS.md) - New database system development and progress
 - [GrapaDB2 Index Design](GRAPA_DB2_INDEX_DESIGN.md) - Index system architecture
 - [GrapaDB2 Formula Fields](GRAPA_DB2_FORMULA_FIELDS.md) - Formula and computed fields system
+- [Grapa Formula Execution Analysis](GRAPA_FORMULA_EXECUTION_ANALYSIS.md) - Comprehensive analysis of execution mechanisms
 - [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md) - Cross-platform compatibility
 - [Base Types](BASETYPES.md) - Foundation type system
 - [Execution Trees](EXECUTION_TREES.md) - Code execution model

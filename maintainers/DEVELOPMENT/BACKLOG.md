@@ -55,8 +55,8 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - Audit and update all code paths for correct field metadata lifecycle handling. See [IMPLEMENTATION/FIELD_METADATA_LIFECYCLE.md] for details and open items.
 - [ ] **Review, validate, and formalize all build and runtime dependencies from BUILD_DEPENDANCIES.md for inclusion in public-facing and onboarding documentation.**
 - [ ] Add a high-level architecture and feature map diagram to the About or Home page (currently a placeholder exists in about.md)
-- [x] Audit and improve cross-linking between major sections (API Reference, Language Reference, Use Cases, Examples); add “See also”/“Related topics” to key pages – Complete as of July 2024
-- [x] Create/expand “Advanced Topics” section for advanced features (meta-programming, custom grammar, etc.) – Complete as of July 2024
+- [x] Audit and improve cross-linking between major sections (API Reference, Language Reference, Use Cases, Examples); add "See also"/"Related topics" to key pages – Complete as of July 2024
+- [x] Create/expand "Advanced Topics" section for advanced features (meta-programming, custom grammar, etc.) – Complete as of July 2024
 - [ ] Ongoing: Periodically review maintainer/internal docs to ensure no internal details leak into user-facing docs as new content is added
 
 ---
@@ -77,6 +77,12 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] Multi-Field Set/Get for Records: Investigate and implement a way to set and get multiple fields at once for a record (batch .set()/.get()). This will improve performance for records with many fields. Consider supporting $LIST or similar structures for batch operations. Note: RAW field type can store any Grapa data type, including $LIST (enhanced JSON), which may be leveraged for this feature. Not immediate priority; to be reviewed after ROW corruption issue is fixed.
 - [ ] Expose custom index creation and management (including multi-field indexes) to the Grapa language and CLI. Currently, only the default $KEY index is created automatically; custom indexes can only be created via the C++ API. Add Grapa language/CLI commands for user-defined indexes.
 
+### GrapaDB2 Formula System Enhancements
+- [ ] **Formula Field Search**: Extend GrapaDB search to handle formula fields, enabling searches on computed values. Implement formula evaluation during search operations with proper caching.
+- [ ] **Formula Indexes**: Create indexes on computed values using Grapa lambda expressions. Support complex business logic in indexes for fast searches on derived data. See [INTERNAL_NOTES/FORMULA_SEARCH_INDEXING_ANALYSIS.md](INTERNAL_NOTES/FORMULA_SEARCH_INDEXING_ANALYSIS.md) for detailed design.
+- [ ] **Formula Version Compatibility**: Implement version embedding in GrapaDB2 formula fields using existing `$sys().compile()` mechanism. Add compatibility checking for formula execution across different Grapa versions. See [INTERNAL_NOTES/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md](INTERNAL_NOTES/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md) for implementation details.
+- [ ] **Dynamic Library Loading**: Extend the existing library specification system to support dynamic loading of libraries at runtime. Leverage the three-pattern $OP syntax infrastructure for future dynamic library support. See [INTERNAL_NOTES/LIBRARY_SPECIFICATION_ANALYSIS.md](INTERNAL_NOTES/LIBRARY_SPECIFICATION_ANALYSIS.md) for technical foundation.
+
 ### Development Tools
 - [ ] Create debugging tools
 - [ ] Add profiling capabilities
@@ -96,6 +102,11 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] Add support for more external libraries
 - [ ] Create bindings for popular frameworks
 - [ ] Implement plugin system
+
+### Advanced Formula Features
+- [ ] **Formula Caching System**: Implement intelligent caching of compiled $OP formulas and computed results for performance optimization. Add dependency tracking for formula updates.
+- [ ] **Advanced Formula Search**: Support complex formula-based search criteria using full Grapa language capabilities. Enable dynamic search logic and formula-based filtering.
+- [ ] **Built-in Database Classes**: Register GrapaDB2 functions as built-in classes following established patterns. Create `$db2` namespace with formula and database operations. See [INTERNAL_NOTES/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md](INTERNAL_NOTES/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md) for integration patterns.
 
 ---
 
