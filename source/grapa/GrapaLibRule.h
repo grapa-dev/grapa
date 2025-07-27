@@ -95,14 +95,15 @@ public:
 	GrapaLibraryEvent* HandleLs(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleMk(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleRm(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleMkField(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleRmField(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleInfo(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSet(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleGet(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleInfo(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleSplit(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleMkfield(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleRmfield(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDebug(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleFileSplit(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleInclude(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDebug(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleMac(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleInterfaces(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleConnect(GrapaCHAR& pName);
@@ -234,7 +235,6 @@ public:
 	GrapaLibraryEvent* HandleReverse(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleReplace(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleGrep(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleSplit(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleJoin(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleShape(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleReShape(GrapaCHAR& pName);
@@ -337,6 +337,14 @@ public:
 	/* Output formatting handlers */
 	GrapaLibraryEvent* HandleFormatTable(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleFormatSimple(GrapaCHAR& pName);
+};
+
+// GrapaDB Handler Classes
+class GrapaLibraryRuleTableEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
 
 #endif //_GrapaLibRule_
