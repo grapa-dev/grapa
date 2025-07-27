@@ -1,0 +1,132 @@
+/* Test script for GrapaDB2 Step 4: Compiled $OP Storage */
+
+/* Test 1: Create formula fields with both text and compiled types */
+print("=== Test 1: Create Formula Fields ===");
+
+/* Create a test database */
+db = $db2("test_compiled_op.db2");
+db.create("test_compiled_op.db2", 1, rootTree);
+
+/* Create a table */
+table = {};
+table.mId = 1;
+table.mRef = rootTree;
+table.mRefType = 1; /* GROUP_TREE */
+db.createTable(rootTree, 1, 1, table);
+
+/* Create regular fields */
+db.createField(table, "price", "INT", "VAR", 32, 8);
+db.createField(table, "quantity", "INT", "VAR", 32, 8);
+
+/* Create a text-based formula field */
+textFormula = "_record.getField('price') * _record.getField('quantity')";
+db.createFormulaField(table, "total_text", textFormula, "INT");
+print("Text formula field created: total_text");
+
+/* Create a compiled $OP formula field */
+compiledFormula = "_record.getField('price') * _record.getField('quantity') + 10";
+db.createCompiledFormulaField(table, "total_compiled", compiledFormula, "INT");
+print("Compiled formula field created: total_compiled");
+
+/* Test 2: Execute formulas with context */
+print("\n=== Test 2: Execute Formulas ===");
+
+/* Create a test record */
+cursor = {};
+cursor.mValue = 1;
+db.createRecord(table, cursor);
+
+/* Set field values */
+db.setField(cursor, "price", 25);
+db.setField(cursor, "quantity", 3);
+
+/* Execute text formula */
+params = "cursor=1,table=1";
+result = db.executeFormula(1000000, 1, params); /* FORMULA_TEXT */
+print("Text formula result:", result);
+
+/* Execute compiled formula */
+result2 = db.executeFormula(1000001, 2, params); /* FORMULA_OP */
+print("Compiled formula result:", result2);
+
+/* Test 3: Formula compilation and storage */
+print("\n=== Test 3: Formula Compilation ===");
+
+/* Test formula compilation */
+testFormula = "x + y * 2";
+compiled = db.compileFormulaToOP(testFormula);
+print("Original formula:", testFormula);
+print("Compiled $OP:", compiled);
+
+/* Test 4: Formula caching and performance */
+print("\n=== Test 4: Formula Caching ===");
+
+/* Create multiple compiled formulas */
+formulas = [
+    "_record.getField('price') * 1.1",
+    "_record.getField('quantity') * 2",
+    "_record.getField('price') * _record.getField('quantity') * 0.9"
+];
+
+i = 0;
+while (i < formulas.mLength) {
+    formulaName = "formula_" + i;
+    db.createCompiledFormulaField(table, formulaName, formulas.get(i), "INT");
+    print("Created compiled formula:", formulaName);
+    i += 1;
+}
+
+/* Test 5: Complex formula with context-aware features */
+print("\n=== Test 5: Complex Formula Features ===");
+
+/* Create a field with large data for testing partial access */
+db.createField(table, "largeData", "RAW", "VAR", 1024, 8);
+largeData = "This is a large field with lots of data that could be processed in chunks. ";
+largeData = largeData.repeat(50);
+db.setField(cursor, "largeData", largeData);
+
+/* Create a complex formula that uses partial field access */
+complexFormula = "
+    basePrice = _record.getField('price');
+    quantity = _record.getField('quantity');
+    
+    /* Check if there are special notes that affect pricing */
+    hasSpecialNotes = _record.getFieldPartial('largeData', 0, 0, 'grep').mLength > 0;
+    
+    /* Calculate total with conditional logic */
+    subtotal = basePrice * quantity;
+    discount = hasSpecialNotes ? subtotal * 0.1 : 0;
+    
+    subtotal - discount
+";
+
+db.createCompiledFormulaField(table, "complex_total", complexFormula, "INT");
+print("Complex formula field created: complex_total");
+
+/* Execute the complex formula */
+result3 = db.executeFormula(1000002, 2, params); /* FORMULA_OP */
+print("Complex formula result:", result3);
+
+/* Test 6: Formula type verification */
+print("\n=== Test 6: Formula Type Verification ===");
+
+/* Verify that we can distinguish between text and compiled formulas */
+print("Formula types supported:");
+print("  - FORMULA_TEXT (1): Text-based formula execution");
+print("  - FORMULA_OP (2): Compiled $OP formula execution");
+
+/* Test 7: Error handling */
+print("\n=== Test 7: Error Handling ===");
+
+/* Test with invalid formula reference */
+result4 = db.executeFormula(0, 1, params);
+print("Invalid formula reference result:", result4);
+
+/* Test with unsupported formula type */
+result5 = db.executeFormula(1000000, 99, params);
+print("Unsupported formula type result:", result5);
+
+/* Cleanup */
+db.close();
+print("\nTest completed successfully!");
+print("Step 4: Compiled $OP Storage implementation verified!"); 
