@@ -140,6 +140,7 @@ public:
 	virtual GrapaError CompareRecordKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
 	virtual GrapaError CompareSearchKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
 	virtual GrapaError DumpTree(u64 pTreeRef = 0, GrapaFile* pDumpFile = NULL);
+	virtual GrapaError DatabaseDump(u64 pTreeRef, GrapaFile& pDumpFile);
 
 	// Additional methods for GrapaDBX-specific functionality
 	virtual GrapaError FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCursor& recCursor, GrapaDBXField& field);

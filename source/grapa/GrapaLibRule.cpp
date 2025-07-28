@@ -2843,28 +2843,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "widget_post", &GrapaLibraryRuleEvent::HandleWidgetPost },
 		{ "widget_clear", &GrapaLibraryRuleEvent::HandleWidgetClear },
 		
-		/* Template-based Database Management */
-		{ "database_create", &GrapaLibraryRuleEvent::HandleDatabaseCreate },
-		{ "database_open", &GrapaLibraryRuleEvent::HandleDatabaseOpen },
-		{ "database_close", &GrapaLibraryRuleEvent::HandleDatabaseClose },
-		
-		/* Template-based Table Management */
-		{ "database_create_table", &GrapaLibraryRuleEvent::HandleDatabaseCreateTable },
-		{ "database_open_table", &GrapaLibraryRuleEvent::HandleDatabaseOpenTable },
-		{ "database_delete_table", &GrapaLibraryRuleEvent::HandleDatabaseDeleteTable },
-		
-		/* Template-based Field Management */
-		{ "database_add_field", &GrapaLibraryRuleEvent::HandleDatabaseAddField },
-		{ "database_remove_field", &GrapaLibraryRuleEvent::HandleDatabaseRemoveField },
-		
-		/* Template-based Record Management */
-		{ "database_create_record", &GrapaLibraryRuleEvent::HandleDatabaseCreateRecord },
-		{ "database_delete_record", &GrapaLibraryRuleEvent::HandleDatabaseDeleteRecord },
-		{ "database_update_record", &GrapaLibraryRuleEvent::HandleDatabaseUpdateRecord },
-		
-		/* Template-based Search and Debug */
-		{ "database_search", &GrapaLibraryRuleEvent::HandleDatabaseSearch },
-		{ "database_debug", &GrapaLibraryRuleEvent::HandleDatabaseDebug },
+
 		
 		/* Enhanced LocalDatabase Management */
 		{ "unified_create", &GrapaLibraryRuleEvent::HandleUnifiedCreate },
@@ -18733,114 +18712,6 @@ GrapaRuleEvent* GrapaLibraryRuleWidgetClearEvent::Run(GrapaScriptExec* vScriptEx
 	return(result);
 };
 
-/* Template-based Database Management */
-class GrapaLibraryRuleDatabaseCreateEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseCreateEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseCreate(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseCreateEvent(pName); }
-
-class GrapaLibraryRuleDatabaseOpenEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseOpenEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseOpen(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseOpenEvent(pName); }
-
-class GrapaLibraryRuleDatabaseCloseEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseCloseEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseClose(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseCloseEvent(pName); }
-
-/* Template-based Table Management */
-class GrapaLibraryRuleDatabaseCreateTableEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseCreateTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseCreateTable(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseCreateTableEvent(pName); }
-
-class GrapaLibraryRuleDatabaseOpenTableEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseOpenTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseOpenTable(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseOpenTableEvent(pName); }
-
-class GrapaLibraryRuleDatabaseDeleteTableEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseDeleteTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseDeleteTable(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseDeleteTableEvent(pName); }
-
-/* Template-based Field Management */
-class GrapaLibraryRuleDatabaseAddFieldEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseAddFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseAddField(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseAddFieldEvent(pName); }
-
-class GrapaLibraryRuleDatabaseRemoveFieldEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseRemoveFieldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseRemoveField(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseRemoveFieldEvent(pName); }
-
-/* Template-based Record Management */
-class GrapaLibraryRuleDatabaseCreateRecordEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseCreateRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseCreateRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseCreateRecordEvent(pName); }
-
-class GrapaLibraryRuleDatabaseDeleteRecordEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseDeleteRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseDeleteRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseDeleteRecordEvent(pName); }
-
-class GrapaLibraryRuleDatabaseUpdateRecordEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseUpdateRecordEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseUpdateRecord(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseUpdateRecordEvent(pName); }
-
-/* Template-based Search and Debug */
-class GrapaLibraryRuleDatabaseSearchEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseSearchEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseSearch(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseSearchEvent(pName); }
-
-class GrapaLibraryRuleDatabaseDebugEvent : public GrapaLibraryEvent
-{
-public:
-	GrapaLibraryRuleDatabaseDebugEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
-};
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDatabaseDebug(GrapaCHAR& pName) { return new GrapaLibraryRuleDatabaseDebugEvent(pName); }
 
 /* Enhanced LocalDatabase Management */
 class GrapaLibraryRuleUnifiedCreateEvent : public GrapaLibraryEvent
@@ -18963,6 +18834,7 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUnifiedDebug(GrapaCHAR& pName) { return new GrapaLibraryRuleUnifiedDebugEvent(pName); }
 
+
 /* Index Management Event Classes */
 class GrapaLibraryRuleUnifiedCreateIndexEvent : public GrapaLibraryEvent
 {
@@ -19040,93 +18912,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleFormatSimple(GrapaCHAR& pName) { return new GrapaLibraryRuleFormatSimpleEvent(pName); }
 
-/* TODO: Remove old implementations - keeping only placeholder versions below */
-
-/* Placeholder implementations for enhanced LocalDatabase handlers */
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseCreateEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced database creation */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseOpenEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced database opening */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseCloseEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced database closing */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseCreateTableEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced table creation */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseOpenTableEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced table opening */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseDeleteTableEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced table deletion */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseAddFieldEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced field addition */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseRemoveFieldEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced field removal */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseCreateRecordEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced record creation */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseDeleteRecordEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced record deletion */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseUpdateRecordEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced record updating */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseSearchEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-    /* TODO: Implement enhanced search */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
-
-GrapaRuleEvent* GrapaLibraryRuleDatabaseDebugEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
-{
-	/* TODO: Implement enhanced debug */
-	return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
-}
 
 /* Enhanced LocalDatabase Run Implementations */
 GrapaRuleEvent* GrapaLibraryRuleUnifiedCreateEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;
+
+	printf("[DEBUG] Create Start'\n");
 
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
@@ -19137,9 +18930,11 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCreateEvent::Run(GrapaScriptExec* vScript
 
 	if (objEvent && objEvent->vDatabase)
 	{
+		printf("[DEBUG] Create have object'\n");
 		GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
 		if (unifiedDB && r2.vVal)
 		{
+			printf("[DEBUG] Create have unifiedDB and r2.vVal'\n");
 			GrapaCHAR storageUrl = r2.vVal->mValue;
 			printf("[DEBUG] Unified Create: storageUrl='%s'\n", (char*)storageUrl.mBytes);
 			err = unifiedDB->InitializeStorage(storageUrl);
@@ -19215,10 +19010,10 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCdEvent::Run(GrapaScriptExec* vScriptExec
 			{
 				/* Implement GrapaDBX directory switching */
 				/* This navigates to a different table or group within GrapaDBX */
-				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
 				if (dbx)
 				{
-					                                        					GrapaDBXTable table;
+					GrapaDBXTable table;
 					GrapaError tableErr = unifiedDB->GrapaDBXNavigateToTable(dirName, table);
 					if (!tableErr)
 					{
@@ -19408,7 +19203,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 			{
 				/* Implement GrapaDBX listing */
 				/* This lists tables, records, or fields within GrapaDBX */
-				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
 				if (dbx)
 				{
 					/* Create a table to hold the listing results */
@@ -19863,7 +19658,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedRmEvent::Run(GrapaScriptExec* vScriptExec
 			{
 				/* Implement GrapaDBX rm */
 				/* This deletes a table, record, or field from GrapaDBX */
-				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
 				if (dbx)
 				{
 					/* Try to delete as a record first */
@@ -20070,7 +19865,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 				/* Implement GrapaDBX set using proper database navigation */
 				/* This sets a field value in a GrapaDBX record */
 				err = 0; /* Initialize err to 0 */
-				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
 				printf("[DEBUG] GrapaLibRule: dbx pointer = %p\n", (void*)dbx);
 				printf("[DEBUG] GrapaLibRule: dbx typeid = %s\n", typeid(*dbx).name());
 				if (dbx)
@@ -20101,16 +19896,8 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 							u8 newDirType = 0;
 							u64 tableId = 0;
 													// Use GrapaGroup2 for hierarchical operations
-						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(dbx);
-						printf("[DEBUG] GrapaLibRule: static_cast result = %p\n", (void*)group2);
-						GrapaError navErr = -1;
-						if (group2) {
-							printf("[DEBUG] GrapaLibRule: Calling group2->OpenGroup\n");
-							navErr = group2->OpenGroup(dirId, dirType, nameEvent->mName, newDirId, newDirType, tableId);
-						} else {
-							printf("[DEBUG] GrapaLibRule: static_cast failed - not a GrapaGroup2\n");
-							navErr = -1; // Not a GrapaGroup2
-						}
+						printf("[DEBUG] GrapaLibRule: Calling dbx->OpenGroup\n");
+						GrapaError navErr = dbx->OpenGroup(dirId, dirType, nameEvent->mName, newDirId, newDirType, tableId);
 							if (navErr)
 							{
 								err = navErr;
@@ -20140,15 +19927,8 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 						if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
 						
 						// Use GrapaGroup2 for hierarchical operations
-						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(dbx);
-						printf("[DEBUG] GrapaLibRule: SetField static_cast result = %p\n", (void*)group2);
-						if (group2) {
-							printf("[DEBUG] GrapaLibRule: Calling group2->SetField\n");
-							err = group2->SetField(dirId, dirType, fname, fieldName, value);
-						} else {
-							printf("[DEBUG] GrapaLibRule: SetField static_cast failed - not a GrapaGroup2\n");
-							err = -1; // Not a GrapaGroup2
-						}
+						printf("[DEBUG] GrapaLibRule: Calling dbx->SetField\n");
+						err = dbx->SetField(dirId, dirType, fname, fieldName, value);
 					}
 					else
 					{
@@ -20350,7 +20130,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 				/* Implement GrapaDBX get using proper database navigation */
 				/* This gets a field value from a GrapaDBX record */
 				err = 0; /* Initialize err to 0 */
-				GrapaDBX* dbx = unifiedDB->GetGrapaDBX();
+				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
 				printf("[DEBUG] GrapaLibRule Get: dbx pointer = %p\n", (void*)dbx);
 				printf("[DEBUG] GrapaLibRule Get: dbx typeid = %s\n", typeid(*dbx).name());
 				if (dbx)
@@ -20381,16 +20161,8 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 							u8 newDirType = 0;
 							u64 tableId = 0;
 							// Use GrapaGroup2 for hierarchical operations
-							GrapaGroup2* group2 = static_cast<GrapaGroup2*>(dbx);
-							printf("[DEBUG] GrapaLibRule Get: static_cast result = %p\n", (void*)group2);
-							GrapaError navErr = -1;
-							if (group2) {
-								printf("[DEBUG] GrapaLibRule Get: Calling group2->OpenGroup\n");
-								navErr = group2->OpenGroup(dirId, dirType, nameEvent->mName, newDirId, newDirType, tableId);
-							} else {
-								printf("[DEBUG] GrapaLibRule Get: static_cast failed - not a GrapaGroup2\n");
-								navErr = -1; // Not a GrapaGroup2
-							}
+							printf("[DEBUG] GrapaLibRule Get: Calling dbx->OpenGroup\n");
+							GrapaError navErr = dbx->OpenGroup(dirId, dirType, nameEvent->mName, newDirId, newDirType, tableId);
 							if (navErr)
 							{
 								err = navErr;
@@ -20420,15 +20192,8 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 						
 						GrapaBYTE value;
 						// Use GrapaGroup2 for hierarchical operations
-						GrapaGroup2* group2 = static_cast<GrapaGroup2*>(dbx);
-						printf("[DEBUG] GrapaLibRule Get: GetField static_cast result = %p\n", (void*)group2);
-						if (group2) {
-							printf("[DEBUG] GrapaLibRule Get: Calling group2->GetField\n");
-							err = group2->GetField(dirId, dirType, fname, fieldName, value);
-						} else {
-							printf("[DEBUG] GrapaLibRule Get: GetField static_cast failed - not a GrapaGroup2\n");
-							err = -1; // Not a GrapaGroup2
-						}
+						printf("[DEBUG] GrapaLibRule Get: Calling dbx->GetField\n");
+						err = dbx->GetField(dirId, dirType, fname, fieldName, value);
 						if (err == 0)
 						{
 							/* Convert GrapaBYTE to string for return */
@@ -20622,10 +20387,56 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCompareEvent::Run(GrapaScriptExec* vScrip
 	return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
 }
 
+
 GrapaRuleEvent* GrapaLibraryRuleUnifiedDebugEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-	/* TODO: Implement enhanced debug */
-	return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
+	GrapaError err = -1;
+	GrapaRuleEvent* result = NULL;
+
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+
+	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+	if (objEvent && objEvent->vDatabase == NULL)
+		objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
+
+
+	if (objEvent && objEvent->vDatabase)
+	{
+		GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+		if (unifiedDB)
+		{
+			err = 0;
+			GrapaCHARFile mFile;
+			unifiedDB->DatabaseDump(0, mFile);
+			printf("[DEBUG] Handler: mFile.mBytes=%p, mFile.mLength=%llu\n", mFile.mBytes, mFile.mLength);
+			if (mFile.mBytes && mFile.mLength > 0)
+			{
+				/* Send debug information to response stream */
+				pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, (char*)mFile.mBytes);
+				printf("[DEBUG] Handler: Sent debug info to response with length %llu\n", mFile.mLength);
+			}
+			else
+			{
+				/* Send basic debug info if no dump available */
+				GrapaCHAR debugInfo;
+				debugInfo.Append("Storage Type: ");
+				debugInfo.Append(unifiedDB->GetStorageType());
+				debugInfo.Append("\nStorage URL: ");
+				debugInfo.Append(unifiedDB->GetStorageUrl());
+				debugInfo.Append("\nGrapaDB: ");
+				debugInfo.Append(unifiedDB->GetGrapaDB() ? "Available" : "Not Available");
+				debugInfo.Append("\nGrapaDBX: ");
+				debugInfo.Append(unifiedDB->GetGrapaDBX() ? "Available" : "Not Available");
+				pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, (char*)debugInfo.mBytes);
+				printf("[DEBUG] Handler: Sent fallback debug info to response with length %llu\n", debugInfo.mLength);
+			}
+		}
+	}
+
+
+	if (err && result == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
+	return(result);
 }
 
 /* Output formatting handlers */

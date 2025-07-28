@@ -196,6 +196,9 @@ public:
     virtual GrapaError MemoryReadFile(const GrapaCHAR& path, GrapaCHAR& content);
     virtual GrapaError MemoryWriteFile(const GrapaCHAR& path, const GrapaCHAR& content);
     
+    /* Debug and diagnostic methods */
+    virtual void DatabaseDump(u64 pId, GrapaCHARFile& dump) override;
+    
 protected:
     /* Storage type-specific implementations */
     virtual GrapaError FileSystemOperation(const GrapaCHAR& operation, const GrapaCHAR& params);

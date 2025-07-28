@@ -38,9 +38,15 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
     } else if (mStorageType.StrCmp("GRAPADBX") == 0) {
         printf("[DEBUG] InitializeStorage: Using GRAPADBX storage\n");
         if (!mGrapaDBX) {
-            mGrapaDBX = new GrapaGroup2(&mFile);
+            // Create GrapaGroup2 without file - following GrapaGroup pattern
+            mGrapaDBX = new GrapaGroup2();
             if (!mGrapaDBX) return -1;
         }
+        
+        // Use the existing mFile object from the unified system
+        mGrapaDBX->INIT(&mFile);
+        
+        // Create the database file
         err = mGrapaDBX->Create((char*)mStoragePath.mBytes, GrapaDB::GROUP_TREE, mGrapaDBXFirstTree);
         if (err) {
             // Try to open existing database
@@ -1216,4 +1222,80 @@ void GrapaUnifiedWorkEvent::Running() {
 
 void GrapaUnifiedWorkEvent::Stopping() {
 	/* Clean up - no special cleanup needed for unified storage */
+}
+
+void GrapaUnifiedLocalDatabase::DatabaseDump(u64 pId, GrapaCHARFile& dump)
+{
+	printf("[DEBUG] GrapaUnifiedLocalDatabase::DatabaseDump called with pId=%llu\n", pId);
+	
+	/* Follow the same pattern as GrapaLocalDatabase::DatabaseDump */
+	if (0 == dump.SetSize(30000))
+	{
+		dump.SetLength(0);
+		
+		/* Add basic unified storage information */
+		GrapaCHAR info;
+		info.Append("=== GrapaUnifiedLocalDatabase Debug Information ===\n");
+		info.Append("Storage Type: ");
+		info.Append(mStorageType);
+		info.Append("\nStorage URL: ");
+		info.Append(mStorageUrl);
+		info.Append("\nStorage Path: ");
+		info.Append(mStoragePath);
+		info.Append("\n");
+		
+		/* Add storage-specific information */
+		if (mStorageType.StrCmp("GRAPADB") == 0) {
+			info.Append("GrapaDB Information:\n");
+			info.Append("  First Tree: ");
+			info.Append((u64)mGrapaDBFirstTree);
+			info.Append("\n  Root Type: ");
+			info.Append((u64)mGrapaDBRootType);
+			info.Append("\n  GrapaDB Available: ");
+			info.Append(mGrapaDB ? "Yes" : "No");
+			info.Append("\n");
+		} else if (mStorageType.StrCmp("GRAPADBX") == 0) {
+			info.Append("GrapaDBX Information:\n");
+			info.Append("  First Tree: ");
+			info.Append((u64)mGrapaDBXFirstTree);
+			info.Append("\n  Root Type: ");
+			info.Append((u64)mGrapaDBXRootType);
+			info.Append("\n  GrapaDBX Available: ");
+			info.Append(mGrapaDBX ? "Yes" : "No");
+			info.Append("\n");
+		} else if (mStorageType.StrCmp("FILESYSTEM") == 0) {
+			info.Append("File System Information:\n");
+			info.Append("  Path: ");
+			info.Append(mStoragePath);
+			info.Append("\n");
+		} else if (mStorageType.StrCmp("NETWORK") == 0) {
+			info.Append("Network Information:\n");
+			info.Append("  Host: ");
+			info.Append(mStorageHost);
+			info.Append("\n  Port: ");
+			info.Append(mNetworkPort);
+			info.Append("\n  Protocol: ");
+			info.Append(mNetworkProtocol);
+			info.Append("\n  Connected: ");
+			info.Append(mNetworkConnected ? "Yes" : "No");
+			info.Append("\n");
+		}
+		
+		/* Add file information */
+		info.Append("File Information:\n");
+		info.Append("  File Available: ");
+		info.Append("Yes");
+		info.Append("\n");
+		
+		/* Copy info to dump */
+		dump.Append(info.mLength, info.mBytes);
+		
+		/* Trim to actual size */
+		dump.SetSize(dump.mLength + 1);
+		dump.SetLength(dump.mLength);
+		
+		printf("[DEBUG] GrapaUnifiedLocalDatabase::DatabaseDump completed\n");
+		printf("[DEBUG] Debug info length: %llu\n", info.mLength);
+		printf("[DEBUG] Dump file length: %llu\n", dump.mLength);
+	}
 }

@@ -288,28 +288,7 @@ public:
 	GrapaLibraryEvent* HandleWidgetPost(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleWidgetClear(GrapaCHAR& pName);
 	
-	/* Template-based Database Management */
-	GrapaLibraryEvent* HandleDatabaseCreate(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDatabaseOpen(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDatabaseClose(GrapaCHAR& pName);
-	
-	/* Template-based Table Management */
-	GrapaLibraryEvent* HandleDatabaseCreateTable(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDatabaseOpenTable(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDatabaseDeleteTable(GrapaCHAR& pName);
-	
-	/* Template-based Field Management */
-	GrapaLibraryEvent* HandleDatabaseAddField(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDatabaseRemoveField(GrapaCHAR& pName);
-	
-	/* Template-based Record Management */
-	GrapaLibraryEvent* HandleDatabaseCreateRecord(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDatabaseDeleteRecord(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDatabaseUpdateRecord(GrapaCHAR& pName);
-	
-	/* Template-based Search and Debug */
-	GrapaLibraryEvent* HandleDatabaseSearch(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDatabaseDebug(GrapaCHAR& pName);
+
 	
 	/* Enhanced LocalDatabase Management */
 	GrapaLibraryEvent* HandleUnifiedCreate(GrapaCHAR& pName);
