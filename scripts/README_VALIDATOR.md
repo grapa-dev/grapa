@@ -46,16 +46,25 @@ python3 scripts/validate_grapa_syntax.py --verbose
 - **Incorrect semicolons**: `op() {;` → `op() {`
 - **Line comments**: `// comment` → `/* comment */`
 - **Class definition semicolons**: `class {;` → `class {`
+- **If/while/else semicolons**: `if () {;` → `if () {`
 
 ### Manual Fix Required
 - **Forbidden patterns**: `for` loops (not supported in Grapa)
+- **Incorrect echo syntax**: `.echo("string")` → `"string".echo()`
+- **Incorrect method calls**: `.len(array)` → `array.len()`
+- **Missing quotes**: `.echo(string)` → `.echo("string")`
+- **Missing newlines**: `"string".echo()` without `\n`
 - **Missing semicolons**: Statements that should end with `;`
-- **Missing newlines**: `.echo()` calls without explicit `\n`
 - **Complex syntax issues**: Issues requiring human judgment
 
 ## Rules Based On
 
-The validator reads rules from `docs-src/docs/syntax/basic_syntax.md` to ensure it stays current with Grapa's syntax requirements.
+The validator implements syntax rules based on:
+
+1. **`docs-src/docs/syntax/basic_syntax.md`** - User-facing documentation with examples and best practices
+2. **`lib/grapa/$grapa.grc`** - **The definitive source for Grapa syntax** (the actual grammar file used by the Grapa parser)
+
+> **Important**: `lib/grapa/$grapa.grc` is the authoritative source for Grapa syntax rules. The validator's patterns are derived from this grammar file and the user documentation. When in doubt about syntax, refer to `$grapa.grc` as the definitive reference.
 
 ## Integration
 
@@ -87,10 +96,12 @@ Found 260 .grc files to validate
 
 📁 /Users/matichuk/GitHub/grapa/test/example.grc
 ------------------------------------------------
-🔧 Line 10: Incorrect semicolon after opening brace
-   Content: op() {;
-⚠️ Line 15: Forbidden pattern found: \bfor\s*\(
-   Content: for (i = 0; i < 10; i++) {
+🔧 AUTO-FIXED Line 10: Incorrect semicolon after opening brace
+    Content: op() {;
+⚠️  MANUAL FIX NEEDED Line 15: Forbidden pattern found: \bfor\s*\(
+    Content: for (i = 0; i < 10; i++) {
+⚠️  MANUAL FIX NEEDED Line 20: Incorrect echo syntax: use "string".echo() not .echo("string")
+    Content: .echo("Hello World");
 
 ==================================================
 📊 VALIDATION SUMMARY
@@ -101,10 +112,7 @@ Total issues found: 2026
 Auto-fixed: 32
 Manual fix needed: 1994
 
-⚠️  1994 issues require manual attention
-   Review the output above and fix manually
-
-✅ 32 issues were auto-fixed
+⚠️  140 files need attention
 ```
 
 ## Exit Codes
@@ -112,15 +120,121 @@ Manual fix needed: 1994
 - `0`: All files are compliant or all issues were auto-fixed
 - `1`: Issues found that require manual attention
 
+## Key Syntax Rules Validated
+
+### Echo Syntax (Most Critical)
+```grapa
+/* ✅ Correct */
+"Hello World\n".echo();
+("Result: " + value.str()).echo();
+
+/* ❌ Incorrect */
+.echo("Hello World");
+echo("Hello World");
+```
+
+### Comments
+```grapa
+/* ✅ Correct - Block comments only */
+/* This is a block comment */
+
+/* ❌ Incorrect - Line comments not allowed */
+// This is a line comment
+```
+
+### Loops
+```grapa
+/* ✅ Correct - Only while loops supported */
+i = 1;
+while (i <= 10) {
+    ("Count: " + i.str()).echo();
+    i = i + 1;
+}
+
+/* ❌ Incorrect - for loops not supported */
+for (i = 0; i < 10; i++) {
+    echo("Count: " + i);
+}
+```
+
+### Error Handling
+```grapa
+/* ✅ Correct - Use .iferr() for error handling */
+result = risky_operation().iferr(0);  /* Returns 0 if operation fails */
+value = (10/0).iferr(55);  /* Returns 55 since division by zero fails */
+
+/* ❌ Incorrect - try/catch not supported */
+try {
+    result = risky_operation();
+} catch (error) {
+    ("Error: " + error).echo();
+}
+```
+
+### Semicolons
+```grapa
+/* ✅ Correct - Statements end with semicolon */
+x = 5;
+"Hello".echo();
+
+/* ✅ Correct - Block statements can omit semicolon */
+if (x > 0) {
+    "Positive".echo();
+}  /* No semicolon required */
+
+/* ❌ Incorrect - Opening braces don't need semicolons */
+op() {;  /* Should be: op() { */
+```
+
+### Database Patterns (GrapaDBX)
+
+#### Correct Patterns
+```grapa
+/* ✅ File-based GrapaDBX via $unified() */
+u = $unified();
+u.create("grapadbx:///path/to/database.dbx");
+
+/* ✅ In-memory GrapaDBX via $unified() */
+u = $unified();
+u.create("memory://temp_database");
+
+/* ✅ In-memory database via $file().table() */
+t = $file().table("ROW");    /* Creates in-memory ROW database */
+t = $file().table("COL");    /* Creates in-memory COL database */
+t = $file().table("GROUP");  /* Creates in-memory GROUP database */
+```
+
+#### Incorrect Patterns (Common Mistakes)
+```grapa
+/* ❌ These patterns do NOT exist */
+$file().dbx();              /* No such method */
+$file().dbx().table();      /* No such method */
+$dbx().table();             /* No such class */
+```
+
+#### The `$` Path Discovery
+The `$file().table()` method uses a special `"$"` path internally:
+- **`"$"` is a symbolic name**, not a file path
+- **Creates in-memory database** using `GrapaCHAR` as storage
+- **No file system access** - entire database stored in memory
+- **`GrapaFileCache` is separate** - caching layer, not in-memory storage
+
+This was discovered by analyzing `GrapaLibraryRuleTableEvent::Run()` in `source/grapa/GrapaLibRule.cpp`:
+```cpp
+// Creates database with name "$" (symbolic, not file path)
+err = g.Create("$", listType, firstTree);
+```
+
 ## Maintenance
 
-The validator automatically reads syntax rules from `basic_syntax.md`, so it stays current as Grapa's syntax evolves. If new syntax rules are added to the documentation, the validator will automatically pick them up.
+The validator implements syntax patterns based on the definitive `$grapa.grc` grammar file and user documentation in `basic_syntax.md`. When Grapa's syntax evolves, both the grammar file and documentation should be updated, and the validator patterns may need corresponding updates.
 
 ## Future Enhancements
 
 Potential improvements:
-- More sophisticated auto-fixing (e.g., `for` loop conversion)
+- More sophisticated auto-fixing (e.g., `for` loop conversion to `while`)
 - Integration with IDE plugins
 - Performance optimization for large codebases
 - Custom rule configuration
-- HTML/JSON output formats for CI integration 
+- HTML/JSON output formats for CI integration
+- Direct parsing using the Grapa grammar for more accurate validation 

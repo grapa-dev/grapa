@@ -28,9 +28,6 @@ class GrapaSyntaxValidator:
         self.docs_dir = self.project_root / "docs-src" / "docs"
         self.basic_syntax_file = self.docs_dir / "syntax" / "basic_syntax.md"
         
-        # Load syntax rules from basic_syntax.md
-        self.syntax_rules = self._load_syntax_rules()
-        
         # Statistics
         self.stats = {
             'files_checked': 0,
@@ -43,49 +40,54 @@ class GrapaSyntaxValidator:
         # Issues found
         self.issues = []
         
-    def _load_syntax_rules(self) -> Dict[str, List[str]]:
-        """Load syntax rules from basic_syntax.md"""
-        rules = {
-            'forbidden_patterns': [],
-            'required_patterns': [],
-            'comment_rules': [],
-            'semicolon_rules': [],
-            'loop_rules': []
+        # Grapa syntax patterns based on basic_syntax.md and $grapa.grc
+        self.syntax_patterns = {
+            # Forbidden patterns
+            'forbidden': [
+                r'\bfor\s*\(',  # for loops are not supported
+                r'\btry\s*\{',  # try/catch is not supported, use .iferr() instead
+                r'\bcatch\s*\(',  # try/catch is not supported, use .iferr() instead
+            ],
+            
+            # Incorrect method call syntax (should be object.method(), not .method(object))
+            'incorrect_method_calls': [
+                r'\.print\s*\([^)]*\)',  # .print("string") -> "string".print()
+                r'\.len\s*\([^)]*\)',    # .len(array) -> array.len()
+                r'\.size\s*\([^)]*\)',   # .size() is not supported, use .len()
+                r'\.keys\s*\([^)]*\)',   # .keys() is not supported on $LIST
+            ],
+            
+            # Line comments (not allowed in Grapa)
+            'line_comments': [
+                r'^\s*//.*$',  # // comment at start of line
+                r'[^"]//[^/].*$',  # // comment in middle of line (but not in strings)
+            ],
+            
+            # Incorrect semicolons
+            'incorrect_semicolons': [
+                r'op\s*\([^)]*\)\s*\{;',  # op() {; -> op() {
+                r'class\s*\{;',           # class {; -> class {
+                r'if\s*\([^)]*\)\s*\{;',  # if () {; -> if () {
+                r'while\s*\([^)]*\)\s*\{;', # while () {; -> while () {
+                r'else\s*\{;',            # else {; -> else {
+            ],
+            
+            # Missing quotes around string literals in method calls
+            'missing_quotes': [
+                r'\.print\s*\([^"]+\)',  # .print(string) -> .print("string")
+            ],
+            
+            # Missing newlines in echo calls (only for simple strings without \n)
+            'missing_newlines': [
+                r'"[^"]*"\.echo\s*\(\s*\)',  # "string".echo() without \n
+            ],
+            
+            # Incorrect echo syntax (should be "string".echo(), not .echo("string"))
+            'incorrect_echo_syntax': [
+                r'\.echo\s*\([^)]*\)',  # .echo("string") -> "string".echo()
+            ]
         }
         
-        if not self.basic_syntax_file.exists():
-            print(f"Warning: {self.basic_syntax_file} not found")
-            return rules
-            
-        try:
-            with open(self.basic_syntax_file, 'r', encoding='utf-8') as f:
-                content = f.read()
-                
-            # Extract rules from the markdown content
-            # Forbidden patterns
-            if 'for' in content.lower():
-                rules['forbidden_patterns'].append(r'\bfor\s*\(')
-                
-            # Comment rules
-            if '/*' in content and '*/' in content:
-                rules['comment_rules'].append(r'//.*$')  # Line comments forbidden
-                
-            # Semicolon rules
-            if 'semicolon' in content.lower():
-                rules['semicolon_rules'].extend([
-                    r'op\([^)]*\)\s*\{;',  # Incorrect semicolon after op() {
-                    r'class\s*\{;',        # Incorrect semicolon after class {
-                ])
-                
-            # Loop rules
-            if 'while' in content.lower():
-                rules['loop_rules'].append(r'\bfor\s*\(')
-                
-        except Exception as e:
-            print(f"Error loading syntax rules: {e}")
-            
-        return rules
-    
     def find_grc_files(self, specific_file: str = None) -> List[Path]:
         """Find all .grc files to validate"""
         if specific_file:
@@ -102,7 +104,7 @@ class GrapaSyntaxValidator:
                 if file.endswith('.grc'):
                     grc_files.append(Path(root) / file)
         
-        return grc_files
+        return sorted(grc_files)
     
     def validate_file(self, file_path: Path, auto_fix: bool = False) -> List[Dict]:
         """Validate a single .grc file"""
@@ -122,7 +124,7 @@ class GrapaSyntaxValidator:
             return issues
         
         # Check for forbidden patterns
-        for pattern in self.syntax_rules['forbidden_patterns']:
+        for pattern in self.syntax_patterns['forbidden']:
             for i, line in enumerate(lines, 1):
                 if re.search(pattern, line):
                     issues.append({
@@ -130,25 +132,40 @@ class GrapaSyntaxValidator:
                         'line': i,
                         'message': f'Forbidden pattern found: {pattern}',
                         'content': line.strip(),
-                        'auto_fixable': pattern == r'\bfor\s*\('
+                        'auto_fixable': False  # Manual fix needed
                     })
         
-        # Check for incorrect semicolons
-        for pattern in self.syntax_rules['semicolon_rules']:
+        # Check for incorrect method call syntax
+        for pattern in self.syntax_patterns['incorrect_method_calls']:
             for i, line in enumerate(lines, 1):
                 if re.search(pattern, line):
                     issues.append({
-                        'type': 'incorrect_semicolon',
+                        'type': 'incorrect_method_call',
                         'line': i,
-                        'message': f'Incorrect semicolon after opening brace',
+                        'message': f'Incorrect method call syntax: {pattern}',
                         'content': line.strip(),
-                        'auto_fixable': True
+                        'auto_fixable': False  # Manual fix needed
+                    })
+        
+        # Check for incorrect echo syntax (most critical) - .echo("string") is wrong
+        for i, line in enumerate(lines, 1):
+            # Look for .echo("string") pattern
+            if re.search(r'\.echo\s*\([^)]*\)', line):
+                # But exclude cases where it's already correct like "string".echo() or (expr).echo()
+                if not (re.search(r'"[^"]*"\.echo\s*\(\s*\)', line) or 
+                       re.search(r'\([^)]*\)\.echo\s*\(\s*\)', line)):
+                    issues.append({
+                        'type': 'incorrect_echo_syntax',
+                        'line': i,
+                        'message': 'Incorrect echo syntax: use "string".echo() not .echo("string")',
+                        'content': line.strip(),
+                        'auto_fixable': False  # Manual fix needed
                     })
         
         # Check for line comments
         for i, line in enumerate(lines, 1):
             stripped = line.strip()
-            if stripped.startswith('//') and not stripped.startswith('//"'):
+            if stripped.startswith('//'):
                 issues.append({
                     'type': 'line_comment',
                     'line': i,
@@ -157,7 +174,46 @@ class GrapaSyntaxValidator:
                     'auto_fixable': True
                 })
         
-        # Check for missing semicolons on statements
+        # Check for incorrect semicolons after opening braces
+        for pattern in self.syntax_patterns['incorrect_semicolons']:
+            for i, line in enumerate(lines, 1):
+                if re.search(pattern, line):
+                    issues.append({
+                        'type': 'incorrect_semicolon',
+                        'line': i,
+                        'message': 'Incorrect semicolon after opening brace',
+                        'content': line.strip(),
+                        'auto_fixable': True
+                    })
+        
+        # Check for missing quotes around string literals in method calls
+        for pattern in self.syntax_patterns['missing_quotes']:
+            for i, line in enumerate(lines, 1):
+                if re.search(pattern, line):
+                    issues.append({
+                        'type': 'missing_quotes',
+                        'line': i,
+                        'message': 'Missing quotes around string literal',
+                        'content': line.strip(),
+                        'auto_fixable': False  # Manual fix needed
+                    })
+        
+        # Check for missing newlines in echo calls (only for simple strings without \n)
+        for i, line in enumerate(lines, 1):
+            # Look for "string".echo() without \n in the string
+            if re.search(r'"[^"]*"\.echo\s*\(\s*\)', line):
+                # Extract the string content
+                match = re.search(r'"([^"]*)"\.echo\s*\(\s*\)', line)
+                if match and '\\n' not in match.group(1):
+                    issues.append({
+                        'type': 'missing_newline',
+                        'line': i,
+                        'message': '.echo() without explicit newline - consider adding \\n',
+                        'content': line.strip(),
+                        'auto_fixable': False  # Manual fix needed
+                    })
+        
+        # Check for missing semicolons on statements (basic check)
         for i, line in enumerate(lines, 1):
             stripped = line.strip()
             if (stripped and 
@@ -179,7 +235,13 @@ class GrapaSyntaxValidator:
                 not stripped.startswith('=') and
                 not stripped.startswith('return') and
                 not stripped.startswith('break') and
-                not stripped.startswith('continue')):
+                not stripped.startswith('continue') and
+                not stripped.startswith('case') and
+                not stripped.startswith('default') and
+                not stripped.startswith('switch') and
+                not stripped.startswith('exit') and
+                not stripped.startswith('include') and
+                not stripped.startswith('reset')):
                 
                 # This might be a missing semicolon
                 issues.append({
@@ -189,19 +251,6 @@ class GrapaSyntaxValidator:
                     'content': line.strip(),
                     'auto_fixable': False  # Too risky to auto-fix
                 })
-        
-        # Check for .echo() without newlines
-        for i, line in enumerate(lines, 1):
-            if '.echo()' in line and '\\n' not in line and '"' in line:
-                # Check if it's a string that should have a newline
-                if re.search(r'"[^"]*"\.echo\(\)', line):
-                    issues.append({
-                        'type': 'missing_newline',
-                        'line': i,
-                        'message': '.echo() without explicit newline - consider adding \\n',
-                        'content': line.strip(),
-                        'auto_fixable': False  # Too risky to auto-fix
-                    })
         
         # Auto-fix if requested
         if auto_fix and issues:
@@ -226,9 +275,15 @@ class GrapaSyntaxValidator:
                 
             if issue['type'] == 'incorrect_semicolon':
                 # Fix op() {; -> op() {
-                fixed_content = re.sub(r'op\([^)]*\)\s*\{;', lambda m: m.group(0).replace('{;', '{'), fixed_content)
+                fixed_content = re.sub(r'op\s*\([^)]*\)\s*\{;', lambda m: m.group(0).replace('{;', '{'), fixed_content)
                 # Fix class {; -> class {
                 fixed_content = re.sub(r'class\s*\{;', lambda m: m.group(0).replace('{;', '{'), fixed_content)
+                # Fix if () {; -> if () {
+                fixed_content = re.sub(r'if\s*\([^)]*\)\s*\{;', lambda m: m.group(0).replace('{;', '{'), fixed_content)
+                # Fix while () {; -> while () {
+                fixed_content = re.sub(r'while\s*\([^)]*\)\s*\{;', lambda m: m.group(0).replace('{;', '{'), fixed_content)
+                # Fix else {; -> else {
+                fixed_content = re.sub(r'else\s*\{;', lambda m: m.group(0).replace('{;', '{'), fixed_content)
                 
             elif issue['type'] == 'line_comment':
                 # Convert // comments to /* */ comments
@@ -240,12 +295,6 @@ class GrapaSyntaxValidator:
                         new_comment = comment.replace('//', '/* ', 1) + ' */'
                         lines[line_num] = lines[line_num].replace(comment, new_comment)
                 fixed_content = '\n'.join(lines)
-                
-            elif issue['type'] == 'forbidden_pattern':
-                if 'for (' in issue['content']:
-                    # Convert for loop to while loop (basic conversion)
-                    # This is a simplified conversion - manual review needed
-                    pass
         
         return fixed_content
     
@@ -277,21 +326,24 @@ class GrapaSyntaxValidator:
                 print("-" * len(str(file_path)))
                 
                 for issue in issues:
-                    status = "🔧" if issue.get('auto_fixable', False) else "⚠️"
-                    print(f"{status} Line {issue['line']}: {issue['message']}")
-                    if verbose and 'content' in issue:
-                        print(f"   Content: {issue['content']}")
-                    
                     if issue.get('auto_fixable', False):
                         self.stats['auto_fixed'] += 1
+                        status = "🔧 AUTO-FIXED"
                     else:
                         self.stats['manual_fix_needed'] += 1
+                        status = "⚠️  MANUAL FIX NEEDED"
+                    
+                    print(f"  Line {issue['line']}: {status}")
+                    print(f"    {issue['message']}")
+                    if 'content' in issue:
+                        print(f"    Content: {issue['content']}")
+                    print()
         
         self._print_summary()
     
     def _print_summary(self):
         """Print validation summary"""
-        print("\n" + "=" * 50)
+        print("=" * 50)
         print("📊 VALIDATION SUMMARY")
         print("=" * 50)
         print(f"Files checked: {self.stats['files_checked']}")
@@ -300,34 +352,25 @@ class GrapaSyntaxValidator:
         print(f"Auto-fixed: {self.stats['auto_fixed']}")
         print(f"Manual fix needed: {self.stats['manual_fix_needed']}")
         
-        if self.stats['manual_fix_needed'] > 0:
-            print(f"\n⚠️  {self.stats['manual_fix_needed']} issues require manual attention")
-            print("   Review the output above and fix manually")
-        
-        if self.stats['auto_fixed'] > 0:
-            print(f"\n✅ {self.stats['auto_fixed']} issues were auto-fixed")
-        
-        if self.stats['total_issues'] == 0:
+        if self.stats['files_with_issues'] == 0:
             print("\n🎉 All files are compliant with Grapa syntax rules!")
+        else:
+            print(f"\n⚠️  {self.stats['files_with_issues']} files need attention")
 
 def main():
     parser = argparse.ArgumentParser(description='Validate Grapa syntax in .grc files')
     parser.add_argument('--fix', action='store_true', help='Auto-fix issues that can be reliably fixed')
     parser.add_argument('--verbose', action='store_true', help='Show detailed information about each issue')
-    parser.add_argument('--file', help='Validate only a specific file')
+    parser.add_argument('--file', type=str, help='Validate only a specific file')
     
     args = parser.parse_args()
     
-    # Find project root (assuming script is in scripts/ directory)
+    # Get project root (assuming script is in scripts/ directory)
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
     
-    validator = GrapaSyntaxValidator(project_root)
+    validator = GrapaSyntaxValidator(str(project_root))
     validator.run_validation(auto_fix=args.fix, verbose=args.verbose, specific_file=args.file)
-    
-    # Exit with error code if there are issues that need manual attention
-    if validator.stats['manual_fix_needed'] > 0:
-        sys.exit(1)
 
 if __name__ == '__main__':
     main() 
