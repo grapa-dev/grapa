@@ -1,4 +1,4 @@
-﻿// GrapaLibRule.cpp
+// GrapaLibRule.cpp
 /*
 Copyright 2022 Chris Ernest Matichuk
 
@@ -19748,10 +19748,26 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;
 
-			GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-		GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL); /* name */
+		GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL); /* this */
+		GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL); /* record */
 		GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL); /* value */
 		GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL); /* field */
+
+		printf("[DEBUG] Parameter extraction: r1.vVal=%p, r2.vVal=%p, r3.vVal=%p, r4.vVal=%p\n", 
+		       (void*)r1.vVal, (void*)r2.vVal, (void*)r3.vVal, (void*)r4.vVal);
+		if (r2.vVal) {
+			printf("[DEBUG] r2.vVal->mValue='%s'\n", (char*)r2.vVal->mValue.mBytes);
+			printf("[DEBUG] r2.vVal->mToken=%d\n", r2.vVal->mValue.mToken);
+			if (r2.vVal->vQueue) printf("[DEBUG] r2.vVal->vQueue has %d items\n", r2.vVal->vQueue->mCount);
+		}
+		if (r3.vVal) {
+			printf("[DEBUG] r3.vVal->mValue='%s'\n", (char*)r3.vVal->mValue.mBytes);
+			printf("[DEBUG] r3.vVal->mToken=%d\n", r3.vVal->mValue.mToken);
+		}
+		if (r4.vVal) {
+			printf("[DEBUG] r4.vVal->mValue='%s'\n", (char*)r4.vVal->mValue.mBytes);
+			printf("[DEBUG] r4.vVal->mToken=%d\n", r4.vVal->mValue.mToken);
+		}
 
 		GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 		if (objEvent && objEvent->vDatabase == NULL)
@@ -19760,12 +19776,51 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 		if (objEvent && objEvent->vDatabase)
 		{
 			GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
-			if (unifiedDB && r2.vVal && r3.vVal && r4.vVal)
-			{
-				printf("[DEBUG] GrapaLibRule Set: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
-				GrapaCHAR name = r2.vVal->mValue;
-				GrapaCHAR value = r3.vVal->mValue;
-				GrapaCHAR field = r4.vVal->mValue;
+					if (unifiedDB && r2.vVal && r3.vVal && r4.vVal)
+		{
+			printf("[DEBUG] GrapaLibRule Set: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
+			
+			/* Extract values from parameters - handle queue objects */
+			GrapaCHAR name, value, field;
+			
+			/* Extract name from r2 */
+			if (r2.vVal->mValue.mToken == 1 && r2.vVal->vQueue && r2.vVal->vQueue->mCount > 0) {
+				/* Value is in queue */
+				GrapaRuleEvent* nameEvent = r2.vVal->vQueue->Head();
+				if (nameEvent) {
+					name.FROM(nameEvent->mValue);
+					printf("[DEBUG] nameEvent->mValue='%s', mToken=%d\n", (char*)nameEvent->mValue.mBytes, nameEvent->mValue.mToken);
+				}
+			} else {
+				/* Direct value */
+				name.FROM(r2.vVal->mValue);
+			}
+			
+			/* Extract value from r3 */
+			if (r3.vVal->mValue.mToken == 1 && r3.vVal->vQueue && r3.vVal->vQueue->mCount > 0) {
+				/* Value is in queue */
+				GrapaRuleEvent* valueEvent = r3.vVal->vQueue->Head();
+				if (valueEvent) {
+					value.FROM(valueEvent->mValue);
+					printf("[DEBUG] valueEvent->mValue='%s', mToken=%d\n", (char*)valueEvent->mValue.mBytes, valueEvent->mValue.mToken);
+				}
+			} else {
+				/* Direct value */
+				value.FROM(r3.vVal->mValue);
+			}
+			
+			/* Extract field from r4 */
+			if (r4.vVal->mValue.mToken == 1 && r4.vVal->vQueue && r4.vVal->vQueue->mCount > 0) {
+				/* Value is in queue */
+				GrapaRuleEvent* fieldEvent = r4.vVal->vQueue->Head();
+				if (fieldEvent) field.FROM(fieldEvent->mValue);
+			} else {
+				/* Direct value */
+				field.FROM(r4.vVal->mValue);
+			}
+			
+			printf("[DEBUG] Extracted values: name='%s', value='%s', field='%s'\n", 
+			       (char*)name.mBytes, (char*)value.mBytes, (char*)field.mBytes);
 			
 			/* Switch based on storage type */
 			if (unifiedDB->GetStorageType().StrCmp("FILESYSTEM") == 0)
@@ -20023,7 +20078,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;
 
-	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL); /* this */
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL); /* name */
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL); /* field */
 
@@ -20037,9 +20092,32 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 		if (unifiedDB && r2.vVal && r3.vVal)
 		{
 			printf("[DEBUG] GrapaLibRule Get: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
-			GrapaCHAR name = r2.vVal->mValue;
-			GrapaCHAR field = r3.vVal->mValue;
-			GrapaCHAR value;
+			
+			/* Extract values from parameters - handle queue objects */
+			GrapaCHAR name, field, value;
+			
+			/* Extract name from r2 */
+			if (r2.vVal->mValue.mToken == 1 && r2.vVal->vQueue && r2.vVal->vQueue->mCount > 0) {
+				/* Value is in queue */
+				GrapaRuleEvent* nameEvent = r2.vVal->vQueue->Head();
+				if (nameEvent) name.FROM(nameEvent->mValue);
+			} else {
+				/* Direct value */
+				name.FROM(r2.vVal->mValue);
+			}
+			
+			/* Extract field from r3 */
+			if (r3.vVal->mValue.mToken == 1 && r3.vVal->vQueue && r3.vVal->vQueue->mCount > 0) {
+				/* Value is in queue */
+				GrapaRuleEvent* fieldEvent = r3.vVal->vQueue->Head();
+				if (fieldEvent) field.FROM(fieldEvent->mValue);
+			} else {
+				/* Direct value */
+				field.FROM(r3.vVal->mValue);
+			}
+			
+			printf("[DEBUG] Extracted values: name='%s', field='%s'\n", 
+			       (char*)name.mBytes, (char*)field.mBytes);
 			
 			/* Switch based on storage type */
 			if (unifiedDB->GetStorageType().StrCmp("FILESYSTEM") == 0)
