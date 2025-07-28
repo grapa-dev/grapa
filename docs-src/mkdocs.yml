@@ -88,10 +88,6 @@ plugins:
         - "**/INTERNAL_NOTES/**"
         - "**/ADVANCED_TOPICS/**"
   - tags
-  - minify:
-      minify_html: true
-  - git-revision-date-localized:
-      enable_creation_date: true
 
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js

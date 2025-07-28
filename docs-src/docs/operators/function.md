@@ -67,6 +67,45 @@ str = @<[op,@<str,{this,@<var,{format}>}>],{format:null}>;
 len = @<len,{this}>;
 ```
 
+### Enhanced Debug Functionality
+The `$unified` class provides enhanced debug capabilities for database inspection:
+
+```grapa
+/* Basic debug output */
+u = $unified();
+u.set("user1", "Alice");
+u.set("user2", "Bob");
+u.debug();
+
+/* Output shows complete database structure */
+=== GrapaUnifiedLocalDatabase Debug Information ===
+Storage Type: GRAPADBX
+Storage URL: 
+Storage Path: default.dbx
+GrapaDBX Information:
+  First Tree: 3
+  Root Type: 0
+  GrapaDBX Available: Yes
+
+=== FULL DATABASE STRUCTURE ===
+DumpTree Result:
+LIST start (3) key=0 type=GROUP parent=0 size=0 weight=1
+| | SU64 key=0 value=0
+LIST ended (3) key=0 type=GROUP weight=1
+
+DumpGroup Result:
+LIST start (3) key=0 type=GROUP parent=0 size=0 weight=1
+| | SU64 key=0 value=0
+LIST ended (3) key=0 type=GROUP weight=1
+```
+
+#### Debug Output Features
+- **High-level Information**: Storage type, URL, path, and availability
+- **Full Database Structure**: Complete B-tree structure with hierarchy
+- **Tree Visualization**: Shows LIST, TREE, SU64 elements with relationships
+- **Weight Information**: Tree complexity and size metrics
+- **Structure Comparison**: Output format matches GrapaDB examples
+
 ## obj
 Creating an instance of a class. See class.
 

@@ -46,6 +46,63 @@ The unified storage system supports the following storage types:
 - **Use Case**: Cloud storage services
 - **Features**: S3, Google Cloud Storage, Azure support
 
+## Debug and Inspection
+
+### Enhanced Debug Functionality
+
+The unified storage system provides comprehensive debug capabilities for database inspection and troubleshooting:
+
+```grapa
+/* Basic debug output */
+u = $unified();
+u.set("user1", "Alice");
+u.set("user2", "Bob");
+u.debug();
+```
+
+#### Debug Output Features
+
+**High-level Information:**
+```
+=== GrapaUnifiedLocalDatabase Debug Information ===
+Storage Type: GRAPADBX
+Storage URL: 
+Storage Path: default.dbx
+GrapaDBX Information:
+  First Tree: 3
+  Root Type: 0
+  GrapaDBX Available: Yes
+```
+
+**Full Database Structure:**
+```
+=== FULL DATABASE STRUCTURE ===
+DumpTree Result:
+LIST start (3) key=0 type=GROUP parent=0 size=0 weight=1
+| | SU64 key=0 value=0
+LIST ended (3) key=0 type=GROUP weight=1
+
+DumpGroup Result:
+LIST start (3) key=0 type=GROUP parent=0 size=0 weight=1
+| | SU64 key=0 value=0
+LIST ended (3) key=0 type=GROUP weight=1
+```
+
+#### Debug Capabilities
+
+- **Storage Information**: Shows storage type, URL, path, and availability
+- **Database Structure**: Complete B-tree structure with hierarchy visualization
+- **Tree Relationships**: Shows parent-child relationships and tree weights
+- **Structure Comparison**: Output format matches GrapaDB examples for consistency
+- **Troubleshooting**: Helps identify database structure issues and data organization
+
+#### Use Cases
+
+- **Development**: Inspect database structure during development
+- **Troubleshooting**: Debug data storage and retrieval issues
+- **Performance**: Analyze database structure for optimization
+- **Migration**: Compare structures between different storage types
+
 ## Basic Usage
 
 ### Creating a Unified Storage Object
