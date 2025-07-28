@@ -18890,18 +18890,6 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCreateIndexEvent::Run(GrapaScriptExec* vS
     {
         GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
         
-        /* Check if storage needs to be initialized */
-        if (unifiedDB && unifiedDB->GetStorageType().mLength == 0)
-        {
-            printf("[DEBUG] CreateIndex: Auto-initializing storage with default URL\n");
-            GrapaCHAR storageUrl;
-            storageUrl.FROM("grapadbx://default.dbx");
-            err = unifiedDB->InitializeStorage(storageUrl);
-            if (err) {
-                printf("[DEBUG] CreateIndex: Auto-initialization failed with error %d\n", err);
-            }
-        }
-        
         if (unifiedDB && r2.vVal && r3.vVal)
         {
             printf("[DEBUG] CreateIndex: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
@@ -19260,31 +19248,6 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCdEvent::Run(GrapaScriptExec* vScriptExec
 			{
 				err = unifiedDB->DirectorySwitch(dirName);
 			}
-			else if (unifiedDB->GetStorageType().StrCmp("GRAPADB") == 0)
-			{
-				/* Implement GrapaDB directory switching */
-				/* This navigates to a different table or group within the database */
-				GrapaGroup* db = unifiedDB->GetGrapaDB();
-				if (db)
-				{
-					GrapaDBTable table;
-					GrapaError tableErr = unifiedDB->GrapaDBNavigateToTable(dirName, table);
-					if (!tableErr)
-					{
-						/* Successfully navigated to table/group */
-						err = 0;
-					}
-					else
-					{
-						/* Table doesn't exist and couldn't be created */
-						err = tableErr;
-					}
-				}
-				else
-				{
-					err = -1; /* No GrapaDB instance */
-				}
-			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
 				/* Implement GrapaDBX directory switching */
@@ -19410,74 +19373,6 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 					delete table;
 				}
 			}
-			else if (unifiedDB->GetStorageType().StrCmp("GRAPADB") == 0)
-			{
-				/* Implement GrapaDB listing */
-				/* This lists tables, records, or fields within the database */
-				GrapaGroup* db = unifiedDB->GetGrapaDB();
-				if (db)
-				{
-					/* Create a table to hold the listing results */
-					GrapaRuleEvent* table = new GrapaRuleEvent(GrapaTokenType::ARRAY, 0, "", "");
-					table->vQueue = new GrapaRuleQueue();
-					
-					/* Get current table info */
-					GrapaDBTable currentTable;
-					GrapaError tableErr = unifiedDB->GrapaDBNavigateToTable(dirName, currentTable);
-					if (!tableErr)
-					{
-						/* List all records in the current table */
-						GrapaDBCursor cursor;
-						GrapaDBFieldValueArray searchValues;
-						GrapaError searchErr = db->SearchDb(cursor, currentTable, searchValues);
-						if (!searchErr)
-						{
-							GrapaError firstErr = db->FirstDb(cursor);
-							if (!firstErr)
-							{
-								/* Add each record to the listing table */
-								do
-								{
-									GrapaCHAR recordName;
-									GrapaError nameErr = db->GetData(cursor.mValue, recordName);
-									if (!nameErr)
-									{
-										/* Add record to listing with default $KEY/$VALUE structure */
-										GrapaRuleEvent* row = new GrapaRuleEvent(0, GrapaCHAR((char*)recordName.mBytes), GrapaCHAR());
-										row->mValue.mToken = GrapaTokenType::LIST;
-										row->vQueue = new GrapaRuleQueue();
-										
-										GrapaInt size(0);
-										row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR((char*)recordName.mBytes)));
-										row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("RECORD")));
-										row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), size.getBytes()));
-										
-										table->vQueue->PushTail(row);
-									}
-									
-									GrapaError nextErr = db->NextDb(cursor);
-									if (nextErr) break;
-								} while (true);
-							}
-						}
-					}
-					
-					if (table->vQueue && table->vQueue->mCount > 0)
-					{
-						result = table;
-						err = 0;
-					}
-					else
-					{
-						delete table;
-						err = -1; /* No records found */
-					}
-				}
-				else
-				{
-					err = -1; /* No GrapaDB instance */
-				}
-			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
 				/* Implement GrapaDBX listing */
@@ -19515,13 +19410,13 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 									if (!nameErr)
 									{
 										/* Add record to listing with default $KEY/$VALUE structure */
-										                                                                                GrapaBYTE& valueBytes = (GrapaBYTE&)value;
-                                                                                GrapaRuleEvent* row = new GrapaRuleEvent(0, GrapaCHAR((char*)valueBytes.mBytes, valueBytes.mLength), GrapaCHAR());
-                                                                                row->mValue.mToken = GrapaTokenType::LIST;
-                                                                                row->vQueue = new GrapaRuleQueue();
+										GrapaBYTE& valueBytes = (GrapaBYTE&)value;
+                                        GrapaRuleEvent* row = new GrapaRuleEvent(0, GrapaCHAR((char*)valueBytes.mBytes, valueBytes.mLength), GrapaCHAR());
+                                        row->mValue.mToken = GrapaTokenType::LIST;
+                                        row->vQueue = new GrapaRuleQueue();
                                                                                 
-                                                                                GrapaInt size(0);
-                                                                                row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR((char*)valueBytes.mBytes, valueBytes.mLength)));
+                                        GrapaInt size(0);
+                                        row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR((char*)valueBytes.mBytes, valueBytes.mLength)));
 										row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("RECORD")));
 										row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), size.getBytes()));
 										
@@ -19705,67 +19600,11 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedMkEvent::Run(GrapaScriptExec* vScriptExec
 			{
 				err = unifiedDB->DirectoryCreate(name, type);
 			}
-			else if (unifiedDB->GetStorageType().StrCmp("GRAPADB") == 0)
-			{
-				/* Implement GrapaDB mk */
-				/* This creates a new table, record, or field in the database */
-				GrapaGroup* db = unifiedDB->GetGrapaDB();
-				if (db)
-				{
-					if (type.Cmp("DIR") == 0 || type.Cmp("GROUP") == 0)
-					{
-						/* Create a new table/group */
-						GrapaDBTable newTable;
-						u64 tableId = 0;
-						                                                err = db->CreateTable(unifiedDB->GetGrapaDBFirstTree(), GrapaDB::GROUP_TREE, tableId, newTable);
-					}
-					else
-					{
-						/* Create a new record */
-						GrapaDBTable currentTable;
-						GrapaError tableErr = db->OpenTable(unifiedDB->GetGrapaDBFirstTree(), 0, currentTable);
-						if (!tableErr)
-						{
-							GrapaCursor cursor;
-							u64 recordId = 0;
-							GrapaError recordErr = db->FindFreeRecordId(currentTable, recordId);
-							if (!recordErr)
-							{
-								                                                                 cursor.Set(currentTable.mRecRef, GrapaDB::RREC_ITEM, recordId);
-								err = db->CreateRecord(currentTable, cursor);
-								
-								/* Set the $KEY field to the record name */
-								if (!err)
-								{
-									GrapaDBFieldValueArray fieldValues;
-									GrapaError fieldErr = fieldValues.Append(db, currentTable, 0, name, GrapaDB::EQ_CMP);
-									if (!fieldErr)
-									{
-										err = db->SetRecordField(cursor, fieldValues);
-									}
-								}
-							}
-							else
-							{
-								err = recordErr;
-							}
-						}
-						else
-						{
-							err = tableErr;
-						}
-					}
-				}
-				else
-				{
-					err = -1; /* No GrapaDB instance */
-				}
-			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
 				/* Implement GrapaDBX mk */
 				/* This creates a new table, record, or field in GrapaDBX */
-				GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(unifiedDB->GetGrapaDBX());
+				GrapaGroup2* group2 = unifiedDB->GetGrapaDBX();
 				if (group2)
 				{
 					if (type.Cmp("DIR") == 0 || type.Cmp("GROUP") == 0)
@@ -19889,50 +19728,6 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedRmEvent::Run(GrapaScriptExec* vScriptExec
 			{
 				err = unifiedDB->DataDelete(name);
 			}
-			else if (unifiedDB->GetStorageType().StrCmp("GRAPADB") == 0)
-			{
-				/* Implement GrapaDB rm */
-				/* This deletes a table, record, or field from the database */
-				GrapaGroup* db = unifiedDB->GetGrapaDB();
-				if (db)
-				{
-					/* Try to delete as a record first */
-					GrapaDBTable currentTable;
-					GrapaError tableErr = db->OpenTable(unifiedDB->GetGrapaDBFirstTree(), 0, currentTable);
-					if (!tableErr)
-					{
-						GrapaCursor cursor;
-						GrapaError findErr = unifiedDB->GrapaDBFindRecord(name, currentTable, cursor);
-						if (!findErr)
-						{
-							/* Found record, delete it */
-							err = db->DeleteRecord(currentTable, cursor);
-						}
-						else
-						{
-							/* Not a record, try to delete as table */
-							u64 tableId = 0;
-							GrapaError deleteTableErr = db->DeleteTable(unifiedDB->GetGrapaDBFirstTree(), tableId);
-							if (!deleteTableErr)
-							{
-								err = 0;
-							}
-							else
-							{
-								err = findErr; /* Return original error if not found */
-							}
-						}
-					}
-					else
-					{
-						err = tableErr;
-					}
-				}
-				else
-				{
-					err = -1; /* No GrapaDB instance */
-				}
-			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
 				/* Implement GrapaDBX rm */
@@ -20037,7 +19832,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 		if (r2.vVal) {
 			printf("[DEBUG] r2.vVal->mValue='%s'\n", (char*)r2.vVal->mValue.mBytes);
 			printf("[DEBUG] r2.vVal->mToken=%d\n", r2.vVal->mValue.mToken);
-			if (r2.vVal->vQueue) printf("[DEBUG] r2.vVal->vQueue has %d items\n", r2.vVal->vQueue->mCount);
+			if (r2.vVal->vQueue) printf("[DEBUG] r2.vVal->vQueue has %d items\n", (int)r2.vVal->vQueue->mCount);
 		}
 		if (r3.vVal) {
 			printf("[DEBUG] r3.vVal->mValue='%s'\n", (char*)r3.vVal->mValue.mBytes);
@@ -20128,93 +19923,6 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 			if (unifiedDB->GetStorageType().StrCmp("FILESYSTEM") == 0)
 			{
 				err = unifiedDB->FieldSet(name, field, value);
-			}
-			else if (unifiedDB->GetStorageType().StrCmp("GRAPADB") == 0)
-			{
-				/* Implement GrapaDB set */
-				/* This sets a field value in a database record */
-				GrapaGroup* db = unifiedDB->GetGrapaDB();
-				if (db)
-				{
-					GrapaDBTable currentTable;
-					GrapaError tableErr = db->OpenTable(unifiedDB->GetGrapaDBFirstTree(), 0, currentTable);
-					if (!tableErr)
-					{
-						GrapaCursor cursor;
-						GrapaError findErr = unifiedDB->GrapaDBFindRecord(name, currentTable, cursor);
-						if (!findErr)
-						{
-							/* Found record, set the field value */
-							GrapaDBFieldValueArray fieldValues;
-							
-							/* Determine field ID based on field name */
-							u64 fieldId = 0; /* Default to $KEY field */
-							if (field.Cmp("$VALUE") == 0)
-							{
-								fieldId = 1; /* $VALUE field */
-							}
-							else if (field.Cmp("$KEY") == 0)
-							{
-								fieldId = 0; /* $KEY field */
-							}
-							else
-							{
-								/* Try to find field by name */
-								fieldId = 0; /* For now, default to $KEY */
-							}
-							
-							GrapaError fieldErr = fieldValues.Append(db, currentTable, fieldId, value, GrapaDB::EQ_CMP);
-							if (!fieldErr)
-							{
-								err = db->SetRecordField(cursor, fieldValues);
-							}
-							else
-							{
-								err = fieldErr;
-							}
-						}
-						else
-						{
-							/* Record doesn't exist, create it first */
-							GrapaCursor newCursor;
-							u64 recordId = 0;
-							GrapaError recordErr = db->FindFreeRecordId(currentTable, recordId);
-							if (!recordErr)
-							{
-								                                                                 				newCursor.Set(currentTable.mRecRef, GrapaDB::RREC_ITEM, recordId);
-								err = db->CreateRecord(currentTable, newCursor);
-								
-								/* Set the field value */
-								if (!err)
-								{
-									GrapaDBFieldValueArray fieldValues;
-									u64 fieldId = (field.Cmp("$VALUE") == 0) ? 1 : 0;
-									GrapaError fieldErr = fieldValues.Append(db, currentTable, fieldId, value, GrapaDB::EQ_CMP);
-									if (!fieldErr)
-									{
-										err = db->SetRecordField(newCursor, fieldValues);
-									}
-									else
-									{
-										err = fieldErr;
-									}
-								}
-							}
-							else
-							{
-								err = recordErr;
-							}
-						}
-					}
-					else
-					{
-						err = tableErr;
-					}
-				}
-				else
-				{
-					err = -1; /* No GrapaDB instance */
-				}
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
@@ -20454,80 +20162,6 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 					result = new GrapaRuleEvent(GrapaTokenType::STR, 0, (char*)field.mBytes, (char*)value.mBytes);
 				}
 			}
-			else if (unifiedDB->GetStorageType().StrCmp("GRAPADB") == 0)
-			{
-				/* Implement GrapaDB get using proper database navigation */
-				/* This gets a field value from a database record */
-				GrapaGroup* db = unifiedDB->GetGrapaDB();
-				if (db)
-				{
-					/* Use the same approach as GrapaLocalDatabase::FieldGet */
-					/* Navigate through the database path to get the correct context */
-					u64 dirId = unifiedDB->GetGrapaDBFirstTree();
-					u8 dirType = unifiedDB->GetGrapaDBRootType();
-					GrapaCHAR fname;
-					
-					/* Parse the name to handle nested paths */
-					GrapaRuleQueue names;
-					names.AppendNames((char*)name.mBytes, "\\/");
-					GrapaObjectEvent* nameEvent = names.Head();
-					
-					/* Navigate through the path */
-					while (nameEvent && nameEvent->Next())
-					{
-						if (nameEvent->mName.mLength == 0)
-						{
-							/* Root directory */
-							dirId = unifiedDB->GetGrapaDBFirstTree();
-							dirType = unifiedDB->GetGrapaDBRootType();
-						}
-						else
-						{
-							/* Navigate to nested table/group */
-							u64 newDirId = 0;
-							u8 newDirType = 0;
-							u64 tableId = 0;
-							GrapaError navErr = db->OpenGroup(dirId, dirType, nameEvent->mName, newDirId, newDirType, tableId);
-							if (navErr)
-							{
-								err = navErr;
-								break;
-							}
-							dirId = newDirId;
-							dirType = newDirType;
-						}
-						nameEvent = nameEvent->Next();
-					}
-					
-					/* Get the final record name */
-					if (nameEvent && nameEvent->mName.mLength)
-					{
-						fname.FROM(nameEvent->mName);
-					}
-					else
-					{
-						fname.FROM(name);
-					}
-					
-					if (err == 0)
-					{
-						/* Now get the field value using the correct context */
-						GrapaCHAR fieldName(field);
-						if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
-						
-						GrapaCHAR value;
-						err = db->GetField(dirId, dirType, fname, fieldName, value);
-						if (err == 0)
-						{
-							result = new GrapaRuleEvent(GrapaTokenType::STR, 0, (char*)field.mBytes, (char*)value.mBytes);
-						}
-					}
-				}
-				else
-				{
-					err = -1; /* No GrapaDB instance */
-				}
-			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
 				printf("[DEBUG] GrapaLibRule Get: Storage type is GRAPADBX\n");
@@ -20705,8 +20339,130 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 
 GrapaRuleEvent* GrapaLibraryRuleUnifiedMkfieldEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-	/* TODO: Implement enhanced make field */
-	return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
+	GrapaError err = -1;
+	GrapaRuleEvent* result = NULL;
+
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaLibraryParam r4(vScriptExec, pNameSpace, pInput ? pInput->Head(3) : NULL);
+	GrapaLibraryParam r5(vScriptExec, pNameSpace, pInput ? pInput->Head(4) : NULL);
+	GrapaLibraryParam r6(vScriptExec, pNameSpace, pInput ? pInput->Head(5) : NULL);
+
+	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+	if (objEvent && objEvent->vDatabase == NULL)
+		objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
+
+	if (objEvent && objEvent->vDatabase)
+	{
+		GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+		if (unifiedDB)
+		{
+			/* Check if storage needs to be initialized */
+			printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Checking auto-initialization, storage type length = %llu\n", unifiedDB->GetStorageType().mLength);
+			if (unifiedDB->GetStorageType().mLength == 0)
+			{
+				printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Storage type is empty, auto-initializing with default URL\n");
+				/* Auto-initialize with a default URL */
+				GrapaCHAR storageUrl;
+				storageUrl.FROM("grapadbx://default.dbx");
+				printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Auto-initializing storage with default URL '%s'\n", (char*)storageUrl.mBytes);
+				GrapaError initErr = unifiedDB->InitializeStorage(storageUrl);
+				if (initErr) {
+					printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Auto-initialization failed with error %d\n", initErr);
+				}
+				else {
+					printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Auto-initialization successful\n");
+				}
+			}
+			
+			/* Extract field creation parameters */
+			GrapaCHAR fieldName = r2.vVal ? r2.vVal->mValue : GrapaCHAR();
+			GrapaCHAR fieldType = r3.vVal ? r3.vVal->mValue : GrapaCHAR("STR");
+			GrapaCHAR storeType = r4.vVal ? r4.vVal->mValue : GrapaCHAR("VAR");
+			
+			u64 storeSize = 32;
+			if (r5.vVal && r5.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt sizeInt;
+				sizeInt.FromBytes(r5.vVal->mValue);
+				storeSize = sizeInt.LongValue();
+			}
+			
+			u64 storeGrow = 8;
+			if (r6.vVal && r6.vVal->mValue.mToken == GrapaTokenType::INT)
+			{
+				GrapaInt growInt;
+				growInt.FromBytes(r6.vVal->mValue);
+				storeGrow = growInt.LongValue();
+			}
+
+			/* Convert field type to GrapaTokenType */
+			u8 grapaType = GrapaTokenType::STR;
+			if (fieldType.StrCmp("BOOL") == 0) grapaType = GrapaTokenType::BOOL;
+			else if (fieldType.StrCmp("INT") == 0) grapaType = GrapaTokenType::INT;
+			else if (fieldType.StrCmp("FLOAT") == 0) grapaType = GrapaTokenType::FLOAT;
+			else if (fieldType.StrCmp("TIME") == 0) grapaType = GrapaTokenType::TIME;
+			else if (fieldType.StrCmp("TABLE") == 0) grapaType = GrapaTokenType::TABLE;
+			else if (fieldType.StrCmp("RAW") == 0) grapaType = GrapaTokenType::RAW;
+
+			printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: fieldName='%s', fieldType='%s', storeType='%s', storeSize=%llu, storeGrow=%llu\n", 
+			       (char*)fieldName.mBytes, (char*)fieldType.mBytes, (char*)storeType.mBytes, storeSize, storeGrow);
+
+			/* Route based on storage type */
+			if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
+			{
+				printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Using GrapaDBX backend\n");
+				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
+				if (dbx)
+				{
+					/* Use GrapaDBX field creation */
+					u64 dirId = unifiedDB->GetGrapaDBXFirstTree();
+					u8 dirType = unifiedDB->GetGrapaDBXRootType();
+					
+					/* Convert field type to GrapaTokenType */
+					u8 grapaType = GrapaTokenType::STR;
+					if (fieldType.StrCmp("BOOL") == 0) grapaType = GrapaTokenType::BOOL;
+					else if (fieldType.StrCmp("INT") == 0) grapaType = GrapaTokenType::INT;
+					else if (fieldType.StrCmp("FLOAT") == 0) grapaType = GrapaTokenType::FLOAT;
+					else if (fieldType.StrCmp("TIME") == 0) grapaType = GrapaTokenType::TIME;
+					else if (fieldType.StrCmp("TABLE") == 0) grapaType = GrapaTokenType::TABLE;
+					else if (fieldType.StrCmp("RAW") == 0) grapaType = GrapaTokenType::RAW;
+
+					/* Convert store type to GrapaDBField store type */
+					u8 grapaStore = GrapaDBField::STORE_VAR;
+					if (storeType.StrCmp("FIX") == 0) grapaStore = GrapaDBField::STORE_FIX;
+					else if (storeType.StrCmp("VAR") == 0) grapaStore = GrapaDBField::STORE_VAR;
+					else if (storeType.StrCmp("PAR") == 0) grapaStore = GrapaDBField::STORE_PAR;
+
+					/* Create the field using GrapaDBX */
+					err = dbx->CreateField(dirId, dirType, fieldName, grapaType, grapaStore, storeSize, storeGrow);
+					printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: GrapaDBX CreateField result = %d\n", err);
+				}
+				else
+				{
+					printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: No GrapaDBX instance\n");
+					err = -1;
+				}
+			}
+			else if (unifiedDB->GetStorageType().StrCmp("FILESYSTEM") == 0)
+			{
+				printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Using FileSystem backend\n");
+				/* For file system, field creation is not applicable */
+				err = 0; /* Success - file system doesn't need field definitions */
+			}
+			else
+			{
+				printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Unknown storage type '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
+				err = -1;
+			}
+
+		}
+	}
+
+	if (err && result == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
+	return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleUnifiedRmfieldEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
@@ -20827,8 +20583,6 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedDebugEvent::Run(GrapaScriptExec* vScriptE
 				debugInfo.Append(unifiedDB->GetStorageType());
 				debugInfo.Append("\nStorage URL: ");
 				debugInfo.Append(unifiedDB->GetStorageUrl());
-				debugInfo.Append("\nGrapaDB: ");
-				debugInfo.Append(unifiedDB->GetGrapaDB() ? "Available" : "Not Available");
 				debugInfo.Append("\nGrapaDBX: ");
 				debugInfo.Append(unifiedDB->GetGrapaDBX() ? "Available" : "Not Available");
 				pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, (char*)debugInfo.mBytes);
@@ -20956,11 +20710,7 @@ GrapaRuleEvent* GrapaLibraryRuleFormatTableEvent::Run(GrapaScriptExec* vScriptEx
 				err = 0;
 			}
 		}
-		
-		if (err == 0)
-		{
-			result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", (char*)output.mBytes);
-		}
+
 	}
 	
 	if (err && result == NULL)

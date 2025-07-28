@@ -135,8 +135,10 @@ public:
 	virtual GrapaError GetDataValue(u64 itemPtr, u64 offset, u64 length, char* data, u64* returnSize);
 	virtual GrapaError SetDataValue(u64 itemPtr, u64 offset, u64 length, const char* data);
 
-	// Utility operations - same interface as GrapaDB
+	// Override operations - same interface as GrapaBtree - do not change parameters or parameter types
 	virtual GrapaError CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
+    
+    // Utility operations - same interface as GrapaDB
 	virtual GrapaError CompareRecordKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
 	virtual GrapaError CompareSearchKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
 	virtual GrapaError DumpTree(u64 pTreeRef = 0, GrapaFile* pDumpFile = NULL);
@@ -156,20 +158,20 @@ protected:
 	
 	// Dump system methods for debugging and visualization
 	virtual GrapaError DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tableId, u64 firstTree);
-	virtual GrapaError DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	virtual GrapaError DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor);
-	virtual GrapaError DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor);
-	virtual GrapaError DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u64 tableDT);
-	virtual GrapaError DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor);
+	virtual GrapaError DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheColStructure(GrapaCHAR& dbWrite, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheStructure(GrapaCHAR& dbWrite, GrapaDBXCursor& cursor, u64 tableDT);
+	virtual GrapaError DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaDBXCursor& cursor);
 	
 	// Helper functions - same interface as GrapaDB
 	virtual GrapaError GetDataTypeRecord(u64 tableRef, u64& tableDT);

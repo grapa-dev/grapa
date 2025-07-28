@@ -9,7 +9,6 @@
 #include "GrapaFile.h"
 #include "GrapaDatabase.h"
 #include "GrapaState.h"
-#include "GrapaDB.h"
 #include "GrapaDBX.h"
 #include "GrapaNet.h"
 
@@ -79,20 +78,15 @@ class GrapaUnifiedLocalDatabase;
 class GrapaUnifiedLocalDatabase : public GrapaLocalDatabase
 {
 private:
-    GrapaCHAR mStorageType;      /* "FILESYSTEM", "GRAPADB", "GRAPADBX", "NETWORK", "MEMORY", "CLOUD" */
+    GrapaCHAR mStorageType;      /* "FILESYSTEM", "GRAPADBX", "NETWORK", "MEMORY", "CLOUD" */
     GrapaCHAR mStorageUrl;       /* Full storage URL */
     GrapaCHAR mStorageHost;      /* Host/server for network/cloud */
     GrapaCHAR mStoragePath;      /* Path within storage */
     GrapaCHAR mStorageOptions;   /* Additional options */
-    
-    /* Storage-specific instances */
-    	GrapaGroup* mGrapaDB;        /* GrapaGroup instance for database operations */
-    u64 mGrapaDBFirstTree;       /* First tree reference for GrapaDB */
-    u8 mGrapaDBRootType;         /* Root tree type for GrapaDB */
-    
+        
     GrapaGroup2* mGrapaDBX;      /* GrapaGroup2 instance for database operations */
-            u64 mGrapaDBXFirstTree;      /* First tree reference for GrapaDBX */
-        u8 mGrapaDBXRootType;        /* Root tree type for GrapaDBX */
+    u64 mGrapaDBXFirstTree;      /* First tree reference for GrapaDBX */
+    u8 mGrapaDBXRootType;        /* Root tree type for GrapaDBX */
     
     				/* Network storage members */
 				GrapaNet* mNetwork;          /* Network connection for remote storage */
@@ -117,9 +111,8 @@ private:
 				/* Thread safety - using existing GrapaThread mechanisms */
     
 public:
-    				            GrapaUnifiedLocalDatabase(GrapaScriptState* pTokenState) : GrapaLocalDatabase(pTokenState), mGrapaDB(NULL), mGrapaDBFirstTree(0), mGrapaDBRootType(0), mGrapaDBX(NULL), mGrapaDBXFirstTree(0), mGrapaDBXRootType(0), mNetwork(NULL), mNetworkConnected(false), mMaxWorkers(16) {}
+    				            GrapaUnifiedLocalDatabase(GrapaScriptState* pTokenState) : GrapaLocalDatabase(pTokenState), mGrapaDBXFirstTree(0), mGrapaDBXRootType(0), mGrapaDBX(NULL), mNetwork(NULL), mNetworkConnected(false), mMaxWorkers(16) {}
         virtual ~GrapaUnifiedLocalDatabase() {
-            if (mGrapaDB) { mGrapaDB->CloseFile(); delete mGrapaDB; mGrapaDB = NULL; }
             if (mGrapaDBX) { mGrapaDBX->CloseFile(); delete mGrapaDBX; mGrapaDBX = NULL; }
             if (mNetwork) { delete mNetwork; mNetwork = NULL; }
         }
@@ -146,11 +139,6 @@ public:
     virtual GrapaCHAR GetStorageUrl() { return mStorageUrl; }
     virtual GrapaError GetStorageInfo(GrapaRuleEvent* pTable);
     
-    /* Storage-specific accessors */
-    	virtual GrapaGroup* GetGrapaDB() { return mGrapaDB; }
-    virtual u64 GetGrapaDBFirstTree() { return mGrapaDBFirstTree; }
-    virtual u8 GetGrapaDBRootType() { return mGrapaDBRootType; }
-    
     virtual GrapaGroup2* GetGrapaDBX() { return mGrapaDBX; }
     virtual u64 GetGrapaDBXFirstTree() { return mGrapaDBXFirstTree; }
     virtual u8 GetGrapaDBXRootType() { return mGrapaDBXRootType; }
@@ -164,14 +152,10 @@ public:
     
     /* Performance comparison */
     virtual GrapaError ComparePerformance(const GrapaCHAR& operation, const GrapaCHAR& params);
-    
-    /* GrapaDB-specific helper methods - moved to public for library access */
-    virtual GrapaError GrapaDBNavigateToTable(const GrapaCHAR& tableName, GrapaDBTable& table);
-    virtual GrapaError GrapaDBFindRecord(const GrapaCHAR& recordName, GrapaDBTable& table, GrapaCursor& cursor);
-    
+        
     /* GrapaDBX-specific helper methods - moved to public for library access */
     	        virtual GrapaError GrapaDBXNavigateToTable(const GrapaCHAR& tableName, GrapaDBXTable& table);
-        virtual GrapaError GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaCursor& cursor);
+        virtual GrapaError GrapaDBXFindRecord(const GrapaCHAR& recordName, GrapaDBXTable& table, GrapaDBXCursor& cursor);
     
     /* Parallel processing support - moved to public for library access */
     virtual GrapaError GetOptimalWorkerCount(const GrapaCHAR& operation, s64 dataSize);
@@ -229,11 +213,10 @@ class GrapaStorageFactory
 public:
     enum StorageType {
         FILESYSTEM = 0,
-        GRAPADB = 1,
-        GRAPADBX = 2,
-        NETWORK = 3,
-        MEMORY = 4,
-        CLOUD = 5
+        GRAPADBX = 1,
+        NETWORK = 2,
+        MEMORY = 3,
+        CLOUD = 4
     };
     
     /* Factory methods for different storage types */

@@ -1,0 +1,28 @@
+/* Test script for unified mkfield functionality */
+
+u = $unified();
+echo = "Testing mkfield functionality...";
+
+/* First, create the database */
+result = u.create("grapadbx://test_mkfield.dbx");
+echo = "Database creation result: " + result;
+
+if (result.type() != $ERR) {
+    echo = "✅ Database creation succeeded";
+    
+    /* Test creating fields */
+    field_result1 = u.mkfield("name", "STR", "VAR");
+    echo = "mkfield name result: " + field_result1;
+    
+    field_result2 = u.mkfield("age", "INT", "FIX", 32, 8);
+    echo = "mkfield age result: " + field_result2;
+    
+    field_result3 = u.mkfield("price", "FLOAT", "VAR", 64, 16);
+    echo = "mkfield price result: " + field_result3;
+    
+    /* Test debug to see the current state */
+    debug_info = u.debug();
+    echo = "Debug info: " + debug_info;
+} else {
+    echo = "❌ Database creation failed: " + result;
+} 
