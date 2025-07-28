@@ -1,0 +1,27 @@
+/* Test script to verify dump functionality is working correctly */
+
+/* Create a unified database */
+u = $unified("grapadbx://test_dump.dbx");
+
+/* Create some test data */
+u.set("user1", "John Doe");
+u.set("user2", "Jane Smith");
+u.set("user3", "Bob Johnson");
+
+/* Test the debug method to see database structure */
+echo = "=== Database Debug Output ===";
+debug_output = u.debug();
+echo.debug_output;
+
+/* Test setting and getting to ensure data is stored */
+echo = "=== Testing Data Storage ===";
+result1 = u.get("user1");
+echo.result1;
+
+result2 = u.get("user2");
+echo.result2;
+
+result3 = u.get("user3");
+echo.result3;
+
+echo = "=== Test Complete ==="; 
