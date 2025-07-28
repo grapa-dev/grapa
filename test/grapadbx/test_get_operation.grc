@@ -1,0 +1,21 @@
+/* Test to verify get operation works after auto-initialization */
+
+/* Create a unified database */
+u = $unified();
+
+/* Set a value */
+result = u.set("test_key", "test_value");
+echo = "Set result: ";
+echo.result;
+
+/* Get the value */
+get_result = u.get("test_key");
+echo = "Get result: ";
+echo.get_result;
+
+/* Test debug output */
+debug_output = u.debug();
+echo = "Debug output: ";
+echo.debug_output;
+
+echo = "Test complete"; 

@@ -1,0 +1,44 @@
+/* Test to verify index management functionality */
+
+/* Create a unified database */
+u = $unified();
+
+/* Set some test data */
+u.set("user1", "John Doe");
+u.set("user2", "Jane Smith");
+u.set("user3", "Bob Johnson");
+
+/* Test index management methods */
+echo = "=== Testing Index Management ===";
+
+/* Test list_indexes */
+echo = "Listing indexes:";
+indexes = u.list_indexes();
+echo.indexes;
+
+/* Test create_index */
+echo = "Creating index on name field:";
+create_result = u.create_index("name_index", "name");
+echo.create_result;
+
+/* Test list_indexes again */
+echo = "Listing indexes after creation:";
+indexes2 = u.list_indexes();
+echo.indexes2;
+
+/* Test refresh_index */
+echo = "Refreshing index:";
+refresh_result = u.refresh_index("name_index");
+echo.refresh_result;
+
+/* Test remove_index */
+echo = "Removing index:";
+remove_result = u.remove_index("name_index");
+echo.remove_result;
+
+/* Test list_indexes after removal */
+echo = "Listing indexes after removal:";
+indexes3 = u.list_indexes();
+echo.indexes3;
+
+echo = "=== Index Management Test Complete ==="; 
