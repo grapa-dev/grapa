@@ -1,4 +1,3 @@
-@global["$unified"]
 /* 
  * $unified - Unified Storage Interface
  * 
@@ -33,6 +32,7 @@
  * - .table() - Format output as ASCII table
  * - .simple() - Format output as simple list
  * - .echo() - Default ASCII output
+ * - .debug() - Debug output with internal state information
  * 
  * Examples:
  * u = $unified();
@@ -44,7 +44,9 @@
  * u.ls("", "", 4);         // Parallel processing with 4 threads
  */
 
-$unified = {
+@global["$unified"]
+	= class ($OBJ) {
+	type = @<"type",{@<this>}>; 
 	create = @<[op,@<unified_create,{@<this>,@<var,{url}>}>],{url}>;
 	getType = @<[op,@<unified_get_type,{@<this>}>]>;
 	getInfo = @<[op,@<unified_get_info,{@<this>}>]>;
@@ -55,16 +57,13 @@ $unified = {
 	rm = @<[op,@<unified_rm,{@<this>,@<var,{name}>}>],{name}>;
 	set = @<[op,@<unified_set,{@<this>,@<var,{name}>,@<var,{value}>,@<var,{field}>}>],{field:"$VALUE"}>;
 	get = @<[op,@<unified_get,{@<this>,@<var,{name}>,@<var,{field}>}>],{field:"$VALUE"}>;
-	
-	/* Index management methods */
 	create_index = @<[op,@<unified_create_index,{@<this>,@<var,{index_name}>,@<var,{fields}>}>],{fields}>;
 	remove_index = @<[op,@<unified_remove_index,{@<this>,@<var,{index_name}>}>],{index_name}>;
 	list_indexes = @<[op,@<unified_list_indexes,{@<this>}>]>;
 	refresh_index = @<[op,@<unified_refresh_index,{@<this>,@<var,{index_name}>}>],{index_name}>;
-	
-	/* Output formatting methods */
-	json = op(){@local."$comp"=rule <$function>;@this.encode("JSON");};
-	table = op(){@local."$comp"=rule <$function>;@this.format("TABLE");};
-	simple = op(){@local."$comp"=rule <$function>;@this.format("SIMPLE");};
-	echo = @<echo,{@<this>}>;
-}; 
+	json = @<"json",{@<this>}>;
+	table = @<"table",{@<this>}>;
+	simple = @<"simple",{@<this>}>;
+	echo = @<"echo",{@<this>}>;
+    debug = @<[op,@<"unified_debug",{@<this>,@<var,{o}>,@<var,{p}>}>],{o,p}>;
+	};
