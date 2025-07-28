@@ -288,7 +288,7 @@ public:
 	GrapaDBXFieldValueArray* mData;
 	bool mUsingIndex;
 public:
-	GrapaDBXCursor() { mUsingIndex = false; mData = NULL; GrapaCursor(); }
+	GrapaDBXCursor() { mUsingIndex = false; mData = NULL; }
     void SetSearch(GrapaDBX* pDb, u64 pTreeRef, bool pUsingIndex, GrapaDBXFieldValueArray* pData);
 };
 

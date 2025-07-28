@@ -463,7 +463,7 @@ GrapaError GrapaDBX::GetRecordField(GrapaCursor& pCursor, u64 pFieldId, GrapaBYT
 	/* Get the actual field value from the record */
 	GrapaError err;
 	GrapaDBXField field;
-	GrapaCursor recCursor;
+	GrapaDBXCursor recCursor;
 	
 	/* Find the record field */
 	err = FindRecordField(pCursor, pFieldId, recCursor, field);
@@ -522,7 +522,26 @@ GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 	}
 	
 	/* Convert pointer to record if needed */
-	err = PtrToRec(cursor, recCursor);
+	switch(cursor.mValueType)
+	{
+		case GREC_ITEM:
+		case RREC_ITEM:
+		case CREC_ITEM:
+			/* Cursor is already a record, just copy it */
+			recCursor = cursor;
+			err = 0;
+			break;
+		case GPTR_ITEM:
+		case RPTR_ITEM:
+		case CPTR_ITEM:
+			/* Cursor is a pointer, need to dereference */
+			err = PtrToRec(cursor, recCursor);
+			break;
+		default:
+			printf("[DEBUG] FindRecordField: unknown cursor type %d\n", cursor.mValueType);
+			return(-1);
+	}
+	
 	if (err) {
 		printf("[DEBUG] FindRecordField: PtrToRec failed with error %d\n", err);
 		if (mDumpFile) {
@@ -602,49 +621,122 @@ GrapaError GrapaDBX::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurs
 
 GrapaError GrapaDBX::GetRecordField(GrapaCursor& pCursor, GrapaDBXField& field, GrapaBYTE& pValue)
 {
-	/* Simplified implementation for current data structure */
+	/* Enhanced implementation to handle multi-field data structure with size prefixes */
 	GrapaError err;
 	u64 returnSize = 0;
-	u64 dataRef = pCursor.mValue;
 	
 	printf("[DEBUG] GetRecordField(field): fieldId=%llu, cursor.mValue=%llu\n", field.mId, pCursor.mValue);
 	
 	pValue.SetSize(0);
 	
 	/* Convert pointer to record if needed */
-	GrapaCursor recCursor;
-	err = PtrToRec(pCursor, recCursor);
+	GrapaDBXCursor recCursor;
+	switch(pCursor.mValueType)
+	{
+		case GREC_ITEM:
+		case RREC_ITEM:
+		case CREC_ITEM:
+			/* Cursor is already a record, just copy it */
+			recCursor.mValue = pCursor.mValue;
+			recCursor.mValueType = pCursor.mValueType;
+			recCursor.mTreeRef = pCursor.mTreeRef;
+			recCursor.mKey = pCursor.mKey;
+			recCursor.mNodeRef = pCursor.mNodeRef;
+			recCursor.mNodeIndex = pCursor.mNodeIndex;
+			recCursor.mLength = pCursor.mLength;
+			err = 0;
+			break;
+		case GPTR_ITEM:
+		case RPTR_ITEM:
+		case CPTR_ITEM:
+			/* Cursor is a pointer, need to dereference */
+			err = PtrToRec(pCursor, recCursor);
+			break;
+		default:
+			printf("[DEBUG] GetRecordField(field): unknown cursor type %d\n", pCursor.mValueType);
+			return(-1);
+	}
+	
 	if (err) {
 		printf("[DEBUG] GetRecordField(field): PtrToRec failed with error %d\n", err);
 		return(err);
 	}
 	
-	printf("[DEBUG] GetRecordField(field): PtrToRec succeeded, dataRef=%llu\n", dataRef);
+	printf("[DEBUG] GetRecordField(field): Cursor conversion succeeded, recCursor.mValue=%llu\n", recCursor.mValue);
 	
-	/* For now, use a simple approach - read the entire data block */
-	/* This assumes the data is stored as a simple block with size prefix */
-	u64 dataSize = 0;
+	/* Get the total data size first */
+	u64 totalDataSize = 0;
 	u8 compressType = 0;
-	err = GetDataSize(dataRef, 0, dataSize, dataSize, compressType);
+	err = GetDataSize(recCursor.mValue, 0, totalDataSize, totalDataSize, compressType);
 	if (err) {
 		printf("[DEBUG] GetRecordField(field): GetDataSize failed with error %d\n", err);
 		return(err);
 	}
 	
-	printf("[DEBUG] GetRecordField(field): dataSize=%llu\n", dataSize);
+	printf("[DEBUG] GetRecordField(field): totalDataSize=%llu\n", totalDataSize);
 	
-	/* Read the data */
-	pValue.SetSize(dataSize);
-	err = GetDataValue(dataRef, 0, dataSize, (char*)pValue.GetPtr(), &returnSize);
+	/* Read the entire data block to parse the multi-field structure */
+	GrapaBYTE fullData;
+	fullData.SetSize(totalDataSize);
+	err = GetDataValue(recCursor.mValue, 0, totalDataSize, (char*)fullData.GetPtr(), &returnSize);
 	if (err) {
 		printf("[DEBUG] GetRecordField(field): GetDataValue failed with error %d\n", err);
 		return(err);
 	}
 	
-	pValue.SetLength(returnSize, false);
-	printf("[DEBUG] GetRecordField(field): Retrieved data, length=%llu\n", returnSize);
+	printf("[DEBUG] GetRecordField(field): Retrieved full data, length=%llu\n", returnSize);
 	
-	return 0;
+	/* Parse the multi-field structure to find the specific field */
+	u64 currentOffset = 0;
+	u64 fieldIndex = 0;
+	
+	while (currentOffset < returnSize) {
+		/* Read the size prefix for this field */
+		if (currentOffset + sizeof(u64) > returnSize) {
+			printf("[DEBUG] GetRecordField(field): Invalid data structure - size prefix incomplete\n");
+			return -1;
+		}
+		
+		u64 fieldSize = *(u64*)((char*)fullData.GetPtr() + currentOffset);
+		printf("[DEBUG] GetRecordField(field): Field %llu at offset %llu, size=%llu\n", fieldIndex, currentOffset, fieldSize);
+		
+		currentOffset += sizeof(u64);
+		
+		/* Check if this is the field we're looking for */
+		if (fieldIndex == field.mId - 1) { /* field.mId is 1-based, convert to 0-based */
+			printf("[DEBUG] GetRecordField(field): Found target field %llu, size=%llu\n", field.mId, fieldSize);
+			
+			/* Extract the field data */
+			if (fieldSize > 0) {
+				if (currentOffset + fieldSize > returnSize) {
+					printf("[DEBUG] GetRecordField(field): Invalid data structure - field data incomplete\n");
+					return -1;
+				}
+				
+				pValue.SetSize(fieldSize);
+				memcpy(pValue.GetPtr(), (char*)fullData.GetPtr() + currentOffset, fieldSize);
+				pValue.SetLength(fieldSize, false);
+				
+				printf("[DEBUG] GetRecordField(field): Retrieved field data, length=%llu\n", fieldSize);
+				if (fieldSize > 0) {
+					printf("[DEBUG] GetRecordField(field): Field content: '%.*s'\n", (int)fieldSize, (char*)pValue.GetPtr());
+				}
+				
+				return 0;
+			} else {
+				printf("[DEBUG] GetRecordField(field): Field is empty\n");
+				pValue.SetSize(0);
+				return 0;
+			}
+		}
+		
+		/* Skip to next field */
+		currentOffset += fieldSize;
+		fieldIndex++;
+	}
+	
+	printf("[DEBUG] GetRecordField(field): Field %llu not found in data structure\n", field.mId);
+	return -1;
 }
 
 // Placeholder implementations for virtual methods
@@ -2445,9 +2537,11 @@ GrapaError GrapaGroup2::GetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 	printf("[DEBUG] GetField: FindEntry succeeded, dataId=%llu\n", dataId);
 
 	cursor.Set(parentDict.mRecRef, RREC_ITEM, dataId);
-	/* For placeholder implementation, we'll skip the complex record search
-	   and just proceed to find the field and get the data */
-	err = 0; /* Assume success for now */
+	err = Search(cursor);
+	if (err) {
+		printf("[DEBUG] GetField: Search(cursor) failed with error %d\n", err);
+		return(err);
+	}
 
 	printf("[DEBUG] GetField: About to determine fieldId\n");
 	u64 fieldId = 0;
