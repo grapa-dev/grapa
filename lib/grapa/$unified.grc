@@ -13,6 +13,7 @@
 	rm = @<[op,@<"unified_rm",{this,@<var,{name}>}>],{name}>;
 	set = @<[op,@<"unified_set",{this,@<var,{name}>,@<var,{value}>,@<var,{field}>}>],{name,value,field}>;
 	get = @<[op,@<"unified_get",{this,@<var,{name}>,@<var,{field}>}>],{name,field}>;
+	rmfield = @<[op,@<"unified_rmfield",{this,@<var,{name}>,@<var,{field}>}>],{name,field}>;
 	create_index = @<[op,@<"unified_create_index",{this,@<var,{index_name}>,@<var,{fields}>}>],{index_name,fields}>;
 	remove_index = @<[op,@<"unified_remove_index",{this,@<var,{index_name}>}>],{index_name}>;
 	list_indexes = @<[op,@<"unified_list_indexes",{this}>]>;

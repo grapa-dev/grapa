@@ -2858,6 +2858,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "unified_rmfield", &GrapaLibraryRuleEvent::HandleUnifiedRmfield },
 		{ "unified_get_type", &GrapaLibraryRuleEvent::HandleUnifiedGetType },
 		{ "unified_get_info", &GrapaLibraryRuleEvent::HandleUnifiedGetInfo },
+		{ "unified_table", &GrapaLibraryRuleEvent::HandleUnifiedTable },
 		{ "unified_switch_type", &GrapaLibraryRuleEvent::HandleUnifiedSwitchType },
 		{ "unified_compare", &GrapaLibraryRuleEvent::HandleUnifiedCompare },
 		{ "unified_debug", &GrapaLibraryRuleEvent::HandleUnifiedDebug },
@@ -18810,6 +18811,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUnifiedGetInfo(GrapaCHAR& pName) { return new GrapaLibraryRuleUnifiedGetInfoEvent(pName); }
 
+class GrapaLibraryRuleUnifiedTableEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleUnifiedTableEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUnifiedTable(GrapaCHAR& pName) { return new GrapaLibraryRuleUnifiedTableEvent(pName); }
+
 class GrapaLibraryRuleUnifiedSwitchTypeEvent : public GrapaLibraryEvent
 {
 public:
@@ -20228,17 +20237,39 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 						GrapaCHAR fieldName(field);
 						if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
 						
-						GrapaBYTE value;
-						// Use GrapaGroup2 for hierarchical operations
-						printf("[DEBUG] GrapaLibRule Get: Calling dbx->GetField\n");
-						err = dbx->GetField(dirId, dirType, fname, fieldName, value);
-						if (err == 0)
-						{
-							/* Convert GrapaBYTE to string for return */
-							GrapaCHAR valueStr;
-							valueStr.FROM((char*)value.mBytes, value.mLength);
-							result = new GrapaRuleEvent(GrapaTokenType::STR, 0, (char*)field.mBytes, (char*)valueStr.mBytes);
+											/* Use the proper FieldGet method which handles conversion correctly */
+					err = unifiedDB->FieldGet(name, field, value);
+					if (err == 0) {
+						printf("[DEBUG] GrapaLibRule Get: FieldGet succeeded, value.mLength=%llu\n", value.mLength);
+						if (value.mLength > 0) {
+							printf("[DEBUG] GrapaLibRule Get: Value content: '%.*s'\n", (int)value.mLength, (char*)value.mBytes);
 						}
+						
+											result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", "");
+					/* Convert GrapaCHAR to proper type */
+					result->mValue.FROM(value);
+					result->mValue.mToken = value.mToken;  /* Preserve actual type from database */
+					
+					/* Handle complex types that need deserialization (like $file implementation) */
+					if (result->mValue.mToken == GrapaTokenType::ARRAY || 
+						result->mValue.mToken == GrapaTokenType::TUPLE || 
+						result->mValue.mToken == GrapaTokenType::LIST || 
+						result->mValue.mToken == GrapaTokenType::XML || 
+						result->mValue.mToken == GrapaTokenType::EL || 
+						result->mValue.mToken == GrapaTokenType::TAG || 
+						result->mValue.mToken == GrapaTokenType::OP || 
+						result->mValue.mToken == GrapaTokenType::CODE || 
+						result->mValue.mToken == GrapaTokenType::ERR)
+					{
+						result->vQueue = new GrapaRuleQueue();
+						result->vClass = ((GrapaRuleQueue*)result->vQueue)->FROM(vScriptExec->vScriptState, pNameSpace, result->mValue);
+						if (result->mValue.mLength == 0)
+							result->mNull = true;
+						result->mValue.SetLength(0);
+						result->mValue.SetSize(0);
+					}
+						printf("[DEBUG] GrapaLibRule Get: Created result event\n");
+					}
 					}
 				}
 				else
@@ -20467,8 +20498,41 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedMkfieldEvent::Run(GrapaScriptExec* vScrip
 
 GrapaRuleEvent* GrapaLibraryRuleUnifiedRmfieldEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-	/* TODO: Implement enhanced remove field */
-	return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
+	GrapaError err = -1;
+	GrapaRuleEvent* result = NULL;
+
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+
+	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+	if (objEvent && objEvent->vDatabase == NULL)
+		objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
+
+	if (objEvent && objEvent->vDatabase)
+	{
+		GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+		if (unifiedDB && r2.vVal && r3.vVal)
+		{
+			GrapaCHAR tableName, fieldName;
+			tableName.FROM(r2.vVal->mValue);
+			fieldName.FROM(r3.vVal->mValue);
+			
+			printf("[DEBUG] GrapaLibRule Rmfield: table='%s', field='%s'\n", 
+				(char*)tableName.mBytes, (char*)fieldName.mBytes);
+			
+			err = unifiedDB->FieldDelete(tableName, fieldName);
+			if (err == 0) {
+				result = new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("ok"));
+			} else {
+				result = new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("error"));
+			}
+		}
+	}
+
+	if (err && result == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
+	return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleUnifiedGetTypeEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
@@ -20526,6 +20590,46 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetInfoEvent::Run(GrapaScriptExec* vScrip
 			infoStr.Append((char*)currentPath.mBytes);
 			
 			result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "", (char*)infoStr.mBytes);
+			err = 0;
+		}
+	}
+
+	if (err && result == NULL)
+		result = Error(vScriptExec, pNameSpace, err);
+	return result;
+}
+
+GrapaRuleEvent* GrapaLibraryRuleUnifiedTableEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaError err = -1;
+	GrapaRuleEvent* result = NULL;
+
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+
+	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+	if (objEvent && objEvent->vDatabase == NULL)
+		objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
+
+	if (objEvent && objEvent->vDatabase)
+	{
+		GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+		if (unifiedDB && r2.vVal)
+		{
+			/* Determine table type based on parameter */
+			u8 tableType = GrapaDB::GROUP_TREE;
+			if (r2.vVal->mValue.StrCmp("DIR") == 0) tableType = GrapaDB::GROUP_TREE;
+			else if (r2.vVal->mValue.StrCmp("GROUP") == 0) tableType = GrapaDB::GROUP_TREE;
+			else if (r2.vVal->mValue.StrCmp("ROW") == 0) tableType = GrapaDB::RTABLE_TREE;
+			else if (r2.vVal->mValue.StrCmp("COL") == 0) tableType = GrapaDB::CTABLE_TREE;
+			
+			printf("[DEBUG] Unified Table: Creating table type %d for '%s'\n", tableType, (char*)r2.vVal->mValue.mBytes);
+			
+			/* Store the table type in the unified database for later use */
+			unifiedDB->SetTableType(tableType);
+			
+			/* Create a table result object */
+			result = new GrapaRuleEvent(GrapaTokenType::TABLE, 0, "");
 			err = 0;
 		}
 	}

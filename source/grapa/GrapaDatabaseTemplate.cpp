@@ -12,6 +12,9 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
 {
     GrapaError err = 0;
     
+    // Initialize table type to default GROUP_TREE
+    mTableType = GrapaDB::GROUP_TREE;
+    
     // Parse the storage URL to determine type
     err = ParseStorageUrl(storageUrl);
     if (err) return err;
@@ -33,8 +36,8 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
         // Use the existing mFile object from the unified system
         mGrapaDBX->INIT(&mFile);
         
-        // Create the database file
-        err = mGrapaDBX->Create((char*)mStoragePath.mBytes, GrapaDB::GROUP_TREE, mGrapaDBXFirstTree);
+        // Create the database file with the detected table type
+        err = mGrapaDBX->Create((char*)mStoragePath.mBytes, mTableType, mGrapaDBXFirstTree);
         if (err) {
             // Try to open existing database
             err = mGrapaDBX->OpenFile(mStoragePath, 'r');
@@ -49,6 +52,25 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
         }
     } else if (mStorageType.StrCmp("MEMORY") == 0) {
         printf("[DEBUG] InitializeStorage: Using MEMORY storage\n");
+        
+        // Check if this is a DBX memory operation (mStoragePath == "$")
+        if (mStoragePath.StrCmp("$") == 0) {
+            printf("[DEBUG] InitializeStorage: Using in-memory DBX storage\n");
+            if (!mGrapaDBX) {
+                // Create GrapaGroup2 for in-memory operations
+                mGrapaDBX = new GrapaGroup2();
+                if (!mGrapaDBX) return -1;
+            }
+            
+            // Use the existing mFile object from the unified system
+            mGrapaDBX->INIT(&mFile);
+            
+            // Create in-memory database with detected table type
+            err = mGrapaDBX->Create("$", mTableType, mGrapaDBXFirstTree);
+            if (err) return err;
+            
+            printf("[DEBUG] InitializeStorage: Created in-memory DBX with table type %d\n", mTableType);
+        }
         // Memory storage is always available
     } else if (mStorageType.StrCmp("CLOUD") == 0) {
         printf("[DEBUG] InitializeStorage: Using CLOUD storage\n");
@@ -78,7 +100,42 @@ GrapaError GrapaUnifiedLocalDatabase::ParseStorageUrl(const GrapaCHAR& storageUr
     printf("[DEBUG] Compare to 'grapadbx://': %d\n", (int)url.StrNCmp("grapadbx://", 11));
     if (url.StrNCmp("grapadbx://", 11) == 0) {
         mStorageType.FROM("GRAPADBX");
-        mStoragePath.FROM((char*)url.mBytes + 11, url.mLength - 11);
+        GrapaCHAR pathAndParams;
+        pathAndParams.FROM((char*)url.mBytes + 11, url.mLength - 11);
+        
+        // Check for URL parameters (e.g., ?type=COL, ?type=ROW)
+        const char* questionPos = strchr((char*)pathAndParams.mBytes, '?');
+        if (questionPos) {
+            // Extract the path (before ?)
+            int pathLen = questionPos - (char*)pathAndParams.mBytes;
+            mStoragePath.FROM((char*)pathAndParams.mBytes, pathLen);
+            
+            // Parse parameters (after ?)
+            GrapaCHAR params;
+            params.FROM(questionPos + 1, pathAndParams.mLength - pathLen - 1);
+            
+            // Check for table type parameter
+            if (params.StrNCmp("type=COL", 8) == 0) {
+                mTableType = GrapaDB::CTABLE_TREE;
+                printf("[DEBUG] ParseStorageUrl: Detected COL table type from URL\n");
+            } else if (params.StrNCmp("type=ROW", 8) == 0) {
+                mTableType = GrapaDB::RTABLE_TREE;
+                printf("[DEBUG] ParseStorageUrl: Detected ROW table type from URL\n");
+            } else if (params.StrNCmp("type=GROUP", 10) == 0) {
+                mTableType = GrapaDB::GROUP_TREE;
+                printf("[DEBUG] ParseStorageUrl: Detected GROUP table type from URL\n");
+            }
+        } else {
+            // No parameters, use default GROUP_TREE
+            mStoragePath = pathAndParams;
+        }
+        
+        // Check if this should be in-memory (no file path or special in-memory indicator)
+        if (mStoragePath.StrCmp("") == 0 || mStoragePath.StrCmp("memory") == 0 || mStoragePath.StrCmp("$") == 0) {
+            printf("[DEBUG] ParseStorageUrl: Switching to in-memory storage for DBX\n");
+            mStorageType.FROM("MEMORY");
+            mStoragePath.FROM("$"); // Use "$" like the old $file().table() for in-memory
+        }
     } else if (url.StrCmp("http://") == 0 || url.StrCmp("https://") == 0 || 
                url.StrCmp("ftp://") == 0 || url.StrCmp("sftp://") == 0) {
         mStorageType.FROM("NETWORK");
@@ -401,6 +458,43 @@ GrapaError GrapaUnifiedLocalDatabase::FieldGet(const GrapaCHAR& pName, const Gra
     return 0;
 }
 
+GrapaError GrapaUnifiedLocalDatabase::FieldDelete(const GrapaCHAR& pName, const GrapaCHAR& pField)
+{
+    printf("[DEBUG] GrapaUnifiedLocalDatabase::FieldDelete: pName='%s', pField='%s', mStorageType='%s'\n", 
+           (char*)pName.mBytes, (char*)pField.mBytes, (char*)mStorageType.mBytes);
+    
+    // Route based on storage type
+    if (mStorageType.StrCmp("MEMORY") == 0 || mStorageType.StrCmp("GRAPADBX") == 0) {
+        printf("[DEBUG] FieldDelete: Using %s storage\n", (char*)mStorageType.mBytes);
+        if (!mGrapaDBX) {
+            printf("[DEBUG] FieldDelete: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        // For GrapaDBX storage, use the DeleteField method
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+        if (group2) {
+            GrapaError err = group2->DeleteField(mGrapaDBXFirstTree, mGrapaDBXRootType, (GrapaCHAR&)pField);
+            if (err) {
+                printf("[DEBUG] FieldDelete: DeleteField failed with error %d\n", err);
+                return err;
+            }
+            printf("[DEBUG] FieldDelete: Successfully deleted field '%s'\n", (char*)pField.mBytes);
+        } else {
+            printf("[DEBUG] FieldDelete: mGrapaDBX is not a GrapaGroup2\n");
+            return -1;
+        }
+        
+    } else {
+        // Fall back to parent implementation for FILESYSTEM and other types
+        printf("[DEBUG] FieldDelete: Using parent implementation for storage type '%s'\n", (char*)mStorageType.mBytes);
+        // Note: Base class FieldDelete only takes field name, not table name
+        return GrapaLocalDatabase::FieldDelete((GrapaCHAR&)pField);
+    }
+    
+    return 0;
+}
+
 GrapaError GrapaUnifiedLocalDatabase::GetStorageInfo(GrapaRuleEvent* pTable)
 {
     /* TODO: Implement storage info retrieval */
@@ -430,37 +524,19 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBXNavigateToTable(const GrapaCHAR& t
 {
     if (!mGrapaDBX) return -1;
     
-    GrapaError err;
+    // For unified interface, we work directly with the database like $file()
+    // No need to navigate to tables - just set up the table structure for field operations
     
-    // Use GrapaDBX's hierarchical navigation methods to properly handle nested structures
-    // This mirrors how GrapaDB handles it with OpenGroup
+    printf("[DEBUG] GrapaDBXNavigateToTable: Setting up direct database access\n");
     
-    u64 newTree;
-    u8 newType;
-    u64 tableId;
+    // Set up the table to point to the main database tree
+    table.mRef = mGrapaDBXFirstTree;
+    table.mRefType = mTableType; // Use the detected table type
+    table.mId = 0;
+    table.mRecRef = mGrapaDBXFirstTree;
     
-    // Try to open the group/table using hierarchical navigation
-    // Use GrapaGroup2 for hierarchical operations
-    GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
-    if (group2) {
-        err = group2->OpenGroup(mGrapaDBXFirstTree, mGrapaDBXRootType, tableName, newTree, newType, tableId);
-    } else {
-        err = -1; // Not a GrapaGroup2
-    }
-    if (err) {
-        // Group/table doesn't exist, we need to create it
-        // For now, default to GROUP_TREE - this should be enhanced to detect table type
-        err = mGrapaDBX->LastTableId(mGrapaDBXFirstTree, tableId);
-        if (err) return err;
-        tableId++;
-        
-        err = mGrapaDBX->CreateTable(mGrapaDBXFirstTree, GrapaDB::GROUP_TREE, tableId, table);
-        if (err) return err;
-    } else {
-        // Successfully opened existing group/table, now open it as a GrapaDBXTable
-        err = mGrapaDBX->OpenTable(mGrapaDBXFirstTree, tableId, table);
-        if (err) return err;
-    }
+    printf("[DEBUG] GrapaDBXNavigateToTable: Table configured - mRef=%llu, mRefType=%d, mId=%llu\n", 
+           (unsigned long long)table.mRef, table.mRefType, (unsigned long long)table.mId);
     
     return 0;
 }

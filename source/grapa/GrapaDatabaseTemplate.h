@@ -87,6 +87,7 @@ private:
     GrapaGroup2* mGrapaDBX;      /* GrapaGroup2 instance for database operations */
     u64 mGrapaDBXFirstTree;      /* First tree reference for GrapaDBX */
     u8 mGrapaDBXRootType;        /* Root tree type for GrapaDBX */
+    u8 mTableType;               /* Table type for unified operations (GROUP_TREE, RTABLE_TREE, CTABLE_TREE) */
     
     				/* Network storage members */
 				GrapaNet* mNetwork;          /* Network connection for remote storage */
@@ -133,11 +134,14 @@ public:
     virtual GrapaError DataDelete(const GrapaCHAR& pName) override;
     virtual GrapaError FieldSet(const GrapaCHAR& pName, const GrapaCHAR& pField, const GrapaCHAR& pValue) override;
     virtual GrapaError FieldGet(const GrapaCHAR& pName, const GrapaCHAR& pField, GrapaCHAR& pValue) override;
+    virtual GrapaError FieldDelete(const GrapaCHAR& pName, const GrapaCHAR& pField);
     
     /* Storage type information */
     virtual GrapaCHAR GetStorageType() { return mStorageType; }
     virtual GrapaCHAR GetStorageUrl() { return mStorageUrl; }
     virtual GrapaError GetStorageInfo(GrapaRuleEvent* pTable);
+    virtual void SetTableType(u8 tableType) { mTableType = tableType; }
+    virtual u8 GetTableType() { return mTableType; }
     
     virtual GrapaGroup2* GetGrapaDBX() { return mGrapaDBX; }
     virtual u64 GetGrapaDBXFirstTree() { return mGrapaDBXFirstTree; }

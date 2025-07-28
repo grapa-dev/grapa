@@ -303,6 +303,7 @@ public:
 	GrapaLibraryEvent* HandleUnifiedRmfield(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleUnifiedGetType(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleUnifiedGetInfo(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleUnifiedTable(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleUnifiedSwitchType(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleUnifiedCompare(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleUnifiedDebug(GrapaCHAR& pName);
