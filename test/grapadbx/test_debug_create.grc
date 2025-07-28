@@ -1,0 +1,32 @@
+/* Debug script to test unified create */
+
+"=== Testing Unified Create ===".echo();
+
+u = $unified();
+"Created unified object".echo();
+
+result = u.create("memory://test_db");
+("Create result: " + result).echo();
+("Result type: " + result.type()).echo();
+("Result value: " + result.value()).echo();
+
+if (result.type() == $ERR) {
+    ("❌ Creation failed with error: " + result).echo();
+} else {
+    "✅ Creation succeeded".echo();
+}
+
+/* Test file-based creation */
+u_file = $unified();
+result_file = u_file.create("grapadbx://test_file.dbx");
+("File create result: " + result_file).echo();
+("File result type: " + result_file.type()).echo();
+("File result value: " + result_file.value()).echo();
+
+if (result_file.type() == $ERR) {
+    ("❌ File creation failed with error: " + result_file).echo();
+} else {
+    "✅ File creation succeeded".echo();
+}
+
+"=== Debug test complete ===".echo(); 

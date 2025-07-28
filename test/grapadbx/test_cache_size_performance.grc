@@ -1,0 +1,74 @@
+/* test/grapadbx/test_cache_size_performance.grc */
+"=== Cache Size Performance Test ===\n".echo();
+
+/* Test performance with different cache sizes */
+"Test: Performance with different cache sizes...\n".echo();
+
+/* Cache sizes to test (in bytes) */
+cache_sizes = [32768, 65536, 131072, 262144, 524288]; /* 32KB, 64KB, 128KB, 256KB, 512KB */
+cache_names = ["32KB", "64KB", "128KB", "256KB", "512KB"];
+
+i = 0;
+while (i < cache_sizes.len()) {
+    cache_size = cache_sizes[i];
+    cache_name = cache_names[i];
+    
+    ("Testing cache size: " + cache_name + " (" + cache_size + " bytes)\n").echo();
+    
+    /* Create database with specific cache size */
+    u = $unified();
+    result = u.create("grapadbx://test_cache_" + i.str() + ".dbx");
+    ("Creation result: " + result + "\n").echo();
+    
+    if (result.type() != $ERR) {
+        "✅ Database creation succeeded\n".echo();
+        
+        /* Set up test structure */
+        u.mk("test", "GROUP");
+        u.cd("test");
+        u.mkfield("name", "STR", "VAR");
+        u.mkfield("value", "STR", "VAR");
+        
+        /* Test write performance */
+        "Testing write performance...\n".echo();
+        start_time = $TIME().utc();
+        
+        j = 0;
+        while (j < 50) {
+            u.set("key" + j.str(), "value" + j.str(), "name");
+            u.set("key" + j.str(), "data" + j.str(), "value");
+            j = j + 1;
+        }
+        
+        write_time = (($TIME().utc() - start_time) / 1000000).int();
+        ("Write 50 records: " + write_time + "ms\n").echo();
+        
+        /* Test read performance */
+        "Testing read performance...\n".echo();
+        start_time = $TIME().utc();
+        
+        j = 0;
+        while (j < 50) {
+            result = u.get("key" + j.str(), "name");
+            j = j + 1;
+        }
+        
+        read_time = (($TIME().utc() - start_time) / 1000000).int();
+        ("Read 50 records: " + read_time + "ms\n").echo();
+        
+        /* Calculate per-record times */
+        write_per_record = (write_time * 1000) / 50; /* Convert to microseconds */
+        read_per_record = (read_time * 1000) / 50; /* Convert to microseconds */
+        
+        ("Per-record write: " + write_per_record + "μs\n").echo();
+        ("Per-record read: " + read_per_record + "μs\n").echo();
+        
+        "---\n".echo();
+    } else {
+        ("❌ Database creation failed for cache size " + cache_name + "\n").echo();
+    }
+    
+    i = i + 1;
+}
+
+"Cache size performance test completed.\n".echo(); 

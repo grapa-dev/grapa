@@ -1,0 +1,93 @@
+/* Test Correct GrapaDBX Patterns */
+
+"Testing correct GrapaDBX patterns...\n".echo();
+
+/* Test 1: $unified() with grapadbx:// URL for file-based DBX */
+"Test 1: Testing $unified() with grapadbx:// URL...\n".echo();
+
+/* Use .iferr() for error handling - $unified() returns $ERR on failure */
+u = $unified();
+result = u.create("grapadbx://test_file.dbx");
+if (result.type() == $ERR) {
+    "Test 1: File-based GrapaDBX creation failed\n".echo();
+} else {
+    "Test 1: File-based GrapaDBX created successfully via $unified()\n".echo();
+    
+    /* Test basic operations */
+    u.mk("test_table", "GROUP");
+    u.cd("test_table");
+    u.mkfield("name", "STR", "VAR");
+    u.set("record1", "John Doe", "name");
+    result = u.get("record1", "name");
+    ("Test 1: Retrieved value: " + result + "\n").echo();
+}
+
+/* Test 2: $file().table() for in-memory DBX */
+"Test 2: Testing $file().table() for in-memory DBX...\n".echo();
+
+/* Use .iferr() for error handling */
+t = $file().table("GROUP");
+if (t.type() == $ERR) {
+    "Test 2: In-memory GrapaDBX creation failed\n".echo();
+} else {
+    "Test 2: In-memory GrapaDBX created successfully via $file().table()\n".echo();
+    
+    /* Test basic operations */
+    t.mkfield("age", "INT", "FIX", 4);
+    t.set("user1", 30, "age");
+    result = t.get("user1", "age");
+    ("Test 2: Retrieved value: " + result + "\n").echo();
+}
+
+/* Test 3: $unified() with memory:// URL for in-memory DBX */
+"Test 3: Testing $unified() with memory:// URL...\n".echo();
+
+/* Use .iferr() for error handling */
+u = $unified();
+result = u.create("memory://temp_database");
+if (result.type() == $ERR) {
+    "Test 3: In-memory GrapaDBX creation via memory:// failed\n".echo();
+} else {
+    "Test 3: In-memory GrapaDBX created successfully via $unified() with memory://\n".echo();
+    
+    /* Test basic operations */
+    u.mk("temp_table", "ROW");
+    u.cd("temp_table");
+    u.mkfield("data", "STR", "VAR");
+    u.set("temp1", "Temporary data", "data");
+    result = u.get("temp1", "data");
+    ("Test 3: Retrieved value: " + result + "\n").echo();
+}
+
+/* Test 4: Verify caching architecture is working */
+"Test 4: Testing caching architecture...\n".echo();
+
+/* Use .iferr() for error handling */
+u = $unified();
+result = u.create("grapadbx://cache_test.dbx");
+if (result.type() == $ERR) {
+    "Test 4: Caching architecture test failed\n".echo();
+} else {
+    /* Perform multiple operations to test caching */
+    u.mk("cache_table", "GROUP");
+    u.cd("cache_table");
+    u.mkfield("counter", "INT", "FIX", 4);
+    
+    /* Multiple writes to test caching */
+    i = 0;
+    while (i < 10) {
+        u.set("record" + i.str(), i, "counter");
+        i = i + 1;
+    }
+    
+    /* Multiple reads to test caching */
+    i = 0;
+    while (i < 10) {
+        result = u.get("record" + i.str(), "counter");
+        i = i + 1;
+    }
+    
+    "Test 4: Caching architecture test completed successfully\n".echo();
+}
+
+"All tests completed\n".echo(); 

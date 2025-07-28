@@ -1,0 +1,16 @@
+/* Test file with syntax errors */
+
+// This is a line comment - should be flagged
+.echo("This is wrong syntax");  // Should be "string".echo()
+
+for (i = 0; i < 10; i++) {  // for loops not allowed
+    .echo("Wrong again");
+}
+
+if (condition) {;  // Incorrect semicolon after {
+    .echo("Still wrong");
+}
+
+"Correct syntax".echo();  // This should be fine
+
+.echo(string);  // Missing quotes around string 

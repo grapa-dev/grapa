@@ -1,0 +1,11 @@
+/* Debug GrapaDBX Creation */
+"=== Debug GrapaDBX Creation ===\n".echo();
+
+u = $unified();
+"Created unified object\n".echo();
+
+"Attempting to create GrapaDBX database...\n".echo();
+result = u.create("grapadbx://test.dbx");
+"Create result: ".echo();
+result.echo();
+"\n".echo(); 

@@ -1,0 +1,31 @@
+/* Unified Constructor Test */
+"=== Unified Constructor Test ===\n".echo();
+
+"Testing unified constructor...\n".echo();
+
+/* Try to create the unified object */
+u = $unified();
+"Unified object created\n".echo();
+
+/* Check if it's a valid object */
+"Object is valid: ".echo();
+(u != null).echo();
+"\n".echo();
+
+/* Check object type */
+"Object type: ".echo();
+u.type().echo();
+"\n".echo();
+
+/* Try to access a method */
+"Trying to access getType method...\n".echo();
+try {
+    result = u.getType();
+    "getType result: ".echo();
+    result.echo();
+    "\n".echo();
+} catch (e) {
+    "Error accessing getType: ".echo();
+    e.echo();
+    "\n".echo();
+}; 

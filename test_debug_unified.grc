@@ -1,0 +1,29 @@
+"=== Testing Unified Debug Functionality ===\n".echo();
+
+/* Create unified object */
+u = $unified();
+"Unified object created\n".echo();
+
+/* Test debug output */
+"Calling u.debug()...\n".echo();
+debug_result = u.debug();
+("Debug result: " + debug_result.str() + "\n").echo();
+
+/* Test debug after creating a database */
+"Creating GrapaDBX database...\n".echo();
+create_result = u.create("grapadbx://test_debug.dbx");
+("Create result: " + create_result.str() + "\n").echo();
+
+/* Test debug output after database creation */
+"Calling u.debug() after database creation...\n".echo();
+debug_result2 = u.debug();
+("Debug result after creation: " + debug_result2.str() + "\n").echo();
+
+/* Test debug with different storage types */
+"Testing debug with file system...\n".echo();
+u2 = $unified();
+u2.create("file:///tmp");
+debug_result3 = u2.debug();
+("File system debug result: " + debug_result3.str() + "\n").echo();
+
+"Debug test complete\n".echo(); 

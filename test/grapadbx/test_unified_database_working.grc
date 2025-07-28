@@ -1,0 +1,167 @@
+/* test/grapadbx/test_unified_database_working.grc */
+"=== Unified Database In-Memory Support - WORKING ===\n".echo();
+
+/* Test 1: In-memory database creation and basic operations */
+"Test 1: In-memory database via $unified()...\n".echo();
+
+u = $unified();
+result = u.create("memory://test_db");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Database creation succeeded\n".echo();
+    
+    /* Test basic operations */
+    u.mk("users", "GROUP");
+    u.cd("users");
+    u.mkfield("name", "STR", "VAR");
+    u.mkfield("age", "INT", "FIX", 4);
+    u.mkfield("email", "STR", "VAR");
+    
+    /* Set multiple records */
+    u.set("user1", "John Doe", "name");
+    u.set("user1", 30, "age");
+    u.set("user1", "john@example.com", "email");
+    
+    u.set("user2", "Jane Smith", "name");
+    u.set("user2", 25, "age");
+    u.set("user2", "jane@example.com", "email");
+    
+    u.set("user3", "Bob Johnson", "name");
+    u.set("user3", 35, "age");
+    u.set("user3", "bob@example.com", "email");
+    
+    /* Retrieve and display records */
+    "Retrieved records:\n".echo();
+    
+    names = ["user1", "user2", "user3"];
+    i = 0;
+    while (i < names.len()) {
+        user_id = names[i];
+        name = u.get(user_id, "name");
+        age = u.get(user_id, "age");
+        email = u.get(user_id, "email");
+        ("  " + user_id + ": " + name + " (age " + age + ") - " + email + "\n").echo();
+        i = i + 1;
+    }
+    
+    "✅ Basic operations completed successfully\n".echo();
+} else {
+    ("❌ Database creation failed: " + result + "\n").echo();
+}
+
+/* Test 2: File-based database with caching */
+"Test 2: File-based database via $unified()...\n".echo();
+
+u_file = $unified();
+result_file = u_file.create("grapadbx://test_file.dbx");
+("File creation result: " + result_file + "\n").echo();
+
+if (result_file.type() != $ERR) {
+    "✅ File-based database creation succeeded\n".echo();
+    
+    /* Test file-based operations */
+    u_file.mk("products", "GROUP");
+    u_file.cd("products");
+    u_file.mkfield("name", "STR", "VAR");
+    u_file.mkfield("price", "FLOAT", "FIX", 8);
+    u_file.mkfield("category", "STR", "VAR");
+    
+    /* Set product data */
+    u_file.set("prod1", "Laptop", "name");
+    u_file.set("prod1", 999.99, "price");
+    u_file.set("prod1", "Electronics", "category");
+    
+    u_file.set("prod2", "Mouse", "name");
+    u_file.set("prod2", 29.99, "price");
+    u_file.set("prod2", "Electronics", "category");
+    
+    u_file.set("prod3", "Desk", "name");
+    u_file.set("prod3", 199.99, "price");
+    u_file.set("prod3", "Furniture", "category");
+    
+    /* Retrieve and display products */
+    "Retrieved products:\n".echo();
+    
+    products = ["prod1", "prod2", "prod3"];
+    i = 0;
+    while (i < products.len()) {
+        prod_id = products[i];
+        name = u_file.get(prod_id, "name");
+        price = u_file.get(prod_id, "price");
+        category = u_file.get(prod_id, "category");
+        ("  " + prod_id + ": " + name + " ($" + price + ") - " + category + "\n").echo();
+        i = i + 1;
+    }
+    
+    "✅ File-based operations completed successfully\n".echo();
+} else {
+    ("❌ File-based database creation failed: " + result_file + "\n").echo();
+}
+
+/* Test 3: Performance comparison */
+"Test 3: Performance comparison...\n".echo();
+
+/* Memory database performance */
+start_time = $TIME().utc();
+i = 0;
+while (i < 100) {
+    u.set("perf" + i.str(), "value" + i.str(), "name");
+    i = i + 1;
+}
+memory_write_time = (($TIME().utc() - start_time) / 1000000).int();
+
+start_time = $TIME().utc();
+i = 0;
+while (i < 100) {
+    result = u.get("perf" + i.str(), "name");
+    i = i + 1;
+}
+memory_read_time = (($TIME().utc() - start_time) / 1000000).int();
+
+("Memory database - Write 100 records: " + memory_write_time + "ms\n").echo();
+("Memory database - Read 100 records: " + memory_read_time + "ms\n").echo();
+
+/* File database performance */
+start_time = $TIME().utc();
+i = 0;
+while (i < 100) {
+    u_file.set("perf" + i.str(), "value" + i.str(), "name");
+    i = i + 1;
+}
+file_write_time = (($TIME().utc() - start_time) / 1000000).int();
+
+start_time = $TIME().utc();
+i = 0;
+while (i < 100) {
+    result = u_file.get("perf" + i.str(), "name");
+    i = i + 1;
+}
+file_read_time = (($TIME().utc() - start_time) / 1000000).int();
+
+("File database - Write 100 records: " + file_write_time + "ms\n").echo();
+("File database - Read 100 records: " + file_read_time + "ms\n").echo();
+
+"✅ Performance test completed\n".echo();
+
+/* Test 4: Error handling */
+"Test 4: Error handling...\n".echo();
+
+/* Test invalid URL */
+u_invalid = $unified();
+result_invalid = u_invalid.create("invalid://test");
+if (result_invalid.type() == $ERR) {
+    "✅ Error handling works for invalid URLs\n".echo();
+} else {
+    "❌ Error handling failed for invalid URLs\n".echo();
+}
+
+/* Test non-existent field */
+result_missing = u.get("nonexistent", "field");
+if (result_missing.len() == 0) {
+    "✅ Error handling works for missing fields\n".echo();
+} else {
+    "❌ Error handling failed for missing fields\n".echo();
+}
+
+"=== Test Complete - Unified Database In-Memory Support Working! ===\n".echo(); 

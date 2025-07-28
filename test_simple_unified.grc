@@ -1,0 +1,5 @@
+print("=== Simple Unified Test ===");
+u = $unified();
+print("Unified object created");
+print("Object type:", u.type());
+print("Object value:", u); 

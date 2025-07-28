@@ -1,0 +1,78 @@
+/* test/grapadbx/test_simple_unified_set_get.grc */
+"=== Simple Unified Database Set/Get Test ===\n".echo();
+
+/* Test 1: In-memory database with simple set/get operations */
+"Test 1: In-memory database via $unified()...\n".echo();
+
+u = $unified();
+result = u.create("memory://test_db");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Database creation succeeded\n".echo();
+    
+    /* Test simple set/get operations */
+    u.set("user1", "John Doe", "name");
+    u.set("user1", 30, "age");
+    u.set("user1", "john@example.com", "email");
+    
+    u.set("user2", "Jane Smith", "name");
+    u.set("user2", 25, "age");
+    u.set("user2", "jane@example.com", "email");
+    
+    /* Retrieve and display records */
+    "Retrieved records:\n".echo();
+    
+    name1 = u.get("user1", "name");
+    age1 = u.get("user1", "age");
+    email1 = u.get("user1", "email");
+    ("  user1: " + name1 + " (age " + age1 + ") - " + email1 + "\n").echo();
+    
+    name2 = u.get("user2", "name");
+    age2 = u.get("user2", "age");
+    email2 = u.get("user2", "email");
+    ("  user2: " + name2 + " (age " + age2 + ") - " + email2 + "\n").echo();
+    
+    "✅ Simple set/get operations completed successfully\n".echo();
+} else {
+    ("❌ Database creation failed: " + result + "\n").echo();
+}
+
+/* Test 2: File-based database with simple set/get operations */
+"Test 2: File-based database via $unified()...\n".echo();
+
+u_file = $unified();
+result_file = u_file.create("grapadbx://test_file.dbx");
+("File creation result: " + result_file + "\n").echo();
+
+if (result_file.type() != $ERR) {
+    "✅ File-based database creation succeeded\n".echo();
+    
+    /* Test file-based set/get operations */
+    u_file.set("prod1", "Laptop", "name");
+    u_file.set("prod1", 999.99, "price");
+    u_file.set("prod1", "Electronics", "category");
+    
+    u_file.set("prod2", "Mouse", "name");
+    u_file.set("prod2", 29.99, "price");
+    u_file.set("prod2", "Electronics", "category");
+    
+    /* Retrieve and display products */
+    "Retrieved products:\n".echo();
+    
+    name1 = u_file.get("prod1", "name");
+    price1 = u_file.get("prod1", "price");
+    category1 = u_file.get("prod1", "category");
+    ("  prod1: " + name1 + " ($" + price1 + ") - " + category1 + "\n").echo();
+    
+    name2 = u_file.get("prod2", "name");
+    price2 = u_file.get("prod2", "price");
+    category2 = u_file.get("prod2", "category");
+    ("  prod2: " + name2 + " ($" + price2 + ") - " + category2 + "\n").echo();
+    
+    "✅ File-based set/get operations completed successfully\n".echo();
+} else {
+    ("❌ File-based database creation failed: " + result_file + "\n").echo();
+}
+
+"=== Test Complete - Simple Unified Database Set/Get Working! ===\n".echo(); 

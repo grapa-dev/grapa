@@ -1,0 +1,33 @@
+/* Direct GrapaDBX Test - Fixed */
+"=== Direct GrapaDBX Test (Fixed) ===\n".echo();
+
+/* Test direct database access using $file().table() */
+"Testing direct database creation...\n".echo();
+
+f = $file();
+"Created file object\n".echo();
+
+/* Try to create a table */
+db = f.table("ROW");
+"Created table object\n".echo();
+
+/* Try to set a value */
+"Setting test_key = test_value\n".echo();
+result = db.set("test_key", "test_value");
+"Set result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Try to get the value */
+"Getting test_key\n".echo();
+value = db.get("test_key");
+"Get result: ".echo();
+value.echo();
+"\n".echo();
+
+/* Try to list the table contents */
+"Listing table contents:\n".echo();
+list = db.list();
+"List result: ".echo();
+list.echo();
+"\n".echo(); 

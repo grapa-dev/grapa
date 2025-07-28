@@ -1,0 +1,41 @@
+/* Debug Bootstrap Process */
+
+echo("=== Debug Bootstrap Process ===");
+
+/* Set environment variables */
+$sys().putenv("LIB", "lib/grapa");
+$sys().putenv("WORK", ".");
+
+echo("LIB = " + $sys().getenv("LIB"));
+echo("WORK = " + $sys().getenv("WORK"));
+
+/* Step 1: List files in lib/grapa */
+f = $file();
+f.chd($sys().getenv("LIB"));
+echo("Files in lib/grapa:");
+files = f.ls();
+files.echo();
+
+/* Step 2: Filter .grc files */
+echo("Filtering .grc files...");
+grc_files = files.reduce(op(a,b){
+    if ((b.$KEY.left(1)=="$")&&(b.$KEY.right(1)=="c")) {
+        a += b.$KEY.rtrim("c");
+    }
+    a;
+}, {});
+
+echo("Grc files found: " + grc_files);
+
+/* Step 3: Create .grz files */
+echo("Creating .grz files...");
+grc_files.reduce(op(x,b,g){
+    echo("Processing: " + b);
+    content = g.get(b+"c");
+    echo("Content length: " + content.len());
+    encoded = $sys().encode(content, "ZIP-GRAPA");
+    echo("Encoded length: " + encoded.len());
+    g.setfile(b+"z", encoded);
+}, {}, f);
+
+echo("=== Debug Complete ==="); 

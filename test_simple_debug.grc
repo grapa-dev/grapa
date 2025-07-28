@@ -1,0 +1,13 @@
+"=== Simple Debug Test ===\n".echo();
+
+/* Create unified object */
+u = $unified();
+"Unified object created\n".echo();
+
+/* Test debug output */
+debug_result = u.debug();
+("Debug result type: " + debug_result.type() + "\n").echo();
+("Debug result length: " + debug_result.len().str() + "\n").echo();
+("Debug result: '" + debug_result.str() + "'\n").echo();
+
+"Test complete\n".echo(); 

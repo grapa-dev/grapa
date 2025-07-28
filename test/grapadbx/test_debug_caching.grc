@@ -1,0 +1,65 @@
+/* test/grapadbx/test_debug_caching.grc */
+"=== Debug Caching Test ===\n".echo();
+
+/* Test cached database creation and basic operations */
+u = $unified();
+result = u.create("grapadbx://test_debug.dbx");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Database creation succeeded\n".echo();
+    
+    /* Set up test structure */
+    "Setting up test structure...\n".echo();
+    u.mk("test", "GROUP");
+    u.cd("test");
+    u.mkfield("name", "STR", "VAR");
+    u.mkfield("value", "STR", "VAR");
+    "✅ Test structure created\n".echo();
+    
+    /* Test a single write operation */
+    "Testing single write operation...\n".echo();
+    start_time = $TIME().utc();
+    u.set("test_key", "test_value", "name");
+    u.set("test_key", "test_data", "value");
+    write_time = (($TIME().utc() - start_time) / 1000000).int();
+    ("Single write took: " + write_time + "ms\n").echo();
+    
+    /* Test a single read operation */
+    "Testing single read operation...\n".echo();
+    start_time = $TIME().utc();
+    name = u.get("test_key", "name");
+    value = u.get("test_key", "value");
+    read_time = (($TIME().utc() - start_time) / 1000000).int();
+    ("Single read took: " + read_time + "ms\n").echo();
+    
+    /* Test multiple operations */
+    "Testing multiple operations...\n".echo();
+    start_time = $TIME().utc();
+    i = 0;
+    while (i < 10) {
+        u.set("key" + i.str(), "value" + i.str(), "name");
+        u.set("key" + i.str(), "data" + i.str(), "value");
+        i = i + 1;
+    }
+    multi_write_time = (($TIME().utc() - start_time) / 1000000).int();
+    ("10 writes took: " + multi_write_time + "ms\n").echo();
+    
+    start_time = $TIME().utc();
+    i = 0;
+    while (i < 10) {
+        name = u.get("key" + i.str(), "name");
+        value = u.get("key" + i.str(), "value");
+        i = i + 1;
+    }
+    multi_read_time = (($TIME().utc() - start_time) / 1000000).int();
+    ("10 reads took: " + multi_read_time + "ms\n").echo();
+    
+    /* Clean up */
+    u.close();
+    "✅ Test completed successfully\n".echo();
+} else {
+    ("❌ Database creation failed: " + result + "\n").echo();
+}
+
+"=== Debug Test Complete ===\n".echo(); 

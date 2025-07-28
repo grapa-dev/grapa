@@ -1,0 +1,16 @@
+/* Test to debug storage type issue */
+
+/* Create a unified database */
+u = $unified("grapadbx://test_storage.dbx");
+
+/* Try to set a value */
+result = u.set("test_key", "test_value");
+echo = "Set result: ";
+echo.result;
+
+/* Try to get the value */
+get_result = u.get("test_key");
+echo = "Get result: ";
+echo.get_result;
+
+echo = "Test complete"; 

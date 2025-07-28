@@ -1,0 +1,17 @@
+/* Basic Unified Test */
+"=== Basic Unified Test ===\n".echo();
+
+"Creating unified object...\n".echo();
+u = $unified();
+"Unified object created\n".echo();
+
+"Testing basic operations...\n".echo();
+
+/* Test if we can access the object */
+"Object type: ".echo();
+u.type().echo();
+"\n".echo();
+
+"Object info: ".echo();
+u.info().echo();
+"\n".echo(); 

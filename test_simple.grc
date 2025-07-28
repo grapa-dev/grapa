@@ -1,19 +1,16 @@
-/* Simple test to verify Grapa is working */
-"Hello from Grapa!\n".echo();
-"Testing basic functionality...\n".echo();
+/* Simple GrapaDBX Test */
+"=== Simple GrapaDBX Test ===\n".echo();
 
-/* Test if $unified can be instantiated */
-"Testing $unified instantiation...\n".echo();
-u = $unified("file:///tmp/test")
-"Created $unified object: ".echo();
-u.echo();
+u = $unified();
+"Created unified object\n".echo();
+
+result = u.create("grapadbx://test.dbx");
+"Create result: ".echo();
+result.echo();
 "\n".echo();
 
-/* Test if $file can be instantiated */
-"Testing $file instantiation...\n".echo();
-f = $file()
-"Created $file object: ".echo();
-f.echo();
-"\n".echo();
-
-"Test completed!\n".echo(); 
+if (result.type() == $ERR) {
+    "❌ Database creation failed\n".echo();
+} else {
+    "✅ Database creation succeeded\n".echo();
+} 

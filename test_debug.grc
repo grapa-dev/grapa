@@ -1,0 +1,19 @@
+/* Debug GrapaDBX Test */
+"=== Debug GrapaDBX Test ===\n".echo();
+
+u = $unified();
+"Created unified object\n".echo();
+
+"Attempting to create GrapaDBX database...\n".echo();
+result = u.create("grapadbx://test.dbx");
+"Create result: ".echo();
+result.echo();
+"\n".echo();
+
+"Storage type: ".echo();
+u.getType().echo();
+"\n".echo();
+
+"Storage info: ".echo();
+u.getInfo().echo();
+"\n".echo(); 

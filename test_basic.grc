@@ -1,0 +1,4 @@
+"Hello World\n".echo();
+x = 5;
+msg = "x = " + x.str() + "\n";
+msg.echo(); 

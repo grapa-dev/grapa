@@ -1,0 +1,67 @@
+"=== Verifying Current DBX/Unified Status ===\n".echo();
+
+/* Test 1: Basic unified object creation */
+"Test 1: Unified object creation...\n".echo();
+u = $unified();
+if (u.type() == "$unified") {
+    "✅ Unified object creation: WORKING\n".echo();
+} else {
+    ("❌ Unified object creation: FAILED - type=" + u.type() + "\n").echo();
+}
+
+/* Test 2: Database creation */
+"Test 2: GrapaDBX database creation...\n".echo();
+result = u.create("grapadbx://verify_test.dbx");
+if (result.str() == "created") {
+    "✅ GrapaDBX database creation: WORKING\n".echo();
+} else {
+    ("❌ GrapaDBX database creation: FAILED - result=" + result.str() + "\n").echo();
+}
+
+/* Test 3: Debug functionality */
+"Test 3: Debug functionality...\n".echo();
+debug_result = u.debug();
+if (debug_result.len() > 0 || debug_result.type() != "$ERR") {
+    "✅ Debug functionality: WORKING\n".echo();
+} else {
+    "❌ Debug functionality: FAILED\n".echo();
+}
+
+/* Test 4: Direct DBX operations */
+"Test 4: Direct DBX operations...\n".echo();
+file_result = $file().table("grapadbx://direct_test.dbx");
+if (file_result.type() != "$ERR") {
+    "✅ Direct DBX operations: WORKING\n".echo();
+} else {
+    ("❌ Direct DBX operations: FAILED - type=" + file_result.type() + "\n").echo();
+}
+
+/* Test 5: Data storage */
+"Test 5: Data storage...\n".echo();
+set_result = u.set("test_record", "test_value");
+if (set_result.type() != "$ERR") {
+    "✅ Data storage: WORKING\n".echo();
+} else {
+    ("❌ Data storage: FAILED - result=" + set_result.str() + "\n").echo();
+}
+
+/* Test 6: Data retrieval */
+"Test 6: Data retrieval...\n".echo();
+get_result = u.get("test_record");
+if (get_result.type() != "$ERR" && get_result.str() == "test_value") {
+    "✅ Data retrieval: WORKING\n".echo();
+} else {
+    ("❌ Data retrieval: FAILED - result=" + get_result.str() + "\n").echo();
+}
+
+/* Test 7: File system operations */
+"Test 7: File system operations...\n".echo();
+u2 = $unified();
+fs_result = u2.create("file:///tmp");
+if (fs_result.str() == "created") {
+    "✅ File system operations: WORKING\n".echo();
+} else {
+    ("❌ File system operations: FAILED - result=" + fs_result.str() + "\n").echo();
+}
+
+"=== Verification Complete ===\n".echo(); 

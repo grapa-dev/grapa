@@ -1,0 +1,96 @@
+/* Debug $unified() Operations */
+
+"=== Debugging $unified() Operations ===\n".echo();
+
+/* Test 1: Basic $unified() creation and operations */
+"Test 1: Basic $unified() operations...\n".echo();
+
+u = $unified();
+result = u.create("memory://debug_test");
+("Creation result type: " + result.type() + "\n").echo();
+("Creation result: " + result + "\n").echo();
+
+if (result.type() == $ERR) {
+    "Creation failed\n".echo();
+} else {
+    "Creation succeeded\n".echo();
+    
+    /* Test mk operation */
+    mk_result = u.mk("test_table", "GROUP");
+    ("mk result type: " + mk_result.type() + "\n").echo();
+    ("mk result: " + mk_result + "\n").echo();
+    
+    /* Test cd operation */
+    cd_result = u.cd("test_table");
+    ("cd result type: " + cd_result.type() + "\n").echo();
+    ("cd result: " + cd_result + "\n").echo();
+    
+    /* Test mkfield operation */
+    mkfield_result = u.mkfield("name", "STR", "VAR");
+    ("mkfield result type: " + mkfield_result.type() + "\n").echo();
+    ("mkfield result: " + mkfield_result + "\n").echo();
+    
+    /* Test set operation */
+    set_result = u.set("record1", "John Doe", "name");
+    ("set result type: " + set_result.type() + "\n").echo();
+    ("set result: " + set_result + "\n").echo();
+    
+    /* Test get operation */
+    get_result = u.get("record1", "name");
+    ("get result type: " + get_result.type() + "\n").echo();
+    ("get result: " + get_result + "\n").echo();
+    ("get result length: " + get_result.len() + "\n").echo();
+}
+
+/* Test 2: Compare with $file().table() */
+"Test 2: Compare with $file().table()...\n".echo();
+
+t = $file().table("GROUP");
+("table result type: " + t.type() + "\n").echo();
+("table result: " + t + "\n").echo();
+
+if (t.type() == $ERR) {
+    "Table creation failed\n".echo();
+} else {
+    "Table creation succeeded\n".echo();
+    
+    /* Test mkfield operation */
+    t_mkfield_result = t.mkfield("age", "INT", "FIX", 4);
+    ("t.mkfield result type: " + t_mkfield_result.type() + "\n").echo();
+    ("t.mkfield result: " + t_mkfield_result + "\n").echo();
+    
+    /* Test set operation */
+    t_set_result = t.set("user1", 30, "age");
+    ("t.set result type: " + t_set_result.type() + "\n").echo();
+    ("t.set result: " + t_set_result + "\n").echo();
+    
+    /* Test get operation */
+    t_get_result = t.get("user1", "age");
+    ("t.get result type: " + t_get_result.type() + "\n").echo();
+    ("t.get result: " + t_get_result + "\n").echo();
+    ("t.get result length: " + t_get_result.len() + "\n").echo();
+}
+
+/* Test 3: Test $unified() with grapadbx:// */
+"Test 3: Test $unified() with grapadbx://...\n".echo();
+
+u2 = $unified();
+result2 = u2.create("grapadbx://debug_file.dbx");
+("grapadbx creation result type: " + result2.type() + "\n").echo();
+("grapadbx creation result: " + result2 + "\n").echo();
+
+if (result2.type() == $ERR) {
+    "grapadbx creation failed\n".echo();
+} else {
+    "grapadbx creation succeeded\n".echo();
+    
+    /* Test basic operations */
+    u2.mk("debug_table", "GROUP");
+    u2.cd("debug_table");
+    u2.mkfield("data", "STR", "VAR");
+    u2.set("key1", "Test Data", "data");
+    get_result2 = u2.get("key1", "data");
+    ("grapadbx get result: " + get_result2 + "\n").echo();
+}
+
+"=== Debug Complete ===\n".echo(); 

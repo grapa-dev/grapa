@@ -1,0 +1,23 @@
+/* Simple GrapaDBX Test */
+
+"Testing GrapaDBX...\n".echo();
+
+/* Create a database */
+dbx = $unified("grapadbx://test.dbx");
+"Database created\n".echo();
+
+/* Create a table */
+dbx.mk("test_table");
+"Table created\n".echo();
+
+/* Set a value */
+dbx.set("test_table/key1", "value1", "$VALUE");
+"Value set\n".echo();
+
+/* Get the value */
+result = dbx.get("test_table/key1", "$VALUE");
+("Retrieved: " + result + "\n").echo();
+
+/* Close */
+dbx.close();
+"Test complete\n".echo(); 

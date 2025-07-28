@@ -1,0 +1,36 @@
+/* Test $file().dbx() pattern for GrapaDBX */
+
+"Testing $file().dbx() pattern...\n".echo();
+
+/* Test 1: File-based DBX */
+"Test 1: Creating file-based DBX...\n".echo();
+try {
+    dbx_file = $file().dbx("test_file.dbx");
+    "Test 1: File-based DBX created successfully\n".echo();
+} catch {
+    "Test 1: File-based DBX creation failed\n".echo();
+}
+
+/* Test 2: In-memory DBX */
+"Test 2: Creating in-memory DBX...\n".echo();
+try {
+    dbx_memory = $file().dbx().table("ROW");
+    "Test 2: In-memory DBX created successfully\n".echo();
+} catch {
+    "Test 2: In-memory DBX creation failed\n".echo();
+}
+
+/* Test 3: Caching configuration */
+"Test 3: Testing caching configuration...\n".echo();
+try {
+    if (dbx_memory) {
+        dbx_memory.caching("ENABLED", 1048576);  /* 1MB cache */
+        mode = dbx_memory.get_caching_mode();
+        size = dbx_memory.get_cache_size();
+        ("Test 3: Caching mode = " + mode + ", size = " + size.str() + "\n").echo();
+    }
+} catch {
+    "Test 3: Caching configuration failed\n".echo();
+}
+
+"Test complete\n".echo(); 

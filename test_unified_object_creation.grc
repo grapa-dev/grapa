@@ -1,0 +1,31 @@
+"=== Unified Object Creation Test ===\n".echo();
+"Testing unified object creation...\n".echo();
+
+u = $unified();
+"Unified object created\n".echo();
+
+/* Check if object is valid */
+("Object is valid: " + (u.type() != "$ERR").str() + "\n").echo();
+("Object type: " + u.type() + "\n").echo();
+
+/* Try to access getType method */
+"Trying to access getType method...\n".echo();
+result = u.getType();
+("getType result: " + result.str() + "\n").echo();
+
+if (result.type() == "$ERR") {
+    ("Error accessing getType: " + result.str() + "\n").echo();
+} else {
+    ("getType works: " + result.str() + "\n").echo();
+}
+
+/* Try to create a database */
+"Trying to create a database...\n".echo();
+result = u.create("grapadbx://test.dbx");
+("Create result: " + result.str() + "\n").echo();
+
+if (result.type() == "$ERR") {
+    ("Error creating database: " + result.str() + "\n").echo();
+} else {
+    ("Database created successfully: " + result.str() + "\n").echo();
+} 

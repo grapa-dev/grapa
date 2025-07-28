@@ -1,0 +1,21 @@
+/* Debug test for GrapaDBX integration */
+
+.echo("Starting debug test...\n");
+
+/* Test 1: Basic echo */
+.echo("Test 1: Basic echo works\n");
+
+/* Test 2: Variable assignment */
+test_var = "test value";
+.echo("Test 2: Variable assignment works: " + test_var + "\n");
+
+/* Test 3: $unified() function call */
+.echo("Test 3: Calling $unified()...\n");
+try {
+    dbx = $unified("grapadbx://test.dbx");
+    .echo("Test 3: $unified() call succeeded\n");
+} catch {
+    .echo("Test 3: $unified() call failed\n");
+}
+
+.echo("Debug test complete\n"); 

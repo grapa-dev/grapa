@@ -1,0 +1,25 @@
+/* Test script to check dump output */
+
+"=== Testing Dump Output ===".echo();
+
+/* Try to create a simple database and dump it */
+u = $unified();
+result = u.create("grapadbx://test_dump.dbx");
+
+if (result.type() != $ERR) {
+    "Database created successfully".echo();
+    
+    /* Try to set some data */
+    u.set("testkey", "testvalue");
+    "Data set".echo();
+    
+    /* Try to dump */
+    "Attempting to dump database...".echo();
+    dump_result = u.dump();
+    ("Dump result: " + dump_result).echo();
+    
+} else {
+    ("Database creation failed: " + result).echo();
+}
+
+"=== Test complete ===".echo(); 

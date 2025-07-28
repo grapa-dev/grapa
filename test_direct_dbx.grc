@@ -1,0 +1,23 @@
+/* Direct GrapaDBX Test */
+"=== Direct GrapaDBX Test ===\n".echo();
+
+/* Try to create a database directly using $file().table() */
+"Testing direct database creation...\n".echo();
+
+f = $file();
+"Created file object\n".echo();
+
+db = f.table("ROW");
+"Created table object\n".echo();
+
+/* Try to set a value */
+result = db.set("test_key", "test_value");
+"Set result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Try to get the value */
+value = db.get("test_key");
+"Get result: ".echo();
+value.echo();
+"\n".echo(); 

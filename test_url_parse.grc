@@ -1,0 +1,21 @@
+/* URL Parse Test */
+"=== URL Parse Test ===\n".echo();
+
+u = $unified();
+"Created unified object\n".echo();
+
+"Testing URL parsing...\n".echo();
+
+/* Test different URL formats */
+urls = ["grapadbx://test.dbx", "grapadb://test.db", "memory://test", "file://test.txt"];
+
+urls.each(url) {
+    "Testing URL: ".echo();
+    url.echo();
+    "\n".echo();
+    
+    result = u.create(url);
+    "Result: ".echo();
+    result.echo();
+    "\n".echo();
+}; 

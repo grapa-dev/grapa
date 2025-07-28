@@ -1,0 +1,4 @@
+/* Basic test script */
+
+.echo("Hello World\n");
+.echo("Basic test completed\n"); 

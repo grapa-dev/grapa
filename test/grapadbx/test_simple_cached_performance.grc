@@ -1,0 +1,71 @@
+/* test/grapadbx/test_simple_cached_performance.grc */
+"=== Simple Cached Performance Test ===\n".echo();
+
+/* Test cached performance with better debugging */
+u = $unified();
+result = u.create("grapadbx://test_simple_cached.dbx");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Database creation succeeded\n".echo();
+    
+    /* Set up test structure */
+    u.mk("test", "GROUP");
+    u.cd("test");
+    u.mkfield("name", "STR", "VAR");
+    u.mkfield("value", "STR", "VAR");
+    
+    /* Test write performance */
+    "Testing write performance...\n".echo();
+    start_time = $TIME().utc();
+    ("Start time: " + start_time + "\n").echo();
+    
+    i = 0;
+    while (i < 50) {
+        u.set("key" + i.str(), "value" + i.str(), "name");
+        u.set("key" + i.str(), "data" + i.str(), "value");
+        i = i + 1;
+    }
+    
+    end_time = $TIME().utc();
+    ("End time: " + end_time + "\n").echo();
+    
+    elapsed_ns = end_time - start_time;
+    ("Elapsed nanoseconds: " + elapsed_ns + "\n").echo();
+    
+    write_time_ms = (elapsed_ns / 1000000).int();
+    ("Write time (ms): " + write_time_ms + "\n").echo();
+    
+    /* Test read performance */
+    "Testing read performance...\n".echo();
+    start_time = $TIME().utc();
+    ("Start time: " + start_time + "\n").echo();
+    
+    i = 0;
+    while (i < 50) {
+        name = u.get("key" + i.str(), "name");
+        value = u.get("key" + i.str(), "value");
+        i = i + 1;
+    }
+    
+    end_time = $TIME().utc();
+    ("End time: " + end_time + "\n").echo();
+    
+    elapsed_ns = end_time - start_time;
+    ("Elapsed nanoseconds: " + elapsed_ns + "\n").echo();
+    
+    read_time_ms = (elapsed_ns / 1000000).int();
+    ("Read time (ms): " + read_time_ms + "\n").echo();
+    
+    /* Final results */
+    ("=== Final Results ===\n").echo();
+    ("Write 50 records: " + write_time_ms + "ms\n").echo();
+    ("Read 50 records: " + read_time_ms + "ms\n").echo();
+    
+    u.close();
+    "✅ Test completed successfully\n".echo();
+} else {
+    ("❌ Database creation failed: " + result + "\n").echo();
+}
+
+"=== Test Complete ===\n".echo(); 
