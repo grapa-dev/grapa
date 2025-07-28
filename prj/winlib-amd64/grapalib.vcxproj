@@ -205,7 +205,9 @@
     <ClCompile Include="..\..\source\grapa\GrapaCompress.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaConsole.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaDatabase.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaDatabaseTemplate.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaDB.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaDBX.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaEncode.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaFileCache.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaFileIO.cpp" />

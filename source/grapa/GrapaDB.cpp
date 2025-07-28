@@ -160,7 +160,7 @@ GrapaError GrapaDB::DumpTree(u64 pTreeRef, GrapaFile *pDumpFile)
 GrapaError GrapaDB::LastTableId(u64 firstTree, u64& pTableId)
 {
 	GrapaError err;
-	GrapaCursor dtCursor;
+	GrapaDBCursor dtCursor;
 	u64 itemCount;
 	pTableId = 1;
 	dtCursor.Set(firstTree);
@@ -176,7 +176,7 @@ GrapaError GrapaDB::LastTableId(u64 firstTree, u64& pTableId)
 GrapaError GrapaDB::CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, GrapaDBTable& pTable)
 {
 	GrapaError err;
-	GrapaCursor tableNames,tableNamesDT;
+	GrapaDBCursor tableNames,tableNamesDT;
 	GrapaDBField dbField;
 	GrapaDBIndex dbIndex;
 	GrapaDBTable parentDict;
@@ -252,7 +252,7 @@ GrapaError GrapaDB::CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, Grapa
 GrapaError GrapaDB::OpenTable(u64 firstTree, u64 pTableId, GrapaDBTable& pTable)
 {
 	GrapaError err;
-	GrapaCursor tableCursor,indexTableCursor,indexCursor;
+	GrapaDBCursor tableCursor,indexTableCursor,indexCursor;
 	GrapaDBTable dictTable;
 	GrapaDBFieldValueArray data;
 	u64 indexRef;
@@ -297,8 +297,8 @@ GrapaError GrapaDB::OpenTable(u64 firstTree, u64 pTableId, GrapaDBTable& pTable)
 GrapaError GrapaDB::DeleteTable(u64 firstTree, u64 pTableId)
 {
 	GrapaError err;
-	GrapaCursor tableCursor;
-	GrapaCursor cursor;
+	GrapaDBCursor tableCursor;
+	GrapaDBCursor cursor;
 	GrapaDBTable table;
 	u64 indexTree,storeTree;
 	u8 storeType;
@@ -346,7 +346,7 @@ GrapaError GrapaDB::DeleteTable(u64 firstTree, u64 pTableId)
 GrapaError GrapaDB::CreateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDBTable& pTable)
 {
 	GrapaError err;
-	GrapaCursor tableNames;
+	GrapaDBCursor tableNames;
 	GrapaDBTable parentDict;
 	u64 indexTree,storeTree;
 	u8 storeType;
@@ -408,7 +408,7 @@ GrapaError GrapaDB::CreateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFir
 GrapaError GrapaDB::UpdateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFirstTree, u64 pTableId, GrapaDBTable& pTable)
 {
 	GrapaError err;
-	GrapaCursor tableNames;
+	GrapaDBCursor tableNames;
 	GrapaDBTable parentDict;
 	u64 indexTree,storeTree;
 	u8 storeType;
@@ -487,9 +487,9 @@ GrapaError GrapaDB::FirstFreeId(u64 tableRef, u64 minId, u64& resId)
 GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField, const GrapaCHAR& pName)
 {
 	GrapaError err;
-	GrapaCursor tableNames;
+	GrapaDBCursor tableNames;
 	u64 indexRef;
-	GrapaCursor dtCursor;
+	GrapaDBCursor dtCursor;
 	u64 recordCount;
 	u64 storeTree;
 	u8 storeType;
@@ -724,9 +724,9 @@ GrapaError GrapaDB::CreateTableField(GrapaDBTable& pTable, GrapaDBField& pField,
 GrapaError GrapaDB::OpenTableField(GrapaDBTable& pTable, u64 pFieldId, GrapaDBField& pField)
 {
 	GrapaError err = 0;
-	GrapaCursor tableNames;
+	GrapaDBCursor tableNames;
 	u64 indexRef;
-	GrapaCursor dtField;
+	GrapaDBCursor dtField;
 
 	tableNames.Set(pTable.mRecRef);
 	err = GetTreeIndex(tableNames,indexRef);
@@ -746,9 +746,9 @@ GrapaError GrapaDB::OpenTableField(GrapaDBTable& pTable, u64 pFieldId, GrapaDBFi
 GrapaError GrapaDB::OpenTableFieldList(GrapaDBTable& pTable, GrapaDBFieldArray& pFieldList)
 {
 	GrapaError err = 0;
-	GrapaCursor tableNames;
+	GrapaDBCursor tableNames;
 	u64 indexRef;
-	GrapaCursor dtField;
+	GrapaDBCursor dtField;
 	GrapaDBField field;
 	u64 fieldCount=0;
 
@@ -777,7 +777,7 @@ GrapaError GrapaDB::OpenTableFieldList(GrapaDBTable& pTable, GrapaDBFieldArray& 
 GrapaError GrapaDB::DeleteTableField(GrapaDBTable& pTable, u64 pFieldId)
 {
 	GrapaError err;
-	GrapaCursor indexCursor, tableCursor;
+	GrapaDBCursor indexCursor, tableCursor;
 	u64 indexRef;
 
 	//if used in any indexes, fail...need to drop indexes first
@@ -792,7 +792,7 @@ GrapaError GrapaDB::DeleteTableField(GrapaDBTable& pTable, u64 pFieldId)
 		err = Next(indexCursor); //skip over the DICT in the index
 	while (!err)
 	{
-		GrapaCursor indexFieldCursor;
+		GrapaDBCursor indexFieldCursor;
 		u64 indexFieldsRef;
 		indexFieldCursor.Set(indexCursor.mValue);
 		err = GetTreeIndex(indexFieldCursor,indexFieldsRef);
@@ -813,8 +813,8 @@ GrapaError GrapaDB::DeleteTableField(GrapaDBTable& pTable, u64 pFieldId)
 			err = Next(indexCursor); //skip over the DICT in the index
 	}
 
-	GrapaCursor tableNames;
-	GrapaCursor dtField;
+	GrapaDBCursor tableNames;
+	GrapaDBCursor dtField;
 	GrapaDBField field;
 	u64 fieldCount=0;
 	u64 fromOffset=0,toOffset=0;
@@ -951,7 +951,7 @@ GrapaError GrapaDB::DeleteTableField(GrapaDBTable& pTable, u64 pFieldId)
 GrapaError GrapaDB::FlushTableFields(GrapaDBTable& pTable)
 {
 	GrapaError err;
-	GrapaCursor tableCursor;
+	GrapaDBCursor tableCursor;
 	bool isDirty=false;
 
 	tableCursor.Set(pTable.mRecRef);
@@ -998,7 +998,7 @@ GrapaError GrapaDB::FindFreeIndexId(GrapaDBIndex& pIndex, u64 minId, u64& pIndex
 GrapaError GrapaDB::CreateIndex(GrapaDBTable& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDBIndex& pIndex)
 {
 	GrapaError err;
-	GrapaCursor indexCursor;
+	GrapaDBCursor indexCursor;
 	u64 indexRef;
 
 	err = OpenIndex(pTable,pIndexId,pIndexList,pIndex);
@@ -1066,7 +1066,7 @@ GrapaError GrapaDB::CreateIndex(GrapaDBTable& pTable, u64 pIndexId, GrapaDU64Arr
 GrapaError GrapaDB::OpenIndex(GrapaDBTable& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDBIndex& pIndex)
 {
 	GrapaError err;
-	GrapaCursor indexCursor;
+	GrapaDBCursor indexCursor;
 	u64 indexRef,indexFieldsRef,fieldCount;
 
 	indexCursor.Set(pTable.mRecRef);
@@ -1107,7 +1107,7 @@ GrapaError GrapaDB::OpenIndex(GrapaDBTable& pTable, u64 pIndexId, GrapaDU64Array
 GrapaError GrapaDB::DeleteIndex(GrapaDBTable& pTable, u64 pIndexId)
 {
 	GrapaError err;
-	GrapaCursor indexCursor;
+	GrapaDBCursor indexCursor;
 	u64 indexRef;
 	GrapaDBIndex pIndex;
 
@@ -1130,7 +1130,7 @@ GrapaError GrapaDB::DeleteIndex(GrapaDBTable& pTable, u64 pIndexId)
 GrapaError GrapaDB::RefreshIndex(GrapaDBIndex& pIndex)
 {
 	GrapaError err;
-	GrapaCursor indexCursor,dtCursor;
+	GrapaDBCursor indexCursor,dtCursor;
 	indexCursor.Set(pIndex.mRef);
 	EmptyTree(indexCursor);
 	dtCursor.Set(pIndex.mTable.mRef);
@@ -1149,7 +1149,7 @@ GrapaError GrapaDB::RefreshIndex(GrapaDBIndex& pIndex)
 GrapaError GrapaDB::CreateIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u64 pFieldId)
 {
 	GrapaError err;
-	GrapaCursor indexCursor,dtCursor;
+	GrapaDBCursor indexCursor,dtCursor;
 	u64 indexFieldsRef;
 	u64 fieldId;
 
@@ -1205,7 +1205,7 @@ GrapaError GrapaDB::CreateIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u6
 GrapaError GrapaDB::OpenIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u64& pFieldId)
 {
 	GrapaError err;
-	GrapaCursor indexCursor;
+	GrapaDBCursor indexCursor;
 	u64 indexFieldsRef;
 
 	pFieldId = 0;
@@ -1228,14 +1228,14 @@ GrapaError GrapaDB::FindFreeRecordId(GrapaDBTable& pTable, u64& pRecordId)
 	return LastTableId(pTable.mRef, pRecordId);
 }
 
-GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
+GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaDBCursor& pCursor)
 {
 	GrapaError err = 0;
 	u64 indexTree=0;
-	GrapaCursor tableCursor,indexCursor,dtField;
+	GrapaDBCursor tableCursor,indexCursor,dtField;
 	u64 newRecordRef = 0;
 	GrapaDBField dbField;
-	GrapaCursor searchCursor=pCursor;
+	GrapaDBCursor searchCursor=pCursor;
 
 	pCursor.mValue = 0;
 
@@ -1329,7 +1329,7 @@ GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
 				if (err) return(err);
 				pCursor.mLength = tableCursor.mLength;
 
-				GrapaCursor itemCursor;
+				GrapaDBCursor itemCursor;
 				u64 tableDT;
 				itemCursor.Set(pTable.mRecRef);
 				err = GetTreeIndex(itemCursor,tableDT);
@@ -1395,10 +1395,10 @@ GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
 	return 0;
 }
 
-GrapaError GrapaDB::DeleteRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
+GrapaError GrapaDB::DeleteRecord(GrapaDBTable& pTable, GrapaDBCursor& pCursor)
 {
 	GrapaError err;
-	GrapaCursor tableCursor;
+	GrapaDBCursor tableCursor;
 	switch (pTable.mDictField.mTreeType)
 	{
 		case SU64_TREE:
@@ -1421,7 +1421,7 @@ GrapaError GrapaDB::DeleteRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
 
 				// then cycle through the fields deleting the item at the offset location at delOffset
 
-				GrapaCursor itemCursor;
+				GrapaDBCursor itemCursor;
 				u64 tableDT;
 				itemCursor.Set(pTable.mRecRef);
 				err = GetTreeIndex(itemCursor,tableDT);
@@ -1469,10 +1469,10 @@ GrapaError GrapaDB::DeleteRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& pFieldList)
+GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray& pFieldList)
 {
 	GrapaError err;
-	GrapaCursor recCursor,tableCursor,indexCursor;
+	GrapaDBCursor recCursor,tableCursor,indexCursor;
 	u64 indexTree,storeTree;
 	u64 bytesWriten;
 	s32 fieldCount = pFieldList.Count();
@@ -1527,7 +1527,7 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 
 	GrapaDBTable parentDict;
 	GrapaDBField dbField;
-	GrapaCursor dbCursor;
+	GrapaDBCursor dbCursor;
 
 	switch (recCursor.mTreeType)
 	{
@@ -1711,7 +1711,7 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 			u64 len = 0;
 			u64 offset = 0;
 			u64 dataPtr = 0, dataSize, dataLength, growBlockSize;
-			GrapaCursor fieldCursor;
+			GrapaDBCursor fieldCursor;
 			u8 fieldType = dbFieldValue->mValue.ToDbType();
 			u8 isRaw = (dbFieldValue->mType == (u8)GrapaTokenType::RAW) ? 1 : 0;
 			switch (dbFieldValue->mStore)
@@ -1898,7 +1898,7 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 	return(0);
 }
 
-GrapaError GrapaDB::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCursor& recCursor, GrapaDBField& field)
+GrapaError GrapaDB::FindRecordField(GrapaDBCursor& cursor, u64 fieldId, GrapaDBCursor& recCursor, GrapaDBField& field)
 {
 	GrapaError err;
 	u64 tableRef;
@@ -1937,11 +1937,11 @@ GrapaError GrapaDB::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurso
 	return(err);
 }
 
-GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, u64 fieldId, GrapaBYTE& buffer)
+GrapaError GrapaDB::GetRecordField(GrapaDBCursor& cursor, u64 fieldId, GrapaBYTE& buffer)
 {
 	GrapaError err;
 	GrapaDBField field;
-	GrapaCursor recCursor;
+	GrapaDBCursor recCursor;
 	err = FindRecordField(cursor, fieldId, recCursor, field);
 	if (err) return(err);
 	err = GetRecordField(recCursor, field, buffer);
@@ -1949,13 +1949,13 @@ GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, u64 fieldId, GrapaBYTE& 
 	return 0;
 }
 
-GrapaError GrapaDB::GetRecordField(GrapaCursor& cursor, GrapaDBField& field, GrapaBYTE& buffer)
+GrapaError GrapaDB::GetRecordField(GrapaDBCursor& cursor, GrapaDBField& field, GrapaBYTE& buffer)
 {
 	GrapaError err;
 	u64 returnSize=0;
 	u64 dataRef = cursor.mValue;
 	u64 indexTree,storeTree;
-	GrapaCursor fieldCursor,recCursor;
+	GrapaDBCursor fieldCursor,recCursor;
 	u8 compressType=0;
 
 	buffer.SetSize(0);
@@ -2199,7 +2199,7 @@ GrapaError GrapaDB::SearchDb(GrapaDBCursor& cursor, GrapaDBTable& pTable, GrapaD
 {
 	GrapaError err;
 	u64 indexRef=0;
-	GrapaCursor indexCursor;
+	GrapaDBCursor indexCursor;
 	bool usingIndex=false;
 	GrapaDBField* field;
 
@@ -2331,11 +2331,11 @@ GrapaError GrapaDB::PrevDb(GrapaDBCursor& cursor)
 
 // need to update to use a field list for indexes that have multiple fields
 // and would need to match up the compar fields to the index fields
-GrapaError GrapaDB::LocateIndex(GrapaCursor& cursor, u64 indexRef, u64 fieldId)
+GrapaError GrapaDB::LocateIndex(GrapaDBCursor& cursor, u64 indexRef, u64 fieldId)
 {
 	GrapaError err;
-	GrapaCursor indexCursor;
-	GrapaCursor indexField;
+	GrapaDBCursor indexCursor;
+	GrapaDBCursor indexField;
 	u64 indexFieldsRef;
 
 	cursor.Set(indexRef);
@@ -2361,11 +2361,11 @@ GrapaError GrapaDB::LocateIndex(GrapaCursor& cursor, u64 indexRef, u64 fieldId)
 	return((GrapaError)-1);
 }
 
-bool GrapaDB::IndexHasField(GrapaCursor& cursor, u64 fieldId)
+bool GrapaDB::IndexHasField(GrapaDBCursor& cursor, u64 fieldId)
 {
 	GrapaError err;
-	GrapaCursor indexCursor;
-	GrapaCursor indexField;
+	GrapaDBCursor indexCursor;
+	GrapaDBCursor indexField;
 	u64 indexFieldsRef;
 
 	indexCursor.Set(cursor.mValue);
@@ -2387,7 +2387,7 @@ bool GrapaDB::IndexHasField(GrapaCursor& cursor, u64 fieldId)
 GrapaError GrapaDB::GetDataTypeRecord(u64 tableRef, u64& tableDT)
 {
 	GrapaError err=0;
-	GrapaCursor tableCursor;
+	GrapaDBCursor tableCursor;
 	u64 indexTree=0;
 	tableDT = 0;
 	tableCursor.Set(tableRef);
@@ -2405,7 +2405,7 @@ GrapaError GrapaDB::GetDataTypeRecord(u64 tableRef, u64& tableDT)
 GrapaError GrapaDB::InsertIntoIndex(u64 tableRef, u8 pValueType, u64 resId, u64 recordRef)
 {
 	GrapaError err=0;
-	GrapaCursor indexTableCursor,indexCursor;
+	GrapaDBCursor indexTableCursor,indexCursor;
 	u64 indexRef;
 
 
@@ -2438,7 +2438,7 @@ GrapaError GrapaDB::InsertIntoIndex(u64 tableRef, u8 pValueType, u64 resId, u64 
 GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCursor& treeCursor, s8& result)
 {
 	GrapaError err=0;
-	GrapaCursor cursor;
+	GrapaDBCursor cursor;
 
 	result = -1;
 
@@ -2519,7 +2519,7 @@ GrapaError GrapaDB::CompareKey(s16 compareType, GrapaCursor& dataCursor, GrapaCu
 GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, GrapaCursor& treeCursor, s8& result)
 {
 	GrapaError err;
-	GrapaCursor cursor;
+	GrapaDBCursor cursor;
 	u64 indexRef;
 	GrapaCHAR name1,name2;
 
@@ -2562,7 +2562,7 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 	err = GetTreeIndex(cursor,indexRef);
 	if (err) return(err);
 
-	GrapaCursor treeItemCursor,dataItemCursor;
+	GrapaDBCursor treeItemCursor,dataItemCursor;
 	err = PtrToRec(treeCursor, treeItemCursor);
 	if (err) return(err);
 	err = PtrToRec(dataCursor, dataItemCursor);
@@ -2644,7 +2644,7 @@ GrapaError GrapaDB::CompareSearchKey(s16 compareType, GrapaCursor& dataCursor, G
 	{
 		fv = fvList->GetFieldAt(i);
 
-		GrapaCursor treeItemCursor;
+		GrapaDBCursor treeItemCursor;
 		err = PtrToRec(treeCursor, treeItemCursor);
 
 		// need to pull this into the treeItemCursor datatype for the comparison
@@ -2765,7 +2765,7 @@ GrapaError GrapaDB::Delete(GrapaCursor& treeCursor)
 GrapaError GrapaDB::DeleteKeyIndexes(GrapaCursor& treeCursor)
 {
 	GrapaError err=0;
-	GrapaCursor tableCursor, indexTableCursor;
+	GrapaDBCursor tableCursor, indexTableCursor;
 	u64 indexRef=0;
 
 	switch(treeCursor.mValueType)
@@ -2814,9 +2814,9 @@ GrapaError GrapaDB::DeleteKeyIndexes(GrapaCursor& treeCursor)
 GrapaError GrapaDB::DeleteKey(GrapaCursor& treeCursor)
 {
 	GrapaError err=0;
-	GrapaCursor dataTypeCursor;
-	GrapaCursor indexTableCursor;
-	GrapaCursor tableCursor;
+	GrapaDBCursor dataTypeCursor;
+	GrapaDBCursor indexTableCursor;
+	GrapaDBCursor tableCursor;
 	u64 tableDT;
 	u64 tableRef=0;
 	GrapaDBField dbField;
@@ -2891,11 +2891,11 @@ GrapaError GrapaDB::DeleteKey(GrapaCursor& treeCursor)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-GrapaError GrapaDB::DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u64 tableDT)
+GrapaError GrapaDB::DumpTheStructure(GrapaCHAR& dbWrite, GrapaDBCursor& cursor, u64 tableDT)
 {
 	GrapaError err = 0;
 	u64 returnLen=0;
-	GrapaCursor dataTypeCursor;
+	GrapaDBCursor dataTypeCursor;
 	GrapaDBField dbField;
 	GrapaCHAR dbChar;
 
@@ -2957,11 +2957,11 @@ GrapaError GrapaDB::DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u6
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaDBCursor& cursor)
 {
 	GrapaError err;
 	u64 tableRef,tableDT;
-	GrapaCursor itemCursor;
+	GrapaDBCursor itemCursor;
 
 	tableRef = cursor.mTreeRef;
 	err = GetDataTypeRecord(tableRef,tableDT);
@@ -2970,11 +2970,11 @@ GrapaError GrapaDB::DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaCursor& curso
 	return DumpTheStructure(dbWrite,itemCursor,tableDT);
 }
 
-GrapaError GrapaDB::DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaDBCursor& cursor)
 {
 	GrapaError err;
 	u64 tableRef,tableDT;
-	GrapaCursor itemCursor;
+	GrapaDBCursor itemCursor;
 
 	tableRef = cursor.mTreeRef;
 	err = GetDataTypeRecord(tableRef,tableDT);
@@ -2983,11 +2983,11 @@ GrapaError GrapaDB::DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
 	return DumpTheStructure(dbWrite,itemCursor,tableDT);
 }
 
-GrapaError GrapaDB::DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheColStructure(GrapaCHAR& dbWrite, GrapaDBCursor& cursor)
 {
 	GrapaError err;
 	u64 tableRef,tableDT;
-	GrapaCursor itemCursor;
+	GrapaDBCursor itemCursor;
 
 	tableRef = cursor.mTreeRef;
 	err = GetDataTypeRecord(tableRef,tableDT);
@@ -2999,7 +2999,7 @@ GrapaError GrapaDB::DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor)
 	return DumpTheStructure(dbWrite,itemCursor,tableDT);
 }
 
-GrapaError GrapaDB::DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sSU64 key=%llu value=%llu\n",leader,cursor.mKey,cursor.mValue);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
@@ -3007,7 +3007,7 @@ GrapaError GrapaDB::DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaCursor&
 	return(0);
 }
 
-GrapaError GrapaDB::DumpGetItemWeight(GrapaCursor& cursor, u64& weight)
+GrapaError GrapaDB::DumpGetItemWeight(GrapaDBCursor& cursor, u64& weight)
 {
 	GrapaError err;
 	GrapaBlockNodeHeader node;
@@ -3016,7 +3016,7 @@ GrapaError GrapaDB::DumpGetItemWeight(GrapaCursor& cursor, u64& weight)
 	return(err);
 }
 
-GrapaError GrapaDB::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	GrapaError err;
 	char dataBlock[201];
@@ -3057,7 +3057,7 @@ GrapaError GrapaDB::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	char leadbuf[201];
 	u64 weight;
@@ -3074,7 +3074,7 @@ GrapaError GrapaDB::DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	char leadbuf[201];
 	u64 weight;
@@ -3091,7 +3091,7 @@ GrapaError GrapaDB::DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheItemRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheItemRec(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	char leadbuf[201];
 	u64 weight;
@@ -3108,7 +3108,7 @@ GrapaError GrapaDB::DumpTheItemRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	u64 weight;
 	DumpGetItemWeight(cursor,weight);
@@ -3121,7 +3121,7 @@ GrapaError GrapaDB::DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor&
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	u64 weight;
 	DumpGetItemWeight(cursor,weight);
@@ -3134,7 +3134,7 @@ GrapaError GrapaDB::DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor&
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	GrapaError err = 0;
 	GrapaDBField dbField;
@@ -3202,7 +3202,7 @@ GrapaError GrapaDB::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cur
 	return(0);
 }
 
-GrapaError GrapaDB::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	char* itemTypeStr=(char*)"";
 	u64 weight;
@@ -3219,7 +3219,7 @@ GrapaError GrapaDB::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%s%s (%llu) key=%llu node=(%llu,%d) weight=%llu: ",leader,itemTypeStr,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
-	GrapaCursor recCursor = cursor;
+	GrapaDBCursor recCursor = cursor;
 	PtrToRec(cursor,recCursor);
 
 	u64 weight2;
@@ -3240,7 +3240,7 @@ GrapaError GrapaDB::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	char leadbuf[201];
 	strcpy(leadbuf,leader);
@@ -3255,7 +3255,7 @@ GrapaError GrapaDB::DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCurso
 	return(0);
 }
 
-GrapaError GrapaDB::DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor)
+GrapaError GrapaDB::DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor)
 {
 	char leadbuf[201];
 
@@ -3309,7 +3309,7 @@ GrapaError GrapaDB::DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor& 
 GrapaError GrapaDB::DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tableId, u64 firstTree)
 {
 	GrapaError err=0;
-	GrapaCursor cursor;
+	GrapaDBCursor cursor;
 	u64 indexRef=0;
 	u64 storeTree=0;
 	u8 storeType;
@@ -3556,7 +3556,7 @@ void GrapaDB::DebugPrintIndexPointerAndRecord(u64 tableRef, u64 key)
 {
 	GrapaError err = 0;
     u64 indexRef = 0;
-    GrapaCursor indexCursor, ptrCursor, recCursor;
+	GrapaDBCursor indexCursor, ptrCursor, recCursor;
     u64 weight = 0, recWeight = 0;
 
     // Locate the index tree for the table
@@ -3591,7 +3591,7 @@ void GrapaDB::DebugPrintIndexPointerAndRecord(u64 tableRef, u64 key)
 
 void GrapaDB::DebugPrintAllIndexPointers(u64 tableRef) {
     u64 indexRef = 0;
-    GrapaCursor indexCursor;
+	GrapaDBCursor indexCursor;
     GrapaError err;
     indexCursor.Set(tableRef);
     err = GetTreeIndex(indexCursor, indexRef);
@@ -3599,7 +3599,7 @@ void GrapaDB::DebugPrintAllIndexPointers(u64 tableRef) {
         printf("DEBUG: Could not find index tree for tableRef=%llu\n", tableRef);
         return;
     }
-    GrapaCursor ptrCursor;
+	GrapaDBCursor ptrCursor;
     ptrCursor.Set(indexRef);
     err = First(ptrCursor);
     int count = 0;

@@ -184,7 +184,9 @@
     <ClCompile Include="..\..\source\grapa\GrapaBtree.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaBtreeBlock.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaDatabase.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaDatabaseTemplate.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaDB.cpp" />
+    <ClCompile Include="..\..\source\grapa\GrapaDBX.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaTime.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaTinyAES.cpp" />
     <ClCompile Include="..\..\source\grapa\GrapaFileCache.cpp" />

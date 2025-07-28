@@ -215,5 +215,11 @@
     <ClCompile Include="..\..\source\utf8proc\utf8proc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\grapa\GrapaDatabaseTemplate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\grapa\GrapaDBX.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

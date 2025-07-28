@@ -9,12 +9,23 @@
 #include "GrapaValue.h"
 #include <string.h>
 
+class GrapaDB;
 class GrapaDBTable;
 class GrapaDBIndex;
 class GrapaDBField;
 class GrapaDBFieldArray;
 class GrapaDBFieldValueArray;
-class GrapaDBCursor;
+
+
+class GrapaDBCursor : public GrapaCursor
+{
+public:
+	GrapaDBFieldValueArray* mData;
+	bool mUsingIndex;
+public:
+	GrapaDBCursor() { mUsingIndex = false; mData = NULL; GrapaCursor(); }
+	void SetSearch(GrapaDB* pDb, u64 pTreeRef, bool pUsingIndex, GrapaDBFieldValueArray* pData);
+};
 
 class GrapaDB : public GrapaBtree
 {
@@ -67,13 +78,13 @@ public:
 	// Need to CreateRecord with all the fields filled in
 	// Don't update the index on create record. Set the dirty bit in the record added to trigger having indexes updated after.
 	// Need and OpenTransaction, CommitTransaction, and CancelTransaction.
-	virtual GrapaError CreateRecord(GrapaDBTable& pTable, GrapaCursor& pCursor);
-	virtual GrapaError DeleteRecord(GrapaDBTable& pTable, GrapaCursor& pCursor);
+	virtual GrapaError CreateRecord(GrapaDBTable& pTable, GrapaDBCursor& pCursor);
+	virtual GrapaError DeleteRecord(GrapaDBTable& pTable, GrapaDBCursor& pCursor);
 
-	virtual GrapaError FindRecordField(GrapaCursor& pCursor, u64 fieldId, GrapaCursor& recCursor, GrapaDBField& pField);
-	virtual GrapaError SetRecordField(GrapaCursor& pCursor, GrapaDBFieldValueArray& pFieldList);
-	virtual GrapaError GetRecordField(GrapaCursor& pCursor, GrapaDBField& pField, GrapaBYTE& pValue);
-	virtual GrapaError GetRecordField(GrapaCursor& pCursor, u64 pFieldId, GrapaBYTE& pValue);
+	virtual GrapaError FindRecordField(GrapaDBCursor& pCursor, u64 fieldId, GrapaDBCursor& recCursor, GrapaDBField& pField);
+	virtual GrapaError SetRecordField(GrapaDBCursor& pCursor, GrapaDBFieldValueArray& pFieldList);
+	virtual GrapaError GetRecordField(GrapaDBCursor& pCursor, GrapaDBField& pField, GrapaBYTE& pValue);
+	virtual GrapaError GetRecordField(GrapaDBCursor& pCursor, u64 pFieldId, GrapaBYTE& pValue);
 
 	virtual GrapaError SearchDb(GrapaDBCursor& pCursor, GrapaDBTable& pTable, GrapaDBFieldValueArray& pFieldList);
 	virtual GrapaError FirstDb(GrapaDBCursor& pCursor);
@@ -113,26 +124,26 @@ public: // Made public for investigation
 protected:
 	//GrapaError SetupDataTypeField(u64 indexRef, u64 fieldId, char *fieldName, u8 fieldType, u64 fieldSize);
 
-	GrapaError LocateIndex(GrapaCursor& cursor, u64 indexRef, u64 fieldId);
+	GrapaError LocateIndex(GrapaDBCursor& cursor, u64 indexRef, u64 fieldId);
 
-	bool IndexHasField(GrapaCursor& cursor, u64 fieldId);
+	bool IndexHasField(GrapaDBCursor& cursor, u64 fieldId);
 
-	GrapaError DumpTheStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor, u64 tableDT);
-	GrapaError DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor);
-	GrapaError DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor);
-	GrapaError DumpTheColStructure(GrapaCHAR& dbWrite, GrapaCursor& cursor);
-	GrapaError DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpGetItemWeight(GrapaCursor& cursor, u64& weight);
-	GrapaError DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpTheItemRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
-	GrapaError DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
+	GrapaError DumpTheStructure(GrapaCHAR& dbWrite, GrapaDBCursor& cursor, u64 tableDT);
+	GrapaError DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaDBCursor& cursor);
+	GrapaError DumpTheRowStructure(GrapaCHAR& dbWrite, GrapaDBCursor& cursor);
+	GrapaError DumpTheColStructure(GrapaCHAR& dbWrite, GrapaDBCursor& cursor);
+	GrapaError DumpTheNumber(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpGetItemWeight(GrapaDBCursor& cursor, u64& weight);
+	GrapaError DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpTheItemRec(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpTheColRec(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
+	GrapaError DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaDBCursor& cursor);
 	GrapaError DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tableId, u64 firstTree);
     void DebugPrintIndexPointerAndRecord(u64 tableRef, u64 key);
     void DebugPrintAllIndexPointers(u64 tableRef);
@@ -228,15 +239,6 @@ public:
 	GrapaDBIndex() { mId = 0; mRef = 0; }
 };
 
-class GrapaDBCursor : public GrapaCursor
-{
-public:
-	GrapaDBFieldValueArray* mData;
-	bool mUsingIndex;
-public:
-	GrapaDBCursor() { mUsingIndex = false; mData = NULL; GrapaCursor(); }
-    void SetSearch(GrapaDB* pDb, u64 pTreeRef, bool pUsingIndex, GrapaDBFieldValueArray* pData);
-};
 
 #endif // _GrapaDB_
 
