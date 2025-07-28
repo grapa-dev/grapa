@@ -1,52 +1,7 @@
-/* 
- * $unified - Unified Storage Interface
- * 
- * This class provides a unified interface for accessing different storage types:
- * - file:// (file system)
- * - grapadb:// (GrapaDB database)
- * - grapadbx:// (GrapaDBX database) 
- * - network:// (remote storage)
- * - memory:// (in-memory storage)
- * - cloud:// (cloud storage)
- * 
- * Current Implementation Status:
- * ✅ File system backend fully implemented
- * ✅ GrapaDB backend fully implemented
- * ✅ GrapaDBX backend fully implemented
- * 📋 Network, memory, and cloud backends planned
- * 
- * Available Methods:
- * - create(url) - Initialize storage with URL
- * - getType() - Get current storage type
- * - getInfo() - Get storage information
- * - pwd() - Get current working directory
- * - cd(path) - Change directory
- * - ls([path][, fields][, threads]) - List contents (supports field selection and parallel processing)
- * - mk(name, type) - Create directory/record
- * - rm(name) - Remove directory/record
- * - set(name, value, field) - Set field value
- * - get(name, field) - Get field value
- * 
- * Output Formatting Methods:
- * - .json() - Format output as JSON
- * - .table() - Format output as ASCII table
- * - .simple() - Format output as simple list
- * - .echo() - Default ASCII output
- * - .debug() - Debug output with internal state information
- * 
- * Examples:
- * u = $unified();
- * u.create("file:///path/to/files");
- * u.ls().json();           // JSON output
- * u.ls().table();          // ASCII table format
- * u.ls("name,size,date");  // Custom fields
- * u.ls("name,size").json(); // Custom fields + JSON
- * u.ls("", "", 4);         // Parallel processing with 4 threads
- */
-
 @global["$unified"]
 	= class ($OBJ) {
 	type = @<"type",{this}>; 
+	init = @<[op,@<"unified_create",{this,@<var,{url}>}>],{url}>;
 	create = @<[op,@<"unified_create",{this,@<var,{url}>}>],{url}>;
 	getType = @<[op,@<"unified_get_type",{this}>]>;
 	getInfo = @<[op,@<"unified_get_info",{this}>]>;
@@ -57,7 +12,7 @@
 	rm = @<[op,@<"unified_rm",{this,@<var,{name}>}>],{name}>;
 	set = @<[op,@<"unified_set",{this,@<var,{name}>,@<var,{value}>,@<var,{field}>}>],{name,value,field}>;
 	get = @<[op,@<"unified_get",{this,@<var,{name}>,@<var,{field}>}>],{name,field}>;
-	create_index = @<[op,@<"unified_create_index",{this,@<var,{index_name}>,@<var,{fields}>}>],{fields}>;
+	create_index = @<[op,@<"unified_create_index",{this,@<var,{index_name}>,@<var,{fields}>}>],{index_name,fields}>;
 	remove_index = @<[op,@<"unified_remove_index",{this,@<var,{index_name}>}>],{index_name}>;
 	list_indexes = @<[op,@<"unified_list_indexes",{this}>]>;
 	refresh_index = @<[op,@<"unified_refresh_index",{this,@<var,{index_name}>}>],{index_name}>;
