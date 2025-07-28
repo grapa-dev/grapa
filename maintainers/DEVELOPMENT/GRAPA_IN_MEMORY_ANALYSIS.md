@@ -5,7 +5,23 @@
 **Date**: December 2024  
 **Status**: ✅ **ANALYSIS COMPLETE**
 
-## **How `$file().table()` Actually Works**
+## **Discovery: The `$` Path Pattern for In-Memory Databases**
+
+**Date**: December 2024  
+**Status**: ✅ **DOCUMENTED**
+
+### **The `$` Path Pattern**
+
+During the investigation, it was discovered that Grapa uses a special `$` path pattern for in-memory databases:
+
+```cpp
+// From GrapaLibraryRuleTableEvent::Run() in GrapaLibRule.cpp:9486
+err = g.Create("$", listType, firstTree);
+```
+
+**Key Insight**: The `$` is **not a file path** - it's a symbolic identifier that tells Grapa to create an in-memory database.
+
+### **How `$file().table()` Actually Works**
 
 ### **The Real Implementation**
 

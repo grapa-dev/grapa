@@ -69,6 +69,8 @@ All deprecated files have been moved to:
 - **CLI Functionality Investigation** – See [CLI_FUNCTIONALITY_INVESTIGATION.md](CLI_FUNCTIONALITY_INVESTIGATION.md)  
 **CLI Bug Reports** – See [CLI_BUG_REPORTS.md](CLI_BUG_REPORTS.md) for systematic testing plan to verify current CLI features and update implementation documentation.
 - **ROW Table Index Corruption Investigation** – See [ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) and [ROW_INDEX_BUG_TODO.md](ROW_INDEX_BUG_TODO.md) for full debug log, root cause analysis, and current status.
+- [GRAPA_DBX_CORRECT_PATTERNS.md](GRAPA_DBX_CORRECT_PATTERNS.md) – Correct and incorrect patterns for using GrapaDBX, based on empirical testing and implementation analysis.
+- [INDEX_BASED_SEARCH_IMPLEMENTATION_GUIDE.md](INDEX_BASED_SEARCH_IMPLEMENTATION_GUIDE.md) – Comprehensive guide for implementing proper index-based searching in GrapaDBX, current task status, and implementation plan.
 
 ## 📦 Archived/Closed Investigations
 

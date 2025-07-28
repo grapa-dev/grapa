@@ -1037,8 +1037,32 @@ months = ["Jan", "Feb", "Mar"];
 value = months["FFF"].iferr(-1);  /* Returns -1 for invalid key */
 ```
 
+### Rich Error Details
+
+`$ERR` objects are essentially `$LIST` objects with rich error information injected into the structure:
+
+```grapa
+/* Access error details like any other list */
+u = $unified();
+result = u.create("grapadbx://test.dbx");
+if (result.type() == $ERR) {
+    error_code = result.error;  /* Access the error code */
+    ("Operation failed with error code: " + error_code + "\n").echo();
+    
+    /* Error objects can contain multiple fields */
+    if (result.X509_error) {
+        ("X509 error: " + result.X509_error + "\n").echo();
+    }
+    
+    if (result.message) {
+        ("Error message: " + result.message + "\n").echo();
+    }
+}
+```
+
 - Use `.iferr(fallback_value)` for simple error handling
 - Use `if (result.type() == $ERR)` for explicit error handling
+- Access error details using dot notation or bracket notation like any `$LIST`
 - `.iferr()` is preferred for simple fallback scenarios
 
 ## Complete Example

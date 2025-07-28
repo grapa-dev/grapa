@@ -5,7 +5,36 @@ tags:
   - internal
 ---
 
-# Maintainers & Internal Documentation
+# Maintainers Documentation
+
+## ⚠️ CRITICAL WARNING: GrapaDB Index Corruption Bug
+
+### **Root Cause of GrapaDBX Development**
+**GrapaDB has an unfixable index corruption bug** that occurs after the 3rd record update. This is why GrapaDBX was created as a replacement.
+
+### **The Bug Evidence** (from `test_row.grc`):
+- **After 2 records**: Index works correctly
+- **After 3 records**: First record's index becomes corrupted: `RREC (0) key=0 node=(0,0) weight=3:`
+- **Result**: Data retrieval fails with `{"error":-1}` for corrupted records
+
+### **Impact on Implementation Strategy**:
+- ✅ **Use GrapaDB as Reference Only**: For structure patterns, not implementation
+- ❌ **Do NOT Copy GrapaDB Code**: Index update logic is corruption-prone
+- ✅ **Implement Clean Index Logic**: Avoid corruption-prone update mechanisms
+- ✅ **Focus on Read Operations**: Index-based searching, not index updating
+
+### **Why This Matters**:
+This explains the massive effort to create GrapaDBX - we're essentially rebuilding the database system to avoid an unfixable corruption bug in the original GrapaDB implementation.
+
+---
+
+## Quick Links to Major Investigations
+
+### **Critical Issues**:
+- [`DEVELOPMENT/GRAPA_DB_INDEX_CORRUPTION_BUG.md`](DEVELOPMENT/GRAPA_DB_INDEX_CORRUPTION_BUG.md) - **CRITICAL**: Unfixable GrapaDB index corruption bug (root cause of GrapaDBX development)
+- [`DEVELOPMENT/INDEX_BASED_SEARCH_IMPLEMENTATION_GUIDE.md`](DEVELOPMENT/INDEX_BASED_SEARCH_IMPLEMENTATION_GUIDE.md) - Current task: Implement proper index-based searching
+- [`DEVELOPMENT/CURRENT_STATUS.md`](DEVELOPMENT/CURRENT_STATUS.md) - Complete current status and agent onboarding
+- [`DEVELOPMENT/BACKLOG.md`](DEVELOPMENT/BACKLOG.md) - Development priorities and tasks
 
 ## 📂 Maintainers Directory Organization
 
@@ -31,7 +60,19 @@ This section documents the organization and purpose of the `maintainers/` direct
 
 ---
 
-## 🚨 **NEW AGENT ONBOARDING**
+## **🚨 CRITICAL ISSUES**
+
+### **$unified() System Failure**
+- **Status**: ROOT CAUSE IDENTIFIED - Missing database context and complex parameter handling
+- **Impact**: Cannot test GrapaDBX caching or use `$unified()` for any operations
+- **Workaround**: Use `$file().table()` for in-memory databases
+- **Documentation**: 
+  - `GRAPA_DBX_CORRECT_PATTERNS.md` - Updated with investigation results
+  - `GRAPA_UNIFIED_SYSTEM_ANALYSIS.md` - New comprehensive technical analysis
+  - `BACKLOG.md` - Added specific fixes needed
+- **Technical Analysis**: Deep dive revealed missing `DatabaseSet()` call and complex parameter routing issues
+
+## **NEW AGENT ONBOARDING**
 
 **IF YOU DO NOT HAVE CONTEXT: Load current status and all related docs for the GrapaDBX sub-project we are working on. You should find "agent context" or some type of agent onboarding notes through that process.**
 
@@ -135,6 +176,7 @@ When referencing maintainer content, use these paths:
 - [Programmer Friendliness & Adoption Plan](DEVELOPMENT/PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md) - Comprehensive audit, migration review, pain points, and proposals to improve Grapa's usability and adoption
 - [GrapaDBX Design](DEVELOPMENT/GRAPADBX_DESIGN.md) - Core design with Unicode and caching as fundamental requirements
 - [GrapaDBX Implementation Status](DEVELOPMENT/GRAPA_DBX_IMPLEMENTATION_STATUS.md) - Detailed implementation tracking with critical caching/in-memory requirements
+- [GrapaDBX Correct Patterns](DEVELOPMENT/GRAPA_DBX_CORRECT_PATTERNS.md) - **NEW**: Correct patterns and $ path discovery for GrapaDBX
 - [GrapaDBX Database-Aware Comparison](DEVELOPMENT/GRAPA_DBX_DATABASE_AWARE_COMPARISON.md) - Advanced comparison system with Unicode support
 - [Grapa In-Memory Analysis](DEVELOPMENT/GRAPA_IN_MEMORY_ANALYSIS.md) - Analysis of how Grapa's in-memory database system actually works
 - [Agent Context Loading](DEVELOPMENT/AGENT_CONTEXT_LOADING.md) - Quick agent onboarding for GrapaDBX sub-project
