@@ -337,6 +337,12 @@ public:
 
 	GrapaError DumpGroup(u64 parentTree, u8 parentType, u64 pId=0, GrapaFile *pDumpFile=NULL);
 
+	/* Index Management Methods */
+	GrapaError CreateIndex(const GrapaCHAR& indexName, const GrapaCHAR& fields);
+	GrapaError RemoveIndex(const GrapaCHAR& indexName);
+	GrapaError ListIndexes(GrapaCHAR& indexList);
+	GrapaError RefreshIndex(const GrapaCHAR& indexName);
+
 	GrapaDBXFieldArray* ListFields(u64 parentTree, u8 parentType);
 	GrapaError FindField(u64 parentTree, u8 parentType, const GrapaCHAR& pFieldName, GrapaDBXField& field, u64& pMaxId);
 	GrapaError GetNameId(u64 parentTree, u8 parentType, u64& pNameId);

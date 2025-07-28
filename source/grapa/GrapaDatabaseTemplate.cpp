@@ -1263,6 +1263,44 @@ void GrapaUnifiedLocalDatabase::DatabaseDump(u64 pId, GrapaCHARFile& dump)
 			info.Append("\n  GrapaDBX Available: ");
 			info.Append(mGrapaDBX ? "Yes" : "No");
 			info.Append("\n");
+			
+			/* Call the underlying GrapaDBX dump methods for full structure */
+			if (mGrapaDBX) {
+				info.Append("\n=== FULL DATABASE STRUCTURE ===\n");
+				
+				/* Create a temporary file for the detailed dump */
+				GrapaCHARFile detailedDump;
+				if (0 == detailedDump.SetSize(50000)) {
+					detailedDump.SetLength(0);
+					
+					/* Call GrapaDBX DumpTree for full structure */
+					GrapaError err = mGrapaDBX->DumpTree(mGrapaDBXFirstTree, &detailedDump);
+					if (err == 0) {
+						/* Append the detailed dump to our info */
+						info.Append("DumpTree Result:\n");
+						info.Append((char*)detailedDump.mBytes, detailedDump.mLength);
+					} else {
+						info.Append("DumpTree failed with error: ");
+						info.Append((u64)err);
+						info.Append("\n");
+					}
+					
+					/* Also try GrapaGroup2 DumpGroup if available */
+					GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+					if (group2) {
+						detailedDump.SetLength(0);
+						err = group2->DumpGroup(mGrapaDBXFirstTree, 0, 0, &detailedDump);
+						if (err == 0) {
+							info.Append("\nDumpGroup Result:\n");
+							info.Append((char*)detailedDump.mBytes, detailedDump.mLength);
+						} else {
+							info.Append("\nDumpGroup failed with error: ");
+							info.Append((u64)err);
+							info.Append("\n");
+						}
+					}
+				}
+			}
 		} else if (mStorageType.StrCmp("FILESYSTEM") == 0) {
 			info.Append("File System Information:\n");
 			info.Append("  Path: ");

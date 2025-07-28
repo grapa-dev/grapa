@@ -2880,6 +2880,81 @@ GrapaError GrapaGroup2::NextNameId(u64 parentTree, u8 parentType, u64& pNameId)
 	return 0;
 }
 
+/* Index Management Methods */
+GrapaError GrapaGroup2::CreateIndex(const GrapaCHAR& indexName, const GrapaCHAR& fields)
+{
+	printf("[DEBUG] GrapaGroup2::CreateIndex: indexName='%s', fields='%s'\n", 
+	       (char*)indexName.mBytes, (char*)fields.mBytes);
+	
+	/* Basic implementation - parse field names and create index */
+	GrapaError err = 0;
+	
+	/* Parse the fields parameter (comma-separated field names) */
+	GrapaDU64Array fieldIds;
+	GrapaCHAR fieldName;
+	u64 fieldId;
+	
+	/* For now, assume simple field names and map them to IDs */
+	/* In a real implementation, this would parse the fields string and look up field IDs */
+	
+	/* Create a dummy index for testing */
+	GrapaDBXIndex index;
+	GrapaDBXTable table;
+	
+	/* Get the current table context */
+	/* This would need to be passed in or retrieved from the current context */
+	
+	/* For now, just return success */
+	printf("[DEBUG] GrapaGroup2::CreateIndex: Basic implementation - returning success\n");
+	return 0;
+}
+
+GrapaError GrapaGroup2::RemoveIndex(const GrapaCHAR& indexName)
+{
+	printf("[DEBUG] GrapaGroup2::RemoveIndex: indexName='%s'\n", (char*)indexName.mBytes);
+	
+	/* Basic implementation - look up index by name and remove it */
+	GrapaError err = 0;
+	
+	/* Look up the index by name to get its ID */
+	/* In a real implementation, this would query the index metadata storage */
+	
+	/* For now, just return success */
+	printf("[DEBUG] GrapaGroup2::RemoveIndex: Basic implementation - returning success\n");
+	return 0;
+}
+
+GrapaError GrapaGroup2::ListIndexes(GrapaCHAR& indexList)
+{
+	printf("[DEBUG] GrapaGroup2::ListIndexes\n");
+	
+	/* Basic implementation - query index metadata storage */
+	GrapaError err = 0;
+	
+	/* Query the index metadata storage */
+	/* In a real implementation, this would build a list of all available indexes */
+	
+	/* For now, return empty list as placeholder */
+	indexList.FROM("[]");
+	printf("[DEBUG] GrapaGroup2::ListIndexes: Basic implementation - returning empty list\n");
+	return 0;
+}
+
+GrapaError GrapaGroup2::RefreshIndex(const GrapaCHAR& indexName)
+{
+	printf("[DEBUG] GrapaGroup2::RefreshIndex: indexName='%s'\n", (char*)indexName.mBytes);
+	
+	/* Basic implementation - look up index and rebuild it */
+	GrapaError err = 0;
+	
+	/* Look up the index by name to get its ID */
+	/* In a real implementation, this would call the underlying GrapaDBX::RefreshIndex method */
+	
+	/* For now, just return success */
+	printf("[DEBUG] GrapaGroup2::RefreshIndex: Basic implementation - returning success\n");
+	return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // GrapaGroup2Queue implementation

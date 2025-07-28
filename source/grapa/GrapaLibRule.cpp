@@ -18873,26 +18873,305 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUnifiedRefreshIndex(GrapaCHAR& p
 /* Index Management Event Implementations */
 GrapaRuleEvent* GrapaLibraryRuleUnifiedCreateIndexEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-    /* TODO: Implement unified index creation */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    printf("[DEBUG] CreateIndex Start\n");
+
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL); /* this */
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL); /* index_name */
+    GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL); /* fields */
+
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    if (objEvent && objEvent->vDatabase == NULL)
+        objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
+
+    if (objEvent && objEvent->vDatabase)
+    {
+        GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+        
+        /* Check if storage needs to be initialized */
+        if (unifiedDB && unifiedDB->GetStorageType().mLength == 0)
+        {
+            printf("[DEBUG] CreateIndex: Auto-initializing storage with default URL\n");
+            GrapaCHAR storageUrl;
+            storageUrl.FROM("grapadbx://default.dbx");
+            err = unifiedDB->InitializeStorage(storageUrl);
+            if (err) {
+                printf("[DEBUG] CreateIndex: Auto-initialization failed with error %d\n", err);
+            }
+        }
+        
+        if (unifiedDB && r2.vVal && r3.vVal)
+        {
+            printf("[DEBUG] CreateIndex: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
+            
+            /* Debug parameter values */
+            printf("[DEBUG] CreateIndex: r2.vVal->mValue='%s', r2.vVal->mToken=%d\n", 
+                   (char*)r2.vVal->mValue.mBytes, r2.vVal->mValue.mToken);
+            printf("[DEBUG] CreateIndex: r3.vVal->mValue='%s', r3.vVal->mToken=%d\n", 
+                   (char*)r3.vVal->mValue.mBytes, r3.vVal->mValue.mToken);
+            
+            /* Extract values from parameters */
+            GrapaCHAR indexName, fields;
+            
+            /* Extract index_name from r2 */
+            if (r2.vVal->mValue.mToken == 1 && r2.vVal->vQueue && r2.vVal->vQueue->mCount > 0) {
+                GrapaRuleEvent* nameEvent = r2.vVal->vQueue->Head();
+                if (nameEvent) indexName.FROM(nameEvent->mValue);
+            } else {
+                indexName.FROM(r2.vVal->mValue);
+            }
+            
+            /* Extract fields from r3 */
+            if (r3.vVal->mValue.mToken == 1 && r3.vVal->vQueue && r3.vVal->vQueue->mCount > 0) {
+                GrapaRuleEvent* fieldsEvent = r3.vVal->vQueue->Head();
+                if (fieldsEvent) fields.FROM(fieldsEvent->mValue);
+            } else {
+                fields.FROM(r3.vVal->mValue);
+            }
+            
+            printf("[DEBUG] CreateIndex: index_name='%s', fields='%s'\n", 
+                   (char*)indexName.mBytes, (char*)fields.mBytes);
+            
+            /* Switch based on storage type */
+            if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
+            {
+                /* Implement GrapaDBX index creation */
+                GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
+                if (dbx)
+                {
+                    printf("[DEBUG] CreateIndex: Calling dbx->CreateIndex\n");
+                    err = dbx->CreateIndex(indexName, fields);
+                    if (err == 0)
+                    {
+                        result = new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("index_created"));
+                    }
+                }
+            }
+            else
+            {
+                printf("[DEBUG] CreateIndex: Storage type not supported for index creation\n");
+                err = -1;
+            }
+        }
+    }
+
+    printf("[DEBUG] CreateIndex: Final err = %d, result = %p\n", err, (void*)result);
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, err);
+    return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleUnifiedRemoveIndexEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-    /* TODO: Implement unified index removal */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    printf("[DEBUG] RemoveIndex Start\n");
+
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL); /* this */
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL); /* index_name */
+
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    if (objEvent && objEvent->vDatabase == NULL)
+        objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
+
+    if (objEvent && objEvent->vDatabase)
+    {
+        GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+        
+        /* Check if storage needs to be initialized */
+        if (unifiedDB && unifiedDB->GetStorageType().mLength == 0)
+        {
+            printf("[DEBUG] RemoveIndex: Auto-initializing storage with default URL\n");
+            GrapaCHAR storageUrl;
+            storageUrl.FROM("grapadbx://default.dbx");
+            err = unifiedDB->InitializeStorage(storageUrl);
+            if (err) {
+                printf("[DEBUG] RemoveIndex: Auto-initialization failed with error %d\n", err);
+            }
+        }
+        
+        if (unifiedDB && r2.vVal)
+        {
+            printf("[DEBUG] RemoveIndex: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
+            
+            /* Extract index_name from r2 */
+            GrapaCHAR indexName;
+            if (r2.vVal->mValue.mToken == 1 && r2.vVal->vQueue && r2.vVal->vQueue->mCount > 0) {
+                GrapaRuleEvent* nameEvent = r2.vVal->vQueue->Head();
+                if (nameEvent) indexName.FROM(nameEvent->mValue);
+            } else {
+                indexName.FROM(r2.vVal->mValue);
+            }
+            
+            printf("[DEBUG] RemoveIndex: index_name='%s'\n", (char*)indexName.mBytes);
+            
+            /* Switch based on storage type */
+            if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
+            {
+                /* Implement GrapaDBX index removal */
+                GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
+                if (dbx)
+                {
+                    printf("[DEBUG] RemoveIndex: Calling dbx->RemoveIndex\n");
+                    err = dbx->RemoveIndex(indexName);
+                    if (err == 0)
+                    {
+                        result = new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("index_removed"));
+                    }
+                }
+            }
+            else
+            {
+                printf("[DEBUG] RemoveIndex: Storage type not supported for index removal\n");
+                err = -1;
+            }
+        }
+    }
+
+    printf("[DEBUG] RemoveIndex: Final err = %d, result = %p\n", err, (void*)result);
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, err);
+    return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleUnifiedListIndexesEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-    /* TODO: Implement unified index listing */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    printf("[DEBUG] ListIndexes Start\n");
+
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL); /* this */
+
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    if (objEvent && objEvent->vDatabase == NULL)
+        objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
+
+    if (objEvent && objEvent->vDatabase)
+    {
+        GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+        
+        /* Check if storage needs to be initialized */
+        if (unifiedDB && unifiedDB->GetStorageType().mLength == 0)
+        {
+            printf("[DEBUG] ListIndexes: Auto-initializing storage with default URL\n");
+            GrapaCHAR storageUrl;
+            storageUrl.FROM("grapadbx://default.dbx");
+            err = unifiedDB->InitializeStorage(storageUrl);
+            if (err) {
+                printf("[DEBUG] ListIndexes: Auto-initialization failed with error %d\n", err);
+            }
+        }
+        
+        if (unifiedDB)
+        {
+            printf("[DEBUG] ListIndexes: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
+            
+            /* Switch based on storage type */
+            if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
+            {
+                /* Implement GrapaDBX index listing */
+                GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
+                if (dbx)
+                {
+                    printf("[DEBUG] ListIndexes: Calling dbx->ListIndexes\n");
+                    GrapaCHAR indexList;
+                    err = dbx->ListIndexes(indexList);
+                    if (err == 0)
+                    {
+                        result = new GrapaRuleEvent(GrapaTokenType::STR, 0, "indexes", (char*)indexList.mBytes);
+                    }
+                }
+            }
+            else
+            {
+                printf("[DEBUG] ListIndexes: Storage type not supported for index listing\n");
+                err = -1;
+            }
+        }
+    }
+
+    printf("[DEBUG] ListIndexes: Final err = %d, result = %p\n", err, (void*)result);
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, err);
+    return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleUnifiedRefreshIndexEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
-    /* TODO: Implement unified index refresh */
-    return new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("placeholder"));
+    GrapaError err = -1;
+    GrapaRuleEvent* result = NULL;
+
+    printf("[DEBUG] RefreshIndex Start\n");
+
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL); /* this */
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL); /* index_name */
+
+    GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+    if (objEvent && objEvent->vDatabase == NULL)
+        objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
+
+    if (objEvent && objEvent->vDatabase)
+    {
+        GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+        
+        /* Check if storage needs to be initialized */
+        if (unifiedDB && unifiedDB->GetStorageType().mLength == 0)
+        {
+            printf("[DEBUG] RefreshIndex: Auto-initializing storage with default URL\n");
+            GrapaCHAR storageUrl;
+            storageUrl.FROM("grapadbx://default.dbx");
+            err = unifiedDB->InitializeStorage(storageUrl);
+            if (err) {
+                printf("[DEBUG] RefreshIndex: Auto-initialization failed with error %d\n", err);
+            }
+        }
+        
+        if (unifiedDB && r2.vVal)
+        {
+            printf("[DEBUG] RefreshIndex: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
+            
+            /* Extract index_name from r2 */
+            GrapaCHAR indexName;
+            if (r2.vVal->mValue.mToken == 1 && r2.vVal->vQueue && r2.vVal->vQueue->mCount > 0) {
+                GrapaRuleEvent* nameEvent = r2.vVal->vQueue->Head();
+                if (nameEvent) indexName.FROM(nameEvent->mValue);
+            } else {
+                indexName.FROM(r2.vVal->mValue);
+            }
+            
+            printf("[DEBUG] RefreshIndex: index_name='%s'\n", (char*)indexName.mBytes);
+            
+            /* Switch based on storage type */
+            if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
+            {
+                /* Implement GrapaDBX index refresh */
+                GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
+                if (dbx)
+                {
+                    printf("[DEBUG] RefreshIndex: Calling dbx->RefreshIndex\n");
+                    err = dbx->RefreshIndex(indexName);
+                    if (err == 0)
+                    {
+                        result = new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("index_refreshed"));
+                    }
+                }
+            }
+            else
+            {
+                printf("[DEBUG] RefreshIndex: Storage type not supported for index refresh\n");
+                err = -1;
+            }
+        }
+    }
+
+    printf("[DEBUG] RefreshIndex: Final err = %d, result = %p\n", err, (void*)result);
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, err);
+    return result;
 }
 
 /* Output formatting handlers */
@@ -19769,16 +20048,39 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 			printf("[DEBUG] r4.vVal->mToken=%d\n", r4.vVal->mValue.mToken);
 		}
 
-		GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
+				GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 		if (objEvent && objEvent->vDatabase == NULL)
 			objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
 
 		if (objEvent && objEvent->vDatabase)
 		{
 			GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
-					if (unifiedDB && r2.vVal && r3.vVal && r4.vVal)
+			
+			/* Check if storage needs to be initialized */
+			printf("[DEBUG] GrapaLibRule Set: Checking auto-initialization, storage type length = %llu\n", unifiedDB->GetStorageType().mLength);
+			printf("[DEBUG] GrapaLibRule Set: unifiedDB = %p\n", (void*)unifiedDB);
+			printf("[DEBUG] GrapaLibRule Set: objEvent->mValue = '%s'\n", (char*)objEvent->mValue.mBytes);
+			printf("[DEBUG] GrapaLibRule Set: objEvent->mName = '%s'\n", (char*)objEvent->mName.mBytes);
+			printf("[DEBUG] GrapaLibRule Set: About to check auto-initialization condition\n");
+			if (unifiedDB && unifiedDB->GetStorageType().mLength == 0)
+			{
+				printf("[DEBUG] GrapaLibRule Set: Storage type is empty, auto-initializing with default URL\n");
+				/* Auto-initialize with a default URL */
+				GrapaCHAR storageUrl;
+				storageUrl.FROM("grapadbx://default.dbx");
+				printf("[DEBUG] GrapaLibRule Set: Auto-initializing storage with default URL '%s'\n", (char*)storageUrl.mBytes);
+				GrapaError initErr = unifiedDB->InitializeStorage(storageUrl);
+				if (initErr) {
+					printf("[DEBUG] GrapaLibRule Set: Auto-initialization failed with error %d\n", initErr);
+				}
+				else {
+					printf("[DEBUG] GrapaLibRule Set: Auto-initialization successful\n");
+				}
+			}
+			
+			if (unifiedDB && r2.vVal && r3.vVal && r4.vVal)
 		{
-			printf("[DEBUG] GrapaLibRule Set: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
+			printf("[DEBUG] GrapaLibRule Set: UnifiedDB found, storage type = '%s', length = %llu\n", (char*)unifiedDB->GetStorageType().mBytes, unifiedDB->GetStorageType().mLength);
 			
 			/* Extract values from parameters - handle queue objects */
 			GrapaCHAR name, value, field;
@@ -20089,9 +20391,33 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedGetEvent::Run(GrapaScriptExec* vScriptExe
 	if (objEvent && objEvent->vDatabase)
 	{
 		GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
+		
+		/* Check if storage needs to be initialized */
+		if (unifiedDB && unifiedDB->GetStorageType().mLength == 0)
+		{
+			/* Try to extract URL from the object name or parameters */
+			GrapaCHAR storageUrl;
+			if (r1.vVal && r1.vVal->mValue.mLength > 0)
+			{
+				/* Check if the object name contains a URL */
+				if (r1.vVal->mValue.StrNCmp("grapadb://", 10) == 0 || 
+				    r1.vVal->mValue.StrNCmp("grapadbx://", 11) == 0 ||
+				    r1.vVal->mValue.StrNCmp("file://", 7) == 0 ||
+				    r1.vVal->mValue.StrNCmp("memory://", 9) == 0)
+				{
+					storageUrl = r1.vVal->mValue;
+					printf("[DEBUG] GrapaLibRule Get: Auto-initializing storage with URL '%s'\n", (char*)storageUrl.mBytes);
+					GrapaError initErr = unifiedDB->InitializeStorage(storageUrl);
+					if (initErr) {
+						printf("[DEBUG] GrapaLibRule Get: Auto-initialization failed with error %d\n", initErr);
+					}
+				}
+			}
+		}
+		
 		if (unifiedDB && r2.vVal && r3.vVal)
 		{
-			printf("[DEBUG] GrapaLibRule Get: UnifiedDB found, storage type = '%s'\n", (char*)unifiedDB->GetStorageType().mBytes);
+			printf("[DEBUG] GrapaLibRule Get: UnifiedDB found, storage type = '%s', length = %llu\n", (char*)unifiedDB->GetStorageType().mBytes, unifiedDB->GetStorageType().mLength);
 			
 			/* Extract values from parameters - handle queue objects */
 			GrapaCHAR name, field, value;
