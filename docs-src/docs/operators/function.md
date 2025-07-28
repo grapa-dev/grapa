@@ -5,6 +5,7 @@ Creating an $OP. See [$OP type](../type/op.md).
 ## class
 Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified variable is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other classes. 
 
+### Basic Class Definition
 ```
 myC = class {myV = 0; myF = op(a){myV=a};};
 myC2 = class (myC) {myV2 = 0; myF2 = op(a){myV2=a};};
@@ -21,6 +22,49 @@ myIns.myV2;
 
 myIns;
 {"myV":4}
+```
+
+### Advanced Class Method Definition
+For built-in classes and advanced use cases, methods can be defined using the execution tree syntax:
+
+```grapa
+@global["$myclass"]
+= class ($OBJ) {
+    /* Basic method with direct parameters */
+    simple = @<"simple_method",{this}>;
+    
+    /* Method with parameters */
+    set = @<[op,@<"my_set",{this,@<var,{name}>,@<var,{value}>}>],{name,value}>;
+    
+    /* Method with default values */
+    get = @<[op,@<"my_get",{this,@<var,{name}>,@<var,{field}>}>],{name,field:"$VALUE"}>;
+    
+    /* Method with multiple defaults */
+    list = @<[op,@<"my_list",{this,@<var,{path}>,@<var,{fields}>,@<var,{threads}>}>],{path:null,fields:null,threads:null}>;
+};
+```
+
+#### Method Definition Syntax
+- **`this`**: Reference to the current object (not `@<this>`)
+- **`@<var,{param}>`**: Parameter reference
+- **`{param1,param2}`**: Parameter list without defaults
+- **`{param1:default,param2:null}`**: Parameter list with defaults
+
+#### Key Patterns
+- Use `this` directly, not `@<this>`
+- Quote method names: `"method_name"`
+- Parameters: `{this,@<var,{param}>}`
+- Defaults: `{param:default_value}`
+
+#### Examples from Built-in Classes
+```grapa
+/* From $file class */
+table = @<[op,@<"file_table",{this,@<var,{p}>}>],{p}>;
+set = @<[op,@<"file_set",{this,@<var,{name}>,@<var,{p}>,@<var,{d}>}>],{name,p,d}>;
+
+/* From $OBJ class */
+str = @<[op,@<str,{this,@<var,{format}>}>],{format:null}>;
+len = @<len,{this}>;
 ```
 
 ## obj
