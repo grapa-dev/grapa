@@ -1,0 +1,29 @@
+/* Comprehensive test to verify all GrapaDBX functionality including dump */
+
+/* Create a unified database */
+u = $unified();
+
+/* Set multiple values to test dump functionality */
+u.set("user1", "John Doe");
+u.set("user2", "Jane Smith");
+u.set("user3", "Bob Johnson");
+
+/* Get values to verify they were stored correctly */
+result1 = u.get("user1");
+result2 = u.get("user2");
+result3 = u.get("user3");
+
+echo = "=== Test Results ===";
+echo = "user1: ";
+echo.result1;
+echo = "user2: ";
+echo.result2;
+echo = "user3: ";
+echo.result3;
+
+/* Test debug/dump functionality */
+echo = "=== Database Debug Output ===";
+debug_output = u.debug();
+echo.debug_output;
+
+echo = "=== Test Complete ==="; 
