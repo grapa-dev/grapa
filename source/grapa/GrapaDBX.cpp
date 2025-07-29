@@ -2196,15 +2196,36 @@ GrapaError GrapaDBX::CreateIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64A
 		return(err);
 	}
 
-	// Insert the index into the index tree
-	indexCursor.Set(indexRef, TREE_ITEM, pIndex.mId, pIndex.mRef);
-	printf("[DEBUG] GrapaDBX::CreateIndex: Inserting TREE_ITEM with key=%llu, value=%llu into index tree %llu\n", pIndex.mId, pIndex.mRef, indexRef);
+	// Create index field dictionary
+	GrapaDBXIndexField indexField;
+	indexField.Init(pIndexId, GrapaDBXIndexField::INDEX_NORMAL, GrapaDBXIndexField::METHOD_BTREE);
+	indexField.mTableRef = pTable.mRef;
+	indexField.mRef = pIndex.mRef;
+
+	// Allocate storage for the index field dictionary
+	u64 indexFieldRef;
+	err = NewData(BYTE_DATA, pTable.mRecRef, sizeof(GrapaDBXIndexField), 0, 0, indexFieldRef, true);
+	if (err) {
+		printf("[DEBUG] GrapaDBX::CreateIndex: NewData for index field failed with error %d\n", err);
+		return(err);
+	}
+
+	// Write the index field dictionary
+	err = indexField.Write(this, indexFieldRef);
+	if (err) {
+		printf("[DEBUG] GrapaDBX::CreateIndex: Write index field failed with error %d\n", err);
+		return(err);
+	}
+
+	// Insert the index dictionary into the index tree using DITYPE_ITEM
+	indexCursor.Set(indexRef, DITYPE_ITEM, pIndex.mId, indexFieldRef);
+	printf("[DEBUG] GrapaDBX::CreateIndex: Inserting DITYPE_ITEM with key=%llu, value=%llu into index tree %llu\n", pIndex.mId, indexFieldRef, indexRef);
 	err = Insert(indexCursor);
 	if (err) {
 		printf("[DEBUG] GrapaDBX::CreateIndex: Insert failed with error %d\n", err);
 		return(err);
 	}
-	printf("[DEBUG] GrapaDBX::CreateIndex: TREE_ITEM inserted successfully\n");
+	printf("[DEBUG] GrapaDBX::CreateIndex: DITYPE_ITEM inserted successfully\n");
 
 	// Link the store tree to the table's record reference (like GrapaDB does)
 	indexCursor.Set(pIndex.mRef);
@@ -2243,15 +2264,23 @@ GrapaError GrapaDBX::OpenIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64Arr
 	pIndex.mRef = 0;
 	pIndex.mDictField.mTableRef = pTable.mRef;
 
-	// Search for the specific index
-	indexCursor.Set(indexRef, TREE_ITEM, pIndex.mId);
+	// Search for the specific index dictionary
+	indexCursor.Set(indexRef, DITYPE_ITEM, pIndex.mId);
 	err = Search(indexCursor);
 	if (err) {
-		printf("[DEBUG] GrapaDBX::OpenIndex: Index not found\n");
+		printf("[DEBUG] GrapaDBX::OpenIndex: Index dictionary not found\n");
 		return(err);
 	}
 
-	pIndex.mRef = indexCursor.mValue;
+	// Read the index field dictionary
+	GrapaDBXIndexField indexField;
+	err = indexField.Read(this, indexCursor.mValue);
+	if (err) {
+		printf("[DEBUG] GrapaDBX::OpenIndex: Read index field failed with error %d\n", err);
+		return(err);
+	}
+
+	pIndex.mRef = indexField.mRef;
 	printf("[DEBUG] GrapaDBX::OpenIndex: Found index at %llu\n", pIndex.mRef);
 
 	// Get the index fields
@@ -3827,8 +3856,7 @@ GrapaError GrapaGroup2::ModifyField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 
 	// Modify the field using its ID
 	err = ModifyTableField(parentDict, field.mId, pNewType, pNewStore, pNewSize, pNewGrow);
-	if (err)
-	{
+	if (err) {
 		printf("[DEBUG] ModifyField: ModifyTableField failed with error %d\n", err);
 		return(err);
 	}
@@ -5274,23 +5302,50 @@ GrapaDBXIndexField::GrapaDBXIndexField()
 	mConstraintRef = 0;
 	mCompositeFieldsRef = 0;
 	mPartialConditionRef = 0;
-	mIndexFlags.mIndexType = 0;
-	mIndexFlags.mIndexMethod = 0;
+	mIndexFlags.mIndexType = INDEX_NORMAL;
+	mIndexFlags.mIndexMethod = METHOD_BTREE;
 	mIndexFlags.mSortOrder = 0;
-	mIndexFlags.mIsActive = 0;
+	mIndexFlags.mIsActive = 1;
 	mIndexFlags.mIsUnique = 0;
+}
+
+void GrapaDBXIndexField::Init(u64 pIndexId, u8 pIndexType, u8 pIndexMethod)
+{
+	mId = pIndexId;
+	mIndexFlags.mIndexType = pIndexType;
+	mIndexFlags.mIndexMethod = pIndexMethod;
+	mIndexFlags.mSortOrder = 0;
+	mIndexFlags.mIsActive = 1;
+	mIndexFlags.mIsUnique = (pIndexType == INDEX_UNIQUE || pIndexType == INDEX_PRIMARY) ? 1 : 0;
 }
 
 // GrapaDBXIndexField Read method
 GrapaError GrapaDBXIndexField::Read(GrapaDBX *pDb, u64 indexRef)
 {
 	if (indexRef == 0) return -1;
-	
+
 	// Read the index field data from the database
 	GrapaError err = pDb->GetDataValue(indexRef, 0, sizeof(GrapaDBXIndexField), (char*)this, NULL);
 	if (err) return err;
-	
+
 	// Convert from big-endian to native endian
+	BigEndian();
+	return 0;
+}
+
+// GrapaDBXIndexField Write method
+GrapaError GrapaDBXIndexField::Write(GrapaDBX *pDb, u64 indexRef)
+{
+	if (indexRef == 0) return -1;
+
+	// Convert to big-endian for storage
+	BigEndian();
+
+	// Write the index field data to the database
+	GrapaError err = pDb->SetDataValue(indexRef, 0, sizeof(GrapaDBXIndexField), this);
+	if (err) return err;
+
+	// Convert back to native endian
 	BigEndian();
 	return 0;
 }
