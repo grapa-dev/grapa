@@ -2175,7 +2175,7 @@ GrapaError GrapaDBX::CreateIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64A
 
 	pIndex.mId = pIndexId;
 	pIndex.mRef = 0;
-	pIndex.mTable = pTable;
+	pIndex.mDictField.mTableRef = pTable.mRef;
 
 	// Create the index table
 	err = NewTree(pIndex.mRef, RTABLE_TREE, indexRef, 8);
@@ -2229,7 +2229,7 @@ GrapaError GrapaDBX::OpenIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64Arr
 
 	pIndex.mId = pIndexId;
 	pIndex.mRef = 0;
-	pIndex.mTable = pTable;
+	pIndex.mDictField.mTableRef = pTable.mRef;
 
 	// Search for the specific index
 	indexCursor.Set(indexRef, TREE_ITEM, pIndex.mId);
@@ -2805,6 +2805,12 @@ GrapaError GrapaDBX::DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaDBXCurs
 			break;
 		case DTYPE_ITEM:
 			DumpTheDT(dbWrite,leadbuf,cursor);
+			break;
+		case DRTYPE_ITEM:
+			DumpTheDRT(dbWrite,leadbuf,cursor);
+			break;
+		case DITYPE_ITEM:
+			DumpTheDIT(dbWrite,leadbuf,cursor);
 			break;
 
 		case GREC_ITEM:
@@ -5220,9 +5226,61 @@ void GrapaDBXTable::BigEndian()
 // GrapaDBXIndex BigEndian implementation
 void GrapaDBXIndex::BigEndian()
 {
-	mTable.BigEndian();
+	mDictField.BigEndian();
 	mId = BE_S64(mId);
 	mRef = BE_S64(mRef);
+}
+
+// GrapaDBXIndexField BigEndian implementation
+void GrapaDBXIndexField::BigEndian()
+{
+	mId = BE_S64(mId);
+	mRef = BE_S64(mRef);
+	mTableRef = BE_S64(mTableRef);
+	mIndexNameRef = BE_S64(mIndexNameRef);
+	mCardinality = BE_S64(mCardinality);
+	mSelectivity = BE_S64(mSelectivity);
+	mLastUpdated = BE_S64(mLastUpdated);
+	mStatisticsRef = BE_S64(mStatisticsRef);
+	mConstraintRef = BE_S64(mConstraintRef);
+	mCompositeFieldsRef = BE_S64(mCompositeFieldsRef);
+	mPartialConditionRef = BE_S64(mPartialConditionRef);
+	// Note: mIndexFlags is a bit field, so no endian conversion needed
+}
+
+// GrapaDBXIndexField constructor
+GrapaDBXIndexField::GrapaDBXIndexField()
+{
+	mId = 0;
+	mRef = 0;
+	mTableRef = 0;
+	mIndexNameRef = 0;
+	mCardinality = 0;
+	mSelectivity = 0;
+	mLastUpdated = 0;
+	mStatisticsRef = 0;
+	mConstraintRef = 0;
+	mCompositeFieldsRef = 0;
+	mPartialConditionRef = 0;
+	mIndexFlags.mIndexType = 0;
+	mIndexFlags.mIndexMethod = 0;
+	mIndexFlags.mSortOrder = 0;
+	mIndexFlags.mIsActive = 0;
+	mIndexFlags.mIsUnique = 0;
+}
+
+// GrapaDBXIndexField Read method
+GrapaError GrapaDBXIndexField::Read(GrapaDBX *pDb, u64 indexRef)
+{
+	if (indexRef == 0) return -1;
+	
+	// Read the index field data from the database
+	GrapaError err = pDb->GetDataValue(indexRef, 0, sizeof(GrapaDBXIndexField), (char*)this, NULL);
+	if (err) return err;
+	
+	// Convert from big-endian to native endian
+	BigEndian();
+	return 0;
 }
 
 // Formula field operations - new functionality for GrapaDBX
@@ -6146,4 +6204,36 @@ GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, const char* p
 {
     GrapaCHAR s(pFieldName);
     return CreateField(parentTree, parentType, s, pType, pStore, pSize, pGrow);
+}
+
+GrapaError GrapaDBX::DumpTheDRT(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor)
+{
+	GrapaDBXField field;
+	GrapaError err = field.Read(this, cursor.mValue);
+	if (err) {
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDRTYPE_ITEM: Error reading field data\n", leader);
+		if (mDumpFile) mDumpFile->Append(dbWrite.mLength, dbWrite.mBytes);
+		return err;
+	}
+	
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDRTYPE_ITEM: id=%llu, type=%d, store=%d, size=%llu, grow=%llu, offset=%llu\n", 
+		leader, field.mId, field.mType, field.mStore, field.mSize, field.mGrow, field.mDictOffset);
+	if (mDumpFile) mDumpFile->Append(dbWrite.mLength, dbWrite.mBytes);
+	return(0);
+}
+
+GrapaError GrapaDBX::DumpTheDIT(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor)
+{
+	GrapaDBXIndexField indexField;
+	GrapaError err = indexField.Read(this, cursor.mValue);
+	if (err) {
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDITYPE_ITEM: Error reading index field data\n", leader);
+		if (mDumpFile) mDumpFile->Append(dbWrite.mLength, dbWrite.mBytes);
+		return err;
+	}
+	
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDITYPE_ITEM: id=%llu, type=%d, method=%d\n", 
+		leader, indexField.mId, indexField.mIndexFlags.mIndexType, indexField.mIndexFlags.mIndexMethod);
+	if (mDumpFile) mDumpFile->Append(dbWrite.mLength, dbWrite.mBytes);
+	return(0);
 }

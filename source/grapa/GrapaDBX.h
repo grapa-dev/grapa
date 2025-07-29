@@ -27,7 +27,7 @@ class GrapaDBXCursor;
 class GrapaDBX : public GrapaBtree
 {
 public:
-	enum { SEARCH_ITEM=LAST_ITEM, DTYPE_ITEM, GREC_ITEM, RREC_ITEM, CREC_ITEM, GPTR_ITEM, RPTR_ITEM, CPTR_ITEM, };
+	enum { SEARCH_ITEM=LAST_ITEM, DTYPE_ITEM, DRTYPE_ITEM, DITYPE_ITEM, GREC_ITEM, RREC_ITEM, CREC_ITEM, GPTR_ITEM, RPTR_ITEM, CPTR_ITEM, };
 	enum { GROUP_TREE=LAST_TREE, RTABLE_TREE, CTABLE_TREE, };
 	enum { IPTR_STORE=LAST_STORE, };
 	enum { NULL_CMP=0, LT_CMP, LTEQ_CMP, EQ_CMP, GTEQ_CMP, GT_CMP, };
@@ -171,6 +171,8 @@ protected:
 	virtual GrapaError DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
 	virtual GrapaError DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
 	virtual GrapaError DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheDRT(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
+	virtual GrapaError DumpTheDIT(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
 	virtual GrapaError DumpTheGroupRec(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
 	virtual GrapaError DumpTheGroupPtr(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
 	virtual GrapaError DumpTheRowRec(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor);
@@ -202,10 +204,23 @@ struct GrapaDBXField
 {
     enum { STORE_FIX = 0, STORE_VAR, STORE_PAR };
     enum { FORMULA_TEXT = 1, FORMULA_OP = 2 };
+    
+    // Core field metadata (needs endian conversion)
     u8 mType;
     u8 mStore;
     u8 mTreeType;
-    u8 mReserved[5];
+    
+    // Bit field for constraints and flags (NO endian conversion needed)
+    struct {
+        u8 mConstraints : 4;    // UNIQUE=1, NOT_NULL=2, CHECK=4, DEFAULT=8
+        u8 mIndexed : 1;        // 0/1
+        u8 mAutoIncrement : 1;  // 0/1
+        u8 mReserved : 2;       // 2 bits reserved
+    } mFlags;
+    
+    u8 mReserved[4];        // Reduced from 5 to 4 bytes
+    
+    // Field references (needs endian conversion)
     u64 mId;
     u64 mRef;
     u64 mNameId;
@@ -217,7 +232,22 @@ struct GrapaDBXField
     u64 mTableRef;
     u64 mFormulaRef;
     u8 mFormulaType;
-    u8 mReserved2[7];
+    
+    // Additional bit field (NO endian conversion needed)
+    struct {
+        u8 mDefaultValueType : 4;  // Type of default value
+        u8 mSortOrder : 1;         // ASC=0, DESC=1
+        u8 mReserved : 3;          // 3 bits reserved
+    } mExtraFlags;
+    
+    // Constraint references (needs endian conversion)
+    u64 mDefaultValueRef;
+    u64 mCheckConstraintRef;
+    u64 mForeignKeyRef;
+    u64 mSequenceRef;
+    u64 mStatisticsRef;
+    
+    u8 mReserved2[3];       // Reduced from 7 to 3 bytes
 
     GrapaDBXField();
     void BigEndian();
@@ -229,6 +259,49 @@ struct GrapaDBXField
     GrapaError Get(GrapaDBX *pDb, u64 tableRef, u64 fieldId);
 };
 
+// Index field dictionary - optimized for index metadata
+struct GrapaDBXIndexField
+{
+    enum { INDEX_PRIMARY = 1, INDEX_UNIQUE = 2, INDEX_NORMAL = 3, INDEX_FULLTEXT = 4 };
+    enum { METHOD_BTREE = 1, METHOD_HASH = 2, METHOD_RTREE = 3 };
+    
+    // Core index metadata (needs endian conversion)
+    u64 mId;
+    u64 mRef;
+    u64 mTableRef;
+    u64 mIndexNameRef;        // Reference to index name
+    
+    // Bit field for index properties (NO endian conversion needed)
+    struct {
+        u8 mIndexType : 3;     // PRIMARY=1, UNIQUE=2, NORMAL=3, FULLTEXT=4
+        u8 mIndexMethod : 2;   // BTREE=1, HASH=2, RTREE=3
+        u8 mSortOrder : 1;     // ASC=0, DESC=1
+        u8 mIsActive : 1;      // 0/1
+        u8 mIsUnique : 1;      // 0/1
+    } mIndexFlags;
+    
+    // Index statistics (needs endian conversion)
+    u64 mCardinality;         // Number of unique values
+    u64 mSelectivity;         // Selectivity ratio
+    u64 mLastUpdated;         // Timestamp of last update
+    u64 mStatisticsRef;       // Reference to index statistics
+    
+    // Index references (needs endian conversion)
+    u64 mConstraintRef;       // Reference to constraint definition
+    u64 mCompositeFieldsRef;  // Reference to composite field list
+    u64 mPartialConditionRef; // Reference to partial index condition
+    
+    // Methods
+    GrapaDBXIndexField();
+    void BigEndian();
+    void Init(u64 pIndexId, u8 pIndexType, u8 pIndexMethod);
+    void* GetPtr();
+    inline static u16 GetSize();
+    GrapaError Write(GrapaDBX *pDb, u64 indexRef);
+    GrapaError Read(GrapaDBX *pDb, u64 indexRef);
+    GrapaError Get(GrapaDBX *pDb, u64 tableRef, u64 indexId);
+};
+
 class GrapaDBXFieldArray : public GrapaVoidArray
 {
 public:
@@ -238,6 +311,17 @@ public:
 	GrapaError Append(GrapaDBX *pDb, GrapaDBXTable& pTable, u64 pFieldId);
 	GrapaError Append(GrapaDBXField *pField);
 	GrapaDBXField* GetFieldAt(u32 i) { return((GrapaDBXField*)GetAt(i)); }
+};
+
+class GrapaDBXIndexFieldArray : public GrapaVoidArray
+{
+public:
+	GrapaDBXIndexFieldArray(u32 pCount=0) : GrapaVoidArray(pCount) {};
+	~GrapaDBXIndexFieldArray();
+public:
+	GrapaError Append(GrapaDBX *pDb, GrapaDBXTable& pTable, u64 pIndexId);
+	GrapaError Append(GrapaDBXIndexField *pIndexField);
+	GrapaDBXIndexField* GetIndexFieldAt(u32 i) { return((GrapaDBXIndexField*)GetAt(i)); }
 };
 
 class GrapaDBXFieldValue : public GrapaDBXField
@@ -263,12 +347,29 @@ public:
 class GrapaDBXTable
 {
 public:
-	GrapaDBXField mDictField;
-	u64 mId;
-	u64 mRef;
-	u64 mRecRef;
-	u8 mRefType;
-	// add the name
+	GrapaDBXField mDictField;    // Record field dictionary
+    u64 mId;
+    u64 mRef;
+    u64 mRecRef;
+    u8 mRefType;
+    
+    // Bit field for table properties (NO endian conversion needed)
+    struct {
+        u8 mTableType : 2;     // TABLE=1, VIEW=2, TEMPORARY=3
+        u8 mAccessMode : 1;    // READ_ONLY=0, READ_WRITE=1
+        u8 mReserved : 5;      // 5 bits reserved
+    } mTableFlags;
+    
+    // Table metadata (needs endian conversion)
+    u64 mTableNameRef;        // Reference to table name
+    u64 mSchemaRef;           // Reference to schema definition
+    u64 mConstraintsRef;      // Reference to table constraints
+    u64 mIndexesRef;          // Reference to index list
+    u64 mTriggersRef;         // Reference to trigger definitions
+    u64 mLastModified;        // Timestamp of last modification
+    u64 mRowCount;            // Approximate row count
+    u64 mTableSize;           // Approximate table size in bytes
+    
 public:
 	GrapaDBXTable() { mId = 0; mRef = 0; mRecRef = 0; mRefType = 0; }
 	void BigEndian();
@@ -277,14 +378,31 @@ public:
 class GrapaDBXIndex
 {
 public:
-	GrapaDBXTable mTable;
-	u64 mId;
-	u64 mRef;
-	// add the name
+	GrapaDBXIndexField mDictField;  // Index field dictionary
+    u64 mId;
+    u64 mRef;
+    
 public:
 	GrapaDBXIndex() { mId = 0; mRef = 0; }
 	void BigEndian();
 };
+
+// Helper macros for bit field access
+#define IS_UNIQUE(field) ((field.mFlags.mConstraints & 1) != 0)
+#define IS_NOT_NULL(field) ((field.mFlags.mConstraints & 2) != 0)
+#define IS_CHECK(field) ((field.mFlags.mConstraints & 4) != 0)
+#define IS_DEFAULT(field) ((field.mFlags.mConstraints & 8) != 0)
+#define IS_INDEXED(field) (field.mFlags.mIndexed != 0)
+#define IS_AUTO_INCREMENT(field) (field.mFlags.mAutoIncrement != 0)
+
+#define IS_PRIMARY_INDEX(index) (index.mDictField.mIndexFlags.mIndexType == 1)
+#define IS_UNIQUE_INDEX(index) (index.mDictField.mIndexFlags.mIndexType == 2)
+#define IS_BTREE_INDEX(index) (index.mDictField.mIndexFlags.mIndexMethod == 1)
+#define IS_ACTIVE_INDEX(index) (index.mDictField.mIndexFlags.mIsActive != 0)
+
+#define IS_TABLE(table) (table.mTableFlags.mTableType == 1)
+#define IS_VIEW(table) (table.mTableFlags.mTableType == 2)
+#define IS_READ_WRITE(table) (table.mTableFlags.mAccessMode == 1)
 
 class GrapaDBXCursor : public GrapaCursor
 {
