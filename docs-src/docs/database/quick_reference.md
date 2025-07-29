@@ -280,6 +280,22 @@ f.set("sale_001", "North", "region")
 f.set("sale_001", 299.99, "sales_amount")
 ```
 
+## Field Deletion
+
+### rmfield(name)
+Deletes a field within the current working directory (database context).
+
+**Performance Note**: Field deletion performance varies significantly by table type:
+- **GROUP tables**: Very fast (O(1))
+- **COL tables**: Fast (O(1)) 
+- **ROW tables**: Expensive for large datasets (O(n))
+
+For detailed information about field deletion performance and best practices, see [Field Deletion](field_deletion.md).
+
+```grapa
+f.rmfield("test");
+```
+
 ## Error Handling
 
 ### Common Error Patterns

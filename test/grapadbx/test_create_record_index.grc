@@ -1,0 +1,33 @@
+('=== Testing CreateRecord Index Insertion ===').echo();
+
+('Creating ROW database...').echo();
+db = $unified();
+db.create('grapadbx://test.dbx?type=ROW');
+db.mk('test_table');
+
+('Creating index on test_table...').echo();
+db.mkfield('test_table', '$KEY', 'STR', 'FIX', 256, 0);
+db.mkfield('test_table', '$VALUE', 'RAW', 'VAR', 32, 8);
+
+('Setting data to trigger CreateRecord...').echo();
+db.set('test_table', 'record1', 'value1');
+db.set('test_table', 'record2', 'value2');
+db.set('test_table', 'record3', 'value3');
+
+('Debug output to verify index entries...').echo();
+db.debug();
+
+('Testing search to verify index is working...').echo();
+result = db.get('test_table', 'record1');
+('Record1 value: ').echo();
+result.echo();
+
+result = db.get('test_table', 'record2');
+('Record2 value: ').echo();
+result.echo();
+
+result = db.get('test_table', 'record3');
+('Record3 value: ').echo();
+result.echo();
+
+('Test completed.').echo(); 

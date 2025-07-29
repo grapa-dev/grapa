@@ -1,0 +1,113 @@
+/* Test script for field deletion functionality in GrapaDBX */
+
+/* Test 1: Basic field deletion in ROW table */
+('=== Testing Field Deletion in ROW Table ===').echo();
+db = $unified();
+db.create('grapadbx://test_field_deletion_row.dbx?type=ROW');
+
+/* Create table with multiple fields */
+db.mk('test_table');
+db.mkfield('test_table', 'field1', 'STR', 'VAR', 0, 0);
+db.mkfield('test_table', 'field2', 'INT', 'FIX', 8, 0);
+db.mkfield('test_table', 'field3', 'FLOAT', 'FIX', 8, 0);
+
+/* Add some records */
+db.set('record1', 'value1', 'test_table');
+db.set('record2', 'value2', 'test_table');
+db.set('record3', 'value3', 'test_table');
+
+/* Verify records exist */
+('Before deletion:').echo();
+db.debug();
+
+/* Delete field2 */
+('Deleting field2...').echo();
+db.rmfield('test_table', 'field2');
+
+/* Verify field was deleted */
+('After deletion:').echo();
+db.debug();
+
+/* Test 2: Field deletion in COL table */
+('=== Testing Field Deletion in COL Table ===').echo();
+db2 = $unified();
+db2.create('grapadbx://test_field_deletion_col.dbx?type=COL');
+
+/* Create table with multiple fields */
+db2.mk('test_table');
+db2.mkfield('test_table', 'field1', 'STR', 'VAR', 0, 0);
+db2.mkfield('test_table', 'field2', 'INT', 'FIX', 8, 0);
+db2.mkfield('test_table', 'field3', 'FLOAT', 'FIX', 8, 0);
+
+/* Add some records */
+db2.set('record1', 'value1', 'test_table');
+db2.set('record2', 'value2', 'test_table');
+db2.set('record3', 'value3', 'test_table');
+
+/* Verify records exist */
+('Before deletion:').echo();
+db2.debug();
+
+/* Delete field2 */
+('Deleting field2...').echo();
+db2.rmfield('test_table', 'field2');
+
+/* Verify field was deleted */
+('After deletion:').echo();
+db2.debug();
+
+/* Test 3: Field deletion in GROUP table */
+('=== Testing Field Deletion in GROUP Table ===').echo();
+db3 = $unified();
+db3.create('grapadbx://test_field_deletion_group.dbx?type=GROUP');
+
+/* Create table with multiple fields */
+db3.mk('test_table');
+db3.mkfield('test_table', 'field1', 'STR', 'VAR', 0, 0);
+db3.mkfield('test_table', 'field2', 'INT', 'FIX', 8, 0);
+db3.mkfield('test_table', 'field3', 'FLOAT', 'FIX', 8, 0);
+
+/* Add some records */
+db3.set('record1', 'value1', 'test_table');
+db3.set('record2', 'value2', 'test_table');
+db3.set('record3', 'value3', 'test_table');
+
+/* Verify records exist */
+('Before deletion:').echo();
+db3.debug();
+
+/* Delete field2 */
+('Deleting field2...').echo();
+db3.rmfield('test_table', 'field2');
+
+/* Verify field was deleted */
+('After deletion:').echo();
+db3.debug();
+
+/* Test 4: Attempt to delete field used in index (should fail) */
+('=== Testing Field Deletion with Index (should fail) ===').echo();
+db4 = $unified();
+db4.create('grapadbx://test_field_deletion_index.dbx?type=ROW');
+
+/* Create table with fields */
+db4.mk('test_table');
+db4.mkfield('test_table', 'field1', 'STR', 'VAR', 0, 0);
+db4.mkfield('test_table', 'field2', 'INT', 'FIX', 8, 0);
+
+/* Create index on field2 */
+db4.mkindex('test_table', 'index1', 'field2');
+
+/* Add some records */
+db4.set('record1', 'value1', 'test_table');
+db4.set('record2', 'value2', 'test_table');
+
+/* Attempt to delete field2 (should fail) */
+('Attempting to delete field2 (used in index)...').echo();
+result = db4.rmfield('test_table', 'field2');
+if (result == -1) {
+    ('SUCCESS: Field deletion correctly failed for indexed field').echo();
+} else {
+    ('ERROR: Field deletion should have failed for indexed field').echo();
+}
+
+('=== Field Deletion Tests Complete ===').echo(); 

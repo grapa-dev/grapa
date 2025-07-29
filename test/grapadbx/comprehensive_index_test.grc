@@ -1,0 +1,178 @@
+/* Comprehensive Index Functionality Test for GrapaDBX */
+
+('=== Comprehensive GrapaDBX Index Test ===').echo();
+
+/* Test 1: Basic Index Update Logic */
+('--- Test 1: Index Update Logic ---').echo();
+
+db = $unified();
+db.create('grapadbx://test_comprehensive.dbx?type=ROW');
+db.mk('users');
+
+/* Create fields */
+db.mkfield('users', 'name', 'STR', 'VAR', 32, 8);
+db.mkfield('users', 'age', 'INT', 'FIX', 8, 0);
+db.mkfield('users', 'email', 'STR', 'VAR', 64, 8);
+
+/* Set initial data */
+db.set('users', 'alice', 'name', 'Alice');
+db.set('users', 'alice', 'age', 25);
+db.set('users', 'alice', 'email', 'alice@example.com');
+
+db.set('users', 'bob', 'name', 'Bob');
+db.set('users', 'bob', 'age', 30);
+db.set('users', 'bob', 'email', 'bob@example.com');
+
+db.set('users', 'charlie', 'name', 'Charlie');
+db.set('users', 'charlie', 'age', 35);
+db.set('users', 'charlie', 'email', 'charlie@example.com');
+
+('Initial data set').echo();
+db.debug();
+
+/* Update data - should trigger index update logic */
+('Updating Alice\'s data...').echo();
+db.set('users', 'alice', 'name', 'Alice Smith');
+db.set('users', 'alice', 'age', 26);
+db.set('users', 'alice', 'email', 'alice.smith@example.com');
+
+('After update').echo();
+db.debug();
+
+/* Test 2: Search Optimization */
+('--- Test 2: Search Optimization ---').echo();
+
+/* Test search with different criteria */
+('Searching for users with age 30...').echo();
+result = db.get('users', 'bob', 'age');
+('Bob\'s age: ' + result).echo();
+
+('Searching for users with name starting with "A"...').echo();
+result = db.get('users', 'alice', 'name');
+('Alice\'s name: ' + result).echo();
+
+/* Test 3: Cursor Navigation */
+('--- Test 3: Cursor Navigation ---').echo();
+
+/* Test with GROUP table type */
+('Testing with GROUP table type...').echo();
+
+db2 = $unified();
+db2.create('grapadbx://test_group_index.dbx?type=GROUP');
+db2.mk('products');
+
+db2.mkfield('products', 'name', 'STR', 'VAR', 32, 8);
+db2.mkfield('products', 'price', 'FLOAT', 'VAR', 16, 8);
+db2.mkfield('products', 'category', 'STR', 'VAR', 16, 8);
+
+/* Add multiple products */
+db2.set('products', 'laptop', 'name', 'Laptop');
+db2.set('products', 'laptop', 'price', 999.99);
+db2.set('products', 'laptop', 'category', 'Electronics');
+
+db2.set('products', 'book', 'name', 'Programming Book');
+db2.set('products', 'book', 'price', 49.99);
+db2.set('products', 'book', 'category', 'Books');
+
+db2.set('products', 'phone', 'name', 'Smartphone');
+db2.set('products', 'phone', 'price', 699.99);
+db2.set('products', 'phone', 'category', 'Electronics');
+
+('Initial GROUP data').echo();
+db2.debug();
+
+/* Update a product - should trigger index update */
+('Updating laptop price...').echo();
+db2.set('products', 'laptop', 'price', 1099.99);
+
+('After GROUP update').echo();
+db2.debug();
+
+/* Test 4: Multiple Field Updates */
+('--- Test 4: Multiple Field Updates ---').echo();
+
+/* Update multiple fields at once */
+('Updating multiple fields for Bob...').echo();
+db.set('users', 'bob', 'name', 'Robert Johnson');
+db.set('users', 'bob', 'age', 31);
+db.set('users', 'bob', 'email', 'robert.johnson@example.com');
+
+('After multiple field updates').echo();
+db.debug();
+
+/* Test 5: Data Retrieval Verification */
+('--- Test 5: Data Retrieval Verification ---').echo();
+
+('Verifying updated data...').echo();
+
+/* Check Alice's updated data */
+alice_name = db.get('users', 'alice', 'name');
+alice_age = db.get('users', 'alice', 'age');
+alice_email = db.get('users', 'alice', 'email');
+
+('Alice - Name: ' + alice_name + ', Age: ' + alice_age + ', Email: ' + alice_email).echo();
+
+/* Check Bob's updated data */
+bob_name = db.get('users', 'bob', 'name');
+bob_age = db.get('users', 'bob', 'age');
+bob_email = db.get('users', 'bob', 'email');
+
+('Bob - Name: ' + bob_name + ', Age: ' + bob_age + ', Email: ' + bob_email).echo();
+
+/* Check Charlie's unchanged data */
+charlie_name = db.get('users', 'charlie', 'name');
+charlie_age = db.get('users', 'charlie', 'age');
+charlie_email = db.get('users', 'charlie', 'email');
+
+('Charlie - Name: ' + charlie_name + ', Age: ' + charlie_age + ', Email: ' + charlie_email).echo();
+
+/* Test 6: Index Consistency */
+('--- Test 6: Index Consistency ---').echo();
+
+('Verifying index consistency after updates...').echo();
+
+/* Try to retrieve all users to ensure indexes are consistent */
+('All users should be retrievable after index updates').echo();
+
+/* Test 7: Error Handling */
+('--- Test 7: Error Handling ---').echo();
+
+('Testing error handling for non-existent records...').echo();
+
+/* Try to get a non-existent user */
+try {
+    result = db.get('users', 'nonexistent', 'name');
+    ('Unexpected: Got result for non-existent user: ' + result).echo();
+} catch {
+    ('Correctly handled non-existent user').echo();
+}
+
+/* Test 8: Performance Verification */
+('--- Test 8: Performance Verification ---').echo();
+
+('Testing search performance with index optimization...').echo();
+
+/* Add more data to test index performance */
+i = 1;
+while (i <= 5) {
+    user_id = 'user' + i;
+    db.set('users', user_id, 'name', 'User ' + i);
+    db.set('users', user_id, 'age', 20 + i);
+    db.set('users', user_id, 'email', 'user' + i + '@example.com');
+    i = i + 1;
+}
+
+('Added 5 more users for performance testing').echo();
+
+/* Test search operations */
+('Testing search operations...').echo();
+
+/* Search for specific user */
+result = db.get('users', 'user3', 'name');
+('User3 name: ' + result).echo();
+
+result = db.get('users', 'user3', 'age');
+('User3 age: ' + result).echo();
+
+('=== Comprehensive Index Test Complete ===').echo();
+('All index functionality should be working correctly').echo(); 

@@ -1,0 +1,51 @@
+/* Test script to verify index update logic in GrapaDBX */
+
+/* Test basic index update functionality */
+('=== Testing GrapaDBX Index Update Logic ===').echo();
+
+/* Create a database with ROW table type */
+db = $unified();
+db.create('grapadbx://test_index.dbx?type=ROW');
+db.mk('test_table');
+
+/* Create an index on the table */
+db.mkfield('test_table', 'name', 'STR', 'VAR', 32, 8);
+db.mkfield('test_table', 'age', 'INT', 'FIX', 8, 0);
+
+/* Set initial data */
+db.set('test_table', 'Alice', 'name', 'Alice');
+db.set('test_table', 'Alice', 'age', 25);
+
+('Initial data set').echo();
+db.debug();
+
+/* Update the data - this should trigger index update logic */
+db.set('test_table', 'Alice', 'name', 'Alice Smith');
+db.set('test_table', 'Alice', 'age', 26);
+
+('After update - should show index update debug messages').echo();
+db.debug();
+
+/* Test with a different table type */
+('=== Testing with GROUP table type ===').echo();
+
+db2 = $unified();
+db2.create('grapadbx://test_index_group.dbx?type=GROUP');
+db2.mk('test_group');
+
+db2.mkfield('test_group', 'name', 'STR', 'VAR', 32, 8);
+db2.mkfield('test_group', 'value', 'INT', 'FIX', 8, 0);
+
+db2.set('test_group', 'item1', 'name', 'Item One');
+db2.set('test_group', 'item1', 'value', 100);
+
+('Initial GROUP data').echo();
+db2.debug();
+
+db2.set('test_group', 'item1', 'name', 'Item One Updated');
+db2.set('test_group', 'item1', 'value', 150);
+
+('After GROUP update').echo();
+db2.debug();
+
+('=== Index Update Test Complete ===').echo(); 
