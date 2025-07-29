@@ -1,0 +1,39 @@
+/* Simple Verification Test */
+
+/* Test basic DBX functionality */
+("=== Testing Basic DBX Functionality ===").echo();
+
+/* Create DBX database */
+dbx = $unified();
+dbx.create("grapadbx://test_simple.dbx?type=ROW");
+dbx.mk("test_table");
+
+/* Set and get a simple value */
+dbx.set("test_key", "test_value");
+result = dbx.get("test_key");
+
+/* Display result */
+("DBX result: " + result).echo();
+
+/* Test reference implementation */
+("=== Testing Reference Implementation ===").echo();
+
+/* Create reference database */
+ref = $file().table("ROW");
+ref.mk("test_table");
+
+/* Set and get a simple value */
+ref.set("test_key", "test_value");
+ref_result = ref.get("test_key");
+
+/* Display result */
+("Reference result: " + ref_result).echo();
+
+/* Compare results */
+if (result == ref_result) {
+    "✅ Results match - DBX working correctly".echo();
+} else {
+    "❌ Results don't match - DBX has issues".echo();
+}
+
+("=== Test completed ===").echo(); 

@@ -75,6 +75,216 @@ This document provides a comprehensive reference for the `GrapaDB` class, its me
 - **`DumpTree(u64 pTreeRef = 0, GrapaFile *pDumpFile = NULL)`** — Dump a specific tree structure.
 - **`GetData(u64 itemPtr, GrapaCHAR& pValue)`** — Retrieve data from a data pointer.
 
+---
+
+## Index Architecture and Search Optimization
+
+### Overview
+GrapaDB implements a sophisticated index system that provides efficient query performance through a combination of index-based bounding and full table scanning. The system uses a **two-stage search process** that optimizes for both indexed and non-indexed field searches.
+
+### Index Update Pattern
+
+#### Three-Phase Index Update Process
+When a field is updated in a record, GrapaDB follows a **three-phase process** to maintain index consistency:
+
+```cpp
+// Phase 1: Remove from all indexes
+indexCursor.Set(indexTree);
+err = First(indexCursor);
+while (!err) {
+    for(i=0; i<fieldCount; i++) {
+        dbFieldValue = pFieldList.GetFieldAt(i);
+        if (IndexHasField(indexCursor, dbFieldValue->mId)) {
+            switch (recCursor.mTreeType) {
+                case GROUP_TREE: 
+                    tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey);
+                    err = Delete(tableCursor);
+                    break;
+                case RTABLE_TREE:
+                    tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+                    err = Delete(tableCursor);
+                    break;
+                case CTABLE_TREE:
+                    tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
+                    err = Delete(tableCursor);
+                    break;
+            }
+            break;
+        }
+    }
+    err = Next(indexCursor);
+}
+
+// Phase 2: Update field data
+// ... field data is updated in the record ...
+
+// Phase 3: Add back to all indexes
+indexCursor.Set(indexTree);
+err = First(indexCursor);
+while (!err) {
+    for (i = 0; i < fieldCount; i++) {
+        dbFieldValue = pFieldList.GetFieldAt(i);
+        if (IndexHasField(indexCursor, dbFieldValue->mId)) {
+            switch (recCursor.mTreeType) {
+                case GROUP_TREE:
+                    tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey);
+                    err = Insert(tableCursor);
+                    break;
+                case RTABLE_TREE:
+                    tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+                    err = Insert(tableCursor);
+                    break;
+                case CTABLE_TREE:
+                    tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
+                    err = Insert(tableCursor);
+                    break;
+            }
+            break;
+        }
+    }
+    err = Next(indexCursor);
+}
+```
+
+#### Key Characteristics
+- **Atomic Updates:** Index updates are performed atomically with record updates
+- **All Table Types:** Supports GROUP_TREE, RTABLE_TREE, and CTABLE_TREE
+- **All Pointer Types:** Uses appropriate pointer types (GPTR_ITEM, RPTR_ITEM, CPTR_ITEM)
+- **Field-Level Granularity:** Only updates indexes that contain the modified fields
+
+### Search Optimization Architecture
+
+#### Two-Stage Search Process
+GrapaDB implements a **two-stage search process** that optimizes query performance:
+
+```cpp
+GrapaError GrapaDB::SearchDb(GrapaDBCursor& cursor, GrapaDBTable& pTable, GrapaDBFieldValueArray& pFieldList)
+{
+    // Stage 1: Index Selection (Simple Approach)
+    field = pFieldList.GetFieldAt(0);  // Use first field's index
+    indexCursor.Set(pTable.mRecRef);
+    err = GetTreeIndex(indexCursor, indexRef);
+    if (!err) {
+        err = LocateIndex(indexCursor, indexRef, field->mId);
+        if (!err) {
+            usingIndex = true;
+            cursor.SetSearch(this, indexCursor.mValue, usingIndex, &pFieldList);
+        }
+    }
+    
+    // Stage 2: Search Execution
+    if (usingIndex) {
+        // Index-based search: Use index to bound search space
+        err = Search(cursor);
+        err = FirstDb(cursor);
+    } else {
+        // Full table scan: Scan all records for matches
+        cursor.SetSearch(this, pTable.mRecRef, usingIndex, &pFieldList);
+        err = First(cursor);
+        err = FirstDb(cursor);
+        // ... compare and iterate through results
+    }
+}
+```
+
+#### Index Selection Strategy
+The reference implementation uses a **simple but effective** index selection strategy:
+
+1. **First Field Priority:** Uses the first field in the search criteria
+2. **Index Availability:** Checks if an index exists for that field
+3. **Fallback to Full Scan:** If no suitable index is found, performs full table scan
+
+#### Cursor Navigation
+Search results are navigated using specialized cursor methods:
+
+```cpp
+GrapaError GrapaDB::FirstDb(GrapaDBCursor& cursor)   // Find first matching record
+GrapaError GrapaDB::NextDb(GrapaDBCursor& cursor)    // Navigate to next match
+GrapaError GrapaDB::LastDb(GrapaDBCursor& cursor)    // Find last matching record
+GrapaError GrapaDB::PrevDb(GrapaDBCursor& cursor)    // Navigate to previous match
+```
+
+### Index Structure and Management
+
+#### Index BTree Structure
+Each index is implemented as a BTree with the following structure:
+
+```
+Index BTree:
+├── Key=0: DICT field (metadata about index structure)
+├── Key=1: Index entry pointing to record 1
+├── Key=2: Index entry pointing to record 2
+└── ...: Additional index entries
+```
+
+#### Index Entry Types
+- **GPTR_ITEM:** Group pointer item (for GROUP_TREE tables)
+- **RPTR_ITEM:** Row pointer item (for RTABLE_TREE tables)  
+- **CPTR_ITEM:** Column pointer item (for CTABLE_TREE tables)
+
+#### Index Field Mapping
+Indexes maintain a mapping between index fields and table fields:
+
+```cpp
+// Index field mapping structure
+struct IndexFieldMapping {
+    u64 indexFieldId;    // Index field identifier
+    u64 tableFieldId;    // Corresponding table field identifier
+};
+```
+
+### Performance Characteristics
+
+#### Index-Based Search Performance
+- **Bounding Effect:** Index narrows search space significantly
+- **Logarithmic Complexity:** O(log n) for index traversal
+- **Pointer Dereferencing:** Additional overhead for record access
+- **Memory Efficiency:** Indexes store pointers, not data
+
+#### Full Table Scan Performance
+- **Linear Complexity:** O(n) for complete table scan
+- **Direct Access:** No pointer dereferencing overhead
+- **Memory Intensive:** May require loading large datasets
+- **Fallback Strategy:** Used when no suitable index exists
+
+#### Hybrid Search Performance
+- **Two-Stage Process:** Index bounding + full scan for remaining fields
+- **Optimized for Mixed Queries:** Combines benefits of both approaches
+- **Flexible Field Matching:** Supports partial index matches
+
+### Limitations and Enhancement Opportunities
+
+#### Current Limitations
+1. **Simple Index Selection:** Only uses first field's index
+2. **No Multi-Index Support:** Cannot use multiple indexes simultaneously
+3. **No Index Statistics:** No performance monitoring or selectivity analysis
+4. **No Compound Index Optimization:** Limited multi-field index usage
+5. **No Cost-Based Optimization:** No intelligent index selection
+
+#### Enhancement Opportunities
+1. **Multi-Index Support:** Use multiple indexes for complex queries
+2. **Index Statistics:** Track cardinality, selectivity, and performance metrics
+3. **Compound Index Optimization:** Optimize multi-field index usage
+4. **Cost-Based Index Selection:** Intelligent index selection based on statistics
+5. **Index Maintenance Optimization:** Efficient index update strategies
+
+### Integration with GrapaDBX
+
+#### Current Status
+GrapaDBX is missing the complete index architecture:
+- ❌ **Index Update Logic:** No three-phase update pattern
+- ❌ **SearchDb Method:** No index selection and two-stage search
+- ❌ **Cursor Navigation:** No FirstDb/NextDb/LastDb/PrevDb methods
+- ❌ **Index Integration:** No proper integration with field updates
+
+#### Implementation Requirements
+To achieve 100% parity with GrapaDB, GrapaDBX needs:
+1. **Index Update Logic:** Implement complete three-phase update pattern
+2. **SearchDb Method:** Implement index selection and two-stage search
+3. **Cursor Navigation:** Implement FirstDb/NextDb/LastDb/PrevDb methods
+4. **Index Management:** Implement CreateIndex/OpenIndex/DeleteIndex/RefreshIndex
+5. **Helper Methods:** Implement LocateIndex and IndexHasField methods
+
 ### Associated Data Structures
 
 #### GrapaDBTable

@@ -1,0 +1,160 @@
+/* Basic GrapaDBX Functionality Test
+ * Tests basic set/get operations across different table types and field types
+ */
+
+/* Test Results */
+test_results = {
+    "passed": 0,
+    "failed": 0,
+    "errors": []
+};
+
+/* Log test results */
+log_test = op(test_name, result, details) {
+    ("=== " + test_name + " ===").echo();
+    if (result) {
+        "✅ PASSED".echo();
+        test_results.passed += 1;
+    } else {
+        "❌ FAILED".echo();
+        test_results.failed += 1;
+        test_results.errors += [{"test": test_name, "details": details}];
+    }
+    if (details) {
+        details.echo();
+    }
+    "".echo();
+};
+
+/* Test basic set/get for a specific table type and field type */
+test_basic_set_get = op(table_type, field_name, field_type, storage_type, test_value) {
+    test_name = "Basic Set/Get - " + table_type + " - " + field_name;
+    
+    /* Create database */
+    db = $unified();
+    db.create("grapadbx://test_" + table_type + ".dbx?type=" + table_type);
+    db.mk("test_table");
+    
+    /* Create field */
+    if (storage_type == "FIX") {
+        db.mkfield(field_name, field_type, storage_type, 20, 20);
+    } else {
+        db.mkfield(field_name, field_type, storage_type, 0, 32);
+    }
+    
+    /* Set data */
+    db.set("test_key", test_value, field_name);
+    
+    /* Get data */
+    retrieved = db.get("test_key", field_name);
+    
+    /* Compare with original */
+    if (retrieved == test_value) {
+        log_test(test_name, true, "");
+        return true;
+    } else {
+        log_test(test_name, false, "Retrieved value doesn't match original");
+        return false;
+    }
+};
+
+/* Test different data types */
+test_data_types = {
+    "string": "Hello World",
+    "integer": 42,
+    "float": 3.14159,
+    "boolean": true,
+    "array": [1, 2, 3, 4, 5],
+    "list": {"key1": "value1", "key2": 123},
+    "null": null,
+    "empty_string": "",
+    "zero": 0,
+    "negative": -42
+};
+
+/* Test configurations */
+test_configs = [
+    {"table_type": "ROW", "field_name": "STR_VAR", "field_type": "STR", "storage_type": "VAR"},
+    {"table_type": "ROW", "field_name": "STR_FIX", "field_type": "STR", "storage_type": "FIX"},
+    {"table_type": "ROW", "field_name": "INT", "field_type": "INT", "storage_type": "FIX"},
+    {"table_type": "ROW", "field_name": "FLOAT", "field_type": "FLOAT", "storage_type": "FIX"},
+    {"table_type": "ROW", "field_name": "BOOL", "field_type": "BOOL", "storage_type": "FIX"},
+    {"table_type": "ROW", "field_name": "RAW", "field_type": "RAW", "storage_type": "VAR"},
+    
+    {"table_type": "COL", "field_name": "STR_VAR", "field_type": "STR", "storage_type": "VAR"},
+    {"table_type": "COL", "field_name": "STR_FIX", "field_type": "STR", "storage_type": "FIX"},
+    {"table_type": "COL", "field_name": "INT", "field_type": "INT", "storage_type": "FIX"},
+    {"table_type": "COL", "field_name": "FLOAT", "field_type": "FLOAT", "storage_type": "FIX"},
+    {"table_type": "COL", "field_name": "BOOL", "field_type": "BOOL", "storage_type": "FIX"},
+    {"table_type": "COL", "field_name": "RAW", "field_type": "RAW", "storage_type": "VAR"},
+    
+    {"table_type": "GROUP", "field_name": "STR_VAR", "field_type": "STR", "storage_type": "VAR"},
+    {"table_type": "GROUP", "field_name": "STR_FIX", "field_type": "STR", "storage_type": "FIX"},
+    {"table_type": "GROUP", "field_name": "INT", "field_type": "INT", "storage_type": "FIX"},
+    {"table_type": "GROUP", "field_name": "FLOAT", "field_type": "FLOAT", "storage_type": "FIX"},
+    {"table_type": "GROUP", "field_name": "BOOL", "field_type": "BOOL", "storage_type": "FIX"},
+    {"table_type": "GROUP", "field_name": "RAW", "field_type": "RAW", "storage_type": "VAR"}
+];
+
+/* Run tests */
+("Starting Basic GrapaDBX Functionality Test").echo();
+("Testing set/get operations across different table types and field types").echo();
+"".echo();
+
+/* Reset test results */
+test_results.passed = 0;
+test_results.failed = 0;
+test_results.errors = [];
+
+/* Test each configuration with each data type */
+i = 0;
+while (i < test_configs.len()) {
+    config = test_configs[i];
+    
+    /* Test with string data */
+    test_basic_set_get(config.table_type, config.field_name, config.field_type, config.storage_type, "test_value");
+    
+    /* Test with integer data */
+    test_basic_set_get(config.table_type, config.field_name + "_int", config.field_type, config.storage_type, 42);
+    
+    /* Test with float data */
+    test_basic_set_get(config.table_type, config.field_name + "_float", config.field_type, config.storage_type, 3.14159);
+    
+    /* Test with boolean data */
+    test_basic_set_get(config.table_type, config.field_name + "_bool", config.field_type, config.storage_type, true);
+    
+    /* Test with array data (for RAW fields) */
+    if (config.field_type == "RAW") {
+        test_basic_set_get(config.table_type, config.field_name + "_array", config.field_type, config.storage_type, [1, 2, 3, 4, 5]);
+    }
+    
+    /* Test with list data (for RAW fields) */
+    if (config.field_type == "RAW") {
+        test_basic_set_get(config.table_type, config.field_name + "_list", config.field_type, config.storage_type, {"key1": "value1", "key2": 123});
+    }
+    
+    i += 1;
+}
+
+/* Print final results */
+"".echo();
+("=== TEST RESULTS ===").echo();
+("Passed: " + test_results.passed.str()).echo();
+("Failed: " + test_results.failed.str()).echo();
+("Total: " + (test_results.passed + test_results.failed).str()).echo();
+
+if (test_results.failed > 0) {
+    ("=== FAILED TESTS ===").echo();
+    i = 0;
+    while (i < test_results.errors.len()) {
+        error = test_results.errors[i];
+        (error.test + ": " + error.details).echo();
+        i += 1;
+    }
+}
+
+if (test_results.failed == 0) {
+    ("🎉 ALL TESTS PASSED! 🎉").echo();
+} else {
+    ("❌ " + test_results.failed.str() + " TESTS FAILED ❌").echo();
+} 

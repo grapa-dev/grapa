@@ -1,23 +1,104 @@
 /* Simple GrapaDBX Test
+ * Tests basic set/get operations for different table types
+ */
 
-"Testing GrapaDBX...\n".echo();
+/* Test ROW table */
+("=== Testing ROW Table ===").echo();
+row_db = $unified();
+row_db.create("grapadbx://test_row.dbx?type=ROW");
+row_db.mk("test_table");
+row_db.mkfield("name", "STR", "VAR", 0, 32);
+row_db.set("user1", "John Doe", "name");
+result = row_db.get("user1", "name");
+("ROW - String: " + result).echo();
 
-/* Create a database
-dbx = $unified("grapadbx://test.dbx");
-"Database created\n".echo();
+/* Test COL table */
+("=== Testing COL Table ===").echo();
+col_db = $unified();
+col_db.create("grapadbx://test_col.dbx?type=COL");
+col_db.mk("test_table");
+col_db.mkfield("age", "INT", "FIX", 4, 4);
+col_db.set("user1", 30, "age");
+result = col_db.get("user1", "age");
+("COL - Integer: " + result).echo();
 
-/* Create a table
-dbx.mk("test_table");
-"Table created\n".echo();
+/* Test GROUP table */
+("=== Testing GROUP Table ===").echo();
+group_db = $unified();
+group_db.create("grapadbx://test_group.dbx?type=GROUP");
+group_db.mk("test_table");
+group_db.mkfield("salary", "FLOAT", "FIX", 8, 8);
+group_db.set("user1", 75000.50, "salary");
+result = group_db.get("user1", "salary");
+("GROUP - Float: " + result).echo();
 
-/* Set a value
-dbx.set("test_table/key1", "value1", "$VALUE");
-"Value set\n".echo();
+/* Test RAW field with complex data */
+("=== Testing RAW Field ===").echo();
+raw_db = $unified();
+raw_db.create("grapadbx://test_raw.dbx?type=ROW");
+raw_db.mk("test_table");
+raw_db.mkfield("data", "RAW", "VAR", 0, 32);
+complex_data = {"name": "Alice", "scores": [85, 92, 78], "active": true};
+raw_db.set("user1", complex_data, "data");
+result = raw_db.get("user1", "data");
+("RAW - Complex data retrieved successfully").echo();
 
-/* Get the value
-result = dbx.get("test_table/key1", "$VALUE");
-("Retrieved: " + result + "\n").echo();
+/* Test multiple records */
+("=== Testing Multiple Records ===").echo();
+multi_db = $unified();
+multi_db.create("grapadbx://test_multi.dbx?type=ROW");
+multi_db.mk("test_table");
+multi_db.mkfield("name", "STR", "VAR", 0, 32);
+multi_db.mkfield("age", "INT", "FIX", 4, 4);
 
-/* Close
-dbx.close();
-"Test complete\n".echo(); 
+/* Add multiple records */
+multi_db.set("user1", "Alice", "name");
+multi_db.set("user1", 25, "age");
+multi_db.set("user2", "Bob", "name");
+multi_db.set("user2", 30, "age");
+multi_db.set("user3", "Charlie", "name");
+multi_db.set("user3", 35, "age");
+
+/* Retrieve and verify */
+name1 = multi_db.get("user1", "name");
+age1 = multi_db.get("user1", "age");
+name2 = multi_db.get("user2", "name");
+age2 = multi_db.get("user2", "age");
+name3 = multi_db.get("user3", "name");
+age3 = multi_db.get("user3", "age");
+
+("Multiple records - User1: " + name1 + ", Age: " + age1).echo();
+("Multiple records - User2: " + name2 + ", Age: " + age2).echo();
+("Multiple records - User3: " + name3 + ", Age: " + age3).echo();
+
+/* Test field deletion */
+("=== Testing Field Deletion ===").echo();
+delete_db = $unified();
+delete_db.create("grapadbx://test_delete.dbx?type=ROW");
+delete_db.mk("test_table");
+delete_db.mkfield("name", "STR", "VAR", 0, 32);
+delete_db.set("user1", "Test User", "name");
+delete_db.rmfield("name");
+deleted_result = delete_db.get("user1", "name");
+if (deleted_result.type() == $ERR) {
+    ("Field deletion works correctly").echo();
+} else {
+    ("Field deletion failed").echo();
+}
+
+/* Test record deletion */
+("=== Testing Record Deletion ===").echo();
+rm_db = $unified();
+rm_db.create("grapadbx://test_rm.dbx?type=ROW");
+rm_db.mk("test_table");
+rm_db.mkfield("name", "STR", "VAR", 0, 32);
+rm_db.set("user1", "Test User", "name");
+rm_db.rm("user1");
+rm_result = rm_db.get("user1", "name");
+if (rm_result.type() == $ERR) {
+    ("Record deletion works correctly").echo();
+} else {
+    ("Record deletion failed").echo();
+}
+
+("=== All Tests Completed ===").echo(); 

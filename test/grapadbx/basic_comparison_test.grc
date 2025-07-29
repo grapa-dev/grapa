@@ -1,0 +1,123 @@
+/* Basic Comparison Test
+ * Simple test to compare GrapaDBX with reference implementation
+ */
+
+/* Test ROW table comparison */
+("=== Testing ROW Table Comparison ===").echo();
+
+/* Test DBX ROW */
+dbx_row = $unified();
+dbx_row.create("grapadbx://test_row_comparison.dbx?type=ROW");
+dbx_row.mk("test_table");
+dbx_row.set("key1", "value1");
+dbx_result = dbx_row.get("key1");
+("DBX ROW result: " + dbx_result).echo();
+
+/* Test reference ROW */
+ref_row = $file().table("ROW");
+ref_row.mk("test_table");
+ref_row.set("key1", "value1");
+ref_result = ref_row.get("key1");
+("Reference ROW result: " + ref_result).echo();
+
+/* Compare results */
+if (dbx_result == ref_result) {
+    "✅ ROW comparison PASSED".echo();
+} else {
+    "❌ ROW comparison FAILED".echo();
+}
+
+/* Test COL table comparison */
+("=== Testing COL Table Comparison ===").echo();
+
+/* Test DBX COL */
+dbx_col = $unified();
+dbx_col.create("grapadbx://test_col_comparison.dbx?type=COL");
+dbx_col.mk("test_table");
+dbx_col.set("key1", "value1");
+dbx_result = dbx_col.get("key1");
+("DBX COL result: " + dbx_result).echo();
+
+/* Test reference COL */
+ref_col = $file().table("COL");
+ref_col.mk("test_table");
+ref_col.set("key1", "value1");
+ref_result = ref_col.get("key1");
+("Reference COL result: " + ref_result).echo();
+
+/* Compare results */
+if (dbx_result == ref_result) {
+    "✅ COL comparison PASSED".echo();
+} else {
+    "❌ COL comparison FAILED".echo();
+}
+
+/* Test GROUP table comparison */
+("=== Testing GROUP Table Comparison ===").echo();
+
+/* Test DBX GROUP */
+dbx_group = $unified();
+dbx_group.create("grapadbx://test_group_comparison.dbx?type=GROUP");
+dbx_group.mk("test_table");
+dbx_group.set("key1", "value1");
+dbx_result = dbx_group.get("key1");
+("DBX GROUP result: " + dbx_result).echo();
+
+/* Test reference GROUP */
+ref_group = $file().table("GROUP");
+ref_group.mk("test_table");
+ref_group.set("key1", "value1");
+ref_result = ref_group.get("key1");
+("Reference GROUP result: " + ref_result).echo();
+
+/* Compare results */
+if (dbx_result == ref_result) {
+    "✅ GROUP comparison PASSED".echo();
+} else {
+    "❌ GROUP comparison FAILED".echo();
+}
+
+/* Test different data types */
+("=== Testing Different Data Types ===").echo();
+
+/* Test integer */
+dbx_int = $unified();
+dbx_int.create("grapadbx://test_int.dbx?type=ROW");
+dbx_int.mk("test_table");
+dbx_int.set("int_key", 42);
+int_result = dbx_int.get("int_key");
+("DBX integer result: " + int_result).echo();
+
+/* Test float */
+dbx_float = $unified();
+dbx_float.create("grapadbx://test_float.dbx?type=ROW");
+dbx_float.mk("test_table");
+dbx_float.set("float_key", 3.14159);
+float_result = dbx_float.get("float_key");
+("DBX float result: " + float_result).echo();
+
+/* Test boolean */
+dbx_bool = $unified();
+dbx_bool.create("grapadbx://test_bool.dbx?type=ROW");
+dbx_bool.mk("test_table");
+dbx_bool.set("bool_key", true);
+bool_result = dbx_bool.get("bool_key");
+("DBX boolean result: " + bool_result).echo();
+
+/* Test array */
+dbx_array = $unified();
+dbx_array.create("grapadbx://test_array.dbx?type=ROW");
+dbx_array.mk("test_table");
+dbx_array.set("array_key", [1, 2, 3]);
+array_result = dbx_array.get("array_key");
+("DBX array result: " + array_result).echo();
+
+/* Test list */
+dbx_list = $unified();
+dbx_list.create("grapadbx://test_list.dbx?type=ROW");
+dbx_list.mk("test_table");
+dbx_list.set("list_key", {"key": "value"});
+list_result = dbx_list.get("list_key");
+("DBX list result: " + list_result).echo();
+
+("=== All Basic Tests Completed ===").echo(); 

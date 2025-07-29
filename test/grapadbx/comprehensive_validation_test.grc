@@ -1,0 +1,319 @@
+/* Comprehensive GrapaDBX Validation Test
+ * Tests GrapaDBX against reference implementation
+ * Focuses on working functionality and proper field types
+ */
+
+/* Test Results */
+test_results = {
+    "passed": 0,
+    "failed": 0,
+    "errors": []
+};
+
+/* Log test results */
+log_test = op(test_name, result, details) {
+    ("=== " + test_name + " ===").echo();
+    if (result) {
+        "✅ PASSED".echo();
+        test_results.passed += 1;
+    } else {
+        "❌ FAILED".echo();
+        test_results.failed += 1;
+        test_results.errors += [{"test": test_name, "details": details}];
+    }
+    if (details) {
+        details.echo();
+    }
+    "".echo();
+};
+
+/* Test basic functionality for each table type */
+test_table_type = op(table_type, test_name) {
+    ("Testing " + table_type + " table type").echo();
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Test basic set/get with default fields */
+    dbx.set("key1", "value1");
+    result = dbx.get("key1");
+    
+    if (result == "value1") {
+        log_test(test_name + " - Basic Set/Get", true, "");
+        return true;
+    } else {
+        log_test(test_name + " - Basic Set/Get", false, "Expected 'value1', got '" + result + "'");
+        return false;
+    }
+};
+
+/* Test different data types */
+test_data_types = op(table_type, test_name) {
+    ("Testing " + table_type + " with different data types").echo();
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_datatypes_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Test different data types */
+    test_cases = [
+        {"name": "string", "value": "Hello World", "expected": "Hello World"},
+        {"name": "integer", "value": 42, "expected": 42},
+        {"name": "float", "value": 3.14159, "expected": 3.14159},
+        {"name": "boolean", "value": true, "expected": true},
+        {"name": "array", "value": [1, 2, 3], "expected": [1, 2, 3]},
+        {"name": "list", "value": {"key": "value"}, "expected": {"key": "value"}},
+        {"name": "null", "value": null, "expected": null},
+        {"name": "empty_string", "value": "", "expected": ""},
+        {"name": "zero", "value": 0, "expected": 0},
+        {"name": "negative", "value": -42, "expected": -42}
+    ];
+    
+    success = true;
+    i = 0;
+    while (i < test_cases.len()) {
+        test_case = test_cases[i];
+        dbx.set("key" + i.str(), test_case.value);
+        result = dbx.get("key" + i.str());
+        
+        if (result != test_case.expected) {
+            success = false;
+            (test_case.name + " failed: expected '" + test_case.expected + "', got '" + result + "'").echo();
+        }
+        
+        i += 1;
+    }
+    
+    log_test(test_name + " - Data Types", success, "");
+    return success;
+};
+
+/* Test multiple records */
+test_multiple_records = op(table_type, test_name) {
+    ("Testing " + table_type + " with multiple records").echo();
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_multiple_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Add multiple records */
+    i = 1;
+    while (i <= 10) {
+        key = "user" + i.str();
+        value = "value" + i.str();
+        dbx.set(key, value);
+        i += 1;
+    }
+    
+    /* Verify all records */
+    success = true;
+    i = 1;
+    while (i <= 10) {
+        key = "user" + i.str();
+        expected = "value" + i.str();
+        result = dbx.get(key);
+        
+        if (result != expected) {
+            success = false;
+            ("Record " + i.str() + " failed: expected '" + expected + "', got '" + result + "'").echo();
+        }
+        
+        i += 1;
+    }
+    
+    log_test(test_name + " - Multiple Records", success, "");
+    return success;
+};
+
+/* Test complex data structures */
+test_complex_data = op(table_type, test_name) {
+    ("Testing " + table_type + " with complex data structures").echo();
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_complex_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Test complex data structures */
+    complex_data = {
+        "nested": {
+            "level1": {
+                "level2": [1, 2, 3, {"deep": "value"}]
+            }
+        },
+        "array": [1, 2, 3, 4, 5, {"mixed": "data"}],
+        "mixed": {
+            "strings": ["a", "b", "c"],
+            "numbers": [1, 2, 3],
+            "booleans": [true, false]
+        }
+    };
+    
+    dbx.set("complex_key", complex_data);
+    result = dbx.get("complex_key");
+    
+    if (result == complex_data) {
+        log_test(test_name + " - Complex Data", true, "");
+        return true;
+    } else {
+        log_test(test_name + " - Complex Data", false, "Complex data retrieval failed");
+        return false;
+    }
+};
+
+/* Test record deletion */
+test_record_deletion = op(table_type, test_name) {
+    ("Testing " + table_type + " record deletion").echo();
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_delete_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Add a record */
+    dbx.set("test_key", "test_value");
+    
+    /* Verify it exists */
+    result = dbx.get("test_key");
+    if (result != "test_value") {
+        log_test(test_name + " - Record Deletion", false, "Record not found before deletion");
+        return false;
+    }
+    
+    /* Delete the record */
+    dbx.rm("test_key");
+    
+    /* Verify it's deleted */
+    deleted_result = dbx.get("test_key");
+    if (deleted_result.type() == $ERR) {
+        log_test(test_name + " - Record Deletion", true, "");
+        return true;
+    } else {
+        log_test(test_name + " - Record Deletion", false, "Record still exists after deletion");
+        return false;
+    }
+};
+
+/* Test debug output */
+test_debug_output = op(table_type, test_name) {
+    ("Testing " + table_type + " debug output").echo();
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_debug_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Add some data */
+    dbx.set("key1", "value1");
+    dbx.set("key2", "value2");
+    
+    /* Get debug output */
+    debug_output = dbx.debug();
+    
+    /* Check if debug output contains expected elements */
+    if (debug_output.len() > 0) {
+        log_test(test_name + " - Debug Output", true, "");
+        return true;
+    } else {
+        log_test(test_name + " - Debug Output", false, "Debug output is empty");
+        return false;
+    }
+};
+
+/* Compare with reference implementation */
+test_reference_comparison = op(table_type, test_name) {
+    ("Comparing " + table_type + " with reference implementation").echo();
+    
+    /* Test DBX */
+    dbx = $unified();
+    dbx.create("grapadbx://test_ref_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    dbx.set("key1", "value1");
+    dbx_result = dbx.get("key1");
+    
+    /* Test reference (file system) */
+    ref = $file().table(table_type);
+    ref.set("key1", "value1");
+    ref_result = ref.get("key1");
+    
+    /* Compare results */
+    if (dbx_result == ref_result) {
+        log_test(test_name + " - Reference Comparison", true, "");
+        return true;
+    } else {
+        log_test(test_name + " - Reference Comparison", false, "DBX result differs from reference");
+        return false;
+    }
+};
+
+/* Main test runner */
+run_validation_tests = op() {
+    ("Starting Comprehensive GrapaDBX Validation Test").echo();
+    ("Testing all table types against reference implementation").echo();
+    "".echo();
+    
+    /* Reset test results */
+    test_results.passed = 0;
+    test_results.failed = 0;
+    test_results.errors = [];
+    
+    /* Test each table type */
+    table_types = ["ROW", "COL", "GROUP"];
+    i = 0;
+    while (i < table_types.len()) {
+        table_type = table_types[i];
+        
+        /* Test basic functionality */
+        test_table_type(table_type, "Basic Functionality");
+        
+        /* Test data types */
+        test_data_types(table_type, "Data Types");
+        
+        /* Test multiple records */
+        test_multiple_records(table_type, "Multiple Records");
+        
+        /* Test complex data */
+        test_complex_data(table_type, "Complex Data");
+        
+        /* Test record deletion */
+        test_record_deletion(table_type, "Record Deletion");
+        
+        /* Test debug output */
+        test_debug_output(table_type, "Debug Output");
+        
+        /* Test reference comparison */
+        test_reference_comparison(table_type, "Reference Comparison");
+        
+        i += 1;
+    }
+    
+    /* Print final results */
+    "".echo();
+    ("=== VALIDATION TEST RESULTS ===").echo();
+    ("Passed: " + test_results.passed.str()).echo();
+    ("Failed: " + test_results.failed.str()).echo();
+    ("Total: " + (test_results.passed + test_results.failed).str()).echo();
+    
+    if (test_results.failed > 0) {
+        ("=== FAILED TESTS ===").echo();
+        i = 0;
+        while (i < test_results.errors.len()) {
+            error = test_results.errors[i];
+            (error.test + ": " + error.details).echo();
+            i += 1;
+        }
+    }
+    
+    if (test_results.failed == 0) {
+        ("🎉 ALL VALIDATION TESTS PASSED! 🎉").echo();
+    } else {
+        ("❌ " + test_results.failed.str() + " VALIDATION TESTS FAILED ❌").echo();
+    }
+};
+
+/* Run the validation tests */
+run_validation_tests(); 

@@ -1,0 +1,434 @@
+/* Comprehensive GrapaDBX Test Suite
+ * Tests all combinations of:
+ * - Data Types: BYTE_DATA, FREC_DATA
+ * - Table Types: ROW, COL, GROUP
+ * - Storage Types: STORE_FIX, STORE_VAR, STORE_PAR
+ * - Field Types: STR, INT, FLOAT, BOOL, TIME, RAW, TABLE
+ * - Grapa Types: All Grapa data types that can be stored
+ */
+
+/* Test Configuration */
+test_config = {
+    "debug": true,
+    "verbose": true,
+    "compare_with_reference": true
+};
+
+/* Test Results Storage */
+test_results = {
+    "passed": 0,
+    "failed": 0,
+    "errors": []
+};
+
+/* Utility Functions */
+log_test = op(test_name, result, details) {
+    if (test_config.verbose) {
+        ("=== " + test_name + " ===").echo();
+        if (result) {
+            "✅ PASSED".echo();
+            test_results.passed += 1;
+        } else {
+            "❌ FAILED".echo();
+            test_results.failed += 1;
+            test_results.errors += [{"test": test_name, "details": details}];
+        }
+        if (details) {
+            details.echo();
+        }
+        "".echo();
+    }
+};
+
+compare_outputs = op(dbx_output, ref_output, test_name) {
+    /* Simple string comparison for now */
+    if (dbx_output == ref_output) {
+        log_test(test_name, true, "");
+        return true;
+    } else {
+        log_test(test_name, false, "DBX output differs from reference");
+        return false;
+    }
+};
+
+/* Test Data Types */
+test_data_types = {
+    "string": "Hello World",
+    "integer": 42,
+    "float": 3.14159,
+    "boolean": true,
+    "array": [1, 2, 3, 4, 5],
+    "list": {"key1": "value1", "key2": 123, "key3": [1, 2, 3]},
+    "null": null,
+    "empty_string": "",
+    "zero": 0,
+    "negative": -42,
+    "large_number": 999999999,
+    "decimal": 123.456789,
+    "unicode": "Hello 世界",
+    "special_chars": "!@#$%^&*()_+-=[]{}|;':\",./<>?"
+};
+
+/* Test Field Types */
+field_types = [
+    {"name": "STR", "type": "STR", "storage": "VAR", "size": 0, "grow": 32},
+    {"name": "STR_FIX", "type": "STR", "storage": "FIX", "size": 20, "grow": 20},
+    {"name": "INT", "type": "INT", "storage": "FIX", "size": 4, "grow": 4},
+    {"name": "FLOAT", "type": "FLOAT", "storage": "FIX", "size": 8, "grow": 8},
+    {"name": "BOOL", "type": "BOOL", "storage": "FIX", "size": 1, "grow": 1},
+    {"name": "TIME", "type": "TIME", "storage": "FIX", "size": 8, "grow": 8},
+    {"name": "RAW", "type": "RAW", "storage": "VAR", "size": 0, "grow": 32},
+    {"name": "TABLE", "type": "TABLE", "storage": "VAR", "size": 0, "grow": 32}
+];
+
+/* Test Table Types */
+table_types = ["ROW", "COL", "GROUP"];
+
+/* Test Storage Types */
+storage_types = ["FIX", "VAR", "PAR"];
+
+/* Test Basic Set/Get Operations */
+test_basic_operations = op(table_type, field_type, test_data) {
+    test_name = "Basic Set/Get - " + table_type + " - " + field_type.name;
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_basic_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Create field */
+    dbx.mkfield(field_type.name, field_type.type, field_type.storage, field_type.size, field_type.grow);
+    
+    /* Set data */
+    dbx.set("test_key", test_data, field_type.name);
+    
+    /* Get data */
+    retrieved = dbx.get("test_key", field_type.name);
+    
+    /* Compare with original */
+    if (retrieved == test_data) {
+        log_test(test_name, true, "");
+        return true;
+    } else {
+        log_test(test_name, false, "Retrieved value doesn't match original");
+        return false;
+    }
+};
+
+/* Test Multiple Records */
+test_multiple_records = op(table_type, field_type) {
+    test_name = "Multiple Records - " + table_type + " - " + field_type.name;
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_multiple_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Create field */
+    dbx.mkfield(field_type.name, field_type.type, field_type.storage, field_type.size, field_type.grow);
+    
+    /* Set multiple records */
+    i = 1;
+    while (i <= 5) {
+        key = "key" + i.str();
+        value = "value" + i.str();
+        dbx.set(key, value, field_type.name);
+        i += 1;
+    }
+    
+    /* Verify all records */
+    i = 1;
+    success = true;
+    while (i <= 5) {
+        key = "key" + i.str();
+        expected = "value" + i.str();
+        retrieved = dbx.get(key, field_type.name);
+        if (retrieved != expected) {
+            success = false;
+        }
+        i += 1;
+    }
+    
+    log_test(test_name, success, "");
+    return success;
+};
+
+/* Test Different Data Types */
+test_data_type_storage = op(table_type, field_type, data_type_name, test_data) {
+    test_name = "Data Type Storage - " + table_type + " - " + field_type.name + " - " + data_type_name;
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_datatype_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Create field */
+    dbx.mkfield(field_type.name, field_type.type, field_type.storage, field_type.size, field_type.grow);
+    
+    /* Set data */
+    dbx.set("test_key", test_data, field_type.name);
+    
+    /* Get data */
+    retrieved = dbx.get("test_key", field_type.name);
+    
+    /* Compare with original */
+    if (retrieved == test_data) {
+        log_test(test_name, true, "");
+        return true;
+    } else {
+        log_test(test_name, false, "Retrieved value doesn't match original");
+        return false;
+    }
+};
+
+/* Test Field Deletion */
+test_field_deletion = op(table_type, field_type) {
+    test_name = "Field Deletion - " + table_type + " - " + field_type.name;
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_delete_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Create field */
+    dbx.mkfield(field_type.name, field_type.type, field_type.storage, field_type.size, field_type.grow);
+    
+    /* Set data */
+    dbx.set("test_key", "test_value", field_type.name);
+    
+    /* Delete field */
+    dbx.rmfield(field_type.name);
+    
+    /* Try to get data (should fail) */
+    retrieved = dbx.get("test_key", field_type.name);
+    
+    /* Check if it's an error */
+    if (retrieved.type() == $ERR) {
+        log_test(test_name, true, "");
+        return true;
+    } else {
+        log_test(test_name, false, "Field deletion didn't work properly");
+        return false;
+    }
+};
+
+/* Test Record Deletion */
+test_record_deletion = op(table_type, field_type) {
+    test_name = "Record Deletion - " + table_type + " - " + field_type.name;
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_rm_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Create field */
+    dbx.mkfield(field_type.name, field_type.type, field_type.storage, field_type.size, field_type.grow);
+    
+    /* Set data */
+    dbx.set("test_key", "test_value", field_type.name);
+    
+    /* Delete record */
+    dbx.rm("test_key");
+    
+    /* Try to get data (should fail) */
+    retrieved = dbx.get("test_key", field_type.name);
+    
+    /* Check if it's an error */
+    if (retrieved.type() == $ERR) {
+        log_test(test_name, true, "");
+        return true;
+    } else {
+        log_test(test_name, false, "Record deletion didn't work properly");
+        return false;
+    }
+};
+
+/* Test Debug Output */
+test_debug_output = op(table_type, field_type) {
+    test_name = "Debug Output - " + table_type + " - " + field_type.name;
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_debug_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Create field */
+    dbx.mkfield(field_type.name, field_type.type, field_type.storage, field_type.size, field_type.grow);
+    
+    /* Set data */
+    dbx.set("test_key", "test_value", field_type.name);
+    
+    /* Get debug output */
+    debug_output = dbx.debug();
+    
+    /* Check if debug output contains expected elements */
+    if (debug_output.len() > 0) {
+        log_test(test_name, true, "");
+        return true;
+    } else {
+        log_test(test_name, false, "Debug output is empty");
+        return false;
+    }
+};
+
+/* Test Complex Data Types */
+test_complex_data_types = op(table_type) {
+    test_name = "Complex Data Types - " + table_type;
+    
+    /* Create DBX database */
+    dbx = $unified();
+    dbx.create("grapadbx://test_complex_" + table_type + ".dbx?type=" + table_type);
+    dbx.mk("test_table");
+    
+    /* Create RAW field for complex data */
+    dbx.mkfield("complex_data", "RAW", "VAR", 0, 32);
+    
+    /* Test different complex data types */
+    complex_data_types = [
+        {"name": "nested_list", "data": {"level1": {"level2": [1, 2, 3, {"nested": "value"}]}}},
+        {"name": "array_data", "data": [1, 2, 3, 4, 5, {"mixed": "data"}]},
+        {"name": "mixed_data", "data": {"strings": ["a", "b", "c"], "numbers": [1, 2, 3], "booleans": [true, false]}},
+        {"name": "deep_nested", "data": {"a": {"b": {"c": {"d": {"e": "deep_value"}}}}}}
+    ];
+    
+    success = true;
+    i = 0;
+    while (i < complex_data_types.len()) {
+        data_type = complex_data_types[i];
+        dbx.set(data_type.name, data_type.data, "complex_data");
+        retrieved = dbx.get(data_type.name, "complex_data");
+        
+        if (retrieved != data_type.data) {
+            success = false;
+        }
+        i += 1;
+    }
+    
+    log_test(test_name, success, "");
+    return success;
+};
+
+/* Test Storage Type Variations */
+test_storage_variations = op(table_type, field_type) {
+    test_name = "Storage Variations - " + table_type + " - " + field_type.name;
+    
+    /* Test different storage configurations */
+    storage_configs = [
+        {"storage": "FIX", "size": 4, "grow": 4},
+        {"storage": "VAR", "size": 0, "grow": 32},
+        {"storage": "PAR", "size": 0, "grow": 64}
+    ];
+    
+    success = true;
+    i = 0;
+    while (i < storage_configs.len()) {
+        config = storage_configs[i];
+        
+        /* Create DBX database */
+        dbx = $unified();
+        dbx.create("grapadbx://test_storage_" + table_type + "_" + i.str() + ".dbx?type=" + table_type);
+        dbx.mk("test_table");
+        
+        /* Create field with specific storage config */
+        dbx.mkfield(field_type.name + "_" + config.storage, field_type.type, config.storage, config.size, config.grow);
+        
+        /* Set and get data */
+        test_value = "test_value_" + config.storage;
+        dbx.set("test_key", test_value, field_type.name + "_" + config.storage);
+        retrieved = dbx.get("test_key", field_type.name + "_" + config.storage);
+        
+        if (retrieved != test_value) {
+            success = false;
+        }
+        
+        i += 1;
+    }
+    
+    log_test(test_name, success, "");
+    return success;
+};
+
+/* Main Test Runner */
+run_comprehensive_tests = op() {
+    ("Starting Comprehensive GrapaDBX Test Suite").echo();
+    ("Testing all combinations of table types, field types, and data types").echo();
+    "".echo();
+    
+    /* Reset test results */
+    test_results.passed = 0;
+    test_results.failed = 0;
+    test_results.errors = [];
+    
+    /* Test each table type */
+    i = 0;
+    while (i < table_types.len()) {
+        table_type = table_types[i];
+        
+        /* Test each field type */
+        j = 0;
+        while (j < field_types.len()) {
+            field_type = field_types[j];
+            
+            /* Test basic operations */
+            test_basic_operations(table_type, field_type, "test_value");
+            
+            /* Test multiple records */
+            test_multiple_records(table_type, field_type);
+            
+            /* Test different data types */
+            k = 0;
+            data_type_names = test_data_types.keys();
+            while (k < data_type_names.len()) {
+                data_type_name = data_type_names[k];
+                test_data = test_data_types[data_type_name];
+                test_data_type_storage(table_type, field_type, data_type_name, test_data);
+                k += 1;
+            }
+            
+            /* Test field deletion */
+            test_field_deletion(table_type, field_type);
+            
+            /* Test record deletion */
+            test_record_deletion(table_type, field_type);
+            
+            /* Test debug output */
+            test_debug_output(table_type, field_type);
+            
+            /* Test storage variations */
+            test_storage_variations(table_type, field_type);
+            
+            j += 1;
+        }
+        
+        /* Test complex data types */
+        test_complex_data_types(table_type);
+        
+        i += 1;
+    }
+    
+    /* Print final results */
+    "".echo();
+    ("=== TEST RESULTS ===").echo();
+    ("Passed: " + test_results.passed.str()).echo();
+    ("Failed: " + test_results.failed.str()).echo();
+    ("Total: " + (test_results.passed + test_results.failed).str()).echo();
+    
+    if (test_results.failed > 0) {
+        ("=== FAILED TESTS ===").echo();
+        i = 0;
+        while (i < test_results.errors.len()) {
+            error = test_results.errors[i];
+            (error.test + ": " + error.details).echo();
+            i += 1;
+        }
+    }
+    
+    if (test_results.failed == 0) {
+        ("🎉 ALL TESTS PASSED! 🎉").echo();
+    } else {
+        ("❌ " + test_results.failed.str() + " TESTS FAILED ❌").echo();
+    }
+};
+
+/* Run the comprehensive test suite */
+run_comprehensive_tests(); 
