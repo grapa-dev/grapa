@@ -523,6 +523,18 @@ GrapaError GrapaDBX::DeleteKey(GrapaCursor& treeCursor)
 		printf("[DEBUG] DeleteKey: SEARCH_ITEM - should not ever get here\n");
 		// should not ever ever get here
 		break;
+	case DRTYPE_ITEM:
+	case DITYPE_ITEM:
+		printf("[DEBUG] DeleteKey: Deleting dictionary item\n");
+		err = dbField.Read(this, treeCursor.mValue);
+		if (!err)
+		{
+			err = DeleteData(dbField.mNameRef);
+			err = DeleteTree(dbField.mTableRef);
+		}
+		err = DeleteData(treeCursor.mValue);
+		if (err) return(err);
+		break;
 	}
 	return(0);
 }
@@ -734,7 +746,7 @@ GrapaError GrapaDBX::CreateTableField(GrapaDBXTable& pTable, GrapaDBXField& pFie
 	if (err) return(err);
 	
 	/* Insert the field into the data type tree */
-	tableNamesDT.Set(tableNames.mValue, DTYPE_ITEM, pField.mId, pField.mRef);
+	tableNamesDT.Set(tableNames.mValue, DRTYPE_ITEM, pField.mId, pField.mRef);
 	err = Insert(tableNamesDT);
 	if (err) return(err);
 	
@@ -764,7 +776,7 @@ GrapaError GrapaDBX::OpenTableField(GrapaDBXTable& pTable, u64 pFieldId, GrapaDB
 	if (err) return(err);
 	
 	/* Search for the field in the data type tree */
-	tableNames.Set(tableNames.mValue, DTYPE_ITEM, pFieldId);
+	tableNames.Set(tableNames.mValue, DRTYPE_ITEM, pFieldId);
 	err = Search(tableNames);
 	if (err) return(err); /* Field not found */
 	
@@ -3017,7 +3029,7 @@ GrapaError GrapaDBX::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor&
 	char *fieldTypeStr = (char*)"?";
 	switch(dbField.mType)
 	{
-		case GrapaTokenType::START: fieldTypeStr = (char*)"DICT"; break;
+		case GrapaTokenType::START: fieldTypeStr = (char*)"RDICT"; break; /* Record dictionary type */
 		case GrapaTokenType::ERR: fieldTypeStr = (char*)"ERR"; break;
 		case GrapaTokenType::RAW: fieldTypeStr = (char*)"RAW"; break;
 		case GrapaTokenType::BOOL: fieldTypeStr = (char*)"BOOL"; break;
@@ -5168,7 +5180,7 @@ GrapaError GrapaDBX::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaDBXC
 		case GrapaTokenType::RAW: fieldType = "RAW"; break;
 		case GrapaTokenType::TIME: fieldType = "TIME"; break;
 		case GrapaTokenType::BOOL: fieldType = "BOOL"; break;
-		case GrapaTokenType::START: fieldType = "DICT"; break;
+		case GrapaTokenType::START: fieldType = "RDICT"; break; /* Record dictionary type */
 		default: fieldType = "UNKNOWN"; break;
 	}
 	
