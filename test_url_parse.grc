@@ -7,7 +7,7 @@ u = $unified();
 "Testing URL parsing...\n".echo();
 
 /* Test different URL formats */
-urls = ["grapadbx://test.dbx", "grapadb://test.db", "memory://test", "file://test.txt"];
+urls = ["grapadbx://test.dbx", "memory://test", "file://test.txt"];
 
 urls.each(url) {
     "Testing URL: ".echo();

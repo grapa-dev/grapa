@@ -1,4 +1,4 @@
-/* Simple Color Output Test */
+/* Simple Color Output Test
 
 "=== SIMPLE COLOR OUTPUT TEST ===\n".echo();
 
@@ -8,7 +8,7 @@ result = input.grep("foo", "oL");
 ("Result string: " + result.str() + "\n").echo();
 ("Result[0] hex: " + result[0].hex() + "\n").echo();
 
-/* Test without color for comparison */
+/* Test without color for comparison
 result2 = input.grep("foo", "o");
 ("Result without color: " + result2.str() + "\n").echo();
 ("Result2[0] hex: " + result2[0].hex() + "\n").echo();

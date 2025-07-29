@@ -1,7 +1,7 @@
-/* test/grapadbx/test_simple_btree.grc */
+/* test/grapadbx/test_simple_btree.grc
 "=== Simple B-Tree Test ===\n".echo();
 
-/* Test basic B-tree operations */
+/* Test basic B-tree operations
 u = $unified();
 result = u.create("grapadbx://test_btree.dbx");
 ("Creation result: " + result + "\n").echo();
@@ -9,17 +9,17 @@ result = u.create("grapadbx://test_btree.dbx");
 if (result.type() != $ERR) {
     "✅ Database creation succeeded\n".echo();
     
-    /* Test basic structure setup */
+    /* Test basic structure setup
     u.mk("test", "GROUP");
     u.cd("test");
     u.mkfield("name", "STR", "VAR");
     
-    /* Test a simple write operation */
+    /* Test a simple write operation
     "Testing simple write...\n".echo();
     u.set("simple_key", "simple_value", "name");
     "✅ Write operation completed\n".echo();
     
-    /* Test reading back */
+    /* Test reading back
     "Testing read back...\n".echo();
     result = u.get("simple_key", "name");
     ("Read result: " + result + "\n").echo();

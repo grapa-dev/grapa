@@ -1,4 +1,4 @@
-/* Debug test for delimiter parameter */
+/* Debug test for delimiter parameter
 "=== DEBUG TEST: DELIMITER PARAMETER ===\n".echo();
 
 input = "line1|||line2|||line3";

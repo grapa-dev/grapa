@@ -1,17 +1,17 @@
-/* Test script for Grapa SQL RAW Field Support */
-/* This demonstrates how RAW fields would work with SQL syntax */
+/* Test script for Grapa SQL RAW Field Support
+/* This demonstrates how RAW fields would work with SQL syntax
 
 "Testing Grapa SQL RAW Field Support...\n".echo();
 "====================================\n".echo();
 
-/* Test 1: Current RAW Field Behavior */
+/* Test 1: Current RAW Field Behavior
 "Test 1: Current RAW Field Behavior\n".echo();
 "---------------------------------\n".echo();
 
 "Current RAW field behavior in Grapa:\n".echo();
 "\n".echo();
 
-/* This shows current RAW field behavior */
+/* This shows current RAW field behavior
 /*
 f = $file();
 f.cd("test_database");
@@ -30,27 +30,27 @@ raw2 = f.get("test2", "binary_data");
 raw3 = f.get("test3", "binary_data");
 
 /* Verify conversion methods
-hex1 = raw1.hex(); /* "0x6869" */
-str1 = raw1.str(); /* "hi" */
-int1 = raw1.int(); /* 26729 */
+hex1 = raw1.hex(); /* "0x6869"
+str1 = raw1.str(); /* "hi"
+int1 = raw1.int(); /* 26729
 */
 "✓ f.mkfield(\"binary_data\", \"RAW\", \"VAR\");\n".echo();
 "✓ f.set(\"test1\", \"hello\".raw(), \"binary_data\");\n".echo();
 "✓ f.set(\"test2\", (0x6869).raw(), \"binary_data\");\n".echo();
 "✓ raw1 = f.get(\"test1\", \"binary_data\");\n".echo();
-"✓ hex1 = raw1.hex(); /* \"0x6869\"\n".echo(); */
-"✓ str1 = raw1.str(); /* \"hi\"\n".echo(); */
-"✓ int1 = raw1.int(); /* 26729\n".echo(); */
+"✓ hex1 = raw1.hex(); /* \"0x6869\"\n".echo();
+"✓ str1 = raw1.str(); /* \"hi\"\n".echo();
+"✓ int1 = raw1.int(); /* 26729\n".echo();
 "\n".echo();
 
-/* Test 2: RAW Field SQL Integration */
+/* Test 2: RAW Field SQL Integration
 "Test 2: RAW Field SQL Integration\n".echo();
 "--------------------------------\n".echo();
 
 "RAW fields would work seamlessly with SQL syntax:\n".echo();
 "\n".echo();
 
-/* This would be the new SQL syntax for RAW fields */
+/* This would be the new SQL syntax for RAW fields
 /*
 f = $file();
 f.cd("binary_database");
@@ -86,14 +86,14 @@ SELECT id, name, binary_content.int() as int_content FROM binary_data;
 "✓ SELECT id, name, binary_content.str() as string_content FROM binary_data;\n".echo();
 "\n".echo();
 
-/* Test 3: RAW Field Comparison Modes */
+/* Test 3: RAW Field Comparison Modes
 "Test 3: RAW Field Comparison Modes\n".echo();
 "----------------------------------\n".echo();
 
 "Different comparison modes for RAW fields:\n".echo();
 "\n".echo();
 
-/* This would show different RAW field comparison modes */
+/* This would show different RAW field comparison modes
 /*
 /* Byte-by-byte comparison (default)
 SELECT * FROM binary_data WHERE binary_content = 'hello'.raw();
@@ -111,22 +111,22 @@ SELECT * FROM binary_data WHERE binary_content.len() > 10;
 /* Range comparison
 SELECT * FROM binary_data WHERE metadata >= (0x1000).raw() AND metadata <= (0xFFFF).raw();
 */
-"✓ SELECT * FROM binary_data WHERE binary_content = 'hello'.raw(); /* Byte-by-byte\n".echo(); */
-"✓ SELECT * FROM binary_data WHERE binary_content.str() = 'hello'; /* Type-aware\n".echo(); */
-"✓ SELECT * FROM binary_data WHERE binary_content.int() > 1000; /* Type-aware\n".echo(); */
-"✓ SELECT * FROM binary_data WHERE binary_content.hex() LIKE '0x68%'; /* Hex pattern\n".echo(); */
-"✓ SELECT * FROM binary_data WHERE binary_content.len() > 10; /* Length-based\n".echo(); */
-"✓ SELECT * FROM binary_data WHERE metadata >= (0x1000).raw() AND metadata <= (0xFFFF).raw(); /* Range\n".echo(); */
+"✓ SELECT * FROM binary_data WHERE binary_content = 'hello'.raw(); /* Byte-by-byte\n".echo();
+"✓ SELECT * FROM binary_data WHERE binary_content.str() = 'hello'; /* Type-aware\n".echo();
+"✓ SELECT * FROM binary_data WHERE binary_content.int() > 1000; /* Type-aware\n".echo();
+"✓ SELECT * FROM binary_data WHERE binary_content.hex() LIKE '0x68%'; /* Hex pattern\n".echo();
+"✓ SELECT * FROM binary_data WHERE binary_content.len() > 10; /* Length-based\n".echo();
+"✓ SELECT * FROM binary_data WHERE metadata >= (0x1000).raw() AND metadata <= (0xFFFF).raw(); /* Range\n".echo();
 "\n".echo();
 
-/* Test 4: RAW Field Functions */
+/* Test 4: RAW Field Functions
 "Test 4: RAW Field Functions\n".echo();
 "---------------------------\n".echo();
 
 "Advanced RAW field functions in SQL:\n".echo();
 "\n".echo();
 
-/* This would show advanced RAW field functions */
+/* This would show advanced RAW field functions
 /*
 /* RAW field functions
 SELECT 
@@ -163,20 +163,20 @@ FROM binary_data;
 "✓ SELECT id, name, RAW_TO_HEX(binary_content) as hex_string, RAW_TO_STR(binary_content) as string_value, RAW_TO_INT(binary_content) as integer_value, RAW_LENGTH(binary_content) as byte_count FROM binary_data;\n".echo();
 "\n".echo();
 
-/* Test 5: RAW Field Pattern Matching */
+/* Test 5: RAW Field Pattern Matching
 "Test 5: RAW Field Pattern Matching\n".echo();
 "----------------------------------\n".echo();
 
 "RAW field pattern matching capabilities:\n".echo();
 "\n".echo();
 
-/* This would show RAW field pattern matching */
+/* This would show RAW field pattern matching
 /*
 /* RAW pattern matching
 SELECT * FROM binary_data WHERE RAW_STARTS_WITH(binary_content, 'hello'.raw());
 SELECT * FROM binary_data WHERE RAW_ENDS_WITH(binary_content, 'world'.raw());
 SELECT * FROM binary_data WHERE RAW_CONTAINS(binary_content, 'test'.raw());
-SELECT * FROM binary_data WHERE RAW_MATCHES(binary_content, '0x68%'); /* Hex pattern */
+SELECT * FROM binary_data WHERE RAW_MATCHES(binary_content, '0x68%'); /* Hex pattern
 
 /* RAW field creation functions
 SELECT 
@@ -190,25 +190,25 @@ FROM binary_data;
 "✓ SELECT * FROM binary_data WHERE RAW_STARTS_WITH(binary_content, 'hello'.raw());\n".echo();
 "✓ SELECT * FROM binary_data WHERE RAW_ENDS_WITH(binary_content, 'world'.raw());\n".echo();
 "✓ SELECT * FROM binary_data WHERE RAW_CONTAINS(binary_content, 'test'.raw());\n".echo();
-"✓ SELECT * FROM binary_data WHERE RAW_MATCHES(binary_content, '0x68%'); /* Hex pattern\n".echo(); */
+"✓ SELECT * FROM binary_data WHERE RAW_MATCHES(binary_content, '0x68%'); /* Hex pattern\n".echo();
 "✓ SELECT id, name, STR_TO_RAW('hello') as from_string, INT_TO_RAW(12345) as from_int, HEX_TO_RAW('0x6869') as from_hex FROM binary_data;\n".echo();
 "\n".echo();
 
-/* Test 6: RAW Field Storage Optimization */
+/* Test 6: RAW Field Storage Optimization
 "Test 6: RAW Field Storage Optimization\n".echo();
 "--------------------------------------\n".echo();
 
 "RAW field storage optimization in SQL:\n".echo();
 "\n".echo();
 
-/* This would show RAW field storage optimization */
+/* This would show RAW field storage optimization
 /*
 /* RAW field storage types in SQL
 CREATE TABLE optimized_binary (
     id INT,
-    small_data RAW FIX 16, /* Fixed size for small data */
-    medium_data RAW VAR, /* Variable size for medium data */
-    large_data RAW PAR /* Partitioned for large data */
+    small_data RAW FIX 16, /* Fixed size for small data
+    medium_data RAW VAR, /* Variable size for medium data
+    large_data RAW PAR /* Partitioned for large data
 );
 
 /* Insert with different storage types
@@ -228,14 +228,14 @@ SELECT * FROM optimized_binary WHERE large_data.len() > 100;
 "✓ SELECT * FROM optimized_binary WHERE large_data.len() > 100;\n".echo();
 "\n".echo();
 
-/* Test 7: RAW Field with Transactions */
+/* Test 7: RAW Field with Transactions
 "Test 7: RAW Field with Transactions\n".echo();
 "-----------------------------------\n".echo();
 
 "RAW fields with transaction support:\n".echo();
 "\n".echo();
 
-/* This would show RAW fields with transactions */
+/* This would show RAW fields with transactions
 /*
 /* RAW fields with transactions
 BEGIN TRANSACTION;
@@ -255,7 +255,7 @@ COMMIT;
 /* Rollback example
 BEGIN TRANSACTION;
 INSERT INTO binary_data (id, name, binary_content) VALUES (5, 'file5', 'will_be_rolled_back'.raw());
-ROLLBACK; /* This RAW data will not be saved */
+ROLLBACK; /* This RAW data will not be saved
 */
 "✓ BEGIN TRANSACTION;\n".echo();
 "✓ INSERT INTO binary_data (id, name, binary_content, metadata) VALUES (4, 'file4', 'transaction_test'.raw(), (0x7478).raw());\n".echo();
@@ -264,17 +264,17 @@ ROLLBACK; /* This RAW data will not be saved */
 "✓ COMMIT;\n".echo();
 "✓ BEGIN TRANSACTION;\n".echo();
 "✓ INSERT INTO binary_data (id, name, binary_content) VALUES (5, 'file5', 'will_be_rolled_back'.raw());\n".echo();
-"✓ ROLLBACK; /* This RAW data will not be saved\n".echo(); */
+"✓ ROLLBACK; /* This RAW data will not be saved\n".echo();
 "\n".echo();
 
-/* Test 8: RAW Field with Batch Operations */
+/* Test 8: RAW Field with Batch Operations
 "Test 8: RAW Field with Batch Operations\n".echo();
 "---------------------------------------\n".echo();
 
 "RAW fields with batch operations:\n".echo();
 "\n".echo();
 
-/* This would show RAW fields with batch operations */
+/* This would show RAW fields with batch operations
 /*
 /* Batch insert RAW data
 INSERT INTO binary_data (id, name, binary_content, metadata) VALUES 
@@ -297,14 +297,14 @@ SELECT * FROM binary_data WHERE binary_content IN ('batch1'.raw(), 'batch2'.raw(
 "✓ SELECT * FROM binary_data WHERE binary_content IN ('batch1'.raw(), 'batch2'.raw(), 'batch3'.raw());\n".echo();
 "\n".echo();
 
-/* Test 9: RAW Field with Unified Path System */
+/* Test 9: RAW Field with Unified Path System
 "Test 9: RAW Field with Unified Path System\n".echo();
 "------------------------------------------\n".echo();
 
 "RAW fields with unified path system:\n".echo();
 "\n".echo();
 
-/* This would show RAW fields with unified paths */
+/* This would show RAW fields with unified paths
 /*
 /* RAW fields across file system and databases
 f = $file();
@@ -338,14 +338,14 @@ FROM binary_data/b JOIN /documents/f ON b.name = f.file_name;
 "✓ cross_ref = SELECT b.id, b.name, b.binary_content.hex() as db_hex, f.file_content.hex() as fs_hex FROM binary_data/b JOIN /documents/f ON b.name = f.file_name;\n".echo();
 "\n".echo();
 
-/* Test 10: RAW Field Performance Monitoring */
+/* Test 10: RAW Field Performance Monitoring
 "Test 10: RAW Field Performance Monitoring\n".echo();
 "----------------------------------------\n".echo();
 
 "RAW field performance monitoring:\n".echo();
 "\n".echo();
 
-/* This would show RAW field performance monitoring */
+/* This would show RAW field performance monitoring
 /*
 /* Enable performance monitoring for RAW fields
 SET QUERY_MONITORING = true;
@@ -375,7 +375,7 @@ optimization_suggestions = ANALYZE_RAW_FIELD_PERFORMANCE("binary_data", "binary_
 "✓ optimization_suggestions = ANALYZE_RAW_FIELD_PERFORMANCE(\"binary_data\", \"binary_content\");\n".echo();
 "\n".echo();
 
-/* Summary */
+/* Summary
 "Summary: RAW Field Support in SQL Integration\n".echo();
 "============================================\n".echo();
 "✅ Complete Type Preservation: Original data types preserved in RAW fields\n".echo();

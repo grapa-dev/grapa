@@ -1,14 +1,14 @@
-/* === INTEGRATION TEST: FEATURE INTERACTIONS === */
-/* Test how different grep features work together */
+/* === INTEGRATION TEST: FEATURE INTERACTIONS ===
+/* Test how different grep features work together
 
-/* Test 1: Basic option combinations */
+/* Test 1: Basic option combinations
 "=== INTEGRATION TEST: FEATURE INTERACTIONS ===\n".echo();
 "Running integration tests for feature interactions...\n".echo();
 
 "Test 1: Basic option combinations\n".echo();
 "---\n".echo();
 
-/* Case-insensitive match-only */
+/* Case-insensitive match-only
 input = "Hello WORLD\nhello world\nHELLO World";
 pattern = "hello";
 options = "io";
@@ -20,7 +20,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Invert with case-insensitive */
+/* Invert with case-insensitive
 input = "Hello WORLD\nhello world\nHELLO World\nGoodbye";
 pattern = "hello";
 options = "iv";
@@ -32,7 +32,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Match-only with word boundaries */
+/* Match-only with word boundaries
 input = "foo bar foobar barfoo";
 pattern = "foo";
 options = "ow";
@@ -44,11 +44,11 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Advanced option combinations */
+/* Test 2: Advanced option combinations
 "Test 2: Advanced option combinations\n".echo();
 "---\n".echo();
 
-/* Case-insensitive exact match */
+/* Case-insensitive exact match
 input = "Hello\nHello world\nHello";
 pattern = "Hello";
 options = "ix";
@@ -60,7 +60,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Match-only with JSON output */
+/* Match-only with JSON output
 input = "Hello world\nGoodbye world";
 pattern = "Hello";
 options = "oj";
@@ -72,7 +72,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* All mode with match-only (should return full input if matches) */
+/* All mode with match-only (should return full input if matches)
 input = "Hello world\nGoodbye world";
 pattern = "Hello";
 options = "ao";
@@ -84,11 +84,11 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Complex patterns with options */
+/* Test 3: Complex patterns with options
 "Test 3: Complex patterns with options\n".echo();
 "---\n".echo();
 
-/* Unicode word boundaries with case-insensitive */
+/* Unicode word boundaries with case-insensitive
 input = "café CAFÉ Café";
 pattern = "\\b\\w+\\b";
 options = "io";
@@ -100,7 +100,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Quantified patterns with match-only */
+/* Quantified patterns with match-only
 input = "aaa aaaa aaaaa";
 pattern = "a{3,4}";
 options = "o";
@@ -112,7 +112,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() >= 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Character classes with case-insensitive */
+/* Character classes with case-insensitive
 input = "Hello123 World456";
 pattern = "[A-Za-z]+";
 options = "io";
@@ -124,11 +124,11 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Custom delimiters with options */
+/* Test 4: Custom delimiters with options
 "Test 4: Custom delimiters with options\n".echo();
 "---\n".echo();
 
-/* Custom delimiter with match-only */
+/* Custom delimiter with match-only
 input = "word1|||word2|||word3|||";
 pattern = "word";
 options = "o";
@@ -140,7 +140,7 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Custom delimiter with case-insensitive */
+/* Custom delimiter with case-insensitive
 input = "Hello|||WORLD|||hello|||";
 pattern = "hello";
 options = "i";
@@ -152,7 +152,7 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Custom delimiter with match-only and case-insensitive */
+/* Custom delimiter with match-only and case-insensitive
 input = "Hello|||WORLD|||hello|||";
 pattern = "hello";
 options = "io";
@@ -164,11 +164,11 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Edge case interactions */
+/* Test 5: Edge case interactions
 "Test 5: Edge case interactions\n".echo();
 "---\n".echo();
 
-/* Empty pattern with match-only */
+/* Empty pattern with match-only
 input = "test";
 pattern = "";
 options = "o";
@@ -180,7 +180,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Empty input with match-only */
+/* Empty input with match-only
 input = "";
 pattern = "test";
 options = "o";
@@ -191,7 +191,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Both empty with match-only */
+/* Both empty with match-only
 input = "";
 pattern = "";
 options = "o";
@@ -202,11 +202,11 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 6: Option precedence tests */
+/* Test 6: Option precedence tests
 "Test 6: Option precedence tests\n".echo();
 "---\n".echo();
 
-/* Match-only should override all mode */
+/* Match-only should override all mode
 input = "Hello world\nGoodbye world";
 pattern = "Hello";
 options = "ao";
@@ -218,7 +218,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Invert should work with match-only */
+/* Invert should work with match-only
 input = "Hello world\nGoodbye world";
 pattern = "Hello";
 options = "vo";
@@ -230,11 +230,11 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 7: Performance with options */
+/* Test 7: Performance with options
 "Test 7: Performance with options\n".echo();
 "---\n".echo();
 
-/* Large input with case-insensitive match-only */
+/* Large input with case-insensitive match-only
 large_input = "";
 i = 0;
 while (i < 100) {
@@ -250,11 +250,11 @@ result = large_input.grep(pattern, options);
 ("Status: " + (result.len() == 100 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 8: Unicode interactions */
+/* Test 8: Unicode interactions
 "Test 8: Unicode interactions\n".echo();
 "---\n".echo();
 
-/* Unicode with case-insensitive match-only */
+/* Unicode with case-insensitive match-only
 input = "café CAFÉ Café";
 pattern = "café";
 options = "io";
@@ -266,7 +266,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Unicode word boundaries with match-only */
+/* Unicode word boundaries with match-only
 input = "café world café";
 pattern = "\\b\\w+\\b";
 options = "o";
@@ -278,11 +278,11 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 9: Error handling with options */
+/* Test 9: Error handling with options
 "Test 9: Error handling with options\n".echo();
 "---\n".echo();
 
-/* Invalid regex with match-only */
+/* Invalid regex with match-only
 input = "test";
 pattern = "(";
 options = "o";
@@ -294,7 +294,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Invalid regex with case-insensitive */
+/* Invalid regex with case-insensitive
 input = "test";
 pattern = "a{";
 options = "i";
@@ -306,11 +306,11 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 10: Complex integration scenarios */
+/* Test 10: Complex integration scenarios
 "Test 10: Complex integration scenarios\n".echo();
 "---\n".echo();
 
-/* Multiple options with complex pattern */
+/* Multiple options with complex pattern
 input = "Hello123 World456\nHELLO789 world012\nhello345 WORLD678";
 pattern = "[A-Za-z]+\\d+";
 options = "io";
@@ -322,7 +322,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Custom delimiter with complex pattern and options */
+/* Custom delimiter with complex pattern and options
 input = "word1|||WORD2|||Word3|||";
 pattern = "\\b\\w+\\b";
 options = "io";

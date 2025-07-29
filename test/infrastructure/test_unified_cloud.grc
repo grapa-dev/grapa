@@ -1,39 +1,39 @@
-/* Test Cloud Storage Backend Integration */
+/* Test Cloud Storage Backend Integration
 
 "=== CLOUD STORAGE BACKEND TEST ===\n".echo();
 
-/* Test 1: AWS S3 Storage */
+/* Test 1: AWS S3 Storage
 "Test 1: AWS S3 Storage\n".echo();
 "----------------------\n".echo();
 
-/* Create unified storage object with S3 */
+/* Create unified storage object with S3
 s3 = $unified();
 "Testing S3 storage...\n".echo();
-result = s3.create("s3: /* test-bucket"); */
+result = s3.create("s3: /* test-bucket");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = s3.getType();
 result.echo();
 "\n".echo();
 
-/* Test getInfo */
+/* Test getInfo
 "Storage info: ".echo();
 result = s3.getInfo();
 result.echo();
 "\n".echo();
 
-/* Test ls (directory listing) */
+/* Test ls (directory listing)
 "Testing ls (directory listing)...\n".echo();
 result = s3.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls with different output formats */
+/* Test ls with different output formats
 "Testing ls with JSON output:\n".echo();
 result = s3.ls().json();
 "JSON result: ".echo();
@@ -52,144 +52,144 @@ result = s3.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Test 2: Google Cloud Storage */
+/* Test 2: Google Cloud Storage
 "Test 2: Google Cloud Storage\n".echo();
 "----------------------------\n".echo();
 
-/* Create unified storage object with Google Cloud Storage */
+/* Create unified storage object with Google Cloud Storage
 gs = $unified();
 "Testing Google Cloud Storage...\n".echo();
-result = gs.create("gs: /* test-bucket"); */
+result = gs.create("gs: /* test-bucket");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = gs.getType();
 result.echo();
 "\n".echo();
 
-/* Test getInfo */
+/* Test getInfo
 "Storage info: ".echo();
 result = gs.getInfo();
 result.echo();
 "\n".echo();
 
-/* Test ls (directory listing) */
+/* Test ls (directory listing)
 "Testing ls (directory listing)...\n".echo();
 result = gs.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 3: Azure Blob Storage */
+/* Test 3: Azure Blob Storage
 "Test 3: Azure Blob Storage\n".echo();
 "-------------------------\n".echo();
 
-/* Create unified storage object with Azure */
+/* Create unified storage object with Azure
 azure = $unified();
 "Testing Azure Blob Storage...\n".echo();
-result = azure.create("azure: /* test-container"); */
+result = azure.create("azure: /* test-container");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = azure.getType();
 result.echo();
 "\n".echo();
 
-/* Test getInfo */
+/* Test getInfo
 "Storage info: ".echo();
 result = azure.getInfo();
 result.echo();
 "\n".echo();
 
-/* Test ls (directory listing) */
+/* Test ls (directory listing)
 "Testing ls (directory listing)...\n".echo();
 result = azure.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 4: Cloud File Operations */
+/* Test 4: Cloud File Operations
 "Test 4: Cloud File Operations\n".echo();
 "-----------------------------\n".echo();
 
-/* Test mk (create file) */
+/* Test mk (create file)
 "Testing mk (create file)...\n".echo();
 result = s3.mk("testfile.txt", "FILE");
 "Make result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test set (write content) */
+/* Test set (write content)
 "Testing set (write content)...\n".echo();
 result = s3.set("testfile.txt", "This is test content for S3 storage", "$VALUE");
 "Set result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test get (read content) */
+/* Test get (read content)
 "Testing get (read content)...\n".echo();
 result = s3.get("testfile.txt", "$VALUE");
 "Get result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls again to see the new file */
+/* Test ls again to see the new file
 "Testing ls again (should show new file)...\n".echo();
 result = s3.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls with field selection */
+/* Test ls with field selection
 "Testing ls with field selection:\n".echo();
 result = s3.ls("$KEY,$TYPE").table();
 "Field selection result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 5: Cloud Directory Operations */
+/* Test 5: Cloud Directory Operations
 "Test 5: Cloud Directory Operations\n".echo();
 "---------------------------------\n".echo();
 
-/* Test mk (create directory) */
+/* Test mk (create directory)
 "Testing mk (create directory)...\n".echo();
 result = s3.mk("testdir", "DIR");
 "Make directory result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test cd (change directory) */
+/* Test cd (change directory)
 "Testing cd (change directory)...\n".echo();
 result = s3.cd("testdir");
 "Change directory result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test pwd (print working directory) */
+/* Test pwd (print working directory)
 "Testing pwd (print working directory)...\n".echo();
 result = s3.pwd();
 "Current directory: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls in new directory */
+/* Test ls in new directory
 "Testing ls in new directory...\n".echo();
 result = s3.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 6: Multiple Cloud File Operations */
+/* Test 6: Multiple Cloud File Operations
 "Test 6: Multiple Cloud File Operations\n".echo();
 "-------------------------------------\n".echo();
 
-/* Create multiple files in S3 */
+/* Create multiple files in S3
 "Creating multiple files in S3...\n".echo();
 s3.mk("file1.txt", "FILE");
 s3.set("file1.txt", "Content for S3 file 1", "$VALUE");
@@ -202,14 +202,14 @@ s3.set("file3.txt", "Content for S3 file 3", "$VALUE");
 
 "Created 3 files in S3\n".echo();
 
-/* Test ls to see all files */
+/* Test ls to see all files
 "Testing ls to see all files...\n".echo();
 result = s3.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls with different output formats */
+/* Test ls with different output formats
 "Testing ls with JSON output:\n".echo();
 result = s3.ls().json();
 "JSON result: ".echo();
@@ -228,11 +228,11 @@ result = s3.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Test 7: Cloud File Content Operations */
+/* Test 7: Cloud File Content Operations
 "Test 7: Cloud File Content Operations\n".echo();
 "------------------------------------\n".echo();
 
-/* Test reading all files */
+/* Test reading all files
 "Reading content from all S3 files...\n".echo();
 content1 = s3.get("file1.txt", "$VALUE");
 content2 = s3.get("file2.txt", "$VALUE");
@@ -250,7 +250,7 @@ content2.echo();
 content3.echo();
 "\n".echo();
 
-/* Test updating file content */
+/* Test updating file content
 "Updating S3 file content...\n".echo();
 s3.set("file1.txt", "Updated content for S3 file 1", "$VALUE");
 updated_content = s3.get("file1.txt", "$VALUE");
@@ -258,103 +258,103 @@ updated_content = s3.get("file1.txt", "$VALUE");
 updated_content.echo();
 "\n".echo();
 
-/* Test 8: Error Handling */
+/* Test 8: Error Handling
 "Test 8: Error Handling\n".echo();
 "---------------------\n".echo();
 
-/* Test reading non-existent file */
+/* Test reading non-existent file
 "Testing read of non-existent file...\n".echo();
 result = s3.get("nonexistent.txt", "$VALUE");
 "Get result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test deleting non-existent file */
+/* Test deleting non-existent file
 "Testing delete of non-existent file...\n".echo();
 result = s3.rm("nonexistent.txt");
 "Remove result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 9: Cross-Cloud Operations */
+/* Test 9: Cross-Cloud Operations
 "Test 9: Cross-Cloud Operations\n".echo();
 "-----------------------------\n".echo();
 
-/* Test moving data between different cloud providers */
+/* Test moving data between different cloud providers
 "Testing data transfer between cloud providers...\n".echo();
 
-/* Create file in S3 */
+/* Create file in S3
 s3.set("cross_cloud_file.txt", "This is S3 content for cross-cloud transfer", "$VALUE");
 "Created file in S3\n".echo();
 
-/* Copy from S3 to Google Cloud Storage */
+/* Copy from S3 to Google Cloud Storage
 "Copying from S3 to Google Cloud Storage...\n".echo();
 s3_content = s3.get("cross_cloud_file.txt", "$VALUE");
 gs.set("gs_file.txt", s3_content, "$VALUE");
 "Copy complete\n".echo();
 
-/* Verify the content in Google Cloud Storage */
+/* Verify the content in Google Cloud Storage
 "Verifying content in Google Cloud Storage...\n".echo();
 gs_content = gs.get("gs_file.txt", "$VALUE");
 "Google Cloud Storage content: ".echo();
 gs_content.echo();
 "\n".echo();
 
-/* Copy from Google Cloud Storage to Azure */
+/* Copy from Google Cloud Storage to Azure
 "Copying from Google Cloud Storage to Azure...\n".echo();
 azure.set("azure_file.txt", gs_content, "$VALUE");
 "Copy complete\n".echo();
 
-/* Verify the content in Azure */
+/* Verify the content in Azure
 "Verifying content in Azure...\n".echo();
 azure_content = azure.get("azure_file.txt", "$VALUE");
 "Azure content: ".echo();
 azure_content.echo();
 "\n".echo();
 
-/* Test 10: Cross-Storage Operations */
+/* Test 10: Cross-Storage Operations
 "Test 10: Cross-Storage Operations\n".echo();
 "--------------------------------\n".echo();
 
-/* Test moving data between cloud and local storage */
+/* Test moving data between cloud and local storage
 "Testing data transfer between cloud and local storage...\n".echo();
 
-/* Create local file system storage */
+/* Create local file system storage
 local = $unified();
-local.create("file: /* /tmp"); */
+local.create("file: /* /tmp");
 
-/* Copy from S3 to local file system */
+/* Copy from S3 to local file system
 "Copying from S3 to local file system...\n".echo();
 s3_data = s3.get("cross_cloud_file.txt", "$VALUE");
 local.set("local_from_s3.txt", s3_data, "$VALUE");
 "Copy complete\n".echo();
 
-/* Verify the content */
+/* Verify the content
 "Verifying local content...\n".echo();
 local_content = local.get("local_from_s3.txt", "$VALUE");
 "Local file content: ".echo();
 local_content.echo();
 "\n".echo();
 
-/* Copy from local to S3 with different name */
+/* Copy from local to S3 with different name
 "Copying from local to S3...\n".echo();
 local.set("local_file.txt", "This is local content for cloud transfer", "$VALUE");
 local_data = local.get("local_file.txt", "$VALUE");
 s3.set("s3_from_local.txt", local_data, "$VALUE");
 "Copy complete\n".echo();
 
-/* Verify the content in S3 */
+/* Verify the content in S3
 "Verifying S3 content...\n".echo();
 s3_verification = s3.get("s3_from_local.txt", "$VALUE");
 "S3 verification content: ".echo();
 s3_verification.echo();
 "\n".echo();
 
-/* Test 11: Performance Test */
+/* Test 11: Performance Test
 "Test 11: Performance Test\n".echo();
 "------------------------\n".echo();
 
-/* Create many files for performance testing */
+/* Create many files for performance testing
 "Creating 50 files for performance test...\n".echo();
 start_time = $time().now();
 
@@ -373,7 +373,7 @@ creation_time = end_time - start_time;
 creation_time.echo();
 " seconds\n".echo();
 
-/* Test ls performance */
+/* Test ls performance
 "Testing ls performance...\n".echo();
 start_time = $time().now();
 result = s3.ls();
@@ -387,7 +387,7 @@ ls_time.echo();
 result.len().echo();
 "\n".echo();
 
-/* Test ls with different output formats performance */
+/* Test ls with different output formats performance
 "Testing output format performance...\n".echo();
 start_time = $time().now();
 json_result = s3.ls().json();
@@ -413,11 +413,11 @@ simple_time = end_time - start_time;
 simple_time.echo();
 " seconds\n".echo();
 
-/* Test 12: Cleanup Operations */
+/* Test 12: Cleanup Operations
 "Test 12: Cleanup Operations\n".echo();
 "--------------------------\n".echo();
 
-/* Test rm (delete files) */
+/* Test rm (delete files)
 "Testing rm (delete files)...\n".echo();
 result = s3.rm("file1.txt");
 "Remove file1 result: ".echo();
@@ -439,19 +439,19 @@ result = s3.rm("testfile.txt");
 result.echo();
 "\n".echo();
 
-/* Cleanup cross-cloud files */
+/* Cleanup cross-cloud files
 "Cleaning up cross-cloud files...\n".echo();
 s3.rm("cross_cloud_file.txt");
 gs.rm("gs_file.txt");
 azure.rm("azure_file.txt");
 
-/* Cleanup cross-storage files */
+/* Cleanup cross-storage files
 "Cleaning up cross-storage files...\n".echo();
 local.rm("local_from_s3.txt");
 local.rm("local_file.txt");
 s3.rm("s3_from_local.txt");
 
-/* Cleanup performance test files */
+/* Cleanup performance test files
 "Cleaning up performance test files...\n".echo();
 i = 0;
 while (i < 50) {
@@ -460,7 +460,7 @@ while (i < 50) {
     i = i + 1;
 }
 
-/* Test ls after cleanup */
+/* Test ls after cleanup
 "Testing ls after cleanup...\n".echo();
 result = s3.ls();
 "List result after cleanup: ".echo();

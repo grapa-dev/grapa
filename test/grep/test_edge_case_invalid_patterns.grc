@@ -1,6 +1,6 @@
 /*
 Grapa .grc File Authoring Rules (Windows)
-- Use block comments for all comments (do not use /* ). Block comments should be written as in this header. */
+- Use block comments for all comments (do not use /* ). Block comments should be written as in this header.
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)
@@ -8,10 +8,10 @@ Grapa .grc File Authoring Rules (Windows)
 - Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
   Example:
     ar = [1,2,3];
-    ar[1];  /* returns 2 */
+    ar[1];  /* returns 2
     ar = {"a":11,"b":22,"c":33};
-    ar[1];  /* returns 22 */
-    ar["b"];  /* returns 22 */
+    ar[1];  /* returns 22
+    ar["b"];  /* returns 22
 - Use .get("key") for object property access, not for arrays/lists.
 - Validate syntax against known-good .grc files before adding new code
 - Prefer simple, explicit constructs for compatibility
@@ -26,7 +26,7 @@ Edge Case Category: Invalid/Degenerate Patterns
 
 "=== INVALID/DEGENERATE PATTERN EDGE CASES ===\n".echo();
 
-/* Test 1: Unmatched parentheses */
+/* Test 1: Unmatched parentheses
 input = "test";
 pattern = "(";
 result = input.grep(pattern, "j");
@@ -36,7 +36,7 @@ result = input.grep(pattern, "j");
 ("Expected: $ERR or error object\n").echo();
 "---\n".echo();
 
-/* Test 2: Invalid quantifier */
+/* Test 2: Invalid quantifier
 pattern = "a{";
 result = input.grep(pattern, "j");
 ("Pattern: '" + pattern + "', Options: j\n").echo();
@@ -44,7 +44,7 @@ result = input.grep(pattern, "j");
 ("Expected: $ERR or error object\n").echo();
 "---\n".echo();
 
-/* Test 3: Invalid Unicode property */
+/* Test 3: Invalid Unicode property
 pattern = "\\p{Invalid}";
 result = input.grep(pattern, "j");
 ("Pattern: '" + pattern + "', Options: j\n").echo();
@@ -52,7 +52,7 @@ result = input.grep(pattern, "j");
 ("Expected: $ERR or error object\n").echo();
 "---\n".echo();
 
-/* Test 4: Invalid escape sequence */
+/* Test 4: Invalid escape sequence
 pattern = "\\xZZ";
 result = input.grep(pattern, "j");
 ("Pattern: '" + pattern + "', Options: j\n").echo();

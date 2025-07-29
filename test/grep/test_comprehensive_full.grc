@@ -1,16 +1,16 @@
-/* === COMPREHENSIVE TEST: FULL FUNCTIONALITY === */
-/* Test all remaining grep functionality not covered in regression/integration */
+/* === COMPREHENSIVE TEST: FULL FUNCTIONALITY ===
+/* Test all remaining grep functionality not covered in regression/integration
 
 "=== COMPREHENSIVE TEST: FULL FUNCTIONALITY ===\n".echo();
 "Running comprehensive functionality tests...\n".echo();
 
-/* ======================================== */
-/* 1. Advanced Pattern Matching */
-/* ======================================== */
+/* ========================================
+/* 1. Advanced Pattern Matching
+/* ========================================
 "Test 1: Advanced pattern matching\n".echo();
 "---\n".echo();
 
-/* Test 1a: Lookaround assertions */
+/* Test 1a: Lookaround assertions
 input = "Hello world\nHello universe\nGoodbye world";
 pattern = "Hello(?=\\s+world)";
 options = "o";
@@ -22,7 +22,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 1b: Negative lookahead */
+/* Test 1b: Negative lookahead
 pattern = "Hello(?!\\s+universe)";
 result = input.grep(pattern, options);
 ("Pattern: " + pattern + ", Options: " + options + "\n").echo();
@@ -31,7 +31,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 1c: Lookbehind assertions */
+/* Test 1c: Lookbehind assertions
 input = "world Hello\nuniverse Hello\nworld Goodbye";
 pattern = "(?<=world\\s+)Hello";
 result = input.grep(pattern, options);
@@ -42,7 +42,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 1d: Unicode script properties */
+/* Test 1d: Unicode script properties
 input = "Hello 世界\nHello world\nHello こんにちは";
 pattern = "\\p{Han}+";
 options = "o";
@@ -54,7 +54,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 1e: Unicode grapheme clusters */
+/* Test 1e: Unicode grapheme clusters
 input = "café\ncafe\u0301\ncafé";
 pattern = "café";
 options = "o";
@@ -66,13 +66,13 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 2. Complex Option Combinations */
-/* ======================================== */
+/* ========================================
+/* 2. Complex Option Combinations
+/* ========================================
 "Test 2: Complex option combinations\n".echo();
 "---\n".echo();
 
-/* Test 2a: Multiple options with custom delimiter */
+/* Test 2a: Multiple options with custom delimiter
 input = "word1|||WORD2|||Word3|||word4|||";
 pattern = "word";
 options = "io";
@@ -84,7 +84,7 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 4 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 2b: Word boundaries with case-insensitive */
+/* Test 2b: Word boundaries with case-insensitive
 input = "foo bar FOOBAR barfoo";
 pattern = "\\bfoo\\b";
 options = "io";
@@ -96,7 +96,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 2c: Exact match with custom delimiter */
+/* Test 2c: Exact match with custom delimiter
 input = "exact|||EXACT|||exact|||";
 pattern = "exact";
 options = "ix";
@@ -108,13 +108,13 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 3. Multiline Pattern Handling */
-/* ======================================== */
+/* ========================================
+/* 3. Multiline Pattern Handling
+/* ========================================
 "Test 3: Multiline pattern handling\n".echo();
 "---\n".echo();
 
-/* Test 3a: Dot-all pattern with custom delimiter */
+/* Test 3a: Dot-all pattern with custom delimiter
 input = "line1\nline2\nline3";
 pattern = "line1.*line3";
 options = "s";
@@ -126,7 +126,7 @@ result = input.grep(pattern, options, "\n");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 3b: Multiline with lookaround */
+/* Test 3b: Multiline with lookaround
 input = "start\nmiddle\nend";
 pattern = "(?<=start\\n).*(?=\\nend)";
 options = "s";
@@ -138,13 +138,13 @@ result = input.grep(pattern, options, "\n");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 4. Unicode Advanced Features */
-/* ======================================== */
+/* ========================================
+/* 4. Unicode Advanced Features
+/* ========================================
 "Test 4: Unicode advanced features\n".echo();
 "---\n".echo();
 
-/* Test 4a: Unicode word boundaries with custom delimiter */
+/* Test 4a: Unicode word boundaries with custom delimiter
 input = "café|||CAFÉ|||café|||";
 pattern = "\\b\\w+\\b";
 options = "io";
@@ -156,7 +156,7 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 4b: Unicode script properties with custom delimiter */
+/* Test 4b: Unicode script properties with custom delimiter
 input = "Hello|||世界|||Hello|||こんにちは|||";
 pattern = "\\p{Han}+";
 options = "o";
@@ -168,7 +168,7 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 4c: Unicode grapheme clusters with custom delimiter */
+/* Test 4c: Unicode grapheme clusters with custom delimiter
 input = "café|||cafe\u0301|||café|||";
 pattern = "café";
 options = "o";
@@ -180,13 +180,13 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 5. Edge Cases and Error Handling */
-/* ======================================== */
+/* ========================================
+/* 5. Edge Cases and Error Handling
+/* ========================================
 "Test 5: Edge cases and error handling\n".echo();
 "---\n".echo();
 
-/* Test 5a: Very long pattern */
+/* Test 5a: Very long pattern
 long_pattern = "";
 i = 0;
 while (i < 1000) {
@@ -202,7 +202,7 @@ result = input.grep(long_pattern, "o");
 ("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5b: Very long input */
+/* Test 5b: Very long input
 long_input = "";
 i = 0;
 while (i < 10000) {
@@ -216,7 +216,7 @@ result = long_input.grep("line", "o");
 ("Status: " + (result.len() == 10000 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5c: Complex nested patterns */
+/* Test 5c: Complex nested patterns
 input = "test";
 pattern = "((((((((((a))))))))))";
 result = input.grep(pattern, "o");
@@ -227,13 +227,13 @@ result = input.grep(pattern, "o");
 ("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 6. Performance and Stress Tests */
-/* ======================================== */
+/* ========================================
+/* 6. Performance and Stress Tests
+/* ========================================
 "Test 6: Performance and stress tests\n".echo();
 "---\n".echo();
 
-/* Test 6a: Many small matches */
+/* Test 6a: Many small matches
 input = "a a a a a a a a a a";
 pattern = "a";
 options = "o";
@@ -245,7 +245,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 10 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 6b: Alternation with many options */
+/* Test 6b: Alternation with many options
 input = "test";
 pattern = "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z";
 options = "o";
@@ -257,13 +257,13 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 4 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 7. Special Pattern Features */
-/* ======================================== */
+/* ========================================
+/* 7. Special Pattern Features
+/* ========================================
 "Test 7: Special pattern features\n".echo();
 "---\n".echo();
 
-/* Test 7a: Named capture groups */
+/* Test 7a: Named capture groups
 input = "Hello world";
 pattern = "(?<word>\\w+)";
 options = "o";
@@ -275,7 +275,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 7b: Atomic groups */
+/* Test 7b: Atomic groups
 input = "Hello world";
 pattern = "(?>\\w+)";
 options = "o";
@@ -287,7 +287,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 7c: Possessive quantifiers */
+/* Test 7c: Possessive quantifiers
 input = "Hello world";
 pattern = "\\w++";
 options = "o";
@@ -299,13 +299,13 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 8. Custom Delimiter Edge Cases */
-/* ======================================== */
+/* ========================================
+/* 8. Custom Delimiter Edge Cases
+/* ========================================
 "Test 8: Custom delimiter edge cases\n".echo();
 "---\n".echo();
 
-/* Test 8a: Empty delimiter */
+/* Test 8a: Empty delimiter
 input = "Hello world";
 pattern = "Hello";
 options = "o";
@@ -317,7 +317,7 @@ result = input.grep(pattern, options, "");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 8b: Single character delimiter */
+/* Test 8b: Single character delimiter
 input = "a|b|c";
 pattern = "a";
 options = "o";
@@ -329,7 +329,7 @@ result = input.grep(pattern, options, "|");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 8c: Delimiter that appears in pattern */
+/* Test 8c: Delimiter that appears in pattern
 input = "Hello|||world|||Hello|||";
 pattern = "Hello|||";
 options = "o";
@@ -341,13 +341,13 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 9. Complex Integration Scenarios */
-/* ======================================== */
+/* ========================================
+/* 9. Complex Integration Scenarios
+/* ========================================
 "Test 9: Complex integration scenarios\n".echo();
 "---\n".echo();
 
-/* Test 9a: Multiple features combined */
+/* Test 9a: Multiple features combined
 input = "Hello 世界\nHELLO world\nhello こんにちは";
 pattern = "\\b\\w+\\b";
 options = "io";
@@ -359,7 +359,7 @@ result = input.grep(pattern, options, "\n");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 9b: Lookaround with custom delimiter */
+/* Test 9b: Lookaround with custom delimiter
 input = "start|||middle|||end";
 pattern = "(?<=start\\|\\|\\|).*(?=\\|\\|\\|end)";
 options = "o";
@@ -371,13 +371,13 @@ result = input.grep(pattern, options, "|||");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 10. Final Validation */
-/* ======================================== */
+/* ========================================
+/* 10. Final Validation
+/* ========================================
 "Test 10: Final validation\n".echo();
 "---\n".echo();
 
-/* Test 10a: All basic options together */
+/* Test 10a: All basic options together
 input = "Hello world\nGoodbye world\nHello universe";
 pattern = "Hello";
 options = "ivn";
@@ -389,7 +389,7 @@ result = input.grep(pattern, options);
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 10b: Complex pattern with all features */
+/* Test 10b: Complex pattern with all features
 input = "Hello 世界\nHELLO world\nhello こんにちは";
 pattern = "(?<=^)\\w+(?=\\s+\\p{Han}+)";
 options = "io";

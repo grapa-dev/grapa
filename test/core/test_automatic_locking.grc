@@ -1,38 +1,38 @@
-/* Test script for automatic variable locking */
+/* Test script for automatic variable locking
 
 "=== Automatic Variable Locking Test ===\n".echo();
 
-/* Test 1: Basic Variable Access */
+/* Test 1: Basic Variable Access
 "Test 1: Basic Variable Access\n".echo();
 
-/* Create shared variables */
+/* Create shared variables
 shared_counter = 0;
 shared_string = "initial";
 shared_array = [1, 2, 3];
 shared_table = $file().table("ROW");
 shared_table.set("key1", "value1", "$VALUE");
 
-/* Function to stress test variable access */
+/* Function to stress test variable access
 stress_test = @<[op,@<code,{
-    /* Each thread will perform thousands of variable accesses */
+    /* Each thread will perform thousands of variable accesses
     thread_id = @<var,{thread_id}>;
     iterations = 10000;
     
     i = 0;
     while (i < iterations) {
-        /* Read operations */
+        /* Read operations
         current_counter = shared_counter;
         current_string = shared_string;
         current_array = shared_array;
         current_value = shared_table.get("key1", "$VALUE");
         
-        /* Write operations */
+        /* Write operations
         shared_counter = current_counter + 1;
         shared_string = "Thread " + thread_id + " iteration " + i;
         shared_array.set(i % 3, i);
         shared_table.set("key" + i, "value" + i, "$VALUE");
         
-        /* Complex operations */
+        /* Complex operations
         if (i % 100 == 0) {
             temp_array = shared_array.copy();
             temp_array.append(i);
@@ -44,12 +44,12 @@ stress_test = @<[op,@<code,{
     "Thread " + thread_id + " completed " + iterations + " iterations\n".echo();
 }>],{thread_id}>;
 
-/* Test 2: Multiple Threads Accessing Same Variables */
+/* Test 2: Multiple Threads Accessing Same Variables
 "Starting concurrent access test with 10 threads...\n".echo();
 
 start_time = $time();
 
-/* Launch multiple threads */
+/* Launch multiple threads
 threads = [];
 t = 0;
 while (t < 10) {
@@ -58,7 +58,7 @@ while (t < 10) {
     t = t + 1;
 }
 
-/* Wait for all threads to complete */
+/* Wait for all threads to complete
 t = 0;
 while (t < threads.len()) {
     threads[t].wait();
@@ -74,31 +74,31 @@ total_time = end_time - start_time;
 "Final shared_array length: " + shared_array.len() + "\n".echo();
 "Final shared_table entries: " + shared_table.len() + "\n".echo();
 
-/* Test 3: Verify No Data Corruption */
+/* Test 3: Verify No Data Corruption
 "Verifying data integrity...\n".echo();
 
-/* Check that counter is reasonable (should be around 100,000) */
+/* Check that counter is reasonable (should be around 100,000)
 if (shared_counter >= 90000 && shared_counter <= 110000) {
     "✓ Counter integrity verified\n".echo();
 } else {
     "✗ Counter corruption detected: " + shared_counter + "\n".echo();
 }
 
-/* Check that array is still valid */
+/* Check that array is still valid
 if (shared_array.len() > 0) {
     "✓ Array integrity verified\n".echo();
 } else {
     "✗ Array corruption detected\n".echo();
 }
 
-/* Check that table is still valid */
+/* Check that table is still valid
 if (shared_table.len() > 0) {
     "✓ Table integrity verified\n".echo();
 } else {
     "✗ Table corruption detected\n".echo();
 }
 
-/* Test 4: Nested Object Access */
+/* Test 4: Nested Object Access
 "Testing nested object access...\n".echo();
 
 nested_obj = $table();
@@ -106,22 +106,22 @@ nested_obj.set("level1", $table(), "$VALUE");
 nested_obj.get("level1", "$VALUE").set("level2", $table(), "$VALUE");
 nested_obj.get("level1", "$VALUE").get("level2", "$VALUE").set("data", "test", "$VALUE");
 
-/* Multiple threads accessing nested structure */
+/* Multiple threads accessing nested structure
 nested_test = @<[op,@<code,{
     thread_id = @<var,{thread_id}>;
     iterations = 1000;
     
     i = 0;
     while (i < iterations) {
-        /* Deep nested access */
+        /* Deep nested access
         level1 = nested_obj.get("level1", "$VALUE");
         level2 = level1.get("level2", "$VALUE");
         data = level2.get("data", "$VALUE");
         
-        /* Modify nested structure */
+        /* Modify nested structure
         level2.set("thread_" + thread_id + "_" + i, "data_" + i, "$VALUE");
         
-        /* Read back */
+        /* Read back
         new_data = level2.get("thread_" + thread_id + "_" + i, "$VALUE");
         
         i = i + 1;
@@ -130,7 +130,7 @@ nested_test = @<[op,@<code,{
     "Nested thread " + thread_id + " completed\n".echo();
 }>],{thread_id}>;
 
-/* Launch nested access threads */
+/* Launch nested access threads
 nested_threads = [];
 t = 0;
 while (t < 5) {
@@ -139,14 +139,14 @@ while (t < 5) {
     t = t + 1;
 }
 
-/* Wait for nested threads */
+/* Wait for nested threads
 t = 0;
 while (t < nested_threads.len()) {
     nested_threads[t].wait();
     t = t + 1;
 }
 
-/* Verify nested structure integrity */
+/* Verify nested structure integrity
 level1 = nested_obj.get("level1", "$VALUE");
 level2 = level1.get("level2", "$VALUE");
 if (level2.len() > 0) {
@@ -155,7 +155,7 @@ if (level2.len() > 0) {
     "✗ Nested structure corruption detected\n".echo();
 }
 
-/* Test 5: Complex Data Structure Access */
+/* Test 5: Complex Data Structure Access
 "Testing complex data structure access...\n".echo();
 
 complex_obj = {
@@ -170,23 +170,23 @@ complex_obj = {
 
 complex_obj.table.set("key1", "value1", "$VALUE");
 
-/* Multiple threads accessing complex structure */
+/* Multiple threads accessing complex structure
 complex_test = @<[op,@<code,{
     thread_id = @<var,{thread_id}>;
     iterations = 500;
     
     i = 0;
     while (i < iterations) {
-        /* Access array */
+        /* Access array
         array_val = complex_obj.array[i % complex_obj.array.len()];
         
-        /* Access table */
+        /* Access table
         table_val = complex_obj.table.get("key1", "$VALUE");
         
-        /* Access nested object */
+        /* Access nested object
         nested_val = complex_obj.nested.deep.value;
         
-        /* Modify structures */
+        /* Modify structures
         complex_obj.array.set(i % complex_obj.array.len(), i);
         complex_obj.table.set("key" + i, "value" + i, "$VALUE");
         complex_obj.nested.deep.value = "modified_" + thread_id + "_" + i;
@@ -197,7 +197,7 @@ complex_test = @<[op,@<code,{
     "Complex thread " + thread_id + " completed\n".echo();
 }>],{thread_id}>;
 
-/* Launch complex access threads */
+/* Launch complex access threads
 complex_threads = [];
 t = 0;
 while (t < 3) {
@@ -206,21 +206,21 @@ while (t < 3) {
     t = t + 1;
 }
 
-/* Wait for complex threads */
+/* Wait for complex threads
 t = 0;
 while (t < complex_threads.len()) {
     complex_threads[t].wait();
     t = t + 1;
 }
 
-/* Verify complex structure integrity */
+/* Verify complex structure integrity
 if (complex_obj.array.len() > 0 && complex_obj.table.len() > 0) {
     "✓ Complex structure integrity verified\n".echo();
 } else {
     "✗ Complex structure corruption detected\n".echo();
 }
 
-/* Test 6: Performance Benchmark */
+/* Test 6: Performance Benchmark
 "Running performance benchmark...\n".echo();
 
 benchmark_iterations = 100000;
@@ -240,7 +240,7 @@ benchmark_time = end_time - start_time;
 "Benchmark completed: " + benchmark_iterations + " operations in " + benchmark_time + " seconds\n".echo();
 "Operations per second: " + (benchmark_iterations / benchmark_time) + "\n".echo();
 
-/* Test 7: Memory Pressure Test */
+/* Test 7: Memory Pressure Test
 "Running memory pressure test...\n".echo();
 
 memory_array = [];
@@ -252,7 +252,7 @@ i = 0;
 while (i < memory_iterations) {
     memory_array.append("data_" + i);
     if (i % 1000 == 0) {
-        /* Force some garbage collection pressure */
+        /* Force some garbage collection pressure
         temp = memory_array.copy();
         memory_array = temp;
     }
@@ -265,7 +265,7 @@ memory_time = end_time - start_time;
 "Memory test completed: " + memory_iterations + " allocations in " + memory_time + " seconds\n".echo();
 "Final array size: " + memory_array.len() + "\n".echo();
 
-/* Summary */
+/* Summary
 "=== Automatic Locking Test Summary ===\n".echo();
 "✓ All tests completed successfully\n".echo();
 "✓ No data corruption detected\n".echo();

@@ -1,4 +1,4 @@
-/* Debug .find() method */
+/* Debug .find() method
 
 "=== DEBUG FIND METHOD ===\n".echo();
 

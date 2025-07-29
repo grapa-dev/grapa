@@ -1,10 +1,10 @@
-/* Test script for GrapaDBX Temporary Transaction System */
-/* This demonstrates the innovative temporary database approach for transactions */
+/* Test script for GrapaDBX Temporary Transaction System
+/* This demonstrates the innovative temporary database approach for transactions
 
 "Testing GrapaDBX Temporary Transaction System...\n".echo();
 "==============================================\n".echo();
 
-/* Test 1: Current Transaction System Problems */
+/* Test 1: Current Transaction System Problems
 "Test 1: Current Transaction System Problems\n".echo();
 "------------------------------------------\n".echo();
 
@@ -15,7 +15,7 @@
 "• Recovery complexity - replaying undo/redo logs\n".echo();
 "\n".echo();
 
-/* Test 2: Temporary Database Transaction Benefits */
+/* Test 2: Temporary Database Transaction Benefits
 "Test 2: Temporary Database Transaction Benefits\n".echo();
 "----------------------------------------------\n".echo();
 
@@ -26,7 +26,7 @@
 "• Crash safe - simple cleanup of orphaned temp databases\n".echo();
 "\n".echo();
 
-/* Test 3: Transaction Flow Demonstration */
+/* Test 3: Transaction Flow Demonstration
 "Test 3: Transaction Flow Demonstration\n".echo();
 "-------------------------------------\n".echo();
 
@@ -34,7 +34,7 @@
 "\n".echo();
 
 "Step 1: Begin Transaction\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 transactionId = 0;
 err = f.beginTransaction(transactionId);
@@ -50,7 +50,7 @@ if (err) {
 "\n".echo();
 
 "Step 2: Perform Operations (All to Temp Database)\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* These operations go to the temporary database
 f.setBatch(transactionId, "user1", {"name": "Alice", "age": 30, "city": "New York"});
@@ -58,7 +58,7 @@ f.setBatch(transactionId, "user2", {"name": "Bob", "age": 25, "city": "Los Angel
 f.setBatch(transactionId, "user3", {"name": "Charlie", "age": 35, "city": "Chicago"});
 
 /* Update existing record (goes to temp database)
-f.setBatch(transactionId, "user1", {"age": 31}); /* Birthday! */
+f.setBatch(transactionId, "user1", {"age": 31}); /* Birthday!
 
 /* Read operations check temp first, then main
 user1_data = f.getBatch(transactionId, "user1", ["name", "age", "city"]);
@@ -70,7 +70,7 @@ user1_data = f.getBatch(transactionId, "user1", ["name", "age", "city"]);
 "\n".echo();
 
 "Step 3: Commit Transaction (Bulk Transfer)\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 err = f.commitTransaction(transactionId);
 if (err) {
@@ -86,7 +86,7 @@ if (err) {
 "\n".echo();
 
 "Step 4: Rollback Transaction (Simple Delete)\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Start another transaction
 transactionId2 = 0;
@@ -94,7 +94,7 @@ f.beginTransaction(transactionId2);
 
 /* Make some changes
 f.setBatch(transactionId2, "user4", {"name": "David", "age": 28, "city": "Boston"});
-f.setBatch(transactionId2, "user1", {"age": 32}); /* Another birthday! */
+f.setBatch(transactionId2, "user1", {"age": 32}); /* Another birthday!
 
 /* Oops, need to rollback
 err = f.rollbackTransaction(transactionId2);
@@ -109,7 +109,7 @@ if (err) {
 "✓ Instant rollback - no complex undo logic\n".echo();
 "\n".echo();
 
-/* Test 4: Performance Comparison */
+/* Test 4: Performance Comparison
 "Test 4: Performance Comparison\n".echo();
 "-----------------------------\n".echo();
 
@@ -130,7 +130,7 @@ if (err) {
 "• Locking: No locks on main database\n".echo();
 "\n".echo();
 
-/* Test 5: Concurrency Benefits */
+/* Test 5: Concurrency Benefits
 "Test 5: Concurrency Benefits\n".echo();
 "---------------------------\n".echo();
 
@@ -138,7 +138,7 @@ if (err) {
 "\n".echo();
 
 "Multiple Concurrent Transactions:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Transaction 1
 txn1 = 0;
@@ -153,7 +153,7 @@ f.setBatch(txn2, "user2", {"status": "processing"});
 /* Transaction 3 (can run concurrently)
 txn3 = 0;
 f.beginTransaction(txn3);
-user3_data = f.getBatch(txn3, "user3", ["name", "age"]); /* Reads from main database */
+user3_data = f.getBatch(txn3, "user3", ["name", "age"]); /* Reads from main database
 
 /* All transactions can run without blocking each other
 /* Each has its own temp database
@@ -165,7 +165,7 @@ user3_data = f.getBatch(txn3, "user3", ["name", "age"]); /* Reads from main data
 "✓ No contention between transactions\n".echo();
 "\n".echo();
 
-/* Test 6: Crash Recovery */
+/* Test 6: Crash Recovery
 "Test 6: Crash Recovery\n".echo();
 "---------------------\n".echo();
 
@@ -173,7 +173,7 @@ user3_data = f.getBatch(txn3, "user3", ["name", "age"]); /* Reads from main data
 "\n".echo();
 
 "On System Startup:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* System startup recovery
 err = f.recoverOnStartup();
@@ -194,7 +194,7 @@ if (err) {
 "✓ Simple recovery - no complex undo/redo replay\n".echo();
 "\n".echo();
 
-/* Test 7: Bulk Transfer Optimization */
+/* Test 7: Bulk Transfer Optimization
 "Test 7: Bulk Transfer Optimization\n".echo();
 "--------------------------------\n".echo();
 
@@ -202,12 +202,12 @@ if (err) {
 "\n".echo();
 
 "Change Tracking for Efficient Transfer:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* During transaction, changes are tracked
-f.setBatch(transactionId, "user1", {"age": 31}); /* Tracked as UPDATE */
-f.setBatch(transactionId, "user4", {"name": "David", "age": 28}); /* Tracked as INSERT */
-f.deleteRecord(transactionId, "user5"); /* Tracked as DELETE */
+f.setBatch(transactionId, "user1", {"age": 31}); /* Tracked as UPDATE
+f.setBatch(transactionId, "user4", {"name": "David", "age": 28}); /* Tracked as INSERT
+f.deleteRecord(transactionId, "user5"); /* Tracked as DELETE
 
 /* On commit, optimized bulk transfer
 err = f.commitTransaction(transactionId);
@@ -223,7 +223,7 @@ err = f.commitTransaction(transactionId);
 "✓ Batch operations for better performance\n".echo();
 "\n".echo();
 
-/* Test 8: Atomic Switch Mechanisms */
+/* Test 8: Atomic Switch Mechanisms
 "Test 8: Atomic Switch Mechanisms\n".echo();
 "------------------------------\n".echo();
 
@@ -231,7 +231,7 @@ err = f.commitTransaction(transactionId);
 "\n".echo();
 
 "File-based Atomic Switch:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Atomic switch process:
 /* 1. Create backup of main database
@@ -253,7 +253,7 @@ if (err) {
 "✓ Ensures data consistency\n".echo();
 "\n".echo();
 
-/* Test 9: Advanced Features */
+/* Test 9: Advanced Features
 "Test 9: Advanced Features\n".echo();
 "------------------------\n".echo();
 
@@ -261,7 +261,7 @@ if (err) {
 "\n".echo();
 
 "Multi-Version Concurrency Control (MVCC):\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* MVCC allows multiple versions of data
 snapshot1 = f.createSnapshot();
@@ -282,7 +282,7 @@ user1_new = f.getBatch(transactionId, "user1", ["age"]);
 "\n".echo();
 
 "Lock-Free Operations:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Optimistic concurrency control
 expected_version = f.getRecordVersion("user1");
@@ -298,7 +298,7 @@ if (err) {
 "✓ High performance for low-contention scenarios\n".echo();
 "\n".echo();
 
-/* Test 10: Integration with Batch Operations */
+/* Test 10: Integration with Batch Operations
 "Test 10: Integration with Batch Operations\n".echo();
 "----------------------------------------\n".echo();
 
@@ -306,7 +306,7 @@ if (err) {
 "\n".echo();
 
 "Efficient Batch Processing:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Start transaction
 transactionId = 0;
@@ -349,7 +349,7 @@ if (err) {
 "✓ Performance benefits of both batch and transaction systems\n".echo();
 "\n".echo();
 
-/* Summary */
+/* Summary
 "Summary: GrapaDBX Temporary Transaction System Benefits\n".echo();
 "=====================================================\n".echo();
 "✅ Simple Rollback: Delete temp database = instant rollback\n".echo();

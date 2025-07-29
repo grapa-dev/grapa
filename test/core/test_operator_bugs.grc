@@ -1,6 +1,6 @@
-/* Test file for operator bugs identified in documentation */
+/* Test file for operator bugs identified in documentation
 
-/* Bug 1: STR > INT behavior - FIXED */
+/* Bug 1: STR > INT behavior - FIXED
 "=== Testing STR > INT behavior (FIXED) ===".echo();
 "Expected: 'hello' > 5 should be FALSE (non-numeric string < number)".echo();
 "Actual:".echo();
@@ -10,7 +10,7 @@
 "Actual:".echo();
 (5 > "hello").echo();
 
-/* Bug 2: Logical NOT FLOAT behavior */
+/* Bug 2: Logical NOT FLOAT behavior
 "=== Testing Logical NOT FLOAT bug ===".echo();
 "Expected: !5.0 should be FALSE".echo();
 "Actual:".echo();
@@ -20,7 +20,7 @@
 "Actual:".echo();
 (!(-5.0)).echo();
 
-/* Bug 3: Logical NOT complex behavior */
+/* Bug 3: Logical NOT complex behavior
 "=== Testing Logical NOT complex bug ===".echo();
 "Expected: !(5 && 3) should be TRUE".echo();
 "Actual:".echo();
@@ -30,7 +30,7 @@
 "Actual:".echo();
 (!(0 || 5)).echo();
 
-/* Bug 4: STR <=> INT behavior */
+/* Bug 4: STR <=> INT behavior
 "=== Testing STR <=> INT bug ===".echo();
 "Expected: 'hello' <=> 5 should be ERROR".echo();
 "Actual:".echo();
@@ -40,7 +40,7 @@
 "Actual:".echo();
 (5 <=> "hello").echo();
 
-/* Control tests - these should work correctly */
+/* Control tests - these should work correctly
 "=== Control tests (should work correctly) ===".echo();
 "5 > 3:".echo();
 (5 > 3).echo();

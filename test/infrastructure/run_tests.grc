@@ -1,10 +1,10 @@
-/* Test Runner for Grapa Unicode Grep */
-/* This file runs all the essential tests for Grapa grep functionality */
+/* Test Runner for Grapa Unicode Grep
+/* This file runs all the essential tests for Grapa grep functionality
 
 "=== GRAPA UNICODE GREP TEST SUITE ===\n".echo();
 "Running comprehensive test suite for Unicode grep functionality\n".echo();
 
-/* Include and run all test files */
+/* Include and run all test files
 include "test/grep/test_performance_optimizations.grc";
 include "test/grep/test_atomic_groups.grc";
 include "test/grep/test_lookaround_assertions.grc";

@@ -1,94 +1,94 @@
-/* Test unified storage handlers */
+/* Test unified storage handlers
 
-/* Test instantiation and basic operations */
+/* Test instantiation and basic operations
 "Testing unified storage handlers...\n".echo();
 
-/* Create unified storage object */
+/* Create unified storage object
 u = $unified();
 "Created unified storage object\n".echo();
 
-/* Test create with file system */
-"Testing create with file: /* /tmp/test...\n".echo(); */
-result = u.create("file: /* /tmp/test"); */
+/* Test create with file system
+"Testing create with file: /* /tmp/test...\n".echo();
+result = u.create("file: /* /tmp/test");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = u.getType();
 result.echo();
 "\n".echo();
 
-/* Test pwd */
+/* Test pwd
 "Current path: ".echo();
 result = u.pwd();
 result.echo();
 "\n".echo();
 
-/* Test mk (create directory) */
+/* Test mk (create directory)
 "Testing mk (create directory)...\n".echo();
 result = u.mk("testdir", "DIR");
 "Make result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test cd (change directory) */
+/* Test cd (change directory)
 "Testing cd (change directory)...\n".echo();
 result = u.cd("testdir");
 "Change directory result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test pwd after cd */
+/* Test pwd after cd
 "Current path after cd: ".echo();
 result = u.pwd();
 result.echo();
 "\n".echo();
 
-/* Test set (create file with content) */
+/* Test set (create file with content)
 "Testing set (create file)...\n".echo();
 result = u.set("testfile.txt", "$VALUE", "Hello, World!");
 "Set result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls (list contents) */
+/* Test ls (list contents)
 "Testing ls (list contents)...\n".echo();
 result = u.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test get (read file content) */
+/* Test get (read file content)
 "Testing get (read file)...\n".echo();
 result = u.get("testfile.txt", "$VALUE");
 "Get result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test cd back to parent */
+/* Test cd back to parent
 "Testing cd back to parent...\n".echo();
 result = u.cd("..");
 "Change directory result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test rm (remove file) */
+/* Test rm (remove file)
 "Testing rm (remove file)...\n".echo();
 result = u.rm("testdir/testfile.txt");
 "Remove result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test rm (remove directory) */
+/* Test rm (remove directory)
 "Testing rm (remove directory)...\n".echo();
 result = u.rm("testdir");
 "Remove directory result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls after cleanup */
+/* Test ls after cleanup
 "Testing ls after cleanup...\n".echo();
 result = u.ls();
 "Final list result: ".echo();

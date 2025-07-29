@@ -1,5 +1,5 @@
 /* Test Option-Based Behavior for Grapa Grep
-   Demonstrates the new 'f' flag to control full segments vs matched portions */
+   Demonstrates the new 'f' flag to control full segments vs matched portions
 
 "=== OPTION-BASED BEHAVIOR TEST SUITE ===\n".echo();
 "\n".echo();
@@ -8,11 +8,11 @@
 "Purpose: Verify that 'o' returns matched portions and 'of' returns full segments\n".echo();
 "\n".echo();
 
-/* Test with regular pattern */
+/* Test with regular pattern
 input = "line1\nline2\nline3\n";
 pattern = "line";
 
-/* Test 1.1: Match only (o) - should return matched portions */
+/* Test 1.1: Match only (o) - should return matched portions
 result1 = input.grep(pattern, "o", "\n");
 (("Input: '" + input + "'\n")).echo();
 (("Pattern: '" + pattern + "', Options: 'o'\n")).echo();
@@ -21,7 +21,7 @@ result1 = input.grep(pattern, "o", "\n");
 (("Status: " + (result1[0] == "line" && result1[1] == "line" && result1[2] == "line" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 1.2: Match only + full segments (of) - should return full segments */
+/* Test 1.2: Match only + full segments (of) - should return full segments
 result2 = input.grep(pattern, "of", "\n");
 (("Input: '" + input + "'\n")).echo();
 (("Pattern: '" + pattern + "', Options: 'of'\n")).echo();
@@ -34,11 +34,11 @@ result2 = input.grep(pattern, "of", "\n");
 "Purpose: Verify that Unicode script properties work with both options\n".echo();
 "\n".echo();
 
-/* Test with Unicode script properties */
+/* Test with Unicode script properties
 input2 = "Hello World\nGoodbye World\n";
 pattern2 = "\\p{L}+";
 
-/* Test 2.1: Match only (o) - should return matched portions */
+/* Test 2.1: Match only (o) - should return matched portions
 result3 = input2.grep(pattern2, "o", "\n");
 (("Input: '" + input2 + "'\n")).echo();
 (("Pattern: '" + pattern2 + "', Options: 'o'\n")).echo();
@@ -47,7 +47,7 @@ result3 = input2.grep(pattern2, "o", "\n");
 (("Status: " + (result3[0] == "Hello" && result3[1] == "World" && result3[2] == "Goodbye" && result3[3] == "World" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 2.2: Match only + full segments (of) - should return full segments */
+/* Test 2.2: Match only + full segments (of) - should return full segments
 result4 = input2.grep(pattern2, "of", "\n");
 (("Input: '" + input2 + "'\n")).echo();
 (("Pattern: '" + pattern2 + "', Options: 'of'\n")).echo();
@@ -60,11 +60,11 @@ result4 = input2.grep(pattern2, "of", "\n");
 "Purpose: Verify that lookaround assertions work with both options\n".echo();
 "\n".echo();
 
-/* Test with lookaround assertions */
+/* Test with lookaround assertions
 input3 = "cat\nbat\nrat\n";
 pattern3 = "(?=a)";
 
-/* Test 3.1: Match only (o) - should return matched portions */
+/* Test 3.1: Match only (o) - should return matched portions
 result5 = input3.grep(pattern3, "o", "\n");
 (("Input: '" + input3 + "'\n")).echo();
 (("Pattern: '" + pattern3 + "', Options: 'o'\n")).echo();
@@ -73,7 +73,7 @@ result5 = input3.grep(pattern3, "o", "\n");
 (("Status: " + (result5[0] == "" && result5[1] == "" && result5[2] == "" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 3.2: Match only + full segments (of) - should return full segments */
+/* Test 3.2: Match only + full segments (of) - should return full segments
 result6 = input3.grep(pattern3, "of", "\n");
 (("Input: '" + input3 + "'\n")).echo();
 (("Pattern: '" + pattern3 + "', Options: 'of'\n")).echo();
@@ -86,11 +86,11 @@ result6 = input3.grep(pattern3, "of", "\n");
 "Purpose: Verify that conditional patterns work with both options\n".echo();
 "\n".echo();
 
-/* Test with conditional patterns */
+/* Test with conditional patterns
 input4 = "ab\nc\n";
 pattern4 = "(a)?(?(1)b|c)";
 
-/* Test 4.1: Match only (o) - should return matched portions */
+/* Test 4.1: Match only (o) - should return matched portions
 result7 = input4.grep(pattern4, "o", "\n");
 (("Input: '" + input4 + "'\n")).echo();
 (("Pattern: '" + pattern4 + "', Options: 'o'\n")).echo();
@@ -99,7 +99,7 @@ result7 = input4.grep(pattern4, "o", "\n");
 (("Status: " + (result7[0] == "ab" && result7[1] == "c" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 4.2: Match only + full segments (of) - should return full segments */
+/* Test 4.2: Match only + full segments (of) - should return full segments
 result8 = input4.grep(pattern4, "of", "\n");
 (("Input: '" + input4 + "'\n")).echo();
 (("Pattern: '" + pattern4 + "', Options: 'of'\n")).echo();
@@ -112,11 +112,11 @@ result8 = input4.grep(pattern4, "of", "\n");
 "Purpose: Verify that grapheme clusters work with both options\n".echo();
 "\n".echo();
 
-/* Test with grapheme clusters */
+/* Test with grapheme clusters
 input5 = "café\nnaïve\n";
 pattern5 = "\\X";
 
-/* Test 5.1: Match only (o) - should return matched portions (individual graphemes) */
+/* Test 5.1: Match only (o) - should return matched portions (individual graphemes)
 result9 = input5.grep(pattern5, "o", "\n");
 (("Input: '" + input5 + "'\n")).echo();
 (("Pattern: '" + pattern5 + "', Options: 'o'\n")).echo();
@@ -125,7 +125,7 @@ result9 = input5.grep(pattern5, "o", "\n");
 (("Status: " + (result9[0] == "c" && result9[1] == "a" && result9[2] == "f" && result9[3] == "é" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 5.2: Match only + full segments (of) - should return full segments */
+/* Test 5.2: Match only + full segments (of) - should return full segments
 result10 = input5.grep(pattern5, "of", "\n");
 (("Input: '" + input5 + "'\n")).echo();
 (("Pattern: '" + pattern5 + "', Options: 'of'\n")).echo();
@@ -138,7 +138,7 @@ result10 = input5.grep(pattern5, "of", "\n");
 "Purpose: Verify that 'f' flag works without 'o' flag\n".echo();
 "\n".echo();
 
-/* Test 6.1: No options - should return full segments (default) */
+/* Test 6.1: No options - should return full segments (default)
 result11 = input.grep(pattern, "", "\n");
 (("Input: '" + input + "'\n")).echo();
 (("Pattern: '" + pattern + "', Options: '' (no options)\n")).echo();
@@ -147,7 +147,7 @@ result11 = input.grep(pattern, "", "\n");
 (("Status: " + (result11[0] == "line1" && result11[1] == "line2" && result11[2] == "line3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 6.2: Full segments flag (f) - should return full segments */
+/* Test 6.2: Full segments flag (f) - should return full segments
 result12 = input.grep(pattern, "f", "\n");
 (("Input: '" + input + "'\n")).echo();
 (("Pattern: '" + pattern + "', Options: 'f'\n")).echo();

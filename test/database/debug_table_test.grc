@@ -1,9 +1,9 @@
-/* Debug Table Test */
+/* Debug Table Test
 
 "=== DEBUG TABLE TEST ===".echo();
 "\n".echo();
 
-/* Create virtual table */
+/* Create virtual table
 table = $TABLE();
 "Table created".echo();
 "\n".echo();
@@ -16,7 +16,7 @@ table.mkfield("age", "INT");
 "Field 'age' created".echo();
 "\n".echo();
 
-/* Set data */
+/* Set data
 table.set("user1", "John", "name");
 "Set name to 'John'".echo();
 "\n".echo();
@@ -25,7 +25,7 @@ table.set("user1", 25, "age");
 "Set age to 25".echo();
 "\n".echo();
 
-/* Get data and check types */
+/* Get data and check types
 name_result = table.get("user1", "name");
 "Name result type: ".echo();
 "\n".echo();
@@ -38,7 +38,7 @@ age_result = table.get("user1", "age");
 age_result.type().echo();
 "\n".echo();
 
-/* Try to get the values */
+/* Try to get the values
 if (name_result.type() != $ERR) {
     name = name_result.str();
     ("Name value: '" + name + "'").echo();

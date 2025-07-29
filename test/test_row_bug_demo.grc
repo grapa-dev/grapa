@@ -1,11 +1,11 @@
-/* ROW Table Index Corruption Bug Demo (as of July 2025) */
-/* This script demonstrates the persistent bug where the first record becomes unreadable after adding the third record in a ROW table. */
-/* As of July 2025, the bug is NOT fixed. See maintainers/DEVELOPMENT/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md for investigation details. */
+/* ROW Table Index Corruption Bug Demo (as of July 2025)
+/* This script demonstrates the persistent bug where the first record becomes unreadable after adding the third record in a ROW table.
+/* As of July 2025, the bug is NOT fixed. See maintainers/DEVELOPMENT/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md for investigation details.
 
 "=== ROW TABLE INDEX CORRUPTION BUG DEMO ===".echo();
 "\n".echo();
 
-/* Create ROW table */
+/* Create ROW table
 "Creating ROW table...\n".echo();
 frow = $file().table("ROW");
 frow.mkfield("name", "STR", "VAR");
@@ -15,7 +15,7 @@ frow.mkfield("city", "STR", "VAR");
 "ROW table created\n".echo();
 "---\n".echo();
 
-/* Add first record */
+/* Add first record
 "Adding first record (user1)...\n".echo();
 frow.set("user1", "Alice", "name");
 frow.set("user1", 25, "age");
@@ -24,7 +24,7 @@ frow.set("user1", "New York", "city");
 "First record added".echo();
 "---\n".echo();
 
-/* Test first record - should work */
+/* Test first record - should work
 "Testing first record retrieval (should work)...\n".echo();
 name1 = frow.get("user1", "name").str();
 age1 = frow.get("user1", "age").raw().int();
@@ -41,7 +41,7 @@ city1.echo();
 "\n".echo();
 "---".echo();
 
-/* Add second record */
+/* Add second record
 "Adding second record (user2)...\n".echo();
 frow.set("user2", "Bob", "name");
 frow.set("user2", 30, "age");
@@ -50,7 +50,7 @@ frow.set("user2", "Los Angeles", "city");
 "Second record added\n".echo();
 "---\n".echo();
 
-/* Test both records - should work */
+/* Test both records - should work
 "Testing both records (should work)...\n".echo();
 name1_again = frow.get("user1", "name");
 name2 = frow.get("user2", "name");
@@ -63,7 +63,7 @@ name2.echo();
 "\n".echo();
 "---\n".echo();
 
-/* Add third record - THIS IS WHERE THE BUG OCCURS */
+/* Add third record - THIS IS WHERE THE BUG OCCURS
 "Adding third record (user3)...\n".echo();
 frow.set("user3", "Charlie", "name");
 frow.set("user3", 35, "age");
@@ -72,7 +72,7 @@ frow.set("user3", "Chicago", "city");
 "Third record added\n".echo();
 "---\n".echo();
 
-/* Test all records - first record should now fail */
+/* Test all records - first record should now fail
 "Testing all records (first record should now fail)...\n".echo();
 name1_bug = frow.get("user1", "name");
 name2_bug = frow.get("user2", "name");
@@ -89,20 +89,20 @@ name3_bug.echo();
 "\n".echo();
 "---\n".echo();
 
-/* Show debug output to see the corruption */
+/* Show debug output to see the corruption
 "ROW table debug output (showing corruption):\n".echo();
 frow.debug();
 "\n".echo();
 "---\n".echo();
 
-/* Compare with COL table that works correctly */
+/* Compare with COL table that works correctly
 "Creating COL table for comparison...\n".echo();
 fcol = $file().table("COL");
 fcol.mkfield("name", "STR", "VAR");
 fcol.mkfield("age", "INT", "FIX", 4);
 fcol.mkfield("city", "STR", "VAR");
 
-/* Add same 3 records to COL table */
+/* Add same 3 records to COL table
 fcol.set("user1", "Alice", "name");
 fcol.set("user1", 25, "age");
 fcol.set("user1", "New York", "city");
@@ -115,7 +115,7 @@ fcol.set("user3", "Charlie", "name");
 fcol.set("user3", 35, "age");
 fcol.set("user3", "Chicago", "city");
 
-/* Test COL table - should work correctly */
+/* Test COL table - should work correctly
 "Testing COL table (should work correctly)...\n".echo();
 col_name1 = fcol.get("user1", "name");
 col_name2 = fcol.get("user2", "name");
@@ -132,7 +132,7 @@ col_name3.echo();
 "\n".echo();
 "---\n".echo();
 
-/* Summary */
+/* Summary
 "=== BUG DEMONSTRATION SUMMARY ===\n".echo();
 "ROW table: First record becomes unreadable after adding third record (BUG STILL PRESENT as of July 2025)\n".echo();
 "COL table: All records remain readable (correct behavior)\n".echo();

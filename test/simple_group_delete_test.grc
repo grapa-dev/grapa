@@ -1,4 +1,4 @@
-/* Simple GROUP table record deletion test */
+/* Simple GROUP table record deletion test
 table = $file().table("GROUP");
 table.mkfield("name", "STR");
 table.set("user1", "Alice", "name");

@@ -1,12 +1,12 @@
-/* Test Unicode "o" option issue */
-/* This test verifies that the "o" option works correctly with Unicode characters */
+/* Test Unicode "o" option issue
+/* This test verifies that the "o" option works correctly with Unicode characters
 
 "=== UNICODE 'o' OPTION TEST ===\n".echo();
 
 input = "é";
 pattern = ".";
 
-/* Test 1: Basic pattern without "o" option */
+/* Test 1: Basic pattern without "o" option
 "Test 1: Basic pattern without 'o' option\n".echo();
 result = input.grep(pattern);
 ("Input: " + input + "\n").echo();
@@ -14,7 +14,7 @@ result = input.grep(pattern);
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Pattern with "o" option */
+/* Test 2: Pattern with "o" option
 "Test 2: Pattern with 'o' option\n".echo();
 result = input.grep(pattern, "o");
 ("Input: " + input + "\n").echo();
@@ -22,7 +22,7 @@ result = input.grep(pattern, "o");
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Pattern with "o" and "i" options */
+/* Test 3: Pattern with "o" and "i" options
 "Test 3: Pattern with 'o' and 'i' options\n".echo();
 result = input.grep(pattern, "oi");
 ("Input: " + input + "\n").echo();
@@ -30,7 +30,7 @@ result = input.grep(pattern, "oi");
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Pattern with "o" and "N" options */
+/* Test 4: Pattern with "o" and "N" options
 "Test 4: Pattern with 'o' and 'N' options\n".echo();
 result = input.grep(pattern, "oN");
 ("Input: " + input + "\n").echo();
@@ -38,7 +38,7 @@ result = input.grep(pattern, "oN");
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Multiple Unicode characters */
+/* Test 5: Multiple Unicode characters
 "Test 5: Multiple Unicode characters\n".echo();
 input2 = "éñü";
 result = input2.grep(".", "o");
@@ -47,7 +47,7 @@ result = input2.grep(".", "o");
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 6: Unicode with newlines (should trigger multiline mode) */
+/* Test 6: Unicode with newlines (should trigger multiline mode)
 "Test 6: Unicode with newlines (multiline mode)\n".echo();
 input3 = "é\nñ\nü";
 result = input3.grep(".", "o");

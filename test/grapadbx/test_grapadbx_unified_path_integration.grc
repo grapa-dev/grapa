@@ -1,10 +1,10 @@
-/* Test script for GrapaDBX Unified Path Integration */
-/* This demonstrates seamless navigation between file system and GrapaDBX */
+/* Test script for GrapaDBX Unified Path Integration
+/* This demonstrates seamless navigation between file system and GrapaDBX
 
 "Testing GrapaDBX Unified Path Integration...\n".echo();
 "==========================================\n".echo();
 
-/* Test 1: Current Unified Path System */
+/* Test 1: Current Unified Path System
 "Test 1: Current Unified Path System\n".echo();
 "----------------------------------\n".echo();
 
@@ -15,7 +15,7 @@
 "• Automatic context switching\n".echo();
 "\n".echo();
 
-/* Test 2: GrapaDBX Integration Requirements */
+/* Test 2: GrapaDBX Integration Requirements
 "Test 2: GrapaDBX Integration Requirements\n".echo();
 "----------------------------------------\n".echo();
 
@@ -23,7 +23,7 @@
 "\n".echo();
 
 "Current Interface (Must Work Unchanged):\n".echo();
-/* This would be the current syntax that must continue to work */
+/* This would be the current syntax that must continue to work
 /*
 f = $file();
 
@@ -34,7 +34,7 @@ f.cd("project/database");
 f.cd("users/admins/user_data");
 
 /* Mixed path navigation
-f.cd("../../.."); /* Back through both database and file system */
+f.cd("../../.."); /* Back through both database and file system
 */
 "✓ f.cd(\"project/database\") - File system navigation\n".echo();
 "✓ f.cd(\"users/admins/user_data\") - Database navigation\n".echo();
@@ -43,7 +43,7 @@ f.cd("../../.."); /* Back through both database and file system */
 "✓ f.ls() - List contents\n".echo();
 "\n".echo();
 
-/* Test 3: GrapaDBX Enhanced Features */
+/* Test 3: GrapaDBX Enhanced Features
 "Test 3: GrapaDBX Enhanced Features\n".echo();
 "--------------------------------\n".echo();
 
@@ -51,14 +51,14 @@ f.cd("../../.."); /* Back through both database and file system */
 "\n".echo();
 
 "Multi-Pointer Navigation:\n".echo();
-/* This would be the new GrapaDBX syntax */
+/* This would be the new GrapaDBX syntax
 /*
 f = $file();
 
 /* Navigate with specific access mode
-f.cd("database", {"mode": "readonly"}); /* Read-only access */
-f.cd("database", {"mode": "writeonly"}); /* Write-only access */
-f.cd("database", {"mode": "readwrite"}); /* Read-write access */
+f.cd("database", {"mode": "readonly"}); /* Read-only access
+f.cd("database", {"mode": "writeonly"}); /* Write-only access
+f.cd("database", {"mode": "readwrite"}); /* Read-write access
 
 /* Concurrent access to same database
 f1 = $file();
@@ -73,7 +73,7 @@ f2.cd("shared_database", {"mode": "readwrite"});
 "\n".echo();
 
 "Transaction-Aware Navigation:\n".echo();
-/* This would be the new GrapaDBX syntax */
+/* This would be the new GrapaDBX syntax
 /*
 f = $file();
 
@@ -82,7 +82,7 @@ f.cd("database");
 f.beginTransaction();
 f.cd("users/admins");
 f.set("user1", "John Doe", "name");
-f.cd(".."); /* Navigation works within transaction */
+f.cd(".."); /* Navigation works within transaction
 f.commitTransaction();
 */
 "✓ f.beginTransaction() - Start transaction\n".echo();
@@ -93,14 +93,14 @@ f.commitTransaction();
 "\n".echo();
 
 "Enhanced Caching Integration:\n".echo();
-/* This would be the new GrapaDBX syntax */
+/* This would be the new GrapaDBX syntax
 /*
 f = $file();
 
 /* Navigate with caching preferences
-f.cd("database", {"cache": "aggressive"}); /* Use L1 cache heavily */
-f.cd("database", {"cache": "minimal"}); /* Minimize cache usage */
-f.cd("database", {"cache": "balanced"}); /* Default caching */
+f.cd("database", {"cache": "aggressive"}); /* Use L1 cache heavily
+f.cd("database", {"cache": "minimal"}); /* Minimize cache usage
+f.cd("database", {"cache": "balanced"}); /* Default caching
 */
 "✓ f.cd(\"database\", {\"cache\": \"aggressive\"}) - Heavy caching\n".echo();
 "✓ f.cd(\"database\", {\"cache\": \"minimal\"}) - Minimal caching\n".echo();
@@ -108,7 +108,7 @@ f.cd("database", {"cache": "balanced"}); /* Default caching */
 "\n".echo();
 
 "Performance Monitoring:\n".echo();
-/* This would be the new GrapaDBX syntax */
+/* This would be the new GrapaDBX syntax
 /*
 f = $file();
 
@@ -124,7 +124,7 @@ performance = f.getNavigationStats();
 "✓ Cache hit/miss statistics\n".echo();
 "\n".echo();
 
-/* Test 4: Backward Compatibility */
+/* Test 4: Backward Compatibility
 "Test 4: Backward Compatibility\n".echo();
 "-----------------------------\n".echo();
 
@@ -132,12 +132,12 @@ performance = f.getNavigationStats();
 "\n".echo();
 
 "Current Database Format:\n".echo();
-/* This would work with current GrapaDB format */
+/* This would work with current GrapaDB format
 /*
 f = $file();
 
 /* Current GrapaDB format - should work seamlessly
-f.cd("old_database"); /* Opens current GrapaDB format */
+f.cd("old_database"); /* Opens current GrapaDB format
 f.cd("users");
 f.mkfield("name", "STR", "VAR");
 f.set("user1", "John Doe", "name");
@@ -148,12 +148,12 @@ f.set("user1", "John Doe", "name");
 "\n".echo();
 
 "New GrapaDBX Format:\n".echo();
-/* This would work with new GrapaDBX format */
+/* This would work with new GrapaDBX format
 /*
 f = $file();
 
 /* New GrapaDBX format - enhanced features available
-f.cd("new_database"); /* Opens GrapaDBX format */
+f.cd("new_database"); /* Opens GrapaDBX format
 f.cd("users", {"mode": "readwrite"});
 f.mkfield("name", "STR", "VAR");
 f.setBatch("user1", {"name": "John Doe", "age": 30});
@@ -165,14 +165,14 @@ f.setBatch("user1", {"name": "John Doe", "age": 30});
 "\n".echo();
 
 "Mixed Access:\n".echo();
-/* This would work with mixed database formats */
+/* This would work with mixed database formats
 /*
 f = $file();
 
 /* Seamless transition between formats
 f.cd("old_database/users");
-f.cd("../new_database/users"); /* Seamless transition */
-f.cd("../../old_database/admins"); /* Back to old format */
+f.cd("../new_database/users"); /* Seamless transition
+f.cd("../../old_database/admins"); /* Back to old format
 */
 "✓ f.cd(\"old_database/users\") - Current format\n".echo();
 "✓ f.cd(\"../new_database/users\") - New format\n".echo();
@@ -180,7 +180,7 @@ f.cd("../../old_database/admins"); /* Back to old format */
 "✓ Seamless transition between formats\n".echo();
 "\n".echo();
 
-/* Test 5: Migration Strategy */
+/* Test 5: Migration Strategy
 "Test 5: Migration Strategy\n".echo();
 "------------------------\n".echo();
 
@@ -188,13 +188,13 @@ f.cd("../../old_database/admins"); /* Back to old format */
 "\n".echo();
 
 "Phase 1: Coexistence:\n".echo();
-/* This would be Phase 1 of migration */
+/* This would be Phase 1 of migration
 /*
 f = $file();
 
 /* Both formats work side by side
-f.cd("old_database"); /* Current format */
-f.cd("new_database"); /* GrapaDBX format */
+f.cd("old_database"); /* Current format
+f.cd("new_database"); /* GrapaDBX format
 
 /* Automatic format detection
 format = f.getDatabaseFormat("database");
@@ -210,14 +210,14 @@ if (format == "GRAPA_DB") {
 "\n".echo();
 
 "Phase 2: Automatic Migration:\n".echo();
-/* This would be Phase 2 of migration */
+/* This would be Phase 2 of migration
 /*
 f = $file();
 
 /* Automatic migration when accessing old databases
-f.cd("old_database"); /* Automatically migrates to GrapaDBX */
+f.cd("old_database"); /* Automatically migrates to GrapaDBX
 f.cd("users");
-f.set("user1", "John Doe", "name"); /* Uses GrapaDBX features */
+f.set("user1", "John Doe", "name"); /* Uses GrapaDBX features
 
 /* Migration status
 status = f.getMigrationStatus("old_database");
@@ -231,12 +231,12 @@ if (status.migrated) {
 "\n".echo();
 
 "Phase 3: GrapaDBX Default:\n".echo();
-/* This would be Phase 3 of migration */
+/* This would be Phase 3 of migration
 /*
 f = $file();
 
 /* GrapaDBX becomes the default format
-f.mk("database", "GROUP"); /* Creates GrapaDBX format by default */
+f.mk("database", "GROUP"); /* Creates GrapaDBX format by default
 f.cd("database");
 f.cd("users", {"mode": "readwrite", "cache": "aggressive"});
 f.mkfield("name", "STR", "VAR");
@@ -247,7 +247,7 @@ f.setBatch("user1", {"name": "John Doe", "age": 30});
 "✓ Enhanced features by default\n".echo();
 "\n".echo();
 
-/* Test 6: Navigation Examples */
+/* Test 6: Navigation Examples
 "Test 6: Navigation Examples\n".echo();
 "--------------------------\n".echo();
 
@@ -255,21 +255,21 @@ f.setBatch("user1", {"name": "John Doe", "age": 30});
 "\n".echo();
 
 "Deep Nested Navigation:\n".echo();
-/* This would demonstrate complex navigation */
+/* This would demonstrate complex navigation
 /*
 f = $file();
 
 /* Deep nested navigation
 f.cd("project/database/departments/engineering/teams/developers");
-f.pwd(); /* Returns: /project/database/departments/engineering/teams/developers */
+f.pwd(); /* Returns: /project/database/departments/engineering/teams/developers
 
 /* Navigate back multiple levels
-f.cd("../../.."); /* Back to engineering */
-f.pwd(); /* Returns: /project/database/departments/engineering */
+f.cd("../../.."); /* Back to engineering
+f.pwd(); /* Returns: /project/database/departments/engineering
 
 /* Direct navigation to deep location
 f.cd("project/database/departments/engineering/teams/developers");
-f.pwd(); /* Returns: /project/database/departments/engineering/teams/developers */
+f.pwd(); /* Returns: /project/database/departments/engineering/teams/developers
 */
 "✓ Deep nested navigation works\n".echo();
 "✓ Multiple level backtracking\n".echo();
@@ -277,20 +277,20 @@ f.pwd(); /* Returns: /project/database/departments/engineering/teams/developers 
 "\n".echo();
 
 "Mixed Format Navigation:\n".echo();
-/* This would demonstrate mixed format navigation */
+/* This would demonstrate mixed format navigation
 /*
 f = $file();
 
 /* Navigate through mixed formats
-f.cd("project"); /* File system */
-f.cd("old_database"); /* Current GrapaDB format */
-f.cd("users"); /* Database structure */
-f.cd("../new_database"); /* GrapaDBX format */
-f.cd("analytics"); /* Database structure */
-f.cd("../../config"); /* Back to file system */
+f.cd("project"); /* File system
+f.cd("old_database"); /* Current GrapaDB format
+f.cd("users"); /* Database structure
+f.cd("../new_database"); /* GrapaDBX format
+f.cd("analytics"); /* Database structure
+f.cd("../../config"); /* Back to file system
 
 /* All navigation works seamlessly
-f.cd("../../../old_database/users"); /* Back to old format */
+f.cd("../../../old_database/users"); /* Back to old format
 */
 "✓ File system navigation\n".echo();
 "✓ Current GrapaDB navigation\n".echo();
@@ -299,7 +299,7 @@ f.cd("../../../old_database/users"); /* Back to old format */
 "\n".echo();
 
 "Transaction-Aware Navigation:\n".echo();
-/* This would demonstrate transaction-aware navigation */
+/* This would demonstrate transaction-aware navigation
 /*
 f = $file();
 
@@ -310,7 +310,7 @@ f.beginTransaction();
 /* Navigate within transaction
 f.cd("users/admins");
 f.set("user1", "John Doe", "name");
-f.cd(".."); /* Navigation works within transaction */
+f.cd(".."); /* Navigation works within transaction
 f.cd("users/guests");
 f.set("guest1", "Jane Smith", "name");
 
@@ -318,15 +318,15 @@ f.set("guest1", "Jane Smith", "name");
 f.commitTransaction();
 
 /* Navigation after transaction
-f.cd(".."); /* Back to users */
-f.cd(".."); /* Back to database root */
+f.cd(".."); /* Back to users
+f.cd(".."); /* Back to database root
 */
 "✓ Navigation within transactions\n".echo();
 "✓ Transaction-aware operations\n".echo();
 "✓ Navigation after transaction commit\n".echo();
 "\n".echo();
 
-/* Test 7: Performance Benefits */
+/* Test 7: Performance Benefits
 "Test 7: Performance Benefits\n".echo();
 "---------------------------\n".echo();
 
@@ -334,7 +334,7 @@ f.cd(".."); /* Back to database root */
 "\n".echo();
 
 "Enhanced Caching:\n".echo();
-/* This would demonstrate performance improvements */
+/* This would demonstrate performance improvements
 /*
 f = $file();
 
@@ -358,7 +358,7 @@ navigation_time = $time() - start;
 "\n".echo();
 
 "Multi-Pointer Access:\n".echo();
-/* This would demonstrate multi-pointer benefits */
+/* This would demonstrate multi-pointer benefits
 /*
 f = $file();
 
@@ -372,8 +372,8 @@ f2.cd("shared_database", {"mode": "readwrite"});
 /* Concurrent operations
 f1.cd("users");
 f2.cd("users");
-f1.get("user1", "name"); /* Read operation */
-f2.set("user2", "Jane Doe", "name"); /* Write operation */
+f1.get("user1", "name"); /* Read operation
+f2.set("user2", "Jane Doe", "name"); /* Write operation
 */
 "✓ Multiple pointers to same database\n".echo();
 "✓ Concurrent read/write access\n".echo();
@@ -381,7 +381,7 @@ f2.set("user2", "Jane Doe", "name"); /* Write operation */
 "✓ Shared file caching\n".echo();
 "\n".echo();
 
-/* Test 8: Error Handling */
+/* Test 8: Error Handling
 "Test 8: Error Handling\n".echo();
 "---------------------\n".echo();
 
@@ -389,7 +389,7 @@ f2.set("user2", "Jane Doe", "name"); /* Write operation */
 "\n".echo();
 
 "Navigation Error Handling:\n".echo();
-/* This would demonstrate error handling */
+/* This would demonstrate error handling
 /*
 f = $file();
 
@@ -413,7 +413,7 @@ try {
     f.beginTransaction();
     f.cd("users");
     f.set("user1", "John Doe", "name");
-    f.cd("nonexistent_group"); /* Error within transaction */
+    f.cd("nonexistent_group"); /* Error within transaction
     f.commitTransaction();
 } catch (error) {
     f.rollbackTransaction();
@@ -426,7 +426,7 @@ try {
 "✓ Automatic rollback on errors\n".echo();
 "\n".echo();
 
-/* Summary */
+/* Summary
 "Summary: GrapaDBX Unified Path Integration Benefits\n".echo();
 "=================================================\n".echo();
 "✅ Seamless Navigation: $file() works exactly as it does now\n".echo();

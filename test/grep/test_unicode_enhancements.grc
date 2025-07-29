@@ -1,10 +1,10 @@
-/* Test Unicode Enhancements for Grapa */
-/* This test identifies specific areas where Unicode support could be enhanced */
+/* Test Unicode Enhancements for Grapa
+/* This test identifies specific areas where Unicode support could be enhanced
 
 "=== UNICODE ENHANCEMENTS TEST ===\n".echo();
 "Testing potential Unicode enhancements for Grapa\n".echo();
 
-/* Test 1: Unicode Word Boundaries */
+/* Test 1: Unicode Word Boundaries
 "Test 1: Unicode Word Boundaries\n".echo();
 input = "Hello世界 こんにちは안녕하세요";
 result = input.grep("\\b\\w+\\b", "o");
@@ -14,7 +14,7 @@ result = input.grep("\\b\\w+\\b", "o");
 ("Expected: Should handle Unicode word boundaries properly\n").echo();
 "---\n".echo();
 
-/* Test 2: Unicode Line Boundaries */
+/* Test 2: Unicode Line Boundaries
 "Test 2: Unicode Line Boundaries\n".echo();
 input = "Hello\n世界\nこんにちは\n안녕하세요";
 result = input.grep("^\\w+$", "m");
@@ -24,7 +24,7 @@ result = input.grep("^\\w+$", "m");
 ("Expected: Should handle Unicode line boundaries properly\n").echo();
 "---\n".echo();
 
-/* Test 3: Unicode Character Classes */
+/* Test 3: Unicode Character Classes
 "Test 3: Unicode Character Classes\n".echo();
 input = "Hello世界123こんにちは안녕하세요";
 result = input.grep("[\\p{L}\\p{N}]+", "o");
@@ -34,7 +34,7 @@ result = input.grep("[\\p{L}\\p{N}]+", "o");
 ("Expected: Should handle Unicode character classes properly\n").echo();
 "---\n".echo();
 
-/* Test 4: Unicode Quantifiers with Grapheme Clusters */
+/* Test 4: Unicode Quantifiers with Grapheme Clusters
 "Test 4: Unicode Quantifiers with Grapheme Clusters\n".echo();
 input = "café mañana résumé";
 result = input.grep("\\X{2,4}", "o");
@@ -44,7 +44,7 @@ result = input.grep("\\X{2,4}", "o");
 ("Expected: Should handle Unicode quantifiers with grapheme clusters\n").echo();
 "---\n".echo();
 
-/* Test 5: Unicode Case Folding */
+/* Test 5: Unicode Case Folding
 "Test 5: Unicode Case Folding\n".echo();
 input = "İstanbul ß ß ß";
 result = input.grep("istanbul", "i");
@@ -54,7 +54,7 @@ result = input.grep("istanbul", "i");
 ("Expected: Should handle Unicode case folding properly\n").echo();
 "---\n".echo();
 
-/* Test 6: Unicode Collation */
+/* Test 6: Unicode Collation
 "Test 6: Unicode Collation\n".echo();
 input = "café cafe café";
 result = input.grep("cafe", "d");
@@ -64,7 +64,7 @@ result = input.grep("cafe", "d");
 ("Expected: Should handle Unicode collation properly\n").echo();
 "---\n".echo();
 
-/* Test 7: Unicode Script Detection */
+/* Test 7: Unicode Script Detection
 "Test 7: Unicode Script Detection\n".echo();
 input = "Hello世界こんにちは안녕하세요";
 result = input.grep("\\p{sc=Han}+", "o");
@@ -74,7 +74,7 @@ result = input.grep("\\p{sc=Han}+", "o");
 ("Expected: Should detect Han script characters\n").echo();
 "---\n".echo();
 
-/* Test 8: Unicode Script Extension */
+/* Test 8: Unicode Script Extension
 "Test 8: Unicode Script Extension\n".echo();
 input = "Hello世界こんにちは안녕하세요";
 result = input.grep("\\p{scx:Han}+", "o");
@@ -84,7 +84,7 @@ result = input.grep("\\p{scx:Han}+", "o");
 ("Expected: Should detect Han script extension characters\n").echo();
 "---\n".echo();
 
-/* Test 9: Unicode General Categories */
+/* Test 9: Unicode General Categories
 "Test 9: Unicode General Categories\n".echo();
 input = "Hello世界123!@#";
 result = input.grep("\\p{Lu}", "o");
@@ -94,7 +94,7 @@ result = input.grep("\\p{Lu}", "o");
 ("Expected: Should detect uppercase letters\n").echo();
 "---\n".echo();
 
-/* Test 10: Unicode Properties with Quantifiers */
+/* Test 10: Unicode Properties with Quantifiers
 "Test 10: Unicode Properties with Quantifiers\n".echo();
 input = "Hello世界123!@#";
 result = input.grep("\\p{L}+", "o");
@@ -104,9 +104,9 @@ result = input.grep("\\p{L}+", "o");
 ("Expected: Should handle Unicode properties with quantifiers\n").echo();
 "---\n".echo();
 
-/* Test 11: Unicode Grapheme Cluster Boundaries */
+/* Test 11: Unicode Grapheme Cluster Boundaries
 "Test 11: Unicode Grapheme Cluster Boundaries\n".echo();
-input = "e\u0301\u0302";  /* e with combining acute and circumflex */
+input = "e\u0301\u0302";  /* e with combining acute and circumflex
 result = input.grep("\\X", "o");
 ("Input: e\\u0301\\u0302 (e with combining marks)\n").echo();
 ("Pattern: \\X (grapheme clusters)\n").echo();
@@ -114,7 +114,7 @@ result = input.grep("\\X", "o");
 ("Expected: Should handle complex grapheme clusters\n").echo();
 "---\n".echo();
 
-/* Test 12: Unicode Emoji Sequences */
+/* Test 12: Unicode Emoji Sequences
 "Test 12: Unicode Emoji Sequences\n".echo();
 input = "👨‍💻👩‍🏫👶‍👧";
 result = input.grep("\\X", "o");
@@ -124,7 +124,7 @@ result = input.grep("\\X", "o");
 ("Expected: Should handle complex emoji sequences\n").echo();
 "---\n".echo();
 
-/* Test 13: Unicode Normalization Edge Cases */
+/* Test 13: Unicode Normalization Edge Cases
 "Test 13: Unicode Normalization Edge Cases\n".echo();
 input = "café\ncafe\u0301\nCafe";
 result = input.grep("café", "NFC");
@@ -134,7 +134,7 @@ result = input.grep("café", "NFC");
 ("Expected: Should handle normalization edge cases\n").echo();
 "---\n".echo();
 
-/* Test 14: Unicode Lookaround with Grapheme Clusters */
+/* Test 14: Unicode Lookaround with Grapheme Clusters
 "Test 14: Unicode Lookaround with Grapheme Clusters\n".echo();
 input = "Hello世界こんにちは안녕하세요";
 result = input.grep("(?<=Hello)\\X+", "o");
@@ -144,7 +144,7 @@ result = input.grep("(?<=Hello)\\X+", "o");
 ("Expected: Should handle lookaround with grapheme clusters\n").echo();
 "---\n".echo();
 
-/* Test 15: Unicode Named Groups */
+/* Test 15: Unicode Named Groups
 "Test 15: Unicode Named Groups\n".echo();
 input = "Hello世界こんにちは안녕하세요";
 result = input.grep("(?P<latin>\\p{sc=Latin}+)(?P<han>\\p{sc=Han}+)", "oj");

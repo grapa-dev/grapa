@@ -1,21 +1,21 @@
-/* Test GROUP Database $VALUE Field Behavior */
+/* Test GROUP Database $VALUE Field Behavior
 
 "=== Testing GROUP Database $VALUE Field ===\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing any existing test files...\n".echo();
 f = $file();
 f.rm("test_group_value");
 "Cleanup completed.\n".echo();
 
-/* Test 1: Create GROUP database */
+/* Test 1: Create GROUP database
 "Test 1: Creating GROUP Database\n".echo();
 "------------------------------\n".echo();
 
 group_db = $file().table("GROUP");
 "✓ GROUP database created\n".echo();
 
-/* Test 2: Demonstrate $VALUE field auto-creation */
+/* Test 2: Demonstrate $VALUE field auto-creation
 "Test 2: $VALUE Field Auto-Creation\n".echo();
 "---------------------------------\n".echo();
 
@@ -35,7 +35,7 @@ file2_content = group_db.get("file2");
 config_content = group_db.get("config");
 ("config content: " + config_content.str() + "\n").echo();
 
-/* Test 3: Explicit $VALUE field usage */
+/* Test 3: Explicit $VALUE field usage
 "Test 3: Explicit $VALUE Field Usage\n".echo();
 "----------------------------------\n".echo();
 
@@ -51,7 +51,7 @@ explicit1_content = group_db.get("explicit1", "$VALUE");
 explicit2_content = group_db.get("explicit2", "$VALUE");
 ("explicit2 $VALUE: " + explicit2_content.str() + "\n").echo();
 
-/* Test 4: Custom fields alongside $VALUE */
+/* Test 4: Custom fields alongside $VALUE
 "Test 4: Custom Fields with $VALUE\n".echo();
 "--------------------------------\n".echo();
 
@@ -79,7 +79,7 @@ doc_type = group_db.get("document1", "type");
 ("document1 size: " + doc_size.raw().int().str() + "\n").echo();
 ("document1 type: " + doc_type.str() + "\n").echo();
 
-/* Test 5: List all records */
+/* Test 5: List all records
 "Test 5: Listing All Records\n".echo();
 "--------------------------\n".echo();
 
@@ -89,7 +89,7 @@ all_records = group_db.ls();
 "Record list:\n".echo();
 all_records.echo();
 
-/* Test 6: Demonstrate $VALUE as default for get() */
+/* Test 6: Demonstrate $VALUE as default for get()
 "Test 6: $VALUE as Default for get()\n".echo();
 "----------------------------------\n".echo();
 
@@ -102,7 +102,7 @@ explicit_value = group_db.get("file1", "$VALUE");
 
 "These should be identical!\n".echo();
 
-/* Test 7: Binary data in $VALUE field */
+/* Test 7: Binary data in $VALUE field
 "Test 7: Binary Data in $VALUE Field\n".echo();
 "----------------------------------\n".echo();
 

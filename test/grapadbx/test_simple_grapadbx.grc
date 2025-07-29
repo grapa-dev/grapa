@@ -1,15 +1,15 @@
-/* Simple GrapaDBX Test */
+/* Simple GrapaDBX Test
 "=== Simple GrapaDBX Test ===".echo();
 
-/* Create a simple GROUP database */
+/* Create a simple GROUP database
 group_db = $file().table("GROUP");
 "✓ GROUP database created".echo();
 
-/* Try to set a simple value */
+/* Try to set a simple value
 group_db.set("test_key", "test_value");
 "✓ Set operation completed".echo();
 
-/* Try to get the value back */
+/* Try to get the value back
 result = group_db.get("test_key");
 "✓ Get operation completed".echo();
 "Result: ".echo();

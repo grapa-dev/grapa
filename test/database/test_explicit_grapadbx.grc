@@ -1,22 +1,22 @@
-/* Explicit GrapaDBX test using grapadbx: /* protocol */ */
+/* Explicit GrapaDBX test using grapadbx://protocol */
 
-/* Create a GrapaDBX database explicitly */
+/* Create a GrapaDBX database explicitly
 dbx = $unified();
-result = dbx.create("grapadbx: /* testdbx"); */
+result = dbx.create("grapadbx://testdbx");
 "Create result: ".echo();
 result.echo();
 
-/* Try to get a simple value */
+/* Try to get a simple value
 result = dbx.get("test", "$VALUE");
 "Simple get result: ".echo();
 result.echo();
 
-/* Try to set a value first */
+/* Try to set a value first
 set_result = dbx.set("test", "$VALUE", "test_value");
 "Set result: ".echo();
 set_result.echo();
 
-/* Try to get it again */
+/* Try to get it again
 result = dbx.get("test", "$VALUE");
 "After set, get result: ".echo();
 result.echo();

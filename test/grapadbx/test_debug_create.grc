@@ -1,4 +1,4 @@
-/* Debug script to test unified create */
+/* Debug script to test unified create
 
 "=== Testing Unified Create ===".echo();
 
@@ -16,7 +16,7 @@ if (result.type() == $ERR) {
     "✅ Creation succeeded".echo();
 }
 
-/* Test file-based creation */
+/* Test file-based creation
 u_file = $unified();
 result_file = u_file.create("grapadbx://test_file.dbx");
 ("File create result: " + result_file).echo();

@@ -1,4 +1,4 @@
-/* Grapa Object Access Patterns Test */
+/* Grapa Object Access Patterns Test
 
 "=== OBJECT ACCESS PATTERNS TEST ===\n".echo();
 

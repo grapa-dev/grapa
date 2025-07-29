@@ -1,4 +1,4 @@
-/* Test to check if isint() method works on strings */
+/* Test to check if isint() method works on strings
 
 "Testing isint() method:".echo();
 "('h'.isint()): ".echo();

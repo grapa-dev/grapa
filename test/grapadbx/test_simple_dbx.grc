@@ -1,23 +1,23 @@
-/* Simple test for GrapaDBX direct usage */
+/* Simple test for GrapaDBX direct usage
 
 "=== Testing Direct GrapaDBX ===".echo();
 
-/* Try direct file operations */
+/* Try direct file operations
 f = $file();
 "Created file object".echo();
 
-/* Try to create a DBX file directly */
+/* Try to create a DBX file directly
 result = f.create("test_direct.dbx");
 ("File create result: " + result).echo();
 
 if (result.type() != $ERR) {
     "✅ Direct file creation succeeded".echo();
     
-    /* Try to write some data */
+    /* Try to write some data
     f.set("testkey", "testvalue");
     "Data written".echo();
     
-    /* Try to read it back */
+    /* Try to read it back
     retrieved = f.get("testkey");
     ("Retrieved: " + retrieved).echo();
     

@@ -586,6 +586,198 @@ GrapaError GrapaDB::RefreshIndex(GrapaDBIndex& pIndex)
 
 This delete-and-recreate approach aligns with the "Database File System" philosophy where operations are simple, reliable, and atomic. It prioritizes data integrity and system reliability over complex optimization, which is appropriate for a database system that needs to be robust and maintainable.
 
+## Recursive Deletion System (CRITICAL IMPLEMENTATION)
+
+**Design Principle**: GrapaDBX implements a sophisticated recursive deletion system that enables proper file system-like deletion behavior. This system is **critical for production readiness** and ensures that deleting a tree (table, group, or record) properly cleans up all associated data and child structures.
+
+### Core Deletion Methods
+
+GrapaDBX implements three critical override methods from GrapaBtree that enable recursive deletion:
+
+#### **1. `Delete(GrapaCursor& cursor)` - Main Deletion Entry Point**
+```cpp
+GrapaError GrapaDBX::Delete(GrapaCursor& cursor)
+{
+    // Delete indexes first to prevent corruption during tree restructuring
+    DeleteKeyIndexes(cursor);
+    // Call parent GrapaBtree::Delete for actual tree deletion
+    return GrapaBtree::Delete(cursor);
+}
+```
+
+**Purpose**: Main entry point for all deletion operations
+**Behavior**: 
+- Calls `DeleteKeyIndexes()` to clean up all indexes first
+- Then calls `GrapaBtree::Delete()` for actual tree deletion
+- Ensures indexes are removed before tree restructuring to prevent corruption
+
+#### **2. `DeleteKey(GrapaCursor& treeCursor)` - Item-Specific Deletion Logic**
+```cpp
+GrapaError GrapaDBX::DeleteKey(GrapaCursor& treeCursor)
+{
+    switch (treeCursor.mValueType) {
+    case GREC_ITEM:  // GROUP record
+        return DeleteTree(treeCursor.mValue);  // Recursively delete entire group
+        
+    case RREC_ITEM:  // ROW record  
+        // Delete all field data and variable storage
+        // Clean up data blocks and pointers
+        return DeleteData(treeCursor.mValue);
+        
+    case CREC_ITEM:  // COL record
+        // Delete column data and storage
+        return 0;  // COL records are lightweight
+        
+    case DTYPE_ITEM:  // Dictionary/field definition
+        // Delete field name storage and table references
+        return DeleteData(treeCursor.mValue);
+    }
+}
+```
+
+**Purpose**: Handles specific deletion logic for different item types
+**Behavior**:
+- **GROUP records**: Recursively deletes entire group tree and all children
+- **ROW records**: Deletes all field data and variable storage blocks
+- **COL records**: Cleans up column data storage
+- **Dictionary items**: Removes field definitions and metadata
+
+#### **3. `DeleteKeyIndexes(GrapaCursor& treeCursor)` - Index Cleanup**
+```cpp
+GrapaError GrapaDBX::DeleteKeyIndexes(GrapaCursor& treeCursor)
+{
+    // Find all indexes that reference this record
+    // Delete index entries for this record from all indexes
+    // Handle different pointer types (GPTR_ITEM, RPTR_ITEM, CPTR_ITEM)
+}
+```
+
+**Purpose**: Removes all index references to the deleted item
+**Behavior**:
+- Scans all indexes for references to the deleted record
+- Removes index entries to prevent dangling pointers
+- Handles different index types (GROUP, ROW, COL pointers)
+- Ensures index consistency during deletion
+
+### Recursive Deletion Flow
+
+#### **File System Analogy**
+The deletion system works like file system deletion:
+- **`rm file`**: Deletes a single record (like deleting a file)
+- **`rm -r directory`**: Recursively deletes entire group and all children (like `rm -rf`)
+- **`rm table`**: Deletes entire table and all records (like deleting a database table)
+
+#### **Deletion Process**
+1. **Index Cleanup**: Remove all index references to prevent corruption
+2. **Data Deletion**: Delete actual data blocks and storage
+3. **Tree Restructuring**: Remove tree nodes and reorganize B-tree structure
+4. **Memory Cleanup**: Free allocated memory and update hole management
+
+### Implementation Details
+
+#### **Override Method Requirements**
+These methods **MUST** override the base GrapaBtree methods with **identical parameter signatures**:
+```cpp
+// In GrapaDBX.h
+virtual GrapaError DeleteKey(GrapaCursor& pTreeCursor);
+virtual GrapaError Delete(GrapaCursor& cursor);
+
+// In GrapaDBX.cpp  
+GrapaError GrapaDBX::DeleteKey(GrapaCursor& treeCursor) { /* implementation */ }
+GrapaError GrapaDBX::Delete(GrapaCursor& cursor) { /* implementation */ }
+```
+
+#### **Critical Implementation Notes**
+- **Parameter Matching**: Override methods must have identical parameters to base class
+- **Index First**: Always delete indexes before tree restructuring
+- **Recursive Safety**: GROUP deletion must handle nested structures safely
+- **Memory Management**: Proper cleanup of data blocks and storage
+- **Error Handling**: Robust error handling for partial deletion scenarios
+
+#### **Deletion Scenarios**
+
+##### **1. Record Deletion (`rm record_name`)**
+```
+1. Find record in table
+2. DeleteKeyIndexes() - Remove from all indexes
+3. DeleteKey() - Delete record data
+4. Delete() - Remove from tree structure
+```
+
+##### **2. Table Deletion (`rm table_name`)**
+```
+1. Find table in database
+2. DeleteKeyIndexes() - Remove table from indexes
+3. DeleteKey() - Delete all records in table
+4. Delete() - Remove table from database structure
+```
+
+##### **3. Group Deletion (`rm -r group_name`)**
+```
+1. Find group in hierarchy
+2. DeleteKeyIndexes() - Remove group from indexes
+3. DeleteKey() - Recursively delete all child groups
+4. Delete() - Remove group from parent structure
+```
+
+### Integration with Unified Interface
+
+#### **`$unified().rm()` Method**
+The unified interface routes deletion requests to the appropriate deletion method:
+```cpp
+// In GrapaLibraryRuleUnifiedRmEvent::Run()
+if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0) {
+    // Try to delete as record first
+    GrapaError findErr = unifiedDB->GrapaDBXFindRecord(name, currentTable, cursor);
+    if (!findErr) {
+        // Found record - delete it
+        err = dbx->DeleteRecord(currentTable, cursor);
+    } else {
+        // Not a record - try to delete as table
+        err = dbx->DeleteTable(unifiedDB->GetGrapaDBXFirstTree(), tableId);
+    }
+}
+```
+
+#### **Deletion Method Routing**
+- **Record Deletion**: Uses `DeleteRecord()` for individual records
+- **Table Deletion**: Uses `DeleteTable()` for entire tables
+- **Group Deletion**: Uses recursive deletion through `DeleteKey()`
+
+### Performance Considerations
+
+#### **Efficiency Optimizations**
+- **Index Cleanup**: Only remove relevant index entries
+- **Bulk Operations**: Optimize for deleting large groups/tables
+- **Memory Management**: Efficient cleanup of data blocks
+- **Tree Balancing**: Maintain B-tree balance during deletion
+
+#### **Safety Measures**
+- **Transaction Safety**: Deletion operations should be atomic
+- **Rollback Capability**: Support for undoing partial deletions
+- **Consistency Checks**: Verify tree integrity after deletion
+- **Error Recovery**: Handle partial deletion failures
+
+### Testing and Validation
+
+#### **Deletion Test Scenarios**
+1. **Single Record**: Delete individual record, verify data and index cleanup
+2. **Table Deletion**: Delete entire table, verify all records and indexes removed
+3. **Group Deletion**: Delete group with children, verify recursive cleanup
+4. **Index Consistency**: Verify no dangling index references after deletion
+5. **Memory Leaks**: Ensure proper cleanup of all allocated resources
+
+#### **Validation Criteria**
+- ✅ **No Dangling Pointers**: All index references properly removed
+- ✅ **Complete Data Cleanup**: All data blocks and storage freed
+- ✅ **Tree Integrity**: B-tree structure remains valid after deletion
+- ✅ **Recursive Safety**: Nested structures deleted completely
+- ✅ **Performance**: Deletion operations complete in reasonable time
+
+This recursive deletion system is **critical for GrapaDBX production readiness** and ensures that the database behaves like a proper file system with reliable deletion operations. The implementation must be thoroughly tested to ensure data integrity and system stability.
+
+---
+
 ## Future Enhancement: Computed Fields and Formula Indexes
 
 **Design Decision**: Support both computed fields and formula indexes for maximum flexibility
@@ -1361,4 +1553,227 @@ This design maintains full compatibility with GrapaDB's tree structure while pro
     └── completed_tasks: 150
 ```
 
-This design provides a solid foundation for implementing GrapaDBX with full compatibility to GrapaDB while improving maintainability and performance. The GROUP table design is now comprehensive and covers all the hierarchical data management needs that make GrapaDBX a powerful database system. 
+This design provides a solid foundation for implementing GrapaDBX with full compatibility to GrapaDB while improving maintainability and performance. The GROUP table design is now comprehensive and covers all the hierarchical data management needs that make GrapaDBX a powerful database system.
+
+## Cursor Handling and State Management
+
+### Cursor Types and State
+
+GrapaDBX uses different cursor types to represent various states in the database operations:
+
+#### **Cursor Types**
+- **`SU64_ITEM` (0)**: Raw B-tree item
+- **`TREE_ITEM` (1)**: Tree structure item
+- **`SDATA_ITEM` (2)**: Small data item
+- **`BDATA_ITEM` (3)**: Big data item
+- **`SEARCH_ITEM` (4)**: Search result that needs dereferencing
+- **`DTYPE_ITEM` (5)**: Data type item
+- **`GREC_ITEM` (6)**: Group record item
+- **`RREC_ITEM` (7)**: Row record item
+- **`CREC_ITEM` (8)**: Column record item
+- **`GPTR_ITEM` (9)**: Group pointer item
+- **`RPTR_ITEM` (10)**: Row pointer item
+- **`CPTR_ITEM` (11)**: Column pointer item
+
+#### **Cursor State Components**
+```cpp
+struct GrapaDBXCursor {
+    u64 mValue;        // Block ID or value
+    u8 mValueType;     // Cursor type (SEARCH_ITEM, CREC_ITEM, etc.)
+    u64 mTreeRef;      // Tree reference
+    u64 mKey;          // Key value
+    u64 mNodeRef;      // Node reference
+    u32 mNodeIndex;    // Node index
+    u32 mLength;       // Data length
+    u8 mTreeType;      // Tree type (CTABLE_TREE, RTABLE_TREE, etc.)
+};
+```
+
+### Critical Cursor Handling Requirements
+
+#### **1. SEARCH_ITEM Handling**
+`SEARCH_ITEM` cursors represent search results that need dereferencing to access actual data. This is critical for the `get` operation:
+
+```cpp
+// SEARCH_ITEM must be handled in all cursor operations
+case SEARCH_ITEM:
+    /* Cursor is a search result, need to dereference */
+    err = PtrToRec(cursor, recCursor);
+    break;
+```
+
+#### **2. Cursor State Preservation**
+Cursor state must be preserved through function calls to maintain data integrity:
+
+```cpp
+// FindEntry must return positioned cursor
+GrapaError FindEntry(u64 parentTree, u8 parentType, 
+                     const GrapaCHAR& pDataName, u64& pId, 
+                     GrapaDBXCursor& outCursor);
+```
+
+#### **3. PtrToRec Function**
+`PtrToRec` converts pointer/search cursors to record cursors:
+
+```cpp
+// For SEARCH_ITEM, navigate to actual data block
+if (ptrCursor.mValueType == SEARCH_ITEM) {
+    /* Get the store tree reference */
+    err = GetTreeStore(ptrCursor, tableRef, storeType);
+    if (err) return(err);
+    
+    /* Set up cursor to search in the store tree */
+    recCursor.Set(tableRef, CREC_ITEM, ptrCursor.mKey);
+    recCursor.mTreeType = CTABLE_TREE;
+    
+    /* Search for the actual record */
+    err = Search(recCursor);
+    if (err) return(err);
+}
+```
+
+### Debug Output and Cursor Tracing
+
+#### **Debug Print Strategy**
+Essential debug prints for cursor state tracing:
+
+```cpp
+// In FindRecordField
+printf("[DEBUG] FindRecordField: fieldId=%llu, cursor.mValue=%llu, "
+       "cursor.mTreeRef=%llu, cursor.mValueType=%d\n",
+       fieldId, cursor.mValue, cursor.mTreeRef, cursor.mValueType);
+
+// In GetTreeStore
+printf("[DEBUG] GetTreeStore: cursor.mTreeRef=%llu\n", cursor.mTreeRef);
+printf("[DEBUG] GetTreeStore: head.blockType=%d, expected TREE_BLOCK=%d\n", 
+       head.blockType, GrapaBlock::TREE_BLOCK);
+```
+
+#### **Block Type Analysis**
+- **`TREE_BLOCK` (type 2)**: Contains tree structure information
+- **`DATA_BLOCK` (type 5)**: Contains actual data
+- Data blocks should be type 5, not type 2
+
+### Common Cursor Issues and Solutions
+
+#### **1. Cursor Redefinition**
+**Problem**: Multiple cursor declarations causing compilation errors.
+**Solution**: Ensure single cursor declaration and proper scope management.
+
+#### **2. Missing SEARCH_ITEM Handling**
+**Problem**: `SEARCH_ITEM` not handled in switch statements.
+**Solution**: Add `SEARCH_ITEM` to all relevant case blocks.
+
+#### **3. Incorrect GetTreeStore Usage**
+**Problem**: Calling `GetTreeStore` on wrong tree reference.
+**Solution**: Verify `mTreeRef` points to correct tree block.
+
+#### **4. File Integrity Issues**
+**Problem**: `head.Read` failing for expected blocks.
+**Solution**: Verify file structure and block allocation.
+
+### Integration with GrapaDB/GrapaGroup
+
+GrapaDBX must maintain compatibility with GrapaDB's cursor handling patterns:
+
+1. **Use GrapaDBXCursor**: For all DBX-specific operations
+2. **Maintain Override Compatibility**: For virtual functions like `CompareKey`
+3. **Follow Reference Implementation**: Study GrapaDB/GrapaGroup cursor patterns
+4. **Preserve Cursor State**: Through all function call chains
+
+This cursor handling design ensures robust data retrieval and maintains compatibility with the existing GrapaDB infrastructure while providing the enhanced capabilities of GrapaDBX.
+
+## Current Implementation Status
+
+### ✅ Completed Features
+
+#### **1. Method Override Compliance**
+- ✅ `NewTree` method override fixed with proper defaults (`parentTree = 0LL, nodeCount = NODE_WIDTH`)
+- ✅ `DumpFile` method added to match GrapaDB interface
+- ✅ All method overrides now match GrapaDB signature
+- ✅ Build compilation errors resolved
+
+#### **2. Table Navigation and Search**
+- ✅ `GrapaDBXNavigateToTable` updated to use `OpenTable` instead of `FindEntry`
+- ✅ `SearchDb` updated to handle `TREE_ITEM` cursor updates correctly
+- ✅ `CompareKey` enhanced with `TREE_ITEM` case for proper search handling
+- ✅ Table navigation now correctly finds and positions to actual table trees
+
+#### **3. Recursive Deletion System**
+- ✅ `rm` operation implemented for record/table/group deletion
+- ✅ `rmfield` operation implemented for field deletion
+- ✅ `GrapaDBX::Delete`, `GrapaDBX::DeleteKey`, `GrapaDBX::DeleteKeyIndexes` overrides implemented
+
+#### **4. Table/Record Creation**
+- ✅ `mk` parameter extraction fixed (changed from `{type:null}` to `{name,type:null}`)
+- ✅ Root type initialization fixed (`mGrapaDBXRootType = mTableType`)
+- ✅ Table structure creation working for `CTABLE_TREE`/`RTABLE_TREE`
+- ✅ `CreateTable` and `CreateIndex` properly implemented
+
+### 🔄 In Progress
+
+#### **1. Get Operation Implementation**
+- ✅ Table navigation working correctly (table.mRef now points to correct table tree)
+- ✅ `OpenTable` succeeding with correct table IDs
+- ✅ Data storage (`set`) working properly
+- ✅ Store tree creation working (created and linked to table tree)
+- ✅ `FieldGet` updated to remove incorrect `GrapaDBXFindRecord` call
+- ✅ Cursor now correctly set to `table.mRecRef` (table's record tree)
+- ✅ `FieldGet` updated to use correct table tree/type (`table.mRef`, `table.mRefType`) instead of root tree
+- ⚠️ Direct field lookup for COL tables not yet implemented (placeholder returning -1)
+- ⚠️ Need to implement proper field search logic for COL table records
+
+#### **2. Debug Output Structure**
+- ✅ INDEX section now appears in debug output
+- ✅ Main list sections now show `CREC` instead of `SU64`
+- ✅ Index creation and TREE_ITEM insertion working correctly
+- ⚠️ INDEX tree not displaying TREE_ITEM entries in debug output
+- ⚠️ Need to fix INDEX tree traversal to show TREE_ITEM entries
+
+### 🎯 Next Steps
+
+#### **1. Complete Get Operation**
+- Implement direct field lookup logic for COL tables
+- Replace placeholder in `FieldGet` with actual field search implementation
+- Test field retrieval for different field types
+- Ensure get operation returns correct values
+
+#### **2. Fix Debug Output Structure**
+- Convert B-tree items to database-level items in `DumpTheValue` method
+- Show `CREC`, `RREC`, `GREC`, `FIELD` instead of `SU64`
+- Match file/DB debug output structure exactly
+
+#### **3. Test All Table Types**
+- Test COL, ROW, and GROUP table types
+- Ensure debug output matches for each type
+- Test multi-level structures (ROW/COL table inside GROUP)
+
+### 🔧 Technical Issues
+
+#### **1. COL Table Field Lookup**
+- Current `FieldGet` implementation has placeholder for direct field lookup
+- Need to implement proper field search logic for COL table records
+- Must handle field name matching and value retrieval correctly
+
+#### **2. B-tree to Database-level Conversion**
+- DBX needs to convert raw B-tree items to database-level items
+- `DumpTheValue` method needs to handle database-level item types
+- Cursor `mValueType` needs to be set correctly
+
+### 📝 Recent Fixes Applied
+
+#### **1. Method Override Fixes**
+- Fixed `NewTree` override in `GrapaDBX.h` with proper default parameters
+- Added `DumpFile` method to `GrapaDBX.h` and `GrapaDBX.cpp`
+- Resolved compilation errors related to function signatures
+
+#### **2. Table Navigation Improvements**
+- Updated `GrapaDBXNavigateToTable` to use `OpenTable` for proper table structure retrieval
+- Enhanced `SearchDb` to update cursor `mTreeRef` when `TREE_ITEM` is found
+- Added `TREE_ITEM` case to `CompareKey` for proper search handling
+
+#### **3. FieldGet Refactoring**
+- Removed incorrect `GrapaDBXFindRecord` call (designed for records, not fields)
+- Updated cursor to use `table.mRecRef` directly
+- Updated `FieldGet` to use correct table tree/type (`table.mRef`, `table.mRefType`) instead of root tree
+- Replaced `FindField`/`GetField` calls with placeholder for COL table field lookup 

@@ -1,16 +1,16 @@
-/* Comprehensive test of Logical NOT operator with all Grapa data types */
+/* Comprehensive test of Logical NOT operator with all Grapa data types
 
 "=== Testing Logical NOT with All Grapa Data Types ===".echo();
 "".echo();
 
-/* Boolean values */
+/* Boolean values
 "--- Boolean Values ---".echo();
 "!true:".echo();
 (!true).echo();
 "!false:".echo();
 (!false).echo();
 
-/* Integer values */
+/* Integer values
 "--- Integer Values ---".echo();
 "!5:".echo();
 (!5).echo();
@@ -19,7 +19,7 @@
 "!(-5):".echo();
 (!(-5)).echo();
 
-/* Float values */
+/* Float values
 "--- Float Values ---".echo();
 "!5.0:".echo();
 (!5.0).echo();
@@ -30,7 +30,7 @@
 "!3.14:".echo();
 (!3.14).echo();
 
-/* String values */
+/* String values
 "--- String Values ---".echo();
 "!'hello':".echo();
 (!"hello").echo();
@@ -41,37 +41,37 @@
 "!'false':".echo();
 (!"false").echo();
 
-/* Array values */
+/* Array values
 "--- Array Values ---".echo();
 "![1,2,3]:".echo();
 (![1,2,3]).echo();
 "![]:".echo();
 (![]).echo();
 
-/* List values */
+/* List values
 "--- List Values ---".echo();
 "!{'a':1,'b':2}:".echo();
 (!{'a':1,'b':2}).echo();
 "!{}:".echo();
 (!{}).echo();
 
-/* Object values */
+/* Object values
 "--- Object Values ---".echo();
 "obj = obj Person; !obj:".echo();
 obj = obj Person;
 (!obj).echo();
 
-/* Error values */
+/* Error values
 "--- Error Values ---".echo();
 "!$ERR:".echo();
 (!$ERR).echo();
 
-/* Null values */
+/* Null values
 "--- Null Values ---".echo();
 "!null:".echo();
 (!null).echo();
 
-/* Complex expressions */
+/* Complex expressions
 "--- Complex Expressions ---".echo();
 "!(5 && 3):".echo();
 (!(5 && 3)).echo();
@@ -82,7 +82,7 @@ obj = obj Person;
 "!(false || true):".echo();
 (!(false || true)).echo();
 
-/* Mixed type expressions */
+/* Mixed type expressions
 "--- Mixed Type Expressions ---".echo();
 "!(5 && 'hello'):".echo();
 (!(5 && "hello")).echo();
@@ -91,7 +91,7 @@ obj = obj Person;
 "!('' && 5):".echo();
 (!("" && 5)).echo();
 
-/* Expected behavior summary */
+/* Expected behavior summary
 "".echo();
 "=== Expected Behavior Summary ===".echo();
 "True values should return FALSE when negated:".echo();

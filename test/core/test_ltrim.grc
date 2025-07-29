@@ -1,21 +1,21 @@
-/* Test script for trim functionality */
+/* Test script for trim functionality
 
 ("=== Testing Trim Functionality ===").echo();
 
-/* Test 1: Basic trim with space */
+/* Test 1: Basic trim with space
 test1 = "  hello".trim();
 ("Test 1: '  hello'.trim() = '" + test1 + "'").echo();
 
-/* Test 2: trim with array of whitespace characters */
+/* Test 2: trim with array of whitespace characters
 whitespace_chars = [" ", "\t", "\n", "\r"];
 test2 = "  \t\n\rhello".trim(whitespace_chars);
 ("Test 2: '  tab newline return hello'.trim(whitespace_chars) = '" + test2 + "'").echo();
 
-/* Test 3: trim with mixed whitespace */
+/* Test 3: trim with mixed whitespace
 test3 = "\t  \nhello world  ".trim(whitespace_chars);
 ("Test 3: 'tab space newline hello world space'.trim(whitespace_chars) = '" + test3 + "'").echo();
 
-/* Test 4: trim with no leading whitespace */
+/* Test 4: trim with no leading whitespace
 test4 = "hello".trim(whitespace_chars);
 ("Test 4: 'hello'.trim(whitespace_chars) = '" + test4 + "'").echo();
 

@@ -1,14 +1,14 @@
-/* Test different field types in COL table */
+/* Test different field types in COL table
 
 "=== Testing different field types in COL table ===".echo();
 "\n".echo();
 
-/* Create COL table */
+/* Create COL table
 "Creating COL table...".echo();
 "\n".echo();
 fcol = $file().table("COL");
 
-/* Test with INT field first */
+/* Test with INT field first
 "Creating INT field...".echo();
 "\n".echo();
 fcol.mkfield("age", "INT", "FIX", 4);
@@ -31,7 +31,7 @@ fcol.get("1", "age").echo();
 "---".echo();
 "\n".echo();
 
-/* Test with STR field */
+/* Test with STR field
 "Creating STR field...".echo();
 "\n".echo();
 fcol.mkfield("name", "STR", "VAR");

@@ -4,11 +4,11 @@
 
 "=== RIPGREP PARITY TEST: ADVANCED FEATURES ===\n".echo();
 
-/* Initialize file system access */
+/* Initialize file system access
 fs = $file();
 fs.chd("test/grep/inputs");
 
-/* Test 1: Multiline pattern */
+/* Test 1: Multiline pattern
 "Test 1: Multiline pattern\n".echo();
 input = fs.get("multiline.txt").str();
 result = input.grep("^foo.*bar$", "m");
@@ -19,7 +19,7 @@ result = input.grep("^foo.*bar$", "m");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Lookahead assertion */
+/* Test 2: Lookahead assertion
 "Test 2: Lookahead assertion\n".echo();
 input = fs.get("lookaround.txt").str();
 result = input.grep("foo(?=bar)", "");
@@ -30,7 +30,7 @@ result = input.grep("foo(?=bar)", "");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 3: After context */
+/* Test 3: After context
 "Test 3: After context\n".echo();
 input = fs.get("context.txt").str();
 result = input.grep("foo", "A1");
@@ -41,7 +41,7 @@ result = input.grep("foo", "A1");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Before context */
+/* Test 4: Before context
 "Test 4: Before context\n".echo();
 result = input.grep("bar", "B1");
 ("Pattern: bar, Options: B1\n").echo();
@@ -50,7 +50,7 @@ result = input.grep("bar", "B1");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Context (before and after) */
+/* Test 5: Context (before and after)
 "Test 5: Context (before and after)\n".echo();
 result = input.grep("foo", "C1");
 ("Pattern: foo, Options: C1\n").echo();
@@ -59,7 +59,7 @@ result = input.grep("foo", "C1");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 6: Custom delimiter (if supported) */
+/* Test 6: Custom delimiter (if supported)
 "Test 6: Custom delimiter\n".echo();
 input = fs.get("delimiter.txt").str();
 result = input.grep("foo", "o", "|||");
@@ -70,7 +70,7 @@ result = input.grep("foo", "o", "|||");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 7: Invalid pattern error handling */
+/* Test 7: Invalid pattern error handling
 "Test 7: Invalid pattern error handling\n".echo();
 input = fs.get("error.txt").str();
 result = input.grep("(unclosed", "");

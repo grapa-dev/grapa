@@ -1,17 +1,17 @@
-/* Test Two-Stage Search Algorithm - Index Selection and Field Matching */
+/* Test Two-Stage Search Algorithm - Index Selection and Field Matching
 
 "=== Testing Two-Stage Search Algorithm ===\n".echo();
 "Demonstrating index selection and detailed field matching\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing any existing test files...\n".echo();
 f = $file();
 f.rm("test_two_stage_search");
 "Cleanup completed.\n".echo();
 
-/* ================================================================================ */
-/* Test Setup: Create Database with Multiple Indexes */
-/* ================================================================================ */
+/* ================================================================================
+/* Test Setup: Create Database with Multiple Indexes
+/* ================================================================================
 "Test Setup: Creating Database with Multiple Indexes\n".echo();
 "--------------------------------------------------\n".echo();
 
@@ -26,9 +26,9 @@ group_db.mkfield("department", "STR", "VAR");
 group_db.mkfield("salary", "INT", "FIX", 4);
 "✓ Custom fields created\n".echo();
 
-/* ================================================================================ */
-/* Test 1: $KEY Index Search (Primary Key) */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 1: $KEY Index Search (Primary Key)
+/* ================================================================================
 "Test 1: $KEY Index Search (Primary Key)\n".echo();
 "---------------------------------------\n".echo();
 
@@ -74,9 +74,9 @@ emp3_name = group_db.get("emp003", "name");
 emp3_dept = group_db.get("emp003", "department");
 ("emp003 - $KEY: " + emp3_key.str() + ", name: " + emp3_name.str() + ", dept: " + emp3_dept.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 2: Custom Field Search (Sequential Scan) */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 2: Custom Field Search (Sequential Scan)
+/* ================================================================================
 "Test 2: Custom Field Search (Sequential Scan)\n".echo();
 "---------------------------------------------\n".echo();
 
@@ -97,9 +97,9 @@ bob_age = group_db.get("emp003", "age").raw().int();
 ("emp002 age: " + jane_age.str() + "\n").echo();
 ("emp003 age: " + bob_age.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 3: Mixed Search Scenarios */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 3: Mixed Search Scenarios
+/* ================================================================================
 "Test 3: Mixed Search Scenarios\n".echo();
 "------------------------------\n".echo();
 
@@ -119,15 +119,15 @@ emp2_age = group_db.get("emp002", "age").raw().int();
 emp2_dept = group_db.get("emp002", "department");
 ("emp002 - $VALUE: " + emp2_data.str() + ", age: " + emp2_age.str() + ", dept: " + emp2_dept.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 4: Search Performance Demonstration */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 4: Search Performance Demonstration
+/* ================================================================================
 "Test 4: Search Performance Demonstration\n".echo();
 "----------------------------------------\n".echo();
 
 "Creating additional records to demonstrate search performance differences:\n".echo();
 
-/* Create more records to show performance differences */
+/* Create more records to show performance differences
 i = 4;
 while (i <= 10) {
     emp_id = "emp" + ("00" + i.str()).right(3);
@@ -162,9 +162,9 @@ while (i <= 3) {
     i = i + 1;
 }
 
-/* ================================================================================ */
-/* Test 5: Search Algorithm Understanding */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 5: Search Algorithm Understanding
+/* ================================================================================
 "Test 5: Search Algorithm Understanding\n".echo();
 "--------------------------------------\n".echo();
 
@@ -186,9 +186,9 @@ while (i <= 3) {
 "- Custom field searches: Slower (sequential scan required)\n".echo();
 "- Mixed searches: Combines both approaches as needed\n".echo();
 
-/* ================================================================================ */
-/* Test 6: List All Records */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 6: List All Records
+/* ================================================================================
 "Test 6: List All Records\n".echo();
 "------------------------\n".echo();
 
@@ -198,9 +198,9 @@ all_records = group_db.ls();
 "Record list (showing $KEY and $VALUE fields):\n".echo();
 all_records.echo();
 
-/* ================================================================================ */
-/* Summary */
-/* ================================================================================ */
+/* ================================================================================
+/* Summary
+/* ================================================================================
 "=== Test Summary ===\n".echo();
 "✓ Two-stage search algorithm demonstrated\n".echo();
 "✓ $KEY index provides fast primary key searches\n".echo();

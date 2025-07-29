@@ -1,10 +1,10 @@
-/* Edge case tests for .get() on INT, FLOAT, and RAW fields */
+/* Edge case tests for .get() on INT, FLOAT, and RAW fields
 table = $file().table("ROW");
 table.mkfield("intf", "INT");
 table.mkfield("floatf", "FLOAT");
 table.mkfield("rawf", "RAW");
 
-/* 1. Missing/empty/null values */
+/* 1. Missing/empty/null values
 ("Missing INT: " + table.get("missing", "intf").type()).echo();
 ("Missing FLOAT: " + table.get("missing", "floatf").type()).echo();
 ("Missing RAW: " + table.get("missing", "rawf").type()).echo();
@@ -16,7 +16,7 @@ table.set("user1", null, "rawf");
 ("Zero FLOAT: " + table.get("user1", "floatf").type() + ", value: " + table.get("user1", "floatf")).echo();
 ("Null RAW: " + table.get("user1", "rawf").type() + ", value: " + table.get("user1", "rawf")).echo();
 
-/* 2. Type mismatch */
+/* 2. Type mismatch
 table.set("user2", "not an int", "intf");
 table.set("user2", "not a float", "floatf");
 table.set("user2", 123, "rawf");
@@ -24,14 +24,14 @@ table.set("user2", 123, "rawf");
 ("FLOAT field with STR: " + table.get("user2", "floatf").type() + ", value: " + table.get("user2", "floatf")).echo();
 ("RAW field with INT: " + table.get("user2", "rawf").type() + ", value: " + table.get("user2", "rawf")).echo();
 
-/* 3. Nested RAW objects */
+/* 3. Nested RAW objects
 table.set("user3", {foo: {bar: [1,2,{baz: 99}]}, arr: [10,20]}, "rawf");
 nested = table.get("user3", "rawf");
 ("Nested RAW type: " + nested.type()).echo();
 ("Nested RAW foo.bar[2].baz: " + nested.foo.bar[2].baz).echo();
 ("Nested RAW arr[1]: " + nested.arr[1]).echo();
 
-/* 4. Overwrite field with different type */
+/* 4. Overwrite field with different type
 table.set("user4", 123, "intf");
 table.set("user4", "now a string", "intf");
 ("INT field overwritten with STR: " + table.get("user4", "intf").type() + ", value: " + table.get("user4", "intf")).echo();
@@ -40,13 +40,13 @@ table.set("user5", 3.14159, "floatf");
 table.set("user5", 42, "floatf");
 ("FLOAT field overwritten with INT: " + table.get("user5", "floatf").type() + ", value: " + table.get("user5", "floatf")).echo();
 
-/* 5. Large numbers and precision */
+/* 5. Large numbers and precision
 table.set("user6", 9223372036854775807, "intf");
 table.set("user6", 1.2345678901234567e+30, "floatf");
 ("Large INT: " + table.get("user6", "intf").type() + ", value: " + table.get("user6", "intf")).echo();
 ("Large FLOAT: " + table.get("user6", "floatf").type() + ", value: " + table.get("user6", "floatf")).echo();
 
-/* 6. Array in RAW */
+/* 6. Array in RAW
 table.set("user7", [1,2,3,4], "rawf");
 arr = table.get("user7", "rawf");
 ("RAW array type: " + arr.type() + ", arr[2]: " + arr[2]).echo(); 

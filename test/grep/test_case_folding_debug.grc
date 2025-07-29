@@ -1,9 +1,9 @@
-/* Test Case Folding Debug */
-/* Debug test to see what case folding actually produces */
+/* Test Case Folding Debug
+/* Debug test to see what case folding actually produces
 
 "=== CASE FOLDING DEBUG TEST ===\n".echo();
 
-/* Test 1: Direct Case Folding */
+/* Test 1: Direct Case Folding
 "Test 1: Direct Case Folding\n".echo();
 input1 = "İ";
 input2 = "I";
@@ -15,7 +15,7 @@ input4 = "i";
 ("i case folded: " + input4.case_fold() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: String Comparison */
+/* Test 2: String Comparison
 "Test 2: String Comparison\n".echo();
 ("İ == i: " + (input1 == input4).str() + "\n").echo();
 ("İ == I: " + (input1 == input2).str() + "\n").echo();
@@ -23,7 +23,7 @@ input4 = "i";
 ("ı == I: " + (input3 == input2).str() + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Case Folded Comparison */
+/* Test 3: Case Folded Comparison
 "Test 3: Case Folded Comparison\n".echo();
 folded1 = input1.case_fold();
 folded2 = input2.case_fold();
@@ -35,7 +35,7 @@ folded4 = input4.case_fold();
 ("ı.case_fold() == I.case_fold(): " + (folded3 == folded2).str() + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Full Word Case Folding */
+/* Test 4: Full Word Case Folding
 "Test 4: Full Word Case Folding\n".echo();
 word1 = "İstanbul";
 word2 = "istanbul";
@@ -44,7 +44,7 @@ word2 = "istanbul";
 ("İstanbul.case_fold() == istanbul.case_fold(): " + (word1.case_fold() == word2.case_fold()).str() + "\n").echo();
 "---\n".echo();
 
-/* Test 5: German Sharp S */
+/* Test 5: German Sharp S
 "Test 5: German Sharp S\n".echo();
 sharp_s = "ß";
 ss = "ss";
@@ -56,7 +56,7 @@ SS = "SS";
 ("ß.case_fold() == SS.case_fold(): " + (sharp_s.case_fold() == SS.case_fold()).str() + "\n").echo();
 "---\n".echo();
 
-/* Test 6: Greek Sigma */
+/* Test 6: Greek Sigma
 "Test 6: Greek Sigma\n".echo();
 final_sigma = "ς";
 sigma = "σ";

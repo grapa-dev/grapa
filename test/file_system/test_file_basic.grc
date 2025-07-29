@@ -1,15 +1,15 @@
-/* Basic File System Tests for Grapa */
-/* Tests fundamental file system operations */
+/* Basic File System Tests for Grapa
+/* Tests fundamental file system operations
 
 "=== BASIC FILE SYSTEM TESTS ===".echo();
 "\n".echo();
 "Testing fundamental file system operations".echo();
 "\n".echo();
 
-/* Initialize file system object */
+/* Initialize file system object
 f = $file();
 
-/* Test 1: Basic Information Functions */
+/* Test 1: Basic Information Functions
 "Test 1: Basic Information Functions".echo();
 "\n".echo();
 "----------------------------------".echo();
@@ -38,7 +38,7 @@ f.type().echo();
 "".echo();
 "\n".echo();
 
-/* Test 2: Directory Navigation */
+/* Test 2: Directory Navigation
 "Test 2: Directory Navigation".echo();
 "\n".echo();
 "---------------------------".echo();
@@ -72,7 +72,7 @@ f.pwd().echo();
 "".echo();
 "\n".echo();
 
-/* Test 3: Directory Listing */
+/* Test 3: Directory Listing
 "Test 3: Directory Listing".echo();
 "\n".echo();
 "------------------------".echo();
@@ -94,7 +94,7 @@ docs_files.echo();
 "\n".echo();
 "".echo();
 
-/* Test 4: File Operations */
+/* Test 4: File Operations
 "Test 4: File Operations".echo();
 "\n".echo();
 "----------------------".echo();
@@ -123,7 +123,7 @@ file_info.echo();
 "".echo();
 "\n".echo();
 
-/* Test 5: Directory Operations */
+/* Test 5: Directory Operations
 "Test 5: Directory Operations".echo();
 "\n".echo();
 "---------------------------".echo();
@@ -160,7 +160,7 @@ nested_files.echo();
 "".echo();
 "\n".echo();
 
-/* Test 6: File Information */
+/* Test 6: File Information
 "Test 6: File Information".echo();
 "\n".echo();
 "------------------------".echo();
@@ -190,7 +190,7 @@ nonexistent_info.echo();
 "".echo();
 "\n".echo();
 
-/* Test 7: File Removal */
+/* Test 7: File Removal
 "Test 7: File Removal".echo();
 "\n".echo();
 "--------------------".echo();
@@ -206,7 +206,7 @@ f.ls().echo();
 "".echo();
 "\n".echo();
 
-/* Test 8: Navigation Back */
+/* Test 8: Navigation Back
 "Test 8: Navigation Back".echo();
 "\n".echo();
 "----------------------".echo();
@@ -222,7 +222,7 @@ f.pwd().echo();
 "".echo();
 "\n".echo();
 
-/* Test 9: Cleanup */
+/* Test 9: Cleanup
 "Test 9: Cleanup".echo();
 "\n".echo();
 "---------------".echo();
@@ -240,7 +240,7 @@ f.rm("test_basic_dir");
 "Cleanup completed.".echo();
 "\n".echo();
 
-/* Test 10: Error Handling */
+/* Test 10: Error Handling
 "Test 10: Error Handling".echo();
 "\n".echo();
 "-----------------------".echo();
@@ -273,7 +273,7 @@ error_result3.echo();
 "".echo();
 "\n".echo();
 
-/* Test Summary */
+/* Test Summary
 "=== BASIC FILE SYSTEM TESTS COMPLETED ===".echo();
 "\n".echo();
 "All basic file system operations tested successfully!".echo();

@@ -1,20 +1,20 @@
-/* Test GrapaDBX Dump Functions */
+/* Test GrapaDBX Dump Functions
 
 echo("=== Testing GrapaDBX Dump Functions ===");
 
-/* Create a simple database */
+/* Create a simple database
 db = $unified("grapadbx://test_dump.dbx");
 echo("Database created");
 
-/* Write a simple record */
+/* Write a simple record
 db.set("testkey", "testvalue");
 echo("Record written");
 
-/* Try to dump the database */
+/* Try to dump the database
 echo("Attempting to dump database...");
 try {
-    /* This would need to be implemented in the Grapa language */
-    /* For now, just check if the database is accessible */
+    /* This would need to be implemented in the Grapa language
+    /* For now, just check if the database is accessible
     result = db.get("testkey");
     echo("Database is accessible, result: " + result);
 } catch (e) {

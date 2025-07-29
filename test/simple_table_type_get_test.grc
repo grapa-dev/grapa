@@ -1,4 +1,4 @@
-/* Test .get() type behavior for INT, FLOAT, and RAW fields */
+/* Test .get() type behavior for INT, FLOAT, and RAW fields
 table = $file().table("ROW");
 table.mkfield("name", "STR");
 table.mkfield("age", "INT");

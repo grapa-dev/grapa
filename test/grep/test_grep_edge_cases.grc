@@ -8,9 +8,9 @@
 
 "=== GREP EDGE CASE TESTS ===\n".echo();
 
-/* ======================================== */
-/* 1. Match at line boundaries */
-/* ======================================== */
+/* ========================================
+/* 1. Match at line boundaries
+/* ========================================
 "Test 1: Match at start/end of line\n".echo();
 input = "foo\nbar\nbaz";
 result = input.grep("^foo", "o");
@@ -21,7 +21,7 @@ result = input.grep("baz$", "o");
 ("Expected: [\"baz\"]\n").echo();
 "---\n".echo();
 
-/* === Overlapping Matches === */
+/* === Overlapping Matches ===
 "Test 2: Overlapping matches\n".echo();
 result = "ababa".grep("aba", "o");
 ("Result: " + result.str() + "\n").echo();
@@ -34,9 +34,9 @@ result = "abcabc".grep("abc", "o");
 ("Expected: [\"abc\", \"abc\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 3. Zero-length matches */
-/* ======================================== */
+/* ========================================
+/* 3. Zero-length matches
+/* ========================================
 "Test 3: Zero-length matches\n".echo();
 input = "abc";
 result = input.grep("^", "o");
@@ -47,9 +47,9 @@ result = input.grep("$", "o");
 ("Expected: [\"\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 4. Multiline patterns */
-/* ======================================== */
+/* ========================================
+/* 4. Multiline patterns
+/* ========================================
 "Test 4: Multiline patterns\n".echo();
 input = "foo\nbar\nbaz";
 result = input.grep("foo\nbar", "o");
@@ -57,9 +57,9 @@ result = input.grep("foo\nbar", "o");
 ("Expected: [\"foo\\nbar\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 5. Unicode edge cases */
-/* ======================================== */
+/* ========================================
+/* 5. Unicode edge cases
+/* ========================================
 "Test 5: Unicode edge cases\n".echo();
 input = "e\u0301\n\ud83d\ude00\u2764\ufe0f";
 result = input.grep("\u00e9", "o");
@@ -70,9 +70,9 @@ result = input.grep("\\X", "o");
 ("Expected: [\"  \",\"\n\",\"  \",\"  \"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 6. Null bytes in input */
-/* ======================================== */
+/* ========================================
+/* 6. Null bytes in input
+/* ========================================
 "Test 6: Null bytes in input\n".echo();
 input = "foo\0bar\0baz";
 result = input.grep("foo", "oz");
@@ -80,9 +80,9 @@ result = input.grep("foo", "oz");
 ("Expected: [\"foo\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 7. Context window at file edges */
-/* ======================================== */
+/* ========================================
+/* 7. Context window at file edges
+/* ========================================
 "Test 7: Context at file edges\n".echo();
 input = "first\nsecond\nthird";
 result = input.grep("first", "A2");
@@ -93,9 +93,9 @@ result = input.grep("third", "B2");
 ("Expected: [\"first\n\", \"second\n\", \"third\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 8. Color output with multiple matches per line */
-/* ======================================== */
+/* ========================================
+/* 8. Color output with multiple matches per line
+/* ========================================
 "Test 8: Color output with multiple matches\n".echo();
 input = "foo foo bar foo";
 result = input.grep("foo", "oL");
@@ -103,9 +103,9 @@ result = input.grep("foo", "oL");
 ("Expected: [\"foo\", \"foo\", \"foo\"] (all colorized)\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 9. Word boundary and non-word boundary */
-/* ======================================== */
+/* ========================================
+/* 9. Word boundary and non-word boundary
+/* ========================================
 "Test 9: Word boundary and non-word boundary\n".echo();
 input = "foo,foo! foo? barfoo";
 result = input.grep("foo", "ow");
@@ -116,9 +116,9 @@ result = input.grep("foo", "o");
 ("Expected: [\"foo\", \"foo\", \"foo\", \"foo\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 10. Option precedence and combinations */
-/* ======================================== */
+/* ========================================
+/* 10. Option precedence and combinations
+/* ========================================
 "Test 10: Option precedence\n".echo();
 input = "foo bar foo";
 result = input.grep("foo", "oT");
@@ -129,9 +129,9 @@ result = input.grep("foo", "oL");
 ("Expected: [\"foo\", \"foo\"] (colorized)\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 11. Invalid regex patterns */
-/* ======================================== */
+/* ========================================
+/* 11. Invalid regex patterns
+/* ========================================
 "Test 11: Invalid regex\n".echo();
 input = "foo";
 result = input.grep("(", "o");

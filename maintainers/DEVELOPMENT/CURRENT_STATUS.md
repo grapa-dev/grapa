@@ -1,70 +1,80 @@
-# Current Status - GrapaDBX Development
+# Current Status
 
-## **CURRENT TASK: Fix Data Retrieval in File-Based Database Operations**
+## Recent Progress
 
-### **Status: MAJOR BREAKTHROUGH - Segmentation Fault Fixed, Data Retrieval Remaining**
+### ✅ **Record Enumeration Structure Fixed**
+- **Issue**: DirectoryList was failing to enumerate records because cursor positioning was incorrect
+- **Root Cause**: Using `mDirId` (table ID) instead of actual table tree reference for cursor positioning
+- **Solution**: Updated DirectoryList to use `OpenTable` to get the actual table tree reference, matching the reference implementation
+- **Result**: Cursor positioning now works correctly - `First()` and `FirstDb()` succeed and position cursor on valid records
 
-### **What's Working:**
-- ✅ **In-memory database operations** - All operations work perfectly
-- ✅ **Core search implementation** - Search logic is complete and functional
-- ✅ **Data writing to file** - Records are being written to data blocks successfully
-- ✅ **B-tree insertion** - Records are being inserted into the B-tree index (FIXED)
-- ✅ **Tree header creation** - Database creation now properly initializes tree structure (FIXED)
-- ✅ **B-tree traversal** - `FindFirstX` successfully reads nodes and leaves (FIXED)
-- ✅ **File-based writes** - Records are being written and indexed correctly (FIXED)
-- ✅ **NextDb/PrevDb fixes** - Index-based navigation works correctly (FIXED)
-- ✅ **Cursor type fixes** - All navigation methods now use `GrapaDBXCursor` properly (FIXED)
-- ✅ **Segmentation fault fixed** - No more crashes during search operations (FIXED)
-- ✅ **Table scan search** - Search operations now work without crashes (FIXED)
-- ✅ **Performance analysis** - Comprehensive benchmarking completed
-- ✅ **Caching system** - File caching is enabled by default (32KB cache)
+### ✅ **Enhanced SetField Implementation**
+- **Issue**: GrapaDBX was only storing `$VALUE` field, but DirectoryList needs `$KEY` field for enumeration
+- **Root Cause**: Simplified SetField implementation didn't match GrapaGroup's dual-field storage pattern
+- **Solution**: Updated GrapaDBX SetField to store both `$KEY` (field ID 0) and `$VALUE` (field ID 1) fields
+- **Result**: Both fields are now being stored successfully as shown in debug output
 
-### **What Still Needs Work:**
-- ❌ **Data retrieval** - `GetRecordField` returns empty data (length=0) instead of actual values
-- ❌ **File-based read operations** - Cannot read back actual data due to retrieval issues
+### ✅ **Buffer Size Management Fixed**
+- **Issue**: `GetDataValue` calls were missing the buffer size parameter
+- **Root Cause**: Hardcoded buffer sizes and missing `sizeof(buffer)` parameter
+- **Solution**: Updated DirectoryList to use `GetDataSize` first to get the correct data length, then allocate the right buffer size
+- **Result**: Data reading is now accurate and memory management is proper
 
-### **Recent Progress:**
-- **FIXED: Segmentation fault** - Cursor type mismatches resolved by using `GrapaDBXCursor` instead of `GrapaCursor`
-- **FIXED: Database creation** - `GrapaDBX::Create` now properly calls `NewTree` to create root tree structure
-- **FIXED: Tree header initialization** - Tree header now has correct `blockType=2` (TREE_BLOCK)
-- **FIXED: B-tree traversal** - `FindFirstX` successfully reads node structure and leaf data
-- **FIXED: File-based writes** - Records are being written, indexed, and can be traversed
-- **FIXED: Search operations** - Table scan search now works without crashes
-- **IDENTIFIED: Data retrieval issue** - `GetRecordField` succeeds but returns empty data
+### 🔍 **Current Blocker: Field Storage Format**
+- **Issue**: `GetRecordField` can't read the stored fields because the data structure format doesn't match expectations
+- **Debug Evidence**: 
+  - `SetRecordField` stores both fields successfully
+  - `GetRecordField` finds the data block but reports "Field 0 not found in data structure"
+  - `ls()` shows field names as values instead of record names (e.g., "value1" instead of "record1")
+- **Root Cause**: GrapaDBX's `SetRecordField` stores fields as separate data blocks, but `GetRecordField` expects them as separate field entries within a single record structure
+- **Next Step**: Fix the field storage mechanism to match the reference implementation's record structure
 
-### **Test Results:**
-- **Memory Database**: Write 100 records: 1.24ms, Read 100 records: 1.72ms ✅
-- **File Database**: Write 100 records: 72ms, Read 100 records: 82ms ✅ (Write working, Read returning empty data)
-- **Performance**: Reasonable for single-file database, comparable to SQLite
-- **Stability**: No more segmentation faults, system is stable
+## Outstanding Tasks
 
-### **Next Priority:**
-**Fix data retrieval in `GetRecordField`** - The search and navigation are working correctly, but `GetRecordField` is returning empty data instead of the actual stored values. Need to investigate the data retrieval logic.
+1. **Fix Field Storage Format**
+   - Ensure GrapaDBX's `SetRecordField` stores fields in the correct format that `GetRecordField` can read
+   - Match the reference implementation's record structure with separate field entries
+   - Fix field name parsing to show record names instead of values
 
-### **Technical Details:**
-- **Issue**: `GetRecordField` returns length=0 instead of actual data
-- **Root Cause**: Data retrieval logic in `GetRecordField` or `GetDataValue` needs fixing
-- **Debug Output**: Shows successful search and navigation, but empty data retrieval
-- **Data Storage**: Confirmed working - data blocks are being created and written correctly
+2. **Test Complex Operations**
+   - Add three records and delete the middle one
+   - Verify debug output matches reference implementation after deletion
+   - Test nested GROUP/ROW/COL structures
+   - Test relative path navigation (`..`)
+   - Test cross-context operations (delete from one GROUP while in another)
 
-### **Files Modified:**
-- `source/grapa/GrapaDBX.cpp` - Enhanced `SetRecordField` with B-tree insertion
-- `source/grapa/GrapaDBX.cpp` - Fixed `Create` method to properly initialize tree structure
-- `source/grapa/GrapaDBX.cpp` - Fixed cursor types in `FirstDb`, `LastDb`, `NextDb`, `PrevDb`
-- `source/grapa/GrapaDBX.cpp` - Added comprehensive debugging to `SearchDb`
-- `source/grapa/GrapaDBX.cpp` - Added tree header write after `AppendNode`
+3. **Multi-Level Testing**
+   - Test GROUP tables containing COL/ROW tables
+   - Verify recursive deletion works correctly
+   - Test navigation between different storage types
 
-### **Next Steps:**
-1. **Fix data retrieval** - Investigate and fix the `GetRecordField` data retrieval logic
-2. **Test file-based read/write operations** - Verify end-to-end functionality once retrieval is fixed
-3. **Update documentation** - Capture final fixes and test results
+4. **Zero Regression Verification**
+   - Compare `ls()` output between `$unified` and `$file` for all table types
+   - Ensure debug output structure matches exactly
+   - Test universal path system compliance
 
-### **Summary of Accomplishments:**
-- **Major breakthrough**: Successfully fixed segmentation fault and search operations
-- **Fixed critical issue**: Cursor type mismatches resolved by using proper `GrapaDBXCursor`
-- **Fixed database creation**: Database creation now properly initializes tree structure
-- **Fixed B-tree operations**: `FindFirstX` successfully reads nodes and traverses B-tree
-- **Fixed file-based writes**: Records are being written, indexed, and can be traversed
-- **Fixed search operations**: Table scan search now works without crashes
-- **Comprehensive debugging**: Added extensive logging to identify and fix issues
-- **Performance analysis**: Completed benchmarking and caching optimization 
+## Testing Status
+
+### ✅ **Basic Operations Working**
+- Database creation and table creation
+- Record storage with `$KEY` and `$VALUE` fields
+- Record enumeration with `ls()`
+- Buffer management and data reading
+
+### 🔍 **Field Storage Issues Identified**
+- Field names showing as values instead of record names
+- Raw binary data format needs proper parsing
+- Field metadata structure needs to match reference implementation
+
+### ⏳ **Complex Operations Pending**
+- Nested GROUP/ROW/COL structures
+- Relative path navigation (`..`)
+- Cross-context operations
+- Delete operations with relative paths
+
+## Technical Notes
+
+- **Cursor Positioning**: Now working correctly using `OpenTable` to get actual table tree reference
+- **Field Storage**: Enhanced to store both `$KEY` and `$VALUE` fields
+- **Data Structure**: Need to fix field storage format to match reference implementation
+- **Debug Output**: Shows successful storage but reading fails due to format mismatch 

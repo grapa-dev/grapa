@@ -2,8 +2,8 @@
 
 "Test 1: Using same precision settings".echo();
 /* Create both values with the same precision settings
-str_float = "55.3".float(128, 10); /* Use explicit precision */
-lit_float = (55.3).float(128, 10); /* Use same precision for literal */
+str_float = "55.3".float(128, 10); /* Use explicit precision
+lit_float = (55.3).float(128, 10); /* Use same precision for literal
 
 if (str_float == lit_float)
     "PASS: 55.3.float(128,10) == (55.3).float(128,10) returns true".echo();

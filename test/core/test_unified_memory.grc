@@ -1,39 +1,39 @@
-/* Test Memory Storage Backend Integration */
+/* Test Memory Storage Backend Integration
 
 "=== MEMORY STORAGE BACKEND TEST ===\n".echo();
 
-/* Test 1: Memory Storage Creation and Basic Operations */
+/* Test 1: Memory Storage Creation and Basic Operations
 "Test 1: Memory Storage Creation and Basic Operations\n".echo();
 "---------------------------------------------------\n".echo();
 
-/* Create unified storage object with memory */
+/* Create unified storage object with memory
 u = $unified();
 "Testing memory storage...\n".echo();
-result = u.create("memory: /* "); */
+result = u.create("memory: /* ");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = u.getType();
 result.echo();
 "\n".echo();
 
-/* Test getInfo */
+/* Test getInfo
 "Storage info: ".echo();
 result = u.getInfo();
 result.echo();
 "\n".echo();
 
-/* Test ls (directory listing) */
+/* Test ls (directory listing)
 "Testing ls (directory listing)...\n".echo();
 result = u.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls with different output formats */
+/* Test ls with different output formats
 "Testing ls with JSON output:\n".echo();
 result = u.ls().json();
 "JSON result: ".echo();
@@ -52,82 +52,82 @@ result = u.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Test 2: Memory File Operations */
+/* Test 2: Memory File Operations
 "Test 2: Memory File Operations\n".echo();
 "-----------------------------\n".echo();
 
-/* Test mk (create file) */
+/* Test mk (create file)
 "Testing mk (create file)...\n".echo();
 result = u.mk("testfile.txt", "FILE");
 "Make result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test set (write content) */
+/* Test set (write content)
 "Testing set (write content)...\n".echo();
 result = u.set("testfile.txt", "This is test content for memory storage", "$VALUE");
 "Set result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test get (read content) */
+/* Test get (read content)
 "Testing get (read content)...\n".echo();
 result = u.get("testfile.txt", "$VALUE");
 "Get result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls again to see the new file */
+/* Test ls again to see the new file
 "Testing ls again (should show new file)...\n".echo();
 result = u.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls with field selection */
+/* Test ls with field selection
 "Testing ls with field selection:\n".echo();
 result = u.ls("$KEY,$TYPE").table();
 "Field selection result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 3: Memory Directory Operations */
+/* Test 3: Memory Directory Operations
 "Test 3: Memory Directory Operations\n".echo();
 "----------------------------------\n".echo();
 
-/* Test mk (create directory) */
+/* Test mk (create directory)
 "Testing mk (create directory)...\n".echo();
 result = u.mk("testdir", "DIR");
 "Make directory result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test cd (change directory) */
+/* Test cd (change directory)
 "Testing cd (change directory)...\n".echo();
 result = u.cd("testdir");
 "Change directory result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test pwd (print working directory) */
+/* Test pwd (print working directory)
 "Testing pwd (print working directory)...\n".echo();
 result = u.pwd();
 "Current directory: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls in new directory */
+/* Test ls in new directory
 "Testing ls in new directory...\n".echo();
 result = u.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 4: Multiple File Operations */
+/* Test 4: Multiple File Operations
 "Test 4: Multiple File Operations\n".echo();
 "-------------------------------\n".echo();
 
-/* Create multiple files */
+/* Create multiple files
 "Creating multiple files...\n".echo();
 u.mk("file1.txt", "FILE");
 u.set("file1.txt", "Content for file 1", "$VALUE");
@@ -140,14 +140,14 @@ u.set("file3.txt", "Content for file 3", "$VALUE");
 
 "Created 3 files\n".echo();
 
-/* Test ls to see all files */
+/* Test ls to see all files
 "Testing ls to see all files...\n".echo();
 result = u.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls with different output formats */
+/* Test ls with different output formats
 "Testing ls with JSON output:\n".echo();
 result = u.ls().json();
 "JSON result: ".echo();
@@ -166,11 +166,11 @@ result = u.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Test 5: File Content Operations */
+/* Test 5: File Content Operations
 "Test 5: File Content Operations\n".echo();
 "------------------------------\n".echo();
 
-/* Test reading all files */
+/* Test reading all files
 "Reading content from all files...\n".echo();
 content1 = u.get("file1.txt", "$VALUE");
 content2 = u.get("file2.txt", "$VALUE");
@@ -188,7 +188,7 @@ content2.echo();
 content3.echo();
 "\n".echo();
 
-/* Test updating file content */
+/* Test updating file content
 "Updating file content...\n".echo();
 u.set("file1.txt", "Updated content for file 1", "$VALUE");
 updated_content = u.get("file1.txt", "$VALUE");
@@ -196,29 +196,29 @@ updated_content = u.get("file1.txt", "$VALUE");
 updated_content.echo();
 "\n".echo();
 
-/* Test 6: Error Handling */
+/* Test 6: Error Handling
 "Test 6: Error Handling\n".echo();
 "---------------------\n".echo();
 
-/* Test reading non-existent file */
+/* Test reading non-existent file
 "Testing read of non-existent file...\n".echo();
 result = u.get("nonexistent.txt", "$VALUE");
 "Get result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test deleting non-existent file */
+/* Test deleting non-existent file
 "Testing delete of non-existent file...\n".echo();
 result = u.rm("nonexistent.txt");
 "Remove result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 7: Cleanup Operations */
+/* Test 7: Cleanup Operations
 "Test 7: Cleanup Operations\n".echo();
 "-------------------------\n".echo();
 
-/* Test rm (delete files) */
+/* Test rm (delete files)
 "Testing rm (delete files)...\n".echo();
 result = u.rm("file1.txt");
 "Remove file1 result: ".echo();
@@ -240,18 +240,18 @@ result = u.rm("testfile.txt");
 result.echo();
 "\n".echo();
 
-/* Test ls after cleanup */
+/* Test ls after cleanup
 "Testing ls after cleanup...\n".echo();
 result = u.ls();
 "List result after cleanup: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 8: Performance Test */
+/* Test 8: Performance Test
 "Test 8: Performance Test\n".echo();
 "-----------------------\n".echo();
 
-/* Create many files for performance testing */
+/* Create many files for performance testing
 "Creating 100 files for performance test...\n".echo();
 start_time = $time().now();
 
@@ -270,7 +270,7 @@ creation_time = end_time - start_time;
 creation_time.echo();
 " seconds\n".echo();
 
-/* Test ls performance */
+/* Test ls performance
 "Testing ls performance...\n".echo();
 start_time = $time().now();
 result = u.ls();
@@ -284,7 +284,7 @@ ls_time.echo();
 result.len().echo();
 "\n".echo();
 
-/* Test ls with different output formats performance */
+/* Test ls with different output formats performance
 "Testing output format performance...\n".echo();
 start_time = $time().now();
 json_result = u.ls().json();
@@ -310,53 +310,53 @@ simple_time = end_time - start_time;
 simple_time.echo();
 " seconds\n".echo();
 
-/* Test 9: Cross-Storage Operations */
+/* Test 9: Cross-Storage Operations
 "Test 9: Cross-Storage Operations\n".echo();
 "--------------------------------\n".echo();
 
-/* Test moving data between memory and file system */
+/* Test moving data between memory and file system
 "Testing data transfer between memory and file system...\n".echo();
 
-/* Create local file system storage */
+/* Create local file system storage
 local = $unified();
-local.create("file: /* /tmp"); */
+local.create("file: /* /tmp");
 
-/* Create memory test file */
+/* Create memory test file
 u.set("memory_file.txt", "This is memory content", "$VALUE");
 "Created memory file\n".echo();
 
-/* Copy from memory to local file system */
+/* Copy from memory to local file system
 "Copying from memory to local file system...\n".echo();
 memory_content = u.get("memory_file.txt", "$VALUE");
 local.set("local_file.txt", memory_content, "$VALUE");
 "Copy complete\n".echo();
 
-/* Verify the content */
+/* Verify the content
 "Verifying content...\n".echo();
 local_content = local.get("local_file.txt", "$VALUE");
 "Local file content: ".echo();
 local_content.echo();
 "\n".echo();
 
-/* Copy back from local to memory with different name */
+/* Copy back from local to memory with different name
 "Copying from local to memory...\n".echo();
 u.set("downloaded_file.txt", local_content, "$VALUE");
 "Copy complete\n".echo();
 
-/* Verify the content */
+/* Verify the content
 "Verifying downloaded content...\n".echo();
 downloaded_content = u.get("downloaded_file.txt", "$VALUE");
 "Downloaded content: ".echo();
 downloaded_content.echo();
 "\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing test files...\n".echo();
 local.rm("local_file.txt");
 u.rm("memory_file.txt");
 u.rm("downloaded_file.txt");
 
-/* Cleanup performance test files */
+/* Cleanup performance test files
 "Cleaning up performance test files...\n".echo();
 i = 0;
 while (i < 100) {

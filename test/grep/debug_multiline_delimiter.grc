@@ -1,7 +1,7 @@
-/* Debug test for multiline pattern with custom delimiter */
+/* Debug test for multiline pattern with custom delimiter
 "=== DEBUG TEST: MULTILINE PATTERN WITH CUSTOM DELIMITER ===\n".echo();
 
-/* Test 1: Multiline pattern with s flag and custom delimiter */
+/* Test 1: Multiline pattern with s flag and custom delimiter
 "Test 1: Multiline pattern with s flag and custom delimiter\n".echo();
 input1 = "start|middle|end";
 result1 = input1.grep("start.*end", "s", "|");
@@ -12,7 +12,7 @@ result1 = input1.grep("start.*end", "s", "|");
 ("Status: " + (result1.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Multiline pattern without s flag and custom delimiter */
+/* Test 2: Multiline pattern without s flag and custom delimiter
 "Test 2: Multiline pattern without s flag and custom delimiter\n".echo();
 input2 = "start|middle|end";
 result2 = input2.grep("start.*end", "", "|");
@@ -23,7 +23,7 @@ result2 = input2.grep("start.*end", "", "|");
 ("Status: " + (result2.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Lookaround assertion with custom delimiter */
+/* Test 3: Lookaround assertion with custom delimiter
 "Test 3: Lookaround assertion with custom delimiter\n".echo();
 input3 = "word123|text456|word789";
 result3 = input3.grep("\\w+(?=\\d)", "o", "|");
@@ -34,7 +34,7 @@ result3 = input3.grep("\\w+(?=\\d)", "o", "|");
 ("Status: " + (result3.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Unicode script property with custom delimiter */
+/* Test 4: Unicode script property with custom delimiter
 "Test 4: Unicode script property with custom delimiter\n".echo();
 input4 = "Hello|World|123|Test";
 result4 = input4.grep("\\p{sc=Latin}+", "o", "|");
@@ -45,7 +45,7 @@ result4 = input4.grep("\\p{sc=Latin}+", "o", "|");
 ("Status: " + (result4.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Multiline pattern with multi-character custom delimiter */
+/* Test 5: Multiline pattern with multi-character custom delimiter
 "Test 5: Multiline pattern with multi-character custom delimiter\n".echo();
 input5 = "start|||middle|||end";
 result5 = input5.grep("start.*end", "", "|||");
@@ -56,7 +56,7 @@ result5 = input5.grep("start.*end", "", "|||");
 ("Status: " + (result5.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 6: Multi-character delimiter at start and end */
+/* Test 6: Multi-character delimiter at start and end
 "Test 6: Multi-character delimiter at start and end\n".echo();
 input6 = "|||start|||middle|||end|||";
 result6 = input6.grep("start.*end", "", "|||");
@@ -67,7 +67,7 @@ result6 = input6.grep("start.*end", "", "|||");
 ("Status: " + (result6.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 7: Multi-character delimiter not present */
+/* Test 7: Multi-character delimiter not present
 "Test 7: Multi-character delimiter not present\n".echo();
 input7 = "startmiddleend";
 result7 = input7.grep("start.*end", "", "|||");
@@ -78,7 +78,7 @@ result7 = input7.grep("start.*end", "", "|||");
 ("Status: " + (result7.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 8: Delimiter as part of the pattern */
+/* Test 8: Delimiter as part of the pattern
 "Test 8: Delimiter as part of the pattern\n".echo();
 input8 = "foo|||bar|||baz";
 result8 = input8.grep("bar\|\|\|baz", "", "|||");
@@ -89,7 +89,7 @@ result8 = input8.grep("bar\|\|\|baz", "", "|||");
 ("Status: " + (result8.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 9: Delimiter with regex metacharacters */
+/* Test 9: Delimiter with regex metacharacters
 "Test 9: Delimiter with regex metacharacters\n".echo();
 input9 = "a.*b.*c.*d";
 result9 = input9.grep("a.*d", "", ".*");
@@ -100,7 +100,7 @@ result9 = input9.grep("a.*d", "", ".*");
 ("Status: " + (result9.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 10: Unicode delimiter (U+2028 LINE SEPARATOR) */
+/* Test 10: Unicode delimiter (U+2028 LINE SEPARATOR)
 "Test 10: Unicode delimiter (U+2028 LINE SEPARATOR)\n".echo();
 input10 = "start\u2028middle\u2028end";
 result10 = input10.grep("start.*end", "", "\u2028");
@@ -111,7 +111,7 @@ result10 = input10.grep("start.*end", "", "\u2028");
 ("Status: " + (result10.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 11: Unicode delimiter (emoji) */
+/* Test 11: Unicode delimiter (emoji)
 "Test 11: Unicode delimiter (emoji)\n".echo();
 input11 = "foo😀bar😀baz";
 result11 = input11.grep("foo.*baz", "", "😀");
@@ -131,7 +131,7 @@ This means patterns like 'a.*d' will not match, as no segment contains both 'a' 
 This is not a bug in the engine, but a limitation of using combining marks as delimiters.
 If grapheme cluster splitting is desired, a different approach is needed.
 */
-/* Test 12: Unicode delimiter (combining mark) */
+/* Test 12: Unicode delimiter (combining mark)
 "Test 12: Unicode delimiter (combining mark)\n".echo();
 input12 = "a\u0301b\u0301c\u0301d";
 result12 = input12.grep("a.*d", "", "\u0301");
@@ -142,7 +142,7 @@ result12 = input12.grep("a.*d", "", "\u0301");
 ("Status: " + (result12.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 13: Multi-emoji delimiter */
+/* Test 13: Multi-emoji delimiter
 "Test 13: Multi-emoji delimiter\n".echo();
 input13 = "foo😀😃bar😀😃baz";
 result13 = input13.grep("foo.*baz", "", "😀😃");
@@ -153,7 +153,7 @@ result13 = input13.grep("foo.*baz", "", "😀😃");
 ("Status: " + (result13.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 14: Rare Unicode sequence delimiter */
+/* Test 14: Rare Unicode sequence delimiter
 "Test 14: Rare Unicode sequence delimiter\n".echo();
 input14 = "foo\u2060bar\u2060baz";
 result14 = input14.grep("foo.*baz", "", "\u2060");

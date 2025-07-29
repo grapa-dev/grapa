@@ -8,7 +8,7 @@
 "=== SMOKE TEST: BASIC CUSTOM DELIMITER SUPPORT ===\n".echo();
 "Running basic custom delimiter validation...\n".echo();
 
-/* Test 1: Basic custom delimiter */
+/* Test 1: Basic custom delimiter
 "Test 1: Basic custom delimiter\n".echo();
 input = "line1|||line2|||line3";
 result = input.grep("line", "o", "|||");
@@ -19,7 +19,7 @@ result = input.grep("line", "o", "|||");
 ("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Single character custom delimiter */
+/* Test 2: Single character custom delimiter
 "Test 2: Single character custom delimiter\n".echo();
 input2 = "line1|line2|line3";
 result = input2.grep("line", "o", "|");
@@ -30,7 +30,7 @@ result = input2.grep("line", "o", "|");
 ("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Custom delimiter with case-insensitive */
+/* Test 3: Custom delimiter with case-insensitive
 "Test 3: Custom delimiter with case-insensitive\n".echo();
 input3 = "Hello|||WORLD|||hello";
 result = input3.grep("hello", "oi", "|||");
@@ -41,7 +41,7 @@ result = input3.grep("hello", "oi", "|||");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Custom delimiter with invert match */
+/* Test 4: Custom delimiter with invert match
 "Test 4: Custom delimiter with invert match\n".echo();
 input4 = "match1|||nomatch|||match2";
 result = input4.grep("match", "ov", "|||");
@@ -52,7 +52,7 @@ result = input4.grep("match", "ov", "|||");
 ("Status: " + (result.len() == 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Custom delimiter with line numbers */
+/* Test 5: Custom delimiter with line numbers
 "Test 5: Custom delimiter with line numbers\n".echo();
 input5 = "line1|||line2|||line3";
 result = input5.grep("line", "on", "|||");
@@ -63,7 +63,7 @@ result = input5.grep("line", "on", "|||");
 ("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 6: Custom delimiter with count only */
+/* Test 6: Custom delimiter with count only
 "Test 6: Custom delimiter with count only\n".echo();
 result = input5.grep("line", "c", "|||");
 ("Pattern: line, Options: c, Delimiter: |||\n").echo();
@@ -72,7 +72,7 @@ result = input5.grep("line", "c", "|||");
 ("Status: " + (result.len() == 1 && result[0] == "3" ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 7: Custom delimiter with JSON output */
+/* Test 7: Custom delimiter with JSON output
 "Test 7: Custom delimiter with JSON output\n".echo();
 result = input5.grep("line", "oj", "|||");
 ("Pattern: line, Options: oj, Delimiter: |||\n").echo();
@@ -81,7 +81,7 @@ result = input5.grep("line", "oj", "|||");
 ("Status: " + (result.len() == 3 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 8: Custom delimiter with context */
+/* Test 8: Custom delimiter with context
 "Test 8: Custom delimiter with context\n".echo();
 input6 = "header|||line1|||line2|||line3|||footer";
 result = input6.grep("line2", "A1", "|||");
@@ -92,7 +92,7 @@ result = input6.grep("line2", "A1", "|||");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 9: Empty delimiter */
+/* Test 9: Empty delimiter
 "Test 9: Empty delimiter\n".echo();
 input7 = "singleline";
 result = input7.grep("line", "o", "");
@@ -103,7 +103,7 @@ result = input7.grep("line", "o", "");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 10: Custom delimiter error handling */
+/* Test 10: Custom delimiter error handling
 "Test 10: Custom delimiter error handling\n".echo();
 input8 = "test";
 /*
@@ -112,7 +112,7 @@ If you write "\0" in a Grapa script, it is trimmed to a zero-length string befor
 This is a known limitation and requires Grapa core enhancement for full support.
 For now, this test will always pass an empty string as the delimiter.
 */
-/* Null delimiter (actually empty string in Grapa) */
+/* Null delimiter (actually empty string in Grapa)
 result = input8.grep("test", "o", "\0");
 ("Input: " + input8 + "\n").echo();
 ("Pattern: test, Options: o, Delimiter: \\0\n").echo();

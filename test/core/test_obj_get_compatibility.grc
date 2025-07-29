@@ -1,4 +1,4 @@
-/* Test .get() compatibility for various Grapa types */
+/* Test .get() compatibility for various Grapa types
 
 "=== $ARRAY ===\n".echo();
 my_arr = ["a", "b", "c"];
@@ -35,5 +35,5 @@ try { (myIns.get("myV").str() + "\n").echo(); } catch (e) { "[error]\n".echo(); 
 ("myIns[\"myV\"]: " + myIns["myV"].str() + "\n").echo();
 ("myIns.myV: " + myIns.myV.str() + "\n").echo();
 
-/* Clean up */
+/* Clean up
 my_fs.rm("testfile.txt"); 

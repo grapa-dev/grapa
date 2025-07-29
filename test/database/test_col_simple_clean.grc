@@ -1,16 +1,16 @@
-/* Simple COL table test - clean version */
+/* Simple COL table test - clean version
 
 "=== Simple COL Table Test (Clean) ===".echo();
 "\n".echo();
 
-/* Create COL table */
+/* Create COL table
 "Creating COL table...".echo();
 "\n".echo();
 fcol = $file().table("COL");
 "COL table created".echo();
 "\n".echo();
 
-/* Create fields one by one */
+/* Create fields one by one
 "Creating field 1...".echo();
 "\n".echo();
 fcol.mkfield("name", "STR", "VAR");
@@ -29,7 +29,7 @@ fcol.mkfield("city", "STR", "VAR");
 "Field 3 created".echo();
 "\n".echo();
 
-/* Try setting data one field at a time */
+/* Try setting data one field at a time
 "Setting name field...".echo();
 "\n".echo();
 fcol.set("1", "name", "Alice");
@@ -48,7 +48,7 @@ fcol.set("1", "city", "New York");
 "City field set".echo();
 "\n".echo();
 
-/* Try getting data */
+/* Try getting data
 "Getting name...".echo();
 "\n".echo();
 fcol.get("1", "name").echo();

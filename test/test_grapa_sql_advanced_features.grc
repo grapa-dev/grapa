@@ -1,22 +1,22 @@
-/* Test script for Grapa SQL Advanced Features */
-/* This demonstrates Unicode, regex, and JSON/XML support */
+/* Test script for Grapa SQL Advanced Features
+/* This demonstrates Unicode, regex, and JSON/XML support
 
 "Testing Grapa SQL Advanced Features...\n".echo();
 "=====================================\n".echo();
 
-/* Test 1: Unicode Support */
+/* Test 1: Unicode Support
 "Test 1: Unicode Support\n".echo();
 "----------------------\n".echo();
 
 "Unicode support in SQL:\n".echo();
 "\n".echo();
 
-/* This would be the new Unicode SQL syntax */
+/* This would be the new Unicode SQL syntax
 /*
 f = $file();
 f.cd("unicode_database");
 
-/* Create table with Unicode fields */
+/* Create table with Unicode fields
 CREATE TABLE unicode_data (
     id INT,
     name STR,
@@ -24,34 +24,34 @@ CREATE TABLE unicode_data (
     description STR
 );
 
-/* Insert Unicode data */
+/* Insert Unicode data
 INSERT INTO unicode_data (id, name, greeting, description) VALUES 
     (1, 'Alice', 'Hello 世界', 'Welcome to our システム'),
     (2, 'Bob', 'Привет мир', 'Добро пожаловать'),
     (3, 'Charlie', 'こんにちは世界', 'システムへようこそ'),
     (4, 'David', '안녕하세요', '환영합니다');
 
-/* Query Unicode data */
+/* Query Unicode data
 SELECT * FROM unicode_data WHERE greeting = 'Hello 世界';
 SELECT * FROM unicode_data WHERE greeting LIKE '%世界%';
-SELECT * FROM unicode_data WHERE greeting ILIKE '%мир%';  /* Case-insensitive */
+SELECT * FROM unicode_data WHERE greeting ILIKE '%мир%';  /* Case-insensitive
 
-/* Unicode functions */
+/* Unicode functions
 SELECT id, name, greeting, greeting.len() as char_count FROM unicode_data;
 SELECT id, name, greeting.upper() as upper_greeting FROM unicode_data;
 SELECT id, name, greeting.lower() as lower_greeting FROM unicode_data;
 
-/* Unicode comparison modes */
+/* Unicode comparison modes
 SELECT * FROM unicode_data WHERE greeting = 'Hello 世界' COLLATE unicode;
 SELECT * FROM unicode_data WHERE greeting ILIKE '%мир%' COLLATE unicode;
 SELECT * FROM unicode_data WHERE greeting LIKE '%世界%' COLLATE unicode;
 SELECT * FROM unicode_data ORDER BY greeting COLLATE unicode;
 
-/* Unicode normalization */
+/* Unicode normalization
 SELECT id, name, UNICODE_NORMALIZE(greeting, 'NFC') as normalized_greeting FROM unicode_data;
 SELECT id, name, UNICODE_NORMALIZE(greeting, 'NFD') as decomposed_greeting FROM unicode_data;
 
-/* Unicode character functions */
+/* Unicode character functions
 SELECT id, name, greeting, UNICODE_CHAR(greeting, 0) as first_char FROM unicode_data;
 SELECT id, name, greeting, UNICODE_CHAR(greeting, -1) as last_char FROM unicode_data;
 SELECT id, name, greeting, UNICODE_SUBSTRING(greeting, 1, 3) as substring_1_3 FROM unicode_data;
@@ -66,19 +66,19 @@ SELECT id, name, greeting, UNICODE_SUBSTRING(greeting, 1, 3) as substring_1_3 FR
 "✓ SELECT id, name, UNICODE_CHAR(greeting, 0) as first_char FROM unicode_data;\n".echo();
 "\n".echo();
 
-/* Test 2: Regex Searching */
+/* Test 2: Regex Searching
 "Test 2: Regex Searching\n".echo();
 "----------------------\n".echo();
 
 "Regex searching in SQL:\n".echo();
 "\n".echo();
 
-/* This would be the new regex SQL syntax */
+/* This would be the new regex SQL syntax
 /*
 f = $file();
 f.cd("regex_database");
 
-/* Create table for regex testing */
+/* Create table for regex testing
 CREATE TABLE regex_data (
     id INT,
     name STR,
@@ -87,47 +87,47 @@ CREATE TABLE regex_data (
     description STR
 );
 
-/* Insert test data */
+/* Insert test data
 INSERT INTO regex_data (id, name, email, phone, description) VALUES 
     (1, 'Alice Smith', 'alice@example.com', '555-123-4567', 'Software engineer'),
     (2, 'Bob Johnson', 'bob.johnson@test.org', '555-987-6543', 'Data scientist'),
     (3, 'Charlie Brown', 'charlie@company.co.uk', '+1-555-111-2222', 'Product manager'),
     (4, 'David Wilson', 'david.wilson@startup.io', '555-555-5555', 'UX designer');
 
-/* Basic regex searching */
+/* Basic regex searching
 SELECT * FROM regex_data WHERE email REGEXP '@example\.com$';
 SELECT * FROM regex_data WHERE phone REGEXP '^555-';
 SELECT * FROM regex_data WHERE name REGEXP '^[A-Z][a-z]+ [A-Z][a-z]+$';
 
-/* Case-insensitive regex */
+/* Case-insensitive regex
 SELECT * FROM regex_data WHERE email REGEXP 'i' '^[a-z]+@';
 
-/* Negated regex */
+/* Negated regex
 SELECT * FROM regex_data WHERE email !~ '@example\.com$';
 
-/* Complex regex patterns */
+/* Complex regex patterns
 SELECT * FROM regex_data WHERE description REGEXP 'engineer|scientist|manager';
 SELECT * FROM regex_data WHERE phone REGEXP '^\+1-';
 SELECT * FROM regex_data WHERE name REGEXP '^[A-Z][a-z]+ [A-Z][a-z]+$';
 
-/* Regex functions */
+/* Regex functions
 SELECT id, name, REGEXP_REPLACE(email, '@.*', '@company.com') as new_email FROM regex_data;
 SELECT id, name, REGEXP_EXTRACT(phone, '^(\d{3})-') as area_code FROM regex_data;
 
-/* Regex with capture groups */
+/* Regex with capture groups
 SELECT id, name, REGEXP_EXTRACT(email, '^([^@]+)@') as username FROM regex_data;
 SELECT id, name, REGEXP_EXTRACT(phone, '(\d{3})-(\d{3})-(\d{4})') as phone_parts FROM regex_data;
 
-/* Regex validation */
+/* Regex validation
 SELECT * FROM regex_data WHERE email REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
 
-/* Advanced regex features */
-SELECT * FROM regex_data WHERE name REGEXP '\\p{Han}';  /* Chinese characters */
-SELECT * FROM regex_data WHERE name REGEXP '\\p{Cyrillic}';  /* Cyrillic characters */
-SELECT * FROM regex_data WHERE email REGEXP 'i' '^[a-z]+@';  /* Case-insensitive */
-SELECT * FROM regex_data WHERE description REGEXP 'm' '^engineer$';  /* Multiline */
+/* Advanced regex features
+SELECT * FROM regex_data WHERE name REGEXP '\\p{Han}';  /* Chinese characters
+SELECT * FROM regex_data WHERE name REGEXP '\\p{Cyrillic}';  /* Cyrillic characters
+SELECT * FROM regex_data WHERE email REGEXP 'i' '^[a-z]+@';  /* Case-insensitive
+SELECT * FROM regex_data WHERE description REGEXP 'm' '^engineer$';  /* Multiline
 
-/* Regex aggregation */
+/* Regex aggregation
 SELECT 
     REGEXP_COUNT(description, 'engineer') as engineer_count,
     REGEXP_COUNT(description, 'scientist') as scientist_count,
@@ -141,19 +141,19 @@ FROM regex_data;
 "✓ SELECT * FROM regex_data WHERE name REGEXP '\\\\p{Han}';  /* Chinese characters */\n".echo();
 "\n".echo();
 
-/* Test 3: JSON Support */
+/* Test 3: JSON Support
 "Test 3: JSON Support\n".echo();
 "-------------------\n".echo();
 
 "JSON support in SQL:\n".echo();
 "\n".echo();
 
-/* This would be the new JSON SQL syntax */
+/* This would be the new JSON SQL syntax
 /*
 f = $file();
 f.cd("json_database");
 
-/* Create table with JSON fields */
+/* Create table with JSON fields
 CREATE TABLE json_data (
     id INT,
     user_data JSON,
@@ -161,45 +161,45 @@ CREATE TABLE json_data (
     metadata JSON
 );
 
-/* Insert JSON data */
+/* Insert JSON data
 INSERT INTO json_data (id, user_data, config, metadata) VALUES 
     (1, '{"name": "Alice", "age": 30, "skills": ["Python", "SQL", "JavaScript"]}', '{"theme": "dark", "notifications": true}', '{"created": "2024-01-15", "tags": ["developer", "senior"]}'),
     (2, '{"name": "Bob", "age": 25, "skills": ["Java", "Kotlin", "GitHub"]}', '{"theme": "light", "notifications": false}', '{"created": "2024-02-20", "tags": ["mobile", "junior"]}'),
     (3, '{"name": "Charlie", "age": 35, "skills": ["C++", "Rust", "LinkedIn"]}', '{"theme": "auto", "notifications": true}', '{"created": "2024-03-10", "tags": ["systems", "expert"]}');
 
-/* Query JSON fields */
+/* Query JSON fields
 SELECT id, user_data->'name' as name FROM json_data;
 SELECT id, user_data->'age' as age FROM json_data;
 SELECT id, user_data->'skills' as skills FROM json_data;
 
-/* JSON path queries */
+/* JSON path queries
 SELECT id, user_data->'skills'->0 as first_skill FROM json_data;
 SELECT id, user_data->'skills'->-1 as last_skill FROM json_data;
 SELECT id, user_data->'skills'->'*' as all_skills FROM json_data;
 
-/* Array access */
+/* Array access
 SELECT id, JSON_ARRAY_LENGTH(user_data->'skills') as skill_count FROM json_data;
 SELECT id, user_data->'skills'->'*' as skill_list FROM json_data;
 
-/* Array contains */
+/* Array contains
 SELECT * FROM json_data WHERE user_data->'skills' ? 'Python';
 SELECT * FROM json_data WHERE user_data->'skills' ? 'Java';
 
-/* JSON functions */
+/* JSON functions
 SELECT id, JSON_KEYS(user_data) as user_keys FROM json_data;
 SELECT id, JSON_VALUES(user_data) as user_values FROM json_data;
 SELECT id, JSON_TYPE(user_data->'age') as age_type FROM json_data;
 
-/* JSON aggregation functions */
+/* JSON aggregation functions
 SELECT 
     JSON_OBJECT('total_users', COUNT(*), 'avg_age', AVG(CAST(user_data->'age' AS INT))) as stats
 FROM json_data;
 
-/* JSON manipulation functions */
+/* JSON manipulation functions
 SELECT id, JSON_SET(user_data, '$.location', 'New York') as updated_user FROM json_data;
 SELECT id, JSON_REMOVE(user_data, '$.age') as user_without_age FROM json_data;
 
-/* JSON validation */
+/* JSON validation
 SELECT * FROM json_data WHERE JSON_VALID(user_data);
 SELECT * FROM json_data WHERE JSON_VALID(config);
 */
@@ -211,19 +211,19 @@ SELECT * FROM json_data WHERE JSON_VALID(config);
 "✓ SELECT id, JSON_KEYS(user_data) as user_keys FROM json_data;\n".echo();
 "\n".echo();
 
-/* Test 4: XML Support */
+/* Test 4: XML Support
 "Test 4: XML Support\n".echo();
 "------------------\n".echo();
 
 "XML support in SQL:\n".echo();
 "\n".echo();
 
-/* This would be the new XML SQL syntax */
+/* This would be the new XML SQL syntax
 /*
 f = $file();
 f.cd("xml_database");
 
-/* Create table with XML fields */
+/* Create table with XML fields
 CREATE TABLE xml_data (
     id INT,
     user_xml XML,
@@ -231,76 +231,76 @@ CREATE TABLE xml_data (
     schema_xml XML
 );
 
-/* Insert XML data */
+/* Insert XML data
 INSERT INTO xml_data (id, user_xml, config_xml, schema_xml) VALUES 
-    (1, '<user><name>Alice</name><role>developer</role></user>', '<config><theme>dark</theme><notifications>true</notifications></config>', '<xs:schema xmlns:xs="http: /* www.w3.org/2001/XMLSchema"><xs:element name="user"><xs:complexType><xs:sequence><xs:element name="name" type="xs:string"/><xs:element name="role" type="xs:string"/></xs:sequence></xs:complexType></xs:element></xs:schema>'), */
-    (2, '<user><name>Bob</name><role>designer</role></user>', '<config><theme>light</theme><notifications>false</notifications></config>', '<xs:schema xmlns:xs="http: /* www.w3.org/2001/XMLSchema"><xs:element name="user"><xs:complexType><xs:sequence><xs:element name="name" type="xs:string"/><xs:element name="role" type="xs:string"/></xs:sequence></xs:complexType></xs:element></xs:schema>'); */
+    (1, '<user><name>Alice</name><role>developer</role></user>', '<config><theme>dark</theme><notifications>true</notifications></config>', '<xs:schema xmlns:xs="http: /* www.w3.org/2001/XMLSchema"><xs:element name="user"><xs:complexType><xs:sequence><xs:element name="name" type="xs:string"/><xs:element name="role" type="xs:string"/></xs:sequence></xs:complexType></xs:element></xs:schema>'),
+    (2, '<user><name>Bob</name><role>designer</role></user>', '<config><theme>light</theme><notifications>false</notifications></config>', '<xs:schema xmlns:xs="http: /* www.w3.org/2001/XMLSchema"><xs:element name="user"><xs:complexType><xs:sequence><xs:element name="name" type="xs:string"/><xs:element name="role" type="xs:string"/></xs:sequence></xs:complexType></xs:element></xs:schema>');
 
-/* Query XML fields */
+/* Query XML fields
 SELECT id, user_xml->'user/name' as name FROM xml_data;
 SELECT id, user_xml->'user/role' as role FROM xml_data;
 
-/* XPath queries */
-SELECT id, user_xml->' /* name' as all_names FROM xml_data; */
-SELECT id, user_xml->' /* role[text()="developer"]' as developer_roles FROM xml_data; */
+/* XPath queries
+SELECT id, user_xml->' /* name' as all_names FROM xml_data;
+SELECT id, user_xml->' /* role[text()="developer"]' as developer_roles FROM xml_data;
 
-/* XPath with conditions */
+/* XPath with conditions
 SELECT * FROM xml_data WHERE user_xml->'user/role' = 'developer';
 SELECT * FROM xml_data WHERE user_xml->'user/name' LIKE '%Alice%';
 
-/* XPath functions */
+/* XPath functions
 SELECT id, XML_LENGTH(user_xml) as xml_length FROM xml_data;
 SELECT id, XML_DEPTH(user_xml) as xml_depth FROM xml_data;
 
-/* XML validation */
+/* XML validation
 SELECT * FROM xml_data WHERE XML_VALID(user_xml, schema_xml);
 SELECT * FROM xml_data WHERE XML_VALID(config_xml);
 
-/* XML functions and aggregation */
+/* XML functions and aggregation
 SELECT 
     XML_AGG(user_xml->'user/name') as all_names
 FROM xml_data;
 
-/* XML aggregation */
+/* XML aggregation
 SELECT 
     XML_OBJECT('users', XML_AGG(user_xml)) as all_users
 FROM xml_data;
 
-/* XML transformation */
+/* XML transformation
 SELECT id, XML_TRANSFORM(user_xml, 'user_to_json.xsl') as json_output FROM xml_data;
 */
 "✓ CREATE TABLE xml_data (id INT, user_xml XML, config_xml XML, schema_xml XML);\n".echo();
-"✓ INSERT INTO xml_data (id, user_xml, config_xml, schema_xml) VALUES (1, '<user><name>Alice</name><role>developer</role></user>', '<config><theme>dark</theme><notifications>true</notifications></config>', '<xs:schema xmlns:xs=\"http: /* www.w3.org/2001/XMLSchema\"><xs:element name=\"user\"><xs:complexType><xs:sequence><xs:element name=\"name\" type=\"xs:string\"/><xs:element name=\"role\" type=\"xs:string\"/></xs:sequence></xs:complexType></xs:element></xs:schema>');\n".echo(); */
+"✓ INSERT INTO xml_data (id, user_xml, config_xml, schema_xml) VALUES (1, '<user><name>Alice</name><role>developer</role></user>', '<config><theme>dark</theme><notifications>true</notifications></config>', '<xs:schema xmlns:xs=\"http: /* www.w3.org/2001/XMLSchema\"><xs:element name=\"user\"><xs:complexType><xs:sequence><xs:element name=\"name\" type=\"xs:string\"/><xs:element name=\"role\" type=\"xs:string\"/></xs:sequence></xs:complexType></xs:element></xs:schema>');\n".echo();
 "✓ SELECT id, user_xml->'user/name' as name FROM xml_data;\n".echo();
-"✓ SELECT id, user_xml->' /* name' as all_names FROM xml_data;\n".echo(); */
+"✓ SELECT id, user_xml->' /* name' as all_names FROM xml_data;\n".echo();
 "✓ SELECT * FROM xml_data WHERE user_xml->'user/role' = 'developer';\n".echo();
 "✓ SELECT * FROM xml_data WHERE XML_VALID(user_xml, schema_xml);\n".echo();
 "\n".echo();
 
-/* Test 5: Combined Features */
+/* Test 5: Combined Features
 "Test 5: Combined Features\n".echo();
 "------------------------\n".echo();
 
 "Combined Unicode, regex, JSON, and XML features:\n".echo();
 "\n".echo();
 
-/* This would demonstrate combined features */
+/* This would demonstrate combined features
 /*
-/* Unicode with regex */
-SELECT * FROM unicode_data WHERE greeting REGEXP '\\p{Han}';  /* Chinese characters */
-SELECT * FROM unicode_data WHERE greeting REGEXP '\\p{Cyrillic}';  /* Cyrillic characters */
+/* Unicode with regex
+SELECT * FROM unicode_data WHERE greeting REGEXP '\\p{Han}';  /* Chinese characters
+SELECT * FROM unicode_data WHERE greeting REGEXP '\\p{Cyrillic}';  /* Cyrillic characters
 
-/* Unicode with JSON */
+/* Unicode with JSON
 SELECT id, user_data->'name' as name, greeting FROM unicode_data u JOIN json_data j ON u.id = j.id;
 SELECT id, JSON_SET(user_data, '$.greeting', greeting) as enhanced_user FROM unicode_data u JOIN json_data j ON u.id = j.id;
 
-/* Regex with JSON */
+/* Regex with JSON
 SELECT * FROM json_data WHERE user_data->'name' REGEXP '^[A-Z][a-z]+$';
 
-/* Unicode with XML */
+/* Unicode with XML
 SELECT id, user_xml->'user/name' as name, greeting FROM unicode_data u JOIN xml_data x ON u.id = x.id;
 
-/* Complex combined queries */
+/* Complex combined queries
 SELECT 
     u.id,
     u.greeting,
@@ -313,7 +313,7 @@ WHERE u.greeting REGEXP '\\p{Han}'
   AND j.user_data->'skills' ? 'Python'
   AND x.user_xml->'user/role' = 'developer';
 
-/* Advanced pattern matching */
+/* Advanced pattern matching
 SELECT 
     id,
     greeting,
@@ -321,7 +321,7 @@ SELECT
     REGEXP_EXTRACT(greeting, '(\\p{Cyrillic}+)') as cyrillic_text
 FROM unicode_data;
 
-/* JSON with regex and Unicode */
+/* JSON with regex and Unicode
 SELECT 
     id,
     user_data,
@@ -336,36 +336,36 @@ WHERE u.greeting REGEXP '\\p{Han}';
 "✓ SELECT id, user_xml->'user/name' as name, greeting FROM unicode_data u JOIN xml_data x ON u.id = x.id;\n".echo();
 "\n".echo();
 
-/* Test 6: Performance Features */
+/* Test 6: Performance Features
 "Test 6: Performance Features\n".echo();
 "----------------------------\n".echo();
 
 "Performance optimization features:\n".echo();
 "\n".echo();
 
-/* This would demonstrate performance features */
+/* This would demonstrate performance features
 /*
-/* Unicode performance */
+/* Unicode performance
 CREATE INDEX idx_unicode_greeting ON unicode_data (greeting COLLATE unicode);
 SELECT * FROM unicode_data WHERE greeting = 'Hello 世界' COLLATE unicode;
 
-/* Regex performance */
+/* Regex performance
 CREATE INDEX idx_regex_email ON regex_data USING regex (email);
 SELECT * FROM regex_data WHERE email REGEXP '@example\.com$';
 
-/* JSON performance */
+/* JSON performance
 CREATE INDEX idx_json_name ON json_data USING json (user_data->'name');
 SELECT * FROM json_data WHERE user_data->'name' = 'Alice';
 
-/* XML performance */
+/* XML performance
 CREATE INDEX idx_xml_name ON xml_data USING xml (user_xml->'user/name');
 SELECT * FROM xml_data WHERE user_xml->'user/name' = 'Alice';
 
-/* Query optimization */
+/* Query optimization
 EXPLAIN SELECT * FROM unicode_data WHERE greeting REGEXP '\\p{Han}';
 EXPLAIN SELECT * FROM json_data WHERE user_data->'skills' ? 'Python';
 
-/* Performance monitoring */
+/* Performance monitoring
 SELECT query_id, execution_time, memory_usage FROM query_performance WHERE execution_time > 1000;
 */
 "✓ CREATE INDEX idx_unicode_greeting ON unicode_data (greeting COLLATE unicode);\n".echo();

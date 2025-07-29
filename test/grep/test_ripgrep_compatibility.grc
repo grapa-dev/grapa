@@ -8,9 +8,9 @@
 
 "=== RIPGREP COMPATIBILITY TEST ===\n".echo();
 
-/* ======================================== */
-/* 1. Column output (T option) */
-/* ======================================== */
+/* ========================================
+/* 1. Column output (T option)
+/* ========================================
 "Test 1: Column output (T option)\n".echo();
 input = "foo bar baz\nbar foo baz\nbaz bar foo";
 result = input.grep("foo", "oT");
@@ -20,9 +20,9 @@ result = input.grep("foo", "oT");
 ("Expected: [\"1:foo\", \"5:foo\", \"9:foo\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 2. Word boundaries (w option) */
-/* ======================================== */
+/* ========================================
+/* 2. Word boundaries (w option)
+/* ========================================
 "Test 2: Word boundaries (w option)\n".echo();
 input = "foo,foo! foo? barfoo";
 result = input.grep("foo", "ow");
@@ -32,9 +32,9 @@ result = input.grep("foo", "ow");
 ("Expected: [\"foo\", \"foo\", \"foo\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 3. Null-data mode (z option) */
-/* ======================================== */
+/* ========================================
+/* 3. Null-data mode (z option)
+/* ========================================
 "Test 3: Null-data mode (z option)\n".echo();
 input = "data1\x00data2\x00data3";
 result = input.grep("data", "z");
@@ -44,9 +44,9 @@ result = input.grep("data", "z");
 ("Expected: [\"data1\", \"data2\", \"data3\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 4. Color output (L option) */
-/* ======================================== */
+/* ========================================
+/* 4. Color output (L option)
+/* ========================================
 "Test 4: Color output (L option)\n".echo();
 input = "Hello world";
 result = input.grep("world", "oL");
@@ -56,9 +56,9 @@ result = input.grep("world", "oL");
 ("Expected: [\"\\x1b[1;31mworld\\x1b[0m\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 5. Context separators */
-/* ======================================== */
+/* ========================================
+/* 5. Context separators
+/* ========================================
 "Test 5: Context separators\n".echo();
 input = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7";
 result = input.grep("Line 2|Line 6", "A1B1");
@@ -68,9 +68,9 @@ result = input.grep("Line 2|Line 6", "A1B1");
 ("Expected: [\"Line 1\\n\", \"Line 2\\n\", \"Line 3\\n\", \"--\\n\", \"Line 5\\n\", \"Line 6\\n\", \"Line 7\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 6. Invert match (v option) */
-/* ======================================== */
+/* ========================================
+/* 6. Invert match (v option)
+/* ========================================
 "Test 6: Invert match (v option)\n".echo();
 input = "line1\nline2\nline3";
 result = input.grep("line2", "v");
@@ -80,9 +80,9 @@ result = input.grep("line2", "v");
 ("Expected: [\"line1\\n\", \"line3\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 7. All mode (a option) */
-/* ======================================== */
+/* ========================================
+/* 7. All mode (a option)
+/* ========================================
 "Test 7: All mode (a option)\n".echo();
 input = "line1\nline2\nline3";
 result = input.grep("line.*line", "a");
@@ -92,9 +92,9 @@ result = input.grep("line.*line", "a");
 ("Expected: [\"line1\\nline2\\nline3\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 8. JSON output (j option) */
-/* ======================================== */
+/* ========================================
+/* 8. JSON output (j option)
+/* ========================================
 "Test 8: JSON output (j option)\n".echo();
 input = "Hello world";
 result = input.grep("\\w+", "j");

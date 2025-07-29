@@ -1,9 +1,9 @@
-/* Test Fixes Verification */
-/* This test verifies that the key fixes are working */
+/* Test Fixes Verification
+/* This test verifies that the key fixes are working
 
 ("=== TESTING KEY FIXES ===\n").echo();
 
-/* Test 1: Multiline pattern with custom delimiter */
+/* Test 1: Multiline pattern with custom delimiter
 ("Test 1: Multiline pattern with custom delimiter\n").echo();
 input1 = "start|middle|end";
 result1 = input1.grep("start.*end", "s", "|");
@@ -13,7 +13,7 @@ result1 = input1.grep("start.*end", "s", "|");
 ("Expected: [\"start|middle|end\"] or similar\n").echo();
 ("---\n").echo();
 
-/* Test 2: Lookaround assertion */
+/* Test 2: Lookaround assertion
 ("Test 2: Lookaround assertion\n").echo();
 input2 = "word123|text456|word789";
 result2 = input2.grep("\\w+(?=\\d)", "o", "|");
@@ -23,7 +23,7 @@ result2 = input2.grep("\\w+(?=\\d)", "o", "|");
 ("Expected: [\"word\", \"text\", \"word\"]\n").echo();
 ("---\n").echo();
 
-/* Test 3: Unicode script property */
+/* Test 3: Unicode script property
 ("Test 3: Unicode script property\n").echo();
 input3 = "Hello 世界 123 €|Goodbye 世界 456 €";
 result3 = input3.grep("\\p{sc=Latin}", "o", "|");
@@ -33,7 +33,7 @@ result3 = input3.grep("\\p{sc=Latin}", "o", "|");
 ("Expected: [\"Hello\", \"Goodbye\"] or individual characters\n").echo();
 ("---\n").echo();
 
-/* Test 4: Match-only with custom delimiter */
+/* Test 4: Match-only with custom delimiter
 ("Test 4: Match-only with custom delimiter\n").echo();
 input4 = "line1|||line2|||line3";
 result4 = input4.grep("line", "o", "|||");
@@ -43,7 +43,7 @@ result4 = input4.grep("line", "o", "|||");
 ("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
 ("---\n").echo();
 
-/* Test 5: Grapheme clusters */
+/* Test 5: Grapheme clusters
 ("Test 5: Grapheme clusters\n").echo();
 input5 = "Hello 👋 world 🌍|||Goodbye 👋 universe 🌌";
 result5 = input5.grep("\\X", "o", "|||");

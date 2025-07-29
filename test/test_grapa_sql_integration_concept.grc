@@ -1,31 +1,31 @@
-/* Test script for Grapa SQL Integration Concept */
-/* This demonstrates how SQL syntax integrates with Grapa's unified system */
+/* Test script for Grapa SQL Integration Concept
+/* This demonstrates how SQL syntax integrates with Grapa's unified system
 
 "Testing Grapa SQL Integration Concept...\n".echo();
 "=======================================\n".echo();
 
-/* Test 1: Direct SQL Queries */
+/* Test 1: Direct SQL Queries
 "Test 1: Direct SQL Queries\n".echo();
 "-------------------------\n".echo();
 
 "Direct SQL queries as native Grapa syntax:\n".echo();
 "\n".echo();
 
-/* This would be the new SQL syntax */
+/* This would be the new SQL syntax
 /*
-/* Direct SQL queries as native Grapa syntax */
+/* Direct SQL queries as native Grapa syntax
 SELECT * FROM users WHERE age > 25;
 
-/* SQL with GrapaDBX enhanced features */
+/* SQL with GrapaDBX enhanced features
 SELECT * FROM users WHERE name REGEXP '^[A-Z][a-z]+$' AND age > 25;
 
-/* SQL with Unicode support */
+/* SQL with Unicode support
 SELECT * FROM users WHERE greeting ILIKE '%мир%' COLLATE unicode;
 
-/* SQL with JSON fields */
+/* SQL with JSON fields
 SELECT id, user_data->'name' as name, user_data->'skills' as skills FROM users;
 
-/* SQL with XML fields */
+/* SQL with XML fields
 SELECT id, user_xml->'user/name' as name, user_xml->'user/role' as role FROM users;
 */
 "✓ SELECT * FROM users WHERE age > 25;\n".echo();
@@ -35,25 +35,25 @@ SELECT id, user_xml->'user/name' as name, user_xml->'user/role' as role FROM use
 "✓ SELECT id, user_xml->'user/name' as name, user_xml->'user/role' as role FROM users;\n".echo();
 "\n".echo();
 
-/* Test 2: Batch Operations */
+/* Test 2: Batch Operations
 "Test 2: Batch Operations\n".echo();
 "-----------------------\n".echo();
 
 "Batch operations with SQL syntax:\n".echo();
 "\n".echo();
 
-/* This would be the new batch SQL syntax */
+/* This would be the new batch SQL syntax
 /*
-/* Batch INSERT using GrapaDBX's SetBatchMultiple */
+/* Batch INSERT using GrapaDBX's SetBatchMultiple
 INSERT INTO users (id, name, age, email) VALUES 
     (1, 'Alice', 30, 'alice@example.com'),
     (2, 'Bob', 25, 'bob@example.com'),
     (3, 'Charlie', 35, 'charlie@example.com');
 
-/* Batch UPDATE using GrapaDBX's enhanced update capabilities */
+/* Batch UPDATE using GrapaDBX's enhanced update capabilities
 UPDATE users SET age = age + 1 WHERE age < 30;
 
-/* Batch DELETE using GrapaDBX's enhanced delete capabilities */
+/* Batch DELETE using GrapaDBX's enhanced delete capabilities
 DELETE FROM users WHERE age > 40;
 */
 "✓ INSERT INTO users (id, name, age, email) VALUES (1, 'Alice', 30, 'alice@example.com'), (2, 'Bob', 25, 'bob@example.com');\n".echo();
@@ -61,24 +61,24 @@ DELETE FROM users WHERE age > 40;
 "✓ DELETE FROM users WHERE age > 40;\n".echo();
 "\n".echo();
 
-/* Test 3: Transaction Support */
+/* Test 3: Transaction Support
 "Test 3: Transaction Support\n".echo();
 "---------------------------\n".echo();
 
 "Transaction support with SQL syntax:\n".echo();
 "\n".echo();
 
-/* This would be the new transaction SQL syntax */
+/* This would be the new transaction SQL syntax
 /*
-/* Create new user */
+/* Create new user
 BEGIN TRANSACTION;
 INSERT INTO users (id, name, age) VALUES (4, 'David', 28);
 COMMIT;
 
-/* Get the new user's ID */
+/* Get the new user's ID
 SELECT id FROM users WHERE name = 'David';
 
-/* Create user profile */
+/* Create user profile
 BEGIN TRANSACTION;
 INSERT INTO user_profiles (user_id, bio, website) VALUES (4, 'Software engineer', 'david.dev');
 COMMIT;
@@ -92,60 +92,60 @@ COMMIT;
 "✓ COMMIT;\n".echo();
 "\n".echo();
 
-/* Test 4: Unified Path Integration */
+/* Test 4: Unified Path Integration
 "Test 4: Unified Path Integration\n".echo();
 "--------------------------------\n".echo();
 
 "SQL with unified path system:\n".echo();
 "\n".echo();
 
-/* This would be the new unified path SQL syntax */
+/* This would be the new unified path SQL syntax
 /*
-/* SQL on file system database */
-users = SELECT * FROM . WHERE age > 25;  /* Query current location */
+/* SQL on file system database
+users = SELECT * FROM . WHERE age > 25;  /* Query current location
 
-/* SQL across mixed paths */
-SELECT * FROM file: /* /data/users WHERE age > 25; */
-SELECT * FROM grapadbx: /* users WHERE age > 25; */
-SELECT * FROM memory: /* temp_users WHERE age > 25; */
+/* SQL across mixed paths
+SELECT * FROM file: /* /data/users WHERE age > 25;
+SELECT * FROM grapadbx://users WHERE age > 25;
+SELECT * FROM memory: /* temp_users WHERE age > 25;
 
-/* SQL with context awareness */
-active_users = SELECT * FROM . WHERE status = 'active';  /* Uses current context */
+/* SQL with context awareness
+active_users = SELECT * FROM . WHERE status = 'active';  /* Uses current context
 */
 "✓ users = SELECT * FROM . WHERE age > 25;  /* Query current location */\n".echo();
-"✓ SELECT * FROM file: /* /data/users WHERE age > 25;\n".echo(); */
-"✓ SELECT * FROM grapadbx: /* users WHERE age > 25;\n".echo(); */
-"✓ SELECT * FROM memory: /* temp_users WHERE age > 25;\n".echo(); */
+"✓ SELECT * FROM file: /* /data/users WHERE age > 25;\n".echo();
+"✓ SELECT * FROM grapadbx://users WHERE age > 25;\n".echo();
+"✓ SELECT * FROM memory: /* temp_users WHERE age > 25;\n".echo();
 "✓ active_users = SELECT * FROM . WHERE status = 'active';  /* Uses current context */\n".echo();
 "\n".echo();
 
-/* Test 5: Advanced Query Features */
+/* Test 5: Advanced Query Features
 "Test 5: Advanced Query Features\n".echo();
 "-------------------------------\n".echo();
 
 "Advanced query features:\n".echo();
 "\n".echo();
 
-/* This would be the new advanced SQL syntax */
+/* This would be the new advanced SQL syntax
 /*
-/* SQL automatically uses best indexes */
-SELECT * FROM users WHERE name = 'Alice';  /* Uses name index automatically */
+/* SQL automatically uses best indexes
+SELECT * FROM users WHERE name = 'Alice';  /* Uses name index automatically
 
-/* Complex queries with multiple conditions */
+/* Complex queries with multiple conditions
 SELECT * FROM users 
 WHERE age BETWEEN 25 AND 35 
   AND name REGEXP '^[A-Z][a-z]+$'
   AND user_data->'skills' ? 'Python'
   AND user_xml->'user/role' = 'developer';
 
-/* Aggregation queries */
+/* Aggregation queries
 SELECT 
     COUNT(*) as total_users,
     AVG(age) as avg_age,
     COUNT(CASE WHEN user_data->'skills' ? 'Python' THEN 1 END) as python_users
 FROM users;
 
-/* Group by with complex conditions */
+/* Group by with complex conditions
 SELECT 
     user_xml->'user/role' as role,
     COUNT(*) as count,
@@ -160,23 +160,23 @@ HAVING COUNT(*) > 1;
 "✓ SELECT user_xml->'user/role' as role, COUNT(*) as count FROM users GROUP BY user_xml->'user/role';\n".echo();
 "\n".echo();
 
-/* Test 6: Performance Monitoring */
+/* Test 6: Performance Monitoring
 "Test 6: Performance Monitoring\n".echo();
 "------------------------------\n".echo();
 
 "Performance monitoring with SQL:\n".echo();
 "\n".echo();
 
-/* This would be the new performance SQL syntax */
+/* This would be the new performance SQL syntax
 /*
-/* Enable query monitoring */
+/* Enable query monitoring
 SET QUERY_MONITORING = true;
 
-/* Execute queries with performance tracking */
+/* Execute queries with performance tracking
 SELECT * FROM users WHERE age > 25;
 SELECT * FROM users WHERE name REGEXP '^[A-Z][a-z]+$';
 
-/* Get query statistics */
+/* Get query statistics
 SELECT query_id, execution_time, memory_usage, index_usage FROM query_performance;
 */
 "✓ SET QUERY_MONITORING = true;\n".echo();
@@ -185,16 +185,16 @@ SELECT query_id, execution_time, memory_usage, index_usage FROM query_performanc
 "✓ SELECT query_id, execution_time, memory_usage, index_usage FROM query_performance;\n".echo();
 "\n".echo();
 
-/* Test 7: Advanced SQL Features */
+/* Test 7: Advanced SQL Features
 "Test 7: Advanced SQL Features\n".echo();
 "------------------------------\n".echo();
 
 "Advanced SQL features:\n".echo();
 "\n".echo();
 
-/* This would be the new advanced SQL syntax */
+/* This would be the new advanced SQL syntax
 /*
-/* Window functions */
+/* Window functions
 SELECT 
     name,
     age,
@@ -202,7 +202,7 @@ SELECT
     LAG(age) OVER (ORDER BY age) as prev_age
 FROM users;
 
-/* Common Table Expressions (CTEs) */
+/* Common Table Expressions (CTEs)
 WITH user_stats AS (
     SELECT role, COUNT(*) as count, AVG(age) as avg_age
     FROM users 
@@ -210,11 +210,11 @@ WITH user_stats AS (
 )
 SELECT * FROM user_stats WHERE count > 1;
 
-/* Subqueries */
+/* Subqueries
 SELECT name, age FROM users 
 WHERE age > (SELECT AVG(age) FROM users);
 
-/* EXISTS clauses */
+/* EXISTS clauses
 SELECT name FROM users u
 WHERE EXISTS (
     SELECT 1 FROM user_profiles p 
@@ -227,43 +227,43 @@ WHERE EXISTS (
 "✓ SELECT name FROM users u WHERE EXISTS (SELECT 1 FROM user_profiles p WHERE p.user_id = u.id);\n".echo();
 "\n".echo();
 
-/* Test 8: File System Integration */
+/* Test 8: File System Integration
 "Test 8: File System Integration\n".echo();
 "-------------------------------\n".echo();
 
 "SQL with file system integration:\n".echo();
 "\n".echo();
 
-/* This would be the new file system SQL syntax */
+/* This would be the new file system SQL syntax
 /*
-/* Query file system metadata */
-SELECT name, size, modified FROM file: /* /data WHERE size > 1024; */
+/* Query file system metadata
+SELECT name, size, modified FROM file: /* /data WHERE size > 1024;
 
-/* Cross-reference with database */
+/* Cross-reference with database
 SELECT u.name, f.size 
 FROM users u 
-JOIN file: /* /data f ON u.name = f.name; */
+JOIN file: /* /data f ON u.name = f.name;
 
-/* Mixed path queries */
-SELECT * FROM grapadbx: /* users WHERE age > 25 */
+/* Mixed path queries
+SELECT * FROM grapadbx://users WHERE age > 25
 UNION
-SELECT * FROM file: /* /data/users WHERE size > 1024; */
+SELECT * FROM file: /* /data/users WHERE size > 1024;
 */
-"✓ SELECT name, size, modified FROM file: /* /data WHERE size > 1024;\n".echo(); */
-"✓ SELECT u.name, f.size FROM users u JOIN file: /* /data f ON u.name = f.name;\n".echo(); */
-"✓ SELECT * FROM grapadbx: /* users WHERE age > 25 UNION SELECT * FROM file:///data/users WHERE size > 1024;\n".echo(); */
+"✓ SELECT name, size, modified FROM file: /* /data WHERE size > 1024;\n".echo();
+"✓ SELECT u.name, f.size FROM users u JOIN file: /* /data f ON u.name = f.name;\n".echo();
+"✓ SELECT * FROM grapadbx://users WHERE age > 25 UNION SELECT * FROM file:///data/users WHERE size > 1024;\n".echo();
 "\n".echo();
 
-/* Test 9: Real-World Examples */
+/* Test 9: Real-World Examples
 "Test 9: Real-World Examples\n".echo();
 "---------------------------\n".echo();
 
 "Real-world SQL examples:\n".echo();
 "\n".echo();
 
-/* This would be the new real-world SQL syntax */
+/* This would be the new real-world SQL syntax
 /*
-/* Sales analysis */
+/* Sales analysis
 SELECT 
     DATE(created_at) as date,
     COUNT(*) as orders,
@@ -274,7 +274,7 @@ WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
 GROUP BY DATE(created_at)
 ORDER BY date;
 
-/* Time series analysis */
+/* Time series analysis
 SELECT 
     HOUR(created_at) as hour,
     COUNT(*) as activity_count
@@ -283,7 +283,7 @@ WHERE created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
 GROUP BY HOUR(created_at)
 ORDER BY hour;
 
-/* Customer analysis */
+/* Customer analysis
 SELECT 
     user_data->'location' as location,
     COUNT(*) as customer_count,

@@ -1,7 +1,7 @@
-/* test/grapadbx/test_simple_caching.grc */
+/* test/grapadbx/test_simple_caching.grc
 "=== Simple GrapaDBX Caching Test ===\n".echo();
 
-/* Test basic caching functionality */
+/* Test basic caching functionality
 "Test: Basic caching functionality...\n".echo();
 
 u = $unified();
@@ -11,13 +11,13 @@ result = u.create("grapadbx://test_simple.dbx");
 if (result.type() != $ERR) {
     "✅ Database creation succeeded\n".echo();
     
-    /* Set up test structure */
+    /* Set up test structure
     u.mk("test", "GROUP");
     u.cd("test");
     u.mkfield("name", "STR", "VAR");
     u.mkfield("value", "STR", "VAR");
     
-    /* Write test data */
+    /* Write test data
     "Writing test data...\n".echo();
     start_time = $TIME().utc();
     i = 0;
@@ -29,7 +29,7 @@ if (result.type() != $ERR) {
     write_time = (($TIME().utc() - start_time) / 1000000).int();
     ("Write 50 records: " + write_time + "ms\n").echo();
     
-    /* Read test data */
+    /* Read test data
     "Reading test data...\n".echo();
     start_time = $TIME().utc();
     i = 0;
@@ -41,7 +41,7 @@ if (result.type() != $ERR) {
     read_time = (($TIME().utc() - start_time) / 1000000).int();
     ("Read 50 records: " + read_time + "ms\n").echo();
     
-    /* Test caching by reading again */
+    /* Test caching by reading again
     "Reading test data again (caching test)...\n".echo();
     start_time = $TIME().utc();
     i = 0;
@@ -53,7 +53,7 @@ if (result.type() != $ERR) {
     read_time2 = (($TIME().utc() - start_time) / 1000000).int();
     ("Read 50 records (second time): " + read_time2 + "ms\n").echo();
     
-    /* Performance analysis */
+    /* Performance analysis
     "=== Performance Analysis ===\n".echo();
     ("Write performance: " + write_time + "ms for 50 records\n").echo();
     ("Read performance: " + read_time + "ms for 50 records\n").echo();
@@ -67,7 +67,7 @@ if (result.type() != $ERR) {
         }
     }
     
-    /* Clean up */
+    /* Clean up
     u.close();
     "✅ Test completed\n".echo();
 } else {

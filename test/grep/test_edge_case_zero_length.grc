@@ -1,6 +1,6 @@
 /*
 Grapa .grc File Authoring Rules (Windows)
-- Use block comments for all comments (do not use /* ). Block comments should be written as in this header. */
+- Use block comments for all comments (do not use /* ). Block comments should be written as in this header.
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)
@@ -8,10 +8,10 @@ Grapa .grc File Authoring Rules (Windows)
 - Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
   Example:
     ar = [1,2,3];
-    ar[1];  /* returns 2 */
+    ar[1];  /* returns 2
     ar = {"a":11,"b":22,"c":33};
-    ar[1];  /* returns 22 */
-    ar["b"];  /* returns 22 */
+    ar[1];  /* returns 22
+    ar["b"];  /* returns 22
 - Use .get("key") for object property access, not for arrays/lists.
 - Validate syntax against known-good .grc files before adding new code
 - Prefer simple, explicit constructs for compatibility
@@ -26,7 +26,7 @@ Edge Case Category: Zero-Length Matches
 
 "=== ZERO-LENGTH MATCH EDGE CASES ===\n".echo();
 
-/* Test 1: Start of line (^) zero-length match */
+/* Test 1: Start of line (^) zero-length match
 input = "a\nb\n";
 pattern = "^";
 result = input.grep(pattern, "o");
@@ -36,7 +36,7 @@ result = input.grep(pattern, "o");
 ('Expected: ["", "a", "", "b", ""]\n').echo();
 "---\n".echo();
 
-/* Test 2: End of line ($) zero-length match */
+/* Test 2: End of line ($) zero-length match
 pattern = "$";
 result = input.grep(pattern, "o");
 ("Pattern: '" + pattern + "', Options: o\n").echo();
@@ -44,7 +44,7 @@ result = input.grep(pattern, "o");
 ('Expected: ["a", "", "b", "", ""]\n').echo();
 "---\n".echo();
 
-/* Test 3: Empty pattern */
+/* Test 3: Empty pattern
 pattern = "";
 result = input.grep(pattern, "o");
 ("Pattern: (empty), Options: o\n").echo();
@@ -52,7 +52,7 @@ result = input.grep(pattern, "o");
 ('Expected: ["", "a", "", "b", "", ""]\n').echo();
 "---\n".echo();
 
-/* Test 4: Lookahead zero-length match */
+/* Test 4: Lookahead zero-length match
 pattern = "(?=a)";
 result = input.grep(pattern, "o");
 ("Pattern: '" + pattern + "', Options: o\n").echo();
@@ -60,7 +60,7 @@ result = input.grep(pattern, "o");
 ('Expected: ["", ""] (zero-length at positions before \'a\')\n').echo();
 "---\n".echo();
 
-/* Test 5: Lookbehind zero-length match */
+/* Test 5: Lookbehind zero-length match
 pattern = "(?<=a)";
 result = input.grep(pattern, "o");
 ("Pattern: '" + pattern + "', Options: o\n").echo();

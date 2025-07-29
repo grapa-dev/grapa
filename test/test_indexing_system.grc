@@ -1,17 +1,17 @@
-/* Test Indexing System - $KEY and Custom Field Indexing */
+/* Test Indexing System - $KEY and Custom Field Indexing
 
 "=== Testing Indexing System ===\n".echo();
 "Testing $KEY automatic indexing and custom field indexing\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing any existing test files...\n".echo();
 f = $file();
 f.rm("test_indexing");
 "Cleanup completed.\n".echo();
 
-/* ================================================================================ */
-/* Test 1: $KEY Automatic Indexing */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 1: $KEY Automatic Indexing
+/* ================================================================================
 "Test 1: $KEY Automatic Indexing\n".echo();
 "-------------------------------\n".echo();
 
@@ -37,9 +37,9 @@ key3 = group_db.get("user3", "$KEY");
 ("user2 $KEY: " + key2.str() + "\n").echo();
 ("user3 $KEY: " + key3.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 2: Custom Field Indexing */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 2: Custom Field Indexing
+/* ================================================================================
 "Test 2: Custom Field Indexing\n".echo();
 "-----------------------------\n".echo();
 
@@ -82,9 +82,9 @@ age3 = group_db.get("person3", "age").raw().int();
 city3 = group_db.get("person3", "city");
 ("person3 - name: " + name3.str() + ", age: " + age3.str() + ", city: " + city3.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 3: Mixed Usage - $KEY and Custom Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 3: Mixed Usage - $KEY and Custom Fields
+/* ================================================================================
 "Test 3: Mixed Usage - $KEY and Custom Fields\n".echo();
 "--------------------------------------------\n".echo();
 
@@ -113,15 +113,15 @@ emp2_name = group_db.get("employee2", "name");
 emp2_dept = group_db.get("employee2", "department");
 ("employee2 - $KEY: " + emp2_key.str() + ", name: " + emp2_name.str() + ", dept: " + emp2_dept.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 4: Index Performance Demonstration */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 4: Index Performance Demonstration
+/* ================================================================================
 "Test 4: Index Performance Demonstration\n".echo();
 "--------------------------------------\n".echo();
 
 "Creating multiple records to demonstrate indexing benefits:\n".echo();
 
-/* Create many records to show indexing benefits */
+/* Create many records to show indexing benefits
 i = 1;
 while (i <= 10) {
     record_name = "record" + i.str();
@@ -145,9 +145,9 @@ while (i <= 5) {
     i = i + 1;
 }
 
-/* ================================================================================ */
-/* Test 5: List All Records */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 5: List All Records
+/* ================================================================================
 "Test 5: List All Records\n".echo();
 "------------------------\n".echo();
 
@@ -157,9 +157,9 @@ all_records = group_db.ls();
 "Record list (showing $KEY and $VALUE fields):\n".echo();
 all_records.echo();
 
-/* ================================================================================ */
-/* Test 6: Demonstrate Search Priority */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 6: Demonstrate Search Priority
+/* ================================================================================
 "Test 6: Demonstrate Search Priority\n".echo();
 "-----------------------------------\n".echo();
 
@@ -176,9 +176,9 @@ test_key = group_db.get("user1", "$KEY");
 test_name = group_db.get("person1", "name");
 ("Custom field search result: " + test_name.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Summary */
-/* ================================================================================ */
+/* ================================================================================
+/* Summary
+/* ================================================================================
 "=== Test Summary ===\n".echo();
 "✓ $KEY field automatically gets an index for fast searching\n".echo();
 "✓ Custom fields can be created and used alongside $KEY\n".echo();

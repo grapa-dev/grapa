@@ -1,9 +1,9 @@
-/* Test Normalization Debug */
-/* Test to see if normalization has the same issue as case folding */
+/* Test Normalization Debug
+/* Test to see if normalization has the same issue as case folding
 
 "=== NORMALIZATION DEBUG TEST ===\n".echo();
 
-/* Test 1: Normalization */
+/* Test 1: Normalization
 "Test 1: Normalization\n".echo();
 input = "İstanbul";
 normalized = input.normalize("NFC");
@@ -12,7 +12,7 @@ normalized = input.normalize("NFC");
 ("İstanbul normalized == İstanbul: " + (normalized == input).str() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Case folding with debug */
+/* Test 2: Case folding with debug
 "Test 2: Case Folding with Debug\n".echo();
 input = "İstanbul";
 folded = input.case_fold();
@@ -25,7 +25,7 @@ for (i = 0; i < folded.len(); i++) {
 "\n".echo();
 "---\n".echo();
 
-/* Test 3: Simple ASCII case folding */
+/* Test 3: Simple ASCII case folding
 "Test 3: Simple ASCII Case Folding\n".echo();
 input = "HELLO";
 folded = input.case_fold();

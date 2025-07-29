@@ -1,10 +1,10 @@
-/* Test Binary Mode Processing */
-/* This test covers binary mode vs Unicode mode differences */
+/* Test Binary Mode Processing
+/* This test covers binary mode vs Unicode mode differences
 
 "=== BINARY MODE TEST ===\n".echo();
 "Testing binary mode processing vs Unicode mode\n".echo();
 
-/* Test 1: Basic text in both modes */
+/* Test 1: Basic text in both modes
 "Test 1: Basic text in both modes\n".echo();
 input = "Hello World\nLine 2\nLine 3";
 result_unicode = input.grep("Hello", "", "", "", "UNICODE");
@@ -16,7 +16,7 @@ result_binary = input.grep("Hello", "", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 2: Null bytes in input */
+/* Test 2: Null bytes in input
 "Test 2: Null bytes in input\n".echo();
 input_with_nulls = "Hello\x00World\nLine\x00with\x00nulls";
 result_unicode = input_with_nulls.grep("Hello", "", "", "", "UNICODE");
@@ -28,7 +28,7 @@ result_binary = input_with_nulls.grep("Hello", "", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 3: Control characters */
+/* Test 3: Control characters
 "Test 3: Control characters\n".echo();
 input_control = "Hello\x01\x02\x03World\nLine\x04\x05\x06with\x07control";
 result_unicode = input_control.grep("Hello", "", "", "", "UNICODE");
@@ -40,7 +40,7 @@ result_binary = input_control.grep("Hello", "", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 4: Pattern with null bytes */
+/* Test 4: Pattern with null bytes
 "Test 4: Pattern with null bytes\n".echo();
 input = "Hello\x00World\nLine\x00with\x00nulls";
 result_unicode = input.grep("Hello\x00", "", "", "", "UNICODE");
@@ -52,7 +52,7 @@ result_binary = input.grep("Hello\x00", "", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 5: Pattern with control characters */
+/* Test 5: Pattern with control characters
 "Test 5: Pattern with control characters\n".echo();
 input = "Hello\x01World\nLine\x01with\x01control";
 result_unicode = input.grep("Hello\x01", "", "", "", "UNICODE");
@@ -64,7 +64,7 @@ result_binary = input.grep("Hello\x01", "", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 6: Unicode characters in binary mode */
+/* Test 6: Unicode characters in binary mode
 "Test 6: Unicode characters in binary mode\n".echo();
 input_unicode = "café\nCAFÉ\ncafe\u0301\nCafe";
 result_unicode = input_unicode.grep("café", "", "", "", "UNICODE");
@@ -77,7 +77,7 @@ result_binary = input_unicode.grep("café", "", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 7: Case sensitivity in binary mode */
+/* Test 7: Case sensitivity in binary mode
 "Test 7: Case sensitivity in binary mode\n".echo();
 input = "Hello WORLD\nHELLO world\nhello World";
 result_unicode = input.grep("hello", "i", "", "", "UNICODE");
@@ -89,7 +89,7 @@ result_binary = input.grep("hello", "i", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 8: Diacritic handling in binary mode */
+/* Test 8: Diacritic handling in binary mode
 "Test 8: Diacritic handling in binary mode\n".echo();
 input = "café\nCAFÉ\ncafe\u0301\nCafe";
 result_unicode = input.grep("cafe", "d", "", "", "UNICODE");
@@ -101,7 +101,7 @@ result_binary = input.grep("cafe", "d", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 9: JSON output in binary mode */
+/* Test 9: JSON output in binary mode
 "Test 9: JSON output in binary mode\n".echo();
 input = "Hello\x00World\nLine\x00with\x00nulls";
 result_unicode = input.grep("Hello", "oj", "", "", "UNICODE");
@@ -113,7 +113,7 @@ result_binary = input.grep("Hello", "oj", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 10: Large binary data */
+/* Test 10: Large binary data
 "Test 10: Large binary data\n".echo();
 large_binary = "";
 i = 0;
@@ -131,7 +131,7 @@ result_binary = large_binary.grep("Line 500", "", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 11: Invalid UTF-8 in binary mode */
+/* Test 11: Invalid UTF-8 in binary mode
 "Test 11: Invalid UTF-8 in binary mode\n".echo();
 invalid_utf8 = "Hello\xFF\xFE\xFDWorld\nInvalid\xC0\x80UTF8";
 result_unicode = invalid_utf8.grep("Hello", "", "", "", "UNICODE");
@@ -144,7 +144,7 @@ result_binary = invalid_utf8.grep("Hello", "", "", "", "BINARY");
 ("Expected (Binary): ...\n").echo();
 "---\n".echo();
 
-/* Test 12: Parallel processing in binary mode */
+/* Test 12: Parallel processing in binary mode
 "Test 12: Parallel processing in binary mode\n".echo();
 input = "Hello\x00World\nLine\x00with\x00nulls\nMore\x01\x02\x03data";
 result_unicode = input.grep("Hello", "", "", "", "UNICODE", 2);

@@ -1,14 +1,14 @@
-/* Test to debug URL parameter passing */
+/* Test to debug URL parameter passing
 
-/* Create a unified database with URL */
+/* Create a unified database with URL
 u = $unified("grapadbx://test_url.dbx");
 
-/* Try to access the URL parameter */
+/* Try to access the URL parameter
 echo = "Testing URL parameter access";
 echo = "Object type: ";
 echo.u.type();
 
-/* Try to set a value to trigger auto-initialization */
+/* Try to set a value to trigger auto-initialization
 result = u.set("test_key", "test_value");
 echo = "Set result: ";
 echo.result;

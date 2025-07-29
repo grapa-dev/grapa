@@ -1,15 +1,15 @@
-/* Test Column Store and Persistent Storage Capabilities */
+/* Test Column Store and Persistent Storage Capabilities
 
 "Testing Column Store and Persistent Storage...\n".echo();
 
-/* Cleanup: Remove any existing test files */
+/* Cleanup: Remove any existing test files
 "Cleanup: Removing any existing test files...\n".echo();
 f = $file();
 f.rm("persistent_db");
 f.rm("row_store_db");
 "Cleanup completed.\n".echo();
 
-/* Test 1: Create a persistent column store database */
+/* Test 1: Create a persistent column store database
 "Test 1: Persistent Column Store Database\n".echo();
 "----------------------------------------\n".echo();
 
@@ -60,7 +60,7 @@ f.get("employee2", "salary").echo();
 f.get("employee3", "department").echo();
 "\n".echo();
 
-/* Test 2: List database contents */
+/* Test 2: List database contents
 "Test 2: Database Contents\n".echo();
 "-------------------------\n".echo();
 
@@ -69,7 +69,7 @@ contents = f.ls();
 contents.echo();
 "\n".echo();
 
-/* Test 3: Create a row store database for comparison */
+/* Test 3: Create a row store database for comparison
 "Test 3: Row Store vs Column Store\n".echo();
 "--------------------------------\n".echo();
 
@@ -99,7 +99,7 @@ f.set("employee2", "Marketing", "department");
 f.ls().echo();
 "\n".echo();
 
-/* Test 4: Demonstrate record deletion */
+/* Test 4: Demonstrate record deletion
 "Test 4: Record Deletion\n".echo();
 "----------------------\n".echo();
 
@@ -110,7 +110,7 @@ f.rm("employee2");
 f.ls().echo();
 "\n".echo();
 
-/* Test 5: Demonstrate database persistence */
+/* Test 5: Demonstrate database persistence
 "Test 5: Database Persistence\n".echo();
 "----------------------------\n".echo();
 
@@ -135,7 +135,7 @@ f.phd().echo();
 "- Insert/update operations\n".echo();
 "- OLTP workloads\n".echo();
 
-/* Test 6: Debug database structure */
+/* Test 6: Debug database structure
 "Test 6: Database Structure Debug\n".echo();
 "--------------------------------\n".echo();
 

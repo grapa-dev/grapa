@@ -1,6 +1,6 @@
 /*
 Grapa .grc File Authoring Rules (Windows)
-- Use block comments for all comments (do not use /* ). Block comments should be written as in this header. */
+- Use block comments for all comments (do not use /* ). Block comments should be written as in this header.
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)
@@ -46,19 +46,19 @@ Grapa .grc File Authoring Rules (Windows)
  *    - All flag combinations
  *    - All pattern types with all delimiters
  *    - Edge cases and boundary conditions
- */
+
 
 "=== COMPREHENSIVE GRAPA GREP TEST SUITE ===\n".echo();
 "\n".echo();
 
-/* Test 1: Output Formatting - Delimiter Removal */
+/* Test 1: Output Formatting - Delimiter Removal
 "Test 1: Output Formatting - Delimiter Removal\n".echo();
 "Purpose: Verify that delimiters are removed from array results for programming language integration\n".echo();
 "Rationale: Grapa grep is integrated into programming languages, not just console tools\n".echo();
 "Expected: Array elements should not contain trailing delimiters\n".echo();
 "\n".echo();
 
-/* Test with default newline delimiter */
+/* Test with default newline delimiter
 input1 = "line1\nline2\nline3\n";
 result1 = input1.grep("line", "o", "\n");
 "Input: 'line1\\nline2\\nline3\\n'\n".echo();
@@ -68,7 +68,7 @@ result1 = input1.grep("line", "o", "\n");
 (("Status: " + (result1.get(0) == "line1" && result1.get(1) == "line2" && result1.get(2) == "line3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test with custom multi-character delimiter */
+/* Test with custom multi-character delimiter
 input2 = "word1|||word2|||word3|||";
 result2 = input2.grep("word", "o", "|||");
 "Input: 'word1|||word2|||word3|||'\n".echo();
@@ -78,12 +78,12 @@ result2 = input2.grep("word", "o", "|||");
 (("Status: " + (result2.get(0) == "word1" && result2.get(1) == "word2" && result2.get(2) == "word3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 2: Multiline Patterns - All Flag Combinations */
+/* Test 2: Multiline Patterns - All Flag Combinations
 "Test 2: Multiline Patterns - All Flag Combinations\n".echo();
 "Purpose: Test multiline patterns with different flags and delimiters\n".echo();
 "\n".echo();
 
-/* Test multiline pattern with 's' flag (DOTALL) */
+/* Test multiline pattern with 's' flag (DOTALL)
 input3 = "start|middle|end";
 result3 = input3.grep("start.*end", "s", "|");
 "Input: 'start|middle|end'\n".echo();
@@ -93,7 +93,7 @@ result3 = input3.grep("start.*end", "s", "|");
 (("Status: " + (result3[0] == "start|middle|end" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test multiline pattern with 'a' flag (all mode) */
+/* Test multiline pattern with 'a' flag (all mode)
 input4 = "start|middle|end";
 result4 = input4.grep("start.*end", "a", "|");
 "Input: 'start|middle|end'\n".echo();
@@ -103,7 +103,7 @@ result4 = input4.grep("start.*end", "a", "|");
 (("Status: " + (result4[0] == "start|middle|end" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test multiline pattern without flags */
+/* Test multiline pattern without flags
 input5 = "start|middle|end";
 result5 = input5.grep("start.*end", "", "|");
 "Input: 'start|middle|end'\n".echo();
@@ -113,7 +113,7 @@ result5 = input5.grep("start.*end", "", "|");
 (("Status: " + (result5.size() == 0 ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test multiline pattern with custom delimiter and match-only */
+/* Test multiline pattern with custom delimiter and match-only
 input6 = "start###middle###end";
 result6 = input6.grep("start.*end", "os", "###");
 "Input: 'start###middle###end'\n".echo();
@@ -123,12 +123,12 @@ result6 = input6.grep("start.*end", "os", "###");
 (("Status: " + (result6[0] == "start###middle###end" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 3: Rare PCRE2 Features */
+/* Test 3: Rare PCRE2 Features
 "Test 3: Rare PCRE2 Features\n".echo();
 "Purpose: Test advanced regex features supported by PCRE2\n".echo();
 "\n".echo();
 
-/* Test atomic groups */
+/* Test atomic groups
 input7 = "aaaab";
 result7 = input7.grep("(?>a+)b", "o", "|");
 "Input: 'aaaab'\n".echo();
@@ -138,7 +138,7 @@ result7 = input7.grep("(?>a+)b", "o", "|");
 (("Status: " + (result7[0] == "aaaab" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test possessive quantifiers */
+/* Test possessive quantifiers
 input8 = "aaaab";
 result8 = input8.grep("a++b", "o", "|");
 "Input: 'aaaab'\n".echo();
@@ -148,7 +148,7 @@ result8 = input8.grep("a++b", "o", "|");
 (("Status: " + (result8[0] == "aaaab" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test named capture groups */
+/* Test named capture groups
 input9 = "John Doe";
 result9 = input9.grep("(?<first>\\w+)\\s+(?<last>\\w+)", "o", "|");
 "Input: 'John Doe'\n".echo();
@@ -158,7 +158,7 @@ result9 = input9.grep("(?<first>\\w+)\\s+(?<last>\\w+)", "o", "|");
 (("Status: " + (result9[0] == "John Doe" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test conditional patterns */
+/* Test conditional patterns
 input10 = "abc123";
 result10 = input10.grep("(a)?(?(1)b|c)", "o", "|");
 "Input: 'abc123'\n".echo();
@@ -168,12 +168,12 @@ result10 = input10.grep("(a)?(?(1)b|c)", "o", "|");
 (("Status: " + ((result10.size() >= 1 && (result10[0] == "ab" || result10[0] == "c")) ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 3.5: Lookaround Assertions - Specific Issue Tests */
+/* Test 3.5: Lookaround Assertions - Specific Issue Tests
 "Test 3.5: Lookaround Assertions - Specific Issue Tests\n".echo();
 "Purpose: Test specific lookaround assertion issues identified\n".echo();
 "\n".echo();
 
-/* Test positive lookahead - should match word but matches word12 */
+/* Test positive lookahead - should match word but matches word12
 input10a = "word12|text34|word56|";
 result10a = input10a.grep("\\w+(?=\\d)", "o", "|");
 "Input: 'word12|text34|word56|'\n".echo();
@@ -183,7 +183,7 @@ result10a = input10a.grep("\\w+(?=\\d)", "o", "|");
 (("Status: " + (result10a.size() == 3 && result10a[0] == "word" && result10a[1] == "text" && result10a[2] == "word" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test negative lookahead - should match nothing but matches everything */
+/* Test negative lookahead - should match nothing but matches everything
 input10b = "word12|text34|word56|";
 result10b = input10b.grep("\\w+(?!\\d)", "o", "|");
 "Input: 'word12|text34|word56|'\n".echo();
@@ -193,7 +193,7 @@ result10b = input10b.grep("\\w+(?!\\d)", "o", "|");
 (("Status: " + (result10b.size() == 0 ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test positive lookbehind - should match word but matches 23word */
+/* Test positive lookbehind - should match word but matches 23word
 input10c = "23word|45text|67word|";
 result10c = input10c.grep("(?<=\\d)\\w+", "o", "|");
 "Input: '23word|45text|67word|'\n".echo();
@@ -203,7 +203,7 @@ result10c = input10c.grep("(?<=\\d)\\w+", "o", "|");
 (("Status: " + (result10c.size() == 3 && result10c[0] == "word" && result10c[1] == "text" && result10c[2] == "word" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test negative lookbehind */
+/* Test negative lookbehind
 input10d = "word23|text45|word67|";
 result10d = input10d.grep("(?<!\\d)\\w+", "o", "|");
 "Input: 'word23|text45|word67|'\n".echo();
@@ -213,12 +213,12 @@ result10d = input10d.grep("(?<!\\d)\\w+", "o", "|");
 (("Status: " + (result10d.size() == 3 && result10d[0] == "word" && result10d[1] == "text" && result10d[2] == "word" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 3.6: Unicode Script Properties - Specific Issue Tests */
+/* Test 3.6: Unicode Script Properties - Specific Issue Tests
 "Test 3.6: Unicode Script Properties - Specific Issue Tests\n".echo();
 "Purpose: Test specific Unicode script property issues identified\n".echo();
 "\n".echo();
 
-/* Test Latin script - should match words, not individual characters */
+/* Test Latin script - should match words, not individual characters
 input10e = "Hello 世界 123 €|||Goodbye 世界 456 €|||";
 result10e = input10e.grep("\\p{sc=Latin}+", "o", "|||");
 "Input: 'Hello 世界 123 €|||Goodbye 世界 456 €|||'\n".echo();
@@ -228,7 +228,7 @@ result10e = input10e.grep("\\p{sc=Latin}+", "o", "|||");
 (("Status: " + (result10e.size() == 2 && result10e[0] == "Hello" && result10e[1] == "Goodbye" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test Han script - should match words, not individual characters */
+/* Test Han script - should match words, not individual characters
 input10f = "Hello 世界 123 €|||Goodbye 世界 456 €|||";
 result10f = input10f.grep("\\p{scx:Han}+", "o", "|||");
 "Input: 'Hello 世界 123 €|||Goodbye 世界 456 €|||'\n".echo();
@@ -238,12 +238,12 @@ result10f = input10f.grep("\\p{scx:Han}+", "o", "|||");
 (("Status: " + (result10f.size() == 1 && result10f[0] == "世界" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 3.7: Grapheme Cluster Issues - Specific Issue Tests */
+/* Test 3.7: Grapheme Cluster Issues - Specific Issue Tests
 "Test 3.7: Grapheme Cluster Issues - Specific Issue Tests\n".echo();
 "Purpose: Test grapheme cluster issues with delimiters\n".echo();
 "\n".echo();
 
-/* Test grapheme clusters - should not include delimiter characters */
+/* Test grapheme clusters - should not include delimiter characters
 input10g = "café|||naïve|||café|||";
 result10g = input10g.grep("\\X", "o", "|||");
 "Input: 'café|||naïve|||café|||'\n".echo();
@@ -253,12 +253,12 @@ result10g = input10g.grep("\\X", "o", "|||");
 (("Status: " + (result10g.size() >= 10 && result10g[0] == "c" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 3.8: Match-Only Pattern Issues - Specific Issue Tests */
+/* Test 3.8: Match-Only Pattern Issues - Specific Issue Tests
 "Test 3.8: Match-Only Pattern Issues - Specific Issue Tests\n".echo();
 "Purpose: Test specific match-only pattern issues identified\n".echo();
 "\n".echo();
 
-/* Test line pattern - should match line1, line2, line3, not just line */
+/* Test line pattern - should match line1, line2, line3, not just line
 input10h = "line1|line2|line3|";
 result10h = input10h.grep("line", "o", "|");
 "Input: 'line1|line2|line3|'\n".echo();
@@ -268,7 +268,7 @@ result10h = input10h.grep("line", "o", "|");
 (("Status: " + (result10h.size() == 3 && result10h[0] == "line1" && result10h[1] == "line2" && result10h[2] == "line3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test item pattern - should match item1, item2, item3, not just item */
+/* Test item pattern - should match item1, item2, item3, not just item
 input10i = "item1|||item2|||item3|||";
 result10i = input10i.grep("item", "o", "|||");
 "Input: 'item1|||item2|||item3|||'\n".echo();
@@ -278,12 +278,12 @@ result10i = input10i.grep("item", "o", "|||");
 (("Status: " + (result10i.size() == 3 && result10i[0] == "item1" && result10i[1] == "item2" && result10i[2] == "item3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 3.9: Behavior Options - Different Behaviors via Flags */
+/* Test 3.9: Behavior Options - Different Behaviors via Flags
 "Test 3.9: Behavior Options - Different Behaviors via Flags\n".echo();
 "Purpose: Test different behaviors via options where rational\n".echo();
 "\n".echo();
 
-/* Test word boundary behavior - w flag for word boundaries */
+/* Test word boundary behavior - w flag for word boundaries
 input10j = "line1|line2|line3|";
 result10j = input10j.grep("line", "ow", "|");
 "Input: 'line1|line2|line3|'\n".echo();
@@ -293,7 +293,7 @@ result10j = input10j.grep("line", "ow", "|");
 (("Status: " + (result10j.size() == 0 ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test lookaround context behavior - l flag for full context */
+/* Test lookaround context behavior - l flag for full context
 input10k = "word12|text34|word56|";
 result10k = input10k.grep("\\w+(?=\\d)", "ol", "|");
 "Input: 'word12|text34|word56|'\n".echo();
@@ -303,7 +303,7 @@ result10k = input10k.grep("\\w+(?=\\d)", "ol", "|");
 (("Status: " + (result10k.size() == 3 && result10k[0] == "word12" && result10k[1] == "text34" && result10k[2] == "word56" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test Unicode script word behavior - u flag for full words */
+/* Test Unicode script word behavior - u flag for full words
 input10l = "Hello 世界 123 €|||Goodbye 世界 456 €|||";
 result10l = input10l.grep("\\p{sc=Latin}+", "ou", "|||");
 "Input: 'Hello 世界 123 €|||Goodbye 世界 456 €|||'\n".echo();
@@ -313,12 +313,12 @@ result10l = input10l.grep("\\p{sc=Latin}+", "ou", "|||");
 (("Status: " + (result10l.size() == 2 && result10l[0] == "Hello 世界 123 €" && result10l[1] == "Goodbye 世界 456 €" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 4: Custom Delimiter Support - Multi-character Delimiters */
+/* Test 4: Custom Delimiter Support - Multi-character Delimiters
 "Test 4: Custom Delimiter Support - Multi-character Delimiters\n".echo();
 "Purpose: Ensure all code paths support multi-character delimiters\n".echo();
 "\n".echo();
 
-/* Test with "|||" delimiter (3 characters) */
+/* Test with "|||" delimiter (3 characters)
 input11 = "part1|||part2|||part3|||";
 result11 = input11.grep("part", "o", "|||");
 "Input: 'part1|||part2|||part3|||'\n".echo();
@@ -328,7 +328,7 @@ result11 = input11.grep("part", "o", "|||");
 (("Status: " + (result11[0] == "part1" && result11[1] == "part2" && result11[2] == "part3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test with "###" delimiter (3 characters) */
+/* Test with "###" delimiter (3 characters)
 input12 = "item1###item2###item3###";
 result12 = input12.grep("item", "o", "###");
 "Input: 'item1###item2###item3###'\n".echo();
@@ -338,7 +338,7 @@ result12 = input12.grep("item", "o", "###");
 (("Status: " + (result12[0] == "item1" && result12[1] == "item2" && result12[2] == "item3" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test with empty delimiter */
+/* Test with empty delimiter
 input13 = "singleline";
 result13 = input13.grep("line", "o", "");
 "Input: 'singleline'\n".echo();
@@ -348,12 +348,12 @@ result13 = input13.grep("line", "o", "");
 (("Status: " + (result13[0] == "line" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 5: Comprehensive Combinations - All Flag Combinations */
+/* Test 5: Comprehensive Combinations - All Flag Combinations
 "Test 5: Comprehensive Combinations - All Flag Combinations\n".echo();
 "Purpose: Test every conceivable logical combination of flags and patterns\n".echo();
 "\n".echo();
 
-/* Test all flags together */
+/* Test all flags together
 input14 = "test1|test2|test3|";
 result14 = input14.grep("test", "oiasd", "|");
 "Input: 'test1|test2|test3|'\n".echo();
@@ -363,7 +363,7 @@ result14 = input14.grep("test", "oiasd", "|");
 (("Status: " + (result14.size() >= 2 && result14[0] == "test" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test multiline with lookaround and custom delimiter */
+/* Test multiline with lookaround and custom delimiter
 input15 = "word123|||text456|||word789|||";
 result15 = input15.grep("\\w+(?=\\d)", "o", "|||");
 "Input: 'word123|||text456|||word789|||'\n".echo();
@@ -373,7 +373,7 @@ result15 = input15.grep("\\w+(?=\\d)", "o", "|||");
 (("Status: " + (result15[0] == "word" && result15[1] == "text" && result15[2] == "word" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test Unicode script properties with custom delimiter */
+/* Test Unicode script properties with custom delimiter
 input16 = "Hello 世界 123 €|||Goodbye 世界 456 €|||";
 result16 = input16.grep("\\p{sc=Latin}", "o", "|||");
 "Input: 'Hello 世界 123 €|||Goodbye 世界 456 €|||'\n".echo();
@@ -383,12 +383,12 @@ result16 = input16.grep("\\p{sc=Latin}", "o", "|||");
 (("Status: " + (result16.size() >= 10 && result16[0] == "H" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test 6: Edge Cases and Boundary Conditions */
+/* Test 6: Edge Cases and Boundary Conditions
 "Test 6: Edge Cases and Boundary Conditions\n".echo();
 "Purpose: Test edge cases and boundary conditions\n".echo();
 "\n".echo();
 
-/* Test empty input */
+/* Test empty input
 input17 = "";
 result17 = input17.grep("test", "o", "|");
 "Input: ''\n".echo();
@@ -398,7 +398,7 @@ result17 = input17.grep("test", "o", "|");
 (("Status: " + (result17.size() == 0 ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test input with only delimiters */
+/* Test input with only delimiters
 input18 = "|||";
 result18 = input18.grep("test", "o", "|");
 "Input: '|||'\n".echo();
@@ -408,7 +408,7 @@ result18 = input18.grep("test", "o", "|");
 (("Status: " + (result18.size() == 0 ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test input with trailing delimiter */
+/* Test input with trailing delimiter
 input19 = "test|";
 result19 = input19.grep("test", "o", "|");
 "Input: 'test|'\n".echo();
@@ -418,7 +418,7 @@ result19 = input19.grep("test", "o", "|");
 (("Status: " + (result19[0] == "test" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Test input without trailing delimiter */
+/* Test input without trailing delimiter
 input20 = "test";
 result20 = input20.grep("test", "o", "|");
 "Input: 'test'\n".echo();
@@ -428,7 +428,7 @@ result20 = input20.grep("test", "o", "|");
 (("Status: " + (result20[0] == "test" ? "PASS" : "FAIL") + "\n")).echo();
 "\n".echo();
 
-/* Documentation of Implementation Differences */
+/* Documentation of Implementation Differences
 "=== IMPLEMENTATION DOCUMENTATION ===\n".echo();
 "\n".echo();
 

@@ -1,23 +1,23 @@
-/* Test to understand the structure returned by fs.ls() */
+/* Test to understand the structure returned by fs.ls()
 
 "=== TESTING fs.ls() STRUCTURE ===\n".echo();
 
-/* Create file system object */
+/* Create file system object
 fs = $file();
 
-/* Create a test file */
+/* Create a test file
 test_file = "ls_test_file.txt";
 fs.set(test_file, "Test content");
 
-/* Test fs.ls() */
+/* Test fs.ls()
 "Testing fs.ls()...\n".echo();
 files = fs.ls();
 
-/* Check the type and structure */
+/* Check the type and structure
 ("Type of fs.ls() result: " + files.type().str() + "\n").echo();
 ("Length of fs.ls() result: " + files.len().str() + "\n").echo();
 
-/* Examine the first few entries */
+/* Examine the first few entries
 "First few entries:\n".echo();
 i = 0;
 while (i < files.len() && i < 5) {
@@ -27,7 +27,7 @@ while (i < files.len() && i < 5) {
     i += 1;
 };
 
-/* Clean up */
+/* Clean up
 fs.rm(test_file);
 
 "=== fs.ls() STRUCTURE TEST COMPLETE ===\n".echo(); 

@@ -1,12 +1,12 @@
-/* Test Unified Dump Functionality */
+/* Test Unified Dump Functionality
 
 echo("=== Testing Unified Dump Functionality ===");
 
-/* Create a simple database */
+/* Create a simple database
 db = $unified("grapadbx://test_dump.dbx");
 echo("Database created");
 
-/* Write some test data */
+/* Write some test data
 db.set("user1", "Alice", "name");
 db.set("user1", 25, "age");
 db.set("user1", "New York", "city");
@@ -17,7 +17,7 @@ db.set("user2", "Los Angeles", "city");
 
 echo("Test data written");
 
-/* Try to dump the database */
+/* Try to dump the database
 echo("Attempting to dump database...");
 try {
     db.dump();

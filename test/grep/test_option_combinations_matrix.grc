@@ -1,6 +1,6 @@
 /*
 Grapa .grc File Authoring Rules (Windows)
-- Use only block comments: the type of coment brackets this comment block uses (do not use /* ) */
+- Use only block comments: the type of coment brackets this comment block uses (do not use /* )
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)
@@ -8,10 +8,10 @@ Grapa .grc File Authoring Rules (Windows)
 - Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
   Example:
     ar = [1,2,3];
-    ar[1];  /* returns */
+    ar[1];  /* returns
     ar = {"a":11,"b":22,"c":33};
-    ar[1];  /* returns 22 */
-    ar["b"];  /* returns 22 */
+    ar[1];  /* returns 22
+    ar["b"];  /* returns 22
 - Use .get("key") for object property access, not for arrays/lists.
 - Validate syntax against known-good .grc files before adding new code
 - Prefer simple, explicit constructs for compatibility
@@ -21,7 +21,7 @@ Grapa .grc File Authoring Rules (Windows)
 
 "=== SYSTEMATIC OPTION COMBINATION MATRIX TEST SUITE ===\n".echo();
 
-/* === Advanced Combinations === */
+/* === Advanced Combinations ===
 "\n-- Advanced Combinations --\n".echo();
 result_oid = input1.grep(pattern1, "oid");
 ("oid: " + result_oid.str() + "\n").echo();
@@ -31,7 +31,7 @@ result_oNf = input1.grep(pattern1, "oNf");
 ("oNf: " + result_oNf.str() + "\n").echo();
 "---\n".echo();
 
-/* === Higher-Order Combinations === */
+/* === Higher-Order Combinations ===
 "\n-- Higher-Order Combinations --\n".echo();
 result_oidj = input1.grep(pattern1, "oidj");
 ("oidj: " + result_oidj.str() + "\n").echo();
@@ -41,7 +41,7 @@ result_oNfB1 = input1.grep(pattern1, "oNfB1");
 ("oNfB1: " + result_oNfB1.str() + "\n").echo();
 "---\n".echo();
 
-/* === Basic Combinations === */
+/* === Basic Combinations ===
 "\n-- Basic Combinations --\n".echo();
 result_oi = input1.grep(pattern1, "oi");
 ("oi: " + result_oi.str() + "\n").echo();
@@ -51,7 +51,7 @@ result_ow = input1.grep(pattern1, "ow");
 ("ow: " + result_ow.str() + "\n").echo();
 "---\n".echo();
 
-/* Section 1: Pairs with 'o' (match-only) */
+/* Section 1: Pairs with 'o' (match-only)
 "\n-- 1. Pairs with 'o' (match-only) --\n".echo();
 input1 = "Hello World\nLine 2\nLine 3\nHello again";
 pattern1 = "Hello";
@@ -85,7 +85,7 @@ result_of = input1.grep(pattern1, "of");
 ("of: " + result_of.str() + "\n").echo();
 "---\n".echo();
 
-/* Section 2: Triples with 'o' (match-only) */
+/* Section 2: Triples with 'o' (match-only)
 "\n-- 2. Triples with 'o' (match-only) --\n".echo();
 result_oij = input1.grep(pattern1, "oij");
 ("oij: " + result_oij.str() + "\n").echo();
@@ -101,7 +101,7 @@ result_oA1B1f = input1.grep(pattern1, "oA1B1f");
 ("oA1B1f: " + result_oA1B1f.str() + "\n").echo();
 "---\n".echo();
 
-/* Section 3: Pairs and triples with 'c' (count/precedence) */
+/* Section 3: Pairs and triples with 'c' (count/precedence)
 "\n-- 3. Pairs and triples with 'c' (count/precedence) --\n".echo();
 result_co = input1.grep(pattern1, "co");
 ("co: " + result_co.str() + "\n").echo();
@@ -115,7 +115,7 @@ result_coA1 = input1.grep(pattern1, "coA1");
 ("coA1: " + result_coA1.str() + "\n").echo();
 "---\n".echo();
 
-/* Section 4: Pairs and triples with 'f' (full-segment) */
+/* Section 4: Pairs and triples with 'f' (full-segment)
 "\n-- 4. Pairs and triples with 'f' (full-segment) --\n".echo();
 result_ofj = input1.grep(pattern1, "ofj");
 ("ofj: " + result_ofj.str() + "\n").echo();
@@ -127,7 +127,7 @@ result_ofA1B1j = input1.grep(pattern1, "ofA1B1j");
 ("ofA1B1j: " + result_ofA1B1j.str() + "\n").echo();
 "---\n".echo();
 
-/* Section 5: Unicode + output/context */
+/* Section 5: Unicode + output/context
 "\n-- 5. Unicode + output/context --\n".echo();
 input2 = "caf rsum nave\nCafe Resume Naive\nCAF RSUM NAVE";
 pattern2 = "cafe";

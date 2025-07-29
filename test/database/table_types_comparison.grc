@@ -1,11 +1,11 @@
-/* Table Types Comparison Test */
+/* Table Types Comparison Test
 
 "=== COMPARING TABLE TYPES ===".echo();
 "\n".echo();
 
-/* ======================================== */
-/* Test 1: ROW Store Table */
-/* ======================================== */
+/* ========================================
+/* Test 1: ROW Store Table
+/* ========================================
 "Test 1: ROW Store Table".echo();
 "\n".echo();
 
@@ -15,12 +15,12 @@ row_table.mkfield("name", "STR");
 row_table.mkfield("age", "INT");
 row_table.mkfield("city", "STR");
 
-/* Set data */
+/* Set data
 row_table.set("user1", "John", "name");
 row_table.set("user1", 25, "age");
 row_table.set("user1", "New York", "city");
 
-/* Get data */
+/* Get data
 row_name = row_table.get("user1", "name");
 row_age = row_table.get("user1", "age");
 row_city = row_table.get("user1", "city");
@@ -28,9 +28,9 @@ row_city = row_table.get("user1", "city");
 ("ROW table - Name: '" + row_name + "', Age: " + row_age + ", City: '" + row_city + "'").echo();
 "\n".echo();
 
-/* ======================================== */
-/* Test 2: COL Store Table */
-/* ======================================== */
+/* ========================================
+/* Test 2: COL Store Table
+/* ========================================
 "Test 2: COL Store Table".echo();
 "\n".echo();
 
@@ -39,12 +39,12 @@ col_table.mkfield("name", "STR");
 col_table.mkfield("age", "INT");
 col_table.mkfield("city", "STR");
 
-/* Set data */
+/* Set data
 col_table.set("user1", "Jane", "name");
 col_table.set("user1", 30, "age");
 col_table.set("user1", "Los Angeles", "city");
 
-/* Get data */
+/* Get data
 col_name = col_table.get("user1", "name");
 col_age = col_table.get("user1", "age");
 col_city = col_table.get("user1", "city");
@@ -52,13 +52,13 @@ col_city = col_table.get("user1", "city");
 ("COL table - Name: '" + col_name + "', Age: " + col_age + ", City: '" + col_city + "'").echo();
 "\n".echo();
 
-/* ======================================== */
-/* Test 3: Multiple Records in COL Table */
-/* ======================================== */
+/* ========================================
+/* Test 3: Multiple Records in COL Table
+/* ========================================
 "Test 3: Multiple Records in COL Table".echo();
 "\n".echo();
 
-/* Add more records to COL table */
+/* Add more records to COL table
 col_table.set("user2", "Bob", "name");
 col_table.set("user2", 35, "age");
 col_table.set("user2", "Chicago", "city");
@@ -67,7 +67,7 @@ col_table.set("user3", "Alice", "name");
 col_table.set("user3", 28, "age");
 col_table.set("user3", "Boston", "city");
 
-/* Retrieve multiple records */
+/* Retrieve multiple records
 user2_name = col_table.get("user2", "name");
 user2_age = col_table.get("user2", "age");
 user3_name = col_table.get("user3", "name");
@@ -78,9 +78,9 @@ user3_age = col_table.get("user3", "age");
 ("COL table - User3: '" + user3_name + "', Age: " + user3_age).echo();
 "\n".echo();
 
-/* ======================================== */
-/* Summary */
-/* ======================================== */
+/* ========================================
+/* Summary
+/* ========================================
 "=== SUMMARY ===".echo();
 "\n".echo();
 

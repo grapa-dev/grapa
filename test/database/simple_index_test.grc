@@ -1,9 +1,9 @@
-/* Simple GrapaDBX Index Test */
+/* Simple GrapaDBX Index Test
 
 "Testing GrapaDBX...\n".echo();
 
 dbx = $unified();
-result = dbx.create("grapadbx: /* simple_test.db"); */
+result = dbx.create("grapadbx://simple_test.db");
 
 "Create result: " + result + "\n".echo();
 

@@ -1,12 +1,12 @@
-/* Simple Automatic Locking Test */
+/* Simple Automatic Locking Test
 
 "Testing automatic variable locking...\n".echo();
 
-/* Create shared variables */
+/* Create shared variables
 counter = 0;
 data = "test";
 
-/* Simple thread function */
+/* Simple thread function
 thread_func = @<[op,@<code,{
     i = 0;
     while (i < 1000) {
@@ -16,7 +16,7 @@ thread_func = @<[op,@<code,{
     }
 }>],{}>;
 
-/* Launch multiple threads */
+/* Launch multiple threads
 threads = [];
 t = 0;
 while (t < 5) {
@@ -25,7 +25,7 @@ while (t < 5) {
     t = t + 1;
 }
 
-/* Wait for completion */
+/* Wait for completion
 t = 0;
 while (t < threads.len()) {
     threads[t].wait();

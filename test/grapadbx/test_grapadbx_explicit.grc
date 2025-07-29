@@ -1,15 +1,17 @@
-/* Test GrapaDBX with explicit URL */
-"================================================================================\n".echo();
-"Testing GrapaDBX Explicit URL\n".echo();
-"================================================================================\n".echo();
+/* Test GrapaDBX Explicit Creation
 
-"Test 1: Create GrapaDBX database with explicit URL\n".echo();
-"Expected: Should use GrapaDBX implementation\n".echo();
+"=== Test GrapaDBX Explicit Creation ===\n".echo();
 
-/* Use relative path instead of absolute path */
 u = $unified();
-err = u.create("grapadbx: /* test_dbx"); */
-"Result: Database creation " + (err == 0 ? "SUCCESS" : "FAILED").str() + "\n".echo();
+"Created unified object\n".echo();
+
+err = u.create("grapadbx://test_dbx");
+
+if (err == 0) {
+    "✅ GrapaDBX database created successfully\n".echo();
+} else {
+    "❌ Failed to create GrapaDBX database: " + err.str() + "\n".echo();
+}
 
 "================================================================================\n".echo();
 "Test 2: Create table in GrapaDBX\n".echo();

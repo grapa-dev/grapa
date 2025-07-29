@@ -1,23 +1,23 @@
-/* Test GrapaDBX BTree Integration */
-/* This test verifies that the BTree-based implementations are working */
+/* Test GrapaDBX BTree Integration
+/* This test verifies that the BTree-based implementations are working
 
 db = $file().table("GROUP");
 db.echo("Testing GrapaDBX BTree Integration...");
 
-/* Test basic database operations */
+/* Test basic database operations
 db.createGroup("test_table", "ROW");
 db.echo("Database initialized successfully");
 
-/* Test field creation */
+/* Test field creation
 db.createField("test_field", "STR", "VAR", 32, 8);
 db.echo("Field created successfully");
 
-/* Test formula field creation */
+/* Test formula field creation
 formula_text = "price * quantity";
-db.createFormulaField("formula_field", formula_text, 5); /* STR type */
+db.createFormulaField("formula_field", formula_text, 5); /* STR type
 db.echo("Formula field created successfully");
 
-/* Test data storage and retrieval */
+/* Test data storage and retrieval
 test_data = "Hello, BTree World!";
 db.setField("test_table", "test_field", test_data);
 db.echo("Data stored successfully");
@@ -25,7 +25,7 @@ db.echo("Data stored successfully");
 retrieved_data = db.getField("test_table", "test_field");
 db.echo("Retrieved data: " + retrieved_data);
 
-/* Test dump functionality */
+/* Test dump functionality
 db.echo("Testing dump functionality...");
 db.dump();
 

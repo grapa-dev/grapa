@@ -10,14 +10,14 @@ Demonstrates how to achieve full ripgrep output parity by post-processing the gr
 
 input = "a\nfoo\nb\nc\nfoo\nd";
 pattern = "foo";
-options = "A1"; /* After-context */
+options = "A1"; /* After-context
 
-/* Step 1: Get the array result from grep */
+/* Step 1: Get the array result from grep
 result = input.grep(pattern, options);
 ("Raw array result: " + result.str() + "\n").echo();
 
-/* Step 2: Post-process to insert '--' between context blocks, as ripgrep does */
-/* For this simple test, context blocks are separated by a blank line in the array */
+/* Step 2: Post-process to insert '--' between context blocks, as ripgrep does
+/* For this simple test, context blocks are separated by a blank line in the array
 output = [];
 block = [];
 index = 0;

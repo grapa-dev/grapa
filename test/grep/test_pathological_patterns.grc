@@ -7,7 +7,7 @@ Grapa Grep Pathological Pattern Edge Cases
 
 '=== PATHOLOGICAL PATTERN EDGE CASES ===\n'.echo();
 
-/* Test 1: Catastrophic backtracking */
+/* Test 1: Catastrophic backtracking
 'Catastrophic backtracking: (a+)+ on long input\n'.echo();
 input1 = '';
 i = 0;
@@ -18,7 +18,7 @@ result1 = input1.grep(pattern1, 'o');
 ('Expected: Should not hang or crash; may be slow.\n').echo();
 '---\n'.echo();
 
-/* Test 2: Large alternation */
+/* Test 2: Large alternation
 'Large alternation: a|b|c|...|z|aa|bb|cc|...|zz\n'.echo();
 input2 = 'a b c d e f g h i j k l m n o p q r s t u v w x y z aa bb cc dd ee ff gg hh ii jj kk ll mm nn oo pp qq rr ss tt uu vv ww xx yy zz';
 pattern2 = 'a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|aa|bb|cc|dd|ee|ff|gg|hh|ii|jj|kk|ll|mm|nn|oo|pp|qq|rr|ss|tt|uu|vv|ww|xx|yy|zz';
@@ -27,7 +27,7 @@ result2 = input2.grep(pattern2, 'o');
 ('Expected: All tokens matched; no crash.\n').echo();
 '---\n'.echo();
 
-/* Test 3: Deeply nested groups */
+/* Test 3: Deeply nested groups
 'Deeply nested groups: (((((((((a))))))))))\n'.echo();
 input3 = 'a';
 pattern3 = '((((((((((a))))))))))';

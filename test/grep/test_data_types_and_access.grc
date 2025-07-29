@@ -8,9 +8,9 @@
 
 "=== GRAPA DATA TYPES AND ACCESS PATTERNS TEST ===\n".echo();
 
-/* ======================================== */
-/* 1. ARRAY INSTANTIATION AND ACCESS */
-/* ======================================== */
+/* ========================================
+/* 1. ARRAY INSTANTIATION AND ACCESS
+/* ========================================
 "Test 1: Array Instantiation and Access\n".echo();
 "Creating arrays with [] syntax:\n".echo();
 
@@ -40,9 +40,9 @@ while (i < arr1.len()) {
 
 "---\n".echo();
 
-/* ======================================== */
-/* 2. LIST INSTANTIATION AND ACCESS */
-/* ======================================== */
+/* ========================================
+/* 2. LIST INSTANTIATION AND ACCESS
+/* ========================================
 "Test 2: List Instantiation and Access\n".echo();
 "Creating lists with {} syntax:\n".echo();
 
@@ -76,13 +76,13 @@ while (i < keys.len()) {
 
 "---\n".echo();
 
-/* ======================================== */
-/* 3. OBJECT INSTANTIATION AND ACCESS */
-/* ======================================== */
+/* ========================================
+/* 3. OBJECT INSTANTIATION AND ACCESS
+/* ========================================
 "Test 3: Object Instantiation and Access\n".echo();
 "Creating objects with class syntax:\n".echo();
 
-/* Define a simple class */
+/* Define a simple class
 TestClass = class {;
     name = "";
     value = 0;
@@ -97,7 +97,7 @@ getInfo = op() {
     };
 };
 
-/* Create object instances */
+/* Create object instances
 obj1 = obj TestClass;
 obj1.init("test1", 42);
 obj2 = obj TestClass;
@@ -116,12 +116,12 @@ obj2.getInfo();
 
 "---\n".echo();
 
-/* ======================================== */
-/* 4. COMPARISON OF ACCESS PATTERNS */
-/* ======================================== */
+/* ========================================
+/* 4. COMPARISON OF ACCESS PATTERNS
+/* ========================================
 "Test 4: Comparison of Access Patterns\n".echo();
 
-/* Test data structures */
+/* Test data structures
 test_array = [10, 20, 30, 40, 50];
 test_list = {"first": "alpha", "second": "beta", "third": "gamma"};
 test_object = obj TestClass;
@@ -145,9 +145,9 @@ test_object.init("test_obj", 999);
 
 "---\n".echo();
 
-/* ======================================== */
-/* 5. ERROR CASES AND EDGE CASES */
-/* ======================================== */
+/* ========================================
+/* 5. ERROR CASES AND EDGE CASES
+/* ========================================
 "Test 5: Error Cases and Edge Cases\n".echo();
 
 "Array error cases:\n".echo();
@@ -164,9 +164,9 @@ test_object.init("test_obj", 999);
 
 "---\n".echo();
 
-/* ======================================== */
-/* 6. NESTED STRUCTURES */
-/* ======================================== */
+/* ========================================
+/* 6. NESTED STRUCTURES
+/* ========================================
 "Test 6: Nested Structures\n".echo();
 
 nested_list = {;
@@ -189,9 +189,9 @@ nested_list = {;
 
 "---\n".echo();
 
-/* ======================================== */
-/* 7. SUMMARY AND RECOMMENDATIONS */
-/* ======================================== */
+/* ========================================
+/* 7. SUMMARY AND RECOMMENDATIONS
+/* ========================================
 "Test 7: Summary and Recommendations\n".echo();
 
 "DATA TYPE SUMMARY:\n".echo();

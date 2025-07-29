@@ -1,18 +1,18 @@
-/* Simple Table Test */
+/* Simple Table Test
 
 "Testing table operations".echo();
 "\n".echo();
 
-/* Create virtual table */
+/* Create virtual table
 table = $TABLE();
 table.mkfield("name", "STR");
 table.mkfield("age", "INT");
 
-/* Set data */
+/* Set data
 table.set("user1", "John", "name");
 table.set("user1", 25, "age");
 
-/* Get data */
+/* Get data
 name = table.get("user1", "name");
 age = table.get("user1", "age");
 

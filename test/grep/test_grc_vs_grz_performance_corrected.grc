@@ -1,7 +1,7 @@
-/* Corrected Performance Comparison: .grc vs .grz execution */
+/* Corrected Performance Comparison: .grc vs .grz execution
 "=== CORRECTED .grc vs .grz PERFORMANCE TEST ===\n".echo();
 
-/* Step 1: Ensure .grz file exists */
+/* Step 1: Ensure .grz file exists
 grz_info = $file().info("test/run_tests.grz");
 if (grz_info.type() == $ERR) {
     "Compiling test/run_tests.grc to test/run_tests.grz...\n".echo();
@@ -9,7 +9,7 @@ if (grz_info.type() == $ERR) {
     "Compilation complete.\n".echo();
 }
 
-/* Step 2: Time runtime execution of .grc (avoiding compile-time includes) */
+/* Step 2: Time runtime execution of .grc (avoiding compile-time includes)
 "Running test/run_tests.grc (runtime execution)...\n".echo();
 grc_start = $TIME().utc();
 op()($file().get("test/run_tests.grc"))();
@@ -17,7 +17,7 @@ grc_end = $TIME().utc();
 grc_time = ((grc_end - grc_start) / 1000000).int();
 "test/run_tests.grc time: " + grc_time.str() + " ms\n".echo();
 
-/* Step 3: Time execution of .grz (proper method) */
+/* Step 3: Time execution of .grz (proper method)
 "Running test/run_tests.grz (pre-compiled)...\n".echo();
 grz_start = $TIME().utc();
 $file().get("test/run_tests.grz").decode("ZIP-GRAPA")["op"]();
@@ -25,7 +25,7 @@ grz_end = $TIME().utc();
 grz_time = ((grz_end - grz_start) / 1000000).int();
 "test/run_tests.grz time: " + grz_time.str() + " ms\n".echo();
 
-/* Step 4: Compare and print results */
+/* Step 4: Compare and print results
 if (grz_time < grc_time) {
     "✓ .grz is faster by ".echo();
     (grc_time - grz_time).str().echo();

@@ -1,39 +1,39 @@
-/* Test Network Storage Backend Integration */
+/* Test Network Storage Backend Integration
 
 "=== NETWORK STORAGE BACKEND TEST ===\n".echo();
 
-/* Test 1: HTTP/HTTPS Storage */
+/* Test 1: HTTP/HTTPS Storage
 "Test 1: HTTP/HTTPS Storage\n".echo();
 "-------------------------\n".echo();
 
-/* Create unified storage object with HTTP */
+/* Create unified storage object with HTTP
 u1 = $unified();
 "Testing HTTP storage...\n".echo();
-result = u1.create("http: /* example.com"); */
+result = u1.create("http: /* example.com");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = u1.getType();
 result.echo();
 "\n".echo();
 
-/* Test getInfo */
+/* Test getInfo
 "Storage info: ".echo();
 result = u1.getInfo();
 result.echo();
 "\n".echo();
 
-/* Test ls (directory listing) */
+/* Test ls (directory listing)
 "Testing ls (directory listing)...\n".echo();
 result = u1.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls with different output formats */
+/* Test ls with different output formats
 "Testing ls with JSON output:\n".echo();
 result = u1.ls().json();
 "JSON result: ".echo();
@@ -46,189 +46,189 @@ result = u1.ls().table();
 result.echo();
 "\n".echo();
 
-/* Test 2: FTP Storage */
+/* Test 2: FTP Storage
 "Test 2: FTP Storage\n".echo();
 "------------------\n".echo();
 
-/* Create unified storage object with FTP */
+/* Create unified storage object with FTP
 u2 = $unified();
 "Testing FTP storage...\n".echo();
-result = u2.create("ftp: /* ftp.example.com"); */
+result = u2.create("ftp: /* ftp.example.com");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = u2.getType();
 result.echo();
 "\n".echo();
 
-/* Test getInfo */
+/* Test getInfo
 "Storage info: ".echo();
 result = u2.getInfo();
 result.echo();
 "\n".echo();
 
-/* Test ls (directory listing) */
+/* Test ls (directory listing)
 "Testing ls (directory listing)...\n".echo();
 result = u2.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test mk (create directory) */
+/* Test mk (create directory)
 "Testing mk (create directory)...\n".echo();
 result = u2.mk("testdir", "DIR");
 "Make result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test set (upload file) */
+/* Test set (upload file)
 "Testing set (upload file)...\n".echo();
 result = u2.set("testfile.txt", "This is test content for FTP", "$VALUE");
 "Set result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test get (download file) */
+/* Test get (download file)
 "Testing get (download file)...\n".echo();
 result = u2.get("testfile.txt", "$VALUE");
 "Get result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls again to see the new file */
+/* Test ls again to see the new file
 "Testing ls again (should show new file)...\n".echo();
 result = u2.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test rm (delete file) */
+/* Test rm (delete file)
 "Testing rm (delete file)...\n".echo();
 result = u2.rm("testfile.txt");
 "Remove result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 3: SFTP Storage */
+/* Test 3: SFTP Storage
 "Test 3: SFTP Storage\n".echo();
 "-------------------\n".echo();
 
-/* Create unified storage object with SFTP */
+/* Create unified storage object with SFTP
 u3 = $unified();
 "Testing SFTP storage...\n".echo();
-result = u3.create("sftp: /* sftp.example.com"); */
+result = u3.create("sftp: /* sftp.example.com");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = u3.getType();
 result.echo();
 "\n".echo();
 
-/* Test getInfo */
+/* Test getInfo
 "Storage info: ".echo();
 result = u3.getInfo();
 result.echo();
 "\n".echo();
 
-/* Test ls (directory listing) */
+/* Test ls (directory listing)
 "Testing ls (directory listing)...\n".echo();
 result = u3.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test mk (create directory) */
+/* Test mk (create directory)
 "Testing mk (create directory)...\n".echo();
 result = u3.mk("secure_dir", "DIR");
 "Make result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test set (upload file) */
+/* Test set (upload file)
 "Testing set (upload file)...\n".echo();
 result = u3.set("secure_file.txt", "This is secure content for SFTP", "$VALUE");
 "Set result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test get (download file) */
+/* Test get (download file)
 "Testing get (download file)...\n".echo();
 result = u3.get("secure_file.txt", "$VALUE");
 "Get result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test ls with field selection */
+/* Test ls with field selection
 "Testing ls with field selection:\n".echo();
 result = u3.ls("$KEY,$TYPE").table();
 "Field selection result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test rm (delete file) */
+/* Test rm (delete file)
 "Testing rm (delete file)...\n".echo();
 result = u3.rm("secure_file.txt");
 "Remove result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 4: HTTPS Storage with Authentication */
+/* Test 4: HTTPS Storage with Authentication
 "Test 4: HTTPS Storage with Authentication\n".echo();
 "----------------------------------------\n".echo();
 
-/* Create unified storage object with HTTPS */
+/* Create unified storage object with HTTPS
 u4 = $unified();
 "Testing HTTPS storage...\n".echo();
-result = u4.create("https: /* secure.example.com"); */
+result = u4.create("https: /* secure.example.com");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test getType */
+/* Test getType
 "Storage type: ".echo();
 result = u4.getType();
 result.echo();
 "\n".echo();
 
-/* Test getInfo */
+/* Test getInfo
 "Storage info: ".echo();
 result = u4.getInfo();
 result.echo();
 "\n".echo();
 
-/* Test ls (directory listing) */
+/* Test ls (directory listing)
 "Testing ls (directory listing)...\n".echo();
 result = u4.ls();
 "List result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test get (download file) */
+/* Test get (download file)
 "Testing get (download file)...\n".echo();
 result = u4.get("index.html", "$VALUE");
 "Get result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test 5: Error Handling */
+/* Test 5: Error Handling
 "Test 5: Error Handling\n".echo();
 "---------------------\n".echo();
 
-/* Test invalid network URL */
+/* Test invalid network URL
 "Testing invalid network URL...\n".echo();
 u5 = $unified();
-result = u5.create("invalid: /* invalid-url"); */
+result = u5.create("invalid: /* invalid-url");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test operations without connection */
+/* Test operations without connection
 "Testing operations without connection...\n".echo();
 result = u5.ls();
 "List result: ".echo();
@@ -245,38 +245,38 @@ result = u5.get("test.txt", "$VALUE");
 result.echo();
 "\n".echo();
 
-/* Test 6: Cross-Storage Operations */
+/* Test 6: Cross-Storage Operations
 "Test 6: Cross-Storage Operations\n".echo();
 "-------------------------------\n".echo();
 
-/* Test moving data between storage types */
+/* Test moving data between storage types
 "Testing data transfer between storage types...\n".echo();
 
-/* Create local file system storage */
+/* Create local file system storage
 local = $unified();
-local.create("file: /* /tmp"); */
+local.create("file: /* /tmp");
 
-/* Create local test file */
+/* Create local test file
 local.set("local_file.txt", "This is local content", "$VALUE");
 "Created local file\n".echo();
 
-/* Create network storage */
+/* Create network storage
 remote = $unified();
-remote.create("ftp: /* ftp.example.com"); */
+remote.create("ftp: /* ftp.example.com");
 
-/* Upload local file to remote */
+/* Upload local file to remote
 "Uploading local file to remote...\n".echo();
 local_content = local.get("local_file.txt", "$VALUE");
 remote.set("remote_file.txt", local_content, "$VALUE");
 "Upload complete\n".echo();
 
-/* Download from remote to local with different name */
+/* Download from remote to local with different name
 "Downloading from remote to local...\n".echo();
 remote_content = remote.get("remote_file.txt", "$VALUE");
 local.set("downloaded_file.txt", remote_content, "$VALUE");
 "Download complete\n".echo();
 
-/* Verify the content */
+/* Verify the content
 "Verifying content...\n".echo();
 original = local.get("local_file.txt", "$VALUE");
 downloaded = local.get("downloaded_file.txt", "$VALUE");
@@ -287,7 +287,7 @@ original.echo();
 downloaded.echo();
 "\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing test files...\n".echo();
 local.rm("local_file.txt");
 local.rm("downloaded_file.txt");

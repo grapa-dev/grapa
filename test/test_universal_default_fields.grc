@@ -1,17 +1,17 @@
-/* Test Universal Default Fields ($KEY and $VALUE) Across All Database Types */
+/* Test Universal Default Fields ($KEY and $VALUE) Across All Database Types
 
 "=== Testing Universal Default Fields ===\n".echo();
 "Testing $KEY and $VALUE across ROW, COL, and GROUP databases\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing any existing test files...\n".echo();
 f = $file();
 f.rm("test_universal_fields");
 "Cleanup completed.\n".echo();
 
-/* ================================================================================ */
-/* Test 1: ROW Database Default Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 1: ROW Database Default Fields
+/* ================================================================================
 "Test 1: ROW Database Default Fields\n".echo();
 "----------------------------------\n".echo();
 
@@ -48,9 +48,9 @@ user_age = row_db.get("user1", "age").raw().int();
 ("user1 name: " + user_name.str() + "\n").echo();
 ("user1 age: " + user_age.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 2: COL Database Default Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 2: COL Database Default Fields
+/* ================================================================================
 "Test 2: COL Database Default Fields\n".echo();
 "----------------------------------\n".echo();
 
@@ -87,9 +87,9 @@ metric_val = col_db.get("metric1", "value").raw().flt();
 ("metric1 metric: " + metric_name.str() + "\n").echo();
 ("metric1 value: " + metric_val.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 3: GROUP Database Default Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 3: GROUP Database Default Fields
+/* ================================================================================
 "Test 3: GROUP Database Default Fields\n".echo();
 "------------------------------------\n".echo();
 
@@ -126,58 +126,58 @@ doc_size = group_db.get("document1", "size").raw().int();
 ("document1 filename: " + doc_filename.str() + "\n").echo();
 ("document1 size: " + doc_size.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 4: Verify Default Behavior */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 4: Verify Default Behavior
+/* ================================================================================
 "Test 4: Verify Default Behavior\n".echo();
 "-------------------------------\n".echo();
 
 "Verifying that default get() uses $VALUE:\n".echo();
 
-/* ROW database */
+/* ROW database
 row_default = row_db.get("record1");
 row_explicit = row_db.get("record1", "$VALUE");
 ("ROW default vs explicit $VALUE: " + (row_default.str() == row_explicit.str()).str() + "\n").echo();
 
-/* COL database */
+/* COL database
 col_default = col_db.get("record1");
 col_explicit = col_db.get("record1", "$VALUE");
 ("COL default vs explicit $VALUE: " + (col_default.str() == col_explicit.str()).str() + "\n").echo();
 
-/* GROUP database */
+/* GROUP database
 group_default = group_db.get("file1");
 group_explicit = group_db.get("file1", "$VALUE");
 ("GROUP default vs explicit $VALUE: " + (group_default.str() == group_explicit.str()).str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 5: Binary Data in $VALUE Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 5: Binary Data in $VALUE Fields
+/* ================================================================================
 "Test 5: Binary Data in $VALUE Fields\n".echo();
 "-----------------------------------\n".echo();
 
 "Testing binary data storage in $VALUE fields:\n".echo();
 
-/* Binary data */
+/* Binary data
 binary_data = "Binary\x00\x01\x02\x03Data";
 
-/* ROW database */
+/* ROW database
 row_db.set("binary1", binary_data, "$VALUE");
 row_binary = row_db.get("binary1", "$VALUE");
 ("ROW binary length: " + row_binary.length().str() + "\n").echo();
 
-/* COL database */
+/* COL database
 col_db.set("binary1", binary_data, "$VALUE");
 col_binary = col_db.get("binary1", "$VALUE");
 ("COL binary length: " + col_binary.length().str() + "\n").echo();
 
-/* GROUP database */
+/* GROUP database
 group_db.set("binary1", binary_data, "$VALUE");
 group_binary = group_db.get("binary1", "$VALUE");
 ("GROUP binary length: " + group_binary.length().str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 6: List Records from All Databases */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 6: List Records from All Databases
+/* ================================================================================
 "Test 6: List Records from All Databases\n".echo();
 "--------------------------------------\n".echo();
 
@@ -193,9 +193,9 @@ col_records = col_db.ls();
 group_records = group_db.ls();
 ("GROUP records: " + group_records.len().str() + "\n").echo();
 
-/* ================================================================================ */
-/* Summary */
-/* ================================================================================ */
+/* ================================================================================
+/* Summary
+/* ================================================================================
 "=== Test Summary ===\n".echo();
 "✓ $VALUE field is universal across ROW, COL, and GROUP databases\n".echo();
 "✓ Default behavior automatically uses $VALUE when no field is specified\n".echo();

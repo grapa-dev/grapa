@@ -1,8 +1,8 @@
-/* Test comparing ROW vs COL table behavior */
+/* Test comparing ROW vs COL table behavior
 
 "=== Comparing ROW vs COL Tables ===".echo();
 
-/* Create ROW table */
+/* Create ROW table
 "Creating ROW table...".echo();
 frow = $file().table("ROW");
 frow.mkfield("name", "STR", "VAR");
@@ -12,7 +12,7 @@ frow.mkfield("city", "STR", "VAR");
 "ROW table created".echo();
 "---".echo();
 
-/* Create COL table */
+/* Create COL table
 "Creating COL table...".echo();
 fcol = $file().table("COL");
 fcol.mkfield("name", "STR", "VAR");
@@ -22,7 +22,7 @@ fcol.mkfield("city", "STR", "VAR");
 "COL table created".echo();
 "---".echo();
 
-/* Add same data to both tables */
+/* Add same data to both tables
 "Adding data to ROW table...".echo();
 frow.set("1", "name", "Alice");
 frow.set("1", "age", 30);
@@ -42,7 +42,7 @@ fcol.set("2", "city", "Los Angeles");
 "Data added to both tables".echo();
 "---".echo();
 
-/* Compare debug output */
+/* Compare debug output
 "ROW table debug output:".echo();
 frow.debug();
 "---".echo();
@@ -51,7 +51,7 @@ frow.debug();
 fcol.debug();
 "---".echo();
 
-/* Test field operations */
+/* Test field operations
 "Testing field operations...".echo();
 "ROW table - Record 1 name: ".echo();
 frow.get("1", "name").echo();

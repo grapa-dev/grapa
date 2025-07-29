@@ -1,6 +1,6 @@
 /*
 Grapa .grc File Authoring Rules (Windows)
-- Use block comments for all comments (do not use /* ). Block comments should be written as in this header. */
+- Use block comments for all comments (do not use /* ). Block comments should be written as in this header.
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)
@@ -8,10 +8,10 @@ Grapa .grc File Authoring Rules (Windows)
 - Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
   Example:
     ar = [1,2,3];
-    ar[1];  /* returns 2 */
+    ar[1];  /* returns 2
     ar = {"a":11,"b":22,"c":33};
-    ar[1];  /* returns 22 */
-    ar["b"];  /* returns 22 */
+    ar[1];  /* returns 22
+    ar["b"];  /* returns 22
 - Use .get("key") for object property access, not for arrays/lists.
 - Validate syntax against known-good .grc files before adding new code
 - Prefer simple, explicit constructs for compatibility
@@ -26,7 +26,7 @@ Edge Case Category: Context at File Boundaries
 
 "=== CONTEXT AT FILE BOUNDARIES EDGE CASES ===\n".echo();
 
-/* Test 1: Context at start of file */
+/* Test 1: Context at start of file
 input = "Line 1\nLine 2\nLine 3\nLine 4";
 pattern = "Line 1";
 result = input.grep(pattern, "B1");
@@ -36,7 +36,7 @@ result = input.grep(pattern, "B1");
 ("Expected: [\"Line 1\n\", \"Line 2\n\"]\n").echo();
 "---\n".echo();
 
-/* Test 2: Context at end of file */
+/* Test 2: Context at end of file
 pattern = "Line 4";
 result = input.grep(pattern, "A1");
 ("Pattern: '" + pattern + "', Options: A1\n").echo();
@@ -44,7 +44,7 @@ result = input.grep(pattern, "A1");
 ("Expected: [\"Line 3\n\", \"Line 4\"]\n").echo();
 "---\n".echo();
 
-/* Test 3: Context merging and separators */
+/* Test 3: Context merging and separators
 input2 = "a\nb\nc\nd\ne\nf\ng\nh\ni\nj";
 pattern = "c|i";
 result = input2.grep(pattern, "A1B1");

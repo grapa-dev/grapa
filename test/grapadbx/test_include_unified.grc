@@ -1,24 +1,24 @@
-/* Test script using include to load the updated $unified.grc */
+/* Test script using include to load the updated $unified.grc
 
-/* Include the updated unified class definition */
+/* Include the updated unified class definition
 include "lib/grapa/$unified.grc";
 
-/* Test the parameter fix for create_index */
+/* Test the parameter fix for create_index
 echo = "=== Testing Parameter Fix ===";
 
-/* Create a unified database */
+/* Create a unified database
 u = $unified();
 
-/* Set some test data */
+/* Set some test data
 u.set("user1", "John Doe");
 u.set("user2", "Jane Smith");
 
-/* Test create_index with correct parameter order */
+/* Test create_index with correct parameter order
 echo = "Creating index with correct parameters:";
 create_result = u.create_index("name_index", "name");
 echo.create_result;
 
-/* Test list_indexes */
+/* Test list_indexes
 echo = "Listing indexes:";
 indexes = u.list_indexes();
 echo.indexes;

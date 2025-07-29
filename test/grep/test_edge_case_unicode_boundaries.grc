@@ -1,6 +1,6 @@
 /*
 Grapa .grc File Authoring Rules (Windows)
-- Use block comments for all comments (do not use /* ). Block comments should be written as in this header. */
+- Use block comments for all comments (do not use /* ). Block comments should be written as in this header.
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)
@@ -8,10 +8,10 @@ Grapa .grc File Authoring Rules (Windows)
 - Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
   Example:
     ar = [1,2,3];
-    ar[1];  /* returns 2 */
+    ar[1];  /* returns 2
     ar = {"a":11,"b":22,"c":33};
-    ar[1];  /* returns 22 */
-    ar["b"];  /* returns 22 */
+    ar[1];  /* returns 22
+    ar["b"];  /* returns 22
 - Use .get("key") for object property access, not for arrays/lists.
 - Validate syntax against known-good .grc files before adding new code
 - Prefer simple, explicit constructs for compatibility
@@ -26,8 +26,8 @@ Edge Case Category: Unicode Boundaries
 
 "=== UNICODE BOUNDARY EDGE CASES ===\n".echo();
 
-/* Test 1: Grapheme cluster boundary (\X) */
-input = "a\u0301b\u0327c"; /* abc (a+combining acute, b+combining cedilla) */
+/* Test 1: Grapheme cluster boundary (\X)
+input = "a\u0301b\u0327c"; /* abc (a+combining acute, b+combining cedilla)
 pattern = "\\X";
 result = input.grep(pattern, "o");
 ("Input: '" + input + "'\n").echo();
@@ -36,7 +36,7 @@ result = input.grep(pattern, "o");
 ("Expected: [\"a\", \"b\", \"c\"]\n").echo();
 "---\n".echo();
 
-/* Test 2: Emoji sequence as grapheme cluster */
+/* Test 2: Emoji sequence as grapheme cluster
 input = "\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d\udc66";
 pattern = "\\X";
 result = input.grep(pattern, "o");
@@ -46,8 +46,8 @@ result = input.grep(pattern, "o");
 ("Expected: [\"\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d\udc66\"]\n").echo();
 "---\n".echo();
 
-/* Test 3: Combining mark boundary */
-input = "e\u0301e"; /* ee */
+/* Test 3: Combining mark boundary
+input = "e\u0301e"; /* ee
 pattern = "e";
 result = input.grep(pattern, "o");
 ("Input: '" + input + "'\n").echo();
@@ -56,7 +56,7 @@ result = input.grep(pattern, "o");
 ("Expected: [\"e\", \"e\"] (should match both base and combined)\n").echo();
 "---\n".echo();
 
-/* Test 4: Unicode word boundary (\b) */
+/* Test 4: Unicode word boundary (\b)
 input = "caf maana";
 pattern = "\\bcaf\\b";
 result = input.grep(pattern, "o");
@@ -66,7 +66,7 @@ result = input.grep(pattern, "o");
 ("Expected: [\"caf\"]\n").echo();
 "---\n".echo();
 
-/* Test 5: Unicode property boundary */
+/* Test 5: Unicode property boundary
 input = "Hello \u4e16\u754c 123 \u20ac";
 pattern = "\\p{L}+";
 result = input.grep(pattern, "o");

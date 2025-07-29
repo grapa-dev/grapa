@@ -1,28 +1,28 @@
-/* Debug script to test string vs number comparison logic */
+/* Debug script to test string vs number comparison logic
 
 "=== Debug String vs Number Comparison ===".echo();
 
-/* Test if "hello" can be parsed as a number */
+/* Test if "hello" can be parsed as a number
 "Testing if 'hello' can be parsed as number:".echo();
 ("'hello' > 5: " + ("hello" > 5).str()).echo();
 "\n".echo();
 
-/* Test if "123" can be parsed as a number */
+/* Test if "123" can be parsed as a number
 "Testing if '123' can be parsed as number:".echo();
 ("'123' > 5: " + ("123" > 5).str()).echo();
 "\n".echo();
 
-/* Test if "5" can be parsed as a number */
+/* Test if "5" can be parsed as a number
 "Testing if '5' can be parsed as number:".echo();
 ("'5' > 5: " + ("5" > 5).str()).echo();
 "\n".echo();
 
-/* Test negative number parsing */
+/* Test negative number parsing
 "Testing negative number parsing:".echo();
 ("'-5' > 5: " + ("-5" > 5).str()).echo();
 "\n".echo();
 
-/* Test float parsing */
+/* Test float parsing
 "Testing float parsing:".echo();
 ("'5.5' > 5: " + ("5.5" > 5).str()).echo();
 "\n".echo(); 

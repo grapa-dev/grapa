@@ -162,8 +162,9 @@ class GrapaSyntaxValidator:
                         'auto_fixable': False  # Manual fix needed
                     })
         
-        # Check for line comments
+        # Check for line comments (improved - excludes // within quoted strings)
         for i, line in enumerate(lines, 1):
+            # Skip lines that start with // (these are definitely comments)
             stripped = line.strip()
             if stripped.startswith('//'):
                 issues.append({
@@ -173,6 +174,43 @@ class GrapaSyntaxValidator:
                     'content': line.strip(),
                     'auto_fixable': True
                 })
+                continue
+            
+            # Check for // in the middle of lines, but exclude those within quoted strings
+            if '//' in line:
+                # Simple state machine to track if we're inside a quoted string
+                in_string = False
+                string_char = None  # Track which quote character we're in
+                j = 0
+                while j < len(line):
+                    char = line[j]
+                    
+                    # Handle escaped quotes
+                    if char == '\\' and j + 1 < len(line):
+                        j += 2  # Skip the escape and the next character
+                        continue
+                    
+                    # Handle quote characters
+                    if char in ['"', "'"]:
+                        if not in_string:
+                            in_string = True
+                            string_char = char
+                        elif string_char == char:
+                            in_string = False
+                            string_char = None
+                    
+                    # Check for // outside of strings
+                    elif char == '/' and j + 1 < len(line) and line[j + 1] == '/' and not in_string:
+                        issues.append({
+                            'type': 'line_comment',
+                            'line': i,
+                            'message': 'Line comments (//) are not allowed in Grapa',
+                            'content': line.strip(),
+                            'auto_fixable': True
+                        })
+                        break
+                    
+                    j += 1
         
         # Check for incorrect semicolons after opening braces
         for pattern in self.syntax_patterns['incorrect_semicolons']:

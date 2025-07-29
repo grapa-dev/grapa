@@ -1,6 +1,6 @@
 /*
 Grapa .grc File Authoring Rules (Windows)
-- Use block comments for all comments (do not use /* ). Block comments should be written as in this header. */
+- Use block comments for all comments (do not use /* ). Block comments should be written as in this header.
 - Always use .echo() as a method: "string".echo(); or (str1+str2).echo();
 - End every command with a ; character
 - Use while loops instead of for (Grapa does not support for)
@@ -8,10 +8,10 @@ Grapa .grc File Authoring Rules (Windows)
 - Arrays (type $ARRAY) and lists (type $LIST) are accessed with [index] syntax, not .get().
   Example:
     ar = [1,2,3];
-    ar[1];  /* returns 2 */
+    ar[1];  /* returns 2
     ar = {"a":11,"b":22,"c":33};
-    ar[1];  /* returns 22 */
-    ar["b"];  /* returns 22 */
+    ar[1];  /* returns 22
+    ar["b"];  /* returns 22
 - Use .get("key") for object property access, not for arrays/lists.
 - Validate syntax against known-good .grc files before adding new code
 - Prefer simple, explicit constructs for compatibility
@@ -29,7 +29,7 @@ Grapa .grc File Authoring Rules (Windows)
 
 "=== 'F' FLAG (FORCE FULL-SEGMENT) COMBINATIONS TEST SUITE ===\n".echo();
 
-/* Section 1: 'f' flag alone vs. 'o' (match-only) */
+/* Section 1: 'f' flag alone vs. 'o' (match-only)
 "\n-- 1. 'f' flag alone vs. 'o' (match-only) --\n".echo();
 input1 = "line1\nline2\nline3";
 pattern1 = "line";
@@ -43,7 +43,7 @@ result1b = input1.grep(pattern1, "of", "\n");
 ("Expected: 'o' returns matched portions, 'of' returns full segments\n").echo();
 "---\n".echo();
 
-/* Section 2: 'f' with Unicode property and custom delimiter */
+/* Section 2: 'f' with Unicode property and custom delimiter
 "\n-- 2. 'f' with Unicode property and custom delimiter --\n".echo();
 input2 = "Hello \u4e16\u754c|||Goodbye \u4e16\u754c|||Hello caf\u00e9";
 pattern2 = "\\p{L}+";
@@ -54,7 +54,7 @@ result2 = input2.grep(pattern2, "of", "|||");
 ("Expected: Each full segment containing a match\n").echo();
 "---\n".echo();
 
-/* Section 3: 'f' with context lines (A1, B1, C1) */
+/* Section 3: 'f' with context lines (A1, B1, C1)
 "\n-- 3. 'f' with context lines (A1, B1, C1) --\n".echo();
 input3 = "a\nb\nc\nd\ne\nf";
 pattern3 = "c|d";
@@ -65,7 +65,7 @@ result3 = input3.grep(pattern3, "ofA1B1", "\n");
 ("Expected: Full segments for matches and their context\n").echo();
 "---\n".echo();
 
-/* Section 4: 'f' with JSON output */
+/* Section 4: 'f' with JSON output
 "\n-- 4. 'f' with JSON output --\n".echo();
 input4 = "foo bar baz|bar foo baz|baz bar foo";
 pattern4 = "foo";
@@ -76,7 +76,7 @@ result4 = input4.grep(pattern4, "ofj", "|");
 ("Expected: JSON array of full segments containing matches\n").echo();
 "---\n".echo();
 
-/* Section 5: 'f' with parallel processing */
+/* Section 5: 'f' with parallel processing
 "\n-- 5. 'f' with parallel processing --\n".echo();
 input5 = "apple|banana|pear|apple|banana|pear";
 pattern5 = "apple|banana";
@@ -87,7 +87,7 @@ result5 = input5.grep(pattern5, "of", "|", "NONE", "UNICODE", 2);
 ("Expected: Full segments for all matches, processed in parallel\n").echo();
 "---\n".echo();
 
-/* Section 6: 'f' with edge-case precedence (e.g., with 'c' count) */
+/* Section 6: 'f' with edge-case precedence (e.g., with 'c' count)
 "\n-- 6. 'f' with edge-case precedence (with 'c' count) --\n".echo();
 input6 = "foo|bar|baz|foo|bar|baz";
 pattern6 = "foo|bar";
@@ -98,7 +98,7 @@ result6 = input6.grep(pattern6, "ofc", "|");
 ("Expected: Only the count of matches (precedence: c disables output)\n").echo();
 "---\n".echo();
 
-/* Section 7: Not-yet-implemented or ambiguous combos (expected failure) */
+/* Section 7: Not-yet-implemented or ambiguous combos (expected failure)
 "\n-- 7. Not-yet-implemented or ambiguous combos (expected failure) --\n".echo();
 input7 = "foo|bar|baz";
 pattern7 = "foo|bar|baz";

@@ -1,0 +1,42 @@
+/* Test string concatenation with retrieved values */
+
+"=== String Concatenation Test ===\n".echo();
+
+u = $unified();
+result = u.create("grapadbx://test_concat.dbx?type=COL");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Table creation succeeded\n".echo();
+    
+    /* Set some data */
+    u.set("user1", "Alice", "name");
+    
+    /* Get the data back */
+    name = u.get("user1", "name");
+    
+    /* Test different concatenation approaches */
+    "Test 1: Direct concatenation\n".echo();
+    ("Name: '" + name + "'\n").echo();
+    
+    "Test 2: Separate concatenation\n".echo();
+    prefix = "Name: '";
+    suffix = "'\n";
+    (prefix + name + suffix).echo();
+    
+    "Test 3: Using echo separately\n".echo();
+    "Name: '".echo();
+    name.echo();
+    "'\n".echo();
+    
+    "Test 4: Length check\n".echo();
+    ("Length: " + name.length() + "\n").echo();
+    
+    "Test 5: Type check\n".echo();
+    ("Type: " + name.type() + "\n").echo();
+    
+} else {
+    ("❌ Table creation failed: " + result + "\n").echo();
+}
+
+"=== Test Complete ===\n".echo(); 

@@ -440,13 +440,19 @@ GrapaError GrapaBtree::GetTreeStore(GrapaCursor& cursor, u64& storeTree, u8& sto
 
 	storeTree = 0;
 
+	printf("[DEBUG] GetTreeStore: cursor.mTreeRef=%llu\n", cursor.mTreeRef);
 	err = head.Read(mFile,cursor.mTreeRef);
-	if (err) return(err);
+	if (err) {
+		printf("[DEBUG] GetTreeStore: head.Read failed with error %d\n", err);
+		return(err);
+	}
 
+	printf("[DEBUG] GetTreeStore: head.blockType=%d, expected TREE_BLOCK=%d\n", head.blockType, GrapaBlock::TREE_BLOCK);
 	if (head.blockType!=GrapaBlock::TREE_BLOCK) return(-1);
 
 	storeTree = head.storeTree;
 	storeType = head.storeType;
+	printf("[DEBUG] GetTreeStore: storeTree=%llu, storeType=%d\n", storeTree, storeType);
 
 	return(0);
 }
@@ -518,12 +524,18 @@ GrapaError	GrapaBtree::GetTreeType(GrapaCursor& cursor, u8& treeType)
 
 	if (cursor.mTreeRef==0L) return(-1);
 
+	printf("[DEBUG] GetTreeType: cursor.mTreeRef=%llu\n", cursor.mTreeRef);
 	err = kb.Read(mFile,cursor.mTreeRef);
-	if (err) return(err);
+	if (err) {
+		printf("[DEBUG] GetTreeType: kb.Read failed with error %d\n", err);
+		return(err);
+	}
 
+	printf("[DEBUG] GetTreeType: kb.blockType=%d, expected TREE_BLOCK=%d\n", kb.blockType, GrapaBlock::TREE_BLOCK);
 	if (kb.blockType!=GrapaBlock::TREE_BLOCK) return(-1);
 
 	treeType = kb.treeType;
+	printf("[DEBUG] GetTreeType: kb.treeType=%d\n", treeType);
 
 	return(0);
 }

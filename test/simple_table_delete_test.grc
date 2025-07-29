@@ -1,4 +1,4 @@
-/* Simple table record deletion test */
+/* Simple table record deletion test
 table = $file().table("ROW");
 table.mkfield("name", "STR");
 table.set("user1", "Alice", "name");

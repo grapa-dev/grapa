@@ -1,31 +1,31 @@
-/* Test GrapaDBX Enhanced Dump System */
-/* This test demonstrates the enhanced dump functionality with real BTree information */
+/* Test GrapaDBX Enhanced Dump System
+/* This test demonstrates the enhanced dump functionality with real BTree information
 
 db = $file().table("GROUP");
 db.echo("Testing GrapaDBX Enhanced Dump System...");
 
-/* Create a more complex database structure */
+/* Create a more complex database structure
 db.createGroup("test_table", "ROW");
 db.echo("Database initialized successfully");
 
-/* Create multiple fields */
+/* Create multiple fields
 db.createField("name", "STR", "VAR", 32, 8);
 db.createField("age", "INT", "FIX", 8, 8);
 db.createField("salary", "FLOAT", "FIX", 8, 8);
 db.echo("Fields created successfully");
 
-/* Create a formula field */
+/* Create a formula field
 formula_text = "salary * 1.1";
-db.createFormulaField("bonus", formula_text, 6); /* FLOAT type */
+db.createFormulaField("bonus", formula_text, 6); /* FLOAT type
 db.echo("Formula field created successfully");
 
-/* Store some test data */
+/* Store some test data
 db.setField("test_table", "name", "John Doe");
 db.setField("test_table", "age", 30);
 db.setField("test_table", "salary", 50000.0);
 db.echo("Test data stored successfully");
 
-/* Test enhanced dump functionality */
+/* Test enhanced dump functionality
 db.echo("=== ENHANCED DUMP OUTPUT ===");
 db.echo("This should show real BTree information including:");
 db.echo("- Tree types (GROUP, RTABLE, etc.)");
@@ -35,7 +35,7 @@ db.echo("- Tree sizes");
 db.echo("- Node references");
 db.echo("");
 
-/* Perform the dump */
+/* Perform the dump
 db.dump();
 
 db.echo("");

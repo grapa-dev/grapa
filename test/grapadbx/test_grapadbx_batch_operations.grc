@@ -1,10 +1,10 @@
-/* Test script for GrapaDBX batch field operations */
-/* This demonstrates the performance benefits of batch operations */
+/* Test script for GrapaDBX batch field operations
+/* This demonstrates the performance benefits of batch operations
 
 "Testing GrapaDBX Batch Field Operations Concept...\n".echo();
 "==================================================\n".echo();
 
-/* Test 1: Individual Field Operations (Current Approach) */
+/* Test 1: Individual Field Operations (Current Approach)
 "Test 1: Individual Field Operations (Current Approach)\n".echo();
 "-----------------------------------------------------\n".echo();
 
@@ -41,12 +41,12 @@ city1 = f.get("user1", "city");
 
 ("Retrieved user1: " + name1 + ", age " + age1.raw().int().str() + ", salary " + salary1.raw().float().str() + "\n").echo();
 
-/* Test 2: Batch Field Operations (Proposed Approach) */
+/* Test 2: Batch Field Operations (Proposed Approach)
 "Test 2: Batch Field Operations (Proposed Approach)\n".echo();
 "------------------------------------------------\n".echo();
 
 "Setting data using batch operations (efficient):\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 f.setBatch("user2", {
     "name": "Jane Smith",
@@ -61,19 +61,19 @@ f.setBatch("user2", {
 */
 
 "Getting data using batch operations (efficient):\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 user2_data = f.getBatch("user2", ["name", "age", "salary", "department"]);
 ("Retrieved user2: " + user2_data["name"] + ", age " + user2_data["age"].raw().int().str() + 
  ", salary " + user2_data["salary"].raw().float().str() + "\n").echo();
 */
 
-/* Test 3: Multiple Records Batch Operations */
+/* Test 3: Multiple Records Batch Operations
 "Test 3: Multiple Records Batch Operations (Proposed)\n".echo();
 "--------------------------------------------------\n".echo();
 
 "Setting multiple records using batch operations:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 f.setBatchMultiple({
     "user3": {
@@ -98,7 +98,7 @@ f.setBatchMultiple({
 */
 
 "Getting multiple records using batch operations:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 users_data = f.getBatchMultiple(["user3", "user4", "user5"], ["name", "age", "department"]);
 i = 0;
@@ -111,7 +111,7 @@ while (i < users_data.len()) {
 }
 */
 
-/* Test 4: Performance Comparison */
+/* Test 4: Performance Comparison
 "Test 4: Performance Comparison\n".echo();
 "-----------------------------\n".echo();
 
@@ -133,12 +133,12 @@ while (i < users_data.len()) {
 "• Expected transaction improvement: 8x faster\n".echo();
 "\n".echo();
 
-/* Test 5: Real-World Usage Examples */
+/* Test 5: Real-World Usage Examples
 "Test 5: Real-World Usage Examples\n".echo();
 "--------------------------------\n".echo();
 
 "Example 1: User Registration\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 f.setBatch("new_user_123", {
     "username": "johndoe",
@@ -153,7 +153,7 @@ f.setBatch("new_user_123", {
 "\n".echo();
 
 "Example 2: Order Processing\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 f.setBatch("order_456", {
     "customer_id": 12345,
@@ -169,7 +169,7 @@ f.setBatch("order_456", {
 "\n".echo();
 
 "Example 3: Analytics Data Retrieval\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 analytics_data = f.getBatchMultiple(["user1", "user2", "user3", "user4", "user5"], ;
                                    ["age", "salary", "department"]);
@@ -177,7 +177,7 @@ analytics_data = f.getBatchMultiple(["user1", "user2", "user3", "user4", "user5"
 "✓ Single batch operation instead of 15 individual operations\n".echo();
 "\n".echo();
 
-/* Test 6: Backward Compatibility */
+/* Test 6: Backward Compatibility
 "Test 6: Backward Compatibility\n".echo();
 "-----------------------------\n".echo();
 
@@ -188,7 +188,7 @@ analytics_data = f.getBatchMultiple(["user1", "user2", "user3", "user4", "user5"
 "✓ Optional deprecation of individual operations\n".echo();
 "\n".echo();
 
-/* Summary */
+/* Summary
 "Summary: GrapaDBX Batch Operations Benefits\n".echo();
 "==========================================\n".echo();
 "✅ 3-20x performance improvement for multi-field operations\n".echo();

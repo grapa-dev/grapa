@@ -1,20 +1,20 @@
-/* Simple GrapaDB test to compare behavior */
+/* Simple GrapaDB test to compare behavior
 
-/* Create a GrapaDB database */
+/* Create a GrapaDB database
 db = $file().table("GROUP");
 
-/* Create a field first */
+/* Create a field first
 db.mkfield("$VALUE", "STR", "VAR");
 
-/* Try to get a simple value */
+/* Try to get a simple value
 result = db.get("test", "$VALUE");
 "Simple get result: ".echo();
 result.echo();
 
-/* Try to set a value first */
+/* Try to set a value first
 db.set("test", "$VALUE", "test_value");
 
-/* Try to get it again */
+/* Try to get it again
 result = db.get("test", "$VALUE");
 "After set, get result: ".echo();
 result.echo();

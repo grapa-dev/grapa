@@ -4,11 +4,11 @@
 
 "=== RIPGREP PARITY TEST: UNICODE ===\n".echo();
 
-/* Initialize file system access */
+/* Initialize file system access
 fs = $file();
 fs.chd("test/grep/inputs");
 
-/* Test 1: Unicode literal match */
+/* Test 1: Unicode literal match
 "Test 1: Unicode literal match\n".echo();
 input = fs.get("unicode.txt").str();
 result = input.grep("café", "");
@@ -19,7 +19,7 @@ result = input.grep("café", "");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Grapheme cluster extraction */
+/* Test 2: Grapheme cluster extraction
 "Test 2: Grapheme cluster extraction\n".echo();
 result = input.grep("\\X", "o");
 ("Pattern: \\X, Options: o\n").echo();
@@ -28,7 +28,7 @@ result = input.grep("\\X", "o");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Unicode script property */
+/* Test 3: Unicode script property
 "Test 3: Unicode script property\n".echo();
 result = input.grep("\\p{Han}+", "");
 ("Pattern: \\p{Han}+, Options: (none)\n").echo();
@@ -37,7 +37,7 @@ result = input.grep("\\p{Han}+", "");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Case-insensitive Unicode */
+/* Test 4: Case-insensitive Unicode
 "Test 4: Case-insensitive Unicode\n".echo();
 result = input.grep("PÂTÉ", "i");
 ("Pattern: PÂTÉ, Options: i\n").echo();
@@ -46,7 +46,7 @@ result = input.grep("PÂTÉ", "i");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Emoji grapheme clusters */
+/* Test 5: Emoji grapheme clusters
 "Test 5: Emoji grapheme clusters\n".echo();
 result = input.grep("👨‍👩‍👧‍👦", "o");
 ("Pattern: 👨‍👩‍👧‍👦, Options: o\n").echo();

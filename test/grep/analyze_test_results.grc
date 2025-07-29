@@ -8,7 +8,7 @@
 "=== GRAPA GREP TEST RESULTS ANALYSIS ===\n".echo();
 "Analyzing test results to identify implementation gaps...\n".echo();
 
-/* Test categories and their status */
+/* Test categories and their status
 categories = {;
     "basic_pattern_matching": "WORKING",
     "case_insensitive": "WORKING", 
@@ -29,7 +29,7 @@ categories = {;
     "ripgrep_compatibility": "PARTIAL"
 };
 
-/* Implementation priorities */
+/* Implementation priorities
 priorities = {;
     "CRITICAL": ["invert_match", "count_only"],
     "HIGH": ["lookaround_assertions", "context_lines"],
@@ -37,7 +37,7 @@ priorities = {;
     "LOW": ["ripgrep_compatibility"]
 };
 
-/* Generate analysis report */
+/* Generate analysis report
 "=== FEATURE STATUS ===\n".echo();
 i = 0;
 keys = categories.keys();

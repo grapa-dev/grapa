@@ -1,9 +1,9 @@
-/* Targeted Fixes Test */
-/* Focus on the most critical issues */
+/* Targeted Fixes Test
+/* Focus on the most critical issues
 
 ("=== TARGETED FIXES TEST ===\n").echo();
 
-/* Issue 1: Multiline patterns with custom delimiters */
+/* Issue 1: Multiline patterns with custom delimiters
 ("Issue 1: Multiline patterns with custom delimiters\n").echo();
 input1 = "start|middle|end";
 result1a = input1.grep("start.*end", "s", "|");
@@ -16,7 +16,7 @@ result1b = input1.grep("start.*end", "a", "|");
 ("Expected: Both should return [\"start|middle|end\"]\n").echo();
 ("---\n").echo();
 
-/* Issue 2: Lookaround assertions */
+/* Issue 2: Lookaround assertions
 ("Issue 2: Lookaround assertions\n").echo();
 input2 = "word123|text456|word789";
 result2a = input2.grep("\\w+(?=\\d)", "o", "|");
@@ -29,7 +29,7 @@ result2b = input2.grep("(?<=\\d)\\w+", "o", "|");
 ("Expected: [\"word\", \"text\", \"word\"] for both\n").echo();
 ("---\n").echo();
 
-/* Issue 3: Match-only with custom delimiters */
+/* Issue 3: Match-only with custom delimiters
 ("Issue 3: Match-only with custom delimiters\n").echo();
 input3 = "line1|||line2|||line3";
 result3 = input3.grep("line", "o", "|||");
@@ -39,7 +39,7 @@ result3 = input3.grep("line", "o", "|||");
 ("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
 ("---\n").echo();
 
-/* Issue 4: Unicode script properties */
+/* Issue 4: Unicode script properties
 ("Issue 4: Unicode script properties\n").echo();
 input4 = "Hello 世界 123 €|Goodbye 世界 456 €";
 result4 = input4.grep("\\p{sc=Latin}", "o", "|");

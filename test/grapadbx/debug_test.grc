@@ -1,15 +1,15 @@
-/* Debug test for GrapaDBX integration */
+/* Debug test for GrapaDBX integration
 
 .echo("Starting debug test...\n");
 
-/* Test 1: Basic echo */
+/* Test 1: Basic echo
 .echo("Test 1: Basic echo works\n");
 
-/* Test 2: Variable assignment */
+/* Test 2: Variable assignment
 test_var = "test value";
 .echo("Test 2: Variable assignment works: " + test_var + "\n");
 
-/* Test 3: $unified() function call */
+/* Test 3: $unified() function call
 .echo("Test 3: Calling $unified()...\n");
 try {
     dbx = $unified("grapadbx://test.dbx");

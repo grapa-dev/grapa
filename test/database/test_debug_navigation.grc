@@ -1,22 +1,22 @@
-/* Debug navigation test */
+/* Debug navigation test
 
-/* Create unified storage object */
+/* Create unified storage object
 dbx = $unified();
 
-/* Create GrapaDBX database */
-result = dbx.create("grapadbx: /* testdbx"); */
+/* Create GrapaDBX database
+result = dbx.create("grapadbx://testdbx");
 
-/* Create field */
+/* Create field
 result = dbx.mk("$VALUE", "STR");
 "mk result: ".echo();
 result.echo();
 
-/* Set value */
+/* Set value
 result = dbx.set("test", "test_value", "$VALUE");
 "set result: ".echo();
 result.echo();
 
-/* Get value */
+/* Get value
 result = dbx.get("test", "$VALUE");
 "get result: ".echo();
 result.echo();

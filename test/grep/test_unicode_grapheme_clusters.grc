@@ -8,9 +8,9 @@
 
 "=== UNICODE GRAPHEME CLUSTERS TEST ===\n".echo();
 
-/* ======================================== */
-/* 1. Basic grapheme clusters */
-/* ======================================== */
+/* ========================================
+/* 1. Basic grapheme clusters
+/* ========================================
 "Test 1: Basic grapheme clusters\n".echo();
 input = "café";
 result = input.grep("\\X", "o");
@@ -20,11 +20,11 @@ result = input.grep("\\X", "o");
 ("Expected: [\"c\", \"a\", \"f\", \"é\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 2. Combining marks */
-/* ======================================== */
+/* ========================================
+/* 2. Combining marks
+/* ========================================
 "Test 2: Combining marks\n".echo();
-input = "e\u0301";  /* e + combining acute */
+input = "e\u0301";  /* e + combining acute
 result = input.grep("\\X", "o");
 ("Input: e\\u0301 (e + combining acute)\n").echo();
 ("Pattern: \\X, Options: o\n").echo();
@@ -32,11 +32,11 @@ result = input.grep("\\X", "o");
 ("Expected: [\"é\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 3. Emoji sequences */
-/* ======================================== */
+/* ========================================
+/* 3. Emoji sequences
+/* ========================================
 "Test 3: Emoji sequences\n".echo();
-input = "😀\u2764\ufe0f";  /* smiley + heart + emoji modifier */
+input = "😀\u2764\ufe0f";  /* smiley + heart + emoji modifier
 result = input.grep("\\X", "o");
 ("Input: 😀\\u2764\\ufe0f (smiley + heart + emoji modifier)\n").echo();
 ("Pattern: \\X, Options: o\n").echo();
@@ -44,11 +44,11 @@ result = input.grep("\\X", "o");
 ("Expected: [\"😀\", \"❤️\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 4. Complex emoji sequences */
-/* ======================================== */
+/* ========================================
+/* 4. Complex emoji sequences
+/* ========================================
 "Test 4: Complex emoji sequences\n".echo();
-input = "👨‍👩‍👧‍👦";  /* family emoji */
+input = "👨‍👩‍👧‍👦";  /* family emoji
 result = input.grep("\\X", "o");
 ("Input: 👨‍👩‍👧‍👦 (family emoji)\n").echo();
 ("Pattern: \\X, Options: o\n").echo();
@@ -56,9 +56,9 @@ result = input.grep("\\X", "o");
 ("Expected: [\"👨‍👩‍👧‍👦\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 5. Mixed content */
-/* ======================================== */
+/* ========================================
+/* 5. Mixed content
+/* ========================================
 "Test 5: Mixed content\n".echo();
 input = "Hello 世界 😀";
 result = input.grep("\\X", "o");
@@ -68,9 +68,9 @@ result = input.grep("\\X", "o");
 ("Expected: [\"H\", \"e\", \"l\", \"l\", \"o\", \" \", \"世\", \"界\", \" \", \"😀\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 6. Grapheme clusters with quantifiers */
-/* ======================================== */
+/* ========================================
+/* 6. Grapheme clusters with quantifiers
+/* ========================================
 "Test 6: Grapheme clusters with quantifiers\n".echo();
 input = "café";
 result = input.grep("\\X+", "o");
@@ -80,9 +80,9 @@ result = input.grep("\\X+", "o");
 ("Expected: [\"café\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 7. Zero or more grapheme clusters */
-/* ======================================== */
+/* ========================================
+/* 7. Zero or more grapheme clusters
+/* ========================================
 "Test 7: Zero or more grapheme clusters\n".echo();
 input = "café";
 result = input.grep("\\X*", "o");
@@ -92,9 +92,9 @@ result = input.grep("\\X*", "o");
 ("Expected: [\"\", \"café\", \"\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 8. Optional grapheme clusters */
-/* ======================================== */
+/* ========================================
+/* 8. Optional grapheme clusters
+/* ========================================
 "Test 8: Optional grapheme clusters\n".echo();
 input = "café";
 result = input.grep("\\X?", "o");
@@ -104,9 +104,9 @@ result = input.grep("\\X?", "o");
 ("Expected: [\"\", \"c\", \"\", \"a\", \"\", \"f\", \"\", \"é\", \"\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 9. Specific count grapheme clusters */
-/* ======================================== */
+/* ========================================
+/* 9. Specific count grapheme clusters
+/* ========================================
 "Test 9: Specific count grapheme clusters\n".echo();
 input = "café";
 result = input.grep("\\X{2,3}", "o");
@@ -116,9 +116,9 @@ result = input.grep("\\X{2,3}", "o");
 ("Expected: [\"ca\", \"fé\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 10. Newlines in grapheme clusters */
-/* ======================================== */
+/* ========================================
+/* 10. Newlines in grapheme clusters
+/* ========================================
 "Test 10: Newlines in grapheme clusters\n".echo();
 input = "é\n😀";
 result = input.grep("\\X", "o");
@@ -128,9 +128,9 @@ result = input.grep("\\X", "o");
 ("Expected: [\"é\", \"\\n\", \"😀\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 11. Simple grapheme cluster tests */
-/* ======================================== */
+/* ========================================
+/* 11. Simple grapheme cluster tests
+/* ========================================
 "Test 11: Simple grapheme cluster tests\n".echo();
 input = "Hello";
 result = input.grep("\\X", "oj");
@@ -149,9 +149,9 @@ result = input.grep("\\X", "oj");
 ("Mixed Content: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 12. Debug grapheme cluster tests */
-/* ======================================== */
+/* ========================================
+/* 12. Debug grapheme cluster tests
+/* ========================================
 "Test 12: Debug grapheme cluster tests\n".echo();
 input = "👨‍💻👩‍🏫👶‍👧";
 ("Complex Unicode Sequences: " + input + "\n").echo();

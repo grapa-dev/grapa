@@ -1,17 +1,17 @@
-/* Test Field Definition Management - Add, Delete, Modify Fields */
+/* Test Field Definition Management - Add, Delete, Modify Fields
 
 "=== Testing Field Definition Management ===\n".echo();
 "Demonstrating field operations with index dependency handling\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing any existing test files...\n".echo();
 f = $file();
 f.rm("test_field_management");
 "Cleanup completed.\n".echo();
 
-/* ================================================================================ */
-/* Test Setup: Create Database with Initial Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test Setup: Create Database with Initial Fields
+/* ================================================================================
 "Test Setup: Creating Database with Initial Fields\n".echo();
 "------------------------------------------------\n".echo();
 
@@ -36,9 +36,9 @@ group_db.set("user2", 28, "age");
 group_db.set("user2", "Los Angeles", "city");
 "✓ Test data added\n".echo();
 
-/* ================================================================================ */
-/* Test 1: Add New Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 1: Add New Fields
+/* ================================================================================
 "Test 1: Add New Fields\n".echo();
 "---------------------\n".echo();
 
@@ -69,9 +69,9 @@ user2_dept = group_db.get("user2", "department");
 user2_salary = group_db.get("user2", "salary").raw().int();
 ("user2 - name: " + user2_name.str() + ", dept: " + user2_dept.str() + ", salary: " + user2_salary.str() + "\n").echo();
 
-/* ================================================================================ */
-/* Test 2: Field Modification (Conceptual) */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 2: Field Modification (Conceptual)
+/* ================================================================================
 "Test 2: Field Modification (Conceptual)\n".echo();
 "---------------------------------------\n".echo();
 
@@ -87,9 +87,9 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 "- Index rebuilds\n".echo();
 "- Transaction safety\n".echo();
 
-/* ================================================================================ */
-/* Test 3: Index Dependency Management */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 3: Index Dependency Management
+/* ================================================================================
 "Test 3: Index Dependency Management\n".echo();
 "-----------------------------------\n".echo();
 
@@ -103,17 +103,17 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 
 "Implementation details:\n".echo();
 "```cpp\n".echo();
-" /* Check all indexes for field usage before deletion\n".echo(); */
+" /* Check all indexes for field usage before deletion\n".echo();
 "while (!err) {\n".echo();
 "    if (indexFieldCursor.mValue == pFieldId)\n".echo();
-"        return(-1); /* Field used in index - cannot delete\n".echo(); */
+"        return(-1); /* Field used in index - cannot delete\n".echo();
 "    err = Next(indexFieldCursor);\n".echo();
 "}\n".echo();
 "```\n".echo();
 
-/* ================================================================================ */
-/* Test 4: Data Propagation During Field Changes */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 4: Data Propagation During Field Changes
+/* ================================================================================
 "Test 4: Data Propagation During Field Changes\n".echo();
 "---------------------------------------------\n".echo();
 
@@ -132,13 +132,13 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 
 "ROW Table Field Management:\n".echo();
 "```cpp\n".echo();
-" /* Bit-shift all records to remove deleted field\n".echo(); */
+" /* Bit-shift all records to remove deleted field\n".echo();
 "err = CopyDataValue(tableCursor.mValue, toOffset, tableCursor.mValue, fromOffset, moveSize, &bytesWriten);\n".echo();
 "```\n".echo();
 
 "COL Table Field Management:\n".echo();
 "```cpp\n".echo();
-" /* Delete field's column storage based on type and storage method\n".echo(); */
+" /* Delete field's column storage based on type and storage method\n".echo();
 "switch (fieldStore) {\n".echo();
 "    case STORE_VAR:\n".echo();
 "    case STORE_PAR:\n".echo();
@@ -152,9 +152,9 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 "}\n".echo();
 "```\n".echo();
 
-/* ================================================================================ */
-/* Test 5: Transaction Safety */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 5: Transaction Safety
+/* ================================================================================
 "Test 5: Transaction Safety\n".echo();
 "--------------------------\n".echo();
 
@@ -168,21 +168,21 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 
 "Implementation:\n".echo();
 "```cpp\n".echo();
-" /* Set tree dirty during field operations\n".echo(); */
+" /* Set tree dirty during field operations\n".echo();
 "indexCursor.Set(pTable.mRecRef);\n".echo();
 "err = SetTreeDirty(indexCursor, true);\n".echo();
 "\n".echo();
-" /* Perform field operations\n".echo(); */
-" /* ... field modification code ...\n".echo(); */
+" /* Perform field operations\n".echo();
+" /* ... field modification code ...\n".echo();
 "\n".echo();
-" /* Clear dirty bit when complete\n".echo(); */
+" /* Clear dirty bit when complete\n".echo();
 "indexCursor.Set(pTable.mRecRef);\n".echo();
 "err = SetTreeDirty(indexCursor, false);\n".echo();
 "```\n".echo();
 
-/* ================================================================================ */
-/* Test 6: Field Operations Summary */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 6: Field Operations Summary
+/* ================================================================================
 "Test 6: Field Operations Summary\n".echo();
 "--------------------------------\n".echo();
 
@@ -207,9 +207,9 @@ user2_salary = group_db.get("user2", "salary").raw().int();
 "- VAR: Variable-length storage\n".echo();
 "- PAR: Partitioned storage\n".echo();
 
-/* ================================================================================ */
-/* Test 7: List All Records and Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 7: List All Records and Fields
+/* ================================================================================
 "Test 7: List All Records and Fields\n".echo();
 "-----------------------------------\n".echo();
 
@@ -230,9 +230,9 @@ while (i < all_records.len()) {
     i = i + 1;
 }
 
-/* ================================================================================ */
-/* Summary */
-/* ================================================================================ */
+/* ================================================================================
+/* Summary
+/* ================================================================================
 "=== Test Summary ===\n".echo();
 "✓ Field definition management demonstrated\n".echo();
 "✓ Field addition works with existing data\n".echo();

@@ -1,10 +1,10 @@
-/* Basic Database Tests for Grapa */
-/* Tests fundamental database operations for all table types */
+/* Basic Database Tests for Grapa
+/* Tests fundamental database operations for all table types
 
 "=== BASIC DATABASE TESTS ===\n".echo();
 "Testing fundamental database operations\n".echo();
 
-/* Test 1: Table Creation and Types */
+/* Test 1: Table Creation and Types
 "Test 1: Table Creation and Types\n".echo();
 "--------------------------------\n".echo();
 
@@ -34,7 +34,7 @@ f4 = $file().table("GROUP");
 f4.type().echo();
 "\n".echo();
 
-/* Test 2: Field Creation and Types */
+/* Test 2: Field Creation and Types
 "Test 2: Field Creation and Types\n".echo();
 "--------------------------------\n".echo();
 
@@ -54,7 +54,7 @@ f3.mkfield("active", "BOOL", "FIX", 1);
 f3.mkfield("timestamp", "TIME", "FIX", 8);
 "Column store fields created successfully.\n".echo();
 
-/* Test 3: Data Operations - Row Store */
+/* Test 3: Data Operations - Row Store
 "Test 3: Data Operations - Row Store\n".echo();
 "-----------------------------------\n".echo();
 
@@ -92,7 +92,7 @@ f2.get("user1", "active").echo();
 f2.get("user1", "timestamp").echo();
 "\n".echo();
 
-/* Test 4: Data Operations - Column Store */
+/* Test 4: Data Operations - Column Store
 "Test 4: Data Operations - Column Store\n".echo();
 "-------------------------------------\n".echo();
 
@@ -130,7 +130,7 @@ f3.get("user1", "active").echo();
 f3.get("user1", "timestamp").echo();
 "\n".echo();
 
-/* Test 5: Listing and Navigation */
+/* Test 5: Listing and Navigation
 "Test 5: Listing and Navigation\n".echo();
 "------------------------------\n".echo();
 
@@ -144,7 +144,7 @@ col_contents = f3.ls();
 col_contents.echo();
 "\n".echo();
 
-/* Test 6: Field Information */
+/* Test 6: Field Information
 "Test 6: Field Information\n".echo();
 "-------------------------\n".echo();
 
@@ -156,7 +156,7 @@ f2.debug();
 f3.debug();
 "\n".echo();
 
-/* Test 7: Error Handling */
+/* Test 7: Error Handling
 "Test 7: Error Handling\n".echo();
 "----------------------\n".echo();
 
@@ -182,7 +182,7 @@ error_result4 = f3.get("user1", "nonexistent");
 error_result4.echo();
 "\n".echo();
 
-/* Test 8: Data Type Handling */
+/* Test 8: Data Type Handling
 "Test 8: Data Type Handling\n".echo();
 "--------------------------\n".echo();
 
@@ -213,7 +213,7 @@ f2.set("test5", 1640995200, "timestamp");
 f2.get("test5", "timestamp").echo();
 "\n".echo();
 
-/* Test 9: Field Removal */
+/* Test 9: Field Removal
 "Test 9: Field Removal\n".echo();
 "---------------------\n".echo();
 
@@ -232,7 +232,7 @@ f2.rmfield("temp_field");
 f2.get("user1", "temp_field").echo();
 "\n".echo();
 
-/* Test 10: Performance Comparison */
+/* Test 10: Performance Comparison
 "Test 10: Performance Comparison\n".echo();
 "-------------------------------\n".echo();
 
@@ -263,7 +263,7 @@ f2.ls().length().echo();
 f3.ls().length().echo();
 "\n".echo();
 
-/* Test Summary */
+/* Test Summary
 "=== BASIC DATABASE TESTS COMPLETED ===\n".echo();
 "All basic database operations tested successfully!\n".echo();
 "Database functions tested:\n".echo();

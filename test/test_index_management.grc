@@ -1,17 +1,17 @@
-/* Test Index Definition Management - Create, Delete, Refresh, Modify */
+/* Test Index Definition Management - Create, Delete, Refresh, Modify
 
 "=== Testing Index Definition Management ===\n".echo();
 "Demonstrating delete-and-recreate approach for index management\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing any existing test files...\n".echo();
 f = $file();
 f.rm("test_index_management");
 "Cleanup completed.\n".echo();
 
-/* ================================================================================ */
-/* Test Setup: Create Database with Fields */
-/* ================================================================================ */
+/* ================================================================================
+/* Test Setup: Create Database with Fields
+/* ================================================================================
 "Test Setup: Creating Database with Fields\n".echo();
 "----------------------------------------\n".echo();
 
@@ -49,9 +49,9 @@ group_db.set("user3", "Sales", "department");
 group_db.set("user3", 80000, "salary");
 "✓ Test data added\n".echo();
 
-/* ================================================================================ */
-/* Test 1: Index Creation and Basic Operations */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 1: Index Creation and Basic Operations
+/* ================================================================================
 "Test 1: Index Creation and Basic Operations\n".echo();
 "-------------------------------------------\n".echo();
 
@@ -62,7 +62,7 @@ group_db.set("user3", 80000, "salary");
 
 "Index creation workflow:\n".echo();
 "```cpp\n".echo();
-" /* Create index on specified fields\n".echo(); */
+" /* Create index on specified fields\n".echo();
 "GrapaDBIndex dbIndex;\n".echo();
 "GrapaDU64Array fieldList(2);\n".echo();
 "fieldList.Append(1, nameFieldId);\n".echo();
@@ -70,9 +70,9 @@ group_db.set("user3", 80000, "salary");
 "err = CreateIndex(table, indexId, fieldList, dbIndex);\n".echo();
 "```\n".echo();
 
-/* ================================================================================ */
-/* Test 2: Index Field Addition */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 2: Index Field Addition
+/* ================================================================================
 "Test 2: Index Field Addition\n".echo();
 "----------------------------\n".echo();
 
@@ -81,20 +81,20 @@ group_db.set("user3", 80000, "salary");
 
 "Implementation details:\n".echo();
 "```cpp\n".echo();
-" /* Adding a field to an existing index\n".echo(); */
+" /* Adding a field to an existing index\n".echo();
 "GrapaError GrapaDB::CreateIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u64 pFieldId)\n".echo();
 "{\n".echo();
-" /* Add field to index definition\n".echo(); */
+" /* Add field to index definition\n".echo();
 "    indexCursor.Set(indexFieldsRef, SU64_ITEM, pIndexFieldId, pFieldId);\n".echo();
 "    err = Insert(indexCursor);\n".echo();
 "    \n".echo();
-" /* Rebuild entire index with new field\n".echo(); */
+" /* Rebuild entire index with new field\n".echo();
 "    indexCursor.Set(pIndex.mRef, TREE_ITEM);\n".echo();
-"    EmptyTree(indexCursor); /* Clear existing index data\n".echo(); */
+"    EmptyTree(indexCursor); /* Clear existing index data\n".echo();
 "    dtCursor.Set(pIndex.mTable.mRef);\n".echo();
 "    err = First(dtCursor);\n".echo();
 "    while(!err) {\n".echo();
-" /* Rebuild index entries for all records\n".echo(); */
+" /* Rebuild index entries for all records\n".echo();
 "        indexCursor.Set(pIndex.mRef, RPTR_ITEM, dtCursor.mKey);\n".echo();
 "        Insert(indexCursor);\n".echo();
 "        err = Next(dtCursor);\n".echo();
@@ -103,9 +103,9 @@ group_db.set("user3", 80000, "salary");
 "}\n".echo();
 "```\n".echo();
 
-/* ================================================================================ */
-/* Test 3: Index Refresh Process */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 3: Index Refresh Process
+/* ================================================================================
 "Test 3: Index Refresh Process\n".echo();
 "-----------------------------\n".echo();
 
@@ -114,17 +114,17 @@ group_db.set("user3", 80000, "salary");
 
 "Implementation details:\n".echo();
 "```cpp\n".echo();
-" /* Complete index rebuild\n".echo(); */
+" /* Complete index rebuild\n".echo();
 "GrapaError GrapaDB::RefreshIndex(GrapaDBIndex& pIndex)\n".echo();
 "{\n".echo();
 "    GrapaCursor indexCursor, dtCursor;\n".echo();
 "    indexCursor.Set(pIndex.mRef);\n".echo();
-"    EmptyTree(indexCursor); /* Clear all index data\n".echo(); */
+"    EmptyTree(indexCursor); /* Clear all index data\n".echo();
 "    \n".echo();
 "    dtCursor.Set(pIndex.mTable.mRef);\n".echo();
 "    err = First(dtCursor);\n".echo();
 "    while(!err) {\n".echo();
-" /* Rebuild index entries for all records\n".echo(); */
+" /* Rebuild index entries for all records\n".echo();
 "        indexCursor.Set(pIndex.mRef, RPTR_ITEM, dtCursor.mKey, dtCursor.mValue);\n".echo();
 "        Insert(indexCursor);\n".echo();
 "        err = Next(dtCursor);\n".echo();
@@ -133,9 +133,9 @@ group_db.set("user3", 80000, "salary");
 "}\n".echo();
 "```\n".echo();
 
-/* ================================================================================ */
-/* Test 4: Delete-and-Recreate Strategy */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 4: Delete-and-Recreate Strategy
+/* ================================================================================
 "Test 4: Delete-and-Recreate Strategy\n".echo();
 "------------------------------------\n".echo();
 
@@ -156,21 +156,21 @@ group_db.set("user3", 80000, "salary");
 
 "Implementation:\n".echo();
 "```cpp\n".echo();
-" /* Delete existing index\n".echo(); */
+" /* Delete existing index\n".echo();
 "err = DeleteIndex(table, oldIndexId);\n".echo();
 "\n".echo();
-" /* Create new index with updated definition\n".echo(); */
+" /* Create new index with updated definition\n".echo();
 "GrapaDBIndex newIndex;\n".echo();
 "GrapaDU64Array newFieldList(3);\n".echo();
 "newFieldList.Append(1, nameFieldId);\n".echo();
 "newFieldList.Append(2, ageFieldId);\n".echo();
-"newFieldList.Append(3, departmentFieldId); /* Added field\n".echo(); */
+"newFieldList.Append(3, departmentFieldId); /* Added field\n".echo();
 "err = CreateIndex(table, newIndexId, newFieldList, newIndex);\n".echo();
 "```\n".echo();
 
-/* ================================================================================ */
-/* Test 5: When to Use Each Approach */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 5: When to Use Each Approach
+/* ================================================================================
 "Test 5: When to Use Each Approach\n".echo();
 "---------------------------------\n".echo();
 
@@ -196,9 +196,9 @@ group_db.set("user3", 80000, "salary");
 "- More efficient than multiple incremental changes\n".echo();
 "- Atomic operation ensures data consistency\n".echo();
 
-/* ================================================================================ */
-/* Test 6: Implementation Considerations */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 6: Implementation Considerations
+/* ================================================================================
 "Test 6: Implementation Considerations\n".echo();
 "------------------------------------\n".echo();
 
@@ -224,9 +224,9 @@ group_db.set("user3", 80000, "salary");
 "- Keep backup of index definitions\n".echo();
 "- Monitor index integrity after changes\n".echo();
 
-/* ================================================================================ */
-/* Test 7: Index Management Summary */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 7: Index Management Summary
+/* ================================================================================
 "Test 7: Index Management Summary\n".echo();
 "--------------------------------\n".echo();
 
@@ -248,9 +248,9 @@ group_db.set("user3", 80000, "salary");
 "- Prioritizes system reliability and maintainability\n".echo();
 "- Eliminates complex edge cases and corruption risks\n".echo();
 
-/* ================================================================================ */
-/* Test 8: Demonstrate Index Usage */
-/* ================================================================================ */
+/* ================================================================================
+/* Test 8: Demonstrate Index Usage
+/* ================================================================================
 "Test 8: Demonstrate Index Usage\n".echo();
 "-------------------------------\n".echo();
 
@@ -275,9 +275,9 @@ group_db.set("user3", 80000, "salary");
 "- Choose index that covers most search criteria\n".echo();
 "- Fall back to sequential scan if no suitable index\n".echo();
 
-/* ================================================================================ */
-/* Summary */
-/* ================================================================================ */
+/* ================================================================================
+/* Summary
+/* ================================================================================
 "=== Test Summary ===\n".echo();
 "✓ Index definition management demonstrated\n".echo();
 "✓ Delete-and-recreate approach documented\n".echo();

@@ -1,15 +1,15 @@
-/* Advanced File System Tests for Grapa */
-/* Tests advanced file system operations including split, large files, and edge cases */
+/* Advanced File System Tests for Grapa
+/* Tests advanced file system operations including split, large files, and edge cases
 
 "=== ADVANCED FILE SYSTEM TESTS ===".echo();
 "\n".echo();
 "Testing advanced file system operations".echo();
 "\n".echo();
 
-/* Initialize file system object */
+/* Initialize file system object
 f = $file();
 
-/* Test 1: File Split Functionality */
+/* Test 1: File Split Functionality
 "Test 1: File Split Functionality".echo();
 "\n".echo();
 "--------------------------------".echo();
@@ -61,7 +61,7 @@ while (i < split_files.length()) {
     i = i + 1;
 }
 
-/* Test 2: CSV File Splitting with Header */
+/* Test 2: CSV File Splitting with Header
 "Test 2: CSV File Splitting with Header".echo();
 "\n".echo();
 "-------------------------------------".echo();
@@ -103,7 +103,7 @@ csv_files.echo();
 "".echo();
 "\n".echo();
 
-/* Test 3: Custom Delimiter Splitting */
+/* Test 3: Custom Delimiter Splitting
 "Test 3: Custom Delimiter Splitting".echo();
 "\n".echo();
 "--------------------------------".echo();
@@ -133,7 +133,7 @@ custom_result.echo();
 "".echo();
 "\n".echo();
 
-/* Test 4: Start Option Splitting */
+/* Test 4: Start Option Splitting
 "Test 4: Start Option Splitting".echo();
 "\n".echo();
 "----------------------------".echo();
@@ -161,7 +161,7 @@ start_result.echo();
 "".echo();
 "\n".echo();
 
-/* Test 5: File Size Analysis */
+/* Test 5: File Size Analysis
 "Test 5: File Size Analysis".echo();
 "\n".echo();
 "------------------------".echo();
@@ -194,7 +194,7 @@ custom_file_info.echo();
 "".echo();
 "\n".echo();
 
-/* Test 6: Error Handling for Split */
+/* Test 6: Error Handling for Split
 "Test 6: Error Handling for Split".echo();
 "\n".echo();
 "--------------------------------".echo();
@@ -220,7 +220,7 @@ invalid_result.echo();
 "".echo();
 "\n".echo();
 
-/* Test 7: Content Verification */
+/* Test 7: Content Verification
 "Test 7: Content Verification".echo();
 "\n".echo();
 "---------------------------".echo();
@@ -245,7 +245,7 @@ csv_content_check = f.get(csv_file);
 ("CSV split file (" + csv_file + ") starts with header: " + (csv_content_check.indexOf("Name,Age,City,Occupation") >= 0)).echo();
 "\n".echo();
 
-/* Test 8: Large File Operations */
+/* Test 8: Large File Operations
 "Test 8: Large File Operations".echo();
 "\n".echo();
 "----------------------------".echo();
@@ -281,7 +281,7 @@ very_large_result.echo();
 "".echo();
 "\n".echo();
 
-/* Test 9: Cleanup */
+/* Test 9: Cleanup
 "Test 9: Cleanup".echo();
 "\n".echo();
 "---------------".echo();
@@ -353,7 +353,7 @@ f.rm("very_large_split_output");
 "Cleanup completed.".echo();
 "\n".echo();
 
-/* Test Summary */
+/* Test Summary
 "=== ADVANCED FILE SYSTEM TESTS COMPLETED ===\n".echo();
 "All advanced file system operations tested successfully!\n".echo();
 "Advanced functions tested:\n".echo();

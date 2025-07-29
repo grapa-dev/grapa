@@ -131,10 +131,12 @@ public:
     /* Enhanced operations that work across storage types */
     virtual GrapaError DirectoryCreate(GrapaCHAR& pName, GrapaCHAR& pType) override;
     virtual GrapaError DataCreate(const GrapaCHAR& pName) override;
-    virtual GrapaError DataDelete(const GrapaCHAR& pName) override;
+    	virtual GrapaError DataDelete(const GrapaCHAR& pName) override;
+	virtual GrapaError DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* pTable) override;
     virtual GrapaError FieldSet(const GrapaCHAR& pName, const GrapaCHAR& pField, const GrapaCHAR& pValue) override;
     virtual GrapaError FieldGet(const GrapaCHAR& pName, const GrapaCHAR& pField, GrapaCHAR& pValue) override;
     virtual GrapaError FieldDelete(const GrapaCHAR& pName, const GrapaCHAR& pField);
+    virtual GrapaError CreateTableStructure(const GrapaCHAR& pName, const GrapaCHAR& pType);
     
     /* Storage type information */
     virtual GrapaCHAR GetStorageType() { return mStorageType; }

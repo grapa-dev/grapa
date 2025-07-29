@@ -8,7 +8,7 @@
 	pwd = @<[op,@<"unified_pwd",{this}>]>;
 	cd = @<[op,@<"unified_cd",{this,@<var,{path}>}>],{path}>;
 	ls = @<[op,@<"unified_ls",{this,@<var,{path}>,@<var,{fields}>,@<var,{threads}>}>],{path:null,fields:null,threads:null}>;
-	mk = @<[op,@<"unified_mk",{this,@<var,{name}>,@<var,{type}>}>],{type:null}>;
+	mk = @<[op,@<"unified_mk",{this,@<var,{name}>,@<var,{type}>}>],{name,type:null}>;
 	mkfield = @<[op,@<"unified_mkfield",{this,@<var,{name}>,@<var,{fieldType}>,@<var,{storeType}>,@<var,{storeSize}>,@<var,{storeGrow}>}>],{name,fieldType:null,storeType:null,storeSize:null,storeGrow:null}>;
 	rm = @<[op,@<"unified_rm",{this,@<var,{name}>}>],{name}>;
 	set = @<[op,@<"unified_set",{this,@<var,{name}>,@<var,{value}>,@<var,{field}>}>],{name,value,field}>;

@@ -1,7 +1,7 @@
-/* test/grapadbx/test_debug_file_operations.grc */
+/* test/grapadbx/test_debug_file_operations.grc
 "=== Debug File-Based Database Operations ===\n".echo();
 
-/* Test 1: Create a simple file-based database */
+/* Test 1: Create a simple file-based database
 "Test 1: Creating file-based database...\n".echo();
 u = $unified();
 result = u.create("grapadbx://test_debug.dbx");
@@ -10,20 +10,20 @@ result = u.create("grapadbx://test_debug.dbx");
 if (result.type() != $ERR) {
     "✅ Database creation succeeded\n".echo();
     
-    /* Test 2: Set up basic structure */
+    /* Test 2: Set up basic structure
     "Test 2: Setting up basic structure...\n".echo();
     u.mk("test", "GROUP");
     u.cd("test");
     u.mkfield("name", "STR", "VAR");
     u.mkfield("value", "STR", "VAR");
     
-    /* Test 3: Write a single record */
+    /* Test 3: Write a single record
     "Test 3: Writing a single record...\n".echo();
     u.set("testkey", "testvalue", "name");
     u.set("testkey", "testdata", "value");
     "✅ Record written\n".echo();
     
-    /* Test 4: Try to read the record back */
+    /* Test 4: Try to read the record back
     "Test 4: Reading the record back...\n".echo();
     result = u.get("testkey", "name");
     ("Read result: " + result + "\n").echo();
@@ -34,7 +34,7 @@ if (result.type() != $ERR) {
         "❌ Failed to read record\n".echo();
     }
     
-    /* Test 5: List all records */
+    /* Test 5: List all records
     "Test 5: Listing all records...\n".echo();
     result = u.list();
     ("List result: " + result + "\n").echo();

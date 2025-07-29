@@ -1,162 +1,162 @@
-/* Fancy Multi-Level GROUP Database Test */
+/* Fancy Multi-Level GROUP Database Test
 "=== Fancy Multi-Level GROUP Database Test ===".echo();
 
-/* Create root GROUP database */
+/* Create root GROUP database
 root_group = $file().table("GROUP");
 "✓ Root GROUP database created".echo();
 
-/* Level 1: Create main application structure */
+/* Level 1: Create main application structure
 root_group.mk("app", "GROUP");
 root_group.mk("data", "GROUP");
 root_group.mk("config", "GROUP");
 "✓ Level 1: Created app, data, config groups".echo();
 
-/* Level 2: Navigate to app and create nested structure */
+/* Level 2: Navigate to app and create nested structure
 app_group = root_group.cd("app");
 app_group.mk("users", "ROW");
 app_group.mk("analytics", "COL");
 app_group.mk("modules", "GROUP");
 "✓ Level 2: Created users (ROW), analytics (COL), modules (GROUP) in app".echo();
 
-/* Add data records directly to app GROUP */
+/* Add data records directly to app GROUP
 app_group.set("app_name", "MyFancyApp");
 app_group.set("version", "2.1.0");
 app_group.set("status", "active");
 "✓ Added data records to app GROUP".echo();
 
-/* Level 3: Navigate to modules and create deeper structure */
+/* Level 3: Navigate to modules and create deeper structure
 modules_group = app_group.cd("modules");
 modules_group.mk("auth", "GROUP");
 modules_group.mk("dashboard", "GROUP");
 modules_group.mk("reports", "COL");
 "✓ Level 3: Created auth (GROUP), dashboard (GROUP), reports (COL) in modules".echo();
 
-/* Add data records to modules GROUP */
+/* Add data records to modules GROUP
 modules_group.set("total_modules", 3);
 modules_group.set("default_module", "dashboard");
 "✓ Added data records to modules GROUP".echo();
 
-/* Level 4: Navigate to auth module */
+/* Level 4: Navigate to auth module
 auth_group = modules_group.cd("auth");
 auth_group.mk("roles", "ROW");
 auth_group.mk("permissions", "COL");
 auth_group.mk("sessions", "GROUP");
 "✓ Level 4: Created roles (ROW), permissions (COL), sessions (GROUP) in auth".echo();
 
-/* Add data records to auth GROUP */
+/* Add data records to auth GROUP
 auth_group.set("auth_method", "jwt");
 auth_group.set("session_timeout", 3600);
 auth_group.set("max_attempts", 3);
 "✓ Added data records to auth GROUP".echo();
 
-/* Level 5: Navigate to sessions and add more structure */
+/* Level 5: Navigate to sessions and add more structure
 sessions_group = auth_group.cd("sessions");
 sessions_group.mk("active", "ROW");
 sessions_group.mk("history", "COL");
 "✓ Level 5: Created active (ROW), history (COL) in sessions".echo();
 
-/* Add data records to sessions GROUP */
+/* Add data records to sessions GROUP
 sessions_group.set("session_count", 0);
 sessions_group.set("last_cleanup", "2024-01-15");
 "✓ Added data records to sessions GROUP".echo();
 
-/* Navigate back to dashboard module */
+/* Navigate back to dashboard module
 dashboard_group = modules_group.cd("dashboard");
 dashboard_group.mk("widgets", "ROW");
 dashboard_group.mk("metrics", "COL");
 dashboard_group.mk("layouts", "GROUP");
 "✓ Level 4: Created widgets (ROW), metrics (COL), layouts (GROUP) in dashboard".echo();
 
-/* Add data records to dashboard GROUP */
+/* Add data records to dashboard GROUP
 dashboard_group.set("default_layout", "grid");
 dashboard_group.set("refresh_rate", 30);
 "✓ Added data records to dashboard GROUP".echo();
 
-/* Level 5: Navigate to layouts */
+/* Level 5: Navigate to layouts
 layouts_group = dashboard_group.cd("layouts");
 layouts_group.mk("grid", "GROUP");
 layouts_group.mk("list", "GROUP");
 "✓ Level 5: Created grid (GROUP), list (GROUP) in layouts".echo();
 
-/* Add data records to layouts GROUP */
+/* Add data records to layouts GROUP
 layouts_group.set("current_layout", "grid");
 layouts_group.set("layout_count", 2);
 "✓ Added data records to layouts GROUP".echo();
 
-/* Level 6: Navigate to grid layout */
+/* Level 6: Navigate to grid layout
 grid_group = layouts_group.cd("grid");
 grid_group.set("columns", 3);
 grid_group.set("rows", 2);
 grid_group.set("spacing", 10);
 "✓ Level 6: Added data records to grid layout GROUP".echo();
 
-/* Navigate back to data group */
+/* Navigate back to data group
 data_group = root_group.cd("data");
 data_group.mk("users", "ROW");
 data_group.mk("products", "COL");
 data_group.mk("cache", "GROUP");
 "✓ Level 2: Created users (ROW), products (COL), cache (GROUP) in data".echo();
 
-/* Add data records to data GROUP */
+/* Add data records to data GROUP
 data_group.set("backup_enabled", true);
 data_group.set("compression", "gzip");
 "✓ Added data records to data GROUP".echo();
 
-/* Level 3: Navigate to cache */
+/* Level 3: Navigate to cache
 cache_group = data_group.cd("cache");
 cache_group.mk("memory", "ROW");
 cache_group.mk("disk", "COL");
 "✓ Level 3: Created memory (ROW), disk (COL) in cache".echo();
 
-/* Add data records to cache GROUP */
+/* Add data records to cache GROUP
 cache_group.set("max_size", "1GB");
 cache_group.set("ttl", 300);
 "✓ Added data records to cache GROUP".echo();
 
-/* Navigate to config group */
+/* Navigate to config group
 config_group = root_group.cd("config");
 config_group.mk("environment", "GROUP");
 config_group.mk("logging", "GROUP");
 config_group.mk("security", "ROW");
 "✓ Level 2: Created environment (GROUP), logging (GROUP), security (ROW) in config".echo();
 
-/* Add data records to config GROUP */
+/* Add data records to config GROUP
 config_group.set("config_version", "1.0");
 config_group.set("auto_reload", true);
 "✓ Added data records to config GROUP".echo();
 
-/* Level 3: Navigate to environment */
+/* Level 3: Navigate to environment
 env_group = config_group.cd("environment");
 env_group.mk("dev", "GROUP");
 env_group.mk("prod", "GROUP");
 env_group.mk("test", "GROUP");
 "✓ Level 3: Created dev, prod, test groups in environment".echo();
 
-/* Add data records to environment GROUP */
+/* Add data records to environment GROUP
 env_group.set("current_env", "dev");
 env_group.set("env_count", 3);
 "✓ Added data records to environment GROUP".echo();
 
-/* Level 4: Navigate to dev environment */
+/* Level 4: Navigate to dev environment
 dev_group = env_group.cd("dev");
 dev_group.set("debug", true);
 dev_group.set("port", 3000);
 dev_group.set("database", "sqlite");
 "✓ Level 4: Added data records to dev environment GROUP".echo();
 
-/* Navigate to logging */
+/* Navigate to logging
 logging_group = config_group.cd("logging");
 logging_group.mk("levels", "ROW");
 logging_group.mk("outputs", "COL");
 "✓ Level 3: Created levels (ROW), outputs (COL) in logging".echo();
 
-/* Add data records to logging GROUP */
+/* Add data records to logging GROUP
 logging_group.set("default_level", "INFO");
 logging_group.set("max_files", 10);
 "✓ Added data records to logging GROUP".echo();
 
-/* Now populate some of the ROW and COL tables with actual data */
-/* Navigate to app/users and add user data */
+/* Now populate some of the ROW and COL tables with actual data
+/* Navigate to app/users and add user data
 users_row = app_group.cd("users");
 users_row.mkfield("id", "INT", "FIX", 4);
 users_row.mkfield("name", "STR", "VAR");
@@ -174,7 +174,7 @@ users_row.set("user2", "bob@example.com", "email");
 users_row.set("user2", "user", "role");
 "✓ Added user data to ROW table".echo();
 
-/* Navigate to app/analytics and add analytics data */
+/* Navigate to app/analytics and add analytics data
 analytics_col = app_group.cd("analytics");
 analytics_col.mkfield("metric", "STR", "VAR");
 analytics_col.mkfield("value", "FLT", "FIX", 8);
@@ -189,12 +189,12 @@ analytics_col.set("metric2", 0.045, "value");
 analytics_col.set("metric2", 1703123457, "timestamp");
 "✓ Added analytics data to COL table".echo();
 
-/* Navigate back to root and show the complete structure */
+/* Navigate back to root and show the complete structure
 root_group.cd("..");
 root_contents = root_group.ls();
 ("✓ Root GROUP contains " + root_contents.len().str() + " top-level items").echo();
 
-/* Show the complete tree structure */
+/* Show the complete tree structure
 "=== Fancy Multi-Level GROUP Database Tree Structure ===".echo();
 root_group.dump();
 

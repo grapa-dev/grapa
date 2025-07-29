@@ -1,0 +1,62 @@
+/* Test GrapaDBX Debug Output Comparison with Old DB */
+
+"=== GrapaDBX Debug Output Comparison ===\n".echo();
+
+/* Test 1: Create GrapaDBX database and set/get data */
+"Test 1: Create GrapaDBX database...\n".echo();
+
+u = $unified();
+result = u.create("grapadbx://debug_test");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Database creation succeeded\n".echo();
+    
+    /* Set user1 data */
+    "Set user1 {\"name\":\"Alice\",\"age\":25,\"city\":\"New York\"}\n".echo();
+    u.set("user1", "Alice", "name");
+    u.set("user1", 25, "age");
+    u.set("user1", "New York", "city");
+    
+    /* Get user1 data */
+    "Get user1 {\"name\":\"Alice\",\"age\":25,\"city\":\"New York\"}\n".echo();
+    name1 = u.get("user1", "name");
+    age1 = u.get("user1", "age");
+    city1 = u.get("user1", "city");
+    
+    result_obj = "{\"name\":\"" + name1 + "\",\"age\":" + age1 + ",\"city\":\"" + city1 + "\"}";
+    result_obj.echo();
+    "\n".echo();
+    
+    /* Debug output */
+    "--------------------------\n".echo();
+    u.debug();
+    "\n".echo();
+    
+    /* Set user2 data */
+    "Set user2 {\"name\":\"Bob\",\"age\":30,\"city\":\"Los Angeles\"}\n".echo();
+    u.set("user2", "Bob", "name");
+    u.set("user2", 30, "age");
+    u.set("user2", "Los Angeles", "city");
+    
+    /* Get user1 data again */
+    "Get user1 {\"name\":\"Alice\",\"age\":25,\"city\":\"New York\"}\n".echo();
+    name1 = u.get("user1", "name");
+    age1 = u.get("user1", "age");
+    city1 = u.get("user1", "city");
+    
+    result_obj = "{\"name\":\"" + name1 + "\",\"age\":" + age1 + ",\"city\":\"" + city1 + "\"}";
+    result_obj.echo();
+    "\n".echo();
+    
+    /* Debug output */
+    "--------------------------\n".echo();
+    u.debug();
+    "\n".echo();
+    
+    "✅ GrapaDBX debug comparison completed\n".echo();
+} else {
+    ("❌ Database creation failed: " + result + "\n").echo();
+}
+
+"=== Test Complete ===\n".echo(); 

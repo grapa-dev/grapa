@@ -1,35 +1,35 @@
-/* Test Network Storage with Grapa Document Parsing */
+/* Test Network Storage with Grapa Document Parsing
 
 "=== NETWORK STORAGE WITH DOCUMENT PARSING TEST ===\n".echo();
 
-/* Test 1: HTTP Content Parsing with .map() and .findall() */
+/* Test 1: HTTP Content Parsing with .map() and .findall()
 "Test 1: HTTP Content Parsing\n".echo();
 "---------------------------\n".echo();
 
-/* Create unified storage object with HTTP */
+/* Create unified storage object with HTTP
 u = $unified();
-u.create("http: /* example.com"); */
+u.create("http: /* example.com");
 
-/* Get content from HTTP */
+/* Get content from HTTP
 "Fetching content from HTTP...\n".echo();
 content = u.get("index.html", "$VALUE");
 "Content length: ".echo();
 content.len().echo();
 "\n".echo();
 
-/* Parse HTML content using Grapa's document parsing */
+/* Parse HTML content using Grapa's document parsing
 "Parsing HTML content...\n".echo();
 html_doc = content.html();
 "HTML document parsed successfully\n".echo();
 
-/* Extract all links using .findall() */
+/* Extract all links using .findall()
 "Extracting all links...\n".echo();
 links = html_doc.findall({name:"a"});
 "Found ".echo();
 links.len().echo();
 " links\n".echo();
 
-/* Use .map() to extract href attributes */
+/* Use .map() to extract href attributes
 "Extracting href attributes with .map()...\n".echo();
 hrefs = links.map(op(link) {;
     if (link.$LIST.href.type() != $ERR) {
@@ -42,52 +42,52 @@ hrefs = links.map(op(link) {;
 hrefs.len().echo();
 " hrefs\n".echo();
 
-/* Filter out empty hrefs using .filter() */
+/* Filter out empty hrefs using .filter()
 "Filtering non-empty hrefs...\n".echo();
 valid_hrefs = hrefs.filter(op(href) { href.len() > 0; });
 "Valid hrefs: ".echo();
 valid_hrefs.len().echo();
 "\n".echo();
 
-/* Display first few hrefs */
+/* Display first few hrefs
 "First 5 hrefs:\n".echo();
 valid_hrefs.range(0, 4).map(op(href) { href.echo(); "\n".echo(); });
 
-/* Test 2: XML Content Parsing */
+/* Test 2: XML Content Parsing
 "Test 2: XML Content Parsing\n".echo();
 "--------------------------\n".echo();
 
-/* Create sample XML content */
+/* Create sample XML content
 xml_content = '<?xml version="1.0" encoding="UTF-8"?>;
 <rss version="2.0">
     <channel>
         <title>Sample RSS Feed</title>
         <item>
             <title>First Article</title>
-            <link>http: /* example.com/1</link> */
+            <link>http: /* example.com/1</link>
             <description>First article description</description>
         </item>
         <item>
             <title>Second Article</title>
-            <link>http: /* example.com/2</link> */
+            <link>http: /* example.com/2</link>
             <description>Second article description</description>
         </item>
     </channel>
 </rss>';
 
-/* Parse XML content */
+/* Parse XML content
 "Parsing XML content...\n".echo();
 xml_doc = xml_content.xml();
 "XML document parsed successfully\n".echo();
 
-/* Extract all items using .findall() */
+/* Extract all items using .findall()
 "Extracting all RSS items...\n".echo();
 items = xml_doc.findall({name:"item"});
 "Found ".echo();
 items.len().echo();
 " items\n".echo();
 
-/* Use .map() to extract titles and links */
+/* Use .map() to extract titles and links
 "Extracting titles and links with .map()...\n".echo();
 item_data = items.map(op(item) {;
     title = item.findall({name:"title"});
@@ -102,7 +102,7 @@ item_data = items.map(op(item) {;
 item_data.len().echo();
 " items\n".echo();
 
-/* Display item data */
+/* Display item data
 "Item data:\n".echo();
 item_data.map(op(item) {
     "Title: ".echo();
@@ -112,11 +112,11 @@ item_data.map(op(item) {
     "\n".echo();
 });
 
-/* Test 3: JSON Content Parsing */
+/* Test 3: JSON Content Parsing
 "Test 3: JSON Content Parsing\n".echo();
 "---------------------------\n".echo();
 
-/* Create sample JSON content */
+/* Create sample JSON content
 json_content = '{;
     "users": [
         {"id": 1, "name": "John", "email": "john@example.com"},
@@ -126,37 +126,37 @@ json_content = '{;
     "total": 3
 }';
 
-/* Parse JSON content */
+/* Parse JSON content
 "Parsing JSON content...\n".echo();
 json_doc = json_content.json();
 "JSON document parsed successfully\n".echo();
 
-/* Extract users using .findall() */
+/* Extract users using .findall()
 "Extracting users...\n".echo();
 users = json_doc.findall({name:"users"});
 "Found ".echo();
 users.len().echo();
 " user arrays\n".echo();
 
-/* Use .map() to process user data */
+/* Use .map() to process user data
 "Processing user data with .map()...\n".echo();
 user_names = users[0].map(op(user) { user.name; });
 "User names: ".echo();
 user_names.echo();
 "\n".echo();
 
-/* Filter users by email domain using .filter() */
+/* Filter users by email domain using .filter()
 "Filtering users by email domain...\n".echo();
 example_users = users[0].filter(op(user) { user.email.grep("@example.com").len() > 0; });
 "Users with @example.com emails: ".echo();
 example_users.len().echo();
 "\n".echo();
 
-/* Test 4: Complex HTML Parsing with Nested Queries */
+/* Test 4: Complex HTML Parsing with Nested Queries
 "Test 4: Complex HTML Parsing\n".echo();
 "----------------------------\n".echo();
 
-/* Create complex HTML content */
+/* Create complex HTML content
 complex_html = '<html>;
 <head><title>Complex Page</title></head>
 <body>
@@ -183,12 +183,12 @@ complex_html = '<html>;
 </body>
 </html>';
 
-/* Parse complex HTML */
+/* Parse complex HTML
 "Parsing complex HTML...\n".echo();
 complex_doc = complex_html.html();
 "Complex HTML parsed successfully\n".echo();
 
-/* Find all links in navigation */
+/* Find all links in navigation
 "Finding navigation links...\n".echo();
 nav_links = complex_doc.findall({name:"nav", has:{name:"a"}});
 nav_links = nav_links[0].findall({name:"a"});
@@ -196,13 +196,13 @@ nav_links = nav_links[0].findall({name:"a"});
 nav_links.len().echo();
 "\n".echo();
 
-/* Extract navigation hrefs */
+/* Extract navigation hrefs
 nav_hrefs = nav_links.map(op(link) { link.$LIST.href; });
 "Navigation hrefs: ".echo();
 nav_hrefs.echo();
 "\n".echo();
 
-/* Find all links in articles */
+/* Find all links in articles
 "Finding article links...\n".echo();
 article_links = complex_doc.findall({name:"article", has:{name:"a"}});
 article_links = article_links[0].findall({name:"a"});
@@ -210,7 +210,7 @@ article_links = article_links[0].findall({name:"a"});
 article_links.len().echo();
 "\n".echo();
 
-/* Find all links in sidebar */
+/* Find all links in sidebar
 "Finding sidebar links...\n".echo();
 sidebar_links = complex_doc.findall({name:"aside", has:{name:"a"}});
 sidebar_links = sidebar_links[0].findall({name:"a"});
@@ -218,29 +218,29 @@ sidebar_links = sidebar_links[0].findall({name:"a"});
 sidebar_links.len().echo();
 "\n".echo();
 
-/* Test 5: Functional Processing with Method Chaining */
+/* Test 5: Functional Processing with Method Chaining
 "Test 5: Functional Processing\n".echo();
 "-----------------------------\n".echo();
 
-/* Create a list of URLs to process */
-urls = ["http: /* example.com/1", "http://example.com/2", "https://secure.example.com/3", "ftp://ftp.example.com/4"]; */
+/* Create a list of URLs to process
+urls = ["http: /* example.com/1", "http://example.com/2", "https://secure.example.com/3", "ftp://ftp.example.com/4"];
 
-/* Use method chaining to process URLs */
+/* Use method chaining to process URLs
 "Processing URLs with method chaining...\n".echo();
 processed_urls = urls;
-    .filter(op(url) { url.grep("https: /* ").len() > 0; })  /* Filter HTTPS URLs */ */
-    .map(op(url) { url.upper(); })                        /* Convert to uppercase */
-    .reduce(op(acc, url) { acc + " | " + url; }, "");     /* Join with separators */
+    .filter(op(url) { url.grep("https: /* ").len() > 0; })  /* Filter HTTPS URLs */
+    .map(op(url) { url.upper(); })                        /* Convert to uppercase
+    .reduce(op(acc, url) { acc + " | " + url; }, "");     /* Join with separators
 
 "Processed HTTPS URLs: ".echo();
 processed_urls.echo();
 "\n".echo();
 
-/* Test 6: Error Handling with .iferr() */
+/* Test 6: Error Handling with .iferr()
 "Test 6: Error Handling\n".echo();
 "----------------------\n".echo();
 
-/* Test parsing invalid content */
+/* Test parsing invalid content
 "Testing error handling with invalid content...\n".echo();
 invalid_content = "This is not valid HTML or XML";
 invalid_doc = invalid_content.html().iferr(null);
@@ -250,7 +250,7 @@ if (invalid_doc == null) {
     "Unexpected success with invalid HTML\n".echo();
 }
 
-/* Test accessing non-existent properties */
+/* Test accessing non-existent properties
 "Testing non-existent property access...\n".echo();
 test_obj = {"name": "test"};
 non_existent = test_obj.missing_property.iferr("default_value");
@@ -258,18 +258,18 @@ non_existent = test_obj.missing_property.iferr("default_value");
 non_existent.echo();
 "\n".echo();
 
-/* Test 7: Parallel Processing with Large Datasets */
+/* Test 7: Parallel Processing with Large Datasets
 "Test 7: Parallel Processing\n".echo();
 "---------------------------\n".echo();
 
-/* Create a large dataset for parallel processing */
+/* Create a large dataset for parallel processing
 "Creating large dataset for parallel processing...\n".echo();
 large_data = (1000).range(0, 1);
 "Dataset size: ".echo();
 large_data.len().echo();
 "\n".echo();
 
-/* Process with parallel .map() */
+/* Process with parallel .map()
 "Processing with parallel .map() (8 threads)...\n".echo();
 start_time = $time().now();
 squares = large_data.map(op(x) { x * x; }, 8);
@@ -279,7 +279,7 @@ processing_time = end_time - start_time;
 processing_time.echo();
 " seconds\n".echo();
 
-/* Process with parallel .filter() */
+/* Process with parallel .filter()
 "Processing with parallel .filter() (8 threads)...\n".echo();
 start_time = $time().now();
 evens = large_data.filter(op(x) { x % 2 == 0; }, 8);

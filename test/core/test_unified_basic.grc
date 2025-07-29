@@ -1,13 +1,13 @@
-/* Test basic $unified class instantiation and methods */
+/* Test basic $unified class instantiation and methods
 
-/* Test instantiation */
+/* Test instantiation
 "Testing $unified class instantiation...\n".echo();
 u = $unified("file: /* /tmp/test") */;
 "Created unified storage object: ".echo();
 u.echo();
 "\n".echo();
 
-/* Test basic methods */
+/* Test basic methods
 "Testing basic methods...\n".echo();
 result = u.getType();
 "Storage type: ".echo();

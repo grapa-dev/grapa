@@ -1,8 +1,8 @@
-/* Test mkrow and getrow functionality */
+/* Test mkrow and getrow functionality
 
 "Testing mkrow and getrow operations...\n".echo();
 
-/* Test 1: Create a table and try mkrow/getrow */
+/* Test 1: Create a table and try mkrow/getrow
 "Test 1: Basic table operations\n".echo();
 "------------------------------\n".echo();
 
@@ -34,7 +34,7 @@ user2 = db.getrow("user2");
 user2.echo();
 "\n".echo();
 
-/* Test 2: Check what methods are available on the table */
+/* Test 2: Check what methods are available on the table
 "Test 2: Available methods on table\n".echo();
 "----------------------------------\n".echo();
 
@@ -48,7 +48,7 @@ user2.echo();
 (db.getrow != null).echo();
 "\n".echo();
 
-/* Test 3: Try using set/get instead */
+/* Test 3: Try using set/get instead
 "Test 3: Using set/get methods\n".echo();
 "-----------------------------\n".echo();
 
@@ -67,7 +67,7 @@ user4 = db.get("user4");
 user4.echo();
 "\n".echo();
 
-/* Test 4: List contents */
+/* Test 4: List contents
 "Test 4: Listing database contents\n".echo();
 "--------------------------------\n".echo();
 

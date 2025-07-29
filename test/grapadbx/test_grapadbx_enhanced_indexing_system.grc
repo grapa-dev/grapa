@@ -1,10 +1,10 @@
-/* Test script for GrapaDBX Enhanced Indexing System */
-/* This demonstrates practical enhancements to the current simple indexing approach */
+/* Test script for GrapaDBX Enhanced Indexing System
+/* This demonstrates practical enhancements to the current simple indexing approach
 
 "Testing GrapaDBX Enhanced Indexing System...\n".echo();
 "==========================================\n".echo();
 
-/* Test 1: Current Indexing Limitations */
+/* Test 1: Current Indexing Limitations
 "Test 1: Current Indexing Limitations\n".echo();
 "-----------------------------------\n".echo();
 
@@ -17,7 +17,7 @@
 "• Manual index management\n".echo();
 "\n".echo();
 
-/* Test 2: Enhanced Index Types */
+/* Test 2: Enhanced Index Types
 "Test 2: Enhanced Index Types\n".echo();
 "---------------------------\n".echo();
 
@@ -33,7 +33,7 @@
 "• Functional Index (function-based)\n".echo();
 "\n".echo();
 
-/* Test 3: Enhanced Index Creation */
+/* Test 3: Enhanced Index Creation
 "Test 3: Enhanced Index Creation\n".echo();
 "------------------------------\n".echo();
 
@@ -41,7 +41,7 @@
 "\n".echo();
 
 "Basic Index (Backward Compatible):\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Current syntax still works
 f.mkindex("users", ["name", "email"]);
@@ -59,14 +59,14 @@ f.mkindex("users", ["name", "email"], {
 "\n".echo();
 
 "Unique Index:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Create unique index on email
 f.mkindex("users", ["email"], {"unique": true});
 
 /* This would prevent duplicate emails
-f.set("user1", "john@example.com", "email"); /* Works */
-f.set("user2", "john@example.com", "email"); /* Fails - duplicate email */
+f.set("user1", "john@example.com", "email"); /* Works
+f.set("user2", "john@example.com", "email"); /* Fails - duplicate email
 */
 "✓ Unique constraint: f.mkindex(\"users\", [\"email\"], {\"unique\": true})\n".echo();
 "✓ Prevents duplicate values automatically\n".echo();
@@ -74,15 +74,15 @@ f.set("user2", "john@example.com", "email"); /* Fails - duplicate email */
 "\n".echo();
 
 "Sparse Index:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Create sparse index on phone (skip NULL values)
 f.mkindex("users", ["phone"], {"sparse": true});
 
 /* Only users with phone numbers are indexed
-f.set("user1", "555-1234", "phone"); /* Indexed */
-f.set("user2", "", "phone"); /* Not indexed (NULL/empty) */
-f.set("user3", null, "phone"); /* Not indexed (NULL) */
+f.set("user1", "555-1234", "phone"); /* Indexed
+f.set("user2", "", "phone"); /* Not indexed (NULL/empty)
+f.set("user3", null, "phone"); /* Not indexed (NULL)
 */
 "✓ Sparse indexing: f.mkindex(\"users\", [\"phone\"], {\"sparse\": true})\n".echo();
 "✓ Skips NULL/empty values\n".echo();
@@ -90,17 +90,17 @@ f.set("user3", null, "phone"); /* Not indexed (NULL) */
 "\n".echo();
 
 "Partial Index:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Create partial index only for active users
 f.mkindex("users", ["last_login"], {"partial": "status = 'active'"});
 
 /* Only active users are indexed
 f.set("user1", "active", "status");
-f.set("user1", "2024-01-15", "last_login"); /* Indexed (active user) */
+f.set("user1", "2024-01-15", "last_login"); /* Indexed (active user)
 
 f.set("user2", "inactive", "status");
-f.set("user2", "2024-01-10", "last_login"); /* Not indexed (inactive user) */
+f.set("user2", "2024-01-10", "last_login"); /* Not indexed (inactive user)
 */
 "✓ Partial indexing: f.mkindex(\"users\", [\"last_login\"], {\"partial\": \"status = 'active'\"})\n".echo();
 "✓ Only indexes records matching condition\n".echo();
@@ -108,24 +108,24 @@ f.set("user2", "2024-01-10", "last_login"); /* Not indexed (inactive user) */
 "\n".echo();
 
 "Functional Index:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Create functional index on email domain
 f.mkindex("users", ["email_domain"], {"functional": "SUBSTRING(email, LOCATE('@', email) + 1)"});
 
 /* Indexes the domain part of email addresses
-f.set("user1", "john@example.com", "email"); /* Indexes "example.com" */
-f.set("user2", "jane@gmail.com", "email"); /* Indexes "gmail.com" */
+f.set("user1", "john@example.com", "email"); /* Indexes "example.com"
+f.set("user2", "jane@gmail.com", "email"); /* Indexes "gmail.com"
 
 /* Search by domain
-results = f.search({"email_domain": "example.com"}); /* Uses functional index */
+results = f.search({"email_domain": "example.com"}); /* Uses functional index
 */
 "✓ Functional indexing: f.mkindex(\"users\", [\"email_domain\"], {\"functional\": \"SUBSTRING(email, LOCATE('@', email) + 1)\"})\n".echo();
 "✓ Indexes computed/derived values\n".echo();
 "✓ Enables efficient searches on expressions\n".echo();
 "\n".echo();
 
-/* Test 4: Enhanced Field Mapping */
+/* Test 4: Enhanced Field Mapping
 "Test 4: Enhanced Field Mapping\n".echo();
 "-----------------------------\n".echo();
 
@@ -133,7 +133,7 @@ results = f.search({"email_domain": "example.com"}); /* Uses functional index */
 "\n".echo();
 
 "Current Simple Mapping:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Current: Just field ID to field ID
 f.mkindex("users", ["name", "age"]);
@@ -143,7 +143,7 @@ f.mkindex("users", ["name", "age"]);
 "\n".echo();
 
 "Enhanced Field Mapping:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Enhanced: Field with options
 f.mkindex("users", [
@@ -159,7 +159,7 @@ f.mkindex("users", [
 "✓ Field weights for composite indexes\n".echo();
 "\n".echo();
 
-/* Test 5: Database-Aware Index Comparison */
+/* Test 5: Database-Aware Index Comparison
 "Test 5: Database-Aware Index Comparison\n".echo();
 "--------------------------------------\n".echo();
 
@@ -167,7 +167,7 @@ f.mkindex("users", [
 "\n".echo();
 
 "Current Comparison Issues:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Current: strcmp for all field types
 f.mkindex("users", ["age", "salary", "created"]);
@@ -184,7 +184,7 @@ f.mkindex("users", ["age", "salary", "created"]);
 "\n".echo();
 
 "Enhanced Database-Aware Comparison:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Enhanced: Type-aware comparison
 f.mkindex("users", [
@@ -205,7 +205,7 @@ f.mkindex("users", [
 "✅ All Grapa data types supported\n".echo();
 "\n".echo();
 
-/* Test 6: Index Management Enhancements */
+/* Test 6: Index Management Enhancements
 "Test 6: Index Management Enhancements\n".echo();
 "-----------------------------------\n".echo();
 
@@ -213,7 +213,7 @@ f.mkindex("users", [
 "\n".echo();
 
 "Index Statistics:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Get index statistics
 stats = f.indexStats("users_name_email_index");
@@ -229,7 +229,7 @@ stats = f.indexStats("users_name_email_index");
 "\n".echo();
 
 "Index Maintenance:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Validate index consistency
 isValid = f.validateIndex("users_name_email_index");
@@ -252,7 +252,7 @@ usageStats = f.analyzeIndexUsage("users_name_email_index");
 "✓ Usage analysis: Query count, performance\n".echo();
 "\n".echo();
 
-/* Test 7: Automatic Index Selection */
+/* Test 7: Automatic Index Selection
 "Test 7: Automatic Index Selection\n".echo();
 "--------------------------------\n".echo();
 
@@ -260,7 +260,7 @@ usageStats = f.analyzeIndexUsage("users_name_email_index");
 "\n".echo();
 
 "Query Optimization:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Create multiple indexes
 f.mkindex("users", ["name"], {"type": "btree"});
@@ -268,9 +268,9 @@ f.mkindex("users", ["email"], {"unique": true});
 f.mkindex("users", ["status", "age"], {"type": "composite"});
 
 /* Search with automatic index selection
-results = f.search({"name": "John"}); /* Uses name index */
-results = f.search({"email": "john@example.com"}); /* Uses email index */
-results = f.search({"status": "active", "age": {"$gt": 25}}); /* Uses composite index */
+results = f.search({"name": "John"}); /* Uses name index
+results = f.search({"email": "john@example.com"}); /* Uses email index
+results = f.search({"status": "active", "age": {"$gt": 25}}); /* Uses composite index
 */
 "✓ Automatic index selection for queries\n".echo();
 "✓ Chooses best index based on search criteria\n".echo();
@@ -278,7 +278,7 @@ results = f.search({"status": "active", "age": {"$gt": 25}}); /* Uses composite 
 "\n".echo();
 
 "Query Plan Analysis:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Analyze query plan
 plan = f.analyzeQuery({"status": "active", "age": {"$gt": 25}});
@@ -293,7 +293,7 @@ plan = f.analyzeQuery({"status": "active", "age": {"$gt": 25}});
 "\n".echo();
 
 "Index Suggestions:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Get index suggestions
 suggestions = f.indexSuggestions("users");
@@ -313,7 +313,7 @@ while (i < suggestions.len()) {
 "✓ Priority recommendations\n".echo();
 "\n".echo();
 
-/* Test 8: Enhanced Index Operations */
+/* Test 8: Enhanced Index Operations
 "Test 8: Enhanced Index Operations\n".echo();
 "--------------------------------\n".echo();
 
@@ -321,7 +321,7 @@ while (i < suggestions.len()) {
 "\n".echo();
 
 "Batch Index Creation:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Create multiple indexes in batch
 indexes = [;
@@ -340,7 +340,7 @@ f.createIndexesBatch(indexes);
 "\n".echo();
 
 "Index-Aware Batch Operations:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Batch operations with index optimization
 f.setBatchMultiple([
@@ -361,7 +361,7 @@ f.refreshIndexes("users");
 "✓ Index refresh after bulk operations\n".echo();
 "\n".echo();
 
-/* Test 9: Index Monitoring */
+/* Test 9: Index Monitoring
 "Test 9: Index Monitoring\n".echo();
 "-----------------------\n".echo();
 
@@ -369,7 +369,7 @@ f.refreshIndexes("users");
 "\n".echo();
 
 "Usage Statistics:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Get index usage statistics
 stats = f.indexUsageStats();
@@ -391,7 +391,7 @@ while (i < stats.len()) {
 "\n".echo();
 
 "Performance Monitoring:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Monitor index performance
 f.monitorIndexPerformance("users_name_email_index");
@@ -413,7 +413,7 @@ while (i < alerts.len()) {
 "✓ Optimization recommendations\n".echo();
 "\n".echo();
 
-/* Test 10: Integration with Other Features */
+/* Test 10: Integration with Other Features
 "Test 10: Integration with Other Features\n".echo();
 "---------------------------------------\n".echo();
 
@@ -421,7 +421,7 @@ while (i < alerts.len()) {
 "\n".echo();
 
 "Enhanced Search with Index Selection:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Search with automatic index selection
 results = f.searchWithIndex({"status": "active", "age": {"$gt": 25}});
@@ -438,7 +438,7 @@ results = f.searchMultiIndex([;
 "\n".echo();
 
 "Integration with Batch Operations:\n".echo();
-/* This would be the new syntax for GrapaDBX */
+/* This would be the new syntax for GrapaDBX
 /*
 /* Batch operations with index optimization
 f.setBatchWithIndex("user1", {"name": "John", "age": 30}, {"updateIndexes": true});
@@ -454,7 +454,7 @@ f.setBatchMultipleWithIndex([
 "✓ Integration with temporary transaction system\n".echo();
 "\n".echo();
 
-/* Summary */
+/* Summary
 "Summary: GrapaDBX Enhanced Indexing System Benefits\n".echo();
 "=================================================\n".echo();
 "✅ Backward Compatible: Current code continues to work\n".echo();

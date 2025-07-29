@@ -1,9 +1,9 @@
-/* Debug Test Runner */
+/* Debug Test Runner
 
 "=== DEBUG TEST RUNNER ===".echo();
 "\n".echo();
 
-/* Simple test functions */
+/* Simple test functions
 test1 = op() {
     "Test 1 running\n".echo();
     true;
@@ -19,11 +19,11 @@ test3 = op() {
     false;
 };
 
-/* Create test array */
+/* Create test array
 tests = [test1, test2, test3];
 ("Number of tests: " + tests.len().str() + "\n").echo();
 
-/* Run tests manually */
+/* Run tests manually
 "Running tests manually:\n".echo();
 
 "Calling test1:\n".echo();
@@ -38,12 +38,12 @@ result2 = test2();
 result3 = test3();
 ("Test3 result: " + result3.str() + "\n").echo();
 
-/* Try array access */
+/* Try array access
 "Testing array access:\n".echo();
 ("tests[0] type: " + tests[0].type()).echo();
 "\n".echo();
 
-/* Try calling from array */
+/* Try calling from array
 "Calling tests[0]():\n".echo();
 array_result = tests[0]();
 ("Array result: " + array_result.str() + "\n").echo();

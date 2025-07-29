@@ -56,6 +56,7 @@ public:
 	
 	// Core database operations - same interface as GrapaDB
 	virtual GrapaError Create(const char *pFileName, u8 treeType, u64& firstTree);
+	virtual GrapaError NewTree(u64& treePtr, u8 treeType, u64 parentTree = 0LL, u8 nodeCount = NODE_WIDTH);
 	virtual GrapaError CreateRoot(u8 treeType, u64& firstTree);
 	virtual GrapaError OpenFile(const char *fileName, char mode);
 	virtual u64 RootTree(u8& pRootType);
@@ -114,6 +115,7 @@ public:
 	virtual GrapaError SetRecordField(GrapaCursor& pCursor, GrapaDBXFieldValueArray& pFieldList);
 	virtual GrapaError GetRecordField(GrapaCursor& pCursor, u64 pFieldId, GrapaBYTE& pValue);
 	virtual GrapaError GetRecordField(GrapaCursor& pCursor, GrapaDBXField& field, GrapaBYTE& pValue);
+	virtual GrapaError GetRecordFieldData(GrapaCursor& recCursor, GrapaDBXField& field, GrapaBYTE& buffer);
 
 	// Search operations - same interface as GrapaDB
 	virtual GrapaError SearchDb(GrapaCursor& pCursor, GrapaDBXTable& pTable, GrapaDBXFieldValueArray& pFieldList);
@@ -128,6 +130,7 @@ public:
 	virtual GrapaError OpenIndex(GrapaDBXTable& pTable, u64 pIndexId, GrapaDU64Array& pIndexList, GrapaDBXIndex& pIndex);
 	virtual GrapaError DeleteIndex(GrapaDBXTable& pTable, u64 pIndexId);
 	virtual GrapaError RefreshIndex(GrapaDBXIndex& pIndex);
+	virtual GrapaError InsertIntoIndex(u64 tableRef, u8 pValueType, u64 resId, u64 recordRef);
 
 	// Data operations - same interface as GrapaDB
 	virtual GrapaError GetData(u64 itemPtr, GrapaCHAR& pValue);
@@ -137,10 +140,14 @@ public:
 
 	// Override operations - same interface as GrapaBtree - do not change parameters or parameter types
 	virtual GrapaError CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
+	virtual GrapaError DeleteKey(GrapaCursor& pTreeCursor);
+	virtual GrapaError Delete(GrapaCursor& cursor);
+
     
     // Utility operations - same interface as GrapaDB
 	virtual GrapaError CompareRecordKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
 	virtual GrapaError CompareSearchKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
+	virtual GrapaError DumpFile(GrapaFile *pDumpFile = NULL);
 	virtual GrapaError DumpTree(u64 pTreeRef = 0, GrapaFile* pDumpFile = NULL);
 	virtual GrapaError DatabaseDump(u64 pTreeRef, GrapaFile& pDumpFile);
 
@@ -175,6 +182,7 @@ protected:
 	
 	// Helper functions - same interface as GrapaDB
 	virtual GrapaError GetDataTypeRecord(u64 tableRef, u64& tableDT);
+	virtual GrapaError DeleteKeyIndexes(GrapaCursor& treeCursor);
 	
 	// Index helper methods - same interface as GrapaDB
 	virtual GrapaError LocateIndex(GrapaCursor& cursor, u64 indexRef, u64 fieldId);
@@ -321,7 +329,7 @@ public:
 	GrapaError OpenGroup(u64 parentTree, u8 parentType, u64 pId, u64& pNewTree, u8& pNewType, u64& pTableId, GrapaCHAR& pName);
 
 	GrapaError CreateEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, u64& pId);
-	GrapaError FindEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, u64& pId);
+	GrapaError FindEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName, u64& pId, GrapaDBXCursor& outCursor);
 	GrapaError DeleteEntry(u64 parentTree, u8 parentType, const GrapaCHAR& pDataName);
 	GrapaError DeleteEntry(u64 parentTree, u8 parentType, u64 pId);
 

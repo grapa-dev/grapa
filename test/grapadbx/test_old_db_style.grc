@@ -1,0 +1,49 @@
+/* Test GrapaDBX with Old DB Style Operations */
+
+"=== GrapaDBX Old DB Style Test ===\n".echo();
+
+/* Test 1: Create GrapaDBX database with table structure */
+"Test 1: Create GrapaDBX database with table structure...\n".echo();
+
+u = $unified();
+result = u.create("grapadbx://old_style_test");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Database creation succeeded\n".echo();
+    
+    /* Try to create table structure like old DB */
+    "Creating table structure...\n".echo();
+    
+    /* Create fields like old DB */
+    u.mkfield("name", "STR", "VAR");
+    u.mkfield("age", "INT", "FIX", 4);
+    u.mkfield("city", "STR", "VAR");
+    
+    /* Set user1 data using old DB style */
+    "Set user1 {\"name\":\"Alice\",\"age\":25,\"city\":\"New York\"}\n".echo();
+    u.set("user1", "Alice", "name");
+    u.set("user1", 25, "age");
+    u.set("user1", "New York", "city");
+    
+    /* Get user1 data */
+    "Get user1 {\"name\":\"Alice\",\"age\":25,\"city\":\"New York\"}\n".echo();
+    name1 = u.get("user1", "name");
+    age1 = u.get("user1", "age");
+    city1 = u.get("user1", "city");
+    
+    result_obj = "{\"name\":\"" + name1 + "\",\"age\":" + age1 + ",\"city\":\"" + city1 + "\"}";
+    result_obj.echo();
+    "\n".echo();
+    
+    /* Debug output */
+    "--------------------------\n".echo();
+    u.debug();
+    "\n".echo();
+    
+    "✅ Old DB style test completed\n".echo();
+} else {
+    ("❌ Database creation failed: " + result + "\n").echo();
+}
+
+"=== Test Complete ===\n".echo(); 

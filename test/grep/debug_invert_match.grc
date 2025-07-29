@@ -1,10 +1,10 @@
-/* Debug invert match issue */
+/* Debug invert match issue
 
 "=== DEBUG INVERT MATCH ===\n".echo();
 
 input = "Hello world\nGoodbye world\nHello universe";
 pattern = "Hello";
-options = "ov";  /* match-only + invert */
+options = "ov";  /* match-only + invert
 
 "Input: " + input.str() + "\n".echo();
 "Pattern: " + pattern.str() + "\n".echo();

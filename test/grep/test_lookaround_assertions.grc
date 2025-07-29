@@ -1,10 +1,10 @@
-/* Test Lookaround Assertions */
-/* This test verifies that all four types of lookaround assertions work correctly */
+/* Test Lookaround Assertions
+/* This test verifies that all four types of lookaround assertions work correctly
 
 "=== LOOKAROUND ASSERTIONS TEST ===\n".echo();
 "Testing all four types of lookaround assertions\n".echo();
 
-/* Test 1: Positive Lookahead (?=...) */
+/* Test 1: Positive Lookahead (?=...)
 "Test 1: Positive Lookahead (?=...)\n".echo();
 input = "word123 text456";
 result = input.grep("\\w+(?=\\d)", "oj");
@@ -15,7 +15,7 @@ if (result.type() != $ERR && result.len() > 0) {
 }
 "---\n".echo();
 
-/* Test 2: Negative Lookahead (?!...) */
+/* Test 2: Negative Lookahead (?!...)
 "Test 2: Negative Lookahead (?!...)\n".echo();
 input = "word123 text456";
 result = input.grep("\\w+(?!\\d)", "oj");
@@ -26,7 +26,7 @@ if (result.type() != $ERR && result.len() > 0) {
 }
 "---\n".echo();
 
-/* Test 3: Positive Lookbehind (?<=...) */
+/* Test 3: Positive Lookbehind (?<=...)
 "Test 3: Positive Lookbehind (?<=...)\n".echo();
 input = "word123 text456";
 result = input.grep("(?<=\\w)\\d+", "oj");
@@ -37,7 +37,7 @@ if (result.type() != $ERR && result.len() > 0) {
 }
 "---\n".echo();
 
-/* Test 4: Negative Lookbehind (?<!...) */
+/* Test 4: Negative Lookbehind (?<!...)
 "Test 4: Negative Lookbehind (?<!...)\n".echo();
 input = "123 word456";
 result = input.grep("(?<!\\w)\\d+", "oj");
@@ -48,7 +48,7 @@ if (result.type() != $ERR && result.len() > 0) {
 }
 "---\n".echo();
 
-/* Test 5: Complex Password Validation */
+/* Test 5: Complex Password Validation
 "Test 5: Complex Password Validation\n".echo();
 input = "password123";
 result = input.grep("(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}", "oj");
@@ -67,7 +67,7 @@ if (result.type() != $ERR && result.len() > 0) {
 }
 "---\n".echo();
 
-/* Test 6: Word Boundary with Lookaround */
+/* Test 6: Word Boundary with Lookaround
 "Test 6: Word Boundary with Lookaround\n".echo();
 input = "hello world test";
 result = input.grep("(?<=\\b)\\w+(?=\\b)", "oj");
@@ -78,7 +78,7 @@ if (result.type() != $ERR && result.len() > 0) {
 }
 "---\n".echo();
 
-/* Test 7: Empty Lookaround */
+/* Test 7: Empty Lookaround
 "Test 7: Empty Lookaround\n".echo();
 input = "test";
 result = input.grep("(?=)", "oj");
@@ -96,7 +96,7 @@ if (result.type() != $ERR) {
 }
 "---\n".echo();
 
-/* Test 8: Nested Lookaround */
+/* Test 8: Nested Lookaround
 "Test 8: Nested Lookaround\n".echo();
 input = "test123";
 result = input.grep("(?=.*(?=\\d))", "oj");

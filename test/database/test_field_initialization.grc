@@ -1,14 +1,14 @@
-/* Test Field Initialization Behavior */
+/* Test Field Initialization Behavior
 
 "Testing Field Initialization...\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing any existing test files...\n".echo();
 f = $file();
 f.rm("test_db");
 "Cleanup completed.\n".echo();
 
-/* Test 1: Create database and define schema */
+/* Test 1: Create database and define schema
 "Test 1: Database Schema Definition\n".echo();
 "----------------------------------\n".echo();
 
@@ -22,7 +22,7 @@ f.mkfield("age", "INT", "FIX", 4);
 f.mkfield("salary", "FLOAT", "FIX", 8);
 f.mkfield("department", "STR", "VAR");
 
-/* Test 2: Create a record and check field values */
+/* Test 2: Create a record and check field values
 "Test 2: Record Creation and Field Values\n".echo();
 "----------------------------------------\n".echo();
 
@@ -59,7 +59,7 @@ dept_value.echo();
 dept_value.length().echo();
 ")\n".echo();
 
-/* Test 3: Set all fields and check again */
+/* Test 3: Set all fields and check again
 "Test 3: Setting All Fields\n".echo();
 "--------------------------\n".echo();
 
@@ -89,7 +89,7 @@ f.get("employee1", "salary").echo();
 f.get("employee1", "department").echo();
 "\n".echo();
 
-/* Test 4: Create another record with different approach */
+/* Test 4: Create another record with different approach
 "Test 4: Alternative Record Creation\n".echo();
 "-----------------------------------\n".echo();
 
@@ -120,7 +120,7 @@ f.get("employee2", "salary").echo();
 f.get("employee2", "department").echo();
 "\n".echo();
 
-/* Test 5: List database contents */
+/* Test 5: List database contents
 "Test 5: Database Contents\n".echo();
 "-------------------------\n".echo();
 

@@ -1,7 +1,7 @@
-/* test/grapadbx/test_unified_database_working.grc */
+/* test/grapadbx/test_unified_database_working.grc
 "=== Unified Database In-Memory Support - WORKING ===\n".echo();
 
-/* Test 1: In-memory database creation and basic operations */
+/* Test 1: In-memory database creation and basic operations
 "Test 1: In-memory database via $unified()...\n".echo();
 
 u = $unified();
@@ -11,14 +11,14 @@ result = u.create("memory://test_db");
 if (result.type() != $ERR) {
     "✅ Database creation succeeded\n".echo();
     
-    /* Test basic operations */
+    /* Test basic operations
     u.mk("users", "GROUP");
     u.cd("users");
     u.mkfield("name", "STR", "VAR");
     u.mkfield("age", "INT", "FIX", 4);
     u.mkfield("email", "STR", "VAR");
     
-    /* Set multiple records */
+    /* Set multiple records
     u.set("user1", "John Doe", "name");
     u.set("user1", 30, "age");
     u.set("user1", "john@example.com", "email");
@@ -31,7 +31,7 @@ if (result.type() != $ERR) {
     u.set("user3", 35, "age");
     u.set("user3", "bob@example.com", "email");
     
-    /* Retrieve and display records */
+    /* Retrieve and display records
     "Retrieved records:\n".echo();
     
     names = ["user1", "user2", "user3"];
@@ -50,7 +50,7 @@ if (result.type() != $ERR) {
     ("❌ Database creation failed: " + result + "\n").echo();
 }
 
-/* Test 2: File-based database with caching */
+/* Test 2: File-based database with caching
 "Test 2: File-based database via $unified()...\n".echo();
 
 u_file = $unified();
@@ -60,14 +60,14 @@ result_file = u_file.create("grapadbx://test_file.dbx");
 if (result_file.type() != $ERR) {
     "✅ File-based database creation succeeded\n".echo();
     
-    /* Test file-based operations */
+    /* Test file-based operations
     u_file.mk("products", "GROUP");
     u_file.cd("products");
     u_file.mkfield("name", "STR", "VAR");
     u_file.mkfield("price", "FLOAT", "FIX", 8);
     u_file.mkfield("category", "STR", "VAR");
     
-    /* Set product data */
+    /* Set product data
     u_file.set("prod1", "Laptop", "name");
     u_file.set("prod1", 999.99, "price");
     u_file.set("prod1", "Electronics", "category");
@@ -80,7 +80,7 @@ if (result_file.type() != $ERR) {
     u_file.set("prod3", 199.99, "price");
     u_file.set("prod3", "Furniture", "category");
     
-    /* Retrieve and display products */
+    /* Retrieve and display products
     "Retrieved products:\n".echo();
     
     products = ["prod1", "prod2", "prod3"];
@@ -99,10 +99,10 @@ if (result_file.type() != $ERR) {
     ("❌ File-based database creation failed: " + result_file + "\n").echo();
 }
 
-/* Test 3: Performance comparison */
+/* Test 3: Performance comparison
 "Test 3: Performance comparison...\n".echo();
 
-/* Memory database performance */
+/* Memory database performance
 start_time = $TIME().utc();
 i = 0;
 while (i < 100) {
@@ -122,7 +122,7 @@ memory_read_time = (($TIME().utc() - start_time) / 1000000).int();
 ("Memory database - Write 100 records: " + memory_write_time + "ms\n").echo();
 ("Memory database - Read 100 records: " + memory_read_time + "ms\n").echo();
 
-/* File database performance */
+/* File database performance
 start_time = $TIME().utc();
 i = 0;
 while (i < 100) {
@@ -144,10 +144,10 @@ file_read_time = (($TIME().utc() - start_time) / 1000000).int();
 
 "✅ Performance test completed\n".echo();
 
-/* Test 4: Error handling */
+/* Test 4: Error handling
 "Test 4: Error handling...\n".echo();
 
-/* Test invalid URL */
+/* Test invalid URL
 u_invalid = $unified();
 result_invalid = u_invalid.create("invalid://test");
 if (result_invalid.type() == $ERR) {
@@ -156,7 +156,7 @@ if (result_invalid.type() == $ERR) {
     "❌ Error handling failed for invalid URLs\n".echo();
 }
 
-/* Test non-existent field */
+/* Test non-existent field
 result_missing = u.get("nonexistent", "field");
 if (result_missing.len() == 0) {
     "✅ Error handling works for missing fields\n".echo();

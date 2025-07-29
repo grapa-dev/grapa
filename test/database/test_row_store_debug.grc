@@ -1,8 +1,8 @@
-/* Test Row Store Database Operations with Debug */
+/* Test Row Store Database Operations with Debug
 
 "Testing Row Store Database Operations...\n".echo();
 
-/* Test 1: Create a virtual $TABLE in memory */
+/* Test 1: Create a virtual $TABLE in memory
 "Test 1: Virtual $TABLE in Memory\n".echo();
 "--------------------------------\n".echo();
 
@@ -23,7 +23,7 @@ f.mkfield("department", "STR", "VAR");
 f.debug();
 "\n".echo();
 
-/* Test 2: Create records and set field values */
+/* Test 2: Create records and set field values
 "Test 2: Record Creation and Field Setting\n".echo();
 "-----------------------------------------\n".echo();
 
@@ -47,7 +47,7 @@ f.set("employee2", "Marketing", "department");
 f.debug();
 "\n".echo();
 
-/* Test 3: Retrieve and verify field values */
+/* Test 3: Retrieve and verify field values
 "Test 3: Field Retrieval and Verification\n".echo();
 "----------------------------------------\n".echo();
 
@@ -95,7 +95,7 @@ salary2.echo();
 dept2.echo();
 "\n".echo();
 
-/* Test 4: Test unset fields */
+/* Test 4: Test unset fields
 "Test 4: Unset Fields\n".echo();
 "-------------------\n".echo();
 
@@ -105,7 +105,7 @@ unset_field = f.get("employee1", "id");
 unset_field.echo();
 "\n".echo();
 
-/* Test 5: Update existing field */
+/* Test 5: Update existing field
 "Test 5: Field Update\n".echo();
 "-------------------\n".echo();
 

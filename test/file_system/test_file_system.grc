@@ -1,12 +1,12 @@
-/* Test File System Commands in Grapa */
+/* Test File System Commands in Grapa
 
 "Testing Grapa File System Commands\n".echo();
 "================================\n".echo();
 
-/* Initialize file system object */
+/* Initialize file system object
 f = $file();
 
-/* Test 1: Basic Information */
+/* Test 1: Basic Information
 "Test 1: Basic Information\n".echo();
 "------------------------\n".echo();
 
@@ -18,7 +18,7 @@ f.pwd().echo();
 f.phd().echo();
 "\n".echo();
 
-/* Test 2: List Current Directory */
+/* Test 2: List Current Directory
 "Test 2: List Current Directory\n".echo();
 "-----------------------------\n".echo();
 
@@ -27,7 +27,7 @@ files = f.ls();
 files.echo();
 "\n".echo();
 
-/* Test 3: Navigation */
+/* Test 3: Navigation
 "Test 3: Navigation\n".echo();
 "-----------------\n".echo();
 
@@ -48,7 +48,7 @@ f.cd("..");
 f.pwd().echo();
 "\n".echo();
 
-/* Test 4: File Operations */
+/* Test 4: File Operations
 "Test 4: File Operations\n".echo();
 "----------------------\n".echo();
 
@@ -61,7 +61,7 @@ content = f.get("test_file.txt");
 content.echo();
 "\n".echo();
 
-/* Test 5: Directory Operations */
+/* Test 5: Directory Operations
 "Test 5: Directory Operations\n".echo();
 "---------------------------\n".echo();
 
@@ -90,7 +90,7 @@ f.cd("..");
 f.pwd().echo();
 "\n".echo();
 
-/* Test 6: File Information */
+/* Test 6: File Information
 "Test 6: File Information\n".echo();
 "------------------------\n".echo();
 
@@ -99,7 +99,7 @@ file_info = f.info("test_file.txt");
 file_info.echo();
 "\n".echo();
 
-/* Test 7: Database Operations */
+/* Test 7: Database Operations
 "Test 7: Database Operations\n".echo();
 "--------------------------\n".echo();
 
@@ -123,7 +123,7 @@ db.getrow("user1").echo();
 db.getrow("user2").echo();
 "\n".echo();
 
-/* Test 8: Advanced File Operations */
+/* Test 8: Advanced File Operations
 "Test 8: Advanced File Operations\n".echo();
 "--------------------------------\n".echo();
 
@@ -142,7 +142,7 @@ large_file_info = f.info("large_test_file.txt");
 large_file_info.echo();
 "\n".echo();
 
-/* Test 9: Cleanup */
+/* Test 9: Cleanup
 "Test 9: Cleanup\n".echo();
 "---------------\n".echo();
 
@@ -155,7 +155,7 @@ f.cd("..");
 f.rm("test_dir");
 "Cleanup completed.\n".echo();
 
-/* Test 10: Error Handling */
+/* Test 10: Error Handling
 "Test 10: Error Handling\n".echo();
 "-----------------------\n".echo();
 
@@ -171,7 +171,7 @@ error_result2 = f.cd("non_existent_directory");
 error_result2.echo();
 "\n".echo();
 
-/* Final Summary */
+/* Final Summary
 "Final Summary\n".echo();
 "============\n".echo();
 

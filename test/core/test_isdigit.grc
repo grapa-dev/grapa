@@ -1,4 +1,4 @@
-/* Test to check if isdigit is working correctly */
+/* Test to check if isdigit is working correctly
 
 "Testing isdigit function:".echo();
 "isdigit('h'): ".echo();

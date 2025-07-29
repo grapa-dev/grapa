@@ -1,9 +1,9 @@
-/* Minimal Test Runner */
+/* Minimal Test Runner
 
 "=== MINIMAL TEST RUNNER ===".echo();
 "\n".echo();
 
-/* Simple test functions */
+/* Simple test functions
 test1 = op() {
     "Test 1 running\n".echo();
     true;
@@ -14,12 +14,12 @@ test2 = op() {
     true;
 };
 
-/* Create test array */
+/* Create test array
 tests = [test1, test2];
 total = tests.len();
 ("Total tests: " + total.str() + "\n").echo();
 
-/* Simple loop */
+/* Simple loop
 passed = 0;
 i = 0;
 ("Starting loop with i=" + i.str() + " and total=" + total.str() + "\n").echo();

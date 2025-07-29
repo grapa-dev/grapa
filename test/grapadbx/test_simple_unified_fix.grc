@@ -1,7 +1,7 @@
-/* test/grapadbx/test_simple_unified_fix.grc */
+/* test/grapadbx/test_simple_unified_fix.grc
 "=== Testing Unified Database Fix ===\n".echo();
 
-/* Test 1: Basic unified database creation */
+/* Test 1: Basic unified database creation
 "Test 1: Creating unified database...\n".echo();
 u = $unified();
 result = u.create("memory://test_db");
@@ -10,7 +10,7 @@ result = u.create("memory://test_db");
 if (result.type() != $ERR) {
     "Test 1: Creation succeeded\n".echo();
     
-    /* Test 2: Basic operations */
+    /* Test 2: Basic operations
     "Test 2: Testing basic operations...\n".echo();
     u.mk("test_table", "GROUP");
     u.cd("test_table");

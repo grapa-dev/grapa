@@ -1,9 +1,9 @@
-/* Test Grep Debug */
-/* Test to see if grep debug output appears */
+/* Test Grep Debug
+/* Test to see if grep debug output appears
 
 "=== GREP DEBUG TEST ===\n".echo();
 
-/* Test 1: Simple grep call */
+/* Test 1: Simple grep call
 "Test 1: Simple Grep Call\n".echo();
 input = "hello world";
 result = input.grep("hello");
@@ -11,7 +11,7 @@ result = input.grep("hello");
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Case insensitive grep */
+/* Test 2: Case insensitive grep
 "Test 2: Case Insensitive Grep\n".echo();
 input = "HELLO world";
 result = input.grep("hello", "i");
@@ -19,7 +19,7 @@ result = input.grep("hello", "i");
 ("Result: " + result.str() + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Unicode grep */
+/* Test 3: Unicode grep
 "Test 3: Unicode Grep\n".echo();
 input = "İstanbul istanbul";
 result = input.grep("istanbul", "i");

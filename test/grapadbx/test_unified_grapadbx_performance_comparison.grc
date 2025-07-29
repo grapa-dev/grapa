@@ -1,18 +1,18 @@
 /* ========================================================================
    Test Unified GrapaDBX Performance Comparison
    Compares in-memory vs file-based database performance
-   ======================================================================== */
+   ========================================================================
 
 "================================================================================\n".echo();
 "Testing GrapaDBX Performance Comparison\n".echo();
 "================================================================================\n".echo();
 
-/* Test 1: In-Memory Database Performance */
+/* Test 1: In-Memory Database Performance
 "Test 1: In-Memory Database Performance\n".echo();
 "=======================================\n".echo();
 
 u_memory = $unified();
-err = u_memory.create("grapadbx: /* ");  /* In-memory database */ */
+err = u_memory.create("grapadbx://");  /* In-memory database
 
 if (err == 0) {
     "✅ In-memory database created\n".echo();
@@ -21,13 +21,13 @@ if (err == 0) {
     exit(1);
 }
 
-/* Create table structure */
+/* Create table structure
 u_memory.mk("test", "ROW");
 u_memory.mkfield("data", "STR", "VAR");
 u_memory.mkfield("number", "INT", "FIX", 4);
 u_memory.mkfield("float_val", "FLOAT", "FIX", 8);
 
-/* Write performance test */
+/* Write performance test
 "Testing write performance...\n".echo();
 write_start = $time().utc();
 i = 0;
@@ -40,7 +40,7 @@ while (i < 1000) {
 write_end = $time().utc();
 memory_write_time = write_end - write_start;
 
-/* Read performance test */
+/* Read performance test
 "Testing read performance...\n".echo();
 read_start = $time().utc();
 i = 0;
@@ -56,12 +56,12 @@ memory_read_time = read_end - read_start;
 ("In-Memory Write Time: " + memory_write_time + " ns\n").echo();
 ("In-Memory Read Time: " + memory_read_time + " ns\n").echo();
 
-/* Test 2: File-Based Database Performance */
+/* Test 2: File-Based Database Performance
 "Test 2: File-Based Database Performance\n".echo();
 "========================================\n".echo();
 
 u_file = $unified();
-err = u_file.create("grapadbx: /* performance_test.dbx");  /* File-based with caching */ */
+err = u_file.create("grapadbx://performance_test.dbx");  /* File-based with caching
 
 if (err == 0) {
     "✅ File-based database created\n".echo();
@@ -70,13 +70,13 @@ if (err == 0) {
     exit(1);
 }
 
-/* Create table structure */
+/* Create table structure
 u_file.mk("test", "ROW");
 u_file.mkfield("data", "STR", "VAR");
 u_file.mkfield("number", "INT", "FIX", 4);
 u_file.mkfield("float_val", "FLOAT", "FIX", 8);
 
-/* Write performance test */
+/* Write performance test
 "Testing write performance...\n".echo();
 write_start = $time().utc();
 i = 0;
@@ -89,7 +89,7 @@ while (i < 1000) {
 write_end = $time().utc();
 file_write_time = write_end - write_start;
 
-/* Read performance test (first pass - may hit disk) */
+/* Read performance test (first pass - may hit disk)
 "Testing read performance (first pass)...\n".echo();
 read_start = $time().utc();
 i = 0;
@@ -102,7 +102,7 @@ while (i < 1000) {
 read_end = $time().utc();
 file_read_time_1 = read_end - read_start;
 
-/* Read performance test (second pass - should hit cache) */
+/* Read performance test (second pass - should hit cache)
 "Testing read performance (second pass - cached)...\n".echo();
 read_start = $time().utc();
 i = 0;
@@ -119,11 +119,11 @@ file_read_time_2 = read_end - read_start;
 ("File-Based Read Time (First Pass): " + file_read_time_1 + " ns\n").echo();
 ("File-Based Read Time (Second Pass): " + file_read_time_2 + " ns\n").echo();
 
-/* Test 3: Performance Analysis */
+/* Test 3: Performance Analysis
 "Test 3: Performance Analysis\n".echo();
 "============================\n".echo();
 
-/* Calculate ratios */
+/* Calculate ratios
 write_ratio = file_write_time / memory_write_time;
 read_ratio_1 = file_read_time_1 / memory_read_time;
 read_ratio_2 = file_read_time_2 / memory_read_time;
@@ -134,19 +134,19 @@ cache_improvement = file_read_time_1 / file_read_time_2;
 ("Read Performance (Second Pass): File-based is " + read_ratio_2.str() + "x slower than in-memory\n").echo();
 ("Cache Improvement: Second read is " + cache_improvement.str() + "x faster than first read\n").echo();
 
-/* Test 4: Zero Regression Verification */
+/* Test 4: Zero Regression Verification
 "Test 4: Zero Regression Verification\n".echo();
 "====================================\n".echo();
 
-/* Verify that both databases work correctly */
+/* Verify that both databases work correctly
 "Verifying data integrity...\n".echo();
 
-/* Check in-memory data */
+/* Check in-memory data
 u_memory.cd("/test");
 memory_records = u_memory.ls();
 ("In-memory records: " + memory_records.len() + "\n").echo();
 
-/* Check file-based data */
+/* Check file-based data
 u_file.cd("/test");
 file_records = u_file.ls();
 ("File-based records: " + file_records.len() + "\n").echo();
@@ -157,7 +157,7 @@ if (memory_records.len() == file_records.len()) {
     "❌ Data integrity issue - different record counts\n".echo();
 }
 
-/* Test 5: Memory Usage Comparison */
+/* Test 5: Memory Usage Comparison
 "Test 5: Memory Usage Comparison\n".echo();
 "===============================\n".echo();
 
@@ -167,7 +167,7 @@ if (memory_records.len() == file_records.len()) {
 "• Both provide same API and functionality\n".echo();
 "• Both support all GrapaDBX features\n".echo();
 
-/* Test 6: Use Case Recommendations */
+/* Test 6: Use Case Recommendations
 "Test 6: Use Case Recommendations\n".echo();
 "================================\n".echo();
 
@@ -185,7 +185,7 @@ if (memory_records.len() == file_records.len()) {
 "   • Production workloads\n".echo();
 "   • Data that needs to be shared between processes\n".echo();
 
-/* Summary */
+/* Summary
 "================================================================================\n".echo();
 "Performance Comparison Summary\n".echo();
 "================================================================================\n".echo();

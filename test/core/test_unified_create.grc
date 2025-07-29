@@ -1,26 +1,26 @@
-/* Test $unified create method */
+/* Test $unified create method
 
-/* Test instantiation with create */
+/* Test instantiation with create
 "Testing $unified create method...\n".echo();
 u = $unified();
 "Created unified storage object: ".echo();
 u.echo();
 "\n".echo();
 
-/* Call create with a storage URL */
-"Calling create with file: /* /tmp/test...\n".echo(); */
-result = u.create("file: /* /tmp/test"); */
+/* Call create with a storage URL
+"Calling create with file: /* /tmp/test...\n".echo();
+result = u.create("file: /* /tmp/test");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Check the storage info after create */
+/* Check the storage info after create
 "Storage info after create: ".echo();
 result = u.getInfo();
 result.echo();
 "\n".echo();
 
-/* Check the storage type after create */
+/* Check the storage type after create
 "Storage type after create: ".echo();
 result = u.getType();
 result.echo();

@@ -1,10 +1,10 @@
-/* test/grapadbx/test_caching_performance.grc */
+/* test/grapadbx/test_caching_performance.grc
 "=== GrapaDBX Caching Performance Test ===\n".echo();
 
-/* Test caching performance by comparing enabled vs disabled caching */
+/* Test caching performance by comparing enabled vs disabled caching
 "Test: Caching Performance Comparison...\n".echo();
 
-/* Test 1: With caching enabled (default) */
+/* Test 1: With caching enabled (default)
 "Test 1: Performance with caching ENABLED (default)...\n".echo();
 
 u_cached = $unified();
@@ -14,13 +14,13 @@ result = u_cached.create("grapadbx://test_cached.dbx");
 if (result.type() != $ERR) {
     "✅ Cached database creation succeeded\n".echo();
     
-    /* Set up test structure */
+    /* Set up test structure
     u_cached.mk("test", "GROUP");
     u_cached.cd("test");
     u_cached.mkfield("name", "STR", "VAR");
     u_cached.mkfield("value", "STR", "VAR");
     
-    /* Performance test with caching */
+    /* Performance test with caching
     start_time = $TIME().utc();
     i = 0;
     while (i < 100) {
@@ -42,13 +42,13 @@ if (result.type() != $ERR) {
     ("Cached - Write 100 records: " + cached_write_time + "ms\n").echo();
     ("Cached - Read 100 records: " + cached_read_time + "ms\n").echo();
     
-    /* Clean up */
+    /* Clean up
     u_cached.close();
 } else {
     ("❌ Cached database creation failed: " + result + "\n").echo();
 }
 
-/* Test 2: With caching disabled */
+/* Test 2: With caching disabled
 "Test 2: Performance with caching DISABLED...\n".echo();
 
 u_uncached = $unified();
@@ -58,16 +58,16 @@ result = u_uncached.create("grapadbx://test_uncached.dbx");
 if (result.type() != $ERR) {
     "✅ Uncached database creation succeeded\n".echo();
     
-    /* Disable caching */
+    /* Disable caching
     u_uncached.setCachingMode("DISABLED");
     
-    /* Set up test structure */
+    /* Set up test structure
     u_uncached.mk("test", "GROUP");
     u_uncached.cd("test");
     u_uncached.mkfield("name", "STR", "VAR");
     u_uncached.mkfield("value", "STR", "VAR");
     
-    /* Performance test without caching */
+    /* Performance test without caching
     start_time = $TIME().utc();
     i = 0;
     while (i < 100) {
@@ -89,13 +89,13 @@ if (result.type() != $ERR) {
     ("Uncached - Write 100 records: " + uncached_write_time + "ms\n").echo();
     ("Uncached - Read 100 records: " + uncached_read_time + "ms\n").echo();
     
-    /* Clean up */
+    /* Clean up
     u_uncached.close();
 } else {
     ("❌ Uncached database creation failed: " + result + "\n").echo();
 }
 
-/* Performance comparison */
+/* Performance comparison
 "=== Performance Comparison ===\n".echo();
 ("Write performance: Cached=" + cached_write_time + "ms, Uncached=" + uncached_write_time + "ms\n").echo();
 ("Read performance: Cached=" + cached_read_time + "ms, Uncached=" + uncached_read_time + "ms\n").echo();

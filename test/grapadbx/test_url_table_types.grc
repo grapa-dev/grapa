@@ -1,0 +1,53 @@
+/* Test GrapaDBX data retrieval with proper type handling */
+
+"=== GrapaDBX Data Retrieval Test ===\n".echo();
+
+u = $unified();
+result = u.create("grapadbx://test_concat.dbx?type=COL");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Table creation succeeded\n".echo();
+    
+    /* Set different types of data */
+    u.set("user1", "Alice", "name");
+    u.set("user1", 25, "age");
+    u.set("user1", "New York", "city");
+    u.set("user1", 3.14, "pi");
+    
+    /* Get the data back */
+    name1 = u.get("user1", "name");
+    age1 = u.get("user1", "age");
+    city1 = u.get("user1", "city");
+    pi1 = u.get("user1", "pi");
+    
+    /* Test string concatenation and type handling */
+    "Test 1: String concatenation\n".echo();
+    ("Name: '" + name1 + "'\n").echo();
+    ("City: '" + city1 + "'\n").echo();
+    
+    "Test 2: Numeric operations\n".echo();
+    ("Age: " + age1 + "\n").echo();
+    ("Pi: " + pi1 + "\n").echo();
+    
+    "Test 3: Type checking\n".echo();
+    ("Name type: " + name1.type() + "\n").echo();
+    ("Age type: " + age1.type() + "\n").echo();
+    ("City type: " + city1.type() + "\n").echo();
+    ("Pi type: " + pi1.type() + "\n").echo();
+    
+    "Test 4: Length checking\n".echo();
+    ("Name length: " + name1.length() + "\n").echo();
+    ("City length: " + city1.length() + "\n").echo();
+    
+    "Test 5: Math operations\n".echo();
+    (age1 + 5).echo();
+    "\n".echo();
+    (pi1 * 2).echo();
+    "\n".echo();
+    
+} else {
+    ("❌ Table creation failed: " + result + "\n").echo();
+}
+
+"=== Test Complete ===\n".echo(); 

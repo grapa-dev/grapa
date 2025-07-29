@@ -1,28 +1,28 @@
-/* Simple Database Test */
-/* This script tests basic database functionality */
+/* Simple Database Test
+/* This script tests basic database functionality
 
 "=== Simple Database Test ===".echo();
 
-/* Create a ROW database */
+/* Create a ROW database
 db = $file().table("ROW");
 "✓ Database created".echo();
 
-/* Create fields */
+/* Create fields
 db.mkfield("name", "STR", "VAR");
 db.mkfield("age", "INT", "FIX", 4);
 "✓ Fields created".echo();
 
-/* Insert data */
+/* Insert data
 db.set("user1", "Alice", "name");
 db.set("user1", 25, "age");
 "✓ Data inserted".echo();
 
-/* Retrieve data */
+/* Retrieve data
 name = db.get("user1", "name");
 age = db.get("user1", "age").raw().int();
 ("✓ Retrieved: " + name.str() + ", age " + age.str()).echo();
 
-/* List records */
+/* List records
 records = db.ls();
 ("✓ Records: " + records.len().str()).echo();
 

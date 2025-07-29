@@ -1,12 +1,12 @@
-/* Test GrapaDBX Indexes */
+/* Test GrapaDBX Indexes
 
 "=== GRAPADBX INDEX TEST ===\n".echo();
 
-/* Test 1: Create GrapaDBX Database with Indexes */
+/* Test 1: Create GrapaDBX Database with Indexes
 "Test 1: Creating GrapaDBX database with indexes...\n".echo();
 
 dbx = $unified();
-result = dbx.create("grapadbx: /* test_indexes.db"); */
+result = dbx.create("grapadbx://test_indexes.db");
 
 if (result == 0) {
     "✓ GrapaDBX database created successfully\n".echo();
@@ -14,10 +14,10 @@ if (result == 0) {
     "✗ Failed to create GrapaDBX database: " + result + "\n".echo();
 }
 
-/* Test 2: Create Table with Index */
+/* Test 2: Create Table with Index
 "Test 2: Creating table with index...\n".echo();
 
-/* Create a table */
+/* Create a table
 result = dbx.mk("users");
 if (result == 0) {
     "✓ Table created successfully\n".echo();
@@ -25,10 +25,10 @@ if (result == 0) {
     "✗ Failed to create table: " + result + "\n".echo();
 }
 
-/* Test 3: Add Records with Indexed Fields */
+/* Test 3: Add Records with Indexed Fields
 "Test 3: Adding records with indexed fields...\n".echo();
 
-/* Add records with different values */
+/* Add records with different values
 result = dbx.set("users/user1", "Alice", "$VALUE");
 if (result == 0) {
     "✓ User1 added successfully\n".echo();
@@ -50,7 +50,7 @@ if (result == 0) {
     "✗ Failed to add user3: " + result + "\n".echo();
 }
 
-/* Test 4: List Records */
+/* Test 4: List Records
 "Test 4: Listing records...\n".echo();
 
 listing = dbx.ls("users");
@@ -61,10 +61,10 @@ if (listing.len() > 0) {
     "✗ Listing failed or returned empty results\n".echo();
 }
 
-/* Test 5: Search by Index */
+/* Test 5: Search by Index
 "Test 5: Testing index-based search...\n".echo();
 
-/* Search for specific user */
+/* Search for specific user
 content = dbx.get("users/user1", "$VALUE");
 if (content == "Alice") {
     "✓ Index-based search successful for user1\n".echo();
@@ -79,10 +79,10 @@ if (content == "Bob") {
     "✗ Index-based search failed for user2, got: " + content + "\n".echo();
 }
 
-/* Test 6: Update Records (Index Maintenance) */
+/* Test 6: Update Records (Index Maintenance)
 "Test 6: Testing index maintenance during updates...\n".echo();
 
-/* Update a record */
+/* Update a record
 result = dbx.set("users/user1", "Alice Updated", "$VALUE");
 if (result == 0) {
     "✓ User1 updated successfully\n".echo();
@@ -90,7 +90,7 @@ if (result == 0) {
     "✗ Failed to update user1: " + result + "\n".echo();
 }
 
-/* Verify the update */
+/* Verify the update
 content = dbx.get("users/user1", "$VALUE");
 if (content == "Alice Updated") {
     "✓ Index maintained correctly after update\n".echo();
@@ -98,10 +98,10 @@ if (content == "Alice Updated") {
     "✗ Index maintenance failed after update, got: " + content + "\n".echo();
 }
 
-/* Test 7: Delete Records (Index Cleanup) */
+/* Test 7: Delete Records (Index Cleanup)
 "Test 7: Testing index cleanup during deletion...\n".echo();
 
-/* Delete a record */
+/* Delete a record
 result = dbx.rm("users/user3");
 if (result == 0) {
     "✓ User3 deleted successfully\n".echo();
@@ -109,7 +109,7 @@ if (result == 0) {
     "✗ Failed to delete user3: " + result + "\n".echo();
 }
 
-/* Verify the deletion */
+/* Verify the deletion
 listing = dbx.ls("users");
 if (listing.len() == 2) {
     "✓ Index cleanup successful, remaining users: " + listing.len() + "\n".echo();
@@ -117,10 +117,10 @@ if (listing.len() == 2) {
     "✗ Index cleanup failed, found " + listing.len() + " users\n".echo();
 }
 
-/* Test 8: Multiple Field Index */
+/* Test 8: Multiple Field Index
 "Test 8: Testing multiple field index...\n".echo();
 
-/* Create a more complex table with multiple fields */
+/* Create a more complex table with multiple fields
 result = dbx.mk("employees");
 if (result == 0) {
     "✓ Employees table created successfully\n".echo();
@@ -128,7 +128,7 @@ if (result == 0) {
     "✗ Failed to create employees table: " + result + "\n".echo();
 }
 
-/* Add employee records with multiple fields */
+/* Add employee records with multiple fields
 result = dbx.set("employees/emp1", "John,30,Engineer", "$VALUE");
 if (result == 0) {
     "✓ Employee1 added successfully\n".echo();
@@ -143,10 +143,10 @@ if (result == 0) {
     "✗ Failed to add employee2: " + result + "\n".echo();
 }
 
-/* Test 9: Index Performance */
+/* Test 9: Index Performance
 "Test 9: Testing index performance...\n".echo();
 
-/* Add many records to test index performance */
+/* Add many records to test index performance
 i = 1;
 while (i <= 10) {
     result = dbx.set("users/user" + i + "_perf", "User" + i + "_Performance", "$VALUE");
@@ -158,10 +158,10 @@ while (i <= 10) {
 
 "✓ Performance test completed\n".echo();
 
-/* Test 10: Index Integrity */
+/* Test 10: Index Integrity
 "Test 10: Testing index integrity...\n".echo();
 
-/* Verify all records are still accessible */
+/* Verify all records are still accessible
 listing = dbx.ls("users");
 if (listing.len() >= 10) {
     "✓ Index integrity maintained, all records accessible\n".echo();
@@ -169,10 +169,10 @@ if (listing.len() >= 10) {
     "✗ Index integrity issue, found " + listing.len() + " records\n".echo();
 }
 
-/* Test 11: Cross-Table Index Operations */
+/* Test 11: Cross-Table Index Operations
 "Test 11: Testing cross-table index operations...\n".echo();
 
-/* Navigate between tables */
+/* Navigate between tables
 result = dbx.cd("users");
 if (result == 0) {
     "✓ Navigation to users table successful\n".echo();
@@ -187,7 +187,7 @@ if (result == 0) {
     "✗ Navigation to users table failed: " + result + "\n".echo();
 }
 
-/* Navigate back to root */
+/* Navigate back to root
 result = dbx.cd("");
 if (result == 0) {
     "✓ Navigation back to root successful\n".echo();
@@ -195,10 +195,10 @@ if (result == 0) {
     "✗ Navigation back to root failed: " + result + "\n".echo();
 }
 
-/* Test 12: Index Output Formatting */
+/* Test 12: Index Output Formatting
 "Test 12: Testing index output formatting...\n".echo();
 
-/* Test JSON output with indexes */
+/* Test JSON output with indexes
 json_output = dbx.ls("users").json();
 if (json_output.len() > 0) {
     "✓ JSON output with indexes working\n".echo();
@@ -206,7 +206,7 @@ if (json_output.len() > 0) {
     "✗ JSON output with indexes failed\n".echo();
 }
 
-/* Test table output with indexes */
+/* Test table output with indexes
 table_output = dbx.ls("users").table();
 if (table_output.len() > 0) {
     "✓ Table output with indexes working\n".echo();
@@ -214,7 +214,7 @@ if (table_output.len() > 0) {
     "✗ Table output with indexes failed\n".echo();
 }
 
-/* Final Summary */
+/* Final Summary
 "=== GRAPADBX INDEX TEST COMPLETE ===\n".echo();
 "✓ All index tests completed\n".echo();
 "✓ Index creation and maintenance working\n".echo();

@@ -1,4 +1,4 @@
-/* Simple debug script to test number parsing */
+/* Simple debug script to test number parsing
 
 "Testing 'hello' parsing:".echo();
 "hello".echo();

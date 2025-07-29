@@ -1,8 +1,8 @@
-/* Comprehensive ripgrep parity feature test */
+/* Comprehensive ripgrep parity feature test
 
 "=== RIPGREP PARITY FEATURE TESTS ===\n".echo();
 
-/* 1. Column numbers (T) */
+/* 1. Column numbers (T)
 "Test 1: Column numbers (T)\n".echo();
 input = "foo bar baz\nbar foo baz\nbaz bar foo";
 result = input.grep("foo", "oT");
@@ -12,7 +12,7 @@ result = input.grep("foo", "oT");
 ("Expected: [\"5:foo\", \"5:foo\", \"9:foo\"] (column:match)\n").echo();
 "---\n".echo();
 
-/* 2. Word boundary (w) */
+/* 2. Word boundary (w)
 "Test 2: Word boundary (w)\n".echo();
 input = "foo bar foobar barfoo";
 result = input.grep("foo", "ow");
@@ -22,7 +22,7 @@ result = input.grep("foo", "ow");
 ("Expected: [\"foo\"] (only whole word matches)\n").echo();
 "---\n".echo();
 
-/* 3. Null-data mode (z) */
+/* 3. Null-data mode (z)
 "Test 3: Null-data mode (z)\n".echo();
 input = "foo\0bar\0baz\0foo";
 result = input.grep("foo", "oz");
@@ -32,7 +32,7 @@ result = input.grep("foo", "oz");
 ("Expected: [\"foo\", \"foo\"] (null-separated records)\n").echo();
 "---\n".echo();
 
-/* 4. Context separator lines (--) */
+/* 4. Context separator lines (--)
 "Test 4: Context separator lines (--)\n".echo();
 input = "a\nfoo\nb\nc\nfoo\nd";
 result = input.grep("foo", "A1");
@@ -42,7 +42,7 @@ result = input.grep("foo", "A1");
 ("Expected: [\"foo\n\", \"b\n\", \"--\n\", \"foo\n\", \"d\"] (context blocks separated by --)\n").echo();
 "---\n".echo();
 
-/* 5. Color output (L) */
+/* 5. Color output (L)
 "Test 5: Color output (L)\n".echo();
 input = "foo bar baz";
 result = input.grep("foo", "oL");
@@ -52,7 +52,7 @@ result = input.grep("foo", "oL");
 ("Expected: [\"\x1b[1;31mfoo\x1b[0m\"] (with color)\n").echo();
 "---\n".echo();
 
-/* 6. Full PCRE2 features */
+/* 6. Full PCRE2 features
 "Test 6a: Lookahead (?=bar)\n".echo();
 input = "foo bar\nbar foo\nfoobar";
 result = input.grep("foo(?= bar)", "o");
@@ -83,7 +83,7 @@ result = input.grep("\\p{L}", "o");
 ("Expected: [\"a\", \"b\", \"c\", \"é\"] (all letters)\n").echo();
 "---\n".echo();
 
-/* 7. Error messages */
+/* 7. Error messages
 "Test 7a: Invalid regex\n".echo();
 input = "foo";
 result = input.grep("(", "o");

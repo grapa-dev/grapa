@@ -1,39 +1,39 @@
-/* Test Parallel Processing for Unified Storage */
+/* Test Parallel Processing for Unified Storage
 
 "=== PARALLEL PROCESSING TEST ===\n".echo();
 
-/* Test 1: File System with Parallel Processing */
+/* Test 1: File System with Parallel Processing
 "Test 1: File System with Parallel Processing\n".echo();
 "--------------------------------------------\n".echo();
 
-/* Create unified storage object with file system */
+/* Create unified storage object with file system
 fs = $unified();
 "Testing file system with parallel processing...\n".echo();
-result = fs.create("file: /* /tmp"); */
+result = fs.create("file: /* /tmp");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Test parallel directory listing */
+/* Test parallel directory listing
 "Testing parallel directory listing with 4 threads...\n".echo();
 listing = fs.ls("", "", 4);
 "Parallel listing result: ".echo();
 listing.echo();
 "\n".echo();
 
-/* Test 2: GrapaDB with Parallel Processing */
+/* Test 2: GrapaDB with Parallel Processing
 "Test 2: GrapaDB with Parallel Processing\n".echo();
 "----------------------------------------\n".echo();
 
-/* Create unified storage object with GrapaDB */
+/* Create unified storage object with GrapaDB
 db = $unified();
 "Testing GrapaDB with parallel processing...\n".echo();
-result = db.create("grapadb: /* test_parallel.db"); */
+result = db.create("grapadb: /* test_parallel.db");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Create some test data */
+/* Create some test data
 "Creating test data...\n".echo();
 db.set("file1.txt", "Content 1", "$VALUE");
 db.set("file2.txt", "Content 2", "$VALUE");
@@ -41,18 +41,18 @@ db.set("file3.txt", "Content 3", "$VALUE");
 db.set("file4.txt", "Content 4", "$VALUE");
 "Test data created\n".echo();
 
-/* Test parallel listing */
+/* Test parallel listing
 "Testing parallel listing with 2 threads...\n".echo();
 listing = db.ls("", "", 2);
 "Parallel listing result: ".echo();
 listing.echo();
 "\n".echo();
 
-/* Test 3: Performance Comparison */
+/* Test 3: Performance Comparison
 "Test 3: Performance Comparison\n".echo();
 "------------------------------\n".echo();
 
-/* Test sequential vs parallel */
+/* Test sequential vs parallel
 "Testing sequential listing...\n".echo();
 start_time = $time();
 seq_listing = db.ls("", "", 1);
@@ -71,7 +71,7 @@ par_time = end_time - start_time;
 par_time.echo();
 " ms\n".echo();
 
-/* Calculate speedup */
+/* Calculate speedup
 if (seq_time > 0) {
     speedup = seq_time / par_time;
     "Speedup: ".echo();
@@ -81,11 +81,11 @@ if (seq_time > 0) {
     "Speedup calculation not possible (zero time)\n".echo();
 }
 
-/* Test 4: Error Handling */
+/* Test 4: Error Handling
 "Test 4: Error Handling\n".echo();
 "----------------------\n".echo();
 
-/* Test with invalid thread count */
+/* Test with invalid thread count
 "Testing with invalid thread count (0)...\n".echo();
 try {
     invalid_listing = db.ls("", "", 0);
@@ -98,7 +98,7 @@ try {
     "\n".echo();
 }
 
-/* Test with negative thread count */
+/* Test with negative thread count
 "Testing with negative thread count (-1)...\n".echo();
 try {
     negative_listing = db.ls("", "", -1);
@@ -111,78 +111,78 @@ try {
     "\n".echo();
 }
 
-/* Test 5: Memory Backend with Parallel Processing */
+/* Test 5: Memory Backend with Parallel Processing
 "Test 5: Memory Backend with Parallel Processing\n".echo();
 "-----------------------------------------------\n".echo();
 
-/* Create unified storage object with memory backend */
+/* Create unified storage object with memory backend
 mem = $unified();
 "Testing memory backend with parallel processing...\n".echo();
-result = mem.create("memory: /* test_parallel"); */
+result = mem.create("memory: /* test_parallel");
 "Create result: ".echo();
 result.echo();
 "\n".echo();
 
-/* Create test data in memory */
+/* Create test data in memory
 "Creating test data in memory...\n".echo();
 mem.set("mem1.txt", "Memory content 1", "$VALUE");
 mem.set("mem2.txt", "Memory content 2", "$VALUE");
 mem.set("mem3.txt", "Memory content 3", "$VALUE");
 "Test data created in memory\n".echo();
 
-/* Test parallel listing in memory */
+/* Test parallel listing in memory
 "Testing parallel listing in memory with 3 threads...\n".echo();
 mem_listing = mem.ls("", "", 3);
 "Memory parallel listing result: ".echo();
 mem_listing.echo();
 "\n".echo();
 
-/* Test 6: Output Formatting with Parallel Processing */
+/* Test 6: Output Formatting with Parallel Processing
 "Test 6: Output Formatting with Parallel Processing\n".echo();
 "--------------------------------------------------\n".echo();
 
-/* Test JSON output with parallel processing */
+/* Test JSON output with parallel processing
 "Testing JSON output with parallel processing...\n".echo();
 json_output = db.ls("", "", 2).json();
 "JSON output: ".echo();
 json_output.echo();
 "\n".echo();
 
-/* Test table output with parallel processing */
+/* Test table output with parallel processing
 "Testing table output with parallel processing...\n".echo();
 table_output = db.ls("", "", 2).table();
 "Table output: ".echo();
 table_output.echo();
 "\n".echo();
 
-/* Test simple output with parallel processing */
+/* Test simple output with parallel processing
 "Testing simple output with parallel processing...\n".echo();
 simple_output = db.ls("", "", 2).simple();
 "Simple output: ".echo();
 simple_output.echo();
 "\n".echo();
 
-/* Test 7: Cross-Storage Parallel Operations */
+/* Test 7: Cross-Storage Parallel Operations
 "Test 7: Cross-Storage Parallel Operations\n".echo();
 "-----------------------------------------\n".echo();
 
-/* Test moving data between storage types with parallel processing */
+/* Test moving data between storage types with parallel processing
 "Testing cross-storage operations with parallel processing...\n".echo();
 
-/* Copy from memory to file system with parallel processing */
+/* Copy from memory to file system with parallel processing
 "Copying from memory to file system...\n".echo();
 mem_content = mem.get("mem1.txt", "$VALUE");
 fs.set("cross_storage_file.txt", mem_content, "$VALUE");
 "Copy complete\n".echo();
 
-/* Verify with parallel listing */
+/* Verify with parallel listing
 "Verifying with parallel listing...\n".echo();
 fs_verify = fs.ls("", "", 2);
 "File system verification: ".echo();
 fs_verify.echo();
 "\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup...\n".echo();
 fs.rm("cross_storage_file.txt");
 "Cleanup complete\n".echo();

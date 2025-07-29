@@ -9652,7 +9652,13 @@ GrapaRuleEvent* GrapaLibraryRuleRmEvent::Run(GrapaScriptExec *vScriptExec, Grapa
 
 	if (objEvent && r2.vVal && r2.vVal->mValue.mLength)
 	{
+		/* File system style rm - first try to delete as directory, then as data file */
 		err = objEvent->vDatabase->DirectoryDelete(r2.vVal->mValue);
+		if (err)
+		{
+			/* Directory deletion failed, try as data file */
+			err = objEvent->vDatabase->DataDelete(r2.vVal->mValue);
+		}
 	}
 
 	if (err && result == NULL)
@@ -19261,26 +19267,7 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedCdEvent::Run(GrapaScriptExec* vScriptExec
 			{
 				/* Implement GrapaDBX directory switching */
 				/* This navigates to a different table or group within GrapaDBX */
-				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
-				if (dbx)
-				{
-					GrapaDBXTable table;
-					GrapaError tableErr = unifiedDB->GrapaDBXNavigateToTable(dirName, table);
-					if (!tableErr)
-					{
-						/* Successfully navigated to table/group */
-						err = 0;
-					}
-					else
-					{
-						/* Table doesn't exist and couldn't be created */
-						err = tableErr;
-					}
-				}
-				else
-				{
-					err = -1; /* No GrapaDBX instance */
-				}
+				err = unifiedDB->DirectorySwitch(dirName);
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("NETWORK") == 0)
 			{
@@ -19384,75 +19371,18 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedLsEvent::Run(GrapaScriptExec* vScriptExec
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
 			{
-				/* Implement GrapaDBX listing */
-				/* This lists tables, records, or fields within GrapaDBX */
-				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
-				if (dbx)
+				/* Use DirectoryList for GrapaDBX storage */
+				/* This provides consistent behavior with file system */
+				GrapaRuleEvent* table = new GrapaRuleEvent(GrapaTokenType::TABLE, 0, "ls");
+				err = unifiedDB->DirectoryList(dirName, table);
+				
+				if (err == 0)
 				{
-					/* Create a table to hold the listing results */
-					GrapaRuleEvent* table = new GrapaRuleEvent(GrapaTokenType::ARRAY, 0, "", "");
-					table->vQueue = new GrapaRuleQueue();
-					
-					/* Get current table info */
-					GrapaDBXTable currentTable;
-					GrapaError tableErr = unifiedDB->GrapaDBXNavigateToTable(dirName, currentTable);
-					if (!tableErr)
-					{
-						/* List all records in the current table */
-						GrapaDBXCursor cursor;
-						GrapaDBXFieldValueArray searchValues;
-						GrapaError searchErr = dbx->SearchDb(cursor, currentTable, searchValues);
-						if (!searchErr)
-						{
-							GrapaError firstErr = dbx->FirstDb(cursor);
-							if (!firstErr)
-							{
-								/* Add each record to the listing table */
-								do
-								{
-									/* Get record name from cursor */
-									GrapaCHAR recordName;
-									GrapaCHAR keyField;
-									keyField.FROM("$KEY");
-									GrapaBYTE value;
-									GrapaError nameErr = dbx->GetRecordField(cursor, 0, value);
-									if (!nameErr)
-									{
-										/* Add record to listing with default $KEY/$VALUE structure */
-										GrapaBYTE& valueBytes = (GrapaBYTE&)value;
-                                        GrapaRuleEvent* row = new GrapaRuleEvent(0, GrapaCHAR((char*)valueBytes.mBytes, valueBytes.mLength), GrapaCHAR());
-                                        row->mValue.mToken = GrapaTokenType::LIST;
-                                        row->vQueue = new GrapaRuleQueue();
-                                                                                
-                                        GrapaInt size(0);
-                                        row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR((char*)valueBytes.mBytes, valueBytes.mLength)));
-										row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("RECORD")));
-										row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), size.getBytes()));
-										
-										table->vQueue->PushTail(row);
-									}
-									
-									GrapaError nextErr = dbx->NextDb(cursor);
-									if (nextErr) break;
-								} while (true);
-							}
-						}
-					}
-					
-					if (table->vQueue && table->vQueue->mCount > 0)
-					{
-						result = table;
-						err = 0;
-					}
-					else
-					{
-						delete table;
-						err = -1; /* No records found */
-					}
+					result = table;
 				}
 				else
 				{
-					err = -1; /* No GrapaDBX instance */
+					delete table;
 				}
 			}
 			else if (unifiedDB->GetStorageType().StrCmp("NETWORK") == 0)
@@ -19591,121 +19521,36 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedMkEvent::Run(GrapaScriptExec* vScriptExec
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
 	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL); /* type (optional) */
+	
+			printf("[DEBUG] GrapaLibRule Mk: pInput=%p, Head(0)=%p, Head(1)=%p, Head(2)=%p\n", 
+		       pInput, pInput ? pInput->Head(0) : NULL, pInput ? pInput->Head(1) : NULL, pInput ? pInput->Head(2) : NULL);
+		printf("[DEBUG] GrapaLibRule Mk: r1.vVal=%p, r2.vVal=%p, r3.vVal=%p\n", r1.vVal, r2.vVal, r3.vVal);
+		if (r2.vVal) {
+			printf("[DEBUG] GrapaLibRule Mk: r2.vVal->mValue.mLength=%d, r2.vVal->mValue.mToken=%d\n", 
+			       r2.vVal->mValue.mLength, r2.vVal->mValue.mToken);
+		}
 
 	GrapaRuleEvent* objEvent = vScriptExec->vScriptState->SearchTarget(pNameSpace, r1.vVal);
 	if (objEvent && objEvent->vDatabase == NULL)
 		objEvent->vDatabase = new GrapaUnifiedLocalDatabase(vScriptExec->vScriptState);
 
-	if (objEvent && objEvent->vDatabase)
+	if (objEvent && r2.vVal)
 	{
 		GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
-		if (unifiedDB && r2.vVal)
+		printf("[DEBUG] GrapaLibRule Mk: r2.vVal=%p, r2.vVal->mValue='%s'\n", r2.vVal, r2.vVal ? (char*)r2.vVal->mValue.mBytes : "NULL");
+		if (unifiedDB)
 		{
 			GrapaCHAR name = r2.vVal->mValue;
 			GrapaCHAR type = r3.vVal ? r3.vVal->mValue : GrapaCHAR("");
 			
-			/* Switch based on storage type */
-			if (unifiedDB->GetStorageType().StrCmp("FILESYSTEM") == 0)
-			{
-				err = unifiedDB->DirectoryCreate(name, type);
-			}
-			else if (unifiedDB->GetStorageType().StrCmp("GRAPADBX") == 0)
-			{
-				/* Implement GrapaDBX mk */
-				/* This creates a new table, record, or field in GrapaDBX */
-				GrapaGroup2* group2 = unifiedDB->GetGrapaDBX();
-				if (group2)
-				{
-					if (type.Cmp("DIR") == 0 || type.Cmp("GROUP") == 0)
-					{
-						/* Create a new table/group */
-						u64 newTree = 0;
-						err = group2->CreateGroup(unifiedDB->GetGrapaDBXFirstTree(), unifiedDB->GetGrapaDBXRootType(), name, type, newTree);
-					}
-					else if (type.Cmp("STR") == 0 || type.Cmp("INT") == 0 || type.Cmp("FLOAT") == 0 || type.Cmp("RAW") == 0)
-					{
-						/* Create a new field */
-						err = group2->CreateField(unifiedDB->GetGrapaDBXFirstTree(), unifiedDB->GetGrapaDBXRootType(), (char*)name.mBytes);
-					}
-					else
-					{
-						/* Create a new record/entry */
-						u64 recordId = 0;
-						err = group2->CreateEntry(unifiedDB->GetGrapaDBXFirstTree(), unifiedDB->GetGrapaDBXRootType(), name, recordId);
-					}
-				}
-				else
-				{
-					err = -1; /* No GrapaGroup2 instance */
-				}
-			}
-			else if (unifiedDB->GetStorageType().StrCmp("NETWORK") == 0)
-			{
-				/* Implement network mk */
-				/* This creates a new file/directory on the remote server */
-				if (unifiedDB->IsNetworkConnected())
-				{
-					if (type.Cmp("DIR") == 0)
-					{
-						/* Create directory on remote server */
-						err = unifiedDB->NetworkCreateDirectory(name);
-					}
-					else
-					{
-						/* Create empty file on remote server */
-						GrapaCHAR emptyContent;
-						err = unifiedDB->NetworkWriteFile(name, emptyContent);
-					}
-				}
-				else
-				{
-					err = -1; /* Not connected to network */
-				}
-			}
-			else if (unifiedDB->GetStorageType().StrCmp("MEMORY") == 0)
-			{
-				/* Implement memory mk */
-				/* This creates a new object in the memory namespace */
-				GrapaCHAR type = r3.vVal ? r3.vVal->mValue : GrapaCHAR("FILE");
-				if (type.StrCmp("DIR") == 0)
-				{
-					err = unifiedDB->MemoryCreateDirectory(name);
-				}
-				else
-				{
-					/* Create a file in memory */
-					err = unifiedDB->MemoryWriteFile(name, GrapaCHAR(""));
-				}
-			}
-			else if (unifiedDB->GetStorageType().StrCmp("CLOUD") == 0)
-			{
-				/* Implement cloud mk */
-				/* This creates a new object in the cloud storage bucket */
-				if (unifiedDB->IsNetworkConnected())
-				{
-					GrapaCHAR type = r3.vVal ? r3.vVal->mValue : GrapaCHAR("FILE");
-					if (type.StrCmp("DIR") == 0)
-					{
-						/* Create directory in cloud storage */
-						err = unifiedDB->NetworkCreateDirectory(name);
-					}
-					else
-					{
-						/* Create file in cloud storage */
-						err = unifiedDB->NetworkWriteFile(name, GrapaCHAR(""));
-					}
-				}
-				else
-				{
-					err = -1; /* Not connected to cloud storage */
-				}
-			}
-			
-			if (err == 0)
-			{
-				result = new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("mk_ok"));
-			}
+			/* Use the same pattern as $file() - delegate to the database object */
+			err = unifiedDB->DirectoryCreate(name, type);
 		}
+	}
+	
+	if (err == 0)
+	{
+		result = new GrapaRuleEvent(0, GrapaCHAR("status"), GrapaCHAR("mk_ok"));
 	}
 	
 	if (err && result == NULL)
@@ -19744,40 +19589,58 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedRmEvent::Run(GrapaScriptExec* vScriptExec
 				GrapaGroup2* dbx = unifiedDB->GetGrapaDBX();
 				if (dbx)
 				{
-					/* Try to delete as a record first */
-					GrapaDBXTable currentTable;
-					GrapaError tableErr = dbx->OpenTable(unifiedDB->GetGrapaDBXFirstTree(), 0, currentTable);
-					if (!tableErr)
+					printf("[DEBUG] GrapaLibRule Rm: Attempting to delete '%s' from GrapaDBX\n", (char*)name.mBytes);
+					
+					/* File system style rm - check current context and delete appropriately */
+					printf("[DEBUG] GrapaLibRule Rm: Attempting to delete '%s' from GrapaDBX\n", (char*)name.mBytes);
+					
+					/* First, check if we're currently in a table context (like being in a directory) */
+					u64 currentDirId = unifiedDB->mDirId;
+					u8 currentDirType = unifiedDB->mDirType;
+					
+					if (currentDirId > 0)
 					{
-						GrapaDBXCursor cursor;
-						GrapaError findErr = unifiedDB->GrapaDBXFindRecord(name, currentTable, cursor);
-						if (!findErr)
-						{
-							/* Found record, delete it */
-							err = dbx->DeleteRecord(currentTable, cursor);
-						}
-						else
-						{
-							/* Not a record, try to delete as table */
-							u64 tableId = 0;
-							GrapaError deleteTableErr = dbx->DeleteTable(unifiedDB->GetGrapaDBXFirstTree(), tableId);
-							if (!deleteTableErr)
-							{
-								err = 0;
-							}
-							else
-							{
-								err = findErr; /* Return original error if not found */
-							}
+						/* We're in a table context, so try to delete the record from this table */
+						printf("[DEBUG] GrapaLibRule Rm: In table context (dirId=%llu, dirType=%d), searching for record '%s'\n", 
+							   (unsigned long long)currentDirId, currentDirType, (char*)name.mBytes);
+						
+						/* Use the current directory context to delete the record */
+						err = unifiedDB->DataDelete(name);
+						if (err) {
+							printf("[DEBUG] GrapaLibRule Rm: DataDelete failed with error %d\n", err);
+						} else {
+							printf("[DEBUG] GrapaLibRule Rm: Record deleted successfully\n");
 						}
 					}
 					else
 					{
-						err = tableErr;
+						/* We're not in a table context, so try to find and delete as a table/group */
+						printf("[DEBUG] GrapaLibRule Rm: Not in table context, searching for table/group '%s'\n", (char*)name.mBytes);
+						
+						u64 tableId = 0;
+						GrapaDBXCursor tableCursor;
+						GrapaError tableFindErr = dbx->FindEntry(unifiedDB->GetGrapaDBXFirstTree(), unifiedDB->GetGrapaDBXRootType(), name, tableId, tableCursor);
+						if (!tableFindErr)
+						{
+							printf("[DEBUG] GrapaLibRule Rm: Found table/group '%s' with ID %llu, deleting table/group\n", (char*)name.mBytes, tableId);
+							/* Found as table/group, delete it */
+							err = dbx->DeleteTable(unifiedDB->GetGrapaDBXFirstTree(), tableId);
+							if (err) {
+								printf("[DEBUG] GrapaLibRule Rm: DeleteTable failed with error %d\n", err);
+							} else {
+								printf("[DEBUG] GrapaLibRule Rm: Table/group deleted successfully\n");
+							}
+						}
+						else
+						{
+							printf("[DEBUG] GrapaLibRule Rm: '%s' not found as table/group, error %d\n", (char*)name.mBytes, tableFindErr);
+							err = tableFindErr;
+						}
 					}
 				}
 				else
 				{
+					printf("[DEBUG] GrapaLibRule Rm: No GrapaDBX instance available\n");
 					err = -1; /* No GrapaDBX instance */
 				}
 			}
@@ -19944,69 +19807,31 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedSetEvent::Run(GrapaScriptExec* vScriptExe
 				printf("[DEBUG] GrapaLibRule: dbx typeid = %s\n", typeid(*dbx).name());
 				if (dbx)
 				{
-					/* Use the same approach as GrapaDB - navigate through the database path */
-					u64 dirId = unifiedDB->GetGrapaDBXFirstTree();
-					u8 dirType = unifiedDB->GetGrapaDBXRootType();
-					GrapaCHAR fname;
+					/* For GrapaDBX, we need to navigate to the table first, then set the field */
+					/* This is similar to how FieldGet works */
+					GrapaCHAR tableName(name);
+					GrapaDBXTable table;
 					
-					/* Parse the name to handle nested paths */
-					GrapaRuleQueue names;
-					names.AppendNames((char*)name.mBytes, "\\/");
-					GrapaObjectEvent* nameEvent = names.Head();
-					
-					/* Navigate through the path */
-					while (nameEvent && nameEvent->Next())
+					/* Navigate to the table using the same logic as FieldGet */
+					printf("[DEBUG] GrapaLibRule Set: Navigating to table '%s'\n", (char*)tableName.mBytes);
+					GrapaError navErr = unifiedDB->GrapaDBXNavigateToTable(tableName, table);
+					if (navErr)
 					{
-						if (nameEvent->mName.mLength == 0)
-						{
-							/* Root directory */
-							dirId = unifiedDB->GetGrapaDBXFirstTree();
-							dirType = unifiedDB->GetGrapaDBXRootType();
-						}
-						else
-						{
-							/* Navigate to nested table/group */
-							u64 newDirId = 0;
-							u8 newDirType = 0;
-							u64 tableId = 0;
-													// Use GrapaGroup2 for hierarchical operations
-						printf("[DEBUG] GrapaLibRule: Calling dbx->OpenGroup\n");
-						GrapaError navErr = dbx->OpenGroup(dirId, dirType, nameEvent->mName, newDirId, newDirType, tableId);
-							if (navErr)
-							{
-								err = navErr;
-								break;
-							}
-							dirId = newDirId;
-							dirType = newDirType;
-						}
-						nameEvent = nameEvent->Next();
-					}
-					
-					/* Get the final record name */
-					if (nameEvent && nameEvent->mName.mLength)
-					{
-						fname.FROM(nameEvent->mName);
+						printf("[DEBUG] GrapaLibRule Set: Navigation failed with error %d\n", navErr);
+						err = navErr;
 					}
 					else
 					{
-						fname.FROM(name);
-					}
-					printf("[DEBUG] GrapaLibRule Set: Final record name = '%s', err = %d\n", (char*)fname.mBytes, err);
-					
-					if (err == 0)
-					{
-						/* Now set the field value using the correct context */
+						printf("[DEBUG] GrapaLibRule Set: Navigation succeeded, table.mRef=%llu, table.mRefType=%d\n", 
+						       (unsigned long long)table.mRef, table.mRefType);
+						
+						/* Now set the field value using the table context */
 						GrapaCHAR fieldName(field);
 						if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
 						
 						// Use GrapaGroup2 for hierarchical operations
-						printf("[DEBUG] GrapaLibRule: Calling dbx->SetField\n");
-						err = dbx->SetField(dirId, dirType, fname, fieldName, value);
-					}
-					else
-					{
-						printf("[DEBUG] GrapaLibRule Set: Skipping SetField because err != 0 (%d)\n", err);
+						printf("[DEBUG] GrapaLibRule: Calling dbx->SetField with table context\n");
+						err = dbx->SetField(table.mRef, table.mRefType, name, fieldName, value);
 					}
 				}
 				else

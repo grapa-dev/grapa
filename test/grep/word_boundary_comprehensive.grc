@@ -1,4 +1,4 @@
-/* Comprehensive word boundary test */
+/* Comprehensive word boundary test
 "=== COMPREHENSIVE WORD BOUNDARY TEST ===\n".echo();
 
 "--- Test 1: Basic word boundaries ---\n".echo();

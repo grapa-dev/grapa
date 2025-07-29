@@ -1,21 +1,21 @@
-/* Test GrapaDBX Dump Functionality */
+/* Test GrapaDBX Dump Functionality
 
 "=== GrapaDBX Dump Test ===".echo();
 
-/* Create a GrapaDBX database */
+/* Create a GrapaDBX database
 db = $file().table("GROUP");
 "✓ Database created".echo();
 
-/* Set some test data */
+/* Set some test data
 db.set("test_field", "test_value");
 "✓ Set operation completed".echo();
 
-/* Try to dump the database */
+/* Try to dump the database
 "=== Dumping Database ===".echo();
 db.dump();
 "✓ Dump operation completed".echo();
 
-/* Get the data back */
+/* Get the data back
 result = db.get("test_field");
 "✓ Get operation completed".echo();
 "Result: ".echo();

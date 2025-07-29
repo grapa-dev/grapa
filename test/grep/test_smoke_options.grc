@@ -8,7 +8,7 @@
 "=== SMOKE TEST: CORE OPTIONS ===\n".echo();
 "Running core options validation...\n".echo();
 
-/* Test 1: Match-only (o) option */
+/* Test 1: Match-only (o) option
 "Test 1: Match-only (o) option\n".echo();
 input = "Hello world\nGoodbye world\nHello universe";
 result = input.grep("\\w+", "o");
@@ -19,7 +19,7 @@ result = input.grep("\\w+", "o");
 ("Status: " + (result.len() > 0 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Case-insensitive (i) option */
+/* Test 2: Case-insensitive (i) option
 "Test 2: Case-insensitive (i) option\n".echo();
 result = input.grep("hello", "i");
 ("Pattern: hello, Options: i\n").echo();
@@ -28,7 +28,7 @@ result = input.grep("hello", "i");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Invert match (v) option */
+/* Test 3: Invert match (v) option
 "Test 3: Invert match (v) option\n".echo();
 result = input.grep("Hello", "v");
 ("Pattern: Hello, Options: v\n").echo();
@@ -37,7 +37,7 @@ result = input.grep("Hello", "v");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Line numbers (n) option */
+/* Test 4: Line numbers (n) option
 "Test 4: Line numbers (n) option\n".echo();
 result = input.grep("Hello", "n");
 ("Pattern: Hello, Options: n\n").echo();
@@ -46,7 +46,7 @@ result = input.grep("Hello", "n");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Count only (c) option */
+/* Test 5: Count only (c) option
 "Test 5: Count only (c) option\n".echo();
 result = input.grep("Hello", "c");
 ("Pattern: Hello, Options: c\n").echo();
@@ -55,7 +55,7 @@ result = input.grep("Hello", "c");
 ("Status: " + (result == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 6: JSON output (j) option */
+/* Test 6: JSON output (j) option
 "Test 6: JSON output (j) option\n".echo();
 result = input.grep("Hello", "j");
 ("Pattern: Hello, Options: j\n").echo();
@@ -64,7 +64,7 @@ result = input.grep("Hello", "j");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 7: All mode (a) option */
+/* Test 7: All mode (a) option
 "Test 7: All mode (a) option\n".echo();
 result = input.grep("Hello", "a");
 ("Pattern: Hello, Options: a\n").echo();
@@ -73,7 +73,7 @@ result = input.grep("Hello", "a");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 8: Word boundary (w) option */
+/* Test 8: Word boundary (w) option
 "Test 8: Word boundary (w) option\n".echo();
 input2 = "foo bar foobar barfoo";
 result = input2.grep("foo", "w");
@@ -84,7 +84,7 @@ result = input2.grep("foo", "w");
 ("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 9: Exact match (x) option */
+/* Test 9: Exact match (x) option
 "Test 9: Exact match (x) option\n".echo();
 input3 = "Hello\nHello world\nHello";
 result = input3.grep("Hello", "x");
@@ -95,7 +95,7 @@ result = input3.grep("Hello", "x");
 ("Status: " + (result.len() == 2 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
-/* Test 10: Context (A1) option */
+/* Test 10: Context (A1) option
 "Test 10: Context (A1) option\n".echo();
 input4 = "line1\nline2\nline3\nline4";
 result = input4.grep("line2", "A1");

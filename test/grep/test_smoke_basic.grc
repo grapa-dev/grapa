@@ -9,10 +9,10 @@
 "=== SMOKE TEST: BASIC GREP FUNCTIONALITY ===\n".echo();
 "Running critical path validation...\n".echo();
 
-/* Initialize test result tracking */
+/* Initialize test result tracking
 $global.testresult = "PASS";
 
-/* Test 1: Basic pattern matching */
+/* Test 1: Basic pattern matching
 "Test 1: Basic pattern matching\n".echo();
 input = "Hello world\nGoodbye world\nHello universe";
 result = input.grep("Hello", "o");
@@ -25,7 +25,7 @@ test1_passed = result.len() == 2 && result[0] == "Hello" && result[1] == "Hello"
 if (!test1_passed) { $global.testresult = "FAIL"; }
 "---\n".echo();
 
-/* Test 2: Case-insensitive matching */
+/* Test 2: Case-insensitive matching
 "Test 2: Case-insensitive matching\n".echo();
 result = input.grep("hello", "oi");
 ("Pattern: hello, Options: oi\n").echo();
@@ -36,7 +36,7 @@ test2_passed = result.len() == 2;
 if (!test2_passed) { $global.testresult = "FAIL"; }
 "---\n".echo();
 
-/* Test 3: Invert match */
+/* Test 3: Invert match
 "Test 3: Invert match\n".echo();
 result = input.grep("Hello", "ov");
 ("Pattern: Hello, Options: ov\n").echo();
@@ -47,7 +47,7 @@ test3_passed = result.len() == 1 && result[0] == "Goodbye world";
 if (!test3_passed) { $global.testresult = "FAIL"; }
 "---\n".echo();
 
-/* Test 4: Line numbers */
+/* Test 4: Line numbers
 "Test 4: Line numbers\n".echo();
 result = input.grep("Hello", "on");
 ("Pattern: Hello, Options: on\n").echo();
@@ -58,7 +58,7 @@ test4_passed = result.len() == 2;
 if (!test4_passed) { $global.testresult = "FAIL"; }
 "---\n".echo();
 
-/* Test 5: Count only */
+/* Test 5: Count only
 "Test 5: Count only\n".echo();
 result = input.grep("Hello", "c");
 ("Pattern: Hello, Options: c\n").echo();
@@ -69,7 +69,7 @@ test5_passed = result.len() == 1 && result[0] == "2";
 if (!test5_passed) { $global.testresult = "FAIL"; }
 "---\n".echo();
 
-/* Test 6: JSON output */
+/* Test 6: JSON output
 "Test 6: JSON output\n".echo();
 result = input.grep("Hello", "oj");
 ("Pattern: Hello, Options: oj\n").echo();
@@ -80,7 +80,7 @@ test6_passed = result.len() == 2;
 if (!test6_passed) { $global.testresult = "FAIL"; }
 "---\n".echo();
 
-/* Test 7: Empty input handling */
+/* Test 7: Empty input handling
 "Test 7: Empty input handling\n".echo();
 result = "".grep("pattern", "o");
 ("Input: empty, Pattern: pattern, Options: o\n").echo();
@@ -91,7 +91,7 @@ test7_passed = result.len() == 0;
 if (!test7_passed) { $global.testresult = "FAIL"; }
 "---\n".echo();
 
-/* Test 8: Invalid pattern handling */
+/* Test 8: Invalid pattern handling
 "Test 8: Invalid pattern handling\n".echo();
 result = "test".grep("(", "o");
 ("Input: test, Pattern: (, Options: o\n").echo();

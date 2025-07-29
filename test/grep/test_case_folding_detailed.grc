@@ -1,9 +1,9 @@
-/* Test Case Folding Detailed Debug */
-/* Detailed debug to understand the case folding issue */
+/* Test Case Folding Detailed Debug
+/* Detailed debug to understand the case folding issue
 
 "=== CASE FOLDING DETAILED DEBUG ===\n".echo();
 
-/* Test 1: Check what case folding actually produces */
+/* Test 1: Check what case folding actually produces
 "Test 1: Case Folding Output\n".echo();
 input1 = "İ";
 input2 = "i";
@@ -14,7 +14,7 @@ input2 = "i";
 ("İ case folded == i case folded: " + (input1.case_fold() == input2.case_fold()).str() + "\n").echo();
 "---\n".echo();
 
-/* Test 2: Check full word case folding */
+/* Test 2: Check full word case folding
 "Test 2: Full Word Case Folding\n".echo();
 word1 = "İstanbul";
 word2 = "istanbul";
@@ -25,7 +25,7 @@ word2 = "istanbul";
 ("İstanbul case folded == istanbul case folded: " + (word1.case_fold() == word2.case_fold()).str() + "\n").echo();
 "---\n".echo();
 
-/* Test 3: Check what happens in grep */
+/* Test 3: Check what happens in grep
 "Test 3: Grep Behavior\n".echo();
 input = "İstanbul ß ß ß";
 ("Input: " + input + "\n").echo();
@@ -36,7 +36,7 @@ result = input.grep("istanbul", "i");
 ("Result length: " + result.len().str() + "\n").echo();
 "---\n".echo();
 
-/* Test 4: Check with match-only mode */
+/* Test 4: Check with match-only mode
 "Test 4: Match-Only Mode\n".echo();
 result = input.grep("istanbul", "io");
 ("Pattern: istanbul (case-insensitive, match-only)\n").echo();
@@ -44,7 +44,7 @@ result = input.grep("istanbul", "io");
 ("Result length: " + result.len().str() + "\n").echo();
 "---\n".echo();
 
-/* Test 5: Check with exact pattern */
+/* Test 5: Check with exact pattern
 "Test 5: Exact Pattern\n".echo();
 result = input.grep("İstanbul", "io");
 ("Pattern: İstanbul (match-only)\n").echo();
@@ -52,7 +52,7 @@ result = input.grep("İstanbul", "io");
 ("Result length: " + result.len().str() + "\n").echo();
 "---\n".echo();
 
-/* Test 6: Check case folding with normalization */
+/* Test 6: Check case folding with normalization
 "Test 6: Case Folding with Normalization\n".echo();
 result = input.grep("istanbul", "iNFC");
 ("Pattern: istanbul (case-insensitive, NFC normalization)\n").echo();

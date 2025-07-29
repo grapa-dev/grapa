@@ -1,12 +1,12 @@
-/* Simple Option Combination Test */
-/* Testing key option combinations with correct expected values */
+/* Simple Option Combination Test
+/* Testing key option combinations with correct expected values
 
 "=== SIMPLE OPTION COMBINATION TEST ===\n".echo();
 
 result = "";
 test_count = 0;
 
-/* Test 1: Basic match-only */
+/* Test 1: Basic match-only
 test_count += 1;
 input = "Hello World|Goodbye World";
 actual = input.grep("Hello", "o", "|");
@@ -18,7 +18,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": o (match-only) - " + actual.str() + "\n").echo();
 
-/* Test 2: Case-insensitive */
+/* Test 2: Case-insensitive
 test_count += 1;
 actual = input.grep("hello", "i", "|");
 expected_len = 1;
@@ -29,7 +29,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": i (case-insensitive) - " + actual.str() + "\n").echo();
 
-/* Test 3: Match-only + case-insensitive */
+/* Test 3: Match-only + case-insensitive
 test_count += 1;
 actual = input.grep("hello", "oi", "|");
 expected_len = 1;
@@ -40,7 +40,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": oi (match-only + case) - " + actual.str() + "\n").echo();
 
-/* Test 4: JSON output */
+/* Test 4: JSON output
 test_count += 1;
 actual = input.grep("Hello", "j", "|");
 expected_len = 1;
@@ -51,7 +51,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": j (JSON) - " + actual.str() + "\n").echo();
 
-/* Test 5: Match-only + JSON */
+/* Test 5: Match-only + JSON
 test_count += 1;
 actual = input.grep("Hello", "oj", "|");
 expected_len = 1;
@@ -62,7 +62,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": oj (match-only + JSON) - " + actual.str() + "\n").echo();
 
-/* Test 6: Line numbers */
+/* Test 6: Line numbers
 test_count += 1;
 actual = input.grep("Hello", "n", "|");
 expected_len = 1;
@@ -73,7 +73,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": n (line numbers) - " + actual.str() + "\n").echo();
 
-/* Test 7: Match-only + line numbers */
+/* Test 7: Match-only + line numbers
 test_count += 1;
 actual = input.grep("Hello", "on", "|");
 expected_len = 1;
@@ -84,7 +84,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": on (match-only + line numbers) - " + actual.str() + "\n").echo();
 
-/* Test 8: Context */
+/* Test 8: Context
 test_count += 1;
 actual = input.grep("Hello", "A1", "|");
 expected_len = 1;
@@ -95,7 +95,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": A1 (context) - " + actual.str() + "\n").echo();
 
-/* Test 9: Match-only + context */
+/* Test 9: Match-only + context
 test_count += 1;
 actual = input.grep("Hello", "oA1", "|");
 expected_len = 1;
@@ -106,7 +106,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": oA1 (match-only + context) - " + actual.str() + "\n").echo();
 
-/* Test 10: 3-option combination */
+/* Test 10: 3-option combination
 test_count += 1;
 actual = input.grep("Hello", "ojn", "|");
 expected_len = 1;
@@ -117,7 +117,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": ojn (3 options) - " + actual.str() + "\n").echo();
 
-/* Test 11: 4-option combination */
+/* Test 11: 4-option combination
 test_count += 1;
 actual = input.grep("Hello", "ojnA1", "|");
 expected_len = 1;
@@ -128,7 +128,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": ojnA1 (4 options) - " + actual.str() + "\n").echo();
 
-/* Test 12: Count only */
+/* Test 12: Count only
 test_count += 1;
 actual = input.grep("Hello", "c", "|");
 expected_len = 1;
@@ -139,7 +139,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": c (count) - " + actual.str() + "\n").echo();
 
-/* Test 13: Invert match */
+/* Test 13: Invert match
 test_count += 1;
 actual = input.grep("Hello", "v", "|");
 expected_len = 1;
@@ -150,7 +150,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": v (invert) - " + actual.str() + "\n").echo();
 
-/* Test 14: Exact match */
+/* Test 14: Exact match
 test_count += 1;
 actual = input.grep("Hello World", "x", "|");
 expected_len = 1;
@@ -161,7 +161,7 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": x (exact) - " + actual.str() + "\n").echo();
 
-/* Test 15: All-mode */
+/* Test 15: All-mode
 test_count += 1;
 actual = input.grep("Hello", "a", "|");
 expected_len = 1;
@@ -172,15 +172,15 @@ if (actual.len() == expected_len) {
 };
 ("Test " + test_count + ": a (all-mode) - " + actual.str() + "\n").echo();
 
-/* ======================================== */
-/* SUMMARY */
-/* ======================================== */
+/* ========================================
+/* SUMMARY
+/* ========================================
 ("=== SIMPLE OPTION COMBINATION TEST COMPLETE ===\n").echo();
 ("Total tests: " + test_count + "\n").echo();
 ("Results: " + result + "\n").echo();
 ("Summary: . = PASS, F = FAIL\n").echo();
 
-/* Count passes and failures */
+/* Count passes and failures
 pass_count = 0;
 fail_count = 0;
 i = 0;

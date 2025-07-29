@@ -3,7 +3,38 @@
 ## Overview
 This directory contains documentation and resources for academic outreach and collaboration opportunities with Grapa. These materials support university engagement, student projects, and research partnerships.
 
+## Core Research Areas
+
+Grapa offers three primary research areas for academic collaboration:
+
+### 1. Database File System Paradigm
+A novel approach that unifies file system and database semantics through a single API where tables function as directories and records function as files. This represents a significant departure from traditional database approaches and offers unique research opportunities in database systems, file systems, and programming languages.
+
+### 2. Runtime Grammar Mutation & Language Extensibility
+Grapa's core innovation enabling grammar evolution at runtime through mutable $RULE structures, allowing context-specific syntax modifications and self-hosting architecture.
+
+### 3. Weighted BTree Storage Engine
+Advanced storage system featuring weighted traversal for efficient size/count queries, fragmented column-store support, and in-place updates with minimal data movement.
+
 ## Documents
+
+### [Database File System Research](DATABASE_FILE_SYSTEM_RESEARCH.md)
+Comprehensive research opportunities and implementation status for Grapa's database file system paradigm:
+- Novel unified file/database API where tables = directories, records = files
+- Hierarchical data organization with groups containing both structure and data
+- Research questions spanning performance, usability, consistency, and scalability
+- Academic positioning in database systems, file systems, and programming languages
+- Current GrapaDBX implementation status and technical achievements
+- Publication opportunities and collaboration models
+
+### [GrapaDBX Implementation Status](GRAPADBX_IMPLEMENTATION_STATUS.md)
+Detailed technical status of the current GrapaDBX implementation for academic researchers:
+- Complete feature status (completed, in progress, planned)
+- Technical achievements and problem-solving approaches
+- Implementation details and source code organization
+- Research opportunities and academic value assessment
+- Next steps for research and development
+- Contact information and collaboration opportunities
 
 ### [Research Directions](RESEARCH_DIRECTIONS.md)
 Comprehensive overview of potential research directions and collaboration opportunities for academic institutions interested in Grapa's core innovations:

@@ -523,3 +523,58 @@ The implementation follows Grapa's design philosophy of simplicity and elegance,
 - [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md)
 - [Execution Trees](EXECUTION_TREES.md)
 - [$OP Type Documentation](docs-src/docs/type/op.md) 
+
+## Grapa Script Variable Assignment and Serialization Patterns
+
+### Issue Description
+During the development of GrapaDBX's unified interface, a critical issue was discovered where C++ data retrieval was working correctly, but retrieved values were not properly populating Grapa script variables. This manifested as empty strings or incorrect type handling in the final Grapa script output.
+
+### Root Cause Analysis
+The issue was traced to incorrect handling of `GrapaRuleEvent` construction and token type assignment in the unified get logic. The implementation was:
+
+1. **Forcibly setting token type to STR**: The unified get logic was explicitly setting `result->mValue.mToken = GrapaTokenType::STR`, which overrode the actual type determined by the underlying database retrieval.
+
+2. **Missing deserialization logic**: Unlike the `$file` implementation, the unified get logic was not handling complex types (ARRAY, LIST, TUPLE, XML, etc.) that require deserialization into Grapa C++ objects.
+
+### Learnings from $file Implementation
+
+#### Serialization Philosophy
+Grapa maintains a consistent serialization philosophy:
+- **Simple types** (INT, FLOAT, STR, BOOL): Kept in serialized format in `mValue`, with correct `mToken` type
+- **Complex types** (ARRAY, LIST, TUPLE, XML, EL, TAG, OP, CODE, ERR): Deserialized into `vQueue` and `vClass` objects, with `mValue` cleared
+
+#### Correct Pattern from $file Implementation
+```cpp
+// 1. Retrieve value with correct token type
+result->mValue.mToken = value.mToken;  // Preserve actual type
+
+// 2. Handle complex types that need deserialization
+if (result->mValue.mToken == GrapaTokenType::ARRAY || 
+    result->mValue.mToken == GrapaTokenType::TUPLE || 
+    result->mValue.mToken == GrapaTokenType::LIST || 
+    result->mValue.mToken == GrapaTokenType::XML || 
+    result->mValue.mToken == GrapaTokenType::EL || 
+    result->mValue.mToken == GrapaTokenType::TAG || 
+    result->mValue.mToken == GrapaTokenType::OP || 
+    result->mValue.mToken == GrapaTokenType::CODE || 
+    result->mValue.mToken == GrapaTokenType::ERR)
+{
+    result->vQueue = new GrapaRuleQueue();
+    result->vClass = ((GrapaRuleQueue*)result->vQueue)->FROM(vScriptExec->vScriptState, pNameSpace, result->mValue);
+    if (result->mValue.mLength == 0)
+        result->mNull = true;
+    result->mValue.SetLength(0);
+    result->mValue.SetSize(0);
+}
+```
+
+### Implementation Requirements for GrapaDBX
+When implementing data retrieval in GrapaDBX or any unified database interface:
+
+1. **Preserve token types**: Never forcibly override the token type from the underlying database
+2. **Handle RAW field types**: For RAW fields, the actual type is embedded in the data and must be read during retrieval
+3. **Implement deserialization**: For complex types, perform the same deserialization logic as `$file`
+4. **Maintain serialization consistency**: Follow the same patterns as the existing Grapa codebase
+
+### Impact on Formula Fields
+This serialization pattern is particularly important for formula fields, as they may return complex data structures that need proper deserialization to be accessible in Grapa scripts. 

@@ -13,7 +13,7 @@ i = 0;
 while (i < 1024*1024) { input1 += 'a'; i += 1; }
 ('Input length: ' + input1.len().str() + '\n').echo();
 
-/* Test 1: Single line >1MB */
+/* Test 1: Single line >1MB
 'a+ should match entire string\n'.echo();
 pattern1 = 'a+';
 result1 = input1.grep(pattern1, 'o');
@@ -21,7 +21,7 @@ result1 = input1.grep(pattern1, 'o');
 ('Expected: Should match the entire line; no crash.\n').echo();
 '---\n'.echo();
 
-/* Test 2: Input with only delimiters */
+/* Test 2: Input with only delimiters
 'Input with only delimiters ("\\n\\n\\n\\n")\n'.echo();
 input2 = '\n\n\n\n';
 pattern2 = '.';
@@ -30,7 +30,7 @@ result2 = input2.grep(pattern2, 'o');
 ('Expected: [] (no matches)\n').echo();
 '---\n'.echo();
 
-/* Test 3: File with no newline at EOF */
+/* Test 3: File with no newline at EOF
 'File with no newline at EOF\n'.echo();
 input3 = 'line1\nline2\nline3';
 pattern3 = 'line\d+';

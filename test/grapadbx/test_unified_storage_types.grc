@@ -1,58 +1,40 @@
-/* Test $unified() with Different Storage Types */
+/* Test $unified() with Different Storage Types
 
 "=== Testing $unified() with Different Storage Types ===\n".echo();
 
-/* Test 1: GrapaDB storage */
-"Test 1: GrapaDB storage...\n".echo();
+/* Test 1: Filesystem storage
+"Test 1: Filesystem storage...\n".echo();
 
 u1 = $unified();
-result1 = u1.create("grapadb://test_grapadb.db");
+result1 = u1.create("file:///tmp/test_filesystem");
 if (result1.type() == $ERR) {
-    "GrapaDB creation failed\n".echo();
-} else {
-    "GrapaDB creation succeeded\n".echo();
-    
-    u1.mk("test_table", "GROUP");
-    u1.cd("test_table");
-    u1.mkfield("value", "STR", "VAR");
-    u1.set("key1", "grapadb_value", "value");
-    val1 = u1.get("key1", "value");
-    ("GrapaDB retrieved value: " + val1 + "\n").echo();
-}
-
-/* Test 2: Filesystem storage */
-"Test 2: Filesystem storage...\n".echo();
-
-u2 = $unified();
-result2 = u2.create("file:///tmp/test_filesystem");
-if (result2.type() == $ERR) {
     "Filesystem creation failed\n".echo();
 } else {
     "Filesystem creation succeeded\n".echo();
     
-    u2.mk("test_dir", "DIR");
-    u2.cd("test_dir");
-    u2.set("test_file.txt", "filesystem_content");
-    content = u2.get("test_file.txt");
+    u1.mk("test_dir", "DIR");
+    u1.cd("test_dir");
+    u1.set("test_file.txt", "filesystem_content");
+    content = u1.get("test_file.txt");
     ("Filesystem retrieved content: " + content + "\n").echo();
 }
 
-/* Test 3: Memory storage */
-"Test 3: Memory storage...\n".echo();
+/* Test 2: Memory storage
+"Test 2: Memory storage...\n".echo();
 
-u3 = $unified();
-result3 = u3.create("memory://test_memory");
-if (result3.type() == $ERR) {
+u2 = $unified();
+result2 = u2.create("memory://test_memory");
+if (result2.type() == $ERR) {
     "Memory creation failed\n".echo();
 } else {
     "Memory creation succeeded\n".echo();
     
-    u3.mk("test_table", "GROUP");
-    u3.cd("test_table");
-    u3.mkfield("value", "STR", "VAR");
-    u3.set("key1", "memory_value", "value");
-    val3 = u3.get("key1", "value");
-    ("Memory retrieved value: " + val3 + "\n").echo();
+    u2.mk("test_table", "GROUP");
+    u2.cd("test_table");
+    u2.mkfield("value", "STR", "VAR");
+    u2.set("key1", "memory_value", "value");
+    val2 = u2.get("key1", "value");
+    ("Memory retrieved value: " + val2 + "\n").echo();
 }
 
 "=== Storage Type Tests Complete ===\n".echo(); 

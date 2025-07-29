@@ -5,7 +5,41 @@ This document outlines specific student project opportunities that can be undert
 
 ## Undergraduate Projects
 
-### 1. Grammar Mutation Pattern Library
+### 1. Database File System Performance Benchmarking
+**Duration**: 1 semester  
+**Difficulty**: Intermediate  
+**Prerequisites**: Database concepts, basic algorithms, performance analysis
+
+#### Project Description
+Create a comprehensive benchmarking suite to evaluate the performance characteristics of Grapa's database file system paradigm compared to traditional databases.
+
+#### Learning Objectives
+- Understand database system design and file system concepts
+- Learn performance measurement and analysis techniques
+- Gain experience with unified file/database systems
+- Develop statistical analysis skills for system comparison
+
+#### Deliverables
+- **Benchmark Suite**: Automated performance tests for database file system
+- **Performance Report**: Detailed analysis comparing to traditional databases
+- **Comparison Study**: Database file system vs. SQL databases vs. NoSQL systems
+- **Visualization**: Charts and graphs of performance data
+- **Usability Analysis**: User experience comparison with traditional approaches
+
+#### Technical Requirements
+- **Language**: Grapa, Python (for analysis/visualization)
+- **Tools**: Performance measurement tools, statistical analysis
+- **Data**: Synthetic datasets and real-world scenarios
+- **Comparison Systems**: SQLite, PostgreSQL, MongoDB for baseline
+
+#### Mentoring Support
+- Weekly code reviews and technical guidance
+- Access to Grapa source code and implementation docs
+- Regular progress check-ins and milestone reviews
+
+---
+
+### 2. Grammar Mutation Pattern Library
 **Duration**: 1-2 semesters  
 **Difficulty**: Intermediate  
 **Prerequisites**: Programming fundamentals, basic compiler concepts
@@ -38,7 +72,7 @@ Implement and document a library of common grammar mutation patterns that can be
 
 ---
 
-### 2. Weighted BTree Performance Benchmarking
+### 3. Weighted BTree Performance Benchmarking
 **Duration**: 1 semester  
 **Difficulty**: Intermediate  
 **Prerequisites**: Data structures, basic algorithms
@@ -95,7 +129,35 @@ Develop a tool to visualize Grapa's execution trees, helping developers understa
 
 ## Masters Projects
 
-### 1. Formal Analysis of Grammar Evolution Semantics
+### 1. Formal Analysis of Database File System Semantics
+**Duration**: 2-3 semesters  
+**Difficulty**: Advanced  
+**Prerequisites**: Formal methods, database theory, file system concepts
+
+#### Project Description
+Develop formal semantics for Grapa's database file system paradigm, including consistency models, transaction semantics, and hierarchical data organization.
+
+#### Learning Objectives
+- Master formal methods and semantic analysis for database systems
+- Understand file system semantics and database theory
+- Learn theorem proving and formal verification for storage systems
+- Develop research and publication skills in systems research
+
+#### Deliverables
+- **Formal Semantics**: Complete semantic specification for database file system
+- **Consistency Models**: Formal models for unified file/database operations
+- **Transaction Semantics**: Formal analysis of ACID properties
+- **Research Paper**: Publication-quality technical paper
+- **Implementation**: Prototype verification tools for database file system
+
+#### Technical Requirements
+- **Tools**: Theorem provers (Coq, Isabelle, etc.)
+- **Language**: Formal specification languages
+- **Research**: Literature review of database and file system semantics
+
+---
+
+### 2. Formal Analysis of Grammar Evolution Semantics
 **Duration**: 2-3 semesters  
 **Difficulty**: Advanced  
 **Prerequisites**: Formal methods, compiler theory, logic
@@ -181,7 +243,38 @@ Develop parallel optimization algorithms for Grapa's execution trees, enabling e
 
 ## PhD Projects
 
-### 1. Composable Language Extension Framework
+### 1. Distributed Database File System Systems
+**Duration**: 3-4 years  
+**Difficulty**: Research-level  
+**Prerequisites**: Distributed systems, database theory, file system design
+
+#### Project Description
+Extend Grapa's database file system paradigm to support distributed storage systems with consistency guarantees, fault tolerance, and hierarchical data distribution.
+
+#### Research Questions
+- How can database file system semantics be maintained in distributed settings?
+- What consistency models are appropriate for hierarchical data distribution?
+- How can distributed database file systems support fault tolerance and recovery?
+- What are the performance characteristics of distributed database file systems?
+- How can file system metaphors scale to large distributed systems?
+
+#### Deliverables
+- **Distributed Algorithm**: Novel distributed database file system design
+- **Consistency Protocol**: Distributed consistency guarantees for hierarchical data
+- **Fault Tolerance**: Recovery and replication mechanisms for database file systems
+- **Performance Analysis**: Distributed system evaluation and scalability analysis
+- **Dissertation**: Complete research document
+- **Publications**: Multiple conference/journal papers
+
+#### Technical Requirements
+- **Research**: Distributed systems theory, database theory, file system design
+- **Implementation**: Distributed system components for database file system
+- **Evaluation**: Large-scale distributed testing and performance analysis
+- **Publication**: Conference and journal submissions in systems research
+
+---
+
+### 2. Composable Language Extension Framework
 **Duration**: 3-4 years  
 **Difficulty**: Research-level  
 **Prerequisites**: Advanced PL theory, formal methods, research experience
@@ -207,36 +300,6 @@ Develop a theoretical framework and practical implementation for safe, composabl
 - **Research**: Literature review, theoretical analysis
 - **Implementation**: Advanced language features
 - **Evaluation**: Formal methods, performance analysis
-- **Publication**: Conference and journal submissions
-
----
-
-### 2. Distributed Weighted BTree Systems
-**Duration**: 3-4 years  
-**Difficulty**: Research-level  
-**Prerequisites**: Distributed systems, database theory, algorithms
-
-#### Project Description
-Extend Grapa's weighted BTree to support distributed storage systems with consistency guarantees and fault tolerance.
-
-#### Research Questions
-- How can weighted BTree properties be maintained in distributed settings?
-- What consistency models are appropriate for fragmented storage?
-- How can distributed weighted BTree support fault tolerance?
-- What are the performance characteristics of distributed weighted BTree?
-
-#### Deliverables
-- **Distributed Algorithm**: Novel distributed weighted BTree design
-- **Consistency Protocol**: Distributed consistency guarantees
-- **Fault Tolerance**: Recovery and replication mechanisms
-- **Performance Analysis**: Distributed system evaluation
-- **Dissertation**: Complete research document
-- **Publications**: Multiple conference/journal papers
-
-#### Technical Requirements
-- **Research**: Distributed systems theory, database theory
-- **Implementation**: Distributed system components
-- **Evaluation**: Large-scale distributed testing
 - **Publication**: Conference and journal submissions
 
 ---

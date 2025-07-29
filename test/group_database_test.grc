@@ -1,36 +1,36 @@
-/* GROUP Database Test */
-/* Isolating the GROUP database issue */
+/* GROUP Database Test
+/* Isolating the GROUP database issue
 
 "=== GROUP Database Test ===\n".echo();
 
-/* Test GROUP database */
+/* Test GROUP database
 group_db = $file().table("GROUP");
 "✓ GROUP database created\n".echo();
 
-/* Create nested database */
+/* Create nested database
 group_db.mk("users", "ROW");
 "✓ Nested database created\n".echo();
 
-/* Navigate to users database */
+/* Navigate to users database
 users_db = group_db.cd("users");
 "✓ Navigated to users database\n".echo();
 
-/* Create fields */
+/* Create fields
 users_db.mkfield("name", "STR", "VAR");
 users_db.mkfield("age", "INT", "FIX", 4);
 "✓ Fields created\n".echo();
 
-/* Insert data */
+/* Insert data
 users_db.set("user1", "Charlie", "name");
 users_db.set("user1", 35, "age");
 "✓ Data inserted\n".echo();
 
-/* Retrieve data */
+/* Retrieve data
 name = users_db.get("user1", "name");
 age = users_db.get("user1", "age").raw().int();
 ("✓ Retrieved: " + name.str() + ", age " + age.str() + "\n").echo();
 
-/* Test navigation back */
+/* Test navigation back
 group_db.cd("..");
 contents = group_db.ls();
 ("✓ Group contents: " + contents.len().str() + " items\n").echo();

@@ -1,11 +1,11 @@
-/* Basic Automatic Locking Test */
+/* Basic Automatic Locking Test
 
 "=== BASIC LOCKING TEST ===\n".echo();
 
-/* Create shared counter */
+/* Create shared counter
 counter = 0;
 
-/* Simple thread that increments counter */
+/* Simple thread that increments counter
 thread_func = @<[op,@<code,{;
     i = 0;
     while (i < 100) {
@@ -14,11 +14,11 @@ thread_func = @<[op,@<code,{;
     }
 }>],{}>;
 
-/* Launch thread */
+/* Launch thread
 thread = thread_func();
 thread.wait();
 
-/* Check result */
+/* Check result
 "Final counter: " + counter + "\n".echo();
 
 if (counter == 100) {

@@ -1,0 +1,153 @@
+/* Complex Unified Operations Test */
+/* Testing nested structures, relative paths, and field storage format */
+
+echo("=== Complex Unified Operations Test ===");
+
+/* Test 1: Basic field storage format */
+echo("\n--- Test 1: Basic Field Storage Format ---");
+db = $unified();
+db.create("grapadbx://test_complex.dbx?type=COL");
+db.mk("test_table");
+db.cd("test_table");
+
+/* Test field storage with different data types */
+db.set("record1", "value1", "$VALUE");
+db.set("record2", "value2", "$VALUE");
+db.set("record3", "value3", "$VALUE");
+
+echo("Records in table:");
+db.ls();
+
+/* Test 2: Nested GROUP structure */
+echo("\n--- Test 2: Nested GROUP Structure ---");
+db.cd("..");
+db.mk("nested_group", "GROUP");
+db.cd("nested_group");
+
+/* Create ROW table within GROUP */
+db.mk("row_table", "ROW");
+db.cd("row_table");
+db.set("row1", "data1", "$VALUE");
+db.set("row2", "data2", "$VALUE");
+db.set("row3", "data3", "$VALUE");
+
+echo("Records in ROW table:");
+db.ls();
+
+/* Test 3: COL table within GROUP */
+echo("\n--- Test 3: COL Table within GROUP ---");
+db.cd("..");
+db.mk("col_table", "COL");
+db.cd("col_table");
+db.set("col1", "col_data1", "$VALUE");
+db.set("col2", "col_data2", "$VALUE");
+db.set("col3", "col_data3", "$VALUE");
+
+echo("Records in COL table:");
+db.ls();
+
+/* Test 4: Relative path navigation */
+echo("\n--- Test 4: Relative Path Navigation ---");
+echo("Current location:");
+db.pwd();
+
+/* Navigate back to parent GROUP */
+db.cd("..");
+echo("After cd('..'):");
+db.pwd();
+db.ls();
+
+/* Navigate back to root */
+db.cd("..");
+echo("After cd('..') to root:");
+db.pwd();
+db.ls();
+
+/* Navigate back to nested GROUP */
+db.cd("nested_group");
+echo("After cd('nested_group'):");
+db.pwd();
+db.ls();
+
+/* Test 5: Delete middle record from COL table */
+echo("\n--- Test 5: Delete Middle Record from COL Table ---");
+db.cd("col_table");
+echo("Before deletion:");
+db.ls();
+
+/* Delete middle record */
+db.rm("col2");
+echo("After deleting 'col2':");
+db.ls();
+
+/* Test 6: Delete from different GROUP context */
+echo("\n--- Test 6: Delete from Different GROUP Context ---");
+db.cd("..");
+db.cd("row_table");
+echo("Current location:");
+db.pwd();
+echo("Records in ROW table:");
+db.ls();
+
+/* Delete from COL table using relative path */
+db.rm("../col_table/col1");
+echo("After deleting '../col_table/col1':");
+db.cd("../col_table");
+db.ls();
+
+/* Test 7: Complex nested structure */
+echo("\n--- Test 7: Complex Nested Structure ---");
+db.cd("../../..");
+db.mk("complex_group", "GROUP");
+db.cd("complex_group");
+
+/* Create multiple levels */
+db.mk("level1", "GROUP");
+db.cd("level1");
+db.mk("level2", "GROUP");
+db.cd("level2");
+db.mk("level3", "GROUP");
+db.cd("level3");
+db.mk("data_table", "ROW");
+db.cd("data_table");
+
+/* Add data at deep level */
+db.set("deep1", "deep_data1", "$VALUE");
+db.set("deep2", "deep_data2", "$VALUE");
+db.set("deep3", "deep_data3", "$VALUE");
+
+echo("Deep nested data:");
+db.ls();
+
+/* Navigate back multiple levels */
+db.cd("../../../..");
+echo("After cd('../../../..'):");
+db.pwd();
+db.ls();
+
+/* Test 8: Cross-context operations */
+echo("\n--- Test 8: Cross-Context Operations ---");
+/* Navigate to one GROUP */
+db.cd("complex_group/level1/level2/level3/data_table");
+echo("Location 1:");
+db.pwd();
+
+/* Navigate to another GROUP */
+db.cd("../../../../nested_group/row_table");
+echo("Location 2:");
+db.pwd();
+
+/* Delete from first location using relative path */
+db.rm("../../complex_group/level1/level2/level3/data_table/deep2");
+echo("After cross-context deletion:");
+
+/* Check both locations */
+db.cd("../../complex_group/level1/level2/level3/data_table");
+echo("Location 1 after deletion:");
+db.ls();
+
+db.cd("../../../../nested_group/row_table");
+echo("Location 2:");
+db.ls();
+
+echo("\n=== Test Complete ==="); 

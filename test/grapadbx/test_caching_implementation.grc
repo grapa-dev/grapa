@@ -1,26 +1,26 @@
-/* Test script to verify BTree Read/Write Caching implementation in GrapaDBX */
+/* Test script to verify BTree Read/Write Caching implementation in GrapaDBX
 
 .echo("=== GrapaDBX Caching Implementation Test ===\n");
 
-/* Test 1: Create database with default caching (should be enabled) */
+/* Test 1: Create database with default caching (should be enabled)
 .echo("Test 1: Creating database with default caching\n");
 dbx = $unified("grapadbx://test_caching.dbx");
 .echo("Database created successfully\n");
 
-/* Test 2: Verify database operations work (caching should be active) */
+/* Test 2: Verify database operations work (caching should be active)
 .echo("\nTest 2: Basic database operations with caching\n");
 
-/* Create a test table */
+/* Create a test table
 .echo("Creating test table...\n");
 dbx.mk("test_table");
 
-/* Add some test data */
+/* Add some test data
 .echo("Adding test data...\n");
 dbx.set("test_table/record1", "John Doe", "$VALUE");
 dbx.set("test_table/record2", "Jane Smith", "$VALUE");
 dbx.set("test_table/record3", "Bob Johnson", "$VALUE");
 
-/* Retrieve data (should benefit from caching) */
+/* Retrieve data (should benefit from caching)
 .echo("Retrieving data (should use cache)...\n");
 value1 = dbx.get("test_table/record1", "$VALUE");
 value2 = dbx.get("test_table/record2", "$VALUE");
@@ -31,10 +31,10 @@ value3 = dbx.get("test_table/record3", "$VALUE");
 .echo("  record2: " + value2 + "\n");
 .echo("  record3: " + value3 + "\n");
 
-/* Test 3: Multiple operations to test caching effectiveness */
+/* Test 3: Multiple operations to test caching effectiveness
 .echo("\nTest 3: Multiple operations to test caching\n");
 
-/* Add more data */
+/* Add more data
 .echo("Adding more test data...\n");
 i = 1;
 while (i <= 10) {
@@ -42,7 +42,7 @@ while (i <= 10) {
     i = i + 1;
 }
 
-/* Retrieve all data (should benefit from caching) */
+/* Retrieve all data (should benefit from caching)
 .echo("Retrieving all data...\n");
 i = 1;
 while (i <= 10) {
@@ -51,24 +51,24 @@ while (i <= 10) {
     i = i + 1;
 }
 
-/* Test 4: List operations (should use cache) */
+/* Test 4: List operations (should use cache)
 .echo("\nTest 4: List operations\n");
 listing = dbx.ls("test_table");
 .echo("Table contents:\n");
 .echo(listing + "\n");
 
-/* Test 5: Update operations (should update cache) */
+/* Test 5: Update operations (should update cache)
 .echo("\nTest 5: Update operations\n");
 dbx.set("test_table/record1", "John Doe Updated", "$VALUE");
 updatedValue = dbx.get("test_table/record1", "$VALUE");
 .echo("Updated record1: " + updatedValue + "\n");
 
-/* Test 6: Delete operations (should update cache) */
+/* Test 6: Delete operations (should update cache)
 .echo("\nTest 6: Delete operations\n");
 dbx.rm("test_table/record3");
 .echo("Deleted record3\n");
 
-/* Verify deletion */
+/* Verify deletion
 try {
     deletedValue = dbx.get("test_table/record3", "$VALUE");
     .echo("ERROR: record3 still exists: " + deletedValue + "\n");
@@ -76,7 +76,7 @@ try {
     .echo("✅ record3 successfully deleted\n");
 }
 
-/* Test 7: Performance test - repeated access */
+/* Test 7: Performance test - repeated access
 .echo("\nTest 7: Performance test - repeated access\n");
 .echo("Accessing same data multiple times (should benefit from caching)...\n");
 
@@ -88,7 +88,7 @@ while (i <= 5) {
     i = i + 1;
 }
 
-/* Clean up */
+/* Clean up
 .echo("\nCleaning up...\n");
 dbx.close();
 

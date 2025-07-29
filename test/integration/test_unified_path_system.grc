@@ -1,13 +1,13 @@
-/* Unified Path System Tests for Grapa */
-/* Tests seamless navigation between file system and database */
+/* Unified Path System Tests for Grapa
+/* Tests seamless navigation between file system and database
 
 "=== UNIFIED PATH SYSTEM TESTS ===\n".echo();
 "Testing seamless navigation between file system and database\n".echo();
 
-/* Initialize file system object */
+/* Initialize file system object
 f = $file();
 
-/* Test 1: Basic Unified Path Navigation */
+/* Test 1: Basic Unified Path Navigation
 "Test 1: Basic Unified Path Navigation\n".echo();
 "------------------------------------\n".echo();
 
@@ -36,7 +36,7 @@ f.pwd().echo();
 f.ls().echo();
 "\n".echo();
 
-/* Test 2: Navigation Between Contexts */
+/* Test 2: Navigation Between Contexts
 "Test 2: Navigation Between Contexts\n".echo();
 "-----------------------------------\n".echo();
 
@@ -60,7 +60,7 @@ f.pwd().echo();
 f.ls().echo();
 "\n".echo();
 
-/* Test 3: Parent Directory Navigation */
+/* Test 3: Parent Directory Navigation
 "Test 3: Parent Directory Navigation\n".echo();
 "----------------------------------\n".echo();
 
@@ -86,7 +86,7 @@ f.cd("test_project");
 f.pwd().echo();
 "\n".echo();
 
-/* Test 4: Mixed Path Operations */
+/* Test 4: Mixed Path Operations
 "Test 4: Mixed Path Operations\n".echo();
 "-----------------------------\n".echo();
 
@@ -104,17 +104,17 @@ f.pwd().echo();
 "\n".echo();
 
 "Navigating with mixed paths...\n".echo();
-f.cd("../..");  /* Go back two levels */
+f.cd("../..");  /* Go back two levels
 "After cd('../..'): ".echo();
 f.pwd().echo();
 "\n".echo();
 
-f.cd("data/nested_db");  /* Navigate to nested database */
+f.cd("data/nested_db");  /* Navigate to nested database
 "After cd('data/nested_db'): ".echo();
 f.pwd().echo();
 "\n".echo();
 
-/* Test 5: File System to Database Transitions */
+/* Test 5: File System to Database Transitions
 "Test 5: File System to Database Transitions\n".echo();
 "------------------------------------------\n".echo();
 
@@ -147,7 +147,7 @@ f.ls().echo();
 f.get("file_data.txt").echo();
 "\n".echo();
 
-/* Test 6: Complex Path Navigation */
+/* Test 6: Complex Path Navigation
 "Test 6: Complex Path Navigation\n".echo();
 "------------------------------\n".echo();
 
@@ -186,7 +186,7 @@ f.pwd().echo();
 f.ls().echo();
 "\n".echo();
 
-/* Test 7: Path Validation */
+/* Test 7: Path Validation
 "Test 7: Path Validation\n".echo();
 "----------------------\n".echo();
 
@@ -205,7 +205,7 @@ error_result2 = f.cd("nonexistent_field");
 error_result2.echo();
 "\n".echo();
 
-/* Test 8: Data Persistence Across Contexts */
+/* Test 8: Data Persistence Across Contexts
 "Test 8: Data Persistence Across Contexts\n".echo();
 "----------------------------------------\n".echo();
 
@@ -224,7 +224,7 @@ f.cd("data/users_db");
 f.get("user2", "name").echo();
 "\n".echo();
 
-/* Test 9: Performance with Unified Paths */
+/* Test 9: Performance with Unified Paths
 "Test 9: Performance with Unified Paths\n".echo();
 "-------------------------------------\n".echo();
 
@@ -256,7 +256,7 @@ while (i <= 10) {
     i = i + 1;
 }
 
-/* Test 10: Cleanup */
+/* Test 10: Cleanup
 "Test 10: Cleanup\n".echo();
 "----------------\n".echo();
 
@@ -286,7 +286,7 @@ f.rm("test_project");
 
 "Cleanup completed.\n".echo();
 
-/* Test Summary */
+/* Test Summary
 "=== UNIFIED PATH SYSTEM TESTS COMPLETED ===\n".echo();
 "All unified path system operations tested successfully!\n".echo();
 "Unified path features tested:\n".echo();

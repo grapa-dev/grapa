@@ -43,6 +43,9 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
             err = mGrapaDBX->OpenFile(mStoragePath, 'r');
             if (err) return err;
             mGrapaDBXRootType = GrapaDB::GROUP_TREE;
+        } else {
+            // Database created successfully, set root type to the detected table type
+            mGrapaDBXRootType = mTableType;
         }
     } else if (mStorageType.StrCmp("NETWORK") == 0) {
         printf("[DEBUG] InitializeStorage: Using NETWORK storage\n");
@@ -68,6 +71,9 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
             // Create in-memory database with detected table type
             err = mGrapaDBX->Create("$", mTableType, mGrapaDBXFirstTree);
             if (err) return err;
+            
+            // Set root type to the detected table type
+            mGrapaDBXRootType = mTableType;
             
             printf("[DEBUG] InitializeStorage: Created in-memory DBX with table type %d\n", mTableType);
         }
@@ -192,8 +198,41 @@ GrapaError GrapaUnifiedLocalDatabase::DirectorySwitchSingle(GrapaCHAR& pName)
 
 GrapaError GrapaUnifiedLocalDatabase::DirectorySwitch(const GrapaCHAR& pName)
 {
-    /* TODO: Implement enhanced directory switching */
-    return GrapaLocalDatabase::DirectorySwitch(pName);
+    printf("[DEBUG] GrapaUnifiedLocalDatabase::DirectorySwitch: pName='%s', mStorageType='%s'\n", 
+           (char*)pName.mBytes, (char*)mStorageType.mBytes);
+    
+    /* Route based on storage type */
+    if (mStorageType.StrCmp("GRAPADBX") == 0)
+    {
+        printf("[DEBUG] DirectorySwitch: Using GRAPADBX storage\n");
+        if (!mGrapaDBX)
+        {
+            printf("[DEBUG] DirectorySwitch: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        /* For GrapaDBX storage, navigate to the specified table/group */
+        GrapaDBXTable table;
+        GrapaError err = GrapaDBXNavigateToTable(pName, table);
+        if (err)
+        {
+            printf("[DEBUG] DirectorySwitch: GrapaDBXNavigateToTable failed with error %d\n", err);
+            return err;
+        }
+        
+        /* Update the current directory context to the table */
+        mDirId = table.mId;
+        mDirType = table.mRefType;
+        printf("[DEBUG] DirectorySwitch: Updated context to table.mId=%llu, table.mRefType=%d\n", 
+               (unsigned long long)table.mId, table.mRefType);
+        
+        return 0;
+    }
+    else
+    {
+        /* For other storage types, use the base implementation */
+        return GrapaLocalDatabase::DirectorySwitch(pName);
+    }
 }
 
 void GrapaUnifiedLocalDatabase::DirectoryPWD(GrapaCHAR& pName)
@@ -204,8 +243,11 @@ void GrapaUnifiedLocalDatabase::DirectoryPWD(GrapaCHAR& pName)
 
 GrapaError GrapaUnifiedLocalDatabase::DirectoryCreate(GrapaCHAR& pName, GrapaCHAR& pType)
 {
-    /* TODO: Implement enhanced directory creation */
-    return GrapaLocalDatabase::DirectoryCreate(pName, pType);
+    printf("[DEBUG] GrapaUnifiedLocalDatabase::DirectoryCreate: pName='%s', pType='%s', mStorageType='%s'\n", 
+           (char*)pName.mBytes, (char*)pType.mBytes, (char*)mStorageType.mBytes);
+    
+    // Use the new CreateTableStructure method to create proper table structures
+    return CreateTableStructure(pName, pType);
 }
 
 GrapaError GrapaUnifiedLocalDatabase::DataCreate(const GrapaCHAR& pName)
@@ -216,8 +258,165 @@ GrapaError GrapaUnifiedLocalDatabase::DataCreate(const GrapaCHAR& pName)
 
 GrapaError GrapaUnifiedLocalDatabase::DataDelete(const GrapaCHAR& pName)
 {
-    /* TODO: Implement enhanced data deletion */
-    return GrapaLocalDatabase::DataDelete(pName);
+    printf("[DEBUG] GrapaUnifiedLocalDatabase::DataDelete: pName='%s', mStorageType='%s'\n", 
+           (char*)pName.mBytes, (char*)mStorageType.mBytes);
+    
+    /* Route based on storage type */
+    if (mStorageType.StrCmp("GRAPADBX") == 0)
+    {
+        printf("[DEBUG] DataDelete: Using GRAPADBX storage\n");
+        if (!mGrapaDBX)
+        {
+            printf("[DEBUG] DataDelete: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        /* For GrapaDBX storage, delete the record from the current table context */
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+        if (group2)
+        {
+            printf("[DEBUG] DataDelete: Using current context dirId=%llu, dirType=%d\n", 
+                   (unsigned long long)mDirId, mDirType);
+            
+            /* Delete the record from the current table context */
+            GrapaError err = group2->DeleteEntry(mDirId, mDirType, pName);
+            if (err) {
+                printf("[DEBUG] DataDelete: DeleteEntry failed with error %d\n", err);
+            } else {
+                printf("[DEBUG] DataDelete: Record deleted successfully\n");
+            }
+            return err;
+        }
+        else
+        {
+            printf("[DEBUG] DataDelete: mGrapaDBX is not a GrapaGroup2\n");
+            return -1;
+        }
+    }
+    else
+    {
+        /* For other storage types, use the base implementation */
+        return GrapaLocalDatabase::DataDelete(pName);
+    }
+}
+
+GrapaError GrapaUnifiedLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleEvent* pTable)
+{
+    printf("[DEBUG] GrapaUnifiedLocalDatabase::DirectoryList: pName='%s', mStorageType='%s'\n", 
+           (char*)pName.mBytes, (char*)mStorageType.mBytes);
+    
+    /* Route based on storage type */
+    if (mStorageType.StrCmp("GRAPADBX") == 0)
+    {
+        printf("[DEBUG] DirectoryList: Using GRAPADBX storage\n");
+        if (!mGrapaDBX)
+        {
+            printf("[DEBUG] DirectoryList: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        /* For GrapaDBX storage, list records in the current table context */
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+        if (group2)
+        {
+            printf("[DEBUG] DirectoryList: Using current context dirId=%llu, dirType=%d\n", 
+                   (unsigned long long)mDirId, mDirType);
+            
+            /* Initialize the result table */
+            pTable->mValue.mToken = GrapaTokenType::ARRAY;
+            pTable->mValue.SetLength(0);
+            if (pTable->vQueue) pTable->vQueue->CLEAR();
+            else pTable->vQueue = new GrapaRuleQueue();
+            
+            /* First get the actual table tree reference using OpenTable */
+            GrapaDBXTable parentDict;
+            parentDict.mRef = mDirId;
+            parentDict.mRefType = mDirType;
+            
+            /* Open the table to get the actual tree reference */
+            GrapaError openErr = group2->OpenTable(3, mDirId, parentDict); // 3 is the root tree
+            printf("[DEBUG] DirectoryList: OpenTable returned %d, parentDict.mRef=%llu\n", 
+                   openErr, (unsigned long long)parentDict.mRef);
+            
+            if (!openErr)
+            {
+                /* Enumerate all records in the current table */
+                GrapaDBXCursor cursor;
+                cursor.mTreeRef = parentDict.mRef;
+                printf("[DEBUG] DirectoryList: Setting cursor.mTreeRef=%llu\n", (unsigned long long)cursor.mTreeRef);
+                
+                /* First position on the record tree using First() */
+                GrapaError firstErr = group2->First(cursor);
+                printf("[DEBUG] DirectoryList: First() returned %d, cursor.mValue=%llu, cursor.mValueType=%d\n", 
+                       firstErr, (unsigned long long)cursor.mValue, cursor.mValueType);
+                
+                if (!firstErr)
+                {
+                    /* Now use FirstDb() for database-level navigation */
+                    firstErr = group2->FirstDb(cursor);
+                    printf("[DEBUG] DirectoryList: FirstDb() returned %d, cursor.mValue=%llu, cursor.mValueType=%d\n", 
+                           firstErr, (unsigned long long)cursor.mValue, cursor.mValueType);
+                    
+                    if (!firstErr)
+                    {
+                        do
+                        {
+                            // TEMPORARY WORKAROUND: Read raw data directly since field storage format doesn't match yet
+                            // First get the data size to allocate the right buffer
+                            u64 growBlockSize, dataSize, dataLength;
+                            u8 encodeType;
+                            GrapaError sizeErr = group2->GetDataSize(cursor.mValue, growBlockSize, dataSize, dataLength, encodeType);
+                            printf("[DEBUG] DirectoryList: GetDataSize returned %d, dataLength=%llu\n", 
+                                   sizeErr, dataLength);
+                            if (sizeErr) break;
+                            
+                            // Allocate buffer of the correct size
+                            char* buffer = new char[dataLength];
+                            u64 returnSize = 0;
+                            GrapaError dataErr = group2->GetDataValue(cursor.mValue, 0, dataLength, buffer, &returnSize);
+                            printf("[DEBUG] DirectoryList: GetDataValue returned %d, data length=%llu\n", 
+                                   dataErr, returnSize);
+                            if (dataErr) {
+                                delete[] buffer;
+                                break;
+                            }
+                            
+                            // For now, use the raw data as the record name for enumeration
+                            GrapaRuleEvent* row = new GrapaRuleEvent(0, GrapaCHAR(buffer, returnSize), GrapaCHAR());
+                            row->mValue.mToken = GrapaTokenType::LIST;
+                            row->vQueue = new GrapaRuleQueue();
+
+                            GrapaInt size(returnSize);
+                            row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR(buffer, returnSize)));
+                            row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("COL")));
+                            row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), size.getBytes()));
+
+                            pTable->vQueue->PushTail(row);
+                            
+                            // Clean up the allocated buffer
+                            delete[] buffer;
+                            
+                            GrapaError nextErr = group2->NextDb(cursor);
+                            if (nextErr) break;
+                        } while (true);
+                    }
+                }
+            }
+            
+            printf("[DEBUG] DirectoryList: Successfully listed entries\n");
+            return 0;
+        }
+        else
+        {
+            printf("[DEBUG] DirectoryList: mGrapaDBX is not a GrapaGroup2\n");
+            return -1;
+        }
+    }
+    else
+    {
+        /* For other storage types, use the base implementation */
+        return GrapaLocalDatabase::DirectoryList(pName, pTable);
+    }
 }
 
 GrapaError GrapaUnifiedLocalDatabase::FieldSet(const GrapaCHAR& pName, const GrapaCHAR& pField, const GrapaCHAR& pValue)
@@ -246,7 +445,11 @@ GrapaError GrapaUnifiedLocalDatabase::FieldSet(const GrapaCHAR& pName, const Gra
         u64 recordId;
         GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
         if (group2) {
-            err = group2->CreateEntry(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, recordId);
+            // Use the table tree and type from navigation instead of root tree
+            printf("[DEBUG] FieldSet: Using table.mRef=%llu, table.mRefType=%d for SetField\n", 
+                   (unsigned long long)table.mRef, table.mRefType);
+            
+            err = group2->CreateEntry(table.mRef, table.mRefType, pName, recordId);
             if (err) {
                 printf("[DEBUG] FieldSet: CreateEntry failed with error %d\n", err);
                 return err;
@@ -261,7 +464,7 @@ GrapaError GrapaUnifiedLocalDatabase::FieldSet(const GrapaCHAR& pName, const Gra
             fieldValue.FROM(pValue.mLength, pValue.mBytes);
             fieldValue.mToken = pValue.mToken;
             
-            err = group2->SetField(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, fieldName, fieldValue);
+            err = group2->SetField(table.mRef, table.mRefType, pName, fieldName, fieldValue);
             if (err) {
                 printf("[DEBUG] FieldSet: SetField failed with error %d\n", err);
                 return err;
@@ -293,7 +496,11 @@ GrapaError GrapaUnifiedLocalDatabase::FieldSet(const GrapaCHAR& pName, const Gra
         u64 recordId;
         GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
         if (group2) {
-            err = group2->CreateEntry(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, recordId);
+            // Use the table tree and type from navigation instead of root tree
+            printf("[DEBUG] FieldSet: Using table.mRef=%llu, table.mRefType=%d for SetField\n", 
+                   (unsigned long long)table.mRef, table.mRefType);
+            
+            err = group2->CreateEntry(table.mRef, table.mRefType, pName, recordId);
             if (err) {
                 printf("[DEBUG] FieldSet: CreateEntry failed with error %d\n", err);
                 return err;
@@ -308,7 +515,7 @@ GrapaError GrapaUnifiedLocalDatabase::FieldSet(const GrapaCHAR& pName, const Gra
             fieldValue.FROM(pValue.mLength, pValue.mBytes);
             fieldValue.mToken = pValue.mToken;
             
-            err = group2->SetField(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, fieldName, fieldValue);
+            err = group2->SetField(table.mRef, table.mRefType, pName, fieldName, fieldValue);
             if (err) {
                 printf("[DEBUG] FieldSet: SetField failed with error %d\n", err);
                 return err;
@@ -346,8 +553,7 @@ GrapaError GrapaUnifiedLocalDatabase::FieldGet(const GrapaCHAR& pName, const Gra
         
         // For memory storage, use GrapaDBX with in-memory file
         GrapaDBXTable table;
-        GrapaCHAR tableName("$");
-        GrapaError err = GrapaDBXNavigateToTable(tableName, table);
+        GrapaError err = GrapaDBXNavigateToTable(pName, table);
         if (err) {
             printf("[DEBUG] FieldGet: GrapaDBXNavigateToTable failed with error %d\n", err);
             return err;
@@ -402,43 +608,52 @@ GrapaError GrapaUnifiedLocalDatabase::FieldGet(const GrapaCHAR& pName, const Gra
         
         // For GrapaDBX storage, use file-based GrapaDBX
         GrapaDBXTable table;
-        GrapaCHAR tableName("$");
-        GrapaError err = GrapaDBXNavigateToTable(tableName, table);
+        GrapaError err = GrapaDBXNavigateToTable(pName, table);
         if (err) {
             printf("[DEBUG] FieldGet: GrapaDBXNavigateToTable failed with error %d\n", err);
             return err;
         }
         
-        // Find the record
+        // For get operation, we need to find the field in the table's records
+        // The table is already navigated to, so we can directly access its records
         GrapaDBXCursor cursor;
-        err = GrapaDBXFindRecord(pName, table, cursor);
-        if (err) {
-            printf("[DEBUG] FieldGet: GrapaDBXFindRecord failed with error %d\n", err);
-            return err;
-        }
+        cursor.Set(table.mRecRef); // Set cursor to the table's record tree
+        printf("[DEBUG] FieldGet: Set cursor to table.mRecRef=%llu\n", (unsigned long long)table.mRecRef);
         
         // Get the field value
         GrapaBYTE fieldValue;
         GrapaCHAR fieldName(pField);
         if (fieldName.mLength == 0) fieldName.FROM("$VALUE");
         
-        // Find field ID
-        GrapaDBXField field;
-        u64 maxId;
+        // For COL tables, we need to find the field value directly in the table's records
+        // The field 'field1' should be stored as a field in the table's records
         GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
         if (group2) {
-            err = group2->FindField(mGrapaDBXFirstTree, mGrapaDBXRootType, fieldName, field, maxId);
-            if (err) {
-                printf("[DEBUG] FieldGet: FindField failed with error %d\n", err);
-                return err;
-            }
+            // For COL tables, we need to search for the field value directly
+            // The field name is stored as a field in the table's records
+            GrapaDBXCursor recordCursor;
+            recordCursor.Set(table.mRecRef); // Set cursor to the table's record tree
+            printf("[DEBUG] FieldGet: Searching for field '%s' in table records\n", (char*)fieldName.mBytes);
             
-            // Get the field value using GrapaDBX's GetField
-            err = group2->GetField(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, fieldName, fieldValue);
+            // For COL tables, we need to search for the field value directly in the table's records
+            // The field value should be stored as a field in the table's records
+            // For now, we'll use a simple approach to find the field value
+            // In a real implementation, we would search through the table's records
+            // to find the field with the matching name
+            printf("[DEBUG] FieldGet: Using direct field lookup for COL table\n");
+            
+            // For COL tables, we need to implement proper field lookup using the GrapaDB pattern
+            // Since GetDataTypeRecord is protected, we'll use a simpler approach
+            // For now, let's try to get the field value directly from the record
+            printf("[DEBUG] FieldGet: Using simplified field lookup for COL table\n");
+            
+            // Use GrapaGroup2's GetField method which is designed for this purpose
+            err = group2->GetField(table.mRef, table.mRefType, pName, fieldName, fieldValue);
             if (err) {
                 printf("[DEBUG] FieldGet: GetField failed with error %d\n", err);
                 return err;
             }
+            printf("[DEBUG] FieldGet: Retrieved field value successfully using GetField\n");
             
             // Convert GrapaBYTE to GrapaCHAR
             pValue.FROM((char*)fieldValue.mBytes, fieldValue.mLength);
@@ -495,6 +710,55 @@ GrapaError GrapaUnifiedLocalDatabase::FieldDelete(const GrapaCHAR& pName, const 
     return 0;
 }
 
+GrapaError GrapaUnifiedLocalDatabase::CreateTableStructure(const GrapaCHAR& pName, const GrapaCHAR& pType)
+{
+    printf("[DEBUG] GrapaUnifiedLocalDatabase::CreateTableStructure: pName='%s', pType='%s', mStorageType='%s'\n", 
+           (char*)pName.mBytes, (char*)pType.mBytes, (char*)mStorageType.mBytes);
+    
+    // Route based on storage type
+    if (mStorageType.StrCmp("GRAPADBX") == 0) {
+        printf("[DEBUG] CreateTableStructure: Using GRAPADBX storage\n");
+        if (!mGrapaDBX) {
+            printf("[DEBUG] CreateTableStructure: mGrapaDBX is NULL\n");
+            return -1;
+        }
+        
+        // For GrapaDBX storage, create a proper table structure using GrapaGroup2
+        GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+        if (group2) {
+            u64 newTree = 0;
+            u8 tableType = mGrapaDBXRootType; // Default to database's table type
+            
+            // Determine table type based on pType parameter
+            if (pType.mLength > 0) {
+                if (strcmp((char*)pType.mBytes, "ROW") == 0) {
+                    tableType = GrapaDBX::RTABLE_TREE;
+                } else if (strcmp((char*)pType.mBytes, "COL") == 0) {
+                    tableType = GrapaDBX::CTABLE_TREE;
+                } else if (strcmp((char*)pType.mBytes, "GROUP") == 0) {
+                    tableType = GrapaDBX::GROUP_TREE;
+                }
+            }
+            
+            printf("[DEBUG] CreateTableStructure: Creating table with name='%s', tableType=%d\n", 
+                   (char*)pName.mBytes, tableType);
+            
+            // Use CreateGroup to create a proper table structure
+            GrapaError err = group2->CreateGroup(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, tableType, newTree);
+            printf("[DEBUG] CreateTableStructure: CreateGroup returned err=%d, newTree=%llu\n", err, newTree);
+            return err;
+        } else {
+            printf("[DEBUG] CreateTableStructure: mGrapaDBX is not a GrapaGroup2\n");
+            return -1;
+        }
+    } else {
+        // For other storage types, use the base class implementation
+        GrapaCHAR name(pName);
+        GrapaCHAR type(pType);
+        return GrapaLocalDatabase::DirectoryCreate(name, type);
+    }
+}
+
 GrapaError GrapaUnifiedLocalDatabase::GetStorageInfo(GrapaRuleEvent* pTable)
 {
     /* TODO: Implement storage info retrieval */
@@ -524,16 +788,44 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBXNavigateToTable(const GrapaCHAR& t
 {
     if (!mGrapaDBX) return -1;
     
-    // For unified interface, we work directly with the database like $file()
-    // No need to navigate to tables - just set up the table structure for field operations
-    
-    printf("[DEBUG] GrapaDBXNavigateToTable: Setting up direct database access\n");
+    printf("[DEBUG] GrapaDBXNavigateToTable: Setting up table navigation for '%s'\n", (char*)tableName.mBytes);
     
     // Set up the table to point to the main database tree
     table.mRef = mGrapaDBXFirstTree;
     table.mRefType = mTableType; // Use the detected table type
-    table.mId = 0;
-    table.mRecRef = mGrapaDBXFirstTree;
+    
+    // Find the actual table ID using FindEntry
+    GrapaDBXCursor tableCursor;
+    GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
+    if (group2) {
+        GrapaError err = group2->FindEntry(table.mRef, table.mRefType, tableName, table.mId, tableCursor);
+        if (err) {
+            printf("[DEBUG] GrapaDBXNavigateToTable: FindEntry failed with error %d\n", err);
+            return err;
+        }
+        printf("[DEBUG] GrapaDBXNavigateToTable: Found table ID=%llu\n", (unsigned long long)table.mId);
+        
+        // Now use OpenTable to get the actual table structure
+        GrapaDBXTable actualTable;
+        err = mGrapaDBX->OpenTable(table.mRef, table.mId, actualTable);
+        if (err) {
+            printf("[DEBUG] GrapaDBXNavigateToTable: OpenTable failed with error %d\n", err);
+            return err;
+        }
+        printf("[DEBUG] GrapaDBXNavigateToTable: OpenTable succeeded, table.mRef=%llu\n", (unsigned long long)actualTable.mRef);
+        
+        // Update the table reference to point to the actual table tree
+        table.mRef = actualTable.mRef;
+        table.mRecRef = actualTable.mRecRef;
+        table.mRefType = actualTable.mRefType;
+        printf("[DEBUG] GrapaDBXNavigateToTable: Updated table.mRef to %llu, mRecRef to %llu\n", 
+               (unsigned long long)table.mRef, (unsigned long long)table.mRecRef);
+    } else {
+        printf("[DEBUG] GrapaDBXNavigateToTable: Not a GrapaGroup2, using default ID=0\n");
+        table.mId = 0;
+    }
+    
+    table.mRecRef = table.mRef; // Use the actual table tree reference
     
     printf("[DEBUG] GrapaDBXNavigateToTable: Table configured - mRef=%llu, mRefType=%d, mId=%llu\n", 
            (unsigned long long)table.mRef, table.mRefType, (unsigned long long)table.mId);
@@ -557,7 +849,8 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBXFindRecord(const GrapaCHAR& record
 	// Use GrapaGroup2 for hierarchical operations
 	GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
 	if (group2) {
-		err = group2->FindEntry(table.mRef, table.mRefType, recordName, recordId);
+		GrapaDBXCursor recordCursor;
+		err = group2->FindEntry(table.mRef, table.mRefType, recordName, recordId, recordCursor);
 	} else {
 		err = -1; // Not a GrapaGroup2
 	}

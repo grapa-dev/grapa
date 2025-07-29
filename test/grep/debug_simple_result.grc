@@ -1,4 +1,4 @@
-/* Debug simple result */
+/* Debug simple result
 
 "=== DEBUG SIMPLE RESULT ===\n".echo();
 

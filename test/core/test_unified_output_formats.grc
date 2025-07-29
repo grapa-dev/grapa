@@ -1,151 +1,151 @@
-/* Test Unified Storage Output Formatting Methods */
+/* Test Unified Storage Output Formatting Methods
 
 "=== UNIFIED STORAGE OUTPUT FORMATTING TEST ===\n".echo();
 
-/* Test 1: File System with Different Output Formats */
+/* Test 1: File System with Different Output Formats
 "Test 1: File System Output Formats\n".echo();
 "--------------------------------\n".echo();
 
-/* Create unified storage object with file system */
+/* Create unified storage object with file system
 u = $unified();
-u.create("file: /* /tmp"); */
+u.create("file: /* /tmp");
 
-/* Create some test files */
+/* Create some test files
 u.set("test1.txt", "Content 1");
 u.set("test2.txt", "Content 2");
 u.mk("testdir", "DIR");
 
-/* Test default .ls() output */
+/* Test default .ls() output
 "Default .ls() output:\n".echo();
 result = u.ls();
 result.echo();
 "\n".echo();
 
-/* Test .ls().json() output */
+/* Test .ls().json() output
 "JSON output:\n".echo();
 result = u.ls().json();
 result.echo();
 "\n".echo();
 
-/* Test .ls().table() output */
+/* Test .ls().table() output
 "ASCII table output:\n".echo();
 result = u.ls().table();
 result.echo();
 "\n".echo();
 
-/* Test .ls().simple() output */
+/* Test .ls().simple() output
 "Simple list output:\n".echo();
 result = u.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Test 2: GrapaDB with Different Output Formats */
+/* Test 2: GrapaDB with Different Output Formats
 "Test 2: GrapaDB Output Formats\n".echo();
 "-----------------------------\n".echo();
 
-/* Create unified storage object with GrapaDB */
+/* Create unified storage object with GrapaDB
 u2 = $unified();
-u2.create("grapadb: /* testdb.gdb"); */
+u2.create("grapadb: /* testdb.gdb");
 
-/* Create some test records */
+/* Create some test records
 u2.mk("record1", "RECORD");
 u2.set("record1", "Value 1", "$VALUE");
 u2.mk("record2", "RECORD");
 u2.set("record2", "Value 2", "$VALUE");
 
-/* Test default .ls() output */
+/* Test default .ls() output
 "Default .ls() output:\n".echo();
 result = u2.ls();
 result.echo();
 "\n".echo();
 
-/* Test .ls().json() output */
+/* Test .ls().json() output
 "JSON output:\n".echo();
 result = u2.ls().json();
 result.echo();
 "\n".echo();
 
-/* Test .ls().table() output */
+/* Test .ls().table() output
 "ASCII table output:\n".echo();
 result = u2.ls().table();
 result.echo();
 "\n".echo();
 
-/* Test .ls().simple() output */
+/* Test .ls().simple() output
 "Simple list output:\n".echo();
 result = u2.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Test 3: GrapaDBX with Different Output Formats */
+/* Test 3: GrapaDBX with Different Output Formats
 "Test 3: GrapaDBX Output Formats\n".echo();
 "------------------------------\n".echo();
 
-/* Create unified storage object with GrapaDBX */
+/* Create unified storage object with GrapaDBX
 u3 = $unified();
-u3.create("grapadbx: /* testdbx.gdb"); */
+u3.create("grapadbx://testdbx.gdb");
 
-/* Create some test records */
+/* Create some test records
 u3.mk("record1", "RECORD");
 u3.set("record1", "Value 1", "$VALUE");
 u3.mk("record2", "RECORD");
 u3.set("record2", "Value 2", "$VALUE");
 
-/* Test default .ls() output */
+/* Test default .ls() output
 "Default .ls() output:\n".echo();
 result = u3.ls();
 result.echo();
 "\n".echo();
 
-/* Test .ls().json() output */
+/* Test .ls().json() output
 "JSON output:\n".echo();
 result = u3.ls().json();
 result.echo();
 "\n".echo();
 
-/* Test .ls().table() output */
+/* Test .ls().table() output
 "ASCII table output:\n".echo();
 result = u3.ls().table();
 result.echo();
 "\n".echo();
 
-/* Test .ls().simple() output */
+/* Test .ls().simple() output
 "Simple list output:\n".echo();
 result = u3.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Test 4: Field Selection with Output Formats */
+/* Test 4: Field Selection with Output Formats
 "Test 4: Field Selection with Output Formats\n".echo();
 "------------------------------------------\n".echo();
 
-/* Test field selection with JSON output */
+/* Test field selection with JSON output
 "Field selection with JSON:\n".echo();
 result = u.ls("$KEY,$TYPE").json();
 result.echo();
 "\n".echo();
 
-/* Test field selection with table output */
+/* Test field selection with table output
 "Field selection with table:\n".echo();
 result = u.ls("$KEY,$TYPE").table();
 result.echo();
 "\n".echo();
 
-/* Test field selection with simple output */
+/* Test field selection with simple output
 "Field selection with simple:\n".echo();
 result = u.ls("$KEY,$TYPE").simple();
 result.echo();
 "\n".echo();
 
-/* Test 5: Empty Results */
+/* Test 5: Empty Results
 "Test 5: Empty Results\n".echo();
 "--------------------\n".echo();
 
-/* Create empty directory */
+/* Create empty directory
 u4 = $unified();
-u4.create("file: /* /tmp/empty"); */
+u4.create("file: /* /tmp/empty");
 
-/* Test empty results with different formats */
+/* Test empty results with different formats
 "Empty results - default:\n".echo();
 result = u4.ls();
 result.echo();
@@ -166,7 +166,7 @@ result = u4.ls().simple();
 result.echo();
 "\n".echo();
 
-/* Cleanup */
+/* Cleanup
 "Cleanup: Removing test files...\n".echo();
 u.rm("test1.txt");
 u.rm("test2.txt");

@@ -1,9 +1,9 @@
-/* Test script for float comparison corner cases */
-/* This tests various edge cases that might break our float comparison logic */
+/* Test script for float comparison corner cases
+/* This tests various edge cases that might break our float comparison logic
 
 ("=== Testing Float Comparison Corner Cases ===").echo();
 
-/* Test 1: Division result comparison (your specific case) */
+/* Test 1: Division result comparison (your specific case)
 ("Test 1: Division result comparison").echo();
 result = "53.6" == 107.2/2.0;
 ("53.6 == 107.2/2.0 = " + result.str()).echo();
@@ -13,7 +13,7 @@ if (result) {
     ("❌ FAIL: Division result comparison").echo();
 }
 
-/* Test 2: Scientific notation equivalents using .pow() */
+/* Test 2: Scientific notation equivalents using .pow()
 ("\nTest 2: Scientific notation equivalents").echo();
 result1 = "55.3" == 5.53 * (10).pow(1);
 ("55.3 == 5.53 * 10^1 = " + result1.str()).echo();
@@ -24,7 +24,7 @@ result2 = "5530" == 5.53 * (10).pow(3);
 result3 = "0.553" == 5.53 * (10).pow(-1);
 ("0.553 == 5.53 * 10^-1 = " + result3.str()).echo();
 
-/* Test 3: Precision edge cases */
+/* Test 3: Precision edge cases
 ("\nTest 3: Precision edge cases").echo();
 result1 = "55.3" == "55.300";
 ("55.3 == 55.300 = " + result1.str()).echo();
@@ -35,7 +35,7 @@ result2 = "55.3" == "55.300000";
 result3 = "55.3" == "55";
 ("55.3 == 55 = " + result3.str()).echo();
 
-/* Test 4: Whitespace handling */
+/* Test 4: Whitespace handling
 ("\nTest 4: Whitespace handling").echo();
 result1 = "55.3" == " 55.3 ";
 ("55.3 == ' 55.3 ' = " + result1.str()).echo();
@@ -44,7 +44,7 @@ result2 = "55.3" == "	55.3;
 ";
 ("55.3 == '\\t55.3\\n' = " + result2.str()).echo();
 
-/* Test 4.5: Focused whitespace debugging */
+/* Test 4.5: Focused whitespace debugging
 ("\nTest 4.5: Focused whitespace debugging").echo();
 result1 = "55.3" == "55.3";
 ("55.3 == 55.3 (no whitespace) = " + result1.str()).echo();
@@ -55,7 +55,7 @@ result2 = "55.3" == " 55.3";
 result3 = "55.3" == "55.3 ";
 ("55.3 == '55.3 ' (trailing space) = " + result3.str()).echo();
 
-/* Test 5: Negative numbers */
+/* Test 5: Negative numbers
 ("\nTest 5: Negative numbers").echo();
 result1 = "-55.3" == -55.3;
 ("-55.3 == -55.3 = " + result1.str()).echo();
@@ -63,7 +63,7 @@ result1 = "-55.3" == -55.3;
 result2 = "55.3" == -(-55.3);
 ("55.3 == -(-55.3) = " + result2.str()).echo();
 
-/* Test 6: Zero edge cases */
+/* Test 6: Zero edge cases
 ("\nTest 6: Zero edge cases").echo();
 result1 = "0" == 0.0;
 ("0 == 0.0 = " + result1.str()).echo();
@@ -74,7 +74,7 @@ result2 = "0.0" == 0;
 result3 = "0.000" == 0;
 ("0.000 == 0 = " + result3.str()).echo();
 
-/* Test 7: Very small numbers */
+/* Test 7: Very small numbers
 ("\nTest 7: Very small numbers").echo();
 result1 = "0.0000000001" == (1).pow(-10);
 ("0.0000000001 == 10^-10 = " + result1.str()).echo();
@@ -82,7 +82,7 @@ result1 = "0.0000000001" == (1).pow(-10);
 result2 = "0.00000000001" == (1).pow(-11);
 ("0.00000000001 == 10^-11 = " + result2.str()).echo();
 
-/* Test 8: Large numbers */
+/* Test 8: Large numbers
 ("\nTest 8: Large numbers").echo();
 result1 = "1000000" == (10).pow(6);
 ("1000000 == 10^6 = " + result1.str()).echo();
@@ -90,7 +90,7 @@ result1 = "1000000" == (10).pow(6);
 result2 = "1000000.0" == (10).pow(6);
 ("1000000.0 == 10^6 = " + result2.str()).echo();
 
-/* Test 9: Complex calculations */
+/* Test 9: Complex calculations
 ("\nTest 9: Complex calculations").echo();
 result1 = "3.14159" == (22).float() / 7;
 ("3.14159 == 22/7 = " + result1.str()).echo();
@@ -98,7 +98,7 @@ result1 = "3.14159" == (22).float() / 7;
 result2 = "2.71828" == (271828).float() / 100000;
 ("2.71828 == 271828/100000 = " + result2.str()).echo();
 
-/* Test 10: Invalid strings (should return false) */
+/* Test 10: Invalid strings (should return false)
 ("\nTest 10: Invalid strings").echo();
 result1 = "55.3" == "hello";
 ("55.3 == hello = " + result1.str()).echo();

@@ -1,8 +1,8 @@
-/* Test script for use cases */
+/* Test script for use cases
 
 "=== Use Cases Test ===".echo();
 
-/* Test 1: Basic file operations */
+/* Test 1: Basic file operations
 "Test 1: Basic file operations\n".echo();
 
 fs = $file();
@@ -10,7 +10,7 @@ fs.set("test.txt", "Hello World");
 content = fs.get("test.txt");
 ("Content: " + content).echo();
 
-/* Test 2: Basic table operations */
+/* Test 2: Basic table operations
 "Test 2: Basic table operations\n".echo();
 
 table = $file().table("ROW");
@@ -19,14 +19,14 @@ table.set("user1", "Alice", "name");
 name = table.get("user1", "name");
 ("Name: " + name).echo();
 
-/* Test 3: Basic list operations */
+/* Test 3: Basic list operations
 "Test 3: Basic list operations\n".echo();
 
 list = {"key1": "value1", "key2": "value2"};
 value = list["key1"];
 ("Value: " + value).echo();
 
-/* Test 4: Basic array operations */
+/* Test 4: Basic array operations
 "Test 4: Basic array operations\n".echo();
 
 array = [1, 2, 3, 4, 5];
@@ -38,7 +38,7 @@ while (i < array.len()) {
 }
 ("Sum: " + sum).echo();
 
-/* Test 5: Basic string operations */
+/* Test 5: Basic string operations
 "Test 5: Basic string operations\n".echo();
 
 text = "Hello World";
@@ -48,7 +48,7 @@ lowercase = text.lower();
 ("Uppercase: " + uppercase).echo();
 ("Lowercase: " + lowercase).echo();
 
-/* Test 6: Basic math operations */
+/* Test 6: Basic math operations
 "Test 6: Basic math operations\n".echo();
 
 a = 10;
@@ -62,7 +62,7 @@ quotient = a / b;
 ("Product: " + product).echo();
 ("Quotient: " + quotient).echo();
 
-/* Test 7: Basic conditional operations */
+/* Test 7: Basic conditional operations
 "Test 7: Basic conditional operations\n".echo();
 
 age = 25;
@@ -72,7 +72,7 @@ if (age >= 18) {
     "Minor".echo();
 }
 
-/* Test 8: Basic loop operations */
+/* Test 8: Basic loop operations
 "Test 8: Basic loop operations\n".echo();
 
 i = 1;
@@ -81,14 +81,14 @@ while (i <= 5) {
     i = i + 1;
 }
 
-/* Test 9: Basic function operations */
+/* Test 9: Basic function operations
 "Test 9: Basic function operations\n".echo();
 
 add = op(a, b) { a + b; };
 result = add(10, 20);
 ("Function result: " + result).echo();
 
-/* Test 10: Basic class operations */
+/* Test 10: Basic class operations
 "Test 10: Basic class operations\n".echo();
 
 Person = class {;
@@ -109,7 +109,7 @@ person = obj Person;
 person.init("Alice", 30);
 person.getInfo();
 
-/* Test 11: Basic error handling */
+/* Test 11: Basic error handling
 "Test 11: Basic error handling\n".echo();
 
 try {
@@ -118,55 +118,55 @@ try {
     ("Error caught: " + error).echo();
 }
 
-/* Test 12: Basic time operations */
+/* Test 12: Basic time operations
 "Test 12: Basic time operations\n".echo();
 
 current_time = $TIME().utc();
 ("Current time: " + current_time).echo();
 
-/* Test 13: Basic system operations */
+/* Test 13: Basic system operations
 "Test 13: Basic system operations\n".echo();
 
 system_info = $sys().info();
 ("System info: " + system_info).echo();
 
-/* Test 14: Basic network operations */
+/* Test 14: Basic network operations
 "Test 14: Basic network operations\n".echo();
 
-/* This would test network operations if available */
+/* This would test network operations if available
 "Network operations would be tested here".echo();
 
-/* Test 15: Basic thread operations */
+/* Test 15: Basic thread operations
 "Test 15: Basic thread operations\n".echo();
 
-/* This would test thread operations if available */
+/* This would test thread operations if available
 "Thread operations would be tested here".echo();
 
-/* Test 16: Basic widget operations */
+/* Test 16: Basic widget operations
 "Test 16: Basic widget operations\n".echo();
 
-/* This would test widget operations if available */
+/* This would test widget operations if available
 "Widget operations would be tested here".echo();
 
-/* Test 17: Basic unified operations */
+/* Test 17: Basic unified operations
 "Test 17: Basic unified operations\n".echo();
 
 u = $unified();
-err = u.create("memory: /* "); */
+err = u.create("memory: /* ");
 if (err == 0) {
     "✓ Unified memory storage created".echo();
 } else {
     "✗ Failed to create unified memory storage".echo();
 }
 
-/* Test 18: Basic grep operations */
+/* Test 18: Basic grep operations
 "Test 18: Basic grep operations\n".echo();
 
 text = "Hello World\nGoodbye World\nHello Universe";
 matches = text.grep("Hello", "o");
 ("Matches found: " + matches.len()).echo();
 
-/* Test 19: Basic database operations */
+/* Test 19: Basic database operations
 "Test 19: Basic database operations\n".echo();
 
 db = $file().table("ROW");
@@ -175,10 +175,10 @@ db.set("user1", "Alice", "name");
 name = db.get("user1", "name");
 ("Database name: " + name).echo();
 
-/* Test 20: Basic web scraping simulation */
+/* Test 20: Basic web scraping simulation
 "Test 20: Basic web scraping simulation\n".echo();
 
-html_content = "<h1>Title 1</h1><h2>Title 2</h2><a href='http: /* example.com'>Link</a>"; */
+html_content = "<h1>Title 1</h1><h2>Title 2</h2><a href='http: /* example.com'>Link</a>";
 titles = html_content.grep("<h[12]>.*?</h[12]>", "o");
 ("Titles found: " + titles.len()).echo();
 

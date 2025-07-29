@@ -1,10 +1,10 @@
-/* Debug count-only functionality */
+/* Debug count-only functionality
 
 "=== DEBUG COUNT ONLY ===\n".echo();
 
 input = "Hello world\nGoodbye world\nHello universe";
 pattern = "Hello";
-options = "c";  /* count-only */
+options = "c";  /* count-only
 
 "Input: " + input.str() + "\n".echo();
 "Pattern: " + pattern.str() + "\n".echo();

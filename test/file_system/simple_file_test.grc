@@ -7,25 +7,25 @@
 "=== SIMPLE FILE SYSTEM TEST ===".echo();
 "\n".echo();
 
-/* Create file system object */
+/* Create file system object
 fs = $file();
 
-/* Test file name */
+/* Test file name
 test_file = "simple_test.txt";
 
-/* Create and write to file */
+/* Create and write to file
 ("Creating file: " + test_file).echo();
 "\n".echo();
 fs.set(test_file, "Hello from simple file test!");
 
-/* Read from file */
+/* Read from file
 "Reading file content...".echo();
 "\n".echo();
 content = fs.get(test_file).str();
 ("File content: " + content).echo();
 "\n".echo();
 
-/* Verify content matches */
+/* Verify content matches
 if (content == "Hello from simple file test!") {
     "✓ File write/read test PASSED".echo();
 } else {
@@ -33,7 +33,7 @@ if (content == "Hello from simple file test!") {
 };
 "\n".echo();
 
-/* Check if file exists */
+/* Check if file exists
 "Checking file existence...".echo();
 "\n".echo();
 file_info = fs.info(test_file);
@@ -44,13 +44,13 @@ if (file_info.type() != $ERR) {
 };
 "\n".echo();
 
-/* ======================================== */
-/* Table Operations Test */
-/* ======================================== */
+/* ========================================
+/* Table Operations Test
+/* ========================================
 "Testing table operations...".echo();
 "\n".echo();
 
-/* Try regular table approach first */
+/* Try regular table approach first
 "Creating table with fs.table()...".echo();
 "\n".echo();
 table = fs.table("ROW");
@@ -58,14 +58,14 @@ table.mkfield("name", "STR");
 table.mkfield("age", "INT");
 table.mkfield("city", "STR");
 
-/* Insert data for one record */
+/* Insert data for one record
 "Setting record data...".echo();
 "\n".echo();
 table.set("user1", "John Doe", "name");
 table.set("user1", 30, "age");
 table.set("user1", "New York", "city");
 
-/* Retrieve and verify data */
+/* Retrieve and verify data
 "Retrieving record data...".echo();
 "\n".echo();
 name = table.get("user1", "name");
@@ -82,7 +82,7 @@ if (name == "John Doe" && age == 30 && city == "New York") {
     "✗ Table operations test FAILED - trying virtual $TABLE approach".echo();
 	"\n".echo();
    
-    /* Try virtual $TABLE approach as fallback */
+    /* Try virtual $TABLE approach as fallback
     "Trying virtual $TABLE approach...".echo();
 	"\n".echo();
     vtable = $TABLE();
@@ -90,14 +90,14 @@ if (name == "John Doe" && age == 30 && city == "New York") {
     vtable.mkfield("age", "INT");
     vtable.mkfield("city", "STR");
     
-    /* Insert data for one record */
+    /* Insert data for one record
     "Setting record data with virtual table...".echo();
 	"\n".echo();
     vtable.set("user1", "John Doe", "name");
     vtable.set("user1", 30, "age");
     vtable.set("user1", "New York", "city");
     
-    /* Retrieve and verify data */
+    /* Retrieve and verify data
     "Retrieving record data from virtual table...".echo();
 	"\n".echo();
     vname = vtable.get("user1", "name");
@@ -115,12 +115,12 @@ if (name == "John Doe" && age == 30 && city == "New York") {
 	"\n".echo();
 };
 
-/* Delete the file */
+/* Delete the file
 "Deleting test file...".echo();
 "\n".echo();
 fs.rm(test_file);
 
-/* Verify file is deleted */
+/* Verify file is deleted
 file_info_after = fs.info(test_file);
 if (file_info_after.type() == $ERR) {
     "✓ File deletion test PASSED".echo();

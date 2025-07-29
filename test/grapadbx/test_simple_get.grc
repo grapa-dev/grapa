@@ -1,0 +1,30 @@
+/* Simple test to isolate the get operation issue */
+
+"=== Simple Get Test ===\n".echo();
+
+u = $unified();
+result = u.create("grapadbx://test_simple.dbx?type=COL");
+("Creation result: " + result + "\n").echo();
+
+if (result.type() != $ERR) {
+    "✅ Table creation succeeded\n".echo();
+    
+    /* Set some data */
+    u.set("user1", "Alice", "name");
+    
+    /* Get the data back */
+    name = u.get("user1", "name");
+    
+    ("Raw name value: '" + name + "'\n").echo();
+    ("Name length: " + name.length() + "\n").echo();
+    ("Name type: " + name.type() + "\n").echo();
+    
+    /* Debug output */
+    "--------------------------\n".echo();
+    u.debug();
+    "\n".echo();
+} else {
+    ("❌ Table creation failed: " + result + "\n").echo();
+}
+
+"=== Test Complete ===\n".echo(); 

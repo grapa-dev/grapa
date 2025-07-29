@@ -1,12 +1,12 @@
-/* Test file demonstrating testing patterns from TESTING.md documentation */
-/* This file tests the testing patterns themselves */
+/* Test file demonstrating testing patterns from TESTING.md documentation
+/* This file tests the testing patterns themselves
 
 "Starting comprehensive testing demonstration...".echo();
 
-/* ===== BASIC TESTING ===== */
+/* ===== BASIC TESTING =====
 "=== Basic Testing ===".echo();
 
-/* Test basic function */
+/* Test basic function
 test_function = op(x) { x * 2; };
 result = test_function(5);
 if (result != 10) { 
@@ -15,7 +15,7 @@ if (result != 10) {
     "✓ Basic function test passed".echo();
 };
 
-/* Test with multiple cases */
+/* Test with multiple cases
 test_cases = [0, 1, 5, 10, -3];
 expected_results = [0, 2, 10, 20, -6];
 
@@ -33,7 +33,7 @@ while (i < test_cases.len()) {
     i = i + 1;
 };
 
-/* Test string operations */
+/* Test string operations
 test_string = "  Hello, World!  ";
 trimmed = test_string.trim();
 upper = trimmed.upper();
@@ -50,10 +50,10 @@ if (upper != "HELLO, WORLD!") {
     "✓ String upper test passed".echo();
 };
 
-/* ===== ERROR HANDLING TESTS ===== */
+/* ===== ERROR HANDLING TESTS =====
 "=== Error Handling Tests ===".echo();
 
-/* Test division by zero handling */
+/* Test division by zero handling
 test_division = op(a, b) {;
     if (b == 0) { 
         $ERR; 
@@ -62,7 +62,7 @@ test_division = op(a, b) {;
     };
 };
 
-/* Test error case */
+/* Test error case
 result = test_division(10, 0);
 if (result.type() == $ERR) {
     "✓ Division by zero correctly caught".echo();
@@ -70,7 +70,7 @@ if (result.type() == $ERR) {
     "✗ Division by zero test failed".echo();
 };
 
-/* Test success case */
+/* Test success case
 result = test_division(10, 2);
 if (result.type() != $ERR && result == 5) {
     "✓ Division test passed".echo();
@@ -78,10 +78,10 @@ if (result.type() != $ERR && result == 5) {
     "✗ Division test failed".echo();
 };
 
-/* Test object property access */
+/* Test object property access
 test_obj = {"name": "Alice", "age": 30};
 
-/* Test existing property */
+/* Test existing property
 name = test_obj.get("name");
 if (name != "Alice") {
     "✗ Object property test failed".echo();
@@ -89,7 +89,7 @@ if (name != "Alice") {
     "✓ Object property test passed".echo();
 };
 
-/* Test missing property */
+/* Test missing property
 missing = test_obj.get("nonexistent");
 if (missing.type() == $ERR) {
     "✓ Missing property correctly returns $ERR".echo();
@@ -97,22 +97,22 @@ if (missing.type() == $ERR) {
     "✗ Missing property test failed".echo();
 };
 
-/* ===== DATA STRUCTURE TESTING ===== */
+/* ===== DATA STRUCTURE TESTING =====
 "=== Data Structure Testing ===".echo();
 
-/* Test array operations */
+/* Test array operations
 test_array = [1, 2, 3, 4, 5];
 doubled = test_array.map(op(x) { x * 2; });
 expected = [2, 4, 6, 8, 10];
 
-/* Compare arrays */
+/* Compare arrays
 if (doubled.len() != expected.len()) {
     "✗ Array length test failed".echo();
 } else {
     "✓ Array length test passed".echo();
 };
 
-/* Compare each element */
+/* Compare each element
 i = 0;
 while (i < doubled.len()) {
     if (doubled[i] != expected[i]) {
@@ -123,7 +123,7 @@ while (i < doubled.len()) {
     i = i + 1;
 };
 
-/* Test array filtering */
+/* Test array filtering
 numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 evens = numbers.filter(op(x) { x % 2 == 0; });
 expected_evens = [2, 4, 6, 8, 10];
@@ -134,7 +134,7 @@ if (evens.len() != expected_evens.len()) {
     "✓ Filter length test passed".echo();
 };
 
-/* Sort for comparison (order may vary with parallel processing) */
+/* Sort for comparison (order may vary with parallel processing)
 evens_sorted = evens.sort();
 expected_sorted = expected_evens.sort();
 
@@ -144,7 +144,7 @@ if (evens_sorted.str() == expected_sorted.str()) {
     "✗ Filter test failed".echo();
 };
 
-/* Test array reduction */
+/* Test array reduction
 numbers = [1, 2, 3, 4, 5];
 sum = numbers.reduce(op(acc, x) { acc + x; }, 0);
 expected_sum = 15;
@@ -155,17 +155,17 @@ if (sum == expected_sum) {
     ("✗ Reduce test failed: expected " + expected_sum.str() + ", got " + sum.str()).echo();
 };
 
-/* ===== FILE I/O TESTING ===== */
+/* ===== FILE I/O TESTING =====
 "=== File I/O Testing ===".echo();
 
-/* Test file operations */
+/* Test file operations
 test_file = "test_data.txt";
 test_content = "Hello, Grapa!";
 
-/* Write test data */
+/* Write test data
 file_set(test_file, test_content);
 
-/* Read and verify */
+/* Read and verify
 read_content = file_get(test_file);
 if (read_content != test_content) {
     "✗ File content test failed".echo();
@@ -173,7 +173,7 @@ if (read_content != test_content) {
     "✓ File content test passed".echo();
 };
 
-/* Test file listing */
+/* Test file listing
 files = file_ls(".");
 test_file_found = false;
 i = 0;
@@ -190,14 +190,14 @@ if (test_file_found) {
     "✗ File listing test failed".echo();
 };
 
-/* Cleanup */
-file_set(test_file, "");  /* Clear file */
+/* Cleanup
+file_set(test_file, "");  /* Clear file
 
-/* Test JSON processing */
+/* Test JSON processing
 json_text = '{"name": "Alice", "age": 30, "active": true}';
 parsed = json_text.json();
 
-/* Test object access */
+/* Test object access
 name = parsed.get("name");
 age = parsed.get("age");
 active = parsed.get("active");
@@ -208,7 +208,7 @@ if (name == "Alice" && age == 30 && active == true) {
     "✗ JSON parsing test failed".echo();
 };
 
-/* Test missing key */
+/* Test missing key
 missing = parsed.get("nonexistent");
 if (missing.type() == $ERR) {
     "✓ JSON missing key test passed".echo();
@@ -216,15 +216,15 @@ if (missing.type() == $ERR) {
     "✗ JSON missing key test failed".echo();
 };
 
-/* ===== PARALLEL PROCESSING TESTS ===== */
+/* ===== PARALLEL PROCESSING TESTS =====
 "=== Parallel Processing Tests ===".echo();
 
-/* Test parallel operations */
-test_data = (100).range(0, 1);  /* Generate 0-99 (smaller for demo) */
+/* Test parallel operations
+test_data = (100).range(0, 1);  /* Generate 0-99 (smaller for demo)
 expected_sum = test_data.reduce(op(acc, x) { acc + x; }, 0);
 
-/* Test parallel sum with limited threads */
-/* 4 threads */
+/* Test parallel sum with limited threads
+/* 4 threads
 parallel_sum = test_data.reduce(op(acc, x) { acc + x; }, 0, 4);
 
 if (parallel_sum == expected_sum) {
@@ -233,13 +233,13 @@ if (parallel_sum == expected_sum) {
     ("✗ Parallel sum test failed: expected " + expected_sum.str() + ", got " + parallel_sum.str()).echo();
 };
 
-/* Test parallel mapping */
-/* 4 threads */
+/* Test parallel mapping
+/* 4 threads
 doubled = test_data.map(op(x) { x * 2; }, 4);
-/* Sequential for comparison */
+/* Sequential for comparison
 expected_doubled = test_data.map(op(x) { x * 2; });
 
-/* Sort for comparison (parallel order may vary) */
+/* Sort for comparison (parallel order may vary)
 doubled_sorted = doubled.sort();
 expected_sorted = expected_doubled.sort();
 
@@ -249,20 +249,20 @@ if (doubled_sorted.str() == expected_sorted.str()) {
     "✗ Parallel map test failed".echo();
 };
 
-/* Test thread safety with shared data */
+/* Test thread safety with shared data
 shared_counter = 0;
 lock_obj = $thread();
 
-/* Create multiple threads that increment counter */
+/* Create multiple threads that increment counter
 increment_worker = op() {
     lock_obj.lock();
     shared_counter = shared_counter + 1;
     lock_obj.unlock();
 };
 
-/* Run multiple increments */
+/* Run multiple increments
 i = 0;
-/* Smaller number for demo */
+/* Smaller number for demo
 while (i < 10) {
     increment_worker();
     i = i + 1;
@@ -274,10 +274,10 @@ if (shared_counter == 10) {
     ("✗ Thread safety test failed: expected 10, got " + shared_counter.str()).echo();
 };
 
-/* ===== PATTERN MATCHING TESTS ===== */
+/* ===== PATTERN MATCHING TESTS =====
 "=== Pattern Matching Tests ===".echo();
 
-/* Test basic pattern matching */
+/* Test basic pattern matching
 test_text = "Hello world\nGoodbye world\nHello again";
 matches = test_text.grep("Hello", "o");
 
@@ -288,7 +288,7 @@ if (matches.len() != expected_matches.len()) {
     "✓ Grep match count test passed".echo();
 };
 
-/* Test case-insensitive matching */
+/* Test case-insensitive matching
 case_matches = test_text.grep("hello", "oi");
 if (case_matches.len() == 2) {
     "✓ Case-insensitive grep test passed".echo();
@@ -296,7 +296,7 @@ if (case_matches.len() == 2) {
     "✗ Case-insensitive grep test failed".echo();
 };
 
-/* Test complex regex patterns */
+/* Test complex regex patterns
 test_text = "abc123\ndef456\nghi789";
 number_matches = test_text.grep("[0-9]+", "o");
 
@@ -306,7 +306,7 @@ if (number_matches.len() == 3) {
     "✗ Number pattern test failed".echo();
 };
 
-/* Test word boundaries */
+/* Test word boundaries
 word_text = "hello world hello123 hello_test";
 word_matches = word_text.grep("hello", "wo");
 
@@ -316,7 +316,7 @@ if (word_matches.len() == 2) {
     "✗ Word boundary test failed".echo();
 };
 
-/* Test Unicode pattern matching */
+/* Test Unicode pattern matching
 unicode_text = "café résumé naïve";
 unicode_matches = unicode_text.grep("é", "o");
 
@@ -326,7 +326,7 @@ if (unicode_matches.len() == 3) {
     "✗ Unicode pattern test failed".echo();
 };
 
-/* Test grapheme clusters */
+/* Test grapheme clusters
 emoji_text = "Hello 👨‍👩‍👧‍👦 World";
 grapheme_matches = emoji_text.grep("\\X", "o");
 
@@ -336,20 +336,20 @@ if (grapheme_matches.len() > 0) {
     "✗ Grapheme cluster test failed".echo();
 };
 
-/* ===== INTEGRATION TESTING ===== */
+/* ===== INTEGRATION TESTING =====
 "=== Integration Testing ===".echo();
 
-/* Test complete ETL workflow */
+/* Test complete ETL workflow
 test_etl_workflow = op() {
-    /* Setup test data */
+    /* Setup test data
     test_data = [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}];
     
-    /* Transform data */
+    /* Transform data
 processed = test_data.map(op(record) { ;
         {"name": record.get("name").upper(), "age": record.get("age")}; 
     });
     
-    /* Verify results */
+    /* Verify results
     if (processed.len() != 2) {
         "✗ ETL workflow test failed: expected 2 records".echo();
         return false;
@@ -371,38 +371,38 @@ processed = test_data.map(op(record) { ;
 
 test_etl_workflow();
 
-/* Test data validation pipeline */
+/* Test data validation pipeline
 test_validation_pipeline = op() {
-    /* Define validation rules */
+    /* Define validation rules
 rules = {;
         "email": {"pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"},
         "age": {"min": 0, "max": 150},
         "salary": {"min": 0, "max": 1000000}
     };
     
-    /* Test data */
+    /* Test data
 test_records = [;
         {"email": "alice@example.com", "age": 30, "salary": 50000},
         {"email": "invalid-email", "age": -5, "salary": 2000000},
         {"email": "bob@test.org", "age": 25, "salary": 75000}
     ];
     
-    /* Validate function */
+    /* Validate function
 validate_record = op(record, rules) {;
         errors = [];
         
-        /* Check email pattern */
+        /* Check email pattern
         if (!record.get("email").grep(rules.get("email").get("pattern"), "o").len() > 0) {
             errors += "Invalid email format";
         };
         
-        /* Check age range */
+        /* Check age range
         age = record.get("age");
         if (age < rules.get("age").get("min") || age > rules.get("age").get("max")) {
             errors += "Age out of range";
         };
         
-        /* Check salary range */
+        /* Check salary range
         salary = record.get("salary");
         if (salary < rules.get("salary").get("min") || salary > rules.get("salary").get("max")) {
             errors += "Salary out of range";
@@ -411,12 +411,12 @@ validate_record = op(record, rules) {;
         {"record": record, "errors": errors, "valid": errors.len() == 0};
     };
     
-    /* Process validation results */
+    /* Process validation results
     results = test_records.map(op(record) { validate_record(record, rules); });
     valid_records = results.filter(op(result) { result.get("valid"); });
     invalid_records = results.filter(op(result) { !result.get("valid"); });
     
-    /* Verify expected results */
+    /* Verify expected results
     if (valid_records.len() == 2 && invalid_records.len() == 1) {
         "✓ Validation pipeline test passed".echo();
         return true;
@@ -428,10 +428,10 @@ validate_record = op(record, rules) {;
 
 test_validation_pipeline();
 
-/* ===== BEST PRACTICES DEMONSTRATION ===== */
+/* ===== BEST PRACTICES DEMONSTRATION =====
 "=== Best Practices Demonstration ===".echo();
 
-/* Create reusable assertion functions */
+/* Create reusable assertion functions
 assert_equal = op(actual, expected, message) {;
     if (actual == expected) {
         ("✓ " + message + " passed").echo();
@@ -461,7 +461,7 @@ assert_array_equal = op(actual, expected, message) {;
     return true;
 };
 
-/* Use assertions in tests */
+/* Use assertions in tests
 test_with_assertions = op() {
     result = 5 * 2;
     assert_equal(result, 10, "Multiplication test");
@@ -472,9 +472,9 @@ test_with_assertions = op() {
 
 test_with_assertions();
 
-/* Test edge cases */
+/* Test edge cases
 test_edge_cases = op() {
-    /* Test empty array */
+    /* Test empty array
     empty_result = [].map(op(x) { x * 2; });
     if (empty_result.len() == 0) {
         "✓ Empty array test passed".echo();
@@ -482,7 +482,7 @@ test_edge_cases = op() {
         "✗ Empty array test failed".echo();
     };
     
-    /* Test single element */
+    /* Test single element
     single_result = [5].map(op(x) { x * 2; });
     if (single_result[0] == 10) {
         "✓ Single element test passed".echo();
@@ -490,7 +490,7 @@ test_edge_cases = op() {
         "✗ Single element test failed".echo();
     };
     
-    /* Test negative numbers */
+    /* Test negative numbers
     negative_result = [-1, -2, -3].map(op(x) { x * 2; });
     if (negative_result.str() == "[-2,-4,-6]") {
         "✓ Negative numbers test passed".echo();
@@ -501,12 +501,12 @@ test_edge_cases = op() {
 
 test_edge_cases();
 
-/* Test parallel operations with thread limits */
+/* Test parallel operations with thread limits
 test_parallel_safely = op() {
-    large_data = (1000).range(0, 1);  /* Smaller for demo */
+    large_data = (1000).range(0, 1);  /* Smaller for demo
     
-    /* Use limited threads for large datasets */
-    /* Limit to 4 threads */
+    /* Use limited threads for large datasets
+    /* Limit to 4 threads
 result = large_data.map(op(x) { x * 2; }, 4);
     
     if (result.len() == 1000) {

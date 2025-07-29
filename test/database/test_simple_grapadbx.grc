@@ -1,18 +1,18 @@
-/* Simple GrapaDBX test to isolate the issue */
+/* Simple GrapaDBX test to isolate the issue
 
-/* Create a GrapaDBX database using the grapadbx: /* protocol */ */
+/* Create a GrapaDBX database using the grapadbx://protocol */
 dbx = $unified();
 
-/* Debug: show the URL we're about to use */
-url = "grapadbx: /* testdbx"; */
+/* Debug: show the URL we're about to use
+url = "grapadbx://testdbx";
 "URL: ".echo();
 url.echo();
 "URL length: ".echo();
 url.len().echo();
 
-/* Try a different approach - use grapadb: /* first to see if that works */ */
+/* Try a different approach - use grapadb: /* first to see if that works */
 db1 = $unified();
-grapadb_url = "grapadb: /* testdb1"; */
+grapadb_url = "grapadb: /* testdb1";
 "GrapaDB URL: ".echo();
 grapadb_url.echo();
 "GrapaDB URL length: ".echo();
@@ -22,30 +22,30 @@ result1 = db1.create(grapadb_url);
 "GrapaDB storage type: ".echo();
 db1.getType().echo();
 
-/* Now try GrapaDBX */
+/* Now try GrapaDBX
 result = dbx.create(url);
 
-/* Check storage type */
+/* Check storage type
 storage_type = dbx.getType();
 "Storage type: ".echo();
 storage_type.echo();
 
-/* Create a field first */
+/* Create a field first
 result = dbx.mk("$VALUE", "STR");
 "mkfield result: ".echo();
 result.echo();
 
-/* Try to get a simple value */
+/* Try to get a simple value
 result = dbx.get("test", "$VALUE");
 "Simple get result: ".echo();
 result.echo();
 
-/* Try to set a value first */
+/* Try to set a value first
 result = dbx.set("test", "test_value", "$VALUE");
 "set result: ".echo();
 result.echo();
 
-/* Try to get it again */
+/* Try to get it again
 result = dbx.get("test", "$VALUE");
 "After set, get result: ".echo();
 result.echo();

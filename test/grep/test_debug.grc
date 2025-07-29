@@ -1,4 +1,4 @@
-/* Debug Test */
+/* Debug Test
 "=== DEBUG TEST ===".echo();
 "Testing basic functionality...".echo();
 

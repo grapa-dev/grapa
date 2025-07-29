@@ -1,12 +1,12 @@
-/* Comprehensive Test Runner for Grapa */
-/* This file runs all essential tests for Grapa functionality */
+/* Comprehensive Test Runner for Grapa
+/* This file runs all essential tests for Grapa functionality
 
 "=== GRAPA COMPREHENSIVE TEST SUITE ===\n".echo();
 "Running comprehensive test suite for all Grapa functionality\n".echo();
 "Timestamp: " + $sys.utc().echo();
 "\n".echo();
 
-/* File System and Database Tests */
+/* File System and Database Tests
 "=== FILE SYSTEM AND DATABASE TESTS ===\n".echo();
 include "test/file_system/test_file_basic.grc";
 include "test/file_system/test_file_advanced.grc";
@@ -17,7 +17,7 @@ include "test/database/test_table_performance.grc";
 include "test/integration/test_unified_path_system.grc";
 include "test/integration/test_cross_context_operations.grc";
 
-/* Unicode Grep Tests */
+/* Unicode Grep Tests
 "=== UNICODE GREP TESTS ===\n".echo();
 include "test/grep/test_current_capabilities.grc";
 include "test/grep/test_performance_optimizations.grc";
@@ -33,13 +33,13 @@ include "test/grep/test_advanced_context.grc";
 include "test/grep/test_unicode_normalization.grc";
 include "test/grep/test_context_lines.grc";
 
-/* Regression Tests */
+/* Regression Tests
 "=== REGRESSION TESTS ===\n".echo();
 include "test/regression/test_known_bugs.grc";
 include "test/regression/test_edge_cases.grc";
 include "test/regression/test_performance_regression.grc";
 
-/* Python Integration Tests */
+/* Python Integration Tests
 "=== PYTHON INTEGRATION TESTS ===\n".echo();
 "Note: Python integration tests are run separately using Python\n".echo();
 "Run: python test/python/test_python_file_operations.py\n".echo();

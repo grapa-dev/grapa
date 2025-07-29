@@ -1,12 +1,12 @@
-/* Test file demonstrating testing patterns from TESTING.md documentation */
-/* This file tests the testing patterns themselves - CORRECTED VERSION */
+/* Test file demonstrating testing patterns from TESTING.md documentation
+/* This file tests the testing patterns themselves - CORRECTED VERSION
 
 "Starting comprehensive testing demonstration...\n".echo();
 
-/* ===== BASIC TESTING ===== */
+/* ===== BASIC TESTING =====
 "=== Basic Testing ===\n".echo();
 
-/* Test basic function */
+/* Test basic function
 test_function = op(x) { x * 2; };
 result = test_function(5);
 if (result != 10) { 
@@ -15,7 +15,7 @@ if (result != 10) {
     "✓ Basic function test passed\n".echo();
 };
 
-/* Test with multiple cases */
+/* Test with multiple cases
 test_cases = [0, 1, 5, 10, -3];
 expected_results = [0, 2, 10, 20, -6];
 
@@ -33,7 +33,7 @@ while (i < test_cases.len()) {
     i += 1;
 };
 
-/* String testing */
+/* String testing
 test_string = "  hello world  ";
 trimmed = test_string.trim();
 if (trimmed == "hello world") {
@@ -49,10 +49,10 @@ if (upper_string == "  HELLO WORLD  ") {
     "✗ String upper test failed\n".echo();
 };
 
-/* ===== ERROR HANDLING TESTS ===== */
+/* ===== ERROR HANDLING TESTS =====
 "\n=== Error Handling Tests ===\n".echo();
 
-/* Test division by zero - Grapa returns $ERR */
+/* Test division by zero - Grapa returns $ERR
 result = 10 / 0;
 if (result.type() == $ERR) {
     "✓ Division by zero correctly returns $ERR\n".echo();
@@ -60,7 +60,7 @@ if (result.type() == $ERR) {
     "✗ Division by zero test failed\n".echo();
 };
 
-/* Test normal division */
+/* Test normal division
 result = 10 / 2;
 if (result == 5) {
     "✓ Division test passed\n".echo();
@@ -68,7 +68,7 @@ if (result == 5) {
     "✗ Division test failed\n".echo();
 };
 
-/* Test object property access */
+/* Test object property access
 test_obj = { "name": "John", "age": 30 };
 name = test_obj.name;
 if (name == "John") {
@@ -77,7 +77,7 @@ if (name == "John") {
     "✗ Object property test failed\n".echo();
 };
 
-/* Test missing property */
+/* Test missing property
 missing = test_obj.missing_property;
 if (missing.type() == $ERR) {
     "✓ Missing property correctly returns $ERR\n".echo();
@@ -85,10 +85,10 @@ if (missing.type() == $ERR) {
     "✗ Missing property test failed\n".echo();
 };
 
-/* ===== DATA STRUCTURE TESTING ===== */
+/* ===== DATA STRUCTURE TESTING =====
 "\n=== Data Structure Testing ===\n".echo();
 
-/* Array testing */
+/* Array testing
 test_array = [1, 2, 3, 4, 5];
 if (test_array.len() == 5) {
     "✓ Array length test passed\n".echo();
@@ -96,7 +96,7 @@ if (test_array.len() == 5) {
     "✗ Array length test failed\n".echo();
 };
 
-/* Test array elements */
+/* Test array elements
 i = 0;
 while (i < test_array.len()) {
     if (test_array[i] == i + 1) {
@@ -107,7 +107,7 @@ while (i < test_array.len()) {
     i += 1;
 };
 
-/* Test array operations */
+/* Test array operations
 filtered = test_array.filter(op(x) { x > 2; });
 if (filtered.len() == 3) {
     "✓ Filter length test passed\n".echo();
@@ -121,7 +121,7 @@ if (filtered[0] == 3 && filtered[1] == 4 && filtered[2] == 5) {
     "✗ Filter test failed\n".echo();
 };
 
-/* Test reduce operation - CORRECTED: must mutate accumulator */
+/* Test reduce operation - CORRECTED: must mutate accumulator
 sum = test_array.reduce(op(acc, x) { acc += x; }, 0);
 if (sum == 15) {
     "✓ Reduce test passed\n".echo();
@@ -129,18 +129,18 @@ if (sum == 15) {
     ("✗ Reduce test failed: expected 15, got " + sum.str() + "\n").echo();
 };
 
-/* ===== FILE I/O TESTING ===== */
+/* ===== FILE I/O TESTING =====
 "\n=== File I/O Testing ===\n".echo();
 
-/* Test file operations */
+/* Test file operations
 fs = $file();
 test_file = "test_output.txt";
 test_content = "Hello from Grapa test!";
 
-/* Write to file */
+/* Write to file
 fs.set(test_file, test_content);
 
-/* Read from file */
+/* Read from file
 read_content = fs.get(test_file).str();
 if (read_content == test_content) {
     "✓ File content test passed\n".echo();
@@ -148,7 +148,7 @@ if (read_content == test_content) {
     "✗ File content test failed\n".echo();
 };
 
-/* Test file listing - CORRECTED: fs.ls() returns $ARRAY of $LIST objects */
+/* Test file listing - CORRECTED: fs.ls() returns $ARRAY of $LIST objects
 files = fs.ls();
 if (files.len() > 0) {
     "✓ File listing test passed\n".echo();
@@ -156,7 +156,7 @@ if (files.len() > 0) {
     "✗ File listing test failed\n".echo();
 };
 
-/* Test JSON operations */
+/* Test JSON operations
 test_json = '{"name": "John", "age": 30, "city": "New York"}';
 parsed = test_json.json();
 if (parsed.name == "John" && parsed.age == 30) {
@@ -165,7 +165,7 @@ if (parsed.name == "John" && parsed.age == 30) {
     "✗ JSON parsing test failed\n".echo();
 };
 
-/* Test missing JSON key */
+/* Test missing JSON key
 missing_key = parsed.missing_key;
 if (missing_key.type() == $ERR) {
     "✓ JSON missing key test passed\n".echo();
@@ -173,13 +173,13 @@ if (missing_key.type() == $ERR) {
     "✗ JSON missing key test failed\n".echo();
 };
 
-/* Clean up */
+/* Clean up
 fs.rm(test_file);
 
-/* ===== PARALLEL PROCESSING TESTS ===== */
+/* ===== PARALLEL PROCESSING TESTS =====
 "\n=== Parallel Processing Tests ===\n".echo();
 
-/* Test parallel sum - CORRECTED: use .parallel() method */
+/* Test parallel sum - CORRECTED: use .parallel() method
 numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 parallel_sum = numbers.parallel().reduce(op(acc, x) { acc += x; }, 0);
 if (parallel_sum == 55) {
@@ -188,7 +188,7 @@ if (parallel_sum == 55) {
     "✗ Parallel sum test failed\n".echo();
 };
 
-/* Test parallel map */
+/* Test parallel map
 doubled = numbers.parallel().map(op(x) { x * 2; });
 if (doubled[0] == 2 && doubled[4] == 10) {
     "✓ Parallel map test passed\n".echo();
@@ -196,15 +196,15 @@ if (doubled[0] == 2 && doubled[4] == 10) {
     "✗ Parallel map test failed\n".echo();
 };
 
-/* Test thread safety */
+/* Test thread safety
 shared_counter = 0;
 parallel_ops = [1, 2, 3, 4, 5].parallel().map(op(x) { shared_counter += x; });
 "✓ Thread safety test passed\n".echo();
 
-/* ===== PATTERN MATCHING TESTS ===== */
+/* ===== PATTERN MATCHING TESTS =====
 "\n=== Pattern Matching Tests ===\n".echo();
 
-/* Test grep operations - CORRECTED: use proper grep syntax */
+/* Test grep operations - CORRECTED: use proper grep syntax
 test_text = "Hello world! This is a test. Numbers: 123, 456, 789.";
 matches = test_text.grep("\\d+", "x");
 if (matches.len() == 3) {
@@ -213,7 +213,7 @@ if (matches.len() == 3) {
     "✗ Grep match count test failed\n".echo();
 };
 
-/* Test case-insensitive grep */
+/* Test case-insensitive grep
 case_matches = test_text.grep("hello", "i");
 if (case_matches.len() > 0) {
     "✓ Case-insensitive grep test passed\n".echo();
@@ -221,7 +221,7 @@ if (case_matches.len() > 0) {
     "✗ Case-insensitive grep test failed\n".echo();
 };
 
-/* Test number patterns */
+/* Test number patterns
 number_matches = test_text.grep("[0-9]+", "x");
 if (number_matches.len() == 3) {
     "✓ Number pattern test passed\n".echo();
@@ -229,7 +229,7 @@ if (number_matches.len() == 3) {
     "✗ Number pattern test failed\n".echo();
 };
 
-/* Test word boundaries */
+/* Test word boundaries
 word_matches = test_text.grep("\\b\\w+\\b", "x");
 if (word_matches.len() > 0) {
     "✓ Word boundary test passed\n".echo();
@@ -237,7 +237,7 @@ if (word_matches.len() > 0) {
     "✗ Word boundary test failed\n".echo();
 };
 
-/* Test Unicode patterns */
+/* Test Unicode patterns
 unicode_text = "Hello 世界! 🌍 Test";
 unicode_matches = unicode_text.grep("[\\p{L}]+", "x");
 if (unicode_matches.len() > 0) {
@@ -246,8 +246,8 @@ if (unicode_matches.len() > 0) {
     "✗ Unicode pattern test failed\n".echo();
 };
 
-/* Test grapheme clusters */
-/* e with acute accent */
+/* Test grapheme clusters
+/* e with acute accent
 grapheme_text = "café";
 grapheme_matches = grapheme_text.grep("\\X", "x");
 if (grapheme_matches.len() == 4) {
@@ -256,23 +256,23 @@ if (grapheme_matches.len() == 4) {
     "✗ Grapheme cluster test failed\n".echo();
 };
 
-/* ===== INTEGRATION TESTING ===== */
+/* ===== INTEGRATION TESTING =====
 "\n=== Integration Testing ===\n".echo();
 
-/* Test ETL workflow */
+/* Test ETL workflow
 data = [;
     {"name": "john", "age": 25, "city": "new york"},
     {"name": "jane", "age": 30, "city": "los angeles"},
     {"name": "bob", "age": 35, "city": "chicago"}
 ];
 
-/* Transform: uppercase names */
+/* Transform: uppercase names
 transformed = data.map(op(record) {;
     record.name = record.name.upper();
     record;
 });
 
-/* Validate transformation */
+/* Validate transformation
 first_name = transformed[0].name;
 if (first_name == "JOHN") {
     "✓ ETL workflow test passed\n".echo();
@@ -287,7 +287,7 @@ if (second_name == "JANE") {
     ("✗ ETL workflow test failed: second name not uppercased\n").echo();
 };
 
-/* Test validation pipeline */
+/* Test validation pipeline
 valid_records = transformed.filter(op(record) { record.age >= 18; });
 if (valid_records.len() == 3) {
     "✓ ETL workflow test passed\n".echo();
@@ -295,10 +295,10 @@ if (valid_records.len() == 3) {
     "✗ Validation pipeline test failed\n".echo();
 };
 
-/* ===== BEST PRACTICES DEMONSTRATION ===== */
+/* ===== BEST PRACTICES DEMONSTRATION =====
 "\n=== Best Practices Demonstration ===\n".echo();
 
-/* Test helper functions */
+/* Test helper functions
 multiply = op(a, b) { a * b; };
 result = multiply(3, 4);
 if (result == 12) {
@@ -307,7 +307,7 @@ if (result == 12) {
     "✗ Multiplication test failed\n".echo();
 };
 
-/* Test array operations */
+/* Test array operations
 numbers = [1, 2, 3, 4, 5];
 squared = numbers.map(op(x) { x * x; });
 if (squared[0] == 1 && squared[2] == 9) {
@@ -316,7 +316,7 @@ if (squared[0] == 1 && squared[2] == 9) {
     "✗ Array mapping test failed\n".echo();
 };
 
-/* Test edge cases */
+/* Test edge cases
 empty_array = [];
 empty_result = empty_array.map(op(x) { x * 2; });
 if (empty_result.len() == 0) {
@@ -333,7 +333,7 @@ if (single_result[0] == 10) {
     "✗ Single element test failed\n".echo();
 };
 
-/* Test with negative numbers */
+/* Test with negative numbers
 negative_numbers = [-1, -2, -3];
 negative_result = negative_numbers.map(op(x) { x * 2; });
 if (negative_result[0] == -2 && negative_result[1] == -4) {
@@ -342,7 +342,7 @@ if (negative_result[0] == -2 && negative_result[1] == -4) {
     "✗ Negative numbers test failed\n".echo();
 };
 
-/* Test parallel processing */
+/* Test parallel processing
 parallel_result = numbers.parallel().map(op(x) { x * 3; });
 if (parallel_result[0] == 3 && parallel_result[4] == 15) {
     "✓ Parallel processing test passed\n".echo();

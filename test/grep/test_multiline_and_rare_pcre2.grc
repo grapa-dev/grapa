@@ -1,15 +1,15 @@
-/* Test Multiline Patterns and Rare PCRE2 Features */
-/* This test covers advanced regex features and multiline patterns with custom delimiters */
+/* Test Multiline Patterns and Rare PCRE2 Features
+/* This test covers advanced regex features and multiline patterns with custom delimiters
 
 "=== MULTILINE PATTERNS AND RARE PCRE2 FEATURES TEST ===\n".echo();
 "Testing advanced regex features, multiline patterns, and custom delimiters\n".echo();
 
-/* ======================================== */
-/* 1. Multiline Patterns with Custom Delimiters */
-/* ======================================== */
+/* ========================================
+/* 1. Multiline Patterns with Custom Delimiters
+/* ========================================
 "Test 1: Multiline patterns with custom delimiters\n".echo();
 
-/* Test with pipe delimiter */
+/* Test with pipe delimiter
 input1 = "start|middle|end";
 result1a = input1.grep("start.*end", "s", "|");
 ("Input: " + input1 + "\n").echo();
@@ -17,7 +17,7 @@ result1a = input1.grep("start.*end", "s", "|");
 ("Result: " + result1a.str() + "\n").echo();
 "---\n".echo();
 
-/* Test with multi-character delimiter */
+/* Test with multi-character delimiter
 input2 = "start|||middle|||end";
 result1b = input2.grep("start.*end", "s", "|||");
 ("Input: " + input2 + "\n").echo();
@@ -25,7 +25,7 @@ result1b = input2.grep("start.*end", "s", "|||");
 ("Result: " + result1b.str() + "\n").echo();
 "---\n".echo();
 
-/* Test with tab delimiter */
+/* Test with tab delimiter
 input3 = "start\tmiddle\tend";
 result1c = input3.grep("start.*end", "s", "\t");
 ("Input: " + input3 + "\n").echo();
@@ -33,12 +33,12 @@ result1c = input3.grep("start.*end", "s", "\t");
 ("Result: " + result1c.str() + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 2. Atomic Groups */
-/* ======================================== */
+/* ========================================
+/* 2. Atomic Groups
+/* ========================================
 "Test 2: Atomic groups\n".echo();
 
-/* Basic atomic group */
+/* Basic atomic group
 input4 = "aaaa";
 result2a = input4.grep("(?>a+)a", "o");
 ("Input: " + input4 + "\n").echo();
@@ -47,14 +47,14 @@ result2a = input4.grep("(?>a+)a", "o");
 ("Expected: [] (atomic group prevents backtracking)\n").echo();
 "---\n".echo();
 
-/* Atomic group with possessive quantifier */
+/* Atomic group with possessive quantifier
 result2b = input4.grep("(?>a++)a", "o");
 ("Pattern: (?>a++)a (atomic group with possessive), Options: o\n").echo();
 ("Result: " + result2b.str() + "\n").echo();
 ("Expected: [] (atomic group + possessive prevents backtracking)\n").echo();
 "---\n".echo();
 
-/* Atomic group with custom delimiter */
+/* Atomic group with custom delimiter
 input5 = "aaaa|bbbb|cccc";
 result2c = input5.grep("(?>a+)a", "o", "|");
 ("Input: " + input5 + "\n").echo();
@@ -63,12 +63,12 @@ result2c = input5.grep("(?>a+)a", "o", "|");
 ("Expected: [] (atomic group prevents backtracking)\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 3. Possessive Quantifiers */
-/* ======================================== */
+/* ========================================
+/* 3. Possessive Quantifiers
+/* ========================================
 "Test 3: Possessive quantifiers\n".echo();
 
-/* Basic possessive quantifier */
+/* Basic possessive quantifier
 input6 = "aaa";
 result3a = input6.grep("a++", "o");
 ("Input: " + input6 + "\n").echo();
@@ -77,7 +77,7 @@ result3a = input6.grep("a++", "o");
 ("Expected: [\"aaa\"] (matches all a's greedily without backtracking)\n").echo();
 "---\n".echo();
 
-/* Possessive quantifier with custom delimiter */
+/* Possessive quantifier with custom delimiter
 input7 = "aaa|bbb|ccc";
 result3b = input7.grep("a++", "o", "|");
 ("Input: " + input7 + "\n").echo();
@@ -86,7 +86,7 @@ result3b = input7.grep("a++", "o", "|");
 ("Expected: [\"aaa\"]\n").echo();
 "---\n".echo();
 
-/* Possessive optional quantifier */
+/* Possessive optional quantifier
 input8 = "a";
 result3c = input8.grep("a?+", "o");
 ("Input: " + input8 + "\n").echo();
@@ -95,12 +95,12 @@ result3c = input8.grep("a?+", "o");
 ("Expected: [\"a\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 4. Conditional Patterns */
-/* ======================================== */
+/* ========================================
+/* 4. Conditional Patterns
+/* ========================================
 "Test 4: Conditional patterns\n".echo();
 
-/* Basic conditional pattern */
+/* Basic conditional pattern
 input9 = "abc123";
 result4a = input9.grep("(a)?(?(1)b|c)", "o");
 ("Input: " + input9 + "\n").echo();
@@ -109,7 +109,7 @@ result4a = input9.grep("(a)?(?(1)b|c)", "o");
 ("Expected: [\"ab\"] (first branch when 'a' is present)\n").echo();
 "---\n".echo();
 
-/* Conditional pattern with custom delimiter */
+/* Conditional pattern with custom delimiter
 input10 = "abc123|def456";
 result4b = input10.grep("(a)?(?(1)b|c)", "o", "|");
 ("Input: " + input10 + "\n").echo();
@@ -118,7 +118,7 @@ result4b = input10.grep("(a)?(?(1)b|c)", "o", "|");
 ("Expected: [\"ab\", \"c\"]\n").echo();
 "---\n".echo();
 
-/* Conditional pattern with alternative branch */
+/* Conditional pattern with alternative branch
 input11 = "c123";
 result4c = input11.grep("(a)?(?(1)b|c)", "o");
 ("Input: " + input11 + "\n").echo();
@@ -127,12 +127,12 @@ result4c = input11.grep("(a)?(?(1)b|c)", "o");
 ("Expected: [\"c\"] (second branch when 'a' is not present)\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 5. Lookaround Assertions with Custom Delimiters */
-/* ======================================== */
+/* ========================================
+/* 5. Lookaround Assertions with Custom Delimiters
+/* ========================================
 "Test 5: Lookaround assertions with custom delimiters\n".echo();
 
-/* Positive lookahead */
+/* Positive lookahead
 input12 = "word123|text456|word789";
 result5a = input12.grep("\\w+(?=\\d)", "o", "|");
 ("Input: " + input12 + "\n").echo();
@@ -141,14 +141,14 @@ result5a = input12.grep("\\w+(?=\\d)", "o", "|");
 ("Expected: [\"word\", \"text\", \"word\"]\n").echo();
 "---\n".echo();
 
-/* Negative lookahead */
+/* Negative lookahead
 result5b = input12.grep("\\w+(?!\\d)", "o", "|");
 ("Pattern: \\w+(?!\\d) (negative lookahead), Options: o, Delimiter: |\n").echo();
 ("Result: " + result5b.str() + "\n").echo();
 ("Expected: [] (no words not followed by digits)\n").echo();
 "---\n".echo();
 
-/* Positive lookbehind */
+/* Positive lookbehind
 input13 = "123word|456text|789word";
 result5c = input13.grep("(?<=\\d)\\w+", "o", "|");
 ("Input: " + input13 + "\n").echo();
@@ -157,12 +157,12 @@ result5c = input13.grep("(?<=\\d)\\w+", "o", "|");
 ("Expected: [\"word\", \"text\", \"word\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 6. Unicode Properties with Custom Delimiters */
-/* ======================================== */
+/* ========================================
+/* 6. Unicode Properties with Custom Delimiters
+/* ========================================
 "Test 6: Unicode properties with custom delimiters\n".echo();
 
-/* Unicode categories */
+/* Unicode categories
 input14 = "Hello 世界 123 €|Goodbye 世界 456 €";
 result6a = input14.grep("\\p{L}+", "o", "|");
 ("Input: " + input14 + "\n").echo();
@@ -171,26 +171,26 @@ result6a = input14.grep("\\p{L}+", "o", "|");
 ("Expected: [\"Hello\", \"世界\", \"Goodbye\", \"世界\"]\n").echo();
 "---\n".echo();
 
-/* Unicode scripts */
+/* Unicode scripts
 result6b = input14.grep("\\p{sc=Latin}", "o", "|");
 ("Pattern: \\p{sc=Latin} (Latin script), Options: o, Delimiter: |\n").echo();
 ("Result: " + result6b.str() + "\n").echo();
 ("Expected: [\"Hello\", \"Goodbye\"]\n").echo();
 "---\n".echo();
 
-/* Unicode script extensions */
+/* Unicode script extensions
 result6c = input14.grep("\\p{scx:Han}", "o", "|");
 ("Pattern: \\p{scx:Han} (Han script extension), Options: o, Delimiter: |\n").echo();
 ("Result: " + result6c.str() + "\n").echo();
 ("Expected: [\"世界\", \"世界\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 7. Complex Multiline Patterns */
-/* ======================================== */
+/* ========================================
+/* 7. Complex Multiline Patterns
+/* ========================================
 "Test 7: Complex multiline patterns\n".echo();
 
-/* Multiline pattern with context */
+/* Multiline pattern with context
 input15 = "header|||line1|||line2|||line3|||footer";
 result7a = input15.grep("line2", "A1B1", "|||");
 ("Input: " + input15 + "\n").echo();
@@ -199,19 +199,19 @@ result7a = input15.grep("line2", "A1B1", "|||");
 ("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
 "---\n".echo();
 
-/* Multiline pattern with match-only */
+/* Multiline pattern with match-only
 result7b = input15.grep("line\\d+", "o", "|||");
 ("Pattern: line\\d+, Options: o, Delimiter: |||\n").echo();
 ("Result: " + result7b.str() + "\n").echo();
 ("Expected: [\"line1\", \"line2\", \"line3\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 8. Edge Cases with Multi-Character Delimiters */
-/* ======================================== */
+/* ========================================
+/* 8. Edge Cases with Multi-Character Delimiters
+/* ========================================
 "Test 8: Edge cases with multi-character delimiters\n".echo();
 
-/* Empty delimiter (treat as single line) */
+/* Empty delimiter (treat as single line)
 input16 = "start|middle|end";
 result8a = input16.grep("start.*end", "s", "");
 ("Input: " + input16 + "\n").echo();
@@ -220,7 +220,7 @@ result8a = input16.grep("start.*end", "s", "");
 ("Expected: [\"start|middle|end\"] (treated as single line)\n").echo();
 "---\n".echo();
 
-/* Delimiter that appears in content */
+/* Delimiter that appears in content
 input17 = "start|||middle|||end";
 result8b = input17.grep("middle", "o", "|||");
 ("Input: " + input17 + "\n").echo();
@@ -229,12 +229,12 @@ result8b = input17.grep("middle", "o", "|||");
 ("Expected: [\"middle\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 9. JSON Output with Custom Delimiters */
-/* ======================================== */
+/* ========================================
+/* 9. JSON Output with Custom Delimiters
+/* ========================================
 "Test 9: JSON output with custom delimiters\n".echo();
 
-/* JSON output with named groups */
+/* JSON output with named groups
 input18 = "John Doe (30)|Jane Smith (25)";
 result9a = input18.grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj", "|");
 ("Input: " + input18 + "\n").echo();
@@ -243,12 +243,12 @@ result9a = input18.grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "o
 ("Result type: " + result9a.type() + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 10. Performance with Large Multi-Character Delimiters */
-/* ======================================== */
+/* ========================================
+/* 10. Performance with Large Multi-Character Delimiters
+/* ========================================
 "Test 10: Performance with large multi-character delimiters\n".echo();
 
-/* Large input with multi-character delimiter */
+/* Large input with multi-character delimiter
 large_input = "";
 i = 0;
 while(i < 100) {
@@ -262,12 +262,12 @@ result10a = large_input.grep("Line 50", "o", "|||");
 ("Result length: " + result10a.len() + "\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 11. Rare PCRE2 Features */
-/* ======================================== */
+/* ========================================
+/* 11. Rare PCRE2 Features
+/* ========================================
 "Test 11: Rare PCRE2 features\n".echo();
 
-/* Unicode grapheme clusters with custom delimiter */
+/* Unicode grapheme clusters with custom delimiter
 input19 = "Hello 👋 world 🌍|||Goodbye 👋 universe 🌌";
 result11a = input19.grep("\\X", "o", "|||");
 ("Input: " + input19 + "\n").echo();
@@ -276,7 +276,7 @@ result11a = input19.grep("\\X", "o", "|||");
 ("First few results: " + result11a.str() + "\n").echo();
 "---\n".echo();
 
-/* Emoji sequences with custom delimiter */
+/* Emoji sequences with custom delimiter
 input20 = "Family: 👨‍👩‍👧‍👦|||Group: 👨‍👩‍👧‍👦";
 result11b = input20.grep("(?:\\p{So}(?:\\u200D\\p{So})*)+", "o", "|||");
 ("Input: " + input20 + "\n").echo();
@@ -285,12 +285,12 @@ result11b = input20.grep("(?:\\p{So}(?:\\u200D\\p{So})*)+", "o", "|||");
 ("Expected: [\"👨‍👩‍👧‍👦\", \"👨‍👩‍👧‍👦\"]\n").echo();
 "---\n".echo();
 
-/* ======================================== */
-/* 12. Delimiter Removal Verification */
-/* ======================================== */
+/* ========================================
+/* 12. Delimiter Removal Verification
+/* ========================================
 "Test 12: Delimiter removal verification\n".echo();
 
-/* Verify that delimiters are removed from output */
+/* Verify that delimiters are removed from output
 input21 = "line1|||line2|||line3";
 result12a = input21.grep("line", "o", "|||");
 ("Input: " + input21 + "\n").echo();
@@ -299,7 +299,7 @@ result12a = input21.grep("line", "o", "|||");
 ("Expected: [\"line1\", \"line2\", \"line3\"] (no ||| in output)\n").echo();
 "---\n".echo();
 
-/* Verify with different delimiter */
+/* Verify with different delimiter
 input22 = "item1###item2###item3";
 result12b = input22.grep("item", "o", "###");
 ("Input: " + input22 + "\n").echo();

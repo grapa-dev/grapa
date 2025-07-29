@@ -1,9 +1,9 @@
-/* Test comparing ROW vs COL set operations */
+/* Test comparing ROW vs COL set operations
 
 "=== Testing ROW vs COL set operations ===\n".echo();
 "\n".echo();
 
-/* Test ROW table first */
+/* Test ROW table first
 "Creating ROW table...\n".echo();
 "\n".echo();
 frow = $file().table("ROW");
@@ -26,7 +26,7 @@ frow.get("1", "name").echo();
 "---\n".echo();
 "\n".echo();
 
-/* Test COL table */
+/* Test COL table
 "Creating COL table...\n".echo();
 "\n".echo();
 fcol = $file().table("COL");
