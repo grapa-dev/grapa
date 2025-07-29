@@ -20273,8 +20273,15 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedMkfieldEvent::Run(GrapaScriptExec* vScrip
 				if (dbx)
 				{
 					/* Use GrapaDBX field creation */
-					u64 dirId = unifiedDB->GetGrapaDBXFirstTree();
-					u8 dirType = unifiedDB->GetGrapaDBXRootType();
+					u64 dirId;
+					u8 dirType;
+					
+					/* Use current working directory context for all table types */
+					/* This matches the reference implementation behavior */
+					dirId = unifiedDB->mDirId;
+					dirType = unifiedDB->mDirType;
+					printf("[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Using current context (dirId=%llu, dirType=%d)\n", 
+					       (unsigned long long)dirId, dirType);
 					
 					/* Convert field type to GrapaTokenType */
 					u8 grapaType = GrapaTokenType::STR;
@@ -20337,11 +20344,22 @@ GrapaRuleEvent* GrapaLibraryRuleUnifiedRmfieldEvent::Run(GrapaScriptExec* vScrip
 	if (objEvent && objEvent->vDatabase)
 	{
 		GrapaUnifiedLocalDatabase* unifiedDB = dynamic_cast<GrapaUnifiedLocalDatabase*>(objEvent->vDatabase);
-		if (unifiedDB && r2.vVal && r3.vVal)
+		if (unifiedDB && r2.vVal)
 		{
 			GrapaCHAR tableName, fieldName;
-			tableName.FROM(r2.vVal->mValue);
-			fieldName.FROM(r3.vVal->mValue);
+			
+			// Handle case where only field name is provided (use current directory as table)
+			if (r3.vVal) {
+				// Both table and field provided
+				tableName.FROM(r2.vVal->mValue);
+				fieldName.FROM(r3.vVal->mValue);
+				printf("[DEBUG] GrapaLibRule Rmfield: Both parameters provided\n");
+			} else {
+				// Only field name provided, use current directory as table
+				unifiedDB->DirectoryPWD(tableName);
+				fieldName.FROM(r2.vVal->mValue);
+				printf("[DEBUG] GrapaLibRule Rmfield: Only field name provided, using current directory\n");
+			}
 			
 			printf("[DEBUG] GrapaLibRule Rmfield: table='%s', field='%s'\n", 
 				(char*)tableName.mBytes, (char*)fieldName.mBytes);

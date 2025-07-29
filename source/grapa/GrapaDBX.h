@@ -78,6 +78,7 @@ public:
 	virtual GrapaError OpenTableField(GrapaDBXTable& pTable, u64 pFieldId, GrapaDBXField& pField);
 	virtual GrapaError OpenTableFieldList(GrapaDBXTable& pTable, GrapaDBXFieldArray& pFieldList);
 	virtual GrapaError DeleteTableField(GrapaDBXTable& pTable, u64 pFieldId);
+	virtual GrapaError ModifyTableField(GrapaDBXTable& pTable, u64 pFieldId, u8 pNewType, u8 pNewStore, u64 pNewSize, u64 pNewGrow);
 	virtual GrapaError FlushTableFields(GrapaDBXTable& pTable);
 
 	// Formula field operations - new functionality for GrapaDBX
@@ -329,6 +330,7 @@ public:
 	GrapaError CreateField(u64 parentTree, u8 parentType, const char* pFieldName, u8 pType = GrapaTokenType::RAW, u8 pStore = GrapaDBXField::STORE_VAR, u64 pSize = 32, u64 pGrow = 8);
 	GrapaError CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pFieldName, u8 pType = GrapaTokenType::RAW, u8 pStore = GrapaDBXField::STORE_VAR, u64 pSize = 32, u64 pGrow = 8);
 	GrapaError DeleteField(u64 parentTree, u8 parentType, GrapaCHAR& pField);
+	GrapaError ModifyField(u64 parentTree, u8 parentType, GrapaCHAR& pFieldName, u8 pNewType, u8 pNewStore, u64 pNewSize, u64 pNewGrow);
 
 	GrapaError SetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, const char* pField, const GrapaBYTE& pValue);
 	GrapaError SetField(u64 parentTree, u8 parentType, const GrapaCHAR& pName, const GrapaCHAR& pField, const GrapaBYTE& pValue);

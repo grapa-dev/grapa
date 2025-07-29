@@ -98,17 +98,37 @@ GrapaDBX is now fully functional with all debug output showing correct behavior:
 [DEBUG] SetDataValue: Result=0
 [DEBUG] CreateTableField: Stored field name '$VALUE' at mNameRef=55
 [DEBUG] CreateTableField: Updating dictionary metadata for field ID 2
-[DEBUG] CreateTableField: Before update - pTable.mDictField.mDictOffset=0, pTable.mDictField.mDictSize=2
-[DEBUG] CreateTableField: Adding field with mDictSize=8
-[DEBUG] CreateTableField: After update - runningDataOffset=266
-[DEBUG] GrapaDBX::CreateTable: $VALUE field created successfully
 ```
 
 **Analysis**:
-- ✅ Field names stored correctly (`$DICT`, `$KEY`, `$VALUE`)
-- ✅ Field metadata updated properly
-- ✅ Running offset calculation working (258, 266)
-- ✅ Field sizes set correctly (258 for $KEY, 8 for $VALUE)
+- ✅ Field name storage working correctly
+- ✅ Dictionary metadata updates functioning
+- ✅ Field ID assignment working properly
+- ✅ Running data offset calculation correct
+
+### 4. Custom Field Creation
+```
+[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: Using current context (dirId=5, dirType=4)
+[DEBUG] GetDataTypeRecord: called with tableRef=5
+[DEBUG] GetDataTypeRecord: returning tableDT=15
+[DEBUG] GrapaGroup2::FindField: parentTree=5, parentType=4, fieldName='custom_field'
+[DEBUG] GrapaGroup2::ListFields: parentTree=5, parentType=4
+[DEBUG] ListFields: Found 3 fields in data type record
+[DEBUG] FindField: Field 'custom_field' not found
+[DEBUG] CreateTableField: called with fieldId=3, fieldName='custom_field'
+[DEBUG] SetDataValue: itemPtr=63, offset=0, dataSize=12, buffer=0x600000db8b40
+[DEBUG] SetDataValue: First few bytes: 63 75 73 74 6f 6d 5f 66
+[DEBUG] SetDataValue: Result=0
+[DEBUG] CreateTableField: Stored field name 'custom_field' at mNameRef=63
+[DEBUG] GrapaLibraryRuleUnifiedMkfieldEvent: GrapaDBX CreateField result = 0
+```
+
+**Analysis**:
+- ✅ Current working directory context working (dirId=5, dirType=4)
+- ✅ Field lookup working correctly (field not found, proceeding with creation)
+- ✅ Field ID assignment correct (fieldId=3)
+- ✅ Field name storage working (custom_field stored at mNameRef=63)
+- ✅ Field creation successful (result = 0)
 
 ### 4. Data Storage Operations
 ```

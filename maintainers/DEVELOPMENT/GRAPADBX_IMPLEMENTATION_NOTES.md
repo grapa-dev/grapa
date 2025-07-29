@@ -96,6 +96,25 @@ GrapaGroup2
 - **Null Pointer Handling**: Checks for null pointers in `GetRecordFieldData`
 - **Memory Safety**: Proper cleanup and validation
 
+## Field Creation System
+
+### Current Working Directory Management
+- **Context Setting**: `CreateTableStructure` sets `mDirId = newTree` and `mDirType = mGrapaDBXTableType` after table creation
+- **Field Creation Context**: `GrapaLibraryRuleUnifiedMkfieldEvent` uses current working directory context for all table types
+- **Cross-Table Support**: Works correctly for ROW, COL, and GROUP table types
+
+### Field Creation Process
+1. **Table Creation**: `db.mk('table_name')` creates table and sets current working directory
+2. **Field Creation**: `db.mkfield('field_name')` uses current working directory context
+3. **Dictionary Management**: Field names stored in `$DICT` field with proper metadata
+4. **Field ID Assignment**: Uses field-based approach matching reference implementation
+
+### Field Dictionary Structure
+- **Field Names**: Stored as UTF-8 strings in separate data blocks
+- **Field Metadata**: `GrapaDBXField` struct with type, store, size, and grow information
+- **Dictionary Layout**: Sequential storage with proper offset calculations
+- **Field ID Assignment**: Dynamic assignment based on existing field count
+
 ## Key Implementation Details
 
 ### Field Offset Calculation
@@ -169,6 +188,8 @@ GetDataValue(dataPtr, 0, dataSize, buffer);
 - ✅ **Basic Functionality**: All table types working correctly
 - ✅ **Data Type Support**: All Grapa types properly handled
 - ✅ **Field Management**: Dictionary and field operations working
+- ✅ **Field Creation**: `mkfield` functionality working across all table types
+- ✅ **Current Working Directory**: Proper context management after table creation
 - ✅ **Record Operations**: Create, read, update, delete working
 - ✅ **Memory Safety**: No corruption or leaks detected
 - ✅ **Reference Compatibility**: Matches reference implementation behavior

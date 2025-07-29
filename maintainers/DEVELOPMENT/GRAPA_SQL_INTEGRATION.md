@@ -50,6 +50,600 @@ Connect SQL queries to GrapaDBX's enhanced features (batch operations, transacti
 ### **4. Unified Path System Integration**
 Leverage the unified path system to make SQL work seamlessly across file system and database contexts.
 
+## **CRITICAL GAPS FOR SQL IMPLEMENTATION**
+
+### **Foundation Gaps (Search Functionality)**
+
+The following gaps in GrapaDBX search functionality are **critical prerequisites** for SQL implementation:
+
+#### **1. ❌ No Multiple Results Collection**
+**Current State**: `SearchDb` only positions cursor at first match
+**SQL Requirement**: SELECT queries need to return multiple records
+**Missing**: `SearchDbAll()`, `CollectMatches()` methods
+
+#### **2. ❌ No Result Set Management**
+**Current State**: Single cursor positioning only
+**SQL Requirement**: SQL result sets need navigation (Next, Previous, First, Last)
+**Missing**: `GrapaDBXResultSet` class with iteration methods
+
+#### **3. ❌ No Search Result Iteration**
+**Current State**: No built-in iteration through matches
+**SQL Requirement**: SQL cursors need to iterate through result sets
+**Missing**: `SearchDbNext()`, `SearchDbPrevious()` methods
+
+#### **4. ❌ Limited Index Selection Strategy**
+**Current State**: Uses "first matching index" only
+**SQL Requirement**: SQL query optimizer needs intelligent index selection
+**Missing**: `SelectBestIndex()`, cost-based optimization
+
+### **SQL-Specific Gaps**
+
+#### **5. ❌ Missing SQL Grammar Rules in BNF**
+**Current State**: No SQL syntax rules in `$grapa.grc`
+**Missing Grammar Rules**:
+```grapa
+@global["$sql_statement"]
+    = rule <$select_statement> {@<sql_select,{$1}>}
+    | <$insert_statement> {@<sql_insert,{$1}>}
+    | <$update_statement> {@<sql_update,{$1}>}
+    | <$delete_statement> {@<sql_delete,{$1}>}
+    | <$create_statement> {@<sql_create,{$1}>}
+    | <$drop_statement> {@<sql_drop,{$1}>}
+    ;
+
+@global["$select_statement"]
+    = rule SELECT <$select_list> FROM <$table_reference> <$where_clause>? <$order_clause>? <$limit_clause>? {@<create_select,{$2,$4,$5,$6,$7}>}
+    ;
+
+@global["$where_clause"]
+    = rule WHERE <$condition> {@<create_where,{$2}>}
+    ;
+
+@global["$condition"]
+    = rule <$column_name> <$operator> <$value> {@<create_condition,{$1,$2,$3}>}
+    | <$condition> AND <$condition> {@<create_and,{$1,$3}>}
+    | <$condition> OR <$condition> {@<create_or,{$1,$3}>}
+    | '(' <$condition> ')' {@<create_grouped,{$2}>}
+    ;
+```
+
+#### **6. ❌ Missing SQL Execution Functions**
+**Current State**: No SQL execution functions in language
+**Missing Functions**:
+```cpp
+// Need to add to GrapaLibRule.cpp:
+GrapaError GrapaLibraryRuleSqlSelectEvent::Run(GrapaScriptExec* vScriptExec, GrapaRuleEvent* b, GrapaRuleEvent* p);
+GrapaError GrapaLibraryRuleSqlInsertEvent::Run(GrapaScriptExec* vScriptExec, GrapaRuleEvent* b, GrapaRuleEvent* p);
+GrapaError GrapaLibraryRuleSqlUpdateEvent::Run(GrapaScriptExec* vScriptExec, GrapaRuleEvent* b, GrapaRuleEvent* p);
+GrapaError GrapaLibraryRuleSqlDeleteEvent::Run(GrapaScriptExec* vScriptExec, GrapaRuleEvent* b, GrapaRuleEvent* p);
+GrapaError GrapaLibraryRuleSqlCreateEvent::Run(GrapaScriptExec* vScriptExec, GrapaRuleEvent* b, GrapaRuleEvent* p);
+GrapaError GrapaLibraryRuleSqlDropEvent::Run(GrapaScriptExec* vScriptExec, GrapaRuleEvent* b, GrapaRuleEvent* p);
+```
+
+#### **7. ❌ Missing SQL Query Parser**
+**Current State**: No SQL query parsing infrastructure
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlParser {
+    GrapaError ParseSelect(const GrapaCHAR& sql, GrapaSqlSelect& select);
+    GrapaError ParseWhere(const GrapaCHAR& condition, GrapaSqlCondition& condition);
+    GrapaError ParseJoin(const GrapaCHAR& joinClause, GrapaSqlJoin& join);
+    GrapaError ParseOrderBy(const GrapaCHAR& orderClause, GrapaSqlOrderBy& orderBy);
+    GrapaError ParseGroupBy(const GrapaCHAR& groupClause, GrapaSqlGroupBy& groupBy);
+};
+```
+
+#### **8. ❌ Missing SQL Query Optimizer**
+**Current State**: No query optimization for complex SQL operations
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlOptimizer {
+    GrapaError OptimizeQuery(GrapaSqlQuery& query);
+    GrapaError SelectBestIndex(const GrapaSqlQuery& query, u64& bestIndexRef);
+    GrapaError PlanJoinOrder(const GrapaSqlQuery& query, std::vector<GrapaSqlJoin>& joins);
+    GrapaError EstimateQueryCost(const GrapaSqlQuery& query, double& cost);
+};
+```
+
+#### **9. ❌ Missing SQL Result Set Management**
+**Current State**: No comprehensive result set management for SQL queries
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlResultSet {
+    std::vector<GrapaCursor> mResults;
+    size_t mCurrentIndex;
+    GrapaError Next();
+    GrapaError Previous();
+    GrapaError First();
+    GrapaError Last();
+    size_t Count();
+    GrapaError GetColumn(const GrapaCHAR& columnName, GrapaBYTE& value);
+    GrapaError GetRow(GrapaDBXFieldValueArray& row);
+};
+```
+
+#### **10. ❌ Missing SQL Aggregation Functions**
+**Current State**: No SQL aggregation support
+**Missing Functions**:
+```cpp
+// Need to implement:
+GrapaError GrapaSqlAggregator::Count(const GrapaSqlQuery& query, u64& result);
+GrapaError GrapaSqlAggregator::Sum(const GrapaSqlQuery& query, const GrapaCHAR& column, GrapaBYTE& result);
+GrapaError GrapaSqlAggregator::Avg(const GrapaSqlQuery& query, const GrapaCHAR& column, GrapaBYTE& result);
+GrapaError GrapaSqlAggregator::Min(const GrapaSqlQuery& query, const GrapaCHAR& column, GrapaBYTE& result);
+GrapaError GrapaSqlAggregator::Max(const GrapaSqlQuery& query, const GrapaCHAR& column, GrapaBYTE& result);
+```
+
+#### **11. ❌ Missing SQL JOIN Support**
+**Current State**: No multi-table join operations
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlJoiner {
+    GrapaError InnerJoin(const GrapaSqlQuery& query, GrapaSqlResultSet& result);
+    GrapaError LeftJoin(const GrapaSqlQuery& query, GrapaSqlResultSet& result);
+    GrapaError RightJoin(const GrapaSqlQuery& query, GrapaSqlResultSet& result);
+    GrapaError FullJoin(const GrapaSqlQuery& query, GrapaSqlResultSet& result);
+    GrapaError CrossJoin(const GrapaSqlQuery& query, GrapaSqlResultSet& result);
+};
+```
+
+#### **12. ❌ Missing SQL Transaction Support**
+**Current State**: No SQL transaction management
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlTransaction {
+    GrapaError Begin();
+    GrapaError Commit();
+    GrapaError Rollback();
+    GrapaError Savepoint(const GrapaCHAR& name);
+    GrapaError RollbackToSavepoint(const GrapaCHAR& name);
+};
+```
+
+#### **13. ❌ Missing SQL Schema Management**
+**Current State**: No SQL DDL (Data Definition Language) support
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlSchema {
+    GrapaError CreateTable(const GrapaCHAR& tableName, const GrapaDBXFieldArray& schema);
+    GrapaError AlterTable(const GrapaCHAR& tableName, const GrapaCHAR& operation, const GrapaDBXField& field);
+    GrapaError DropTable(const GrapaCHAR& tableName);
+    GrapaError CreateIndex(const GrapaCHAR& tableName, const GrapaCHAR& indexName, const GrapaDU64Array& columns);
+    GrapaError DropIndex(const GrapaCHAR& tableName, const GrapaCHAR& indexName);
+};
+```
+
+#### **14. ❌ Missing SQL Prepared Statements**
+**Current State**: No prepared statement support for performance
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlPreparedStatement {
+    GrapaError Prepare(const GrapaCHAR& sql);
+    GrapaError BindParameter(u32 index, const GrapaBYTE& value);
+    GrapaError Execute(GrapaSqlResultSet& result);
+    GrapaError Close();
+};
+```
+
+### **🆕 CRITICAL: Metadata and Functionality Gaps for Dictionary Fields and Indexes**
+
+#### **15. ❌ Missing Field Metadata for Constraints**
+**Current State**: `GrapaDBXField` struct has no constraint metadata
+**Current Field Structure**:
+```cpp
+struct GrapaDBXField {
+    u8 mType;
+    u8 mStore;
+    u8 mTreeType;
+    u8 mReserved[5];
+    u64 mId;
+    u64 mRef;
+    u64 mNameId;
+    u64 mNameRef;
+    u64 mDictOffset;
+    u64 mDictSize;
+    u64 mSize;
+    u64 mGrow;
+    u64 mTableRef;
+    u64 mFormulaRef;
+    u8 mFormulaType;
+    u8 mReserved2[7];
+    // ❌ MISSING: Constraint metadata
+};
+```
+
+**Missing Field Metadata**:
+```cpp
+// Need to add to GrapaDBXField:
+u8 mConstraints;           // Bit flags for constraints (UNIQUE, NOT_NULL, etc.)
+u8 mDefaultValueType;      // Type of default value
+u64 mDefaultValueRef;      // Reference to default value data
+u64 mCheckConstraintRef;   // Reference to check constraint expression
+u64 mForeignKeyRef;        // Reference to foreign key definition
+u8 mIndexed;              // Whether field is indexed
+u8 mAutoIncrement;        // Auto-increment flag
+u64 mSequenceRef;         // Reference to sequence for auto-increment
+```
+
+#### **16. ❌ Missing Unique Constraint Support**
+**Current State**: No unique constraint implementation
+**SQL Requirement**: `CREATE TABLE users (id INT UNIQUE, email STR UNIQUE)`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXUniqueConstraint {
+    GrapaError CreateUniqueConstraint(GrapaDBXTable& table, u64 fieldId);
+    GrapaError ValidateUniqueConstraint(GrapaDBXTable& table, u64 fieldId, const GrapaBYTE& value);
+    GrapaError DropUniqueConstraint(GrapaDBXTable& table, u64 fieldId);
+    GrapaError CheckUniqueViolation(GrapaDBXTable& table, u64 fieldId, const GrapaBYTE& value);
+};
+```
+
+#### **17. ❌ Missing NOT NULL Constraint Support**
+**Current State**: No NOT NULL constraint implementation
+**SQL Requirement**: `CREATE TABLE users (id INT NOT NULL, name STR NOT NULL)`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXNotNullConstraint {
+    GrapaError CreateNotNullConstraint(GrapaDBXTable& table, u64 fieldId);
+    GrapaError ValidateNotNullConstraint(const GrapaBYTE& value);
+    GrapaError DropNotNullConstraint(GrapaDBXTable& table, u64 fieldId);
+};
+```
+
+#### **18. ❌ Missing Check Constraint Support**
+**Current State**: No check constraint implementation
+**SQL Requirement**: `CREATE TABLE users (age INT CHECK (age >= 0))`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXCheckConstraint {
+    GrapaError CreateCheckConstraint(GrapaDBXTable& table, u64 fieldId, const GrapaCHAR& expression);
+    GrapaError ValidateCheckConstraint(const GrapaCHAR& expression, const GrapaBYTE& value);
+    GrapaError DropCheckConstraint(GrapaDBXTable& table, u64 fieldId);
+    GrapaError EvaluateCheckExpression(const GrapaCHAR& expression, const GrapaDBXFieldValueArray& values);
+};
+```
+
+#### **19. ❌ Missing Default Value Support**
+**Current State**: No default value implementation
+**SQL Requirement**: `CREATE TABLE users (created_at TIME DEFAULT NOW())`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXDefaultValue {
+    GrapaError SetDefaultValue(GrapaDBXTable& table, u64 fieldId, const GrapaBYTE& defaultValue);
+    GrapaError GetDefaultValue(GrapaDBXTable& table, u64 fieldId, GrapaBYTE& defaultValue);
+    GrapaError ClearDefaultValue(GrapaDBXTable& table, u64 fieldId);
+    GrapaError EvaluateDefaultExpression(const GrapaCHAR& expression, GrapaBYTE& result);
+};
+```
+
+#### **20. ❌ Missing Foreign Key Support**
+**Current State**: No foreign key implementation
+**SQL Requirement**: `CREATE TABLE orders (user_id INT REFERENCES users(id))`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXForeignKey {
+    GrapaError CreateForeignKey(GrapaDBXTable& table, u64 fieldId, const GrapaCHAR& refTable, u64 refFieldId);
+    GrapaError ValidateForeignKey(GrapaDBXTable& table, u64 fieldId, const GrapaBYTE& value);
+    GrapaError DropForeignKey(GrapaDBXTable& table, u64 fieldId);
+    GrapaError CascadeDelete(GrapaDBXTable& table, u64 fieldId, const GrapaBYTE& value);
+    GrapaError CascadeUpdate(GrapaDBXTable& table, u64 fieldId, const GrapaBYTE& oldValue, const GrapaBYTE& newValue);
+};
+```
+
+#### **21. ❌ Missing Auto-Increment Support**
+**Current State**: No auto-increment implementation
+**SQL Requirement**: `CREATE TABLE users (id INT AUTO_INCREMENT)`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXAutoIncrement {
+    GrapaError CreateAutoIncrement(GrapaDBXTable& table, u64 fieldId, u64 startValue = 1, u64 increment = 1);
+    GrapaError GetNextAutoIncrementValue(GrapaDBXTable& table, u64 fieldId, u64& nextValue);
+    GrapaError ResetAutoIncrement(GrapaDBXTable& table, u64 fieldId, u64 newValue);
+    GrapaError DropAutoIncrement(GrapaDBXTable& table, u64 fieldId);
+};
+```
+
+#### **22. ❌ Missing Enhanced Index Metadata**
+**Current State**: `GrapaDBXIndex` has minimal metadata
+**Current Index Structure**:
+```cpp
+class GrapaDBXIndex {
+    GrapaDBXTable mTable;
+    u64 mId;
+    u64 mRef;
+    // ❌ MISSING: Enhanced index metadata
+};
+```
+
+**Missing Index Metadata**:
+```cpp
+// Need to add to GrapaDBXIndex:
+u8 mIndexType;            // UNIQUE, PRIMARY, SECONDARY, etc.
+u8 mIndexMethod;          // BTREE, HASH, etc.
+u8 mSortOrder;            // ASC, DESC
+u64 mCardinality;         // Number of unique values
+u64 mSelectivity;         // Index selectivity (0-100)
+u64 mLastUpdated;         // Timestamp of last update
+u64 mStatisticsRef;       // Reference to index statistics
+u8 mIsActive;             // Whether index is active
+u8 mIsUnique;             // Whether index enforces uniqueness
+u64 mConstraintRef;       // Reference to associated constraint
+```
+
+#### **23. ❌ Missing Index Statistics and Optimization**
+**Current State**: No index statistics for query optimization
+**SQL Requirement**: Query optimizer needs index statistics
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXIndexStatistics {
+    GrapaError UpdateIndexStatistics(GrapaDBXIndex& index);
+    GrapaError GetIndexCardinality(GrapaDBXIndex& index, u64& cardinality);
+    GrapaError GetIndexSelectivity(GrapaDBXIndex& index, double& selectivity);
+    GrapaError AnalyzeIndex(GrapaDBXIndex& index);
+    GrapaError EstimateIndexCost(GrapaDBXIndex& index, const GrapaSqlQuery& query, double& cost);
+};
+```
+
+#### **24. ❌ Missing Composite Index Support**
+**Current State**: Limited to single-field indexes
+**SQL Requirement**: `CREATE INDEX idx_name_email ON users(name, email)`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXCompositeIndex {
+    GrapaError CreateCompositeIndex(GrapaDBXTable& table, const GrapaCHAR& indexName, const GrapaDU64Array& fieldIds);
+    GrapaError ValidateCompositeKey(GrapaDBXTable& table, const GrapaDBXIndex& index, const GrapaDBXFieldValueArray& values);
+    GrapaError GetCompositeIndexFields(const GrapaDBXIndex& index, GrapaDU64Array& fieldIds);
+    GrapaError OptimizeCompositeIndex(GrapaDBXIndex& index, const GrapaSqlQuery& query);
+};
+```
+
+#### **25. ❌ Missing Partial Index Support**
+**Current State**: No partial index implementation
+**SQL Requirement**: `CREATE INDEX idx_active_users ON users(email) WHERE active = 1`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXPartialIndex {
+    GrapaError CreatePartialIndex(GrapaDBXTable& table, const GrapaCHAR& indexName, const GrapaDU64Array& fieldIds, const GrapaCHAR& whereClause);
+    GrapaError EvaluatePartialIndexCondition(const GrapaCHAR& whereClause, const GrapaDBXFieldValueArray& values);
+    GrapaError ValidatePartialIndexEntry(GrapaDBXIndex& index, const GrapaDBXFieldValueArray& values);
+};
+```
+
+#### **26. ❌ Missing Index Maintenance and Rebuilding**
+**Current State**: No index maintenance utilities
+**SQL Requirement**: `REINDEX users`, `ANALYZE users`
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaDBXIndexMaintenance {
+    GrapaError RebuildIndex(GrapaDBXIndex& index);
+    GrapaError AnalyzeTable(GrapaDBXTable& table);
+    GrapaError UpdateIndexStatistics(GrapaDBXIndex& index);
+    GrapaError CompactIndex(GrapaDBXIndex& index);
+    GrapaError ValidateIndexIntegrity(GrapaDBXIndex& index);
+};
+```
+
+### **🆕 CRITICAL: SQL DDL (Data Definition Language) Gaps**
+
+#### **27. ❌ Missing CREATE TABLE with Constraints**
+**Current State**: No SQL CREATE TABLE with constraint syntax
+**SQL Requirement**: 
+```sql
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email STR UNIQUE NOT NULL,
+    name STR NOT NULL,
+    age INT CHECK (age >= 0),
+    created_at TIME DEFAULT NOW()
+);
+```
+
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlDDL {
+    GrapaError CreateTableWithConstraints(const GrapaCHAR& tableName, const GrapaSqlTableDefinition& definition);
+    GrapaError ParseTableDefinition(const GrapaCHAR& ddl, GrapaSqlTableDefinition& definition);
+    GrapaError ValidateTableConstraints(GrapaDBXTable& table, const GrapaDBXFieldValueArray& values);
+    GrapaError ApplyTableConstraints(GrapaDBXTable& table);
+};
+```
+
+#### **28. ❌ Missing ALTER TABLE Support**
+**Current State**: No ALTER TABLE implementation
+**SQL Requirement**: 
+```sql
+ALTER TABLE users ADD COLUMN phone STR;
+ALTER TABLE users ADD CONSTRAINT uk_email UNIQUE(email);
+ALTER TABLE users DROP CONSTRAINT uk_email;
+```
+
+**Missing Components**:
+```cpp
+// Need to implement:
+class GrapaSqlAlterTable {
+    GrapaError AddColumn(const GrapaCHAR& tableName, const GrapaSqlColumnDefinition& column);
+    GrapaError DropColumn(const GrapaCHAR& tableName, const GrapaCHAR& columnName);
+    GrapaError AddConstraint(const GrapaCHAR& tableName, const GrapaSqlConstraint& constraint);
+    GrapaError DropConstraint(const GrapaCHAR& tableName, const GrapaCHAR& constraintName);
+    GrapaError ModifyColumn(const GrapaCHAR& tableName, const GrapaCHAR& columnName, const GrapaSqlColumnDefinition& newDefinition);
+};
+```
+
+### **Summary of Metadata and Functionality Gaps**
+
+The analysis reveals **14 additional critical gaps** in metadata and functionality beyond the original 14 SQL gaps:
+
+#### **Field Metadata Gaps (6 gaps)**
+15. **Missing Field Metadata for Constraints**: No constraint metadata in `GrapaDBXField`
+16. **Missing Unique Constraint Support**: No unique constraint implementation
+17. **Missing NOT NULL Constraint Support**: No NOT NULL constraint implementation
+18. **Missing Check Constraint Support**: No check constraint implementation
+19. **Missing Default Value Support**: No default value implementation
+20. **Missing Foreign Key Support**: No foreign key implementation
+21. **Missing Auto-Increment Support**: No auto-increment implementation
+
+#### **Index Metadata Gaps (5 gaps)**
+22. **Missing Enhanced Index Metadata**: Minimal metadata in `GrapaDBXIndex`
+23. **Missing Index Statistics and Optimization**: No index statistics for query optimization
+24. **Missing Composite Index Support**: Limited to single-field indexes
+25. **Missing Partial Index Support**: No partial index implementation
+26. **Missing Index Maintenance and Rebuilding**: No index maintenance utilities
+
+#### **SQL DDL Gaps (2 gaps)**
+27. **Missing CREATE TABLE with Constraints**: No SQL CREATE TABLE with constraint syntax
+28. **Missing ALTER TABLE Support**: No ALTER TABLE implementation
+
+**Total Gaps for Full SQL Implementation: 28 gaps** (14 original + 14 metadata/functionality gaps)
+
+This comprehensive analysis shows that implementing full SQL support requires addressing not just the search functionality and SQL syntax gaps, but also significant metadata and constraint management capabilities that are currently missing from the GrapaDBX implementation.
+
+## **Implementation Priority**
+
+### **Phase 1: Foundation (Critical Prerequisites)** 🔥 **HIGHEST PRIORITY**
+1. **Fix Search Functionality Gaps**
+   - [ ] Implement `SearchDbAll()` for multiple results collection
+   - [ ] Implement `SearchDbNext()` for result iteration
+   - [ ] Create `GrapaDBXResultSet` class for result management
+   - [ ] Add enhanced index selection (`SelectBestIndex()`)
+
+### **Phase 2: SQL Grammar and Parser** 🔥 **HIGH PRIORITY**
+2. **Add SQL Grammar Rules**
+   - [ ] Add SQL statement rules to `$grapa.grc`
+   - [ ] Implement SQL execution functions in `GrapaLibRule.cpp`
+   - [ ] Create SQL parser infrastructure
+
+### **Phase 3: SQL Core Functionality** ⏳ **MEDIUM PRIORITY**
+3. **Implement Core SQL Features**
+   - [ ] SQL query optimizer
+   - [ ] SQL result set management
+   - [ ] Basic aggregation functions (COUNT, SUM, AVG, MIN, MAX)
+
+### **Phase 4: Advanced SQL Features** ⏳ **LOW PRIORITY**
+4. **Advanced SQL Capabilities**
+   - [ ] JOIN operations (INNER, LEFT, RIGHT, FULL, CROSS)
+   - [ ] Transaction support (BEGIN, COMMIT, ROLLBACK)
+   - [ ] DDL operations (CREATE, ALTER, DROP)
+   - [ ] Prepared statements for performance
+
+## **Integration Points**
+
+### **SQL → GrapaDBX Integration**
+```cpp
+// SQL SELECT would use enhanced search functionality:
+GrapaError ExecuteSqlSelect(const GrapaCHAR& sql, GrapaSqlResultSet& results)
+{
+    // Parse SQL query
+    GrapaSqlQuery query = ParseSqlQuery(sql);
+    
+    // Use enhanced search functionality
+    return SearchDbAll(query.cursor, query.table, query.fieldList, results);
+}
+```
+
+### **SQL → Unified Path System Integration**
+```grapa
+// SQL works seamlessly with unified path system:
+f = $file();
+f.cd("database://my_db");
+
+// SQL queries work on current context
+users = SELECT * FROM users WHERE active = 1;
+```
+
+## **Testing Strategy**
+
+### **Foundation Testing**
+```cpp
+// Test search functionality prerequisites
+GrapaError TestSearchFoundation() {
+    // Test multiple results collection
+    // Test result set iteration
+    // Test index optimization
+}
+```
+
+### **SQL Grammar Testing**
+```grapa
+// Test SQL grammar rules
+test_sql_grammar = op() {
+    // Test SELECT statement parsing
+    // Test WHERE clause parsing
+    // Test JOIN clause parsing
+    // Test ORDER BY parsing
+};
+```
+
+### **SQL Execution Testing**
+```cpp
+// Test SQL execution
+GrapaError TestSqlExecution() {
+    // Test SELECT query execution
+    // Test INSERT query execution
+    // Test UPDATE query execution
+    // Test DELETE query execution
+}
+```
+
+## **Performance Considerations**
+
+### **Expected Performance**
+- **Simple SELECT**: ~1-5ms (with index optimization)
+- **Complex JOIN**: ~10-50ms (depending on table sizes)
+- **Aggregation**: ~5-20ms (depending on data size)
+- **Transaction**: ~1-10ms (depending on operation count)
+
+### **Optimization Opportunities**
+- **Index-based queries**: Leverage GrapaDBX enhanced indexing
+- **Batch operations**: Use GrapaDBX batch capabilities
+- **Caching**: Implement query result caching
+- **Parallel processing**: Use Grapa's built-in parallelism
+
+## **Conclusion**
+
+The SQL implementation requires addressing **14 major gaps** across two categories:
+
+### **Critical Foundation Gaps (4 gaps)**
+These must be resolved first as they are prerequisites for SQL functionality:
+1. Multiple results collection
+2. Result set management  
+3. Search result iteration
+4. Enhanced index selection
+
+### **SQL-Specific Gaps (10 gaps)**
+These are specific to SQL implementation:
+5. SQL grammar rules
+6. SQL execution functions
+7. SQL query parser
+8. SQL query optimizer
+9. SQL result set management
+10. SQL aggregation functions
+11. SQL JOIN support
+12. SQL transaction support
+13. SQL schema management
+14. SQL prepared statements
+
+**Implementation Strategy**: Address foundation gaps first, then implement SQL grammar and parser, followed by core SQL functionality, and finally advanced SQL features.
+
+**Timeline**: Foundation gaps (Phase 1) are critical blockers and should be prioritized before any SQL implementation can begin. 
+
 ## Grammar Design
 
 ### **1. Extending the Command Grammar**

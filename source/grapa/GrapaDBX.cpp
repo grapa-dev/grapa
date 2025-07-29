@@ -783,66 +783,167 @@ GrapaError GrapaDBX::OpenTableFieldList(GrapaDBXTable& pTable, GrapaDBXFieldArra
 
 GrapaError GrapaDBX::DeleteTableField(GrapaDBXTable& pTable, u64 pFieldId)
 {
-	printf("[DEBUG] GrapaDBX::DeleteTableField: tableRef=%llu, fieldId=%llu\n", pTable.mRef, pFieldId);
-	
 	GrapaError err;
 	GrapaDBXCursor indexCursor, tableCursor;
 	u64 indexRef;
-	
-	// Check if field is used in any indexes - if so, fail (need to drop indexes first)
+
+	// Check if field is used in any indexes - if so, fail
 	indexCursor.Set(pTable.mRecRef);
 	err = GetTreeIndex(indexCursor, indexRef);
-	if (err) {
-		printf("[DEBUG] DeleteTableField: GetTreeIndex failed with error %d\n", err);
-		return err;
-	}
-	
-	if (indexRef != 0) {
-		// Check all indexes for this field
-		indexCursor.Set(indexRef);
-		err = First(indexCursor);
+	if (err) return(err);
+	if (indexRef == 0) return(-1);
+
+	indexCursor.Set(indexRef);
+	err = First(indexCursor);
+	if (!err && indexCursor.mKey == 0)
+		err = Next(indexCursor); // Skip over the DICT in the index
+
+	while (!err) {
+		GrapaDBXCursor indexFieldCursor;
+		u64 indexFieldsRef;
+		indexFieldCursor.Set(indexCursor.mValue);
+		err = GetTreeIndex(indexFieldCursor, indexFieldsRef);
+		if (indexFieldsRef) {
+			indexFieldCursor.Set(indexFieldsRef);
+			err = First(indexFieldCursor);
+			while (!err) {
+				// If field is used in any indexes, fail
+				if (indexFieldCursor.mValue == pFieldId) {
+					printf("[DEBUG] DeleteTableField: Field %llu is used in index, cannot delete\n", pFieldId);
+					return -1;
+				}
+				err = Next(indexFieldCursor);
+			}
+		}
+		err = Next(indexCursor);
 		if (!err && indexCursor.mKey == 0)
 			err = Next(indexCursor); // Skip over the DICT in the index
-		
-		while (!err) {
-			GrapaDBXCursor indexFieldCursor;
-			u64 indexFieldsRef;
-			indexFieldCursor.Set(indexCursor.mValue);
-			err = GetTreeIndex(indexFieldCursor, indexFieldsRef);
-			if (indexFieldsRef) {
-				indexFieldCursor.Set(indexFieldsRef);
-				err = First(indexFieldCursor);
-				while (!err) {
-					// If field is used in any indexes, fail
-					if (indexFieldCursor.mValue == pFieldId) {
-						printf("[DEBUG] DeleteTableField: Field %llu is used in index, cannot delete\n", pFieldId);
-						return -1;
-					}
-					err = Next(indexFieldCursor);
-				}
-			}
-			err = Next(indexCursor);
-			if (!err && indexCursor.mKey == 0)
-				err = Next(indexCursor); // Skip over the DICT in the index
-		}
 	}
+
+	// Get field information and update dictionary
+	GrapaDBXCursor tableNames;
+	GrapaDBXCursor dtField;
+	GrapaDBXField field;
+	u64 fieldCount = 0;
+	u64 fromOffset = 0, toOffset = 0;
+	u64 fieldHeadRef = 0;
+	u8 fieldType = 0;
+	u8 fieldStore = 0;
+	u64 storeTree;
+	u8 storeType;
+
+	tableNames.Set(indexRef);
+	err = Search(tableNames);
+	if (err) return(err);
+
+	err = GetTreeSize(tableNames, fieldCount);
+
+	dtField.Set(tableNames.mValue);
+	err = First(dtField);
+	while (!err) {
+		err = field.Read(this, dtField.mValue);
+		if (field.mId == 0) {
+			pTable.mDictField = field;
+			fieldHeadRef = dtField.mValue;
+		}
+		else if (field.mId == pFieldId) {
+			toOffset = field.mDictOffset;
+			fromOffset = field.mDictOffset + field.mDictSize;
+			fieldType = field.mType; // Needed for CTABLE_TREE processing
+			fieldStore = field.mStore;
+		}
+		if (fromOffset - toOffset) {
+			field.mDictOffset -= (fromOffset - toOffset);
+			field.Write(this, dtField.mValue);
+		}
+		err = Next(dtField);
+	}
+
+	if (fieldHeadRef == 0) return(-1);
 	
-	// For now, since we're using a simplified field dictionary structure,
-	// we'll just mark the field as deleted in the dictionary
-	// In a full implementation, we would:
-	// 1. Update field offsets in the dictionary
-	// 2. Adjust data in records
-	// 3. Remove the field from the dictionary structure
+	u64 totalSize = pTable.mDictField.mDictSize;
+	u64 moveSize = totalSize - fromOffset;
+	pTable.mDictField.mDictSize -= (fromOffset - toOffset);
+	pTable.mDictField.mDictOffset--;
+	pTable.mDictField.Write(this, fieldHeadRef);
 	
-	printf("[DEBUG] DeleteTableField: Field %llu marked for deletion (simplified implementation)\n", pFieldId);
-	
-	// TODO: Implement full field deletion with proper dictionary management
-	// This would involve:
-	// - Updating field offsets in the dictionary
-	// - Shifting data in records to account for deleted field
-	// - Removing the field from the dictionary structure
-	
-	return 0;
+	dtField.Set(tableNames.mValue, SDATA_ITEM, pFieldId);
+	err = Delete(dtField);
+	if (err) return(err);
+
+	u64 bytesWritten;
+
+	switch (pTable.mDictField.mTreeType) {
+		case GROUP_TREE:
+			// For GROUP tables, no data work needed
+			break;
+
+		case RTABLE_TREE:
+			// For ROW tables, bitshift all records
+			indexCursor.Set(pTable.mRecRef);
+			err = SetTreeDirty(indexCursor, true);
+
+			// Bitshift all the records
+			err = CopyDataValue(tableCursor.mValue, toOffset, tableCursor.mValue, fromOffset, moveSize, &bytesWritten);
+
+			indexCursor.Set(pTable.mRecRef);
+			err = SetTreeDirty(indexCursor, false);
+			break;
+
+		case CTABLE_TREE:
+			// For COL tables, delete the column tree
+			indexCursor.Set(pTable.mRecRef);
+			err = SetTreeDirty(indexCursor, true);
+
+			err = GetTreeStore(indexCursor, storeTree, storeType);
+			if (err) return(err);
+			if (storeTree == 0) return(-1);
+
+			switch(fieldType) {
+				case GrapaTokenType::START:
+					break;
+
+				case GrapaTokenType::ERR:
+				case GrapaTokenType::RAW:
+				case GrapaTokenType::BOOL:
+				case GrapaTokenType::INT:
+				case GrapaTokenType::FLOAT:
+				case GrapaTokenType::STR:
+				case GrapaTokenType::TIME:
+				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::TUPLE:
+				case GrapaTokenType::VECTOR:
+				case GrapaTokenType::WIDGET:
+				case GrapaTokenType::XML:
+				case GrapaTokenType::LIST:
+				case GrapaTokenType::EL:
+				case GrapaTokenType::TAG:
+				case GrapaTokenType::OP:
+				case GrapaTokenType::CODE:
+				case GrapaTokenType::TABLE:
+					switch (fieldStore) {
+						case GrapaDBXField::STORE_VAR:
+						case GrapaDBXField::STORE_PAR:
+							tableCursor.Set(storeTree, TREE_ITEM, pFieldId);
+							err = Delete(tableCursor);
+							break;
+						case GrapaDBXField::STORE_FIX:
+							tableCursor.Set(storeTree, SDATA_ITEM, pFieldId);
+							err = Delete(tableCursor);
+							break;
+					}
+					break;
+
+				default:
+					break;
+			}
+
+			indexCursor.Set(pTable.mRecRef);
+			err = SetTreeDirty(indexCursor, false);
+			break;
+	}
+
+	return(err);
 }
 
 GrapaError GrapaDBX::FlushTableFields(GrapaDBXTable& pTable)
@@ -3547,12 +3648,6 @@ GrapaError GrapaGroup2::DeleteEntry(u64 parentTree, u8 parentType, u64 pId)
 	return(0);
 }
 
-GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, const char* pFieldName, u8 pType, u8 pStore, u64 pSize, u64 pGrow)
-{
-    GrapaCHAR s(pFieldName);
-    return CreateField(parentTree, parentType, s, pType, pStore, pSize, pGrow);
-}
-
 GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pFieldName, u8 pType, u8 pStore, u64 pSize, u64 pGrow)
 {
 
@@ -3560,7 +3655,6 @@ GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 	GrapaDBXCursor cursor;
 	GrapaDBXTable parentDict;
 	GrapaDBXField dbFieldName;
-	GrapaDBXIndex dbIndexName;
 	u64 indexRef;
 	u64 fieldId;
 
@@ -3598,33 +3692,20 @@ GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 		return(err);
 	}
 
-	u64 nameId = 0;
-	err = GetNameId(parentTree, parentType, nameId);
-	if (err)
-	{
-		return(err);
-	}
-	if (nameId == 0)
-	{
-		return(-1);
-	}
-
-	GrapaDBXFieldValueArray data;
-	data.Append(this, parentDict, nameId, pFieldName, EQ_CMP);
-	err = SearchDb(cursor, parentDict, data);
+	// Check if field already exists
+	GrapaDBXField field;
+	u64 maxId;
+	err = FindField(parentTree, parentType, pFieldName, field, maxId);
 	if (!err)
 	{
+		// Field already exists
 		return(-1);
 	}
 
-	err = CreateRecord(parentDict, cursor);
-	if (err)
-	{
-		return(err);
-	}
+	// Get next available field ID
+	fieldId = maxId + 1;
 
-	fieldId = cursor.mKey;
-
+	// Create the field using CreateTableField
 	dbFieldName.Init(fieldId, pType, pStore, pSize, pGrow);
 	err = CreateTableField(parentDict, dbFieldName, pFieldName);
 	if (err)
@@ -3632,26 +3713,15 @@ GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 		return(err);
 	}
 
-	{
-		GrapaDBXFieldValueArray data2;
-		data2.Append(this, parentDict, nameId, pFieldName, EQ_CMP);
-		err = SetRecordField(cursor, data2);
-		if (err)
-		{
-			return(err);
-		}
-	}
-
 	return(0);
 }
 
 GrapaError GrapaGroup2::DeleteField(u64 parentTree, u8 parentType, GrapaCHAR& pFieldName)
 {
-
 	GrapaError err;
-	GrapaDBXCursor cursor;
 	GrapaDBXTable parentDict;
-	GrapaDBXFieldValueArray data;
+	GrapaDBXField field;
+	u64 fieldId;
 
 	if (pFieldName.mLength == 0 || pFieldName.mBytes == NULL)
 	{
@@ -3670,31 +3740,83 @@ GrapaError GrapaGroup2::DeleteField(u64 parentTree, u8 parentType, GrapaCHAR& pF
 		}
 	}
 
-	u64 nameId = 0;
-	err = GetNameId(parentTree, parentType, nameId);
+	// Find the field by name to get its ID
+	err = FindField(parentTree, parentType, pFieldName, field, fieldId);
 	if (err)
 	{
-		return(err);
-	}
-	if (nameId == 0)
-	{
-		return(-1);
-	}
-
-	data.Append(this, parentDict, nameId, pFieldName, EQ_CMP);
-	err = SearchDb(cursor, parentDict, data);
-	if (err)
-	{
+		printf("[DEBUG] DeleteField: FindField failed with error %d\n", err);
 		return(err);
 	}
 
-	err = DeleteTableField(parentDict, cursor.mKey);
+	// Delete the field using its ID
+	err = DeleteTableField(parentDict, field.mId);
 	if (err)
 	{
+		printf("[DEBUG] DeleteField: DeleteTableField failed with error %d\n", err);
 		return(err);
 	}
 
 	return(0);
+}
+
+GrapaError GrapaGroup2::ModifyField(u64 parentTree, u8 parentType, GrapaCHAR& pFieldName, u8 pNewType, u8 pNewStore, u64 pNewSize, u64 pNewGrow)
+{
+	/* 
+	 * FIELD MODIFICATION FEATURE DISABLED
+	 * 
+	 * This feature has been disabled due to incomplete implementation.
+	 * The ModifyTableField function exists but lacks critical data migration
+	 * logic for ROW and COL tables, which could lead to data corruption.
+	 * 
+	 * See maintainers/DEVELOPMENT/GRAPADBX_FIELD_MODIFICATION_DISABLED.md
+	 * for details and implementation plan.
+	 */
+	printf("[ERROR] Field modification is currently disabled for safety reasons.\n");
+	printf("[ERROR] This feature requires complete data migration implementation.\n");
+	printf("[ERROR] See maintainers/DEVELOPMENT/GRAPADBX_FIELD_MODIFICATION_DISABLED.md\n");
+	return(-1);
+
+	/* Original implementation (disabled):
+	GrapaError err;
+	GrapaDBXTable parentDict;
+	GrapaDBXField field;
+	u64 fieldId;
+
+	if (pFieldName.mLength == 0 || pFieldName.mBytes == NULL)
+	{
+		return(-1);
+	}
+
+	parentDict.mRef = parentTree;
+	parentDict.mRecRef = parentTree;
+
+	if (parentType == GROUP_TREE)
+	{
+		err = OpenTable(parentTree, 0, parentDict);
+		if (err)
+		{
+			return(err);
+		}
+	}
+
+	// Find the field by name to get its ID
+	err = FindField(parentTree, parentType, pFieldName, field, fieldId);
+	if (err)
+	{
+		printf("[DEBUG] ModifyField: FindField failed with error %d\n", err);
+		return(err);
+	}
+
+	// Modify the field using its ID
+	err = ModifyTableField(parentDict, field.mId, pNewType, pNewStore, pNewSize, pNewGrow);
+	if (err)
+	{
+		printf("[DEBUG] ModifyField: ModifyTableField failed with error %d\n", err);
+		return(err);
+	}
+
+	return(0);
+	*/
 }
 
 
@@ -5886,4 +6008,142 @@ GrapaError GrapaGroup2::SetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 	return(0);
 }
 
+GrapaError GrapaDBX::ModifyTableField(GrapaDBXTable& pTable, u64 pFieldId, u8 pNewType, u8 pNewStore, u64 pNewSize, u64 pNewGrow)
+{
+	/* 
+	 * FIELD MODIFICATION FEATURE DISABLED
+	 * 
+	 * This feature has been disabled due to incomplete implementation.
+	 * The function lacks critical data migration logic for ROW and COL tables,
+	 * which could lead to data corruption.
+	 * 
+	 * See maintainers/DEVELOPMENT/GRAPADBX_FIELD_MODIFICATION_DISABLED.md
+	 * for details and implementation plan.
+	 */
+	printf("[ERROR] ModifyTableField is currently disabled for safety reasons.\n");
+	printf("[ERROR] This feature requires complete data migration implementation.\n");
+	printf("[ERROR] See maintainers/DEVELOPMENT/GRAPADBX_FIELD_MODIFICATION_DISABLED.md\n");
+	return(-1);
 
+	/* Original implementation (disabled):
+	GrapaError err;
+	GrapaDBXCursor dtField;
+	GrapaDBXField field;
+	u64 indexRef;
+
+	// Get the current field definition
+	err = GetDataTypeRecord(pTable.mRef, indexRef);
+	if (err) return(err);
+
+	dtField.Set(indexRef, SDATA_ITEM, pFieldId);
+	err = Search(dtField);
+	if (err) return(err);
+
+	err = field.Read(this, dtField.mValue);
+	if (err) return(err);
+
+	// Store old values for data migration
+	u8 oldType = field.mType;
+	u8 oldStore = field.mStore;
+	u64 oldSize = field.mSize;
+	u64 oldDictSize = field.mDictSize;
+
+	// Update field definition
+	field.mType = pNewType;
+	field.mStore = pNewStore;
+	field.mSize = pNewSize;
+	field.mGrow = pNewGrow;
+
+	// Recalculate dict size based on new type and store
+	switch (field.mStore) {
+		case GrapaDBXField::STORE_FIX:
+			switch (field.mType) {
+				case GrapaTokenType::BOOL:
+					field.mDictSize = 1;
+					field.mSize = 1;
+					break;
+				case GrapaTokenType::INT:
+				case GrapaTokenType::FLOAT:
+				case GrapaTokenType::TIME:
+					if (field.mDictSize > 0x7FFF) field.mDictSize = 0x7FFF;
+					field.mSize = field.mDictSize;
+					if (field.mDictSize == 1);
+					else if (field.mDictSize <= 127) field.mDictSize += 1;
+					else field.mDictSize += 2;
+					break;
+				case GrapaTokenType::STR:
+					if (field.mDictSize > 0x7FFF) field.mDictSize = 0x7FFF;
+					field.mSize = field.mDictSize;
+					if (field.mDictSize <= 127) field.mDictSize += 1;
+					else field.mDictSize += 2;
+					break;
+				case GrapaTokenType::ERR:
+				case GrapaTokenType::ARRAY:
+				case GrapaTokenType::TUPLE:
+				case GrapaTokenType::VECTOR:
+				case GrapaTokenType::WIDGET:
+				case GrapaTokenType::XML:
+				case GrapaTokenType::LIST:
+				case GrapaTokenType::EL:
+				case GrapaTokenType::TAG:
+				case GrapaTokenType::OP:
+				case GrapaTokenType::CODE:
+				case GrapaTokenType::TABLE:
+				case GrapaTokenType::RAW:
+					if (field.mDictSize > 0x7FFF) field.mDictSize = 0x7FFF;
+					field.mSize = field.mDictSize;
+					if (field.mDictSize <= 127) field.mDictSize += 2;
+					else field.mDictSize += 3;
+					break;
+			}
+			break;
+		case GrapaDBXField::STORE_VAR:
+		case GrapaDBXField::STORE_PAR:
+			field.mDictSize = 8;
+			break;
+		default:
+			field.mDictSize = 0;
+			field.mSize = 0;
+			break;
+	}
+
+	// Write updated field definition
+	err = field.Write(this, dtField.mValue);
+	if (err) return(err);
+
+	// Handle data migration based on table type
+	switch (pTable.mDictField.mTreeType) {
+		case GROUP_TREE:
+			// For GROUP tables, no data migration needed
+			break;
+
+		case RTABLE_TREE:
+			// For ROW tables, migrate data if size changed
+			if (oldDictSize != field.mDictSize) {
+				// TODO: Implement data migration for ROW tables
+				// This would involve reading all records and adjusting field data
+				printf("[DEBUG] ModifyTableField: ROW table data migration not yet implemented\n");
+			}
+			break;
+
+		case CTABLE_TREE:
+			// For COL tables, handle column tree changes
+			if (oldStore != field.mStore || oldType != field.mType) {
+				// TODO: Implement column tree migration
+				// This would involve recreating the column tree with new structure
+				printf("[DEBUG] ModifyTableField: COL table data migration not yet implemented\n");
+			}
+			break;
+	}
+
+	return(0);
+	*/
+}
+
+
+
+GrapaError GrapaGroup2::CreateField(u64 parentTree, u8 parentType, const char* pFieldName, u8 pType, u8 pStore, u64 pSize, u64 pGrow)
+{
+    GrapaCHAR s(pFieldName);
+    return CreateField(parentTree, parentType, s, pType, pStore, pSize, pGrow);
+}

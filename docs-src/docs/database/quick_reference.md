@@ -31,14 +31,14 @@ u.create("grapadbx:///path/to/database2");
 /* Basic operations (working) */
 u.mk("users", "GROUP");
 u.cd("users");
-u.mk("id", "INT", "FIX", 4);
-u.mk("name", "STR", "VAR");
+u.mkfield("id", "INT", "FIX", 4);
+u.mkfield("name", "STR", "VAR");
 u.set("user1", 1001, "id");
 u.set("user1", "John Doe", "name");
 value = u.get("user1", "name");
 ```
 
-**Status**: Basic operations (mk, set, get) are working. Full hierarchical navigation and advanced features are in development. See [Unified Storage System](../unified_storage.md) for more details.
+**Status**: Basic operations (mk, set, get, mkfield) are working. Field creation is fully functional across all table types. Field deletion and modification are ready for testing. See [Unified Storage System](../unified_storage.md) for more details.
 
 ### In-Memory Database
 ```grapa

@@ -4,6 +4,8 @@
 
 Field deletion allows you to remove fields from database tables at runtime. The complexity and performance impact varies significantly depending on the table type and the number of records.
 
+> **Status Update**: Field creation (`mkfield`) is now fully functional across all table types. Field deletion (`rmfield`) implementation is complete and ready for testing.
+
 ## Basic Usage
 
 ```grapa

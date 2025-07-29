@@ -1,0 +1,115 @@
+/* Test script for field deletion and modification operations */
+
+/* Test field deletion and modification for GROUP tables */
+('=== Testing GROUP Table Field Operations ===').echo();
+
+db = $unified();
+db.create('grapadbx://test_group.dbx?type=GROUP');
+db.mk('test_group');
+
+/* Create some fields */
+db.mkfield('field1', 'STR', 'FIX', 50, 0);
+db.mkfield('field2', 'INT', 'FIX', 8, 0);
+db.mkfield('field3', 'FLOAT', 'VAR', 32, 8);
+
+/* Set some data */
+db.set('record1', 'field1', 'value1');
+db.set('record1', 'field2', '123');
+db.set('record1', 'field3', '3.14');
+
+db.set('record2', 'field1', 'value2');
+db.set('record2', 'field2', '456');
+db.set('record2', 'field3', '2.718');
+
+('Group table with data created').echo();
+db.debug();
+
+/* Test field deletion */
+('=== Testing field deletion ===').echo();
+db.rmfield('field2');
+
+('After deleting field2').echo();
+db.debug();
+
+/* Test field modification */
+('=== Testing field modification ===').echo();
+/* Note: Field modification would require a new API call */
+('Field modification not yet exposed via CLI').echo();
+
+/* Test ROW table field operations */
+('=== Testing ROW Table Field Operations ===').echo();
+
+db2 = $unified();
+db2.create('grapadbx://test_row.dbx?type=ROW');
+db2.mk('test_row');
+
+/* Create fields */
+db2.mkfield('name', 'STR', 'FIX', 100, 0);
+db2.mkfield('age', 'INT', 'FIX', 4, 0);
+db2.mkfield('salary', 'FLOAT', 'VAR', 16, 4);
+
+/* Set data */
+db2.set('person1', 'name', 'Alice');
+db2.set('person1', 'age', '30');
+db2.set('person1', 'salary', '50000.50');
+
+db2.set('person2', 'name', 'Bob');
+db2.set('person2', 'age', '25');
+db2.set('person2', 'salary', '40000.75');
+
+('ROW table with data created').echo();
+db2.debug();
+
+/* Test field deletion in ROW table */
+('=== Testing ROW table field deletion ===').echo();
+db2.rmfield('age');
+
+('After deleting age field').echo();
+db2.debug();
+
+/* Test COL table field operations */
+('=== Testing COL Table Field Operations ===').echo();
+
+db3 = $unified();
+db3.create('grapadbx://test_col.dbx?type=COL');
+db3.mk('test_col');
+
+/* Create fields */
+db3.mkfield('product', 'STR', 'FIX', 50, 0);
+db3.mkfield('price', 'FLOAT', 'FIX', 8, 0);
+db3.mkfield('quantity', 'INT', 'VAR', 4, 2);
+
+/* Set data */
+db3.set('item1', 'product', 'Laptop');
+db3.set('item1', 'price', '999.99');
+db3.set('item1', 'quantity', '5');
+
+db3.set('item2', 'product', 'Mouse');
+db3.set('item2', 'price', '29.99');
+db3.set('item2', 'quantity', '10');
+
+('COL table with data created').echo();
+db3.debug();
+
+/* Test field deletion in COL table */
+('=== Testing COL table field deletion ===').echo();
+db3.rmfield('quantity');
+
+('After deleting quantity field').echo();
+db3.debug();
+
+/* Test error conditions */
+('=== Testing Error Conditions ===').echo();
+
+/* Try to delete non-existent field */
+('Trying to delete non-existent field').echo();
+db.rmfield('nonexistent');
+
+/* Try to delete field that doesn't exist */
+('Trying to delete field from empty table').echo();
+db4 = $unified();
+db4.create('grapadbx://test_empty.dbx?type=GROUP');
+db4.mk('empty_table');
+db4.rmfield('any_field');
+
+('=== Field Operations Test Complete ===').echo(); 

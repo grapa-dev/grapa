@@ -732,10 +732,22 @@ GrapaError GrapaUnifiedLocalDatabase::FieldDelete(const GrapaCHAR& pName, const 
             return -1;
         }
         
-        // For GrapaDBX storage, use the DeleteField method
+        // For GrapaDBX storage, navigate to the table first
+        GrapaDBXTable table;
+        GrapaCHAR tableName("$");
+        GrapaError err = GrapaDBXNavigateToTable(tableName, table);
+        if (err) {
+            printf("[DEBUG] FieldDelete: GrapaDBXNavigateToTable failed with error %d\n", err);
+            return err;
+        }
+        
+        // Use the DeleteField method with the actual table reference and type
         GrapaGroup2* group2 = dynamic_cast<GrapaGroup2*>(mGrapaDBX);
         if (group2) {
-            GrapaError err = group2->DeleteField(mGrapaDBXFirstTree, mGrapaDBXRootType, (GrapaCHAR&)pField);
+            printf("[DEBUG] FieldDelete: Using table.mRef=%llu, table.mRefType=%d for DeleteField\n", 
+                   (unsigned long long)table.mRef, table.mRefType);
+            
+            err = group2->DeleteField(table.mRef, table.mRefType, (GrapaCHAR&)pField);
             if (err) {
                 printf("[DEBUG] FieldDelete: DeleteField failed with error %d\n", err);
                 return err;
@@ -795,6 +807,15 @@ GrapaError GrapaUnifiedLocalDatabase::CreateTableStructure(const GrapaCHAR& pNam
                    (char*)pName.mBytes, mGrapaDBXTableType, mGrapaDBXRootType);
             GrapaError err = group2->CreateGroup(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, mGrapaDBXTableType, newTree);
             printf("[DEBUG] CreateTableStructure: CreateGroup returned err=%d, newTree=%llu\n", err, newTree);
+            
+            // Set the current working directory to the newly created table
+            if (err == 0 && newTree > 0) {
+                mDirId = newTree;
+                mDirType = mGrapaDBXTableType;
+                printf("[DEBUG] CreateTableStructure: Set current working directory to dirId=%llu, dirType=%d\n", 
+                       (unsigned long long)mDirId, mDirType);
+            }
+            
             return err;
         } else {
             printf("[DEBUG] CreateTableStructure: mGrapaDBX is not a GrapaGroup2\n");
