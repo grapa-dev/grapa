@@ -36,7 +36,7 @@
    - All compilation errors resolved and functionality tested
 
 ## CURRENT TASK
-**INDEX DICTIONARY WRITING IMPLEMENTATION COMPLETED**
+**DumpGetItemWeight IMPLEMENTATION COMPLETED**
 
 ## What's Working
 - Dictionary type differentiation in dump output working
@@ -45,6 +45,7 @@
 - BigEndian conversion for index field data working
 - GrapaDBXIndexField Write/Read/Init methods implemented
 - CreateIndex and OpenIndex functions updated to use DITYPE_ITEM
+- DumpGetItemWeight function now reads actual weight from BTree node header
 
 ### 📋 **NEXT STEPS**
 

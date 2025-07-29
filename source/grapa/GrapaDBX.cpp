@@ -5955,10 +5955,11 @@ void GrapaDBX::DebugPrintAllIndexPointers(u64 tableRef) {
 // Debug utility methods
 GrapaError GrapaDBX::DumpGetItemWeight(GrapaCursor& cursor, u64& weight)
 {
-    // For now, return a default weight of 1
-    // This can be enhanced later to get actual weight from the cursor
-    weight = 1;
-    return(0);
+	GrapaError err;
+	GrapaBlockNodeHeader node;
+	err = node.Read(mFile, cursor.mNodeRef);
+	weight = node.weight;
+	return(err);
 }
 
 GrapaError GrapaDBX::InsertIntoIndex(u64 tableRef, u8 pValueType, u64 resId, u64 recordRef)
