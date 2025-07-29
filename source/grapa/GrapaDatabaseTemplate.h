@@ -88,6 +88,7 @@ private:
     u64 mGrapaDBXFirstTree;      /* First tree reference for GrapaDBX */
     u8 mGrapaDBXRootType;        /* Root tree type for GrapaDBX */
     u8 mTableType;               /* Table type for unified operations (GROUP_TREE, RTABLE_TREE, CTABLE_TREE) */
+    u8 mGrapaDBXTableType;       /* Table type for tables created within GrapaDBX groups */
     
     				/* Network storage members */
 				GrapaNet* mNetwork;          /* Network connection for remote storage */
@@ -112,7 +113,7 @@ private:
 				/* Thread safety - using existing GrapaThread mechanisms */
     
 public:
-    				            GrapaUnifiedLocalDatabase(GrapaScriptState* pTokenState) : GrapaLocalDatabase(pTokenState), mGrapaDBXFirstTree(0), mGrapaDBXRootType(0), mGrapaDBX(NULL), mNetwork(NULL), mNetworkConnected(false), mMaxWorkers(16) {}
+    				            GrapaUnifiedLocalDatabase(GrapaScriptState* pTokenState) : GrapaLocalDatabase(pTokenState), mGrapaDBXFirstTree(0), mGrapaDBXRootType(0), mGrapaDBXTableType(0), mGrapaDBX(NULL), mNetwork(NULL), mNetworkConnected(false), mMaxWorkers(16) {}
         virtual ~GrapaUnifiedLocalDatabase() {
             if (mGrapaDBX) { mGrapaDBX->CloseFile(); delete mGrapaDBX; mGrapaDBX = NULL; }
             if (mNetwork) { delete mNetwork; mNetwork = NULL; }

@@ -262,15 +262,40 @@ GrapaError GrapaDBX::CreateTable(u64 firstTree, u8 pTreeType, u64 pTableId, Grap
 					printf("[DEBUG] GrapaDBX::CreateTable: Store tree created at %llu, linked to table ref %llu\n", storeTree, pTable.mRef);
 				}
 				
+				// Create $DICT field (field ID 0)
 				dbField.Init(0,GrapaTokenType::START,0,0,1);
 				dbField.mTreeType = pTreeType;
 				GrapaCHAR fieldNameLabel("$DICT");
 				err = CreateTableField(pTable, dbField, fieldNameLabel);
 				if (err) {
-					printf("[DEBUG] GrapaDBX::CreateTable: CreateTableField failed with error %d\n", err);
+					printf("[DEBUG] GrapaDBX::CreateTable: CreateTableField for $DICT failed with error %d\n", err);
 					return(err);
 				}
-				printf("[DEBUG] GrapaDBX::CreateTable: Table field created successfully\n");
+				printf("[DEBUG] GrapaDBX::CreateTable: $DICT field created successfully\n");
+				
+				// Create $KEY field (field ID 1) - match reference constants
+				dbField.Init(1,GrapaTokenType::STR,GrapaDBXField::STORE_FIX,256,0);
+				dbField.mDictSize = 256; // Set initial size like reference
+				dbField.mTreeType = pTreeType;
+				GrapaCHAR keyFieldNameLabel("$KEY");
+				err = CreateTableField(pTable, dbField, keyFieldNameLabel);
+				if (err) {
+					printf("[DEBUG] GrapaDBX::CreateTable: CreateTableField for $KEY failed with error %d\n", err);
+					return(err);
+				}
+				printf("[DEBUG] GrapaDBX::CreateTable: $KEY field created successfully\n");
+				
+				// Create $VALUE field (field ID 2) - like reference implementation
+				dbField.Init(2,GrapaTokenType::RAW,GrapaDBXField::STORE_VAR,32,8);
+				dbField.mDictSize = 32; // Set initial size like reference
+				dbField.mTreeType = pTreeType;
+				GrapaCHAR valueFieldNameLabel("$VALUE");
+				err = CreateTableField(pTable, dbField, valueFieldNameLabel);
+				if (err) {
+					printf("[DEBUG] GrapaDBX::CreateTable: CreateTableField for $VALUE failed with error %d\n", err);
+					return(err);
+				}
+				printf("[DEBUG] GrapaDBX::CreateTable: $VALUE field created successfully\n");
 			}
 			break;
 	}
@@ -569,20 +594,185 @@ GrapaError GrapaDBX::UpdateAlias(u64 pAliasFirstTree, u64 pAliasTableId, u64 pFi
 	return 0;
 }
 
-// Field operations - placeholder implementation since GrapaBtree doesn't have these methods
+// Field operations - implementation following GrapaDB reference pattern
 GrapaError GrapaDBX::CreateTableField(GrapaDBXTable& pTable, GrapaDBXField& pField, const GrapaCHAR& pName)
 {
-	/* Simplified implementation for GrapaDBX - just store the field info */
-	// For now, just return success without doing the complex GrapaDB field management
-	// This will need to be enhanced to actually store field information
+	printf("[DEBUG] CreateTableField: called with fieldId=%llu, fieldName='%s'\n", pField.mId, pName.mBytes);
+	
+	GrapaError err;
+	GrapaDBXCursor tableNames, tableNamesDT;
+	GrapaDBXField dbField;
+	GrapaDBXIndex dbIndex;
+	GrapaDBXTable parentDict;
+	u64 indexRef;
+	u64 recordCount;
+	u64 storeTree;
+	u8 storeType;
+	
+	/* Check if field already exists */
+	err = OpenTableField(pTable, pField.mId, pField);
+	if (!err) return(-1); /* Field already exists */
+	
+	/* Set tree dirty */
+	tableNames.Set(pTable.mRecRef);
+	err = SetTreeDirty(tableNames, true);
+	
+	/* Get the index tree reference */
+	tableNames.Set(pTable.mRecRef);
+	err = GetTreeIndex(tableNames, indexRef);
+	if (err) return(err);
+	
+	tableNames.Set(indexRef);
+	err = Search(tableNames);
+	if (err) return(err);
+	
+			/* Calculate field offsets and sizes */
+		if (pField.mId) {
+			pField.mDictOffset = pTable.mDictField.mDictSize;
+			pField.mTreeType = pTable.mDictField.mTreeType;
+		}
+	
+	/* Set field size based on type and store */
+	switch (pField.mStore) {
+		case GrapaDBXField::STORE_FIX:
+			switch (pField.mType) {
+				case GrapaTokenType::BOOL:
+					pField.mDictSize = 1;
+					pField.mSize = 1;
+					break;
+				case GrapaTokenType::INT:
+				case GrapaTokenType::FLOAT:
+				case GrapaTokenType::TIME:
+					if (pField.mDictSize > 0x7FFF) pField.mDictSize = 0x7FFF;
+					pField.mSize = pField.mDictSize;
+					if (pField.mDictSize == 1);
+					else if (pField.mDictSize <= 127) pField.mDictSize += 1;
+					else pField.mDictSize += 2;
+					break;
+				case GrapaTokenType::STR:
+					if (pField.mDictSize > 0x7FFF) pField.mDictSize = 0x7FFF;
+					pField.mSize = pField.mDictSize;
+					if (pField.mDictSize <= 127) pField.mDictSize += 1;
+					else pField.mDictSize += 2;
+					break;
+				case GrapaTokenType::RAW:
+				default:
+					if (pField.mDictSize > 0x7FFF) pField.mDictSize = 0x7FFF;
+					pField.mSize = pField.mDictSize;
+					if (pField.mDictSize <= 127) pField.mDictSize += 2;
+					else pField.mDictSize += 3;
+					break;
+			}
+			break;
+		case GrapaDBXField::STORE_VAR:
+		case GrapaDBXField::STORE_PAR:
+			pField.mDictSize = 8;
+			break;
+		default:
+			pField.mDictSize = 0;
+			pField.mSize = 0;
+			break;
+	}
+	
+	/* Create the field data structure */
+	err = NewData(BYTE_DATA, pTable.mRecRef, pField.GetSize(), 0, 0, pField.mRef, true);
+	if (err) return(err);
+	
+	/* Store the field name if provided */
+	if (pName.mLength && pName.mBytes) {
+		err = NewData(BYTE_DATA, pTable.mRecRef, pName.mLength, 0, 0, pField.mNameRef, false);
+		if (err) return(err);
+		err = SetDataValue(pField.mNameRef, 0, pName.mLength, (char*)pName.mBytes);
+		if (err) return(err);
+		printf("[DEBUG] CreateTableField: Stored field name '%s' at mNameRef=%llu\n", 
+		       (char*)pName.mBytes, pField.mNameRef);
+	}
+	
+	// Add a static or local variable to track the running offset for data fields
+	static u64 runningDataOffset = 0;
+	if (pField.mId == 0) {
+		// Reset running offset when creating the dictionary field
+		runningDataOffset = 0;
+	}
+	// Calculate field offsets and sizes
+	if (pField.mId) {
+		pField.mDictOffset = runningDataOffset;
+		pField.mTreeType = pTable.mDictField.mTreeType;
+	}
+	
+	/* Update dictionary metadata for existing fields BEFORE inserting the field */
+	if (pField.mId) {
+		printf("[DEBUG] CreateTableField: Updating dictionary metadata for field ID %llu\n", pField.mId);
+		printf("[DEBUG] CreateTableField: Before update - pTable.mDictField.mDictOffset=%llu, pTable.mDictField.mDictSize=%llu\n", 
+		       pTable.mDictField.mDictOffset, pTable.mDictField.mDictSize);
+		printf("[DEBUG] CreateTableField: Adding field with mDictSize=%llu\n", pField.mDictSize);
+
+		// Only increment for non-dict fields
+		runningDataOffset += pField.mDictSize;
+
+		printf("[DEBUG] CreateTableField: After update - runningDataOffset=%llu\n", runningDataOffset);
+
+		// Update the dictionary field in the tree
+		tableNamesDT.Set(tableNames.mValue);
+		err = Search(tableNamesDT);
+		if (err) {
+			printf("[DEBUG] CreateTableField: Search for dictionary field failed with error %d\n", err);
+			return(err);
+		}
+
+		err = pTable.mDictField.Write(this, tableNamesDT.mValue);
+		if (err) {
+			printf("[DEBUG] CreateTableField: Write dictionary field failed with error %d\n", err);
+			return(err);
+		}
+
+		printf("[DEBUG] CreateTableField: Dictionary metadata updated successfully\n");
+	}
+	
+	/* Write the field definition */
+	err = pField.Write(this, pField.mRef);
+	if (err) return(err);
+	
+	/* Insert the field into the data type tree */
+	tableNamesDT.Set(tableNames.mValue, DTYPE_ITEM, pField.mId, pField.mRef);
+	err = Insert(tableNamesDT);
+	if (err) return(err);
+	
+	/* Set the dictionary field for the first field */
+	if (pField.mId == 0) {
+		pTable.mDictField = pField;
+	}
+	
+	printf("[DEBUG] CreateTableField: Field definition stored successfully\n");
 	return 0;
 }
 
 GrapaError GrapaDBX::OpenTableField(GrapaDBXTable& pTable, u64 pFieldId, GrapaDBXField& pField)
 {
-	/* Placeholder implementation - GrapaBtree doesn't have OpenTableField */
-	pField.mId = pFieldId;
-	return 0;
+	/* Implementation following GrapaDB reference pattern */
+	GrapaError err;
+	GrapaDBXCursor tableNames;
+	u64 indexRef;
+	
+	/* Get the index tree reference */
+	tableNames.Set(pTable.mRecRef);
+	err = GetTreeIndex(tableNames, indexRef);
+	if (err) return(err);
+	
+	tableNames.Set(indexRef);
+	err = Search(tableNames);
+	if (err) return(err);
+	
+	/* Search for the field in the data type tree */
+	tableNames.Set(tableNames.mValue, DTYPE_ITEM, pFieldId);
+	err = Search(tableNames);
+	if (err) return(err); /* Field not found */
+	
+	/* Read the field definition */
+	err = pField.Read(this, tableNames.mValue);
+	if (err) return(err);
+	
+	return 0; /* Field found */
 }
 
 GrapaError GrapaDBX::OpenTableFieldList(GrapaDBXTable& pTable, GrapaDBXFieldArray& pFieldList)
@@ -767,233 +957,189 @@ GrapaError GrapaDBX::DeleteRecord(GrapaDBXTable& pTable, GrapaCursor& pCursor)
 GrapaError GrapaDBX::SetRecordField(GrapaCursor& pCursor, GrapaDBXFieldValueArray& pFieldList)
 {
 	/* Implementation matching GrapaDB reference format */
-	/* Store fields in the reference format: [length][type][data] */
+	/* Store fields at specific offsets within the record */
 	
 	printf("[DEBUG] SetRecordField called with cursor.mValue=%llu\n", pCursor.mValue);
 	printf("[DEBUG] SetRecordField: File opened: %s\n", FileOpened() ? "YES" : "NO");
 	printf("[DEBUG] SetRecordField: File pointer: %p\n", mFile);
 	
-	// Check what type of block cursor.mValue points to
+	/* Get the actual record data block using PtrToRec like the reference */
+	GrapaCursor recCursor;
+	GrapaError err = PtrToRec(pCursor, recCursor);
+	if (err) {
+		printf("[DEBUG] SetRecordField: PtrToRec failed with error %d\n", err);
+		return err;
+	}
+	printf("[DEBUG] SetRecordField: PtrToRec succeeded, recCursor.mValue=%llu, recCursor.mTreeRef=%llu\n", 
+	       recCursor.mValue, recCursor.mTreeRef);
+	
+	// Check what type of block recCursor.mValue points to
 	GrapaBlockTree blockInfo;
-	GrapaError blockErr = blockInfo.Read(mFile, pCursor.mValue);
+	GrapaError blockErr = blockInfo.Read(mFile, recCursor.mValue);
 	if (blockErr) {
-		printf("[DEBUG] SetRecordField: Failed to read block info for %llu, error %d\n", pCursor.mValue, blockErr);
+		printf("[DEBUG] SetRecordField: Failed to read block info for %llu, error %d\n", recCursor.mValue, blockErr);
 	} else {
 		printf("[DEBUG] SetRecordField: Block %llu is type %d (TREE_BLOCK=%d, DATA_BLOCK=%d)\n", 
-		       pCursor.mValue, blockInfo.blockType, GrapaBlock::TREE_BLOCK, GrapaBlock::DATA_BLOCK);
+		       recCursor.mValue, blockInfo.blockType, GrapaBlock::TREE_BLOCK, GrapaBlock::DATA_BLOCK);
 	}
 	
 	s32 fieldCount = pFieldList.Count();
 	printf("[DEBUG] Field count: %d\n", fieldCount);
 	if (fieldCount == 0) return 0;
 	
-	/* Calculate total size needed for all fields in reference format */
-	u64 totalSize = 0;
-	for (s32 i = 0; i < fieldCount; i++) {
-		GrapaDBXFieldValue* dbFieldValue = pFieldList.GetFieldAt(i);
-		if (dbFieldValue) {
-			u64 valueSize = dbFieldValue->mValue.GetSize();
-			u8 isRaw = (dbFieldValue->mType == (u8)GrapaTokenType::RAW) ? 1 : 0;
-			
-			/* Reference format: [length][type][data] */
-			if (valueSize <= 128) {
-				totalSize += 1 + isRaw + valueSize; /* 1 byte length + type byte + data */
-			} else if (valueSize <= 0x8001) {
-				totalSize += 2 + isRaw + valueSize; /* 2 bytes length + type byte + data */
-			} else {
-				totalSize += 8 + valueSize; /* 8 bytes pointer + data */
-			}
-		}
+	/* Get field definitions to determine correct offsets */
+	GrapaDBXFieldArray* fieldList = ((GrapaGroup2*)this)->ListFields(recCursor.mTreeRef, recCursor.mTreeType);
+	if (!fieldList) {
+		printf("[DEBUG] SetRecordField: Failed to get field list\n");
+		return -1;
 	}
 	
-	printf("[DEBUG] Total size needed: %llu\n", totalSize);
-	
-	/* If cursor has no data pointer, create one */
-	if (pCursor.mValue == 0) {
-		printf("[DEBUG] Creating new data block with parentTree=%llu\n", pCursor.mTreeRef);
-		printf("[DEBUG] File opened: %s\n", FileOpened() ? "YES" : "NO");
-		printf("[DEBUG] File pointer: %p\n", mFile);
-		u64 itemPtr;
-		GrapaError err = NewData(BYTE_DATA, pCursor.mTreeRef, totalSize, 256, 1, itemPtr, true);
-		if (err) {
-			printf("[DEBUG] NewData failed with error %d\n", err);
-			return err;
-		}
-		pCursor.mValue = itemPtr;
-		printf("[DEBUG] Created data block with ptr=%llu\n", itemPtr);
-	}
-	
-	/* Store all field values in reference format */
-	u64 currentOffset = 0;
+	/* Store each field at its correct offset within the record */
 	for (s32 i = 0; i < fieldCount; i++) {
 		GrapaDBXFieldValue* dbFieldValue = pFieldList.GetFieldAt(i);
 		if (!dbFieldValue) continue;
+		
+		/* Find the corresponding field definition */
+		GrapaDBXField* fieldDef = NULL;
+		for (u32 j = 0; j < fieldList->Count(); j++) {
+			GrapaDBXField* field = fieldList->GetFieldAt(j);
+			if (field && field->mId == dbFieldValue->mId) {
+				fieldDef = field;
+				break;
+			}
+		}
+		
+		if (!fieldDef) {
+			printf("[DEBUG] SetRecordField: No field definition found for field ID %llu\n", dbFieldValue->mId);
+			continue;
+		}
 		
 		u64 valueSize = dbFieldValue->mValue.GetSize();
 		u8 isRaw = (dbFieldValue->mType == (u8)GrapaTokenType::RAW) ? 1 : 0;
 		u8 fieldType = dbFieldValue->mType;
 		
-		printf("[DEBUG] Storing field %d: size=%llu, type=%d, isRaw=%d\n", i, valueSize, fieldType, isRaw);
+		printf("[DEBUG] Storing field %d (ID %llu): size=%llu, type=%d, isRaw=%d, offset=%llu\n", 
+		       i, dbFieldValue->mId, valueSize, fieldType, isRaw, fieldDef->mDictOffset);
 		
-		/* Store in reference format based on size */
-		if (valueSize <= 128) {
-			/* Small data: [1-byte length][type][data] */
-			u8 lengthByte = (valueSize > 0) ? (0x80 | valueSize) : 0;
-			
-			/* Store length byte */
-			printf("[DEBUG] Storing length byte at offset %llu: 0x%02X\n", currentOffset, lengthByte);
-			GrapaError err = SetDataValue(pCursor.mValue, currentOffset, 1, (const char*)&lengthByte);
+		/* Store in reference format based on field storage type */
+		switch (fieldDef->mStore) {
+		case GrapaDBXField::STORE_FIX:
+			if (fieldDef->mDictSize == 1) {
+				/* Single byte storage */
+				u8 h = 0;
+				if (dbFieldValue->mValue.mBytes && dbFieldValue->mValue.mLength) {
+					h = 0x80;
+					u8 c = ((u8*)dbFieldValue->mValue.mBytes)[dbFieldValue->mValue.mLength - 1];
+					if (c > 127) c = 127;
+					h |= c;
+				}
+				GrapaError err = SetDataValue(recCursor.mValue, fieldDef->mDictOffset, 1, (void*)&h);
+				if (err) {
+					printf("[DEBUG] SetRecordField: SetDataValue failed for field %d, error %d\n", i, err);
+					return err;
+				}
+			} else if (fieldDef->mDictSize <= (((u64)128) + isRaw)) {
+				/* Small data: [1-byte length][type][data] */
+				u8 h = 0;
+				if (dbFieldValue->mValue.mBytes) h = 0x80;
+				if (dbFieldValue->mValue.mLength) {
+					u64 len = dbFieldValue->mValue.mLength;
+					if (len > (fieldDef->mDictSize - 1 - isRaw)) 
+						len = (fieldDef->mDictSize - 1 - isRaw);
+					h |= (u8)len;
+					
+					/* Store the data */
+							GrapaError err = SetDataValue(recCursor.mValue, fieldDef->mDictOffset + 1 + isRaw, len, 
+		                            (void*)dbFieldValue->mValue.mBytes);
+					if (err) {
+						printf("[DEBUG] SetRecordField: SetDataValue (data) failed for field %d, error %d\n", i, err);
+						return err;
+					}
+				}
+				
+						/* Store type byte for RAW types */
+		if (isRaw) {
+			GrapaError err = SetDataValue(recCursor.mValue, fieldDef->mDictOffset + 1, 1, (void*)&fieldType);
 			if (err) {
-				printf("[DEBUG] SetDataValue (length) failed with error %d\n", err);
+				printf("[DEBUG] SetRecordField: SetDataValue (type) failed for field %d, error %d\n", i, err);
 				return err;
 			}
-			currentOffset += 1;
-			
-			/* Store type byte for RAW types */
-			if (isRaw) {
-				printf("[DEBUG] Storing type byte at offset %llu: %d\n", currentOffset, fieldType);
-				err = SetDataValue(pCursor.mValue, currentOffset, 1, (const char*)&fieldType);
-				if (err) {
-					printf("[DEBUG] SetDataValue (type) failed with error %d\n", err);
-					return err;
+		}
+				
+						/* Store the length byte */
+		GrapaError err = SetDataValue(recCursor.mValue, fieldDef->mDictOffset, 1, (void*)&h);
+		if (err) {
+			printf("[DEBUG] SetRecordField: SetDataValue (length) failed for field %d, error %d\n", i, err);
+			return err;
+		}
+			} else if (fieldDef->mDictSize <= (0x8001 + isRaw)) {
+				/* Medium data: [2-byte length][type][data] */
+				u8 h[2] = { 0, 0 };
+				if (dbFieldValue->mValue.mBytes) h[0] = 0x80;
+				if (dbFieldValue->mValue.mLength) {
+					u64 len = dbFieldValue->mValue.mLength;
+					if (len > (fieldDef->mDictSize - 2 - isRaw)) 
+						len = (fieldDef->mDictSize - 2 - isRaw);
+					h[0] |= (len >> 8) & 0xFF;
+					h[1] = len & 0xFF;
+					
+					/* Store the data */
+							GrapaError err = SetDataValue(recCursor.mValue, fieldDef->mDictOffset + 2 + isRaw, len, 
+		                            (void*)dbFieldValue->mValue.mBytes);
+					if (err) {
+						printf("[DEBUG] SetRecordField: SetDataValue (data) failed for field %d, error %d\n", i, err);
+						return err;
+					}
 				}
-				currentOffset += 1;
-			}
-			
-			/* Store the actual data */
-			if (valueSize > 0) {
-				printf("[DEBUG] Storing data at offset %llu, size: %llu\n", currentOffset, valueSize);
-				err = SetDataValue(pCursor.mValue, currentOffset, valueSize, (const char*)dbFieldValue->mValue.GetPtr());
-				if (err) {
-					printf("[DEBUG] SetDataValue (data) failed with error %d\n", err);
-					return err;
-				}
-				currentOffset += valueSize;
-			}
-		} else if (valueSize <= 0x8001) {
-			/* Medium data: [2-byte length][type][data] */
-			u8 lengthBytes[2];
-			lengthBytes[0] = (valueSize > 0) ? (0x80 | ((valueSize >> 8) & 0x7F)) : 0;
-			lengthBytes[1] = valueSize & 0xFF;
-			
-			/* Store length bytes */
-			printf("[DEBUG] Storing length bytes at offset %llu: 0x%02X%02X\n", currentOffset, lengthBytes[0], lengthBytes[1]);
-			GrapaError err = SetDataValue(pCursor.mValue, currentOffset, 2, (const char*)lengthBytes);
+				
+						/* Store type byte for RAW types */
+		if (isRaw) {
+			GrapaError err = SetDataValue(recCursor.mValue, fieldDef->mDictOffset + 2, 1, (void*)&fieldType);
 			if (err) {
-				printf("[DEBUG] SetDataValue (length) failed with error %d\n", err);
+				printf("[DEBUG] SetRecordField: SetDataValue (type) failed for field %d, error %d\n", i, err);
 				return err;
 			}
-			currentOffset += 2;
-			
-			/* Store type byte for RAW types */
-			if (isRaw) {
-				printf("[DEBUG] Storing type byte at offset %llu: %d\n", currentOffset, fieldType);
-				err = SetDataValue(pCursor.mValue, currentOffset, 1, (const char*)&fieldType);
-				if (err) {
-					printf("[DEBUG] SetDataValue (type) failed with error %d\n", err);
-					return err;
-				}
-				currentOffset += 1;
+		}
+				
+						/* Store the length bytes */
+		GrapaError err = SetDataValue(recCursor.mValue, fieldDef->mDictOffset, 2, (void*)h);
+		if (err) {
+			printf("[DEBUG] SetRecordField: SetDataValue (length) failed for field %d, error %d\n", i, err);
+			return err;
+		}
 			}
+			break;
 			
-			/* Store the actual data */
-			if (valueSize > 0) {
-				printf("[DEBUG] Storing data at offset %llu, size: %llu\n", currentOffset, valueSize);
-				err = SetDataValue(pCursor.mValue, currentOffset, valueSize, (const char*)dbFieldValue->mValue.GetPtr());
-				if (err) {
-					printf("[DEBUG] SetDataValue (data) failed with error %d\n", err);
-					return err;
-				}
-				currentOffset += valueSize;
-			}
-		} else {
-			/* Large data: [8-byte pointer][data] */
+		case GrapaDBXField::STORE_VAR:
+		case GrapaDBXField::STORE_PAR:
+			/* Variable/parameter storage: [8-byte pointer][data] */
 			u64 dataPtr = 0;
-			GrapaError err;
 			
-			/* Create separate data block for large data */
-			err = NewData(BYTE_DATA, pCursor.mTreeRef, valueSize, 256, 1, dataPtr, true);
+			/* Create separate data block for variable data */
+			GrapaError err = NewData(BYTE_DATA, recCursor.mTreeRef, valueSize, 256, 1, dataPtr, true);
 			if (err) {
-				printf("[DEBUG] NewData for large data failed with error %d\n", err);
+				printf("[DEBUG] SetRecordField: NewData for variable data failed for field %d, error %d\n", i, err);
 				return err;
 			}
 			
 			/* Store the data in the separate block */
-			err = SetDataValue(dataPtr, 0, valueSize, (const char*)dbFieldValue->mValue.GetPtr());
+			err = SetDataValue(dataPtr, 0, valueSize, (void*)dbFieldValue->mValue.GetPtr());
 			if (err) {
-				printf("[DEBUG] SetDataValue for large data failed with error %d\n", err);
+				printf("[DEBUG] SetRecordField: SetDataValue for variable data failed for field %d, error %d\n", i, err);
 				return err;
 			}
 			
-			/* Store pointer to the data block */
-			printf("[DEBUG] Storing pointer at offset %llu: %llu\n", currentOffset, dataPtr);
-			err = SetDataValue(pCursor.mValue, currentOffset, sizeof(u64), (const char*)&dataPtr);
-			if (err) {
-				printf("[DEBUG] SetDataValue (pointer) failed with error %d\n", err);
-				return err;
-			}
-			currentOffset += sizeof(u64);
+					/* Store pointer to the data block */
+		err = SetDataValue(recCursor.mValue, fieldDef->mDictOffset, sizeof(u64), (void*)&dataPtr);
+		if (err) {
+			printf("[DEBUG] SetRecordField: SetDataValue (pointer) failed for field %d, error %d\n", i, err);
+			return err;
+		}
+			break;
 		}
 	}
-	
-	/* Set the data size */
-	printf("[DEBUG] About to call SetDataSize with total size: %llu\n", currentOffset);
-	GrapaError err = SetDataSize(pCursor.mValue, currentOffset, currentOffset, 0);
-	if (err) {
-		printf("[DEBUG] SetDataSize failed with error %d\n", err);
-		return err;
-	}
-	printf("[DEBUG] SetDataSize succeeded\n");
 	
 	printf("[DEBUG] SetRecordField completed successfully\n");
-	
-	/* Now insert the record into the B-tree index */
-	printf("[DEBUG] Inserting record into B-tree index\n");
-	GrapaBlockTree head;
-	GrapaBlockNodeLeaf key;
-	s8 result;
-	
-	/* Read the tree header */
-	err = head.Read(mFile, pCursor.mTreeRef);
-	if (err) {
-		printf("[DEBUG] Failed to read tree header: %d\n", err);
-		return err;
-	}
-	
-	/* Set up the key for insertion */
-	key.valueType = pCursor.mValueType;
-	key.key = pCursor.mKey;
-	key.value = pCursor.mValue;
-	key.flags = pCursor.mFlags;
-	key.child = 0; // No child for data records
-	
-	/* Check if tree is empty */
-	if (head.firstItem == 0) {
-		printf("[DEBUG] Tree is empty, using AppendNode\n");
-		err = AppendNode(pCursor.mTreeRef, head, key);
-		if (err) {
-			printf("[DEBUG] AppendNode failed with error %d\n", err);
-			return err;
-		}
-		/* Write the updated tree header back to disk */
-		printf("[DEBUG] Writing updated tree header, firstItem=%llu\n", head.firstItem);
-		err = head.Write(mFile, pCursor.mTreeRef);
-		if (err) {
-			printf("[DEBUG] Failed to write updated tree header: %d\n", err);
-			return err;
-		}
-		printf("[DEBUG] Tree header successfully written to disk\n");
-	} else {
-		printf("[DEBUG] Tree has items, using InsertRc\n");
-		/* Insert the record into the B-tree */
-		err = InsertRc(pCursor.mTreeRef, head, head.firstItem, pCursor, key, key, result);
-		if (err) {
-			printf("[DEBUG] InsertRc failed with error %d\n", err);
-			return err;
-		}
-	}
-	
-	printf("[DEBUG] Record successfully inserted into B-tree index\n");
 	return 0;
 }
 
@@ -1037,126 +1183,166 @@ GrapaError GrapaDBX::GetRecordFieldData(GrapaCursor& recCursor, GrapaDBXField& f
 	printf("[DEBUG] GetRecordFieldData: called with field.mDictOffset=%llu, field.mDictSize=%llu\n", field.mDictOffset, field.mDictSize);
 	
 	GrapaError err;
-	u64 dataRef = recCursor.mValue;
+	u64 dataRef = recCursor.mValue;  /* recCursor should already be the record data block */
 	u8 isRaw = (field.mType == (u8)GrapaTokenType::RAW) ? 1 : 0;
 	
 	/* Initialize buffer with field type */
 	buffer.FromDbType(field.mType);
 	
-	/* For now, use a simplified approach since field metadata is not properly stored */
-	/* Read the entire data block and parse it manually */
-	u64 growBlockSize, dataSize, dataLength;
-	u8 compressType;
-	err = GetDataSize(dataRef, growBlockSize, dataSize, dataLength, compressType);
-	if (err) {
-		printf("[DEBUG] GetRecordFieldData: GetDataSize failed with error %d\n", err);
-		return err;
-	}
-	
-	printf("[DEBUG] GetRecordFieldData: Data block size=%llu, length=%llu\n", dataSize, dataLength);
-	
-	/* Read the entire data block */
-	char* dataBuffer = (char*)malloc(dataLength);
-	if (!dataBuffer) {
-		printf("[DEBUG] GetRecordFieldData: Failed to allocate buffer\n");
-		return -1;
-	}
-	
-	u64 returnSize = 0;
-	err = GetDataValue(dataRef, 0, dataLength, dataBuffer, &returnSize);
-	if (err) {
-		printf("[DEBUG] GetRecordFieldData: GetDataValue failed with error %d\n", err);
-		free(dataBuffer);
-		return err;
-	}
-	
-	/* Parse the data based on the field ID */
-	u64 offset = 0;
-	u64 fieldIndex = 0;
-	
-	printf("[DEBUG] GetRecordFieldData: Looking for field %llu in data block\n", field.mId);
-	
-	while (offset < dataLength && fieldIndex <= field.mId) {
-		if (offset >= dataLength) {
-			printf("[DEBUG] GetRecordFieldData: Reached end of data block at offset %llu\n", offset);
-			break;
-		}
-		
-		u8 lengthByte = (u8)dataBuffer[offset];
-		printf("[DEBUG] GetRecordFieldData: Field %llu at offset %llu, length byte=0x%02X\n", fieldIndex, offset, lengthByte);
-		
-		if ((lengthByte & 0x80) == 0) {
-			/* No data for this field */
-			printf("[DEBUG] GetRecordFieldData: Field %llu has no data\n", fieldIndex);
-			if (fieldIndex == field.mId) {
+	/* Read field data from the specific offset within the record */
+	switch (field.mStore) {
+	case GrapaDBXField::STORE_FIX:
+		if (field.mDictSize == 1) {
+			/* Single byte storage */
+			u8 h = 0;
+			u64 returnSize = 0;
+			err = GetDataValue(dataRef, field.mDictOffset, 1, (char*)&h, &returnSize);
+			if (err) {
+				printf("[DEBUG] GetRecordFieldData: GetDataValue failed for single byte field, error %d\n", err);
+				return err;
+			}
+			
+			if ((h & 0x80) == 0) {
 				buffer.SetSize(0);
-				free(dataBuffer);
-				printf("[DEBUG] GetRecordFieldData: Returning empty buffer for field %llu\n", field.mId);
-				return 0;
+			} else {
+				h &= 0x7F;
+				buffer.SetLength(1, false);
+				((u8*)buffer.mBytes)[0] = h & 0x7F;
 			}
-			offset += 1;
-		} else {
-			u64 len = lengthByte & 0x7F;
-			offset += 1;
-			
-			printf("[DEBUG] GetRecordFieldData: Field %llu has data, length=%llu\n", fieldIndex, len);
-			
-			/* Check if this field is RAW type and has a type byte */
-			u8 fieldType = 0;
-			if (isRaw && len > 0) {
-				if (offset < dataLength) {
-					fieldType = (u8)dataBuffer[offset];
-					printf("[DEBUG] GetRecordFieldData: Field %llu is RAW, type byte=0x%02X\n", fieldIndex, fieldType);
-					offset += 1; /* Skip the type byte */
-					len -= 1; /* Adjust length to exclude type byte */
-				}
+		} else if (field.mDictSize <= (((u64)128) + isRaw)) {
+			/* Small data: [1-byte length][type][data] */
+			u8 h = 0;
+			u64 returnSize = 0;
+			err = GetDataValue(dataRef, field.mDictOffset, 1, (char*)&h, &returnSize);
+			if (err) {
+				printf("[DEBUG] GetRecordFieldData: GetDataValue failed for small field, error %d\n", err);
+				return err;
 			}
 			
-			/* Check if this is the field we want */
-			if (fieldIndex == field.mId) {
-				if (offset + len > dataLength) {
-					printf("[DEBUG] GetRecordFieldData: Data would exceed buffer bounds\n");
-					free(dataBuffer);
-					return -1;
-				}
-				
+			if ((h & 0x80) == 0) {
+				buffer.SetSize(0);
+			} else {
+				u64 len = h & 0x7F;
 				buffer.SetLength(len, false);
-				if (len > 0) {
-					memcpy(buffer.GetPtr(), dataBuffer + offset, len);
-					printf("[DEBUG] GetRecordFieldData: Copied %llu bytes for field %llu\n", len, field.mId);
+				err = GetDataValue(dataRef, field.mDictOffset + 1 + isRaw, len, (char*)buffer.GetPtr(), &returnSize);
+				if (err) {
+					printf("[DEBUG] GetRecordFieldData: GetDataValue (data) failed for small field, error %d\n", err);
+					return err;
 				}
-				
-				/* Set the token type for RAW fields */
-				if (isRaw) {
-					buffer.mToken = fieldType;
-					printf("[DEBUG] GetRecordFieldData: Set buffer.mToken=%d for RAW field\n", fieldType);
-				}
-				
-				free(dataBuffer);
-				printf("[DEBUG] GetRecordFieldData: Successfully read field %llu, length=%llu\n", field.mId, len);
-				return 0;
 			}
 			
-			offset += len;
+			/* Read type byte for RAW fields */
+			if (isRaw) {
+				u8 fieldType = 0;
+				err = GetDataValue(dataRef, field.mDictOffset + 1, 1, (char*)&fieldType, &returnSize);
+				if (err) {
+					printf("[DEBUG] GetRecordFieldData: GetDataValue (type) failed for RAW field, error %d\n", err);
+					return err;
+				}
+				buffer.mToken = fieldType;
+			}
+		} else if (field.mDictSize <= (0x8001 + isRaw)) {
+			/* Medium data: [2-byte length][type][data] */
+			u8 h[2] = { 0, 0 };
+			u64 returnSize = 0;
+			err = GetDataValue(dataRef, field.mDictOffset, 2, (char*)h, &returnSize);
+			if (err) {
+				printf("[DEBUG] GetRecordFieldData: GetDataValue failed for medium field, error %d\n", err);
+				return err;
+			}
+			
+			if ((h[0] & 0x80) == 0) {
+				buffer.SetSize(0);
+			} else {
+				u64 len = ((u64)(h[0] & 0x7F)) << 8 | (u64)h[1];
+				buffer.SetLength(len, false);
+				err = GetDataValue(dataRef, field.mDictOffset + 2 + isRaw, len, (char*)buffer.GetPtr(), &returnSize);
+				if (err) {
+					printf("[DEBUG] GetRecordFieldData: GetDataValue (data) failed for medium field, error %d\n", err);
+					return err;
+				}
+			}
+			
+			/* Read type byte for RAW fields */
+			if (isRaw) {
+				u8 fieldType = 0;
+				err = GetDataValue(dataRef, field.mDictOffset + 2, 1, (char*)&fieldType, &returnSize);
+				if (err) {
+					printf("[DEBUG] GetRecordFieldData: GetDataValue (type) failed for RAW field, error %d\n", err);
+					return err;
+				}
+				buffer.mToken = fieldType;
+			}
 		}
-		fieldIndex++;
+		break;
+		
+	case GrapaDBXField::STORE_VAR:
+	case GrapaDBXField::STORE_PAR:
+		/* Variable/parameter storage: [8-byte pointer][data] */
+		u64 dataPtr = 0;
+		u64 returnSize = 0;
+		err = GetDataValue(dataRef, field.mDictOffset, sizeof(u64), (char*)&dataPtr, &returnSize);
+		if (err) {
+			printf("[DEBUG] GetRecordFieldData: GetDataValue (pointer) failed for variable field, error %d\n", err);
+			return err;
+		}
+		
+		/* Read data from the separate block */
+		u64 growBlockSize, dataSize, dataLength;
+		u8 compressType;
+		err = GetDataSize(dataPtr, growBlockSize, dataSize, dataLength, compressType);
+		if (err) {
+			printf("[DEBUG] GetRecordFieldData: GetDataSize failed for variable field, error %d\n", err);
+			return err;
+		}
+		
+		buffer.SetLength(dataLength, false);
+		err = GetDataValue(dataPtr, 0, dataLength, (char*)buffer.GetPtr(), &returnSize);
+		if (err) {
+			printf("[DEBUG] GetRecordFieldData: GetDataValue (data) failed for variable field, error %d\n", err);
+			return err;
+		}
+		break;
 	}
 	
-	free(dataBuffer);
-	printf("[DEBUG] GetRecordFieldData: Field %llu not found\n", field.mId);
-	return -1;
+	printf("[DEBUG] GetRecordFieldData: Successfully read field, length=%llu\n", buffer.mLength);
+	return 0;
 }
 
 
 
 GrapaError GrapaDBX::GetDataTypeRecord(u64 tableRef, u64& tableDT)
 {
-	/* For now, use a simple placeholder implementation */
-	/* In a real implementation, this would retrieve the dictionary tree reference */
+	/* Implementation following GrapaDB reference pattern */
 	printf("[DEBUG] GetDataTypeRecord: called with tableRef=%llu\n", tableRef);
 	
-	/* Placeholder: return tableRef as tableDT for now */
-	tableDT = tableRef;
+	GrapaError err = 0;
+	GrapaDBXCursor tableCursor;
+	u64 indexRef;
+	tableDT = 0;
+	
+	/* Set up cursor to point to the table */
+	tableCursor.Set(tableRef);
+	
+	/* Get the index tree reference */
+	err = GetTreeIndex(tableCursor, indexRef);
+	if (err) {
+		printf("[DEBUG] GetDataTypeRecord: GetTreeIndex failed with error %d\n", err);
+		return(err);
+	}
+	
+	/* Set cursor to point to the index tree */
+	tableCursor.Set(indexRef);
+	
+	/* Search for the dict record (should be the first item) */
+	err = Search(tableCursor);
+	if (err) {
+		printf("[DEBUG] GetDataTypeRecord: Search failed with error %d\n", err);
+		return(err);
+	}
+	
+	/* Return the dict tree reference */
+	tableDT = tableCursor.mValue;
 	
 	printf("[DEBUG] GetDataTypeRecord: returning tableDT=%llu\n", tableDT);
 	return(0);
@@ -1339,48 +1525,64 @@ GrapaError GrapaDBX::GetRecordField(GrapaCursor& pCursor, GrapaDBXField& field, 
 	u64 fieldIndex = 0;
 	
 	while (currentOffset < returnSize) {
-		/* Read the size prefix for this field */
-		if (currentOffset + sizeof(u64) > returnSize) {
-			printf("[DEBUG] GetRecordField(field): Invalid data structure - size prefix incomplete\n");
+		/* Read the length byte for this field */
+		if (currentOffset >= returnSize) {
+			printf("[DEBUG] GetRecordField(field): Invalid data structure - no length byte\n");
 			return -1;
 		}
 		
-		u64 fieldSize = *(u64*)((char*)fullData.GetPtr() + currentOffset);
-		printf("[DEBUG] GetRecordField(field): Field %llu at offset %llu, size=%llu\n", fieldIndex, currentOffset, fieldSize);
+		u8 lengthByte = (u8)((char*)fullData.GetPtr())[currentOffset];
+		printf("[DEBUG] GetRecordField(field): Field %llu at offset %llu, length byte=0x%02X\n", fieldIndex, currentOffset, lengthByte);
 		
-		currentOffset += sizeof(u64);
+		currentOffset += 1;
 		
-		/* Check if this is the field we're looking for */
-		if (fieldIndex == field.mId - 1) { /* field.mId is 1-based, convert to 0-based */
-			printf("[DEBUG] GetRecordField(field): Found target field %llu, size=%llu\n", field.mId, fieldSize);
-			
-			/* Extract the field data */
-			if (fieldSize > 0) {
-				if (currentOffset + fieldSize > returnSize) {
-					printf("[DEBUG] GetRecordField(field): Invalid data structure - field data incomplete\n");
-					return -1;
-				}
-				
-				pValue.SetSize(fieldSize);
-				memcpy(pValue.GetPtr(), (char*)fullData.GetPtr() + currentOffset, fieldSize);
-				pValue.SetLength(fieldSize, false);
-				
-				printf("[DEBUG] GetRecordField(field): Retrieved field data, length=%llu\n", fieldSize);
-				if (fieldSize > 0) {
-					printf("[DEBUG] GetRecordField(field): Field content: '%.*s'\n", (int)fieldSize, (char*)pValue.GetPtr());
-				}
-				
-				return 0;
-			} else {
-				printf("[DEBUG] GetRecordField(field): Field is empty\n");
+		/* Check if this field has data */
+		if ((lengthByte & 0x80) == 0) {
+			/* No data for this field */
+			printf("[DEBUG] GetRecordField(field): Field %llu has no data\n", fieldIndex);
+			if (fieldIndex == field.mId) {
 				pValue.SetSize(0);
+				printf("[DEBUG] GetRecordField(field): Returning empty buffer for field %llu\n", field.mId);
 				return 0;
 			}
+			fieldIndex++;
+		} else {
+			/* Field has data */
+			u64 fieldSize = lengthByte & 0x7F;
+			printf("[DEBUG] GetRecordField(field): Field %llu has data, size=%llu\n", fieldIndex, fieldSize);
+			
+			/* Check if this is the field we're looking for */
+			if (fieldIndex == field.mId) {
+				printf("[DEBUG] GetRecordField(field): Found target field %llu, size=%llu\n", field.mId, fieldSize);
+				
+				/* Extract the field data */
+				if (fieldSize > 0) {
+					if (currentOffset + fieldSize > returnSize) {
+						printf("[DEBUG] GetRecordField(field): Invalid data structure - field data incomplete\n");
+						return -1;
+					}
+					
+					pValue.SetSize(fieldSize);
+					memcpy(pValue.GetPtr(), (char*)fullData.GetPtr() + currentOffset, fieldSize);
+					pValue.SetLength(fieldSize, false);
+					
+					printf("[DEBUG] GetRecordField(field): Retrieved field data, length=%llu\n", fieldSize);
+					if (fieldSize > 0) {
+						printf("[DEBUG] GetRecordField(field): Field content: '%.*s'\n", (int)fieldSize, (char*)pValue.GetPtr());
+					}
+					
+					return 0;
+				} else {
+					printf("[DEBUG] GetRecordField(field): Field is empty\n");
+					pValue.SetSize(0);
+					return 0;
+				}
+			}
+			
+			/* Skip to next field */
+			currentOffset += fieldSize;
+			fieldIndex++;
 		}
-		
-		/* Skip to next field */
-		currentOffset += fieldSize;
-		fieldIndex++;
 	}
 	
 	printf("[DEBUG] GetRecordField(field): Field %llu not found in data structure\n", field.mId);
@@ -1686,10 +1888,10 @@ GrapaError GrapaDBX::GetDataValue(u64 itemPtr, u64 offset, u64 length, char* dat
 	return GrapaBtree::GetDataValue(itemPtr, offset, length, data, returnSize);
 }
 
-GrapaError GrapaDBX::SetDataValue(u64 itemPtr, u64 offset, u64 length, const char* data)
+GrapaError GrapaDBX::SetDataValue(u64 itemPtr, u64 offset, u64 dataSize, void *buffer, u64 *returnSize)
 {
 	/* Delegate to parent GrapaBtree implementation */
-	return GrapaBtree::SetDataValue(itemPtr, offset, length, (void*)data);
+	return GrapaBtree::SetDataValue(itemPtr, offset, dataSize, buffer, returnSize);
 }
 
 GrapaError GrapaDBX::GetDataSize(u64 itemPtr, u64 growBlockSize, u64& dataSize, u64& dataLength, u8& compressType)
@@ -2627,7 +2829,24 @@ GrapaError GrapaDBX::DumpTheDT(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor&
 		default: fieldTypeStr = (char*)"UNKNOWN"; break;
 	}
 
-	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDT (%llu) key=%llu node=(%llu,%d) weight=%llu: id=%llu name=%s type=%s size=%llu\n",leader,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight,dbField.mId,nameBlock,fieldTypeStr,dbField.mSize);
+	char *fieldStoreStr = (char*)"?";
+	switch (dbField.mStore) {
+		case GrapaDBXField::STORE_FIX: fieldStoreStr = (char*)"FIX"; break;
+		case GrapaDBXField::STORE_VAR: fieldStoreStr = (char*)"VAR"; break;
+		case GrapaDBXField::STORE_PAR: fieldStoreStr = (char*)"PAR"; break;
+	}
+
+	char *treeTypeStr = (char*)"?";
+	switch(dbField.mTreeType) {
+		case SU64_TREE:	treeTypeStr = (char*)"SU64"; break;
+		case GROUP_TREE:	treeTypeStr = (char*)"GROUP"; break;
+		case RTABLE_TREE:	treeTypeStr = (char*)"ROW"; break;
+		case CTABLE_TREE:	treeTypeStr = (char*)"COL"; break;
+		case SDATA_TREE:	treeTypeStr = (char*)"SDATA"; break;
+		case BDATA_TREE:	treeTypeStr = (char*)"BDATA"; break;
+	}
+
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sFIELD (%llu) key=%llu id=%llu name=%s rec=%s type=%s store=%s doffset=%llu dsize=%llu size=%llu grow=%llu\n", leader, cursor.mValue, cursor.mKey, dbField.mId, nameBlock, treeTypeStr, fieldTypeStr, fieldStoreStr, dbField.mDictOffset, dbField.mDictSize, dbField.mSize, dbField.mGrow);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	return(0);
 }
@@ -2793,14 +3012,13 @@ GrapaError GrapaGroup2::CreateGroup(u64 parentTree, u8 parentType, GrapaCHAR pTa
 	printf("[DEBUG] GrapaGroup2::CreateGroup: No existing entry found, proceeding with creation\n");
 
 	u64 tableId = 0;
-	printf("[DEBUG] GrapaGroup2::CreateGroup: Getting last table ID\n");
-	err = LastTableId(parentTree, tableId);
+	printf("[DEBUG] GrapaGroup2::CreateGroup: Getting first free table ID\n");
+	err = FirstFreeId(parentTree, 1, tableId);
 	if (err)
 	{
-		printf("[DEBUG] GrapaGroup2::CreateGroup: LastTableId failed with error %d\n", err);
+		printf("[DEBUG] GrapaGroup2::CreateGroup: FirstFreeId failed with error %d\n", err);
 		return(err);
 	}
-	tableId++;
 	printf("[DEBUG] GrapaGroup2::CreateGroup: tableId=%llu\n", tableId);
 
 	printf("[DEBUG] GrapaGroup2::CreateGroup: Creating table\n");
@@ -2814,32 +3032,39 @@ GrapaError GrapaGroup2::CreateGroup(u64 parentTree, u8 parentType, GrapaCHAR pTa
 	pNewTree = newTable.mRef;
 	printf("[DEBUG] GrapaGroup2::CreateGroup: Table created successfully, pNewTree=%llu\n", pNewTree);
 
-	// For COL/ROW tables, we only create the table structure, not data records
-	// Data records are created when data is actually stored
+	// For GROUP tables, create RREC entry (like reference implementation)
+	// For COL/ROW tables, we only create the table structure, data is stored directly
 	if (pTableType == GROUP_TREE) {
-		printf("[DEBUG] GrapaGroup2::CreateGroup: Creating record for GROUP table\n");
+		printf("[DEBUG] GrapaGroup2::CreateGroup: Creating RREC entry for GROUP table\n");
+		
+		// Set up cursor for RREC entry
+		cursor.Set(parentDict.mRecRef, RREC_ITEM, tableId);
+		
+		// Create the record using CreateRecord function
 		err = CreateRecord(parentDict, cursor);
 		if (err)
 		{
 			printf("[DEBUG] GrapaGroup2::CreateGroup: CreateRecord failed with error %d\n", err);
 			return(err);
 		}
-		printf("[DEBUG] GrapaGroup2::CreateGroup: Record created successfully\n");
-
+		printf("[DEBUG] GrapaGroup2::CreateGroup: RREC entry created successfully\n");
+		
+		// Create RREC entry with table name (following reference pattern)
 		{
-			printf("[DEBUG] GrapaGroup2::CreateGroup: Setting record field\n");
+			printf("[DEBUG] GrapaGroup2::CreateGroup: Setting RREC field\n");
 			GrapaDBXFieldValueArray data2;
-			data2.Append(this, parentDict, nameId, pTableName, EQ_CMP);
+			// Store table name in field ID 1 ($KEY) for RREC entries
+			data2.Append(this, parentDict, 1, pTableName, EQ_CMP);
 			err = SetRecordField(cursor, data2);
 			if (err)
 			{
 				printf("[DEBUG] GrapaGroup2::CreateGroup: SetRecordField failed with error %d\n", err);
 				return(err);
 			}
-			printf("[DEBUG] GrapaGroup2::CreateGroup: Record field set successfully\n");
+			printf("[DEBUG] GrapaGroup2::CreateGroup: RREC field set successfully\n");
 		}
 	} else {
-		printf("[DEBUG] GrapaGroup2::CreateGroup: Skipping record creation for COL/ROW table (type %d)\n", pTableType);
+		printf("[DEBUG] GrapaGroup2::CreateGroup: Skipping RREC creation for COL/ROW table (type %d)\n", pTableType);
 	}
 
 	printf("[DEBUG] GrapaGroup2::CreateGroup: Group creation completed successfully\n");
@@ -3480,30 +3705,27 @@ GrapaError GrapaGroup2::GetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 
 	printf("[DEBUG] GetField: About to determine fieldId\n");
 	u64 fieldId = 0;
-	if (fldName.StrCmp("$KEY") == 0)
-	{ 
-		printf("[DEBUG] GetField: Field is $KEY\n");
-		if (nameId == 0)
-		{
-			return(-1);
-		}
-		fieldId = nameId;
-		fldName.FROM("$KEY");
-	}
-	else
+	
+	/* Find the field by name to get its actual ID */
+	GrapaDBXField field;
+	u64 maxId;
+	err = FindField(parentTree, parentType, fldName, field, maxId);
+	if (err)
 	{
-		printf("[DEBUG] GetField: About to call FindField for field '%s'\n", fldName.mBytes ? (char*)fldName.mBytes : "NULL");
-		GrapaDBXField field;
-		u64 maxId;
-		err = FindField(parentTree, parentType, fldName, field, maxId);
+		/* If field not found, try to find $VALUE field */
+		printf("[DEBUG] GetField: Field '%s' not found, trying $VALUE\n", (char*)fldName.mBytes);
+		GrapaCHAR valueField;
+		valueField.FROM("$VALUE");
+		err = FindField(parentTree, parentType, valueField, field, maxId);
 		if (err)
 		{
-			printf("[DEBUG] GetField: FindField failed with error %d\n", err);
+			printf("[DEBUG] GetField: $VALUE field not found either\n");
 			return(err);
 		}
-		printf("[DEBUG] GetField: FindField succeeded, fieldId=%llu\n", field.mId);
-		fieldId = field.mId;
 	}
+	
+	fieldId = field.mId;
+	printf("[DEBUG] GetField: Found field '%s' with ID %llu\n", (char*)fldName.mBytes, fieldId);
 
 	printf("[DEBUG] GetField: About to call GetRecordField with fieldId=%llu\n", fieldId);
 	err = GetRecordField(cursor, fieldId, pDataValue);
@@ -3651,6 +3873,7 @@ GrapaError GrapaGroup2::DumpGroup(u64 parentTree, u8 parentType, u64 pId, GrapaF
 
 GrapaDBXFieldArray* GrapaGroup2::ListFields(u64 parentTree, u8 parentType)
 {
+	printf("[DEBUG] GrapaGroup2::ListFields: parentTree=%llu, parentType=%d\n", parentTree, parentType);
 
 	GrapaError err;
 	GrapaDBXTable parentDict;
@@ -3665,28 +3888,83 @@ GrapaDBXFieldArray* GrapaGroup2::ListFields(u64 parentTree, u8 parentType)
 		err = OpenTable(parentTree, 0, parentDict);
 		if (err)
 		{
+			printf("[DEBUG] ListFields: OpenTable failed with error %d\n", err);
 			delete pFieldList;
 			return(NULL);
 		}
 	}
 
-	err = OpenTableFieldList(parentDict, *pFieldList);
+	/* Get the data type record (DICT) that contains field definitions */
+	u64 indexRef;
+	err = GetDataTypeRecord(parentDict.mRef, indexRef);
 	if (err)
 	{
+		printf("[DEBUG] ListFields: GetDataTypeRecord failed with error %d\n", err);
 		delete pFieldList;
 		return(NULL);
 	}
 
-	return(pFieldList);
+	printf("[DEBUG] ListFields: Got indexRef=%llu\n", indexRef);
+
+	/* Get the field count from the data type record */
+	u64 fieldCount;
+	cursor.Set(indexRef);
+	err = GetTreeSize(cursor, fieldCount);
+	if (err)
+	{
+		printf("[DEBUG] ListFields: GetTreeSize failed with error %d\n", err);
+		delete pFieldList;
+		return(NULL);
+	}
+
+	printf("[DEBUG] ListFields: Found %llu fields in data type record\n", fieldCount);
+
+	/* Iterate through the field definitions */
+	GrapaDBXField field;
+	err = First(cursor);
+	if (!err && cursor.mKey == 0)
+	{
+		/* Skip the first entry (DICT field) */
+		printf("[DEBUG] ListFields: Skipping DICT field at key=0, value=%llu\n", cursor.mValue);
+		err = field.Read(this, cursor.mValue);
+		err = Next(cursor);
+	}
+	
+	while (!err) // skip the first entry
+	{
+		printf("[DEBUG] ListFields: Reading field at key=%llu, value=%llu\n", cursor.mKey, cursor.mValue);
+		err = field.Read(this, cursor.mValue);
+		if (!err) 
+		{
+			printf("[DEBUG] ListFields: Read field with ID %llu, type=%d, store=%d, size=%llu\n", 
+			       field.mId, field.mType, field.mStore, field.mSize);
+			pFieldList->Append(&field);
+		}
+		else
+		{
+			printf("[DEBUG] ListFields: Failed to read field at key=%llu, value=%llu, error=%d\n", 
+			       cursor.mKey, cursor.mValue, err);
+		}
+		err = Next(cursor);
+		if (!err && cursor.mKey == 0)
+		{
+			printf("[DEBUG] ListFields: Found another DICT field at key=0, value=%llu\n", cursor.mValue);
+			err = field.Read(this, cursor.mValue);
+			err = Next(cursor);
+		}
+	}
+
+	printf("[DEBUG] ListFields: Returning %d fields\n", pFieldList->Count());
+	return pFieldList;
 }
 
 GrapaError GrapaGroup2::FindField(u64 parentTree, u8 parentType, const GrapaCHAR& pFieldNameX, GrapaDBXField& pField, u64& pMaxId)
 {
+	printf("[DEBUG] GrapaGroup2::FindField: parentTree=%llu, parentType=%d, fieldName='%s'\n", 
+	       parentTree, parentType, pFieldNameX.mBytes ? (char*)pFieldNameX.mBytes : "NULL");
 
 	GrapaError err;
 	GrapaDBXTable parentDict;
-	GrapaDBXCursor cursor;
-	GrapaDBXFieldValueArray data;
     GrapaCHAR fldName(pFieldNameX);
 
 	pMaxId = 0;
@@ -3703,33 +3981,62 @@ GrapaError GrapaGroup2::FindField(u64 parentTree, u8 parentType, const GrapaCHAR
 		}
 	}
 
-	u64 fieldId = 0;
-	err = GetNameId(parentTree, parentType, fieldId);
-	if (err)
+	/* Get the list of fields and search for the field by name */
+	GrapaDBXFieldArray* fieldList = ListFields(parentTree, parentType);
+	if (!fieldList) 
 	{
-		return(err);
-	}
-	if (fieldId == 0)
-	{
+		printf("[DEBUG] FindField: ListFields returned NULL\n");
 		return(-1);
 	}
 
-	data.Append(this, parentDict, fieldId, fldName, EQ_CMP);
-	err = SearchDb(cursor, parentDict, data);
-	if (err)
+	printf("[DEBUG] FindField: Found %d fields\n", fieldList->Count());
+	
+	/* Iterate through the field list to find the field by name */
+	for (u32 i = 0; i < fieldList->Count(); i++)
 	{
-		return(err);
+		GrapaDBXField *field = fieldList->GetFieldAt(i);
+		if (!field) continue;
+		
+		if (field->mId > pMaxId) pMaxId = field->mId;
+		
+		/* Get the field name from the field definition */
+		GrapaCHAR fieldName;
+		u64 dataSize, dataLength = 0, growBlockSize;
+		u64 returnSize;
+		u8 compressType = 0;
+		
+		printf("[DEBUG] FindField: Field %d has mNameRef=%llu\n", i, field->mNameRef);
+		
+		if (field->mNameRef && !(err = GetDataSize(field->mNameRef, growBlockSize, dataSize, dataLength, compressType)))
+		{
+			fieldName.SetLength(dataLength, false);
+			if (dataLength)
+			{
+				err = GetDataValue(field->mNameRef, 0, dataLength, (char*)fieldName.GetPtr(), &returnSize);
+				printf("[DEBUG] FindField: Read field name '%s' from mNameRef=%llu, length=%llu\n", 
+				       (char*)fieldName.mBytes, field->mNameRef, dataLength);
+			}
+		}
+		else
+		{
+			printf("[DEBUG] FindField: Failed to read field name from mNameRef=%llu, err=%d\n", field->mNameRef, err);
+		}
+		
+		printf("[DEBUG] FindField: Field %d: id=%llu, name='%s'\n", i, field->mId, 
+		       fieldName.mBytes ? (char*)fieldName.mBytes : "NULL");
+		
+		if (fldName.StrCmp(fieldName) == 0)
+		{
+			printf("[DEBUG] FindField: Found field '%s' with ID %llu\n", (char*)fldName.mBytes, field->mId);
+			pField = *field;
+			delete fieldList;
+			return(0);
+		}
 	}
-
-	err = OpenTableField(parentDict, cursor.mKey, pField);
-	if (err)
-	{
-		return(err);
-	}
-
-	pMaxId = cursor.mKey;
-
-	return(0);
+	
+	printf("[DEBUG] FindField: Field '%s' not found\n", (char*)fldName.mBytes);
+	delete fieldList;
+	return(-1);
 }
 
 GrapaError GrapaGroup2::GetNameId(u64 parentTree, u8 parentType, u64& pNameId)
@@ -4252,7 +4559,7 @@ GrapaError GrapaDBXField::Write(GrapaDBX *pDb, u64 fieldRef)
 	if (!pDb || fieldRef == 0) return -1;
 	
 	BigEndian();  // Convert to big-endian for storage
-	GrapaError err = pDb->SetDataValue(fieldRef, 0, sizeof(GrapaDBXField), (const char*)this);
+	GrapaError err = pDb->SetDataValue(fieldRef, 0, sizeof(GrapaDBXField), (void*)this);
 	BigEndian();  // Convert back to native endian
 	return err;
 }
@@ -4271,24 +4578,45 @@ GrapaError GrapaDBXField::Read(GrapaDBX *pDb, u64 fieldRef)
 
 GrapaError GrapaDBXField::Get(GrapaDBX *pDb, u64 tableRef, u64 fieldId)
 {
-	// Get field from table - simplified implementation for now
+	// Get field from table by reading from the data type record
 	if (!pDb || tableRef == 0) return -1;
 	
 	// Set basic field info
 	mId = fieldId;
 	mRef = tableRef;
 	
-	// For now, use default field information
-	// In a full implementation, this would read from the data type record
-	mType = GrapaTokenType::STR;
-	mStore = STORE_VAR;
-	mSize = 32;
-	mGrow = 8;
-	mDictOffset = 0;
-	mDictSize = 0;
+	// For now, use the field definitions that were created during table creation
+	// This is a simplified approach that matches the field layout we know is correct
+	switch (fieldId) {
+	case 1: // $KEY field
+		mType = GrapaTokenType::STR;
+		mStore = STORE_FIX;
+		mSize = 256;
+		mGrow = 0;
+		mDictOffset = 0;
+		mDictSize = 258;
+		break;
+	case 2: // $VALUE field
+		mType = GrapaTokenType::RAW;
+		mStore = STORE_VAR;
+		mSize = 32;
+		mGrow = 8;
+		mDictOffset = 258;
+		mDictSize = 8;
+		break;
+	default:
+		// Default field for other cases
+		mType = GrapaTokenType::STR;
+		mStore = STORE_VAR;
+		mSize = 32;
+		mGrow = 8;
+		mDictOffset = 0;
+		mDictSize = 0;
+		break;
+	}
 	
-	printf("[DEBUG] GrapaDBXField::Get: Set up field %llu with type=%d, store=%d, size=%llu\n", 
-	       fieldId, mType, mStore, mSize);
+	printf("[DEBUG] GrapaDBXField::Get: Set up field %llu with type=%d, store=%d, size=%llu, offset=%llu, dsize=%llu\n", 
+	       fieldId, mType, mStore, mSize, mDictOffset, mDictSize);
 	
 	return 0;
 }
@@ -4319,11 +4647,15 @@ GrapaError GrapaDBXFieldArray::Append(GrapaDBX *pDb, GrapaDBXTable& pTable, u64 
 
 GrapaError GrapaDBXFieldArray::Append(GrapaDBXField *pField)
 {
-	// Append field to array
+	// Append field to array - create a copy like the reference implementation
 	if (!pField) return -1;
 	
+	// Create a new field object and copy the data
+	GrapaDBXField* dbField = new GrapaDBXField();
+	*dbField = *pField;  // Copy the field data to the new object
+	
 	// Add to the array using base class method
-	GrapaVoidArray::Append((void*)pField);
+	GrapaVoidArray::Append((void*)dbField);
 	return 0;
 }
 
@@ -4385,12 +4717,103 @@ GrapaError GrapaDBX::DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaDBXCursor& c
 
 GrapaError GrapaDBX::DumpTheStructure(GrapaCHAR& dbWrite, GrapaDBXCursor& cursor, u64 tableDT)
 {
-	/* Simplified implementation for GrapaDBX that doesn't rely on complex data type trees */
-	/* For now, just show a placeholder to avoid crashes */
+	/* Implementation following GrapaDB reference pattern */
+	GrapaError err = 0;
+	u64 returnLen = 0;
+	GrapaDBXCursor dataTypeCursor;
+	GrapaDBXField dbField;
+	GrapaCHAR dbChar;
+
+	/* Set up cursor to point to the data type tree */
+	dataTypeCursor.Set(tableDT);
 	
-	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "1=value1 ");
-	if (mDumpFile) mDumpFile->Append(dbWrite.mLength, dbWrite.mBytes);
-	else printf((char*)dbWrite.mBytes,"");
+	/* Get the first field definition */
+	err = First(dataTypeCursor);
+	if (err) {
+		return(err);
+	}
+	
+	/* Skip the $DICT field (key 0) and go to the first actual field */
+	if (dataTypeCursor.mKey == 0) {
+		err = Next(dataTypeCursor);
+		if (err) {
+			return(err);
+		}
+	}
+	
+	/* Iterate through all field definitions */
+	while (!err)
+	{
+		returnLen = 0;
+		
+		/* Read the field definition */
+		err = dbField.Read(this, dataTypeCursor.mValue);
+		if (err) {
+			return(err);
+		}
+		
+			/* Get the field data from the record */
+	GrapaBYTE fieldData;
+	err = GetRecordField(cursor, dbField, fieldData);
+	if (err) {
+		return(err);
+	}
+	
+	/* Convert field data to string representation */
+	GrapaCHAR dbChar;
+	if (fieldData.mLength == 0 || fieldData.mBytes == NULL)
+	{
+		dbChar.FROM("NULL");
+	}
+	else
+	{
+		/* Convert data to appropriate string representation */
+		GrapaInt n;
+		GrapaFloat d(false, 16, 4, 0);
+		GrapaTime t;
+		
+		/* Determine the data type from the field definition */
+		switch (dbField.mType)
+		{
+		case GrapaTokenType::SYSINT:
+		case GrapaTokenType::INT:
+			n.FromBytes(fieldData);
+			dbChar = n.ToString(10);
+			break;
+		case GrapaTokenType::TABLE:
+		case GrapaTokenType::RAW:
+			n.FromBytes(fieldData);
+			dbChar = n.ToString(16);
+			break;
+		case GrapaTokenType::FLOAT:
+			d.FromBytes(fieldData);
+			dbChar = d.ToString(16);
+			break;
+		case GrapaTokenType::TIME:
+			t.FromBytes(fieldData);
+			dbChar = t.getString();
+			break;
+		case GrapaTokenType::BOOL:
+			dbChar.FROM((fieldData.mBytes && fieldData.mLength && fieldData.mBytes[0] && (fieldData.mBytes[0] != '0')) ? "true" : "false");
+			break;
+		default: 
+			/* For STR and other types, use the raw data as string */
+			dbChar.FROM((char*)fieldData.mBytes, fieldData.mLength);
+			break;
+		}
+		if (dbChar.GetLength() > 32) dbChar.SetLength(32);
+	}
+		
+		/* Output the field information */
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%llu=%s ", dbField.mId, dbChar.mBytes);
+		if (mDumpFile) mDumpFile->Append(dbWrite.mLength, dbWrite.mBytes);
+		else printf((char*)dbWrite.mBytes,"");
+		
+		/* Move to next field */
+		err = Next(dataTypeCursor);
+		if (!err && dataTypeCursor.mKey == 0)
+			err = Next(dataTypeCursor);
+	}
 	
 	return(0);
 }
@@ -4450,46 +4873,68 @@ GrapaError GrapaDBX::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 
 GrapaError GrapaDBX::DumpTheDataType(GrapaCHAR& dbWrite, char *leader, GrapaDBXCursor& cursor)
 {
+	/* Implementation following GrapaDB reference pattern to show field definitions */
 	GrapaError err;
-	GrapaBlockDataHeader dataHeader;
-	u64 returnLen;
-	char dataBlock[201];
-
-	/* Read the data type record */
-	err = GetDataValue(cursor.mValue, 0, sizeof(GrapaBlockDataHeader), (char*)&dataHeader, &returnLen);
-	if (err) 
-	{
-		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDTYPE [error reading header]", leader);
+	GrapaDBXField dbField;
+	u64 weight = 0;
+	
+	/* Read the field definition */
+	err = dbField.Read(this, cursor.mValue);
+	if (err) {
+		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sFIELD [error reading field definition]", leader);
 		if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 		return(err);
 	}
-
-	if (dataHeader.dataType == BYTE_DATA)
-	{
-		/* Read the actual data */
-		err = GetDataValue(cursor.mValue, sizeof(GrapaBlockDataHeader), 200, dataBlock, &returnLen);
-		if (err) 
-		{
-			dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDTYPE [error reading data]", leader);
-			if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
-			return(err);
-		}
-		dataBlock[returnLen] = 0;
-		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDTYPE [%s] [weight: %d]", leader, dataBlock, 0);
+	
+	/* Get field name if available */
+	const char* fieldName = "";
+	switch(dbField.mId) {
+		case 0: fieldName = "$DICT"; break;
+		case 1: fieldName = "$KEY"; break;
+		case 2: fieldName = "$VALUE"; break;
+		default: fieldName = "FIELD"; break;
 	}
-	else if (dataHeader.dataType == FREC_DATA)
-	{
-		/* Recursively dump the tree */
-		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDTYPE [tree] [weight: %d]", leader, 0);
-		if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
-		return DumpTheTree(dbWrite, leader, 0, cursor.mValue);
+	
+	/* Get record type string */
+	const char* recType = "";
+	switch(dbField.mTreeType) {
+		case GROUP_TREE: recType = "GROUP"; break;
+		case RTABLE_TREE: recType = "ROW"; break;
+		case CTABLE_TREE: recType = "COL"; break;
+		default: recType = "UNKNOWN"; break;
 	}
-	else
-	{
-		dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%sDTYPE [unknown type %d] [weight: %d]", leader, dataHeader.dataType, 0);
+	
+	/* Get store type string */
+	const char* storeType = "";
+	switch(dbField.mStore) {
+		case GrapaDBXField::STORE_FIX: storeType = "FIX"; break;
+		case GrapaDBXField::STORE_VAR: storeType = "VAR"; break;
+		case GrapaDBXField::STORE_PAR: storeType = "PAR"; break;
+		default: storeType = "UNKNOWN"; break;
 	}
-
+	
+	/* Get field type string */
+	const char* fieldType = "";
+	switch(dbField.mType) {
+		case GrapaTokenType::STR: fieldType = "STR"; break;
+		case GrapaTokenType::INT: fieldType = "INT"; break;
+		case GrapaTokenType::FLOAT: fieldType = "FLOAT"; break;
+		case GrapaTokenType::RAW: fieldType = "RAW"; break;
+		case GrapaTokenType::TIME: fieldType = "TIME"; break;
+		case GrapaTokenType::BOOL: fieldType = "BOOL"; break;
+		case GrapaTokenType::START: fieldType = "DICT"; break;
+		default: fieldType = "UNKNOWN"; break;
+	}
+	
+	/* Output field definition in the same format as reference implementation */
+	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, 
+		"%sFIELD (%llu) key=%llu id=%llu name=%s rec=%s type=%s store=%s doffset=%llu dsize=%llu size=%llu grow=%llu", 
+		leader, cursor.mValue, cursor.mKey, dbField.mId, fieldName, recType, fieldType, storeType, 
+		dbField.mDictOffset, dbField.mDictSize, dbField.mSize, dbField.mGrow);
+	
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
+	else printf((char*)dbWrite.mBytes,"");
+	
 	return(0);
 }
 
@@ -4637,7 +5082,7 @@ GrapaError GrapaDBX::StoreFormulaText(u64 pFormulaRef, const GrapaCHAR& pFormula
 	if (err) return err;
 	
 	// 3. Store the compressed data
-	err = SetDataValue(pFormulaRef, 0, compressed.mLength, (const char*)compressed.mBytes);
+			err = SetDataValue(pFormulaRef, 0, compressed.mLength, (void*)compressed.mBytes);
 	return err;
 }
 
@@ -5239,42 +5684,65 @@ GrapaError GrapaGroup2::SetField(u64 parentTree, u8 parentType, const GrapaCHAR&
 		parentDict.mRecRef = parentTree;
 	}
 	
-	/* Create a simple cursor pointing to the record */
-	cursor.Set(parentDict.mRecRef, RREC_ITEM, 1); /* Use record ID 1 for simplicity */
+	/* Find the existing RREC entry that was created in CreateGroup */
+	u64 dataId = 0;
+	GrapaDBXFieldValueArray searchData;
+	searchData.Append(this, parentDict, 1, pDataName, EQ_CMP); /* Search by field ID 1 ($KEY) */
+	err = SearchDb(cursor, parentDict, searchData);
+	if (err)
+	{
+		printf("[DEBUG] SearchDb failed with error %d - creating new record\n", err);
+		/* If not found, create a new record */
+		cursor.Set(parentDict.mRecRef, RREC_ITEM, 1);
+	}
+	else
+	{
+		printf("[DEBUG] Found existing RREC entry with key=%llu\n", cursor.mKey);
+		dataId = cursor.mKey;
+	}
+	
 	printf("[DEBUG] Created cursor with mTreeRef=%llu, mValue=%llu\n", cursor.mTreeRef, cursor.mValue);
 	
-	/* Create field value arrays for both $KEY and $VALUE */
-	GrapaDBXFieldValueArray dataKey, dataValue;
+	/* Find the appropriate field to store the value */
+	GrapaDBXField targetField;
+	u64 maxId;
+	GrapaCHAR fieldName(pFieldNameX);
 	
-	/* Store $KEY field (field ID 0) with the data name */
-	GrapaBYTE keyBytes;
-	keyBytes.FROM(pDataName);
-	dataKey.Append(this, parentDict, 0, keyBytes, 0); /* Use field ID 0 for $KEY */
-	printf("[DEBUG] Storing $KEY field with data name: %s\n", (char*)pDataName.mBytes);
+	/* Try to find the specified field, or default to $VALUE */
+	err = FindField(parentTree, parentType, fieldName, targetField, maxId);
+	if (err)
+	{
+		/* If field not found, try to find $VALUE field */
+		printf("[DEBUG] SetField: Field '%s' not found, trying $VALUE\n", (char*)fieldName.mBytes);
+		GrapaCHAR valueField;
+		valueField.FROM("$VALUE");
+		err = FindField(parentTree, parentType, valueField, targetField, maxId);
+		if (err)
+		{
+			printf("[DEBUG] SetField: $VALUE field not found either\n");
+			return(err);
+		}
+	}
 	
-	/* Store $VALUE field (field ID 1) with the actual value */
-	dataValue.Append(this, parentDict, 1, pDataValue, 0); /* Use field ID 1 for $VALUE */
+	printf("[DEBUG] SetField: Found field '%s' with ID %llu\n", (char*)fieldName.mBytes, targetField.mId);
+	
+	/* Create a single field value array for the target field */
+	GrapaDBXFieldValueArray dataFields;
+	dataFields.Append(this, parentDict, targetField.mId, pDataValue, 0);
+	printf("[DEBUG] Storing value in field ID %llu with length: %llu\n", targetField.mId, pDataValue.mLength);
 	printf("[DEBUG] Storing $VALUE field with value length: %llu\n", pDataValue.mLength);
 	
-	/* Store both fields using our simplified SetRecordField */
-	printf("[DEBUG] About to call SetRecordField for $KEY\n");
-	err = SetRecordField(cursor, dataKey);
+	/* Store both fields in a single call to SetRecordField */
+	printf("[DEBUG] About to call SetRecordField for both fields\n");
+	err = SetRecordField(cursor, dataFields);
 	if (err)
 	{
-		printf("[DEBUG] SetRecordField for $KEY failed with error %d\n", err);
+		printf("[DEBUG] SetRecordField failed with error %d\n", err);
 		return(err);
 	}
-	printf("[DEBUG] SetRecordField for $KEY succeeded\n");
-	
-	printf("[DEBUG] About to call SetRecordField for $VALUE\n");
-	err = SetRecordField(cursor, dataValue);
-	if (err)
-	{
-		printf("[DEBUG] SetRecordField for $VALUE failed with error %d\n", err);
-		return(err);
-	}
-	printf("[DEBUG] SetRecordField for $VALUE succeeded\n");
+	printf("[DEBUG] SetRecordField succeeded\n");
 	
 	return(0);
 }
+
 

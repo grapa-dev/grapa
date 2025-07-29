@@ -12,12 +12,18 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
 {
     GrapaError err = 0;
     
-    // Initialize table type to default GROUP_TREE
-    mTableType = GrapaDB::GROUP_TREE;
-    
-    // Parse the storage URL to determine type
+    // Parse the storage URL to determine type first
     err = ParseStorageUrl(storageUrl);
     if (err) return err;
+    
+    // Use the requested table type as the root type
+    mGrapaDBXRootType = mTableType;
+    
+    // Store the requested table type for use when creating tables
+    mGrapaDBXTableType = mTableType;
+    
+    printf("[DEBUG] InitializeStorage: Set mGrapaDBXRootType=%d, mGrapaDBXTableType=%d\n", 
+           mGrapaDBXRootType, mGrapaDBXTableType);
     
     printf("[DEBUG] InitializeStorage: After ParseStorageUrl, mStorageType='%s'\n", (char*)mStorageType.mBytes);
     
@@ -37,7 +43,7 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
         mGrapaDBX->INIT(&mFile);
         
         // Create the database file with the detected table type
-        err = mGrapaDBX->Create((char*)mStoragePath.mBytes, mTableType, mGrapaDBXFirstTree);
+        err = mGrapaDBX->Create((char*)mStoragePath.mBytes, mGrapaDBXRootType, mGrapaDBXFirstTree);
         if (err) {
             // Try to open existing database
             err = mGrapaDBX->OpenFile(mStoragePath, 'r');
@@ -69,13 +75,13 @@ GrapaError GrapaUnifiedLocalDatabase::InitializeStorage(const GrapaCHAR& storage
             mGrapaDBX->INIT(&mFile);
             
             // Create in-memory database with detected table type
-            err = mGrapaDBX->Create("$", mTableType, mGrapaDBXFirstTree);
+            err = mGrapaDBX->Create("$", mGrapaDBXRootType, mGrapaDBXFirstTree);
             if (err) return err;
             
             // Set root type to the detected table type
             mGrapaDBXRootType = mTableType;
             
-            printf("[DEBUG] InitializeStorage: Created in-memory DBX with table type %d\n", mTableType);
+            printf("[DEBUG] InitializeStorage: Created in-memory DBX with root type %d\n", mGrapaDBXRootType);
         }
         // Memory storage is always available
     } else if (mStorageType.StrCmp("CLOUD") == 0) {
@@ -359,42 +365,82 @@ GrapaError GrapaUnifiedLocalDatabase::DirectoryList(GrapaCHAR& pName, GrapaRuleE
                     
                     if (!firstErr)
                     {
+                        // Keep track of seen table names to avoid duplicates
+                        GrapaRuleQueue seenTables;
+                        
                         do
                         {
-                            // TEMPORARY WORKAROUND: Read raw data directly since field storage format doesn't match yet
-                            // First get the data size to allocate the right buffer
-                            u64 growBlockSize, dataSize, dataLength;
-                            u8 encodeType;
-                            GrapaError sizeErr = group2->GetDataSize(cursor.mValue, growBlockSize, dataSize, dataLength, encodeType);
-                            printf("[DEBUG] DirectoryList: GetDataSize returned %d, dataLength=%llu\n", 
-                                   sizeErr, dataLength);
-                            if (sizeErr) break;
+                            // Read the table name directly from field 0 of the RREC entry
+                            GrapaCHAR tableName;
+                            GrapaError fieldErr = group2->GetRecordField(cursor, 0, tableName);
+                            printf("[DEBUG] DirectoryList: GetRecordField returned %d, tableName='%s'\n", 
+                                   fieldErr, (char*)tableName.mBytes);
                             
-                            // Allocate buffer of the correct size
-                            char* buffer = new char[dataLength];
-                            u64 returnSize = 0;
-                            GrapaError dataErr = group2->GetDataValue(cursor.mValue, 0, dataLength, buffer, &returnSize);
-                            printf("[DEBUG] DirectoryList: GetDataValue returned %d, data length=%llu\n", 
-                                   dataErr, returnSize);
-                            if (dataErr) {
-                                delete[] buffer;
-                                break;
+                            if (fieldErr) {
+                                printf("[DEBUG] DirectoryList: GetRecordField failed, trying NextDb\n");
+                                GrapaError nextErr = group2->NextDb(cursor);
+                                if (nextErr) break;
+                                continue;
                             }
                             
-                            // For now, use the raw data as the record name for enumeration
-                            GrapaRuleEvent* row = new GrapaRuleEvent(0, GrapaCHAR(buffer, returnSize), GrapaCHAR());
+                            // Clean up null terminators from table name
+                            GrapaCHAR cleanTableName;
+                            for (u64 i = 0; i < tableName.mLength; i++) {
+                                if (tableName.mBytes[i] != 0) {
+                                    cleanTableName.Append((char)tableName.mBytes[i]);
+                                }
+                            }
+                            
+                            // Check if we've already seen this table name
+                            bool alreadySeen = false;
+                            GrapaObjectEvent* seenTable = seenTables.Head();
+                            while (seenTable) {
+                                if (seenTable->mName.StrCmp(cleanTableName) == 0) {
+                                    alreadySeen = true;
+                                    break;
+                                }
+                                seenTable = seenTable->Next();
+                            }
+                            
+                            if (alreadySeen) {
+                                printf("[DEBUG] DirectoryList: Skipping duplicate table '%s'\n", (char*)cleanTableName.mBytes);
+                                GrapaError nextErr = group2->NextDb(cursor);
+                                if (nextErr) break;
+                                continue;
+                            }
+                            
+                            // Add to seen tables list
+                            GrapaObjectEvent* newSeenTable = new GrapaObjectEvent((char*)cleanTableName.mBytes);
+                            seenTables.PushTail(newSeenTable);
+                            
+                            // Create the record entry with the table name
+                            GrapaRuleEvent* row = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
                             row->mValue.mToken = GrapaTokenType::LIST;
                             row->vQueue = new GrapaRuleQueue();
 
-                            GrapaInt size(returnSize);
-                            row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), GrapaCHAR(buffer, returnSize)));
-                            row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), GrapaCHAR("COL")));
+                            // Add the table name as $KEY
+                            row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$KEY"), cleanTableName));
+                            
+                            // Determine the table type based on the root type (since we're in a GROUP database)
+                            GrapaCHAR tableType;
+                            if (mGrapaDBXRootType == GrapaDB::GROUP_TREE) {
+                                tableType = "GROUP";
+                            } else if (mGrapaDBXRootType == GrapaDB::RTABLE_TREE) {
+                                tableType = "ROW";
+                            } else if (mGrapaDBXRootType == GrapaDB::CTABLE_TREE) {
+                                tableType = "COL";
+                            } else {
+                                tableType = "UNKNOWN";
+                            }
+                            
+                            // Add the table type as $TYPE
+                            row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$TYPE"), tableType));
+                            
+                            // Add the data size as $BYTES
+                            GrapaInt size(cleanTableName.mLength);
                             row->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("$BYTES"), size.getBytes()));
 
                             pTable->vQueue->PushTail(row);
-                            
-                            // Clean up the allocated buffer
-                            delete[] buffer;
                             
                             GrapaError nextErr = group2->NextDb(cursor);
                             if (nextErr) break;
@@ -740,11 +786,14 @@ GrapaError GrapaUnifiedLocalDatabase::CreateTableStructure(const GrapaCHAR& pNam
                 }
             }
             
-            printf("[DEBUG] CreateTableStructure: Creating table with name='%s', tableType=%d\n", 
-                   (char*)pName.mBytes, tableType);
+            printf("[DEBUG] CreateTableStructure: Creating table with name='%s', tableType=%d, rootType=%d\n", 
+                   (char*)pName.mBytes, tableType, mGrapaDBXRootType);
             
             // Use CreateGroup to create a proper table structure
-            GrapaError err = group2->CreateGroup(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, tableType, newTree);
+            // The CreateGroup function will handle different root types appropriately
+            printf("[DEBUG] CreateTableStructure: Creating table structure with name='%s', tableType=%d, rootType=%d\n", 
+                   (char*)pName.mBytes, mGrapaDBXTableType, mGrapaDBXRootType);
+            GrapaError err = group2->CreateGroup(mGrapaDBXFirstTree, mGrapaDBXRootType, pName, mGrapaDBXTableType, newTree);
             printf("[DEBUG] CreateTableStructure: CreateGroup returned err=%d, newTree=%llu\n", err, newTree);
             return err;
         } else {
@@ -814,12 +863,20 @@ GrapaError GrapaUnifiedLocalDatabase::GrapaDBXNavigateToTable(const GrapaCHAR& t
         }
         printf("[DEBUG] GrapaDBXNavigateToTable: OpenTable succeeded, table.mRef=%llu\n", (unsigned long long)actualTable.mRef);
         
-        // Update the table reference to point to the actual table tree
-        table.mRef = actualTable.mRef;
-        table.mRecRef = actualTable.mRecRef;
-        table.mRefType = actualTable.mRefType;
-        printf("[DEBUG] GrapaDBXNavigateToTable: Updated table.mRef to %llu, mRecRef to %llu\n", 
-               (unsigned long long)table.mRef, (unsigned long long)table.mRecRef);
+        // For GROUP tables, when setting values, we need to stay in the parent table context
+        // where the RREC entry was created, not navigate to the nested table
+        if (table.mRefType == GrapaDB::GROUP_TREE) {
+            // Stay in the parent table context for GROUP tables
+            printf("[DEBUG] GrapaDBXNavigateToTable: GROUP table detected, staying in parent context\n");
+            // Don't update table.mRef - keep it pointing to the parent table
+        } else {
+            // For ROW/COL tables, navigate to the actual table tree
+            table.mRef = actualTable.mRef;
+            table.mRecRef = actualTable.mRecRef;
+            table.mRefType = actualTable.mRefType;
+            printf("[DEBUG] GrapaDBXNavigateToTable: Updated table.mRef to %llu, mRecRef to %llu\n", 
+                   (unsigned long long)table.mRef, (unsigned long long)table.mRecRef);
+        }
     } else {
         printf("[DEBUG] GrapaDBXNavigateToTable: Not a GrapaGroup2, using default ID=0\n");
         table.mId = 0;

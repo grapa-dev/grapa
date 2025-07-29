@@ -136,7 +136,7 @@ public:
 	virtual GrapaError GetData(u64 itemPtr, GrapaCHAR& pValue);
 	virtual GrapaError GetDataSize(u64 itemPtr, u64 growBlockSize, u64& dataSize, u64& dataLength, u8& compressType);
 	virtual GrapaError GetDataValue(u64 itemPtr, u64 offset, u64 length, char* data, u64* returnSize);
-	virtual GrapaError SetDataValue(u64 itemPtr, u64 offset, u64 length, const char* data);
+	virtual GrapaError SetDataValue(u64 itemPtr, u64 offset, u64 dataSize, void *buffer, u64 *returnSize = NULL);
 
 	// Override operations - same interface as GrapaBtree - do not change parameters or parameter types
 	virtual GrapaError CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
@@ -180,10 +180,6 @@ protected:
 	virtual GrapaError DumpTheStructure(GrapaCHAR& dbWrite, GrapaDBXCursor& cursor, u64 tableDT);
 	virtual GrapaError DumpTheGroupStructure(GrapaCHAR& dbWrite, GrapaDBXCursor& cursor);
 	
-	// Helper functions - same interface as GrapaDB
-	virtual GrapaError GetDataTypeRecord(u64 tableRef, u64& tableDT);
-	virtual GrapaError DeleteKeyIndexes(GrapaCursor& treeCursor);
-	
 	// Index helper methods - same interface as GrapaDB
 	virtual GrapaError LocateIndex(GrapaCursor& cursor, u64 indexRef, u64 fieldId);
 	virtual bool IndexHasField(GrapaCursor& cursor, u64 fieldId);
@@ -194,45 +190,42 @@ protected:
 	
 	// Debug utility methods
 	virtual GrapaError DumpGetItemWeight(GrapaCursor& cursor, u64& weight);
+	
+	// Helper functions - same interface as GrapaDB
+	virtual GrapaError GetDataTypeRecord(u64 tableRef, u64& tableDT);
+	virtual GrapaError DeleteKeyIndexes(GrapaCursor& treeCursor);
 };
 
-// GrapaDBX-specific data structures (duplicated from GrapaDB.h with "X" suffix)
-class GrapaDBXField
+// Replace the class GrapaDBXField definition with a plain struct, matching the reference field order and types
+struct GrapaDBXField
 {
-public:
-	enum { STORE_FIX = 0, STORE_VAR, STORE_PAR, };
-	
-	// Formula field types
-	enum { FORMULA_TEXT = 1, FORMULA_OP = 2 };
+    enum { STORE_FIX = 0, STORE_VAR, STORE_PAR };
+    enum { FORMULA_TEXT = 1, FORMULA_OP = 2 };
+    u8 mType;
+    u8 mStore;
+    u8 mTreeType;
+    u8 mReserved[5];
+    u64 mId;
+    u64 mRef;
+    u64 mNameId;
+    u64 mNameRef;
+    u64 mDictOffset;
+    u64 mDictSize;
+    u64 mSize;
+    u64 mGrow;
+    u64 mTableRef;
+    u64 mFormulaRef;
+    u8 mFormulaType;
+    u8 mReserved2[7];
 
-public:
-	struct{
-		u8 mType;
-		u8 mStore;
-		u8 mTreeType;
-		u8 mReserved[5];
-		u64 mId;		// Need to index
-		u64 mRef;
-		u64 mNameId;
-		u64 mNameRef;   // Need to index
-		u64 mDictOffset;
-		u64 mDictSize;
-		u64 mSize;
-		u64 mGrow;      // How many items to store in each block
-		u64 mTableRef;	// Extended metadata. User configurable.
-		u64 mFormulaRef;    // Reference to compressed formula code
-		u8 mFormulaType;    // FORMULA_TEXT or FORMULA_OP
-		u8 mReserved2[7];   // Reduced from 8 to 7 bytes
-	};
-public:
-	GrapaDBXField();
-	void BigEndian();
-	void Init(u64 pFieldId, u8 pType, u8 pStore, u64 pSize, u64 pGrow);
-	void* GetPtr();
-	inline static u16 GetSize();
-	GrapaError Write(GrapaDBX *pDb, u64 fieldRef);
-	GrapaError Read(GrapaDBX *pDb, u64 fieldRef);
-	GrapaError Get(GrapaDBX *pDb, u64 tableRef, u64 fieldId);
+    GrapaDBXField();
+    void BigEndian();
+    void Init(u64 pFieldId, u8 pType, u8 pStore, u64 pSize, u64 pGrow);
+    void* GetPtr();
+    inline static u16 GetSize();
+    GrapaError Write(GrapaDBX *pDb, u64 fieldRef);
+    GrapaError Read(GrapaDBX *pDb, u64 fieldRef);
+    GrapaError Get(GrapaDBX *pDb, u64 tableRef, u64 fieldId);
 };
 
 class GrapaDBXFieldArray : public GrapaVoidArray
