@@ -1,0 +1,65 @@
+"=== BUG COMPARISON TEST ===\n".echo();
+"Testing the 3rd record corruption bug in reference vs DBX\n".echo();
+
+"--- REFERENCE TEST ---\n".echo();
+ref_db = $file().table("ROW");
+ref_db.mkfield("name", "STR", "VAR");
+ref_db.mkfield("age", "INT", "FIX", 4);
+ref_db.mkfield("city", "STR", "VAR");
+
+"Setting user1...\n".echo();
+ref_db.set("user1", "Alice", "name");
+ref_db.set("user1", 25, "age");
+ref_db.set("user1", "New York", "city");
+
+"Setting user2...\n".echo();
+ref_db.set("user2", "Bob", "name");
+ref_db.set("user2", 30, "age");
+ref_db.set("user2", "Los Angeles", "city");
+
+"Setting user3...\n".echo();
+ref_db.set("user3", "Charlie", "name");
+ref_db.set("user3", 35, "age");
+ref_db.set("user3", "Chicago", "city");
+
+"Checking user1 after 3rd record...\n".echo();
+user1_name = ref_db.get("user1", "name");
+user1_age = ref_db.get("user1", "age");
+user1_city = ref_db.get("user1", "city");
+
+("Reference - user1 name: " + user1_name.str() + "\n").echo();
+("Reference - user1 age: " + user1_age.str() + "\n").echo();
+("Reference - user1 city: " + user1_city.str() + "\n").echo();
+
+"--- DBX TEST ---\n".echo();
+dbx_db = $unified();
+dbx_db.create("grapadbx://test_bug_comparison.dbx?type=ROW");
+dbx_db.mkfield("name", "STR", "VAR");
+dbx_db.mkfield("age", "INT", "FIX", 4);
+dbx_db.mkfield("city", "STR", "VAR");
+
+"Setting user1...\n".echo();
+dbx_db.set("user1", "Alice", "name");
+dbx_db.set("user1", 25, "age");
+dbx_db.set("user1", "New York", "city");
+
+"Setting user2...\n".echo();
+dbx_db.set("user2", "Bob", "name");
+dbx_db.set("user2", 30, "age");
+dbx_db.set("user2", "Los Angeles", "city");
+
+"Setting user3...\n".echo();
+dbx_db.set("user3", "Charlie", "name");
+dbx_db.set("user3", 35, "age");
+dbx_db.set("user3", "Chicago", "city");
+
+"Checking user1 after 3rd record...\n".echo();
+dbx_user1_name = dbx_db.get("user1", "name");
+dbx_user1_age = dbx_db.get("user1", "age");
+dbx_user1_city = dbx_db.get("user1", "city");
+
+("DBX - user1 name: " + dbx_user1_name.str() + "\n").echo();
+("DBX - user1 age: " + dbx_user1_age.str() + "\n").echo();
+("DBX - user1 city: " + dbx_user1_city.str() + "\n").echo();
+
+"=== COMPARISON COMPLETE ===\n".echo(); 

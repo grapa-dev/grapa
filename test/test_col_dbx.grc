@@ -1,8 +1,8 @@
 "================================================================================\n".echo();
-"Get $file().table('GROUP')\n".echo();
+"Get grapadbx://test_col_dbx.dbx\n".echo();
 "================================================================================\n".echo();
 "Create and initialize name,age,city\n".echo();
-fdata = $file().table("GROUP");
+fdata = grapadbx://test_col_dbx.dbx;
 fdata.mkfield("name", "STR", "VAR");
 fdata.mkfield("age", "INT", "FIX", 4);
 fdata.mkfield("city", "STR", "VAR");
@@ -36,4 +36,4 @@ setFields(fdata,"user3","Charlie",35,"Chicago");
 (getFields(fdata,"user1").str() + "\n").echo();
 "--------------------------\n".echo();
 fdata.debug();
-"================================================================================\n".echo();
+"================================================================================\n".echo(); 
