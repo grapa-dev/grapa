@@ -1505,17 +1505,17 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 				switch (recCursor.mTreeType)
 				{
 					case GROUP_TREE: 
-						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey);
+						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey,recCursor.mValue);
 						err = Delete(tableCursor);
 						break;
 					case RTABLE_TREE:
 						printf("DEBUG: SetRecordField Delete RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue);
-						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mValue);
 						err = Delete(tableCursor);
 						printf("DEBUG: SetRecordField Delete RPTR_ITEM - Delete err=%lld\n", (long long)err);
 						break;
 					case CTABLE_TREE:
-						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
+						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey, recCursor.mValue);
 						err = Delete(tableCursor);
 						break;
 				}
@@ -1877,17 +1877,17 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 				switch (recCursor.mTreeType)
 				{
 				case GROUP_TREE:
-					tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey);
+					tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey, recCursor.mValue);
 					err = Insert(tableCursor);
 					break;
 				case RTABLE_TREE:
 					printf("DEBUG: SetRecordField Insert RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue);
-					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
+					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mValue);
 					err = Insert(tableCursor);
 					printf("DEBUG: SetRecordField Insert RPTR_ITEM - Insert err=%lld tableCursor.mValue=%llu\n", (long long)err, tableCursor.mValue);
 					break;
 				case CTABLE_TREE:
-					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
+					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey, recCursor.mValue);
 					err = Insert(tableCursor);
 					break;
 				}
