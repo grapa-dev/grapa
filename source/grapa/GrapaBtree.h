@@ -20,7 +20,7 @@ public:
 	enum { DATA_STORE=0, LAST_STORE, };
 	enum { SEARCH_MODE=0, INSERT_MODE, DELETE_MODE, LAST_MODE, };
 	enum { ENCODE_NONE = 0, ENCODE_ZIP = 0x01, ENCODE_AES = 0x02, };
-	enum { NODE_WIDTH=5 };
+	enum { NODE_WIDTH=17 };
 	enum { CMP_LT=-1, CMP_EQ=0, CMP_GT=1, };
 
 	u8 mFlags;
@@ -130,7 +130,7 @@ protected:
 
 	GrapaError UpdateChildInfo(u64 childBlock, u64 newBlock, s8 newIndex);
 	GrapaError UpdateLeafInfo(GrapaBlockNodeLeaf* key, u64 newBlock, s8 newIndex);
-	GrapaError MoveLeaf(u64 headRef, GrapaBlockTree& head, GrapaBlockNodeHeader& oldPage, u64 rootNode, s8 rootIndex, GrapaBlockNodeHeader& newPage, u64 newBlock, s8 newIndex);
+	virtual GrapaError MoveLeaf(u64 headRef, GrapaBlockTree& head, GrapaBlockNodeHeader& oldPage, u64 rootNode, s8 rootIndex, GrapaBlockNodeHeader& newPage, u64 newBlock, s8 newIndex);
 
 	GrapaError EmptyItem(u64 headRef, GrapaBlockTree& head, u64 pagePos);
 	GrapaError AppendNode(u64 headRef, GrapaBlockTree& head, GrapaBlockNodeLeaf& promKey);
