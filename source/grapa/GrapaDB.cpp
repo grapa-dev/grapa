@@ -1311,9 +1311,10 @@ GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaDBCursor& pCursor)
 			err = First(indexCursor);
 			if (!err && indexCursor.mKey == 0)
 				err = Next(indexCursor);
+			u64 savedPCursorValue = pCursor.mValue;  // Save the original value before any potential modifications
 			while (!err)
 			{
-				tableCursor.Set(indexCursor.mValue, RPTR_ITEM, pCursor.mKey);
+				tableCursor.Set(indexCursor.mValue, RPTR_ITEM, pCursor.mKey, savedPCursorValue);
 				err = Insert(tableCursor);
 				err = Next(indexCursor);
 				if (!err && indexCursor.mKey == 0)
@@ -1480,6 +1481,7 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 	s32 i;
 	u8 compressType=0;
 
+	u64 savedCursorValue = cursor.mValue;  // Save the original value before PtrToRec modifies it
 	err = PtrToRec(cursor,recCursor);
 	if (err) return(err);
 
@@ -1505,17 +1507,17 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 				switch (recCursor.mTreeType)
 				{
 					case GROUP_TREE: 
-						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey,recCursor.mValue);
+						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey,savedCursorValue);
 						err = Delete(tableCursor);
 						break;
 					case RTABLE_TREE:
-						printf("DEBUG: SetRecordField Delete RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue);
-						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mValue);
+						printf("DEBUG: SetRecordField Delete RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu savedCursorValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue, savedCursorValue);
+						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, savedCursorValue);
 						err = Delete(tableCursor);
 						printf("DEBUG: SetRecordField Delete RPTR_ITEM - Delete err=%lld\n", (long long)err);
 						break;
 					case CTABLE_TREE:
-						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey, recCursor.mValue);
+						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey, savedCursorValue);
 						err = Delete(tableCursor);
 						break;
 				}
@@ -1877,17 +1879,17 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 				switch (recCursor.mTreeType)
 				{
 				case GROUP_TREE:
-					tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey, recCursor.mValue);
+					tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey, savedCursorValue);
 					err = Insert(tableCursor);
 					break;
 				case RTABLE_TREE:
-					printf("DEBUG: SetRecordField Insert RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue);
-					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mValue);
+					printf("DEBUG: SetRecordField Insert RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu savedCursorValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue, savedCursorValue);
+					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, savedCursorValue);
 					err = Insert(tableCursor);
 					printf("DEBUG: SetRecordField Insert RPTR_ITEM - Insert err=%lld tableCursor.mValue=%llu\n", (long long)err, tableCursor.mValue);
 					break;
 				case CTABLE_TREE:
-					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey, recCursor.mValue);
+					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey, savedCursorValue);
 					err = Insert(tableCursor);
 					break;
 				}
