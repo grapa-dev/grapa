@@ -6,7 +6,7 @@
 
 **Status**: 🔄 **IN PROGRESS** - Investigating index corruption in file-based databases
 
-**Latest Update**: **PARTIAL FIX IMPLEMENTED** - Fixed `tableCursor.Set()` calls in `SetRecordField` to include the missing fourth parameter (`recCursor.mValue`). RPTR values are now being set correctly (31, 91, 112 instead of 0), but there's still an issue with record data corruption for the first record. The first RPTR points to correct record (31) but the record data shows NULL values. Need to investigate why record data becomes corrupted.
+**Latest Update**: **PTRTOREC VALUE MODIFICATION FIX IMPLEMENTED** - Successfully implemented the fix for `PtrToRec` value modification by saving cursor values before calling `PtrToRec` and using the saved values in `tableCursor.Set()` calls. The RPTR values are now correctly set (31, 91, 112) instead of being corrupted. Records are being created and retrieved successfully. However, there's still a separate issue where the first record's data becomes NULL after the third record is inserted, indicating a BTree rebalancing or record storage issue that needs further investigation.
 
 ### 📋 **INVESTIGATION PLAN**
 
@@ -26,7 +26,9 @@
 - [x] **Identify specific root cause** of index corruption - `tableCursor.Set()` not properly setting value parameter
 - [x] **Determine exact failure point** in file-based operations - `tableCursor.mValue` becomes 0 after `Insert()`
 - [x] **Implement targeted fix** based on investigation findings - Fixed `tableCursor.Set()` calls to include `recCursor.mValue` parameter
-- [ ] **Investigate record data corruption** - First record shows NULL values despite correct RPTR pointer
+- [x] **Resolve RPTR corruption** - RPTR values now correctly point to records (31, 91, 112)
+- [x] **Fix PtrToRec value modification** - Successfully implemented fix by saving cursor values before `PtrToRec` calls
+- [ ] **Investigate record data corruption** - First record data becomes NULL after third record insertion (separate issue)
 - [ ] **Test file-based read/write operations** after fixing record corruption
 
 ## 🚀 **AGENT ONBOARDING**
@@ -179,6 +181,8 @@ python3 build.py --exe-only
 tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mValue);
 ```
 Where `recCursor.mValue` is 0 during the first attempt.
+
+**NEW DISCOVERY - PtrToRec Value Modification**: The `PtrToRec` function modifies cursor values before `tableCursor.Set()` calls. The function copies `ptrCursor` to `recCursor` and then calls `Search(recCursor)`, which modifies `recCursor.mValue`. This means using cursor values after `PtrToRec` calls may use modified values instead of the original record ID.
 
 ### **Impact Scope** ✅
 - **All Table Types**: RTABLE_TREE, CTABLE_TREE, GROUP_TREE affected
