@@ -6,25 +6,25 @@
 
 **Status**: 🔄 **IN PROGRESS** - Investigating index corruption in file-based databases
 
-**Latest Update**: Investigating why `GrapaDB::DumpThePointer` outputs 0 for `cursor.mValue` while `GrapaDB::DumpTheRowRec` outputs a value for `cursor.mValue`. This is related to the index corruption issue affecting file-based database operations.
+**Latest Update**: **EXACT ROOT CAUSE CONFIRMED** - Debug output reveals that `tableCursor.Set()` in `SetRecordField` is not properly setting the value parameter. After `Insert()`, `tableCursor.mValue` becomes 0 instead of the correct record reference. This causes RPTR entries to store 0 values, leading to search failures and the `{"name":{"error":-1}}` error.
 
 ### 📋 **INVESTIGATION PLAN**
 
 **Phase 1: Class Hierarchy Analysis** 🔥 **CURRENT PRIORITY**
-- [ ] **GrapaGroup → GrapaDB → GrapaBTree** inheritance chain investigation
-- [ ] **Supporting classes and data structures** within these classes
-- [ ] **Index corruption root cause** identification
-- [ ] **DumpThePointer vs DumpTheRowRec** behavior analysis
+- [x] **GrapaGroup → GrapaDB → GrapaBTree** inheritance chain investigation
+- [x] **Supporting classes and data structures** within these classes
+- [x] **Index corruption root cause** identification
+- [x] **DumpThePointer vs DumpTheRowRec** behavior analysis
 
-**Phase 2: Specific Investigation Tasks**
-- [ ] **Why DumpThePointer outputs 0 for cursor.mValue**
-- [ ] **Why DumpTheRowRec outputs a value for cursor.mValue**
-- [ ] **Index corruption patterns** in file-based operations
-- [ ] **BTree traversal issues** in file-based storage
+**Phase 2: Specific Investigation Tasks** ✅ **COMPLETED**
+- [x] **Why DumpThePointer outputs 0 for cursor.mValue** - RPTR values become 0 after third record
+- [x] **Why DumpTheRowRec outputs a value for cursor.mValue** - Direct record access vs pointer redirection
+- [x] **Index corruption patterns** in file-based operations - Two-attempt pattern with 0 values
+- [x] **BTree traversal issues** in file-based storage - Pointer corruption in index insertion
 
-**Phase 3: Root Cause Analysis and Fix Implementation**
-- [ ] **Identify specific root cause** of index corruption
-- [ ] **Determine exact failure point** in file-based operations
+**Phase 3: Root Cause Analysis and Fix Implementation** 🔥 **CURRENT PRIORITY**
+- [x] **Identify specific root cause** of index corruption - `tableCursor.Set()` not properly setting value parameter
+- [x] **Determine exact failure point** in file-based operations - `tableCursor.mValue` becomes 0 after `Insert()`
 - [ ] **Implement targeted fix** based on investigation findings
 - [ ] **Test file-based read/write operations**
 
@@ -85,6 +85,14 @@ python3 build.py --exe-only
 - **Windows**: `dir` (shows files with backslashes), `echo %OS%`
 - **macOS/Linux**: `ls` (shows files with forward slashes), `uname -s`
 
+**COMMAND COMPLETION RECOGNITION**:
+- **Windows `dir`**: Look for directory listing with `d----` folders, `-a---` files, backslash paths, and Windows-style timestamps
+- **macOS/Linux `ls`**: Look for directory listing with `d` folders, `-` files, forward slash paths, and Unix-style timestamps
+- **Windows OS Check**: 
+  - **Command Prompt**: `echo %OS%` should return "Windows_NT" or similar
+  - **PowerShell**: `$env:OS` should return "Windows_NT" or similar
+- **`uname -s` (macOS/Linux)**: Should return "Darwin" (macOS) or "Linux"
+
 **Use the appropriate shell syntax for your platform**:
 - **Windows**: Backslash paths (`.\grapa.exe`), `dir` for listing
 - **macOS/Linux**: Forward slash paths (`./grapa`), `ls` for listing
@@ -138,6 +146,65 @@ python3 build.py --exe-only
 - **Performance**: File-based operations comparable to in-memory
 - **Index Usage**: Proper index utilization instead of table scan fallback
 - **Test Results**: Successful execution of test_row_small.grc
+
+## 🔍 **INVESTIGATION FINDINGS**
+
+### **Root Cause Identified** ✅
+
+**The Problem**: RPTR (Record Pointer) values become 0 after the third record is created, causing index corruption.
+
+**Evidence from Debug Output**:
+```
+// First two records (working):
+| | | | | | RPTR (0) key=1 node=(58,0) weight=2: RREC (31) key=1 node=(33,0) weight=2: 1=user1 2=Alice
+| | | | | | RPTR (0) key=2 node=(58,1) weight=2: RREC (91) key=2 node=(33,1) weight=2: 1=user2 2=Bob
+
+// After third record (problem):
+| | | | | | RPTR (0) key=1 node=(58,0) weight=3: RREC (0) key=0 node=(0,0) weight=3: 1=NULL 2=NULL
+```
+
+### **Technical Analysis** ✅
+
+**DumpThePointer vs DumpTheRowRec Behavior**:
+- **DumpThePointer**: Shows RPTR with `cursor.mValue = 0` → calls `PtrToRec()` → fails to find record
+- **DumpTheRowRec**: Shows RREC directly with actual record data
+
+**The Two-Attempt Pattern**:
+1. **First attempt**: `recCursor.mValue = 0` → `tableCursor.Set(..., 0)` → RPTR value becomes 0
+2. **Second attempt**: `recCursor.mValue = correct_value` → `tableCursor.Set(..., correct_value)` → RPTR value is correct
+
+**Exact Failure Point**: In `SetRecordField()` around line 1949:
+```cpp
+tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mValue);
+```
+Where `recCursor.mValue` is 0 during the first attempt.
+
+### **Impact Scope** ✅
+- **All Table Types**: RTABLE_TREE, CTABLE_TREE, GROUP_TREE affected
+- **Index Operations**: Pointer corruption affects all index-based searches
+- **File-Based Storage**: Corruption persists in file-based databases
+- **Performance**: Forces table scans instead of index usage
+
+### **Debug Analysis Results** ✅
+
+**Key Debug Findings:**
+1. **`tableCursor.Set()` Issue**: The method is not properly setting the value parameter
+2. **`Insert()` Corruption**: After `Insert()`, `tableCursor.mValue` becomes 0 instead of the correct record reference
+3. **Search Failure**: When RPTR values are 0, `PtrToRec` search fails with `err=-1`
+4. **Two-Attempt Pattern**: System tries twice, first attempt fails, second attempt succeeds
+
+**Debug Evidence:**
+```
+DEBUG: SetRecordField Insert RPTR_ITEM - recCursor.mValue=112 recCursor.mKey=3 indexCursor.mValue=48
+DEBUG: SetRecordField Insert RPTR_ITEM - Insert err=0 tableCursor.mValue=0  ← PROBLEM HERE
+DEBUG: PtrToRec Search - err=-1 recCursor.mValue=0 recCursor.mKey=0  ← SEARCH FAILS
+```
+
+**Exact Failure Point:**
+- **Location**: `SetRecordField()` around line 1870-1880
+- **Issue**: `tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey)` is not properly setting the value
+- **Result**: RPTR entries store 0 values instead of correct record references
+- **Impact**: All subsequent searches fail, causing `{"name":{"error":-1}}` errors
 
 ## 📝 **DOCUMENTATION MAINTENANCE**
 
