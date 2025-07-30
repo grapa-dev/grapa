@@ -1509,8 +1509,10 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 						err = Delete(tableCursor);
 						break;
 					case RTABLE_TREE:
+						printf("DEBUG: SetRecordField Delete RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue);
 						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
 						err = Delete(tableCursor);
+						printf("DEBUG: SetRecordField Delete RPTR_ITEM - Delete err=%lld\n", (long long)err);
 						break;
 					case CTABLE_TREE:
 						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
@@ -1879,8 +1881,10 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 					err = Insert(tableCursor);
 					break;
 				case RTABLE_TREE:
+					printf("DEBUG: SetRecordField Insert RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue);
 					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
 					err = Insert(tableCursor);
+					printf("DEBUG: SetRecordField Insert RPTR_ITEM - Insert err=%lld tableCursor.mValue=%llu\n", (long long)err, tableCursor.mValue);
 					break;
 				case CTABLE_TREE:
 					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
@@ -2717,22 +2721,27 @@ GrapaError GrapaDB::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 	GrapaError err=0;
 	u64 tableRef;
 	u8 storeType;
+	printf("DEBUG: PtrToRec ENTER - ptrCursor.mValue=%llu ptrCursor.mKey=%llu ptrCursor.mValueType=%d\n", ptrCursor.mValue, ptrCursor.mKey, ptrCursor.mValueType);
 	recCursor = ptrCursor;
 	switch(ptrCursor.mValueType)
 	{
 		case GREC_ITEM:
 		case RREC_ITEM:
 		case CREC_ITEM:
+			printf("DEBUG: PtrToRec - Already a record type, returning\n");
 			return(0);
 		case GPTR_ITEM:
 		case RPTR_ITEM:
 		case CPTR_ITEM:
+			printf("DEBUG: PtrToRec - Processing pointer type %d\n", ptrCursor.mValueType);
 			break;
 		default:
+			printf("DEBUG: PtrToRec - Unknown value type %d, returning error\n", ptrCursor.mValueType);
 			return(-1);
 			break;
 	}
 	err = GetTreeStore(ptrCursor,tableRef,storeType);
+	printf("DEBUG: PtrToRec GetTreeStore - err=%lld tableRef=%llu storeType=%d\n", (long long)err, tableRef, storeType);
 	if (err) return(err);
 	switch(ptrCursor.mValueType)
 	{
@@ -2741,6 +2750,7 @@ GrapaError GrapaDB::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 			recCursor.mTreeType = GROUP_TREE;
 			break;
 		case RPTR_ITEM:
+			printf("DEBUG: PtrToRec RPTR_ITEM - Setting recCursor tableRef=%llu key=%llu\n", tableRef, ptrCursor.mKey);
 			recCursor.Set(tableRef,RREC_ITEM,ptrCursor.mKey);
 			recCursor.mTreeType = RTABLE_TREE;
 			break;
@@ -2749,7 +2759,9 @@ GrapaError GrapaDB::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 			recCursor.mTreeType = CTABLE_TREE;
 			break;
 	}
+	printf("DEBUG: PtrToRec - About to Search recCursor.mValue=%llu recCursor.mKey=%llu\n", recCursor.mValue, recCursor.mKey);
 	GrapaError searchErr = Search(recCursor);
+	printf("DEBUG: PtrToRec Search - err=%lld recCursor.mValue=%llu recCursor.mKey=%llu\n", (long long)searchErr, recCursor.mValue, recCursor.mKey);
 	return searchErr;
 }
 
@@ -3216,11 +3228,14 @@ GrapaError GrapaDB::DumpThePointer(GrapaCHAR& dbWrite, char *leader, GrapaDBCurs
 		case CPTR_ITEM:	itemTypeStr = (char*)"CPTR"; break;
 	}
 
+	printf("DEBUG: DumpThePointer - cursor.mValue=%llu cursor.mKey=%llu cursor.mValueType=%d\n", cursor.mValue, cursor.mKey, cursor.mValueType);
 	dbWrite.mLength = snprintf((char*)dbWrite.mBytes, dbWrite.mSize, "%s%s (%llu) key=%llu node=(%llu,%d) weight=%llu: ",leader,itemTypeStr,cursor.mValue,cursor.mKey,cursor.mNodeRef,cursor.mNodeIndex,weight);
 	if (mDumpFile) mDumpFile->Append(dbWrite.mLength,dbWrite.mBytes);
 	else printf((char*)dbWrite.mBytes,"");
 	GrapaDBCursor recCursor = cursor;
+	printf("DEBUG: DumpThePointer - About to call PtrToRec\n");
 	PtrToRec(cursor,recCursor);
+	printf("DEBUG: DumpThePointer - After PtrToRec recCursor.mValue=%llu recCursor.mKey=%llu\n", recCursor.mValue, recCursor.mKey);
 
 	u64 weight2;
 	DumpGetItemWeight(recCursor, weight2);
