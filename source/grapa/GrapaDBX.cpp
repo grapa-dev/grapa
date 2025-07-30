@@ -2113,7 +2113,7 @@ GrapaError GrapaDBX::SetDataValue(u64 itemPtr, u64 offset, u64 dataSize, void *b
 	return err;
 }
 
-GrapaError GrapaDBX::GetDataSize(u64 itemPtr, u64 growBlockSize, u64& dataSize, u64& dataLength, u8& compressType)
+GrapaError GrapaDBX::GetDataSize(u64 itemPtr, u64& growBlockSize, u64& dataSize, u64& dataLength, u8& compressType)
 {
 	/* Delegate to parent GrapaBtree implementation */
 	return GrapaBtree::GetDataSize(itemPtr, growBlockSize, dataSize, dataLength, compressType);
@@ -2122,11 +2122,11 @@ GrapaError GrapaDBX::GetDataSize(u64 itemPtr, u64 growBlockSize, u64& dataSize, 
 GrapaError GrapaDBX::GetData(u64 itemPtr, GrapaCHAR& pValue)
 {
 	/* Implement using BTree methods */
-	u64 dataSize = 0, dataLength = 0;
+	u64 growBlockSize = 0, dataSize = 0, dataLength = 0;
 	u8 compressType = 0;
 	
 	// Get the data size information
-	GrapaError err = GetDataSize(itemPtr, 0, dataSize, dataLength, compressType);
+	GrapaError err = GetDataSize(itemPtr, growBlockSize, dataSize, dataLength, compressType);
 	if (err) return err;
 	
 	if (dataLength == 0) {

@@ -135,7 +135,7 @@ public:
 
 	// Data operations - same interface as GrapaDB
 	virtual GrapaError GetData(u64 itemPtr, GrapaCHAR& pValue);
-	virtual GrapaError GetDataSize(u64 itemPtr, u64 growBlockSize, u64& dataSize, u64& dataLength, u8& compressType);
+	virtual GrapaError GetDataSize(u64 itemPtr, u64& growBlockSize, u64& dataSize, u64& dataLength, u8& compressType);
 	virtual GrapaError GetDataValue(u64 itemPtr, u64 offset, u64 length, char* data, u64* returnSize);
 	virtual GrapaError SetDataValue(u64 itemPtr, u64 offset, u64 dataSize, void *buffer, u64 *returnSize = NULL);
 
