@@ -1,0 +1,38 @@
+/* Test to verify the dictionary record (record id = 0) hypothesis */
+
+"=== DICTIONARY RECORD HYPOTHESIS TEST ===\n".echo();
+"Testing if dictionary record (record id = 0) is being created properly\n".echo();
+
+/* Create a ROW table and examine its structure */
+db = $file();
+table = db.table("ROW");
+
+/* Create fields */
+table.mkfield("name", "STR", "VAR");
+table.mkfield("age", "INT", "FIX", 4);
+table.mkfield("city", "STR", "VAR");
+
+"=== TABLE CREATED ===\n".echo();
+"Now examining table structure to check dictionary records...\n".echo();
+
+/* Add first record and check if dictionary record exists */
+"=== ADDING FIRST RECORD ===\n".echo();
+table.set("user1", "Alice", "name");
+
+"=== ADDING SECOND RECORD ===\n".echo();
+table.set("user2", "Bob", "name");
+
+"=== ADDING THIRD RECORD ===\n".echo();
+table.set("user3", "Charlie", "name");
+
+"=== CHECKING FIRST RECORD AFTER THIRD ===\n".echo();
+user1_name = table.get("user1", "name");
+user1_age = table.get("user1", "age");
+user1_city = table.get("user1", "city");
+
+("user1 name: " + user1_name.str() + "\n").echo();
+("user1 age: " + user1_age.str() + "\n").echo();
+("user1 city: " + user1_city.str() + "\n").echo();
+
+"=== TEST COMPLETE ===\n".echo();
+"Expected: If dictionary record (ID 0) is missing/corrupted, user1 should return error -1\n".echo(); 

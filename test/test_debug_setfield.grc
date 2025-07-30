@@ -1,0 +1,39 @@
+/* Debug test to trace GrapaGroup::SetField execution and identify index corruption */
+
+"=== DEBUG SETFIELD TEST ===\n".echo();
+"Testing GrapaGroup::SetField execution path\n".echo();
+
+/* Create a ROW table and add records to trace the bug */
+db = $file();
+table = db.table("ROW");
+
+/* Create fields */
+table.mkfield("name", "STR", "VAR");
+table.mkfield("age", "INT", "FIX", 4);
+table.mkfield("city", "STR", "VAR");
+
+"=== SETTING USER1 ===\n".echo();
+table.set("user1", "Alice", "name");
+table.set("user1", 25, "age");
+table.set("user1", "New York", "city");
+
+"=== SETTING USER2 ===\n".echo();
+table.set("user2", "Bob", "name");
+table.set("user2", 30, "age");
+table.set("user2", "Los Angeles", "city");
+
+"=== SETTING USER3 ===\n".echo();
+table.set("user3", "Charlie", "name");
+table.set("user3", 35, "age");
+table.set("user3", "Chicago", "city");
+
+"=== CHECKING USER1 AFTER USER3 ===\n".echo();
+user1_name = table.get("user1", "name");
+user1_age = table.get("user1", "age");
+user1_city = table.get("user1", "city");
+
+("user1 name: " + user1_name.str() + "\n").echo();
+("user1 age: " + user1_age.str() + "\n").echo();
+("user1 city: " + user1_city.str() + "\n").echo();
+
+"=== TEST COMPLETE ===\n".echo(); 
