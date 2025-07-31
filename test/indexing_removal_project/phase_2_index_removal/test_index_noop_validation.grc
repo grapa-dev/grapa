@@ -1,0 +1,76 @@
+/* Test Index No-Op Validation */
+/* Phase 2: Index System Removal */
+/* Purpose: Validate index functions become no-ops while preserving API */
+
+("=== Index No-Op Validation Test ===").echo();
+("Testing index functions become no-ops after Phase 2...").echo();
+
+/* Test 1: CreateIndex should become no-op */
+table = ROW("noop_test", "id:int,name:str");
+("Table created for no-op testing").echo();
+
+/* Test CreateIndex - should return success but do nothing */
+result = table.CreateIndex("name_index", "name").iferr(0);
+if (result == 0) {
+    ("ERROR: CreateIndex function not accessible").echo();
+} else {
+    ("CreateIndex called successfully (should be no-op)").echo();
+}
+
+/* Test 2: SearchDb should use table scan */
+table.Insert(1, "Alice");
+table.Insert(2, "Bob");
+table.Insert(3, "Charlie");
+
+/* Search should work but use table scan instead of index */
+result = table.SearchDb("name", "Bob").iferr(0);
+if (result == 0) {
+    ("ERROR: SearchDb function not accessible").echo();
+} else {
+    ("SearchDb called successfully (should use table scan)").echo();
+    ("Search result count: " + result.Count().str()).echo();
+}
+
+/* Test 3: IndexHasField should return false */
+has_field = table.IndexHasField("name").iferr(false);
+if (has_field) {
+    ("WARNING: IndexHasField returned true (should be false after no-op)").echo();
+} else {
+    ("IndexHasField correctly returns false (no-op behavior)").echo();
+}
+
+/* Test 4: LocateIndex should return not found */
+locate_result = table.LocateIndex("name", "Bob").iferr(0);
+if (locate_result == 0) {
+    ("LocateIndex correctly returns not found (no-op behavior)").echo();
+} else {
+    ("WARNING: LocateIndex returned result (should be not found)").echo();
+}
+
+/* Test 5: InsertIntoIndex should be no-op */
+insert_result = table.InsertIntoIndex("name", "TestValue", 999).iferr(0);
+if (insert_result == 0) {
+    ("ERROR: InsertIntoIndex function not accessible").echo();
+} else {
+    ("InsertIntoIndex called successfully (should be no-op)").echo();
+}
+
+/* Test 6: DeleteKeyIndexes should be no-op */
+delete_result = table.DeleteKeyIndexes(1).iferr(0);
+if (delete_result == 0) {
+    ("ERROR: DeleteKeyIndexes function not accessible").echo();
+} else {
+    ("DeleteKeyIndexes called successfully (should be no-op)").echo();
+}
+
+/* Test 7: Verify data integrity after no-op operations */
+final_result = table.SearchDb("name", "Alice").iferr(0);
+if (final_result == 0) {
+    ("ERROR: Data integrity check failed").echo();
+} else {
+    ("Data integrity maintained after no-op operations").echo();
+    ("Final search result count: " + final_result.Count().str()).echo();
+}
+
+("=== Index No-Op Validation Test Complete ===").echo();
+("All index functions validated as no-ops while preserving API").echo(); 

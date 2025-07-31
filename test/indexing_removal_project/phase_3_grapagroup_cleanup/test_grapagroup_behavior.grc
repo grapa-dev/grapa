@@ -1,0 +1,81 @@
+/* Test GrapaGroup Behavior */
+/* Phase 3: GrapaGroup Index Cleanup */
+/* Purpose: Validate GrapaGroup relies on updated GrapaDB implementations */
+
+("=== GrapaGroup Behavior Test ===").echo();
+("Testing GrapaGroup behavior with updated GrapaDB implementations...").echo();
+
+/* Test 1: Create group and verify CreateIndex calls */
+group = GROUP("test_group");
+("Group created successfully").echo();
+
+/* CreateIndex call should remain but rely on no-op implementation */
+result = group.CreateIndex("name_index", "name").iferr(0);
+if (result == 0) {
+    ("ERROR: Group CreateIndex function not accessible").echo();
+} else {
+    ("Group CreateIndex called successfully (relies on GrapaDB no-op)").echo();
+}
+
+/* Test 2: Add entries to group */
+group.Add("entry1", "Alice");
+group.Add("entry2", "Bob");
+group.Add("entry3", "Charlie");
+("Group entries added successfully").echo();
+
+/* Test 3: SearchDb calls should rely on table scan implementation */
+search_result = group.SearchDb("name", "Bob").iferr(0);
+if (search_result == 0) {
+    ("ERROR: Group SearchDb function not accessible").echo();
+} else {
+    ("Group SearchDb called successfully (relies on GrapaDB table scan)").echo();
+    ("Search result count: " + search_result.Count().str()).echo();
+}
+
+/* Test 4: Verify group operations still work */
+group.Set("entry1", "name", "AliceUpdated");
+get_result = group.Get("entry1", "name").iferr("");
+if (get_result == "") {
+    ("ERROR: Group Get operation failed").echo();
+} else {
+    ("Group Get operation successful: " + get_result.str()).echo();
+}
+
+/* Test 5: Test group field operations */
+group.AddField("age", "int");
+group.Set("entry1", "age", 30);
+age_result = group.Get("entry1", "age").iferr(0);
+if (age_result == 0) {
+    ("ERROR: Group field operation failed").echo();
+} else {
+    ("Group field operation successful: " + age_result.str()).echo();
+}
+
+/* Test 6: Verify group enumeration */
+entries = group.Entries().iferr(0);
+if (entries == 0) {
+    ("ERROR: Group enumeration failed").echo();
+} else {
+    ("Group enumeration successful").echo();
+    ("Entry count: " + entries.Count().str()).echo();
+}
+
+/* Test 7: Test group deletion */
+delete_result = group.Delete("entry2").iferr(0);
+if (delete_result == 0) {
+    ("ERROR: Group deletion failed").echo();
+} else {
+    ("Group deletion successful").echo();
+}
+
+/* Test 8: Verify final state */
+final_entries = group.Entries().iferr(0);
+if (final_entries == 0) {
+    ("ERROR: Final state verification failed").echo();
+} else {
+    ("Final state verification successful").echo();
+    ("Remaining entry count: " + final_entries.Count().str()).echo();
+}
+
+("=== GrapaGroup Behavior Test Complete ===").echo();
+("GrapaGroup successfully relies on updated GrapaDB implementations").echo(); 

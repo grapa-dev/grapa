@@ -50,7 +50,7 @@ Current status, planning, agent onboarding, workflow guidance, and technical deb
 Development workflow, progress tracking, roadmaps, and contribution guidelines.
 
 ### 📝 [Research and Analysis](RESEARCH_AND_ANALYSIS/)
-Work-in-progress research, ongoing investigations, internal analysis, and experimental work.
+Work-in-progress research, ongoing investigations, internal analysis, and experimental work. Includes critical database indexing analysis and bug investigations.
 
 ### 🎓 [Academic Outreach](ACADEMIC_OUTREACH/)
 Academic collaboration, student projects, research partnerships, and university engagement.

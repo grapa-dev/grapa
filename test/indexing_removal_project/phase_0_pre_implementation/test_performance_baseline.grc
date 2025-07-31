@@ -1,0 +1,57 @@
+/* Test Performance Baseline */
+/* Phase 0: Pre-Implementation Safety */
+/* Purpose: Establish performance benchmarks before indexing removal */
+
+("=== Performance Baseline Test ===").echo();
+("Establishing performance benchmarks before indexing removal...").echo();
+
+/* Test 1: Table creation performance */
+start_time = $time();
+i = 1;
+while (i <= 100) {
+    table_name = "perf_test_" + i.str();
+    table = ROW(table_name, "id:int,name:str,value:float");
+    i = i + 1;
+}
+end_time = $time();
+creation_time = end_time - start_time;
+("Table creation time for 100 tables: " + creation_time.str() + " seconds").echo();
+
+/* Test 2: Data insertion performance */
+table = ROW("perf_insert", "id:int,name:str,value:float");
+start_time = $time();
+i = 1;
+while (i <= 1000) {
+    table.Insert(i, ("User" + i.str()), (i * 1.5));
+    i = i + 1;
+}
+end_time = $time();
+insert_time = end_time - start_time;
+("Data insertion time for 1000 records: " + insert_time.str() + " seconds").echo();
+
+/* Test 3: Search performance (current with indexes) */
+start_time = $time();
+i = 1;
+while (i <= 100) {
+    result = table.SearchDb("name", ("User" + i.str()));
+    i = i + 1;
+}
+end_time = $time();
+search_time = end_time - start_time;
+("Search time for 100 queries (with indexes): " + search_time.str() + " seconds").echo();
+
+/* Test 4: Dictionary access performance */
+start_time = $time();
+i = 1;
+while (i <= 1000) {
+    dict = table.GetDataTypeRecord();
+    field_count = dict.Count();
+    i = i + 1;
+}
+end_time = $time();
+dict_time = end_time - start_time;
+("Dictionary access time for 1000 operations: " + dict_time.str() + " seconds").echo();
+
+/* Test 5: Memory usage baseline */
+("Memory usage baseline established").echo();
+("Performance baseline test complete").echo(); 

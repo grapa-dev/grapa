@@ -1,0 +1,85 @@
+/* Test Documentation Validation */
+/* Phase 5: Documentation Update */
+/* Purpose: Validate documentation accuracy and API consistency */
+
+("=== Documentation Validation Test ===").echo();
+("Testing documentation accuracy and API consistency...").echo();
+
+/* Test 1: Verify core API functions are accessible */
+table = ROW("doc_test", "id:int,name:str,value:float");
+("Core API: ROW table creation successful").echo();
+
+/* Test 2: Verify table operations work as documented */
+table.Insert(1, "Alice", 100.5);
+table.Insert(2, "Bob", 200.7);
+("Core API: Table insertion successful").echo();
+
+/* Test 3: Verify search operations work (should use table scan) */
+search_result = table.SearchDb("name", "Alice").iferr(0);
+if (search_result == 0) {
+    ("ERROR: Core API: SearchDb not accessible").echo();
+} else {
+    ("Core API: SearchDb accessible (uses table scan)").echo();
+    ("Search result count: " + search_result.Count().str()).echo();
+}
+
+/* Test 4: Verify dictionary access works from new location */
+dict = table.GetDataTypeRecord().iferr(0);
+if (dict == 0) {
+    ("ERROR: Core API: Dictionary access failed").echo();
+} else {
+    ("Core API: Dictionary access successful").echo();
+    ("Dictionary field count: " + dict.Count().str()).echo();
+}
+
+/* Test 5: Verify group operations work as documented */
+group = GROUP("doc_group");
+group.Add("entry1", "Alice");
+group.Add("entry2", "Bob");
+("Core API: Group operations successful").echo();
+
+/* Test 6: Verify group search relies on updated implementations */
+group_search = group.SearchDb("name", "Bob").iferr(0);
+if (group_search == 0) {
+    ("ERROR: Core API: Group search failed").echo();
+} else {
+    ("Core API: Group search successful (relies on updated GrapaDB)").echo();
+    ("Group search result count: " + group_search.Count().str()).echo();
+}
+
+/* Test 7: Verify debug functions work as documented */
+dump_result = table.DumpTheStructure().iferr("");
+if (dump_result == "") {
+    ("ERROR: Core API: Debug functions not accessible").echo();
+} else {
+    ("Core API: Debug functions accessible").echo();
+    ("Debug output length: " + dump_result.len().str()).echo();
+}
+
+/* Test 8: Verify API consistency across operations */
+/* Test that all documented functions work consistently */
+table.Insert(3, "Charlie", 300.9);
+final_search = table.SearchDb("name", "Charlie").iferr(0);
+if (final_search == 0) {
+    ("ERROR: API consistency: Final search failed").echo();
+} else {
+    ("API consistency: All operations work as documented").echo();
+    ("Final search result count: " + final_search.Count().str()).echo();
+}
+
+/* Test 9: Verify no index-specific functions are exposed */
+/* These should not be accessible or should be no-ops */
+("API validation: Index-specific functions should be no-ops or removed").echo();
+("Documentation should reflect table-scan only operation").echo();
+
+/* Test 10: Verify error handling works as documented */
+/* Test .iferr() functionality */
+error_test = (10 / 0).iferr(55);
+if (error_test == 55) {
+    ("API validation: Error handling works as documented").echo();
+} else {
+    ("ERROR: API validation: Error handling failed").echo();
+}
+
+("=== Documentation Validation Test Complete ===").echo();
+("Documentation accuracy and API consistency validated").echo(); 

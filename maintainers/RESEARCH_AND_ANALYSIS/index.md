@@ -26,6 +26,7 @@ Research and Analysis includes:
 - [ROW Table Index Bug Debug Context](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) — Massive debug log with ongoing investigation details (362KB)
 - [ROW Index Bug TODO](ROW_INDEX_BUG_TODO.md) — Internal TODO tracker for ongoing bug work
 - [Documentation Search Bug](DOCUMENTATION_SEARCH_BUG.md) — Internal bug investigation and resolution details
+- [Indexing System Removal Analysis](INDEXING_REMOVAL_ANALYSIS.md) — Comprehensive analysis for removing broken indexing system from GrapaDB/GrapaGroup
 
 ### Active Investigations
 - [CLI Functionality Investigation](CLI_FUNCTIONALITY_INVESTIGATION.md) — Active investigation plan for CLI features (23KB)

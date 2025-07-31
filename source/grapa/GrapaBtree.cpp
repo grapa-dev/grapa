@@ -414,6 +414,41 @@ GrapaError GrapaBtree::GetTreeIndex(GrapaCursor& cursor, u64& indexTree)
 	return(0);
 }
 
+GrapaError GrapaBtree::SetTreeDictionary(GrapaCursor& cursor, u64 dictTree)
+{
+	GrapaError err = 0;
+	GrapaBlockTree head;
+
+	err = head.Read(mFile,cursor.mTreeRef);
+	if (err) return(err);
+
+	if (head.blockType!=GrapaBlock::TREE_BLOCK) return(-1);
+
+	head.dictTree = dictTree;
+
+	err = head.Write(mFile,cursor.mTreeRef);
+	if (err) return(err);
+
+	return(0);
+}
+
+GrapaError GrapaBtree::GetTreeDictionary(GrapaCursor& cursor, u64& dictTree)
+{
+	GrapaError err = 0;
+	GrapaBlockTree head;
+
+	dictTree = 0;
+
+	err = head.Read(mFile,cursor.mTreeRef);
+	if (err) return(err);
+
+	if (head.blockType!=GrapaBlock::TREE_BLOCK) return(-1);
+
+	dictTree = head.dictTree;
+
+	return(0);
+}
+
 GrapaError GrapaBtree::SetTreeStore(GrapaCursor& cursor, u64 storeTree, u8 storeType)
 {
 	GrapaError err = 0;
@@ -2363,6 +2398,8 @@ GrapaError GrapaBtree::EmptyItem(u64 headRef, GrapaBlockTree& head, u64 pagePos)
 			err = EmptyItem(pagePos, tempHead, tempHead.firstItem);
 			if (err) return(err);
 			err = EmptyItem(pagePos,tempHead,tempHead.indexTree);
+			if (err) return(err);
+			err = EmptyItem(pagePos,tempHead,tempHead.dictTree);
 			if (err) return(err);
 			if (tempHead.storeType==DATA_STORE)
 				err = EmptyItem(pagePos,tempHead,tempHead.storeTree);

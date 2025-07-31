@@ -1,0 +1,31 @@
+/* Debug Dictionary Test */
+/* Purpose: Examine database structure and identify issues */
+
+("=== Debug Dictionary Test ===").echo();
+
+/* Create a simple table */
+table = $file().table("ROW");
+("Table created").echo();
+
+/* Add a field */
+table.mkfield("name", "STR", "VAR");
+("Field added").echo();
+
+/* Try to set data */
+table.set("test1", "Alice", "name");
+("Data set").echo();
+
+/* Try to get data */
+result = table.get("test1", "name");
+("Get result: " + result.str()).echo();
+
+/* List all records */
+("=== Listing records ===").echo();
+records = table.ls();
+("Records: " + records.str()).echo();
+
+/* Dump the structure */
+("=== Dumping structure ===").echo();
+table.dump();
+
+("=== Test complete ===").echo(); 

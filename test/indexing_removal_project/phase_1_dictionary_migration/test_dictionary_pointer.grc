@@ -1,0 +1,55 @@
+/* Test Dictionary Pointer Migration */
+/* Phase 1: Dictionary Pointer Migration */
+/* Purpose: Validate dictionary pointer relocation to B-tree node */
+
+/* CRITICAL NOTE: Dictionary IS a tree structure */
+/* - GetDataTypeRecord() returns a tree reference to the dictionary */
+/* - Dictionary scanning is O(n) linear search through tree items */
+/* - Field name lookups use linear search, no indexing on field names */
+/* - Migration changes storage location but not access pattern */
+
+("=== Dictionary Pointer Migration Test ===").echo();
+("Testing dictionary pointer relocation to B-tree node...").echo();
+
+/* Test 1: Create table and examine structure */
+table = $file().table("ROW");
+table.mkfield("id", "INT");
+table.mkfield("name", "STR", "VAR");
+table.mkfield("value", "FLOAT", "FIX", 8);
+("Table created successfully").echo();
+
+/* Test 2: Examine database structure with .dump() */
+("=== Database Structure Before Data Insertion ===").echo();
+table.dump();
+
+/* Test 3: Insert some data */
+table.set("user1", 1, "id");
+table.set("user1", "Alice", "name");
+table.set("user1", 123.45, "value");
+
+table.set("user2", 2, "id");
+table.set("user2", "Bob", "name");
+table.set("user2", 67.89, "value");
+
+("Data inserted successfully").echo();
+
+/* Test 4: Examine database structure after data insertion */
+("=== Database Structure After Data Insertion ===").echo();
+table.dump();
+
+/* Test 5: Verify data retrieval */
+("=== Data Retrieval Test ===").echo();
+user1_name = table.get("user1", "name").str();
+user1_value = table.get("user1", "value").float();
+user2_name = table.get("user2", "name").str();
+user2_value = table.get("user2", "value").float();
+
+("User1: " + user1_name + ", Value: " + user1_value.str()).echo();
+("User2: " + user2_name + ", Value: " + user2_value.str()).echo();
+
+/* Test 6: Examine final structure */
+("=== Final Database Structure ===").echo();
+table.dump();
+
+("=== Dictionary Pointer Migration Test Complete ===").echo();
+("Check output above for dictionary tree references in B-tree nodes").echo(); 

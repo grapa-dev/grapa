@@ -133,8 +133,9 @@ void GrapaBlockTree::BigEndian()
 	itemCount = BE_S64(itemCount);
 	firstItem = BE_S64(firstItem);
 	storeTree = BE_S64(storeTree);
-	indexTree = BE_S64(indexTree);
 	parentTree = BE_S64(parentTree);
+	dictTree = BE_S64(dictTree);
+	indexTree = BE_S64(indexTree);
 }
 void GrapaBlockTree::Init() { memset(&blockType, 0, GetSize()); blockType = GrapaBlock::TREE_BLOCK; }
 bool GrapaBlockTree::GetDirty() { return((flags & 0x80) == 0x80); }

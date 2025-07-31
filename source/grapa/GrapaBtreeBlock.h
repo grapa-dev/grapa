@@ -117,9 +117,10 @@ public:
 		u64 itemCount;
 		u64 firstItem;
 		u64 storeTree;
-		u64 indexTree;
 		u64 parentTree;
-		u64 reserved2[2];
+		u64 dictTree;		// NEW: Dictionary tree reference
+		u64 indexTree;		// Retained for future use
+		u64 reserved2;		// Changed from array to single u64
 	};
 	void BigEndian();
 	static u16 GetBlocks() { return(GrapaBlock::BLOCKS32 * 2); }

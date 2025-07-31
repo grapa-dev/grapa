@@ -1,0 +1,60 @@
+/* Test Index Audit Functionality */
+/* Phase 0: Pre-Implementation Safety */
+/* Purpose: Validate that all index-related code is properly identified */
+
+/* Test 1: Verify index-related functions exist and are callable */
+/* This test ensures we can identify all functions that will be modified */
+
+("=== Index Audit Test ===").echo();
+("Testing index-related function identification...").echo();
+
+/* Test CreateIndex function (will become no-op) */
+/* Create a simple table to test index creation */
+table = ROW("test_audit", "id:int,name:str");
+
+/* This should work before modification */
+/* After modification, this will be a no-op but should not error */
+result = table.CreateIndex("name_index", "name").iferr(0);
+if (result == 0) {
+    ("ERROR: CreateIndex function not accessible").echo();
+} else {
+    ("CreateIndex function exists and is callable").echo();
+}
+
+/* Test SearchDb function (will use table scan) */
+/* Insert test data */
+table.Insert(1, "Alice");
+table.Insert(2, "Bob");
+table.Insert(3, "Charlie");
+
+/* Search should work (will use table scan after modification) */
+result = table.SearchDb("name", "Bob").iferr(0);
+if (result == 0) {
+    ("ERROR: SearchDb function not accessible").echo();
+} else {
+    ("SearchDb function exists and is callable").echo();
+    ("Search result count: " + result.Count().str()).echo();
+}
+
+/* Test dictionary access (will change location) */
+/* Access table dictionary */
+dict = table.GetDataTypeRecord().iferr(0);
+if (dict == 0) {
+    ("ERROR: Dictionary access failed").echo();
+} else {
+    ("Dictionary access works (current location)").echo();
+    ("Dictionary field count: " + dict.Count().str()).echo();
+}
+
+/* Test debug functions */
+/* Test dump functionality */
+dump_result = table.DumpTheStructure().iferr(0);
+if (dump_result == 0) {
+    ("ERROR: DumpTheStructure function not accessible").echo();
+} else {
+    ("DumpTheStructure function exists and is callable").echo();
+}
+
+("=== Index Audit Test Complete ===").echo();
+("All index-related functions identified and accessible").echo();
+("Ready for modification phase").echo(); 

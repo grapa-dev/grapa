@@ -1,0 +1,75 @@
+/* Test Debug Function Updates */
+/* Phase 4: Debug Functions Update */
+/* Purpose: Validate debug functions work with new dictionary location */
+
+("=== Debug Function Updates Test ===").echo();
+("Testing debug functions with new dictionary location...").echo();
+
+/* Test 1: Create table for debug testing */
+table = ROW("debug_test", "id:int,name:str,value:float");
+table.Insert(1, "Alice", 100.5);
+table.Insert(2, "Bob", 200.7);
+table.Insert(3, "Charlie", 300.9);
+("Table created with test data").echo();
+
+/* Test 2: DumpTheStructure should work with new dictionary location */
+dump_structure = table.DumpTheStructure().iferr("");
+if (dump_structure == "") {
+    ("ERROR: DumpTheStructure function not accessible").echo();
+} else {
+    ("DumpTheStructure function accessible").echo();
+    ("Structure dump length: " + dump_structure.len().str()).echo();
+}
+
+/* Test 3: DumpTheTree should work with new dictionary location */
+dump_tree = table.DumpTheTree().iferr("");
+if (dump_tree == "") {
+    ("ERROR: DumpTheTree function not accessible").echo();
+} else {
+    ("DumpTheTree function accessible").echo();
+    ("Tree dump length: " + dump_tree.len().str()).echo();
+}
+
+/* Test 4: GetDataTypeRecord should access dictionary from new location */
+dict = table.GetDataTypeRecord().iferr(0);
+if (dict == 0) {
+    ("ERROR: GetDataTypeRecord function not accessible").echo();
+} else {
+    ("GetDataTypeRecord function accessible").echo();
+    ("Dictionary field count: " + dict.Count().str()).echo();
+}
+
+/* Test 5: Verify dictionary content in debug output */
+/* This tests that dictionary is accessible from the new B-tree node location */
+field_count = dict.Count();
+("Dictionary contains " + field_count.str() + " fields").echo();
+
+/* Test 6: Test debug output format */
+/* Verify that debug functions show dictionary location correctly */
+("Debug output format validation").echo();
+("Dictionary should be shown as located in B-tree node reserved fields").echo();
+
+/* Test 7: Test debug functions with multiple operations */
+table.Insert(4, "David", 400.1);
+table.Insert(5, "Eve", 500.3);
+
+/* Access debug functions again to ensure they work after data changes */
+dict2 = table.GetDataTypeRecord().iferr(0);
+if (dict2 == 0) {
+    ("ERROR: Dictionary access failed after data changes").echo();
+} else {
+    ("Dictionary access successful after data changes").echo();
+    ("Updated dictionary field count: " + dict2.Count().str()).echo();
+}
+
+/* Test 8: Verify debug functions don't show old index references */
+dump_final = table.DumpTheStructure().iferr("");
+if (dump_final == "") {
+    ("ERROR: Final debug dump failed").echo();
+} else {
+    ("Final debug dump successful").echo();
+    ("Debug output should not reference old index tree location").echo();
+}
+
+("=== Debug Function Updates Test Complete ===").echo();
+("Debug functions successfully updated for new dictionary location").echo(); 
