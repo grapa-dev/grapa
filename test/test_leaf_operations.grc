@@ -1,0 +1,26 @@
+/* Test file to trigger leaf operations and see UpdateLeafInfo logging */
+
+/* Create a table with multiple records to trigger leaf operations */
+$file().table('TEST');
+
+/* Create multiple records to trigger leaf splitting and moving */
+$file().set('user1', '{"name":"Alice","age":25,"city":"New York"}');
+$file().set('user2', '{"name":"Bob","age":30,"city":"Los Angeles"}');
+$file().set('user3', '{"name":"Charlie","age":35,"city":"Chicago"}');
+$file().set('user4', '{"name":"David","age":40,"city":"Boston"}');
+$file().set('user5', '{"name":"Eve","age":45,"city":"Seattle"}');
+$file().set('user6', '{"name":"Frank","age":50,"city":"Miami"}');
+$file().set('user7', '{"name":"Grace","age":55,"city":"Denver"}');
+$file().set('user8', '{"name":"Henry","age":60,"city":"Phoenix"}');
+
+/* Update some records to trigger SetRecordField operations */
+$file().set('user1', '{"name":"Alice Updated","age":26,"city":"New York Updated"}');
+$file().set('user2', '{"name":"Bob Updated","age":31,"city":"Los Angeles Updated"}');
+
+/* Access records to trigger PtrToRec operations */
+$file().get('user1');
+$file().get('user2');
+$file().get('user3');
+
+/* Show the final structure */
+$file().structure(); 

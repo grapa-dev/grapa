@@ -97,7 +97,11 @@ public:
 	virtual GrapaError CompareKey(s16 pCompareType, GrapaCursor& pUserCursor, GrapaCursor& pTreeCursor, s8& pResult);
 	virtual GrapaError DeleteKey(GrapaCursor& pTreeCursor);
 	virtual GrapaError Delete(GrapaCursor& cursor);
+	virtual GrapaError Insert(GrapaCursor& cursor);
+	virtual GrapaError UpdateLeafInfo(GrapaBlockNodeLeaf* key, u64 newBlock, s8 newIndex) override;
+	virtual GrapaError Search(GrapaCursor& cursor);
 	virtual GrapaError MoveLeaf(u64 headRef, GrapaBlockTree& head, GrapaBlockNodeHeader& oldPage, u64 rootNode, s8 rootIndex, GrapaBlockNodeHeader& newPage, u64 newBlock, s8 newIndex);
+	virtual GrapaError PurgeRc(u64 headRef, GrapaBlockTree& head, u64 rootNode, GrapaCursor& key, GrapaBlockNodeHeader& rootTree, s8& result);
 
 	// other helper functions
 	virtual GrapaError DeleteKeyIndexes(GrapaCursor& pTreeCursor);

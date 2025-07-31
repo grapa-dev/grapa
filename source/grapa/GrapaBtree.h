@@ -125,11 +125,11 @@ protected:
 	GrapaError SetKey(GrapaBlockTree& head, GrapaBlockNodeLeaf& leaf, GrapaCursor& cursor);
 	GrapaError InsertRc(u64 headRef, GrapaBlockTree& head, u64 rootNode,
 			GrapaCursor& key, GrapaBlockNodeLeaf& pKey, GrapaBlockNodeLeaf& fKey, s8& result);
-	GrapaError PurgeRc(u64 headRef, GrapaBlockTree& head, u64 rootNode, GrapaCursor& key,
+	virtual GrapaError PurgeRc(u64 headRef, GrapaBlockTree& head, u64 rootNode, GrapaCursor& key,
 			GrapaBlockNodeHeader& rootTree, s8& result);
 
 	GrapaError UpdateChildInfo(u64 childBlock, u64 newBlock, s8 newIndex);
-	GrapaError UpdateLeafInfo(GrapaBlockNodeLeaf* key, u64 newBlock, s8 newIndex);
+	virtual GrapaError UpdateLeafInfo(GrapaBlockNodeLeaf* key, u64 newBlock, s8 newIndex);
 	virtual GrapaError MoveLeaf(u64 headRef, GrapaBlockTree& head, GrapaBlockNodeHeader& oldPage, u64 rootNode, s8 rootIndex, GrapaBlockNodeHeader& newPage, u64 newBlock, s8 newIndex);
 
 	GrapaError EmptyItem(u64 headRef, GrapaBlockTree& head, u64 pagePos);

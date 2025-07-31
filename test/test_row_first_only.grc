@@ -1,0 +1,19 @@
+"================================================================================\n".echo();
+"Get $file().table('ROW')\n".echo();
+"================================================================================\n".echo();
+"Create and initialize name,age,city\n".echo();
+fdata = $file().table("ROW");
+fdata.mkfield("name", "STR", "VAR");
+fdata.mkfield("age", "INT", "FIX", 4);
+fdata.mkfield("city", "STR", "VAR");
+setFields = op(pData,rName,pName,pAge,pCity) {
+	pData.set(rName, pName, "name");
+	pData.set(rName, pAge, "age");
+	pData.set(rName, pCity, "city");
+};
+"================================================================================\n".echo();
+("Set user1 " + {"name":"Alice","age":25,"city":"New York"}.str() + "\n").echo();
+setFields(fdata,"user1","Alice",25,"New York");
+"--------------------------\n".echo();
+fdata.debug();
+"================================================================================\n".echo(); 

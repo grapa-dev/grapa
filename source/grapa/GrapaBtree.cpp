@@ -1045,7 +1045,9 @@ GrapaError	GrapaBtree::Search(GrapaCursor& cursor)
 
 	if (head.blockType!=GrapaBlock::TREE_BLOCK) return(-1);
 
+	printf("DEBUG: Search - Searching for key=%llu value=%llu in tree=%llu firstItem=%llu\n", cursor.mKey, cursor.mValue, cursor.mTreeRef, head.firstItem);
 	found = SearchRc(head.firstItem, cursor, result);
+	printf("DEBUG: Search - SearchRc returned found=%d, result.valueType=%d result.key=%llu result.value=%llu\n", found, result.valueType, result.key, result.value);
 	cursor.mValueType = result.valueType;
 	cursor.mKey = result.key;
 	cursor.mValue = result.value;
@@ -1407,12 +1409,19 @@ bool GrapaBtree::SearchNode(u64 rootNode, GrapaCursor& key, s8& pos, u64& child,
 	h = page.leafCount - 1;
 	match = 1;
 
+	printf("DEBUG: SearchNode - Searching for key=%llu value=%llu valueType=%d in node=%llu, leafCount=%d\n", 
+		key.mKey, key.mValue, key.mValueType, rootNode, page.leafCount);
+
 	while (h >= l)
 	{
 		pos = l + (h-l)/2;
 		foundOffset = rootNode+1+pos;
 		err = foundKey.Read(mFile,foundOffset);
 		if (err) return(false);
+		
+		printf("DEBUG: SearchNode - Binary search: pos=%d, foundKey.key=%llu, foundKey.value=%llu, foundKey.valueType=%d\n", 
+			pos, foundKey.key, foundKey.value, foundKey.valueType);
+		
 		switch(key.mValueType)
 		{
 			case SU64_ITEM:
@@ -1428,11 +1437,16 @@ bool GrapaBtree::SearchNode(u64 rootNode, GrapaCursor& key, s8& pos, u64& child,
 				err = CompareKey(compareType,key,leafCursor,match);
 				if (err) return(false);
 		}
+		
+		printf("DEBUG: SearchNode - Comparison result: match=%d (0=equal, >0=foundKey>key, <0=foundKey<key)\n", match);
+		
 		if (match == 0) break;
 		if (match > 0) h = pos - 1; else l = pos + 1;
 	}
 
 	if (match < 0) pos++;
+
+	printf("DEBUG: SearchNode - Final result: match=%d, pos=%d, foundOffset=%llu\n", match, pos, foundOffset);
 
 	if (pos)
 	{
@@ -1590,13 +1604,16 @@ bool GrapaBtree::SearchRc(u64 rootNode, GrapaCursor& key, GrapaBlockNodeLeaf& fo
 	if (node.blockType!=GrapaBlock::NODE_BLOCK)
 		return(false);
 
+	printf("DEBUG: SearchRc - Searching in node=%llu for key=%llu value=%llu\n", rootNode, key.mKey, key.mValue);
 	if (SearchNode(rootNode,key,nodeIndex,child,foundKey,SEARCH_MODE))
 	{
+		printf("DEBUG: SearchRc - Found in node=%llu at index=%d\n", rootNode, nodeIndex);
 		key.mNodeRef = rootNode;
 		key.mNodeIndex = nodeIndex;
 		return(true);
 	}
 
+	printf("DEBUG: SearchRc - Not found in node=%llu, recursing to child=%llu\n", rootNode, child);
 	return(SearchRc(child,key,foundKey));
 }
 
@@ -1783,6 +1800,8 @@ GrapaError GrapaBtree::UpdateChildInfo(u64 childBlock, u64 newBlock, s8 newIndex
 	GrapaError err = 0;
 	GrapaBlockNodeHeader child;
 
+	printf("DEBUG: UpdateChildInfo - childBlock=%llu newBlock=%llu newIndex=%d\n", childBlock, newBlock, newIndex);
+
 	if (childBlock)
 	{
 		err = child.Read(mFile,childBlock);
@@ -1790,11 +1809,21 @@ GrapaError GrapaBtree::UpdateChildInfo(u64 childBlock, u64 newBlock, s8 newIndex
 
 		if (child.blockType==GrapaBlock::NODE_BLOCK)
 		{
+			printf("DEBUG: UpdateChildInfo - Updating NODE_BLOCK child.parent from %llu to %llu, parentIndex from %d to %d\n", 
+				child.parent, newBlock, child.parentIndex, newIndex);
 			child.parent = newBlock;
 			child.parentIndex = newIndex;
 			err = child.Write(mFile,childBlock);
 			if (err) return(err);
 		}
+		else
+		{
+			printf("DEBUG: UpdateChildInfo - Child block type is %d, not NODE_BLOCK\n", child.blockType);
+		}
+	}
+	else
+	{
+		printf("DEBUG: UpdateChildInfo - childBlock is 0, skipping update\n");
 	}
 
 	return(0);
@@ -1812,8 +1841,12 @@ GrapaError GrapaBtree::UpdateLeafInfo(GrapaBlockNodeLeaf* key, u64 newBlock, s8 
 		key = &tempKey;
 	}
 
-	err = UpdateChildInfo(key->child,newBlock,newIndex+1);
-	if (err) return(err);
+	/* RPTR items (type 10) don't have child blocks - they point directly to records */
+	if (key->valueType != 10)
+	{
+		err = UpdateChildInfo(key->child,newBlock,newIndex+1);
+		if (err) return(err);
+	}
 
 	err = key->Write(mFile,newBlock+1+newIndex);
 	if (err) return(err);

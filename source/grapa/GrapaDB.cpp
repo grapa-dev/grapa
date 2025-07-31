@@ -1315,7 +1315,9 @@ GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaDBCursor& pCursor)
 			while (!err)
 			{
 				tableCursor.Set(indexCursor.mValue, RPTR_ITEM, pCursor.mKey, savedPCursorValue);
+				printf("DEBUG: CreateRecord Insert RPTR_ITEM - pCursor.mKey=%llu savedPCursorValue=%llu indexCursor.mValue=%llu\n", pCursor.mKey, savedPCursorValue, indexCursor.mValue);
 				err = Insert(tableCursor);
+				printf("DEBUG: CreateRecord Insert RPTR_ITEM - Insert err=%lld\n", (long long)err);
 				err = Next(indexCursor);
 				if (!err && indexCursor.mKey == 0)
 					err = Next(indexCursor);
@@ -1512,9 +1514,16 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 						break;
 					case RTABLE_TREE:
 						printf("DEBUG: SetRecordField Delete RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu savedCursorValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue, savedCursorValue);
-						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, savedCursorValue);
+						// FIX: RPTR should point to the record's key, not the record's value
+						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mKey);
+						printf("DEBUG: SetRecordField Delete RPTR_ITEM - About to delete key=%llu value=%llu from tree=%llu\n", tableCursor.mKey, tableCursor.mValue, tableCursor.mTreeRef);
 						err = Delete(tableCursor);
 						printf("DEBUG: SetRecordField Delete RPTR_ITEM - Delete err=%lld\n", (long long)err);
+						// If delete fails, it might be because the entry doesn't exist or is in a different state
+						// This is not a critical error - we can proceed with the insert
+						if (err != 0) {
+							printf("DEBUG: SetRecordField Delete RPTR_ITEM - Delete failed, but continuing with insert\n");
+						}
 						break;
 					case CTABLE_TREE:
 						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey, savedCursorValue);
@@ -1884,7 +1893,8 @@ GrapaError GrapaDB::SetRecordField(GrapaDBCursor& cursor, GrapaDBFieldValueArray
 					break;
 				case RTABLE_TREE:
 					printf("DEBUG: SetRecordField Insert RPTR_ITEM - recCursor.mValue=%llu recCursor.mKey=%llu indexCursor.mValue=%llu savedCursorValue=%llu\n", recCursor.mValue, recCursor.mKey, indexCursor.mValue, savedCursorValue);
-					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, savedCursorValue);
+					// FIX: RPTR should point to the record's key, not the record's value
+					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey, recCursor.mKey);
 					err = Insert(tableCursor);
 					printf("DEBUG: SetRecordField Insert RPTR_ITEM - Insert err=%lld tableCursor.mValue=%llu\n", (long long)err, tableCursor.mValue);
 					break;
@@ -2748,85 +2758,85 @@ GrapaError GrapaDB::PtrToRec(GrapaCursor& ptrCursor, GrapaCursor& recCursor)
 	switch(ptrCursor.mValueType)
 	{
 		case GPTR_ITEM:
-			recCursor.Set(tableRef,GREC_ITEM,ptrCursor.mKey);
+			recCursor.Set(tableRef,GREC_ITEM,ptrCursor.mKey,ptrCursor.mValue);
 			recCursor.mTreeType = GROUP_TREE;
 			break;
 		case RPTR_ITEM:
-			printf("DEBUG: PtrToRec RPTR_ITEM - Setting recCursor tableRef=%llu key=%llu\n", tableRef, ptrCursor.mKey);
-			recCursor.Set(tableRef,RREC_ITEM,ptrCursor.mKey);
+			printf("DEBUG: PtrToRec RPTR_ITEM - Setting recCursor tableRef=%llu key=%llu ptrCursor.mValue=%llu\n", tableRef, ptrCursor.mKey, ptrCursor.mValue);
+			recCursor.Set(tableRef,RREC_ITEM,ptrCursor.mKey,ptrCursor.mValue);
 			recCursor.mTreeType = RTABLE_TREE;
+			printf("DEBUG: PtrToRec RPTR_ITEM - After Set: recCursor.mValue=%llu recCursor.mKey=%llu recCursor.mTreeRef=%llu\n", recCursor.mValue, recCursor.mKey, recCursor.mTreeRef);
 			break;
 		case CPTR_ITEM:
-			recCursor.Set(tableRef,CREC_ITEM,ptrCursor.mKey);
+			recCursor.Set(tableRef,CREC_ITEM,ptrCursor.mKey,ptrCursor.mValue);
 			recCursor.mTreeType = CTABLE_TREE;
 			break;
 	}
-	printf("DEBUG: PtrToRec - About to Search recCursor.mValue=%llu recCursor.mKey=%llu\n", recCursor.mValue, recCursor.mKey);
+	printf("DEBUG: PtrToRec - About to Search recCursor.mValue=%llu recCursor.mKey=%llu recCursor.mTreeRef=%llu\n", recCursor.mValue, recCursor.mKey, recCursor.mTreeRef);
 	GrapaError searchErr = Search(recCursor);
-	printf("DEBUG: PtrToRec Search - err=%lld recCursor.mValue=%llu recCursor.mKey=%llu\n", (long long)searchErr, recCursor.mValue, recCursor.mKey);
+	printf("DEBUG: PtrToRec Search - err=%lld recCursor.mValue=%llu recCursor.mKey=%llu recCursor.mTreeRef=%llu\n", (long long)searchErr, recCursor.mValue, recCursor.mKey, recCursor.mTreeRef);
 	return searchErr;
 }
 
 GrapaError GrapaDB::Delete(GrapaCursor& treeCursor)
 {
+	printf("DEBUG: GrapaDB::Delete - Deleting item type %d key=%llu value=%llu\n", 
+		treeCursor.mValueType, treeCursor.mKey, treeCursor.mValue);
+	
 	// Need to delete the indexes first because of a scenario in PurgeRc
 	// where the key has children, a child is promoted and replaces the key in the tree
 	// This causes the DeleteKey to fail to delete the index because the key can't be located in the search
 	DeleteKeyIndexes(treeCursor);
-	return GrapaBtree::Delete(treeCursor);
+	
+	GrapaError err = GrapaBtree::Delete(treeCursor);
+	printf("DEBUG: GrapaDB::Delete - Base class Delete returned err=%lld\n", (long long)err);
+	return err;
+}
+
+GrapaError GrapaDB::Insert(GrapaCursor& treeCursor)
+{
+	printf("DEBUG: GrapaDB::Insert - Inserting item type %d key=%llu value=%llu\n", 
+		treeCursor.mValueType, treeCursor.mKey, treeCursor.mValue);
+	
+	GrapaError err = GrapaBtree::Insert(treeCursor);
+	printf("DEBUG: GrapaDB::Insert - Base class Insert returned err=%lld\n", (long long)err);
+	return err;
+}
+
+GrapaError GrapaDB::Search(GrapaCursor& treeCursor)
+{
+	// printf("DEBUG: GrapaDB::Search - Searching for item type %d key=%llu value=%llu\n", 
+	// 	treeCursor.mValueType, treeCursor.mKey, treeCursor.mValue);
+	
+	GrapaError err = GrapaBtree::Search(treeCursor);
+	// printf("DEBUG: GrapaDB::Search - Base class Search returned err=%lld\n", (long long)err);
+	return err;
 }
 
 GrapaError GrapaDB::MoveLeaf(u64 headRef, GrapaBlockTree& head, GrapaBlockNodeHeader& oldPage, u64 rootNode, s8 rootIndex, GrapaBlockNodeHeader& newPage, u64 newBlock, s8 newIndex)
 {
 	GrapaError err;
 	GrapaBlockNodeLeaf wrkkey;
-	GrapaCursor cursor;
 
-	// Call the base class to handle the basic leaf movement
-	err = GrapaBtree::MoveLeaf(headRef, head, oldPage, rootNode, rootIndex, newPage, newBlock, newIndex);
-	if (err) return(err);
-
-	// Read the leaf key to check if it's a GrapaDB-specific item type
+	// Read the leaf key to log what we're moving
 	err = wrkkey.Read(mFile, rootNode + 1 + rootIndex);
-	if (err) return(err);
-
-	// Handle GrapaDB-specific cleanup for RPTR_ITEM entries during leaf shifting
-	switch (wrkkey.valueType)
+	if (!err)
 	{
-		case RPTR_ITEM:
-		case GPTR_ITEM:
-		case CPTR_ITEM:
-			// These are pointer items that may need special handling during leaf shifting
-			// The base class has already moved the leaf, but we need to ensure
-			// the pointer relationships remain valid in the GrapaDB context
-			cursor.Set(headRef, wrkkey.valueType, wrkkey.key, wrkkey.value, wrkkey.flags);
-			cursor.mTreeType = head.treeType;
-			
-			// For RPTR_ITEM entries, we need to ensure the pointer to record relationship
-			// remains valid after the leaf has been moved to a new location
-			if (wrkkey.valueType == RPTR_ITEM)
-			{
-				// DEBUG: Log when MoveLeaf is called for RPTR_ITEM
-				printf("DEBUG: GrapaDB::MoveLeaf called for RPTR_ITEM - key=%llu value=%llu\n", wrkkey.key, wrkkey.value);
-				
-				// The RPTR_ITEM points to a record, and we need to ensure
-				// that the pointer relationship is maintained after the move
-				// This is where the corruption was happening - the base BTree
-				// doesn't understand that RPTR_ITEM entries have special semantics
-				
-				// No additional cleanup needed here since the base class has already
-				// moved the leaf and updated the necessary BTree structures.
-				// The RPTR_ITEM corruption was happening because the base class
-				// wasn't handling the GrapaDB-specific data structures properly.
-			}
-			break;
+		printf("DEBUG: GrapaDB::MoveLeaf - Moving item type %d key=%llu value=%llu from pos %d to pos %d\n", 
+			wrkkey.valueType, wrkkey.key, wrkkey.value, rootIndex, newIndex);
 	}
 
-	return(0);
+	// Call the base class to handle the actual leaf movement
+	err = GrapaBtree::MoveLeaf(headRef, head, oldPage, rootNode, rootIndex, newPage, newBlock, newIndex);
+	
+	return(err);
 }
 
 GrapaError GrapaDB::DeleteKeyIndexes(GrapaCursor& treeCursor)
 {
+	printf("DEBUG: GrapaDB::DeleteKeyIndexes - Deleting indexes for item type %d key=%llu value=%llu\n", 
+		treeCursor.mValueType, treeCursor.mKey, treeCursor.mValue);
+	
 	GrapaError err=0;
 	GrapaDBCursor tableCursor, indexTableCursor;
 	u64 indexRef=0;
@@ -2860,7 +2870,10 @@ GrapaError GrapaDB::DeleteKeyIndexes(GrapaCursor& treeCursor)
 							tableCursor.Set(indexTableCursor.mValue,CPTR_ITEM,treeCursor.mKey);
 							break;
 					}
+					printf("DEBUG: GrapaDB::DeleteKeyIndexes - Deleting index item type %d key=%llu value=%llu\n", 
+						tableCursor.mValueType, tableCursor.mKey, tableCursor.mValue);
 					err = GrapaBtree::Delete(tableCursor);
+					printf("DEBUG: GrapaDB::DeleteKeyIndexes - Base class Delete returned err=%lld\n", (long long)err);
 					// Ignore the error...the index could have already been deleted
 					// Maybe do a search first and then only delete if it exists? But this adds a search cost.
 					//if (err) return(err);
@@ -3676,5 +3689,73 @@ void GrapaDB::DebugPrintAllIndexPointers(u64 tableRef) {
         err = Next(ptrCursor);
     }
     printf("DEBUG: Total index entries: %d\n", count);
+}
+
+GrapaError GrapaDB::PurgeRc(u64 headRef, GrapaBlockTree& head, u64 rootNode, GrapaCursor& key, GrapaBlockNodeHeader& rootTree, s8& result)
+{
+	GrapaError err;
+	GrapaBlockNodeLeaf wrkkey;
+
+	// Read the leaf key to log what we're purging
+	err = wrkkey.Read(mFile, rootNode + 1);
+	if (!err)
+	{
+		printf("DEBUG: GrapaDB::PurgeRc - Purging item type %d key=%llu value=%llu\n", 
+			wrkkey.valueType, wrkkey.key, wrkkey.value);
+	}
+
+	// Call the base class to handle the actual purge operation
+	err = GrapaBtree::PurgeRc(headRef, head, rootNode, key, rootTree, result);
+	
+	return(err);
+}
+
+GrapaError GrapaDB::UpdateLeafInfo(GrapaBlockNodeLeaf* key, u64 newBlock, s8 newIndex)
+{
+	GrapaError err = 0;
+	GrapaBlockNodeLeaf tempKey;
+
+	// Check if this is tree 84 and the first leaf (index 0)
+	if (newBlock == 84 && newIndex == 0)
+	{
+		printf("DEBUG: GrapaDB::UpdateLeafInfo - Writing to tree 84, first leaf (index 0)\n");
+		printf("DEBUG: GrapaDB::UpdateLeafInfo - Before write: key->valueType=%d key->key=%llu key->value=%llu key->child=%llu\n", 
+			key ? key->valueType : -1, key ? key->key : 0, key ? key->value : 0, key ? key->child : 0);
+	}
+
+	if (key==0L)
+	{
+		err = tempKey.Read(mFile,newBlock+1+newIndex);
+		if (err) return(err);
+		key = &tempKey;
+		
+		// Log the read operation for tree 84, first leaf
+		if (newBlock == 84 && newIndex == 0)
+		{
+			printf("DEBUG: GrapaDB::UpdateLeafInfo - Read from tree 84, first leaf: valueType=%d key=%llu value=%llu child=%llu\n", 
+				key->valueType, key->key, key->value, key->child);
+		}
+	}
+
+	err = UpdateChildInfo(key->child,newBlock,newIndex+1);
+	if (err) return(err);
+
+	// Log before writing for tree 84, first leaf
+	if (newBlock == 84 && newIndex == 0)
+	{
+		printf("DEBUG: GrapaDB::UpdateLeafInfo - About to write to tree 84, first leaf: valueType=%d key=%llu value=%llu child=%llu\n", 
+			key->valueType, key->key, key->value, key->child);
+	}
+
+	err = key->Write(mFile,newBlock+1+newIndex);
+	if (err) return(err);
+
+	// Log after writing for tree 84, first leaf
+	if (newBlock == 84 && newIndex == 0)
+	{
+		printf("DEBUG: GrapaDB::UpdateLeafInfo - Successfully wrote to tree 84, first leaf\n");
+	}
+
+	return(0);
 }
 

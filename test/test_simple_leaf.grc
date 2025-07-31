@@ -1,0 +1,17 @@
+/* Simple test to focus on RPTR corruption issue */
+
+/* Create a table */
+$file().table('SIMPLE');
+
+/* Create a few records */
+$file().set('user1', '{"name":"Alice","age":25}');
+$file().set('user2', '{"name":"Bob","age":30}');
+
+/* Update a record to trigger SetRecordField */
+$file().set('user1', '{"name":"Alice Updated","age":26}');
+
+/* Access the record to see the corruption */
+$file().get('user1');
+
+/* Show structure */
+$file().structure(); 
