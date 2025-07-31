@@ -113,6 +113,24 @@ This document provides a comprehensive reference for the `GrapaBtree` class, its
 - **GrapaBlockFirst**: Manages the first block and free page list.
 - **GrapaBlockPage**: Manages free space and page allocation.
 
+### Performance Optimization Details
+- **Node Width Tuning**: Configurable `NODE_WIDTH` for performance vs. memory trade-offs
+- **Block Size Optimization**: 32-byte blocks for consistent allocation patterns
+- **Memory Management**: Efficient allocation and deallocation with hole management
+- **Cache Hit Optimization**: LRU eviction for optimal cache performance
+
+### Thread Safety Features
+- **Built-in Synchronization**: All operations internally synchronized at C++ level
+- **No Crashes**: Never encounter crashes or corruption from concurrent access
+- **Logical Race Conditions**: May see logical race conditions but no stability issues
+- **Cache Thread Safety**: Thread-safe caching mechanisms for concurrent access
+
+### Performance Monitoring and Debugging
+- **Weight Tracking**: Maintain subtree weights for fast size/count queries
+- **Debug Dumping**: Comprehensive dump system for performance analysis
+- **Block-level Debugging**: Inspect individual blocks and nodes for optimization
+- **Performance Profiling**: Tools for identifying performance bottlenecks
+
 ---
 
 ## BYTE_DATA and FREC_DATA: Standard and Fragmented Data Support

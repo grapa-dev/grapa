@@ -499,6 +499,110 @@ The architecture supports extensions through:
 
 #### Debug Output System
 The system includes comprehensive debug output for investigation:
+
+---
+
+## GrapaDB Storage Architecture: Table Layouts and Indexing
+
+GrapaDB organizes all persistent data using BTrees, leveraging them for both record/column storage and for all indexes. The storage architecture varies by table type (ROW, COL, GROUP), but all share a common foundation:
+- **Data BTrees**: Store the actual user data (records or columns)
+- **Index BTrees**: Store pointers to data BTrees for fast lookup/search
+- **Metadata/Dictionary BTrees**: Store field definitions, types, and schema info
+
+### Table Layouts
+
+#### ROW Table
+- **Data Organization**: Each record (row) is stored as a single entry in the data BTree; all fields for a record are together.
+- **Indexes**: One or more index BTrees point to record locations in the data BTree (using RPTR_ITEM, etc.).
+- **Metadata**: Dictionary/field definitions are stored in a DICT field (key==0) in the index BTree.
+
+#### COL Table
+- **Data Organization**: Each column is stored separately, often as its own BTree (using FREC_DATA for fragmentation).
+- **Indexes**: Indexes may be per-column or global, depending on configuration; pointers link index BTrees to column BTrees.
+- **Fragmentation**: FREC_DATA and weighted BTree are used for efficient column storage and updates.
+- **Metadata**: Dictionary/field definitions as in ROW.
+
+#### GROUP Table
+- **Data Organization**: Hierarchical or nested records (like a directory tree or JSON object); may use a BTree per group or nested structure.
+- **Indexes**: Can be hierarchical or flat; pointers link parent/child groups and their indexes.
+- **Metadata**: As above, with possible extensions for nested/grouped fields.
+
+### Diagram: High-Level Storage Layout
+
+```
++-------------------+         +-------------------+
+|   Data BTree(s)   | <------ |   Index BTree(s)  |
+| (records/columns) |         | (pointers to data)|
++-------------------+         +-------------------+
+         ^                           ^
+         |                           |
+         +-----------+   +-----------+
+                     |   |
+             +-------------------+
+             |  Metadata/DICT    |
+             |  (field defs, etc)|
+             +-------------------+
+```
+- For COL tables, there may be multiple data BTrees (one per column), each with its own index or shared indexes.
+- GROUP tables may have a tree of data/index BTrees linked by parent/child pointers.
+
+### Comparison Table: Table Layouts
+
+| Table Type | Data Storage         | Indexing                | Metadata/DICT         |
+|------------|---------------------|-------------------------|-----------------------|
+| ROW        | One BTree for rows  | Index BTrees point to records | DICT field in index BTree |
+| COL        | BTree per column (FREC_DATA) | Index per column or global | DICT field in index BTree |
+| GROUP      | BTree per group/nested structure | Hierarchical or flat indexes | DICT, possibly nested    |
+
+### Why This Matters
+- **For maintainers**: Understanding the mapping from high-level tables to BTrees is essential for debugging, extending, or recovering GrapaDB files.
+- **For debugging/forensics**: Knowing how data and indexes are linked allows for manual recovery and low-level analysis.
+- **For extensibility**: Enables future contributors to add new table types, optimize storage, or build tools for migration and analysis.
+
+---
+
+## How to Properly Use GrapaDB
+
+### Database Initialization
+1. Create a `GrapaDB` instance
+2. Call `Create(fileName, treeType, firstTree)` to initialize
+3. Use `OpenFile(fileName, mode)` for existing databases
+
+### Table Operations
+1. Use `CreateTable(tableName, tableType)` to create tables
+2. Use `GetTable(tableName)` to access existing tables
+3. Use `DeleteTable(tableName)` to remove tables
+
+### Record Operations
+1. Use `CreateRecord()` to add new records
+2. Use `DeleteRecord()` to remove records
+3. Use `SetRecordField()` to update field values
+4. Use `GetRecordField()` to retrieve field values
+
+### Index Operations
+1. Indexes are automatically created and maintained
+2. Use `SearchDb()` for indexed searches
+3. Indexes are updated automatically on record changes
+
+---
+
+## [2025-07-22] Index Entry Value Handling and ROW Table Bug Resolution
+
+- When inserting index entries (RPTR_ITEM, CPTR_ITEM, GPTR_ITEM) during record creation or field update, always set the value to the actual record reference (recCursor.mValue).
+- Never use 0 or the key as the value for these index entries, as this leads to index corruption and data loss after multiple inserts.
+- This rule was established and validated during the investigation and resolution of the ROW table index corruption bug (see investigation docs for details).
+- The implementation now comments out the old logic and uses the correct value assignment in both CreateRecord and SetRecordField.
+
+---
+
+## [2025-07-24] Index Creation and Exposure: Default $KEY Index and Custom Indexes
+
+- **Default Index:** Every GrapaDB table automatically receives a default index on the $KEY field (fieldId=4) at creation. This index is required for correct table operation and is always present.
+- **Custom Indexes:** Additional (user-defined) indexes, including multi-field indexes, can be created via the C++ API using `CreateIndex` (to create the index structure) and `CreateIndexField` (to associate one or more fields with the index). The index field list is stored in the index's field mapping tree, and multi-field indexes are supported by adding multiple fields to the same index.
+- **Language/CLI Exposure:** As of this update, there are no Grapa language or CLI commands to create or manage custom indexes; this functionality is only available via the C++ API. This is now a documented backlog item (see BACKLOG.md) to expose user-defined index creation and management to the Grapa language and CLI.
+- **Index Structure:** Each index maintains a mapping of index field IDs, and the comparison/search logic supports multi-field indexes via the `CompareSearchKey` method. Indexes store pointers (not data) and are updated automatically on record changes.
+#### Debug Output System
+The system includes comprehensive debug output for investigation:
 ```
 ```
 
