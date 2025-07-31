@@ -22,14 +22,7 @@
   - Fix implemented and tested
   - Workaround documented for users
 
-### 2. Custom Delimiter Edge Cases
-- **Status:** MEDIUM PRIORITY, investigation needed
-- **Goal:** Fix custom delimiter implementation issues that currently cause test failures
-- **Impact:** High - affects any production use with custom delimiters
-- **Success Criteria:**
-  - Custom delimiter tests pass consistently
-  - Implementation handles edge cases properly
-  - Documentation updated with correct behavior
+
 
 ---
 
@@ -56,8 +49,8 @@
 
 ## 📊 CURRENT FOCUS
 
-**Primary Goal:** Resolve critical database issues (ROW table corruption, custom delimiter edge cases)
+**Primary Goal:** Resolve critical database issues (ROW table corruption)
 
-**Next Priority:** Unicode language binding and CLI standardization (see [`BACKLOG.md`](BACKLOG.md) for full roadmap)
+**Next Priority:** Unicode language binding and CLI enhancement (see [`BACKLOG.md`](BACKLOG.md) for full roadmap)
 
 **Last Updated:** January 2025 

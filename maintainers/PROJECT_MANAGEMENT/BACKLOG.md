@@ -86,11 +86,11 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] **Advanced Debugging**: Add `--trace` for execution tracing, `--dump-ast` for showing parsed AST, and `--dump-bytecode` for showing compiled bytecode
 - [ ] **Performance Profiling**: Add `--profile` option for performance analysis and optimization insights
 
-### CLI Standardization
-- [ ] **Replace Non-Standard Options**: Replace `-ccmd`, `-cfile`, `-ccin`, `-argcin` with standard `-c`, `-f`, `-s`, `-S`
-- [ ] **Remove Conflicting Options**: Remove `-c, --console` and `-e, --env` conflicts
-- [ ] **Move GUI Options**: Move `-w` and `-wfile` to separate GUI tool
-- [ ] **Remove Internal Options**: Remove `-argv` and `-` internal use options
+### CLI Standardization ✅ **COMPLETED**
+- [x] **Replace Non-Standard Options**: Replace `-ccmd`, `-cfile`, `-ccin`, `-argcin` with standard `-c`, `-f`, `-s`, `-S` ✅ **COMPLETED**
+- [x] **Remove Conflicting Options**: Remove `-c, --console` and `-e, --env` conflicts ✅ **COMPLETED**
+- [x] **Move GUI Options**: Move `-w` and `-wfile` to separate GUI tool ✅ **COMPLETED**
+- [x] **Remove Internal Options**: Remove `-argv` and `-` internal use options ✅ **COMPLETED**
 
 ### Core Language Features
 - [ ] **String Comparison Distance Function**: Consider creating a dedicated function that returns detailed string comparison distance information (like current `<=>` operator behavior) for applications that need fuzzy matching or detailed string analysis

@@ -82,13 +82,13 @@ test/
 ### Automated Testing
 ```bash
 # Run complete test suite
-./grapa -cfile "test/run_tests.grc"
+./grapa -f "test/run_tests.grc"
 
 # Run Python test suite
 python3 test/run_tests.py
 
 # Run specific test category
-./grapa -cfile "test/core/basic_tests.grc"
+./grapa -f "test/core/basic_tests.grc"
 ```
 
 ### Manual Testing

@@ -86,12 +86,8 @@ For development and CI/CD:
 For detailed testing information, see [Testing Documentation](testing.md).
 
 # Editor
-Grapa includes a widget library that can be used create create a GUI. Grapa can be run with simple editor (see lib/grapa/editor.grc) writen using this library.
-```
-grapa -w
-```
+Grapa includes a widget library that can be used to create GUIs. The widget system is available through the `$WIDGET` type in Grapa scripts.
 
-You can also create your own GUI to run with grapa. This file can either be a raw text file, or a grapa compiled file.
-```
-grapa -wfile [file]
-```
+**Note:** The `-w` and `-wfile` CLI options have been removed from the main Grapa executable. GUI functionality is now available through the widget system in scripts.
+
+For editor functionality, you can create custom GUI applications using the `$WIDGET` type. See the [Widget Documentation](../type/widget.md) for details.

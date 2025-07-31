@@ -75,7 +75,7 @@ test/
 - Cross-calling between file types
 
 **After (Correct):**
-- **`.grc` files**: Run with `./grapa -cfile filename.grc`
+- **`.grc` files**: Run with `./grapa -f filename.grc`
 - **`.py` files**: Run with `python filename.py` (uses Grapa extension directly)
 - **No cross-calling**: Each file type uses its appropriate execution method
 
@@ -184,15 +184,15 @@ All relevant documentation has been updated to reflect the consolidation:
 ### For Developers
 ```bash
 # Run comprehensive .grc test suite
-./grapa -cfile "test/run_tests_comprehensive.grc"
+./grapa -f "test/run_tests_comprehensive.grc"
 
 # Run specific .grc category
-./grapa -cfile "test/file_system/test_file_basic.grc"
+./grapa -f "test/file_system/test_file_basic.grc"
 
 # Run consolidated grep tests
-./grapa -cfile "test/grep/test_context_merging.grc"
-./grapa -cfile "test/grep/test_o_option_comprehensive.grc"
-./grapa -cfile "test/grep/test_output_formats.grc"
+./grapa -f "test/grep/test_context_merging.grc"
+./grapa -f "test/grep/test_o_option_comprehensive.grc"
+./grapa -f "test/grep/test_output_formats.grc"
 
 # Run Python integration tests
 python test/python/test_python_file_operations.py
@@ -204,7 +204,7 @@ python test/run_organized_tests.py
 ### For CI/CD
 ```bash
 # Comprehensive .grc testing
-./grapa -cfile "test/run_tests_comprehensive.grc"
+./grapa -f "test/run_tests_comprehensive.grc"
 
 # Python integration testing
 python test/python/test_python_file_operations.py

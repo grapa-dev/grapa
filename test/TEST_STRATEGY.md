@@ -180,56 +180,56 @@ This document defines a comprehensive test strategy for Grapa grep with multiple
 #### Daily Development Workflow:
 ```bash
 # Run smoke tests (every build)
-.\grapa.exe -q -cfile "test/grep/test_smoke_basic.grc"
-.\grapa.exe -q -cfile "test/grep/test_smoke_options.grc"
-.\grapa.exe -q -cfile "test/grep/test_smoke_unicode.grc"
-.\grapa.exe -q -cfile "test/grep/test_smoke_custom_delimiters.grc"
+.\grapa.exe -q -f "test/grep/test_smoke_basic.grc"
+.\grapa.exe -q -f "test/grep/test_smoke_options.grc"
+.\grapa.exe -q -f "test/grep/test_smoke_unicode.grc"
+.\grapa.exe -q -f "test/grep/test_smoke_custom_delimiters.grc"
 ```
 
 #### Daily Regression Testing:
 ```bash
 # Run regression tests (daily)
-.\grapa.exe -q -cfile "test/grep/test_regression_core.grc"
-.\grapa.exe -q -cfile "test/grep/test_regression_unicode.grc"
-.\grapa.exe -q -cfile "test/grep/test_regression_options.grc"
-.\grapa.exe -q -cfile "test/grep/test_regression_custom_delimiters.grc"
-.\grapa.exe -q -cfile "test/grep/test_regression_context.grc"
-.\grapa.exe -q -cfile "test/grep/test_regression_error_handling.grc"
-.\grapa.exe -q -cfile "test/grep/test_regression_edge_cases.grc"
+.\grapa.exe -q -f "test/grep/test_regression_core.grc"
+.\grapa.exe -q -f "test/grep/test_regression_unicode.grc"
+.\grapa.exe -q -f "test/grep/test_regression_options.grc"
+.\grapa.exe -q -f "test/grep/test_regression_custom_delimiters.grc"
+.\grapa.exe -q -f "test/grep/test_regression_context.grc"
+.\grapa.exe -q -f "test/grep/test_regression_error_handling.grc"
+.\grapa.exe -q -f "test/grep/test_regression_edge_cases.grc"
 ```
 
 #### Weekly Integration Testing:
 ```bash
 # Run integration tests (weekly)
-.\grapa.exe -q -cfile "test/grep/test_integration_option_combinations.grc"
-.\grapa.exe -q -cfile "test/grep/test_integration_unicode_advanced.grc"
-.\grapa.exe -q -cfile "test/grep/test_integration_custom_delimiters_advanced.grc"
-.\grapa.exe -q -cfile "test/grep/test_integration_performance.grc"
-.\grapa.exe -q -cfile "test/grep/test_integration_ripgrep_parity.grc"
-.\grapa.exe -q -cfile "test/grep/test_integration_large_inputs.grc"
+.\grapa.exe -q -f "test/grep/test_integration_option_combinations.grc"
+.\grapa.exe -q -f "test/grep/test_integration_unicode_advanced.grc"
+.\grapa.exe -q -f "test/grep/test_integration_custom_delimiters_advanced.grc"
+.\grapa.exe -q -f "test/grep/test_integration_performance.grc"
+.\grapa.exe -q -f "test/grep/test_integration_ripgrep_parity.grc"
+.\grapa.exe -q -f "test/grep/test_integration_large_inputs.grc"
 ```
 
 #### Monthly Comprehensive Testing:
 ```bash
 # Run comprehensive tests (monthly)
-.\grapa.exe -q -cfile "test/grep/test_comprehensive_all_features.grc"
-.\grapa.exe -q -cfile "test/grep/test_comprehensive_edge_cases.grc"
-.\grapa.exe -q -cfile "test/grep/test_comprehensive_error_scenarios.grc"
-.\grapa.exe -q -cfile "test/grep/test_comprehensive_unicode_full.grc"
-.\grapa.exe -q -cfile "test/grep/test_comprehensive_custom_delimiters_full.grc"
-.\grapa.exe -q -cfile "test/grep/test_comprehensive_option_matrix.grc"
-.\grapa.exe -q -cfile "test/grep/test_comprehensive_performance_full.grc"
+.\grapa.exe -q -f "test/grep/test_comprehensive_all_features.grc"
+.\grapa.exe -q -f "test/grep/test_comprehensive_edge_cases.grc"
+.\grapa.exe -q -f "test/grep/test_comprehensive_error_scenarios.grc"
+.\grapa.exe -q -f "test/grep/test_comprehensive_unicode_full.grc"
+.\grapa.exe -q -f "test/grep/test_comprehensive_custom_delimiters_full.grc"
+.\grapa.exe -q -f "test/grep/test_comprehensive_option_matrix.grc"
+.\grapa.exe -q -f "test/grep/test_comprehensive_performance_full.grc"
 ```
 
 #### Pre-Release Production Testing:
 ```bash
 # Run production readiness tests (before releases)
-.\grapa.exe -q -cfile "test/grep/test_production_stress.grc"
-.\grapa.exe -q -cfile "test/grep/test_production_reliability.grc"
-.\grapa.exe -q -cfile "test/grep/test_production_security.grc"
-.\grapa.exe -q -cfile "test/grep/test_production_performance.grc"
-.\grapa.exe -q -cfile "test/grep/test_production_enterprise.grc"
-.\grapa.exe -q -cfile "test/grep/test_production_compatibility.grc"
+.\grapa.exe -q -f "test/grep/test_production_stress.grc"
+.\grapa.exe -q -f "test/grep/test_production_reliability.grc"
+.\grapa.exe -q -f "test/grep/test_production_security.grc"
+.\grapa.exe -q -f "test/grep/test_production_performance.grc"
+.\grapa.exe -q -f "test/grep/test_production_enterprise.grc"
+.\grapa.exe -q -f "test/grep/test_production_compatibility.grc"
 ```
 
 ### Manual Test Execution
@@ -237,17 +237,17 @@ This document defines a comprehensive test strategy for Grapa grep with multiple
 #### Development Testing:
 ```bash
 # Run development tests (during feature development)
-.\grapa.exe -q -cfile "test/grep/test_development_custom_delimiters_fixes.grc"
-.\grapa.exe -q -cfile "test/grep/test_development_unicode_fixes.grc"
-.\grapa.exe -q -cfile "test/grep/test_development_option_fixes.grc"
+.\grapa.exe -q -f "test/grep/test_development_custom_delimiters_fixes.grc"
+.\grapa.exe -q -f "test/grep/test_development_unicode_fixes.grc"
+.\grapa.exe -q -f "test/grep/test_development_option_fixes.grc"
 ```
 
 #### Research Testing:
 ```bash
 # Run research tests (as needed for investigation)
-.\grapa.exe -q -cfile "test/grep/test_research_ripgrep_comparison.grc"
-.\grapa.exe -q -cfile "test/grep/test_research_performance_analysis.grc"
-.\grapa.exe -q -cfile "test/grep/test_research_unicode_behavior.grc"
+.\grapa.exe -q -f "test/grep/test_research_ripgrep_comparison.grc"
+.\grapa.exe -q -f "test/grep/test_research_performance_analysis.grc"
+.\grapa.exe -q -f "test/grep/test_research_unicode_behavior.grc"
 ```
 
 ## Test File Creation Plan

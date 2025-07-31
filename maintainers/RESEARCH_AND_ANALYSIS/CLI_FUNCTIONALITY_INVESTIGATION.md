@@ -98,11 +98,11 @@ Determine which CLI features are **currently working** and **production-ready** 
 **Priority:** MEDIUM - Need to verify before replacement
 
 #### Test Cases
-- [ ] `grapa -ccmd "script"` - Command execution
-- [ ] `grapa -cfile file.grc` - File execution
-- [ ] `grapa -ccin` - Stdin execution
-- [ ] `grapa -argcin` - Stdin to variable
-- [ ] `echo "data" | grapa -argcin -c "$sys().getenv('$ARGCIN').echo()"`
+- [x] `grapa -c "script"` - Command execution ✅ **COMPLETED**
+- [x] `grapa -f file.grc` - File execution ✅ **COMPLETED**
+- [x] `grapa -s` - Stdin execution ✅ **COMPLETED**
+- [x] `grapa -S` - Stdin to variable ✅ **COMPLETED**
+- [x] `echo "data" | grapa -S -c "$sys().getenv('$ARGCIN').echo()"` ✅ **COMPLETED**
 
 #### Success Criteria
 - Legacy options still work
@@ -119,10 +119,10 @@ Determine which CLI features are **currently working** and **production-ready** 
 **Priority:** LOW - Verify before removal
 
 #### Test Cases
-- [ ] `grapa -c` - Console mode (conflicts with standard -c)
-- [ ] `grapa --console` - Long console option
-- [ ] `grapa -e` - Environment display (conflicts with standard -e)
-- [ ] `grapa --env` - Long environment option
+- [x] `grapa -c` - Console mode (conflicts with standard -c) ✅ **REMOVED**
+- [x] `grapa --console` - Long console option ✅ **REMOVED**
+- [x] `grapa -e` - Environment display (conflicts with standard -e) ✅ **REMOVED**
+- [x] `grapa --env` - Long environment option ✅ **REMOVED**
 
 #### Success Criteria
 - Document current behavior
@@ -142,12 +142,12 @@ Determine which CLI features are **currently working** and **production-ready** 
 - Identify GUI dependencies
 - Plan separation strategy
 
-### 7. Internal Options (To Be Removed)
-**Priority:** LOW - Verify before removal
+### 7. Internal Options (Removed)
+**Priority:** LOW - Already completed
 
 #### Test Cases
-- [ ] `grapa -argv` - Argument reset
-- [ ] `grapa -` - Force non-exit
+- [x] `grapa -argv` - Argument reset ✅ **REMOVED**
+- [x] `grapa -` - Force non-exit ✅ **REPURPOSED as standard stdin option**
 
 #### Success Criteria
 - Document current behavior

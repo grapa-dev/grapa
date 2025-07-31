@@ -338,15 +338,15 @@ The system's integration with the execution tree architecture ensures that inclu
 
 ## Running Grapa Tests and Scripts
 
-- Use **-cfile <filename>** to run a Grapa script file (e.g., .grc test):
+- Use **-f <filename>** to run a Grapa script file (e.g., .grc test):
   
   ```powershell
-  .\grapa.exe -q -cfile "test/my_test.grc"
+  .\grapa.exe -q -f "test/my_test.grc"
   ```
-- Use **-ccmd <code>** for inline code only:
+- Use **-c <code>** for inline code only:
   
   ```powershell
-  .\grapa.exe -q -ccmd "'Hello'.echo();"
+  .\grapa.exe -q -c "'Hello'.echo();"
   ```
 
-**Do not use -ccmd for .grc files.** 
+**Do not use -c for .grc files.** 

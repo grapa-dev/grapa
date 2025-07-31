@@ -50,16 +50,17 @@ cat file.txt | grapa # Automatic stdin reading ✅
 
 #### Non-Standard Options (To Be Replaced)
 ```bash
--ccmd script        # Execute command → should be -c
--cfile file         # Execute file → should be -f  
--ccin               # Read from stdin → should be -s
--argcin             # Store stdin in $ARGCIN → should be -S
+-c script           # Execute command (standard)
+-f file             # Execute file (standard)
+-s                  # Read from stdin (standard)
+-S                  # Store stdin in $ARGCIN (standard)
 ```
 
-#### Conflicting Options (To Be Removed)
+#### Conflicting Options (Removed)
 ```bash
--c, --console       # Conflicts with standard -c for command
--e, --env           # Conflicts with standard -e for eval
+# These options have been removed from the implementation
+# -c, --console       # Conflicts with standard -c for command
+# -e, --env           # Conflicts with standard -e for eval
 ```
 
 ### ❌ **GUI Options (To Be Moved)**
@@ -68,10 +69,11 @@ cat file.txt | grapa # Automatic stdin reading ✅
 -wfile file         # Editor with file → move to separate GUI tool
 ```
 
-### 🔧 **Internal Options (To Be Removed)**
+### 🔧 **Internal Options (Removed)**
 ```bash
--argv               # Reset argument list (internal use)
--                   # Force non-exit (internal use)
+# These options have been removed from the implementation
+# -argv               # Reset argument list (internal use) - REMOVED
+# -                   # Force non-exit (internal use) - REPURPOSED as standard stdin option
 ```
 
 ---
@@ -108,7 +110,7 @@ python -o output.txt                 # Output to file (not standard)
 ```bash
 -c <command>         # Execute command (standard)
 -i                   # Interactive mode (already implemented)
--s                   # Read from stdin (replace -ccin)
+-s                   # Read from stdin (standard)
 -h, --help           # Help (already implemented)
 -v, --version        # Version (already implemented)
 ```
@@ -230,10 +232,10 @@ else if (strstr((char*)e->mValue.mBytes, ".grc") != NULL)
 ## 📋 Success Criteria
 
 ### Phase 1 Success Criteria ✅ COMPLETED
-- [x] `grapa -c "'hello'.echo()"` works (replaces `-ccmd`)
-- [x] `grapa -f script.grc` works (replaces `-cfile`)
-- [x] `grapa -s` works (replaces `-ccin`)
-- [x] `grapa -S` works (replaces `-argcin`)
+- [x] `grapa -c "'hello'.echo()"` works ✅ **COMPLETED**
+- [x] `grapa -f script.grc` works ✅ **COMPLETED**
+- [x] `grapa -s` works ✅ **COMPLETED**
+- [x] `grapa -S` works ✅ **COMPLETED**
 - [x] Help text updated with new options
 - [x] All existing functionality preserved
 - [x] No GUI options in CLI help

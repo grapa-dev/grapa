@@ -105,10 +105,10 @@ All documentation updates have been verified against actual Grapa behavior:
 
 ```bash
 # Verified examples from documentation
-./grapa -ccmd "(5 <=> 3).echo()"           # Returns: 1
-./grapa -ccmd "('hello' <=> 'world').echo()" # Returns: -1
-./grapa -ccmd "(5 <=> '5').echo()"         # Returns: 0
-./grapa -ccmd "(5.5 <=> '5.5').echo()"     # Returns: 0
+./grapa -c "(5 <=> 3).echo()"           # Returns: 1
+./grapa -c "('hello' <=> 'world').echo()" # Returns: -1
+./grapa -c "(5 <=> '5').echo()"         # Returns: 0
+./grapa -c "(5.5 <=> '5.5').echo()"     # Returns: 0
 ```
 
 ## Future Considerations

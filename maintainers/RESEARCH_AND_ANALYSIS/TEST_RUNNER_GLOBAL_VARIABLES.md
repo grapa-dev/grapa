@@ -16,8 +16,8 @@ When using `.shell()` to execute Grapa files, each execution runs in a **separat
 ### ❌ Shell Execution (Separate Processes)
 ```grapa
 /* Test runner using .shell() - DOESN'T WORK */
-result1 = "../../grapa -q -cfile test_pass.grc".shell();
-result2 = "../../grapa -q -cfile test_fail.grc".shell();
+result1 = "../../grapa -q -f test_pass.grc".shell();
+result2 = "../../grapa -q -f test_fail.grc".shell();
 /* $global.testresult from these processes is NOT accessible */
 ```
 
@@ -38,7 +38,7 @@ include "test_fail.grc";  /* Sets $global.testresult = false */
 ### Current Broken Test Runner
 ```grapa
 /* Current approach in run_all_tests.grc */
-grapa_cmd = "../../grapa -q -cfile " + test_file;
+grapa_cmd = "../../grapa -q -f " + test_file;
 result = grapa_cmd.shell();
 if (result.type() == $ERR) {
     /* Only catches execution errors, not test failures */
@@ -98,7 +98,7 @@ while (i < test_files.len()) {
 ### ❌ Avoid This Approach
 ```grapa
 /* Don't use .shell() for test files */
-result = ("../../grapa -q -cfile " + test_file).shell();
+result = ("../../grapa -q -f " + test_file).shell();
 /* Global variables from test file are lost */
 ```
 

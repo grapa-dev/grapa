@@ -48,7 +48,7 @@ print(xy.eval('"Hello, Grapa!".echo();'))
 
 ### Run a Script
 ```bash
-grapa -cfile "my_script.grc"
+grapa -f "my_script.grc"
 ```
 
 **[🚀 Get Started Guide](https://grapa-dev.github.io/grapa/GETTING_STARTED/)**

@@ -12,7 +12,7 @@ This directory contains a comprehensive, organized test suite for Grapa function
 
 ### Execution Methods
 
-- **`.grc` files**: Run with `./grapa -cfile filename.grc`
+- **`.grc` files**: Run with `./grapa -f filename.grc`
 - **`.py` files**: Run with `python filename.py` (uses Grapa extension)
 
 ## Test Organization
@@ -51,7 +51,7 @@ test/
 Run all `.grc` tests using the comprehensive test runner:
 
 ```bash
-./grapa -cfile "test/run_tests_comprehensive.grc"
+./grapa -f "test/run_tests_comprehensive.grc"
 ```
 
 This will execute all `.grc` tests in the organized structure and provide detailed output.
@@ -77,14 +77,14 @@ Run specific test categories:
 
 ```bash
 # File system tests (.grc files)
-./grapa -cfile "test/file_system/test_file_basic.grc"
-./grapa -cfile "test/file_system/test_file_advanced.grc"
+./grapa -f "test/file_system/test_file_basic.grc"
+./grapa -f "test/file_system/test_file_advanced.grc"
 
 # Database tests (.grc files)
-./grapa -cfile "test/database/test_table_basic.grc"
+./grapa -f "test/database/test_table_basic.grc"
 
 # Integration tests (.grc files)
-./grapa -cfile "test/integration/test_unified_path_system.grc"
+./grapa -f "test/integration/test_unified_path_system.grc"
 
 # Python integration tests (.py files)
 python test/python/test_python_file_operations.py
@@ -275,7 +275,7 @@ Tests provide detailed output including:
 For debugging test issues, run individual tests with verbose output:
 
 ```bash
-./grapa -cfile "test/file_system/test_file_basic.grc" -v
+./grapa -f "test/file_system/test_file_basic.grc" -v
 ```
 
 ## Test Results

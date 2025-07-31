@@ -320,7 +320,7 @@ GrapaCHAR GrapaConsoleSend::SendSync(GrapaCHAR& pIn, GrapaRuleEvent* pRule, u64 
 ## Environment Integration
 
 ### System Variables
-- **`$ARGCIN`** - Stdin content (when using `-argcin` option)
+- **`$ARGCIN`** - Stdin content (when using `-S` option)
 - **`$sys().getenv()`** - Environment variable access
 - **`$sys().putenv()`** - Environment variable setting
 

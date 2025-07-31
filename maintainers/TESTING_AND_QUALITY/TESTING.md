@@ -510,7 +510,7 @@ The following rules apply to all Grapa .grc test and script files:
 - Validate syntax against known-good .grc files before adding new code.
 - Prefer simple, explicit constructs for compatibility.
 - To run .grc files on Windows:
-    .\grapa.exe -q -cfile path/file.grc
+    .\grapa.exe -q -f path/file.grc
 - See the living section in docs/obj/grep.md for updates (if present).
 
 These practices ensure consistency, maintainability, and compatibility across all Grapa test and script files.
@@ -699,23 +699,23 @@ The project has made **excellent progress** with 90% of the original requirement
 
 **Next step**: Focus on completing the option combination matrix testing to achieve 100% ripgrep parity and full production readiness. 
 
-## Running Grapa Scripts: -cfile vs -ccmd
+## Running Grapa Scripts: -f vs -c
 
-- Use **-cfile <filename>** to run a Grapa script file (e.g., a .grc test file):
+- Use **-f <filename>** to run a Grapa script file (e.g., a .grc test file):
   
   ```powershell
-  .\grapa.exe -q -cfile "test/my_test.grc"
+  .\grapa.exe -q -f "test/my_test.grc"
   ```
   This is the correct way to run all test files and multi-line scripts.
 
-- Use **-ccmd <code>** to run a single line or short inline Grapa code directly from the command line:
+- Use **-c <code>** to run a single line or short inline Grapa code directly from the command line:
   
   ```powershell
-  .\grapa.exe -q -ccmd "'Hello'.echo();"
+  .\grapa.exe -q -c "'Hello'.echo();"
   ```
   This is for quick, one-off commands only.
 
-**Note:** Attempting to run a .grc file with -ccmd will not work and may result in errors or no output. Always use -cfile for script files.
+**Note:** Attempting to run a .grc file with -c will not work and may result in errors or no output. Always use -f for script files.
 
 ---
 

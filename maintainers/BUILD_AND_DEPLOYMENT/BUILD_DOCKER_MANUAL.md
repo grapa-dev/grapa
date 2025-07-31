@@ -63,20 +63,20 @@ rmdir /S /q prj\winlib-amd64\grapalib
 rmdir /s /q dist
 python setup.py sdist
 rmdir /s /q grapapy.egg-info
-grapa.exe -q -ccmd "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
+grapa.exe -q -c "f=$file().ls('dist')[0].$KEY;$sys().shell('pip install dist/'+f);"
 ```
 
 ### Test
 ```bash
 # Run complete test suite
-.\grapa.exe -cfile "test/run_tests.grc"
+.\grapa.exe -f "test/run_tests.grc"
 
 # Run complete Python test suite
 python test/run_tests.py
 
 # Or run individual test categories
-.\grapa.exe -cfile "test/test_current_capabilities.grc"
-.\grapa.exe -cfile "test/test_performance_optimizations.grc"
+.\grapa.exe -f "test/test_current_capabilities.grc"
+.\grapa.exe -f "test/test_performance_optimizations.grc"
 
 # Or run individual Python test categories
 python test/test_grep_python_doc_examples.py
@@ -167,20 +167,20 @@ tar -czvf bin/grapa-mac-amd64.tar.gz grapa source/grapa-lib/mac-amd64/* source/g
 rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
-./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+./grapa -q -c "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 ```
 
 ### Test
 ```bash
 # Run complete test suite
-./grapa -cfile "test/run_tests.grc"
+./grapa -f "test/run_tests.grc"
 
 # Run complete Python test suite
 python3 test/run_tests.py
 
 # Or run individual test categories
-./grapa -cfile "test/test_current_capabilities.grc"
-./grapa -cfile "test/test_performance_optimizations.grc"
+./grapa -f "test/test_current_capabilities.grc"
+./grapa -f "test/test_performance_optimizations.grc"
 
 # Or run individual Python test categories
 python3 test/test_grep_python_doc_examples.py
@@ -309,14 +309,14 @@ pip3 install dist/*
 ### Test
 ```bash
 # Run complete test suite
-./grapa -cfile "test/run_tests.grc"
+./grapa -f "test/run_tests.grc"
 
 # Run complete Python test suite
 python3 test/run_tests.py
 
 # Or run individual test categories
-./grapa -cfile "test/test_current_capabilities.grc"
-./grapa -cfile "test/test_performance_optimizations.grc"
+./grapa -f "test/test_current_capabilities.grc"
+./grapa -f "test/test_performance_optimizations.grc"
 
 # Or run individual Python test categories
 python3 test/test_grep_python_doc_examples.py
@@ -395,7 +395,7 @@ tar -czvf bin/grapa-aws-arm64.tar.gz grapa source/grapa-lib/aws-arm64/*
 rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
-./grapa -q -ccmd "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
+./grapa -q -c "f=\$file().ls('dist')[0].\$KEY;$sys().shell('pip3 install dist/'+f);"
 ```
 
 ### AWS AMD64
@@ -424,14 +424,14 @@ pip3 install dist/*
 ### Test
 ```bash
 # Run complete test suite
-./grapa -cfile "test/run_tests.grc"
+./grapa -f "test/run_tests.grc"
 
 # Run complete Python test suite
 python3 test/run_tests.py
 
 # Or run individual test categories
-./grapa -cfile "test/test_current_capabilities.grc"
-./grapa -cfile "test/test_performance_optimizations.grc"
+./grapa -f "test/test_current_capabilities.grc"
+./grapa -f "test/test_performance_optimizations.grc"
 
 # Or run individual Python test categories
 python3 test/test_grep_python_doc_examples.py

@@ -155,14 +155,14 @@ The following issues have been identified as **design decisions** rather than bu
 ### **Test Commands for Verification**:
 ```bash
 # Verify all operator fixes
-./grapa -cfile test/core/test_operator_bugs.grc
-./grapa -cfile test/core/test_logical_not_all_types.grc
+./grapa -f test/core/test_operator_bugs.grc
+./grapa -f test/core/test_logical_not_all_types.grc
 
 # Test specific cases
-./grapa -ccmd '"hello" > 5'
-./grapa -ccmd '5 > "hello"'
-./grapa -ccmd '!0'
-./grapa -ccmd '!(-5)'
+./grapa -c '"hello" > 5'
+./grapa -c '5 > "hello"'
+./grapa -c '!0'
+./grapa -c '!(-5)'
 ```
 
 ---

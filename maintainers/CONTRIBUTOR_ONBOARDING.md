@@ -15,7 +15,7 @@ This guide helps new contributors get started with the Grapa project effectively
 ### ✅ **Environment Setup**
 - [ ] **Install build dependencies**: See [BUILD_SYSTEM.md](BUILD_AND_DEPLOYMENT/BUILD_SYSTEM.md)
 - [ ] **Build the project**: `python3 build.py`
-- [ ] **Run tests**: `./grapa -cfile "test/run_tests.grc"`
+- [ ] **Run tests**: `./grapa -f "test/run_tests.grc"`
 - [ ] **Verify Python integration**: `python3 test/run_tests.py`
 
 ### ✅ **Documentation Review**
@@ -170,13 +170,13 @@ python3 build.py --python-only
 ### **Running Tests**
 ```bash
 # Run complete test suite
-./grapa -cfile "test/run_tests.grc"
+./grapa -f "test/run_tests.grc"
 
 # Run Python test suite
 python3 test/run_tests.py
 
 # Run specific test category
-./grapa -cfile "test/core/basic_tests.grc"
+./grapa -f "test/core/basic_tests.grc"
 ```
 
 ### **Building Documentation**
@@ -196,10 +196,10 @@ python3 -m mkdocs serve
 ```bash
 # Enable debug output
 export GRAPA_DEBUG=1
-./grapa -cfile "your_script.grc"
+./grapa -f "your_script.grc"
 
 # Verbose output
-./grapa --verbose -cfile "your_script.grc"
+./grapa --verbose -f "your_script.grc"
 ```
 
 ## Success Metrics

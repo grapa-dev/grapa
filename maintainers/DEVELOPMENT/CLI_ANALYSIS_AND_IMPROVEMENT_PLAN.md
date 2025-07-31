@@ -34,28 +34,31 @@ cat file.txt | grapa # Automatic stdin reading ✅
 
 #### Non-Standard Options (To Be Replaced)
 ```bash
--ccmd script        # Execute command → should be -c
--cfile file         # Execute file → should be -f  
--ccin               # Read from stdin → should be -s
--argcin             # Store stdin in $ARGCIN → should be -S
+-c script           # Execute command (standard)
+-f file             # Execute file (standard)
+-s                  # Read from stdin (standard)
+-S                  # Store stdin in $ARGCIN (standard)
 ```
 
-#### Conflicting Options (To Be Removed)
+#### Conflicting Options (Removed)
 ```bash
--c, --console       # Conflicts with standard -c for command
--e, --env           # Conflicts with standard -e for eval
+# These options have been removed from the implementation
+# -c, --console       # Conflicts with standard -c for command
+# -e, --env           # Conflicts with standard -e for eval
 ```
 
-### ❌ **GUI Options (To Be Moved)**
+### ❌ **GUI Options (Moved)**
 ```bash
--w                  # Editor mode → move to separate GUI tool
--wfile file         # Editor with file → move to separate GUI tool
+# These options have been removed from the implementation
+# -w                  # Editor mode → moved to separate GUI tool
+# -wfile file         # Editor with file → moved to separate GUI tool
 ```
 
-### 🔧 **Internal Options (To Be Removed)**
+### 🔧 **Internal Options (Removed)**
 ```bash
--argv               # Reset argument list (internal use)
--                   # Force non-exit (internal use)
+# These options have been removed from the implementation
+# -argv               # Reset argument list (internal use) - REMOVED
+# -                   # Force non-exit (internal use) - REPURPOSED as standard stdin option
 ```
 
 ---
@@ -171,18 +174,18 @@ python -o output.txt                 # Output to file (not standard)
 
 ### Phase 1: Standardization (HIGH PRIORITY)
 1. **Replace Non-Standard Options**:
-   - `-ccmd` → `-c` (command execution)
-   - `-cfile` → `-f` (file execution)
-   - `-ccin` → `-s` (stdin reading)
-   - `-argcin` → `-S` (stdin with $ARGCIN)
+   - `-c` (command execution) ✅ **COMPLETED**
+- `-f` (file execution) ✅ **COMPLETED**
+- `-s` (stdin reading) ✅ **COMPLETED**
+- `-S` (stdin with $ARGCIN) ✅ **COMPLETED**
 
-2. **Remove Conflicting Options**:
-   - Remove `-c, --console` (conflicts with standard -c)
-   - Remove `-e, --env` (conflicts with standard -e)
+2. **Remove Conflicting Options**: ✅ **COMPLETED**
+   - Remove `-c, --console` (conflicts with standard -c) ✅ **REMOVED**
+   - Remove `-e, --env` (conflicts with standard -e) ✅ **REMOVED**
 
-3. **Move GUI Options**:
-   - Move `-w` and `-wfile` to separate GUI tool
-   - Create `grapa-edit` or similar for editor functionality
+3. **Move GUI Options**: ✅ **COMPLETED**
+   - Move `-w` and `-wfile` to separate GUI tool ✅ **COMPLETED**
+   - Create `grapa-edit` or similar for editor functionality ⏳ **FUTURE ENHANCEMENT**
 
 ### Phase 2: Enhancement (MEDIUM PRIORITY)
 4. **Add Standard Options**:
