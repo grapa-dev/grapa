@@ -20,7 +20,7 @@ This guide provides comprehensive onboarding information for new agents, develop
 
 ### Discovery Path for New Agents
 
-**When you start a new session, follow this discovery path:**
+**⚠️ MANDATORY: You MUST complete ALL 6 steps in order before proceeding with any work:**
 
 1. **Start Here**: Read this ONBOARD.md file (you're here!)
 2. **Project Status**: Read `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` for current priorities
@@ -29,6 +29,32 @@ This guide provides comprehensive onboarding information for new agents, develop
 5. **Canonical Syntax**: Review `docs-src/docs/syntax/basic_syntax.md` for language rules
 6. **Development Priorities**: Read `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` for roadmap
 
+**❌ DO NOT PROCEED until you have completed ALL 6 steps above**
+**❌ DO NOT create new documentation until you have completed the discovery path**
+**❌ DO NOT assume you understand the project without following this path**
+
+### Discovery Path Validation Checklist
+
+**After completing each step, you must acknowledge completion:**
+
+- [ ] **Step 1**: ONBOARD.md read and understood
+- [ ] **Step 2**: CURRENT_STATUS.md read - current priorities understood
+- [ ] **Step 3**: index.md reviewed - directory structure understood
+- [ ] **Step 4**: README.md checked - maintainer guidance understood
+- [ ] **Step 5**: basic_syntax.md reviewed - language rules understood
+- [ ] **Step 6**: BACKLOG.md read - development priorities understood
+
+**Only proceed when all steps are complete and checked off.**
+
+### Common Agent Mistakes to Avoid
+
+❌ **Creating new TODO files** - Use existing CURRENT_STATUS.md and BACKLOG.md
+❌ **Skipping the discovery path** - Always complete all 6 steps in order
+❌ **Creating documentation without reading existing docs** - Check what already exists first
+❌ **Assuming you understand the project** - Follow the discovery path first
+❌ **Cherry-picking what to read** - Complete the entire discovery path systematically
+❌ **Creating personal tracking files** - Work within the existing documentation structure
+
 **Key Discovery Files:**
 - `maintainers/index.md` - Complete directory navigation
 - `maintainers/README.md` - Maintainer onboarding and guidance
@@ -36,9 +62,46 @@ This guide provides comprehensive onboarding information for new agents, develop
 - `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` - Development priorities
 - `docs-src/docs/syntax/basic_syntax.md` - Canonical syntax reference
 
+### Agent Validation Checklist
+
+**Before responding to any user request, verify:**
+
+- [ ] I have read ONBOARD.md completely
+- [ ] I have followed the discovery path (all 6 steps completed)
+- [ ] I understand the current project status from CURRENT_STATUS.md
+- [ ] I know where to find key information in the documentation
+- [ ] I will not create new documentation without checking existing docs first
+- [ ] I will use the established response templates below
+
+**If any item is unchecked, complete the discovery path first.**
+
 ### Quick Reference for New Agents
 
-**If user says "load current status and tell me next steps":**
+**If user says "onboard" or "load current status and tell me next steps":**
+
+**⚠️ REQUIRED RESPONSE: Use this exact template after completing the discovery path:**
+
+"Based on the current Grapa project status, here are the key areas of focus:
+
+📋 **Current Priorities:**
+1. ROW Table Index Corruption Bug - HIGH PRIORITY, ready to start
+2. Custom Delimiter Edge Cases - MEDIUM PRIORITY, investigation needed
+3. Unicode Language Binding - Add case_fold(), Unicode-aware string methods
+4. String Interpolation - Implement template literal-style interpolation
+5. CLI Enhancement - Performance options, environment management, error handling
+
+🔗 **Key Resources:**
+- `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` - Complete project status
+- `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` - Development priorities
+- `docs-src/` - User documentation
+- `test/` - Test scripts and validation
+
+**Next Steps:**
+1. Review the ROW table corruption issue in `maintainers/RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`
+2. Test the custom delimiter edge cases
+3. Choose a specific area to focus on from the current priorities
+
+Would you like me to focus on any specific area, or do you have questions about the current implementation?"
 
 #### 1. Current Project State
 - **Project**: Grapa Programming Language with GrapaDB Database System
@@ -302,6 +365,19 @@ Any change to the Grapa language requires:
 - [ ] **Cross-reference related documents**
 - [ ] **Update index files** if adding new documents
 
+**❌ NEVER create new documentation without:**
+- [ ] Completing the full discovery path first
+- [ ] Checking if the information already exists elsewhere
+- [ ] Understanding the project's documentation structure
+- [ ] Following the established naming and placement conventions
+
+**Documentation Placement Guide:**
+- **Investigation Results**: `maintainers/RESEARCH_AND_ANALYSIS/`
+- **Technical Details**: `maintainers/IMPLEMENTATION/`
+- **Analysis & Planning**: `maintainers/DEVELOPMENT/`
+- **Status Changes**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`
+- **Personal Progress Tracking**: Use existing WIP files, don't create new TODO files
+
 **Documentation Placement Guide:**
 - **Investigation Results**: `maintainers/RESEARCH_AND_ANALYSIS/`
 - **Technical Details**: `maintainers/IMPLEMENTATION/`
@@ -335,6 +411,22 @@ Any change to the Grapa language requires:
 
 This will help me avoid making rogue actions or incomplete changes."
 ```
+
+**⚠️ CRITICAL: If you detect you are a new agent with no context:**
+
+1. **STOP immediately** - Do not proceed with any actions
+2. **Request onboarding** - Say "I need to onboard to understand the current context"
+3. **Ask for context** - Request user to describe what was being worked on
+4. **Verify state** - Check if system is in an incomplete state
+5. **Wait for guidance** - Do not make assumptions about what should be done next
+6. **Follow discovery path** - Complete all 6 steps before proceeding
+
+**Signs of incomplete context:**
+- User mentions "continuing" or "next step" but you have no context
+- User refers to previous work you don't know about
+- User mentions specific files or changes you can't see
+- User asks about progress on something you don't understand
+- User seems frustrated or confused by your responses
 
 ---
 
