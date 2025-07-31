@@ -11,6 +11,10 @@
         <link rel="canonical" href="https://grapa-dev.github.io/grapa/grep/">
       
       
+        <link rel="prev" href="../obj/transform/">
+      
+      
+        <link rel="next" href="../database/quick_reference/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -18,7 +22,7 @@
     
     
       
-        <title>Grapa Grep Documentation - Grapa Documentation</title>
+        <title>Grep Documentation - Grapa Documentation</title>
       
     
     
@@ -104,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Grapa Grep Documentation
+              Grep Documentation
             
           </span>
         </div>
@@ -276,10 +280,12 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../api_reference/" class="md-tabs__link">
           
   
@@ -605,24 +611,29 @@
       
   
   
+    
   
   
+  
     
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -635,7 +646,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -1632,6 +1643,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../function_quick_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Function Quick Reference
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1831,6 +1865,1088 @@
                 
   
   
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Pattern Matching
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_6">
+            <span class="md-nav__icon md-icon"></span>
+            Pattern Matching
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Grep Documentation
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#recent-fixes-and-known-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recent Fixes and Known Gaps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thread-safety-and-parallelism" class="md-nav__link">
+    <span class="md-ellipsis">
+      Thread Safety and Parallelism
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#who-is-this-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      Who is this for?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-syntax-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Syntax Rules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pattern Matching
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unicode-and-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode and Normalization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unicode-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Properties
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#grapheme-cluster-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapheme Cluster Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#diacritic-insensitive-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diacritic-Insensitive Matching
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edge-cases-and-special-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Edge Cases and Special Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-signature" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function Signature
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Signature">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#output-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matching-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Matching Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#special-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unicode-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Support
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unicode Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#normalization-forms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Normalization Forms
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-properties_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Properties
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grapheme-cluster-pattern-x" class="md-nav__link">
+    <span class="md-ellipsis">
+      Grapheme Cluster Pattern (\X)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diacritic-insensitive-matching_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Diacritic-Insensitive Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-boundary-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Boundary Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-edge-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Edge Cases
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#word-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Word Boundaries
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Word Boundaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-word-boundary-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Word Boundary Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-boundary-with-different-characters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Word Boundary with Different Characters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-boundary-with-other-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Word Boundary with Other Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manual-vs-automatic-word-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Manual vs Automatic Word Boundaries
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#column-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Column Numbers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Column Numbers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-column-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Column Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#column-numbers-with-multiple-matches" class="md-nav__link">
+    <span class="md-ellipsis">
+      Column Numbers with Multiple Matches
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#column-numbers-with-other-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Column Numbers with Other Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#color-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Color Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Color Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-color-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Color Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#color-output-with-other-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Color Output with Other Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#color-code-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      Color Code Details
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Lines
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Context Lines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#after-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      After Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#before-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Before Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#combined-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Combined Context
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-separators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Separators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-precedence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Precedence
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-delimiters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Delimiters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#binary-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Binary Mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Binary Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-binary-mode-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Binary Mode Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#binary-vs-unicode-mode-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Binary vs Unicode Mode Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-binary-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Binary Patterns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#real-world-binary-processing-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Binary Processing Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-binary-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Binary Mode
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Processing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parallel Processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Scaling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graceful-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Graceful Error Handling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-prevention" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Prevention
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-error-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Error Scenarios
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-output-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Output Format
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="JSON Output Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#json-object-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON Object Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-named-groups" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing Named Groups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ripgrep-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ripgrep Compatibility
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ripgrep Compatibility">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-features-full-parity" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Supported Features (Full Parity)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Known Differences
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recently-fixed-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Recently Fixed Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#known-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      ⚠️ Known Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backlog-items-noted-for-future-improvement" class="md-nav__link">
+    <span class="md-ellipsis">
+      📋 Backlog Items (Noted for Future Improvement)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      ✅ Production Ready
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Features
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jit-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      JIT Compilation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fast-path-optimizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fast Path Optimizations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lru-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      LRU Cache
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-processing_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Processing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-line-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context Line Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#column-number-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Column Number Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#word-boundary-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Word Boundary Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-based-output-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option-Based Output Control
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option-Based Output Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#output-behavior-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Behavior Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-type-independence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pattern Type Independence
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recent-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recent Improvements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recent Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#major-fixes-latest-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Major Fixes (Latest Release)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Improvements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unicode-enhancements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unicode Enhancements
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#achieving-ripgrep-output-parity-via-post-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Achieving Ripgrep Output Parity via Post-Processing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advancedbinary-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced/Binary Features
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     
@@ -1845,10 +2961,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
         
           
-          <label class="md-nav__link" for="__nav_5_6" id="__nav_5_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
             
   
   
@@ -1861,8 +2977,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_6">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_7">
             <span class="md-nav__icon md-icon"></span>
             Database
           </label>
@@ -1963,10 +3079,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_8" >
         
           
-          <label class="md-nav__link" for="__nav_5_7" id="__nav_5_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5_8" id="__nav_5_8_label" tabindex="0">
             
   
   
@@ -1979,8 +3095,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_8">
             <span class="md-nav__icon md-icon"></span>
             Language Reference
           </label>
@@ -2099,6 +3215,29 @@
   
   <span class="md-ellipsis">
     Advanced Topics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deep Expert Implementation
     
   </span>
   
