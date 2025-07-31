@@ -6,6 +6,36 @@ This guide provides comprehensive onboarding information for new agents, develop
 
 ## 🤖 Agent Onboarding
 
+### ⚠️ CRITICAL SAFEGUARDS
+
+**BEFORE making any changes to this project, agents MUST:**
+
+1. **ALWAYS follow the discovery path** - Never skip the onboarding process
+2. **NEVER modify onboarding files** without explicit user permission
+3. **ALWAYS verify build commands** work before suggesting changes
+4. **NEVER assume platform-specific behavior** - Always check Windows vs Mac/Linux differences
+5. **ALWAYS test CLI functionality** before claiming features work
+6. **NEVER modify canonical syntax** without empirical testing
+7. **ALWAYS preserve the working onboarding process** - This is a critical system
+
+### Discovery Path for New Agents
+
+**When you start a new session, follow this discovery path:**
+
+1. **Start Here**: Read this ONBOARD.md file (you're here!)
+2. **Project Status**: Read `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` for current priorities
+3. **Directory Structure**: Review `maintainers/index.md` for complete directory organization
+4. **Maintainer Guidance**: Check `maintainers/README.md` for maintainer-specific guidance
+5. **Canonical Syntax**: Review `docs-src/docs/syntax/basic_syntax.md` for language rules
+6. **Development Priorities**: Read `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` for roadmap
+
+**Key Discovery Files:**
+- `maintainers/index.md` - Complete directory navigation
+- `maintainers/README.md` - Maintainer onboarding and guidance
+- `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` - **AUTHORITATIVE** project status
+- `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` - Development priorities
+- `docs-src/docs/syntax/basic_syntax.md` - Canonical syntax reference
+
 ### Quick Reference for New Agents
 
 **If user says "load current status and tell me next steps":**
@@ -41,8 +71,8 @@ When user asks for next steps, respond with:
 Would you like me to focus on any specific area, or do you have questions about the current implementation?"
 
 #### 4. Key Files to Review
-- `maintainers/DEVELOPMENT/CURRENT_STATUS.md` - Complete project status
-- `maintainers/DEVELOPMENT/BACKLOG.md` - Development priorities and tasks
+- `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` - Complete project status
+- `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` - Development priorities and tasks
 - `docs-src/docs/syntax/basic_syntax.md` - Canonical syntax reference
 - `test/` - Test scripts and validation tools
 
@@ -69,7 +99,7 @@ Would you like me to focus on any specific area, or do you have questions about 
 ### Development Workflow
 
 #### 1. Understanding the Codebase
-- Start with `maintainers/DEVELOPMENT/CURRENT_STATUS.md` for current priorities
+- Start with `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` for current priorities
 - Review `docs-src/docs/syntax/basic_syntax.md` for language rules
 - Check `test/` directory for examples and validation
 
@@ -91,6 +121,11 @@ Would you like me to focus on any specific area, or do you have questions about 
 
 ### Windows-Specific Commands
 - **Build**: `python build.py` (not `python3`)
+  - **Build Options**: `python build.py -h` to see all options
+  - **Quick Build**: `python build.py --exe-only` for fast iterative development
+  - **Full Build**: `python build.py` for complete build with libraries and packaging
+  - **Clean Build**: `python build.py --clean` to clean build artifacts
+  - **Test Build**: `python build.py --test` to run tests after build
 - **Executable**: `grapa.exe` (not `./grapa`)
 - **File paths**: Use backslashes `"test\grapa.exe"`
 - **Shell**: Use PowerShell or x64 Native Tools Command Prompt for VS 2022
@@ -98,6 +133,11 @@ Would you like me to focus on any specific area, or do you have questions about 
 
 ### Mac/Linux Commands
 - **Build**: `python3 build.py` (not `python`)
+  - **Build Options**: `python3 build.py -h` to see all options
+  - **Quick Build**: `python3 build.py --exe-only` for fast iterative development
+  - **Full Build**: `python3 build.py` for complete build with libraries and packaging
+  - **Clean Build**: `python3 build.py --clean` to clean build artifacts
+  - **Test Build**: `python3 build.py --test` to run tests after build
 - **Executable**: `./grapa` (not `grapa.exe`)
 - **File paths**: Use forward slashes `"./grapa"`
 - **Shell**: Standard Mac/Linux shell
@@ -115,6 +155,25 @@ Would you like me to focus on any specific area, or do you have questions about 
 3. **Path separators**: Backslashes (Windows) vs forward slashes (Mac/Linux)
 4. **Shell environment**: PowerShell/Native Tools (Windows) vs standard shell (Mac/Linux)
 
+### 🛡️ Protecting the Onboarding Process
+
+**This onboarding system is CRITICAL and must be preserved:**
+
+- **DO NOT** modify `ONBOARD.md`, `CURRENT_STATUS.md`, or `BACKLOG.md` without explicit permission
+- **DO NOT** change the discovery path order or structure
+- **DO NOT** remove or modify the safeguards above
+- **DO NOT** assume build commands work without testing them
+- **DO NOT** claim CLI features work without verifying them
+- **ALWAYS** test any suggested changes before implementing them
+- **ALWAYS** preserve the working "onboard" command functionality
+
+**If you need to update onboarding documentation:**
+1. Get explicit user permission
+2. Test all changes thoroughly
+3. Verify the "onboard" command still works
+4. Update this section if you modify the safeguards
+5. Review [`ONBOARDING_SAFEGUARDS.md`](ONBOARDING_SAFEGUARDS.md) for additional protection guidelines
+
 ---
 
 ## 📚 Onboarding & Documentation Strategy
@@ -128,8 +187,8 @@ Would you like me to focus on any specific area, or do you have questions about 
 - **Examples**: `docs-src/docs/examples/`
 
 #### For Developers
-- **Project Status**: `maintainers/DEVELOPMENT/CURRENT_STATUS.md`
-- **Development Priorities**: `maintainers/DEVELOPMENT/BACKLOG.md`
+- **Project Status**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`
+- **Development Priorities**: `maintainers/PROJECT_MANAGEMENT/BACKLOG.md`
 - **Implementation Details**: `maintainers/IMPLEMENTATION/`
 - **Testing**: `test/` directory with organized test suites
 
@@ -198,8 +257,8 @@ Any change to the Grapa language requires:
 ## 📋 Onboarding Checklist
 
 ### For New Agents
-- [ ] Read `maintainers/DEVELOPMENT/CURRENT_STATUS.md`
-- [ ] Review `maintainers/DEVELOPMENT/BACKLOG.md`
+- [ ] Read `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`
+- [ ] Review `maintainers/PROJECT_MANAGEMENT/BACKLOG.md`
 - [ ] Understand the agent response template above
 - [ ] Familiarize with key file locations
 - [ ] Know how to handle "load current status" requests
@@ -218,12 +277,71 @@ Any change to the Grapa language requires:
 - [ ] Understand contribution guidelines
 - [ ] Know where to find help and resources
 
+### 🔍 Agent Validation Checklist
+
+**Before making any changes, agents MUST verify:**
+
+- [ ] **Build System**: `python build.py --exe-only` works on Windows
+- [ ] **CLI Functionality**: `.\grapa.exe -h` shows correct options
+- [ ] **Discovery Path**: All 6 discovery steps are accessible
+- [ ] **Cross-Platform**: Both Windows and Mac/Linux commands documented
+- [ ] **Syntax Rules**: Canonical syntax reference is accurate
+- [ ] **Documentation Links**: All internal links work correctly
+- [ ] **Onboarding Process**: "onboard" command works as expected
+
+**If any of these fail, STOP and ask for guidance before proceeding.**
+
+### 📝 Documentation Update Rules
+
+**When updating documentation:**
+
+- [ ] **Search existing docs** before creating new ones
+- [ ] **Update existing docs** rather than creating duplicates
+- [ ] **Preserve `CURRENT_STATUS.md`** - only add status changes
+- [ ] **Use proper directory structure** for content type
+- [ ] **Cross-reference related documents**
+- [ ] **Update index files** if adding new documents
+
+**Documentation Placement Guide:**
+- **Investigation Results**: `maintainers/RESEARCH_AND_ANALYSIS/`
+- **Technical Details**: `maintainers/IMPLEMENTATION/`
+- **Analysis & Planning**: `maintainers/DEVELOPMENT/`
+- **Status Changes**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`
+
+### 🚨 Agent Switching Protection
+
+**CRITICAL: If you detect you are a new agent with no context:**
+
+1. **STOP immediately** - Do not proceed with any actions
+2. **Request onboarding** - Say "I need to onboard to understand the current context"
+3. **Ask for context** - Request user to describe what was being worked on
+4. **Verify state** - Check if system is in an incomplete state
+5. **Wait for guidance** - Do not make assumptions about what should be done next
+
+**Signs of incomplete context:**
+- User mentions "continuing" or "next step" but you have no context
+- User refers to previous work you don't know about
+- User mentions specific files or changes you can't see
+- User asks about progress on something you don't understand
+- User seems frustrated or confused by your responses
+
+**Safe response when context is missing:**
+```
+"I notice I may be missing context from previous work. To ensure I don't make incorrect assumptions or cause issues:
+
+1. Could you briefly describe what was being worked on?
+2. Are there any incomplete changes or processes I should be aware of?
+3. Should I onboard first to understand the current project state?
+
+This will help me avoid making rogue actions or incomplete changes."
+```
+
 ---
 
 ## 🔗 Related Documentation
 
-- **Project Status**: `maintainers/DEVELOPMENT/CURRENT_STATUS.md`
-- **Development Priorities**: `maintainers/DEVELOPMENT/BACKLOG.md`
+- **Project Status**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`
+- **Development Priorities**: `maintainers/PROJECT_MANAGEMENT/BACKLOG.md`
 - **Canonical Syntax**: `docs-src/docs/syntax/basic_syntax.md`
 - **Migration Guides**: `docs-src/docs/migrations/`
 - **Test Examples**: `test/` directory
@@ -232,4 +350,4 @@ Any change to the Grapa language requires:
 ---
 
 *Last Updated: December 2024*
-*For complete project status, see `maintainers/DEVELOPMENT/CURRENT_STATUS.md`* 
+*For complete project status, see `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`* 

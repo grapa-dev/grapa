@@ -82,6 +82,14 @@ grapa -cfile "my_script.grc"
 - **[GitHub Issues](https://github.com/grapa-dev/grapa/issues)** - Report bugs and request features
 - **[Discussions](https://github.com/grapa-dev/grapa/discussions)** - Ask questions and share ideas
 
+## For Maintainers & Contributors 🛠️
+
+- **[Maintainer Documentation](maintainers/)** - Build instructions, development workflow, and internal docs
+- **[Current Status](maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md)** - Project priorities and development status
+- **[Implementation Details](maintainers/IMPLEMENTATION/)** - Core technical implementation documentation
+- **[Testing & Quality](maintainers/TESTING_AND_QUALITY/)** - Testing frameworks and quality assurance
+- **[Build System](maintainers/BUILD_AND_DEPLOYMENT/)** - Build instructions and deployment guides
+
 ---
 
 ## License 📄

@@ -1,12 +1,12 @@
-# Maintainers & News
+# Maintainers & Project Status
 
-**Note for contributors:**
+**Welcome to the Grapa maintainer documentation!**
 
-> For onboarding, project status, and maintainer documentation, see [`maintainers/README.md`](maintainers/README.md) and [`maintainers/DEVELOPMENT/CURRENT_STATUS.md`](maintainers/DEVELOPMENT/CURRENT_STATUS.md).
+> **For complete navigation and organization overview, see [`maintainers/index.md`](index.md).**
 
 **Project Status and Priorities**
 
-> **Always consult [`maintainers/DEVELOPMENT/CURRENT_STATUS.md`](DEVELOPMENT/CURRENT_STATUS.md) for the authoritative, up-to-date project status, priorities, and progress tracking.**  
+> **Always consult [`maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`](PROJECT_MANAGEMENT/CURRENT_STATUS.md) for the authoritative, up-to-date project status, priorities, and progress tracking.**  
 > This file is the single source of truth for all ongoing work, TODOs, and development focus. All maintainers and contributors should review CURRENT_STATUS.md before starting new work or making major changes.
 
 This section is for Grapa maintainers and advanced contributors. It contains documentation and resources related to:
@@ -20,14 +20,14 @@ This section is for Grapa maintainers and advanced contributors. It contains doc
 
 **General users do not need to reference these files.**
 
-## Contents
-- Build instructions and environment setup
-- Dependency management
-- Documentation examples management (`docs/docs/examples/`)
-- Docker and cloud setup
-- Internal design and roadmap docs
-- System function and grammar/BNF documentation
-- Work-in-progress and internal notes
+## Quick Navigation
+
+- **[Complete Documentation Index](index.md)** - Full navigation and organization overview
+- **[Current Project Status](PROJECT_MANAGEMENT/CURRENT_STATUS.md)** - Authoritative project status and priorities
+- **[Build System](BUILD_AND_DEPLOYMENT/)** - Build instructions and deployment guides
+- **[Implementation Details](IMPLEMENTATION/)** - Core technical implementation documentation
+- **[Testing & Quality](TESTING_AND_QUALITY/)** - Testing frameworks and quality assurance
+- **[Development Workflow](DEVELOPMENT/)** - Development process and guidelines
 
 ## Current Context & Status (July 19, 2024)
 
@@ -120,7 +120,7 @@ After any change to the Grapa language (syntax, semantics, features, or deprecat
 - Update [Basic Syntax Guide](../docs-src/docs/syntax/basic_syntax.md) and migration docs.
 - Scan and update all code samples in documentation (`docs-src`).
 - Empirically re-test all `.grc` scripts.
-- Update the [Programmer Friendliness & Adoption Plan](DEVELOPMENT/PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md) if new features address previous pain points.
+- Update the [Language Analysis & Improvement Plan](DEVELOPMENT/LANGUAGE_ANALYSIS_AND_IMPROVEMENT_PLAN.md) if new features address previous pain points.
 - Cross-link all relevant docs (basic_syntax.md, migration docs, comment handling guide, this plan).
 - Ensure a sign-off step in the PR/release process for documentation and sample updates. 
 

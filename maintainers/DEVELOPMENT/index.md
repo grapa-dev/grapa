@@ -12,16 +12,16 @@ This folder is for all in-progress, investigation, planning, and debug documenta
 ## 📋 **Current Status & Planning**
 
 ### **🎯 Single Source of Truth**
-- **[CURRENT_STATUS.md](CURRENT_STATUS.md)** - **AUTHORITATIVE**: Single source of truth for all development status, priorities, and progress tracking
-- **[ONBOARD.md](ONBOARD.md)** - **NEW**: Agent onboarding and developer workflow documentation
-- **[MIGRATION_SUMMARY.md](MIGRATION_SUMMARY.md)** - **NEW**: Summary of GrapaDBX migration and content organization
+- **[CURRENT_STATUS.md](../PROJECT_MANAGEMENT/CURRENT_STATUS.md)** - **AUTHORITATIVE**: Single source of truth for all development status, priorities, and progress tracking
+- **[ONBOARD.md](../PROJECT_MANAGEMENT/ONBOARD.md)** - **NEW**: Agent onboarding and developer workflow documentation
+- **[MIGRATION_SUMMARY.md](../PROJECT_MANAGEMENT/MIGRATION_SUMMARY.md)** - **NEW**: Summary of GrapaDBX migration and content organization
 
 ### **📚 Reference Documentation**
 - **[DOCUMENTATION_DEPLOYMENT_GUIDE.md](../BUILD_AND_DEPLOYMENT/DOCUMENTATION_DEPLOYMENT.md)** - Complete documentation deployment process
-- **[BACKLOG.md](BACKLOG.md)** - Historical or long-term backlog
+- **[BACKLOG.md](../PROJECT_MANAGEMENT/BACKLOG.md)** - Historical or long-term backlog
 - **[LANGUAGE_IMPROVEMENT_PLAN.md](LANGUAGE_IMPROVEMENT_PLAN.md)** - Language improvement roadmap and proposals
 - **[CLI_IMPROVEMENT_PLAN.md](CLI_IMPROVEMENT_PLAN.md)** - CLI enhancement plans and proposals
-- **[PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md](PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md)** - Comprehensive audit, migration review, pain points, and proposals to improve comment handling, loop syntax, string interpolation, onboarding, and overall language adoption.
+- **[LANGUAGE_ANALYSIS_AND_IMPROVEMENT_PLAN.md](LANGUAGE_ANALYSIS_AND_IMPROVEMENT_PLAN.md)** - Comprehensive audit, migration review, pain points, and proposals to improve comment handling, loop syntax, string interpolation, onboarding, and overall language adoption.
 
 ## 🔧 **Build & Deployment**
 
@@ -66,23 +66,22 @@ All deprecated files have been moved to:
 
 ### **Database & Analysis**
 - **[GRAPADB_ANALYSIS.md](GRAPADB_ANALYSIS.md)** - Comprehensive GrapaDB analysis and implementation details
-- **[GRAPA_IN_MEMORY_ANALYSIS.md](GRAPA_IN_MEMORY_ANALYSIS.md)** - In-memory database analysis and patterns
-- **[INDEX_BASED_SEARCH_IMPLEMENTATION_GUIDE.md](INDEX_BASED_SEARCH_IMPLEMENTATION_GUIDE.md)** - Index-based search implementation guide
-- **[GRAPA_DB_INDEX_CORRUPTION_BUG.md](GRAPA_DB_INDEX_CORRUPTION_BUG.md)** - Critical index corruption bug investigation
+- **[GRAPA_IN_MEMORY_DATABASE_DISCOVERY.md](GRAPA_IN_MEMORY_DATABASE_DISCOVERY.md)** - Discovery of Grapa's in-memory database mechanism using `$` path pattern
+
+### **Language & CLI Analysis**
+- **[LANGUAGE_ANALYSIS_AND_IMPROVEMENT_PLAN.md](LANGUAGE_ANALYSIS_AND_IMPROVEMENT_PLAN.md)** - Comprehensive analysis of Grapa language features, migration patterns, pain points, and improvement plan
+- **[CLI_ANALYSIS_AND_IMPROVEMENT_PLAN.md](CLI_ANALYSIS_AND_IMPROVEMENT_PLAN.md)** - Comprehensive analysis of CLI functionality, testing requirements, and improvement roadmap
 
 ### **CLI & Interface**
-- **[CLI_FUNCTIONALITY_INVESTIGATION.md](CLI_FUNCTIONALITY_INVESTIGATION.md)** - Comprehensive CLI functionality investigation
+- **[CLI_FUNCTIONALITY_INVESTIGATION.md](../RESEARCH_AND_ANALYSIS/CLI_FUNCTIONALITY_INVESTIGATION.md)** - Comprehensive CLI functionality investigation
 - **[CLI_BUG_REPORTS.md](CLI_BUG_REPORTS.md)** - CLI bug reports and systematic testing plan
-- **[GRAPA_CLI_COMPREHENSIVE.md](GRAPA_CLI_COMPREHENSIVE.md)** - Comprehensive CLI implementation analysis
 
 ### **Language & Documentation**
-- **[COMMENT_HANDLING_GUIDE.md](COMMENT_HANDLING_GUIDE.md)** - Comment handling guide and best practices
-- **[DOCUMENTATION_SEARCH_BUG.md](DOCUMENTATION_SEARCH_BUG.md)** - Documentation search bug investigation
-- **[CONSOLIDATION_PLAN.md](CONSOLIDATION_PLAN.md)** - Documentation consolidation planning
+- **[DOCUMENTATION_SEARCH_BUG.md](../RESEARCH_AND_ANALYSIS/DOCUMENTATION_SEARCH_BUG.md)** - Documentation search bug investigation
 
 ### **Bug Investigations**
-- **[ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)** - ROW table index corruption debug context
-- **[ROW_INDEX_BUG_TODO.md](ROW_INDEX_BUG_TODO.md)** - ROW index bug TODO tracker
+- **[ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](../RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)** - ROW table index corruption debug context
+- **[ROW_INDEX_BUG_TODO.md](../RESEARCH_AND_ANALYSIS/ROW_INDEX_BUG_TODO.md)** - ROW index bug TODO tracker
 
 ## How to Add or Update Documentation
 

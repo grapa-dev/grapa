@@ -32,9 +32,16 @@ Grapa's implementation is built on several key components:
 - [BTree Implementation](GRAPA_BTREE_IMPLEMENTATION.md) - Low-level BTree data structure and algorithms (used by the database)
 - [BTree File Structure & Traversal](GRAPA_BTREE_FILE_STRUCTURE.md) - On-disk file/block structure and manual traversal for Grapa BTree files (for forensics, debugging, and tool authors)
 - [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
-- [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md) - Cross-platform compatibility and endian conversion implementation
-- [Cross-Platform Objects](GRAPA_CROSS_PLATFORM_OBJECTS.md) - Cross-platform object implementation and compatibility
+- [Index-Based Search Implementation](INDEX_BASED_SEARCH_IMPLEMENTATION_GUIDE.md) - Guide for implementing proper index-based searching in Grapa databases
+- [Comment Handling Guide](COMMENT_HANDLING_GUIDE.md) - Comment handling guide and best practices
+- [Threading Architecture](GRAPA_THREADING_ARCHITECTURE.md) - Grapa's parallel-by-design architecture and thread safety implementation
+- [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY_IMPLEMENTATION.md) - Cross-platform endian safety for database file compatibility
 - [Float Implementation](GRAPAFLOAT_IMPLEMENTATION.md) - Floating-point number implementation and precision handling
+- [Compilation and Execution](GRAPA_COMPILATION_AND_EXECUTION.md) - Core compilation process, left recursion solution, and operator precedence
+- [Static Helper Functions](STATIC_HELPER_FUNCTION_DOCUMENTATION.md) - Documentation for static helper functions
+- [Formula Version Compatibility](../RESEARCH_AND_ANALYSIS/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md) - Version compatibility analysis for Grapa's formula system
+- [Library Specification Analysis](../RESEARCH_AND_ANALYSIS/LIBRARY_SPECIFICATION_ANALYSIS.md) - Analysis of library specification mechanisms in $OP syntax
+- [Builtin Namespace Definitions](../RESEARCH_AND_ANALYSIS/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md) - Analysis of builtin namespace definitions and registration
 
 ### Specialized Components
 - [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation

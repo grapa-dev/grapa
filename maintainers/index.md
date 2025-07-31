@@ -43,14 +43,24 @@ Core implementation details, system functions, execution model, and technical sp
 ### 🧪 [Testing & Quality](TESTING_AND_QUALITY/)
 Testing frameworks, production readiness assessment, performance benchmarks, and quality assurance.
 
+### 📊 [Project Management](PROJECT_MANAGEMENT/)
+Current status, planning, agent onboarding, workflow guidance, and technical debt tracking.
+
 ### 🛠️ [Development](DEVELOPMENT/)
 Development workflow, progress tracking, roadmaps, and contribution guidelines.
 
-### 📝 [Internal Notes](INTERNAL_NOTES/)
-Work-in-progress documentation, improvement ideas, and internal analysis.
+### 📝 [Research and Analysis](RESEARCH_AND_ANALYSIS/)
+Work-in-progress research, ongoing investigations, internal analysis, and experimental work.
 
-### 🔬 [Advanced Topics](ADVANCED_TOPICS/)
-Specialized topics like binary grep implementation, grammar development, and core extensions.
+### 🎓 [Academic Outreach](ACADEMIC_OUTREACH/)
+Academic collaboration, student projects, research partnerships, and university engagement.
+
+### 🗄️ [DBX Archive](DBXARCHIVE/)
+Experimental DBX content and research for future reference.
+
+### 📋 [Standards & Guidelines](.)
+- **[Documentation Standards](DOCUMENTATION_STANDARDS.md)** - Standards for maintainer documentation
+- **[Contributor Onboarding](CONTRIBUTOR_ONBOARDING.md)** - Guide for new contributors
 
 ## For AI Assistants
 
@@ -65,11 +75,10 @@ When referencing maintainer content, use these paths:
 ## Key Documents by Category
 
 ### Build & Deployment
-- [Build Instructions](BUILD_AND_DEPLOYMENT/BUILD.md) - Complete build process
-- [Dependencies](BUILD_AND_DEPLOYMENT/DEPENDENCIES.md) - External library management
+- [Build System](BUILD_AND_DEPLOYMENT/BUILD_SYSTEM.md) - Complete build system reference
+- [Documentation Deployment](BUILD_AND_DEPLOYMENT/DOCUMENTATION_DEPLOYMENT.md) - Documentation deployment process
 - [AWS/Docker Setup](BUILD_AND_DEPLOYMENT/SETUPAWSDOCKER.md) - Cloud deployment
-- [Packaging](BUILD_AND_DEPLOYMENT/PACKAGING.md) - Package manager support
-- [Deployment](BUILD_AND_DEPLOYMENT/DEPLOYMENT.md) - Production deployment
+- [Docker Manual](BUILD_AND_DEPLOYMENT/BUILD_DOCKER_MANUAL.md) - Docker build manual
 
 ### Implementation
 - [System Functions](IMPLEMENTATION/SYSTEM_FUNCTIONS.md) - Low-level system APIs
@@ -87,18 +96,26 @@ When referencing maintainer content, use these paths:
 - [Performance Benchmarks](TESTING_AND_QUALITY/PERFORMANCE_BENCHMARKS.md) - Performance testing
 
 ### Development
-- [Implementation Progress](DEVELOPMENT/IMPLEMENTATION_PROGRESS.md) - Progress tracking
-- [Language Roadmap](DEVELOPMENT/grapa_language_enhancement_roadmap.md) - Feature roadmap
-- [Development Status](DEVELOPMENT/CURRENT_STATUS.md) - **AUTHORITATIVE**: Single source of truth for all development status
-- [Contributing Guidelines](DEVELOPMENT/CONTRIBUTING.md) - How to contribute
-- [Code Review Process](DEVELOPMENT/CODE_REVIEW.md) - Review guidelines
-- [Programmer Friendliness & Adoption Plan](DEVELOPMENT/PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md) - Comprehensive audit, migration review, pain points, and proposals to improve Grapa's usability and adoption.
+- [Current Status](PROJECT_MANAGEMENT/CURRENT_STATUS.md) - **AUTHORITATIVE**: Single source of truth for all development status
+- [Language Analysis](DEVELOPMENT/LANGUAGE_ANALYSIS_AND_IMPROVEMENT_PLAN.md) - Language features analysis and improvement plan
+- [Technical Debt](PROJECT_MANAGEMENT/TECHNICAL_DEBT.md) - Quality standards and maintenance tracking
+- [CLI Analysis](DEVELOPMENT/CLI_ANALYSIS_AND_IMPROVEMENT_PLAN.md) - CLI functionality analysis and improvement plan
+- [Database Analysis](DEVELOPMENT/GRAPADB_ANALYSIS.md) - GrapaDB implementation analysis
+- [In-Memory Database Discovery](DEVELOPMENT/GRAPA_IN_MEMORY_DATABASE_DISCOVERY.md) - Language feature discovery
 
-### Internal Notes
-- [Documentation Ideas](INTERNAL_NOTES/DOCS_IMPROVEMENT_IDEAS.md) - Docs improvement plans
-- [XML BNF Analysis](INTERNAL_NOTES/xml_bnf_analysis.md) - XML grammar analysis
-- [BNF Review Notes](INTERNAL_NOTES/bnf_review_notes.md) - Grammar enhancement ideas
-- [Archived WIP](INTERNAL_NOTES/ARCHIVED/) - Historical work-in-progress files
+### Project Management
+- [Onboarding](PROJECT_MANAGEMENT/ONBOARD.md) - Agent onboarding and developer workflow
+- [Backlog](PROJECT_MANAGEMENT/BACKLOG.md) - Development backlog and priorities
+- [Migration Summary](PROJECT_MANAGEMENT/MIGRATION_SUMMARY.md) - DBX migration summary
+- [Reorganization Summary](PROJECT_MANAGEMENT/REORGANIZATION_SUMMARY.md) - Documentation reorganization summary
+
+### Research and Analysis
+- [Bug Investigations](RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) - Database bug investigation
+- [CLI Investigation](RESEARCH_AND_ANALYSIS/CLI_FUNCTIONALITY_INVESTIGATION.md) - CLI functionality investigation
+- [Optimization Backlog](RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md) - Performance optimization plans
+- [Technical Analysis](RESEARCH_AND_ANALYSIS/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md) - Formula system analysis
+- [BNF Review Notes](RESEARCH_AND_ANALYSIS/bnf_review_notes.md) - Grammar enhancement ideas
+- [XML BNF Analysis](RESEARCH_AND_ANALYSIS/xml_bnf_analysis.md) - XML grammar analysis
 
 ### Advanced Topics
 - [Binary Grep Implementation](IMPLEMENTATION/BINARY_GREP.md) - Binary data processing (now in Implementation)
