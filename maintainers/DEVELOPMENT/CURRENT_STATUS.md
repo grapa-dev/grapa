@@ -1,101 +1,154 @@
-# CURRENT STATUS - Grapa Project
+# Grapa Database Development Status
 
-## **CRITICAL ISSUE: RPTR Corruption During Leaf Shifting** 🔴
+## 🚀 **AGENT ONBOARDING**
 
-### **Root Cause Analysis** ✅
-- **Issue**: RPTR entries become corrupted during leaf shifting operations, manifesting as `{"name":{"error":-1}}`
-- **Root Cause**: First RPTR_ITEM deletion fails (`err=-1`) during field updates, leaving RPTR_ITEM in inconsistent state
-- **Evidence**: Debug shows `DEBUG: SetRecordField Delete RPTR_ITEM - Delete err=-1` for first record
-- **Final State**: First RPTR shows `RREC (0)` instead of `RREC (55)`, other RPTRs work correctly
-- **Architecture Violation**: GrapaBtree leaf shifting operations are not properly handling GrapaDB-specific data structures
-- **Solution Pattern**: Use existing override pattern in GrapaDB.h (4 existing overrides: NewTree, CompareKey, DeleteKey, Delete)
+**⚠️ CRITICAL**: New agents MUST complete all onboarding steps before proceeding with any investigation or development work. This ensures proper environment setup and syntax understanding.
 
-### **Solution Approach** ✅
-- **Add 5th Override**: `GrapaDB::MoveLeaf()` to handle GrapaDB-specific leaf shifting
-- **Follow Existing Pattern**: Use same approach as other overrides - call base class first, then add GrapaDB-specific logic
-- **Fix RPTR Deletion Issue**: Investigate why first RPTR_ITEM deletion fails with `err=-1`
-- **Test Strategy**: Verify MoveLeaf override is called and RPTR corruption is resolved
+### 🔧 **PLATFORM-SPECIFIC TEST SETUP**
 
-### **Implementation Status** 🟡
-- **Analysis Complete**: Root cause identified and solution approach documented
-- **Critical Insight**: Problem starts earlier than 3rd record - first RPTR deletion already fails (`err=-1`)
-- **Implementation Complete**: GrapaDB::MoveLeaf() override implemented and tested
-- **Test Results**: MoveLeaf override is working (debug messages confirm it's being called)
-- **Remaining Issue**: First RPTR entry still shows `RREC (0)` instead of `RREC (55)`
-- **Root Cause**: First RPTR deletion fails during field updates, leaving RPTR_ITEM in corrupted state
-- **Evidence**: Debug shows `DEBUG: PtrToRec Search - err=-1` during third record operations
-- **Next Steps**: Investigate why first RPTR deletion fails and fix the deletion/insertion logic
-- **Documentation**: Update maintainer docs with architectural findings
+**Current Platform**: Windows AMD64
+**Terminal**: x64 Native Tools Command Prompt for VS 2022
 
-## **PROJECT STATUS**
+#### **Windows Test Setup**
+```bash
+# Build Command
+python build.py --exe-only
 
-### **Build System** ✅
-- **Platform**: Windows AMD64 (PowerShell)
-- **Build Command**: `python build.py --exe-only` - ✅ **WORKING**
-- **Executable**: `.\grapa.exe` - ✅ **WORKING**
-- **CLI**: `.\grapa.exe -h` - ✅ **WORKING**
+# Test Commands
+.\grapa.exe -h                    # Help
+.\grapa.exe -c "script"           # Script execution
+.\grapa.exe folder\file.grc       # File execution
 
-### **Core Functionality** ✅
-- **Basic CLI**: ✅ **WORKING**
-- **Database Operations**: ✅ **WORKING** (except RPTR corruption issue)
-- **File System**: ✅ **WORKING**
-- **Python Integration**: ✅ **WORKING**
+# Primary Test File
+.\grapa test\test_row_small.grc
+```
 
-### **Documentation** ✅
-- **User Docs**: ✅ **COMPLETE** (live at https://grapa.github.io)
-- **Maintainer Docs**: ✅ **COMPLETE**
-- **API Reference**: ✅ **COMPLETE**
-- **Migration Guides**: ✅ **COMPLETE**
+#### **macOS Test Setup**
+```bash
+# Build Command
+python3 build.py --exe-only
 
-### **Testing** 🟡
-- **Primary Test**: `test_row_small.grc` - 🔴 **FAILING** (RPTR corruption)
-- **Test Organization**: ✅ **COMPLETE** (organized into logical subdirectories)
-- **Test Coverage**: ✅ **GOOD** (comprehensive test suite available)
+# Test Commands
+./grapa -h                        # Help
+./grapa -c "script"              # Script execution
+./grapa folder/file.grc          # File execution
 
-## **OUTSTANDING TASKS**
+# Primary Test File
+./grapa test/test_row_small.grc
+```
 
-### **Critical (High Priority)**
-1. **🔴 RPTR Corruption Fix** - Implement GrapaDB::MoveLeaf() override
-   - Status: Analysis complete, ready for implementation
-   - Impact: Database reliability and data integrity
-   - Timeline: Immediate
+#### **Linux Test Setup**
+```bash
+# Build Command
+python3 build.py --exe-only
 
-### **Important (Medium Priority)**
-2. **Test Script Refinement** - Address placeholder output in comprehensive_database_validation.grc
-3. **Stress Test Optimization** - Review and optimize stress test sections in .grc test scripts
-4. **Language Enhancement Roadmap** - Review and prioritize next Grapa language features/bugfixes
+# Test Commands
+./grapa -h                        # Help
+./grapa -c "script"              # Script execution
+./grapa folder/file.grc          # File execution
 
-### **Maintenance (Low Priority)**
-5. **Documentation Updates** - Keep docs synchronized with code changes
-6. **Build System Monitoring** - Monitor for any build issues across platforms
+# Primary Test File
+./grapa test/test_row_small.grc
+```
 
-## **RECENTLY COMPLETED** ✅
-- **Agent Onboarding**: ✅ **COMPLETE** (platform identification, build verification, syntax loading)
-- **Root Cause Analysis**: ✅ **COMPLETE** (identified architectural violation and solution pattern)
-- **Documentation Organization**: ✅ **COMPLETE** (user/maintainer separation, live site working)
-- **Test Organization**: ✅ **COMPLETE** (logical subdirectories, comprehensive coverage)
+### 🎯 **IMMEDIATE TASKS FOR NEW AGENTS**
 
-## **TECHNICAL CONTEXT**
+**⚠️ CRITICAL FIRST STEP**: Run platform identification commands to determine your environment:
+- **Windows**: `dir` (shows files with backslashes), `echo %OS%`
+- **macOS/Linux**: `ls` (shows files with forward slashes), `uname -s`
 
-### **Architecture Pattern**
-- **GrapaBtree**: Generic B-tree implementation (should not know about GrapaDB)
-- **GrapaDB**: Database layer with specific overrides for data structure handling
-- **Override Pattern**: 4 existing overrides (NewTree, CompareKey, DeleteKey, Delete) + new MoveLeaf override
+**COMMAND COMPLETION RECOGNITION**:
+- **Windows `dir`**: Look for directory listing with `d----` folders, `-a---` files, backslash paths, and Windows-style timestamps
+- **macOS/Linux `ls`**: Look for directory listing with `d` folders, `-` files, forward slash paths, and Unix-style timestamps
+- **Windows OS Check**: 
+  - **Command Prompt**: `echo %OS%` should return "Windows_NT" or similar
+  - **PowerShell**: `$env:OS` should return "Windows_NT" or similar
+- **`uname -s` (macOS/Linux)**: Should return "Darwin" (macOS) or "Linux"
 
-### **Platform Details**
-- **OS**: Windows AMD64 (Windows_NT)
-- **Shell**: PowerShell
-- **Build**: `python build.py --exe-only`
-- **Executable**: `.\grapa.exe`
-- **Test Paths**: Windows backslash syntax (`test\test_row_small.grc`)
+**Use the appropriate shell syntax for your platform**:
+- **Windows**: Backslash paths (`.\grapa.exe`), `dir` for listing
+- **macOS/Linux**: Forward slash paths (`./grapa`), `ls` for listing
 
-### **Critical Files**
-- **Primary Test**: `test/test_row_small.grc` (demonstrates RPTR corruption)
-- **Core Implementation**: `source/grapa/GrapaDB.h` (override definitions)
-- **BTree Implementation**: `source/grapa/GrapaBtree.h` (base class)
-- **Status Tracking**: `maintainers/DEVELOPMENT/CURRENT_STATUS.md` (this file)
+1. **Environment Setup**
+   - [ ] Run platform identification commands (`dir` vs `ls`, `echo %OS%` vs `uname -s`)
+   - [ ] Verify correct platform (Windows/macOS/Linux) based on command output
+   - [ ] Use appropriate build command for platform (`python` vs `python3`)
+   - [ ] Use correct executable path and syntax (backslash vs forward slash)
+   - [ ] Test basic CLI functionality with platform-appropriate commands
+
+2. **Investigation Setup**
+   - [ ] Build Grapa from source using platform-specific command
+   - [ ] Test executable with help command
+   - [ ] Run primary test file: `test_row_small.grc`
+   - [ ] Verify file-based database operations
+
+3. **Current Investigation Focus**
+   - [ ] Analyze `GrapaGroup → GrapaDB → GrapaBTree` inheritance chain
+   - [ ] Investigate `DumpThePointer` vs `DumpTheRowRec` behavior differences
+   - [ ] Identify root cause of index corruption in file-based databases
+   - [ ] Document findings in investigation plan
+
+### 📚 **REQUIRED GRAPA SYNTAX REFERENCE**
+
+**⚠️ CRITICAL**: Before running any Grapa scripts, agents must load these syntax references:
+- **Basic Syntax**: `docs-src/docs/syntax/basic_syntax.md` - Core Grapa language rules
+- **Grammar Rules**: `lib/grapa/$grapa.grc` - Complete language grammar definition
+
+**Required for all CLI testing** (both `-c` option and file execution):
+- **Script Syntax**: Understanding Grapa script structure and commands
+- **Database Operations**: Proper syntax for database creation, queries, and manipulation
+- **Error Handling**: Correct `.iferr()` usage and error patterns
+- **Data Types**: Proper handling of `$STR`, `$INT`, `$FLOAT`, `$TABLE`, etc.
 
 ---
 
-**Last Updated**: [Current Date] - RPTR Corruption Analysis Complete, Ready for Implementation
-**Next Review**: After RPTR corruption fix implementation 
+## **Current Issue: RPTR Corruption During Leaf Shifting** 🔴 **INVESTIGATION ONGOING**
+
+### **Root Cause Analysis** 🔍
+- **Primary Issue**: RPTR_ITEM entries appear to point to `RREC (0)` instead of the correct record
+- **Corruption Point**: The issue occurs during **record lookup** in the `PtrToRec` method, not in RPTR entry creation
+- **Evidence**: Debug shows RPTR entries are created correctly with proper values, but when PtrToRec tries to follow the pointer, it gets a record with value 0
+- **Index Ordering**: The RPTR entries are an index that must maintain their alphabetical/key order during leaf shifting
+
+### **Critical New Finding: PtrToRec Function Issue** 🔴
+- **Exact Issue Point**: The `PtrToRec` function is returning `recCursor.mValue=0` when accessing RPTR entries
+- **Evidence**: Debug output shows:
+  ```
+  DEBUG: PtrToRec Search - err=-1 recCursor.mValue=0 recCursor.mKey=0
+  DEBUG: PtrToRec ENTER - ptrCursor.mValue=0 ptrCursor.mKey=0 ptrCursor.mValueType=0
+  DEBUG: PtrToRec - Unknown value type 0, returning error
+  ```
+- **Root Cause**: The RPTR entry is being created correctly, but when `PtrToRec` tries to follow the pointer, it gets a corrupted value
+
+### **UpdateLeafInfo Logging Implementation** ✅
+- **Virtual Function**: Made `UpdateLeafInfo` virtual in GrapaBtree.h
+- **Override Added**: Added override in GrapaDB.h and implementation in GrapaDB.cpp
+- **Logging Target**: Specifically logs operations on tree 84, first leaf (index 0)
+- **Logging Details**: Captures before/after write operations with key values and types
+- **Status**: Implementation complete, but no leaf operations for tree 84, first leaf detected in current tests
+
+### **Investigation Progress** 📊
+1. ✅ **Identified corruption pattern**: First RPTR entry always points to RREC (0)
+2. ✅ **Added comprehensive logging**: SetRecordField, CreateRecord, PtrToRec operations
+3. ✅ **Implemented UpdateLeafInfo override**: Ready to capture leaf writing operations
+4. 🔍 **Root cause identified**: Issue is in PtrToRec function, not in RPTR creation
+5. 🔍 **Next steps**: Investigate why PtrToRec returns value 0 for first RPTR entry
+
+### **Technical Details** 🔧
+- **RPTR Entry Creation**: ✅ Working correctly - entries are created with proper values
+- **SetRecordField Operations**: ✅ Working correctly - delete/insert operations succeed
+- **PtrToRec Function**: 🔴 **ISSUE** - Returns value 0 when accessing first RPTR entry
+- **Leaf Operations**: ✅ MoveLeaf operations detected and working correctly
+
+### **Next Investigation Steps** 📋
+1. **Analyze PtrToRec function**: Why does it return value 0 for first RPTR entry?
+2. **Check RPTR entry structure**: Verify the actual data stored in RPTR entries
+3. **Test with larger datasets**: Trigger more leaf operations to see UpdateLeafInfo logging
+4. **Fix PtrToRec logic**: Correct the pointer resolution for RPTR entries
+
+### **Current Test Results** 📈
+- **1-Record Test**: RPTR corruption confirmed
+- **2-Record Test**: RPTR corruption confirmed  
+- **UpdateLeafInfo Logging**: Implemented but no tree 84, first leaf operations detected
+- **MoveLeaf Operations**: Detected and working correctly
+- **PtrToRec Function**: Identified as the root cause of corruption 
