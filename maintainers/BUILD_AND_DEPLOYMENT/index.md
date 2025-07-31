@@ -16,13 +16,14 @@ This directory contains all build system and deployment documentation for the Gr
 - **[BUILD_DEPENDANCIES.md](BUILD_DEPENDANCIES.md)** - Essential build and setup information. Do NOT delete or modify unless updating build documentation.
 
 ### **📚 Legacy Files (Deprecated)**
-- **[BUILD_DEBUGGING.md](BUILD_DEBUGGING.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
-- **[DEPENDENCIES.md](DEPENDENCIES.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
+- **[BUILD.md](BUILD.md)** - **DEPRECATED**: Moved to BUILD_SYSTEM.md
 
 ## 🚀 **Deployment**
 
 ### **Documentation Deployment**
+- **[DOCUMENTATION_DEPLOYMENT.md](DOCUMENTATION_DEPLOYMENT.md)** - Documentation deployment process and procedures
 - **[SETUPAWSDOCKER.md](SETUPAWSDOCKER.md)** - AWS and Docker setup instructions
+- **[BUILD_DOCKER_MANUAL.md](BUILD_DOCKER_MANUAL.md)** - Docker build manual and containerization guide
 
 ## 📖 **Archived Documentation**
 

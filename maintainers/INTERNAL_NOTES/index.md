@@ -43,7 +43,14 @@ Internal notes include:
 
 ### Documentation Improvement & WIP
 - [Documentation Ideas](DOCS_IMPROVEMENT_IDEAS.md) — Documentation improvement plans
+- [Social Media Tracker](SOCIAL_MEDIA_TRACKER.md) — Social media tracking and outreach
 - [ARCHIVED/**](ARCHIVED/) — Historical work-in-progress and archived files
+
+### Formula & Library Analysis
+- [Formula Search Indexing Analysis](FORMULA_SEARCH_INDEXING_ANALYSIS.md) — Formula search and indexing analysis
+- [Formula Version Compatibility Analysis](FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md) — Formula version compatibility analysis
+- [Library Specification Analysis](LIBRARY_SPECIFICATION_ANALYSIS.md) — Library specification analysis
+- [Builtin Namespace Definitions Analysis](BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md) — Builtin namespace definitions analysis
 
 > For stable documentation, see the main documentation sections. For operator/optimization/analysis, see the above cross-linked docs for their distinct roles. 
 

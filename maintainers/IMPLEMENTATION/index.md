@@ -32,12 +32,13 @@ Grapa's implementation is built on several key components:
 - [BTree Implementation](GRAPA_BTREE_IMPLEMENTATION.md) - Low-level BTree data structure and algorithms (used by the database)
 - [BTree File Structure & Traversal](GRAPA_BTREE_FILE_STRUCTURE.md) - On-disk file/block structure and manual traversal for Grapa BTree files (for forensics, debugging, and tool authors)
 - [Database Implementation](GRAPA_DB_IMPLEMENTATION.md) - Full GrapaDB system, including database architecture, pointer dereferencing, and integration
-- [Group Implementation](GRAPA_GROUP_IMPLEMENTATION.md) - GrapaGroup hierarchical database management, dual content types (trees and data), and navigation patterns
 - [Endian Safety Implementation](GRAPA_ENDIAN_SAFETY.md) - Cross-platform compatibility and endian conversion implementation
+- [Cross-Platform Objects](GRAPA_CROSS_PLATFORM_OBJECTS.md) - Cross-platform object implementation and compatibility
+- [Float Implementation](GRAPAFLOAT_IMPLEMENTATION.md) - Floating-point number implementation and precision handling
 
+### Specialized Components
 - [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation
-- [Field Metadata Lifecycle and Requirements](FIELD_METADATA_LIFECYCLE.md)
-- [VECTOR Implementation](GRAPA_VECTOR_IMPLEMENTATION.md) - Canonical reference for the $VECTOR type, methods, construction, and edge cases
+- [Field Metadata Lifecycle](FIELD_METADATA_LIFECYCLE.md) - Field metadata lifecycle and requirements
 
 ## Architecture Overview
 

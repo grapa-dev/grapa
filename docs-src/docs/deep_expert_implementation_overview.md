@@ -18,9 +18,9 @@ The following documentation is available to contributors and maintainers (not pa
   - [FIELD_METADATA_LIFECYCLE.md](../../maintainers/IMPLEMENTATION/FIELD_METADATA_LIFECYCLE.md) – Field metadata lifecycle and best practices
   - ...and more in the [maintainers/IMPLEMENTATION/](../../maintainers/IMPLEMENTATION/) directory
 - **Development & Debugging:**
-  - [PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md](../../maintainers/DEVELOPMENT/PROGRAMMER_FRIENDLINESS_AND_ADOPTION_PLAN.md) – Language improvement roadmap
+  - [LANGUAGE_IMPROVEMENT_PLAN.md](../../maintainers/DEVELOPMENT/LANGUAGE_IMPROVEMENT_PLAN.md) – Language improvement roadmap
 - **Backlog, Testing, and Internal Notes:**
-  - [BACKLOG.md](../../maintainers/BACKLOG.md), [TESTING_AND_QUALITY/](../../maintainers/TESTING_AND_QUALITY/), [INTERNAL_NOTES/](../../maintainers/INTERNAL_NOTES/)
+  - [BACKLOG.md](../../maintainers/DEVELOPMENT/BACKLOG.md), [TESTING_AND_QUALITY/](../../maintainers/TESTING_AND_QUALITY/), [INTERNAL_NOTES/](../../maintainers/INTERNAL_NOTES/)
 
 > **Note:** These docs are for contributors/maintainers only. If you wish to contribute or need access, contact the project maintainers.
 

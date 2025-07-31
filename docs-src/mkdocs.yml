@@ -125,6 +125,7 @@ nav:
           - Network Functions: sys/net.md
           - System Functions: sys/sys.md
           - Thread Functions: sys/thread.md
+          - Function Quick Reference: function_quick_reference.md
       - Object Types:
           - Document: obj/document.md
           - Encode: obj/encode.md
@@ -132,6 +133,8 @@ nav:
           - Grep Python: obj/grep_python.md
           - Iterate: obj/iterate.md
           - Transform: obj/transform.md
+      - Pattern Matching:
+          - Grep Documentation: grep.md
       - Database:
           - Quick Reference: database/quick_reference.md
           - Storage Types: database/column_store.md
@@ -142,6 +145,7 @@ nav:
           - Precedence: syntax/precedence.md
           - Grammar Design: syntax/grammar_design.md
       - Advanced Topics: advanced_topics.md
+      - Deep Expert Implementation: deep_expert_implementation_overview.md
   - Guides:
       - Migration Guides:
           - Python: migrations/python_to_grapa_migration.md

@@ -43,7 +43,7 @@ If you want to build Grapa yourself (or need the latest version), you can build 
 3. The CLI binary will be created in the appropriate directory for your platform.
 4. The Python extension will also be built and installed if Python is available.
 
-For more details, see the [CLI Quickstart](cli_quickstart.md) and [Build System Guide](../BUILD_AND_DEPLOYMENT/BUILD_README.md).
+For more details, see the [CLI Quickstart](cli_quickstart.md).
 
 ---
 
