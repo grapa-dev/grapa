@@ -2,9 +2,9 @@
 
 **For all maintainers and AI assistants:**
 - Always review this file for the latest project status and active work items
-- For complete navigation, see [`maintainers/index.md`](../index.md)
-- For detailed technical plans, see [`maintainers/PROJECT_MANAGEMENT/BACKLOG.md`](BACKLOG.md)
-- For onboarding guidance, see [`maintainers/PROJECT_MANAGEMENT/ONBOARD.md`](ONBOARD.md)
+- For complete navigation, see [`maintainers/index.md`](../index.md) (note existence)
+- For detailed technical plans, see [`maintainers/PROJECT_MANAGEMENT/BACKLOG.md`](BACKLOG.md) (note existence, load when needed)
+- For onboarding guidance, see [`maintainers/PROJECT_MANAGEMENT/ONBOARD.md`](ONBOARD.md) (always load)
 
 ---
 

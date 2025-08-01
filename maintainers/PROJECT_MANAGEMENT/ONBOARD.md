@@ -24,25 +24,34 @@ This guide provides comprehensive onboarding information for new agents, develop
 
 1. **Start Here**: Read this ONBOARD.md file (you're here!)
 2. **Project Status**: Read `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` for current priorities
-3. **Directory Structure**: Review `maintainers/index.md` for complete directory organization
-4. **Maintainer Guidance**: Check `maintainers/README.md` for maintainer-specific guidance
+3. **Directory Structure**: Note existence of `maintainers/index.md` for complete directory organization
+4. **Maintainer Guidance**: Note existence of `maintainers/README.md` for maintainer-specific guidance
 5. **Canonical Syntax**: Review `docs-src/docs/syntax/basic_syntax.md` for language rules
-6. **Development Priorities**: Read `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` for roadmap
+6. **Development Priorities**: Note existence of `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` for roadmap
 
 **❌ DO NOT PROCEED until you have completed ALL 6 steps above**
 **❌ DO NOT create new documentation until you have completed the discovery path**
 **❌ DO NOT assume you understand the project without following this path**
 
+### File Loading Guidelines
+- **LOAD FULL CONTENT**: Only for files you need to work with immediately
+- **NOTE EXISTENCE**: For files you might need later (just verify they exist and know their purpose)
+- **CURRENT_STATUS.md**: Always load (contains active work)
+- **ONBOARD.md**: Always load (contains onboarding process)
+- **basic_syntax.md**: **ALWAYS LOAD** (essential for Grapa language work - prevents syntax errors)
+- **BACKLOG.md**: Note existence, load only when working on backlog items
+- **Other files**: Note existence unless immediately needed
+
 ### Discovery Path Validation Checklist
 
 **After completing each step, you must acknowledge completion:**
 
-- [ ] **Step 1**: ONBOARD.md read and understood
-- [ ] **Step 2**: CURRENT_STATUS.md read - current priorities understood
-- [ ] **Step 3**: index.md reviewed - directory structure understood
-- [ ] **Step 4**: README.md checked - maintainer guidance understood
-- [ ] **Step 5**: basic_syntax.md reviewed - language rules understood
-- [ ] **Step 6**: BACKLOG.md read - development priorities understood
+- [ ] **Step 1**: ONBOARD.md **LOADED** - onboarding process understood
+- [ ] **Step 2**: CURRENT_STATUS.md **LOADED** - current priorities understood
+- [ ] **Step 3**: index.md **NOTED** - directory structure location understood
+- [ ] **Step 4**: README.md **NOTED** - maintainer guidance location understood
+- [ ] **Step 5**: basic_syntax.md **LOADED** - Grapa language rules understood (essential for scripting work)
+- [ ] **Step 6**: BACKLOG.md **NOTED** - development priorities location understood
 
 **Only proceed when all steps are complete and checked off.**
 
@@ -54,13 +63,14 @@ This guide provides comprehensive onboarding information for new agents, develop
 ❌ **Assuming you understand the project** - Follow the discovery path first
 ❌ **Cherry-picking what to read** - Complete the entire discovery path systematically
 ❌ **Creating personal tracking files** - Work within the existing documentation structure
+❌ **Loading unnecessary files** - Only load what's needed for current work
 
 **Key Discovery Files:**
-- `maintainers/index.md` - Complete directory navigation
-- `maintainers/README.md` - Maintainer onboarding and guidance
-- `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` - **AUTHORITATIVE** project status
-- `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` - Development priorities
-- `docs-src/docs/syntax/basic_syntax.md` - Canonical syntax reference
+- `maintainers/index.md` - Complete directory navigation (note existence)
+- `maintainers/README.md` - Maintainer onboarding and guidance (note existence)
+- `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` - **AUTHORITATIVE** project status (always load)
+- `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` - Development priorities (note existence, load when needed)
+- `docs-src/docs/syntax/basic_syntax.md` - **ESSENTIAL** Grapa language reference (always load - prevents syntax errors)
 
 ### Agent Validation Checklist
 
@@ -72,6 +82,7 @@ This guide provides comprehensive onboarding information for new agents, develop
 - [ ] I know where to find key information in the documentation
 - [ ] I will not create new documentation without checking existing docs first
 - [ ] I will use the established response templates below
+- [ ] I will only load files needed for current work, not unnecessary files
 
 **If any item is unchecked, complete the discovery path first.**
 
@@ -91,8 +102,8 @@ This guide provides comprehensive onboarding information for new agents, develop
 5. CLI Enhancement - Performance options, environment management, error handling
 
 🔗 **Key Resources:**
-- `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` - Complete project status
-- `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` - Development priorities
+- `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` - **LOADED** (Complete project status)
+- `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` - **NOTED** (Development priorities - load when needed)
 - `docs-src/` - User documentation
 - `test/` - Test scripts and validation
 
@@ -207,7 +218,7 @@ Would you like me to focus on any specific area, or do you have questions about 
 - **Test scripts**: `./grapa test/script.grc` with forward slashes
 
 ### Cross-Platform Testing
-- **CLI testing**: Always load `basic_syntax.md` and `lib/grapa/$grapa.grc` for Grapa scripting syntax rules
+- **CLI testing**: Note existence of `lib/grapa/$grapa.grc` for Grapa scripting syntax rules (load when doing CLI testing)
 - **Debug flag**: Use `-d` flag throughout for debug output
 - **Script testing**: Use `-c` option for inline scripts (escape `$` characters)
 - **File testing**: Use file option for `.grc` files
@@ -274,14 +285,9 @@ Would you like me to focus on any specific area, or do you have questions about 
 ### Migration Support
 
 #### Available Migration Guides
-- **Python**: `docs-src/docs/migrations/python_to_grapa_migration.md`
-- **JavaScript**: `docs-src/docs/migrations/js_to_grapa_migration.md`
-- **Go**: `docs-src/docs/migrations/go_to_grapa_migration.md`
-- **Rust**: `docs-src/docs/migrations/rust_to_grapa_migration.md`
-- **TypeScript**: `docs-src/docs/migrations/typescript_to_grapa_migration.md`
-- **Ruby**: `docs-src/docs/migrations/ruby_to_grapa_migration.md`
-- **Kotlin**: `docs-src/docs/migrations/kotlin_to_grapa_migration.md`
-- **Swift**: `docs-src/docs/migrations/swift_to_grapa_migration.md`
+- **Location**: `docs-src/docs/migrations/` (note existence, load specific guides when working on migration tasks)
+- **Available**: Python, JavaScript, Go, Rust, TypeScript, Ruby, Kotlin, Swift
+- **Usage**: Load specific migration guide only when working with that language
 
 #### Key Migration Differences
 - **Loops**: Use `while` or `.range()`+functional methods instead of `for`/`foreach`
@@ -344,13 +350,13 @@ Any change to the Grapa language requires:
 
 **Before making any changes, agents MUST verify:**
 
-- [ ] **Build System**: `python build.py --exe-only` works on Windows
-- [ ] **CLI Functionality**: `.\grapa.exe -h` shows correct options
 - [ ] **Discovery Path**: All 6 discovery steps are accessible
 - [ ] **Cross-Platform**: Both Windows and Mac/Linux commands documented
 - [ ] **Syntax Rules**: Canonical syntax reference is accurate
 - [ ] **Documentation Links**: All internal links work correctly
 - [ ] **Onboarding Process**: "onboard" command works as expected
+- [ ] **Build System**: Note that `python build.py --exe-only` should work on Windows (test when needed)
+- [ ] **CLI Functionality**: Note that `.\grapa.exe -h` should show correct options (test when needed)
 
 **If any of these fail, STOP and ask for guidance before proceeding.**
 
@@ -372,17 +378,11 @@ Any change to the Grapa language requires:
 - [ ] Following the established naming and placement conventions
 
 **Documentation Placement Guide:**
-- **Investigation Results**: `maintainers/RESEARCH_AND_ANALYSIS/`
-- **Technical Details**: `maintainers/IMPLEMENTATION/`
-- **Analysis & Planning**: `maintainers/DEVELOPMENT/`
-- **Status Changes**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`
+- **Investigation Results**: `maintainers/RESEARCH_AND_ANALYSIS/` (note existence)
+- **Technical Details**: `maintainers/IMPLEMENTATION/` (note existence)
+- **Analysis & Planning**: `maintainers/DEVELOPMENT/` (note existence)
+- **Status Changes**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` (always load)
 - **Personal Progress Tracking**: Use existing WIP files, don't create new TODO files
-
-**Documentation Placement Guide:**
-- **Investigation Results**: `maintainers/RESEARCH_AND_ANALYSIS/`
-- **Technical Details**: `maintainers/IMPLEMENTATION/`
-- **Analysis & Planning**: `maintainers/DEVELOPMENT/`
-- **Status Changes**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`
 
 ### 🚨 Agent Switching Protection
 
@@ -420,6 +420,7 @@ This will help me avoid making rogue actions or incomplete changes."
 4. **Verify state** - Check if system is in an incomplete state
 5. **Wait for guidance** - Do not make assumptions about what should be done next
 6. **Follow discovery path** - Complete all 6 steps before proceeding
+7. **Load efficiently** - Only load CURRENT_STATUS.md, ONBOARD.md, and basic_syntax.md (ESSENTIAL for Grapa language work) unless other files are immediately needed
 
 **Signs of incomplete context:**
 - User mentions "continuing" or "next step" but you have no context
@@ -432,12 +433,12 @@ This will help me avoid making rogue actions or incomplete changes."
 
 ## 🔗 Related Documentation
 
-- **Project Status**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md`
-- **Development Priorities**: `maintainers/PROJECT_MANAGEMENT/BACKLOG.md`
-- **Canonical Syntax**: `docs-src/docs/syntax/basic_syntax.md`
-- **Migration Guides**: `docs-src/docs/migrations/`
-- **Test Examples**: `test/` directory
-- **Implementation Details**: `maintainers/IMPLEMENTATION/`
+- **Project Status**: `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` (always load)
+- **Development Priorities**: `maintainers/PROJECT_MANAGEMENT/BACKLOG.md` (note existence, load when needed)
+- **Canonical Syntax**: `docs-src/docs/syntax/basic_syntax.md` (**ESSENTIAL** - always load for Grapa language work)
+- **Migration Guides**: `docs-src/docs/migrations/` (note existence, load specific guides when needed)
+- **Test Examples**: `test/` directory (note existence, load specific tests when needed)
+- **Implementation Details**: `maintainers/IMPLEMENTATION/` (note existence, load specific docs when needed)
 
 ---
 
