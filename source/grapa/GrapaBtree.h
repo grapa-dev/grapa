@@ -63,8 +63,8 @@ public:
     virtual GrapaError EmptyTree    (GrapaCursor& cursor);
     virtual GrapaError SetTreeIndex (GrapaCursor& cursor, u64 indexTree);
     virtual GrapaError GetTreeIndex (GrapaCursor& cursor, u64& indexTree);
-    virtual GrapaError SetTreeDictionary (GrapaCursor& cursor, u64 dictTree);
-    virtual GrapaError GetTreeDictionary (GrapaCursor& cursor, u64& dictTree);
+    virtual GrapaError SetTreeDict (GrapaCursor& cursor, u64 dictTree);
+    virtual GrapaError GetTreeDict (GrapaCursor& cursor, u64& dictTree);
     virtual GrapaError SetTreeStore (GrapaCursor& cursor, u64 storeTree, u8 storeType);
     virtual GrapaError GetTreeStore (GrapaCursor& cursor, u64& storeTree, u8& storeType);
     virtual GrapaError GetTreeSize  (GrapaCursor& cursor, u64& itemCount);

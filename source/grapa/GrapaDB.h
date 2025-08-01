@@ -60,6 +60,10 @@ public:
 	virtual GrapaError DeleteIndex(GrapaDBTable& pTable, u64 pIndexId);
 	virtual GrapaError RefreshIndex(GrapaDBIndex& pIndex);
 
+	virtual u8 TreeTypeToRecType(u8 pTreeType);
+	virtual u8 TreeTypeToPtrType(u8 pTreeType);
+	virtual u8 ValueTypeToTreeType(u8 pValueType);
+
 	virtual GrapaError CreateIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u64 pFieldId);
 	virtual GrapaError OpenIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u64& pFieldId);
 

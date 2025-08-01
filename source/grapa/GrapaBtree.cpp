@@ -414,7 +414,7 @@ GrapaError GrapaBtree::GetTreeIndex(GrapaCursor& cursor, u64& indexTree)
 	return(0);
 }
 
-GrapaError GrapaBtree::SetTreeDictionary(GrapaCursor& cursor, u64 dictTree)
+GrapaError GrapaBtree::SetTreeDict(GrapaCursor& cursor, u64 dictTree)
 {
 	GrapaError err = 0;
 	GrapaBlockTree head;
@@ -432,7 +432,7 @@ GrapaError GrapaBtree::SetTreeDictionary(GrapaCursor& cursor, u64 dictTree)
 	return(0);
 }
 
-GrapaError GrapaBtree::GetTreeDictionary(GrapaCursor& cursor, u64& dictTree)
+GrapaError GrapaBtree::GetTreeDict(GrapaCursor& cursor, u64& dictTree)
 {
 	GrapaError err = 0;
 	GrapaBlockTree head;

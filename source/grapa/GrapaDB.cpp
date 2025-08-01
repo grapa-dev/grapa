@@ -1146,6 +1146,51 @@ GrapaError GrapaDB::RefreshIndex(GrapaDBIndex& pIndex)
 
 ////////////////////////////////////////////////////////////////////////////////
 
+u8 GrapaDB::TreeTypeToRecType(u8 pTreeType)
+{
+	switch (pTreeType)
+	{
+	case GROUP_TREE:
+		return GREC_ITEM;
+	case RTABLE_TREE:
+		return RREC_ITEM;
+	case CTABLE_TREE:
+		return CREC_ITEM;
+	}
+	return 0;
+}
+
+u8 GrapaDB::TreeTypeToPtrType(u8 pTreeType)
+{
+	switch (pTreeType)
+	{
+	case GROUP_TREE:
+		return GPTR_ITEM;
+	case RTABLE_TREE:
+		return RPTR_ITEM;
+	case CTABLE_TREE:
+		return CPTR_ITEM;
+	}
+	return 0;
+}
+
+u8 GrapaDB::ValueTypeToTreeType(u8 pValueType)
+{
+	switch (pValueType)
+	{
+	case GREC_ITEM:
+	case GPTR_ITEM:
+		return GROUP_TREE;
+	case RREC_ITEM:
+	case RPTR_ITEM:
+		return RTABLE_TREE;
+	case CREC_ITEM:
+	case CPTR_ITEM:
+		return CTABLE_TREE;
+	}
+	return 0;
+}
+
 GrapaError GrapaDB::CreateIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u64 pFieldId)
 {
 	GrapaError err;
@@ -1181,21 +1226,8 @@ GrapaError GrapaDB::CreateIndexField(GrapaDBIndex& pIndex, u64 pIndexFieldId, u6
 	{
 		GrapaBlockTree tree;
 		err = tree.Read(mFile,dtCursor.mTreeRef);
-		switch (tree.treeType)
-		{
-			case GROUP_TREE: 
-				indexCursor.Set(pIndex.mRef,GPTR_ITEM,dtCursor.mKey);
-				Insert(indexCursor);
-				break;
-			case RTABLE_TREE: 
-				indexCursor.Set(pIndex.mRef,RPTR_ITEM,dtCursor.mKey);
-				Insert(indexCursor);
-				break;
-			case CTABLE_TREE: 
-				indexCursor.Set(pIndex.mRef,CPTR_ITEM,dtCursor.mKey);
-				Insert(indexCursor);
-				break;
-		}
+		indexCursor.Set(pIndex.mRef, TreeTypeToPtrType(tree.treeType), dtCursor.mKey);
+		Insert(indexCursor);
 		err = Next(dtCursor);
 	}
 
@@ -1247,23 +1279,8 @@ GrapaError GrapaDB::CreateRecord(GrapaDBTable& pTable, GrapaCursor& pCursor)
 		case GROUP_TREE:
 			{
 				GrapaDBTable recTable;
-				switch (pCursor.mValueType)
-				{
-					case GREC_ITEM:
-						err = CreateTable(pTable.mRef,GROUP_TREE,pCursor.mKey,recTable);
-						if (err) return(err);
-						break;
-					case RREC_ITEM:
-						err = CreateTable(pTable.mRef,RTABLE_TREE,pCursor.mKey,recTable);
-						if (err) return(err);
-						break;
-					case CREC_ITEM:
-						err = CreateTable(pTable.mRef,CTABLE_TREE,pCursor.mKey,recTable);
-						if (err) return(err);
-						break;
-					default:
-						return(-1);
-				}
+				err = CreateTable(pTable.mRef, ValueTypeToTreeType(pCursor.mValueType), pCursor.mKey, recTable);
+				if (err) return(err);
 				pCursor.Set(pTable.mRecRef,pCursor.mValueType,pCursor.mKey);
 				err = Search(pCursor);
 				if (err) return(err);
@@ -1502,21 +1519,8 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 			dbFieldValue = pFieldList.GetFieldAt(i);
 			if (IndexHasField(indexCursor,dbFieldValue->mId))
 			{
-				switch (recCursor.mTreeType)
-				{
-					case GROUP_TREE: 
-						tableCursor.Set(indexCursor.mValue,GPTR_ITEM,recCursor.mKey);
-						err = Delete(tableCursor);
-						break;
-					case RTABLE_TREE:
-						tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
-						err = Delete(tableCursor);
-						break;
-					case CTABLE_TREE:
-						tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
-						err = Delete(tableCursor);
-						break;
-				}
+				tableCursor.Set(indexCursor.mValue, TreeTypeToPtrType(recCursor.mTreeType), recCursor.mKey);
+				err = Delete(tableCursor);
 				break;
 			}
 		}
@@ -1872,21 +1876,8 @@ GrapaError GrapaDB::SetRecordField(GrapaCursor& cursor, GrapaDBFieldValueArray& 
 			dbFieldValue = pFieldList.GetFieldAt(i);
 			if (IndexHasField(indexCursor, dbFieldValue->mId))
 			{
-				switch (recCursor.mTreeType)
-				{
-				case GROUP_TREE:
-					tableCursor.Set(indexCursor.mValue, GPTR_ITEM, recCursor.mKey);
-					err = Insert(tableCursor);
-					break;
-				case RTABLE_TREE:
-					tableCursor.Set(indexCursor.mValue, RPTR_ITEM, recCursor.mKey);
-					err = Insert(tableCursor);
-					break;
-				case CTABLE_TREE:
-					tableCursor.Set(indexCursor.mValue, CPTR_ITEM, recCursor.mKey);
-					err = Insert(tableCursor);
-					break;
-				}
+				tableCursor.Set(indexCursor.mValue, TreeTypeToPtrType(recCursor.mTreeType), recCursor.mKey);
+				err = Insert(tableCursor);
 				break;
 			}
 		}
@@ -1902,38 +1893,14 @@ GrapaError GrapaDB::FindRecordField(GrapaCursor& cursor, u64 fieldId, GrapaCurso
 {
 	GrapaError err;
 	u64 tableRef;
-
 	err = PtrToRec(cursor, recCursor);
 	if (err) return(err);
-
 	GrapaBlockTree tree;
 	err = tree.Read(mFile, recCursor.mTreeRef);
 	if (err) return(err);
-
 	recCursor.mTreeType = tree.treeType;
-
-	switch (recCursor.mTreeType)
-	{
-	case GROUP_TREE:
-		tableRef = recCursor.mTreeRef;
-		err = field.Get(this, tableRef, fieldId);
-		break;
-	case RTABLE_TREE:
-		tableRef = recCursor.mTreeRef;
-		err = field.Get(this, tableRef, fieldId);
-		if (err) return(err);
-		break;
-	case CTABLE_TREE:
-		tableRef = recCursor.mTreeRef;
-		err = field.Get(this, tableRef, fieldId);
-		if (err) return(err);
-		break;
-	default:
-		return(-1);  // do we every get to this location?
-		//err = dbField.Get(this, recCursor.mValue, fieldId);
-		//if (err) return(err);
-		break;
-	}
+	tableRef = recCursor.mTreeRef;
+	err = field.Get(this, tableRef, fieldId);
 	return(err);
 }
 
