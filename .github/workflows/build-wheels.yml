@@ -65,19 +65,19 @@ jobs:
             python-version: '3.12'
           
           # Linux ARM64
-          - os: ubuntu-latest
+          - os: ubuntu-arm64
             platform: linux-arm64
             python-version: '3.8'
-          - os: ubuntu-latest
+          - os: ubuntu-arm64
             platform: linux-arm64
             python-version: '3.9'
-          - os: ubuntu-latest
+          - os: ubuntu-arm64
             platform: linux-arm64
             python-version: '3.10'
-          - os: ubuntu-latest
+          - os: ubuntu-arm64
             platform: linux-arm64
             python-version: '3.11'
-          - os: ubuntu-latest
+          - os: ubuntu-arm64
             platform: linux-arm64
             python-version: '3.12'
           
