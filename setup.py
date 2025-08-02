@@ -59,12 +59,14 @@ if sys.platform.startswith('linux'):
         from_os = 'aws-amd64'
         if is_arm:
             from_os = 'aws-arm64'
-        extra_link_args = ['-std=c++17','-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
+        # For Python extension, we don't need X11 GUI libraries
+        extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
     else:
         from_os = 'linux-amd64'
         if is_arm:
             from_os = 'linux-arm64'
-        extra_link_args = ['-std=c++17','-lX11','-lXfixes','-lXft','-lXext','-lXrender','-lXinerama','-lXcursor','-lxcb','-lXau','-lpng','-lfontconfig','-lfreetype','-O3','-pthread','-ldl','-lm']
+        # For Python extension, we don't need X11 GUI libraries
+        extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
@@ -283,14 +285,14 @@ def pick_library_dirs():
     if my_system == 'Linux':
         if is_aws:
             if is_arm:
-                return ["source", "source/grapa-lib/aws-arm64", "source/X11-lib/aws-arm64"]
+                return ["source", "source/grapa-lib/aws-arm64"]
             else:
-                return ["source", "source/grapa-lib/aws-amd64", "source/X11-lib/aws-amd64"]
+                return ["source", "source/grapa-lib/aws-amd64"]
         else:
             if is_arm:
-                return ["source", "source/grapa-lib/linux-arm64", "source/X11-lib/linux-arm64"]
+                return ["source", "source/grapa-lib/linux-arm64"]
             else:
-                return ["source", "source/grapa-lib/linux-amd64", "source/X11-lib/linux-amd64"]
+                return ["source", "source/grapa-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
             return ["source", "source/grapa-lib/mac-arm64"]
