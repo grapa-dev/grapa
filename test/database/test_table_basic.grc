@@ -256,11 +256,11 @@ while (i <= 100) {
 }
 
 "Row store record count: ".echo();
-f2.ls().length().echo();
+f2.ls().len().echo();
 "\n".echo();
 
 "Column store record count: ".echo();
-f3.ls().length().echo();
+f3.ls().len().echo();
 "\n".echo();
 
 /* Test Summary */

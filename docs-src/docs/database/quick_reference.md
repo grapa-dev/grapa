@@ -88,7 +88,9 @@ records = f.ls()
 
 # List specific directory
 files = f.ls("subdirectory")
-```
+
+# Get record count (use .len(), not .length())
+record_count = f.ls().len()
 
 ## Database Navigation
 
@@ -276,6 +278,19 @@ try {
     # Handle field creation error
 }
 ```
+
+## Method Limitations
+
+### Unavailable Methods
+The following methods are **not implemented** in Grapa:
+- `mkrow()` - Use `set()` to create records automatically
+- `getrow()` - Use `get()` to retrieve data
+- `.length()` - Use `.len()` for array/list length
+
+### Array/List Methods
+- Use `.len()` for length, not `.length()`
+- Use `[]` for array access, not `.get()`
+- Use `.get()` only for database tables and file objects
 
 ### Debug Information
 ```grapa

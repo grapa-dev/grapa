@@ -3,6 +3,24 @@
 ## Purpose
 This document provides a comprehensive reference for the `GrapaDB` class, its methods, enums, and associated data structures. It is intended as the authoritative source for understanding and maintaining the database layer in Grapa, including table management, indexing, record operations, and the complex pointer dereferencing system that enables efficient data storage and retrieval.
 
+## Method Limitations
+
+### Unavailable Methods
+The following methods are **not implemented** in Grapa and should not be used:
+- `mkrow()` - Use `set()` to create records automatically
+- `getrow()` - Use `get()` to retrieve data
+- `.length()` - Use `.len()` for array/list length
+
+### Available Methods
+The following methods are **implemented** and working correctly:
+- `table()` - Create database tables
+- `mkfield()` - Create table fields
+- `set()` - Set data values (creates records automatically)
+- `get()` - Retrieve data values
+- `ls()` - List database contents
+- `debug()` - Debug database structure
+- `rmfield()` - Remove table fields
+
 ---
 
 ## Class: GrapaDB

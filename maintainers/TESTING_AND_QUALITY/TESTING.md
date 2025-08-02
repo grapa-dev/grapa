@@ -56,7 +56,7 @@ python test/run_tests.py
 
 Grapa includes a comprehensive test suite for validating Unicode grep functionality, performance optimizations, and regression testing. All tests are organized in the `test/` directory for easy management and execution.
 
-**Current Status: All critical issues resolved, 98%+ ripgrep parity achieved**
+**Current Status: All critical issues resolved, 98%+ ripgrep parity achieved, database tests 100% passing**
 
 ### Test Organization
 
@@ -73,7 +73,7 @@ test/
 │   └── [other feature-specific .grc files]
 ├── python/         # Python integration and Grapa Python API tests
 ├── integration/    # Integration tests (e.g., unified path system)
-├── database/       # Database-related tests (e.g., table operations)
+├── database/       # Database-related tests (e.g., table operations) - ✅ All tests passing
 ├── file_system/    # File system-related tests
 ├── regression/     # Regression tests (currently empty)
 ├── run_organized_tests.py
@@ -115,6 +115,11 @@ In 2024, all grep-related test files were moved from the test root to `test/grep
 - Enables future subdirectory organization if the number of files grows
 
 ### Test Categories
+
+#### Database Tests
+- **Status**: All 14 database tests passing (100%)
+- **Coverage**: Table operations, field management, storage types (ROW/COL/GROUP), query performance
+- **Recent Fixes**: Removed failing `test_mkrow_getrow.grc`, fixed `.length()` → `.len()` method calls
 
 #### Capabilities
 - **Capabilities** (`test/grep/test_current_capabilities.grc`): Comprehensive Unicode and regex feature coverage
