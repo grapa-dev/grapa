@@ -214,18 +214,27 @@ class CopySharedLibrary(Command):
             self.mkpath(lib_target_path)
         self.copy_file(self.lib_source_path, os.path.join(lib_target_path, self.filename))
         if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
-            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'openssl-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'openssl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'blst-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'blst-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'fl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'pcre2-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'pcre2-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-           # for file_name in os.listdir(os.path.join(self.build_dir, 'X11-lib/'+from_os)):
-           #    self.copy_file(os.path.join(os.path.join(self.build_dir, 'X11-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
+            # Determine the correct platform directory dynamically
+            my_system = platform.system()
+            if my_system == 'Linux':
+                platform_dir = 'linux-arm64' if is_arm else 'linux-amd64'
+            elif my_system == 'Darwin':
+                platform_dir = 'mac-arm64' if is_arm else 'mac-amd64'
+            else:
+                platform_dir = from_os  # fallback
+            
+            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/'+platform_dir)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/'+platform_dir),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'openssl-lib/'+platform_dir)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'openssl-lib/'+platform_dir),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'blst-lib/'+platform_dir)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'blst-lib/'+platform_dir),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib/'+platform_dir)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'fl-lib/'+platform_dir),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'pcre2-lib/'+platform_dir)):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'pcre2-lib/'+platform_dir),file_name), os.path.join(lib_target_path, file_name))
+           # for file_name in os.listdir(os.path.join(self.build_dir, 'X11-lib/'+platform_dir)):
+           #    self.copy_file(os.path.join(os.path.join(self.build_dir, 'X11-lib/'+platform_dir),file_name), os.path.join(lib_target_path, file_name))
         if sys.platform.startswith('linux'):
             os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
 
@@ -282,9 +291,15 @@ def pick_libraries():
         return ['grapa']
     if my_system == 'Darwin':
         #return ['@rpath/grapa']
-        return ['source/grapa-lib/libgrapa.a']
+        if is_arm:
+            return ['source/grapa-lib/mac-arm64/libgrapa.a']
+        else:
+            return ['source/grapa-lib/mac-amd64/libgrapa.a']
     if my_system == 'Windows':
-        return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
+        if is_arm:
+            return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
+        else:
+            return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
     raise ValueError("Unknown platform: " + my_system)
 
 lib_grapa = Extension(
