@@ -194,6 +194,13 @@ jobs:
         Write-Host "Checking if libraries exist before wheel build..."
         Get-ChildItem source/grapa-lib/${{ matrix.platform }}/ -ErrorAction SilentlyContinue | Write-Host
         Write-Host "Building wheel..."
+        # Set platform environment variable based on matrix platform
+        if ("${{ matrix.platform }}" -like "*arm64*") {
+          $env:GRAPA_PLATFORM = "arm64"
+        } else {
+          $env:GRAPA_PLATFORM = "amd64"
+        }
+        Write-Host "Setting GRAPA_PLATFORM=$env:GRAPA_PLATFORM"
         python setup.py bdist_wheel
         $exitCode = $LASTEXITCODE
         Write-Host "Setup.py exit code: $exitCode"
@@ -219,6 +226,13 @@ jobs:
         echo "Checking if libraries exist before wheel build..."
         ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
         echo "Building wheel..."
+        # Set platform environment variable based on matrix platform
+        if [[ "${{ matrix.platform }}" == *"arm64"* ]]; then
+          export GRAPA_PLATFORM=arm64
+        else
+          export GRAPA_PLATFORM=amd64
+        fi
+        echo "Setting GRAPA_PLATFORM=$GRAPA_PLATFORM"
         python setup.py bdist_wheel
         echo "Setup.py exit code: $?"
         if [ $? -ne 0 ]; then

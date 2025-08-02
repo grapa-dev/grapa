@@ -24,7 +24,17 @@ grapapy_version = "0.0.51"
 is_aws = False
 is_apple = False
 from_os = ''
-is_arm = platform.machine().lower() in ["aarch64", "arm64"]
+# Allow environment variable to override platform detection for CI/CD
+if 'GRAPA_PLATFORM' in os.environ:
+    platform_override = os.environ['GRAPA_PLATFORM']
+    if platform_override == 'arm64':
+        is_arm = True
+    elif platform_override == 'amd64':
+        is_arm = False
+    else:
+        is_arm = platform.machine().lower() in ["aarch64", "arm64"]
+else:
+    is_arm = platform.machine().lower() in ["aarch64", "arm64"]
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
