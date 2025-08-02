@@ -11,6 +11,14 @@ from setuptools.command.build_ext import build_ext
 
 from pathlib import Path
 
+# Get pybind11 include path
+def get_pybind11_include():
+    try:
+        import pybind11
+        return pybind11.get_include()
+    except ImportError:
+        return None
+
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
@@ -308,7 +316,7 @@ lib_grapa = Extension(
     sources = [
         'source/mainpy.cpp',
     ],
-    include_dirs=["source","source/utf8proc"],
+    include_dirs=["source","source/utf8proc"] + ([get_pybind11_include()] if get_pybind11_include() else []),
     library_dirs=pick_library_dirs(),
     libraries=pick_libraries(),
     runtime_library_dirs=runtime_library_dirs,
