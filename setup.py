@@ -4,8 +4,6 @@ import platform
 import subprocess
 import re
 
-from setuptools.command.build import build
-
 from setuptools import Extension, setup, find_packages, Command
 from setuptools.command.build_ext import build_ext
 
@@ -247,13 +245,7 @@ class CopySharedLibrary(Command):
             os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
 
 
-class CustomBuild(build):
-    sub_commands = [
-        ('build_clib', build.has_c_libraries),
-        ('build_ext', build.has_ext_modules),
-        ('build_py', build.has_pure_modules),
-        ('build_scripts', build.has_scripts),
-    ]
+# CustomBuild class removed - using default build behavior
 
 
 class CustomBuildExt(build_ext):
@@ -352,7 +344,6 @@ For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/
         cmdclass={
             'copy_grapalib': CopySharedLibrary,
             'build_ext': CustomBuildExt,
-            'build': CustomBuild,
         },
         zip_safe=False,
         python_requires=">=3.6",
