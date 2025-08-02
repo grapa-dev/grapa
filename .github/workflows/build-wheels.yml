@@ -12,8 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        os: [ubuntu-latest]
+        python-version: ['3.11']
 
     steps:
     - uses: actions/checkout@v4
@@ -29,6 +29,11 @@ jobs:
     
     - name: Build wheels
       run: |
+        echo "Current directory: $(pwd)"
+        echo "Python version: $(python --version)"
+        echo "Listing source directory:"
+        ls -la source/
+        echo "Building wheel..."
         python setup.py bdist_wheel
     
     - name: Upload wheels
