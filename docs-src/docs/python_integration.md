@@ -1,353 +1,255 @@
-# Python Integration with Grapa
+# Python Integration
 
-## Overview
+Grapa provides seamless Python integration through the GrapaPy extension, allowing you to execute Grapa code from Python applications and call Python functions from Grapa.
 
-Grapa provides powerful Python integration capabilities, offering a unified interface for file system operations, database management, and data processing. This integration combines Grapa's efficient storage systems with Python's rich ecosystem for data science, web development, and system administration.
+## Installation
 
-## Key Benefits
+Install GrapaPy from PyPI:
 
-### 1. **Unified File System and Database Access**
-Grapa provides a single API that seamlessly navigates between file systems and databases:
+```bash
+pip install grapapy==0.0.49
+```
+
+## Basic Usage
+
+### Import and Initialize
 
 ```python
 import grapapy
 
-f = grapapy.grapa().file()
-# Navigate from file system into database seamlessly
-f.cd("project_data")  # Could be file system directory
-f.cd("users")         # Could be database table
-f.cd("profile")       # Could be nested database structure
+# Create a Grapa instance
+xy = grapapy.grapa()
+
+# Execute Grapa code
+result = xy.eval("2 + 2;")
+print(result)  # Output: 4
 ```
 
-**Advantages:**
-- **Single API** for both file system and database operations
-- **Transparent navigation** between different data sources
-- **Consistent interface** regardless of underlying storage
-
-### 2. **Advanced Database Capabilities**
-
-#### **Column Store for Analytics**
-Optimized for analytical workloads and data science:
+### Basic Operations
 
 ```python
-# Python data science workflows with column store
-f = grapapy.grapa().file()
-f.mk("analytics_db", "COL")  # Column store for analytical queries
-f.cd("analytics_db")
+# Mathematical operations
+result = xy.eval("10 * 5;")
+print(result)  # Output: 50
+
+# String operations
+result = xy.eval("'Hello ' + 'World';")
+print(result)  # Output: Hello World
+
+# Array operations
+result = xy.eval("[1, 2, 3, 4, 5].len();")
+print(result)  # Output: 5
 ```
 
-# Define schema optimized for analytics
-f.mkfield("timestamp", "TIME", "FIX", 8)
-f.mkfield("user_id", "INT", "FIX", 4)
-f.mkfield("metric_value", "FLOAT", "FIX", 8)
-f.mkfield("category", "STR", "VAR")
+## Functional Programming Methods
 
-# Efficient column scans for aggregations
-# Python can process the results for statistical analysis
-```
+GrapaPy supports functional programming methods with specific syntax requirements:
 
-**Benefits:**
-- **Native column store** for analytical workloads
-- **Better performance** than row stores for aggregations
-- **Memory efficient** for large datasets
-
-#### **Row Store for Transactional Data**
-Optimized for transactional workloads and frequent updates:
+### Map Operations
 
 ```python
-# Transactional data with row store
-f.mk("user_sessions", "ROW")
-f.cd("user_sessions")
+# Transform array elements
+result = xy.eval("[1, 2, 3, 4, 5].map(op(x) { x * 2; });")
+print(result)  # Output: [2, 4, 6, 8, 10]
+
+# Transform strings
+result = xy.eval("['john', 'jane', 'bob'].map(op(name) { name.upper(); });")
+print(result)  # Output: ['JOHN', 'JANE', 'BOB']
 ```
 
-# Fast point queries and updates
-f.set("session_123", "user_456", "user_id")
-f.set("session_123", "2024-01-15", "login_time")
-f.set("session_123", "active", "status")
-```
-
-### 3. **File Processing Capabilities**
-
-#### **Large File Management**
-Built-in support for handling large files efficiently:
+### Filter Operations
 
 ```python
-# Python can orchestrate large file operations
-f = grapa.file()
+# Filter even numbers
+result = xy.eval("[1, 2, 3, 4, 5, 6].filter(op(x) { x % 2 == 0; });")
+print(result)  # Output: [2, 4, 6]
 
-# Split large files for parallel processing
-result = f.split(8, "large_dataset.csv", "chunks", "", "csv")
-# Python can then process each chunk in parallel
-
-# Get file metadata efficiently
-file_info = f.info("large_file.txt")
-if file_info["$TYPE"] == "FILE" and file_info["$BYTES"] > 1000000:
-    # Handle large files appropriately
-    pass
+# Filter non-empty strings
+result = xy.eval("['hello', '', 'world', '', 'test'].filter(op(line) { line.len() > 0; });")
+print(result)  # Output: ['hello', 'world', 'test']
 ```
 
-#### **Unified Path System**
-Seamless navigation across complex data structures:
+### Reduce Operations
+
+**⚠️ CRITICAL:** For reduce operations, you must use `+=` (compound assignment), not `+` (addition):
+
+> **Design Philosophy:** Unlike most languages that expect return-based accumulation (`return acc + x`), Grapa's `reduce` requires explicit mutation (`acc += x`). This design doesn't assume the nature of the data being reduced and allows for complex operations like network calls, file I/O, or database queries within the reduce callback. The imperative approach enables sophisticated stateful operations.
 
 ```python
-# Navigate complex data structures
-f.chd("/project/data")  # Set home directory
-f.cd("database")        # Enter database
-f.cd("users")           # Navigate to users table
-f.cd("..")              # Go back up
-f.cd("../logs")         # Navigate to logs directory
+# ✅ CORRECT - Use += for compound assignment
+result = xy.eval("[1, 2, 3, 4, 5].reduce(op(acc, x) { acc += x; }, 0);")
+print(result)  # Output: 15
+
+# ❌ WRONG - Using + returns 0
+result = xy.eval("[1, 2, 3, 4, 5].reduce(op(acc, x) { acc + x; }, 0);")
+print(result)  # Output: 0 (WRONG!)
+
+# String concatenation with reduce
+result = xy.eval("['hello', 'world', 'test'].reduce(op(acc, word) { acc += ' ' + word; }, '');")
+print(result)  # Output: " hello world test"
 ```
 
-## Use Cases
+### Method Chaining
 
-### 1. **Data Science and Analytics**
-
-#### **Scientific Computing**
 ```python
-# Scientific computing with Grapa
-f = grapa.file()
-f.mk("experiment_data", "COL")
-f.cd("experiment_data")
-
-# Store experimental results efficiently
-for experiment in experiments:
-    f.set(f"exp_{experiment.id}", experiment.timestamp, "time")
-    f.set(f"exp_{experiment.id}", experiment.results, "data")
-    f.set(f"exp_{experiment.id}", experiment.parameters, "config")
-
-# Fast column scans for statistical analysis
+# Filter -> Map -> Reduce chain
+result = xy.eval("""
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    .filter(op(x) { x % 2 == 0; })
+    .map(op(x) { x * x; })
+    .reduce(op(acc, x) { acc += x; }, 0);
+""")
+print(result)  # Output: 220
 ```
 
-#### **Machine Learning Workflows**
+## File Operations
+
+GrapaPy provides file system operations with proper byte handling:
+
 ```python
-# ML data management with Grapa
-f = grapa.file()
-f.mk("ml_dataset", "COL")
-f.cd("ml_dataset")
+# Initialize file system
+xy.eval("$global.fs = $file();")
 
-# Store features and labels
-for sample in training_data:
-    f.set(f"sample_{sample.id}", sample.features, "features")
-    f.set(f"sample_{sample.id}", sample.label, "label")
-    f.set(f"sample_{sample.id}", sample.metadata, "meta")
+# Create and write files
+xy.eval("fs.set('test.txt', 'Hello from GrapaPy!\\nThis is a test file.\\n');")
 
-# Efficient feature extraction for model training
+# Read files (returns bytes, needs decoding)
+content = xy.eval("fs.get('test.txt');")
+if isinstance(content, bytes):
+    content = content.decode('utf-8')
+print(content)
+
+# Get file info
+info = xy.eval("fs.info('test.txt');")
+print(info)  # Output: {'$TYPE': 'FILE', '$BYTES': 41}
+
+# Remove files
+xy.eval("fs.remove('test.txt');")
 ```
 
-### 2. **Web Application Development**
+## High Precision Math
 
-#### **Backend Data Management**
+GrapaPy supports high-precision arithmetic:
+
 ```python
-# Web app with Grapa storage
-f = grapa.file()
-f.chd("/app/data")
+# Large number calculations
+result = xy.eval("12345678901234567890 * 98765432109876543210;")
+print(result)  # Output: Large number result
 
-# User management
-f.cd("users")
-f.set(user_id, user_data, "profile")
-f.set(user_id, session_data, "session")
-
-# Content management
-f.cd("../content")
-f.set(content_id, content_data, "body")
-f.set(content_id, metadata, "meta")
+# High precision division
+result = xy.eval("1000000000000000000000 / 3;")
+print(result)  # Precise decimal result
 ```
 
-#### **API Development**
+## Python Callbacks
+
+Call Python functions from Grapa:
+
 ```python
-# FastAPI with Grapa backend
-from fastapi import FastAPI
-import grapa
+def python_function(name):
+    return f"Hello from Python, {name}!"
 
-app = FastAPI()
-f = grapa.file()
+# Register Python function in Grapa
+xy.eval("$global.python_greeting = python_function;", {"python_function": python_function})
 
-@app.get("/users/{user_id}")
-async def get_user(user_id: str):
-    f.cd("users")
-    profile = f.get(user_id, "profile")
-    return {"user_id": user_id, "profile": profile}
+# Call Python function from Grapa
+result = xy.eval("python_greeting('Alice');")
+print(result)  # Output: Hello from Python, Alice!
 ```
 
-### 3. **System Administration**
+## Error Handling
 
-#### **Log File Management**
+Handle errors and edge cases:
+
 ```python
-# System admin tools with Grapa
-f = grapa.file()
+# Check for error responses
+result = xy.eval("fs.get('nonexistent.txt');")
+if isinstance(result, dict) and result.get("error") == -1:
+    print("File not found")
 
-# Log file management
-f.cd("/var/log")
-log_files = f.ls()
-for log_file in log_files:
-    info = f.info(log_file)
-    if info["$BYTES"] > 1000000:  # 1MB
-        # Split large log files
-        f.split(4, log_file, "log_chunks", "\n", "")
+# Handle bytes vs strings
+content = xy.eval("fs.get('test.txt');")
+if isinstance(content, bytes):
+    content = content.decode('utf-8')
 ```
 
-#### **Configuration Management**
-```python
-# Configuration management
-f.cd("/etc/configs")
-configs = f.ls()
-for config in configs:
-    content = f.get(config)
-    if validate_config(content):
-        deploy_config(config, content)
+## Validation and Testing
+
+### Running Validation Tests
+
+GrapaPy includes comprehensive validation tests in the `test/grapapy_validation/` directory:
+
+```bash
+# Run basic operations test
+python test_basic_operations.py
+
+# Run functional methods test
+python test_functional_methods.py
+
+# Run file operations test
+python test_file_operations.py
+
+# Run complete validation suite
+python run_validation.py
 ```
 
-### 4. **Data Pipeline Integration**
+### Known Issues and Workarounds
 
-#### **ETL Workflows**
-```python
-# Extract-Transform-Load with Grapa
-f = grapa.file()
+1. **Reduce Operations**: Always use `+=` (compound assignment), not `+` (addition)
+2. **File Content**: File content is returned as bytes and needs `.decode('utf-8')`
+3. **Complex Recursion**: Avoid complex recursive functions (may hang)
+4. **Error Responses**: Some operations return `{"error":-1}` - check for this pattern
 
-# Extract: Read from various sources
-f.cd("source_data")
-raw_data = f.get("input.csv")
+### Platform Support
 
-# Transform: Process in Python
-processed_data = python_transform_function(raw_data)
+- **Windows**: Use `pip install grapapy==0.0.49`
+- **Linux**: Use `pip3 install grapapy==0.0.49`
+- **macOS**: Use `pip3 install grapapy==0.0.49`
 
-# Load: Store in Grapa database
-f.cd("../processed_data")
-f.set("processed_batch_001", processed_data, "content")
-```
-
-#### **Data Validation**
-```python
-# Validate data before processing
-files = f.ls("input_directory")
-for file in files:
-    info = f.info(file)
-    if info["$TYPE"] == "FILE":
-        content = f.get(file)
-        if validate_data_format(content):
-            # Process valid files
-            pass
-```
-
-## Performance Advantages
-
-### **Memory Efficiency**
-- **Column store**: Only loads relevant columns for analysis
-- **Fragmented storage**: Efficient for sparse data
-- **Block-based I/O**: Memory-efficient file operations
-
-### **Scalability**
-- **Large file handling**: Built-in splitting and chunking
-- **Database optimization**: Different storage types for different use cases
-- **Cross-platform**: Consistent performance across systems
-
-## Integration with Python Ecosystem
-
-### **Data Science Libraries**
-```python
-import pandas as pd
-import numpy as np
-import grapa
-
-# Process Grapa data with pandas
-f = grapa.file()
-f.cd("analytics_data")
-
-# Extract data for pandas processing
-data = []
-for record in f.ls():
-    row = {
-        'id': record,
-        'value': f.get(record, "value"),
-        'category': f.get(record, "category")
-    }
-    data.append(row)
-
-df = pd.DataFrame(data)
-# Perform pandas operations
-```
-
-### **Machine Learning Frameworks**
-```python
-import sklearn
-import grapa
-
-# Feature storage for ML
-f = grapa.file()
-f.mk("ml_features", "COL")
-f.cd("ml_features")
-
-# Store features efficiently
-for sample_id, features in feature_data.items():
-    f.set(sample_id, features.tobytes(), "features")
-    f.set(sample_id, labels[sample_id], "label")
-```
-
-### **Web Frameworks**
-```python
-# Django with Grapa
-from django.http import JsonResponse
-import grapa
-
-def user_profile(request, user_id):
-    f = grapa.file()
-    f.cd("users")
-    
-    profile = f.get(user_id, "profile")
-    return JsonResponse({"profile": profile})
-```
+All platforms support the same functionality with the same syntax requirements.
 
 ## Best Practices
 
-### **Database Design**
-1. **Choose appropriate storage types**:
-   - Use **COL** (column store) for analytical workloads
-   - Use **ROW** (row store) for transactional data
-   - Use **FIX** fields for small, frequently accessed data
-   - Use **VAR** fields for variable-length data
+1. **Always use `+=` for reduce operations**
+2. **Decode file content**: `content.decode('utf-8')`
+3. **Check for error responses**: `{"error":-1}`
+4. **Test with small datasets first**
+5. **Use proper error handling for file operations**
+6. **Avoid complex recursion in Grapa code**
 
-2. **Optimize field types**:
-   - Match data types to storage needs
-   - Use appropriate field sizes
-   - Consider growth patterns
+## Troubleshooting
 
-### **File Management**
-1. **Large file handling**:
-   - Use `split()` for files larger than memory
-   - Process chunks in parallel
-   - Monitor file sizes with `info()`
+### Common Issues
 
-2. **Path management**:
-   - Use `chd()` to set project home directories
-   - Use relative paths with `cd()` for navigation
-   - Leverage the unified path system
+1. **Reduce returns 0**: Check if using `+=` instead of `+`
+2. **File content issues**: Always decode bytes to strings
+3. **Import errors**: Try `pip install grapapy==0.0.49 --force-reinstall`
+4. **Hanging operations**: Avoid complex recursion, use iterative approaches
 
-### **Performance Optimization**
-1. **Memory management**:
-   - Use column store for analytical queries
-   - Process data in chunks
-   - Monitor memory usage
+### Debugging Commands
 
-2. **I/O optimization**:
-   - Use appropriate storage types
-   - Batch operations when possible
-   - Leverage Grapa's efficient I/O
+```python
+import grapapy
+xy = grapapy.grapa()
 
-## Conclusion
+# Test basic functionality
+print(xy.eval("2 + 2;"))  # Should be 4
 
-Grapa's Python integration provides a powerful combination of:
-- **Unified data access** across file systems and databases
-- **Performance optimization** through specialized storage types
-- **Scalability** for large datasets and complex workflows
-- **Integration** with Python's rich ecosystem
+# Test reduce syntax
+print(xy.eval("[1,2,3].reduce(op(acc, x) { acc += x; }, 0);"))  # Should be 6
 
-This makes Grapa particularly valuable for Python applications that need to handle diverse data types, large datasets, or complex data workflows. The unified path system and efficient storage options provide significant advantages over traditional file system + database combinations. 
+# Test file operations
+xy.eval("$global.fs = $file();")
+xy.eval("fs.set('test.txt', 'Hello');")
+content = xy.eval("fs.get('test.txt');")
+if isinstance(content, bytes):
+    content = content.decode('utf-8')
+print(content)  # Should be 'Hello'
+```
 
----
+## See Also
 
-## See also
-- [API Reference](api_reference.md)
-- [Language Reference](syntax/basic_syntax.md)
-- [Use Cases](use_cases/)
-- [Examples](examples/)
-- [Advanced Topics](advanced_topics.md) 
+- [GrapaPy Validation Guide](../../test/grapapy_validation/PLATFORM_VALIDATION_GUIDE.md)
+- [Basic Syntax](../syntax/basic_syntax.md)
+- [Functional Methods](../operators/loop.md)
+- [API Reference](../api_reference.md) 
