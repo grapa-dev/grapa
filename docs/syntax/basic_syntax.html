@@ -5009,6 +5009,9 @@ sum = data.reduce(op(acc, x) { acc += x; }, 0, 4);
 - <strong>CRITICAL:</strong> For <code>.reduce()</code>, use <code>+=</code> (compound assignment) not <code>+</code> (addition)
   - Correct: <code>arr.reduce(op(acc, x) { acc += x; }, 0)</code>
   - Wrong: <code>arr.reduce(op(acc, x) { acc + x; }, 0)</code> (returns 0)</p>
+<blockquote>
+<p><strong>Design Philosophy:</strong> Grapa's <code>reduce</code> requires explicit mutation (<code>+=</code>) rather than return-based accumulation. This design doesn't assume the nature of the data being reduced and allows for complex operations like network calls, file I/O, or database queries within the reduce callback. Unlike most languages that expect <code>return acc + x</code>, Grapa's imperative approach enables sophisticated stateful operations.</p>
+</blockquote>
 <h2 id="data-types-and-access-patterns">Data Types and Access Patterns</h2>
 <h3 id="array-type-array">Array Type (<code>$ARRAY</code>)</h3>
 <p>Arrays are created with square brackets and support index-based access:</p>
