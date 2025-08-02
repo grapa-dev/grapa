@@ -16,10 +16,6 @@ jobs:
           - os: windows-latest
             platform: win-amd64
             arch: x64
-          # Windows ARM64
-          - os: windows-latest
-            platform: win-arm64
-            arch: ARM64
           # macOS AMD64
           - os: macos-latest
             platform: mac-amd64
@@ -62,7 +58,26 @@ jobs:
         echo "Installing build dependencies for macOS..."
         # Xcode command line tools are pre-installed on macos-latest
         
-    - name: Build libraries and binaries
+    - name: Build libraries and binaries (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Building libraries for platform: ${{ matrix.platform }}"
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Platform: ${{ matrix.platform }}"
+        
+        # Build libraries only
+        python build.py --lib-only
+        
+        Write-Host "Build completed. Checking for libraries..."
+        Get-ChildItem "source/grapa-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/openssl-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/fl-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/blst-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/pcre2-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        
+    - name: Build libraries and binaries (Linux/macOS)
+      if: matrix.os != 'windows-latest'
       run: |
         echo "Building libraries for platform: ${{ matrix.platform }}"
         echo "Current directory: $(pwd)"
