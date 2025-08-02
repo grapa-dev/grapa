@@ -25,6 +25,11 @@ jobs:
     
     - name: Install build dependencies
       run: |
+        # Install system dependencies for Linux (needed for library build)
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
+        fi
         pip install wheel setuptools build
     
     - name: Build core libraries
