@@ -80,8 +80,7 @@ All deprecated files have been moved to:
 - **[DOCUMENTATION_SEARCH_BUG.md](../RESEARCH_AND_ANALYSIS/DOCUMENTATION_SEARCH_BUG.md)** - Documentation search bug investigation
 
 ### **Bug Investigations**
-- **[ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](../RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)** - ROW table index corruption debug context
-- **[ROW_INDEX_BUG_TODO.md](../RESEARCH_AND_ANALYSIS/ROW_INDEX_BUG_TODO.md)** - ROW index bug TODO tracker
+- **[Database debugging documentation](../RESEARCH_AND_ANALYSIS/)** - Database debugging and investigation documentation
 
 ## How to Add or Update Documentation
 
@@ -94,7 +93,7 @@ All deprecated files have been moved to:
 ### How to Add a New Investigation or Debug Log
 - Check if your topic fits as a section in an existing doc (especially CURRENT_STATUS.md).
 - If not, create a new file in this folder, add a one-line summary to index.md, and cross-link from any relevant implementation docs.
-- Use a descriptive name like FEATURE_OR_AREA_BUG_INVESTIGATION.md (e.g., ROW_TABLE_INDEX_CORRUPTION_INVESTIGATION.md).
+- Use a descriptive name like FEATURE_OR_AREA_BUG_INVESTIGATION.md (e.g., DATABASE_CORRUPTION_INVESTIGATION.md).
 - Follow the contributor checklist below for naming, placement, and cross-linking.
 
 **Contributor Checklist:**

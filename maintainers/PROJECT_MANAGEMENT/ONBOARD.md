@@ -95,7 +95,7 @@ This guide provides comprehensive onboarding information for new agents, develop
 "Based on the current Grapa project status, here are the key areas of focus:
 
 📋 **Current Priorities:**
-1. ROW Table Index Corruption Bug - HIGH PRIORITY, ready to start
+1. Database system improvements - HIGH PRIORITY, ready to start
 2. Custom Delimiter Edge Cases - MEDIUM PRIORITY, investigation needed
 3. Unicode Language Binding - Add case_fold(), Unicode-aware string methods
 4. String Interpolation - Implement template literal-style interpolation

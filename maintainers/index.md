@@ -110,7 +110,7 @@ When referencing maintainer content, use these paths:
 - [Reorganization Summary](PROJECT_MANAGEMENT/REORGANIZATION_SUMMARY.md) - Documentation reorganization summary
 
 ### Research and Analysis
-- [Bug Investigations](RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) - Database bug investigation
+- [Database Engineering Best Practices](RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md) - Extracted debugging methodologies and implementation patterns
 - [CLI Investigation](RESEARCH_AND_ANALYSIS/CLI_FUNCTIONALITY_INVESTIGATION.md) - CLI functionality investigation
 - [Optimization Backlog](RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md) - Performance optimization plans
 - [Technical Analysis](RESEARCH_AND_ANALYSIS/FORMULA_VERSION_COMPATIBILITY_ANALYSIS.md) - Formula system analysis

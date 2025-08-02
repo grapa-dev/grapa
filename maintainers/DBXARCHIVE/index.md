@@ -122,9 +122,6 @@ This explains the massive effort to create GrapaDBX - we're essentially rebuildi
 - **[README.md](README.md)** - README
 
 ### **DBX Investigation Files**
-- **[ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)** - ROW table index bug debug context (363KB)
-- **[ROW_TABLE_INDEX_BUG_INVESTIGATION.md](ROW_TABLE_INDEX_BUG_INVESTIGATION.md)** - ROW table index bug investigation
-- **[ROW_INDEX_BUG_TODO.md](ROW_INDEX_BUG_TODO.md)** - ROW index bug TODO
 - **[TABLE_TYPE_ANALYSIS.md](TABLE_TYPE_ANALYSIS.md)** - Table type analysis
 
 ### **DBX Planning & Organization**

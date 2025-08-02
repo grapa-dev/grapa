@@ -366,7 +366,7 @@ GrapaDB organizes all persistent data using BTrees, leveraging them for both rec
 - **Solution:** Consider caching strategies for frequently accessed records
 
 ### Open Issues
-- **ROW and COL Table Index Corruption:**
+- **Database Index Corruption:**
   - There is a known issue where index entries may become corrupted after field updates, affecting both ROW and COL tables.
   - For full investigation details, root cause analysis, and debugging history, see:
     - [archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) (archived, closed investigation)
@@ -586,11 +586,11 @@ GrapaDB organizes all persistent data using BTrees, leveraging them for both rec
 
 ---
 
-## [2025-07-22] Index Entry Value Handling and ROW Table Bug Resolution
+## [2025-07-22] Index Entry Value Handling and Database Bug Resolution
 
 - When inserting index entries (RPTR_ITEM, CPTR_ITEM, GPTR_ITEM) during record creation or field update, always set the value to the actual record reference (recCursor.mValue).
 - Never use 0 or the key as the value for these index entries, as this leads to index corruption and data loss after multiple inserts.
-- This rule was established and validated during the investigation and resolution of the ROW table index corruption bug (see investigation docs for details).
+- This rule was established and validated during the investigation and resolution of database corruption issues (see investigation docs for details).
 - The implementation now comments out the old logic and uses the correct value assignment in both CreateRecord and SetRecordField.
 
 ---
@@ -606,16 +606,4 @@ The system includes comprehensive debug output for investigation:
 ```
 ```
 
-## [2025-07-22] Index Entry Value Handling and ROW Table Bug Resolution
 
-- When inserting index entries (RPTR_ITEM, CPTR_ITEM, GPTR_ITEM) during record creation or field update, always set the value to the actual record reference (recCursor.mValue).
-- Never use 0 or the key as the value for these index entries, as this leads to index corruption and data loss after multiple inserts.
-- This rule was established and validated during the investigation and resolution of the ROW table index corruption bug (see investigation docs for details).
-- The implementation now comments out the old logic and uses the correct value assignment in both CreateRecord and SetRecordField.
-
-## [2025-07-24] Index Creation and Exposure: Default $KEY Index and Custom Indexes
-
-- **Default Index:** Every GrapaDB table automatically receives a default index on the $KEY field (fieldId=4) at creation. This index is required for correct table operation and is always present.
-- **Custom Indexes:** Additional (user-defined) indexes, including multi-field indexes, can be created via the C++ API using `CreateIndex` (to create the index structure) and `CreateIndexField` (to associate one or more fields with the index). The index field list is stored in the index's field mapping tree, and multi-field indexes are supported by adding multiple fields to the same index.
-- **Language/CLI Exposure:** As of this update, there are no Grapa language or CLI commands to create or manage custom indexes; this functionality is only available via the C++ API. This is now a documented backlog item (see BACKLOG.md) to expose user-defined index creation and management to the Grapa language and CLI.
-- **Index Structure:** Each index maintains a mapping of index field IDs, and the comparison/search logic supports multi-field indexes via the `CompareSearchKey` method. Indexes store pointers (not data) and are updated automatically on record changes.

@@ -72,7 +72,7 @@ Comprehensive performance analysis and benchmarking for Grapa's weighted BTree i
 - Test harness infrastructure and cross-platform support
 
 ### [Storage Model Comparison Strategy](STORAGE_MODEL_COMPARISON_STRATEGY.md)
-Strategy for documenting storage model comparison while working around the ROW table index corruption bug:
+Strategy for documenting storage model comparison:
 - Work-around approach for comprehensive documentation
 - Safe testing scenarios for ROW tables
 - COL vs GROUP performance analysis
@@ -137,7 +137,6 @@ Strategy for creating formal semantics documentation for academic collaboration 
 
 ### Project Status
 - [CURRENT_STATUS.md](../DEVELOPMENT/CURRENT_STATUS.md) - Current project priorities and status
-- [ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md](../DEVELOPMENT/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md) - Database bug investigation
 
 ---
 

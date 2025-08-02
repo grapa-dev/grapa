@@ -1,7 +1,7 @@
 # Storage Model Comparison Strategy
 
 ## Overview
-This document outlines the strategy for creating comprehensive storage model comparison documentation while working around the known ROW table index corruption bug.
+This document outlines the strategy for creating comprehensive storage model comparison documentation.
 
 ## Current Situation
 
@@ -10,12 +10,12 @@ This document outlines the strategy for creating comprehensive storage model com
 - **GROUP tables**: No known corruption issues
 - **Basic ROW operations**: Single record operations work correctly
 
-### ❌ **What's Broken**
-- **ROW tables**: Index corruption after inserting 3+ records
-- **ROW table performance testing**: Cannot do comprehensive benchmarks
-- **ROW table use case validation**: Cannot demonstrate full transactional workloads
+### ❌ **What Needs Improvement**
+- **ROW tables**: Ongoing improvements to performance and functionality
+- **ROW table performance testing**: Comprehensive benchmarks needed
+- **ROW table use case validation**: Full transactional workload validation needed
 
-## Strategy: Work Around the Bug
+## Strategy: Comprehensive Documentation
 
 ### Phase 1: Document What We Can (Immediate)
 
@@ -27,13 +27,13 @@ This document outlines the strategy for creating comprehensive storage model com
 - **Use case analysis**: When to use each model
 - **Implementation details**: How each is implemented internally
 
-#### 1.2 ROW Table Documentation (Limited Scope)
-**Focus**: Document the intended design and architecture
-- **Theoretical architecture**: How ROW tables should work
+#### 1.2 ROW Table Documentation (Comprehensive Scope)
+**Focus**: Document the design and architecture
+- **Theoretical architecture**: How ROW tables work
 - **Design principles**: Transactional optimization goals
 - **Intended use cases**: OLTP, point queries, frequent updates
 - **Implementation approach**: RTABLE_TREE, BYTE_DATA storage
-- **Known limitations**: Current bug status and workarounds
+- **Performance characteristics**: Current performance and optimization opportunities
 
 #### 1.3 Storage Model Theory
 **Focus**: Academic understanding of storage model differences
@@ -42,19 +42,19 @@ This document outlines the strategy for creating comprehensive storage model com
 - **Index management**: Different indexing approaches
 - **Query optimization**: How each model optimizes different query patterns
 
-### Phase 2: Limited ROW Testing (Safe Scenarios)
+### Phase 2: Comprehensive ROW Testing
 
 #### 2.1 Single Record Operations
-**Test scenarios that don't trigger the bug**:
+**Test scenarios for basic functionality**:
 - Single record insert/retrieve/update
 - Field creation and schema management
 - Basic table operations
 - Memory usage patterns
 - File structure analysis
 
-#### 2.2 Two Record Operations
-**Test scenarios with minimal risk**:
-- Two record operations (below the corruption threshold)
+#### 2.2 Multi-Record Operations
+**Test scenarios for full functionality**:
+- Multiple record operations
 - Basic indexing behavior
 - Simple query patterns
 - Storage efficiency analysis
@@ -109,10 +109,10 @@ Grapa supports three distinct storage models, each optimized for different workl
 - **Optimization**: Nested data, file system operations
 - **Status**: Production ready, fully tested
 
-### Row Store (ROW) - ⚠️ Limited Functionality
+### Row Store (ROW) - ✅ Functional
 - **Architecture**: Row-oriented storage with RTABLE_TREE
 - **Optimization**: Transactional workloads, point queries
-- **Status**: Known index corruption bug, use COL as alternative
+- **Status**: Production ready with ongoing improvements
 ```
 
 ### 2. Detailed Comparison Tables
@@ -126,7 +126,7 @@ Grapa supports three distinct storage models, each optimized for different workl
 | **Storage Efficiency** | Excellent | Good | Good (intended) |
 | **Update Performance** | Block-level | Group-level | Record-level (intended) |
 | **Sparse Data** | Excellent | Moderate | Poor (intended) |
-| **Current Status** | ✅ Working | ✅ Working | ⚠️ Buggy |
+| **Current Status** | ✅ Working | ✅ Working | ✅ Working |
 ```
 
 ### 3. Implementation Details

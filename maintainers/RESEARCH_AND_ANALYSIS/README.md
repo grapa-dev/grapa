@@ -14,8 +14,6 @@ This directory contains **work-in-progress research, ongoing investigations, int
 ## Quick Navigation
 
 ### Bug Investigations & Debug Logs
-- **[ROW Table Index Bug Debug Context](ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)** - Massive debug log with ongoing investigation details (362KB)
-- **[ROW Index Bug TODO](ROW_INDEX_BUG_TODO.md)** - Internal TODO tracker for ongoing bug work
 - **[Documentation Search Bug](DOCUMENTATION_SEARCH_BUG.md)** - Internal bug investigation and resolution details
 
 ### Active Investigations
