@@ -69,7 +69,7 @@
   - Tests for basic operations, functional methods, file operations
   - Platform-specific validation guides for Windows, Linux, macOS
   - Complete validation suite with `run_validation.py`
-- **Platform Support**: All tests passing on Windows, ready for Linux/macOS validation
+- **Platform Support**: All tests passing on Windows and macOS, ready for Linux validation
 
 ---
 
@@ -119,6 +119,26 @@
 - **Current Version**: grapapy==0.0.49
 - **Benefits**: Reliable distribution, no local compilation required
 
+### Mac Platform Validation - ✅ COMPLETED
+- **Status**: Complete
+- **Description**: Comprehensive validation of GrapaPy on macOS ARM64 platform
+- **Build Process**:
+  - ✅ `python3 build.py --python-only --preserve-dist` successful
+  - ✅ Wheel creation: `grapapy-0.0.49-cp313-cp313-macosx_15_0_universal2.whl`
+  - ✅ Installation: `pip3 install dist/*.whl` successful
+  - ✅ Import: `import grapapy` successful
+- **Validation Results**:
+  - ✅ Basic operations: Math, strings, arrays all working
+  - ✅ Functional methods: Map, filter, reduce all working
+  - ✅ File operations: Create, read, delete all working
+  - ✅ Critical reduce syntax: `acc += x;` works, `acc + x;` fails as expected
+  - ✅ Error handling: `{"error":-1}` responses handled gracefully
+- **Platform-Specific Notes**:
+  - Mac ARM64 (Apple Silicon) support confirmed
+  - Universal2 wheel format working correctly
+  - No Mac-specific dependency issues encountered
+  - All validation tests passing (3/3)
+
 ### Documentation Standards
 - **Status**: Complete
 - **Description**: Comprehensive documentation updates with critical syntax warnings
@@ -127,8 +147,29 @@
   - `docs-src/docs/api_reference.md` - Fixed reduce examples
   - `docs-src/docs/cli_quickstart.md` - Fixed reduce syntax
   - `docs-src/docs/testing.md` - Fixed reduce examples
-  - `docs-src/docs/python_integration.md` - Complete rewrite with validation findings
+  - `docs-src/docs/python_integration.md` - Complete rewrite with validation findings and error handling
   - `docs-src/docs/operators/loop.md` - Already had correct syntax and explanation
+
+### Error Handling Enhancement - ✅ COMPLETED
+- **Status**: Complete
+- **Description**: Comprehensive error handling utilities for `{"error":-1}` responses
+- **New Components**:
+  - `test/grapapy_validation/error_handling_utils.py` - Complete error handling framework
+  - `test/grapapy_validation/test_improved_error_handling.py` - Comprehensive error handling tests
+  - Updated `docs-src/docs/python_integration.md` - Production-ready error handling patterns
+- **Features Implemented**:
+  - **GrapaPyErrorHandler**: Comprehensive error detection and handling
+  - **Safe Evaluation**: `safe_eval()` with fallback values
+  - **Safe File Operations**: `safe_file_operation()` for file system operations
+  - **Retry Mechanism**: Exponential backoff retry logic
+  - **Error Reporting**: Detailed error reports and summaries
+  - **Logging Integration**: Comprehensive logging for debugging
+- **Benefits**:
+  - Production-ready error handling for all GrapaPy operations
+  - Graceful degradation when operations fail
+  - Comprehensive error reporting and debugging
+  - Retry mechanisms for transient failures
+  - Fallback values for failed operations
 
 ---
 
@@ -136,9 +177,9 @@
 
 ### Immediate Priorities
 1. **Linux Validation**: Complete GrapaPy validation on Linux platform
-2. **macOS Validation**: Complete GrapaPy validation on macOS platform
-3. **Documentation Review**: Ensure all reduce examples use correct `+=` syntax
-4. **Error Handling**: Improve handling of `{"error":-1}` responses
+2. **Documentation Review**: Ensure all reduce examples use correct `+=` syntax
+3. **GitHub Actions Testing**: Verify Mac build step in CI/CD pipeline
+4. **Error Handling Enhancement**: Deploy improved error handling utilities
 
 ### Medium Term
 1. **Performance Optimization**: Optimize GrapaPy for large datasets
@@ -160,7 +201,7 @@
 1. **Reduce Syntax**: Must use `+=` not `+` (documented and fixed in examples)
 2. **File Content**: Returns bytes, needs `.decode('utf-8')` (documented)
 3. **Complex Recursion**: May hang (avoid for now)
-4. **Error Responses**: Some operations return `{"error":-1}` (handle gracefully)
+4. **Error Responses**: Some operations return `{"error":-1}` (improved handling implemented)
 
 ### Build System Issues
 1. **Windows Dependencies**: Resolved via pre-compiled wheels
@@ -179,11 +220,11 @@
 
 ### GrapaPy Validation
 - ✅ Windows validation complete
+- ✅ macOS validation complete
 - ✅ Critical syntax issues identified and documented
 - ✅ Comprehensive test suite created
 - ✅ Documentation updated with findings
 - ⏳ Linux validation pending
-- ⏳ macOS validation pending
 
 ### Documentation
 - ✅ All reduce examples corrected

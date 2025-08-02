@@ -1,18 +1,14 @@
 # Python Integration
 
-Grapa provides seamless Python integration through the GrapaPy extension, allowing you to execute Grapa code from Python applications and call Python functions from Grapa.
+GrapaPy provides a Python interface to the Grapa language, allowing you to execute Grapa code from Python applications.
 
 ## Installation
 
-Install GrapaPy from PyPI:
-
 ```bash
-pip install grapapy==0.0.49
+pip install grapapy
 ```
 
 ## Basic Usage
-
-### Import and Initialize
 
 ```python
 import grapapy
@@ -22,234 +18,373 @@ xy = grapapy.grapa()
 
 # Execute Grapa code
 result = xy.eval("2 + 2;")
-print(result)  # Output: 4
-```
+print(result)  # 4
 
-### Basic Operations
-
-```python
-# Mathematical operations
-result = xy.eval("10 * 5;")
-print(result)  # Output: 50
-
-# String operations
-result = xy.eval("'Hello ' + 'World';")
-print(result)  # Output: Hello World
-
-# Array operations
-result = xy.eval("[1, 2, 3, 4, 5].len();")
-print(result)  # Output: 5
-```
-
-## Functional Programming Methods
-
-GrapaPy supports functional programming methods with specific syntax requirements:
-
-### Map Operations
-
-```python
-# Transform array elements
-result = xy.eval("[1, 2, 3, 4, 5].map(op(x) { x * 2; });")
-print(result)  # Output: [2, 4, 6, 8, 10]
-
-# Transform strings
-result = xy.eval("['john', 'jane', 'bob'].map(op(name) { name.upper(); });")
-print(result)  # Output: ['JOHN', 'JANE', 'BOB']
-```
-
-### Filter Operations
-
-```python
-# Filter even numbers
-result = xy.eval("[1, 2, 3, 4, 5, 6].filter(op(x) { x % 2 == 0; });")
-print(result)  # Output: [2, 4, 6]
-
-# Filter non-empty strings
-result = xy.eval("['hello', '', 'world', '', 'test'].filter(op(line) { line.len() > 0; });")
-print(result)  # Output: ['hello', 'world', 'test']
-```
-
-### Reduce Operations
-
-**⚠️ CRITICAL:** For reduce operations, you must use `+=` (compound assignment), not `+` (addition):
-
-> **Design Philosophy:** Unlike most languages that expect return-based accumulation (`return acc + x`), Grapa's `reduce` requires explicit mutation (`acc += x`). This design doesn't assume the nature of the data being reduced and allows for complex operations like network calls, file I/O, or database queries within the reduce callback. The imperative approach enables sophisticated stateful operations.
-
-```python
-# ✅ CORRECT - Use += for compound assignment
-result = xy.eval("[1, 2, 3, 4, 5].reduce(op(acc, x) { acc += x; }, 0);")
-print(result)  # Output: 15
-
-# ❌ WRONG - Using + returns 0
-result = xy.eval("[1, 2, 3, 4, 5].reduce(op(acc, x) { acc + x; }, 0);")
-print(result)  # Output: 0 (WRONG!)
-
-# String concatenation with reduce
-result = xy.eval("['hello', 'world', 'test'].reduce(op(acc, word) { acc += ' ' + word; }, '');")
-print(result)  # Output: " hello world test"
-```
-
-### Method Chaining
-
-```python
-# Filter -> Map -> Reduce chain
-result = xy.eval("""
-[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    .filter(op(x) { x % 2 == 0; })
-    .map(op(x) { x * x; })
-    .reduce(op(acc, x) { acc += x; }, 0);
-""")
-print(result)  # Output: 220
-```
-
-## File Operations
-
-GrapaPy provides file system operations with proper byte handling:
-
-```python
-# Initialize file system
-xy.eval("$global.fs = $file();")
-
-# Create and write files
-xy.eval("fs.set('test.txt', 'Hello from GrapaPy!\\nThis is a test file.\\n');")
-
-# Read files (returns bytes, needs decoding)
-content = xy.eval("fs.get('test.txt');")
-if isinstance(content, bytes):
-    content = content.decode('utf-8')
-print(content)
-
-# Get file info
-info = xy.eval("fs.info('test.txt');")
-print(info)  # Output: {'$TYPE': 'FILE', '$BYTES': 41}
-
-# Remove files
-xy.eval("fs.remove('test.txt');")
-```
-
-## High Precision Math
-
-GrapaPy supports high-precision arithmetic:
-
-```python
-# Large number calculations
-result = xy.eval("12345678901234567890 * 98765432109876543210;")
-print(result)  # Output: Large number result
-
-# High precision division
-result = xy.eval("1000000000000000000000 / 3;")
-print(result)  # Precise decimal result
-```
-
-## Python Callbacks
-
-Call Python functions from Grapa:
-
-```python
-def python_function(name):
-    return f"Hello from Python, {name}!"
-
-# Register Python function in Grapa
-xy.eval("$global.python_greeting = python_function;", {"python_function": python_function})
-
-# Call Python function from Grapa
-result = xy.eval("python_greeting('Alice');")
-print(result)  # Output: Hello from Python, Alice!
+# Pass variables to Grapa
+variables = {"name": "World", "numbers": [1, 2, 3, 4, 5]}
+result = xy.eval("'Hello ' + name + '!';", variables)
+print(result)  # Hello World!
 ```
 
 ## Error Handling
 
-Handle errors and edge cases:
+### Basic Error Detection
+
+GrapaPy operations may return `{"error":-1}` for failed operations. Use proper error handling:
 
 ```python
-# Check for error responses
+import grapapy
+
+xy = grapapy.grapa()
+
+# Basic error handling
 result = xy.eval("fs.get('nonexistent.txt');")
 if isinstance(result, dict) and result.get("error") == -1:
-    print("File not found")
+    print("Operation failed with error -1")
+else:
+    print(f"Operation successful: {result}")
+```
 
-# Handle bytes vs strings
+### Advanced Error Handling with Utilities
+
+For comprehensive error handling, use the provided utilities:
+
+```python
+import grapapy
+from error_handling_utils import GrapaPyErrorHandler
+
+xy = grapapy.grapa()
+handler = GrapaPyErrorHandler(xy)
+
+# Safe evaluation with fallback
+result = handler.safe_eval("fs.get('nonexistent.txt');", fallback="File not found")
+print(result)  # File not found
+
+# Safe file operations
+content = handler.safe_file_operation("get", "test.txt")
+if content is None:
+    print("File operation failed")
+else:
+    print(f"File content: {content}")
+
+# Retry mechanism
+def operation():
+    return xy.eval("fs.get('test.txt');")
+
+result = handler.retry_operation(operation, max_retries=3)
+```
+
+### Error Reporting
+
+Generate comprehensive error reports:
+
+```python
+from error_handling_utils import create_error_report
+
+# After performing operations
+error_report = create_error_report(handler)
+print(error_report)
+```
+
+## Critical Syntax Issues
+
+### Reduce Syntax
+
+**IMPORTANT**: Grapa's reduce function requires compound assignment (`+=`), not simple addition (`+`):
+
+```python
+# ✅ CORRECT - Use compound assignment
+result = xy.eval("""
+arr = [1, 2, 3, 4, 5];
+arr.reduce(op(acc, x) { acc += x; }, 0);
+""")
+print(result)  # 15
+
+# ❌ WRONG - Simple addition returns 0
+result = xy.eval("""
+arr = [1, 2, 3, 4, 5];
+arr.reduce(op(acc, x) { acc + x; }, 0);
+""")
+print(result)  # 0
+```
+
+### File Content Handling
+
+File content is returned as bytes and needs explicit decoding:
+
+```python
+# Get file content
 content = xy.eval("fs.get('test.txt');")
 if isinstance(content, bytes):
     content = content.decode('utf-8')
+print(content)
 ```
 
-## Validation and Testing
+## File Operations
 
-### Running Validation Tests
+### Basic File Operations
 
-GrapaPy includes comprehensive validation tests in the `test/grapapy_validation/` directory:
+```python
+import grapapy
 
-```bash
-# Run basic operations test
-python test_basic_operations.py
+xy = grapapy.grapa()
 
-# Run functional methods test
-python test_functional_methods.py
+# Initialize file system in global namespace
+xy.eval("$global.fs = $file();")
 
-# Run file operations test
-python test_file_operations.py
+# Create a file
+xy.eval("fs.set('test.txt', 'Hello World');")
 
-# Run complete validation suite
-python run_validation.py
+# Read file content
+content = xy.eval("fs.get('test.txt');")
+if isinstance(content, bytes):
+    content = content.decode('utf-8')
+print(content)  # Hello World
+
+# Get file information
+info = xy.eval("fs.info('test.txt');")
+print(info)  # {'$TYPE': 'FILE', '$BYTES': 11}
+
+# Remove file
+xy.eval("fs.remove('test.txt');")
 ```
 
-### Known Issues and Workarounds
+### File Operations with Error Handling
 
-1. **Reduce Operations**: Always use `+=` (compound assignment), not `+` (addition)
-2. **File Content**: File content is returned as bytes and needs `.decode('utf-8')`
-3. **Complex Recursion**: Avoid complex recursive functions (may hang)
-4. **Error Responses**: Some operations return `{"error":-1}` - check for this pattern
+```python
+from error_handling_utils import GrapaPyErrorHandler
 
-### Platform Support
+xy = grapapy.grapa()
+handler = GrapaPyErrorHandler(xy)
 
-- **Windows**: Use `pip install grapapy==0.0.49`
-- **Linux**: Use `pip3 install grapapy==0.0.49`
-- **macOS**: Use `pip3 install grapapy==0.0.49`
+# Initialize file system
+handler.safe_eval("$global.fs = $file();")
 
-All platforms support the same functionality with the same syntax requirements.
+# Safe file operations
+content = handler.safe_file_operation("set", "test.txt", "Hello World")
+if content is not None:
+    print("File created successfully")
 
-## Best Practices
+read_content = handler.safe_file_operation("get", "test.txt")
+if read_content:
+    print(f"File content: {read_content}")
 
-1. **Always use `+=` for reduce operations**
-2. **Decode file content**: `content.decode('utf-8')`
-3. **Check for error responses**: `{"error":-1}`
-4. **Test with small datasets first**
-5. **Use proper error handling for file operations**
-6. **Avoid complex recursion in Grapa code**
+# Handle non-existent files gracefully
+nonexistent = handler.safe_file_operation("get", "nonexistent.txt")
+if nonexistent is None:
+    print("File not found - handled gracefully")
+```
+
+## Functional Programming
+
+### Map, Filter, and Reduce
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Map operation
+result = xy.eval("""
+numbers = [1, 2, 3, 4, 5];
+numbers.map(op(x) { x * 2; });
+""")
+print(result)  # [2, 4, 6, 8, 10]
+
+# Filter operation
+result = xy.eval("""
+numbers = [1, 2, 3, 4, 5, 6];
+numbers.filter(op(x) { x % 2 == 0; });
+""")
+print(result)  # [2, 4, 6]
+
+# Reduce operation (use += syntax)
+result = xy.eval("""
+numbers = [1, 2, 3, 4, 5];
+numbers.reduce(op(acc, x) { acc += x; }, 0);
+""")
+print(result)  # 15
+```
+
+## Database Operations
+
+### Table Operations
+
+```python
+import grapapy
+
+xy = grapapy.grapa()
+
+# Initialize database
+xy.eval("$global.db = $file().table('ROW');")
+
+# Create table schema
+xy.eval("""
+db.mkfield('name', 'STR', 'VAR');
+db.mkfield('age', 'INT');
+db.mkfield('salary', 'FLOAT', 'FIX', 8);
+""")
+
+# Insert data
+xy.eval("db.set('user1', 'John Doe', 'name');")
+xy.eval("db.set('user1', 30, 'age');")
+xy.eval("db.set('user1', 75000.50, 'salary');")
+
+# Retrieve data
+name = xy.eval("db.get('user1', 'name').str();")
+age = xy.eval("db.get('user1', 'age').int();")
+salary = xy.eval("db.get('user1', 'salary').float();")
+
+print(f"Name: {name}, Age: {age}, Salary: {salary}")
+```
+
+## Performance Considerations
+
+### Large Dataset Processing
+
+```python
+import grapapy
+from error_handling_utils import GrapaPyErrorHandler
+
+xy = grapapy.grapa()
+handler = GrapaPyErrorHandler(xy)
+
+# Process large datasets with error handling
+def process_large_dataset():
+    try:
+        # Create large array
+        result = xy.eval("""
+        large_array = [];
+        i = 1;
+        while (i <= 10000) {
+            large_array.push(i);
+            i = i + 1;
+        }
+        large_array.reduce(op(acc, x) { acc += x; }, 0);
+        """)
+        return result
+    except Exception as e:
+        print(f"Processing failed: {e}")
+        return None
+
+result = handler.retry_operation(process_large_dataset, max_retries=3)
+if result:
+    print(f"Sum of 1 to 10000: {result}")
+```
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Reduce returns 0**: Check if using `+=` instead of `+`
-2. **File content issues**: Always decode bytes to strings
-3. **Import errors**: Try `pip install grapapy==0.0.49 --force-reinstall`
-4. **Hanging operations**: Avoid complex recursion, use iterative approaches
+1. **Reduce Syntax**: Always use `acc += x;` not `acc + x;`
+2. **File Content**: Decode bytes explicitly: `content.decode('utf-8')`
+3. **Error Responses**: Check for `{"error":-1}` pattern
+4. **Namespace Management**: Use `$global` for persistent objects
 
-### Debugging Commands
+### Error Handling Best Practices
+
+1. **Use Error Handler**: Always use `GrapaPyErrorHandler` for production code
+2. **Provide Fallbacks**: Use fallback values for failed operations
+3. **Retry Logic**: Implement retry mechanisms for transient failures
+4. **Logging**: Enable logging to track error patterns
+5. **Graceful Degradation**: Handle errors without crashing the application
+
+### Debugging Tips
 
 ```python
 import grapapy
+import logging
+
+# Enable debug logging
+logging.basicConfig(level=logging.DEBUG)
+
 xy = grapapy.grapa()
 
 # Test basic functionality
-print(xy.eval("2 + 2;"))  # Should be 4
-
-# Test reduce syntax
-print(xy.eval("[1,2,3].reduce(op(acc, x) { acc += x; }, 0);"))  # Should be 6
+result = xy.eval("2 + 2;")
+print(f"Basic test: {result}")
 
 # Test file operations
 xy.eval("$global.fs = $file();")
-xy.eval("fs.set('test.txt', 'Hello');")
-content = xy.eval("fs.get('test.txt');")
-if isinstance(content, bytes):
-    content = content.decode('utf-8')
-print(content)  # Should be 'Hello'
+file_result = xy.eval("fs.set('debug.txt', 'test');")
+print(f"File operation: {file_result}")
+
+# Check for errors
+if isinstance(file_result, dict) and file_result.get("error") == -1:
+    print("File operation failed")
 ```
 
-## See Also
+## Integration Examples
 
-- [GrapaPy Validation Guide](../../test/grapapy_validation/PLATFORM_VALIDATION_GUIDE.md)
-- [Basic Syntax](../syntax/basic_syntax.md)
-- [Functional Methods](../operators/loop.md)
-- [API Reference](../api_reference.md) 
+### Web Application Integration
+
+```python
+from flask import Flask, request, jsonify
+import grapapy
+from error_handling_utils import GrapaPyErrorHandler
+
+app = Flask(__name__)
+xy = grapapy.grapa()
+handler = GrapaPyErrorHandler(xy)
+
+@app.route('/execute', methods=['POST'])
+def execute_grapa():
+    try:
+        code = request.json.get('code')
+        variables = request.json.get('variables', {})
+        
+        result = handler.safe_eval(code, variables, fallback="Execution failed")
+        
+        return jsonify({
+            'success': True,
+            'result': result,
+            'errors': handler.get_error_summary()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+### Data Processing Pipeline
+
+```python
+import grapapy
+from error_handling_utils import GrapaPyErrorHandler
+
+def process_data_with_grapa(data_list):
+    xy = grapapy.grapa()
+    handler = GrapaPyErrorHandler(xy)
+    
+    # Initialize processing
+    handler.safe_eval("$global.processor = $file();")
+    
+    results = []
+    for i, data in enumerate(data_list):
+        try:
+            # Process each item
+            result = handler.safe_eval(f"""
+            input_data = {data};
+            processed = input_data.map(op(x) {{ x * 2; }});
+            processed.reduce(op(acc, x) {{ acc += x; }}, 0);
+            """, fallback=f"Processing failed for item {i}")
+            
+            results.append(result)
+            
+        except Exception as e:
+            print(f"Error processing item {i}: {e}")
+            results.append(None)
+    
+    return results
+
+# Usage
+data = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+results = process_data_with_grapa(data)
+print(f"Processing results: {results}")
+```
+
+This comprehensive guide covers all aspects of GrapaPy integration with proper error handling for production use. 

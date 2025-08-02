@@ -115,6 +115,10 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
   - **Reference**: [`../DEVELOPMENT/LANGUAGE_ANALYSIS_AND_IMPROVEMENT_PLAN.md`](../DEVELOPMENT/LANGUAGE_ANALYSIS_AND_IMPROVEMENT_PLAN.md)
 - [ ] **Loop Syntax**: Add `for` loop as syntactic sugar for `.range()` patterns
 - [ ] **Error Handling**: Improve `.iferr()` ergonomics and exception-based error handling
+- [ ] **Recursion Safety Limits**: Investigate and implement safety mechanisms for deep recursion (e.g., factorial(1000) causes bus error). Consider stack depth limits, timeout mechanisms, or graceful degradation for complex recursive operations
+  - **Impact**: High - prevents system crashes from deep recursion
+  - **Investigation Needed**: Determine best approach (stack limits, timeouts, or graceful failure)
+  - **Reference**: Current error handling utilities detect but don't prevent these crashes
 
 ---
 
@@ -141,6 +145,27 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [x] **Audit and improve cross-linking between major sections** (API Reference, Language Reference, Use Cases, Examples); add "See also"/"Related topics" to key pages – Complete as of July 2024
 - [x] **Create/expand "Advanced Topics" section for advanced features** (meta-programming, custom grammar, etc.) – Complete as of July 2024
 - [ ] **Ongoing: Periodically review maintainer/internal docs to ensure no internal details leak into user-facing docs as new content is added**
+- [ ] **File Content Handling Documentation**: Create comprehensive documentation and helper functions for handling different file types (text, binary, unknown encoding) in GrapaPy
+  - **Focus**: Text files (UTF-8, ASCII, other encodings), binary files, mixed content, encoding detection
+  - **Deliverables**: Helper functions for safe text decoding, encoding detection, binary file handling
+  - **Impact**: Medium - improves user experience for file operations without making assumptions about file types
+- [ ] **GrapaPy Namespace Management Documentation**: Document proper usage of `$global` for data persistence across calls and clarify that `$` prefix is reserved for system use
+  - **Focus**: When to use `$global` vs regular variables, system namespace reservation, data persistence patterns
+  - **Deliverables**: Clear documentation of namespace rules, examples of proper `$global` usage, warnings about `$` prefix reservation
+  - **Impact**: Medium - prevents user confusion and misuse of system namespaces
+- [ ] **Error Response Documentation Enhancement**: Document both native Grapa error system and GrapaPy error handling patterns
+  - **Focus**: 
+    - **Native Grapa**: `$ERR` type (same as `$LIST`), `.iferr()` method, `result.type()==$ERR` checks, absence of try/catch
+    - **GrapaPy**: `{"error":-1}` response handling, error detection utilities, safe evaluation patterns
+  - **Deliverables**: 
+    - Native Grapa error handling documentation with `result.len()`, `result[0]`, `.iferr()` examples
+    - GrapaPy error handling utilities documentation and integration examples
+    - Clear distinction between native language errors and Python integration errors
+  - **Impact**: Medium - improves debugging and error handling for both native Grapa and GrapaPy users
+- [ ] **Functional Programming Patterns Documentation**: Explore and document common functional patterns in Grapa including performance monitoring, error handling, and other functional programming techniques
+  - **Focus**: Performance monitoring as function parameters, functional error handling patterns, higher-order functions, functional composition
+  - **Deliverables**: Documentation of functional patterns, performance monitoring examples, functional programming best practices
+  - **Impact**: Medium - helps users leverage Grapa's functional nature for custom solutions
 
 ### Language Features
 - [ ] **Add support for more mathematical functions**
