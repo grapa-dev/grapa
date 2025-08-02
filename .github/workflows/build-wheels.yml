@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [windows-latest]
         python-version: ['3.11']
 
     steps:
@@ -25,11 +25,6 @@ jobs:
     
     - name: Install build dependencies
       run: |
-        # Install system dependencies for Linux (needed for library build)
-        if [ "$RUNNER_OS" = "Linux" ]; then
-          sudo apt-get update
-          sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev build-essential
-        fi
         pip install wheel setuptools build
     
     - name: Build core libraries
@@ -37,10 +32,10 @@ jobs:
         echo "Building core libraries first..."
         echo "Current directory: $(pwd)"
         echo "Checking if required library directories exist..."
-        ls -la source/openssl-lib/linux-amd64/ || echo "OpenSSL libs not found"
-        ls -la source/fl-lib/linux-amd64/ || echo "FL libs not found"
-        ls -la source/blst-lib/linux-amd64/ || echo "BLST libs not found"
-        ls -la source/pcre2-lib/linux-amd64/ || echo "PCRE2 libs not found"
+        ls -la source/openssl-lib/win-amd64/ || echo "OpenSSL libs not found"
+        ls -la source/fl-lib/win-amd64/ || echo "FL libs not found"
+        ls -la source/blst-lib/win-amd64/ || echo "BLST libs not found"
+        ls -la source/pcre2-lib/win-amd64/ || echo "PCRE2 libs not found"
         echo "Running build.py --lib-only..."
         python build.py --lib-only
         echo "Build.py exit code: $?"
@@ -49,7 +44,7 @@ jobs:
           exit 1
         fi
         echo "Library build completed. Checking for library files..."
-        ls -la source/grapa-lib/linux-amd64/ || echo "No library files found"
+        ls -la source/grapa-lib/win-amd64/ || echo "No library files found"
         echo "Checking if build.py created any files in current directory..."
         ls -la *.o *.a *.so 2>/dev/null || echo "No build artifacts found in current directory"
     
@@ -58,7 +53,7 @@ jobs:
         echo "Current directory: $(pwd)"
         echo "Python version: $(python --version)"
         echo "Checking if libraries exist before wheel build..."
-        ls -la source/grapa-lib/linux-amd64/ || echo "No grapa libraries found"
+        ls -la source/grapa-lib/win-amd64/ || echo "No grapa libraries found"
         echo "Building wheel..."
         python setup.py bdist_wheel
         echo "Setup.py exit code: $?"
