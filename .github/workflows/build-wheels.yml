@@ -41,9 +41,13 @@ jobs:
         ls -la source/fl-lib/linux-amd64/ || echo "FL libs not found"
         ls -la source/blst-lib/linux-amd64/ || echo "BLST libs not found"
         ls -la source/pcre2-lib/linux-amd64/ || echo "PCRE2 libs not found"
+        echo "Running build.py --lib-only..."
         python build.py --lib-only
+        echo "Build.py exit code: $?"
         echo "Library build completed. Checking for library files..."
         ls -la source/grapa-lib/linux-amd64/ || echo "No library files found"
+        echo "Checking if build.py created any files in current directory..."
+        ls -la *.o *.a *.so 2>/dev/null || echo "No build artifacts found in current directory"
     
     - name: Build wheels
       run: |
@@ -53,8 +57,12 @@ jobs:
         ls -la source/grapa-lib/linux-amd64/ || echo "No grapa libraries found"
         echo "Building wheel..."
         python setup.py bdist_wheel
+        echo "Setup.py exit code: $?"
         echo "Wheel build completed. Checking for wheel files..."
         ls -la dist/ || echo "No wheel files found"
+        echo "Checking if setup.py created any files..."
+        ls -la build/ 2>/dev/null || echo "No build directory found"
+        ls -la *.egg-info/ 2>/dev/null || echo "No egg-info directory found"
     
     - name: Upload wheels
       uses: actions/upload-artifact@v4
