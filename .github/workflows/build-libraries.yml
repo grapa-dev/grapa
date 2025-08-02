@@ -141,6 +141,12 @@ jobs:
         path: artifacts/
         merge-multiple: true
         
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev
+        
     - name: Setup Git
       run: |
         git config --local user.email "action@github.com"
