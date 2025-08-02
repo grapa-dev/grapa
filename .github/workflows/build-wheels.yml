@@ -28,7 +28,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
-        pip install wheel setuptools build auditwheel
+        pip install wheel setuptools build
     
     - name: Install build dependencies (Windows/Mac)
       if: matrix.os != 'ubuntu-latest'
@@ -129,11 +129,23 @@ jobs:
         echo "Listing all files in dist directory:"
         ls -la dist/ -R || echo "No files found"
         
-        # Note: Skipping auditwheel repair due to Ubuntu 24.04 toolchain being too recent
-        # The wheels will use native platform tags which should be accepted by PyPI
+        # For Linux, we'll manually rename the wheel to use manylinux2014 platform tag
         if [ "$RUNNER_OS" = "Linux" ]; then
-          echo "Skipping auditwheel repair - using native platform tags"
-          echo "Wheels ready for upload:"
+          echo "Renaming Linux wheels to use manylinux2014 platform tag..."
+          for wheel in dist/*.whl; do
+            if [ -f "$wheel" ]; then
+              echo "Processing $wheel"
+              # Extract the wheel name and version
+              wheel_name=$(basename "$wheel")
+              # Replace linux_x86_64 with manylinux2014_x86_64
+              new_name=$(echo "$wheel_name" | sed 's/linux_x86_64/manylinux2014_x86_64/g')
+              if [ "$wheel_name" != "$new_name" ]; then
+                mv "$wheel" "dist/$new_name"
+                echo "Renamed $wheel_name to $new_name"
+              fi
+            fi
+          done
+          echo "Wheels after renaming:"
           ls -la dist/
         fi
     
