@@ -30,7 +30,7 @@ jobs:
     
     - name: Build wheels
       run: |
-        python -m build --wheel
+        python setup.py bdist_wheel
     
     - name: Upload wheels
       uses: actions/upload-artifact@v4

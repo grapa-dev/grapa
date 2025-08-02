@@ -24,8 +24,8 @@ def build_wheel():
     # Install build dependencies
     subprocess.run([sys.executable, '-m', 'pip', 'install', '--upgrade', 'pip', 'wheel', 'setuptools', 'build'], check=True)
     
-    # Build wheel
-    subprocess.run([sys.executable, '-m', 'build', '--wheel'], check=True)
+    # Build wheel using setup.py directly
+    subprocess.run([sys.executable, 'setup.py', 'bdist_wheel'], check=True)
     
     # List built wheels
     dist_dir = Path('dist')
