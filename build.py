@@ -201,7 +201,7 @@ class GrapaBuilder:
                 else:
                     self._run_linux_build_command(config, is_library=False)
             
-            if not exe_only:
+            if not exe_only or lib_only:
                 # Build static library
                 if config.platform == "aws":
                     self._run_aws_build_command(config, is_library=True, is_static=True)
@@ -217,8 +217,9 @@ class GrapaBuilder:
                 # Copy library files to top-level directory
                 self._copy_libraries_to_top_level(config)
                 
-                # Create package
-                self._create_linux_package(config)
+                # Create package (only if not lib_only)
+                if not lib_only:
+                    self._create_linux_package(config)
             
             return True
             
