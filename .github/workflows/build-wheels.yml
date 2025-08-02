@@ -131,6 +131,17 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
         pip install wheel setuptools build
+        
+        # Install ARM64 cross-compilation toolchain for ARM64 builds
+        if [[ "${{ matrix.platform }}" == "linux-arm64" ]]; then
+          echo "Installing ARM64 cross-compilation toolchain..."
+          sudo dpkg --add-architecture arm64
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          export CC=aarch64-linux-gnu-gcc
+          export CXX=aarch64-linux-gnu-g++
+          echo "Cross-compilation toolchain installed"
+        fi
     
     - name: Install build dependencies (Windows/Mac)
       if: matrix.os != 'ubuntu-latest'
@@ -231,6 +242,10 @@ jobs:
         # Set platform environment variable based on matrix platform
         if [[ "${{ matrix.platform }}" == *"arm64"* ]]; then
           export GRAPA_PLATFORM=arm64
+          # Set cross-compilation environment variables for ARM64 builds
+          export CC=aarch64-linux-gnu-gcc
+          export CXX=aarch64-linux-gnu-g++
+          echo "Using cross-compilation toolchain: CC=$CC, CXX=$CXX"
         else
           export GRAPA_PLATFORM=amd64
         fi
