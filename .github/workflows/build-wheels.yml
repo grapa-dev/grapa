@@ -143,10 +143,10 @@ jobs:
         Write-Host "Current directory: $(Get-Location)"
         Write-Host "Platform: ${{ matrix.platform }}"
         Write-Host "Checking if required library directories exist..."
-        Get-ChildItem source/openssl-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
-        Get-ChildItem source/fl-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
-        Get-ChildItem source/blst-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
-        Get-ChildItem source/pcre2-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem source/openssl-lib/${{ matrix.platform }}/ -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem source/fl-lib/${{ matrix.platform }}/ -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem source/blst-lib/${{ matrix.platform }}/ -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem source/pcre2-lib/${{ matrix.platform }}/ -ErrorAction SilentlyContinue | Write-Host
         Write-Host "Running build.py --lib-only..."
         python build.py --lib-only
         $exitCode = $LASTEXITCODE
@@ -156,7 +156,7 @@ jobs:
           exit 1
         }
         Write-Host "Library build completed. Checking for library files..."
-        Get-ChildItem source/grapa-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem source/grapa-lib/${{ matrix.platform }}/ -ErrorAction SilentlyContinue | Write-Host
         Write-Host "Checking if build.py created any files in current directory..."
         Get-ChildItem *.o, *.a, *.so -ErrorAction SilentlyContinue | Write-Host
     
@@ -168,10 +168,10 @@ jobs:
         echo "Current directory: $(pwd)"
         echo "Platform: ${{ matrix.platform }}"
         echo "Checking if required library directories exist..."
-        ls -la source/openssl-lib/linux-amd64/ || echo "OpenSSL libs not found"
-        ls -la source/fl-lib/linux-amd64/ || echo "FL libs not found"
-        ls -la source/blst-lib/linux-amd64/ || echo "BLST libs not found"
-        ls -la source/pcre2-lib/linux-amd64/ || echo "PCRE2 libs not found"
+        ls -la source/openssl-lib/${{ matrix.platform }}/ || echo "OpenSSL libs not found"
+        ls -la source/fl-lib/${{ matrix.platform }}/ || echo "FL libs not found"
+        ls -la source/blst-lib/${{ matrix.platform }}/ || echo "BLST libs not found"
+        ls -la source/pcre2-lib/${{ matrix.platform }}/ || echo "PCRE2 libs not found"
         echo "Running build.py --lib-only..."
         python build.py --lib-only
         echo "Build.py exit code: $?"
@@ -180,7 +180,7 @@ jobs:
           exit 1
         fi
         echo "Library build completed. Checking for library files..."
-        ls -la source/grapa-lib/linux-amd64/ || echo "No library files found"
+        ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No library files found"
         echo "Checking if build.py created any files in current directory..."
         ls -la *.o *.a *.so 2>/dev/null || echo "No build artifacts found in current directory"
     
@@ -192,7 +192,7 @@ jobs:
         Write-Host "Python version: $(python --version)"
         Write-Host "Platform: ${{ matrix.platform }}"
         Write-Host "Checking if libraries exist before wheel build..."
-        Get-ChildItem source/grapa-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem source/grapa-lib/${{ matrix.platform }}/ -ErrorAction SilentlyContinue | Write-Host
         Write-Host "Building wheel..."
         python setup.py bdist_wheel
         $exitCode = $LASTEXITCODE
@@ -217,7 +217,7 @@ jobs:
         echo "Python version: $(python --version)"
         echo "Platform: ${{ matrix.platform }}"
         echo "Checking if libraries exist before wheel build..."
-        ls -la source/grapa-lib/linux-amd64/ || echo "No grapa libraries found"
+        ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
         echo "Building wheel..."
         python setup.py bdist_wheel
         echo "Setup.py exit code: $?"
