@@ -25,10 +25,9 @@ jobs:
           # Linux AMD64
           - os: ubuntu-latest
             platform: linux-amd64
-          # Linux ARM64 - use self-hosted runner or skip for now
+          # Linux ARM64
           - os: ubuntu-latest
             platform: linux-arm64
-            continue-on-error: true
 
     steps:
     - uses: actions/checkout@v4
@@ -181,15 +180,7 @@ jobs:
     - name: Build wheels
       run: |
         echo "Building wheels using pre-built libraries..."
-        
-        # Build universal wheel for x86_64
-        python setup.py bdist_wheel --plat-name manylinux1_x86_64
-        
-        # Also build for ARM64 if we have ARM64 libraries
-        if [ -d "source/grapa-lib/linux-arm64" ]; then
-          echo "Building ARM64 wheel..."
-          python setup.py bdist_wheel --plat-name manylinux1_aarch64
-        fi
+        python setup.py bdist_wheel
         
         echo "Built wheels:"
         ls -la dist/
