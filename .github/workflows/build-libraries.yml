@@ -180,6 +180,10 @@ jobs:
     - name: Build wheels
       run: |
         echo "Building wheels using pre-built libraries..."
+        
+        # Clean previous builds to ensure fresh wheels
+        rm -rf dist/ build/ *.egg-info/
+        
         python setup.py bdist_wheel
         
         echo "Built wheels:"
