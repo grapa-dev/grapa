@@ -31,6 +31,8 @@ jobs:
       run: |
         echo "Current directory: $(pwd)"
         echo "Python version: $(python --version)"
+        echo "Finding pybind11 location:"
+        python -c "import pybind11; print('pybind11 location:', pybind11.get_include())"
         echo "Listing source directory:"
         ls -la source/
         echo "Building wheel..."
