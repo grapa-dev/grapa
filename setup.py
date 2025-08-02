@@ -4,7 +4,7 @@ import platform
 import subprocess
 import re
 
-from distutils.command.build import build
+from setuptools.command.build import build
 
 from setuptools import Extension, setup, find_packages, Command
 from setuptools.command.build_ext import build_ext
@@ -14,7 +14,7 @@ from pathlib import Path
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
-grapapy_version = "0.0.43"
+grapapy_version = "0.0.42"
 is_aws = False
 is_apple = False
 from_os = ''

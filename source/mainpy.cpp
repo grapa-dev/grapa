@@ -4,6 +4,7 @@
 #define PCRE2_STATIC
 #endif
 
+#include <io.h>
 #include <pybind11/pybind11.h>
 #include "pybind11/include/pybind11/pybind11.h"
 #include "pybind11/include/pybind11/eval.h"

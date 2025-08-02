@@ -12,6 +12,10 @@ Usage:
     python3 build.py                    # Build for current platform/arch
     python3 build.py --test             # Run tests after build
     python3 build.py --clean            # Clean build artifacts
+    python3 build.py --exe-only         # Build only the executable (skip libraries, Python package)
+    python3 build.py --lib-only         # Build only the libraries (skip executable, Python package)
+    python3 build.py --python-only      # Build only the Python extension (assumes executable exists)
+    python3 build.py --preserve-dist    # Preserve dist/ directory after build
     python3 build.py --help             # Show help
 
 Supported Platforms (when run on that platform):
@@ -120,20 +124,21 @@ class GrapaBuilder:
         else:
             raise RuntimeError(f"Unsupported platform: {system}")
     
-    def build_windows(self, config: BuildConfig, exe_only: bool = False) -> bool:
+    def build_windows(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
         """Build for Windows using Visual Studio"""
         print(f"Building for {config.target} using Visual Studio...")
         
         try:
-            # Build main executable
-            subprocess.run([
-                "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
-            ], check=True)
-            
-            # Copy executable
-            if os.path.exists("grapa.exe"):
-                os.remove("grapa.exe")
-            shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
+            if not lib_only:
+                # Build main executable
+                subprocess.run([
+                    "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
+                ], check=True)
+                
+                # Copy executable
+                if os.path.exists("grapa.exe"):
+                    os.remove("grapa.exe")
+                shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
             
             if not exe_only:
                 # Build library
@@ -156,21 +161,25 @@ class GrapaBuilder:
             print(f"Windows build failed: {e}")
             return False
     
-    def build_mac(self, config: BuildConfig, exe_only: bool = False) -> bool:
+    def build_mac(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
         """Build for Mac using clang/clang++"""
         print(f"Building for {config.target} using clang++...")
         
         try:
-            # Build main executable
-            self._run_mac_build_command(config, is_library=False)
-            
-            # Build static library
-            self._run_mac_build_command(config, is_library=True, is_static=True)
-            
-            # Build shared library
-            self._run_mac_build_command(config, is_library=True, is_static=False)
+            if not lib_only:
+                # Build main executable
+                self._run_mac_build_command(config, is_library=False)
             
             if not exe_only:
+                # Build static library
+                self._run_mac_build_command(config, is_library=True, is_static=True)
+                
+                # Build shared library
+                self._run_mac_build_command(config, is_library=True, is_static=False)
+                
+                # Copy library files to top-level directory
+                self._copy_libraries_to_top_level(config)
+                
                 # Create package
                 self._create_mac_package(config)
             
@@ -180,30 +189,34 @@ class GrapaBuilder:
             print(f"Mac build failed: {e}")
             return False
     
-    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False) -> bool:
+    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
         """Build for Linux/AWS using g++"""
         print(f"Building for {config.target} using g++...")
         
         try:
-            # Build main executable
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=False)
-            else:
-                self._run_linux_build_command(config, is_library=False)
-            
-            # Build static library
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=True, is_static=True)
-            else:
-                self._run_linux_build_command(config, is_library=True, is_static=True)
-            
-            # Build shared library
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=True, is_static=False)
-            else:
-                self._run_linux_build_command(config, is_library=True, is_static=False)
+            if not lib_only:
+                # Build main executable
+                if config.platform == "aws":
+                    self._run_aws_build_command(config, is_library=False)
+                else:
+                    self._run_linux_build_command(config, is_library=False)
             
             if not exe_only:
+                # Build static library
+                if config.platform == "aws":
+                    self._run_aws_build_command(config, is_library=True, is_static=True)
+                else:
+                    self._run_linux_build_command(config, is_library=True, is_static=True)
+                
+                # Build shared library
+                if config.platform == "aws":
+                    self._run_aws_build_command(config, is_library=True, is_static=False)
+                else:
+                    self._run_linux_build_command(config, is_library=True, is_static=False)
+                
+                # Copy library files to top-level directory
+                self._copy_libraries_to_top_level(config)
+                
                 # Create package
                 self._create_linux_package(config)
             
@@ -485,14 +498,16 @@ class GrapaBuilder:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
     
-    def _clean_build_artifacts(self):
+    def _clean_build_artifacts(self, preserve_dist: bool = False):
         """Clean build artifacts that should be removed after build"""
         print("Cleaning build artifacts...")
         
         # Clean Python package artifacts
-        if os.path.exists("dist"):
+        if os.path.exists("dist") and not preserve_dist:
             print("Removing dist/ directory...")
             shutil.rmtree("dist")
+        elif preserve_dist and os.path.exists("dist"):
+            print("Preserving dist/ directory as requested")
         
         if os.path.exists("grapapy.egg-info"):
             print("Removing grapapy.egg-info/ directory...")
@@ -575,7 +590,7 @@ class GrapaBuilder:
         print(f"Creating package with files: {files_to_include}")
         subprocess.run(tar_cmd, check=True)
     
-    def build_python_package(self, config: BuildConfig):
+    def build_python_package(self, config: BuildConfig, preserve_dist: bool = False):
         """Build Python package"""
         print("Building Python package...")
 
@@ -595,6 +610,31 @@ class GrapaBuilder:
         # Install package
         package_path = os.path.join("dist", package_file)
         subprocess.run([pip_cmd, "install", package_path], check=True)
+        
+        if preserve_dist:
+            print("Preserving dist/ directory as requested")
+        else:
+            print("Cleaning dist/ directory...")
+            shutil.rmtree("dist")
+    
+    def build_python_only(self, config: BuildConfig, preserve_dist: bool = False) -> bool:
+        """Build only the Python extension (assumes executable already exists)"""
+        print("Building Python extension only...")
+        
+        # Check if executable exists
+        exe_name = "grapa.exe" if config.platform == "windows" else "grapa"
+        if not os.path.exists(exe_name):
+            print(f"Warning: {exe_name} not found. Python extension build may fail.")
+            print("Consider running full build first to ensure executable exists.")
+        
+        try:
+            # Build Python package
+            self.build_python_package(config, preserve_dist=preserve_dist)
+            print("Python extension build successful")
+            return True
+        except Exception as e:
+            print(f"Python extension build failed: {e}")
+            return False
     
     def run_tests(self, config: BuildConfig):
         """Run tests"""
@@ -615,7 +655,59 @@ class GrapaBuilder:
         
         return True
     
-    def build(self, run_tests: bool = False, exe_only: bool = False) -> bool:
+    def _copy_libraries_to_top_level(self, config: BuildConfig):
+        """Copy compiled library files to the top-level directory"""
+        print("Copying library files to top-level directory...")
+        
+        if config.platform == "windows":
+            # Windows only has static library
+            lib_path = f"source/grapa-lib/{config.target}/grapa.lib"
+            if os.path.exists(lib_path):
+                shutil.copy(lib_path, "grapa.lib")
+                print("✅ Copied grapa.lib to top-level directory")
+        else:
+            # Mac/Linux/AWS have both static and shared libraries
+            static_lib_path = f"source/grapa-lib/{config.target}/libgrapa.a"
+            shared_lib_path = f"source/grapa-lib/{config.target}/libgrapa.so"
+            
+            if os.path.exists(static_lib_path):
+                shutil.copy(static_lib_path, "libgrapa.a")
+                print("✅ Copied libgrapa.a to top-level directory")
+            
+            if os.path.exists(shared_lib_path):
+                shutil.copy(shared_lib_path, "libgrapa.so")
+                print("✅ Copied libgrapa.so to top-level directory")
+
+    def build_libraries_only(self, config: BuildConfig) -> bool:
+        """Build only the libraries (skip executable and Python package)"""
+        print("Building libraries only...")
+        
+        try:
+            # Build based on platform
+            success = False
+            if config.platform == "windows":
+                success = self.build_windows(config, exe_only=True, lib_only=True)
+            elif config.platform == "mac":
+                success = self.build_mac(config, exe_only=True, lib_only=True)
+            elif config.platform == "linux":
+                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
+            elif config.platform == "aws":
+                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
+            else:
+                print(f"Unsupported platform: {config.platform}")
+                return False
+            
+            if success:
+                print("Libraries build successful")
+                return True
+            else:
+                print("Libraries build failed")
+                return False
+        except Exception as e:
+            print(f"Libraries build failed: {e}")
+            return False
+
+    def build(self, run_tests: bool = False, exe_only: bool = False, lib_only: bool = False, python_only: bool = False, preserve_dist: bool = False) -> bool:
         """Build for the current platform and architecture"""
         platform, arch = self.detect_platform()
         config = BuildConfig(platform, arch)
@@ -623,16 +715,24 @@ class GrapaBuilder:
         print(f"Building Grapa for {config.target}...")
         
         try:
+            if python_only:
+                # Build only Python extension
+                return self.build_python_only(config, preserve_dist=preserve_dist)
+            
+            if lib_only:
+                # Build only libraries
+                return self.build_libraries_only(config)
+            
             # Build based on platform
             success = False
             if config.platform == "windows":
-                success = self.build_windows(config, exe_only=exe_only)
+                success = self.build_windows(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "mac":
-                success = self.build_mac(config, exe_only=exe_only)
+                success = self.build_mac(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=exe_only)
+                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=exe_only)
+                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -642,7 +742,7 @@ class GrapaBuilder:
                 
                 if not exe_only:
                     # Build Python package
-                    self.build_python_package(config)
+                    self.build_python_package(config, preserve_dist=preserve_dist)
                     # Run tests if requested
                     if run_tests:
                         self.run_tests(config)
@@ -653,13 +753,16 @@ class GrapaBuilder:
                 return False
         finally:
             # Always clean up build artifacts, regardless of success or failure
-            self._clean_build_artifacts()
+            self._clean_build_artifacts(preserve_dist=preserve_dist)
 
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
-    parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip library, Python package, and packaging steps). Useful for fast iterative development and investigation.")
+    parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip libraries, Python package, and packaging steps). Useful for fast iterative development and investigation.")
+    parser.add_argument("--lib-only", action="store_true", help="Build only the libraries (skip executable, Python package, and packaging steps). Libraries will be copied to the top-level directory.")
+    parser.add_argument("--python-only", action="store_true", help="Build only the Python extension (assumes executable already exists). Useful for debugging Python extension issues without rebuilding the executable.")
+    parser.add_argument("--preserve-dist", action="store_true", help="Preserve the dist/ directory after build (useful for debugging or manual installation)")
     
     args = parser.parse_args()
     
@@ -669,7 +772,7 @@ def main():
     platform, arch = builder.detect_platform()
     print(f"Building for {platform} {arch}")
     
-    if builder.build(args.test, exe_only=args.exe_only):
+    if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist):
         print(f"\n{'='*50}")
         print(f"Build successful for {platform} {arch}")
         print(f"{'='*50}")

@@ -18,9 +18,28 @@
   - **Findings**: Core database functionality working correctly, removed failing test using non-existent methods
   - **Next**: Focus on CLI Enhancement (Phase 2) and Unicode Language Binding
 
----
+### Build System Enhancement - ✅ COMPLETED
+- **Add Python-only build option for debugging Python extension issues**
+  - **Status**: ✅ **COMPLETED** - New build options implemented
+  - **New Options Added**:
+    - `--python-only`: Build only the Python extension (assumes executable exists)
+    - `--preserve-dist`: Preserve the dist/ directory after build
+    - `--lib-only`: Build only the libraries (skip executable, Python package)
+  - **Benefits**: Faster iteration when debugging Python extension issues
+  - **Usage**: `python build.py --python-only --preserve-dist`
+  - **Next**: Focus on CLI Enhancement (Phase 2) and Unicode Language Binding
 
-## 📋 QUICK REFERENCE
+### Build System Refinement - ✅ COMPLETED
+- **Split --exe-only functionality and add --lib-only option**
+  - **Status**: ✅ **COMPLETED** - Build options refined
+  - **Changes Made**:
+    - `--exe-only`: Now only builds the executable (no longer builds libraries)
+    - `--lib-only`: New option to build only libraries (copied to top-level directory)
+  - **Benefits**: More granular control over build process
+  - **Usage**: 
+    - `python build.py --exe-only` for executable only
+    - `python build.py --lib-only` for libraries only
+  - **Next**: Focus on CLI Enhancement (Phase 2) and Unicode Language Binding
 
 ---
 
@@ -31,6 +50,10 @@
 - **Build Grapa (Linux/Mac):** `python3 build.py --exe-only` for quick builds
 - **Full Build (Windows):** `python build.py` for complete build
 - **Full Build (Linux/Mac):** `python3 build.py` for complete build
+- **Python Extension Only (Windows):** `python build.py --python-only --preserve-dist`
+- **Python Extension Only (Linux/Mac):** `python3 build.py --python-only --preserve-dist`
+- **Libraries Only (Windows):** `python build.py --lib-only`
+- **Libraries Only (Linux/Mac):** `python3 build.py --lib-only`
 - **Deploy Docs (Linux/Mac):** `./scripts/deploy_docs.sh`
 - **Deploy Docs (Windows):** `.\scripts\deploy_docs.ps1`
 

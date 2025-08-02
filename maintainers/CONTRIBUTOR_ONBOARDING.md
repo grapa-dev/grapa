@@ -165,6 +165,15 @@ python3 build.py --clean
 
 # Build Python package only
 python3 build.py --python-only
+
+# Build executable only (skip libraries, Python package)
+python3 build.py --exe-only
+
+# Build libraries only (skip executable, Python package)
+python3 build.py --lib-only
+
+# Preserve dist/ directory after build
+python3 build.py --preserve-dist
 ```
 
 ### **Running Tests**

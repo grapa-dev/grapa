@@ -195,11 +195,14 @@ Would you like me to focus on any specific area, or do you have questions about 
 
 ### Windows-Specific Commands
 - **Build**: `python build.py` (not `python3`)
-  - **Build Options**: `python build.py -h` to see all options
-  - **Quick Build**: `python build.py --exe-only` for fast iterative development
-  - **Full Build**: `python build.py` for complete build with libraries and packaging
-  - **Clean Build**: `python build.py --clean` to clean build artifacts
-  - **Test Build**: `python build.py --test` to run tests after build
+- **Build Options**: `python build.py -h` to see all options
+- **Quick Build**: `python build.py --exe-only` for fast iterative development
+- **Full Build**: `python build.py` for complete build with libraries and packaging
+- **Clean Build**: `python build.py --clean` to clean build artifacts
+- **Test Build**: `python build.py --test` to run tests after build
+- **Python Extension Only**: `python build.py --python-only --preserve-dist` for debugging Python extension issues
+- **Preserve Distribution**: `python build.py --preserve-dist` to keep dist/ directory after build
+- **Libraries Only**: `python build.py --lib-only` to build only libraries (copied to top-level directory)
 - **Executable**: `grapa.exe` (not `./grapa`)
 - **File paths**: Use backslashes `"test\grapa.exe"`
 - **Shell**: Use PowerShell or x64 Native Tools Command Prompt for VS 2022
@@ -212,6 +215,9 @@ Would you like me to focus on any specific area, or do you have questions about 
   - **Full Build**: `python3 build.py` for complete build with libraries and packaging
   - **Clean Build**: `python3 build.py --clean` to clean build artifacts
   - **Test Build**: `python3 build.py --test` to run tests after build
+  - **Python Extension Only**: `python3 build.py --python-only --preserve-dist` for debugging Python extension issues
+  - **Preserve Distribution**: `python3 build.py --preserve-dist` to keep dist/ directory after build
+  - **Libraries Only**: `python3 build.py --lib-only` to build only libraries (copied to top-level directory)
 - **Executable**: `./grapa` (not `grapa.exe`)
 - **File paths**: Use forward slashes `"./grapa"`
 - **Shell**: Standard Mac/Linux shell
