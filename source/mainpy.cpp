@@ -4,7 +4,9 @@
 #define PCRE2_STATIC
 #endif
 
+#ifdef _WIN32
 #include <io.h>
+#endif
 #include <pybind11/pybind11.h>
 #include "pybind11/include/pybind11/pybind11.h"
 #include "pybind11/include/pybind11/eval.h"
