@@ -132,15 +132,14 @@ jobs:
         sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
         pip install wheel setuptools build
         
-        # Install ARM64 cross-compilation toolchain for Linux ARM64 builds only
+        # For Linux ARM64, we need to handle this differently since we can't cross-compile with prebuilt libraries
         if [[ "${{ matrix.platform }}" == "linux-arm64" ]]; then
-          echo "Installing ARM64 cross-compilation toolchain for Linux..."
-          sudo dpkg --add-architecture arm64
-          sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-          export CC=aarch64-linux-gnu-gcc
-          export CXX=aarch64-linux-gnu-g++
-          echo "Cross-compilation toolchain installed"
+          echo "Linux ARM64 build detected - this requires native ARM64 compilation"
+          echo "Current architecture: $(uname -m)"
+          echo "Available architectures: $(dpkg --print-architecture) $(dpkg --print-foreign-architectures 2>/dev/null || echo 'none')"
+          # For now, we'll skip ARM64 Linux builds until we have proper ARM64 runners
+          echo "Skipping Linux ARM64 build - requires native ARM64 runner"
+          exit 0
         fi
     
     - name: Install build dependencies (Windows/Mac)
@@ -242,11 +241,10 @@ jobs:
         # Set platform environment variable based on matrix platform
         if [[ "${{ matrix.platform }}" == *"arm64"* ]]; then
           export GRAPA_PLATFORM=arm64
-          # Set cross-compilation environment variables for Linux ARM64 builds only
+          # Skip Linux ARM64 builds for now - they need native ARM64 runners
           if [[ "${{ matrix.platform }}" == "linux-arm64" ]]; then
-            export CC=aarch64-linux-gnu-gcc
-            export CXX=aarch64-linux-gnu-g++
-            echo "Using cross-compilation toolchain: CC=$CC, CXX=$CXX"
+            echo "Skipping Linux ARM64 wheel build - requires native ARM64 runner"
+            exit 0
           fi
         else
           export GRAPA_PLATFORM=amd64
