@@ -216,7 +216,7 @@ jobs:
         # Clean previous builds to ensure fresh wheels
         rm -rf dist/ build/ *.egg-info/
         
-        python setup.py bdist_wheel
+        python setup.py bdist_wheel --plat-name manylinux1_x86_64
         
         echo "Built wheels:"
         ls -la dist/
@@ -226,10 +226,10 @@ jobs:
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
         user: __token__
-        repository_url: https://upload.pypi.org/legacy/
-        packages_dir: dist
-        verify_metadata: true
-        skip_existing: false
+        repository-url: https://upload.pypi.org/legacy/
+        packages-dir: dist
+        verify-metadata: true
+        skip-existing: false
         verbose: false
-        print_hash: false
+        print-hash: false
         attestations: true 
