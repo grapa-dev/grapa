@@ -23,12 +23,16 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     
-    - name: Install build dependencies
+    - name: Install build dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest'
       run: |
-        if [ "$RUNNER_OS" = "Linux" ]; then
-          sudo apt-get update
-          sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
-        fi
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
+        pip install wheel setuptools build
+    
+    - name: Install build dependencies (Windows/Mac)
+      if: matrix.os != 'ubuntu-latest'
+      run: |
         pip install wheel setuptools build
     
     - name: Build core libraries (Windows)
@@ -57,6 +61,7 @@ jobs:
     
     - name: Build core libraries (Linux/Mac)
       if: matrix.os != 'windows-latest'
+      shell: bash
       run: |
         echo "Building core libraries first..."
         echo "Current directory: $(pwd)"
@@ -103,6 +108,7 @@ jobs:
     
     - name: Build wheels (Linux/Mac)
       if: matrix.os != 'windows-latest'
+      shell: bash
       run: |
         echo "Current directory: $(pwd)"
         echo "Python version: $(python --version)"
