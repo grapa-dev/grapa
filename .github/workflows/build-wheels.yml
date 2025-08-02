@@ -44,6 +44,10 @@ jobs:
         echo "Running build.py --lib-only..."
         python build.py --lib-only
         echo "Build.py exit code: $?"
+        if [ $? -ne 0 ]; then
+          echo "ERROR: build.py failed with exit code $?"
+          exit 1
+        fi
         echo "Library build completed. Checking for library files..."
         ls -la source/grapa-lib/linux-amd64/ || echo "No library files found"
         echo "Checking if build.py created any files in current directory..."
@@ -58,6 +62,10 @@ jobs:
         echo "Building wheel..."
         python setup.py bdist_wheel
         echo "Setup.py exit code: $?"
+        if [ $? -ne 0 ]; then
+          echo "ERROR: setup.py failed with exit code $?"
+          exit 1
+        fi
         echo "Wheel build completed. Checking for wheel files..."
         ls -la dist/ || echo "No wheel files found"
         echo "Checking if setup.py created any files..."
