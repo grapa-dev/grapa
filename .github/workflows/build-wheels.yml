@@ -36,6 +36,8 @@ jobs:
       run: |
         echo "Building core libraries first..."
         python build.py --lib-only
+        echo "Library build completed. Checking for library files..."
+        ls -la source/grapa-lib/linux-amd64/ || echo "No library files found"
     
     - name: Build wheels
       run: |
@@ -43,6 +45,8 @@ jobs:
         echo "Python version: $(python --version)"
         echo "Building wheel..."
         python setup.py bdist_wheel
+        echo "Wheel build completed. Checking for wheel files..."
+        ls -la dist/ || echo "No wheel files found"
     
     - name: Upload wheels
       uses: actions/upload-artifact@v4
