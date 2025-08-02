@@ -28,13 +28,19 @@ jobs:
         # Install system dependencies for Linux (needed for library build)
         if [ "$RUNNER_OS" = "Linux" ]; then
           sudo apt-get update
-          sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
+          sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev build-essential
         fi
         pip install wheel setuptools build
     
     - name: Build core libraries
       run: |
         echo "Building core libraries first..."
+        echo "Current directory: $(pwd)"
+        echo "Checking if required library directories exist..."
+        ls -la source/openssl-lib/linux-amd64/ || echo "OpenSSL libs not found"
+        ls -la source/fl-lib/linux-amd64/ || echo "FL libs not found"
+        ls -la source/blst-lib/linux-amd64/ || echo "BLST libs not found"
+        ls -la source/pcre2-lib/linux-amd64/ || echo "PCRE2 libs not found"
         python build.py --lib-only
         echo "Library build completed. Checking for library files..."
         ls -la source/grapa-lib/linux-amd64/ || echo "No library files found"
@@ -43,6 +49,8 @@ jobs:
       run: |
         echo "Current directory: $(pwd)"
         echo "Python version: $(python --version)"
+        echo "Checking if libraries exist before wheel build..."
+        ls -la source/grapa-lib/linux-amd64/ || echo "No grapa libraries found"
         echo "Building wheel..."
         python setup.py bdist_wheel
         echo "Wheel build completed. Checking for wheel files..."
@@ -66,6 +74,4 @@ jobs:
         path: dist/
     
     - name: Upload to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        password: ${{ secrets.PYPI_API_TOKEN }} 
+      uses: pypa/gh-action-pypi-publish@release/v1 
