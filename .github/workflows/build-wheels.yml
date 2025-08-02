@@ -28,7 +28,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
-        pip install wheel setuptools build
+        pip install wheel setuptools build auditwheel
     
     - name: Install build dependencies (Windows/Mac)
       if: matrix.os != 'ubuntu-latest'
@@ -128,6 +128,20 @@ jobs:
         ls -la *.egg-info/ 2>/dev/null || echo "No egg-info directory found"
         echo "Listing all files in dist directory:"
         ls -la dist/ -R || echo "No files found"
+        
+        # Repair Linux wheels to make them manylinux-compatible
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          echo "Repairing Linux wheels with auditwheel..."
+          for wheel in dist/*.whl; do
+            if [ -f "$wheel" ]; then
+              echo "Repairing $wheel"
+              auditwheel repair "$wheel" --plat manylinux2014_x86_64 -w dist/
+              rm "$wheel"  # Remove the original wheel
+            fi
+          done
+          echo "Wheels after repair:"
+          ls -la dist/
+        fi
     
     - name: Upload wheels
       uses: actions/upload-artifact@v4
