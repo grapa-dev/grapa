@@ -180,7 +180,16 @@ jobs:
     - name: Build wheels
       run: |
         echo "Building wheels using pre-built libraries..."
+        
+        # Build Mac/Linux wheel (universal for Mac and Linux)
+        echo "Building Mac/Linux wheel..."
         python setup.py bdist_wheel
+        
+        # Build Windows wheel
+        echo "Building Windows wheel..."
+        # Set environment to simulate Windows build
+        export GRAPA_PLATFORM=win-amd64
+        python setup.py bdist_wheel --plat-name win_amd64
         
         echo "Built wheels:"
         ls -la dist/
