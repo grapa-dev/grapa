@@ -64,22 +64,23 @@ jobs:
             platform: linux-amd64
             python-version: '3.12'
           
-          # Linux ARM64
-          - os: ubuntu-latest
-            platform: linux-arm64
-            python-version: '3.8'
-          - os: ubuntu-latest
-            platform: linux-arm64
-            python-version: '3.9'
-          - os: ubuntu-latest
-            platform: linux-arm64
-            python-version: '3.10'
-          - os: ubuntu-latest
-            platform: linux-arm64
-            python-version: '3.11'
-          - os: ubuntu-latest
-            platform: linux-arm64
-            python-version: '3.12'
+          # Linux ARM64 - Temporarily disabled due to CI runner limitations
+          # ARM64 Linux wheels can be built locally on ARM64 systems
+          # - os: ubuntu-latest
+          #   platform: linux-arm64
+          #   python-version: '3.8'
+          # - os: ubuntu-latest
+          #   platform: linux-arm64
+          #   python-version: '3.9'
+          # - os: ubuntu-latest
+          #   platform: linux-arm64
+          #   python-version: '3.10'
+          # - os: ubuntu-latest
+          #   platform: linux-arm64
+          #   python-version: '3.11'
+          # - os: ubuntu-latest
+          #   platform: linux-arm64
+          #   python-version: '3.12'
           
           # macOS AMD64
           - os: macos-latest
@@ -132,15 +133,7 @@ jobs:
         sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
         pip install wheel setuptools build
         
-        # For Linux ARM64, we need to handle this differently since we can't cross-compile with prebuilt libraries
-        if [[ "${{ matrix.platform }}" == "linux-arm64" ]]; then
-          echo "Linux ARM64 build detected - this requires native ARM64 compilation"
-          echo "Current architecture: $(uname -m)"
-          echo "Available architectures: $(dpkg --print-architecture) $(dpkg --print-foreign-architectures 2>/dev/null || echo 'none')"
-          # For now, we'll skip ARM64 Linux builds until we have proper ARM64 runners
-          echo "Skipping Linux ARM64 build - requires native ARM64 runner"
-          exit 0
-        fi
+
     
     - name: Install build dependencies (Windows/Mac)
       if: matrix.os != 'ubuntu-latest'
@@ -241,11 +234,6 @@ jobs:
         # Set platform environment variable based on matrix platform
         if [[ "${{ matrix.platform }}" == *"arm64"* ]]; then
           export GRAPA_PLATFORM=arm64
-          # Skip Linux ARM64 builds for now - they need native ARM64 runners
-          if [[ "${{ matrix.platform }}" == "linux-arm64" ]]; then
-            echo "Skipping Linux ARM64 wheel build - requires native ARM64 runner"
-            exit 0
-          fi
         else
           export GRAPA_PLATFORM=amd64
         fi
