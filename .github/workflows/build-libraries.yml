@@ -1,0 +1,189 @@
+name: Build Libraries and Binaries
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-libraries:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          # Windows AMD64
+          - os: windows-latest
+            platform: win-amd64
+            arch: x64
+          # Windows ARM64
+          - os: windows-latest
+            platform: win-arm64
+            arch: ARM64
+          # macOS AMD64
+          - os: macos-latest
+            platform: mac-amd64
+          # macOS ARM64
+          - os: macos-latest
+            platform: mac-arm64
+          # Linux AMD64
+          - os: ubuntu-latest
+            platform: linux-amd64
+          # Linux ARM64
+          - os: ubuntu-latest
+            platform: linux-arm64
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install build dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Installing build dependencies for Windows..."
+        # Visual Studio is pre-installed on windows-latest
+        Write-Host "Visual Studio environment available"
+        
+    - name: Install build dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        echo "Installing build dependencies for Linux..."
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
+        
+    - name: Install build dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        echo "Installing build dependencies for macOS..."
+        # Xcode command line tools are pre-installed on macos-latest
+        
+    - name: Build libraries and binaries
+      run: |
+        echo "Building libraries for platform: ${{ matrix.platform }}"
+        echo "Current directory: $(pwd)"
+        echo "Platform: ${{ matrix.platform }}"
+        
+        # Build libraries only
+        python build.py --lib-only
+        
+        echo "Build completed. Checking for libraries..."
+        ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
+        ls -la source/openssl-lib/${{ matrix.platform }}/ || echo "No OpenSSL libraries found"
+        ls -la source/fl-lib/${{ matrix.platform }}/ || echo "No FL libraries found"
+        ls -la source/blst-lib/${{ matrix.platform }}/ || echo "No BLST libraries found"
+        ls -la source/pcre2-lib/${{ matrix.platform }}/ || echo "No PCRE2 libraries found"
+        
+    - name: Create archives (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Creating Windows archive for ${{ matrix.platform }}..."
+        if (Test-Path "grapa.exe") {
+          Compress-Archive -Path "grapa.exe" -DestinationPath "bin/grapa-win-${{ matrix.platform }}.zip" -Force
+          Write-Host "Created bin/grapa-win-${{ matrix.platform }}.zip"
+        } else {
+          Write-Host "grapa.exe not found, skipping archive creation"
+        }
+        
+    - name: Create archives (Linux/macOS)
+      if: matrix.os != 'windows-latest'
+      run: |
+        echo "Creating archive for ${{ matrix.platform }}..."
+        if [ -f "grapa" ]; then
+          tar -czf "bin/grapa-${{ matrix.platform }}.tar.gz" grapa
+          echo "Created bin/grapa-${{ matrix.platform }}.tar.gz"
+        else
+          echo "grapa executable not found, skipping archive creation"
+        fi
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ matrix.platform }}
+        path: |
+          source/*-lib/${{ matrix.platform }}/
+          bin/
+          
+  commit-artifacts:
+    needs: build-libraries
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
+        merge-multiple: true
+        
+    - name: Setup Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+    - name: Commit artifacts back to repo
+      run: |
+        echo "Committing build artifacts to repository..."
+        
+        # Copy libraries to source directories
+        for platform_dir in artifacts/build-artifacts-*/source/*-lib/*/; do
+          if [ -d "$platform_dir" ]; then
+            platform=$(basename "$platform_dir")
+            lib_type=$(basename $(dirname "$platform_dir"))
+            echo "Copying $lib_type libraries for $platform"
+            cp -r "$platform_dir" "source/$lib_type/$platform/"
+          fi
+        done
+        
+        # Copy binaries to bin directory
+        if [ -d "artifacts/build-artifacts-*/bin" ]; then
+          echo "Copying binary archives to bin/"
+          cp -r artifacts/build-artifacts-*/bin/* bin/ 2>/dev/null || echo "No binary archives found"
+        fi
+        
+        # Add and commit
+        git add source/*-lib/ bin/
+        git commit -m "Update pre-built libraries and binaries for all platforms [automated]" || echo "No changes to commit"
+        git push origin main
+        
+    - name: Build wheels
+      run: |
+        echo "Building wheels using pre-built libraries..."
+        python setup.py bdist_wheel
+        
+        echo "Built wheels:"
+        ls -la dist/
+        
+    - name: Upload wheels
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheels
+        path: dist/*.whl
+        
+  deploy-to-pypi:
+    needs: commit-artifacts
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download wheels
+      uses: actions/download-artifact@v4
+      with:
+        name: wheels
+        path: dist/
+        
+    - name: Upload to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }} 
