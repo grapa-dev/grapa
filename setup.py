@@ -316,7 +316,7 @@ lib_grapa = Extension(
     sources = [
         'source/mainpy.cpp',
     ],
-    include_dirs=["source","source/utf8proc"] + ([get_pybind11_include()] if get_pybind11_include() else []),
+    include_dirs=["source","source/utf8proc","source/pybind11/include"],
     library_dirs=pick_library_dirs(),
     libraries=pick_libraries(),
     runtime_library_dirs=runtime_library_dirs,
