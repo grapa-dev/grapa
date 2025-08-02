@@ -12,8 +12,108 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        include:
+          # Windows AMD64
+          - os: windows-latest
+            platform: win-amd64
+            python-version: '3.8'
+          - os: windows-latest
+            platform: win-amd64
+            python-version: '3.9'
+          - os: windows-latest
+            platform: win-amd64
+            python-version: '3.10'
+          - os: windows-latest
+            platform: win-amd64
+            python-version: '3.11'
+          - os: windows-latest
+            platform: win-amd64
+            python-version: '3.12'
+          
+          # Windows ARM64
+          - os: windows-latest
+            platform: win-arm64
+            python-version: '3.8'
+          - os: windows-latest
+            platform: win-arm64
+            python-version: '3.9'
+          - os: windows-latest
+            platform: win-arm64
+            python-version: '3.10'
+          - os: windows-latest
+            platform: win-arm64
+            python-version: '3.11'
+          - os: windows-latest
+            platform: win-arm64
+            python-version: '3.12'
+          
+          # Linux AMD64
+          - os: ubuntu-latest
+            platform: linux-amd64
+            python-version: '3.8'
+          - os: ubuntu-latest
+            platform: linux-amd64
+            python-version: '3.9'
+          - os: ubuntu-latest
+            platform: linux-amd64
+            python-version: '3.10'
+          - os: ubuntu-latest
+            platform: linux-amd64
+            python-version: '3.11'
+          - os: ubuntu-latest
+            platform: linux-amd64
+            python-version: '3.12'
+          
+          # Linux ARM64
+          - os: ubuntu-latest
+            platform: linux-arm64
+            python-version: '3.8'
+          - os: ubuntu-latest
+            platform: linux-arm64
+            python-version: '3.9'
+          - os: ubuntu-latest
+            platform: linux-arm64
+            python-version: '3.10'
+          - os: ubuntu-latest
+            platform: linux-arm64
+            python-version: '3.11'
+          - os: ubuntu-latest
+            platform: linux-arm64
+            python-version: '3.12'
+          
+          # macOS AMD64
+          - os: macos-latest
+            platform: mac-amd64
+            python-version: '3.8'
+          - os: macos-latest
+            platform: mac-amd64
+            python-version: '3.9'
+          - os: macos-latest
+            platform: mac-amd64
+            python-version: '3.10'
+          - os: macos-latest
+            platform: mac-amd64
+            python-version: '3.11'
+          - os: macos-latest
+            platform: mac-amd64
+            python-version: '3.12'
+          
+          # macOS ARM64
+          - os: macos-latest
+            platform: mac-arm64
+            python-version: '3.8'
+          - os: macos-latest
+            platform: mac-arm64
+            python-version: '3.9'
+          - os: macos-latest
+            platform: mac-arm64
+            python-version: '3.10'
+          - os: macos-latest
+            platform: mac-arm64
+            python-version: '3.11'
+          - os: macos-latest
+            platform: mac-arm64
+            python-version: '3.12'
 
     steps:
     - uses: actions/checkout@v4
@@ -41,6 +141,7 @@ jobs:
       run: |
         Write-Host "Building core libraries first..."
         Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Platform: ${{ matrix.platform }}"
         Write-Host "Checking if required library directories exist..."
         Get-ChildItem source/openssl-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
         Get-ChildItem source/fl-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
@@ -65,6 +166,7 @@ jobs:
       run: |
         echo "Building core libraries first..."
         echo "Current directory: $(pwd)"
+        echo "Platform: ${{ matrix.platform }}"
         echo "Checking if required library directories exist..."
         ls -la source/openssl-lib/linux-amd64/ || echo "OpenSSL libs not found"
         ls -la source/fl-lib/linux-amd64/ || echo "FL libs not found"
@@ -88,6 +190,7 @@ jobs:
       run: |
         Write-Host "Current directory: $(Get-Location)"
         Write-Host "Python version: $(python --version)"
+        Write-Host "Platform: ${{ matrix.platform }}"
         Write-Host "Checking if libraries exist before wheel build..."
         Get-ChildItem source/grapa-lib/win-amd64/ -ErrorAction SilentlyContinue | Write-Host
         Write-Host "Building wheel..."
@@ -112,6 +215,7 @@ jobs:
       run: |
         echo "Current directory: $(pwd)"
         echo "Python version: $(python --version)"
+        echo "Platform: ${{ matrix.platform }}"
         echo "Checking if libraries exist before wheel build..."
         ls -la source/grapa-lib/linux-amd64/ || echo "No grapa libraries found"
         echo "Building wheel..."
@@ -152,7 +256,7 @@ jobs:
     - name: Upload wheels
       uses: actions/upload-artifact@v4
       with:
-        name: wheels-${{ matrix.os }}-py${{ matrix.python-version }}
+        name: wheels-${{ matrix.platform }}-py${{ matrix.python-version }}
         path: dist/*.whl
 
   upload-to-pypi:

@@ -19,10 +19,9 @@ Usage:
     python3 build.py --help             # Show help
 
 Supported Platforms (when run on that platform):
-    - windows (amd64)
+    - windows (amd64, arm64)
     - mac (arm64, amd64)
     - linux (arm64, amd64)
-    - aws (arm64, amd64)
 """
 
 import os
@@ -59,7 +58,7 @@ class BuildConfig:
             return "msbuild"
         elif self.platform == "mac":
             return "clang++"
-        else:  # linux, aws
+        else:  # linux
             return "g++"
     
     def _get_flags(self) -> List[str]:
@@ -68,7 +67,7 @@ class BuildConfig:
         
         if self.platform == "mac":
             base_flags.extend(["-m64"])
-        elif self.platform in ["linux", "aws"]:
+        elif self.platform == "linux":
             base_flags.extend(["-static-libgcc"])
             
         return base_flags
@@ -115,12 +114,8 @@ class GrapaBuilder:
             else:
                 raise RuntimeError(f"Unsupported Mac architecture: {machine}")
         elif system == "linux":
-            # Check if this is AWS Linux by looking for Amazon Linux specific files
-            if (os.path.exists("/etc/system-release") and 
-                ("Amazon Linux" in open("/etc/system-release").read())):
-                return "aws", "arm64" if machine == "aarch64" else "amd64"
-            else:
-                return "linux", "arm64" if machine == "aarch64" else "amd64"
+            # Treat all Linux as standard Linux (AWS uses standard Linux builds)
+            return "linux", "arm64" if machine == "aarch64" else "amd64"
         else:
             raise RuntimeError(f"Unsupported platform: {system}")
     
@@ -189,30 +184,21 @@ class GrapaBuilder:
             print(f"Mac build failed: {e}")
             return False
     
-    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
-        """Build for Linux/AWS using g++"""
+    def build_linux(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
+        """Build for Linux using g++"""
         print(f"Building for {config.target} using g++...")
         
         try:
             if not lib_only:
                 # Build main executable
-                if config.platform == "aws":
-                    self._run_aws_build_command(config, is_library=False)
-                else:
-                    self._run_linux_build_command(config, is_library=False)
+                self._run_linux_build_command(config, is_library=False)
             
             if not exe_only or lib_only:
                 # Build static library
-                if config.platform == "aws":
-                    self._run_aws_build_command(config, is_library=True, is_static=True)
-                else:
-                    self._run_linux_build_command(config, is_library=True, is_static=True)
+                self._run_linux_build_command(config, is_library=True, is_static=True)
                 
                 # Build shared library
-                if config.platform == "aws":
-                    self._run_aws_build_command(config, is_library=True, is_static=False)
-                else:
-                    self._run_linux_build_command(config, is_library=True, is_static=False)
+                self._run_linux_build_command(config, is_library=True, is_static=False)
                 
                 # Copy library files to top-level directory
                 self._copy_libraries_to_top_level(config)
@@ -224,7 +210,7 @@ class GrapaBuilder:
             return True
             
         except subprocess.CalledProcessError as e:
-            print(f"{config.platform.capitalize()} build failed: {e}")
+            print(f"Linux build failed: {e}")
             return False
     
     def _run_mac_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
@@ -691,9 +677,7 @@ class GrapaBuilder:
             elif config.platform == "mac":
                 success = self.build_mac(config, exe_only=True, lib_only=True)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
-            elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
+                success = self.build_linux(config, exe_only=True, lib_only=True)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -731,9 +715,7 @@ class GrapaBuilder:
             elif config.platform == "mac":
                 success = self.build_mac(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
-            elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
+                success = self.build_linux(config, exe_only=exe_only, lib_only=False)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False

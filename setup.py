@@ -46,25 +46,10 @@ if sys.platform.startswith('win32'):
     extra_link_args = ['/MANIFEST:NO']
 if sys.platform.startswith('linux'):
     from_os = 'linux-amd64'
-    temp_result = subprocess.run(["cat", "/etc/os-release"])
-    process = subprocess.Popen(['cat', '/etc/os-release'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    if stderr.decode()=='':
-        stdouts = stdout.decode()
-        if stdouts.find("Amazon Linux")>=0:
-            is_aws = True
-    if is_aws:
-        from_os = 'aws-amd64'
-        if is_arm:
-            from_os = 'aws-arm64'
-        # For Python extension, we don't need X11 GUI libraries
-        extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
-    else:
-        from_os = 'linux-amd64'
-        if is_arm:
-            from_os = 'linux-arm64'
-        # For Python extension, we don't need X11 GUI libraries
-        extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
+    if is_arm:
+        from_os = 'linux-arm64'
+    # For Python extension, we don't need X11 GUI libraries
+    extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
     so_ext = '.so'
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
@@ -275,23 +260,20 @@ class CustomBuildExt(build_ext):
 def pick_library_dirs():
     my_system = platform.system()
     if my_system == 'Linux':
-        if is_aws:
-            if is_arm:
-                return ["source", "source/grapa-lib/aws-arm64"]
-            else:
-                return ["source", "source/grapa-lib/aws-amd64"]
+        if is_arm:
+            return ["source", "source/grapa-lib/linux-arm64"]
         else:
-            if is_arm:
-                return ["source", "source/grapa-lib/linux-arm64"]
-            else:
-                return ["source", "source/grapa-lib/linux-amd64"]
+            return ["source", "source/grapa-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
             return ["source", "source/grapa-lib/mac-arm64"]
         else:
             return ["source", "source/grapa-lib/mac-amd64"]
     if my_system == 'Windows':
-        return ["source", "source/grapa-lib/win-amd64"]
+        if is_arm:
+            return ["source", "source/grapa-lib/win-arm64"]
+        else:
+            return ["source", "source/grapa-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
 
 def pick_libraries():
@@ -320,7 +302,7 @@ lib_grapa = Extension(
 
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
-if sys.platform.startswith('linux') or sys.platform.startswith('win32'):
+if sys.platform.startswith('linux') or sys.platform.startswith('win32') or sys.platform.startswith('darwin'):
     setup(
         name="grapapy",
         version=grapapy_version,
