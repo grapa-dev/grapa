@@ -27,6 +27,11 @@ jobs:
       run: |
         pip install wheel setuptools build
     
+    - name: Build core libraries
+      run: |
+        echo "Building core libraries first..."
+        python build.py --lib-only
+    
     - name: Build wheels
       run: |
         echo "Current directory: $(pwd)"
