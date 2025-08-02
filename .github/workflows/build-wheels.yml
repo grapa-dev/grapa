@@ -12,8 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest]
-        python-version: ['3.11']
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
     - uses: actions/checkout@v4
@@ -25,9 +25,14 @@ jobs:
     
     - name: Install build dependencies
       run: |
+        if [ "$RUNNER_OS" = "Linux" ]; then
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev
+        fi
         pip install wheel setuptools build
     
-    - name: Build core libraries
+    - name: Build core libraries (Windows)
+      if: matrix.os == 'windows-latest'
       shell: pwsh
       run: |
         Write-Host "Building core libraries first..."
@@ -50,7 +55,30 @@ jobs:
         Write-Host "Checking if build.py created any files in current directory..."
         Get-ChildItem *.o, *.a, *.so -ErrorAction SilentlyContinue | Write-Host
     
-    - name: Build wheels
+    - name: Build core libraries (Linux/Mac)
+      if: matrix.os != 'windows-latest'
+      run: |
+        echo "Building core libraries first..."
+        echo "Current directory: $(pwd)"
+        echo "Checking if required library directories exist..."
+        ls -la source/openssl-lib/linux-amd64/ || echo "OpenSSL libs not found"
+        ls -la source/fl-lib/linux-amd64/ || echo "FL libs not found"
+        ls -la source/blst-lib/linux-amd64/ || echo "BLST libs not found"
+        ls -la source/pcre2-lib/linux-amd64/ || echo "PCRE2 libs not found"
+        echo "Running build.py --lib-only..."
+        python build.py --lib-only
+        echo "Build.py exit code: $?"
+        if [ $? -ne 0 ]; then
+          echo "ERROR: build.py failed with exit code $?"
+          exit 1
+        fi
+        echo "Library build completed. Checking for library files..."
+        ls -la source/grapa-lib/linux-amd64/ || echo "No library files found"
+        echo "Checking if build.py created any files in current directory..."
+        ls -la *.o *.a *.so 2>/dev/null || echo "No build artifacts found in current directory"
+    
+    - name: Build wheels (Windows)
+      if: matrix.os == 'windows-latest'
       shell: pwsh
       run: |
         Write-Host "Current directory: $(Get-Location)"
@@ -72,6 +100,28 @@ jobs:
         Get-ChildItem *.egg-info/ -ErrorAction SilentlyContinue | Write-Host
         Write-Host "Listing all files in dist directory:"
         Get-ChildItem dist/ -Recurse -ErrorAction SilentlyContinue | Write-Host
+    
+    - name: Build wheels (Linux/Mac)
+      if: matrix.os != 'windows-latest'
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Python version: $(python --version)"
+        echo "Checking if libraries exist before wheel build..."
+        ls -la source/grapa-lib/linux-amd64/ || echo "No grapa libraries found"
+        echo "Building wheel..."
+        python setup.py bdist_wheel
+        echo "Setup.py exit code: $?"
+        if [ $? -ne 0 ]; then
+          echo "ERROR: setup.py failed with exit code $?"
+          exit 1
+        fi
+        echo "Wheel build completed. Checking for wheel files..."
+        ls -la dist/ || echo "No wheel files found"
+        echo "Checking if setup.py created any files..."
+        ls -la build/ 2>/dev/null || echo "No build directory found"
+        ls -la *.egg-info/ 2>/dev/null || echo "No egg-info directory found"
+        echo "Listing all files in dist directory:"
+        ls -la dist/ -R || echo "No files found"
     
     - name: Upload wheels
       uses: actions/upload-artifact@v4
