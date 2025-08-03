@@ -38,13 +38,25 @@
 - **Impact**: `pip install grapapy` now works on any Windows system without requiring Visual Studio or manual SDK configuration
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
-### Automated CI/CD Implementation - ✅ COMPLETED
-- **Status**: ✅ **COMPLETED** - Two-stage CI/CD workflow implemented and working
+### Automated CI/CD Implementation - 🔄 IN PROGRESS
+- **Status**: 🔄 **IN PROGRESS** - CI/CD workflow issues identified and being fixed
 - **Approach**: Automating the original, proven build process
 - **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
 - **Stage 2**: Build universal wheels and deploy to PyPI
-- **Current Version**: v0.0.114 (latest version, successfully deployed with utf8proc fix)
+- **Current Version**: v0.0.116 (latest version, successfully deployed)
 - **Key Insights**: Original approach used universal wheels containing all platform libraries
+- **Issues Discovered**:
+  - ❌ **CRITICAL**: `commit-artifacts` job not detecting changes from platform jobs
+  - ❌ **CRITICAL**: Platform jobs not committing their artifacts independently
+  - ❌ **CRITICAL**: Wheel jobs not receiving updated artifacts from platform jobs
+  - ❌ **CRITICAL**: Windows archive naming incorrect (`grapa-win-win-amd64.zip` instead of `grapa-win-amd64.zip`)
+  - ❌ **CRITICAL**: Linux/macOS archives only including executable, missing libraries
+- **Fixes Implemented**:
+  - ✅ **FIXED**: Removed `commit-artifacts` job entirely
+  - ✅ **FIXED**: Added individual platform artifact commits within each `build-libraries` job
+  - ✅ **FIXED**: Fixed Windows archive naming to match build.py logic
+  - ✅ **FIXED**: Enhanced Linux/macOS archive creation to include libraries (matching build.py)
+  - ✅ **FIXED**: Updated workflow to ensure wheel jobs get latest artifacts
 - **Progress**: 
   - ✅ Fixed PowerShell commands in GitHub Actions
   - ✅ Removed win-arm64 platform (not supported)
@@ -64,7 +76,9 @@
   - ✅ **FIXED**: Updated setup.py to compile utf8proc.c with C compiler and link via extra_objects
   - ✅ **FIXED**: Updated version to 0.0.114 in both setup.py and source/mainpy.cpp
   - ✅ **SUCCESS**: v0.0.114 deployed successfully to PyPI with utf8proc fix working
-- **Next**: Focus on Windows local build issue resolution
+  - ✅ **FIXED**: Updated version to 0.0.115 and 0.0.116 with automated script
+  - 🔄 **IN PROGRESS**: Testing fixed CI/CD workflow with proper artifact commits
+- **Next**: Verify all 5 platform commits are made and wheel jobs receive correct artifacts
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
@@ -180,4 +194,6 @@
 - [x] Build system enhancements completed
 - [x] Database tests passing (100%)
 - [x] Windows local build issue resolved
-- [x] Universal `pip install grapapy` working on all platforms 
+- [x] Universal `pip install grapapy` working on all platforms
+- [x] Version deployment automation script created
+- 🔄 CI/CD workflow artifact commitment issues being resolved 

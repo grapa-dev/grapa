@@ -101,22 +101,55 @@ jobs:
       shell: pwsh
       run: |
         Write-Host "Creating Windows archive for ${{ matrix.platform }}..."
+        
+        # Get files to include (matching build.py logic)
+        $filesToInclude = @()
+        
+        # Add executable if it exists
         if (Test-Path "grapa.exe") {
-          Compress-Archive -Path "grapa.exe" -DestinationPath "bin/grapa-win-${{ matrix.platform }}.zip" -Force
-          Write-Host "Created bin/grapa-win-${{ matrix.platform }}.zip"
+          $filesToInclude += "grapa.exe"
+        }
+        
+        # Add library file if it exists
+        if (Test-Path "grapa.lib") {
+          $filesToInclude += "grapa.lib"
+        }
+        
+        if ($filesToInclude.Count -gt 0) {
+          Compress-Archive -Path $filesToInclude -DestinationPath "bin/grapa-${{ matrix.platform }}.zip" -Force
+          Write-Host "Created bin/grapa-${{ matrix.platform }}.zip with files: $($filesToInclude -join ', ')"
         } else {
-          Write-Host "grapa.exe not found, skipping archive creation"
+          Write-Host "No files found to include in archive, skipping archive creation"
         }
         
     - name: Create archives (Linux/macOS)
       if: matrix.os != 'windows-latest'
       run: |
         echo "Creating archive for ${{ matrix.platform }}..."
+        
+        # Get files to include (matching build.py logic)
+        files_to_include=()
+        
+        # Add executable if it exists
         if [ -f "grapa" ]; then
-          tar -czf "bin/grapa-${{ matrix.platform }}.tar.gz" grapa
-          echo "Created bin/grapa-${{ matrix.platform }}.tar.gz"
+          files_to_include+=("grapa")
+        fi
+        
+        # Add library files
+        if [ -d "source/grapa-lib/${{ matrix.platform }}/" ]; then
+          files_to_include+=("source/grapa-lib/${{ matrix.platform }}/"*)
+        fi
+        
+        # Add other files (for Mac shared libraries)
+        if [ -d "source/grapa-other/${{ matrix.platform }}/" ]; then
+          files_to_include+=("source/grapa-other/${{ matrix.platform }}/"*)
+        fi
+        
+        if [ ${#files_to_include[@]} -gt 0 ]; then
+          tar -czf "bin/grapa-${{ matrix.platform }}.tar.gz" "${files_to_include[@]}"
+          echo "Created bin/grapa-${{ matrix.platform }}.tar.gz with files: ${files_to_include[*]}"
         else
-          echo "grapa executable not found, skipping archive creation"
+          echo "No files found to include in archive, skipping archive creation"
         fi
         
     # FIXED: Each platform commits its own artifacts
@@ -136,6 +169,10 @@ jobs:
         git add "source/fl-lib/${{ matrix.platform }}/"
         git add "source/blst-lib/${{ matrix.platform }}/"
         git add "source/pcre2-lib/${{ matrix.platform }}/"
+        
+        # Add top-level binary artifacts
+        if (Test-Path "grapa.exe") { git add "grapa.exe" }
+        if (Test-Path "grapa.lib") { git add "grapa.lib" }
         
         # Add binaries if they exist
         if (Test-Path "bin/") {
@@ -162,6 +199,16 @@ jobs:
         git add "source/blst-lib/${{ matrix.platform }}/"
         git add "source/pcre2-lib/${{ matrix.platform }}/"
         
+        # Add Mac shared library (goes to grapa-other, not grapa-lib)
+        if [ -d "source/grapa-other/${{ matrix.platform }}/" ]; then
+          git add "source/grapa-other/${{ matrix.platform }}/"
+        fi
+        
+        # Add top-level binary artifacts
+        if [ -f "grapa" ]; then git add "grapa"; fi
+        if [ -f "libgrapa.a" ]; then git add "libgrapa.a"; fi
+        if [ -f "libgrapa.so" ]; then git add "libgrapa.so"; fi
+        
         # Add binaries if they exist
         if [ -d "bin/" ]; then
           git add "bin/"
@@ -177,7 +224,10 @@ jobs:
         name: build-artifacts-${{ matrix.platform }}
         path: |
           source/*-lib/${{ matrix.platform }}/
+          source/grapa-other/${{ matrix.platform }}/
           bin/
+          grapa*
+          libgrapa.*
           
   build-wheels-linux:
     needs: build-libraries
