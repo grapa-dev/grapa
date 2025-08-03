@@ -107,6 +107,9 @@ class GrapaBuilder:
             # Parse platform like "linux-arm64", "mac-amd64", etc.
             if '-' in ci_platform:
                 platform_name, arch = ci_platform.split('-', 1)
+                # Map "win" to "windows" for compatibility
+                if platform_name == "win":
+                    platform_name = "windows"
                 return platform_name, arch
             else:
                 print(f"Warning: CI_PLATFORM={ci_platform} is not in expected format (platform-arch)")
