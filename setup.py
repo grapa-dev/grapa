@@ -240,16 +240,16 @@ class CopySharedLibrary(Command):
             self.mkpath(lib_target_path)
         self.copy_file(self.lib_source_path, os.path.join(lib_target_path, self.filename))
         if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
-            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'openssl-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'openssl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'blst-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'blst-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'fl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'pcre2-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'pcre2-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib', from_os)):
+                self.copy_file(os.path.join(self.build_dir, 'grapa-lib', from_os, file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'openssl-lib', from_os)):
+                self.copy_file(os.path.join(self.build_dir, 'openssl-lib', from_os, file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'blst-lib', from_os)):
+                self.copy_file(os.path.join(self.build_dir, 'blst-lib', from_os, file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib', from_os)):
+                self.copy_file(os.path.join(self.build_dir, 'fl-lib', from_os, file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'pcre2-lib', from_os)):
+                self.copy_file(os.path.join(self.build_dir, 'pcre2-lib', from_os, file_name), os.path.join(lib_target_path, file_name))
            # for file_name in os.listdir(os.path.join(self.build_dir, 'X11-lib/'+from_os)):
            #    self.copy_file(os.path.join(os.path.join(self.build_dir, 'X11-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
         if sys.platform.startswith('linux'):
