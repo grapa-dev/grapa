@@ -382,6 +382,11 @@ class GrapaBuilder:
             if is_static:
                 # Build static library
                 cpp_files = glob.glob("source/grapa/*.cpp")
+                
+                # Clean any existing object files first
+                for obj_file in glob.glob("*.o"):
+                    os.remove(obj_file)
+                
                 subprocess.run([
                     "g++", "-Isource", "-c"
                 ] + cpp_files + [
@@ -391,6 +396,11 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
+                
+                # Remove any existing libgrapa.a to avoid conflicts
+                if os.path.exists("libgrapa.a"):
+                    os.remove("libgrapa.a")
+                
                 subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
@@ -476,6 +486,11 @@ class GrapaBuilder:
             if is_static:
                 # Build static library
                 cpp_files = glob.glob("source/grapa/*.cpp")
+                
+                # Clean any existing object files first
+                for obj_file in glob.glob("*.o"):
+                    os.remove(obj_file)
+                
                 subprocess.run([
                     "g++", "-Isource", "-c"
                 ] + cpp_files + [
@@ -485,6 +500,11 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
+                
+                # Remove any existing libgrapa.a to avoid conflicts
+                if os.path.exists("libgrapa.a"):
+                    os.remove("libgrapa.a")
+                
                 subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
