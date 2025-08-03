@@ -162,7 +162,7 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.139`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.139, push tag
-- **Current Version:** v0.0.143 (testing Linux JPEG linking fix for all builds)
+- **Current Version:** v0.0.144 (testing FLTK JPEG library exclusion fix)
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error

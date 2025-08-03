@@ -319,9 +319,7 @@ class GrapaBuilder:
                 print("Building shared library...")
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                # Get FLTK libraries but exclude JPEG library to avoid system JPEG dependency
-                all_fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                fl_libs = [lib for lib in all_fl_libs if "jpeg" not in lib.lower()]
+                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
@@ -338,9 +336,7 @@ class GrapaBuilder:
             print("Building executable...")
             cpp_files = glob.glob("source/grapa/*.cpp")
             openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            # Get FLTK libraries but exclude JPEG library to avoid system JPEG dependency
-            all_fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-            fl_libs = [lib for lib in all_fl_libs if "jpeg" not in lib.lower()]
+            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
@@ -441,9 +437,7 @@ class GrapaBuilder:
                 # Build shared library
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                # Get FLTK libraries but exclude JPEG library to avoid system JPEG dependency
-                all_fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                fl_libs = [lib for lib in all_fl_libs if "jpeg" not in lib.lower()]
+                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
@@ -457,10 +451,8 @@ class GrapaBuilder:
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
                 ] + system_libs + [
-                    "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                    "-O3", "-pthread", "-fPIC", "-ljpeg", "-o", "libgrapa.so"
                 ] + cross_flags
-                
-                # Note: -ljpeg removed for all Linux builds as CI environment lacks JPEG dev library
                 
                 subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
@@ -469,9 +461,7 @@ class GrapaBuilder:
             # Build executable - match AWS pattern exactly
             cpp_files = glob.glob("source/grapa/*.cpp")
             openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            # Get FLTK libraries but exclude JPEG library to avoid system JPEG dependency
-            all_fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-            fl_libs = [lib for lib in all_fl_libs if "jpeg" not in lib.lower()]
+            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
@@ -487,10 +477,8 @@ class GrapaBuilder:
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                 f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
             ] + system_libs + [
-                "-O3", "-pthread", "-o", config.output_name
+                "-O3", "-pthread", "-ljpeg", "-o", config.output_name
             ] + cross_flags
-            
-            # Note: -ljpeg removed for all Linux builds as CI environment lacks JPEG dev library
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
