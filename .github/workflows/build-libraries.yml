@@ -389,6 +389,20 @@ jobs:
         path: dists/
         merge-multiple: true
         
+    - name: Clean and organize distributions
+      run: |
+        echo "Cleaning distribution artifacts..."
+        
+        # Remove any non-distribution files/directories
+        find dists/ -name "bin" -type d -exec rm -rf {} + 2>/dev/null || true
+        find dists/ -name "source" -type d -exec rm -rf {} + 2>/dev/null || true
+        find dists/ -name "grapa*" -type f -not -name "*.whl" -not -name "*.tar.gz" -not -name "*.zip" -delete 2>/dev/null || true
+        find dists/ -name "libgrapa*" -type f -delete 2>/dev/null || true
+        
+        # Keep only actual distribution files
+        echo "Distribution files to upload:"
+        find dists/ -name "*.whl" -o -name "*.tar.gz" -o -name "*.zip" | sort
+        
     - name: Upload combined distributions artifact
       uses: actions/upload-artifact@v4
       with:
