@@ -162,20 +162,35 @@ jobs:
       run: |
         echo "Committing build artifacts to repository..."
         
+        # Debug: Show what's in artifacts directory
+        echo "Artifacts directory contents:"
+        find artifacts/ -type d 2>/dev/null | head -20 || echo "No artifacts directory found"
+        echo "All artifacts files:"
+        find artifacts/ -type f 2>/dev/null | head -20 || echo "No artifacts files found"
+        echo "Artifacts directory structure:"
+        ls -la artifacts/ 2>/dev/null || echo "No artifacts directory found"
+        
         # Copy libraries to source directories
-        for platform_dir in artifacts/build-artifacts-*/source/*-lib/*/; do
-          if [ -d "$platform_dir" ]; then
-            platform=$(basename "$platform_dir")
-            lib_type=$(basename $(dirname "$platform_dir"))
-            echo "Copying $lib_type libraries for $platform"
-            cp -r "$platform_dir" "source/$lib_type/$platform/"
+        # The artifacts are uploaded as source/*-lib/$platform/ and downloaded to artifacts/
+        for lib_dir in artifacts/*-lib/; do
+          if [ -d "$lib_dir" ]; then
+            lib_type=$(basename "$lib_dir" -lib)
+            echo "Processing $lib_type libraries..."
+            for platform_dir in "$lib_dir"*/; do
+              if [ -d "$platform_dir" ]; then
+                platform=$(basename "$platform_dir")
+                echo "Copying $lib_type libraries for $platform"
+                mkdir -p "source/$lib_type-lib/$platform/"
+                cp -r "$platform_dir"* "source/$lib_type-lib/$platform/"
+              fi
+            done
           fi
         done
         
         # Copy binaries to bin directory
-        if [ -d "artifacts/build-artifacts-*/bin" ]; then
+        if [ -d "artifacts/bin" ]; then
           echo "Copying binary archives to bin/"
-          cp -r artifacts/build-artifacts-*/bin/* bin/ 2>/dev/null || echo "No binary archives found"
+          cp -r artifacts/bin/* bin/ 2>/dev/null || echo "No binary archives found"
         fi
         
         # Add and commit
@@ -276,26 +291,26 @@ jobs:
         name: dists-macos
         path: dist-macos/
         
-    - name: Combine wheels into single dist
+    - name: Combine distributions into single dist
       run: |
-        echo "Combining wheels from both build systems..."
+        echo "Combining distributions from both build systems..."
         mkdir -p dist/
         
-        # Copy Linux/Windows wheel
+        # Copy Linux/Windows distributions (wheels and source)
         if [ -d "dist-linux" ]; then
-          cp dist-linux/*.whl dist/
-          echo "Copied Linux/Windows wheel:"
+          cp dist-linux/* dist/
+          echo "Copied Linux/Windows distributions:"
           ls -la dist-linux/
         fi
         
-        # Copy macOS wheel
+        # Copy macOS distributions (wheels and source)
         if [ -d "dist-macos" ]; then
-          cp dist-macos/*.whl dist/
-          echo "Copied macOS wheel:"
+          cp dist-macos/* dist/
+          echo "Copied macOS distributions:"
           ls -la dist-macos/
         fi
         
-        echo "Combined wheels in dist/:"
+        echo "Combined distributions in dist/:"
         ls -la dist/
         
     - name: Upload to PyPI
