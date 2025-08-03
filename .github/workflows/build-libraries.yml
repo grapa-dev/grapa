@@ -183,26 +183,6 @@ jobs:
         git commit -m "Update pre-built libraries and binaries for all platforms [automated]" || echo "No changes to commit"
         git push origin main
         
-    - name: Build wheels
-      run: |
-        echo "Building wheels using pre-built libraries..."
-        
-        # Clean previous builds to ensure fresh wheels
-        rm -rf dist/ build/ *.egg-info/
-        
-        # Build wheels using original simple approach
-        echo "Building wheels using original approach..."
-        python setup.py bdist_wheel
-        
-        echo "Built wheels:"
-        ls -la dist/
-        
-    - name: Upload wheels
-      uses: actions/upload-artifact@v4
-      with:
-        name: wheels
-        path: dist/*.whl
-        
   deploy-to-pypi:
     needs: commit-artifacts
     runs-on: windows-latest
