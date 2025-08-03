@@ -185,7 +185,7 @@ jobs:
         
   build-wheels:
     needs: commit-artifacts
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     
     steps:
@@ -194,28 +194,22 @@ jobs:
     - name: Install build dependencies for wheel building
       run: |
         echo "Installing build dependencies for wheel building..."
-        # Check what's available
-        python -c "import sys; print('Python version:', sys.version)"
-        python -c "import distutils; print('distutils available')" || echo "distutils not available"
-        python -c "import setuptools; print('setuptools available')" || echo "setuptools not available"
-        
-        # Try to install setuptools
+        # Install Python dependencies
         python -m pip install --upgrade pip setuptools wheel build
-        python -c "import setuptools; print('setuptools version:', setuptools.__version__)"
         
-    - name: Build wheels on Windows
+    - name: Build wheels on Linux
       run: |
         echo "Building wheels using pre-built libraries..."
         
         # Clean previous builds to ensure fresh wheels
-        Remove-Item -Recurse -Force dist, build, *.egg-info -ErrorAction SilentlyContinue
+        rm -rf dist/ build/ *.egg-info/
         
         # Build universal wheel with all platform libraries
         echo "Building universal wheel with all platform libraries..."
         python setup.py bdist_wheel
         
         echo "Built wheels:"
-        Get-ChildItem dist/
+        ls -la dist/
         
     - name: Upload wheels artifact
       uses: actions/upload-artifact@v4
