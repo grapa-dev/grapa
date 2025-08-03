@@ -43,7 +43,7 @@
 - **Approach**: Automating the original, proven build process
 - **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
 - **Stage 2**: Build universal wheels and deploy to PyPI
-- **Current Version**: v0.0.135 (latest version, successfully deployed)
+- **Current Version**: v0.0.138 (latest version, testing Linux ARM64 fix)
 - **Key Insights**: Original approach used universal wheels containing all platform libraries
 - **Issues Discovered**:
   - ❌ **CRITICAL**: `commit-artifacts` job not detecting changes from platform jobs
@@ -53,6 +53,8 @@
   - ❌ **CRITICAL**: Linux/macOS archives only including executable, missing libraries
   - ❌ **CRITICAL**: Git race conditions when multiple platform jobs try to commit simultaneously
   - ❌ **CRITICAL**: Linux ARM64 build failing due to architecture mismatch (AMD64 runner trying to link ARM64 libraries)
+  - ❌ **CRITICAL**: Linux ARM64 build failing with `gcc: error: unrecognized command-line option '-target'` (GCC doesn't support -target flag)
+  - ❌ **CRITICAL**: Linux ARM64 build failing with `cannot access local variable 'gpp_cmd' where it is not associated with a value` (Python scoping issue)
 - **Fixes Implemented**:
   - ✅ **FIXED**: Removed `commit-artifacts` job entirely
   - ✅ **FIXED**: Fixed Windows archive naming to match build.py logic
@@ -60,8 +62,10 @@
   - ✅ **FIXED**: Replaced individual platform commits with artifact uploads to avoid Git conflicts
   - ✅ **FIXED**: Added single `commit-all-artifacts` job that downloads and commits all artifacts
   - ✅ **FIXED**: Updated workflow to ensure wheel jobs get latest artifacts
-  - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 (using `-target aarch64-linux-gnu`)
-  - ✅ **FIXED**: Added ARM64 cross-compilation toolchain installation in workflow
+  - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner (using `-target x86_64-apple-macos10.9`)
+  - ✅ **FIXED**: Added ARM64 cross-compilation toolchain installation in workflow (`gcc-aarch64-linux-gnu`, `g++-aarch64-linux-gnu`, `binutils-aarch64-linux-gnu`)
+  - ✅ **FIXED**: Implemented proper GCC cross-compilation for Linux ARM64 using cross-compiler prefixes (`aarch64-linux-gnu-`)
+  - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` by moving variable definition outside conditional blocks
 - **Progress**: 
   - ✅ Fixed PowerShell commands in GitHub Actions
   - ✅ Removed win-arm64 platform (not supported)
@@ -85,7 +89,14 @@
   - 🔄 **IN PROGRESS**: Testing fixed CI/CD workflow with proper artifact commits
   - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner
   - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 from AMD64 runner
-- **Next**: Test Linux ARM64 cross-compilation with version bump
+  - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` (v0.0.138)
+- **Current Status**: 
+  - ✅ **Windows AMD64**: Building successfully
+  - ✅ **macOS ARM64**: Building successfully  
+  - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
+  - 🔄 **Linux AMD64**: Should build successfully
+  - 🔄 **Linux ARM64**: Testing fix for `gpp_cmd` scoping issue (v0.0.138)
+- **Next**: Monitor v0.0.138 CI/CD run to verify Linux ARM64 build success
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
@@ -148,8 +159,9 @@
 
 ### Version and Deployment Commands
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
-- **Example:** `python scripts/bump_version_and_deploy.py 0.0.116`
-- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.116, push tag
+- **Example:** `python scripts/bump_version_and_deploy.py 0.0.139`
+- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.139, push tag
+- **Current Version:** v0.0.138 (testing Linux ARM64 build fix)
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error
@@ -203,4 +215,8 @@
 - [x] Windows local build issue resolved
 - [x] Universal `pip install grapapy` working on all platforms
 - [x] Version deployment automation script created
+- [x] Windows AMD64 builds working successfully
+- [x] macOS ARM64 builds working successfully
+- [x] macOS AMD64 cross-compilation working successfully
+- 🔄 Linux ARM64 build scoping issue being resolved (v0.0.138)
 - 🔄 CI/CD workflow artifact commitment issues being resolved 

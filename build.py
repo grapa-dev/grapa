@@ -445,7 +445,7 @@ class GrapaBuilder:
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto",
                     "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                     "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc",
-                    "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                    "-O3", "-pthread", "-fPIC", "-ljpeg", "-o", "libgrapa.so"
                 ] + cross_flags
                 
                 subprocess.run(cmd, check=True)
@@ -465,7 +465,7 @@ class GrapaBuilder:
                 f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
                 "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
                 "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
-                "-O3", "-pthread", "-o", config.output_name
+                "-O3", "-pthread", "-ljpeg", "-o", config.output_name
             ] + cross_flags
             
             print(f"Current working directory: {os.getcwd()}")
