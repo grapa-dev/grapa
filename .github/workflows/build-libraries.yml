@@ -215,25 +215,60 @@ jobs:
         # Install Python dependencies
         python -m pip install --upgrade pip setuptools wheel build
         
-    - name: Build Linux/Windows wheel
+    - name: Build Linux wheel
       run: |
-        echo "Building Linux/Windows wheel using Extension approach..."
+        echo "Building Linux wheel using Extension approach..."
         
         # Clean previous builds to ensure fresh wheels
         rm -rf dist/ build/ *.egg-info/
         
-        # Build wheel and source distribution for Linux/Windows (Extension approach)
-        echo "Building wheel and source distribution for Linux/Windows..."
+        # Build wheel and source distribution for Linux (Extension approach)
+        echo "Building wheel and source distribution for Linux..."
         python setup.py bdist_wheel --plat-name manylinux2014_x86_64
         python setup.py sdist
         
         echo "Built distributions:"
         ls -la dist/
         
-    - name: Upload Linux/Windows distributions artifact
+    - name: Upload Linux distributions artifact
       uses: actions/upload-artifact@v4
       with:
         name: dists-linux
+        path: dist/
+
+  build-wheels-windows:
+    needs: commit-artifacts
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        # Install Python dependencies
+        python -m pip install --upgrade pip setuptools wheel build
+        
+    - name: Build Windows wheel
+      run: |
+        echo "Building Windows wheel using Extension approach..."
+        
+        # Clean previous builds to ensure fresh wheels
+        Remove-Item -Recurse -Force dist, build, *.egg-info -ErrorAction SilentlyContinue
+        
+        # Build wheel and source distribution for Windows (Extension approach)
+        echo "Building wheel and source distribution for Windows..."
+        python setup.py bdist_wheel --plat-name win_amd64
+        python setup.py sdist
+        
+        echo "Built distributions:"
+        Get-ChildItem dist/
+        
+    - name: Upload Windows distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dists-windows
         path: dist/
 
   build-wheels-macos:
@@ -272,18 +307,24 @@ jobs:
         path: dist/
         
   deploy-to-pypi:
-    needs: [build-wheels-linux, build-wheels-macos]
+    needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Download Linux/Windows distributions
+    - name: Download Linux distributions
       uses: actions/download-artifact@v4
       with:
         name: dists-linux
         path: dist-linux/
+        
+    - name: Download Windows distributions
+      uses: actions/download-artifact@v4
+      with:
+        name: dists-windows
+        path: dist-windows/
         
     - name: Download macOS distributions
       uses: actions/download-artifact@v4
@@ -293,14 +334,21 @@ jobs:
         
     - name: Combine distributions into single dist
       run: |
-        echo "Combining distributions from both build systems..."
+        echo "Combining distributions from all build systems..."
         mkdir -p dist/
         
-        # Copy Linux/Windows distributions (wheels and source)
+        # Copy Linux distributions (wheels and source)
         if [ -d "dist-linux" ]; then
           cp dist-linux/* dist/
-          echo "Copied Linux/Windows distributions:"
+          echo "Copied Linux distributions:"
           ls -la dist-linux/
+        fi
+        
+        # Copy Windows distributions (wheels and source)
+        if [ -d "dist-windows" ]; then
+          cp dist-windows/* dist/
+          echo "Copied Windows distributions:"
+          ls -la dist-windows/
         fi
         
         # Copy macOS distributions (wheels and source)
