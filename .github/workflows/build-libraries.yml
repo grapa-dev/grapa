@@ -207,18 +207,19 @@ jobs:
         # Clean previous builds to ensure fresh wheels
         rm -rf dist/ build/ *.egg-info/
         
-        # Build wheel for Linux/Windows (Extension approach)
-        echo "Building wheel for Linux/Windows..."
+        # Build wheel and source distribution for Linux/Windows (Extension approach)
+        echo "Building wheel and source distribution for Linux/Windows..."
         python setup.py bdist_wheel --plat-name manylinux2014_x86_64
+        python setup.py sdist
         
-        echo "Built wheels:"
+        echo "Built distributions:"
         ls -la dist/
         
-    - name: Upload Linux/Windows wheel artifact
+    - name: Upload Linux/Windows distributions artifact
       uses: actions/upload-artifact@v4
       with:
-        name: wheels-linux
-        path: dist/*.whl
+        name: dists-linux
+        path: dist/
 
   build-wheels-macos:
     needs: commit-artifacts
@@ -241,18 +242,19 @@ jobs:
         # Clean previous builds to ensure fresh wheels
         rm -rf dist/ build/ *.egg-info/
         
-        # Build wheel for macOS (CMakeExtension approach)
-        echo "Building wheel for macOS..."
+        # Build wheel and source distribution for macOS (CMakeExtension approach)
+        echo "Building wheel and source distribution for macOS..."
         python setup.py bdist_wheel
+        python setup.py sdist
         
-        echo "Built wheels:"
+        echo "Built distributions:"
         ls -la dist/
         
-    - name: Upload macOS wheel artifact
+    - name: Upload macOS distributions artifact
       uses: actions/upload-artifact@v4
       with:
-        name: wheels-macos
-        path: dist/*.whl
+        name: dists-macos
+        path: dist/
         
   deploy-to-pypi:
     needs: [build-wheels-linux, build-wheels-macos]
@@ -262,16 +264,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Download Linux/Windows wheels
+    - name: Download Linux/Windows distributions
       uses: actions/download-artifact@v4
       with:
-        name: wheels-linux
+        name: dists-linux
         path: dist-linux/
         
-    - name: Download macOS wheels
+    - name: Download macOS distributions
       uses: actions/download-artifact@v4
       with:
-        name: wheels-macos
+        name: dists-macos
         path: dist-macos/
         
     - name: Combine wheels into single dist
