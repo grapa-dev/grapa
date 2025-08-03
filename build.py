@@ -388,6 +388,8 @@ class GrapaBuilder:
                 subprocess.run(["aarch64-linux-gnu-gcc", "--version"], check=True, capture_output=True)
                 cross_compiler_prefix = "aarch64-linux-gnu-"
                 print("Using cross-compilation toolchain")
+                # Add ARM64 library paths for cross-compilation
+                cross_flags = ["-L/usr/lib/aarch64-linux-gnu", "-L/usr/lib/x86_64-linux-gnu"]
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("Cross-compilation toolchain not available, using native compiler with ARM flags")
                 cross_flags = ["-march=armv8-a", "-mtune=cortex-a72"]
@@ -441,12 +443,13 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                # For ARM64 cross-compilation, exclude X11 dependencies (server environment)
-                if is_cross_compile:
-                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                else:
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                            # For ARM64 cross-compilation, use ARM64 X11 libraries
+            if is_cross_compile:
+                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+            else:
+                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
@@ -454,9 +457,8 @@ class GrapaBuilder:
                     "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                 ] + cross_flags
                 
-                # Add -ljpeg only for native builds (not cross-compilation)
-                if not is_cross_compile:
-                    cmd.insert(-2, "-ljpeg")
+                # Add -ljpeg for both native and cross-compilation builds
+                cmd.insert(-2, "-ljpeg")
                 
                 subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
@@ -469,9 +471,10 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            # For ARM64 cross-compilation, exclude X11 dependencies (server environment)
+            # For ARM64 cross-compilation, use ARM64 X11 libraries
             if is_cross_compile:
-                system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
             else:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
@@ -484,9 +487,8 @@ class GrapaBuilder:
                 "-O3", "-pthread", "-o", config.output_name
             ] + cross_flags
             
-            # Add -ljpeg only for native builds (not cross-compilation)
-            if not is_cross_compile:
-                cmd.insert(-2, "-ljpeg")
+            # Add -ljpeg for both native and cross-compilation builds
+            cmd.insert(-2, "-ljpeg")
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")

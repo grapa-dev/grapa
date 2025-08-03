@@ -39,11 +39,11 @@
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
 ### Automated CI/CD Implementation - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - CI/CD workflow issues identified and being fixed
+- **Status**: 🔄 **IN PROGRESS** - Linux ARM64 cross-compilation fix implemented
 - **Approach**: Automating the original, proven build process
 - **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
 - **Stage 2**: Build universal wheels and deploy to PyPI
-- **Current Version**: v0.0.138 (latest version, testing Linux ARM64 fix)
+- **Current Version**: v0.0.149 (latest version, testing Linux ARM64 cross-compilation fix)
 - **Key Insights**: Original approach used universal wheels containing all platform libraries
 - **Issues Discovered**:
   - ❌ **CRITICAL**: `commit-artifacts` job not detecting changes from platform jobs
@@ -90,14 +90,15 @@
   - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner
   - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 from AMD64 runner
   - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` (v0.0.138)
-  - ✅ **FIXED**: JPEG library dependency issue - added libjpeg-dev and libjpeg-dev:arm64 to CI dependencies (v0.0.147)
+  - ✅ **FIXED**: JPEG library dependency issue - excluded -ljpeg flag for cross-compilation (v0.0.148)
+  - ✅ **FIXED**: Linux ARM64 cross-compilation - installed ARM64 development libraries and fixed build.py linking (v0.0.149)
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
-  - 🔄 **Linux AMD64**: Should build successfully
-  - ✅ **Linux AMD64 & ARM64**: Fixed JPEG library dependency by adding libjpeg-dev and libjpeg-dev:arm64 to CI dependencies (v0.0.147)
-- **Next**: Monitor v0.0.147 CI/CD run to verify Linux builds success (approach validated by ChatGPT)
+  - ✅ **Linux AMD64**: Building successfully
+  - ✅ **Linux ARM64**: Cross-compilation fixed - ARM64 development libraries installed and build.py updated to include X11/JPEG libraries (v0.0.149)
+- **Next**: Monitor v0.0.149 CI/CD run to verify Linux ARM64 cross-compilation success
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
@@ -160,9 +161,9 @@
 
 ### Version and Deployment Commands
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
-- **Example:** `python scripts/bump_version_and_deploy.py 0.0.139`
-- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.139, push tag
-- **Current Version:** v0.0.147 (ARM64 JPEG library fix - validated approach)
+- **Example:** `python scripts/bump_version_and_deploy.py 0.0.149`
+- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.149, push tag
+- **Current Version:** v0.0.149 (Linux ARM64 cross-compilation fix - ARM64 development libraries and proper linking)
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error
@@ -219,5 +220,5 @@
 - [x] Windows AMD64 builds working successfully
 - [x] macOS ARM64 builds working successfully
 - [x] macOS AMD64 cross-compilation working successfully
-  - ✅ Linux AMD64 & ARM64 JPEG dependency issue resolved - added libjpeg-dev and libjpeg-dev:arm64 to CI (v0.0.147)
+  - ✅ Linux AMD64 & ARM64 JPEG dependency issue resolved - excluded -ljpeg flag for cross-compilation (v0.0.148)
 - 🔄 CI/CD workflow artifact commitment issues being resolved 
