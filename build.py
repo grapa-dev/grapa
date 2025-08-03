@@ -454,9 +454,7 @@ class GrapaBuilder:
                     "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                 ] + cross_flags
                 
-                # Add -ljpeg only for native builds (not cross-compilation)
-                if not is_cross_compile:
-                    cmd.insert(-2, "-ljpeg")
+                # Note: -ljpeg removed for all Linux builds as CI environment lacks JPEG dev library
                 
                 subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
@@ -484,9 +482,7 @@ class GrapaBuilder:
                 "-O3", "-pthread", "-o", config.output_name
             ] + cross_flags
             
-            # Add -ljpeg only for native builds (not cross-compilation)
-            if not is_cross_compile:
-                cmd.insert(-2, "-ljpeg")
+            # Note: -ljpeg removed for all Linux builds as CI environment lacks JPEG dev library
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
