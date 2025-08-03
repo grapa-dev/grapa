@@ -6,9 +6,24 @@ Grapa provides seamless Python integration through the GrapaPy extension, allowi
 
 Install GrapaPy from PyPI:
 
+### Platform Support
+
+GrapaPy supports the following platforms:
+- **Windows**: AMD64 (x86_64) - Requires Visual Studio Build Tools or Visual Studio
+- **macOS**: AMD64 (x86_64) and ARM64 (Apple Silicon) - Requires Xcode Command Line Tools  
+- **Linux**: AMD64 (x86_64) and ARM64 - Requires GCC and development libraries
+
+### Installation Commands
+
 ```bash
-pip install grapapy==0.0.49
+# Windows
+pip install grapapy
+
+# macOS/Linux
+pip3 install grapapy
 ```
+
+**Note**: The installation process compiles a C++ extension, so you'll need the appropriate development tools for your platform. On Windows, this typically means having Visual Studio Build Tools installed.
 
 ## Basic Usage
 

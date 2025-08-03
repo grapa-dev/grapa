@@ -42,8 +42,92 @@ if sys.platform.startswith('win32'):
     so_ext = '.lib'
     lib_filename = 'grapa' + so_ext
     lib_pathfile = 'grapa-lib/win-amd64/' + lib_filename
-    extra_compile_args = ['/DUTF8PROC_STATIC', '/DPCRE2_STATIC']
+    extra_compile_args = ['/DUTF8PROC_STATIC', '/DPCRE2_STATIC', '/D_CRT_SECURE_NO_WARNINGS', '/D_LIB']
     extra_link_args = ['/MANIFEST:NO']
+    # Add Windows SDK include path to fix io.h dependency issue
+    import os
+    import glob
+    windows_sdk_path = None
+    
+    # Try multiple methods to find Windows SDK
+    sdk_paths = []
+    
+    # Method 1: Check common Windows SDK locations
+    program_files_paths = [
+        os.environ.get('ProgramFiles(x86)', 'C:\\Program Files (x86)'),
+        os.environ.get('ProgramFiles', 'C:\\Program Files')
+    ]
+    
+    for program_files in program_files_paths:
+        if os.path.exists(program_files):
+            sdk_base = os.path.join(program_files, 'Windows Kits', '10')
+            if os.path.exists(sdk_base):
+                # Look for Include directories
+                include_dir = os.path.join(sdk_base, 'Include')
+                if os.path.exists(include_dir):
+                    # Find the highest version number
+                    try:
+                        versions = [d for d in os.listdir(include_dir) 
+                                  if os.path.isdir(os.path.join(include_dir, d)) and d.replace('.', '').isdigit()]
+                        if versions:
+                            # Sort by version number (highest first)
+                            versions.sort(key=lambda x: [int(i) for i in x.split('.')], reverse=True)
+                            sdk_paths.append(os.path.join(include_dir, versions[0]))
+                    except (OSError, ValueError):
+                        pass
+    
+    # Method 2: Use Windows SDK registry or environment variables
+    try:
+        import winreg
+        # Try to get SDK path from registry
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, 
+                           r"SOFTWARE\Microsoft\Windows Kits\Installed Roots") as key:
+            sdk_root = winreg.QueryValueEx(key, "KitsRoot10")[0]
+            if os.path.exists(sdk_root):
+                include_dir = os.path.join(sdk_root, 'Include')
+                if os.path.exists(include_dir):
+                    # Find the highest version
+                    try:
+                        versions = [d for d in os.listdir(include_dir) 
+                                  if os.path.isdir(os.path.join(include_dir, d)) and d.replace('.', '').isdigit()]
+                        if versions:
+                            versions.sort(key=lambda x: [int(i) for i in x.split('.')], reverse=True)
+                            sdk_paths.append(os.path.join(include_dir, versions[0]))
+                    except (OSError, ValueError):
+                        pass
+    except (ImportError, OSError, FileNotFoundError):
+        pass
+    
+    # Method 3: Use Visual Studio's vcvars to get SDK path
+    try:
+        import subprocess
+        # Try to get SDK path from Visual Studio environment
+        result = subprocess.run(['where', 'cl'], capture_output=True, text=True, shell=True)
+        if result.returncode == 0:
+            # Extract SDK path from cl.exe location
+            cl_path = result.stdout.strip().split('\n')[0]
+            if 'Microsoft Visual Studio' in cl_path:
+                # Navigate up to find SDK
+                vs_path = os.path.dirname(os.path.dirname(os.path.dirname(cl_path)))
+                sdk_base = os.path.join(vs_path, '..', '..', '..', 'Windows Kits', '10', 'Include')
+                if os.path.exists(sdk_base):
+                    try:
+                        versions = [d for d in os.listdir(sdk_base) 
+                                  if os.path.isdir(os.path.join(sdk_base, d)) and d.replace('.', '').isdigit()]
+                        if versions:
+                            versions.sort(key=lambda x: [int(i) for i in x.split('.')], reverse=True)
+                            sdk_paths.append(os.path.join(sdk_base, versions[0]))
+                    except (OSError, ValueError):
+                        pass
+    except (subprocess.SubprocessError, OSError):
+        pass
+    
+    # Use the first found SDK path
+    if sdk_paths:
+        windows_sdk_path = sdk_paths[0]
+        print(f"Found Windows SDK at: {windows_sdk_path}")
+    else:
+        print("Warning: Windows SDK not found, build may fail")
 if sys.platform.startswith('linux'):
     from_os = 'linux-amd64'
     temp_result = subprocess.run(["cat", "/etc/os-release"])
@@ -364,7 +448,17 @@ def pick_library_dirs():
         else:
             return ["source", "source/grapa-lib/mac-amd64", "source/blst-lib/mac-amd64", "source/fl-lib/mac-amd64", "source/openssl-lib/mac-amd64", "source/pcre2-lib/mac-amd64"]
     if my_system == 'Windows':
-        return ["source", "source/grapa-lib/win-amd64"]
+        # Add Windows SDK library path if available
+        library_dirs = ["source", "source/grapa-lib/win-amd64"]
+        if 'windows_sdk_path' in locals() and windows_sdk_path:
+            # Add Windows SDK library path for system libraries like Gdi32.lib
+            # Convert Include path to Lib path
+            lib_path = windows_sdk_path.replace('Include', 'Lib')
+            library_dirs.extend([
+                f"{lib_path}\\um\\x64",
+                f"{lib_path}\\ucrt\\x64"
+            ])
+        return library_dirs
     raise ValueError("Unknown platform: " + my_system)
 
 def pick_libraries():
@@ -378,12 +472,25 @@ def pick_libraries():
         return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
     raise ValueError("Unknown platform: " + my_system)
 
+# Prepare include directories
+include_dirs = ["source","source/utf8proc","source/pybind11/include"]
+
+# Add Windows SDK include path if on Windows
+if sys.platform.startswith('win32') and 'windows_sdk_path' in locals() and windows_sdk_path:
+    include_dirs.extend([windows_sdk_path, f"{windows_sdk_path}\\ucrt", f"{windows_sdk_path}\\um", f"{windows_sdk_path}\\shared"])
+    # Also set environment variables for the compiler
+    import os
+    os.environ['INCLUDE'] = os.environ.get('INCLUDE', '') + f";{windows_sdk_path}\\um;{windows_sdk_path}\\ucrt;{windows_sdk_path}\\shared"
+    # Fix the LIB path to use the correct Windows SDK Lib directory
+    lib_path = windows_sdk_path.replace('Include', 'Lib')
+    os.environ['LIB'] = os.environ.get('LIB', '') + f";{lib_path}\\um\\x64;{lib_path}\\ucrt\\x64"
+
 lib_grapa = Extension(
     'grapapy', 
     sources = [
         'source/mainpy.cpp',
     ],
-    include_dirs=["source","source/utf8proc","source/pybind11/include"],
+    include_dirs=include_dirs,
     library_dirs=pick_library_dirs(),
     libraries=pick_libraries(),
     runtime_library_dirs=runtime_library_dirs,
@@ -399,11 +506,28 @@ if sys.platform.startswith('linux') or sys.platform.startswith('win32') or sys.p
         version=grapapy_version,
         author="Chris Matichuk",
         author_email="matichuk@hotmail.com",
-        description="GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa's C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python's GIL and making advanced data processing simple and fast.",
+        description="GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa's C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python's GIL and making advanced data processing simple and fast. **Platform Support**: Windows (AMD64), macOS (AMD64/ARM64), Linux (AMD64/ARM64).",
         long_description="""
 GrapaPy is a Python extension for the Grapa language, designed for advanced data processing, ETL, and language experimentation. GrapaPy brings robust, production-ready parallel ETL/data processing to Python. By leveraging Grapa's C++ backend, GrapaPy enables true parallelism for high-throughput data workflows—bypassing Python's GIL and making advanced data processing simple and fast.
 
-Features:
+## Platform Support
+
+GrapaPy supports the following platforms:
+- **Windows**: AMD64 (x86_64) - Requires Visual Studio Build Tools or Visual Studio
+- **macOS**: AMD64 (x86_64) and ARM64 (Apple Silicon) - Requires Xcode Command Line Tools
+- **Linux**: AMD64 (x86_64) and ARM64 - Requires GCC and development libraries
+
+## Installation
+
+```bash
+# Windows
+pip install grapapy
+
+# macOS/Linux
+pip3 install grapapy
+```
+
+## Features
 - True parallel ETL/data processing from Python
 - Hardened, production-ready parallelism
 - High performance for large file processing, data transformation, analytics, and more
