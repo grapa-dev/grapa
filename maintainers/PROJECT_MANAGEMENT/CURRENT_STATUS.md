@@ -90,14 +90,14 @@
   - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner
   - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 from AMD64 runner
   - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` (v0.0.138)
-  - ✅ **FIXED**: Fixed JPEG library linking issue for all Linux builds (v0.0.143)
+  - 🔄 **IN PROGRESS**: JPEG library dependency issue - FLTK requires system JPEG library (v0.0.145)
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - 🔄 **Linux AMD64**: Should build successfully
-  - ✅ **Linux AMD64 & ARM64**: Fixed JPEG library linking issue for all Linux builds (v0.0.143)
-- **Next**: Monitor v0.0.143 CI/CD run to verify Linux builds success
+  - 🔄 **Linux AMD64 & ARM64**: JPEG library dependency issue - need to install libjpeg-dev in CI (v0.0.145)
+- **Next**: Install libjpeg-dev in CI environment or build FLTK with static JPEG
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
@@ -162,7 +162,7 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.139`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.139, push tag
-- **Current Version:** v0.0.144 (testing FLTK JPEG library exclusion fix)
+- **Current Version:** v0.0.145 (testing JPEG library dependency fix)
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error
@@ -219,5 +219,5 @@
 - [x] Windows AMD64 builds working successfully
 - [x] macOS ARM64 builds working successfully
 - [x] macOS AMD64 cross-compilation working successfully
-  - ✅ Linux AMD64 & ARM64 JPEG linking issue resolved (v0.0.143)
+  - 🔄 Linux AMD64 & ARM64 JPEG dependency issue - need libjpeg-dev in CI (v0.0.145)
 - 🔄 CI/CD workflow artifact commitment issues being resolved 
