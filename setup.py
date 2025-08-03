@@ -219,20 +219,47 @@ class CopySharedLibrary(Command):
         else:
             lib_target_path = os.path.join(self.build_lib, "grapapy-"+grapapy_version)
             self.mkpath(lib_target_path)
-        self.copy_file(self.lib_source_path, os.path.join(lib_target_path, self.filename))
-        if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
-            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'openssl-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'openssl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'blst-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'blst-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'fl-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-            for file_name in os.listdir(os.path.join(self.build_dir, 'pcre2-lib/'+from_os)):
-                self.copy_file(os.path.join(os.path.join(self.build_dir, 'pcre2-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
-           # for file_name in os.listdir(os.path.join(self.build_dir, 'X11-lib/'+from_os)):
-           #    self.copy_file(os.path.join(os.path.join(self.build_dir, 'X11-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
+        
+        # Copy libraries for ALL platforms, not just current platform
+        platforms = [
+            'win-amd64',
+            'linux-amd64', 
+            'linux-arm64',
+            'mac-amd64',
+            'mac-arm64'
+        ]
+        
+        for platform in platforms:
+            # Copy grapa libraries for this platform
+            grapa_lib_path = os.path.join(self.build_dir, 'grapa-lib', platform)
+            if os.path.exists(grapa_lib_path):
+                for file_name in os.listdir(grapa_lib_path):
+                    self.copy_file(os.path.join(grapa_lib_path, file_name), os.path.join(lib_target_path, file_name))
+            
+            # Copy openssl libraries for this platform
+            openssl_lib_path = os.path.join(self.build_dir, 'openssl-lib', platform)
+            if os.path.exists(openssl_lib_path):
+                for file_name in os.listdir(openssl_lib_path):
+                    self.copy_file(os.path.join(openssl_lib_path, file_name), os.path.join(lib_target_path, file_name))
+            
+            # Copy blst libraries for this platform
+            blst_lib_path = os.path.join(self.build_dir, 'blst-lib', platform)
+            if os.path.exists(blst_lib_path):
+                for file_name in os.listdir(blst_lib_path):
+                    self.copy_file(os.path.join(blst_lib_path, file_name), os.path.join(lib_target_path, file_name))
+            
+            # Copy fl libraries for this platform
+            fl_lib_path = os.path.join(self.build_dir, 'fl-lib', platform)
+            if os.path.exists(fl_lib_path):
+                for file_name in os.listdir(fl_lib_path):
+                    self.copy_file(os.path.join(fl_lib_path, file_name), os.path.join(lib_target_path, file_name))
+            
+            # Copy pcre2 libraries for this platform
+            pcre2_lib_path = os.path.join(self.build_dir, 'pcre2-lib', platform)
+            if os.path.exists(pcre2_lib_path):
+                for file_name in os.listdir(pcre2_lib_path):
+                    self.copy_file(os.path.join(pcre2_lib_path, file_name), os.path.join(lib_target_path, file_name))
+        
         if sys.platform.startswith('linux'):
             os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
 

@@ -210,8 +210,8 @@ jobs:
         # Clean previous builds to ensure fresh wheels
         Remove-Item -Recurse -Force dist, build, *.egg-info -ErrorAction SilentlyContinue
         
-        # Build wheels using original simple approach
-        echo "Building wheels using original approach..."
+        # Build universal wheel with all platform libraries
+        echo "Building universal wheel with all platform libraries..."
         python setup.py bdist_wheel
         
         echo "Built wheels:"
