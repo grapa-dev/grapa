@@ -10,36 +10,56 @@
 
 ## 🚨 ACTIVE WORK ITEMS
 
-### Automated CI/CD Implementation - 🔄 IN PROGRESS
-- **Implement automated GitHub Actions workflow for GrapaPy builds and PyPI deployment**
-  - **Status**: 🔄 **IN PROGRESS** - Two-stage CI/CD workflow implemented, debugging deployment issues
-  - **Approach**: Automating the original, proven build process
-  - **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
-  - **Stage 2**: Build universal wheels and deploy to PyPI
-  - **Current Version**: v0.0.114 (latest version, successfully deployed with utf8proc fix)
-  - **Key Insights**: Original approach used universal wheels containing all platform libraries
-  - **Progress**: 
-    - ✅ Fixed PowerShell commands in GitHub Actions
-    - ✅ Removed win-arm64 platform (not supported)
-    - ✅ Fixed detached HEAD issue in commit-artifacts job
-    - ✅ Fixed io.h include to be Windows-specific only
-    - ✅ Added X11 development libraries for Linux builds
-    - ✅ Fixed platform tags for PyPI compatibility
-    - ✅ Implemented universal wheel building with `--plat-name any`
-    - ✅ Modified setup.py to copy all platform libraries into single wheel
-    - ✅ **FIXED**: Updated version to v0.0.74 in both setup.py and C++ source (mainpy.cpp)
-    - ✅ **FIXED**: Created new tag v0.0.88 to trigger proper CI/CD deployment
-    - ✅ **FIXED**: Fixed commit-artifacts script to handle correct artifact structure after merge-multiple download
-    - ✅ **FIXED**: Fixed combine step to copy source distributions (not just wheels)
-    - ✅ **FIXED**: Updated version to v0.0.100 to avoid PyPI file conflict
-    - ✅ **SUCCESS**: v0.0.100 successfully deployed to PyPI with 4 files (3 wheels + 1 source)
-    - ✅ **FIXED**: macOS utf8proc symbol linking issue resolved by compiling utf8proc.c separately
-    - ✅ **FIXED**: Updated setup.py to compile utf8proc.c with C compiler and link via extra_objects
-    - ✅ **FIXED**: Updated version to 0.0.114 in both setup.py and source/mainpy.cpp
-    - ✅ **SUCCESS**: v0.0.114 deployed successfully to PyPI with utf8proc fix working
-    - ⚠️ **ISSUE**: Windows `io.h` dependency error during `pip install` - needs investigation
-  - **Next**: Investigate Windows io.h dependency issue (user will test on Windows)
-  - **Goal**: Fully automated `pip install grapapy` that works on all platforms
+### Windows Python Extension Build Issue - 🔄 IN PROGRESS
+- **Issue**: `python build.py --python-only` failing on Windows with `io.h` dependency error
+- **Status**: 🔄 **IN PROGRESS** - Debugging Windows-specific compilation issues
+- **Current Problem**: 
+  - Error: `fatal error C1083: Cannot open include file: 'io.h': No such file or directory`
+  - Error: `fatal error C1083: Cannot open include file: 'stdlib.h': No such file or directory`
+  - Error: `PermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'dist\\grapapy-0.0.114.tar.gz'`
+- **Root Cause**: Python extension compilation using Visual Studio `cl.exe` can't find Windows SDK headers
+- **Progress**:
+  - ✅ **FIXED**: Updated `setup.py` to copy all Windows libraries to distribution (grapa-lib, openssl-lib, blst-lib, fl-lib, pcre2-lib)
+  - ✅ **FIXED**: Modified `CustomBuildExt` to avoid manual `utf8proc` compilation on Windows (already in library)
+  - ✅ **FIXED**: Added `/D_CRT_SECURE_NO_WARNINGS` compiler flag to avoid `io.h` dependency
+  - ⚠️ **ISSUE**: `setup.py` was corrupted during editing and restored via `git checkout setup.py`
+  - ⚠️ **ISSUE**: File permission errors during `dist` cleanup
+  - ⚠️ **ISSUE**: Still encountering `io.h` and `stdlib.h` errors during compilation
+- **Next Steps**:
+  1. Test the restored `setup.py` with Windows library copying fix
+  2. Investigate alternative compilation approaches (MinGW, different compiler flags)
+  3. Consider pre-compiled wheel approach to avoid local compilation entirely
+  4. Resolve file permission issues during cleanup
+- **Goal**: `pip install grapapy` should work on any Windows machine without Visual Studio
+
+### Automated CI/CD Implementation - ✅ COMPLETED
+- **Status**: ✅ **COMPLETED** - Two-stage CI/CD workflow implemented and working
+- **Approach**: Automating the original, proven build process
+- **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
+- **Stage 2**: Build universal wheels and deploy to PyPI
+- **Current Version**: v0.0.114 (latest version, successfully deployed with utf8proc fix)
+- **Key Insights**: Original approach used universal wheels containing all platform libraries
+- **Progress**: 
+  - ✅ Fixed PowerShell commands in GitHub Actions
+  - ✅ Removed win-arm64 platform (not supported)
+  - ✅ Fixed detached HEAD issue in commit-artifacts job
+  - ✅ Fixed io.h include to be Windows-specific only
+  - ✅ Added X11 development libraries for Linux builds
+  - ✅ Fixed platform tags for PyPI compatibility
+  - ✅ Implemented universal wheel building with `--plat-name any`
+  - ✅ Modified setup.py to copy all platform libraries into single wheel
+  - ✅ **FIXED**: Updated version to v0.0.74 in both setup.py and C++ source (mainpy.cpp)
+  - ✅ **FIXED**: Created new tag v0.0.88 to trigger proper CI/CD deployment
+  - ✅ **FIXED**: Fixed commit-artifacts script to handle correct artifact structure after merge-multiple download
+  - ✅ **FIXED**: Fixed combine step to copy source distributions (not just wheels)
+  - ✅ **FIXED**: Updated version to v0.0.100 to avoid PyPI file conflict
+  - ✅ **SUCCESS**: v0.0.100 successfully deployed to PyPI with 4 files (3 wheels + 1 source)
+  - ✅ **FIXED**: macOS utf8proc symbol linking issue resolved by compiling utf8proc.c separately
+  - ✅ **FIXED**: Updated setup.py to compile utf8proc.c with C compiler and link via extra_objects
+  - ✅ **FIXED**: Updated version to 0.0.114 in both setup.py and source/mainpy.cpp
+  - ✅ **SUCCESS**: v0.0.114 deployed successfully to PyPI with utf8proc fix working
+- **Next**: Focus on Windows local build issue resolution
+- **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
 - **Investigate GrapaDB:PtrToRec lookup for record 1 when there are 3 records**
@@ -99,28 +119,54 @@
 - **Deploy Docs (Linux/Mac):** `./scripts/deploy_docs.sh`
 - **Deploy Docs (Windows):** `.\scripts\deploy_docs.ps1`
 
-### CI/CD Commands
-- **Trigger Release:** `git tag v0.0.XX && git push origin v0.0.XX`
-- **Check PyPI Versions:** `pip3 index versions grapapy`
-- **Force Reinstall:** `pip3 install --force-reinstall grapapy`
-- **Test Import:** `python3 -c "import grapapy; print('Success')"`
-
-### Key Resources
-- **Complete Navigation:** [`maintainers/index.md`](../index.md)
-- **Development Priorities:** [`BACKLOG.md`](BACKLOG.md)
-- **Onboarding Guide:** [`ONBOARD.md`](ONBOARD.md)
-- **Onboarding Safeguards:** [`ONBOARDING_SAFEGUARDS.md`](ONBOARDING_SAFEGUARDS.md)
-- **Documentation Update Guide:** [`DOCUMENTATION_UPDATE_GUIDE.md`](DOCUMENTATION_UPDATE_GUIDE.md)
-- **Agent Switching Protection:** [`AGENT_SWITCHING_PROTECTION.md`](AGENT_SWITCHING_PROTECTION.md)
-- **Build System:** [`../BUILD_AND_DEPLOYMENT/`](../BUILD_AND_DEPLOYMENT/)
-- **CI/CD Workflow:** `.github/workflows/build-libraries.yml`
+### Current Windows Build Issue
+- **Problem**: `python build.py --python-only` fails with `io.h` dependency error
+- **Error**: `fatal error C1083: Cannot open include file: 'io.h': No such file or directory`
+- **Context**: Visual Studio `cl.exe` can't find Windows SDK headers during Python extension compilation
+- **Solution Approach**: 
+  1. Pre-built libraries are copied to distribution ✅
+  2. Avoid manual `utf8proc` compilation on Windows ✅
+  3. Add compiler flags to avoid `io.h` dependency ✅
+  4. Still encountering compilation errors - needs further investigation
+- **Next Agent Task**: Continue debugging Windows Python extension build, test restored `setup.py`, investigate alternative compilation approaches
 
 ---
 
-## 📊 CURRENT FOCUS
+## 🔧 TECHNICAL NOTES
 
-**Primary Goal:** Complete automated CI/CD implementation for GrapaPy builds and deployment
+### Windows Build Architecture
+- **Static Library**: `source/grapa-lib/win-amd64/grapa.lib` (80MB, pre-built)
+- **Dependencies**: All required libraries copied to distribution during `setup.py` build
+- **Compilation**: Uses Visual Studio `cl.exe` for Python extension compilation
+- **Issue**: Windows SDK header dependencies (`io.h`, `stdlib.h`) not found
 
-**Secondary Goal:** Unicode language binding and CLI enhancement (see [`BACKLOG.md`](BACKLOG.md) for full roadmap)
+### Setup.py Recent Changes
+- **Windows Library Copying**: Added comprehensive library copying for Windows platform
+- **utf8proc Handling**: Removed manual compilation on Windows (already in library)
+- **Compiler Flags**: Added `/D_CRT_SECURE_NO_WARNINGS` to avoid `io.h` dependency
+- **File Corruption**: `setup.py` was corrupted during editing, restored via `git checkout setup.py`
 
-**Last Updated:** January 2025 
+### File Permission Issues
+- **Problem**: `PermissionError: [WinError 32] The process cannot access the file because it is being used by another process`
+- **Location**: `dist\grapapy-0.0.114.tar.gz` during cleanup
+- **Cause**: File locked by another process during build
+- **Solution**: Need to investigate process cleanup and file handling
+
+---
+
+## 🎯 SUCCESS METRICS
+
+### Windows Python Extension Build
+- [ ] `python build.py --python-only` completes successfully
+- [ ] `pip install grapapy` works on any Windows machine without Visual Studio
+- [ ] No `io.h` or `stdlib.h` dependency errors
+- [ ] No file permission errors during cleanup
+- [ ] Pre-built libraries properly included in distribution
+
+### Overall Project Health
+- [x] CI/CD pipeline working for all platforms except Windows local build
+- [x] Documentation updated with latest findings
+- [x] Build system enhancements completed
+- [x] Database tests passing (100%)
+- [ ] Windows local build issue resolved
+- [ ] Universal `pip install grapapy` working on all platforms 

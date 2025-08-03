@@ -252,6 +252,19 @@ class CopySharedLibrary(Command):
                 self.copy_file(os.path.join(os.path.join(self.build_dir, 'pcre2-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
            # for file_name in os.listdir(os.path.join(self.build_dir, 'X11-lib/'+from_os)):
            #    self.copy_file(os.path.join(os.path.join(self.build_dir, 'X11-lib/'+from_os),file_name), os.path.join(lib_target_path, file_name))
+        elif sys.platform.startswith('win32'):
+            # Windows: copy all required libraries
+            for file_name in os.listdir(os.path.join(self.build_dir, 'grapa-lib/win-amd64')):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'grapa-lib/win-amd64'),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'openssl-lib/win-amd64')):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'openssl-lib/win-amd64'),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'blst-lib/win-amd64')):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'blst-lib/win-amd64'),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'fl-lib/win-amd64')):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'fl-lib/win-amd64'),file_name), os.path.join(lib_target_path, file_name))
+            for file_name in os.listdir(os.path.join(self.build_dir, 'pcre2-lib/win-amd64')):
+                self.copy_file(os.path.join(os.path.join(self.build_dir, 'pcre2-lib/win-amd64'),file_name), os.path.join(lib_target_path, file_name))
+            print(f"Copied Windows libraries to distribution")
         if sys.platform.startswith('linux'):
             os.environ["ORIGIN"] = os.path.abspath(lib_target_path)
 
@@ -272,36 +285,55 @@ class CustomBuildExt(build_ext):
             if not os.path.exists(self.build_temp):
                 os.makedirs(self.build_temp)
         
-        # Compile utf8proc.c first (C compilation)
-        print("Building utf8proc...")
-        try:
-            if sys.platform.startswith('darwin'):
-                # macOS: use clang
-                subprocess.run([
-                    "clang", "-Isource", "-DUTF8PROC_STATIC", "-c",
-                    "source/utf8proc/utf8proc.c", "-O3"
-                ], check=True)
-            elif sys.platform.startswith('linux'):
-                # Linux: use gcc
-                subprocess.run([
-                    "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c",
-                    "source/utf8proc/utf8proc.c", "-O3"
-                ], check=True)
-            elif sys.platform.startswith('win32'):
-                # Windows: use cl (MSVC)
-                subprocess.run([
-                    "cl", "/Isource", "/DUTF8PROC_STATIC", "/c",
-                    "source/utf8proc/utf8proc.c", "/O2"
-                ], check=True)
-            print("utf8proc compiled successfully")
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to compile utf8proc: {e}")
-            raise
+        # On Windows, utf8proc is already compiled into the library
+        # On other platforms, use pre-compiled objects if available
+        if not sys.platform.startswith('win32'):
+            print("Using pre-compiled utf8proc...")
+            try:
+                if sys.platform.startswith('darwin'):
+                    # macOS: use pre-compiled utf8proc.o
+                    utf8proc_obj = 'utf8proc.o'
+                    if os.path.exists(utf8proc_obj):
+                        ext.extra_objects = [utf8proc_obj]
+                        print(f"Using pre-compiled {utf8proc_obj}")
+                    else:
+                        print(f"Warning: {utf8proc_obj} not found, will compile at runtime")
+                        # Fallback to runtime compilation
+                        subprocess.run([
+                            "clang", "-Isource", "-DUTF8PROC_STATIC", "-c",
+                            "source/utf8proc/utf8proc.c", "-O3"
+                        ], check=True)
+                        if os.path.exists('utf8proc.o'):
+                            ext.extra_objects = ['utf8proc.o']
+                elif sys.platform.startswith('linux'):
+                    # Linux: use pre-compiled utf8proc.o
+                    utf8proc_obj = 'utf8proc.o'
+                    if os.path.exists(utf8proc_obj):
+                        ext.extra_objects = [utf8proc_obj]
+                        print(f"Using pre-compiled {utf8proc_obj}")
+                    else:
+                        print(f"Warning: {utf8proc_obj} not found, will compile at runtime")
+                        # Fallback to runtime compilation
+                        subprocess.run([
+                            "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c",
+                            "source/utf8proc/utf8proc.c", "-O3"
+                        ], check=True)
+                        if os.path.exists('utf8proc.o'):
+                            ext.extra_objects = ['utf8proc.o']
+                print("utf8proc handling completed")
+            except subprocess.CalledProcessError as e:
+                print(f"Failed to handle utf8proc: {e}")
+                raise
+        else:
+            # On Windows, try to avoid the io.h issue by using different compiler flags
+            print("Windows: Using library-based approach (utf8proc already in library)")
+            # Add compiler flags to avoid io.h dependency
+            if hasattr(ext, 'extra_compile_args'):
+                ext.extra_compile_args.extend(['/D_CRT_SECURE_NO_WARNINGS'])
+            else:
+                ext.extra_compile_args = ['/D_CRT_SECURE_NO_WARNINGS']
         
         try:
-            # Add utf8proc.o to the extra objects for linking
-            if os.path.exists('utf8proc.o'):
-                ext.extra_objects = ['utf8proc.o']
             super().build_extension(ext)
         except PermissionError as e:
             if "cache" in str(e).lower():

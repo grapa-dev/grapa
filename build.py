@@ -141,7 +141,7 @@ class GrapaBuilder:
                 shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
             
             if not exe_only:
-                # Build library
+                # Build library (utf8proc.c is already included in the MSBuild project)
                 subprocess.run([
                     "msbuild", "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
                 ], check=True)
