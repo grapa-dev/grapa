@@ -319,7 +319,9 @@ class GrapaBuilder:
                 print("Building shared library...")
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+                # Get FLTK libraries but exclude JPEG library to avoid system JPEG dependency
+                all_fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+                fl_libs = [lib for lib in all_fl_libs if "jpeg" not in lib.lower()]
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
@@ -336,7 +338,9 @@ class GrapaBuilder:
             print("Building executable...")
             cpp_files = glob.glob("source/grapa/*.cpp")
             openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+            # Get FLTK libraries but exclude JPEG library to avoid system JPEG dependency
+            all_fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+            fl_libs = [lib for lib in all_fl_libs if "jpeg" not in lib.lower()]
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
@@ -437,7 +441,9 @@ class GrapaBuilder:
                 # Build shared library
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+                # Get FLTK libraries but exclude JPEG library to avoid system JPEG dependency
+                all_fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+                fl_libs = [lib for lib in all_fl_libs if "jpeg" not in lib.lower()]
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
@@ -463,7 +469,9 @@ class GrapaBuilder:
             # Build executable - match AWS pattern exactly
             cpp_files = glob.glob("source/grapa/*.cpp")
             openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+            # Get FLTK libraries but exclude JPEG library to avoid system JPEG dependency
+            all_fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+            fl_libs = [lib for lib in all_fl_libs if "jpeg" not in lib.lower()]
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
