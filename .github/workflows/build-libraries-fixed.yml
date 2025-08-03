@@ -152,71 +152,21 @@ jobs:
           echo "No files found to include in archive, skipping archive creation"
         fi
         
-    # FIXED: Each platform commits its own artifacts
-    - name: Commit platform artifacts (Windows)
-      if: matrix.os == 'windows-latest'
-      shell: pwsh
-      run: |
-        Write-Host "Committing ${{ matrix.platform }} artifacts to repository..."
-        
-        # Setup Git
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        # Add platform-specific libraries
-        git add "source/grapa-lib/${{ matrix.platform }}/"
-        git add "source/openssl-lib/${{ matrix.platform }}/"
-        git add "source/fl-lib/${{ matrix.platform }}/"
-        git add "source/blst-lib/${{ matrix.platform }}/"
-        git add "source/pcre2-lib/${{ matrix.platform }}/"
-        
-        # Add top-level binary artifacts
-        if (Test-Path "grapa.exe") { git add "grapa.exe" }
-        if (Test-Path "grapa.lib") { git add "grapa.lib" }
-        
-        # Add binaries if they exist
-        if (Test-Path "bin/") {
-          git add "bin/"
-        }
-        
-        # Commit and push
-        git commit -m "Add ${{ matrix.platform }} libraries and binaries [automated]" || Write-Host "No changes to commit"
-        git push origin main
-        
-    - name: Commit platform artifacts (Linux/macOS)
-      if: matrix.os != 'windows-latest'
-      run: |
-        echo "Committing ${{ matrix.platform }} artifacts to repository..."
-        
-        # Setup Git
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        # Add platform-specific libraries
-        git add "source/grapa-lib/${{ matrix.platform }}/"
-        git add "source/openssl-lib/${{ matrix.platform }}/"
-        git add "source/fl-lib/${{ matrix.platform }}/"
-        git add "source/blst-lib/${{ matrix.platform }}/"
-        git add "source/pcre2-lib/${{ matrix.platform }}/"
-        
-        # Add Mac shared library (goes to grapa-other, not grapa-lib)
-        if [ -d "source/grapa-other/${{ matrix.platform }}/" ]; then
-          git add "source/grapa-other/${{ matrix.platform }}/"
-        fi
-        
-        # Add top-level binary artifacts
-        if [ -f "grapa" ]; then git add "grapa"; fi
-        if [ -f "libgrapa.a" ]; then git add "libgrapa.a"; fi
-        if [ -f "libgrapa.so" ]; then git add "libgrapa.so"; fi
-        
-        # Add binaries if they exist
-        if [ -d "bin/" ]; then
-          git add "bin/"
-        fi
-        
-        # Commit and push
-        git commit -m "Add ${{ matrix.platform }} libraries and binaries [automated]" || echo "No changes to commit"
-        git push origin main
+    # Upload artifacts for later commit
+    - name: Upload platform artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: platform-artifacts-${{ matrix.platform }}
+        path: |
+          source/grapa-lib/${{ matrix.platform }}/
+          source/openssl-lib/${{ matrix.platform }}/
+          source/fl-lib/${{ matrix.platform }}/
+          source/blst-lib/${{ matrix.platform }}/
+          source/pcre2-lib/${{ matrix.platform }}/
+          source/grapa-other/${{ matrix.platform }}/
+          bin/
+          grapa*
+          libgrapa.*
         
     - name: Upload artifacts (for backup)
       uses: actions/upload-artifact@v4
@@ -229,8 +179,60 @@ jobs:
           grapa*
           libgrapa.*
           
-  build-wheels-linux:
+  commit-all-artifacts:
     needs: build-libraries
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: main
+    
+    - name: Download all platform artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
+        merge-multiple: true
+    
+    - name: Extract and commit artifacts
+      run: |
+        echo "Extracting and committing all platform artifacts..."
+        
+        # Setup Git
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Extract artifacts to their correct locations
+        for artifact_dir in artifacts/platform-artifacts-*/; do
+          if [ -d "$artifact_dir" ]; then
+            echo "Processing artifacts from: $artifact_dir"
+            cp -r "$artifact_dir"/* . || echo "No files to copy from $artifact_dir"
+          fi
+        done
+        
+        # Add all platform-specific libraries
+        git add source/grapa-lib/ || echo "No grapa-lib changes"
+        git add source/openssl-lib/ || echo "No openssl-lib changes"
+        git add source/fl-lib/ || echo "No fl-lib changes"
+        git add source/blst-lib/ || echo "No blst-lib changes"
+        git add source/pcre2-lib/ || echo "No pcre2-lib changes"
+        git add source/grapa-other/ || echo "No grapa-other changes"
+        
+        # Add top-level binary artifacts
+        git add grapa* || echo "No grapa executable changes"
+        git add libgrapa.* || echo "No libgrapa changes"
+        
+        # Add binaries
+        git add bin/ || echo "No bin changes"
+        
+        # Commit and push
+        git commit -m "Update pre-built libraries and binaries for all platforms [automated]" || echo "No changes to commit"
+        git push origin main
+        
+  build-wheels-linux:
+    needs: commit-all-artifacts
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     
@@ -270,7 +272,7 @@ jobs:
         path: dist/
 
   build-wheels-windows:
-    needs: build-libraries
+    needs: commit-all-artifacts
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
     
@@ -312,7 +314,7 @@ jobs:
         path: dist/
 
   build-wheels-macos:
-    needs: build-libraries
+    needs: commit-all-artifacts
     runs-on: macos-latest
     if: startsWith(github.ref, 'refs/tags/')
     

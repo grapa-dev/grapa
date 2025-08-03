@@ -51,11 +51,13 @@
   - ❌ **CRITICAL**: Wheel jobs not receiving updated artifacts from platform jobs
   - ❌ **CRITICAL**: Windows archive naming incorrect (`grapa-win-win-amd64.zip` instead of `grapa-win-amd64.zip`)
   - ❌ **CRITICAL**: Linux/macOS archives only including executable, missing libraries
+  - ❌ **CRITICAL**: Git race conditions when multiple platform jobs try to commit simultaneously
 - **Fixes Implemented**:
   - ✅ **FIXED**: Removed `commit-artifacts` job entirely
-  - ✅ **FIXED**: Added individual platform artifact commits within each `build-libraries` job
   - ✅ **FIXED**: Fixed Windows archive naming to match build.py logic
   - ✅ **FIXED**: Enhanced Linux/macOS archive creation to include libraries (matching build.py)
+  - ✅ **FIXED**: Replaced individual platform commits with artifact uploads to avoid Git conflicts
+  - ✅ **FIXED**: Added single `commit-all-artifacts` job that downloads and commits all artifacts
   - ✅ **FIXED**: Updated workflow to ensure wheel jobs get latest artifacts
 - **Progress**: 
   - ✅ Fixed PowerShell commands in GitHub Actions
