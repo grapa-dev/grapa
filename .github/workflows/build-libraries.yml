@@ -184,6 +184,8 @@ jobs:
         # Clean previous builds to ensure fresh wheels
         rm -rf dist/ build/ *.egg-info/
         
+        # Build wheels using original simple approach
+        echo "Building wheels using original approach..."
         python setup.py bdist_wheel
         
         echo "Built wheels:"
@@ -197,7 +199,7 @@ jobs:
         
   deploy-to-pypi:
     needs: commit-artifacts
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
     
     steps:
@@ -206,32 +208,21 @@ jobs:
     - name: Install build dependencies for wheel building
       run: |
         echo "Installing build dependencies for wheel building..."
-        sudo apt-get update
-        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev
+        # Windows has most dependencies pre-installed
         
     - name: Build fresh wheels
       run: |
         echo "Building fresh wheels using pre-built libraries..."
         
         # Clean previous builds to ensure fresh wheels
-        rm -rf dist/ build/ *.egg-info/
+        Remove-Item -Recurse -Force dist, build, *.egg-info -ErrorAction SilentlyContinue
         
-        # Build Mac/Linux x86_64 wheel
-        echo "Building Mac/Linux x86_64 wheel..."
-        python setup.py bdist_wheel --plat-name manylinux1_x86_64
-        
-        # Build Mac/Linux ARM64 wheel
-        echo "Building Mac/Linux ARM64 wheel..."
-        export GRAPA_PLATFORM=linux-arm64
-        python setup.py bdist_wheel --plat-name linux_aarch64
-        
-        # Build Windows wheel
-        echo "Building Windows wheel..."
-        export GRAPA_PLATFORM=win-amd64
-        python setup.py bdist_wheel --plat-name win_amd64
+        # Build wheels using original simple approach
+        echo "Building wheels using original approach..."
+        python setup.py bdist_wheel
         
         echo "Built wheels:"
-        ls -la dist/
+        Get-ChildItem dist/
         
     - name: Upload to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
