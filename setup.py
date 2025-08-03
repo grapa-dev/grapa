@@ -65,7 +65,7 @@ if sys.platform.startswith('linux'):
             from_os = 'linux-arm64'
         # For Python extension, we don't need X11 GUI libraries
         extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
-    so_ext = '.so'
+    so_ext = '.a'  # All platforms use static libraries (.a) for Extension-based approach
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
     runtime_library_dirs = ['$ORIGIN/grapapy-' + grapapy_version]
