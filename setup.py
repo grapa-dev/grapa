@@ -224,7 +224,7 @@ class CopySharedLibrary(Command):
         self.build_dir = "source"
         self.filename = lib_filename
         self.lib_source_path = os.path.join(self.build_dir, lib_pathfile)
-        self.package_name = 'source'
+        self.package_name = 'grapapy'
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_lib', 'build_lib'), )
@@ -234,6 +234,7 @@ class CopySharedLibrary(Command):
         self.inplace = self.get_finalized_command('build_ext').inplace
         if self.inplace:
             lib_target_path = self.package_name
+            self.mkpath(lib_target_path)
         else:
             lib_target_path = os.path.join(self.build_lib, "grapapy-"+grapapy_version)
             self.mkpath(lib_target_path)
