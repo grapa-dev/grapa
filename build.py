@@ -258,7 +258,7 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
+                subprocess.run(["libtool", "-static", "-o", "libgrapa.a"] + obj_files, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
             else:
