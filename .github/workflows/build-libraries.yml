@@ -16,10 +16,7 @@ jobs:
           - os: windows-latest
             platform: win-amd64
             arch: x64
-          # macOS AMD64
-          - os: macos-latest
-            platform: mac-amd64
-          # macOS ARM64
+          # macOS ARM64 (macos-latest is now ARM64)
           - os: macos-latest
             platform: mac-arm64
           # Linux AMD64
