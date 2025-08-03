@@ -58,7 +58,7 @@ jobs:
         # Install cross-compilation tools for ARM64 if needed
         if [ "${{ matrix.platform }}" = "linux-arm64" ]; then
           echo "Installing ARM64 cross-compilation tools..."
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
         fi
         
     - name: Install build dependencies (macOS)

@@ -380,16 +380,25 @@ class GrapaBuilder:
         
         # Set up cross-compilation flags if needed
         cross_flags = []
+        cross_compiler_prefix = ""
         if is_cross_compile:
             print("Cross-compiling for ARM64 from AMD64...")
-            cross_flags = ["-target", "aarch64-linux-gnu"]
+            # Check if cross-compilation toolchain is available
+            try:
+                subprocess.run(["aarch64-linux-gnu-gcc", "--version"], check=True, capture_output=True)
+                cross_compiler_prefix = "aarch64-linux-gnu-"
+                print("Using cross-compilation toolchain")
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                print("Cross-compilation toolchain not available, using native compiler with ARM flags")
+                cross_flags = ["-march=armv8-a", "-mtune=cortex-a72"]
         
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         # Use -fPIC for shared library builds, regular for executable
         pic_flag = ["-fPIC"] if is_library else []
+        gcc_cmd = f"{cross_compiler_prefix}gcc" if cross_compiler_prefix else "gcc"
         subprocess.run([
-            "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
+            gcc_cmd, "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
         ] + pic_flag + cross_flags, check=True)
         
@@ -405,8 +414,9 @@ class GrapaBuilder:
                 for obj_file in glob.glob("*.o"):
                     os.remove(obj_file)
                 
+                gpp_cmd = f"{cross_compiler_prefix}g++" if cross_compiler_prefix else "g++"
                 subprocess.run([
-                    "g++", "-Isource", "-c"
+                    gpp_cmd, "-Isource", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-O3", "-pthread", "-fPIC"
                 ] + cross_flags, check=True)
@@ -419,7 +429,8 @@ class GrapaBuilder:
                 if os.path.exists("libgrapa.a"):
                     os.remove("libgrapa.a")
                 
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
+                ar_cmd = f"{cross_compiler_prefix}ar" if cross_compiler_prefix else "ar"
+                subprocess.run([ar_cmd, "-crs", "libgrapa.a"] + obj_files, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
             else:
@@ -430,7 +441,7 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                cmd = ["g++", "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto",
                     "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                     "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc",
@@ -449,7 +460,7 @@ class GrapaBuilder:
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
             cmd = [
-                "g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
+                gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                 f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
                 "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
