@@ -452,13 +452,13 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                            # For ARM64 cross-compilation, use ARM64 X11 libraries
-            if is_cross_compile:
-                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
-            else:
-                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                # For ARM64 cross-compilation, use ARM64 X11 libraries
+                if is_cross_compile:
+                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                else:
+                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
