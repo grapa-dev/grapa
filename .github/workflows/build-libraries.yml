@@ -144,8 +144,14 @@ jobs:
     - name: Install build dependencies for wheel building
       run: |
         echo "Installing build dependencies for wheel building..."
-        sudo apt-get update
-        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev
+        # Check what's available
+        python -c "import sys; print('Python version:', sys.version)"
+        python -c "import distutils; print('distutils available')" || echo "distutils not available"
+        python -c "import setuptools; print('setuptools available')" || echo "setuptools not available"
+        
+        # Try to install setuptools
+        python -m pip install --upgrade pip setuptools wheel
+        python -c "import setuptools; print('setuptools version:', setuptools.__version__)"
         
     - name: Setup Git
       run: |
@@ -208,10 +214,14 @@ jobs:
     - name: Install build dependencies for wheel building
       run: |
         echo "Installing build dependencies for wheel building..."
-        # Windows has most dependencies pre-installed
-        # Install Python dependencies
-        python -m pip install --upgrade pip
-        python -m pip install setuptools wheel
+        # Check what's available
+        python -c "import sys; print('Python version:', sys.version)"
+        python -c "import distutils; print('distutils available')" || echo "distutils not available"
+        python -c "import setuptools; print('setuptools available')" || echo "setuptools not available"
+        
+        # Try to install setuptools
+        python -m pip install --upgrade pip setuptools wheel build
+        python -c "import setuptools; print('setuptools version:', setuptools.__version__)"
         
     - name: Build fresh wheels
       run: |
