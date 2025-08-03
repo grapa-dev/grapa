@@ -183,7 +183,7 @@ jobs:
         git commit -m "Update pre-built libraries and binaries for all platforms [automated]" || echo "No changes to commit"
         git push origin main
         
-  build-wheels:
+  build-wheels-linux:
     needs: commit-artifacts
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
@@ -200,39 +200,101 @@ jobs:
         # Install Python dependencies
         python -m pip install --upgrade pip setuptools wheel build
         
-    - name: Build wheels on Linux
+    - name: Build Linux/Windows wheel
       run: |
-        echo "Building wheels using pre-built libraries..."
+        echo "Building Linux/Windows wheel using Extension approach..."
         
         # Clean previous builds to ensure fresh wheels
         rm -rf dist/ build/ *.egg-info/
         
-        # Build universal wheel with all platform libraries
-        echo "Building universal wheel with all platform libraries..."
-        python setup.py bdist_wheel --plat-name any
+        # Build wheel for Linux/Windows (Extension approach)
+        echo "Building wheel for Linux/Windows..."
+        python setup.py bdist_wheel
         
         echo "Built wheels:"
         ls -la dist/
         
-    - name: Upload wheels artifact
+    - name: Upload Linux/Windows wheel artifact
       uses: actions/upload-artifact@v4
       with:
-        name: wheels
+        name: wheels-linux
+        path: dist/*.whl
+
+  build-wheels-macos:
+    needs: commit-artifacts
+    runs-on: macos-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        # Install Python dependencies
+        python -m pip install --upgrade pip setuptools wheel build
+        
+    - name: Build macOS wheel
+      run: |
+        echo "Building macOS wheel using CMakeExtension approach..."
+        
+        # Clean previous builds to ensure fresh wheels
+        rm -rf dist/ build/ *.egg-info/
+        
+        # Build wheel for macOS (CMakeExtension approach)
+        echo "Building wheel for macOS..."
+        python setup.py bdist_wheel
+        
+        echo "Built wheels:"
+        ls -la dist/
+        
+    - name: Upload macOS wheel artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheels-macos
         path: dist/*.whl
         
   deploy-to-pypi:
-    needs: build-wheels
+    needs: [build-wheels-linux, build-wheels-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Download wheels
+    - name: Download Linux/Windows wheels
       uses: actions/download-artifact@v4
       with:
-        name: wheels
-        path: dist/
+        name: wheels-linux
+        path: dist-linux/
+        
+    - name: Download macOS wheels
+      uses: actions/download-artifact@v4
+      with:
+        name: wheels-macos
+        path: dist-macos/
+        
+    - name: Combine wheels into single dist
+      run: |
+        echo "Combining wheels from both build systems..."
+        mkdir -p dist/
+        
+        # Copy Linux/Windows wheel
+        if [ -d "dist-linux" ]; then
+          cp dist-linux/*.whl dist/
+          echo "Copied Linux/Windows wheel:"
+          ls -la dist-linux/
+        fi
+        
+        # Copy macOS wheel
+        if [ -d "dist-macos" ]; then
+          cp dist-macos/*.whl dist/
+          echo "Copied macOS wheel:"
+          ls -la dist-macos/
+        fi
+        
+        echo "Combined wheels in dist/:"
+        ls -la dist/
         
     - name: Upload to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
