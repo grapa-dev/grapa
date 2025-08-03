@@ -399,6 +399,8 @@ class GrapaBuilder:
                     print("Warning: ARM64 libraries not available, will use static linking approach")
                     # Use static linking approach instead
                     cross_flags.extend(["-static", "-static-libgcc", "-static-libstdc++"])
+                    # Also remove system_libs since we're doing static linking
+                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("Cross-compilation toolchain not available, using native compiler with ARM flags")
                 cross_flags = ["-march=armv8-a", "-mtune=cortex-a72"]
@@ -454,8 +456,12 @@ class GrapaBuilder:
                 
                 # For ARM64 cross-compilation, use ARM64 X11 libraries
                 if is_cross_compile:
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                    # Check if we're using static linking (no X11 libraries available)
+                    if "-static" in cross_flags:
+                        system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                    else:
+                        system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                                      "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
                 else:
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                                   "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
@@ -466,8 +472,9 @@ class GrapaBuilder:
                     "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                 ] + cross_flags
                 
-                # Add -ljpeg for both native and cross-compilation builds
-                cmd.insert(-2, "-ljpeg")
+                # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
+                if "-static" not in cross_flags:
+                    cmd.insert(-2, "-ljpeg")
                 
                 subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
@@ -482,8 +489,12 @@ class GrapaBuilder:
             
             # For ARM64 cross-compilation, use ARM64 X11 libraries
             if is_cross_compile:
-                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                # Check if we're using static linking (no X11 libraries available)
+                if "-static" in cross_flags:
+                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                else:
+                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
             else:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
@@ -496,8 +507,9 @@ class GrapaBuilder:
                 "-O3", "-pthread", "-o", config.output_name
             ] + cross_flags
             
-            # Add -ljpeg for both native and cross-compilation builds
-            cmd.insert(-2, "-ljpeg")
+            # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
+            if "-static" not in cross_flags:
+                cmd.insert(-2, "-ljpeg")
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
