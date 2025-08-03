@@ -202,7 +202,17 @@ class CMakeBuild(build_ext):
             os.makedirs(build_temp)
 
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
-        subprocess.check_call(["cmake", "--build", ".", "--verbose"] + build_args, cwd=build_temp)
+        try:
+            subprocess.check_call(["cmake", "--build", ".", "--verbose"] + build_args, cwd=build_temp)
+        except subprocess.CalledProcessError as e:
+            print(f"CMake build failed with exit code {e.returncode}")
+            print("Attempting to get more detailed error information...")
+            # Try to get more detailed output
+            result = subprocess.run(["cmake", "--build", ".", "--verbose"] + build_args, 
+                                  cwd=build_temp, capture_output=True, text=True)
+            print("STDOUT:", result.stdout)
+            print("STDERR:", result.stderr)
+            raise
 
 
 class CopySharedLibrary(Command):
