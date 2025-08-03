@@ -397,6 +397,7 @@ class GrapaBuilder:
         # Use -fPIC for shared library builds, regular for executable
         pic_flag = ["-fPIC"] if is_library else []
         gcc_cmd = f"{cross_compiler_prefix}gcc" if cross_compiler_prefix else "gcc"
+        gpp_cmd = f"{cross_compiler_prefix}g++" if cross_compiler_prefix else "g++"
         subprocess.run([
             gcc_cmd, "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
@@ -414,7 +415,6 @@ class GrapaBuilder:
                 for obj_file in glob.glob("*.o"):
                     os.remove(obj_file)
                 
-                gpp_cmd = f"{cross_compiler_prefix}g++" if cross_compiler_prefix else "g++"
                 subprocess.run([
                     gpp_cmd, "-Isource", "-c"
                 ] + cpp_files + [
