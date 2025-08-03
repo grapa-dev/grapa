@@ -84,7 +84,7 @@ elif sys.platform.startswith('darwin'):
         '-std=c++17',
         '-O3','-pthread','-fPIC',
         ]
-    so_ext = '.so'
+    so_ext = '.a'  # macOS uses static libraries (.a), not shared libraries (.so)
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
 
