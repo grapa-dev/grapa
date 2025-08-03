@@ -16,7 +16,7 @@
   - **Approach**: Automating the original, proven build process
   - **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
   - **Stage 2**: Build universal wheels and deploy to PyPI
-  - **Current Version**: v0.0.76 (latest version, fixing PyPI upload issues)
+  - **Current Version**: v0.0.114 (latest version, successfully deployed with utf8proc fix)
   - **Key Insights**: Original approach used universal wheels containing all platform libraries
   - **Progress**: 
     - ✅ Fixed PowerShell commands in GitHub Actions
@@ -31,9 +31,14 @@
     - ✅ **FIXED**: Created new tag v0.0.88 to trigger proper CI/CD deployment
     - ✅ **FIXED**: Fixed commit-artifacts script to handle correct artifact structure after merge-multiple download
     - ✅ **FIXED**: Fixed combine step to copy source distributions (not just wheels)
-    - ✅ **FIXED**: Updated version to v0.0.76 to avoid PyPI file conflict
-    - ⚠️ **ISSUE**: Previous versions had version mismatch between setup.py and C++ source
-  - **Next**: Create v0.0.76 tag and test deployment with source distribution included
+    - ✅ **FIXED**: Updated version to v0.0.100 to avoid PyPI file conflict
+    - ✅ **SUCCESS**: v0.0.100 successfully deployed to PyPI with 4 files (3 wheels + 1 source)
+    - ✅ **FIXED**: macOS utf8proc symbol linking issue resolved by compiling utf8proc.c separately
+    - ✅ **FIXED**: Updated setup.py to compile utf8proc.c with C compiler and link via extra_objects
+    - ✅ **FIXED**: Updated version to 0.0.114 in both setup.py and source/mainpy.cpp
+    - ✅ **SUCCESS**: v0.0.114 deployed successfully to PyPI with utf8proc fix working
+    - ⚠️ **ISSUE**: Windows `io.h` dependency error during `pip install` - needs investigation
+  - **Next**: Investigate Windows io.h dependency issue (user will test on Windows)
   - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
