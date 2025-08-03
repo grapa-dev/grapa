@@ -19,9 +19,15 @@ jobs:
           # macOS AMD64
           - os: macos-latest
             platform: mac-amd64
+          # macOS ARM64
+          - os: macos-latest
+            platform: mac-arm64
           # Linux AMD64
           - os: ubuntu-latest
             platform: linux-amd64
+          # Linux ARM64
+          - os: ubuntu-latest
+            platform: linux-arm64
 
     steps:
     - uses: actions/checkout@v4
@@ -96,6 +102,13 @@ jobs:
         ls -la source/fl-lib/${{ matrix.platform }}/ || echo "No FL libraries found"
         ls -la source/blst-lib/${{ matrix.platform }}/ || echo "No BLST libraries found"
         ls -la source/pcre2-lib/${{ matrix.platform }}/ || echo "No PCRE2 libraries found"
+        
+        # Build executable only
+        echo "Building executable for ${{ matrix.platform }}..."
+        python build.py --exe-only
+        
+        echo "Executable build completed. Checking for executable..."
+        ls -la grapa* || echo "No executable found"
         
     - name: Build libraries and binaries (Linux)
       if: matrix.os == 'ubuntu-latest'
