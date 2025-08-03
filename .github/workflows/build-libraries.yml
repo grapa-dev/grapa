@@ -204,28 +204,54 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
+        # Debug: List what's in artifacts directory
+        echo "=== DEBUG: Artifacts directory contents ==="
+        ls -la artifacts/ || echo "artifacts/ directory not found"
+        find artifacts/ -type f 2>/dev/null | head -20 || echo "No files found in artifacts/"
+        
         # Extract artifacts to their correct locations
+        echo "=== DEBUG: Processing artifact directories ==="
         for artifact_dir in artifacts/platform-artifacts-*/; do
           if [ -d "$artifact_dir" ]; then
             echo "Processing artifacts from: $artifact_dir"
-            cp -r "$artifact_dir"/* . || echo "No files to copy from $artifact_dir"
+            ls -la "$artifact_dir" || echo "Could not list $artifact_dir"
+            cp -rv "$artifact_dir"/* . 2>&1 || echo "Failed to copy from $artifact_dir"
+          else
+            echo "Directory not found: $artifact_dir"
           fi
         done
         
+        # Debug: Check what files we have after extraction
+        echo "=== DEBUG: Files after extraction ==="
+        ls -la source/grapa-lib/ 2>/dev/null || echo "No grapa-lib directory"
+        ls -la source/openssl-lib/ 2>/dev/null || echo "No openssl-lib directory"
+        ls -la source/fl-lib/ 2>/dev/null || echo "No fl-lib directory"
+        ls -la source/blst-lib/ 2>/dev/null || echo "No blst-lib directory"
+        ls -la source/pcre2-lib/ 2>/dev/null || echo "No pcre2-lib directory"
+        ls -la source/grapa-other/ 2>/dev/null || echo "No grapa-other directory"
+        ls -la bin/ 2>/dev/null || echo "No bin directory"
+        ls -la grapa* 2>/dev/null || echo "No grapa executables"
+        ls -la libgrapa.* 2>/dev/null || echo "No libgrapa files"
+        
         # Add all platform-specific libraries
-        git add source/grapa-lib/ || echo "No grapa-lib changes"
-        git add source/openssl-lib/ || echo "No openssl-lib changes"
-        git add source/fl-lib/ || echo "No fl-lib changes"
-        git add source/blst-lib/ || echo "No blst-lib changes"
-        git add source/pcre2-lib/ || echo "No pcre2-lib changes"
-        git add source/grapa-other/ || echo "No grapa-other changes"
+        echo "=== DEBUG: Adding files to git ==="
+        git add source/grapa-lib/ 2>&1 || echo "No grapa-lib changes"
+        git add source/openssl-lib/ 2>&1 || echo "No openssl-lib changes"
+        git add source/fl-lib/ 2>&1 || echo "No fl-lib changes"
+        git add source/blst-lib/ 2>&1 || echo "No blst-lib changes"
+        git add source/pcre2-lib/ 2>&1 || echo "No pcre2-lib changes"
+        git add source/grapa-other/ 2>&1 || echo "No grapa-other changes"
         
         # Add top-level binary artifacts
-        git add grapa* || echo "No grapa executable changes"
-        git add libgrapa.* || echo "No libgrapa changes"
+        git add grapa* 2>&1 || echo "No grapa executable changes"
+        git add libgrapa.* 2>&1 || echo "No libgrapa changes"
         
         # Add binaries
-        git add bin/ || echo "No bin changes"
+        git add bin/ 2>&1 || echo "No bin changes"
+        
+        # Debug: Check git status
+        echo "=== DEBUG: Git status ==="
+        git status --porcelain
         
         # Commit and push
         git commit -m "Update pre-built libraries and binaries for all platforms [automated]" || echo "No changes to commit"
