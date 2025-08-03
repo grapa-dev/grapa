@@ -310,7 +310,7 @@ def pick_libraries():
         return ['grapa']
     if my_system == 'Darwin':
         #return ['@rpath/grapa']
-        return ['source/grapa-lib/libgrapa.a']
+        return ['grapa', 'blst', 'fltk', 'fltk_forms', 'fltk_gl', 'fltk_images', 'fltk_jpeg', 'fltk_png', 'crypto', 'ssl', 'pcre2-8']
     if my_system == 'Windows':
         return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
     raise ValueError("Unknown platform: " + my_system)
