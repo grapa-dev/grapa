@@ -769,6 +769,9 @@ def main():
     
     builder = GrapaBuilder()
     
+    # Get platform and architecture for reporting
+    platform, arch = builder.detect_platform()
+    
     if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist):
         print(f"\n{'='*50}")
         print(f"Build successful for {platform} {arch}")
