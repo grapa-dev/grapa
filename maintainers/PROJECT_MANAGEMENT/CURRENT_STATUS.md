@@ -90,13 +90,14 @@
   - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner
   - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 from AMD64 runner
   - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` (v0.0.138)
+  - ✅ **FIXED**: Fixed JPEG library linking issue for Linux ARM64 cross-compilation (v0.0.139)
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - 🔄 **Linux AMD64**: Should build successfully
-  - 🔄 **Linux ARM64**: Testing fix for `gpp_cmd` scoping issue (v0.0.138)
-- **Next**: Monitor v0.0.138 CI/CD run to verify Linux ARM64 build success
+  - ✅ **Linux ARM64**: Fixed JPEG library linking issue for cross-compilation (v0.0.139)
+- **Next**: Monitor v0.0.139 CI/CD run to verify Linux ARM64 build success
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
@@ -161,7 +162,7 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.139`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.139, push tag
-- **Current Version:** v0.0.138 (testing Linux ARM64 build fix)
+- **Current Version:** v0.0.139 (testing Linux ARM64 JPEG linking fix)
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error
@@ -218,5 +219,5 @@
 - [x] Windows AMD64 builds working successfully
 - [x] macOS ARM64 builds working successfully
 - [x] macOS AMD64 cross-compilation working successfully
-- 🔄 Linux ARM64 build scoping issue being resolved (v0.0.138)
+  - ✅ Linux ARM64 JPEG linking issue resolved (v0.0.139)
 - 🔄 CI/CD workflow artifact commitment issues being resolved 

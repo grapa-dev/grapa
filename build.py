@@ -451,8 +451,12 @@ class GrapaBuilder:
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
                 ] + system_libs + [
-                    "-O3", "-pthread", "-fPIC", "-ljpeg", "-o", "libgrapa.so"
+                    "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                 ] + cross_flags
+                
+                # Add -ljpeg only for native builds (not cross-compilation)
+                if not is_cross_compile:
+                    cmd.insert(-2, "-ljpeg")
                 
                 subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
@@ -477,8 +481,12 @@ class GrapaBuilder:
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                 f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
             ] + system_libs + [
-                "-O3", "-pthread", "-ljpeg", "-o", config.output_name
+                "-O3", "-pthread", "-o", config.output_name
             ] + cross_flags
+            
+            # Add -ljpeg only for native builds (not cross-compilation)
+            if not is_cross_compile:
+                cmd.insert(-2, "-ljpeg")
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
