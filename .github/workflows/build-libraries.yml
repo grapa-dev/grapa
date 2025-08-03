@@ -1,4 +1,4 @@
-name: Build Libraries and Binaries
+name: Build Libraries and Binaries (Fixed)
 
 on:
   push:
@@ -31,6 +31,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: main
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -98,33 +101,85 @@ jobs:
       shell: pwsh
       run: |
         Write-Host "Creating Windows archive for ${{ matrix.platform }}..."
+        
+        # Get files to include (matching build.py logic)
+        $filesToInclude = @()
+        
+        # Add executable if it exists
         if (Test-Path "grapa.exe") {
-          Compress-Archive -Path "grapa.exe" -DestinationPath "bin/grapa-win-${{ matrix.platform }}.zip" -Force
-          Write-Host "Created bin/grapa-win-${{ matrix.platform }}.zip"
+          $filesToInclude += "grapa.exe"
+        }
+        
+        # Add library file if it exists
+        if (Test-Path "grapa.lib") {
+          $filesToInclude += "grapa.lib"
+        }
+        
+        if ($filesToInclude.Count -gt 0) {
+          Compress-Archive -Path $filesToInclude -DestinationPath "bin/grapa-${{ matrix.platform }}.zip" -Force
+          Write-Host "Created bin/grapa-${{ matrix.platform }}.zip with files: $($filesToInclude -join ', ')"
         } else {
-          Write-Host "grapa.exe not found, skipping archive creation"
+          Write-Host "No files found to include in archive, skipping archive creation"
         }
         
     - name: Create archives (Linux/macOS)
       if: matrix.os != 'windows-latest'
       run: |
         echo "Creating archive for ${{ matrix.platform }}..."
+        
+        # Get files to include (matching build.py logic)
+        files_to_include=()
+        
+        # Add executable if it exists
         if [ -f "grapa" ]; then
-          tar -czf "bin/grapa-${{ matrix.platform }}.tar.gz" grapa
-          echo "Created bin/grapa-${{ matrix.platform }}.tar.gz"
-        else
-          echo "grapa executable not found, skipping archive creation"
+          files_to_include+=("grapa")
         fi
         
-    - name: Upload artifacts
+        # Add library files
+        if [ -d "source/grapa-lib/${{ matrix.platform }}/" ]; then
+          files_to_include+=("source/grapa-lib/${{ matrix.platform }}/"*)
+        fi
+        
+        # Add other files (for Mac shared libraries)
+        if [ -d "source/grapa-other/${{ matrix.platform }}/" ]; then
+          files_to_include+=("source/grapa-other/${{ matrix.platform }}/"*)
+        fi
+        
+        if [ ${#files_to_include[@]} -gt 0 ]; then
+          tar -czf "bin/grapa-${{ matrix.platform }}.tar.gz" "${files_to_include[@]}"
+          echo "Created bin/grapa-${{ matrix.platform }}.tar.gz with files: ${files_to_include[*]}"
+        else
+          echo "No files found to include in archive, skipping archive creation"
+        fi
+        
+    # Upload artifacts for later commit
+    - name: Upload platform artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: platform-artifacts-${{ matrix.platform }}
+        path: |
+          source/grapa-lib/${{ matrix.platform }}/
+          source/openssl-lib/${{ matrix.platform }}/
+          source/fl-lib/${{ matrix.platform }}/
+          source/blst-lib/${{ matrix.platform }}/
+          source/pcre2-lib/${{ matrix.platform }}/
+          source/grapa-other/${{ matrix.platform }}/
+          bin/
+          grapa*
+          libgrapa.*
+        
+    - name: Upload artifacts (for backup)
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts-${{ matrix.platform }}
         path: |
           source/*-lib/${{ matrix.platform }}/
+          source/grapa-other/${{ matrix.platform }}/
           bin/
+          grapa*
+          libgrapa.*
           
-  commit-artifacts:
+  commit-all-artifacts:
     needs: build-libraries
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
@@ -134,77 +189,57 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         ref: main
-        
-    - name: Download all artifacts
+    
+    - name: Download all platform artifacts
       uses: actions/download-artifact@v4
       with:
         path: artifacts/
         merge-multiple: true
-        
-    - name: Install build dependencies for wheel building
+    
+    - name: Extract and commit artifacts
       run: |
-        echo "Installing build dependencies for wheel building..."
-        # Check what's available
-        python -c "import sys; print('Python version:', sys.version)"
-        python -c "import distutils; print('distutils available')" || echo "distutils not available"
-        python -c "import setuptools; print('setuptools available')" || echo "setuptools not available"
+        echo "Extracting and committing all platform artifacts..."
         
-        # Try to install setuptools
-        python -m pip install --upgrade pip setuptools wheel
-        python -c "import setuptools; print('setuptools version:', setuptools.__version__)"
-        
-    - name: Setup Git
-      run: |
+        # Setup Git
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
-    - name: Commit artifacts back to repo
-      run: |
-        echo "Committing build artifacts to repository..."
-        
-        # Debug: Show what's in artifacts directory
-        echo "Artifacts directory contents:"
-        find artifacts/ -type d 2>/dev/null | head -20 || echo "No artifacts directory found"
-        echo "All artifacts files:"
-        find artifacts/ -type f 2>/dev/null | head -20 || echo "No artifacts files found"
-        echo "Artifacts directory structure:"
-        ls -la artifacts/ 2>/dev/null || echo "No artifacts directory found"
-        
-        # Copy libraries to source directories
-        # The artifacts are uploaded as source/*-lib/$platform/ and downloaded to artifacts/source/*-lib/
-        for lib_dir in artifacts/source/*-lib/; do
-          if [ -d "$lib_dir" ]; then
-            lib_type=$(basename "$lib_dir" -lib)
-            echo "Processing $lib_type libraries..."
-            for platform_dir in "$lib_dir"*/; do
-              if [ -d "$platform_dir" ]; then
-                platform=$(basename "$platform_dir")
-                echo "Copying $lib_type libraries for $platform"
-                mkdir -p "source/$lib_type-lib/$platform/"
-                cp -r "$platform_dir"* "source/$lib_type-lib/$platform/"
-              fi
-            done
+        # Extract artifacts to their correct locations
+        for artifact_dir in artifacts/platform-artifacts-*/; do
+          if [ -d "$artifact_dir" ]; then
+            echo "Processing artifacts from: $artifact_dir"
+            cp -r "$artifact_dir"/* . || echo "No files to copy from $artifact_dir"
           fi
         done
         
-        # Copy binaries to bin directory
-        if [ -d "artifacts/bin" ]; then
-          echo "Copying binary archives to bin/"
-          cp -r artifacts/bin/* bin/ 2>/dev/null || echo "No binary archives found"
-        fi
+        # Add all platform-specific libraries
+        git add source/grapa-lib/ || echo "No grapa-lib changes"
+        git add source/openssl-lib/ || echo "No openssl-lib changes"
+        git add source/fl-lib/ || echo "No fl-lib changes"
+        git add source/blst-lib/ || echo "No blst-lib changes"
+        git add source/pcre2-lib/ || echo "No pcre2-lib changes"
+        git add source/grapa-other/ || echo "No grapa-other changes"
         
-        # Add and commit
-        git add source/*-lib/ bin/
+        # Add top-level binary artifacts
+        git add grapa* || echo "No grapa executable changes"
+        git add libgrapa.* || echo "No libgrapa changes"
+        
+        # Add binaries
+        git add bin/ || echo "No bin changes"
+        
+        # Commit and push
         git commit -m "Update pre-built libraries and binaries for all platforms [automated]" || echo "No changes to commit"
         git push origin main
         
   build-wheels-linux:
-    needs: commit-artifacts
+    needs: commit-all-artifacts
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: main
     
     - name: Install build dependencies for wheel building
       run: |
@@ -237,12 +272,14 @@ jobs:
         path: dist/
 
   build-wheels-windows:
-    needs: commit-artifacts
+    needs: commit-all-artifacts
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: main
     
     - name: Set up Python 3.12
       uses: actions/setup-python@v4
@@ -277,12 +314,14 @@ jobs:
         path: dist/
 
   build-wheels-macos:
-    needs: commit-artifacts
+    needs: commit-all-artifacts
     runs-on: macos-latest
     if: startsWith(github.ref, 'refs/tags/')
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: main
     
     - name: Install build dependencies for wheel building
       run: |
@@ -299,7 +338,7 @@ jobs:
         
         # Build wheel and source distribution for macOS (CMakeExtension approach)
         echo "Building wheel and source distribution for macOS..."
-        python setup.py bdist_wheel
+        python setup.py bdist_wheel --plat-name macosx_10_9_x86_64
         python setup.py sdist
         
         echo "Built distributions:"
@@ -310,71 +349,39 @@ jobs:
       with:
         name: dists-macos
         path: dist/
-        
-  deploy-to-pypi:
+
+  combine-distributions:
     needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
     
     steps:
-    - uses: actions/checkout@v4
+    - name: Download all distribution artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dists/
+        merge-multiple: true
+        
+    - name: Upload combined distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: all-distributions
+        path: dists/
+
+  deploy-to-pypi:
+    needs: combine-distributions
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
     
-    - name: Download Linux distributions
+    steps:
+    - name: Download combined distributions
       uses: actions/download-artifact@v4
       with:
-        name: dists-linux
-        path: dist-linux/
-        
-    - name: Download Windows distributions
-      uses: actions/download-artifact@v4
-      with:
-        name: dists-windows
-        path: dist-windows/
-        
-    - name: Download macOS distributions
-      uses: actions/download-artifact@v4
-      with:
-        name: dists-macos
-        path: dist-macos/
-        
-    - name: Combine distributions into single dist
-      run: |
-        echo "Combining distributions from all build systems..."
-        mkdir -p dist/
-        
-        # Copy Linux distributions (wheels and source)
-        if [ -d "dist-linux" ]; then
-          cp dist-linux/* dist/
-          echo "Copied Linux distributions:"
-          ls -la dist-linux/
-        fi
-        
-        # Copy Windows distributions (wheels and source)
-        if [ -d "dist-windows" ]; then
-          cp dist-windows/* dist/
-          echo "Copied Windows distributions:"
-          ls -la dist-windows/
-        fi
-        
-        # Copy macOS distributions (wheels and source)
-        if [ -d "dist-macos" ]; then
-          cp dist-macos/* dist/
-          echo "Copied macOS distributions:"
-          ls -la dist-macos/
-        fi
-        
-        echo "Combined distributions in dist/:"
-        ls -la dist/
+        name: all-distributions
+        path: dists/
         
     - name: Upload to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
-        user: __token__
-        repository-url: https://upload.pypi.org/legacy/
-        packages-dir: dist
-        verify-metadata: true
-        skip-existing: false
-        verbose: false
-        print-hash: false
-        attestations: true 
+        packages-dir: dists/ 
