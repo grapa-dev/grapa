@@ -90,14 +90,14 @@
   - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner
   - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 from AMD64 runner
   - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` (v0.0.138)
-  - ✅ **FIXED**: JPEG library dependency issue - added libjpeg-dev to CI dependencies (v0.0.146)
+  - ✅ **FIXED**: JPEG library dependency issue - added libjpeg-dev and libjpeg-dev:arm64 to CI dependencies (v0.0.147)
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - 🔄 **Linux AMD64**: Should build successfully
-  - ✅ **Linux AMD64 & ARM64**: Fixed JPEG library dependency by adding libjpeg-dev to CI dependencies (v0.0.146)
-- **Next**: Monitor v0.0.146 CI/CD run to verify Linux builds success
+  - ✅ **Linux AMD64 & ARM64**: Fixed JPEG library dependency by adding libjpeg-dev and libjpeg-dev:arm64 to CI dependencies (v0.0.147)
+- **Next**: Monitor v0.0.147 CI/CD run to verify Linux builds success (approach validated by ChatGPT)
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
@@ -162,7 +162,7 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.139`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.139, push tag
-- **Current Version:** v0.0.146 (testing JPEG library installation fix)
+- **Current Version:** v0.0.147 (ARM64 JPEG library fix - validated approach)
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error
@@ -219,5 +219,5 @@
 - [x] Windows AMD64 builds working successfully
 - [x] macOS ARM64 builds working successfully
 - [x] macOS AMD64 cross-compilation working successfully
-  - ✅ Linux AMD64 & ARM64 JPEG dependency issue resolved - added libjpeg-dev to CI (v0.0.146)
+  - ✅ Linux AMD64 & ARM64 JPEG dependency issue resolved - added libjpeg-dev and libjpeg-dev:arm64 to CI (v0.0.147)
 - 🔄 CI/CD workflow artifact commitment issues being resolved 
