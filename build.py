@@ -764,14 +764,20 @@ def main():
     parser.add_argument("--lib-only", action="store_true", help="Build only the libraries (skip executable, Python package, and packaging steps). Libraries will be copied to the top-level directory.")
     parser.add_argument("--python-only", action="store_true", help="Build only the Python extension (assumes executable already exists). Useful for debugging Python extension issues without rebuilding the executable.")
     parser.add_argument("--preserve-dist", action="store_true", help="Preserve the dist/ directory after build (useful for debugging or manual installation)")
+    parser.add_argument("--platform", help="Target platform (windows, mac, linux, aws)")
+    parser.add_argument("--arch", help="Target architecture (amd64, arm64)")
     
     args = parser.parse_args()
     
     builder = GrapaBuilder()
     
-    # Build for current platform only
-    platform, arch = builder.detect_platform()
-    print(f"Building for {platform} {arch}")
+    # Use provided platform/arch or detect current platform
+    if args.platform and args.arch:
+        platform, arch = args.platform, args.arch
+        print(f"Building for target platform: {platform} {arch}")
+    else:
+        platform, arch = builder.detect_platform()
+        print(f"Building for current platform: {platform} {arch}")
     
     if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist):
         print(f"\n{'='*50}")

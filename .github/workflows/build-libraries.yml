@@ -19,15 +19,19 @@ jobs:
           # macOS AMD64
           - os: macos-latest
             platform: mac-amd64
+            arch: amd64
           # macOS ARM64
           - os: macos-latest
             platform: mac-arm64
+            arch: arm64
           # Linux AMD64
           - os: ubuntu-latest
             platform: linux-amd64
+            arch: amd64
           # Linux ARM64
           - os: ubuntu-latest
             platform: linux-arm64
+            arch: arm64
 
     steps:
     - uses: actions/checkout@v4
@@ -70,7 +74,7 @@ jobs:
         Write-Host "Platform: ${{ matrix.platform }}"
         
         # Build libraries only
-        python build.py --lib-only
+        python build.py --lib-only --platform windows --arch amd64
         
         Write-Host "Build completed. Checking for libraries..."
         Get-ChildItem "source/grapa-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
@@ -79,15 +83,32 @@ jobs:
         Get-ChildItem "source/blst-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
         Get-ChildItem "source/pcre2-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
         
-    - name: Build libraries and binaries (Linux/macOS)
-      if: matrix.os != 'windows-latest'
+    - name: Build libraries and binaries (macOS)
+      if: matrix.os == 'macos-latest'
       run: |
         echo "Building libraries for platform: ${{ matrix.platform }}"
         echo "Current directory: $(pwd)"
         echo "Platform: ${{ matrix.platform }}"
         
         # Build libraries only
-        python build.py --lib-only
+        python build.py --lib-only --platform mac --arch ${{ matrix.arch }}
+        
+        echo "Build completed. Checking for libraries..."
+        ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
+        ls -la source/openssl-lib/${{ matrix.platform }}/ || echo "No OpenSSL libraries found"
+        ls -la source/fl-lib/${{ matrix.platform }}/ || echo "No FL libraries found"
+        ls -la source/blst-lib/${{ matrix.platform }}/ || echo "No BLST libraries found"
+        ls -la source/pcre2-lib/${{ matrix.platform }}/ || echo "No PCRE2 libraries found"
+        
+    - name: Build libraries and binaries (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        echo "Building libraries for platform: ${{ matrix.platform }}"
+        echo "Current directory: $(pwd)"
+        echo "Platform: ${{ matrix.platform }}"
+        
+        # Build libraries only
+        python build.py --lib-only --platform linux --arch ${{ matrix.arch }}
         
         echo "Build completed. Checking for libraries..."
         ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
