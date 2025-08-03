@@ -271,14 +271,44 @@ class CustomBuildExt(build_ext):
             self.build_temp = os.path.join(os.getcwd(), 'build_temp')
             if not os.path.exists(self.build_temp):
                 os.makedirs(self.build_temp)
+        
+        # Compile utf8proc.c first (C compilation)
+        print("Building utf8proc...")
         try:
+            if sys.platform.startswith('darwin'):
+                # macOS: use clang
+                subprocess.run([
+                    "clang", "-Isource", "-DUTF8PROC_STATIC", "-c",
+                    "source/utf8proc/utf8proc.c", "-O3"
+                ], check=True)
+            elif sys.platform.startswith('linux'):
+                # Linux: use gcc
+                subprocess.run([
+                    "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c",
+                    "source/utf8proc/utf8proc.c", "-O3"
+                ], check=True)
+            elif sys.platform.startswith('win32'):
+                # Windows: use cl (MSVC)
+                subprocess.run([
+                    "cl", "/Isource", "/DUTF8PROC_STATIC", "/c",
+                    "source/utf8proc/utf8proc.c", "/O2"
+                ], check=True)
+            print("utf8proc compiled successfully")
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to compile utf8proc: {e}")
+            raise
+        
+        try:
+            # Add utf8proc.o to the extra objects for linking
+            if os.path.exists('utf8proc.o'):
+                ext.extra_objects = ['utf8proc.o']
             super().build_extension(ext)
         except PermissionError as e:
             if "cache" in str(e).lower():
                 print("\n" + "="*60)
                 print("PERMISSION ERROR: Pip cannot write to its cache directory.")
                 print("SOLUTION: Use one of these commands:")
-                print("  pip install --no-cache-dir dist/grapapy-0.0.25.tar.gz")
+                print("  pip install --no-cache-dir dist/grapapy-0.0.100.tar.gz")
                 print("  pip install --no-cache-dir -e .")
                 print("="*60)
             raise
