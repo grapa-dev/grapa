@@ -202,7 +202,7 @@ class CMakeBuild(build_ext):
             os.makedirs(build_temp)
 
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=build_temp)
-        subprocess.check_call(["cmake", "--build", "."] + build_args, cwd=build_temp)
+        subprocess.check_call(["cmake", "--build", ".", "--verbose"] + build_args, cwd=build_temp)
 
 
 class CopySharedLibrary(Command):
