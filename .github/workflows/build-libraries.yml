@@ -183,7 +183,7 @@ jobs:
         git commit -m "Update pre-built libraries and binaries for all platforms [automated]" || echo "No changes to commit"
         git push origin main
         
-  deploy-to-pypi:
+  build-wheels:
     needs: commit-artifacts
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/')
@@ -203,9 +203,9 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel build
         python -c "import setuptools; print('setuptools version:', setuptools.__version__)"
         
-    - name: Build fresh wheels
+    - name: Build wheels on Windows
       run: |
-        echo "Building fresh wheels using pre-built libraries..."
+        echo "Building wheels using pre-built libraries..."
         
         # Clean previous builds to ensure fresh wheels
         Remove-Item -Recurse -Force dist, build, *.egg-info -ErrorAction SilentlyContinue
@@ -216,6 +216,26 @@ jobs:
         
         echo "Built wheels:"
         Get-ChildItem dist/
+        
+    - name: Upload wheels artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheels
+        path: dist/*.whl
+        
+  deploy-to-pypi:
+    needs: build-wheels
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download wheels
+      uses: actions/download-artifact@v4
+      with:
+        name: wheels
+        path: dist/
         
     - name: Upload to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
