@@ -101,6 +101,17 @@ class GrapaBuilder:
         
     def detect_platform(self) -> Tuple[str, str]:
         """Detect current platform and architecture"""
+        # Check for CI/CD environment variable first
+        ci_platform = os.environ.get('CI_PLATFORM')
+        if ci_platform:
+            # Parse platform like "linux-arm64", "mac-amd64", etc.
+            if '-' in ci_platform:
+                platform_name, arch = ci_platform.split('-', 1)
+                return platform_name, arch
+            else:
+                print(f"Warning: CI_PLATFORM={ci_platform} is not in expected format (platform-arch)")
+        
+        # Fall back to automatic detection
         system = platform.system().lower()
         machine = platform.machine().lower()
         

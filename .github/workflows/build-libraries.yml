@@ -64,10 +64,13 @@ jobs:
     - name: Build libraries and binaries (Windows)
       if: matrix.os == 'windows-latest'
       shell: pwsh
+      env:
+        CI_PLATFORM: ${{ matrix.platform }}
       run: |
         Write-Host "Building libraries for platform: ${{ matrix.platform }}"
         Write-Host "Current directory: $(Get-Location)"
         Write-Host "Platform: ${{ matrix.platform }}"
+        Write-Host "CI_PLATFORM: $env:CI_PLATFORM"
         
         # Build libraries only
         python build.py --lib-only
@@ -88,10 +91,13 @@ jobs:
         
     - name: Build libraries and binaries (macOS)
       if: matrix.os == 'macos-latest'
+      env:
+        CI_PLATFORM: ${{ matrix.platform }}
       run: |
         echo "Building libraries for platform: ${{ matrix.platform }}"
         echo "Current directory: $(pwd)"
         echo "Platform: ${{ matrix.platform }}"
+        echo "CI_PLATFORM: $CI_PLATFORM"
         
         # Build libraries only
         python build.py --lib-only
@@ -112,10 +118,13 @@ jobs:
         
     - name: Build libraries and binaries (Linux)
       if: matrix.os == 'ubuntu-latest'
+      env:
+        CI_PLATFORM: ${{ matrix.platform }}
       run: |
         echo "Building libraries for platform: ${{ matrix.platform }}"
         echo "Current directory: $(pwd)"
         echo "Platform: ${{ matrix.platform }}"
+        echo "CI_PLATFORM: $CI_PLATFORM"
         
         # Build libraries only
         python build.py --lib-only
