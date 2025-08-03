@@ -129,10 +129,40 @@ class GrapaBuilder:
         print(f"Building for {config.target} using Visual Studio...")
         
         try:
+            # Find msbuild in common locations
+            msbuild_paths = [
+                "msbuild",  # Try PATH first
+                "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+                "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\MSBuild\\Current\\Bin\\MSBuild.exe",
+                "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe",
+                "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+                "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Professional\\MSBuild\\Current\\Bin\\MSBuild.exe",
+                "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            ]
+            
+            msbuild_exe = None
+            for path in msbuild_paths:
+                try:
+                    if path == "msbuild":
+                        # Test if msbuild is in PATH
+                        subprocess.run(["msbuild", "/version"], capture_output=True, check=True)
+                        msbuild_exe = "msbuild"
+                        break
+                    elif os.path.exists(path):
+                        msbuild_exe = path
+                        break
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    continue
+            
+            if not msbuild_exe:
+                raise RuntimeError("Could not find msbuild. Please ensure Visual Studio is installed.")
+            
+            print(f"Using msbuild: {msbuild_exe}")
+            
             if not lib_only:
                 # Build main executable
                 subprocess.run([
-                    "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
+                    msbuild_exe, "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
                 ], check=True)
                 
                 # Copy executable
@@ -143,7 +173,7 @@ class GrapaBuilder:
             if not exe_only:
                 # Build library (utf8proc.c is already included in the MSBuild project)
                 subprocess.run([
-                    "msbuild", "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
+                    msbuild_exe, "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
                 ], check=True)
                 # Copy library
                 if os.path.exists("grapa.lib"):
