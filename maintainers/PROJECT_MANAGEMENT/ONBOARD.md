@@ -98,6 +98,19 @@ This guide provides comprehensive onboarding information for new agents, develop
 1. Database system improvements - HIGH PRIORITY, ready to start
 2. Custom Delimiter Edge Cases - MEDIUM PRIORITY, investigation needed
 3. Unicode Language Binding - Add case_fold(), Unicode-aware string methods
+
+### Version Deployment Process
+
+**When user says "increment the version and push to GitHub" or similar:**
+
+**⚠️ REQUIRED PROCESS:**
+1. **Use the automated script:** `python scripts/bump_version_and_deploy.py <new_version>`
+2. **Manual process if script unavailable:**
+   - Update version in 3 files: `setup.py`, `source/mainpy.cpp`, `source/grapa/GrapaLink.h`
+   - Create Git tag: `git tag v<version>`
+   - Push tag: `git push origin v<version>`
+3. **The tag triggers CI/CD workflow automatically**
+4. **PyPI deployment happens automatically after successful build**
 4. String Interpolation - Implement template literal-style interpolation
 5. CLI Enhancement - Performance options, environment management, error handling
 

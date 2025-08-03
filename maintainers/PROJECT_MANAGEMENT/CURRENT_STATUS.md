@@ -125,6 +125,11 @@
 - **Deploy Docs (Linux/Mac):** `./scripts/deploy_docs.sh`
 - **Deploy Docs (Windows):** `.\scripts\deploy_docs.ps1`
 
+### Version and Deployment Commands
+- **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
+- **Example:** `python scripts/bump_version_and_deploy.py 0.0.116`
+- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.116, push tag
+
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error
 - **Error**: `fatal error C1083: Cannot open include file: 'io.h': No such file or directory`

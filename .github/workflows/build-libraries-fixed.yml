@@ -1,0 +1,335 @@
+name: Build Libraries and Binaries (Fixed)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-libraries:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          # Windows AMD64
+          - os: windows-latest
+            platform: win-amd64
+            arch: x64
+          # macOS AMD64
+          - os: macos-latest
+            platform: mac-amd64
+          # macOS ARM64
+          - os: macos-latest
+            platform: mac-arm64
+          # Linux AMD64
+          - os: ubuntu-latest
+            platform: linux-amd64
+          # Linux ARM64
+          - os: ubuntu-latest
+            platform: linux-arm64
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: main
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install build dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Installing build dependencies for Windows..."
+        # Visual Studio is pre-installed on windows-latest
+        Write-Host "Visual Studio environment available"
+        
+    - name: Install build dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        echo "Installing build dependencies for Linux..."
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev
+        
+    - name: Install build dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        echo "Installing build dependencies for macOS..."
+        # Xcode command line tools are pre-installed on macos-latest
+        
+    - name: Build libraries and binaries (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Building libraries for platform: ${{ matrix.platform }}"
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Platform: ${{ matrix.platform }}"
+        
+        # Build libraries only
+        python build.py --lib-only
+        
+        Write-Host "Build completed. Checking for libraries..."
+        Get-ChildItem "source/grapa-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/openssl-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/fl-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/blst-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/pcre2-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        
+    - name: Build libraries and binaries (Linux/macOS)
+      if: matrix.os != 'windows-latest'
+      run: |
+        echo "Building libraries for platform: ${{ matrix.platform }}"
+        echo "Current directory: $(pwd)"
+        echo "Platform: ${{ matrix.platform }}"
+        
+        # Build libraries only
+        python build.py --lib-only
+        
+        echo "Build completed. Checking for libraries..."
+        ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
+        ls -la source/openssl-lib/${{ matrix.platform }}/ || echo "No OpenSSL libraries found"
+        ls -la source/fl-lib/${{ matrix.platform }}/ || echo "No FL libraries found"
+        ls -la source/blst-lib/${{ matrix.platform }}/ || echo "No BLST libraries found"
+        ls -la source/pcre2-lib/${{ matrix.platform }}/ || echo "No PCRE2 libraries found"
+        
+    - name: Create archives (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Creating Windows archive for ${{ matrix.platform }}..."
+        if (Test-Path "grapa.exe") {
+          Compress-Archive -Path "grapa.exe" -DestinationPath "bin/grapa-win-${{ matrix.platform }}.zip" -Force
+          Write-Host "Created bin/grapa-win-${{ matrix.platform }}.zip"
+        } else {
+          Write-Host "grapa.exe not found, skipping archive creation"
+        }
+        
+    - name: Create archives (Linux/macOS)
+      if: matrix.os != 'windows-latest'
+      run: |
+        echo "Creating archive for ${{ matrix.platform }}..."
+        if [ -f "grapa" ]; then
+          tar -czf "bin/grapa-${{ matrix.platform }}.tar.gz" grapa
+          echo "Created bin/grapa-${{ matrix.platform }}.tar.gz"
+        else
+          echo "grapa executable not found, skipping archive creation"
+        fi
+        
+    # FIXED: Each platform commits its own artifacts
+    - name: Commit platform artifacts (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Committing ${{ matrix.platform }} artifacts to repository..."
+        
+        # Setup Git
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add platform-specific libraries
+        git add "source/grapa-lib/${{ matrix.platform }}/"
+        git add "source/openssl-lib/${{ matrix.platform }}/"
+        git add "source/fl-lib/${{ matrix.platform }}/"
+        git add "source/blst-lib/${{ matrix.platform }}/"
+        git add "source/pcre2-lib/${{ matrix.platform }}/"
+        
+        # Add binaries if they exist
+        if (Test-Path "bin/") {
+          git add "bin/"
+        }
+        
+        # Commit and push
+        git commit -m "Add ${{ matrix.platform }} libraries and binaries [automated]" || Write-Host "No changes to commit"
+        git push origin main
+        
+    - name: Commit platform artifacts (Linux/macOS)
+      if: matrix.os != 'windows-latest'
+      run: |
+        echo "Committing ${{ matrix.platform }} artifacts to repository..."
+        
+        # Setup Git
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add platform-specific libraries
+        git add "source/grapa-lib/${{ matrix.platform }}/"
+        git add "source/openssl-lib/${{ matrix.platform }}/"
+        git add "source/fl-lib/${{ matrix.platform }}/"
+        git add "source/blst-lib/${{ matrix.platform }}/"
+        git add "source/pcre2-lib/${{ matrix.platform }}/"
+        
+        # Add binaries if they exist
+        if [ -d "bin/" ]; then
+          git add "bin/"
+        fi
+        
+        # Commit and push
+        git commit -m "Add ${{ matrix.platform }} libraries and binaries [automated]" || echo "No changes to commit"
+        git push origin main
+        
+    - name: Upload artifacts (for backup)
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ matrix.platform }}
+        path: |
+          source/*-lib/${{ matrix.platform }}/
+          bin/
+          
+  build-wheels-linux:
+    needs: build-libraries
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: main
+    
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        # Install system dependencies
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev
+        # Install Python dependencies
+        python -m pip install --upgrade pip setuptools wheel build
+        
+    - name: Build Linux wheel
+      run: |
+        echo "Building Linux wheel using Extension approach..."
+        
+        # Clean previous builds to ensure fresh wheels
+        rm -rf dist/ build/ *.egg-info/
+        
+        # Build wheel and source distribution for Linux (Extension approach)
+        echo "Building wheel and source distribution for Linux..."
+        python setup.py bdist_wheel --plat-name manylinux2014_x86_64
+        python setup.py sdist
+        
+        echo "Built distributions:"
+        ls -la dist/
+        
+    - name: Upload Linux distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dists-linux
+        path: dist/
+
+  build-wheels-windows:
+    needs: build-libraries
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: main
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        # Install Python dependencies
+        python -m pip install --upgrade pip setuptools wheel build
+        
+    - name: Build Windows wheel
+      run: |
+        echo "Building Windows wheel using Extension approach..."
+        
+        # Clean previous builds to ensure fresh wheels
+        Remove-Item -Recurse -Force dist, build, *.egg-info -ErrorAction SilentlyContinue
+        
+        # Build wheel and source distribution for Windows (Extension approach)
+        echo "Building wheel and source distribution for Windows..."
+        python setup.py bdist_wheel --plat-name win_amd64
+        python setup.py sdist
+        
+        echo "Built distributions:"
+        Get-ChildItem dist/
+        
+    - name: Upload Windows distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dists-windows
+        path: dist/
+
+  build-wheels-macos:
+    needs: build-libraries
+    runs-on: macos-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: main
+    
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        # Install Python dependencies
+        python -m pip install --upgrade pip setuptools wheel build
+        
+    - name: Build macOS wheel
+      run: |
+        echo "Building macOS wheel using CMakeExtension approach..."
+        
+        # Clean previous builds to ensure fresh wheels
+        rm -rf dist/ build/ *.egg-info/
+        
+        # Build wheel and source distribution for macOS (CMakeExtension approach)
+        echo "Building wheel and source distribution for macOS..."
+        python setup.py bdist_wheel --plat-name macosx_10_9_x86_64
+        python setup.py sdist
+        
+        echo "Built distributions:"
+        ls -la dist/
+        
+    - name: Upload macOS distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dists-macos
+        path: dist/
+
+  combine-distributions:
+    needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download all distribution artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dists/
+        merge-multiple: true
+        
+    - name: Upload combined distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: all-distributions
+        path: dists/
+
+  deploy-to-pypi:
+    needs: combine-distributions
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download combined distributions
+      uses: actions/download-artifact@v4
+      with:
+        name: all-distributions
+        path: dists/
+        
+    - name: Upload to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        packages-dir: dists/ 
