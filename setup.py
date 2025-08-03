@@ -297,9 +297,9 @@ def pick_library_dirs():
                 return ["source", "source/grapa-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
-            return ["source", "source/grapa-lib/mac-arm64"]
+            return ["source", "source/grapa-lib/mac-arm64", "source/blst-lib/mac-arm64", "source/fl-lib/mac-arm64", "source/openssl-lib/mac-arm64", "source/pcre2-lib/mac-arm64"]
         else:
-            return ["source", "source/grapa-lib/mac-amd64"]
+            return ["source", "source/grapa-lib/mac-amd64", "source/blst-lib/mac-amd64", "source/fl-lib/mac-amd64", "source/openssl-lib/mac-amd64", "source/pcre2-lib/mac-amd64"]
     if my_system == 'Windows':
         return ["source", "source/grapa-lib/win-amd64"]
     raise ValueError("Unknown platform: " + my_system)
