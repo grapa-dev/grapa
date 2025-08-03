@@ -212,15 +212,21 @@ jobs:
         # Extract artifacts to their correct locations
         echo "=== DEBUG: Processing artifacts ==="
         
-        # Copy all artifacts directly (they're already in the right structure)
-        echo "Copying all artifacts to current directory..."
-        cp -rv artifacts/* . 2>&1 || echo "Failed to copy artifacts"
-        
-        # Remove the wrong Windows archive if it exists
-        if [ -f "bin/grapa-win-win-amd64.zip" ]; then
-          echo "Removing incorrect Windows archive: bin/grapa-win-win-amd64.zip"
-          rm "bin/grapa-win-win-amd64.zip"
-        fi
+                 # Copy all artifacts directly (they're already in the right structure)
+         echo "Copying all artifacts to current directory..."
+         cp -rv artifacts/* . 2>&1 || echo "Failed to copy artifacts"
+         
+         # Remove the wrong Windows archive if it exists
+         if [ -f "bin/grapa-win-win-amd64.zip" ]; then
+           echo "Removing incorrect Windows archive: bin/grapa-win-win-amd64.zip"
+           rm "bin/grapa-win-win-amd64.zip"
+         fi
+         
+         # Remove test files that shouldn't be committed
+         if [ -f "grapapy_test.ipynb" ]; then
+           echo "Removing test file: grapapy_test.ipynb"
+           rm "grapapy_test.ipynb"
+         fi
         
         # Debug: Check what files we have after extraction
         echo "=== DEBUG: Files after extraction ==="
@@ -234,21 +240,22 @@ jobs:
         ls -la grapa* 2>/dev/null || echo "No grapa executables"
         ls -la libgrapa.* 2>/dev/null || echo "No libgrapa files"
         
-        # Add all platform-specific libraries
-        echo "=== DEBUG: Adding files to git ==="
-        git add source/grapa-lib/ 2>&1 || echo "No grapa-lib changes"
-        git add source/openssl-lib/ 2>&1 || echo "No openssl-lib changes"
-        git add source/fl-lib/ 2>&1 || echo "No fl-lib changes"
-        git add source/blst-lib/ 2>&1 || echo "No blst-lib changes"
-        git add source/pcre2-lib/ 2>&1 || echo "No pcre2-lib changes"
-        git add source/grapa-other/ 2>&1 || echo "No grapa-other changes"
-        
-        # Add top-level binary artifacts
-        git add grapa* 2>&1 || echo "No grapa executable changes"
-        git add libgrapa.* 2>&1 || echo "No libgrapa changes"
-        
-        # Add binaries
-        git add bin/ 2>&1 || echo "No bin changes"
+                 # Add all platform-specific libraries (force add to ensure all files are included)
+         echo "=== DEBUG: Adding files to git ==="
+         git add -A source/grapa-lib/ 2>&1 || echo "No grapa-lib changes"
+         git add -A source/openssl-lib/ 2>&1 || echo "No openssl-lib changes"
+         git add -A source/fl-lib/ 2>&1 || echo "No fl-lib changes"
+         git add -A source/blst-lib/ 2>&1 || echo "No blst-lib changes"
+         git add -A source/pcre2-lib/ 2>&1 || echo "No pcre2-lib changes"
+         git add -A source/grapa-other/ 2>&1 || echo "No grapa-other changes"
+         
+         # Add top-level binary artifacts (only if they exist and are not test files)
+         if [ -f "grapa" ] || [ -f "grapa.exe" ]; then
+           git add grapa* 2>&1 || echo "No grapa executable changes"
+         fi
+         
+         # Add binaries
+         git add -A bin/ 2>&1 || echo "No bin changes"
         
         # Debug: Check git status
         echo "=== DEBUG: Git status ==="
