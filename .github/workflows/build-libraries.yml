@@ -210,16 +210,17 @@ jobs:
         find artifacts/ -type f 2>/dev/null | head -20 || echo "No files found in artifacts/"
         
         # Extract artifacts to their correct locations
-        echo "=== DEBUG: Processing artifact directories ==="
-        for artifact_dir in artifacts/platform-artifacts-*/; do
-          if [ -d "$artifact_dir" ]; then
-            echo "Processing artifacts from: $artifact_dir"
-            ls -la "$artifact_dir" || echo "Could not list $artifact_dir"
-            cp -rv "$artifact_dir"/* . 2>&1 || echo "Failed to copy from $artifact_dir"
-          else
-            echo "Directory not found: $artifact_dir"
-          fi
-        done
+        echo "=== DEBUG: Processing artifacts ==="
+        
+        # Copy all artifacts directly (they're already in the right structure)
+        echo "Copying all artifacts to current directory..."
+        cp -rv artifacts/* . 2>&1 || echo "Failed to copy artifacts"
+        
+        # Remove the wrong Windows archive if it exists
+        if [ -f "bin/grapa-win-win-amd64.zip" ]; then
+          echo "Removing incorrect Windows archive: bin/grapa-win-win-amd64.zip"
+          rm "bin/grapa-win-win-amd64.zip"
+        fi
         
         # Debug: Check what files we have after extraction
         echo "=== DEBUG: Files after extraction ==="
