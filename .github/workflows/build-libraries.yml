@@ -171,8 +171,8 @@ jobs:
         ls -la artifacts/ 2>/dev/null || echo "No artifacts directory found"
         
         # Copy libraries to source directories
-        # The artifacts are uploaded as source/*-lib/$platform/ and downloaded to artifacts/
-        for lib_dir in artifacts/*-lib/; do
+        # The artifacts are uploaded as source/*-lib/$platform/ and downloaded to artifacts/source/*-lib/
+        for lib_dir in artifacts/source/*-lib/; do
           if [ -d "$lib_dir" ]; then
             lib_type=$(basename "$lib_dir" -lib)
             echo "Processing $lib_type libraries..."
