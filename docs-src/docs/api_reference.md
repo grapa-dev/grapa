@@ -318,7 +318,7 @@ doubled = data.map(op(x) { x * 2; });
 evans = data.filter(op(x) { x % 2 == 0; });
 
 /* Reduce (sequential) */
-sum = data.reduce(op(acc, x) { acc + x; }, 0);
+sum = data.reduce(op(acc, x) { acc += x; }, 0);
 ```
 
 > **Note:** `map` and `filter` are parallel by default and production-ready for high-throughput data processing.

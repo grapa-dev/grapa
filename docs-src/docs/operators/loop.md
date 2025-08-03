@@ -117,6 +117,9 @@ reduced_sum: 10
 - The accumulator variable (acc) must be mutated inside the op for reduce to work as expected.
 - This means you must use `acc += x;` or similar, not just `acc + x;`.
 - Returning a new value does NOT update the accumulator.
+
+> **Design Philosophy:** Unlike most languages that expect return-based accumulation (`return acc + x`), Grapa's `reduce` requires explicit mutation (`acc += x`). This design doesn't assume the nature of the data being reduced and allows for complex operations like network calls, file I/O, or database queries within the reduce callback. The imperative approach enables sophisticated stateful operations.
+
 - Common mistake:
 ```
 arr = [1,2,3,4];

@@ -184,11 +184,11 @@ filtered = large_data.filter(op(x) { x % 2 == 0; }, 8);  /* Limit to 8 threads *
 ```grapa
 /* Sum all numbers */
 numbers = [1, 2, 3, 4, 5];
-sum = numbers.reduce(op(acc, x) { acc + x; }, 0);  /* 15 */
+sum = numbers.reduce(op(acc, x) { acc += x; }, 0);  /* 15 */
 
 /* Build a string */
 words = ["hello", "world", "test"];
-sentence = words.reduce(op(acc, word) { acc + " " + word; }, "");  /* " hello world test" */
+sentence = words.reduce(op(acc, word) { acc += " " + word; }, "");  /* " hello world test" */
 
 /* Collect even numbers */
 numbers = [1, 2, 3, 4, 5, 6];
@@ -208,13 +208,13 @@ numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 result = numbers
     .filter(op(x) { x % 2 == 0; })      /* [2, 4, 6, 8, 10] */
     .map(op(x) { x * x; })              /* [4, 16, 36, 64, 100] */
-    .reduce(op(acc, x) { acc + x; }, 0); /* 220 */
+    .reduce(op(acc, x) { acc += x; }, 0); /* 220 */
 
 /* Process with .range() */
 result = (10).range(0,1)
     .filter(op(x) { x % 2 == 0; })      /* [0, 2, 4, 6, 8] */
     .map(op(x) { x * x; })              /* [0, 4, 16, 36, 64] */
-    .reduce(op(acc, x) { acc + x; }, 0); /* 120 */
+    .reduce(op(acc, x) { acc += x; }, 0); /* 120 */
 ```
 
 ### Parallel Processing
@@ -232,7 +232,7 @@ squares = data.map(op(x) { x * x; }, 8);
 evens = data.filter(op(x) { x % 2 == 0; }, 8);
 
 /* Parallel reduce with 4 threads */
-sum = data.reduce(op(acc, x) { acc + x; }, 0, 4);
+sum = data.reduce(op(acc, x) { acc += x; }, 0, 4);
 ```
 
 **Important Notes:**
@@ -240,6 +240,11 @@ sum = data.reduce(op(acc, x) { acc + x; }, 0, 4);
 - Always specify thread count for very large datasets to avoid too many threads
 - `.reduce()` can be parallel but requires careful consideration of the operation
 - Method chaining is efficient and readable
+- **CRITICAL:** For `.reduce()`, use `+=` (compound assignment) not `+` (addition)
+  - Correct: `arr.reduce(op(acc, x) { acc += x; }, 0)`
+  - Wrong: `arr.reduce(op(acc, x) { acc + x; }, 0)` (returns 0)
+
+> **Design Philosophy:** Grapa's `reduce` requires explicit mutation (`+=`) rather than return-based accumulation. This design doesn't assume the nature of the data being reduced and allows for complex operations like network calls, file I/O, or database queries within the reduce callback. Unlike most languages that expect `return acc + x`, Grapa's imperative approach enables sophisticated stateful operations.
 
 ## Data Types and Access Patterns
 

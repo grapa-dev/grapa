@@ -160,7 +160,7 @@ evens = data.filter(op(x) { return x % 2 == 0; });
 ("Evens: " + evens).echo();
 
 /* Reduce operation */
-sum = data.reduce(op(acc, x) { return acc + x; }, 0);
+sum = data.reduce(op(acc, x) { acc += x; }, 0);
 ("Sum: " + sum).echo();
 ```
 

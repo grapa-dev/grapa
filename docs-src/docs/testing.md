@@ -194,7 +194,7 @@ if (evens_sorted.str() == expected_sorted.str()) {
 ```grapa
 /* Test array reduction */
 numbers = [1, 2, 3, 4, 5];
-sum = numbers.reduce(op(acc, x) { acc + x; }, 0);
+sum = numbers.reduce(op(acc, x) { acc += x; }, 0);
 expected_sum = 15;
 
 if (sum == expected_sum) {
@@ -276,11 +276,11 @@ if (missing.type() == $ERR) {
 ```grapa
 /* Test parallel operations */
 test_data = (1000).range(0, 1);  /* Generate 0-999 */
-expected_sum = test_data.reduce(op(acc, x) { acc + x; }, 0);
+expected_sum = test_data.reduce(op(acc, x) { acc += x; }, 0);
 
 /* Test parallel sum with limited threads */
 /* 4 threads */
-parallel_sum = test_data.reduce(op(acc, x) { acc + x; }, 0, 4);
+parallel_sum = test_data.reduce(op(acc, x) { acc += x; }, 0, 4);
 
 if (parallel_sum == expected_sum) {
     "Parallel sum test passed".echo();
