@@ -330,7 +330,7 @@ lib_grapa = Extension(
 
 # The information here can also be placed in setup.cfg - better separation of
 # logic and declaration, and simpler if you include description/version in a file.
-if sys.platform.startswith('linux') or sys.platform.startswith('win32'):
+if sys.platform.startswith('linux') or sys.platform.startswith('win32') or sys.platform.startswith('darwin'):
     setup(
         name="grapapy",
         version=grapapy_version,
