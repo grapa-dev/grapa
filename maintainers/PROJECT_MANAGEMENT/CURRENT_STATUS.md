@@ -43,7 +43,7 @@
 - **Approach**: Automating the original, proven build process
 - **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
 - **Stage 2**: Build universal wheels and deploy to PyPI
-- **Current Version**: v0.0.149 (latest version, testing Linux ARM64 cross-compilation fix) - DEPLOYED
+- **Current Version**: v0.0.150 (latest version, testing Linux ARM64 cross-compilation fix with Ubuntu 22.04) - DEPLOYED
 - **Key Insights**: Original approach used universal wheels containing all platform libraries
 - **Issues Discovered**:
   - ❌ **CRITICAL**: `commit-artifacts` job not detecting changes from platform jobs
@@ -92,13 +92,14 @@
   - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` (v0.0.138)
   - ✅ **FIXED**: JPEG library dependency issue - excluded -ljpeg flag for cross-compilation (v0.0.148)
   - ✅ **FIXED**: Linux ARM64 cross-compilation - installed ARM64 development libraries and fixed build.py linking (v0.0.149)
+  - ✅ **FIXED**: Linux ARM64 cross-compilation - switched to Ubuntu 22.04 and added robust ARM64 library handling (v0.0.150)
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - ✅ **Linux AMD64**: Building successfully
-  - ✅ **Linux ARM64**: Cross-compilation fixed - ARM64 development libraries installed and build.py updated to include X11/JPEG libraries (v0.0.149)
-- **Next**: Monitor v0.0.149 CI/CD run to verify Linux ARM64 cross-compilation success - IN PROGRESS
+  - ✅ **Linux ARM64**: Cross-compilation fixed - Ubuntu 22.04 with robust ARM64 library handling and fallback to static linking (v0.0.150)
+- **Next**: Monitor v0.0.150 CI/CD run to verify Linux ARM64 cross-compilation success with Ubuntu 22.04 - IN PROGRESS
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
@@ -161,9 +162,10 @@
 
 ### Version and Deployment Commands
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
-- **Example:** `python scripts/bump_version_and_deploy.py 0.0.149`
-- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.149, push tag
-- **Current Version:** v0.0.149 (Linux ARM64 cross-compilation fix - ARM64 development libraries and proper linking) - DEPLOYED
+- **Example:** `python scripts/bump_version_and_deploy.py 0.0.150`
+- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.150, push tag
+- **Current Version:** v0.0.150 (Linux ARM64 cross-compilation fix - Ubuntu 22.04 with robust ARM64 library handling) - DEPLOYED
+- **Next**: Monitor v0.0.150 CI/CD run to verify Linux ARM64 cross-compilation success with Ubuntu 22.04 - IN PROGRESS
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error
