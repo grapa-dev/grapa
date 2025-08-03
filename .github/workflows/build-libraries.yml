@@ -19,10 +19,13 @@ jobs:
           # macOS ARM64 (macos-latest is now ARM64)
           - os: macos-latest
             platform: mac-arm64
+          # macOS AMD64 (cross-compiled from ARM64)
+          - os: macos-latest
+            platform: mac-amd64
           # Linux AMD64
           - os: ubuntu-latest
             platform: linux-amd64
-          # Linux ARM64
+          # Linux ARM64 (cross-compiled from AMD64)
           - os: ubuntu-latest
             platform: linux-arm64
 
@@ -51,6 +54,12 @@ jobs:
         echo "Installing build dependencies for Linux..."
         sudo apt-get update
         sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev
+        
+        # Install cross-compilation tools for ARM64 if needed
+        if [ "${{ matrix.platform }}" = "linux-arm64" ]; then
+          echo "Installing ARM64 cross-compilation tools..."
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+        fi
         
     - name: Install build dependencies (macOS)
       if: matrix.os == 'macos-latest'

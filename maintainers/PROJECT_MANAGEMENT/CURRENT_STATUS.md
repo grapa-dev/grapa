@@ -43,7 +43,7 @@
 - **Approach**: Automating the original, proven build process
 - **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
 - **Stage 2**: Build universal wheels and deploy to PyPI
-- **Current Version**: v0.0.116 (latest version, successfully deployed)
+- **Current Version**: v0.0.135 (latest version, successfully deployed)
 - **Key Insights**: Original approach used universal wheels containing all platform libraries
 - **Issues Discovered**:
   - ❌ **CRITICAL**: `commit-artifacts` job not detecting changes from platform jobs
@@ -52,6 +52,7 @@
   - ❌ **CRITICAL**: Windows archive naming incorrect (`grapa-win-win-amd64.zip` instead of `grapa-win-amd64.zip`)
   - ❌ **CRITICAL**: Linux/macOS archives only including executable, missing libraries
   - ❌ **CRITICAL**: Git race conditions when multiple platform jobs try to commit simultaneously
+  - ❌ **CRITICAL**: Linux ARM64 build failing due to architecture mismatch (AMD64 runner trying to link ARM64 libraries)
 - **Fixes Implemented**:
   - ✅ **FIXED**: Removed `commit-artifacts` job entirely
   - ✅ **FIXED**: Fixed Windows archive naming to match build.py logic
@@ -59,6 +60,8 @@
   - ✅ **FIXED**: Replaced individual platform commits with artifact uploads to avoid Git conflicts
   - ✅ **FIXED**: Added single `commit-all-artifacts` job that downloads and commits all artifacts
   - ✅ **FIXED**: Updated workflow to ensure wheel jobs get latest artifacts
+  - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 (using `-target aarch64-linux-gnu`)
+  - ✅ **FIXED**: Added ARM64 cross-compilation toolchain installation in workflow
 - **Progress**: 
   - ✅ Fixed PowerShell commands in GitHub Actions
   - ✅ Removed win-arm64 platform (not supported)
@@ -80,7 +83,9 @@
   - ✅ **SUCCESS**: v0.0.114 deployed successfully to PyPI with utf8proc fix working
   - ✅ **FIXED**: Updated version to 0.0.115 and 0.0.116 with automated script
   - 🔄 **IN PROGRESS**: Testing fixed CI/CD workflow with proper artifact commits
-- **Next**: Verify all 5 platform commits are made and wheel jobs receive correct artifacts
+  - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner
+  - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 from AMD64 runner
+- **Next**: Test Linux ARM64 cross-compilation with version bump
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED

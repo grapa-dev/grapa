@@ -281,12 +281,21 @@ class GrapaBuilder:
         
         print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
         
+        # Check if this is cross-compilation (mac-amd64 on ARM64 runner)
+        is_cross_compile = config.target == "mac-amd64" and platform.machine() == "arm64"
+        
+        # Set up cross-compilation flags if needed
+        cross_flags = []
+        if is_cross_compile:
+            print("Cross-compiling for AMD64 from ARM64...")
+            cross_flags = ["-target", "x86_64-apple-macos10.9"]
+        
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         subprocess.run([
             "clang", "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-m64", "-O3"
-        ], check=True)
+        ] + cross_flags, check=True)
         
         if is_library:
             if is_static:
@@ -297,7 +306,7 @@ class GrapaBuilder:
                     "clang++", "-Isource", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-m64", "-O3", "-pthread"
-                ], check=True)
+                ] + cross_flags, check=True)
                 # Get all .o files
                 obj_files = glob.glob("*.o")
                 if not obj_files:
@@ -319,7 +328,7 @@ class GrapaBuilder:
                 ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                     "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ], check=True)
+                ] + cross_flags, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
@@ -336,7 +345,7 @@ class GrapaBuilder:
             cmd = ["clang++", "-Isource", "source/main.cpp"] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                 "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                 "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
-            ]
+            ] + cross_flags
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
             try:
@@ -366,6 +375,15 @@ class GrapaBuilder:
         
         print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
         
+        # Check if this is cross-compilation (linux-arm64 on AMD64 runner)
+        is_cross_compile = config.target == "linux-arm64" and platform.machine() == "x86_64"
+        
+        # Set up cross-compilation flags if needed
+        cross_flags = []
+        if is_cross_compile:
+            print("Cross-compiling for ARM64 from AMD64...")
+            cross_flags = ["-target", "aarch64-linux-gnu"]
+        
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         # Use -fPIC for shared library builds, regular for executable
@@ -373,7 +391,7 @@ class GrapaBuilder:
         subprocess.run([
             "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
-        ] + pic_flag, check=True)
+        ] + pic_flag + cross_flags, check=True)
         
         # Get library path based on target
         lib_path = f"source/openssl-lib/{config.target}"
@@ -391,7 +409,7 @@ class GrapaBuilder:
                     "g++", "-Isource", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-O3", "-pthread", "-fPIC"
-                ], check=True)
+                ] + cross_flags, check=True)
                 # Get all .o files (including utf8proc.o if it exists)
                 obj_files = glob.glob("*.o")
                 if not obj_files:
@@ -417,7 +435,7 @@ class GrapaBuilder:
                     "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                     "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc",
                     "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ]
+                ] + cross_flags
                 
                 subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
@@ -437,7 +455,7 @@ class GrapaBuilder:
                 "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
                 "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
                 "-O3", "-pthread", "-o", config.output_name
-            ]
+            ] + cross_flags
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
