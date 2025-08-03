@@ -43,7 +43,7 @@
 - **Approach**: Automating the original, proven build process
 - **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
 - **Stage 2**: Build universal wheels and deploy to PyPI
-- **Current Version**: v0.0.149 (latest version, testing Linux ARM64 cross-compilation fix)
+- **Current Version**: v0.0.149 (latest version, testing Linux ARM64 cross-compilation fix) - DEPLOYED
 - **Key Insights**: Original approach used universal wheels containing all platform libraries
 - **Issues Discovered**:
   - ❌ **CRITICAL**: `commit-artifacts` job not detecting changes from platform jobs
@@ -98,7 +98,7 @@
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - ✅ **Linux AMD64**: Building successfully
   - ✅ **Linux ARM64**: Cross-compilation fixed - ARM64 development libraries installed and build.py updated to include X11/JPEG libraries (v0.0.149)
-- **Next**: Monitor v0.0.149 CI/CD run to verify Linux ARM64 cross-compilation success
+- **Next**: Monitor v0.0.149 CI/CD run to verify Linux ARM64 cross-compilation success - IN PROGRESS
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms
 
 ### Database Investigation - ✅ COMPLETED
@@ -163,7 +163,7 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.149`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.149, push tag
-- **Current Version:** v0.0.149 (Linux ARM64 cross-compilation fix - ARM64 development libraries and proper linking)
+- **Current Version:** v0.0.149 (Linux ARM64 cross-compilation fix - ARM64 development libraries and proper linking) - DEPLOYED
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error

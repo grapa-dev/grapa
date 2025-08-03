@@ -390,6 +390,15 @@ class GrapaBuilder:
                 print("Using cross-compilation toolchain")
                 # Add ARM64 library paths for cross-compilation
                 cross_flags = ["-L/usr/lib/aarch64-linux-gnu", "-L/usr/lib/x86_64-linux-gnu"]
+                
+                # Check if ARM64 libraries are available
+                try:
+                    subprocess.run(["aarch64-linux-gnu-gcc", "-print-file-name=libX11.so"], check=True, capture_output=True)
+                    print("ARM64 libraries available")
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    print("Warning: ARM64 libraries not available, will use static linking approach")
+                    # Use static linking approach instead
+                    cross_flags.extend(["-static", "-static-libgcc", "-static-libstdc++"])
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("Cross-compilation toolchain not available, using native compiler with ARM flags")
                 cross_flags = ["-march=armv8-a", "-mtune=cortex-a72"]

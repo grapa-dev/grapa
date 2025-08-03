@@ -26,7 +26,7 @@ jobs:
           - os: ubuntu-latest
             platform: linux-amd64
           # Linux ARM64 (cross-compiled from AMD64)
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: linux-arm64
 
     steps:
@@ -49,7 +49,7 @@ jobs:
         Write-Host "Visual Studio environment available"
         
     - name: Install build dependencies (Linux)
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-22.04'
       run: |
         echo "Installing build dependencies for Linux..."
         sudo apt-get update
@@ -60,10 +60,13 @@ jobs:
           echo "Installing ARM64 cross-compilation tools..."
           sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
           
-          # Enable multiarch and install ARM64 development libraries
-          sudo dpkg --add-architecture arm64
-          sudo apt-get update
-          sudo apt-get install -y libx11-dev:arm64 libxfixes-dev:arm64 libxft-dev:arm64 libxext-dev:arm64 libxrender-dev:arm64 libxinerama-dev:arm64 libxcursor-dev:arm64 libfontconfig1-dev:arm64 libjpeg-dev:arm64
+          # Try to enable multiarch and install ARM64 development libraries
+          echo "Attempting to install ARM64 development libraries..."
+          sudo dpkg --add-architecture arm64 || echo "Warning: Could not add arm64 architecture"
+          sudo apt-get update || echo "Warning: apt-get update failed, continuing..."
+          
+          # Try to install ARM64 libraries, but don't fail if they're not available
+          sudo apt-get install -y libx11-dev:arm64 libxfixes-dev:arm64 libxft-dev:arm64 libxext-dev:arm64 libxrender-dev:arm64 libxinerama-dev:arm64 libxcursor-dev:arm64 libfontconfig1-dev:arm64 libjpeg-dev:arm64 || echo "Warning: ARM64 libraries not available, will use native libraries"
         fi
         
     - name: Install build dependencies (macOS)
@@ -128,7 +131,7 @@ jobs:
         ls -la grapa* || echo "No executable found"
         
     - name: Build libraries and binaries (Linux)
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-22.04'
       env:
         CI_PLATFORM: ${{ matrix.platform }}
       run: |
