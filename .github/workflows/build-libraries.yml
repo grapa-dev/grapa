@@ -209,7 +209,7 @@ jobs:
         
         # Build universal wheel with all platform libraries
         echo "Building universal wheel with all platform libraries..."
-        python setup.py bdist_wheel
+        python setup.py bdist_wheel --plat-name any
         
         echo "Built wheels:"
         ls -la dist/
