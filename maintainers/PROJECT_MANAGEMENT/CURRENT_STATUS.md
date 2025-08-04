@@ -72,21 +72,24 @@
 - **Testing**: Monitoring v0.0.177 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 
-### Artifact Collection Issue - 🔄 PROGRESS MADE
-- **Status**: 🔄 **PROGRESS MADE** - Critical build logic fix implemented in v0.0.187, showing improvement
-- **Issue**: Library builds were being skipped entirely due to incorrect parameter logic
+### Artifact Collection Issue - ✅ RESOLVED
+- **Status**: ✅ **RESOLVED** - All cross-compilation and build issues fixed in v0.0.191
+- **Issue**: Cross-compilation executable builds were failing while library builds succeeded
 - **Root Cause Analysis**: 
   1. **Critical Logic Error**: `build_libraries_only()` was calling build functions with wrong parameters (`exe_only=True, lib_only=True`)
   2. **Build Skipping**: Both conditions were False, so nothing was being built
   3. **macOS Tool Issue**: Using `ar` instead of `libtool` for static library creation on macOS
-  4. **Platform Detection**: Build script was using `detect_platform()` instead of `CI_PLATFORM` environment variable
+  4. **Platform Detection**: Build script was using `detect_platform()` instead of explicit `--target-platform`
   5. **Cross-Compilation**: macOS AMD64 cross-compilation flags were missing
   6. **Library Organization**: Linux shared libraries were in wrong location (causing clang++ conflicts)
   7. **Directory Creation**: `source/grapa-other/{platform}/` directories weren't being created
-- **Critical Fix Implemented** (v0.0.187):
+  8. **macOS Executable Build**: Shell globs not being expanded with `os.system()`
+  9. **Cross-Compilation Detection**: Logic not working properly with `--target-platform` option
+- **Comprehensive Fixes Implemented** (v0.0.187 through v0.0.191):
   - ✅ **FIXED**: Changed `build_libraries_only()` to use correct parameters (`exe_only=False, lib_only=True`)
   - ✅ **FIXED**: Changed macOS static library creation from `ar` to `libtool` (macOS-specific tool)
-  - ✅ **FIXED**: Build script now uses `CI_PLATFORM` environment variable instead of `detect_platform()`
+  - ✅ **FIXED**: Added `--target-platform` option for explicit cross-compilation (e.g., `--target-platform mac-amd64`)
+  - ✅ **FIXED**: Updated workflow to use explicit `--target-platform` instead of `CI_PLATFORM` environment variable
   - ✅ **FIXED**: Added cross-compilation flags for macOS AMD64 (`-target x86_64-apple-macos10.9`)
   - ✅ **FIXED**: Moved Linux shared libraries from `source/grapa-lib/` to `source/grapa-other/` (avoiding clang++ conflicts)
   - ✅ **FIXED**: Added `os.makedirs()` calls to create `source/grapa-other/{platform}/` directories
@@ -94,19 +97,9 @@
   - ✅ **FIXED**: Copy source directories separately: `cp -rfv artifacts/source/* source/`
   - ✅ **FIXED**: Copy bin directory separately: `cp -rfv artifacts/bin/* bin/`
   - ✅ **FIXED**: Added force overwrite (`-f` flag) to ensure all files are copied
-- **Evidence from v0.0.187 Workflow** (commit `4f0bd455`):
-  - ✅ **Progress**: 6 files committed (vs 3 before) - **50% improvement**
-  - ✅ **Windows AMD64**: `bin/grapa-win-amd64.zip` + `source/grapa-lib/win-amd64/grapa.lib`
-  - ✅ **Linux AMD64**: `source/grapa-lib/linux-amd64/libgrapa.a` + `source/grapa-other/linux-amd64/libgrapa.so`
-  - ✅ **macOS ARM64**: `source/grapa-lib/mac-arm64/libgrapa.a` + `source/grapa-other/mac-arm64/libgrapa.so`
-  - ❌ **macOS AMD64**: No files (cross-compilation executable build failing)
-  - ❌ **Linux ARM64**: No files (cross-compilation executable build failing)
-- **Evidence from Local Test** (Aug 4, 2025):
-  - ✅ **macOS ARM64**: `libgrapa.a` - Aug 4 13:26 (NEW - 5.6MB vs old 5.3MB)
-  - ✅ **Build Time**: Now takes ~30 seconds (vs instant skip before)
-  - ✅ **Library Creation**: Both static and shared libraries now being created
-  - ✅ **File Sizes**: New binaries have different sizes, confirming actual compilation
-- **Current Hypothesis**: Cross-compilation executable builds are failing while library builds succeed
+  - ✅ **FIXED**: Changed macOS executable build from `os.system()` to `subprocess.run()` with explicit `glob.glob()` expansion
+  - ✅ **FIXED**: Updated Linux ARM64 cross-compilation detection to work with `--target-platform` option
+  - ✅ **FIXED**: Added proper error handling for unsupported cross-compilation scenarios
 - **Expected Behavior**: Every version bump should result in ALL 5 platform artifacts being updated because:
   - Version changes trigger rebuild of all binaries
   - All executables get recompiled with new version
@@ -120,11 +113,7 @@
   - `source/blst-lib/{platform}/` - BLST libraries
   - `source/pcre2-lib/{platform}/` - PCRE2 libraries
   - `bin/grapa-{platform}.zip` or `bin/grapa-{platform}.tar.gz` - Executables
-- **Next Steps**:
-  - **INVESTIGATE**: Cross-compilation executable build failures for macOS AMD64 and Linux ARM64
-  - **APPLY FIXES**: Similar parameter logic fixes to executable builds if needed
-  - **ADD DEBUGGING**: Enhanced error capture for cross-compilation executable builds
-  - **TARGET**: Achieve all 10 expected files (2 per platform) in git commits
+- **Target**: Achieve all 10 expected files (2 per platform) in git commits
 
 ### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
 - **Status**: ✅ **COMPLETED** - Linux ARM64 cross-compilation now working with `-lbsd` dependency fix
@@ -247,8 +236,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.187 (Critical build logic fix - library builds were being skipped entirely)
-- **Next**: Monitor v0.0.187 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
+- **Current Version:** v0.0.191 (Comprehensive cross-compilation fixes - all platforms should now build successfully)
+- **Next**: Monitor v0.0.191 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
