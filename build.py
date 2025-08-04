@@ -468,6 +468,9 @@ class GrapaBuilder:
                     # Check if we're using static linking (no X11 libraries available)
                     if "-static" in cross_flags:
                         system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                    elif arm64_libs_available and "--sysroot" in cross_flags:
+                        # Using sysroot - avoid X11 libraries for now, focus on core functionality
+                        system_libs = ["-ldl", "-lm", "-static-libgcc"]
                     else:
                         system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                                       "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
@@ -500,6 +503,9 @@ class GrapaBuilder:
             if is_cross_compile:
                 # Check if we're using static linking (no X11 libraries available)
                 if "-static" in cross_flags:
+                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                elif arm64_libs_available and "--sysroot" in cross_flags:
+                    # Using sysroot - avoid X11 libraries for now, focus on core functionality
                     system_libs = ["-ldl", "-lm", "-static-libgcc"]
                 else:
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
