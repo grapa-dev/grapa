@@ -139,7 +139,7 @@ class GrapaBuilder:
         else:
             raise RuntimeError(f"Unsupported platform: {system}")
     
-    def build_windows(self, config: BuildConfig, exe_only: bool = False) -> bool:
+    def build_windows(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
         """Build for Windows using Visual Studio"""
         print(f"Building for {config.target} using Visual Studio...")
         
@@ -175,7 +175,7 @@ class GrapaBuilder:
             print(f"Windows build failed: {e}")
             return False
     
-    def build_mac(self, config: BuildConfig, exe_only: bool = False) -> bool:
+    def build_mac(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
         """Build for Mac using clang/clang++"""
         print(f"Building for {config.target} using clang++...")
         
@@ -199,7 +199,7 @@ class GrapaBuilder:
             print(f"Mac build failed: {e}")
             return False
     
-    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False) -> bool:
+    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
         """Build for Linux/AWS using g++"""
         print(f"Building for {config.target} using g++...")
         
@@ -743,7 +743,7 @@ class GrapaBuilder:
         
         return True
     
-    def build(self, run_tests: bool = False, exe_only: bool = False) -> bool:
+    def build(self, run_tests: bool = False, exe_only: bool = False, lib_only: bool = False, python_only: bool = False, preserve_dist: bool = False) -> bool:
         """Build for the current platform and architecture"""
         platform, arch = self.detect_platform()
         config = BuildConfig(platform, arch)
@@ -751,16 +751,24 @@ class GrapaBuilder:
         print(f"Building Grapa for {config.target}...")
         
         try:
+            if python_only:
+                # Build only Python extension
+                return self.build_python_only(config, preserve_dist=preserve_dist)
+            
+            if lib_only:
+                # Build only libraries
+                return self.build_libraries_only(config)
+            
             # Build based on platform
             success = False
             if config.platform == "windows":
-                success = self.build_windows(config, exe_only=exe_only)
+                success = self.build_windows(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "mac":
-                success = self.build_mac(config, exe_only=exe_only)
+                success = self.build_mac(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=exe_only)
+                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=exe_only)
+                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -780,14 +788,59 @@ class GrapaBuilder:
                 print(f"Build failed for {config.target}")
                 return False
         finally:
-            # Always clean up build artifacts, regardless of success or failure
-            self._clean_build_artifacts()
+            # Always clean up build artifacts, unless preserve_dist is requested
+            if not preserve_dist:
+                self._clean_build_artifacts()
+
+    def build_libraries_only(self, config: BuildConfig) -> bool:
+        """Build only the libraries (skip executable and Python package)"""
+        print("Building libraries only...")
+        
+        try:
+            # Build based on platform
+            success = False
+            if config.platform == "windows":
+                success = self.build_windows(config, exe_only=True, lib_only=True)
+            elif config.platform == "mac":
+                success = self.build_mac(config, exe_only=True, lib_only=True)
+            elif config.platform == "linux":
+                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
+            elif config.platform == "aws":
+                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
+            else:
+                print(f"Unsupported platform: {config.platform}")
+                return False
+            
+            if success:
+                print("Libraries build successful")
+                return True
+            else:
+                print("Libraries build failed")
+                return False
+        except Exception as e:
+            print(f"Libraries build failed: {e}")
+            return False
+
+    def build_python_only(self, config: BuildConfig, preserve_dist: bool = False) -> bool:
+        """Build only the Python extension (assumes executable already exists)"""
+        print("Building Python extension only...")
+        
+        try:
+            # Build Python package
+            self.build_python_package(config)
+            return True
+        except Exception as e:
+            print(f"Python extension build failed: {e}")
+            return False
 
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
     parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip library, Python package, and packaging steps). Useful for fast iterative development and investigation.")
+    parser.add_argument("--lib-only", action="store_true", help="Build only the libraries (skip executable, Python package, and packaging steps). Libraries will be copied to the top-level directory.")
+    parser.add_argument("--python-only", action="store_true", help="Build only the Python extension (assumes executable already exists). Useful for debugging Python extension issues without rebuilding the executable.")
+    parser.add_argument("--preserve-dist", action="store_true", help="Preserve the dist/ directory after build (useful for debugging or manual installation)")
     
     args = parser.parse_args()
     
@@ -797,7 +850,7 @@ def main():
     platform, arch = builder.detect_platform()
     print(f"Building for {platform} {arch}")
     
-    if builder.build(args.test, exe_only=args.exe_only):
+    if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist):
         print(f"\n{'='*50}")
         print(f"Build successful for {platform} {arch}")
         print(f"{'='*50}")
