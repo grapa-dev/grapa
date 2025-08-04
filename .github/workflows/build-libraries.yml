@@ -287,11 +287,23 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         ref: main
     
+    - name: List available artifacts
+      run: |
+        echo "=== DEBUG: Listing available artifacts ==="
+        gh run list --limit 1 --json artifactsUrl
+        echo "Current run artifacts should be available for platforms:"
+        echo "- platform-artifacts-win-amd64"
+        echo "- platform-artifacts-mac-arm64" 
+        echo "- platform-artifacts-mac-amd64"
+        echo "- platform-artifacts-linux-amd64"
+        echo "- platform-artifacts-linux-arm64"
+        
     - name: Download all platform artifacts
       uses: actions/download-artifact@v4
       with:
         path: artifacts/
         merge-multiple: true
+        pattern: platform-artifacts-*
     
     - name: Extract and commit artifacts
       run: |
@@ -305,6 +317,13 @@ jobs:
         echo "=== DEBUG: Artifacts directory contents ==="
         ls -la artifacts/ || echo "artifacts/ directory not found"
         find artifacts/ -type f 2>/dev/null | head -20 || echo "No files found in artifacts/"
+        
+        # Debug: Check for platform-specific artifacts
+        echo "=== DEBUG: Checking for platform artifacts ==="
+        for platform in win-amd64 mac-arm64 mac-amd64 linux-amd64 linux-arm64; do
+          echo "Checking for $platform artifacts:"
+          find artifacts/ -name "*$platform*" 2>/dev/null || echo "No $platform artifacts found"
+        done
         
         # Extract artifacts to their correct locations
         echo "=== DEBUG: Processing artifacts ==="
