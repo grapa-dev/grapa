@@ -432,15 +432,24 @@ jobs:
         # Copy artifacts with proper structure preservation
         echo "Copying artifacts with proper structure..."
         
-        # Copy source directories (libraries)
+        # Debug: Show what's in artifacts before copying
+        echo "=== DEBUG: Artifacts before copying ==="
+        echo "Artifacts source:"
+        find artifacts/source/ -type f 2>/dev/null | head -10 || echo "No source artifacts found"
+        echo "Artifacts bin:"
+        ls -la artifacts/bin/ 2>/dev/null || echo "No bin artifacts found"
+        
+        # Copy source directories (libraries) - create target directories first
         if [ -d "artifacts/source" ]; then
           echo "Copying source directories..."
+          mkdir -p source/grapa-lib source/openssl-lib source/fl-lib source/blst-lib source/pcre2-lib source/grapa-other
           cp -rv artifacts/source/* source/ 2>&1 || echo "Failed to copy source directories"
         fi
         
-        # Copy bin directory (executables)
+        # Copy bin directory (executables) - create target directory first
         if [ -d "artifacts/bin" ]; then
           echo "Copying bin directory..."
+          mkdir -p bin
           cp -rv artifacts/bin/* bin/ 2>&1 || echo "Failed to copy bin directory"
         fi
         
