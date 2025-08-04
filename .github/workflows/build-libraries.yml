@@ -92,16 +92,13 @@ jobs:
     - name: Build libraries and binaries (Windows)
       if: matrix.os == 'windows-latest'
       shell: pwsh
-      env:
-        CI_PLATFORM: ${{ matrix.platform }}
       run: |
         Write-Host "Building libraries for platform: ${{ matrix.platform }}"
         Write-Host "Current directory: $(Get-Location)"
         Write-Host "Platform: ${{ matrix.platform }}"
-        Write-Host "CI_PLATFORM: $env:CI_PLATFORM"
         
         # Build libraries only
-        python build.py --lib-only
+        python build.py --target-platform ${{ matrix.platform }} --lib-only
         
         Write-Host "Build completed. Checking for libraries..."
         Get-ChildItem "source/grapa-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
@@ -112,23 +109,20 @@ jobs:
         
         # Build executable only
         Write-Host "Building executable for ${{ matrix.platform }}..."
-        python build.py --exe-only
+        python build.py --target-platform ${{ matrix.platform }} --exe-only
         
         Write-Host "Executable build completed. Checking for executable..."
         Get-ChildItem "grapa*" -ErrorAction SilentlyContinue | Write-Host
         
     - name: Build libraries and binaries (macOS)
       if: matrix.os == 'macos-latest'
-      env:
-        CI_PLATFORM: ${{ matrix.platform }}
       run: |
         echo "Building libraries for platform: ${{ matrix.platform }}"
         echo "Current directory: $(pwd)"
         echo "Platform: ${{ matrix.platform }}"
-        echo "CI_PLATFORM: $CI_PLATFORM"
         
         # Build libraries only
-        python build.py --lib-only
+        python build.py --target-platform ${{ matrix.platform }} --lib-only
         
         echo "Build completed. Checking for libraries..."
         ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
@@ -139,23 +133,20 @@ jobs:
         
         # Build executable only
         echo "Building executable for ${{ matrix.platform }}..."
-        python build.py --exe-only
+        python build.py --target-platform ${{ matrix.platform }} --exe-only
         
         echo "Executable build completed. Checking for executable..."
         ls -la grapa* || echo "No executable found"
         
     - name: Build libraries and binaries (Linux)
       if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-22.04'
-      env:
-        CI_PLATFORM: ${{ matrix.platform }}
       run: |
         echo "Building libraries for platform: ${{ matrix.platform }}"
         echo "Current directory: $(pwd)"
         echo "Platform: ${{ matrix.platform }}"
-        echo "CI_PLATFORM: $CI_PLATFORM"
         
         # Build libraries only
-        python build.py --lib-only
+        python build.py --target-platform ${{ matrix.platform }} --lib-only
         
         echo "Build completed. Checking for libraries..."
         ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
@@ -168,7 +159,7 @@ jobs:
         echo "Building executable for ${{ matrix.platform }}..."
         if [ "${{ matrix.platform }}" = "linux-arm64" ]; then
           echo "Using debug script for Linux ARM64..."
-          python build.py --exe-only
+          python build.py --target-platform ${{ matrix.platform }} --exe-only
           if [ $? -ne 0 ]; then
             echo "Build failed, uploading debug log..."
             if [ -f "build-debug.log" ]; then
@@ -182,7 +173,7 @@ jobs:
             exit 1
           fi
         else
-          python build.py --exe-only
+          python build.py --target-platform ${{ matrix.platform }} --exe-only
         fi
         
         echo "Executable build completed. Checking for executable..."
