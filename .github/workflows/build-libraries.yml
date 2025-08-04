@@ -439,18 +439,18 @@ jobs:
         echo "Artifacts bin:"
         ls -la artifacts/bin/ 2>/dev/null || echo "No bin artifacts found"
         
-        # Copy source directories (libraries) - create target directories first
+        # Copy source directories (libraries) - create target directories first and force overwrite
         if [ -d "artifacts/source" ]; then
           echo "Copying source directories..."
           mkdir -p source/grapa-lib source/openssl-lib source/fl-lib source/blst-lib source/pcre2-lib source/grapa-other
-          cp -rv artifacts/source/* source/ 2>&1 || echo "Failed to copy source directories"
+          cp -rfv artifacts/source/* source/ 2>&1 || echo "Failed to copy source directories"
         fi
         
-        # Copy bin directory (executables) - create target directory first
+        # Copy bin directory (executables) - create target directory first and force overwrite
         if [ -d "artifacts/bin" ]; then
           echo "Copying bin directory..."
           mkdir -p bin
-          cp -rv artifacts/bin/* bin/ 2>&1 || echo "Failed to copy bin directory"
+          cp -rfv artifacts/bin/* bin/ 2>&1 || echo "Failed to copy bin directory"
         fi
         
         # Debug: Show what we copied
