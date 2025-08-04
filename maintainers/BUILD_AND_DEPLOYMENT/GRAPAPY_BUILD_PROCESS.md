@@ -165,18 +165,40 @@ The `setup.py` file automatically:
 
 ## Automated CI/CD Workflow
 
-### Current Status (January 2025)
+### Current Status (August 2025)
 
 The original manual process has been automated using GitHub Actions in `.github/workflows/build-libraries.yml`. The workflow implements a two-stage process:
 
-1. **Stage 1 - Build Libraries**: Runs on multiple platforms (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64) to build and commit pre-built libraries
+1. **Stage 1 - Build Libraries**: Runs on multiple platforms (Windows AMD64, macOS ARM64, macOS AMD64 cross-compiled, Linux AMD64, Linux ARM64 cross-compiled) to build and commit pre-built libraries
 2. **Stage 2 - Build and Deploy**: Builds universal wheels containing all platform libraries and deploys to PyPI
+
+### Workflow Architecture
+
+**Platform Build Matrix:**
+- **Windows AMD64**: Native build on `windows-latest` runner
+- **macOS ARM64**: Native build on `macos-latest` runner (Apple Silicon)
+- **macOS AMD64**: Cross-compiled from `macos-latest` runner using `-target x86_64-apple-macos10.9`
+- **Linux AMD64**: Native build on `ubuntu-latest` runner
+- **Linux ARM64**: Cross-compiled from `ubuntu-22.04` runner using ARM64 sysroot
+
+**Library Organization:**
+- **Static libraries**: `source/grapa-lib/{platform}/` (all platforms)
+- **Shared libraries**: `source/grapa-other/{platform}/` (Linux, macOS) - separated to avoid clang++ linking conflicts
+- **Dependencies**: `source/openssl-lib/{platform}/`, `source/fl-lib/{platform}/`, `source/blst-lib/{platform}/`, `source/pcre2-lib/{platform}/`
+
+### Recent Fixes (August 2025)
+
+- **✅ Platform Detection**: Fixed build script to use `CI_PLATFORM` environment variable instead of `detect_platform()`
+- **✅ Cross-Compilation**: Added missing cross-compilation flags for macOS AMD64 builds
+- **✅ Library Organization**: Moved Linux shared libraries to `source/grapa-other/` to avoid clang++ conflicts
+- **✅ Directory Creation**: Added automatic creation of `source/grapa-other/{platform}/` directories
+- **✅ Artifact Collection**: Fixed copying logic to ensure all platform artifacts are committed
 
 ### Current Issues
 
-- **Version Mismatch**: PyPI shows v0.0.73 with 3 wheels, but `pip install grapapy` still installs v0.0.42
+- **Version Mismatch**: PyPI shows v0.0.185 with 3 wheels, but `pip install grapapy` still installs older version
 - **Caching Issue**: Local pip cache may be preventing installation of latest version
-- **Workflow Status**: Latest tag is v0.0.87, but deployment may not have completed successfully
+- **Workflow Status**: Latest tag is v0.0.185, testing complete artifact collection fixes
 
 ### Debugging Steps
 
