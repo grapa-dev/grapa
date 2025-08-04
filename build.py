@@ -362,6 +362,8 @@ class GrapaBuilder:
                     "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                     "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                 ] + cross_flags, check=True)
+                # Ensure the grapa-other directory exists
+                os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
@@ -541,6 +543,8 @@ class GrapaBuilder:
                     run_diagnostic_cross_compile(cmd)
                 else:
                     subprocess.run(cmd, check=True)
+                # Ensure the grapa-other directory exists
+                os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
@@ -657,6 +661,8 @@ class GrapaBuilder:
                 
                 print(f"Executing shared library build command: {' '.join(cmd)}")
                 subprocess.run(cmd, check=True)
+                # Ensure the grapa-other directory exists
+                os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
