@@ -288,6 +288,8 @@ jobs:
         ref: main
     
     - name: List available artifacts
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         echo "=== DEBUG: Listing available artifacts ==="
         gh run list --limit 1 --json artifactsUrl
