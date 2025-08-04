@@ -376,21 +376,26 @@ class GrapaBuilder:
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
             # Step 1: utf8proc.o is already built above
-            # Step 2: Build executable using utf8proc.o - use shell globs like manual command
+            # Step 2: Build executable using utf8proc.o - expand globs like Linux build
+            openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
+            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+            blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
+            pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
+            
             cmd = [
-                "clang++", "-Isource", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
-                f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
-                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
+                "clang++", "-Isource", "source/main.cpp"
+            ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                 "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                 "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
             ] + cross_flags
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
             try:
-                # Try os.system() first - it might be faster than subprocess
-                result = os.system(" ".join(cmd))
-                if result != 0:
-                    raise RuntimeError(f"Build failed with exit code {result}")
+                # Use subprocess.run for better error handling
+                subprocess.run(cmd, check=True)
+            except subprocess.CalledProcessError as e:
+                print(f"❌ Build failed: {e}")
+                raise RuntimeError(f"Build failed with exit code {e.returncode}")
             except Exception as e:
                 print(f"❌ Build failed: {e}")
                 raise
