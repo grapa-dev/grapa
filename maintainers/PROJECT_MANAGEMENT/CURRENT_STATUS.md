@@ -39,7 +39,7 @@
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
 ### PyPI Deployment Issue - 🔄 TESTING
-- **Status**: 🔄 **TESTING** - PyPI deployment fixes implemented, testing with v0.0.174
+- **Status**: 🔄 **TESTING** - PyPI deployment fixes implemented, testing with v0.0.176
 - **Issue**: PyPI deployment failing with `InvalidDistribution: Too many top-level members in sdist archive`
 - **Root Cause**: `grapa-build-debug.zip` debug artifact being incorrectly included in `dists/` directory
 - **Error Details**: 
@@ -59,13 +59,16 @@
   - ✅ **FIXED**: Added specific cleanup for `grapa-build-debug.zip`, `grapa`, `grapa.exe` from distribution
   - ✅ **FIXED**: Ensured executables stay in platform-specific compressed files (`bin/grapa-*.zip/tar.gz`)
   - ✅ **FIXED**: Updated artifact collection to only include libraries and compressed platform files
+  - ✅ **FIXED**: Added GH_TOKEN environment variable for GitHub CLI debugging
+  - ✅ **FIXED**: Added debugging steps to identify missing platform artifacts
 - **Expected Behavior**:
   - All 5 platforms should build successfully
   - Proper compressed artifacts created with executables + libraries for each platform
   - Only libraries committed to repository (no executables in root)
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
-- **Testing**: Monitoring v0.0.174 CI/CD run to verify PyPI deployment success
+  - Debugging output to identify which platforms are missing artifacts
+- **Testing**: Monitoring v0.0.176 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 
 ### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
@@ -189,8 +192,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.161 (Linux ARM64 cross-compilation fix - added -lbsd dependency for FLTK library) - DEPLOYED
-- **Next**: Monitor v0.0.161 CI/CD run to verify Linux ARM64 cross-compilation success with -lbsd dependency fix - IN PROGRESS
+- **Current Version:** v0.0.176 (PyPI deployment debugging - added GH_TOKEN fix and artifact debugging) - TESTING
+- **Next**: Monitor v0.0.176 CI/CD run to verify PyPI deployment success and identify missing platform artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
