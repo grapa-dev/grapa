@@ -100,7 +100,7 @@
   - All libraries get rebuilt with new version
   - All compressed files get recreated with new binaries
 - **Current Reality**: Only 3 platforms are actually updating their binaries (Windows, Linux AMD64, Linux ARM64, macOS ARM64)
-- **Root Cause**: macOS AMD64 cross-compilation is failing, causing old binaries to persist
+- **Root Cause**: macOS AMD64 cross-compilation is failing OR libraries are not being copied correctly
 - **Solution Implemented**: 
   - ✅ **FIXED**: Replaced `cp -rv artifacts/* .` with structured copying
   - ✅ **FIXED**: Copy source directories separately: `cp -rfv artifacts/source/* source/`
@@ -117,8 +117,8 @@
   - `source/grapa-other/{platform}/` - Other libraries
   - `bin/grapa-{platform}.zip` or `bin/grapa-{platform}.tar.gz` - Executables
 - **Next Steps**:
-  - **INVESTIGATE**: Debug macOS AMD64 cross-compilation failure
-  - **FIX**: Resolve macOS AMD64 build issues
+  - **INVESTIGATE**: Check if macOS AMD64 is building successfully but libraries not being copied
+  - **DEBUG**: Monitor v0.0.184 workflow to see if cross-compilation fix works
   - **VERIFY**: Ensure all 5 platforms contribute artifacts to git commits
   - **TEST**: Verify PyPI deployment works with complete artifact collection
 
