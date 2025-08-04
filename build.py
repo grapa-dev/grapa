@@ -246,13 +246,16 @@ class GrapaBuilder:
                     self._run_linux_build_command(config, is_library=False)
             
             if not exe_only or lib_only:
-                # Build static library
+                # Check if this is cross-compilation (linux-arm64 on AMD64 runner)
+                is_cross_compile = config.target == "linux-arm64" and platform.machine() == "x86_64"
+                
+                # Build static library (always)
                 if config.platform == "aws":
                     self._run_aws_build_command(config, is_library=True, is_static=True)
                 else:
                     self._run_linux_build_command(config, is_library=True, is_static=True)
                 
-                # Build shared library
+                # Build shared library (both native and cross-compilation)
                 if config.platform == "aws":
                     self._run_aws_build_command(config, is_library=True, is_static=False)
                 else:
@@ -464,9 +467,9 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                # For ARM64 cross-compilation, use ARM64 X11 libraries
+                # For ARM64 cross-compilation, avoid X11 libraries for shared library
                 if is_cross_compile:
-                    # Always use static linking for cross-compilation to avoid X11 library issues
+                    # Use minimal system libraries for cross-compilation shared library
                     system_libs = ["-ldl", "-lm", "-static-libgcc"]
                 else:
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
