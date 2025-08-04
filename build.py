@@ -481,9 +481,7 @@ class GrapaBuilder:
                 # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
                 if "-static" not in cross_flags:
                     cmd.insert(-2, "-ljpeg")
-                    # Add -lbsd only for cross-compilation (ARM64 from AMD64)
-                    if is_cross_compile:
-                        cmd.insert(-2, "-lbsd")
+                    # Note: -lbsd removed for cross-compilation as it's not available in sysroot
                 
                 subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
@@ -515,9 +513,7 @@ class GrapaBuilder:
             # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
             if "-static" not in cross_flags:
                 cmd.insert(-2, "-ljpeg")
-                # Add -lbsd only for cross-compilation (ARM64 from AMD64)
-                if is_cross_compile:
-                    cmd.insert(-2, "-lbsd")
+                # Note: -lbsd removed for cross-compilation as it's not available in sysroot
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
