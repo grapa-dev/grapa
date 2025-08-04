@@ -72,20 +72,31 @@
 - **Testing**: Monitoring v0.0.177 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 
-### Artifact Collection Issue - ✅ ROOT CAUSE IDENTIFIED
-- **Status**: ✅ **ROOT CAUSE IDENTIFIED** - All 5 platforms building successfully, but git commit logic failing
-- **Issue**: Commit `0a2518ca` only contains 3 files instead of all artifacts from all 5 platforms
-- **Actual Build Status** (from v0.0.179 debugging):
+### Artifact Collection Issue - ✅ RESOLVED
+- **Status**: ✅ **RESOLVED** - All 5 platforms building successfully and all artifacts committed
+- **Issue**: Git commit logic was failing to copy all artifacts properly
+- **Solution**: Fixed artifact copying logic in workflow to preserve directory structure
+- **Result**: All artifacts from all platforms now successfully committed to repository
+- **Actual Build Status** (from v0.0.180):
   - ✅ **Windows AMD64**: Building successfully - `grapa-win-amd64.zip` (21MB)
   - ✅ **macOS ARM64**: Building successfully - `grapa-mac-arm64.tar.gz` (8.6MB)
   - ✅ **macOS AMD64**: Building successfully - `grapa-mac-amd64.tar.gz` (7.3MB)
   - ✅ **Linux AMD64**: Building successfully - `grapa-linux-amd64.tar.gz` (10MB)
   - ✅ **Linux ARM64**: Building successfully - `grapa-linux-arm64.tar.gz` (9.9MB)
+  - ✅ **AWS AMD64**: Building successfully - `grapa-aws-amd64.tar.gz`
+  - ✅ **AWS ARM64**: Building successfully - `grapa-aws-arm64.tar.gz`
 - **All Libraries Created Successfully**:
-  - ✅ **BLST libraries**: All platforms (win-amd64, mac-amd64, mac-arm64, linux-amd64, linux-arm64)
-  - ✅ **OpenSSL libraries**: All platforms (win-amd64, mac-amd64, linux-amd64)
+  - ✅ **BLST libraries**: All platforms (win-amd64, mac-amd64, mac-arm64, linux-amd64, linux-arm64, aws-amd64, aws-arm64)
+  - ✅ **OpenSSL libraries**: All platforms (mac-amd64, linux-amd64, etc.)
+  - ✅ **PCRE2 libraries**: All platforms
   - ✅ **Additional platforms**: AWS AMD64 and ARM64 also working
 - **Root Cause**: Git commit logic failing - `cp -rv artifacts/* .` not copying all artifacts properly
+- **Solution Implemented**: 
+  - ✅ **FIXED**: Replaced `cp -rv artifacts/* .` with structured copying
+  - ✅ **FIXED**: Copy source directories separately: `cp -rv artifacts/source/* source/`
+  - ✅ **FIXED**: Copy bin directory separately: `cp -rv artifacts/bin/* bin/`
+  - ✅ **FIXED**: Added debugging output to show what files are copied
+  - ✅ **FIXED**: Preserved directory structure properly
 - **Expected Artifacts Per Platform**:
   - `source/grapa-lib/{platform}/` - Grapa libraries
   - `source/openssl-lib/{platform}/` - OpenSSL libraries  
@@ -95,10 +106,9 @@
   - `source/grapa-other/{platform}/` - Other libraries
   - `bin/grapa-{platform}.zip` or `bin/grapa-{platform}.tar.gz` - Executables
 - **Next Steps**:
-  - **FIX GIT COMMIT LOGIC**: Replace `cp -rv artifacts/* .` with proper artifact copying
-  - Ensure all artifacts from all platforms are committed to repository
-  - Test PyPI deployment with complete artifact collection
-  - Verify all 5 platforms contribute to final distribution
+  - **TEST PYPI DEPLOYMENT**: Now that all artifacts are committed, test PyPI deployment
+  - Verify PyPI deployment works with complete artifact collection
+  - Ensure all 5 platforms contribute to final distribution
 
 ### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
 - **Status**: ✅ **COMPLETED** - Linux ARM64 cross-compilation now working with `-lbsd` dependency fix
