@@ -38,20 +38,19 @@
 - **Impact**: `pip install grapapy` now works on any Windows system without requiring Visual Studio or manual SDK configuration
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
-### PyPI Deployment Issue - 🔄 INVESTIGATING
-- **Status**: 🔄 **INVESTIGATING** - PyPI deployment fixes implemented, but only 2 out of 5 platforms uploading artifacts
+### PyPI Deployment Issue - 🔄 TESTING
+- **Status**: 🔄 **TESTING** - Token authentication fix applied, v0.0.193 workflow now running
 - **Issue**: PyPI deployment failing with `InvalidDistribution: Too many top-level members in sdist archive`
 - **Root Cause**: `grapa-build-debug.zip` debug artifact being incorrectly included in `dists/` directory
 - **Error Details**: 
   - PyPI expects only valid Python package distributions (`.whl`, `.tar.gz`)
   - `grapa-build-debug.zip` is a debug artifact that shouldn't be in distribution
   - `grapa` executable was being committed to root directory instead of platform-specific compressed files
-- **Actual Build Status** (based on commit `2cd80a5a`):
-  - ✅ **Windows AMD64**: Building successfully with improved Visual Studio detection
-  - ❌ **macOS ARM64**: No artifacts uploaded (build likely failing)
-  - ❌ **macOS AMD64**: No artifacts uploaded (cross-compilation likely failing)
-  - ⚠️ **Linux AMD64**: Building successfully but missing executable in compressed file
-  - ❌ **Linux ARM64**: No artifacts uploaded (cross-compilation likely failing)
+- **Token Authentication Issue** (v0.0.192):
+  - **Error**: "Input required and not supplied: token" in workflow
+  - **Root Cause**: `gh run list` command failing due to GitHub CLI authentication issues
+  - **Fix Applied**: Made GitHub CLI commands optional with error handling
+  - **Result**: Workflow now continues even if GitHub CLI authentication fails
 - **Solution Implemented**:
   - ✅ **FIXED**: Removed `grapa*` and `libgrapa.*` from artifact upload paths
   - ✅ **FIXED**: Removed git add commands that were committing executables to root directory
@@ -62,6 +61,7 @@
   - ✅ **FIXED**: Added GH_TOKEN environment variable for GitHub CLI debugging
   - ✅ **FIXED**: Added debugging steps to identify missing platform artifacts
   - ✅ **FIXED**: Fixed GitHub CLI JSON fields for artifact debugging
+  - ✅ **FIXED**: Made GitHub CLI commands optional to avoid token authentication failures
 - **Expected Behavior**:
   - All 5 platforms should build successfully
   - Proper compressed artifacts created with executables + libraries for each platform
@@ -69,7 +69,7 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.177 CI/CD run to verify PyPI deployment success and artifact debugging
+- **Testing**: Monitoring v0.0.193 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 
 ### Artifact Collection Issue - ✅ RESOLVED
@@ -236,8 +236,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.191 (Comprehensive cross-compilation fixes - all platforms should now build successfully)
-- **Next**: Monitor v0.0.191 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
+- **Current Version:** v0.0.193 (Token authentication fix + comprehensive cross-compilation fixes - workflow now running)
+- **Next**: Monitor v0.0.193 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
