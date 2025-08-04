@@ -519,20 +519,13 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                # For ARM64 cross-compilation, use ARM64 X11 libraries
-                if is_cross_compile:
-                    # Check if we're using static linking (no X11 libraries available)
-                    if "-static" in cross_flags:
-                        system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                    elif arm64_libs_available and "--sysroot" in cross_flags:
-                        # Using sysroot - avoid X11 libraries for now, focus on core functionality
-                        system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                    else:
-                        system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                      "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
-                else:
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                        # For ARM64 cross-compilation, avoid X11 libraries to focus on core functionality
+            if is_cross_compile:
+                # For cross-compilation, avoid X11 libraries to focus on core functionality
+                system_libs = ["-ldl", "-lm", "-static-libgcc"]
+            else:
+                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
@@ -540,9 +533,9 @@ class GrapaBuilder:
                     "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                 ] + cross_flags
                 
-                # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
-                if "-static" not in cross_flags:
-                    cmd.insert(-2, "-ljpeg")
+                            # Add -ljpeg for native builds, skip for cross-compilation to avoid missing dependencies
+            if not is_cross_compile and "-static" not in cross_flags:
+                cmd.insert(-2, "-ljpeg")
                 
                 # Use diagnostic function for ARM64 cross-compilation
                 if is_cross_compile:
@@ -570,8 +563,8 @@ class GrapaBuilder:
                     # Using sysroot - avoid X11 libraries for now, focus on core functionality
                     system_libs = ["-ldl", "-lm", "-static-libgcc"]
                 else:
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                    # For cross-compilation, avoid X11 libraries to focus on core functionality
+                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
             else:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
@@ -584,8 +577,8 @@ class GrapaBuilder:
                 "-O3", "-pthread", "-o", config.output_name
             ] + cross_flags
             
-            # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
-            if "-static" not in cross_flags:
+            # Add -ljpeg for native builds, skip for cross-compilation to avoid missing dependencies
+            if not is_cross_compile and "-static" not in cross_flags:
                 cmd.insert(-2, "-ljpeg")
             
             print(f"Current working directory: {os.getcwd()}")
