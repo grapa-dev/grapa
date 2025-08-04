@@ -533,10 +533,10 @@ class GrapaBuilder:
             if is_arm64_emulation:
                 # For native ARM64 compilation in emulation, use X11 libraries from sysroot
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                              "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
             else:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                              "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
@@ -573,11 +573,11 @@ class GrapaBuilder:
                 elif arm64_libs_available and "--sysroot" in cross_flags:
                     # Using sysroot - try to use X11 libraries from sysroot
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                                  "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
                 else:
                     # For cross-compilation without sysroot, use static linking approach
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                                  "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
             else:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
