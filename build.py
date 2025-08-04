@@ -604,13 +604,13 @@ class GrapaBuilder:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
             
-                            cmd = [
-                    gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
-                ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
-                ] + cross_flags + [
-                    "-lcrypto"
-                ] + system_libs
+            cmd = [
+                gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
+            ] + cross_flags + [
+                "-lcrypto"
+            ] + system_libs
                 
                 # Add explicit C++17 compatibility flags for ARM64
                 if is_arm64_emulation:
