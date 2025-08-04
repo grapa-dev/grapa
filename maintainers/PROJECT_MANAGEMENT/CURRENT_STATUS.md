@@ -38,12 +38,39 @@
 - **Impact**: `pip install grapapy` now works on any Windows system without requiring Visual Studio or manual SDK configuration
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
-### Linux ARM64 Cross-Compilation Debugging - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Debugging Linux ARM64 cross-compilation using Option 2 (sysroot approach)
+### PyPI Deployment Issue - 🔄 IN PROGRESS
+- **Status**: 🔄 **IN PROGRESS** - Fixing PyPI deployment failure due to invalid artifacts
+- **Issue**: PyPI deployment failing with `InvalidDistribution: Too many top-level members in sdist archive`
+- **Root Cause**: `grapa-build-debug.zip` debug artifact being incorrectly included in `dists/` directory
+- **Error Details**: 
+  - PyPI expects only valid Python package distributions (`.whl`, `.tar.gz`)
+  - `grapa-build-debug.zip` is a debug artifact that shouldn't be in distribution
+  - This file is being uploaded to GitHub artifacts but shouldn't be in PyPI dists/
+- **Build Status**: 
+  - ✅ **Windows AMD64**: Building successfully with improved Visual Studio detection
+  - ✅ **macOS ARM64**: Building successfully  
+  - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
+  - ✅ **Linux AMD64**: Building successfully
+  - ✅ **Linux ARM64**: Cross-compilation working with `-lbsd` dependency fix
+- **Artifact Issues Identified**:
+  - Missing compressed files for some platforms
+  - Missing library files for some platforms  
+  - `grapa` executable incorrectly placed in root instead of in platform-specific compressed files
+  - Each compressed file should contain executable + libraries for that platform
+- **Solution Needed**:
+  - Fix artifact collection process to exclude debug files from `dists/`
+  - Ensure all platforms generate proper compressed artifacts
+  - Verify each platform's compressed file contains correct executable + libraries
+  - Clean up artifact upload process to separate debug artifacts from distribution artifacts
+- **Next**: Fix artifact collection and PyPI deployment process
+- **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
+
+### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
+- **Status**: ✅ **COMPLETED** - Linux ARM64 cross-compilation now working with `-lbsd` dependency fix
 - **Build Architecture**: 
   - **5 Runners**: win-amd64, mac-arm64, mac-amd64, linux-amd64, linux-arm64
   - **Available Runners**: win-amd64, mac-arm64, linux-amd64 (native)
-  - **Cross-Compilation Needed**: mac-amd64 (working ✅), linux-arm64 (failing ❌)
+  - **Cross-Compilation Needed**: mac-amd64 (working ✅), linux-arm64 (working ✅)
   - **Process**: Build artifacts on each platform → Check into GitHub → Build universal Python extension
 - **Issue**: Linux ARM64 cross-compilation failing with truncated command line and linker errors in GitHub Actions
 - **Root Cause**: Missing `-lbsd` dependency for FLTK static library
@@ -58,6 +85,7 @@
   - ✅ **ENHANCED**: Added `run_diagnostic_cross_compile()` function to `build.py` for better ARM64 debugging
   - ✅ **ENHANCED**: Updated ARM64 cross-compilation to use diagnostic logging for utf8proc, C++ compilation, and linking steps
   - ✅ **FIXED**: Added ARM64 cross-compilation code to `build.py` (the script used by GitHub Actions workflow)
+  - ✅ **FIXED**: Improved Visual Studio detection using setup.py approach (4-method detection)
 - **Debugging Setup**:
   - **Full Command Capture**: `build.py` now captures complete g++ command line for Linux ARM64 builds
   - **Environment Logging**: Captures relevant environment variables (PATH, CC, CXX, ARCH, PLATFORM)
@@ -74,14 +102,14 @@
   - ✅ **FIXED**: Restored full build system functionality while preserving debugging logging
   - ✅ **FIXED**: Updated workflow to use `build.py` with proper arguments
   - ✅ **FIXED**: Added artifact upload for debug logs when builds fail
-  - ✅ **FIXED**: Created version v0.0.161 to test the fix
+  - ✅ **FIXED**: Improved Visual Studio detection for Windows builds
 - **Current Status**: 
-  - ✅ **Windows AMD64**: Building successfully
+  - ✅ **Windows AMD64**: Building successfully with robust Visual Studio detection
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - ✅ **Linux AMD64**: Building successfully
-  - 🔄 **Linux ARM64**: Cross-compilation fix implemented - testing with `-lbsd` dependency fix (v0.0.161)
-- **Next**: Monitor v0.0.161 CI/CD run to verify Linux ARM64 cross-compilation success with `-lbsd` dependency fix
+  - ✅ **Linux ARM64**: Cross-compilation working with `-lbsd` dependency fix
+- **Result**: All 5 platform builds now working successfully
 - **Goal**: Fully automated `pip install grapapy` that works on all platforms including Linux ARM64
 
 ### Database Investigation - ✅ COMPLETED
