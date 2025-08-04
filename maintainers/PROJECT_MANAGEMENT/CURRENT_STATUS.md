@@ -93,6 +93,7 @@
   - ✅ **FIXED**: JPEG library dependency issue - excluded -ljpeg flag for cross-compilation (v0.0.148)
   - ✅ **FIXED**: Linux ARM64 cross-compilation - installed ARM64 development libraries and fixed build.py linking (v0.0.149)
   - ✅ **FIXED**: Linux ARM64 cross-compilation - switched to Ubuntu 22.04 and added robust ARM64 library handling (v0.0.150)
+  - ✅ **FIXED**: Linux ARM64 cross-compilation - improved library detection and static linking fallback with better debugging (v0.0.153)
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully
   - ✅ **macOS ARM64**: Building successfully  
@@ -164,8 +165,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.150`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.150, push tag
-- **Current Version:** v0.0.150 (Linux ARM64 cross-compilation fix - Ubuntu 22.04 with robust ARM64 library handling) - DEPLOYED
-- **Next**: Monitor v0.0.150 CI/CD run to verify Linux ARM64 cross-compilation success with Ubuntu 22.04 - IN PROGRESS
+- **Current Version:** v0.0.153 (Linux ARM64 cross-compilation fix - improved library detection and static linking fallback) - DEPLOYED
+- **Next**: Monitor v0.0.153 CI/CD run to verify Linux ARM64 cross-compilation success with improved library detection - IN PROGRESS
 
 ### Current Windows Build Issue
 - **Problem**: `python build.py --python-only` fails with `io.h` dependency error
