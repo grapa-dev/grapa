@@ -467,10 +467,17 @@ class GrapaBuilder:
         
         # Use native ARM64 compilation in chroot for emulation
         if is_arm64_emulation and arm64_libs_available:
-            # Run native ARM64 compilation in chroot
-            chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(utf8proc_cmd)]
-            print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
-            subprocess.run(chroot_cmd, check=True)
+            # Copy source files into chroot for native compilation
+            print("Copying source files into ARM64 chroot...")
+            subprocess.run(["sudo", "cp", "-r", "source", "./arm64-root/"], check=True)
+            
+            # Step 1: Compile utf8proc.c with gcc inside chroot
+            utf8proc_chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(utf8proc_cmd)]
+            print(f"Running utf8proc compilation in chroot: {' '.join(utf8proc_chroot_cmd)}")
+            subprocess.run(utf8proc_chroot_cmd, check=True)
+            
+            # Copy utf8proc.o back to host filesystem
+            subprocess.run(["sudo", "cp", "./arm64-root/utf8proc.o", "./"], check=True)
         else:
             # Use diagnostic function for cross-compilation or regular compilation
             if is_arm64_emulation:
@@ -502,10 +509,13 @@ class GrapaBuilder:
                 
                 # Use native ARM64 compilation in chroot for emulation
                 if is_arm64_emulation and arm64_libs_available:
-                    # Run native ARM64 compilation in chroot
-                    chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cpp_compile_cmd)]
-                    print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
-                    subprocess.run(chroot_cmd, check=True)
+                    # Step 2: Compile C++ files inside chroot (source files already copied)
+                    cpp_chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cpp_compile_cmd)]
+                    print(f"Running C++ compilation in chroot: {' '.join(cpp_chroot_cmd)}")
+                    subprocess.run(cpp_chroot_cmd, check=True)
+                    
+                    # Copy all .o files back to host filesystem
+                    subprocess.run(["sudo", "cp", "./arm64-root/*.o", "./"], check=True)
                 else:
                     # Use diagnostic function for cross-compilation or regular compilation
                     if is_arm64_emulation:
@@ -554,7 +564,14 @@ class GrapaBuilder:
                 # Add -ljpeg for shared library builds
                 cmd.insert(-2, "-ljpeg")
             
-            # Use diagnostic function for ARM64 cross-compilation
+            # Use native ARM64 compilation in chroot for emulation
+            if is_arm64_emulation and arm64_libs_available:
+                # Source files already copied in utf8proc step, just run compilation
+                chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cmd)]
+                print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
+                subprocess.run(chroot_cmd, check=True)
+            else:
+                # Use diagnostic function for cross-compilation or regular compilation
                 if is_arm64_emulation:
                     run_diagnostic_cross_compile(cmd)
                 else:
