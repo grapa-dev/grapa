@@ -95,6 +95,7 @@
   - ✅ **FIXED**: Linux ARM64 cross-compilation - switched to Ubuntu 22.04 and added robust ARM64 library handling (v0.0.150)
   - ✅ **FIXED**: Linux ARM64 cross-compilation - improved library detection and static linking fallback with better debugging (v0.0.153)
   - ✅ **FIXED**: Linux ARM64 cross-compilation - switched to Option 2 sysroot approach with debootstrap and qemu-user-static (v0.0.154)
+  - ✅ **FIXED**: Linux ARM64 cross-compilation - refined sysroot approach to avoid X11 libraries and focus on core functionality (v0.0.155)
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully
   - ✅ **macOS ARM64**: Building successfully  
@@ -166,8 +167,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.150`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.150, push tag
-- **Current Version:** v0.0.154 (Linux ARM64 cross-compilation fix - switched to Option 2 sysroot approach) - DEPLOYED
-- **Next**: Monitor v0.0.154 CI/CD run to verify Linux ARM64 cross-compilation success with sysroot approach - IN PROGRESS
+- **Current Version:** v0.0.155 (Linux ARM64 cross-compilation fix - refined sysroot approach to avoid X11 libraries) - DEPLOYED
+- **Next**: Monitor v0.0.155 CI/CD run to verify Linux ARM64 cross-compilation success with refined sysroot approach - IN PROGRESS
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working

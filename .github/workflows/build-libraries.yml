@@ -166,7 +166,21 @@ jobs:
         
         # Build executable only
         echo "Building executable for ${{ matrix.platform }}..."
-        python build.py --exe-only
+        if [ "${{ matrix.platform }}" = "linux-arm64" ]; then
+          echo "Using debug script for Linux ARM64..."
+          python build-test.py
+          if [ $? -ne 0 ]; then
+            echo "Build failed, uploading debug log..."
+            if [ -f "build-debug.log" ]; then
+              echo "=== Debug Log Contents ==="
+              cat build-debug.log
+              echo "=== End Debug Log ==="
+            fi
+            exit 1
+          fi
+        else
+          python build.py --exe-only
+        fi
         
         echo "Executable build completed. Checking for executable..."
         ls -la grapa* || echo "No executable found"
