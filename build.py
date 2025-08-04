@@ -561,6 +561,10 @@ class GrapaBuilder:
                     "-lcrypto"
                 ] + system_libs
                 
+                # Add explicit C++17 compatibility flags for ARM64
+                if is_arm64_emulation:
+                    cmd.extend(["-D_GLIBCXX_USE_CXX11_ABI=0", "-fno-sized-deallocation"])
+                
                 # Add -ljpeg for shared library builds
                 cmd.insert(-2, "-ljpeg")
                 
@@ -600,13 +604,17 @@ class GrapaBuilder:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
             
-            cmd = [
-                gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
-            ] + cross_flags + [
-                "-lcrypto"
-            ] + system_libs
+                            cmd = [
+                    gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
+                ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
+                ] + cross_flags + [
+                    "-lcrypto"
+                ] + system_libs
+                
+                # Add explicit C++17 compatibility flags for ARM64
+                if is_arm64_emulation:
+                    cmd.extend(["-D_GLIBCXX_USE_CXX11_ABI=0", "-fno-sized-deallocation"])
             
             # Add -ljpeg for executable builds
             cmd.insert(-2, "-ljpeg")
@@ -752,7 +760,19 @@ class GrapaBuilder:
         # Clean Python bytecode cache
         for pycache_dir in Path(".").glob("**/__pycache__"):
             print(f"Removing {pycache_dir}...")
-            shutil.rmtree(pycache_dir)
+            try:
+                shutil.rmtree(pycache_dir)
+            except PermissionError:
+                print(f"Warning: Could not remove {pycache_dir} due to permissions, continuing...")
+        
+        # Clean ARM64 chroot Python cache if it exists
+        arm64_pycache = Path("./arm64-root/usr/share/python3/__pycache__")
+        if arm64_pycache.exists():
+            print(f"Removing ARM64 chroot Python cache: {arm64_pycache}...")
+            try:
+                subprocess.run(["sudo", "rm", "-rf", str(arm64_pycache)], check=True)
+            except subprocess.CalledProcessError:
+                print(f"Warning: Could not remove ARM64 chroot Python cache, continuing...")
         
         # Clean object files (but preserve executable)
         for obj_file in Path(".").glob("*.o"):
