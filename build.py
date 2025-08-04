@@ -835,10 +835,13 @@ class GrapaBuilder:
         
         return True
     
-    def build(self, run_tests: bool = False, exe_only: bool = False, lib_only: bool = False, python_only: bool = False, preserve_dist: bool = False) -> bool:
+    def build(self, run_tests: bool = False, exe_only: bool = False, lib_only: bool = False, python_only: bool = False, preserve_dist: bool = False, target_config: BuildConfig = None) -> bool:
         """Build for the current platform and architecture"""
-        platform, arch = self.detect_platform()
-        config = BuildConfig(platform, arch)
+        if target_config is None:
+            platform, arch = self.detect_platform()
+            config = BuildConfig(platform, arch)
+        else:
+            config = target_config
         
         print(f"Building Grapa for {config.target}...")
         
@@ -969,6 +972,7 @@ def main():
     parser.add_argument("--lib-only", action="store_true", help="Build only the libraries (skip executable, Python package, and packaging steps). Libraries will be copied to the top-level directory.")
     parser.add_argument("--python-only", action="store_true", help="Build only the Python extension (assumes executable already exists). Useful for debugging Python extension issues without rebuilding the executable.")
     parser.add_argument("--preserve-dist", action="store_true", help="Preserve the dist/ directory after build (useful for debugging or manual installation)")
+    parser.add_argument("--target-platform", type=str, help="Override target platform (e.g., 'mac-amd64' for cross-compilation from ARM64)")
     
     args = parser.parse_args()
     
@@ -985,12 +989,24 @@ def main():
         else:
             print(f"Invalid CI_PLATFORM format: {ci_platform}")
             return 1
+    elif args.target_platform:
+        print(f"Using explicit target platform: {args.target_platform}")
+        # Parse target platform like "mac-amd64", "linux-arm64", etc.
+        if "-" in args.target_platform:
+            platform, arch = args.target_platform.split("-", 1)
+            print(f"Building for {platform} {arch}")
+        else:
+            print(f"Invalid target platform format: {args.target_platform}")
+            return 1
     else:
         # Build for current platform only
         platform, arch = builder.detect_platform()
         print(f"Building for {platform} {arch}")
     
-    if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist):
+    # Create BuildConfig with the target platform
+    config = BuildConfig(platform, arch)
+    
+    if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist, target_config=config):
         print(f"\n{'='*50}")
         print(f"Build successful for {platform} {arch}")
         print(f"{'='*50}")
