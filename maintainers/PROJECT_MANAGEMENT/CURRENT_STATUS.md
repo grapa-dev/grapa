@@ -39,16 +39,25 @@
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
 ### Linux ARM64 Cross-Compilation Debugging - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Debugging truncated linker errors in GitHub Actions
-- **Issue**: Linux ARM64 cross-compilation failing with truncated command line and linker errors in GitHub Actions output
+- **Status**: 🔄 **IN PROGRESS** - Debugging Linux ARM64 cross-compilation using Option 2 (sysroot approach)
+- **Build Architecture**: 
+  - **5 Runners**: win-amd64, mac-arm64, mac-amd64, linux-amd64, linux-arm64
+  - **Available Runners**: win-amd64, mac-arm64, linux-amd64 (native)
+  - **Cross-Compilation Needed**: mac-amd64 (working ✅), linux-arm64 (failing ❌)
+  - **Process**: Build artifacts on each platform → Check into GitHub → Build universal Python extension
+- **Issue**: Linux ARM64 cross-compilation failing with truncated command line and linker errors in GitHub Actions
 - **Root Cause**: Missing `-lbsd` dependency for FLTK static library
 - **Error Identified**: `undefined reference to symbol 'strlcat@@LIBBSD_0.0'` - FLTK library compiled with libbsd dependencies
+- **Cross-Compilation Approach**: Using Option 2 (sysroot with debootstrap) for Linux ARM64
 - **Solution Implemented**: 
   - ✅ **FIXED**: Added `-lbsd` flag to Linux ARM64 cross-compilation linker commands
   - ✅ **FIXED**: Restored full `build.py` functionality from `build-original.py`
   - ✅ **FIXED**: Added debugging logging specifically for Linux ARM64 cross-compilation builds
   - ✅ **FIXED**: Updated GitHub Actions workflow to call `python build.py --exe-only` for Linux ARM64 builds
   - ✅ **FIXED**: Added artifact upload for `build-debug.log` when Linux ARM64 build fails
+  - ✅ **ENHANCED**: Added `run_diagnostic_cross_compile()` function to `build.py` for better ARM64 debugging
+  - ✅ **ENHANCED**: Updated ARM64 cross-compilation to use diagnostic logging for utf8proc, C++ compilation, and linking steps
+  - ✅ **FIXED**: Added ARM64 cross-compilation code to `build.py` (the script used by GitHub Actions workflow)
 - **Debugging Setup**:
   - **Full Command Capture**: `build.py` now captures complete g++ command line for Linux ARM64 builds
   - **Environment Logging**: Captures relevant environment variables (PATH, CC, CXX, ARCH, PLATFORM)
@@ -93,6 +102,18 @@
   - **Benefits**: Faster iteration when debugging Python extension issues
   - **Usage**: `python build.py --python-only --preserve-dist`
   - **Next**: Focus on CLI Enhancement (Phase 2) and Unicode Language Binding
+
+### Multi-Platform Build Architecture - ✅ COMPLETED
+- **GitHub Actions Workflow**: 5 runners for universal Python package
+  - **Native Runners**: win-amd64, mac-arm64, linux-amd64
+  - **Cross-Compilation**: mac-amd64 (working ✅), linux-arm64 (failing ❌)
+  - **Process**: Build artifacts → Check into GitHub → Build universal Python extension
+- **Build Types**: Both static and dynamic libraries (static preferred, dynamic available)
+  - **Windows**: Static libraries only
+  - **macOS/Linux**: Both static and dynamic libraries
+- **Cross-Compilation Methods**:
+  - **mac-amd64**: Native cross-compilation (working)
+  - **linux-arm64**: Option 2 sysroot approach with debootstrap (debugging)
 
 ### Build System Refinement - ✅ COMPLETED
 - **Split --exe-only functionality and add --lib-only option**

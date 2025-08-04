@@ -12,10 +12,6 @@ Usage:
     python3 build.py                    # Build for current platform/arch
     python3 build.py --test             # Run tests after build
     python3 build.py --clean            # Clean build artifacts
-    python3 build.py --exe-only         # Build only the executable (skip libraries, Python package)
-    python3 build.py --lib-only         # Build only the libraries (skip executable, Python package)
-    python3 build.py --python-only      # Build only the Python extension (assumes executable exists)
-    python3 build.py --preserve-dist    # Preserve dist/ directory after build
     python3 build.py --help             # Show help
 
 Supported Platforms (when run on that platform):
@@ -32,6 +28,25 @@ import platform
 import argparse
 import shutil
 from pathlib import Path
+
+def run_diagnostic_cross_compile(cmd: list, log_filename: str = "build-debug.log"):
+    """Run the cross-compile command with full output to log"""
+    from pathlib import Path
+    import subprocess
+
+    log_path = Path(log_filename)
+    with log_path.open("w") as f:
+        f.write("Running command:\n")
+        f.write(" ".join(cmd) + "\n\n")
+        try:
+            result = subprocess.run(cmd, stdout=f, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                f.write(f"\nCommand failed with exit code {result.returncode}\n")
+                raise RuntimeError(f"Build failed with exit code {result.returncode}")
+        except Exception as e:
+            f.write(f"\nException occurred: {e}\n")
+            raise
+
 from typing import Dict, List, Tuple, Optional
 
 class BuildConfig:
@@ -101,20 +116,6 @@ class GrapaBuilder:
         
     def detect_platform(self) -> Tuple[str, str]:
         """Detect current platform and architecture"""
-        # Check for CI/CD environment variable first
-        ci_platform = os.environ.get('CI_PLATFORM')
-        if ci_platform:
-            # Parse platform like "linux-arm64", "mac-amd64", etc.
-            if '-' in ci_platform:
-                platform_name, arch = ci_platform.split('-', 1)
-                # Map "win" to "windows" for compatibility
-                if platform_name == "win":
-                    platform_name = "windows"
-                return platform_name, arch
-            else:
-                print(f"Warning: CI_PLATFORM={ci_platform} is not in expected format (platform-arch)")
-        
-        # Fall back to automatic detection
         system = platform.system().lower()
         machine = platform.machine().lower()
         
@@ -138,56 +139,25 @@ class GrapaBuilder:
         else:
             raise RuntimeError(f"Unsupported platform: {system}")
     
-    def build_windows(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
+    def build_windows(self, config: BuildConfig, exe_only: bool = False) -> bool:
         """Build for Windows using Visual Studio"""
         print(f"Building for {config.target} using Visual Studio...")
         
         try:
-            # Find msbuild in common locations
-            msbuild_paths = [
-                "msbuild",  # Try PATH first
-                "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
-                "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\MSBuild\\Current\\Bin\\MSBuild.exe",
-                "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe",
-                "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
-                "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Professional\\MSBuild\\Current\\Bin\\MSBuild.exe",
-                "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin\\MSBuild.exe",
-            ]
+            # Build main executable
+            subprocess.run([
+                "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
+            ], check=True)
             
-            msbuild_exe = None
-            for path in msbuild_paths:
-                try:
-                    if path == "msbuild":
-                        # Test if msbuild is in PATH
-                        subprocess.run(["msbuild", "/version"], capture_output=True, check=True)
-                        msbuild_exe = "msbuild"
-                        break
-                    elif os.path.exists(path):
-                        msbuild_exe = path
-                        break
-                except (subprocess.CalledProcessError, FileNotFoundError):
-                    continue
-            
-            if not msbuild_exe:
-                raise RuntimeError("Could not find msbuild. Please ensure Visual Studio is installed.")
-            
-            print(f"Using msbuild: {msbuild_exe}")
-            
-            if not lib_only:
-                # Build main executable
-                subprocess.run([
-                    msbuild_exe, "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
-                ], check=True)
-                
-                # Copy executable
-                if os.path.exists("grapa.exe"):
-                    os.remove("grapa.exe")
-                shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
+            # Copy executable
+            if os.path.exists("grapa.exe"):
+                os.remove("grapa.exe")
+            shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
             
             if not exe_only:
-                # Build library (utf8proc.c is already included in the MSBuild project)
+                # Build library
                 subprocess.run([
-                    msbuild_exe, "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
+                    "msbuild", "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
                 ], check=True)
                 # Copy library
                 if os.path.exists("grapa.lib"):
@@ -205,25 +175,21 @@ class GrapaBuilder:
             print(f"Windows build failed: {e}")
             return False
     
-    def build_mac(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
+    def build_mac(self, config: BuildConfig, exe_only: bool = False) -> bool:
         """Build for Mac using clang/clang++"""
         print(f"Building for {config.target} using clang++...")
         
         try:
-            if not lib_only:
-                # Build main executable
-                self._run_mac_build_command(config, is_library=False)
+            # Build main executable
+            self._run_mac_build_command(config, is_library=False)
+            
+            # Build static library
+            self._run_mac_build_command(config, is_library=True, is_static=True)
+            
+            # Build shared library
+            self._run_mac_build_command(config, is_library=True, is_static=False)
             
             if not exe_only:
-                # Build static library
-                self._run_mac_build_command(config, is_library=True, is_static=True)
-                
-                # Build shared library
-                self._run_mac_build_command(config, is_library=True, is_static=False)
-                
-                # Copy library files to top-level directory
-                self._copy_libraries_to_top_level(config)
-                
                 # Create package
                 self._create_mac_package(config)
             
@@ -233,40 +199,32 @@ class GrapaBuilder:
             print(f"Mac build failed: {e}")
             return False
     
-    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
+    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False) -> bool:
         """Build for Linux/AWS using g++"""
         print(f"Building for {config.target} using g++...")
         
         try:
-            if not lib_only:
-                # Build main executable
-                if config.platform == "aws":
-                    self._run_aws_build_command(config, is_library=False)
-                else:
-                    self._run_linux_build_command(config, is_library=False)
+            # Build main executable
+            if config.platform == "aws":
+                self._run_aws_build_command(config, is_library=False)
+            else:
+                self._run_linux_build_command(config, is_library=False)
             
-            if not exe_only or lib_only:
-                # Check if this is cross-compilation (linux-arm64 on AMD64 runner)
-                is_cross_compile = config.target == "linux-arm64" and platform.machine() == "x86_64"
-                
-                # Build static library (always)
-                if config.platform == "aws":
-                    self._run_aws_build_command(config, is_library=True, is_static=True)
-                else:
-                    self._run_linux_build_command(config, is_library=True, is_static=True)
-                
-                # Build shared library (both native and cross-compilation)
-                if config.platform == "aws":
-                    self._run_aws_build_command(config, is_library=True, is_static=False)
-                else:
-                    self._run_linux_build_command(config, is_library=True, is_static=False)
-                
-                # Copy library files to top-level directory
-                self._copy_libraries_to_top_level(config)
-                
-                # Create package (only if not lib_only)
-                if not lib_only:
-                    self._create_linux_package(config)
+            # Build static library
+            if config.platform == "aws":
+                self._run_aws_build_command(config, is_library=True, is_static=True)
+            else:
+                self._run_linux_build_command(config, is_library=True, is_static=True)
+            
+            # Build shared library
+            if config.platform == "aws":
+                self._run_aws_build_command(config, is_library=True, is_static=False)
+            else:
+                self._run_linux_build_command(config, is_library=True, is_static=False)
+            
+            if not exe_only:
+                # Create package
+                self._create_linux_package(config)
             
             return True
             
@@ -284,21 +242,12 @@ class GrapaBuilder:
         
         print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
         
-        # Check if this is cross-compilation (mac-amd64 on ARM64 runner)
-        is_cross_compile = config.target == "mac-amd64" and platform.machine() == "arm64"
-        
-        # Set up cross-compilation flags if needed
-        cross_flags = []
-        if is_cross_compile:
-            print("Cross-compiling for AMD64 from ARM64...")
-            cross_flags = ["-target", "x86_64-apple-macos10.9"]
-        
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         subprocess.run([
             "clang", "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-m64", "-O3"
-        ] + cross_flags, check=True)
+        ], check=True)
         
         if is_library:
             if is_static:
@@ -309,12 +258,12 @@ class GrapaBuilder:
                     "clang++", "-Isource", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-m64", "-O3", "-pthread"
-                ] + cross_flags, check=True)
+                ], check=True)
                 # Get all .o files
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
-                subprocess.run(["libtool", "-static", "-o", "libgrapa.a"] + obj_files, check=True)
+                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
             else:
@@ -331,7 +280,7 @@ class GrapaBuilder:
                 ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                     "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ] + cross_flags, check=True)
+                ], check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
@@ -344,19 +293,21 @@ class GrapaBuilder:
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
             # Step 1: utf8proc.o is already built above
-            # Step 2: Build executable using utf8proc.o - expand globs properly
-            cmd = ["clang++", "-Isource", "source/main.cpp"] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+            # Step 2: Build executable using utf8proc.o - use shell globs like manual command
+            cmd = [
+                "clang++", "-Isource", "source/main.cpp", "source/grapa/*.cpp", "utf8proc.o",
+                f"source/openssl-lib/{config.target}/*.a", f"source/fl-lib/{config.target}/*.a", 
+                f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
                 "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                 "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
-            ] + cross_flags
+            ]
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
             try:
-                # Use subprocess.run() to properly handle the command
-                subprocess.run(cmd, check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"❌ Build failed: {e}")
-                raise RuntimeError(f"Build failed with exit code {e.returncode}")
+                # Try os.system() first - it might be faster than subprocess
+                result = os.system(" ".join(cmd))
+                if result != 0:
+                    raise RuntimeError(f"Build failed with exit code {result}")
             except Exception as e:
                 print(f"❌ Build failed: {e}")
                 raise
@@ -406,10 +357,12 @@ class GrapaBuilder:
                         "-L" + os.path.join(sysroot_path, "lib/aarch64-linux-gnu")
                     ])
                     arm64_libs_available = True
-                    print("ARM64 sysroot libraries available")
+                    print("ARM64 sysroot libraries available, using dynamic linking")
                 else:
-                    # Fallback if no sysroot
-                    print("Warning: ARM64 sysroot not available")
+                    # Fallback to static linking if no sysroot
+                    print("Warning: ARM64 sysroot not available, will use static linking approach")
+                    cross_flags.extend(["-static", "-static-libgcc", "-static-libstdc++"])
+                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
                     arm64_libs_available = False
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("Cross-compilation toolchain not available, using native compiler with ARM flags")
@@ -421,10 +374,17 @@ class GrapaBuilder:
         pic_flag = ["-fPIC"] if is_library else []
         gcc_cmd = f"{cross_compiler_prefix}gcc" if cross_compiler_prefix else "gcc"
         gpp_cmd = f"{cross_compiler_prefix}g++" if cross_compiler_prefix else "g++"
-        subprocess.run([
+        
+        utf8proc_cmd = [
             gcc_cmd, "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
-        ] + pic_flag + cross_flags, check=True)
+        ] + pic_flag + cross_flags
+        
+        # Use diagnostic function for ARM64 cross-compilation
+        if is_cross_compile:
+            run_diagnostic_cross_compile(utf8proc_cmd)
+        else:
+            subprocess.run(utf8proc_cmd, check=True)
         
         # Get library path based on target
         lib_path = f"source/openssl-lib/{config.target}"
@@ -438,11 +398,17 @@ class GrapaBuilder:
                 for obj_file in glob.glob("*.o"):
                     os.remove(obj_file)
                 
-                subprocess.run([
+                cpp_compile_cmd = [
                     gpp_cmd, "-Isource", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-O3", "-pthread", "-fPIC"
-                ] + cross_flags, check=True)
+                ] + cross_flags
+                
+                # Use diagnostic function for ARM64 cross-compilation
+                if is_cross_compile:
+                    run_diagnostic_cross_compile(cpp_compile_cmd)
+                else:
+                    subprocess.run(cpp_compile_cmd, check=True)
                 # Get all .o files (including utf8proc.o if it exists)
                 obj_files = glob.glob("*.o")
                 if not obj_files:
@@ -460,18 +426,24 @@ class GrapaBuilder:
                 # Build shared library
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
+                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                # For ARM64 cross-compilation, exclude FLTK libraries (no X11 in sysroot)
+                # For ARM64 cross-compilation, use ARM64 X11 libraries
                 if is_cross_compile:
-                    # Use minimal system libraries for cross-compilation shared library (no GUI)
-                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                    fl_libs = []  # Skip FLTK libraries for cross-compilation
+                    # Check if we're using static linking (no X11 libraries available)
+                    if "-static" in cross_flags:
+                        system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                    elif arm64_libs_available and "--sysroot" in cross_flags:
+                        # Using sysroot - avoid X11 libraries for now, focus on core functionality
+                        system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                    else:
+                        system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                                      "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
                 else:
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                                   "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
-                    fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
@@ -482,29 +454,36 @@ class GrapaBuilder:
                 # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
                 if "-static" not in cross_flags:
                     cmd.insert(-2, "-ljpeg")
-                    # Add -lbsd for cross-compilation (now available in sysroot)
-                    if is_cross_compile:
-                        cmd.insert(-2, "-lbsd")
                 
-                subprocess.run(cmd, check=True)
+                # Use diagnostic function for ARM64 cross-compilation
+                if is_cross_compile:
+                    run_diagnostic_cross_compile(cmd)
+                else:
+                    subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
             # Build executable - match AWS pattern exactly
             cpp_files = glob.glob("source/grapa/*.cpp")
             openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
+            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            # For ARM64 cross-compilation, exclude FLTK libraries (no X11 in sysroot)
+            # For ARM64 cross-compilation, use ARM64 X11 libraries
             if is_cross_compile:
-                # Use minimal system libraries for cross-compilation (no GUI)
-                system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                fl_libs = []  # Skip FLTK libraries for cross-compilation
+                # Check if we're using static linking (no X11 libraries available)
+                if "-static" in cross_flags:
+                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                elif arm64_libs_available and "--sysroot" in cross_flags:
+                    # Using sysroot - avoid X11 libraries for now, focus on core functionality
+                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                else:
+                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
             else:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
             
             cmd = [
                 gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
@@ -517,44 +496,21 @@ class GrapaBuilder:
             # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
             if "-static" not in cross_flags:
                 cmd.insert(-2, "-ljpeg")
-                # Add -lbsd for cross-compilation (now available in sysroot)
-                if is_cross_compile:
-                    cmd.insert(-2, "-lbsd")
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
-            
-            # Add debugging logging for Linux ARM64 cross-compilation
-            if is_cross_compile:
-                print("Writing build command to build-debug.log for Linux ARM64 debugging...")
-                build_log = Path("build-debug.log")
-                with build_log.open("w") as f:
-                    f.write("Running command:\n")
-                    f.write(" ".join(cmd) + "\n\n")
-                    f.write("Environment:\n")
-                    for key, value in os.environ.items():
-                        if any(x in key.upper() for x in ['PATH', 'CC', 'CXX', 'ARCH', 'PLATFORM']):
-                            f.write(f"{key}={value}\n")
-                    f.write("\n")
-                    
-                    try:
-                        process = subprocess.run(cmd, stdout=f, stderr=subprocess.STDOUT, text=True)
-                        f.write(f"\nExit code: {process.returncode}\n")
-                        if process.returncode != 0:
-                            raise RuntimeError(f"Build failed with exit code {process.returncode}")
-                    except Exception as e:
-                        f.write(f"Exception occurred: {str(e)}\n")
-                        raise
-            else:
-                try:
-                    # Use subprocess.run() to properly handle the command
+            try:
+                # Use diagnostic function for ARM64 cross-compilation
+                if is_cross_compile:
+                    run_diagnostic_cross_compile(cmd)
+                else:
                     subprocess.run(cmd, check=True)
-                except subprocess.CalledProcessError as e:
-                    print(f"❌ Build failed: {e}")
-                    raise RuntimeError(f"Build failed with exit code {e.returncode}")
-                except Exception as e:
-                    print(f"❌ Build failed: {e}")
-                    raise
+            except subprocess.CalledProcessError as e:
+                print(f"❌ Build failed: {e}")
+                raise RuntimeError(f"Build failed with exit code {e.returncode}")
+            except Exception as e:
+                print(f"❌ Build failed: {e}")
+                raise
             
             # Check if executable was created
             if os.path.exists(config.output_name):
@@ -591,11 +547,6 @@ class GrapaBuilder:
             if is_static:
                 # Build static library
                 cpp_files = glob.glob("source/grapa/*.cpp")
-                
-                # Clean any existing object files first
-                for obj_file in glob.glob("*.o"):
-                    os.remove(obj_file)
-                
                 subprocess.run([
                     "g++", "-Isource", "-c"
                 ] + cpp_files + [
@@ -605,11 +556,6 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
-                
-                # Remove any existing libgrapa.a to avoid conflicts
-                if os.path.exists("libgrapa.a"):
-                    os.remove("libgrapa.a")
-                
                 subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
@@ -642,8 +588,8 @@ class GrapaBuilder:
             
             cmd = [
                 "g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
+            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
+                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
                 "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
                 "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
                 "-O3", "-pthread", "-o", config.output_name
@@ -652,11 +598,10 @@ class GrapaBuilder:
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
             try:
-                # Use subprocess.run() to properly handle the command
-                subprocess.run(cmd, check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"❌ Build failed: {e}")
-                raise RuntimeError(f"Build failed with exit code {e.returncode}")
+                # Try os.system() first - it might be faster than subprocess
+                result = os.system(" ".join(cmd))
+                if result != 0:
+                    raise RuntimeError(f"Build failed with exit code {result}")
             except Exception as e:
                 print(f"❌ Build failed: {e}")
                 raise
@@ -668,16 +613,14 @@ class GrapaBuilder:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
     
-    def _clean_build_artifacts(self, preserve_dist: bool = False):
+    def _clean_build_artifacts(self):
         """Clean build artifacts that should be removed after build"""
         print("Cleaning build artifacts...")
         
         # Clean Python package artifacts
-        if os.path.exists("dist") and not preserve_dist:
+        if os.path.exists("dist"):
             print("Removing dist/ directory...")
             shutil.rmtree("dist")
-        elif preserve_dist and os.path.exists("dist"):
-            print("Preserving dist/ directory as requested")
         
         if os.path.exists("grapapy.egg-info"):
             print("Removing grapapy.egg-info/ directory...")
@@ -760,7 +703,7 @@ class GrapaBuilder:
         print(f"Creating package with files: {files_to_include}")
         subprocess.run(tar_cmd, check=True)
     
-    def build_python_package(self, config: BuildConfig, preserve_dist: bool = False):
+    def build_python_package(self, config: BuildConfig):
         """Build Python package"""
         print("Building Python package...")
 
@@ -780,31 +723,6 @@ class GrapaBuilder:
         # Install package
         package_path = os.path.join("dist", package_file)
         subprocess.run([pip_cmd, "install", package_path], check=True)
-        
-        if preserve_dist:
-            print("Preserving dist/ directory as requested")
-        else:
-            print("Cleaning dist/ directory...")
-            shutil.rmtree("dist")
-    
-    def build_python_only(self, config: BuildConfig, preserve_dist: bool = False) -> bool:
-        """Build only the Python extension (assumes executable already exists)"""
-        print("Building Python extension only...")
-        
-        # Check if executable exists
-        exe_name = "grapa.exe" if config.platform == "windows" else "grapa"
-        if not os.path.exists(exe_name):
-            print(f"Warning: {exe_name} not found. Python extension build may fail.")
-            print("Consider running full build first to ensure executable exists.")
-        
-        try:
-            # Build Python package
-            self.build_python_package(config, preserve_dist=preserve_dist)
-            print("Python extension build successful")
-            return True
-        except Exception as e:
-            print(f"Python extension build failed: {e}")
-            return False
     
     def run_tests(self, config: BuildConfig):
         """Run tests"""
@@ -825,59 +743,7 @@ class GrapaBuilder:
         
         return True
     
-    def _copy_libraries_to_top_level(self, config: BuildConfig):
-        """Copy compiled library files to the top-level directory"""
-        print("Copying library files to top-level directory...")
-        
-        if config.platform == "windows":
-            # Windows only has static library
-            lib_path = f"source/grapa-lib/{config.target}/grapa.lib"
-            if os.path.exists(lib_path):
-                shutil.copy(lib_path, "grapa.lib")
-                print("✅ Copied grapa.lib to top-level directory")
-        else:
-            # Mac/Linux/AWS have both static and shared libraries
-            static_lib_path = f"source/grapa-lib/{config.target}/libgrapa.a"
-            shared_lib_path = f"source/grapa-lib/{config.target}/libgrapa.so"
-            
-            if os.path.exists(static_lib_path):
-                shutil.copy(static_lib_path, "libgrapa.a")
-                print("✅ Copied libgrapa.a to top-level directory")
-            
-            if os.path.exists(shared_lib_path):
-                shutil.copy(shared_lib_path, "libgrapa.so")
-                print("✅ Copied libgrapa.so to top-level directory")
-
-    def build_libraries_only(self, config: BuildConfig) -> bool:
-        """Build only the libraries (skip executable and Python package)"""
-        print("Building libraries only...")
-        
-        try:
-            # Build based on platform
-            success = False
-            if config.platform == "windows":
-                success = self.build_windows(config, exe_only=True, lib_only=True)
-            elif config.platform == "mac":
-                success = self.build_mac(config, exe_only=True, lib_only=True)
-            elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
-            elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
-            else:
-                print(f"Unsupported platform: {config.platform}")
-                return False
-            
-            if success:
-                print("Libraries build successful")
-                return True
-            else:
-                print("Libraries build failed")
-                return False
-        except Exception as e:
-            print(f"Libraries build failed: {e}")
-            return False
-
-    def build(self, run_tests: bool = False, exe_only: bool = False, lib_only: bool = False, python_only: bool = False, preserve_dist: bool = False) -> bool:
+    def build(self, run_tests: bool = False, exe_only: bool = False) -> bool:
         """Build for the current platform and architecture"""
         platform, arch = self.detect_platform()
         config = BuildConfig(platform, arch)
@@ -885,24 +751,16 @@ class GrapaBuilder:
         print(f"Building Grapa for {config.target}...")
         
         try:
-            if python_only:
-                # Build only Python extension
-                return self.build_python_only(config, preserve_dist=preserve_dist)
-            
-            if lib_only:
-                # Build only libraries
-                return self.build_libraries_only(config)
-            
             # Build based on platform
             success = False
             if config.platform == "windows":
-                success = self.build_windows(config, exe_only=exe_only, lib_only=False)
+                success = self.build_windows(config, exe_only=exe_only)
             elif config.platform == "mac":
-                success = self.build_mac(config, exe_only=exe_only, lib_only=False)
+                success = self.build_mac(config, exe_only=exe_only)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
+                success = self.build_linux_aws(config, exe_only=exe_only)
             elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
+                success = self.build_linux_aws(config, exe_only=exe_only)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -912,7 +770,7 @@ class GrapaBuilder:
                 
                 if not exe_only:
                     # Build Python package
-                    self.build_python_package(config, preserve_dist=preserve_dist)
+                    self.build_python_package(config)
                     # Run tests if requested
                     if run_tests:
                         self.run_tests(config)
@@ -923,25 +781,23 @@ class GrapaBuilder:
                 return False
         finally:
             # Always clean up build artifacts, regardless of success or failure
-            self._clean_build_artifacts(preserve_dist=preserve_dist)
+            self._clean_build_artifacts()
 
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
-    parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip libraries, Python package, and packaging steps). Useful for fast iterative development and investigation.")
-    parser.add_argument("--lib-only", action="store_true", help="Build only the libraries (skip executable, Python package, and packaging steps). Libraries will be copied to the top-level directory.")
-    parser.add_argument("--python-only", action="store_true", help="Build only the Python extension (assumes executable already exists). Useful for debugging Python extension issues without rebuilding the executable.")
-    parser.add_argument("--preserve-dist", action="store_true", help="Preserve the dist/ directory after build (useful for debugging or manual installation)")
+    parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip library, Python package, and packaging steps). Useful for fast iterative development and investigation.")
     
     args = parser.parse_args()
     
     builder = GrapaBuilder()
     
-    # Get platform and architecture for reporting
+    # Build for current platform only
     platform, arch = builder.detect_platform()
+    print(f"Building for {platform} {arch}")
     
-    if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist):
+    if builder.build(args.test, exe_only=args.exe_only):
         print(f"\n{'='*50}")
         print(f"Build successful for {platform} {arch}")
         print(f"{'='*50}")

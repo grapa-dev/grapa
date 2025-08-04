@@ -34,6 +34,24 @@ import shutil
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 
+def run_diagnostic_cross_compile(cmd: list, log_filename: str = "build-debug.log"):
+    """Run the cross-compile command with full output to log"""
+    from pathlib import Path
+    import subprocess
+
+    log_path = Path(log_filename)
+    with log_path.open("w") as f:
+        f.write("Running command:\n")
+        f.write(" ".join(cmd) + "\n\n")
+        try:
+            result = subprocess.run(cmd, stdout=f, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                f.write(f"\nCommand failed with exit code {result.returncode}\n")
+                raise RuntimeError(f"Build failed with exit code {result.returncode}")
+        except Exception as e:
+            f.write(f"\nException occurred: {e}\n")
+            raise
+
 class BuildConfig:
     """Configuration for different build targets"""
     
@@ -420,10 +438,17 @@ class GrapaBuilder:
         pic_flag = ["-fPIC"] if is_library else []
         gcc_cmd = f"{cross_compiler_prefix}gcc" if cross_compiler_prefix else "gcc"
         gpp_cmd = f"{cross_compiler_prefix}g++" if cross_compiler_prefix else "g++"
-        subprocess.run([
+        
+        utf8proc_cmd = [
             gcc_cmd, "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-O3"
-        ] + pic_flag + cross_flags, check=True)
+        ] + pic_flag + cross_flags
+        
+        # Use diagnostic function for ARM64 cross-compilation
+        if is_cross_compile:
+            run_diagnostic_cross_compile(utf8proc_cmd)
+        else:
+            subprocess.run(utf8proc_cmd, check=True)
         
         # Get library path based on target
         lib_path = f"source/openssl-lib/{config.target}"
@@ -437,11 +462,17 @@ class GrapaBuilder:
                 for obj_file in glob.glob("*.o"):
                     os.remove(obj_file)
                 
-                subprocess.run([
+                cpp_compile_cmd = [
                     gpp_cmd, "-Isource", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-O3", "-pthread", "-fPIC"
-                ] + cross_flags, check=True)
+                ] + cross_flags
+                
+                # Use diagnostic function for ARM64 cross-compilation
+                if is_cross_compile:
+                    run_diagnostic_cross_compile(cpp_compile_cmd)
+                else:
+                    subprocess.run(cpp_compile_cmd, check=True)
                 # Get all .o files (including utf8proc.o if it exists)
                 obj_files = glob.glob("*.o")
                 if not obj_files:
@@ -488,7 +519,11 @@ class GrapaBuilder:
                 if "-static" not in cross_flags:
                     cmd.insert(-2, "-ljpeg")
                 
-                subprocess.run(cmd, check=True)
+                # Use diagnostic function for ARM64 cross-compilation
+                if is_cross_compile:
+                    run_diagnostic_cross_compile(cmd)
+                else:
+                    subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
@@ -529,8 +564,11 @@ class GrapaBuilder:
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
             try:
-                # Use subprocess.run() to properly handle the command
-                subprocess.run(cmd, check=True)
+                # Use diagnostic function for ARM64 cross-compilation
+                if is_cross_compile:
+                    run_diagnostic_cross_compile(cmd)
+                else:
+                    subprocess.run(cmd, check=True)
             except subprocess.CalledProcessError as e:
                 print(f"❌ Build failed: {e}")
                 raise RuntimeError(f"Build failed with exit code {e.returncode}")
