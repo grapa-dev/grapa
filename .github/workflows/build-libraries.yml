@@ -168,7 +168,7 @@ jobs:
         echo "Building executable for ${{ matrix.platform }}..."
         if [ "${{ matrix.platform }}" = "linux-arm64" ]; then
           echo "Using debug script for Linux ARM64..."
-          python build-test.py
+          python build.py
           if [ $? -ne 0 ]; then
             echo "Build failed, uploading debug log..."
             if [ -f "build-debug.log" ]; then

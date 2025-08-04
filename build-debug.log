@@ -1,0 +1,4 @@
+Running command:
+aarch64-linux-gnu-g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/GrapaInt.cpp source/grapa/GrapaState.cpp source/grapa/GrapaDB.cpp source/utf8proc/utf8proc.c source/openssl-lib/linux-arm64/libcrypto.a source/openssl-lib/linux-arm64/libssl.a
+
+Exception occurred: [WinError 2] The system cannot find the file specified
