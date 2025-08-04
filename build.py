@@ -144,13 +144,19 @@ class GrapaBuilder:
         print(f"Building for {config.target} using Visual Studio...")
         
         try:
-            # Try to find msbuild - first check if it's in PATH
-            msbuild_exe = "msbuild"
+            # Try to find msbuild using multiple methods (like setup.py does)
+            msbuild_exe = None
+            
+            # Method 1: Check if msbuild is in PATH
             try:
-                subprocess.run([msbuild_exe, "/version"], capture_output=True, check=True)
+                subprocess.run(["msbuild", "/version"], capture_output=True, check=True)
+                msbuild_exe = "msbuild"
                 print(f"Using msbuild from PATH")
             except (subprocess.CalledProcessError, FileNotFoundError):
-                # If not in PATH, try to find it using vswhere (Visual Studio installer)
+                pass
+            
+            # Method 2: Use vswhere to find Visual Studio installation
+            if not msbuild_exe:
                 try:
                     vswhere_output = subprocess.run([
                         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
@@ -160,15 +166,49 @@ class GrapaBuilder:
                     
                     vs_path = vswhere_output.stdout.strip()
                     if vs_path:
-                        msbuild_exe = os.path.join(vs_path, "MSBuild", "Current", "Bin", "MSBuild.exe")
-                        if os.path.exists(msbuild_exe):
+                        msbuild_candidate = os.path.join(vs_path, "MSBuild", "Current", "Bin", "MSBuild.exe")
+                        if os.path.exists(msbuild_candidate):
+                            msbuild_exe = msbuild_candidate
                             print(f"Using msbuild: {msbuild_exe}")
-                        else:
-                            raise RuntimeError(f"Found Visual Studio at {vs_path} but msbuild not found")
-                    else:
-                        raise RuntimeError("Could not find Visual Studio installation")
                 except (subprocess.CalledProcessError, FileNotFoundError):
-                    raise RuntimeError("Could not find msbuild. Please ensure Visual Studio is installed and msbuild is available.")
+                    pass
+            
+            # Method 3: Try to find Visual Studio using 'where cl' (like setup.py)
+            if not msbuild_exe:
+                try:
+                    result = subprocess.run(['where', 'cl'], capture_output=True, text=True, shell=True)
+                    if result.returncode == 0:
+                        cl_path = result.stdout.strip().split('\n')[0]
+                        if 'Microsoft Visual Studio' in cl_path:
+                            # Navigate up from cl.exe to find msbuild
+                            vs_path = os.path.dirname(os.path.dirname(os.path.dirname(cl_path)))
+                            msbuild_candidate = os.path.join(vs_path, "MSBuild", "Current", "Bin", "MSBuild.exe")
+                            if os.path.exists(msbuild_candidate):
+                                msbuild_exe = msbuild_candidate
+                                print(f"Using msbuild: {msbuild_exe}")
+                except (subprocess.SubprocessError, OSError):
+                    pass
+            
+            # Method 4: Check common installation paths
+            if not msbuild_exe:
+                vs_paths = [
+                    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community",
+                    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional", 
+                    "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise",
+                    "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community",
+                    "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Professional",
+                    "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise",
+                ]
+                
+                for vs_path in vs_paths:
+                    msbuild_candidate = os.path.join(vs_path, "MSBuild", "Current", "Bin", "MSBuild.exe")
+                    if os.path.exists(msbuild_candidate):
+                        msbuild_exe = msbuild_candidate
+                        print(f"Using msbuild: {msbuild_candidate}")
+                        break
+            
+            if not msbuild_exe:
+                raise RuntimeError("Could not find msbuild. Please ensure Visual Studio is installed and msbuild is available.")
             
             if not lib_only:
                 # Build main executable
