@@ -550,16 +550,16 @@ class GrapaBuilder:
                     except Exception as e:
                         f.write(f"Exception occurred: {str(e)}\n")
                         raise
-            
-            try:
-                # Use subprocess.run() to properly handle the command
-                subprocess.run(cmd, check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"❌ Build failed: {e}")
-                raise RuntimeError(f"Build failed with exit code {e.returncode}")
-            except Exception as e:
-                print(f"❌ Build failed: {e}")
-                raise
+            else:
+                try:
+                    # Use subprocess.run() to properly handle the command
+                    subprocess.run(cmd, check=True)
+                except subprocess.CalledProcessError as e:
+                    print(f"❌ Build failed: {e}")
+                    raise RuntimeError(f"Build failed with exit code {e.returncode}")
+                except Exception as e:
+                    print(f"❌ Build failed: {e}")
+                    raise
             
             # Check if executable was created
             if os.path.exists(config.output_name):
