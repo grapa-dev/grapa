@@ -9,6 +9,24 @@ from setuptools.command.build_ext import build_ext
 
 from pathlib import Path
 
+def run_diagnostic_cross_compile(cmd: list, log_filename: str = "build-debug.log"):
+    """Run the cross-compile command with full output to log"""
+    from pathlib import Path
+    import subprocess
+
+    log_path = Path(log_filename)
+    with log_path.open("w") as f:
+        f.write("Running command:\n")
+        f.write(" ".join(cmd) + "\n\n")
+        try:
+            result = subprocess.run(cmd, stdout=f, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                f.write(f"\nCommand failed with exit code {result.returncode}\n")
+                raise RuntimeError(f"Build failed with exit code {result.returncode}")
+        except Exception as e:
+            f.write(f"\nException occurred: {e}\n")
+            raise
+
 # Get pybind11 include path
 def get_pybind11_include():
     try:
@@ -20,7 +38,7 @@ def get_pybind11_include():
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
-grapapy_version = "0.0.169"
+grapapy_version = "0.0.170"
 is_aws = False
 is_apple = False
 from_os = ''
