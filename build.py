@@ -344,7 +344,7 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
+                subprocess.run(["libtool", "-static", "-o", "libgrapa.a"] + obj_files, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
             else:
@@ -887,13 +887,13 @@ class GrapaBuilder:
             # Build based on platform
             success = False
             if config.platform == "windows":
-                success = self.build_windows(config, exe_only=True, lib_only=True)
+                success = self.build_windows(config, exe_only=False, lib_only=True)
             elif config.platform == "mac":
-                success = self.build_mac(config, exe_only=True, lib_only=True)
+                success = self.build_mac(config, exe_only=False, lib_only=True)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
+                success = self.build_linux_aws(config, exe_only=False, lib_only=True)
             elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=True, lib_only=True)
+                success = self.build_linux_aws(config, exe_only=False, lib_only=True)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
