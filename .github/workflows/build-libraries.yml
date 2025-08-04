@@ -253,8 +253,9 @@ jobs:
         path: build-debug.log
         retention-days: 30
 
-    # Debug: Check artifact placement before upload
-    - name: Debug artifact placement
+    # Debug: Check artifact placement before upload (Linux/macOS)
+    - name: Debug artifact placement (Linux/macOS)
+      if: matrix.os != 'windows-latest'
       run: |
         echo "=== DEBUG: Checking artifact placement for ${{ matrix.platform }} ==="
         echo "Current directory: $(pwd)"
@@ -295,6 +296,61 @@ jobs:
         else
           echo "❌ No compressed archive found for ${{ matrix.platform }}"
         fi
+        
+    # Debug: Check artifact placement before upload (Windows)
+    - name: Debug artifact placement (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "=== DEBUG: Checking artifact placement for ${{ matrix.platform }} ==="
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Checking if build directories exist:"
+        
+        # Check each expected directory
+        $dirs = @(
+          "source/grapa-lib/${{ matrix.platform }}/",
+          "source/openssl-lib/${{ matrix.platform }}/",
+          "source/fl-lib/${{ matrix.platform }}/",
+          "source/blst-lib/${{ matrix.platform }}/",
+          "source/pcre2-lib/${{ matrix.platform }}/",
+          "source/grapa-other/${{ matrix.platform }}/"
+        )
+        
+        foreach ($dir in $dirs) {
+          if (Test-Path $dir) {
+            $items = Get-ChildItem $dir | Measure-Object | Select-Object -ExpandProperty Count
+            Write-Host "✅ $dir exists with $items items"
+            Get-ChildItem $dir | Select-Object -First 5 | ForEach-Object { Write-Host "  $($_.Name)" }
+          } else {
+            Write-Host "❌ $dir does not exist"
+          }
+        }
+        
+        Write-Host "Checking bin/ directory:"
+        if (Test-Path "bin/") {
+          Write-Host "✅ bin/ exists with:"
+          Get-ChildItem "bin/" | ForEach-Object { Write-Host "  $($_.Name)" }
+        } else {
+          Write-Host "❌ bin/ does not exist"
+        }
+        
+        Write-Host "Checking for executable:"
+        if (Test-Path "grapa") {
+          Write-Host "✅ grapa executable exists"
+        } elseif (Test-Path "grapa.exe") {
+          Write-Host "✅ grapa.exe executable exists"
+        } else {
+          Write-Host "❌ No executable found"
+        }
+        
+        Write-Host "Checking for compressed archives:"
+        if (Test-Path "bin/grapa-${{ matrix.platform }}.zip") {
+          Write-Host "✅ bin/grapa-${{ matrix.platform }}.zip exists"
+        } elseif (Test-Path "bin/grapa-${{ matrix.platform }}.tar.gz") {
+          Write-Host "✅ bin/grapa-${{ matrix.platform }}.tar.gz exists"
+        } else {
+          Write-Host "❌ No compressed archive found for ${{ matrix.platform }}"
+        }
         
     # Upload artifacts for later commit
     - name: Upload platform artifacts
