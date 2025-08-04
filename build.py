@@ -963,9 +963,21 @@ def main():
     
     builder = GrapaBuilder()
     
-    # Build for current platform only
-    platform, arch = builder.detect_platform()
-    print(f"Building for {platform} {arch}")
+    # Check if we're in CI and use CI_PLATFORM if available
+    ci_platform = os.environ.get("CI_PLATFORM")
+    if ci_platform:
+        print(f"CI detected, using target platform: {ci_platform}")
+        # Parse CI_PLATFORM like "linux-arm64", "mac-amd64", etc.
+        if "-" in ci_platform:
+            platform, arch = ci_platform.split("-", 1)
+            print(f"Building for {platform} {arch}")
+        else:
+            print(f"Invalid CI_PLATFORM format: {ci_platform}")
+            return 1
+    else:
+        # Build for current platform only
+        platform, arch = builder.detect_platform()
+        print(f"Building for {platform} {arch}")
     
     if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist):
         print(f"\n{'='*50}")
