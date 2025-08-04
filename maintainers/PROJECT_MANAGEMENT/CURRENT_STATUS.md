@@ -38,72 +38,42 @@
 - **Impact**: `pip install grapapy` now works on any Windows system without requiring Visual Studio or manual SDK configuration
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
-### Automated CI/CD Implementation - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Linux ARM64 cross-compilation fix implemented
-- **Approach**: Automating the original, proven build process
-- **Stage 1**: Build libraries on each platform (Windows AMD64, macOS AMD64/ARM64, Linux AMD64/ARM64)
-- **Stage 2**: Build universal wheels and deploy to PyPI
-- **Current Version**: v0.0.150 (latest version, testing Linux ARM64 cross-compilation fix with Ubuntu 22.04) - DEPLOYED
-- **Key Insights**: Original approach used universal wheels containing all platform libraries
-- **Issues Discovered**:
-  - ❌ **CRITICAL**: `commit-artifacts` job not detecting changes from platform jobs
-  - ❌ **CRITICAL**: Platform jobs not committing their artifacts independently
-  - ❌ **CRITICAL**: Wheel jobs not receiving updated artifacts from platform jobs
-  - ❌ **CRITICAL**: Windows archive naming incorrect (`grapa-win-win-amd64.zip` instead of `grapa-win-amd64.zip`)
-  - ❌ **CRITICAL**: Linux/macOS archives only including executable, missing libraries
-  - ❌ **CRITICAL**: Git race conditions when multiple platform jobs try to commit simultaneously
-  - ❌ **CRITICAL**: Linux ARM64 build failing due to architecture mismatch (AMD64 runner trying to link ARM64 libraries)
-  - ❌ **CRITICAL**: Linux ARM64 build failing with `gcc: error: unrecognized command-line option '-target'` (GCC doesn't support -target flag)
-  - ❌ **CRITICAL**: Linux ARM64 build failing with `cannot access local variable 'gpp_cmd' where it is not associated with a value` (Python scoping issue)
-- **Fixes Implemented**:
-  - ✅ **FIXED**: Removed `commit-artifacts` job entirely
-  - ✅ **FIXED**: Fixed Windows archive naming to match build.py logic
-  - ✅ **FIXED**: Enhanced Linux/macOS archive creation to include libraries (matching build.py)
-  - ✅ **FIXED**: Replaced individual platform commits with artifact uploads to avoid Git conflicts
-  - ✅ **FIXED**: Added single `commit-all-artifacts` job that downloads and commits all artifacts
-  - ✅ **FIXED**: Updated workflow to ensure wheel jobs get latest artifacts
-  - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner (using `-target x86_64-apple-macos10.9`)
-  - ✅ **FIXED**: Added ARM64 cross-compilation toolchain installation in workflow (`gcc-aarch64-linux-gnu`, `g++-aarch64-linux-gnu`, `binutils-aarch64-linux-gnu`)
-  - ✅ **FIXED**: Implemented proper GCC cross-compilation for Linux ARM64 using cross-compiler prefixes (`aarch64-linux-gnu-`)
-  - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` by moving variable definition outside conditional blocks
-- **Progress**: 
-  - ✅ Fixed PowerShell commands in GitHub Actions
-  - ✅ Removed win-arm64 platform (not supported)
-  - ✅ Fixed detached HEAD issue in commit-artifacts job
-  - ✅ Fixed io.h include to be Windows-specific only
-  - ✅ Added X11 development libraries for Linux builds
-  - ✅ Fixed platform tags for PyPI compatibility
-  - ✅ Implemented universal wheel building with `--plat-name any`
-  - ✅ Modified setup.py to copy all platform libraries into single wheel
-  - ✅ **FIXED**: Updated version to v0.0.74 in both setup.py and C++ source (mainpy.cpp)
-  - ✅ **FIXED**: Created new tag v0.0.88 to trigger proper CI/CD deployment
-  - ✅ **FIXED**: Fixed commit-artifacts script to handle correct artifact structure after merge-multiple download
-  - ✅ **FIXED**: Fixed combine step to copy source distributions (not just wheels)
-  - ✅ **FIXED**: Updated version to v0.0.100 to avoid PyPI file conflict
-  - ✅ **SUCCESS**: v0.0.100 successfully deployed to PyPI with 4 files (3 wheels + 1 source)
-  - ✅ **FIXED**: macOS utf8proc symbol linking issue resolved by compiling utf8proc.c separately
-  - ✅ **FIXED**: Updated setup.py to compile utf8proc.c with C compiler and link via extra_objects
-  - ✅ **FIXED**: Updated version to 0.0.114 in both setup.py and source/mainpy.cpp
-  - ✅ **SUCCESS**: v0.0.114 deployed successfully to PyPI with utf8proc fix working
-  - ✅ **FIXED**: Updated version to 0.0.115 and 0.0.116 with automated script
-  - 🔄 **IN PROGRESS**: Testing fixed CI/CD workflow with proper artifact commits
-  - ✅ **FIXED**: Added cross-compilation support for macOS AMD64 from ARM64 runner
-  - ✅ **FIXED**: Added cross-compilation support for Linux ARM64 from AMD64 runner
-  - ✅ **FIXED**: Fixed `gpp_cmd` scoping issue in `build.py` (v0.0.138)
-  - ✅ **FIXED**: JPEG library dependency issue - excluded -ljpeg flag for cross-compilation (v0.0.148)
-  - ✅ **FIXED**: Linux ARM64 cross-compilation - installed ARM64 development libraries and fixed build.py linking (v0.0.149)
-  - ✅ **FIXED**: Linux ARM64 cross-compilation - switched to Ubuntu 22.04 and added robust ARM64 library handling (v0.0.150)
-  - ✅ **FIXED**: Linux ARM64 cross-compilation - improved library detection and static linking fallback with better debugging (v0.0.153)
-  - ✅ **FIXED**: Linux ARM64 cross-compilation - switched to Option 2 sysroot approach with debootstrap and qemu-user-static (v0.0.154)
-  - ✅ **FIXED**: Linux ARM64 cross-compilation - refined sysroot approach to avoid X11 libraries and focus on core functionality (v0.0.155)
+### Linux ARM64 Cross-Compilation Debugging - 🔄 IN PROGRESS
+- **Status**: 🔄 **IN PROGRESS** - Debugging truncated linker errors in GitHub Actions
+- **Issue**: Linux ARM64 cross-compilation failing with truncated command line and linker errors in GitHub Actions output
+- **Root Cause**: Missing `-lbsd` dependency for FLTK static library
+- **Error Identified**: `undefined reference to symbol 'strlcat@@LIBBSD_0.0'` - FLTK library compiled with libbsd dependencies
+- **Solution Implemented**: 
+  - ✅ **FIXED**: Added `-lbsd` flag to Linux ARM64 cross-compilation linker commands
+  - ✅ **FIXED**: Restored full `build.py` functionality from `build-original.py`
+  - ✅ **FIXED**: Added debugging logging specifically for Linux ARM64 cross-compilation builds
+  - ✅ **FIXED**: Updated GitHub Actions workflow to call `python build.py --exe-only` for Linux ARM64 builds
+  - ✅ **FIXED**: Added artifact upload for `build-debug.log` when Linux ARM64 build fails
+- **Debugging Setup**:
+  - **Full Command Capture**: `build.py` now captures complete g++ command line for Linux ARM64 builds
+  - **Environment Logging**: Captures relevant environment variables (PATH, CC, CXX, ARCH, PLATFORM)
+  - **Output Capture**: All stdout/stderr output captured to `build-debug.log`
+  - **Artifact Upload**: Workflow uploads `build-debug.log` as downloadable artifact when build fails
+- **Technical Details**:
+  - **FLTK Dependency**: Static FLTK library (`libfltk.a`) was compiled with libbsd dependencies
+  - **Missing Link**: GCC doesn't automatically follow symbol references from .a files
+  - **Manual Specification**: Must explicitly add `-lbsd` to linker command
+  - **Cross-Compilation**: ARM64 cross-compiler requires explicit dependency specification
+- **Progress**:
+  - ✅ **FIXED**: Identified missing `-lbsd` dependency causing linker failure
+  - ✅ **FIXED**: Added `-lbsd` flag to both executable and shared library build commands
+  - ✅ **FIXED**: Restored full build system functionality while preserving debugging logging
+  - ✅ **FIXED**: Updated workflow to use `build.py` with proper arguments
+  - ✅ **FIXED**: Added artifact upload for debug logs when builds fail
+  - ✅ **FIXED**: Created version v0.0.161 to test the fix
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - ✅ **Linux AMD64**: Building successfully
-  - ✅ **Linux ARM64**: Cross-compilation fixed - Ubuntu 22.04 with robust ARM64 library handling and fallback to static linking (v0.0.150)
-- **Next**: Monitor v0.0.150 CI/CD run to verify Linux ARM64 cross-compilation success with Ubuntu 22.04 - IN PROGRESS
-- **Goal**: Fully automated `pip install grapapy` that works on all platforms
+  - 🔄 **Linux ARM64**: Cross-compilation fix implemented - testing with `-lbsd` dependency fix (v0.0.161)
+- **Next**: Monitor v0.0.161 CI/CD run to verify Linux ARM64 cross-compilation success with `-lbsd` dependency fix
+- **Goal**: Fully automated `pip install grapapy` that works on all platforms including Linux ARM64
 
 ### Database Investigation - ✅ COMPLETED
 - **Investigate GrapaDB:PtrToRec lookup for record 1 when there are 3 records**
@@ -165,10 +135,10 @@
 
 ### Version and Deployment Commands
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
-- **Example:** `python scripts/bump_version_and_deploy.py 0.0.150`
-- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.150, push tag
-- **Current Version:** v0.0.155 (Linux ARM64 cross-compilation fix - refined sysroot approach to avoid X11 libraries) - DEPLOYED
-- **Next**: Monitor v0.0.155 CI/CD run to verify Linux ARM64 cross-compilation success with refined sysroot approach - IN PROGRESS
+- **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
+- **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
+- **Current Version:** v0.0.161 (Linux ARM64 cross-compilation fix - added -lbsd dependency for FLTK library) - DEPLOYED
+- **Next**: Monitor v0.0.161 CI/CD run to verify Linux ARM64 cross-compilation success with -lbsd dependency fix - IN PROGRESS
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
