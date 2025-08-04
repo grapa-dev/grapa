@@ -175,6 +175,9 @@ jobs:
               echo "=== Debug Log Contents ==="
               cat build-debug.log
               echo "=== End Debug Log ==="
+              
+              # Upload debug log as artifact
+              echo "Uploading build-debug.log as artifact..."
             fi
             exit 1
           fi
@@ -241,6 +244,15 @@ jobs:
           echo "No files found to include in archive, skipping archive creation"
         fi
         
+    # Upload debug log if build failed (Linux ARM64 only)
+    - name: Upload debug log artifact
+      if: matrix.platform == 'linux-arm64' && failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug-log-linux-arm64
+        path: build-debug.log
+        retention-days: 30
+
     # Upload artifacts for later commit
     - name: Upload platform artifacts
       uses: actions/upload-artifact@v4
