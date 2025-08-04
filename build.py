@@ -522,21 +522,21 @@ class GrapaBuilder:
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
             else:
-                # Build shared library
+                # Build shared library - completely separate from static build
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
                 fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                        # For ARM64 compilation, use X11 libraries (required by FL)
-            if is_arm64_emulation:
-                # For native ARM64 compilation in emulation, use X11 libraries from sysroot
-                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
-            else:
-                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
+                # For shared library, use dynamic linking (no -static-libgcc)
+                if is_arm64_emulation:
+                    # For native ARM64 compilation in emulation, use X11 libraries from sysroot
+                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                                  "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
+                else:
+                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                                  "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
@@ -544,8 +544,7 @@ class GrapaBuilder:
                     "-lcrypto"
                 ] + system_libs
                 
-                                        # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
-            if "-static" not in cross_flags:
+                # Add -ljpeg for shared library builds
                 cmd.insert(-2, "-ljpeg")
             
             # Use diagnostic function for ARM64 cross-compilation
@@ -565,22 +564,15 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            # For ARM64 cross-compilation, use ARM64 X11 libraries
-            if is_cross_compile:
-                # Check if we're using static linking (no X11 libraries available)
-                if "-static" in cross_flags:
-                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                elif arm64_libs_available and "--sysroot" in cross_flags:
-                    # Using sysroot - try to use X11 libraries from sysroot
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
-                else:
-                    # For cross-compilation without sysroot, use static linking approach
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
-            else:
+            # For executable build, use static linking for cross-compilation, dynamic for native
+            if is_arm64_emulation:
+                # For native ARM64 compilation in emulation, use dynamic linking
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                              "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
+            else:
+                # For native builds, use dynamic linking
+                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                              "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
             
             cmd = [
                 gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
@@ -590,9 +582,8 @@ class GrapaBuilder:
                 "-lcrypto"
             ] + system_libs
             
-            # Add -ljpeg for native builds, skip for cross-compilation to avoid missing dependencies
-            if not is_cross_compile and "-static" not in cross_flags:
-                cmd.insert(-2, "-ljpeg")
+            # Add -ljpeg for executable builds
+            cmd.insert(-2, "-ljpeg")
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
