@@ -378,12 +378,8 @@ jobs:
         ref: main
     
     - name: List available artifacts
-      env:
-        GH_TOKEN: ${{ github.token }}
       run: |
         echo "=== DEBUG: Listing available artifacts ==="
-        # Try to list runs, but don't fail if token is not available
-        gh run list --limit 1 --json number,status,conclusion,name || echo "GitHub CLI not available or token issue - continuing anyway"
         echo "Current run artifacts should be available for platforms:"
         echo "- platform-artifacts-win-amd64"
         echo "- platform-artifacts-mac-arm64" 
