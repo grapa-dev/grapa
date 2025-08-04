@@ -266,8 +266,6 @@ jobs:
           source/pcre2-lib/${{ matrix.platform }}/
           source/grapa-other/${{ matrix.platform }}/
           bin/
-          grapa*
-          libgrapa.*
         
     - name: Upload artifacts (for backup)
       uses: actions/upload-artifact@v4
@@ -277,8 +275,6 @@ jobs:
           source/*-lib/${{ matrix.platform }}/
           source/grapa-other/${{ matrix.platform }}/
           bin/
-          grapa*
-          libgrapa.*
           
   commit-all-artifacts:
     needs: build-libraries
@@ -338,8 +334,6 @@ jobs:
         ls -la source/pcre2-lib/ 2>/dev/null || echo "No pcre2-lib directory"
         ls -la source/grapa-other/ 2>/dev/null || echo "No grapa-other directory"
         ls -la bin/ 2>/dev/null || echo "No bin directory"
-        ls -la grapa* 2>/dev/null || echo "No grapa executables"
-        ls -la libgrapa.* 2>/dev/null || echo "No libgrapa files"
         
                  # Add all platform-specific libraries (force add to ensure all files are included)
          echo "=== DEBUG: Adding files to git ==="
@@ -350,10 +344,7 @@ jobs:
          git add -A source/pcre2-lib/ 2>&1 || echo "No pcre2-lib changes"
          git add -A source/grapa-other/ 2>&1 || echo "No grapa-other changes"
          
-         # Add top-level binary artifacts (only if they exist and are not test files)
-         if [ -f "grapa" ] || [ -f "grapa.exe" ]; then
-           git add grapa* 2>&1 || echo "No grapa executable changes"
-         fi
+         # Note: Executables should be in platform-specific compressed files, not in root
          
          # Add binaries
          git add -A bin/ 2>&1 || echo "No bin changes"
@@ -504,12 +495,16 @@ jobs:
         # Remove any non-distribution files/directories
         find dists/ -name "bin" -type d -exec rm -rf {} + 2>/dev/null || true
         find dists/ -name "source" -type d -exec rm -rf {} + 2>/dev/null || true
-        find dists/ -name "grapa*" -type f -not -name "*.whl" -not -name "*.tar.gz" -not -name "*.zip" -delete 2>/dev/null || true
+        
+        # Remove debug artifacts and executables that shouldn't be in distribution
+        find dists/ -name "grapa-build-debug.zip" -delete 2>/dev/null || true
+        find dists/ -name "grapa" -type f -delete 2>/dev/null || true
+        find dists/ -name "grapa.exe" -type f -delete 2>/dev/null || true
         find dists/ -name "libgrapa*" -type f -delete 2>/dev/null || true
         
         # Keep only actual distribution files
         echo "Distribution files to upload:"
-        find dists/ -name "*.whl" -o -name "*.tar.gz" -o -name "*.zip" | sort
+        find dists/ -name "*.whl" -o -name "*.tar.gz" | sort
         
     - name: Upload combined distributions artifact
       uses: actions/upload-artifact@v4
