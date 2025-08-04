@@ -38,20 +38,20 @@
 - **Impact**: `pip install grapapy` now works on any Windows system without requiring Visual Studio or manual SDK configuration
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
-### PyPI Deployment Issue - 🔄 TESTING
-- **Status**: 🔄 **TESTING** - PyPI deployment fixes implemented, testing with v0.0.176
+### PyPI Deployment Issue - 🔄 INVESTIGATING
+- **Status**: 🔄 **INVESTIGATING** - PyPI deployment fixes implemented, but only 2 out of 5 platforms uploading artifacts
 - **Issue**: PyPI deployment failing with `InvalidDistribution: Too many top-level members in sdist archive`
 - **Root Cause**: `grapa-build-debug.zip` debug artifact being incorrectly included in `dists/` directory
 - **Error Details**: 
   - PyPI expects only valid Python package distributions (`.whl`, `.tar.gz`)
   - `grapa-build-debug.zip` is a debug artifact that shouldn't be in distribution
   - `grapa` executable was being committed to root directory instead of platform-specific compressed files
-- **Build Status**: 
+- **Actual Build Status** (based on commit `2cd80a5a`):
   - ✅ **Windows AMD64**: Building successfully with improved Visual Studio detection
-  - ✅ **macOS ARM64**: Building successfully  
-  - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
-  - ✅ **Linux AMD64**: Building successfully
-  - ✅ **Linux ARM64**: Cross-compilation working with `-lbsd` dependency fix
+  - ❌ **macOS ARM64**: No artifacts uploaded (build likely failing)
+  - ❌ **macOS AMD64**: No artifacts uploaded (cross-compilation likely failing)
+  - ⚠️ **Linux AMD64**: Building successfully but missing executable in compressed file
+  - ❌ **Linux ARM64**: No artifacts uploaded (cross-compilation likely failing)
 - **Solution Implemented**:
   - ✅ **FIXED**: Removed `grapa*` and `libgrapa.*` from artifact upload paths
   - ✅ **FIXED**: Removed git add commands that were committing executables to root directory
@@ -61,6 +61,7 @@
   - ✅ **FIXED**: Updated artifact collection to only include libraries and compressed platform files
   - ✅ **FIXED**: Added GH_TOKEN environment variable for GitHub CLI debugging
   - ✅ **FIXED**: Added debugging steps to identify missing platform artifacts
+  - ✅ **FIXED**: Fixed GitHub CLI JSON fields for artifact debugging
 - **Expected Behavior**:
   - All 5 platforms should build successfully
   - Proper compressed artifacts created with executables + libraries for each platform
@@ -68,8 +69,37 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.176 CI/CD run to verify PyPI deployment success and artifact debugging
+- **Testing**: Monitoring v0.0.177 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
+
+### Artifact Collection Issue - 🔄 INVESTIGATING
+- **Status**: 🔄 **INVESTIGATING** - Only 2 out of 5 platforms uploading artifacts successfully
+- **Issue**: Commit `2cd80a5a` only contains artifacts from Windows AMD64 and Linux AMD64 platforms
+- **Missing Artifacts**:
+  - ❌ **macOS ARM64**: No artifacts uploaded (build likely failing)
+  - ❌ **macOS AMD64**: No artifacts uploaded (cross-compilation likely failing)
+  - ❌ **Linux ARM64**: No artifacts uploaded (cross-compilation likely failing)
+  - ⚠️ **Linux AMD64**: Only has libraries, missing executable in compressed file
+  - ✅ **Windows AMD64**: Has executable in compressed file, but missing other libraries
+- **Expected Artifacts Per Platform**:
+  - `source/grapa-lib/{platform}/` - Grapa libraries
+  - `source/openssl-lib/{platform}/` - OpenSSL libraries  
+  - `source/fl-lib/{platform}/` - FLTK libraries
+  - `source/blst-lib/{platform}/` - BLST libraries
+  - `source/pcre2-lib/{platform}/` - PCRE2 libraries
+  - `source/grapa-other/{platform}/` - Other libraries
+  - `bin/grapa-{platform}.zip` or `bin/grapa-{platform}.tar.gz` - Executables
+- **Root Cause Hypothesis**: 
+  - macOS ARM64/AMD64 builds may be failing during cross-compilation
+  - Linux ARM64 build may be failing during cross-compilation
+  - Build failures prevent artifact upload, so only successful platforms contribute
+- **Next Steps**:
+  - **INVESTIGATION PHASE**: Verify artifact placement for each platform before making build changes
+  - Add debugging to check if platforms are building successfully but failing to place artifacts in expected locations
+  - Check if build directories exist and contain expected files for each platform
+  - Verify archive creation logic is working correctly
+  - Identify whether issue is build failure vs. artifact placement failure
+  - Only after investigation, fix the root cause (build vs. placement)
 
 ### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
 - **Status**: ✅ **COMPLETED** - Linux ARM64 cross-compilation now working with `-lbsd` dependency fix
@@ -192,8 +222,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.176 (PyPI deployment debugging - added GH_TOKEN fix and artifact debugging) - TESTING
-- **Next**: Monitor v0.0.176 CI/CD run to verify PyPI deployment success and identify missing platform artifacts
+- **Current Version:** v0.0.177 (PyPI deployment debugging - fixed GitHub CLI JSON fields) - TESTING
+- **Next**: Monitor v0.0.177 CI/CD run to verify PyPI deployment success and identify missing platform artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working

@@ -253,6 +253,49 @@ jobs:
         path: build-debug.log
         retention-days: 30
 
+    # Debug: Check artifact placement before upload
+    - name: Debug artifact placement
+      run: |
+        echo "=== DEBUG: Checking artifact placement for ${{ matrix.platform }} ==="
+        echo "Current directory: $(pwd)"
+        echo "Checking if build directories exist:"
+        
+        # Check each expected directory
+        for dir in source/grapa-lib/${{ matrix.platform }}/ source/openssl-lib/${{ matrix.platform }}/ source/fl-lib/${{ matrix.platform }}/ source/blst-lib/${{ matrix.platform }}/ source/pcre2-lib/${{ matrix.platform }}/ source/grapa-other/${{ matrix.platform }}/; do
+          if [ -d "$dir" ]; then
+            echo "✅ $dir exists with $(ls -la "$dir" | wc -l) items"
+            ls -la "$dir" | head -5
+          else
+            echo "❌ $dir does not exist"
+          fi
+        done
+        
+        echo "Checking bin/ directory:"
+        if [ -d "bin/" ]; then
+          echo "✅ bin/ exists with:"
+          ls -la bin/
+        else
+          echo "❌ bin/ does not exist"
+        fi
+        
+        echo "Checking for executable:"
+        if [ -f "grapa" ]; then
+          echo "✅ grapa executable exists"
+        elif [ -f "grapa.exe" ]; then
+          echo "✅ grapa.exe executable exists"
+        else
+          echo "❌ No executable found"
+        fi
+        
+        echo "Checking for compressed archives:"
+        if [ -f "bin/grapa-${{ matrix.platform }}.zip" ]; then
+          echo "✅ bin/grapa-${{ matrix.platform }}.zip exists"
+        elif [ -f "bin/grapa-${{ matrix.platform }}.tar.gz" ]; then
+          echo "✅ bin/grapa-${{ matrix.platform }}.tar.gz exists"
+        else
+          echo "❌ No compressed archive found for ${{ matrix.platform }}"
+        fi
+        
     # Upload artifacts for later commit
     - name: Upload platform artifacts
       uses: actions/upload-artifact@v4
