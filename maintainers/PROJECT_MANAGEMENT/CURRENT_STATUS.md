@@ -69,15 +69,16 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.194 CI/CD run to verify PyPI deployment success and artifact debugging
+- **Testing**: Monitoring v0.0.195 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
-- **Latest Fixes Applied** (v0.0.194):
+- **Latest Fixes Applied** (v0.0.194 through v0.0.195):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
   - ✅ **Native ARM64 Compilation**: Linux ARM64 uses QEMU emulation instead of cross-compilation
   - ✅ **Fully Static Libraries**: Static libraries include all dependencies (OpenSSL, FLTK, BLST, PCRE2)
   - ✅ **Proper Linker Ordering**: All `-l*` flags moved after `.a` files for correct symbol resolution
   - ✅ **Explicit libbsd Linking**: Added `-lbsd` for Linux ARM64 builds
   - ✅ **Clean Build Separation**: Static and shared library builds are completely separate
+  - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
 ### Artifact Collection Issue - ✅ RESOLVED
 - **Status**: ✅ **RESOLVED** - All cross-compilation and build issues fixed in v0.0.191
@@ -243,8 +244,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.193 (Token authentication fix + comprehensive cross-compilation fixes - workflow now running)
-- **Next**: Monitor v0.0.193 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
+- **Current Version:** v0.0.195 (Comprehensive build system fixes + documentation updates - workflow now running)
+- **Next**: Monitor v0.0.195 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
