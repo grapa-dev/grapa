@@ -429,9 +429,27 @@ jobs:
         # Extract artifacts to their correct locations
         echo "=== DEBUG: Processing artifacts ==="
         
-                 # Copy all artifacts directly (they're already in the right structure)
-         echo "Copying all artifacts to current directory..."
-         cp -rv artifacts/* . 2>&1 || echo "Failed to copy artifacts"
+        # Copy artifacts with proper structure preservation
+        echo "Copying artifacts with proper structure..."
+        
+        # Copy source directories (libraries)
+        if [ -d "artifacts/source" ]; then
+          echo "Copying source directories..."
+          cp -rv artifacts/source/* source/ 2>&1 || echo "Failed to copy source directories"
+        fi
+        
+        # Copy bin directory (executables)
+        if [ -d "artifacts/bin" ]; then
+          echo "Copying bin directory..."
+          cp -rv artifacts/bin/* bin/ 2>&1 || echo "Failed to copy bin directory"
+        fi
+        
+        # Debug: Show what we copied
+        echo "=== DEBUG: After copying ==="
+        echo "Source directories:"
+        find source/ -type f 2>/dev/null | head -10 || echo "No source files found"
+        echo "Bin files:"
+        ls -la bin/ 2>/dev/null || echo "No bin files found"
          
          # Remove the wrong Windows archive if it exists
          if [ -f "bin/grapa-win-win-amd64.zip" ]; then
