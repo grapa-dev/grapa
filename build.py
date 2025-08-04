@@ -563,19 +563,21 @@ class GrapaBuilder:
                 
                 # Add -ljpeg for shared library builds
                 cmd.insert(-2, "-ljpeg")
-            
-            # Use native ARM64 compilation in chroot for emulation
-            if is_arm64_emulation and arm64_libs_available:
-                # Source files already copied in utf8proc step, just run compilation
-                chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cmd)]
-                print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
-                subprocess.run(chroot_cmd, check=True)
-            else:
-                # Use diagnostic function for cross-compilation or regular compilation
-                if is_arm64_emulation:
-                    run_diagnostic_cross_compile(cmd)
+                
+                # Execute shared library build
+                print(f"Executing shared library build command: {' '.join(cmd)}")
+                if is_arm64_emulation and arm64_libs_available:
+                    # Use native ARM64 compilation in chroot for emulation
+                    chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cmd)]
+                    print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
+                    subprocess.run(chroot_cmd, check=True)
                 else:
-                    subprocess.run(cmd, check=True)
+                    # Use diagnostic function for cross-compilation or regular compilation
+                    if is_arm64_emulation:
+                        run_diagnostic_cross_compile(cmd)
+                    else:
+                        subprocess.run(cmd, check=True)
+                
                 # Ensure the grapa-other directory exists
                 os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
