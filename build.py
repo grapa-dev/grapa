@@ -555,7 +555,7 @@ class GrapaBuilder:
                 cmd.insert(-2, "-ljpeg")
             
             # Use diagnostic function for ARM64 cross-compilation
-                if is_cross_compile:
+                if is_arm64_emulation:
                     run_diagnostic_cross_compile(cmd)
                 else:
                     subprocess.run(cmd, check=True)
