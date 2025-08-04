@@ -292,7 +292,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         echo "=== DEBUG: Listing available artifacts ==="
-        gh run list --limit 1 --json artifactsUrl
+        gh run list --limit 1 --json number,status,conclusion,name
         echo "Current run artifacts should be available for platforms:"
         echo "- platform-artifacts-win-amd64"
         echo "- platform-artifacts-mac-arm64" 
