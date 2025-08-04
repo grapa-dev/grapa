@@ -539,10 +539,10 @@ class GrapaBuilder:
                               "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc"]
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
-                ] + system_libs + [
-                    "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ] + cross_flags
+                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                ] + cross_flags + [
+                    "-lcrypto"
+                ] + system_libs
                 
                                         # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
             if "-static" not in cross_flags:
@@ -585,10 +585,10 @@ class GrapaBuilder:
             cmd = [
                 gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
-            ] + system_libs + [
-                "-O3", "-pthread", "-o", config.output_name
-            ] + cross_flags
+                f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
+            ] + cross_flags + [
+                "-lcrypto"
+            ] + system_libs
             
             # Add -ljpeg for native builds, skip for cross-compilation to avoid missing dependencies
             if not is_cross_compile and "-static" not in cross_flags:
@@ -672,10 +672,10 @@ class GrapaBuilder:
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
                 cmd = ["g++", "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto",
-                    "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                    "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc",
-                    "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                ] + [
+                    "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
+                    "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"
                 ]
                 
                 print(f"Executing shared library build command: {' '.join(cmd)}")
