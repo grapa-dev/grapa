@@ -417,14 +417,14 @@ class GrapaBuilder:
         
         print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
         
-        # Check if this is cross-compilation (linux-arm64 on AMD64 runner)
-        is_cross_compile = config.target == "linux-arm64" and platform.machine() == "x86_64"
+        # Check if this is cross-compilation (linux-arm64 from any other platform)
+        is_cross_compile = config.target == "linux-arm64" and platform.machine() != "aarch64"
         
         # Set up cross-compilation flags if needed
         cross_flags = []
         cross_compiler_prefix = ""
         if is_cross_compile:
-            print("Cross-compiling for ARM64 from AMD64...")
+            print("Cross-compiling for Linux ARM64...")
             # Check if cross-compilation toolchain is available
             try:
                 subprocess.run(["aarch64-linux-gnu-gcc", "--version"], check=True, capture_output=True)
@@ -453,8 +453,9 @@ class GrapaBuilder:
                     system_libs = ["-ldl", "-lm", "-static-libgcc"]
                     arm64_libs_available = False
             except (subprocess.CalledProcessError, FileNotFoundError):
-                print("Cross-compilation toolchain not available, using native compiler with ARM flags")
-                cross_flags = ["-march=armv8-a", "-mtune=cortex-a72"]
+                print("Cross-compilation toolchain not available on this platform")
+                print("Linux ARM64 cross-compilation requires Linux environment with cross-compilation tools")
+                raise RuntimeError("Linux ARM64 cross-compilation not supported on macOS - requires Linux environment")
         
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
