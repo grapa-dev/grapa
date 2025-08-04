@@ -417,45 +417,41 @@ class GrapaBuilder:
         
         print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
         
-        # Check if this is cross-compilation (linux-arm64 from any other platform)
-        is_cross_compile = config.target == "linux-arm64" and platform.machine() != "aarch64"
+        # Check if this is ARM64 native compilation in emulation
+        is_arm64_emulation = config.target == "linux-arm64" and platform.machine() != "aarch64"
         
-        # Set up cross-compilation flags if needed
+        # Set up compilation flags
         cross_flags = []
         cross_compiler_prefix = ""
-        if is_cross_compile:
-            print("Cross-compiling for Linux ARM64...")
-            # Check if cross-compilation toolchain is available
-            try:
-                subprocess.run(["aarch64-linux-gnu-gcc", "--version"], check=True, capture_output=True)
-                cross_compiler_prefix = "aarch64-linux-gnu-"
-                print("Using cross-compilation toolchain")
-                # Add ARM64 library paths for cross-compilation
-                cross_flags = ["-L/usr/lib/aarch64-linux-gnu", "-L/usr/lib/x86_64-linux-gnu"]
-                
-                # Check if sysroot is available (Option 2 approach)
-                sysroot_path = "./arm64-root"
-                if os.path.exists(sysroot_path):
-                    print(f"Using ARM64 sysroot at: {sysroot_path}")
-                    # Use sysroot for cross-compilation
-                    cross_flags.extend([
-                        f"--sysroot={sysroot_path}",
-                        "-I" + os.path.join(sysroot_path, "usr/include"),
-                        "-L" + os.path.join(sysroot_path, "usr/lib/aarch64-linux-gnu"),
-                        "-L" + os.path.join(sysroot_path, "lib/aarch64-linux-gnu")
-                    ])
-                    arm64_libs_available = True
-                    print("ARM64 sysroot libraries available, using dynamic linking")
-                else:
-                    # Fallback to static linking if no sysroot
-                    print("Warning: ARM64 sysroot not available, will use static linking approach")
-                    cross_flags.extend(["-static", "-static-libgcc", "-static-libstdc++"])
-                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
+        if is_arm64_emulation:
+            print("Using native ARM64 compilation in QEMU emulation...")
+            # Check if ARM64 sysroot is available for native compilation
+            sysroot_path = "./arm64-root"
+            if os.path.exists(sysroot_path):
+                print(f"Using ARM64 sysroot at: {sysroot_path}")
+                # Use native ARM64 compilation in emulation
+                cross_compiler_prefix = ""  # Use native ARM64 compiler in chroot
+                cross_flags = [
+                    f"--sysroot={sysroot_path}",
+                    "-I" + os.path.join(sysroot_path, "usr/include"),
+                    "-L" + os.path.join(sysroot_path, "usr/lib/aarch64-linux-gnu"),
+                    "-L" + os.path.join(sysroot_path, "lib/aarch64-linux-gnu")
+                ]
+                arm64_libs_available = True
+                print("ARM64 native compilation in emulation available")
+            else:
+                print("Warning: ARM64 sysroot not available, falling back to cross-compilation")
+                # Fallback to cross-compilation if sysroot not available
+                try:
+                    subprocess.run(["aarch64-linux-gnu-gcc", "--version"], check=True, capture_output=True)
+                    cross_compiler_prefix = "aarch64-linux-gnu-"
+                    print("Using cross-compilation toolchain as fallback")
+                    cross_flags = ["-L/usr/lib/aarch64-linux-gnu", "-L/usr/lib/x86_64-linux-gnu"]
                     arm64_libs_available = False
-            except (subprocess.CalledProcessError, FileNotFoundError):
-                print("Cross-compilation toolchain not available on this platform")
-                print("Linux ARM64 cross-compilation requires Linux environment with cross-compilation tools")
-                raise RuntimeError("Linux ARM64 cross-compilation not supported on macOS - requires Linux environment")
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    print("Cross-compilation toolchain not available on this platform")
+                    print("Linux ARM64 compilation requires Linux environment with ARM64 tools")
+                    raise RuntimeError("Linux ARM64 compilation not supported on macOS - requires Linux environment")
         
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
@@ -469,11 +465,18 @@ class GrapaBuilder:
             "source/utf8proc/utf8proc.c", "-O3"
         ] + pic_flag + cross_flags
         
-        # Use diagnostic function for ARM64 cross-compilation
-        if is_cross_compile:
-            run_diagnostic_cross_compile(utf8proc_cmd)
+        # Use native ARM64 compilation in chroot for emulation
+        if is_arm64_emulation and arm64_libs_available:
+            # Run native ARM64 compilation in chroot
+            chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(utf8proc_cmd)]
+            print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
+            subprocess.run(chroot_cmd, check=True)
         else:
-            subprocess.run(utf8proc_cmd, check=True)
+            # Use diagnostic function for cross-compilation or regular compilation
+            if is_arm64_emulation:
+                run_diagnostic_cross_compile(utf8proc_cmd)
+            else:
+                subprocess.run(utf8proc_cmd, check=True)
         
         # Get library path based on target
         lib_path = f"source/openssl-lib/{config.target}"
@@ -493,11 +496,18 @@ class GrapaBuilder:
                     "-std=c++17", "-O3", "-pthread", "-fPIC"
                 ] + cross_flags
                 
-                # Use diagnostic function for ARM64 cross-compilation
-                if is_cross_compile:
-                    run_diagnostic_cross_compile(cpp_compile_cmd)
+                # Use native ARM64 compilation in chroot for emulation
+                if is_arm64_emulation and arm64_libs_available:
+                    # Run native ARM64 compilation in chroot
+                    chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cpp_compile_cmd)]
+                    print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
+                    subprocess.run(chroot_cmd, check=True)
                 else:
-                    subprocess.run(cpp_compile_cmd, check=True)
+                    # Use diagnostic function for cross-compilation or regular compilation
+                    if is_arm64_emulation:
+                        run_diagnostic_cross_compile(cpp_compile_cmd)
+                    else:
+                        subprocess.run(cpp_compile_cmd, check=True)
                 # Get all .o files (including utf8proc.o if it exists)
                 obj_files = glob.glob("*.o")
                 if not obj_files:
@@ -519,9 +529,9 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                        # For ARM64 cross-compilation, use X11 libraries (required by FL)
-            if is_cross_compile:
-                # For cross-compilation, use X11 libraries from sysroot or static linking
+                        # For ARM64 compilation, use X11 libraries (required by FL)
+            if is_arm64_emulation:
+                # For native ARM64 compilation in emulation, use X11 libraries from sysroot
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
             else:
@@ -587,11 +597,18 @@ class GrapaBuilder:
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
             try:
-                # Use diagnostic function for ARM64 cross-compilation
-                if is_cross_compile:
-                    run_diagnostic_cross_compile(cmd)
+                # Use native ARM64 compilation in chroot for emulation
+                if is_arm64_emulation and arm64_libs_available:
+                    # Run native ARM64 compilation in chroot
+                    chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cmd)]
+                    print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
+                    subprocess.run(chroot_cmd, check=True)
                 else:
-                    subprocess.run(cmd, check=True)
+                    # Use diagnostic function for cross-compilation or regular compilation
+                    if is_arm64_emulation:
+                        run_diagnostic_cross_compile(cmd)
+                    else:
+                        subprocess.run(cmd, check=True)
             except subprocess.CalledProcessError as e:
                 print(f"❌ Build failed: {e}")
                 raise RuntimeError(f"Build failed with exit code {e.returncode}")
