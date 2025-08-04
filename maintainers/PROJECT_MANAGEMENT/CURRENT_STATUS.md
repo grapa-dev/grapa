@@ -72,11 +72,11 @@
 - **Testing**: Monitoring v0.0.177 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 
-### Artifact Collection Issue - ✅ RESOLVED
-- **Status**: ✅ **RESOLVED** - All 5 platforms building successfully and artifacts being committed
-- **Issue**: PyPI deployment failing due to version already existing on PyPI
-- **Root Cause Analysis**: v0.0.182 already exists on PyPI, causing "File already exists" error
-- **Evidence from Workflow Output** (v0.0.182):
+### Artifact Collection Issue - 🔄 INVESTIGATING
+- **Status**: 🔄 **INVESTIGATING** - macOS AMD64 cross-compilation failing
+- **Issue**: Only 3 files being committed because macOS AMD64 build is not updating
+- **Root Cause Analysis**: macOS AMD64 cross-compilation is failing, causing old binaries to persist
+- **Evidence from Workflow Output** (v0.0.183):
   - ✅ **All 5 Platform Artifacts Downloaded Successfully**:
     - `platform-artifacts-linux-arm64` (Size: 84MB)
     - `platform-artifacts-linux-amd64` (Size: 84MB)
@@ -84,22 +84,23 @@
     - `platform-artifacts-mac-arm64` (Size: 79MB)
     - `platform-artifacts-mac-amd64` (Size: 81MB)
   - ✅ **All Platforms Building Successfully**: All 5 platform artifacts are being uploaded and downloaded
-  - ✅ **Git Commit Working**: All artifacts are being committed to git (commit `628d4ae2`)
+  - ❌ **Git Commit Only Shows 3 Files**: Only files that are actually different get committed
   - ✅ **PyPI Packaging Working**: All wheel files and source distribution created successfully
-  - ❌ **PyPI Upload Failing**: "File already exists" error for v0.0.182
 - **Evidence from File Timestamps** (Aug 4, 2025):
-  - ✅ **Windows AMD64**: `grapa-win-amd64.zip` - Aug 4 11:31 (RECENT)
+  - ✅ **Windows AMD64**: `grapa-win-amd64.zip` - Aug 4 12:29 (RECENT)
   - ✅ **Linux AMD64**: `grapa-linux-amd64.tar.gz` - Aug 4 07:41 (RECENT)
   - ✅ **Linux ARM64**: `grapa-linux-arm64.tar.gz` - Aug 4 08:43 (RECENT)
   - ✅ **macOS ARM64**: `grapa-mac-arm64.tar.gz` - Aug 4 08:43 (RECENT)
-  - ✅ **macOS AMD64**: `grapa-mac-amd64.tar.gz` - Now being updated correctly
+  - ❌ **macOS AMD64**: `grapa-mac-amd64.tar.gz` - Jul 25 16:29 (OLD - NOT UPDATING)
+  - ❌ **AWS AMD64**: `grapa-aws-amd64.tar.gz` - Jul 25 15:51 (OLD - NOT UPDATING)
+  - ❌ **AWS ARM64**: `grapa-aws-arm64.tar.gz` - Jul 25 15:46 (OLD - NOT UPDATING)
 - **Expected Behavior**: Every version bump should result in ALL 5 platform artifacts being updated because:
   - Version changes trigger rebuild of all binaries
   - All executables get recompiled with new version
   - All libraries get rebuilt with new version
   - All compressed files get recreated with new binaries
-- **Current Reality**: All 5 platforms are building successfully and all artifacts are being committed
-- **Root Cause**: Version v0.0.182 already exists on PyPI
+- **Current Reality**: Only 3 platforms are actually updating their binaries (Windows, Linux AMD64, Linux ARM64, macOS ARM64)
+- **Root Cause**: macOS AMD64 cross-compilation is failing, causing old binaries to persist
 - **Solution Implemented**: 
   - ✅ **FIXED**: Replaced `cp -rv artifacts/* .` with structured copying
   - ✅ **FIXED**: Copy source directories separately: `cp -rfv artifacts/source/* source/`
@@ -116,10 +117,10 @@
   - `source/grapa-other/{platform}/` - Other libraries
   - `bin/grapa-{platform}.zip` or `bin/grapa-{platform}.tar.gz` - Executables
 - **Next Steps**:
-  - **BUMP VERSION**: Increment to v0.0.183 to trigger new PyPI deployment
-  - **TEST**: Verify PyPI deployment works with new version
-  - **MONITOR**: Ensure all 5 platforms contribute artifacts to git commits
-  - **VERIFY**: Confirm all binaries and libraries are updated with new version
+  - **INVESTIGATE**: Debug macOS AMD64 cross-compilation failure
+  - **FIX**: Resolve macOS AMD64 build issues
+  - **VERIFY**: Ensure all 5 platforms contribute artifacts to git commits
+  - **TEST**: Verify PyPI deployment works with complete artifact collection
 
 ### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
 - **Status**: ✅ **COMPLETED** - Linux ARM64 cross-compilation now working with `-lbsd` dependency fix
