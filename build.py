@@ -537,12 +537,13 @@ class GrapaBuilder:
                 
                 # For shared library, use dynamic linking (no -static-libgcc)
                 if is_arm64_emulation:
-                    # For native ARM64 compilation in emulation, use X11 libraries from sysroot
+                    # For native ARM64 compilation in emulation, use X11 libraries from sysroot with libbsd
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                                   "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
                 else:
+                    # For native builds, use dynamic linking without libbsd (not needed for AMD64)
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
+                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
@@ -572,13 +573,13 @@ class GrapaBuilder:
             
             # For executable build, use static linking for cross-compilation, dynamic for native
             if is_arm64_emulation:
-                # For native ARM64 compilation in emulation, use dynamic linking
+                # For native ARM64 compilation in emulation, use dynamic linking with libbsd
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
             else:
-                # For native builds, use dynamic linking
+                # For native builds, use dynamic linking without libbsd (not needed for AMD64)
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
+                              "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
             
             cmd = [
                 gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
