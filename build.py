@@ -306,6 +306,7 @@ class GrapaBuilder:
     def _run_mac_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
         """Run Mac build command"""
         import glob
+        import platform
         
         # Remove existing executable only when building executable
         if not is_library and os.path.exists(config.output_name):
@@ -313,12 +314,21 @@ class GrapaBuilder:
         
         print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
         
+        # Check if this is cross-compilation (mac-amd64 on ARM64 runner)
+        is_cross_compile = config.target == "mac-amd64" and platform.machine() == "arm64"
+        
+        # Set up cross-compilation flags if needed
+        cross_flags = []
+        if is_cross_compile:
+            print("Cross-compiling for AMD64 from ARM64...")
+            cross_flags = ["-target", "x86_64-apple-macos10.9"]
+        
         # Build utf8proc first (C compilation)
         print("Building utf8proc...")
         subprocess.run([
             "clang", "-Isource", "-DUTF8PROC_STATIC", "-c", 
             "source/utf8proc/utf8proc.c", "-m64", "-O3"
-        ], check=True)
+        ] + cross_flags, check=True)
         
         if is_library:
             if is_static:
@@ -329,7 +339,7 @@ class GrapaBuilder:
                     "clang++", "-Isource", "-c"
                 ] + cpp_files + [
                     "-std=c++17", "-m64", "-O3", "-pthread"
-                ], check=True)
+                ] + cross_flags, check=True)
                 # Get all .o files
                 obj_files = glob.glob("*.o")
                 if not obj_files:
@@ -351,7 +361,7 @@ class GrapaBuilder:
                 ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                     "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ], check=True)
+                ] + cross_flags, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
@@ -371,7 +381,7 @@ class GrapaBuilder:
                 f"source/blst-lib/{config.target}/*.a", f"source/pcre2-lib/{config.target}/libpcre2-8.a",
                 "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit",
                 "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
-            ]
+            ] + cross_flags
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
             try:
