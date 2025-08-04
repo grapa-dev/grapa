@@ -35,10 +35,10 @@ The primary build system is `build.py` (698 lines) which provides:
 # Build for current platform
 python3 build.py
 
-# Build for specific platform
-python3 build.py --platform mac-arm64
-python3 build.py --platform linux-amd64
-python3 build.py --platform windows-amd64
+# Cross-compilation for specific platform
+python3 build.py --target-platform mac-amd64    # Cross-compile macOS AMD64 from ARM64
+python3 build.py --target-platform linux-arm64  # Cross-compile Linux ARM64 from AMD64
+python3 build.py --target-platform win-amd64    # Build Windows AMD64
 
 # Clean build artifacts
 python3 build.py --clean
@@ -54,9 +54,6 @@ python3 build.py --lib-only
 
 # Preserve dist/ directory after build
 python3 build.py --preserve-dist
-
-# Build all platforms
-python3 build.py --all-platforms
 ```
 
 #### **Platform Detection**
@@ -67,10 +64,32 @@ The build system automatically detects:
 - Required dependencies
 
 #### **Build Artifacts**
-- **Static libraries**: `libgrapa.a` (Unix), `grapalib.lib` (Windows)
+- **Static libraries**: `libgrapa.a` (Unix), `grapalib.lib` (Windows) - **Fully static with all dependencies embedded**
 - **Shared libraries**: `libgrapa.so` (Linux), `libgrapa.dylib` (macOS)
 - **Python package**: `grapapy-0.0.25.tar.gz`
 - **Executable**: `grapa` binary
+
+#### **Recent Technical Improvements (v0.0.194+)**
+
+##### **Cross-Compilation Enhancements**
+- **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping for proper platform detection
+- **Native ARM64 Compilation**: Linux ARM64 uses QEMU emulation instead of cross-compilation to avoid linker issues
+- **Explicit Target Platform**: `--target-platform` option provides precise control over cross-compilation targets
+
+##### **Static Library Architecture**
+- **Fully Self-Contained**: Static libraries include all dependencies (OpenSSL, FLTK, BLST, PCRE2, utf8proc)
+- **No Runtime Dependencies**: Perfect for Python extension which only links against `libgrapa.a`
+- **Cross-Platform Compatibility**: No dynamic linking issues or version conflicts
+
+##### **Linker Optimizations**
+- **Proper Library Ordering**: All `-l*` flags moved after `.a` files for correct symbol resolution
+- **Clean Build Separation**: Static and shared library builds are completely separate to avoid conflicts
+- **Explicit Dependencies**: Added `-lbsd` for Linux ARM64 builds to resolve missing symbols
+
+##### **Build System Robustness**
+- **GitHub Actions Integration**: Automated multi-platform builds with proper artifact collection
+- **Comprehensive Error Handling**: Diagnostic logging and graceful failure recovery
+- **Artifact Management**: Proper distribution of platform-specific compressed files and libraries
 
 ---
 

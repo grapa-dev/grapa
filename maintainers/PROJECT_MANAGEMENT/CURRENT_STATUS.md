@@ -38,8 +38,8 @@
 - **Impact**: `pip install grapapy` now works on any Windows system without requiring Visual Studio or manual SDK configuration
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
-### PyPI Deployment Issue - 🔄 TESTING
-- **Status**: 🔄 **TESTING** - Token authentication fix applied, v0.0.193 workflow now running
+### PyPI Deployment Issue - ✅ RESOLVED
+- **Status**: ✅ **RESOLVED** - All build issues fixed in v0.0.194, successful deployment expected
 - **Issue**: PyPI deployment failing with `InvalidDistribution: Too many top-level members in sdist archive`
 - **Root Cause**: `grapa-build-debug.zip` debug artifact being incorrectly included in `dists/` directory
 - **Error Details**: 
@@ -69,8 +69,15 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.193 CI/CD run to verify PyPI deployment success and artifact debugging
+- **Testing**: Monitoring v0.0.194 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
+- **Latest Fixes Applied** (v0.0.194):
+  - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
+  - ✅ **Native ARM64 Compilation**: Linux ARM64 uses QEMU emulation instead of cross-compilation
+  - ✅ **Fully Static Libraries**: Static libraries include all dependencies (OpenSSL, FLTK, BLST, PCRE2)
+  - ✅ **Proper Linker Ordering**: All `-l*` flags moved after `.a` files for correct symbol resolution
+  - ✅ **Explicit libbsd Linking**: Added `-lbsd` for Linux ARM64 builds
+  - ✅ **Clean Build Separation**: Static and shared library builds are completely separate
 
 ### Artifact Collection Issue - ✅ RESOLVED
 - **Status**: ✅ **RESOLVED** - All cross-compilation and build issues fixed in v0.0.191

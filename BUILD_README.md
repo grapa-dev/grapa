@@ -2,7 +2,7 @@
 
 This directory now contains an automated build system that replaces the manual copy-paste process from `maintainers/BUILD_AND_DEPLOYMENT/BUILD.md`.
 
-**IMPORTANT: This build system builds for the CURRENT platform only. It does NOT support cross-compilation. You must run this script on each target platform independently.**
+**IMPORTANT: This build system now supports cross-compilation and automated multi-platform builds via GitHub Actions. The local build system supports both current platform and cross-compilation.**
 
 ## Quick Start
 
@@ -15,6 +15,14 @@ python3 build.py
 ./build.sh
 ```
 
+### Cross-Compilation Build
+```bash
+# Build for specific target platform
+python3 build.py --target-platform mac-amd64    # Cross-compile macOS AMD64 from ARM64
+python3 build.py --target-platform linux-arm64  # Cross-compile Linux ARM64 from AMD64
+python3 build.py --target-platform win-amd64    # Build Windows AMD64
+```
+
 ### Build with Tests
 ```bash
 python3 build.py --test
@@ -22,15 +30,15 @@ python3 build.py --test
 
 ## Supported Platforms
 
-| Platform | Architecture | Compiler | Notes |
-|----------|--------------|----------|-------|
-| Windows | AMD64 | Visual Studio (msbuild) | Requires VS 2022 |
-| Mac | ARM64 | clang/clang++ | Apple Silicon |
-| Mac | AMD64 | clang/clang++ | Intel Mac |
-| Linux | ARM64 | g++ | Ubuntu 24.04+ |
-| Linux | AMD64 | g++ | Ubuntu 24.04+ |
-| AWS | ARM64 | g++ | Amazon Linux |
-| AWS | AMD64 | g++ | Amazon Linux |
+| Platform | Architecture | Compiler | Cross-Compilation | Notes |
+|----------|--------------|----------|-------------------|-------|
+| Windows | AMD64 | Visual Studio (msbuild) | ✅ Yes | Requires VS 2022 |
+| Mac | ARM64 | clang/clang++ | ✅ Yes | Apple Silicon (native) |
+| Mac | AMD64 | clang/clang++ | ✅ Yes | Intel Mac (cross-compiled) |
+| Linux | ARM64 | g++ | ✅ Yes | Ubuntu 24.04+ (native or QEMU emulation) |
+| Linux | AMD64 | g++ | ✅ Yes | Ubuntu 24.04+ (native) |
+| AWS | ARM64 | g++ | ✅ Yes | Amazon Linux (native) |
+| AWS | AMD64 | g++ | ✅ Yes | Amazon Linux (native) |
 
 ## What It Does
 
@@ -43,6 +51,28 @@ The build system automatically:
 5. **Python Package**: Builds and installs the Python package
 6. **Tests**: Optionally runs the test suite
 7. **Cleanup**: Removes build artifacts
+
+## Recent Improvements (v0.0.194+)
+
+### Cross-Compilation Support
+- ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
+- ✅ **Native ARM64 Compilation**: Uses QEMU emulation instead of cross-compilation for Linux ARM64
+- ✅ **Explicit Target Platform**: `--target-platform` option for precise cross-compilation control
+
+### Static Library Improvements
+- ✅ **Fully Static Libraries**: Static libraries now include all dependencies (OpenSSL, FLTK, BLST, PCRE2)
+- ✅ **Self-Contained**: No external dependencies required for static libraries
+- ✅ **Python Extension Ready**: Perfect for `setup.py` which only links against `libgrapa.a`
+
+### Linker Fixes
+- ✅ **Proper Library Ordering**: All `-l*` flags moved after `.a` files for correct symbol resolution
+- ✅ **Separated Static/Shared Builds**: Clean separation to avoid linking conflicts
+- ✅ **Explicit libbsd Linking**: Added `-lbsd` for Linux ARM64 builds
+
+### Build System Robustness
+- ✅ **GitHub Actions Integration**: Automated multi-platform builds and PyPI deployment
+- ✅ **Artifact Management**: Proper collection and distribution of all platform artifacts
+- ✅ **Error Handling**: Comprehensive error handling and diagnostic logging
 
 ## Prerequisites
 
