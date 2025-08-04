@@ -460,17 +460,18 @@ class GrapaBuilder:
                 # Build shared library
                 cpp_files = glob.glob("source/grapa/*.cpp")
                 openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                # For ARM64 cross-compilation, avoid X11 libraries for shared library
+                # For ARM64 cross-compilation, exclude FLTK libraries (no X11 in sysroot)
                 if is_cross_compile:
-                    # Use minimal system libraries for cross-compilation shared library
+                    # Use minimal system libraries for cross-compilation shared library (no GUI)
                     system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                    fl_libs = []  # Skip FLTK libraries for cross-compilation
                 else:
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                                   "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                    fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
@@ -481,7 +482,9 @@ class GrapaBuilder:
                 # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
                 if "-static" not in cross_flags:
                     cmd.insert(-2, "-ljpeg")
-                    # Note: -lbsd removed for cross-compilation as it's not available in sysroot
+                    # Add -lbsd for cross-compilation (now available in sysroot)
+                    if is_cross_compile:
+                        cmd.insert(-2, "-lbsd")
                 
                 subprocess.run(cmd, check=True)
                 shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
@@ -490,17 +493,18 @@ class GrapaBuilder:
             # Build executable - match AWS pattern exactly
             cpp_files = glob.glob("source/grapa/*.cpp")
             openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            # For ARM64 cross-compilation, use ARM64 X11 libraries
+            # For ARM64 cross-compilation, exclude FLTK libraries (no X11 in sysroot)
             if is_cross_compile:
-                # Always use static linking for cross-compilation to avoid X11 library issues
+                # Use minimal system libraries for cross-compilation (no GUI)
                 system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                fl_libs = []  # Skip FLTK libraries for cross-compilation
             else:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
             
             cmd = [
                 gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
@@ -513,7 +517,9 @@ class GrapaBuilder:
             # Add -ljpeg for both native and cross-compilation builds (unless doing static linking)
             if "-static" not in cross_flags:
                 cmd.insert(-2, "-ljpeg")
-                # Note: -lbsd removed for cross-compilation as it's not available in sysroot
+                # Add -lbsd for cross-compilation (now available in sysroot)
+                if is_cross_compile:
+                    cmd.insert(-2, "-lbsd")
             
             print(f"Current working directory: {os.getcwd()}")
             print(f"Executing executable build command: {' '.join(cmd)}")
