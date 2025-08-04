@@ -72,40 +72,20 @@
 - **Testing**: Monitoring v0.0.177 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 
-### Artifact Collection Issue - ✅ RESOLVED
-- **Status**: ✅ **RESOLVED** - All platform build and copying issues fixed
-- **Issue**: Multiple platform build and copying issues preventing complete artifact collection
+### Artifact Collection Issue - 🔄 PROGRESS MADE
+- **Status**: 🔄 **PROGRESS MADE** - Critical build logic fix implemented in v0.0.187, showing improvement
+- **Issue**: Library builds were being skipped entirely due to incorrect parameter logic
 - **Root Cause Analysis**: 
-  1. **Platform Detection**: Build script was using `detect_platform()` instead of `CI_PLATFORM` environment variable
-  2. **Cross-Compilation**: macOS AMD64 cross-compilation flags were missing
-  3. **Library Organization**: Linux shared libraries were in wrong location (causing clang++ conflicts)
-  4. **Directory Creation**: `source/grapa-other/{platform}/` directories weren't being created
-- **Evidence from Workflow Output** (v0.0.183):
-  - ✅ **All 5 Platform Artifacts Downloaded Successfully**:
-    - `platform-artifacts-linux-arm64` (Size: 84MB)
-    - `platform-artifacts-linux-amd64` (Size: 84MB)
-    - `platform-artifacts-win-amd64` (Size: 105MB)
-    - `platform-artifacts-mac-arm64` (Size: 79MB)
-    - `platform-artifacts-mac-amd64` (Size: 81MB)
-  - ✅ **All Platforms Building Successfully**: All 5 platform artifacts are being uploaded and downloaded
-  - ❌ **Git Commit Only Shows 3 Files**: Only files that are actually different get committed
-  - ✅ **PyPI Packaging Working**: All wheel files and source distribution created successfully
-- **Evidence from File Timestamps** (Aug 4, 2025):
-  - ✅ **Windows AMD64**: `grapa-win-amd64.zip` - Aug 4 12:29 (RECENT)
-  - ✅ **Linux AMD64**: `grapa-linux-amd64.tar.gz` - Aug 4 07:41 (RECENT)
-  - ✅ **Linux ARM64**: `grapa-linux-arm64.tar.gz` - Aug 4 08:43 (RECENT)
-  - ✅ **macOS ARM64**: `grapa-mac-arm64.tar.gz` - Aug 4 08:43 (RECENT)
-  - ❌ **macOS AMD64**: `grapa-mac-amd64.tar.gz` - Jul 25 16:29 (OLD - NOT UPDATING)
-  - ❌ **AWS AMD64**: `grapa-aws-amd64.tar.gz` - Jul 25 15:51 (OLD - NOT UPDATING)
-  - ❌ **AWS ARM64**: `grapa-aws-arm64.tar.gz` - Jul 25 15:46 (OLD - NOT UPDATING)
-- **Expected Behavior**: Every version bump should result in ALL 5 platform artifacts being updated because:
-  - Version changes trigger rebuild of all binaries
-  - All executables get recompiled with new version
-  - All libraries get rebuilt with new version
-  - All compressed files get recreated with new binaries
-- **Current Reality**: Only 3 platforms are actually updating their binaries (Windows, Linux AMD64, Linux ARM64, macOS ARM64)
-- **Root Cause**: Multiple build and copying issues preventing complete artifact collection
-- **Solution Implemented**: 
+  1. **Critical Logic Error**: `build_libraries_only()` was calling build functions with wrong parameters (`exe_only=True, lib_only=True`)
+  2. **Build Skipping**: Both conditions were False, so nothing was being built
+  3. **macOS Tool Issue**: Using `ar` instead of `libtool` for static library creation on macOS
+  4. **Platform Detection**: Build script was using `detect_platform()` instead of `CI_PLATFORM` environment variable
+  5. **Cross-Compilation**: macOS AMD64 cross-compilation flags were missing
+  6. **Library Organization**: Linux shared libraries were in wrong location (causing clang++ conflicts)
+  7. **Directory Creation**: `source/grapa-other/{platform}/` directories weren't being created
+- **Critical Fix Implemented** (v0.0.187):
+  - ✅ **FIXED**: Changed `build_libraries_only()` to use correct parameters (`exe_only=False, lib_only=True`)
+  - ✅ **FIXED**: Changed macOS static library creation from `ar` to `libtool` (macOS-specific tool)
   - ✅ **FIXED**: Build script now uses `CI_PLATFORM` environment variable instead of `detect_platform()`
   - ✅ **FIXED**: Added cross-compilation flags for macOS AMD64 (`-target x86_64-apple-macos10.9`)
   - ✅ **FIXED**: Moved Linux shared libraries from `source/grapa-lib/` to `source/grapa-other/` (avoiding clang++ conflicts)
@@ -114,8 +94,24 @@
   - ✅ **FIXED**: Copy source directories separately: `cp -rfv artifacts/source/* source/`
   - ✅ **FIXED**: Copy bin directory separately: `cp -rfv artifacts/bin/* bin/`
   - ✅ **FIXED**: Added force overwrite (`-f` flag) to ensure all files are copied
-  - ✅ **FIXED**: Added debugging output to show what files are copied
-  - ✅ **FIXED**: Preserved directory structure properly
+- **Evidence from v0.0.187 Workflow** (commit `4f0bd455`):
+  - ✅ **Progress**: 6 files committed (vs 3 before) - **50% improvement**
+  - ✅ **Windows AMD64**: `bin/grapa-win-amd64.zip` + `source/grapa-lib/win-amd64/grapa.lib`
+  - ✅ **Linux AMD64**: `source/grapa-lib/linux-amd64/libgrapa.a` + `source/grapa-other/linux-amd64/libgrapa.so`
+  - ✅ **macOS ARM64**: `source/grapa-lib/mac-arm64/libgrapa.a` + `source/grapa-other/mac-arm64/libgrapa.so`
+  - ❌ **macOS AMD64**: No files (cross-compilation executable build failing)
+  - ❌ **Linux ARM64**: No files (cross-compilation executable build failing)
+- **Evidence from Local Test** (Aug 4, 2025):
+  - ✅ **macOS ARM64**: `libgrapa.a` - Aug 4 13:26 (NEW - 5.6MB vs old 5.3MB)
+  - ✅ **Build Time**: Now takes ~30 seconds (vs instant skip before)
+  - ✅ **Library Creation**: Both static and shared libraries now being created
+  - ✅ **File Sizes**: New binaries have different sizes, confirming actual compilation
+- **Current Hypothesis**: Cross-compilation executable builds are failing while library builds succeed
+- **Expected Behavior**: Every version bump should result in ALL 5 platform artifacts being updated because:
+  - Version changes trigger rebuild of all binaries
+  - All executables get recompiled with new version
+  - All libraries get rebuilt with new version
+  - All compressed files get recreated with new binaries
 - **Expected Artifacts Per Platform**:
   - `source/grapa-lib/{platform}/` - Static libraries (all platforms)
   - `source/grapa-other/{platform}/` - Shared libraries (Linux, macOS)
@@ -125,10 +121,10 @@
   - `source/pcre2-lib/{platform}/` - PCRE2 libraries
   - `bin/grapa-{platform}.zip` or `bin/grapa-{platform}.tar.gz` - Executables
 - **Next Steps**:
-  - **TEST**: Trigger v0.0.186 workflow to verify all fixes work
-  - **VERIFY**: Ensure all 5 platforms contribute artifacts to git commits
-  - **MONITOR**: Confirm all binaries and libraries are updated with new version
-  - **DEPLOY**: Verify PyPI deployment works with complete artifact collection
+  - **INVESTIGATE**: Cross-compilation executable build failures for macOS AMD64 and Linux ARM64
+  - **APPLY FIXES**: Similar parameter logic fixes to executable builds if needed
+  - **ADD DEBUGGING**: Enhanced error capture for cross-compilation executable builds
+  - **TARGET**: Achieve all 10 expected files (2 per platform) in git commits
 
 ### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
 - **Status**: ✅ **COMPLETED** - Linux ARM64 cross-compilation now working with `-lbsd` dependency fix
@@ -251,8 +247,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.177 (PyPI deployment debugging - fixed GitHub CLI JSON fields) - TESTING
-- **Next**: Monitor v0.0.177 CI/CD run to verify PyPI deployment success and identify missing platform artifacts
+- **Current Version:** v0.0.187 (Critical build logic fix - library builds were being skipped entirely)
+- **Next**: Monitor v0.0.187 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
