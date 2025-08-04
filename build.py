@@ -144,20 +144,47 @@ class GrapaBuilder:
         print(f"Building for {config.target} using Visual Studio...")
         
         try:
-            # Build main executable
-            subprocess.run([
-                "msbuild", "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
-            ], check=True)
+            # Try to find msbuild - first check if it's in PATH
+            msbuild_exe = "msbuild"
+            try:
+                subprocess.run([msbuild_exe, "/version"], capture_output=True, check=True)
+                print(f"Using msbuild from PATH")
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                # If not in PATH, try to find it using vswhere (Visual Studio installer)
+                try:
+                    vswhere_output = subprocess.run([
+                        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
+                        "-latest", "-products", "*", "-requires", "Microsoft.VisualStudio.Component.MSBuild",
+                        "-property", "installationPath"
+                    ], capture_output=True, text=True, check=True)
+                    
+                    vs_path = vswhere_output.stdout.strip()
+                    if vs_path:
+                        msbuild_exe = os.path.join(vs_path, "MSBuild", "Current", "Bin", "MSBuild.exe")
+                        if os.path.exists(msbuild_exe):
+                            print(f"Using msbuild: {msbuild_exe}")
+                        else:
+                            raise RuntimeError(f"Found Visual Studio at {vs_path} but msbuild not found")
+                    else:
+                        raise RuntimeError("Could not find Visual Studio installation")
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    raise RuntimeError("Could not find msbuild. Please ensure Visual Studio is installed and msbuild is available.")
             
-            # Copy executable
-            if os.path.exists("grapa.exe"):
-                os.remove("grapa.exe")
-            shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
+            if not lib_only:
+                # Build main executable
+                subprocess.run([
+                    msbuild_exe, "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
+                ], check=True)
+                
+                # Copy executable
+                if os.path.exists("grapa.exe"):
+                    os.remove("grapa.exe")
+                shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
             
             if not exe_only:
-                # Build library
+                # Build library (utf8proc.c is already included in the MSBuild project)
                 subprocess.run([
-                    "msbuild", "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
+                    msbuild_exe, "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
                 ], check=True)
                 # Copy library
                 if os.path.exists("grapa.lib"):
@@ -180,16 +207,20 @@ class GrapaBuilder:
         print(f"Building for {config.target} using clang++...")
         
         try:
-            # Build main executable
-            self._run_mac_build_command(config, is_library=False)
-            
-            # Build static library
-            self._run_mac_build_command(config, is_library=True, is_static=True)
-            
-            # Build shared library
-            self._run_mac_build_command(config, is_library=True, is_static=False)
+            if not lib_only:
+                # Build main executable
+                self._run_mac_build_command(config, is_library=False)
             
             if not exe_only:
+                # Build static library
+                self._run_mac_build_command(config, is_library=True, is_static=True)
+                
+                # Build shared library
+                self._run_mac_build_command(config, is_library=True, is_static=False)
+                
+                # Copy library files to top-level directory
+                self._copy_libraries_to_top_level(config)
+                
                 # Create package
                 self._create_mac_package(config)
             
@@ -832,6 +863,42 @@ class GrapaBuilder:
         except Exception as e:
             print(f"Python extension build failed: {e}")
             return False
+
+    def _copy_libraries_to_top_level(self, config: BuildConfig):
+        """Copy library files to top-level directory for packaging"""
+        import glob
+        
+        # Copy static libraries
+        lib_patterns = [
+            f"source/grapa-lib/{config.target}/*.a",
+            f"source/openssl-lib/{config.target}/*.a",
+            f"source/fl-lib/{config.target}/*.a",
+            f"source/blst-lib/{config.target}/*.a",
+            f"source/pcre2-lib/{config.target}/*.a",
+        ]
+        
+        for pattern in lib_patterns:
+            for lib_file in glob.glob(pattern):
+                if os.path.exists(lib_file):
+                    filename = os.path.basename(lib_file)
+                    shutil.copy2(lib_file, filename)
+                    print(f"Copied {filename} to top-level directory")
+        
+        # Copy shared libraries
+        so_patterns = [
+            f"source/grapa-lib/{config.target}/*.so",
+            f"source/openssl-lib/{config.target}/*.so",
+            f"source/fl-lib/{config.target}/*.so",
+            f"source/blst-lib/{config.target}/*.so",
+            f"source/pcre2-lib/{config.target}/*.so",
+        ]
+        
+        for pattern in so_patterns:
+            for lib_file in glob.glob(pattern):
+                if os.path.exists(lib_file):
+                    filename = os.path.basename(lib_file)
+                    shutil.copy2(lib_file, filename)
+                    print(f"Copied {filename} to top-level directory")
 
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
