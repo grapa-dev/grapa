@@ -66,7 +66,15 @@ jobs:
           sudo apt-get update || echo "Warning: apt-get update failed, continuing..."
           
           # Try to install ARM64 libraries, but don't fail if they're not available
+          echo "Installing ARM64 X11 and JPEG development libraries..."
           sudo apt-get install -y libx11-dev:arm64 libxfixes-dev:arm64 libxft-dev:arm64 libxext-dev:arm64 libxrender-dev:arm64 libxinerama-dev:arm64 libxcursor-dev:arm64 libfontconfig1-dev:arm64 libjpeg-dev:arm64 || echo "Warning: ARM64 libraries not available, will use static linking"
+          
+          # Debug: Check what ARM64 libraries are actually available
+          echo "Checking for ARM64 libraries..."
+          aarch64-linux-gnu-gcc -print-file-name=libX11.so || echo "ARM64 X11 library not found"
+          aarch64-linux-gnu-gcc -print-file-name=libjpeg.so || echo "ARM64 JPEG library not found"
+          ls -la /usr/lib/aarch64-linux-gnu/libX11* 2>/dev/null || echo "No ARM64 X11 libraries found in /usr/lib/aarch64-linux-gnu/"
+          ls -la /usr/lib/aarch64-linux-gnu/libjpeg* 2>/dev/null || echo "No ARM64 JPEG libraries found in /usr/lib/aarch64-linux-gnu/"
         fi
         
     - name: Install build dependencies (macOS)

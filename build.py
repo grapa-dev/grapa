@@ -391,16 +391,39 @@ class GrapaBuilder:
                 # Add ARM64 library paths for cross-compilation
                 cross_flags = ["-L/usr/lib/aarch64-linux-gnu", "-L/usr/lib/x86_64-linux-gnu"]
                 
-                # Check if ARM64 libraries are available
+                # More robust check for ARM64 libraries
+                arm64_libs_available = False
                 try:
-                    subprocess.run(["aarch64-linux-gnu-gcc", "-print-file-name=libX11.so"], check=True, capture_output=True)
-                    print("ARM64 libraries available")
-                except (subprocess.CalledProcessError, FileNotFoundError):
+                    # Check if we can actually find ARM64 library files
+                    result = subprocess.run(["aarch64-linux-gnu-gcc", "-print-file-name=libX11.so"], 
+                                          check=True, capture_output=True, text=True)
+                    lib_path = result.stdout.strip()
+                    if lib_path and lib_path != "libX11.so" and os.path.exists(lib_path):
+                        print(f"ARM64 X11 library found: {lib_path}")
+                        arm64_libs_available = True
+                    else:
+                        print(f"ARM64 X11 library not found at: {lib_path}")
+                        
+                    # Also check for JPEG library
+                    result = subprocess.run(["aarch64-linux-gnu-gcc", "-print-file-name=libjpeg.so"], 
+                                          check=True, capture_output=True, text=True)
+                    jpeg_path = result.stdout.strip()
+                    if jpeg_path and jpeg_path != "libjpeg.so" and os.path.exists(jpeg_path):
+                        print(f"ARM64 JPEG library found: {jpeg_path}")
+                    else:
+                        print(f"ARM64 JPEG library not found at: {jpeg_path}")
+                        
+                except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                    print(f"Error checking ARM64 libraries: {e}")
+                
+                if not arm64_libs_available:
                     print("Warning: ARM64 libraries not available, will use static linking approach")
                     # Use static linking approach instead
                     cross_flags.extend(["-static", "-static-libgcc", "-static-libstdc++"])
                     # Also remove system_libs since we're doing static linking
                     system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                else:
+                    print("ARM64 libraries available, using dynamic linking")
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("Cross-compilation toolchain not available, using native compiler with ARM flags")
                 cross_flags = ["-march=armv8-a", "-mtune=cortex-a72"]
