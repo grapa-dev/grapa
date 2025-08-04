@@ -986,6 +986,15 @@ def main():
         # Parse CI_PLATFORM like "linux-arm64", "mac-amd64", etc.
         if "-" in ci_platform:
             platform, arch = ci_platform.split("-", 1)
+            # Normalize platform names to match build logic expectations
+            if platform == "win":
+                platform = "windows"
+            elif platform == "mac":
+                platform = "mac"
+            elif platform == "linux":
+                platform = "linux"
+            elif platform == "aws":
+                platform = "aws"
             print(f"Building for {platform} {arch}")
         else:
             print(f"Invalid CI_PLATFORM format: {ci_platform}")
@@ -995,6 +1004,15 @@ def main():
         # Parse target platform like "mac-amd64", "linux-arm64", etc.
         if "-" in args.target_platform:
             platform, arch = args.target_platform.split("-", 1)
+            # Normalize platform names to match build logic expectations
+            if platform == "win":
+                platform = "windows"
+            elif platform == "mac":
+                platform = "mac"
+            elif platform == "linux":
+                platform = "linux"
+            elif platform == "aws":
+                platform = "aws"
             print(f"Building for {platform} {arch}")
         else:
             print(f"Invalid target platform format: {args.target_platform}")
