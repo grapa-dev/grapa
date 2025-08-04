@@ -393,23 +393,24 @@ class GrapaBuilder:
                 
                 # Check if sysroot is available (Option 2 approach)
                 sysroot_path = "./arm64-root"
-                if os.path.exists(sysroot_path):
-                    print(f"Using ARM64 sysroot at: {sysroot_path}")
-                    # Use sysroot for cross-compilation
-                    cross_flags.extend([
-                        f"--sysroot={sysroot_path}",
-                        "-I" + os.path.join(sysroot_path, "usr/include"),
-                        "-L" + os.path.join(sysroot_path, "usr/lib/aarch64-linux-gnu"),
-                        "-L" + os.path.join(sysroot_path, "lib/aarch64-linux-gnu")
-                    ])
-                    arm64_libs_available = True
-                    print("ARM64 sysroot libraries available, using dynamic linking")
-                else:
-                    # Fallback to static linking if no sysroot
-                    print("Warning: ARM64 sysroot not available, will use static linking approach")
-                    cross_flags.extend(["-static", "-static-libgcc", "-static-libstdc++"])
-                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                    arm64_libs_available = False
+                 if os.path.exists(sysroot_path):
+                     print(f"Using ARM64 sysroot at: {sysroot_path}")
+                     # Use sysroot for cross-compilation but with static linking to avoid X11 issues
+                     cross_flags.extend([
+                         f"--sysroot={sysroot_path}",
+                         "-I" + os.path.join(sysroot_path, "usr/include"),
+                         "-L" + os.path.join(sysroot_path, "usr/lib/aarch64-linux-gnu"),
+                         "-L" + os.path.join(sysroot_path, "lib/aarch64-linux-gnu"),
+                         "-static", "-static-libgcc", "-static-libstdc++"
+                     ])
+                     arm64_libs_available = True
+                     print("ARM64 sysroot libraries available, using static linking to avoid X11 issues")
+                 else:
+                     # Fallback to static linking if no sysroot
+                     print("Warning: ARM64 sysroot not available, will use static linking approach")
+                     cross_flags.extend(["-static", "-static-libgcc", "-static-libstdc++"])
+                     system_libs = ["-ldl", "-lm", "-static-libgcc"]
+                     arm64_libs_available = False
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("Cross-compilation toolchain not available, using native compiler with ARM flags")
                 cross_flags = ["-march=armv8-a", "-mtune=cortex-a72"]
@@ -465,15 +466,8 @@ class GrapaBuilder:
                 
                 # For ARM64 cross-compilation, use ARM64 X11 libraries
                 if is_cross_compile:
-                    # Check if we're using static linking (no X11 libraries available)
-                    if "-static" in cross_flags:
-                        system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                    elif arm64_libs_available and "--sysroot" in cross_flags:
-                        # Using sysroot - avoid X11 libraries for now, focus on core functionality
-                        system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                    else:
-                        system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                      "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                    # Always use static linking for cross-compilation to avoid X11 library issues
+                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
                 else:
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                                   "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
@@ -504,15 +498,8 @@ class GrapaBuilder:
             
             # For ARM64 cross-compilation, use ARM64 X11 libraries
             if is_cross_compile:
-                # Check if we're using static linking (no X11 libraries available)
-                if "-static" in cross_flags:
-                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                elif arm64_libs_available and "--sysroot" in cross_flags:
-                    # Using sysroot - avoid X11 libraries for now, focus on core functionality
-                    system_libs = ["-ldl", "-lm", "-static-libgcc"]
-                else:
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
+                # Always use static linking for cross-compilation to avoid X11 library issues
+                system_libs = ["-ldl", "-lm", "-static-libgcc"]
             else:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"]
