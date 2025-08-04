@@ -396,21 +396,21 @@ class GrapaBuilder:
                 
                 # Check if sysroot is available (Option 2 approach)
                 sysroot_path = "./arm64-root"
-                 if os.path.exists(sysroot_path):
-                     print(f"Using ARM64 sysroot at: {sysroot_path}")
-                     # Use sysroot for cross-compilation
-                     cross_flags.extend([
-                         f"--sysroot={sysroot_path}",
-                         "-I" + os.path.join(sysroot_path, "usr/include"),
-                         "-L" + os.path.join(sysroot_path, "usr/lib/aarch64-linux-gnu"),
-                         "-L" + os.path.join(sysroot_path, "lib/aarch64-linux-gnu")
-                     ])
-                     arm64_libs_available = True
-                     print("ARM64 sysroot libraries available")
-                 else:
-                     # Fallback if no sysroot
-                     print("Warning: ARM64 sysroot not available")
-                     arm64_libs_available = False
+                if os.path.exists(sysroot_path):
+                    print(f"Using ARM64 sysroot at: {sysroot_path}")
+                    # Use sysroot for cross-compilation
+                    cross_flags.extend([
+                        f"--sysroot={sysroot_path}",
+                        "-I" + os.path.join(sysroot_path, "usr/include"),
+                        "-L" + os.path.join(sysroot_path, "usr/lib/aarch64-linux-gnu"),
+                        "-L" + os.path.join(sysroot_path, "lib/aarch64-linux-gnu")
+                    ])
+                    arm64_libs_available = True
+                    print("ARM64 sysroot libraries available")
+                else:
+                    # Fallback if no sysroot
+                    print("Warning: ARM64 sysroot not available")
+                    arm64_libs_available = False
             except (subprocess.CalledProcessError, FileNotFoundError):
                 print("Cross-compilation toolchain not available, using native compiler with ARM flags")
                 cross_flags = ["-march=armv8-a", "-mtune=cortex-a72"]
