@@ -541,7 +541,7 @@ class GrapaBuilder:
                     run_diagnostic_cross_compile(cmd)
                 else:
                     subprocess.run(cmd, check=True)
-                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
+                shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
             # Build executable - match AWS pattern exactly
@@ -657,7 +657,7 @@ class GrapaBuilder:
                 
                 print(f"Executing shared library build command: {' '.join(cmd)}")
                 subprocess.run(cmd, check=True)
-                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
+                shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
             # Build executable
