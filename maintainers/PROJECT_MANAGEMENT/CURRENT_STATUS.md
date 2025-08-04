@@ -38,31 +38,34 @@
 - **Impact**: `pip install grapapy` now works on any Windows system without requiring Visual Studio or manual SDK configuration
 - **Documentation**: Platform dependencies are now clearly communicated in both PyPI description and Python documentation
 
-### PyPI Deployment Issue - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Fixing PyPI deployment failure due to invalid artifacts
+### PyPI Deployment Issue - 🔄 TESTING
+- **Status**: 🔄 **TESTING** - PyPI deployment fixes implemented, testing with v0.0.174
 - **Issue**: PyPI deployment failing with `InvalidDistribution: Too many top-level members in sdist archive`
 - **Root Cause**: `grapa-build-debug.zip` debug artifact being incorrectly included in `dists/` directory
 - **Error Details**: 
   - PyPI expects only valid Python package distributions (`.whl`, `.tar.gz`)
   - `grapa-build-debug.zip` is a debug artifact that shouldn't be in distribution
-  - This file is being uploaded to GitHub artifacts but shouldn't be in PyPI dists/
+  - `grapa` executable was being committed to root directory instead of platform-specific compressed files
 - **Build Status**: 
   - ✅ **Windows AMD64**: Building successfully with improved Visual Studio detection
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - ✅ **Linux AMD64**: Building successfully
   - ✅ **Linux ARM64**: Cross-compilation working with `-lbsd` dependency fix
-- **Artifact Issues Identified**:
-  - Missing compressed files for some platforms
-  - Missing library files for some platforms  
-  - `grapa` executable incorrectly placed in root instead of in platform-specific compressed files
-  - Each compressed file should contain executable + libraries for that platform
-- **Solution Needed**:
-  - Fix artifact collection process to exclude debug files from `dists/`
-  - Ensure all platforms generate proper compressed artifacts
-  - Verify each platform's compressed file contains correct executable + libraries
-  - Clean up artifact upload process to separate debug artifacts from distribution artifacts
-- **Next**: Fix artifact collection and PyPI deployment process
+- **Solution Implemented**:
+  - ✅ **FIXED**: Removed `grapa*` and `libgrapa.*` from artifact upload paths
+  - ✅ **FIXED**: Removed git add commands that were committing executables to root directory
+  - ✅ **FIXED**: Improved combine-distributions step to specifically exclude debug artifacts
+  - ✅ **FIXED**: Added specific cleanup for `grapa-build-debug.zip`, `grapa`, `grapa.exe` from distribution
+  - ✅ **FIXED**: Ensured executables stay in platform-specific compressed files (`bin/grapa-*.zip/tar.gz`)
+  - ✅ **FIXED**: Updated artifact collection to only include libraries and compressed platform files
+- **Expected Behavior**:
+  - All 5 platforms should build successfully
+  - Proper compressed artifacts created with executables + libraries for each platform
+  - Only libraries committed to repository (no executables in root)
+  - Python wheels built without including debug artifacts
+  - Successful PyPI deployment with only valid distribution files
+- **Testing**: Monitoring v0.0.174 CI/CD run to verify PyPI deployment success
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 
 ### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
