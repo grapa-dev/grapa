@@ -69,9 +69,9 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.203 CI/CD run to verify PyPI deployment success and artifact debugging
+- **Testing**: Monitoring v0.0.204 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
-- **Latest Fixes Applied** (v0.0.194 through v0.0.203):
+- **Latest Fixes Applied** (v0.0.194 through v0.0.204):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
   - ✅ **Native ARM64 Compilation**: Linux ARM64 uses QEMU emulation instead of cross-compilation
   - ✅ **Fully Static Libraries**: Static libraries include all dependencies (OpenSSL, FLTK, BLST, PCRE2)
@@ -88,6 +88,7 @@
   - ✅ **Linux ARM64 Missing Libraries Fix**: Added `libxcb1-dev libfreetype6-dev libexpat1-dev` to ARM64 sysroot
   - ✅ **Permission Error Fix**: Enhanced cleanup functions with proper error handling for ARM64 chroot
   - ✅ **Python Indentation Error Fix**: Fixed incorrect indentation in build.py that was causing syntax errors
+  - ✅ **GitHub CLI Token Error Fix**: Removed problematic `gh run list` command that was causing authentication failures
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
 ### Artifact Collection Issue - ✅ RESOLVED
@@ -254,8 +255,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.203 (Python indentation error fix - workflow now running)
-- **Next**: Monitor v0.0.203 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
+- **Current Version:** v0.0.204 (GitHub CLI token error fix - workflow now running)
+- **Next**: Monitor v0.0.204 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working

@@ -611,10 +611,10 @@ class GrapaBuilder:
             ] + cross_flags + [
                 "-lcrypto"
             ] + system_libs
-                
-                # Add explicit C++17 compatibility flags for ARM64
-                if is_arm64_emulation:
-                    cmd.extend(["-D_GLIBCXX_USE_CXX11_ABI=0", "-fno-sized-deallocation"])
+            
+            # Add explicit C++17 compatibility flags for ARM64
+            if is_arm64_emulation:
+                cmd.extend(["-D_GLIBCXX_USE_CXX11_ABI=0", "-fno-sized-deallocation"])
             
             # Add -ljpeg for executable builds
             cmd.insert(-2, "-ljpeg")
