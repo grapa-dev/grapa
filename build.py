@@ -483,8 +483,12 @@ class GrapaBuilder:
         
         if is_library:
             if is_static:
-                # Build static library
+                # Build fully static library - include all static dependencies
                 cpp_files = glob.glob("source/grapa/*.cpp")
+                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
+                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
+                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
                 # Clean any existing object files first
                 for obj_file in glob.glob("*.o"):
@@ -508,6 +512,7 @@ class GrapaBuilder:
                         run_diagnostic_cross_compile(cpp_compile_cmd)
                     else:
                         subprocess.run(cpp_compile_cmd, check=True)
+                
                 # Get all .o files (including utf8proc.o if it exists)
                 obj_files = glob.glob("*.o")
                 if not obj_files:
@@ -517,8 +522,9 @@ class GrapaBuilder:
                 if os.path.exists("libgrapa.a"):
                     os.remove("libgrapa.a")
                 
+                # Create fully static library with all dependencies included
                 ar_cmd = f"{cross_compiler_prefix}ar" if cross_compiler_prefix else "ar"
-                subprocess.run([ar_cmd, "-crs", "libgrapa.a"] + obj_files, check=True)
+                subprocess.run([ar_cmd, "-crs", "libgrapa.a"] + obj_files + openssl_libs + fl_libs + blst_libs + pcre2_lib, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
             else:
