@@ -69,7 +69,7 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.218 CI/CD run to verify PyPI deployment success and artifact debugging
+- **Testing**: Triggering GitHub Actions workflow to continue ARM64 investigation in proper Linux environment
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 - **Latest Fixes Applied** (v0.0.194 through v0.0.208):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
@@ -103,6 +103,8 @@
   - ✅ **Linux ARM64 Chroot Error Output Capture**: Added error output capture to see the actual compilation error messages from g++ command
   - ✅ **Linux ARM64 Chroot Variable Scope Fix**: Fixed variable scope issue where `arm64_libs_available` was not defined in executable build section
   - ✅ **Linux ARM64 Build Path Debug Prints**: Added explicit debug prints before both chroot and cross-compile branches in linux-arm64 executable build section to confirm which path is being taken
+  - ✅ **Linux AMD64 System Investigation**: Work completed on Linux AMD64 system addressing some issues but not all. Agent attempted CentOS-to-Ubuntu conversion for environment setup but something may not have worked properly.
+  - ✅ **Investigation Platform Switch**: Moved investigation back to GitHub Actions workflow from resource-constrained Linux AMD64 system. Buildlog.txt revealed ARM64 chroot setup failed with "No module named ensurepip" error.
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
 ### Artifact Collection Issue - ✅ RESOLVED
@@ -269,8 +271,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.219 (Added debug prints to diagnose linux-arm64 build path - workflow now running)
-- **Next**: Review v0.0.219 workflow output for [DEBUG] lines to confirm which build path is taken and fix logic as needed
+- **Current Version:** v0.0.220 (Investigation moved back to GitHub Actions workflow - ARM64 chroot setup failed with ensurepip error)
+- **Next**: Trigger workflow to continue investigation in proper Linux environment for ARM64 builds
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
