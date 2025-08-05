@@ -77,8 +77,8 @@ jobs:
           
           # Install ARM64 development tools and libraries in the sysroot
           echo "Installing ARM64 development tools and libraries in sysroot..."
-          sudo chroot ./arm64-root apt update
-          sudo chroot ./arm64-root apt install -y build-essential gcc g++ make python3-pip x11-apps libc6-dev libc6-dev-arm64-cross libjpeg-dev libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libfontconfig1-dev libbsd-dev libxcb1-dev libfreetype6-dev libexpat1-dev libxml2-dev
+          sudo chroot ./arm64-root apt update --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y build-essential gcc g++ make python3-pip libc6-dev --allow-unauthenticated
           
           echo "ARM64 sysroot setup completed"
         fi
