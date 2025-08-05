@@ -423,6 +423,8 @@ class GrapaBuilder:
         # Set up compilation flags
         cross_flags = []
         cross_compiler_prefix = ""
+        arm64_libs_available = False  # Initialize this variable for both library and executable builds
+        
         if is_arm64_emulation:
             print("Using native ARM64 compilation in QEMU emulation...")
             # Check if ARM64 sysroot is available for native compilation
