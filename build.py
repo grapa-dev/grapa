@@ -641,12 +641,11 @@ class GrapaBuilder:
                     chroot_blst_libs = [lib.replace("source/", "/source/") for lib in blst_libs]
                     chroot_pcre2_lib = [lib.replace("source/", "/source/") for lib in pcre2_lib]
                     
-                    # Build command with chroot-relative paths
+                    # Build command with chroot-relative paths (no cross_flags needed in chroot)
                     chroot_cmd = [
                         gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
                     ] + cpp_files + ["source/utf8proc/utf8proc.c"] + chroot_openssl_libs + chroot_fl_libs + chroot_blst_libs + chroot_pcre2_lib + [
-                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
-                    ] + cross_flags + [
+                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name,
                         "-lcrypto"
                     ] + system_libs
                     
