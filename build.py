@@ -664,7 +664,13 @@ class GrapaBuilder:
                     # Run native ARM64 compilation in chroot
                     chroot_bash_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(chroot_cmd)]
                     print(f"Running native ARM64 compilation: {' '.join(chroot_bash_cmd)}")
-                    subprocess.run(chroot_bash_cmd, check=True)
+                    try:
+                        subprocess.run(chroot_bash_cmd, check=True, capture_output=True, text=True)
+                    except subprocess.CalledProcessError as e:
+                        print(f"❌ Build failed with exit code {e.returncode}")
+                        print(f"STDOUT: {e.stdout}")
+                        print(f"STDERR: {e.stderr}")
+                        raise
                 else:
                     # Use diagnostic function for cross-compilation or regular compilation
                     if is_arm64_emulation:
