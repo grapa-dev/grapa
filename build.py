@@ -606,6 +606,8 @@ class GrapaBuilder:
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
             
+            print(f"[DEBUG] Executable build: is_arm64_emulation={is_arm64_emulation}, arm64_libs_available={arm64_libs_available}")
+            
             cmd = [
                 gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
             ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
