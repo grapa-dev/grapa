@@ -561,9 +561,9 @@ class GrapaBuilder:
                     "-lcrypto"
                 ] + system_libs
                 
-                # Add explicit C++17 compatibility flags for ARM64
+                # Add -static-libgcc for ARM64 builds (matching working command)
                 if is_arm64_emulation:
-                    cmd.extend(["-D_GLIBCXX_USE_CXX11_ABI=0", "-fno-sized-deallocation"])
+                    cmd.extend(["-static-libgcc"])
                 
                 # Add -ljpeg for shared library builds
                 cmd.insert(-2, "-ljpeg")
@@ -612,9 +612,9 @@ class GrapaBuilder:
                 "-lcrypto"
             ] + system_libs
             
-            # Add explicit C++17 compatibility flags for ARM64
+            # Add -static-libgcc for ARM64 builds (matching working command)
             if is_arm64_emulation:
-                cmd.extend(["-D_GLIBCXX_USE_CXX11_ABI=0", "-fno-sized-deallocation"])
+                cmd.extend(["-static-libgcc"])
             
             # Add -ljpeg for executable builds
             cmd.insert(-2, "-ljpeg")
