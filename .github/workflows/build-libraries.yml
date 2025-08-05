@@ -55,13 +55,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev libjpeg-dev
         
-        # Install cross-compilation tools for ARM64 if needed
+        # Install ARM64 native compilation tools and libraries
         if [ "${{ matrix.platform }}" = "linux-arm64" ]; then
-          echo "Installing ARM64 cross-compilation tools..."
-          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
-          
-          # Option 2: Sysroot approach with debootstrap and qemu-user-static
-          echo "Setting up ARM64 sysroot environment..."
+          echo "Setting up ARM64 native compilation environment..."
           sudo apt-get install -y debootstrap qemu-user-static
           
           # Create ARM64 root filesystem
@@ -75,12 +71,22 @@ jobs:
           echo "Completing debootstrap process..."
           sudo chroot ./arm64-root ./debootstrap/debootstrap --second-stage
           
-          # Install ARM64 development tools and libraries in the sysroot
-          echo "Installing ARM64 development tools and libraries in sysroot..."
+          # Install ARM64 development tools and X11 libraries in the sysroot (Ubuntu equivalent of AWS Amazon Linux)
+          echo "Installing ARM64 development tools and X11 libraries in sysroot..."
           sudo chroot ./arm64-root apt update --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y build-essential gcc g++ make python3-pip libc6-dev --allow-unauthenticated
+          # Ubuntu equivalent of AWS Amazon Linux X11 packages
+          sudo chroot ./arm64-root apt install -y python3-pip python3-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y x11-apps libx11-dev libxcursor-dev libxft-dev libxext-dev libxinerama-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y libxrender-dev libxfixes-dev libfontconfig1-dev libfreetype6-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y perl tar --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y libgl1-mesa-dev libglu1-mesa-dev --allow-unauthenticated
+          # Upgrade pip and install packaging (Ubuntu equivalent of AWS setup)
+          sudo chroot ./arm64-root python3 -m ensurepip --upgrade
+          sudo chroot ./arm64-root python3 -m pip install --upgrade pip setuptools
+          sudo chroot ./arm64-root python3 -m pip install --user --upgrade packaging
           
-          echo "ARM64 sysroot setup completed"
+          echo "ARM64 native compilation environment setup completed"
         fi
         
     - name: Install build dependencies (macOS)

@@ -185,6 +185,14 @@
   - ✅ **COMPLETED**: Source files and libraries copied successfully to ARM64 chroot
   - ✅ **COMPLETED**: Native ARM64 compilation started (working through QEMU emulation)
   - ✅ **COMPLETED**: Apply proven QEMU emulation solution to GitHub workflow
+  - ✅ **COMPLETED**: Successfully triggered GitHub workflow with v0.0.220 tag
+  - ✅ **COMPLETED**: GitHub workflow triggered with v0.0.220 tag
+  - ✅ **CONFIRMED**: Same FLTK/X11 linking errors in GitHub workflow as local investigation
+  - ✅ **DISCOVERED**: AWS ARM64 native compilation with X11 libraries works successfully
+  - ✅ **IDENTIFIED**: Required X11 libraries: `libx11-dev`, `libxcursor-dev`, `libxft-dev`, `libxext-dev`, `libxinerama-dev`
+  - ✅ **MAPPED**: AWS Amazon Linux (dnf) → Ubuntu (apt) package equivalents
+  - ✅ **APPLIED**: Updated workflow to use native ARM64 compilation with Ubuntu X11 libraries (matching AWS approach)
+  - 🔄 **IN PROGRESS**: Monitor workflow results for Linux ARM64 build success (with AWS-proven approach)
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully with robust Visual Studio detection
   - ✅ **macOS ARM64**: Building successfully  
@@ -203,15 +211,16 @@
   4. ✅ **COMPLETED**: Debug check issue fixed and full ARM64 build started
   5. ✅ **COMPLETED**: Native ARM64 compilation working (through QEMU emulation)
   6. ✅ **COMPLETED**: Apply proven QEMU emulation solution to GitHub workflow
-  7. 🔄 **IN PROGRESS**: Test GitHub workflow with Linux ARM64 builds
-  8. Verify successful Linux ARM64 builds in CI/CD
+  7. ✅ **COMPLETED**: Test GitHub workflow with Linux ARM64 builds (triggered v0.0.220)
+  8. 🔄 **IN PROGRESS**: Monitor GitHub workflow results for Linux ARM64 builds
 - **Goal**: Debug and fix Linux ARM64 cross-compilation locally, then apply solution to GitHub workflow
 - **Impact**: Once resolved, all 5 platforms will build successfully for universal Python package
 - **⚠️ IMPORTANT**: Local investigation files (ARM64 sysroot, QEMU binaries, etc.) should NOT be committed to GitHub
-  - **ARM64 Sysroot**: `./arm64-root/` directory contains large ARM64 filesystem that shouldn't be in git
+  - **ARM64 Sysroot**: `./arm64-root/` directory moved to `~/arm64-root-temp` (safe from git)
   - **QEMU Binaries**: `qemu-aarch64-static` and other QEMU files are large and not needed in repository
-  - **Git Cleanup Required**: When investigation is complete, clean up local files before committing
+  - **Git Cleanup Completed**: Local investigation files moved out of project directory
   - **Commit Strategy**: Only commit build script changes and workflow fixes, not investigation artifacts
+  - **Workflow Triggered**: Successfully pushed v0.0.220 tag to trigger GitHub workflow with fixes
 
 ### Database Investigation - ✅ COMPLETED
 - **Investigate GrapaDB:PtrToRec lookup for record 1 when there are 3 records**

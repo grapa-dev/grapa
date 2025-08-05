@@ -586,8 +586,11 @@ class GrapaBuilder:
                 if config.platform == "linux":
                     cmd.extend(["-static-libgcc"])
                 
-                # Add -ljpeg for shared library builds (skip for ARM64 cross-compilation)
+                # Add -ljpeg for shared library builds (include for ARM64 native compilation)
                 if not is_arm64_emulation:
+                    cmd.insert(-2, "-ljpeg")
+                else:
+                    # For ARM64 native compilation, include jpeg (matching AWS approach)
                     cmd.insert(-2, "-ljpeg")
                 
                 # Execute shared library build
@@ -616,11 +619,11 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            # For executable build, use static linking for cross-compilation, dynamic for native
+            # For executable build, use native ARM64 compilation with X11 libraries (matching AWS approach)
             if is_arm64_emulation:
-                # For ARM64 cross-compilation, skip GUI dependencies (headless build for Python extension)
-                print("Using headless build for ARM64 cross-compilation (no GUI dependencies)")
-                system_libs = ["-ldl", "-lm"]
+                # For ARM64 native compilation, include X11 libraries (matching AWS ARM64 build)
+                print("Using native ARM64 compilation with X11 libraries (matching AWS approach)")
+                system_libs = ["-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-ldl", "-lm"]
             else:
                 # For native builds, use dynamic linking without libbsd (not needed for AMD64)
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
@@ -640,8 +643,11 @@ class GrapaBuilder:
             if config.platform == "linux":
                 cmd.extend(["-static-libgcc"])
             
-            # Add -ljpeg for executable builds (skip for ARM64 cross-compilation)
+            # Add -ljpeg for executable builds (include for ARM64 native compilation)
             if not is_arm64_emulation:
+                cmd.insert(-2, "-ljpeg")
+            else:
+                # For ARM64 native compilation, include jpeg (matching AWS approach)
                 cmd.insert(-2, "-ljpeg")
             
             try:
@@ -676,11 +682,11 @@ class GrapaBuilder:
                     chroot_blst_libs = [lib.replace("source/", "/source/") for lib in blst_libs]
                     chroot_pcre2_lib = [lib.replace("source/", "/source/") for lib in pcre2_lib]
                     
-                    # Build command with chroot-relative paths (matching working command exactly)
+                    # Build command with chroot-relative paths (matching AWS ARM64 build with Ubuntu X11 libraries)
                     chroot_cmd = [
                         gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp", "source/grapa/*.cpp", "source/utf8proc/utf8proc.c",
                         f"/source/openssl-lib/{config.target}/*.a", f"/source/fl-lib/{config.target}/*.a", f"/source/blst-lib/{config.target}/*.a", f"/source/pcre2-lib/{config.target}/libpcre2-8.a",
-                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name
+                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name
                     ]
                     
                     print(f"Current working directory: {os.getcwd()}")
