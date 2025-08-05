@@ -74,17 +74,13 @@ jobs:
           # Install ARM64 development tools and X11 libraries in the sysroot (Ubuntu equivalent of AWS Amazon Linux)
           echo "Installing ARM64 development tools and X11 libraries in sysroot..."
           sudo chroot ./arm64-root apt update --allow-unauthenticated
-          sudo chroot ./arm64-root apt install -y build-essential gcc g++ make python3-pip libc6-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y build-essential gcc g++ make libc6-dev --allow-unauthenticated
           # Ubuntu equivalent of AWS Amazon Linux X11 packages
-          sudo chroot ./arm64-root apt install -y python3-pip python3-dev --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y x11-apps libx11-dev libxcursor-dev libxft-dev libxext-dev libxinerama-dev --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y libxrender-dev libxfixes-dev libfontconfig1-dev libfreetype6-dev --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y perl tar --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y libgl1-mesa-dev libglu1-mesa-dev --allow-unauthenticated
-          # Upgrade pip and install packaging (Ubuntu equivalent of AWS setup)
-          sudo chroot ./arm64-root python3 -m ensurepip --upgrade
-          sudo chroot ./arm64-root python3 -m pip install --upgrade pip setuptools
-          sudo chroot ./arm64-root python3 -m pip install --user --upgrade packaging
+          # Note: Python setup will be done later when needed for testing
           
           echo "ARM64 native compilation environment setup completed"
         fi
