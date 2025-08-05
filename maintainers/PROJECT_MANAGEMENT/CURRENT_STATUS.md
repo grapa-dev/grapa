@@ -2125,3 +2125,25 @@
   - ❌ **Python ensurepip Issue**: ARM64 chroot still failing with "No module named ensurepip" error, preventing environment setup completion
   - ✅ **Python ensurepip Fix**: Removed Python setup from ARM64 chroot since it's not needed for the build step, only for later testing
   - ✅ **ARM64 Chroot
+
+### Linux ARM64 Library Recompilation - ✅ RESOLVED
+- **Status**: ✅ **RESOLVED** - Native ARM64 library recompilation completed in commit `6d772837`
+- **Issue**: Linux ARM64 build failing with `__isoc23_` undefined references due to C++23/C++17 compatibility mismatch
+- **Root Cause**: Libraries (OpenSSL, FLTK, PCRE2) were compiled with C++23 features but linking with C++17
+- **Solution Implemented** (v0.0.231):
+  - ✅ **Native ARM64 Library Recompilation**: User recompiled OpenSSL, FLTK, and PCRE2 on native ARM64 system
+  - ✅ **C++17 Compatibility**: Libraries now built with C++17 compatibility to avoid `__isoc23_` errors
+  - ✅ **Proven Build Methods**: Used working native ARM64 build processes:
+    - **OpenSSL**: `./config -fPIC -std=c++17 no-shared`
+    - **PCRE2**: CMake with `-DBUILD_SHARED_LIBS=OFF` and `-DPCRE2_BUILD_PCRE2_8=ON`
+    - **FLTK**: `./configure --with-optim="-fPIC -std=c++17" --disable-shared`
+  - ✅ **Library Updates**: All libraries updated in commit `6d772837` with C++17-compatible versions
+  - ✅ **Commit Reference**: `6d772837` - "linux-arm64 lib updates openssl, fltk, pcre2"
+- **Current Status**: Testing v0.0.231 workflow with recompiled C++17-compatible libraries
+- **Expected Result**: Successful Linux ARM64 build with C++17-compatible libraries
+- **Next Steps**: Monitor workflow results for Linux ARM64 build success
+- **Benefits**:
+  - **Native compilation** - no chroot issues
+  - **C++17 compatibility** - works across all platforms
+  - **Consistent environment** - libraries built on the same system
+  - **Proven process** - using working native ARM64 setup
