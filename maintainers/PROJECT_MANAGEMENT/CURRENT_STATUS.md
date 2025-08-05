@@ -347,6 +347,46 @@ docker run --rm -v $(pwd):/workspace arm64-build /workspace/build.sh
 
 **When to Consider**: If current chroot approach continues to have library/dependency issues or becomes a blocker for the entire workflow
 
+### 🔄 FALLBACK APPROACH 2: Native Library Recompilation
+**Status**: Documented as secondary fallback if comprehensive package installation fails
+
+**FLTK Native ARM64 Build Process** (from user's native Linux ARM64 setup):
+```bash
+sudo apt-get install g++
+sudo apt-get install gdb
+sudo apt-get install git
+sudo apt-get install autoconf
+sudo apt-get install libx11-dev
+sudo apt-get install libglu1-mesa-dev
+sudo apt-get install libasound2-dev
+sudo apt-get install libxft-dev
+sudo apt-get install -y libfreetype-dev
+NOCONFIGURE=1 ./autogen.sh
+./configure --with-optim="-fPIC"
+make
+sudo make install
+```
+
+**Available Source Archives in dep/**: 
+- FLTK: `fltk-1.3.11-source.tar.gz` (5.3MB)
+- OpenSSL: `openssl-1.1.1w.tar.gz` (9.4MB)
+- PCRE2: `pcre2-10.45.zip` (2.9MB)
+- BLST: `blst-master.zip` (709KB) - **Excluded as requested**
+
+**Implementation Strategy**:
+1. Extract source archives in ARM64 chroot
+2. Install build dependencies (matching user's native setup)
+3. Build libraries natively in ARM64 chroot environment
+4. Use newly built libraries for final Grapa compilation
+
+**Advantages**:
+- Native ARM64 compilation (no cross-compilation issues)
+- Consistent environment (libraries built in same chroot as final build)
+- Matching dependencies (all libraries built with same ARM64 environment)
+- Proven build process (user's working native ARM64 setup)
+
+**When to Consider**: If comprehensive package installation (v0.0.229) fails to resolve library dependency issues
+
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
 - **Objective**: Validate builds on all 5 platforms (Windows AMD64, Linux AMD64/ARM64, macOS AMD64/ARM64)
