@@ -69,7 +69,7 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.228 workflow results for Linux ARM64 build success with libbsd linking
+- **Testing**: Monitoring v0.0.229 workflow results for Linux ARM64 build success with comprehensive native Linux packages
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 - **Latest Fixes Applied** (v0.0.194 through v0.0.208):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
@@ -115,6 +115,7 @@
   - ✅ **libbsd-dev Fix**: Added libbsd-dev to ARM64 chroot environment installation
   - ❌ **Still Missing libbsd Linking**: Even with libbsd-dev installed, we need to explicitly link against it
   - ✅ **libbsd Linking Fix**: Added -lbsd back to ARM64 build command since libbsd-dev is now available
+  - ✅ **Comprehensive Package Installation**: Added all packages from native Linux setup (libxcb1-dev, libjpeg-dev, libpng-dev, libssl-dev, libcrypto++-dev, cmake, gdebi-core)
   - ✅ **Investigation Platform Switch**: Moved investigation back to GitHub Actions workflow from resource-constrained Linux AMD64 system. Buildlog.txt revealed ARM64 chroot setup failed with "No module named ensurepip" error.
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
@@ -311,8 +312,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.228 (Added -lbsd back to ARM64 build command - libbsd-dev is installed but we still need to link against it)
-- **Next**: Monitor workflow results for Linux ARM64 build success with libbsd linking
+- **Current Version:** v0.0.229 (Added comprehensive package installation to ARM64 chroot based on native Linux setup from BUILD_DOCKER_MANUAL.md)
+- **Next**: Monitor workflow results for Linux ARM64 build success with complete native Linux environment
 
 ### 🔄 FALLBACK APPROACH: Docker-Based Build System
 **Status**: Documented as fallback if current chroot approach exhausts all options

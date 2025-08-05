@@ -71,16 +71,21 @@ jobs:
           echo "Completing debootstrap process..."
           sudo chroot ./arm64-root ./debootstrap/debootstrap --second-stage
           
-          # Install ARM64 development tools and X11 libraries in the sysroot (Ubuntu equivalent of AWS Amazon Linux)
+          # Install ARM64 development tools and X11 libraries in the sysroot (matching native Linux setup)
           echo "Installing ARM64 development tools and X11 libraries in sysroot..."
           sudo chroot ./arm64-root apt update --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y build-essential gcc g++ make libc6-dev --allow-unauthenticated
-          # Ubuntu equivalent of AWS Amazon Linux X11 packages
+          # Core X11 packages (matching native Linux setup)
           sudo chroot ./arm64-root apt install -y x11-apps libx11-dev libxcursor-dev libxft-dev libxext-dev libxinerama-dev --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y libxrender-dev libxfixes-dev libfontconfig1-dev libfreetype6-dev --allow-unauthenticated
+          # Additional packages from native Linux setup
           sudo chroot ./arm64-root apt install -y perl tar --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y libgl1-mesa-dev libglu1-mesa-dev --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y libbsd-dev --allow-unauthenticated
+          # Additional packages that might be needed
+          sudo chroot ./arm64-root apt install -y libxcb1-dev libjpeg-dev libpng-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y libssl-dev libcrypto++-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y cmake gdebi-core --allow-unauthenticated
           # Note: Python setup will be done later when needed for testing
           
           echo "ARM64 native compilation environment setup completed"
