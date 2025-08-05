@@ -619,8 +619,6 @@ class GrapaBuilder:
             # Add -ljpeg for executable builds
             cmd.insert(-2, "-ljpeg")
             
-            print(f"Current working directory: {os.getcwd()}")
-            print(f"Executing executable build command: {' '.join(cmd)}")
             try:
                 # Use native ARM64 compilation in chroot for emulation
                 if is_arm64_emulation and arm64_libs_available:
@@ -658,6 +656,9 @@ class GrapaBuilder:
                     
                     # Add -ljpeg for executable builds
                     chroot_cmd.insert(-2, "-ljpeg")
+                    
+                    print(f"Current working directory: {os.getcwd()}")
+                    print(f"Executing ARM64 chroot build command: {' '.join(chroot_cmd)}")
                     
                     # Run native ARM64 compilation in chroot
                     chroot_bash_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(chroot_cmd)]
