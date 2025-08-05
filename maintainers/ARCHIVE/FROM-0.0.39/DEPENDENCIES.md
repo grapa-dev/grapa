@@ -6,14 +6,24 @@ tags:
   - dependencies
 ---
 
+
 # Source
 ## OpenSSL
 - https://github.com/openssl/openssl.git
 - https://www.openssl.org/source/openssl-1.1.1w.tar.gz
 
+cd dep/openssl-1.1.1w
+./config -fPIC -std=c++17 no-shared
+make
+
 ## FLTK
 - https://github.com/fltk/fltk.git
 - https://github.com/fltk/fltk/releases/download/release-1.3.11/fltk-1.3.11-source.tar.gz
+
+cd dep/fltk-1.3.11-source
+NOCONFIGURE=1 ./autogen.sh
+./configure --with-optim="-fPIC -std=c++17" --disable-shared
+make
 
 ## BLST
 - https://github.com/supranational/blst
@@ -25,6 +35,13 @@ tags:
 
 ## pcre2
 - https://github.com/PCRE2Project/pcre2/releases/tag/pcre2-10.45
+
+cd dep/pcre2-10.45
+rm -rf build_static
+mkdir build_static
+cd build_static
+cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
+make
 
 # win-amd64
 See https://stackoverflow.com/questions/45494630/how-to-build-openssl-on-windows-with-visual-studio-2017
@@ -208,7 +225,7 @@ sudo apt-get install libasound2-dev
 sudo apt-get install libxft-dev
 sudo apt-get install -y libfreetype-dev
 NOCONFIGURE=1 ./autogen.sh
-./configure --with-optim="-fPIC"
+./configure --with-optim="-fPIC" -std=c++17
 make
 sudo make install
 ```

@@ -49,89 +49,89 @@ Current directory: /home/runner/work/grapa/grapa
 Platform: linux-arm64
 /usr/bin/g++
 total 6472
-drwxr-xr-x  2 root root    4096 Aug  5 18:05 .
-drwxr-xr-x 10 root root    4096 Aug  5 18:05 ..
--rw-r--r--  1 root root 5579400 Aug  5 18:05 libcrypto.a
--rw-r--r--  1 root root 1034242 Aug  5 18:05 libssl.a
+drwxr-xr-x  2 root root    4096 Aug  5 18:32 .
+drwxr-xr-x 10 root root    4096 Aug  5 18:32 ..
+-rw-r--r--  1 root root 5579400 Aug  5 18:32 libcrypto.a
+-rw-r--r--  1 root root 1034242 Aug  5 18:32 libssl.a
 total 7788
-drwxr-xr-x  2 root root    4096 Aug  5 18:05 .
-drwxr-xr-x 10 root root    4096 Aug  5 18:05 ..
--rw-r--r--  1 root root 6354168 Aug  5 18:05 libfltk.a
--rw-r--r--  1 root root  174252 Aug  5 18:05 libfltk_forms.a
--rw-r--r--  1 root root  592250 Aug  5 18:05 libfltk_gl.a
--rw-r--r--  1 root root  265174 Aug  5 18:05 libfltk_images.a
--rw-r--r--  1 root root  573388 Aug  5 18:05 libfltk_jpeg.a
+drwxr-xr-x  2 root root    4096 Aug  5 18:32 .
+drwxr-xr-x 10 root root    4096 Aug  5 18:32 ..
+-rw-r--r--  1 root root 6354168 Aug  5 18:32 libfltk.a
+-rw-r--r--  1 root root  174252 Aug  5 18:32 libfltk_forms.a
+-rw-r--r--  1 root root  592250 Aug  5 18:32 libfltk_gl.a
+-rw-r--r--  1 root root  265174 Aug  5 18:32 libfltk_images.a
+-rw-r--r--  1 root root  573388 Aug  5 18:32 libfltk_jpeg.a
 total 252
-drwxr-xr-x  2 root root   4096 Aug  5 18:05 .
-drwxr-xr-x 10 root root   4096 Aug  5 18:05 ..
--rw-r--r--  1 root root 249460 Aug  5 18:05 libblst.a
+drwxr-xr-x  2 root root   4096 Aug  5 18:32 .
+drwxr-xr-x 10 root root   4096 Aug  5 18:32 ..
+-rw-r--r--  1 root root 249460 Aug  5 18:32 libblst.a
 total 504
-drwxr-xr-x 2 root root   4096 Aug  5 18:05 .
-drwxr-xr-x 9 root root   4096 Aug  5 18:05 ..
--rw-r--r-- 1 root root 504668 Aug  5 18:05 libpcre2-8.a
+drwxr-xr-x 2 root root   4096 Aug  5 18:32 .
+drwxr-xr-x 9 root root   4096 Aug  5 18:32 ..
+-rw-r--r-- 1 root root 504668 Aug  5 18:32 libpcre2-8.a
 total 2892
-drwxr-xr-x  2 root root   4096 Aug  5 18:05 .
-drwxr-xr-x 18 root root   4096 Aug  5 18:05 ..
--rw-r--r--  1 root root 110323 Aug  5 18:05 GrapaBtree.cpp
--rw-r--r--  1 root root  11592 Aug  5 18:05 GrapaBtree.h
--rw-r--r--  1 root root   6519 Aug  5 18:05 GrapaBtreeBlock.cpp
--rw-r--r--  1 root root   4640 Aug  5 18:05 GrapaBtreeBlock.h
--rw-r--r--  1 root root   3515 Aug  5 18:05 GrapaCompress.cpp
--rw-r--r--  1 root root    537 Aug  5 18:05 GrapaCompress.h
--rw-r--r--  1 root root   5022 Aug  5 18:05 GrapaConsole.cpp
--rw-r--r--  1 root root   1204 Aug  5 18:05 GrapaConsole.h
--rw-r--r--  1 root root  99766 Aug  5 18:05 GrapaDB.cpp
--rw-r--r--  1 root root  10184 Aug  5 18:05 GrapaDB.h
--rw-r--r--  1 root root  42223 Aug  5 18:05 GrapaDatabase.cpp
--rw-r--r--  1 root root   3184 Aug  5 18:05 GrapaDatabase.h
--rw-r--r--  1 root root  98385 Aug  5 18:05 GrapaEncode.cpp
--rw-r--r--  1 root root   1347 Aug  5 18:05 GrapaEncode.h
--rw-r--r--  1 root root   1279 Aug  5 18:05 GrapaFile.h
--rw-r--r--  1 root root  11354 Aug  5 18:05 GrapaFileCache.cpp
--rw-r--r--  1 root root   2281 Aug  5 18:05 GrapaFileCache.h
--rw-r--r--  1 root root   6922 Aug  5 18:05 GrapaFileIO.cpp
--rw-r--r--  1 root root   1084 Aug  5 18:05 GrapaFileIO.h
--rw-r--r--  1 root root   8963 Aug  5 18:05 GrapaFileTree.cpp
--rw-r--r--  1 root root   1731 Aug  5 18:05 GrapaFileTree.h
--rw-r--r--  1 root root  59297 Aug  5 18:05 GrapaFloat.cpp
--rw-r--r--  1 root root   4951 Aug  5 18:05 GrapaFloat.h
--rw-r--r--  1 root root  41158 Aug  5 18:05 GrapaGroup.cpp
--rw-r--r--  1 root root   5689 Aug  5 18:05 GrapaGroup.h
--rw-r--r--  1 root root   5220 Aug  5 18:05 GrapaHash.cpp
--rw-r--r--  1 root root   1472 Aug  5 18:05 GrapaHash.h
--rw-r--r--  1 root root  68703 Aug  5 18:05 GrapaInt.cpp
--rw-r--r--  1 root root   5603 Aug  5 18:05 GrapaInt.h
--rw-r--r--  1 root root 692728 Aug  5 18:05 GrapaLibRule.cpp
--rw-r--r--  1 root root  15126 Aug  5 18:05 GrapaLibRule.h
--rw-r--r--  1 root root  21521 Aug  5 18:05 GrapaLink.cpp
--rw-r--r--  1 root root    782 Aug  5 18:05 GrapaLink.h
--rw-r--r--  1 root root   9338 Aug  5 18:05 GrapaMem.h
--rw-r--r--  1 root root  49010 Aug  5 18:05 GrapaNet.cpp
--rw-r--r--  1 root root   2340 Aug  5 18:05 GrapaNet.h
--rw-r--r--  1 root root  22813 Aug  5 18:05 GrapaNetConnect.cpp
--rw-r--r--  1 root root   2068 Aug  5 18:05 GrapaNetConnect.h
--rw-r--r--  1 root root  10007 Aug  5 18:05 GrapaObject.cpp
--rw-r--r--  1 root root   6034 Aug  5 18:05 GrapaObject.h
--rw-r--r--  1 root root  52632 Aug  5 18:05 GrapaPrime.cpp
--rw-r--r--  1 root root   2190 Aug  5 18:05 GrapaPrime.h
--rw-r--r--  1 root root 219918 Aug  5 18:05 GrapaState.cpp
--rw-r--r--  1 root root  22585 Aug  5 18:05 GrapaState.h
--rw-r--r--  1 root root 704633 Aug  5 18:05 GrapaStaticLib.c
--rw-r--r--  1 root root  33837 Aug  5 18:05 GrapaSystem.cpp
--rw-r--r--  1 root root   6421 Aug  5 18:05 GrapaSystem.h
--rw-r--r--  1 root root  13255 Aug  5 18:05 GrapaThread.cpp
--rw-r--r--  1 root root   1185 Aug  5 18:05 GrapaThread.h
--rw-r--r--  1 root root   7455 Aug  5 18:05 GrapaTime.cpp
--rw-r--r--  1 root root   1027 Aug  5 18:05 GrapaTime.h
--rw-r--r--  1 root root   7301 Aug  5 18:05 GrapaTinyAES.cpp
--rw-r--r--  1 root root   1046 Aug  5 18:05 GrapaTinyAES.h
--rw-r--r--  1 root root    748 Aug  5 18:05 GrapaType.h
--rw-r--r--  1 root root  45481 Aug  5 18:05 GrapaValue.cpp
--rw-r--r--  1 root root   9994 Aug  5 18:05 GrapaValue.h
--rw-r--r--  1 root root  97441 Aug  5 18:05 GrapaVector.cpp
--rw-r--r--  1 root root   6581 Aug  5 18:05 GrapaVector.h
--rw-r--r--  1 root root 122385 Aug  5 18:05 GrapaWidget.cpp
--rw-r--r--  1 root root   4493 Aug  5 18:05 GrapaWidget.h
+drwxr-xr-x  2 root root   4096 Aug  5 18:32 .
+drwxr-xr-x 18 root root   4096 Aug  5 18:32 ..
+-rw-r--r--  1 root root 110323 Aug  5 18:32 GrapaBtree.cpp
+-rw-r--r--  1 root root  11592 Aug  5 18:32 GrapaBtree.h
+-rw-r--r--  1 root root   6519 Aug  5 18:32 GrapaBtreeBlock.cpp
+-rw-r--r--  1 root root   4640 Aug  5 18:32 GrapaBtreeBlock.h
+-rw-r--r--  1 root root   3515 Aug  5 18:32 GrapaCompress.cpp
+-rw-r--r--  1 root root    537 Aug  5 18:32 GrapaCompress.h
+-rw-r--r--  1 root root   5022 Aug  5 18:32 GrapaConsole.cpp
+-rw-r--r--  1 root root   1204 Aug  5 18:32 GrapaConsole.h
+-rw-r--r--  1 root root  99766 Aug  5 18:32 GrapaDB.cpp
+-rw-r--r--  1 root root  10184 Aug  5 18:32 GrapaDB.h
+-rw-r--r--  1 root root  42223 Aug  5 18:32 GrapaDatabase.cpp
+-rw-r--r--  1 root root   3184 Aug  5 18:32 GrapaDatabase.h
+-rw-r--r--  1 root root  98385 Aug  5 18:32 GrapaEncode.cpp
+-rw-r--r--  1 root root   1347 Aug  5 18:32 GrapaEncode.h
+-rw-r--r--  1 root root   1279 Aug  5 18:32 GrapaFile.h
+-rw-r--r--  1 root root  11354 Aug  5 18:32 GrapaFileCache.cpp
+-rw-r--r--  1 root root   2281 Aug  5 18:32 GrapaFileCache.h
+-rw-r--r--  1 root root   6922 Aug  5 18:32 GrapaFileIO.cpp
+-rw-r--r--  1 root root   1084 Aug  5 18:32 GrapaFileIO.h
+-rw-r--r--  1 root root   8963 Aug  5 18:32 GrapaFileTree.cpp
+-rw-r--r--  1 root root   1731 Aug  5 18:32 GrapaFileTree.h
+-rw-r--r--  1 root root  59297 Aug  5 18:32 GrapaFloat.cpp
+-rw-r--r--  1 root root   4951 Aug  5 18:32 GrapaFloat.h
+-rw-r--r--  1 root root  41158 Aug  5 18:32 GrapaGroup.cpp
+-rw-r--r--  1 root root   5689 Aug  5 18:32 GrapaGroup.h
+-rw-r--r--  1 root root   5220 Aug  5 18:32 GrapaHash.cpp
+-rw-r--r--  1 root root   1472 Aug  5 18:32 GrapaHash.h
+-rw-r--r--  1 root root  68703 Aug  5 18:32 GrapaInt.cpp
+-rw-r--r--  1 root root   5603 Aug  5 18:32 GrapaInt.h
+-rw-r--r--  1 root root 692728 Aug  5 18:32 GrapaLibRule.cpp
+-rw-r--r--  1 root root  15126 Aug  5 18:32 GrapaLibRule.h
+-rw-r--r--  1 root root  21521 Aug  5 18:32 GrapaLink.cpp
+-rw-r--r--  1 root root    782 Aug  5 18:32 GrapaLink.h
+-rw-r--r--  1 root root   9338 Aug  5 18:32 GrapaMem.h
+-rw-r--r--  1 root root  49010 Aug  5 18:32 GrapaNet.cpp
+-rw-r--r--  1 root root   2340 Aug  5 18:32 GrapaNet.h
+-rw-r--r--  1 root root  22813 Aug  5 18:32 GrapaNetConnect.cpp
+-rw-r--r--  1 root root   2068 Aug  5 18:32 GrapaNetConnect.h
+-rw-r--r--  1 root root  10007 Aug  5 18:32 GrapaObject.cpp
+-rw-r--r--  1 root root   6034 Aug  5 18:32 GrapaObject.h
+-rw-r--r--  1 root root  52632 Aug  5 18:32 GrapaPrime.cpp
+-rw-r--r--  1 root root   2190 Aug  5 18:32 GrapaPrime.h
+-rw-r--r--  1 root root 219918 Aug  5 18:32 GrapaState.cpp
+-rw-r--r--  1 root root  22585 Aug  5 18:32 GrapaState.h
+-rw-r--r--  1 root root 704633 Aug  5 18:32 GrapaStaticLib.c
+-rw-r--r--  1 root root  33837 Aug  5 18:32 GrapaSystem.cpp
+-rw-r--r--  1 root root   6421 Aug  5 18:32 GrapaSystem.h
+-rw-r--r--  1 root root  13255 Aug  5 18:32 GrapaThread.cpp
+-rw-r--r--  1 root root   1185 Aug  5 18:32 GrapaThread.h
+-rw-r--r--  1 root root   7455 Aug  5 18:32 GrapaTime.cpp
+-rw-r--r--  1 root root   1027 Aug  5 18:32 GrapaTime.h
+-rw-r--r--  1 root root   7301 Aug  5 18:32 GrapaTinyAES.cpp
+-rw-r--r--  1 root root   1046 Aug  5 18:32 GrapaTinyAES.h
+-rw-r--r--  1 root root    748 Aug  5 18:32 GrapaType.h
+-rw-r--r--  1 root root  45481 Aug  5 18:32 GrapaValue.cpp
+-rw-r--r--  1 root root   9994 Aug  5 18:32 GrapaValue.h
+-rw-r--r--  1 root root  97441 Aug  5 18:32 GrapaVector.cpp
+-rw-r--r--  1 root root   6581 Aug  5 18:32 GrapaVector.h
+-rw-r--r--  1 root root 122385 Aug  5 18:32 GrapaWidget.cpp
+-rw-r--r--  1 root root   4493 Aug  5 18:32 GrapaWidget.h
 Using explicit target platform: linux-arm64
 Building for linux arm64
 Building Grapa for linux-arm64...
@@ -150,8 +150,8 @@ Copying library files into ARM64 chroot...
 === DEBUG: Checking chroot environment ===
 === END DEBUG ===
 Current working directory: /home/runner/work/grapa/grapa
-Executing ARM64 chroot build command: g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/*.cpp source/utf8proc/utf8proc.c /source/openssl-lib/linux-arm64/*.a /source/fl-lib/linux-arm64/*.a /source/blst-lib/linux-arm64/*.a /source/pcre2-lib/linux-arm64/libpcre2-8.a -L/source/openssl-lib/linux-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -lbsd -ldl -lm -static-libgcc -O3 -pthread -o grapa
-Running native ARM64 compilation: sudo chroot ./arm64-root bash -c g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/*.cpp source/utf8proc/utf8proc.c /source/openssl-lib/linux-arm64/*.a /source/fl-lib/linux-arm64/*.a /source/blst-lib/linux-arm64/*.a /source/pcre2-lib/linux-arm64/libpcre2-8.a -L/source/openssl-lib/linux-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -lbsd -ldl -lm -static-libgcc -O3 -pthread -o grapa
+Executing ARM64 chroot build command: g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/*.cpp source/utf8proc/utf8proc.c /source/openssl-lib/linux-arm64/*.a /source/fl-lib/linux-arm64/*.a /source/blst-lib/linux-arm64/*.a /source/pcre2-lib/linux-arm64/libpcre2-8.a -L/source/openssl-lib/linux-arm64 -std=c++23 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -lbsd -ldl -lm -static-libgcc -O3 -pthread -o grapa
+Running native ARM64 compilation: sudo chroot ./arm64-root bash -c g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/*.cpp source/utf8proc/utf8proc.c /source/openssl-lib/linux-arm64/*.a /source/fl-lib/linux-arm64/*.a /source/blst-lib/linux-arm64/*.a /source/pcre2-lib/linux-arm64/libpcre2-8.a -L/source/openssl-lib/linux-arm64 -std=c++23 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -lbsd -ldl -lm -static-libgcc -O3 -pthread -o grapa
 ❌ Build failed with exit code 1
 STDOUT: 
 STDERR: /usr/bin/ld: /source/openssl-lib/linux-arm64/libcrypto.a(rand_unix.o): in function `wait_random_seeded':
@@ -176,7 +176,7 @@ Fl_Pixmap.cxx:(.text._ZN9Fl_Pixmap10desaturateEv+0x70): undefined reference to `
 /usr/bin/ld: /source/fl-lib/linux-arm64/libfltk.a(Fl_XBM_Image.o):Fl_XBM_Image.cxx:(.text._ZN12Fl_XBM_ImageC2EPKc+0xec): more undefined references to `__isoc23_sscanf' follow
 collect2: error: ld returned 1 exit status
 
-❌ Build failed: Command '['sudo', 'chroot', './arm64-root', 'bash', '-c', 'g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/*.cpp source/utf8proc/utf8proc.c /source/openssl-lib/linux-arm64/*.a /source/fl-lib/linux-arm64/*.a /source/blst-lib/linux-arm64/*.a /source/pcre2-lib/linux-arm64/libpcre2-8.a -L/source/openssl-lib/linux-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -lbsd -ldl -lm -static-libgcc -O3 -pthread -o grapa']' returned non-zero exit status 1.
+❌ Build failed: Command '['sudo', 'chroot', './arm64-root', 'bash', '-c', 'g++ -Isource -DUTF8PROC_STATIC source/main.cpp source/grapa/*.cpp source/utf8proc/utf8proc.c /source/openssl-lib/linux-arm64/*.a /source/fl-lib/linux-arm64/*.a /source/blst-lib/linux-arm64/*.a /source/pcre2-lib/linux-arm64/libpcre2-8.a -L/source/openssl-lib/linux-arm64 -std=c++23 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -lbsd -ldl -lm -static-libgcc -O3 -pthread -o grapa']' returned non-zero exit status 1.
 Libraries build failed: Build failed with exit code 1
 Cleaning build artifacts...
 Removing arm64-root/usr/share/python3/__pycache__...
