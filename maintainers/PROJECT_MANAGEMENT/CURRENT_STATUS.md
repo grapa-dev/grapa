@@ -68,9 +68,14 @@
 ## 🎯 NEXT STEPS
 
 1. **Monitor v0.0.232 workflow** for Linux ARM64 build success
-2. **Verify all 5 platforms** build successfully (Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64)
-3. **Confirm PyPI deployment** completes without errors
-4. **Validate all artifacts** are properly committed and packaged
+2. **Implement Simple Version Validation** for 3 non-cross-compilation runners:
+   - **Windows AMD64**: `./grapa.exe -c "\$sys().getenv(\$VERSION)"`
+   - **Linux AMD64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
+   - **macOS ARM64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
+   - **Python**: `import grapapy; print(grapapy.__version__)`
+3. **Verify all 5 platforms** build successfully (Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64)
+4. **Confirm PyPI deployment** completes without errors
+5. **Validate all artifacts** are properly committed and packaged
 
 ---
 
