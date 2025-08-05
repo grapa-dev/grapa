@@ -4,54 +4,54 @@ Current directory: /home/runner/work/grapa/grapa
 Platform: linux-arm64
 /usr/bin/g++
 total 6472
-drwxr-xr-x  2 root root    4096 Aug  5 17:02 .
-drwxr-xr-x 10 root root    4096 Aug  5 17:02 ..
--rw-r--r--  1 root root 5579400 Aug  5 17:02 libcrypto.a
--rw-r--r--  1 root root 1034242 Aug  5 17:02 libssl.a
+drwxr-xr-x  2 root root    4096 Aug  5 17:24 .
+drwxr-xr-x 10 root root    4096 Aug  5 17:24 ..
+-rw-r--r--  1 root root 5579400 Aug  5 17:24 libcrypto.a
+-rw-r--r--  1 root root 1034242 Aug  5 17:24 libssl.a
 total 7788
-drwxr-xr-x  2 root root    4096 Aug  5 17:02 .
-drwxr-xr-x 10 root root    4096 Aug  5 17:02 ..
--rw-r--r--  1 root root 6354168 Aug  5 17:02 libfltk.a
--rw-r--r--  1 root root  174252 Aug  5 17:02 libfltk_forms.a
--rw-r--r--  1 root root  592250 Aug  5 17:02 libfltk_gl.a
--rw-r--r--  1 root root  265174 Aug  5 17:02 libfltk_images.a
--rw-r--r--  1 root root  573388 Aug  5 17:02 libfltk_jpeg.a
+drwxr-xr-x  2 root root    4096 Aug  5 17:24 .
+drwxr-xr-x 10 root root    4096 Aug  5 17:24 ..
+-rw-r--r--  1 root root 6354168 Aug  5 17:24 libfltk.a
+-rw-r--r--  1 root root  174252 Aug  5 17:24 libfltk_forms.a
+-rw-r--r--  1 root root  592250 Aug  5 17:24 libfltk_gl.a
+-rw-r--r--  1 root root  265174 Aug  5 17:24 libfltk_images.a
+-rw-r--r--  1 root root  573388 Aug  5 17:24 libfltk_jpeg.a
 total 252
-drwxr-xr-x  2 root root   4096 Aug  5 17:02 .
-drwxr-xr-x 10 root root   4096 Aug  5 17:02 ..
--rw-r--r--  1 root root 249460 Aug  5 17:02 libblst.a
+drwxr-xr-x  2 root root   4096 Aug  5 17:24 .
+drwxr-xr-x 10 root root   4096 Aug  5 17:24 ..
+-rw-r--r--  1 root root 249460 Aug  5 17:24 libblst.a
 total 504
-drwxr-xr-x 2 root root   4096 Aug  5 17:02 .
-drwxr-xr-x 9 root root   4096 Aug  5 17:02 ..
--rw-r--r-- 1 root root 504668 Aug  5 17:02 libpcre2-8.a
+drwxr-xr-x 2 root root   4096 Aug  5 17:24 .
+drwxr-xr-x 9 root root   4096 Aug  5 17:24 ..
+-rw-r--r-- 1 root root 504668 Aug  5 17:24 libpcre2-8.a
 total 2892
-drwxr-xr-x  2 root root   4096 Aug  5 17:02 .
-drwxr-xr-x 18 root root   4096 Aug  5 17:02 ..
--rw-r--r--  1 root root 110323 Aug  5 17:02 GrapaBtree.cpp
--rw-r--r--  1 root root  11592 Aug  5 17:02 GrapaBtree.h
--rw-r--r--  1 root root   6519 Aug  5 17:02 GrapaBtreeBlock.cpp
--rw-r--r--  1 root root   4640 Aug  5 17:02 GrapaBtreeBlock.h
--rw-r--r--  1 root root   3515 Aug  5 17:02 GrapaCompress.cpp
--rw-r--r--  1 root root    537 Aug  5 17:02 GrapaCompress.h
--rw-r--r--  1 root root   5022 Aug  5 17:02 GrapaConsole.cpp
--rw-r--r--  1 root root   1204 Aug  5 17:02 GrapaConsole.h
--rw-r--r--  1 root root  99766 Aug  5 17:02 GrapaDB.cpp
--rw-r--r--  1 root root  10184 Aug  5 17:02 GrapaDB.h
--rw-r--r--  1 root root  42223 Aug  5 17:02 GrapaDatabase.cpp
--rw-r--r--  1 root root   3184 Aug  5 17:02 GrapaDatabase.h
--rw-r--r--  1 root root  98385 Aug  5 17:02 GrapaEncode.cpp
--rw-r--r--  1 root root   1347 Aug  5 17:02 GrapaEncode.h
--rw-r--r--  1 root root   1279 Aug  5 17:02 GrapaFile.h
--rw-r--r--  1 root root  11354 Aug  5 17:02 GrapaFileCache.cpp
--rw-r--r--  1 root root   2281 Aug  5 17:02 GrapaFileCache.h
--rw-r--r--  1 root root   6922 Aug  5 17:02 GrapaFileIO.cpp
--rw-r--r--  1 root root   1084 Aug  5 17:02 GrapaFileIO.h
--rw-r--r--  1 root root   8963 Aug  5 17:02 GrapaFileTree.cpp
--rw-r--r--  1 root root   1731 Aug  5 17:02 GrapaFileTree.h
--rw-r--r--  1 root root  59297 Aug  5 17:02 GrapaFloat.cpp
--rw-r--r--  1 root root   4951 Aug  5 17:02 GrapaFloat.h
--rw-r--r--  1 root root  41158 Aug  5 17:02 GrapaGroup.cpp
--rw-r--r--  1 root root   5689 Aug  5 17:02 GrapaGroup.h
+drwxr-xr-x  2 root root   4096 Aug  5 17:24 .
+drwxr-xr-x 18 root root   4096 Aug  5 17:24 ..
+-rw-r--r--  1 root root 110323 Aug  5 17:24 GrapaBtree.cpp
+-rw-r--r--  1 root root  11592 Aug  5 17:24 GrapaBtree.h
+-rw-r--r--  1 root root   6519 Aug  5 17:24 GrapaBtreeBlock.cpp
+-rw-r--r--  1 root root   4640 Aug  5 17:24 GrapaBtreeBlock.h
+-rw-r--r--  1 root root   3515 Aug  5 17:24 GrapaCompress.cpp
+-rw-r--r--  1 root root    537 Aug  5 17:24 GrapaCompress.h
+-rw-r--r--  1 root root   5022 Aug  5 17:24 GrapaConsole.cpp
+-rw-r--r--  1 root root   1204 Aug  5 17:24 GrapaConsole.h
+-rw-r--r--  1 root root  99766 Aug  5 17:24 GrapaDB.cpp
+-rw-r--r--  1 root root  10184 Aug  5 17:24 GrapaDB.h
+-rw-r--r--  1 root root  42223 Aug  5 17:24 GrapaDatabase.cpp
+-rw-r--r--  1 root root   3184 Aug  5 17:24 GrapaDatabase.h
+-rw-r--r--  1 root root  98385 Aug  5 17:24 GrapaEncode.cpp
+-rw-r--r--  1 root root   1347 Aug  5 17:24 GrapaEncode.h
+-rw-r--r--  1 root root   1279 Aug  5 17:24 GrapaFile.h
+-rw-r--r--  1 root root  11354 Aug  5 17:24 GrapaFileCache.cpp
+-rw-r--r--  1 root root   2281 Aug  5 17:24 GrapaFileCache.h
+-rw-r--r--  1 root root   6922 Aug  5 17:24 GrapaFileIO.cpp
+-rw-r--r--  1 root root   1084 Aug  5 17:24 GrapaFileIO.h
+-rw-r--r--  1 root root   8963 Aug  5 17:24 GrapaFileTree.cpp
+-rw-r--r--  1 root root   1731 Aug  5 17:24 GrapaFileTree.h
+-rw-r--r--  1 root root  59297 Aug  5 17:24 GrapaFloat.cpp
+-rw-r--r--  1 root root   4951 Aug  5 17:24 GrapaFloat.h
+-rw-r--r--  1 root root  41158 Aug  5 17:24 GrapaGroup.cpp
+-rw-r--r--  1 root root   5689 Aug  5 17:24 GrapaGroup.h
 === DEBUG: Checking chroot environment ===
 === END DEBUG ===
 Current working directory: /home/runner/work/grapa/grapa
