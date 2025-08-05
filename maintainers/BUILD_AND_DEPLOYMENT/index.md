@@ -13,6 +13,7 @@ This directory contains all build system and deployment documentation for the Gr
 
 ### **🎯 Single Source of Truth**
 - **[BUILD_SYSTEM.md](BUILD_SYSTEM.md)** - **COMPREHENSIVE**: Complete build system reference with all platform instructions, dependencies, and testing commands
+- **[THIRD_PARTY_LIBRARY_BUILD_GUIDE.md](THIRD_PARTY_LIBRARY_BUILD_GUIDE.md)** - **COMPREHENSIVE**: Complete guide for building third-party libraries across all platforms
 
 ## 🚀 **Deployment**
 
