@@ -643,9 +643,9 @@ class GrapaBuilder:
                     
                     # Build command with chroot-relative paths (matching working command exactly)
                     chroot_cmd = [
-                        gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
-                    ] + cpp_files + ["source/utf8proc/utf8proc.c"] + chroot_openssl_libs + chroot_fl_libs + chroot_blst_libs + chroot_pcre2_lib + [
-                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name, "-ljpeg"
+                        gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp", "source/grapa/*.cpp", "source/utf8proc/utf8proc.c",
+                        f"/source/openssl-lib/{config.target}/*.a", f"/source/fl-lib/{config.target}/*.a", f"/source/blst-lib/{config.target}/*.a", f"/source/pcre2-lib/{config.target}/libpcre2-8.a",
+                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name
                     ]
                     
                     print(f"Current working directory: {os.getcwd()}")
