@@ -90,7 +90,7 @@ jobs:
           # Install GCC 13+ for C++23 support
           echo "Installing GCC 13+ for C++23 support..."
           sudo chroot ./arm64-root apt install -y software-properties-common --allow-unauthenticated
-          sudo chroot ./arm64-root add-apt-repository ppa:ubuntu-toolchain-r/test --allow-unauthenticated
+          sudo chroot ./arm64-root add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo chroot ./arm64-root apt update --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y gcc-13 g++-13 --allow-unauthenticated
           
