@@ -69,9 +69,9 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.206 CI/CD run to verify PyPI deployment success and artifact debugging
+- **Testing**: Monitoring v0.0.207 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
-- **Latest Fixes Applied** (v0.0.194 through v0.0.206):
+- **Latest Fixes Applied** (v0.0.194 through v0.0.207):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
   - ✅ **Native ARM64 Compilation**: Linux ARM64 uses QEMU emulation instead of cross-compilation
   - ✅ **Fully Static Libraries**: Static libraries include all dependencies (OpenSSL, FLTK, BLST, PCRE2)
@@ -91,6 +91,7 @@
   - ✅ **GitHub CLI Token Error Fix**: Removed problematic `gh run list` command that was causing authentication failures
   - ✅ **Second Python Indentation Error Fix**: Fixed another incorrect indentation in build.py on line 616
   - ✅ **Linux ARM64 Additional Libraries Fix**: Added `libxml2-dev` to ARM64 sysroot for XML dependencies
+  - ✅ **Linux ARM64 Build Command Alignment**: Updated build commands to match working approach with `-static-libgcc` flag
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
 ### Artifact Collection Issue - ✅ RESOLVED
@@ -257,8 +258,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.206 (Linux ARM64 missing shared libraries + C++17 compatibility fix - workflow now running)
-- **Next**: Monitor v0.0.206 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
+- **Current Version:** v0.0.207 (Linux ARM64 build command alignment with working approach - workflow now running)
+- **Next**: Monitor v0.0.207 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working

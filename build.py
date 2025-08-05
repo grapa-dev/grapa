@@ -561,8 +561,8 @@ class GrapaBuilder:
                     "-lcrypto"
                 ] + system_libs
                 
-                # Add -static-libgcc for ARM64 builds (matching working command)
-                if is_arm64_emulation:
+                # Add -static-libgcc for Linux builds (matching working command)
+                if config.platform == "linux":
                     cmd.extend(["-static-libgcc"])
                 
                 # Add -ljpeg for shared library builds
@@ -582,9 +582,9 @@ class GrapaBuilder:
                     else:
                         subprocess.run(cmd, check=True)
                 
-                # Ensure the grapa-other directory exists
-                os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
-                shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
+                # Ensure the grapa-lib directory exists (matching working approach)
+                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
             # Build executable - match AWS pattern exactly
@@ -612,8 +612,8 @@ class GrapaBuilder:
                 "-lcrypto"
             ] + system_libs
             
-            # Add -static-libgcc for ARM64 builds (matching working command)
-            if is_arm64_emulation:
+            # Add -static-libgcc for Linux builds (matching working command)
+            if config.platform == "linux":
                 cmd.extend(["-static-libgcc"])
             
             # Add -ljpeg for executable builds
