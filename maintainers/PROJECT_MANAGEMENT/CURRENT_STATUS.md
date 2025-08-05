@@ -69,7 +69,7 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.224 workflow results for Linux ARM64 build success with simplified ARM64 chroot setup (no Python during build)
+- **Testing**: Monitoring v0.0.225 workflow results for Linux ARM64 build success with libbsd fix
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 - **Latest Fixes Applied** (v0.0.194 through v0.0.208):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
@@ -108,6 +108,9 @@
   - ✅ **ARM64 Chroot Progress**: v0.0.223 workflow shows ARM64 chroot setup progressing much further - build tools (gcc, g++) installing successfully, X11 libraries working with AWS→Ubuntu mapping
   - ❌ **Python ensurepip Issue**: ARM64 chroot still failing with "No module named ensurepip" error, preventing environment setup completion
   - ✅ **Python ensurepip Fix**: Removed Python setup from ARM64 chroot since it's not needed for the build step, only for later testing
+  - ✅ **ARM64 Chroot Success**: v0.0.224 workflow shows ARM64 chroot setup working perfectly - no more ensurepip errors, build tools and X11 libraries installing successfully
+  - ❌ **libbsd Linker Error**: ARM64 build failing with "undefined reference to symbol 'strlcat@@LIBBSD_0.0'" - need to add -lbsd
+  - ✅ **libbsd Fix**: Added -lbsd to ARM64 chroot build command to resolve FLTK dependency
   - ✅ **Investigation Platform Switch**: Moved investigation back to GitHub Actions workflow from resource-constrained Linux AMD64 system. Buildlog.txt revealed ARM64 chroot setup failed with "No module named ensurepip" error.
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
@@ -304,8 +307,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.224 (Fixed Python ensurepip issue by removing Python setup from ARM64 chroot - not needed for build step)
-- **Next**: Monitor workflow results for Linux ARM64 build success with simplified ARM64 chroot setup
+- **Current Version:** v0.0.225 (Fixed libbsd linker error by adding -lbsd to ARM64 chroot build command)
+- **Next**: Monitor workflow results for Linux ARM64 build success with libbsd fix
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working

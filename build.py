@@ -686,7 +686,7 @@ class GrapaBuilder:
                     chroot_cmd = [
                         gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp", "source/grapa/*.cpp", "source/utf8proc/utf8proc.c",
                         f"/source/openssl-lib/{config.target}/*.a", f"/source/fl-lib/{config.target}/*.a", f"/source/blst-lib/{config.target}/*.a", f"/source/pcre2-lib/{config.target}/libpcre2-8.a",
-                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name
+                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-lbsd", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name
                     ]
                     
                     print(f"Current working directory: {os.getcwd()}")
