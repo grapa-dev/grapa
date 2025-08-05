@@ -624,10 +624,45 @@ class GrapaBuilder:
             try:
                 # Use native ARM64 compilation in chroot for emulation
                 if is_arm64_emulation and arm64_libs_available:
+                    # Copy library files into chroot environment
+                    print("Copying library files into ARM64 chroot...")
+                    subprocess.run(["sudo", "cp", "-r", "source/openssl-lib", "./arm64-root/source/"], check=True)
+                    subprocess.run(["sudo", "cp", "-r", "source/fl-lib", "./arm64-root/source/"], check=True)
+                    subprocess.run(["sudo", "cp", "-r", "source/blst-lib", "./arm64-root/source/"], check=True)
+                    subprocess.run(["sudo", "cp", "-r", "source/pcre2-lib", "./arm64-root/source/"], check=True)
+                    
+                    # Update library paths to use chroot-relative paths
+                    openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
+                    fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+                    blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
+                    pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
+                    
+                    # Convert to chroot-relative paths
+                    chroot_openssl_libs = [lib.replace("source/", "/source/") for lib in openssl_libs]
+                    chroot_fl_libs = [lib.replace("source/", "/source/") for lib in fl_libs]
+                    chroot_blst_libs = [lib.replace("source/", "/source/") for lib in blst_libs]
+                    chroot_pcre2_lib = [lib.replace("source/", "/source/") for lib in pcre2_lib]
+                    
+                    # Build command with chroot-relative paths
+                    chroot_cmd = [
+                        gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
+                    ] + cpp_files + ["source/utf8proc/utf8proc.c"] + chroot_openssl_libs + chroot_fl_libs + chroot_blst_libs + chroot_pcre2_lib + [
+                        f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
+                    ] + cross_flags + [
+                        "-lcrypto"
+                    ] + system_libs
+                    
+                    # Add -static-libgcc for Linux builds (matching working command)
+                    if config.platform == "linux":
+                        chroot_cmd.extend(["-static-libgcc"])
+                    
+                    # Add -ljpeg for executable builds
+                    chroot_cmd.insert(-2, "-ljpeg")
+                    
                     # Run native ARM64 compilation in chroot
-                    chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cmd)]
-                    print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
-                    subprocess.run(chroot_cmd, check=True)
+                    chroot_bash_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(chroot_cmd)]
+                    print(f"Running native ARM64 compilation: {' '.join(chroot_bash_cmd)}")
+                    subprocess.run(chroot_bash_cmd, check=True)
                 else:
                     # Use diagnostic function for cross-compilation or regular compilation
                     if is_arm64_emulation:
