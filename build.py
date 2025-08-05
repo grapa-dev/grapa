@@ -433,12 +433,9 @@ class GrapaBuilder:
                 print(f"Using ARM64 sysroot at: {sysroot_path}")
                 # Use native ARM64 compilation in emulation
                 cross_compiler_prefix = ""  # Use native ARM64 compiler in chroot
-                cross_flags = [
-                    f"--sysroot={sysroot_path}",
-                    "-I" + os.path.join(sysroot_path, "usr/include"),
-                    "-L" + os.path.join(sysroot_path, "usr/lib/aarch64-linux-gnu"),
-                    "-L" + os.path.join(sysroot_path, "lib/aarch64-linux-gnu")
-                ]
+                # For native ARM64 compilation in chroot, we don't need --sysroot or include paths
+                # since we're already running inside the ARM64 environment
+                cross_flags = []
                 arm64_libs_available = True
                 print("ARM64 native compilation in emulation available")
             else:
@@ -471,7 +468,29 @@ class GrapaBuilder:
         if is_arm64_emulation and arm64_libs_available:
             # Copy source files into chroot for native compilation
             print("Copying source files into ARM64 chroot...")
-            subprocess.run(["sudo", "cp", "-r", "source", "./arm64-root/"], check=True)
+            # Only copy the source code directories, not the pre-built libraries
+            subprocess.run(["sudo", "mkdir", "-p", "./arm64-root/source"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/grapa", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/utf8proc", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/FL", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/blst", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/openssl", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/pcre2", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/pybind11", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/X11", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/tiny-AES-c-master", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/miniz-master", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/work", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "-r", "source/grep", "./arm64-root/source/"], check=True)
+            # Copy the main source files
+            subprocess.run(["sudo", "cp", "source/main.cpp", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "source/maindebug.cpp", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "source/mainpy.cpp", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "source/mainpy_minimal.cpp", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "source/stdafx.cpp", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "source/stdafx.h", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "source/targetver.h", "./arm64-root/source/"], check=True)
+            subprocess.run(["sudo", "cp", "source/Keccakreadableandcompact.c", "./arm64-root/source/"], check=True)
             
             # Step 1: Compile utf8proc.c with gcc inside chroot
             utf8proc_chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(utf8proc_cmd)]
@@ -549,9 +568,9 @@ class GrapaBuilder:
                 
                 # For shared library, use dynamic linking (no -static-libgcc)
                 if is_arm64_emulation:
-                    # For native ARM64 compilation in emulation, use X11 libraries from sysroot with libbsd
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
+                    # For ARM64 cross-compilation, skip GUI dependencies (headless build for Python extension)
+                    print("Using headless build for ARM64 cross-compilation (no GUI dependencies)")
+                    system_libs = ["-ldl", "-lm"]
                 else:
                     # For native builds, use dynamic linking without libbsd (not needed for AMD64)
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
@@ -567,8 +586,9 @@ class GrapaBuilder:
                 if config.platform == "linux":
                     cmd.extend(["-static-libgcc"])
                 
-                # Add -ljpeg for shared library builds
-                cmd.insert(-2, "-ljpeg")
+                # Add -ljpeg for shared library builds (skip for ARM64 cross-compilation)
+                if not is_arm64_emulation:
+                    cmd.insert(-2, "-ljpeg")
                 
                 # Execute shared library build
                 print(f"Executing shared library build command: {' '.join(cmd)}")
@@ -598,9 +618,9 @@ class GrapaBuilder:
             
             # For executable build, use static linking for cross-compilation, dynamic for native
             if is_arm64_emulation:
-                # For native ARM64 compilation in emulation, use dynamic linking with libbsd
-                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm"]
+                # For ARM64 cross-compilation, skip GUI dependencies (headless build for Python extension)
+                print("Using headless build for ARM64 cross-compilation (no GUI dependencies)")
+                system_libs = ["-ldl", "-lm"]
             else:
                 # For native builds, use dynamic linking without libbsd (not needed for AMD64)
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
@@ -620,8 +640,9 @@ class GrapaBuilder:
             if config.platform == "linux":
                 cmd.extend(["-static-libgcc"])
             
-            # Add -ljpeg for executable builds
-            cmd.insert(-2, "-ljpeg")
+            # Add -ljpeg for executable builds (skip for ARM64 cross-compilation)
+            if not is_arm64_emulation:
+                cmd.insert(-2, "-ljpeg")
             
             try:
                 # Use native ARM64 compilation in chroot for emulation
@@ -635,7 +656,7 @@ class GrapaBuilder:
                     
                     # Debug: Check what's available in chroot
                     print("=== DEBUG: Checking chroot environment ===")
-                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "which g++"], check=True)
+                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls /usr/bin/g++"], check=True)
                     subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/openssl-lib/linux-arm64/"], check=True)
                     subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/fl-lib/linux-arm64/"], check=True)
                     subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/blst-lib/linux-arm64/"], check=True)
