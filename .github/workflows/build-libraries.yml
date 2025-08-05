@@ -80,6 +80,7 @@ jobs:
           sudo chroot ./arm64-root apt install -y libxrender-dev libxfixes-dev libfontconfig1-dev libfreetype6-dev --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y perl tar --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y libgl1-mesa-dev libglu1-mesa-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y libbsd-dev --allow-unauthenticated
           # Note: Python setup will be done later when needed for testing
           
           echo "ARM64 native compilation environment setup completed"

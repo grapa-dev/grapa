@@ -69,7 +69,7 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.226 workflow results for Linux ARM64 build success with exact working command
+- **Testing**: Monitoring v0.0.227 workflow results for Linux ARM64 build success with libbsd-dev installed
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 - **Latest Fixes Applied** (v0.0.194 through v0.0.208):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
@@ -111,6 +111,8 @@
   - ✅ **ARM64 Chroot Success**: v0.0.224 workflow shows ARM64 chroot setup working perfectly - no more ensurepip errors, build tools and X11 libraries installing successfully
   - ❌ **libbsd Linker Error**: ARM64 build failing with "undefined reference to symbol 'strlcat@@LIBBSD_0.0'" - need to add -lbsd
   - ✅ **Exact Working Command**: Updated ARM64 build command to match user's proven working command - removed -lbsd, added -lXfixes, reordered libraries
+  - ❌ **Missing libbsd in ARM64 Environment**: Build failing because libbsd-dev not installed in ARM64 chroot
+  - ✅ **libbsd-dev Fix**: Added libbsd-dev to ARM64 chroot environment installation
   - ✅ **Investigation Platform Switch**: Moved investigation back to GitHub Actions workflow from resource-constrained Linux AMD64 system. Buildlog.txt revealed ARM64 chroot setup failed with "No module named ensurepip" error.
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
@@ -307,8 +309,40 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.226 (Using exact working command for Linux ARM64 - removed -lbsd, added -lXfixes, reordered libraries)
-- **Next**: Monitor workflow results for Linux ARM64 build success with proven working command
+- **Current Version:** v0.0.227 (Added libbsd-dev to ARM64 chroot environment - exact working command is correct, but environment was missing libbsd)
+- **Next**: Monitor workflow results for Linux ARM64 build success with complete ARM64 environment
+
+### 🔄 FALLBACK APPROACH: Docker-Based Build System
+**Status**: Documented as fallback if current chroot approach exhausts all options
+
+**Linux ARM64 Docker Approach:**
+- **Strategy**: Preconfigured ARM64 Ubuntu Docker container with all build dependencies
+- **Local Development**: Can be developed and tested from Mac platform using Docker Desktop ARM64 emulation
+- **Implementation**: Dockerfile in `.github/docker/arm64-build/` with build script
+- **Advantages**: 
+  - Consistent environment across all runners
+  - Local debugging capability
+  - Version-controlled build environment
+  - No dependency on runner-specific setup
+- **Size Considerations**: 
+  - Dockerfile ~1KB (small repo footprint)
+  - Image built during workflow (no large files in repo)
+  - Estimated size: 500-800MB per platform
+
+**Universal Application:**
+- **Windows AMD64**: Windows Server Core base image
+- **macOS AMD64/ARM64**: Platform-specific approaches
+- **Linux AMD64**: Ubuntu base image
+- **Linux ARM64**: ARM64 Ubuntu base image (current focus)
+
+**Local Development Workflow:**
+```bash
+# Test ARM64 build locally from Mac
+docker build --platform linux/arm64 -t arm64-build .github/docker/arm64-build/
+docker run --rm -v $(pwd):/workspace arm64-build /workspace/build.sh
+```
+
+**When to Consider**: If current chroot approach continues to have library/dependency issues or becomes a blocker for the entire workflow
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
