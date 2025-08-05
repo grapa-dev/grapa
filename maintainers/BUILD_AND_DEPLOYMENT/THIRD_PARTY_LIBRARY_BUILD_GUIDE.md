@@ -336,6 +336,20 @@ nm source/openssl-lib/linux-arm64/libcrypto.a | grep __isoc23
 
 ### Build System Debugging
 
+#### C++23 Symbol Resolution
+**Problem**: `__isoc23_` undefined reference errors even with C++17 libraries  
+**Root Cause**: System libraries providing C++23 symbols even with C++17 compilation  
+**Solution**: Add compatibility flags to disable C++23 features
+
+```bash
+# Build command with compatibility flags
+g++ -std=c++17 -D_GLIBCXX_USE_CXX11_ABI=0 -fno-sized-deallocation [other flags]
+```
+
+**Flags Explained**:
+- `-D_GLIBCXX_USE_CXX11_ABI=0`: Disables C++11 ABI, uses older symbol names
+- `-fno-sized-deallocation`: Disables sized deallocation (C++14+ feature)
+
 #### Executable Preservation Issue
 **Problem**: Executable being deleted during library builds  
 **Root Cause**: Executable removal logic running for all build types  

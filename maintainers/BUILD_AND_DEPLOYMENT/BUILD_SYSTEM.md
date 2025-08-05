@@ -91,6 +91,11 @@ The build system automatically detects:
 - **Comprehensive Error Handling**: Diagnostic logging and graceful failure recovery
 - **Artifact Management**: Proper distribution of platform-specific compressed files and libraries
 
+##### **C++ Standard Compatibility**
+- **C++17 Standard**: All builds use `-std=c++17` for maximum compatibility
+- **C++23 Symbol Resolution**: Added compatibility flags (`-D_GLIBCXX_USE_CXX11_ABI=0`, `-fno-sized-deallocation`) to handle `__isoc23_` undefined references
+- **Cross-Platform Consistency**: Same C++ standard across all platforms to avoid symbol mismatches
+
 ---
 
 ## 🔧 **Dependencies**
