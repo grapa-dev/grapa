@@ -22,13 +22,13 @@
     - **PCRE2**: CMake with `-DBUILD_SHARED_LIBS=OFF` and `-DPCRE2_BUILD_PCRE2_8=ON`
     - **FLTK**: `./configure --with-optim="-fPIC -std=c++17" --disable-shared` ✅ **BUILT & COPIED**
   - ❌ **Compatibility Flags Failed**: `-D_GLIBCXX_USE_CXX11_ABI=0` and `-fno-sized-deallocation` didn't resolve `__isoc23_` errors
-  - 🔄 **Current Status**: Implementing GCC 13+ with C++23 support in ARM64 chroot
+  - 🔄 **Current Status**: GCC 13+ installation failed due to PPA connectivity issues in chroot
   - **Next Steps**: 
     1. ✅ **Completed**: Build FLTK libraries with `make`
     2. ✅ **Completed**: Copy new libraries to `source/fl-lib/linux-arm64/`
     3. ❌ **Failed**: Compatibility flags approach
-    4. 🔄 **In Progress**: Install GCC 13+ in ARM64 chroot and use `-std=c++23`
-    5. **Next**: Test with native C++23 compilation
+    4. ❌ **Failed**: GCC 13+ PPA installation in chroot (connectivity issues)
+    5. **Alternative**: Create new Ubuntu ARM64 VM with native C++17 compilation
   - **Benefits**:
     - **Native compilation** - no chroot issues
     - **C++17 compatibility** - works across all platforms
@@ -69,11 +69,12 @@
 
 ## 🎯 NEXT STEPS
 
-1. **Monitor v0.0.233 workflow** for Linux ARM64 build success
-2. **If compatibility flags fail**, implement GCC 13+ with C++23 support:
-   - **Add GCC 13+ to ARM64 chroot**: `sudo chroot ./arm64-root apt install -y gcc-13 g++-13`
-   - **Update build.py**: Use `gcc-13`/`g++-13` and `-std=c++23` for ARM64 builds
-   - **Test with full C++23 support**: Native C++23 compilation instead of compatibility flags
+1. **Monitor v0.0.235 workflow** for Linux ARM64 build success
+2. **If GCC 13+ approach fails**, implement alternative Ubuntu ARM64 VM approach:
+   - **Create fresh Ubuntu ARM64 VM** with older GCC (C++17 compatible)
+   - **Recompile all libraries** with C++17 compatibility: OpenSSL, FLTK, PCRE2, BLST
+   - **Use proven C++17 approach** instead of trying to force C++23 compatibility
+   - **Benefits**: Native compilation, no chroot issues, proven working approach
 3. **Implement Simple Version Validation** for 3 non-cross-compilation runners:
    - **Windows AMD64**: `./grapa.exe -c "\$sys().getenv(\$VERSION)"`
    - **Linux AMD64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
