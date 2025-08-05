@@ -88,6 +88,21 @@ make
 
 ### macOS AMD64 (Native)
 
+**Prerequisites:**
+```bash
+brew install llvm
+```
+
+**For Mac Intel (AMD64) Cross-Compilation:**
+```bash
+git clone https://github.com/llvm/llvm-project.git
+cd llvm-project
+mkdir build && cd build
+cmake -DLLVM_ENABLE_PROJECTS="libcxx;libcxxabi" -DCMAKE_BUILD_TYPE=Release ../llvm
+make cxx
+# Use the resulting *.a files in the build
+```
+
 #### OpenSSL
 ```bash
 cd dep/openssl-1.1.1w
@@ -162,40 +177,49 @@ make
 
 ### Windows AMD64 (Native)
 
+**Prerequisites:**
+- Install [Strawberry Perl](https://strawberryperl.com/)
+- Install [NASM](https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/)
+- Run "x64 Native Tools Command Prompt for VS 2022" in administrator mode
+
 #### OpenSSL
 ```bash
 cd dep/openssl-1.1.1w
 # Use Visual Studio Developer Command Prompt
-perl Configure VC-WIN64A -fPIC -std=c++17 no-shared
+perl Configure VC-WIN64A
 nmake
+# Note: If compile freezes on building test app, this is OK - abort at that point
 # Copy libcrypto_static.lib and libssl_static.lib to source/openssl-lib/win-amd64/
+# Copy include/openssl to source/
 ```
 
 #### FLTK
 ```bash
 cd dep/fltk-1.3.11-source
 # Use Visual Studio Developer Command Prompt
-# FLTK requires Visual Studio build system
-# Build with static library configuration
-# Copy *.lib files to source/fl-lib/win-amd64/
+cmake -S . -B build_vs2022 -G "Visual Studio 17 2022" -A x64 -D BUILD_SHARED_LIBS=OFF -D OPTION_USE_SYSTEM_LIBJPEG=OFF -D OPTION_USE_SYSTEM_LIBPNG=OFF -D OPTION_USE_SYSTEM_ZLIB=OFF -D FLTK_BUILD_FLUID=OFF -D FLTK_BUILD_TEST=OFF -D FLTK_BUILD_EXAMPLES=OFF -D FLTK_MSVC_RUNTIME_DLL=OFF
+cmake --build build_vs2022 --config Release
+# Copy FL/* to source/FL
+# Copy build_vs2022/FL/* to source/FL
+# Copy build_vs2022/lib/Release/*.lib to source/fl-lib/win-amd64/
 ```
 
 #### PCRE2
 ```bash
 cd dep/pcre2-10.45
-# Use Visual Studio Developer Command Prompt
-# Build with CMake for Visual Studio
-cmake -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ..
-# Build with Visual Studio
+rmdir /s /q build_static
+mkdir build_static
+cd build_static
+cmake -G "Unix Makefiles" -DPCRE2_BUILD_PCRE2_8=ON -DPCRE2_BUILD_PCRE2_16=ON -DPCRE2_BUILD_PCRE2_32=ON -DBUILD_SHARED_LIBS=OFF -DPCRE2_STATIC_RUNTIME=ON -DPCRE2_SUPPORT_UNICODE=ON -DCMAKE_BUILD_TYPE=Release ..
 # Copy pcre2-8-static.lib to source/pcre2-lib/win-amd64/
 ```
 
 #### BLST
 ```bash
-cd dep/blst-master
-# Use Visual Studio Developer Command Prompt
-# Build with Visual Studio
-# Copy blst.lib to source/blst-lib/win-amd64/
+cd prj/blst
+build
+# Copy bindings/*.h* and bindings/*.swg to source/blst
+# Copy *.lib and *.pdb to source/blst-lib/win-amd64/
 ```
 
 ## Cross-Compilation Considerations
@@ -309,6 +333,37 @@ nm source/openssl-lib/linux-arm64/libcrypto.a | grep __isoc23
 2. **Architecture Mismatch**: Verify libraries match target platform architecture
 3. **Missing Dependencies**: Install required build tools for each platform
 4. **PIC Issues**: Ensure all libraries are built with `-fPIC`
+
+### Build System Debugging
+
+#### Executable Preservation Issue
+**Problem**: Executable being deleted during library builds  
+**Root Cause**: Executable removal logic running for all build types  
+**Solution**: Only remove executable when building executable, not libraries
+
+```python
+# PROBLEMATIC CODE (before fix)
+def _run_mac_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
+    # Remove existing executable
+    if os.path.exists(config.output_name):
+        os.remove(config.output_name)  # ❌ This ran for ALL builds
+
+# FIXED CODE (after fix)
+def _run_mac_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
+    # Remove existing executable only when building executable
+    if not is_library and os.path.exists(config.output_name):
+        os.remove(config.output_name)  # ✅ Only runs for executable builds
+```
+
+#### Windows Build Freezing
+**Problem**: OpenSSL build freezes on test app compilation  
+**Solution**: This is normal - abort the build at that point as libraries are already built
+
+#### Cross-Platform Impact
+The same executable preservation issue exists in:
+- **Linux Build** (`_run_linux_build_command`): ❌ Same issue
+- **AWS Build** (`_run_aws_build_command`): ❌ Same issue  
+- **Windows Build**: ✅ Not affected (different build architecture)
 
 ### Platform-Specific Issues
 
