@@ -582,9 +582,9 @@ class GrapaBuilder:
                     else:
                         subprocess.run(cmd, check=True)
                 
-                # Ensure the grapa-lib directory exists (matching working approach)
-                os.makedirs(f"source/grapa-lib/{config.target}", exist_ok=True)
-                shutil.copy("libgrapa.so", f"source/grapa-lib/{config.target}/libgrapa.so")
+                # Ensure the grapa-other directory exists (standardized shared library location)
+                os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
+                shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
             # Build executable - match AWS pattern exactly
