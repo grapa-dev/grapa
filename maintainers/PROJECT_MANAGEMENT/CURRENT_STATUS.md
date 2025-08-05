@@ -11,24 +11,24 @@
 ## 🚨 ACTIVE WORK ITEMS
 
 ### Linux ARM64 Library Recompilation - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - FLTK libraries copied but still contain `__isoc23_` symbols, trying compatibility flags
+- **Status**: 🔄 **IN PROGRESS** - Compatibility flags failed, implementing GCC 13+ with C++23 support
 - **Issue**: Linux ARM64 build failing with `__isoc23_` undefined references due to C++23/C++17 compatibility mismatch
 - **Root Cause**: Libraries (OpenSSL, FLTK, PCRE2) were compiled with C++23 features but linking with C++17
-- **Solution Strategy** (v0.0.232):
+- **Solution Strategy** (v0.0.233):
   - ✅ **Native ARM64 Library Recompilation**: User recompiled OpenSSL, FLTK, and PCRE2 on native ARM64 system
   - ✅ **C++17 Compatibility**: Libraries now built with C++17 compatibility to avoid `__isoc23_` errors
   - ✅ **Proven Build Methods**: Used working native ARM64 build processes:
     - **OpenSSL**: `./config -fPIC -std=c++17 no-shared`
     - **PCRE2**: CMake with `-DBUILD_SHARED_LIBS=OFF` and `-DPCRE2_BUILD_PCRE2_8=ON`
     - **FLTK**: `./configure --with-optim="-fPIC -std=c++17" --disable-shared` ✅ **BUILT & COPIED**
-  - ✅ **Workflow Fix**: Updated build.py to use `-std=c++17` to match recompiled libraries
-  - 🔄 **Current Status**: FLTK libraries copied but still contain `__isoc23_` symbols (16 symbols detected)
+  - ❌ **Compatibility Flags Failed**: `-D_GLIBCXX_USE_CXX11_ABI=0` and `-fno-sized-deallocation` didn't resolve `__isoc23_` errors
+  - 🔄 **Current Status**: Implementing GCC 13+ with C++23 support in ARM64 chroot
   - **Next Steps**: 
     1. ✅ **Completed**: Build FLTK libraries with `make`
     2. ✅ **Completed**: Copy new libraries to `source/fl-lib/linux-arm64/`
-    3. 🔄 **In Progress**: Added compatibility flags (`-D_GLIBCXX_USE_CXX11_ABI=0`, `-fno-sized-deallocation`)
-    4. **Next**: Commit changes and test workflow
-    5. **Fallback**: If compatibility flags fail, implement GCC 13+ with C++23 support
+    3. ❌ **Failed**: Compatibility flags approach
+    4. 🔄 **In Progress**: Install GCC 13+ in ARM64 chroot and use `-std=c++23`
+    5. **Next**: Test with native C++23 compilation
   - **Benefits**:
     - **Native compilation** - no chroot issues
     - **C++17 compatibility** - works across all platforms
