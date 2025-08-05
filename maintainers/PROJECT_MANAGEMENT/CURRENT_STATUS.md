@@ -192,7 +192,8 @@
   - ✅ **IDENTIFIED**: Required X11 libraries: `libx11-dev`, `libxcursor-dev`, `libxft-dev`, `libxext-dev`, `libxinerama-dev`
   - ✅ **MAPPED**: AWS Amazon Linux (dnf) → Ubuntu (apt) package equivalents
   - ✅ **APPLIED**: Updated workflow to use native ARM64 compilation with Ubuntu X11 libraries (matching AWS approach)
-  - 🔄 **IN PROGRESS**: Monitor workflow results for Linux ARM64 build success (with AWS-proven approach)
+  - 🔄 **IN PROGRESS**: Monitor workflow results for Linux ARM64 build success (with AWS→Ubuntu mapping)
+  - **Next Workflow Trigger**: Use `python scripts/bump_version_and_deploy.py 0.0.222` for future deployments
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully with robust Visual Studio detection
   - ✅ **macOS ARM64**: Building successfully  
@@ -220,7 +221,8 @@
   - **QEMU Binaries**: `qemu-aarch64-static` and other QEMU files are large and not needed in repository
   - **Git Cleanup Completed**: Local investigation files moved out of project directory
   - **Commit Strategy**: Only commit build script changes and workflow fixes, not investigation artifacts
-  - **Workflow Triggered**: Successfully pushed v0.0.220 tag to trigger GitHub workflow with fixes
+  - **Workflow Triggered**: Successfully pushed v0.0.221 tag to trigger GitHub workflow with AWS→Ubuntu mapping
+  - **Future Workflow Triggers**: Can now use `scripts/bump_version_and_deploy.py` since large investigation files moved out
 
 ### Database Investigation - ✅ COMPLETED
 - **Investigate GrapaDB:PtrToRec lookup for record 1 when there are 3 records**
