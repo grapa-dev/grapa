@@ -87,12 +87,7 @@ jobs:
           sudo chroot ./arm64-root apt install -y libssl-dev libcrypto++-dev --allow-unauthenticated
           sudo chroot ./arm64-root apt install -y cmake gdebi-core --allow-unauthenticated
           
-          # Install GCC 13+ for C++23 support
-          echo "Installing GCC 13+ for C++23 support..."
-          sudo chroot ./arm64-root apt install -y software-properties-common --allow-unauthenticated
-          sudo chroot ./arm64-root add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo chroot ./arm64-root apt update --allow-unauthenticated
-          sudo chroot ./arm64-root apt install -y gcc-13 g++-13 --allow-unauthenticated
+
           
           # Note: Python setup will be done later when needed for testing
           

@@ -11,10 +11,10 @@
 ## 🚨 ACTIVE WORK ITEMS
 
 ### Linux ARM64 Library Recompilation - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Compatibility flags failed, implementing GCC 13+ with C++23 support
+- **Status**: 🔄 **IN PROGRESS** - Reverting to C++17 approach with Ubuntu ARM64 VM
 - **Issue**: Linux ARM64 build failing with `__isoc23_` undefined references due to C++23/C++17 compatibility mismatch
 - **Root Cause**: Libraries (OpenSSL, FLTK, PCRE2) were compiled with C++23 features but linking with C++17
-- **Solution Strategy** (v0.0.233):
+- **Solution Strategy** (v0.0.236):
   - ✅ **Native ARM64 Library Recompilation**: User recompiled OpenSSL, FLTK, and PCRE2 on native ARM64 system
   - ✅ **C++17 Compatibility**: Libraries now built with C++17 compatibility to avoid `__isoc23_` errors
   - ✅ **Proven Build Methods**: Used working native ARM64 build processes:
@@ -22,13 +22,14 @@
     - **PCRE2**: CMake with `-DBUILD_SHARED_LIBS=OFF` and `-DPCRE2_BUILD_PCRE2_8=ON`
     - **FLTK**: `./configure --with-optim="-fPIC -std=c++17" --disable-shared` ✅ **BUILT & COPIED**
   - ❌ **Compatibility Flags Failed**: `-D_GLIBCXX_USE_CXX11_ABI=0` and `-fno-sized-deallocation` didn't resolve `__isoc23_` errors
-  - 🔄 **Current Status**: GCC 13+ installation failed due to PPA connectivity issues in chroot
+  - ❌ **GCC 13+ Approach Failed**: PPA connectivity issues in chroot environment
+  - 🔄 **Current Status**: Reverting to C++17 and implementing Ubuntu ARM64 VM approach
   - **Next Steps**: 
     1. ✅ **Completed**: Build FLTK libraries with `make`
     2. ✅ **Completed**: Copy new libraries to `source/fl-lib/linux-arm64/`
     3. ❌ **Failed**: Compatibility flags approach
     4. ❌ **Failed**: GCC 13+ PPA installation in chroot (connectivity issues)
-    5. **Alternative**: Create new Ubuntu ARM64 VM with native C++17 compilation
+    5. 🔄 **In Progress**: Revert to C++17 and use Ubuntu ARM64 VM for all library recompilation
   - **Benefits**:
     - **Native compilation** - no chroot issues
     - **C++17 compatibility** - works across all platforms

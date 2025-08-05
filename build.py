@@ -682,11 +682,11 @@ class GrapaBuilder:
                     chroot_blst_libs = [lib.replace("source/", "/source/") for lib in blst_libs]
                     chroot_pcre2_lib = [lib.replace("source/", "/source/") for lib in pcre2_lib]
                     
-                    # Build command with chroot-relative paths (using GCC 13+ with C++23)
+                    # Build command with chroot-relative paths (using C++17)
                     chroot_cmd = [
-                        "g++-13", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp", "source/grapa/*.cpp", "source/utf8proc/utf8proc.c",
+                        gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp", "source/grapa/*.cpp", "source/utf8proc/utf8proc.c",
                         f"/source/openssl-lib/{config.target}/*.a", f"/source/fl-lib/{config.target}/*.a", f"/source/blst-lib/{config.target}/*.a", f"/source/pcre2-lib/{config.target}/libpcre2-8.a",
-                        f"-L/source/openssl-lib/{config.target}", "-std=c++23", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name
+                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name
                     ]
                     
                     print(f"Current working directory: {os.getcwd()}")
