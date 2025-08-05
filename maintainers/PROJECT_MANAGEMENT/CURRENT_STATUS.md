@@ -28,6 +28,7 @@
     2. ✅ **Completed**: Copy new libraries to `source/fl-lib/linux-arm64/`
     3. 🔄 **In Progress**: Added compatibility flags (`-D_GLIBCXX_USE_CXX11_ABI=0`, `-fno-sized-deallocation`)
     4. **Next**: Commit changes and test workflow
+    5. **Fallback**: If compatibility flags fail, implement GCC 13+ with C++23 support
   - **Benefits**:
     - **Native compilation** - no chroot issues
     - **C++17 compatibility** - works across all platforms
@@ -68,22 +69,27 @@
 
 ## 🎯 NEXT STEPS
 
-1. **Monitor v0.0.232 workflow** for Linux ARM64 build success
-2. **Implement Simple Version Validation** for 3 non-cross-compilation runners:
+1. **Monitor v0.0.233 workflow** for Linux ARM64 build success
+2. **If compatibility flags fail**, implement GCC 13+ with C++23 support:
+   - **Add GCC 13+ to ARM64 chroot**: `sudo chroot ./arm64-root apt install -y gcc-13 g++-13`
+   - **Update build.py**: Use `gcc-13`/`g++-13` and `-std=c++23` for ARM64 builds
+   - **Test with full C++23 support**: Native C++23 compilation instead of compatibility flags
+3. **Implement Simple Version Validation** for 3 non-cross-compilation runners:
    - **Windows AMD64**: `./grapa.exe -c "\$sys().getenv(\$VERSION)"`
    - **Linux AMD64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
    - **macOS ARM64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
    - **Python**: `import grapapy; print(grapapy.__version__)`
-3. **Verify all 5 platforms** build successfully (Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64)
-4. **Confirm PyPI deployment** completes without errors
-5. **Validate all artifacts** are properly committed and packaged
+4. **Verify all 5 platforms** build successfully (Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64)
+5. **Confirm PyPI deployment** completes without errors
+6. **Validate all artifacts** are properly committed and packaged
 
 ---
 
 ## 📊 WORKFLOW STATUS
 
-- **Current Version**: v0.0.232
-- **Latest Commit**: `c181aaaa` - "Bump version to 0.0.232"
+- **Current Version**: v0.0.233
+- **Latest Commit**: `23701a0b` - "Bump version to 0.0.233"
+- **Compatibility Fix**: `c63ace5c` - "Add compatibility flags for Linux ARM64 C++23 symbol resolution"
 - **Library Updates**: `6d772837` - "linux-arm64 lib updates openssl, fltk, pcre2"
 - **Build Fix**: `107df412` - "Fix Linux ARM64 build to use C++17 to match recompiled libraries"
-- **Status**: Testing recompiled C++17-compatible libraries 
+- **Status**: Testing compatibility flags (`-D_GLIBCXX_USE_CXX11_ABI=0`, `-fno-sized-deallocation`) for C++23 symbol resolution 
