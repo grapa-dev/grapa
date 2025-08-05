@@ -629,6 +629,16 @@ class GrapaBuilder:
                     subprocess.run(["sudo", "cp", "-r", "source/blst-lib", "./arm64-root/source/"], check=True)
                     subprocess.run(["sudo", "cp", "-r", "source/pcre2-lib", "./arm64-root/source/"], check=True)
                     
+                    # Debug: Check what's available in chroot
+                    print("=== DEBUG: Checking chroot environment ===")
+                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "which g++"], check=True)
+                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/openssl-lib/linux-arm64/"], check=True)
+                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/fl-lib/linux-arm64/"], check=True)
+                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/blst-lib/linux-arm64/"], check=True)
+                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/pcre2-lib/linux-arm64/"], check=True)
+                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la source/grapa/"], check=True)
+                    print("=== END DEBUG ===")
+                    
                     # Update library paths to use chroot-relative paths
                     openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
                     fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")

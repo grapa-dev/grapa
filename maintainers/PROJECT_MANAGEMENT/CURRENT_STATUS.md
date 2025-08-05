@@ -69,7 +69,7 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.214 CI/CD run to verify PyPI deployment success and artifact debugging
+- **Testing**: Monitoring v0.0.215 CI/CD run to verify PyPI deployment success and artifact debugging
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 - **Latest Fixes Applied** (v0.0.194 through v0.0.208):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
@@ -98,6 +98,7 @@
   - ✅ **Linux ARM64 Chroot Library Path Fix**: Updated `-L` flag to use chroot-relative path (`/source/openssl-lib/`) for proper library linking
   - ✅ **Linux ARM64 Chroot Cross-Compilation Flags Fix**: Removed cross-compilation flags (`--sysroot`, `-I`, `-L` host paths) when running inside chroot environment
   - ✅ **Linux ARM64 Chroot Simplified Build Command**: Simplified build command to match working approach exactly, removing complex system_libs logic
+  - ✅ **Linux ARM64 Chroot Exact Working Command Match**: Updated build command to exactly match user's proven working command with glob patterns and simpler library references
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
 ### Artifact Collection Issue - ✅ RESOLVED
@@ -264,8 +265,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.214 (Linux ARM64 chroot simplified build command - workflow now running)
-- **Next**: Monitor v0.0.214 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
+- **Current Version:** v0.0.215 (Linux ARM64 chroot exact working command match - workflow now running)
+- **Next**: Monitor v0.0.215 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
