@@ -645,7 +645,7 @@ class GrapaBuilder:
                     chroot_cmd = [
                         gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
                     ] + cpp_files + ["source/utf8proc/utf8proc.c"] + chroot_openssl_libs + chroot_fl_libs + chroot_blst_libs + chroot_pcre2_lib + [
-                        f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
+                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
                     ] + cross_flags + [
                         "-lcrypto"
                     ] + system_libs
