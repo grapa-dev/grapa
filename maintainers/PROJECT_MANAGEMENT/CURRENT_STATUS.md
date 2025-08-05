@@ -150,52 +150,81 @@
   - `bin/grapa-{platform}.zip` or `bin/grapa-{platform}.tar.gz` - Executables
 - **Target**: Achieve all 10 expected files (2 per platform) in git commits
 
-### Linux ARM64 Cross-Compilation Debugging - ✅ COMPLETED
-- **Status**: ✅ **COMPLETED** - Linux ARM64 cross-compilation now working with `-lbsd` dependency fix
+### Linux ARM64 Cross-Compilation Debugging - 🔄 IN PROGRESS (Local Debugging)
+- **Status**: 🔄 **IN PROGRESS** - Debugging Linux ARM64 cross-compilation issues locally on Linux AMD64 platform
+- **Approach**: Local debugging to identify and fix issues before applying to GitHub workflow
 - **Build Architecture**: 
   - **5 Runners**: win-amd64, mac-arm64, mac-amd64, linux-amd64, linux-arm64
   - **Available Runners**: win-amd64, mac-arm64, linux-amd64 (native)
-  - **Cross-Compilation Needed**: mac-amd64 (working ✅), linux-arm64 (working ✅)
+  - **Cross-Compilation Needed**: mac-amd64 (working ✅), linux-arm64 (debugging 🔄)
   - **Process**: Build artifacts on each platform → Check into GitHub → Build universal Python extension
-- **Issue**: Linux ARM64 cross-compilation failing with truncated command line and linker errors in GitHub Actions
-- **Root Cause**: Missing `-lbsd` dependency for FLTK static library
-- **Error Identified**: `undefined reference to symbol 'strlcat@@LIBBSD_0.0'` - FLTK library compiled with libbsd dependencies
-- **Cross-Compilation Approach**: Using Option 2 (sysroot with debootstrap) for Linux ARM64
-- **Solution Implemented**: 
-  - ✅ **FIXED**: Added `-lbsd` flag to Linux ARM64 cross-compilation linker commands
-  - ✅ **FIXED**: Restored full `build.py` functionality from `build-original.py`
-  - ✅ **FIXED**: Added debugging logging specifically for Linux ARM64 cross-compilation builds
-  - ✅ **FIXED**: Updated GitHub Actions workflow to call `python build.py --exe-only` for Linux ARM64 builds
-  - ✅ **FIXED**: Added artifact upload for `build-debug.log` when Linux ARM64 build fails
-  - ✅ **ENHANCED**: Added `run_diagnostic_cross_compile()` function to `build.py` for better ARM64 debugging
-  - ✅ **ENHANCED**: Updated ARM64 cross-compilation to use diagnostic logging for utf8proc, C++ compilation, and linking steps
-  - ✅ **FIXED**: Added ARM64 cross-compilation code to `build.py` (the script used by GitHub Actions workflow)
-  - ✅ **FIXED**: Improved Visual Studio detection using setup.py approach (4-method detection)
-- **Debugging Setup**:
-  - **Full Command Capture**: `build.py` now captures complete g++ command line for Linux ARM64 builds
-  - **Environment Logging**: Captures relevant environment variables (PATH, CC, CXX, ARCH, PLATFORM)
-  - **Output Capture**: All stdout/stderr output captured to `build-debug.log`
-  - **Artifact Upload**: Workflow uploads `build-debug.log` as downloadable artifact when build fails
-- **Technical Details**:
-  - **FLTK Dependency**: Static FLTK library (`libfltk.a`) was compiled with libbsd dependencies
-  - **Missing Link**: GCC doesn't automatically follow symbol references from .a files
-  - **Manual Specification**: Must explicitly add `-lbsd` to linker command
-  - **Cross-Compilation**: ARM64 cross-compiler requires explicit dependency specification
-- **Progress**:
-  - ✅ **FIXED**: Identified missing `-lbsd` dependency causing linker failure
-  - ✅ **FIXED**: Added `-lbsd` flag to both executable and shared library build commands
-  - ✅ **FIXED**: Restored full build system functionality while preserving debugging logging
-  - ✅ **FIXED**: Updated workflow to use `build.py` with proper arguments
-  - ✅ **FIXED**: Added artifact upload for debug logs when builds fail
-  - ✅ **FIXED**: Improved Visual Studio detection for Windows builds
+- **Issue**: Linux ARM64 cross-compilation failing with X11/GUI dependency errors in GitHub Actions
+- **Root Cause**: FLTK library requires X11 dependencies, making cross-compilation complex
+- **Local Debugging Setup**:
+  - ✅ **Platform**: Moved investigation to Linux AMD64 platform for direct testing
+  - ✅ **QEMU Installation**: Installed `qemu-user-static debootstrap` for ARM64 emulation
+  - ✅ **ARM64 Sysroot**: Created ARM64 root filesystem with `debootstrap --arch=arm64 --foreign stable`
+  - ✅ **QEMU Binary**: Copied `qemu-aarch64-static` to ARM64 sysroot `/usr/bin/`
+  - ✅ **Debootstrap Second Stage**: Completed ARM64 sysroot setup with `chroot ./arm64-root /debootstrap/debootstrap --second-stage`
+  - 🔄 **Build Tools Installation**: Currently installing `build-essential` in ARM64 chroot
+- **Progress Made**:
+  - ✅ **FIXED**: ARM64 cross-compilation toolchain installation (`gcc-aarch64-linux-gnu`, `g++-aarch64-linux-gnu`)
+  - ✅ **FIXED**: ARM64 multiarch support (`dpkg --add-architecture arm64`)
+  - ✅ **FIXED**: Implemented headless build mode for ARM64 cross-compilation (removed X11/GUI dependencies)
+  - ✅ **FIXED**: Removed `-ljpeg` dependency for ARM64 cross-compilation
+  - ✅ **ENHANCED**: Added diagnostic logging for ARM64 cross-compilation builds
+  - ✅ **ENHANCED**: Updated build script to use `--target-platform linux-arm64` for explicit cross-compilation
+  - ✅ **FIXED**: ARM64 sysroot setup with debootstrap and QEMU emulation
+  - ✅ **FIXED**: QEMU binary placement in ARM64 sysroot
+  - ✅ **FIXED**: Debootstrap second stage completion
+  - ✅ **COMPLETED**: ARM64 sysroot setup with debootstrap and QEMU emulation
+  - ✅ **COMPLETED**: QEMU binary placement in ARM64 sysroot
+  - ✅ **COMPLETED**: Debootstrap second stage completion
+  - ✅ **COMPLETED**: Build tools installation in ARM64 chroot (gcc, g++, build-essential installed)
+  - ✅ **COMPLETED**: C standard library headers available (`stdlib.h` confirmed)
+  - ✅ **COMPLETED**: utf8proc compilation working in ARM64 chroot
+  - ✅ **COMPLETED**: Debug check issue with `which` command (replaced with `ls`)
+  - ✅ **COMPLETED**: Source files and libraries copied successfully to ARM64 chroot
+  - ✅ **COMPLETED**: Native ARM64 compilation started (working through QEMU emulation)
+  - ✅ **COMPLETED**: Apply proven QEMU emulation solution to GitHub workflow
+  - ✅ **COMPLETED**: Successfully triggered GitHub workflow with v0.0.220 tag
+  - ✅ **COMPLETED**: GitHub workflow triggered with v0.0.220 tag
+  - ✅ **CONFIRMED**: Same FLTK/X11 linking errors in GitHub workflow as local investigation
+  - ✅ **DISCOVERED**: AWS ARM64 native compilation with X11 libraries works successfully
+  - ✅ **IDENTIFIED**: Required X11 libraries: `libx11-dev`, `libxcursor-dev`, `libxft-dev`, `libxext-dev`, `libxinerama-dev`
+  - ✅ **MAPPED**: AWS Amazon Linux (dnf) → Ubuntu (apt) package equivalents
+  - ✅ **APPLIED**: Updated workflow to use native ARM64 compilation with Ubuntu X11 libraries (matching AWS approach)
+  - 🔄 **IN PROGRESS**: Monitor workflow results for Linux ARM64 build success (with AWS→Ubuntu mapping)
+  - **Next Workflow Trigger**: Use `python scripts/bump_version_and_deploy.py 0.0.222` for future deployments
 - **Current Status**: 
   - ✅ **Windows AMD64**: Building successfully with robust Visual Studio detection
   - ✅ **macOS ARM64**: Building successfully  
   - ✅ **macOS AMD64**: Building successfully (cross-compiled from ARM64)
   - ✅ **Linux AMD64**: Building successfully
-  - ✅ **Linux ARM64**: Cross-compilation working with `-lbsd` dependency fix
-- **Result**: All 5 platform builds now working successfully
-- **Goal**: Fully automated `pip install grapapy` that works on all platforms including Linux ARM64
+  - 🔄 **Linux ARM64**: QEMU emulation working, build tools installation failed
+- **Key Findings**:
+  - ✅ **QEMU Emulation**: Successfully detecting ARM64 sysroot and attempting native compilation
+  - ✅ **Build Script**: Correctly using QEMU emulation approach instead of cross-compilation
+  - ❌ **Build Tools**: ARM64 chroot missing gcc/g++ due to installation failures
+  - ❌ **Chroot Issues**: GPG key verification and system file problems in ARM64 environment
+- **Next Steps**:
+  1. ✅ **COMPLETED**: Fix ARM64 chroot environment and complete build tools installation
+  2. ✅ **COMPLETED**: QEMU emulation working with native ARM64 compilation
+  3. ✅ **COMPLETED**: utf8proc compilation successful in ARM64 chroot
+  4. ✅ **COMPLETED**: Debug check issue fixed and full ARM64 build started
+  5. ✅ **COMPLETED**: Native ARM64 compilation working (through QEMU emulation)
+  6. ✅ **COMPLETED**: Apply proven QEMU emulation solution to GitHub workflow
+  7. ✅ **COMPLETED**: Test GitHub workflow with Linux ARM64 builds (triggered v0.0.220)
+  8. 🔄 **IN PROGRESS**: Monitor GitHub workflow results for Linux ARM64 builds
+- **Goal**: Debug and fix Linux ARM64 cross-compilation locally, then apply solution to GitHub workflow
+- **Impact**: Once resolved, all 5 platforms will build successfully for universal Python package
+- **⚠️ IMPORTANT**: Local investigation files (ARM64 sysroot, QEMU binaries, etc.) should NOT be committed to GitHub
+  - **ARM64 Sysroot**: `./arm64-root/` directory moved to `~/arm64-root-temp` (safe from git)
+  - **QEMU Binaries**: `qemu-aarch64-static` and other QEMU files are large and not needed in repository
+  - **Git Cleanup Completed**: Local investigation files moved out of project directory
+  - **Commit Strategy**: Only commit build script changes and workflow fixes, not investigation artifacts
+  - **Workflow Triggered**: Successfully pushed v0.0.221 tag to trigger GitHub workflow with AWS→Ubuntu mapping
+  - **Future Workflow Triggers**: Can now use `scripts/bump_version_and_deploy.py` since large investigation files moved out
 
 ### Database Investigation - ✅ COMPLETED
 - **Investigate GrapaDB:PtrToRec lookup for record 1 when there are 3 records**
