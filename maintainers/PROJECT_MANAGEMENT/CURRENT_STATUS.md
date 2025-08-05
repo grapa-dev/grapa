@@ -102,6 +102,7 @@
   - ✅ **Linux ARM64 Chroot Environment Debugging**: Added debugging to check if g++ is available and if all library files are properly copied into chroot environment
   - ✅ **Linux ARM64 Chroot Error Output Capture**: Added error output capture to see the actual compilation error messages from g++ command
   - ✅ **Linux ARM64 Chroot Variable Scope Fix**: Fixed variable scope issue where `arm64_libs_available` was not defined in executable build section
+  - ✅ **Linux ARM64 Build Path Debug Prints**: Added explicit debug prints before both chroot and cross-compile branches in linux-arm64 executable build section to confirm which path is being taken
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
 ### Artifact Collection Issue - ✅ RESOLVED
@@ -268,8 +269,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.218 (Linux ARM64 chroot variable scope fix - workflow now running)
-- **Next**: Monitor v0.0.218 CI/CD run to verify all 5 platforms now build successfully and contribute artifacts
+- **Current Version:** v0.0.219 (Added debug prints to diagnose linux-arm64 build path - workflow now running)
+- **Next**: Review v0.0.219 workflow output for [DEBUG] lines to confirm which build path is taken and fix logic as needed
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
