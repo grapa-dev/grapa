@@ -69,7 +69,7 @@
   - Python wheels built without including debug artifacts
   - Successful PyPI deployment with only valid distribution files
   - Debugging output to identify which platforms are missing artifacts
-- **Testing**: Monitoring v0.0.225 workflow results for Linux ARM64 build success with libbsd fix
+- **Testing**: Monitoring v0.0.226 workflow results for Linux ARM64 build success with exact working command
 - **Goal**: Successful PyPI deployment with all platform artifacts properly packaged
 - **Latest Fixes Applied** (v0.0.194 through v0.0.208):
   - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
@@ -110,7 +110,7 @@
   - ✅ **Python ensurepip Fix**: Removed Python setup from ARM64 chroot since it's not needed for the build step, only for later testing
   - ✅ **ARM64 Chroot Success**: v0.0.224 workflow shows ARM64 chroot setup working perfectly - no more ensurepip errors, build tools and X11 libraries installing successfully
   - ❌ **libbsd Linker Error**: ARM64 build failing with "undefined reference to symbol 'strlcat@@LIBBSD_0.0'" - need to add -lbsd
-  - ✅ **libbsd Fix**: Added -lbsd to ARM64 chroot build command to resolve FLTK dependency
+  - ✅ **Exact Working Command**: Updated ARM64 build command to match user's proven working command - removed -lbsd, added -lXfixes, reordered libraries
   - ✅ **Investigation Platform Switch**: Moved investigation back to GitHub Actions workflow from resource-constrained Linux AMD64 system. Buildlog.txt revealed ARM64 chroot setup failed with "No module named ensurepip" error.
   - ✅ **Documentation Updated**: BUILD_README.md and BUILD_SYSTEM.md updated with all improvements
 
@@ -307,8 +307,8 @@
 - **Bump Version and Deploy:** `python scripts/bump_version_and_deploy.py <new_version>`
 - **Example:** `python scripts/bump_version_and_deploy.py 0.0.161`
 - **Manual Version Update:** Update version in 3 files (setup.py, mainpy.cpp, GrapaLink.h), create Git tag v0.0.161, push tag
-- **Current Version:** v0.0.225 (Fixed libbsd linker error by adding -lbsd to ARM64 chroot build command)
-- **Next**: Monitor workflow results for Linux ARM64 build success with libbsd fix
+- **Current Version:** v0.0.226 (Using exact working command for Linux ARM64 - removed -lbsd, added -lXfixes, reordered libraries)
+- **Next**: Monitor workflow results for Linux ARM64 build success with proven working command
 
 ### 🎯 NEXT PHASE: Multi-Platform Validation Workflow
 - **Status**: 🔄 **PLANNED** - To be implemented after current Linux ARM64 cross-compilation is working
