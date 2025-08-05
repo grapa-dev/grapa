@@ -10,28 +10,29 @@
 
 ## 🚨 ACTIVE WORK ITEMS
 
-### Linux ARM64 Library Recompilation - ✅ RESOLVED
-- **Status**: ✅ **RESOLVED** - Native ARM64 library recompilation completed in commit `6d772837`
+### Linux ARM64 Library Recompilation - 🔄 IN PROGRESS
+- **Status**: 🔄 **IN PROGRESS** - FLTK libraries copied but still contain `__isoc23_` symbols, trying compatibility flags
 - **Issue**: Linux ARM64 build failing with `__isoc23_` undefined references due to C++23/C++17 compatibility mismatch
 - **Root Cause**: Libraries (OpenSSL, FLTK, PCRE2) were compiled with C++23 features but linking with C++17
-- **Solution Implemented** (v0.0.232):
+- **Solution Strategy** (v0.0.232):
   - ✅ **Native ARM64 Library Recompilation**: User recompiled OpenSSL, FLTK, and PCRE2 on native ARM64 system
   - ✅ **C++17 Compatibility**: Libraries now built with C++17 compatibility to avoid `__isoc23_` errors
   - ✅ **Proven Build Methods**: Used working native ARM64 build processes:
     - **OpenSSL**: `./config -fPIC -std=c++17 no-shared`
     - **PCRE2**: CMake with `-DBUILD_SHARED_LIBS=OFF` and `-DPCRE2_BUILD_PCRE2_8=ON`
-    - **FLTK**: `./configure --with-optim="-fPIC -std=c++17" --disable-shared`
-  - ✅ **Library Updates**: All libraries updated in commit `6d772837` with C++17-compatible versions
+    - **FLTK**: `./configure --with-optim="-fPIC -std=c++17" --disable-shared` ✅ **BUILT & COPIED**
   - ✅ **Workflow Fix**: Updated build.py to use `-std=c++17` to match recompiled libraries
-  - ✅ **Commit Reference**: `6d772837` - "linux-arm64 lib updates openssl, fltk, pcre2"
-- **Current Status**: Testing v0.0.232 workflow with recompiled C++17-compatible libraries
-- **Expected Result**: Successful Linux ARM64 build with C++17-compatible libraries
-- **Next Steps**: Monitor workflow results for Linux ARM64 build success
-- **Benefits**:
-  - **Native compilation** - no chroot issues
-  - **C++17 compatibility** - works across all platforms
-  - **Consistent environment** - libraries built on the same system
-  - **Proven process** - using working native ARM64 setup
+  - 🔄 **Current Status**: FLTK libraries copied but still contain `__isoc23_` symbols (16 symbols detected)
+  - **Next Steps**: 
+    1. ✅ **Completed**: Build FLTK libraries with `make`
+    2. ✅ **Completed**: Copy new libraries to `source/fl-lib/linux-arm64/`
+    3. 🔄 **In Progress**: Added compatibility flags (`-D_GLIBCXX_USE_CXX11_ABI=0`, `-fno-sized-deallocation`)
+    4. **Next**: Commit changes and test workflow
+  - **Benefits**:
+    - **Native compilation** - no chroot issues
+    - **C++17 compatibility** - works across all platforms
+    - **Consistent environment** - libraries built on the same system
+    - **Proven process** - using working native ARM64 setup
 
 ### Windows Python Extension Build Issue - ✅ RESOLVED
 - **Status**: ✅ **RESOLVED** - Windows SDK detection and path configuration fixed
