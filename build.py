@@ -641,20 +641,12 @@ class GrapaBuilder:
                     chroot_blst_libs = [lib.replace("source/", "/source/") for lib in blst_libs]
                     chroot_pcre2_lib = [lib.replace("source/", "/source/") for lib in pcre2_lib]
                     
-                    # Build command with chroot-relative paths (no cross_flags needed in chroot)
+                    # Build command with chroot-relative paths (matching working command exactly)
                     chroot_cmd = [
                         gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
                     ] + cpp_files + ["source/utf8proc/utf8proc.c"] + chroot_openssl_libs + chroot_fl_libs + chroot_blst_libs + chroot_pcre2_lib + [
-                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name,
-                        "-lcrypto"
-                    ] + system_libs
-                    
-                    # Add -static-libgcc for Linux builds (matching working command)
-                    if config.platform == "linux":
-                        chroot_cmd.extend(["-static-libgcc"])
-                    
-                    # Add -ljpeg for executable builds
-                    chroot_cmd.insert(-2, "-ljpeg")
+                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name, "-ljpeg"
+                    ]
                     
                     print(f"Current working directory: {os.getcwd()}")
                     print(f"Executing ARM64 chroot build command: {' '.join(chroot_cmd)}")
