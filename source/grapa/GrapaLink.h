@@ -3,7 +3,7 @@
 
 #include "GrapaValue.h"
 
-#define grapa_version "0.0.233"
+#define grapa_version "0.0.234"
 
 typedef void (*GrapaLinkCallback)(const char* pStr, bool pFlush);
 class GrapaSystem;
