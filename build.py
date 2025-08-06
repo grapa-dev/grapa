@@ -214,14 +214,14 @@ class GrapaBuilder:
                 
                 # Check if executable was created
                 if os.path.exists("prj/win-amd64/x64/Release/grapa.exe"):
-                    print("✅ Executable built successfully")
+                    print("SUCCESS: Executable built successfully")
                     # Copy executable
                     if os.path.exists("grapa.exe"):
                         os.remove("grapa.exe")
                     shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
-                    print("✅ Executable copied to root directory")
+                    print("SUCCESS: Executable copied to root directory")
                 else:
-                    print("❌ Executable not found at prj/win-amd64/x64/Release/grapa.exe")
+                    print("ERROR: Executable not found at prj/win-amd64/x64/Release/grapa.exe")
                     print("📁 Checking what files exist in prj/win-amd64/x64/Release/:")
                     if os.path.exists("prj/win-amd64/x64/Release/"):
                         import glob
@@ -240,15 +240,15 @@ class GrapaBuilder:
                 
                 # Check if library was created
                 if os.path.exists("prj/winlib-amd64/x64/Release/grapa.lib"):
-                    print("✅ Library built successfully")
+                    print("SUCCESS: Library built successfully")
                     # Copy library
                     if os.path.exists("grapa.lib"):
                         os.remove("grapa.lib")
                     shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", "grapa.lib")
                     shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"source/grapa-lib/{config.target}/grapa.lib")
-                    print("✅ Library copied to root directory and source/grapa-lib/")
+                    print("SUCCESS: Library copied to root directory and source/grapa-lib/")
                 else:
-                    print("❌ Library not found at prj/winlib-amd64/x64/Release/grapa.lib")
+                    print("ERROR: Library not found at prj/winlib-amd64/x64/Release/grapa.lib")
                     print("📁 Checking what files exist in prj/winlib-amd64/x64/Release/:")
                     if os.path.exists("prj/winlib-amd64/x64/Release/"):
                         import glob
@@ -879,9 +879,9 @@ class GrapaBuilder:
         for cmd in test_commands:
             try:
                 subprocess.run(cmd, check=True)
-                print("✅ CLI tests passed")
+                print("SUCCESS: CLI tests passed")
             except subprocess.CalledProcessError as e:
-                print(f"❌ CLI tests failed: {e}")
+                print(f"ERROR: CLI tests failed: {e}")
                 return False
         
         return True
@@ -899,9 +899,9 @@ class GrapaBuilder:
         for cmd in test_commands:
             try:
                 subprocess.run(cmd, check=True)
-                print("✅ Python tests passed")
+                print("SUCCESS: Python tests passed")
             except subprocess.CalledProcessError as e:
-                print(f"❌ Python tests failed: {e}")
+                print(f"ERROR: Python tests failed: {e}")
                 return False
         
         return True
