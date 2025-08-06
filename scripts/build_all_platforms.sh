@@ -489,42 +489,22 @@ verify_cli_executable() {
     fi
 }
 
-# Python distribution building and validation
+# Python distribution validation
 echo ""
-echo "🐍 Building Python distribution..."
+echo "🐍 Validating Python distribution..."
 echo "=================================="
 
-# Build Python package
-echo "📦 Building Python package with --python-only --preserve-dist..."
-python3 build.py --python-only --preserve-dist
+# Test Python package (already built and installed)
+echo "📦 Testing Python package functionality..."
 
-if [[ $? -eq 0 ]]; then
-    echo "✅ Python package built successfully"
+# Test Python package version
+python_version=$(python3 -c "import grapapy; print(grapapy.__version__)" 2>/dev/null)
+if [[ $? -eq 0 ]] && [[ -n "$python_version" ]]; then
+    echo "✅ Python package version: $python_version"
     
-    # Find the built package
-    dist_files=$(ls dist/*.tar.gz 2>/dev/null || echo "")
-    if [[ -n "$dist_files" ]]; then
-        package_file=$(echo "$dist_files" | head -1)
-        echo "📁 Found package: $package_file"
-        
-        # Install the package
-        echo "📥 Installing package with pip3..."
-        pip3 install "$package_file"
-        
-        if [[ $? -eq 0 ]]; then
-            echo "✅ Package installed successfully"
-            
-            # Validate version
-            echo "🔍 Validating Python package version..."
-            
-            # Test Python package version
-            python_version=$(python3 -c "import grapapy; print(grapapy.__version__)" 2>/dev/null)
-            if [[ $? -eq 0 ]] && [[ -n "$python_version" ]]; then
-                echo "✅ Python package version: $python_version"
-                
-                # Test Python package functionality
-                echo "🧪 Testing Python package functionality..."
-                python_test_output=$(python3 -c "
+    # Test Python package functionality
+    echo "🧪 Testing Python package functionality..."
+    python_test_output=$(python3 -c "
 import grapapy
 import sys
 try:
@@ -541,24 +521,16 @@ except Exception as e:
     print(f'ERROR: Python package test failed: {e}')
     sys.exit(1)
 " 2>/dev/null)
-                
-                if [[ $? -eq 0 ]]; then
-                    echo "✅ Python package functionality test passed"
-                else
-                    echo "❌ Python package functionality test failed"
-                    echo "   Output: $python_test_output"
-                fi
-            else
-                echo "❌ Python package version test failed"
-            fi
-        else
-            echo "❌ Package installation failed"
-        fi
+    
+    if [[ $? -eq 0 ]]; then
+        echo "✅ Python package functionality test passed"
     else
-        echo "❌ No Python package found in dist/"
+        echo "❌ Python package functionality test failed"
+        echo "   Output: $python_test_output"
     fi
 else
-    echo "❌ Python package build failed"
+    echo "❌ Python package version test failed"
+    echo "   Make sure grapapy is installed: pip3 install dist/*.tar.gz"
 fi
 
 # CLI Testing
