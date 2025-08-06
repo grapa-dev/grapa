@@ -264,10 +264,10 @@ cp libgrapa.a source/grapa-lib/linux-arm64/libgrapa.a
 rm libgrapa.a
 
 g++ -shared -Isource -DUTF8PROC_STATIC source/grapa/*.cpp source/utf8proc/utf8proc.c source/openssl-lib/linux-arm64/*.a source/fl-lib/linux-arm64/*.a source/blst-lib/linux-arm64/*.a source/pcre2-lib/linux-arm64/libpcre2-8.a -Lsource/openssl-lib/linux-arm64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
-cp libgrapa.so source/grapa-lib/linux-arm64/libgrapa.so
+cp libgrapa.so source/grapa-other/linux-arm64/libgrapa.so
 rm libgrapa.so
 
-tar -czvf bin/grapa-linux-arm64.tar.gz grapa source/grapa-lib/linux-arm64/*
+tar -czvf bin/grapa-linux-arm64.tar.gz grapa source/grapa-lib/linux-arm64/* source/grapa-other/linux-arm64/*
 
 rm -rf dist
 python3 setup.py sdist
@@ -287,10 +287,10 @@ cp libgrapa.a source/grapa-lib/linux-amd64/libgrapa.a
 rm libgrapa.a
 
 g++ -shared -Isource -DUTF8PROC_STATIC source/grapa/*.cpp source/utf8proc/utf8proc.c source/openssl-lib/linux-amd64/*.a source/fl-lib/linux-amd64/*.a source/blst-lib/linux-amd64/*.a source/pcre2-lib/linux-amd64/libpcre2-8.a -Lsource/openssl-lib/linux-amd64 -std=c++17 -lcrypto -lX11 -lXfixes -lXft -lXext -lXrender -lXinerama -lfontconfig -lXcursor -ldl -lm -static-libgcc -O3 -pthread -fPIC -o libgrapa.so
-cp libgrapa.so source/grapa-lib/linux-amd64/libgrapa.so
+cp libgrapa.so source/grapa-other/linux-amd64/libgrapa.so
 rm libgrapa.so
 
-tar -czvf bin/grapa-linux-amd64.tar.gz grapa source/grapa-lib/linux-amd64/*
+tar -czvf bin/grapa-linux-amd64.tar.gz grapa source/grapa-lib/linux-amd64/* source/grapa-other/linux-amd64/*
 
 rm -rf dist
 python3 setup.py sdist
