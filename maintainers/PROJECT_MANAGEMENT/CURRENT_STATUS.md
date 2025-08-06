@@ -96,6 +96,21 @@
 - ✅ **Impact**: Windows GitHub Actions workflow now triggers properly when version is bumped
 - ✅ **Files Updated**: All three version files now contain version 0.0.247 and are committed to git
 
+### Optional Version Bumping (v0.0.247)
+- ✅ **Added `--bump-version` Flag**: Version bumping is now optional in `build_all_platforms.sh`
+- ✅ **Root Cause**: Version was being bumped on every test run, causing unnecessary version increments
+- ✅ **Solution**: Added `--bump-version` flag to control when version bumping occurs
+- ✅ **Usage**: `./scripts/build_all_platforms.sh` (no version bump) vs `./scripts/build_all_platforms.sh --bump-version`
+- ✅ **Impact**: Windows builds are skipped unless `--bump-version` is specified
+- ✅ **Legacy File Cleanup**: Identified `source/mainpy_minimal.cpp` as unused (only used in ARM64 emulation context)
+
+### Enhanced Version Bumping Script (v0.0.247)
+- ✅ **Added `--bump-version` to `bump_version_and_deploy.py`**: Now supports auto-increment like `build_all_platforms.sh`
+- ✅ **Consistent Interface**: Both scripts now use the same `--bump-version` pattern
+- ✅ **Auto-Increment Logic**: Reads current version from `setup.py` and increments last number
+- ✅ **Usage**: `python3 scripts/bump_version_and_deploy.py --bump-version --commit-and-push`
+- ✅ **Flexibility**: Still supports manual version specification for specific releases
+
 ### Target Platform Restriction (v0.0.242)
 - ✅ **Restricted `--target-platform`**: Limited to macOS platforms only (`mac-arm64`, `mac-amd64`)
 - ✅ **Removed Support**: Eliminated AWS, Windows, and Linux support from `--target-platform` option

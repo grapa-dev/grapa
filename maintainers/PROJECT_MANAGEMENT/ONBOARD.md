@@ -104,13 +104,33 @@ This guide provides comprehensive onboarding information for new agents, develop
 **When user says "increment the version and push to GitHub" or similar:**
 
 **⚠️ REQUIRED PROCESS:**
-1. **Use the automated script:** `python scripts/bump_version_and_deploy.py <new_version>`
-2. **Manual process if script unavailable:**
-   - Update version in 3 files: `setup.py`, `source/mainpy.cpp`, `source/grapa/GrapaLink.h`
-   - Create Git tag: `git tag v<version>`
-   - Push tag: `git push origin v<version>`
-3. **The tag triggers CI/CD workflow automatically**
-4. **PyPI deployment happens automatically after successful build**
+
+#### **Option 1: Full Multi-Platform Release (Recommended)**
+```bash
+./scripts/build_all_platforms.sh --bump-version
+```
+- **What it does**: Builds all platforms (Linux ARM64/AMD64, macOS ARM64/AMD64, Windows AMD64) with version bump
+- **When to use**: Full releases, when you want all platforms built
+- **Version**: Auto-increments current version by 1
+
+#### **Option 2: Quick Version Bump Only**
+```bash
+# Auto-increment version
+python3 scripts/bump_version_and_deploy.py --bump-version --commit-and-push
+
+# Specify exact version
+python3 scripts/bump_version_and_deploy.py <new_version> --commit-and-push
+```
+- **What it does**: Bumps version and triggers Windows GitHub Actions workflow only
+- **When to use**: Quick hotfixes, when you only need Windows build
+- **Version**: Auto-increments current version OR user-specified version
+
+#### **Option 3: Manual Process (Fallback)**
+1. Update version in 3 files: `setup.py`, `source/mainpy.cpp`, `source/grapa/GrapaLink.h`
+2. Create Git tag: `git tag v<version>`
+3. Push tag: `git push origin v<version>`
+
+**All methods trigger CI/CD workflow automatically and PyPI deployment after successful build**
 4. String Interpolation - Implement template literal-style interpolation
 5. CLI Enhancement - Performance options, environment management, error handling
 

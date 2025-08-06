@@ -866,14 +866,74 @@ class GrapaBuilder:
         # Install package
         package_path = os.path.join("dist", package_file)
         subprocess.run([pip_cmd, "install", package_path], check=True)
+        
+        return True
     
+    def _extract_executable_for_testing(self, config: BuildConfig):
+        """Extract executable from bin folder for testing"""
+        import tempfile
+        import shutil
+        
+        # Determine the appropriate bin file and executable name
+        if config.platform == "windows":
+            bin_file = f"bin/grapa-{config.target}.zip"
+            exe_name = "grapa.exe"
+        else:
+            bin_file = f"bin/grapa-{config.target}.tar.gz"
+            exe_name = "grapa"
+        
+        if not os.path.exists(bin_file):
+            print(f"ERROR: Bin file not found: {bin_file}")
+            return None
+        
+        # Create temporary directory for extraction
+        temp_dir = tempfile.mkdtemp()
+        print(f"Extracting executable to: {temp_dir}")
+        
+        try:
+            # Extract the executable
+            if config.platform == "windows":
+                import zipfile
+                with zipfile.ZipFile(bin_file, 'r') as zip_ref:
+                    zip_ref.extract(exe_name, temp_dir)
+            else:
+                import tarfile
+                with tarfile.open(bin_file, 'r:gz') as tar_ref:
+                    tar_ref.extract(exe_name, temp_dir)
+            
+            exe_path = os.path.join(temp_dir, exe_name)
+            if os.path.exists(exe_path):
+                # Make executable (for Unix systems)
+                if config.platform != "windows":
+                    os.chmod(exe_path, 0o755)
+                print(f"SUCCESS: Extracted executable: {exe_path}")
+                return exe_path
+            else:
+                print(f"ERROR: Executable not found in extracted files: {exe_path}")
+                return None
+        except Exception as e:
+            print(f"ERROR: Failed to extract executable: {e}")
+            return None
+
     def run_cli_tests(self, config: BuildConfig):
         """Run CLI tests"""
         print("Running CLI tests...")
         
+        # Check if executable exists in current directory
+        exe_path = "./grapa"
+        if config.platform == "windows":
+            exe_path = "./grapa.exe"
+        
+        if not os.path.exists(exe_path):
+            print(f"Executable not found at {exe_path}, extracting from bin folder...")
+            exe_path = self._extract_executable_for_testing(config)
+            if not exe_path:
+                print("ERROR: Could not extract executable for testing")
+                return False
+        
         # Run Grapa CLI tests
         test_commands = [
-            ["grapa.exe" if config.platform == "windows" else "./grapa", "-f", "test/infrastructure/run_tests.grc"]
+            [exe_path, "-f", "test/infrastructure/run_tests.grc"]
         ]
         
         for cmd in test_commands:
@@ -889,6 +949,33 @@ class GrapaBuilder:
     def run_python_tests(self, config: BuildConfig):
         """Run Python tests"""
         print("Running Python tests...")
+        
+        # Check if grapapy is available
+        try:
+            import grapapy
+            print("SUCCESS: grapapy package is available")
+        except ImportError:
+            print("grapapy package not found, building Python package...")
+            # Build Python package
+            if not self.build_python_package(config):
+                print("ERROR: Failed to build Python package")
+                return False
+            
+            # Install the package
+            dist_files = [f for f in os.listdir("dist") if f.startswith("grapapy-") and f.endswith(".tar.gz")]
+            if not dist_files:
+                print("ERROR: No grapapy package found in dist/")
+                return False
+            
+            package_path = os.path.join("dist", dist_files[0])
+            pip_cmd = "python" if config.platform == "windows" else "python3"
+            
+            try:
+                subprocess.run([pip_cmd, "-m", "pip", "install", package_path], check=True)
+                print("SUCCESS: Python package installed")
+            except subprocess.CalledProcessError as e:
+                print(f"ERROR: Failed to install Python package: {e}")
+                return False
         
         # Run Python tests
         test_commands = [
@@ -1020,7 +1107,7 @@ class GrapaBuilder:
             print(f"Python extension build failed: {e}")
             return False
 
-    def build_bin_only(self, config: BuildConfig, preserve_exe: bool = False) -> bool:
+    def build_bin_only(self, config: BuildConfig, preserve_exe: bool = False, run_tests: bool = False) -> bool:
         """Build executable and libraries, then create compressed package in bin/"""
         print("Building executable and libraries for bin package...")
         print(f"Platform: {config.platform}, Target: {config.target}")
@@ -1040,6 +1127,10 @@ class GrapaBuilder:
             if success:
                 print("Executable and libraries built successfully")
                 print("Package already created by build method")
+                
+                # Run tests if requested
+                if run_tests:
+                    self.run_tests(config, exe_only=True, python_only=False)
                 
                 # Clean up build artifacts
                 self._clean_build_artifacts(preserve_exe=preserve_exe)
@@ -1092,6 +1183,7 @@ class GrapaBuilder:
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
+    parser.add_argument("--test-only", action="store_true", help="Run tests only (assumes build already completed)")
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
     parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip library, Python package, and packaging steps). Useful for fast iterative development and investigation.")
     parser.add_argument("--lib-only", action="store_true", help="Build only the libraries (skip executable, Python package, and packaging steps). Libraries will be copied to the top-level directory.")
@@ -1160,8 +1252,12 @@ def main():
         print("Cleaning build artifacts...")
         builder._clean_build_artifacts(preserve_exe=args.preserve_exe)
     
-    if args.bin_only:
-        success = builder.build_bin_only(config, preserve_exe=args.preserve_exe)
+    if args.test_only:
+        # Run tests only (assumes build already completed)
+        print("Running tests only (assuming build already completed)...")
+        success = builder.run_tests(config, exe_only=args.exe_only, python_only=args.python_only)
+    elif args.bin_only:
+        success = builder.build_bin_only(config, preserve_exe=args.preserve_exe, run_tests=args.test)
     elif args.python_only:
         success = builder.build_python_only(config, preserve_dist=args.preserve_dist, run_tests=args.test)
     else:

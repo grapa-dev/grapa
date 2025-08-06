@@ -7,8 +7,14 @@ This script automates the complete process of:
 2. Creating a Git tag
 3. Pushing to trigger CI/CD deployment
 
-Usage: python scripts/bump_version_and_deploy.py [new_version]
-Example: python scripts/bump_version_and_deploy.py 0.0.116
+Usage: 
+  python scripts/bump_version_and_deploy.py <new_version> [--commit-and-push]
+  python scripts/bump_version_and_deploy.py --bump-version [--commit-and-push]
+
+Examples:
+  python scripts/bump_version_and_deploy.py 0.0.116
+  python scripts/bump_version_and_deploy.py 0.0.116 --commit-and-push
+  python scripts/bump_version_and_deploy.py --bump-version --commit-and-push
 """
 
 import sys
@@ -30,14 +36,54 @@ def update_version_in_file(file_path, old_version_pattern, new_version):
     
     print(f"SUCCESS: Updated {file_path}")
 
+def get_current_version():
+    """Get current version from setup.py"""
+    try:
+        with open("setup.py", 'r') as f:
+            content = f.read()
+            match = re.search(r'grapapy_version = "([^"]+)"', content)
+            if match:
+                return match.group(1)
+    except FileNotFoundError:
+        pass
+    return None
+
+def calculate_next_version(current_version):
+    """Calculate next version by incrementing last number"""
+    parts = current_version.split('.')
+    if len(parts) == 3:
+        parts[2] = str(int(parts[2]) + 1)
+        return '.'.join(parts)
+    return None
+
 def main():
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("Usage: python scripts/bump_version_and_deploy.py <new_version> [--commit-and-push]")
+    if len(sys.argv) < 2:
+        print("Usage: python scripts/bump_version_and_deploy.py <new_version|--bump-version> [--commit-and-push]")
         print("Example: python scripts/bump_version_and_deploy.py 0.0.116")
         print("Example: python scripts/bump_version_and_deploy.py 0.0.116 --commit-and-push")
+        print("Example: python scripts/bump_version_and_deploy.py --bump-version --commit-and-push")
         sys.exit(1)
     
-    new_version = sys.argv[1]
+    # Check if --bump-version is requested
+    if sys.argv[1] == "--bump-version":
+        current_version = get_current_version()
+        if not current_version:
+            print("ERROR: Could not read current version from setup.py")
+            sys.exit(1)
+        
+        new_version = calculate_next_version(current_version)
+        if not new_version:
+            print("ERROR: Could not calculate next version")
+            sys.exit(1)
+        
+        print(f"INFO: Current version: {current_version}")
+        print(f"INFO: Bumping to version: {new_version}")
+        
+        # Remove --bump-version from argv and replace with calculated version
+        sys.argv[1] = new_version
+    else:
+        new_version = sys.argv[1]
+    
     commit_and_push = len(sys.argv) == 3 and sys.argv[2] == "--commit-and-push"
     
     # Validate version format
