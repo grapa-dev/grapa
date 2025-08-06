@@ -212,7 +212,6 @@ sudo apt install -y libxinerama-dev
 For Ubuntu 20.04, enable c++17
 ```
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-sudo apt update
 sudo apt install g++-13
 sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
 sudo update-alternatives --config g++
