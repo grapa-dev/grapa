@@ -30,9 +30,9 @@ docker run --platform=linux/amd64 -it --rm \
         mkdir -p source/grapa-other/linux-amd64
         mkdir -p bin
         
-        # Build Grapa using build.py (without --exe-only to trigger package creation)
+        # Build Grapa using build.py with --bin-only to create compressed package
         echo '📦 Building Grapa Application and creating package using build.py...'
-        python3 build.py
+        python3 build.py --bin-only
         echo '✅ Grapa Application and package built successfully'
         
         echo '🎉 All Grapa components built successfully!'
