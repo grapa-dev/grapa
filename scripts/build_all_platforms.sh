@@ -34,10 +34,10 @@ build_platform() {
             mkdir -p source/grapa-other/$platform-$arch
             mkdir -p bin
             
-            # Build Grapa Application and create package using build.py
-            echo '📦 Building Grapa Application and creating package for $platform-$arch using build.py...'
-            python3 build.py
-            echo '✅ Grapa Application and package built successfully for $platform-$arch'
+                               # Build Grapa Application and create package using build.py
+                   echo '📦 Building Grapa Application and creating package for $platform-$arch using build.py...'
+                   python3 build.py --bin-only
+                   echo '✅ Grapa Application and package built successfully for $platform-$arch'
             
             echo '🎉 All Grapa components built successfully for $platform-$arch!'
         "
@@ -55,15 +55,52 @@ build_platform "linux" "arm64" "linux/arm64"
 # Linux AMD64  
 build_platform "linux" "amd64" "linux/amd64"
 
-# Note: Windows and macOS builds would need different Docker containers
-# For now, we'll focus on Linux builds which can be done with the current setup
+# macOS ARM64 (native build on Mac)
 echo ""
-echo "⚠️  Note: Windows and macOS builds require different Docker containers"
-echo "   - Windows: Requires Windows containers with Visual Studio"
-echo "   - macOS: Requires macOS containers (limited Docker support)"
+echo "🍎 Building for macOS ARM64 (native)..."
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "✅ Running on macOS, building natively..."
+    mkdir -p source/grapa-lib/mac-arm64
+    mkdir -p source/grapa-other/mac-arm64
+    mkdir -p bin
+    python3 build.py --bin-only
+    echo "✅ macOS ARM64 build completed"
+else
+    echo "⚠️  macOS ARM64 build skipped (not on macOS)"
+fi
+
+# macOS AMD64 (cross-compilation from ARM64 Mac)
 echo ""
-echo "✅ Linux builds completed successfully!"
-echo "📁 Applications: grapa (Linux ARM64 and AMD64)"
-echo "📁 Static libraries: source/grapa-lib/linux-*/libgrapa.a"
-echo "📁 Shared libraries: source/grapa-other/linux-*/libgrapa.so"
-echo "📁 Compressed files: bin/grapa-linux-*.tar.gz" 
+echo "🍎 Building for macOS AMD64 (cross-compilation)..."
+if [[ "$OSTYPE" == "darwin"* && "$(uname -m)" == "arm64" ]]; then
+    echo "✅ Running on ARM64 Mac, using cross-compilation..."
+    mkdir -p source/grapa-lib/mac-amd64
+    mkdir -p source/grapa-other/mac-amd64
+    mkdir -p bin
+    python3 build.py --bin-only --target-platform mac-amd64
+    echo "✅ macOS AMD64 build completed"
+else
+    echo "⚠️  macOS AMD64 build skipped (requires ARM64 Mac)"
+fi
+
+# Windows AMD64 (requires Windows machine)
+echo ""
+echo "🪟 Building for Windows AMD64..."
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+    echo "✅ Running on Windows, building natively..."
+    mkdir -p source/grapa-lib/win-amd64
+    mkdir -p source/grapa-other/win-amd64
+    mkdir -p bin
+    python build.py --bin-only
+    echo "✅ Windows AMD64 build completed"
+else
+    echo "⚠️  Windows AMD64 build skipped (requires Windows machine)"
+    echo "   Options: Windows machine, VM, or GitHub Actions (.github/workflows/build-windows.yml)"
+fi
+
+echo ""
+echo "✅ All available builds completed successfully!"
+echo "📁 Applications: grapa (Linux ARM64/AMD64, macOS ARM64/AMD64)"
+echo "📁 Static libraries: source/grapa-lib/*/libgrapa.a"
+echo "📁 Shared libraries: source/grapa-other/*/libgrapa.so"
+echo "📁 Compressed files: bin/grapa-*.tar.gz" 

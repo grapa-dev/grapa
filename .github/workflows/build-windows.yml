@@ -1,0 +1,58 @@
+name: Build Windows AMD64
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'source/**'
+      - 'build.py'
+      - 'setup.py'
+      - '.github/workflows/build-windows.yml'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install Visual Studio Build Tools
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Create output directories
+      run: |
+        mkdir -p source/grapa-lib/win-amd64
+        mkdir -p source/grapa-other/win-amd64
+        mkdir -p bin
+        
+    - name: Build Grapa for Windows AMD64
+      run: |
+        echo "🚀 Building Grapa for Windows AMD64..."
+        python build.py --bin-only
+        echo "✅ Build completed successfully!"
+        
+    - name: List build artifacts
+      run: |
+        echo "📁 Build artifacts:"
+        ls -la grapa.exe
+        ls -la source/grapa-lib/win-amd64/
+        ls -la source/grapa-other/win-amd64/
+        ls -la bin/grapa-win-amd64.tar.gz
+        
+    - name: Upload Windows build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: grapa-windows-amd64
+        path: |
+          grapa.exe
+          source/grapa-lib/win-amd64/
+          source/grapa-other/win-amd64/
+          bin/grapa-win-amd64.tar.gz
+        retention-days: 30 
