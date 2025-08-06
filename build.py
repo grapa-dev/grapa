@@ -380,17 +380,17 @@ class GrapaBuilder:
                 # Use subprocess.run for better error handling
                 subprocess.run(cmd, check=True)
             except subprocess.CalledProcessError as e:
-                print(f"❌ Build failed: {e}")
+                print(f"Build failed: {e}")
                 raise RuntimeError(f"Build failed with exit code {e.returncode}")
             except Exception as e:
-                print(f"❌ Build failed: {e}")
+                print(f"Build failed: {e}")
                 raise
             
             # Check if executable was created
             if os.path.exists(config.output_name):
-                print(f"✅ Executable created: {config.output_name}")
+                print(f"Executable created: {config.output_name}")
             else:
-                print(f"❌ Executable not found: {config.output_name}")
+                print(f"Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
     
     def _run_linux_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
@@ -684,7 +684,7 @@ class GrapaBuilder:
                     try:
                         subprocess.run(chroot_bash_cmd, check=True, capture_output=True, text=True)
                     except subprocess.CalledProcessError as e:
-                        print(f"❌ Build failed with exit code {e.returncode}")
+                        print(f"Build failed with exit code {e.returncode}")
                         print(f"STDOUT: {e.stdout}")
                         print(f"STDERR: {e.stderr}")
                         raise
@@ -695,17 +695,17 @@ class GrapaBuilder:
                     else:
                         subprocess.run(cmd, check=True)
             except subprocess.CalledProcessError as e:
-                print(f"❌ Build failed: {e}")
+                print(f"Build failed: {e}")
                 raise RuntimeError(f"Build failed with exit code {e.returncode}")
             except Exception as e:
-                print(f"❌ Build failed: {e}")
+                print(f"Build failed: {e}")
                 raise
             
             # Check if executable was created
             if os.path.exists(config.output_name):
-                print(f"✅ Executable created: {config.output_name}")
+                print(f"Executable created: {config.output_name}")
             else:
-                print(f"❌ Executable not found: {config.output_name}")
+                print(f"Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
     
 
