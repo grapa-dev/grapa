@@ -566,6 +566,20 @@ class GrapaBuilder:
                     current_platform = platform.system().lower()
                     if current_platform == "linux":
                         cmd.insert(-2, "-static-libgcc")
+                        
+                elif config.target.startswith("mac-"):
+                    print(f"Building shared library for {config.target} using working Mac reference command...")
+                    
+                    # For Mac builds, compile utf8proc separately first (like the working reference)
+                    utf8proc_cmd = ["clang", "-Isource", "-DUTF8PROC_STATIC", "-c", "source/utf8proc/utf8proc.c", "-m64", "-O3"]
+                    subprocess.run(utf8proc_cmd, check=True)
+                    
+                    # Build the exact Mac command that works (from BUILD.md)
+                    cmd = [
+                        "clang++", "-shared", "-Isource"
+                    ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                        "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit", "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                    ]
                 
                 # Execute shared library build
                 print(f"Executing shared library build command: {' '.join(cmd)}")
@@ -599,6 +613,20 @@ class GrapaBuilder:
                 current_platform = platform.system().lower()
                 if current_platform == "linux":
                     cmd.insert(-2, "-static-libgcc")
+                    
+            elif config.target.startswith("mac-"):
+                print(f"Building executable for {config.target} using working Mac reference command...")
+                
+                # For Mac builds, compile utf8proc separately first (like the working reference)
+                utf8proc_cmd = ["clang", "-Isource", "-DUTF8PROC_STATIC", "-c", "source/utf8proc/utf8proc.c", "-m64", "-O3"]
+                subprocess.run(utf8proc_cmd, check=True)
+                
+                # Build the exact Mac command that works (from BUILD.md)
+                cmd = [
+                    "clang++", "-Isource", "source/main.cpp"
+                ] + cpp_files + ["utf8proc.o"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                    "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit", "-std=c++17", "-m64", "-O3", "-pthread", "-o", config.output_name
+                ]
             
             try:
                 # Execute the build command (simplified - no emulation needed)
