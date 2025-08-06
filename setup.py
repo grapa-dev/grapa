@@ -39,7 +39,7 @@ extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
 grapapy_version = "0.0.237"
-is_aws = False
+
 is_apple = False
 from_os = ''
 is_arm = platform.machine().lower() in ["aarch64", "arm64"]
@@ -148,25 +148,10 @@ if sys.platform.startswith('win32'):
         print("Warning: Windows SDK not found, build may fail")
 if sys.platform.startswith('linux'):
     from_os = 'linux-amd64'
-    temp_result = subprocess.run(["cat", "/etc/os-release"])
-    process = subprocess.Popen(['cat', '/etc/os-release'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    if stderr.decode()=='':
-        stdouts = stdout.decode()
-        if stdouts.find("Amazon Linux")>=0:
-            is_aws = True
-    if is_aws:
-        from_os = 'aws-amd64'
-        if is_arm:
-            from_os = 'aws-arm64'
-        # For Python extension, we don't need X11 GUI libraries
-        extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
-    else:
-        from_os = 'linux-amd64'
-        if is_arm:
-            from_os = 'linux-arm64'
-        # For Python extension, we don't need X11 GUI libraries
-        extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
+    if is_arm:
+        from_os = 'linux-arm64'
+    # For Python extension, we don't need X11 GUI libraries
+    extra_link_args = ['-std=c++17','-O3','-pthread','-ldl','-lm']
     so_ext = '.a'  # All platforms use static libraries (.a) for Extension-based approach
     lib_filename = 'libgrapa' + so_ext
     lib_pathfile = 'grapa-lib/' + from_os + '/' + lib_filename
@@ -450,16 +435,10 @@ class CustomBuildExt(build_ext):
 def pick_library_dirs():
     my_system = platform.system()
     if my_system == 'Linux':
-        if is_aws:
-            if is_arm:
-                return ["source", "source/grapa-lib/aws-arm64"]
-            else:
-                return ["source", "source/grapa-lib/aws-amd64"]
+        if is_arm:
+            return ["source", "source/grapa-lib/linux-arm64"]
         else:
-            if is_arm:
-                return ["source", "source/grapa-lib/linux-arm64"]
-            else:
-                return ["source", "source/grapa-lib/linux-amd64"]
+            return ["source", "source/grapa-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
             return ["source", "source/grapa-lib/mac-arm64", "source/blst-lib/mac-arm64", "source/fl-lib/mac-arm64", "source/openssl-lib/mac-arm64", "source/pcre2-lib/mac-arm64"]

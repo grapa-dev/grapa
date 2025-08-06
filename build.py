@@ -130,12 +130,7 @@ class GrapaBuilder:
             else:
                 raise RuntimeError(f"Unsupported Mac architecture: {machine}")
         elif system == "linux":
-            # Check if this is AWS Linux by looking for Amazon Linux specific files
-            if (os.path.exists("/etc/system-release") and 
-                ("Amazon Linux" in open("/etc/system-release").read())):
-                return "aws", "arm64" if machine == "aarch64" else "amd64"
-            else:
-                return "linux", "arm64" if machine == "aarch64" else "amd64"
+            return "linux", "arm64" if machine == "aarch64" else "amd64"
         else:
             raise RuntimeError(f"Unsupported platform: {system}")
     
@@ -276,22 +271,13 @@ class GrapaBuilder:
         
         try:
             # Build main executable
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=False)
-            else:
-                self._run_linux_build_command(config, is_library=False)
+            self._run_linux_build_command(config, is_library=False)
             
             # Build static library
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=True, is_static=True)
-            else:
-                self._run_linux_build_command(config, is_library=True, is_static=True)
+            self._run_linux_build_command(config, is_library=True, is_static=True)
             
             # Build shared library
-            if config.platform == "aws":
-                self._run_aws_build_command(config, is_library=True, is_static=False)
-            else:
-                self._run_linux_build_command(config, is_library=True, is_static=False)
+            self._run_linux_build_command(config, is_library=True, is_static=False)
             
             if not exe_only:
                 # Create package
@@ -722,101 +708,7 @@ class GrapaBuilder:
                 print(f"❌ Executable not found: {config.output_name}")
                 raise RuntimeError(f"Executable {config.output_name} was not created")
     
-    def _run_aws_build_command(self, config: BuildConfig, is_library: bool = False, is_static: bool = False):
-        """Run AWS build command (Amazon Linux)"""
-        import glob
-        
-        # Remove existing executable only when building executable
-        if not is_library and os.path.exists(config.output_name):
-            os.remove(config.output_name)
-        
-        print(f"Building {'library' if is_library else 'executable'} for {config.target}...")
-        
-        # Build utf8proc first (C compilation) - only for static libraries and executables
-        if is_library and is_static:
-            print("Building utf8proc...")
-            subprocess.run([
-                "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
-                "source/utf8proc/utf8proc.c", "-O3", "-fPIC"
-            ], check=True)
-        elif not is_library:
-            print("Building utf8proc...")
-            subprocess.run([
-                "gcc", "-Isource", "-DUTF8PROC_STATIC", "-c", 
-                "source/utf8proc/utf8proc.c", "-O3"
-            ], check=True)
-        
-        if is_library:
-            if is_static:
-                # Build static library
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                subprocess.run([
-                    "g++", "-Isource", "-c"
-                ] + cpp_files + [
-                    "-std=c++17", "-O3", "-pthread"
-                ], check=True)
-                # Get all .o files
-                obj_files = glob.glob("*.o")
-                if not obj_files:
-                    raise RuntimeError("No object files found for static library")
-                subprocess.run(["ar", "-crs", "libgrapa.a"] + obj_files, check=True)
-                shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
-                os.remove("libgrapa.a")
-            else:
-                # Build shared library - match original working script exactly
-                cpp_files = glob.glob("source/grapa/*.cpp")
-                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-                
-                cmd = ["g++", "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ] + [
-                    "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                    "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc"
-                ]
-                
-                print(f"Executing shared library build command: {' '.join(cmd)}")
-                subprocess.run(cmd, check=True)
-                # Ensure the grapa-other directory exists
-                os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
-                shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
-                os.remove("libgrapa.so")
-        else:
-            # Build executable
-            cpp_files = glob.glob("source/grapa/*.cpp")
-            openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-            fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-            blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-            pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-            
-            cmd = [
-                "g++", "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + [
-                f"source/pcre2-lib/{config.target}/libpcre2-8.a", f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", 
-                "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", 
-                "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-static-libgcc", 
-                "-O3", "-pthread", "-o", config.output_name
-            ]
-            
-            print(f"Current working directory: {os.getcwd()}")
-            print(f"Executing executable build command: {' '.join(cmd)}")
-            try:
-                # Try os.system() first - it might be faster than subprocess
-                result = os.system(" ".join(cmd))
-                if result != 0:
-                    raise RuntimeError(f"Build failed with exit code {result}")
-            except Exception as e:
-                print(f"❌ Build failed: {e}")
-                raise
-            
-            # Check if executable was created
-            if os.path.exists(config.output_name):
-                print(f"✅ Executable created: {config.output_name}")
-            else:
-                print(f"❌ Executable not found: {config.output_name}")
-                raise RuntimeError(f"Executable {config.output_name} was not created")
+
     
     def _clean_build_artifacts(self):
         """Clean build artifacts that should be removed after build"""
@@ -987,8 +879,6 @@ class GrapaBuilder:
                 success = self.build_mac(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "linux":
                 success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
-            elif config.platform == "aws":
-                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -1024,8 +914,6 @@ class GrapaBuilder:
             elif config.platform == "mac":
                 success = self.build_mac(config, exe_only=False, lib_only=True)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=False, lib_only=True)
-            elif config.platform == "aws":
                 success = self.build_linux_aws(config, exe_only=False, lib_only=True)
             else:
                 print(f"Unsupported platform: {config.platform}")
