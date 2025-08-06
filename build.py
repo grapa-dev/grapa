@@ -552,47 +552,24 @@ class GrapaBuilder:
                 blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
-                # For shared library, use dynamic linking (no -static-libgcc)
+                # For shared library, use the exact working command from BUILD.md
                 if config.target.startswith("linux-"):
-                    # For all Linux builds, include libbsd for FLTK compatibility
-                    print("Using Linux build with libbsd for FLTK compatibility")
-                    system_libs = ["-ldl", "-lm", "-lbsd"]
-                
-                cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
-                ] + cross_flags + [
-                    "-lcrypto"
-                ] + system_libs
-                
-                # Use C++23 for ARM64 builds to match pre-built libraries
-                if config.target == "linux-arm64":
-                    # Replace C++17 with C++23 for ARM64 builds
-                    cmd = [arg.replace("-std=c++17", "-std=c++23") if arg == "-std=c++17" else arg for arg in cmd]
-                
-                # Add -static-libgcc for Linux builds (matching working command)
-                if config.platform == "linux":
-                    cmd.extend(["-static-libgcc"])
-                
-                # Add -ljpeg for shared library builds (include for ARM64 native compilation)
-                if not is_arm64_emulation:
-                    cmd.insert(-2, "-ljpeg")
-                else:
-                    # For ARM64 native compilation, include jpeg (matching AWS approach)
-                    cmd.insert(-2, "-ljpeg")
+                    print(f"Building shared library for {config.target} using working reference command...")
+                    
+                    # Build the exact command that works (from BUILD.md)
+                    cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                        f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                    ]
+                    
+                    # Add -static-libgcc only for Linux systems (not macOS)
+                    import platform
+                    current_platform = platform.system().lower()
+                    if current_platform == "linux":
+                        cmd.insert(-2, "-static-libgcc")
                 
                 # Execute shared library build
                 print(f"Executing shared library build command: {' '.join(cmd)}")
-                if is_arm64_emulation and arm64_libs_available:
-                    # Use native ARM64 compilation in chroot for emulation
-                    chroot_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(cmd)]
-                    print(f"Running native ARM64 compilation: {' '.join(chroot_cmd)}")
-                    subprocess.run(chroot_cmd, check=True)
-                else:
-                    # Use diagnostic function for cross-compilation or regular compilation
-                    if is_arm64_emulation:
-                        run_diagnostic_cross_compile(cmd)
-                    else:
-                        subprocess.run(cmd, check=True)
+                subprocess.run(cmd, check=True)
                 
                 # Ensure the grapa-other directory exists (standardized shared library location)
                 os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
@@ -606,96 +583,26 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            # For executable build, use X11 libraries with libbsd (required for FLTK on all Linux platforms)
+            # For executable build, use the exact working command from BUILD.md
             if config.target.startswith("linux-"):
-                # For all Linux builds (both ARM64 and AMD64), include X11 libraries and libbsd
-                print("Using Linux build with X11 libraries and libbsd (required for FLTK)")
-                system_libs = ["-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-ldl", "-lm", "-lbsd"]
-            
-            print(f"[DEBUG] Executable build: is_arm64_emulation={is_arm64_emulation}, arm64_libs_available={arm64_libs_available}")
-            
-            cmd = [
-                gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
-            ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
-                f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-o", config.output_name
-            ] + cross_flags + [
-                "-lcrypto"
-            ] + system_libs
-            
-            # Use C++23 for ARM64 builds to match pre-built libraries
-            if config.target == "linux-arm64":
-                # Replace C++17 with C++23 for ARM64 builds
-                cmd = [arg.replace("-std=c++17", "-std=c++23") if arg == "-std=c++17" else arg for arg in cmd]
-            
-            # Add -static-libgcc for Linux builds (matching working command)
-            if config.platform == "linux":
-                cmd.extend(["-static-libgcc"])
-            
-            # Add -ljpeg for executable builds (include for ARM64 native compilation)
-            if not is_arm64_emulation:
-                cmd.insert(-2, "-ljpeg")
-            else:
-                # For ARM64 native compilation, include jpeg (matching AWS approach)
-                cmd.insert(-2, "-ljpeg")
+                print(f"Building executable for {config.target} using working reference command...")
+                
+                # Build the exact command that works (from BUILD.md)
+                cmd = [
+                    gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
+                ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-O3", "-pthread", "-o", config.output_name
+                ]
+                
+                # Add -static-libgcc only for Linux systems (not macOS)
+                import platform
+                current_platform = platform.system().lower()
+                if current_platform == "linux":
+                    cmd.insert(-2, "-static-libgcc")
             
             try:
-                # Use native ARM64 compilation in chroot for emulation
-                if is_arm64_emulation and arm64_libs_available:
-                    # Copy library files into chroot environment
-                    print("Copying library files into ARM64 chroot...")
-                    subprocess.run(["sudo", "cp", "-r", "source/openssl-lib", "./arm64-root/source/"], check=True)
-                    subprocess.run(["sudo", "cp", "-r", "source/fl-lib", "./arm64-root/source/"], check=True)
-                    subprocess.run(["sudo", "cp", "-r", "source/blst-lib", "./arm64-root/source/"], check=True)
-                    subprocess.run(["sudo", "cp", "-r", "source/pcre2-lib", "./arm64-root/source/"], check=True)
-                    
-                    # Debug: Check what's available in chroot
-                    print("=== DEBUG: Checking chroot environment ===")
-                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls /usr/bin/g++"], check=True)
-                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/openssl-lib/linux-arm64/"], check=True)
-                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/fl-lib/linux-arm64/"], check=True)
-                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/blst-lib/linux-arm64/"], check=True)
-                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la /source/pcre2-lib/linux-arm64/"], check=True)
-                    subprocess.run(["sudo", "chroot", "./arm64-root", "bash", "-c", "ls -la source/grapa/"], check=True)
-                    print("=== END DEBUG ===")
-                    
-                    # Update library paths to use chroot-relative paths
-                    openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
-                    fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
-                    blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
-                    pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
-                    
-                    # Convert to chroot-relative paths
-                    chroot_openssl_libs = [lib.replace("source/", "/source/") for lib in openssl_libs]
-                    chroot_fl_libs = [lib.replace("source/", "/source/") for lib in fl_libs]
-                    chroot_blst_libs = [lib.replace("source/", "/source/") for lib in blst_libs]
-                    chroot_pcre2_lib = [lib.replace("source/", "/source/") for lib in pcre2_lib]
-                    
-                    # Build command with chroot-relative paths (using C++17)
-                    chroot_cmd = [
-                        gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp", "source/grapa/*.cpp", "source/utf8proc/utf8proc.c",
-                        f"/source/openssl-lib/{config.target}/*.a", f"/source/fl-lib/{config.target}/*.a", f"/source/blst-lib/{config.target}/*.a", f"/source/pcre2-lib/{config.target}/libpcre2-8.a",
-                        f"-L/source/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-lbsd", "-ldl", "-lm", "-static-libgcc", "-O3", "-pthread", "-o", config.output_name
-                    ]
-                    
-                    print(f"Current working directory: {os.getcwd()}")
-                    print(f"Executing ARM64 chroot build command: {' '.join(chroot_cmd)}")
-                    
-                    # Run native ARM64 compilation in chroot
-                    chroot_bash_cmd = ["sudo", "chroot", "./arm64-root", "bash", "-c", " ".join(chroot_cmd)]
-                    print(f"Running native ARM64 compilation: {' '.join(chroot_bash_cmd)}")
-                    try:
-                        subprocess.run(chroot_bash_cmd, check=True, capture_output=True, text=True)
-                    except subprocess.CalledProcessError as e:
-                        print(f"Build failed with exit code {e.returncode}")
-                        print(f"STDOUT: {e.stdout}")
-                        print(f"STDERR: {e.stderr}")
-                        raise
-                else:
-                    # Use diagnostic function for cross-compilation or regular compilation
-                    if is_arm64_emulation:
-                        run_diagnostic_cross_compile(cmd)
-                    else:
-                        subprocess.run(cmd, check=True)
+                # Execute the build command (simplified - no emulation needed)
+                subprocess.run(cmd, check=True)
             except subprocess.CalledProcessError as e:
                 print(f"Build failed: {e}")
                 raise RuntimeError(f"Build failed with exit code {e.returncode}")
