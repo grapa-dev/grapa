@@ -554,9 +554,9 @@ class GrapaBuilder:
                 
                 # For shared library, use dynamic linking (no -static-libgcc)
                 if is_arm64_emulation:
-                    # For ARM64 cross-compilation, skip GUI dependencies (headless build for Python extension)
-                    print("Using headless build for ARM64 cross-compilation (no GUI dependencies)")
-                    system_libs = ["-ldl", "-lm"]
+                    # For ARM64 cross-compilation, include libbsd for FLTK compatibility
+                    print("Using ARM64 build with libbsd for FLTK compatibility")
+                    system_libs = ["-ldl", "-lm", "-lbsd"]
                 else:
                     # For native builds, use dynamic linking without libbsd (not needed for AMD64)
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
@@ -607,9 +607,9 @@ class GrapaBuilder:
             
             # For executable build, use native ARM64 compilation with X11 libraries (matching AWS approach)
             if is_arm64_emulation:
-                # For ARM64 native compilation, include X11 libraries (matching AWS ARM64 build)
-                print("Using native ARM64 compilation with X11 libraries (matching AWS approach)")
-                system_libs = ["-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-ldl", "-lm"]
+                # For ARM64 native compilation, include X11 libraries and libbsd (matching AWS ARM64 build)
+                print("Using native ARM64 compilation with X11 libraries and libbsd (matching AWS approach)")
+                system_libs = ["-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-ldl", "-lm", "-lbsd"]
             else:
                 # For native builds, use dynamic linking without libbsd (not needed for AMD64)
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",

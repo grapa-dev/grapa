@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     libfontconfig-dev \
     libxcursor-dev \
     libjpeg-dev \
+    libbsd-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
