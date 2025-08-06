@@ -61,6 +61,22 @@
 - ✅ **Comprehensive Cleanup**: Now removes all build artifacts: `.o`, `.a`, `.so`, `.lib`, `.dll`, `dist/`, `grapapy.egg-info/`
 - ✅ **Usage**: `python3 build.py --clean` to clean all build artifacts from project root
 
+### Enhanced Build Testing and Validation (v0.0.242)
+- ✅ **Improved Failure Reporting**: Added clear error messages and proper exit codes to `build_all_platforms.sh`
+- ✅ **CLI Testing**: Added function to extract and test CLI executables from compressed packages
+- ✅ **Python Testing**: Simplified Python package version validation
+- ✅ **Timeout Protection**: Added 5-minute timeout to Windows artifact downloads
+- ✅ **Comprehensive Summary**: Added final build summary with clear success/failure status
+- ✅ **Better Error Handling**: Improved error messages and exit codes throughout the build process
+
+### Target Platform Restriction (v0.0.242)
+- ✅ **Restricted `--target-platform`**: Limited to macOS platforms only (`mac-arm64`, `mac-amd64`)
+- ✅ **Removed Support**: Eliminated AWS, Windows, and Linux support from `--target-platform` option
+- ✅ **Error Handling**: Added proper error messages for unsupported platforms
+- ✅ **Help Text**: Updated help text to reflect macOS-only support
+- ✅ **macOS Cross-Compilation**: Verified working on M3 Mac (ARM64 to AMD64 cross-compilation successful)
+- ✅ **Validation**: Tested with `python3 build.py --bin-only --target-platform mac-amd64 --preserve-exe`
+
 ### Linux ARM64/AMD64 Docker Build System (v0.0.237)
 - ✅ **Docker Ubuntu 22.04 ARM64**: Successfully built all libraries using Docker container
 - ✅ **C++17 Compatibility**: All libraries (OpenSSL, FLTK, PCRE2, BLST) compiled with C++17 to avoid `__isoc23_` errors
@@ -98,14 +114,14 @@
 
 ## 🚀 CURRENT VALIDATION STATUS
 
-### **Distribution Build System - ✅ MOSTLY SUCCESSFUL WITH IDENTIFIED ISSUE**
-- **Status**: ✅ **MOSTLY SUCCESSFUL** - 4/5 platforms working, 1 needs library rebuild
+### **Distribution Build System - ✅ FULLY SUCCESSFUL**
+- **Status**: ✅ **FULLY SUCCESSFUL** - All 5 platforms working
 - **Validated Platforms**: 
   - ✅ **Linux ARM64**: Confirmed working (Docker build successful)
+  - ✅ **Linux AMD64**: Confirmed working (Docker build successful with platform fix)
   - ✅ **Mac ARM64**: Confirmed working (native build successful)
-  - ✅ **Mac AMD64**: Confirmed working (native build successful)
+  - ✅ **Mac AMD64**: Confirmed working (cross-compilation from ARM64 Mac successful)
   - ✅ **Windows AMD64**: Confirmed working (GitHub Actions + manual package update)
-  - ❌ **Linux AMD64**: Build system working but third-party libraries incompatible (July 21st libraries)
 - **Python Distribution**: 
   - ✅ **Python package**: Successfully built and installed (version 0.0.237)
   - ✅ **Python extension**: Working correctly (grapapy.eval() functional)
@@ -122,13 +138,13 @@
   - ✅ **Validation logic**: Fixed to properly detect file updates during build process
   - ✅ **Windows package**: Manually updated to use fresh artifacts from GitHub Actions
 - **Known Issues**: 
-  - ❌ **Linux AMD64**: Docker container runs on ARM64 architecture, causing library compatibility issues
-  - **Error**: `file in wrong format` during linking (OpenSSL, PCRE2 libraries)
-  - **Root Cause**: Docker container is aarch64 but trying to build for x86_64, causing architecture mismatch
-  - **Solution**: Use native Linux AMD64 system for AMD64 builds (script: `scripts/build_linux_amd64_native.sh`)
+  - ✅ **Linux AMD64**: FIXED - Added `--platform=linux/amd64` to Docker commands
+  - **Error**: `file in wrong format` during linking due to cross-compilation issues
+  - **Root Cause**: Docker container was aarch64 but trying to build for x86_64 (cross-compilation not supported)
+  - **Solution**: ✅ IMPLEMENTED - Docker now runs natively on AMD64 platform (no cross-compilation)
 - **Dependencies**: Added Linux build dependency documentation
-- **Artifacts**: 4/5 platform packages successfully built and available in `bin/`
-- **Final Status**: 4/5 platforms fully operational, 1 needs library rebuild
+- **Artifacts**: 5/5 platform packages successfully built and available in `bin/`
+- **Final Status**: 5/5 platforms fully operational
 - **Version Validation**: Confirms `grapapy.__version__` matches `$VERSION` environment variable
 - **Next Action**: Test complete build system with `./scripts/build_all_platforms.sh`
 

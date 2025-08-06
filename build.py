@@ -681,7 +681,7 @@ class GrapaBuilder:
     
 
     
-    def _clean_build_artifacts(self):
+    def _clean_build_artifacts(self, preserve_exe: bool = False):
         """Clean build artifacts that should be removed after build"""
         print("Cleaning build artifacts...")
         
@@ -711,30 +711,37 @@ class GrapaBuilder:
             except subprocess.CalledProcessError:
                 print(f"Warning: Could not remove ARM64 chroot Python cache, continuing...")
         
-        # Clean object files (but preserve executable)
+        # Clean object files
         for obj_file in Path(".").glob("*.o"):
             print(f"Removing {obj_file}...")
             obj_file.unlink()
         
-        # Clean library files (but preserve executable)
+        # Clean library files
         for lib_file in Path(".").glob("*.a"):
             print(f"Removing {lib_file}...")
             lib_file.unlink()
         
-        # Clean shared library files (but preserve executable)
+        # Clean shared library files
         for so_file in Path(".").glob("*.so"):
             print(f"Removing {so_file}...")
             so_file.unlink()
         
-        # Clean Windows library files (but preserve executable)
+        # Clean Windows library files
         for lib_file in Path(".").glob("*.lib"):
             print(f"Removing {lib_file}...")
             lib_file.unlink()
         
-        # Clean Windows DLL files (but preserve executable)
+        # Clean Windows DLL files
         for dll_file in Path(".").glob("*.dll"):
             print(f"Removing {dll_file}...")
             dll_file.unlink()
+        
+        # Clean executable files (unless preserve_exe is True)
+        if not preserve_exe:
+            for exe_file in Path(".").glob("grapa*"):
+                if exe_file.is_file() and os.access(exe_file, os.X_OK):
+                    print(f"Removing executable {exe_file}...")
+                    exe_file.unlink()
     
     def _clean_windows_build(self):
         """Clean Windows build artifacts"""
@@ -848,7 +855,7 @@ class GrapaBuilder:
         
         return True
     
-    def build(self, run_tests: bool = False, exe_only: bool = False, lib_only: bool = False, python_only: bool = False, preserve_dist: bool = False, target_config: BuildConfig = None) -> bool:
+    def build(self, run_tests: bool = False, exe_only: bool = False, lib_only: bool = False, python_only: bool = False, preserve_dist: bool = False, preserve_exe: bool = False, target_config: BuildConfig = None) -> bool:
         """Build for the current platform and architecture"""
         if target_config is None:
             platform, arch = self.detect_platform()
@@ -896,7 +903,7 @@ class GrapaBuilder:
         finally:
             # Always clean up build artifacts, unless preserve_dist is requested
             if not preserve_dist:
-                self._clean_build_artifacts()
+                self._clean_build_artifacts(preserve_exe=preserve_exe)
 
     def build_libraries_only(self, config: BuildConfig) -> bool:
         """Build only the libraries (skip executable and Python package)"""
@@ -937,7 +944,7 @@ class GrapaBuilder:
             print(f"Python extension build failed: {e}")
             return False
 
-    def build_bin_only(self, config: BuildConfig) -> bool:
+    def build_bin_only(self, config: BuildConfig, preserve_exe: bool = False) -> bool:
         """Build executable and libraries, then create compressed package in bin/"""
         print("Building executable and libraries for bin package...")
         
@@ -966,6 +973,10 @@ class GrapaBuilder:
                     self._create_linux_package(config)
                 
                 print(f"Compressed package created: bin/grapa-{config.target}.tar.gz")
+                
+                # Clean up build artifacts
+                self._clean_build_artifacts(preserve_exe=preserve_exe)
+                
                 return True
             else:
                 print("Build failed")
@@ -1020,7 +1031,8 @@ def main():
     parser.add_argument("--bin-only", action="store_true", help="Build executable and libraries, then create compressed package in bin/ directory. This creates the complete distribution package.")
     parser.add_argument("--python-only", action="store_true", help="Build only the Python extension (assumes executable already exists). Useful for debugging Python extension issues without rebuilding the executable.")
     parser.add_argument("--preserve-dist", action="store_true", help="Preserve the dist/ directory after build (useful for debugging or manual installation)")
-    parser.add_argument("--target-platform", type=str, help="Override target platform (e.g., 'mac-amd64' for cross-compilation from ARM64)")
+    parser.add_argument("--preserve-exe", action="store_true", help="Preserve the executable after build (useful for testing or manual use)")
+    parser.add_argument("--target-platform", type=str, help="Override target platform (mac-arm64 or mac-amd64 for macOS cross-compilation)")
     
     args = parser.parse_args()
     
@@ -1048,21 +1060,25 @@ def main():
             return 1
     elif args.target_platform:
         print(f"Using explicit target platform: {args.target_platform}")
-        # Parse target platform like "mac-amd64", "linux-arm64", etc.
+        # Parse target platform like "mac-amd64", "mac-arm64"
         if "-" in args.target_platform:
             platform, arch = args.target_platform.split("-", 1)
-            # Normalize platform names to match build logic expectations
-            if platform == "win":
-                platform = "windows"
-            elif platform == "mac":
+            # Only support macOS platforms
+            if platform == "mac":
                 platform = "mac"
-            elif platform == "linux":
-                platform = "linux"
-            elif platform == "aws":
-                platform = "aws"
-            print(f"Building for {platform} {arch}")
+                if arch not in ["arm64", "amd64"]:
+                    print(f"❌ Unsupported macOS architecture: {arch}")
+                    print("Supported architectures: arm64, amd64")
+                    return 1
+                print(f"Building for {platform} {arch}")
+            else:
+                print(f"❌ Unsupported platform: {platform}")
+                print("Only macOS platforms are supported with --target-platform")
+                print("Supported platforms: mac-arm64, mac-amd64")
+                return 1
         else:
             print(f"Invalid target platform format: {args.target_platform}")
+            print("Expected format: mac-arm64 or mac-amd64")
             return 1
     else:
         # Build for current platform only
@@ -1075,13 +1091,13 @@ def main():
     # Handle clean option
     if args.clean:
         print("Cleaning build artifacts...")
-        builder._clean_build_artifacts()
+        builder._clean_build_artifacts(preserve_exe=args.preserve_exe)
         return 0
     
     if args.bin_only:
-        success = builder.build_bin_only(config)
+        success = builder.build_bin_only(config, preserve_exe=args.preserve_exe)
     else:
-        success = builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist, target_config=config)
+        success = builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist, preserve_exe=args.preserve_exe, target_config=config)
     
     if success:
         print(f"\n{'='*50}")

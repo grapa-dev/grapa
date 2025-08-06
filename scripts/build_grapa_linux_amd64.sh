@@ -10,11 +10,12 @@ echo "🐳 Building Grapa for Linux AMD64..."
 
 # Build the Docker image
 echo "Building Docker image..."
-docker build -f Dockerfile.grapa-build -t grapa-build .
+docker build --platform=linux/amd64 -f Dockerfile.grapa-build -t grapa-build .
 
 # Run the container and build Grapa
 echo "Running container and building Grapa..."
 docker run -it --rm \
+    --platform=linux/amd64 \
     -v $HOME:/data \
     grapa-build \
     bash -c "
@@ -32,7 +33,7 @@ docker run -it --rm \
         
         # Build Grapa using build.py with --bin-only to create compressed package
         echo '📦 Building Grapa Application and creating package using build.py...'
-        python3 build.py --bin-only --target-platform linux-amd64
+        python3 build.py --bin-only --clean
         echo '✅ Grapa Application and package built successfully'
         
         echo '🎉 All Grapa components built successfully!'

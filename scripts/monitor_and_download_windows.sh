@@ -37,10 +37,12 @@ download_artifacts() {
     TEMP_DIR=$(mktemp -d)
     echo "📁 Using temporary directory: $TEMP_DIR"
     
-    # Download artifacts to temporary directory
-    gh run download "$run_id" --name="grapa-windows-amd64" --dir="$TEMP_DIR"
+    # Download artifacts to temporary directory with timeout
+    echo "⏳ Downloading artifacts (timeout: 5 minutes)..."
+    timeout 300 gh run download "$run_id" --name="grapa-windows-amd64" --dir="$TEMP_DIR"
     
-    if [[ $? -eq 0 ]]; then
+    local download_exit_code=$?
+    if [[ $download_exit_code -eq 0 ]]; then
         echo ""
         echo "✅ Artifacts downloaded successfully!"
         echo ""
@@ -98,13 +100,20 @@ download_artifacts() {
         echo ""
         echo "📁 Downloaded files:"
         ls -la grapa.exe 2>/dev/null || echo "  ❌ grapa.exe (missing)"
-        ls -la source/grapa-lib/win-amd64/ 2>/dev/null || echo "  ❌ source/grapa-lib/win-amd64/ (missing)"
-        ls -la source/grapa-other/win-amd64/ 2>/dev/null || echo "  ❌ source/grapa-other/win-amd64/ (missing)"
-        ls -la bin/grapa-win-amd64.* 2>/dev/null || echo "  ❌ bin/grapa-win-amd64.* (missing)"
         
         return 0
+    elif [[ $download_exit_code -eq 124 ]]; then
+        echo ""
+        echo "❌ Download timed out after 5 minutes"
+        echo "   The download may be taking longer than expected."
+        echo "   You can try running this script again later."
+        rm -rf "$TEMP_DIR"
+        return 1
     else
-        echo "❌ Failed to download artifacts"
+        echo ""
+        echo "❌ Download failed with exit code $download_exit_code"
+        echo "   Please check your network connection and GitHub CLI permissions."
+        rm -rf "$TEMP_DIR"
         return 1
     fi
 }

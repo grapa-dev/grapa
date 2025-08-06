@@ -30,7 +30,7 @@ mkdir -p bin
 
 # Build Grapa using build.py with --bin-only and target platform
 echo "📦 Building Grapa Application and creating package for macOS AMD64..."
-python3 build.py --bin-only --target-platform mac-amd64
+python3 build.py --bin-only --target-platform mac-amd64 --clean
 echo "✅ Grapa Application and package built successfully"
 
 echo "🎉 All Grapa components built successfully!"

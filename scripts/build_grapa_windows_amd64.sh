@@ -25,7 +25,7 @@ if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     
     # Build Grapa using build.py with --bin-only
     echo "📦 Building Grapa Application and creating package using build.py..."
-    python build.py --bin-only
+    python build.py --bin-only --clean
     echo "✅ Grapa Application and package built successfully"
     
     echo ""
