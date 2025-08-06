@@ -35,6 +35,11 @@ jobs:
     - name: Build Grapa for Windows AMD64
       run: |
         echo "🚀 Building Grapa for Windows AMD64..."
+        echo "📋 Python version:"
+        python --version
+        echo "📋 Available build.py options:"
+        python build.py --help
+        echo "📋 Running build with --bin-only:"
         python build.py --bin-only
         echo "✅ Build completed successfully!"
         
