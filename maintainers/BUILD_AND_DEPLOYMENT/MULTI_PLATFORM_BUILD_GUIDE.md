@@ -106,8 +106,9 @@ python3 build.py --bin-only                    # ARM64 native
 **Output:**
 - `grapa.exe` (executable)
 - `source/grapa-lib/win-amd64/grapa.lib` (static library)
-- `source/grapa-other/win-amd64/grapa.dll` (shared library)
-- `bin/grapa-win-amd64.tar.gz` (compressed package)
+- `bin/grapa-win-amd64.zip` (compressed package)
+
+**Note:** Windows builds only create static libraries (`.lib`), no shared libraries (`.dll`) are built.
 
 ## Build Options
 
@@ -206,14 +207,47 @@ source/
     ├── linux-amd64/libgrapa.so
     ├── mac-arm64/libgrapa.so
     ├── mac-amd64/libgrapa.so
-    └── win-amd64/grapa.dll
+    └── win-amd64/ (empty - no shared library built for Windows)
 bin/
 ├── grapa-linux-arm64.tar.gz
 ├── grapa-linux-amd64.tar.gz
 ├── grapa-mac-arm64.tar.gz
 ├── grapa-mac-amd64.tar.gz
-└── grapa-win-amd64.tar.gz
+└── grapa-win-amd64.zip
 ```
+
+## Package Contents
+
+### Compressed Package Contents
+
+Each platform creates a compressed package with the following contents:
+
+#### Linux Packages (`grapa-linux-*.tar.gz`)
+- **Executable**: `grapa` (platform-specific binary)
+- **Static Library**: `libgrapa.a` (from `source/grapa-lib/linux-{arch}/`)
+- **Shared Library**: `libgrapa.so` (from `source/grapa-other/linux-{arch}/`)
+
+#### macOS Packages (`grapa-mac-*.tar.gz`)
+- **Executable**: `grapa` (platform-specific binary)
+- **Static Library**: `libgrapa.a` (from `source/grapa-lib/mac-{arch}/`)
+- **Shared Library**: `libgrapa.so` (from `source/grapa-other/mac-{arch}/`)
+
+#### Windows Package (`grapa-win-amd64.zip`)
+- **Executable**: `grapa.exe` (Windows AMD64 binary)
+- **Static Library**: `grapa.lib` (from `source/grapa-lib/win-amd64/`)
+
+**Note:** Windows builds only create static libraries, no shared libraries are built.
+
+### Validation
+
+The `build_all_platforms.sh` script includes automatic validation that checks:
+
+1. **Executables**: `grapa` (Linux/macOS) or `grapa.exe` (Windows)
+2. **Static Libraries**: `libgrapa.a` (Linux/macOS) or `grapa.lib` (Windows)
+3. **Shared Libraries**: `libgrapa.so` (Linux/macOS only)
+4. **Compressed Packages**: All expected files are included
+
+Validation fails if any required artifacts are missing.
 
 ## Troubleshooting
 

@@ -128,7 +128,106 @@ echo "📁 Static libraries: source/grapa-lib/*/libgrapa.a, source/grapa-lib/win
 echo "📁 Shared libraries: source/grapa-other/*/libgrapa.so"
 echo "📁 Compressed files: bin/grapa-*.tar.gz, bin/grapa-win-amd64.zip"
 echo ""
+
+# Validation step
+echo "🔍 Validating build artifacts..."
+echo "=================================="
+
+# Function to validate platform artifacts
+validate_platform() {
+    local platform=$1
+    local arch=$2
+    local target="$platform-$arch"
+    
+    echo ""
+    echo "📋 Validating $target..."
+    
+    # Check executable
+    if [[ "$platform" == "win" ]]; then
+        exe_name="grapa.exe"
+    else
+        exe_name="grapa"
+    fi
+    
+    if [[ -f "$exe_name" ]]; then
+        echo "  ✅ Executable: $exe_name"
+    else
+        echo "  ❌ Executable: $exe_name (missing)"
+        return 1
+    fi
+    
+    # Check static library
+    if [[ "$platform" == "win" ]]; then
+        static_lib="source/grapa-lib/$target/grapa.lib"
+    else
+        static_lib="source/grapa-lib/$target/libgrapa.a"
+    fi
+    
+    if [[ -f "$static_lib" ]]; then
+        echo "  ✅ Static library: $static_lib"
+    else
+        echo "  ❌ Static library: $static_lib (missing)"
+        return 1
+    fi
+    
+    # Check shared library (except Windows which doesn't build .dll)
+    if [[ "$platform" != "win" ]]; then
+        shared_lib="source/grapa-other/$target/libgrapa.so"
+        if [[ -f "$shared_lib" ]]; then
+            echo "  ✅ Shared library: $shared_lib"
+        else
+            echo "  ❌ Shared library: $shared_lib (missing)"
+            return 1
+        fi
+    fi
+    
+    # Check compressed package
+    if [[ "$platform" == "win" ]]; then
+        compressed_file="bin/grapa-$target.zip"
+    else
+        compressed_file="bin/grapa-$target.tar.gz"
+    fi
+    
+    if [[ -f "$compressed_file" ]]; then
+        echo "  ✅ Compressed package: $compressed_file"
+        
+        # Validate package contents
+        echo "  📦 Package contents:"
+        if [[ "$platform" == "win" ]]; then
+            unzip -l "$compressed_file" | grep -E "(grapa\.exe|grapa\.lib)" || echo "    ❌ Missing expected files"
+        else
+            tar -tzf "$compressed_file" | grep -E "(grapa$|libgrapa\.(a|so))" || echo "    ❌ Missing expected files"
+        fi
+    else
+        echo "  ❌ Compressed package: $compressed_file (missing)"
+        return 1
+    fi
+    
+    echo "  ✅ $target validation passed"
+    return 0
+}
+
+# Validate each platform
+validation_failed=false
+
+validate_platform "linux" "arm64" || validation_failed=true
+validate_platform "linux" "amd64" || validation_failed=true
+validate_platform "mac" "arm64" || validation_failed=true
+validate_platform "mac" "amd64" || validation_failed=true
+validate_platform "win" "amd64" || validation_failed=true
+
+echo ""
+if [[ "$validation_failed" == "true" ]]; then
+    echo "❌ Validation failed! Some artifacts are missing."
+    echo "   Please check the build logs and rebuild if necessary."
+    exit 1
+else
+    echo "✅ All platform validations passed!"
+    echo "🎉 Build system is ready for distribution!"
+fi
+
+echo ""
 echo "🎯 Next steps:"
-echo "   1. Run: ./scripts/check_platform_status.sh (verify all builds)"
+echo "   1. Run: ./scripts/check_platform_status.sh (detailed verification)"
 echo "   2. Build Python distribution: python3 setup.py sdist bdist_wheel"
 echo "   3. Deploy to PyPI: twine upload dist/*" 

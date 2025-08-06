@@ -800,9 +800,13 @@ class GrapaBuilder:
         if os.path.exists(config.output_name):
             files_to_include.append(config.output_name)
         
-        # Add library files (only grapa-lib, matching original script)
+        # Add static library files
         lib_files = glob.glob(f"source/grapa-lib/{config.target}/*")
         files_to_include.extend(lib_files)
+        
+        # Add shared library files (include shared libraries like macOS)
+        other_files = glob.glob(f"source/grapa-other/{config.target}/*")
+        files_to_include.extend(other_files)
         
         if not files_to_include:
             raise RuntimeError(f"No files found to include in package for {config.target}")
