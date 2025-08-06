@@ -553,14 +553,10 @@ class GrapaBuilder:
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
                 # For shared library, use dynamic linking (no -static-libgcc)
-                if config.target == "linux-arm64":
-                    # For ARM64 builds, include libbsd for FLTK compatibility
-                    print("Using ARM64 build with libbsd for FLTK compatibility")
+                if config.target.startswith("linux-"):
+                    # For all Linux builds, include libbsd for FLTK compatibility
+                    print("Using Linux build with libbsd for FLTK compatibility")
                     system_libs = ["-ldl", "-lm", "-lbsd"]
-                else:
-                    # For AMD64 builds, use dynamic linking without libbsd (not needed for AMD64)
-                    system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                                  "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
                 
                 cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
@@ -610,15 +606,11 @@ class GrapaBuilder:
             blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
-            # For executable build, use native ARM64 compilation with X11 libraries (matching AWS approach)
-            if config.target == "linux-arm64":
-                # For ARM64 builds (both native and emulation), include X11 libraries and libbsd
-                print("Using ARM64 build with X11 libraries and libbsd (required for FLTK)")
+            # For executable build, use X11 libraries with libbsd (required for FLTK on all Linux platforms)
+            if config.target.startswith("linux-"):
+                # For all Linux builds (both ARM64 and AMD64), include X11 libraries and libbsd
+                print("Using Linux build with X11 libraries and libbsd (required for FLTK)")
                 system_libs = ["-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-ldl", "-lm", "-lbsd"]
-            else:
-                # For AMD64 builds, use dynamic linking without libbsd (not needed for AMD64)
-                system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
-                              "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
             
             print(f"[DEBUG] Executable build: is_arm64_emulation={is_arm64_emulation}, arm64_libs_available={arm64_libs_available}")
             
