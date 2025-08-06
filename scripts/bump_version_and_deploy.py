@@ -28,7 +28,7 @@ def update_version_in_file(file_path, old_version_pattern, new_version):
     with open(file_path, 'w') as f:
         f.write(new_content)
     
-    print(f"✅ Updated {file_path}")
+    print(f"SUCCESS: Updated {file_path}")
 
 def main():
     if len(sys.argv) < 2 or len(sys.argv) > 3:
@@ -42,7 +42,7 @@ def main():
     
     # Validate version format
     if not re.match(r'^\d+\.\d+\.\d+$', new_version):
-        print("❌ Error: Version must be in format X.Y.Z (e.g., 0.0.116)")
+        print("ERROR: Version must be in format X.Y.Z (e.g., 0.0.116)")
         sys.exit(1)
     
     print(f"🚀 Starting version bump to {new_version}...")
@@ -59,7 +59,7 @@ def main():
         if os.path.exists(file_path):
             update_version_in_file(file_path, pattern, replacement)
         else:
-            print(f"❌ Warning: {file_path} not found")
+            print(f"WARNING: {file_path} not found")
     
     # Create Git tag
     tag_name = f"v{new_version}"
@@ -81,18 +81,18 @@ def main():
             subprocess.run(["git", "push"], check=True)
             subprocess.run(["git", "push", "origin", tag_name], check=True)
             
-            print(f"✅ Successfully bumped version to {new_version}")
-            print(f"✅ Created and pushed tag {tag_name}")
-            print(f"🚀 CI/CD workflow should now trigger automatically")
-            print(f"📦 PyPI deployment will begin shortly...")
+            print(f"SUCCESS: Successfully bumped version to {new_version}")
+            print(f"SUCCESS: Created and pushed tag {tag_name}")
+            print(f"INFO: CI/CD workflow should now trigger automatically")
+            print(f"INFO: PyPI deployment will begin shortly...")
             
         except subprocess.CalledProcessError as e:
-            print(f"❌ Git operation failed: {e}")
+            print(f"ERROR: Git operation failed: {e}")
             sys.exit(1)
     else:
-        print(f"✅ Successfully bumped version to {new_version}")
-        print(f"📝 Files updated but not committed/pushed")
-        print(f"💡 To commit and push, run: python scripts/bump_version_and_deploy.py {new_version} --commit-and-push")
+        print(f"SUCCESS: Successfully bumped version to {new_version}")
+        print(f"INFO: Files updated but not committed/pushed")
+        print(f"INFO: To commit and push, run: python scripts/bump_version_and_deploy.py {new_version} --commit-and-push")
 
 if __name__ == "__main__":
     main() 
