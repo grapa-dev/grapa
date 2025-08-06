@@ -114,6 +114,7 @@
 - ✅ **Full System Test**: Successfully ran complete build cycle with version 0.0.249
 - ✅ **All Platforms Validated**: Linux ARM64/AMD64, macOS ARM64/AMD64, Windows AMD64 all working
 - ✅ **Artifacts Committed**: Windows build artifacts properly committed and pushed to git
+- ✅ **Fixed Unwanted Artifacts**: Removed unnecessary Python package build during validation to prevent unwanted macOS artifacts
 
 ### Comprehensive CLI and Python Validation (v0.0.248)
 - ✅ **Enhanced `--test` Option**: Fixed `build.py` to support `--test` with all build modes (`--bin-only`, `--python-only`)
