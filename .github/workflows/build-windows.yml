@@ -28,9 +28,9 @@ jobs:
       
     - name: Create output directories
       run: |
-        mkdir -p source/grapa-lib/win-amd64
-        mkdir -p source/grapa-other/win-amd64
-        mkdir -p bin
+        New-Item -ItemType Directory -Force -Path "source/grapa-lib/win-amd64"
+        New-Item -ItemType Directory -Force -Path "source/grapa-other/win-amd64"
+        New-Item -ItemType Directory -Force -Path "bin"
         
     - name: Build Grapa for Windows AMD64
       run: |
