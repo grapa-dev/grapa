@@ -752,7 +752,28 @@ class GrapaBuilder:
         
         # Clean object files (but preserve executable)
         for obj_file in Path(".").glob("*.o"):
+            print(f"Removing {obj_file}...")
             obj_file.unlink()
+        
+        # Clean library files (but preserve executable)
+        for lib_file in Path(".").glob("*.a"):
+            print(f"Removing {lib_file}...")
+            lib_file.unlink()
+        
+        # Clean shared library files (but preserve executable)
+        for so_file in Path(".").glob("*.so"):
+            print(f"Removing {so_file}...")
+            so_file.unlink()
+        
+        # Clean Windows library files (but preserve executable)
+        for lib_file in Path(".").glob("*.lib"):
+            print(f"Removing {lib_file}...")
+            lib_file.unlink()
+        
+        # Clean Windows DLL files (but preserve executable)
+        for dll_file in Path(".").glob("*.dll"):
+            print(f"Removing {dll_file}...")
+            dll_file.unlink()
     
     def _clean_windows_build(self):
         """Clean Windows build artifacts"""
@@ -1089,6 +1110,12 @@ def main():
     
     # Create BuildConfig with the target platform
     config = BuildConfig(platform, arch)
+    
+    # Handle clean option
+    if args.clean:
+        print("Cleaning build artifacts...")
+        builder._clean_build_artifacts()
+        return 0
     
     if args.bin_only:
         success = builder.build_bin_only(config)
