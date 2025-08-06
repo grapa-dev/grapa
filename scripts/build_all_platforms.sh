@@ -135,10 +135,6 @@ validate_platform_artifacts() {
     fi
 }
 
-# Build Docker image once
-echo "🐳 Building Docker image..."
-docker build -f Dockerfile.grapa-build -t grapa-build .
-
 # Function to build for a specific platform
 build_platform() {
     local platform=$1
@@ -148,10 +144,14 @@ build_platform() {
     echo ""
     echo "🔨 Building for $platform-$arch..."
     
+    # Build Docker image for the specific platform
+    echo "🐳 Building Docker image for $docker_platform..."
+    docker build --platform=$docker_platform -f Dockerfile.grapa-build -t grapa-build-$platform-$arch .
+    
     if docker run -it --rm \
         --platform=$docker_platform \
         -v $HOME:/data \
-        grapa-build \
+        grapa-build-$platform-$arch \
         bash -c "
             echo '🚀 Starting Grapa build for $platform-$arch...'
             cd /data/GitHub/grapa
