@@ -27,34 +27,42 @@ check_platform() {
         echo "  ❌ Executable: $exe_name (missing)"
     fi
     
-    # Check static library
-    static_lib="source/grapa-lib/$target/libgrapa.a"
-    if [[ -f "$static_lib" ]]; then
-        echo "  ✅ Static library: $static_lib ($(stat -f%z "$static_lib" 2>/dev/null || stat -c%s "$static_lib" 2>/dev/null || echo "unknown") bytes)"
-    else
-        echo "  ❌ Static library: $static_lib (missing)"
-    fi
-    
-    # Check shared library
-    if [[ "$platform" == "win" ]]; then
-        shared_lib="source/grapa-other/$target/grapa.dll"
-    else
-        shared_lib="source/grapa-other/$target/libgrapa.so"
-    fi
-    
-    if [[ -f "$shared_lib" ]]; then
-        echo "  ✅ Shared library: $shared_lib ($(stat -f%z "$shared_lib" 2>/dev/null || stat -c%s "$shared_lib" 2>/dev/null || echo "unknown") bytes)"
-    else
-        echo "  ❌ Shared library: $shared_lib (missing)"
-    fi
-    
-    # Check compressed package
-    compressed_file="bin/grapa-$target.tar.gz"
-    if [[ -f "$compressed_file" ]]; then
-        echo "  ✅ Compressed package: $compressed_file ($(stat -f%z "$compressed_file" 2>/dev/null || stat -c%s "$compressed_file" 2>/dev/null || echo "unknown") bytes)"
-    else
-        echo "  ❌ Compressed package: $compressed_file (missing)"
-    fi
+               # Check static library
+           if [[ "$platform" == "win" ]]; then
+               static_lib="source/grapa-lib/$target/grapa.lib"
+           else
+               static_lib="source/grapa-lib/$target/libgrapa.a"
+           fi
+           if [[ -f "$static_lib" ]]; then
+               echo "  ✅ Static library: $static_lib ($(stat -f%z "$static_lib" 2>/dev/null || stat -c%s "$static_lib" 2>/dev/null || echo "unknown") bytes)"
+           else
+               echo "  ❌ Static library: $static_lib (missing)"
+           fi
+           
+           # Check shared library
+           if [[ "$platform" == "win" ]]; then
+               shared_lib="source/grapa-other/$target/grapa.dll"
+           else
+               shared_lib="source/grapa-other/$target/libgrapa.so"
+           fi
+           
+           if [[ -f "$shared_lib" ]]; then
+               echo "  ✅ Shared library: $shared_lib ($(stat -f%z "$shared_lib" 2>/dev/null || stat -c%s "$shared_lib" 2>/dev/null || echo "unknown") bytes)"
+           else
+               echo "  ❌ Shared library: $shared_lib (missing)"
+           fi
+           
+           # Check compressed package
+           if [[ "$platform" == "win" ]]; then
+               compressed_file="bin/grapa-$target.zip"
+           else
+               compressed_file="bin/grapa-$target.tar.gz"
+           fi
+           if [[ -f "$compressed_file" ]]; then
+               echo "  ✅ Compressed package: $compressed_file ($(stat -f%z "$compressed_file" 2>/dev/null || stat -c%s "$compressed_file" 2>/dev/null || echo "unknown") bytes)"
+           else
+               echo "  ❌ Compressed package: $compressed_file (missing)"
+           fi
 }
 
 # Check each platform
