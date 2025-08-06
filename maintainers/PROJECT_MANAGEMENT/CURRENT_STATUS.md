@@ -308,3 +308,15 @@
 - **All platforms**: ✅ Use `build.py --bin-only` for consistent builds
 
 --- 
+
+### **Scripts Organization** - ✅ COMPLETED
+- **Status**: ✅ **COMPLETED** - Successfully reorganized into logical subdirectories
+- **New Structure**: 
+  - `scripts/build/` - Build and deployment scripts (8 files)
+  - `scripts/ci-cd/` - CI/CD and artifact management (5 files)
+  - `scripts/validation/` - Testing and validation scripts (4 files)
+  - `scripts/documentation/` - Documentation deployment (3 files)
+  - `scripts/legacy/` - Legacy scripts (2 files)
+- **Migration**: Updated ~25 file references throughout codebase
+- **Benefits**: Clear purpose, easier navigation, better scalability, improved maintainability
+- **Documentation**: Added README files for each subdirectory explaining purpose and usage 
