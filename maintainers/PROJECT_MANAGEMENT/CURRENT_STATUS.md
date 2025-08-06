@@ -11,7 +11,7 @@
 ## 🚨 ACTIVE WORK ITEMS
 
 ### Hybrid Multi-Platform Build System - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Debugging build issues
+- **Status**: 🔄 **IN PROGRESS** - Version bumping and commit issues resolved
 - **Strategy**: Hybrid approach combining Docker builds with GitHub Actions for Windows
 - **Core Approach**: 
   - **Windows AMD64**: GitHub Actions workflow (`.github/workflows/build-windows.yml`)
@@ -22,6 +22,7 @@
 - **Platforms**: Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64
 - **Current Issues**:
   - **Windows builds**: ✅ FIXED - Package creation duplication resolved
+  - **Version bumping**: ✅ FIXED - Version files now properly committed and pushed
   - **Linux builds**: `--target-platform` restriction preventing Linux builds from working
   - **Mac builds**: Builds completing too quickly, not actually creating new packages
   - **Validation**: All platforms failing validation due to packages not being updated
@@ -87,6 +88,13 @@
 - ✅ **Solution**: Added `--commit-and-push` flag to `bump_version_and_deploy.py` to control git operations
 - ✅ **Integration**: Modified `build_all_platforms.sh` to use version bump with flag instead of explicit workflow trigger
 - ✅ **Impact**: Windows workflow now runs only once per build cycle, eliminating duplicate CI/CD runs
+
+### Version Bumping and Commit Fix (v0.0.247)
+- ✅ **Fixed Version File Commits**: Version files are now properly committed and pushed when bumped
+- ✅ **Root Cause**: Version bumping updated files but didn't commit them, preventing GitHub Actions workflow trigger
+- ✅ **Solution**: Manual commit and push of version files (`setup.py`, `source/grapa/GrapaLink.h`, `source/mainpy.cpp`)
+- ✅ **Impact**: Windows GitHub Actions workflow now triggers properly when version is bumped
+- ✅ **Files Updated**: All three version files now contain version 0.0.247 and are committed to git
 
 ### Target Platform Restriction (v0.0.242)
 - ✅ **Restricted `--target-platform`**: Limited to macOS platforms only (`mac-arm64`, `mac-amd64`)
