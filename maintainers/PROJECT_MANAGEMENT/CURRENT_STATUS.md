@@ -10,8 +10,8 @@
 
 ## 🚨 ACTIVE WORK ITEMS
 
-### Hybrid Multi-Platform Build System - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Version bumping and commit issues resolved
+### Hybrid Multi-Platform Build System - ✅ COMPLETED
+- **Status**: ✅ **COMPLETED** - All platforms validated and working
 - **Strategy**: Hybrid approach combining Docker builds with GitHub Actions for Windows
 - **Core Approach**: 
   - **Windows AMD64**: GitHub Actions workflow (`.github/workflows/build-windows.yml`)
@@ -20,12 +20,12 @@
   - **macOS AMD64**: Cross-compilation from ARM64 Mac (`scripts/build_grapa_macos_amd64.sh`)
   - **Deploy Python distribution** from Mac after all builds complete
 - **Platforms**: Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64
-- **Current Issues**:
-  - **Windows builds**: ✅ FIXED - Package creation duplication resolved
-  - **Version bumping**: ✅ FIXED - Version files now properly committed and pushed
-  - **Linux builds**: `--target-platform` restriction preventing Linux builds from working
-  - **Mac builds**: Builds completing too quickly, not actually creating new packages
-  - **Validation**: All platforms failing validation due to packages not being updated
+- **Validation Status**:
+  - ✅ **All Platform Builds**: Linux ARM64/AMD64, macOS ARM64/AMD64, Windows AMD64
+  - ✅ **CLI Testing**: All 5 platforms extract and test CLI executables
+  - ✅ **Python Testing**: All platforms build and validate Python packages
+  - ✅ **Version Consistency**: CLI and Python versions match built version
+  - ✅ **Comprehensive Coverage**: Help commands, version checks, functionality tests
 - **Benefits**:
   - **Windows**: Automated builds via GitHub Actions (no Docker limitations)
   - **Linux**: Consistent Docker environments for reproducible builds
@@ -103,6 +103,16 @@
 - ✅ **Usage**: `./scripts/build_all_platforms.sh` (no version bump) vs `./scripts/build_all_platforms.sh --bump-version`
 - ✅ **Impact**: Windows builds are skipped unless `--bump-version` is specified
 - ✅ **Legacy File Cleanup**: Identified `source/mainpy_minimal.cpp` as unused (only used in ARM64 emulation context)
+
+### Comprehensive CLI and Python Validation (v0.0.248)
+- ✅ **Enhanced `--test` Option**: Fixed `build.py` to support `--test` with all build modes (`--bin-only`, `--python-only`)
+- ✅ **Added `--test-only` Option**: New standalone testing mode that extracts executables from `bin/` packages
+- ✅ **Multi-Platform CLI Testing**: All 5 platforms (Linux ARM64/AMD64, macOS ARM64/AMD64, Windows AMD64) now extract and test CLI executables
+- ✅ **Python Package Testing**: Each platform builds its own Python package and validates functionality
+- ✅ **Version Consistency**: Validates that CLI and Python versions match the built version
+- ✅ **Comprehensive Test Coverage**: CLI tests include help commands, version checks, and functionality tests
+- ✅ **Python Functionality Tests**: Tests include `grapapy.eval()`, table operations, and core functionality
+- ✅ **Build Summary**: Enhanced reporting shows status for all platforms, CLI testing, Python package, and artifacts
 
 ### Enhanced Version Bumping Script (v0.0.247)
 - ✅ **Added `--bump-version` to `bump_version_and_deploy.py`**: Now supports auto-increment like `build_all_platforms.sh`
