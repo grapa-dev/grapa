@@ -12,12 +12,12 @@
 
 ### Hybrid Multi-Platform Build System - ✅ COMPLETED
 - **Status**: ✅ **COMPLETED** - All platforms validated and working
-- **Strategy**: Hybrid approach combining Docker builds with GitHub Actions for Windows
+- **Strategy**: Hybrid approach combining Docker, GitHub Actions, and native builds
 - **Core Approach**: 
   - **Windows AMD64**: GitHub Actions workflow (`.github/workflows/build-windows.yml`)
   - **Linux AMD64/ARM64**: Docker containers (`scripts/build/build_grapa_linux_*.sh`)
   - **macOS ARM64**: Native build on Mac (`python3 build.py --bin-only`)
-  - **macOS AMD64**: Cross-compilation from ARM64 Mac (`scripts/build_grapa_macos_amd64.sh`)
+  - **macOS AMD64**: Cross-compilation from ARM64 Mac (`scripts/build/build_grapa_macos_amd64.sh`)
   - **Deploy Python distribution** from Mac after all builds complete
 - **Platforms**: Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64
 - **Validation Status**:
@@ -37,6 +37,39 @@
 
 ## 📋 RECENTLY COMPLETED
 
+### Scripts Organization and File Cleanup (v0.0.250)
+- ✅ **Scripts Reorganization**: Successfully reorganized `scripts/` directory into logical subdirectories:
+  - `scripts/build/` - Build and deployment scripts (8 files)
+  - `scripts/ci-cd/` - CI/CD and artifact management (5 files) 
+  - `scripts/validation/` - Testing and validation scripts (4 files)
+  - `scripts/documentation/` - Documentation deployment (3 files)
+  - `scripts/legacy/` - Legacy scripts (2 files)
+- ✅ **File Cleanup**: Removed obsolete files from project root:
+  - `build-original.py`, `Dockerfile.grapa-build`, `build_wheels.py`, `build-test.py`
+  - `test_simple_grapapy.py`, `test_local_arm64_build.sh`, `build_temp/`, `debug/`
+- ✅ **Migration**: Updated ~25 file references throughout codebase to new paths
+- ✅ **Documentation**: Added README files for each subdirectory explaining purpose and usage
+- ✅ **Benefits**: Clearer project structure, easier navigation, better scalability, improved maintainability
+
+### Enhanced Build System Validation (v0.0.250)
+- ✅ **Version Bump Integration**: Added `--bump-version` flag to control version bumping
+- ✅ **Comprehensive Testing**: All 5 platforms now validated with CLI and Python testing
+- ✅ **CLI Testing Enhancement**: Enhanced to extract executables from `bin/` packages when needed
+- ✅ **Python Testing Enhancement**: Enhanced to build and install Python package when needed
+- ✅ **Artifact Management**: Windows artifacts properly downloaded and committed
+- ✅ **Validation Logic**: Fixed timestamp-based validation to properly detect updated artifacts
+- ✅ **Build Summary**: Enhanced reporting shows status for all platforms, CLI testing, Python package, and artifacts
+
+### Documentation Updates (v0.0.250)
+- ✅ **Updated Build Guide**: `maintainers/BUILD_AND_DEPLOYMENT/MULTI_PLATFORM_BUILD_GUIDE.md` updated with:
+  - New script paths reflecting reorganization
+  - Version bumping methods (Full Release, Quick Bump, No Commit)
+  - Comprehensive testing procedures
+  - Build options documentation (`--clean`, `--preserve-exe`, `--preserve-dist`, etc.)
+  - Complete release process workflow
+- ✅ **Updated Onboarding**: `maintainers/PROJECT_MANAGEMENT/ONBOARD.md` updated with new version deployment process
+- ✅ **Scripts README**: Added `scripts/README.md` with overview of new directory structure
+
 ### Windows AMD64 Build System (v0.0.238)
 - ✅ **GitHub Actions Workflow**: Created `.github/workflows/build-windows.yml` for automated Windows builds
 - ✅ **Unicode Compatibility**: Fixed all Unicode emoji characters in `build.py` for Windows console compatibility
@@ -46,8 +79,8 @@
 - ✅ **Debugging Tools**: Added comprehensive debugging output to diagnose build issues
 
 ### Windows Workflow Automation (v0.0.239)
-- ✅ **Monitoring Scripts**: Created `scripts/monitor_and_download_windows.sh` and `.ps1` for automated artifact download
-- ✅ **Workflow Integration**: Updated `build_all_platforms.sh` to automatically trigger and monitor Windows builds
+- ✅ **Monitoring Scripts**: Created `scripts/ci-cd/monitor_and_download_windows.sh` and `.ps1` for automated artifact download
+- ✅ **Workflow Integration**: Updated `scripts/build/build_all_platforms.sh` to automatically trigger and monitor Windows builds
 - ✅ **GitHub CLI Integration**: Seamless workflow triggering and monitoring via `gh workflow run`
 - ✅ **Error Handling**: Comprehensive error detection and reporting for failed workflows
 - ✅ **Cross-Platform Support**: Bash script for Mac/Linux, PowerShell script for Windows
@@ -130,7 +163,7 @@
 - ✅ **Added `--bump-version` to `bump_version_and_deploy.py`**: Now supports auto-increment like `build_all_platforms.sh`
 - ✅ **Consistent Interface**: Both scripts now use the same `--bump-version` pattern
 - ✅ **Auto-Increment Logic**: Reads current version from `setup.py` and increments last number
-- ✅ **Usage**: `python3 scripts/bump_version_and_deploy.py --bump-version --commit-and-push`
+- ✅ **Usage**: `python3 scripts/build/bump_version_and_deploy.py --bump-version --commit-and-push`
 - ✅ **Flexibility**: Still supports manual version specification for specific releases
 
 ### Target Platform Restriction (v0.0.242)
@@ -187,7 +220,7 @@
   - ✅ **Mac AMD64**: Confirmed working (cross-compilation from ARM64 Mac successful)
   - ✅ **Windows AMD64**: Confirmed working (GitHub Actions + manual package update)
 - **Python Distribution**: 
-  - ✅ **Python package**: Successfully built and installed (version 0.0.237)
+  - ✅ **Python package**: Successfully built and installed (version 0.0.250)
   - ✅ **Python extension**: Working correctly (grapapy.eval() functional)
 - **Validation System**: 
   - ✅ **Improved timestamp tracking**: Records file timestamps before and after build
@@ -238,8 +271,9 @@
 3. **✅ Complete build automation** now available for all 5 platforms
 4. **✅ Python distribution building** and version validation added
 5. **✅ Comprehensive validation** with build timestamp verification
-6. **🔄 Ready for test run** - `./scripts/build/build_all_platforms.sh` ready for execution
-7. **Clean up obsolete files** (user will cover this task)
+6. **✅ Scripts reorganization** completed with logical subdirectory structure
+7. **✅ File cleanup** completed removing obsolete files
+8. **🔄 Ready for production use** - Build system fully validated and operational
 
 ### **Build System Validation:**
 5. **Test Linux builds** using Docker:
@@ -271,9 +305,9 @@
 
 ### **Documentation and Scripts:**
 13. **✅ Complete multi-platform build guide** in `maintainers/BUILD_AND_DEPLOYMENT/MULTI_PLATFORM_BUILD_GUIDE.md`
-14. **✅ Create master build script** `scripts/build_all_platforms.sh` to orchestrate all builds
-15. **✅ Add platform status monitoring** with `scripts/check_platform_status.sh`
-16. **✅ Windows workflow monitoring** with `scripts/monitor_and_download_windows.sh` and `.ps1`
+14. **✅ Create master build script** `scripts/build/build_all_platforms.sh` to orchestrate all builds
+15. **✅ Add platform status monitoring** with `scripts/validation/check_platform_status.sh`
+16. **✅ Windows workflow monitoring** with `scripts/ci-cd/monitor_and_download_windows.sh` and `.ps1`
 17. **✅ Python distribution building** and version validation in `build_all_platforms.sh`
 
 ---

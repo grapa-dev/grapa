@@ -131,6 +131,19 @@ download_artifacts() {
         echo "📁 Downloaded files:"
         ls -la grapa.exe 2>/dev/null || echo "  ❌ grapa.exe (missing)"
         
+        # Commit the downloaded artifacts
+        echo ""
+        echo "📝 Committing downloaded artifacts..."
+        if git add bin/grapa-win-amd64.zip source/grapa-lib/win-amd64/grapa.lib 2>/dev/null; then
+            if git commit -m "Update Windows artifacts from GitHub Actions build" 2>/dev/null; then
+                echo "✅ Windows artifacts committed successfully"
+            else
+                echo "⚠️  Windows artifacts already committed or no changes"
+            fi
+        else
+            echo "⚠️  Could not add Windows artifacts to git"
+        fi
+        
         return 0
     elif [[ $download_exit_code -eq 124 ]]; then
         echo ""

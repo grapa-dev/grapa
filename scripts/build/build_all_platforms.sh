@@ -212,7 +212,18 @@ if [[ "$BUMP_VERSION" == "true" ]]; then
     echo "🚀 Calculating new version..."
     current_version=$(grep 'grapapy_version = "' setup.py | sed 's/.*grapapy_version = "\([^"]*\)".*/\1/')
     new_version=$(echo "$current_version" | awk -F. '{$NF = $NF + 1} 1' | sed 's/ /./g')
-    echo "🚀 Will bump version from $current_version to $new_version during Windows build..."
+    echo "🚀 Will bump version from $current_version to $new_version..."
+    
+    # Bump version BEFORE all builds
+    echo "📋 Bumping version before builds..."
+    python3 scripts/build/bump_version_and_deploy.py "$new_version"
+    if [[ $? -eq 0 ]]; then
+        echo "✅ Version bumped successfully to $new_version"
+        echo "ℹ️  All subsequent builds will use version $new_version"
+    else
+        echo "❌ Failed to bump version"
+        exit 1
+    fi
 else
     echo ""
     echo "ℹ️  Version bumping disabled (use --bump-version to enable)"
@@ -270,13 +281,13 @@ echo ""
 echo "🪟 Building for Windows AMD64..."
 
 if [[ "$BUMP_VERSION" == "true" ]]; then
-    echo "📋 Triggering Windows build via version bump and push..."
+    echo "📋 Triggering Windows build via workflow..."
     
-    # Bump version and trigger workflow
+    # Trigger workflow (version already bumped)
     python3 scripts/build/bump_version_and_deploy.py "$new_version" --commit-and-push
     
     if [[ $? -eq 0 ]]; then
-        echo "✅ Version bumped and workflow triggered successfully!"
+        echo "✅ Workflow triggered successfully!"
         echo "🔄 Monitoring workflow and downloading artifacts..."
         
         # Use the monitoring script to wait for completion and download
@@ -289,7 +300,7 @@ if [[ "$BUMP_VERSION" == "true" ]]; then
             echo "   Please check the workflow at: https://github.com/grapa-dev/grapa/actions"
         fi
     else
-        echo "❌ Failed to bump version and trigger workflow"
+        echo "❌ Failed to trigger workflow"
         echo "   Please check the script and try again"
     fi
 else
