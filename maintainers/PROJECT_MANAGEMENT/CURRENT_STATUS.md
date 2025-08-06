@@ -55,6 +55,12 @@
 - ✅ **Comprehensive Error Handling**: Detailed error reporting for Python package building and validation
 - ✅ **Build Timestamp Verification**: Ensures all artifacts are from current build session
 
+### Build Cleanup Enhancement (v0.0.241)
+- ✅ **Fixed `--clean` Option**: Implemented missing `--clean` option in `build.py` main function
+- ✅ **Enhanced Cleanup**: Extended `_clean_build_artifacts()` to remove `.a`, `.so`, `.lib`, `.dll` files
+- ✅ **Comprehensive Cleanup**: Now removes all build artifacts: `.o`, `.a`, `.so`, `.lib`, `.dll`, `dist/`, `grapapy.egg-info/`
+- ✅ **Usage**: `python3 build.py --clean` to clean all build artifacts from project root
+
 ### Linux ARM64/AMD64 Docker Build System (v0.0.237)
 - ✅ **Docker Ubuntu 22.04 ARM64**: Successfully built all libraries using Docker container
 - ✅ **C++17 Compatibility**: All libraries (OpenSSL, FLTK, PCRE2, BLST) compiled with C++17 to avoid `__isoc23_` errors
@@ -92,12 +98,13 @@
 
 ## 🚀 CURRENT VALIDATION STATUS
 
-### **Distribution Build System - ✅ READY FOR TESTING**
-- **Status**: ✅ **READY FOR TESTING** - All build systems operational with complete validation
-- **Complete Automation**: All 5 platforms can be built and artifacts collected automatically
-- **Single Command**: `./scripts/build_all_platforms.sh` builds all platforms with validation
-- **Artifact Collection**: All compressed packages automatically placed in `bin/` directory
-- **Python Distribution**: Automatically builds and validates Python package
+### **Distribution Build System - 🔄 PARTIALLY WORKING**
+- **Status**: 🔄 **PARTIALLY WORKING** - 4/5 platforms working, Linux AMD64 needs library rebuild
+- **Working Platforms**: Linux ARM64, macOS ARM64, macOS AMD64, Windows AMD64
+- **Failing Platform**: Linux AMD64 (incompatible pre-built libraries)
+- **Issue**: `source/openssl-lib/linux-amd64/libcrypto.a` has "file in wrong format" error
+- **Solution**: Need to rebuild Linux AMD64 third-party libraries in Docker environment
+- **Cleanup Enhancement**: Fixed `build.py --clean` option and enhanced cleanup to remove `.a`, `.so`, `.lib`, `.dll` files
 - **Version Validation**: Confirms `grapapy.__version__` matches `$VERSION` environment variable
 - **Next Action**: Test complete build system with `./scripts/build_all_platforms.sh`
 
