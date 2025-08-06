@@ -133,6 +133,10 @@ echo ""
 echo "🔍 Validating build artifacts..."
 echo "=================================="
 
+# Get build start time (when script started)
+BUILD_START_TIME=$(date +%s)
+echo "📅 Build started at: $(date -d @$BUILD_START_TIME)"
+
 # Function to validate platform artifacts
 validate_platform() {
     local platform=$1
@@ -150,7 +154,13 @@ validate_platform() {
     fi
     
     if [[ -f "$exe_name" ]]; then
-        echo "  ✅ Executable: $exe_name"
+        # Check if file was created during this build
+        file_time=$(stat -c %Y "$exe_name" 2>/dev/null || stat -f %m "$exe_name" 2>/dev/null)
+        if [[ $file_time -ge $BUILD_START_TIME ]]; then
+            echo "  ✅ Executable: $exe_name (built in this session)"
+        else
+            echo "  ⚠️  Executable: $exe_name (exists but may be from previous build)"
+        fi
     else
         echo "  ❌ Executable: $exe_name (missing)"
         return 1
@@ -164,7 +174,13 @@ validate_platform() {
     fi
     
     if [[ -f "$static_lib" ]]; then
-        echo "  ✅ Static library: $static_lib"
+        # Check if file was created during this build
+        file_time=$(stat -c %Y "$static_lib" 2>/dev/null || stat -f %m "$static_lib" 2>/dev/null)
+        if [[ $file_time -ge $BUILD_START_TIME ]]; then
+            echo "  ✅ Static library: $static_lib (built in this session)"
+        else
+            echo "  ⚠️  Static library: $static_lib (exists but may be from previous build)"
+        fi
     else
         echo "  ❌ Static library: $static_lib (missing)"
         return 1
@@ -174,7 +190,13 @@ validate_platform() {
     if [[ "$platform" != "win" ]]; then
         shared_lib="source/grapa-other/$target/libgrapa.so"
         if [[ -f "$shared_lib" ]]; then
-            echo "  ✅ Shared library: $shared_lib"
+            # Check if file was created during this build
+            file_time=$(stat -c %Y "$shared_lib" 2>/dev/null || stat -f %m "$shared_lib" 2>/dev/null)
+            if [[ $file_time -ge $BUILD_START_TIME ]]; then
+                echo "  ✅ Shared library: $shared_lib (built in this session)"
+            else
+                echo "  ⚠️  Shared library: $shared_lib (exists but may be from previous build)"
+            fi
         else
             echo "  ❌ Shared library: $shared_lib (missing)"
             return 1
@@ -189,7 +211,13 @@ validate_platform() {
     fi
     
     if [[ -f "$compressed_file" ]]; then
-        echo "  ✅ Compressed package: $compressed_file"
+        # Check if file was created during this build
+        file_time=$(stat -c %Y "$compressed_file" 2>/dev/null || stat -f %m "$compressed_file" 2>/dev/null)
+        if [[ $file_time -ge $BUILD_START_TIME ]]; then
+            echo "  ✅ Compressed package: $compressed_file (built in this session)"
+        else
+            echo "  ⚠️  Compressed package: $compressed_file (exists but may be from previous build)"
+        fi
         
         # Validate package contents
         echo "  📦 Package contents:"
