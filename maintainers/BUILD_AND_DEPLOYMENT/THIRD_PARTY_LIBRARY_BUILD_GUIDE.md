@@ -12,6 +12,35 @@ Grapa depends on the following third-party libraries:
 
 ## Platform-Specific Build Instructions
 
+### Linux Build Dependencies
+
+**Required for Linux builds (both ARM64 and AMD64):**
+```bash
+# Core build tools
+sudo apt update
+sudo apt install -y build-essential cmake
+
+# X11 development libraries (required for FLTK GUI)
+sudo apt install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libfontconfig1-dev libfreetype6-dev
+
+# Additional libraries
+sudo apt install -y libpng-dev libjpeg-dev libssl-dev
+
+# Additional packages for complete FLTK build
+sudo apt install -y libz-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev
+
+# Development tools
+sudo apt install -y gdb git autoconf
+
+# Graphics and audio libraries
+sudo apt install -y libglu1-mesa-dev libasound2-dev
+
+# Optional but recommended
+sudo apt install -y pkg-config
+```
+
+**Note:** The working Linux build commands do NOT include `-ljpeg` or `-lbsd` flags. The build system only requires the X11 libraries listed above.
+
 ### Prerequisites
 
 #### Ubuntu 22.04 ARM64 Prerequisites (Recommended for GitHub Actions Compatibility)
