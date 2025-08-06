@@ -238,6 +238,21 @@ Each platform creates a compressed package with the following contents:
 
 **Note:** Windows builds only create static libraries, no shared libraries are built.
 
+### Python Distribution and Validation
+
+After all platform builds complete, the script automatically:
+
+1. **Builds Python package**: `python3 build.py --python-only --preserve-dist`
+2. **Installs package**: `pip3 install dist/*.tar.gz`
+3. **Validates version**: Compares `grapapy.__version__` with `$VERSION` environment variable
+4. **Runs version script**: Uses `grapapy -c "\$sys().getenv(\$VERSION);"` to verify consistency
+
+**Version Validation Process:**
+- Extracts version from `grapapy.__version__`
+- Runs grapapy with version script: `$sys().getenv($VERSION);`
+- Compares both values for exact match
+- Fails if versions don't match
+
 ### Validation
 
 The `build_all_platforms.sh` script includes automatic validation that checks:
@@ -246,8 +261,11 @@ The `build_all_platforms.sh` script includes automatic validation that checks:
 2. **Static Libraries**: `libgrapa.a` (Linux/macOS) or `grapa.lib` (Windows)
 3. **Shared Libraries**: `libgrapa.so` (Linux/macOS only)
 4. **Compressed Packages**: All expected files are included
+5. **Build Timestamps**: Files were created during current build session
+6. **Python Package**: Builds and validates Python distribution
+7. **Version Validation**: Confirms `grapapy.__version__` matches `$VERSION` environment variable
 
-Validation fails if any required artifacts are missing.
+Validation fails if any required artifacts are missing or version mismatch is detected.
 
 ## Troubleshooting
 
@@ -284,8 +302,10 @@ This will show:
 
 1. **Complete Windows build** on Windows machine or via GitHub Actions
 2. **Test all platforms** to ensure compatibility
-3. **Deploy to PyPI** from Mac with all platform artifacts
-4. **Set up automated builds** for releases
+3. **Build Python distribution** using `python3 build.py --python-only --preserve-dist`
+4. **Validate Python package** version matches environment `$VERSION`
+5. **Deploy to PyPI** from Mac with all platform artifacts
+6. **Set up automated builds** for releases
 
 ## Scripts Reference
 

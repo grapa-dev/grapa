@@ -258,4 +258,98 @@ echo ""
 echo "🎯 Next steps:"
 echo "   1. Run: ./scripts/check_platform_status.sh (detailed verification)"
 echo "   2. Build Python distribution: python3 setup.py sdist bdist_wheel"
-echo "   3. Deploy to PyPI: twine upload dist/*" 
+echo "   3. Deploy to PyPI: twine upload dist/*"
+
+# Python distribution building and validation
+echo ""
+echo "🐍 Building Python distribution..."
+echo "=================================="
+
+# Build Python package
+echo "📦 Building Python package with --python-only --preserve-dist..."
+python3 build.py --python-only --preserve-dist
+
+if [[ $? -eq 0 ]]; then
+    echo "✅ Python package built successfully"
+    
+    # Find the built package
+    dist_files=$(ls dist/*.tar.gz 2>/dev/null || echo "")
+    if [[ -n "$dist_files" ]]; then
+        package_file=$(echo "$dist_files" | head -1)
+        echo "📁 Found package: $package_file"
+        
+        # Install the package
+        echo "📥 Installing package with pip3..."
+        pip3 install "$package_file"
+        
+        if [[ $? -eq 0 ]]; then
+            echo "✅ Package installed successfully"
+            
+            # Validate version
+            echo "🔍 Validating Python package version..."
+            echo "📋 Running version validation script..."
+            
+            # Create temporary validation script
+            cat > /tmp/validate_grapapy_version.grc << 'EOF'
+$sys().getenv($VERSION);
+EOF
+            
+            # Run validation using grapapy
+            validation_result=$(python3 -c "
+import grapapy
+import subprocess
+import sys
+
+try:
+    # Get version from grapapy
+    grapapy_version = grapapy.__version__
+    print(f'Grapapy version: {grapapy_version}')
+    
+    # Run grapapy with version script
+    result = subprocess.run(['grapapy', '-c', '\$sys().getenv(\$VERSION);'], 
+                          capture_output=True, text=True, timeout=10)
+    
+    if result.returncode == 0:
+        env_version = result.stdout.strip()
+        print(f'Environment VERSION: {env_version}')
+        
+        if env_version == grapapy_version:
+            print('✅ Version validation passed!')
+            sys.exit(0)
+        else:
+            print(f'❌ Version mismatch: grapapy={grapapy_version}, env={env_version}')
+            sys.exit(1)
+    else:
+        print(f'❌ Grapapy execution failed: {result.stderr}')
+        sys.exit(1)
+        
+except Exception as e:
+    print(f'❌ Validation error: {e}')
+    sys.exit(1)
+")
+
+            if [[ $? -eq 0 ]]; then
+                echo "✅ Python package version validation passed!"
+                echo "🎉 All builds and validations completed successfully!"
+            else
+                echo "❌ Python package version validation failed!"
+                echo "$validation_result"
+                exit 1
+            fi
+            
+        else
+            echo "❌ Failed to install Python package"
+            exit 1
+        fi
+    else
+        echo "❌ No Python package found in dist/ directory"
+        exit 1
+    fi
+else
+    echo "❌ Failed to build Python package"
+    exit 1
+fi
+
+echo ""
+echo "🚀 Ready for deployment!"
+echo "   Run: twine upload dist/*" 
