@@ -1,0 +1,143 @@
+Determining if the include file windows.h exists failed with the following output:
+Change Dir: /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_6ed5a/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_6ed5a.dir/build.make CMakeFiles/cmTC_6ed5a.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6ed5a.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -std=gnu99 -o CMakeFiles/cmTC_6ed5a.dir/CheckIncludeFile.c.o -c /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: windows.h: No such file or directory
+    1 | #include <windows.h>
+      |          ^~~~~~~~~~~
+compilation terminated.
+gmake[1]: *** [CMakeFiles/cmTC_6ed5a.dir/build.make:78: CMakeFiles/cmTC_6ed5a.dir/CheckIncludeFile.c.o] Error 1
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_6ed5a/fast] Error 2
+
+
+
+Determining if the memfd_create exist failed with the following output:
+Change Dir: /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_82f6a/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_82f6a.dir/build.make CMakeFiles/cmTC_82f6a.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_82f6a.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -std=gnu99 -o CMakeFiles/cmTC_82f6a.dir/CheckSymbolExists.c.o -c /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function 'main':
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: 'memfd_create' undeclared (first use in this function)
+    8 |   return ((int*)(&memfd_create))[argc];
+      |                   ^~~~~~~~~~~~
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_82f6a.dir/build.make:78: CMakeFiles/cmTC_82f6a.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_82f6a/fast] Error 2
+
+
+File /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/mman.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef memfd_create
+  return ((int*)(&memfd_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the secure_getenv exist failed with the following output:
+Change Dir: /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_9af56/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_9af56.dir/build.make CMakeFiles/cmTC_9af56.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9af56.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -std=gnu99 -o CMakeFiles/cmTC_9af56.dir/CheckSymbolExists.c.o -c /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c: In function 'main':
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: 'secure_getenv' undeclared (first use in this function)
+    8 |   return ((int*)(&secure_getenv))[argc];
+      |                   ^~~~~~~~~~~~~
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: note: each undeclared identifier is reported only once for each function it appears in
+gmake[1]: *** [CMakeFiles/cmTC_9af56.dir/build.make:78: CMakeFiles/cmTC_9af56.dir/CheckSymbolExists.c.o] Error 1
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_9af56/fast] Error 2
+
+
+File /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef secure_getenv
+  return ((int*)(&secure_getenv))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C SOURCE FILE Test HAVE_ATTRIBUTE_UNINITIALIZED failed with the following output:
+Change Dir: /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_383ad/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_383ad.dir/build.make CMakeFiles/cmTC_383ad.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_383ad.dir/src.c.o
+/usr/bin/cc -DHAVE_ATTRIBUTE_UNINITIALIZED  -Werror -std=gnu99 -o CMakeFiles/cmTC_383ad.dir/src.c.o -c /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/src.c
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/src.c: In function 'main':
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/src.c:1:1: error: 'uninitialized' attribute directive ignored [-Werror=attributes]
+    1 | int main(void) { char buf[128] __attribute__((uninitialized)); (void)buf; return 0; }
+      | ^~~
+cc1: all warnings being treated as errors
+gmake[1]: *** [CMakeFiles/cmTC_383ad.dir/build.make:78: CMakeFiles/cmTC_383ad.dir/src.c.o] Error 1
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_383ad/fast] Error 2
+
+
+Source file was:
+int main(void) { char buf[128] __attribute__((uninitialized)); (void)buf; return 0; }
+Performing C SOURCE FILE Test HAVE_BUILTIN_ASSUME failed with the following output:
+Change Dir: /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_a4d35/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_a4d35.dir/build.make CMakeFiles/cmTC_a4d35.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a4d35.dir/src.c.o
+/usr/bin/cc -DHAVE_BUILTIN_ASSUME  -std=gnu99 -o CMakeFiles/cmTC_a4d35.dir/src.c.o -c /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/src.c
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/src.c: In function 'main':
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/src.c:1:18: warning: implicit declaration of function '__assume' [-Wimplicit-function-declaration]
+    1 | int main(void) { __assume(1); return 0; }
+      |                  ^~~~~~~~
+Linking C executable cmTC_a4d35
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a4d35.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_a4d35.dir/src.c.o -o cmTC_a4d35 
+/usr/bin/ld: CMakeFiles/cmTC_a4d35.dir/src.c.o: in function `main':
+src.c:(.text+0xc): undefined reference to `__assume'
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_a4d35.dir/build.make:99: cmTC_a4d35] Error 1
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_a4d35/fast] Error 2
+
+
+Source file was:
+int main(void) { __assume(1); return 0; }
+Performing C SOURCE FILE Test INTEL_CET_ENABLED failed with the following output:
+Change Dir: /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_a13c8/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_a13c8.dir/build.make CMakeFiles/cmTC_a13c8.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a13c8.dir/src.c.o
+/usr/bin/cc -DINTEL_CET_ENABLED  -std=gnu99 -o CMakeFiles/cmTC_a13c8.dir/src.c.o -c /data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/src.c
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp/src.c:2:4: error: #error CET is not enabled
+    2 |   #error CET is not enabled
+      |    ^~~~~
+gmake[1]: *** [CMakeFiles/cmTC_a13c8.dir/build.make:78: CMakeFiles/cmTC_a13c8.dir/src.c.o] Error 1
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_a13c8/fast] Error 2
+
+
+Source file was:
+  #ifndef __CET__
+  #error CET is not enabled
+  #endif
+  int main() { return 0; }
+  

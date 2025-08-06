@@ -1,0 +1,14 @@
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/pcre2-8-static.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/pcre2-posix-static.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/pcre2-16-static.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/pcre2-32-static.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/pcre2grep.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/pcre2test.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/pcre2posix_test.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/test.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/edit_cache.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/rebuild_cache.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/list_install_components.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/install.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/install/local.dir
+/data/GitHub/grapa/dep/pcre2-10.45/build_static/CMakeFiles/install/strip.dir

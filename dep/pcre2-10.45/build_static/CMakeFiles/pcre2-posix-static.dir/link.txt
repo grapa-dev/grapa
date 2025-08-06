@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpcre2-posix.a CMakeFiles/pcre2-posix-static.dir/src/pcre2posix.c.o
+/usr/bin/ranlib libpcre2-posix.a

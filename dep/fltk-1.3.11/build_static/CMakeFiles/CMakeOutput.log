@@ -1,0 +1,991 @@
+The system is: Linux - 6.10.14-linuxkit - aarch64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is GNU, found in "/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/3.22.1/CompilerIdC/a.out"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/3.22.1/CompilerIdCXX/a.out"
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_db11c/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_db11c.dir/build.make CMakeFiles/cmTC_db11c.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc   -v -o CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c
+Using built-in specs.
+COLLECT_GCC=/usr/bin/cc
+Target: aarch64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_db11c.dir/'
+ /usr/lib/gcc/aarch64-linux-gnu/11/cc1 -quiet -v -imultiarch aarch64-linux-gnu /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_db11c.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mlittle-endian -mabi=lp64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -o /tmp/ccoNUM5D.s
+GNU C17 (Ubuntu 11.4.0-1ubuntu1~22.04) version 11.4.0 (aarch64-linux-gnu)
+	compiled by GNU C version 11.4.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/local/include/aarch64-linux-gnu"
+ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/11/include-fixed"
+ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/11/../../../../aarch64-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/lib/gcc/aarch64-linux-gnu/11/include
+ /usr/local/include
+ /usr/include/aarch64-linux-gnu
+ /usr/include
+End of search list.
+GNU C17 (Ubuntu 11.4.0-1ubuntu1~22.04) version 11.4.0 (aarch64-linux-gnu)
+	compiled by GNU C version 11.4.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 52ed857e9cd110e5efaa797811afcfbb
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_db11c.dir/'
+ as -v -EL -mabi=lp64 -o CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o /tmp/ccoNUM5D.s
+GNU assembler version 2.38 (aarch64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.38
+COMPILER_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.'
+Linking C executable cmTC_db11c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_db11c.dir/link.txt --verbose=1
+/usr/bin/cc  -v CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o -o cmTC_db11c 
+Using built-in specs.
+COLLECT_GCC=/usr/bin/cc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper
+Target: aarch64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+COMPILER_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_db11c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_db11c.'
+ /usr/lib/gcc/aarch64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/aarch64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/cc9Mqo10.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu --as-needed -dynamic-linker /lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux --fix-cortex-a53-843419 -pie -z now -z relro -o cmTC_db11c /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/aarch64-linux-gnu/11 -L/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu -L/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib -L/lib/aarch64-linux-gnu -L/lib/../lib -L/usr/lib/aarch64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/aarch64-linux-gnu/11/../../.. CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_db11c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_db11c.'
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Parsed C implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/usr/lib/gcc/aarch64-linux-gnu/11/include]
+    add: [/usr/local/include]
+    add: [/usr/include/aarch64-linux-gnu]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/usr/lib/gcc/aarch64-linux-gnu/11/include] ==> [/usr/lib/gcc/aarch64-linux-gnu/11/include]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/usr/include/aarch64-linux-gnu] ==> [/usr/include/aarch64-linux-gnu]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/usr/lib/gcc/aarch64-linux-gnu/11/include;/usr/local/include;/usr/include/aarch64-linux-gnu;/usr/include]
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_db11c/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_db11c.dir/build.make CMakeFiles/cmTC_db11c.dir/build]
+  ignore line: [gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc   -v -o CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/cc]
+  ignore line: [Target: aarch64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib zstd]
+  ignore line: [gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_db11c.dir/']
+  ignore line: [ /usr/lib/gcc/aarch64-linux-gnu/11/cc1 -quiet -v -imultiarch aarch64-linux-gnu /usr/share/cmake-3.22/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_db11c.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mlittle-endian -mabi=lp64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -o /tmp/ccoNUM5D.s]
+  ignore line: [GNU C17 (Ubuntu 11.4.0-1ubuntu1~22.04) version 11.4.0 (aarch64-linux-gnu)]
+  ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version isl-0.24-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring nonexistent directory "/usr/local/include/aarch64-linux-gnu"]
+  ignore line: [ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/11/include-fixed"]
+  ignore line: [ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/11/../../../../aarch64-linux-gnu/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /usr/lib/gcc/aarch64-linux-gnu/11/include]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /usr/include/aarch64-linux-gnu]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C17 (Ubuntu 11.4.0-1ubuntu1~22.04) version 11.4.0 (aarch64-linux-gnu)]
+  ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version isl-0.24-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: 52ed857e9cd110e5efaa797811afcfbb]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_db11c.dir/']
+  ignore line: [ as -v -EL -mabi=lp64 -o CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o /tmp/ccoNUM5D.s]
+  ignore line: [GNU assembler version 2.38 (aarch64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.38]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.']
+  ignore line: [Linking C executable cmTC_db11c]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_db11c.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc  -v CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o -o cmTC_db11c ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/cc]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper]
+  ignore line: [Target: aarch64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib zstd]
+  ignore line: [gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_db11c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_db11c.']
+  link line: [ /usr/lib/gcc/aarch64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/aarch64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/cc9Mqo10.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu --as-needed -dynamic-linker /lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux --fix-cortex-a53-843419 -pie -z now -z relro -o cmTC_db11c /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/aarch64-linux-gnu/11 -L/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu -L/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib -L/lib/aarch64-linux-gnu -L/lib/../lib -L/usr/lib/aarch64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/aarch64-linux-gnu/11/../../.. CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/cc9Mqo10.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib/ld-linux-aarch64.so.1] ==> ignore
+    arg [-X] ==> ignore
+    arg [-EL] ==> ignore
+    arg [-maarch64linux] ==> ignore
+    arg [--fix-cortex-a53-843419] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-znow] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_db11c] ==> ignore
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o]
+    arg [-L/usr/lib/gcc/aarch64-linux-gnu/11] ==> dir [/usr/lib/gcc/aarch64-linux-gnu/11]
+    arg [-L/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu] ==> dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu]
+    arg [-L/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib] ==> dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib]
+    arg [-L/lib/aarch64-linux-gnu] ==> dir [/lib/aarch64-linux-gnu]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/aarch64-linux-gnu] ==> dir [/usr/lib/aarch64-linux-gnu]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/usr/lib/gcc/aarch64-linux-gnu/11/../../..] ==> dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../..]
+    arg [CMakeFiles/cmTC_db11c.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--push-state] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--pop-state] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--push-state] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--pop-state] ==> ignore
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o]
+  collapse obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o] ==> [/usr/lib/aarch64-linux-gnu/Scrt1.o]
+  collapse obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o] ==> [/usr/lib/aarch64-linux-gnu/crti.o]
+  collapse obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o] ==> [/usr/lib/aarch64-linux-gnu/crtn.o]
+  collapse library dir [/usr/lib/gcc/aarch64-linux-gnu/11] ==> [/usr/lib/gcc/aarch64-linux-gnu/11]
+  collapse library dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu] ==> [/usr/lib/aarch64-linux-gnu]
+  collapse library dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/aarch64-linux-gnu] ==> [/lib/aarch64-linux-gnu]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/aarch64-linux-gnu] ==> [/usr/lib/aarch64-linux-gnu]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../..] ==> [/usr/lib]
+  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+  implicit objs: [/usr/lib/aarch64-linux-gnu/Scrt1.o;/usr/lib/aarch64-linux-gnu/crti.o;/usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o;/usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o;/usr/lib/aarch64-linux-gnu/crtn.o]
+  implicit dirs: [/usr/lib/gcc/aarch64-linux-gnu/11;/usr/lib/aarch64-linux-gnu;/usr/lib;/lib/aarch64-linux-gnu;/lib]
+  implicit fwks: []
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_06f70/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_06f70.dir/build.make CMakeFiles/cmTC_06f70.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++   -v -o CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp
+Using built-in specs.
+COLLECT_GCC=/usr/bin/c++
+Target: aarch64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_06f70.dir/'
+ /usr/lib/gcc/aarch64-linux-gnu/11/cc1plus -quiet -v -imultiarch aarch64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_06f70.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mlittle-endian -mabi=lp64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -o /tmp/ccFdYrTz.s
+GNU C++17 (Ubuntu 11.4.0-1ubuntu1~22.04) version 11.4.0 (aarch64-linux-gnu)
+	compiled by GNU C version 11.4.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring duplicate directory "/usr/include/aarch64-linux-gnu/c++/11"
+ignoring nonexistent directory "/usr/local/include/aarch64-linux-gnu"
+ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/11/include-fixed"
+ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/11/../../../../aarch64-linux-gnu/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/include/c++/11
+ /usr/include/aarch64-linux-gnu/c++/11
+ /usr/include/c++/11/backward
+ /usr/lib/gcc/aarch64-linux-gnu/11/include
+ /usr/local/include
+ /usr/include/aarch64-linux-gnu
+ /usr/include
+End of search list.
+GNU C++17 (Ubuntu 11.4.0-1ubuntu1~22.04) version 11.4.0 (aarch64-linux-gnu)
+	compiled by GNU C version 11.4.0, GMP version 6.2.1, MPFR version 4.1.0, MPC version 1.2.1, isl version isl-0.24-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: 3e6e780af1232722b47e0979fda82402
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_06f70.dir/'
+ as -v -EL -mabi=lp64 -o CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccFdYrTz.s
+GNU assembler version 2.38 (aarch64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.38
+COMPILER_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.'
+Linking CXX executable cmTC_06f70
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_06f70.dir/link.txt --verbose=1
+/usr/bin/c++  -v CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_06f70 
+Using built-in specs.
+COLLECT_GCC=/usr/bin/c++
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper
+Target: aarch64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) 
+COMPILER_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_06f70' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_06f70.'
+ /usr/lib/gcc/aarch64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/aarch64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/ccpMsofY.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu --as-needed -dynamic-linker /lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux --fix-cortex-a53-843419 -pie -z now -z relro -o cmTC_06f70 /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/aarch64-linux-gnu/11 -L/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu -L/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib -L/lib/aarch64-linux-gnu -L/lib/../lib -L/usr/lib/aarch64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/aarch64-linux-gnu/11/../../.. CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_06f70' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_06f70.'
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Parsed CXX implicit include dir info from above output: rv=done
+  found start of include info
+  found start of implicit include info
+    add: [/usr/include/c++/11]
+    add: [/usr/include/aarch64-linux-gnu/c++/11]
+    add: [/usr/include/c++/11/backward]
+    add: [/usr/lib/gcc/aarch64-linux-gnu/11/include]
+    add: [/usr/local/include]
+    add: [/usr/include/aarch64-linux-gnu]
+    add: [/usr/include]
+  end of search list found
+  collapse include dir [/usr/include/c++/11] ==> [/usr/include/c++/11]
+  collapse include dir [/usr/include/aarch64-linux-gnu/c++/11] ==> [/usr/include/aarch64-linux-gnu/c++/11]
+  collapse include dir [/usr/include/c++/11/backward] ==> [/usr/include/c++/11/backward]
+  collapse include dir [/usr/lib/gcc/aarch64-linux-gnu/11/include] ==> [/usr/lib/gcc/aarch64-linux-gnu/11/include]
+  collapse include dir [/usr/local/include] ==> [/usr/local/include]
+  collapse include dir [/usr/include/aarch64-linux-gnu] ==> [/usr/include/aarch64-linux-gnu]
+  collapse include dir [/usr/include] ==> [/usr/include]
+  implicit include dirs: [/usr/include/c++/11;/usr/include/aarch64-linux-gnu/c++/11;/usr/include/c++/11/backward;/usr/lib/gcc/aarch64-linux-gnu/11/include;/usr/local/include;/usr/include/aarch64-linux-gnu;/usr/include]
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_06f70/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_06f70.dir/build.make CMakeFiles/cmTC_06f70.dir/build]
+  ignore line: [gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/c++]
+  ignore line: [Target: aarch64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib zstd]
+  ignore line: [gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_06f70.dir/']
+  ignore line: [ /usr/lib/gcc/aarch64-linux-gnu/11/cc1plus -quiet -v -imultiarch aarch64-linux-gnu -D_GNU_SOURCE /usr/share/cmake-3.22/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_06f70.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mlittle-endian -mabi=lp64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -o /tmp/ccFdYrTz.s]
+  ignore line: [GNU C++17 (Ubuntu 11.4.0-1ubuntu1~22.04) version 11.4.0 (aarch64-linux-gnu)]
+  ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version isl-0.24-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [ignoring duplicate directory "/usr/include/aarch64-linux-gnu/c++/11"]
+  ignore line: [ignoring nonexistent directory "/usr/local/include/aarch64-linux-gnu"]
+  ignore line: [ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/11/include-fixed"]
+  ignore line: [ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/11/../../../../aarch64-linux-gnu/include"]
+  ignore line: [#include "..." search starts here:]
+  ignore line: [#include <...> search starts here:]
+  ignore line: [ /usr/include/c++/11]
+  ignore line: [ /usr/include/aarch64-linux-gnu/c++/11]
+  ignore line: [ /usr/include/c++/11/backward]
+  ignore line: [ /usr/lib/gcc/aarch64-linux-gnu/11/include]
+  ignore line: [ /usr/local/include]
+  ignore line: [ /usr/include/aarch64-linux-gnu]
+  ignore line: [ /usr/include]
+  ignore line: [End of search list.]
+  ignore line: [GNU C++17 (Ubuntu 11.4.0-1ubuntu1~22.04) version 11.4.0 (aarch64-linux-gnu)]
+  ignore line: [	compiled by GNU C version 11.4.0  GMP version 6.2.1  MPFR version 4.1.0  MPC version 1.2.1  isl version isl-0.24-GMP]
+  ignore line: []
+  ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+  ignore line: [Compiler executable checksum: 3e6e780af1232722b47e0979fda82402]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_06f70.dir/']
+  ignore line: [ as -v -EL -mabi=lp64 -o CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o /tmp/ccFdYrTz.s]
+  ignore line: [GNU assembler version 2.38 (aarch64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.38]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.']
+  ignore line: [Linking CXX executable cmTC_06f70]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_06f70.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++  -v CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_06f70 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/c++]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper]
+  ignore line: [Target: aarch64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c ada c++ go d fortran objc obj-c++ m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2]
+  ignore line: [Thread model: posix]
+  ignore line: [Supported LTO compression algorithms: zlib zstd]
+  ignore line: [gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/11/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/11/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_06f70' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_06f70.']
+  link line: [ /usr/lib/gcc/aarch64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/aarch64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/ccpMsofY.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu --as-needed -dynamic-linker /lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux --fix-cortex-a53-843419 -pie -z now -z relro -o cmTC_06f70 /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/aarch64-linux-gnu/11 -L/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu -L/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib -L/lib/aarch64-linux-gnu -L/lib/../lib -L/usr/lib/aarch64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/aarch64-linux-gnu/11/../../.. CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o /usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/aarch64-linux-gnu/11/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccpMsofY.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib/ld-linux-aarch64.so.1] ==> ignore
+    arg [-X] ==> ignore
+    arg [-EL] ==> ignore
+    arg [-maarch64linux] ==> ignore
+    arg [--fix-cortex-a53-843419] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-znow] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_06f70] ==> ignore
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o]
+    arg [-L/usr/lib/gcc/aarch64-linux-gnu/11] ==> dir [/usr/lib/gcc/aarch64-linux-gnu/11]
+    arg [-L/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu] ==> dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu]
+    arg [-L/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib] ==> dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib]
+    arg [-L/lib/aarch64-linux-gnu] ==> dir [/lib/aarch64-linux-gnu]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/aarch64-linux-gnu] ==> dir [/usr/lib/aarch64-linux-gnu]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/usr/lib/gcc/aarch64-linux-gnu/11/../../..] ==> dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../..]
+    arg [CMakeFiles/cmTC_06f70.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o]
+    arg [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o] ==> obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o]
+  collapse obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/Scrt1.o] ==> [/usr/lib/aarch64-linux-gnu/Scrt1.o]
+  collapse obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crti.o] ==> [/usr/lib/aarch64-linux-gnu/crti.o]
+  collapse obj [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu/crtn.o] ==> [/usr/lib/aarch64-linux-gnu/crtn.o]
+  collapse library dir [/usr/lib/gcc/aarch64-linux-gnu/11] ==> [/usr/lib/gcc/aarch64-linux-gnu/11]
+  collapse library dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../../aarch64-linux-gnu] ==> [/usr/lib/aarch64-linux-gnu]
+  collapse library dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/aarch64-linux-gnu] ==> [/lib/aarch64-linux-gnu]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/aarch64-linux-gnu] ==> [/usr/lib/aarch64-linux-gnu]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/aarch64-linux-gnu/11/../../..] ==> [/usr/lib]
+  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit objs: [/usr/lib/aarch64-linux-gnu/Scrt1.o;/usr/lib/aarch64-linux-gnu/crti.o;/usr/lib/gcc/aarch64-linux-gnu/11/crtbeginS.o;/usr/lib/gcc/aarch64-linux-gnu/11/crtendS.o;/usr/lib/aarch64-linux-gnu/crtn.o]
+  implicit dirs: [/usr/lib/gcc/aarch64-linux-gnu/11;/usr/lib/aarch64-linux-gnu;/usr/lib;/lib/aarch64-linux-gnu;/lib]
+  implicit fwks: []
+
+
+Determining if the include file sys/types.h exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_0abe2/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_0abe2.dir/build.make CMakeFiles/cmTC_0abe2.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0abe2.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_0abe2.dir/CheckIncludeFile.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0abe2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0abe2.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_0abe2.dir/CheckIncludeFile.c.o -o cmTC_0abe2 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file stdint.h exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_7f2bf/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_7f2bf.dir/build.make CMakeFiles/cmTC_7f2bf.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7f2bf.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_7f2bf.dir/CheckIncludeFile.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_7f2bf
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7f2bf.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_7f2bf.dir/CheckIncludeFile.c.o -o cmTC_7f2bf 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file stddef.h exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_fedbd/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_fedbd.dir/build.make CMakeFiles/cmTC_fedbd.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_fedbd.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_fedbd.dir/CheckIncludeFile.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_fedbd
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fedbd.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_fedbd.dir/CheckIncludeFile.c.o -o cmTC_fedbd 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of short passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_18f89/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_18f89.dir/build.make CMakeFiles/cmTC_18f89.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_18f89.dir/SIZEOF_SHORT.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_18f89.dir/SIZEOF_SHORT.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckTypeSize/SIZEOF_SHORT.c
+Linking C executable cmTC_18f89
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_18f89.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_18f89.dir/SIZEOF_SHORT.c.o -o cmTC_18f89 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of int passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_81351/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_81351.dir/build.make CMakeFiles/cmTC_81351.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_81351.dir/SIZEOF_INT.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_81351.dir/SIZEOF_INT.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckTypeSize/SIZEOF_INT.c
+Linking C executable cmTC_81351
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_81351.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_81351.dir/SIZEOF_INT.c.o -o cmTC_81351 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of long passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_500b2/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_500b2.dir/build.make CMakeFiles/cmTC_500b2.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_500b2.dir/SIZEOF_LONG.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_500b2.dir/SIZEOF_LONG.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckTypeSize/SIZEOF_LONG.c
+Linking C executable cmTC_500b2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_500b2.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_500b2.dir/SIZEOF_LONG.c.o -o cmTC_500b2 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining size of long long passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_4b482/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_4b482.dir/build.make CMakeFiles/cmTC_4b482.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4b482.dir/HAVE_LONG_LONG.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_4b482.dir/HAVE_LONG_LONG.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckTypeSize/HAVE_LONG_LONG.c
+Linking C executable cmTC_4b482
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4b482.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_4b482.dir/HAVE_LONG_LONG.c.o -o cmTC_4b482 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files alsa/asoundlib.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_38ae4/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_38ae4.dir/build.make CMakeFiles/cmTC_38ae4.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_38ae4.dir/HAVE_ALSA_ASOUNDLIB_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_38ae4.dir/HAVE_ALSA_ASOUNDLIB_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_ALSA_ASOUNDLIB_H.c
+Linking C executable cmTC_38ae4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_38ae4.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_38ae4.dir/HAVE_ALSA_ASOUNDLIB_H.c.o -o cmTC_38ae4 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files dlfcn.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_502e5/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_502e5.dir/build.make CMakeFiles/cmTC_502e5.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_502e5.dir/HAVE_DLFCN_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_502e5.dir/HAVE_DLFCN_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_DLFCN_H.c
+Linking C executable cmTC_502e5
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_502e5.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_502e5.dir/HAVE_DLFCN_H.c.o -o cmTC_502e5 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files GL/glu.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_2e09c/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_2e09c.dir/build.make CMakeFiles/cmTC_2e09c.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_2e09c.dir/HAVE_GL_GLU_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_2e09c.dir/HAVE_GL_GLU_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_GL_GLU_H.c
+Linking C executable cmTC_2e09c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2e09c.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_2e09c.dir/HAVE_GL_GLU_H.c.o -o cmTC_2e09c 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files libpng/png.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_de132/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_de132.dir/build.make CMakeFiles/cmTC_de132.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_de132.dir/HAVE_LIBPNG_PNG_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_de132.dir/HAVE_LIBPNG_PNG_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_LIBPNG_PNG_H.c
+Linking C executable cmTC_de132
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_de132.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_de132.dir/HAVE_LIBPNG_PNG_H.c.o -o cmTC_de132 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files locale.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_ff70d/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_ff70d.dir/build.make CMakeFiles/cmTC_ff70d.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ff70d.dir/HAVE_LOCALE_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_ff70d.dir/HAVE_LOCALE_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_LOCALE_H.c
+Linking C executable cmTC_ff70d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ff70d.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_ff70d.dir/HAVE_LOCALE_H.c.o -o cmTC_ff70d 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files png.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_7240a/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_7240a.dir/build.make CMakeFiles/cmTC_7240a.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7240a.dir/HAVE_PNG_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_7240a.dir/HAVE_PNG_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_PNG_H.c
+Linking C executable cmTC_7240a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7240a.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_7240a.dir/HAVE_PNG_H.c.o -o cmTC_7240a 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files stdio.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_d2d56/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_d2d56.dir/build.make CMakeFiles/cmTC_d2d56.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d2d56.dir/HAVE_STDIO_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_d2d56.dir/HAVE_STDIO_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_STDIO_H.c
+Linking C executable cmTC_d2d56
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d2d56.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_d2d56.dir/HAVE_STDIO_H.c.o -o cmTC_d2d56 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files strings.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_85b62/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_85b62.dir/build.make CMakeFiles/cmTC_85b62.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_85b62.dir/HAVE_STRINGS_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_85b62.dir/HAVE_STRINGS_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_STRINGS_H.c
+Linking C executable cmTC_85b62
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_85b62.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_85b62.dir/HAVE_STRINGS_H.c.o -o cmTC_85b62 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files sys/select.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_0787f/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_0787f.dir/build.make CMakeFiles/cmTC_0787f.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0787f.dir/HAVE_SYS_SELECT_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_0787f.dir/HAVE_SYS_SELECT_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_SYS_SELECT_H.c
+Linking C executable cmTC_0787f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0787f.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_0787f.dir/HAVE_SYS_SELECT_H.c.o -o cmTC_0787f 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files X11/Xlib.h;X11/Xregion.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_86029/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_86029.dir/build.make CMakeFiles/cmTC_86029.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_86029.dir/HAVE_X11_XREGION_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_86029.dir/HAVE_X11_XREGION_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_X11_XREGION_H.c
+Linking C executable cmTC_86029
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_86029.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_86029.dir/HAVE_X11_XREGION_H.c.o -o cmTC_86029 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files X11/Xlib.h;X11/extensions/Xdbe.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_7e3c3/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_7e3c3.dir/build.make CMakeFiles/cmTC_7e3c3.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7e3c3.dir/HAVE_XDBE_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_7e3c3.dir/HAVE_XDBE_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_XDBE_H.c
+Linking C executable cmTC_7e3c3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7e3c3.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_7e3c3.dir/HAVE_XDBE_H.c.o -o cmTC_7e3c3 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files pthread.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_ecfc1/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_ecfc1.dir/build.make CMakeFiles/cmTC_ecfc1.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ecfc1.dir/HAVE_PTHREAD_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_ecfc1.dir/HAVE_PTHREAD_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_PTHREAD_H.c
+Linking C executable cmTC_ecfc1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ecfc1.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_ecfc1.dir/HAVE_PTHREAD_H.c.o -o cmTC_ecfc1 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if files dirent.h exist passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_a10db/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_a10db.dir/build.make CMakeFiles/cmTC_a10db.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a10db.dir/HAVE_DIRENT_H.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_a10db.dir/HAVE_DIRENT_H.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CheckIncludeFiles/HAVE_DIRENT_H.c
+Linking C executable cmTC_a10db
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a10db.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_a10db.dir/HAVE_DIRENT_H.c.o -o cmTC_a10db 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function dlsym exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_69ee4/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_69ee4.dir/build.make CMakeFiles/cmTC_69ee4.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_69ee4.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=dlsym -o CMakeFiles/cmTC_69ee4.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_69ee4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_69ee4.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=dlsym CMakeFiles/cmTC_69ee4.dir/CheckFunctionExists.c.o -o cmTC_69ee4  -ldl 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function localeconv exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_55888/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_55888.dir/build.make CMakeFiles/cmTC_55888.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_55888.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=localeconv -o CMakeFiles/cmTC_55888.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_55888
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_55888.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=localeconv CMakeFiles/cmTC_55888.dir/CheckFunctionExists.c.o -o cmTC_55888 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function png_get_valid exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_6ff7b/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_6ff7b.dir/build.make CMakeFiles/cmTC_6ff7b.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6ff7b.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=png_get_valid -o CMakeFiles/cmTC_6ff7b.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_6ff7b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6ff7b.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=png_get_valid CMakeFiles/cmTC_6ff7b.dir/CheckFunctionExists.c.o -o cmTC_6ff7b  /usr/lib/aarch64-linux-gnu/libpng.so 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function png_set_tRNS_to_alpha exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_ea248/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_ea248.dir/build.make CMakeFiles/cmTC_ea248.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ea248.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=png_set_tRNS_to_alpha -o CMakeFiles/cmTC_ea248.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_ea248
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ea248.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=png_set_tRNS_to_alpha CMakeFiles/cmTC_ea248.dir/CheckFunctionExists.c.o -o cmTC_ea248  /usr/lib/aarch64-linux-gnu/libpng.so 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function scandir exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_b1b16/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_b1b16.dir/build.make CMakeFiles/cmTC_b1b16.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b1b16.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=scandir -o CMakeFiles/cmTC_b1b16.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_b1b16
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b1b16.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=scandir CMakeFiles/cmTC_b1b16.dir/CheckFunctionExists.c.o -o cmTC_b1b16 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function snprintf exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_039f3/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_039f3.dir/build.make CMakeFiles/cmTC_039f3.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_039f3.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=snprintf -o CMakeFiles/cmTC_039f3.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+<command-line>: warning: conflicting types for built-in function 'snprintf'; expected 'int(char *, long unsigned int,  const char *, ...)' [-Wbuiltin-declaration-mismatch]
+/usr/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro 'CHECK_FUNCTION_EXISTS'
+    7 |   CHECK_FUNCTION_EXISTS(void);
+      |   ^~~~~~~~~~~~~~~~~~~~~
+/usr/share/cmake-3.22/Modules/CheckFunctionExists.c:1:1: note: 'snprintf' is declared in header '<stdio.h>'
+  +++ |+#include <stdio.h>
+    1 | #ifdef CHECK_FUNCTION_EXISTS
+Linking C executable cmTC_039f3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_039f3.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=snprintf CMakeFiles/cmTC_039f3.dir/CheckFunctionExists.c.o -o cmTC_039f3 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function strcasecmp exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_e790f/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_e790f.dir/build.make CMakeFiles/cmTC_e790f.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e790f.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=strcasecmp -o CMakeFiles/cmTC_e790f.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+<command-line>: warning: conflicting types for built-in function 'strcasecmp'; expected 'int(const char *, const char *)' [-Wbuiltin-declaration-mismatch]
+<command-line>: note: in definition of macro 'CHECK_FUNCTION_EXISTS'
+Linking C executable cmTC_e790f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e790f.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=strcasecmp CMakeFiles/cmTC_e790f.dir/CheckFunctionExists.c.o -o cmTC_e790f 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function vsnprintf exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_c196d/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_c196d.dir/build.make CMakeFiles/cmTC_c196d.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c196d.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=vsnprintf -o CMakeFiles/cmTC_c196d.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+<command-line>: warning: conflicting types for built-in function 'vsnprintf'; expected 'int(char *, long unsigned int,  const char *, __va_list)' [-Wbuiltin-declaration-mismatch]
+/usr/share/cmake-3.22/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro 'CHECK_FUNCTION_EXISTS'
+    7 |   CHECK_FUNCTION_EXISTS(void);
+      |   ^~~~~~~~~~~~~~~~~~~~~
+/usr/share/cmake-3.22/Modules/CheckFunctionExists.c:1:1: note: 'vsnprintf' is declared in header '<stdio.h>'
+  +++ |+#include <stdio.h>
+    1 | #ifdef CHECK_FUNCTION_EXISTS
+Linking C executable cmTC_c196d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c196d.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=vsnprintf CMakeFiles/cmTC_c196d.dir/CheckFunctionExists.c.o -o cmTC_c196d 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file png.h exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_340d3/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_340d3.dir/build.make CMakeFiles/cmTC_340d3.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_340d3.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_340d3.dir/CheckIncludeFile.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_340d3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_340d3.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_340d3.dir/CheckIncludeFile.c.o -o cmTC_340d3 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function XOpenDisplay exists in the /usr/lib/aarch64-linux-gnu/libX11.so;/usr/lib/aarch64-linux-gnu/libXext.so passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_b5145/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_b5145.dir/build.make CMakeFiles/cmTC_b5145.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b5145.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=XOpenDisplay -o CMakeFiles/cmTC_b5145.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_b5145
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b5145.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=XOpenDisplay CMakeFiles/cmTC_b5145.dir/CheckFunctionExists.c.o -o cmTC_b5145  /usr/lib/aarch64-linux-gnu/libX11.so /usr/lib/aarch64-linux-gnu/libXext.so 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function gethostbyname exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_fcff0/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_fcff0.dir/build.make CMakeFiles/cmTC_fcff0.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_fcff0.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=gethostbyname -o CMakeFiles/cmTC_fcff0.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_fcff0
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fcff0.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=gethostbyname CMakeFiles/cmTC_fcff0.dir/CheckFunctionExists.c.o -o cmTC_fcff0 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function connect exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_90f5a/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_90f5a.dir/build.make CMakeFiles/cmTC_90f5a.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_90f5a.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=connect -o CMakeFiles/cmTC_90f5a.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_90f5a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_90f5a.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=connect CMakeFiles/cmTC_90f5a.dir/CheckFunctionExists.c.o -o cmTC_90f5a 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function remove exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_da702/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_da702.dir/build.make CMakeFiles/cmTC_da702.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_da702.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=remove -o CMakeFiles/cmTC_da702.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_da702
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_da702.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=remove CMakeFiles/cmTC_da702.dir/CheckFunctionExists.c.o -o cmTC_da702 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function shmat exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_54590/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_54590.dir/build.make CMakeFiles/cmTC_54590.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_54590.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=shmat -o CMakeFiles/cmTC_54590.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_54590
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_54590.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=shmat CMakeFiles/cmTC_54590.dir/CheckFunctionExists.c.o -o cmTC_54590 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the function glXGetProcAddressARB exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_e64c4/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_e64c4.dir/build.make CMakeFiles/cmTC_e64c4.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e64c4.dir/CheckFunctionExists.c.o
+/usr/bin/cc  -I/usr/include/GL -DCHECK_FUNCTION_EXISTS=glXGetProcAddressARB -o CMakeFiles/cmTC_e64c4.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_e64c4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e64c4.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=glXGetProcAddressARB CMakeFiles/cmTC_e64c4.dir/CheckFunctionExists.c.o -o cmTC_e64c4  /usr/lib/aarch64-linux-gnu/libGL.so /usr/lib/aarch64-linux-gnu/libGLU.so 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_be68f/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_be68f.dir/build.make CMakeFiles/cmTC_be68f.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_be68f.dir/CheckIncludeFile.c.o
+/usr/bin/cc  -I/usr/include/GL  -o CMakeFiles/cmTC_be68f.dir/CheckIncludeFile.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_be68f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_be68f.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_be68f.dir/CheckIncludeFile.c.o -o cmTC_be68f 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD succeeded with the following output:
+Change Dir: /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_9162b/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_9162b.dir/build.make CMakeFiles/cmTC_9162b.dir/build
+gmake[1]: Entering directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9162b.dir/src.c.o
+/usr/bin/cc -DCMAKE_HAVE_LIBC_PTHREAD -I/usr/include/GL  -o CMakeFiles/cmTC_9162b.dir/src.c.o -c /data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_9162b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9162b.dir/link.txt --verbose=1
+/usr/bin/cc CMakeFiles/cmTC_9162b.dir/src.c.o -o cmTC_9162b 
+gmake[1]: Leaving directory '/data/GitHub/grapa/dep/fltk-1.3.11/build_static/CMakeFiles/CMakeTmp'
+
+
+Source file was:
+#include <pthread.h>
+
+static void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_cancel(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+

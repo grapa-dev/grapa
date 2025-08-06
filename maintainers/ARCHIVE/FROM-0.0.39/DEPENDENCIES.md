@@ -6,6 +6,20 @@ tags:
   - dependencies
 ---
 
+sudo apt-get install build-essential
+sudo apt-get install cmake
+sudo apt-get install libx11-dev
+sudo apt-get install libxfixes-dev
+sudo apt-get install libxft-dev
+sudo apt-get install libxext-dev
+sudo apt-get install libxrender-dev
+sudo apt-get install libxinerama-dev
+sudo apt-get install libxcursor-dev
+sudo apt-get install libfontconfig1-dev
+sudo apt-get install libfreetype6-dev
+sudo apt-get install libpng-dev
+sudo apt-get install libjpeg-dev
+sudo apt-get install libssl-dev
 
 # Source
 ## OpenSSL

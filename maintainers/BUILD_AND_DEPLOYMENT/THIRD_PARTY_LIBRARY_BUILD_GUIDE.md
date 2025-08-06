@@ -12,6 +12,40 @@ Grapa depends on the following third-party libraries:
 
 ## Platform-Specific Build Instructions
 
+### Prerequisites
+
+#### Ubuntu 22.04 ARM64 Prerequisites (Recommended for GitHub Actions Compatibility)
+```bash
+# Core build tools
+sudo apt update
+sudo apt install -y build-essential cmake
+
+# X11 development libraries (required for FLTK)
+sudo apt install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libfontconfig1-dev libfreetype6-dev
+
+# Additional libraries
+sudo apt install -y libpng-dev libjpeg-dev libssl-dev
+
+# Additional packages for complete FLTK build
+sudo apt install -y libz-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev
+
+# Development tools
+sudo apt install -y gdb git autoconf
+
+# Graphics and audio libraries
+sudo apt install -y libglu1-mesa-dev libasound2-dev
+
+# Optional but recommended
+sudo apt install -y pkg-config
+```
+
+**Verification:**
+```bash
+g++ --version
+cmake --version
+pkg-config --version
+```
+
 ### Linux AMD64 (Native)
 
 #### OpenSSL
@@ -385,6 +419,13 @@ The same executable preservation issue exists in:
 - **Missing X11 libraries**: Install `libx11-dev`, `libxft-dev`, etc.
 - **Missing build tools**: Install `build-essential`, `gcc`, `g++`
 - **Chroot environment**: Use QEMU emulation for native ARM64 builds
+- **Ubuntu Version Compatibility**: ⚠️ **CRITICAL** - Use Ubuntu 22.04 for ARM64 builds to match GitHub Actions runners
+
+**Ubuntu Version Compatibility Issue**:
+- **Problem**: Libraries built on Ubuntu 24.04 fail on GitHub Actions (Ubuntu 22.04)
+- **Root Cause**: Different GCC versions, library versions, and C++ standard support
+- **Solution**: Always use Ubuntu 22.04 for ARM64 builds to ensure compatibility
+- **Impact**: `__isoc23_` symbol errors, linker failures, runtime crashes
 
 #### Windows
 - **Visual Studio**: Ensure Visual Studio is properly installed

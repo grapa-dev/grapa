@@ -1,0 +1,181 @@
+#
+# Make include file for the Fast Light Tool Kit (FLTK).
+#
+# Copyright 1998-2021 by Bill Spitzak and others.
+#
+# This library is free software. Distribution and use rights are outlined in
+# the file "COPYING" which should have been included with this file.  If this
+# file is missing or damaged, see the license at:
+#
+#     https://www.fltk.org/COPYING.php
+#
+# Please see the following page on how to report bugs and issues:
+#
+#      https://www.fltk.org/bugs.php
+#
+
+# FLTK version numbers
+
+FL_VERSION		= 1.3.11
+FL_DSO_VERSION		= 1.3
+FL_ABI_VERSION		= 1.3.0
+
+# FLTK version for documentation generation with doxygen
+
+FLTK_VERSION		= 1.3.11
+
+# Standard configure variables
+
+prefix		= /usr/local
+exec_prefix	= ${prefix}
+bindir		= ${exec_prefix}/bin
+datadir		= ${datarootdir}
+datarootdir	= ${prefix}/share
+includedir	= ${prefix}/include
+libdir		= ${exec_prefix}/lib
+mandir		= ${datarootdir}/man
+srcdir		= .
+docdir		= $(datadir)/doc/fltk
+
+USEMMFILES	= No
+
+# programs we use...
+DOXYDOC		= 
+INSTALL		= /usr/bin/install -c
+LN		= ln -s
+NROFF		= 
+RM		= rm -f
+RMDIR		= rm -rf
+SHELL		= /bin/sh
+STRIP		= strip
+
+# compiler names:
+CXX		= g++
+CC		= gcc
+MAKEDEPEND	= $(CXX) -M
+
+# (Windows) resource compiler
+RC		= 
+
+# flags for C++ compiler:
+ARCHFLAGS	= 
+OPTIM		=  -fPIC -std=c++17 -Wall -Wunused -Wno-format-y2k  -fno-exceptions -fno-strict-aliasing -ffunction-sections -fdata-sections
+CFLAGS		= $(OPTIM) -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_THREAD_SAFE -D_REENTRANT -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16  
+CXXFLAGS	= $(OPTIM) -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_THREAD_SAFE -D_REENTRANT -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/libpng16   $(FLTKFLAGS)
+
+# program to make the archive:
+LIBNAME		= ../lib/libfltk.a
+FLLIBNAME	= ../lib/libfltk_forms.a
+GLLIBNAME	= ../lib/libfltk_gl.a
+IMGLIBNAME	= ../lib/libfltk_images.a
+CAIROLIBNAME	= ../lib/libfltk_cairo.a
+LIBCOMMAND	= /usr/bin/ar cr
+LIBEXT		= .a
+RANLIB		= ranlib
+DSONAME		= 
+FLDSONAME	= 
+GLDSONAME	= 
+IMGDSONAME	= 
+CAIRODSONAME	= 
+DSOCOMMAND	= echo
+
+LIBBASENAME	= libfltk.a
+FLLIBBASENAME	= libfltk_forms.a
+GLLIBBASENAME	= libfltk_gl.a
+IMGLIBBASENAME	= libfltk_images.a
+CAIROLIBBASENAME= libfltk_cairo.a
+
+# libraries to link with:
+AUDIOLIBS	= -lasound
+CAIROLIBS	= 
+CAIROFLAGS	= 
+DSOFLAGS	= -L.   -Wl,-no-undefined -Wl,-Bsymbolic-functions -Wl,-gc-sections
+LDFLAGS		= $(OPTIM)  
+LDLIBS		= -lXrender -lXcursor -lXfixes -lXext -lXft -lfontconfig -lXinerama -lpthread -lm  -lX11 
+GLDLIBS		= -lGLU -lGL -lXrender -lXcursor -lXfixes -lXext -lXft -lfontconfig -lXinerama -lpthread -lm  -lX11 
+LINKFLTK	= ../lib/libfltk.a
+LINKFLTKGL	= ../lib/libfltk_gl.a
+LINKFLTKFORMS	= ../lib/libfltk_forms.a ../lib/libfltk.a
+LINKFLTKIMG	= ../lib/libfltk_images.a ../lib/libfltk.a $(IMAGELIBS)
+LINKFLTKCAIRO	=  $(CAIROLIBS)
+FLTKCAIROOPTION = 
+LINKSHARED	=   ../lib/libfltk_images.a ../lib/libfltk_forms.a ../lib/libfltk.a $(IMAGELIBS) $(CAIROLIBS)
+IMAGELIBS	= -L../lib -lpng -lz -ljpeg 
+
+# image libraries to build...
+IMAGEDIRS	=   
+CAIRODIR	= 
+# The extension to use for executables...
+EXEEXT		= 
+
+# Do we build the OpenGL demos?
+GLDEMOS		= gldemos
+
+# Do we build the threads demo?
+THREADS		= threads
+
+# Name of FLUID executable we install
+FLUID		= fluid$(EXEEXT)
+
+# Name and/or path of FLUID executable we use for building:
+# depends on the build type (native or cross-compiler)
+FLUID_BUILD	= ../fluid/fluid
+
+# Possible steps for OS X build only
+OSX_ONLY	= :
+
+# Man page extensions...
+CAT1EXT		= 1
+CAT3EXT		= 3
+CAT6EXT		= 6
+
+#
+# Installation programs...
+#
+
+INSTALL_BIN	= $(INSTALL) -m 755
+INSTALL_DATA	= $(INSTALL) -m 644
+INSTALL_DIR	= $(INSTALL) -d
+INSTALL_LIB	= $(INSTALL) -m 755
+INSTALL_MAN	= $(INSTALL) -m 644
+INSTALL_SCRIPT	= $(INSTALL) -m 755
+
+# Additional GUI install/uninstall targets...
+INSTALL_DESKTOP	= install-linux
+UNINSTALL_DESKTOP = uninstall-linux
+
+# Be quiet when building...
+.SILENT:
+
+# Build commands and filename extensions...
+.SUFFIXES:	.0 .1 .3 .6 .c .cxx .mm .h .fl .man .o .z $(EXEEXT)
+
+.o$(EXEEXT):
+	echo Linking $@...
+	$(CXX) $(ARCHFLAGS) $(LDFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
+	$(OSX_ONLY) ../fltk-config --post $@
+
+.c.o:
+	echo Compiling $<...
+	$(CC) -I.. $(ARCHFLAGS)    $(CFLAGS) -c $< -o $@
+
+.cxx.o:
+	echo Compiling $<...
+	$(CXX) -I.. $(ARCHFLAGS)    $(CXXFLAGS) -c $< -o $@
+
+.mm.o:
+	echo Compiling $<...
+	$(CXX) -I.. $(ARCHFLAGS) $(CXXFLAGS) -x objective-c++ -c $< -o $@
+
+
+.man.0 .man.1 .man.3 .man.6:
+	echo Formatting $<...
+	rm -f $@
+	$(NROFF) -man $< >$@
+
+.man.z:
+	echo Formatting $<...
+	rm -f $@ t.z
+	$(NROFF) -man $< >t
+	pack -f t
+	mv t.z $@

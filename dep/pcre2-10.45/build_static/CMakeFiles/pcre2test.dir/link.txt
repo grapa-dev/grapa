@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/pcre2test.dir/src/pcre2test.c.o -o pcre2test  libpcre2-posix.a libpcre2-8.a libpcre2-16.a libpcre2-32.a 
