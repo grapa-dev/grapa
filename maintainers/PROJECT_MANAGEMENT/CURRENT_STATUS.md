@@ -104,6 +104,17 @@
 - ✅ **Impact**: Windows builds are skipped unless `--bump-version` is specified
 - ✅ **Legacy File Cleanup**: Identified `source/mainpy_minimal.cpp` as unused (only used in ARM64 emulation context)
 
+### Comprehensive CLI and Python Testing (v0.0.249)
+- ✅ **Enhanced `--test` Option**: Fixed `build.py` to support `--test` with all build modes (`--bin-only`, `--python-only`)
+- ✅ **Added `--test-only` Option**: New standalone testing mode that extracts executables from `bin/` packages when needed
+- ✅ **Multi-Platform CLI Testing**: All 5 platforms now extract and test CLI executables
+- ✅ **Python Package Testing**: Enhanced to build and install Python package when needed for `--test-only`
+- ✅ **Comprehensive Validation**: All platforms validated with CLI and Python functionality tests
+- ✅ **Build System Ready**: Complete end-to-end validation system working across all platforms
+- ✅ **Full System Test**: Successfully ran complete build cycle with version 0.0.249
+- ✅ **All Platforms Validated**: Linux ARM64/AMD64, macOS ARM64/AMD64, Windows AMD64 all working
+- ✅ **Artifacts Committed**: Windows build artifacts properly committed and pushed to git
+
 ### Comprehensive CLI and Python Validation (v0.0.248)
 - ✅ **Enhanced `--test` Option**: Fixed `build.py` to support `--test` with all build modes (`--bin-only`, `--python-only`)
 - ✅ **Added `--test-only` Option**: New standalone testing mode that extracts executables from `bin/` packages
