@@ -32,7 +32,7 @@ docker run -it --rm \
         
         # Build Grapa using build.py with --bin-only to create compressed package
         echo '📦 Building Grapa Application and creating package using build.py...'
-        python3 build.py --bin-only
+        python3 build.py --bin-only --target-platform linux-amd64
         echo '✅ Grapa Application and package built successfully'
         
         echo '🎉 All Grapa components built successfully!'
