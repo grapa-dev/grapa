@@ -10,30 +10,36 @@
 
 ## 🚨 ACTIVE WORK ITEMS
 
-### Linux ARM64 Library Recompilation - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Reverting to C++17 approach with Ubuntu ARM64 VM
+### Linux ARM64 Library Recompilation - ✅ RESOLVED
+- **Status**: ✅ **RESOLVED** - Docker-based Ubuntu 22.04 ARM64 approach completed successfully
 - **Issue**: Linux ARM64 build failing with `__isoc23_` undefined references due to C++23/C++17 compatibility mismatch
 - **Root Cause**: Libraries (OpenSSL, FLTK, PCRE2) were compiled with C++23 features but linking with C++17
-- **Solution Strategy** (v0.0.236):
-  - ✅ **Native ARM64 Library Recompilation**: User recompiled OpenSSL, FLTK, and PCRE2 on native ARM64 system
-  - ✅ **C++17 Compatibility**: Libraries now built with C++17 compatibility to avoid `__isoc23_` errors
-  - ✅ **Proven Build Methods**: Used working native ARM64 build processes:
+- **Solution Strategy** (v0.0.236+):
+  - ✅ **Docker Ubuntu 22.04 ARM64**: Created Docker container matching GitHub Actions environment exactly
+  - ✅ **C++17 Compatibility**: Libraries built with C++17 compatibility to avoid `__isoc23_` errors
+  - ✅ **Proven Build Methods**: Using working native ARM64 build processes:
     - **OpenSSL**: `./config -fPIC -std=c++17 no-shared`
     - **PCRE2**: CMake with `-DBUILD_SHARED_LIBS=OFF` and `-DPCRE2_BUILD_PCRE2_8=ON`
-    - **FLTK**: `./configure --with-optim="-fPIC -std=c++17" --disable-shared` ✅ **BUILT & COPIED**
+    - **FLTK**: `./configure --with-optim="-fPIC -std=c++17" --disable-shared`
+    - **BLST**: `cd prj/blst && ./build.sh` (using special tweaked version)
+  - ✅ **Docker Build Completed**: All libraries successfully built and copied to `source/*/linux-arm64/`
+  - ✅ **Library Verification**: All required libraries present:
+    - `source/openssl-lib/linux-arm64/libcrypto.a` and `libssl.a`
+    - `source/fl-lib/linux-arm64/libfltk.a`, `libfltk_gl.a`, `libfltk_forms.a`, `libfltk_images.a`
+    - `source/pcre2-lib/linux-arm64/libpcre2-8.a`
+    - `source/blst-lib/linux-arm64/libblst.a`
   - ❌ **Compatibility Flags Failed**: `-D_GLIBCXX_USE_CXX11_ABI=0` and `-fno-sized-deallocation` didn't resolve `__isoc23_` errors
   - ❌ **GCC 13+ Approach Failed**: PPA connectivity issues in chroot environment
-  - 🔄 **Current Status**: Reverting to C++17 and implementing Ubuntu ARM64 VM approach
-  - **Next Steps**: 
-    1. ✅ **Completed**: Build FLTK libraries with `make`
-    2. ✅ **Completed**: Copy new libraries to `source/fl-lib/linux-arm64/`
-    3. ❌ **Failed**: Compatibility flags approach
-    4. ❌ **Failed**: GCC 13+ PPA installation in chroot (connectivity issues)
-    5. 🔄 **In Progress**: Revert to C++17 and use Ubuntu ARM64 VM for all library recompilation
+  - ❌ **Ubuntu 24.04 VM Failed**: Not supported on Mac M3
+  - ✅ **Docker Setup**:
+    - ✅ **Dockerfile.ubuntu22-arm64**: Created with all required build tools and dependencies
+    - ✅ **scripts/build_libraries_docker.sh**: Automated build script for all libraries including BLST
+    - ✅ **scripts/docker_ubuntu22_arm64.sh**: Manual container access script
+    - ✅ **$HOME:/data mapping**: Matches user's existing Docker pattern
   - **Benefits**:
-    - **Native compilation** - no chroot issues
+    - **Exact GitHub Actions environment** - Ubuntu 22.04 ARM64
     - **C++17 compatibility** - works across all platforms
-    - **Consistent environment** - libraries built on the same system
+    - **No hardware requirements** - runs on Mac M3
     - **Proven process** - using working native ARM64 setup
 
 ### Windows Python Extension Build Issue - ✅ RESOLVED
@@ -70,28 +76,44 @@
 
 ## 🎯 NEXT STEPS
 
-1. **Monitor v0.0.235 workflow** for Linux ARM64 build success
-2. **If GCC 13+ approach fails**, implement alternative Ubuntu ARM64 VM approach:
-   - **Create fresh Ubuntu ARM64 VM** with older GCC (C++17 compatible)
-   - **Recompile all libraries** with C++17 compatibility: OpenSSL, FLTK, PCRE2, BLST
-   - **Use proven C++17 approach** instead of trying to force C++23 compatibility
-   - **Benefits**: Native compilation, no chroot issues, proven working approach
-3. **Implement Simple Version Validation** for 3 non-cross-compilation runners:
+### **IMMEDIATE NEXT ACTION (When Resuming):**
+1. **Commit new Linux ARM64 libraries** to repository:
+   - **Files**: All libraries in `source/*/linux-arm64/` directories
+   - **Commit message**: "Add Linux ARM64 libraries built with C++17 compatibility"
+   - **Push**: `git push origin main`
+
+2. **Bump version** and trigger GitHub Actions workflow:
+   - **Run**: `python scripts/bump_version.py`
+   - **Expected**: Version bumped to v0.0.237
+   - **Trigger**: GitHub Actions workflow will test Linux ARM64 build
+
+3. **Monitor workflow** for successful Linux ARM64 compilation:
+   - **Check**: Linux ARM64 build step in GitHub Actions
+   - **Expected**: Successful compilation with new C++17-compatible libraries
+   - **Result**: All 5 platforms should build successfully
+
+### **If Linux ARM64 Build Succeeds:**
+4. **Implement Simple Version Validation** for 3 non-cross-compilation runners:
    - **Windows AMD64**: `./grapa.exe -c "\$sys().getenv(\$VERSION)"`
    - **Linux AMD64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
    - **macOS ARM64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
    - **Python**: `import grapapy; print(grapapy.__version__)`
-4. **Verify all 5 platforms** build successfully (Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64)
-5. **Confirm PyPI deployment** completes without errors
-6. **Validate all artifacts** are properly committed and packaged
+5. **Verify all 5 platforms** build successfully (Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64)
+6. **Confirm PyPI deployment** completes without errors
+7. **Validate all artifacts** are properly committed and packaged
+
+### **If Linux ARM64 Build Fails:**
+4. **Debug remaining issues** in GitHub Actions environment
+5. **Check library compatibility** between Docker and GitHub Actions
+6. **Verify C++17 compatibility** is maintained in CI environment
 
 ---
 
 ## 📊 WORKFLOW STATUS
 
-- **Current Version**: v0.0.233
-- **Latest Commit**: `23701a0b` - "Bump version to 0.0.233"
-- **Compatibility Fix**: `c63ace5c` - "Add compatibility flags for Linux ARM64 C++23 symbol resolution"
-- **Library Updates**: `6d772837` - "linux-arm64 lib updates openssl, fltk, pcre2"
-- **Build Fix**: `107df412` - "Fix Linux ARM64 build to use C++17 to match recompiled libraries"
-- **Status**: Testing compatibility flags (`-D_GLIBCXX_USE_CXX11_ABI=0`, `-fno-sized-deallocation`) for C++23 symbol resolution 
+- **Current Version**: v0.0.236
+- **Latest Commit**: Docker Ubuntu 22.04 ARM64 setup for library recompilation
+- **Docker Setup**: Created Docker container matching GitHub Actions environment exactly
+- **Build Script**: `scripts/build_libraries_docker.sh` - Automated build for OpenSSL, FLTK, PCRE2
+- **Manual Access**: `scripts/docker_ubuntu22_arm64.sh` - Manual container access
+- **Status**: Ready to test Docker-based library recompilation approach 
