@@ -9,6 +9,139 @@ set -e
 echo "🚀 Building Grapa for All Platforms..."
 echo "📋 Platforms: Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64"
 
+# Function to get file timestamp (works on both Linux and macOS)
+get_file_timestamp() {
+    local file="$1"
+    if [[ -f "$file" ]]; then
+        stat -c %Y "$file" 2>/dev/null || stat -f %m "$file" 2>/dev/null
+    else
+        echo "0"  # File doesn't exist
+    fi
+}
+
+# Function to record timestamps of all expected artifacts
+record_artifact_timestamps() {
+    local timestamp_file="$1"
+    local platform="$2"
+    local arch="$3"
+    local target="$platform-$arch"
+    
+    # Define expected files for this platform
+    local files=()
+    
+    # Executable
+    if [[ "$platform" == "win" ]]; then
+        files+=("grapa.exe")
+    else
+        files+=("grapa")
+    fi
+    
+    # Static library
+    if [[ "$platform" == "win" ]]; then
+        files+=("source/grapa-lib/$target/grapa.lib")
+    else
+        files+=("source/grapa-lib/$target/libgrapa.a")
+    fi
+    
+    # Shared library (except Windows)
+    if [[ "$platform" != "win" ]]; then
+        files+=("source/grapa-other/$target/libgrapa.so")
+    fi
+    
+    # Compressed package
+    if [[ "$platform" == "win" ]]; then
+        files+=("bin/grapa-$target.zip")
+    else
+        files+=("bin/grapa-$target.tar.gz")
+    fi
+    
+    # Record timestamps
+    for file in "${files[@]}"; do
+        local timestamp=$(get_file_timestamp "$file")
+        echo "$file:$timestamp" >> "$timestamp_file"
+    done
+}
+
+# Function to validate platform artifacts
+validate_platform_artifacts() {
+    local platform="$1"
+    local arch="$2"
+    local target="$platform-$arch"
+    local before_timestamps="$3"
+    local after_timestamps="$4"
+    
+    echo ""
+    echo "📋 Validating $target..."
+    
+    # Define expected files for this platform
+    local files=()
+    
+    # Executable
+    if [[ "$platform" == "win" ]]; then
+        files+=("grapa.exe")
+    else
+        files+=("grapa")
+    fi
+    
+    # Static library
+    if [[ "$platform" == "win" ]]; then
+        files+=("source/grapa-lib/$target/grapa.lib")
+    else
+        files+=("source/grapa-lib/$target/libgrapa.a")
+    fi
+    
+    # Shared library (except Windows)
+    if [[ "$platform" != "win" ]]; then
+        files+=("source/grapa-other/$target/libgrapa.so")
+    fi
+    
+    # Compressed package
+    if [[ "$platform" == "win" ]]; then
+        files+=("bin/grapa-$target.zip")
+    else
+        files+=("bin/grapa-$target.tar.gz")
+    fi
+    
+    local validation_passed=true
+    
+    # Check each file
+    for file in "${files[@]}"; do
+        local before_time=$(grep "^$file:" "$before_timestamps" | cut -d: -f2 || echo "0")
+        local after_time=$(grep "^$file:" "$after_timestamps" | cut -d: -f2 || echo "0")
+        local current_time=$(get_file_timestamp "$file")
+        
+        if [[ -f "$file" ]]; then
+            if [[ "$current_time" -gt "$before_time" ]]; then
+                echo "  ✅ $file (updated during build)"
+            else
+                echo "  ⚠️  $file (exists but not updated during build)"
+                validation_passed=false
+            fi
+            
+            # Validate package contents for compressed files
+            if [[ "$file" == bin/* ]]; then
+                echo "  📦 Package contents:"
+                if [[ "$platform" == "win" ]]; then
+                    unzip -l "$file" | grep -E "(grapa\.exe|grapa\.lib)" || echo "    ❌ Missing expected files"
+                else
+                    tar -tzf "$file" | grep -E "(grapa$|libgrapa\.(a|so))" || echo "    ❌ Missing expected files"
+                fi
+            fi
+        else
+            echo "  ❌ $file (missing)"
+            validation_passed=false
+        fi
+    done
+    
+    if [[ "$validation_passed" == "true" ]]; then
+        echo "  ✅ $target validation passed"
+        return 0
+    else
+        echo "  ❌ $target validation failed"
+        return 1
+    fi
+}
+
 # Build Docker image once
 echo "🐳 Building Docker image..."
 docker build -f Dockerfile.grapa-build -t grapa-build .
@@ -34,16 +167,31 @@ build_platform() {
             mkdir -p source/grapa-other/$platform-$arch
             mkdir -p bin
             
-                               # Build Grapa Application and create package using build.py
-                   echo '📦 Building Grapa Application and creating package for $platform-$arch using build.py...'
-                   python3 build.py --bin-only
-                   echo '✅ Grapa Application and package built successfully for $platform-$arch'
+            # Build Grapa Application and create package using build.py
+            echo '📦 Building Grapa Application and creating package for $platform-$arch using build.py...'
+            python3 build.py --bin-only --target-platform $platform-$arch
+            echo '✅ Grapa Application and package built successfully for $platform-$arch'
             
             echo '🎉 All Grapa components built successfully for $platform-$arch!'
         "
     
     echo "✅ Completed build for $platform-$arch"
 }
+
+# Record timestamps before build
+echo ""
+echo "📅 Recording artifact timestamps before build..."
+before_timestamps=$(mktemp)
+after_timestamps=$(mktemp)
+
+# Record timestamps for all expected artifacts
+record_artifact_timestamps "$before_timestamps" "linux" "arm64"
+record_artifact_timestamps "$before_timestamps" "linux" "amd64"
+record_artifact_timestamps "$before_timestamps" "mac" "arm64"
+record_artifact_timestamps "$before_timestamps" "mac" "amd64"
+record_artifact_timestamps "$before_timestamps" "win" "amd64"
+
+echo "📋 Pre-build timestamps recorded in: $before_timestamps"
 
 # Build for each platform
 echo ""
@@ -63,7 +211,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     mkdir -p source/grapa-lib/mac-arm64
     mkdir -p source/grapa-other/mac-arm64
     mkdir -p bin
-    python3 build.py --bin-only
+    python3 build.py --bin-only --target-platform mac-arm64
     echo "✅ macOS ARM64 build completed"
 else
     echo "⚠️  macOS ARM64 build skipped (not on macOS)"
@@ -129,124 +277,35 @@ echo "📁 Shared libraries: source/grapa-other/*/libgrapa.so"
 echo "📁 Compressed files: bin/grapa-*.tar.gz, bin/grapa-win-amd64.zip"
 echo ""
 
+# Record timestamps after build
+echo "📅 Recording artifact timestamps after build..."
+record_artifact_timestamps "$after_timestamps" "linux" "arm64"
+record_artifact_timestamps "$after_timestamps" "linux" "amd64"
+record_artifact_timestamps "$after_timestamps" "mac" "arm64"
+record_artifact_timestamps "$after_timestamps" "mac" "amd64"
+record_artifact_timestamps "$after_timestamps" "win" "amd64"
+
+echo "📋 Post-build timestamps recorded in: $after_timestamps"
+
 # Validation step
 echo "🔍 Validating build artifacts..."
 echo "=================================="
 
-# Get build start time (when script started)
-BUILD_START_TIME=$(date +%s)
-echo "📅 Build started at: $(date -d @$BUILD_START_TIME)"
-
-# Function to validate platform artifacts
-validate_platform() {
-    local platform=$1
-    local arch=$2
-    local target="$platform-$arch"
-    
-    echo ""
-    echo "📋 Validating $target..."
-    
-    # Check executable
-    if [[ "$platform" == "win" ]]; then
-        exe_name="grapa.exe"
-    else
-        exe_name="grapa"
-    fi
-    
-    if [[ -f "$exe_name" ]]; then
-        # Check if file was created during this build
-        file_time=$(stat -c %Y "$exe_name" 2>/dev/null || stat -f %m "$exe_name" 2>/dev/null)
-        if [[ $file_time -ge $BUILD_START_TIME ]]; then
-            echo "  ✅ Executable: $exe_name (built in this session)"
-        else
-            echo "  ⚠️  Executable: $exe_name (exists but may be from previous build)"
-        fi
-    else
-        echo "  ❌ Executable: $exe_name (missing)"
-        return 1
-    fi
-    
-    # Check static library
-    if [[ "$platform" == "win" ]]; then
-        static_lib="source/grapa-lib/$target/grapa.lib"
-    else
-        static_lib="source/grapa-lib/$target/libgrapa.a"
-    fi
-    
-    if [[ -f "$static_lib" ]]; then
-        # Check if file was created during this build
-        file_time=$(stat -c %Y "$static_lib" 2>/dev/null || stat -f %m "$static_lib" 2>/dev/null)
-        if [[ $file_time -ge $BUILD_START_TIME ]]; then
-            echo "  ✅ Static library: $static_lib (built in this session)"
-        else
-            echo "  ⚠️  Static library: $static_lib (exists but may be from previous build)"
-        fi
-    else
-        echo "  ❌ Static library: $static_lib (missing)"
-        return 1
-    fi
-    
-    # Check shared library (except Windows which doesn't build .dll)
-    if [[ "$platform" != "win" ]]; then
-        shared_lib="source/grapa-other/$target/libgrapa.so"
-        if [[ -f "$shared_lib" ]]; then
-            # Check if file was created during this build
-            file_time=$(stat -c %Y "$shared_lib" 2>/dev/null || stat -f %m "$shared_lib" 2>/dev/null)
-            if [[ $file_time -ge $BUILD_START_TIME ]]; then
-                echo "  ✅ Shared library: $shared_lib (built in this session)"
-            else
-                echo "  ⚠️  Shared library: $shared_lib (exists but may be from previous build)"
-            fi
-        else
-            echo "  ❌ Shared library: $shared_lib (missing)"
-            return 1
-        fi
-    fi
-    
-    # Check compressed package
-    if [[ "$platform" == "win" ]]; then
-        compressed_file="bin/grapa-$target.zip"
-    else
-        compressed_file="bin/grapa-$target.tar.gz"
-    fi
-    
-    if [[ -f "$compressed_file" ]]; then
-        # Check if file was created during this build
-        file_time=$(stat -c %Y "$compressed_file" 2>/dev/null || stat -f %m "$compressed_file" 2>/dev/null)
-        if [[ $file_time -ge $BUILD_START_TIME ]]; then
-            echo "  ✅ Compressed package: $compressed_file (built in this session)"
-        else
-            echo "  ⚠️  Compressed package: $compressed_file (exists but may be from previous build)"
-        fi
-        
-        # Validate package contents
-        echo "  📦 Package contents:"
-        if [[ "$platform" == "win" ]]; then
-            unzip -l "$compressed_file" | grep -E "(grapa\.exe|grapa\.lib)" || echo "    ❌ Missing expected files"
-        else
-            tar -tzf "$compressed_file" | grep -E "(grapa$|libgrapa\.(a|so))" || echo "    ❌ Missing expected files"
-        fi
-    else
-        echo "  ❌ Compressed package: $compressed_file (missing)"
-        return 1
-    fi
-    
-    echo "  ✅ $target validation passed"
-    return 0
-}
-
 # Validate each platform
 validation_failed=false
 
-validate_platform "linux" "arm64" || validation_failed=true
-validate_platform "linux" "amd64" || validation_failed=true
-validate_platform "mac" "arm64" || validation_failed=true
-validate_platform "mac" "amd64" || validation_failed=true
-validate_platform "win" "amd64" || validation_failed=true
+validate_platform_artifacts "linux" "arm64" "$before_timestamps" "$after_timestamps" || validation_failed=true
+validate_platform_artifacts "linux" "amd64" "$before_timestamps" "$after_timestamps" || validation_failed=true
+validate_platform_artifacts "mac" "arm64" "$before_timestamps" "$after_timestamps" || validation_failed=true
+validate_platform_artifacts "mac" "amd64" "$before_timestamps" "$after_timestamps" || validation_failed=true
+validate_platform_artifacts "win" "amd64" "$before_timestamps" "$after_timestamps" || validation_failed=true
+
+# Clean up temporary files
+rm -f "$before_timestamps" "$after_timestamps"
 
 echo ""
 if [[ "$validation_failed" == "true" ]]; then
-    echo "❌ Validation failed! Some artifacts are missing."
+    echo "❌ Validation failed! Some artifacts are missing or not updated."
     echo "   Please check the build logs and rebuild if necessary."
     exit 1
 else
