@@ -45,11 +45,11 @@ jobs:
         
     - name: List build artifacts
       run: |
-        echo "📁 Build artifacts:"
-        ls -la grapa.exe
-        ls -la source/grapa-lib/win-amd64/
-        ls -la source/grapa-other/win-amd64/
-        ls -la bin/grapa-win-amd64.tar.gz
+        echo "Build artifacts:"
+        Get-ChildItem grapa.exe -ErrorAction SilentlyContinue
+        Get-ChildItem source/grapa-lib/win-amd64/ -ErrorAction SilentlyContinue
+        Get-ChildItem source/grapa-other/win-amd64/ -ErrorAction SilentlyContinue
+        Get-ChildItem bin/grapa-win-amd64.tar.gz -ErrorAction SilentlyContinue
         
     - name: Upload Windows build artifacts
       uses: actions/upload-artifact@v4
