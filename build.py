@@ -958,8 +958,8 @@ class GrapaBuilder:
                 return False
             
             if success:
-                print("✅ Executable and libraries built successfully")
-                print("📦 Creating compressed package in bin/ directory...")
+                print("Executable and libraries built successfully")
+                print("Creating compressed package in bin/ directory...")
                 
                 # Create the appropriate package based on platform
                 if config.platform == "windows":
@@ -969,10 +969,10 @@ class GrapaBuilder:
                 elif config.platform == "linux":
                     self._create_linux_package(config)
                 
-                print(f"✅ Compressed package created: bin/grapa-{config.target}.tar.gz")
+                print(f"Compressed package created: bin/grapa-{config.target}.tar.gz")
                 return True
             else:
-                print("❌ Build failed")
+                print("Build failed")
                 return False
                 
         except Exception as e:
