@@ -15,7 +15,7 @@
 - **Strategy**: Hybrid approach combining Docker builds with GitHub Actions for Windows
 - **Core Approach**: 
   - **Windows AMD64**: GitHub Actions workflow (`.github/workflows/build-windows.yml`)
-  - **Linux AMD64/ARM64**: Docker containers (`scripts/build_grapa_linux_*.sh`)
+  - **Linux AMD64/ARM64**: Docker containers (`scripts/build/build_grapa_linux_*.sh`)
   - **macOS ARM64**: Native build on Mac (`python3 build.py --bin-only`)
   - **macOS AMD64**: Cross-compilation from ARM64 Mac (`scripts/build_grapa_macos_amd64.sh`)
   - **Deploy Python distribution** from Mac after all builds complete
@@ -100,7 +100,7 @@
 - ✅ **Added `--bump-version` Flag**: Version bumping is now optional in `build_all_platforms.sh`
 - ✅ **Root Cause**: Version was being bumped on every test run, causing unnecessary version increments
 - ✅ **Solution**: Added `--bump-version` flag to control when version bumping occurs
-- ✅ **Usage**: `./scripts/build_all_platforms.sh` (no version bump) vs `./scripts/build_all_platforms.sh --bump-version`
+- ✅ **Usage**: `./scripts/build/build_all_platforms.sh` (no version bump) vs `./scripts/build/build_all_platforms.sh --bump-version`
 - ✅ **Impact**: Windows builds are skipped unless `--bump-version` is specified
 - ✅ **Legacy File Cleanup**: Identified `source/mainpy_minimal.cpp` as unused (only used in ARM64 emulation context)
 
@@ -151,8 +151,8 @@
   - BLST: `libblst.a` (using special tweaked version from `prj/blst`)
 - ✅ **Docker Build System**: Created complete Docker-based build system with:
   - `Dockerfile.grapa-build`: Generic Ubuntu 22.04 container with all build tools
-  - `scripts/build_grapa_linux_arm64.sh`: Automated build script for Linux ARM64
-  - `scripts/build_grapa_linux_amd64.sh`: Automated build script for Linux AMD64
+  - `scripts/build/build_grapa_linux_arm64.sh`: Automated build script for Linux ARM64
+- `scripts/build/build_grapa_linux_amd64.sh`: Automated build script for Linux AMD64
 - ✅ **Proof of Concept**: Demonstrated Docker-based builds work successfully for Linux platforms
 
 ### macOS Cross-Compilation System (v0.0.237)
@@ -210,7 +210,7 @@
 - **Artifacts**: 5/5 platform packages successfully built and available in `bin/`
 - **Final Status**: 5/5 platforms fully operational
 - **Version Validation**: Confirms `grapapy.__version__` matches `$VERSION` environment variable
-- **Next Action**: Test complete build system with `./scripts/build_all_platforms.sh`
+- **Next Action**: Test complete build system with `./scripts/build/build_all_platforms.sh`
 
 ### **Platform Build Status:**
 - **✅ Windows AMD64**: GitHub Actions workflow + monitoring scripts
@@ -221,8 +221,8 @@
 - **✅ All Platforms**: Use `build.py --bin-only` for consistent builds
 
 ### **Validation Requirements:**
-1. **Build all platforms** using `./scripts/build_all_platforms.sh` (includes all validation)
-2. **Verify artifacts** using `./scripts/check_platform_status.sh` (detailed verification)
+1. **Build all platforms** using `./scripts/build/build_all_platforms.sh` (includes all validation)
+2. **Verify artifacts** using `./scripts/validation/check_platform_status.sh` (detailed verification)
 3. **Test version validation** for each platform (automatic)
 4. **Build Python distribution** from collected artifacts (automatic)
 5. **Validate Python package** version consistency (automatic)
@@ -238,16 +238,16 @@
 3. **✅ Complete build automation** now available for all 5 platforms
 4. **✅ Python distribution building** and version validation added
 5. **✅ Comprehensive validation** with build timestamp verification
-6. **🔄 Ready for test run** - `./scripts/build_all_platforms.sh` ready for execution
+6. **🔄 Ready for test run** - `./scripts/build/build_all_platforms.sh` ready for execution
 7. **Clean up obsolete files** (user will cover this task)
 
 ### **Build System Validation:**
 5. **Test Linux builds** using Docker:
-   - `./scripts/build_grapa_linux_arm64.sh`
-   - `./scripts/build_grapa_linux_amd64.sh`
+   - `./scripts/build/build_grapa_linux_arm64.sh`
+- `./scripts/build/build_grapa_linux_amd64.sh`
 6. **Test macOS builds**:
    - **ARM64**: `python3 build.py --bin-only`
-   - **AMD64**: `./scripts/build_grapa_macos_amd64.sh` (requires ARM64 Mac)
+   - **AMD64**: `./scripts/build/build_grapa_macos_amd64.sh` (requires ARM64 Mac)
 7. **Test Windows build** via GitHub Actions workflow
 
 ### **Full Build and Deploy Process:**

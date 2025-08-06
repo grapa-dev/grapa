@@ -19,7 +19,7 @@ This validator addresses the recurring issue where AI agents (including this one
 python3 scripts/validate_grapa_syntax.py
 
 # Or use the shell wrapper
-./scripts/validate_grapa.sh
+./scripts/validation/validate_grapa.sh
 ```
 
 ### Auto-fix Issues

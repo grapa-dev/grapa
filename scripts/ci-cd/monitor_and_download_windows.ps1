@@ -96,7 +96,7 @@ function Download-Artifacts {
         Remove-Item "$TempDir" -Recurse -Force
         Write-Host ""
         Write-Host "🎉 Windows build artifacts are now available!" -ForegroundColor Green
-        Write-Host "   You can now run: ./scripts/check_platform_status.sh" -ForegroundColor Cyan
+        Write-Host "   You can now run: ./scripts/validation/check_platform_status.sh" -ForegroundColor Cyan
         
         # Show what was downloaded
         Write-Host ""

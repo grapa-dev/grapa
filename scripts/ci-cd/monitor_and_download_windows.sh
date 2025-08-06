@@ -124,7 +124,7 @@ download_artifacts() {
         rm -rf "$TEMP_DIR"
         echo ""
         echo "🎉 Windows build artifacts are now available!"
-        echo "   You can now run: ./scripts/check_platform_status.sh"
+        echo "   You can now run: ./scripts/validation/check_platform_status.sh"
         
         # Show what was downloaded
         echo ""

@@ -4,7 +4,7 @@
 # This script triggers the GitHub workflow manually without using the version bump script.
 # This allows testing the workflow without committing local investigation files.
 #
-# Usage: ./scripts/trigger_workflow.sh
+# Usage: ./scripts/ci-cd/trigger_workflow.sh
 
 echo "🚀 Triggering GitHub workflow manually..."
 

@@ -107,7 +107,7 @@ This guide provides comprehensive onboarding information for new agents, develop
 
 #### **Option 1: Full Multi-Platform Release (Recommended)**
 ```bash
-./scripts/build_all_platforms.sh --bump-version
+./scripts/build/build_all_platforms.sh --bump-version
 ```
 - **What it does**: Builds all platforms (Linux ARM64/AMD64, macOS ARM64/AMD64, Windows AMD64) with version bump
 - **When to use**: Full releases, when you want all platforms built

@@ -1,8 +1,8 @@
 #!/bin/bash
-# Download Windows Build Artifacts from GitHub Actions (Force Overwrite)
+# Download Windows Build Artifacts from GitHub Actions
 # This script downloads the Windows build artifacts after the workflow completes
 
-echo "🪟 Downloading Windows build artifacts from GitHub Actions (force overwrite)..."
+echo "🪟 Downloading Windows build artifacts from GitHub Actions..."
 echo ""
 
 # Check if we have the GitHub CLI installed
@@ -68,72 +68,22 @@ fi
 echo "✅ Workflow completed successfully!"
 echo ""
 
-# Create temporary directory for download
-TEMP_DIR=$(mktemp -d)
-echo "📥 Downloading artifacts to temporary directory: $TEMP_DIR"
-
-# Download artifacts to temporary directory
-gh run download "$RUN_ID" --name="grapa-windows-amd64" --dir="$TEMP_DIR"
+# Download artifacts
+echo "📥 Downloading artifacts..."
+gh run download "$RUN_ID" --name="grapa-windows-amd64" --dir="."
 
 if [[ $? -eq 0 ]]; then
     echo ""
-    echo "✅ Artifacts downloaded successfully to temporary directory!"
-    echo ""
-    
-    # Create necessary directories
-    mkdir -p source/grapa-lib/win-amd64
-    mkdir -p source/grapa-other/win-amd64
-    mkdir -p bin
-    
-    # Copy files with force overwrite
-    echo "📁 Copying files with force overwrite..."
-    
-    # Copy executable
-    if [[ -f "$TEMP_DIR/grapa.exe" ]]; then
-        cp -f "$TEMP_DIR/grapa.exe" .
-        echo "  ✅ Copied grapa.exe"
-    else
-        echo "  ❌ grapa.exe not found in artifacts"
-    fi
-    
-    # Copy static libraries
-    if [[ -d "$TEMP_DIR/source/grapa-lib/win-amd64" ]]; then
-        cp -rf "$TEMP_DIR/source/grapa-lib/win-amd64/"* source/grapa-lib/win-amd64/
-        echo "  ✅ Copied static libraries"
-    else
-        echo "  ❌ Static libraries not found in artifacts"
-    fi
-    
-    # Copy shared libraries
-    if [[ -d "$TEMP_DIR/source/grapa-other/win-amd64" ]]; then
-        cp -rf "$TEMP_DIR/source/grapa-other/win-amd64/"* source/grapa-other/win-amd64/
-        echo "  ✅ Copied shared libraries"
-    else
-        echo "  ❌ Shared libraries not found in artifacts"
-    fi
-    
-    # Copy compressed package
-    if [[ -f "$TEMP_DIR/bin/grapa-win-amd64.tar.gz" ]]; then
-        cp -f "$TEMP_DIR/bin/grapa-win-amd64.tar.gz" bin/
-        echo "  ✅ Copied compressed package"
-    else
-        echo "  ❌ Compressed package not found in artifacts"
-    fi
-    
-    # Clean up temporary directory
-    rm -rf "$TEMP_DIR"
-    echo ""
-    echo "🎉 Windows build artifacts are now available!"
-    echo "   You can now run: ./scripts/check_platform_status.sh"
-    
-    # Show what was downloaded
+    echo "✅ Artifacts downloaded successfully!"
     echo ""
     echo "📁 Downloaded files:"
     ls -la grapa.exe 2>/dev/null || echo "  ❌ grapa.exe (missing)"
     ls -la source/grapa-lib/win-amd64/ 2>/dev/null || echo "  ❌ source/grapa-lib/win-amd64/ (missing)"
     ls -la source/grapa-other/win-amd64/ 2>/dev/null || echo "  ❌ source/grapa-other/win-amd64/ (missing)"
     ls -la bin/grapa-win-amd64.tar.gz 2>/dev/null || echo "  ❌ bin/grapa-win-amd64.tar.gz (missing)"
-    
+    echo ""
+    echo "🎉 Windows build artifacts are now available!"
+    echo "   You can now run: ./scripts/validation/check_platform_status.sh"
 else
     echo "❌ Failed to download artifacts"
     echo "   Please check the workflow run page for manual download"

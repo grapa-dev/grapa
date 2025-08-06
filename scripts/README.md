@@ -1,48 +1,64 @@
-# Grapa Documentation Build & Deployment
+# Scripts Directory
 
-This directory contains scripts and workflows for building and deploying the Grapa documentation to GitHub Pages.
+This directory contains organized scripts for building, testing, and deploying Grapa.
+
+## Directory Structure
+
+### 📦 `build/` - Build and Deployment Scripts
+Core build scripts for all platforms and version management.
+- **Main script**: `build_all_platforms.sh` - Master build orchestrator
+- **Platform scripts**: Individual platform build scripts
+- **Version management**: `bump_version_and_deploy.py`
+
+### 🔄 `ci-cd/` - CI/CD and Artifact Management
+Scripts for Continuous Integration/Continuous Deployment operations.
+- **Windows artifacts**: Monitor and download Windows build artifacts
+- **Workflow management**: Trigger GitHub Actions workflows
+
+### ✅ `validation/` - Testing and Validation Scripts
+Scripts for testing and validating builds, syntax, and functionality.
+- **Platform validation**: Check status of all platform builds
+- **Syntax validation**: Comprehensive Grapa syntax validation
+
+### 📚 `documentation/` - Documentation Deployment
+Scripts for building and deploying documentation.
+- **Deployment scripts**: Deploy documentation to GitHub Pages
+- **Cross-platform**: Both Bash and PowerShell versions
+
+### 🗂️ `legacy/` - Legacy Scripts
+Scripts that are no longer actively used but kept for reference.
+- **Historical reference**: AWS-related scripts and older validation tools
 
 ## Quick Start
 
-### Build and Deploy User Documentation
+### Build All Platforms
+```bash
+./scripts/build/build_all_platforms.sh
+```
 
-1. **Build the documentation:**
-   ```bash
-   ./scripts/deploy_docs.sh
-   ```
-   - This builds the user documentation from `/docs-src` and outputs to `/docs`.
-   - All validation (case sensitivity, link checks, etc.) is performed automatically.
+### Check Build Status
+```bash
+./scripts/validation/check_platform_status.sh
+```
 
-2. **Commit and push the built docs:**
-   ```bash
-   git add docs/
-   git commit -m "docs: Update user documentation"
-   git push origin main
-   ```
-   - This will trigger GitHub Pages to update the live site from `/docs` on the `main` branch.
+### Deploy Documentation
+```bash
+./scripts/documentation/deploy_docs.sh
+```
 
-3. **Check the live site:**
-   - Visit: https://grapa-dev.github.io/grapa/
-   - Changes may take a few minutes to appear.
+## Migration Notes
 
-### Notes
-- Maintainer documentation is not built or deployed by this script.
-- No branch switching or manual deployment is required.
-- All deployment is handled automatically by GitHub Pages.
+This directory was reorganized from a flat structure to improve organization and maintainability. All script references have been updated throughout the codebase.
 
-## Files
+### Old vs New Paths
+- `./scripts/build_all_platforms.sh` → `./scripts/build/build_all_platforms.sh`
+- `./scripts/check_platform_status.sh` → `./scripts/validation/check_platform_status.sh`
+- `./scripts/monitor_and_download_windows.sh` → `./scripts/ci-cd/monitor_and_download_windows.sh`
+- `./scripts/deploy_docs.sh` → `./scripts/documentation/deploy_docs.sh`
 
-### `deploy_docs.sh`
-- Builds user documentation from `/docs-src` to `/docs`.
-- Performs validation (case sensitivity, etc.).
-- Does **not** deploy or push; you must commit and push `/docs` to deploy.
+## Dependencies
 
-## Prerequisites
-- Python 3.7+
-- MkDocs Material theme: `pip install mkdocs-material`
-- Pymdown extensions: `pip install pymdown-extensions`
-
-## Troubleshooting
-- If the build fails, check for errors in your Markdown or MkDocs config in `/docs-src`.
-- If the site does not update, ensure you have committed and pushed `/docs` to `main`.
-- For more details, see `maintainers/DEVELOPMENT/DOCUMENTATION_DEPLOYMENT_GUIDE.md`. 
+- **Docker**: Required for Linux builds
+- **Python 3**: Required for most scripts
+- **GitHub CLI**: Required for Windows artifact management
+- **Platform-specific tools**: Xcode (macOS), Visual Studio (Windows) 

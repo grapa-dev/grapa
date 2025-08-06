@@ -273,14 +273,14 @@ if [[ "$BUMP_VERSION" == "true" ]]; then
     echo "📋 Triggering Windows build via version bump and push..."
     
     # Bump version and trigger workflow
-    python3 scripts/bump_version_and_deploy.py "$new_version" --commit-and-push
+    python3 scripts/build/bump_version_and_deploy.py "$new_version" --commit-and-push
     
     if [[ $? -eq 0 ]]; then
         echo "✅ Version bumped and workflow triggered successfully!"
         echo "🔄 Monitoring workflow and downloading artifacts..."
         
         # Use the monitoring script to wait for completion and download
-        ./scripts/monitor_and_download_windows.sh
+        ./scripts/ci-cd/monitor_and_download_windows.sh
         
         if [[ $? -eq 0 ]]; then
             echo "✅ Windows AMD64 build completed and artifacts downloaded"
@@ -343,7 +343,7 @@ fi
 
 echo ""
 echo "🎯 Next steps:"
-echo "   1. Run: ./scripts/check_platform_status.sh (detailed verification)"
+echo "   1. Run: ./scripts/validation/check_platform_status.sh (detailed verification)"
 echo "   2. Build Python distribution: python3 setup.py sdist bdist_wheel"
 echo "   3. Deploy to PyPI: twine upload dist/*"
 

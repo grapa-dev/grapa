@@ -32,33 +32,33 @@ cd grapa
 chmod +x scripts/*.sh
 
 # Verify setup
-./scripts/check_platform_status.sh
+./scripts/validation/check_platform_status.sh
 ```
 
 ## Quick Start
 
 ### Check Current Status
 ```bash
-./scripts/check_platform_status.sh
+./scripts/validation/check_platform_status.sh
 ```
 
 ### Build All Available Platforms
 ```bash
-./scripts/build_all_platforms.sh
+./scripts/build/build_all_platforms.sh
 ```
 
 ### Build Individual Platforms
 ```bash
 # Linux (Docker)
-./scripts/build_grapa_linux_arm64.sh
-./scripts/build_grapa_linux_amd64.sh
+./scripts/build/build_grapa_linux_arm64.sh
+./scripts/build/build_grapa_linux_amd64.sh
 
 # macOS
 python3 build.py --bin-only --clean                    # ARM64 native
-./scripts/build_grapa_macos_amd64.sh                  # AMD64 cross-compilation
+./scripts/build/build_grapa_macos_amd64.sh                  # AMD64 cross-compilation
 
 # Windows
-./scripts/build_grapa_windows_amd64.sh                # Requires Windows machine
+./scripts/build/build_grapa_windows_amd64.sh                # Requires Windows machine
 ```
 
 ### Build Options
@@ -402,10 +402,10 @@ python3 -c "import grapapy; print(grapapy.__version__)"
 **Monitoring:**
 ```bash
 # Monitor workflow and download artifacts
-./scripts/monitor_and_download_windows.sh
+./scripts/ci-cd/monitor_and_download_windows.sh
 
 # Force download artifacts (overwrites existing)
-./scripts/download_windows_artifacts_force.sh
+./scripts/ci-cd/download_windows_artifacts_force.sh
 ```
 
 **Manual Monitoring:**
@@ -430,7 +430,7 @@ python3 -c "import grapapy; print(grapapy.__version__)"
 Use the status check script to verify builds:
 
 ```bash
-./scripts/check_platform_status.sh
+./scripts/validation/check_platform_status.sh
 ```
 
 This will show:
@@ -449,7 +449,7 @@ Grapa supports multiple methods for version bumping and deployment, each suited 
 
 **Command:**
 ```bash
-./scripts/build_all_platforms.sh --bump-version
+./scripts/build/build_all_platforms.sh --bump-version
 ```
 
 **What it does:**
@@ -473,10 +473,10 @@ Grapa supports multiple methods for version bumping and deployment, each suited 
 **Commands:**
 ```bash
 # Auto-increment version
-python3 scripts/bump_version_and_deploy.py --bump-version --commit-and-push
+python3 scripts/build/bump_version_and_deploy.py --bump-version --commit-and-push
 
 # Specify exact version
-python3 scripts/bump_version_and_deploy.py 0.0.248 --commit-and-push
+python3 scripts/build/bump_version_and_deploy.py 0.0.248 --commit-and-push
 ```
 
 **What it does:**
@@ -616,16 +616,16 @@ For each platform, the script:
 #### 1. Pre-Release Testing
 ```bash
 # Test all platforms without version bump
-./scripts/build_all_platforms.sh
+./scripts/build/build_all_platforms.sh
 
 # Verify all builds work correctly
-./scripts/check_platform_status.sh
+./scripts/validation/check_platform_status.sh
 ```
 
 #### 2. Full Release
 ```bash
 # Build all platforms with version bump
-./scripts/build_all_platforms.sh --bump-version
+./scripts/build/build_all_platforms.sh --bump-version
 
 # This automatically:
 # - Increments version (e.g., 0.0.247 → 0.0.248)
@@ -637,10 +637,10 @@ For each platform, the script:
 #### 3. Monitor and Verify
 ```bash
 # Check build status
-./scripts/check_platform_status.sh
+./scripts/validation/check_platform_status.sh
 
 # Monitor Windows workflow
-./scripts/monitor_and_download_windows.sh
+./scripts/ci-cd/monitor_and_download_windows.sh
 
 # Verify Python package
 python3 -c "import grapapy; print(grapapy.__version__)"
@@ -674,10 +674,10 @@ For urgent fixes that only need Windows:
 
 ```bash
 # Quick version bump and Windows build
-python3 scripts/bump_version_and_deploy.py --bump-version --commit-and-push
+python3 scripts/build/bump_version_and_deploy.py --bump-version --commit-and-push
 
 # Monitor workflow
-./scripts/monitor_and_download_windows.sh
+./scripts/ci-cd/monitor_and_download_windows.sh
 ```
 
 ## Next Steps
@@ -693,12 +693,12 @@ python3 scripts/bump_version_and_deploy.py --bump-version --commit-and-push
 
 | Script | Purpose | Platform | Testing |
 |--------|---------|----------|---------|
-| `check_platform_status.sh` | Check build status | All | None |
-| `build_all_platforms.sh` | Build all available | All | ✅ CLI + Python |
-| `build_all_platforms.sh --bump-version` | Build all + version bump | All | ✅ CLI + Python |
-| `build_grapa_linux_arm64.sh` | Linux ARM64 | Docker | None |
-| `build_grapa_linux_amd64.sh` | Linux AMD64 | Docker | None |
-| `build_grapa_macos_amd64.sh` | macOS AMD64 | Cross-compilation | None |
-| `build_grapa_windows_amd64.sh` | Windows AMD64 | Native/Instructions | None |
-| `bump_version_and_deploy.py --bump-version` | Auto-increment version | Version only | None |
-| `bump_version_and_deploy.py <version>` | Manual version bump | Version only | None | 
+| `validation/check_platform_status.sh` | Check build status | All | None |
+| `build/build_all_platforms.sh` | Build all available | All | ✅ CLI + Python |
+| `build/build_all_platforms.sh --bump-version` | Build all + version bump | All | ✅ CLI + Python |
+| `build/build_grapa_linux_arm64.sh` | Linux ARM64 | Docker | None |
+| `build/build_grapa_linux_amd64.sh` | Linux AMD64 | Docker | None |
+| `build/build_grapa_macos_amd64.sh` | macOS AMD64 | Cross-compilation | None |
+| `build/build_grapa_windows_amd64.sh` | Windows AMD64 | Native/Instructions | None |
+| `build/bump_version_and_deploy.py --bump-version` | Auto-increment version | Version only | None |
+| `build/bump_version_and_deploy.py <version>` | Manual version bump | Version only | None | 

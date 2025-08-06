@@ -126,4 +126,4 @@ docker run --rm \
 
 echo "✅ Linux AMD64 libraries rebuilt successfully!"
 echo "📁 Libraries are now compatible with the current Docker environment"
-echo "🔄 You can now run: ./scripts/build_grapa_linux_amd64.sh" 
+echo "🔄 You can now run: ./scripts/build/build_grapa_linux_amd64.sh" 

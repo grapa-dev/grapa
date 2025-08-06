@@ -197,8 +197,8 @@ python3 -m mkdocs build
 python3 -m mkdocs serve
 
 # Deploy documentation
-./scripts/deploy_docs.sh  # Linux/Mac
-.\scripts\deploy_docs.ps1 # Windows
+./scripts/documentation/deploy_docs.sh  # Linux/Mac
+.\scripts\documentation\deploy_docs.ps1 # Windows
 ```
 
 ### **Debugging**
