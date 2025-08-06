@@ -83,24 +83,52 @@ else
     echo "⚠️  macOS AMD64 build skipped (requires ARM64 Mac)"
 fi
 
-# Windows AMD64 (requires Windows machine)
+# Windows AMD64 (GitHub Actions workflow)
 echo ""
 echo "🪟 Building for Windows AMD64..."
-if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
-    echo "✅ Running on Windows, building natively..."
-    mkdir -p source/grapa-lib/win-amd64
-    mkdir -p source/grapa-other/win-amd64
-    mkdir -p bin
-    python build.py --bin-only
-    echo "✅ Windows AMD64 build completed"
+echo "📋 Checking if GitHub CLI is available for Windows workflow..."
+
+if command -v gh &> /dev/null && gh auth status &> /dev/null; then
+    echo "✅ GitHub CLI available and authenticated"
+    echo "🚀 Triggering Windows build workflow..."
+    
+    # Trigger the workflow
+    gh workflow run "Build Windows AMD64.yml"
+    
+    if [[ $? -eq 0 ]]; then
+        echo "✅ Windows workflow triggered successfully!"
+        echo "🔄 Monitoring workflow and downloading artifacts..."
+        
+        # Use the monitoring script to wait for completion and download
+        ./scripts/monitor_and_download_windows.sh
+        
+        if [[ $? -eq 0 ]]; then
+            echo "✅ Windows AMD64 build completed and artifacts downloaded"
+        else
+            echo "❌ Windows build failed or download failed"
+            echo "   Please check the workflow at: https://github.com/grapa-dev/grapa/actions"
+        fi
+    else
+        echo "❌ Failed to trigger Windows workflow"
+        echo "   Please check GitHub CLI permissions and try again"
+    fi
 else
-    echo "⚠️  Windows AMD64 build skipped (requires Windows machine)"
-    echo "   Options: Windows machine, VM, or GitHub Actions (.github/workflows/build-windows.yml)"
+    echo "⚠️  GitHub CLI not available or not authenticated"
+    echo "   Manual options:"
+    echo "   1. Install GitHub CLI: https://cli.github.com/"
+    echo "   2. Run: gh auth login"
+    echo "   3. Or trigger manually: https://github.com/grapa-dev/grapa/actions"
+    echo "   4. Then run: ./scripts/monitor_and_download_windows.sh"
 fi
 
 echo ""
 echo "✅ All available builds completed successfully!"
-echo "📁 Applications: grapa (Linux ARM64/AMD64, macOS ARM64/AMD64)"
-echo "📁 Static libraries: source/grapa-lib/*/libgrapa.a"
+echo "📁 Applications: grapa (Linux ARM64/AMD64, macOS ARM64/AMD64), grapa.exe (Windows AMD64)"
+echo "📁 Static libraries: source/grapa-lib/*/libgrapa.a, source/grapa-lib/win-amd64/grapa.lib"
 echo "📁 Shared libraries: source/grapa-other/*/libgrapa.so"
-echo "📁 Compressed files: bin/grapa-*.tar.gz" 
+echo "📁 Compressed files: bin/grapa-*.tar.gz, bin/grapa-win-amd64.zip"
+echo ""
+echo "🎯 Next steps:"
+echo "   1. Run: ./scripts/check_platform_status.sh (verify all builds)"
+echo "   2. Build Python distribution: python3 setup.py sdist bdist_wheel"
+echo "   3. Deploy to PyPI: twine upload dist/*" 
