@@ -568,6 +568,11 @@ class GrapaBuilder:
                     "-lcrypto"
                 ] + system_libs
                 
+                # Use C++23 for ARM64 builds to match pre-built libraries
+                if config.target == "linux-arm64":
+                    # Replace C++17 with C++23 for ARM64 builds
+                    cmd = [arg.replace("-std=c++17", "-std=c++23") if arg == "-std=c++17" else arg for arg in cmd]
+                
                 # Add -static-libgcc for Linux builds (matching working command)
                 if config.platform == "linux":
                     cmd.extend(["-static-libgcc"])
@@ -624,6 +629,11 @@ class GrapaBuilder:
             ] + cross_flags + [
                 "-lcrypto"
             ] + system_libs
+            
+            # Use C++23 for ARM64 builds to match pre-built libraries
+            if config.target == "linux-arm64":
+                # Replace C++17 with C++23 for ARM64 builds
+                cmd = [arg.replace("-std=c++17", "-std=c++23") if arg == "-std=c++17" else arg for arg in cmd]
             
             # Add -static-libgcc for Linux builds (matching working command)
             if config.platform == "linux":
