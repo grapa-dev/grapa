@@ -14,7 +14,7 @@ docker build -f Dockerfile.grapa-build -t grapa-build .
 
 # Run the container and build Grapa
 echo "Running container and building Grapa..."
-docker run --platform=linux/arm64 -it --rm \
+docker run -it --rm \
     -v $HOME:/data \
     grapa-build \
     bash -c "
