@@ -149,6 +149,7 @@ build_platform() {
     echo "🔨 Building for $platform-$arch..."
     
     if docker run -it --rm \
+        --platform=$docker_platform \
         -v $HOME:/data \
         grapa-build \
         bash -c "
