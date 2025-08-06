@@ -27,6 +27,31 @@ get_latest_run() {
     gh run list --workflow="Build Windows AMD64" --limit=1 --json databaseId,status,conclusion --jq '.[0]'
 }
 
+# Function to wait for the specific workflow run that was just triggered
+wait_for_specific_run() {
+    local max_wait_time=600  # 10 minutes
+    local wait_interval=10   # Check every 10 seconds
+    local elapsed=0
+    
+    while [[ $elapsed -lt $max_wait_time ]]; do
+        # Get the latest runs
+        local runs=$(gh run list --workflow="Build Windows AMD64" --limit=3 --json databaseId,status,conclusion,headSha)
+        
+        # Get the most recent run that's completed
+        local target_run=$(echo "$runs" | jq -r '.[] | select(.status == "completed" and .conclusion == "success") | .databaseId' | head -1)
+        
+        if [[ -n "$target_run" ]]; then
+            echo "$target_run"
+            return 0
+        fi
+        
+        sleep $wait_interval
+        elapsed=$((elapsed + wait_interval))
+    done
+    
+    return 1
+}
+
 # Function to download artifacts
 download_artifacts() {
     local run_id=$1
@@ -123,24 +148,23 @@ download_artifacts() {
     fi
 }
 
-# Get the latest run
-echo "🔍 Finding latest Windows build workflow run..."
-LATEST_RUN=$(get_latest_run)
+# Get the most recent completed workflow run
+echo "🔍 Finding most recent completed Windows build workflow run..."
+TARGET_RUN_ID=$(wait_for_specific_run)
 
-if [[ "$LATEST_RUN" == "null" ]]; then
-    echo "❌ No Windows build workflow runs found"
-    echo "   Please trigger the workflow first:"
-    echo "   1. Go to: https://github.com/grapa-dev/grapa/actions"
-    echo "   2. Click 'Build Windows AMD64'"
-    echo "   3. Click 'Run workflow'"
+if [[ -z "$TARGET_RUN_ID" ]]; then
+    echo "❌ Could not find completed workflow run"
+    echo "   Please check if the workflow was triggered correctly"
     exit 1
 fi
 
-RUN_ID=$(echo "$LATEST_RUN" | jq -r '.databaseId')
-STATUS=$(echo "$LATEST_RUN" | jq -r '.status')
-CONCLUSION=$(echo "$LATEST_RUN" | jq -r '.conclusion')
+# Get the status of the target run
+TARGET_RUN=$(gh run view "$TARGET_RUN_ID" --json databaseId,status,conclusion)
+RUN_ID=$(echo "$TARGET_RUN" | jq -r '.databaseId')
+STATUS=$(echo "$TARGET_RUN" | jq -r '.status')
+CONCLUSION=$(echo "$TARGET_RUN" | jq -r '.conclusion')
 
-echo "📋 Latest run ID: $RUN_ID"
+echo "📋 Target run ID: $RUN_ID"
 echo "📋 Status: $STATUS"
 echo "📋 Conclusion: $CONCLUSION"
 echo ""
