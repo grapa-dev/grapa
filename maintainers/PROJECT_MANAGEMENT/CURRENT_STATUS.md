@@ -58,6 +58,20 @@
 
 ## 📋 RECENTLY COMPLETED
 
+### Linux ARM64 Library Recompilation (v0.0.237)
+- ✅ **Docker Ubuntu 22.04 ARM64**: Successfully built all libraries using Docker container
+- ✅ **C++17 Compatibility**: All libraries (OpenSSL, FLTK, PCRE2, BLST) compiled with C++17 to avoid `__isoc23_` errors
+- ✅ **Library Verification**: All required libraries present in `source/*/linux-arm64/`:
+  - OpenSSL: `libcrypto.a`, `libssl.a`
+  - FLTK: `libfltk.a`, `libfltk_gl.a`, `libfltk_forms.a`, `libfltk_images.a`
+  - PCRE2: `libpcre2-8.a`
+  - BLST: `libblst.a` (using special tweaked version from `prj/blst`)
+- ✅ **Docker Build System**: Created complete Docker-based build system with:
+  - `Dockerfile.ubuntu22-arm64`: Ubuntu 22.04 ARM64 container with all build tools
+  - `scripts/build_libraries_docker.sh`: Automated build script for all libraries
+  - `scripts/docker_ubuntu22_arm64.sh`: Manual container access script
+- ✅ **Version Bump**: Successfully bumped to v0.0.237 and triggered GitHub Actions workflow
+
 ### Build System Improvements (v0.0.194 through v0.0.232)
 - ✅ **Platform Normalization**: Fixed `win-amd64` → `windows-amd64` mapping
 - ✅ **Native ARM64 Compilation**: Linux ARM64 uses QEMU emulation instead of cross-compilation
@@ -77,35 +91,27 @@
 ## 🎯 NEXT STEPS
 
 ### **IMMEDIATE NEXT ACTION (When Resuming):**
-1. **Commit new Linux ARM64 libraries** to repository:
-   - **Files**: All libraries in `source/*/linux-arm64/` directories
-   - **Commit message**: "Add Linux ARM64 libraries built with C++17 compatibility"
-   - **Push**: `git push origin main`
-
-2. **Bump version** and trigger GitHub Actions workflow:
-   - **Run**: `python scripts/bump_version.py`
-   - **Expected**: Version bumped to v0.0.237
-   - **Trigger**: GitHub Actions workflow will test Linux ARM64 build
-
-3. **Monitor workflow** for successful Linux ARM64 compilation:
-   - **Check**: Linux ARM64 build step in GitHub Actions
-   - **Expected**: Successful compilation with new C++17-compatible libraries
-   - **Result**: All 5 platforms should build successfully
+1. **Monitor GitHub Actions workflow** for v0.0.237:
+   - **Check**: https://github.com/grapa-dev/grapa/actions
+   - **Expected**: All 5 platforms should build successfully with new C++17-compatible libraries
+   - **Focus**: Linux ARM64 build step should now succeed
+   - **Result**: PyPI deployment should complete without errors
 
 ### **If Linux ARM64 Build Succeeds:**
-4. **Implement Simple Version Validation** for 3 non-cross-compilation runners:
+2. **Implement Simple Version Validation** for 3 non-cross-compilation runners:
    - **Windows AMD64**: `./grapa.exe -c "\$sys().getenv(\$VERSION)"`
    - **Linux AMD64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
    - **macOS ARM64**: `./grapa -c "\$sys().getenv(\$VERSION)"`
    - **Python**: `import grapapy; print(grapapy.__version__)`
-5. **Verify all 5 platforms** build successfully (Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64)
-6. **Confirm PyPI deployment** completes without errors
-7. **Validate all artifacts** are properly committed and packaged
+3. **Verify all 5 platforms** build successfully (Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64)
+4. **Confirm PyPI deployment** completes without errors
+5. **Validate all artifacts** are properly committed and packaged
 
 ### **If Linux ARM64 Build Fails:**
-4. **Debug remaining issues** in GitHub Actions environment
-5. **Check library compatibility** between Docker and GitHub Actions
-6. **Verify C++17 compatibility** is maintained in CI environment
+2. **Debug remaining issues** in GitHub Actions environment
+3. **Check library compatibility** between Docker and GitHub Actions
+4. **Verify C++17 compatibility** is maintained in CI environment
+5. **Review build logs** for any remaining `__isoc23_` errors
 
 ---
 
