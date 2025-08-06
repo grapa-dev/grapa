@@ -207,25 +207,56 @@ class GrapaBuilder:
             
             if not lib_only:
                 # Build main executable
+                print(f"Building executable with: {msbuild_exe} prj/win-amd64/grapa.sln /p:Configuration=Release")
                 subprocess.run([
                     msbuild_exe, "prj/win-amd64/grapa.sln", "/p:Configuration=Release"
                 ], check=True)
                 
-                # Copy executable
-                if os.path.exists("grapa.exe"):
-                    os.remove("grapa.exe")
-                shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
+                # Check if executable was created
+                if os.path.exists("prj/win-amd64/x64/Release/grapa.exe"):
+                    print("✅ Executable built successfully")
+                    # Copy executable
+                    if os.path.exists("grapa.exe"):
+                        os.remove("grapa.exe")
+                    shutil.copy("prj/win-amd64/x64/Release/grapa.exe", "grapa.exe")
+                    print("✅ Executable copied to root directory")
+                else:
+                    print("❌ Executable not found at prj/win-amd64/x64/Release/grapa.exe")
+                    print("📁 Checking what files exist in prj/win-amd64/x64/Release/:")
+                    if os.path.exists("prj/win-amd64/x64/Release/"):
+                        import glob
+                        for file in glob.glob("prj/win-amd64/x64/Release/*"):
+                            print(f"  - {file}")
+                    else:
+                        print("  Directory prj/win-amd64/x64/Release/ does not exist")
+                    raise RuntimeError("Windows executable build failed")
             
             if not exe_only:
                 # Build library (utf8proc.c is already included in the MSBuild project)
+                print(f"Building library with: {msbuild_exe} prj/winlib-amd64/grapalib.sln /p:Configuration=Release")
                 subprocess.run([
                     msbuild_exe, "prj/winlib-amd64/grapalib.sln", "/p:Configuration=Release"
                 ], check=True)
-                # Copy library
-                if os.path.exists("grapa.lib"):
-                    os.remove("grapa.lib")
-                shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", "grapa.lib")
-                shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"source/grapa-lib/{config.target}/grapa.lib")
+                
+                # Check if library was created
+                if os.path.exists("prj/winlib-amd64/x64/Release/grapa.lib"):
+                    print("✅ Library built successfully")
+                    # Copy library
+                    if os.path.exists("grapa.lib"):
+                        os.remove("grapa.lib")
+                    shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", "grapa.lib")
+                    shutil.copy("prj/winlib-amd64/x64/Release/grapa.lib", f"source/grapa-lib/{config.target}/grapa.lib")
+                    print("✅ Library copied to root directory and source/grapa-lib/")
+                else:
+                    print("❌ Library not found at prj/winlib-amd64/x64/Release/grapa.lib")
+                    print("📁 Checking what files exist in prj/winlib-amd64/x64/Release/:")
+                    if os.path.exists("prj/winlib-amd64/x64/Release/"):
+                        import glob
+                        for file in glob.glob("prj/winlib-amd64/x64/Release/*"):
+                            print(f"  - {file}")
+                    else:
+                        print("  Directory prj/winlib-amd64/x64/Release/ does not exist")
+                    raise RuntimeError("Windows library build failed")
                 # Clean build artifacts
                 self._clean_windows_build()
                 # Create package
@@ -992,6 +1023,7 @@ class GrapaBuilder:
     def build_bin_only(self, config: BuildConfig, preserve_exe: bool = False) -> bool:
         """Build executable and libraries, then create compressed package in bin/"""
         print("Building executable and libraries for bin package...")
+        print(f"Platform: {config.platform}, Target: {config.target}")
         
         try:
             # Build main executable
@@ -1007,17 +1039,7 @@ class GrapaBuilder:
             
             if success:
                 print("Executable and libraries built successfully")
-                print("Creating compressed package in bin/ directory...")
-                
-                # Create the appropriate package based on platform
-                if config.platform == "windows":
-                    self._create_windows_package(config)
-                elif config.platform == "mac":
-                    self._create_mac_package(config)
-                elif config.platform == "linux":
-                    self._create_linux_package(config)
-                
-                print(f"Compressed package created: bin/grapa-{config.target}.tar.gz")
+                print("Package already created by build method")
                 
                 # Clean up build artifacts
                 self._clean_build_artifacts(preserve_exe=preserve_exe)
