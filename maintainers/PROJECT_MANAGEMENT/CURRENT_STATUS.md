@@ -11,7 +11,7 @@
 ## 🚨 ACTIVE WORK ITEMS
 
 ### Hybrid Multi-Platform Build System - 🔄 IN PROGRESS
-- **Status**: 🔄 **IN PROGRESS** - Implementation phase
+- **Status**: 🔄 **IN PROGRESS** - Debugging build issues
 - **Strategy**: Hybrid approach combining Docker builds with GitHub Actions for Windows
 - **Core Approach**: 
   - **Windows AMD64**: GitHub Actions workflow (`.github/workflows/build-windows.yml`)
@@ -20,6 +20,11 @@
   - **macOS AMD64**: Cross-compilation from ARM64 Mac (`scripts/build_grapa_macos_amd64.sh`)
   - **Deploy Python distribution** from Mac after all builds complete
 - **Platforms**: Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64
+- **Current Issues**:
+  - **Linux builds**: `--target-platform` restriction preventing Linux builds from working
+  - **Mac builds**: Builds completing too quickly, not actually creating new packages
+  - **Windows builds**: Partially working (static library updated, executable missing)
+  - **Validation**: All platforms failing validation due to packages not being updated
 - **Benefits**:
   - **Windows**: Automated builds via GitHub Actions (no Docker limitations)
   - **Linux**: Consistent Docker environments for reproducible builds

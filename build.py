@@ -836,24 +836,61 @@ class GrapaBuilder:
         package_path = os.path.join("dist", package_file)
         subprocess.run([pip_cmd, "install", package_path], check=True)
     
-    def run_tests(self, config: BuildConfig):
-        """Run tests"""
-        print("Running tests...")
+    def run_cli_tests(self, config: BuildConfig):
+        """Run CLI tests"""
+        print("Running CLI tests...")
         
-        # Run Grapa tests
+        # Run Grapa CLI tests
         test_commands = [
-            ["./grapa" if config.platform != "windows" else "grapa.exe", "-cfile", "test/run_tests.grc"],
-            ["python3", "test/run_tests.py"]
+            ["grapa.exe" if config.platform == "windows" else "./grapa", "-f", "test/infrastructure/run_tests.grc"]
         ]
         
         for cmd in test_commands:
             try:
                 subprocess.run(cmd, check=True)
+                print("✅ CLI tests passed")
             except subprocess.CalledProcessError as e:
-                print(f"Test failed: {e}")
+                print(f"❌ CLI tests failed: {e}")
                 return False
         
         return True
+    
+    def run_python_tests(self, config: BuildConfig):
+        """Run Python tests"""
+        print("Running Python tests...")
+        
+        # Run Python tests
+        test_commands = [
+            ["python" if config.platform == "windows" else "python3", "test/python/test_python_examples.py"],
+            ["python" if config.platform == "windows" else "python3", "test/python/test_grapapy_table.py"]
+        ]
+        
+        for cmd in test_commands:
+            try:
+                subprocess.run(cmd, check=True)
+                print("✅ Python tests passed")
+            except subprocess.CalledProcessError as e:
+                print(f"❌ Python tests failed: {e}")
+                return False
+        
+        return True
+    
+    def run_tests(self, config: BuildConfig, exe_only: bool = False, python_only: bool = False):
+        """Run tests based on build flags"""
+        print("Running tests...")
+        
+        # Determine which tests to run based on build flags
+        if exe_only:
+            # Only run CLI tests when building executable only
+            return self.run_cli_tests(config)
+        elif python_only:
+            # Only run Python tests when building Python extension only
+            return self.run_python_tests(config)
+        else:
+            # Run both tests when building everything
+            cli_success = self.run_cli_tests(config)
+            python_success = self.run_python_tests(config)
+            return cli_success and python_success
     
     def build(self, run_tests: bool = False, exe_only: bool = False, lib_only: bool = False, python_only: bool = False, preserve_dist: bool = False, preserve_exe: bool = False, target_config: BuildConfig = None) -> bool:
         """Build for the current platform and architecture"""
@@ -894,7 +931,10 @@ class GrapaBuilder:
                     self.build_python_package(config)
                     # Run tests if requested
                     if run_tests:
-                        self.run_tests(config)
+                        self.run_tests(config, exe_only=exe_only, python_only=python_only)
+                elif run_tests:
+                    # Run tests even for exe_only builds
+                    self.run_tests(config, exe_only=exe_only, python_only=python_only)
                 
                 return True
             else:
@@ -932,13 +972,18 @@ class GrapaBuilder:
             print(f"Libraries build failed: {e}")
             return False
 
-    def build_python_only(self, config: BuildConfig, preserve_dist: bool = False) -> bool:
+    def build_python_only(self, config: BuildConfig, preserve_dist: bool = False, run_tests: bool = False) -> bool:
         """Build only the Python extension (assumes executable already exists)"""
         print("Building Python extension only...")
         
         try:
             # Build Python package
             self.build_python_package(config)
+            
+            # Run tests if requested
+            if run_tests:
+                self.run_tests(config, exe_only=False, python_only=True)
+            
             return True
         except Exception as e:
             print(f"Python extension build failed: {e}")
@@ -1088,16 +1133,26 @@ def main():
     # Create BuildConfig with the target platform
     config = BuildConfig(platform, arch)
     
-    # Handle clean option
+    # Handle clean option (run before build, not instead of build)
     if args.clean:
         print("Cleaning build artifacts...")
         builder._clean_build_artifacts(preserve_exe=args.preserve_exe)
-        return 0
     
     if args.bin_only:
         success = builder.build_bin_only(config, preserve_exe=args.preserve_exe)
+    elif args.python_only:
+        success = builder.build_python_only(config, preserve_dist=args.preserve_dist, run_tests=args.test)
     else:
         success = builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist, preserve_exe=args.preserve_exe, target_config=config)
+    
+    # Clean after build if requested (unless preserve flags are specified)
+    if args.clean and success:
+        # Only clean if no preserve flags are specified
+        if not (args.preserve_exe or args.preserve_dist):
+            print("Cleaning build artifacts after successful build...")
+            builder._clean_build_artifacts(preserve_exe=args.preserve_exe)
+        else:
+            print("Skipping post-build cleanup due to preserve flags...")
     
     if success:
         print(f"\n{'='*50}")

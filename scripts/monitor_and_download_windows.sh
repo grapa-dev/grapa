@@ -39,7 +39,12 @@ download_artifacts() {
     
     # Download artifacts to temporary directory with timeout
     echo "⏳ Downloading artifacts (timeout: 5 minutes)..."
-    timeout 300 gh run download "$run_id" --name="grapa-windows-amd64" --dir="$TEMP_DIR"
+    if command -v timeout >/dev/null 2>&1; then
+        timeout 300 gh run download "$run_id" --name="grapa-windows-amd64" --dir="$TEMP_DIR"
+    else
+        # On macOS, run without timeout (should be fast enough)
+        gh run download "$run_id" --name="grapa-windows-amd64" --dir="$TEMP_DIR"
+    fi
     
     local download_exit_code=$?
     if [[ $download_exit_code -eq 0 ]]; then

@@ -148,7 +148,7 @@ build_platform() {
     echo ""
     echo "🔨 Building for $platform-$arch..."
     
-    docker run -it --rm \
+    if docker run -it --rm \
         -v $HOME:/data \
         grapa-build \
         bash -c "
@@ -166,9 +166,12 @@ build_platform() {
             echo '✅ Grapa Application and package built successfully for $platform-$arch'
             
             echo '🎉 All Grapa components built successfully for $platform-$arch!'
-        "
-    
-    echo "✅ Completed build for $platform-$arch"
+        "; then
+        echo "✅ Completed build for $platform-$arch"
+    else
+        echo "❌ Build failed for $platform-$arch"
+        exit 1
+    fi
 }
 
 # Record timestamps before build
@@ -204,8 +207,12 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     mkdir -p source/grapa-lib/mac-arm64
     mkdir -p source/grapa-other/mac-arm64
     mkdir -p bin
-    python3 build.py --bin-only --target-platform mac-arm64 --clean
-    echo "✅ macOS ARM64 build completed"
+    if python3 build.py --bin-only --target-platform mac-arm64 --clean; then
+        echo "✅ macOS ARM64 build completed"
+    else
+        echo "❌ macOS ARM64 build failed"
+        exit 1
+    fi
 else
     echo "⚠️  macOS ARM64 build skipped (not on macOS)"
 fi
@@ -218,8 +225,12 @@ if [[ "$OSTYPE" == "darwin"* && "$(uname -m)" == "arm64" ]]; then
     mkdir -p source/grapa-lib/mac-amd64
     mkdir -p source/grapa-other/mac-amd64
     mkdir -p bin
-    python3 build.py --bin-only --target-platform mac-amd64 --clean
-    echo "✅ macOS AMD64 build completed"
+    if python3 build.py --bin-only --target-platform mac-amd64 --clean; then
+        echo "✅ macOS AMD64 build completed"
+    else
+        echo "❌ macOS AMD64 build failed"
+        exit 1
+    fi
 else
     echo "⚠️  macOS AMD64 build skipped (requires ARM64 Mac)"
 fi
