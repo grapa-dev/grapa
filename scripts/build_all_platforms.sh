@@ -238,39 +238,33 @@ fi
 # Windows AMD64 (GitHub Actions workflow)
 echo ""
 echo "🪟 Building for Windows AMD64..."
-echo "📋 Checking if GitHub CLI is available for Windows workflow..."
+echo "📋 Triggering Windows build via version bump and push..."
 
-if command -v gh &> /dev/null && gh auth status &> /dev/null; then
-    echo "✅ GitHub CLI available and authenticated"
-    echo "🚀 Triggering Windows build workflow..."
+# Bump version and trigger workflow
+current_version=$(grep 'grapapy_version = "' setup.py | sed 's/.*grapapy_version = "\([^"]*\)".*/\1/')
+new_version=$(echo "$current_version" | awk -F. '{$NF = $NF + 1} 1' | sed 's/ /./g')
+
+echo "🚀 Bumping version from $current_version to $new_version and triggering workflow..."
+
+# Bump version with commit and push flag
+python3 scripts/bump_version_and_deploy.py "$new_version" --commit-and-push
+
+if [[ $? -eq 0 ]]; then
+    echo "✅ Version bumped and workflow triggered successfully!"
+    echo "🔄 Monitoring workflow and downloading artifacts..."
     
-    # Trigger the workflow
-    gh workflow run "build-windows.yml"
+    # Use the monitoring script to wait for completion and download
+    ./scripts/monitor_and_download_windows.sh
     
     if [[ $? -eq 0 ]]; then
-        echo "✅ Windows workflow triggered successfully!"
-        echo "🔄 Monitoring workflow and downloading artifacts..."
-        
-        # Use the monitoring script to wait for completion and download
-        ./scripts/monitor_and_download_windows.sh
-        
-        if [[ $? -eq 0 ]]; then
-            echo "✅ Windows AMD64 build completed and artifacts downloaded"
-        else
-            echo "❌ Windows build failed or download failed"
-            echo "   Please check the workflow at: https://github.com/grapa-dev/grapa/actions"
-        fi
+        echo "✅ Windows AMD64 build completed and artifacts downloaded"
     else
-        echo "❌ Failed to trigger Windows workflow"
-        echo "   Please check GitHub CLI permissions and try again"
+        echo "❌ Windows build failed or download failed"
+        echo "   Please check the workflow at: https://github.com/grapa-dev/grapa/actions"
     fi
 else
-    echo "⚠️  GitHub CLI not available or not authenticated"
-    echo "   Manual options:"
-    echo "   1. Install GitHub CLI: https://cli.github.com/"
-    echo "   2. Run: gh auth login"
-    echo "   3. Or trigger manually: https://github.com/grapa-dev/grapa/actions"
-    echo "   4. Then run: ./scripts/monitor_and_download_windows.sh"
+    echo "❌ Failed to bump version and trigger workflow"
+    echo "   Please check the script and try again"
 fi
 
 echo ""

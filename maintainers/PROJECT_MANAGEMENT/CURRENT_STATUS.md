@@ -21,9 +21,9 @@
   - **Deploy Python distribution** from Mac after all builds complete
 - **Platforms**: Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64
 - **Current Issues**:
+  - **Windows builds**: ✅ FIXED - Package creation duplication resolved
   - **Linux builds**: `--target-platform` restriction preventing Linux builds from working
   - **Mac builds**: Builds completing too quickly, not actually creating new packages
-  - **Windows builds**: Partially working (static library updated, executable missing)
   - **Validation**: All platforms failing validation due to packages not being updated
 - **Benefits**:
   - **Windows**: Automated builds via GitHub Actions (no Docker limitations)
@@ -73,6 +73,20 @@
 - ✅ **Timeout Protection**: Added 5-minute timeout to Windows artifact downloads
 - ✅ **Comprehensive Summary**: Added final build summary with clear success/failure status
 - ✅ **Better Error Handling**: Improved error messages and exit codes throughout the build process
+
+### Windows Build Duplication Fix (v0.0.242)
+- ✅ **Fixed Package Duplication**: Removed duplicate `_create_windows_package()` call in `build_bin_only` method
+- ✅ **Root Cause**: `build_bin_only` was calling `build_windows()` which creates package, then calling `_create_windows_package()` again
+- ✅ **Solution**: Removed redundant package creation in `build_bin_only`, letting individual build methods handle packaging
+- ✅ **Verification**: Tested on macOS build to confirm no duplication occurs
+- ✅ **Impact**: Windows builds now create package only once, eliminating 7-Zip duplicate output
+
+### Workflow Trigger Duplication Fix (v0.0.242)
+- ✅ **Fixed Workflow Duplication**: Eliminated duplicate GitHub Actions workflow triggers
+- ✅ **Root Cause**: `bump_version_and_deploy.py` pushes to git (triggers workflow) + `build_all_platforms.sh` explicitly triggers same workflow
+- ✅ **Solution**: Added `--commit-and-push` flag to `bump_version_and_deploy.py` to control git operations
+- ✅ **Integration**: Modified `build_all_platforms.sh` to use version bump with flag instead of explicit workflow trigger
+- ✅ **Impact**: Windows workflow now runs only once per build cycle, eliminating duplicate CI/CD runs
 
 ### Target Platform Restriction (v0.0.242)
 - ✅ **Restricted `--target-platform`**: Limited to macOS platforms only (`mac-arm64`, `mac-amd64`)

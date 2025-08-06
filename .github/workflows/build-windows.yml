@@ -39,6 +39,8 @@ jobs:
         python --version
         echo "📋 Available build.py options:"
         python build.py --help
+        echo "📋 Checking if Windows project files exist:"
+        Get-ChildItem prj/win-amd64/ -ErrorAction SilentlyContinue
         echo "📋 Running build with --bin-only:"
         python build.py --bin-only
         echo "✅ Build completed successfully!"
@@ -46,10 +48,18 @@ jobs:
     - name: List build artifacts
       run: |
         echo "Build artifacts:"
+        echo "📁 Current directory contents:"
+        Get-ChildItem -ErrorAction SilentlyContinue
+        echo "📁 Checking for grapa.exe:"
         Get-ChildItem grapa.exe -ErrorAction SilentlyContinue
+        echo "📁 Checking for grapa.lib:"
+        Get-ChildItem grapa.lib -ErrorAction SilentlyContinue
+        echo "📁 Checking source/grapa-lib/win-amd64/:"
         Get-ChildItem source/grapa-lib/win-amd64/ -ErrorAction SilentlyContinue
+        echo "📁 Checking source/grapa-other/win-amd64/:"
         Get-ChildItem source/grapa-other/win-amd64/ -ErrorAction SilentlyContinue
-        Get-ChildItem bin/grapa-win-amd64.tar.gz -ErrorAction SilentlyContinue
+        echo "📁 Checking bin/grapa-win-amd64.zip:"
+        Get-ChildItem bin/grapa-win-amd64.zip -ErrorAction SilentlyContinue
         
     - name: Upload Windows build artifacts
       uses: actions/upload-artifact@v4
@@ -57,7 +67,8 @@ jobs:
         name: grapa-windows-amd64
         path: |
           grapa.exe
+          grapa.lib
           source/grapa-lib/win-amd64/
           source/grapa-other/win-amd64/
-          bin/grapa-win-amd64.tar.gz
+          bin/grapa-win-amd64.zip
         retention-days: 30 

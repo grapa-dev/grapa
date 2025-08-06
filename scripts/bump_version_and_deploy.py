@@ -31,12 +31,14 @@ def update_version_in_file(file_path, old_version_pattern, new_version):
     print(f"✅ Updated {file_path}")
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python scripts/bump_version_and_deploy.py <new_version>")
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("Usage: python scripts/bump_version_and_deploy.py <new_version> [--commit-and-push]")
         print("Example: python scripts/bump_version_and_deploy.py 0.0.116")
+        print("Example: python scripts/bump_version_and_deploy.py 0.0.116 --commit-and-push")
         sys.exit(1)
     
     new_version = sys.argv[1]
+    commit_and_push = len(sys.argv) == 3 and sys.argv[2] == "--commit-and-push"
     
     # Validate version format
     if not re.match(r'^\d+\.\d+\.\d+$', new_version):
@@ -61,30 +63,36 @@ def main():
     
     # Create Git tag
     tag_name = f"v{new_version}"
-    print(f"🏷️  Creating Git tag: {tag_name}")
     
-    try:
-        # Add all changes
-        subprocess.run(["git", "add", "."], check=True)
+    if commit_and_push:
+        print(f"🏷️  Creating Git tag and pushing: {tag_name}")
         
-        # Commit changes
-        subprocess.run(["git", "commit", "-m", f"Bump version to {new_version}"], check=True)
-        
-        # Create tag
-        subprocess.run(["git", "tag", tag_name], check=True)
-        
-        # Push changes and tag
-        subprocess.run(["git", "push"], check=True)
-        subprocess.run(["git", "push", "origin", tag_name], check=True)
-        
+        try:
+            # Add all changes
+            subprocess.run(["git", "add", "."], check=True)
+            
+            # Commit changes
+            subprocess.run(["git", "commit", "-m", f"Bump version to {new_version}"], check=True)
+            
+            # Create tag
+            subprocess.run(["git", "tag", tag_name], check=True)
+            
+            # Push changes and tag
+            subprocess.run(["git", "push"], check=True)
+            subprocess.run(["git", "push", "origin", tag_name], check=True)
+            
+            print(f"✅ Successfully bumped version to {new_version}")
+            print(f"✅ Created and pushed tag {tag_name}")
+            print(f"🚀 CI/CD workflow should now trigger automatically")
+            print(f"📦 PyPI deployment will begin shortly...")
+            
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Git operation failed: {e}")
+            sys.exit(1)
+    else:
         print(f"✅ Successfully bumped version to {new_version}")
-        print(f"✅ Created and pushed tag {tag_name}")
-        print(f"🚀 CI/CD workflow should now trigger automatically")
-        print(f"📦 PyPI deployment will begin shortly...")
-        
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Git operation failed: {e}")
-        sys.exit(1)
+        print(f"📝 Files updated but not committed/pushed")
+        print(f"💡 To commit and push, run: python scripts/bump_version_and_deploy.py {new_version} --commit-and-push")
 
 if __name__ == "__main__":
     main() 
