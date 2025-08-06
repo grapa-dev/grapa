@@ -553,12 +553,12 @@ class GrapaBuilder:
                 pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
                 
                 # For shared library, use dynamic linking (no -static-libgcc)
-                if is_arm64_emulation:
-                    # For ARM64 cross-compilation, include libbsd for FLTK compatibility
+                if config.target == "linux-arm64":
+                    # For ARM64 builds, include libbsd for FLTK compatibility
                     print("Using ARM64 build with libbsd for FLTK compatibility")
                     system_libs = ["-ldl", "-lm", "-lbsd"]
                 else:
-                    # For native builds, use dynamic linking without libbsd (not needed for AMD64)
+                    # For AMD64 builds, use dynamic linking without libbsd (not needed for AMD64)
                     system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                                   "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
                 
@@ -606,12 +606,12 @@ class GrapaBuilder:
             pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
             
             # For executable build, use native ARM64 compilation with X11 libraries (matching AWS approach)
-            if is_arm64_emulation:
-                # For ARM64 native compilation, include X11 libraries and libbsd (matching AWS ARM64 build)
-                print("Using native ARM64 compilation with X11 libraries and libbsd (matching AWS approach)")
+            if config.target == "linux-arm64":
+                # For ARM64 builds (both native and emulation), include X11 libraries and libbsd
+                print("Using ARM64 build with X11 libraries and libbsd (required for FLTK)")
                 system_libs = ["-lX11", "-lXcursor", "-lXft", "-lXext", "-lXinerama", "-lXrender", "-lXfixes", "-lfontconfig", "-ldl", "-lm", "-lbsd"]
             else:
-                # For native builds, use dynamic linking without libbsd (not needed for AMD64)
+                # For AMD64 builds, use dynamic linking without libbsd (not needed for AMD64)
                 system_libs = ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama",
                               "-lfontconfig", "-lXcursor", "-ldl", "-lm"]
             
