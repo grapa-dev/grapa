@@ -557,12 +557,20 @@ class GrapaBuilder:
                     print(f"Building shared library for {config.target} using working reference command...")
                     
                     # Build the exact command that works (from BUILD.md)
-                    cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                    # Use wildcard patterns like the working reference with shell expansion
+                    cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + [
+                        f"source/openssl-lib/{config.target}/*.a",
+                        f"source/fl-lib/{config.target}/*.a", 
+                        f"source/blst-lib/{config.target}/*.a",
+                        f"source/pcre2-lib/{config.target}/libpcre2-8.a"
+                    ] + [
                         f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                     ]
                     
+                    # Convert to shell command for wildcard expansion
+                    shell_cmd = " ".join(cmd)
+                    
                     # Add -static-libgcc only for Linux systems (not macOS)
-                    import platform
                     current_platform = platform.system().lower()
                     if current_platform == "linux":
                         cmd.insert(-2, "-static-libgcc")
@@ -581,9 +589,18 @@ class GrapaBuilder:
                         "-framework", "CoreFoundation", "-framework", "AppKit", "-framework", "IOKit", "-std=c++17", "-m64", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                     ]
                 
-                # Execute shared library build
-                print(f"Executing shared library build command: {' '.join(cmd)}")
-                subprocess.run(cmd, check=True)
+                # Execute shared library build with shell expansion for wildcards
+                if config.target.startswith("linux-"):
+                    print(f"Executing shared library build command: {shell_cmd}")
+                    subprocess.run(shell_cmd, shell=True, check=True)
+                else:
+                    print(f"Executing shared library build command: {' '.join(cmd)}")
+                    subprocess.run(cmd, check=True)
+                
+                # Clean up utf8proc.o immediately after successful shared library build
+                if os.path.exists("utf8proc.o"):
+                    print("Removing utf8proc.o...")
+                    os.remove("utf8proc.o")
                 
                 # Ensure the grapa-other directory exists (standardized shared library location)
                 os.makedirs(f"source/grapa-other/{config.target}", exist_ok=True)
@@ -602,14 +619,22 @@ class GrapaBuilder:
                 print(f"Building executable for {config.target} using working reference command...")
                 
                 # Build the exact command that works (from BUILD.md)
+                # Use wildcard patterns like the working reference with shell expansion
                 cmd = [
                     gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
-                ] + cpp_files + ["source/utf8proc/utf8proc.c"] + openssl_libs + fl_libs + blst_libs + pcre2_lib + [
+                ] + cpp_files + ["source/utf8proc/utf8proc.c"] + [
+                    f"source/openssl-lib/{config.target}/*.a",
+                    f"source/fl-lib/{config.target}/*.a", 
+                    f"source/blst-lib/{config.target}/*.a",
+                    f"source/pcre2-lib/{config.target}/libpcre2-8.a"
+                ] + [
                     f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-O3", "-pthread", "-o", config.output_name
                 ]
                 
+                # Convert to shell command for wildcard expansion
+                shell_cmd = " ".join(cmd)
+                
                 # Add -static-libgcc only for Linux systems (not macOS)
-                import platform
                 current_platform = platform.system().lower()
                 if current_platform == "linux":
                     cmd.insert(-2, "-static-libgcc")
@@ -629,8 +654,17 @@ class GrapaBuilder:
                 ]
             
             try:
-                # Execute the build command (simplified - no emulation needed)
-                subprocess.run(cmd, check=True)
+                # Execute the build command with shell expansion for wildcards
+                if config.target.startswith("linux-"):
+                    subprocess.run(shell_cmd, shell=True, check=True)
+                else:
+                    subprocess.run(cmd, check=True)
+                
+                # Clean up utf8proc.o immediately after successful build
+                if os.path.exists("utf8proc.o"):
+                    print("Removing utf8proc.o...")
+                    os.remove("utf8proc.o")
+                    
             except subprocess.CalledProcessError as e:
                 print(f"Build failed: {e}")
                 raise RuntimeError(f"Build failed with exit code {e.returncode}")
