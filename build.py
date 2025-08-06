@@ -941,6 +941,44 @@ class GrapaBuilder:
             print(f"Python extension build failed: {e}")
             return False
 
+    def build_bin_only(self, config: BuildConfig) -> bool:
+        """Build executable and libraries, then create compressed package in bin/"""
+        print("Building executable and libraries for bin package...")
+        
+        try:
+            # Build main executable
+            if config.platform == "windows":
+                success = self.build_windows(config, exe_only=False, lib_only=False)
+            elif config.platform == "mac":
+                success = self.build_mac(config, exe_only=False, lib_only=False)
+            elif config.platform == "linux":
+                success = self.build_linux_aws(config, exe_only=False, lib_only=False)
+            else:
+                print(f"Unsupported platform: {config.platform}")
+                return False
+            
+            if success:
+                print("✅ Executable and libraries built successfully")
+                print("📦 Creating compressed package in bin/ directory...")
+                
+                # Create the appropriate package based on platform
+                if config.platform == "windows":
+                    self._create_windows_package(config)
+                elif config.platform == "mac":
+                    self._create_mac_package(config)
+                elif config.platform == "linux":
+                    self._create_linux_package(config)
+                
+                print(f"✅ Compressed package created: bin/grapa-{config.target}.tar.gz")
+                return True
+            else:
+                print("❌ Build failed")
+                return False
+                
+        except Exception as e:
+            print(f"Bin package build failed: {e}")
+            return False
+
     def _copy_libraries_to_top_level(self, config: BuildConfig):
         """Copy library files to top-level directory for packaging"""
         import glob
@@ -983,6 +1021,7 @@ def main():
     parser.add_argument("--clean", action="store_true", help="Clean build artifacts")
     parser.add_argument("--exe-only", action="store_true", help="Build only the main executable (skip library, Python package, and packaging steps). Useful for fast iterative development and investigation.")
     parser.add_argument("--lib-only", action="store_true", help="Build only the libraries (skip executable, Python package, and packaging steps). Libraries will be copied to the top-level directory.")
+    parser.add_argument("--bin-only", action="store_true", help="Build executable and libraries, then create compressed package in bin/ directory. This creates the complete distribution package.")
     parser.add_argument("--python-only", action="store_true", help="Build only the Python extension (assumes executable already exists). Useful for debugging Python extension issues without rebuilding the executable.")
     parser.add_argument("--preserve-dist", action="store_true", help="Preserve the dist/ directory after build (useful for debugging or manual installation)")
     parser.add_argument("--target-platform", type=str, help="Override target platform (e.g., 'mac-amd64' for cross-compilation from ARM64)")
@@ -1037,7 +1076,12 @@ def main():
     # Create BuildConfig with the target platform
     config = BuildConfig(platform, arch)
     
-    if builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist, target_config=config):
+    if args.bin_only:
+        success = builder.build_bin_only(config)
+    else:
+        success = builder.build(args.test, exe_only=args.exe_only, lib_only=args.lib_only, python_only=args.python_only, preserve_dist=args.preserve_dist, target_config=config)
+    
+    if success:
         print(f"\n{'='*50}")
         print(f"Build successful for {platform} {arch}")
         print(f"{'='*50}")
