@@ -47,6 +47,14 @@
 - ✅ **Cross-Platform Support**: Bash script for Mac/Linux, PowerShell script for Windows
 - ✅ **Automatic Artifact Management**: Force overwrite existing files, clean temporary directories
 
+### Python Distribution and Validation (v0.0.240)
+- ✅ **Python Package Building**: Added `python3 build.py --python-only --preserve-dist` to build_all_platforms.sh
+- ✅ **Package Installation**: Automatic `pip3 install dist/*.tar.gz` after building
+- ✅ **Version Validation**: Compares `grapapy.__version__` with `$VERSION` environment variable
+- ✅ **Grapapy Script Execution**: Uses `grapapy -c "\$sys().getenv(\$VERSION);"` for validation
+- ✅ **Comprehensive Error Handling**: Detailed error reporting for Python package building and validation
+- ✅ **Build Timestamp Verification**: Ensures all artifacts are from current build session
+
 ### Linux ARM64/AMD64 Docker Build System (v0.0.237)
 - ✅ **Docker Ubuntu 22.04 ARM64**: Successfully built all libraries using Docker container
 - ✅ **C++17 Compatibility**: All libraries (OpenSSL, FLTK, PCRE2, BLST) compiled with C++17 to avoid `__isoc23_` errors
@@ -84,12 +92,14 @@
 
 ## 🚀 CURRENT VALIDATION STATUS
 
-### **Distribution Build System - ✅ READY FOR VALIDATION**
-- **Status**: ✅ **READY FOR VALIDATION** - All build systems operational
+### **Distribution Build System - ✅ READY FOR TESTING**
+- **Status**: ✅ **READY FOR TESTING** - All build systems operational with complete validation
 - **Complete Automation**: All 5 platforms can be built and artifacts collected automatically
-- **Single Command**: `./scripts/build_all_platforms.sh` builds all platforms
+- **Single Command**: `./scripts/build_all_platforms.sh` builds all platforms with validation
 - **Artifact Collection**: All compressed packages automatically placed in `bin/` directory
-- **Next Action**: Validate complete distribution by building all platforms and testing artifacts
+- **Python Distribution**: Automatically builds and validates Python package
+- **Version Validation**: Confirms `grapapy.__version__` matches `$VERSION` environment variable
+- **Next Action**: Test complete build system with `./scripts/build_all_platforms.sh`
 
 ### **Platform Build Status:**
 - **✅ Windows AMD64**: GitHub Actions workflow + monitoring scripts
@@ -100,11 +110,12 @@
 - **✅ All Platforms**: Use `build.py --bin-only` for consistent builds
 
 ### **Validation Requirements:**
-1. **Build all platforms** using `./scripts/build_all_platforms.sh`
-2. **Verify artifacts** using `./scripts/check_platform_status.sh`
-3. **Test version validation** for each platform
-4. **Build Python distribution** from collected artifacts
-5. **Deploy to PyPI** and verify installation
+1. **Build all platforms** using `./scripts/build_all_platforms.sh` (includes all validation)
+2. **Verify artifacts** using `./scripts/check_platform_status.sh` (detailed verification)
+3. **Test version validation** for each platform (automatic)
+4. **Build Python distribution** from collected artifacts (automatic)
+5. **Validate Python package** version consistency (automatic)
+6. **Deploy to PyPI** and verify installation
 
 ---
 
@@ -114,8 +125,10 @@
 1. **✅ Windows workflow monitoring scripts** created and tested successfully
 2. **✅ `build_all_platforms.sh`** updated to automatically trigger and monitor Windows builds
 3. **✅ Complete build automation** now available for all 5 platforms
-4. **🔄 Ready for distribution validation** - all platforms can be built and artifacts collected
-5. **Clean up obsolete files** (user will cover this task)
+4. **✅ Python distribution building** and version validation added
+5. **✅ Comprehensive validation** with build timestamp verification
+6. **🔄 Ready for test run** - `./scripts/build_all_platforms.sh` ready for execution
+7. **Clean up obsolete files** (user will cover this task)
 
 ### **Build System Validation:**
 5. **Test Linux builds** using Docker:
@@ -132,8 +145,9 @@
    - **Linux AMD64/ARM64**: Docker containers
    - **macOS ARM64/AMD64**: Native/cross-compilation
 9. **✅ Collect all artifacts** from all build methods (automated via monitoring scripts)
-10. **🔄 Build Python distribution** from Mac using collected artifacts
-11. **🔄 Deploy to PyPI** from Mac
+10. **✅ Build Python distribution** from Mac using collected artifacts (automatic)
+11. **✅ Validate Python package** version consistency (automatic)
+12. **🔄 Deploy to PyPI** from Mac
 
 ### **Validation and Testing:**
 12. **Implement version validation** for all platforms:
@@ -145,10 +159,11 @@
     - **Python**: `import grapapy; print(grapapy.__version__)`
 
 ### **Documentation and Scripts:**
-13. **🔄 Complete multi-platform build guide** in `maintainers/BUILD_AND_DEPLOYMENT/MULTI_PLATFORM_BUILD_GUIDE.md`
+13. **✅ Complete multi-platform build guide** in `maintainers/BUILD_AND_DEPLOYMENT/MULTI_PLATFORM_BUILD_GUIDE.md`
 14. **✅ Create master build script** `scripts/build_all_platforms.sh` to orchestrate all builds
 15. **✅ Add platform status monitoring** with `scripts/check_platform_status.sh`
 16. **✅ Windows workflow monitoring** with `scripts/monitor_and_download_windows.sh` and `.ps1`
+17. **✅ Python distribution building** and version validation in `build_all_platforms.sh`
 
 ---
 
