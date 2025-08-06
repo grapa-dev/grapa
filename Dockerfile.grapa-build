@@ -12,6 +12,15 @@ RUN apt-get update && apt-get install -y \
     git \
     python3 \
     python3-pip \
+    libx11-dev \
+    libxfixes-dev \
+    libxft-dev \
+    libxext-dev \
+    libxrender-dev \
+    libxinerama-dev \
+    libfontconfig-dev \
+    libxcursor-dev \
+    libjpeg-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
