@@ -64,19 +64,47 @@ jobs:
       run: |
         echo "🧪 Testing Windows CLI functionality..."
         
-        # Extract grapa.exe from the zip file if it doesn't exist in root
-        if (-not (Test-Path "grapa.exe")) {
-            echo "📁 Extracting grapa.exe from zip file..."
+        # Check if grapa.exe already exists in root
+        if (Test-Path "grapa.exe") {
+            echo "✅ grapa.exe found in root directory"
+        } else {
+            echo "📁 grapa.exe not found in root, checking zip file..."
+            
+            # Check if zip file exists
             if (Test-Path "bin/grapa-win-amd64.zip") {
-                Expand-Archive -Path "bin/grapa-win-amd64.zip" -DestinationPath "." -Force
-                echo "✅ Extracted grapa.exe from zip file"
+                echo "📁 Found bin/grapa-win-amd64.zip, extracting..."
+                
+                # List contents of zip file
+                echo "📋 Contents of zip file:"
+                try {
+                    $zipContents = Get-ChildItem -Path "bin/grapa-win-amd64.zip" | ForEach-Object { $_.Name }
+                    echo "Zip file size: $((Get-Item 'bin/grapa-win-amd64.zip').Length) bytes"
+                    
+                    # Extract the zip file
+                    Expand-Archive -Path "bin/grapa-win-amd64.zip" -DestinationPath "." -Force
+                    echo "✅ Extraction completed"
+                    
+                    # List what was extracted
+                    echo "📋 Files in current directory after extraction:"
+                    Get-ChildItem -ErrorAction SilentlyContinue | ForEach-Object { echo "  - $($_.Name)" }
+                    
+                } catch {
+                    echo "❌ Error during extraction: $_"
+                    exit 1
+                }
             } else {
                 echo "❌ bin/grapa-win-amd64.zip not found"
+                echo "📋 Checking what's in bin/ directory:"
+                if (Test-Path "bin") {
+                    Get-ChildItem "bin" -ErrorAction SilentlyContinue | ForEach-Object { echo "  - $($_.Name)" }
+                } else {
+                    echo "  bin/ directory does not exist"
+                }
                 exit 1
             }
         }
         
-        # Check if grapa.exe exists
+        # Check if grapa.exe exists after extraction
         if (Test-Path "grapa.exe") {
             echo "✅ grapa.exe found"
             
@@ -102,7 +130,9 @@ jobs:
             
             echo "✅ Windows CLI testing completed successfully!"
         } else {
-            echo "❌ grapa.exe not found - build may have failed"
+            echo "❌ grapa.exe not found after extraction - build may have failed"
+            echo "📋 Current directory contents:"
+            Get-ChildItem -ErrorAction SilentlyContinue | ForEach-Object { echo "  - $($_.Name)" }
             exit 1
         }
         
