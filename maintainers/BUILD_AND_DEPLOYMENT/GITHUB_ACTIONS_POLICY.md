@@ -47,15 +47,15 @@ This document establishes the policy for GitHub Actions workflows in the Grapa p
 3. **Manual Control**: All workflows must be triggered manually
 4. **No Side Effects**: Scripts should not trigger workflows as side effects
 
-## Built-in GitHub Workflows
+## Custom GitHub Workflows
 
-### Pages Build and Deployment
-- **Status**: Built-in GitHub Pages workflow (not in our repository)
-- **Trigger**: Automatic on push to main branch
-- **Control**: This is a GitHub-provided workflow that we cannot modify
-- **Policy**: This is **EXPECTED BEHAVIOR** for documentation deployment
-- **Rationale**: When we push documentation changes, we want Pages to deploy automatically
-- **No Mitigation Needed**: This workflow should trigger on documentation pushes
+### Pages Build and Deployment (`pages.yml`)
+- **Status**: Custom workflow that overrides default GitHub Pages behavior
+- **Trigger**: Only on push to main branch with documentation changes
+- **Paths**: `docs/`, `docs-src/`, `mkdocs.yml`, `docs-site/`
+- **Policy**: **ZERO unintended workflow triggering**
+- **Rationale**: Pages workflow should only trigger when documentation actually changes
+- **Implementation**: Custom workflow with path-based triggers prevents version updates from triggering Pages
 
 ## Script Integration
 
