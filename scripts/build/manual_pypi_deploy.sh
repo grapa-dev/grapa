@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Manual PyPI Deployment Script
-# This script manually triggers PyPI deployment by pushing a version tag
+# This script manually triggers PyPI deployment using the current version from setup.py
 
 set -e
 
@@ -20,58 +20,52 @@ print_status() { echo -e "${BLUE}📋 $1${NC}"; }
 
 # Function to show help
 show_help() {
-    echo "Usage: $0 <version>"
+    echo "Usage: $0"
     echo ""
-    echo "Manually deploy to PyPI by pushing a version tag"
-    echo ""
-    echo "Examples:"
-    echo "  $0 0.0.265    Deploy version 0.0.265 to PyPI"
+    echo "Manually deploy to PyPI using the current version from setup.py"
     echo ""
     echo "This script will:"
-    echo "  1. Check if the version tag exists locally"
-    echo "  2. Trigger PyPI deployment workflow manually"
-    echo "  3. Monitor the deployment process"
+    echo "  1. Trigger PyPI deployment workflow manually"
+    echo "  2. The workflow will auto-detect the version from setup.py"
+    echo ""
+    echo "Prerequisites:"
+    echo "  - build_all_platforms.sh must have completed successfully"
+    echo "  - Version must be set in setup.py"
+    echo "  - GitHub CLI (gh) must be installed and authenticated"
 }
 
-# Check if version is provided
-if [[ $# -eq 0 ]]; then
-    show_help
+# Check if we're in a git repository
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    print_error "Not in a git repository"
     exit 1
 fi
 
-version=$1
+print_status "Starting manual PyPI deployment..."
 
-# Validate version format
-if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    print_error "Invalid version format. Use X.Y.Z (e.g., 0.0.265)"
+# Check prerequisites
+print_status "Checking prerequisites..."
+
+# Check if GitHub CLI is installed
+if ! command -v gh >/dev/null 2>&1; then
+    print_error "GitHub CLI (gh) is not installed. Please install it first."
     exit 1
 fi
 
-print_status "Starting manual PyPI deployment for version $version..."
+# Check if we're authenticated with GitHub
+if ! gh auth status >/dev/null 2>&1; then
+    print_error "Not authenticated with GitHub. Please run 'gh auth login' first."
+    exit 1
+fi
 
-# Check if tag exists locally
-if git tag -l "v$version" | grep -q "v$version"; then
-    print_success "Version tag v$version exists locally"
+# Trigger PyPI deployment workflow manually
+print_status "Triggering PyPI deployment workflow..."
+if gh workflow run "Deploy to PyPI" --field confirm="YES"; then
+    print_success "PyPI deployment workflow triggered successfully"
+    print_status "The workflow will auto-detect the version from setup.py"
+    print_status "Monitor the deployment at: https://github.com/grapa-dev/grapa/actions"
 else
-    print_error "Version tag v$version does not exist locally"
-    print_status "Create the tag first with: git tag v$version"
+    print_error "Failed to trigger PyPI deployment workflow"
     exit 1
 fi
 
-# Check if tag exists remotely
-if git ls-remote --tags origin "v$version" | grep -q "v$version"; then
-    print_warning "Version tag v$version already exists remotely"
-    print_status "This will trigger a new PyPI deployment"
-fi
-
-       # Trigger PyPI deployment workflow manually
-       print_status "Triggering PyPI deployment workflow for version $version..."
-       if gh workflow run "Deploy to PyPI" --field version="$version" --field confirm="YES"; then
-           print_success "PyPI deployment workflow triggered successfully"
-           print_status "Monitor the deployment at: https://github.com/grapa-dev/grapa/actions"
-       else
-           print_error "Failed to trigger PyPI deployment workflow"
-           exit 1
-       fi
-
-print_success "Manual PyPI deployment initiated for version $version" 
+print_success "Manual PyPI deployment initiated" 

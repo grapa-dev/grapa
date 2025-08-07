@@ -62,30 +62,9 @@ check_pypi_version() {
     fi
 }
 
-# Function to create and push version tag
-create_version_tag() {
-    local version=$1
-    print_status "Creating and pushing version tag v$version..."
-    
-    # Check if tag already exists
-    if git tag -l "v$version" | grep -q "v$version"; then
-        print_warning "Tag v$version already exists"
-        print_status "Using existing tag v$version (not recreating to avoid duplicate workflows)"
-        return 0
-    fi
-    
-    # Create tag locally (don't push to avoid automatic workflow trigger)
-    git tag "v$version"
-    
-    print_success "Version tag v$version created locally"
-    print_status "To deploy to PyPI, push the tag: git push origin v$version"
-    print_status "Or use the manual deployment script: ./scripts/build/manual_pypi_deploy.sh $version"
-}
-
 # Function to monitor GitHub Actions workflow
 monitor_workflow() {
-    local version=$1
-    print_status "Monitoring GitHub Actions workflow for version $version..."
+    print_status "Monitoring GitHub Actions workflow..."
     
     # Wait for workflow to start
     print_status "Waiting for workflow to start..."
@@ -152,7 +131,7 @@ monitor_pypi_version() {
 # Function to test PyPI installation on all platforms
 test_pypi_installation() {
     local version=$1
-    print_status "Testing PyPI installation on all platforms..."
+    print_status "Testing PyPI installation on current platform..."
     
     # Test current platform
     print_status "Testing on current platform..."
@@ -183,37 +162,31 @@ show_usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options:"
-    echo "  -v, --version VERSION    Specify version to deploy (default: auto-detect from setup.py)"
     echo "  --monitor-only           Monitor PyPI only (don't deploy)"
     echo "  --test-only              Test PyPI installation only"
     echo "  -h, --help              Show this help message"
     echo ""
     echo "Examples:"
-    echo "  $0                       # Deploy current version (auto-detected)"
-    echo "  $0 -v 0.0.252           # Deploy specific version"
+    echo "  $0                       # Deploy current version (auto-detected from setup.py)"
     echo "  $0 --monitor-only        # Monitor PyPI only"
     echo "  $0 --test-only           # Test PyPI installation only"
     echo ""
     echo "Prerequisites:"
     echo "  - build_all_platforms.sh must have completed successfully"
     echo "  - All platform artifacts must be committed to GitHub"
+    echo "  - Version must be set in setup.py"
     echo "  - GitHub CLI (gh) must be installed and authenticated"
     echo "  - PyPI API token must be configured in GitHub secrets"
 }
 
 # Main script
 main() {
-    local version=""
     local monitor_only=false
     local test_only=false
     
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
         case $1 in
-            -v|--version)
-                version="$2"
-                shift 2
-                ;;
             --monitor-only)
                 monitor_only=true
                 shift
@@ -237,12 +210,22 @@ main() {
     # Check if we're in a git repository
     check_git_repo
     
-    # Get current version if not specified
+    # Get current version from setup.py for monitoring/testing
+    print_status "Auto-detecting current version from setup.py..."
+    version=$(get_current_version)
+    
     if [[ -z "$version" ]]; then
-        version=$(get_current_version)
-        print_status "Auto-detected version from setup.py: $version"
-    else
-        print_status "Using specified version: $version"
+        print_error "Could not determine version from setup.py"
+        print_status "Make sure build_all_platforms.sh has completed successfully"
+        exit 1
+    fi
+    
+    print_status "Current version: $version"
+    
+    # Validate version format
+    if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        print_error "Invalid version format in setup.py: $version"
+        exit 1
     fi
     
     # Check prerequisites
@@ -275,11 +258,18 @@ main() {
         # Full deployment process
         print_status "Starting PyPI deployment process for version $version..."
         
-        # Step 1: Create and push version tag
-        create_version_tag "$version"
+        # Step 1: Trigger PyPI deployment workflow
+        print_status "Triggering PyPI deployment workflow..."
+        if gh workflow run "Deploy to PyPI" --field confirm="YES"; then
+            print_success "PyPI deployment workflow triggered successfully"
+            print_status "The workflow will auto-detect the version from setup.py"
+        else
+            print_error "Failed to trigger PyPI deployment workflow"
+            exit 1
+        fi
         
         # Step 2: Monitor GitHub Actions workflow
-        monitor_workflow "$version"
+        monitor_workflow
         
         # Step 3: Monitor PyPI for version availability
         monitor_pypi_version "$version"
