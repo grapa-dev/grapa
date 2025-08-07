@@ -6,6 +6,37 @@
 
 set -e
 
+# Function to show help
+show_help() {
+    echo "Usage: $0 [OPTIONS]"
+    echo ""
+    echo "Build Grapa for All Platforms"
+    echo ""
+    echo "OPTIONS:"
+    echo "  --bump-version    Automatically bump version before building"
+    echo "  -h, --help        Show this help message"
+    echo ""
+    echo "EXAMPLES:"
+    echo "  $0                Build with current version"
+    echo "  $0 --bump-version Build with bumped version"
+    echo ""
+    echo "The script builds for:"
+    echo "  - Linux ARM64/AMD64 (native)"
+    echo "  - macOS ARM64/AMD64 (native/cross-compilation)"
+    echo "  - Windows AMD64 (via GitHub Actions when --bump-version is used)"
+    echo ""
+    echo "Version bumping:"
+    echo "  - Reads current version from setup.py"
+    echo "  - Increments patch number (e.g., 0.0.255 -> 0.0.256)"
+    echo "  - Updates setup.py and commits changes"
+}
+
+# Check for help flag
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    show_help
+    exit 0
+fi
+
 echo "🚀 Building Grapa for All Platforms..."
 echo "📋 Platforms: Windows AMD64, macOS ARM64, macOS AMD64, Linux AMD64, Linux ARM64"
 
