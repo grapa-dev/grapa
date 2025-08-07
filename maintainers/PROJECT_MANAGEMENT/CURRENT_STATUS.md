@@ -32,6 +32,7 @@
 - **Workflow audit completed**: All workflows now use proper manual triggers
 - **Documentation scripts**: Both PowerShell and Bash scripts now have identical validation features
 - **PyPI trigger fixed**: Changed from automatic tag-based trigger to explicit workflow_dispatch
+- **Workflow policy established**: Created GITHUB_ACTIONS_POLICY.md with explicit trigger requirements
 - **Status**: ✅ **Windows workflow completed successfully!**
 - **Focus**: Windows CLI extraction and testing now working correctly
 
