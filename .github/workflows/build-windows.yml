@@ -34,8 +34,14 @@ jobs:
         python build.py --help
         echo "📋 Checking if Windows project files exist:"
         Get-ChildItem prj/win-amd64/ -ErrorAction SilentlyContinue
+        echo "📋 Checking if x64/Release directory exists:"
+        Get-ChildItem prj/win-amd64/x64/ -ErrorAction SilentlyContinue
         echo "📋 Running build with --bin-only:"
         python build.py --bin-only
+        echo "📋 Checking if grapa.exe was created in root:"
+        Get-ChildItem grapa.exe -ErrorAction SilentlyContinue
+        echo "📋 Checking if grapa.exe was created in build directory:"
+        Get-ChildItem prj/win-amd64/x64/Release/grapa.exe -ErrorAction SilentlyContinue
         echo "✅ Build completed successfully!"
         
     - name: List build artifacts
@@ -57,6 +63,18 @@ jobs:
     - name: Test Windows CLI
       run: |
         echo "🧪 Testing Windows CLI functionality..."
+        
+        # Extract grapa.exe from the zip file if it doesn't exist in root
+        if (-not (Test-Path "grapa.exe")) {
+            echo "📁 Extracting grapa.exe from zip file..."
+            if (Test-Path "bin/grapa-win-amd64.zip") {
+                Expand-Archive -Path "bin/grapa-win-amd64.zip" -DestinationPath "." -Force
+                echo "✅ Extracted grapa.exe from zip file"
+            } else {
+                echo "❌ bin/grapa-win-amd64.zip not found"
+                exit 1
+            }
+        }
         
         # Check if grapa.exe exists
         if (Test-Path "grapa.exe") {
