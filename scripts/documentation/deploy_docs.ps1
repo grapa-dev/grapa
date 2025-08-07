@@ -169,7 +169,17 @@ function Main {
     if ($Push) {
         Write-Info "Pushing changes to main branch..."
         git push origin main
-        Write-Success "Changes pushed to main. GitHub Pages deployment triggered."
+        
+        Write-Info "Triggering custom GitHub Pages deployment workflow..."
+        $workflowResult = gh workflow run "Deploy Documentation to GitHub Pages" --field confirm="YES"
+        if ($LASTEXITCODE -eq 0) {
+            Write-Success "GitHub Pages deployment workflow triggered successfully."
+            Write-Info "Monitor deployment at: https://github.com/grapa-dev/grapa/actions"
+        }
+        else {
+            Write-Error "Failed to trigger GitHub Pages deployment workflow."
+            Write-Info "You may need to trigger it manually from the GitHub Actions tab."
+        }
     }
     else {
         Write-Info "Changes committed locally. Run 'git push origin main' to deploy to GitHub Pages."

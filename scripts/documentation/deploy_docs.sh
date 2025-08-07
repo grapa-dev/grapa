@@ -212,7 +212,15 @@ main() {
     if [[ "$PUSH_CHANGES" == "true" ]]; then
         log_info "Pushing changes to main branch..."
         git push origin main
-        log_success "Changes pushed to main. GitHub Pages deployment triggered."
+        
+        log_info "Triggering custom GitHub Pages deployment workflow..."
+        if gh workflow run "Deploy Documentation to GitHub Pages" --field confirm="YES"; then
+            log_success "GitHub Pages deployment workflow triggered successfully."
+            log_info "Monitor deployment at: https://github.com/grapa-dev/grapa/actions"
+        else
+            log_error "Failed to trigger GitHub Pages deployment workflow."
+            log_info "You may need to trigger it manually from the GitHub Actions tab."
+        fi
     else
         log_info "Changes committed locally. Run 'git push origin main' to deploy to GitHub Pages."
     fi
