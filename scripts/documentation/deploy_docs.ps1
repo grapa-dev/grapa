@@ -8,7 +8,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$REPO_ROOT = Split-Path -Parent $PSScriptRoot
+$REPO_ROOT = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $SRC_DIR = Join-Path $REPO_ROOT "docs-src"
 $USER_CONFIG = Join-Path $SRC_DIR "mkdocs.yml"
 $SITE_DIR = Join-Path $SRC_DIR "site"
