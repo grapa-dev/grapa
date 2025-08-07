@@ -70,9 +70,8 @@ create_version_tag() {
     # Check if tag already exists
     if git tag -l "v$version" | grep -q "v$version"; then
         print_warning "Tag v$version already exists"
-        print_status "Deleting existing tag and recreating it..."
-        git tag -d "v$version" 2>/dev/null || true
-        git push origin ":refs/tags/v$version" 2>/dev/null || true
+        print_status "Using existing tag v$version (not recreating to avoid duplicate workflows)"
+        return 0
     fi
     
     # Create and push tag
