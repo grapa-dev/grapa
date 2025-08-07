@@ -520,7 +520,20 @@ GrapaPy supports the following platforms:
 # Windows
 pip install grapapy
 
-# macOS/Linux
+# macOS
+pip3 install grapapy
+
+# Linux (requires X11 libraries)
+# Ubuntu/Debian:
+sudo apt-get install libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libfontconfig1-dev libxcursor-dev
+pip3 install grapapy
+
+# CentOS/RHEL:
+sudo yum install libX11-devel libXfixes-devel libXft-devel libXext-devel libXrender-devel libXinerama-devel fontconfig-devel libXcursor-devel
+pip3 install grapapy
+
+# Fedora:
+sudo dnf install libX11-devel libXfixes-devel libXft-devel libXext-devel libXrender-devel libXinerama-devel fontconfig-devel libXcursor-devel
 pip3 install grapapy
 ```
 
@@ -539,6 +552,13 @@ For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/
             'copy_grapalib': CopySharedLibrary,
             'build_ext': CustomBuildExt,
         },
+        # Add post-install script to check X11 dependencies
+        scripts=['scripts/check_x11_dependencies.py'],
+        entry_points={
+            'console_scripts': [
+                'grapapy-check-x11=scripts.check_x11_dependencies:main',
+            ],
+        },
         zip_safe=False,
         python_requires=">=3.6",
         packages=find_packages(),
@@ -548,6 +568,12 @@ For comprehensive documentation, visit: https://grapa-dev.github.io/grapa/
                 'build_temp': os.path.join(os.getcwd(), 'build_temp'),
             }
         },
+        # System dependencies for Linux X11 support
+        install_requires=[],
+        # Note: X11 libraries are system dependencies that need to be installed separately
+        # For Ubuntu/Debian: sudo apt-get install libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libfontconfig1-dev libxcursor-dev
+        # For CentOS/RHEL: sudo yum install libX11-devel libXfixes-devel libXft-devel libXext-devel libXrender-devel libXinerama-devel fontconfig-devel libXcursor-devel
+        # For Fedora: sudo dnf install libX11-devel libXfixes-devel libXft-devel libXext-devel libXrender-devel libXinerama-devel fontconfig-devel libXcursor-devel
     )
 else:
     setup(

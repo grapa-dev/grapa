@@ -10,37 +10,31 @@
 
 ## 🚨 ACTIVE WORK ITEMS
 
-### X11 Dependency Issue Resolution - ✅ COMPLETED
-- **Status**: ✅ **COMPLETED** - X11 dependency issue resolved with conditional linking
+### X11 Dependency Issue Resolution - 🔄 IN PROGRESS
+- **Status**: 🔄 **IN PROGRESS** - X11 dependency is fundamental to Grapa architecture
 - **Issue**: PyPI package (0.0.275) failed on systems without X11 with `undefined symbol: XDrawArc` error
-- **Root Cause**: Dynamic linking against X11 libraries that aren't available on headless servers/CI environments
-- **Solution**: Implemented conditional X11 linking that checks availability at build time
+- **Root Cause**: X11 is a core dependency of Grapa/FLTK and cannot be removed without major rearchitecting
+- **Solution**: Need to ensure PyPI packages work on systems without X11 by providing clear installation instructions
 
-**Technical Implementation:**
-- **Added `check_x11_availability()`**: Tests if X11 libraries are available on the system
-- **Added `get_x11_libs()`**: Returns X11 library flags only if available, empty list otherwise
-- **Modified Linux Build Commands**: Both shared library and executable builds now use conditional X11 linking
-- **AWS Cleanup**: Removed all AWS references from build system (renamed `build_linux_aws()` to `build_linux()`)
+**Technical Understanding:**
+- **X11 is Fundamental**: Grapa and FLTK require X11 for GUI functionality
+- **Cannot Remove**: Removing X11 would require major rearchitecting of the underlying codebase
+- **PyPI Challenge**: PyPI packages need to work on headless servers that don't have X11 installed
+- **Installation Instructions**: Need to provide clear guidance for systems without X11
 
-**Benefits:**
-- **Linux PyPI packages** now work on systems without X11 (headless servers, CI environments)
-- **Systems with X11** still get full GUI support
-- **No more `undefined symbol: XDrawArc` errors** on systems without X11
-- **Backward compatible** - existing systems with X11 continue to work normally
-
-**Build System Changes:**
-- **Conditional X11 Linking**: Linux builds now check X11 availability and link accordingly
-- **AWS References Removed**: Cleaned up all AWS platform references from build system
+**Current Status:**
+- **Build System**: Reverted conditional X11 linking approach (not appropriate)
+- **X11 Libraries**: Always linked in Linux builds (as required by Grapa architecture)
+- **AWS Cleanup**: Completed - removed all AWS references from build system
 - **Method Renaming**: `build_linux_aws()` → `build_linux()` for clarity
-- **Platform Detection**: Updated to only support win, mac, linux platforms
 
 **Next Steps:**
 - [x] ✅ X11 dependency issue identified and analyzed
-- [x] ✅ Conditional X11 linking implemented
+- [x] ✅ Reverted inappropriate conditional linking approach
 - [x] ✅ AWS references cleaned up from build system
-- [x] ✅ Build system updated to handle X11 availability gracefully
-- [ ] Test PyPI deployment with new build system
-- [ ] Verify packages work on systems without X11
+- [ ] Provide clear installation instructions for systems without X11
+- [ ] Test PyPI deployment with proper X11 dependency handling
+- [ ] Document X11 requirements in PyPI package description
 
 ### Build Script Syntax Error Fix - ✅ COMPLETED
 - **Status**: ✅ **COMPLETED** - Syntax error in build_all_platforms.sh fixed

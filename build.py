@@ -596,17 +596,14 @@ class GrapaBuilder:
                     
                     # Build the exact command that works (from BUILD.md)
                     # Use wildcard patterns like the working reference with shell expansion
-                    # Get X11 libraries conditionally
-                    x11_libs = self.get_x11_libs()
-                    
                     cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + [
                         f"source/openssl-lib/{config.target}/*.a",
                         f"source/fl-lib/{config.target}/*.a", 
                         f"source/blst-lib/{config.target}/*.a",
                         f"source/pcre2-lib/{config.target}/libpcre2-8.a"
                     ] + [
-                        f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
-                    ] + x11_libs + [
+                        f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto",
+                        "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor",
                         "-ldl", "-lm", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                     ]
                     
@@ -663,9 +660,6 @@ class GrapaBuilder:
                 
                 # Build the exact command that works (from BUILD.md)
                 # Use wildcard patterns like the working reference with shell expansion
-                # Get X11 libraries conditionally
-                x11_libs = self.get_x11_libs()
-                
                 cmd = [
                     gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
                 ] + cpp_files + ["source/utf8proc/utf8proc.c"] + [
@@ -674,8 +668,8 @@ class GrapaBuilder:
                     f"source/blst-lib/{config.target}/*.a",
                     f"source/pcre2-lib/{config.target}/libpcre2-8.a"
                 ] + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
-                ] + x11_libs + [
+                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto",
+                    "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor",
                     "-ldl", "-lm", "-O3", "-pthread", "-o", config.output_name
                 ]
                 
@@ -1217,49 +1211,7 @@ class GrapaBuilder:
                     shutil.copy2(lib_file, filename)
                     print(f"Copied {filename} to top-level directory")
 
-    def check_x11_availability(self) -> bool:
-        """Check if X11 libraries are available on the system"""
-        try:
-            # Try to compile a simple test program that uses X11
-            test_code = """
-            #include <X11/Xlib.h>
-            int main() {
-                Display *display = XOpenDisplay(NULL);
-                if (display) {
-                    XCloseDisplay(display);
-                    return 0;
-                }
-                return 1;
-            }
-            """
-            
-            with open("x11_test.cpp", "w") as f:
-                f.write(test_code)
-            
-            result = subprocess.run([
-                "g++", "-o", "x11_test", "x11_test.cpp", 
-                "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", 
-                "-lXinerama", "-lfontconfig", "-lXcursor"
-            ], capture_output=True, text=True)
-            
-            # Clean up test files
-            if os.path.exists("x11_test.cpp"):
-                os.remove("x11_test.cpp")
-            if os.path.exists("x11_test"):
-                os.remove("x11_test")
-            
-            return result.returncode == 0
-            
-        except Exception:
-            return False
 
-    def get_x11_libs(self) -> List[str]:
-        """Get X11 library flags if available, empty list otherwise"""
-        if self.check_x11_availability():
-            return ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor"]
-        else:
-            print("⚠️  X11 libraries not available - building without GUI support")
-            return []
 
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
