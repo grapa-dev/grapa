@@ -314,24 +314,35 @@ echo "🪟 Building for Windows AMD64..."
 if [[ "$BUMP_VERSION" == "true" ]]; then
     echo "📋 Triggering Windows build via workflow..."
     
-    # Trigger workflow (version already bumped)
-    python3 scripts/build/bump_version_and_deploy.py "$new_version" --commit-and-push
+    # Bump version first (without pushing)
+    python3 scripts/build/bump_version_and_deploy.py "$new_version"
     
     if [[ $? -eq 0 ]]; then
-        echo "✅ Workflow triggered successfully!"
-        echo "🔄 Monitoring workflow and downloading artifacts..."
+        echo "✅ Version bumped successfully to $new_version"
         
-        # Use the monitoring script to wait for completion and download
-        ./scripts/ci-cd/monitor_and_download_windows.sh
+        # Manually trigger Windows workflow
+        echo "🔄 Triggering Windows workflow manually..."
+        gh workflow run "Build Windows AMD64"
         
         if [[ $? -eq 0 ]]; then
-            echo "✅ Windows AMD64 build completed and artifacts downloaded"
+            echo "✅ Windows workflow triggered successfully!"
+            echo "🔄 Monitoring workflow and downloading artifacts..."
+            
+            # Use the monitoring script to wait for completion and download
+            ./scripts/ci-cd/monitor_and_download_windows.sh
+            
+            if [[ $? -eq 0 ]]; then
+                echo "✅ Windows AMD64 build completed and artifacts downloaded"
+            else
+                echo "❌ Windows build failed or download failed"
+                echo "   Please check the workflow at: https://github.com/grapa-dev/grapa/actions"
+            fi
         else
-            echo "❌ Windows build failed or download failed"
-            echo "   Please check the workflow at: https://github.com/grapa-dev/grapa/actions"
+            echo "❌ Failed to trigger Windows workflow"
+            echo "   Please check the script and try again"
         fi
     else
-        echo "❌ Failed to trigger workflow"
+        echo "❌ Failed to bump version"
         echo "   Please check the script and try again"
     fi
 else
