@@ -361,7 +361,15 @@ class GrapaBuilder:
                 obj_files = glob.glob("*.o")
                 if not obj_files:
                     raise RuntimeError("No object files found for static library")
-                subprocess.run(["libtool", "-static", "-o", "libgrapa.a"] + obj_files, check=True)
+                
+                # Get all static libraries to include
+                openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
+                fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
+                blst_libs = glob.glob(f"source/blst-lib/{config.target}/*.a")
+                pcre2_lib = glob.glob(f"source/pcre2-lib/{config.target}/libpcre2-8.a")
+                
+                # Create fully static library with all dependencies included
+                subprocess.run(["libtool", "-static", "-o", "libgrapa.a"] + obj_files + openssl_libs + fl_libs + blst_libs + pcre2_lib, check=True)
                 shutil.copy("libgrapa.a", f"source/grapa-lib/{config.target}/libgrapa.a")
                 os.remove("libgrapa.a")
             else:
