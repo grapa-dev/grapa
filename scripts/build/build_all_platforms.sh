@@ -524,6 +524,16 @@ try:
     print(f'Python test result: {result}')
     if result == '$python_version':
         print('SUCCESS: Python package version test passed')
+        
+        # Test FLTK functionality (this would catch linking issues)
+        try:
+            # Try to create a simple FLTK widget - this should trigger FLTK linking
+            fltk_test = grapapy.eval('\$widget().create(\"button\", \"test\");')
+            print('SUCCESS: FLTK functionality test passed')
+        except Exception as fltk_error:
+            print(f'ERROR: FLTK functionality test failed: {fltk_error}')
+            sys.exit(1)
+        
         sys.exit(0)
     else:
         print(f'ERROR: Version mismatch. Expected: $python_version, Got: {result}')
