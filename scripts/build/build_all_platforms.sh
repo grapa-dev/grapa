@@ -558,49 +558,7 @@ verify_cli_executable() {
     fi
 }
 
-# Python distribution validation
-echo ""
-echo "🐍 Validating Python distribution..."
-echo "=================================="
 
-# Test Python package (already built and installed)
-echo "📦 Testing Python package functionality..."
-
-# Test Python package version
-python_version=$(python3 -c "import grapapy; print(grapapy.__version__)" 2>/dev/null)
-if [[ $? -eq 0 ]] && [[ -n "$python_version" ]]; then
-    echo "✅ Python package version: $python_version"
-    
-    # Test Python package functionality
-    echo "🧪 Testing Python package functionality..."
-    python_test_output=$(python3 -c "
-import grapapy
-import sys
-try:
-    # Test basic functionality
-    result = grapapy.eval('\$sys().getenv(\$VERSION);')
-    print(f'Python test result: {result}')
-    if result == '$python_version':
-        print('SUCCESS: Python package version test passed')
-        sys.exit(0)
-    else:
-        print(f'ERROR: Version mismatch. Expected: $python_version, Got: {result}')
-        sys.exit(1)
-except Exception as e:
-    print(f'ERROR: Python package test failed: {e}')
-    sys.exit(1)
-" 2>/dev/null)
-    
-    if [[ $? -eq 0 ]]; then
-        echo "✅ Python package functionality test passed"
-    else
-        echo "❌ Python package functionality test failed"
-        echo "   Output: $python_test_output"
-    fi
-else
-    echo "❌ Python package version test failed"
-    echo "   Make sure grapapy is installed: pip3 install dist/*.tar.gz"
-fi
 
 # CLI Testing
 echo ""
@@ -647,15 +605,7 @@ else
     echo "  ❌ Some CLI tests failed - check output above"
 fi
 
-echo ""
-echo "📋 Python Package Status:"
-if [[ -n "$python_version" ]]; then
-    echo "  ✅ Python package: Built and installed successfully"
-    echo "  ✅ Python version: $python_version"
-    echo "  ✅ Python functionality: Tested with grapapy.eval()"
-else
-    echo "  ❌ Python package testing failed"
-fi
+
 
 echo ""
 echo "📋 Artifact Summary:"
@@ -663,7 +613,6 @@ echo "  📁 Applications: grapa (Linux ARM64/AMD64, macOS ARM64/AMD64), grapa.e
 echo "  📁 Static libraries: source/grapa-lib/*/libgrapa.a, source/grapa-lib/win-amd64/grapa.lib"
 echo "  📁 Shared libraries: source/grapa-other/*/libgrapa.so"
 echo "  📁 Compressed files: bin/grapa-*.tar.gz, bin/grapa-win-amd64.zip"
-echo "  📦 Python package: dist/grapapy-*.tar.gz"
 
 echo ""
 if [[ "$validation_failed" == "true" ]]; then
@@ -678,7 +627,6 @@ else
     echo "✅ ALL TESTS PASSED - Build system is ready for distribution!"
     echo "   All 5 platforms built, validated, and tested successfully."
     echo "   CLI executables extracted and tested for all platforms."
-    echo "   Python package built and tested with all platform artifacts."
 fi
 
 echo ""
@@ -686,6 +634,5 @@ echo "📁 Applications: grapa (Linux ARM64/AMD64, macOS ARM64/AMD64), grapa.exe
 echo "📁 Static libraries: source/grapa-lib/*/libgrapa.a, source/grapa-lib/win-amd64/grapa.lib"
 echo "📁 Shared libraries: source/grapa-other/*/libgrapa.so"
 echo "📁 Compressed files: bin/grapa-*.tar.gz, bin/grapa-win-amd64.zip"
-echo "📦 Python package: dist/grapapy-*.tar.gz"
 echo ""
 echo "🚀 Ready for distribution!" 
