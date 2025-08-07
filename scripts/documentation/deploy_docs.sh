@@ -98,20 +98,46 @@ commit_and_push_docs() {
         log_info "No changes to commit."
     else
         git commit -m "docs: Update user documentation and clean up build artifacts"
-        git push origin main
-        log_success "Changes committed and pushed to main."
+        log_success "Documentation changes committed."
     fi
 }
 
 show_usage() {
-    echo "Usage: $0"
+    echo "Usage: $0 [OPTIONS]"
     echo "Builds user documentation from /docs-src to /docs with validation."
-    echo "After running, commit and push the /docs directory to main to deploy."
+    echo ""
+    echo "OPTIONS:"
+    echo "  --push        Push changes to main branch (triggers GitHub Pages deployment)"
+    echo "  -h, --help    Show this help message"
+    echo ""
+    echo "EXAMPLES:"
+    echo "  $0              Build and commit documentation (no push)"
+    echo "  $0 --push       Build, commit, and push to trigger GitHub Pages deployment"
+    echo ""
+    echo "Note: Use --push only when you want to deploy documentation to GitHub Pages."
 }
 
 main() {
-    if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-        show_usage; exit 0; fi
+    PUSH_CHANGES=false
+    
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --push)
+                PUSH_CHANGES=true
+                shift
+                ;;
+            -h|--help)
+                show_usage
+                exit 0
+                ;;
+            *)
+                log_error "Unknown option: $1"
+                show_usage
+                exit 1
+                ;;
+        esac
+    done
+    
     log_info "Starting Grapa documentation build (user docs only)..."
     log_info "Source: $SRC_DIR"
     log_info "Destination: $DEST_DIR"
@@ -119,8 +145,16 @@ main() {
     build_user_docs
     copy_site_files
     commit_and_push_docs
-    log_success "Documentation build and deploy completed!"
-    echo -e "\nGitHub Pages will update automatically from /docs on main."
+    
+    if [[ "$PUSH_CHANGES" == "true" ]]; then
+        log_info "Pushing changes to main branch..."
+        git push origin main
+        log_success "Changes pushed to main. GitHub Pages deployment triggered."
+    else
+        log_info "Changes committed locally. Run 'git push origin main' to deploy to GitHub Pages."
+    fi
+    
+    log_success "Documentation build completed!"
 }
 
 main "$@" 
