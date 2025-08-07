@@ -336,7 +336,9 @@ All platforms are tested for CLI functionality:
 
 ### Python Testing
 
-All platforms are tested for Python package functionality:
+**Note:** Python package testing is handled separately from platform builds. The `build_all_platforms.sh` script focuses on platform binary builds and CLI testing only.
+
+Python package testing occurs during the PyPI deployment phase:
 
 ```bash
 # Test Python package installation and basic functionality
@@ -419,7 +421,7 @@ After deployment, test PyPI installation:
   - [ ] Run `./scripts/build/build_all_platforms.sh --bump-version`
   - [ ] Verify all 5 platforms build successfully
   - [ ] Verify CLI tests pass for all platforms
-  - [ ] Verify Python tests pass for all platforms
+  - [ ] Verify CLI tests pass for all platforms
   - [ ] Verify Windows artifacts are downloaded and committed
 
 - [ ] **PyPI deployment:**
@@ -437,7 +439,7 @@ After deployment, test PyPI installation:
 
 | Script | Purpose | Location | Testing |
 |--------|---------|----------|---------|
-| `build_all_platforms.sh` | Master build script | `scripts/build/` | ✅ CLI, Python |
+| `build_all_platforms.sh` | Master build script | `scripts/build/` | ✅ CLI only |
 | `bump_version_and_deploy.py` | Version management | `scripts/build/` | ✅ Version files |
 | `build_and_deploy_pypi.sh` | PyPI deployment | `scripts/build/` | ✅ PyPI upload |
 | `monitor_and_download_windows.sh` | Windows artifact collection | `scripts/ci-cd/` | ✅ Artifact download |
