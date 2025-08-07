@@ -12,7 +12,7 @@ import platform
 def check_x11_libraries():
     """Check if X11 libraries are available on the system"""
     if platform.system() != 'Linux':
-        return True  # Only check on Linux
+        return []  # Only check on Linux, return empty list (no missing libs)
     
     # List of X11 libraries that GrapaPy requires
     x11_libs = [
