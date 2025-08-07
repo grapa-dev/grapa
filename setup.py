@@ -461,10 +461,10 @@ def pick_library_dirs():
 def pick_libraries():
     my_system = platform.system()
     if my_system == 'Linux':
-        return ['grapa', 'blst', 'fltk', 'fltk_forms', 'fltk_gl', 'fltk_images', 'fltk_jpeg', 'fltk_png', 'crypto', 'ssl', 'pcre2-8']
+        return ['grapa', 'blst', 'fltk', 'fltk_forms', 'fltk_gl', 'fltk_images', 'fltk_jpeg', 'crypto', 'ssl', 'pcre2-8']
     if my_system == 'Darwin':
         #return ['@rpath/grapa']
-        return ['grapa', 'blst', 'fltk', 'fltk_forms', 'fltk_gl', 'fltk_images', 'fltk_jpeg', 'fltk_png', 'crypto', 'ssl', 'pcre2-8']
+        return ['grapa', 'blst', 'fltk', 'fltk_forms', 'fltk_gl', 'fltk_images', 'fltk_jpeg', 'fltk_png', 'fltk_z', 'crypto', 'ssl', 'pcre2-8']
     if my_system == 'Windows':
         return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
     raise ValueError("Unknown platform: " + my_system)
