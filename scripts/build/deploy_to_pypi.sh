@@ -70,15 +70,9 @@ create_version_tag() {
     # Check if tag already exists
     if git tag -l "v$version" | grep -q "v$version"; then
         print_warning "Tag v$version already exists"
-        read -p "Do you want to delete and recreate it? (y/N): " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            git tag -d "v$version" 2>/dev/null || true
-            git push origin ":refs/tags/v$version" 2>/dev/null || true
-        else
-            print_status "Using existing tag v$version"
-            return 0
-        fi
+        print_status "Deleting existing tag and recreating it..."
+        git tag -d "v$version" 2>/dev/null || true
+        git push origin ":refs/tags/v$version" 2>/dev/null || true
     fi
     
     # Create and push tag
@@ -269,12 +263,7 @@ main() {
     # Check if version is already on PyPI
     if check_pypi_version "$version"; then
         print_warning "Version $version already exists on PyPI"
-        read -p "Do you want to continue with testing? (y/N): " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            print_status "Aborted by user"
-            exit 0
-        fi
+        print_status "Continuing with testing..."
     fi
     
     # Execute requested operations
