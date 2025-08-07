@@ -33,9 +33,10 @@
 - **Documentation scripts**: Both PowerShell and Bash scripts now have identical validation features
 - **PyPI trigger fixed**: Changed from automatic tag-based trigger to explicit workflow_dispatch
 - **Workflow policy established**: Created GITHUB_ACTIONS_POLICY.md with explicit trigger requirements
-- **Pages workflow fixed**: Added custom pages.yml with path-based triggers to prevent version updates from triggering Pages
+- **Pages workflow issue**: Built-in GitHub Pages workflow still triggering on version updates
+- **Solution needed**: Disable GitHub Pages in repository settings (Settings → Pages → Source: None)
 - **Status**: ✅ **Windows workflow completed successfully!**
-- **Focus**: Windows CLI extraction and testing now working correctly
+- **Focus**: Disable GitHub Pages to achieve ZERO unintended workflow triggering
 
 **Next Steps:**
 - [x] ✅ Windows workflow completed successfully
