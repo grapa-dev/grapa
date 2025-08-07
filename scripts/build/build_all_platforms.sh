@@ -250,8 +250,19 @@ if [[ "$BUMP_VERSION" == "true" ]]; then
     python3 scripts/build/bump_version_and_deploy.py "$new_version" --commit-and-push
     if [[ $? -eq 0 ]]; then
         echo "✅ Version bumped successfully to $new_version"
-        echo "✅ Version changes committed and pushed"
+        echo "✅ Version changes committed locally"
         echo "ℹ️  All subsequent builds will use version $new_version"
+        
+        # Push changes to make them available for Windows workflow
+        echo "📤 Pushing version changes to remote..."
+        echo "ℹ️  Note: This will trigger GitHub Pages workflow (expected for version updates)"
+        git push
+        if [[ $? -eq 0 ]]; then
+            echo "✅ Version changes pushed to remote"
+        else
+            echo "❌ Failed to push version changes"
+            exit 1
+        fi
     else
         echo "❌ Failed to bump version"
         exit 1
