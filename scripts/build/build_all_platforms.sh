@@ -428,7 +428,11 @@ verify_cli_executable() {
     
     # Extract the executable with proper tar syntax
     if [[ "$platform" == "win" ]]; then
+        echo "📁 Extracting Windows executable: unzip -q \"$bin_file\" \"$exe_name\" -d \"$temp_dir\""
         unzip -q "$bin_file" "$exe_name" -d "$temp_dir"
+        local unzip_exit_code=$?
+        echo "📁 Unzip exit code: $unzip_exit_code"
+        echo "📁 Contents of temp dir: $(ls -la "$temp_dir" 2>/dev/null || echo 'temp dir not accessible')"
     else
         # Fix tar extraction syntax - -C must come before the archive
         tar -xzf "$bin_file" -C "$temp_dir" "$exe_name" 2>/dev/null || \
@@ -436,7 +440,18 @@ verify_cli_executable() {
         tar -xzf "$bin_file" -C "$temp_dir" 2>/dev/null
     fi
     
-    if [[ $? -eq 0 ]] && [[ -f "$temp_dir/$exe_name" ]]; then
+    local extraction_success=false
+    if [[ "$platform" == "win" ]]; then
+        if [[ $unzip_exit_code -eq 0 ]] && [[ -f "$temp_dir/$exe_name" ]]; then
+            extraction_success=true
+        fi
+    else
+        if [[ $? -eq 0 ]] && [[ -f "$temp_dir/$exe_name" ]]; then
+            extraction_success=true
+        fi
+    fi
+    
+    if [[ "$extraction_success" == "true" ]]; then
         echo "✅ Executable extracted: $temp_dir/$exe_name"
         
         # Make executable (for Unix systems)
