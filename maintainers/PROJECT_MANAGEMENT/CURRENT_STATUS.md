@@ -27,9 +27,9 @@
 - **Unicode Issues**: Removed Unicode checkmark characters that caused Windows encoding errors
 
 **Current Testing:**
-- **About to run**: `./scripts/build/build_all_platforms.sh --bump-version` to test Windows workflow
-- **Monitoring**: GitHub Actions workflow for Windows build completion
-- **Focus**: Windows CLI extraction and testing validation step
+- **Issue discovered**: Version bump triggered `pages-build-deployment` workflow (expected behavior)
+- **Status**: Version bumped to 0.0.265, Windows workflow should be running
+- **Focus**: Monitor Windows workflow completion and CLI extraction testing
 
 **Next Steps:**
 - [ ] Run build script and monitor Windows workflow
