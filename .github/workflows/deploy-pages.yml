@@ -1,0 +1,35 @@
+name: Deploy Documentation to GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "YES" to confirm Pages deployment'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    if: github.event.inputs.confirm == 'YES'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build with MkDocs
+        run: |
+          pip install mkdocs-material
+          cd docs-src
+          mkdocs build --clean
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs-src/site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
