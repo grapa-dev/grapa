@@ -436,9 +436,9 @@ def pick_library_dirs():
     my_system = platform.system()
     if my_system == 'Linux':
         if is_arm:
-            return ["source", "source/grapa-lib/linux-arm64"]
+            return ["source", "source/grapa-lib/linux-arm64", "source/blst-lib/linux-arm64", "source/fl-lib/linux-arm64", "source/openssl-lib/linux-arm64", "source/pcre2-lib/linux-arm64"]
         else:
-            return ["source", "source/grapa-lib/linux-amd64"]
+            return ["source", "source/grapa-lib/linux-amd64", "source/blst-lib/linux-amd64", "source/fl-lib/linux-amd64", "source/openssl-lib/linux-amd64", "source/pcre2-lib/linux-amd64"]
     if my_system == 'Darwin':
         if is_arm:
             return ["source", "source/grapa-lib/mac-arm64", "source/blst-lib/mac-arm64", "source/fl-lib/mac-arm64", "source/openssl-lib/mac-arm64", "source/pcre2-lib/mac-arm64"]
@@ -461,7 +461,7 @@ def pick_library_dirs():
 def pick_libraries():
     my_system = platform.system()
     if my_system == 'Linux':
-        return ['grapa']
+        return ['grapa', 'blst', 'fltk', 'fltk_forms', 'fltk_gl', 'fltk_images', 'fltk_jpeg', 'fltk_png', 'crypto', 'ssl', 'pcre2-8']
     if my_system == 'Darwin':
         #return ['@rpath/grapa']
         return ['grapa', 'blst', 'fltk', 'fltk_forms', 'fltk_gl', 'fltk_images', 'fltk_jpeg', 'fltk_png', 'crypto', 'ssl', 'pcre2-8']
