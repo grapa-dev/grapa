@@ -255,7 +255,6 @@ if [[ "$BUMP_VERSION" == "true" ]]; then
         
         # Push changes to make them available for Windows workflow
         echo "📤 Pushing version changes to remote..."
-        echo "ℹ️  Note: This will trigger GitHub Pages workflow (expected for version updates)"
         git push
         if [[ $? -eq 0 ]]; then
             echo "✅ Version changes pushed to remote"
