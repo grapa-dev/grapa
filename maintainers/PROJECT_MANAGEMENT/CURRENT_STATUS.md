@@ -10,8 +10,34 @@
 
 ## 🚨 ACTIVE WORK ITEMS
 
-### PyPI Deployment System Testing - ⏳ PENDING TESTING
-- **Status**: ⏳ **PENDING TESTING** - System implemented, ready for end-to-end testing
+### Windows AMD64 Build Workflow Debugging - 🔧 IN PROGRESS
+- **Status**: 🔧 **IN PROGRESS** - Debugging Windows CLI extraction and testing issues
+- **Goal**: Fix Windows workflow to properly extract and test CLI executable
+- **Current Issues**:
+  - [x] **Fixed**: Removed incorrect Python package testing from Windows workflow
+  - [x] **Fixed**: Improved extraction logic with better debugging output
+  - [x] **Fixed**: Removed Unicode characters that caused Windows encoding errors
+  - [ ] **Pending**: Verify Windows CLI extraction works correctly
+  - [ ] **Pending**: Confirm Windows workflow completes successfully
+
+**Recent Fixes Applied:**
+- **Workflow Separation**: Removed Python package testing from Windows workflow (should only be in PyPI deployment)
+- **Extraction Logic**: Enhanced Windows CLI test to properly extract `grapa.exe` from `bin/grapa-win-amd64.zip`
+- **Error Handling**: Added verbose debugging output to show zip contents and extraction results
+- **Unicode Issues**: Removed Unicode checkmark characters that caused Windows encoding errors
+
+**Current Testing:**
+- Running `./scripts/build/build_all_platforms.sh --bump-version` to test Windows workflow
+- Monitoring GitHub Actions workflow for Windows build completion
+- Verifying CLI extraction and testing works correctly
+
+**Next Steps:**
+- [ ] Confirm Windows workflow completes successfully
+- [ ] Verify CLI extraction and testing works
+- [ ] Return to PyPI deployment system testing once Windows build is stable
+
+### PyPI Deployment System Testing - ⏸️ ON HOLD
+- **Status**: ⏸️ **ON HOLD** - Waiting for Windows build workflow to be stable
 - **Goal**: Validate the complete PyPI deployment workflow
 - **Testing Tasks**:
   - [ ] Test automated GitHub Actions PyPI deployment with version tag
