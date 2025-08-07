@@ -247,9 +247,10 @@ if [[ "$BUMP_VERSION" == "true" ]]; then
     
     # Bump version BEFORE all builds
     echo "📋 Bumping version before builds..."
-    python3 scripts/build/bump_version_and_deploy.py "$new_version"
+    python3 scripts/build/bump_version_and_deploy.py "$new_version" --commit-and-push
     if [[ $? -eq 0 ]]; then
         echo "✅ Version bumped successfully to $new_version"
+        echo "✅ Version changes committed and pushed"
         echo "ℹ️  All subsequent builds will use version $new_version"
     else
         echo "❌ Failed to bump version"
@@ -314,8 +315,8 @@ echo "🪟 Building for Windows AMD64..."
 if [[ "$BUMP_VERSION" == "true" ]]; then
     echo "📋 Triggering Windows build via workflow..."
     
-    # Bump version first (without pushing)
-    python3 scripts/build/bump_version_and_deploy.py "$new_version"
+    # Bump version first (without pushing - already done above)
+    echo "📋 Version already bumped to $new_version above"
     
     if [[ $? -eq 0 ]]; then
         echo "✅ Version bumped successfully to $new_version"
