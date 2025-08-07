@@ -6,7 +6,7 @@
 
 set -e  # Exit on any error
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SRC_DIR="$REPO_ROOT/docs-src"
 USER_CONFIG="$SRC_DIR/mkdocs.yml"
 SITE_DIR="$SRC_DIR/site"
