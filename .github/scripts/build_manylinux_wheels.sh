@@ -13,8 +13,11 @@ cd /io
 # Install build dependencies
 yum install -y gcc gcc-c++ make cmake
 
-# Install Python build tools
-/opt/python/cp39-cp39/bin/pip install setuptools wheel build
+# Install Python build tools for all Python versions
+for pyver in cp39-cp39 cp310-cp310 cp311-cp311 cp312-cp312; do
+    echo "Installing build tools for Python $pyver..."
+    /opt/python/$pyver/bin/pip install setuptools wheel build
+done
 
 # Build wheels for all Python versions
 for pyver in cp39-cp39 cp310-cp310 cp311-cp311 cp312-cp312; do
