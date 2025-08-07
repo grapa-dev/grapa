@@ -449,17 +449,22 @@ verify_cli_executable() {
     echo "📁 Extracting to: $temp_dir"
     
     # Extract the executable with proper tar syntax
+    local tar_exit_code=0
+    local unzip_exit_code=0
+    
     if [[ "$platform" == "win" ]]; then
         echo "📁 Extracting Windows executable: unzip -q \"$bin_file\" \"$exe_name\" -d \"$temp_dir\""
         unzip -q "$bin_file" "$exe_name" -d "$temp_dir"
-        local unzip_exit_code=$?
+        unzip_exit_code=$?
         echo "📁 Unzip exit code: $unzip_exit_code"
         echo "📁 Contents of temp dir: $(ls -la "$temp_dir" 2>/dev/null || echo 'temp dir not accessible')"
     else
-        # Fix tar extraction syntax - -C must come before the archive
-        tar -xzf "$bin_file" -C "$temp_dir" "$exe_name" 2>/dev/null || \
-        tar -xzf "$bin_file" -C "$temp_dir" --strip-components=0 "$exe_name" 2>/dev/null || \
-        tar -xzf "$bin_file" -C "$temp_dir" 2>/dev/null
+        # Extract the executable from tar.gz
+        echo "📁 Extracting Unix executable: tar -xzf \"$bin_file\" -C \"$temp_dir\" \"$exe_name\""
+        tar -xzf "$bin_file" -C "$temp_dir" "$exe_name"
+        tar_exit_code=$?
+        echo "📁 Tar exit code: $tar_exit_code"
+        echo "📁 Contents of temp dir: $(ls -la "$temp_dir" 2>/dev/null || echo 'temp dir not accessible')"
     fi
     
     local extraction_success=false
@@ -468,7 +473,7 @@ verify_cli_executable() {
             extraction_success=true
         fi
     else
-        if [[ $? -eq 0 ]] && [[ -f "$temp_dir/$exe_name" ]]; then
+        if [[ $tar_exit_code -eq 0 ]] && [[ -f "$temp_dir/$exe_name" ]]; then
             extraction_success=true
         fi
     fi
@@ -563,6 +568,8 @@ verify_cli_executable() {
         return 0
     else
         echo "❌ Failed to extract executable from $bin_file"
+        echo "   Tar/Unzip exit code: $tar_exit_code (Unix) / $unzip_exit_code (Windows)"
+        echo "   Temp dir contents: $(ls -la "$temp_dir" 2>/dev/null || echo 'temp dir not accessible')"
         rm -rf "$temp_dir"
         return 1
     fi

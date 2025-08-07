@@ -33,22 +33,42 @@ wait_for_specific_run() {
     local wait_interval=10   # Check every 10 seconds
     local elapsed=0
     
+    # Get the run ID that was just triggered (should be the most recent one)
+    local triggered_run_id=""
+    local runs=$(gh run list --workflow="Build Windows AMD64" --limit=1 --json databaseId,status,conclusion,headSha)
+    triggered_run_id=$(echo "$runs" | jq -r '.[0].databaseId')
+    
+    if [[ -z "$triggered_run_id" ]]; then
+        echo "❌ Could not find the triggered workflow run"
+        return 1
+    fi
+    
+    echo "📋 Waiting for specific run ID: $triggered_run_id"
+    
     while [[ $elapsed -lt $max_wait_time ]]; do
-        # Get the latest runs
-        local runs=$(gh run list --workflow="Build Windows AMD64" --limit=3 --json databaseId,status,conclusion,headSha)
+        # Get the status of the specific run
+        local run_status=$(gh run view "$triggered_run_id" --json status,conclusion)
+        local status=$(echo "$run_status" | jq -r '.status')
+        local conclusion=$(echo "$run_status" | jq -r '.conclusion')
         
-        # Get the most recent run that's completed
-        local target_run=$(echo "$runs" | jq -r '.[] | select(.status == "completed" and .conclusion == "success") | .databaseId' | head -1)
+        echo "⏳ Run $triggered_run_id - Status: $status, Conclusion: $conclusion"
         
-        if [[ -n "$target_run" ]]; then
-            echo "$target_run"
-            return 0
+        if [[ "$status" == "completed" ]]; then
+            if [[ "$conclusion" == "success" ]]; then
+                echo "✅ Specific run $triggered_run_id completed successfully!"
+                echo "$triggered_run_id"
+                return 0
+            else
+                echo "❌ Specific run $triggered_run_id failed with conclusion: $conclusion"
+                return 1
+            fi
         fi
         
         sleep $wait_interval
         elapsed=$((elapsed + wait_interval))
     done
     
+    echo "❌ Timeout waiting for run $triggered_run_id to complete"
     return 1
 }
 
