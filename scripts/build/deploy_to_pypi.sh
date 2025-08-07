@@ -74,11 +74,12 @@ create_version_tag() {
         return 0
     fi
     
-    # Create and push tag
+    # Create tag locally (don't push to avoid automatic workflow trigger)
     git tag "v$version"
-    git push origin "v$version"
     
-    print_success "Version tag v$version created and pushed successfully"
+    print_success "Version tag v$version created locally"
+    print_status "To deploy to PyPI, push the tag: git push origin v$version"
+    print_status "Or use the manual deployment script: ./scripts/build/manual_pypi_deploy.sh $version"
 }
 
 # Function to monitor GitHub Actions workflow
