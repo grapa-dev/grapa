@@ -75,6 +75,18 @@ python3 build.py --all-platforms
 - **Python package**: `grapapy-0.0.25.tar.gz`
 - **Executable**: `grapa` binary
 
+#### Repository Management
+The project uses `.gitignore` to prevent accidental commits of generated files:
+
+**Ignored Files:**
+- **System files**: `.DS_Store`, `Thumbs.db`, `._*` (macOS/Windows system files)
+- **Build artifacts**: `docs-src/site/`, `docs/site/` (documentation build output)
+- **Python artifacts**: `dist/`, `build/`, `*.egg-info/` (Python package builds)
+- **IDE files**: `.vscode/`, `.idea/`, `*.swp`, `*.swo` (editor files)
+- **Temporary files**: `*.tmp`, `*.temp` (temporary build files)
+
+**Important:** Build artifacts are intentionally excluded from version control. Only source code and essential configuration files should be committed.
+
 ## Dependencies
 
 ### Core Dependencies

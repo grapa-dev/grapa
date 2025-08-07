@@ -201,6 +201,25 @@ python3 -m mkdocs serve
 .\scripts\documentation\deploy_docs.ps1 # Windows
 ```
 
+### **Repository Management**
+The project uses `.gitignore` to maintain a clean repository:
+
+**Important:** Only commit source code and essential files. Generated files are automatically excluded:
+- **Build artifacts**: `docs-src/site/`, `dist/`, `build/` (automatically ignored)
+- **System files**: `.DS_Store`, `Thumbs.db` (automatically ignored)
+- **IDE files**: `.vscode/`, `.idea/` (automatically ignored)
+
+**Before committing:**
+```bash
+# Check what will be committed
+git status
+
+# Review changes
+git diff --cached
+
+# Only commit source files, not build artifacts
+```
+
 ### **Debugging**
 ```bash
 # Enable debug output
