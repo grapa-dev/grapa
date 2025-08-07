@@ -470,7 +470,7 @@ def pick_libraries():
     raise ValueError("Unknown platform: " + my_system)
 
 # Prepare include directories
-include_dirs = ["source","source/utf8proc","source/pybind11/include"]
+include_dirs = ["source","source/utf8proc","source/pybind11/include","source/X11","source/FL"]
 
 # Add Windows SDK include path if on Windows
 if sys.platform.startswith('win32') and 'windows_sdk_path' in locals() and windows_sdk_path:
