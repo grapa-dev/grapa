@@ -123,15 +123,14 @@ def main():
             # Create tag
             subprocess.run(["git", "tag", tag_name], check=True)
             
-            # Push changes and tag
+            # Push changes only (no tag push to avoid triggering PyPI deployment)
             subprocess.run(["git", "push"], check=True)
-            subprocess.run(["git", "push", "origin", tag_name], check=True)
             
             print(f"SUCCESS: Successfully bumped version to {new_version}")
-            print(f"SUCCESS: Created and pushed tag {tag_name}")
-            print(f"INFO: CI/CD workflow should now trigger automatically")
-            print(f"INFO: PyPI deployment will begin shortly...")
-            print(f"INFO: Note: GitHub Pages workflow may also trigger (this is expected)")
+            print(f"SUCCESS: Created tag {tag_name} (not pushed)")
+            print(f"INFO: Platform builds will use version {new_version}")
+            print(f"INFO: PyPI deployment should be triggered manually after platform builds complete")
+            print(f"INFO: Note: GitHub Pages workflow may trigger (this is expected)")
             
         except subprocess.CalledProcessError as e:
             print(f"ERROR: Git operation failed: {e}")

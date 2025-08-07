@@ -38,7 +38,7 @@ def get_pybind11_include():
 extra_link_args = []
 extra_compile_args = []
 runtime_library_dirs = []
-grapapy_version = "0.0.265"
+grapapy_version = "0.0.266"
 
 is_apple = False
 from_os = ''
