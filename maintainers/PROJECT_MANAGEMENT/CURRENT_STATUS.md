@@ -27,7 +27,8 @@
 - **Unicode Issues**: Removed Unicode checkmark characters that caused Windows encoding errors
 
 **Current Testing:**
-- **Issue discovered**: Version bump triggered `pages-build-deployment` workflow (expected behavior)
+- **Issue discovered**: Version bump triggered both `pages-build-deployment` AND PyPI deployment workflows
+- **Fix applied**: Modified version bump script to not push tags automatically
 - **Status**: Version bumped to 0.0.265, Windows workflow should be running
 - **Focus**: Monitor Windows workflow completion and CLI extraction testing
 
