@@ -144,13 +144,56 @@ jobs:
         echo "📋 Building Python package..."
         python build.py --python-only
         
-        # Install the package
-        echo "📋 Installing Python package..."
-        pip install dist/*.whl --force-reinstall
+        # Check what was built
+        echo "📋 Checking dist/ directory contents:"
+        if (Test-Path "dist") {
+            Get-ChildItem "dist" -ErrorAction SilentlyContinue | ForEach-Object { echo "  - $($_.Name)" }
+        } else {
+            echo "  dist/ directory does not exist"
+        }
         
-        # Test Python functionality
+        # Install the package (try different formats)
+        echo "📋 Installing Python package..."
+        $packageInstalled = $false
+        
+        # Try wheel files first
+        $wheelFiles = Get-ChildItem "dist" -Filter "*.whl" -ErrorAction SilentlyContinue
+        if ($wheelFiles) {
+            echo "📋 Found wheel files:"
+            $wheelFiles | ForEach-Object { echo "  - $($_.Name)" }
+            try {
+                pip install $wheelFiles[0].FullName --force-reinstall
+                $packageInstalled = $true
+                echo "✅ Successfully installed wheel package"
+            } catch {
+                echo "❌ Failed to install wheel package: $_"
+            }
+        }
+        
+        # Try source distribution if wheel failed
+        if (-not $packageInstalled) {
+            $tarFiles = Get-ChildItem "dist" -Filter "*.tar.gz" -ErrorAction SilentlyContinue
+            if ($tarFiles) {
+                echo "📋 Found source distribution:"
+                $tarFiles | ForEach-Object { echo "  - $($_.Name)" }
+                try {
+                    pip install $tarFiles[0].FullName --force-reinstall
+                    $packageInstalled = $true
+                    echo "✅ Successfully installed source package"
+                } catch {
+                    echo "❌ Failed to install source package: $_"
+                }
+            }
+        }
+        
+        if (-not $packageInstalled) {
+            echo "❌ No package files found to install"
+            exit 1
+        }
+        
+        # Test Python functionality (avoid Unicode characters)
         echo "📋 Testing Python functionality..."
-        python -c "import grapapy; xy = grapapy.grapa(); result = xy.eval('2 + 2;'); print(f'GrapaPy test: 2 + 2 = {result}'); assert result == 4, 'Basic functionality test failed'; print('✅ Python package test passed!')"
+        python -c "import grapapy; xy = grapapy.grapa(); result = xy.eval('2 + 2;'); print(f'GrapaPy test: 2 + 2 = {result}'); assert result == 4, 'Basic functionality test failed'; print('SUCCESS: Python package test passed!')"
         
         echo "✅ Python package testing completed successfully!"
         
