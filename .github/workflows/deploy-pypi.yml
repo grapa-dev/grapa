@@ -1,9 +1,16 @@
 name: Deploy to PyPI
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy (e.g., 0.0.267)'
+        required: true
+        type: string
+      confirm:
+        description: 'Type "YES" to confirm deployment'
+        required: true
+        type: string
 
 jobs:
   build-and-deploy:
@@ -63,7 +70,7 @@ jobs:
   combine-and-deploy:
     needs: build-and-deploy
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    if: github.event.inputs.confirm == 'YES'
     
     steps:
     - name: Download all distribution artifacts
@@ -125,6 +132,6 @@ jobs:
       if: success()
       run: |
         echo "🎉 GrapaPy successfully deployed to PyPI!"
-        echo "Version: ${{ github.ref_name }}"
+        echo "Version: ${{ github.event.inputs.version }}"
         echo "Package: grapapy"
         echo "PyPI URL: https://pypi.org/project/grapapy/" 

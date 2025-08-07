@@ -29,7 +29,7 @@ show_help() {
     echo ""
     echo "This script will:"
     echo "  1. Check if the version tag exists locally"
-    echo "  2. Push the tag to trigger PyPI deployment workflow"
+    echo "  2. Trigger PyPI deployment workflow manually"
     echo "  3. Monitor the deployment process"
 }
 
@@ -64,15 +64,14 @@ if git ls-remote --tags origin "v$version" | grep -q "v$version"; then
     print_status "This will trigger a new PyPI deployment"
 fi
 
-# Push the tag to trigger PyPI deployment
-print_status "Pushing version tag v$version to trigger PyPI deployment..."
-if git push origin "v$version"; then
-    print_success "Version tag v$version pushed successfully"
-    print_success "PyPI deployment workflow triggered"
-    print_status "Monitor the deployment at: https://github.com/grapa-dev/grapa/actions"
-else
-    print_error "Failed to push version tag v$version"
-    exit 1
-fi
+       # Trigger PyPI deployment workflow manually
+       print_status "Triggering PyPI deployment workflow for version $version..."
+       if gh workflow run "Deploy to PyPI" --field version="$version" --field confirm="YES"; then
+           print_success "PyPI deployment workflow triggered successfully"
+           print_status "Monitor the deployment at: https://github.com/grapa-dev/grapa/actions"
+       else
+           print_error "Failed to trigger PyPI deployment workflow"
+           exit 1
+       fi
 
 print_success "Manual PyPI deployment initiated for version $version" 
