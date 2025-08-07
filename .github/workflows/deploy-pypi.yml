@@ -44,7 +44,11 @@ jobs:
         # Clean previous builds
         rm -rf dist/ build/ *.egg-info/
         
-        # Build wheel and source distribution
+        # Install X11 development libraries for static linking
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libfontconfig1-dev libxcursor-dev
+        
+        # Build wheel and source distribution with X11 statically linked
         python setup.py bdist_wheel sdist
         
         echo "Built distributions:"

@@ -1,8 +1,4 @@
 #!/bin/bash
-
-# Build manylinux wheels for GrapaPy
-# This script runs inside the manylinux Docker container
-
 set -e
 
 echo "Building manylinux wheels for GrapaPy..."
@@ -12,6 +8,9 @@ cd /io
 
 # Install build dependencies
 yum install -y gcc gcc-c++ make cmake
+
+# Install X11 development libraries in the manylinux container
+yum install -y libX11-devel libXfixes-devel libXft-devel libXext-devel libXrender-devel libXinerama-devel fontconfig-devel libXcursor-devel
 
 # Install Python build tools for all Python versions
 for pyver in cp39-cp39 cp310-cp310 cp311-cp311 cp312-cp312; do
