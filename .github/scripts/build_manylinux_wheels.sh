@@ -7,6 +7,9 @@ set -e
 
 echo "Building manylinux wheels for GrapaPy..."
 
+# Change to the mounted repository directory
+cd /io
+
 # Install build dependencies
 yum install -y gcc gcc-c++ make cmake
 
