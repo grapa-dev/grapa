@@ -18,7 +18,6 @@ Supported Platforms (when run on that platform):
     - windows (amd64)
     - mac (arm64, amd64)
     - linux (arm64, amd64)
-    - aws (arm64, amd64)
 """
 
 import os
@@ -74,7 +73,7 @@ class BuildConfig:
             return "msbuild"
         elif self.platform == "mac":
             return "clang++"
-        else:  # linux, aws
+        else:  # linux
             return "g++"
     
     def _get_flags(self) -> List[str]:
@@ -83,7 +82,7 @@ class BuildConfig:
         
         if self.platform == "mac":
             base_flags.extend(["-m64"])
-        elif self.platform in ["linux", "aws"]:
+        elif self.platform == "linux":
             base_flags.extend(["-static-libgcc"])
             
         return base_flags
@@ -296,8 +295,8 @@ class GrapaBuilder:
             print(f"Mac build failed: {e}")
             return False
     
-    def build_linux_aws(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
-        """Build for Linux/AWS using g++"""
+    def build_linux(self, config: BuildConfig, exe_only: bool = False, lib_only: bool = False) -> bool:
+        """Build for Linux using g++"""
         print(f"Building for {config.target} using g++...")
         
         try:
@@ -597,13 +596,18 @@ class GrapaBuilder:
                     
                     # Build the exact command that works (from BUILD.md)
                     # Use wildcard patterns like the working reference with shell expansion
+                    # Get X11 libraries conditionally
+                    x11_libs = self.get_x11_libs()
+                    
                     cmd = [gpp_cmd, "-shared", "-Isource", "-DUTF8PROC_STATIC"] + cpp_files + ["source/utf8proc/utf8proc.c"] + [
                         f"source/openssl-lib/{config.target}/*.a",
                         f"source/fl-lib/{config.target}/*.a", 
                         f"source/blst-lib/{config.target}/*.a",
                         f"source/pcre2-lib/{config.target}/libpcre2-8.a"
                     ] + [
-                        f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
+                        f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
+                    ] + x11_libs + [
+                        "-ldl", "-lm", "-O3", "-pthread", "-fPIC", "-o", "libgrapa.so"
                     ]
                     
                     # Convert to shell command for wildcard expansion
@@ -646,7 +650,7 @@ class GrapaBuilder:
                 shutil.copy("libgrapa.so", f"source/grapa-other/{config.target}/libgrapa.so")
                 os.remove("libgrapa.so")
         else:
-            # Build executable - match AWS pattern exactly
+            # Build executable - match Linux pattern exactly
             cpp_files = glob.glob("source/grapa/*.cpp")
             openssl_libs = glob.glob(f"source/openssl-lib/{config.target}/*.a")
             fl_libs = glob.glob(f"source/fl-lib/{config.target}/*.a")
@@ -659,6 +663,9 @@ class GrapaBuilder:
                 
                 # Build the exact command that works (from BUILD.md)
                 # Use wildcard patterns like the working reference with shell expansion
+                # Get X11 libraries conditionally
+                x11_libs = self.get_x11_libs()
+                
                 cmd = [
                     gpp_cmd, "-Isource", "-DUTF8PROC_STATIC", "source/main.cpp"
                 ] + cpp_files + ["source/utf8proc/utf8proc.c"] + [
@@ -667,7 +674,9 @@ class GrapaBuilder:
                     f"source/blst-lib/{config.target}/*.a",
                     f"source/pcre2-lib/{config.target}/libpcre2-8.a"
                 ] + [
-                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto", "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor", "-ldl", "-lm", "-O3", "-pthread", "-o", config.output_name
+                    f"-Lsource/openssl-lib/{config.target}", "-std=c++17", "-lcrypto"
+                ] + x11_libs + [
+                    "-ldl", "-lm", "-O3", "-pthread", "-o", config.output_name
                 ]
                 
                 # Convert to shell command for wildcard expansion
@@ -828,7 +837,7 @@ class GrapaBuilder:
         subprocess.run(tar_cmd, check=True)
     
     def _create_linux_package(self, config: BuildConfig):
-        """Create Linux/AWS package"""
+        """Create Linux package"""
         import glob
         
         # Get the actual files to include
@@ -1064,7 +1073,7 @@ class GrapaBuilder:
             elif config.platform == "mac":
                 success = self.build_mac(config, exe_only=exe_only, lib_only=False)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=exe_only, lib_only=False)
+                success = self.build_linux(config, exe_only=exe_only, lib_only=False)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -1103,7 +1112,7 @@ class GrapaBuilder:
             elif config.platform == "mac":
                 success = self.build_mac(config, exe_only=False, lib_only=True)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=False, lib_only=True)
+                success = self.build_linux(config, exe_only=False, lib_only=True)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -1147,7 +1156,7 @@ class GrapaBuilder:
             elif config.platform == "mac":
                 success = self.build_mac(config, exe_only=False, lib_only=False)
             elif config.platform == "linux":
-                success = self.build_linux_aws(config, exe_only=False, lib_only=False)
+                success = self.build_linux(config, exe_only=False, lib_only=False)
             else:
                 print(f"Unsupported platform: {config.platform}")
                 return False
@@ -1208,6 +1217,50 @@ class GrapaBuilder:
                     shutil.copy2(lib_file, filename)
                     print(f"Copied {filename} to top-level directory")
 
+    def check_x11_availability(self) -> bool:
+        """Check if X11 libraries are available on the system"""
+        try:
+            # Try to compile a simple test program that uses X11
+            test_code = """
+            #include <X11/Xlib.h>
+            int main() {
+                Display *display = XOpenDisplay(NULL);
+                if (display) {
+                    XCloseDisplay(display);
+                    return 0;
+                }
+                return 1;
+            }
+            """
+            
+            with open("x11_test.cpp", "w") as f:
+                f.write(test_code)
+            
+            result = subprocess.run([
+                "g++", "-o", "x11_test", "x11_test.cpp", 
+                "-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", 
+                "-lXinerama", "-lfontconfig", "-lXcursor"
+            ], capture_output=True, text=True)
+            
+            # Clean up test files
+            if os.path.exists("x11_test.cpp"):
+                os.remove("x11_test.cpp")
+            if os.path.exists("x11_test"):
+                os.remove("x11_test")
+            
+            return result.returncode == 0
+            
+        except Exception:
+            return False
+
+    def get_x11_libs(self) -> List[str]:
+        """Get X11 library flags if available, empty list otherwise"""
+        if self.check_x11_availability():
+            return ["-lX11", "-lXfixes", "-lXft", "-lXext", "-lXrender", "-lXinerama", "-lfontconfig", "-lXcursor"]
+        else:
+            print("⚠️  X11 libraries not available - building without GUI support")
+            return []
+
 def main():
     parser = argparse.ArgumentParser(description="Grapa Build Script")
     parser.add_argument("--test", action="store_true", help="Run tests after build")
@@ -1239,8 +1292,6 @@ def main():
                 platform = "mac"
             elif platform == "linux":
                 platform = "linux"
-            elif platform == "aws":
-                platform = "aws"
             print(f"Building for {platform} {arch}")
         else:
             print(f"Invalid CI_PLATFORM format: {ci_platform}")

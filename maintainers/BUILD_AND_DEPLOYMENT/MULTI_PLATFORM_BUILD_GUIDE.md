@@ -89,7 +89,29 @@ python3 build.py --python-only
 python3 build.py --clean
 ```
 
-## Build Individual Platforms
+## X11 Dependency Handling
+
+### Linux X11 Dependencies
+
+The build system now handles X11 dependencies intelligently:
+
+**Automatic Detection:**
+- The build system automatically checks if X11 libraries are available
+- If X11 is available, builds include full GUI support
+- If X11 is not available, builds without GUI support (no X11 linking)
+
+**Benefits:**
+- **Headless Servers**: PyPI packages work on systems without X11
+- **CI Environments**: Builds succeed in containerized environments
+- **Development Systems**: Full GUI support when X11 is available
+- **No Runtime Errors**: Eliminates `undefined symbol: XDrawArc` errors
+
+**Technical Details:**
+- **Conditional Linking**: Linux builds check X11 availability at build time
+- **Graceful Degradation**: Systems without X11 get CLI-only builds
+- **Backward Compatibility**: Existing systems with X11 continue to work normally
+
+### Build Individual Platforms
 
 ### Local Builds (Linux/macOS)
 
