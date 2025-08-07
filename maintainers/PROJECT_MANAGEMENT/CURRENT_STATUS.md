@@ -27,13 +27,14 @@
 - **Unicode Issues**: Removed Unicode checkmark characters that caused Windows encoding errors
 
 **Current Testing:**
-- Running `./scripts/build/build_all_platforms.sh --bump-version` to test Windows workflow
-- Monitoring GitHub Actions workflow for Windows build completion
-- Verifying CLI extraction and testing works correctly
+- **About to run**: `./scripts/build/build_all_platforms.sh --bump-version` to test Windows workflow
+- **Monitoring**: GitHub Actions workflow for Windows build completion
+- **Focus**: Windows CLI extraction and testing validation step
 
 **Next Steps:**
-- [ ] Confirm Windows workflow completes successfully
-- [ ] Verify CLI extraction and testing works
+- [ ] Run build script and monitor Windows workflow
+- [ ] Debug any Windows CLI extraction issues
+- [ ] Verify Windows workflow completes successfully
 - [ ] Return to PyPI deployment system testing once Windows build is stable
 
 ### PyPI Deployment System Testing - ⏸️ ON HOLD
