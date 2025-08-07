@@ -33,8 +33,24 @@ jobs:
         # Clean previous builds
         rm -rf dist/ build/ *.egg-info/
         
+        # Install auditwheel for Linux wheel repair
+        pip install auditwheel
+        
         # Build wheel and source distribution
         python setup.py bdist_wheel sdist
+        
+        # Repair Linux wheels to use manylinux tags
+        if [[ "$RUNNER_OS" == "Linux" ]]; then
+          echo "Repairing Linux wheels with auditwheel..."
+          for wheel in dist/*.whl; do
+            if [[ -f "$wheel" ]]; then
+              echo "Repairing $wheel..."
+              auditwheel repair "$wheel" --plat manylinux_2_28_x86_64 -w dist/
+              # Remove the original wheel (auditwheel creates a new one with manylinux tag)
+              rm "$wheel"
+            fi
+          done
+        fi
         
         echo "Built distributions:"
         ls -la dist/
