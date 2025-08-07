@@ -80,6 +80,67 @@ validate_case_sensitivity() {
     log_success "Case sensitivity validation passed - all files/folders use lowercase naming"
 }
 
+validate_documentation_separation() {
+    log_info "Validating documentation separation policy..."
+    
+    # Check for links to maintainers/ directory
+    local violations=$(find "$SRC_DIR" -name "*.md" -not -name "deep_expert_implementation_overview.md" -exec grep -l "\.\./maintainers/\|\.\./\.\./maintainers/\|/maintainers/" {} \; 2>/dev/null || true)
+    
+    if [ -n "$violations" ]; then
+        log_error "User-facing docs in docs-src must not link to or reference anything outside docs-src (including maintainers/), except in deep_expert_implementation_overview.md."
+        echo "$violations" | while read -r file; do
+            log_error "  - $file"
+        done
+        exit 1
+    fi
+    
+    log_success "Documentation separation policy validation passed"
+}
+
+validate_orphan_docs() {
+    log_info "Checking for orphan documentation files..."
+    
+    # Get all .md files in docs-src/docs/ (excluding index.md)
+    local all_docs=$(find "$SRC_DIR/docs" -name "*.md" -not -name "index.md" 2>/dev/null || true)
+    
+    if [ -z "$all_docs" ]; then
+        log_success "No documentation files found to check for orphans"
+        return 0
+    fi
+    
+    # Extract linked docs from markdown files
+    local linked_docs=$(find "$SRC_DIR/docs" -name "*.md" -exec grep -ho '([^)]*\.md)' {} \; 2>/dev/null | sed 's/^([^)]*\.md)$/\1/' | sed 's/^\.\///' | sort -u || true)
+    
+    # Extract docs from mkdocs.yml nav (simplified - would need yq for full parsing)
+    local nav_docs=$(grep -E '\.md' "$USER_CONFIG" 2>/dev/null | grep -v '^#' | sed 's/.*"\([^"]*\.md\)".*/\1/' | sed 's/.*'\''\([^'\'']*\.md\)'\''.*/\1/' | sort -u || true)
+    
+    # Combine discoverable docs
+    local discoverable_docs=$(echo -e "${linked_docs}\n${nav_docs}" | sort -u)
+    
+    # Check for orphans
+    local orphans=""
+    while IFS= read -r doc; do
+        if [ -n "$doc" ]; then
+            local doc_name=$(basename "$doc")
+            if ! echo "$discoverable_docs" | grep -q "$doc_name"; then
+                orphans="${orphans}${doc}\n"
+            fi
+        fi
+    done <<< "$all_docs"
+    
+    if [ -n "$orphans" ]; then
+        log_error "The following docs in docs-src are not discoverable (not linked from index.md, any other .md, or mkdocs.yml nav):"
+        echo -e "$orphans" | while read -r orphan; do
+            if [ -n "$orphan" ]; then
+                log_error "  - $orphan"
+            fi
+        done
+        exit 1
+    fi
+    
+    log_success "Orphan documentation validation passed"
+}
+
 copy_site_files() {
     log_info "Copying site files to $DEST_DIR..."
     if [ -d "$DEST_DIR" ]; then
@@ -143,6 +204,8 @@ main() {
     log_info "Destination: $DEST_DIR"
     validate_prerequisites
     build_user_docs
+    validate_documentation_separation
+    validate_orphan_docs
     copy_site_files
     commit_and_push_docs
     
