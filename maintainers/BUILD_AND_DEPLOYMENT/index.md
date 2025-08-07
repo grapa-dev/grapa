@@ -18,6 +18,9 @@ This directory contains all build system and deployment documentation for the Gr
 
 ## 🚀 **Deployment**
 
+### **GitHub Actions Policy**
+- **[GITHUB_ACTIONS_POLICY.md](GITHUB_ACTIONS_POLICY.md)** - **CRITICAL**: Policy for explicit workflow triggers only, preventing accidental deployments
+
 ### **Documentation Deployment**
 - **[DOCUMENTATION_DEPLOYMENT.md](DOCUMENTATION_DEPLOYMENT.md)** - Documentation deployment process and procedures
 - **[SETUPAWSDOCKER.md](SETUPAWSDOCKER.md)** - AWS and Docker setup instructions
