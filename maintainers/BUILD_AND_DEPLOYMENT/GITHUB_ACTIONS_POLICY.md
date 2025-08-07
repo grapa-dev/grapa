@@ -6,7 +6,7 @@ This document establishes the policy for GitHub Actions workflows in the Grapa p
 
 ## Core Principle
 
-**All GitHub Actions workflows must use explicit triggers only. No workflow should be triggered automatically by commits, pushes, or other operations.**
+**All custom GitHub Actions workflows must use explicit triggers only. Built-in GitHub workflows (like Pages) may trigger automatically as expected.**
 
 ## Current Workflows
 
@@ -53,7 +53,9 @@ This document establishes the policy for GitHub Actions workflows in the Grapa p
 - **Status**: Built-in GitHub Pages workflow (not in our repository)
 - **Trigger**: Automatic on push to main branch
 - **Control**: This is a GitHub-provided workflow that we cannot modify
-- **Mitigation**: Documentation deployment scripts require explicit `--push` flag
+- **Policy**: This is **EXPECTED BEHAVIOR** for documentation deployment
+- **Rationale**: When we push documentation changes, we want Pages to deploy automatically
+- **No Mitigation Needed**: This workflow should trigger on documentation pushes
 
 ## Script Integration
 
@@ -78,7 +80,8 @@ This document establishes the policy for GitHub Actions workflows in the Grapa p
 When creating or modifying GitHub Actions workflows:
 
 - [ ] Uses `workflow_dispatch` trigger only
-- [ ] No automatic triggers (`push`, `pull_request`, etc.)
+- [ ] No automatic triggers (`push`, `pull_request`, etc.) for custom workflows
+- [ ] Built-in workflows (Pages) may trigger automatically as expected
 - [ ] Requires explicit confirmation for critical operations
 - [ ] Scripts trigger workflows explicitly, not as side effects
 - [ ] Documentation updated to reflect manual trigger requirements
