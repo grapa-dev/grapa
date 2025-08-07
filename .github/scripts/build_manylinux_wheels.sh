@@ -9,8 +9,8 @@ cd /io
 # Install build dependencies
 yum install -y gcc gcc-c++ make cmake
 
-# Install X11 development libraries in the manylinux container
-yum install -y libX11-devel libXfixes-devel libXft-devel libXext-devel libXrender-devel libXinerama-devel fontconfig-devel libXcursor-devel
+# Note: X11 libraries are not available in manylinux containers
+# The wheels will be built without X11 dependencies
 
 # Install Python build tools for all Python versions
 for pyver in cp39-cp39 cp310-cp310 cp311-cp311 cp312-cp312; do
