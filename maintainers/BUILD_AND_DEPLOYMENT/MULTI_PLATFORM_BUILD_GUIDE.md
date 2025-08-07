@@ -1,451 +1,137 @@
 # Multi-Platform Build Guide
 
+This guide provides comprehensive instructions for building Grapa across all supported platforms using the hybrid build system.
+
 ## Overview
 
-This guide covers building Grapa for all 5 supported platforms:
-- **Linux ARM64** - Docker container
-- **Linux AMD64** - Docker container  
-- **macOS ARM64** - Native build
-- **macOS AMD64** - Cross-compilation from ARM64 Mac
-- **Windows AMD64** - Windows machine or GitHub Actions
+The Grapa build system uses a **hybrid approach** combining:
+- **Docker** for Linux builds (consistent environments)
+- **GitHub Actions** for Windows builds (automated artifact collection)
+- **Native builds** for macOS (direct compilation)
+- **PyPI deployment** for Python package distribution
+
+## Supported Platforms
+
+- **Windows**: AMD64 (x86_64)
+- **macOS**: AMD64 (x86_64) and ARM64 (Apple Silicon)
+- **Linux**: AMD64 (x86_64) and ARM64
+- **Python**: PyPI distribution for all platforms
 
 ## Prerequisites
 
-### Required Software
-- **Docker Desktop** - For Linux builds
-- **Python 3.x** - For build scripts and Python package
-- **Git** - For version control and workflow triggers
-- **GitHub CLI** - For workflow monitoring (optional)
+### System Requirements
 
-### Platform-Specific Requirements
-- **macOS**: Xcode Command Line Tools
-- **Windows**: Visual Studio 2019+ with C++ build tools
-- **Linux**: Docker with Ubuntu 24.04 base image
+**All Platforms:**
+- **Git** for version control
+- **Python 3.6+** for build scripts
+- **Docker** (for Linux builds)
+
+**Platform-Specific:**
+- **Windows**: Visual Studio Build Tools 2019+ or Visual Studio 2019+
+- **macOS**: Xcode Command Line Tools (`xcode-select --install`)
+- **Linux**: GCC 7.0+, build essentials (`sudo apt-get install build-essential`)
 
 ### Environment Setup
-```bash
-# Clone repository
-git clone https://github.com/grapa-dev/grapa.git
-cd grapa
 
-# Make scripts executable
-chmod +x scripts/*.sh
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/grapa-dev/grapa.git
+   cd grapa
+   ```
 
-# Verify setup
-./scripts/validation/check_platform_status.sh
-```
+2. **Install Python dependencies:**
+   ```bash
+   pip install setuptools wheel build twine
+   ```
 
-## Quick Start
-
-### Check Current Status
-```bash
-./scripts/validation/check_platform_status.sh
-```
-
-### Build All Available Platforms
-```bash
-./scripts/build/build_all_platforms.sh
-```
-
-### Build Individual Platforms
-```bash
-# Linux (Docker)
-./scripts/build/build_grapa_linux_arm64.sh
-./scripts/build/build_grapa_linux_amd64.sh
-
-# macOS
-python3 build.py --bin-only --clean                    # ARM64 native
-./scripts/build/build_grapa_macos_amd64.sh                  # AMD64 cross-compilation
-
-# Windows
-./scripts/build/build_grapa_windows_amd64.sh                # Requires Windows machine
-```
-
-### Build Options
-
-The `build.py` script supports several important options:
-
-| Option | Purpose | Example |
-|--------|---------|---------|
-| `--clean` | Clean build artifacts after build | `python3 build.py --bin-only --clean` |
-| `--preserve-exe` | Keep executable after cleaning | `python3 build.py --bin-only --clean --preserve-exe` |
-| `--preserve-dist` | Keep Python distribution after cleaning | `python3 build.py --python-only --preserve-dist` |
-| `--test` | Run validation tests after build | `python3 build.py --bin-only --test` |
-| `--test-only` | Run tests only (assumes build completed) | `python3 build.py --test-only` |
-| `--target-platform` | Cross-compilation target (macOS only) | `python3 build.py --bin-only --target-platform mac-amd64` |
-| `--exe-only` | Build executable only | `python3 build.py --exe-only --test` |
-| `--python-only` | Build Python package only | `python3 build.py --python-only --preserve-dist` |
-
-**Note:** The `--target-platform` option only supports macOS platforms (`mac-arm64`, `mac-amd64`). Linux and Windows builds do not use this option.
-
-## Platform-Specific Details
-
-### Linux (ARM64 & AMD64)
-
-**Requirements:**
-- Docker Desktop
-- Ubuntu 24.04 base image (updated for C++23 support)
-
-**Build Method:**
-- Uses `Dockerfile.grapa-build`
-- Runs `python3 build.py --bin-only` in container
-- Creates compressed packages in `bin/`
-
-**Output:**
-- `grapa` (executable)
-- `source/grapa-lib/linux-{arch}/libgrapa.a` (static library)
-- `source/grapa-other/linux-{arch}/libgrapa.so` (shared library)
-- `bin/grapa-linux-{arch}.tar.gz` (compressed package)
-
-### macOS ARM64
-
-**Requirements:**
-- macOS machine
-- Xcode Command Line Tools
-- Python 3.x
-
-**Build Method:**
-- Native build using `python3 build.py --bin-only --clean`
-- Uses system clang compiler
-- Automatically cleans build artifacts after build
-
-**Output:**
-- `grapa` (executable)
-- `source/grapa-lib/mac-arm64/libgrapa.a` (static library)
-- `source/grapa-other/mac-arm64/libgrapa.so` (shared library)
-- `bin/grapa-mac-arm64.tar.gz` (compressed package)
-
-### macOS AMD64
-
-**Requirements:**
-- ARM64 Mac (for cross-compilation)
-- Xcode Command Line Tools
-- Python 3.x
-
-**Build Method:**
-- Cross-compilation from ARM64 to AMD64
-- Uses `--target-platform mac-amd64` flag
-- Automatically cleans build artifacts after build
-
-**Output:**
-- `grapa` (executable)
-- `source/grapa-lib/mac-amd64/libgrapa.a` (static library)
-- `source/grapa-other/mac-amd64/libgrapa.so` (shared library)
-- `bin/grapa-mac-amd64.tar.gz` (compressed package)
-
-### Windows AMD64
-
-**Requirements:**
-- Windows machine
-- Visual Studio 2019 or later
-- Python 3.x
-- Git for Windows
-
-**Build Method:**
-- Native build on Windows
-- Uses Visual Studio compiler
-
-**Alternative:**
-- GitHub Actions workflow: `.github/workflows/build-windows.yml`
-
-**Output:**
-- `grapa.exe` (executable)
-- `source/grapa-lib/win-amd64/grapa.lib` (static library)
-- `bin/grapa-win-amd64.zip` (compressed package)
-
-**Note:** Windows builds only create static libraries (`.lib`), no shared libraries (`.dll`) are built.
+3. **Set up Docker (for Linux builds):**
+   ```bash
+   # Build Docker image
+   docker build -t grapa-build -f Dockerfile.grapa-build .
+   ```
 
 ## Build Options
 
-### `--bin-only` Option
+### `build.py` Flags
 
-The `--bin-only` option is the recommended way to build complete distribution packages:
+The main build script supports various options:
 
+| Flag | Description | Use Case |
+|------|-------------|----------|
+| `--clean` | Clean build artifacts before/after build | Fresh builds, debugging |
+| `--preserve-exe` | Keep executable after build | Development, testing |
+| `--preserve-dist` | Keep distribution files after build | Package inspection |
+| `--test` | Run tests after build | Validation |
+| `--test-only` | Run tests without building | Quick validation |
+| `--target-platform` | Specify target platform (Mac only) | Cross-compilation |
+| `--exe-only` | Build executable only | CLI development |
+| `--python-only` | Build Python package only | Python integration |
+
+### Build Modes
+
+**Full Build (Default):**
 ```bash
-python3 build.py --bin-only                    # Current platform
-python3 build.py --bin-only --target-platform mac-amd64  # Cross-compilation
+python3 build.py
 ```
 
-**What it does:**
-1. Builds executable
-2. Builds static library
-3. Builds shared library
-4. Copies libraries to correct locations
-5. Creates compressed package in `bin/`
-6. Cleans up temporary files
-
-### Other Options
-
+**Executable Only:**
 ```bash
-python3 build.py --exe-only    # Build executable only
-python3 build.py --lib-only    # Build libraries only
-python3 build.py --python-only # Build Python extension only
+python3 build.py --exe-only
 ```
 
-## Docker Setup
-
-### Base Dockerfile
-
-```dockerfile
-FROM ubuntu:24.04
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=UTC
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    pkg-config \
-    git \
-    python3 \
-    python3-pip \
-    libx11-dev \
-    libxfixes-dev \
-    libxft-dev \
-    libxext-dev \
-    libxrender-dev \
-    libxinerama-dev \
-    libfontconfig-dev \
-    libxcursor-dev \
-    libjpeg-dev \
-    && rm -rf /var/lib/apt/lists/*
-WORKDIR /data
-CMD ["/bin/bash"]
-```
-
-### Building Docker Image
-
+**Python Package Only:**
 ```bash
-docker build -f Dockerfile.grapa-build -t grapa-build .
+python3 build.py --python-only
 ```
 
-## GitHub Actions
-
-### Windows Build Workflow
-
-The `.github/workflows/build-windows.yml` workflow provides automated Windows builds:
-
-- **Trigger:** Manual dispatch or push to main
-- **Runner:** `windows-latest`
-- **Setup:** Python 3.11 + Visual Studio Build Tools
-- **Output:** Uploads artifacts for download
-
-### Usage
-
-1. **Manual trigger:** Go to Actions → Build Windows AMD64 → Run workflow
-2. **Automatic trigger:** Push changes to main branch
-3. **Download artifacts:** From the workflow run page
-
-## File Structure
-
-### Expected Output Structure
-
-```
-grapa/                          # Current platform executable
-source/
-├── grapa-lib/
-│   ├── linux-arm64/libgrapa.a
-│   ├── linux-amd64/libgrapa.a
-│   ├── mac-arm64/libgrapa.a
-│   ├── mac-amd64/libgrapa.a
-│   └── win-amd64/grapa.lib
-└── grapa-other/
-    ├── linux-arm64/libgrapa.so
-    ├── linux-amd64/libgrapa.so
-    ├── mac-arm64/libgrapa.so
-    ├── mac-amd64/libgrapa.so
-    └── win-amd64/ (empty - no shared library built for Windows)
-bin/
-├── grapa-linux-arm64.tar.gz
-├── grapa-linux-amd64.tar.gz
-├── grapa-mac-arm64.tar.gz
-├── grapa-mac-amd64.tar.gz
-└── grapa-win-amd64.zip
-```
-
-## Package Contents
-
-### Compressed Package Contents
-
-Each platform creates a compressed package with the following contents:
-
-#### Linux Packages (`grapa-linux-*.tar.gz`)
-- **Executable**: `grapa` (platform-specific binary)
-- **Static Library**: `libgrapa.a` (from `source/grapa-lib/linux-{arch}/`)
-- **Shared Library**: `libgrapa.so` (from `source/grapa-other/linux-{arch}/`)
-
-#### macOS Packages (`grapa-mac-*.tar.gz`)
-- **Executable**: `grapa` (platform-specific binary)
-- **Static Library**: `libgrapa.a` (from `source/grapa-lib/mac-{arch}/`)
-- **Shared Library**: `libgrapa.so` (from `source/grapa-other/mac-{arch}/`)
-
-#### Windows Package (`grapa-win-amd64.zip`)
-- **Executable**: `grapa.exe` (Windows AMD64 binary)
-- **Static Library**: `grapa.lib` (from `source/grapa-lib/win-amd64/`)
-
-**Note:** Windows builds only create static libraries, no shared libraries are built.
-
-### Python Distribution and Validation
-
-After all platform builds complete, the script automatically:
-
-1. **Builds Python package**: `python3 build.py --python-only --preserve-dist`
-2. **Installs package**: `pip3 install dist/*.tar.gz`
-3. **Validates version**: Compares `grapapy.__version__` with `$VERSION` environment variable
-4. **Runs version script**: Uses `grapapy -c "\$sys().getenv(\$VERSION);"` to verify consistency
-
-**Version Validation Process:**
-- Extracts version from `grapapy.__version__`
-- Runs grapapy with version script: `$sys().getenv($VERSION);`
-- Compares both values for exact match
-- Fails if versions don't match
-
-### Testing and Validation
-
-#### Manual Testing
+**Clean Build:**
 ```bash
-# Test CLI executable after build
-python3 build.py --exe-only --test
-
-# Test Python package after build
-python3 build.py --python-only --test
-
-# Test both CLI and Python after build
-python3 build.py --test
-
-# Test only (assumes build already completed)
-python3 build.py --test-only
+python3 build.py --clean
 ```
 
-#### Automatic Validation
+## Build Individual Platforms
 
-The `build_all_platforms.sh` script includes automatic validation that checks:
+### Local Builds (Linux/macOS)
 
-1. **Executables**: `grapa` (Linux/macOS) or `grapa.exe` (Windows)
-2. **Static Libraries**: `libgrapa.a` (Linux/macOS) or `grapa.lib` (Windows)
-3. **Shared Libraries**: `libgrapa.so` (Linux/macOS only)
-4. **Compressed Packages**: All expected files are included
-5. **Build Timestamps**: Files were created during current build session
-6. **Python Package**: Builds and validates Python distribution
-7. **Version Validation**: Confirms `grapapy.__version__` matches `$VERSION` environment variable
-
-Validation fails if any required artifacts are missing or version mismatch is detected.
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Docker build fails with linker errors**
-   - Install missing X11 libraries: `libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libfontconfig-dev libxcursor-dev libjpeg-dev`
-   - Check Docker platform: Ensure `--platform=linux/amd64` is used for AMD64 builds
-
-2. **macOS cross-compilation warnings**
-   - Warnings about newer macOS version are normal and don't affect functionality
-   - Ensure you're on ARM64 Mac for cross-compilation to AMD64
-
-3. **Windows build requires Visual Studio**
-   - Install Visual Studio 2019 or later with C++ build tools
-   - Or use GitHub Actions workflow
-
-4. **Permission denied on scripts**
-   - Run: `chmod +x scripts/*.sh`
-
-5. **Version bump fails**
-   - Check git status: `git status`
-   - Ensure no uncommitted changes in version files
-   - Verify version format: Must be X.Y.Z (e.g., 0.0.248)
-
-6. **GitHub Actions workflow doesn't trigger**
-   - Check if version files were committed and pushed
-   - Verify git tag was created: `git tag -l`
-   - Check workflow status at: https://github.com/grapa-dev/grapa/actions
-
-7. **Build artifacts not updated**
-   - Check build timestamps: Files should be from current build session
-   - Verify `--clean` option is working properly
-   - Check for build errors in output
-
-8. **Python package validation fails**
-   - Ensure `pip3 install dist/*.tar.gz` completed successfully
-   - Check `grapapy.__version__` matches environment `$VERSION`
-   - Verify Python package was built with correct version
-
-### Debugging Commands
-
+**Linux AMD64:**
 ```bash
-# Check current version
-grep 'grapapy_version = "' setup.py
-
-# Check git status
-git status
-
-# Check recent commits
-git log --oneline -5
-
-# Check git tags
-git tag -l
-
-# Check build artifacts
-ls -la bin/
-ls -la source/grapa-lib/
-ls -la source/grapa-other/
-
-# Check Python package
-python3 -c "import grapapy; print(grapapy.__version__)"
-
-# Check CLI version
-./grapa -c "\$sys().getenv(\$VERSION);"
+python3 build.py --clean --exe-only
 ```
 
-### Workflow Monitoring and Artifact Management
-
-#### Windows GitHub Actions Workflow
-
-**Monitoring:**
+**Linux ARM64:**
 ```bash
-# Monitor workflow and download artifacts
-./scripts/ci-cd/monitor_and_download_windows.sh
-
-# Force download artifacts (overwrites existing)
-./scripts/ci-cd/download_windows_artifacts_force.sh
+python3 build.py --clean --exe-only
 ```
 
-**Manual Monitoring:**
-- Check workflow status: https://github.com/grapa-dev/grapa/actions
-- Look for "Build Windows AMD64" workflow
-- Download artifacts manually if needed
-
-#### Artifact Management
-
-**Expected Artifacts:**
-- `grapa.exe` - Windows executable
-- `grapa.lib` - Windows static library
-- `grapa-win-amd64.zip` - Compressed package
-
-**Artifact Locations:**
-- **Linux**: `bin/grapa-linux-*.tar.gz`
-- **macOS**: `bin/grapa-mac-*.tar.gz`
-- **Windows**: `bin/grapa-win-amd64.zip` (after download)
-
-### Validation
-
-Use the status check script to verify builds:
-
+**macOS AMD64:**
 ```bash
-./scripts/validation/check_platform_status.sh
+python3 build.py --clean --exe-only --target-platform mac-amd64
 ```
 
-This will show:
-- ✅ Available builds
-- ❌ Missing builds
-- File sizes and timestamps
-- Build instructions for missing platforms
+**macOS ARM64:**
+```bash
+python3 build.py --clean --exe-only
+```
+
+### Windows Build (GitHub Actions)
+
+Windows builds are automated via GitHub Actions:
+
+1. **Trigger Windows build:**
+   ```bash
+   python3 scripts/build/bump_version_and_deploy.py --bump-version --commit-and-push
+   ```
+
+2. **Monitor and download artifacts:**
+   ```bash
+   ./scripts/ci-cd/monitor_and_download_windows.sh
+   ```
 
 ## Version Bumping and Deployment
 
-### Overview
-
 Grapa supports multiple methods for version bumping and deployment, each suited for different use cases:
 
-### Method 1: Full Multi-Platform Release (Recommended)
+### Method 1: Full Release (Recommended)
 
 **Command:**
 ```bash
@@ -453,252 +139,365 @@ Grapa supports multiple methods for version bumping and deployment, each suited 
 ```
 
 **What it does:**
-- Auto-increments current version by 1
-- Builds all 5 platforms (Linux ARM64/AMD64, macOS ARM64/AMD64, Windows AMD64)
+- Bumps version automatically (patch increment)
+- Builds all 5 platforms (Linux AMD64/ARM64, macOS AMD64/ARM64, Windows AMD64)
+- Commits and pushes version files
 - Triggers Windows GitHub Actions workflow
-- Validates all builds and Python package
+- Downloads and commits Windows artifacts
+- Validates all builds and tests
 
-**When to use:**
-- Full releases
-- When you want all platforms built
-- Standard release process
+**When to use:** Production releases, major updates
 
-**Version Logic:**
-- Reads current version from `setup.py`
-- Increments last number (e.g., `0.0.247` → `0.0.248`)
-- Updates all version files automatically
+**Version logic:** Automatically increments patch number (0.0.251 → 0.0.252)
 
-### Method 2: Quick Version Bump Only
+### Method 2: Quick Bump
 
-**Commands:**
+**Command:**
 ```bash
-# Auto-increment version
 python3 scripts/build/bump_version_and_deploy.py --bump-version --commit-and-push
-
-# Specify exact version
-python3 scripts/build/bump_version_and_deploy.py 0.0.248 --commit-and-push
 ```
 
 **What it does:**
-- Bumps version and triggers Windows GitHub Actions workflow only
-- Does NOT build other platforms
-- Faster than full multi-platform build
+- Bumps version automatically (patch increment)
+- Commits and pushes version files
+- Triggers Windows GitHub Actions workflow
+- Downloads and commits Windows artifacts
 
-**When to use:**
-- Quick hotfixes
-- When you only need Windows build
-- Specific version numbers
+**When to use:** Quick hotfixes, minor updates
 
-### Method 3: Version Bump Without Commit
+**Version logic:** Automatically increments patch number (0.0.251 → 0.0.252)
 
-**Commands:**
+### Method 3: Manual Version
+
+**Command:**
 ```bash
-# Auto-increment version (no commit)
-python3 scripts/bump_version_and_deploy.py --bump-version
-
-# Specify exact version (no commit)
-python3 scripts/bump_version_and_deploy.py 0.0.248
+python3 scripts/build/bump_version_and_deploy.py 0.0.252 --commit-and-push
 ```
 
 **What it does:**
-- Updates version files locally
-- Does NOT commit or push
-- Does NOT trigger workflows
+- Sets version to specified value
+- Commits and pushes version files
+- Triggers Windows GitHub Actions workflow
+- Downloads and commits Windows artifacts
 
-**When to use:**
-- Testing version changes
-- Local development
-- When you want to review changes before committing
+**When to use:** Specific version requirements, major/minor version bumps
 
-### Version Files Updated
+**Version logic:** Uses specified version exactly
 
-All version bumping methods update these 3 files:
-1. **`setup.py`** - `grapapy_version = "0.0.248"`
-2. **`source/grapa/GrapaLink.h`** - `#define grapa_version "0.0.248"`
-3. **`source/mainpy.cpp`** - `m.attr("__version__") = "0.0.248"`
+### Method 4: No Commit (Development)
 
-### Version Bumping Workflow
-
-#### For Testing (No Version Bump)
+**Command:**
 ```bash
-./scripts/build_all_platforms.sh
+python3 scripts/build/bump_version_and_deploy.py --bump-version
 ```
-- Builds all platforms with current version
-- No version increment
-- Safe for debugging and testing
 
-#### For Full Releases
+**What it does:**
+- Bumps version automatically (patch increment)
+- Updates version files locally only
+- No Git operations
+
+**When to use:** Development, testing, debugging
+
+**Version logic:** Automatically increments patch number (0.0.251 → 0.0.252)
+
+## PyPI Deployment
+
+### Automated PyPI Deployment
+
+GrapaPy is automatically deployed to PyPI when a new version tag is pushed:
+
+1. **Create and push a version tag:**
+   ```bash
+   git tag v0.0.252
+   git push origin v0.0.252
+   ```
+
+2. **GitHub Actions automatically:**
+   - Builds Python package for all platforms
+   - Uploads to PyPI
+   - Verifies deployment
+
+### Manual PyPI Deployment
+
+**Primary Method - GitHub Actions (Recommended):**
 ```bash
-./scripts/build_all_platforms.sh --bump-version
+./scripts/build/deploy_to_pypi.sh
 ```
-- Auto-increments version
-- Builds all platforms
-- Triggers Windows workflow
-- Validates everything
 
-#### For Quick Hotfixes
+**Backup Method - Local Build and Deploy (Emergency):**
 ```bash
-python3 scripts/bump_version_and_deploy.py --bump-version --commit-and-push
+./scripts/build/build_and_deploy_pypi.sh -v 0.0.252
 ```
-- Auto-increments version
-- Triggers Windows workflow only
-- Faster than full build
 
-### Version File Commit/Push Triggers
+**Monitor PyPI only:**
+```bash
+./scripts/build/deploy_to_pypi.sh --monitor-only
+```
 
-**Scenarios that commit and push version files:**
+**Test PyPI installation only:**
+```bash
+./scripts/build/deploy_to_pypi.sh --test-only
+```
 
-1. **Full Release**: `./scripts/build_all_platforms.sh --bump-version`
-   - Auto-increments version
-   - Updates 3 version files
-   - Commits with message "Bump version to X.X.X"
-   - Creates git tag `vX.X.X`
-   - Pushes commit and tag
-   - Triggers Windows GitHub Actions workflow
+### PyPI Deployment Methods
 
-2. **Quick Release**: `python3 scripts/bump_version_and_deploy.py --bump-version --commit-and-push`
-   - Updates 3 version files
-   - Commits with message "Bump version to X.X.X"
-   - Creates git tag `vX.X.X`
-   - Pushes commit and tag
-   - Triggers Windows GitHub Actions workflow
+#### **Method 1: GitHub Actions Deployment (Recommended)**
+- **Script**: `deploy_to_pypi.sh`
+- **Process**: Creates version tag → Triggers GitHub Actions → Builds in cloud → Deploys to PyPI
+- **Prerequisites**: GitHub CLI, authenticated GitHub account, committed artifacts
+- **Security**: PyPI secrets stored in GitHub
+- **Use case**: Standard deployment process
 
-3. **Manual Version**: `python3 scripts/bump_version_and_deploy.py 0.0.248 --commit-and-push`
-   - Updates 3 version files with specified version
-   - Commits and pushes as above
+#### **Method 2: Local Build and Deploy (Emergency)**
+- **Script**: `build_and_deploy_pypi.sh`
+- **Process**: Rebuilds Python package locally → Deploys to PyPI
+- **Prerequisites**: Local build environment, local PyPI secrets
+- **Security**: Requires local PyPI API token
+- **Use case**: Emergency deployment when GitHub Actions is unavailable
 
-**Scenarios that do NOT commit/push:**
-- `./scripts/build_all_platforms.sh` (testing builds)
-- `python3 scripts/bump_version_and_deploy.py --bump-version` (no `--commit-and-push` flag)
-- `python3 scripts/bump_version_and_deploy.py 0.0.248` (no `--commit-and-push` flag)
+### PyPI Deployment Process
 
-**After commit/push:**
-- Windows GitHub Actions workflow triggers automatically
-- PyPI deployment begins after successful build
-- Version files are permanently committed to git history
+The PyPI deployment process is **separate** from the build process:
 
-### Comprehensive Testing and Validation
+1. **Build Phase** (completed by `build_all_platforms.sh`):
+   - Builds all 5 platforms
+   - Commits platform artifacts to GitHub
+   - Bumps version and commits version files
 
-The `build_all_platforms.sh` script performs comprehensive testing:
+2. **Deploy Phase** (completed by `deploy_to_pypi.sh`):
+   - Creates and pushes version tag
+   - Triggers GitHub Actions PyPI deployment
+   - Monitors deployment progress
+   - Tests PyPI installation
 
-#### **Platform Build Validation**
-- ✅ **Linux ARM64**: Builds and validates artifacts
-- ✅ **Linux AMD64**: Builds and validates artifacts  
-- ✅ **macOS ARM64**: Builds and validates artifacts
-- ✅ **macOS AMD64**: Builds and validates artifacts
-- ✅ **Windows AMD64**: Builds and validates artifacts
+### Prerequisites for PyPI Deployment
 
-#### **CLI Testing (All 5 Platforms)**
-For each platform, the script:
-1. **Extracts** executable from compressed package
-2. **Tests CLI help**: `./grapa -h` (5-second timeout)
-3. **Tests CLI version**: `./grapa -c "\$sys().getenv(\$VERSION);"`
-4. **Validates version** matches expected version from `setup.py`
-5. **Reports** executable size and functionality
+- ✅ **build_all_platforms.sh completed successfully**
+- ✅ **All platform artifacts committed to GitHub**
+- ✅ **GitHub CLI (gh) installed and authenticated**
+- ✅ **PyPI API token configured in GitHub secrets**
 
-#### **Python Package Testing**
-1. **Builds Python package**: `python3 build.py --python-only --preserve-dist`
-2. **Installs package**: `pip3 install dist/*.tar.gz`
-3. **Tests version**: `grapapy.__version__` matches expected version
-4. **Tests functionality**: `grapapy.eval('\$sys().getenv(\$VERSION);')`
-5. **Validates** Python package works with all platform artifacts
+### Deployment Verification
 
-#### **Artifact Validation**
-- **Version Consistency**: All 3 version files match
-- **Build Timestamps**: All artifacts are from current build session
-- **Package Contents**: Compressed packages contain expected files
-- **File Sizes**: Reasonable file sizes for each platform
+After deployment, verify the package works correctly:
+
+```bash
+# Clear pip cache
+pip cache purge
+
+# Install the new version
+pip install --no-cache-dir grapapy --force-reinstall
+
+# Test basic functionality
+python3 -c "
+import grapapy
+xy = grapapy.grapa()
+result = xy.eval('2 + 2;')
+print(f'GrapaPy test: 2 + 2 = {result}')
+assert result == 4, 'Basic functionality test failed'
+print('✅ PyPI deployment verified successfully!')
+"
+```
+
+## Version File Commit/Push Triggers
+
+### Scenarios that DO commit/push version files:
+
+1. **Full Release:** `./scripts/build/build_all_platforms.sh --bump-version`
+2. **Quick Bump:** `python3 scripts/build/bump_version_and_deploy.py --bump-version --commit-and-push`
+3. **Manual Version:** `python3 scripts/build/bump_version_and_deploy.py 0.0.252 --commit-and-push`
+
+### Scenarios that do NOT commit/push version files:
+
+1. **Development:** `python3 scripts/build/bump_version_and_deploy.py --bump-version` (no `--commit-and-push`)
+2. **Manual Version (no commit):** `python3 scripts/build/bump_version_and_deploy.py 0.0.252` (no `--commit-and-push`)
+3. **Build only:** `python3 build.py --exe-only`
+4. **Test only:** `python3 build.py --test-only`
+
+## Comprehensive Testing and Validation
+
+### CLI Testing
+
+All platforms are tested for CLI functionality:
+
+```bash
+# Test CLI extraction and basic functionality
+./scripts/validation/check_platform_status.sh
+```
+
+**Expected output:**
+```
+✅ Linux AMD64: CLI extraction works
+✅ Linux ARM64: CLI extraction works  
+✅ macOS AMD64: CLI extraction works
+✅ macOS ARM64: CLI extraction works
+⚠️  Windows AMD64: CLI extraction works (requires Windows environment for testing)
+```
+
+### Python Testing
+
+All platforms are tested for Python package functionality:
+
+```bash
+# Test Python package installation and basic functionality
+python3 build.py --python-only --test
+```
+
+**Expected output:**
+```
+✅ Linux AMD64: Python package works
+✅ Linux ARM64: Python package works
+✅ macOS AMD64: Python package works  
+✅ macOS ARM64: Python package works
+✅ Windows AMD64: Python package works
+```
+
+### PyPI Testing
+
+After deployment, test PyPI installation:
+
+```bash
+# Monitor PyPI and test deployment
+./scripts/validation/monitor_and_test_pypi.sh -v 0.0.252 --wait
+```
+
+**Expected output:**
+```
+✅ Version 0.0.252 is now available on PyPI!
+✅ Basic functionality test passed!
+✅ File operations test passed!
+✅ Functional methods test passed!
+✅ All tests passed!
+```
 
 ## Complete Release Process
 
-### Step-by-Step Release Workflow
+### Step-by-Step Workflow
 
-#### 1. Pre-Release Testing
-```bash
-# Test all platforms without version bump
-./scripts/build/build_all_platforms.sh
+1. **Prepare for release:**
+   ```bash
+   git pull origin main
+   git status  # Ensure clean working directory
+   ```
 
-# Verify all builds work correctly
-./scripts/validation/check_platform_status.sh
-```
+2. **Run full build and release:**
+   ```bash
+   ./scripts/build/build_all_platforms.sh --bump-version
+   ```
 
-#### 2. Full Release
-```bash
-# Build all platforms with version bump
-./scripts/build/build_all_platforms.sh --bump-version
+3. **Verify all builds:**
+   ```bash
+   ./scripts/validation/check_platform_status.sh
+   ```
 
-# This automatically:
-# - Increments version (e.g., 0.0.247 → 0.0.248)
-# - Builds all 5 platforms
-# - Triggers Windows GitHub Actions workflow
-# - Validates all builds and Python package
-```
+4. **Deploy to PyPI:**
+   ```bash
+   git tag v0.0.252  # Use the version that was bumped
+   git push origin v0.0.252
+   ```
 
-#### 3. Monitor and Verify
-```bash
-# Check build status
-./scripts/validation/check_platform_status.sh
+5. **Monitor PyPI deployment:**
+   ```bash
+   ./scripts/validation/monitor_and_test_pypi.sh -v 0.0.252 --wait
+   ```
 
-# Monitor Windows workflow
-./scripts/ci-cd/monitor_and_download_windows.sh
-
-# Verify Python package
-python3 -c "import grapapy; print(grapapy.__version__)"
-```
-
-#### 4. Deploy to PyPI
-```bash
-# Build Python distribution
-python3 build.py --python-only --preserve-dist
-
-# Install and test
-pip3 install dist/*.tar.gz
-
-# Deploy (if automated deployment is set up)
-# PyPI deployment happens automatically after successful builds
-```
+6. **Verify PyPI installation:**
+   ```bash
+   pip install --no-cache-dir grapapy --force-reinstall
+   python3 -c "import grapapy; print(grapapy.grapa().eval('2 + 2;'))"
+   ```
 
 ### Release Checklist
 
-- [ ] **Pre-release testing** completed successfully
-- [ ] **All platforms** built and validated
-- [ ] **Windows artifacts** downloaded from GitHub Actions
-- [ ] **Python package** built and tested
-- [ ] **Version consistency** verified across all artifacts
-- [ ] **GitHub Actions workflow** completed successfully
-- [ ] **PyPI deployment** completed (if applicable)
+- [ ] **Pre-release:**
+  - [ ] All tests pass locally
+  - [ ] Documentation is up to date
+  - [ ] Version files are consistent
+  - [ ] Git repository is clean
 
-### Quick Hotfix Process
+- [ ] **Build and release:**
+  - [ ] Run `./scripts/build/build_all_platforms.sh --bump-version`
+  - [ ] Verify all 5 platforms build successfully
+  - [ ] Verify CLI tests pass for all platforms
+  - [ ] Verify Python tests pass for all platforms
+  - [ ] Verify Windows artifacts are downloaded and committed
 
-For urgent fixes that only need Windows:
+- [ ] **PyPI deployment:**
+  - [ ] Create and push version tag
+  - [ ] Monitor GitHub Actions workflow
+  - [ ] Verify PyPI upload completes
+  - [ ] Test PyPI installation on all platforms
 
-```bash
-# Quick version bump and Windows build
-python3 scripts/build/bump_version_and_deploy.py --bump-version --commit-and-push
-
-# Monitor workflow
-./scripts/ci-cd/monitor_and_download_windows.sh
-```
-
-## Next Steps
-
-1. **Complete Windows build** on Windows machine or via GitHub Actions
-2. **Test all platforms** to ensure compatibility
-3. **Build Python distribution** using `python3 build.py --python-only --preserve-dist`
-4. **Validate Python package** version matches environment `$VERSION`
-5. **Deploy to PyPI** from Mac with all platform artifacts
-6. **Set up automated builds** for releases
+- [ ] **Post-release:**
+  - [ ] Update release notes
+  - [ ] Announce release
+  - [ ] Monitor for issues
 
 ## Scripts Reference
 
-| Script | Purpose | Platform | Testing |
+| Script | Purpose | Location | Testing |
 |--------|---------|----------|---------|
-| `validation/check_platform_status.sh` | Check build status | All | None |
-| `build/build_all_platforms.sh` | Build all available | All | ✅ CLI + Python |
-| `build/build_all_platforms.sh --bump-version` | Build all + version bump | All | ✅ CLI + Python |
-| `build/build_grapa_linux_arm64.sh` | Linux ARM64 | Docker | None |
-| `build/build_grapa_linux_amd64.sh` | Linux AMD64 | Docker | None |
-| `build/build_grapa_macos_amd64.sh` | macOS AMD64 | Cross-compilation | None |
-| `build/build_grapa_windows_amd64.sh` | Windows AMD64 | Native/Instructions | None |
-| `build/bump_version_and_deploy.py --bump-version` | Auto-increment version | Version only | None |
-| `build/bump_version_and_deploy.py <version>` | Manual version bump | Version only | None | 
+| `build_all_platforms.sh` | Master build script | `scripts/build/` | ✅ CLI, Python |
+| `bump_version_and_deploy.py` | Version management | `scripts/build/` | ✅ Version files |
+| `build_and_deploy_pypi.sh` | PyPI deployment | `scripts/build/` | ✅ PyPI upload |
+| `monitor_and_download_windows.sh` | Windows artifact collection | `scripts/ci-cd/` | ✅ Artifact download |
+| `monitor_and_test_pypi.sh` | PyPI monitoring and testing | `scripts/validation/` | ✅ PyPI deployment |
+| `check_platform_status.sh` | Build validation | `scripts/validation/` | ✅ All platforms |
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Windows build fails:**
+   - Check GitHub Actions workflow status
+   - Verify `PYPI_API_TOKEN` secret is set
+   - Check Windows artifacts download
+
+2. **PyPI deployment fails:**
+   - Verify version tag format (`v0.0.252`)
+   - Check GitHub Actions workflow logs
+   - Verify PyPI API token permissions
+
+3. **Version mismatch:**
+   - Clear pip cache: `pip cache purge`
+   - Force reinstall: `pip install --force-reinstall grapapy`
+   - Check version in `setup.py`
+
+4. **Build failures:**
+   - Check platform-specific requirements
+   - Verify Docker setup (Linux builds)
+   - Check development tools installation
+
+### Debugging Commands
+
+```bash
+# Check current version
+grep 'grapapy_version = "' setup.py
+
+# Check PyPI versions
+pip index versions grapapy
+
+# Test local build
+python3 build.py --exe-only --test
+
+# Test PyPI installation
+pip install --no-cache-dir grapapy --force-reinstall
+python3 -c "import grapapy; print(grapapy.grapa().eval('2 + 2;'))"
+```
+
+## Environment Variables
+
+| Variable | Purpose | Required |
+|----------|---------|----------|
+| `PYPI_API_TOKEN` | PyPI upload authentication | Yes (for deployment) |
+| `GITHUB_TOKEN` | GitHub API access | Yes (for workflows) |
+| `DOCKER_BUILDKIT` | Docker build optimization | No (optional) |
+
+## Best Practices
+
+1. **Always use `--bump-version` for releases**
+2. **Test on all platforms before releasing**
+3. **Monitor PyPI deployment after upload**
+4. **Keep pip cache clean during testing**
+5. **Use version tags for PyPI deployment**
+6. **Verify PyPI installation on all platforms** 

@@ -13,7 +13,31 @@ GrapaPy supports the following platforms:
 - **macOS**: AMD64 (x86_64) and ARM64 (Apple Silicon) - Requires Xcode Command Line Tools  
 - **Linux**: AMD64 (x86_64) and ARM64 - Requires GCC and development libraries
 
-### Installation Commands
+### Minimum Requirements
+
+#### **Python Version**
+- **Python 3.6 or higher** (Python 3.9+ recommended)
+- **pip** package manager
+
+#### **Platform-Specific Requirements**
+
+**Windows (AMD64):**
+- **Visual Studio Build Tools 2019 or later** OR **Visual Studio 2019 or later**
+- **Windows 10 or later**
+- **Python 3.6+** with pip
+
+**macOS (AMD64/ARM64):**
+- **Xcode Command Line Tools** (`xcode-select --install`)
+- **macOS 10.14 or later**
+- **Python 3.6+** with pip
+
+**Linux (AMD64/ARM64):**
+- **GCC 7.0 or later** (`gcc --version`)
+- **Build essentials** (`sudo apt-get install build-essential` on Ubuntu/Debian)
+- **Python 3.6+** with pip
+- **Development headers** (`sudo apt-get install python3-dev` on Ubuntu/Debian)
+
+#### **Installation Commands**
 
 ```bash
 # Windows
@@ -23,7 +47,42 @@ pip install grapapy
 pip3 install grapapy
 ```
 
-**Note**: The installation process compiles a C++ extension, so you'll need the appropriate development tools for your platform. On Windows, this typically means having Visual Studio Build Tools installed.
+**Note**: The installation process compiles a C++ extension, so you'll need the appropriate development tools for your platform. If you encounter build errors, ensure you have the required development tools installed.
+
+### Troubleshooting Installation
+
+#### **Common Installation Issues**
+
+1. **"Microsoft Visual C++ 14.0 is required" (Windows)**
+   - Install Visual Studio Build Tools 2019 or later
+   - Or install Visual Studio Community (free)
+
+2. **"clang: error: no such file or directory" (macOS)**
+   - Install Xcode Command Line Tools: `xcode-select --install`
+
+3. **"gcc: command not found" (Linux)**
+   - Install build essentials: `sudo apt-get install build-essential`
+
+4. **"Python.h: No such file or directory" (Linux)**
+   - Install Python development headers: `sudo apt-get install python3-dev`
+
+#### **Verification Commands**
+
+```bash
+# Check Python version
+python3 --version
+
+# Check pip
+pip --version
+
+# Check platform-specific tools
+# Windows
+where cl
+# macOS
+xcode-select -p
+# Linux
+gcc --version
+```
 
 ## Basic Usage
 
@@ -217,9 +276,9 @@ python run_validation.py
 
 ### Platform Support
 
-- **Windows**: Use `pip install grapapy==0.0.49`
-- **Linux**: Use `pip3 install grapapy==0.0.49`
-- **macOS**: Use `pip3 install grapapy==0.0.49`
+- **Windows**: Use `pip install grapapy`
+- **Linux**: Use `pip3 install grapapy`
+- **macOS**: Use `pip3 install grapapy`
 
 All platforms support the same functionality with the same syntax requirements.
 
@@ -238,7 +297,7 @@ All platforms support the same functionality with the same syntax requirements.
 
 1. **Reduce returns 0**: Check if using `+=` instead of `+`
 2. **File content issues**: Always decode bytes to strings
-3. **Import errors**: Try `pip install grapapy==0.0.49 --force-reinstall`
+3. **Import errors**: Try `pip install grapapy --force-reinstall`
 4. **Hanging operations**: Avoid complex recursion, use iterative approaches
 
 ### Debugging Commands
@@ -260,6 +319,50 @@ content = xy.eval("fs.get('test.txt');")
 if isinstance(content, bytes):
     content = content.decode('utf-8')
 print(content)  # Should be 'Hello'
+```
+
+## PyPI Deployment
+
+### For Maintainers
+
+GrapaPy is automatically deployed to PyPI when a new version tag is pushed to the repository. The deployment process includes:
+
+1. **Automated Build**: GitHub Actions builds the package for all supported platforms
+2. **PyPI Upload**: Package is uploaded to PyPI using the `pypa/gh-action-pypi-publish` action
+3. **Verification**: Basic functionality is tested after upload
+
+### Manual Deployment
+
+For manual deployment, use the provided scripts:
+
+```bash
+# Build and deploy to PyPI
+./scripts/build/build_and_deploy_pypi.sh -v 0.0.252
+
+# Monitor PyPI and test deployment
+./scripts/validation/monitor_and_test_pypi.sh -v 0.0.252 --wait
+```
+
+### Deployment Verification
+
+After deployment, verify the package works correctly:
+
+```bash
+# Clear pip cache
+pip cache purge
+
+# Install the new version
+pip install --no-cache-dir grapapy --force-reinstall
+
+# Test basic functionality
+python3 -c "
+import grapapy
+xy = grapapy.grapa()
+result = xy.eval('2 + 2;')
+print(f'GrapaPy test: 2 + 2 = {result}')
+assert result == 4, 'Basic functionality test failed'
+print('✅ PyPI deployment verified successfully!')
+"
 ```
 
 ## See Also

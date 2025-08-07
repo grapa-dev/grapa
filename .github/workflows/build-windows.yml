@@ -61,6 +61,58 @@ jobs:
         echo "📁 Checking bin/grapa-win-amd64.zip:"
         Get-ChildItem bin/grapa-win-amd64.zip -ErrorAction SilentlyContinue
         
+    - name: Test Windows CLI
+      run: |
+        echo "🧪 Testing Windows CLI functionality..."
+        
+        # Check if grapa.exe exists
+        if (Test-Path "grapa.exe") {
+            echo "✅ grapa.exe found"
+            
+            # Test help command
+            echo "📋 Testing help command..."
+            $helpOutput = .\grapa.exe -h 2>&1
+            echo "Help output: $helpOutput"
+            
+            # Test version command
+            echo "📋 Testing version command..."
+            $versionOutput = .\grapa.exe -c "`$sys().getenv(`$VERSION);" 2>&1
+            echo "Version output: $versionOutput"
+            
+            # Test basic functionality
+            echo "📋 Testing basic functionality..."
+            $basicOutput = .\grapa.exe -c "2 + 2;" 2>&1
+            echo "Basic test output: $basicOutput"
+            
+            # Test file operations
+            echo "📋 Testing file operations..."
+            $fileOutput = .\grapa.exe -c "`$global.fs = `$file(); fs.set('test.txt', 'Hello Windows!'); fs.get('test.txt');" 2>&1
+            echo "File test output: $fileOutput"
+            
+            echo "✅ Windows CLI testing completed successfully!"
+        } else {
+            echo "❌ grapa.exe not found - build may have failed"
+            exit 1
+        }
+        
+    - name: Test Python package
+      run: |
+        echo "🧪 Testing Python package on Windows..."
+        
+        # Build Python package
+        echo "📋 Building Python package..."
+        python build.py --python-only
+        
+        # Install the package
+        echo "📋 Installing Python package..."
+        pip install dist/*.whl --force-reinstall
+        
+        # Test Python functionality
+        echo "📋 Testing Python functionality..."
+        python -c "import grapapy; xy = grapapy.grapa(); result = xy.eval('2 + 2;'); print(f'GrapaPy test: 2 + 2 = {result}'); assert result == 4, 'Basic functionality test failed'; print('✅ Python package test passed!')"
+        
+        echo "✅ Python package testing completed successfully!"
+        
     - name: Upload Windows build artifacts
       uses: actions/upload-artifact@v4
       with:

@@ -1,0 +1,115 @@
+name: Deploy to PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11, 3.12]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel build twine
+        
+    - name: Build Python package
+      run: |
+        echo "Building GrapaPy package..."
+        
+        # Clean previous builds
+        rm -rf dist/ build/ *.egg-info/
+        
+        # Build wheel and source distribution
+        python setup.py bdist_wheel sdist
+        
+        echo "Built distributions:"
+        ls -la dist/
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dists-${{ matrix.python-version }}
+        path: dist/
+        
+  combine-and-deploy:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download all distribution artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dists/
+        merge-multiple: true
+        
+    - name: Clean and organize distributions
+      run: |
+        echo "Cleaning distribution artifacts..."
+        
+        # Remove any non-distribution files/directories
+        find dists/ -name "bin" -type d -exec rm -rf {} + 2>/dev/null || true
+        find dists/ -name "source" -type d -exec rm -rf {} + 2>/dev/null || true
+        
+        # Remove debug artifacts and executables that shouldn't be in distribution
+        find dists/ -name "grapa-build-debug.zip" -delete 2>/dev/null || true
+        find dists/ -name "grapa" -type f -delete 2>/dev/null || true
+        find dists/ -name "grapa.exe" -type f -delete 2>/dev/null || true
+        find dists/ -name "libgrapa*" -type f -delete 2>/dev/null || true
+        
+        # Keep only actual distribution files
+        echo "Distribution files to upload:"
+        find dists/ -name "*.whl" -o -name "*.tar.gz" | sort
+        
+    - name: Upload combined distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: all-distributions
+        path: dists/
+        
+    - name: Upload to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        packages-dir: dists/
+        
+    - name: Verify PyPI upload
+      run: |
+        echo "Waiting for PyPI to process upload..."
+        sleep 30
+        
+        # Check if the package is available on PyPI
+        pip install --upgrade pip
+        pip install --no-cache-dir grapapy --force-reinstall
+        
+        # Test basic functionality
+        python -c "
+        import grapapy
+        xy = grapapy.grapa()
+        result = xy.eval('2 + 2;')
+        print(f'GrapaPy test: 2 + 2 = {result}')
+        assert result == 4, 'Basic functionality test failed'
+        print('✅ PyPI deployment verified successfully!')
+        "
+        
+    - name: Notify deployment success
+      if: success()
+      run: |
+        echo "🎉 GrapaPy successfully deployed to PyPI!"
+        echo "Version: ${{ github.ref_name }}"
+        echo "Package: grapapy"
+        echo "PyPI URL: https://pypi.org/project/grapapy/" 
