@@ -2568,12 +2568,16 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 	err = PtrToRec(dataCursor, dataItemCursor);
 	if (err) return(err);
 
+	s64 cr = 0;
+
 	switch(treeCursor.mValueType)
 	{
 		case GREC_ITEM: 
 		case RREC_ITEM:
 		case GPTR_ITEM: 
 		case RPTR_ITEM:
+			cr = treeItemCursor.mValue - treeItemCursor.mValue;
+			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
 			if (dataItemCursor.mValue==treeItemCursor.mValue) 
 			{
 				result = 0;
@@ -2583,6 +2587,8 @@ GrapaError GrapaDB::CompareRecordKey(s16 compareType, GrapaCursor& dataCursor, G
 
 		case CREC_ITEM:
 		case CPTR_ITEM:
+			cr = dataItemCursor.mLength - treeItemCursor.mLength;
+			result = (cr > 0) ? 1 : ((cr < 0) ? -1 : 0);
 			if (dataItemCursor.mLength==treeItemCursor.mLength) 
 			{
 				result = 0;
