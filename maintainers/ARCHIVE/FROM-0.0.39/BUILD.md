@@ -207,6 +207,13 @@ sudo apt install -y libxcursor-dev
 sudo apt install -y libxft-dev
 sudo apt install -y libxext-dev
 sudo apt install -y libxinerama-dev
+
+sudo apt install -y gcc
+sudo apt install -y g++
+sudo apt install -y gdebi-core 
+sudo apt install -y cmake
+
+
 ```
 
 For Ubuntu 20.04, enable c++17
@@ -295,6 +302,13 @@ rm -rf dist
 python3 setup.py sdist
 rm -rf grapapy.egg-info
 pip3 install dist/*
+
+rm -rf dist
+python3 setup_0.0.42.py sdist
+rm -rf grapapy.egg-info
+pip3 install dist/*
+
+
 ```
 
 ### Test

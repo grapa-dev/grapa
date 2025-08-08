@@ -52,6 +52,9 @@ find /usr/ -name libpthread.so.0
 find /usr/ -name libc.so.6
 find /usr/ -name libpng16.so.16
 ```
+cp /usr/lib64/libXfixes.so.3.1.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXfixes.so
+cp /usr/lib64/libXfixes.so.3.1.0 /data/GitHub/grapa/source/X11-lib/aws-arm64/libXfixes.so.3
+
 
 # copy dependancies
 
