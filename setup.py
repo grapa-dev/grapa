@@ -38,6 +38,40 @@ if sys.platform.startswith('win32'):
     lib_pathfile = 'grapa-lib/win-amd64/' + lib_filename
     extra_compile_args = ['/DUTF8PROC_STATIC', '/DPCRE2_STATIC']
     extra_link_args = ['/MANIFEST:NO']
+    
+    # Add UCRT include path for io.h and other Windows SDK headers
+    import glob
+    windows_sdk_paths = glob.glob("C:/Program Files (x86)/Windows Kits/10/Include/*")
+    if windows_sdk_paths:
+        # Use the latest SDK version
+        latest_sdk = max(windows_sdk_paths, key=lambda x: x.split('\\')[-1])
+        ucrt_path = os.path.join(latest_sdk, "ucrt")
+        shared_path = os.path.join(latest_sdk, "shared")
+        um_path = os.path.join(latest_sdk, "um")
+        
+        # Create a custom include_dirs list to ensure Windows SDK paths come first
+        include_dirs = []
+        if os.path.exists(ucrt_path):
+            include_dirs.append(ucrt_path)
+            print(f"Added UCRT include path: {ucrt_path}")
+        if os.path.exists(shared_path):
+            include_dirs.append(shared_path)
+            print(f"Added shared include path: {shared_path}")
+        if os.path.exists(um_path):
+            include_dirs.append(um_path)
+            print(f"Added um include path: {um_path}")
+        
+        # Also add library paths for linking
+        lib_path = latest_sdk.replace("Include", "Lib")
+        ucrt_lib_path = os.path.join(lib_path, "ucrt", "x64")
+        um_lib_path = os.path.join(lib_path, "um", "x64")
+        
+        if os.path.exists(ucrt_lib_path):
+            extra_link_args.insert(0, f'/LIBPATH:"{ucrt_lib_path}"')
+            print(f"Added UCRT library path: {ucrt_lib_path}")
+        if os.path.exists(um_lib_path):
+            extra_link_args.insert(0, f'/LIBPATH:"{um_lib_path}"')
+            print(f"Added UM library path: {um_lib_path}")
 if sys.platform.startswith('linux'):
     from_os = 'linux-amd64'
     temp_result = subprocess.run(["cat", "/etc/os-release"])
@@ -303,12 +337,20 @@ def pick_libraries():
         return ["grapa","Gdi32","Advapi32","User32","Ole32","Shell32","Comdlg32"]
     raise ValueError("Unknown platform: " + my_system)
 
+# Set up include_dirs for Windows SDK paths
+if sys.platform.startswith('win32') and 'include_dirs' in locals():
+    # Use custom include_dirs that puts Windows SDK paths first
+    base_include_dirs = ["source","source/utf8proc",'source/pybind11/include']
+    include_dirs = include_dirs + base_include_dirs
+else:
+    include_dirs = ["source","source/utf8proc",'source/pybind11/include']
+
 lib_grapa = Extension(
     'grapapy', 
     sources = [
         'source/mainpy.cpp',
     ],
-    include_dirs=["source","source/utf8proc",'source/pybind11/include'],
+    include_dirs=include_dirs,
     library_dirs=pick_library_dirs(),
     libraries=pick_libraries(),
     runtime_library_dirs=runtime_library_dirs,
