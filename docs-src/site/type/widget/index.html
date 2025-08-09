@@ -3746,8 +3746,9 @@
 
 
 <h1 id="widget">$WIDGET</h1>
-<p>To try test scripts, run grapa in with the editor screen by either using "grapa -w" from the command line, or if in grapa console, enter "&gt;".</p>
-<p>To run grapa from the command line with a custom widget script, use "grapa -wfile filename". To speed up load time, compile the script using $sys().compile(infile, outfile). </p>
+<p>To try test scripts, you can create custom GUI applications using the <code>$WIDGET</code> type in Grapa scripts.</p>
+<p><strong>Note:</strong> The <code>-w</code> and <code>-wfile</code> CLI options have been removed from the main Grapa executable. GUI functionality is now available through the widget system in scripts.</p>
+<p>To speed up load time for widget scripts, compile them using <code>$sys().compile(infile, outfile)</code>. </p>
 <p>The $WIDGET type includes an initialization method $new that is called when the widget object is created, passing in the widget type name, the screen boundaries, an optional label, and an optional set of attributes. The design is an implementation of the FTLK library, and so references included to the related library documentation. </p>
 <p>All widgets are created using the following syntax, where label and attrlist are optional.
 - widgetname = name of the widget, such as "window" or "button"

@@ -3164,12 +3164,9 @@
 </code></pre></div></p>
 <p>For detailed testing information, see <a href="../testing/">Testing Documentation</a>.</p>
 <h1 id="editor">Editor</h1>
-<p>Grapa includes a widget library that can be used create create a GUI. Grapa can be run with simple editor (see lib/grapa/editor.grc) writen using this library.
-<div class="highlight"><pre><span></span><code>grapa -w
-</code></pre></div></p>
-<p>You can also create your own GUI to run with grapa. This file can either be a raw text file, or a grapa compiled file.
-<div class="highlight"><pre><span></span><code>grapa -wfile [file]
-</code></pre></div></p>
+<p>Grapa includes a widget library that can be used to create GUIs. The widget system is available through the <code>$WIDGET</code> type in Grapa scripts.</p>
+<p><strong>Note:</strong> The <code>-w</code> and <code>-wfile</code> CLI options have been removed from the main Grapa executable. GUI functionality is now available through the widget system in scripts.</p>
+<p>For editor functionality, you can create custom GUI applications using the <code>$WIDGET</code> type. See the <a href="../type/widget.md">Widget Documentation</a> for details.</p>
 
 
 
