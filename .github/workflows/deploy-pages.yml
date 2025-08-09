@@ -8,6 +8,11 @@ on:
         required: true
         type: string
 
+permissions:
+  id-token: write
+  contents: write
+  pages: write
+
 jobs:
   deploy:
     if: github.event.inputs.confirm == 'YES'
