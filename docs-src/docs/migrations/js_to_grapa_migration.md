@@ -485,7 +485,7 @@ if (value.type() == $INT) {
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **Template literals**: `` `Hello ${name}` `` - Use string concatenation: `"Hello " + name`
+- **Template literals**: `` `Hello ${name}` `` - Use string concatenation: `"Hello " + name` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns
 - **Destructuring**: `const {a, b} = obj` - Use explicit property access: `a = obj.a; b = obj.b;`
 - **Spread operator**: `[...arr1, ...arr2]` - Use `+=` operator: `arr1 += arr2`
 - **Optional chaining**: `obj?.prop?.sub` - Use explicit null checks: `if (obj && obj.prop) { obj.prop.sub; }`

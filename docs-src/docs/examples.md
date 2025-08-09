@@ -196,6 +196,26 @@ result = $sys().eval(user_input);
 ("Result: " + result).echo();  /* Result: 14 */
 ```
 
+### String Templates and Dynamic Construction
+
+For string-specific templates and dynamic construction patterns, see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) in the String Type documentation.
+
+**Quick Examples:**
+```grapa
+/* Parameterized string templates */
+greeting = op("name"=0, "time"=0){
+    "Good " + time + ", " + name + "!"
+};
+greeting("Alice", "morning").echo();  /* Good morning, Alice! */
+
+/* Dynamic string construction */
+template = "name + \"! You are \" + age.str() + \" years old.\"";
+name = "Alice";
+age = 25;
+result = op()(template)();
+result.echo();  /* Alice! You are 25 years old. */
+```
+
 ### Compiled Execution for Performance
 ```grapa
 /* Compile once, execute many times */

@@ -393,6 +393,8 @@ String manipulation and analysis.
 - `.replace(old, new)` - Replace text
 - `.grep(pattern, options)` - Search with regex
 
+> **See Also:** [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced string construction patterns using templates, dynamic execution, and parameterized functions.
+
 ### Examples
 ```grapa
 text = "  Hello, World!  ";

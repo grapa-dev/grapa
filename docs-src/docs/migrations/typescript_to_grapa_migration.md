@@ -278,7 +278,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Union types**: `string | number` - No union type system
 - **Intersection types**: `A & B` - No intersection type system
 - **Literal types**: `"hello"` - No literal type system
-- **Template literal types**: `` `Hello ${string}` `` - No template literal types
+- **Template literal types**: `` `Hello ${string}` `` - No template literal types (but see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for runtime templates)
 - **Conditional types**: `T extends U ? X : Y` - No conditional type system
 - **Mapped types**: `{ [K in keyof T]: T[K] }` - No mapped type system
 - **Utility types**: `Partial<T>`, `Required<T>` - No utility type system

@@ -81,6 +81,113 @@ whitespace = [" ", "\t", "\n", "\r"];
 
 > **See Also:** [String Transform Functions](../obj/transform.md#trimchars) for comprehensive trimming documentation including array-based multi-character trimming.
 
+## String Templates and Dynamic Construction
+
+Grapa provides several powerful approaches for constructing strings dynamically, from simple concatenation to advanced template patterns.
+
+### String Concatenation (Simple Cases)
+
+For basic string construction, use concatenation with parentheses:
+
+```grapa
+/* Basic concatenation */
+name = "Alice";
+age = 25;
+message = "Hello, " + name + "! You are " + age.str() + " years old.";
+message.echo();  /* Output: Hello, Alice! You are 25 years old. */
+
+/* With parentheses for clarity */
+message = ("Hello, " + name + "! You are " + age.str() + " years old.");
+```
+
+### Parameterized Templates (Reusable)
+
+For reusable templates with parameters, use `op()` functions:
+
+```grapa
+/* Create a parameterized template */
+template = op("name"=0, "age"=0){
+    name + "! You are " + age.str() + " years old."
+};
+
+/* Use the template multiple times */
+result1 = template("Alice", 25);
+result1.echo();  /* Output: Alice! You are 25 years old. */
+
+result2 = template("Bob", 30);
+result2.echo();  /* Output: Bob! You are 30 years old. */
+```
+
+### Dynamic Code Execution (Complex Cases)
+
+For complex string construction with arbitrary expressions:
+
+```grapa
+/* Dynamic template as string */
+template = "name + \"! You are \" + age.str() + \" years old.\"";
+name = "Alice";
+age = 25;
+result = op()(template)();
+result.echo();  /* Output: Alice! You are 25 years old. */
+
+/* System-level evaluation with context */
+result = $sys().eval("name + \"! You are \" + age.str() + \" years old.\"", {"name": name, "age": age});
+result.echo();  /* Output: Alice! You are 25 years old. */
+```
+
+### Template Patterns for Common Use Cases
+
+#### User Greeting Templates
+```grapa
+/* Simple greeting template */
+greeting = op("name"=0, "time"=0){
+    "Good " + time + ", " + name + "!"
+};
+
+greeting("Alice", "morning").echo();  /* Good morning, Alice! */
+greeting("Bob", "evening").echo();    /* Good evening, Bob! */
+```
+
+#### Data Formatting Templates
+```grapa
+/* Data formatting template */
+format_record = op("name"=0, "age"=0, "city"=0){
+    "Name: " + name + ", Age: " + age.str() + ", City: " + city
+};
+
+record = format_record("Alice", 25, "New York");
+record.echo();  /* Output: Name: Alice, Age: 25, City: New York */
+```
+
+#### Dynamic SQL-like Queries
+```grapa
+/* Dynamic query template */
+build_query = op("table"=0, "conditions"=0){
+    "SELECT * FROM " + table + " WHERE " + conditions
+};
+
+query = build_query("users", "age > 18");
+query.echo();  /* Output: SELECT * FROM users WHERE age > 18 */
+```
+
+### When to Use Each Approach
+
+| Use Case | Recommended Approach | Example |
+|----------|---------------------|---------|
+| **Simple concatenation** | String concatenation | `"Hello, " + name` |
+| **Reusable templates** | `op()` functions | `template = op("name"=0){...}` |
+| **Complex expressions** | Dynamic execution | `op()(template)()` |
+| **System integration** | `$sys().eval()` | `$sys().eval(script, params)` |
+
+### Performance Considerations
+
+- **String concatenation**: Fastest for simple cases
+- **`op()` templates**: Good for reusable templates (compiled once)
+- **Dynamic execution**: More overhead, use for complex cases only
+- **`$sys().eval()`**: Highest overhead, use for system integration
+
+> **Note**: Grapa's template approaches are more powerful than traditional string interpolation because they can execute arbitrary expressions and complex logic, not just variable substitution.
+
 ---
 
 ## See also

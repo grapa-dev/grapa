@@ -47,7 +47,7 @@ This guide helps Rust users transition to Grapa by mapping common Rust idioms, p
 | `arr.iter().filter(|x| *x > 0)` | `arr.filter(op(x) { x > 0; })` |
 | `arr.iter().fold(0, |a, x| a + x)` | `arr.reduce(op(a, x) { a + x; }, 0)` |
 | `arr.len()` | `arr.len()` |
-| `format!("{} {}", a, b)` | `("" + a.str() + " " + b.str())` |
+| `format!("{} {}", a, b)` | `("" + a.str() + " " + b.str())` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
 

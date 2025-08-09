@@ -348,7 +348,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **F-strings**: `f"Hello {name}"` - Use string concatenation: `"Hello " + name`
+- **F-strings**: `f"Hello {name}"` - Use string concatenation: `"Hello " + name` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns
 - **Walrus operator**: `if (x := f()) > 0:` - Use separate assignment: `x = f(); if (x > 0) { ... }`
 - **Match statements**: `match x:` - Use `if/else` chains
 - **Structural pattern matching**: - Use explicit property access
