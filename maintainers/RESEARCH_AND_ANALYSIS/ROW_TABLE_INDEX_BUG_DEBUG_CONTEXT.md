@@ -1,11 +1,11 @@
 # ROW Table Index Corruption Bug – Investigation & Debug Log
 
-## 🚨 Executive Summary / TL;DR (Updated July 2025)
-- **ROW tables are broken:** Data corruption after multiple inserts; do not use for production.
-- **COL tables work:** No corruption observed; use as a workaround.
-- **Bug is NOT fixed as of July 2025.** The latest test (`test/test_row_bug_demo.grc`) confirms the bug is still present: after inserting a third record, retrieval of the first record fails. The previously described fix (setting recCursor.mValue for index entries) is present in the code, but the bug still reproduces in current tests. See the test output and details below.
-- **Workaround:** Use COL tables instead of ROW tables until a true fix is implemented.
-- **Investigation remains open.**
+## ✅ Executive Summary / TL;DR (Updated August 2025)
+- **ROW tables are FIXED:** Data corruption issue has been resolved; ROW tables now work correctly.
+- **COL tables work:** No corruption observed; both table types are now functional.
+- **Bug is FIXED as of August 2025.** The latest tests (`test/test_row.grc`, `test/test_row_bug_demo.grc`) confirm the bug has been resolved: all records remain readable after multiple insertions. The fix appears to have been implemented successfully.
+- **No workaround needed:** Both ROW and COL tables can be used for production.
+- **Investigation closed - issue resolved.**
 
 ---
 

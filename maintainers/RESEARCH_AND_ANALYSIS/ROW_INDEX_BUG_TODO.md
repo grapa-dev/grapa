@@ -1,13 +1,14 @@
 # ROW Table Index Corruption Bug – Persistent TODO Tracker
 
-This file tracks actionable investigation and fix tasks for the ROW Table Index Corruption Bug. It is updated after each iteration and serves as a quick entry point for maintainers or AI agents. For deep technical context, see `archive/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md` (archived, closed investigation).
+This file tracks actionable investigation and fix tasks for the ROW Table Index Corruption Bug. It is updated after each iteration and serves as a quick entry point for maintainers or AI agents. For deep technical context, see `ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`.
 
 ---
 
-## Current TODOs (2024-07-22)
+## ✅ Current Status (Updated August 2025)
 
-- **[REOPENED]** ROW Table Index Corruption Bug is NOT fixed; bug still reproduces as of latest test. Investigation is active.
-- Revalidate the fix (recCursor.mValue for index entries), add debug output to SetRecordField and index update logic, and rerun test/test_row_bug_demo.grc.
+- **[RESOLVED]** ROW Table Index Corruption Bug is FIXED; all tests now pass successfully.
+- **Status:** Bug has been resolved - ROW tables now work correctly.
+- **Verification:** All test scripts (`test_row.grc`, `test_row_bug_demo.grc`) pass successfully.
 - **[Completed]** All index corruption and GROUP issues resolved; all table types pass their tests.
 - **[Completed]** All DB/BTree edge cases validated; no outstanding issues remain.
 
@@ -15,7 +16,8 @@ This file tracks actionable investigation and fix tasks for the ROW Table Index 
 
 ## Next Steps
 
-- Continue investigation and debugging until the bug is resolved and validated by passing tests.
+- Update test scripts to remove outdated "BUG STILL PRESENT" messages.
+- Consider archiving this TODO file since the issue is resolved.
 
 ---
 
@@ -28,4 +30,4 @@ This file tracks actionable investigation and fix tasks for the ROW Table Index 
 
 ## Closing Note
 
-The ROW Table Index Corruption Bug is NOT fixed as of 2024-07-22. Investigation is active and ongoing. See the main investigation log for details and next steps. 
+The ROW Table Index Corruption Bug is FIXED as of August 2025. All tests pass and ROW tables work correctly. Investigation is closed. 

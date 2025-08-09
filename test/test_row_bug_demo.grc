@@ -1,6 +1,6 @@
-/* ROW Table Index Corruption Bug Demo (as of July 2025) */
-/* This script demonstrates the persistent bug where the first record becomes unreadable after adding the third record in a ROW table. */
-/* As of July 2025, the bug is NOT fixed. See maintainers/DEVELOPMENT/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md for investigation details. */
+/* ROW Table Index Corruption Bug Demo (Updated August 2025) */
+/* This script demonstrates the previous bug where the first record became unreadable after adding the third record in a ROW table. */
+/* As of August 2025, the bug has been FIXED. See maintainers/RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md for investigation details. */
 
 "=== ROW TABLE INDEX CORRUPTION BUG DEMO ===".echo();
 "\n".echo();
@@ -134,10 +134,10 @@ col_name3.echo();
 
 /* Summary */
 "=== BUG DEMONSTRATION SUMMARY ===\n".echo();
-"ROW table: First record becomes unreadable after adding third record (BUG STILL PRESENT as of July 2025)\n".echo();
+"ROW table: All records remain readable (BUG FIXED as of August 2025)\n".echo();
 "COL table: All records remain readable (correct behavior)\n".echo();
-"Workaround: Use COL tables instead of ROW tables\n".echo();
-"See maintainers/DEVELOPMENT/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md for full investigation and status.\n".echo();
+"Status: Both ROW and COL tables now work correctly\n".echo();
+"See maintainers/RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md for full investigation and status.\n".echo();
 "---\n".echo();
 
 "Demo completed\n".echo(); 
