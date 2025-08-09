@@ -259,6 +259,188 @@ grapa -d -c "'Hello'.echo()"
 grapa -i
 ```
 
+## Using Language Capabilities from CLI
+
+### Performance and Timing
+```bash
+# Performance profiling using built-in timing
+grapa -c "
+start_time = \$TIME().utc();
+/* ... operations ... */
+end_time = \$TIME().utc();
+elapsed_ms = ((end_time - start_time) / 1000000).int();
+('Performance: ' + elapsed_ms + ' ms').echo();
+"
+
+# Parallel processing with built-in capabilities
+grapa -c "
+large_data = (1000000).range(0,1);
+squares = large_data.map(op(x) { x * x; }, 8);  /* 8 worker threads */
+('Processed ' + squares.len() + ' items in parallel').echo();
+"
+
+# Performance optimization with caching
+grapa -c "
+compiled = \$sys().compile('x * 2 + 1');
+result = \$sys().eval(compiled, {'x': 5});
+('Optimized result: ' + result).echo();
+"
+```
+
+### Environment Management
+```bash
+# Get environment variables
+grapa -c "(\$sys().getenv('USERNAME')).echo();"
+
+# Set environment variables
+grapa -c "\$sys().putenv('DEBUG_MODE', 'true'); ('DEBUG_MODE set to: ' + \$sys().getenv('DEBUG_MODE')).echo();"
+
+# Get system information
+grapa -c "(\$sys().getenv(\$VERSION)).echo();"
+
+# Environment-based configuration
+grapa -c "
+env = \$sys().getenv('NODE_ENV');
+if (env == 'production') {
+    'Running in production mode'.echo();
+} else {
+    'Running in development mode'.echo();
+}
+"
+
+# Runtime debug configuration
+grapa -c "
+/* Set debug mode at runtime */
+\$sys().putenv('DEBUG_MODE', 'true');
+\$sys().putenv('LOG_LEVEL', 'verbose');
+
+/* Check debug mode and adjust behavior */
+if (\$sys().getenv('DEBUG_MODE') == 'true') {
+    'Debug mode enabled'.echo();
+    log_level = \$sys().getenv('LOG_LEVEL');
+    ('Log level: ' + log_level).echo();
+    
+    /* Enable detailed logging */
+    start_time = \$TIME().utc();
+    'Performing debug operations...'.echo();
+    \$sys().sleep(100);  /* Simulate work */
+    end_time = \$TIME().utc();
+    elapsed = ((end_time - start_time) / 1000000).int();
+    ('Debug operation took: ' + elapsed + ' ms').echo();
+} else {
+    'Debug mode disabled'.echo();
+}
+
+/* Runtime switching - turn debug off */
+\$sys().putenv('DEBUG_MODE', 'false');
+'Debug mode turned off'.echo();
+"
+```
+
+### Output Control and Redirection
+```bash
+# Shell piping for output control (already works)
+grapa -c "'Hello World'.echo()" > output.txt
+grapa -c "'Hello World'.echo()" | grep "Hello"
+grapa -c "'Hello World'.echo()" >> log.txt
+
+# Process output in scripts
+grapa -c "
+result = 'Hello World'.echo();
+result = result.upper();
+result.echo();
+"
+
+# Output formatting and control
+grapa -c "
+data = ['apple', 'banana', 'cherry'];
+for (item in data) {
+    ('Item: ' + item.upper()).echo();
+}
+"
+```
+
+### Advanced Language Features
+```bash
+# Dynamic code execution
+grapa -c "
+template = 'name + \"! You are \" + age.str() + \" years old.\"';
+name = 'Alice';
+age = 25;
+result = op()(template)();
+result.echo();
+"
+
+# String templates and dynamic construction
+grapa -c "
+greeting = op('name'=0, 'time'=0){
+    'Good ' + time + ', ' + name + '!'
+};
+greeting('Alice', 'morning').echo();
+"
+
+# Error handling with iferr
+grapa -c "
+iferr {
+    result = 10 / 0;
+    'This won\'t print'.echo();
+} {
+    ('Error occurred: ' + \$sys.error).echo();
+}
+"
+```
+
+### Database and File Operations
+```bash
+# Database operations
+grapa -c "
+db = \$file().table('ROW');
+db.mkfield('name', 'STR');
+db.mkfield('age', 'INT');
+db.set('user1', 'Alice', 'name');
+db.set('user1', 25, 'age');
+result = db.get('user1', 'name');
+('User name: ' + result).echo();
+"
+
+# File operations
+grapa -c "
+files = \$file().ls('.');
+for (file in files) {
+    if (file.type == 'file') {
+        ('File: ' + file.name).echo();
+    }
+}
+"
+```
+
+### Parallel and Concurrent Processing
+```bash
+# Parallel data processing
+grapa -c "
+data = (10000).range(0,1);
+processed = data.map(op(x) { x * x + 1; }, 4);  /* 4 workers */
+('Processed ' + processed.len() + ' items').echo();
+"
+
+# Concurrent operations
+grapa -c "
+tasks = [];
+for (i in (5).range(0,1)) {
+    task = op(id) {
+        \$sys().sleep(100);  /* Simulate work */
+        'Task ' + id.str() + ' completed'.echo();
+    };
+    tasks.append(task);
+}
+
+/* Execute tasks concurrently */
+for (task in tasks) {
+    task(tasks.index(task));
+}
+"
+```
+
 ## Common Patterns
 
 ### Configuration Files

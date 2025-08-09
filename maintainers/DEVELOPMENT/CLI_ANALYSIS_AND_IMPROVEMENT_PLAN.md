@@ -188,26 +188,196 @@ python -o output.txt                 # Output to file (not standard)
    - Create `grapa-edit` or similar for editor functionality ⏳ **FUTURE ENHANCEMENT**
 
 ### Phase 2: Enhancement (MEDIUM PRIORITY)
-4. **Add Standard Options**:
-   - `-c "command"` - Execute command
-   - `-f file.grc` - Execute file
-   - `-s` - Read from stdin
-   - `-S` - Read from stdin with $ARGCIN
 
-5. **Add Debug Options**:
-   - `--dump-ast` - Show parsed AST
-   - `--dump-bytecode` - Show compiled bytecode
-   - `--profile` - Performance profiling
+#### **Enhanced Debug Mode**
+- [ ] **Improved Debug Output**: Enhanced `-d` option with verbose output capabilities
+  - [ ] **Execution Tracing**: Step-by-step execution tracking with variable state snapshots
+  - [ ] **Error Context Display**: Better error context information in debug mode
+  - [ ] **Performance Timing**: Built-in performance timing and memory usage tracking
+  - [ ] **AST/Bytecode Dumping**: Execution tree visualization and bytecode inspection
 
-### Phase 3: Advanced Features (LOW PRIORITY)
-6. **Performance Options**:
-   - `--optimize` - Enable optimizations
-   - `--no-cache` - Disable caching
-   - `--memory-limit N` - Set memory limit
+#### **Better Error Messages**
+- [ ] **Enhanced Syntax Error Reporting**: More descriptive and helpful error messages
+  - [ ] **Error Context Information**: Detailed error context with file, line, and function information
+  - [ ] **Stack Trace Display**: Execution stack trace for debugging
+  - [ ] **Variable State Snapshots**: Variable state at error points
+  - [ ] **Error Type Classification**: Specific error types and hierarchies
+  - [ ] **Error Recovery Suggestions**: Helpful suggestions for common errors
+  - [ ] **Error History Tracking**: Comprehensive error history for debugging
 
-7. **Environment Options**:
-   - `--env-file file` - Load environment from file
-   - `--env KEY=value` - Set environment variable
+**Enhanced Error Message Examples:**
+```bash
+# Current error message
+grapa -c "x = 1 + ;"
+# Error: Syntax error at line 1
+
+# Enhanced error message
+grapa -c "x = 1 + ;"
+# Error: Syntax error at line 1, column 7
+#   x = 1 + ;
+#         ^
+# Expected: expression, identifier, or literal
+# Suggestion: Add an expression after the '+' operator
+# Context: Assignment statement
+
+# Error with context information
+grapa -c "
+function process_data() {
+    data = $file().get('missing.txt');
+    return data.len();
+}
+result = process_data();
+"
+# Error: FileNotFoundError at line 3, column 8 in function 'process_data'
+#   data = $file().get('missing.txt');
+#          ^
+# File 'missing.txt' not found in current directory
+# Stack trace:
+#   - process_data() at line 3
+#   - <main> at line 6
+# Suggestion: Check if file exists or provide a default value using .iferr()
+
+# Error with variable state
+grapa -c "
+x = 10;
+y = 0;
+result = x / y;
+"
+# Error: DivisionByZeroError at line 4, column 12
+#   result = x / y;
+#            ^
+# Division by zero attempted
+# Variables at error:
+#   x = 10
+#   y = 0
+# Stack trace:
+#   - <main> at line 4
+# Suggestion: Check if y is zero before division or use .iferr() for fallback
+```
+
+**Implementation Strategy:**
+1. **Error context capture** - Automatic error context capture during execution
+2. **Syntax error enhancement** - Enhanced syntax error reporting with suggestions
+3. **Error type classification** - Specific error types and error hierarchies
+4. **Stack trace generation** - Execution stack trace generation and display
+5. **Variable state snapshots** - Variable state capture at error points
+6. **Error recovery suggestions** - Helpful suggestions for common error patterns
+7. **Error history tracking** - Comprehensive error history for debugging
+8. **Integration with debug mode** - Enhanced error reporting in debug mode
+
+### Phase 3: Documentation and Integration (LOW PRIORITY)
+6. **Documentation Updates**:
+   - Update CLI documentation to reference existing language capabilities
+   - Add examples showing how to use built-in performance, environment, and timing features
+   - Cross-reference language features in CLI documentation
+
+7. **Language Integration**:
+   - Document how to use `$TIME().utc()` for performance profiling from CLI
+   - Document how to use `$sys().getenv()` and `$sys().putenv()` for environment management
+   - Document how to use parallel processing with `.map()` and thread counts
+
+#### Language Capabilities Integration Examples
+
+**Performance Profiling:**
+```bash
+# Built-in timing capabilities
+grapa -c "
+start_time = \$TIME().utc();
+/* ... operations ... */
+end_time = \$TIME().utc();
+elapsed_ms = ((end_time - start_time) / 1000000).int();
+('Performance: ' + elapsed_ms + ' ms').echo();
+"
+```
+
+**Environment Management:**
+```bash
+# Environment variable access
+grapa -c "\$sys().getenv('USERNAME').echo();"
+grapa -c "\$sys().putenv('DEBUG_MODE', 'true');"
+
+# Environment-based configuration
+grapa -c "
+env = \$sys().getenv('NODE_ENV');
+if (env == 'production') {
+    'Running in production mode'.echo();
+} else {
+    'Running in development mode'.echo();
+}
+"
+```
+
+**Parallel Processing:**
+```bash
+# Parallel data processing
+grapa -c "
+data = (10000).range(0,1);
+processed = data.map(op(x) { x * x + 1; }, 4);  /* 4 workers */
+('Processed ' + processed.len() + ' items').echo();
+"
+```
+
+**Output Control:**
+```bash
+# Shell piping (already works)
+grapa -c "'Hello World'.echo()" > output.txt
+grapa -c "'Hello World'.echo()" | grep "Hello"
+
+# Output formatting
+grapa -c "
+data = ['apple', 'banana', 'cherry'];
+for (item in data) {
+    ('Item: ' + item.upper()).echo();
+}
+"
+```
+
+**Dynamic Code Execution:**
+```bash
+# String templates and dynamic construction
+grapa -c "
+greeting = op('name'=0, 'time'=0){
+    'Good ' + time + ', ' + name + '!'
+};
+greeting('Alice', 'morning').echo();
+"
+
+# Dynamic code execution
+grapa -c "
+template = 'name + \"! You are \" + age.str() + \" years old.\"';
+name = 'Alice';
+age = 25;
+result = op()(template)();
+result.echo();
+"
+```
+
+**Error Handling:**
+```bash
+# Error handling with iferr
+grapa -c "
+iferr {
+    result = 10 / 0;
+    'This won\'t print'.echo();
+} {
+    ('Error occurred: ' + \$sys.error).echo();
+}
+"
+```
+
+**Database Operations:**
+```bash
+# Database operations
+grapa -c "
+db = \$file().table('ROW');
+db.mkfield('name', 'STR');
+db.mkfield('age', 'INT');
+db.set('user1', 'Alice', 'name');
+db.set('user1', 25, 'age');
+result = db.get('user1', 'name');
+('User name: ' + result).echo();
+"
+```
 
 ---
 

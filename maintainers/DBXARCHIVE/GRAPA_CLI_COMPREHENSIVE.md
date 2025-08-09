@@ -119,41 +119,67 @@ python -o output.txt                 # Output to file (not standard)
 
 ## 🚀 Proposed CLI Enhancements
 
-### Phase 2: Advanced Features (Backlog)
+### Phase 2: Focused Improvements (Backlog)
 
-#### Performance Options
+#### Enhanced Debug Mode
 ```bash
--j, --jobs <N>       # Parallel workers (like make -j)
---no-parallel        # Disable parallelism
---profile            # Performance profiling
+-d, --debug          # Enhanced debug mode with verbose output capabilities
+--verbose            # User-friendly detailed information (different from debug)
 ```
 
-#### Environment Management
+#### Better Error Messages
 ```bash
--E, --env <VAR=value> # Set environment variable
---env-file <file>     # Load environment file
+# Improved syntax error reporting with more descriptive and helpful error messages
+# Better error context and suggestions for common issues
 ```
 
-#### Error Handling
+#### Documentation Updates
 ```bash
---strict             # Strict mode (fail on warnings)
---continue           # Continue on errors
---max-errors <N>     # Stop after N errors
+# Update CLI documentation to reference existing language capabilities:
+# - Performance: $TIME().utc() for timing, .map() with thread counts for parallel processing
+# - Environment: $sys().getenv() and $sys().putenv() for environment management
+# - Output Control: Standard shell piping (>, >>, |) already works
+# - Profiling: Built-in timing capabilities with nanosecond precision
 ```
 
-#### Advanced Debugging
+#### Cross-Reference Language Features
 ```bash
--d, --debug          # Debug mode
---trace              # Execution trace
---dump-ast           # Show parsed AST
---dump-bytecode      # Show compiled bytecode
-```
+# Add examples showing how to use built-in capabilities from CLI:
 
-#### Output Control
-```bash
--o, --output <file>  # Redirect output to file
--a, --append         # Append to file
---verbose            # Verbose output (different from -v version)
+# Performance profiling and timing
+grapa -c "
+start_time = \$TIME().utc();
+/* ... operations ... */
+end_time = \$TIME().utc();
+elapsed_ms = ((end_time - start_time) / 1000000).int();
+('Performance: ' + elapsed_ms + ' ms').echo();
+"
+
+# Environment management
+grapa -c "\$sys().getenv('USERNAME').echo();"
+grapa -c "\$sys().putenv('DEBUG_MODE', 'true');"
+
+# Parallel processing
+grapa -c "large_data = (1000000).range(0,1); squares = large_data.map(op(x) { x * x; }, 8);"
+
+# Output control with shell piping
+grapa -c "'Hello World'.echo()" > output.txt
+grapa -c "'Hello World'.echo()" | grep "Hello"
+
+# Dynamic code execution
+grapa -c "template = 'name + \"! You are \" + age.str() + \" years old.\"'; result = op()(template)();"
+
+# String templates
+grapa -c "greeting = op('name'=0, 'time'=0){ 'Good ' + time + ', ' + name + '!' }; greeting('Alice', 'morning').echo();"
+
+# Error handling
+grapa -c "iferr { result = 10 / 0; } { ('Error: ' + \$sys.error).echo(); }"
+
+# Database operations
+grapa -c "db = \$file().table('ROW'); db.mkfield('name', 'STR'); db.set('user1', 'Alice', 'name');"
+
+# File operations
+grapa -c "files = \$file().ls('.'); for (file in files) { ('File: ' + file.name).echo(); }"
 ```
 
 ### Database-Specific CLI Features

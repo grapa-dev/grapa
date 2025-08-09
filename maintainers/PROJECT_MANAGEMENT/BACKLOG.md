@@ -6,23 +6,80 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🎯 **ACTIVE PRIORITIES** (Next Implementation Cycle)
+## 🎯 **IMMEDIATE NEXT STEPS** (Pull to current_status.md)
 
-### 🔥 **HIGH PRIORITY** (2 items)
+**Note:** CLI Enhancement Phase 2 has been moved to [`CURRENT_STATUS.md`](CURRENT_STATUS.md) as the active priority.
 
-#### **CLI Enhancement (Phase 2)**
-- [ ] **Performance Options**: Add `-j/--jobs <N>` for parallel worker control and `--no-parallel` to disable parallelism
-- [ ] **Environment Management**: Add `-E/--env <VAR=value>` for setting environment variables and `--env-file <file>` for loading environment files
-- [ ] **Error Handling**: Add `--strict` mode (fail on warnings), `--continue` (continue on errors), and `--max-errors <N>` (stop after N errors)
-- [ ] **Advanced Debugging**: Add `--trace` for execution tracing, `--dump-ast` for showing parsed AST, and `--dump-bytecode` for showing compiled bytecode
-- [ ] **Performance Profiling**: Add `--profile` option for performance analysis and optimization insights
+**Next Priority:** Session-Specific Environment Variables - Implementation ready, see [`SESSION_SPECIFIC_ENVIRONMENT_VARIABLES_PLAN.md`](../RESEARCH_AND_ANALYSIS/SESSION_SPECIFIC_ENVIRONMENT_VARIABLES_PLAN.md)
 
-#### **Core Language Features**
-- [ ] **String Comparison Distance Function**: Create dedicated function for detailed string comparison distance information (like current `<=>` operator behavior) for fuzzy matching applications
-- [ ] **GrapaDB Float Comparison Support**: Add float comparison support to GrapaDB for index keys
+---
+
+## 🚀 **MAJOR RELEASES** (5 items)
+
+### **2. Grapa Syntax Improvements** - **LANGUAGE ADOPTION FOUNDATION**
 - [ ] **Line Comments**: Add support for `//` and `#` line comments
-- [ ] **Loop Syntax**: Add `for` loop as syntactic sugar for `.range()` patterns
-- [ ] **Error Handling**: Improve `.iferr()` ergonomics and exception-based error handling
+- [ ] **For Loop Syntax**: Add `for` loop as syntactic sugar for `.range()` patterns
+- [ ] **Exception Handling**: Add `try/catch` blocks and exception handling
+- [ ] **String Interpolation**: Add template literals and string interpolation
+- [ ] **Module System**: Design basic import/include system
+- [ ] **Property Access**: Improve attribute-style access for objects
+- **Reference**: [`GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md)
+- **Estimated Effort**: Major Release (3-6 months)
+- **Dependencies**: CLI Enhancement Phase 2 (error reporting)
+- **Priority**: Highest among major releases - foundational for language adoption
+
+### **3. Enhanced Debug Mode** - **DEVELOPMENT EXPERIENCE**
+- [ ] **Comprehensive Debug System**: Implement sophisticated debugging capabilities including execution tracing, variable inspection, performance profiling, and AST/bytecode dumping
+- [ ] **Debug Infrastructure**: Core debug system with configurable debug levels and thread-safe debug context management
+- [ ] **Execution Tracing**: Step-by-step execution tracking with variable state snapshots
+- [ ] **Performance Profiling**: Built-in performance timing and memory usage tracking
+- [ ] **AST/Bytecode Dumping**: Execution tree visualization and bytecode inspection
+- [ ] **Debug CLI Integration**: Enhanced debug options and output formats
+- **Reference**: [`GRAPA_ENHANCED_DEBUG_MODE_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_ENHANCED_DEBUG_MODE_PLAN.md)
+- **Estimated Effort**: Major Release (6-12 months)
+- **Dependencies**: CLI Enhancement Phase 2 completion, Syntax Improvements (for error handling)
+- **Priority**: High - enables advanced development capabilities
+
+### **4. GrapaDB Enhancements** - **DATABASE SYSTEM**
+- [ ] **Performance Optimization**: Index performance enhancement, memory management optimization, query optimization
+- [ ] **Advanced Features**: Transaction support, advanced querying, data validation and constraints
+- [ ] **Scalability and Reliability**: Large dataset support, backup and recovery, concurrent access
+- [ ] **Integration and Testing**: Language integration, performance monitoring, comprehensive testing
+- **Reference**: [`GRAPA_DB_ENHANCEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_DB_ENHANCEMENTS_PLAN.md)
+- **Estimated Effort**: Major Release (4-8 months)
+- **Dependencies**: Core language features completion, Syntax Improvements (for error handling)
+- **Priority**: Medium - database-specific enhancements
+
+### **5. String Comparison Distance Function** - **UTILITY FEATURE**
+- [ ] **Core Distance Algorithms**: Implement edit distance (Levenshtein), Hamming distance, and basic similarity scoring
+- [ ] **Advanced Similarity Algorithms**: Implement Jaro-Winkler, Cosine similarity, and N-gram similarity
+- [ ] **Language Integration**: Add distance and similarity methods to GrapaCHAR class and language binding
+- [ ] **Performance Optimization**: Optimize algorithms for large strings and memory efficiency
+- [ ] **Testing and Documentation**: Comprehensive test suite, documentation, and examples
+- **Reference**: [`GRAPA_STRING_DISTANCE_FUNCTION_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_STRING_DISTANCE_FUNCTION_PLAN.md)
+- **Estimated Effort**: Major Release (3-6 months)
+- **Dependencies**: Core language features completion
+- **Priority**: Medium - utility feature enhancement
+
+### **6. Optimization Implementation** - **PERFORMANCE**
+- [ ] **Performance improvements** for arithmetic, bitwise, comparison, and assignment operators
+- **Status**: Requires extensive testing and its own release cycle
+- **Reference**: [`GRAPA_OPTIMIZATION_BACKLOG.md`](../RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md)
+- **Estimated Effort**: Major Release (6-12 months)
+- **Dependencies**: Core language features completion, Syntax Improvements (for error handling)
+- **Priority**: Lower - performance optimization after core features are stable
+
+### **7. Distutils Removal and Shared Library Naming** - **BUILD SYSTEM MODERNIZATION**
+- [ ] **Distutils Dependency Removal**: Replace deprecated `distutils` with `setuptools` for Python 3.13+ compatibility
+- [ ] **Shared Library Naming Convention**: Implement consistent `_static` vs `_shared` naming across all platforms
+- [ ] **Unified Library Locations**: Move all libraries to `source/grapa-lib/{platform}/` directory
+- [ ] **Mac Build Process Update**: Remove separate `grapa-other` directory, use consistent naming
+- [ ] **Cross-Platform Consistency**: Ensure Linux, AWS, and Windows use same naming patterns
+- **Reference**: [`DISTUTILS_REMOVAL_PLAN.md`](../RESEARCH_AND_ANALYSIS/DISTUTILS_REMOVAL_PLAN.md)
+- **Estimated Effort**: Major Release (4-6 weeks)
+- **Dependencies**: None (foundational build system work)
+- **Priority**: High - critical for Python 3.13+ compatibility and build system consistency
+- **Risk Level**: Medium - affects all platforms and build processes
 
 ---
 
@@ -40,14 +97,22 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Next Steps**: Submit article to Wikipedia, monitor feedback, maintain article
 - **Reference**: `wikipedia_grapa_article.txt` - Complete article with instructions
 
+### **Programming Language Naming Investigation** 🔍 **RESEARCH PHASE**
+- **Status**: Comprehensive investigation underway
+- **Goal**: Identify alternative names for "Grapa" that might be more appealing to users
+- **Scope**: Domain availability analysis, naming patterns research, rebranding strategy
+- **Key Findings**: Lighthouse.com is available, most .com domains are taken
+- **Reference**: [`PROGRAMMING_LANGUAGE_NAMING_INVESTIGATION.md`](../RESEARCH_AND_ANALYSIS/PROGRAMMING_LANGUAGE_NAMING_INVESTIGATION.md)
+- **Estimated Effort**: Research Phase (2-3 months)
+- **Dependencies**: None (independent research initiative)
+- **Priority**: Medium - strategic branding consideration
+- **Risk Level**: High - potential rebranding impact on community and SEO
+
 ---
 
 ## 🟡 **MEDIUM PRIORITY** (6 categories)
 
 ### **Performance & Optimization**
-- [ ] **Optimization Implementation**: Performance improvements for arithmetic, bitwise, comparison, and assignment operators
-  - **Status**: Requires extensive testing and its own release cycle
-  - **Reference**: [`../RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md`](../RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md)
 - [ ] **Optimize large array operations**
 - [ ] **Improve memory management for long-running scripts**
 - [ ] **Add caching for frequently accessed data structures**
@@ -66,8 +131,6 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] **Implement advanced string manipulation functions**
 - [ ] **Add support for regular expressions**
 - [ ] **Consider adding support for custom operators**
-- [ ] **Module System**: Design basic import/include system
-- [ ] **Property Access**: Improve attribute-style access for objects
 - [ ] **Boolean Logic**: Add implicit truthy/falsy support
 
 ### **Database Features**
@@ -95,7 +158,6 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ### **Development Tools**
 - [ ] **Create debugging tools**
 - [ ] **Add profiling capabilities**
-- [ ] **Implement better error reporting**
 - [ ] **Create IDE plugins**
 
 ### **Experimental Features**
@@ -135,20 +197,19 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 📋 **Future/Long-Term Tasks**
-- User-defined classes/objects: Improve documentation and idiomatic usage
-- Continue documentation structure improvements: See [DOCS_STRUCTURE_IMPROVEMENT_PLAN.md](DEVELOPMENT/DOCS_STRUCTURE_IMPROVEMENT_PLAN.md)
-- Evaluate all instances of null, true, and false handling in Grapa for consistency
-- Automate running the full regression suite as part of CI
-
----
-
 # 📄 **Backlog Summary**
 
-- **Active Priorities**: 2 HIGH priority items (CLI Enhancement Phase 2, Core Language Features)
-- **New Initiatives**: 2 items (Database Engineering Best Practices, Wikipedia Article)
+- **Immediate Next Steps**: 0 items (CLI Enhancement Phase 2 moved to current_status.md)
+- **Major Releases**: 6 items (Grapa Syntax Improvements, Enhanced Debug Mode, GrapaDB Enhancements, String Comparison Distance Function, Optimization Implementation, Distutils Removal and Shared Library Naming)
+- **New Initiatives**: 3 items (Database Engineering Best Practices, Wikipedia Article, Programming Language Naming Investigation)
 - **Medium Priority**: 6 categories with multiple items each
 - **Low Priority**: 4 categories with experimental and future features
 - **Recently Completed**: 15+ major achievements documented
 
-**For active and in-progress work, see [`CURRENT_STATUS.md`](CURRENT_STATUS.md).** 
+**Priority Order Rationale:**
+1. **Grapa Syntax Improvements** - Critical for language adoption and developer experience
+2. **Enhanced Debug Mode** - Advanced development capabilities (depends on CLI Phase 2)
+3. **GrapaDB Enhancements** - Database-specific improvements
+4. **String Comparison Distance Function** - Utility feature enhancement
+5. **Distutils Removal and Shared Library Naming** - Critical for Python 3.13+ compatibility and build system consistency
+6. **Optimization Implementation** - Performance optimization after core features are stable 

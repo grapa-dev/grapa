@@ -2,12 +2,20 @@
 
 **Document Status:** Active Investigation Results  
 **Created:** 2025-01-27  
-**Last Updated:** 2025-01-27  
+**Last Updated:** August 2025  
 **Investigation:** CLI_FUNCTIONALITY_INVESTIGATION.md  
 
 ## Overview
 
 This document contains bug reports for CLI functionality issues identified during the comprehensive CLI investigation. All issues have been verified on both macOS and Windows platforms.
+
+**Phase 2 Scope Update (August 2025):** CLI Enhancement Phase 2 has been revised to focus on:
+1. **Enhanced Debug Mode**: Improve existing `-d` option with verbose output capabilities
+2. **Better Error Messages**: Improve syntax error reporting with more descriptive messages
+3. **Documentation Updates**: Reference existing language capabilities (performance, environment, timing)
+4. **Cross-Reference Language Features**: Add examples showing built-in capabilities
+
+Many features originally planned for CLI Phase 2 (performance options, environment management, output control) are already implemented in the Grapa language and don't need CLI wrappers.
 
 ## Bug Reports
 
