@@ -2,12 +2,13 @@
 # Builds documentation from /docs-src to /docs, with full validation.
 
 param(
-    [switch]$Help
+    [switch]$Help,
+    [switch]$Push
 )
 
 $ErrorActionPreference = "Stop"
 
-$REPO_ROOT = Split-Path -Parent $PSScriptRoot
+$REPO_ROOT = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $SRC_DIR = Join-Path $REPO_ROOT "docs-src"
 $USER_CONFIG = Join-Path $SRC_DIR "mkdocs.yml"
 $SITE_DIR = Join-Path $SRC_DIR "site"
@@ -131,15 +132,23 @@ function Commit-AndPushDocs {
     }
     else {
         git commit -m "docs: Update user documentation and clean up build artifacts"
-        git push origin main
-        Write-Success "Changes committed and pushed to main."
+        Write-Success "Documentation changes committed."
     }
 }
 
 function Show-Usage {
-    Write-Host "Usage: .\deploy_docs.ps1"
+    Write-Host "Usage: .\deploy_docs.ps1 [OPTIONS]"
     Write-Host "Builds user documentation from /docs-src to /docs with validation."
-    Write-Host "After running, commit and push the /docs directory to main to deploy."
+    Write-Host ""
+    Write-Host "OPTIONS:"
+    Write-Host "  -Push        Push changes to main branch (triggers GitHub Pages deployment)"
+    Write-Host "  -Help        Show this help message"
+    Write-Host ""
+    Write-Host "EXAMPLES:"
+    Write-Host "  .\deploy_docs.ps1              Build and commit documentation (no push)"
+    Write-Host "  .\deploy_docs.ps1 -Push        Build, commit, and push to trigger GitHub Pages deployment"
+    Write-Host ""
+    Write-Host "Note: Use -Push only when you want to deploy documentation to GitHub Pages."
 }
 
 function Main {
@@ -157,8 +166,26 @@ function Main {
     Copy-SiteFiles
     Commit-AndPushDocs
     
-    Write-Success "Documentation build and deploy completed!"
-    Write-Host "`nGitHub Pages will update automatically from /docs on main."
+    if ($Push) {
+        Write-Info "Pushing changes to main branch..."
+        git push origin main
+        
+        Write-Info "Triggering custom GitHub Pages deployment workflow..."
+        $workflowResult = gh workflow run "Deploy Documentation to GitHub Pages" --field confirm="YES"
+        if ($LASTEXITCODE -eq 0) {
+            Write-Success "GitHub Pages deployment workflow triggered successfully."
+            Write-Info "Monitor deployment at: https://github.com/grapa-dev/grapa/actions"
+        }
+        else {
+            Write-Error "Failed to trigger GitHub Pages deployment workflow."
+            Write-Info "You may need to trigger it manually from the GitHub Actions tab."
+        }
+    }
+    else {
+        Write-Info "Changes committed locally. Run 'git push origin main' to deploy to GitHub Pages."
+    }
+    
+    Write-Success "Documentation build completed!"
 }
 
 # Verify documentation separation policy: no links from docs-src to maintainers or outside docs-src, except in deep_expert_implementation_overview.md
