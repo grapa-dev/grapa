@@ -122,9 +122,9 @@ def main():
     
     # Files to update with their version patterns
     files_to_update = [
-        ("setup.py", r'grapapy_version = "0\.0\.\d+"', f'grapapy_version = "{new_version}"'),
-        ("source/mainpy.cpp", r'm\.attr\("__version__"\) = "0\.0\.\d+"', f'm.attr("__version__") = "{new_version}"'),
-        ("source/grapa/GrapaLink.h", r'#define grapa_version "0\.0\.\d+"', f'#define grapa_version "{new_version}"'),
+        ("setup.py", r'grapapy_version = "\d+\.\d+\.\d+"', f'grapapy_version = "{new_version}"'),
+        ("source/mainpy.cpp", r'm\.attr\("__version__"\) = "\d+\.\d+\.\d+"', f'm.attr("__version__") = "{new_version}"'),
+        ("source/grapa/GrapaLink.h", r'#define grapa_version "\d+\.\d+\.\d+"', f'#define grapa_version "{new_version}"'),
     ]
     
     # Update all version files
