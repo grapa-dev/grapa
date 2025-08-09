@@ -277,8 +277,38 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     // Apply word boundary logic if 'w' option is present
     std::string working_pattern = effective_pattern;
     if (filtered_options.find('w') != std::string::npos) {
-        if (working_pattern.substr(0,2) != "\\b") working_pattern = "\\b" + working_pattern;
-        if (working_pattern.size() < 2 || working_pattern.substr(working_pattern.size()-2) != "\\b") working_pattern += "\\b";
+        // Check if we have a custom delimiter
+        bool custom_delimiter = (!line_delim.empty() && line_delim != "\n");
+        
+        if (custom_delimiter) {
+            // For custom delimiters, we need to create a custom word boundary pattern
+            // that includes the delimiter as a word boundary
+            std::string delimiter_pattern;
+            
+            // Escape the delimiter for regex
+            for (char c : line_delim) {
+                if (c == '|' || c == '\\' || c == '(' || c == ')' || c == '[' || c == ']' || c == '{' || c == '}' || c == '+' || c == '*' || c == '?' || c == '.' || c == '^' || c == '$') {
+                    delimiter_pattern += "\\";
+                }
+                delimiter_pattern += c;
+            }
+            
+            // For word boundaries with custom delimiters, we want to match the pattern as a complete word
+            // This means the pattern should be at the beginning of a segment or followed by non-word characters or delimiters
+            // The pattern should also be preceded by non-word characters, delimiters, or start of string
+            // The key insight is that we need to allow the pattern to be followed by word characters and then a word boundary
+            if (working_pattern.substr(0,2) != "\\b" && working_pattern.substr(0,1) != "^") {
+                working_pattern = "(^|[^\\w]|" + delimiter_pattern + ")" + working_pattern;
+            }
+            if (working_pattern.size() < 2 || (working_pattern.substr(working_pattern.size()-2) != "\\b" && working_pattern.substr(working_pattern.size()-1) != "$")) {
+                // Allow the pattern to be followed by word characters and then a word boundary
+                working_pattern += "(?=\\w*([^\\w]|" + delimiter_pattern + "|$))";
+            }
+        } else {
+            // For default delimiter (newline), use standard word boundaries
+            if (working_pattern.substr(0,2) != "\\b") working_pattern = "\\b" + working_pattern;
+            if (working_pattern.size() < 2 || working_pattern.substr(working_pattern.size()-2) != "\\b") working_pattern += "\\b";
+        }
     }
     
     // Special handling for multiline patterns with custom delimiters
