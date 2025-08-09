@@ -167,9 +167,11 @@ unsigned_int = data.uint();
 data = "Hello, Grapa!";
 lowercase = data.lower();
 uppercase = data.upper();
+casefolded = data.casefold();
 
 ("Lowercase: " + lowercase + "\n").echo();
 ("Uppercase: " + uppercase + "\n").echo();
+("Casefolded: " + casefolded + "\n").echo();
 ```
 
 ## Practical Examples

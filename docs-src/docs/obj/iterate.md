@@ -38,6 +38,9 @@ Optionally pass in a compare routine.'''
 > ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.upper()<= 3eb.upper();})
 ["a","A","B","b","b","c"]
 
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.casefold()<= 3eb.casefold();})
+["a","A","B","b","b","c"]
+
 > ["b","a","B","c","b","A"].sort(0,0,op(a,b){$local.c=a.upper()<= 3eb.upper();if(c==0)c=a<= 3eb;c;})
 [A,a,B,b,b,c]
 
@@ -58,6 +61,9 @@ Optionally pass in a compare routine.'''
 ["A","B","a","b","c"]
 
 > ["b","a","B","c","b","A"].unique(op(a,b){a.upper()<= 3eb.upper();})
+["A","b","c"]
+
+> ["b","a","B","c","b","A"].unique(op(a,b){a.casefold()<= 3eb.casefold();})
 ["A","b","c"]
 ```
 

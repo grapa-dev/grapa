@@ -43,6 +43,7 @@
 	diagonal = @<[op,@<diagonal,{@<this>,@<var,{b}>}>],{b:null}>; 
 	upper = @<"upper",{@<this>}>; 
 	lower = @<"lower",{@<this>}>; 
+	casefold = @<"casefold",{@<this>}>;
 	setbit = @<[op,@<setbit,{@<this>,@<var,{b}>}>],{"b":0}>; 
 	clearbit = @<[op,@<clearbit,{@<this>,@<var,{b}>}>],{"b":0}>; 
 	genbits = @<genbits,{@<this>}>;

@@ -1,4 +1,4 @@
-﻿// GrapaLibRule.cpp
+// GrapaLibRule.cpp
 /*
 Copyright 2022 Chris Ernest Matichuk
 
@@ -28,6 +28,7 @@ limitations under the License.
 #include "GrapaLink.h"
 #include "GrapaNetConnect.h"
 #include "GrapaTime.h"
+#include "../grep/grapa_grep_unicode.hpp"
 
 #include <thread>
 #include <cctype>
@@ -2225,10 +2226,18 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLower(GrapaCHAR& pName) { return
 class GrapaLibraryRuleUpperEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleUpperEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+    GrapaLibraryRuleUpperEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleUpper(GrapaCHAR& pName) { return new GrapaLibraryRuleUpperEvent(pName); }
+
+class GrapaLibraryRuleCaseFoldEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleCaseFoldEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCaseFold(GrapaCHAR& pName) { return new GrapaLibraryRuleCaseFoldEvent(pName); }
 
 class GrapaLibraryRuleUtcEvent : public GrapaLibraryEvent
 {
@@ -2769,7 +2778,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "sum", &GrapaLibraryRuleEvent::HandleSum },
 		{ "mean", &GrapaLibraryRuleEvent::HandleMean },
 		{ "lower", &GrapaLibraryRuleEvent::HandleLower },
-		{ "upper", &GrapaLibraryRuleEvent::HandleUpper },
+        { "upper", &GrapaLibraryRuleEvent::HandleUpper },
+        { "casefold", &GrapaLibraryRuleEvent::HandleCaseFold },
 		{ "eq", &GrapaLibraryRuleEvent::HandleEq },
 		{ "neq", &GrapaLibraryRuleEvent::HandleNEq },
 		{ "gteq", &GrapaLibraryRuleEvent::HandleGtEq },
@@ -17683,6 +17693,37 @@ GrapaRuleEvent* GrapaLibraryRuleUpperEvent::Run(GrapaScriptExec *vScriptExec, Gr
 	if (result == NULL)
 		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleCaseFoldEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent *result = NULL;
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    if (r1.vVal)
+    {
+        switch (r1.vVal->mValue.mToken)
+        {
+        case GrapaTokenType::STR:
+        case GrapaTokenType::ID:
+            {
+                // Convert GrapaCHAR to std::string
+                std::string input_str(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+                
+                // Use the standalone case folding function
+                std::string folded_str = grapa_case_fold_string(input_str);
+                
+                // Convert back to GrapaCHAR
+                result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR());
+                result->mValue.FROM(folded_str.c_str(), folded_str.length());
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    if (result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
 }
 
 GrapaRuleEvent* GrapaLibraryRuleUtcEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)

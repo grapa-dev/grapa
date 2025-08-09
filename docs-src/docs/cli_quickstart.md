@@ -171,10 +171,12 @@ text = "Hello, World!";
 /* String methods */
 upper = text.upper();
 lower = text.lower();
+casefold = text.casefold();
 length = text.len();
 
 ("Upper: " + upper).echo();
 ("Lower: " + lower).echo();
+("Casefold: " + casefold).echo();
 ("Length: " + length).echo();
 
 /* String splitting and joining */

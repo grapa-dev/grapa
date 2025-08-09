@@ -132,7 +132,9 @@ content = $file().read("data.txt");
 lines = content.split("\n");
 filtered = lines.filter(op(line) { line.len() > 0; });
 result = filtered.map(op(line) { line.upper(); });
+casefolded = filtered.map(op(line) { line.casefold(); });
 result.echo();
+casefolded.echo();
 ```
 
 ### JSON Processing

@@ -361,6 +361,17 @@ Converts to lower.
 "HI".lower() -> "hi"
 ```
 
+## casefold()
+Converts to Unicode case folded form for case-insensitive comparisons.
+
+```
+"İstanbul".casefold() -> "istanbul"
+"ß".casefold() -> "ss"
+"HELLO".casefold() -> "hello"
+```
+
+**Note**: `casefold()` is more aggressive than `lower()` and handles Unicode-specific case conversions like Turkish İ → i and German ß → ss.
+
 ## data = (stop).range(start,step)
 
 ```

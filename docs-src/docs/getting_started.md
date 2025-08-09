@@ -198,6 +198,7 @@ content = $file().read("data.txt");
 lines = content.split("\n");
 filtered = lines.filter(op(line) { line.len() > 0; });
 result = filtered.map(op(line) { line.upper(); });
+casefolded = filtered.map(op(line) { line.casefold(); });
 result.echo();
 
 json_data = $file().read("data.json").json();
@@ -227,6 +228,7 @@ dot_product.echo();  /* 32 */
 text = "  hello world  ";
 trimmed = text.trim();
 upper = trimmed.upper();
+casefolded = trimmed.casefold();
 words = upper.split(" ");
 words.echo();  /* ["HELLO", "WORLD"] */
 

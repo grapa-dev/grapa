@@ -72,6 +72,7 @@ while (i < test_cases.len()) {
 test_string = "  Hello, World!  ";
 trimmed = test_string.trim();
 upper = trimmed.upper();
+casefolded = trimmed.casefold();
 
 if (trimmed != "Hello, World!") {
     "String trim test failed".echo();
@@ -441,6 +442,11 @@ test_etl_workflow = op() {
     /* Transform data */
     processed = test_data.map(op(record) {
         {"name": record.get("name").upper(), "age": record.get("age")};
+    });
+    
+    /* Transform data with case folding */
+    processed_casefold = test_data.map(op(record) {
+        {"name": record.get("name").casefold(), "age": record.get("age")};
     });
 
     /* Verify results */

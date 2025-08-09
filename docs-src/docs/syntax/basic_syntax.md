@@ -157,6 +157,7 @@ doubled = numbers.map(op(x) { x * 2; });  /* [2, 4, 6, 8, 10] */
 /* Transform with string operations */
 names = ["john", "jane", "bob"];
 uppercase = names.map(op(name) { name.upper(); });  /* ["JOHN", "JANE", "BOB"] */
+casefolded = names.map(op(name) { name.casefold(); });  /* ["john", "jane", "bob"] */
 
 /* Parallel processing with thread count */
 large_data = (1000000).range(0,1);
@@ -1272,6 +1273,10 @@ StringProcessor = class {
         text.trim().upper();  // Returns processed string
     };
     
+    processCasefold = op(text) {
+        text.trim().casefold();  // Returns case-folded string
+    };
+    
     reverse = op(text) {
         text.reverse();  // Returns reversed string
     };
@@ -1295,6 +1300,10 @@ Many built-in types have chainable methods:
 /* String chaining */
 result = "  hello world  ".trim().upper().replace("WORLD", "GRAPA");
 result.echo();  // Output: HELLO GRAPA
+
+/* String chaining with case folding */
+result = "  İstanbul  ".trim().casefold().upper();
+result.echo();  // Output: ISTANBUL
 
 /* Array chaining */
 result = [1, 2, 3, 4, 5].filter(op(x) { x % 2 == 0; }).map(op(x) { x * 2; });
@@ -1377,131 +1386,3 @@ while (i < operations.len()) {
 funcs["add"](5, 3).echo();  // 8
 funcs["mul"](5, 3).echo();  // 15
 ```
-
-## Using `$sys().compile()` for Performance
-- Pre-compiles scripts for maximum performance
-- Creates $OP objects that can be executed with `$sys().eval()`
-- Ideal for frequently executed code
-
-```grapa
-/* Compile once, execute many times */
-compiled = $sys().compile("input * 2 + offset");
-
-/* Execute with different parameters */
-result1 = $sys().eval(compiled, {"input": 10, "offset": 5}); // 25
-result2 = $sys().eval(compiled, {"input": 20, "offset": 10}); // 50
-```
-
-## Advanced Meta-Programming Patterns
-
-### Template-Based Code Generation
-```grapa
-/* Create reusable templates */
-template = "result = base * multiplier + offset; result";
-process = op("base"=0, "multiplier"=1, "offset"=0)(template);
-process(10, 2, 5).echo(); // 25
-```
-
-### Configuration-Driven Functions
-```grapa
-/* Generate functions from configuration */
-config = {"operation": "add", "default": 0};
-code = "a " + config.operation + " b";
-func = op("a"=config.default, "b"=config.default)(code);
-func(5, 3).echo(); // 8
-```
-
-## When to Use Each Method
-- **`$sys().eval()`**: One-off evaluation, user input processing, simple expressions
-- **`op()`**: Reusable functions, meta-programming, dynamic code generation
-- **`$sys().compile()`**: Performance-critical code, frequently executed operations
-
-## Why Grapa's Dynamic Execution is Superior
-1. **Human-readable execution trees**: Unlike bytecode, $OP objects can be examined and understood
-2. **Direct manipulation**: Execution trees can be created, modified, and executed directly
-3. **Compile-time optimization**: Constant folding and expression simplification
-4. **Parameter binding**: Both positional and named parameters with default values
-5. **Type safety**: Execution trees maintain type information
-6. **Performance**: Compiled execution trees are highly optimized
-
-See also: [Advanced Scripting](../grc_scripts.md), [$OP Type](../type/op.md), [System Functions](../sys/sys.md)
-*/ 
-
-## Object Access Patterns and Behaviors (Empirical)
-
-Grapa objects ($OBJ) behave differently from typical objects/maps in other languages. Here are key findings and best practices:
-
-- **Property Access:**
-  - Dot notation: `p.name` (preferred)
-  - Bracket notation: `p["name"]` (preferred)
-  - Both return the property value (e.g., `Alice`).
-- **Print Method vs Getter:**
-  - `.getInfo()` prints a formatted string (side-effect, not a getter).
-  - `.get()` is NOT a built-in method for $OBJ. If you want a `.get()` method, you must define it yourself as a member function in your class. Its behavior is entirely determined by your implementation.
-  - Example:
-    ```grapa
-    Person = class {
-        name = "";
-        age = 0;
-        // You must define get() yourself if you want it
-        get = op() { {"name": name, "age": age}; };
-    };
-    p = obj Person;
-    p.get(); // Works only because you defined it
-    ```
-  - If you do NOT define a `.get()` method, calling `p.get()` will result in an error.
-  - `.get()` is not like Python or JavaScript, where it is built-in for objects/dicts.
-- **Type and Length:**
-  - `p.get().type()` returns `$LIST`.
-  - `info = p.get(); info.len()` returns the number of properties (e.g., 3).
-  - `p.len()` returns `{ "error":-1 }` (not supported on $OBJ).
-  - `p.type()` returns `{ "error":-1 }` (not supported on $OBJ).
-- **Index Access:**
-  - `p[0]` returns the first property value (e.g., `Alice`). This is a side effect and not idiomatic.
-- **Special Methods:**
-  - `p.getThis()` returns a $LIST of the object's properties, not a true $OBJ.
-  - `p.getLocal()` returns a $LIST of local variables (e.g., `{ "t":4 }`), not the property table.
-- **Type Checks:**
-  - `.type()` works on $LIST, not on $OBJ.
-
-**Example:**
-```grapa
-Person = class {
-    name = "";
-    age = 0;
-    city = "";
-    getInfo = op() { ("Name: " + name + ", Age: " + age.str() + ", City: " + city).echo(); };
-    get = op() { {"name": name, "age": age, "city": city}; };
-    getLocal = op() { t = 4; $local; };
-    getThis = op() { $this; };
-};
-p = obj Person;
-p.name = "Alice";
-p.age = 25;
-p.city = "New York";
-
-p.name.echo();        // Alice
-p["name"].echo();     // Alice
-p.getInfo();           // Name: Alice, Age: 25, City: New York
-info = p.get();
-info.len();            // 3
-info["name"].echo();   // Alice
-p[0].echo();           // Alice (side effect)
-p.getThis();           // {"name":"Alice","age":25,"city":"New York"}
-p.getLocal();          // {"t":4}
-p.len();               // {"error":-1}
-p.type();              // {"error":-1}
-info.type();           // $LIST
-```
-
-> **Note:** Grapa $OBJ is not a true map/object as in other languages. It is more like a class instance with $LIST-like property access. Use explicit getters for structured data, and prefer dot or bracket notation for property access. 
-
----
-
-## See also
-- [API Reference](../api_reference.md)
-- [Use Cases](../use_cases/)
-- [Examples](../examples/)
-<!-- Advanced Topics link removed: content consolidated or planned/future --> 
-
-/* Note: As of 2025-07-22, all known DB/BTree and index issues are resolved and validated by comprehensive tests. The Grapa syntax and type system are empirically validated and up to date. */ 

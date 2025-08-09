@@ -384,6 +384,7 @@ String manipulation and analysis.
 - `.len()` - Get string length
 - `.upper()` - Convert to uppercase
 - `.lower()` - Convert to lowercase
+- `.casefold()` - Convert to Unicode case folded form (for case-insensitive comparisons)
 - `.trim([chars])` - Remove characters from both ends (default: space)
 - `.ltrim([chars])` - Remove characters from left end (default: space)  
 - `.rtrim([chars])` - Remove characters from right end (default: space)

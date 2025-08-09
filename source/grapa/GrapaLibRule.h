@@ -247,7 +247,8 @@ public:
 	GrapaLibraryEvent* HandleSum(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleMean(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleLower(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleUpper(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleUpper(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleCaseFold(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleUtc(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleTz(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleEq(GrapaCHAR& pName);

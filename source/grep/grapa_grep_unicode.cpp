@@ -1434,5 +1434,17 @@ std::string extract_grapheme_cluster(const std::string& input, size_t offset) {
     return input.substr(start, end - start);
 }
 
+// Standalone case folding function for Grapa language binding
+// This function can be called from GrapaLibRule.cpp without needing to include Unicode headers
+std::string grapa_case_fold_string(const std::string& input) {
+    if (input.empty()) return "";
+    
+    // Use the existing Unicode case folding implementation
+    GrapaUnicode::UnicodeString unicode_str(input);
+    GrapaUnicode::UnicodeString folded = unicode_str.case_fold();
+    
+    return folded.data();
+}
+
 
  
