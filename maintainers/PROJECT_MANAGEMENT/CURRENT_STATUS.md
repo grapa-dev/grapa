@@ -2,6 +2,7 @@
 
 **For all maintainers and AI assistants:**
 - Always review this file for the latest project status and active work items
+- **Current Date:** August 2025 (use `date` command to verify current date)
 - For complete navigation, see [`maintainers/index.md`](../index.md)
 - For detailed technical plans, see [`maintainers/PROJECT_MANAGEMENT/BACKLOG.md`](BACKLOG.md)
 - For onboarding guidance, see [`maintainers/PROJECT_MANAGEMENT/ONBOARD.md`](ONBOARD.md)
@@ -11,7 +12,7 @@
 ## ✅ RECENTLY RESOLVED ISSUES
 
 ### Custom Delimiter Edge Cases - ALL RESOLVED ✅
-- **Status:** **RESOLVED** - December 2024
+- **Status:** **RESOLVED** - August 2025
 - **Issues Fixed:**
   1. ✅ **Lookaround assertions** - Fixed character-by-character analysis for consuming parts
   2. ✅ **Unicode script properties** - Implemented word grouping for consecutive matches  
@@ -21,7 +22,7 @@
 - **Impact:** Grapa grep now has **100% compatibility** with ripgrep for all in-memory/streaming features
 
 ### Debug Statements Removed ✅
-- **Status:** **RESOLVED** - December 2024
+- **Status:** **RESOLVED** - August 2025
 - **Issue:** Debug statements were enabled in production code
 - **Solution:** Commented out `#define GRAPA_DEBUG_PRINTF` in `source/grep/grapa_grep_unicode.hpp`
 - **Validation:** Recompiled and verified debug output is no longer present ✅
@@ -31,7 +32,7 @@
 ## 🎯 CURRENT PRIORITIES
 
 ### Unicode Language Binding (CRITICAL) - FINAL TASK FOR 100% RIPGREP COMPATIBILITY
-- **Status:** **IN PROGRESS** - December 2024
+- **Status:** **IN PROGRESS** - August 2025
 - **Issue:** `case_fold()` method not implemented in Grapa language binding
 - **Impact:** Last remaining task for 100% ripgrep compatibility
 - **Priority:** **CRITICAL** - This is the final task needed to achieve complete ripgrep parity

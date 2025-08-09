@@ -5,7 +5,7 @@
 
 ## Recent Fixes and Known Gaps
 
-- **✅ ALL CUSTOM DELIMITER EDGE CASES RESOLVED** - December 2024
+- **✅ ALL CUSTOM DELIMITER EDGE CASES RESOLVED** - August 2025
   - Lookaround assertions now work correctly with custom delimiters
   - Unicode script properties now group consecutive matches into complete words
   - Grapheme clusters now exclude delimiter characters from output
@@ -1082,7 +1082,7 @@ age = result[0]["age"]           // "30"
 
 **✅ 99.9% RIPGREP PARITY ACHIEVED** - Grapa grep has achieved near-complete parity with ripgrep for all in-memory/streaming features (excluding file system features).
 
-**Status Update (December 2024):**
+**Status Update (August 2025):**
 - ✅ **All custom delimiter edge cases resolved** - Lookaround assertions, Unicode script properties, grapheme clusters, word boundaries
 - ✅ **All in-memory/streaming features working** - Complete parity with ripgrep
 - ⚠️ **Final missing feature**: Unicode Language Binding (`case_fold()` method not yet implemented in Grapa language)

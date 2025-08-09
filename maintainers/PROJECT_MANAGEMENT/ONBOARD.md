@@ -1,5 +1,7 @@
 # Grapa Project Onboarding Guide
 
+**Current Date:** August 2025 (use `date` command to verify current date)
+
 This guide provides comprehensive onboarding information for new agents, developers, and contributors to the Grapa project.
 
 ---

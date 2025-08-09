@@ -1,5 +1,7 @@
 # BACKLOG
 
+**Current Date:** August 2025 (use `date` command to verify current date)
+
 This backlog tracks all future, long-term, and queued tasks for the Grapa project. For active and in-progress work, see [`CURRENT_STATUS.md`](CURRENT_STATUS.md). Items are grouped by priority and area. Completed items are listed at the end for reference.
 
 ---
