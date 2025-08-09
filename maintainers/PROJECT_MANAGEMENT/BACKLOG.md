@@ -87,8 +87,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ### String Interpolation
 - [ ] **String Interpolation**: Implement template literal-style interpolation and expression evaluation in strings.
 
-### Cryptographic Features Stabilization (AKS, etc.)
-- [ ] **Cryptographic Features Stabilization (AKS, etc.)**: Fix AKS routing logic, improve error handling, document crypto features, update docs and code.
+
 
 ### Optimization Implementation
 - [ ] **Optimization Implementation**: Performance improvements for arithmetic, bitwise, comparison, and assignment operators.
@@ -202,12 +201,12 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ### 🔥 **CRITICAL PRIORITY**
 1. **Database system improvements**: General database functionality enhancements
 2. **Custom Delimiter Edge Cases**: Fix custom delimiter implementation issues
+3. **Cryptographic Features Stabilization (AKS, etc.)**: Fix AKS routing logic, improve error handling, document crypto features, update docs and code
 
 ### 🚨 **HIGH PRIORITY**
 3. **Unicode Language Binding**: Add `case_fold()`, Unicode-aware string methods, Turkish I support
 4. **String Interpolation**: Implement template literal-style interpolation and expression evaluation in strings
-5. **Cryptographic Features Stabilization**: Fix AKS routing logic, improve error handling, document crypto features
-6. **Optimization Implementation**: Performance improvements for arithmetic, bitwise, comparison, and assignment operators
+5. **Optimization Implementation**: Performance improvements for arithmetic, bitwise, comparison, and assignment operators
 7. **CLI Enhancement (Phase 2)**: Performance options, environment management, error handling, advanced debugging, performance profiling
 8. **CLI Standardization**: Replace non-standard options, remove conflicts, move GUI options
 9. **Core Language Features**: Line comments, loop syntax, error handling improvements

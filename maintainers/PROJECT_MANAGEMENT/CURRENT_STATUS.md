@@ -12,6 +12,22 @@
 
 *No recently resolved issues at this time.*
 
+---
+
+## 🚨 ACTIVE WORK ITEMS
+
+### 1. Custom Delimiter Edge Cases
+- **Status:** CRITICAL PRIORITY, ready to start
+- **Goal:** Fix custom delimiter implementation issues that currently cause test failures
+- **Impact:** High - affects any production use with custom delimiters
+- **Need:** Fix the underlying implementation
+- **Test Scripts:** Need to identify and run failing custom delimiter tests
+- **Success Criteria:**
+  - All custom delimiter tests pass
+  - Robust handling of edge cases
+  - Production-ready custom delimiter functionality
+  - Improved error handling for delimiter-related issues
+
 
 
 ---
@@ -39,8 +55,8 @@
 
 ## 📊 CURRENT FOCUS
 
-**Primary Goal:** Database system improvements and CLI enhancement (see [`BACKLOG.md`](BACKLOG.md) for full roadmap)
+**Primary Goal:** Fix critical production issues (custom delimiter edge cases, database improvements, cryptographic features)
 
-**Next Priority:** Custom delimiter edge cases and database system improvements
+**Next Priority:** Custom delimiter edge cases - identify and fix failing tests
 
 **Last Updated:** August 2025 
