@@ -284,9 +284,9 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     #endif // DEBUG_END
     
     // For multiline patterns with custom delimiters, treat the entire input as one string
-    // FIX: If a custom delimiter (not '\n') is present, treat as single string for multiline patterns, even without s flag
+    // FIX: Handle multiline patterns with custom delimiters properly
     bool custom_delimiter = (!line_delim.empty() && line_delim != "\n");
-    if ((is_multiline || has_s_flag) && custom_delimiter) {
+    if ((is_multiline || has_s_flag) && (custom_delimiter || has_s_flag)) {
         #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
         printf("DEBUG: Multiline pattern handling block entered\n");
         printf("DEBUG: is_multiline: %s, has_s_flag: %s, line_delim: '%s'\n", is_multiline ? "true" : "false", has_s_flag ? "true" : "false", line_delim.c_str());
@@ -310,7 +310,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             // For multiline patterns with s flag, use the original input with delimiters
             // The regex engine should handle the delimiters as part of the pattern matching
             working_input = original_input_with_delimiters;
-        } else if (is_multiline) {
+        } else if (is_multiline && custom_delimiter) {
             // FIX: For multiline patterns with a custom delimiter, treat as single string
             // This allows patterns like 'start.*end' to match across custom delimiters (even multi-char)
             // This is a Grapa extension beyond traditional grep/ripgrep

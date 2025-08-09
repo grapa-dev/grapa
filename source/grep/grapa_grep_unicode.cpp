@@ -208,135 +208,203 @@ bool has_lookaround_assertions(const std::string& pattern) {
 
 // Helper: Extract matches with proper lookaround handling
 std::vector<std::string> extract_matches_with_lookaround(const std::string& input, const std::string& pattern, bool case_insensitive, bool diacritic_insensitive, GrapaUnicode::NormalizationForm norm) {
-    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
-    printf("DEBUG: extract_matches_with_lookaround called\n");
-    printf("DEBUG: Pattern: '%s'\n", pattern.c_str());
-    printf("DEBUG: Input length: %zu\n", input.length());
-    printf("DEBUG: Case insensitive: %s\n", case_insensitive ? "true" : "false");
-    printf("DEBUG: Diacritic insensitive: %s\n", diacritic_insensitive ? "true" : "false");
-    #endif // DEBUG_END
-    
     std::vector<std::string> matches;
     
-    // Use the original pattern to find match positions
     GrapaUnicode::UnicodeRegex regex(pattern, case_insensitive, diacritic_insensitive, norm);
+    // Compile the regex before checking if it's valid
     regex.compile(input);
-    
     if (!regex.is_valid()) {
-        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
-        printf("DEBUG: Regex compilation failed for pattern '%s'\n", pattern.c_str());
-        #endif // DEBUG_END
         return matches;
     }
     
+    auto positions = regex.find_all(GrapaUnicode::UnicodeString(input));
+    
     #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
-    printf("DEBUG: Regex compilation successful for pattern '%s'\n", pattern.c_str());
-    #endif // DEBUG_END
-
-    // Get all match positions
-    auto match_positions = regex.find_all(GrapaUnicode::UnicodeString(input));
-    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
-    printf("DEBUG: Found %zu match positions\n", match_positions.size());
+    printf("DEBUG: extract_matches_with_lookaround - found %zu positions\n", positions.size());
     #endif // DEBUG_END
     
-    for (const auto& pos : match_positions) {
-        std::string match_text;
-        
-        if (pattern.find("(?=") != std::string::npos) {
-            // Positive lookahead: extract everything before the lookahead
-            size_t lookahead_pos = pattern.find("(?=");
-            std::string before_lookahead = pattern.substr(0, lookahead_pos);
+    for (const auto& pos : positions) {
+        if (pos.second > 0) {
+            // For lookaround assertions, we need to extract only the consuming part
+            // For example, in pattern "\w+(?=\d)", we want only the "\w+" part
             
-            // For \w+(?=\d), we want to extract just the \w+ part
-            // The match span includes the lookahead, so we need to find where the word ends
-            std::string full_match = input.substr(pos.first, pos.second);
-            
-            // Find the end of the word part (before the digits)
-            size_t word_end = 0;
-            for (size_t i = 0; i < full_match.length(); ++i) {
-                if (std::isdigit(full_match[i])) {
-                    word_end = i;
-                    break;
+            // Check if this is a lookaround pattern
+            if (pattern.find("(?=") != std::string::npos || pattern.find("(?!") != std::string::npos ||
+                pattern.find("(?<=") != std::string::npos || pattern.find("(?<!") != std::string::npos) {
+                
+                #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                printf("DEBUG: Processing lookaround pattern: '%s'\n", pattern.c_str());
+                #endif // DEBUG_END
+                
+                // Parse the pattern to find the consuming part
+                std::string consuming_pattern;
+                size_t consuming_start = 0;
+                size_t consuming_end = 0;
+                
+                if (pattern.find("(?=") != std::string::npos || pattern.find("(?!") != std::string::npos) {
+                    // Lookahead assertion - the consuming part is before the lookahead
+                    size_t lookahead_pos = pattern.find("(?=");
+                    if (lookahead_pos == std::string::npos) {
+                        lookahead_pos = pattern.find("(?!");
+                    }
+                    if (lookahead_pos != std::string::npos) {
+                        consuming_pattern = pattern.substr(0, lookahead_pos);
+                        consuming_start = pos.first;
+                        // For lookahead, the consuming part ends where the lookahead starts
+                        // We need to find where the consuming part actually ends
+                        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                        printf("DEBUG: Found lookahead at pos %zu, consuming_pattern: '%s'\n", lookahead_pos, consuming_pattern.c_str());
+                        #endif // DEBUG_END
+                    }
+                } else if (pattern.find("(?<=") != std::string::npos || pattern.find("(?<!") != std::string::npos) {
+                    // Lookbehind assertion - the consuming part is after the lookbehind
+                    size_t lookbehind_pos = pattern.find("(?<=");
+                    if (lookbehind_pos == std::string::npos) {
+                        lookbehind_pos = pattern.find("(?<!");
+                    }
+                    if (lookbehind_pos != std::string::npos) {
+                        // Find the closing parenthesis of the lookbehind
+                        size_t close_pos = pattern.find(')', lookbehind_pos);
+                        if (close_pos != std::string::npos) {
+                            consuming_pattern = pattern.substr(close_pos + 1);
+                            consuming_start = pos.first;
+                            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                            printf("DEBUG: Found lookbehind at pos %zu, consuming_pattern: '%s'\n", lookbehind_pos, consuming_pattern.c_str());
+                            #endif // DEBUG_END
+                        }
+                    }
                 }
-            }
-            if (word_end > 0) {
-                match_text = full_match.substr(0, word_end);
-            } else {
-                match_text = full_match;
-            }
-        } else if (pattern.find("(?!") != std::string::npos) {
-            // Negative lookahead: extract everything before the lookahead
-            size_t lookahead_pos = pattern.find("(?!");
-            std::string before_lookahead = pattern.substr(0, lookahead_pos);
-            
-            // For \w+(?!\d), we want to extract just the \w+ part
-            std::string full_match = input.substr(pos.first, pos.second);
-            
-            // Find the end of the word part (before the digits)
-            size_t word_end = 0;
-            for (size_t i = 0; i < full_match.length(); ++i) {
-                if (std::isdigit(full_match[i])) {
-                    word_end = i;
-                    break;
+                
+                // If we found a consuming pattern, use it to extract the correct text
+                if (!consuming_pattern.empty()) {
+                    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                    printf("DEBUG: Using consuming pattern: '%s'\n", consuming_pattern.c_str());
+                    #endif // DEBUG_END
+                    
+                    // Create a new regex for just the consuming part
+                    GrapaUnicode::UnicodeRegex consuming_regex(consuming_pattern, case_insensitive, diacritic_insensitive, norm);
+                    consuming_regex.compile(input);
+                    if (consuming_regex.is_valid()) {
+                        auto consuming_positions = consuming_regex.find_all(GrapaUnicode::UnicodeString(input));
+                        
+                        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                        printf("DEBUG: Consuming regex found %zu positions\n", consuming_positions.size());
+                        #endif // DEBUG_END
+                        
+                        // Find the consuming match that corresponds to our lookaround match
+                        for (const auto& consuming_pos : consuming_positions) {
+                            #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                            printf("DEBUG: Checking consuming_pos: first=%zu, second=%zu vs lookaround_pos: first=%zu, second=%zu\n", 
+                                   consuming_pos.first, consuming_pos.second, pos.first, pos.second);
+                            #endif // DEBUG_END
+                            
+                            // The consuming part should start at the same position as the lookaround match
+                            if (consuming_pos.first == pos.first) {
+                                // Found the corresponding consuming part
+                                // For lookahead assertions, we need to find where the consuming part ends
+                                // by looking for the first character that satisfies the lookahead
+                                size_t match_length = consuming_pos.second;
+                                
+                                // For lookahead assertions, we need to find the actual end of the consuming part
+                                if (pattern.find("(?=") != std::string::npos || pattern.find("(?!") != std::string::npos) {
+                                    // Find the first character that satisfies the lookahead
+                                    size_t start_pos = consuming_pos.first;
+                                    size_t end_pos = start_pos + consuming_pos.second;
+                                    
+                                    // Look for the first character that satisfies the lookahead
+                                    for (size_t i = start_pos; i < end_pos && i < input.length(); ++i) {
+                                        char c = input[i];
+                                        // Check if this character satisfies the lookahead pattern
+                                        if (pattern.find("(?=\\d)") != std::string::npos && isdigit(c)) {
+                                            // Found the first digit, this is where the consuming part ends
+                                            match_length = i - start_pos;
+                                            break;
+                                        } else if (pattern.find("(?!\\d)") != std::string::npos && !isdigit(c)) {
+                                            // For negative lookahead, continue until we find a non-digit
+                                            match_length = i - start_pos + 1;
+                                        }
+                                    }
+                                }
+                                
+                                std::string consuming_text = input.substr(consuming_pos.first, match_length);
+                                if (!consuming_text.empty()) {
+                                    matches.push_back(consuming_text);
+                                }
+                                break;
+                            }
+                        }
+                    } else {
+                        #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                        printf("DEBUG: Consuming regex compilation failed\n");
+                        #endif // DEBUG_END
+                    }
+                } else {
+                    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+                    printf("DEBUG: No consuming pattern found, using fallback\n");
+                    #endif // DEBUG_END
+                    // Fallback: use the original match
+                    std::string match_text = input.substr(pos.first, pos.second);
+                    if (!match_text.empty()) {
+                        matches.push_back(match_text);
+                    }
                 }
-            }
-            if (word_end > 0) {
-                match_text = full_match.substr(0, word_end);
             } else {
-                match_text = full_match;
-            }
-        } else if (pattern.find("(?<=") != std::string::npos) {
-            // Positive lookbehind: extract everything after the lookbehind
-            size_t lookbehind_pos = pattern.find("(?<=");
-            std::string after_lookbehind = pattern.substr(lookbehind_pos + 4); // Skip "(?<="
-            
-            // For (?<=\d)\w+, we want to extract just the \w+ part
-            std::string full_match = input.substr(pos.first, pos.second);
-            
-            // Find the start of the word part (after the digits)
-            size_t word_start = 0;
-            for (size_t i = 0; i < full_match.length(); ++i) {
-                if (std::isalpha(full_match[i])) {
-                    word_start = i;
-                    break;
+                // No lookaround assertions, use the original match
+                std::string match_text = input.substr(pos.first, pos.second);
+                if (!match_text.empty()) {
+                    matches.push_back(match_text);
                 }
-            }
-            if (word_start < full_match.length()) {
-                match_text = full_match.substr(word_start);
-            } else {
-                match_text = full_match;
-            }
-        } else if (pattern.find("(?<!") != std::string::npos) {
-            // Negative lookbehind: extract everything after the lookbehind
-            size_t lookbehind_pos = pattern.find("(?<!");
-            std::string after_lookbehind = pattern.substr(lookbehind_pos + 4); // Skip "(?<!"
-            
-            // For (?<!\d)\w+, we want to extract just the \w+ part
-            std::string full_match = input.substr(pos.first, pos.second);
-            
-            // Find the start of the word part (after the digits)
-            size_t word_start = 0;
-            for (size_t i = 0; i < full_match.length(); ++i) {
-                if (std::isalpha(full_match[i])) {
-                    word_start = i;
-                    break;
-                }
-            }
-            if (word_start < full_match.length()) {
-                match_text = full_match.substr(word_start);
-            } else {
-                match_text = full_match;
             }
         } else {
-            // Fallback to full match
-            match_text = input.substr(pos.first, pos.second);
+            // Zero-width match - this might be a pure lookaround assertion
+            // For example, "(?=test)" would match the position before "test" but not consume anything
+            // In this case, we need to determine what text to return based on the context
+            
+            // Check the pattern to determine the type of lookaround
+            if (pattern.find("(?=") != std::string::npos) {
+                // Positive lookahead: return the text that follows the match position
+                if (pos.first < input.length()) {
+                    std::string following_text = input.substr(pos.first);
+                    if (!following_text.empty()) {
+                        matches.push_back(following_text);
+                    }
+                }
+            } else if (pattern.find("(?!") != std::string::npos) {
+                // Negative lookahead: return the text that doesn't match the pattern
+                if (pos.first < input.length()) {
+                    std::string following_text = input.substr(pos.first);
+                    if (!following_text.empty()) {
+                        matches.push_back(following_text);
+                    }
+                }
+            } else if (pattern.find("(?<=") != std::string::npos) {
+                // Positive lookbehind: return the text that precedes the match position
+                if (pos.first > 0) {
+                    std::string preceding_text = input.substr(0, pos.first);
+                    if (!preceding_text.empty()) {
+                        matches.push_back(preceding_text);
+                    }
+                }
+            } else if (pattern.find("(?<!") != std::string::npos) {
+                // Negative lookbehind: return the text that doesn't match the pattern
+                if (pos.first > 0) {
+                    std::string preceding_text = input.substr(0, pos.first);
+                    if (!preceding_text.empty()) {
+                        matches.push_back(preceding_text);
+                    }
+                }
+            }
         }
         
-        matches.push_back(match_text);
         #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
-        printf("DEBUG: Extracted match at pos %zu, length %zu: '%s'\n", pos.first, pos.second, match_text.c_str());
+        printf("DEBUG: Extracted match at pos %zu, length %zu: '%s'\n", pos.first, pos.second, 
+               pos.second == 0 ? "zero-width" : input.substr(pos.first, pos.second).c_str());
         #endif // DEBUG_END
     }
+    
+    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+    printf("DEBUG: extract_matches_with_lookaround returning %zu matches\n", matches.size());
+    #endif // DEBUG_END
     
     return matches;
 }
@@ -491,7 +559,8 @@ std::vector<MatchPosition> grep_unicode_impl(
 
         // Remove trailing delimiter for exact match
         if (exact_match && !line_copy.empty() && line_copy.size() >= effective_delimiter.size()) {
-            if (line_copy.compare(line_copy.size() - effective_delimiter.size(), effective_delimiter.size(), effective_delimiter) == 0) {
+            if (line_copy.compare(line_copy.size() - effective_delimiter.size(), effective_delimiter.size(), effective_delimiter) == 0)
+            {
                 line_copy = line_copy.substr(0, line_copy.size() - effective_delimiter.size());
             }
         }
@@ -1188,7 +1257,7 @@ void UnicodeRegex::compile(const std::string& input) {
         std::string pattern_utf8 = parse_unicode_escapes(pattern_to_compile);
         int error_code = 0;
         PCRE2_SIZE error_offset = 0;
-        uint32_t compile_flags = PCRE2_UTF | PCRE2_UCP | PCRE2_JIT_COMPLETE;
+        uint32_t compile_flags = PCRE2_UTF | PCRE2_UCP;
         // Only use PCRE2_CASELESS if we haven't already case-folded the strings
         // The case folding is handled in the calling code for better control
         // if (case_insensitive_) {
