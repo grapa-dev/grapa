@@ -1,12 +1,12 @@
 # GrapaDBX Development Backlog
 
-## ⚠️ CRITICAL WARNING: GrapaDB Index Corruption Bug
+## ✅ **UPDATED**: GrapaDB Index Corruption Bug - RESOLVED
 
-**IMPORTANT**: GrapaDB has an unfixable index corruption bug that occurs after the 3rd record update, causing the first record's index to become corrupted (e.g., `RREC (0) key=0 node=(0,0)`). This bug is the primary reason for developing GrapaDBX. **DO NOT copy GrapaDB index update code** - use it only as a reference for patterns, not implementation.
+**IMPORTANT**: The GrapaDB index corruption bug has been **RESOLVED** (August 2025). ROW tables now work correctly after multiple record updates. The bug that previously caused the first record's index to become corrupted has been fixed.
 
-**Evidence**: Running `./grapa test/test_row.grc` shows that after the third `set` operation, the `RPTR` for the first record points to `RREC (0) key=0 node=(0,0)`, leading to `{"error":-1}` on retrieval.
+**Evidence**: Running `./grapa test/test_row.grc` now shows that all records remain readable after multiple insertions, including the first record after adding the third record.
 
-**Impact**: GrapaDBX must implement its own index management system, avoiding the corruption-prone update mechanisms in GrapaDB.
+**Impact**: GrapaDBX development can now reference GrapaDB's working index management system as a valid implementation pattern.
 
 
 
