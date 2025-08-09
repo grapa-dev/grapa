@@ -886,7 +886,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         // Pattern-based behavior control:
         // - Regular patterns (e.g., 'line', 'word'): Return full segments containing matches
         // - Lookaround assertions (e.g., '\w+(?=\d)'): Return only the matched portions
-        // - Unicode script properties (e.g., '\p{sc=Latin}+'): Return only the matched portions
+        // - Unicode script properties (e.g., '\p{sc=Latin}+'): Return only the matched portions (FIXED)
         // - Conditional patterns (e.g., '(a)?(?(1)b|c)'): Return only the matched portions
         // - Option 'f' overrides: forces full segments for all pattern types
         if (full_segments_mode) {
@@ -913,9 +913,56 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
             // Return matched portions for lookaround assertions, Unicode script properties, and conditional patterns
             std::vector<std::string> matched_portions;
             
-            // Use the extracted_matches which contain the actual pattern matches
-            for (const auto& match : extracted_matches) {
-                matched_portions.push_back(match);
+            // For Unicode script properties, we need to extract complete words, not individual characters
+            if (has_unicode_script) {
+                // Extract complete words that match the Unicode script property
+                std::vector<std::string> words;
+                std::vector<std::string> segments = split_by_delimiter(working_input, line_delim);
+                
+                // Define case_insensitive and diacritic_insensitive for this scope
+                bool case_insensitive = (filtered_options.find('i') != std::string::npos);
+                bool diacritic_insensitive = (filtered_options.find('d') != std::string::npos);
+                
+                for (const auto& segment : segments) {
+                    // Find all matches in this segment
+                    GrapaUnicode::UnicodeRegex regex(effective_pattern, case_insensitive, diacritic_insensitive, norm);
+                    regex.compile(segment);
+                    
+                    if (regex.is_valid()) {
+                        auto matches = regex.find_all(GrapaUnicode::UnicodeString(segment));
+                        
+                        // Group consecutive matches into words
+                        std::string current_word;
+                        size_t last_end = 0;
+                        
+                        for (const auto& match : matches) {
+                            if (match.first == last_end) {
+                                // Consecutive match, append to current word
+                                current_word += segment.substr(match.first, match.second);
+                            } else {
+                                // Non-consecutive match, save current word and start new one
+                                if (!current_word.empty()) {
+                                    words.push_back(current_word);
+                                    current_word.clear();
+                                }
+                                current_word = segment.substr(match.first, match.second);
+                            }
+                            last_end = match.first + match.second;
+                        }
+                        
+                        // Add the last word if any
+                        if (!current_word.empty()) {
+                            words.push_back(current_word);
+                        }
+                    }
+                }
+                
+                matched_portions = words;
+            } else {
+                // Use the extracted_matches which contain the actual pattern matches
+                for (const auto& match : extracted_matches) {
+                    matched_portions.push_back(match);
+                }
             }
             
             #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
