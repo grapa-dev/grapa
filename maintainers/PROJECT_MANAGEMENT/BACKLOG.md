@@ -6,9 +6,9 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ## 🆕 **NEW: Database Engineering Best Practices Review**
 
-### Status: ⏳ **PENDING REVIEW** - Extracted valuable patterns from ROW bug investigation
+### Status: ⏳ **PENDING REVIEW** - Extracted valuable patterns from database development experience
 
-**Latest Update**: Created comprehensive database engineering best practices document (`../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md`) that extracts valuable debugging methodologies, testing strategies, and implementation patterns from the ROW Table Index Corruption Bug investigation. This document preserves general engineering knowledge while removing specific bug details.
+**Latest Update**: Created comprehensive database engineering best practices document (`../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md`) that extracts valuable debugging methodologies, testing strategies, and implementation patterns from database development experience. This document preserves general engineering knowledge while providing reusable patterns.
 
 ### 📋 **Review Tasks**
 - [ ] **Review Extracted Content**: Evaluate the extracted patterns and methodologies for completeness and accuracy
@@ -68,11 +68,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ## ✅ **RECENTLY RESOLVED** (August 2025)
 
 ### Database System Issues
-- [x] **ROW Table Index Corruption Bug**: ✅ **RESOLVED** - ROW table index corruption issue has been fixed. Reference: [`../RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`](../RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md)
-  - **Status**: RESOLVED (August 2025) - ROW tables now work correctly
-  - **Verification**: All test scripts (`test_row.grc`, `test_row_bug_demo.grc`) pass successfully
-  - **Test Script**: `test_row_bug_demo.grc` - now passes
-  - **Result**: ROW tables are now fully functional for production use
+*No recently resolved database issues at this time.*
 
 ### Production Readiness Issues
 - [ ] **Custom Delimiter Edge Cases**: Fix custom delimiter implementation issues that currently cause test failures
@@ -160,7 +156,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] **Implement connection pooling**
 - [ ] **Add support for transactions**
 - [ ] **Improve query optimization**
-- [ ] **Multi-Field Set/Get for Records**: Investigate and implement a way to set and get multiple fields at once for a record (batch .set()/.get()). This will improve performance for records with many fields. Consider supporting $LIST or similar structures for batch operations. Note: RAW field type can store any Grapa data type, including $LIST (enhanced JSON), which may be leveraged for this feature. Ready for implementation now that ROW corruption issue is resolved.
+- [ ] **Multi-Field Set/Get for Records**: Investigate and implement a way to set and get multiple fields at once for a record (batch .set()/.get()). This will improve performance for records with many fields. Consider supporting $LIST or similar structures for batch operations. Note: RAW field type can store any Grapa data type, including $LIST (enhanced JSON), which may be leveraged for this feature.
 - [ ] **Expose custom index creation and management** (including multi-field indexes) to the Grapa language and CLI. Currently, only the default $KEY index is created automatically; custom indexes can only be created via the C++ API. Add Grapa language/CLI commands for user-defined indexes.
 
 ### Test Coverage Expansion
@@ -241,7 +237,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [x] **Float Comparison Fixes**: Fixed float comparison bugs including precision normalization and mixed type comparisons
 - [x] **String vs Number Comparison**: Improved handling of string vs number comparisons with proper numeric conversion attempts
 - [x] **CLI Interface Improvement**: Completed best-in-class CLI interface matching Python standards and user expectations
-- [x] **ROW Table Index Corruption Bug**: ✅ **RESOLVED** (August 2025) - Root cause was index entry value not set to record reference (recCursor.mValue). Fixed in SetRecordField for ROW, COL, and GROUP tables. Tests confirm no corruption after multiple inserts.
+
 - [x] **Database system improvements**: Various database functionality enhancements completed inserts.
 
 ### Previous Releases
