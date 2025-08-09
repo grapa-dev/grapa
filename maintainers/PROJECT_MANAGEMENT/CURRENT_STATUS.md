@@ -17,11 +17,27 @@
 ## 🚨 ACTIVE WORK ITEMS
 
 ### 1. Custom Delimiter Edge Cases
-- **Status:** CRITICAL PRIORITY, ready to start
+- **Status:** CRITICAL PRIORITY, investigation in progress
 - **Goal:** Fix custom delimiter implementation issues that currently cause test failures
 - **Impact:** High - affects any production use with custom delimiters
-- **Need:** Fix the underlying implementation
-- **Test Scripts:** Need to identify and run failing custom delimiter tests
+- **Test Scripts:** `test/grep/test_comprehensive_grep_combinations.grc` demonstrates all issues
+- **Issues Identified:**
+  1. **Multiline patterns (s flag)** - `start.*end` patterns don't work with custom delimiters
+  2. **Lookaround assertions** - Positive/negative lookahead/lookbehind not working correctly
+  3. **Unicode script properties** - Matching individual characters instead of complete words
+  4. **Grapheme clusters** - Including delimiter characters in output
+  5. **Word boundaries** - Not working correctly with custom delimiters
+- **Priority Order:**
+  1. Fix multiline patterns (s flag) - highest impact
+  2. Fix lookaround assertions - high impact
+  3. Fix Unicode script properties - medium impact
+  4. Fix grapheme cluster delimiter handling - medium impact
+  5. Fix word boundaries - lower impact
+- **Next Steps:**
+  1. Investigate C++ implementation of custom delimiter handling
+  2. Fix multiline pattern support first
+  3. Fix lookaround assertions second
+  4. Test and validate each fix
 - **Success Criteria:**
   - All custom delimiter tests pass
   - Robust handling of edge cases
