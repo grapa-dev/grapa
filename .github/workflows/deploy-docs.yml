@@ -1,14 +1,7 @@
 name: Deploy Documentation
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'docs/**'
-      - 'maintainers/**'
-      - '.github/workflows/deploy-docs.yml'
-      - 'scripts/deploy_docs.sh'
-  workflow_dispatch:  # Allow manual triggering
+  workflow_dispatch:  # Manual triggering only - no automatic triggers
 
 permissions:
   contents: write
