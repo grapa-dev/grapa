@@ -3284,6 +3284,9 @@ Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence 
 &gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){a.upper()&lt;= 3eb.upper();})
 [&quot;a&quot;,&quot;A&quot;,&quot;B&quot;,&quot;b&quot;,&quot;b&quot;,&quot;c&quot;]
 
+&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){a.casefold()&lt;= 3eb.casefold();})
+[&quot;a&quot;,&quot;A&quot;,&quot;B&quot;,&quot;b&quot;,&quot;b&quot;,&quot;c&quot;]
+
 &gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){$local.c=a.upper()&lt;= 3eb.upper();if(c==0)c=a&lt;= 3eb;c;})
 [A,a,B,b,b,c]
 
@@ -3299,6 +3302,9 @@ Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence 
 [&quot;A&quot;,&quot;B&quot;,&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]
 
 &gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].unique(op(a,b){a.upper()&lt;= 3eb.upper();})
+[&quot;A&quot;,&quot;b&quot;,&quot;c&quot;]
+
+&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].unique(op(a,b){a.casefold()&lt;= 3eb.casefold();})
 [&quot;A&quot;,&quot;b&quot;,&quot;c&quot;]
 </code></pre></div></p>
 <h2 id="getnameindex">getname([index])</h2>

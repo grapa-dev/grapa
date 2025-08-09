@@ -3930,10 +3930,12 @@ sum = data.reduce(op(acc, x) { return acc + x; }, 0);
 /* String methods */
 upper = text.upper();
 lower = text.lower();
+casefold = text.casefold();
 length = text.len();
 
 (&quot;Upper: &quot; + upper).echo();
 (&quot;Lower: &quot; + lower).echo();
+(&quot;Casefold: &quot; + casefold).echo();
 (&quot;Length: &quot; + length).echo();
 
 /* String splitting and joining */

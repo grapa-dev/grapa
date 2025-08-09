@@ -2198,6 +2198,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#casefold" class="md-nav__link">
+    <span class="md-ellipsis">
+      casefold()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#data-stoprangestartstep" class="md-nav__link">
     <span class="md-ellipsis">
       data = (stop).range(start,step)
@@ -3919,6 +3928,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#casefold" class="md-nav__link">
+    <span class="md-ellipsis">
+      casefold()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#data-stoprangestartstep" class="md-nav__link">
     <span class="md-ellipsis">
       data = (stop).range(start,step)
@@ -4393,6 +4411,13 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 <p>Converts to lower.</p>
 <div class="highlight"><pre><span></span><code>&quot;HI&quot;.lower() -&gt; &quot;hi&quot;
 </code></pre></div>
+<h2 id="casefold">casefold()</h2>
+<p>Converts to Unicode case folded form for case-insensitive comparisons.</p>
+<div class="highlight"><pre><span></span><code>&quot;İstanbul&quot;.casefold() -&gt; &quot;istanbul&quot;
+&quot;ß&quot;.casefold() -&gt; &quot;ss&quot;
+&quot;HELLO&quot;.casefold() -&gt; &quot;hello&quot;
+</code></pre></div>
+<p><strong>Note</strong>: <code>casefold()</code> is more aggressive than <code>lower()</code> and handles Unicode-specific case conversions like Turkish İ → i and German ß → ss.</p>
 <h2 id="data-stoprangestartstep">data = (stop).range(start,step)</h2>
 <div class="highlight"><pre><span></span><code>(9).range(1,2);
 [1,3,5,7]

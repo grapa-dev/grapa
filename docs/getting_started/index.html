@@ -3645,6 +3645,7 @@ content = $file().read(&quot;data.txt&quot;);
 lines = content.split(&quot;\n&quot;);
 filtered = lines.filter(op(line) { line.len() &gt; 0; });
 result = filtered.map(op(line) { line.upper(); });
+casefolded = filtered.map(op(line) { line.casefold(); });
 result.echo();
 
 json_data = $file().read(&quot;data.json&quot;).json();
@@ -3668,6 +3669,7 @@ dot_product.echo();  /* 32 */
 <div class="highlight"><pre><span></span><code>text = &quot;  hello world  &quot;;
 trimmed = text.trim();
 upper = trimmed.upper();
+casefolded = trimmed.casefold();
 words = upper.split(&quot; &quot;);
 words.echo();  /* [&quot;HELLO&quot;, &quot;WORLD&quot;] */
 

@@ -4938,6 +4938,7 @@ doubled = numbers.map(op(x) { x * 2; });  /* [2, 4, 6, 8, 10] */
 /* Transform with string operations */
 names = [&quot;john&quot;, &quot;jane&quot;, &quot;bob&quot;];
 uppercase = names.map(op(name) { name.upper(); });  /* [&quot;JOHN&quot;, &quot;JANE&quot;, &quot;BOB&quot;] */
+casefolded = names.map(op(name) { name.casefold(); });  /* [&quot;john&quot;, &quot;jane&quot;, &quot;bob&quot;] */
 
 /* Parallel processing with thread count */
 large_data = (1000000).range(0,1);
@@ -5955,6 +5956,10 @@ StringProcessor = class {
         text.trim().upper();  // Returns processed string
     };
 
+    processCasefold = op(text) {
+        text.trim().casefold();  // Returns case-folded string
+    };
+
     reverse = op(text) {
         text.reverse();  // Returns reversed string
     };
@@ -5974,6 +5979,10 @@ result.echo();  // Output: Result: DLROW OLLEH
 <div class="highlight"><pre><span></span><code>/* String chaining */
 result = &quot;  hello world  &quot;.trim().upper().replace(&quot;WORLD&quot;, &quot;GRAPA&quot;);
 result.echo();  // Output: HELLO GRAPA
+
+/* String chaining with case folding */
+result = &quot;  İstanbul  &quot;.trim().casefold().upper();
+result.echo();  // Output: ISTANBUL
 
 /* Array chaining */
 result = [1, 2, 3, 4, 5].filter(op(x) { x % 2 == 0; }).map(op(x) { x * 2; });
@@ -6048,126 +6057,6 @@ while (i &lt; operations.len()) {
 funcs[&quot;add&quot;](5, 3).echo();  // 8
 funcs[&quot;mul&quot;](5, 3).echo();  // 15
 </code></pre></div>
-<h2 id="using-syscompile-for-performance">Using <code>$sys().compile()</code> for Performance</h2>
-<ul>
-<li>Pre-compiles scripts for maximum performance</li>
-<li>Creates $OP objects that can be executed with <code>$sys().eval()</code></li>
-<li>Ideal for frequently executed code</li>
-</ul>
-<div class="highlight"><pre><span></span><code>/* Compile once, execute many times */
-compiled = $sys().compile(&quot;input * 2 + offset&quot;);
-
-/* Execute with different parameters */
-result1 = $sys().eval(compiled, {&quot;input&quot;: 10, &quot;offset&quot;: 5}); // 25
-result2 = $sys().eval(compiled, {&quot;input&quot;: 20, &quot;offset&quot;: 10}); // 50
-</code></pre></div>
-<h2 id="advanced-meta-programming-patterns">Advanced Meta-Programming Patterns</h2>
-<h3 id="template-based-code-generation">Template-Based Code Generation</h3>
-<div class="highlight"><pre><span></span><code>/* Create reusable templates */
-template = &quot;result = base * multiplier + offset; result&quot;;
-process = op(&quot;base&quot;=0, &quot;multiplier&quot;=1, &quot;offset&quot;=0)(template);
-process(10, 2, 5).echo(); // 25
-</code></pre></div>
-<h3 id="configuration-driven-functions">Configuration-Driven Functions</h3>
-<div class="highlight"><pre><span></span><code>/* Generate functions from configuration */
-config = {&quot;operation&quot;: &quot;add&quot;, &quot;default&quot;: 0};
-code = &quot;a &quot; + config.operation + &quot; b&quot;;
-func = op(&quot;a&quot;=config.default, &quot;b&quot;=config.default)(code);
-func(5, 3).echo(); // 8
-</code></pre></div>
-<h2 id="when-to-use-each-method">When to Use Each Method</h2>
-<ul>
-<li><strong><code>$sys().eval()</code></strong>: One-off evaluation, user input processing, simple expressions</li>
-<li><strong><code>op()</code></strong>: Reusable functions, meta-programming, dynamic code generation</li>
-<li><strong><code>$sys().compile()</code></strong>: Performance-critical code, frequently executed operations</li>
-</ul>
-<h2 id="why-grapas-dynamic-execution-is-superior">Why Grapa's Dynamic Execution is Superior</h2>
-<ol>
-<li><strong>Human-readable execution trees</strong>: Unlike bytecode, $OP objects can be examined and understood</li>
-<li><strong>Direct manipulation</strong>: Execution trees can be created, modified, and executed directly</li>
-<li><strong>Compile-time optimization</strong>: Constant folding and expression simplification</li>
-<li><strong>Parameter binding</strong>: Both positional and named parameters with default values</li>
-<li><strong>Type safety</strong>: Execution trees maintain type information</li>
-<li><strong>Performance</strong>: Compiled execution trees are highly optimized</li>
-</ol>
-<p>See also: <a href="../../grc_scripts/">Advanced Scripting</a>, <a href="../../type/op/">$OP Type</a>, <a href="../../sys/sys/">System Functions</a>
-*/ </p>
-<h2 id="object-access-patterns-and-behaviors-empirical">Object Access Patterns and Behaviors (Empirical)</h2>
-<p>Grapa objects ($OBJ) behave differently from typical objects/maps in other languages. Here are key findings and best practices:</p>
-<ul>
-<li><strong>Property Access:</strong></li>
-<li>Dot notation: <code>p.name</code> (preferred)</li>
-<li>Bracket notation: <code>p["name"]</code> (preferred)</li>
-<li>Both return the property value (e.g., <code>Alice</code>).</li>
-<li><strong>Print Method vs Getter:</strong></li>
-<li><code>.getInfo()</code> prints a formatted string (side-effect, not a getter).</li>
-<li><code>.get()</code> is NOT a built-in method for $OBJ. If you want a <code>.get()</code> method, you must define it yourself as a member function in your class. Its behavior is entirely determined by your implementation.</li>
-<li>Example:
-    <div class="highlight"><pre><span></span><code>Person = class {
-    name = &quot;&quot;;
-    age = 0;
-    // You must define get() yourself if you want it
-    get = op() { {&quot;name&quot;: name, &quot;age&quot;: age}; };
-};
-p = obj Person;
-p.get(); // Works only because you defined it
-</code></pre></div></li>
-<li>If you do NOT define a <code>.get()</code> method, calling <code>p.get()</code> will result in an error.</li>
-<li><code>.get()</code> is not like Python or JavaScript, where it is built-in for objects/dicts.</li>
-<li><strong>Type and Length:</strong></li>
-<li><code>p.get().type()</code> returns <code>$LIST</code>.</li>
-<li><code>info = p.get(); info.len()</code> returns the number of properties (e.g., 3).</li>
-<li><code>p.len()</code> returns <code>{ "error":-1 }</code> (not supported on $OBJ).</li>
-<li><code>p.type()</code> returns <code>{ "error":-1 }</code> (not supported on $OBJ).</li>
-<li><strong>Index Access:</strong></li>
-<li><code>p[0]</code> returns the first property value (e.g., <code>Alice</code>). This is a side effect and not idiomatic.</li>
-<li><strong>Special Methods:</strong></li>
-<li><code>p.getThis()</code> returns a $LIST of the object's properties, not a true $OBJ.</li>
-<li><code>p.getLocal()</code> returns a $LIST of local variables (e.g., <code>{ "t":4 }</code>), not the property table.</li>
-<li><strong>Type Checks:</strong></li>
-<li><code>.type()</code> works on $LIST, not on $OBJ.</li>
-</ul>
-<p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>Person = class {
-    name = &quot;&quot;;
-    age = 0;
-    city = &quot;&quot;;
-    getInfo = op() { (&quot;Name: &quot; + name + &quot;, Age: &quot; + age.str() + &quot;, City: &quot; + city).echo(); };
-    get = op() { {&quot;name&quot;: name, &quot;age&quot;: age, &quot;city&quot;: city}; };
-    getLocal = op() { t = 4; $local; };
-    getThis = op() { $this; };
-};
-p = obj Person;
-p.name = &quot;Alice&quot;;
-p.age = 25;
-p.city = &quot;New York&quot;;
-
-p.name.echo();        // Alice
-p[&quot;name&quot;].echo();     // Alice
-p.getInfo();           // Name: Alice, Age: 25, City: New York
-info = p.get();
-info.len();            // 3
-info[&quot;name&quot;].echo();   // Alice
-p[0].echo();           // Alice (side effect)
-p.getThis();           // {&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:25,&quot;city&quot;:&quot;New York&quot;}
-p.getLocal();          // {&quot;t&quot;:4}
-p.len();               // {&quot;error&quot;:-1}
-p.type();              // {&quot;error&quot;:-1}
-info.type();           // $LIST
-</code></pre></div></p>
-<blockquote>
-<p><strong>Note:</strong> Grapa $OBJ is not a true map/object as in other languages. It is more like a class instance with $LIST-like property access. Use explicit getters for structured data, and prefer dot or bracket notation for property access. </p>
-</blockquote>
-<hr />
-<h2 id="see-also">See also</h2>
-<ul>
-<li><a href="../../api_reference/">API Reference</a></li>
-<li><a href="../use_cases/">Use Cases</a></li>
-<li><a href="../examples/">Examples</a></li>
-</ul>
-<!-- Advanced Topics link removed: content consolidated or planned/future -->
-
-<p>/<em> Note: As of 2025-07-22, all known DB/BTree and index issues are resolved and validated by comprehensive tests. The Grapa syntax and type system are empirically validated and up to date. </em>/ </p>
 
 
 
