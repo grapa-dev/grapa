@@ -39,8 +39,8 @@
 
 ## 📊 CURRENT FOCUS
 
-**Primary Goal:** Unicode language binding and CLI enhancement (see [`BACKLOG.md`](BACKLOG.md) for full roadmap)
+**Primary Goal:** Database system improvements and CLI enhancement (see [`BACKLOG.md`](BACKLOG.md) for full roadmap)
 
-**Next Priority:** Unicode language binding implementation
+**Next Priority:** Custom delimiter edge cases and database system improvements
 
 **Last Updated:** August 2025 
