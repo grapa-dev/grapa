@@ -214,7 +214,7 @@ main() {
         git push origin main
         
         log_info "Triggering custom GitHub Pages deployment workflow..."
-        if gh workflow run "Deploy Documentation" --field confirm="YES"; then
+        if gh workflow run "Deploy Documentation to GitHub Pages" --field confirm="YES"; then
             log_success "GitHub Pages deployment workflow triggered successfully."
             log_info "Monitor deployment at: https://github.com/grapa-dev/grapa/actions"
         else
