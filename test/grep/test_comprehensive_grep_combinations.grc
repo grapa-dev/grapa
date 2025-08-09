@@ -145,15 +145,15 @@ result4c = input4a.grep("line\\d+", "o", "|||");
 /* ======================================== */
 ("Test 5: Grapheme cluster issues analysis\n").echo();
 
-/* Test 5a: Grapheme clusters with custom delimiter - ISSUE IDENTIFIED */
+/* Test 5a: Grapheme clusters with custom delimiter - RESOLVED */
 input5a = "Hello 👋 world 🌍|||Goodbye 👋 universe 🌌";
 result5a = input5a.grep("\\X", "o", "|||");
 (("Input: " + input5a + "\n")).echo();
 (("Pattern: \\X (grapheme clusters), Options: o, Delimiter: |||\n")).echo();
 (("Result length: " + result5a.len() + "\n")).echo();
 (("First few results: " + result5a.str() + "\n")).echo();
-("Issue: Includes delimiter characters (|||) in output\n").echo();
-("Expected: Should not include delimiter characters\n").echo();
+("Status: RESOLVED - Delimiter characters are now excluded from output\n").echo();
+("Expected: Should not include delimiter characters ✅\n").echo();
 ("---\n").echo();
 
 /* Test 5b: Grapheme clusters without custom delimiter */

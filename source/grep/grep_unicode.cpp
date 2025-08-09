@@ -235,16 +235,37 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     if (match_only && effective_pattern == "\\X") {
         std::vector<std::string> graphemes;
         
-        // Process the entire input as one string to include newlines as separate grapheme clusters
-        // Use the original input with delimiters to preserve newlines
-        std::string full_input = original_input_with_delimiters;
+        // Check if we have a custom delimiter
+        bool custom_delimiter = (!line_delim.empty() && line_delim != "\n");
         
-        size_t offset = 0;
-        while (offset < full_input.size()) {
-            std::string cluster = extract_grapheme_cluster(full_input, offset);
-            if (cluster.empty()) break;
-            graphemes.push_back(GrapaUnicode::UnicodeRegex::get_normalized_text(cluster, false, GrapaUnicode::NormalizationForm::NFC));
-            offset += cluster.size();
+        if (custom_delimiter) {
+            // For custom delimiters, split the input and process each segment separately
+            std::vector<std::string> segments = split_by_delimiter(original_input_with_delimiters, line_delim);
+            
+            for (const auto& segment : segments) {
+                if (segment.empty()) continue;
+                
+                // Process each segment for grapheme clusters
+                size_t offset = 0;
+                while (offset < segment.size()) {
+                    std::string cluster = extract_grapheme_cluster(segment, offset);
+                    if (cluster.empty()) break;
+                    graphemes.push_back(GrapaUnicode::UnicodeRegex::get_normalized_text(cluster, false, GrapaUnicode::NormalizationForm::NFC));
+                    offset += cluster.size();
+                }
+            }
+        } else {
+            // For default delimiter (newline), process the entire input as one string
+            // This preserves newlines as separate grapheme clusters
+            std::string full_input = original_input_with_delimiters;
+            
+            size_t offset = 0;
+            while (offset < full_input.size()) {
+                std::string cluster = extract_grapheme_cluster(full_input, offset);
+                if (cluster.empty()) break;
+                graphemes.push_back(GrapaUnicode::UnicodeRegex::get_normalized_text(cluster, false, GrapaUnicode::NormalizationForm::NFC));
+                offset += cluster.size();
+            }
         }
         
         if (json_output) {
