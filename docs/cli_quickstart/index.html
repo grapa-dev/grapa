@@ -876,6 +876,75 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-language-capabilities-from-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Language Capabilities from CLI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using Language Capabilities from CLI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-and-timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance and Timing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-control-and-redirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Control and Redirection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-language-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Language Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-and-file-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database and File Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-and-concurrent-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel and Concurrent Processing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       Common Patterns
@@ -3669,6 +3738,75 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#using-language-capabilities-from-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Language Capabilities from CLI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using Language Capabilities from CLI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-and-timing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance and Timing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#environment-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-control-and-redirection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Control and Redirection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-language-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Language Features
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-and-file-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Database and File Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-and-concurrent-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel and Concurrent Processing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#common-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       Common Patterns
@@ -4006,6 +4144,175 @@ grapa<span class="w"> </span>-d<span class="w"> </span>-c<span class="w"> </span
 
 <span class="c1"># Interactive mode</span>
 grapa<span class="w"> </span>-i
+</code></pre></div>
+<h2 id="using-language-capabilities-from-cli">Using Language Capabilities from CLI</h2>
+<h3 id="performance-and-timing">Performance and Timing</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Performance profiling using built-in timing</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">start_time = \$TIME().utc();</span>
+<span class="s2">/* ... operations ... */</span>
+<span class="s2">end_time = \$TIME().utc();</span>
+<span class="s2">elapsed_ms = ((end_time - start_time) / 1000000).int();</span>
+<span class="s2">(&#39;Performance: &#39; + elapsed_ms + &#39; ms&#39;).echo();</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># Parallel processing with built-in capabilities</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">large_data = (1000000).range(0,1);</span>
+<span class="s2">squares = large_data.map(op(x) { x * x; }, 8);  /* 8 worker threads */</span>
+<span class="s2">(&#39;Processed &#39; + squares.len() + &#39; items in parallel&#39;).echo();</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># Performance optimization with caching</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">compiled = \$sys().compile(&#39;x * 2 + 1&#39;);</span>
+<span class="s2">result = \$sys().eval(compiled, {&#39;x&#39;: 5});</span>
+<span class="s2">(&#39;Optimized result: &#39; + result).echo();</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<h3 id="environment-management">Environment Management</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Get environment variables</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;(\$sys().getenv(&#39;USERNAME&#39;)).echo();&quot;</span>
+
+<span class="c1"># Set environment variables</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;\$sys().putenv(&#39;DEBUG_MODE&#39;, &#39;true&#39;); (&#39;DEBUG_MODE set to: &#39; + \$sys().getenv(&#39;DEBUG_MODE&#39;)).echo();&quot;</span>
+
+<span class="c1"># Get system information</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;(\$sys().getenv(\$VERSION)).echo();&quot;</span>
+
+<span class="c1"># Environment-based configuration</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">env = \$sys().getenv(&#39;NODE_ENV&#39;);</span>
+<span class="s2">if (env == &#39;production&#39;) {</span>
+<span class="s2">    &#39;Running in production mode&#39;.echo();</span>
+<span class="s2">} else {</span>
+<span class="s2">    &#39;Running in development mode&#39;.echo();</span>
+<span class="s2">}</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># Runtime debug configuration</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">/* Set debug mode at runtime */</span>
+<span class="s2">\$sys().putenv(&#39;DEBUG_MODE&#39;, &#39;true&#39;);</span>
+<span class="s2">\$sys().putenv(&#39;LOG_LEVEL&#39;, &#39;verbose&#39;);</span>
+
+<span class="s2">/* Check debug mode and adjust behavior */</span>
+<span class="s2">if (\$sys().getenv(&#39;DEBUG_MODE&#39;) == &#39;true&#39;) {</span>
+<span class="s2">    &#39;Debug mode enabled&#39;.echo();</span>
+<span class="s2">    log_level = \$sys().getenv(&#39;LOG_LEVEL&#39;);</span>
+<span class="s2">    (&#39;Log level: &#39; + log_level).echo();</span>
+
+<span class="s2">    /* Enable detailed logging */</span>
+<span class="s2">    start_time = \$TIME().utc();</span>
+<span class="s2">    &#39;Performing debug operations...&#39;.echo();</span>
+<span class="s2">    \$sys().sleep(100);  /* Simulate work */</span>
+<span class="s2">    end_time = \$TIME().utc();</span>
+<span class="s2">    elapsed = ((end_time - start_time) / 1000000).int();</span>
+<span class="s2">    (&#39;Debug operation took: &#39; + elapsed + &#39; ms&#39;).echo();</span>
+<span class="s2">} else {</span>
+<span class="s2">    &#39;Debug mode disabled&#39;.echo();</span>
+<span class="s2">}</span>
+
+<span class="s2">/* Runtime switching - turn debug off */</span>
+<span class="s2">\$sys().putenv(&#39;DEBUG_MODE&#39;, &#39;false&#39;);</span>
+<span class="s2">&#39;Debug mode turned off&#39;.echo();</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<h3 id="output-control-and-redirection">Output Control and Redirection</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Shell piping for output control (already works)</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello World&#39;.echo()&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>output.txt
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello World&#39;.echo()&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;Hello&quot;</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello World&#39;.echo()&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>log.txt
+
+<span class="c1"># Process output in scripts</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">result = &#39;Hello World&#39;.echo();</span>
+<span class="s2">result = result.upper();</span>
+<span class="s2">result.echo();</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># Output formatting and control</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">data = [&#39;apple&#39;, &#39;banana&#39;, &#39;cherry&#39;];</span>
+<span class="s2">for (item in data) {</span>
+<span class="s2">    (&#39;Item: &#39; + item.upper()).echo();</span>
+<span class="s2">}</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<h3 id="advanced-language-features">Advanced Language Features</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Dynamic code execution</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">template = &#39;name + \&quot;! You are \&quot; + age.str() + \&quot; years old.\&quot;&#39;;</span>
+<span class="s2">name = &#39;Alice&#39;;</span>
+<span class="s2">age = 25;</span>
+<span class="s2">result = op()(template)();</span>
+<span class="s2">result.echo();</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># String templates and dynamic construction</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">greeting = op(&#39;name&#39;=0, &#39;time&#39;=0){</span>
+<span class="s2">    &#39;Good &#39; + time + &#39;, &#39; + name + &#39;!&#39;</span>
+<span class="s2">};</span>
+<span class="s2">greeting(&#39;Alice&#39;, &#39;morning&#39;).echo();</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># Error handling with iferr</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">iferr {</span>
+<span class="s2">    result = 10 / 0;</span>
+<span class="s2">    &#39;This won\&#39;t print&#39;.echo();</span>
+<span class="s2">} {</span>
+<span class="s2">    (&#39;Error occurred: &#39; + \$sys.error).echo();</span>
+<span class="s2">}</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<h3 id="database-and-file-operations">Database and File Operations</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Database operations</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">db = \$file().table(&#39;ROW&#39;);</span>
+<span class="s2">db.mkfield(&#39;name&#39;, &#39;STR&#39;);</span>
+<span class="s2">db.mkfield(&#39;age&#39;, &#39;INT&#39;);</span>
+<span class="s2">db.set(&#39;user1&#39;, &#39;Alice&#39;, &#39;name&#39;);</span>
+<span class="s2">db.set(&#39;user1&#39;, 25, &#39;age&#39;);</span>
+<span class="s2">result = db.get(&#39;user1&#39;, &#39;name&#39;);</span>
+<span class="s2">(&#39;User name: &#39; + result).echo();</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># File operations</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">files = \$file().ls(&#39;.&#39;);</span>
+<span class="s2">for (file in files) {</span>
+<span class="s2">    if (file.type == &#39;file&#39;) {</span>
+<span class="s2">        (&#39;File: &#39; + file.name).echo();</span>
+<span class="s2">    }</span>
+<span class="s2">}</span>
+<span class="s2">&quot;</span>
+</code></pre></div>
+<h3 id="parallel-and-concurrent-processing">Parallel and Concurrent Processing</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Parallel data processing</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">data = (10000).range(0,1);</span>
+<span class="s2">processed = data.map(op(x) { x * x + 1; }, 4);  /* 4 workers */</span>
+<span class="s2">(&#39;Processed &#39; + processed.len() + &#39; items&#39;).echo();</span>
+<span class="s2">&quot;</span>
+
+<span class="c1"># Concurrent operations</span>
+grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">tasks = [];</span>
+<span class="s2">for (i in (5).range(0,1)) {</span>
+<span class="s2">    task = op(id) {</span>
+<span class="s2">        \$sys().sleep(100);  /* Simulate work */</span>
+<span class="s2">        &#39;Task &#39; + id.str() + &#39; completed&#39;.echo();</span>
+<span class="s2">    };</span>
+<span class="s2">    tasks.append(task);</span>
+<span class="s2">}</span>
+
+<span class="s2">/* Execute tasks concurrently */</span>
+<span class="s2">for (task in tasks) {</span>
+<span class="s2">    task(tasks.index(task));</span>
+<span class="s2">}</span>
+<span class="s2">&quot;</span>
 </code></pre></div>
 <h2 id="common-patterns">Common Patterns</h2>
 <h3 id="configuration-files">Configuration Files</h3>
