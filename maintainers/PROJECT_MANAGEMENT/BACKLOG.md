@@ -17,6 +17,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ## 🚀 **MAJOR RELEASES** (5 items)
 
 ### **2. Grapa Syntax Improvements** - **LANGUAGE ADOPTION FOUNDATION**
+- [ ] **Core Control Flow Fixes**: Fix `return` and `break` statements - both are currently non-functional
 - [ ] **Line Comments**: Add support for `//` and `#` line comments
 - [ ] **For Loop Syntax**: Add `for` loop as syntactic sugar for `.range()` patterns
 - [ ] **Exception Handling**: Add `try/catch` blocks and exception handling
@@ -83,7 +84,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🆕 **NEW INITIATIVES** (2 items)
+## 🆕 **NEW INITIATIVES** (3 items)
 
 ### **Database Engineering Best Practices Review** ⏳ **PENDING REVIEW**
 - **Status**: Extracted valuable patterns from database development experience
@@ -96,6 +97,19 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Goal**: Improve Grapa's discoverability and establish official Wikipedia presence
 - **Next Steps**: Submit article to Wikipedia, monitor feedback, maintain article
 - **Reference**: `wikipedia_grapa_article.txt` - Complete article with instructions
+
+### **SQL Syntax Injection Demo** 🔍 **INVESTIGATION NEEDED**
+- **Status**: Initial investigation complete, core issue identified
+- **Focus**: Create working demonstration of custom SQL syntax injection using Grapa's grammar extension capabilities
+- **Context**: Educational demonstration showing how `custom_command` and `custom_function` can extend Grapa's syntax
+- **Current Issue**: Simple custom grammar rules work (e.g., `select $INT`), but complex SQL rules (e.g., `select $STR from $STR`) fail to parse properly
+- **Progress**: 
+  - ✅ Basic custom function demonstration working
+  - ✅ Script compilation issues resolved
+  - ✅ Core limitation identified (complex rule parsing)
+- **Next Steps**: Investigate rule syntax limitations, create working SQL demo or document limitations
+- **Reference**: [`test/use_cases/sql_syntax_injection_table_demo.grc`](../../test/use_cases/sql_syntax_injection_table_demo.grc) - Current test script
+- **Priority**: Low - educational/demonstration value
 
 ### **Programming Language Naming Investigation** ✅ **COMPLETED**
 - **Status**: Investigation completed, decision finalized

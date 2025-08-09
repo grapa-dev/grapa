@@ -1,0 +1,301 @@
+/* SQL Syntax Injection Demo using $file().table()
+ * 
+ * This test demonstrates how to inject SQL-like syntax into the language using
+ * custom_function and custom_command grammar injection, combined with
+ * the $file().table() object for data operations.
+ */
+
+("=== SQL Syntax Injection Demo using $file().table() ===").echo();
+
+/* Step 1: Create sample data tables for testing */
+("Creating sample data tables...").echo();
+
+/* Create a users table */
+users_table = $file().table("ROW");
+users_table.mkfield("name", "STR", "VAR");
+users_table.mkfield("age", "INT");
+users_table.mkfield("city", "STR", "VAR");
+
+/* Create a products table */
+products_table = $file().table("ROW");
+products_table.mkfield("id", "INT");
+products_table.mkfield("name", "STR", "VAR");
+products_table.mkfield("price", "FLOAT", "FIX", 8);
+products_table.mkfield("category", "STR", "VAR");
+
+/* Populate users table */
+users_table.set("user1", "John", "name");
+users_table.set("user1", 25, "age");
+users_table.set("user1", "New York", "city");
+
+users_table.set("user2", "Jane", "name");
+users_table.set("user2", 30, "age");
+users_table.set("user2", "Los Angeles", "city");
+
+users_table.set("user3", "Bob", "name");
+users_table.set("user3", 35, "age");
+users_table.set("user3", "Chicago", "city");
+
+users_table.set("user4", "Alice", "name");
+users_table.set("user4", 28, "age");
+users_table.set("user4", "Boston", "city");
+
+/* Populate products table */
+products_table.set("prod1", 1, "id");
+products_table.set("prod1", "Laptop", "name");
+products_table.set("prod1", 999.0, "price");
+products_table.set("prod1", "Electronics", "category");
+
+products_table.set("prod2", 2, "id");
+products_table.set("prod2", "Book", "name");
+products_table.set("prod2", 25.0, "price");
+products_table.set("prod2", "Education", "category");
+
+products_table.set("prod3", 3, "id");
+products_table.set("prod3", "Phone", "name");
+products_table.set("prod3", 699.0, "price");
+products_table.set("prod3", "Electronics", "category");
+
+("Sample data tables created successfully.\n").echo();
+
+/* Step 2: Inject SQL-like SELECT syntax */
+("Injecting SELECT syntax...").echo();
+custom_function = rule select $STR from $STR {op(fields:$2,table_name:$4){
+    ("SQL SELECT: " + fields + " FROM " + table_name).echo();
+    
+    /* Get the appropriate table object */
+    table_obj = null;
+    if (table_name == "users") {
+        table_obj = users_table;
+    } else if (table_name == "products") {
+        table_obj = products_table;
+    } else {
+        ("Unknown table: " + table_name).echo();
+        return $err("Unknown table");
+    };
+    
+    /* Get all records from the table */
+    records = table_obj.ls();
+    if (records.len() == 0) {
+        ("Table " + table_name + " is empty").echo();
+        return [];
+    };
+    
+    /* Parse the fields to select */
+    if (fields == "*") {
+        /* Select all fields */
+        field_names = [];
+        if (table_name == "users") {
+            field_names = ["name", "age", "city"];
+        } else if (table_name == "products") {
+            field_names = ["id", "name", "price", "category"];
+        };
+    } else {
+        /* Select specific fields */
+        field_names = fields.split(",");
+        i = 0;
+        while (i < field_names.len()) {
+            field_names[i] = field_names[i].trim();
+            i = i + 1;
+        };
+    };
+    
+    /* Build result data */
+    result_data = [];
+    i = 0;
+    while (i < records.len()) {
+        record = records[i];
+        key = record.getname(1);
+        
+        row_data = {};
+        j = 0;
+        while (j < field_names.len()) {
+            field_name = field_names[j];
+            field_value = table_obj.get(key, field_name);
+            if (field_value.type() != $ERR) {
+                row_data[field_name] = field_value;
+            };
+            j = j + 1;
+        };
+        
+        if (row_data.len() > 0) {
+            result_data += row_data;
+        };
+        
+        i = i + 1;
+    };
+    
+    ("Query returned " + result_data.len() + " rows").echo();
+    return result_data;
+}};
+
+/* Step 3: Inject SQL-like INSERT syntax */
+("Injecting INSERT syntax...").echo();
+custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
+    ("SQL INSERT: INSERT INTO " + table_name + " VALUES " + values_str).echo();
+    
+    /* Get the appropriate table object */
+    table_obj = null;
+    if (table_name == "users") {
+        table_obj = users_table;
+    } else if (table_name == "products") {
+        table_obj = products_table;
+    } else {
+        ("Unknown table: " + table_name).echo();
+        return;
+    };
+    
+    /* Parse values (comma-separated) */
+    values = values_str.split(",");
+    if (values.len() < 2) {
+        ("Invalid values format. Need at least 2 values").echo();
+        return;
+    };
+    
+    /* Generate a new key */
+    existing_records = table_obj.ls();
+    new_key = table_name + "_" + (existing_records.len() + 1).str();
+    
+    /* Insert values based on table type */
+    if (table_name == "users") {
+        if (values.len() >= 3) {
+            table_obj.set(new_key, values[1].trim(), "name");
+            table_obj.set(new_key, values[2].trim().int(), "age");
+            table_obj.set(new_key, values[3].trim(), "city");
+            ("Successfully inserted user: " + values[1].trim()).echo();
+        } else {
+            ("Invalid user values. Need: name,age,city").echo();
+        };
+    } else if (table_name == "products") {
+        if (values.len() >= 4) {
+            table_obj.set(new_key, values[1].trim().int(), "id");
+            table_obj.set(new_key, values[2].trim(), "name");
+            table_obj.set(new_key, values[3].trim().float(), "price");
+            table_obj.set(new_key, values[4].trim(), "category");
+            ("Successfully inserted product: " + values[2].trim()).echo();
+        } else {
+            ("Invalid product values. Need: id,name,price,category").echo();
+        };
+    };
+}};
+
+/* Step 4: Inject SQL-like UPDATE syntax */
+("Injecting UPDATE syntax...").echo();
+custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clause:$4,where_clause:$6){
+    ("SQL UPDATE: UPDATE " + table_name + " SET " + set_clause + " WHERE " + where_clause).echo();
+    
+    /* Get the appropriate table object */
+    table_obj = null;
+    if (table_name == "users") {
+        table_obj = users_table;
+    } else if (table_name == "products") {
+        table_obj = products_table;
+    } else {
+        ("Unknown table: " + table_name).echo();
+        return;
+    };
+    
+    /* Parse set clause (e.g., "age=26") */
+    set_parts = set_clause.split("=");
+    if (set_parts.len() != 2) {
+        ("Invalid SET clause format. Use 'field=value'").echo();
+        return;
+    };
+    set_field = set_parts[1].trim();
+    set_value = set_parts[2].trim();
+    
+    /* Parse where clause (e.g., "name=John") */
+    where_parts = where_clause.split("=");
+    if (where_parts.len() != 2) {
+        ("Invalid WHERE clause format. Use 'field=value'").echo();
+        return;
+    };
+    where_field = where_parts[1].trim();
+    where_value = where_parts[2].trim();
+    
+    /* Find and update matching records */
+    records = table_obj.ls();
+    updated_count = 0;
+    
+    i = 0;
+    while (i < records.len()) {
+        record = records[i];
+        key = record.getname(1);
+        
+        /* Check if this record matches the WHERE condition */
+        current_value = table_obj.get(key, where_field);
+        if (current_value.type() != $ERR) {
+            if (current_value.str() == where_value) {
+                /* Update the matching record */
+                if (set_field == "age" && table_name == "users") {
+                    table_obj.set(key, set_value.int(), set_field);
+                } else if (set_field == "price" && table_name == "products") {
+                    table_obj.set(key, set_value.float(), set_field);
+                } else {
+                    table_obj.set(key, set_value, set_field);
+                };
+                ("Updated record " + key).echo();
+                updated_count = updated_count + 1;
+            };
+        };
+        
+        i = i + 1;
+    };
+    
+    if (updated_count > 0) {
+        ("Successfully updated " + updated_count + " records in " + table_name).echo();
+    } else {
+        ("No records matched the WHERE condition").echo();
+    };
+}};
+
+("SQL syntax injection complete!\n").echo();
+
+/* Step 5: Test the injected SQL syntax */
+("=== Testing SQL Syntax ===").echo();
+
+("1. Testing select * from users:").echo();
+result1 = op(parse)("select * from users")();
+result1.echo();
+
+("\n2. Testing select name,age from users:").echo();
+result2 = op(parse)("select name,age from users")();
+result2.echo();
+
+("\n3. Testing insert into users values David,40,Seattle:").echo();
+op(parse)("insert into users values David,40,Seattle")();
+
+("\n4. Testing select * from users after insert:").echo();
+result3 = op(parse)("select * from users")();
+result3.echo();
+
+("\n5. Testing update users set age=26 where name=John:").echo();
+op(parse)("update users set age=26 where name=John")();
+
+("\n6. Testing select * from users after update:").echo();
+result4 = op(parse)("select * from users")();
+result4.echo();
+
+("\n7. Testing select * from products:").echo();
+result5 = op(parse)("select * from products")();
+result5.echo();
+
+("\n8. Testing insert into products values 4,Tablet,299,Electronics:").echo();
+op(parse)("insert into products values 4,Tablet,299,Electronics")();
+
+("\n9. Testing select * from products after insert:").echo();
+result6 = op(parse)("select * from products")();
+result6.echo();
+
+/* Step 6: Test dynamic execution with op(parse) */
+("\n=== Testing Dynamic SQL Execution ===").echo();
+
+("Executing dynamic SQL script:").echo();
+sql_script = "select name,city from users";
+("Script: " + sql_script).echo();
+
+dynamic_result = op(parse)(sql_script)();
+("Dynamic execution result:").echo();
+dynamic_result.echo();
+
+("\n=== SQL Syntax Injection Demo Complete ===").echo(); 

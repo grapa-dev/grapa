@@ -11,7 +11,8 @@ This section covers advanced features and techniques in Grapa for power users an
 
 ## Custom Grammar and BNF
 - **Grammar Design:** Grapa allows you to define and extend its grammar using BNF-like rules, enabling custom language features and DSLs.
-- **Reference:** See [Grammar Design](syntax/grammar_design.md) and maintainer docs for implementation details.
+- **Language Extensibility:** Define custom commands and functions that become part of the language syntax at runtime.
+- **Reference:** See [Language Syntax Extension](type/rule.md#language-syntax-extension) for comprehensive documentation, [Grammar Design](syntax/grammar_design.md) for BNF details, and maintainer docs for implementation details.
 
 ## Advanced System Functions
 - **System API:** Advanced file, math, network, and threading functions are available for complex scripting and integration.

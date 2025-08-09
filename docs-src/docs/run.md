@@ -90,4 +90,4 @@ Grapa includes a widget library that can be used to create GUIs. The widget syst
 
 **Note:** The `-w` and `-wfile` CLI options have been removed from the main Grapa executable. GUI functionality is now available through the widget system in scripts.
 
-For editor functionality, you can create custom GUI applications using the `$WIDGET` type. See the [Widget Documentation](../type/widget.md) for details.
+For editor functionality, you can create custom GUI applications using the `$WIDGET` type. See the [Widget Documentation](type/widget.md) for details.

@@ -128,6 +128,27 @@ result = $sys().eval(compiled, {"input": 10, "offset": 5});
 result.echo();  /* 25 */
 ```
 
+### Language Syntax Extension
+
+Grapa's dynamic capabilities extend beyond code execution - you can actually extend the language syntax itself at runtime:
+
+```grapa
+/* Define a custom function that becomes part of the language */
+custom_function = rule select $INT {op(p:$2){p*5}};
+
+/* Use it as if it were built into the language */
+select 4;        // Returns 20
+x = select 8;    // x = 40
+
+/* Define custom commands for domain-specific languages */
+custom_command = rule reset_data {op(){clear_database()}};
+reset_data;      // Executes clear_database()
+```
+
+This feature enables you to create domain-specific languages, add custom syntax for your applications, and adapt Grapa to specific use cases without modifying the core implementation.
+
+**See also:** [Language Syntax Extension](type/rule.md#language-syntax-extension) for comprehensive documentation.
+
 ### Data Types
 
 Grapa provides rich data types for modern data processing:

@@ -162,10 +162,257 @@ r2 = rule
 
 Note that with left recursion, the subtraction happens first resulting in (5-3)+2, which produces the correct answer.
 
+## Rule Composition and Concatenation
+
+Rules can be dynamically composed and extended using the `++=` operator (see [Assignment Operators](../operators/assignment.md#)), which allows you to concatenate additional rule alternatives to an existing rule. This enables dynamic grammar construction and runtime rule modification.
+
+### Basic Rule Concatenation
+
+```
+> x = rule $INT $INT {op(a:$1,b:$2){a*b}}
+rule $INT $INT {@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{"a":$1,"b":$2}>}
+
+> x ++= rule $INT {op(a:$1){a}}
+$INT $INT {@<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{"a":$1,"b":$2}>}| $INT {@<[op,@<var,{a}>],{"a":$1}>}
+
+> (op()("4",x))()
+4
+
+> (op()("4 3",x))()
+12
+```
+
+### Dynamic Grammar Building
+
+This feature is particularly powerful for building domain-specific languages incrementally:
+
+```
+> // Start with a basic rule
+> parser = rule $ID {op(a:$1){a}};
+
+> // Add support for numbers
+> parser ++= rule $INT {op(a:$1){a}};
+
+> // Add support for string literals
+> parser ++= rule $STR {op(a:$1){a}};
+
+> // Add support for function calls
+> parser ++= rule $ID '(' $ID ')' {op(a:$1,b:$3){a+" calls "+b}};
+
+> // Test the expanded parser
+> (op()("hello",parser))();
+hello
+
+> (op()("42",parser))();
+42
+
+> (op()("func(arg)",parser))();
+func calls arg
+```
+
+### Use Cases
+
+- **Incremental Language Development**: Build complex grammars step by step
+- **Plugin Systems**: Allow extensions to add new syntax rules
+- **Dynamic Parsing**: Modify parsing behavior based on runtime conditions
+- **Domain-Specific Languages**: Create specialized parsers that can be extended
+
 For those interested in how to modify a recursive decent parser to support left recursion, see the following on how this was addressed for Python:
 
 https://medium.com/@gvanrossum_83706/left-recursive-peg-grammars-65dab3c580e1
 
 A simular approach is used for Grapa - but with a few improvements on the appropach to support more complex scenarios than what's required to support the Python syntax alone.
 
+## Language Syntax Extension
+
+Grapa's most powerful feature is its ability to dynamically extend the language syntax at runtime. This allows you to create domain-specific languages, add custom commands, and modify the grammar without restarting the application.
+
+### Custom Commands and Functions
+
+The Grapa parser includes two special variables that allow you to inject custom syntax:
+
+- **`custom_command`**: For commands that perform actions but don't return values
+- **`custom_function`**: For functions that return values
+
+#### Basic Syntax Extension
+
+```grapa
+// Define a custom function that returns a value
+custom_function = rule select $INT {op(p:$2){p*5}};
+
+// Now you can use it directly
+select 4;        // Returns 20
+x = select 8;    // x = 40
+
+// Define a custom command that performs an action
+custom_command = rule reset_data {op(){clear_database()}};
+
+// Use the custom command
+reset_data;      // Executes clear_database()
 ```
+
+#### How It Works
+
+When you define `custom_function` or `custom_command`, you're essentially extending the Grapa grammar. The parser:
+
+1. **Falls through** the built-in command patterns
+2. **Matches your custom rule** when the input fits the pattern
+3. **Executes your code** with the matched parameters
+4. **Returns results** (for functions) or performs actions (for commands)
+
+### Scoping and Namespace Control
+
+Custom syntax can be defined at different scopes, giving you precise control over where extensions are available:
+
+#### Local Scope (Function-Level)
+
+```grapa
+function_with_custom_syntax() {
+    // Custom syntax only available within this function
+    custom_function = rule local_cmd $INT {op(n:$2){n*2}};
+    
+    result = local_cmd 5;  // Works here
+    // Function exits, local_cmd is gone
+}
+
+// Global scope - local_cmd is undefined
+// local_cmd 5 would cause an error
+```
+
+#### Global Scope (Permanent)
+
+```grapa
+function_with_permanent_syntax() {
+    // Promote to global namespace - available everywhere
+    @global["custom_function"] = rule global_cmd $INT {op(n:$2){n*3}};
+    
+    result = global_cmd 5;  // Works here
+    // Function exits, but global_cmd is still available globally
+}
+
+// Global scope - global_cmd is still available
+result = global_cmd 10;  // Works here too
+```
+
+#### Conditional Global Promotion
+
+```grapa
+function_with_conditional_syntax() {
+    // Create local syntax first
+    custom_function = rule temp_cmd $INT {op(n:$2){n*4}};
+    
+    // Test it locally
+    if (temp_cmd 5 == 20) {
+        // If it works well, promote to global
+        @global["custom_function"] = rule temp_cmd $INT {op(n:$2){n*4}};
+        echo "Syntax promoted to global";
+    }
+    
+    // temp_cmd is now available globally
+}
+```
+
+### Dynamic Compilation with Custom Syntax
+
+**Important**: Custom syntax changes don't affect already-compiled code. They only apply to new code compiled with `op(parse)()`:
+
+#### Compilation vs. Runtime
+
+```grapa
+// This script was compiled with the original grammar
+function test() {
+    // Even if we change custom_function here, it won't affect
+    // the already-compiled code in this function
+    custom_function = rule new_syntax $INT {op(n:$2){n*10}};
+    
+    // This line was compiled before the custom_function change
+    // so it still uses the old grammar
+    old_syntax 5;  // Uses whatever was defined when script was compiled
+}
+```
+
+#### Dynamic Compilation
+
+```grapa
+function dynamic_compilation() {
+    // Set up custom syntax
+    custom_function = rule custom_cmd $INT {op(n:$2){n*5}};
+    
+    // Compile and execute new code dynamically
+    script_text = "result = custom_cmd 10; echo result;";
+    op(parse)(script_text)();  // Uses current custom syntax
+    
+    // Or compile to a function for reuse
+    compiled_function = op(parse)(script_text);
+    compiled_function();  // Executes with custom syntax
+}
+```
+
+### Real-World Use Cases
+
+#### Domain-Specific Languages
+
+```grapa
+function create_sql_dsl() {
+    // Define SQL-like syntax
+    custom_function = rule SELECT $STR FROM $STR {op(fields:$2,table:$4){
+        build_select_query(fields, table)
+    }};
+    
+    custom_function = rule WHERE $STR {op(condition:$2){
+        build_where_clause(condition)
+    }};
+    
+    // Now you can write SQL-like code
+    script = "SELECT name,age FROM users WHERE age > 18;";
+    query = op(parse)(script)();
+    return query;
+}
+```
+
+#### Configuration-Driven Scripts
+
+```grapa
+function load_plugin(plugin_config) {
+    // Set up plugin-specific syntax
+    custom_function = rule plugin_cmd $STR {op(cmd:$2){execute_plugin(cmd)}};
+    
+    // Compile plugin script with new syntax
+    plugin_script = plugin_config.script;
+    plugin_function = op(parse)(plugin_script);
+    
+    // Execute with plugin syntax available
+    plugin_function();
+}
+```
+
+#### Thread-Safe Syntax Extensions
+
+```grapa
+// Each thread can have its own syntax extensions
+function thread_with_custom_syntax() {
+    // Local custom syntax for this thread
+    custom_function = rule thread_cmd $INT {op(n:$2){n*thread_id()}};
+    
+    // This syntax is isolated to this thread
+    result = thread_cmd 5;
+}
+```
+
+### Best Practices
+
+1. **Start Local**: Define custom syntax locally first, then promote to global when ready
+2. **Use Descriptive Names**: Choose names that clearly indicate what your syntax does
+3. **Document Patterns**: Include examples of how to use your custom syntax
+4. **Test Thoroughly**: Custom syntax can affect parsing, so test edge cases
+5. **Consider Scope**: Use local scope for experimental features, global for stable ones
+6. **Performance**: Remember that custom syntax is evaluated at parse time
+
+### Limitations and Considerations
+
+- **Parse-Time Execution**: Custom syntax rules are evaluated during parsing, not execution
+- **No Recursive Extensions**: You can't extend the grammar to support extending itself
+- **Performance Impact**: Complex custom syntax can slow down parsing
+- **Debugging**: Custom syntax errors can be harder to debug than regular code errors
+
+This syntax extension capability makes Grapa uniquely powerful for creating domain-specific languages, implementing custom DSLs, and adapting the language to specific use cases without modifying the core implementation.

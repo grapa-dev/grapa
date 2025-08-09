@@ -1,0 +1,10 @@
+/* Simple SELECT rule test */
+
+("Defining simple SELECT rule...").echo();
+custom_function = rule select $STR from $STR {op(fields:$2,table_name:$4){
+    ("SELECT: " + fields + " FROM " + table_name).echo();
+}};
+
+("Testing the rule...").echo();
+op(parse)("select * from users")();
+("Rule executed").echo(); 

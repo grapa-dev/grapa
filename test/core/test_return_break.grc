@@ -1,0 +1,71 @@
+/* Test script to verify return and break statement functionality */
+
+/* Test 1: Basic return statement */
+("Testing return statement...").echo();
+test_return = op(x) {
+    if (x > 5) {
+        return "x is greater than 5";
+    };
+    return "x is 5 or less";
+};
+
+result1 = test_return(10);
+("Return test 1 result: " + result1).echo();
+
+result2 = test_return(3);
+("Return test 2 result: " + result2).echo();
+
+/* Test 2: Break statement in while loop */
+("Testing break statement...").echo();
+i = 1;
+sum = 0;
+while (i <= 10) {
+    if (i == 6) {
+        ("Breaking at i = " + i.str()).echo();
+        break;
+    };
+    sum = sum + i;
+    i = i + 1;
+};
+("Sum after break: " + sum.str()).echo();
+
+/* Test 3: Return from function with early exit */
+("Testing early return...").echo();
+early_return_test = op(x) {
+    if (x < 0) {
+        return "negative";
+    };
+    if (x == 0) {
+        return "zero";
+    };
+    return "positive";
+};
+
+result3 = early_return_test(-5);
+("Early return test (-5): " + result3).echo();
+
+result4 = early_return_test(0);
+("Early return test (0): " + result4).echo();
+
+result5 = early_return_test(7);
+("Early return test (7): " + result5).echo();
+
+/* Test 4: Break in nested loops */
+("Testing nested loop break...").echo();
+outer_sum = 0;
+i = 1;
+while (i <= 3) {
+    j = 1;
+    while (j <= 5) {
+        if (i == 2 && j == 3) {
+            ("Breaking inner loop at i=" + i.str() + ", j=" + j.str()).echo();
+            break;
+        };
+        outer_sum = outer_sum + (i * j);
+        j = j + 1;
+    };
+    i = i + 1;
+};
+("Nested loop sum after break: " + outer_sum.str()).echo();
+
+("All tests completed!").echo(); 

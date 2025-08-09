@@ -198,7 +198,7 @@ result = $sys().eval(user_input);
 
 ### String Templates and Dynamic Construction
 
-For string-specific templates and dynamic construction patterns, see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) in the String Type documentation.
+For string-specific templates and dynamic construction patterns, see [String Templates and Dynamic Construction](type/str.md#string-templates-and-dynamic-construction) in the String Type documentation.
 
 **Quick Examples:**
 ```grapa
@@ -469,19 +469,22 @@ for (i = 0; i < patterns.len(); i = i + 1) {
 // Result: ['foo'] (works correctly)
 ```
 
-## Grammer Updating
+## Grammar Extension
 
-The standard grammer loaded by default includes suport for 2 user defined rules that assist in easily modifying the grammer.
+Grapa supports dynamic language syntax extension through custom commands and functions. This powerful feature allows you to create domain-specific languages and extend the grammar at runtime.
 
-custom_start - The engine will evaulate the $start rule before evaluating the predefined $start rule. Setting a variable "start" with a rule will cause the engine to call the user defined rule first. If this variable is set locally within a function, it will only apply to scripts parsed from within the scope of that function.
+For comprehensive documentation on syntax extension, including custom commands, custom functions, scoping, and dynamic compilation, see [Language Syntax Extension](type/rule.md#language-syntax-extension).
 
-custom_function - The engine will evaluate the variable "function" if it is a $RULE as a part of the $function rule. To verify, check the $function variable. Used in contexts where a value is returned.
+### Quick Example
 
-custom_command - Same as above. Used in contexts where a value is not returned.
+```grapa
+// Define a custom function
+custom_function = rule select $INT {op(p:$2){p*5}};
 
-Alternative, redefine any of the predefined rules for the default grammer. Take caution on changing the global variable, unless the change is inteded for the entire session. Restart the app to revert back. 
-
-If any of the above is set as a local variable within some scope, such as a class instance or a function, the modification will only apply for exectution within that scope. You can, for example, have muliple threads with unique modifications that apply separately. This is bascially the result of having the rules implemented as variables.
+// Use it directly
+select 4;        // Returns 20
+x = select 8;    // x = 40
+```
 
 ## PCA - Principal Component Analysis
 

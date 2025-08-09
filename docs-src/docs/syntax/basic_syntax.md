@@ -1388,3 +1388,20 @@ while (i < operations.len()) {
 funcs["add"](5, 3).echo();  // 8
 funcs["mul"](5, 3).echo();  // 15
 ```
+
+## Language Syntax Extension
+
+Grapa's dynamic code execution capabilities are complemented by its ability to extend the language syntax itself at runtime. You can define custom commands and functions that become part of the language grammar.
+
+For comprehensive documentation on syntax extension, including custom commands, custom functions, scoping, and dynamic compilation, see [Language Syntax Extension](../type/rule.md#language-syntax-extension).
+
+### Quick Syntax Extension Example
+
+```grapa
+// Define a custom function that becomes part of the language
+custom_function = rule select $INT {op(p:$2){p*5}};
+
+// Use it as if it were built into the language
+select 4;        // Returns 20
+x = select 8;    // x = 40
+```

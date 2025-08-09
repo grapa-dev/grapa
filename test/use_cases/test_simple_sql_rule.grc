@@ -1,0 +1,8 @@
+/* Simple SQL rule test */
+
+("Defining simple custom_function...").echo();
+custom_function = rule select $INT {op(p:$2){p*5}};
+
+("Testing the rule...").echo();
+result = op(parse)("select 4")();
+("Result: " + result).echo(); 

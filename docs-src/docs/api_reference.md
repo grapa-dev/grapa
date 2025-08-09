@@ -81,6 +81,26 @@ my_func = op(x) { x * 2; };
 my_func.type().echo();  /* $OP */
 ```
 
+### Language Extensibility
+Grapa's most powerful feature is its ability to extend the language syntax at runtime. You can define custom commands and functions that become part of the language grammar.
+
+**Key Concepts:**
+- **`custom_command`**: For commands that perform actions (no return value)
+- **`custom_function`**: For functions that return values
+- **Scoping**: Local (function-level) or global (permanent) syntax extensions
+- **Dynamic Compilation**: New syntax applies to code compiled with `op(parse)()`
+
+```grapa
+/* Define custom syntax */
+custom_function = rule select $INT {op(p:$2){p*5}};
+
+/* Use it as if it were built into the language */
+select 4;        // Returns 20
+x = select 8;    // x = 40
+```
+
+For comprehensive documentation, see [Language Syntax Extension](type/rule.md#language-syntax-extension).
+
 ### Namespace System
 Grapa has a dynamic namespace system managed by the execution tree:
 
@@ -203,7 +223,7 @@ Create and manipulate arrays, lists, and objects.
 
 ### Object Merging Operators
 - `+=` - Append/nest second object within first
-- `++=` - Merge/flatten properties from both objects
+- `++=` - Merge/flatten properties from both objects. For rules, concatenates additional rule alternatives (see [Rule Composition](type/rule.md#rule-composition-and-concatenation))
 
 ### Examples
 ```grapa
@@ -393,7 +413,7 @@ String manipulation and analysis.
 - `.replace(old, new)` - Replace text
 - `.grep(pattern, options)` - Search with regex
 
-> **See Also:** [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced string construction patterns using templates, dynamic execution, and parameterized functions.
+> **See Also:** [String Templates and Dynamic Construction](type/str.md#string-templates-and-dynamic-construction) for advanced string construction patterns using templates, dynamic execution, and parameterized functions.
 
 ### Examples
 ```grapa
