@@ -1881,6 +1881,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Custom Delimiter Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#advanced-custom-delimiter-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Custom Delimiter Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -2538,15 +2553,6 @@
   <a href="#benefits-of-array-design_1" class="md-nav__link">
     <span class="md-ellipsis">
       Benefits of Array Design
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#custom-delimiter-support_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Delimiter Support
     </span>
   </a>
   
@@ -4259,6 +4265,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Custom Delimiter Support">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#advanced-custom-delimiter-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Custom Delimiter Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -4921,15 +4942,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#custom-delimiter-support_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Delimiter Support
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -5329,7 +5341,7 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 <li><strong>Python Integration</strong>: Arrays map naturally to Python lists</li>
 </ol>
 <h3 id="custom-delimiter-support">Custom Delimiter Support</h3>
-<p>Grapa grep fully supports <strong>multi-character delimiters</strong>:</p>
+<p>Grapa grep fully supports <strong>multi-character delimiters</strong> with comprehensive edge case handling:</p>
 <div class="highlight"><pre><span></span><code>/* Single character delimiter */
 &quot;line1|line2|line3&quot;.grep(&quot;line&quot;, &quot;o&quot;, &quot;|&quot;)
 /* Result: [&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;] */
@@ -5343,6 +5355,51 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 /* Result: [&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;] */
 </code></pre></div>
 <p><strong>Note</strong>: All delimiters are automatically removed from output strings, regardless of length or complexity.</p>
+<h4 id="advanced-custom-delimiter-features">Advanced Custom Delimiter Features</h4>
+<p>Grapa grep now fully supports all advanced regex features with custom delimiters:</p>
+<p><strong>Lookaround Assertions with Custom Delimiters:</strong>
+<div class="highlight"><pre><span></span><code>/* Positive lookahead with custom delimiter */
+&quot;word123|text456|word789&quot;.grep(&quot;\\w+(?=\\d)&quot;, &quot;o&quot;, &quot;|&quot;)
+/* Result: [&quot;word&quot;, &quot;text&quot;, &quot;word&quot;] */
+
+/* Negative lookahead with custom delimiter */
+&quot;word123|text456|word789&quot;.grep(&quot;\\w+(?!\\d)&quot;, &quot;o&quot;, &quot;|&quot;)
+/* Result: [&quot;word123&quot;, &quot;text456&quot;, &quot;word789&quot;] */
+
+/* Positive lookbehind with custom delimiter */
+&quot;123word|456text|789word&quot;.grep(&quot;(?&lt;=\\d)\\w+&quot;, &quot;o&quot;, &quot;|&quot;)
+/* Result: [&quot;word&quot;, &quot;text&quot;, &quot;word&quot;] */
+</code></pre></div></p>
+<p><strong>Unicode Script Properties with Custom Delimiters:</strong>
+<div class="highlight"><pre><span></span><code>/* Latin script with custom delimiter */
+&quot;Hello 世界|Goodbye 世界|Test 123&quot;.grep(&quot;\\p{sc=Latin}+&quot;, &quot;o&quot;, &quot;|&quot;)
+/* Result: [&quot;Hello&quot;, &quot;Goodbye&quot;, &quot;Test&quot;] */
+
+/* Han script with custom delimiter */
+&quot;Hello 世界|Goodbye 世界|Test 123&quot;.grep(&quot;\\p{sc=Han}+&quot;, &quot;o&quot;, &quot;|&quot;)
+/* Result: [&quot;世界&quot;, &quot;世界&quot;] */
+</code></pre></div></p>
+<p><strong>Grapheme Clusters with Custom Delimiters:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapheme clusters with custom delimiter */
+&quot;Hello 👋 world 🌍|||Goodbye 👋 universe 🌌&quot;.grep(&quot;\\X&quot;, &quot;o&quot;, &quot;|||&quot;)
+/* Result: [&quot;H&quot;, &quot;e&quot;, &quot;l&quot;, &quot;l&quot;, &quot;o&quot;, &quot; &quot;, &quot;👋&quot;, &quot; &quot;, &quot;w&quot;, &quot;o&quot;, &quot;r&quot;, &quot;l&quot;, &quot;d&quot;, &quot; &quot;, &quot;🌍&quot;, &quot;G&quot;, &quot;o&quot;, &quot;o&quot;, &quot;d&quot;, &quot;b&quot;, &quot;y&quot;, &quot;e&quot;, &quot; &quot;, &quot;👋&quot;, &quot; &quot;, &quot;u&quot;, &quot;n&quot;, &quot;i&quot;, &quot;v&quot;, &quot;e&quot;, &quot;r&quot;, &quot;s&quot;, &quot;e&quot;, &quot; &quot;, &quot;🌌&quot;] */
+/* Note: Delimiter characters are automatically excluded from output */
+</code></pre></div></p>
+<p><strong>Word Boundaries with Custom Delimiters:</strong>
+<div class="highlight"><pre><span></span><code>/* Word boundaries with custom delimiter */
+&quot;line1|line2|line3&quot;.grep(&quot;line&quot;, &quot;wo&quot;, &quot;|&quot;)
+/* Result: [&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;] */
+
+/* Manual word boundaries with custom delimiter */
+&quot;line1|line2|line3&quot;.grep(&quot;\\bline\\b&quot;, &quot;o&quot;, &quot;|&quot;)
+/* Result: [&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;] */
+</code></pre></div></p>
+<p><strong>Multiline Patterns with Custom Delimiters:</strong>
+<div class="highlight"><pre><span></span><code>/* Multiline pattern with custom delimiter */
+&quot;start|middle|end&quot;.grep(&quot;start.*end&quot;, &quot;s&quot;, &quot;|&quot;)
+/* Result: [&quot;start|middle|end&quot;] */
+</code></pre></div></p>
+<p>All these features work seamlessly with custom delimiters of any length or complexity, ensuring consistent behavior across all regex patterns and Unicode features.</p>
 <h2 id="key-features">Key Features</h2>
 <h3 id="unicode-support">🔍 <strong>Unicode Support</strong></h3>
 <ul>
@@ -6375,21 +6432,6 @@ console_output = result.join(&quot;\n&quot;);  /* &quot;line1\nline2\nline3&quot
 <li><strong>Language Integration</strong>: Natural fit with Grapa's array-based design</li>
 <li><strong>Python Integration</strong>: Arrays map naturally to Python lists</li>
 </ol>
-<h3 id="custom-delimiter-support_1">Custom Delimiter Support</h3>
-<p>Grapa grep fully supports <strong>multi-character delimiters</strong>:</p>
-<div class="highlight"><pre><span></span><code>/* Single character delimiter */
-&quot;line1|line2|line3&quot;.grep(&quot;line&quot;, &quot;o&quot;, &quot;|&quot;)
-/* Result: [&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;] */
-
-/* Multi-character delimiter */
-&quot;line1|||line2|||line3&quot;.grep(&quot;line&quot;, &quot;o&quot;, &quot;|||&quot;)
-/* Result: [&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;] */
-
-/* Complex delimiter */
-&quot;line1&lt;DELIM&gt;line2&lt;DELIM&gt;line3&quot;.grep(&quot;line&quot;, &quot;o&quot;, &quot;&lt;DELIM&gt;&quot;)
-/* Result: [&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;] */
-</code></pre></div>
-<p><strong>Note</strong>: All delimiters are automatically removed from output strings, regardless of length or complexity.</p>
 <h2 id="error-output">Error Output</h2>
 <blockquote>
 <p><strong>Note:</strong> Invalid regex patterns always return <code>"$ERR"</code> (not a JSON object or other format).</p>

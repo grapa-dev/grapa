@@ -5760,7 +5760,8 @@ input.grep(&quot;Line 2|Line 6&quot;, &quot;A1B1&quot;)
 <li>Example: <code>A1B2C3</code> uses <code>C3</code> (3 lines before and after)</li>
 </ul>
 <h2 id="custom-delimiters">Custom Delimiters</h2>
-<div class="highlight"><pre><span></span><code>// Pipe-delimited input
+<p>Grapa grep fully supports custom delimiters with comprehensive edge case handling for all advanced regex features:</p>
+<div class="highlight"><pre><span></span><code>// Basic custom delimiter
 &quot;Line 1|Line 2|Line 3&quot;.grep(&quot;Line 2&quot;, &quot;&quot;, &quot;|&quot;)
 [&quot;Line 2&quot;]
 
@@ -5771,9 +5772,29 @@ input.grep(&quot;Line 2|Line 6&quot;, &quot;A1B1&quot;)
 // Multi-character delimiter
 &quot;Line 1\r\nLine 2\r\nLine 3&quot;.grep(&quot;Line 2&quot;, &quot;&quot;, &quot;\r\n&quot;)
 [&quot;Line 2&quot;]
+
+// Lookaround assertions with custom delimiter
+&quot;word123|text456|word789&quot;.grep(&quot;\\w+(?=\\d)&quot;, &quot;o&quot;, &quot;|&quot;)
+[&quot;word&quot;, &quot;text&quot;, &quot;word&quot;]
+
+// Unicode script properties with custom delimiter
+&quot;Hello 世界|Goodbye 世界|Test 123&quot;.grep(&quot;\\p{sc=Latin}+&quot;, &quot;o&quot;, &quot;|&quot;)
+[&quot;Hello&quot;, &quot;Goodbye&quot;, &quot;Test&quot;]
+
+// Grapheme clusters with custom delimiter
+&quot;Hello 👋 world 🌍|||Goodbye 👋 universe 🌌&quot;.grep(&quot;\\X&quot;, &quot;o&quot;, &quot;|||&quot;)
+[&quot;H&quot;, &quot;e&quot;, &quot;l&quot;, &quot;l&quot;, &quot;o&quot;, &quot; &quot;, &quot;👋&quot;, &quot; &quot;, &quot;w&quot;, &quot;o&quot;, &quot;r&quot;, &quot;l&quot;, &quot;d&quot;, &quot; &quot;, &quot;🌍&quot;, &quot;G&quot;, &quot;o&quot;, &quot;o&quot;, &quot;d&quot;, &quot;b&quot;, &quot;y&quot;, &quot;e&quot;, &quot; &quot;, &quot;👋&quot;, &quot; &quot;, &quot;u&quot;, &quot;n&quot;, &quot;i&quot;, &quot;v&quot;, &quot;e&quot;, &quot;r&quot;, &quot;s&quot;, &quot;e&quot;, &quot; &quot;, &quot;🌌&quot;]
+
+// Word boundaries with custom delimiter
+&quot;line1|line2|line3&quot;.grep(&quot;line&quot;, &quot;wo&quot;, &quot;|&quot;)
+[&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;]
+
+// Multiline patterns with custom delimiter
+&quot;start|middle|end&quot;.grep(&quot;start.*end&quot;, &quot;s&quot;, &quot;|&quot;)
+[&quot;start|middle|end&quot;]
 </code></pre></div>
 <blockquote>
-<p><strong>Warning:</strong> Do not use Unicode combining marks (e.g., U+0301) as delimiters. Combining marks are intended to modify the preceding base character, forming a single grapheme cluster (e.g., 'a' + U+0301 = 'á'). Using a combining mark as a delimiter will split after every occurrence, resulting in segments that are not meaningful for text processing. See <code>test/grep/debug_multiline_delimiter.grc</code> for an example and explanation.</p>
+<p><strong>Warning:</strong> Do not use Unicode combining marks (e.g., U+0301) as delimiters. Combining marks are intended to modify the preceding base character, forming a single grapheme cluster (e.g., 'a' + U+0301 = 'á'). Using a combining mark as a delimiter will split after every occurrence, resulting in segments that are not meaningful for text processing. See <code>test/grep/debug_multiline_delimiter.grc</code> for an example and explanation.</p>
 </blockquote>
 <h2 id="binary-mode">Binary Mode</h2>
 <p>Binary mode allows you to process raw binary data without Unicode processing, which is useful for:
