@@ -3258,6 +3258,13 @@
 <p>Add item to source.</p>
 <h2 id="_3"><code>++=</code></h2>
 <p>Concatenate contents to source.</p>
+<p>For rules, this operator concatenates additional rule alternatives, allowing dynamic grammar construction:</p>
+<div class="highlight"><pre><span></span><code>&gt; x = rule $INT {op(a:$1){a}};
+&gt; x ++= rule $STR {op(a:$1){a}};
+&gt; x
+$INT {@&lt;[op,@&lt;var,{a}&gt;],{&quot;a&quot;:$1}&gt;}| $STR {@&lt;[op,@&lt;var,{a}&gt;],{&quot;a&quot;:$1}&gt;}
+</code></pre></div>
+<p>See <a href="../../type/rule/#rule-composition-and-concatenation">Rule Composition and Concatenation</a> for detailed examples.</p>
 <h2 id="-"><code>-=</code></h2>
 <p>Subtract item from source.</p>
 <h2 id="see-also">See also</h2>
