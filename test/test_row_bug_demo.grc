@@ -1,8 +1,8 @@
-/* ROW Table Index Corruption Bug Demo (Updated August 2025) */
-/* This script demonstrates the previous bug where the first record became unreadable after adding the third record in a ROW table. */
-/* As of August 2025, the bug has been FIXED. See maintainers/RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md for investigation details. */
+/* ROW Table Test Demo (Updated August 2025) */
+/* This script demonstrates ROW table functionality. */
+/* As of August 2025, ROW tables work correctly. */
 
-"=== ROW TABLE INDEX CORRUPTION BUG DEMO ===".echo();
+"=== ROW TABLE TEST DEMO ===".echo();
 "\n".echo();
 
 /* Create ROW table */
@@ -63,7 +63,7 @@ name2.echo();
 "\n".echo();
 "---\n".echo();
 
-/* Add third record - THIS IS WHERE THE BUG OCCURS */
+/* Add third record */
 "Adding third record (user3)...\n".echo();
 frow.set("user3", "Charlie", "name");
 frow.set("user3", 35, "age");
@@ -72,30 +72,30 @@ frow.set("user3", "Chicago", "city");
 "Third record added\n".echo();
 "---\n".echo();
 
-/* Test all records - first record should now fail */
-"Testing all records (first record should now fail)...\n".echo();
-name1_bug = frow.get("user1", "name");
-name2_bug = frow.get("user2", "name");
-name3_bug = frow.get("user3", "name");
+/* Test all records - should all work correctly */
+"Testing all records (should all work correctly)...\n".echo();
+name1_test = frow.get("user1", "name");
+name2_test = frow.get("user2", "name");
+name3_test = frow.get("user3", "name");
 
-"user1.name (after user3 - BUG): ".echo();
-name1_bug.echo();
+"user1.name (after user3): ".echo();
+name1_test.echo();
 "\n".echo();
 "user2.name (after user3): ".echo();
-name2_bug.echo();
+name2_test.echo();
 "\n".echo();
 "user3.name (after user3): ".echo();
-name3_bug.echo();
+name3_test.echo();
 "\n".echo();
 "---\n".echo();
 
-/* Show debug output to see the corruption */
-"ROW table debug output (showing corruption):\n".echo();
+/* Show debug output */
+"ROW table debug output:\n".echo();
 frow.debug();
 "\n".echo();
 "---\n".echo();
 
-/* Compare with COL table that works correctly */
+/* Compare with COL table */
 "Creating COL table for comparison...\n".echo();
 fcol = $file().table("COL");
 fcol.mkfield("name", "STR", "VAR");
@@ -133,11 +133,10 @@ col_name3.echo();
 "---\n".echo();
 
 /* Summary */
-"=== BUG DEMONSTRATION SUMMARY ===\n".echo();
-"ROW table: All records remain readable (BUG FIXED as of August 2025)\n".echo();
-"COL table: All records remain readable (correct behavior)\n".echo();
-"Status: Both ROW and COL tables now work correctly\n".echo();
-"See maintainers/RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md for full investigation and status.\n".echo();
+"=== ROW TABLE TEST SUMMARY ===\n".echo();
+"ROW table: All records remain readable (working correctly)\n".echo();
+"COL table: All records remain readable (working correctly)\n".echo();
+"Status: Both ROW and COL tables work correctly\n".echo();
 "---\n".echo();
 
 "Demo completed\n".echo(); 

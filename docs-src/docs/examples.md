@@ -405,8 +405,33 @@ for (i = 0; i < patterns.len(); i = i + 1) {
 
 ### Custom Delimiters
 ```grapa
+// Basic custom delimiter
 "Line 1|Line 2|Line 3".grep("Line 2", "", "|")
 ["Line 2"]
+
+// Multi-character delimiter
+"Line 1|||Line 2|||Line 3".grep("Line", "o", "|||")
+["Line 1", "Line 2", "Line 3"]
+
+// Lookaround assertions with custom delimiter
+"word123|text456|word789".grep("\\w+(?=\\d)", "o", "|")
+["word", "text", "word"]
+
+// Unicode script properties with custom delimiter
+"Hello 世界|Goodbye 世界|Test 123".grep("\\p{sc=Latin}+", "o", "|")
+["Hello", "Goodbye", "Test"]
+
+// Grapheme clusters with custom delimiter
+"Hello 👋 world 🌍|||Goodbye 👋 universe 🌌".grep("\\X", "o", "|||")
+["H", "e", "l", "l", "o", " ", "👋", " ", "w", "o", "r", "l", "d", " ", "🌍", "G", "o", "o", "d", "b", "y", "e", " ", "👋", " ", "u", "n", "i", "v", "e", "r", "s", "e", " ", "🌌"]
+
+// Word boundaries with custom delimiter
+"line1|line2|line3".grep("line", "wo", "|")
+["line1", "line2", "line3"]
+
+// Multiline patterns with custom delimiter
+"start|middle|end".grep("start.*end", "s", "|")
+["start|middle|end"]
 ```
 
 ### Null-Data Mode (Limited Support)

@@ -71,13 +71,11 @@ Comprehensive performance analysis and benchmarking for Grapa's weighted BTree i
 - Academic research contributions and applications
 - Test harness infrastructure and cross-platform support
 
-### [Storage Model Comparison Strategy](STORAGE_MODEL_COMPARISON_STRATEGY.md)
-Strategy for documenting storage model comparison while working around the ROW table index corruption bug:
-- Work-around approach for comprehensive documentation
-- Safe testing scenarios for ROW tables
-- COL vs GROUP performance analysis
-- Academic value despite technical limitations
-- Implementation plan and success criteria
+## Storage Model Analysis
+
+Strategy for documenting storage model comparison:
+
+- **[STORAGE_MODEL_COMPARISON_STRATEGY.md](STORAGE_MODEL_COMPARISON_STRATEGY.md)** - Comprehensive storage model comparison strategy
 
 ### [Grammar Mutation Documentation Strategy](GRAMMAR_MUTATION_DOCUMENTATION_STRATEGY.md)
 Strategy for documenting Grapa's core research innovation: runtime grammar mutation through mutable $RULE structures:

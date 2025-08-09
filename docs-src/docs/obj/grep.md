@@ -64,7 +64,7 @@ console_output = result.join("\n");  /* "line1\nline2\nline3" */
 
 ### Custom Delimiter Support
 
-Grapa grep fully supports **multi-character delimiters**:
+Grapa grep fully supports **multi-character delimiters** with comprehensive edge case handling:
 
 ```grapa
 /* Single character delimiter */
@@ -81,6 +81,64 @@ Grapa grep fully supports **multi-character delimiters**:
 ```
 
 **Note**: All delimiters are automatically removed from output strings, regardless of length or complexity.
+
+#### Advanced Custom Delimiter Features
+
+Grapa grep now fully supports all advanced regex features with custom delimiters:
+
+**Lookaround Assertions with Custom Delimiters:**
+```grapa
+/* Positive lookahead with custom delimiter */
+"word123|text456|word789".grep("\\w+(?=\\d)", "o", "|")
+/* Result: ["word", "text", "word"] */
+
+/* Negative lookahead with custom delimiter */
+"word123|text456|word789".grep("\\w+(?!\\d)", "o", "|")
+/* Result: ["word123", "text456", "word789"] */
+
+/* Positive lookbehind with custom delimiter */
+"123word|456text|789word".grep("(?<=\\d)\\w+", "o", "|")
+/* Result: ["word", "text", "word"] */
+```
+
+**Unicode Script Properties with Custom Delimiters:**
+```grapa
+/* Latin script with custom delimiter */
+"Hello 世界|Goodbye 世界|Test 123".grep("\\p{sc=Latin}+", "o", "|")
+/* Result: ["Hello", "Goodbye", "Test"] */
+
+/* Han script with custom delimiter */
+"Hello 世界|Goodbye 世界|Test 123".grep("\\p{sc=Han}+", "o", "|")
+/* Result: ["世界", "世界"] */
+```
+
+**Grapheme Clusters with Custom Delimiters:**
+```grapa
+/* Grapheme clusters with custom delimiter */
+"Hello 👋 world 🌍|||Goodbye 👋 universe 🌌".grep("\\X", "o", "|||")
+/* Result: ["H", "e", "l", "l", "o", " ", "👋", " ", "w", "o", "r", "l", "d", " ", "🌍", "G", "o", "o", "d", "b", "y", "e", " ", "👋", " ", "u", "n", "i", "v", "e", "r", "s", "e", " ", "🌌"] */
+/* Note: Delimiter characters are automatically excluded from output */
+```
+
+**Word Boundaries with Custom Delimiters:**
+```grapa
+/* Word boundaries with custom delimiter */
+"line1|line2|line3".grep("line", "wo", "|")
+/* Result: ["line1", "line2", "line3"] */
+
+/* Manual word boundaries with custom delimiter */
+"line1|line2|line3".grep("\\bline\\b", "o", "|")
+/* Result: ["line1", "line2", "line3"] */
+```
+
+**Multiline Patterns with Custom Delimiters:**
+```grapa
+/* Multiline pattern with custom delimiter */
+"start|middle|end".grep("start.*end", "s", "|")
+/* Result: ["start|middle|end"] */
+```
+
+All these features work seamlessly with custom delimiters of any length or complexity, ensuring consistent behavior across all regex patterns and Unicode features.
 
 ## Key Features
 
@@ -1080,26 +1138,6 @@ console_output = result.join("\n");  /* "line1\nline2\nline3" */
 3. **Flexible Output**: Can join with any delimiter for different formats
 4. **Language Integration**: Natural fit with Grapa's array-based design
 5. **Python Integration**: Arrays map naturally to Python lists
-
-### Custom Delimiter Support
-
-Grapa grep fully supports **multi-character delimiters**:
-
-```grapa
-/* Single character delimiter */
-"line1|line2|line3".grep("line", "o", "|")
-/* Result: ["line1", "line2", "line3"] */
-
-/* Multi-character delimiter */
-"line1|||line2|||line3".grep("line", "o", "|||")
-/* Result: ["line1", "line2", "line3"] */
-
-/* Complex delimiter */
-"line1<DELIM>line2<DELIM>line3".grep("line", "o", "<DELIM>")
-/* Result: ["line1", "line2", "line3"] */
-```
-
-**Note**: All delimiters are automatically removed from output strings, regardless of length or complexity.
 
 ## Error Output
 

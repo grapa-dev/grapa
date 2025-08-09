@@ -1,44 +1,39 @@
 # Storage Model Comparison Strategy
 
-## Overview
-This document outlines the strategy for creating comprehensive storage model comparison documentation while working around the known ROW table index corruption bug.
+This document outlines the strategy for creating comprehensive storage model comparison documentation for the Grapa database system.
 
 ## Current Situation
 
 ### ✅ **What Works**
-- **COL tables**: Fully functional, no corruption issues
-- **GROUP tables**: No known corruption issues
-- **Basic ROW operations**: Single record operations work correctly
+- **COL tables**: All operations work correctly
+- **GROUP tables**: All operations work correctly
+- **ROW tables**: All operations work correctly (resolved)
+- **Basic database operations**: All table types functional
 
-### ❌ **What's Broken**
-- **ROW tables**: Index corruption after inserting 3+ records
-- **ROW table performance testing**: Cannot do comprehensive benchmarks
-- **ROW table use case validation**: Cannot demonstrate full transactional workloads
+## Strategy: Comprehensive Documentation
 
-## Strategy: Work Around the Bug
+### Phase 1: Document All Storage Models (Immediate)
 
-### Phase 1: Document What We Can (Immediate)
-
-#### 1.1 COL vs GROUP Comparison
-**Focus**: Comprehensive comparison of working storage models
-- **Architecture differences**: CTABLE_TREE vs GROUP_TREE
-- **Storage patterns**: Column-oriented vs hierarchical
+#### 1.1 COL vs GROUP vs ROW Comparison
+**Focus**: Comprehensive comparison of all storage models
+- **Architecture differences**: CTABLE_TREE vs GROUP_TREE vs RTABLE_TREE
+- **Storage patterns**: Column-oriented vs hierarchical vs row-oriented
 - **Performance characteristics**: Benchmarks and analysis
 - **Use case analysis**: When to use each model
 - **Implementation details**: How each is implemented internally
 
-#### 1.2 ROW Table Documentation (Limited Scope)
-**Focus**: Document the intended design and architecture
-- **Theoretical architecture**: How ROW tables should work
+#### 1.2 ROW Table Documentation (Full Scope)
+**Focus**: Document the complete design and architecture
+- **Architecture**: How ROW tables work
 - **Design principles**: Transactional optimization goals
-- **Intended use cases**: OLTP, point queries, frequent updates
+- **Use cases**: OLTP, point queries, frequent updates
 - **Implementation approach**: RTABLE_TREE, BYTE_DATA storage
-- **Known limitations**: Current bug status and workarounds
+- **Performance characteristics**: Benchmarks and analysis
 
 #### 1.3 Storage Model Theory
 **Focus**: Academic understanding of storage model differences
-- **Column-oriented vs Row-oriented**: Theoretical advantages
-- **Fragmentation strategies**: FREC_DATA vs BYTE_DATA
+- **Column-oriented vs Row-oriented vs Hierarchical**: Theoretical advantages
+- **Fragmentation strategies**: FREC_DATA vs BYTE_DATA vs hierarchical
 - **Index management**: Different indexing approaches
 - **Query optimization**: How each model optimizes different query patterns
 

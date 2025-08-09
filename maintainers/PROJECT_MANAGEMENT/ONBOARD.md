@@ -84,11 +84,11 @@ This guide provides comprehensive onboarding information for new agents, develop
 "Based on the current Grapa project status, here are the key areas of focus:
 
 📋 **Current Priorities:**
-1. ROW Table Index Corruption Bug - HIGH PRIORITY, ready to start
-2. Custom Delimiter Edge Cases - MEDIUM PRIORITY, investigation needed
-3. Unicode Language Binding - Add case_fold(), Unicode-aware string methods
-4. String Interpolation - Implement template literal-style interpolation
-5. CLI Enhancement - Performance options, environment management, error handling
+1. Unicode Language Binding - Add case_fold(), Unicode-aware string methods
+2. String Interpolation - Implement template literal-style interpolation
+3. CLI Enhancement - Performance options, environment management, error handling
+4. Optimization Implementation - Performance improvements for arithmetic, bitwise, comparison, and assignment operators
+5. Core Language Features - Line comments, loop syntax, error handling improvements
 
 🔗 **Key Resources:**
 - `maintainers/PROJECT_MANAGEMENT/CURRENT_STATUS.md` - Complete project status
@@ -97,9 +97,9 @@ This guide provides comprehensive onboarding information for new agents, develop
 - `test/` - Test scripts and validation
 
 **Next Steps:**
-1. Review the ROW table corruption issue in `maintainers/RESEARCH_AND_ANALYSIS/ROW_TABLE_INDEX_BUG_DEBUG_CONTEXT.md`
-2. Test the custom delimiter edge cases
-3. Choose a specific area to focus on from the current priorities
+1. Choose a specific area to focus on from the current priorities
+2. Review the current status and backlog for detailed information
+3. Select a high-priority item to begin work on
 
 Would you like me to focus on any specific area, or do you have questions about the current implementation?"
 

@@ -2,37 +2,6 @@
 
 ## Critical Issues
 
-### ✅ ROW Table Index Corruption Bug - RESOLVED
-
-**Issue**: ~~ROW tables have a critical bug where the first record's index becomes corrupted when the third record is added.~~ **RESOLVED**
-
-**Previous Symptoms** (now fixed):
-- ~~First record returns `{"error":-1}` when retrieved~~
-- ~~Subsequent records work correctly~~
-- ~~Debug output shows empty RPTR entries for first record~~
-
-**Resolution**: The ROW Table Index Corruption Bug has been fixed. All three database types (ROW, COL, GROUP) now work correctly.
-
-**Current Status**: ✅ **RESOLVED** - ROW tables work correctly for transactional workloads. Choose database type based on your use case:
-
-```grapa
-// ROW: Optimized for transactional workloads, record-based operations
-tbl = $file().table("ROW");
-
-// COL: Optimized for analytical workloads, column-based operations  
-tbl = $file().table("COL");
-
-// GROUP: Optimized for hierarchical data, nested structures
-tbl = $file().table("GROUP");
-```
-
-**Recommendation**: Use the database type that best fits your workload:
-- **ROW**: For transactional applications, frequent updates, point queries
-- **COL**: For analytical queries, large datasets, sparse data
-- **GROUP**: For hierarchical data, file system operations, nested structures
-
-## Common Issues
-
 This guide covers common issues encountered when working with Grapa and GrapaPy, along with their solutions and debugging techniques.
 
 > **See Also:**

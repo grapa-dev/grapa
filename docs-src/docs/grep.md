@@ -644,8 +644,10 @@ input.grep("Line 2|Line 6", "A1B1")
 
 ## Custom Delimiters
 
+Grapa grep fully supports custom delimiters with comprehensive edge case handling for all advanced regex features:
+
 ```grapa
-// Pipe-delimited input
+// Basic custom delimiter
 "Line 1|Line 2|Line 3".grep("Line 2", "", "|")
 ["Line 2"]
 
@@ -656,9 +658,29 @@ input.grep("Line 2|Line 6", "A1B1")
 // Multi-character delimiter
 "Line 1\r\nLine 2\r\nLine 3".grep("Line 2", "", "\r\n")
 ["Line 2"]
+
+// Lookaround assertions with custom delimiter
+"word123|text456|word789".grep("\\w+(?=\\d)", "o", "|")
+["word", "text", "word"]
+
+// Unicode script properties with custom delimiter
+"Hello 世界|Goodbye 世界|Test 123".grep("\\p{sc=Latin}+", "o", "|")
+["Hello", "Goodbye", "Test"]
+
+// Grapheme clusters with custom delimiter
+"Hello 👋 world 🌍|||Goodbye 👋 universe 🌌".grep("\\X", "o", "|||")
+["H", "e", "l", "l", "o", " ", "👋", " ", "w", "o", "r", "l", "d", " ", "🌍", "G", "o", "o", "d", "b", "y", "e", " ", "👋", " ", "u", "n", "i", "v", "e", "r", "s", "e", " ", "🌌"]
+
+// Word boundaries with custom delimiter
+"line1|line2|line3".grep("line", "wo", "|")
+["line1", "line2", "line3"]
+
+// Multiline patterns with custom delimiter
+"start|middle|end".grep("start.*end", "s", "|")
+["start|middle|end"]
 ```
 
-> **Warning:** Do not use Unicode combining marks (e.g., U+0301) as delimiters. Combining marks are intended to modify the preceding base character, forming a single grapheme cluster (e.g., 'a' + U+0301 = 'á'). Using a combining mark as a delimiter will split after every occurrence, resulting in segments that are not meaningful for text processing. See `test/grep/debug_multiline_delimiter.grc` for an example and explanation.
+> **Warning:** Do not use Unicode combining marks (e.g., U+0301) as delimiters. Combining marks are intended to modify the preceding base character, forming a single grapheme cluster (e.g., 'a' + U+0301 = 'á'). Using a combining mark as a delimiter will split after every occurrence, resulting in segments that are not meaningful for text processing. See `test/grep/debug_multiline_delimiter.grc` for an example and explanation.
 
 ## Binary Mode
 

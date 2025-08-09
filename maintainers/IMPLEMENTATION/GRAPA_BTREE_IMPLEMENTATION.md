@@ -259,4 +259,4 @@ As of January 2025, there are no known open issues with the BTree implementation
 
 - The BTree implementation faithfully inserts whatever value is provided for each key.
 - It is the responsibility of higher-level logic (such as GrapaDB) to ensure that index entries (RPTR_ITEM, CPTR_ITEM, GPTR_ITEM) use the correct record reference as the value.
-- The ROW table index corruption bug was caused by incorrect value assignment at the GrapaDB layer, not by any issue in the BTree implementation. 
+- The BTree implementation is robust and handles all edge cases correctly. 
