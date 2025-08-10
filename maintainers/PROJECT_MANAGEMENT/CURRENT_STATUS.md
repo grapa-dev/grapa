@@ -16,18 +16,25 @@
 - **Testing**: Create test scripts for session isolation
 - **Documentation Updates**: Track required changes to user-facing docs (to be implemented after completion)
 
-## **COMPLETED ITEMS** ✅
+## COMPLETED ITEMS
 
 ### **CLI Enhancement (Phase 2)** ✅ **COMPLETED**
-- **Phase 1 Implementation**: Basic error context ✅ **COMPLETED**
-- **Phase 2 Implementation**: Detailed compilation flow, including token creation ✅ **COMPLETED**
-- **Phase 3 Implementation**: Advanced debugging (Level 4-5) - state machine transitions, full token stream logging ✅ **COMPLETED**
-- **Lexer/Parser Separation**: Separate `lexer` and `parser` debug components with `compiler` shorthand ✅ **COMPLETED**
-- **Architecture**: Lexer uses session debug via `vScriptExec` context passed through `GrapaItemState::SetParams` ✅ **COMPLETED**
-- **Debug Output Formatting**: Fixed debug output to include proper line breaks for readability ✅ **COMPLETED**
-- **Performance Metrics**: Added compilation timing and performance tracking (Level 5) ✅ **COMPLETED**
-- **State Machine Transitions**: Added detailed state transition logging (Level 4) ✅ **COMPLETED**
-- **Full Token Stream Logging**: Added complete token stream with context (Level 5) ✅ **COMPLETED**
+- **Enhanced Debug System**: Comprehensive debug output with component-specific filtering
+- **Session Isolation**: Multi-processing debug support with unique session IDs
+- **Environment Variable Integration**: Debug flags via `$sys().putenv()` and `$sys().getenv()`
+- **Component-Specific Debugging**: Filtering by specific components (lexer, parser, executor)
+- **Component-Specific Levels**: Different verbosity levels per component (e.g., "lexer:2,parser:1")
+- **Performance Impact Mitigation**: `ShouldDebug()` checks ensure minimal performance impact
+
+#### **Debug Components Implemented**:
+- **Lexer Component**: `GRAPA_SESSION_DEBUG_COMPONENTS=lexer` for tokenization debug
+- **Parser Component**: `GRAPA_SESSION_DEBUG_COMPONENTS=parser` for grammar parsing debug  
+- **Executor Component**: `GRAPA_SESSION_DEBUG_COMPONENTS=executor` for plan execution debug
+- **Combined Component**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler` for both lexer and parser (backward compatible)
+- **Runtime Component**: `GRAPA_SESSION_DEBUG_COMPONENTS=runtime` for complete pipeline (compiler + executor)
+- **Architecture**: Lexer uses session debug via `vScriptExec` context passed through `GrapaItemState::SetParams`
+- **Debug Output Formatting**: Fixed debug output to include proper line breaks for readability
+- **Complete Pipeline**: Full E2E visibility from text → tokens → execution trees → results
 
 #### **3. Component-Specific Debug System** - ✅ **COMPLETED**
 - **Status:** **COMPLETED** - August 2025

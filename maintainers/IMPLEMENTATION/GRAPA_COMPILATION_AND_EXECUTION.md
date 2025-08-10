@@ -275,11 +275,54 @@ The Grapa compiler supports comprehensive debug instrumentation through session-
 - **Output**: Rule matching attempts, error context, execution tree building
 - **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=parser`
 
-#### **Combined Component** (`compiler`)
-- **Scope**: Both lexer and parser (shorthand)
+#### **Executor Component** (`executor`)
+- **Scope**: Plan execution (execution trees to results)
 - **Debug Levels**: 1-5 (basic to detailed)
-- **Output**: Complete compilation flow
-- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler`
+- **Output**: Operation execution flow, library loading, function calls, performance metrics
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=executor`
+
+#### **Combined Components**
+- **Compiler Component** (`compiler`): Both lexer and parser (shorthand)
+- **Runtime Component** (`runtime`): Complete pipeline (compiler + executor)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler` or `runtime`
+
+### **Complete Execution Pipeline**
+
+The Grapa execution pipeline provides end-to-end visibility from source text to final results:
+
+#### **Pipeline Stages**
+
+1. **Lexer** (`lexer`): Raw text → Tokens
+   - Token creation and classification
+   - State machine transitions (Level 4)
+   - Quote character analysis
+   - Performance metrics (Level 5)
+
+2. **Parser** (`parser`): Tokens → Execution Trees
+   - Rule matching and grammar parsing
+   - Error context and token streams (Level 5)
+   - Execution tree construction
+   - Performance metrics (Level 5)
+
+3. **Executor** (`executor`): Execution Trees → Results
+   - Operation execution flow (Level 2)
+   - Library loading and function calls (Level 3)
+   - Parameter binding and scope management (Level 4)
+   - Performance metrics (Level 1)
+
+#### **Debug Component Shorthands**
+
+- **`compiler`**: `lexer` + `parser` (compilation phase)
+- **`runtime`**: `compiler` + `executor` (complete pipeline)
+
+#### **Performance Impact**
+
+The debug system uses `ShouldDebug()` checks to ensure minimal performance impact:
+- Debug output is only generated when explicitly enabled
+- Component-specific filtering prevents unnecessary output
+- Level-based filtering provides granular control
+- Session isolation prevents debug interference
 
 ### **Async Pipeline Architecture**
 
