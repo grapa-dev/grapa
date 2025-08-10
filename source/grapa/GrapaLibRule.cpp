@@ -3376,7 +3376,6 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 		{
 			err = 0;
 			char levelStr[16];
-			sprintf(levelStr, "%d", gSystem->mDebug.mDebugLevel);
 			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(levelStr));
 		}
 		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG") == 0)
@@ -3393,7 +3392,6 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			err = 0;
 			if (vScriptExec && vScriptExec->vScriptState) {
 				char levelStr[16];
-				sprintf(levelStr, "%d", vScriptExec->vScriptState->mDebug.mSessionDebugLevel);
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(levelStr));
 			} else {
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("0"));
@@ -3404,7 +3402,6 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			err = 0;
 			if (vScriptExec && vScriptExec->vScriptState) {
 				char idStr[32];
-				sprintf(idStr, "%llu", (unsigned long long)vScriptExec->vScriptState->mDebug.mSessionId);
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(idStr));
 			} else {
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("0"));
@@ -10418,7 +10415,7 @@ GrapaRuleEvent* GrapaLibraryRuleDebugEvent::Run(GrapaScriptExec *vScriptExec, Gr
 			GrapaCHARFile mFile;
 			objEvent->vDatabase->DatabaseDump(a.LongValue(), mFile);
 			if (mFile.mBytes)
-				vScriptExec->vScriptState->mDebug.DebugPrint(vScriptExec, pNameSpace, mFile);
+				vScriptExec->vScriptState->mDebug.DebugPrint(vScriptExec, pNameSpace, mFile); 
 		}
 	}
 	if (err && result == NULL)

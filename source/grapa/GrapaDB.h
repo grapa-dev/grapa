@@ -134,8 +134,6 @@ protected:
 	GrapaError DumpTheValue(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
 	GrapaError DumpTheTreeItem(GrapaCHAR& dbWrite, char *leader, GrapaCursor& cursor);
 	GrapaError DumpTheTree(GrapaCHAR& dbWrite, const char *leader, u64 tableId, u64 firstTree);
-    void DebugPrintIndexPointerAndRecord(u64 tableRef, u64 key);
-    void DebugPrintAllIndexPointers(u64 tableRef);
 };
 
 // need a way for user to extend the dict field definition
