@@ -28,6 +28,11 @@
   - [ ] **Better Error Messages**: Improve syntax error reporting with more descriptive and helpful error messages
   - [x] **Documentation Updates**: Update CLI documentation to reference existing language capabilities ✅ **COMPLETED**
   - [x] **Cross-Reference Language Features**: Add examples showing how to use built-in performance, environment, and timing features from CLI ✅ **COMPLETED**
+- **Critical Design Requirement**: All debug output MUST use `pNameSpace->GetResponse()->Send()` system, NOT direct `printf()` calls. This ensures:
+  - Thread-safe output with proper locking
+  - Platform-specific output handling (Windows: `WriteConsoleA()`, Unix: `std::cout`)
+  - Integration with Grapa's response system architecture
+  - Support for output redirection and multiple output targets
 
 #### **2. Session-Specific Environment Variables** - **DEVELOPMENT EXPERIENCE**
 - **Status:** **ACTIVE** - Implementation planning complete, ready to implement
@@ -39,6 +44,11 @@
   - [ ] **C++ Implementation**: Modify `GrapaLibRule.cpp` for session variable support
   - [ ] **Testing**: Create test scripts for session isolation
   - [ ] **Documentation Updates**: Track required changes to user-facing docs (to be implemented after completion)
+- **Critical Design Requirement**: All debug output related to session variables MUST use `pNameSpace->GetResponse()->Send()` system, NOT direct `printf()` calls. This ensures:
+  - Thread-safe output when multiple sessions are active
+  - Proper integration with Grapa's response system
+  - Platform-specific output handling
+  - Support for output redirection and debugging tools
 - **Related Documentation:**
   - [`maintainers/IMPLEMENTATION/SYSTEM_FUNCTIONS.md`](../IMPLEMENTATION/SYSTEM_FUNCTIONS.md) - Core system function implementation
   - [`test/core/test_sys_functions.grc`](../../test/core/test_sys_functions.grc) - Existing test suite for `$sys` functions
