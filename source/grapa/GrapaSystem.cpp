@@ -113,6 +113,15 @@ int GrapaDebug::GetComponentDebugLevel(const char* component)
 		return (lexerLevel > parserLevel) ? lexerLevel : parserLevel;
 	}
 	
+	// Handle "runtime" shorthand - expand to "compiler,executor"
+	if (strcmp(component, "runtime") == 0) {
+		// Check if either compiler or executor is enabled
+		int compilerLevel = GetComponentDebugLevel("compiler");
+		int executorLevel = GetComponentDebugLevel("executor");
+		// Return the higher level if either is enabled
+		return (compilerLevel > executorLevel) ? compilerLevel : executorLevel;
+	}
+	
 	// First, look for exact component match with level
 	char searchPattern[256];
 	snprintf(searchPattern, sizeof(searchPattern), "%s:", component);

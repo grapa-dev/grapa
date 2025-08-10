@@ -4137,15 +4137,52 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 {
 	GrapaRuleEvent* result = NULL;
 	s64 idx;
+	
+	// ADD DEBUG: Execution start (Level 1)
+	clock_t startTime = 0;
+	if (vScriptState->mDebug.ShouldDebug("executor", 1)) {
+		startTime = clock();
+		char debugMsg[256];
+		snprintf(debugMsg, sizeof(debugMsg), "EXEC: Starting execution - operation type=%d", 
+				 pOperation ? pOperation->mValue.mToken : -1);
+		vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 1);
+	}
+	
 	if (!pOperation) return(result);
 	while (pOperation->mValue.mToken == GrapaTokenType::PTR && pOperation->vRulePointer) pOperation = pOperation->vRulePointer;
+	
+	// ADD DEBUG: Operation type analysis (Level 2)
+	if (vScriptState->mDebug.ShouldDebug("executor", 2)) {
+		char debugMsg[256];
+		snprintf(debugMsg, sizeof(debugMsg), "EXEC: Processing operation type=%d (CODE=%d, OP=%d)", 
+				 pOperation->mValue.mToken, GrapaTokenType::CODE, GrapaTokenType::OP);
+		vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 2);
+	}
+	
 	if (pOperation->mValue.mToken == GrapaTokenType::CODE)
 	{
+		// ADD DEBUG: CODE execution start (Level 2)
+		if (vScriptState->mDebug.ShouldDebug("executor", 2)) {
+			char debugMsg[256];
+			snprintf(debugMsg, sizeof(debugMsg), "EXEC: CODE execution - child count=%llu", 
+					 pOperation->vQueue ? (unsigned long long)pOperation->vQueue->mCount : 0);
+			vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 2);
+		}
+		
 		if (pOperation->vQueue && pOperation->vQueue->mCount)
 		{
 			GrapaRuleEvent *item = (GrapaRuleEvent*)pOperation->vQueue->Head();
+			int childIndex = 0;
 			while (item)
 			{
+				// ADD DEBUG: Child execution (Level 3)
+				if (vScriptState->mDebug.ShouldDebug("executor", 3)) {
+					char debugMsg[256];
+					snprintf(debugMsg, sizeof(debugMsg), "EXEC: CODE child[%d] execution - type=%d", 
+							 childIndex, item->mValue.mToken);
+					vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 3);
+				}
+				
 				GrapaRuleEvent* oldresult = result;
 				result = ProcessPlan(pNameSpace, item, pParam, pCount);
 				if (oldresult)
@@ -4155,11 +4192,20 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 					oldresult = NULL;
 				}
 				item = item->Next();
+				childIndex++;
 			}
 		}
 	}
 	else if (pOperation->mValue.mToken == GrapaTokenType::OP)
 	{
+		// ADD DEBUG: OP execution start (Level 2)
+		if (vScriptState->mDebug.ShouldDebug("executor", 2)) {
+			char debugMsg[256];
+			snprintf(debugMsg, sizeof(debugMsg), "EXEC: OP execution - queue count=%llu", 
+					 pOperation->vQueue ? (unsigned long long)pOperation->vQueue->mCount : 0);
+			vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 2);
+		}
+		
 		if (pOperation->vQueue && pOperation->vQueue->mCount)
 		{
 			GrapaRuleEvent *libName = &gSystem->mLib;
@@ -4193,12 +4239,29 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 				if (libName == NULL || libName->mValue.StrCmp("$SYS") == 0 || (libName->mValue.mToken == GrapaTokenType::SYSID && libName->mValue.StrCmp("SYS") == 0)) libName = &gSystem->mLib;
 				break;
 			}
+			
+			// ADD DEBUG: Library resolution (Level 3)
+			if (vScriptState->mDebug.ShouldDebug("executor", 3)) {
+				char debugMsg[256];
+				snprintf(debugMsg, sizeof(debugMsg), "EXEC: Library resolution - libName='%.*s'", 
+						 (int)libName->mValue.mLength, (char*)libName->mValue.mBytes);
+				vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 3);
+			}
+			
 			if (libName)
 			{
 				GrapaRuleQueue *input = inputItem ? (GrapaRuleQueue*)inputItem->vQueue : NULL;
 				GrapaRuleQueue *inputDel = NULL;
 				if (pParam)
 				{
+					// ADD DEBUG: Parameter binding (Level 4)
+					if (vScriptState->mDebug.ShouldDebug("executor", 4)) {
+						char debugMsg[256];
+						snprintf(debugMsg, sizeof(debugMsg), "EXEC: Parameter binding - input params=%llu", 
+								 input ? (unsigned long long)input->mCount : 0);
+						vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 4);
+					}
+					
 					GrapaRuleQueue* paramQueue = new GrapaRuleQueue();
 					GrapaRuleEvent *e = input ? input->Head() : NULL;
 					while (e)
@@ -4267,10 +4330,46 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 					}
 					input = inputDel = paramQueue;
 				}
+				
+				// ADD DEBUG: Library loading (Level 3)
+				if (vScriptState->mDebug.ShouldDebug("executor", 3)) {
+					char debugMsg[256];
+					snprintf(debugMsg, sizeof(debugMsg), "EXEC: Loading library - libName='%.*s'", 
+							 (int)libName->mValue.mLength, (char*)libName->mValue.mBytes);
+					vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 3);
+				}
+				
 				LoadLib(libName);
+				
+				// ADD DEBUG: Library execution (Level 2)
+				if (vScriptState->mDebug.ShouldDebug("executor", 2)) {
+					char debugMsg[256];
+					snprintf(debugMsg, sizeof(debugMsg), "EXEC: Library execution - hasLibrary=%s", 
+							 libName->vLibraryEvent ? "true" : "false");
+					vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 2);
+				}
+				
 				if (libName->vLibraryEvent)
 				{
+					// ADD DEBUG: Function call (Level 4)
+					if (vScriptState->mDebug.ShouldDebug("executor", 4)) {
+						char debugMsg[256];
+						snprintf(debugMsg, sizeof(debugMsg), "EXEC: Function call - libParam='%.*s'", 
+								 libParam ? (int)libParam->mValue.mLength : 0, 
+								 libParam ? (char*)libParam->mValue.mBytes : "");
+						vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 4);
+					}
+					
 					result = libName->vLibraryEvent->Run(this, pNameSpace, libParam, input);
+					
+					// ADD DEBUG: Function result (Level 4)
+					if (vScriptState->mDebug.ShouldDebug("executor", 4)) {
+						char debugMsg[256];
+						snprintf(debugMsg, sizeof(debugMsg), "EXEC: Function result - hasResult=%s, resultType=%d", 
+								 result ? "true" : "false", result ? result->mValue.mToken : -1);
+						vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 4);
+					}
+					
 					if (result && !result->mVar && result->mValue.mToken == GrapaTokenType::PTR && result->vRulePointer)
 					{
 						GrapaRuleEvent *v = result->vRulePointer;
@@ -4298,6 +4397,14 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 	}
 	else if (!pOperation->mNull)
 	{
+		// ADD DEBUG: Direct value return (Level 3)
+		if (vScriptState->mDebug.ShouldDebug("executor", 3)) {
+			char debugMsg[256];
+			snprintf(debugMsg, sizeof(debugMsg), "EXEC: Direct value return - type=%d", 
+					 pOperation->mValue.mToken);
+			vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 3);
+		}
+		
 		result = CopyItem(pOperation);
 	}
 	if (result && !result->mVar && result->mValue.mToken == GrapaTokenType::PTR) //NEED TO FIX THIS
@@ -4307,6 +4414,17 @@ GrapaRuleEvent* GrapaScriptExec::ProcessPlan(GrapaNames* pNameSpace, GrapaRuleEv
 		delete result;
 		result = v;
 	}
+	
+	// ADD DEBUG: Execution completion (Level 1)
+	if (vScriptState->mDebug.ShouldDebug("executor", 1)) {
+		clock_t endTime = clock();
+		double elapsedTime = ((double)(endTime - startTime)) / CLOCKS_PER_SEC * 1000000.0;  // Convert to microseconds
+		char debugMsg[256];
+		snprintf(debugMsg, sizeof(debugMsg), "EXEC: Execution completed - elapsed time=%.2f microseconds, hasResult=%s", 
+				 elapsedTime, result ? "true" : "false");
+		vScriptState->mDebug.DebugPrint(this, pNameSpace, "executor", debugMsg, 1);
+	}
+	
 	return(result);
 }
 
