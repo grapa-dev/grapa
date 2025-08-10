@@ -71,6 +71,36 @@ Hello, Grapa!
 4 * 3 = 12
 ```
 
+## Debug Options
+
+Grapa provides comprehensive debugging capabilities that can be controlled from the command line or within scripts.
+
+### Command Line Debug
+```bash
+# Enable debug mode
+grapa -d script.grc
+
+# Debug with command execution
+grapa -d -c "'hello world'.echo();"
+```
+
+### Script-Based Debug Control
+You can also control debug settings dynamically within your scripts:
+```grapa
+// Enable debug for database operations
+$sys().putenv("GRAPA_DEBUG_MODE", "1");
+$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database");
+
+// Perform operations with debug output
+db = $file().table('ROW');
+db.mkfield('name', 'STR');
+
+// Disable debug when done
+$sys().putenv("GRAPA_DEBUG_MODE", "0");
+```
+
+**For complete debugging documentation, see [Debugging in Grapa](debugging.md).**
+
 ## Basic Syntax and Patterns
 
 ### Variables and Assignment

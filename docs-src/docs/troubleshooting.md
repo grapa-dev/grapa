@@ -6,6 +6,7 @@ This guide covers common issues encountered when working with Grapa and GrapaPy,
 
 > **See Also:**
 > - [Getting Started](getting_started.md)
+> - [Debugging](debugging.md) - Comprehensive debugging system for troubleshooting
 > - [Migration Tips for Python Users](python_use_cases.md#migration-tips-for-python-users)
 > - [Python Integration Guide](python_integration.md)
 

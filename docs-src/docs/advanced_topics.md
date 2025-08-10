@@ -24,7 +24,7 @@ This section covers advanced features and techniques in Grapa for power users an
 
 ## Advanced Error Handling and Debugging
 - **Error Handling:** Use `.iferr()` for fallback, and advanced error patterns for robust scripts.
-- **Debugging:** Enable debug output and use advanced logging for troubleshooting.
+- **Debugging:** Grapa provides a comprehensive debugging system with CLI and script-based control, component-specific targeting, and session isolation. See [Debugging in Grapa](debugging.md) for complete documentation.
 
 ---
 

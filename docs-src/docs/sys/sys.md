@@ -114,6 +114,35 @@ $sys().getenv("CUSTOM_VAR");
 my_value
 ```
 
+#### Debug Environment Variables
+`putenv()` supports special debug-related environment variables for controlling Grapa's debugging system:
+
+**System-Level Debug Variables:**
+```grapa
+// Enable system-level debug mode
+$sys().putenv("GRAPA_DEBUG_MODE", "1");
+
+// Set debug verbosity level (0-9)
+$sys().putenv("GRAPA_DEBUG_LEVEL", "3");
+
+// Enable debug for specific components
+$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database,grep");
+```
+
+**Session-Level Debug Variables:**
+```grapa
+// Enable session-specific debug override
+$sys().putenv("GRAPA_SESSION_DEBUG", "1");
+
+// Set session debug level
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
+
+// Set session-specific debug components
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "vector,filesystem");
+```
+
+**For complete debugging documentation, see [Debugging in Grapa](../debugging.md).**
+
 **Note:** Like `getenv()`, any value not starting with `$` will be directed to the native OS `putenv()` function.
 
 ### compilef(scriptfilename, compiledfilename)

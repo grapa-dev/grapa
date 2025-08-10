@@ -11,11 +11,13 @@
 
 ## Getting Started
 - [Quickstart Guide](getting_started.md)
+- [CLI Quickstart](cli_quickstart.md)
 - [API Reference](api_reference.md)
 - [Migration Guides](migrations/python_to_grapa_migration.md)
 - [Examples](examples.md)
 
 ## Advanced Topics
+- [Debugging](debugging.md) - Comprehensive debugging system with CLI and script control
 - [Grammar Design](syntax/grammar_design.md) - Create your own languages with Grapa
 
 ## Key Features
