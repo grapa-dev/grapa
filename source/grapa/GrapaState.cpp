@@ -6386,7 +6386,7 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 }
 
 /////////////////////////////////////////////////////////////////
-GrapaScriptExecDebug::GrapaScriptExecDebug() 
+GrapaScriptExecStateDebug::GrapaScriptExecStateDebug() 
 {
 	// pull from gSystem->mDebug any default values needed in a new session
 	// note gSystem spans all sessions that may be running in parallel
@@ -6394,14 +6394,14 @@ GrapaScriptExecDebug::GrapaScriptExecDebug()
 	// If additioonal values needed, use getenv() 
 
 }
-GrapaScriptExecDebug::~GrapaScriptExecDebug()
+GrapaScriptExecStateDebug::~GrapaScriptExecStateDebug()
 {
 };
-void GrapaScriptExecDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr)
+void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr)
 {
 	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, (char*)pStr);
 };
-void GrapaScriptExecDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue)
+void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue)
 {
 	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, pValue);
 };

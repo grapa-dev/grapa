@@ -302,12 +302,12 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class GrapaScriptExecDebug
+class GrapaScriptExecStateDebug
 {
 public:
 	bool mDebugMode;
-	GrapaScriptExecDebug();
-	~GrapaScriptExecDebug();
+	GrapaScriptExecStateDebug();
+	~GrapaScriptExecStateDebug();
 	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr);
 	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue);
 };
@@ -322,7 +322,7 @@ public:
 	bool mEnablePrompt,mNeedsPrompt;
 	u64 mRuleId;
 	bool mClearState;
-	GrapaScriptExecDebug mDebug;
+	GrapaScriptExecStateDebug mDebug;
 public:
 	GrapaScriptExecState();
 	virtual ~GrapaScriptExecState();
