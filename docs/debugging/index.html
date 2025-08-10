@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/obj/encode/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/debugging/">
       
       
-        <link rel="prev" href="../document/">
+        <link rel="prev" href="../syntax/grammar_design/">
       
       
-        <link rel="next" href="../grep/">
+        <link rel="next" href="../advanced_topics/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Encode - Grapa Documentation</title>
+        <title>Debugging - Grapa Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#key-methodgenkeysoptions" class="md-skip">
+        <a href="#debugging-in-grapa" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +88,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Encode
+              Debugging
             
           </span>
         </div>
@@ -205,7 +205,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../about/" class="md-tabs__link">
+      <a href="../about/" class="md-tabs__link">
         
   
   
@@ -224,7 +224,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -245,7 +245,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting_started/" class="md-tabs__link">
+        <a href="../getting_started/" class="md-tabs__link">
           
   
   
@@ -263,7 +263,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../cli_quickstart/" class="md-tabs__link">
+      <a href="../cli_quickstart/" class="md-tabs__link">
         
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../api_reference/" class="md-tabs__link">
+        <a href="../api_reference/" class="md-tabs__link">
           
   
   
@@ -313,7 +313,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../migrations/python_to_grapa_migration/" class="md-tabs__link">
+        <a href="../migrations/python_to_grapa_migration/" class="md-tabs__link">
           
   
   
@@ -336,7 +336,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../use_cases/" class="md-tabs__link">
+        <a href="../use_cases/" class="md-tabs__link">
           
   
   
@@ -356,7 +356,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../troubleshooting/" class="md-tabs__link">
+        <a href="../troubleshooting/" class="md-tabs__link">
           
   
   
@@ -390,7 +390,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -408,7 +408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         
   
   
@@ -430,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -493,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/" class="md-nav__link">
+      <a href="../getting_started/" class="md-nav__link">
         
   
   
@@ -516,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli_integration/" class="md-nav__link">
+      <a href="../cli_integration/" class="md-nav__link">
         
   
   
@@ -539,7 +539,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../run/" class="md-nav__link">
+      <a href="../run/" class="md-nav__link">
         
   
   
@@ -562,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_integration/" class="md-nav__link">
+      <a href="../python_integration/" class="md-nav__link">
         
   
   
@@ -592,7 +592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli_quickstart/" class="md-nav__link">
+      <a href="../cli_quickstart/" class="md-nav__link">
         
   
   
@@ -660,7 +660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/" class="md-nav__link">
+      <a href="../api_reference/" class="md-nav__link">
         
   
   
@@ -724,7 +724,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/array/" class="md-nav__link">
+      <a href="../type/array/" class="md-nav__link">
         
   
   
@@ -747,7 +747,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/bool/" class="md-nav__link">
+      <a href="../type/bool/" class="md-nav__link">
         
   
   
@@ -770,7 +770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/code/" class="md-nav__link">
+      <a href="../type/code/" class="md-nav__link">
         
   
   
@@ -793,7 +793,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/err/" class="md-nav__link">
+      <a href="../type/err/" class="md-nav__link">
         
   
   
@@ -816,7 +816,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/float/" class="md-nav__link">
+      <a href="../type/float/" class="md-nav__link">
         
   
   
@@ -839,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/id/" class="md-nav__link">
+      <a href="../type/id/" class="md-nav__link">
         
   
   
@@ -862,7 +862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/int/" class="md-nav__link">
+      <a href="../type/int/" class="md-nav__link">
         
   
   
@@ -885,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/list/" class="md-nav__link">
+      <a href="../type/list/" class="md-nav__link">
         
   
   
@@ -908,7 +908,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/op/" class="md-nav__link">
+      <a href="../type/op/" class="md-nav__link">
         
   
   
@@ -931,7 +931,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/raw/" class="md-nav__link">
+      <a href="../type/raw/" class="md-nav__link">
         
   
   
@@ -954,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/rule/" class="md-nav__link">
+      <a href="../type/rule/" class="md-nav__link">
         
   
   
@@ -977,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/str/" class="md-nav__link">
+      <a href="../type/str/" class="md-nav__link">
         
   
   
@@ -1000,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysid/" class="md-nav__link">
+      <a href="../type/sysid/" class="md-nav__link">
         
   
   
@@ -1023,7 +1023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysint/" class="md-nav__link">
+      <a href="../type/sysint/" class="md-nav__link">
         
   
   
@@ -1046,7 +1046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysstr/" class="md-nav__link">
+      <a href="../type/sysstr/" class="md-nav__link">
         
   
   
@@ -1069,7 +1069,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/table/" class="md-nav__link">
+      <a href="../type/table/" class="md-nav__link">
         
   
   
@@ -1092,7 +1092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/tag/" class="md-nav__link">
+      <a href="../type/tag/" class="md-nav__link">
         
   
   
@@ -1115,7 +1115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/time/" class="md-nav__link">
+      <a href="../type/time/" class="md-nav__link">
         
   
   
@@ -1138,7 +1138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/vector/" class="md-nav__link">
+      <a href="../type/vector/" class="md-nav__link">
         
   
   
@@ -1161,7 +1161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/widget/" class="md-nav__link">
+      <a href="../type/widget/" class="md-nav__link">
         
   
   
@@ -1184,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/widget/attributes/" class="md-nav__link">
+      <a href="../type/widget/attributes/" class="md-nav__link">
         
   
   
@@ -1207,7 +1207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/xml/" class="md-nav__link">
+      <a href="../type/xml/" class="md-nav__link">
         
   
   
@@ -1279,7 +1279,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/function/" class="md-nav__link">
+      <a href="../operators/function/" class="md-nav__link">
         
   
   
@@ -1302,7 +1302,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/assignment/" class="md-nav__link">
+      <a href="../operators/assignment/" class="md-nav__link">
         
   
   
@@ -1325,7 +1325,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/math/" class="md-nav__link">
+      <a href="../operators/math/" class="md-nav__link">
         
   
   
@@ -1348,7 +1348,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/bit/" class="md-nav__link">
+      <a href="../operators/bit/" class="md-nav__link">
         
   
   
@@ -1371,7 +1371,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/compare/" class="md-nav__link">
+      <a href="../operators/compare/" class="md-nav__link">
         
   
   
@@ -1394,7 +1394,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/condition/" class="md-nav__link">
+      <a href="../operators/condition/" class="md-nav__link">
         
   
   
@@ -1417,7 +1417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/loop/" class="md-nav__link">
+      <a href="../operators/loop/" class="md-nav__link">
         
   
   
@@ -1440,7 +1440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/command/" class="md-nav__link">
+      <a href="../operators/command/" class="md-nav__link">
         
   
   
@@ -1463,7 +1463,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../operators/constants/" class="md-nav__link">
+      <a href="../operators/constants/" class="md-nav__link">
         
   
   
@@ -1535,7 +1535,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/file/" class="md-nav__link">
+      <a href="../sys/file/" class="md-nav__link">
         
   
   
@@ -1558,7 +1558,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/math/" class="md-nav__link">
+      <a href="../sys/math/" class="md-nav__link">
         
   
   
@@ -1581,7 +1581,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/net/" class="md-nav__link">
+      <a href="../sys/net/" class="md-nav__link">
         
   
   
@@ -1604,7 +1604,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/sys/" class="md-nav__link">
+      <a href="../sys/sys/" class="md-nav__link">
         
   
   
@@ -1627,7 +1627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/thread/" class="md-nav__link">
+      <a href="../sys/thread/" class="md-nav__link">
         
   
   
@@ -1650,7 +1650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../function_quick_reference/" class="md-nav__link">
+      <a href="../function_quick_reference/" class="md-nav__link">
         
   
   
@@ -1678,8 +1678,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1690,11 +1688,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" >
         
           
           <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
@@ -1710,7 +1708,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_5">
             <span class="md-nav__icon md-icon"></span>
             Object Types
@@ -1724,7 +1722,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../document/" class="md-nav__link">
+      <a href="../obj/document/" class="md-nav__link">
         
   
   
@@ -1744,30 +1742,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Encode
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../obj/encode/" class="md-nav__link">
         
   
   
@@ -1778,165 +1756,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#key-methodgenkeysoptions" class="md-nav__link">
-    <span class="md-ellipsis">
-      key = method.genkeys(options)
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="key = method.genkeys(options)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#rsa" class="md-nav__link">
-    <span class="md-ellipsis">
-      "rsa"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dh-diffie-hellman-key-exchange" class="md-nav__link">
-    <span class="md-ellipsis">
-      "dh" - Diffie-Hellman key exchange
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ec" class="md-nav__link">
-    <span class="md-ellipsis">
-      "ec"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bc" class="md-nav__link">
-    <span class="md-ellipsis">
-      "bc"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#md" class="md-nav__link">
-    <span class="md-ellipsis">
-      "md"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rpk" class="md-nav__link">
-    <span class="md-ellipsis">
-      "rpk"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kdf" class="md-nav__link">
-    <span class="md-ellipsis">
-      "kdf"
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#encdata-rawdataencode-method-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      encdata = rawdata.encode (method, options)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rawdata-encdatadecode-method-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      rawdata = encdata.decode (method, options)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sig-rawdatasign-method-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      sig = rawdata.sign (method, options)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sig-sigsignadd-method-value-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      sig = sig.signadd (method, value, options)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ispass-sigverify-method-value-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      ispass = sig.verify (method, value, options)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rawdata-sigverifyrecover-method-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      rawdata = sig.verifyrecover (method, options)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value-keysecret-key" class="md-nav__link">
-    <span class="md-ellipsis">
-      value = key.secret (key)
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1949,7 +1768,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grep/" class="md-nav__link">
+      <a href="../obj/grep/" class="md-nav__link">
         
   
   
@@ -1972,7 +1791,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../grep_python/" class="md-nav__link">
+      <a href="../obj/grep_python/" class="md-nav__link">
         
   
   
@@ -1995,7 +1814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../iterate/" class="md-nav__link">
+      <a href="../obj/iterate/" class="md-nav__link">
         
   
   
@@ -2018,7 +1837,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../transform/" class="md-nav__link">
+      <a href="../obj/transform/" class="md-nav__link">
         
   
   
@@ -2090,7 +1909,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grep/" class="md-nav__link">
+      <a href="../grep/" class="md-nav__link">
         
   
   
@@ -2162,7 +1981,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/quick_reference/" class="md-nav__link">
+      <a href="../database/quick_reference/" class="md-nav__link">
         
   
   
@@ -2185,7 +2004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/column_store/" class="md-nav__link">
+      <a href="../database/column_store/" class="md-nav__link">
         
   
   
@@ -2208,7 +2027,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/troubleshooting/" class="md-nav__link">
+      <a href="../database/troubleshooting/" class="md-nav__link">
         
   
   
@@ -2280,7 +2099,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/basic_syntax/" class="md-nav__link">
+      <a href="../syntax/basic_syntax/" class="md-nav__link">
         
   
   
@@ -2303,7 +2122,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/operator/" class="md-nav__link">
+      <a href="../syntax/operator/" class="md-nav__link">
         
   
   
@@ -2326,7 +2145,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/precedence/" class="md-nav__link">
+      <a href="../syntax/precedence/" class="md-nav__link">
         
   
   
@@ -2349,7 +2168,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/grammar_design/" class="md-nav__link">
+      <a href="../syntax/grammar_design/" class="md-nav__link">
         
   
   
@@ -2377,10 +2196,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../debugging/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Debugging
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2391,6 +2232,395 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Features
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-debug-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Debug Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CLI Debug Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-with-other-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug with Other Options
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#script-based-debug-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Script-Based Debug Control
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Script-Based Debug Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-level-debug-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Debug Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-level-debug-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Session-Level Debug Control
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-specific-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Component-Specific Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-specific-debug-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      Component-Specific Debug Levels
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Environment Variables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debug Environment Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-level-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-level-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Session-Level Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-debug-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Debug Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Debug Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#high-priority-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      High Priority Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-priority-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Medium Priority Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#low-priority-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Low Priority Components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-output-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Output Formats
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debug Output Formats">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-level-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-level-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Session-Level Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-database-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 1: Database Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-multi-component-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 2: Multi-Component Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-session-specific-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 3: Session-Specific Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-conditional-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 4: Conditional Debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-use-session-specific-debug-for-parallel-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use Session-Specific Debug for Parallel Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-target-specific-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Target Specific Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-use-appropriate-debug-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Use Appropriate Debug Levels
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-clean-up-debug-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Clean Up Debug Settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#debug-output-not-appearing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Output Not Appearing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#too-much-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Too Much Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-output-in-wrong-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Output in Wrong Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See Also
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2403,7 +2633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_topics/" class="md-nav__link">
+      <a href="../advanced_topics/" class="md-nav__link">
         
   
   
@@ -2426,7 +2656,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deep_expert_implementation_overview/" class="md-nav__link">
+      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
         
   
   
@@ -2538,7 +2768,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/python_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/python_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2561,7 +2791,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/js_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/js_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2584,7 +2814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/rust_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/rust_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2607,7 +2837,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/typescript_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/typescript_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2630,7 +2860,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/go_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/go_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2653,7 +2883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/ruby_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/ruby_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2676,7 +2906,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2699,7 +2929,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/swift_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/swift_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2730,7 +2960,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -2753,7 +2983,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -2776,7 +3006,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_use_cases/" class="md-nav__link">
+      <a href="../python_use_cases/" class="md-nav__link">
         
   
   
@@ -2799,7 +3029,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grc_scripts/" class="md-nav__link">
+      <a href="../grc_scripts/" class="md-nav__link">
         
   
   
@@ -2822,7 +3052,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grz_format/" class="md-nav__link">
+      <a href="../grz_format/" class="md-nav__link">
         
   
   
@@ -2845,7 +3075,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapapy_namespace_solution/" class="md-nav__link">
+      <a href="../grapapy_namespace_solution/" class="md-nav__link">
         
   
   
@@ -2868,7 +3098,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../directory_navigation/" class="md-nav__link">
+      <a href="../directory_navigation/" class="md-nav__link">
         
   
   
@@ -2891,7 +3121,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_path_system/" class="md-nav__link">
+      <a href="../unified_path_system/" class="md-nav__link">
         
   
   
@@ -2962,7 +3192,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/" class="md-nav__link">
+      <a href="../use_cases/" class="md-nav__link">
         
   
   
@@ -2985,7 +3215,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+      <a href="../use_cases/etl_data_engineering/" class="md-nav__link">
         
   
   
@@ -3008,7 +3238,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+      <a href="../use_cases/compiler_bnf_learning/" class="md-nav__link">
         
   
   
@@ -3031,7 +3261,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+      <a href="../use_cases/high_precision_math/" class="md-nav__link">
         
   
   
@@ -3054,7 +3284,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+      <a href="../use_cases/parallel_concurrent_programming/" class="md-nav__link">
         
   
   
@@ -3077,7 +3307,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+      <a href="../use_cases/web_data_scraping/" class="md-nav__link">
         
   
   
@@ -3100,7 +3330,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+      <a href="../use_cases/database_file_system/" class="md-nav__link">
         
   
   
@@ -3123,7 +3353,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+      <a href="../use_cases/education_prototyping/" class="md-nav__link">
         
   
   
@@ -3146,7 +3376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/cryptography/" class="md-nav__link">
+      <a href="../use_cases/cryptography/" class="md-nav__link">
         
   
   
@@ -3217,7 +3447,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/" class="md-nav__link">
         
   
   
@@ -3240,7 +3470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../testing/" class="md-nav__link">
+      <a href="../testing/" class="md-nav__link">
         
   
   
@@ -3280,6 +3510,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -3288,73 +3520,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#key-methodgenkeysoptions" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      key = method.genkeys(options)
+      Overview
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="key = method.genkeys(options)">
+    <nav class="md-nav" aria-label="Overview">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#rsa" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
-      "rsa"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#dh-diffie-hellman-key-exchange" class="md-nav__link">
-    <span class="md-ellipsis">
-      "dh" - Diffie-Hellman key exchange
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ec" class="md-nav__link">
-    <span class="md-ellipsis">
-      "ec"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bc" class="md-nav__link">
-    <span class="md-ellipsis">
-      "bc"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#md" class="md-nav__link">
-    <span class="md-ellipsis">
-      "md"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#rpk" class="md-nav__link">
-    <span class="md-ellipsis">
-      "rpk"
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#kdf" class="md-nav__link">
-    <span class="md-ellipsis">
-      "kdf"
+      Key Features
     </span>
   </a>
   
@@ -3366,63 +3544,345 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#encdata-rawdataencode-method-options" class="md-nav__link">
+  <a href="#cli-debug-options" class="md-nav__link">
     <span class="md-ellipsis">
-      encdata = rawdata.encode (method, options)
+      CLI Debug Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CLI Debug Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Debug Mode
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#rawdata-encdatadecode-method-options" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#debug-with-other-options" class="md-nav__link">
     <span class="md-ellipsis">
-      rawdata = encdata.decode (method, options)
+      Debug with Other Options
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#sig-rawdatasign-method-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      sig = rawdata.sign (method, options)
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#sig-sigsignadd-method-value-options" class="md-nav__link">
+  <a href="#script-based-debug-control" class="md-nav__link">
     <span class="md-ellipsis">
-      sig = sig.signadd (method, value, options)
+      Script-Based Debug Control
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Script-Based Debug Control">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-level-debug-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Debug Control
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#ispass-sigverify-method-value-options" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#session-level-debug-control" class="md-nav__link">
     <span class="md-ellipsis">
-      ispass = sig.verify (method, value, options)
+      Session-Level Debug Control
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#rawdata-sigverifyrecover-method-options" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#component-specific-debugging" class="md-nav__link">
     <span class="md-ellipsis">
-      rawdata = sig.verifyrecover (method, options)
+      Component-Specific Debugging
     </span>
   </a>
   
 </li>
+        
+          <li class="md-nav__item">
+  <a href="#component-specific-debug-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      Component-Specific Debug Levels
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#value-keysecret-key" class="md-nav__link">
+  <a href="#debug-environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
-      value = key.secret (key)
+      Debug Environment Variables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debug Environment Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-level-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-level-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Session-Level Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-debug-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Available Debug Components
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Debug Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#high-priority-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      High Priority Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-priority-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Medium Priority Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#low-priority-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      Low Priority Components
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debug-output-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Output Formats
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debug Output Formats">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-level-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      System-Level Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#session-level-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Session-Level Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1-database-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 1: Database Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-2-multi-component-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 2: Multi-Component Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-3-session-specific-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 3: Session-Specific Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-4-conditional-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 4: Conditional Debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-use-session-specific-debug-for-parallel-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use Session-Specific Debug for Parallel Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-target-specific-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Target Specific Components
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-use-appropriate-debug-levels" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Use Appropriate Debug Levels
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-clean-up-debug-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Clean Up Debug Settings
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#debug-output-not-appearing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Output Not Appearing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#too-much-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Too Much Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-output-in-wrong-session" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Output in Wrong Session
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      See Also
     </span>
   </a>
   
@@ -3442,434 +3902,332 @@
                 
                   
 
+  <nav class="md-tags" >
+    
+      
+      
+      
+        <span class="md-tag">debugging</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">development</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">highlevel</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">user</span>
+      
+    
+  </nav>
 
 
-  <h1>Encode</h1>
 
-<p>References</p>
+<h1 id="debugging-in-grapa">Debugging in Grapa</h1>
+<p>Grapa provides a comprehensive debugging system that supports both command-line and script-based debug control. This system allows you to enable debug output, control verbosity levels, and target specific system components for detailed troubleshooting.</p>
+<h2 id="overview">Overview</h2>
+<p>Grapa's debug system operates at two levels:
+- <strong>System-level debugging</strong>: Global debug settings that affect all sessions
+- <strong>Session-level debugging</strong>: Session-specific debug settings that can override global settings</p>
+<h3 id="key-features">Key Features</h3>
 <ul>
-<li><a href="../../sys/math/">$math</a></li>
+<li><strong>CLI Debug Control</strong>: Enable debug mode with <code>-d</code> flag</li>
+<li><strong>Script Debug Control</strong>: Dynamically enable/disable debug during script execution</li>
+<li><strong>Component-Specific Debugging</strong>: Target specific system components (database, grep, vector, etc.)</li>
+<li><strong>Debug Levels</strong>: Control verbosity from 0 (disabled) to 9 (maximum detail)</li>
+<li><strong>Session Isolation</strong>: Debug settings are isolated between parallel sessions</li>
+<li><strong>Environment Variable Integration</strong>: Configure debug settings via environment variables</li>
 </ul>
-<h2 id="key-methodgenkeysoptions">key = method.genkeys(options)</h2>
-<h3 id="rsa">"rsa"</h3>
-<p><a href="https://www.openssl.org/docs/man1.0.2/man3/RSA_generate_key_ex.html">RSA_generate_key</a></p>
-<p>options
-- bits (default=1024)
-- e (default=65537)</p>
-<div class="highlight"><pre><span></span><code>grapa: /&gt;&quot;rsa&quot;.genkeys({bits:1024, e:65537});
-{&quot;method&quot;:&quot;rsa&quot;,&quot;n&quot;:153343860242731826718997454922543948246319786484738710266065697186566851303969929744525118374830275413173691343298483355967655653707943038260978178989870480981813864975853444332967984168167971315164681129567478872720168346499340635885246889112254404613308384241361659956685429052350776397599870929204283799727,&quot;e&quot;:65537,&quot;d&quot;:79055022445659402007335810450096775552716887040295814635390111095145249324919236710228881006612913550893380981980039628730017876494656017726225944634797947775686645431513668671692142235308537648915581979668299541155091041081197126102417671890829285804060548022166826534910977714874080213766562525384158510233,&quot;p&quot;:12927549674691586875163180066905699166335405091224131481044213102404425715203497636737871644864054092888178130162387310855633573554296177378467548678038211,&quot;q&quot;:11861788513791973340894513760762175330214406628819766321709624619984772343399257289407679201931012919105862007733677390652191686844294289003006359142734757,&quot;dmp1&quot;:421535524281183471202888685825983476791106713458748019820734598773795836754655758574680435556624251895906688804141503018119366871927780201379146917389683,&quot;dmq1&quot;:2422782566269730917515509730405152493557075348785897919990311353328900660523711156690284782596831391964097667508781383817846985978877936930195814936366441,&quot;iqmp&quot;:4751564343152764182762436394942179636976979980491913680362394619885466773528151935033468867078538523266366855637186571425698958155097556787751966441250519}
+<h2 id="cli-debug-options">CLI Debug Options</h2>
+<h3 id="basic-debug-mode">Basic Debug Mode</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable debug mode</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
 
-grapa: /&gt;nodeA = &quot;rsa&quot;.genkeys();
-grapa: /&gt;tstr = &quot;this is a test of this is a test&quot;.left(nodeA.n.bytes()-42);
-grapa: /&gt;enc = tstr.encode(nodeA);
-grapa: /&gt;enc;
-0xC492D258D8213815771868C08197E89834FD553EF26DE0FD1E957E37282B5F75805A0538EA47C93A0B767999CD0B034176FBEB85960211D9D12AB598FBBA0D54162E2AECE5F5DFB0168D8ADD5BC5CA33964216FDE2E5C7525AFABD7DE0111C4C2F253A1C6F14810EF30E93E99364220D58DF55A970994A9DFC0EBD3850000917
-grapa: /&gt;enc.decode(nodeA).str();
-this is a test of this is a test
-
-grapa: /&gt;nodeA = &quot;rsa&quot;.genkeys();
-grapa: /&gt;sig = &quot;test&quot;.sign(nodeA)
-grapa: /&gt;sig
-0xA86168258CCCAF03D502AF220D29C56DF689E29A881792203A30F55E9F5DC620D9BA72A69FA7BB8E5DB6DB40E74DC7F37AE10E94267EB69BD178310F9AE713E36559B789A2A1D88D80D7B7631C53C8F0D65DD74F2129F3C065F0CFB7982013625E22EF052AF829A44C07CDCA33334229B6A23058ECA50D6B7C7B8DCB54AD6402
-grapa: /&gt;sig.verify(nodeA,&quot;test&quot;)
-1
-grapa: /&gt;sig.verify(nodeA,&quot;test2&quot;)
-0
-grapa: /&gt;sig.verifyrecover(nodeA).str()
-test
+<span class="c1"># Long form</span>
+grapa<span class="w"> </span>--debug<span class="w"> </span>script.grc
 </code></pre></div>
-<h3 id="dh-diffie-hellman-key-exchange">"dh" - Diffie-Hellman key exchange</h3>
-<p><a href="https://www.openssl.org/docs/man1.0.2/man3/DH_generate_key.html">DH_generate_key</a></p>
-<p>options
-- bits (default=1024)
-- g (default=2)
-- p (from other node)</p>
-<div class="highlight"><pre><span></span><code>grapa: /&gt;&quot;dh&quot;.genkeys({bits:1024, g:2});
-{&quot;method&quot;:&quot;dh&quot;,&quot;p&quot;:155060894798916672436294955495808726921562912418691946735299981488630632728917641139720322303293804373154953309741508291858037753320020908034625492504226207533520275246218001191529318164644965512204584496862649121961720039055278601771796332158129094227178861323999156687238560468911736859258982900594036495419,&quot;g&quot;:2,&quot;pub&quot;:32452604788320682188849350932531192941087970270462344515271303858654517731576279803429572719652061802609399632204622690115682073041731861373289670753479025573602436383635155882438039975820160596493133927013148569271558813144843665089688971452982482929762826761875748093517340605310796965292388347247601517927,&quot;prv&quot;:85108738216648176726657906323697936988639742459594685112244281495890189161229363404509137286685931354323324249119565623639407205879234061660167646352177376062162362276676470273884923897379280600025611946952284789763517326405782930856345819438343010650014807653972154357078710716080052243407709981947131030820}
+<h3 id="debug-with-other-options">Debug with Other Options</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Debug with command execution</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;hello world&#39;.echo();&quot;</span>
 
-grapa: /&gt;nodeA = &quot;dh&quot;.genkeys();
-grapa: /&gt;nodeB = &quot;dh&quot;.genkeys({p:nodeA.p, g:nodeA.g});
-grapa: /&gt;nodeA.secret({method:nodeB.method, pub:nodeB.pub});
-41411399464032750193815617500918575158768059683378407298669269983997192654320169347707063521253943511427030448681025344568888491017373725518403783432343686587216160306110643977085792902295674526020669661500697334078419157529204684347818535354141358922052361205641014829108645061072280570433902877036291304733
-grapa: /&gt;nodeB.secret({method:nodeA.method, pub:nodeA.pub});
-41411399464032750193815617500918575158768059683378407298669269983997192654320169347707063521253943511427030448681025344568888491017373725518403783432343686587216160306110643977085792902295674526020669661500697334078419157529204684347818535354141358922052361205641014829108645061072280570433902877036291304733
-grapa: /&gt;nodeA.secret({method:b.method, pub:nodeB.pub}) == b.secret({method:nodeA.method, pub:nodeA.pub});
-true
+<span class="c1"># Debug with quiet mode (suppresses header)</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>-q<span class="w"> </span>script.grc
+
+<span class="c1"># Debug with verbose mode (shows version header)</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>--verbose<span class="w"> </span>script.grc
 </code></pre></div>
-<h3 id="ec">"ec"</h3>
-<p><a href="https://www.openssl.org/docs/man1.0.2/man3/EC_KEY_generate_key.html">EC_KEY_generate_key</a></p>
-<p>options
-- curve (default="prime256v1")</p>
-<p>curve
-- "secp224r1"
-- "prime256v1"</p>
-<div class="highlight"><pre><span></span><code>grapa: /&gt;&quot;ec&quot;.genkeys()
-{&quot;method&quot;:&quot;ec&quot;,&quot;curve&quot;:&quot;prime256v1&quot;,&quot;pub&quot;:349854664772403873294259339017252697866055805081789380369591127264988512574728,&quot;prv&quot;:109253108998027222598743004106159085619823908146992540608529858792290817953562}
+<h2 id="script-based-debug-control">Script-Based Debug Control</h2>
+<h3 id="system-level-debug-control">System-Level Debug Control</h3>
+<p>Enable or disable system-level debug settings that affect all sessions:</p>
+<div class="highlight"><pre><span></span><code>// Enable system-level debug
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_DEBUG_LEVEL&quot;, &quot;3&quot;);
 
-grapa: /&gt;&quot;ec&quot;.genkeys({curve:&quot;secp224r1&quot;, bits:256})
-{&quot;method&quot;:&quot;EC&quot;,&quot;curve&quot;:&quot;secp224r1&quot;,&quot;pub&quot;:94005469537357239932833357907049107441874311457299400778270964405582,&quot;prv&quot;:5192160124916624753659544220564622206602718051022940651336084962189}
-
-grapa: /&gt;nodeA = &quot;ec&quot;.genkeys({curve:&quot;prime256v1&quot;});
-grapa: /&gt;sig = &quot;test&quot;.sign(nodeA)
-grapa: /&gt;sig
-0x304402207601D7909310BC4DE38DB17D8FE52AB71B7A21CE2976238E1A4870CCD5EE8FE202207072F45DBF7C35D46CE23AAEC4BF89B2FA62E158DD1FA69B28FEF935ACC01807
-grapa: /&gt;sig.verify(nodeA,&quot;test&quot;)
-1
-grapa: /&gt;sig.verify(nodeA,&quot;test2&quot;)
-0
-
-grapa: /&gt;nodeA = &quot;ec&quot;.genkeys({curve:&quot;prime256v1&quot;});
-grapa: /&gt;nodeB = &quot;ec&quot;.genkeys({curve:nodeA.curve});
-grapa: /&gt;nodeA.secret({method:nodeB.method, curve:nodeB.curve, pub:nodeB.pub});
--32833883556403339571501877545325088412797888782971835903758327481485027662328
-grapa: /&gt;nodeB.secret({method:nodeA.method, curve:nodeA.curve, pub:nodeA.pub});
--32833883556403339571501877545325088412797888782971835903758327481485027662328
-grapa: /&gt;nodeA.secret({method:nodeB.method, curve:nodeB.curve, pub:nodeB.pub}) == nodeB.secret({method:nodeA.method, curve:nodeA.curve, pub:nodeA.pub});
-true
+// Disable system-level debug
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;0&quot;);
 </code></pre></div>
-<h3 id="bc">"bc"</h3>
-<p><a href="https://www.openssl.org/docs/man1.0.2/man3/EVP_CipherInit_ex.html">EVP_CipherInit_ex</a></p>
-<p>options
-- cipher (default="aes-256-cbc")
-- key
-- iv
-- digest (default="sha512")
-- count
-- salt
-- data</p>
-<p>cyper
-- "des-ecb"
-- "des-ede"
-- "des-ede3"
-- "des-ede-ecb"
-- "des-ede3-ecb"
-- "des-cfb64"
-- "des-cfb1"
-- "des-cfb8"
-- "des-ede-cfb64"
-- "des-ede3-cfb64"
-- "des-ede3-cfb1"
-- "des-ede3-cfb8"
-- "des-ofb"
-- "des-ede-ofb"
-- "des-ede3-ofb"
-- "des-cbc"
-- "des-ede-cbc"
-- "des-ede3-cbc"
-- "desx-cbc"
-- "des-ede3-wrap"
-- "rc4"
-- "rc4-40"
-- "rc4-hmac-md5"
-- "idea-ecb"
-- "idea-cfb64"
-- "idea-ofb"
-- "idea-cbc"
-- "rc2-ecb"
-- "rc2-cbc"
-- "rc2-40-cbc"
-- "rc2-64-cbc"
-- "rc2-cfb64"
-- "rc2-ofb"
-- "bf-ecb"
-- "bf-cbc"
-- "bf-cfb64"
-- "bf-ofb"
-- "cast5-ecb"
-- "cast5-cbc"
-- "cast5-cfb64"
-- "cast5-ofb"
-- "rc5-32-12-16-cbc"
-- "rc5-32-12-16-ecb"
-- "rc5-32-12-16-cfb64"
-- "rc5-32-12-16-ofb"
-- "aes-128-ecb"
-- "aes-128-cbc"
-- "aes-128-cfb1"
-- "aes-128-cfb8"
-- "aes-128-cfb128"
-- "aes-128-ofb"
-- "aes-128-ctr"
-- "aes-128-ccm"
-- "aes-128-gcm"
-- "aes-128-xts"
-- "aes-128-wrap"
-- "aes-128-wrap-pad"
-- "aes-128-ocb"
-- "aes-192-ecb"
-- "aes-192-cbc"
-- "aes-192-cfb1"
-- "aes-192-cfb8"
-- "aes-192-cfb128"
-- "aes-192-ofb"
-- "aes-192-ctr"
-- "aes-192-ccm"
-- "aes-192-gcm"
-- "aes-192-wrap"
-- "aes-192-wrap-pad"
-- "aes-192-ocb"
-- "aes-256-ecb"
-- "aes-256-cbc"
-- "aes-256-cfb1"
-- "aes-256-cfb8"
-- "aes-256-cfb128"
-- "aes-256-ofb"
-- "aes-256-ctr"
-- "aes-256-ccm"
-- "aes-256-gcm"
-- "aes-256-xts"
-- "aes-256-wrap"
-- "aes-256-wrap-pad"
-- "aes-256-ocb"
-- "aes-128-cbc-hmac-sha1"
-- "aes-256-cbc-hmac-sha1"
-- "aes-128-cbc-hmac-sha256"
-- "aes-256-cbc-hmac-sha256"
-- "aria-128-ecb"
-- "aria-128-cbc"
-- "aria-128-cfb1"
-- "aria-128-cfb8"
-- "aria-128-cfb128"
-- "aria-128-ctr"
-- "aria-128-ofb"
-- "aria-128-gcm"
-- "aria-128-ccm"
-- "aria-192-ecb"
-- "aria-192-cbc"
-- "aria-192-cfb1"
-- "aria-192-cfb8"
-- "aria-192-cfb128"
-- "aria-192-ctr"
-- "aria-192-ofb"
-- "aria-192-gcm"
-- "aria-192-ccm"
-- "aria-256-ecb"
-- "aria-256-cbc"
-- "aria-256-cfb1"
-- "aria-256-cfb8"
-- "aria-256-cfb128"
-- "aria-256-ctr"
-- "aria-256-ofb"
-- "aria-256-gcm"
-- "aria-256-ccm"
-- "camellia-128-ecb"
-- "camellia-128-cbc"
-- "camellia-128-cfb1"
-- "camellia-128-cfb8"
-- "camellia-128-cfb128"
-- "camellia-128-ofb"
-- "camellia-128-ctr"
-- "camellia-192-ecb"
-- "camellia-192-cbc"
-- "camellia-192-cfb1"
-- "camellia-192-cfb8"
-- "camellia-192-cfb128"
-- "camellia-192-ofb"
-- "camellia-192-ctr"
-- "camellia-256-ecb"
-- "camellia-256-cbc"
-- "camellia-256-cfb1"
-- "camellia-256-cfb8"
-- "camellia-256-cfb128"
-- "camellia-256-ofb"
-- "camellia-256-ctr"
-- "chacha20"
-- "chacha20-poly1305"
-- "seed-ecb"
-- "seed-cbc"
-- "seed-cfb128"
-- "seed-ofb"
-- "sm4-ecb"
-- "sm4-cbc"
-- "sm4-cfb128"
-- "sm4-ofb"
-- "sm4-ctr"</p>
-<div class="highlight"><pre><span></span><code>grapa: /&gt;nodeA = &quot;bc&quot;.genkeys({cipher:&quot;aes-256-cbc&quot;, key:&quot;thisisatest&quot;})
-grapa: /&gt;nodeA
-{&quot;method&quot;:&quot;bc&quot;,&quot;cipher&quot;:&quot;aes-256-cbc&quot;,&quot;key&quot;:0x7468697369736174657374,&quot;iv&quot;:null}
-grapa: /&gt;enc = &quot;this is a test&quot;.encode(nodeA);
-grapa: /&gt;enc
-0x4E12DB388BBE0173A35A82D6972C0BBA
-grapa: /&gt;enc.decode(nodeA).str();
-this is a test
+<h3 id="session-level-debug-control">Session-Level Debug Control</h3>
+<p>Enable session-specific debug settings that override system settings for the current session:</p>
+<div class="highlight"><pre><span></span><code>// Enable session-specific debug override
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_LEVEL&quot;, &quot;2&quot;);
 
-grapa: /&gt;enc = &quot;this is a test&quot;.encode({method:&quot;bc&quot;, cipher:&quot;aes-256-cbc&quot;, key:&quot;thisisatest&quot;});
-grapa: /&gt;enc
-0x4E12DB388BBE0173A35A82D6972C0BBA
-grapa: /&gt;enc.decode({method:&quot;bc&quot;, cipher:&quot;aes-256-cbc&quot;, key:&quot;thisisatest&quot;}).str();
-this is a test
+// Disable session-specific debug
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG&quot;, &quot;0&quot;);
 </code></pre></div>
-<h3 id="md">"md"</h3>
-<p>digest
-- "md4"
-- "md5"
-- "md5-sha1"
-- "blake2b512"
-- "blake2s256"
-- "sha1"
-- "sha224"
-- "sha256"
-- "sha384"
-- "sha512"
-- "sha512-224"
-- "sha512-256"
-- "sha3-224"
-- "sha3-256"
-- "sha3-384"
-- "sha3-512"
-- "shake128"
-- "shake256"
-- "mdc2"
-- "ripemd160"
-- "whirlpool"
-- "sm3"</p>
-<div class="highlight"><pre><span></span><code>grapa: /&gt;nodeA = &quot;md&quot;.genkeys({digest:&quot;sha3-256&quot;});
-grapa: /&gt;nodeA;
-{&quot;method&quot;:&quot;md&quot;,&quot;digest&quot;:&quot;sha3-256&quot;}
-grapa: /&gt;&quot;test&quot;.encode(nodeA);
-0x36F028580BB02CC8272A9A020F4200E346E276AE664E45EE80745574E2F5AB80
+<h3 id="component-specific-debugging">Component-Specific Debugging</h3>
+<p>Target specific system components for focused debugging:</p>
+<div class="highlight"><pre><span></span><code>// Enable debug for specific components
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database,grep,vector&quot;);
 
-grapa: /&gt;&quot;test&quot;.encode({method:&quot;md&quot;, digest:&quot;sha3-256&quot;});
-0x36F028580BB02CC8272A9A020F4200E346E276AE664E45EE80745574E2F5AB80
+// Enable all components
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;*&quot;);
+
+// Session-specific component targeting
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;filesystem,network&quot;);
 </code></pre></div>
-<h3 id="rpk">"rpk"</h3>
-<p><a href="https://www.openssl.org/docs/man1.0.2/man3/EVP_PKEY_keygen_init.html">EVP_PKEY_keygen_init</a></p>
-<p>options
-- alg (default="ED25519")
-- pub
-- prv</p>
-<p>alg
-- "ED25519"
-- "X25519"
-- "ED448"
-- "X448"</p>
-<div class="highlight"><pre><span></span><code>grapa: /&gt;&quot;rpk&quot;.genkeys({alg:&quot;ED25519&quot;})
-{&quot;method&quot;:&quot;rpk&quot;,&quot;alg&quot;:&quot;ed25519&quot;,&quot;pub&quot;:0x60BEEACB0D9B67B617E98B3DFFF047B0951413A5817685E6FD2125853B07DDB5,&quot;prv&quot;:0x1C8390953C4E0B5B5720E55C3C4A1C21FF4B105C61B69ADAA065C7E655722B59}
+<h3 id="component-specific-debug-levels">Component-Specific Debug Levels</h3>
+<p>Set different debug levels for different components:</p>
+<div class="highlight"><pre><span></span><code>// Set specific levels per component
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;grep:3,database:1,vector:0&quot;);
 
-grapa: /&gt;g=&quot;rpk&quot;.genkeys()
-grapa: /&gt;g
-{&quot;method&quot;:&quot;rpk&quot;,&quot;alg&quot;:&quot;ed25519&quot;,&quot;pub&quot;:0x1780BB5267C0EC8A10C2A99A836930991B909608045F123668596C9AF28F2FC,&quot;prv&quot;:0xF0A90D5C818DF2E62B0C3B49DF668501A77B3D6E1C8DAD98F7F49FDE5DE2C723}
-grapa: /&gt;&quot;test&quot;.sign(g)
-0xA3FDB87097F7ED99F5B1E15387E392DCF7870C32904544D9039941A1C9D6A111B48392931F6447BBEC6FDDB7CCB2E3408060E504379B3E19DC27F21F4E579A08
-grapa: /&gt;&quot;test&quot;.sign(g).verify(g,&quot;test&quot;)
-1
-grapa: /&gt;&quot;test&quot;.sign(g).verify(g,&quot;test2&quot;)
-0
+// Set default level for all components except specified ones
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;grep:3,*:1&quot;);
 
-grapa: /&gt;nodeA = &quot;rpk&quot;.genkeys({alg:&quot;X25519&quot;});
-grapa: /&gt;nodeB = &quot;rpk&quot;.genkeys({alg:nodeA.alg});
-grapa: /&gt;nodeA.secret({method:nodeB.method, alg:nodeB.alg, pub:nodeB.pub});
-33649166166276908480251638309469536773081960395558481192191946345661575379713
-grapa: /&gt;nodeB.secret({method:nodeA.method, alg:nodeA.alg, pub:nodeA.pub});
-33649166166276908480251638309469536773081960395558481192191946345661575379713
-grapa: /&gt;nodeA.secret({method:nodeB.method, alg:nodeB.alg, pub:nodeB.pub}) == nodeB.secret({method:nodeA.method, alg:nodeA.alg, pub:nodeA.pub});
-true
+// Enable only one component at high level, disable others
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database:3,*:0&quot;);
 </code></pre></div>
-<h3 id="kdf">"kdf"</h3>
-<p>options:
-- alg (default="hkdf")
-- digest (default="sha256")
-- count
-- size
-- salt
-- secret
-- info</p>
-<p>alg
-- "hkdf"
-- "pbkdf2"</p>
-<div class="highlight"><pre><span></span><code>grapa: /&gt;seed = (256).random();
-grapa: /&gt;&quot;kdf&quot;.genkeys({alg:&quot;hkdf&quot;,digest:&quot;blake2b512&quot;,salt:&quot;SIG-KEYGEN-SALT-&quot;,secret:((seed.uint()) &lt;&lt; 8),info:((&quot;test1&quot;.raw().uint()&lt;&lt;16)|48),count:5});
-{&quot;method&quot;:&quot;kdf&quot;,&quot;alg&quot;:&quot;hkdf&quot;,&quot;sk&quot;:0x9A11D899176B8AA59205D37295FC2492B55E93C7057FD765537488A96463851A2CCE6A1DE6397A3377F556A7EF21CA53BD7BD4880322643EA274812935D1F56BA5F43782DD46534B996A65D26AA15035F1586C79916B395D6A882174210D709F569700F0F4936BF831B9AD8F3CA4687220AE20E0DE2D5DEA28CDE582CD15F15F7823E95B15420DA8FCE8136EA88D060F5EED8D0743D3905CA65F5DA2C7798403A06E563CDA61A50E52977D9FB3541630E92F7A852EC56C3F9434D3875649DAD3A29B35E4C08759C10C2DD00A6E200474F678E135C8E2AE9BA7DA63E068C12583250EC87FD54744F412EF0CFA494A469CF07B5BE81DCC7CDB1C529D40D880E191}
+<h2 id="debug-environment-variables">Debug Environment Variables</h2>
+<h3 id="system-level-variables">System-Level Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Values</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GRAPA_DEBUG_MODE</code></td>
+<td>Enable/disable system debug</td>
+<td><code>"0"</code> or <code>"1"</code></td>
+<td><code>"1"</code></td>
+</tr>
+<tr>
+<td><code>GRAPA_DEBUG_LEVEL</code></td>
+<td>System debug verbosity</td>
+<td><code>0-9</code></td>
+<td><code>"3"</code></td>
+</tr>
+<tr>
+<td><code>GRAPA_DEBUG_COMPONENTS</code></td>
+<td>System debug components</td>
+<td>Component list</td>
+<td><code>"database,grep"</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="session-level-variables">Session-Level Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Values</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GRAPA_SESSION_DEBUG</code></td>
+<td>Enable session debug override</td>
+<td><code>"0"</code> or <code>"1"</code></td>
+<td><code>"1"</code></td>
+</tr>
+<tr>
+<td><code>GRAPA_SESSION_DEBUG_LEVEL</code></td>
+<td>Session debug verbosity</td>
+<td><code>0-9</code></td>
+<td><code>"2"</code></td>
+</tr>
+<tr>
+<td><code>GRAPA_SESSION_DEBUG_COMPONENTS</code></td>
+<td>Session debug components</td>
+<td>Component list</td>
+<td><code>"vector,filesystem"</code></td>
+</tr>
+<tr>
+<td><code>GRAPA_SESSION_ID</code></td>
+<td>Current session ID (read-only)</td>
+<td>Auto-generated</td>
+<td><code>"123"</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="available-debug-components">Available Debug Components</h2>
+<h3 id="high-priority-components">High Priority Components</h3>
+<ul>
+<li><strong><code>database</code></strong>: Database operations, queries, and storage</li>
+<li><strong><code>grep</code></strong>: Text search and pattern matching</li>
+<li><strong><code>script</code></strong>: Script execution and parsing</li>
+<li><strong><code>network</code></strong>: Network operations and connections</li>
+</ul>
+<h3 id="medium-priority-components">Medium Priority Components</h3>
+<ul>
+<li><strong><code>vector</code></strong>: Vector operations and calculations</li>
+<li><strong><code>filesystem</code></strong>: File system operations</li>
+<li><strong><code>threading</code></strong>: Thread management and synchronization</li>
+<li><strong><code>memory</code></strong>: Memory allocation and management</li>
+</ul>
+<h3 id="low-priority-components">Low Priority Components</h3>
+<ul>
+<li><strong><code>widget</code></strong>: GUI widget operations</li>
+<li><strong><code>time</code></strong>: Time-related operations</li>
+<li><strong><code>prime</code></strong>: Prime number operations</li>
+<li><strong><code>crypto</code></strong>: Cryptographic operations</li>
+<li><strong><code>object</code></strong>: Object management</li>
+<li><strong><code>system</code></strong>: System-level operations</li>
+<li><strong><code>encoding</code></strong>: Data encoding/decoding</li>
+</ul>
+<h2 id="debug-output-formats">Debug Output Formats</h2>
+<h3 id="system-level-debug-output">System-Level Debug Output</h3>
+<p>System-level debug output appears on stderr with the format:
+<div class="highlight"><pre><span></span><code>[DEBUG] message
+[DEBUG-component] message
+</code></pre></div></p>
+<h3 id="session-level-debug-output">Session-Level Debug Output</h3>
+<p>Session-level debug output appears through the response system with the format:
+<div class="highlight"><pre><span></span><code>[DEBUG-SESSION-{session_id}] message
+[DEBUG-SESSION-{session_id}-{component}] message
+</code></pre></div></p>
+<h2 id="practical-examples">Practical Examples</h2>
+<h3 id="example-1-database-debugging">Example 1: Database Debugging</h3>
+<div class="highlight"><pre><span></span><code>// Enable database debugging
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database&quot;);
+
+// Database operations will now show debug output
+db = $file().table(&#39;ROW&#39;);
+db.mkfield(&#39;name&#39;, &#39;STR&#39;);
+db.set(&#39;user1&#39;, &#39;Alice&#39;, &#39;name&#39;);
+result = db.get(&#39;user1&#39;, &#39;name&#39;);
+
+// Disable debug
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;0&quot;);
 </code></pre></div>
-<h2 id="encdata-rawdataencode-method-options">encdata = rawdata.encode (method, options)</h2>
-<p>encode/decode types:
-Method | Options | Description
------------- | ------------- | -------------
-"RSA" | {n,e,d [,p,q,dp,dq,qi]} | Data size must be exactly byte count of d  minus 32.
-"AES256" | {key [,iv]} | key is 32 bits and iv is 16 bits
-"ZIP-GRAPA" | |
-"BASE64" | |
-"ESCAPE" | |
-"FLOAT" | |
-"JSON" | | Only encode.
-"XML" | | Only encode.
-"SHAKE256" | | Only encode.
-"SHAKE128" | | Only encode.
-SHA3-256" | | Only encode.
-SHA3-384" | | Only encode.
-"SHA3-512" | | Only encode.
-"PEM" | | Only decode.</p>
-<p>Example of RSA using hard coded RSA key.</p>
-<div class="highlight"><pre><span></span><code>e = 65537;
-d = (0xA4954A19EA13D5FF06C86E7719AB6B6D5F37EF2D0A453713F08CD3FF2847C7BE80F2A3D0159C2EA862997DEE93DC08CD18CDFBD96DCC077B978904D05B2FCA5988A63).uraw();
-d = (d + (0x2CEB3B7286ACEF97682F418172B30509BD29A1C56E0244D79CFADD5A60C83D2F28A8B72643CB82AABA08871E094B36E6613B108166768B33F5C4860BD21).uraw()).uint();
-n = (0xB47D8ABBD7A33B5AD29C8EFD291433D62695BA043F4130F8E677CD179315FD0DD39989539EC710EB3BCBCACBDED2230DE8575FAEE3ED2835B256ADB1AAEF2F34C430E).uraw();
-n = (n + (0xAB9934FAF1977FA83E12B947806CE1F8D06692F02068FD18E4DE952895DDD2D9BDEE923E94257E84B63D21C92EC1F74B8AF4AF9A33608C7E8247F1C820F).uraw()).uint();
-g = {&quot;method&quot;:&quot;rsa&quot;,&quot;n&quot;:n,&quot;e&quot;:e, &quot;d&quot;:d};
-len = g.n.bytes()-42;
-v = &quot;this is a test of this is a test of 86 chars to see if we can encode with RSA. It needs to be exact size chars to see if we can encode with RSA. It needs to be exact size...so need to make it so.&quot;.left(len);
-v.encode(g).decode(g).str();
+<h3 id="example-2-multi-component-debugging">Example 2: Multi-Component Debugging</h3>
+<div class="highlight"><pre><span></span><code>// Enable debug for multiple components with different levels
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database:3,grep:2,vector:1&quot;);
+
+// Operations will show debug output based on component and level
+db = $file().table(&#39;ROW&#39;);  // database level 3
+&quot;hello world&quot;.grep(&quot;hello&quot;);  // grep level 2
+vec = [1, 2, 3];  // vector level 1
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>v.encode(&quot;AES256&quot;,{key:&quot;12345678123456781234567812345678&quot;,iv:&quot;1234567812345678&quot;}).decode(&quot;AES256&quot;,{key:&quot;12345678123456781234567812345678&quot;,iv:&quot;1234567812345678&quot;}).str();
-v.encode(&quot;SHA3-256&quot;);
-v.encode(&quot;SHAKE128&quot;);
-{1,2,3}.encode(&quot;ZIP-GRAPA&quot;).decode(&quot;ZIP-GRAPA&quot;);
-v.encode(&quot;BASE64&quot;).decode(&quot;BASE64&quot;).str();
+<h3 id="example-3-session-specific-debugging">Example 3: Session-Specific Debugging</h3>
+<div class="highlight"><pre><span></span><code>// Enable session-specific debug override
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_LEVEL&quot;, &quot;2&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database&quot;);
+
+// This session will show debug output even if system debug is disabled
+db = $file().table(&#39;ROW&#39;);
+db.mkfield(&#39;name&#39;, &#39;STR&#39;);
 </code></pre></div>
-<h2 id="rawdata-encdatadecode-method-options">rawdata = encdata.decode (method, options)</h2>
-<p>See encode.</p>
-<h2 id="sig-rawdatasign-method-options">sig = rawdata.sign (method, options)</h2>
-<div class="highlight"><pre><span></span><code>curve = &quot;prime256v1&quot;;
-pub = 0x25074E1882EF3F6230925ADFFEA56EC322F7EB4F23C3DECF12BFF5A24E11BA21C;
-prv = 0x5A44899AE665F34833146FD9805222B9E7C22B8BE94B7F9C34A54AA9B9D89890;
-g = {&quot;method&quot;:&quot;ec&quot;,&quot;curve&quot;:curve,&quot;pub&quot;:pub,&quot;prv&quot;:prv};
-&quot;test&quot;.sign(g).verify(g,&quot;test&quot;);
+<h3 id="example-4-conditional-debugging">Example 4: Conditional Debugging</h3>
+<div class="highlight"><pre><span></span><code>// Enable debug only for specific operations
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database&quot;);
+
+// Database operations show debug output
+db = $file().table(&#39;ROW&#39;);
+
+// Disable debug for other operations
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;grep&quot;);
+
+// Only grep operations show debug output
+&quot;hello world&quot;.grep(&quot;hello&quot;);
 </code></pre></div>
-<h2 id="sig-sigsignadd-method-value-options">sig = sig.signadd (method, value, options)</h2>
-<p>Not implemented yet. Used for pairwise eliptic curves where sigatures can be added.</p>
-<h2 id="ispass-sigverify-method-value-options">ispass = sig.verify (method, value, options)</h2>
-<p>See sign.</p>
-<h2 id="rawdata-sigverifyrecover-method-options">rawdata = sig.verifyrecover (method, options)</h2>
-<p>Recovers signed data.</p>
-<div class="highlight"><pre><span></span><code>a = &quot;rsa&quot;.genkeys();
-b = &quot;hello&quot;.sign(a);
-b.verifyrecover(a).str();
-</code></pre></div>
-<h2 id="value-keysecret-key">value = key.secret (key)</h2>
-<p>Diffie-Hellman key exchange. Node A generates the staring keys and sends "p" and "g" to node B. Node B then generates its keys using "p" and "g" from node A. Both nodes can then generate the shared secret, and they will be equal.  </p>
-<div class="highlight"><pre><span></span><code>grapa: /&gt;nodeA = &quot;dh&quot;.genkeys();
-grapa: /&gt;nodeB = &quot;dh&quot;.genkeys({p:nodeA.p, g:nodeA.g});
-grapa: /&gt;nodeA.secret({method:nodeB.method, pub:nodeB.pub});
-41411399464032750193815617500918575158768059683378407298669269983997192654320169347707063521253943511427030448681025344568888491017373725518403783432343686587216160306110643977085792902295674526020669661500697334078419157529204684347818535354141358922052361205641014829108645061072280570433902877036291304733
-grapa: /&gt;nodeB.secret({method:nodeA.method, pub:nodeA.pub});
-41411399464032750193815617500918575158768059683378407298669269983997192654320169347707063521253943511427030448681025344568888491017373725518403783432343686587216160306110643977085792902295674526020669661500697334078419157529204684347818535354141358922052361205641014829108645061072280570433902877036291304733
-grapa: /&gt;nodeA.secret({method:b.method, pub:nodeB.pub}) == b.secret({method:nodeA.method, pub:nodeA.pub});
-true
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-use-session-specific-debug-for-parallel-operations">1. Use Session-Specific Debug for Parallel Operations</h3>
+<p>When running multiple Grapa sessions in parallel, use session-specific debug settings to avoid interference:
+<div class="highlight"><pre><span></span><code>$sys().putenv(&quot;GRAPA_SESSION_DEBUG&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database&quot;);
+</code></pre></div></p>
+<h3 id="2-target-specific-components">2. Target Specific Components</h3>
+<p>Instead of enabling all debug output, target specific components for focused debugging:
+<div class="highlight"><pre><span></span><code>// Good: Target specific component
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database&quot;);
 
-grapa: /&gt;nodeA = &quot;ec&quot;.genkeys({curve:&quot;prime256v1&quot;});
-grapa: /&gt;nodeB = &quot;ec&quot;.genkeys({curve:nodeA.curve});
-grapa: /&gt;nodeA.secret({method:nodeB.method, curve:nodeB.curve, pub:nodeB.pub});
--32833883556403339571501877545325088412797888782971835903758327481485027662328
-grapa: /&gt;nodeB.secret({method:nodeA.method, curve:nodeA.curve, pub:nodeA.pub});
--32833883556403339571501877545325088412797888782971835903758327481485027662328
-grapa: /&gt;nodeA.secret({method:nodeB.method, curve:nodeB.curve, pub:nodeB.pub}) == nodeB.secret({method:nodeA.method, curve:nodeA.curve, pub:nodeA.pub});
-true
+// Avoid: Enable all components unless needed
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;*&quot;);
+</code></pre></div></p>
+<h3 id="3-use-appropriate-debug-levels">3. Use Appropriate Debug Levels</h3>
+<ul>
+<li><strong>Level 0</strong>: Disabled (no output)</li>
+<li><strong>Level 1</strong>: Basic operations</li>
+<li><strong>Level 2</strong>: Detailed operations</li>
+<li><strong>Level 3</strong>: Verbose operations</li>
+<li><strong>Levels 4-9</strong>: Very detailed (use sparingly)</li>
+</ul>
+<h3 id="4-clean-up-debug-settings">4. Clean Up Debug Settings</h3>
+<p>Remember to disable debug output when not needed:
+<div class="highlight"><pre><span></span><code>// Enable debug for troubleshooting
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
 
-grapa: /&gt;nodeA = &quot;rpk&quot;.genkeys({alg:&quot;X25519&quot;});
-grapa: /&gt;nodeB = &quot;rpk&quot;.genkeys({alg:nodeA.alg});
-grapa: /&gt;nodeA.secret({method:nodeB.method, alg:nodeB.alg, pub:nodeB.pub});
-33649166166276908480251638309469536773081960395558481192191946345661575379713
-grapa: /&gt;nodeB.secret({method:nodeA.method, alg:nodeA.alg, pub:nodeA.pub});
-33649166166276908480251638309469536773081960395558481192191946345661575379713
-grapa: /&gt;nodeA.secret({method:nodeB.method, alg:nodeB.alg, pub:nodeB.pub}) == nodeB.secret({method:nodeA.method, alg:nodeA.alg, pub:nodeA.pub});
-true
-</code></pre></div>
+// ... perform operations ...
+
+// Disable debug when done
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;0&quot;);
+</code></pre></div></p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="debug-output-not-appearing">Debug Output Not Appearing</h3>
+<ol>
+<li><strong>Check debug mode</strong>: Ensure <code>GRAPA_DEBUG_MODE</code> is set to <code>"1"</code></li>
+<li><strong>Check debug level</strong>: Ensure the operation's debug level is within your set level</li>
+<li><strong>Check components</strong>: Ensure the component is included in <code>GRAPA_DEBUG_COMPONENTS</code></li>
+<li><strong>Check session override</strong>: If using session debug, ensure <code>GRAPA_SESSION_DEBUG</code> is set to <code>"1"</code></li>
+</ol>
+<h3 id="too-much-debug-output">Too Much Debug Output</h3>
+<ol>
+<li><strong>Reduce debug level</strong>: Lower the <code>GRAPA_DEBUG_LEVEL</code> value</li>
+<li><strong>Target specific components</strong>: Use <code>GRAPA_DEBUG_COMPONENTS</code> to limit output</li>
+<li><strong>Use component-specific levels</strong>: Set different levels for different components</li>
+</ol>
+<h3 id="debug-output-in-wrong-session">Debug Output in Wrong Session</h3>
+<ol>
+<li><strong>Use session-specific settings</strong>: Set <code>GRAPA_SESSION_DEBUG</code> to <code>"1"</code></li>
+<li><strong>Check session isolation</strong>: Ensure you're setting debug for the correct session</li>
+<li><strong>Verify session ID</strong>: Use <code>$sys().getenv("GRAPA_SESSION_ID")</code> to confirm session</li>
+</ol>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="../cli_quickstart/">CLI Quickstart</a> - Basic CLI usage including debug options</li>
+<li><a href="../sys/sys/">System Functions</a> - <code>$sys().putenv()</code> and <code>$sys().getenv()</code> functions</li>
+<li><a href="../advanced_topics/">Advanced Topics</a> - Advanced debugging techniques</li>
+<li><a href="../troubleshooting/">Troubleshooting</a> - General troubleshooting guide </li>
+</ul>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -3920,16 +4278,16 @@ true
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
-        <script src="../../javascripts/mermaid-init.js"></script>
+        <script src="../javascripts/mermaid-init.js"></script>
       
-        <script src="../../javascripts/search-fix.js"></script>
+        <script src="../javascripts/search-fix.js"></script>
       
     
   </body>

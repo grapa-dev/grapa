@@ -717,6 +717,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#debug-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debug Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-line-debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Debug
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#script-based-debug-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Script-Based Debug Control
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#basic-syntax-and-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       Basic Syntax and Patterns
@@ -2617,6 +2650,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Debugging
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../advanced_topics/" class="md-nav__link">
         
   
@@ -3579,6 +3635,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#debug-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debug Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-line-debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Debug
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#script-based-debug-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      Script-Based Debug Control
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#basic-syntax-and-patterns" class="md-nav__link">
     <span class="md-ellipsis">
       Basic Syntax and Patterns
@@ -3984,6 +4073,29 @@ grapa<span class="w"> </span>-f<span class="w"> </span>hello.grc
 <div class="highlight"><pre><span></span><code>Hello, Grapa!
 4 * 3 = 12
 </code></pre></div></p>
+<h2 id="debug-options">Debug Options</h2>
+<p>Grapa provides comprehensive debugging capabilities that can be controlled from the command line or within scripts.</p>
+<h3 id="command-line-debug">Command Line Debug</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable debug mode</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
+
+<span class="c1"># Debug with command execution</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;hello world&#39;.echo();&quot;</span>
+</code></pre></div>
+<h3 id="script-based-debug-control">Script-Based Debug Control</h3>
+<p>You can also control debug settings dynamically within your scripts:
+<div class="highlight"><pre><span></span><code>// Enable debug for database operations
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database&quot;);
+
+// Perform operations with debug output
+db = $file().table(&#39;ROW&#39;);
+db.mkfield(&#39;name&#39;, &#39;STR&#39;);
+
+// Disable debug when done
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;0&quot;);
+</code></pre></div></p>
+<p><strong>For complete debugging documentation, see <a href="../debugging/">Debugging in Grapa</a>.</strong></p>
 <h2 id="basic-syntax-and-patterns">Basic Syntax and Patterns</h2>
 <h3 id="variables-and-assignment">Variables and Assignment</h3>
 <div class="highlight"><pre><span></span><code>/* Simple assignment */

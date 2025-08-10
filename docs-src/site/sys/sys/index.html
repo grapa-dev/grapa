@@ -1708,6 +1708,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="putenv(type, value)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#debug-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Environment Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -2423,6 +2438,29 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Debugging
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3374,6 +3412,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="putenv(type, value)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#debug-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Environment Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -3678,6 +3731,29 @@ true
 $sys().getenv(&quot;CUSTOM_VAR&quot;);
 my_value
 </code></pre></div></p>
+<h4 id="debug-environment-variables">Debug Environment Variables</h4>
+<p><code>putenv()</code> supports special debug-related environment variables for controlling Grapa's debugging system:</p>
+<p><strong>System-Level Debug Variables:</strong>
+<div class="highlight"><pre><span></span><code>// Enable system-level debug mode
+$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
+
+// Set debug verbosity level (0-9)
+$sys().putenv(&quot;GRAPA_DEBUG_LEVEL&quot;, &quot;3&quot;);
+
+// Enable debug for specific components
+$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database,grep&quot;);
+</code></pre></div></p>
+<p><strong>Session-Level Debug Variables:</strong>
+<div class="highlight"><pre><span></span><code>// Enable session-specific debug override
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG&quot;, &quot;1&quot;);
+
+// Set session debug level
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_LEVEL&quot;, &quot;2&quot;);
+
+// Set session-specific debug components
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;vector,filesystem&quot;);
+</code></pre></div></p>
+<p><strong>For complete debugging documentation, see <a href="../../debugging/">Debugging in Grapa</a>.</strong></p>
 <p><strong>Note:</strong> Like <code>getenv()</code>, any value not starting with <code>$</code> will be directed to the native OS <code>putenv()</code> function.</p>
 <h3 id="compilefscriptfilename-compiledfilename">compilef(scriptfilename, compiledfilename)</h3>
 <p>Compiles a Grapa script file and saves the compiled version to disk.</p>
