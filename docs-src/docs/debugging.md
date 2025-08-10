@@ -130,7 +130,21 @@ $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,*:0");
 ## Debug Components
 
 ### Currently Instrumented Components
-Currently, no system components have been instrumented with debug output. The debug system infrastructure is in place and ready for component integration.
+The following components are currently instrumented with debug output:
+
+#### Compiler Components
+- **`lexer`**: Lexical analysis (tokenization) - Shows token creation during script parsing
+  - **Level 2+**: Token creation details (type, value, quote character)
+  - **Example Output**: `LEX: Created token type=4 value='x' quote=`
+- **`parser`**: Syntactic analysis (grammar parsing) - Shows rule matching and error context
+  - **Level 1+**: Basic error context and rule matching failures
+  - **Level 2+**: Detailed rule matching attempts and results
+  - **Level 3+**: Operation tree building and compilation flow
+
+#### Combined Compiler Component
+- **`compiler`**: Shorthand for both `lexer` and `parser` components
+  - **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler` enables both lexer and parser debug
+  - **Equivalent to**: `GRAPA_SESSION_DEBUG_COMPONENTS=lexer,parser`
 
 ### Planned Debug Components
 The following components are planned for debug instrumentation:
@@ -138,7 +152,6 @@ The following components are planned for debug instrumentation:
 #### High Priority Components
 - **`database`**: Database operations, queries, and storage
 - **`grep`**: Text search and pattern matching
-- **`script`**: Script execution and parsing
 - **`network`**: Network operations and connections
 
 #### Medium Priority Components
@@ -202,18 +215,96 @@ $sys().putenv("GRAPA_DEBUG_LEVEL", "3");
 $sys().putenv("GRAPA_DEBUG_MODE", "0");
 ```
 
-### Example 2: Component-Specific Debug (Future)
+### Example 2: Compiler Debug Components
+```grapa
+// Enable debug for lexer only (tokenization)
+$sys().putenv("GRAPA_SESSION_DEBUG", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "lexer");
+
+// This will show token creation during script parsing
+op()("x + y")();  // Shows: LEX: Created token type=4 value='x' quote=
+
+// Enable debug for parser only (grammar parsing)
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "parser");
+
+// This will show rule matching and error context
+op()("invalid syntax here")();  // Shows parser error details
+
+// Enable debug for both lexer and parser
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "compiler");
+// Equivalent to: $sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "lexer,parser");
+```
+
+### Example 3: Syntax Error Debugging
+Debug output is particularly useful for identifying syntax issues in Grapa scripts:
+
+#### Scenario 1: CLI Environment Debug (for .grc files with syntax errors)
+```bash
+# Set debug flags via environment variables before running the script
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_LEVEL=2 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa script_with_errors.grc
+```
+
+#### Scenario 2: op() with bad syntax (where .grc has good syntax)
+```grapa
+// Set debug flags within the .grc script, then use op() to execute problematic code
+$sys().putenv("GRAPA_SESSION_DEBUG", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "lexer");
+
+// Test different syntax variations dynamically
+op()("x = 5 + 3")();  // Test expression
+op()("message = 'test'")();  // Test string syntax (shows quote=')
+op()("echo('This should use .echo() method')")();  // Test incorrect echo syntax
+```
+
+#### Debug Output Analysis
+The lexer debug output reveals:
+
+**Token Types:**
+- **Type 4**: Identifiers (`x`, `message`, `echo`)
+- **Type 5**: String literals (with quote character shown)
+- **Type 8**: Numbers
+- **Type 10**: Operators and punctuation (`=`, `+`, `(`, `)`, `;`, `'`, `"`)
+- **Type 11**: Newlines
+- **Type 18**: System identifiers (`sys`)
+
+**Quote Character Analysis:**
+- **`quote=`**: No quote character (identifiers, operators)
+- **`quote='`**: Single quotes detected (syntax issue!)
+- **`quote="`**: Double quotes (correct)
+
+**Common Syntax Issues Identified:**
+1. **Missing semicolons**: Token stream ends abruptly
+2. **Single quotes**: Shows `quote='` instead of `quote="`
+3. **Incomplete expressions**: Tokens stop mid-expression
+4. **Incorrect function calls**: Shows `echo` as identifier instead of method
+
+**Example Debug Output:**
+```
+[DEBUG-SESSION-1-lexer] LEX: Created token type=4 value='x' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=' ' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value='=' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=' ' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=8 value='5' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=' ' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value='+' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=' ' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=8 value='3' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=11 value='' quote=
+```
+
+### Example 4: Component-Specific Debug (Future)
 ```grapa
 // Enable debug for specific components (when instrumented)
 $sys().putenv("GRAPA_DEBUG_MODE", "1");
 $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database,grep");
 
 // When these components are instrumented, they will show debug output
-db = $file().table('ROW');  // database operations
+db = $file().table("ROW");  // database operations
 "hello world".grep("hello");  // grep operations
 ```
 
-### Example 3: Session-Specific Debug
+### Example 5: Session-Specific Debug
 ```grapa
 // Enable session-specific debug override
 $sys().putenv("GRAPA_SESSION_DEBUG", "1");
@@ -221,17 +312,17 @@ $sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
 
 // This session will show debug output even if system debug is disabled
 // (when components are instrumented)
-db = $file().table('ROW');
+db = $file().table("ROW");
 ```
 
-### Example 4: Component-Specific Levels (Future)
+### Example 6: Component-Specific Levels (Future)
 ```grapa
 // Set different debug levels for different components
 $sys().putenv("GRAPA_DEBUG_MODE", "1");
 $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,grep:2,vector:1");
 
 // When instrumented, components will show debug output based on their level
-db = $file().table('ROW');  // database level 3 (most verbose)
+db = $file().table("ROW");  // database level 3 (most verbose)
 "hello world".grep("hello");  // grep level 2 (medium verbose)
 vec = [1, 2, 3];  // vector level 1 (basic debug)
 ```
@@ -273,6 +364,32 @@ $sys().putenv("GRAPA_DEBUG_MODE", "1");
 // Disable debug when done
 $sys().putenv("GRAPA_DEBUG_MODE", "0");
 ```
+
+### 5. Use Debug for Syntax Troubleshooting
+Debug output is particularly valuable for identifying syntax issues:
+
+```bash
+# For scripts with syntax errors, use CLI environment variables
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa problematic_script.grc
+```
+
+```grapa
+// For testing syntax variations, use op() with debug enabled
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "lexer");
+
+// Test different syntax patterns
+op()("x = 5 + 3")();  // Valid expression
+op()("message = 'test'")();  // Shows single quote issue
+op()("echo('wrong')")();  // Shows incorrect echo syntax
+```
+
+**Key Debug Insights:**
+- **Token type 4**: Identifiers (variables, functions)
+- **Token type 5**: String literals (check quote character)
+- **Token type 8**: Numbers
+- **Token type 10**: Operators and punctuation
+- **Token type 11**: Newlines
+- **Quote analysis**: `quote='` indicates single quotes (syntax error)
 
 ## Troubleshooting
 
