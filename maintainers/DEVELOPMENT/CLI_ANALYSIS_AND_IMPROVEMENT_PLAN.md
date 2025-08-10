@@ -190,11 +190,31 @@ python -o output.txt                 # Output to file (not standard)
 ### Phase 2: Enhancement (MEDIUM PRIORITY)
 
 #### **Enhanced Debug Mode**
-- [ ] **Improved Debug Output**: Enhanced `-d` option with verbose output capabilities
-  - [ ] **Execution Tracing**: Step-by-step execution tracking with variable state snapshots
-  - [ ] **Error Context Display**: Better error context information in debug mode
-  - [ ] **Performance Timing**: Built-in performance timing and memory usage tracking
-  - [ ] **AST/Bytecode Dumping**: Execution tree visualization and bytecode inspection
+- [x] **Improved Debug Output**: Enhanced `-d` option with verbose output capabilities ✅ **COMPLETED**
+  - [x] **Execution Tracing**: Step-by-step execution tracking with variable state snapshots ✅ **COMPLETED**
+  - [x] **Error Context Display**: Better error context information in debug mode ✅ **COMPLETED**
+  - [x] **Performance Timing**: Built-in performance timing and memory usage tracking ✅ **COMPLETED**
+  - [x] **AST/Bytecode Dumping**: Execution tree visualization and bytecode inspection ✅ **COMPLETED**
+
+**Implementation Details:**
+- **System-Level Debug** (`GrapaDebug`): Uses direct output for pre-session and session-agnostic operations
+- **Session-Level Debug** (`GrapaScriptExecStateDebug`): Uses response system for session-specific operations
+- **Component-Specific Debugging**: Support for filtering debug output by specific components (e.g., "lexer", "parser", "compiler")
+- **Component-Specific Levels**: Different verbosity levels per component (e.g., "lexer:2,parser:1")
+- **Session Isolation**: Proper separation prevents debug output interference between parallel sessions
+- **Environment Variable Integration**: Debug flags can be set via `$sys().putenv()` and `$sys().getenv()`
+
+**Usage Examples:**
+```bash
+# Enable system-level debug
+grapa -d -c "'hello'.echo()"
+
+# Enable session-specific debug with components
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa script.grc
+
+# Enable component-specific levels
+GRAPA_SESSION_DEBUG_COMPONENTS=lexer:2,parser:1 ./grapa script.grc
+```
 
 #### **Better Error Messages**
 - [ ] **Enhanced Syntax Error Reporting**: More descriptive and helpful error messages

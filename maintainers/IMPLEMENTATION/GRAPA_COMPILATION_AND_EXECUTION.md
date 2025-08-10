@@ -257,6 +257,101 @@ Examples should:
 - **Optimization** reduces runtime overhead
 - **Type checking** happens at runtime
 
+## Debug Instrumentation
+
+### **Compiler Debug Components**
+
+The Grapa compiler supports comprehensive debug instrumentation through session-level debug output:
+
+#### **Lexer Component** (`lexer`)
+- **Scope**: Tokenization process (bytes to tokens)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Output**: Token creation details, state transitions, error context
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=lexer`
+
+#### **Parser Component** (`parser`)
+- **Scope**: Grammar parsing (tokens to execution trees)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Output**: Rule matching attempts, error context, execution tree building
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=parser`
+
+#### **Combined Component** (`compiler`)
+- **Scope**: Both lexer and parser (shorthand)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Output**: Complete compilation flow
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler`
+
+### **Async Pipeline Architecture**
+
+The lexer and compiler operate as separate, parallel queues in a multi-stage async pipeline:
+
+```
+Raw Input → Lexer Queue → Token Queue → Parser Queue → Execution Tree
+```
+
+**Key Characteristics:**
+- **Parallel Processing**: Lexer and parser work simultaneously
+- **Queue-Based**: Each stage waits for items in its queue
+- **Session Context**: Lexer receives session context at creation time
+- **Isolation**: Each session has independent pipeline instances
+
+### **Session Context Passing**
+
+The lexer requires session context for debug output, implemented through:
+
+#### **Architectural Solution**
+```cpp
+// GrapaItemState receives vScriptExec context
+class GrapaItemState {
+    GrapaScriptExec* vScriptExec;  // Session context
+    // ... other members
+};
+
+// Context passed during lexer creation
+void GrapaScriptExec::Plan() {
+    GrapaItemState itemState;
+    itemState.SetParams(&vScriptState->mItemParams, 
+                       vScriptState->GetNameSpace(), 
+                       this);  // Pass vScriptExec context
+}
+```
+
+#### **Debug Output Integration**
+```cpp
+// Lexer debug output uses session context
+void GrapaItemState::PushOutput() {
+    if (vScriptExec && vScriptExec->vScriptState->mDebug.ShouldDebug("lexer", 2)) {
+        // Use session debug system
+        vScriptExec->vScriptState->mDebug.DebugPrint(vScriptExec, mNameSpace, "lexer", debugMsg, 2);
+    }
+}
+```
+
+### **Syntax Error Debugging**
+
+Debug output is particularly valuable for identifying syntax issues:
+
+#### **Token Analysis**
+- **Token Types**: Identifiers (4), Strings (5), Numbers (8), Operators (10), Newlines (11)
+- **Quote Analysis**: `quote='` indicates single quotes (syntax error), `quote="` is correct
+- **Token Stream**: Shows exactly where parsing fails
+
+#### **Error Context**
+- **Remaining Tokens**: Shows tokens that couldn't be processed
+- **State Information**: Current lexer state when error occurred
+- **Position Tracking**: Character position in input stream
+
+#### **Usage Examples**
+```bash
+# CLI environment debug for scripts with syntax errors
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa script_with_errors.grc
+
+# In-script debug for testing syntax variations
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "lexer");
+op()("x = 5 + 3")();  // Test expression
+op()("message = 'test'")();  // Shows quote=' syntax issue
+```
+
 ## Conclusion
 
 Understanding the compilation and execution process is essential for:

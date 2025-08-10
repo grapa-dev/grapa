@@ -399,7 +399,7 @@ grapa -S
 ```bash
 grapa -d
 ```
-**Status**: ✅ **VERIFIED WORKING** - Provides debug output for CLI operations
+**Status**: ✅ **VERIFIED WORKING** - Provides enhanced debug output for CLI operations
 **Implementation**: Sets `gSystem->mDebugMode = true` and calls `gSystem->DebugPrint()`
 **Behavior**: Shows debug information for command execution, file loading, and pipe detection
 **Examples**:
@@ -407,6 +407,47 @@ grapa -d
 - `./grapa -d -f script.grc` shows debug info for file execution
 - `./grapa -d -` shows debug info for stdin execution
 **Output**: Debug messages prefixed with "[DEBUG]" sent to stderr
+
+### Enhanced Debug System Architecture
+
+#### **System-Level Debug** (`GrapaDebug`)
+- **Scope**: Pre-session and session-agnostic operations
+- **Output Method**: Direct output (`fprintf(stderr)`)
+- **Use Cases**: CLI initialization, system startup, global operations
+- **Environment Variables**: `GRAPA_DEBUG_MODE`, `GRAPA_DEBUG_LEVEL`, `GRAPA_DEBUG_COMPONENTS`
+
+#### **Session-Level Debug** (`GrapaScriptExecStateDebug`)
+- **Scope**: Session-specific operations within Grapa script execution
+- **Output Method**: Response system (`pNameSpace->GetResponse()->Send()`)
+- **Use Cases**: Script execution, compiler operations, database operations
+- **Environment Variables**: `GRAPA_SESSION_DEBUG`, `GRAPA_SESSION_DEBUG_LEVEL`, `GRAPA_SESSION_DEBUG_COMPONENTS`
+
+#### **Component-Specific Debugging**
+- **Filtering**: Debug output can be filtered by specific components
+- **Components**: `lexer`, `parser`, `compiler`, `database`, `grep`, `vector`, etc.
+- **Levels**: Different verbosity levels per component (e.g., "lexer:2,parser:1")
+- **Syntax**: Comma-separated list with optional level specification
+
+**Examples**:
+```bash
+# Enable specific components
+GRAPA_SESSION_DEBUG_COMPONENTS=lexer,parser ./grapa script.grc
+
+# Enable component-specific levels
+GRAPA_SESSION_DEBUG_COMPONENTS=lexer:2,parser:1 ./grapa script.grc
+
+# Enable all components
+GRAPA_SESSION_DEBUG_COMPONENTS=* ./grapa script.grc
+
+# Enable only one component at high level
+GRAPA_SESSION_DEBUG_COMPONENTS=lexer:3,*:0 ./grapa script.grc
+```
+
+#### **Session Isolation**
+- **Multi-Processing Support**: Each session has isolated debug output
+- **Session IDs**: Unique identifiers prevent output interference
+- **Parallel Execution**: Multiple sessions can run with different debug configurations
+- **Context Preservation**: Debug context is maintained per session
 
 ## Implementation Details
 

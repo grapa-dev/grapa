@@ -659,4 +659,143 @@ The test suite has been significantly consolidated to improve maintainability an
 - **Status**: ✅ **COMPLETE** - Verified with test cases
 
 ##### 12. **Grapheme Clusters with Newlines** - ✅ **FIXED**
-- The `
+- The `\X` pattern now correctly handles newlines within grapheme clusters
+- **Status**: ✅ **COMPLETE** - Verified with test cases
+
+---
+
+## Debug System Testing
+
+### **Testing Debug Components**
+
+The Grapa debug system supports comprehensive testing of debug output and component isolation:
+
+#### **Lexer Debug Testing**
+```bash
+# Test lexer debug output
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa test/compiler_debug_test.grc
+
+# Expected output includes:
+# [DEBUG-SESSION-1-lexer] LEX: Created token type=4 value='x' quote=
+# [DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=' ' quote=
+# [DEBUG-SESSION-1-lexer] LEX: Created token type=10 value='+' quote=
+```
+
+#### **Parser Debug Testing**
+```bash
+# Test parser debug output (when implemented)
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=parser ./grapa test/parser_debug_test.grc
+```
+
+#### **Combined Compiler Debug Testing**
+```bash
+# Test combined compiler debug (lexer + parser)
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=compiler ./grapa test/combined_compiler_debug_test.grc
+```
+
+### **Syntax Error Debug Testing**
+
+Debug output is particularly useful for identifying syntax issues:
+
+#### **Token Type Analysis**
+```bash
+# Test with syntax errors to see token analysis
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa test/syntax_error_test.grc
+
+# Expected output shows:
+# - Token types (4=identifier, 5=string, 8=number, 10=operator, 11=newline)
+# - Quote character analysis (quote=' vs quote=")
+# - Token stream where parsing fails
+```
+
+#### **Quote Character Testing**
+```bash
+# Test single quotes (syntax error)
+echo 'message = "test"' | GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa
+
+# Test double quotes (correct)
+echo 'message = "test"' | GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa
+```
+
+### **Session Isolation Testing**
+
+Test that debug output is properly isolated between sessions:
+
+#### **Parallel Session Debug**
+```bash
+# Run multiple sessions with different debug configurations
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa script1.grc &
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=parser ./grapa script2.grc &
+wait
+
+# Verify debug output shows different session IDs
+# [DEBUG-SESSION-1-lexer] ...
+# [DEBUG-SESSION-2-parser] ...
+```
+
+#### **Component-Specific Level Testing**
+```bash
+# Test component-specific debug levels
+GRAPA_SESSION_DEBUG_COMPONENTS=lexer:2,parser:1 ./grapa test/component_level_test.grc
+
+# Test wildcard with specific component
+GRAPA_SESSION_DEBUG_COMPONENTS=lexer:3,*:0 ./grapa test/component_level_test.grc
+```
+
+### **Environment Variable Testing**
+
+Test debug flag management through environment variables:
+
+#### **System-Level Debug**
+```bash
+# Test system debug flags
+GRAPA_DEBUG_MODE=1 GRAPA_DEBUG_LEVEL=2 ./grapa -c "'hello'.echo()"
+
+# Test component-specific system debug
+GRAPA_DEBUG_MODE=1 GRAPA_DEBUG_COMPONENTS=grep,database ./grapa -c "test_script"
+```
+
+#### **Session-Level Debug**
+```bash
+# Test session debug override
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_LEVEL=3 ./grapa test_script.grc
+
+# Test session component filtering
+GRAPA_SESSION_DEBUG_COMPONENTS=lexer,parser ./grapa test_script.grc
+```
+
+### **Debug Output Validation**
+
+#### **Output Format Verification**
+- **Session ID**: Each debug message includes unique session identifier
+- **Component Name**: Debug messages are prefixed with component name
+- **Line Breaks**: Debug output includes proper line breaks for readability
+- **Message Content**: Debug messages provide meaningful context
+
+#### **Performance Impact Testing**
+```bash
+# Test debug output performance impact
+time ./grapa large_script.grc
+time GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_COMPONENTS=lexer ./grapa large_script.grc
+
+# Verify debug output doesn't significantly impact performance
+```
+
+### **Integration Testing**
+
+#### **CLI Integration**
+```bash
+# Test debug mode with CLI options
+./grapa -d -c "'hello'.echo()"
+./grapa -d -f test_script.grc
+./grapa -d -  # stdin mode
+```
+
+#### **Script Integration**
+```bash
+# Test debug flags set within scripts
+./grapa test/debug_integration_test.grc
+
+# Test op() with debug enabled
+./grapa test/op_debug_test.grc
+```

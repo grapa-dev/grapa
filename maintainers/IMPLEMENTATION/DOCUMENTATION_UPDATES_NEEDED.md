@@ -93,19 +93,41 @@ if ($sys().getenv("DEBUG_MODE") == "true") {
 
 **New Content Needed:**
 ```markdown
-## Session-Specific Debugging
+## Session-Specific Debugging ✅ **COMPLETED**
 
 Grapa supports session-specific environment variables for isolated debugging and configuration:
 
 ```grapa
 /* Set session-specific debug flags */
-$sys().putenv("DEBUG_MODE", "true");
-$sys().putenv("LOG_LEVEL", "verbose");
+$sys().putenv("GRAPA_SESSION_DEBUG", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "lexer,parser");
 
-/* These settings only apply to the current session */
+/* Use debug flags in session */
+if ($sys().getenv("GRAPA_SESSION_DEBUG") == "1") {
+    "Session debug mode enabled".echo();
+}
 ```
 
 This allows multiple developers or scripts to run with different debug configurations simultaneously without interference.
+
+### **Debug System Documentation** ✅ **COMPLETED**
+- **User Documentation**: `docs-src/docs/debugging.md` - Comprehensive debug system guide
+- **Component-Specific Debugging**: Documented lexer, parser, and compiler components
+- **Syntax Error Debugging**: Documented token analysis and quote character debugging
+- **Session Isolation**: Documented multi-processing debug support
+- **Environment Variables**: Documented all debug-related environment variables
+
+### **Implementation Documentation** ✅ **COMPLETED**
+- **CLI Implementation**: Updated with enhanced debug system architecture
+- **Compilation Process**: Updated with debug instrumentation details
+- **Testing Guide**: Updated with debug system testing procedures
+- **Design Documents**: Updated with architectural solutions and implementation status
+
+### **Remaining Documentation Needs**
+- **Phase 3 Implementation**: Document advanced debugging features when implemented
+- **Performance Impact**: Document debug output performance characteristics
+- **Best Practices**: Document debug system usage patterns and recommendations
 ```
 
 ### **Implementation Notes**

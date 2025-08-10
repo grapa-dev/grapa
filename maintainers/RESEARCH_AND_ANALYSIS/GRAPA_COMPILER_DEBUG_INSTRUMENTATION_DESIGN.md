@@ -226,39 +226,86 @@ if (vScriptExec->vScriptState->mDebug.ShouldDebug("compiler", 3)) {
 }
 ```
 
-## Implementation Strategy
+## Implementation Status
 
-### **Phase 1: Basic Error Context (Level 1)**
-**Priority**: High - Immediate user benefit
+### **Phase 1: Basic Error Context** ✅ **COMPLETED**
+- **Parser Error Context**: Enhanced error messages with rule matching context
+- **Token Stream Context**: Shows remaining tokens when parsing fails
+- **Rule Stack Information**: Displays current rule stack during errors
+- **Error Suggestions**: Provides helpful suggestions for common syntax issues
 
-**Implementation**:
-1. Add debug output to `PlanRule()` for rule matching failures
-2. Add token stream context to error messages
-3. Add position information to lexical errors
+### **Phase 2: Detailed Compilation Flow** ✅ **COMPLETED**
+- **Lexer Token Creation**: Debug output for token creation process
+- **Parser Rule Matching**: Detailed rule matching attempts and results
+- **Component Separation**: Separate `lexer` and `parser` debug components
+- **Session Context Integration**: Lexer receives session context via `vScriptExec`
 
-**Files to Modify**:
-- `source/grapa/GrapaState.cpp`: `PlanRule()`, `Plan()`
-- `source/grapa/GrapaState.h`: Add debug method declarations
+### **Phase 3: Advanced Debugging** 🔄 **IN PROGRESS**
+- **State Machine Transitions**: Detailed lexer state transitions (Level 4-5)
+- **Full Token Stream Logging**: Complete token stream with context (Level 4-5)
+- **Memory Allocation Tracking**: Compilation memory usage (Level 5)
+- **Performance Metrics**: Compilation timing and optimization data (Level 5)
 
-### **Phase 2: Detailed Compilation Flow (Level 2-3)**
-**Priority**: Medium - Developer debugging
+## Architectural Solutions Implemented
 
-**Implementation**:
-1. Add token creation debug output
-2. Add rule matching attempt debug output
-3. Add operation tree building debug output
+### **Session Context Passing**
+The challenge of passing session context to the lexer was solved through:
 
-**Files to Modify**:
-- `source/grapa/GrapaState.cpp`: `AddToken()`, state transitions
-- Add rule stack tracking
+#### **GrapaItemState Enhancement**
+```cpp
+class GrapaItemState {
+    GrapaScriptExec* vScriptExec;  // Session context
+    // ... existing members
+};
+```
 
-### **Phase 3: Advanced Debugging (Level 4-5)**
-**Priority**: Low - Deep debugging
+#### **Context Passing Pattern**
+```cpp
+// During lexer creation in GrapaScriptExec::Plan()
+itemState.SetParams(&vScriptState->mItemParams, 
+                   vScriptState->GetNameSpace(), 
+                   this);  // Pass vScriptExec context
+```
 
-**Implementation**:
-1. Add state machine transition debug output
-2. Add full token stream logging
-3. Add rule alternative exploration
+#### **Debug Output Integration**
+```cpp
+// Lexer debug output uses session context
+if (vScriptExec && vScriptExec->vScriptState->mDebug.ShouldDebug("lexer", 2)) {
+    vScriptExec->vScriptState->mDebug.DebugPrint(vScriptExec, mNameSpace, "lexer", debugMsg, 2);
+}
+```
+
+### **Component Separation**
+The compiler debug component was separated into granular components:
+
+#### **Lexer Component** (`lexer`)
+- **Scope**: Tokenization process only
+- **Debug Levels**: 1-5
+- **Output**: Token creation, state transitions, error context
+
+#### **Parser Component** (`parser`)
+- **Scope**: Grammar parsing only
+- **Debug Levels**: 1-5
+- **Output**: Rule matching, execution tree building, error context
+
+#### **Combined Component** (`compiler`)
+- **Scope**: Both lexer and parser (shorthand)
+- **Debug Levels**: 1-5
+- **Implementation**: Returns higher level of lexer/parser components
+
+### **Async Pipeline Architecture**
+The discovery that lexer and parser operate as separate, parallel queues was documented:
+
+#### **Multi-Stage Pipeline**
+```
+Raw Input → Lexer Queue → Token Queue → Parser Queue → Execution Tree
+```
+
+#### **Key Characteristics**
+- **Parallel Processing**: Lexer and parser work simultaneously
+- **Queue-Based**: Each stage waits for items in its queue
+- **Session Context**: Lexer receives session context at creation time
+- **Isolation**: Each session has independent pipeline instances
 
 ## Error Message Enhancement
 
