@@ -14,7 +14,7 @@
         <link rel="prev" href="../syntax/grammar_design/">
       
       
-        <link rel="next" href="../advanced_topics/">
+        <link rel="next" href="../execution_pipeline_overview/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -2399,16 +2399,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-components" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debug Components
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Debug Components">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#currently-instrumented-components" class="md-nav__link">
     <span class="md-ellipsis">
       Currently Instrumented Components
@@ -2437,16 +2427,29 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#combined-component-compiler" class="md-nav__link">
+  <a href="#executor-component-executor" class="md-nav__link">
     <span class="md-ellipsis">
-      Combined Component (compiler)
+      Executor Component (executor)
     </span>
   </a>
   
 </li>
         
-      </ul>
-    </nav>
+          <li class="md-nav__item">
+  <a href="#combined-compiler-component-compiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Combined Compiler Component (compiler)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#runtime-component-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      Runtime Component (runtime)
+    </span>
+  </a>
   
 </li>
         
@@ -2610,44 +2613,11 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-4-advanced-debugging-phase-3" class="md-nav__link">
+  <a href="#example-4-complete-execution-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Example 4: Advanced Debugging (Phase 3)
+      Example 4: Complete Execution Pipeline
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Example 4: Advanced Debugging (Phase 3)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#level-4-state-machine-transitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Level 4: State Machine Transitions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#level-5-full-token-stream-and-performance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Level 5: Full Token Stream and Performance
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Analysis
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -2670,9 +2640,51 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-6-component-specific-levels-future" class="md-nav__link">
+  <a href="#example-7-component-specific-levels-future" class="md-nav__link">
     <span class="md-ellipsis">
-      Example 6: Component-Specific Levels (Future)
+      Example 7: Component-Specific Levels (Future)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-execution-pipeline-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complete Execution Pipeline Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Complete Execution Pipeline Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-stages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pipeline Stages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-component-shorthands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Component Shorthands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Impact
     </span>
   </a>
   
@@ -2798,6 +2810,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../execution_pipeline_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Execution Pipeline
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3847,16 +3882,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-components" class="md-nav__link">
-    <span class="md-ellipsis">
-      Debug Components
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Debug Components">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#currently-instrumented-components" class="md-nav__link">
     <span class="md-ellipsis">
       Currently Instrumented Components
@@ -3885,16 +3910,29 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#combined-component-compiler" class="md-nav__link">
+  <a href="#executor-component-executor" class="md-nav__link">
     <span class="md-ellipsis">
-      Combined Component (compiler)
+      Executor Component (executor)
     </span>
   </a>
   
 </li>
         
-      </ul>
-    </nav>
+          <li class="md-nav__item">
+  <a href="#combined-compiler-component-compiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      Combined Compiler Component (compiler)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#runtime-component-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      Runtime Component (runtime)
+    </span>
+  </a>
   
 </li>
         
@@ -4058,44 +4096,11 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-4-advanced-debugging-phase-3" class="md-nav__link">
+  <a href="#example-4-complete-execution-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
-      Example 4: Advanced Debugging (Phase 3)
+      Example 4: Complete Execution Pipeline
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Example 4: Advanced Debugging (Phase 3)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#level-4-state-machine-transitions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Level 4: State Machine Transitions
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#level-5-full-token-stream-and-performance" class="md-nav__link">
-    <span class="md-ellipsis">
-      Level 5: Full Token Stream and Performance
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#performance-analysis" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Analysis
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -4118,9 +4123,51 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-6-component-specific-levels-future" class="md-nav__link">
+  <a href="#example-7-component-specific-levels-future" class="md-nav__link">
     <span class="md-ellipsis">
-      Example 6: Component-Specific Levels (Future)
+      Example 7: Component-Specific Levels (Future)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-execution-pipeline-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complete Execution Pipeline Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Complete Execution Pipeline Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pipeline-stages" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pipeline Stages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-component-shorthands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug Component Shorthands
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Impact
     </span>
   </a>
   
@@ -4431,33 +4478,51 @@ $sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database:3,*:0&quot;);
 </tr>
 </tbody>
 </table>
-<h2 id="debug-components">Debug Components</h2>
-<h3 id="currently-instrumented-components"><strong>Currently Instrumented Components</strong></h3>
-<h4 id="lexer-component-lexer"><strong>Lexer Component</strong> (<code>lexer</code>)</h4>
+<h2 id="currently-instrumented-components">Currently Instrumented Components</h2>
+<p>The following debug components are currently instrumented and available for use:</p>
+<h3 id="lexer-component-lexer"><strong>Lexer Component</strong> (<code>lexer</code>)</h3>
 <ul>
 <li><strong>Scope</strong>: Tokenization process (bytes to tokens)</li>
 <li><strong>Debug Levels</strong>: 1-5 (basic to detailed)</li>
-<li><strong>Output</strong>: Token creation details, state transitions, error context</li>
-<li><strong>Usage</strong>: <code>GRAPA_SESSION_DEBUG_COMPONENTS=lexer</code></li>
+<li><strong>Example Output</strong>:
+  <div class="highlight"><pre><span></span><code>[DEBUG-SESSION-1-lexer] LEX: Created token type=4 value=&#39;x&#39; quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=&#39; &#39; quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=&#39;+&#39; quote=
+</code></pre></div></li>
 </ul>
-<h4 id="parser-component-parser"><strong>Parser Component</strong> (<code>parser</code>)</h4>
+<h3 id="parser-component-parser"><strong>Parser Component</strong> (<code>parser</code>)</h3>
 <ul>
 <li><strong>Scope</strong>: Grammar parsing (tokens to execution trees)</li>
 <li><strong>Debug Levels</strong>: 1-5 (basic to detailed)</li>
-<li><strong>Output</strong>: Rule matching attempts, error context, execution tree building</li>
-<li><strong>Usage</strong>: <code>GRAPA_SESSION_DEBUG_COMPONENTS=parser</code></li>
+<li><strong>Example Output</strong>:
+  <div class="highlight"><pre><span></span><code>[DEBUG-SESSION-1-parser] PARSE: Rule matching attempt - rule=&#39;expression&#39;
+[DEBUG-SESSION-1-parser] PARSE: Full token stream: [4:&#39;x&#39;] [10:&#39;+&#39;] [8:&#39;5&#39;]
+</code></pre></div></li>
 </ul>
-<h4 id="combined-component-compiler"><strong>Combined Component</strong> (<code>compiler</code>)</h4>
+<h3 id="executor-component-executor"><strong>Executor Component</strong> (<code>executor</code>)</h3>
+<ul>
+<li><strong>Scope</strong>: Plan execution (execution trees to results)</li>
+<li><strong>Debug Levels</strong>: 1-5 (basic to detailed)</li>
+<li><strong>Example Output</strong>:
+  <div class="highlight"><pre><span></span><code>[DEBUG-SESSION-1-executor] EXEC: Starting execution - operation type=21
+[DEBUG-SESSION-1-executor] EXEC: Processing operation type=21 (CODE=22, OP=21)
+[DEBUG-SESSION-1-executor] EXEC: Library execution - hasLibrary=true
+[DEBUG-SESSION-1-executor] EXEC: Execution completed - elapsed time=15.00 microseconds, hasResult=true
+</code></pre></div></li>
+</ul>
+<h3 id="combined-compiler-component-compiler"><strong>Combined Compiler Component</strong> (<code>compiler</code>)</h3>
 <ul>
 <li><strong>Scope</strong>: Both lexer and parser (shorthand)</li>
 <li><strong>Debug Levels</strong>: 1-5 (basic to detailed)</li>
-<li><strong>Output</strong>: Complete compilation flow including:</li>
-<li><strong>Level 1</strong>: Basic error context and rule matching failures</li>
-<li><strong>Level 2</strong>: Token creation and rule matching attempts</li>
-<li><strong>Level 3</strong>: Operation tree building and detailed compilation flow</li>
-<li><strong>Level 4</strong>: State machine transitions and detailed parsing states</li>
-<li><strong>Level 5</strong>: Full token stream logging, performance metrics, and memory tracking</li>
 <li><strong>Usage</strong>: <code>GRAPA_SESSION_DEBUG_COMPONENTS=compiler</code></li>
+<li><strong>Equivalent to</strong>: <code>GRAPA_SESSION_DEBUG_COMPONENTS=lexer,parser</code></li>
+</ul>
+<h3 id="runtime-component-runtime"><strong>Runtime Component</strong> (<code>runtime</code>)</h3>
+<ul>
+<li><strong>Scope</strong>: Complete execution pipeline (compiler + executor)</li>
+<li><strong>Debug Levels</strong>: 1-5 (basic to detailed)</li>
+<li><strong>Usage</strong>: <code>GRAPA_SESSION_DEBUG_COMPONENTS=runtime</code></li>
+<li><strong>Equivalent to</strong>: <code>GRAPA_SESSION_DEBUG_COMPONENTS=compiler,executor</code></li>
 </ul>
 <h3 id="planned-debug-components">Planned Debug Components</h3>
 <p>The following components are planned for debug instrumentation:</p>
@@ -4584,37 +4649,29 @@ op()(&quot;echo(&#39;This should use .echo() method&#39;)&quot;)();  // Test inc
 [DEBUG-SESSION-1-lexer] LEX: Created token type=8 value=&#39;3&#39; quote=
 [DEBUG-SESSION-1-lexer] LEX: Created token type=11 value=&#39;&#39; quote=
 </code></pre></div></p>
-<h3 id="example-4-advanced-debugging-phase-3">Example 4: Advanced Debugging (Phase 3)</h3>
-<h4 id="level-4-state-machine-transitions"><strong>Level 4: State Machine Transitions</strong></h4>
-<div class="highlight"><pre><span></span><code><span class="c1"># Enable Level 4 debug for state machine transitions</span>
-<span class="nv">GRAPA_SESSION_DEBUG</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">GRAPA_SESSION_DEBUG_LEVEL</span><span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span>compiler<span class="w"> </span>./grapa<span class="w"> </span>script.grc
-</code></pre></div>
-<p><strong>Expected Output:</strong>
-<div class="highlight"><pre><span></span><code>[DEBUG-SESSION-1-compiler] PARSE: State machine initialized - START state, input length=9
-[DEBUG-SESSION-1-compiler] PARSE: State transition START -&gt; BLOCK (start token)
-[DEBUG-SESSION-1-compiler] PARSE: State transition BLOCK -&gt; START (end token)
-</code></pre></div></p>
-<h4 id="level-5-full-token-stream-and-performance"><strong>Level 5: Full Token Stream and Performance</strong></h4>
-<div class="highlight"><pre><span></span><code><span class="c1"># Enable Level 5 debug for complete analysis</span>
-<span class="nv">GRAPA_SESSION_DEBUG</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">GRAPA_SESSION_DEBUG_LEVEL</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span>compiler<span class="w"> </span>./grapa<span class="w"> </span>script.grc
-</code></pre></div>
-<p><strong>Expected Output:</strong>
-<div class="highlight"><pre><span></span><code>[DEBUG-SESSION-1-compiler] PARSE: Compilation started - input length=15
-[DEBUG-SESSION-1-compiler] PARSE: Full token stream: [4:&#39;x&#39;] [10:&#39; &#39;] [10:&#39;=&#39;] [10:&#39; &#39;] [8:&#39;5&#39;] [10:&#39; &#39;] [10:&#39;+&#39;] [10:&#39; &#39;] [8:&#39;3&#39;] [10:&#39;;&#39;] [11:&#39;&#39;] 
-[DEBUG-SESSION-1-compiler] PARSE: Compilation completed - elapsed time=1234.56 microseconds
-</code></pre></div></p>
-<h4 id="performance-analysis"><strong>Performance Analysis</strong></h4>
-<div class="highlight"><pre><span></span><code>// Test compilation performance with complex expressions
-$sys().putenv(&quot;GRAPA_SESSION_DEBUG_LEVEL&quot;, &quot;5&quot;);
-$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;compiler&quot;);
+<h3 id="example-4-complete-execution-pipeline">Example 4: Complete Execution Pipeline</h3>
+<p>Debug the entire execution pipeline from text to results:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable runtime debug (compiler + executor)</span>
+<span class="nv">GRAPA_SESSION_DEBUG</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">GRAPA_SESSION_DEBUG_LEVEL</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span>runtime<span class="w"> </span>./grapa<span class="w"> </span>script.grc
 
-// Complex expression for performance testing
-op()(&quot;result = (a + b * c) / (d - e) + f * g - h;&quot;)();
+<span class="c1"># Or enable specific components</span>
+<span class="nv">GRAPA_SESSION_DEBUG</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">GRAPA_SESSION_DEBUG_LEVEL</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span>lexer,parser,executor<span class="w"> </span>./grapa<span class="w"> </span>script.grc
 </code></pre></div>
+<p><strong>Complete Pipeline Output</strong>:
+<div class="highlight"><pre><span></span><code>[DEBUG-SESSION-1-lexer] LEX: Created token type=4 value=&#39;x&#39; quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=&#39; &#39; quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=&#39;+&#39; quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=&#39; &#39; quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=8 value=&#39;5&#39; quote=
+[DEBUG-SESSION-1-parser] PARSE: Full token stream: [4:&#39;x&#39;] [10:&#39;+&#39;] [8:&#39;5&#39;]
+[DEBUG-SESSION-1-executor] EXEC: Starting execution - operation type=21
+[DEBUG-SESSION-1-executor] EXEC: Processing operation type=21 (CODE=22, OP=21)
+[DEBUG-SESSION-1-executor] EXEC: Library execution - hasLibrary=true
+[DEBUG-SESSION-1-executor] EXEC: Execution completed - elapsed time=15.00 microseconds, hasResult=true
+</code></pre></div></p>
 <h3 id="example-5-component-specific-debug-future">Example 5: Component-Specific Debug (Future)</h3>
 <div class="highlight"><pre><span></span><code>// Enable debug for specific components (when instrumented)
-$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
-$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database,grep&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database,grep,vector&quot;);
 
 // When these components are instrumented, they will show debug output
 db = $file().table(&quot;ROW&quot;);  // database operations
@@ -4624,21 +4681,60 @@ db = $file().table(&quot;ROW&quot;);  // database operations
 <div class="highlight"><pre><span></span><code>// Enable session-specific debug override
 $sys().putenv(&quot;GRAPA_SESSION_DEBUG&quot;, &quot;1&quot;);
 $sys().putenv(&quot;GRAPA_SESSION_DEBUG_LEVEL&quot;, &quot;2&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;compiler&quot;);
 
 // This session will show debug output even if system debug is disabled
 // (when components are instrumented)
 db = $file().table(&quot;ROW&quot;);
 </code></pre></div>
-<h3 id="example-6-component-specific-levels-future">Example 6: Component-Specific Levels (Future)</h3>
+<h3 id="example-7-component-specific-levels-future">Example 7: Component-Specific Levels (Future)</h3>
 <div class="highlight"><pre><span></span><code>// Set different debug levels for different components
-$sys().putenv(&quot;GRAPA_DEBUG_MODE&quot;, &quot;1&quot;);
-$sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database:3,grep:2,vector:1&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database:3,grep:2,vector:1&quot;);
 
 // When instrumented, components will show debug output based on their level
 db = $file().table(&quot;ROW&quot;);  // database level 3 (most verbose)
 &quot;hello world&quot;.grep(&quot;hello&quot;);  // grep level 2 (medium verbose)
 vec = [1, 2, 3];  // vector level 1 (basic debug)
 </code></pre></div>
+<h2 id="complete-execution-pipeline-overview">Complete Execution Pipeline Overview</h2>
+<p>Grapa's debug system provides comprehensive visibility into the entire execution pipeline:</p>
+<h3 id="pipeline-stages"><strong>Pipeline Stages</strong></h3>
+<ol>
+<li><strong>Lexer</strong> (<code>lexer</code>): Raw text → Tokens</li>
+<li>Token creation and classification</li>
+<li>State machine transitions</li>
+<li>Quote character analysis</li>
+<li>
+<p>Performance metrics</p>
+</li>
+<li>
+<p><strong>Parser</strong> (<code>parser</code>): Tokens → Execution Trees</p>
+</li>
+<li>Rule matching and grammar parsing</li>
+<li>Error context and token streams</li>
+<li>Execution tree construction</li>
+<li>
+<p>Performance metrics</p>
+</li>
+<li>
+<p><strong>Executor</strong> (<code>executor</code>): Execution Trees → Results</p>
+</li>
+<li>Operation execution flow</li>
+<li>Library loading and function calls</li>
+<li>Parameter binding and scope management</li>
+<li>Performance metrics</li>
+</ol>
+<h3 id="debug-component-shorthands"><strong>Debug Component Shorthands</strong></h3>
+<ul>
+<li><strong><code>compiler</code></strong>: <code>lexer</code> + <code>parser</code> (compilation phase)</li>
+<li><strong><code>runtime</code></strong>: <code>compiler</code> + <code>executor</code> (complete pipeline)</li>
+</ul>
+<h3 id="performance-impact"><strong>Performance Impact</strong></h3>
+<p>The debug system uses <code>ShouldDebug()</code> checks to ensure minimal performance impact:
+- Debug output is only generated when explicitly enabled
+- Component-specific filtering prevents unnecessary output
+- Level-based filtering provides granular control
+- Session isolation prevents debug interference</p>
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="1-use-session-specific-debug-for-parallel-operations">1. Use Session-Specific Debug for Parallel Operations</h3>
 <p>When running multiple Grapa sessions in parallel, use session-specific debug settings to avoid interference:
