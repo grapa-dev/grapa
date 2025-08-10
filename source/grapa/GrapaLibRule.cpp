@@ -3376,7 +3376,13 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 		{
 			err = 0;
 			char levelStr[16];
+			sprintf(levelStr, "%d", gSystem->mDebug.mDebugLevel);
 			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(levelStr));
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_DEBUG_COMPONENTS") == 0)
+		{
+			err = 0;
+			result = new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mDebug.mDebugComponents);
 		}
 		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG") == 0)
 		{
@@ -3392,9 +3398,19 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			err = 0;
 			if (vScriptExec && vScriptExec->vScriptState) {
 				char levelStr[16];
+				sprintf(levelStr, "%d", vScriptExec->vScriptState->mDebug.mSessionDebugLevel);
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(levelStr));
 			} else {
 				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("0"));
+			}
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG_COMPONENTS") == 0)
+		{
+			err = 0;
+			if (vScriptExec && vScriptExec->vScriptState) {
+				result = new GrapaRuleEvent(0, GrapaCHAR(), vScriptExec->vScriptState->mDebug.mDebugComponents);
+			} else {
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("*"));
 			}
 		}
 		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_ID") == 0)
@@ -3474,6 +3490,13 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 				gSystem->mDebug.mDebugLevel = atoi((char*)r2.vVal->mValue.mBytes);
 			}
 		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_DEBUG_COMPONENTS") == 0)
+		{
+			err = 0;
+			if (r2.vVal && r2.vVal->mValue.mBytes) {
+				gSystem->mDebug.mDebugComponents.FROM(r2.vVal->mValue);
+			}
+		}
 		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG") == 0)
 		{
 			err = 0;
@@ -3486,6 +3509,13 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			err = 0;
 			if (vScriptExec && vScriptExec->vScriptState && r2.vVal && r2.vVal->mValue.mBytes) {
 				vScriptExec->vScriptState->mDebug.mSessionDebugLevel = atoi((char*)r2.vVal->mValue.mBytes);
+			}
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG_COMPONENTS") == 0)
+		{
+			err = 0;
+			if (vScriptExec && vScriptExec->vScriptState && r2.vVal && r2.vVal->mValue.mBytes) {
+				vScriptExec->vScriptState->mDebug.mDebugComponents.FROM(r2.vVal->mValue);
 			}
 		}
 		else if (r1.vVal->mValue.mLength && r1.vVal->mValue.mBytes[0] != '$')

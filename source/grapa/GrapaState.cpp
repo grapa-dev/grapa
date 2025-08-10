@@ -6393,6 +6393,7 @@ GrapaScriptExecStateDebug::GrapaScriptExecStateDebug()
 	mDebugMode = gSystem->mDebug.mDebugMode;
 	mSessionDebugLevel = gSystem->mDebug.mDebugLevel;
 	mSessionDebugOverride = false;
+	mDebugComponents.FROM("*");  // Default to all components
 	
 	// Get a unique session ID
 	mSessionId = gSystem->GetNextSessionId();
@@ -6406,6 +6407,11 @@ GrapaScriptExecStateDebug::GrapaScriptExecStateDebug()
 	const char* sessionDebugLevel = getenv("GRAPA_SESSION_DEBUG_LEVEL");
 	if (sessionDebugLevel) {
 		mSessionDebugLevel = atoi(sessionDebugLevel);
+	}
+	
+	const char* sessionDebugComponents = getenv("GRAPA_SESSION_DEBUG_COMPONENTS");
+	if (sessionDebugComponents) {
+		mDebugComponents.FROM(sessionDebugComponents);
 	}
 }
 GrapaScriptExecStateDebug::~GrapaScriptExecStateDebug()
@@ -6433,6 +6439,97 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	sessionDebug.Append(pValue);
 	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebug);
 };
+
+int GrapaScriptExecStateDebug::GetComponentDebugLevel(const char* component)
+{
+	if (!mDebugMode && !mSessionDebugOverride) return 0;
+	if (mDebugComponents.Cmp("*") == 0) return mSessionDebugLevel;
+	
+	// Parse component-specific debug levels
+	// Format: "grep:2,vector:1,database:3" or "grep:2,*:1"
+	const char* components = (const char*)mDebugComponents.mBytes;
+	if (!components || !component) return 0;
+	
+	// First, look for exact component match with level
+	char searchPattern[256];
+	snprintf(searchPattern, sizeof(searchPattern), "%s:", component);
+	const char* pos = strstr(components, searchPattern);
+	if (pos) {
+		// Found component with level specification
+		const char* levelStart = pos + strlen(searchPattern);
+		const char* levelEnd = strchr(levelStart, ',');
+		if (levelEnd) {
+			// Extract level number
+			char levelStr[16];
+			u64 levelLen = levelEnd - levelStart;
+			if (levelLen < sizeof(levelStr)) {
+				strncpy(levelStr, levelStart, levelLen);
+				levelStr[levelLen] = '\0';
+				return atoi(levelStr);
+			}
+		} else {
+			// Component is at the end of the list
+			return atoi(levelStart);
+		}
+	}
+	
+	// Look for wildcard level specification
+	pos = strstr(components, "*:");
+	if (pos) {
+		const char* levelStart = pos + 2; // Skip "*:"
+		const char* levelEnd = strchr(levelStart, ',');
+		if (levelEnd) {
+			char levelStr[16];
+			u64 levelLen = levelEnd - levelStart;
+			if (levelLen < sizeof(levelStr)) {
+				strncpy(levelStr, levelStart, levelLen);
+				levelStr[levelLen] = '\0';
+				return atoi(levelStr);
+			}
+		} else {
+			return atoi(levelStart);
+		}
+	}
+	
+	// Fallback to simple component matching (no level specified)
+	pos = strstr(components, component);
+	if (pos) {
+		u64 componentLen = strlen(component);
+		if (pos > components && *(pos-1) != ',') return 0;  // Not start of list
+		if (pos + componentLen < components + mDebugComponents.mLength && *(pos + componentLen) != ',') return 0;  // Not end of list
+		return mSessionDebugLevel; // Use default level
+	}
+	
+	return 0; // Component not found
+}
+
+bool GrapaScriptExecStateDebug::ShouldDebug(const char* component, int minLevel)
+{
+	int componentLevel = GetComponentDebugLevel(component);
+	return componentLevel >= minLevel;
+}
+
+void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* component, const char* pStr, int level)
+{
+	if (!ShouldDebug(component, level)) return;
+	
+	// Create component and session-identified debug output
+	char sessionDebugStr[256];
+	snprintf(sessionDebugStr, sizeof(sessionDebugStr), "[DEBUG-SESSION-%llu-%s] %s", (unsigned long long)mSessionId, component, pStr);
+	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebugStr);
+}
+
+void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* component, const GrapaCHAR& pValue, int level)
+{
+	if (!ShouldDebug(component, level)) return;
+	
+	// Create component and session-identified debug output
+	char sessionDebugStr[256];
+	snprintf(sessionDebugStr, sizeof(sessionDebugStr), "[DEBUG-SESSION-%llu-%s] ", (unsigned long long)mSessionId, component);
+	GrapaCHAR sessionDebug(sessionDebugStr);
+	sessionDebug.Append(pValue);
+	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebug);
+}
 /////////////////////////////////////////////////////////////////
 
 

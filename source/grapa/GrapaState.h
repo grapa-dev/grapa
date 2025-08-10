@@ -309,10 +309,22 @@ public:
 	bool mSessionDebugOverride;  // Allow session to override global debug state
 	int mSessionDebugLevel;      // Session-specific debug verbosity level (0-9)
 	u64 mSessionId;              // Unique session identifier
+	GrapaCHAR mDebugComponents;  // Component-specific debug: "grep,vector,database" or "*" for all
+	
 	GrapaScriptExecStateDebug();
 	~GrapaScriptExecStateDebug();
+	
+	// Original debug print methods
 	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr);
 	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue);
+	
+	// Component-specific debug methods
+	bool ShouldDebug(const char* component, int minLevel = 0);
+	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* component, const char* pStr, int level = 0);
+	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* component, const GrapaCHAR& pValue, int level = 0);
+	
+	// Component-specific debug level parsing
+	int GetComponentDebugLevel(const char* component);
 };
 
 class GrapaScriptExecState : public GrapaState

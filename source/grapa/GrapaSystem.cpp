@@ -51,6 +51,7 @@ GrapaDebug::GrapaDebug()
 {
 	mDebugMode = false;
 	mDebugLevel = 0;
+	mDebugComponents.FROM("*");  // Default to all components
 	
 	// Read environment variables for initial values
 	const char* debugMode = getenv("GRAPA_DEBUG_MODE");
@@ -61,6 +62,11 @@ GrapaDebug::GrapaDebug()
 	const char* debugLevel = getenv("GRAPA_DEBUG_LEVEL");
 	if (debugLevel) {
 		mDebugLevel = atoi(debugLevel);
+	}
+	
+	const char* debugComponents = getenv("GRAPA_DEBUG_COMPONENTS");
+	if (debugComponents) {
+		mDebugComponents.FROM(debugComponents);
 	}
 }
 
@@ -84,6 +90,95 @@ void GrapaDebug::DebugPrint(const GrapaCHAR& pValue, bool flush)
 
 	gSystem->mPrintLock.WaitCritical();
 	fprintf(stderr, "[DEBUG] %.*s", (int)pValue.mLength, (char*)pValue.mBytes);
+	if (flush) fflush(stderr);
+	gSystem->mPrintLock.LeaveCritical();
+}
+
+int GrapaDebug::GetComponentDebugLevel(const char* component)
+{
+	if (!mDebugMode) return 0;
+	if (mDebugComponents.Cmp("*") == 0) return mDebugLevel;
+	
+	// Parse component-specific debug levels
+	// Format: "grep:2,vector:1,database:3" or "grep:2,*:1"
+	const char* components = (const char*)mDebugComponents.mBytes;
+	if (!components || !component) return 0;
+	
+	// First, look for exact component match with level
+	char searchPattern[256];
+	snprintf(searchPattern, sizeof(searchPattern), "%s:", component);
+	const char* pos = strstr(components, searchPattern);
+	if (pos) {
+		// Found component with level specification
+		const char* levelStart = pos + strlen(searchPattern);
+		const char* levelEnd = strchr(levelStart, ',');
+		if (levelEnd) {
+			// Extract level number
+			char levelStr[16];
+			u64 levelLen = levelEnd - levelStart;
+			if (levelLen < sizeof(levelStr)) {
+				strncpy(levelStr, levelStart, levelLen);
+				levelStr[levelLen] = '\0';
+				return atoi(levelStr);
+			}
+		} else {
+			// Component is at the end of the list
+			return atoi(levelStart);
+		}
+	}
+	
+	// Look for wildcard level specification
+	pos = strstr(components, "*:");
+	if (pos) {
+		const char* levelStart = pos + 2; // Skip "*:"
+		const char* levelEnd = strchr(levelStart, ',');
+		if (levelEnd) {
+			char levelStr[16];
+			u64 levelLen = levelEnd - levelStart;
+			if (levelLen < sizeof(levelStr)) {
+				strncpy(levelStr, levelStart, levelLen);
+				levelStr[levelLen] = '\0';
+				return atoi(levelStr);
+			}
+		} else {
+			return atoi(levelStart);
+		}
+	}
+	
+	// Fallback to simple component matching (no level specified)
+	pos = strstr(components, component);
+	if (pos) {
+		u64 componentLen = strlen(component);
+		if (pos > components && *(pos-1) != ',') return 0;  // Not start of list
+		if (pos + componentLen < components + mDebugComponents.mLength && *(pos + componentLen) != ',') return 0;  // Not end of list
+		return mDebugLevel; // Use default level
+	}
+	
+	return 0; // Component not found
+}
+
+bool GrapaDebug::ShouldDebug(const char* component, int minLevel)
+{
+	int componentLevel = GetComponentDebugLevel(component);
+	return componentLevel >= minLevel;
+}
+
+void GrapaDebug::DebugPrint(const char* component, const char* pStr, int level, bool flush)
+{
+	if (!ShouldDebug(component, level)) return;
+
+	gSystem->mPrintLock.WaitCritical();
+	fprintf(stderr, "[DEBUG-%s] %s", component, pStr);
+	if (flush) fflush(stderr);
+	gSystem->mPrintLock.LeaveCritical();
+}
+
+void GrapaDebug::DebugPrint(const char* component, const GrapaCHAR& pValue, int level, bool flush)
+{
+	if (!ShouldDebug(component, level)) return;
+
+	gSystem->mPrintLock.WaitCritical();
+	fprintf(stderr, "[DEBUG-%s] %.*s", component, (int)pValue.mLength, (char*)pValue.mBytes);
 	if (flush) fflush(stderr);
 	gSystem->mPrintLock.LeaveCritical();
 }

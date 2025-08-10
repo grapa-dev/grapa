@@ -49,17 +49,21 @@
   - **Supported Environment Variables**:
     - `GRAPA_DEBUG_MODE`: Enable/disable system-level debug (0/1)
     - `GRAPA_DEBUG_LEVEL`: Set system debug verbosity level (0-9)
+    - `GRAPA_DEBUG_COMPONENTS`: Set system debug components ("grep,vector,database" or "*")
     - `GRAPA_SESSION_DEBUG`: Enable session-specific debug override (0/1)
     - `GRAPA_SESSION_DEBUG_LEVEL`: Set session debug verbosity level (0-9)
+    - `GRAPA_SESSION_DEBUG_COMPONENTS`: Set session debug components ("network,filesystem" or "*")
     - `GRAPA_SESSION_ID`: Get current session ID (read-only)
   - **Usage Examples**:
     - `$sys().putenv("GRAPA_DEBUG_MODE", "1")` - Enable system debug
+    - `$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database,grep")` - Enable specific components
     - `$sys().putenv("GRAPA_SESSION_DEBUG", "1")` - Enable session debug override
     - `$sys().getenv("GRAPA_SESSION_ID")` - Get current session ID
   - **Key Implementation Details**:
     - Uses `$sys().putenv()` (not `setenv`) for setting debug flags
     - String comparison `r2.vVal->mValue.Cmp("1") == 0` correctly identifies "1" values
     - Session ID generation working correctly with thread-safe increment
+    - Component-specific filtering with comma-separated list support
     - All debug flags can be set and retrieved successfully
 
 #### **2. Session-Specific Environment Variables** - **DEVELOPMENT EXPERIENCE**
@@ -77,18 +81,83 @@
   - Proper integration with Grapa's response system
   - Platform-specific output handling
   - Support for output redirection and debugging tools
-- **Debug Integration**: ✅ **COMPLETED** - Extended `$sys().getenv()` and `$sys().setenv()` to handle debug-specific environment variables:
+- **Debug Integration**: ✅ **COMPLETED** - Extended `$sys().getenv()` and `$sys().putenv()` to handle debug-specific environment variables:
   - ✅ `GRAPA_DEBUG_MODE`: Enable system-level debug mode
   - ✅ `GRAPA_DEBUG_LEVEL`: Set system debug verbosity level
+  - ✅ `GRAPA_DEBUG_COMPONENTS`: Set system debug components
   - ✅ `GRAPA_SESSION_DEBUG`: Enable session-specific debug override
   - ✅ `GRAPA_SESSION_DEBUG_LEVEL`: Set session debug verbosity level
+  - ✅ `GRAPA_SESSION_DEBUG_COMPONENTS`: Set session debug components
   - ✅ `GRAPA_SESSION_ID`: Get current session ID (read-only)
   - ✅ Session-specific debug flag management with proper isolation
+  - ✅ Component-specific debug filtering with comma-separated list support
 - **Related Documentation:**
   - [`maintainers/IMPLEMENTATION/SYSTEM_FUNCTIONS.md`](../IMPLEMENTATION/SYSTEM_FUNCTIONS.md) - Core system function implementation
   - [`test/core/test_sys_functions.grc`](../../test/core/test_sys_functions.grc) - Existing test suite for `$sys` functions
   - [`source/grapa/GrapaState.h`](../../source/grapa/GrapaState.h) - `GrapaScriptState` class definition
   - [`maintainers/IMPLEMENTATION/DOCUMENTATION_UPDATES_NEEDED.md`](../IMPLEMENTATION/DOCUMENTATION_UPDATES_NEEDED.md) - Track required updates to user-facing docs
+
+#### **3. Component-Specific Debug System** - ✅ **COMPLETED**
+- **Status:** **COMPLETED** - August 2025
+- **Focus:** Implement component-specific debug output filtering
+- **Reference:** [`COMPONENT_DEBUG_AUDIT.md`](../RESEARCH_AND_ANALYSIS/COMPONENT_DEBUG_AUDIT.md)
+- **Dependencies:** Debug Flag Management Implementation
+- **Priority:** High - enables targeted debugging of specific system components
+- **Tasks:**
+  - ✅ **C++ Implementation**: Enhanced `GrapaDebug` and `GrapaScriptExecStateDebug` with component filtering
+  - ✅ **Environment Variables**: Added `GRAPA_DEBUG_COMPONENTS` and `GRAPA_SESSION_DEBUG_COMPONENTS`
+  - ✅ **Testing**: Created comprehensive test scripts and demo
+  - ✅ **Audit**: Complete source code audit identifying 15 component categories with 45+ sub-components
+  - ✅ **Component-Specific Debug Levels**: Enhanced system to support different debug levels per component
+- **Key Features:**
+  - Component-specific debug filtering with comma-separated list support
+  - **Component-specific debug levels**: Support for different verbosity levels per component
+  - Wildcard support (`*`) for all components
+  - Session-specific component override capability
+  - String-based component matching with boundary checking
+  - Support for both system-level and session-level component filtering
+- **Component Level Format:**
+  - `"grep:2,vector:1,database:3"` - Specific levels per component
+  - `"grep:3,*:1"` - grep at level 3, everything else at level 1
+  - `"grep:3,*:0"` - grep at level 3, everything else disabled
+  - `"grep:2,vector,database:3"` - Mixed format (vector uses default level)
+- **Identified Components:**
+  - **High Priority**: `database`, `grep`, `script`, `network`
+  - **Medium Priority**: `vector`, `filesystem`, `threading`, `memory`
+  - **Low Priority**: `widget`, `time`, `prime`, `crypto`, `object`, `system`, `encoding`
+- **Usage Examples:**
+  - `$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database,grep")` - Enable specific components
+  - `$sys().putenv("GRAPA_DEBUG_COMPONENTS", "*")` - Enable all components
+  - `$sys().putenv("GRAPA_DEBUG_COMPONENTS", "grep:2,vector:1,database:3")` - Component-specific levels
+  - `$sys().putenv("GRAPA_DEBUG_COMPONENTS", "grep:3,*:0")` - Only grep at level 3
+  - `$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "vector:3,database:1,*:0")` - Session-specific levels
+
+#### **4. Debug Capabilities Analysis** - ✅ **COMPLETED**
+- **Status:** **COMPLETED** - August 2025
+- **Focus:** Analyze debug capabilities in other languages for potential Grapa enhancements
+- **Reference:** [`DEBUG_CAPABILITIES_ANALYSIS.md`](../RESEARCH_AND_ANALYSIS/DEBUG_CAPABILITIES_ANALYSIS.md)
+- **Dependencies:** Component-Specific Debug System
+- **Priority:** Medium - ensures Grapa's debug system follows industry best practices
+- **Analysis Scope:**
+  - **Python**: logging module, pdb debugger, performance profiling
+  - **JavaScript/Node.js**: console methods, debug module, performance hooks
+  - **Rust**: log crate, tracing, span-based debugging
+  - **Go**: structured logging, context-aware debugging, pprof
+  - **Java**: SLF4J/Logback, MDC, multiple appenders
+  - **C++**: custom macros, performance counters, memory profiling
+- **Key Findings:**
+  - Grapa's current debug system is comprehensive for core needs
+  - Most valuable additions: structured logging, performance profiling, context-aware debugging
+  - Session isolation and component filtering are already advanced features
+  - Multi-processing architecture provides unique advantages over single-threaded languages
+- **Recommended Enhancements:**
+  - **High Priority**: Structured logging formats (JSON, key-value), performance profiling, context-aware debug
+  - **Medium Priority**: Multiple output destinations, debug filters/conditions, debug metrics
+  - **Low Priority**: Debug visualization, remote debugging, memory tracking
+- **Implementation Approach:**
+  - Phase 1: Core enhancements (structured logging, profiling, context)
+  - Phase 2: Advanced features (multiple outputs, filters, metrics)
+  - Phase 3: Specialized features (visualization, remote debugging, memory tracking)
 
 ---
 
