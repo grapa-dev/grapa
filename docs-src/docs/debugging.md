@@ -133,7 +133,7 @@ $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,*:0");
 Currently, no system components have been instrumented with debug output. The debug system infrastructure is in place and ready for component integration.
 
 ### Planned Debug Components
-The following components are planned for debug instrumentation based on the [Component Debug Audit](../maintainers/RESEARCH_AND_ANALYSIS/COMPONENT_DEBUG_AUDIT.md):
+The following components are planned for debug instrumentation:
 
 #### High Priority Components
 - **`database`**: Database operations, queries, and storage
