@@ -129,22 +129,30 @@ $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,*:0");
 
 ## Debug Components
 
-### Currently Instrumented Components
-The following components are currently instrumented with debug output:
+### **Currently Instrumented Components**
 
-#### Compiler Components
-- **`lexer`**: Lexical analysis (tokenization) - Shows token creation during script parsing
-  - **Level 2+**: Token creation details (type, value, quote character)
-  - **Example Output**: `LEX: Created token type=4 value='x' quote=`
-- **`parser`**: Syntactic analysis (grammar parsing) - Shows rule matching and error context
-  - **Level 1+**: Basic error context and rule matching failures
-  - **Level 2+**: Detailed rule matching attempts and results
-  - **Level 3+**: Operation tree building and compilation flow
+#### **Lexer Component** (`lexer`)
+- **Scope**: Tokenization process (bytes to tokens)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Output**: Token creation details, state transitions, error context
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=lexer`
 
-#### Combined Compiler Component
-- **`compiler`**: Shorthand for both `lexer` and `parser` components
-  - **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler` enables both lexer and parser debug
-  - **Equivalent to**: `GRAPA_SESSION_DEBUG_COMPONENTS=lexer,parser`
+#### **Parser Component** (`parser`)
+- **Scope**: Grammar parsing (tokens to execution trees)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Output**: Rule matching attempts, error context, execution tree building
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=parser`
+
+#### **Combined Component** (`compiler`)
+- **Scope**: Both lexer and parser (shorthand)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Output**: Complete compilation flow including:
+  - **Level 1**: Basic error context and rule matching failures
+  - **Level 2**: Token creation and rule matching attempts
+  - **Level 3**: Operation tree building and detailed compilation flow
+  - **Level 4**: State machine transitions and detailed parsing states
+  - **Level 5**: Full token stream logging, performance metrics, and memory tracking
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler`
 
 ### Planned Debug Components
 The following components are planned for debug instrumentation:
@@ -223,7 +231,7 @@ $sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
 $sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "lexer");
 
 // This will show token creation during script parsing
-op()("x + y")();  // Shows: LEX: Created token type=4 value='x' quote=
+op()("x + y")();  // Shows: LEX: Created token type=4 value='x' quote=`
 
 // Enable debug for parser only (grammar parsing)
 $sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "parser");
@@ -293,7 +301,45 @@ The lexer debug output reveals:
 [DEBUG-SESSION-1-lexer] LEX: Created token type=11 value='' quote=
 ```
 
-### Example 4: Component-Specific Debug (Future)
+### Example 4: Advanced Debugging (Phase 3)
+
+#### **Level 4: State Machine Transitions**
+```bash
+# Enable Level 4 debug for state machine transitions
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_LEVEL=4 GRAPA_SESSION_DEBUG_COMPONENTS=compiler ./grapa script.grc
+```
+
+**Expected Output:**
+```
+[DEBUG-SESSION-1-compiler] PARSE: State machine initialized - START state, input length=9
+[DEBUG-SESSION-1-compiler] PARSE: State transition START -> BLOCK (start token)
+[DEBUG-SESSION-1-compiler] PARSE: State transition BLOCK -> START (end token)
+```
+
+#### **Level 5: Full Token Stream and Performance**
+```bash
+# Enable Level 5 debug for complete analysis
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_LEVEL=5 GRAPA_SESSION_DEBUG_COMPONENTS=compiler ./grapa script.grc
+```
+
+**Expected Output:**
+```
+[DEBUG-SESSION-1-compiler] PARSE: Compilation started - input length=15
+[DEBUG-SESSION-1-compiler] PARSE: Full token stream: [4:'x'] [10:' '] [10:'='] [10:' '] [8:'5'] [10:' '] [10:'+'] [10:' '] [8:'3'] [10:';'] [11:''] 
+[DEBUG-SESSION-1-compiler] PARSE: Compilation completed - elapsed time=1234.56 microseconds
+```
+
+#### **Performance Analysis**
+```grapa
+// Test compilation performance with complex expressions
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "5");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "compiler");
+
+// Complex expression for performance testing
+op()("result = (a + b * c) / (d - e) + f * g - h;")();
+```
+
+### Example 5: Component-Specific Debug (Future)
 ```grapa
 // Enable debug for specific components (when instrumented)
 $sys().putenv("GRAPA_DEBUG_MODE", "1");
@@ -304,7 +350,7 @@ db = $file().table("ROW");  // database operations
 "hello world".grep("hello");  // grep operations
 ```
 
-### Example 5: Session-Specific Debug
+### Example 6: Session-Specific Debug
 ```grapa
 // Enable session-specific debug override
 $sys().putenv("GRAPA_SESSION_DEBUG", "1");
@@ -413,4 +459,4 @@ op()("echo('wrong')")();  // Shows incorrect echo syntax
 - [CLI Quickstart](cli_quickstart.md) - Basic CLI usage including debug options
 - [System Functions](sys/sys.md) - `$sys().putenv()` and `$sys().getenv()` functions
 - [Advanced Topics](advanced_topics.md) - Advanced debugging techniques
-- [Troubleshooting](troubleshooting.md) - General troubleshooting guide 
+- [Troubleshooting](troubleshooting.md) - General troubleshooting guide
