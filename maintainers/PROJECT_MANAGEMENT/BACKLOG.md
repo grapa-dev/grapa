@@ -125,7 +125,27 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🟡 **MEDIUM PRIORITY** (6 categories)
+## 🟡 **MEDIUM PRIORITY** (7 categories)
+
+### **Infrastructure & Dependencies**
+- [ ] **OpenSSL 3.0 Migration**: Upgrade from OpenSSL 1.1.1 to OpenSSL 3.0 for security improvements and modern cryptographic standards
+  - **Security Benefits**: Latest security patches, improved cryptographic algorithms, better TLS support
+  - **Compatibility**: Ensure all cryptographic functions work with OpenSSL 3.0 APIs
+  - **Testing**: Comprehensive testing of all crypto operations after migration
+  - **Dependencies**: Update build scripts, dependency management, and platform-specific configurations
+  - **Risk Assessment**: Medium - requires careful API compatibility testing
+  - **Estimated Effort**: 2-4 weeks
+  - **Priority**: High within medium priority - security and compatibility upgrade
+- [ ] **FLTK 1.4.4 Migration**: Upgrade from FLTK 1.3.11 to FLTK 1.4.4 for improved compatibility and support
+  - **Official Recommendation**: FLTK team explicitly recommends 1.4.4 over 1.3.11
+  - **End of Life**: 1.3.11 is considered "old software" and may not compile on new platforms
+  - **Compatibility**: FLTK states "many older apps can use it with little or no change"
+  - **Benefits**: Bug fixes, improvements, and future platform compatibility
+  - **Testing**: Verify GUI components (My_Text_Console, My_Prompt_Editor) work correctly
+  - **Dependencies**: Update dep/fltk-1.3.11-source.tar.gz to fltk-1.4.4-source.tar.gz
+  - **Risk Assessment**: Low - FLTK maintains API compatibility between 1.3.x and 1.4.x
+  - **Estimated Effort**: 1-2 weeks
+  - **Priority**: Medium - recommended upgrade for long-term maintenance
 
 ### **Performance & Optimization**
 - [ ] **Optimize large array operations**
@@ -217,7 +237,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Immediate Next Steps**: 0 items (CLI Enhancement Phase 2 moved to current_status.md)
 - **Major Releases**: 6 items (Grapa Syntax Improvements, Enhanced Debug Mode, GrapaDB Enhancements, String Comparison Distance Function, Optimization Implementation, Distutils Removal and Shared Library Naming)
 - **New Initiatives**: 2 items (Database Engineering Best Practices, Wikipedia Article)
-- **Medium Priority**: 6 categories with multiple items each
+- **Medium Priority**: 7 categories with multiple items each
 - **Low Priority**: 4 categories with experimental and future features
 - **Recently Completed**: 15+ major achievements documented
 
