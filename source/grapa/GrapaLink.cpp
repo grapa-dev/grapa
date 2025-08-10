@@ -106,11 +106,11 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		} else if ((e->mValue.Cmp("-q") == 0) || (e->mValue.Cmp("--quiet") == 0)) {
 			suppressHeader = true;
 		} else if ((e->mValue.Cmp("-d") == 0) || (e->mValue.Cmp("--debug") == 0)) {
-			gSystem->mDebugMode = true;
-			gSystem->DebugPrint("Debug mode enabled\n");
+			gSystem->mDebug.mDebugMode = true;
+			gSystem->mDebug.DebugPrint("Debug mode enabled\n");
 		} else if (e->mValue.Cmp("--verbose") == 0) {
 			showVersion = true;
-			gSystem->DebugPrint("Verbose mode enabled (showing version header)\n");
+			gSystem->mDebug.DebugPrint("Verbose mode enabled (showing version header)\n");
 		/* Removed non-standard options: -o, -a */
 		} else if ((e->mValue.Cmp("-i") == 0) || (e->mValue.Cmp("--interactive") == 0)) {
 			interactiveMode = true;
@@ -138,7 +138,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		/* Removed non-standard options: -s, -S (replaced with standard - option) */
 		} else if (e->mValue.Cmp("-") == 0) {
 			/* Standard stdin option (like Python/Node.js) */
-			gSystem->DebugPrint("Executing from stdin (- option)\n");
+			gSystem->mDebug.DebugPrint("Executing from stdin (- option)\n");
 			needExit = true;
 			if (isPipeInput) {
 				char c;
@@ -165,9 +165,9 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	GrapaRuleQueue* argvList = new GrapaRuleQueue();
 	int used_script_arg_index = -1;
 	if (found_c && c_arg.mLength) {
-		gSystem->DebugPrint("Executing command: ");
-		gSystem->DebugPrint(c_arg);
-		gSystem->DebugPrint("\n");
+		gSystem->mDebug.DebugPrint("Executing command: ");
+		gSystem->mDebug.DebugPrint(c_arg);
+		gSystem->mDebug.DebugPrint("\n");
 		runStr.FROM(c_arg);
 		needExit = true;
 		// Find which positional arg was used for -c (if any)
@@ -178,9 +178,9 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 			}
 		}
 	} else if (found_f && f_arg.mLength) {
-		gSystem->DebugPrint("Executing file: ");
-		gSystem->DebugPrint(f_arg);
-		gSystem->DebugPrint("\n");
+		gSystem->mDebug.DebugPrint("Executing file: ");
+		gSystem->mDebug.DebugPrint(f_arg);
+		gSystem->mDebug.DebugPrint("\n");
 		GrapaFileIO fp;
 		if (fp.Open((char*)f_arg.mBytes) == 0) {
 			u64 sz = 0;
@@ -201,7 +201,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		}
 	} else {
 		// Look for first positional .grc/.grz
-		gSystem->DebugPrint("Looking for positional script file\n");
+		gSystem->mDebug.DebugPrint("Looking for positional script file\n");
 		for (size_t i = 0; i < positional_args.size(); ++i) {
 			auto* arg = positional_args[i];
 			if (arg->mValue.mLength > 4 &&
@@ -209,9 +209,9 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 				 strcmp((char*)&arg->mValue.mBytes[arg->mValue.mLength - 4], ".grz") == 0)) {
 				GrapaFileIO fp;
 				if (fp.Open((char*)arg->mValue.mBytes) == 0) {
-					gSystem->DebugPrint("Found script file: ");
-					gSystem->DebugPrint(arg->mValue);
-					gSystem->DebugPrint("\n");
+					gSystem->mDebug.DebugPrint("Found script file: ");
+					gSystem->mDebug.DebugPrint(arg->mValue);
+					gSystem->mDebug.DebugPrint("\n");
 					u64 sz = 0;
 					fp.GetSize(sz);
 					runStr.SetLength(sz);
@@ -247,7 +247,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	// Auto-detect pipe input if no explicit stdin option and no script file
 	if (isPipeInput && runStr.mLength == 0 && !interactiveMode && !showWidget)
 	{
-		gSystem->DebugPrint("Auto-detected pipe input\n");
+		gSystem->mDebug.DebugPrint("Auto-detected pipe input\n");
 		char c;
 		runStr.SetLength(0);
 		while (std::cin >> c && !std::cin.eof())

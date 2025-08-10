@@ -302,6 +302,16 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
+class GrapaScriptExecDebug
+{
+public:
+	bool mDebugMode;
+	GrapaScriptExecDebug();
+	~GrapaScriptExecDebug();
+	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr);
+	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue);
+};
+
 class GrapaScriptExecState : public GrapaState
 {
 public:
@@ -312,6 +322,7 @@ public:
 	bool mEnablePrompt,mNeedsPrompt;
 	u64 mRuleId;
 	bool mClearState;
+	GrapaScriptExecDebug mDebug;
 public:
 	GrapaScriptExecState();
 	virtual ~GrapaScriptExecState();

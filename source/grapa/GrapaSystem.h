@@ -154,6 +154,18 @@ public:
 	void ExecInFocus(const char* in);
 };
 
+// GrapaDebug is used in gSystem which spans all sessions that may be running in parallel
+// GrapaDebug should NOT be used for outputing debug statements for sessions
+class GrapaDebug
+{
+public:
+	bool mDebugMode;
+	GrapaDebug();
+	~GrapaDebug();
+	void DebugPrint(const char* pStr, bool flush = true);
+	void DebugPrint(const GrapaCHAR& pValue, bool flush = true);
+};
+
 class GrapaSystem
 {
 public:
@@ -164,9 +176,8 @@ public:
 	GrapaRuleQueue* mStaticLib;
 	GrapaRuleQueue* mArgv;
 	GrapaCHAR mArgcin;
-	GrapaCHAR mOutputFile;
-	bool mDebugMode;
-	bool mAppendMode;
+	GrapaCHAR mOutputFilex;
+	GrapaDebug mDebug;
 	time_t mStartTime;
 	clock_t mStartClock;
 	GrapaGroupQueue mGroupQueue;
@@ -177,7 +188,8 @@ public:
 	GrapaRuleEvent mLib;
 	GrapaCritical mLibLock;
 	GrapaCritical mTimeLock;
-	GrapaCritical mChdLock;
+	GrapaCritical mChdLock;	
+	GrapaCritical mPrintLock;
 	std::list < My_Text_Console* > mConsoleList;
 
 public:
@@ -190,9 +202,7 @@ public:
 	//void PrintLine(const GrapaCHAR& pValue, bool flush = true);
 	//void Print(const GrapaSU64& pValue, bool flush = true);
 	//void Print(u64 pValue, bool flush = true);
-	void PrintTimeLine(const char* pChar, bool flush = true);
-	void DebugPrint(const char* pStr, bool flush = true);
-	void DebugPrint(const GrapaCHAR& pValue, bool flush = true);
+	//void PrintTimeLine(const char* pChar, bool flush = true);
 	int GetCharOLD();
 	std::string GetUtf8Char();
 	void SetEcho(bool enable = true);
@@ -202,7 +212,6 @@ public:
 		GrapaCHAR exec(GrapaCHAR& command);
 
 private:
-	GrapaCritical mPrintLock;
 #ifdef WIN32
 	HANDLE mStdinRef;
 	DWORD mStdinMode;

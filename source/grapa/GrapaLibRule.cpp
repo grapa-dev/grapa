@@ -10345,7 +10345,7 @@ GrapaRuleEvent* GrapaLibraryRuleDebugEvent::Run(GrapaScriptExec *vScriptExec, Gr
 			GrapaCHARFile mFile;
 			objEvent->vDatabase->DatabaseDump(a.LongValue(), mFile);
 			if (mFile.mBytes)
-				pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, (char*)mFile.mBytes);
+				vScriptExec->vScriptState->mDebug.DebugPrint(vScriptExec, pNameSpace, mFile);
 		}
 	}
 	if (err && result == NULL)

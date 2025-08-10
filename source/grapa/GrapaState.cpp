@@ -6386,6 +6386,27 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 }
 
 /////////////////////////////////////////////////////////////////
+GrapaScriptExecDebug::GrapaScriptExecDebug() 
+{
+	// pull from gSystem->mDebug any default values needed in a new session
+	// note gSystem spans all sessions that may be running in parallel
+	mDebugMode = gSystem->mDebug.mDebugMode;
+	// If additioonal values needed, use getenv() 
+
+}
+GrapaScriptExecDebug::~GrapaScriptExecDebug()
+{
+};
+void GrapaScriptExecDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr)
+{
+	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, (char*)pStr);
+};
+void GrapaScriptExecDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue)
+{
+	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, pValue);
+};
+/////////////////////////////////////////////////////////////////
+
 
 GrapaScriptExecState::GrapaScriptExecState() 
 { 

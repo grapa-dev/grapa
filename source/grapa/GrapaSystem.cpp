@@ -47,6 +47,36 @@ limitations under the License.
 
 extern GrapaSystem* gSystem;
 
+GrapaDebug::GrapaDebug() 
+{
+	mDebugMode = false;
+	// use getenv() to preload struct values
+}
+
+GrapaDebug::~GrapaDebug() 
+{
+}
+
+void GrapaDebug::DebugPrint(const char* pStr, bool flush)
+{
+	if (!mDebugMode) return;
+
+	gSystem->mPrintLock.WaitCritical();
+	fprintf(stderr, "[DEBUG] %s", pStr);
+	if (flush) fflush(stderr);
+	gSystem->mPrintLock.LeaveCritical();
+}
+
+void GrapaDebug::DebugPrint(const GrapaCHAR& pValue, bool flush)
+{
+	if (!mDebugMode) return;
+
+	gSystem->mPrintLock.WaitCritical();
+	fprintf(stderr, "[DEBUG] %.*s", (int)pValue.mLength, (char*)pValue.mBytes);
+	if (flush) fflush(stderr);
+	gSystem->mPrintLock.LeaveCritical();
+}
+
 GrapaSystem::GrapaSystem()
 {
 	RandSeed();
@@ -106,8 +136,6 @@ GrapaSystem::GrapaSystem()
 	mStaticLib = NULL;
 	mArgv = new GrapaRuleQueue();
 	mLinkInitialized = false;
-	mDebugMode = false;
-	mAppendMode = false;
 }
 
 GrapaSystem::~GrapaSystem()
@@ -213,25 +241,8 @@ GrapaSystem::~GrapaSystem()
 //	PrintLine(s,flush);
 //}
 
-void GrapaSystem::DebugPrint(const char* pStr, bool flush)
-{
-	if (!mDebugMode) return;
-	
-	mPrintLock.WaitCritical();
-	fprintf(stderr, "[DEBUG] %s", pStr);
-	if (flush) fflush(stderr);
-	mPrintLock.LeaveCritical();
-}
 
-void GrapaSystem::DebugPrint(const GrapaCHAR& pValue, bool flush)
-{
-	if (!mDebugMode) return;
-	
-	mPrintLock.WaitCritical();
-	fprintf(stderr, "[DEBUG] %.*s", (int)pValue.mLength, (char*)pValue.mBytes);
-	if (flush) fflush(stderr);
-	mPrintLock.LeaveCritical();
-}
+
 //
 //void GrapaSystem::Print(const GrapaSU64& pValue, bool flush)
 //{
