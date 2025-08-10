@@ -19,10 +19,13 @@ Grapa's debug system operates at two levels:
 ### Key Features
 - **CLI Debug Control**: Enable debug mode with `-d` flag
 - **Script Debug Control**: Dynamically enable/disable debug during script execution
-- **Component-Specific Debugging**: Target specific system components (database, grep, vector, etc.)
+- **Component-Specific Debugging**: Target specific system components (infrastructure ready, components planned)
 - **Debug Levels**: Control verbosity from 0 (disabled) to 9 (maximum detail)
 - **Session Isolation**: Debug settings are isolated between parallel sessions
 - **Environment Variable Integration**: Configure debug settings via environment variables
+
+### Current Status
+The debug system infrastructure is fully implemented and ready for use. While no system components are currently instrumented with debug output, the framework is in place for future component integration. Users can set debug flags and configure the system, and debug output will appear once components are instrumented.
 
 ## CLI Debug Options
 
@@ -124,21 +127,27 @@ $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,*:0");
 | `GRAPA_SESSION_DEBUG_COMPONENTS` | Session debug components | Component list | `"vector,filesystem"` |
 | `GRAPA_SESSION_ID` | Current session ID (read-only) | Auto-generated | `"123"` |
 
-## Available Debug Components
+## Debug Components
 
-### High Priority Components
+### Currently Instrumented Components
+Currently, no system components have been instrumented with debug output. The debug system infrastructure is in place and ready for component integration.
+
+### Planned Debug Components
+The following components are planned for debug instrumentation based on the [Component Debug Audit](../maintainers/RESEARCH_AND_ANALYSIS/COMPONENT_DEBUG_AUDIT.md):
+
+#### High Priority Components
 - **`database`**: Database operations, queries, and storage
 - **`grep`**: Text search and pattern matching
 - **`script`**: Script execution and parsing
 - **`network`**: Network operations and connections
 
-### Medium Priority Components
+#### Medium Priority Components
 - **`vector`**: Vector operations and calculations
 - **`filesystem`**: File system operations
 - **`threading`**: Thread management and synchronization
 - **`memory`**: Memory allocation and management
 
-### Low Priority Components
+#### Low Priority Components
 - **`widget`**: GUI widget operations
 - **`time`**: Time-related operations
 - **`prime`**: Prime number operations
@@ -146,6 +155,21 @@ $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,*:0");
 - **`object`**: Object management
 - **`system`**: System-level operations
 - **`encoding`**: Data encoding/decoding
+
+### Adding Debug to Components
+To add debug output to a component, developers can use the existing debug infrastructure:
+
+```cpp
+// In component code
+if (gSystem->mDebug.ShouldDebug("component_name", 1)) {
+    gSystem->mDebug.DebugPrint("component_name", "Debug message", 1);
+}
+
+// For session-level debug
+if (vScriptExec->vScriptState->mDebug.ShouldDebug("component_name", 1)) {
+    vScriptExec->vScriptState->mDebug.DebugPrint(vScriptExec, pNameSpace, "component_name", "Debug message", 1);
+}
+```
 
 ## Debug Output Formats
 
@@ -165,60 +189,51 @@ Session-level debug output appears through the response system with the format:
 
 ## Practical Examples
 
-### Example 1: Database Debugging
+### Example 1: Basic Debug Control
 ```grapa
-// Enable database debugging
+// Enable system-level debug
 $sys().putenv("GRAPA_DEBUG_MODE", "1");
-$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database");
+$sys().putenv("GRAPA_DEBUG_LEVEL", "3");
 
-// Database operations will now show debug output
-db = $file().table('ROW');
-db.mkfield('name', 'STR');
-db.set('user1', 'Alice', 'name');
-result = db.get('user1', 'name');
+// When components are instrumented, they will show debug output
+// Currently, no components are instrumented, so no debug output will appear
 
 // Disable debug
 $sys().putenv("GRAPA_DEBUG_MODE", "0");
 ```
 
-### Example 2: Multi-Component Debugging
+### Example 2: Component-Specific Debug (Future)
 ```grapa
-// Enable debug for multiple components with different levels
+// Enable debug for specific components (when instrumented)
 $sys().putenv("GRAPA_DEBUG_MODE", "1");
-$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,grep:2,vector:1");
+$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database,grep");
 
-// Operations will show debug output based on component and level
-db = $file().table('ROW');  // database level 3
-"hello world".grep("hello");  // grep level 2
-vec = [1, 2, 3];  // vector level 1
+// When these components are instrumented, they will show debug output
+db = $file().table('ROW');  // database operations
+"hello world".grep("hello");  // grep operations
 ```
 
-### Example 3: Session-Specific Debugging
+### Example 3: Session-Specific Debug
 ```grapa
 // Enable session-specific debug override
 $sys().putenv("GRAPA_SESSION_DEBUG", "1");
 $sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
-$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "database");
 
 // This session will show debug output even if system debug is disabled
+// (when components are instrumented)
 db = $file().table('ROW');
-db.mkfield('name', 'STR');
 ```
 
-### Example 4: Conditional Debugging
+### Example 4: Component-Specific Levels (Future)
 ```grapa
-// Enable debug only for specific operations
+// Set different debug levels for different components
 $sys().putenv("GRAPA_DEBUG_MODE", "1");
-$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database");
+$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,grep:2,vector:1");
 
-// Database operations show debug output
-db = $file().table('ROW');
-
-// Disable debug for other operations
-$sys().putenv("GRAPA_DEBUG_COMPONENTS", "grep");
-
-// Only grep operations show debug output
-"hello world".grep("hello");
+// When instrumented, components will show debug output based on their level
+db = $file().table('ROW');  // database level 3 (most verbose)
+"hello world".grep("hello");  // grep level 2 (medium verbose)
+vec = [1, 2, 3];  // vector level 1 (basic debug)
 ```
 
 ## Best Practices
@@ -231,9 +246,9 @@ $sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "database");
 ```
 
 ### 2. Target Specific Components
-Instead of enabling all debug output, target specific components for focused debugging:
+When components are instrumented, target specific components for focused debugging:
 ```grapa
-// Good: Target specific component
+// Good: Target specific component (when available)
 $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database");
 
 // Avoid: Enable all components unless needed
