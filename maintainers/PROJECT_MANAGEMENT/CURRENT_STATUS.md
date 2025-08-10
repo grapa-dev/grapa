@@ -18,14 +18,16 @@
 
 
 #### **1. CLI Enhancement (Phase 2)** - **FOUNDATIONAL**
-- **Status:** **ACTIVE** - Next implementation cycle
-- **Focus:** Enhanced debug mode and better error messages
-- **Reference:** [`BACKLOG.md`](BACKLOG.md#immediate-next-steps-pull-to-current_statusmd)
+- **Status:** **ACTIVE** - Compiler debug instrumentation design complete
+- **Focus:** Enhanced debug mode and better error messages through compiler instrumentation
+- **Reference:** [`GRAPA_COMPILER_DEBUG_INSTRUMENTATION_DESIGN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_COMPILER_DEBUG_INSTRUMENTATION_DESIGN.md)
 - **Dependencies:** None (foundational)
 - **Priority:** Highest - enables better development experience
 - **Tasks:**
-  - [ ] **Enhanced Debug Mode**: Improve existing `-d` option with verbose output capabilities and better debug information
-  - [ ] **Better Error Messages**: Improve syntax error reporting with more descriptive and helpful error messages
+  - [x] **Compiler Debug Design**: Complete strategic design for compiler instrumentation ✅ **COMPLETED**
+  - [ ] **Phase 1 Implementation**: Basic error context (Level 1) - rule matching failures, token stream context, position information
+  - [ ] **Phase 2 Implementation**: Detailed compilation flow (Level 2-3) - token creation, rule matching attempts, operation tree building
+  - [ ] **Phase 3 Implementation**: Advanced debugging (Level 4-5) - state machine transitions, full token stream logging
   - [x] **Documentation Updates**: Update CLI documentation to reference existing language capabilities ✅ **COMPLETED**
   - [x] **Cross-Reference Language Features**: Add examples showing how to use built-in performance, environment, and timing features from CLI ✅ **COMPLETED**
 - **Critical Design Requirement**: Debug output must use the appropriate system based on context:
