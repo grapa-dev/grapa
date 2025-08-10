@@ -104,6 +104,15 @@ int GrapaDebug::GetComponentDebugLevel(const char* component)
 	const char* components = (const char*)mDebugComponents.mBytes;
 	if (!components || !component) return 0;
 	
+	// Handle "compiler" shorthand - expand to "lexer,parser"
+	if (strcmp(component, "compiler") == 0) {
+		// Check if either lexer or parser is enabled
+		int lexerLevel = GetComponentDebugLevel("lexer");
+		int parserLevel = GetComponentDebugLevel("parser");
+		// Return the higher level if either is enabled
+		return (lexerLevel > parserLevel) ? lexerLevel : parserLevel;
+	}
+	
 	// First, look for exact component match with level
 	char searchPattern[256];
 	snprintf(searchPattern, sizeof(searchPattern), "%s:", component);

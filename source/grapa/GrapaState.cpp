@@ -219,6 +219,14 @@ GrapaRuleEvent* GrapaItemState::SearchToken(u8 pType, const GrapaBYTE& pValue)
 
 void GrapaItemState::PushOutput(u8 pToken, const GrapaBYTE& pValue, char quote)
 {
+	// ADD DEBUG: Token creation (Level 2) - Use session debug if available
+	if (vScriptExec && vScriptExec->vScriptState->mDebug.ShouldDebug("lexer", 2)) {
+		char debugMsg[256];
+		snprintf(debugMsg, sizeof(debugMsg), "LEX: Created token type=%d value='%.*s' quote=%c", 
+				 pToken, (int)pValue.mLength, (char*)pValue.mBytes, quote);
+		vScriptExec->vScriptState->mDebug.DebugPrint(vScriptExec, mNameSpace, "lexer", debugMsg, 2);
+	}
+
 	bool sendRaw = true;
 	bool isStrChar = false;
 	bool sentStr = false;
@@ -2070,14 +2078,16 @@ GrapaScriptState::~GrapaScriptState()
 {
 	Stop();
 	GrapaScriptState::CLEAR();
-	mItemState.SetParams(NULL,NULL);
+	mItemState.SetParams(NULL,NULL,NULL);
 	mItemState.SetQueue(NULL);
 }
 
 void GrapaScriptState::SetNameSpace(GrapaNames* pRuleVariables)
 {
 	vRuleVariables = pRuleVariables;
-	mItemState.SetParams(&mItemParams, pRuleVariables);
+	// Use vScriptExec if available (inherited from GrapaScriptExecState)
+	// This will be NULL during system initialization but available during script execution
+	mItemState.SetParams(&mItemParams, pRuleVariables, vScriptExec);
 }
 
 void GrapaScriptState::CLEAR()
@@ -6150,7 +6160,7 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 	GrapaRuleQueue tokenQueue;
 	itemState.SetQueue(&itemQueue);
 	itemState.SetOutput(&tokenQueue);
-	itemState.SetParams(&vScriptState->mItemParams, vScriptState->GetNameSpace());
+	itemState.SetParams(&vScriptState->mItemParams, vScriptState->GetNameSpace(), this);
 	itemState.mProfile.FROM(pProfile);
 
 	GrapaItemEvent* event = new GrapaItemEvent();
@@ -6515,7 +6525,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	
 	// Create component and session-identified debug output
 	char sessionDebugStr[256];
-	snprintf(sessionDebugStr, sizeof(sessionDebugStr), "[DEBUG-SESSION-%llu-%s] %s", (unsigned long long)mSessionId, component, pStr);
+	snprintf(sessionDebugStr, sizeof(sessionDebugStr), "[DEBUG-SESSION-%llu-%s] %s\n", (unsigned long long)mSessionId, component, pStr);
 	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebugStr);
 }
 
@@ -6528,6 +6538,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	snprintf(sessionDebugStr, sizeof(sessionDebugStr), "[DEBUG-SESSION-%llu-%s] ", (unsigned long long)mSessionId, component);
 	GrapaCHAR sessionDebug(sessionDebugStr);
 	sessionDebug.Append(pValue);
+	sessionDebug.Append("\n");
 	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebug);
 }
 /////////////////////////////////////////////////////////////////

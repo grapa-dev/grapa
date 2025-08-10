@@ -40,12 +40,13 @@ public:
 	s64 mFloatMax;
 	s64 mFloatExtra;
 	GrapaNames* mNameSpace;
+	GrapaScriptExec* vScriptExec;
 	GrapaCHAR mProfile;
 public:
-	GrapaItemState() { mItemParams = NULL; mClearState = false;  mFloatFix = false; mFloatMax = 16 * 8; mFloatExtra = 10; mNameSpace = NULL; }
-	GrapaItemState(GrapaItemParams* pLexParams, GrapaNames* pNameSpace) { mItemParams = NULL; mFloatFix = false; mFloatMax = 16 * 8; mFloatExtra = 10; SetParams(pLexParams, pNameSpace); }
+	GrapaItemState() { mItemParams = NULL; mClearState = false;  mFloatFix = false; mFloatMax = 16 * 8; mFloatExtra = 10; mNameSpace = NULL; vScriptExec = NULL; }
+	GrapaItemState(GrapaItemParams* pLexParams, GrapaNames* pNameSpace, GrapaScriptExec* pScriptExec) { mItemParams = NULL; mFloatFix = false; mFloatMax = 16 * 8; mFloatExtra = 10; SetParams(pLexParams, pNameSpace, pScriptExec); }
 public:
-	virtual inline void SetParams(GrapaItemParams* pLexParams, GrapaNames* pNameSpace) { mItemParams = pLexParams; mNameSpace = pNameSpace; }
+	virtual inline void SetParams(GrapaItemParams* pLexParams, GrapaNames* pNameSpace, GrapaScriptExec* pScriptExec = NULL) { mItemParams = pLexParams; mNameSpace = pNameSpace; vScriptExec = pScriptExec; }
 	virtual void SetParam(u64 pLexParam, const char* pValue, bool pTouched = false);
 	virtual GrapaRuleEvent* AddToken(u8 pToken, const char* pName, bool pSkip, const GrapaBYTE& pValue);
 	virtual GrapaRuleEvent* SearchToken(u64 pId);
