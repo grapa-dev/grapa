@@ -3338,6 +3338,28 @@ GrapaRuleEvent* GrapaScriptExec::PlanRule(GrapaNames* pNameSpace, GrapaRuleEvent
 
 	pMatched = false;
 
+	// ADD DEBUG: Full token stream logging (Level 5)
+	if (vScriptState->mDebug.ShouldDebug("compiler", 5)) {
+		GrapaCHAR tokenStream;
+		tokenStream.FROM("PARSE: Full token stream: ");
+		GrapaRuleEvent* currentToken = pTokenEvent;
+		int tokenCount = 0;
+		while (currentToken && tokenCount < 20) {  // Limit to prevent excessive output
+			char tokenInfo[128];
+			snprintf(tokenInfo, sizeof(tokenInfo), "[%d:'%.*s'] ", 
+					 currentToken->mValue.mToken, 
+					 (int)currentToken->mValue.mLength, 
+					 (char*)currentToken->mValue.mBytes);
+			tokenStream.Append(tokenInfo);
+			currentToken = currentToken->Next();
+			tokenCount++;
+		}
+		if (currentToken) {
+			tokenStream.Append("... (more tokens)");
+		}
+		vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", tokenStream, 5);
+	}
+
 	while (operation)
 	{
 		GrapaRuleEvent* lastOperation = operation;
@@ -6155,6 +6177,15 @@ GrapaRuleEvent* GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaRuleEvent* pO
 
 GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput, GrapaRuleEvent* rulexx, u64 pRuleId, GrapaCHAR pProfile)
 {
+	// ADD DEBUG: Performance tracking start (Level 5)
+	clock_t startTime = 0;
+	if (vScriptState->mDebug.ShouldDebug("compiler", 5)) {
+		startTime = clock();
+		char debugMsg[256];
+		snprintf(debugMsg, sizeof(debugMsg), "PARSE: Compilation started - input length=%llu", 
+				 (unsigned long long)pInput.mLength);
+		vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", debugMsg, 5);
+	}
 	GrapaItemState itemState;
 	GrapaQueue itemQueue;
 	GrapaRuleQueue tokenQueue;
@@ -6178,6 +6209,14 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 	enum { START = 0, ESCAPE, BLOCK, };
 	u64 state = START;
 	u64 returnState = START;
+	
+	// ADD DEBUG: State machine initialization (Level 4)
+	if (vScriptState->mDebug.ShouldDebug("compiler", 4)) {
+		char debugMsg[256];
+		snprintf(debugMsg, sizeof(debugMsg), "PARSE: State machine initialized - START state, input length=%llu", 
+				 (unsigned long long)pInput.mLength);
+		vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", debugMsg, 4);
+	}
 
 	if (rulexx == NULL)
 	{
@@ -6206,12 +6245,24 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 		case BLOCK:
 			if (!nextValue)
 			{
+				// ADD DEBUG: State transition BLOCK -> START (no next value) (Level 4)
+				if (vScriptState->mDebug.ShouldDebug("compiler", 4)) {
+					char debugMsg[256];
+					snprintf(debugMsg, sizeof(debugMsg), "PARSE: State transition BLOCK -> START (no next value)");
+					vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", debugMsg, 4);
+				}
 				returnState = BLOCK;
 				state = START;
 				break;
 			}
 			if (nextValue->mEscape)
 			{
+				// ADD DEBUG: State transition BLOCK -> ESCAPE (escape token) (Level 4)
+				if (vScriptState->mDebug.ShouldDebug("compiler", 4)) {
+					char debugMsg[256];
+					snprintf(debugMsg, sizeof(debugMsg), "PARSE: State transition BLOCK -> ESCAPE (escape token)");
+					vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", debugMsg, 4);
+				}
 				returnState = BLOCK;
 				state = ESCAPE;
 				GrapaRuleEvent*e = tokenQueue.PopHead();
@@ -6224,10 +6275,22 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 				evalQueue.PushTail(tokenQueue.PopHead());
 				break;
 			}
+			// ADD DEBUG: State transition BLOCK -> START (end token) (Level 4)
+			if (vScriptState->mDebug.ShouldDebug("compiler", 4)) {
+				char debugMsg[256];
+				snprintf(debugMsg, sizeof(debugMsg), "PARSE: State transition BLOCK -> START (end token)");
+				vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", debugMsg, 4);
+			}
 			state = START;
 		case START:
 			if (nextValue && nextValue->mEscape)
 			{
+				// ADD DEBUG: State transition START -> ESCAPE (escape token) (Level 4)
+				if (vScriptState->mDebug.ShouldDebug("compiler", 4)) {
+					char debugMsg[256];
+					snprintf(debugMsg, sizeof(debugMsg), "PARSE: State transition START -> ESCAPE (escape token)");
+					vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", debugMsg, 4);
+				}
 				returnState = START;
 				state = ESCAPE;
 				GrapaRuleEvent*e = tokenQueue.PopHead();
@@ -6237,6 +6300,12 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 			}
 			else if (nextValue && nextValue->mStart)
 			{
+				// ADD DEBUG: State transition START -> BLOCK (start token) (Level 4)
+				if (vScriptState->mDebug.ShouldDebug("compiler", 4)) {
+					char debugMsg[256];
+					snprintf(debugMsg, sizeof(debugMsg), "PARSE: State transition START -> BLOCK (start token)");
+					vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", debugMsg, 4);
+				}
 				GrapaRuleEvent*e = tokenQueue.PopHead();
 				e->CLEAR();
 				delete e;
@@ -6392,6 +6461,17 @@ GrapaRuleEvent *GrapaScriptExec::Plan(GrapaNames* pNameSpace, GrapaCHAR& pInput,
 			}
 		}
 	}
+	
+	// ADD DEBUG: Performance tracking end (Level 5)
+	if (vScriptState->mDebug.ShouldDebug("compiler", 5)) {
+		clock_t endTime = clock();
+		double elapsedTime = ((double)(endTime - startTime)) / CLOCKS_PER_SEC * 1000000.0;  // Convert to microseconds
+		char debugMsg[256];
+		snprintf(debugMsg, sizeof(debugMsg), "PARSE: Compilation completed - elapsed time=%.2f microseconds", 
+				 elapsedTime);
+		vScriptState->mDebug.DebugPrint(this, pNameSpace, "compiler", debugMsg, 5);
+	}
+	
 	return(codeResult);
 }
 
