@@ -25,9 +25,15 @@
 - **Priority:** Highest - enables better development experience
 - **Tasks:**
   - [x] **Compiler Debug Design**: Complete strategic design for compiler instrumentation ✅ **COMPLETED**
-  - [ ] **Phase 1 Implementation**: Basic error context (Level 1) - rule matching failures, token stream context, position information
-  - [ ] **Phase 2 Implementation**: Detailed compilation flow (Level 2-3) - token creation, rule matching attempts, operation tree building
+  - [x] **Phase 1 Implementation**: Basic error context (Level 1) - rule matching failures, token stream context, position information ✅ **COMPLETED**
+  - [x] **Phase 2 Implementation**: Detailed compilation flow (Level 2-3) - token creation, rule matching attempts, operation tree building ✅ **COMPLETED**
   - [ ] **Phase 3 Implementation**: Advanced debugging (Level 4-5) - state machine transitions, full token stream logging
+  - [x] **Lexer/Parser Separation**: Implemented separate `lexer` and `parser` debug components for granular control ✅ **COMPLETED**
+    - **Lexer Component**: `GRAPA_SESSION_DEBUG_COMPONENTS=lexer` for tokenization debug
+    - **Parser Component**: `GRAPA_SESSION_DEBUG_COMPONENTS=parser` for grammar parsing debug  
+    - **Combined Component**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler` for both (backward compatible)
+    - **Architecture**: Lexer uses session debug via `vScriptExec` context passed through `GrapaItemState::SetParams`
+    - **Debug Output Formatting**: Fixed debug output to include proper line breaks for readability
   - [x] **Documentation Updates**: Update CLI documentation to reference existing language capabilities ✅ **COMPLETED**
   - [x] **Cross-Reference Language Features**: Add examples showing how to use built-in performance, environment, and timing features from CLI ✅ **COMPLETED**
 - **Critical Design Requirement**: Debug output must use the appropriate system based on context:
