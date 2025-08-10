@@ -127,32 +127,51 @@ $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,*:0");
 | `GRAPA_SESSION_DEBUG_COMPONENTS` | Session debug components | Component list | `"vector,filesystem"` |
 | `GRAPA_SESSION_ID` | Current session ID (read-only) | Auto-generated | `"123"` |
 
-## Debug Components
+## Currently Instrumented Components
 
-### **Currently Instrumented Components**
+The following debug components are currently instrumented and available for use:
 
-#### **Lexer Component** (`lexer`)
+### **Lexer Component** (`lexer`)
 - **Scope**: Tokenization process (bytes to tokens)
 - **Debug Levels**: 1-5 (basic to detailed)
-- **Output**: Token creation details, state transitions, error context
-- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=lexer`
+- **Example Output**:
+  ```
+  [DEBUG-SESSION-1-lexer] LEX: Created token type=4 value='x' quote=
+  [DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=' ' quote=
+  [DEBUG-SESSION-1-lexer] LEX: Created token type=10 value='+' quote=
+  ```
 
-#### **Parser Component** (`parser`)
+### **Parser Component** (`parser`)
 - **Scope**: Grammar parsing (tokens to execution trees)
 - **Debug Levels**: 1-5 (basic to detailed)
-- **Output**: Rule matching attempts, error context, execution tree building
-- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=parser`
+- **Example Output**:
+  ```
+  [DEBUG-SESSION-1-parser] PARSE: Rule matching attempt - rule='expression'
+  [DEBUG-SESSION-1-parser] PARSE: Full token stream: [4:'x'] [10:'+'] [8:'5']
+  ```
 
-#### **Combined Component** (`compiler`)
+### **Executor Component** (`executor`)
+- **Scope**: Plan execution (execution trees to results)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Example Output**:
+  ```
+  [DEBUG-SESSION-1-executor] EXEC: Starting execution - operation type=21
+  [DEBUG-SESSION-1-executor] EXEC: Processing operation type=21 (CODE=22, OP=21)
+  [DEBUG-SESSION-1-executor] EXEC: Library execution - hasLibrary=true
+  [DEBUG-SESSION-1-executor] EXEC: Execution completed - elapsed time=15.00 microseconds, hasResult=true
+  ```
+
+### **Combined Compiler Component** (`compiler`)
 - **Scope**: Both lexer and parser (shorthand)
 - **Debug Levels**: 1-5 (basic to detailed)
-- **Output**: Complete compilation flow including:
-  - **Level 1**: Basic error context and rule matching failures
-  - **Level 2**: Token creation and rule matching attempts
-  - **Level 3**: Operation tree building and detailed compilation flow
-  - **Level 4**: State machine transitions and detailed parsing states
-  - **Level 5**: Full token stream logging, performance metrics, and memory tracking
 - **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler`
+- **Equivalent to**: `GRAPA_SESSION_DEBUG_COMPONENTS=lexer,parser`
+
+### **Runtime Component** (`runtime`)
+- **Scope**: Complete execution pipeline (compiler + executor)
+- **Debug Levels**: 1-5 (basic to detailed)
+- **Usage**: `GRAPA_SESSION_DEBUG_COMPONENTS=runtime`
+- **Equivalent to**: `GRAPA_SESSION_DEBUG_COMPONENTS=compiler,executor`
 
 ### Planned Debug Components
 The following components are planned for debug instrumentation:
@@ -301,49 +320,35 @@ The lexer debug output reveals:
 [DEBUG-SESSION-1-lexer] LEX: Created token type=11 value='' quote=
 ```
 
-### Example 4: Advanced Debugging (Phase 3)
+### Example 4: Complete Execution Pipeline
+Debug the entire execution pipeline from text to results:
 
-#### **Level 4: State Machine Transitions**
 ```bash
-# Enable Level 4 debug for state machine transitions
-GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_LEVEL=4 GRAPA_SESSION_DEBUG_COMPONENTS=compiler ./grapa script.grc
+# Enable runtime debug (compiler + executor)
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_LEVEL=2 GRAPA_SESSION_DEBUG_COMPONENTS=runtime ./grapa script.grc
+
+# Or enable specific components
+GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_LEVEL=2 GRAPA_SESSION_DEBUG_COMPONENTS=lexer,parser,executor ./grapa script.grc
 ```
 
-**Expected Output:**
+**Complete Pipeline Output**:
 ```
-[DEBUG-SESSION-1-compiler] PARSE: State machine initialized - START state, input length=9
-[DEBUG-SESSION-1-compiler] PARSE: State transition START -> BLOCK (start token)
-[DEBUG-SESSION-1-compiler] PARSE: State transition BLOCK -> START (end token)
-```
-
-#### **Level 5: Full Token Stream and Performance**
-```bash
-# Enable Level 5 debug for complete analysis
-GRAPA_SESSION_DEBUG=1 GRAPA_SESSION_DEBUG_LEVEL=5 GRAPA_SESSION_DEBUG_COMPONENTS=compiler ./grapa script.grc
-```
-
-**Expected Output:**
-```
-[DEBUG-SESSION-1-compiler] PARSE: Compilation started - input length=15
-[DEBUG-SESSION-1-compiler] PARSE: Full token stream: [4:'x'] [10:' '] [10:'='] [10:' '] [8:'5'] [10:' '] [10:'+'] [10:' '] [8:'3'] [10:';'] [11:''] 
-[DEBUG-SESSION-1-compiler] PARSE: Compilation completed - elapsed time=1234.56 microseconds
-```
-
-#### **Performance Analysis**
-```grapa
-// Test compilation performance with complex expressions
-$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "5");
-$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "compiler");
-
-// Complex expression for performance testing
-op()("result = (a + b * c) / (d - e) + f * g - h;")();
+[DEBUG-SESSION-1-lexer] LEX: Created token type=4 value='x' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=' ' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value='+' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=10 value=' ' quote=
+[DEBUG-SESSION-1-lexer] LEX: Created token type=8 value='5' quote=
+[DEBUG-SESSION-1-parser] PARSE: Full token stream: [4:'x'] [10:'+'] [8:'5']
+[DEBUG-SESSION-1-executor] EXEC: Starting execution - operation type=21
+[DEBUG-SESSION-1-executor] EXEC: Processing operation type=21 (CODE=22, OP=21)
+[DEBUG-SESSION-1-executor] EXEC: Library execution - hasLibrary=true
+[DEBUG-SESSION-1-executor] EXEC: Execution completed - elapsed time=15.00 microseconds, hasResult=true
 ```
 
 ### Example 5: Component-Specific Debug (Future)
 ```grapa
 // Enable debug for specific components (when instrumented)
-$sys().putenv("GRAPA_DEBUG_MODE", "1");
-$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database,grep");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "database,grep,vector");
 
 // When these components are instrumented, they will show debug output
 db = $file().table("ROW");  // database operations
@@ -355,23 +360,60 @@ db = $file().table("ROW");  // database operations
 // Enable session-specific debug override
 $sys().putenv("GRAPA_SESSION_DEBUG", "1");
 $sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "compiler");
 
 // This session will show debug output even if system debug is disabled
 // (when components are instrumented)
 db = $file().table("ROW");
 ```
 
-### Example 6: Component-Specific Levels (Future)
+### Example 7: Component-Specific Levels (Future)
 ```grapa
 // Set different debug levels for different components
-$sys().putenv("GRAPA_DEBUG_MODE", "1");
-$sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,grep:2,vector:1");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "database:3,grep:2,vector:1");
 
 // When instrumented, components will show debug output based on their level
 db = $file().table("ROW");  // database level 3 (most verbose)
 "hello world".grep("hello");  // grep level 2 (medium verbose)
 vec = [1, 2, 3];  // vector level 1 (basic debug)
 ```
+
+## Complete Execution Pipeline Overview
+
+Grapa's debug system provides comprehensive visibility into the entire execution pipeline:
+
+### **Pipeline Stages**
+
+1. **Lexer** (`lexer`): Raw text → Tokens
+   - Token creation and classification
+   - State machine transitions
+   - Quote character analysis
+   - Performance metrics
+
+2. **Parser** (`parser`): Tokens → Execution Trees
+   - Rule matching and grammar parsing
+   - Error context and token streams
+   - Execution tree construction
+   - Performance metrics
+
+3. **Executor** (`executor`): Execution Trees → Results
+   - Operation execution flow
+   - Library loading and function calls
+   - Parameter binding and scope management
+   - Performance metrics
+
+### **Debug Component Shorthands**
+
+- **`compiler`**: `lexer` + `parser` (compilation phase)
+- **`runtime`**: `compiler` + `executor` (complete pipeline)
+
+### **Performance Impact**
+
+The debug system uses `ShouldDebug()` checks to ensure minimal performance impact:
+- Debug output is only generated when explicitly enabled
+- Component-specific filtering prevents unnecessary output
+- Level-based filtering provides granular control
+- Session isolation prevents debug interference
 
 ## Best Practices
 
