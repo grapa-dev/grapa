@@ -6391,19 +6391,47 @@ GrapaScriptExecStateDebug::GrapaScriptExecStateDebug()
 	// pull from gSystem->mDebug any default values needed in a new session
 	// note gSystem spans all sessions that may be running in parallel
 	mDebugMode = gSystem->mDebug.mDebugMode;
-	// If additioonal values needed, use getenv() 
-
+	mSessionDebugLevel = gSystem->mDebug.mDebugLevel;
+	mSessionDebugOverride = false;
+	
+	// Get a unique session ID
+	mSessionId = gSystem->GetNextSessionId();
+	
+	// Read session-specific environment variables for initial values
+	const char* sessionDebug = getenv("GRAPA_SESSION_DEBUG");
+	if (sessionDebug && strcmp(sessionDebug, "1") == 0) {
+		mSessionDebugOverride = true;
+	}
+	
+	const char* sessionDebugLevel = getenv("GRAPA_SESSION_DEBUG_LEVEL");
+	if (sessionDebugLevel) {
+		mSessionDebugLevel = atoi(sessionDebugLevel);
+	}
 }
 GrapaScriptExecStateDebug::~GrapaScriptExecStateDebug()
 {
 };
 void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr)
 {
-	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, (char*)pStr);
+	// Check if debug output should be enabled for this session
+	if (!mDebugMode && !mSessionDebugOverride) return;
+	
+	// Create session-identified debug output
+	char sessionDebugStr[256];
+	snprintf(sessionDebugStr, sizeof(sessionDebugStr), "[DEBUG-SESSION-%llu] %s", (unsigned long long)mSessionId, pStr);
+	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebugStr);
 };
 void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue)
 {
-	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, pValue);
+	// Check if debug output should be enabled for this session
+	if (!mDebugMode && !mSessionDebugOverride) return;
+	
+	// Create session-identified debug output
+	char sessionDebugStr[256];
+	snprintf(sessionDebugStr, sizeof(sessionDebugStr), "[DEBUG-SESSION-%llu] ", (unsigned long long)mSessionId);
+	GrapaCHAR sessionDebug(sessionDebugStr);
+	sessionDebug.Append(pValue);
+	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebug);
 };
 /////////////////////////////////////////////////////////////////
 

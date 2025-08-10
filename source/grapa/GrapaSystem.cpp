@@ -50,7 +50,18 @@ extern GrapaSystem* gSystem;
 GrapaDebug::GrapaDebug() 
 {
 	mDebugMode = false;
-	// use getenv() to preload struct values
+	mDebugLevel = 0;
+	
+	// Read environment variables for initial values
+	const char* debugMode = getenv("GRAPA_DEBUG_MODE");
+	if (debugMode && strcmp(debugMode, "1") == 0) {
+		mDebugMode = true;
+	}
+	
+	const char* debugLevel = getenv("GRAPA_DEBUG_LEVEL");
+	if (debugLevel) {
+		mDebugLevel = atoi(debugLevel);
+	}
 }
 
 GrapaDebug::~GrapaDebug() 
@@ -136,6 +147,7 @@ GrapaSystem::GrapaSystem()
 	mStaticLib = NULL;
 	mArgv = new GrapaRuleQueue();
 	mLinkInitialized = false;
+	mNextSessionId = 1;  // Start session IDs at 1
 }
 
 GrapaSystem::~GrapaSystem()
@@ -446,6 +458,14 @@ void GrapaSystem::RandSeed(u64 pSeed)
 	srand(seed);
 	u32 rd = Random32();
 	RAND_seed((void*)&rd, 32);
+}
+
+u64 GrapaSystem::GetNextSessionId()
+{
+	mSessionIdLock.WaitCritical();
+	u64 sessionId = mNextSessionId++;
+	mSessionIdLock.LeaveCritical();
+	return sessionId;
 }
 
 GrapaCHAR GrapaSystem::exec(GrapaCHAR& command)

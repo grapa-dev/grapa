@@ -160,6 +160,7 @@ class GrapaDebug
 {
 public:
 	bool mDebugMode;
+	int mDebugLevel;  // Debug verbosity level (0-9)
 	GrapaDebug();
 	~GrapaDebug();
 	void DebugPrint(const char* pStr, bool flush = true);
@@ -190,6 +191,8 @@ public:
 	GrapaCritical mTimeLock;
 	GrapaCritical mChdLock;	
 	GrapaCritical mPrintLock;
+	GrapaCritical mSessionIdLock;
+	u64 mNextSessionId;
 	std::list < My_Text_Console* > mConsoleList;
 
 public:
@@ -209,6 +212,7 @@ public:
 	void SetLineInput(bool enable = true);
 	void RandSeed(u64 pSeed = 0);
 	u32 Random32() { return(((rand() & 0xFF) << 24) | ((rand() & 0xFFF) << 12) | (rand() & 0xFFF)); }
+	u64 GetNextSessionId();
 		GrapaCHAR exec(GrapaCHAR& command);
 
 private:

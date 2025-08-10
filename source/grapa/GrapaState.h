@@ -306,6 +306,9 @@ class GrapaScriptExecStateDebug
 {
 public:
 	bool mDebugMode;
+	bool mSessionDebugOverride;  // Allow session to override global debug state
+	int mSessionDebugLevel;      // Session-specific debug verbosity level (0-9)
+	u64 mSessionId;              // Unique session identifier
 	GrapaScriptExecStateDebug();
 	~GrapaScriptExecStateDebug();
 	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr);

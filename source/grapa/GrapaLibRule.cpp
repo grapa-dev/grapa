@@ -3366,6 +3366,50 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			result->vQueue->PushTail(new GrapaRuleEvent(0, GrapaCHAR("__aarch64__"), GrapaInt(__aarch64__).getBytes()));
 #endif
 		}
+		/* Debug flag handling - Grapa-specific environment variables */
+		else if (r1.vVal->mValue.Cmp("GRAPA_DEBUG_MODE") == 0)
+		{
+			err = 0;
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(gSystem->mDebug.mDebugMode ? "1" : "0"));
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_DEBUG_LEVEL") == 0)
+		{
+			err = 0;
+			char levelStr[16];
+			sprintf(levelStr, "%d", gSystem->mDebug.mDebugLevel);
+			result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(levelStr));
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG") == 0)
+		{
+			err = 0;
+			if (vScriptExec && vScriptExec->vScriptState) {
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(vScriptExec->vScriptState->mDebug.mSessionDebugOverride ? "1" : "0"));
+			} else {
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("0"));
+			}
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG_LEVEL") == 0)
+		{
+			err = 0;
+			if (vScriptExec && vScriptExec->vScriptState) {
+				char levelStr[16];
+				sprintf(levelStr, "%d", vScriptExec->vScriptState->mDebug.mSessionDebugLevel);
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(levelStr));
+			} else {
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("0"));
+			}
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_ID") == 0)
+		{
+			err = 0;
+			if (vScriptExec && vScriptExec->vScriptState) {
+				char idStr[32];
+				sprintf(idStr, "%llu", (unsigned long long)vScriptExec->vScriptState->mDebug.mSessionId);
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(idStr));
+			} else {
+				result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("0"));
+			}
+		}
 		else if (r1.vVal->mValue.mLength && r1.vVal->mValue.mBytes[0] != '$')
 		{
 			err = 0;
@@ -3383,6 +3427,8 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 	GrapaError err = -1;
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	
+
 	if (r1.vVal)
 	{
 		if (r1.vVal->mValue.Cmp("$PATH") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("PATH") == 0))
@@ -3417,6 +3463,33 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 		else if (r1.vVal->mValue.Cmp("$WORK") == 0 || (r1.vVal->mValue.mToken == GrapaTokenType::SYSID && r1.vVal->mValue.Cmp("WORK") == 0))
 		{
 			gSystem->mWorkDir.FROM(r2.vVal ? r2.vVal->mValue : GrapaCHAR());
+		}
+		/* Debug flag handling - Grapa-specific environment variables */
+		else if (r1.vVal->mValue.Cmp("GRAPA_DEBUG_MODE") == 0)
+		{
+			err = 0;
+			gSystem->mDebug.mDebugMode = (r2.vVal && r2.vVal->mValue.Cmp("1") == 0);
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_DEBUG_LEVEL") == 0)
+		{
+			err = 0;
+			if (r2.vVal && r2.vVal->mValue.mBytes) {
+				gSystem->mDebug.mDebugLevel = atoi((char*)r2.vVal->mValue.mBytes);
+			}
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG") == 0)
+		{
+			err = 0;
+			if (vScriptExec && vScriptExec->vScriptState) {
+				vScriptExec->vScriptState->mDebug.mSessionDebugOverride = (r2.vVal && r2.vVal->mValue.Cmp("1") == 0);
+			}
+		}
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG_LEVEL") == 0)
+		{
+			err = 0;
+			if (vScriptExec && vScriptExec->vScriptState && r2.vVal && r2.vVal->mValue.mBytes) {
+				vScriptExec->vScriptState->mDebug.mSessionDebugLevel = atoi((char*)r2.vVal->mValue.mBytes);
+			}
 		}
 		else if (r1.vVal->mValue.mLength && r1.vVal->mValue.mBytes[0] != '$')
 		{
