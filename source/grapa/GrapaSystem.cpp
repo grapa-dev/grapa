@@ -655,6 +655,56 @@ void GrapaConsole2Response::SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pN
 #endif
 }
 
+void GrapaConsole2Response::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen)
+{
+    // printf("[DEBUG] GrapaConsole2Response::SendError called, sendbuflen=%llu\n", (unsigned long long)sendbuflen);
+    // if (sendbuflen) printf("[DEBUG] sendbuf='%.*s'\n", (int)sendbuflen, (char*)sendbuf);
+#ifdef WIN32
+	// Use standard error for proper stream redirection
+	if (sendbuflen) {
+		fprintf(stderr, "%.*s", (int)sendbuflen, (char*)sendbuf);
+	}
+	fflush(stderr);
+#else
+	if (sendbuflen) fprintf(stderr, "%.*s", (int)sendbuflen, (char*)sendbuf);
+	fflush(stderr);
+#endif
+}
+
+void GrapaConsole2Response::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf)
+{
+    // printf("[DEBUG] GrapaConsole2Response::SendError called, sendbuf.mLength=%llu\n", (unsigned long long)sendbuf.mLength);
+    // if (sendbuf.mLength) printf("[DEBUG] sendbuf='%.*s'\n", (int)sendbuf.mLength, (char*)sendbuf.mBytes);
+#ifdef WIN32
+	// Use standard error for proper stream redirection
+	if (sendbuf.mLength) {
+		fprintf(stderr, "%.*s", (int)sendbuf.mLength, (char*)sendbuf.mBytes);
+	}
+	fflush(stderr);
+#else
+	if (sendbuf.mLength) fprintf(stderr, "%.*s", (int)sendbuf.mLength, (char*)sendbuf.mBytes);
+	fflush(stderr);
+#endif
+}
+
+void GrapaConsole2Response::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue)
+{
+    // printf("[DEBUG] GrapaConsole2Response::SendError called\n");
+	if (pValue)
+	{
+		if (pValue->vQueue) vScriptExec->EchoList(this, pValue, false, false, false);
+		else vScriptExec->EchoValue(this, pValue, false, false, false);
+	}
+#ifdef WIN32
+	// Use standard error for proper stream redirection
+	fprintf(stderr, "\n");
+	fflush(stderr);
+#else
+	fprintf(stderr, "\n");
+	fflush(stderr);
+#endif
+}
+
 My_Console::My_Console()
 {
 	mRuleVariables.SetResponse(&mConsole2Response);
@@ -1127,6 +1177,33 @@ void GrapaEditorResponse::SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNam
 	//Fl::unlock();    // release the lock; allow other threads to access FLTK again
 }
 
+void GrapaEditorResponse::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen)
+{
+	// Output debug/error messages to stderr for GUI editor
+	if (sendbuflen) {
+		fprintf(stderr, "%.*s", (int)sendbuflen, (char*)sendbuf);
+	}
+}
+
+void GrapaEditorResponse::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf)
+{
+	// Output debug/error messages to stderr for GUI editor
+	if (sendbuf.mLength) {
+		fprintf(stderr, "%.*s", (int)sendbuf.mLength, (char*)sendbuf.mBytes);
+	}
+}
+
+void GrapaEditorResponse::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue)
+{
+	if (pValue)
+	{
+		if (pNameSpace->vLast->vQueue) vScriptExec->EchoList(this, pValue, false, false, false);
+		else vScriptExec->EchoValue(this, pValue, false, false, false);
+	}
+	// Output debug/error messages to stderr for GUI editor
+	fprintf(stderr, "\n");
+}
+
 void GrapaPromptResponse::SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen)
 {
 	disp->buffer()->append((char*)sendbuf);
@@ -1152,6 +1229,33 @@ void GrapaPromptResponse::SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNam
 	disp->buffer()->append((char*)"\n");
 	Fl_Text_Editor::kf_ctrl_move(FL_End, disp);
 	//if (disp->vWin) disp->vWin->redraw();
+}
+
+void GrapaPromptResponse::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen)
+{
+	// Output debug/error messages to stderr for GUI prompt
+	if (sendbuflen) {
+		fprintf(stderr, "%.*s", (int)sendbuflen, (char*)sendbuf);
+	}
+}
+
+void GrapaPromptResponse::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf)
+{
+	// Output debug/error messages to stderr for GUI prompt
+	if (sendbuf.mLength) {
+		fprintf(stderr, "%.*s", (int)sendbuf.mLength, (char*)sendbuf.mBytes);
+	}
+}
+
+void GrapaPromptResponse::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue)
+{
+	if (pValue)
+	{
+		if (pNameSpace->vLast->vQueue) vScriptExec->EchoList(this, pValue, false, false, false);
+		else vScriptExec->EchoValue(this, pValue, false, false, false);
+	}
+	// Output debug/error messages to stderr for GUI prompt
+	fprintf(stderr, "\n");
 }
 
 My_Group::My_Group(int X, int Y, int W, int H, GrapaNames* pNameSpace)

@@ -3694,4 +3694,31 @@ void GrapaWidgetThread::SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameS
 	}
 };
 
+void GrapaWidgetThread::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen)
+{
+	// Output debug/error messages to stderr for widget system
+	if (sendbuflen) {
+		fprintf(stderr, "%.*s", (int)sendbuflen, (char*)sendbuf);
+	}
+}
+
+void GrapaWidgetThread::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf)
+{
+	// Output debug/error messages to stderr for widget system
+	if (sendbuf.mLength) {
+		fprintf(stderr, "%.*s", (int)sendbuf.mLength, (char*)sendbuf.mBytes);
+	}
+}
+
+void GrapaWidgetThread::SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue)
+{
+	// Output debug/error messages to stderr for widget system
+	if (pValue)
+	{
+		if (pValue->vQueue) vScriptExec->EchoList(this, pValue, false, false, false);
+		else vScriptExec->EchoValue(this, pValue, false, false, false);
+	}
+	fprintf(stderr, "\n");
+}
+
 ////////////////////////////////////////////////////////////////////////////////

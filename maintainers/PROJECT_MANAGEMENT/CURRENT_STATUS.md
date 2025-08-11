@@ -11,9 +11,25 @@
 
 ## **ACTIVE PRIORITIES** 🔄
 
-### **No Active Priorities** ✅ **ALL COMPLETED**
+### **Session Debug Output Stream Separation** 🔧 **COMPLETED**
 
-All high-priority development tasks have been completed. The project is in a stable state with comprehensive debug system, CLI enhancements, and documentation fully implemented.
+**Status:** **COMPLETED** - `SendError()` method implemented and validated
+**Priority:** **HIGH** - Affects shell scripting and debug output usability on both Mac and Windows
+**Issue:** Session debug messages (`[DEBUG-SESSION-1-executor] EXEC: ...`) appearing in stdout instead of stderr
+**Impact:** Cannot cleanly separate normal program output from debug output when redirecting streams
+**Scope:** Cross-platform issue affecting both Mac and Windows
+
+**Solution Implemented:** Added `SendError()` method to response system
+- **Files Modified:** 6 files (base classes + implementations)
+- **Architecture:** Minimal interface change, maintains session context
+- **Implementation:** Documented in `maintainers/IMPLEMENTATION/SEND_SYSTEM_ARCHITECTURE.md`
+- **Validation:** Tested on Windows with `test\complete_debug_test.grc` - stream separation working correctly
+
+**Technical Details:**
+- **Base Classes:** Added `SendError()` overloads to `GrapaSystemSend` and `GrapaConsoleResponse`
+- **Implementations:** Added `SendError()` to `GrapaConsole2Response`, `GrapaEditorResponse`, `GrapaPromptResponse`, `GrapaWidgetThread`
+- **Usage Update:** Modified `GrapaScriptExecStateDebug::DebugPrint` methods to use `SendError()` instead of `Send()`
+- **Stream Separation:** Normal output → stdout, debug output → stderr ✅
 
 ## COMPLETED ITEMS
 

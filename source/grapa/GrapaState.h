@@ -187,6 +187,9 @@ public:
 	virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* sendbuf) { Send(vScriptExec,pNameSpace,(u8*)sendbuf, strlen(sendbuf)); }
 	virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf) { Send(vScriptExec,pNameSpace,sendbuf.mBytes, sendbuf.mLength);}
 	virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen);
+	virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* sendbuf) { SendError(vScriptExec,pNameSpace,(u8*)sendbuf, strlen(sendbuf)); }
+	virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf) { SendError(vScriptExec,pNameSpace,sendbuf.mBytes, sendbuf.mLength);}
+	virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen) {};
 	virtual void SendStart(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace) {};
 	virtual GrapaRuleEvent* SendM(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pMessage) { return(NULL); };
 	virtual void SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen) {};

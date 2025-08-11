@@ -6642,7 +6642,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	sessionDebugStr.SetLength(256 + strlen(pStr));
 	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-SESSION-%llu] %s\n", (unsigned long long)mSessionId, pStr);
 	sessionDebugStr.SetLength(len);
-	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebugStr);
+	pNameSpace->GetResponse()->SendError(vScriptExec, pNameSpace, sessionDebugStr);
 };
 void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue)
 {
@@ -6654,7 +6654,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	sessionDebugStr.SetLength(256 + pValue.mLength);
 	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-SESSION-%llu] %s\n", (unsigned long long)mSessionId, (char*)pValue.mBytes);
 	sessionDebugStr.SetLength(len);
-	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebugStr);
+	pNameSpace->GetResponse()->SendError(vScriptExec, pNameSpace, sessionDebugStr);
 };
 
 int GrapaScriptExecStateDebug::GetComponentDebugLevel(const char* component)
@@ -6735,7 +6735,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	sessionDebugStr.SetLength(256 + strlen(pStr));
 	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-SESSION-%llu-%s] %s\n", (unsigned long long)mSessionId, component, pStr);
 	sessionDebugStr.SetLength(len);
-	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebugStr);
+	pNameSpace->GetResponse()->SendError(vScriptExec, pNameSpace, sessionDebugStr);
 }
 
 void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* component, const GrapaCHAR& pValue, int level)
@@ -6747,7 +6747,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	sessionDebugStr.SetLength(256 + pValue.mLength);
 	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-SESSION-%llu-%s] %s\n", (unsigned long long)mSessionId, component, pValue.mBytes);
 	sessionDebugStr.SetLength(len);
-	pNameSpace->GetResponse()->Send(vScriptExec, pNameSpace, sessionDebugStr);
+	pNameSpace->GetResponse()->SendError(vScriptExec, pNameSpace, sessionDebugStr);
 }
 /////////////////////////////////////////////////////////////////
 
