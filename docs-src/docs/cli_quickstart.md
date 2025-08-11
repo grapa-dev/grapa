@@ -82,6 +82,12 @@ grapa -d script.grc
 
 # Debug with command execution
 grapa -d -c "'hello world'.echo();"
+
+# Debug with stream redirection (separate normal and debug output)
+grapa -d script.grc > normal_output.txt 2> debug_output.txt
+
+# Debug with quiet mode (suppress header, keep debug output)
+grapa -d -q script.grc 2> debug_output.txt
 ```
 
 ### Script-Based Debug Control
@@ -285,6 +291,9 @@ grapa --verbose -c "'Hello'.echo()"
 # Debug mode (shows debug output)
 grapa -d -c "'Hello'.echo()"
 
+# Debug with stream redirection
+grapa -d -c "'Hello'.echo()" > normal.txt 2> debug.txt
+
 # Interactive mode
 grapa -i
 ```
@@ -366,6 +375,33 @@ if (\$sys().getenv('DEBUG_MODE') == 'true') {
 'Debug mode turned off'.echo();
 "
 ```
+
+### Stream Redirection and Debug Output
+
+Grapa properly separates normal program output from debug output, allowing for flexible stream redirection:
+
+```bash
+# Separate normal and debug output into different files
+grapa -d script.grc > normal_output.txt 2> debug_output.txt
+
+# Capture only normal output (suppress debug)
+grapa -d script.grc > normal_output.txt 2> /dev/null
+
+# Capture only debug output (suppress normal output)
+grapa -d script.grc > /dev/null 2> debug_output.txt
+
+# Pipe normal output to another command, debug to file
+grapa -d script.grc 2> debug.txt | grep "important"
+
+# Debug with quiet mode (suppress header, keep debug output)
+grapa -d -q script.grc 2> debug_output.txt
+```
+
+**Stream Separation Benefits:**
+- **Clean Output**: Normal program results are separate from debug information
+- **Flexible Logging**: Can log debug output while processing normal output
+- **Pipeline Integration**: Can pipe normal output to other tools
+- **Selective Capture**: Choose which streams to capture or suppress
 
 ### Output Control and Redirection
 ```bash

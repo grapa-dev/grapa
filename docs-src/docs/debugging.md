@@ -211,7 +211,15 @@ if (vScriptExec->vScriptState->mDebug.ShouldDebug("component_name", 1)) {
 }
 ```
 
-## Debug Output Formats
+## Debug Output Formats and Stream Separation
+
+### Stream Separation
+Grapa's debug system properly separates normal program output from debug output:
+
+- **Normal Program Output**: Goes to stdout (standard output)
+- **Debug Output**: Goes to stderr (standard error)
+
+This separation allows for proper stream redirection and filtering.
 
 ### System-Level Debug Output
 System-level debug output appears on stderr with the format:
@@ -221,10 +229,28 @@ System-level debug output appears on stderr with the format:
 ```
 
 ### Session-Level Debug Output
-Session-level debug output appears through the response system with the format:
+Session-level debug output appears on stderr with the format:
 ```
 [DEBUG-SESSION-{session_id}] message
 [DEBUG-SESSION-{session_id}-{component}] message
+```
+
+### Stream Redirection Examples
+```bash
+# Redirect normal output to file, debug output to separate file
+grapa -d script.grc > normal_output.txt 2> debug_output.txt
+
+# Redirect normal output to file, debug output to terminal
+grapa -d script.grc > normal_output.txt
+
+# Redirect normal output to terminal, debug output to file
+grapa -d script.grc 2> debug_output.txt
+
+# Suppress debug output entirely
+grapa -d script.grc 2> /dev/null
+
+# Suppress normal output, show only debug
+grapa -d script.grc > /dev/null
 ```
 
 ## Practical Examples

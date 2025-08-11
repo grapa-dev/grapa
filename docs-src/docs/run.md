@@ -44,6 +44,11 @@ echo "thisisatest".encode('SHAKE256') | grapa - -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 ```
 
+Example: Debug mode with stream redirection (separate normal and debug output)
+```
+grapa -d -c "'hello world'.echo()" > normal.txt 2> debug.txt
+```
+
 **Note:** The `-` option requires pipe input. Using `grapa -` without pipe input will show an error message.
 
 **Note:** By default, Grapa runs without showing version headers (like Python/Node.js). Use `--verbose` to show version headers when needed.

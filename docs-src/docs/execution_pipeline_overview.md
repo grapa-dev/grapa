@@ -137,6 +137,7 @@ result.echo();
 - **Component Filtering**: Only enabled components generate output
 - **Level Filtering**: Granular control over verbosity
 - **Session Isolation**: No interference between parallel sessions
+- **Stream Separation**: Debug output goes to stderr, normal output to stdout
 
 ## Architecture Insights
 

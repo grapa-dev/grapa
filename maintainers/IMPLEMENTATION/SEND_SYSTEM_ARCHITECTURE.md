@@ -18,16 +18,25 @@ public:
     virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* sendbuf);
     virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
     virtual void Send(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* sendbuf);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen) {};
     virtual void SendStart(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace);
     virtual GrapaRuleEvent* SendM(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pMessage);
-    virtual void SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen);
-    virtual void SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
-    virtual void SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
+    virtual void SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen) {};
+    virtual void SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf) {};
+    virtual void SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue) {};
     virtual void SetActive(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, bool pActive);
 };
 ```
 
 **Purpose:** Provides the fundamental interface for all output operations.
+
+**Design Pattern:** This is a **Template Method Pattern** where:
+- `Send()` and `SendError()` are **template methods** that provide the framework
+- `SendCommand()`, `SendPrompt()`, `SendEnd()` are **primitive operations** that derived classes override
+- The base class provides default empty implementations (`{}`) for primitive operations
+- Derived classes provide concrete implementations for their specific output destinations
 
 #### 2. GrapaConsoleResponse (Response Base)
 **Location:** `source/grapa/GrapaConsole.h:10-15`
@@ -45,7 +54,7 @@ public:
 ### Response Implementation Classes
 
 #### 1. GrapaConsole2Response (CLI Console)
-**Location:** `source/grapa/GrapaSystem.h:20-26`
+**Location:** `source/grapa/GrapaSystem.h:20-28`
 
 ```cpp
 class GrapaConsole2Response : public GrapaConsoleResponse {
@@ -53,16 +62,20 @@ public:
     virtual void SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen);
     virtual void SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
     virtual void SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
 };
 ```
 
-**Implementation:** `source/grapa/GrapaSystem.cpp:607-650`
-- **SendCommand:** Outputs to `std::cout` (stdout)
-- **SendPrompt:** Outputs to `std::cout` (stdout)  
-- **SendEnd:** Outputs to `std::cout` (stdout)
+**Implementation:** `source/grapa/GrapaSystem.cpp:607-700`
+- **SendCommand:** Outputs to `std::cout` (stdout) with Windows-specific `WriteConsoleA()` replacement
+- **SendPrompt:** Outputs to `std::cout` (stdout) with Windows-specific `WriteConsoleA()` replacement
+- **SendEnd:** Outputs to `std::cout` (stdout) with Windows-specific `WriteConsoleA()` replacement
+- **SendError:** Outputs to `fprintf(stderr, ...)` (stderr) for all platforms
 
 #### 2. GrapaEditorResponse (GUI Editor)
-**Location:** `source/grapa/GrapaSystem.h:82-89`
+**Location:** `source/grapa/GrapaSystem.h:82-95`
 
 ```cpp
 class GrapaEditorResponse : public GrapaConsoleResponse {
@@ -72,16 +85,20 @@ public:
     virtual void SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen);
     virtual void SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
     virtual void SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
 };
 ```
 
-**Implementation:** `source/grapa/GrapaSystem.cpp:1105-1129`
-- **SendCommand:** Outputs to FLTK text display widget
-- **SendPrompt:** Outputs to FLTK text display widget
-- **SendEnd:** Outputs to FLTK text display widget
+**Implementation:** `source/grapa/GrapaSystem.cpp:1154-1205`
+- **SendCommand:** Outputs to FLTK text display widget (`disp->buffer()->append()`)
+- **SendPrompt:** Outputs to FLTK text display widget (`disp->buffer()->append()`)
+- **SendEnd:** Outputs to FLTK text display widget (`disp->buffer()->append()`)
+- **SendError:** Outputs to `fprintf(stderr, ...)` (stderr) for debug/error messages
 
 #### 3. GrapaPromptResponse (GUI Prompt)
-**Location:** `source/grapa/GrapaSystem.h:94-101`
+**Location:** `source/grapa/GrapaSystem.h:105-112`
 
 ```cpp
 class GrapaPromptResponse : public GrapaConsoleResponse {
@@ -91,16 +108,20 @@ public:
     virtual void SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen);
     virtual void SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
     virtual void SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
 };
 ```
 
-**Implementation:** `source/grapa/GrapaSystem.cpp:1130-1156`
-- **SendCommand:** Outputs to FLTK prompt editor widget
-- **SendPrompt:** Outputs to FLTK prompt editor widget
-- **SendEnd:** Outputs to FLTK prompt editor widget
+**Implementation:** `source/grapa/GrapaSystem.cpp:1206-1260`
+- **SendCommand:** Outputs to FLTK prompt editor widget (`disp->buffer()->append()`)
+- **SendPrompt:** Outputs to FLTK prompt editor widget (`disp->buffer()->append()`)
+- **SendEnd:** Outputs to FLTK prompt editor widget (`disp->buffer()->append()`)
+- **SendError:** Outputs to `fprintf(stderr, ...)` (stderr) for debug/error messages
 
 #### 4. GrapaWidgetThread (Widget System)
-**Location:** `source/grapa/GrapaWidget.h:35-53`
+**Location:** `source/grapa/GrapaWidget.h:49-56`
 
 ```cpp
 class GrapaWidgetThread : public GrapaConsoleResponse {
@@ -110,10 +131,19 @@ public:
     virtual void SendCommand(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const void* sendbuf, u64 sendbuflen);
     virtual void SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
     virtual void SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, void* sendbuf, u64 sendbuflen);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaBYTE& sendbuf);
+    virtual void SendError(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pValue);
 };
 ```
 
-**Purpose:** Handles output for widget-based GUI applications.
+**Implementation:** `source/grapa/GrapaWidget.cpp:3569-3720`
+- **SendCommand:** Uses widget callback system (`echoCB`) for widget-specific output
+- **SendPrompt:** Uses widget callback system (`promptCB`) for widget-specific output
+- **SendEnd:** Uses widget callback system (`endCB`) for widget-specific output
+- **SendError:** Outputs to `fprintf(stderr, ...)` (stderr) for debug/error messages
+
+**Purpose:** Handles output for widget-based GUI applications with callback-driven architecture.
 
 ### Session Context Management
 
@@ -131,6 +161,69 @@ public:
 ```
 
 **Purpose:** Each execution namespace maintains a reference to its response handler, enabling session-specific output routing.
+
+## Polymorphic Design Pattern
+
+### Template Method Pattern Implementation
+
+The Grapa Send system uses the **Template Method Pattern** to provide a unified interface across different output destinations:
+
+```cpp
+// Base class provides template methods
+class GrapaSystemSend {
+    virtual void Send(...) {
+        // Template method - calls primitive operations
+        SendCommand(...);  // Primitive operation (empty in base)
+    }
+    virtual void SendCommand(...) {};  // Primitive operation (empty in base)
+};
+
+// Derived classes override primitive operations
+class GrapaConsole2Response : public GrapaSystemSend {
+    virtual void SendCommand(...) {
+        std::cout << ...;  // Concrete implementation for CLI
+    }
+};
+```
+
+### Polymorphic Echo Methods
+
+The `GrapaScriptExec` Echo methods demonstrate perfect polymorphic design:
+
+```cpp
+void GrapaScriptExec::EchoValue(GrapaSystemSend* pSend, ...) {
+    // This method doesn't know what type of response system is in use
+    // It could be:
+    // - GrapaConsole2Response (CLI output)
+    // - GrapaEditorResponse (GUI output) 
+    // - GrapaPromptResponse (GUI prompt)
+    // - GrapaWidgetThread (Widget system)
+    
+    pSend->Send(this, vScriptState->vRuleVariables, "some output");
+    // ^-- Virtual call gets resolved to the correct implementation
+}
+```
+
+**Key Benefits:**
+1. **Separation of Concerns:** Echo methods don't need to know about output destinations
+2. **Extensibility:** New response types can be added without changing Echo methods
+3. **Consistency:** All response types handle Send/SendError the same way
+4. **Future-proof:** Adding Error versions of Echo methods would work automatically
+
+### Send vs SendError Pattern
+
+All response implementations follow the same pattern:
+
+| Method | Purpose | Destination |
+|--------|---------|-------------|
+| `Send()` | Normal program output | stdout (CLI) / GUI widgets / Widget callbacks |
+| `SendError()` | Debug/error output | stderr (all platforms) |
+
+**Implementation Consistency:**
+- **GrapaConsole2Response:** `Send()` → `std::cout`, `SendError()` → `fprintf(stderr, ...)`
+- **GrapaEditorResponse:** `Send()` → GUI buffer, `SendError()` → `fprintf(stderr, ...)`
+- **GrapaPromptResponse:** `Send()` → GUI buffer, `SendError()` → `fprintf(stderr, ...)`
+- **GrapaWidgetThread:** `Send()` → Widget callbacks, `SendError()` → `fprintf(stderr, ...)`
 
 ## Output Flow Analysis
 
@@ -162,11 +255,15 @@ public:
 ### Working Correctly ✅
 - **System Debug Output:** `fprintf(stderr, ...)` → stderr
 - **Error Messages:** CLI argument errors → stderr
-- **Basic Stream Redirection:** `> stdout.txt 2> stderr.txt` works for basic cases
+- **Session Debug Output:** `pNameSpace->GetResponse()->SendError()` → stderr ✅ **RESOLVED**
+- **Basic Stream Redirection:** `> stdout.txt 2> stderr.txt` works for all cases ✅ **RESOLVED**
+- **Cross-Platform Compatibility:** Works on both Mac and Windows ✅ **RESOLVED**
 
-### Not Working ❌
-- **Session Debug Output:** Goes through response system → stdout instead of stderr
-- **Mixed Output:** Session debug messages appear inline with normal program output
+### Implementation Details
+- **Session Debug Output:** Now uses `SendError()` method instead of `Send()` method
+- **Stream Separation:** Normal output → stdout, debug output → stderr
+- **Session Context:** Maintained through polymorphic response system
+- **All Response Types:** CLI, GUI, and Widget systems all support proper stream separation
 
 ## Send Method Usage Analysis
 
@@ -191,24 +288,31 @@ public:
 
 ## Critical Architecture Insights
 
-### 1. Response System is Universal
-- **All output** goes through the response system
-- **No direct stderr access** in response implementations
-- **Session context** is maintained through `GrapaNames::GetResponse()`
+### 1. Template Method Pattern Success
+- **Base class** provides template methods (`Send()`, `SendError()`) with framework logic
+- **Derived classes** override primitive operations (`SendCommand()`, `SendPrompt()`, `SendEnd()`) with concrete implementations
+- **Polymorphic design** allows Echo methods to work with any response type without knowing the implementation details
 
-### 2. Debug Output Split
-- **System debug:** Direct `fprintf(stderr, ...)` ✅
-- **Session debug:** Response system `Send()` → stdout ❌
+### 2. Polymorphic Echo Methods
+- **`GrapaScriptExec::EchoValue()`** and related methods use `GrapaSystemSend* pSend` parameter
+- **Virtual method calls** automatically resolve to the correct derived class implementation
+- **Future-proof design** - adding Error versions of Echo methods would work automatically with existing response types
 
-### 3. Stream Separation Missing
-- **No stream type parameter** in Send methods
-- **No SendError() method** in base classes
-- **All output treated as normal program output**
+### 3. Consistent Send/SendError Pattern
+- **All response implementations** follow the same pattern: `Send()` for normal output, `SendError()` for debug/error output
+- **Stream separation** is handled at the response level, not in the calling code
+- **Cross-platform compatibility** achieved through consistent stderr usage in `SendError()` methods
 
-### 4. Session Context Critical
-- **Debug output must maintain session context**
-- **Cannot bypass response system** without losing session isolation
-- **Multiprocessing safety** depends on response system
+### 4. Session Context Preservation
+- **Debug output maintains session context** through the polymorphic response system
+- **Multiprocessing safety** preserved through existing response system architecture
+- **No bypass of response system** needed - the system already supports proper stream separation
+
+### 5. Architectural Excellence
+- **Separation of concerns:** Echo methods don't need to know about output destinations
+- **Extensibility:** New response types can be added without changing Echo methods
+- **Consistency:** All response types handle Send/SendError the same way
+- **Maintainability:** Changes to output handling only require updates to response implementations
 
 ## Potential Solutions Analysis
 
@@ -287,4 +391,27 @@ public:
 
 ## Conclusion
 
-The session debug output stream separation issue requires a careful architectural solution that maintains Grapa's complex multiprocessing session management while adding proper stream awareness. The `SendError()` method approach provides the best balance of functionality, maintainability, and minimal disruption to the existing codebase. 
+The session debug output stream separation issue has been **successfully resolved** through the implementation of the `SendError()` method across all response types. This solution demonstrates the architectural excellence of Grapa's polymorphic design:
+
+### Key Achievements
+1. **Stream Separation:** Normal output → stdout, debug output → stderr ✅
+2. **Session Context Preservation:** Debug output maintains multiprocessing session isolation ✅
+3. **Cross-Platform Compatibility:** Works consistently on Mac and Windows ✅
+4. **Minimal Interface Change:** Only added `SendError()` methods to existing classes ✅
+5. **Backward Compatibility:** All existing `Send()` calls remain unchanged ✅
+
+### Architectural Validation
+The successful resolution validates the **Template Method Pattern** and **polymorphic design** of the Grapa Send system:
+- **Base class framework** provides the template methods
+- **Derived class implementations** provide concrete stream handling
+- **Echo methods** work with any response type through virtual method calls
+- **Future extensibility** is built into the design
+
+### Design Pattern Excellence
+The Grapa Send system exemplifies excellent software architecture:
+- **Separation of concerns** between output logic and destination handling
+- **Extensibility** through polymorphic interfaces
+- **Consistency** across all response implementations
+- **Maintainability** through clear interface boundaries
+
+This implementation serves as a model for how to add new functionality to existing polymorphic systems while maintaining architectural integrity and backward compatibility. 

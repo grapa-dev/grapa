@@ -283,6 +283,25 @@ class GrapaTableHelper:
 .\grapa.exe -f "examples/basic_example.grc" -q
 ```
 
+### Debug Output Stream Separation
+
+**Problem**: Debug output mixed with normal program output.
+
+**Solution**: Use stream redirection to separate outputs:
+
+```powershell
+# Separate normal and debug output
+.\grapa.exe -d -f "script.grc" > normal_output.txt 2> debug_output.txt
+
+# Suppress debug output entirely
+.\grapa.exe -d -f "script.grc" 2> $null
+
+# Capture only debug output
+.\grapa.exe -d -f "script.grc" > $null 2> debug_output.txt
+```
+
+**Note**: Grapa properly separates normal program output (stdout) from debug output (stderr), allowing for flexible stream redirection and logging.
+
 ## Best Practices for Debugging
 
 ### 1. Test Incrementally
