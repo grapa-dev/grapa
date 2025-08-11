@@ -2510,14 +2510,23 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-output-formats" class="md-nav__link">
+  <a href="#debug-output-formats-and-stream-separation" class="md-nav__link">
     <span class="md-ellipsis">
-      Debug Output Formats
+      Debug Output Formats and Stream Separation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Debug Output Formats">
+    <nav class="md-nav" aria-label="Debug Output Formats and Stream Separation">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stream-separation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stream Separation
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#system-level-debug-output" class="md-nav__link">
@@ -2532,6 +2541,15 @@
   <a href="#session-level-debug-output" class="md-nav__link">
     <span class="md-ellipsis">
       Session-Level Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-redirection-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stream Redirection Examples
     </span>
   </a>
   
@@ -3993,14 +4011,23 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug-output-formats" class="md-nav__link">
+  <a href="#debug-output-formats-and-stream-separation" class="md-nav__link">
     <span class="md-ellipsis">
-      Debug Output Formats
+      Debug Output Formats and Stream Separation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Debug Output Formats">
+    <nav class="md-nav" aria-label="Debug Output Formats and Stream Separation">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stream-separation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stream Separation
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#system-level-debug-output" class="md-nav__link">
@@ -4015,6 +4042,15 @@
   <a href="#session-level-debug-output" class="md-nav__link">
     <span class="md-ellipsis">
       Session-Level Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-redirection-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stream Redirection Examples
     </span>
   </a>
   
@@ -4561,17 +4597,40 @@ $sys().putenv(&quot;GRAPA_DEBUG_COMPONENTS&quot;, &quot;database:3,*:0&quot;);
 <span class="w">    </span><span class="n">vScriptExec</span><span class="o">-&gt;</span><span class="n">vScriptState</span><span class="o">-&gt;</span><span class="n">mDebug</span><span class="p">.</span><span class="n">DebugPrint</span><span class="p">(</span><span class="n">vScriptExec</span><span class="p">,</span><span class="w"> </span><span class="n">pNameSpace</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;component_name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Debug message&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="debug-output-formats">Debug Output Formats</h2>
+<h2 id="debug-output-formats-and-stream-separation">Debug Output Formats and Stream Separation</h2>
+<h3 id="stream-separation">Stream Separation</h3>
+<p>Grapa's debug system properly separates normal program output from debug output:</p>
+<ul>
+<li><strong>Normal Program Output</strong>: Goes to stdout (standard output)</li>
+<li><strong>Debug Output</strong>: Goes to stderr (standard error)</li>
+</ul>
+<p>This separation allows for proper stream redirection and filtering.</p>
 <h3 id="system-level-debug-output">System-Level Debug Output</h3>
 <p>System-level debug output appears on stderr with the format:
 <div class="highlight"><pre><span></span><code>[DEBUG] message
 [DEBUG-component] message
 </code></pre></div></p>
 <h3 id="session-level-debug-output">Session-Level Debug Output</h3>
-<p>Session-level debug output appears through the response system with the format:
+<p>Session-level debug output appears on stderr with the format:
 <div class="highlight"><pre><span></span><code>[DEBUG-SESSION-{session_id}] message
 [DEBUG-SESSION-{session_id}-{component}] message
 </code></pre></div></p>
+<h3 id="stream-redirection-examples">Stream Redirection Examples</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Redirect normal output to file, debug output to separate file</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span>&gt;<span class="w"> </span>normal_output.txt<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug_output.txt
+
+<span class="c1"># Redirect normal output to file, debug output to terminal</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span>&gt;<span class="w"> </span>normal_output.txt
+
+<span class="c1"># Redirect normal output to terminal, debug output to file</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug_output.txt
+
+<span class="c1"># Suppress debug output entirely</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null
+
+<span class="c1"># Suppress normal output, show only debug</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+</code></pre></div>
 <h2 id="practical-examples">Practical Examples</h2>
 <h3 id="example-1-basic-debug-control">Example 1: Basic Debug Control</h3>
 <div class="highlight"><pre><span></span><code>// Enable system-level debug

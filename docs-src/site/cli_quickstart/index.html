@@ -937,6 +937,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#stream-redirection-and-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stream Redirection and Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#output-control-and-redirection" class="md-nav__link">
     <span class="md-ellipsis">
       Output Control and Redirection
@@ -3878,6 +3887,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#stream-redirection-and-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stream Redirection and Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#output-control-and-redirection" class="md-nav__link">
     <span class="md-ellipsis">
       Output Control and Redirection
@@ -4104,6 +4122,12 @@ grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
 
 <span class="c1"># Debug with command execution</span>
 grapa<span class="w"> </span>-d<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;hello world&#39;.echo();&quot;</span>
+
+<span class="c1"># Debug with stream redirection (separate normal and debug output)</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span>&gt;<span class="w"> </span>normal_output.txt<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug_output.txt
+
+<span class="c1"># Debug with quiet mode (suppress header, keep debug output)</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>-q<span class="w"> </span>script.grc<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug_output.txt
 </code></pre></div>
 <h3 id="script-based-debug-control">Script-Based Debug Control</h3>
 <p>You can also control debug settings dynamically within your scripts:
@@ -4277,6 +4301,9 @@ grapa<span class="w"> </span>--verbose<span class="w"> </span>-c<span class="w">
 <span class="c1"># Debug mode (shows debug output)</span>
 grapa<span class="w"> </span>-d<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello&#39;.echo()&quot;</span>
 
+<span class="c1"># Debug with stream redirection</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello&#39;.echo()&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>normal.txt<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug.txt
+
 <span class="c1"># Interactive mode</span>
 grapa<span class="w"> </span>-i
 </code></pre></div>
@@ -4353,6 +4380,28 @@ grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</
 <span class="s2">&#39;Debug mode turned off&#39;.echo();</span>
 <span class="s2">&quot;</span>
 </code></pre></div>
+<h3 id="stream-redirection-and-debug-output">Stream Redirection and Debug Output</h3>
+<p>Grapa properly separates normal program output from debug output, allowing for flexible stream redirection:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Separate normal and debug output into different files</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span>&gt;<span class="w"> </span>normal_output.txt<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug_output.txt
+
+<span class="c1"># Capture only normal output (suppress debug)</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span>&gt;<span class="w"> </span>normal_output.txt<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>/dev/null
+
+<span class="c1"># Capture only debug output (suppress normal output)</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug_output.txt
+
+<span class="c1"># Pipe normal output to another command, debug to file</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>script.grc<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;important&quot;</span>
+
+<span class="c1"># Debug with quiet mode (suppress header, keep debug output)</span>
+grapa<span class="w"> </span>-d<span class="w"> </span>-q<span class="w"> </span>script.grc<span class="w"> </span><span class="m">2</span>&gt;<span class="w"> </span>debug_output.txt
+</code></pre></div>
+<p><strong>Stream Separation Benefits:</strong>
+- <strong>Clean Output</strong>: Normal program results are separate from debug information
+- <strong>Flexible Logging</strong>: Can log debug output while processing normal output
+- <strong>Pipeline Integration</strong>: Can pipe normal output to other tools
+- <strong>Selective Capture</strong>: Choose which streams to capture or suppress</p>
 <h3 id="output-control-and-redirection">Output Control and Redirection</h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Shell piping for output control (already works)</span>
 grapa<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;&#39;Hello World&#39;.echo()&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>output.txt

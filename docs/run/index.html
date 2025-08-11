@@ -3180,6 +3180,9 @@
 <div class="highlight"><pre><span></span><code>echo &quot;thisisatest&quot;.encode(&#39;SHAKE256&#39;) | grapa - -q
 0x94B3D49AF1B6396CD186876793A5C4405A1BBFD12C7341521ABD62AA26E3E852B06B345D82126B1D864DFA885B6DC791D21A318259D307D76D7946D1EFF9DA54
 </code></pre></div></p>
+<p>Example: Debug mode with stream redirection (separate normal and debug output)
+<div class="highlight"><pre><span></span><code>grapa -d -c &quot;&#39;hello world&#39;.echo()&quot; &gt; normal.txt 2&gt; debug.txt
+</code></pre></div></p>
 <p><strong>Note:</strong> The <code>-</code> option requires pipe input. Using <code>grapa -</code> without pipe input will show an error message.</p>
 <p><strong>Note:</strong> By default, Grapa runs without showing version headers (like Python/Node.js). Use <code>--verbose</code> to show version headers when needed.</p>
 <h1 id="testing">Testing</h1>
