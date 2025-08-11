@@ -4090,17 +4090,17 @@
 - <strong>Modify grammar rules at runtime</strong> - Change language syntax dynamically
 - <strong>Execute arbitrary code during parsing</strong> - Transform data as it's being parsed
 - <strong>Create domain-specific languages</strong> - Build custom syntax for specific problems
-- <strong>Process multiple syntaxes natively</strong> - Handle SQL, JSON, XML, HTML in the same codebase</p>
+- <strong>Process multiple syntaxes</strong> - Handle JSON, XML, HTML natively, with SQL demonstrated through example scripts</p>
 <h3 id="multi-syntax-processing"><strong>Multi-Syntax Processing</strong> 🔄</h3>
-<p>Unlike most languages that require external libraries for different data formats, Grapa natively supports:
-<div class="highlight"><pre><span></span><code>/* SQL processing */
-result = op(parse)(&quot;SELECT * FROM users WHERE age &gt; 25&quot;)();
-
-/* JSON processing */
+<p>Unlike most languages that require external libraries for different data formats, Grapa supports:
+<div class="highlight"><pre><span></span><code>/* JSON processing (native) */
 data = {&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30};
 
-/* XML processing */
+/* XML processing (native) */
 xml = $&amp;&lt;user&gt;&lt;name&gt;John&lt;/name&gt;&lt;age&gt;30&lt;/age&gt;&lt;/user&gt;$&amp;;
+
+/* SQL processing (demonstrated via example scripts) */
+result = op(parse)(&quot;SELECT * FROM users WHERE age &gt; 25&quot;)();
 
 /* All in the same script! */
 </code></pre></div></p>
@@ -4130,12 +4130,12 @@ for (i = 0; i &lt; 10; i++) {
 - <strong>Template engines</strong> with dynamic syntax</p>
 <h4 id="2-etl-and-data-processing-pipelines"><strong>2. ETL and Data Processing Pipelines</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Process multiple data formats in one pipeline */
-sql_data = op(parse)(&quot;SELECT * FROM customers&quot;)();
 json_data = {&quot;transactions&quot;: [...]};
 xml_data = $&amp;&lt;orders&gt;...&lt;/orders&gt;$&amp;;
+sql_data = op(parse)(&quot;SELECT * FROM customers&quot;)(); /* via example scripts */
 
 /* Transform and combine */
-result = process_all_formats(sql_data, json_data, xml_data);
+result = process_all_formats(json_data, xml_data, sql_data);
 </code></pre></div>
 <p><strong>Use Cases:</strong>
 - <strong>Data integration</strong> across multiple sources
@@ -4305,7 +4305,7 @@ result = users.grep(age &gt; 25).transform(format_user);
 <h3 id="current-state-2024"><strong>Current State (2024)</strong></h3>
 <ul>
 <li>✅ <strong>Executable BNF system</strong> - Core innovation</li>
-<li>✅ <strong>Multi-syntax support</strong> - SQL, JSON, XML, HTML</li>
+<li>✅ <strong>Multi-syntax support</strong> - JSON, XML, HTML (native), SQL (example scripts)</li>
 <li>✅ <strong>ETL capabilities</strong> - Data transformation pipelines</li>
 <li>✅ <strong>Database integration</strong> - Native table operations</li>
 <li>⚠️ <strong>Basic developer experience</strong> - Limited tooling</li>
@@ -4343,7 +4343,7 @@ result = users.grep(age &gt; 25).transform(format_user);
 <p>After the enhancement roadmap is complete, Grapa will be viable for:</p>
 <h4 id="1-modern-application-development"><strong>1. Modern Application Development</strong></h4>
 <ul>
-<li><strong>Web applications</strong> with native SQL/JSON processing</li>
+<li><strong>Web applications</strong> with JSON processing and SQL via example scripts</li>
 <li><strong>API development</strong> with multi-format support</li>
 <li><strong>Microservices</strong> with built-in ETL capabilities</li>
 <li><strong>Data pipelines</strong> with dynamic grammar support</li>
@@ -4365,12 +4365,12 @@ result = users.grep(age &gt; 25).transform(format_user);
 <h2 id="getting-started">Getting Started</h2>
 <h3 id="quick-evaluation"><strong>Quick Evaluation</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Try Grapa&#39;s multi-syntax capabilities */
-sql = op(parse)(&quot;SELECT name, age FROM users WHERE age &gt; 25&quot;)();
 json = {&quot;users&quot;: [{&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30}]};
 xml = $&amp;&lt;users&gt;&lt;user&gt;&lt;name&gt;John&lt;/name&gt;&lt;age&gt;30&lt;/age&gt;&lt;/user&gt;&lt;/users&gt;$&amp;;
+sql = op(parse)(&quot;SELECT name, age FROM users WHERE age &gt; 25&quot;)(); /* via example scripts */
 
 /* Process all formats */
-result = process_data(sql, json, xml);
+result = process_data(json, xml, sql);
 </code></pre></div>
 <h3 id="learning-path"><strong>Learning Path</strong></h3>
 <ol>

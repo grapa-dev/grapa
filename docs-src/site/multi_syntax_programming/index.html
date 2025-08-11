@@ -2392,13 +2392,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sql-syntax-integration" class="md-nav__link">
+  <a href="#sql-syntax-integration-example-implementation" class="md-nav__link">
     <span class="md-ellipsis">
-      SQL Syntax Integration
+      SQL Syntax Integration (Example Implementation)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SQL Syntax Integration">
+    <nav class="md-nav" aria-label="SQL Syntax Integration (Example Implementation)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3744,13 +3744,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sql-syntax-integration" class="md-nav__link">
+  <a href="#sql-syntax-integration-example-implementation" class="md-nav__link">
     <span class="md-ellipsis">
-      SQL Syntax Integration
+      SQL Syntax Integration (Example Implementation)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SQL Syntax Integration">
+    <nav class="md-nav" aria-label="SQL Syntax Integration (Example Implementation)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4131,7 +4131,7 @@
 
 <h1 id="multi-syntax-programming-in-grapa">Multi-Syntax Programming in Grapa</h1>
 <h2 id="overview">Overview</h2>
-<p>Grapa's executable BNF architecture enables support for multiple native syntaxes within a single language. This guide explores how to use and extend Grapa with SQL, JSON, XML, and other syntaxes, making it a powerful multi-paradigm programming environment.</p>
+<p>Grapa's executable BNF architecture enables support for multiple syntaxes within a single language. This guide explores how to use and extend Grapa with JSON, XML, HTML (native), SQL (example scripts), and other syntaxes, making it a powerful multi-paradigm programming environment.</p>
 <h2 id="key-concepts">Key Concepts</h2>
 <h3 id="executable-bnf-architecture"><strong>Executable BNF Architecture</strong></h3>
 <p>Grapa's <code>$RULE</code> system goes beyond traditional parsing - it's an executable BNF that can:
@@ -4161,9 +4161,9 @@ processed = html_data.encode(&quot;HTML-GRAPA&quot;);
 - <strong>Fallback Compatibility</strong>: Works without flags in most cases
 - <strong>Complex Syntax Handling</strong>: Enables proper processing of syntax that might conflict with normal Grapa syntax
 - <strong>Format-Specific Processing</strong>: Different lexical modes for different data formats</p>
-<h2 id="sql-syntax-integration">SQL Syntax Integration</h2>
+<h2 id="sql-syntax-integration-example-implementation">SQL Syntax Integration (Example Implementation)</h2>
 <h3 id="basic-sql-usage"><strong>Basic SQL Usage</strong></h3>
-<p>Grapa can support native SQL syntax for database operations:</p>
+<p>Grapa demonstrates SQL syntax integration through example scripts that show how to add custom SQL syntax to the language:</p>
 <div class="highlight"><pre><span></span><code>/* Define SQL syntax */
 custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     (&quot;SQL SELECT: &quot; + fields + &quot; FROM &quot; + table_name).echo();
@@ -4181,19 +4181,19 @@ op(parse)(&quot;select * from users&quot;)();
 user_count = op(parse)(&quot;count(*) from users&quot;)();
 </code></pre></div>
 <h3 id="advanced-sql-features"><strong>Advanced SQL Features</strong></h3>
-<div class="highlight"><pre><span></span><code>/* INSERT statement */
+<div class="highlight"><pre><span></span><code>/* INSERT statement (example implementation) */
 custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
     (&quot;SQL INSERT: &quot; + table_name + &quot; VALUES &quot; + values_str).echo();
     /* Insert implementation */
 }};
 
-/* UPDATE statement */
+/* UPDATE statement (example implementation) */
 custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clause:$4,where_clause:$6){
     (&quot;SQL UPDATE: &quot; + table_name + &quot; SET &quot; + set_clause + &quot; WHERE &quot; + where_clause).echo();
     /* Update implementation */
 }};
 
-/* Execute complex SQL */
+/* Execute complex SQL (via example scripts) */
 op(parse)(&quot;insert into users values John,25,New York&quot;)();
 op(parse)(&quot;update users set age=26 where name=John&quot;)();
 </code></pre></div>
@@ -4455,7 +4455,7 @@ result = op(parse)(&#39;pipeline { load &quot;data.csv&quot; | filter &quot;age 
 </code></pre></div>
 <h2 id="conclusion">Conclusion</h2>
 <p>Grapa's multi-syntax capabilities make it uniquely powerful for:
-- <strong>Data processing</strong> with native SQL, JSON, and XML
+- <strong>Data processing</strong> with JSON, XML (native), and SQL (example scripts)
 - <strong>Web development</strong> with HTML and CSS selectors
 - <strong>Configuration management</strong> with custom DSLs
 - <strong>Domain-specific applications</strong> with tailored syntax</p>

@@ -1,7 +1,8 @@
 /* SQL Syntax Integration Example
  * 
- * This example demonstrates how Grapa can support native SQL syntax
+ * This example demonstrates how Grapa can support SQL syntax
  * through its executable BNF architecture using custom_command and custom_function.
+ * This is an example implementation showing how SQL could be added to Grapa.
  * 
  * Key concepts:
  * - custom_command: For SQL statements (SELECT, INSERT, UPDATE)
@@ -164,11 +165,11 @@ avg_age = avg_age / records.len();
 
 ("\n=== Multi-Syntax Power ===").echo();
 
-("Grapa can support multiple native syntaxes:").echo();
-("- SQL: Database queries and operations").echo();
-("- JSON: Data structure manipulation").echo();
-("- XML: Document processing").echo();
-("- HTML: Web content parsing").echo();
+("Grapa can support multiple syntaxes:").echo();
+("- SQL: Database queries and operations (example implementation)").echo();
+("- JSON: Data structure manipulation (native)").echo();
+("- XML: Document processing (native)").echo();
+("- HTML: Web content parsing (native)").echo();
 ("- Custom DSLs: Domain-specific languages").echo();
 
 ("All through the same executable BNF architecture!").echo();
@@ -181,6 +182,6 @@ avg_age = avg_age / records.len();
  * 1. custom_command: For actions (SELECT, INSERT, UPDATE)
  * 2. custom_function: For expressions (COUNT, SUM, AVG)
  * 3. op(parse)(): Execution pattern for custom syntax
- * 4. Multi-syntax: Grapa can support SQL, JSON, XML, HTML natively
+ * 4. Multi-syntax: Grapa can support SQL (example), JSON, XML, HTML (native)
  * 5. No core changes: All implemented through rule extensions
  */ 
