@@ -143,6 +143,13 @@ All high-priority development tasks have been completed. The project is in a sta
   - Line 90: `printf("[DEBUG] %.*s\n", ...)` → `fprintf(stderr, "[DEBUG] %.*s\n", ...)`
   - Line 186: `printf("[DEBUG-%s] %s\n", ...)` → `fprintf(stderr, "[DEBUG-%s] %s\n", ...)`
   - Line 195: `printf("[DEBUG-%s] %.*s\n", ...)` → `fprintf(stderr, "[DEBUG-%s] %.*s\n", ...)`
+- **Windows-Specific Fix:** Updated `GrapaConsole2Response` methods in `source/grapa/GrapaSystem.cpp`:
+  - **Issue:** Windows was using `WriteConsoleA()` which bypassed standard stream redirection
+  - **Solution:** Changed Windows-specific code to use `std::cout` instead of `WriteConsoleA()`
+  - **Methods Updated:**
+    - `GrapaConsole2Response::SendCommand()` - now uses `std::cout` on Windows
+    - `GrapaConsole2Response::SendPrompt()` - now uses `std::cout` on Windows  
+    - `GrapaConsole2Response::SendEnd()` - now uses `std::cout` on Windows
 - **Validation Tests Performed (Mac):**
   - ✅ **Build Verification**: `python3 build.py --exe-only` - successful compilation
   - ✅ **Error Stream Test**: `./grapa --invalid-option 2>&1` - error messages captured via stderr redirection
@@ -150,19 +157,25 @@ All high-priority development tasks have been completed. The project is in a sta
     - Normal output (program results) → stdout (normal_output.txt)
     - Debug output (`[DEBUG-SESSION-1-executor]` messages) → stderr (debug_output.txt)
   - ✅ **Combined Stream Test**: `./grapa -f test/complete_debug_test.grc 2>&1` - both streams captured together
+- **Validation Tests Performed (Windows):**
+  - ✅ **Build Verification**: `python build.py --exe-only` - successful compilation
+  - ✅ **Error Stream Test**: `.\grapa.exe --invalid-option 2>&1` - error messages captured via stderr redirection
+  - ✅ **Basic Stream Separation Test**: `.\grapa.exe -d -c "echo 'Hello World'" > test_d_output.txt 2> test_d_error.txt`
+    - Normal output ("Hello World") → stdout (test_d_output.txt) ✅
+    - Debug output ("[DEBUG] Debug mode enabled") → stderr (test_d_error.txt) ✅
+  - ⚠️ **Session Debug Output Issue**: Session debug messages (`[DEBUG-SESSION-1-executor] EXEC: ...`) appearing in stdout instead of stderr
+    - **Root Cause**: Session debug output in `GrapaState.cpp` is using `fprintf(stderr, ...)` but getting mixed into stdout stream
+    - **Impact**: Debug test scripts show mixed output in stdout file
+    - **Status**: Requires additional investigation - may be Windows-specific session debug handling issue
 - **Benefits:**
   - Better separation between normal program output and debug information
   - Improved shell scripting capabilities (redirect stdout while preserving debug info)
   - Follows standard C/C++ conventions for output streams
   - Debug output no longer interferes with program results
-- **Windows Validation Required:**
-  - **Build Test**: Verify `python3 build.py --exe-only` compiles successfully on Windows
-  - **Error Stream Test**: `grapa.exe --invalid-option 2>&1` - confirm error messages captured via stderr
-  - **Debug Output Separation Test**: `grapa.exe -f test/complete_debug_test.grc > normal_output.txt 2> debug_output.txt`
-    - Verify normal output goes to normal_output.txt
-    - Verify debug output goes to debug_output.txt
-  - **Combined Stream Test**: `grapa.exe -f test/complete_debug_test.grc 2>&1` - verify both streams captured together
-  - **PowerShell Compatibility**: Test with PowerShell redirection syntax if different from bash
+- **Cross-Platform Status:**
+  - **Mac**: ✅ **FULLY WORKING** - All stream separation tests pass
+  - **Windows**: ⚠️ **PARTIALLY WORKING** - Basic separation works, session debug output needs investigation
+  - **Next Steps**: Verify session debug output behavior on Mac to determine if this is Windows-specific issue
 
 ### **Debug Statements Removed** ✅ **COMPLETED**
 - **Status:** **RESOLVED** - August 2025
@@ -178,12 +191,14 @@ All high-priority development tasks have been completed. The project is in a sta
 - **Current Work:** 0 items in progress
 - **Major Milestone:** 100% RIPGREP COMPATIBILITY achieved
 - **Recent Achievements:** 
-  - Debug output stream standardization completed (Mac)
+  - Debug output stream standardization completed (Mac & Windows - basic functionality)
+  - Windows-specific console output fixes implemented
   - Null byte delimiter issue resolved
   - Debug statements removed from production code
   - Session variables implementation plan complete
   - SQL syntax injection investigation moved to backlog
-- **Next Focus:** Windows validation of debug output stream standardization
+- **Current Investigation:** Session debug output stream separation on Windows
+- **Next Focus:** Cross-platform validation of session debug output behavior
 
 ### **Key Metrics**
 - **Ripgrep Compatibility:** 100% ✅

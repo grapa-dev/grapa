@@ -610,15 +610,9 @@ void GrapaConsole2Response::SendCommand(GrapaScriptExec* vScriptExec, GrapaNames
     // printf("[DEBUG] GrapaConsole2Response::SendCommand called, sendbuflen=%llu\n", (unsigned long long)sendbuflen);
     // if (sendbuflen) printf("[DEBUG] sendbuf='%.*s'\n", (int)sendbuflen, (char*)sendbuf);
 #ifdef WIN32
-	// Use Unicode-aware console output
+	// Use standard output for proper stream redirection
 	if (sendbuflen) {
-		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		if (hOut != INVALID_HANDLE_VALUE) {
-			DWORD written;
-			WriteConsoleA(hOut, sendbuf, (DWORD)sendbuflen, &written, NULL);
-		} else {
-			std::cout << (char*)sendbuf;
-		}
+		std::cout << (char*)sendbuf;
 	}
 	std::cout.flush();
 #else
@@ -632,15 +626,9 @@ void GrapaConsole2Response::SendPrompt(GrapaScriptExec* vScriptExec, GrapaNames*
     // printf("[DEBUG] GrapaConsole2Response::SendPrompt called, sendbuf.mLength=%llu\n", (unsigned long long)sendbuf.mLength);
     // if (sendbuf.mLength) printf("[DEBUG] sendbuf='%.*s'\n", (int)sendbuf.mLength, (char*)sendbuf.mBytes);
 #ifdef WIN32
-	// Use Unicode-aware console output
+	// Use standard output for proper stream redirection
 	if (sendbuf.mLength) {
-		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		if (hOut != INVALID_HANDLE_VALUE) {
-			DWORD written;
-			WriteConsoleA(hOut, sendbuf.mBytes, (DWORD)sendbuf.mLength, &written, NULL);
-		} else {
-			std::cout << (char*)sendbuf.mBytes;
-		}
+		std::cout << (char*)sendbuf.mBytes;
 	}
 	std::cout.flush();
 #else
@@ -658,14 +646,8 @@ void GrapaConsole2Response::SendEnd(GrapaScriptExec* vScriptExec, GrapaNames* pN
 		else vScriptExec->EchoValue(this, pValue, false, false, false);
 	}
 #ifdef WIN32
-	// Use Unicode-aware console output for newline
-	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (hOut != INVALID_HANDLE_VALUE) {
-		DWORD written;
-		WriteConsoleA(hOut, "\n", 1, &written, NULL);
-	} else {
-		std::cout << (char*)"\n";
-	}
+	// Use standard output for proper stream redirection
+	std::cout << (char*)"\n";
 	std::cout.flush();
 #else
 	std::cout << (char*)"\n";
