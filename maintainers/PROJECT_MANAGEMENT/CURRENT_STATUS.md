@@ -37,6 +37,18 @@
 - **Test Method:** `./grapa -f test/complete_debug_test.grc > normal_output.txt 2> debug_output.txt`
 - **Results:** All `[DEBUG-SESSION-1-executor]` messages correctly routed to stderr, normal output to stdout
 
+**Documentation Updates:** ✅ **COMPLETED**
+- **Updated Files:** 6 documentation files in `docs-src/`
+- **Key Additions:** Stream separation examples, troubleshooting guidance, cross-platform support
+- **Files Updated:**
+  - `debugging.md` - Added stream separation section and redirection examples
+  - `cli_quickstart.md` - Added stream redirection section and practical examples
+  - `run.md` - Added debug mode with stream redirection example
+  - `troubleshooting.md` - Added debug output stream separation troubleshooting
+  - `execution_pipeline_overview.md` - Added stream separation to debug overhead
+  - `advanced_topics.md` - Updated debugging description to mention stream separation
+- **Documentation Coverage:** Comprehensive coverage of new debug output redirection capabilities
+
 ## COMPLETED ITEMS
 
 ### **CLI Enhancement (Phase 2)** ✅ **COMPLETED**

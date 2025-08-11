@@ -8,15 +8,15 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ## 🎯 **IMMEDIATE NEXT STEPS** (Pull to current_status.md)
 
-**Note:** CLI Enhancement Phase 2 has been moved to [`CURRENT_STATUS.md`](CURRENT_STATUS.md) as the active priority.
+**Status:** No immediate items - all active work completed ✅
 
-**Next Priority:** Session-Specific Environment Variables - Implementation ready, see [`SESSION_SPECIFIC_ENVIRONMENT_VARIABLES_PLAN.md`](../RESEARCH_AND_ANALYSIS/SESSION_SPECIFIC_ENVIRONMENT_VARIABLES_PLAN.md)
+**Next Priority:** When ready for new development, consider pulling from Major Releases section below.
 
 ---
 
-## 🚀 **MAJOR RELEASES** (5 items)
+## 🚀 **MAJOR RELEASES** (6 items)
 
-### **2. Grapa Syntax Improvements** - **LANGUAGE ADOPTION FOUNDATION**
+### **1. Grapa Syntax Improvements** - **LANGUAGE ADOPTION FOUNDATION** 🔥 **HIGHEST PRIORITY**
 - [ ] **Core Control Flow Fixes**: Fix `return` and `break` statements - both are currently non-functional
 - [ ] **Line Comments**: Add support for `//` and `#` line comments
 - [ ] **For Loop Syntax**: Add `for` loop as syntactic sugar for `.range()` patterns
@@ -26,10 +26,10 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] **Property Access**: Improve attribute-style access for objects
 - **Reference**: [`GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md)
 - **Estimated Effort**: Major Release (3-6 months)
-- **Dependencies**: CLI Enhancement Phase 2 (error reporting)
+- **Dependencies**: None (foundational work)
 - **Priority**: Highest among major releases - foundational for language adoption
 
-### **3. Enhanced Debug Mode** - **DEVELOPMENT EXPERIENCE**
+### **2. Enhanced Debug Mode** - **DEVELOPMENT EXPERIENCE** 🔥 **HIGH PRIORITY**
 - [ ] **Comprehensive Debug System**: Implement sophisticated debugging capabilities including execution tracing, variable inspection, performance profiling, and AST/bytecode dumping
 - [ ] **Debug Infrastructure**: Core debug system with configurable debug levels and thread-safe debug context management
 - [ ] **Execution Tracing**: Step-by-step execution tracking with variable state snapshots
@@ -38,39 +38,10 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - [ ] **Debug CLI Integration**: Enhanced debug options and output formats
 - **Reference**: [`GRAPA_ENHANCED_DEBUG_MODE_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_ENHANCED_DEBUG_MODE_PLAN.md)
 - **Estimated Effort**: Major Release (6-12 months)
-- **Dependencies**: CLI Enhancement Phase 2 completion, Syntax Improvements (for error handling)
+- **Dependencies**: Syntax Improvements (for error handling)
 - **Priority**: High - enables advanced development capabilities
 
-### **4. GrapaDB Enhancements** - **DATABASE SYSTEM**
-- [ ] **Performance Optimization**: Index performance enhancement, memory management optimization, query optimization
-- [ ] **Advanced Features**: Transaction support, advanced querying, data validation and constraints
-- [ ] **Scalability and Reliability**: Large dataset support, backup and recovery, concurrent access
-- [ ] **Integration and Testing**: Language integration, performance monitoring, comprehensive testing
-- **Reference**: [`GRAPA_DB_ENHANCEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_DB_ENHANCEMENTS_PLAN.md)
-- **Estimated Effort**: Major Release (4-8 months)
-- **Dependencies**: Core language features completion, Syntax Improvements (for error handling)
-- **Priority**: Medium - database-specific enhancements
-
-### **5. String Comparison Distance Function** - **UTILITY FEATURE**
-- [ ] **Core Distance Algorithms**: Implement edit distance (Levenshtein), Hamming distance, and basic similarity scoring
-- [ ] **Advanced Similarity Algorithms**: Implement Jaro-Winkler, Cosine similarity, and N-gram similarity
-- [ ] **Language Integration**: Add distance and similarity methods to GrapaCHAR class and language binding
-- [ ] **Performance Optimization**: Optimize algorithms for large strings and memory efficiency
-- [ ] **Testing and Documentation**: Comprehensive test suite, documentation, and examples
-- **Reference**: [`GRAPA_STRING_DISTANCE_FUNCTION_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_STRING_DISTANCE_FUNCTION_PLAN.md)
-- **Estimated Effort**: Major Release (3-6 months)
-- **Dependencies**: Core language features completion
-- **Priority**: Medium - utility feature enhancement
-
-### **6. Optimization Implementation** - **PERFORMANCE**
-- [ ] **Performance improvements** for arithmetic, bitwise, comparison, and assignment operators
-- **Status**: Requires extensive testing and its own release cycle
-- **Reference**: [`GRAPA_OPTIMIZATION_BACKLOG.md`](../RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md)
-- **Estimated Effort**: Major Release (6-12 months)
-- **Dependencies**: Core language features completion, Syntax Improvements (for error handling)
-- **Priority**: Lower - performance optimization after core features are stable
-
-### **7. Distutils Removal and Shared Library Naming** - **BUILD SYSTEM MODERNIZATION**
+### **3. Distutils Removal and Shared Library Naming** - **BUILD SYSTEM MODERNIZATION** 🔥 **HIGH PRIORITY**
 - [ ] **Distutils Dependency Removal**: Replace deprecated `distutils` with `setuptools` for Python 3.13+ compatibility
 - [ ] **Shared Library Naming Convention**: Implement consistent `_static` vs `_shared` naming across all platforms
 - [ ] **Unified Library Locations**: Move all libraries to `source/grapa-lib/{platform}/` directory
@@ -82,46 +53,52 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Priority**: High - critical for Python 3.13+ compatibility and build system consistency
 - **Risk Level**: Medium - affects all platforms and build processes
 
+### **4. GrapaDB Enhancements** - **DATABASE SYSTEM** 🟡 **MEDIUM PRIORITY**
+- [ ] **Performance Optimization**: Index performance enhancement, memory management optimization, query optimization
+- [ ] **Advanced Features**: Transaction support, advanced querying, data validation and constraints
+- [ ] **Scalability and Reliability**: Large dataset support, backup and recovery, concurrent access
+- [ ] **Integration and Testing**: Language integration, performance monitoring, comprehensive testing
+- **Reference**: [`GRAPA_DB_ENHANCEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_DB_ENHANCEMENTS_PLAN.md)
+- **Estimated Effort**: Major Release (4-8 months)
+- **Dependencies**: Syntax Improvements (for error handling)
+- **Priority**: Medium - database-specific enhancements
+
+### **5. String Comparison Distance Function** - **UTILITY FEATURE** 🟡 **MEDIUM PRIORITY**
+- [ ] **Core Distance Algorithms**: Implement edit distance (Levenshtein), Hamming distance, and basic similarity scoring
+- [ ] **Advanced Similarity Algorithms**: Implement Jaro-Winkler, Cosine similarity, and N-gram similarity
+- [ ] **Language Integration**: Add distance and similarity methods to GrapaCHAR class and language binding
+- [ ] **Performance Optimization**: Optimize algorithms for large strings and memory efficiency
+- [ ] **Testing and Documentation**: Comprehensive test suite, documentation, and examples
+- **Reference**: [`GRAPA_STRING_DISTANCE_FUNCTION_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_STRING_DISTANCE_FUNCTION_PLAN.md)
+- **Estimated Effort**: Major Release (3-6 months)
+- **Dependencies**: Core language features completion
+- **Priority**: Medium - utility feature enhancement
+
+### **6. Optimization Implementation** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
+- [ ] **Performance improvements** for arithmetic, bitwise, comparison, and assignment operators
+- **Status**: Requires extensive testing and its own release cycle
+- **Reference**: [`GRAPA_OPTIMIZATION_BACKLOG.md`](../RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md)
+- **Estimated Effort**: Major Release (6-12 months)
+- **Dependencies**: Core language features completion, Syntax Improvements (for error handling)
+- **Priority**: Lower - performance optimization after core features are stable
+
 ---
 
-## 🆕 **NEW INITIATIVES** (3 items)
-
-### **Database Engineering Best Practices Review** ⏳ **PENDING REVIEW**
-- **Status**: Extracted valuable patterns from database development experience
-- **Focus**: Debugging methodologies, testing strategies, implementation patterns
-- **Next Steps**: Review extracted content, identify integration opportunities, update documentation
-- **Reference**: [`../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md`](../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md)
+## 🆕 **NEW INITIATIVES** (2 items)
 
 ### **Wikipedia Article Creation** ✅ **READY TO IMPLEMENT**
 - **Status**: Article content prepared and ready for submission
 - **Goal**: Improve Grapa's discoverability and establish official Wikipedia presence
 - **Next Steps**: Submit article to Wikipedia, monitor feedback, maintain article
 - **Reference**: `wikipedia_grapa_article.txt` - Complete article with instructions
+- **Priority**: Medium - marketing and visibility
 
-### **SQL Syntax Injection Demo** 🔍 **INVESTIGATION NEEDED**
-- **Status**: Initial investigation complete, core issue identified
-- **Focus**: Create working demonstration of custom SQL syntax injection using Grapa's grammar extension capabilities
-- **Context**: Educational demonstration showing how `custom_command` and `custom_function` can extend Grapa's syntax
-- **Current Issue**: Simple custom grammar rules work (e.g., `select $INT`), but complex SQL rules (e.g., `select $STR from $STR`) fail to parse properly
-- **Progress**: 
-  - ✅ Basic custom function demonstration working
-  - ✅ Script compilation issues resolved
-  - ✅ Core limitation identified (complex rule parsing)
-- **Next Steps**: Investigate rule syntax limitations, create working SQL demo or document limitations
-- **Reference**: [`test/use_cases/sql_syntax_injection_table_demo.grc`](../../test/use_cases/sql_syntax_injection_table_demo.grc) - Current test script
-- **Priority**: Low - educational/demonstration value
-
-### **Programming Language Naming Investigation** ✅ **COMPLETED**
-- **Status**: Investigation completed, decision finalized
-- **Goal**: Evaluate whether to retain "Grapa" or consider rebranding alternatives
-- **Scope**: Domain availability analysis, naming patterns research, rebranding strategy evaluation
-- **Key Findings**: Decision made to retain "Grapa" - zero migration cost, clear namespace control, low collision risk, thematic relevance
-- **Reference**: [`PROGRAMMING_LANGUAGE_NAMING_INVESTIGATION.md`](../RESEARCH_AND_ANALYSIS/PROGRAMMING_LANGUAGE_NAMING_INVESTIGATION.md)
-- **Estimated Effort**: Completed (2-3 months research)
-- **Dependencies**: None (independent research initiative)
-- **Priority**: Completed - strategic branding decision made
-- **Risk Level**: Mitigated - no rebranding required
-- **Next Steps**: Implement brand strengthening plan (domain registration, SEO optimization, Wikipedia preparation)
+### **Database Engineering Best Practices Review** ⏳ **PENDING REVIEW**
+- **Status**: Extracted valuable patterns from database development experience
+- **Focus**: Debugging methodologies, testing strategies, implementation patterns
+- **Next Steps**: Review extracted content, identify integration opportunities, update documentation
+- **Reference**: [`../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md`](../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md)
+- **Priority**: Low - documentation improvement
 
 ---
 
@@ -212,6 +189,23 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
+## 🔍 **INVESTIGATION ITEMS** (1 item)
+
+### **SQL Syntax Injection Demo** 🔍 **INVESTIGATION NEEDED**
+- **Status**: Initial investigation complete, core issue identified
+- **Focus**: Create working demonstration of custom SQL syntax injection using Grapa's grammar extension capabilities
+- **Context**: Educational demonstration showing how `custom_command` and `custom_function` can extend Grapa's syntax
+- **Current Issue**: Simple custom grammar rules work (e.g., `select $INT`), but complex SQL rules (e.g., `select $STR from $STR`) fail to parse properly
+- **Progress**: 
+  - ✅ Basic custom function demonstration working
+  - ✅ Script compilation issues resolved
+  - ✅ Core limitation identified (complex rule parsing)
+- **Next Steps**: Investigate rule syntax limitations, create working SQL demo or document limitations
+- **Reference**: [`test/use_cases/sql_syntax_injection_table_demo.grc`](../../test/use_cases/sql_syntax_injection_table_demo.grc) - Current test script
+- **Priority**: Low - educational/demonstration value
+
+---
+
 ## ✅ **RECENTLY COMPLETED** (August 2025)
 
 ### **Major Achievements**
@@ -221,6 +215,8 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - ✅ **String Interpolation** - Grapa's existing capabilities are superior to traditional string interpolation
 - ✅ **CLI Standardization** - Replaced non-standard options, removed conflicts, moved GUI options
 - ✅ **Debug Statements Removed** - Production code cleaned up
+- ✅ **Session Debug Output Stream Separation** - `SendError()` method implemented and validated
+- ✅ **Debug Output Documentation** - Comprehensive documentation updates completed
 
 ### **Technical Improvements**
 - ✅ **Missing Operator Documentation** - Completed comprehensive documentation for all 5 missing operators
@@ -230,21 +226,25 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - ✅ **String vs Number Comparison** - Improved handling with proper numeric conversion
 - ✅ **CLI Interface Improvement** - Completed best-in-class CLI interface
 
+### **Completed Investigations**
+- ✅ **Programming Language Naming Investigation** - Decision made to retain "Grapa" branding
+
 ---
 
 # 📄 **Backlog Summary**
 
-- **Immediate Next Steps**: 0 items (CLI Enhancement Phase 2 moved to current_status.md)
-- **Major Releases**: 6 items (Grapa Syntax Improvements, Enhanced Debug Mode, GrapaDB Enhancements, String Comparison Distance Function, Optimization Implementation, Distutils Removal and Shared Library Naming)
-- **New Initiatives**: 2 items (Database Engineering Best Practices, Wikipedia Article)
+- **Immediate Next Steps**: 0 items - all active work completed ✅
+- **Major Releases**: 6 items (prioritized by impact and dependencies)
+- **New Initiatives**: 2 items (Wikipedia Article, Database Best Practices)
 - **Medium Priority**: 7 categories with multiple items each
 - **Low Priority**: 4 categories with experimental and future features
+- **Investigation Items**: 1 item (SQL Syntax Injection Demo)
 - **Recently Completed**: 15+ major achievements documented
 
 **Priority Order Rationale:**
 1. **Grapa Syntax Improvements** - Critical for language adoption and developer experience
-2. **Enhanced Debug Mode** - Advanced development capabilities (depends on CLI Phase 2)
-3. **GrapaDB Enhancements** - Database-specific improvements
-4. **String Comparison Distance Function** - Utility feature enhancement
-5. **Distutils Removal and Shared Library Naming** - Critical for Python 3.13+ compatibility and build system consistency
+2. **Enhanced Debug Mode** - Advanced development capabilities (depends on Syntax Improvements)
+3. **Distutils Removal and Shared Library Naming** - Critical for Python 3.13+ compatibility and build system consistency
+4. **GrapaDB Enhancements** - Database-specific improvements
+5. **String Comparison Distance Function** - Utility feature enhancement
 6. **Optimization Implementation** - Performance optimization after core features are stable 
