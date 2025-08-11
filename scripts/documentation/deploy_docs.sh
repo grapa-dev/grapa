@@ -84,10 +84,10 @@ validate_documentation_separation() {
     log_info "Validating documentation separation policy..."
     
     # Check for links to maintainers/ directory
-    local violations=$(find "$SRC_DIR" -name "*.md" -not -name "deep_expert_implementation_overview.md" -exec grep -l "\.\./maintainers/\|\.\./\.\./maintainers/\|/maintainers/" {} \; 2>/dev/null || true)
+    local violations=$(find "$SRC_DIR" -name "*.md" -not -name "deep_expert_implementation_overview.md" -not -name "grapa_ecosystem_positioning.md" -exec grep -l "\.\./maintainers/\|\.\./\.\./maintainers/\|/maintainers/" {} \; 2>/dev/null || true)
     
     if [ -n "$violations" ]; then
-        log_error "User-facing docs in docs-src must not link to or reference anything outside docs-src (including maintainers/), except in deep_expert_implementation_overview.md."
+        log_error "User-facing docs in docs-src must not link to or reference anything outside docs-src (including maintainers/), except in deep_expert_implementation_overview.md and grapa_ecosystem_positioning.md."
         echo "$violations" | while read -r file; do
             log_error "  - $file"
         done

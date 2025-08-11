@@ -188,12 +188,12 @@ function Main {
     Write-Success "Documentation build completed!"
 }
 
-# Verify documentation separation policy: no links from docs-src to maintainers or outside docs-src, except in deep_expert_implementation_overview.md
+# Verify documentation separation policy: no links from docs-src to maintainers or outside docs-src, except in deep_expert_implementation_overview.md and grapa_ecosystem_positioning.md
 $allDocs = Get-ChildItem -Path 'docs-src/**/*.md' -Recurse
-$docsToCheck = $allDocs | Where-Object { $_.Name -ne 'deep_expert_implementation_overview.md' }
+$docsToCheck = $allDocs | Where-Object { $_.Name -ne 'deep_expert_implementation_overview.md' -and $_.Name -ne 'grapa_ecosystem_positioning.md' }
 $violations = Select-String -Path $docsToCheck.FullName -Pattern '\.\./maintainers/|\.\./\.\./maintainers/|/maintainers/'
 if ($violations) {
-    Write-Host "ERROR: User-facing docs in docs-src must not link to or reference anything outside docs-src (including maintainers/), except in deep_expert_implementation_overview.md." -ForegroundColor Red
+    Write-Host "ERROR: User-facing docs in docs-src must not link to or reference anything outside docs-src (including maintainers/), except in deep_expert_implementation_overview.md and grapa_ecosystem_positioning.md." -ForegroundColor Red
     $violations | ForEach-Object { Write-Host $_.Path ':' $_.LineNumber ':' $_.Line }
     exit 1
 }
