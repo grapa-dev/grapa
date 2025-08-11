@@ -4487,7 +4487,11 @@ unicode_text = &quot;café résumé&quot;.grep(&quot;cafe&quot;, &quot;d&quot;);
 <div class="highlight"><pre><span></span><code>/* Try Grapa&#39;s multi-syntax capabilities */
 json = {&quot;users&quot;: [{&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30}]};
 xml = $&amp;&lt;users&gt;&lt;user&gt;&lt;name&gt;John&lt;/name&gt;&lt;age&gt;30&lt;/age&gt;&lt;/user&gt;&lt;/users&gt;$&amp;;
-sql = op(parse)(&quot;SELECT name, age FROM users WHERE age &gt; 25&quot;)(); /* via example scripts */
+
+/* Load SQL syntax rules first (example implementation) */
+/* See docs-src/docs/examples/sql_syntax_example.grc for full implementation */
+custom_command = rule select $STR from $STR { op(fields:$2, table:$4){ /* SQL implementation */ } };
+sql = op(parse)(&quot;SELECT name, age FROM users WHERE age &gt; 25&quot;)();
 
 /* Process all formats */
 result = process_data(json, xml, sql);
