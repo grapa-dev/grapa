@@ -1,0 +1,677 @@
+name: Build Libraries and Binaries (Fixed)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-libraries:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          # Windows AMD64
+          - os: windows-latest
+            platform: win-amd64
+            arch: x64
+          # macOS ARM64 (macos-latest is now ARM64)
+          - os: macos-latest
+            platform: mac-arm64
+          # macOS AMD64 (cross-compiled from ARM64)
+          - os: macos-latest
+            platform: mac-amd64
+          # Linux AMD64
+          - os: ubuntu-latest
+            platform: linux-amd64
+          # Linux ARM64 (cross-compiled from AMD64)
+          - os: ubuntu-22.04
+            platform: linux-arm64
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: main
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install build dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Installing build dependencies for Windows..."
+        # Visual Studio is pre-installed on windows-latest
+        Write-Host "Visual Studio environment available"
+        
+    - name: Install build dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-22.04'
+      run: |
+        echo "Installing build dependencies for Linux..."
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev libjpeg-dev
+        
+        # Install ARM64 native compilation tools and libraries
+        if [ "${{ matrix.platform }}" = "linux-arm64" ]; then
+          echo "Setting up ARM64 native compilation environment..."
+          sudo apt-get install -y debootstrap qemu-user-static
+          
+          # Create ARM64 root filesystem
+          echo "Creating ARM64 root filesystem..."
+          sudo debootstrap --arch=arm64 --foreign stable ./arm64-root http://deb.debian.org/debian
+          
+          # Copy qemu-aarch64-static to the rootfs
+          sudo cp /usr/bin/qemu-aarch64-static ./arm64-root/usr/bin/
+          
+          # Complete the debootstrap process
+          echo "Completing debootstrap process..."
+          sudo chroot ./arm64-root ./debootstrap/debootstrap --second-stage
+          
+          # Install ARM64 development tools and X11 libraries in the sysroot (matching native Linux setup)
+          echo "Installing ARM64 development tools and X11 libraries in sysroot..."
+          sudo chroot ./arm64-root apt update --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y build-essential gcc g++ make libc6-dev --allow-unauthenticated
+          # Core X11 packages (matching native Linux setup)
+          sudo chroot ./arm64-root apt install -y x11-apps libx11-dev libxcursor-dev libxft-dev libxext-dev libxinerama-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y libxrender-dev libxfixes-dev libfontconfig1-dev libfreetype6-dev --allow-unauthenticated
+          # Additional packages from native Linux setup
+          sudo chroot ./arm64-root apt install -y perl tar --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y libgl1-mesa-dev libglu1-mesa-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y libbsd-dev --allow-unauthenticated
+          # Additional packages that might be needed
+          sudo chroot ./arm64-root apt install -y libxcb1-dev libjpeg-dev libpng-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y libssl-dev libcrypto++-dev --allow-unauthenticated
+          sudo chroot ./arm64-root apt install -y cmake gdebi-core --allow-unauthenticated
+          
+
+          
+          # Note: Python setup will be done later when needed for testing
+          
+          echo "ARM64 native compilation environment setup completed"
+        fi
+        
+    - name: Install build dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        echo "Installing build dependencies for macOS..."
+        # Xcode command line tools are pre-installed on macos-latest
+        
+    - name: Build libraries and binaries (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Building libraries for platform: ${{ matrix.platform }}"
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Platform: ${{ matrix.platform }}"
+        
+        # Build libraries only
+        python build.py --target-platform ${{ matrix.platform }} --lib-only
+        
+        Write-Host "Build completed. Checking for libraries..."
+        Get-ChildItem "source/grapa-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/openssl-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/fl-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/blst-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        Get-ChildItem "source/pcre2-lib/${{ matrix.platform }}/" -ErrorAction SilentlyContinue | Write-Host
+        
+        # Build executable only
+        Write-Host "Building executable for ${{ matrix.platform }}..."
+        python build.py --target-platform ${{ matrix.platform }} --exe-only
+        
+        Write-Host "Executable build completed. Checking for executable..."
+        Get-ChildItem "grapa*" -ErrorAction SilentlyContinue | Write-Host
+        
+    - name: Build libraries and binaries (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        echo "Building libraries for platform: ${{ matrix.platform }}"
+        echo "Current directory: $(pwd)"
+        echo "Platform: ${{ matrix.platform }}"
+        
+        # Build libraries only
+        python build.py --target-platform ${{ matrix.platform }} --lib-only
+        
+        echo "Build completed. Checking for libraries..."
+        ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
+        ls -la source/openssl-lib/${{ matrix.platform }}/ || echo "No OpenSSL libraries found"
+        ls -la source/fl-lib/${{ matrix.platform }}/ || echo "No FL libraries found"
+        ls -la source/blst-lib/${{ matrix.platform }}/ || echo "No BLST libraries found"
+        ls -la source/pcre2-lib/${{ matrix.platform }}/ || echo "No PCRE2 libraries found"
+        
+        # Build executable only
+        echo "Building executable for ${{ matrix.platform }}..."
+        python build.py --target-platform ${{ matrix.platform }} --exe-only
+        
+        echo "Executable build completed. Checking for executable..."
+        ls -la grapa* || echo "No executable found"
+        
+    - name: Build libraries and binaries (Linux)
+      if: matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-22.04'
+      run: |
+        echo "Building libraries for platform: ${{ matrix.platform }}"
+        echo "Current directory: $(pwd)"
+        echo "Platform: ${{ matrix.platform }}"
+        
+        # Build libraries only
+        python build.py --target-platform ${{ matrix.platform }} --lib-only
+        
+        echo "Build completed. Checking for libraries..."
+        ls -la source/grapa-lib/${{ matrix.platform }}/ || echo "No grapa libraries found"
+        ls -la source/openssl-lib/${{ matrix.platform }}/ || echo "No OpenSSL libraries found"
+        ls -la source/fl-lib/${{ matrix.platform }}/ || echo "No FL libraries found"
+        ls -la source/blst-lib/${{ matrix.platform }}/ || echo "No BLST libraries found"
+        ls -la source/pcre2-lib/${{ matrix.platform }}/ || echo "No PCRE2 libraries found"
+        
+        # Build executable only
+        echo "Building executable for ${{ matrix.platform }}..."
+        if [ "${{ matrix.platform }}" = "linux-arm64" ]; then
+          echo "Using debug script for Linux ARM64..."
+          python build.py --target-platform ${{ matrix.platform }} --exe-only
+          if [ $? -ne 0 ]; then
+            echo "Build failed, uploading debug log..."
+            if [ -f "build-debug.log" ]; then
+              echo "=== Debug Log Contents ==="
+              cat build-debug.log
+              echo "=== End Debug Log ==="
+              
+              # Upload debug log as artifact
+              echo "Uploading build-debug.log as artifact..."
+            fi
+            exit 1
+          fi
+        else
+          python build.py --target-platform ${{ matrix.platform }} --exe-only
+        fi
+        
+        echo "Executable build completed. Checking for executable..."
+        ls -la grapa* || echo "No executable found"
+        
+    - name: Create archives (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "Creating Windows archive for ${{ matrix.platform }}..."
+        
+        # Get files to include (matching build.py logic)
+        $filesToInclude = @()
+        
+        # Add executable if it exists
+        if (Test-Path "grapa.exe") {
+          $filesToInclude += "grapa.exe"
+        }
+        
+        # Add library file if it exists
+        if (Test-Path "grapa.lib") {
+          $filesToInclude += "grapa.lib"
+        }
+        
+        if ($filesToInclude.Count -gt 0) {
+          Compress-Archive -Path $filesToInclude -DestinationPath "bin/grapa-${{ matrix.platform }}.zip" -Force
+          Write-Host "Created bin/grapa-${{ matrix.platform }}.zip with files: $($filesToInclude -join ', ')"
+        } else {
+          Write-Host "No files found to include in archive, skipping archive creation"
+        }
+        
+    - name: Create archives (Linux/macOS)
+      if: matrix.os != 'windows-latest'
+      run: |
+        echo "Creating archive for ${{ matrix.platform }}..."
+        
+        # Get files to include (matching build.py logic)
+        files_to_include=()
+        
+        # Add executable if it exists
+        if [ -f "grapa" ]; then
+          files_to_include+=("grapa")
+        fi
+        
+        # Add library files
+        if [ -d "source/grapa-lib/${{ matrix.platform }}/" ]; then
+          files_to_include+=("source/grapa-lib/${{ matrix.platform }}/"*)
+        fi
+        
+        # Add other files (for Mac shared libraries)
+        if [ -d "source/grapa-other/${{ matrix.platform }}/" ]; then
+          files_to_include+=("source/grapa-other/${{ matrix.platform }}/"*)
+        fi
+        
+        if [ ${#files_to_include[@]} -gt 0 ]; then
+          tar -czf "bin/grapa-${{ matrix.platform }}.tar.gz" "${files_to_include[@]}"
+          echo "Created bin/grapa-${{ matrix.platform }}.tar.gz with files: ${files_to_include[*]}"
+        else
+          echo "No files found to include in archive, skipping archive creation"
+        fi
+        
+    # Upload debug log if build failed (Linux ARM64 only)
+    - name: Upload debug log artifact
+      if: matrix.platform == 'linux-arm64' && failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: debug-log-linux-arm64
+        path: build-debug.log
+        retention-days: 30
+
+    # Debug: Check artifact placement before upload (Linux/macOS)
+    - name: Debug artifact placement (Linux/macOS)
+      if: matrix.os != 'windows-latest'
+      run: |
+        echo "=== DEBUG: Checking artifact placement for ${{ matrix.platform }} ==="
+        echo "Current directory: $(pwd)"
+        echo "Checking if build directories exist:"
+        
+        # Check each expected directory
+        for dir in source/grapa-lib/${{ matrix.platform }}/ source/openssl-lib/${{ matrix.platform }}/ source/fl-lib/${{ matrix.platform }}/ source/blst-lib/${{ matrix.platform }}/ source/pcre2-lib/${{ matrix.platform }}/ source/grapa-other/${{ matrix.platform }}/; do
+          if [ -d "$dir" ]; then
+            echo "✅ $dir exists with $(ls -la "$dir" | wc -l) items"
+            ls -la "$dir" | head -5
+          else
+            echo "❌ $dir does not exist"
+          fi
+        done
+        
+        echo "Checking bin/ directory:"
+        if [ -d "bin/" ]; then
+          echo "✅ bin/ exists with:"
+          ls -la bin/
+        else
+          echo "❌ bin/ does not exist"
+        fi
+        
+        echo "Checking for executable:"
+        if [ -f "grapa" ]; then
+          echo "✅ grapa executable exists"
+        elif [ -f "grapa.exe" ]; then
+          echo "✅ grapa.exe executable exists"
+        else
+          echo "❌ No executable found"
+        fi
+        
+        echo "Checking for compressed archives:"
+        if [ -f "bin/grapa-${{ matrix.platform }}.zip" ]; then
+          echo "✅ bin/grapa-${{ matrix.platform }}.zip exists"
+        elif [ -f "bin/grapa-${{ matrix.platform }}.tar.gz" ]; then
+          echo "✅ bin/grapa-${{ matrix.platform }}.tar.gz exists"
+        else
+          echo "❌ No compressed archive found for ${{ matrix.platform }}"
+        fi
+        
+    # Debug: Check artifact placement before upload (Windows)
+    - name: Debug artifact placement (Windows)
+      if: matrix.os == 'windows-latest'
+      shell: pwsh
+      run: |
+        Write-Host "=== DEBUG: Checking artifact placement for ${{ matrix.platform }} ==="
+        Write-Host "Current directory: $(Get-Location)"
+        Write-Host "Checking if build directories exist:"
+        
+        # Check each expected directory
+        $dirs = @(
+          "source/grapa-lib/${{ matrix.platform }}/",
+          "source/openssl-lib/${{ matrix.platform }}/",
+          "source/fl-lib/${{ matrix.platform }}/",
+          "source/blst-lib/${{ matrix.platform }}/",
+          "source/pcre2-lib/${{ matrix.platform }}/",
+          "source/grapa-other/${{ matrix.platform }}/"
+        )
+        
+        foreach ($dir in $dirs) {
+          if (Test-Path $dir) {
+            $items = Get-ChildItem $dir | Measure-Object | Select-Object -ExpandProperty Count
+            Write-Host "✅ $dir exists with $items items"
+            Get-ChildItem $dir | Select-Object -First 5 | ForEach-Object { Write-Host "  $($_.Name)" }
+          } else {
+            Write-Host "❌ $dir does not exist"
+          }
+        }
+        
+        Write-Host "Checking bin/ directory:"
+        if (Test-Path "bin/") {
+          Write-Host "✅ bin/ exists with:"
+          Get-ChildItem "bin/" | ForEach-Object { Write-Host "  $($_.Name)" }
+        } else {
+          Write-Host "❌ bin/ does not exist"
+        }
+        
+        Write-Host "Checking for executable:"
+        if (Test-Path "grapa") {
+          Write-Host "✅ grapa executable exists"
+        } elseif (Test-Path "grapa.exe") {
+          Write-Host "✅ grapa.exe executable exists"
+        } else {
+          Write-Host "❌ No executable found"
+        }
+        
+        Write-Host "Checking for compressed archives:"
+        if (Test-Path "bin/grapa-${{ matrix.platform }}.zip") {
+          Write-Host "✅ bin/grapa-${{ matrix.platform }}.zip exists"
+        } elseif (Test-Path "bin/grapa-${{ matrix.platform }}.tar.gz") {
+          Write-Host "✅ bin/grapa-${{ matrix.platform }}.tar.gz exists"
+        } else {
+          Write-Host "❌ No compressed archive found for ${{ matrix.platform }}"
+        }
+        
+    # Upload artifacts for later commit
+    - name: Upload platform artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: platform-artifacts-${{ matrix.platform }}
+        path: |
+          source/grapa-lib/${{ matrix.platform }}/
+          source/openssl-lib/${{ matrix.platform }}/
+          source/fl-lib/${{ matrix.platform }}/
+          source/blst-lib/${{ matrix.platform }}/
+          source/pcre2-lib/${{ matrix.platform }}/
+          source/grapa-other/${{ matrix.platform }}/
+          bin/
+        
+    - name: Upload artifacts (for backup)
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts-${{ matrix.platform }}
+        path: |
+          source/*-lib/${{ matrix.platform }}/
+          source/grapa-other/${{ matrix.platform }}/
+          bin/
+          
+  commit-all-artifacts:
+    needs: build-libraries
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: main
+    
+    - name: List available artifacts
+      run: |
+        echo "=== DEBUG: Listing available artifacts ==="
+        echo "Current run artifacts should be available for platforms:"
+        echo "- platform-artifacts-win-amd64"
+        echo "- platform-artifacts-mac-arm64" 
+        echo "- platform-artifacts-mac-amd64"
+        echo "- platform-artifacts-linux-amd64"
+        echo "- platform-artifacts-linux-arm64"
+        
+    - name: Download all platform artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
+        merge-multiple: true
+        pattern: platform-artifacts-*
+    
+    - name: Extract and commit artifacts
+      run: |
+        echo "Extracting and committing all platform artifacts..."
+        
+        # Setup Git
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Debug: List what's in artifacts directory
+        echo "=== DEBUG: Artifacts directory contents ==="
+        ls -la artifacts/ || echo "artifacts/ directory not found"
+        find artifacts/ -type f 2>/dev/null | head -20 || echo "No files found in artifacts/"
+        
+        # Debug: Check for platform-specific artifacts
+        echo "=== DEBUG: Checking for platform artifacts ==="
+        for platform in win-amd64 mac-arm64 mac-amd64 linux-amd64 linux-arm64; do
+          echo "Checking for $platform artifacts:"
+          find artifacts/ -name "*$platform*" 2>/dev/null || echo "No $platform artifacts found"
+        done
+        
+        # Extract artifacts to their correct locations
+        echo "=== DEBUG: Processing artifacts ==="
+        
+        # Copy artifacts with proper structure preservation
+        echo "Copying artifacts with proper structure..."
+        
+        # Debug: Show what's in artifacts before copying
+        echo "=== DEBUG: Artifacts before copying ==="
+        echo "Artifacts source:"
+        find artifacts/source/ -type f 2>/dev/null | head -10 || echo "No source artifacts found"
+        echo "Artifacts bin:"
+        ls -la artifacts/bin/ 2>/dev/null || echo "No bin artifacts found"
+        
+        # Copy source directories (libraries) - create target directories first and force overwrite
+        if [ -d "artifacts/source" ]; then
+          echo "Copying source directories..."
+          mkdir -p source/grapa-lib source/openssl-lib source/fl-lib source/blst-lib source/pcre2-lib source/grapa-other
+          cp -rfv artifacts/source/* source/ 2>&1 || echo "Failed to copy source directories"
+        fi
+        
+        # Copy bin directory (executables) - create target directory first and force overwrite
+        if [ -d "artifacts/bin" ]; then
+          echo "Copying bin directory..."
+          mkdir -p bin
+          cp -rfv artifacts/bin/* bin/ 2>&1 || echo "Failed to copy bin directory"
+        fi
+        
+        # Debug: Show what we copied
+        echo "=== DEBUG: After copying ==="
+        echo "Source directories:"
+        find source/ -type f 2>/dev/null | head -10 || echo "No source files found"
+        echo "Bin files:"
+        ls -la bin/ 2>/dev/null || echo "No bin files found"
+         
+         # Remove the wrong Windows archive if it exists
+         if [ -f "bin/grapa-win-win-amd64.zip" ]; then
+           echo "Removing incorrect Windows archive: bin/grapa-win-win-amd64.zip"
+           rm "bin/grapa-win-win-amd64.zip"
+         fi
+         
+         # Remove test files that shouldn't be committed
+         if [ -f "grapapy_test.ipynb" ]; then
+           echo "Removing test file: grapapy_test.ipynb"
+           rm "grapapy_test.ipynb"
+         fi
+        
+        # Debug: Check what files we have after extraction
+        echo "=== DEBUG: Files after extraction ==="
+        ls -la source/grapa-lib/ 2>/dev/null || echo "No grapa-lib directory"
+        ls -la source/openssl-lib/ 2>/dev/null || echo "No openssl-lib directory"
+        ls -la source/fl-lib/ 2>/dev/null || echo "No fl-lib directory"
+        ls -la source/blst-lib/ 2>/dev/null || echo "No blst-lib directory"
+        ls -la source/pcre2-lib/ 2>/dev/null || echo "No pcre2-lib directory"
+        ls -la source/grapa-other/ 2>/dev/null || echo "No grapa-other directory"
+        ls -la bin/ 2>/dev/null || echo "No bin directory"
+        
+                 # Add all platform-specific libraries (force add to ensure all files are included)
+         echo "=== DEBUG: Adding files to git ==="
+         git add -A source/grapa-lib/ 2>&1 || echo "No grapa-lib changes"
+         git add -A source/openssl-lib/ 2>&1 || echo "No openssl-lib changes"
+         git add -A source/fl-lib/ 2>&1 || echo "No fl-lib changes"
+         git add -A source/blst-lib/ 2>&1 || echo "No blst-lib changes"
+         git add -A source/pcre2-lib/ 2>&1 || echo "No pcre2-lib changes"
+         git add -A source/grapa-other/ 2>&1 || echo "No grapa-other changes"
+         
+         # Note: Executables should be in platform-specific compressed files, not in root
+         
+         # Add binaries
+         git add -A bin/ 2>&1 || echo "No bin changes"
+        
+        # Debug: Check git status
+        echo "=== DEBUG: Git status ==="
+        git status --porcelain
+        
+        # Commit and push
+        git commit -m "Update pre-built libraries and binaries for all platforms [automated]" || echo "No changes to commit"
+        git push origin main
+        
+  build-wheels-linux:
+    needs: commit-all-artifacts
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: main
+    
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        # Install system dependencies
+        sudo apt-get update
+        sudo apt-get install -y libx11-dev libxfixes-dev libxft-dev libxext-dev libxrender-dev libxinerama-dev libxcursor-dev libxau-dev libpng-dev libfontconfig1-dev libfreetype6-dev libxcb1-dev libjpeg-dev
+        # Install Python dependencies
+        python -m pip install --upgrade pip setuptools wheel build
+        
+    - name: Build Linux wheel
+      run: |
+        echo "Building Linux wheel using Extension approach..."
+        
+        # Clean previous builds to ensure fresh wheels
+        rm -rf dist/ build/ *.egg-info/
+        
+        # Build wheel and source distribution for Linux (Extension approach)
+        echo "Building wheel and source distribution for Linux..."
+        python setup.py bdist_wheel --plat-name manylinux2014_x86_64
+        python setup.py sdist
+        
+        echo "Built distributions:"
+        ls -la dist/
+        
+    - name: Upload Linux distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dists-linux
+        path: dist/
+
+  build-wheels-windows:
+    needs: commit-all-artifacts
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: main
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        # Install Python dependencies
+        python -m pip install --upgrade pip setuptools wheel build
+        
+    - name: Build Windows wheel
+      run: |
+        echo "Building Windows wheel using Extension approach..."
+        
+        # Clean previous builds to ensure fresh wheels
+        Remove-Item -Recurse -Force dist, build, *.egg-info -ErrorAction SilentlyContinue
+        
+        # Build wheel and source distribution for Windows (Extension approach)
+        echo "Building wheel and source distribution for Windows..."
+        python setup.py bdist_wheel --plat-name win_amd64
+        python setup.py sdist
+        
+        echo "Built distributions:"
+        Get-ChildItem dist/
+        
+    - name: Upload Windows distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dists-windows
+        path: dist/
+
+  build-wheels-macos:
+    needs: commit-all-artifacts
+    runs-on: macos-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: main
+    
+    - name: Install build dependencies for wheel building
+      run: |
+        echo "Installing build dependencies for wheel building..."
+        # Install Python dependencies
+        python -m pip install --upgrade pip setuptools wheel build
+        
+    - name: Build macOS wheel
+      run: |
+        echo "Building macOS wheel using CMakeExtension approach..."
+        
+        # Clean previous builds to ensure fresh wheels
+        rm -rf dist/ build/ *.egg-info/
+        
+        # Build wheel and source distribution for macOS (CMakeExtension approach)
+        echo "Building wheel and source distribution for macOS..."
+        python setup.py bdist_wheel --plat-name macosx_10_9_x86_64
+        python setup.py sdist
+        
+        echo "Built distributions:"
+        ls -la dist/
+        
+    - name: Upload macOS distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dists-macos
+        path: dist/
+
+  combine-distributions:
+    needs: [build-wheels-linux, build-wheels-windows, build-wheels-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download all distribution artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: dists/
+        merge-multiple: true
+        
+    - name: Clean and organize distributions
+      run: |
+        echo "Cleaning distribution artifacts..."
+        
+        # Remove any non-distribution files/directories
+        find dists/ -name "bin" -type d -exec rm -rf {} + 2>/dev/null || true
+        find dists/ -name "source" -type d -exec rm -rf {} + 2>/dev/null || true
+        
+        # Remove debug artifacts and executables that shouldn't be in distribution
+        find dists/ -name "grapa-build-debug.zip" -delete 2>/dev/null || true
+        find dists/ -name "grapa" -type f -delete 2>/dev/null || true
+        find dists/ -name "grapa.exe" -type f -delete 2>/dev/null || true
+        find dists/ -name "libgrapa*" -type f -delete 2>/dev/null || true
+        
+        # Keep only actual distribution files
+        echo "Distribution files to upload:"
+        find dists/ -name "*.whl" -o -name "*.tar.gz" | sort
+        
+    - name: Upload combined distributions artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: all-distributions
+        path: dists/
+
+  deploy-to-pypi:
+    needs: combine-distributions
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download combined distributions
+      uses: actions/download-artifact@v4
+      with:
+        name: all-distributions
+        path: dists/
+        
+    - name: Upload to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        packages-dir: dists/ 

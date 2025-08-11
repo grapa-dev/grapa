@@ -1,0 +1,333 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'maintainers/**'
+      - '.github/workflows/deploy-docs.yml'
+      - 'scripts/deploy_docs.sh'
+  workflow_dispatch:  # Allow manual triggering
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for git operations
+        token: ${{ secrets.PAT_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install mkdocs-material>=9.5.0
+        pip install pymdown-extensions>=10.8
+    
+    - name: Validate prerequisites
+      run: |
+        # Check if we're in a git repository
+        git rev-parse --git-dir
+        
+        # Check if we're on the main branch
+        if [ "$(git branch --show-current)" != "main" ]; then
+          echo "Error: Not on main branch"
+          exit 1
+        fi
+        
+        # Check if working directory is clean
+        if ! git diff-index --quiet HEAD -- || ! git diff-files --quiet; then
+          echo "Error: Working directory is not clean"
+          git status --porcelain
+          exit 1
+        fi
+        
+        # Check if required directories exist
+        if [ ! -d "docs" ]; then
+          echo "Error: docs directory not found"
+          exit 1
+        fi
+        
+        if [ ! -f "docs/mkdocs.yml" ]; then
+          echo "Error: mkdocs.yml not found"
+          exit 1
+        fi
+        
+        echo "Prerequisites validated successfully"
+    
+    - name: Build user documentation
+      run: |
+        cd docs
+        python -m mkdocs build --clean
+        
+        # Verify build output
+        if [ ! -f "site/index.html" ]; then
+          echo "Error: Build failed - index.html not found"
+          exit 1
+        fi
+        
+        # Validate case sensitivity - check for uppercase files/folders
+        echo "Validating case sensitivity - checking for uppercase files/folders..."
+        uppercase_items=()
+        while IFS= read -r -d '' item; do
+          basename=$(basename "$item")
+          if [[ "$basename" =~ [A-Z] ]]; then
+            uppercase_items+=("$item")
+          fi
+        done < <(find "site" -mindepth 1 -maxdepth 1 -print0)
+        
+        if [ ${#uppercase_items[@]} -gt 0 ]; then
+          echo "Error: Found uppercase files/folders that will cause 404 errors:"
+          printf '%s\n' "${uppercase_items[@]}"
+          echo "Fix navigation configuration in mkdocs.yml to use lowercase keys"
+          exit 1
+        fi
+        
+        echo "Case sensitivity validation passed"
+        
+        # Generate deployment fingerprint for verification
+        echo "Generating deployment fingerprint..."
+        timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+        fingerprint="GRAPA_DEPLOYMENT_$(date +%s)_$(git rev-parse --short HEAD)"
+        
+        # Store fingerprint in a file that will be deployed
+        echo "$fingerprint" > "site/deployment-fingerprint.txt"
+        echo "Deployment timestamp: $timestamp" >> "site/deployment-fingerprint.txt"
+        echo "Git commit: $(git rev-parse HEAD)" >> "site/deployment-fingerprint.txt"
+        echo "Build completed: $(date)" >> "site/deployment-fingerprint.txt"
+        
+        # Store fingerprint for verification
+        echo "$fingerprint" > "../.deployment-fingerprint"
+        
+        echo "Deployment fingerprint: $fingerprint"
+        echo "User documentation built successfully"
+    
+    - name: Build maintainer documentation (if config exists)
+      run: |
+        cd docs
+        
+        if [ -f "mkdocs-maintainers.yml" ]; then
+          echo "Building maintainer documentation..."
+          
+          # Create symlink for maintainer docs if it doesn't exist
+          if [ ! -L "docs/maintainers" ]; then
+            ln -sf "../../maintainers" "docs/maintainers"
+          fi
+          
+          # Build maintainer site
+          python -m mkdocs build -f mkdocs-maintainers.yml --clean -d site-maintainers
+          
+          # Copy maintainer docs to main site if needed
+          if [ -d "site-maintainers" ]; then
+            cp -r site-maintainers/* site/ 2>/dev/null || true
+          fi
+          
+          echo "Maintainer documentation built successfully"
+        else
+          echo "Maintainer config not found, skipping maintainer docs build"
+        fi
+    
+    - name: Prepare deployment branch
+      run: |
+        # Check if remote branch exists and delete it
+        if git ls-remote --heads origin gh-pages | grep -q gh-pages; then
+          echo "Remote gh-pages branch exists, deleting..."
+          git push origin --delete gh-pages 2>/dev/null || true
+        fi
+        
+        # Delete local branch if it exists
+        if git show-ref --verify --quiet refs/heads/gh-pages; then
+          echo "Local gh-pages branch exists, deleting..."
+          git branch -D gh-pages 2>/dev/null || true
+        fi
+        
+        # Create fresh orphan branch
+        echo "Creating fresh orphan gh-pages branch..."
+        git checkout --orphan gh-pages
+        
+        # Clear the branch completely (safe on orphan branch)
+        echo "Clearing branch contents..."
+        git rm -rf . 2>/dev/null || true
+    
+    - name: Copy site files
+      run: |
+        # Copy site files from main branch
+        git checkout main -- docs/site/
+        
+        # Move files to root (where GitHub Pages expects them)
+        if [ -d "docs/site" ]; then
+          echo "Moving site files to root..."
+          mv docs/site/* . 2>/dev/null || true
+          rmdir docs/site 2>/dev/null || true
+          rmdir docs 2>/dev/null || true
+        else
+          echo "Error: Site directory not found after checkout"
+          exit 1
+        fi
+        
+        # Verify key files exist
+        if [ ! -f "index.html" ]; then
+          echo "Error: index.html not found in deployment directory"
+          exit 1
+        fi
+        
+        echo "Site files copied successfully"
+    
+    - name: Commit and push deployment
+      run: |
+        # Configure git for deployment
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Add all files
+        git add .
+        
+        # Check if there are changes to commit
+        if git diff-index --quiet HEAD --; then
+          echo "No changes to commit"
+        else
+          # Commit with timestamp
+          commit_message="Deploy documentation site - $(date '+%Y-%m-%d %H:%M:%S')"
+          git commit -m "$commit_message"
+          
+          # Push to remote
+          echo "Pushing to remote gh-pages branch..."
+          git push origin gh-pages
+        fi
+    
+    - name: Return to main branch
+      run: |
+        git checkout main
+    
+    - name: Verify deployment
+      run: |
+        echo "Starting deployment verification..."
+        echo "Waiting for GitHub Pages to process deployment..."
+        sleep 15
+        
+        # Function to check if content matches expected deployment
+        check_content_verification() {
+          local max_attempts=12  # 2 minutes total (12 * 10 seconds)
+          local attempt=1
+          
+          # Get expected fingerprint
+          local expected_fingerprint=""
+          if [ -f ".deployment-fingerprint" ]; then
+            expected_fingerprint=$(head -n 1 ".deployment-fingerprint")
+            echo "Expected deployment fingerprint: $expected_fingerprint"
+          else
+            echo "No deployment fingerprint found, falling back to content verification"
+          fi
+          
+          while [ $attempt -le $max_attempts ]; do
+            echo "Verification attempt $attempt/$max_attempts..."
+            
+            # First, try to verify using deployment fingerprint
+            if [ -n "$expected_fingerprint" ]; then
+              local fingerprint_url="https://grapa-dev.github.io/grapa/deployment-fingerprint.txt"
+              local fingerprint_content=$(curl -s -f "$fingerprint_url" 2>/dev/null)
+              
+              if [ $? -eq 0 ] && echo "$fingerprint_content" | grep -q "$expected_fingerprint"; then
+                echo "✅ Deployment fingerprint verified!"
+                echo "✅ Site contains the expected deployment"
+                return 0
+              else
+                echo "Deployment fingerprint not found yet, checking site accessibility..."
+              fi
+            fi
+            
+            # Fallback: Get the current site content
+            local site_content=$(curl -s -f "https://grapa-dev.github.io/grapa/" 2>/dev/null)
+            if [ $? -ne 0 ]; then
+              echo "Site not accessible yet, waiting 10 seconds..."
+              sleep 10
+              attempt=$((attempt + 1))
+              continue
+            fi
+            
+            # Check for key content that should be present
+            local verification_passed=true
+            
+            # Check for main page content
+            if ! echo "$site_content" | grep -q "Grapa Documentation"; then
+              echo "Main page content not found, waiting 10 seconds..."
+              verification_passed=false
+            fi
+            
+            # Check for navigation elements
+            if ! echo "$site_content" | grep -q "Getting Started"; then
+              echo "Navigation elements not found, waiting 10 seconds..."
+              verification_passed=false
+            fi
+            
+            # Check for search functionality
+            if ! echo "$site_content" | grep -q "search"; then
+              echo "Search functionality not found, waiting 10 seconds..."
+              verification_passed=false
+            fi
+            
+            # If all checks pass, deployment is verified
+            if [ "$verification_passed" = true ]; then
+              echo "✅ Deployment verification successful!"
+              echo "✅ Site is live and contains expected content"
+              return 0
+            fi
+            
+            sleep 10
+            attempt=$((attempt + 1))
+          done
+          
+          echo "❌ Deployment verification failed after $max_attempts attempts"
+          echo "❌ Site may not be fully updated yet"
+          return 1
+        }
+        
+        # Run content verification
+        if check_content_verification; then
+          echo "✅ Deployment verification completed successfully"
+          
+          # Clean up fingerprint file
+          if [ -f ".deployment-fingerprint" ]; then
+            rm ".deployment-fingerprint"
+            echo "Cleaned up deployment fingerprint"
+          fi
+        else
+          echo "⚠️ Deployment verification incomplete - site may still be updating"
+          echo "Note: GitHub Pages can take up to 10 minutes to fully update"
+          
+          # Keep fingerprint for manual verification
+          if [ -f ".deployment-fingerprint" ]; then
+            echo "Deployment fingerprint preserved for manual verification"
+          fi
+        fi
+        
+        echo "Site URL: https://grapa-dev.github.io/grapa/"
+    
+    - name: Comment on PR (if applicable)
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '📚 Documentation has been deployed to https://grapa-dev.github.io/grapa/'
+          }) 
