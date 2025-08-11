@@ -6,21 +6,32 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 
 ## Example Scripts
 
+### **Core Language Examples**
 | Example | Description |
 |---------|-------------|
 | [Basic Example](examples/basic_example.grc) | Demonstrates basic Grapa syntax, variable assignment, arrays, strings, and math operations. |
 | [Advanced Example](examples/advanced_example.grc) | Shows more complex operations: string processing, array manipulation, and returning multiple results. |
 | [Performance Example](examples/performance_example.grc) | Illustrates performance-related operations, including loops and array creation. |
-| [SQL Syntax Example](examples/sql_syntax_example.grc) | Demonstrates native SQL syntax integration using custom_command and custom_function. |
+
+### **Language Extension Examples**
+| Example | Description |
+|---------|-------------|
+| [SQL Syntax Example](examples/sql_syntax_example.grc) | **Example Implementation** - Demonstrates how SQL syntax could be added to Grapa using custom_command and custom_function. Shows the pattern for extending Grapa's grammar. |
 | [Language Design Example](examples/language_design_example.grc) | Demonstrates executable BNF system for creating custom languages, DSLs, and extending Grapa. |
 | [Isolated Rule Execution Example](examples/isolated_rule_execution_demo.grc) | Demonstrates executing custom rules in isolation for ETL and domain-specific processing. |
 | [Wrapper Function Example](examples/wrapper_function_example.grc) | Demonstrates the wrapper function pattern for ETL processing using rule tokens with custom functions. |
+
+### **Integration Examples**
+| Example | Description |
+|---------|-------------|
 | [Python Integration Example](examples/python_integration_example.py) | Demonstrates how to use Grapa from Python, including math, strings, arrays, file, and grep operations. |
 
 > **How to use these examples:**
 > - Click any example to view the source.
 > - Copy/paste `.grc` scripts into the Grapa REPL or save and run them with the CLI.
 > - For Python, run the `.py` script with Python 3 and the `grapapy` module installed.
+> 
+> **Note about SQL Syntax Example:** The SQL syntax example demonstrates how Grapa's executable BNF can be used to add custom syntax to the language. This is an example implementation showing the pattern - SQL is not natively supported in Grapa, but this example shows how it could be added.
 
 ## See Also
 - [Getting Started](getting_started.md)

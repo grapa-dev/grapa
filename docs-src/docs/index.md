@@ -20,14 +20,14 @@
 ## Advanced Topics
 - [Debugging](debugging.md) - Comprehensive debugging system with CLI and script control
 - [Grammar Design](syntax/grammar_design.md) - Create your own languages with Grapa
-- [Multi-Syntax Programming](multi_syntax_programming.md) - Native SQL, JSON, XML, and custom syntax support
+- [Multi-Syntax Programming](multi_syntax_programming.md) - JSON, XML, HTML (native), SQL (example scripts), and custom syntax support
 - [Language Design with Executable BNF](language_design_with_executable_bnf.md) - Advanced language design and DSL creation
 - [Isolated Rule Execution](isolated_rule_execution.md) - ETL and domain-specific processing without affecting main language
 
 ## Key Features
 - **Dynamic Code Execution**: Compile and execute code at runtime with `op()(<string>)()` and `$sys().eval()`
 - **Execution Trees**: Direct manipulation of `$OP` objects for advanced meta-programming
-- **Multi-Syntax Support**: Native SQL, JSON, XML, and custom syntax through executable BNF
+- **Multi-Syntax Support**: JSON, XML, HTML (native), SQL (example scripts), and custom syntax through executable BNF
 - **Parallel Processing**: Built-in parallel data operations with `.map()`, `.filter()`, `.reduce()`
 - **Unlimited Precision**: Native support for arbitrary-precision arithmetic
 - **Cross-Platform**: Runs on Windows, macOS, and Linux

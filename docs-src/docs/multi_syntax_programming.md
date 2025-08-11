@@ -12,7 +12,7 @@ tags:
 
 ## Overview
 
-Grapa's executable BNF architecture enables support for multiple native syntaxes within a single language. This guide explores how to use and extend Grapa with SQL, JSON, XML, and other syntaxes, making it a powerful multi-paradigm programming environment.
+Grapa's executable BNF architecture enables support for multiple syntaxes within a single language. This guide explores how to use and extend Grapa with JSON, XML, HTML (native), SQL (example scripts), and other syntaxes, making it a powerful multi-paradigm programming environment.
 
 ## Key Concepts
 
@@ -48,11 +48,11 @@ processed = html_data.encode("HTML-GRAPA");
 - **Complex Syntax Handling**: Enables proper processing of syntax that might conflict with normal Grapa syntax
 - **Format-Specific Processing**: Different lexical modes for different data formats
 
-## SQL Syntax Integration
+## SQL Syntax Integration (Example Implementation)
 
 ### **Basic SQL Usage**
 
-Grapa can support native SQL syntax for database operations:
+Grapa demonstrates SQL syntax integration through example scripts that show how to add custom SQL syntax to the language:
 
 ```grapa
 /* Define SQL syntax */
@@ -75,19 +75,19 @@ user_count = op(parse)("count(*) from users")();
 ### **Advanced SQL Features**
 
 ```grapa
-/* INSERT statement */
+/* INSERT statement (example implementation) */
 custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
     ("SQL INSERT: " + table_name + " VALUES " + values_str).echo();
     /* Insert implementation */
 }};
 
-/* UPDATE statement */
+/* UPDATE statement (example implementation) */
 custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clause:$4,where_clause:$6){
     ("SQL UPDATE: " + table_name + " SET " + set_clause + " WHERE " + where_clause).echo();
     /* Update implementation */
 }};
 
-/* Execute complex SQL */
+/* Execute complex SQL (via example scripts) */
 op(parse)("insert into users values John,25,New York")();
 op(parse)("update users set age=26 where name=John")();
 ```
@@ -395,7 +395,7 @@ result = op(parse)('pipeline { load "data.csv" | filter "age > 25" | sort "name"
 ## Conclusion
 
 Grapa's multi-syntax capabilities make it uniquely powerful for:
-- **Data processing** with native SQL, JSON, and XML
+- **Data processing** with JSON, XML (native), and SQL (example scripts)
 - **Web development** with HTML and CSS selectors
 - **Configuration management** with custom DSLs
 - **Domain-specific applications** with tailored syntax

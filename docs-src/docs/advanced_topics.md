@@ -20,7 +20,7 @@ This section covers advanced features and techniques in Grapa for power users an
 ## Custom Grammar and BNF
 - **Grammar Design:** Grapa allows you to define and extend its grammar using BNF-like rules, enabling custom language features and DSLs.
 - **Language Extensibility:** Define custom commands and functions that become part of the language syntax at runtime.
-- **Multi-Syntax Support:** Grapa can support multiple native syntaxes (SQL, JSON, XML, HTML) through its executable BNF architecture.
+- **Multi-Syntax Support:** Grapa can support multiple syntaxes (JSON, XML, HTML natively, SQL via example scripts) through its executable BNF architecture.
 - **Lexical Processing:** Use `$&` enclosures to activate special lexer processing for complex formats like XML/HTML.
 - **Reference:** See [Language Syntax Extension](type/rule.md#language-syntax-extension) for comprehensive documentation, [Grammar Design](syntax/grammar_design.md) for BNF details, and maintainer docs for implementation details.
 

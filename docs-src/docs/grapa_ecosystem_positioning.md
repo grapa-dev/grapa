@@ -20,29 +20,37 @@ Grapa's core innovation is its **executable BNF system** that allows you to:
 - **Modify grammar rules at runtime** - Change language syntax dynamically
 - **Execute arbitrary code during parsing** - Transform data as it's being parsed
 - **Create domain-specific languages** - Build custom syntax for specific problems
-- **Process multiple syntaxes natively** - Handle SQL, JSON, XML, HTML in the same codebase
+- **Process multiple syntaxes** - Handle JSON, XML, HTML natively, with SQL demonstrated through example scripts
+
+### **Unlimited Precision Mathematics** 🔢
+Grapa provides **arbitrary-precision arithmetic** for all numeric types:
+- **$INT**: Unlimited precision integers (no overflow)
+- **$FLOAT**: Configurable precision floating-point (128-bit default, up to 300+ bits)
+- **$TIME**: Unlimited precision timestamps (unbounded years, nanosecond precision)
+- **Mathematical operations**: Support for large exponents, modular arithmetic, prime number generation
 
 ### **Multi-Syntax Processing** 🔄
-Unlike most languages that require external libraries for different data formats, Grapa natively supports:
+Unlike most languages that require external libraries for different data formats, Grapa supports:
 ```grapa
-/* SQL processing */
-result = op(parse)("SELECT * FROM users WHERE age > 25")();
-
-/* JSON processing */
+/* JSON processing (native) */
 data = {"name": "John", "age": 30};
 
-/* XML processing */
+/* XML processing (native) */
 xml = $&<user><name>John</name><age>30</age></user>$&;
+
+/* SQL processing (demonstrated via example scripts) */
+result = op(parse)("SELECT * FROM users WHERE age > 25")();
 
 /* All in the same script! */
 ```
 
 ### **ETL and Data Processing** 📊
 Grapa excels at Extract, Transform, Load operations:
-- **Built-in database integration** with `$file().table()`
+- **Built-in database integration** with `$file().table()` (ROW, COL, GROUP storage types)
 - **Binary data processing** with advanced grep capabilities
 - **Unicode support** for international data
 - **Execution trees** for efficient data transformation
+- **Parallel processing** with built-in map/reduce/filter operations
 
 ## When to Choose Grapa
 
@@ -70,12 +78,12 @@ for (i = 0; i < 10; i++) {
 #### **2. ETL and Data Processing Pipelines**
 ```grapa
 /* Process multiple data formats in one pipeline */
-sql_data = op(parse)("SELECT * FROM customers")();
 json_data = {"transactions": [...]};
 xml_data = $&<orders>...</orders>$&;
+sql_data = op(parse)("SELECT * FROM customers")(); /* via example scripts */
 
 /* Transform and combine */
-result = process_all_formats(sql_data, json_data, xml_data);
+result = process_all_formats(json_data, xml_data, sql_data);
 ```
 
 **Use Cases:**
@@ -112,6 +120,34 @@ result = users.grep(age > 25).transform(format_user);
 - **Reporting** and analytics
 - **Database-driven applications**
 
+#### **5. High-Precision Computing**
+```grapa
+/* Unlimited precision arithmetic */
+large_number = 123456789012345678901234567890 ** 123;
+prime = 256.genprime();  /* Cryptographic prime generation */
+timestamp = $TIME().utc();  /* Nanosecond precision */
+```
+
+**Use Cases:**
+- **Cryptographic applications** (prime generation, modular arithmetic)
+- **Financial calculations** (arbitrary precision required)
+- **Scientific computing** (high-precision mathematical operations)
+- **Time series analysis** (unlimited precision timestamps)
+
+#### **6. Advanced Pattern Matching**
+```grapa
+/* 100% ripgrep compatible pattern matching */
+text = "Hello world\nGoodbye world";
+matches = text.grep("world", "o");  /* Match-only output */
+unicode_text = "café résumé".grep("cafe", "d");  /* Diacritic-insensitive */
+```
+
+**Use Cases:**
+- **Text processing** and analysis
+- **Log file analysis** with advanced regex
+- **Unicode-aware** pattern matching
+- **Binary data** pattern matching
+
 ### ❌ **Grapa is NOT Ideal For:**
 
 #### **1. General-Purpose Programming**
@@ -141,6 +177,8 @@ result = users.grep(age > 25).transform(format_user);
 | **Runtime Grammar Changes** | ✅ Yes | ❌ No |
 | **Executable Actions** | ✅ Yes | ❌ Limited |
 | **Multi-Syntax Support** | ✅ Native | ❌ Separate parsers |
+| **Unlimited Precision** | ✅ Yes | ❌ No |
+| **Advanced Pattern Matching** | ✅ Yes | ❌ No |
 | **Error Messages** | ⚠️ Basic | ✅ Advanced |
 | **Tooling** | ⚠️ Limited | ✅ Mature |
 
@@ -152,6 +190,8 @@ result = users.grep(age > 25).transform(format_user);
 |---------|-------|-----------------|
 | **Executable BNF** | ✅ Yes | ❌ No |
 | **ETL Integration** | ✅ Native | ❌ Libraries |
+| **Unlimited Precision** | ✅ Yes | ⚠️ Limited |
+| **Advanced Pattern Matching** | ✅ Yes | ⚠️ Limited |
 | **Performance** | ✅ High | ✅ High |
 | **Type Safety** | ⚠️ Basic | ✅ Advanced |
 | **Ecosystem** | ⚠️ Small | ✅ Large |
@@ -164,6 +204,8 @@ result = users.grep(age > 25).transform(format_user);
 |---------|-------|---------------|
 | **Runtime Flexibility** | ✅ Yes | ❌ No |
 | **Performance** | ✅ High | ⚠️ Variable |
+| **Unlimited Precision** | ✅ Yes | ❌ No |
+| **Advanced Pattern Matching** | ✅ Yes | ❌ No |
 | **IDE Support** | ⚠️ Basic | ✅ Advanced |
 | **Visual Editing** | ❌ No | ✅ Yes |
 | **Learning Curve** | ✅ Low | ❌ High |
@@ -174,9 +216,14 @@ result = users.grep(age > 25).transform(format_user);
 
 ### **Current State (2024)**
 - ✅ **Executable BNF system** - Core innovation
-- ✅ **Multi-syntax support** - SQL, JSON, XML, HTML
+- ✅ **Multi-syntax support** - JSON, XML, HTML (native), SQL (example scripts)
 - ✅ **ETL capabilities** - Data transformation pipelines
-- ✅ **Database integration** - Native table operations
+- ✅ **Database integration** - Native table operations (ROW, COL, GROUP)
+- ✅ **Unlimited precision** - Arbitrary-precision arithmetic for all numeric types
+- ✅ **Advanced pattern matching** - 100% ripgrep compatible with Unicode support
+- ✅ **Parallel processing** - Built-in thread safety and concurrent operations
+- ✅ **Cryptographic capabilities** - Prime generation, modular arithmetic, hash functions
+- ✅ **Unified path system** - Seamless file system and database navigation
 - ⚠️ **Basic developer experience** - Limited tooling
 
 ### **Phase 1: Critical Features (Weeks 1-4)**
@@ -210,7 +257,7 @@ result = users.grep(age > 25).transform(format_user);
 After the enhancement roadmap is complete, Grapa will be viable for:
 
 #### **1. Modern Application Development**
-- **Web applications** with native SQL/JSON processing
+- **Web applications** with JSON processing and SQL via example scripts
 - **API development** with multi-format support
 - **Microservices** with built-in ETL capabilities
 - **Data pipelines** with dynamic grammar support
@@ -226,18 +273,20 @@ After the enhancement roadmap is complete, Grapa will be viable for:
 - **ETL platforms** with dynamic transformation rules
 - **Integration systems** with protocol parsing
 - **Analytics engines** with custom query languages
+- **Cryptographic systems** with unlimited precision arithmetic
+- **Financial systems** requiring arbitrary precision calculations
 
 ## Getting Started
 
 ### **Quick Evaluation**
 ```grapa
 /* Try Grapa's multi-syntax capabilities */
-sql = op(parse)("SELECT name, age FROM users WHERE age > 25")();
 json = {"users": [{"name": "John", "age": 30}]};
 xml = $&<users><user><name>John</name><age>30</age></user></users>$&;
+sql = op(parse)("SELECT name, age FROM users WHERE age > 25")(); /* via example scripts */
 
 /* Process all formats */
-result = process_data(sql, json, xml);
+result = process_data(json, xml, sql);
 ```
 
 ### **Learning Path**
@@ -259,4 +308,4 @@ Grapa is a **specialized tool** that excels in specific domains where other lang
 
 The enhancement roadmap will significantly expand Grapa's viable use cases, making it competitive with modern languages for a broader range of applications while maintaining its unique strengths in executable BNF and multi-syntax processing.
 
-**Key Takeaway**: Choose Grapa when you need **runtime language flexibility** or **native multi-format data processing**. For general-purpose programming, consider other languages in the ecosystem. 
+**Key Takeaway**: Choose Grapa when you need **runtime language flexibility**, **native multi-format data processing**, **unlimited precision arithmetic**, or **advanced pattern matching**. For general-purpose programming, consider other languages in the ecosystem. 
