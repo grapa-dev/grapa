@@ -167,13 +167,13 @@ public:
 	~GrapaDebug();
 	
 	// Original debug print methods
-	void DebugPrint(const char* pStr, bool flush = true);
-	void DebugPrint(const GrapaCHAR& pValue, bool flush = true);
+	void DebugPrint(const char* pStr);
+	void DebugPrint(const GrapaCHAR& pValue);
 	
 	// Component-specific debug methods
 	bool ShouldDebug(const char* component, int minLevel = 0);
-	void DebugPrint(const char* component, const char* pStr, int level = 0, bool flush = true);
-	void DebugPrint(const char* component, const GrapaCHAR& pValue, int level = 0, bool flush = true);
+	void DebugPrint(const char* component, const char* pStr, int level = 0);
+	void DebugPrint(const char* component, const GrapaCHAR& pValue, int level = 0);
 	
 	// Component-specific debug level parsing
 	int GetComponentDebugLevel(const char* component);

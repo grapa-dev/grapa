@@ -318,7 +318,7 @@ public:
 	// Original debug print methods
 	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* pStr);
 	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const GrapaCHAR& pValue);
-	
+
 	// Component-specific debug methods
 	bool ShouldDebug(const char* component, int minLevel = 0);
 	void DebugPrint(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, const char* component, const char* pStr, int level = 0);

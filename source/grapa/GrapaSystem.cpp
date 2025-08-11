@@ -74,23 +74,21 @@ GrapaDebug::~GrapaDebug()
 {
 }
 
-void GrapaDebug::DebugPrint(const char* pStr, bool flush)
+void GrapaDebug::DebugPrint(const char* pStr)
 {
 	if (!mDebugMode) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	fprintf(stderr, "[DEBUG] %s", pStr);
-	if (flush) fflush(stderr);
+	printf( "[DEBUG] %s\n", pStr);
 	gSystem->mPrintLock.LeaveCritical();
 }
 
-void GrapaDebug::DebugPrint(const GrapaCHAR& pValue, bool flush)
+void GrapaDebug::DebugPrint(const GrapaCHAR& pValue)
 {
 	if (!mDebugMode) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	fprintf(stderr, "[DEBUG] %.*s", (int)pValue.mLength, (char*)pValue.mBytes);
-	if (flush) fflush(stderr);
+	printf("[DEBUG] %.*s\n", (int)pValue.mLength, (char*)pValue.mBytes);
 	gSystem->mPrintLock.LeaveCritical();
 }
 
@@ -181,23 +179,21 @@ bool GrapaDebug::ShouldDebug(const char* component, int minLevel)
 	return componentLevel >= minLevel;
 }
 
-void GrapaDebug::DebugPrint(const char* component, const char* pStr, int level, bool flush)
+void GrapaDebug::DebugPrint(const char* component, const char* pStr, int level)
 {
 	if (!ShouldDebug(component, level)) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	fprintf(stderr, "[DEBUG-%s] %s", component, pStr);
-	if (flush) fflush(stderr);
+	printf("[DEBUG-%s] %s\n", component, pStr);
 	gSystem->mPrintLock.LeaveCritical();
 }
 
-void GrapaDebug::DebugPrint(const char* component, const GrapaCHAR& pValue, int level, bool flush)
+void GrapaDebug::DebugPrint(const char* component, const GrapaCHAR& pValue, int level)
 {
 	if (!ShouldDebug(component, level)) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	fprintf(stderr, "[DEBUG-%s] %.*s", component, (int)pValue.mLength, (char*)pValue.mBytes);
-	if (flush) fflush(stderr);
+	printf( "[DEBUG-%s] %.*s\n", component, (int)pValue.mLength, (char*)pValue.mBytes);
 	gSystem->mPrintLock.LeaveCritical();
 }
 
