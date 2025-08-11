@@ -18,21 +18,21 @@ This document provides a comprehensive analysis of the Grapa grammar (`lib/grapa
 
 Grapa's core strength is the ability to define programming languages purely through rule changes while leveraging comprehensive underlying C++ libraries. This analysis identifies:
 
-1. **Pure Rule Changes** - Can be implemented immediately using `custom_command` and `custom_function` with existing C++ libraries
+1. **Pure Rule Changes** - Can be implemented immediately using direct BNF integration with existing C++ libraries
 2. **C++ Library Extensions** - Require new C++ library functions but no core language changes
 3. **Core Language Changes** - Require modifications to the fundamental language infrastructure
 
-### **Key Distinction: custom_command vs custom_function**
+### **Key Distinction: BNF Integration vs Isolated Rules**
 
-- **`custom_command`**: For actions that don't return values (loops, commands, statements)
-  - Integrated into `$command` rule (line 648)
-  - Used for control flow, commands, actions
-  - Example: for loops, custom commands
+#### **Primary Approach: Direct BNF Integration**
+- **Control Structures**: Add to `$command` rule using `@<function_name,{parameters}>` pattern
+- **Expressions**: Add to `$comp` rule using `@<function_name,{parameters}>` pattern
+- **Example**: `| for '(' <$comp> ';' <$comp> ';' <$comp> ')' <$command> {@<for,{$3,$5,$7,$9}>}`
 
-- **`custom_function`**: For expressions that return values (operators, functions, expressions)
-  - Integrated into `$function` rule (line 510)
-  - Used for expressions, operators, value-returning syntax
-  - Example: enhanced assignment operators, string interpolation, range functions
+#### **Secondary Approach: Isolated Rule Execution**
+- **`custom_command`**: For domain-specific processing (ETL, DSLs)
+- **`custom_function`**: For domain-specific expressions
+- **Example**: SQL syntax, configuration languages, protocol parsers
 
 ## Current Grammar Analysis
 
@@ -53,7 +53,7 @@ Grapa's core strength is the ability to define programming languages purely thro
     | break {@<break,{}>}
     | return '(' <$comp> ')' {@<return,{$3}>}
     | exit {@<exit,{}>}
-    | <custom_command>  /* ← Extension point for new syntax */
+    | <custom_command>  /* ← Domain-specific processing */
     | <$litname> '=' <$comp> {@<assign,{$1,$3}>}
     /* ... assignment operators ... */
     | <$comp>
@@ -239,18 +239,18 @@ custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:
 ```
 
 **Implementation:** Pure rule changes using existing database and string libraries.
-**Execution Pattern:**
+**Usage Pattern:**
 ```grapa
-/* Define SQL syntax */
+/* Define SQL syntax as variables */
 custom_command = rule select $STR from $STR { ... };
 custom_function = rule count '(' $STR ')' from $STR { ... };
 
-/* Execute using op(parse)() */
-op(parse)("select * from users")();           /* Action */
-result = op(parse)("count(*) from users")();  /* Expression */
+/* Use directly like any other syntax */
+select * from users;           /* Action */
+result = count(*) from users;  /* Expression */
 ```
 
-**Key Discovery:** SQL syntax can be implemented purely through rule changes, demonstrating Grapa's power for native multi-syntax support (SQL, JSON, XML, HTML).
+**Key Discovery:** SQL syntax can be implemented purely through rule changes using `custom_command` and `custom_function` as variables that leverage existing grammar rules, demonstrating Grapa's power for native multi-syntax support (SQL, JSON, XML, HTML).
 
 #### **List Comprehension - using custom_function**
 ```grapa

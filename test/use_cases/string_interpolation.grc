@@ -1,0 +1,120 @@
+/*
+ * String Interpolation Implementation
+ * 
+ * Implements template string interpolation using custom_function mechanism.
+ * Supports ${expression} syntax for embedding expressions in strings.
+ */
+
+/* ========================================
+ * String Interpolation: ${expression}
+ * ======================================== */
+custom_function = rule '$' '{' <$comp> '}' {
+    op(expression:$3){
+        /* Evaluate the expression and return its string representation */
+        result = op()(expression)();
+        result.str();
+    }
+};
+
+/* ========================================
+ * COMPREHENSIVE TESTING
+ * ======================================== */
+
+("=== STRING INTERPOLATION TESTS ===").echo();
+("").echo();
+
+/* Test 1: Basic variable interpolation */
+("Test 1: Basic variable interpolation").echo();
+name = "Alice";
+age = 30;
+message = "Hello, ${name}! You are ${age} years old.";
+message.echo();
+("").echo();
+
+/* Test 2: Expression interpolation */
+("Test 2: Expression interpolation").echo();
+x = 10;
+y = 5;
+result = "The sum of ${x} and ${y} is ${x + y}.";
+result.echo();
+("").echo();
+
+/* Test 3: Complex expressions */
+("Test 3: Complex expressions").echo();
+a = 3;
+b = 4;
+c = 5;
+formula = "For a=${a}, b=${b}, c=${c}: a² + b² = ${a**2 + b**2}, c² = ${c**2}";
+formula.echo();
+("").echo();
+
+/* Test 4: String concatenation in interpolation */
+("Test 4: String concatenation in interpolation").echo();
+first = "John";
+last = "Doe";
+full_name = "Full name: ${first + ' ' + last}";
+full_name.echo();
+("").echo();
+
+/* Test 5: Conditional expressions */
+("Test 5: Conditional expressions").echo();
+score = 85;
+grade = "Your score is ${score}, which is ${score >= 90 ? 'excellent' : score >= 80 ? 'good' : 'needs improvement'}.";
+grade.echo();
+("").echo();
+
+/* Test 6: Function calls in interpolation */
+("Test 6: Function calls in interpolation").echo();
+numbers = [1, 2, 3, 4, 5];
+stats = "Array: ${numbers}, Length: ${numbers.len()}, Sum: ${numbers.sum()}";
+stats.echo();
+("").echo();
+
+/* Test 7: Nested interpolation */
+("Test 7: Nested interpolation").echo();
+outer = "outer";
+inner = "inner";
+nested = "This is ${outer} with ${inner} interpolation: ${'nested ${inner}'}";
+nested.echo();
+("").echo();
+
+/* Test 8: Multiple interpolations in one string */
+("Test 8: Multiple interpolations in one string").echo();
+day = "Monday";
+temp = 72;
+weather = "sunny";
+forecast = "Today is ${day}, temperature is ${temp}°F, weather is ${weather}.";
+forecast.echo();
+("").echo();
+
+/* Test 9: Mathematical expressions */
+("Test 9: Mathematical expressions").echo();
+radius = 5;
+pi = 3.14159;
+area = "Circle with radius ${radius} has area: ${pi * radius**2}";
+area.echo();
+("").echo();
+
+/* Test 10: Boolean expressions */
+("Test 10: Boolean expressions").echo();
+is_raining = true;
+is_cold = false;
+condition = "Weather check: Raining=${is_raining}, Cold=${is_cold}, Stay inside=${is_raining && is_cold}";
+condition.echo();
+("").echo();
+
+/* Test 11: List/Array interpolation */
+("Test 11: List/Array interpolation").echo();
+fruits = ["apple", "banana", "orange"];
+list_info = "Fruits: ${fruits}, Count: ${fruits.len()}, First: ${fruits[1]}";
+list_info.echo();
+("").echo();
+
+/* Test 12: Error handling - undefined variable */
+("Test 12: Error handling - undefined variable").echo();
+/* This will show how undefined variables are handled */
+undefined_test = "Testing undefined: ${undefined_var}";
+undefined_test.echo();
+("").echo();
+
+("=== ALL STRING INTERPOLATION TESTS COMPLETED ===").echo(); 

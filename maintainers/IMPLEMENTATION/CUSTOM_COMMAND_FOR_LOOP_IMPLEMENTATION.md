@@ -12,7 +12,7 @@ tags:
 
 ## Overview
 
-This document explains how to implement a custom "for" loop in Grapa using the `custom_command` mechanism. This approach allows you to extend Grapa's grammar with new syntax that feels natural to developers from Python, JavaScript, and other mainstream languages.
+This document explains how to implement a custom "for" loop in Grapa using the `custom_command` mechanism for isolated rule execution. This approach demonstrates domain-specific syntax extension, though for native language features, direct BNF integration would be preferred.
 
 ## Architecture
 
@@ -35,7 +35,7 @@ The `custom_command` rule is already integrated into Grapa's grammar in `lib/gra
     | break {@<break,{}>}
     | return '(' <$comp> ')' {@<return,{$3}>}
     | exit {@<exit,{}>}
-    | <custom_command>  /* ← This is where custom commands are injected */
+    | <custom_command>  /* ← Domain-specific processing */
     | <$litname> '=' <$comp> {@<assign,{$1,$3}>}
     /* ... other command patterns ... */
     ;

@@ -577,53 +577,63 @@ if (vScriptState->mDebug.ShouldDebug("executor", 1)) {
 };
 ```
 
-### 2. **Custom Command and Function Integration**
+### 2. **Syntax Extension Approaches**
 
-**Critical Distinction:**
-- **`custom_command`**: For actions that perform operations (no return value)
-- **`custom_function`**: For expressions that return values
+**Primary Approach: Direct BNF Integration**
+Add syntax directly to existing BNF rules using `@<function_name,{parameters}>` pattern:
 
-**Integration Points:**
 ```grapa
-@global["$command"]
-    = rule '{' <$command_list> ';' '}' {@<scope,{$2}>}
-    // ... other commands ...
-    | <custom_command>  /* ← Actions (loops, commands, statements) */
-    // ... other commands ...
-    ;
+/* Add to $command rule for control structures */
+| for '(' <$comp> ';' <$comp> ';' <$comp> ')' <$command> {@<for,{$3,$5,$7,$9}>}
+| for $ID in <$comp> <$command> {@<forin,{$2,$4,$6}>}
 
-@global["$function"]
-    = rule '[' ']' {@<createarray,{}>}
-    // ... other functions/expressions ...
-    | <custom_function>  /* ← Expressions (operators, functions) */
-    // ... other functions/expressions ...
-    ;
+/* Add to $comp rule for expressions */
+| '$' '{' <$comp> '}' {@<interpolate,{$3}>}
+| range '(' <$comp> ')' {@<range,{$3}>}
+| '[' <$comp> for $ID in <$comp> ']' {@<comprehension,{$2,$4,$6}>}
+| <$compsetGtLt> '<=>' <$compsetTW> {@<spaceship,{$1,$3}>}
 ```
 
-**Execution Pattern:**
+**Secondary Approach: Custom Command/Function Variables**
+Use `custom_command`/`custom_function` as variables of type `$RULE` that leverage existing `$comp` and `$command` rules:
+
 ```grapa
-/* Define custom syntax */
-custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
-    /* Implementation */
-}};
+/* custom_command - leverages existing $comp and $command rules */
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Uses existing $comp and $command rules */
+        op()(var + " = " + start)();
+        while (op()(var + " <= " + end)()) {
+            op()(body)();
+            op()(var + " = " + var + " + 1")();
+        };
+    }
+};
 
-custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table:$6){
-    /* Implementation */
-    return result;
-}};
+/* custom_function - leverages existing $comp rules */
+custom_function = rule <$comp> '*=' <$comp> {
+    op(left:$1, right:$3){
+        result = op()(left)() * op()(right)();
+        op()(left + " = " + result)();
+        result;
+    }
+};
 
-/* Execute using op(parse)() */
-op(parse)("select * from users")();           /* Action */
-result = op(parse)("count(*) from users")();  /* Expression */
+/* Usage - rules are just variables */
+for i from 1 to 5 { ("Count: " + i).echo(); };
+x = 10; x *= 3; ("x = " + x).echo();
 ```
+
+**Key Insight:** `custom_command` and `custom_function` are variables of type `$RULE` that can leverage the existing `$comp` and `$command` rules without modifying `$grapa.grc`. They run in the same session as the loaded grammar.
 
 **Key Implementation Pattern:**
-The `op(parse)()` pattern is crucial for executing custom syntax:
-1. `op()` creates an `$OP` object
-2. `op()(script)` compiles the script string into an executable operation
-3. `op()(script)()` executes the compiled operation
+The `custom_command` and `custom_function` mechanisms work by:
+1. **Variable Assignment**: `custom_command` and `custom_function` are variables of type `$RULE`
+2. **Rule Definition**: They define new grammar rules that leverage existing `$comp` and `$command` rules
+3. **Session Integration**: They run in the same session as the loaded `$grapa.grc` grammar
+4. **Direct Usage**: Once defined, they can be used directly like any other language syntax
 
-This pattern enables dynamic code execution and custom syntax injection.
+This pattern enables extending Grapa's syntax without modifying the core grammar file.
 
 ### 2. **Data Processing Pipelines**
 

@@ -1,0 +1,179 @@
+/*
+ * Enhanced Assignment Operators Implementation
+ * 
+ * Implements `*=`, `/=`, `%=`, `**=` operators using custom_function mechanism.
+ * These operators perform the operation and assignment in one step.
+ */
+
+/* ========================================
+ * Multiplication Assignment: *=
+ * ======================================== */
+custom_function = rule <$comp> '*=' <$comp> {
+    op(left:$1, right:$3){
+        /* Get the current value of the left operand */
+        left_value = op()(left)();
+        
+        /* Perform multiplication and assign back */
+        result = left_value * right;
+        op()(left + " = " + result)();
+        
+        /* Return the result */
+        result;
+    }
+};
+
+/* ========================================
+ * Division Assignment: /=
+ * ======================================== */
+custom_function = rule <$comp> '/=' <$comp> {
+    op(left:$1, right:$3){
+        /* Get the current value of the left operand */
+        left_value = op()(left)();
+        
+        /* Check for division by zero */
+        if (right == 0) {
+            ("Error: Division by zero").echo();
+            return left_value;
+        };
+        
+        /* Perform division and assign back */
+        result = left_value / right;
+        op()(left + " = " + result)();
+        
+        /* Return the result */
+        result;
+    }
+};
+
+/* ========================================
+ * Modulo Assignment: %=
+ * ======================================== */
+custom_function = rule <$comp> '%=' <$comp> {
+    op(left:$1, right:$3){
+        /* Get the current value of the left operand */
+        left_value = op()(left)();
+        
+        /* Check for modulo by zero */
+        if (right == 0) {
+            ("Error: Modulo by zero").echo();
+            return left_value;
+        };
+        
+        /* Perform modulo and assign back */
+        result = left_value % right;
+        op()(left + " = " + result)();
+        
+        /* Return the result */
+        result;
+    }
+};
+
+/* ========================================
+ * Exponentiation Assignment: **=
+ * ======================================== */
+custom_function = rule <$comp> '**=' <$comp> {
+    op(left:$1, right:$3){
+        /* Get the current value of the left operand */
+        left_value = op()(left)();
+        
+        /* Perform exponentiation and assign back */
+        result = left_value ** right;
+        op()(left + " = " + result)();
+        
+        /* Return the result */
+        result;
+    }
+};
+
+/* ========================================
+ * COMPREHENSIVE TESTING
+ * ======================================== */
+
+("=== ENHANCED ASSIGNMENT OPERATORS TESTS ===").echo();
+("").echo();
+
+/* Test 1: Multiplication Assignment (*=) */
+("Test 1: Multiplication Assignment (*=)").echo();
+x = 5;
+("  Initial x = " + x).echo();
+result = x *= 3;
+("  After x *= 3: x = " + x + ", result = " + result).echo();
+("").echo();
+
+/* Test 2: Division Assignment (/=) */
+("Test 2: Division Assignment (/=)").echo();
+y = 15;
+("  Initial y = " + y).echo();
+result = y /= 3;
+("  After y /= 3: y = " + y + ", result = " + result).echo();
+("").echo();
+
+/* Test 3: Modulo Assignment (%=) */
+("Test 3: Modulo Assignment (%=)").echo();
+z = 17;
+("  Initial z = " + z).echo();
+result = z %= 5;
+("  After z %= 5: z = " + z + ", result = " + result).echo();
+("").echo();
+
+/* Test 4: Exponentiation Assignment (**=) */
+("Test 4: Exponentiation Assignment (**=)").echo();
+w = 2;
+("  Initial w = " + w).echo();
+result = w **= 3;
+("  After w **= 3: w = " + w + ", result = " + result).echo();
+("").echo();
+
+/* Test 5: Chaining operations */
+("Test 5: Chaining operations").echo();
+a = 10;
+("  Initial a = " + a).echo();
+a *= 2;
+("  After a *= 2: a = " + a).echo();
+a /= 4;
+("  After a /= 4: a = " + a).echo();
+a **= 2;
+("  After a **= 2: a = " + a).echo();
+("").echo();
+
+/* Test 6: Error handling - division by zero */
+("Test 6: Error handling - division by zero").echo();
+b = 10;
+("  Initial b = " + b).echo();
+result = b /= 0;
+("  After b /= 0: b = " + b + ", result = " + result).echo();
+("").echo();
+
+/* Test 7: Error handling - modulo by zero */
+("Test 7: Error handling - modulo by zero").echo();
+c = 10;
+("  Initial c = " + c).echo();
+result = c %= 0;
+("  After c %= 0: c = " + c + ", result = " + result).echo();
+("").echo();
+
+/* Test 8: Complex expressions */
+("Test 8: Complex expressions").echo();
+d = 5;
+("  Initial d = " + d).echo();
+result = (d *= 2) + 3;
+("  After (d *= 2) + 3: d = " + d + ", result = " + result).echo();
+("").echo();
+
+/* Test 9: Float operations */
+("Test 9: Float operations").echo();
+e = 10.5;
+("  Initial e = " + e).echo();
+result = e *= 2.5;
+("  After e *= 2.5: e = " + e + ", result = " + result).echo();
+("").echo();
+
+/* Test 10: Large numbers */
+("Test 10: Large numbers").echo();
+f = 1000000;
+("  Initial f = " + f).echo();
+result = f **= 2;
+("  After f **= 2: f = " + f + ", result = " + result).echo();
+("").echo();
+
+("=== ALL ENHANCED ASSIGNMENT OPERATOR TESTS COMPLETED ===").echo(); 

@@ -1,0 +1,48 @@
+/* Simple For Loop Test */
+
+/* Define for loop patterns */
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Set initial value */
+        op()(var + " = " + start)();
+        
+        /* Loop from start to end (inclusive) */
+        current = start;
+        while (current <= end) {
+            /* Execute the loop body */
+            op()(body)();
+            
+            /* Increment the variable */
+            current += 1;
+            op()(var + " = " + current)();
+        };
+    }
+};
+
+custom_command = rule for $ID in <$comp> <$command> {
+    op(var:$2, range:$4, body:$6){
+        /* Handle integer range */
+        if (range.type() == "$INT") {
+            i = 0;
+            while (i < range) {
+                op()(var + " = " + i)();
+                op()(body)();
+                i += 1;
+            };
+        };
+    }
+};
+
+/* Test basic for loop */
+("Testing for loop from 1 to 3:").echo();
+for i from 1 to 3 {
+    ("  i = " + i).echo();
+};
+
+/* Test range-based for loop */
+("Testing range-based for loop (0 to 2):").echo();
+for j in 3 {
+    ("  j = " + j).echo();
+};
+
+("For loop tests completed!").echo(); 

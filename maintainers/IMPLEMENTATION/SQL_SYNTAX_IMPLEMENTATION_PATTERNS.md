@@ -13,28 +13,29 @@ tags:
 
 ## Overview
 
-This document captures the implementation patterns discovered for adding native SQL syntax to Grapa using the `custom_command` and `custom_function` mechanisms. These patterns demonstrate how Grapa can support multiple native syntaxes (SQL, JSON, XML, HTML) purely through rule changes.
+This document captures the implementation patterns discovered for adding native SQL syntax to Grapa using `custom_command` and `custom_function` as variables. These patterns demonstrate how Grapa can support domain-specific syntaxes (SQL, configuration languages, protocol parsers) through variables that leverage existing grammar rules.
 
 ## Key Discoveries
 
 ### 1. **Critical Distinction: custom_command vs custom_function**
 
 **`custom_command`**: For actions that perform operations (no return value)
-- Used for SQL statements like `SELECT`, `INSERT`, `UPDATE`, `DELETE`
-- Integrated into the `$command` rule in `lib/grapa/$grapa.grc`
+- Used for domain-specific statements like `SELECT`, `INSERT`, `UPDATE`, `DELETE`
+- Used as variables of type `$RULE` that leverage existing `$comp` and `$command` rules
 - Executes actions and displays results
 
 **`custom_function`**: For expressions that return values
-- Used for SQL functions like `COUNT`, `SUM`, `AVG`
-- Integrated into the `$function` rule in `lib/grapa/$grapa.grc`
+- Used for domain-specific functions like `COUNT`, `SUM`, `AVG`
+- Used as variables of type `$RULE` that leverage existing `$comp` rules
 - Returns values that can be assigned to variables
 
-### 2. **Execution Pattern: op(parse)()**
+### 2. **Usage Pattern: Direct Syntax**
 
-The `op(parse)()` pattern is crucial for executing custom syntax:
-1. `op()` creates an `$OP` object
-2. `op()(script)` compiles the script string into an executable operation
-3. `op()(script)()` executes the compiled operation
+The `custom_command` and `custom_function` mechanisms work by:
+1. **Variable Assignment**: `custom_command` and `custom_function` are variables of type `$RULE`
+2. **Rule Definition**: They define new grammar rules that leverage existing `$comp` and `$command` rules
+3. **Session Integration**: They run in the same session as the loaded `$grapa.grc` grammar
+4. **Direct Usage**: Once defined, they can be used directly like any other language syntax
 
 ## Implementation Examples
 
@@ -104,9 +105,9 @@ custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("Query returned " + records.len() + " rows").echo();
 }};
 
-/* Execute SELECT */
-op(parse)("select * from users")();
-op(parse)("select name,age from users")();
+/* Use SELECT directly */
+select * from users;
+select name,age from users;
 ```
 
 ### COUNT Function (custom_function)
@@ -203,7 +204,7 @@ op(parse)("insert into users values David,40,Seattle")();
     | break {@<break,{}>}
     | return '(' <$comp> ')' {@<return,{$3}>}
     | exit {@<exit,{}>}
-    | <custom_command>  /* ← SQL commands (SELECT, INSERT, UPDATE, DELETE) */
+    | <custom_command>  /* ← Domain-specific processing (SQL, ETL, DSLs) */
     | <$litname> '=' <$comp> {@<assign,{$1,$3}>}
     | <$comp> '=' <$comp> {@<assign,{$1,$3}>}
     | <$comp>
@@ -332,7 +333,7 @@ if (op(parse)("count(*) from users")() > 1) {
 ## Key Insights
 
 ### 1. **Architectural Power**
-The `custom_command` and `custom_function` mechanisms enable Grapa to support multiple native syntaxes purely through rule changes, without modifying core language infrastructure.
+The `custom_command` and `custom_function` mechanisms enable Grapa to support domain-specific syntaxes through isolated rule execution, without modifying core language infrastructure.
 
 ### 2. **Execution Pattern**
 The `op(parse)()` pattern provides a clean way to execute custom syntax after it's defined, enabling dynamic language extension.
@@ -345,7 +346,7 @@ This pattern can be extended to support:
 - **Regex**: Native regex syntax and operations
 
 ### 4. **Implementation Strategy**
-1. **Define syntax** using `custom_command` (actions) and `custom_function` (expressions)
+1. **Define syntax** using `custom_command` (domain-specific actions) and `custom_function` (domain-specific expressions)
 2. **Implement logic** using existing C++ libraries
 3. **Execute** using `op(parse)()` pattern
 4. **Integrate** into grammar at the appropriate points

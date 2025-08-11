@@ -122,44 +122,49 @@ filter_function = @<grep,{@<this>,@<lit,{"pattern"}>}>;
 
 ## Language Extensibility Patterns
 
-### **1. Custom Commands and Functions**
+### **1. Syntax Extension Approaches**
 
-**Critical Distinction:**
-- **`custom_command`**: For actions that perform operations (no return value)
-- **`custom_function`**: For expressions that return values
+#### **Primary Approach: Direct BNF Integration**
+Add syntax directly to existing BNF rules using `@<function_name,{parameters}>` pattern:
 
-**Integration Points:**
 ```grapa
-@global["$command"]
-    = rule '{' <$command_list> ';' '}' {@<scope,{$2}>}
-    // ... other commands ...
-    | <custom_command>  /* ← Actions (loops, commands, statements) */
-    // ... other commands ...
-    ;
+/* Add to $command rule for control structures */
+| for '(' <$comp> ';' <$comp> ';' <$comp> ')' <$command> {@<for,{$3,$5,$7,$9}>}
+| for $ID in <$comp> <$command> {@<forin,{$2,$4,$6}>}
 
-@global["$function"]
-    = rule '[' ']' {@<createarray,{}>}
-    // ... other functions/expressions ...
-    | <custom_function>  /* ← Expressions (operators, functions) */
-    // ... other functions/expressions ...
-    ;
+/* Add to $comp rule for expressions */
+| '$' '{' <$comp> '}' {@<interpolate,{$3}>}
+| range '(' <$comp> ')' {@<range,{$3}>}
 ```
 
-**Execution Pattern:**
+#### **Secondary Approach: Custom Command/Function Variables**
+Use `custom_command`/`custom_function` as variables that leverage existing grammar rules:
+
 ```grapa
-/* Define custom syntax */
-custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
-    /* Implementation */
-}};
+/* custom_command - leverages existing $comp and $command rules */
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Uses existing $comp and $command rules */
+        op()(var + " = " + start)();
+        while (op()(var + " <= " + end)()) {
+            op()(body)();
+            op()(var + " = " + var + " + 1")();
+        };
+    }
+};
 
-custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table:$6){
-    /* Implementation */
-    return result;
-}};
+/* custom_function - leverages existing $comp rules */
+custom_function = rule <$comp> '*=' <$comp> {
+    op(left:$1, right:$3){
+        result = op()(left)() * op()(right)();
+        op()(left + " = " + result)();
+        result;
+    }
+};
 
-/* Execute using op(parse)() */
-op(parse)("select * from users")();           /* Action */
-result = op(parse)("count(*) from users")();  /* Expression */
+/* Use directly like any other syntax */
+for i from 1 to 5 { ("Count: " + i).echo(); };
+x = 10; x *= 3; ("x = " + x).echo();
 ```
 
 ### **2. Dynamic Grammar Modification**
@@ -511,7 +516,7 @@ api = op(parse)('api "user_api" {
 
 ### **3. Integration**
 1. **Leverage Existing Libraries**: Use Grapa's C++ libraries when possible
-2. **Follow Patterns**: Use established patterns like `custom_command`/`custom_function`
+2. **Follow Patterns**: Use established patterns like direct BNF integration for native features, `custom_command`/`custom_function` as variables that leverage existing grammar rules
 3. **Test Thoroughly**: Validate grammar rules with comprehensive testing
 4. **Version Control**: Track grammar changes and maintain compatibility
 

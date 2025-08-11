@@ -1,0 +1,228 @@
+/*
+ * Production For Loop Implementation
+ * 
+ * Comprehensive implementation of for loops using custom_command mechanism.
+ * This serves as the proof of concept and specification for future C++ implementation.
+ * 
+ * Supported patterns:
+ * 1. for var from start to end { body }
+ * 2. for var from start to end step increment { body }
+ * 3. for var in range { body }
+ * 4. for var in list { body }
+ * 5. for var in table table_name { body }
+ */
+
+/* ========================================
+ * Pattern 1: Start-to-end for loop
+ * for var from start to end { body }
+ * ======================================== */
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Validate inputs */
+        if (start.type() != "$INT" || end.type() != "$INT") {
+            ("Error: Start and end must be integers").echo();
+            return;
+        };
+        
+        /* Set initial value */
+        op()(var + " = " + start)();
+        
+        /* Loop from start to end (inclusive) */
+        current = start;
+        while (current <= end) {
+            /* Execute the loop body */
+            op()(body)();
+            
+            /* Increment the variable */
+            current += 1;
+            op()(var + " = " + current)();
+        };
+    }
+};
+
+/* ========================================
+ * Pattern 2: Start-to-end with step
+ * for var from start to end step increment { body }
+ * ======================================== */
+custom_command = rule for $ID from <$comp> to <$comp> step <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, step:$8, body:$10){
+        /* Validate inputs */
+        if (start.type() != "$INT" || end.type() != "$INT" || step.type() != "$INT") {
+            ("Error: Start, end, and step must be integers").echo();
+            return;
+        };
+        
+        if (step == 0) {
+            ("Error: Step cannot be zero").echo();
+            return;
+        };
+        
+        /* Set initial value */
+        op()(var + " = " + start)();
+        
+        /* Loop from start to end with step */
+        current = start;
+        if (step > 0) {
+            /* Forward iteration */
+            while (current <= end) {
+                op()(body)();
+                current += step;
+                op()(var + " = " + current)();
+            };
+        } else {
+            /* Backward iteration */
+            while (current >= end) {
+                op()(body)();
+                current += step;
+                op()(var + " = " + current)();
+            };
+        };
+    }
+};
+
+/* ========================================
+ * Pattern 3: Range-based for loop
+ * for var in range { body }
+ * ======================================== */
+custom_command = rule for $ID in <$comp> <$command> {
+    op(var:$2, range:$4, body:$6){
+        /* Handle different range types */
+        if (range.type() == "$INT") {
+            /* Single integer - iterate from 0 to range-1 */
+            i = 0;
+            while (i < range) {
+                op()(var + " = " + i)();
+                op()(body)();
+                i += 1;
+            };
+        } else if (range.type() == "$LIST" || range.type() == "$ARRAY") {
+            /* List/Array iteration */
+            i = 1;
+            while (i <= range.len()) {
+                op()(var + " = " + range[i])();
+                op()(body)();
+                i += 1;
+            };
+        } else if (range.type() == "$STR") {
+            /* String iteration - character by character */
+            i = 1;
+            while (i <= range.len()) {
+                op()(var + " = '" + range[i] + "'")();
+                op()(body)();
+                i += 1;
+            };
+        } else {
+            ("Error: Cannot iterate over type " + range.type()).echo();
+        };
+    }
+};
+
+/* ========================================
+ * Pattern 4: Table iteration
+ * for var in table table_name { body }
+ * ======================================== */
+custom_command = rule for $ID in table <$comp> <$command> {
+    op(var:$2, table_name:$4, body:$6){
+        /* Get table reference */
+        table_ref = $file().table(table_name);
+        
+        if (table_ref.type() == "$TABLE") {
+            /* Iterate through table rows */
+            row_count = table_ref.count();
+            i = 1;
+            while (i <= row_count) {
+                /* Get current row */
+                current_row = table_ref.row(i);
+                op()(var + " = " + current_row)();
+                
+                /* Execute loop body */
+                op()(body)();
+                
+                i += 1;
+            };
+        } else {
+            ("Error: " + table_name + " is not a valid table").echo();
+        };
+    }
+};
+
+/* ========================================
+ * COMPREHENSIVE TESTING
+ * ======================================== */
+
+("=== FOR LOOP PRODUCTION IMPLEMENTATION TESTS ===").echo();
+("").echo();
+
+/* Test 1: Start-to-end for loop */
+("Test 1: Start-to-end for loop").echo();
+for i from 1 to 5 {
+    ("  Count: " + i).echo();
+};
+("").echo();
+
+/* Test 2: Start-to-end with step (forward) */
+("Test 2: Start-to-end with step (forward)").echo();
+for j from 0 to 10 step 2 {
+    ("  Even number: " + j).echo();
+};
+("").echo();
+
+/* Test 3: Start-to-end with step (backward) */
+("Test 3: Start-to-end with step (backward)").echo();
+for k from 10 to 0 step -2 {
+    ("  Countdown: " + k).echo();
+};
+("").echo();
+
+/* Test 4: Range-based for loop with integer */
+("Test 4: Range-based for loop (integer)").echo();
+for m in 3 {
+    ("  Range iteration " + m).echo();
+};
+("").echo();
+
+/* Test 5: Range-based for loop with list */
+("Test 5: Range-based for loop (list)").echo();
+colors = ["red", "green", "blue"];
+for color in colors {
+    ("  Color: " + color).echo();
+};
+("").echo();
+
+/* Test 6: Range-based for loop with string */
+("Test 6: Range-based for loop (string)").echo();
+for char in "hello" {
+    ("  Character: " + char).echo();
+};
+("").echo();
+
+/* Test 7: Error handling - invalid step */
+("Test 7: Error handling - invalid step").echo();
+for p from 1 to 5 step 0 {
+    ("  This should not execute").echo();
+};
+("").echo();
+
+/* Test 8: Nested for loops */
+("Test 8: Nested for loops").echo();
+for x from 1 to 3 {
+    for y from 1 to 3 {
+        ("  (" + x + "," + y + ")").echo();
+    };
+};
+("").echo();
+
+/* Test 9: For loop with break simulation */
+("Test 9: For loop with break simulation").echo();
+for q from 1 to 10 {
+    if (q > 5) {
+        ("  Breaking at " + q).echo();
+        /* In real implementation, this would be a break statement */
+        q = 11; /* Force exit */
+    } else {
+        ("  Normal iteration " + q).echo();
+    };
+};
+("").echo();
+
+("=== ALL FOR LOOP TESTS COMPLETED ===").echo(); 

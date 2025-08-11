@@ -23,9 +23,26 @@ Grapa's `$RULE` system goes beyond traditional parsing - it's an executable BNF 
 - **Build execution trees** for later evaluation
 - **Support multiple syntaxes** simultaneously
 
-### **Custom Command vs Custom Function**
-- **`custom_command`**: For actions that perform operations (no return value)
-- **`custom_function`**: For expressions that return values
+### **Syntax Extension Approaches**
+
+#### **Primary Approach: Direct BNF Integration**
+Add syntax directly to existing BNF rules using `@<function_name,{parameters}>` pattern:
+
+```grapa
+/* Add to $command rule for control structures */
+| for '(' <$comp> ';' <$comp> ';' <$comp> ')' <$command> {@<for,{$3,$5,$7,$9}>}
+| for $ID in <$comp> <$command> {@<forin,{$2,$4,$6}>}
+
+/* Add to $comp rule for expressions */
+| '$' '{' <$comp> '}' {@<interpolate,{$3}>}
+| range '(' <$comp> ')' {@<range,{$3}>}
+```
+
+#### **Secondary Approach: Custom Command/Function Variables**
+Use `custom_command`/`custom_function` as variables that leverage existing grammar rules:
+
+- **`custom_command`**: For domain-specific actions (ETL, DSLs, protocol parsers) - leverages `$comp` and `$command` rules
+- **`custom_function`**: For domain-specific expressions - leverages `$comp` rules
 
 ### **Lexical Processing and Flags**
 For complex formats like XML and HTML, Grapa uses lexical flags to activate special processing:
@@ -52,10 +69,10 @@ processed = html_data.encode("HTML-GRAPA");
 
 ### **Basic SQL Usage**
 
-Grapa demonstrates SQL syntax integration through example scripts that show how to add custom SQL syntax to the language:
+Grapa demonstrates SQL syntax integration through example scripts that show how to add domain-specific SQL syntax using `custom_command` and `custom_function` as variables:
 
 ```grapa
-/* Define SQL syntax */
+/* Define SQL syntax as variables */
 custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("SQL SELECT: " + fields + " FROM " + table_name).echo();
     /* Database query implementation */
@@ -67,9 +84,9 @@ custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
     return records.len();
 }};
 
-/* Execute SQL syntax */
-op(parse)("select * from users")();
-user_count = op(parse)("count(*) from users")();
+/* Use SQL syntax directly */
+select * from users;
+user_count = count(*) from users;
 ```
 
 ### **Advanced SQL Features**
@@ -87,9 +104,9 @@ custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clau
     /* Update implementation */
 }};
 
-/* Execute complex SQL (via example scripts) */
-op(parse)("insert into users values John,25,New York")();
-op(parse)("update users set age=26 where name=John")();
+/* Use complex SQL directly (via example scripts) */
+insert into users values John,25,New York;
+update users set age=26 where name=John;
 ```
 
 ## JSON Syntax Support

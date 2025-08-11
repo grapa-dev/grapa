@@ -16,7 +16,7 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 ### **Language Extension Examples**
 | Example | Description |
 |---------|-------------|
-| [SQL Syntax Example](examples/sql_syntax_example.grc) | **Example Implementation** - Demonstrates how SQL syntax could be added to Grapa using custom_command and custom_function. Shows the pattern for extending Grapa's grammar. |
+| [SQL Syntax Example](examples/sql_syntax_example.grc) | **Example Implementation** - Demonstrates how SQL syntax could be added to Grapa using custom_command and custom_function as variables. Shows the pattern for extending Grapa's grammar. |
 | [Language Design Example](examples/language_design_example.grc) | Demonstrates executable BNF system for creating custom languages, DSLs, and extending Grapa. |
 | [Isolated Rule Execution Example](examples/isolated_rule_execution_demo.grc) | Demonstrates executing custom rules in isolation for ETL and domain-specific processing. |
 | [Wrapper Function Example](examples/wrapper_function_example.grc) | Demonstrates the wrapper function pattern for ETL processing using rule tokens with custom functions. |

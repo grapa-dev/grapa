@@ -44,7 +44,7 @@ Grapa's executable BNF system enables unprecedented power in language design and
 **Solution**: Create a configuration DSL that supports multiple formats, validation, and dynamic loading.
 
 ```grapa
-/* Configuration DSL */
+/* Configuration DSL using custom_command and custom_function as variables */
 custom_command = rule config '{' <$config_entries> '}' {op(entries:$3){
     ("Loading configuration...").echo();
     config = {};
@@ -90,7 +90,7 @@ app_config = op(parse)('config {
 **Solution**: Create a pipeline DSL that defines data processing workflows declaratively.
 
 ```grapa
-/* ETL Pipeline DSL */
+/* ETL Pipeline DSL using custom_command and custom_function as variables */
 custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
     ("Starting ETL pipeline...").echo();
     result = null;
@@ -389,7 +389,7 @@ lazy_result = op(parse)('lazy { expensive_calculation() }')();
 
 ### **3. Integration**
 1. **Leverage Existing Libraries**: Use Grapa's C++ libraries when possible
-2. **Follow Patterns**: Use established patterns like `custom_command`/`custom_function`
+2. **Follow Patterns**: Use established patterns like direct BNF integration for native features, `custom_command`/`custom_function` as variables that leverage existing grammar rules
 3. **Test Thoroughly**: Validate grammar rules with comprehensive testing
 4. **Version Control**: Track grammar changes and maintain compatibility
 

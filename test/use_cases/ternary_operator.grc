@@ -1,0 +1,141 @@
+/*
+ * Ternary Operator Implementation
+ * 
+ * Implements ternary operator ?: using custom_function mechanism.
+ * Supports condition ? true_value : false_value syntax.
+ */
+
+/* ========================================
+ * Ternary Operator: condition ? true_value : false_value
+ * ======================================== */
+custom_function = rule <$comp> '?' <$comp> ':' <$comp> {
+    op(condition:$1, true_value:$3, false_value:$5){
+        /* Evaluate condition and return appropriate value */
+        if (op()(condition)()) {
+            op()(true_value)();
+        } else {
+            op()(false_value)();
+        };
+    }
+};
+
+/* ========================================
+ * COMPREHENSIVE TESTING
+ * ======================================== */
+
+("=== TERNARY OPERATOR TESTS ===").echo();
+("").echo();
+
+/* Test 1: Basic ternary operator */
+("Test 1: Basic ternary operator").echo();
+x = 10;
+result1 = x > 5 ? "x is greater than 5" : "x is not greater than 5";
+("  x = " + x + ", result: " + result1).echo();
+("").echo();
+
+/* Test 2: Numeric comparison */
+("Test 2: Numeric comparison").echo();
+y = 3;
+max = x > y ? x : y;
+("  x = " + x + ", y = " + y + ", max = " + max).echo();
+("").echo();
+
+/* Test 3: String comparison */
+("Test 3: String comparison").echo();
+name = "Alice";
+greeting = name == "Alice" ? "Hello Alice!" : "Hello stranger!";
+("  name = " + name + ", greeting: " + greeting).echo();
+("").echo();
+
+/* Test 4: Boolean values */
+("Test 4: Boolean values").echo();
+is_raining = true;
+umbrella = is_raining ? "Take umbrella" : "No umbrella needed";
+("  is_raining = " + is_raining + ", advice: " + umbrella).echo();
+("").echo();
+
+/* Test 5: Complex condition */
+("Test 5: Complex condition").echo();
+age = 25;
+status = age >= 18 && age <= 65 ? "working age" : "not working age";
+("  age = " + age + ", status: " + status).echo();
+("").echo();
+
+/* Test 6: Nested ternary operators */
+("Test 6: Nested ternary operators").echo();
+score = 85;
+grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : "D";
+("  score = " + score + ", grade: " + grade).echo();
+("").echo();
+
+/* Test 7: Mathematical expressions */
+("Test 7: Mathematical expressions").echo();
+a = 5;
+b = 3;
+operation = a > b ? a + b : a - b;
+("  a = " + a + ", b = " + b + ", operation result: " + operation).echo();
+("").echo();
+
+/* Test 8: List operations */
+("Test 8: List operations").echo();
+numbers = [1, 2, 3, 4, 5];
+has_even = numbers.len() > 0 ? "List has items" : "List is empty";
+("  numbers = " + numbers + ", " + has_even).echo();
+("").echo();
+
+/* Test 9: Function calls in ternary */
+("Test 9: Function calls in ternary").echo();
+text = "hello";
+length_check = text.len() > 5 ? "Long text" : "Short text";
+("  text = " + text + ", " + length_check).echo();
+("").echo();
+
+/* Test 10: Assignment with ternary */
+("Test 10: Assignment with ternary").echo();
+value = 7;
+category = value % 2 == 0 ? "even" : "odd";
+("  value = " + value + ", category: " + category).echo();
+("").echo();
+
+/* Test 11: Multiple conditions */
+("Test 11: Multiple conditions").echo();
+temperature = 75;
+weather = "sunny";
+activity = temperature > 70 && weather == "sunny" ? "Go outside" : "Stay inside";
+("  temperature = " + temperature + ", weather = " + weather + ", activity: " + activity).echo();
+("").echo();
+
+/* Test 12: Zero and null handling */
+("Test 12: Zero and null handling").echo();
+zero_test = 0 ? "Non-zero" : "Zero";
+("  0 ? result: " + zero_test).echo();
+("").echo();
+
+/* Test 13: String interpolation with ternary */
+("Test 13: String interpolation with ternary").echo();
+user = "admin";
+access = user == "admin" ? "Full access" : "Limited access";
+message = "User ${user} has ${access}";
+("  " + message).echo();
+("").echo();
+
+/* Test 14: Complex nested expressions */
+("Test 14: Complex nested expressions").echo();
+x = 10;
+y = 20;
+z = 15;
+result = x > y ? "x is largest" : y > z ? "y is largest" : "z is largest";
+("  x = " + x + ", y = " + y + ", z = " + z + ", " + result).echo();
+("").echo();
+
+/* Test 15: Performance test - multiple ternaries */
+("Test 15: Performance test - multiple ternaries").echo();
+i = 0;
+while (i < 5) {
+    status = i % 2 == 0 ? "even" : "odd";
+    ("  i = " + i + " is " + status).echo();
+    i += 1;
+};
+("").echo();
+
+("=== ALL TERNARY OPERATOR TESTS COMPLETED ===").echo(); 

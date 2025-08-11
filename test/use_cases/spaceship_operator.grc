@@ -1,0 +1,177 @@
+/*
+ * Spaceship Operator Implementation
+ * 
+ * Implements spaceship operator <=> using custom_function mechanism.
+ * Returns -1 if left < right, 0 if left == right, 1 if left > right.
+ */
+
+/* ========================================
+ * Spaceship Operator: <=>
+ * Returns -1, 0, or 1 based on comparison
+ * ======================================== */
+custom_function = rule <$comp> '<=>' <$comp> {
+    op(left:$1, right:$3){
+        /* Get the values to compare */
+        left_val = op()(left)();
+        right_val = op()(right)();
+        
+        /* Perform comparison and return result */
+        if (left_val < right_val) {
+            -1;
+        } else if (left_val == right_val) {
+            0;
+        } else {
+            1;
+        };
+    }
+};
+
+/* ========================================
+ * COMPREHENSIVE TESTING
+ * ======================================== */
+
+("=== SPACESHIP OPERATOR TESTS ===").echo();
+("").echo();
+
+/* Test 1: Basic numeric comparison */
+("Test 1: Basic numeric comparison").echo();
+result1 = 5 <=> 10;
+("  5 <=> 10 = " + result1).echo();
+result2 = 10 <=> 5;
+("  10 <=> 5 = " + result2).echo();
+result3 = 5 <=> 5;
+("  5 <=> 5 = " + result3).echo();
+("").echo();
+
+/* Test 2: String comparison */
+("Test 2: String comparison").echo();
+str1 = "apple" <=> "banana";
+("  'apple' <=> 'banana' = " + str1).echo();
+str2 = "zebra" <=> "apple";
+("  'zebra' <=> 'apple' = " + str2).echo();
+str3 = "hello" <=> "hello";
+("  'hello' <=> 'hello' = " + str3).echo();
+("").echo();
+
+/* Test 3: Float comparison */
+("Test 3: Float comparison").echo();
+float1 = 3.14 <=> 2.71;
+("  3.14 <=> 2.71 = " + float1).echo();
+float2 = 1.0 <=> 1.0;
+("  1.0 <=> 1.0 = " + float2).echo();
+("").echo();
+
+/* Test 4: Mixed type comparison */
+("Test 4: Mixed type comparison").echo();
+mixed1 = 5 <=> "5";
+("  5 <=> '5' = " + mixed1).echo();
+mixed2 = "10" <=> 5;
+("  '10' <=> 5 = " + mixed2).echo();
+("").echo();
+
+/* Test 5: Zero and negative numbers */
+("Test 5: Zero and negative numbers").echo();
+zero1 = 0 <=> 5;
+("  0 <=> 5 = " + zero1).echo();
+zero2 = -5 <=> 0;
+("  -5 <=> 0 = " + zero2).echo();
+zero3 = -10 <=> -5;
+("  -10 <=> -5 = " + zero3).echo();
+("").echo();
+
+/* Test 6: Large numbers */
+("Test 6: Large numbers").echo();
+large1 = 1000000 <=> 999999;
+("  1000000 <=> 999999 = " + large1).echo();
+large2 = 999999 <=> 1000000;
+("  999999 <=> 1000000 = " + large2).echo();
+("").echo();
+
+/* Test 7: Boolean comparison */
+("Test 7: Boolean comparison").echo();
+bool1 = true <=> false;
+("  true <=> false = " + bool1).echo();
+bool2 = false <=> true;
+("  false <=> true = " + bool2).echo();
+bool3 = true <=> true;
+("  true <=> true = " + bool3).echo();
+("").echo();
+
+/* Test 8: List comparison */
+("Test 8: List comparison").echo();
+list1 = [1, 2, 3] <=> [1, 2, 4];
+("  [1,2,3] <=> [1,2,4] = " + list1).echo();
+list2 = [1, 2, 3] <=> [1, 2, 3];
+("  [1,2,3] <=> [1,2,3] = " + list2).echo();
+("").echo();
+
+/* Test 9: Variables in comparison */
+("Test 9: Variables in comparison").echo();
+a = 15;
+b = 20;
+c = 15;
+result_a_b = a <=> b;
+result_a_c = a <=> c;
+("  a = " + a + ", b = " + b + ", c = " + c).echo();
+("  a <=> b = " + result_a_b).echo();
+("  a <=> c = " + result_a_c).echo();
+("").echo();
+
+/* Test 10: Expressions in comparison */
+("Test 10: Expressions in comparison").echo();
+expr1 = (5 + 3) <=> (2 * 4);
+("  (5 + 3) <=> (2 * 4) = " + expr1).echo();
+expr2 = (10 / 2) <=> (3 + 2);
+("  (10 / 2) <=> (3 + 2) = " + expr2).echo();
+("").echo();
+
+/* Test 11: Chaining spaceship operators */
+("Test 11: Chaining spaceship operators").echo();
+chain1 = 5 <=> 10 <=> 15;
+("  5 <=> 10 <=> 15 = " + chain1).echo();
+("").echo();
+
+/* Test 12: Spaceship in conditional statements */
+("Test 12: Spaceship in conditional statements").echo();
+x = 7;
+y = 3;
+if (x <=> y == 1) {
+    ("  x is greater than y").echo();
+} else if (x <=> y == -1) {
+    ("  x is less than y").echo();
+} else {
+    ("  x equals y").echo();
+};
+("").echo();
+
+/* Test 13: Spaceship with function calls */
+("Test 13: Spaceship with function calls").echo();
+func1 = "hello".len() <=> "world".len();
+("  'hello'.len() <=> 'world'.len() = " + func1).echo();
+("").echo();
+
+/* Test 14: Edge cases */
+("Test 14: Edge cases").echo();
+edge1 = 0 <=> 0;
+("  0 <=> 0 = " + edge1).echo();
+edge2 = "" <=> "";
+("  '' <=> '' = " + edge2).echo();
+edge3 = [] <=> [];
+("  [] <=> [] = " + edge3).echo();
+("").echo();
+
+/* Test 15: Performance test - multiple comparisons */
+("Test 15: Performance test - multiple comparisons").echo();
+i = 0;
+while (i < 5) {
+    j = 0;
+    while (j < 5) {
+        result = i <=> j;
+        ("  " + i + " <=> " + j + " = " + result).echo();
+        j += 1;
+    };
+    i += 1;
+};
+("").echo();
+
+("=== ALL SPACESHIP OPERATOR TESTS COMPLETED ===").echo(); 

@@ -1,0 +1,186 @@
+/*
+ * Range Function Implementation
+ * 
+ * Implements range() function using custom_function mechanism.
+ * Supports multiple range patterns similar to Python's range().
+ */
+
+/* ========================================
+ * Range Function: range(stop)
+ * Returns list from 0 to stop-1
+ * ======================================== */
+custom_function = rule range '(' <$comp> ')' {
+    op(stop:$3){
+        /* Create range from 0 to stop-1 */
+        result = [];
+        i = 0;
+        while (i < stop) {
+            result.append(i);
+            i += 1;
+        };
+        result;
+    }
+};
+
+/* ========================================
+ * Range Function: range(start, stop)
+ * Returns list from start to stop-1
+ * ======================================== */
+custom_function = rule range '(' <$comp> ',' <$comp> ')' {
+    op(start:$3, stop:$5){
+        /* Create range from start to stop-1 */
+        result = [];
+        i = start;
+        while (i < stop) {
+            result.append(i);
+            i += 1;
+        };
+        result;
+    }
+};
+
+/* ========================================
+ * Range Function: range(start, stop, step)
+ * Returns list from start to stop-1 with step
+ * ======================================== */
+custom_function = rule range '(' <$comp> ',' <$comp> ',' <$comp> ')' {
+    op(start:$3, stop:$5, step:$7){
+        /* Validate step */
+        if (step == 0) {
+            ("Error: Range step cannot be zero").echo();
+            return [];
+        };
+        
+        /* Create range from start to stop-1 with step */
+        result = [];
+        i = start;
+        
+        if (step > 0) {
+            /* Forward iteration */
+            while (i < stop) {
+                result.append(i);
+                i += step;
+            };
+        } else {
+            /* Backward iteration */
+            while (i > stop) {
+                result.append(i);
+                i += step;
+            };
+        };
+        
+        result;
+    }
+};
+
+/* ========================================
+ * COMPREHENSIVE TESTING
+ * ======================================== */
+
+("=== RANGE FUNCTION TESTS ===").echo();
+("").echo();
+
+/* Test 1: range(stop) */
+("Test 1: range(stop)").echo();
+r1 = range(5);
+("  range(5) = " + r1).echo();
+("").echo();
+
+/* Test 2: range(start, stop) */
+("Test 2: range(start, stop)").echo();
+r2 = range(2, 8);
+("  range(2, 8) = " + r2).echo();
+("").echo();
+
+/* Test 3: range(start, stop, step) - positive step */
+("Test 3: range(start, stop, step) - positive step").echo();
+r3 = range(0, 10, 2);
+("  range(0, 10, 2) = " + r3).echo();
+("").echo();
+
+/* Test 4: range(start, stop, step) - negative step */
+("Test 4: range(start, stop, step) - negative step").echo();
+r4 = range(10, 0, -2);
+("  range(10, 0, -2) = " + r4).echo();
+("").echo();
+
+/* Test 5: range with for loops */
+("Test 5: range with for loops").echo();
+("  Using range(3):").echo();
+for i in range(3) {
+    ("    i = " + i).echo();
+};
+("").echo();
+
+/* Test 6: range with negative start */
+("Test 6: range with negative start").echo();
+r6 = range(-3, 3);
+("  range(-3, 3) = " + r6).echo();
+("").echo();
+
+/* Test 7: range with float values */
+("Test 7: range with float values").echo();
+r7 = range(1.5, 5.5);
+("  range(1.5, 5.5) = " + r7).echo();
+("").echo();
+
+/* Test 8: Empty range */
+("Test 8: Empty range").echo();
+r8 = range(5, 2);
+("  range(5, 2) = " + r8).echo();
+("").echo();
+
+/* Test 9: Range with large step */
+("Test 9: Range with large step").echo();
+r9 = range(0, 20, 5);
+("  range(0, 20, 5) = " + r9).echo();
+("").echo();
+
+/* Test 10: Range with small step */
+("Test 10: Range with small step").echo();
+r10 = range(0, 1, 0.2);
+("  range(0, 1, 0.2) = " + r10).echo();
+("").echo();
+
+/* Test 11: Error handling - zero step */
+("Test 11: Error handling - zero step").echo();
+r11 = range(1, 5, 0);
+("  range(1, 5, 0) = " + r11).echo();
+("").echo();
+
+/* Test 12: Range in expressions */
+("Test 12: Range in expressions").echo();
+sum_range = range(1, 6).sum();
+("  sum(range(1, 6)) = " + sum_range).echo();
+("").echo();
+
+/* Test 13: Range with variables */
+("Test 13: Range with variables").echo();
+start = 10;
+stop = 15;
+step = 1;
+r13 = range(start, stop, step);
+("  range(" + start + ", " + stop + ", " + step + ") = " + r13).echo();
+("").echo();
+
+/* Test 14: Nested ranges */
+("Test 14: Nested ranges").echo();
+("  Nested for loops with range:").echo();
+for i in range(2) {
+    for j in range(2) {
+        ("    (" + i + ", " + j + ")").echo();
+    };
+};
+("").echo();
+
+/* Test 15: Range for indexing */
+("Test 15: Range for indexing").echo();
+array = ["a", "b", "c", "d", "e"];
+("  Original array: " + array).echo();
+("  Using range for indexing:").echo();
+for i in range(array.len()) {
+    ("    array[" + i + "] = " + array[i]).echo();
+};
+("").echo();
+
+("=== ALL RANGE FUNCTION TESTS COMPLETED ===").echo(); 

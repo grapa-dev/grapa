@@ -31,7 +31,7 @@ The goal is to create a unified data processing pipeline that can handle all the
 ```grapa
 /* Multi-Syntax ETL Pipeline Example */
 
-/* Step 1: Define SQL syntax for database operations */
+/* Step 1: Define SQL syntax for database operations using custom_command and custom_function as variables */
 custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     ("SQL: SELECT " + fields + " FROM " + table_name).echo();
     /* Database query implementation */

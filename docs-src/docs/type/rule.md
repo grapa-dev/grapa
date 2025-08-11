@@ -231,7 +231,7 @@ Grapa's most powerful feature is its ability to dynamically extend the language 
 
 The Grapa parser includes two special variables that allow you to inject custom syntax:
 
-- **`custom_command`**: For commands that perform actions but don't return values
+- **`custom_command`**: For domain-specific commands that perform actions but don't return values
 - **`custom_function`**: For functions that return values
 
 #### Basic Syntax Extension
@@ -253,7 +253,7 @@ reset_data;      // Executes clear_database()
 
 #### How It Works
 
-When you define `custom_function` or `custom_command`, you're essentially extending the Grapa grammar. The parser:
+When you define `custom_function` or `custom_command`, you're essentially creating isolated rule execution for domain-specific processing. The parser:
 
 1. **Falls through** the built-in command patterns
 2. **Matches your custom rule** when the input fits the pattern
