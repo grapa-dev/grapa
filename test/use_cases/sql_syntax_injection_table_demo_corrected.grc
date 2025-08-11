@@ -1,0 +1,261 @@
+/* SQL Syntax Injection Demo - CORRECTED VERSION
+ * 
+ * This demonstrates the correct usage of custom_command vs custom_function:
+ * - custom_command: For actions like SELECT, INSERT, UPDATE (SQL commands)
+ * - custom_function: For expressions that return values
+ * 
+ * KEY: After defining custom rules, we must use op(parse)() to execute them
+ */
+
+("=== SQL Syntax Injection Demo - CORRECTED VERSION ===").echo();
+
+/* Step 1: Create sample data tables for testing */
+("Creating sample data tables...").echo();
+
+/* Create a users table */
+users_table = $file().table("ROW");
+users_table.mkfield("name", "STR", "VAR");
+users_table.mkfield("age", "INT");
+users_table.mkfield("city", "STR", "VAR");
+
+/* Populate users table */
+users_table.set("user1", "John", "name");
+users_table.set("user1", 25, "age");
+users_table.set("user1", "New York", "city");
+
+users_table.set("user2", "Jane", "name");
+users_table.set("user2", 30, "age");
+users_table.set("user2", "Los Angeles", "city");
+
+("Sample data tables created successfully.\n").echo();
+
+/* Step 2: CORRECT - SELECT as custom_command (action) */
+("Injecting SELECT syntax as custom_command...").echo();
+custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+    ("SQL SELECT: " + fields + " FROM " + table_name).echo();
+    
+    /* Get the appropriate table object */
+    table_obj = null;
+    if (table_name == "users") {
+        table_obj = users_table;
+    } else {
+        ("Unknown table: " + table_name).echo();
+        return;
+    };
+    
+    /* Get all records from the table */
+    records = table_obj.ls();
+    if (records.len() == 0) {
+        ("Table " + table_name + " is empty").echo();
+        return;
+    };
+    
+    /* Parse the fields to select */
+    if (fields == "*") {
+        field_names = ["name", "age", "city"];
+    } else {
+        field_names = fields.split(",");
+        i = 0;
+        while (i < field_names.len()) {
+            field_names[i] = field_names[i].trim();
+            i = i + 1;
+        };
+    };
+    
+    /* Display results */
+    ("Query results:").echo();
+    i = 0;
+    while (i < records.len()) {
+        record = records[i];
+        key = record.getname(1);
+        
+        row_output = "";
+        j = 0;
+        while (j < field_names.len()) {
+            field_name = field_names[j];
+            field_value = table_obj.get(key, field_name);
+            if (field_value.type() != $ERR) {
+                if (j > 0) {
+                    row_output = row_output + " | ";
+                };
+                row_output = row_output + field_name + ": " + field_value;
+            };
+            j = j + 1;
+        };
+        
+        if (row_output != "") {
+            ("  " + row_output).echo();
+        };
+        
+        i = i + 1;
+    };
+    
+    ("Query returned " + records.len() + " rows").echo();
+}};
+
+/* Step 3: CORRECT - INSERT as custom_command (action) */
+("Injecting INSERT syntax as custom_command...").echo();
+custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
+    ("SQL INSERT: INSERT INTO " + table_name + " VALUES " + values_str).echo();
+    
+    /* Get the appropriate table object */
+    table_obj = null;
+    if (table_name == "users") {
+        table_obj = users_table;
+    } else {
+        ("Unknown table: " + table_name).echo();
+        return;
+    };
+    
+    /* Parse values (comma-separated) */
+    values = values_str.split(",");
+    if (values.len() < 3) {
+        ("Invalid values format. Need: name,age,city").echo();
+        return;
+    };
+    
+    /* Generate a new key */
+    existing_records = table_obj.ls();
+    new_key = table_name + "_" + (existing_records.len() + 1).str();
+    
+    /* Insert values */
+    table_obj.set(new_key, values[1].trim(), "name");
+    table_obj.set(new_key, values[2].trim().int(), "age");
+    table_obj.set(new_key, values[3].trim(), "city");
+    
+    ("Successfully inserted user: " + values[1].trim()).echo();
+}};
+
+/* Step 4: CORRECT - UPDATE as custom_command (action) */
+("Injecting UPDATE syntax as custom_command...").echo();
+custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clause:$4,where_clause:$6){
+    ("SQL UPDATE: UPDATE " + table_name + " SET " + set_clause + " WHERE " + where_clause).echo();
+    
+    /* Get the appropriate table object */
+    table_obj = null;
+    if (table_name == "users") {
+        table_obj = users_table;
+    } else {
+        ("Unknown table: " + table_name).echo();
+        return;
+    };
+    
+    /* Parse set clause (e.g., "age=26") */
+    set_parts = set_clause.split("=");
+    if (set_parts.len() != 2) {
+        ("Invalid SET clause format. Use 'field=value'").echo();
+        return;
+    };
+    set_field = set_parts[1].trim();
+    set_value = set_parts[2].trim();
+    
+    /* Parse where clause (e.g., "name=John") */
+    where_parts = where_clause.split("=");
+    if (where_parts.len() != 2) {
+        ("Invalid WHERE clause format. Use 'field=value'").echo();
+        return;
+    };
+    where_field = where_parts[1].trim();
+    where_value = where_parts[2].trim();
+    
+    /* Find and update matching records */
+    records = table_obj.ls();
+    updated_count = 0;
+    
+    i = 0;
+    while (i < records.len()) {
+        record = records[i];
+        key = record.getname(1);
+        
+        /* Check if this record matches the WHERE condition */
+        current_value = table_obj.get(key, where_field);
+        if (current_value.type() != $ERR) {
+            if (current_value.str() == where_value) {
+                /* Update the matching record */
+                if (set_field == "age") {
+                    table_obj.set(key, set_value.int(), set_field);
+                } else {
+                    table_obj.set(key, set_value, set_field);
+                };
+                ("Updated record " + key).echo();
+                updated_count = updated_count + 1;
+            };
+        };
+        
+        i = i + 1;
+    };
+    
+    if (updated_count > 0) {
+        ("Successfully updated " + updated_count + " records in " + table_name).echo();
+    } else {
+        ("No records matched the WHERE condition").echo();
+    };
+}};
+
+/* Step 5: CORRECT - COUNT as custom_function (returns a value) */
+("Injecting COUNT syntax as custom_function...").echo();
+custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
+    ("SQL COUNT: COUNT(" + field + ") FROM " + table_name).echo();
+    
+    /* Get the appropriate table object */
+    table_obj = null;
+    if (table_name == "users") {
+        table_obj = users_table;
+    } else {
+        ("Unknown table: " + table_name).echo();
+        return 0;
+    };
+    
+    /* Count records */
+    records = table_obj.ls();
+    count = records.len();
+    
+    ("Count returned: " + count).echo();
+    return count;  /* Return the count value */
+}};
+
+("SQL syntax injection complete!\n").echo();
+
+/* Step 6: Test the corrected SQL syntax using op(parse)() */
+("=== Testing Corrected SQL Syntax using op(parse)() ===").echo();
+
+("1. Testing select * from users (as command):").echo();
+op(parse)("select * from users")();
+
+("\n2. Testing select name,age from users (as command):").echo();
+op(parse)("select name,age from users")();
+
+("\n3. Testing insert into users values David,40,Seattle (as command):").echo();
+op(parse)("insert into users values David,40,Seattle")();
+
+("\n4. Testing select * from users after insert (as command):").echo();
+op(parse)("select * from users")();
+
+("\n5. Testing update users set age=26 where name=John (as command):").echo();
+op(parse)("update users set age=26 where name=John")();
+
+("\n6. Testing select * from users after update (as command):").echo();
+op(parse)("select * from users")();
+
+("\n7. Testing count(*) from users (as function - returns value):").echo();
+user_count = op(parse)("count(*) from users")();
+("User count variable: " + user_count).echo();
+
+/* Step 7: Demonstrate the difference */
+("\n=== Demonstrating custom_command vs custom_function ===").echo();
+
+("custom_command (action):").echo();
+op(parse)("select name,city from users")();
+
+("custom_function (expression):").echo();
+total_users = op(parse)("count(*) from users")();
+("Total users: " + total_users).echo();
+
+/* You can use custom_function in expressions */
+if (op(parse)("count(*) from users")() > 3) {
+    ("There are more than 3 users").echo();
+} else {
+    ("There are 3 or fewer users").echo();
+};
+
+("\n=== SQL Syntax Injection Demo - CORRECTED VERSION Complete ===").echo(); 

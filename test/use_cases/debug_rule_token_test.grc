@@ -1,0 +1,26 @@
+/* Debug test for rule token syntax */
+
+echo("=== Starting debug test ===");
+
+/* Test 1: Basic rule token without operation */
+echo("Test 1: Basic rule token");
+basic_rule = rule $INT <$STR> $INT {op(a:$2){a}};
+echo("Basic rule created");
+
+/* Test 2: Rule token with embedded op() */
+echo("Test 2: Rule token with embedded op()");
+op_rule = rule $INT <$STR,op(a:$1){a.len()}> $INT {op(a:$2){a}};
+echo("Op rule created");
+
+/* Test 3: Rule token with direct @<op_list> syntax */
+echo("Test 3: Rule token with direct @<op_list>");
+direct_rule = rule $INT <$STR,@<len,{@<this>}>> $INT {op(a:$2){a}};
+echo("Direct rule created");
+
+/* Test 4: Rule token with predefined function variable */
+echo("Test 4: Rule token with predefined function variable");
+len_func = @<len,{@<this>}>;
+func_rule = rule $INT <$STR,len_func> $INT {op(a:$2){a}};
+echo("Func rule created");
+
+echo("=== All rules created ==="); 

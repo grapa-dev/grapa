@@ -84,7 +84,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🆕 **NEW INITIATIVES** (2 items)
+## 🆕 **NEW INITIATIVES** (3 items)
 
 ### **Wikipedia Article Creation** ✅ **READY TO IMPLEMENT**
 - **Status**: Article content prepared and ready for submission
@@ -98,6 +98,14 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Focus**: Debugging methodologies, testing strategies, implementation patterns
 - **Next Steps**: Review extracted content, identify integration opportunities, update documentation
 - **Reference**: [`../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md`](../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md)
+
+### **Grapa Rules System Enhancement Roadmap** 🔧 **COMPREHENSIVE PLANNING**
+- **Status**: Comprehensive roadmap created with 12 major enhancements across 4 phases
+- **Focus**: Modern language features, developer experience, advanced capabilities
+- **Timeline**: 16-week phased implementation (4 phases, 4 weeks each)
+- **Priority**: High - foundational for language adoption and developer experience
+- **Reference**: [`../IMPLEMENTATION/RULES_SYSTEM_ENHANCEMENT_ROADMAP.md`](../IMPLEMENTATION/RULES_SYSTEM_ENHANCEMENT_ROADMAP.md)
+- **Next Steps**: Prioritize Phase 1 items, begin exception handling implementation
 - **Priority**: Low - documentation improvement
 
 ---

@@ -1,7 +1,0 @@
-/* Simple test of custom_function definition */
-
-custom_function = rule select $INT {op(p:$2){p*5}};
-
-("Testing custom function...").echo();
-result = select 4;
-("Result: " + result).echo(); 

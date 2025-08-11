@@ -1,0 +1,342 @@
+/* Language Design with Executable BNF Example
+ * 
+ * This example demonstrates how to use Grapa's executable BNF system
+ * to create custom languages, DSLs, and extend the language itself.
+ * 
+ * Key concepts:
+ * - custom_command vs custom_function distinction
+ * - Dynamic grammar modification
+ * - DSL creation patterns
+ * - Protocol parsing
+ * - Performance optimization
+ */
+
+("=== Language Design with Executable BNF Demo ===").echo();
+
+/* Step 1: Basic Custom Commands and Functions */
+
+("1. Defining basic custom commands and functions...").echo();
+
+/* Custom command for logging */
+custom_command = rule log $STR {op(message:$2){
+    ("[LOG] " + message).echo();
+}};
+
+/* Custom function for calculations */
+custom_function = rule calc '(' $STR ')' {op(expression:$3){
+    ("Calculating: " + expression).echo();
+    /* Simple calculation - in real implementation, you'd use eval */
+    if (expression == "2+2") {
+        return 4;
+    } else if (expression == "10*5") {
+        return 50;
+    } else {
+        return $err("Unknown expression");
+    };
+}};
+
+/* Execute basic custom syntax */
+op(parse)("log Hello from custom command")();
+result = op(parse)("calc(2+2)")();
+("Calculation result: " + result).echo();
+
+("\n").echo();
+
+/* Step 2: Configuration DSL */
+
+("2. Creating a configuration DSL...").echo();
+
+/* Configuration DSL grammar */
+custom_command = rule config $STR '=' $STR {op(key:$2,value:$4){
+    ("Setting config: " + key + " = " + value).echo();
+    /* In real implementation, you'd store this in a config object */
+    config_values = config_values ? config_values : {};
+    config_values[key] = value;
+}};
+
+custom_command = rule config $STR '=' $INT {op(key:$2,value:$4){
+    ("Setting config: " + key + " = " + value).echo();
+    config_values = config_values ? config_values : {};
+    config_values[key] = value;
+}};
+
+/* Use configuration DSL */
+config_values = {};
+op(parse)('config server_name = "myapp"')();
+op(parse)('config port = 8080')();
+op(parse)('config debug = true')();
+
+("Configuration values: " + config_values).echo();
+
+("\n").echo();
+
+/* Step 3: Data Processing DSL */
+
+("3. Creating a data processing DSL...").echo();
+
+/* Pipeline DSL grammar */
+custom_command = rule pipeline '{' <$pipeline_steps> '}' {op(steps:$3){
+    ("Pipeline execution started").echo();
+    result = null;
+    i = 0;
+    while (i < steps.len()) {
+        step = steps[i];
+        ("Executing step: " + step).echo();
+        result = execute_pipeline_step(step, result);
+        i += 1;
+    };
+    ("Pipeline completed").echo();
+    return result;
+}};
+
+/* Pipeline step execution function */
+execute_pipeline_step = op(step, data) {
+    if (step == "load data") {
+        ("Loading data...").echo();
+        return [1, 2, 3, 4, 5];
+    } else if (step == "filter even") {
+        ("Filtering even numbers...").echo();
+        return data.filter(op(x) { x % 2 == 0; });
+    } else if (step == "double values") {
+        ("Doubling values...").echo();
+        return data.map(op(x) { x * 2; });
+    } else if (step == "sum values") {
+        ("Summing values...").echo();
+        return data.reduce(op(a, b) { a + b; }, 0);
+    } else {
+        ("Unknown step: " + step).echo();
+        return data;
+    };
+};
+
+/* Execute pipeline DSL */
+result = op(parse)('pipeline { 
+    load data | 
+    filter even | 
+    double values | 
+    sum values 
+}')();
+("Pipeline result: " + result).echo();
+
+("\n").echo();
+
+/* Step 4: Protocol Parsing */
+
+("4. Creating a protocol parser...").echo();
+
+/* HTTP request parser */
+custom_function = rule http_parse '(' $STR ')' {op(request:$3){
+    ("Parsing HTTP request: " + request).echo();
+    
+    /* Simple HTTP request parsing */
+    lines = request.split("\n");
+    if (lines.len() > 0) {
+        first_line = lines[1];
+        parts = first_line.split(" ");
+        if (parts.len() >= 3) {
+            method = parts[1];
+            path = parts[2];
+            version = parts[3];
+            
+            result = {};
+            result["method"] = method;
+            result["path"] = path;
+            result["version"] = version;
+            
+            ("Parsed: " + method + " " + path + " " + version).echo();
+            return result;
+        };
+    };
+    
+    return $err("Invalid HTTP request");
+}};
+
+/* Parse HTTP request */
+http_request = "GET /api/users HTTP/1.1\nHost: example.com\nContent-Type: application/json\n";
+parsed = op(parse)('http_parse("' + http_request + '")')();
+("HTTP parse result: " + parsed).echo();
+
+("\n").echo();
+
+/* Step 5: Dynamic Grammar Modification */
+
+("5. Dynamic grammar modification...").echo();
+
+/* Add new loop syntax at runtime */
+custom_command = rule repeat $INT times '{' <$command_list> '}' {op(count:$2,body:$5){
+    ("Executing repeat loop " + count + " times").echo();
+    i = 0;
+    while (i < count) {
+        ("Iteration " + (i + 1)).echo();
+        body();
+        i += 1;
+    };
+}};
+
+/* Use dynamically added syntax */
+op(parse)('repeat 3 times { "Hello from dynamic syntax!".echo(); }')();
+
+("\n").echo();
+
+/* Step 6: Performance Optimization */
+
+("6. Performance optimization with caching...").echo();
+
+/* Grammar compilation caching */
+grammar_cache = {};
+
+compile_grammar = op(rule_name, rule_def) {
+    if (grammar_cache[rule_name]) {
+        ("Using cached grammar: " + rule_name).echo();
+        return grammar_cache[rule_name];
+    };
+    
+    ("Compiling new grammar: " + rule_name).echo();
+    compiled = op(parse)(rule_def);
+    grammar_cache[rule_name] = compiled;
+    return compiled;
+};
+
+/* Cache and use grammar */
+sql_grammar = compile_grammar("sql", "custom_command = rule select $STR from $STR {op(fields:$2,table:$4){ (\"SQL: \" + fields + \" FROM \" + table).echo(); }};");
+sql_grammar2 = compile_grammar("sql", "custom_command = rule select $STR from $STR {op(fields:$2,table:$4){ (\"SQL: \" + fields + \" FROM \" + table).echo(); }};");
+
+/* Execute cached grammar */
+op(parse)("select * from users")();
+
+("\n").echo();
+
+/* Step 7: Error Handling and Debugging */
+
+("7. Error handling and debugging...").echo();
+
+/* Robust grammar with error recovery */
+custom_function = rule safe_parse '(' $STR ')' {op(expression:$3){
+    ("Attempting to parse: " + expression).echo();
+    
+    try {
+        result = op(parse)(expression)();
+        ("Parse successful: " + result).echo();
+        return result;
+    } catch (error) {
+        ("Parse failed, using fallback").echo();
+        return "fallback_value";
+    };
+}};
+
+/* Debug grammar execution */
+custom_command = rule debug <$command> {op(command:$2){
+    ("Debug: Starting command execution").echo();
+    result = command();
+    ("Debug: Command completed with result: " + result).echo();
+    return result;
+}};
+
+/* Test error handling and debugging */
+safe_result = op(parse)('safe_parse("invalid syntax")')();
+debug_result = op(parse)('debug { log "Debug test message" }')();
+
+("\n").echo();
+
+/* Step 8: Real-World Application: Configuration System */
+
+("8. Real-world application: Complete configuration system...").echo();
+
+/* Configuration system DSL */
+custom_command = rule load_config '{' <$config_entries> '}' {op(entries:$3){
+    ("Loading configuration system...").echo();
+    config_system = {};
+    
+    i = 0;
+    while (i < entries.len()) {
+        entry = entries[i];
+        if (entry.type() == $STR) {
+            /* Include directive */
+            ("Including config file: " + entry).echo();
+        } else {
+            /* Config entry */
+            ("Processing config entry: " + entry).echo();
+        };
+        i += 1;
+    };
+    
+    ("Configuration system loaded successfully").echo();
+    return config_system;
+}};
+
+/* Execute configuration system */
+config_system = op(parse)('load_config { 
+    "database.conf" | 
+    server_name = "production" | 
+    port = 443 | 
+    ssl = true | 
+    "logging.conf" 
+}')();
+
+("\n").echo();
+
+/* Step 9: Advanced Pattern: Recursive Grammar */
+
+("9. Advanced pattern: Recursive grammar...").echo();
+
+/* CSV parser with recursive grammar */
+custom_function = rule csv_parse '(' $STR ')' {op(csv_data:$3){
+    ("Parsing CSV data: " + csv_data).echo();
+    
+    /* Simple CSV parsing - in real implementation, you'd use proper recursive grammar */
+    lines = csv_data.split("\n");
+    result = [];
+    
+    i = 0;
+    while (i < lines.len()) {
+        line = lines[i];
+        if (line != "") {
+            fields = line.split(",");
+            result += fields;
+        };
+        i += 1;
+    };
+    
+    ("Parsed " + result.len() + " fields").echo();
+    return result;
+}};
+
+/* Parse CSV data */
+csv_data = "name,age,city\nJohn,25,NY\nJane,30,LA";
+parsed_csv = op(parse)('csv_parse("' + csv_data + '")')();
+("CSV parse result: " + parsed_csv).echo();
+
+("\n").echo();
+
+/* Step 10: Conclusion and Key Takeaways */
+
+("=== Language Design Demo Complete ===").echo();
+
+("Key takeaways from this demo:").echo();
+("1. custom_command: For actions (log, config, pipeline)").echo();
+("2. custom_function: For expressions (calc, http_parse, csv_parse)").echo();
+("3. op(parse)(): Execution pattern for custom syntax").echo();
+("4. Dynamic grammar: Add new syntax at runtime").echo();
+("5. DSL creation: Build domain-specific languages").echo();
+("6. Protocol parsing: Parse various data formats").echo();
+("7. Performance: Cache compiled grammar rules").echo();
+("8. Error handling: Robust grammar with fallbacks").echo();
+("9. Real-world apps: Complete systems using DSLs").echo();
+("10. Advanced patterns: Recursive grammar and complex parsing").echo();
+
+("Grapa's executable BNF system provides unprecedented power for language design!").echo();
+
+/* 
+ * This example demonstrates:
+ * 
+ * 1. Basic custom_command and custom_function usage
+ * 2. DSL creation for configuration and data processing
+ * 3. Protocol parsing for HTTP requests
+ * 4. Dynamic grammar modification
+ * 5. Performance optimization with caching
+ * 6. Error handling and debugging
+ * 7. Real-world applications
+ * 8. Advanced patterns like recursive grammar
+ * 
+ * All implemented using Grapa's executable BNF architecture!
+ */ 

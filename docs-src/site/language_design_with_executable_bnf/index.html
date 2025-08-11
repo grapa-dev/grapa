@@ -8,11 +8,9 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/about/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/language_design_with_executable_bnf/">
       
       
-      
-        <link rel="next" href="..">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +18,7 @@
     
     
       
-        <title>About - Grapa Documentation</title>
+        <title>Language Design with Executable BNF - Grapa Documentation</title>
       
     
     
@@ -72,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#about-grapa" class="md-skip">
+        <a href="#language-design-with-executable-bnf" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              About
+              Language Design with Executable BNF
             
           </span>
         </div>
@@ -201,11 +199,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../about/" class="md-tabs__link">
         
   
   
@@ -403,32 +399,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    About
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
         
   
   
@@ -439,89 +413,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#what-is-grapa" class="md-nav__link">
-    <span class="md-ellipsis">
-      What is Grapa?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#key-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Key Features
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#who-should-use-grapa" class="md-nav__link">
-    <span class="md-ellipsis">
-      Who Should Use Grapa?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whywhen-to-use-grapa" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why/When to Use Grapa?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#high-level-architecture-feature-map" class="md-nav__link">
-    <span class="md-ellipsis">
-      High-Level Architecture &amp; Feature Map
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documentation-structure-onboarding-map" class="md-nav__link">
-    <span class="md-ellipsis">
-      Documentation Structure (Onboarding Map)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next Steps
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -3230,63 +3121,387 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-grapa" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      What is Grapa?
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#key-features" class="md-nav__link">
+  <a href="#key-concepts" class="md-nav__link">
     <span class="md-ellipsis">
-      Key Features
+      Key Concepts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#executable-bnf-beyond-traditional-parsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executable BNF: Beyond Traditional Parsing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#three-phase-processing-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Three-Phase Processing Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-rule-token-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Rule Token Capabilities
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Rule Token Capabilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rule-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rule References
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variable-references-with-complex-lookups" class="md-nav__link">
+    <span class="md-ellipsis">
+      Variable References with Complex Lookups
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-processing-with-optional-op" class="md-nav__link">
+    <span class="md-ellipsis">
+      Post-Processing with Optional $OP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#predefined-functions-in-rule-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      Predefined Functions in Rule Tokens
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#language-extensibility-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Language Extensibility Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Language Extensibility Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-custom-commands-and-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Custom Commands and Functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-dynamic-grammar-modification" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Dynamic Grammar Modification
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-protocol-parsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Protocol Parsing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#domain-specific-language-dsl-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Domain-Specific Language (DSL) Creation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Domain-Specific Language (DSL) Creation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configuration-dsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Configuration DSL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-data-processing-dsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Data Processing DSL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-validation-dsl" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Validation DSL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-language-design-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Language Design Patterns
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Language Design Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-recursive-grammar-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Recursive Grammar Rules
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-context-sensitive-parsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Context-Sensitive Parsing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-dynamic-token-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Dynamic Token Types
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Optimization
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Optimization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-grammar-compilation-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Grammar Compilation Caching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-lazy-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Lazy Evaluation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling-and-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling and Debugging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling and Debugging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-grammar-error-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Grammar Error Recovery
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-debug-grammar-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Debug Grammar Execution
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Applications
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Applications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-configuration-management-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Configuration Management System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-data-transformation-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Data Transformation Pipeline
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-api-definition-language" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. API Definition Language
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-grammar-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Grammar Design
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Integration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#who-should-use-grapa" class="md-nav__link">
+  <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
-      Who Should Use Grapa?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whywhen-to-use-grapa" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why/When to Use Grapa?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#high-level-architecture-feature-map" class="md-nav__link">
-    <span class="md-ellipsis">
-      High-Level Architecture &amp; Feature Map
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documentation-structure-onboarding-map" class="md-nav__link">
-    <span class="md-ellipsis">
-      Documentation Structure (Onboarding Map)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      Next Steps
+      See Also
     </span>
   </a>
   
@@ -3306,81 +3521,508 @@
                 
                   
 
+  <nav class="md-tags" >
+    
+      
+      
+      
+        <span class="md-tag">advanced</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">dsl</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">executable-bnf</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">grammar</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">language-design</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">meta-programming</span>
+      
+    
+      
+      
+      
+        <span class="md-tag">rule-system</span>
+      
+    
+  </nav>
 
 
-<h1 id="about-grapa">About Grapa</h1>
-<h2 id="what-is-grapa">What is Grapa?</h2>
-<p>Grapa is a modern, grammar-based programming language and data processing platform designed for unlimited precision, true parallelism, and seamless Python integration. It is ideal for data engineers, educators, researchers, and anyone who needs high-performance ETL, language experimentation, or advanced scripting.</p>
-<h2 id="key-features">Key Features</h2>
+
+<h1 id="language-design-with-executable-bnf">Language Design with Executable BNF</h1>
+<h2 id="overview">Overview</h2>
+<p>Grapa's <code>$RULE</code> system represents a fundamental innovation in language design - an <strong>executable BNF (Backus-Naur Form)</strong> that goes far beyond traditional grammar definitions. This guide explores how to leverage this powerful system for creating custom languages, domain-specific languages (DSLs), and extending Grapa itself.</p>
+<h2 id="key-concepts">Key Concepts</h2>
+<h3 id="executable-bnf-beyond-traditional-parsing"><strong>Executable BNF: Beyond Traditional Parsing</strong></h3>
+<p>Unlike traditional BNF systems that only define syntax, Grapa's <code>$RULE</code> system:</p>
 <ul>
-<li><strong>Unlimited Precision:</strong> Arbitrary-precision math for $INT, $FLOAT, $TIME</li>
-<li><strong>True Parallelism:</strong> Production-ready parallel ETL/data processing (map/reduce/filter, $thread, $net)</li>
-<li><strong>Unified File/Database API:</strong> Seamless navigation and processing of files and databases</li>
-<li><strong>Python Integration:</strong> Use GrapaPy for idiomatic, high-performance scripting and data workflows</li>
-<li><strong>Executable BNF &amp; Mutable Grammar:</strong> Define and experiment with grammars at runtime</li>
-<li><strong>Education &amp; Prototyping:</strong> Rapidly prototype languages, teach compiler concepts, and experiment with meta-programming</li>
-<li><strong>Cross-Platform:</strong> Windows, Mac, Linux, AWS, and more</li>
+<li><strong>Executes arbitrary code</strong> during parsing via action codes</li>
+<li><strong>Builds execution trees</strong> that can be evaluated later</li>
+<li><strong>Supports dynamic grammar mutation</strong> at runtime</li>
+<li><strong>Handles complex token types</strong> with special behaviors</li>
+<li><strong>Manages execution context</strong> and parameter binding</li>
 </ul>
-<h2 id="who-should-use-grapa">Who Should Use Grapa?</h2>
+<h3 id="three-phase-processing-model"><strong>Three-Phase Processing Model</strong></h3>
+<div class="highlight"><pre><span></span><code>Input → Compilation → Execution Tree → Runtime Evaluation
+</code></pre></div>
+<ol>
+<li><strong>Compilation Phase</strong>: Raw input is parsed against BNF rules, building execution trees</li>
+<li><strong>Tree Construction</strong>: Action codes create <code>$OP</code> and <code>$CODE</code> nodes with parameter binding</li>
+<li><strong>Runtime Evaluation</strong>: Trees are evaluated with lazy parameter resolution</li>
+</ol>
+<h3 id="advanced-rule-token-capabilities"><strong>Advanced Rule Token Capabilities</strong></h3>
+<p>The rule token <code>&lt; &gt;</code> provides sophisticated reference and lookup capabilities:</p>
+<h4 id="rule-references"><strong>Rule References</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Reference another rule */
+@global[&quot;$expression&quot;] = rule &lt;$term&gt; &#39;+&#39; &lt;$expression&gt; {@&lt;add,{$1,$3}&gt;}
+</code></pre></div>
+<h4 id="variable-references-with-complex-lookups"><strong>Variable References with Complex Lookups</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Simple variable reference */
+@global[&quot;$lookup&quot;] = rule @variable {@&lt;var,{$1}&gt;}
+
+/* Array/List indexing */
+@global[&quot;$array_lookup&quot;] = rule @tb[&quot;d&quot;] {@&lt;var,{$1}&gt;}
+@global[&quot;$list_lookup&quot;] = rule @tb.d {@&lt;var,{$1}&gt;}
+@global[&quot;$index_lookup&quot;] = rule @tb[8] {@&lt;var,{$1}&gt;}
+
+/* Database/File object references */
+@global[&quot;$db_lookup&quot;] = rule @$file().table(&quot;ROW&quot;) {@&lt;var,{$1}&gt;}
+</code></pre></div>
+<h4 id="post-processing-with-optional-op"><strong>Post-Processing with Optional $OP</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Rule with compile-time data transformation */
+@global[&quot;$filtered_data&quot;] = rule &lt;$raw_data,op(a:$1){a.grep(&quot;pattern&quot;)}&gt; {@&lt;var,{$1}&gt;}
+</code></pre></div>
+<h4 id="predefined-functions-in-rule-tokens"><strong>Predefined Functions in Rule Tokens</strong></h4>
+<p><strong>Working Solution - Wrapper Function Pattern:</strong>
+<div class="highlight"><pre><span></span><code>/* Define function using op(){} syntax */
+my_func = op(p){p.len()};
+
+/* Use wrapper function in rule token */
+@global[&quot;$processed_data&quot;] = rule &lt;$raw_data,op(b:$1){my_func(b)}&gt; {@&lt;var,{$1}&gt;}
+</code></pre></div></p>
+<p><strong>Key Benefits:</strong>
+- <strong>Explicit Parameter Passing</strong>: <code>op(b:$1){my_func(b)}</code> clearly shows parameter flow
+- <strong>Works with Any Function</strong>: Can wrap any function definition
+- <strong>No Grammar Changes</strong>: Uses existing <code>$op</code> syntax
+- <strong>ETL-Friendly</strong>: Perfect for data transformation pipelines
+- <strong>Reusable</strong>: Functions can be defined once and used in multiple rules</p>
+<p><strong>ETL Processing Example:</strong>
+<div class="highlight"><pre><span></span><code>/* Define ETL processing functions */
+validate_data = op(p){p.grep(&quot;valid&quot;)};
+transform_data = op(p){p.upper()};
+filter_data = op(p){p.len() &gt; 10 ? p : null};
+
+/* Use in ETL pipeline rules */
+@global[&quot;$etl_pipeline&quot;] = rule 
+    &lt;$raw_data,op(b:$1){validate_data(b)}&gt;
+    &lt;$validated,op(b:$1){transform_data(b)}&gt;
+    &lt;$transformed,op(b:$1){filter_data(b)}&gt;
+    {@&lt;var,{$1}&gt;}
+</code></pre></div></p>
+<p><strong>Alternative Syntax (Future Enhancement):</strong>
+<div class="highlight"><pre><span></span><code>/* Define predefined function using @&lt;op,{parameters}&gt; syntax */
+filter_function = @&lt;grep,{@&lt;this&gt;,@&lt;lit,{&quot;pattern&quot;}&gt;}&gt;;
+
+/* Use predefined function in rule token */
+@global[&quot;$filtered_data&quot;] = rule &lt;$raw_data,filter_function&gt; {@&lt;var,{$1}&gt;}
+</code></pre></div></p>
+<p><strong>Key Features:</strong>
+- <strong>Execution Tree Return</strong>: Always returns execution trees that must be evaluated
+- <strong>Namespace Resolution</strong>: Follows Grapa's namespace hierarchy (local → function → global)
+- <strong>Dynamic Lookup</strong>: Supports arrays, lists, objects, database objects
+- <strong>Compile-Time Processing</strong>: Post-processing <code>$OP</code> runs during compilation phase
+- <strong>Token Lookback</strong>: Access previous tokens via <code>$1</code>, <code>$2</code>, etc.
+- <strong>Error Handling</strong>: Can return <code>$ERR</code> to cause rule failure
+- <strong>Performance Note</strong>: Post-processing runs every evaluation (avoid heavy operations)
+- <strong>Predefined Functions</strong>: Functions can be defined once and reused across multiple rules
+- <strong>Cleaner Syntax</strong>: Avoids embedding raw code in grammar rules</p>
+<h2 id="language-extensibility-patterns">Language Extensibility Patterns</h2>
+<h3 id="1-custom-commands-and-functions"><strong>1. Custom Commands and Functions</strong></h3>
+<p><strong>Critical Distinction:</strong>
+- <strong><code>custom_command</code></strong>: For actions that perform operations (no return value)
+- <strong><code>custom_function</code></strong>: For expressions that return values</p>
+<p><strong>Integration Points:</strong>
+<div class="highlight"><pre><span></span><code>@global[&quot;$command&quot;]
+    = rule &#39;{&#39; &lt;$command_list&gt; &#39;;&#39; &#39;}&#39; {@&lt;scope,{$2}&gt;}
+    // ... other commands ...
+    | &lt;custom_command&gt;  /* ← Actions (loops, commands, statements) */
+    // ... other commands ...
+    ;
+
+@global[&quot;$function&quot;]
+    = rule &#39;[&#39; &#39;]&#39; {@&lt;createarray,{}&gt;}
+    // ... other functions/expressions ...
+    | &lt;custom_function&gt;  /* ← Expressions (operators, functions) */
+    // ... other functions/expressions ...
+    ;
+</code></pre></div></p>
+<p><strong>Execution Pattern:</strong>
+<div class="highlight"><pre><span></span><code>/* Define custom syntax */
+custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
+    /* Implementation */
+}};
+
+custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3,table:$6){
+    /* Implementation */
+    return result;
+}};
+
+/* Execute using op(parse)() */
+op(parse)(&quot;select * from users&quot;)();           /* Action */
+result = op(parse)(&quot;count(*) from users&quot;)();  /* Expression */
+</code></pre></div></p>
+<h3 id="2-dynamic-grammar-modification"><strong>2. Dynamic Grammar Modification</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Add new language constructs at runtime */
+@global[&quot;$custom_loop&quot;] = rule &#39;repeat&#39; $INT &#39;times&#39; &#39;{&#39; &lt;$command_list&gt; &#39;}&#39; {
+    op(count:$2, body:$5) {
+        i = 0;
+        while (i &lt; count) {
+            body();
+            i += 1;
+        };
+    }
+};
+
+/* Use the new syntax immediately */
+op(parse)(&#39;repeat 5 times { &quot;Hello&quot;.echo(); }&#39;)();
+</code></pre></div>
+<h3 id="3-protocol-parsing"><strong>3. Protocol Parsing</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Define HTTP request grammar */
+@global[&quot;$http_request&quot;] = rule &lt;$http_method&gt; &#39; &#39; &lt;$http_path&gt; &#39; &#39; &lt;$http_version&gt; &#39;\r\n&#39; &lt;$http_headers&gt; {
+    op(method:$1, path:$3, version:$5, headers:$7) {
+        return create_request(method, path, version, headers);
+    }
+};
+
+/* Parse HTTP requests */
+request = op(parse)(&#39;GET /api/users HTTP/1.1\r\nHost: example.com\r\n&#39;)();
+</code></pre></div>
+<h2 id="domain-specific-language-dsl-creation">Domain-Specific Language (DSL) Creation</h2>
+<h3 id="1-configuration-dsl"><strong>1. Configuration DSL</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Configuration language grammar */
+@global[&quot;$config_entry&quot;] = rule $ID &#39;=&#39; &lt;$config_value&gt; &#39;;&#39; {
+    op(key:$1, value:$3) {
+        set_config(key, value);
+    }
+};
+
+@global[&quot;$config_value&quot;] = rule $STR | $INT | $BOOL | &#39;[&#39; &lt;$config_list&gt; &#39;]&#39; | &#39;{&#39; &lt;$config_object&gt; &#39;}&#39;;
+
+/* Use the configuration DSL */
+op(parse)(&#39;server_name = &quot;myapp&quot;;&#39;)();
+op(parse)(&#39;port = 8080;&#39;)();
+op(parse)(&#39;debug = true;&#39;)();
+op(parse)(&#39;allowed_hosts = [&quot;localhost&quot;, &quot;127.0.0.1&quot;];&#39;)();
+</code></pre></div>
+<h3 id="2-data-processing-dsl"><strong>2. Data Processing DSL</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Pipeline processing language */
+@global[&quot;$pipeline&quot;] = rule &#39;pipeline&#39; &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {
+    op(steps:$3) {
+        result = null;
+        i = 0;
+        while (i &lt; steps.len()) {
+            step = steps[i];
+            result = execute_pipeline_step(step, result);
+            i += 1;
+        };
+        return result;
+    }
+};
+
+@global[&quot;$pipeline_steps&quot;] = rule &lt;$pipeline_step&gt; (&#39;|&#39; &lt;$pipeline_steps&gt; | );
+
+/* Execute data processing pipeline */
+result = op(parse)(&#39;pipeline { 
+    load &quot;data.csv&quot; | 
+    filter &quot;age &gt; 25&quot; | 
+    sort &quot;name&quot; | 
+    output &quot;results.json&quot; 
+}&#39;)();
+</code></pre></div>
+<h3 id="3-validation-dsl"><strong>3. Validation DSL</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Data validation language */
+@global[&quot;$validation&quot;] = rule &#39;validate&#39; $STR &#39;{&#39; &lt;$validation_rules&gt; &#39;}&#39; {
+    op(data:$2, rules:$4) {
+        validation_result = true;
+        i = 0;
+        while (i &lt; rules.len()) {
+            rule = rules[i];
+            if (!apply_validation_rule(data, rule)) {
+                validation_result = false;
+            };
+            i += 1;
+        };
+        return validation_result;
+    }
+};
+
+@global[&quot;$validation_rules&quot;] = rule &lt;$validation_rule&gt; (&#39;|&#39; &lt;$validation_rules&gt; | );
+
+@global[&quot;$validation_rule&quot;] = rule &#39;field&#39; $STR &#39;required&#39; | &#39;field&#39; $STR &#39;type&#39; $STR;
+
+/* Execute validation */
+is_valid = op(parse)(&#39;validate user_data { 
+    field &quot;name&quot; required | 
+    field &quot;age&quot; type &quot;integer&quot; | 
+    field &quot;email&quot; type &quot;email&quot; 
+}&#39;)();
+</code></pre></div>
+<h2 id="advanced-language-design-patterns">Advanced Language Design Patterns</h2>
+<h3 id="1-recursive-grammar-rules"><strong>1. Recursive Grammar Rules</strong></h3>
+<div class="highlight"><pre><span></span><code>/* CSV parser with recursive grammar */
+@global[&quot;$csv_parser&quot;] = rule &lt;$csv_row&gt; (&#39;\n&#39; &lt;$csv_parser&gt; | &#39;\n&#39; | ) {
+    op(row:$1, rest:$3) {
+        if (rest) {
+            return [row] + rest;
+        } else {
+            return [row];
+        };
+    }
+};
+
+@global[&quot;$csv_row&quot;] = rule &lt;$csv_field&gt; (&#39;,&#39; &lt;$csv_row&gt; | );
+
+/* Parse CSV data */
+csv_data = &quot;name,age,city\nJohn,25,NY\nJane,30,LA&quot;;
+parsed = op(parse)(csv_data)();
+</code></pre></div>
+<h3 id="2-context-sensitive-parsing"><strong>2. Context-Sensitive Parsing</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Context-aware parsing with state */
+@global[&quot;$context_parser&quot;] = rule &lt;$context_state&gt; &lt;$context_rule&gt; {
+    op(state:$1, rule:$2) {
+        /* Apply context-specific parsing rules */
+        return parse_with_context(state, rule);
+    }
+};
+
+@global[&quot;$context_state&quot;] = rule &#39;in&#39; $STR &#39;{&#39; | &#39;out&#39; $STR &#39;}&#39;;
+
+/* Use context-sensitive parsing */
+result = op(parse)(&#39;in &quot;sql&quot; { SELECT * FROM users }&#39;)();
+</code></pre></div>
+<h3 id="3-dynamic-token-types"><strong>3. Dynamic Token Types</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Define custom token types */
+@global[&quot;$custom_token&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) | $SYM(&quot;JSON_PATH&quot;) | $SYM(&quot;XPATH_EXPR&quot;);
+
+/* Use custom tokens in grammar */
+@global[&quot;$sql_statement&quot;] = rule $SYM(&quot;SQL_KEYWORD&quot;) &lt;$sql_expression&gt; {
+    op(keyword:$1, expr:$2) {
+        return execute_sql_statement(keyword, expr);
+    }
+};
+</code></pre></div>
+<h2 id="performance-optimization">Performance Optimization</h2>
+<h3 id="1-grammar-compilation-caching"><strong>1. Grammar Compilation Caching</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Cache compiled grammar rules for performance */
+grammar_cache = {};
+
+compile_grammar = op(rule_name, rule_def) {
+    if (grammar_cache[rule_name]) {
+        return grammar_cache[rule_name];
+    };
+
+    compiled = op(parse)(rule_def);
+    grammar_cache[rule_name] = compiled;
+    return compiled;
+};
+
+/* Use cached grammar */
+sql_grammar = compile_grammar(&quot;sql&quot;, &quot;custom_command = rule select...&quot;);
+json_grammar = compile_grammar(&quot;json&quot;, &quot;custom_function = rule $STR-&gt;$STR...&quot;);
+</code></pre></div>
+<h3 id="2-lazy-evaluation"><strong>2. Lazy Evaluation</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Lazy evaluation of complex expressions */
+@global[&quot;$lazy_expression&quot;] = rule &#39;lazy&#39; &#39;{&#39; &lt;$expression&gt; &#39;}&#39; {
+    op(expr:$3) {
+        /* Create lazy evaluation wrapper */
+        return op() {
+            return expr();
+        };
+    }
+};
+
+/* Execute lazy expression only when needed */
+lazy_result = op(parse)(&#39;lazy { expensive_calculation() }&#39;)();
+/* Expression not evaluated until lazy_result() is called */
+</code></pre></div>
+<h2 id="error-handling-and-debugging">Error Handling and Debugging</h2>
+<h3 id="1-grammar-error-recovery"><strong>1. Grammar Error Recovery</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Robust grammar with error recovery */
+@global[&quot;$robust_rule&quot;] = rule &lt;$primary_rule&gt; | &lt;$fallback_rule&gt; {
+    op(primary:$1, fallback:$2) {
+        if (primary.type() != $ERR) {
+            return primary;
+        } else {
+            (&quot;Recovering from error with fallback&quot;).echo();
+            return fallback;
+        };
+    }
+};
+</code></pre></div>
+<h3 id="2-debug-grammar-execution"><strong>2. Debug Grammar Execution</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Debug grammar execution */
+@global[&quot;$debug_rule&quot;] = rule &#39;debug&#39; &lt;$rule&gt; {
+    op(rule:$2) {
+        (&quot;Debug: Executing rule&quot;).echo();
+        result = rule();
+        (&quot;Debug: Rule result: &quot; + result).echo();
+        return result;
+    }
+};
+
+/* Use debug wrapper */
+debug_result = op(parse)(&#39;debug { custom_rule() }&#39;)();
+</code></pre></div>
+<h2 id="real-world-applications">Real-World Applications</h2>
+<h3 id="1-configuration-management-system"><strong>1. Configuration Management System</strong></h3>
+<div class="highlight"><pre><span></span><code>/* Complete configuration DSL */
+@global[&quot;$config_system&quot;] = rule &#39;config&#39; &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {
+    op(entries:$3) {
+        (&quot;Loading configuration...&quot;).echo();
+        i = 0;
+        while (i &lt; entries.len()) {
+            entry = entries[i];
+            apply_config_entry(entry);
+            i += 1;
+        };
+        (&quot;Configuration loaded successfully&quot;).echo();
+    }
+};
+
+@global[&quot;$config_entries&quot;] = rule &lt;$config_entry&gt; (&#39;;&#39; &lt;$config_entries&gt; | );
+
+@global[&quot;$config_entry&quot;] = rule $ID &#39;=&#39; &lt;$config_value&gt; | &#39;include&#39; $STR;
+
+/* Load configuration */
+op(parse)(&#39;config { 
+    server_name = &quot;myapp&quot;; 
+    port = 8080; 
+    debug = true; 
+    include &quot;local.conf&quot;; 
+}&#39;)();
+</code></pre></div>
+<h3 id="2-data-transformation-pipeline"><strong>2. Data Transformation Pipeline</strong></h3>
+<div class="highlight"><pre><span></span><code>/* ETL pipeline DSL */
+@global[&quot;$etl_pipeline&quot;] = rule &#39;etl&#39; &#39;{&#39; &lt;$etl_steps&gt; &#39;}&#39; {
+    op(steps:$3) {
+        (&quot;Starting ETL pipeline...&quot;).echo();
+        result = null;
+        i = 0;
+        while (i &lt; steps.len()) {
+            step = steps[i];
+            (&quot;Executing step: &quot; + step).echo();
+            result = execute_etl_step(step, result);
+            i += 1;
+        };
+        (&quot;ETL pipeline completed&quot;).echo();
+        return result;
+    }
+};
+
+@global[&quot;$etl_steps&quot;] = rule &lt;$etl_step&gt; (&#39;|&#39; &lt;$etl_steps&gt; | );
+
+@global[&quot;$etl_step&quot;] = rule &#39;extract&#39; $STR | &#39;transform&#39; $STR | &#39;load&#39; $STR;
+
+/* Execute ETL pipeline */
+result = op(parse)(&#39;etl { 
+    extract &quot;source.csv&quot; | 
+    transform &quot;clean_data&quot; | 
+    load &quot;target.db&quot; 
+}&#39;)();
+</code></pre></div>
+<h3 id="3-api-definition-language"><strong>3. API Definition Language</strong></h3>
+<div class="highlight"><pre><span></span><code>/* API definition DSL */
+@global[&quot;$api_definition&quot;] = rule &#39;api&#39; $STR &#39;{&#39; &lt;$api_endpoints&gt; &#39;}&#39; {
+    op(name:$2, endpoints:$4) {
+        (&quot;Defining API: &quot; + name).echo();
+        return create_api(name, endpoints);
+    }
+};
+
+@global[&quot;$api_endpoints&quot;] = rule &lt;$api_endpoint&gt; (&#39;;&#39; &lt;$api_endpoints&gt; | );
+
+@global[&quot;$api_endpoint&quot;] = rule $STR $STR &#39;{&#39; &lt;$endpoint_body&gt; &#39;}&#39; {
+    op(method:$1, path:$2, body:$4) {
+        return define_endpoint(method, path, body);
+    }
+};
+
+/* Define API */
+api = op(parse)(&#39;api &quot;user_api&quot; { 
+    GET &quot;/users&quot; { return get_users(); } | 
+    POST &quot;/users&quot; { return create_user(request.body); } | 
+    PUT &quot;/users/{id}&quot; { return update_user(id, request.body); } 
+}&#39;)();
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-grammar-design"><strong>1. Grammar Design</strong></h3>
+<ol>
+<li><strong>Start Simple</strong>: Begin with basic rules and gradually add complexity</li>
+<li><strong>Use Clear Names</strong>: Name rules and tokens descriptively</li>
+<li><strong>Handle Errors</strong>: Include error recovery and fallback mechanisms</li>
+<li><strong>Document Grammar</strong>: Provide clear documentation for custom syntax</li>
+</ol>
+<h3 id="2-performance"><strong>2. Performance</strong></h3>
+<ol>
+<li><strong>Cache Compiled Rules</strong>: Reuse compiled grammar rules when possible</li>
+<li><strong>Optimize Token Types</strong>: Use appropriate token types for efficiency</li>
+<li><strong>Lazy Evaluation</strong>: Defer expensive operations until needed</li>
+<li><strong>Profile Execution</strong>: Monitor performance of custom grammar rules</li>
+</ol>
+<h3 id="3-integration"><strong>3. Integration</strong></h3>
+<ol>
+<li><strong>Leverage Existing Libraries</strong>: Use Grapa's C++ libraries when possible</li>
+<li><strong>Follow Patterns</strong>: Use established patterns like <code>custom_command</code>/<code>custom_function</code></li>
+<li><strong>Test Thoroughly</strong>: Validate grammar rules with comprehensive testing</li>
+<li><strong>Version Control</strong>: Track grammar changes and maintain compatibility</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>Grapa's executable BNF system provides unprecedented power for language design and extension. By understanding and leveraging this system, you can:</p>
 <ul>
-<li><strong>Data Engineers &amp; Scientists:</strong> For high-throughput ETL, analytics, and automation</li>
-<li><strong>Educators &amp; Researchers:</strong> For teaching, language prototyping, and meta-programming</li>
-<li><strong>Python/CLI Power Users:</strong> For offloading heavy data processing or integrating with existing workflows</li>
-<li><strong>Anyone needing:</strong></li>
-<li>Unlimited precision math</li>
-<li>Parallel/concurrent scripting</li>
-<li>Unified file/database access</li>
-<li>Custom language/grammar experimentation</li>
+<li><strong>Create custom languages</strong> tailored to specific domains</li>
+<li><strong>Build sophisticated DSLs</strong> for complex workflows</li>
+<li><strong>Extend Grapa itself</strong> with new syntax and capabilities</li>
+<li><strong>Implement protocol parsers</strong> for various data formats</li>
+<li><strong>Design configuration languages</strong> for dynamic systems</li>
 </ul>
-<h2 id="whywhen-to-use-grapa">Why/When to Use Grapa?</h2>
+<p>The key is to start with simple patterns and gradually build complexity, always keeping in mind the three-phase processing model and the distinction between commands and functions.</p>
+<h2 id="see-also">See Also</h2>
 <ul>
-<li>When you need to process large data sets with true parallelism</li>
-<li>When you want to experiment with grammars, compilers, or language design</li>
-<li>When Python’s GIL or precision limits are a bottleneck</li>
-<li>When you want a scripting language that is both high-level and deeply extensible</li>
-<li>When you need to unify file, database, and scripting workflows</li>
-<li><strong>For a detailed comparison with other languages, see <a href="../grapa_ecosystem_positioning/">Grapa in the Ecosystem</a></strong></li>
+<li><a href="../advanced_topics/">Advanced Topics</a></li>
+<li><a href="../multi_syntax_programming/">Multi-Syntax Programming</a></li>
+<li><a href="../syntax/grammar_design/">Grammar Design</a></li>
+<li><a href="../examples/">Examples</a></li>
+<li><a href="../use_cases/">Use Cases</a> </li>
 </ul>
-<h2 id="high-level-architecture-feature-map">High-Level Architecture &amp; Feature Map</h2>
-<blockquote>
-<p><em>[A visual diagram will be added here in the future. For now, see the summary below.]</em></p>
-</blockquote>
-<ul>
-<li><strong>Core Language:</strong> Grammar-based, block-structured, unlimited precision</li>
-<li><strong>Execution Model:</strong> Dynamic code execution, execution trees, meta-programming</li>
-<li><strong>Parallelism:</strong> Built-in support for parallel map/filter/reduce, $thread, $net</li>
-<li><strong>Unified Path System:</strong> Navigate seamlessly between file systems and databases</li>
-<li><strong>Integration:</strong> Python (GrapaPy), CLI, extensible via modules</li>
-<li><strong>Cross-Platform:</strong> Windows, Mac, Linux, AWS</li>
-</ul>
-<h2 id="documentation-structure-onboarding-map">Documentation Structure (Onboarding Map)</h2>
-<ul>
-<li><strong><a href="../getting_started/">Getting Started</a>:</strong> Installation, first steps, and onboarding</li>
-<li><strong><a href="../cli_integration/">CLI Integration</a>:</strong> Using the CLI (download or build)</li>
-<li><strong><a href="../python_integration/">Python Integration</a>:</strong> Using Grapa from Python</li>
-<li><strong><a href="../cli_quickstart/">Quickstart</a>:</strong> CLI usage and patterns</li>
-<li><strong><a href="../api_reference/">API Reference</a>:</strong> Complete function and type reference</li>
-<li><strong><a href="../examples/">Examples</a>:</strong> Practical scripts and code samples</li>
-<li><strong><a href="../use_cases/">Use Cases</a>:</strong> Real-world scenarios and solutions</li>
-<li><strong><a href="../grapa_ecosystem_positioning/">Grapa in the Ecosystem</a>:</strong> When to use Grapa vs. other languages</li>
-<li><strong><a href="../troubleshooting/">Support</a>:</strong> Troubleshooting and help</li>
-</ul>
-<h2 id="next-steps">Next Steps</h2>
-<ul>
-<li><a href="../getting_started/">Start with the Getting Started guide</a></li>
-<li><a href="../api_reference/">Explore the API Reference</a></li>
-<li><a href="../examples/">Try out Examples</a></li>
-<li><a href="../use_cases/">See Use Cases for real-world applications</a></li>
-<li><a href="../troubleshooting/">Get help or report issues</a></li>
-</ul>
-<hr />
-<p><em>Grapa: High-performance scripting for data, ETL, and automation.</em> </p>
 
 
 
 
 
 
+
+  
+  
 
 
 

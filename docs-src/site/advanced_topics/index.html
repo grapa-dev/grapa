@@ -2304,6 +2304,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#executable-bnf-and-language-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executable BNF and Language Design
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#custom-grammar-and-bnf" class="md-nav__link">
     <span class="md-ellipsis">
       Custom Grammar and BNF
@@ -3246,6 +3255,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#executable-bnf-and-language-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executable BNF and Language Design
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#custom-grammar-and-bnf" class="md-nav__link">
     <span class="md-ellipsis">
       Custom Grammar and BNF
@@ -3324,10 +3342,21 @@
 <li><strong>Dynamic Evaluation:</strong> Use <code>$sys().eval()</code> and <code>$sys().compile()</code> for advanced meta-programming patterns.</li>
 <li><strong>Reference:</strong> See <a href="../operators/function/">Operator: Function</a> and <a href="../sys/sys/">System Functions</a>.</li>
 </ul>
+<h2 id="executable-bnf-and-language-design">Executable BNF and Language Design</h2>
+<ul>
+<li><strong>Executable BNF:</strong> Grapa's <code>$RULE</code> system goes beyond traditional parsing - it's a complete programming language for defining languages.</li>
+<li><strong>Dynamic Grammar:</strong> Modify and extend the language grammar at runtime for custom syntax and DSLs.</li>
+<li><strong>Three-Phase Processing:</strong> Input → Compilation → Execution Tree → Runtime Evaluation.</li>
+<li><strong>Isolated Rule Execution:</strong> Execute custom rules without affecting the main language grammar.</li>
+<li><strong>Lexical Flags:</strong> Use <code>$&amp;</code> enclosures to activate special lexer processing for XML/HTML content.</li>
+<li><strong>Reference:</strong> See <a href="../language_design_with_executable_bnf/">Language Design with Executable BNF</a> for comprehensive guide, <a href="../isolated_rule_execution/">Isolated Rule Execution</a> for ETL and domain-specific processing.</li>
+</ul>
 <h2 id="custom-grammar-and-bnf">Custom Grammar and BNF</h2>
 <ul>
 <li><strong>Grammar Design:</strong> Grapa allows you to define and extend its grammar using BNF-like rules, enabling custom language features and DSLs.</li>
 <li><strong>Language Extensibility:</strong> Define custom commands and functions that become part of the language syntax at runtime.</li>
+<li><strong>Multi-Syntax Support:</strong> Grapa can support multiple native syntaxes (SQL, JSON, XML, HTML) through its executable BNF architecture.</li>
+<li><strong>Lexical Processing:</strong> Use <code>$&amp;</code> enclosures to activate special lexer processing for complex formats like XML/HTML.</li>
 <li><strong>Reference:</strong> See <a href="../type/rule/#language-syntax-extension">Language Syntax Extension</a> for comprehensive documentation, <a href="../syntax/grammar_design/">Grammar Design</a> for BNF details, and maintainer docs for implementation details.</li>
 </ul>
 <h2 id="advanced-system-functions">Advanced System Functions</h2>

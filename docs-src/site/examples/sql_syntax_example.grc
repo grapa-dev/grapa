@@ -1,0 +1,186 @@
+/* SQL Syntax Integration Example
+ * 
+ * This example demonstrates how Grapa can support native SQL syntax
+ * through its executable BNF architecture using custom_command and custom_function.
+ * 
+ * Key concepts:
+ * - custom_command: For SQL statements (SELECT, INSERT, UPDATE)
+ * - custom_function: For SQL functions (COUNT, SUM, AVG)
+ * - op(parse)(): Execution pattern for custom syntax
+ */
+
+("=== SQL Syntax Integration Demo ===").echo();
+
+/* Step 1: Create sample database */
+("Creating sample database...").echo();
+
+/* Create users table */
+users_table = $file().table("ROW");
+users_table.mkfield("name", "STR", "VAR");
+users_table.mkfield("age", "INT");
+users_table.mkfield("city", "STR", "VAR");
+
+/* Populate with sample data */
+users_table.set("user1", "John", "name");
+users_table.set("user1", 25, "age");
+users_table.set("user1", "New York", "city");
+
+users_table.set("user2", "Jane", "name");
+users_table.set("user2", 30, "age");
+users_table.set("user2", "Los Angeles", "city");
+
+users_table.set("user3", "Bob", "name");
+users_table.set("user3", 35, "age");
+users_table.set("user3", "Chicago", "city");
+
+("Database created with 3 users.\n").echo();
+
+/* Step 2: Define SQL syntax using custom_command and custom_function */
+
+/* SELECT statement (custom_command - action) */
+("Defining SELECT syntax...").echo();
+custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
+    ("SQL SELECT: " + fields + " FROM " + table_name).echo();
+    
+    if (table_name == "users") {
+        records = users_table.ls();
+        ("Found " + records.len() + " records:").echo();
+        
+        i = 0;
+        while (i < records.len()) {
+            record = records[i];
+            key = record.getname(1);
+            name = users_table.get(key, "name");
+            age = users_table.get(key, "age");
+            city = users_table.get(key, "city");
+            
+            if (fields == "*") {
+                ("  " + name + " (age " + age + ", " + city + ")").echo();
+            } else if (fields == "name,age") {
+                ("  " + name + " (age " + age + ")").echo();
+            } else if (fields == "name,city") {
+                ("  " + name + " (" + city + ")").echo();
+            };
+            
+            i = i + 1;
+        };
+    } else {
+        ("Unknown table: " + table_name).echo();
+    };
+}};
+
+/* COUNT function (custom_function - expression) */
+("Defining COUNT syntax...").echo();
+custom_function = rule count '(' $STR ')' from $STR {op(field:$3,table_name:$6){
+    ("SQL COUNT: " + field + " FROM " + table_name).echo();
+    
+    if (table_name == "users") {
+        records = users_table.ls();
+        count = records.len();
+        ("Count: " + count).echo();
+        return count;
+    } else {
+        ("Unknown table: " + table_name).echo();
+        return 0;
+    };
+}};
+
+/* INSERT statement (custom_command - action) */
+("Defining INSERT syntax...").echo();
+custom_command = rule insert into $STR values $STR {op(table_name:$3,values_str:$5){
+    ("SQL INSERT: " + table_name + " VALUES " + values_str).echo();
+    
+    if (table_name == "users") {
+        values = values_str.split(",");
+        if (values.len() >= 3) {
+            existing_records = users_table.ls();
+            new_key = "user" + (existing_records.len() + 1).str();
+            
+            users_table.set(new_key, values[1].trim(), "name");
+            users_table.set(new_key, values[2].trim().int(), "age");
+            users_table.set(new_key, values[3].trim(), "city");
+            
+            ("Successfully inserted: " + values[1].trim()).echo();
+        } else {
+            ("Invalid values format. Need: name,age,city").echo();
+        };
+    } else {
+        ("Unknown table: " + table_name).echo();
+    };
+}};
+
+("SQL syntax defined!\n").echo();
+
+/* Step 3: Execute SQL syntax using op(parse)() */
+
+("=== Executing SQL Syntax ===").echo();
+
+("1. SELECT all users:").echo();
+op(parse)("select * from users")();
+
+("\n2. SELECT specific fields:").echo();
+op(parse)("select name,age from users")();
+
+("\n3. COUNT users:").echo();
+user_count = op(parse)("count(*) from users")();
+("Total users: " + user_count).echo();
+
+("\n4. INSERT new user:").echo();
+op(parse)("insert into users values David,40,Seattle")();
+
+("\n5. SELECT after INSERT:").echo();
+op(parse)("select * from users")();
+
+("\n6. COUNT after INSERT:").echo();
+new_count = op(parse)("count(*) from users")();
+("Updated count: " + new_count).echo();
+
+/* Step 4: Demonstrate expression usage */
+
+("\n=== Using SQL in Expressions ===").echo();
+
+("Using COUNT in conditional logic:").echo();
+if (op(parse)("count(*) from users")() > 3) {
+    ("There are more than 3 users").echo();
+} else {
+    ("There are 3 or fewer users").echo();
+};
+
+("Using COUNT in calculations:").echo();
+avg_age = 0;
+records = users_table.ls();
+i = 0;
+while (i < records.len()) {
+    record = records[i];
+    key = record.getname(1);
+    age = users_table.get(key, "age");
+    avg_age = avg_age + age;
+    i = i + 1;
+};
+avg_age = avg_age / records.len();
+("Average age: " + avg_age).echo();
+
+/* Step 5: Demonstrate the power of multi-syntax */
+
+("\n=== Multi-Syntax Power ===").echo();
+
+("Grapa can support multiple native syntaxes:").echo();
+("- SQL: Database queries and operations").echo();
+("- JSON: Data structure manipulation").echo();
+("- XML: Document processing").echo();
+("- HTML: Web content parsing").echo();
+("- Custom DSLs: Domain-specific languages").echo();
+
+("All through the same executable BNF architecture!").echo();
+
+("\n=== SQL Syntax Demo Complete ===").echo();
+
+/* 
+ * Key Takeaways:
+ * 
+ * 1. custom_command: For actions (SELECT, INSERT, UPDATE)
+ * 2. custom_function: For expressions (COUNT, SUM, AVG)
+ * 3. op(parse)(): Execution pattern for custom syntax
+ * 4. Multi-syntax: Grapa can support SQL, JSON, XML, HTML natively
+ * 5. No core changes: All implemented through rule extensions
+ */ 

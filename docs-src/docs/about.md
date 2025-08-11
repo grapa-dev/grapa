@@ -28,6 +28,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 - When Python’s GIL or precision limits are a bottleneck
 - When you want a scripting language that is both high-level and deeply extensible
 - When you need to unify file, database, and scripting workflows
+- **For a detailed comparison with other languages, see [Grapa in the Ecosystem](grapa_ecosystem_positioning.md)**
 
 ## High-Level Architecture & Feature Map
 > _[A visual diagram will be added here in the future. For now, see the summary below.]_
@@ -47,6 +48,7 @@ Grapa is a modern, grammar-based programming language and data processing platfo
 - **[API Reference](api_reference.md):** Complete function and type reference
 - **[Examples](examples.md):** Practical scripts and code samples
 - **[Use Cases](use_cases/index.md):** Real-world scenarios and solutions
+- **[Grapa in the Ecosystem](grapa_ecosystem_positioning.md):** When to use Grapa vs. other languages
 - **[Support](troubleshooting.md):** Troubleshooting and help
 
 ## Next Steps

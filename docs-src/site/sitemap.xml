@@ -53,6 +53,10 @@
          <lastmod>2025-08-11</lastmod>
     </url>
     <url>
+         <loc>https://grapa-dev.github.io/grapa/grapa_ecosystem_positioning/</loc>
+         <lastmod>2025-08-11</lastmod>
+    </url>
+    <url>
          <loc>https://grapa-dev.github.io/grapa/grapapy_namespace_solution/</loc>
          <lastmod>2025-08-11</lastmod>
     </url>
@@ -66,6 +70,18 @@
     </url>
     <url>
          <loc>https://grapa-dev.github.io/grapa/grz_format/</loc>
+         <lastmod>2025-08-11</lastmod>
+    </url>
+    <url>
+         <loc>https://grapa-dev.github.io/grapa/isolated_rule_execution/</loc>
+         <lastmod>2025-08-11</lastmod>
+    </url>
+    <url>
+         <loc>https://grapa-dev.github.io/grapa/language_design_with_executable_bnf/</loc>
+         <lastmod>2025-08-11</lastmod>
+    </url>
+    <url>
+         <loc>https://grapa-dev.github.io/grapa/multi_syntax_programming/</loc>
          <lastmod>2025-08-11</lastmod>
     </url>
     <url>
@@ -350,6 +366,14 @@
     </url>
     <url>
          <loc>https://grapa-dev.github.io/grapa/use_cases/high_precision_math/</loc>
+         <lastmod>2025-08-11</lastmod>
+    </url>
+    <url>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/language_design_and_dsls/</loc>
+         <lastmod>2025-08-11</lastmod>
+    </url>
+    <url>
+         <loc>https://grapa-dev.github.io/grapa/use_cases/multi_syntax_data_processing/</loc>
          <lastmod>2025-08-11</lastmod>
     </url>
     <url>

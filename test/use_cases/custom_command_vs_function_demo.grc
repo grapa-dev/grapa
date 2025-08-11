@@ -1,0 +1,67 @@
+/*
+ * Custom Command vs Custom Function Demo
+ * 
+ * This demonstrates the key difference:
+ * - custom_command: For actions that don't return values (like loops, commands)
+ * - custom_function: For expressions that return values (like operators, functions)
+ */
+
+/* Step 1: custom_command - for actions (no return value) */
+("Defining custom_command for actions...").echo();
+
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {op(var:$2,start:$4,end:$6,body:$8){
+    /* This is an action - it performs a loop but doesn't return a value */
+    op()(var + " = " + start)();
+    current = start;
+    while (current <= end) {
+        op()(body)();
+        current += 1;
+        op()(var + " = " + current)();
+    };
+    ("Loop completed for " + var + " from " + start + " to " + end).echo();
+}};
+
+/* Step 2: custom_function - for expressions (returns a value) */
+("Defining custom_function for expressions...").echo();
+
+custom_function = rule range '(' <$comp> ')' {op(end:$3){
+    /* This is an expression - it returns a value */
+    result = [];
+    i = 1;
+    while (i <= end) {
+        result += i;
+        i += 1;
+    };
+    result;  /* Return the result */
+}};
+
+/* Step 3: Test the difference */
+("Testing the difference...").echo();
+
+/* custom_command usage - action, no return value */
+for i from 1 to 3 {
+    ("Loop iteration " + i).echo();
+};
+
+/* custom_function usage - expression, returns a value */
+numbers = range(5);
+("Range result: " + numbers).echo();
+
+/* You can use custom_function in expressions */
+sum = 0;
+for i in range(3) {
+    sum += numbers[i];
+};
+("Sum of first 3 numbers: " + sum).echo();
+
+/* You can assign the result of custom_function */
+r1 = range(3);
+r2 = range(5);
+combined = r1 + r2;
+("Combined ranges: " + combined).echo();
+
+/* You can use custom_function in calculations */
+total = range(4).len();
+("Length of range(4): " + total).echo();
+
+("Demo completed!").echo(); 

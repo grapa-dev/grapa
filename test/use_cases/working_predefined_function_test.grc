@@ -1,0 +1,29 @@
+/* Working test for predefined functions in rule tokens */
+
+echo("=== Testing working predefined function syntax ===");
+
+/* Define a simple rule for testing */
+x = rule $STR {@<lit,{$1}>};
+
+echo("Rule x defined");
+
+/* Test 1: Direct @<op,{parameters}> syntax - THIS WORKS */
+echo("Test 1: Direct @<op,{parameters}> syntax");
+test_rule1 = rule $INT <x,@<len,{@<this>}>> $INT {op(a:$2){a}};
+echo("Test rule 1 created");
+
+/* Test 2: Different predefined function */
+echo("Test 2: Different predefined function");
+test_rule2 = rule $INT <x,@<grep,{@<this>,@<lit,{"test"}>}>> $INT {op(a:$2){a}};
+echo("Test rule 2 created");
+
+/* Execute tests */
+echo("=== Executing tests ===");
+
+echo("Testing rule 1:");
+result1 = op()("44 'test data' 22", test_rule1)();
+echo("Result 1: " + result1);
+
+echo("Testing rule 2:");
+result2 = op()("44 'test data' 22", test_rule2)();
+echo("Result 2: " + result2); 

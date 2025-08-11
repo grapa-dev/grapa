@@ -1,0 +1,61 @@
+/*
+ * Simple Custom "for" Loop Demo
+ * 
+ * This demonstrates the basic concept of extending Grapa's grammar
+ * with a custom "for" loop using the custom_command mechanism.
+ */
+
+/* Define a simple custom for loop command */
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {op(var:$2,start:$4,end:$6,body:$8){
+    /* Set initial value */
+    op()(var + " = " + start)();
+    
+    /* Loop from start to end */
+    current = start;
+    while (current <= end) {
+        /* Execute the loop body */
+        op()(body)();
+        
+        /* Increment the variable */
+        current += 1;
+        op()(var + " = " + current)();
+    };
+    
+    ("For loop completed: " + var + " went from " + start + " to " + end).echo();
+}};
+
+/* Test the custom for loop */
+("Testing custom for loop...").echo();
+
+for i from 1 to 5 {
+    ("Iteration " + i).echo();
+};
+
+/* Define another custom command for range-based iteration */
+custom_command = rule for $ID in <$comp> <$command> {op(var:$2,items:$4,body:$6){
+    /* Simple list iteration */
+    if (items.type() == "$LIST" || items.type() == "$ARRAY") {
+        i = 1;
+        while (i <= items.len()) {
+            /* Set the loop variable */
+            op()(var + " = " + items[i])();
+            
+            /* Execute loop body */
+            op()(body)();
+            
+            i += 1;
+        };
+    } else {
+        ("Error: Expected list or array for iteration").echo();
+    };
+}};
+
+/* Test range-based iteration */
+("Testing range-based iteration...").echo();
+
+my_list = [10, 20, 30, 40, 50];
+for item in my_list {
+    ("Processing item: " + item).echo();
+};
+
+("Custom for loop demo completed!").echo(); 

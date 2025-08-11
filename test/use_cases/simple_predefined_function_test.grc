@@ -1,0 +1,23 @@
+/* Test for predefined function names in rule tokens */
+
+echo("Script starting");
+
+/* Define a simple predefined function using the correct syntax */
+my_function = @<len,{@<this>}>;
+
+echo("Function defined");
+
+/* Define a simple rule for testing */
+x = rule $STR {@<lit,{$1}>};
+
+echo("Rule x defined");
+
+/* Test rule using predefined function name with @ reference */
+test_rule = rule $INT <x,@my_function> $INT {op(a:$2){a}};
+
+echo("Test rule defined");
+
+/* Execute test */
+echo("Testing predefined function in rule token:");
+result = op()("44 'test data' 22", test_rule)();
+echo("Result: " + result); 

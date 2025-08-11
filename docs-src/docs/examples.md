@@ -11,6 +11,10 @@ Welcome to the Grapa Examples hub! Here you'll find practical, ready-to-run scri
 | [Basic Example](examples/basic_example.grc) | Demonstrates basic Grapa syntax, variable assignment, arrays, strings, and math operations. |
 | [Advanced Example](examples/advanced_example.grc) | Shows more complex operations: string processing, array manipulation, and returning multiple results. |
 | [Performance Example](examples/performance_example.grc) | Illustrates performance-related operations, including loops and array creation. |
+| [SQL Syntax Example](examples/sql_syntax_example.grc) | Demonstrates native SQL syntax integration using custom_command and custom_function. |
+| [Language Design Example](examples/language_design_example.grc) | Demonstrates executable BNF system for creating custom languages, DSLs, and extending Grapa. |
+| [Isolated Rule Execution Example](examples/isolated_rule_execution_demo.grc) | Demonstrates executing custom rules in isolation for ETL and domain-specific processing. |
+| [Wrapper Function Example](examples/wrapper_function_example.grc) | Demonstrates the wrapper function pattern for ETL processing using rule tokens with custom functions. |
 | [Python Integration Example](examples/python_integration_example.py) | Demonstrates how to use Grapa from Python, including math, strings, arrays, file, and grep operations. |
 
 > **How to use these examples:**

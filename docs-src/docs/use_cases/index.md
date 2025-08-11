@@ -76,6 +76,26 @@ Comprehensive cryptographic capabilities through OpenSSL integration and custom 
 - Hash functions (SHA3 family, SHAKE)
 - RSA, Diffie-Hellman, and digital signatures
 
+### [8. Multi-Syntax Data Processing](multi_syntax_data_processing.md)
+Grapa's executable BNF architecture enables native support for multiple syntaxes (SQL, JSON, XML, HTML) within a single language, making it ideal for complex data integration and ETL workflows.
+
+**Key Features:**
+- Native SQL syntax for database operations
+- JSON path queries and manipulation
+- XPath expressions for XML processing
+- Custom DSL creation for domain-specific tasks
+- Unified multi-syntax data pipelines
+
+### [9. Language Design and Domain-Specific Languages](language_design_and_dsls.md)
+Grapa's executable BNF system provides unprecedented power for creating custom languages and domain-specific languages (DSLs) directly within the language itself.
+
+**Key Features:**
+- Runtime language evolution and dynamic grammar modification
+- Three-phase processing: Input → Compilation → Execution Tree → Runtime Evaluation
+- Seamless integration with existing C++ libraries
+- Configuration management, data processing pipelines, and API definition DSLs
+- Protocol parsing and business rule validation systems
+
 ---
 
 For each use case, see the corresponding section for detailed examples in both Grapa and Python (GrapaPy). 

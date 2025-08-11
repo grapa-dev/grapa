@@ -43,6 +43,14 @@ Grapa's implementation is built on several key components:
 - [Library Specification Analysis](../RESEARCH_AND_ANALYSIS/LIBRARY_SPECIFICATION_ANALYSIS.md) - Analysis of library specification mechanisms in $OP syntax
 - [Builtin Namespace Definitions](../RESEARCH_AND_ANALYSIS/BUILTIN_NAMESPACE_DEFINITIONS_ANALYSIS.md) - Analysis of builtin namespace definitions and registration
 
+### Language Extensibility
+- [Rule System Architecture](RULE_SYSTEM_ARCHITECTURE.md) - Executable BNF system, compilation vs execution, custom syntax integration
+- [Rules System Enhancement Roadmap](RULES_SYSTEM_ENHANCEMENT_ROADMAP.md) - Comprehensive 16-week roadmap for modern language features and developer experience
+- [SQL Syntax Implementation Patterns](SQL_SYNTAX_IMPLEMENTATION_PATTERNS.md) - Native SQL syntax using custom_command and custom_function mechanisms
+- [Syntax Improvements Analysis](GRAPA_SYNTAX_IMPROVEMENTS_ANALYSIS.md) - Comprehensive analysis of grammar and C++ libraries for syntax enhancements
+- [Custom Command For Loop Implementation](CUSTOM_COMMAND_FOR_LOOP_IMPLEMENTATION.md) - For loop implementation using custom_command mechanism
+- [BNF-Based ETL Analysis](BNF_BASED_ETL_ANALYSIS.md) - How Grapa uses executable BNF for JSON, XML, and HTML processing
+
 ### Specialized Components
 - [Binary Grep Implementation](BINARY_GREP.md) - Deep technical reference for binary data processing and grep implementation
 - [Field Metadata Lifecycle](FIELD_METADATA_LIFECYCLE.md) - Field metadata lifecycle and requirements

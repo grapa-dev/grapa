@@ -83,6 +83,7 @@ nav:
       - CLI Integration: cli_integration.md
       - Run Command: run.md
       - Python Integration: python_integration.md
+      - Grapa in the Ecosystem: grapa_ecosystem_positioning.md
   - Quickstart: cli_quickstart.md
   - Reference:
       - API Reference: api_reference.md
@@ -147,6 +148,9 @@ nav:
       - Debugging: debugging.md
       - Execution Pipeline: execution_pipeline_overview.md
       - Advanced Topics: advanced_topics.md
+      - Multi-Syntax Programming: multi_syntax_programming.md
+      - Language Design with Executable BNF: language_design_with_executable_bnf.md
+      - Isolated Rule Execution: isolated_rule_execution.md
       - Deep Expert Implementation: deep_expert_implementation_overview.md
   - Guides:
       - Migration Guides:
@@ -176,6 +180,8 @@ nav:
       - Database & File System: use_cases/database_file_system.md
       - Education & Prototyping: use_cases/education_prototyping.md
       - Cryptography: use_cases/cryptography.md
+      - Multi-Syntax Data Processing: use_cases/multi_syntax_data_processing.md
+      - Language Design and DSLs: use_cases/language_design_and_dsls.md
   - Support:
       - Troubleshooting: troubleshooting.md
       - Testing: testing.md
