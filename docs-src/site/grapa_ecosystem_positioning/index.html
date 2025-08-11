@@ -668,6 +668,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#unlimited-precision-mathematics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unlimited Precision Mathematics 🔢
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#multi-syntax-processing" class="md-nav__link">
     <span class="md-ellipsis">
       Multi-Syntax Processing 🔄
@@ -741,6 +750,24 @@
   <a href="#4-database-centric-applications" class="md-nav__link">
     <span class="md-ellipsis">
       4. Database-Centric Applications
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-high-precision-computing" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. High-Precision Computing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-advanced-pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Advanced Pattern Matching
     </span>
   </a>
   
@@ -3700,6 +3727,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#unlimited-precision-mathematics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unlimited Precision Mathematics 🔢
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#multi-syntax-processing" class="md-nav__link">
     <span class="md-ellipsis">
       Multi-Syntax Processing 🔄
@@ -3773,6 +3809,24 @@
   <a href="#4-database-centric-applications" class="md-nav__link">
     <span class="md-ellipsis">
       4. Database-Centric Applications
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-high-precision-computing" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. High-Precision Computing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-advanced-pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Advanced Pattern Matching
     </span>
   </a>
   
@@ -4091,6 +4145,12 @@
 - <strong>Execute arbitrary code during parsing</strong> - Transform data as it's being parsed
 - <strong>Create domain-specific languages</strong> - Build custom syntax for specific problems
 - <strong>Process multiple syntaxes</strong> - Handle JSON, XML, HTML natively, with SQL demonstrated through example scripts</p>
+<h3 id="unlimited-precision-mathematics"><strong>Unlimited Precision Mathematics</strong> 🔢</h3>
+<p>Grapa provides <strong>arbitrary-precision arithmetic</strong> for all numeric types:
+- <strong>$INT</strong>: Unlimited precision integers (no overflow)
+- <strong>$FLOAT</strong>: Configurable precision floating-point (128-bit default, up to 300+ bits)
+- <strong>$TIME</strong>: Unlimited precision timestamps (unbounded years, nanosecond precision)
+- <strong>Mathematical operations</strong>: Support for large exponents, modular arithmetic, prime number generation</p>
 <h3 id="multi-syntax-processing"><strong>Multi-Syntax Processing</strong> 🔄</h3>
 <p>Unlike most languages that require external libraries for different data formats, Grapa supports:
 <div class="highlight"><pre><span></span><code>/* JSON processing (native) */
@@ -4106,10 +4166,11 @@ result = op(parse)(&quot;SELECT * FROM users WHERE age &gt; 25&quot;)();
 </code></pre></div></p>
 <h3 id="etl-and-data-processing"><strong>ETL and Data Processing</strong> 📊</h3>
 <p>Grapa excels at Extract, Transform, Load operations:
-- <strong>Built-in database integration</strong> with <code>$file().table()</code>
+- <strong>Built-in database integration</strong> with <code>$file().table()</code> (ROW, COL, GROUP storage types)
 - <strong>Binary data processing</strong> with advanced grep capabilities
 - <strong>Unicode support</strong> for international data
-- <strong>Execution trees</strong> for efficient data transformation</p>
+- <strong>Execution trees</strong> for efficient data transformation
+- <strong>Parallel processing</strong> with built-in map/reduce/filter operations</p>
 <h2 id="when-to-choose-grapa">When to Choose Grapa</h2>
 <h3 id="grapa-is-ideal-for">✅ <strong>Grapa is Ideal For:</strong></h3>
 <h4 id="1-dynamic-language-creation"><strong>1. Dynamic Language Creation</strong></h4>
@@ -4164,6 +4225,28 @@ result = users.grep(age &gt; 25).transform(format_user);
 - <strong>Data migration</strong> and transformation
 - <strong>Reporting</strong> and analytics
 - <strong>Database-driven applications</strong></p>
+<h4 id="5-high-precision-computing"><strong>5. High-Precision Computing</strong></h4>
+<div class="highlight"><pre><span></span><code>/* Unlimited precision arithmetic */
+large_number = 123456789012345678901234567890 ** 123;
+prime = 256.genprime();  /* Cryptographic prime generation */
+timestamp = $TIME().utc();  /* Nanosecond precision */
+</code></pre></div>
+<p><strong>Use Cases:</strong>
+- <strong>Cryptographic applications</strong> (prime generation, modular arithmetic)
+- <strong>Financial calculations</strong> (arbitrary precision required)
+- <strong>Scientific computing</strong> (high-precision mathematical operations)
+- <strong>Time series analysis</strong> (unlimited precision timestamps)</p>
+<h4 id="6-advanced-pattern-matching"><strong>6. Advanced Pattern Matching</strong></h4>
+<div class="highlight"><pre><span></span><code>/* 100% ripgrep compatible pattern matching */
+text = &quot;Hello world\nGoodbye world&quot;;
+matches = text.grep(&quot;world&quot;, &quot;o&quot;);  /* Match-only output */
+unicode_text = &quot;café résumé&quot;.grep(&quot;cafe&quot;, &quot;d&quot;);  /* Diacritic-insensitive */
+</code></pre></div>
+<p><strong>Use Cases:</strong>
+- <strong>Text processing</strong> and analysis
+- <strong>Log file analysis</strong> with advanced regex
+- <strong>Unicode-aware</strong> pattern matching
+- <strong>Binary data</strong> pattern matching</p>
 <h3 id="grapa-is-not-ideal-for">❌ <strong>Grapa is NOT Ideal For:</strong></h3>
 <h4 id="1-general-purpose-programming"><strong>1. General-Purpose Programming</strong></h4>
 <ul>
@@ -4213,6 +4296,16 @@ result = users.grep(age &gt; 25).transform(format_user);
 <td>❌ Separate parsers</td>
 </tr>
 <tr>
+<td><strong>Unlimited Precision</strong></td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><strong>Advanced Pattern Matching</strong></td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+</tr>
+<tr>
 <td><strong>Error Messages</strong></td>
 <td>⚠️ Basic</td>
 <td>✅ Advanced</td>
@@ -4244,6 +4337,16 @@ result = users.grep(age &gt; 25).transform(format_user);
 <td><strong>ETL Integration</strong></td>
 <td>✅ Native</td>
 <td>❌ Libraries</td>
+</tr>
+<tr>
+<td><strong>Unlimited Precision</strong></td>
+<td>✅ Yes</td>
+<td>⚠️ Limited</td>
+</tr>
+<tr>
+<td><strong>Advanced Pattern Matching</strong></td>
+<td>✅ Yes</td>
+<td>⚠️ Limited</td>
 </tr>
 <tr>
 <td><strong>Performance</strong></td>
@@ -4284,6 +4387,16 @@ result = users.grep(age &gt; 25).transform(format_user);
 <td>⚠️ Variable</td>
 </tr>
 <tr>
+<td><strong>Unlimited Precision</strong></td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+</tr>
+<tr>
+<td><strong>Advanced Pattern Matching</strong></td>
+<td>✅ Yes</td>
+<td>❌ No</td>
+</tr>
+<tr>
 <td><strong>IDE Support</strong></td>
 <td>⚠️ Basic</td>
 <td>✅ Advanced</td>
@@ -4307,7 +4420,12 @@ result = users.grep(age &gt; 25).transform(format_user);
 <li>✅ <strong>Executable BNF system</strong> - Core innovation</li>
 <li>✅ <strong>Multi-syntax support</strong> - JSON, XML, HTML (native), SQL (example scripts)</li>
 <li>✅ <strong>ETL capabilities</strong> - Data transformation pipelines</li>
-<li>✅ <strong>Database integration</strong> - Native table operations</li>
+<li>✅ <strong>Database integration</strong> - Native table operations (ROW, COL, GROUP)</li>
+<li>✅ <strong>Unlimited precision</strong> - Arbitrary-precision arithmetic for all numeric types</li>
+<li>✅ <strong>Advanced pattern matching</strong> - 100% ripgrep compatible with Unicode support</li>
+<li>✅ <strong>Parallel processing</strong> - Built-in thread safety and concurrent operations</li>
+<li>✅ <strong>Cryptographic capabilities</strong> - Prime generation, modular arithmetic, hash functions</li>
+<li>✅ <strong>Unified path system</strong> - Seamless file system and database navigation</li>
 <li>⚠️ <strong>Basic developer experience</strong> - Limited tooling</li>
 </ul>
 <h3 id="phase-1-critical-features-weeks-1-4"><strong>Phase 1: Critical Features (Weeks 1-4)</strong></h3>
@@ -4361,6 +4479,8 @@ result = users.grep(age &gt; 25).transform(format_user);
 <li><strong>ETL platforms</strong> with dynamic transformation rules</li>
 <li><strong>Integration systems</strong> with protocol parsing</li>
 <li><strong>Analytics engines</strong> with custom query languages</li>
+<li><strong>Cryptographic systems</strong> with unlimited precision arithmetic</li>
+<li><strong>Financial systems</strong> requiring arbitrary precision calculations</li>
 </ul>
 <h2 id="getting-started">Getting Started</h2>
 <h3 id="quick-evaluation"><strong>Quick Evaluation</strong></h3>
@@ -4390,7 +4510,7 @@ result = process_data(json, xml, sql);
 <li><strong>Database-centric applications</strong></li>
 </ul>
 <p>The enhancement roadmap will significantly expand Grapa's viable use cases, making it competitive with modern languages for a broader range of applications while maintaining its unique strengths in executable BNF and multi-syntax processing.</p>
-<p><strong>Key Takeaway</strong>: Choose Grapa when you need <strong>runtime language flexibility</strong> or <strong>native multi-format data processing</strong>. For general-purpose programming, consider other languages in the ecosystem. </p>
+<p><strong>Key Takeaway</strong>: Choose Grapa when you need <strong>runtime language flexibility</strong>, <strong>native multi-format data processing</strong>, <strong>unlimited precision arithmetic</strong>, or <strong>advanced pattern matching</strong>. For general-purpose programming, consider other languages in the ecosystem. </p>
 
 
 
