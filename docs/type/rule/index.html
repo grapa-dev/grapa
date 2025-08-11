@@ -3951,7 +3951,7 @@ func calls arg
 <h3 id="custom-commands-and-functions">Custom Commands and Functions</h3>
 <p>The Grapa parser includes two special variables that allow you to inject custom syntax:</p>
 <ul>
-<li><strong><code>custom_command</code></strong>: For commands that perform actions but don't return values</li>
+<li><strong><code>custom_command</code></strong>: For domain-specific commands that perform actions but don't return values</li>
 <li><strong><code>custom_function</code></strong>: For functions that return values</li>
 </ul>
 <h4 id="basic-syntax-extension">Basic Syntax Extension</h4>
@@ -3969,7 +3969,7 @@ custom_command = rule reset_data {op(){clear_database()}};
 reset_data;      // Executes clear_database()
 </code></pre></div>
 <h4 id="how-it-works">How It Works</h4>
-<p>When you define <code>custom_function</code> or <code>custom_command</code>, you're essentially extending the Grapa grammar. The parser:</p>
+<p>When you define <code>custom_function</code> or <code>custom_command</code>, you're essentially creating isolated rule execution for domain-specific processing. The parser:</p>
 <ol>
 <li><strong>Falls through</strong> the built-in command patterns</li>
 <li><strong>Matches your custom rule</strong> when the input fits the pattern</li>

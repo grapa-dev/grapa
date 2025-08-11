@@ -2467,11 +2467,35 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-custom-commands-and-functions" class="md-nav__link">
+  <a href="#1-syntax-extension-approaches" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Custom Commands and Functions
+      1. Syntax Extension Approaches
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="1. Syntax Extension Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-approach-direct-bnf-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primary Approach: Direct BNF Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secondary-approach-custom-commandfunction-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secondary Approach: Custom Command/Function Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3802,11 +3826,35 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-custom-commands-and-functions" class="md-nav__link">
+  <a href="#1-syntax-extension-approaches" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Custom Commands and Functions
+      1. Syntax Extension Approaches
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="1. Syntax Extension Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-approach-direct-bnf-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primary Approach: Direct BNF Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secondary-approach-custom-commandfunction-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secondary Approach: Custom Command/Function Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4235,40 +4283,44 @@ filter_function = @&lt;grep,{@&lt;this&gt;,@&lt;lit,{&quot;pattern&quot;}&gt;}&g
 - <strong>Predefined Functions</strong>: Functions can be defined once and reused across multiple rules
 - <strong>Cleaner Syntax</strong>: Avoids embedding raw code in grammar rules</p>
 <h2 id="language-extensibility-patterns">Language Extensibility Patterns</h2>
-<h3 id="1-custom-commands-and-functions"><strong>1. Custom Commands and Functions</strong></h3>
-<p><strong>Critical Distinction:</strong>
-- <strong><code>custom_command</code></strong>: For actions that perform operations (no return value)
-- <strong><code>custom_function</code></strong>: For expressions that return values</p>
-<p><strong>Integration Points:</strong>
-<div class="highlight"><pre><span></span><code>@global[&quot;$command&quot;]
-    = rule &#39;{&#39; &lt;$command_list&gt; &#39;;&#39; &#39;}&#39; {@&lt;scope,{$2}&gt;}
-    // ... other commands ...
-    | &lt;custom_command&gt;  /* ← Actions (loops, commands, statements) */
-    // ... other commands ...
-    ;
+<h3 id="1-syntax-extension-approaches"><strong>1. Syntax Extension Approaches</strong></h3>
+<h4 id="primary-approach-direct-bnf-integration"><strong>Primary Approach: Direct BNF Integration</strong></h4>
+<p>Add syntax directly to existing BNF rules using <code>@&lt;function_name,{parameters}&gt;</code> pattern:</p>
+<div class="highlight"><pre><span></span><code>/* Add to $command rule for control structures */
+| for &#39;(&#39; &lt;$comp&gt; &#39;;&#39; &lt;$comp&gt; &#39;;&#39; &lt;$comp&gt; &#39;)&#39; &lt;$command&gt; {@&lt;for,{$3,$5,$7,$9}&gt;}
+| for $ID in &lt;$comp&gt; &lt;$command&gt; {@&lt;forin,{$2,$4,$6}&gt;}
 
-@global[&quot;$function&quot;]
-    = rule &#39;[&#39; &#39;]&#39; {@&lt;createarray,{}&gt;}
-    // ... other functions/expressions ...
-    | &lt;custom_function&gt;  /* ← Expressions (operators, functions) */
-    // ... other functions/expressions ...
-    ;
-</code></pre></div></p>
-<p><strong>Execution Pattern:</strong>
-<div class="highlight"><pre><span></span><code>/* Define custom syntax */
-custom_command = rule select $STR from $STR {op(fields:$2,table:$4){
-    /* Implementation */
-}};
+/* Add to $comp rule for expressions */
+| &#39;$&#39; &#39;{&#39; &lt;$comp&gt; &#39;}&#39; {@&lt;interpolate,{$3}&gt;}
+| range &#39;(&#39; &lt;$comp&gt; &#39;)&#39; {@&lt;range,{$3}&gt;}
+</code></pre></div>
+<h4 id="secondary-approach-custom-commandfunction-variables"><strong>Secondary Approach: Custom Command/Function Variables</strong></h4>
+<p>Use <code>custom_command</code>/<code>custom_function</code> as variables that leverage existing grammar rules:</p>
+<div class="highlight"><pre><span></span><code>/* custom_command - leverages existing $comp and $command rules */
+custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&gt; {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Uses existing $comp and $command rules */
+        op()(var + &quot; = &quot; + start)();
+        while (op()(var + &quot; &lt;= &quot; + end)()) {
+            op()(body)();
+            op()(var + &quot; = &quot; + var + &quot; + 1&quot;)();
+        };
+    }
+};
 
-custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3,table:$6){
-    /* Implementation */
-    return result;
-}};
+/* custom_function - leverages existing $comp rules */
+custom_function = rule &lt;$comp&gt; &#39;*=&#39; &lt;$comp&gt; {
+    op(left:$1, right:$3){
+        result = op()(left)() * op()(right)();
+        op()(left + &quot; = &quot; + result)();
+        result;
+    }
+};
 
-/* Execute using op(parse)() */
-op(parse)(&quot;select * from users&quot;)();           /* Action */
-result = op(parse)(&quot;count(*) from users&quot;)();  /* Expression */
-</code></pre></div></p>
+/* Use directly like any other syntax */
+for i from 1 to 5 { (&quot;Count: &quot; + i).echo(); };
+x = 10; x *= 3; (&quot;x = &quot; + x).echo();
+</code></pre></div>
 <h3 id="2-dynamic-grammar-modification"><strong>2. Dynamic Grammar Modification</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Add new language constructs at runtime */
 @global[&quot;$custom_loop&quot;] = rule &#39;repeat&#39; $INT &#39;times&#39; &#39;{&#39; &lt;$command_list&gt; &#39;}&#39; {
@@ -4570,7 +4622,7 @@ api = op(parse)(&#39;api &quot;user_api&quot; {
 <h3 id="3-integration"><strong>3. Integration</strong></h3>
 <ol>
 <li><strong>Leverage Existing Libraries</strong>: Use Grapa's C++ libraries when possible</li>
-<li><strong>Follow Patterns</strong>: Use established patterns like <code>custom_command</code>/<code>custom_function</code></li>
+<li><strong>Follow Patterns</strong>: Use established patterns like direct BNF integration for native features, <code>custom_command</code>/<code>custom_function</code> as variables that leverage existing grammar rules</li>
 <li><strong>Test Thoroughly</strong>: Validate grammar rules with comprehensive testing</li>
 <li><strong>Version Control</strong>: Track grammar changes and maintain compatibility</li>
 </ol>

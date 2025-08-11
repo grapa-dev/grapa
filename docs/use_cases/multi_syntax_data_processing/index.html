@@ -3825,7 +3825,7 @@
 <h3 id="solution-multi-syntax-etl-pipeline"><strong>Solution: Multi-Syntax ETL Pipeline</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Multi-Syntax ETL Pipeline Example */
 
-/* Step 1: Define SQL syntax for database operations */
+/* Step 1: Define SQL syntax for database operations using custom_command and custom_function as variables */
 custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     (&quot;SQL: SELECT &quot; + fields + &quot; FROM &quot; + table_name).echo();
     /* Database query implementation */

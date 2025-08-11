@@ -2369,11 +2369,35 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#custom-command-vs-custom-function" class="md-nav__link">
+  <a href="#syntax-extension-approaches" class="md-nav__link">
     <span class="md-ellipsis">
-      Custom Command vs Custom Function
+      Syntax Extension Approaches
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Syntax Extension Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-approach-direct-bnf-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primary Approach: Direct BNF Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secondary-approach-custom-commandfunction-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secondary Approach: Custom Command/Function Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3721,11 +3745,35 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#custom-command-vs-custom-function" class="md-nav__link">
+  <a href="#syntax-extension-approaches" class="md-nav__link">
     <span class="md-ellipsis">
-      Custom Command vs Custom Function
+      Syntax Extension Approaches
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Syntax Extension Approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#primary-approach-direct-bnf-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Primary Approach: Direct BNF Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secondary-approach-custom-commandfunction-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secondary Approach: Custom Command/Function Variables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4139,10 +4187,22 @@
 - <strong>Execute arbitrary code</strong> during parsing
 - <strong>Build execution trees</strong> for later evaluation
 - <strong>Support multiple syntaxes</strong> simultaneously</p>
-<h3 id="custom-command-vs-custom-function"><strong>Custom Command vs Custom Function</strong></h3>
+<h3 id="syntax-extension-approaches"><strong>Syntax Extension Approaches</strong></h3>
+<h4 id="primary-approach-direct-bnf-integration"><strong>Primary Approach: Direct BNF Integration</strong></h4>
+<p>Add syntax directly to existing BNF rules using <code>@&lt;function_name,{parameters}&gt;</code> pattern:</p>
+<div class="highlight"><pre><span></span><code>/* Add to $command rule for control structures */
+| for &#39;(&#39; &lt;$comp&gt; &#39;;&#39; &lt;$comp&gt; &#39;;&#39; &lt;$comp&gt; &#39;)&#39; &lt;$command&gt; {@&lt;for,{$3,$5,$7,$9}&gt;}
+| for $ID in &lt;$comp&gt; &lt;$command&gt; {@&lt;forin,{$2,$4,$6}&gt;}
+
+/* Add to $comp rule for expressions */
+| &#39;$&#39; &#39;{&#39; &lt;$comp&gt; &#39;}&#39; {@&lt;interpolate,{$3}&gt;}
+| range &#39;(&#39; &lt;$comp&gt; &#39;)&#39; {@&lt;range,{$3}&gt;}
+</code></pre></div>
+<h4 id="secondary-approach-custom-commandfunction-variables"><strong>Secondary Approach: Custom Command/Function Variables</strong></h4>
+<p>Use <code>custom_command</code>/<code>custom_function</code> as variables that leverage existing grammar rules:</p>
 <ul>
-<li><strong><code>custom_command</code></strong>: For actions that perform operations (no return value)</li>
-<li><strong><code>custom_function</code></strong>: For expressions that return values</li>
+<li><strong><code>custom_command</code></strong>: For domain-specific actions (ETL, DSLs, protocol parsers) - leverages <code>$comp</code> and <code>$command</code> rules</li>
+<li><strong><code>custom_function</code></strong>: For domain-specific expressions - leverages <code>$comp</code> rules</li>
 </ul>
 <h3 id="lexical-processing-and-flags"><strong>Lexical Processing and Flags</strong></h3>
 <p>For complex formats like XML and HTML, Grapa uses lexical flags to activate special processing:</p>
@@ -4163,8 +4223,8 @@ processed = html_data.encode(&quot;HTML-GRAPA&quot;);
 - <strong>Format-Specific Processing</strong>: Different lexical modes for different data formats</p>
 <h2 id="sql-syntax-integration-example-implementation">SQL Syntax Integration (Example Implementation)</h2>
 <h3 id="basic-sql-usage"><strong>Basic SQL Usage</strong></h3>
-<p>Grapa demonstrates SQL syntax integration through example scripts that show how to add custom SQL syntax to the language:</p>
-<div class="highlight"><pre><span></span><code>/* Define SQL syntax */
+<p>Grapa demonstrates SQL syntax integration through example scripts that show how to add domain-specific SQL syntax using <code>custom_command</code> and <code>custom_function</code> as variables:</p>
+<div class="highlight"><pre><span></span><code>/* Define SQL syntax as variables */
 custom_command = rule select $STR from $STR {op(fields:$2,table_name:$4){
     (&quot;SQL SELECT: &quot; + fields + &quot; FROM &quot; + table_name).echo();
     /* Database query implementation */
@@ -4176,9 +4236,9 @@ custom_function = rule count &#39;(&#39; $STR &#39;)&#39; from $STR {op(field:$3
     return records.len();
 }};
 
-/* Execute SQL syntax */
-op(parse)(&quot;select * from users&quot;)();
-user_count = op(parse)(&quot;count(*) from users&quot;)();
+/* Use SQL syntax directly */
+select * from users;
+user_count = count(*) from users;
 </code></pre></div>
 <h3 id="advanced-sql-features"><strong>Advanced SQL Features</strong></h3>
 <div class="highlight"><pre><span></span><code>/* INSERT statement (example implementation) */
@@ -4193,9 +4253,9 @@ custom_command = rule update $STR set $STR where $STR {op(table_name:$2,set_clau
     /* Update implementation */
 }};
 
-/* Execute complex SQL (via example scripts) */
-op(parse)(&quot;insert into users values John,25,New York&quot;)();
-op(parse)(&quot;update users set age=26 where name=John&quot;)();
+/* Use complex SQL directly (via example scripts) */
+insert into users values John,25,New York;
+update users set age=26 where name=John;
 </code></pre></div>
 <h2 id="json-syntax-support">JSON Syntax Support</h2>
 <h3 id="native-json-operations"><strong>Native JSON Operations</strong></h3>

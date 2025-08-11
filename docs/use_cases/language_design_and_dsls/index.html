@@ -3996,7 +3996,7 @@
 <h3 id="1-configuration-management-systems"><strong>1. Configuration Management Systems</strong></h3>
 <p><strong>Problem</strong>: Complex applications need flexible configuration systems that can handle various formats and validation rules.</p>
 <p><strong>Solution</strong>: Create a configuration DSL that supports multiple formats, validation, and dynamic loading.</p>
-<div class="highlight"><pre><span></span><code>/* Configuration DSL */
+<div class="highlight"><pre><span></span><code>/* Configuration DSL using custom_command and custom_function as variables */
 custom_command = rule config &#39;{&#39; &lt;$config_entries&gt; &#39;}&#39; {op(entries:$3){
     (&quot;Loading configuration...&quot;).echo();
     config = {};
@@ -4036,7 +4036,7 @@ app_config = op(parse)(&#39;config {
 <h3 id="2-data-processing-pipelines"><strong>2. Data Processing Pipelines</strong></h3>
 <p><strong>Problem</strong>: Complex ETL (Extract, Transform, Load) workflows require custom processing logic and data transformation rules.</p>
 <p><strong>Solution</strong>: Create a pipeline DSL that defines data processing workflows declaratively.</p>
-<div class="highlight"><pre><span></span><code>/* ETL Pipeline DSL */
+<div class="highlight"><pre><span></span><code>/* ETL Pipeline DSL using custom_command and custom_function as variables */
 custom_command = rule pipeline &#39;{&#39; &lt;$pipeline_steps&gt; &#39;}&#39; {op(steps:$3){
     (&quot;Starting ETL pipeline...&quot;).echo();
     result = null;
@@ -4300,7 +4300,7 @@ lazy_result = op(parse)(&#39;lazy { expensive_calculation() }&#39;)();
 <h3 id="3-integration"><strong>3. Integration</strong></h3>
 <ol>
 <li><strong>Leverage Existing Libraries</strong>: Use Grapa's C++ libraries when possible</li>
-<li><strong>Follow Patterns</strong>: Use established patterns like <code>custom_command</code>/<code>custom_function</code></li>
+<li><strong>Follow Patterns</strong>: Use established patterns like direct BNF integration for native features, <code>custom_command</code>/<code>custom_function</code> as variables that leverage existing grammar rules</li>
 <li><strong>Test Thoroughly</strong>: Validate grammar rules with comprehensive testing</li>
 <li><strong>Version Control</strong>: Track grammar changes and maintain compatibility</li>
 </ol>
