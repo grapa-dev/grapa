@@ -1,0 +1,61 @@
+/* Complete Debug Flag Test - Using correct putenv function */
+
+"=== Complete Debug Flag Test ===".echo();
+
+/* Test 1: System-level debug flags */
+"Test 1: System-Level Debug Flags".echo();
+("Initial GRAPA_DEBUG_MODE = " + $sys().getenv("GRAPA_DEBUG_MODE")).echo();
+("Initial GRAPA_DEBUG_LEVEL = " + $sys().getenv("GRAPA_DEBUG_LEVEL")).echo();
+
+/* Set system debug flags */
+$sys().putenv("GRAPA_DEBUG_MODE", "1");
+$sys().putenv("GRAPA_DEBUG_LEVEL", "5");
+
+/* Verify system flags were set */
+("After setting - GRAPA_DEBUG_MODE = " + $sys().getenv("GRAPA_DEBUG_MODE")).echo();
+("After setting - GRAPA_DEBUG_LEVEL = " + $sys().getenv("GRAPA_DEBUG_LEVEL")).echo();
+
+/* Test 2: Session-specific debug flags */
+"Test 2: Session-Specific Debug Flags".echo();
+("Initial GRAPA_SESSION_DEBUG = " + $sys().getenv("GRAPA_SESSION_DEBUG")).echo();
+("Initial GRAPA_SESSION_DEBUG_LEVEL = " + $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL")).echo();
+("Initial GRAPA_SESSION_ID = " + $sys().getenv("GRAPA_SESSION_ID")).echo();
+
+/* Set session debug flags */
+$sys().putenv("GRAPA_SESSION_DEBUG", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "3");
+
+/* Verify session flags were set */
+("After setting - GRAPA_SESSION_DEBUG = " + $sys().getenv("GRAPA_SESSION_DEBUG")).echo();
+("After setting - GRAPA_SESSION_DEBUG_LEVEL = " + $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL")).echo();
+("Session ID (should be same) = " + $sys().getenv("GRAPA_SESSION_ID")).echo();
+
+/* Test 3: Database operations with debug enabled */
+"Test 3: Database Operations with Debug".echo();
+f = $file("complete_debug_test.db");
+f.create();
+
+/* Add a table and some data */
+f.table("debug_test_table");
+f.mkfield("name", "STR", "VAR", 50);
+f.mkfield("value", "INT", "FIX", 4);
+
+/* Insert some test data */
+f.insert("debug_test_table", "test1", 100);
+f.insert("debug_test_table", "test2", 200);
+
+("Database operations completed").echo();
+
+/* Test 4: Reset all flags */
+"Test 4: Resetting All Debug Flags".echo();
+$sys().putenv("GRAPA_DEBUG_MODE", "0");
+$sys().putenv("GRAPA_DEBUG_LEVEL", "0");
+$sys().putenv("GRAPA_SESSION_DEBUG", "0");
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "0");
+
+("Final GRAPA_DEBUG_MODE = " + $sys().getenv("GRAPA_DEBUG_MODE")).echo();
+("Final GRAPA_DEBUG_LEVEL = " + $sys().getenv("GRAPA_DEBUG_LEVEL")).echo();
+("Final GRAPA_SESSION_DEBUG = " + $sys().getenv("GRAPA_SESSION_DEBUG")).echo();
+("Final GRAPA_SESSION_DEBUG_LEVEL = " + $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL")).echo();
+
+"=== Test Complete ===".echo(); 

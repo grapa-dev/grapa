@@ -1,0 +1,25 @@
+/* PutEnv Test - Use the correct putenv function */
+
+"=== PutEnv Test ===".echo();
+
+/* Test 1: Check initial state */
+"Test 1: Initial State".echo();
+initial_mode = $sys().getenv("GRAPA_DEBUG_MODE");
+("Initial GRAPA_DEBUG_MODE = " + initial_mode).echo();
+
+/* Test 2: Set the flag using putenv */
+"Test 2: Setting GRAPA_DEBUG_MODE using putenv".echo();
+$sys().putenv("GRAPA_DEBUG_MODE", "1");
+
+/* Test 3: Check if it was set */
+"Test 3: Checking if flag was set".echo();
+new_mode = $sys().getenv("GRAPA_DEBUG_MODE");
+("After putenv GRAPA_DEBUG_MODE=1, value = " + new_mode).echo();
+
+/* Test 4: Try setting it to 0 */
+"Test 4: Setting to 0".echo();
+$sys().putenv("GRAPA_DEBUG_MODE", "0");
+final_mode = $sys().getenv("GRAPA_DEBUG_MODE");
+("After putenv GRAPA_DEBUG_MODE=0, value = " + final_mode).echo();
+
+"=== Test Complete ===".echo(); 

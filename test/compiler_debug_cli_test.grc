@@ -1,0 +1,25 @@
+/* Test script for compiler debug instrumentation - CLI approach */
+
+// Enable compiler debugging at level 3
+$sys().putenv("GRAPA_SESSION_DEBUG", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "compiler:3");
+
+"Testing compiler debug instrumentation via CLI...".echo();
+
+// Test 1: Valid syntax - should show rule matching
+"Test 1: Valid syntax".echo();
+x = 5;
+y = 10;
+z = x + y;
+z.echo();
+
+// Test 2: Invalid syntax via op() - should show error context
+"Test 2: Invalid syntax via op()".echo();
+try {
+    op()("x = 5; y = 10; z = x +;")();  // Missing operand - should trigger error
+} catch (e) {
+    "Caught error: ".echo();
+    e.echo();
+}
+
+"Test completed.".echo(); 

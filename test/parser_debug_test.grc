@@ -1,0 +1,12 @@
+/* Test parser debug functionality */
+$sys().putenv("GRAPA_SESSION_DEBUG", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "parser");
+
+("Setting debug flags...").echo();
+("GRAPA_SESSION_DEBUG = " + $sys().getenv("GRAPA_SESSION_DEBUG")).echo();
+("GRAPA_SESSION_DEBUG_LEVEL = " + $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL")).echo();
+("GRAPA_SESSION_DEBUG_COMPONENTS = " + $sys().getenv("GRAPA_SESSION_DEBUG_COMPONENTS")).echo();
+
+("Testing parser debug with syntax error...").echo();
+op()("x +")(); 

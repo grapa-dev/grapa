@@ -1,0 +1,157 @@
+/* Debug Flag Management System Test Script */
+
+/* Test 1: Basic environment variable operations */
+print("=== Test 1: Basic Environment Variable Operations ===");
+print("Setting and getting basic environment variables...");
+
+$sys().setenv("TEST_VAR", "test_value");
+result = $sys().getenv("TEST_VAR");
+print("TEST_VAR = " + result);
+
+if (result != "test_value") {
+    print("ERROR: Basic environment variable test failed");
+} else {
+    print("PASS: Basic environment variable test");
+}
+
+/* Test 2: System-level debug flags */
+print("\n=== Test 2: System-Level Debug Flags ===");
+print("Testing GRAPA_DEBUG_MODE and GRAPA_DEBUG_LEVEL...");
+
+/* Check initial values */
+initial_mode = $sys().getenv("GRAPA_DEBUG_MODE");
+initial_level = $sys().getenv("GRAPA_DEBUG_LEVEL");
+print("Initial GRAPA_DEBUG_MODE = " + initial_mode);
+print("Initial GRAPA_DEBUG_LEVEL = " + initial_level);
+
+/* Set system debug mode */
+$sys().setenv("GRAPA_DEBUG_MODE", "1");
+$sys().setenv("GRAPA_DEBUG_LEVEL", "5");
+
+/* Verify values were set */
+new_mode = $sys().getenv("GRAPA_DEBUG_MODE");
+new_level = $sys().getenv("GRAPA_DEBUG_LEVEL");
+print("After setting - GRAPA_DEBUG_MODE = " + new_mode);
+print("After setting - GRAPA_DEBUG_LEVEL = " + new_level);
+
+if (new_mode == "1" && new_level == "5") {
+    print("PASS: System-level debug flags test");
+} else {
+    print("ERROR: System-level debug flags test failed");
+}
+
+/* Test 3: Session-specific debug flags */
+print("\n=== Test 3: Session-Specific Debug Flags ===");
+print("Testing session debug override and level...");
+
+/* Check initial session values */
+session_debug = $sys().getenv("GRAPA_SESSION_DEBUG");
+session_level = $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL");
+session_id = $sys().getenv("GRAPA_SESSION_ID");
+print("Initial GRAPA_SESSION_DEBUG = " + session_debug);
+print("Initial GRAPA_SESSION_DEBUG_LEVEL = " + session_level);
+print("Current GRAPA_SESSION_ID = " + session_id);
+
+/* Set session-specific debug */
+$sys().setenv("GRAPA_SESSION_DEBUG", "1");
+$sys().setenv("GRAPA_SESSION_DEBUG_LEVEL", "3");
+
+/* Verify session values were set */
+new_session_debug = $sys().getenv("GRAPA_SESSION_DEBUG");
+new_session_level = $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL");
+new_session_id = $sys().getenv("GRAPA_SESSION_ID");
+print("After setting - GRAPA_SESSION_DEBUG = " + new_session_debug);
+print("After setting - GRAPA_SESSION_DEBUG_LEVEL = " + new_session_level);
+print("Session ID (should be same) = " + new_session_id);
+
+if (new_session_debug == "1" && new_session_level == "3" && new_session_id == session_id) {
+    print("PASS: Session-specific debug flags test");
+} else {
+    print("ERROR: Session-specific debug flags test failed");
+}
+
+/* Test 4: Session ID uniqueness */
+print("\n=== Test 4: Session ID Uniqueness ===");
+print("Current session ID: " + session_id);
+
+/* Test 5: Debug output with flags enabled */
+print("\n=== Test 5: Debug Output with Flags Enabled ===");
+print("Testing debug output with session debug enabled...");
+
+/* Create a simple database to test debug output */
+f = $file("debug_test.db");
+f.create();
+
+/* Add a table and some data */
+f.table("test_table");
+f.mkfield("name", "STR", "VAR", 50);
+f.mkfield("age", "INT", "FIX", 4);
+f.mkfield("score", "FLOAT", "FIX", 8);
+
+/* Insert some test data */
+f.insert("test_table", "Alice", 25, 95.5);
+f.insert("test_table", "Bob", 30, 87.2);
+
+/* Try to trigger debug output */
+print("Attempting to trigger debug output...");
+/* Note: The actual debug output will depend on the implementation */
+/* This test verifies the system doesn't crash with debug flags enabled */
+
+/* Test 6: Reset debug flags */
+print("\n=== Test 6: Reset Debug Flags ===");
+print("Resetting debug flags to default values...");
+
+$sys().setenv("GRAPA_DEBUG_MODE", "0");
+$sys().setenv("GRAPA_DEBUG_LEVEL", "0");
+$sys().setenv("GRAPA_SESSION_DEBUG", "0");
+$sys().setenv("GRAPA_SESSION_DEBUG_LEVEL", "0");
+
+final_mode = $sys().getenv("GRAPA_DEBUG_MODE");
+final_level = $sys().getenv("GRAPA_DEBUG_LEVEL");
+final_session_debug = $sys().getenv("GRAPA_SESSION_DEBUG");
+final_session_level = $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL");
+
+print("Final GRAPA_DEBUG_MODE = " + final_mode);
+print("Final GRAPA_DEBUG_LEVEL = " + final_level);
+print("Final GRAPA_SESSION_DEBUG = " + final_session_debug);
+print("Final GRAPA_SESSION_DEBUG_LEVEL = " + final_session_level);
+
+if (final_mode == "0" && final_level == "0" && final_session_debug == "0" && final_session_level == "0") {
+    print("PASS: Debug flag reset test");
+} else {
+    print("ERROR: Debug flag reset test failed");
+}
+
+/* Test 7: Invalid environment variable handling */
+print("\n=== Test 7: Invalid Environment Variable Handling ===");
+print("Testing handling of non-existent environment variables...");
+
+nonexistent = $sys().getenv("NONEXISTENT_VAR");
+print("NONEXISTENT_VAR = " + nonexistent);
+
+if (nonexistent == "") {
+    print("PASS: Non-existent environment variable handling");
+} else {
+    print("ERROR: Non-existent environment variable handling");
+}
+
+/* Test 8: Edge cases */
+print("\n=== Test 8: Edge Cases ===");
+print("Testing edge cases for debug levels...");
+
+/* Test invalid debug levels */
+$sys().setenv("GRAPA_DEBUG_LEVEL", "999");
+$sys().setenv("GRAPA_SESSION_DEBUG_LEVEL", "-1");
+
+edge_level = $sys().getenv("GRAPA_DEBUG_LEVEL");
+edge_session_level = $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL");
+
+print("Edge case GRAPA_DEBUG_LEVEL = " + edge_level);
+print("Edge case GRAPA_SESSION_DEBUG_LEVEL = " + edge_session_level);
+
+print("PASS: Edge case testing completed");
+
+/* Summary */
+print("\n=== Debug Flag Management Test Summary ===");
+print("All tests completed. Check output above for PASS/ERROR results.");
+print("Session ID for this test run: " + session_id); 

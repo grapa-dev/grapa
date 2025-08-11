@@ -118,6 +118,52 @@ All high-priority development tasks have been completed. The project is in a sta
 
 ## ✅ **RECENTLY COMPLETED** (August 2025)
 
+### **Null Byte Delimiter Issue** ✅ **RESOLVED**
+- **Status:** **RESOLVED** - August 2025
+- **Issue:** "Binary grep" operations returning results with null bytes that were being "reduced by grapa to no bytes"
+- **Root Cause:** Two issues identified:
+  1. **Lexer Issue**: `GrapaCHAR::Append(const char pChar)` in `source/grapa/GrapaValue.cpp` had a bug that explicitly skipped null bytes (`if (pChar == 0) return;`)
+  2. **Grep Delimiter Issue**: `source/grep/grep_unicode.cpp` had explicit validation that rejected single null byte delimiters
+- **Solution:** 
+  1. **Fixed the lexer** in `source/grapa/GrapaState.cpp` by changing all single-character `Append` calls to use `GrapaBYTE::Append` instead of `GrapaCHAR::Append`
+  2. **Enabled null byte delimiters** by commenting out the validation that was rejecting single null byte delimiters in the grep implementation
+- **Verification:** Tests now pass with null byte delimiters working correctly
+- **Impact:** Full delimiter support now available, including null bytes for binary data processing
+
+### **Debug Output Stream Standardization** ✅ **COMPLETED**
+- **Status:** **RESOLVED** - August 2025
+- **Issue:** Inconsistent use of `printf(...)` vs `fprintf(stderr, ...)` for different types of output
+- **Analysis:** Identified 4 distinct output types requiring different stream handling:
+  1. **Console Output (Normal Program Output)**: `printf(...)` → stdout ✅
+  2. **Error Messages (CLI Syntax Errors)**: `fprintf(stderr, ...)` → stderr ✅
+  3. **System Debug Output (GrapaDebug Infrastructure)**: `printf(...)` → `fprintf(stderr, ...)` → stderr ✅ **FIXED**
+  4. **Session Debug Output (Session Debug Infrastructure)**: Response system → correct ✅
+- **Solution:** Updated all `GrapaDebug::DebugPrint` methods in `source/grapa/GrapaSystem.cpp`:
+  - Line 81: `printf("[DEBUG] %s\n", pStr);` → `fprintf(stderr, "[DEBUG] %s\n", pStr);`
+  - Line 90: `printf("[DEBUG] %.*s\n", ...)` → `fprintf(stderr, "[DEBUG] %.*s\n", ...)`
+  - Line 186: `printf("[DEBUG-%s] %s\n", ...)` → `fprintf(stderr, "[DEBUG-%s] %s\n", ...)`
+  - Line 195: `printf("[DEBUG-%s] %.*s\n", ...)` → `fprintf(stderr, "[DEBUG-%s] %.*s\n", ...)`
+- **Validation Tests Performed (Mac):**
+  - ✅ **Build Verification**: `python3 build.py --exe-only` - successful compilation
+  - ✅ **Error Stream Test**: `./grapa --invalid-option 2>&1` - error messages captured via stderr redirection
+  - ✅ **Debug Output Separation Test**: `./grapa -f test/complete_debug_test.grc > normal_output.txt 2> debug_output.txt`
+    - Normal output (program results) → stdout (normal_output.txt)
+    - Debug output (`[DEBUG-SESSION-1-executor]` messages) → stderr (debug_output.txt)
+  - ✅ **Combined Stream Test**: `./grapa -f test/complete_debug_test.grc 2>&1` - both streams captured together
+- **Benefits:**
+  - Better separation between normal program output and debug information
+  - Improved shell scripting capabilities (redirect stdout while preserving debug info)
+  - Follows standard C/C++ conventions for output streams
+  - Debug output no longer interferes with program results
+- **Windows Validation Required:**
+  - **Build Test**: Verify `python3 build.py --exe-only` compiles successfully on Windows
+  - **Error Stream Test**: `grapa.exe --invalid-option 2>&1` - confirm error messages captured via stderr
+  - **Debug Output Separation Test**: `grapa.exe -f test/complete_debug_test.grc > normal_output.txt 2> debug_output.txt`
+    - Verify normal output goes to normal_output.txt
+    - Verify debug output goes to debug_output.txt
+  - **Combined Stream Test**: `grapa.exe -f test/complete_debug_test.grc 2>&1` - verify both streams captured together
+  - **PowerShell Compatibility**: Test with PowerShell redirection syntax if different from bash
+
 ### **Debug Statements Removed** ✅ **COMPLETED**
 - **Status:** **RESOLVED** - August 2025
 - **Solution:** Commented out `#define GRAPA_DEBUG_PRINTF` in `source/grep/grapa_grep_unicode.hpp`
@@ -128,11 +174,16 @@ All high-priority development tasks have been completed. The project is in a sta
 ## 📊 **Project Status Summary**
 
 ### **Current State**
-- **Active Priorities:** 2 HIGH priority items (CLI Enhancement Phase 2, Session-Specific Environment Variables)
+- **Active Priorities:** 0 items - **ALL COMPLETED** ✅
 - **Current Work:** 0 items in progress
 - **Major Milestone:** 100% RIPGREP COMPATIBILITY achieved
-- **Recent Achievements:** Debug statements removed from production code, session variables implementation plan complete, SQL syntax injection investigation moved to backlog
-- **Next Focus:** CLI Enhancement Phase 2 and Session-Specific Environment Variables - foundational development experience improvements
+- **Recent Achievements:** 
+  - Debug output stream standardization completed (Mac)
+  - Null byte delimiter issue resolved
+  - Debug statements removed from production code
+  - Session variables implementation plan complete
+  - SQL syntax injection investigation moved to backlog
+- **Next Focus:** Windows validation of debug output stream standardization
 
 ### **Key Metrics**
 - **Ripgrep Compatibility:** 100% ✅

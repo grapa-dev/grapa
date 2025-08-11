@@ -197,6 +197,8 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
     }
     
     // Handle invalid/null delimiter: if delimiter is a single null character, treat as invalid
+    // COMMENTED OUT: Allow null byte delimiters for binary data processing
+    /*
     if (line_delim.size() == 1 && line_delim[0] == '\0') {
         #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
         printf("DEBUG: Invalid delimiter (\\0) detected, returning empty array\n");
@@ -206,6 +208,7 @@ std::vector<std::string> grep_extract_matches_unicode_impl_sequential(
         }
         return {};
     }
+    */
     
     // Define json_output early for all special cases
     bool json_output = (filtered_options.find('j') != std::string::npos);

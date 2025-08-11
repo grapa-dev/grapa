@@ -79,7 +79,7 @@ void GrapaDebug::DebugPrint(const char* pStr)
 	if (!mDebugMode) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	printf( "[DEBUG] %s\n", pStr);
+	fprintf(stderr, "[DEBUG] %s\n", pStr);
 	gSystem->mPrintLock.LeaveCritical();
 }
 
@@ -88,7 +88,7 @@ void GrapaDebug::DebugPrint(const GrapaCHAR& pValue)
 	if (!mDebugMode) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	printf("[DEBUG] %.*s\n", (int)pValue.mLength, (char*)pValue.mBytes);
+	fprintf(stderr, "[DEBUG] %.*s\n", (int)pValue.mLength, (char*)pValue.mBytes);
 	gSystem->mPrintLock.LeaveCritical();
 }
 
@@ -184,7 +184,7 @@ void GrapaDebug::DebugPrint(const char* component, const char* pStr, int level)
 	if (!ShouldDebug(component, level)) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	printf("[DEBUG-%s] %s\n", component, pStr);
+	fprintf(stderr, "[DEBUG-%s] %s\n", component, pStr);
 	gSystem->mPrintLock.LeaveCritical();
 }
 
@@ -193,7 +193,7 @@ void GrapaDebug::DebugPrint(const char* component, const GrapaCHAR& pValue, int 
 	if (!ShouldDebug(component, level)) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	printf( "[DEBUG-%s] %.*s\n", component, (int)pValue.mLength, (char*)pValue.mBytes);
+	fprintf(stderr, "[DEBUG-%s] %.*s\n", component, (int)pValue.mLength, (char*)pValue.mBytes);
 	gSystem->mPrintLock.LeaveCritical();
 }
 

@@ -97,10 +97,17 @@
 
 ### Known Limitations
 
-#### Null Delimiter Handling
-- **Current Limitation:** Grapa scripts cannot pass a string containing a single 0x00 (null byte) as a delimiter. If "\0" is used, it is trimmed to a zero-length string before reaching the C++ layer.
-- **Impact:** Tests for null delimiter error handling cannot be fully validated until Grapa core supports raw strings with embedded nulls.
-- **Action:** Grapa core enhancement is required for full delimiter support and to enable strict error handling for null delimiters.
+#### Null Delimiter Handling ✅ **RESOLVED**
+- **Status:** **RESOLVED** - August 2025
+- **Previous Limitation:** Grapa scripts could not pass a string containing a single 0x00 (null byte) as a delimiter. If "\0" was used, it was trimmed to a zero-length string before reaching the C++ layer.
+- **Root Cause:** Two issues were identified and fixed:
+  1. **Lexer Issue**: `GrapaCHAR::Append(const char pChar)` in `source/grapa/GrapaValue.cpp` had a bug that explicitly skipped null bytes (`if (pChar == 0) return;`)
+  2. **Grep Delimiter Issue**: `source/grep/grep_unicode.cpp` had explicit validation that rejected single null byte delimiters
+- **Solution:** 
+  1. **Fixed the lexer** in `source/grapa/GrapaState.cpp` by changing all single-character `Append` calls to use `GrapaBYTE::Append` instead of `GrapaCHAR::Append`
+  2. **Enabled null byte delimiters** by commenting out the validation that was rejecting single null byte delimiters in the grep implementation
+- **Verification:** Tests now pass with null byte delimiters working correctly
+- **Impact:** Full delimiter support now available, including null bytes for binary data processing
 
 ## Recent Investigations and Resolutions
 

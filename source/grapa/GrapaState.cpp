@@ -652,7 +652,7 @@ void GrapaItemState::Running()
 					else
 					{
 						nextValue->mMessage.mPos++;
-						msgStr.Append(c);
+						msgStr.GrapaBYTE::Append(c);
 					}
 					break;
 				}
@@ -664,7 +664,7 @@ void GrapaItemState::Running()
 					{
 					case 2:
 						nextValue->mMessage.mPos++;
-						msgStr.Append(c);
+						msgStr.GrapaBYTE::Append(c);
 						break;
 					case 4:
 					case 8:
@@ -683,7 +683,7 @@ void GrapaItemState::Running()
 					if (c == quote || strchr(mItemParams->mParam[GrapaItemEnum::STRESC], c))
 					{
 						nextValue->mMessage.mPos++;
-						msgStr.Append(c);
+						msgStr.GrapaBYTE::Append(c);
 						break;
 					}
 				}
@@ -756,13 +756,13 @@ void GrapaItemState::Running()
 				else
 				{
 					nextValue->mMessage.mPos++;
-					msgStr.Append(c);
+					msgStr.GrapaBYTE::Append(c);
 				}
 				break;
 			case GrapaTokenItemType::ELESC:
 				if (saveChar == '$' && c != '&')
 				{
-					msgStr.Append(saveChar);
+					msgStr.GrapaBYTE::Append(saveChar);
 					saveChar = 0;
 					state = saveState;
 					saveState = 0;
@@ -793,7 +793,7 @@ void GrapaItemState::Running()
 			case GrapaTokenItemType::ELSTART:
 				if (expStr.mLength==0 && saveChar == '<' && (c == '<' || c == ' '))
 				{
-					msgStr.Append(saveChar);
+					msgStr.GrapaBYTE::Append(saveChar);
 					saveChar = 0;
 					state = saveState;
 					saveState = 0;
@@ -808,15 +808,15 @@ void GrapaItemState::Running()
 				// if scriptMode, then wait for </script>
 				else if (expStr.mLength == 0 && (strchr(mItemParams->mParam[GrapaItemEnum::ID], c) || strchr(mItemParams->mParam[GrapaItemEnum::DIG], c)))
 				{
-					expStr.Append(c);
+					expStr.GrapaBYTE::Append(c);
 					nextValue->mMessage.mPos++;
 					break;
 				}
 				else if (expStr.mLength == 0 && isScriptEl && !(strchr(mItemParams->mParam[GrapaItemEnum::ID], c) || strchr(mItemParams->mParam[GrapaItemEnum::DIG], c)))
 				{
-					msgStr.Append(saveChar);
+					msgStr.GrapaBYTE::Append(saveChar);
 					if (isEndEl)
-						msgStr.Append("/");
+						msgStr.GrapaBYTE::Append("/");
 					isEndEl = false;
 					saveChar = 0;
 					state = saveState;
@@ -825,18 +825,18 @@ void GrapaItemState::Running()
 				}
 				else if (expStr.mLength && (strchr(mItemParams->mParam[GrapaItemEnum::ID], c) || strchr(mItemParams->mParam[GrapaItemEnum::DIG], c)))
 				{
-					expStr.Append(c);
+					expStr.GrapaBYTE::Append(c);
 					nextValue->mMessage.mPos++;
 					break;
 				}
 				else if (expStr.mLength && isScriptEl && (!isEndEl || expStr.Cmp("script")))
 				{
-					msgStr.Append(saveChar);
+					msgStr.GrapaBYTE::Append(saveChar);
 					if (isEndEl)
-						msgStr.Append("/");
+						msgStr.GrapaBYTE::Append("/");
 					isEndEl = false;
 					if (expStr.mLength)
-						msgStr.Append(expStr);
+						msgStr.GrapaBYTE::Append(expStr);
 					expStr.SetLength(0);
 					saveChar = 0;
 					state = saveState;
@@ -930,6 +930,7 @@ void GrapaItemState::Running()
 				{
 					saveChar = 0;
 					state = saveState;
+                    maxPos = 0;
 					saveState = GrapaTokenItemType::ESCAPEERR;
 				}
 				nextValue->mMessage.mPos++;
@@ -946,18 +947,21 @@ void GrapaItemState::Running()
 						case 2:
 							saveChar = hex_pair_to_byte(savehex[0],savehex[1]);
 							state = saveState;
+                            maxPos = 0;
 							saveState = GrapaTokenItemType::ESCAPE;
 							break;
 						case 4:
 							saveustr = hex_ascii_2byte_to_utf8(savehex, savePos);
 							saveChar = 0; // unicode not supported yet
 							state = saveState;
+                            maxPos = 0;
 							saveState = GrapaTokenItemType::ESCAPE;
 							break;
 						case 8:
 							saveustr = hex_ascii_4byte_to_utf8(savehex, savePos);
 							saveChar = 0; // unicode not supported yet
 							state = saveState;
+                            maxPos = 0;
 							saveState = GrapaTokenItemType::ESCAPE;
 							break;
 						}
@@ -970,6 +974,7 @@ void GrapaItemState::Running()
 					saveChar = 0;
 					savePos = 0;
 					state = saveState;
+                    maxPos = 0;
 					saveState = GrapaTokenItemType::ESCAPEERR;
 					break;
 				}
@@ -984,6 +989,7 @@ void GrapaItemState::Running()
 					if (savePos == 3)
 					{
 						state = saveState;
+                        maxPos = 0;
 						saveState = GrapaTokenItemType::ESCAPE;
 						break;
 					}
@@ -992,6 +998,7 @@ void GrapaItemState::Running()
 				{
 					saveChar = 0;
 					state = saveState;
+                    maxPos = 0;
 					saveState = GrapaTokenItemType::ESCAPEERR;
 					break;
 				}
@@ -1085,7 +1092,7 @@ void GrapaItemState::Running()
 						msgStr.SetLength(0);
 					}
 					nextValue->mMessage.mPos++;
-					msgStr.Append(c);
+					msgStr.GrapaBYTE::Append(c);
 					PushOutput((sendState ? sendState : state), msgStr, quote);
 					msgStr.SetLength(0);
 					sendState = 0;
@@ -1094,7 +1101,7 @@ void GrapaItemState::Running()
 					break;
 				}
 				nextValue->mMessage.mPos++;
-				msgStr.Append(c);
+				msgStr.GrapaBYTE::Append(c);
 				if (!strchr(mItemParams->mParam[GrapaItemEnum::SYS], c))
 				{
 					PushOutput((sendState ? sendState : state), msgStr, quote);
@@ -1163,7 +1170,7 @@ void GrapaItemState::Running()
 				{
 					state = GrapaTokenType::FLOAT;
 					nextValue->mMessage.mPos++;
-					msgStr.Append(c);
+					msgStr.GrapaBYTE::Append(c);
 					break;
 				}
 				else if (state != GrapaTokenItemType::EXP && (c == 'e' || c == 'E'))
@@ -1215,18 +1222,18 @@ void GrapaItemState::Running()
 					break;
 				}
 				nextValue->mMessage.mPos++;
-				if (state == GrapaTokenItemType::EXP) expStr.Append(c); else msgStr.Append(c);
+				if (state == GrapaTokenItemType::EXP) expStr.GrapaBYTE::Append(c); else msgStr.GrapaBYTE::Append(c);
 				break;
 			case GrapaTokenItemType::NUMHEX:
 				if (char *from = strchr(mItemParams->mParam[GrapaItemEnum::HEX], c))
 				{
 					u64 addHex = (from - mItemParams->mParam[GrapaItemEnum::HEX]);
 					if (addHex > 15) addHex -= 16;
-					msgStr.Append(mItemParams->mParam[GrapaItemEnum::HEX][addHex]);
+					msgStr.GrapaBYTE::Append(mItemParams->mParam[GrapaItemEnum::HEX][addHex]);
 				}
 				else if (c == '.')
 				{
-					msgStr.Append('.');
+					msgStr.GrapaBYTE::Append('.');
 				}
 				else
 				{
@@ -1246,7 +1253,7 @@ void GrapaItemState::Running()
 						{
 							GrapaCHAR m3;
 							while (c2++ < c1) m3.Append("\0",1);
-							m3.Append(m2);
+							m3.GrapaBYTE::Append(m2);
 							PushOutput(GrapaTokenType::RAW, m3, quote);
 						}
 						else
@@ -1262,11 +1269,11 @@ void GrapaItemState::Running()
                 from = strchr(mItemParams->mParam[GrapaItemEnum::BIN], c);
 				if (from)
 				{
-					msgStr.Append(c);
+					msgStr.GrapaBYTE::Append(c);
 				}
 				else if (c == '.')
 				{
-					msgStr.Append('.');
+					msgStr.GrapaBYTE::Append('.');
 				}
 				else
 				{
@@ -1286,7 +1293,7 @@ void GrapaItemState::Running()
 						{
 							GrapaCHAR m3;
 							while (c2++ < c1) m3.Append("\0", 1);
-							m3.Append(m2);
+							m3.GrapaBYTE::Append(m2);
 							PushOutput(GrapaTokenType::RAW, m3, quote);
 						}
 						else
@@ -1331,7 +1338,7 @@ void GrapaItemState::Running()
 				}
 
 				nextValue->mMessage.mPos++;
-				msgStr.Append(c);
+				msgStr.GrapaBYTE::Append(c);
 				break;
 // What is this IDDASH for? I think it's for e-10 type stuff.
 // Had to disable because it was causing "a-b" to be treated like a variable...
@@ -1343,7 +1350,7 @@ void GrapaItemState::Running()
 					sendState = 0;
 					noEscape = false;
 					state = GrapaTokenType::START;
-					msgStr.Append("-");
+					msgStr.GrapaBYTE::Append("-");
 					PushOutput(GrapaTokenType::SYM, msgStr, quote);
 					msgStr.SetLength(0);
 					sendState = 0;
@@ -1353,13 +1360,13 @@ void GrapaItemState::Running()
 					sendState = 0;
 					break;
 				}
-				msgStr.Append('-');
+				msgStr.GrapaBYTE::Append('-');
 				state = saveState;
 				saveState = 0;
 				sendState = 0;
 				break;
 			case GrapaTokenType::OTHER:
-				msgStr.Append(c);
+				msgStr.GrapaBYTE::Append(c);
 				PushOutput(state, msgStr, quote);
 				msgStr.SetLength(0);
 				state = GrapaTokenType::START;

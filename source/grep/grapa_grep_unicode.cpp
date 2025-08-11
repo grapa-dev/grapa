@@ -704,7 +704,12 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     printf("DEBUG: input: '%s'\n", input.c_str());
     printf("DEBUG: pattern: '%s'\n", pattern.c_str());
     printf("DEBUG: options: '%s'\n", options.c_str());
-    printf("DEBUG: line_delim: '%s'\n", line_delim.c_str());
+    printf("DEBUG: line_delim: '%s' (length: %zu)\n", line_delim.c_str(), line_delim.length());
+    printf("DEBUG: line_delim bytes: ");
+    for (size_t i = 0; i < line_delim.length(); ++i) {
+        printf("0x%02X ", static_cast<unsigned char>(line_delim[i]));
+    }
+    printf("\n");
     #endif // DEBUG_END
     
     // Call the low-level function to get match positions
@@ -728,6 +733,15 @@ std::vector<std::string> grep_extract_matches_unicode_impl(
     
     // UNIFIED DESIGN: Always use a delimiter, with "\n" as default
     std::string effective_delimiter = line_delim.empty() ? "\n" : line_delim;
+    
+    #ifdef GRAPA_DEBUG_PRINTF // DEBUG_START
+    printf("DEBUG: effective_delimiter: '%s' (length: %zu)\n", effective_delimiter.c_str(), effective_delimiter.length());
+    printf("DEBUG: effective_delimiter bytes: ");
+    for (size_t i = 0; i < effective_delimiter.length(); ++i) {
+        printf("0x%02X ", static_cast<unsigned char>(effective_delimiter[i]));
+    }
+    printf("\n");
+    #endif // DEBUG_END
     
     // Check for count-only and invert match options
     bool count_only = (options.find('c') != std::string::npos);

@@ -166,7 +166,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 	int used_script_arg_index = -1;
 	if (found_c && c_arg.mLength) {
 		char debugMsg[256];
-		int len = snprintf(debugMsg, sizeof(debugMsg), "Executing command: %s", c_arg);
+		int len = snprintf(debugMsg, sizeof(debugMsg), "Executing command: %s", c_arg.mBytes);
 		debugMsg[len] = 0;
 		gSystem->mDebug.DebugPrint(debugMsg);
 		runStr.FROM(c_arg);
@@ -180,7 +180,7 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		}
 	} else if (found_f && f_arg.mLength) {
 		char debugMsg[256];
-		int len = snprintf(debugMsg, sizeof(debugMsg), "Executing file: %s", f_arg);
+		int len = snprintf(debugMsg, sizeof(debugMsg), "Executing file: %s", f_arg.mBytes);
 		debugMsg[len] = 0;
 		gSystem->mDebug.DebugPrint(debugMsg);
 		GrapaFileIO fp;

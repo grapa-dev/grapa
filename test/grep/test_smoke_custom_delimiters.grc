@@ -107,18 +107,17 @@ result = input7.grep("line", "o", "");
 "Test 10: Custom delimiter error handling\n".echo();
 input8 = "test";
 /*
-NOTE: Grapa currently cannot pass a string containing a single 0x00 (null byte) as a delimiter.
-If you write "\0" in a Grapa script, it is trimmed to a zero-length string before reaching C++.
-This is a known limitation and requires Grapa core enhancement for full support.
-For now, this test will always pass an empty string as the delimiter.
+NOTE: Null byte delimiter support has been implemented in Grapa core.
+The lexer and grep implementation have been fixed to properly handle null bytes.
+This test now uses a true null byte delimiter.
 */
-/* Null delimiter (actually empty string in Grapa) */
+/* Null delimiter (null byte) */
 result = input8.grep("test", "o", "\0");
 ("Input: " + input8 + "\n").echo();
 ("Pattern: test, Options: o, Delimiter: \\0\n").echo();
 ("Result: " + result.str() + "\n").echo();
-("Expected: [\"test\"] (pending Grapa core support for true null delimiter)\n").echo();
-("Status: " + (result.len() == 1 ? "PASS (pending core support)" : "FAIL") + "\n").echo();
+("Expected: [\"test\"] (null byte delimiter now supported)\n").echo();
+("Status: " + (result.len() == 1 ? "PASS" : "FAIL") + "\n").echo();
 "---\n".echo();
 
 "=== SMOKE TEST COMPLETE ===\n".echo();
