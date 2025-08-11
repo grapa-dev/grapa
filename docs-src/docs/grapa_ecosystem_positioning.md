@@ -283,7 +283,11 @@ After the enhancement roadmap is complete, Grapa will be viable for:
 /* Try Grapa's multi-syntax capabilities */
 json = {"users": [{"name": "John", "age": 30}]};
 xml = $&<users><user><name>John</name><age>30</age></user></users>$&;
-sql = op(parse)("SELECT name, age FROM users WHERE age > 25")(); /* via example scripts */
+
+/* Load SQL syntax rules first (example implementation) */
+/* See docs-src/docs/examples/sql_syntax_example.grc for full implementation */
+custom_command = rule select $STR from $STR { op(fields:$2, table:$4){ /* SQL implementation */ } };
+sql = op(parse)("SELECT name, age FROM users WHERE age > 25")();
 
 /* Process all formats */
 result = process_data(json, xml, sql);
