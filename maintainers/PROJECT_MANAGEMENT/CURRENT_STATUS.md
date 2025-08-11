@@ -30,9 +30,8 @@
 - **Lexical Processing System** - ✅ **ANALYZED** - `$&` flags and special lexer processing for complex formats
 - **BNF-Based ETL Analysis** - ✅ **DOCUMENTED** - Internal JSON/XML/HTML processing via `$function`, `$xmlcreate`, `$htmlcreate` rules
 
-**Current Focus:** Phase 1 - Pure Rule Changes (High Impact, Low Effort)
-- **Line Comments** - Add `//` and `#` line comment support (requires C++ lexer changes)
-- **For Loops** - ✅ **PROTOTYPE COMPLETED** - Using `custom_command` mechanism (ready for implementation)
+**Current Focus:** Phase 1 - Pure Rule Changes Using `custom_command` and `custom_function` (Proof of Concept)
+- **For Loops** - ✅ **PROTOTYPE COMPLETED** - Using `custom_command` mechanism (ready for production implementation)
 - **Enhanced Assignment Operators** - Add `*=`, `/=`, `%=`, `**=` operators (using `custom_function`)
 - **String Interpolation** - Template strings and interpolation support (using `custom_function`)
 - **Range Function** - Add range() function for loops (using `custom_function`)
@@ -41,16 +40,31 @@
 - **Spaceship Operator** - Add `<=>` comparison operator (using `custom_function`)
 - **Basic SQL Syntax** - Native SELECT, COUNT, INSERT support (using `custom_command` and `custom_function`)
 
+**Phase 2 Focus:** C++ Implementation Based on Phase 1 Results
+- **Line Comments** - Add `//` and `#` line comment support (requires C++ lexer changes)
+- **Native For Loops** - C++ implementation based on Grapa `custom_command` proof of concept
+- **Native Enhanced Assignment** - C++ operators based on Grapa `custom_function` implementations
+- **Native String Interpolation** - C++ implementation based on Grapa template string proof of concept
+- **Native Range Function** - C++ implementation based on Grapa range function proof of concept
+- **Native Ternary Operator** - C++ implementation based on Grapa ternary proof of concept
+- **Native List Comprehension** - C++ implementation based on Grapa list comprehension proof of concept
+- **Native Spaceship Operator** - C++ implementation based on Grapa spaceship proof of concept
+- **Native SQL Syntax** - C++ implementation based on Grapa SQL proof of concept
+- **Exception Handling** - Try/catch blocks (new C++ feature)
+- **Enhanced String Operations** - Native string interpolation and formatting
+
 **Implementation Strategy:**
-- **Phase 1 (Weeks 1-4)**: Pure rule changes - for loops, enhanced assignment, string interpolation, range, ternary, list comprehension, spaceship, basic SQL syntax
-- **Phase 2 (Weeks 5-8)**: C++ library extensions - line comments (lexer changes), native for loops, enhanced string operations, try/catch
-- **Phase 3 (Weeks 9-12)**: Core language changes - fixed break/return, exception handling, enhanced lexer/parser
+- **Phase 1 (Weeks 1-4)**: Pure rule changes using `custom_command` and `custom_function` - Complete proof of concept for all syntax features
+- **Phase 2 (Weeks 5-8)**: C++ implementation based on Phase 1 - Use Grapa implementations as specification for native C++ features
+- **Phase 3 (Weeks 9-12)**: Core language integration - Integrate native features into `$grapa.grc` and enhance lexer/parser
 
 **Technical Details:**
-- **Primary Files**: `lib/grapa/$grapa.grc` (for rule changes), `source/grapa/GrapaLexer.cpp` (for line comments)
-- **Testing**: Comprehensive test suite for each new syntax feature
+- **Phase 1 Files**: `test/use_cases/` (for proof of concept implementations), `docs-src/docs/examples/` (for user examples)
+- **Phase 2 Files**: `lib/grapa/$grapa.grc` (for rule integration), `source/grapa/GrapaLexer.cpp` (for line comments), `source/grapa/GrapaLibRule.cpp` (for C++ implementations)
+- **Testing**: Comprehensive test suite for each new syntax feature (Phase 1) → Integration testing (Phase 2)
 - **Documentation**: Complete documentation updates for new syntax
 - **Working Examples**: `test/use_cases/simple_for_loop_demo.grc`, `test/use_cases/sql_syntax_demo_simple.grc`, `test/use_cases/isolated_rule_execution_demo.grc`
+- **C++ Reference**: Existing `while` loop implementation in `source/grapa/GrapaLibRule.cpp` as template for for loop C++ implementation
 
 **Key Implementation Patterns:**
 - **`custom_command`**: For actions that perform operations (no return value)
@@ -67,18 +81,27 @@
 - **User-Facing Language Design Guide**: [`docs-src/docs/language_design_with_executable_bnf.md`](../../docs-src/docs/language_design_with_executable_bnf.md)
 - **User-Facing Isolated Rule Execution**: [`docs-src/docs/isolated_rule_execution.md`](../../docs-src/docs/isolated_rule_execution.md)
 
-**🚀 IMMEDIATE NEXT STEPS:**
-1. **Implement For Loops** - Working prototype exists, ready for production implementation
+**🚀 IMMEDIATE NEXT STEPS (Phase 1 - Pure Rule Changes):**
+1. **Implement For Loops** - Working prototype exists, ready for production implementation using `custom_command`
 2. **Implement Enhanced Assignment Operators** - `*=`, `/=`, `%=`, `**=` using `custom_function`
 3. **Implement String Interpolation** - Template strings using `custom_function`
 4. **Implement Range Function** - For loop support using `custom_function`
-5. **Implement Basic SQL Syntax** - SELECT, COUNT, INSERT using `custom_command` and `custom_function`
+5. **Implement Ternary Operator** - `?:` conditional operator using `custom_function`
+6. **Implement List Comprehension** - List comprehension syntax using `custom_function`
+7. **Implement Spaceship Operator** - `<=>` comparison operator using `custom_function`
+8. **Implement Basic SQL Syntax** - SELECT, COUNT, INSERT using `custom_command` and `custom_function`
 
-**📋 IMPLEMENTATION PRIORITY:**
-- **Week 1**: For loops (prototype → production)
-- **Week 2**: Enhanced assignment operators + string interpolation
-- **Week 3**: Range function + ternary operator
-- **Week 4**: List comprehension + spaceship operator + basic SQL syntax
+**📋 IMPLEMENTATION PRIORITY (Phase 1):**
+- **Week 1**: For loops (prototype → production) + Enhanced assignment operators
+- **Week 2**: String interpolation + Range function + Ternary operator
+- **Week 3**: List comprehension + Spaceship operator
+- **Week 4**: Basic SQL syntax + Comprehensive testing and documentation
+
+**🎯 PHASE 2 PREPARATION:**
+- **Document all Phase 1 implementations** as specifications for C++ development
+- **Create comprehensive test suites** for each feature
+- **Analyze existing C++ while loop implementation** as reference for for loop C++ implementation
+- **Plan C++ integration strategy** for each feature
 
 ---
 
