@@ -122,7 +122,7 @@ value = table.get("user1", "name");   /* Correct */
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
-- No `for`/`foreach` loops—use `while` or `.range()`+functional methods
+- No `for`/`foreach` loops—use `while` or `.range()`+functional methods (`.range()` is native: `(10).range()`)
 - No `match`—use `if/else` chains
 - No `.push()`/`.append()`—use `+=` for append
 - No `/* comment */` comments—only block comments (`/* ... */`), always on their own line

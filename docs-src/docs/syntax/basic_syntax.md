@@ -98,7 +98,7 @@ for i in 1..10 {
 }
 ```
 
-- Only `while` loops and `.range()`+functional methods are valid for iteration in Grapa.
+- Only `while` loops and `.range()`+functional methods are valid for iteration in Grapa. The `.range()` method is native: `(10).range()` → `[0,1,2,3,4,5,6,7,8,9]`.
 - `for` loops are not supported.
 - If more objects support `.get()` in the future, this guide will be updated.
 
@@ -1312,22 +1312,57 @@ result = [1, 2, 3, 4, 5].filter(op(x) { x % 2 == 0; }).map(op(x) { x * 2; });
 result.echo();  // Output: [4, 8]
 ```
 
-## Workaround for Non-Chainable Functions
+## Advanced Chaining with `$$` Variable
 
-If an existing function/command doesn't support chaining, an OP can be inserted in the chain to make it work using the $$ variable for the result of the prior operation. For example, the following will get the length of a list, generate that many bits, and output the result in binary form. The 3 examples all accomplish the same result.
+Grapa's chaining system allows you to insert custom operations into any chain using the `$$` variable (equivalent to `$0`) to reference the result of the previous operation.
+
+### **Basic Chaining with `$$`**
+
+If an existing function/command doesn't support chaining, an operation block can be inserted using `$$` to reference the previous result:
+
+```grapa
+/* Get length of list, generate that many bits, output in binary */
+{1,2,3,5}.{(@$$).len()}.genbits().bin();
+// Result: 1111
+
+/* Alternative using op() function */
+{1,2,3,5}.{(op(a){a.len()})(@$$)}.genbits().bin();
+// Result: 1111
+
+/* Using predefined function */
+f = op(a){a.len()};
+{1,2,3,5}.{f(@$$)}.genbits().bin();
+// Result: 1111
 ```
-> {1,2,3,5}.{(@$$).len()}.genbits().bin();
-1111
 
-> {1,2,3,5}.{(op(a){a.len()})(@$$)}.genbits().bin();
-1111
+### **Advanced String Chaining**
 
-> f = op(a){a.len()};
-> {1,2,3,5}.{f(@$$)}.genbits().bin();
-1111
+You can perform complex string transformations in chains:
+
+```grapa
+/* Simple transformation */
+"hello".{@$$.upper()}.left(2);
+// Result: HE
+
+/* Complex transformation with multiple steps */
+"hello".{x=@$$.upper();x.right(4);}.left(2);
+// Result: EL
 ```
 
-**Note**: The `$$` variable represents the result of the previous operation in the chain.
+### **Multi-Step Processing**
+
+Chain multiple operations with intermediate variables:
+
+```grapa
+/* Process data through multiple transformations */
+data.{processed=@$$.clean();processed.filter(op(x){x>0});}.len();
+```
+
+**Note**: The `$$` variable represents the result of the previous operation in the chain. The `@` prefix dereferences the variable to get its actual value. `$$` is equivalent to `$0` - both represent the result of the previous operation in a chain.
+
+**Key Concept**: `$$` is the **chain carrier** - it automatically passes the result of each operation to the next step in the chain. This enables seamless data flow through complex transformation pipelines.
+
+**Important**: `@` is for **runtime evaluation** (getting actual values), while `$` is for **compile-time lexical processing** (modifying how the lexer processes tokens).
 */ 
 
 /*

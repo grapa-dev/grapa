@@ -298,6 +298,139 @@ The rule token `< >` is a sophisticated reference mechanism with multiple capabi
 /* Direct variable access */
 @variable
 
+/* Indirect variable access and assignment */
+@@variable  /* Gets the actual value of the variable */
+@@variable = 10;  /* Assigns to the variable */
+@@variable += 1;  /* Increments the variable */
+
+**Key Discovery:** The `@@variable` syntax enables **indirect variable assignment**, making it much simpler to work with dynamic variable names in rule implementations. This eliminates the need for complex string concatenation patterns like `op()(var + " = " + value)()`.
+
+### **Historical Context: `@` Symbol Evolution**
+
+**Original Design:**
+```grapa
+/* Original behavior - $ID was literal */
+x = 5;        /* x was the literal string "x" */
+@x;           /* @x was needed to get the value 5 */
+```
+
+**Current Design:**
+```grapa
+/* Current behavior - automatic dereferencing */
+x = 5;        /* x automatically gets the value 5 */
+@x;           /* @x gets the variable name "x" (for rule tokens) */
+@@x;          /* @@x gets the value of the variable named by x */
+```
+
+**Evolution:**
+1. **Original**: `$ID` was literal, `@` was required for dereferencing
+2. **Problem**: `@` symbols made code messy and verbose
+3. **Solution**: Automatic dereferencing for `$ID` in most contexts
+4. **Rule Tokens**: `@` still needed in `< >` tokens for variable dereferencing
+5. **Double Dereference**: `@@` provides one more level of indirection
+
+**Current Usage:**
+- **`x`**: Direct variable access (automatic dereferencing)
+- **`@x`**: Get variable name as string (for rule tokens)
+- **`@@x`**: Indirect variable access (dereference the variable named by x)
+
+**Rule Token Context:**
+The `@` modifier in rule tokens follows the same historical pattern:
+
+```grapa
+/* In rule definitions */
+{@<assignappend,{$1,$4}>}  /* @ dereferences the rule token */
+{@<if,{$3,$5}>}            /* @ dereferences the rule token */
+
+/* In variable references within rule tokens */
+<@variable>                 /* @ dereferences the variable name */
+<@tb["d"]>                 /* @ dereferences the array access */
+```
+
+**Consistent Pattern:**
+- **`@`** in rule tokens = dereference the rule token (get the actual function/operation)
+- **`@`** in variable references = dereference the variable name (get the actual value)
+- **`@@`** in variable references = double dereference (get the value of the variable named by the variable)
+
+### **System Namespace Protection: `$` Prefix**
+
+The `$` prefix serves as a **system namespace protection mechanism**:
+
+```grapa
+/* User namespace (recommended for user code) */
+x = 5;                    /* $ID -> user variable */
+name = "hello";           /* $STR -> user string */
+
+/* System namespace (reserved for system use) */
+$x = 5;                   /* $SYSID -> system variable */
+$name = "hello";          /* $SYSSTR -> system string */
+```
+
+**Design Philosophy:**
+- **Everything in Grapa is variables** (language, classes, functions, etc.)
+- **Problem**: Developers could accidentally override core system features
+- **Solution**: `$` prefix creates a **protected system namespace**
+- **Guideline**: Use `$` prefix only when there's a good reason to access system namespace
+
+**Token Type Conversion:**
+- **`$ID`** → **`$SYSID`** (system identifier)
+- **`$STR`** → **`$SYSSTR`** (system string)
+- **`$INT`** → **`$SYSINT`** (system integer)
+- **`$FLOAT`** → **`$SYSSYM`** (system symbol)
+
+**Rule Parameter References:**
+In rule definitions, `$n` refers to the nth captured item in the rule:
+
+```grapa
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){  /* $2, $4, $6, $8 are rule parameters */
+        /* Implementation */
+    }
+};
+```
+
+**Parameter vs System Token:**
+- **`$4`** in rule context = **4th captured item** (rule parameter reference)
+- **`$4`** in expression context = **system integer 4** (system token)
+- **Context determines meaning** - same syntax, different interpretation
+
+**Usage Guidelines:**
+- **User Code**: Use `x`, `"hello"`, `5` (user namespace)
+- **System Access**: Use `$x`, `$"hello"`, `$5` (system namespace)
+- **Interchangeable**: Both work, but system namespace should be avoided unless necessary
+
+### **Assignment Grammar Patterns**
+
+Grapa's grammar uses specialized patterns for different assignment scenarios:
+
+```grapa
+/* Pattern 1: Simple variable assignment (optimized) */
+<$litname> '=' <$comp> {@<assign,{$1,$3}>}
+
+/* Pattern 2: Complex assignment (flexible) */
+<$comp> '=' <$comp> {@<assign,{$1,$3}>}
+```
+
+**Key Differences:**
+
+#### **`$litname` (Literal Name)**
+- **Optimized for simple variable assignment**
+- **Special C++ handling** for system variables and namespaces
+- Supports: `@this`, `@parent`, `@global`, `@local`, `$this`, `$parent`, `$global`, `$local`, `$root`, `$self`
+- **Faster execution** for common cases
+- **Guaranteed to be a variable name** (with special handling)
+
+#### **$comp (Complex Expression)**
+- **Flexible** - can assign to any expression
+- Supports: `array[5]`, `object.property`, `function()`, `x + y`
+- **More general** but potentially slower
+- **Same C++ handling** but with more overhead
+
+**Implementation Strategy:**
+- Use `$litname` for simple variable assignments (most common case)
+- Use `$comp` for complex assignments (array indexing, object properties, etc.)
+- This provides **performance optimization** while maintaining **flexibility**
+
 /* Array indexing */
 @array[index]
 @array["key"]
@@ -633,7 +766,17 @@ The `custom_command` and `custom_function` mechanisms work by:
 3. **Session Integration**: They run in the same session as the loaded `$grapa.grc` grammar
 4. **Direct Usage**: Once defined, they can be used directly like any other language syntax
 
-This pattern enables extending Grapa's syntax without modifying the core grammar file.
+**Advanced Pattern - Indirect Variable Assignment:**
+```grapa
+/* Instead of complex string concatenation */
+op()(var + " = " + value)();
+
+/* Use indirect variable assignment */
+@@var = value;
+@@var += 1;
+```
+
+This pattern enables extending Grapa's syntax without modifying the core grammar file and provides much cleaner variable manipulation.
 
 ### 2. **Data Processing Pipelines**
 

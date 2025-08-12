@@ -1,0 +1,141 @@
+/* ========================================
+ * Range Function - IMPROVED VERSION
+ * Applying recent learnings: direct evaluation
+ * ======================================== */
+
+/* ========================================
+ * range(stop) - generates [0, 1, 2, ..., stop-1]
+ * ======================================== */
+custom_function = rule range '(' <$comp> ')' {
+    op(stop:$3){
+        stop_val = stop();
+        if (stop_val.type() != "$INT") {
+            ("Error: Range stop must be integer").echo();
+            return [];
+        };
+        
+        result = [];
+        i = 0;
+        while (i < stop_val) {
+            result += i;
+            i += 1;
+        };
+        result;
+    }
+};
+
+/* ========================================
+ * range(start, stop) - generates [start, start+1, ..., stop-1]
+ * ======================================== */
+custom_function = rule range '(' <$comp> ',' <$comp> ')' {
+    op(start:$3, stop:$5){
+        start_val = start();
+        stop_val = stop();
+        
+        if (start_val.type() != "$INT" || stop_val.type() != "$INT") {
+            ("Error: Range start and stop must be integers").echo();
+            return [];
+        };
+        
+        result = [];
+        i = start_val;
+        while (i < stop_val) {
+            result += i;
+            i += 1;
+        };
+        result;
+    }
+};
+
+/* ========================================
+ * range(start, stop, step) - generates [start, start+step, ..., stop-1]
+ * ======================================== */
+custom_function = rule range '(' <$comp> ',' <$comp> ',' <$comp> ')' {
+    op(start:$3, stop:$5, step:$7){
+        start_val = start();
+        stop_val = stop();
+        step_val = step();
+        
+        if (start_val.type() != "$INT" || stop_val.type() != "$INT" || step_val.type() != "$INT") {
+            ("Error: Range parameters must be integers").echo();
+            return [];
+        };
+        
+        if (step_val == 0) {
+            ("Error: Range step cannot be zero").echo();
+            return [];
+        };
+        
+        result = [];
+        i = start_val;
+        
+        if (step_val > 0) {
+            while (i < stop_val) {
+                result += i;
+                i += step_val;
+            };
+        } else {
+            while (i > stop_val) {
+                result += i;
+                i += step_val;
+            };
+        };
+        result;
+    }
+};
+
+/* ========================================
+ * Test the implementations
+ * ======================================== */
+("=== Testing Range Function (Improved) ===").echo();
+
+/* Test range(stop) */
+("Testing range(5)...").echo();
+result = range(5);
+("Result: " + result).echo();
+
+/* Test range(start, stop) */
+("Testing range(2, 8)...").echo();
+result = range(2, 8);
+("Result: " + result).echo();
+
+/* Test range(start, stop, step) */
+("Testing range(0, 10, 2)...").echo();
+result = range(0, 10, 2);
+("Result: " + result).echo();
+
+/* Test range with negative step */
+("Testing range(10, 0, -2)...").echo();
+result = range(10, 0, -2);
+("Result: " + result).echo();
+
+/* Test range with zero step (error) */
+("Testing range(1, 5, 0)...").echo();
+result = range(1, 5, 0);
+("Result: " + result).echo();
+
+/* Test range with non-integer (error) */
+("Testing range(1.5, 5)...").echo();
+result = range(1.5, 5);
+("Result: " + result).echo();
+
+/* Test range with for loop */
+("Testing range with for loop...").echo();
+for i in range(3) {
+    ("Loop iteration: " + i).echo();
+};
+
+/* Test range with list comprehension */
+("Testing range with list comprehension...").echo();
+squares = [i ** 2 for i in range(5)];
+("Squares: " + squares).echo();
+
+/* Test empty range */
+("Testing empty range...").echo();
+result = range(0);
+("Result: " + result).echo();
+
+result = range(5, 5);
+("Result: " + result).echo();
+
+("=== All range function tests completed! ===").echo(); 

@@ -1,0 +1,117 @@
+/* ========================================
+ * Enhanced Assignment Operators - IMPROVED VERSION
+ * Applying recent learnings: direct evaluation and @@var syntax
+ * ======================================== */
+
+/* ========================================
+ * *= operator
+ * ======================================== */
+custom_function = rule <$comp> '*=' <$comp> {
+    op(left:$1, right:$3){
+        left_val = op()(left)();
+        right_val = right();
+        result = left_val * right_val;
+        @@left = result;
+        result;
+    }
+};
+
+/* ========================================
+ * /= operator (with zero division check)
+ * ======================================== */
+custom_function = rule <$comp> '/=' <$comp> {
+    op(left:$1, right:$3){
+        left_val = op()(left)();
+        right_val = right();
+        
+        if (right_val == 0) {
+            ("Error: Division by zero").echo();
+            return 0;
+        };
+        
+        result = left_val / right_val;
+        @@left = result;
+        result;
+    }
+};
+
+/* ========================================
+ * %= operator (with zero modulo check)
+ * ======================================== */
+custom_function = rule <$comp> '%=' <$comp> {
+    op(left:$1, right:$3){
+        left_val = op()(left)();
+        right_val = right();
+        
+        if (right_val == 0) {
+            ("Error: Modulo by zero").echo();
+            return 0;
+        };
+        
+        result = left_val % right_val;
+        @@left = result;
+        result;
+    }
+};
+
+/* ========================================
+ * **= operator (power assignment)
+ * ======================================== */
+custom_function = rule <$comp> '**=' <$comp> {
+    op(left:$1, right:$3){
+        left_val = op()(left)();
+        right_val = right();
+        result = left_val ** right_val;
+        @@left = result;
+        result;
+    }
+};
+
+/* ========================================
+ * Test the implementations
+ * ======================================== */
+("=== Testing Enhanced Assignment Operators (Improved) ===").echo();
+
+/* Test *= operator */
+("Testing *= operator...").echo();
+x = 5;
+result = x *= 3;
+("x *= 3: x = " + x + ", result = " + result).echo();
+
+/* Test /= operator */
+("Testing /= operator...").echo();
+y = 15;
+result = y /= 3;
+("y /= 3: y = " + y + ", result = " + result).echo();
+
+/* Test /= operator with zero */
+("Testing /= operator with zero...").echo();
+z = 10;
+result = z /= 0;
+("z /= 0: z = " + z + ", result = " + result).echo();
+
+/* Test %= operator */
+("Testing %= operator...").echo();
+a = 17;
+result = a %= 5;
+("a %= 5: a = " + a + ", result = " + result).echo();
+
+/* Test %= operator with zero */
+("Testing %= operator with zero...").echo();
+b = 20;
+result = b %= 0;
+("b %= 0: b = " + b + ", result = " + result).echo();
+
+/* Test **= operator */
+("Testing **= operator...").echo();
+c = 2;
+result = c **= 4;
+("c **= 4: c = " + c + ", result = " + result).echo();
+
+/* Test with different data types */
+("Testing with different data types...").echo();
+d = 100;
+result = d *= 2.5;
+("d *= 2.5: d = " + d + ", result = " + result).echo();
+
+("=== All enhanced assignment operator tests completed! ===").echo(); 

@@ -229,10 +229,10 @@ unicode_text = "café résumé".grep("cafe", "d");  /* Diacritic-insensitive */
 ### **Phase 1: Critical Features (Weeks 1-4)**
 - 🚧 **Exception handling** - `try/catch` blocks
 - 🚧 **For loops** - Native loop syntax
-- 🚧 **Enhanced assignment** - `*=`, `/=`, `%=`, `**=`
-- 🚧 **String interpolation** - Template literals
-- 🚧 **Range function** - `range()` for loops
-- 🚧 **Ternary operator** - `?:` conditional expressions
+- ✅ **Enhanced assignment** - `*=`, `/=`, `%=`, `**=`
+- ✅ **String interpolation** - `"template".interpolate()` method with template literals
+- ✅ **Range function** - `(10).range()` for loops
+- ✅ **Ternary operator** - `?:` conditional expressions
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
 - 📋 **Module system** - Import/export capabilities

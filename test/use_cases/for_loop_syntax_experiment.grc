@@ -1,0 +1,80 @@
+/*
+ * For Loop Syntax Experiment
+ * 
+ * Testing different approaches for for loop implementation:
+ * 1. Direct evaluation of $OP parameters
+ * 2. Variable assignment patterns
+ * 3. Simplified increment patterns
+ */
+
+/* ========================================
+ * Test 1: Direct evaluation approach
+ * ======================================== */
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Try direct evaluation */
+        start_val = start();
+        end_val = end();
+        
+        ("Testing direct evaluation:").echo();
+        ("  start_val = " + start_val).echo();
+        ("  end_val = " + end_val).echo();
+        
+        /* Set initial value using variable assignment */
+        op()(var + " = " + start_val)();
+        
+        /* Loop using direct evaluation */
+        current = start_val;
+        while (current <= end_val) {
+            /* Execute the loop body */
+            body();
+            
+            /* Increment and update variable */
+            current += 1;
+            op()(var + " = " + current)();
+        };
+    }
+};
+
+/* ========================================
+ * Test 2: Simplified approach
+ * ======================================== */
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Simplified approach - evaluate parameters directly */
+        ("Testing simplified approach:").echo();
+        
+        /* Set initial value */
+        op()(var + " = " + start())();
+        
+        /* Loop */
+        while (op()(var + " <= " + end())()) {
+            /* Execute the loop body */
+            body();
+            
+            /* Increment */
+            op()(var + " = " + var + " + 1")();
+        };
+    }
+};
+
+/* ========================================
+ * Test 3: Simple for loop test
+ * ======================================== */
+("=== FOR LOOP SYNTAX EXPERIMENT ===").echo();
+("").echo();
+
+/* Test the implementations */
+("Test 1: Direct evaluation").echo();
+for i from 1 to 3 {
+    ("  Loop iteration: " + i).echo();
+};
+("").echo();
+
+("Test 2: Simplified approach").echo();
+for j from 5 to 7 {
+    ("  Loop iteration: " + j).echo();
+};
+("").echo();
+
+("=== EXPERIMENT COMPLETE ===").echo(); 

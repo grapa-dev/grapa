@@ -374,6 +374,113 @@ lazy_result = op(parse)('lazy { expensive_calculation() }')();
 /* Expression not evaluated until lazy_result() is called */
 ```
 
+## Advanced Variable Manipulation
+
+### **1. Indirect Variable Assignment (`@@`)**
+
+A key discovery in Grapa's rule system is the `@@` syntax for indirect variable access and assignment:
+
+```grapa
+/* Basic variable reference */
+x = 1;
+y = "x";  /* y contains the string "x" */
+
+/* Variable reference */
+@y;       /* Returns "x" (the variable name) */
+
+/* Indirect variable access */
+@@y;      /* Returns 1 (the value of variable x) */
+
+/* Indirect variable assignment */
+@@y = 10; /* Assigns 10 to variable x */
+@@y += 1; /* Increments variable x */
+
+/* In rule implementations */
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Instead of complex string concatenation */
+        /* op()(var + " = " + start())(); */
+        
+        /* Use indirect assignment */
+        @@var = start();
+        
+        while (@@var <= end()) {
+            body();
+            @@var += 1;
+        };
+    }
+};
+```
+
+**Benefits:**
+- **Cleaner Syntax**: Eliminates complex string concatenation
+- **Better Performance**: No string operations for variable assignment
+- **More Readable**: Intent is much clearer
+- **Type Safety**: Direct variable access without string manipulation
+
+### **Historical Context: `@` Symbol Evolution**
+
+The `@` symbol in Grapa has evolved from the original design:
+
+**Original Design (Early Grapa):**
+```grapa
+/* Variables were literal by default */
+x = 5;        /* x was the literal string "x" */
+@x;           /* @x was needed to get the value 5 */
+```
+
+**Current Design:**
+```grapa
+/* Automatic dereferencing for cleaner syntax */
+x = 5;        /* x automatically gets the value 5 */
+@x;           /* @x gets the variable name "x" (for rule tokens) */
+@@x;          /* @@x gets the value of the variable named by x */
+```
+
+**Why This Matters:**
+- **Cleaner Code**: No need for `@` symbols everywhere
+- **Rule Tokens**: `@` still needed in `< >` tokens for variable dereferencing
+- **Indirect Access**: `@@` provides one more level of indirection for dynamic variable names
+
+**Consistent `@` Pattern:**
+The `@` symbol serves the same purpose throughout Grapa - **dereferencing**:
+
+```grapa
+/* In rule definitions */
+{@<assignappend,{$1,$4}>}  /* @ dereferences the rule token */
+{@<if,{$3,$5}>}            /* @ dereferences the rule token */
+
+/* In variable references */
+<@variable>                 /* @ dereferences the variable name */
+<@tb["d"]>                 /* @ dereferences the array access */
+
+/* In direct usage */
+@x;                        /* @ dereferences the variable name */
+@@x;                       /* @ dereferences twice */
+```
+
+**Unified Concept:** `@` always means "get the actual value/operation, not the literal token"
+
+### **System Namespace Protection: `$` Prefix**
+
+Grapa uses the `$` prefix as a **system namespace protection mechanism**:
+
+```grapa
+/* User namespace (recommended) */
+x = 5;                    /* User variable */
+name = "hello";           /* User string */
+
+/* System namespace (reserved) */
+$x = 5;                   /* System variable */
+$name = "hello";          /* System string */
+```
+
+**Why This Matters:**
+- **Everything in Grapa is variables** (language, classes, functions, etc.)
+- **Protection**: Prevents accidental override of core system features
+- **Guideline**: Use `$` prefix only when accessing system namespace is necessary
+- **Interchangeable**: Both work, but system namespace should be avoided in user code
+
 ## Error Handling and Debugging
 
 ### **1. Grammar Error Recovery**

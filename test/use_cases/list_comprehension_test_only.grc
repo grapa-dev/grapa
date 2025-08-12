@@ -1,0 +1,37 @@
+/* ========================================
+ * List Comprehension Test Only
+ * ======================================== */
+
+/* [expression for variable in iterable] */
+custom_function = rule '[' <$comp> for $ID in <$comp> ']' {
+    op(expression:$2, var:$4, iterable:$6){
+        iterable_val = iterable();
+        result = [];
+        
+        if (iterable_val.type() == $INT) {
+            i = 0;
+            while (i < iterable_val) {
+                @@var = i;
+                result += expression();
+                i += 1;
+            };
+        } else {
+            ("Error: Cannot iterate over type " + iterable_val.type()).echo();
+            result = [];
+        };
+        result;
+    }
+};
+
+/* ========================================
+ * TEST
+ * ======================================== */
+
+("=== List Comprehension Test Only ===").echo();
+
+/* Test list comprehension */
+("Testing List Comprehension...").echo();
+c = [x * 2 for x in 3];
+("  [x * 2 for x in 3]: " + c).echo();
+
+("=== List Comprehension Test Complete ===").echo(); 

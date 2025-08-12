@@ -9,6 +9,36 @@ References:
 
 This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessible and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a language by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.
 
+### **The `@` vs `$` Symbols in Grapa**
+
+#### **`@` - Runtime Evaluation**
+The `@` symbol is used for **runtime evaluation** and dereferencing. In rule tokens (like `{@<assignappend,{$1,$4}>}`), `@` serves as a **dereferencing operator** that gets the actual function/operation at runtime.
+
+**Examples:**
+```grapa
+{@<assignappend,{$1,$4}>}  /* @ dereferences to get the actual assignappend function */
+{@<if,{$3,$5}>}            /* @ dereferences to get the actual if function */
+<@variable>                 /* @ dereferences to get the actual value of variable */
+```
+
+#### **`$` - Compile-time Lexical Processing**
+The `$` symbol is used for **compile-time lexical processing** in the Grapa lexer. It acts as an escape character that modifies how tokens are processed during compilation.
+
+**Lexical Modifiers:**
+```grapa
+$ID      /* Converts to $SYSID (system identifier) */
+$STR     /* Converts to $SYSSTR (system string) */
+$INT     /* Converts to $SYSINT (system integer) */
+$[       /* Lexical flag for special processing */
+$]       /* Lexical flag for special processing */
+$&       /* Lexical flag for XML/HTML processing */
+```
+
+**Why the distinction matters:**
+- `@` operates at **runtime** - gets actual values and executes functions
+- `$` operates at **compile-time** - modifies how the lexer processes tokens
+- `@` is for **evaluation**, `$` is for **lexical transformation**
+
 There are three basic steps:
 * Define the rules (rules may reference other rules) with code to execute for each rule option.
 * Apply raw data to the rule to generate an execution plan.

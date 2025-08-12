@@ -126,7 +126,7 @@ value = table.get("user1", "name");   /* Correct */
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
-- No `for`/`range` loops—use `while` or `.range()`+functional methods
+- No `for`/`range` loops—use `while` or `.range()`+functional methods (`.range()` is native: `(10).range()`)
 - No `.push()`/`.append()`—use `+=` for append
 - No `/* comment */` comments—only block comments (`/* ... */`), always on their own line
 - No implicit truthy/falsy—use explicit boolean checks
@@ -278,7 +278,7 @@ This is a handy workaround until Grapa adds a native `.match()` method.
 > - `.get()` is **required** for `$file` and `$TABLE` access.
 > - `.get()` is **not supported** for `$ARRAY`, `$LIST`, or `$OBJ` as of this writing.
 > - Use bracket and dot notation for `$ARRAY`, `$LIST`, and `$OBJ`.
-> - Only `while` loops and `.range()`+functional methods are valid for iteration in Grapa. `for` loops are not supported.
+> - Only `while` loops and `.range()`+functional methods are valid for iteration in Grapa. `for` loops are not supported. The `.range()` method is native: `(10).range()` → `[0,1,2,3,4,5,6,7,8,9]`.
 > - If more objects support `.get()` in the future, this guide will be updated.
 
 > **Comment Style:**

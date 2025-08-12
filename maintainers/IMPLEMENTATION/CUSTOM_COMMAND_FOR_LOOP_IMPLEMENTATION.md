@@ -59,45 +59,81 @@ Where:
 
 ## Implementation Examples
 
-### 1. **Basic For Loop (C-style)**
+### 1. **Improved For Loop (Grapa-style)**
 
 ```grapa
-custom_command = rule for '(' <$comp> ')' <$command> {op(init:$3,body:$6){
-    /* Parse the initialization part (e.g., "i=0;i<10;i++") */
-    init_parts = init.split(";");
-    
-    if (init_parts.len() < 3) {
-        ("Error: for loop requires 3 parts separated by semicolons").echo();
-        return;
-    };
-    
-    /* Extract the three parts */
-    init_stmt = init_parts[1].trim();
-    condition = init_parts[2].trim();
-    increment = init_parts[3].trim();
-    
-    /* Execute the initialization */
-    op()(init_stmt)();
-    
-    /* Main loop */
-    loop_count = 0;
-    max_iterations = 1000; /* Safety limit */
-    
-    while (loop_count < max_iterations) {
-        /* Check condition */
-        condition_result = op()(condition)();
-        if (!condition_result || condition_result == 0 || condition_result == false) {
-            break;
+custom_command = rule for $ID from <$comp> to <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Validate inputs */
+        start_val = start();
+        end_val = end();
+        
+        if (start_val.type() != "$INT" || end_val.type() != "$INT") {
+            ("Error: Start and end must be integers").echo();
+            return;
         };
         
-        /* Execute loop body */
-        op()(body)();
+        /* Set initial value using indirect variable assignment */
+        @@var = start_val;
         
-        /* Execute increment */
-        op()(increment)();
+        /* Loop from start to end (inclusive) */
+        while (@@var <= end_val) {
+            /* Execute the loop body */
+            body();
+            
+            /* Increment using indirect variable assignment */
+            @@var += 1;
+        };
+    }
+};
+```
+
+**Key Improvements:**
+1. **Direct Evaluation**: `start()` and `end()` evaluate $OP parameters directly
+2. **Indirect Assignment**: `@@var` syntax eliminates complex string concatenation
+3. **Cleaner Syntax**: Much more readable and maintainable
+4. **Better Performance**: No string operations for variable assignment
+
+### 2. **For Loop with Configurable Step**
+
+```grapa
+custom_command = rule for $ID from <$comp> to <$comp> step <$comp> <$command> {
+    op(var:$2, start:$4, end:$6, step:$8, body:$10){
+        /* Validate inputs */
+        start_val = start();
+        end_val = end();
+        step_val = step();
         
-        loop_count += 1;
-    };
+        if (start_val.type() != "$INT" || end_val.type() != "$INT" || step_val.type() != "$INT") {
+            ("Error: Start, end, and step must be integers").echo();
+            return;
+        };
+        
+        if (step_val == 0) {
+            ("Error: Step cannot be zero").echo();
+            return;
+        };
+        
+        /* Set initial value */
+        @@var = start_val;
+        
+        /* Loop with configurable step */
+        if (step_val > 0) {
+            /* Forward iteration */
+            while (@@var <= end_val) {
+                body();
+                @@var += step_val;
+            };
+        } else {
+            /* Backward iteration */
+            while (@@var >= end_val) {
+                body();
+                @@var += step_val;
+            };
+        };
+    }
+};
+```
 }};
 ```
 

@@ -1,0 +1,147 @@
+/* ========================================
+ * List Comprehension - IMPROVED VERSION
+ * Applying recent learnings: direct evaluation and @@var syntax
+ * ======================================== */
+
+/* ========================================
+ * [expression for variable in iterable]
+ * ======================================== */
+custom_function = rule '[' <$comp> for $ID in <$comp> ']' {
+    op(expression:$2, var:$4, iterable:$6){
+        iterable_val = iterable();
+        result = [];
+        
+        if (iterable_val.type() == "$INT") {
+            i = 0;
+            while (i < iterable_val) {
+                @@var = i;
+                result += expression();
+                i += 1;
+            };
+        } else if (iterable_val.type() == "$LIST" || iterable_val.type() == "$ARRAY") {
+            i = 1;
+            while (i <= iterable_val.len()) {
+                @@var = iterable_val[i];
+                result += expression();
+                i += 1;
+            };
+        } else if (iterable_val.type() == "$STR") {
+            i = 1;
+            while (i <= iterable_val.len()) {
+                @@var = iterable_val[i];
+                result += expression();
+                i += 1;
+            };
+        } else {
+            ("Error: Cannot iterate over type " + iterable_val.type()).echo();
+            return [];
+        };
+        result;
+    }
+};
+
+/* ========================================
+ * [expression for variable in iterable if condition]
+ * ======================================== */
+custom_function = rule '[' <$comp> for $ID in <$comp> if <$comp> ']' {
+    op(expression:$2, var:$4, iterable:$6, condition:$8){
+        iterable_val = iterable();
+        result = [];
+        
+        if (iterable_val.type() == "$INT") {
+            i = 0;
+            while (i < iterable_val) {
+                @@var = i;
+                if (condition()) {
+                    result += expression();
+                };
+                i += 1;
+            };
+        } else if (iterable_val.type() == "$LIST" || iterable_val.type() == "$ARRAY") {
+            i = 1;
+            while (i <= iterable_val.len()) {
+                @@var = iterable_val[i];
+                if (condition()) {
+                    result += expression();
+                };
+                i += 1;
+            };
+        } else if (iterable_val.type() == "$STR") {
+            i = 1;
+            while (i <= iterable_val.len()) {
+                @@var = iterable_val[i];
+                if (condition()) {
+                    result += expression();
+                };
+                i += 1;
+            };
+        } else {
+            ("Error: Cannot iterate over type " + iterable_val.type()).echo();
+            return [];
+        };
+        result;
+    }
+};
+
+/* ========================================
+ * Test the implementations
+ * ======================================== */
+("=== Testing List Comprehension (Improved) ===").echo();
+
+/* Test basic list comprehension with integer range */
+("Testing [i for i in 5]...").echo();
+result = [i for i in 5];
+("Result: " + result).echo();
+
+/* Test list comprehension with squares */
+("Testing [i**2 for i in 5]...").echo();
+result = [i**2 for i in 5];
+("Result: " + result).echo();
+
+/* Test list comprehension with list */
+("Testing [x*2 for x in [1,2,3,4,5]]...").echo();
+result = [x*2 for x in [1,2,3,4,5]];
+("Result: " + result).echo();
+
+/* Test list comprehension with string */
+("Testing [c for c in 'hello']...").echo();
+result = [c for c in 'hello'];
+("Result: " + result).echo();
+
+/* Test list comprehension with condition */
+("Testing [i for i in 10 if i % 2 == 0]...").echo();
+result = [i for i in 10 if i % 2 == 0];
+("Result: " + result).echo();
+
+/* Test list comprehension with complex expression */
+("Testing [i*2+1 for i in 5]...").echo();
+result = [i*2+1 for i in 5];
+("Result: " + result).echo();
+
+/* Test list comprehension with function calls */
+("Testing [i.len() for i in ['a','bb','ccc']]...").echo();
+result = [i.len() for i in ['a','bb','ccc']];
+("Result: " + result).echo();
+
+/* Test list comprehension with nested condition */
+("Testing [i for i in 20 if i > 10 and i % 3 == 0]...").echo();
+result = [i for i in 20 if i > 10 and i % 3 == 0];
+("Result: " + result).echo();
+
+/* Test list comprehension with string operations */
+("Testing [c.upper() for c in 'hello']...").echo();
+result = [c.upper() for c in 'hello'];
+("Result: " + result).echo();
+
+/* Test list comprehension with empty result */
+("Testing [i for i in 5 if i > 10]...").echo();
+result = [i for i in 5 if i > 10];
+("Result: " + result).echo();
+
+/* Test list comprehension with complex iterable */
+("Testing [x+y for x in [1,2] for y in [10,20]]...").echo();
+/* Note: This would require nested comprehension support */
+result = [x+y for x in [1,2] for y in [10,20]];
+("Result: " + result).echo();
+
+("=== All list comprehension tests completed! ===").echo(); 

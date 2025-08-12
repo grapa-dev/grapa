@@ -156,7 +156,7 @@ value = table.get("user1", "name");   /* Correct */
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
-- No `for`/`foreach` loops—use `while` or `.range()`+functional methods
+- No `for`/`foreach` loops—use `while` or `.range()`+functional methods (`.range()` is native: `(10).range()`)
 - No `try/catch`—use `.iferr()` for fallback or check for `$ERR`
 - No `.get()`/`.set()` on lists/arrays—use `[]` for access (except for `$file`/`$TABLE`)
 - No `//` or `#` comments—only block comments (`/* ... */`), always on their own line
