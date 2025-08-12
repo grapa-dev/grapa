@@ -3934,7 +3934,7 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 <p>See <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for empirical test results and future updates.</p>
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <ul>
-<li>No <code>for</code>/<code>range</code> loops—use <code>while</code> or <code>.range()</code>+functional methods</li>
+<li>No <code>for</code>/<code>range</code> loops—use <code>while</code> or <code>.range()</code>+functional methods (<code>.range()</code> is native: <code>(10).range()</code>)</li>
 <li>No <code>.push()</code>/<code>.append()</code>—use <code>+=</code> for append</li>
 <li>No <code>/* comment */</code> comments—only block comments (<code>/* ... */</code>), always on their own line</li>
 <li>No implicit truthy/falsy—use explicit boolean checks</li>
@@ -4056,7 +4056,7 @@ if (match(&quot;hello world&quot;, &quot;world&quot;)) {
 - <code>.get()</code> is <strong>required</strong> for <code>$file</code> and <code>$TABLE</code> access.
 - <code>.get()</code> is <strong>not supported</strong> for <code>$ARRAY</code>, <code>$LIST</code>, or <code>$OBJ</code> as of this writing.
 - Use bracket and dot notation for <code>$ARRAY</code>, <code>$LIST</code>, and <code>$OBJ</code>.
-- Only <code>while</code> loops and <code>.range()</code>+functional methods are valid for iteration in Grapa. <code>for</code> loops are not supported.
+- Only <code>while</code> loops and <code>.range()</code>+functional methods are valid for iteration in Grapa. <code>for</code> loops are not supported. The <code>.range()</code> method is native: <code>(10).range()</code> → <code>[0,1,2,3,4,5,6,7,8,9]</code>.
 - If more objects support <code>.get()</code> in the future, this guide will be updated.</p>
 <p><strong>Comment Style:</strong>
 - Only block comments (<code>/* ... */</code>) are supported in Grapa, and must always be on their own line.

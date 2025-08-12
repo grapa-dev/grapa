@@ -1029,6 +1029,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#the-vs-symbols-in-grapa" class="md-nav__link">
+    <span class="md-ellipsis">
+      The @ vs $ Symbols in Grapa
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The @ vs $ Symbols in Grapa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-runtime-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      @ - Runtime Evaluation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-compile-time-lexical-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ - Compile-time Lexical Processing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#rule-composition-and-concatenation" class="md-nav__link">
     <span class="md-ellipsis">
       Rule Composition and Concatenation
@@ -3539,6 +3572,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#the-vs-symbols-in-grapa" class="md-nav__link">
+    <span class="md-ellipsis">
+      The @ vs $ Symbols in Grapa
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The @ vs $ Symbols in Grapa">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-runtime-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      @ - Runtime Evaluation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-compile-time-lexical-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ - Compile-time Lexical Processing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#rule-composition-and-concatenation" class="md-nav__link">
     <span class="md-ellipsis">
       Rule Composition and Concatenation
@@ -3786,6 +3852,28 @@ Grapa's $RULE type is inspired by Prolog's executable BNF and logic programming 
 </em>/
 References:</p>
 <p>This datatype is basis of the grapa language. The syntax of the language is implemented as a set of global rule variables that are accessible and changeable - making the grapa language syntax dynamically mutable, either globally, or modified within a specific function by creating local variable rules that override the global rules. Rules variables can also be defined to support parsing of a domain specific language, or defining a data ETL task as a language by defining the rules for the data and applying the data to the rules - in the same way a language would be defined.</p>
+<h3 id="the-vs-symbols-in-grapa"><strong>The <code>@</code> vs <code>$</code> Symbols in Grapa</strong></h3>
+<h4 id="-runtime-evaluation"><strong><code>@</code> - Runtime Evaluation</strong></h4>
+<p>The <code>@</code> symbol is used for <strong>runtime evaluation</strong> and dereferencing. In rule tokens (like <code>{@&lt;assignappend,{$1,$4}&gt;}</code>), <code>@</code> serves as a <strong>dereferencing operator</strong> that gets the actual function/operation at runtime.</p>
+<p><strong>Examples:</strong>
+<div class="highlight"><pre><span></span><code>{@&lt;assignappend,{$1,$4}&gt;}  /* @ dereferences to get the actual assignappend function */
+{@&lt;if,{$3,$5}&gt;}            /* @ dereferences to get the actual if function */
+&lt;@variable&gt;                 /* @ dereferences to get the actual value of variable */
+</code></pre></div></p>
+<h4 id="-compile-time-lexical-processing"><strong><code>$</code> - Compile-time Lexical Processing</strong></h4>
+<p>The <code>$</code> symbol is used for <strong>compile-time lexical processing</strong> in the Grapa lexer. It acts as an escape character that modifies how tokens are processed during compilation.</p>
+<p><strong>Lexical Modifiers:</strong>
+<div class="highlight"><pre><span></span><code>$ID      /* Converts to $SYSID (system identifier) */
+$STR     /* Converts to $SYSSTR (system string) */
+$INT     /* Converts to $SYSINT (system integer) */
+$[       /* Lexical flag for special processing */
+$]       /* Lexical flag for special processing */
+$&amp;       /* Lexical flag for XML/HTML processing */
+</code></pre></div></p>
+<p><strong>Why the distinction matters:</strong>
+- <code>@</code> operates at <strong>runtime</strong> - gets actual values and executes functions
+- <code>$</code> operates at <strong>compile-time</strong> - modifies how the lexer processes tokens
+- <code>@</code> is for <strong>evaluation</strong>, <code>$</code> is for <strong>lexical transformation</strong></p>
 <p>There are three basic steps:
 * Define the rules (rules may reference other rules) with code to execute for each rule option.
 * Apply raw data to the rule to generate an execution plan.

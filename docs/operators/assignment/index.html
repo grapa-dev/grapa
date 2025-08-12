@@ -1377,6 +1377,57 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#simple-vs-complex-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simple vs Complex Assignment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simple vs Complex Assignment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-variable-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simple Variable Assignment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex-assignment-arrayobject-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Assignment (Array/Object Access)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-variable-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Variable Assignment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-namespace-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Namespace Protection
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       =
@@ -1407,6 +1458,42 @@
   <a href="#-" class="md-nav__link">
     <span class="md-ellipsis">
       -=
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      *=
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      /=
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      %=
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      **=
     </span>
   </a>
   
@@ -3359,6 +3446,57 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#simple-vs-complex-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simple vs Complex Assignment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Simple vs Complex Assignment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-variable-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simple Variable Assignment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex-assignment-arrayobject-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Assignment (Array/Object Access)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-variable-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Variable Assignment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-namespace-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Namespace Protection
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#_1" class="md-nav__link">
     <span class="md-ellipsis">
       =
@@ -3389,6 +3527,42 @@
   <a href="#-" class="md-nav__link">
     <span class="md-ellipsis">
       -=
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      *=
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      /=
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      %=
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      **=
     </span>
   </a>
   
@@ -3436,6 +3610,45 @@
 
 
 <h1 id="assignment-operators">Assignment Operators</h1>
+<h2 id="simple-vs-complex-assignment"><strong>Simple vs Complex Assignment</strong></h2>
+<p>Grapa's assignment system is designed for both performance and flexibility:</p>
+<h3 id="simple-variable-assignment"><strong>Simple Variable Assignment</strong></h3>
+<div class="highlight"><pre><span></span><code>x = 10;           /* Direct variable assignment */
+name = &quot;John&quot;;    /* String assignment */
+counter = 0;      /* Integer assignment */
+</code></pre></div>
+<h3 id="complex-assignment-arrayobject-access"><strong>Complex Assignment (Array/Object Access)</strong></h3>
+<div class="highlight"><pre><span></span><code>array[5] = 10;              /* Array element assignment */
+object.property = &quot;value&quot;;  /* Object property assignment */
+data[0].name = &quot;Alice&quot;;     /* Nested object assignment */
+config.database.host = &quot;localhost&quot;;  /* Deep property assignment */
+</code></pre></div>
+<p><strong>Performance Note:</strong> Simple variable assignments are optimized for speed, while complex assignments (array indexing, object properties) provide flexibility but may be slightly slower.</p>
+<h3 id="system-variable-assignment"><strong>System Variable Assignment</strong></h3>
+<p>Grapa supports special system variables with optimized handling:</p>
+<div class="highlight"><pre><span></span><code>@this = value;      /* Current context */
+@parent = value;    /* Parent context */
+@global = value;    /* Global namespace */
+@local = value;     /* Local namespace */
+$this = value;      /* Current object */
+$parent = value;    /* Parent object */
+$root = value;      /* Root object */
+$self = value;      /* Self reference */
+</code></pre></div>
+<h3 id="system-namespace-protection"><strong>System Namespace Protection</strong></h3>
+<p>Grapa uses the <code>$</code> prefix to protect system namespace:</p>
+<div class="highlight"><pre><span></span><code>/* User namespace (recommended) */
+x = 5;                    /* User variable */
+name = &quot;hello&quot;;           /* User string */
+
+/* System namespace (reserved) */
+$x = 5;                   /* System variable */
+$name = &quot;hello&quot;;          /* System string */
+</code></pre></div>
+<p><strong>Guidelines:</strong>
+- <strong>Use user namespace</strong> (<code>x</code>, <code>"hello"</code>) for your own code
+- <strong>Avoid system namespace</strong> (<code>$x</code>, <code>$"hello"</code>) unless necessary
+- <strong>Both work</strong> but system namespace is protected to prevent accidental overrides</p>
 <h2 id="_1"><code>=</code></h2>
 <p>Assign.</p>
 <h2 id="_2"><code>+=</code></h2>
@@ -3451,6 +3664,14 @@ $INT {@&lt;[op,@&lt;var,{a}&gt;],{&quot;a&quot;:$1}&gt;}| $STR {@&lt;[op,@&lt;va
 <p>See <a href="../../type/rule/#rule-composition-and-concatenation">Rule Composition and Concatenation</a> for detailed examples.</p>
 <h2 id="-"><code>-=</code></h2>
 <p>Subtract item from source.</p>
+<h2 id="_4"><code>*=</code></h2>
+<p>Multiply and assign.</p>
+<h2 id="_5"><code>/=</code></h2>
+<p>Divide and assign.</p>
+<h2 id="_6"><code>%=</code></h2>
+<p>Modulo and assign.</p>
+<h2 id="_7"><code>**=</code></h2>
+<p>Power and assign.</p>
 <h2 id="see-also">See also</h2>
 <ul>
 <li><a href="../../api_reference/">API Reference</a></li>

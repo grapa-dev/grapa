@@ -2640,6 +2640,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#advanced-variable-manipulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Variable Manipulation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Variable Manipulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-indirect-variable-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Indirect Variable Assignment (@@)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#historical-context-symbol-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Historical Context: @ Symbol Evolution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-namespace-protection-prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Namespace Protection: $ Prefix
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#error-handling-and-debugging" class="md-nav__link">
     <span class="md-ellipsis">
       Error Handling and Debugging
@@ -3999,6 +4041,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#advanced-variable-manipulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Variable Manipulation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Variable Manipulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-indirect-variable-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Indirect Variable Assignment (@@)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#historical-context-symbol-evolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Historical Context: @ Symbol Evolution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-namespace-protection-prefix" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Namespace Protection: $ Prefix
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#error-handling-and-debugging" class="md-nav__link">
     <span class="md-ellipsis">
       Error Handling and Debugging
@@ -4495,6 +4579,91 @@ json_grammar = compile_grammar(&quot;json&quot;, &quot;custom_function = rule $S
 lazy_result = op(parse)(&#39;lazy { expensive_calculation() }&#39;)();
 /* Expression not evaluated until lazy_result() is called */
 </code></pre></div>
+<h2 id="advanced-variable-manipulation">Advanced Variable Manipulation</h2>
+<h3 id="1-indirect-variable-assignment"><strong>1. Indirect Variable Assignment (<code>@@</code>)</strong></h3>
+<p>A key discovery in Grapa's rule system is the <code>@@</code> syntax for indirect variable access and assignment:</p>
+<div class="highlight"><pre><span></span><code>/* Basic variable reference */
+x = 1;
+y = &quot;x&quot;;  /* y contains the string &quot;x&quot; */
+
+/* Variable reference */
+@y;       /* Returns &quot;x&quot; (the variable name) */
+
+/* Indirect variable access */
+@@y;      /* Returns 1 (the value of variable x) */
+
+/* Indirect variable assignment */
+@@y = 10; /* Assigns 10 to variable x */
+@@y += 1; /* Increments variable x */
+
+/* In rule implementations */
+custom_command = rule for $ID from &lt;$comp&gt; to &lt;$comp&gt; &lt;$command&gt; {
+    op(var:$2, start:$4, end:$6, body:$8){
+        /* Instead of complex string concatenation */
+        /* op()(var + &quot; = &quot; + start())(); */
+
+        /* Use indirect assignment */
+        @@var = start();
+
+        while (@@var &lt;= end()) {
+            body();
+            @@var += 1;
+        };
+    }
+};
+</code></pre></div>
+<p><strong>Benefits:</strong>
+- <strong>Cleaner Syntax</strong>: Eliminates complex string concatenation
+- <strong>Better Performance</strong>: No string operations for variable assignment
+- <strong>More Readable</strong>: Intent is much clearer
+- <strong>Type Safety</strong>: Direct variable access without string manipulation</p>
+<h3 id="historical-context-symbol-evolution"><strong>Historical Context: <code>@</code> Symbol Evolution</strong></h3>
+<p>The <code>@</code> symbol in Grapa has evolved from the original design:</p>
+<p><strong>Original Design (Early Grapa):</strong>
+<div class="highlight"><pre><span></span><code>/* Variables were literal by default */
+x = 5;        /* x was the literal string &quot;x&quot; */
+@x;           /* @x was needed to get the value 5 */
+</code></pre></div></p>
+<p><strong>Current Design:</strong>
+<div class="highlight"><pre><span></span><code>/* Automatic dereferencing for cleaner syntax */
+x = 5;        /* x automatically gets the value 5 */
+@x;           /* @x gets the variable name &quot;x&quot; (for rule tokens) */
+@@x;          /* @@x gets the value of the variable named by x */
+</code></pre></div></p>
+<p><strong>Why This Matters:</strong>
+- <strong>Cleaner Code</strong>: No need for <code>@</code> symbols everywhere
+- <strong>Rule Tokens</strong>: <code>@</code> still needed in <code>&lt; &gt;</code> tokens for variable dereferencing
+- <strong>Indirect Access</strong>: <code>@@</code> provides one more level of indirection for dynamic variable names</p>
+<p><strong>Consistent <code>@</code> Pattern:</strong>
+The <code>@</code> symbol serves the same purpose throughout Grapa - <strong>dereferencing</strong>:</p>
+<div class="highlight"><pre><span></span><code>/* In rule definitions */
+{@&lt;assignappend,{$1,$4}&gt;}  /* @ dereferences the rule token */
+{@&lt;if,{$3,$5}&gt;}            /* @ dereferences the rule token */
+
+/* In variable references */
+&lt;@variable&gt;                 /* @ dereferences the variable name */
+&lt;@tb[&quot;d&quot;]&gt;                 /* @ dereferences the array access */
+
+/* In direct usage */
+@x;                        /* @ dereferences the variable name */
+@@x;                       /* @ dereferences twice */
+</code></pre></div>
+<p><strong>Unified Concept:</strong> <code>@</code> always means "get the actual value/operation, not the literal token"</p>
+<h3 id="system-namespace-protection-prefix"><strong>System Namespace Protection: <code>$</code> Prefix</strong></h3>
+<p>Grapa uses the <code>$</code> prefix as a <strong>system namespace protection mechanism</strong>:</p>
+<div class="highlight"><pre><span></span><code>/* User namespace (recommended) */
+x = 5;                    /* User variable */
+name = &quot;hello&quot;;           /* User string */
+
+/* System namespace (reserved) */
+$x = 5;                   /* System variable */
+$name = &quot;hello&quot;;          /* System string */
+</code></pre></div>
+<p><strong>Why This Matters:</strong>
+- <strong>Everything in Grapa is variables</strong> (language, classes, functions, etc.)
+- <strong>Protection</strong>: Prevents accidental override of core system features
+- <strong>Guideline</strong>: Use <code>$</code> prefix only when accessing system namespace is necessary
+- <strong>Interchangeable</strong>: Both work, but system namespace should be avoided in user code</p>
 <h2 id="error-handling-and-debugging">Error Handling and Debugging</h2>
 <h3 id="1-grammar-error-recovery"><strong>1. Grammar Error Recovery</strong></h3>
 <div class="highlight"><pre><span></span><code>/* Robust grammar with error recovery */

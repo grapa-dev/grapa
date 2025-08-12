@@ -5073,7 +5073,7 @@ for i in 1..10 {
 }
 </code></pre></div>
 <ul>
-<li>Only <code>while</code> loops and <code>.range()</code>+functional methods are valid for iteration in Grapa.</li>
+<li>Only <code>while</code> loops and <code>.range()</code>+functional methods are valid for iteration in Grapa. The <code>.range()</code> method is native: <code>(10).range()</code> → <code>[0,1,2,3,4,5,6,7,8,9]</code>.</li>
 <li><code>for</code> loops are not supported.</li>
 <li>If more objects support <code>.get()</code> in the future, this guide will be updated.</li>
 </ul>
@@ -6175,19 +6175,41 @@ result.echo();  // Output: ISTANBUL
 result = [1, 2, 3, 4, 5].filter(op(x) { x % 2 == 0; }).map(op(x) { x * 2; });
 result.echo();  // Output: [4, 8]
 </code></pre></div>
-<h2 id="workaround-for-non-chainable-functions">Workaround for Non-Chainable Functions</h2>
-<p>If an existing function/command doesn't support chaining, an OP can be inserted in the chain to make it work using the $$ variable for the result of the prior operation. For example, the following will get the length of a list, generate that many bits, and output the result in binary form. The 3 examples all accomplish the same result.
-<div class="highlight"><pre><span></span><code>&gt; {1,2,3,5}.{(@$$).len()}.genbits().bin();
-1111
+<h2 id="advanced-chaining-with-variable">Advanced Chaining with <code>$$</code> Variable</h2>
+<p>Grapa's chaining system allows you to insert custom operations into any chain using the <code>$$</code> variable (equivalent to <code>$0</code>) to reference the result of the previous operation.</p>
+<h3 id="basic-chaining-with"><strong>Basic Chaining with <code>$$</code></strong></h3>
+<p>If an existing function/command doesn't support chaining, an operation block can be inserted using <code>$$</code> to reference the previous result:</p>
+<div class="highlight"><pre><span></span><code>/* Get length of list, generate that many bits, output in binary */
+{1,2,3,5}.{(@$$).len()}.genbits().bin();
+// Result: 1111
 
-&gt; {1,2,3,5}.{(op(a){a.len()})(@$$)}.genbits().bin();
-1111
+/* Alternative using op() function */
+{1,2,3,5}.{(op(a){a.len()})(@$$)}.genbits().bin();
+// Result: 1111
 
-&gt; f = op(a){a.len()};
-&gt; {1,2,3,5}.{f(@$$)}.genbits().bin();
-1111
-</code></pre></div></p>
-<p><strong>Note</strong>: The <code>$$</code> variable represents the result of the previous operation in the chain.
+/* Using predefined function */
+f = op(a){a.len()};
+{1,2,3,5}.{f(@$$)}.genbits().bin();
+// Result: 1111
+</code></pre></div>
+<h3 id="advanced-string-chaining"><strong>Advanced String Chaining</strong></h3>
+<p>You can perform complex string transformations in chains:</p>
+<div class="highlight"><pre><span></span><code>/* Simple transformation */
+&quot;hello&quot;.{@$$.upper()}.left(2);
+// Result: HE
+
+/* Complex transformation with multiple steps */
+&quot;hello&quot;.{x=@$$.upper();x.right(4);}.left(2);
+// Result: EL
+</code></pre></div>
+<h3 id="multi-step-processing"><strong>Multi-Step Processing</strong></h3>
+<p>Chain multiple operations with intermediate variables:</p>
+<div class="highlight"><pre><span></span><code>/* Process data through multiple transformations */
+data.{processed=@$$.clean();processed.filter(op(x){x&gt;0});}.len();
+</code></pre></div>
+<p><strong>Note</strong>: The <code>$$</code> variable represents the result of the previous operation in the chain. The <code>@</code> prefix dereferences the variable to get its actual value. <code>$$</code> is equivalent to <code>$0</code> - both represent the result of the previous operation in a chain.</p>
+<p><strong>Key Concept</strong>: <code>$$</code> is the <strong>chain carrier</strong> - it automatically passes the result of each operation to the next step in the chain. This enables seamless data flow through complex transformation pipelines.</p>
+<p><strong>Important</strong>: <code>@</code> is for <strong>runtime evaluation</strong> (getting actual values), while <code>$</code> is for <strong>compile-time lexical processing</strong> (modifying how the lexer processes tokens).
 */ </p>
 <p>/*</p>
 <h1 id="dynamic-code-execution-grapas-core-meta-programming-capability">Dynamic Code Execution (Grapa's Core Meta-Programming Capability)</h1>
