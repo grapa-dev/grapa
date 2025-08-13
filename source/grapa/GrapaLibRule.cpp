@@ -16490,11 +16490,127 @@ GrapaRuleEvent* GrapaLibraryRuleReplaceEvent::Run(GrapaScriptExec* vScriptExec, 
 GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaRuleEvent* result = NULL;
-	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
-	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL); // input string
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL); // params ($LIST)
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL); // rule ($RULE)
 
-	result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("test"));
+	// Check if we have a valid input string
+	if (!r1.vVal || (r1.vVal->mValue.mToken != GrapaTokenType::STR && r1.vVal->mValue.mToken != GrapaTokenType::RAW))
+	{
+		result = Error(vScriptExec, pNameSpace, -1);
+		return result;
+	}
+
+	// Convert input to std::string for processing
+	std::string input = std::string(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+	std::string resultStr = "";
+
+	// Phase 1: Template Parsing and Parameter Loading
+	// Create local namespace for parameter loading (similar to EvalEvent)
+	GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+	vLocals->mValue.mToken = GrapaTokenType::LIST;
+	vLocals->vQueue = new GrapaRuleQueue();
+
+	// Load parameters into local namespace using PTR approach
+	if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::LIST && r2.vVal->vQueue)
+	{
+		GrapaRuleEvent* e = vScriptExec->CopyItem(r2.vVal, false, false);
+		if (e && e->mValue.mToken == GrapaTokenType::LIST && e->vQueue)
+		{
+			while (e->vQueue->Head())
+				vLocals->vQueue->PushTail(e->vQueue->PopHead());
+		}
+		if (e)
+		{
+			e->CLEAR();
+			delete e;
+		}
+	}
+
+	// Push local namespace onto the queue
+	pNameSpace->GetNameQueue()->PushTail(vLocals);
+
+	// Phase 2: Template Processing
+	size_t pos = 0;
+	while (pos < input.length())
+	{
+		// Find next interpolation pattern
+		size_t dollarPos = input.find('$', pos);
+		if (dollarPos == std::string::npos)
+		{
+			// No more patterns, add remaining literal text
+			resultStr += input.substr(pos);
+			break;
+		}
+
+		// Add literal text before the pattern
+		resultStr += input.substr(pos, dollarPos - pos);
+
+		// Check for ${code} pattern
+		if (dollarPos + 1 < input.length() && input[dollarPos + 1] == '{')
+		{
+			size_t endPos = input.find('}', dollarPos + 2);
+			if (endPos != std::string::npos)
+			{
+				// Extract code between ${ and }
+				std::string code = input.substr(dollarPos + 2, endPos - dollarPos - 2);
+				
+				// Phase 3: Code Execution (following ListEvent pattern)
+				// First try to find the variable directly
+				GrapaCHAR varName;
+				varName.FROM(code.c_str());
+				GrapaRuleEvent* varResult = vScriptExec->vScriptState->SearchVariable(pNameSpace, varName);
+				
+				GrapaRuleEvent* codeResult = NULL;
+				if (varResult)
+				{
+					// Variable found, use it directly
+					codeResult = varResult;
+				}
+				else
+				{
+					// Try to execute as expression using Exec (simpler approach)
+					GrapaCHAR codeStr;
+					codeStr.FROM(code.c_str());
+					codeResult = vScriptExec->Exec(pNameSpace, NULL, 0, GrapaCHAR(), codeStr);
+				}
+				
+				if (codeResult && codeResult->mValue.mToken == GrapaTokenType::STR)
+				{
+					std::string codeResultStr = std::string(reinterpret_cast<const char*>(codeResult->mValue.mBytes), codeResult->mValue.mLength);
+					resultStr += codeResultStr;
+				}
+				else if (codeResult)
+				{
+					// Convert non-string result to string using ToStr()
+					GrapaCHAR strResult = codeResult->mValue.ToStr();
+					resultStr += std::string(reinterpret_cast<const char*>(strResult.mBytes), strResult.mLength);
+				}
+				
+				pos = endPos + 1;
+				continue;
+			}
+		}
+		// Note: $('script') syntax removed - use ${op()("script")()} instead for script execution
+
+		// If no valid pattern found, treat $ as literal
+		resultStr += '$';
+		pos = dollarPos + 1;
+	}
+
+	// Phase 4: Result Assembly
+	GrapaCHAR resultChar;
+	resultChar.FROM(resultStr.c_str());
+	result = new GrapaRuleEvent(0, GrapaCHAR(), resultChar);
+	result->mValue.mToken = GrapaTokenType::STR;
+
+	// Cleanup: Pop local namespace
+	pNameSpace->GetNameQueue()->PopEvent(vLocals);
+	if (vLocals)
+	{
+		vLocals->CLEAR();
+		delete vLocals;
+	}
 
 	if (result == NULL)
 		result = Error(vScriptExec, pNameSpace, -1);

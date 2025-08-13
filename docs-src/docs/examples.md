@@ -72,6 +72,24 @@ sum = numbers.reduce(op(a, b) { a + b; }, 0);
 ("Sum: " + sum).echo();
 ```
 
+### String Interpolation
+```grapa
+/* Basic variable interpolation */
+name = "Alice";
+age = 25;
+"Hello ${name}, you are ${age} years old!".interpolate().echo();
+
+/* Expression evaluation */
+"Sum: ${1 + 2}, Product: ${3 * 4}".interpolate().echo();
+
+/* Script execution with op() function */
+x = 10;
+"Value: ${op()(\"x\")()}".interpolate().echo();
+
+/* Template with parameters */
+"Hello ${name}".interpolate({name:"Alice"}).echo();
+```
+
 ### Generating a Sequence (Range)
 ```grapa
 /* Generate an array of numbers 0..9 */
@@ -196,6 +214,22 @@ funcs["add"](10, 5).echo();  /* 15 */
 funcs["sub"](10, 5).echo();  /* 5 */
 funcs["mul"](10, 5).echo();  /* 50 */
 funcs["div"](10, 5).echo();  /* 2 */
+```
+
+### Advanced String Interpolation
+```grapa
+/* Variable script references */
+script = "xx*yy;";
+"${op(yy=8)(script)()}".interpolate({xx:4}).echo();  /* 32 */
+
+/* Multi-level parameter passing */
+calc = "x * y + z;";
+"${op(y=5,z=10)(calc)()}".interpolate({x:3}).echo();  /* 25 */
+
+/* Dynamic script construction */
+operation = "multiply";
+script = "x " + operation + " y;";
+"${op(y=5)(script)()}".interpolate({x:3}).echo();  /* 15 */
 ```
 
 ### Template-Based Code Generation

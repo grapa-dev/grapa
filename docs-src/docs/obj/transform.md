@@ -180,6 +180,127 @@ Replaces iteems.
 "testing".replace("t","g") -> "gesging"
 ```
 
+## interpolate([params], [rule])
+Performs string interpolation with embedded expressions and script execution. Supports variable substitution, expression evaluation, and dynamic script execution using the powerful `op()` function infrastructure.
+
+### Parameters:
+- `params` (optional) - `$LIST` type providing additional variables for interpolation context
+- `rule` (optional) - `$RULE` type for custom entry point during interpolation
+
+### Template Syntax:
+- `${code}` - Direct code execution within current scope
+- `${op()("script")()}` - **PRIMARY APPROACH** - Script execution using existing `op()` function infrastructure
+- `${op(params)("script")()}` - Script execution with parameters using `op()` function
+- `${op(params)(script_var)()}` - **ADVANCED** - Dynamic script execution with variable references
+
+### Examples:
+
+```grapa
+/* Basic variable interpolation */
+name = "Alice";
+age = 25;
+"Hello ${name}, you are ${age} years old!".interpolate();
+/* → "Hello Alice, you are 25 years old!" */
+
+/* Expression evaluation */
+"Sum: ${1 + 2}, Product: ${3 * 4}".interpolate();
+/* → "Sum: 3, Product: 12" */
+
+/* Complex expressions with variables */
+x = 10;
+y = 5;
+"Sum: ${x + y}, Product: ${x * y}".interpolate();
+/* → "Sum: 15, Product: 50" */
+
+/* Script execution with op() function */
+x = 10;
+"Value: ${op()(\"x\")()}".interpolate();
+/* → "Value: 10" */
+
+/* Parameterized script execution */
+x = 10;
+"Value: ${op(v=x)(\"v + 2\")()}".interpolate();
+/* → "Value: 12" */
+
+/* Variable script references - ADVANCED FEATURE */
+script = "xx*yy;";
+"${op(yy=8)(script)()}".interpolate({xx:4});
+/* → "32" */
+
+/* Multi-level parameter passing - ADVANCED FEATURE */
+calc = "x * y + z;";
+"${op(y=5,z=10)(calc)()}".interpolate({x:3});
+/* → "25" */
+
+/* Template string interpolation with parameters */
+"Hello ${name}".interpolate({name:"Alice"});
+/* → "Hello Alice" */
+
+/* Method chaining */
+"Hello ${name}".interpolate({name:"Alice"}).upper();
+/* → "HELLO ALICE" */
+```
+
+### Advanced Features:
+
+#### Multi-Level Parameter Passing
+Parameters can be passed at both op-level and interpolation-level:
+- **Op-level**: `op(yy=8)` - Parameters passed to script execution
+- **Interpolation-level**: `{xx:4}` - Parameters available in interpolation context
+
+#### Variable Script References
+Scripts stored in variables enable dynamic execution:
+```grapa
+script = "xx*yy;";
+"${op(yy=8)(script)()}".interpolate({xx:4});
+/* → "32" */
+```
+
+#### Template String Interpolation
+Classic template functionality with parameter substitution:
+```grapa
+template = "Hello ${name}, welcome to ${city}!";
+template.interpolate({name:"Alice", city:"New York"});
+/* → "Hello Alice, welcome to New York!" */
+```
+
+#### Dynamic Script Construction
+Programmatic script building and execution:
+```grapa
+operation = "multiply";
+script = "x " + operation + " y;";
+"${op(y=5)(script)()}".interpolate({x:3});
+/* → "15" */
+```
+
+### Enterprise Use Cases:
+
+#### Template Engines
+```grapa
+email_template = "Dear ${name},\n\nYour order #${order_id} has been shipped.\n\nBest regards,\n${company}";
+email_template.interpolate({name:"John", order_id:"12345", company:"GrapaCorp"});
+```
+
+#### Configuration Systems
+```grapa
+config_template = "database.host=${db_host}\ndatabase.port=${db_port}";
+config_template.interpolate({db_host:"localhost", db_port:"5432"});
+```
+
+#### Code Generation
+```grapa
+class_template = "class ${class_name} {\n  private ${field_type} ${field_name};\n}";
+class_template.interpolate({class_name:"User", field_type:"String", field_name:"name"});
+```
+
+### Performance Considerations:
+- **Variable interpolation**: Fastest for simple variable substitution
+- **Expression evaluation**: Good for mathematical and logical expressions
+- **Script execution**: More overhead, use for complex logic
+- **Dynamic script references**: Highest overhead, use for programmatic script construction
+
+> **Note**: The interpolate method is enterprise-ready and supports complex template systems, configuration management, and code generation workflows.
+
 ## grep(pattern, options, delimiter, normalization, mode, num_workers) 
 Extracts matches from a string using PCRE2-powered regular expressions with full Unicode support. Returns an array of results or JSON format with named groups.
 

@@ -118,6 +118,33 @@ result2 = template("Bob", 30);
 result2.echo();  /* Output: Bob! You are 30 years old. */
 ```
 
+### String Interpolation (Recommended)
+
+For modern string construction with embedded expressions, use the `interpolate()` method:
+
+```grapa
+/* Basic string interpolation */
+name = "Alice";
+age = 25;
+result = "Hello ${name}, you are ${age} years old!".interpolate();
+result.echo();  /* Output: Hello Alice, you are 25 years old! */
+
+/* Expression evaluation */
+result = "Sum: ${1 + 2}, Product: ${3 * 4}".interpolate();
+result.echo();  /* Output: Sum: 3, Product: 12 */
+
+/* Script execution with op() function */
+x = 10;
+result = "Value: ${op()(\"x\")()}".interpolate();
+result.echo();  /* Output: Value: 10 */
+
+/* Template with parameters */
+result = "Hello ${name}".interpolate({name:"Alice"});
+result.echo();  /* Output: Hello Alice */
+```
+
+> **See Also:** [String Interpolation Documentation](../obj/transform.md#interpolateparams-rule) for comprehensive documentation including advanced features like multi-level parameter passing and dynamic script execution.
+
 ### Dynamic Code Execution (Complex Cases)
 
 For complex string construction with arbitrary expressions:
@@ -175,6 +202,9 @@ query.echo();  /* Output: SELECT * FROM users WHERE age > 18 */
 | Use Case | Recommended Approach | Example |
 |----------|---------------------|---------|
 | **Simple concatenation** | String concatenation | `"Hello, " + name` |
+| **Variable substitution** | String interpolation | `"Hello ${name}".interpolate()` |
+| **Expression evaluation** | String interpolation | `"Sum: ${x + y}".interpolate()` |
+| **Script execution** | String interpolation | `"${op()(\"script\")()}".interpolate()` |
 | **Reusable templates** | `op()` functions | `template = op("name"=0){...}` |
 | **Complex expressions** | Dynamic execution | `op()(template)()` |
 | **System integration** | `$sys().eval()` | `$sys().eval(script, params)` |
@@ -182,6 +212,7 @@ query.echo();  /* Output: SELECT * FROM users WHERE age > 18 */
 ### Performance Considerations
 
 - **String concatenation**: Fastest for simple cases
+- **String interpolation**: Good for variable substitution and expressions
 - **`op()` templates**: Good for reusable templates (compiled once)
 - **Dynamic execution**: More overhead, use for complex cases only
 - **`$sys().eval()`**: Highest overhead, use for system integration
