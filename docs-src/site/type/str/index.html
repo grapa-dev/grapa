@@ -1146,6 +1146,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#string-interpolation-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Interpolation (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dynamic-code-execution-complex-cases" class="md-nav__link">
     <span class="md-ellipsis">
       Dynamic Code Execution (Complex Cases)
@@ -3585,6 +3594,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#string-interpolation-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      String Interpolation (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#dynamic-code-execution-complex-cases" class="md-nav__link">
     <span class="md-ellipsis">
       Dynamic Code Execution (Complex Cases)
@@ -3797,6 +3815,30 @@ result1.echo();  /* Output: Alice! You are 25 years old. */
 result2 = template(&quot;Bob&quot;, 30);
 result2.echo();  /* Output: Bob! You are 30 years old. */
 </code></pre></div>
+<h3 id="string-interpolation-recommended">String Interpolation (Recommended)</h3>
+<p>For modern string construction with embedded expressions, use the <code>interpolate()</code> method:</p>
+<div class="highlight"><pre><span></span><code>/* Basic string interpolation */
+name = &quot;Alice&quot;;
+age = 25;
+result = &quot;Hello ${name}, you are ${age} years old!&quot;.interpolate();
+result.echo();  /* Output: Hello Alice, you are 25 years old! */
+
+/* Expression evaluation */
+result = &quot;Sum: ${1 + 2}, Product: ${3 * 4}&quot;.interpolate();
+result.echo();  /* Output: Sum: 3, Product: 12 */
+
+/* Script execution with op() function */
+x = 10;
+result = &quot;Value: ${op()(\&quot;x\&quot;)()}&quot;.interpolate();
+result.echo();  /* Output: Value: 10 */
+
+/* Template with parameters */
+result = &quot;Hello ${name}&quot;.interpolate({name:&quot;Alice&quot;});
+result.echo();  /* Output: Hello Alice */
+</code></pre></div>
+<blockquote>
+<p><strong>See Also:</strong> <a href="../../obj/transform/#interpolateparams-rule">String Interpolation Documentation</a> for comprehensive documentation including advanced features like multi-level parameter passing and dynamic script execution.</p>
+</blockquote>
 <h3 id="dynamic-code-execution-complex-cases">Dynamic Code Execution (Complex Cases)</h3>
 <p>For complex string construction with arbitrary expressions:</p>
 <div class="highlight"><pre><span></span><code>/* Dynamic template as string */
@@ -3854,6 +3896,21 @@ query.echo();  /* Output: SELECT * FROM users WHERE age &gt; 18 */
 <td><code>"Hello, " + name</code></td>
 </tr>
 <tr>
+<td><strong>Variable substitution</strong></td>
+<td>String interpolation</td>
+<td><code>"Hello ${name}".interpolate()</code></td>
+</tr>
+<tr>
+<td><strong>Expression evaluation</strong></td>
+<td>String interpolation</td>
+<td><code>"Sum: ${x + y}".interpolate()</code></td>
+</tr>
+<tr>
+<td><strong>Script execution</strong></td>
+<td>String interpolation</td>
+<td><code>"${op()(\"script\")()}".interpolate()</code></td>
+</tr>
+<tr>
 <td><strong>Reusable templates</strong></td>
 <td><code>op()</code> functions</td>
 <td><code>template = op("name"=0){...}</code></td>
@@ -3873,6 +3930,7 @@ query.echo();  /* Output: SELECT * FROM users WHERE age &gt; 18 */
 <h3 id="performance-considerations">Performance Considerations</h3>
 <ul>
 <li><strong>String concatenation</strong>: Fastest for simple cases</li>
+<li><strong>String interpolation</strong>: Good for variable substitution and expressions</li>
 <li><strong><code>op()</code> templates</strong>: Good for reusable templates (compiled once)</li>
 <li><strong>Dynamic execution</strong>: More overhead, use for complex cases only</li>
 <li><strong><code>$sys().eval()</code></strong>: Highest overhead, use for system integration</li>
