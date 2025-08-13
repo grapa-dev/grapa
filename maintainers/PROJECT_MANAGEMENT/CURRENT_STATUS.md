@@ -120,7 +120,12 @@
 - **✅ Create comprehensive test suites** for each feature
 - **✅ Analyze existing C++ while loop implementation** as reference for for loop C++ implementation
 - **✅ Plan C++ integration strategy** for each feature
+- **✅ Complete technical analysis for interpolate function** - PTR-based implementation plan ready
 - **🔄 Complete Basic SQL Syntax** - Domain-specific processing using isolated rule execution
+
+**🚀 IMMEDIATE NEXT STEPS:**
+- **🔄 Implement interpolate function** - C++ implementation in `GrapaLibraryRuleInterpolateEvent::Run`
+- **🔄 Complete Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
 
 **📋 ENHANCED STRING INTERPOLATION SPECIFICATION:**
 - **Method Overloads**:
@@ -137,6 +142,37 @@
   - May require C++ implementation for full functionality beyond basic `.grc` capabilities
   - `$('script')` syntax advantage: enables dynamic syntax modifications in same running code context
   - Integration with existing Grapa execution context and variable scoping
+
+**🎯 C++ IMPLEMENTATION PLAN FOR INTERPOLATE FUNCTION:**
+
+**Target Method**: `GrapaLibraryRuleInterpolateEvent::Run` in `source/grapa/GrapaLibRule.cpp` (line 16489)
+
+**Implementation Scope**: Complete implementation within single method - no external code changes required
+
+**Technical Approach**: PTR-based parameter loading with C++ string processing and existing execution infrastructure
+
+**Implementation Phases**:
+1. **Template Parsing** (20-30 lines): Parse `${code}` and `$('script')` patterns using C++ string functions
+2. **Parameter Loading** (10-15 lines): Use PTR approach to load `$LIST` and `$RULE` parameters into namespace
+3. **Code Execution** (10-15 lines): Execute interpolation code using `vScriptExec->Exec()` infrastructure
+4. **Result Assembly** (15-20 lines): Concatenate literal parts with executed results
+5. **Error Handling** (10-15 lines): Validate templates and handle execution errors
+
+**Key Implementation Patterns**:
+- **PTR Pattern**: Create `GrapaRuleEvent(GrapaTokenType::PTR, 0, "")` with `vRulePointer` pointing to original parameters
+- **String Processing**: Use `std::string`, `strstr`, and manual parsing for template recognition
+- **Namespace Loading**: Add PTR parameters to `pNameSpace->GetNameQueue()` for code execution access
+- **Code Execution**: Use `vScriptExec->Exec(pNameSpace, rule, 0, profStr, codeValue)` for interpolation
+- **Result Creation**: Build final string and return as `GrapaRuleEvent` with `GrapaTokenType::STR`
+
+**Advantages of Single-Method Implementation**:
+- **Self-Contained**: No external dependencies or changes needed
+- **Efficient**: PTR approach avoids memory copying of parameters
+- **Consistent**: Follows existing patterns (MapEvent, EvalEvent, GrepEvent)
+- **Safe**: No risk of destroying original parameter data
+- **Maintainable**: All logic in one place (65-95 lines total)
+
+**Current Status**: Ready for implementation - all technical analysis complete
 
 ---
 
