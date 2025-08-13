@@ -38,6 +38,10 @@
 - **Ternary Operator** - ✅ **ALREADY NATIVE** - Native C++ operator: `condition ? value1 : value2`
 - **Spaceship Operator** - ✅ **ALREADY NATIVE** - Native C++ operator: `<=>`
 - **String Interpolation** - ✅ **IMPLEMENTED** - Using `@global["$STR"]` class method with `"template".interpolate()` syntax and `${expression}` template literals
+  - **Enhanced Specification**: `string.interpolate()`, `string.interpolate(params)`, `string.interpolate(params, rule)`
+  - **Template Syntax**: `${code}` for direct code execution, `$('script')` for script execution with custom rules
+  - **Parameters**: `params` as `$LIST` (defaults to NULL), `rule` as `$RULE` (defaults to NULL)
+  - **Advantage**: `$('script')` enables additional Grapa syntax modifications in the same running code context
 - **Basic SQL Syntax** - 🔄 **Next priority for completion** - Domain-specific processing using `custom_command` and `custom_function`
 
 **Phase 2 Focus:** C++ Implementation Based on Phase 1 Results
@@ -50,7 +54,11 @@
 - **Native Spaceship Operator** - ✅ **ALREADY NATIVE** - No C++ implementation needed
 - **Native SQL Syntax** - C++ implementation based on Grapa SQL proof of concept
 - **Exception Handling** - Try/catch blocks (new C++ feature)
-- **Enhanced String Operations** - Native string interpolation method (`"template".interpolate()` with `${expression}` syntax) - Will be added to `$OBJ.grc` as native method
+- **Enhanced String Operations** - Native string interpolation method with enhanced capabilities:
+  - **Method Signature**: `string.interpolate()`, `string.interpolate(params)`, `string.interpolate(params, rule)`
+  - **Template Syntax**: `${code}` for direct code execution, `$('script')` for script execution with custom rules
+  - **Parameters**: `params` as `$LIST` (defaults to NULL), `rule` as `$RULE` (defaults to NULL)
+  - **Implementation**: Will be added to `$OBJ.grc` as native method, may require C++ implementation for full functionality
 
 **Implementation Strategy:**
 - **Phase 1 (Weeks 1-4)**: ✅ **COMPLETED** - Custom command/function implementation using `custom_command` and `custom_function` with `<$comp>` and `<$command>` patterns
@@ -89,6 +97,9 @@
 - **✅ Enhanced Assignment Operators** - Implemented using `custom_function` with `<$comp>` patterns (`*=`, `/=`, `%=`, `**=`)
 - **✅ List Comprehension** - Implemented using `custom_function` with `<$comp>` patterns
 - **✅ String Interpolation** - Implemented using `@global["$STR"]` class method with `"template".interpolate()` syntax and `${expression}` template literals
+  - **Enhanced Specification**: `string.interpolate()`, `string.interpolate(params)`, `string.interpolate(params, rule)`
+  - **Template Syntax**: `${code}` for direct code execution, `$('script')` for script execution with custom rules
+  - **Parameters**: `params` as `$LIST` (defaults to NULL), `rule` as `$RULE` (defaults to NULL)
 - **✅ Range Function** - Already native method: `(10).range()` → `[0,1,2,3,4,5,6,7,8,9]`
 - **✅ Ternary Operator** - Already native C++ operator: `condition ? value1 : value2`
 - **✅ Spaceship Operator** - Already native C++ operator: `<=>`
@@ -98,7 +109,11 @@
 1. **For Loops** - C++ implementation based on `custom_command` proof of concept
 2. **Enhanced Assignment Operators** - C++ operators based on `custom_function` implementations
 3. **List Comprehension** - C++ implementation based on `custom_function` proof of concept  
-4. **String Interpolation** - C++ method based on `@global["$STR"]` class method proof of concept - Will be added to `$OBJ.grc` as native method
+4. **String Interpolation** - C++ method based on `@global["$STR"]` class method proof of concept with enhanced capabilities:
+   - **Method Signature**: `string.interpolate()`, `string.interpolate(params)`, `string.interpolate(params, rule)`
+   - **Template Syntax**: `${code}` for direct code execution, `$('script')` for script execution with custom rules
+   - **Parameters**: `params` as `$LIST` (defaults to NULL), `rule` as `$RULE` (defaults to NULL)
+   - **Implementation**: Will be added to `$OBJ.grc` as native method, may require C++ implementation for full functionality
 
 **🎯 PHASE 2 PREPARATION:**
 - **✅ Document all Phase 1 implementations** as specifications for C++ development
@@ -106,6 +121,22 @@
 - **✅ Analyze existing C++ while loop implementation** as reference for for loop C++ implementation
 - **✅ Plan C++ integration strategy** for each feature
 - **🔄 Complete Basic SQL Syntax** - Domain-specific processing using isolated rule execution
+
+**📋 ENHANCED STRING INTERPOLATION SPECIFICATION:**
+- **Method Overloads**:
+  - `string.interpolate()` - Default interpolation with current scope variables
+  - `string.interpolate(params)` - Interpolation with additional `$LIST` parameters available
+  - `string.interpolate(params, rule)` - Interpolation with `$LIST` parameters and custom `$RULE` entry point
+- **Template Syntax**:
+  - `${code}` - Direct code execution within current scope
+  - `$('script')` - Script execution with custom rules, enabling additional Grapa syntax modifications
+- **Parameter Types**:
+  - `params` - `$LIST` type (variable storing list or direct list parameter), defaults to NULL
+  - `rule` - `$RULE` type (variable storing rule or direct rule parameter), defaults to NULL
+- **Implementation Notes**:
+  - May require C++ implementation for full functionality beyond basic `.grc` capabilities
+  - `$('script')` syntax advantage: enables dynamic syntax modifications in same running code context
+  - Integration with existing Grapa execution context and variable scoping
 
 ---
 
