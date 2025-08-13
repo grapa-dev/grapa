@@ -2111,6 +2111,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleReplace(GrapaCHAR& pName) { return new GrapaLibraryRuleReplaceEvent(pName); }
 
+class GrapaLibraryRuleInterpolateEvent : public GrapaLibraryEvent
+{
+public:
+	GrapaLibraryRuleInterpolateEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+	virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleInterpolate(GrapaCHAR& pName) { return new GrapaLibraryRuleInterpolateEvent(pName); }
+
 class GrapaLibraryRuleGrepEvent : public GrapaLibraryEvent
 {
 public:
@@ -2763,6 +2771,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "rpad", &GrapaLibraryRuleEvent::HandleRPad },
 		{ "lpad", &GrapaLibraryRuleEvent::HandleLPad },
 		{ "reverse", &GrapaLibraryRuleEvent::HandleReverse },
+		{ "interpolate", &GrapaLibraryRuleEvent::HandleInterpolate },
 		{ "replace", &GrapaLibraryRuleEvent::HandleReplace },
 		{ "grep", &GrapaLibraryRuleEvent::HandleGrep },
 		{ "split", &GrapaLibraryRuleEvent::HandleSplit },
@@ -16473,6 +16482,20 @@ GrapaRuleEvent* GrapaLibraryRuleReplaceEvent::Run(GrapaScriptExec* vScriptExec, 
 			break;
 		}
 	}
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
+	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+	GrapaRuleEvent* result = NULL;
+	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
+
+	result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR("test"));
+
 	if (result == NULL)
 		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
