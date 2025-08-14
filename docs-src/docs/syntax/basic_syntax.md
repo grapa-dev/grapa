@@ -879,6 +879,61 @@ if (age >= 18) {
 }
 ```
 
+### Truthy and Falsy Values
+
+Grapa supports implicit truthy/falsy evaluation in conditions, similar to modern languages like Python and JavaScript:
+
+#### Truthy Values
+```grapa
+/* These values are considered truthy in conditions */
+if (true) { /* Always truthy */ }
+if (1) { /* Non-zero numbers */ }
+if (-1) { /* Negative numbers */ }
+if ("hello") { /* Non-empty strings */ }
+if ([1, 2, 3]) { /* Non-empty arrays */ }
+if ({a: 1, b: 2}) { /* Non-empty lists */ }
+if (some_function) { /* Functions */ }
+```
+
+#### Falsy Values
+```grapa
+/* These values are considered falsy in conditions */
+if (false) { /* Always falsy */ }
+if (0) { /* Zero */ }
+if ("") { /* Empty strings */ }
+if ([]) { /* Empty arrays */ }
+if ({}) { /* Empty lists */ }
+if (null) { /* Null values */ }
+```
+
+#### Practical Examples
+```grapa
+/* Check if user input exists */
+if (user_input) {
+    ("Processing: " + user_input).echo();
+} else {
+    ("No input provided").echo();
+}
+
+/* Check if array has items */
+if (items) {
+    ("Processing " + items.len() + " items").echo();
+} else {
+    ("No items to process").echo();
+}
+
+/* Check if configuration exists */
+if (config) {
+    ("Using configuration").echo();
+} else {
+    ("Using default settings").echo();
+}
+
+/* Ternary operator with truthy/falsy */
+status = user_input ? "active" : "inactive";
+message = items ? "Items found" : "No items";
+```
+
 ### Comparison Operators
 
 ```grapa

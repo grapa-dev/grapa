@@ -43,6 +43,7 @@
   - **Parameters**: `params` as `$LIST` (defaults to NULL), `rule` as `$RULE` (defaults to NULL)
   - **Advanced Features**: Multi-level parameter passing, variable script references, template systems
 - **Native .match() Method** - ✅ **COMPLETED** - Native regex matching method implemented and working perfectly
+- **Boolean Logic** - ✅ **ALREADY IMPLEMENTED** - Implicit truthy/falsy support already working in if statements, ternary operators, and conditions
 - **Basic SQL Syntax** - 🔄 **Next priority for completion** - Domain-specific processing using `custom_command` and `custom_function`
 
 **Phase 2 Focus:** C++ Implementation Based on Phase 1 Results

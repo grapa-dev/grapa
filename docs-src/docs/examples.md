@@ -112,6 +112,53 @@ alice_users = data.filter(op(item){item.name == "Alice";});  /* Find all Alice u
 alice_users.echo();
 ```
 
+### Truthy and Falsy Examples
+```grapa
+/* Natural boolean behavior in conditions */
+user_input = "hello";
+if (user_input) {
+    ("Processing: " + user_input).echo();  /* Output: Processing: hello */
+} else {
+    ("No input provided").echo();
+}
+
+/* Check if array has items */
+items = [1, 2, 3];
+if (items) {
+    ("Processing " + items.len() + " items").echo();  /* Output: Processing 3 items */
+} else {
+    ("No items to process").echo();
+}
+
+/* Check if configuration exists */
+config = null;
+if (config) {
+    ("Using configuration").echo();
+} else {
+    ("Using default settings").echo();  /* Output: Using default settings */
+}
+
+/* Ternary operator with truthy/falsy */
+status = user_input ? "active" : "inactive";  /* "active" */
+message = items ? "Items found" : "No items";  /* "Items found" */
+
+/* Empty values are falsy */
+empty_string = "";
+empty_array = [];
+empty_list = {};
+
+if (!empty_string) { ("Empty string is falsy").echo(); }
+if (!empty_array) { ("Empty array is falsy").echo(); }
+if (!empty_list) { ("Empty list is falsy").echo(); }
+
+/* Zero is falsy */
+count = 0;
+if (!count) { ("Zero is falsy").echo(); }
+
+/* Non-zero numbers are truthy */
+count = 5;
+if (count) { ("Non-zero is truthy").echo(); }
+
 ### Vector Operations
 ```grapa
 /* Vector creation and operations */

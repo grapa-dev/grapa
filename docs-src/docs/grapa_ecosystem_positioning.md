@@ -349,13 +349,12 @@ result = mixed_data.json.users.map(op(user) {
 - 🚧 **For loops** - Native loop syntax
 - 📋 **Advanced control flow** - `foreach`, `do/while`
 - 📋 **Enhanced Assignment Operators** - C++ implementation of `*=`, `/=`, `%=`, `**=` operators
-- 📋 **Line comments** - `//` and `#` support
 - 📋 **List Comprehension** - C++ implementation based on `custom_function` proof of concept
-- 📋 **Boolean Logic** - Implicit truthy/falsy support
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
 - 📋 **Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
 - 📋 **Property Access** - Improve attribute-style access for objects
+- 📋 **Line comments** - `//` and `#` support
 
 ### **Phase 3: Advanced Features (Weeks 9-12)**
 - 📋 **Performance optimizations** - Compilation and execution improvements
