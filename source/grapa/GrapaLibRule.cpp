@@ -520,6 +520,38 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAssignExtend(GrapaCHAR& pName) { return new GrapaLibraryRuleAssignExtendEvent(pName); }
 
+class GrapaLibraryRuleAssignMulEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleAssignMulEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAssignMul(GrapaCHAR& pName) { return new GrapaLibraryRuleAssignMulEvent(pName); }
+
+class GrapaLibraryRuleAssignDivEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleAssignDivEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAssignDiv(GrapaCHAR& pName) { return new GrapaLibraryRuleAssignDivEvent(pName); }
+
+class GrapaLibraryRuleAssignModEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleAssignModEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAssignMod(GrapaCHAR& pName) { return new GrapaLibraryRuleAssignModEvent(pName); }
+
+class GrapaLibraryRuleAssignPowEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleAssignPowEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleAssignPow(GrapaCHAR& pName) { return new GrapaLibraryRuleAssignPowEvent(pName); }
+
 class GrapaLibraryRuleCreateArrayEvent : public GrapaLibraryEvent
 {
 public:
@@ -2639,7 +2671,11 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "var", &GrapaLibraryRuleEvent::HandleVar },
 		{ "assign", &GrapaLibraryRuleEvent::HandleAssign },
 		{ "assignappend", &GrapaLibraryRuleEvent::HandleAssignAppend },
-		{ "assignextend", &GrapaLibraryRuleEvent::HandleAssignExtend },
+        { "assignextend", &GrapaLibraryRuleEvent::HandleAssignExtend },
+        { "assignmul", &GrapaLibraryRuleEvent::HandleAssignMul },
+        { "assigndiv", &GrapaLibraryRuleEvent::HandleAssignDiv },
+        { "assignmod", &GrapaLibraryRuleEvent::HandleAssignMod },
+        { "assignpow", &GrapaLibraryRuleEvent::HandleAssignPow },
 		{ "createarray", &GrapaLibraryRuleEvent::HandleCreateArray },
 		{ "createtuple", &GrapaLibraryRuleEvent::HandleCreateTuple },
 		{ "createlist", &GrapaLibraryRuleEvent::HandleCreateList },
@@ -5292,6 +5328,42 @@ GrapaRuleEvent* GrapaLibraryRuleAssignExtendEvent::Run(GrapaScriptExec* vScriptE
 	if (err && result == NULL)
 		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleAssignMulEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = 0;
+    GrapaRuleEvent* result = ItemAssignRun(vScriptExec, pNameSpace, pOperation, pInput, GrapaCHAR("assignmul"), err);
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleAssignDivEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = 0;
+    GrapaRuleEvent* result = ItemAssignRun(vScriptExec, pNameSpace, pOperation, pInput, GrapaCHAR("assigndiv"), err);
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleAssignModEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = 0;
+    GrapaRuleEvent* result = ItemAssignRun(vScriptExec, pNameSpace, pOperation, pInput, GrapaCHAR("assignmod"), err);
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleAssignPowEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaError err = 0;
+    GrapaRuleEvent* result = ItemAssignRun(vScriptExec, pNameSpace, pOperation, pInput, GrapaCHAR("assignpow"), err);
+    if (err && result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
 }
 
 GrapaRuleEvent* GrapaLibraryRuleExtendEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)

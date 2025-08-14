@@ -41,7 +41,11 @@ public:
 	GrapaLibraryEvent* HandleVar(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleAssign(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleAssignAppend(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleAssignExtend(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleAssignExtend(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleAssignMul(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleAssignDiv(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleAssignMod(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleAssignPow(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleCreateArray(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleCreateTuple(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleCreateList(GrapaCHAR& pName);

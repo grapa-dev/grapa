@@ -660,6 +660,10 @@
 	| <$litname> '+' '+' '=' <$comp> {@<assignextend,{$1,$5}>}
 	| <$litname> '-' '=' <$comp> <$comp> {@<pop,{$1,$4,$5}>}
 	| <$litname> '-' '=' <$comp> {@<pop,{$1,$4}>}
+    | <$litname> '*' '=' <$comp> {@<assignmul,{$1,$4}>}
+    | <$litname> '/' '=' <$comp> {@<assigndiv,{$1,$4}>}
+    | <$litname> '%' '=' <$comp> {@<assignmod,{$1,$4}>}
+    | <$litname> '*' '*' '=' <$comp> {@<assignpow,{$1,$5}>}
 	| <$comp> '=' <$comp> {@<assign,{$1,$3}>}
 	| <$comp> '+' '=' <$comp> <$comp> {@<assignappend,{$1,$4,$5}>}
 	| <$comp> '+' '=' <$comp> {@<assignappend,{$1,$4}>}
@@ -667,6 +671,10 @@
 	| <$comp> '+' '+' '=' <$comp> {@<assignextend,{$1,$5}>}
 	| <$comp> '-' '=' <$comp> <$comp> {@<pop,{$1,$4,$5}>}
 	| <$comp> '-' '=' <$comp> {@<pop,{$1,$4}>}
+    | <$comp> '*' '=' <$comp> {@<assignmul,{$1,$4}>}
+    | <$comp> '/' '=' <$comp> {@<assigndiv,{$1,$4}>}
+    | <$comp> '%' '=' <$comp> {@<assignmod,{$1,$4}>}
+    | <$comp> '*' '*' '=' <$comp> {@<assignpow,{$1,$5}>}
 	| <$comp>
 	;
 @global["$starcomment"]
