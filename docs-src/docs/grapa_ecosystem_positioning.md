@@ -347,25 +347,27 @@ result = mixed_data.json.users.map(op(user) {
 
 ### **Phase 1: Critical Features (Weeks 1-4)**
 - 🚧 **For loops** - Native loop syntax
-- 📋 **Advanced control flow** - `foreach`, `do/while` (continue tracked with exception handling)
+- 📋 **Advanced control flow** - `foreach`, `do/while`
+- 📋 **Enhanced Assignment Operators** - C++ implementation of `*=`, `/=`, `%=`, `**=` operators
+- 📋 **Line comments** - `//` and `#` support
+- 📋 **List Comprehension** - C++ implementation based on `custom_function` proof of concept
+- 📋 **Boolean Logic** - Implicit truthy/falsy support
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
-- 📋 **Module system** - Import/export capabilities
-- 📋 **Line comments** - `//` and `#` support
-- 📋 **Exception handling** - `try/catch` blocks, `return`, `break`, `continue` (special execution tree handling required - these are modern equivalents of "goto" and require special flags during execution tree processing)
+- 📋 **Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
+- 📋 **Property Access** - Improve attribute-style access for objects
 
 ### **Phase 3: Advanced Features (Weeks 9-12)**
-- 📋 **Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
-- 📋 **Enhanced Assignment Operators** - C++ implementation of `*=`, `/=`, `%=`, `**=` operators
-- 📋 **List Comprehension** - C++ implementation based on `custom_function` proof of concept
 - 📋 **Performance optimizations** - Compilation and execution improvements
 - 📋 **Tooling enhancements** - Development environment improvements
+- 📋 **String Distance Functions** - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity
 
 ### **Phase 4: Polish (Weeks 13-16)**
 - 📋 **Type system** - Type annotations and constraints
 - 📋 **Advanced data structures** - Sets (unique collections), Maps (ordered/hash-based), Iterators (lazy evaluation), Priority queues, Deques, Enhanced collections
 - 📋 **Debugging tools** - Stack traces, profiling, hot reloading
-- 📋 **Advanced language features** - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching, advanced module system, enhanced reflection
+- 📋 **Module system** - Import/export capabilities
+- 📋 **Advanced language features** - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching, enhanced reflection
 
 ## Future Positioning
 
