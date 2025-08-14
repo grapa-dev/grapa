@@ -767,6 +767,66 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Type System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-typing-with-runtime-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Typing with Runtime Safety
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-introspection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Introspection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unified-data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unified Data Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Conversion
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-safety-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Safety Patterns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-type-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Type Methods
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1723,6 +1783,29 @@
   
   <span class="md-ellipsis">
     Time
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/tuple/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tuple
     
   </span>
   
@@ -2870,6 +2953,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../advanced_language_features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Language Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../advanced_concurrency_and_callbacks/" class="md-nav__link">
         
   
@@ -3952,6 +4058,66 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Type System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-typing-with-runtime-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Typing with Runtime Safety
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-introspection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Introspection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unified-data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unified Data Model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Conversion
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-safety-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Type Safety Patterns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#core-type-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Type Methods
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4537,6 +4703,83 @@ if (condition) {
 </code></pre></div>
 <h3 id="type-system">Type System</h3>
 <p>Grapa uses dynamic typing with rich runtime type introspection. <strong>Everything in Grapa is data</strong> - functions, classes, primitives, and everything else are just different data types that can be manipulated, stored, and passed around.</p>
+<h4 id="dynamic-typing-with-runtime-safety"><strong>Dynamic Typing with Runtime Safety</strong></h4>
+<p>Grapa's type system provides the flexibility of dynamic typing with the safety of runtime type checking:</p>
+<div class="highlight"><pre><span></span><code>/* Dynamic type assignment */
+x = 42;        /* $INT */
+x = &quot;hello&quot;;   /* $STR */
+x = [1, 2, 3]; /* $ARRAY */
+
+/* Runtime type checking */
+if (x.type() == $ARRAY) {
+    /* Safe to use array methods */
+    result = x.map(op(item) { item * 2; });
+}
+</code></pre></div>
+<h4 id="type-introspection"><strong>Type Introspection</strong></h4>
+<p>Every value in Grapa supports type introspection:</p>
+<div class="highlight"><pre><span></span><code>/* Get type information */
+value = 42;
+type = value.type();  /* $INT */
+
+/* Type comparison */
+if (value.type() == $INT) {
+    /* Handle integer */
+} elseif (value.type() == $STR) {
+    /* Handle string */
+}
+</code></pre></div>
+<h4 id="unified-data-model"><strong>Unified Data Model</strong></h4>
+<p>Grapa's unified data model means everything is a data type:</p>
+<div class="highlight"><pre><span></span><code>/* Functions are data */
+func = op(x) { x * 2; };
+func_type = func.type();  /* $OP */
+
+/* Classes are data */
+class_obj = $ARRAY;
+class_type = class_obj.type();  /* $CLASS */
+
+/* Rules are data */
+rule_obj = rule &lt;$expression&gt; &#39;+&#39; &lt;$expression&gt; {@&lt;add,{$1,$3}&gt;};
+rule_type = rule_obj.type();  /* $RULE */
+</code></pre></div>
+<h4 id="type-conversion"><strong>Type Conversion</strong></h4>
+<p>Grapa provides automatic and explicit type conversion:</p>
+<div class="highlight"><pre><span></span><code>/* Automatic conversion */
+result = &quot;42&quot;.int() + 8;  /* 50 */
+
+/* Explicit conversion */
+str_value = 42.str();     /* &quot;42&quot; */
+int_value = &quot;42&quot;.int();   /* 42 */
+float_value = &quot;3.14&quot;.float(); /* 3.14 */
+</code></pre></div>
+<h4 id="type-safety-patterns"><strong>Type Safety Patterns</strong></h4>
+<p>Best practices for type safety in Grapa:</p>
+<div class="highlight"><pre><span></span><code>/* Defensive programming */
+process_data = op(data) {
+    if (data.type() != $ARRAY) {
+        return $ERR(&quot;Expected array&quot;);
+    }
+
+    /* Safe to process as array */
+    return data.map(op(item) { item * 2; });
+};
+
+/* Type checking with fallbacks */
+safe_get = op(obj, key) {
+    if (obj.type() != $LIST) {
+        return null;
+    }
+
+    value = obj[key];
+    if (value.type() == $ERR) {
+        return null;
+    }
+
+    return value;
+};
+</code></pre></div>
+<h4 id="core-type-methods"><strong>Core Type Methods</strong></h4>
 <ul>
 <li><code>.type()</code> - Get the type of an object (returns <code>$STR</code>)</li>
 <li><code>.str()</code> - Convert to string</li>
@@ -4544,21 +4787,6 @@ if (condition) {
 <li><code>.float()</code> - Convert to float</li>
 <li><code>.bool()</code> - Convert to boolean</li>
 </ul>
-<div class="highlight"><pre><span></span><code>/* Type checking */
-if (value.type() == $INT) { ... }
-if (value.type() == $STR) { ... }
-if (value.type() == $ARRAY) { ... }
-if (value.type() == $OP) { ... }    /* Functions are data */
-if (value.type() == $CLASS) { ... } /* Classes are data */
-
-/* Type conversion */
-text = number.str();
-number = text.int();
-
-/* Functions as data */
-my_func = op(x) { x * 2; };
-my_func.type().echo();  /* $OP */
-</code></pre></div>
 <h3 id="language-extensibility">Language Extensibility</h3>
 <p>Grapa's most powerful feature is its ability to extend the language syntax at runtime. You can define custom commands and functions that become part of the language grammar.</p>
 <p><strong>Key Concepts:</strong>
