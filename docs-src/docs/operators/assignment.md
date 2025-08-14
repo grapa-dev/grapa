@@ -200,14 +200,86 @@ list -= list[1];         /* Remove by positive index: {"a":1,"c":3,"d":4} */
 ## `*=`
 Multiply and assign.
 
+### Numeric Multiplication Assignment
+```grapa
+/* Integer multiplication */
+x = 10;
+x *= 3;                    /* 30 */
+
+/* Float multiplication */
+y = 5.5;
+y *= 2;                    /* 11.0 */
+
+/* Mixed type multiplication (promotes to float) */
+z = 10;
+z *= 2.5;                  /* 25.0 */
+```
+
+**Type Support**: INT, FLOAT  
+**Note**: Only numeric types are supported. String and other types will return $ERR.
+
 ## `/=`
 Divide and assign.
+
+### Numeric Division Assignment
+```grapa
+/* Integer division (promotes to float) */
+x = 10;
+x /= 2;                    /* 5.0 */
+
+/* Float division */
+y = 10.0;
+y /= 3;                    /* 3.333... */
+
+/* Mixed type division */
+z = 10;
+z /= 2.5;                  /* 4.0 */
+```
+
+**Type Support**: INT, FLOAT  
+**Note**: Division always promotes to float for precision. Only numeric types are supported.
 
 ## `%=`
 Modulo and assign.
 
+### Numeric Modulo Assignment
+```grapa
+/* Integer modulo */
+x = 10;
+x %= 3;                    /* 1 */
+
+/* Float modulo */
+y = 10.5;
+y %= 3;                    /* 1.5 */
+
+/* Mixed type modulo */
+z = 10;
+z %= 3.5;                  /* 3.0 */
+```
+
+**Type Support**: INT, FLOAT  
+**Note**: Only numeric types are supported. String and other types will return $ERR.
+
 ## `**=`
 Power and assign.
+
+### Numeric Power Assignment
+```grapa
+/* Integer power */
+x = 2;
+x **= 3;                   /* 8 */
+
+/* Float power */
+y = 2.5;
+y **= 2;                   /* 6.25 */
+
+/* Mixed type power (promotes to float) */
+z = 2;
+z **= 3.5;                 /* 11.313... */
+```
+
+**Type Support**: INT, FLOAT  
+**Note**: Only numeric types are supported. String and other types will return $ERR.
 
 ## Advanced Operations
 

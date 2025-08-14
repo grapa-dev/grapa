@@ -4760,7 +4760,7 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 			}
 			if (rDel && rDel->mValue.mToken == GrapaTokenType::PTR)
 			{
-				if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignappend") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignextend") != 0)
+				if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignappend") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignextend") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") != 0)
 				{
 					GrapaRuleEvent* rold = rDel;
 					r = rDel = vScriptExec->CopyItem(r);
@@ -4770,7 +4770,7 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 			}
 		}
 		while (r && r->mValue.mToken == GrapaTokenType::PTR && r->vRulePointer) r = r->vRulePointer;
-		if (parameter && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignappend") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignextend") != 0)
+		if (parameter && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignappend") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignextend") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") != 0 && GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") != 0)
 		{
 			//if (!ItemAssignCheck(parameter, r))
 			//	; // issue need to address when assigning something to itself, like a=@a or a={@a}
@@ -4809,7 +4809,7 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 			}
 			else if (parameter && !parameter->mConst)
 			{
-				if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignappend") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignextend") == 0)
+				if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignappend") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignextend") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") == 0 || GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") == 0)
 				{
 					GrapaInt a, b;
 					GrapaFloat n1(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
@@ -4857,13 +4857,31 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 						case GrapaTokenType::INT:
 							a.FromBytes(parameter->mValue);
 							b.FromBytes(r->mValue);
-							parameter->mValue.FROM((a + b).getBytes());
+							if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") == 0)
+								parameter->mValue.FROM((a * b).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") == 0)
+								parameter->mValue.FROM((a / b).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") == 0)
+								parameter->mValue.FROM((a % b).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") == 0)
+								parameter->mValue.FROM((a.Pow(b)).getBytes());
+							else
+								parameter->mValue.FROM((a + b).getBytes());
 							break;
 						case GrapaTokenType::FLOAT:
 							a.FromBytes(parameter->mValue);
 							n1 = a;
 							n2.FromBytes(r->mValue);
-							parameter->mValue.FROM((n1 + n2).getBytes());
+							if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") == 0)
+								parameter->mValue.FROM((n1 * n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") == 0)
+								parameter->mValue.FROM((n1 / n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") == 0)
+								parameter->mValue.FROM((n1 % n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") == 0)
+								parameter->mValue.FROM((n1.Pow2(n2)).getBytes());
+							else
+								parameter->mValue.FROM((n1 + n2).getBytes());
 							break;
 						}
 						break;
@@ -4874,12 +4892,30 @@ static GrapaRuleEvent* ItemAssignRun(GrapaScriptExec *vScriptExec, GrapaNames* p
 							n1.FromBytes(parameter->mValue);
 							b.FromBytes(r->mValue);
 							n2 = b;
-							parameter->mValue.FROM((n1 + n2).getBytes());
+							if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") == 0)
+								parameter->mValue.FROM((n1 * n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") == 0)
+								parameter->mValue.FROM((n1 / n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") == 0)
+								parameter->mValue.FROM((n1 % n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") == 0)
+								parameter->mValue.FROM((n1.Pow(b)).getBytes());
+							else
+								parameter->mValue.FROM((n1 + n2).getBytes());
 							break;
 						case GrapaTokenType::FLOAT:
 							n1.FromBytes(parameter->mValue);
 							n2.FromBytes(r->mValue);
-							parameter->mValue.FROM((n1 + n2).getBytes());
+							if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmul") == 0)
+								parameter->mValue.FROM((n1 * n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assigndiv") == 0)
+								parameter->mValue.FROM((n1 / n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignmod") == 0)
+								parameter->mValue.FROM((n1 % n2).getBytes());
+							else if (GrapaMem::StrCmp((char*)pName.mBytes, pName.mLength, "assignpow") == 0)
+								parameter->mValue.FROM((n1.Pow2(n2)).getBytes());
+							else
+								parameter->mValue.FROM((n1 + n2).getBytes());
 							break;
 						}
 						break;

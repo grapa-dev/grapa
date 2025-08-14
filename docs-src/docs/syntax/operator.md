@@ -4,7 +4,7 @@
 
 ## Overview
 
-Grapa provides 26 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.
+Grapa provides 30 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.
 
 ## Operator Categories
 
@@ -34,6 +34,10 @@ Extend, remove, dot operations, and ternary conditional expressions.
 | `-` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | String difference calculation |
 | `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Append assignment |
 | `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Remove by index/key |
+| `*=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Multiplication assignment |
+| `/=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Division assignment |
+| `%=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo assignment |
+| `**=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Power assignment |
 | `*` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | Matrix multiplication support |
 | `/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Smart type promotion |
 | `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
@@ -690,6 +694,106 @@ s -= "world";              /* $ERR (STR not supported) */
 
 **Type Support**: INT, FLOAT, ARRAY  
 **Gaps**: 12 gaps identified (severely limited support)
+
+### Multiply Assignment (`*=`)
+
+Performs multiplication assignment with numeric type support.
+
+```grapa
+/* Integer multiplication */
+a = 10;
+a *= 3;                    /* 30 */
+
+/* Float multiplication */
+b = 5.5;
+b *= 2;                    /* 11.0 */
+
+/* Mixed type multiplication */
+c = 10;
+c *= 2.5;                  /* 25.0 (promoted to float) */
+
+/* Error cases */
+s = "hello";
+s *= 3;                    /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT, FLOAT  
+**Gaps**: 14 gaps identified (numeric types only)
+
+### Divide Assignment (`/=`)
+
+Performs division assignment with smart type promotion.
+
+```grapa
+/* Integer division */
+a = 10;
+a /= 2;                    /* 5.0 (promoted to float) */
+
+/* Float division */
+b = 10.0;
+b /= 3;                    /* 3.333... */
+
+/* Mixed type division */
+c = 10;
+c /= 2.5;                  /* 4.0 */
+
+/* Error cases */
+s = "hello";
+s /= 2;                    /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT, FLOAT  
+**Gaps**: 14 gaps identified (numeric types only)
+
+### Modulo Assignment (`%=`)
+
+Performs modulo assignment with numeric type support.
+
+```grapa
+/* Integer modulo */
+a = 10;
+a %= 3;                    /* 1 */
+
+/* Float modulo */
+b = 10.5;
+b %= 3;                    /* 1.5 */
+
+/* Mixed type modulo */
+c = 10;
+c %= 3.5;                  /* 3.0 */
+
+/* Error cases */
+s = "hello";
+s %= 3;                    /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT, FLOAT  
+**Gaps**: 14 gaps identified (numeric types only)
+
+### Power Assignment (`**=`)
+
+Performs exponentiation assignment with smart type promotion.
+
+```grapa
+/* Integer power */
+a = 2;
+a **= 3;                   /* 8 */
+
+/* Float power */
+b = 2.5;
+b **= 2;                   /* 6.25 */
+
+/* Mixed type power */
+c = 2;
+c **= 3.5;                 /* 11.313... (promoted to float) */
+
+/* Error cases */
+s = "hello";
+s **= 2;                   /* $ERR (STR not supported) */
+```
+
+**Type Support**: INT, FLOAT  
+**Gaps**: 14 gaps identified (numeric types only)
 
 ## Special Operators
 

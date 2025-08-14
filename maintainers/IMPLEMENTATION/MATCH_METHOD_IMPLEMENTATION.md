@@ -184,3 +184,4 @@ The `.match()` method is a well-designed, efficient wrapper around Grapa's grep 
 - **Minimal overhead** with proper memory management
 
 It exemplifies Grapa's philosophy of building powerful functionality through composition and reuse.
+
