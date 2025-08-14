@@ -294,7 +294,7 @@ result = mixed_data.json.users.map(op(user) {
 
 ## Grapa's Development Roadmap
 
-### **Current State (2024)**
+### **Current State (2025)**
 - ✅ **Executable BNF system** - Core innovation
 - ✅ **Multi-syntax support** - JSON, XML, HTML (native), SQL (example scripts)
 - ✅ **ETL capabilities** - Data transformation pipelines
@@ -312,27 +312,27 @@ result = mixed_data.json.users.map(op(user) {
 - ✅ **Execution tree metaprogramming** - Human-readable, manipulable execution trees
 - ✅ **Rich callback systems** - Object references and sophisticated event handling
 - ✅ **Parallel-by-design architecture** - Automatic thread safety and parallel processing
+- ✅ **Range function** - `(10).range()` for loops
+- ✅ **Ternary operator** - `?:` conditional expressions
+- ✅ **Pattern matching** - Destructuring and match expressions (ENHANCED - Unified dot notation provides superior capabilities)
+- ✅ **Advanced metaprogramming** - Enhanced execution tree manipulation (SUPERIOR - Human-readable, manipulable execution trees)
+- ✅ **Structured concurrency** - Enhanced callback and parallel processing patterns (SUPERIOR - Advanced callback systems with object references)
 - ⚠️ **Basic developer experience** - Limited tooling
 
 ### **Phase 1: Critical Features (Weeks 1-4)**
 - 🚧 **Exception handling** - `try/catch` blocks
 - 🚧 **For loops** - Native loop syntax
-- ✅ **Enhanced assignment** - `*=`, `/=`, `%=`, `**=`
-- ✅ **String interpolation** - `"template".interpolate()` method with template literals
-- ✅ **Range function** - `(10).range()` for loops
-- ✅ **Ternary operator** - `?:` conditional expressions
 - 📋 **Native .match() method** - Simple regex matching method (simple addition needed)
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
 - 📋 **Module system** - Import/export capabilities
 - 📋 **Line comments** - `//` and `#` support
 - 📋 **Advanced control flow** - `foreach`, `continue`, `do/while`
-- ✅ **Enhanced string operations** - Native interpolation (COMPLETED)
 
 ### **Phase 3: Advanced Features (Weeks 9-12)**
-- ✅ **Pattern matching** - Destructuring and match expressions (ENHANCED - Unified dot notation provides superior capabilities)
-- ✅ **Advanced metaprogramming** - Enhanced execution tree manipulation (SUPERIOR - Human-readable, manipulable execution trees)
-- ✅ **Structured concurrency** - Enhanced callback and parallel processing patterns (SUPERIOR - Advanced callback systems with object references)
+- 📋 **Advanced language features** - Additional syntax enhancements
+- 📋 **Performance optimizations** - Compilation and execution improvements
+- 📋 **Tooling enhancements** - Development environment improvements
 
 ### **Phase 4: Polish (Weeks 13-16)**
 - 📋 **Type system** - Type annotations and constraints
@@ -341,9 +341,9 @@ result = mixed_data.json.users.map(op(user) {
 
 ## Future Positioning
 
-### **Expanded Use Cases (Post-Roadmap)**
+### **Expanded Use Cases (Current and Future)**
 
-After the enhancement roadmap is complete, Grapa will be viable for:
+Grapa is already viable for many advanced use cases, with additional capabilities planned:
 
 #### **1. Modern Application Development**
 - **Web applications** with JSON processing and SQL via example scripts
