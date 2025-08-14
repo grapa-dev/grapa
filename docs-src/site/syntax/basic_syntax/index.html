@@ -2798,6 +2798,48 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#truthy-and-falsy-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Truthy and Falsy Values
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Truthy and Falsy Values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#truthy-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Truthy Values
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#falsy-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Falsy Values
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#comparison-operators" class="md-nav__link">
     <span class="md-ellipsis">
       Comparison Operators
@@ -4831,6 +4873,48 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#truthy-and-falsy-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Truthy and Falsy Values
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Truthy and Falsy Values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#truthy-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Truthy Values
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#falsy-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Falsy Values
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#comparison-operators" class="md-nav__link">
     <span class="md-ellipsis">
       Comparison Operators
@@ -5858,6 +5942,53 @@ if (age &gt;= 18) {
 } else {
     (&quot;User is a minor&quot;).echo();
 }
+</code></pre></div>
+<h3 id="truthy-and-falsy-values">Truthy and Falsy Values</h3>
+<p>Grapa supports implicit truthy/falsy evaluation in conditions, similar to modern languages like Python and JavaScript:</p>
+<h4 id="truthy-values">Truthy Values</h4>
+<div class="highlight"><pre><span></span><code>/* These values are considered truthy in conditions */
+if (true) { /* Always truthy */ }
+if (1) { /* Non-zero numbers */ }
+if (-1) { /* Negative numbers */ }
+if (&quot;hello&quot;) { /* Non-empty strings */ }
+if ([1, 2, 3]) { /* Non-empty arrays */ }
+if ({a: 1, b: 2}) { /* Non-empty lists */ }
+if (some_function) { /* Functions */ }
+</code></pre></div>
+<h4 id="falsy-values">Falsy Values</h4>
+<div class="highlight"><pre><span></span><code>/* These values are considered falsy in conditions */
+if (false) { /* Always falsy */ }
+if (0) { /* Zero */ }
+if (&quot;&quot;) { /* Empty strings */ }
+if ([]) { /* Empty arrays */ }
+if ({}) { /* Empty lists */ }
+if (null) { /* Null values */ }
+</code></pre></div>
+<h4 id="practical-examples">Practical Examples</h4>
+<div class="highlight"><pre><span></span><code>/* Check if user input exists */
+if (user_input) {
+    (&quot;Processing: &quot; + user_input).echo();
+} else {
+    (&quot;No input provided&quot;).echo();
+}
+
+/* Check if array has items */
+if (items) {
+    (&quot;Processing &quot; + items.len() + &quot; items&quot;).echo();
+} else {
+    (&quot;No items to process&quot;).echo();
+}
+
+/* Check if configuration exists */
+if (config) {
+    (&quot;Using configuration&quot;).echo();
+} else {
+    (&quot;Using default settings&quot;).echo();
+}
+
+/* Ternary operator with truthy/falsy */
+status = user_input ? &quot;active&quot; : &quot;inactive&quot;;
+message = items ? &quot;Items found&quot; : &quot;No items&quot;;
 </code></pre></div>
 <h3 id="comparison-operators">Comparison Operators</h3>
 <div class="highlight"><pre><span></span><code>/* Equality */
