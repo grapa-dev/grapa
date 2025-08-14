@@ -428,8 +428,8 @@ Grapa's executable BNF system provides unprecedented power for language design a
 The key is to start with simple patterns and gradually build complexity, always keeping in mind the three-phase processing model and the distinction between commands and functions.
 
 ## See Also
-- [Language Design with Executable BNF](language_design_with_executable_bnf.md)
-- [Multi-Syntax Programming](multi_syntax_programming.md)
-- [Advanced Topics](advanced_topics.md)
-- [Examples](examples.md)
-- [Grammar Design](syntax/grammar_design.md) 
+- [Language Design with Executable BNF](../language_design_with_executable_bnf.md)
+- [Multi-Syntax Programming](../multi_syntax_programming.md)
+- [Advanced Topics](../advanced_topics.md)
+- [Examples](../examples.md)
+- [Grammar Design](../syntax/grammar_design.md) 
