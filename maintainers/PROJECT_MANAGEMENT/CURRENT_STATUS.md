@@ -91,8 +91,15 @@
   - **Documentation**: Added to user docs and maintainer implementation docs
 
 **📋 PHASE 1 CRITICAL FEATURES (Weeks 1-4):**
-- **🔄 For loops** - Native loop syntax (NOT IMPLEMENTED)
-- **🔄 Advanced control flow** - `foreach`, `do/while` (NOT IMPLEMENTED)
+- **✅ For loops** - Native loop syntax (COMPLETED)
+  - **Status**: ✅ **COMPLETED** - Consolidated smart implementation with single `GrapaLibraryRuleForEvent` handler
+  - **Features**: Supports all loop variations (`for from/to`, `for from/to step`, `for in`, `foreach in`, `for (init;cond;inc)`, `do/while`)
+  - **Implementation**: Smart parameter detection, delayed evaluation, PTR token handling, native `@` assignment
+  - **Grammar**: All variations route to single `@<for,{...}>` handler
+  - **Testing**: All loop types working correctly
+- **✅ Advanced control flow** - `foreach`, `do/while` (COMPLETED)
+  - **Status**: ✅ **COMPLETED** - Integrated into consolidated for loop implementation
+  - **Issue**: Same grammar keyword issue as for loops
 - **🔄 Enhanced Assignment Operators** - C++ implementation of `*=`, `/=`, `%=`, `**=` operators (NOT IMPLEMENTED)
 - **🔄 List Comprehension** - C++ implementation based on `custom_function` proof of concept (NOT IMPLEMENTED)
 

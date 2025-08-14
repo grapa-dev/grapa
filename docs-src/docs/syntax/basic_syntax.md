@@ -92,15 +92,96 @@ while (i <= 10) {
     i = i + 1;
 }
 
-/* ❌ Incorrect */
-for i in 1..10 {
-    echo("Processing item " + i);
+/* ✅ Correct - For loops are now supported! */
+for i from 1 to 10 {
+    ("Processing item " + i).echo();
+}
+
+/* ✅ For-in loops for collections */
+for item in [1, 2, 3, 4, 5] {
+    ("Item: " + item).echo();
+}
+
+/* ✅ C-style for loops */
+for (i = 1; i <= 10; i = i + 1) {
+    ("Count: " + i).echo();
+}
+
+/* ✅ Do-while loops */
+do {
+    ("Executing at least once").echo();
+} while (condition);
+```
+
+- **For loops are now fully supported** with multiple syntax variations
+- `while` loops and `.range()`+functional methods remain valid alternatives
+- The `.range()` method is native: `(10).range()` → `[0,1,2,3,4,5,6,7,8,9]`
+- If more objects support `.get()` in the future, this guide will be updated.
+
+### For Loop Syntax
+
+Grapa supports multiple for loop variations:
+
+#### Numeric Range Loops
+```grapa
+/* Basic range loop */
+for i from 1 to 5 {
+    ("Count: " + i).echo();
+}
+
+/* Range with step */
+for i from 0 to 10 step 2 {
+    ("Even: " + i).echo();
+}
+
+/* Reverse range */
+for i from 10 to 1 step -1 {
+    ("Countdown: " + i).echo();
 }
 ```
 
-- Only `while` loops and `.range()`+functional methods are valid for iteration in Grapa. The `.range()` method is native: `(10).range()` → `[0,1,2,3,4,5,6,7,8,9]`.
-- `for` loops are not supported.
-- If more objects support `.get()` in the future, this guide will be updated.
+#### Collection Loops
+```grapa
+/* Array iteration */
+numbers = [1, 2, 3, 4, 5];
+for item in numbers {
+    ("Item: " + item).echo();
+}
+
+/* String iteration (character by character) */
+text = "Hello";
+for char in text {
+    ("Character: " + char).echo();
+}
+
+/* List iteration */
+data = {a:1, b:2, c:3};
+for value in data {
+    ("Value: " + value).echo();
+}
+```
+
+#### C-Style Loops
+```grapa
+/* Traditional for loop */
+for (i = 1; i <= 10; i = i + 1) {
+    ("Count: " + i).echo();
+}
+
+/* Complex initialization */
+for (i = 0, j = 10; i < j; i = i + 1, j = j - 1) {
+    ("i=" + i + ", j=" + j).echo();
+}
+```
+
+#### Do-While Loops
+```grapa
+/* Execute at least once */
+do {
+    ("Executing...").echo();
+    user_input = get_user_input();
+} while (user_input != "quit");
+```
 
 ### Loop Examples
 

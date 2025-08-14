@@ -346,8 +346,11 @@ result = mixed_data.json.users.map(op(user) {
 - ⚠️ **Basic developer experience** - Limited tooling
 
 ### **Phase 1: Critical Features (Weeks 1-4)**
-- 🚧 **For loops** - Native loop syntax
-- 📋 **Advanced control flow** - `foreach`, `do/while`
+- ✅ **For loops** - Native loop syntax (COMPLETED)
+  - **Features**: `for from/to`, `for from/to step`, `for in`, `foreach in`, `for (init;cond;inc)`, `do/while`
+  - **Implementation**: Smart consolidated handler with parameter detection and delayed evaluation
+- ✅ **Advanced control flow** - `foreach`, `do/while` (COMPLETED)
+  - **Status**: Integrated into consolidated for loop implementation
 - 📋 **Enhanced Assignment Operators** - C++ implementation of `*=`, `/=`, `%=`, `**=` operators
 - 📋 **List Comprehension** - C++ implementation based on `custom_function` proof of concept
 

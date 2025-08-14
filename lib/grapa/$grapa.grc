@@ -643,6 +643,12 @@
 	| if '(' <$comp> ')' <$command> {@<if,{$3,$5}>}
 	| while '(' <$comp> ')' <$command> {@<while,{$3,$5}>}
 	| switch '(' <$comp> ')' '{' <$case_list> '}' {@<switch,{$3,$6}>}
+    | foreach $ID in <$comp> <$command> {@<for,{$2,$4,$5}>}
+    | do <$command> while '(' <$comp> ')' {@<for,{$2,$5}>}
+    | for '(' <$comp> ';' <$comp> ';' <$comp> ')' <$command> {@<for,{$3,$5,$7,$9}>}
+    | for $ID from <$comp> to <$comp> step <$comp> <$command> {@<for,{$2,$4,$6,$8,$9}>}
+    | for $ID from <$comp> to <$comp> <$command> {@<for,{$2,$4,$6,$7}>}
+    | for $ID in <$comp> <$command> {@<for,{$2,$4,$5}>}
 	| break {@<break,{}>}
 	| return '(' <$comp> ')' {@<return,{$3}>}
 	| exit {@<exit,{}>}

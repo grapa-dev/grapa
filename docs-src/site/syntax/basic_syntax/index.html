@@ -2249,6 +2249,57 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#for-loop-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Loop Syntax
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="For Loop Syntax">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-range-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Range Loops
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collection Loops
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-style-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      C-Style Loops
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do-while-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      Do-While Loops
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#loop-examples" class="md-nav__link">
     <span class="md-ellipsis">
       Loop Examples
@@ -4324,6 +4375,57 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#for-loop-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Loop Syntax
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="For Loop Syntax">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-range-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Range Loops
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collection Loops
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-style-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      C-Style Loops
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do-while-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      Do-While Loops
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#loop-examples" class="md-nav__link">
     <span class="md-ellipsis">
       Loop Examples
@@ -5266,16 +5368,87 @@ while (i &lt;= 10) {
     i = i + 1;
 }
 
-/* ❌ Incorrect */
-for i in 1..10 {
-    echo(&quot;Processing item &quot; + i);
+/* ✅ Correct - For loops are now supported! */
+for i from 1 to 10 {
+    (&quot;Processing item &quot; + i).echo();
 }
+
+/* ✅ For-in loops for collections */
+for item in [1, 2, 3, 4, 5] {
+    (&quot;Item: &quot; + item).echo();
+}
+
+/* ✅ C-style for loops */
+for (i = 1; i &lt;= 10; i = i + 1) {
+    (&quot;Count: &quot; + i).echo();
+}
+
+/* ✅ Do-while loops */
+do {
+    (&quot;Executing at least once&quot;).echo();
+} while (condition);
 </code></pre></div>
 <ul>
-<li>Only <code>while</code> loops and <code>.range()</code>+functional methods are valid for iteration in Grapa. The <code>.range()</code> method is native: <code>(10).range()</code> → <code>[0,1,2,3,4,5,6,7,8,9]</code>.</li>
-<li><code>for</code> loops are not supported.</li>
+<li><strong>For loops are now fully supported</strong> with multiple syntax variations</li>
+<li><code>while</code> loops and <code>.range()</code>+functional methods remain valid alternatives</li>
+<li>The <code>.range()</code> method is native: <code>(10).range()</code> → <code>[0,1,2,3,4,5,6,7,8,9]</code></li>
 <li>If more objects support <code>.get()</code> in the future, this guide will be updated.</li>
 </ul>
+<h3 id="for-loop-syntax">For Loop Syntax</h3>
+<p>Grapa supports multiple for loop variations:</p>
+<h4 id="numeric-range-loops">Numeric Range Loops</h4>
+<div class="highlight"><pre><span></span><code>/* Basic range loop */
+for i from 1 to 5 {
+    (&quot;Count: &quot; + i).echo();
+}
+
+/* Range with step */
+for i from 0 to 10 step 2 {
+    (&quot;Even: &quot; + i).echo();
+}
+
+/* Reverse range */
+for i from 10 to 1 step -1 {
+    (&quot;Countdown: &quot; + i).echo();
+}
+</code></pre></div>
+<h4 id="collection-loops">Collection Loops</h4>
+<div class="highlight"><pre><span></span><code>/* Array iteration */
+numbers = [1, 2, 3, 4, 5];
+for item in numbers {
+    (&quot;Item: &quot; + item).echo();
+}
+
+/* String iteration (character by character) */
+text = &quot;Hello&quot;;
+for char in text {
+    (&quot;Character: &quot; + char).echo();
+}
+
+/* List iteration */
+data = {a:1, b:2, c:3};
+for value in data {
+    (&quot;Value: &quot; + value).echo();
+}
+</code></pre></div>
+<h4 id="c-style-loops">C-Style Loops</h4>
+<div class="highlight"><pre><span></span><code>/* Traditional for loop */
+for (i = 1; i &lt;= 10; i = i + 1) {
+    (&quot;Count: &quot; + i).echo();
+}
+
+/* Complex initialization */
+for (i = 0, j = 10; i &lt; j; i = i + 1, j = j - 1) {
+    (&quot;i=&quot; + i + &quot;, j=&quot; + j).echo();
+}
+</code></pre></div>
+<h4 id="do-while-loops">Do-While Loops</h4>
+<div class="highlight"><pre><span></span><code>/* Execute at least once */
+do {
+    (&quot;Executing...&quot;).echo();
+    user_input = get_user_input();
+} while (user_input != &quot;quit&quot;);
+</code></pre></div>
 <h3 id="loop-examples">Loop Examples</h3>
 <div class="highlight"><pre><span></span><code>/* Count from 1 to 5 */
 i = 1;

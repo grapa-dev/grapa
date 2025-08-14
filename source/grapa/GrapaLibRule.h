@@ -77,7 +77,8 @@ public:
 	GrapaLibraryEvent* HandleWhile(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleScope(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSwitch(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleCase(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleCase(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleFor(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandlePlan(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleWrap(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleOp(GrapaCHAR& pName);
