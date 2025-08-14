@@ -106,6 +106,7 @@ nav:
           - Table: type/table.md
           - Tag: type/tag.md
           - Time: type/time.md
+          - Tuple: type/tuple.md
           - Vector: type/vector.md
           - Widget: type/widget.md
           - Widget Attributes: type/widget/attributes.md
@@ -148,6 +149,7 @@ nav:
       - Debugging: debugging.md
       - Execution Pipeline: execution_pipeline_overview.md
       - Advanced Topics: advanced_topics.md
+      - Advanced Language Features: advanced_language_features.md
       - Advanced Concurrency and Callbacks: advanced_concurrency_and_callbacks.md
       - Multi-Syntax Programming: multi_syntax_programming.md
       - Language Design with Executable BNF: language_design_with_executable_bnf.md

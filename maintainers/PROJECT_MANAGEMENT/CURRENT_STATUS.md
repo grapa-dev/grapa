@@ -39,9 +39,9 @@
 - **Spaceship Operator** - ✅ **ALREADY NATIVE** - Native C++ operator: `<=>`
 - **String Interpolation** - ✅ **IMPLEMENTED** - Using `@global["$STR"]` class method with `"template".interpolate()` syntax and `${expression}` template literals
   - **Enhanced Specification**: `string.interpolate()`, `string.interpolate(params)`, `string.interpolate(params, rule)`
-  - **Template Syntax**: `${code}` for direct code execution, `$('script')` for script execution with custom rules
+  - **Template Syntax**: `${code}` for direct code execution, `${op()("script")()}` for script execution
   - **Parameters**: `params` as `$LIST` (defaults to NULL), `rule` as `$RULE` (defaults to NULL)
-  - **Advantage**: `$('script')` enables additional Grapa syntax modifications in the same running code context
+  - **Advanced Features**: Multi-level parameter passing, variable script references, template systems
 - **Native .match() Method** - ✅ **COMPLETED** - Native regex matching method implemented and working perfectly
 - **Basic SQL Syntax** - 🔄 **Next priority for completion** - Domain-specific processing using `custom_command` and `custom_function`
 
@@ -307,6 +307,7 @@
   - **String interpolation documentation completed** ✅
 - **Current Investigation:** Grapa syntax enhancement implementation
 - **Next Focus:** Language adoption through improved syntax and developer experience
+- **Documentation Status:** ✅ **COMPREHENSIVE** - Advanced language features documented, type system enhanced, syntax features documented
 
 ### **Key Metrics**
 - **Ripgrep Compatibility:** 100% ✅

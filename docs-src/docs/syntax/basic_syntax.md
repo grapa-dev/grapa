@@ -1365,6 +1365,216 @@ data.{processed=@$$.clean();processed.filter(op(x){x>0});}.len();
 **Important**: `@` is for **runtime evaluation** (getting actual values), while `$` is for **compile-time lexical processing** (modifying how the lexer processes tokens).
 */ 
 
+## Advanced Syntax Features
+
+Grapa provides several advanced syntax features that enhance expressiveness and developer experience. These features are designed to make Grapa feel natural to developers from Python, JavaScript, and other mainstream languages.
+
+### **String Interpolation**
+
+Grapa provides advanced string interpolation with expression evaluation and script execution:
+
+```grapa
+/* Basic variable interpolation */
+name = "Alice";
+greeting = "Hello, ${name}!".interpolate();  /* "Hello, Alice!" */
+
+/* Expression evaluation */
+x = 10;
+y = 5;
+result = "Sum: ${x + y}, Product: ${x * y}".interpolate();  /* "Sum: 15, Product: 50" */
+
+/* Script execution */
+script = "x * 2 + y";
+x = 10;
+y = 3;
+result = "Result: ${op()(script)()}".interpolate();  /* "Result: 23" */
+
+/* Parameterized templates */
+template = "Hello ${name}, you are ${age} years old";
+result = template.interpolate({name: "Bob", age: 30});  /* "Hello Bob, you are 30 years old" */
+```
+
+**Advanced Features:**
+- **Expression Evaluation** - `${expression}` for direct code execution
+- **Script Execution** - `${op()("script")()}` for complex script execution
+- **Parameter Passing** - Pass parameters to interpolation context
+- **Template Systems** - Reusable templates with parameter substitution
+
+### **Ternary Operator**
+
+Grapa supports the ternary operator for conditional expressions:
+
+```grapa
+/* Basic ternary operator */
+result = condition ? value_if_true : value_if_false;
+
+/* Nested ternary operators */
+grade = score >= 90 ? "A" : 
+        score >= 80 ? "B" : 
+        score >= 70 ? "C" : "F";
+
+/* With expressions */
+max_value = a > b ? a : b;
+status = user.is_active ? "Online" : "Offline";
+```
+
+### **Spaceship Operator**
+
+Grapa supports the spaceship operator (`<=>`) for three-way comparison:
+
+```grapa
+/* Three-way comparison */
+result = a <=> b;  /* Returns -1, 0, or 1 */
+
+/* Sorting with spaceship operator */
+sort_function = op(a, b) { a <=> b; };
+sorted_array = [3, 1, 4, 1, 5].sort(sort_function);
+
+/* Custom comparison */
+compare_length = op(a, b) { a.len() <=> b.len(); };
+sorted_by_length = ["cat", "dog", "elephant"].sort(compare_length);
+```
+
+### **Range Function**
+
+Grapa provides a native range function for sequence generation:
+
+```grapa
+/* Basic range */
+numbers = (10).range();  /* [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] */
+
+/* Range with start and step */
+range1 = (10).range(1, 2);   /* [1, 3, 5, 7, 9] */
+range2 = (10).range(5, 1);   /* [5, 6, 7, 8, 9] */
+
+/* Parallel processing with range */
+squares = (1000).range(0, 1).map(op(x) { x * x; }, 8);  /* Parallel computation */
+```
+
+### **Enhanced Assignment Operators**
+
+Grapa provides enhanced assignment operators with position-based operations:
+
+```grapa
+/* Basic assignment operators */
+x += 5;      /* x = x + 5 */
+x -= 3;      /* x = x - 3 */
+x *= 2;      /* x = x * 2 */
+x /= 4;      /* x = x / 4 */
+
+/* Array assignment operators */
+arr = [1, 2, 3];
+arr += 4;        /* [1, 2, 3, 4] - append */
+arr ++= [5, 6];  /* [1, 2, 3, 4, 5, 6] - extend */
+arr -= 2;        /* [1, 3, 4, 5, 6] - remove at index */
+
+/* Position-based insertion */
+arr = [1, 2, 3];
+arr ++= 1, 10;   /* [1, 10, 2, 3] - insert at position 1 */
+
+/* List assignment operators */
+list = {a: 1, b: 2};
+list.c = 3;      /* {a: 1, b: 2, c: 3} */
+list["d"] = 4;   /* {a: 1, b: 2, c: 3, d: 4} */
+```
+
+### **Advanced Control Flow**
+
+Grapa provides comprehensive control flow structures:
+
+```grapa
+/* If-elseif-else */
+if (score >= 90) {
+    grade = "A";
+} elseif (score >= 80) {
+    grade = "B";
+} elseif (score >= 70) {
+    grade = "C";
+} else {
+    grade = "F";
+}
+
+/* While loops */
+counter = 0;
+while (counter < 10) {
+    counter.echo();
+    counter += 1;
+}
+
+/* Switch statements */
+switch (day) {
+    case 1: day_name = "Monday";;
+    case 2: day_name = "Tuesday";;
+    case 3: day_name = "Wednesday";;
+    default: day_name = "Unknown";;
+}
+```
+
+### **Functional Programming Syntax**
+
+Grapa provides elegant functional programming syntax:
+
+```grapa
+/* Lambda expressions */
+double = op(x) { x * 2; };
+square = op(x) { x * x; };
+
+/* Function composition */
+compose = op(f, g) { op(x) { f(g(x)); }; };
+double_then_square = compose(square, double);
+
+/* Functional methods */
+numbers = [1, 2, 3, 4, 5];
+doubled = numbers.map(double);
+filtered = numbers.filter(op(x) { x > 2; });
+sum = numbers.reduce(op(acc, x) { acc + x; }, 0);
+
+/* Parallel processing */
+parallel_result = numbers.map(op(x) { x * x; }, 4);  /* 4 threads */
+```
+
+### **Advanced Pattern Matching**
+
+Grapa provides superior pattern matching capabilities:
+
+```grapa
+/* Regex pattern matching */
+text = "Hello World 123";
+matches = text.grep("\\d+");  /* Find all digits */
+
+/* Boolean pattern matching */
+has_digits = text.match("\\d+");  /* true/false */
+has_letters = text.match("[a-zA-Z]+");  /* true/false */
+
+/* Complex pattern matching */
+email_pattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
+is_valid_email = email.match(email_pattern);
+```
+
+### **Metaprogramming Syntax**
+
+Grapa provides powerful metaprogramming capabilities:
+
+```grapa
+/* Dynamic code execution */
+code_string = "x * 2 + y";
+x = 10;
+y = 5;
+result = op()(code_string)();  /* 25 */
+
+/* Execution tree manipulation */
+func = op(x) { x * 2; };
+tree = func.plan();  /* Get execution tree */
+result = tree(5);    /* Execute tree with parameter */
+
+/* Template generation */
+template = "function ${name}(x) { return ${body}; }";
+generated_code = template.interpolate({
+    name: "double",
+    body: "x * 2"
+});
+```
+
 /*
 # Dynamic Code Execution (Grapa's Core Meta-Programming Capability)
 

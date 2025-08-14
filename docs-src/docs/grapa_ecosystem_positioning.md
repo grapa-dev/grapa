@@ -346,23 +346,26 @@ result = mixed_data.json.users.map(op(user) {
 - ⚠️ **Basic developer experience** - Limited tooling
 
 ### **Phase 1: Critical Features (Weeks 1-4)**
-- 🚧 **Exception handling** - `try/catch` blocks
 - 🚧 **For loops** - Native loop syntax
+- 📋 **Advanced control flow** - `foreach`, `do/while` (continue tracked with exception handling)
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
 - 📋 **Module system** - Import/export capabilities
 - 📋 **Line comments** - `//` and `#` support
-- 📋 **Advanced control flow** - `foreach`, `continue`, `do/while`
+- 📋 **Exception handling** - `try/catch` blocks, `return`, `break`, `continue` (special execution tree handling required - these are modern equivalents of "goto" and require special flags during execution tree processing)
 
 ### **Phase 3: Advanced Features (Weeks 9-12)**
-- 📋 **Advanced language features** - Additional syntax enhancements
+- 📋 **Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
+- 📋 **Enhanced Assignment Operators** - C++ implementation of `*=`, `/=`, `%=`, `**=` operators
+- 📋 **List Comprehension** - C++ implementation based on `custom_function` proof of concept
 - 📋 **Performance optimizations** - Compilation and execution improvements
 - 📋 **Tooling enhancements** - Development environment improvements
 
 ### **Phase 4: Polish (Weeks 13-16)**
 - 📋 **Type system** - Type annotations and constraints
-- 📋 **Advanced data structures** - Sets, Maps, Iterators
+- 📋 **Advanced data structures** - Sets (unique collections), Maps (ordered/hash-based), Iterators (lazy evaluation), Priority queues, Deques, Enhanced collections
 - 📋 **Debugging tools** - Stack traces, profiling, hot reloading
+- 📋 **Advanced language features** - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching, advanced module system, enhanced reflection
 
 ## Future Positioning
 

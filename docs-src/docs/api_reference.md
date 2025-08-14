@@ -56,30 +56,112 @@ if (condition) {
 ```
 
 ### Type System
+
 Grapa uses dynamic typing with rich runtime type introspection. **Everything in Grapa is data** - functions, classes, primitives, and everything else are just different data types that can be manipulated, stored, and passed around.
+
+#### **Dynamic Typing with Runtime Safety**
+
+Grapa's type system provides the flexibility of dynamic typing with the safety of runtime type checking:
+
+```grapa
+/* Dynamic type assignment */
+x = 42;        /* $INT */
+x = "hello";   /* $STR */
+x = [1, 2, 3]; /* $ARRAY */
+
+/* Runtime type checking */
+if (x.type() == $ARRAY) {
+    /* Safe to use array methods */
+    result = x.map(op(item) { item * 2; });
+}
+```
+
+#### **Type Introspection**
+
+Every value in Grapa supports type introspection:
+
+```grapa
+/* Get type information */
+value = 42;
+type = value.type();  /* $INT */
+
+/* Type comparison */
+if (value.type() == $INT) {
+    /* Handle integer */
+} elseif (value.type() == $STR) {
+    /* Handle string */
+}
+```
+
+#### **Unified Data Model**
+
+Grapa's unified data model means everything is a data type:
+
+```grapa
+/* Functions are data */
+func = op(x) { x * 2; };
+func_type = func.type();  /* $OP */
+
+/* Classes are data */
+class_obj = $ARRAY;
+class_type = class_obj.type();  /* $CLASS */
+
+/* Rules are data */
+rule_obj = rule <$expression> '+' <$expression> {@<add,{$1,$3}>};
+rule_type = rule_obj.type();  /* $RULE */
+```
+
+#### **Type Conversion**
+
+Grapa provides automatic and explicit type conversion:
+
+```grapa
+/* Automatic conversion */
+result = "42".int() + 8;  /* 50 */
+
+/* Explicit conversion */
+str_value = 42.str();     /* "42" */
+int_value = "42".int();   /* 42 */
+float_value = "3.14".float(); /* 3.14 */
+```
+
+#### **Type Safety Patterns**
+
+Best practices for type safety in Grapa:
+
+```grapa
+/* Defensive programming */
+process_data = op(data) {
+    if (data.type() != $ARRAY) {
+        return $ERR("Expected array");
+    }
+    
+    /* Safe to process as array */
+    return data.map(op(item) { item * 2; });
+};
+
+/* Type checking with fallbacks */
+safe_get = op(obj, key) {
+    if (obj.type() != $LIST) {
+        return null;
+    }
+    
+    value = obj[key];
+    if (value.type() == $ERR) {
+        return null;
+    }
+    
+    return value;
+};
+```
+
+#### **Core Type Methods**
 
 - `.type()` - Get the type of an object (returns `$STR`)
 - `.str()` - Convert to string
 - `.int()` - Convert to integer
 - `.float()` - Convert to float
 - `.bool()` - Convert to boolean
-
-```grapa
-/* Type checking */
-if (value.type() == $INT) { ... }
-if (value.type() == $STR) { ... }
-if (value.type() == $ARRAY) { ... }
-if (value.type() == $OP) { ... }    /* Functions are data */
-if (value.type() == $CLASS) { ... } /* Classes are data */
-
-/* Type conversion */
-text = number.str();
-number = text.int();
-
-/* Functions as data */
-my_func = op(x) { x * 2; };
-my_func.type().echo();  /* $OP */
-```
 
 ### Language Extensibility
 Grapa's most powerful feature is its ability to extend the language syntax at runtime. You can define custom commands and functions that become part of the language grammar.
