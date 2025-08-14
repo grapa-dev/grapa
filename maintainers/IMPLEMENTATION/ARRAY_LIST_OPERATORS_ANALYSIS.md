@@ -17,6 +17,11 @@ This document provides a comprehensive analysis of the C++ implementation of ass
 - **Purpose**: Handles `++=` operations for all data types
 - **Location**: `source/grapa/GrapaLibRule.cpp:514-520`
 - **Implementation**: Delegates to `ItemAssignRun()` with `"assignextend"` operation
+- **Grammar Variations**: Supports 4 syntax patterns in `lib/grapa/$grapa.grc`:
+  - `<litname> '+' '+' '=' <comp> <comp>` - 3-parameter with literal name
+  - `<litname> '+' '+' '=' <comp>` - 2-parameter with literal name  
+  - `<comp> '+' '+' '=' <comp> <comp>` - 3-parameter with expression
+  - `<comp> '+' '+' '=' <comp>` - 2-parameter with expression
 
 #### `GrapaLibraryRuleRemoveEvent`
 - **Purpose**: Handles `-=` operations for all data types
@@ -72,6 +77,49 @@ if (r1.vVal && r2.vVal && r1.vVal->mValue.mToken == GrapaTokenType::ARRAY && r2.
     // Array-specific operations
 }
 ```
+
+## Grammar Variations and C++ Implementation
+
+### Grammar Definition Analysis
+The `++=` operator is defined in `lib/grapa/$grapa.grc` with 4 distinct patterns:
+
+```grapa
+| <$litname> '+' '+' '=' <$comp> <$comp> {@<assignextend,{$1,$5,$6}>}  /* 3-parameter literal */
+| <$litname> '+' '+' '=' <$comp> {@<assignextend,{$1,$5}>}             /* 2-parameter literal */
+| <$comp> '+' '+' '=' <$comp> <$comp> {@<assignextend,{$1,$5,$6}>}     /* 3-parameter expression */
+| <$comp> '+' '+' '=' <$comp> {@<assignextend,{$1,$5}>}                /* 2-parameter expression */
+```
+
+**Key Insights:**
+- **Literal vs Expression**: Supports both literal names (`<$litname>`) and expressions (`<$comp>`)
+- **Parameter Count**: Supports both 2-parameter (standard) and 3-parameter (position-based) versions
+- **Parameter Mapping**: 
+  - `{$1}` = target variable/expression
+  - `{$5}` = value to concatenate
+  - `{$6}` = position (3-parameter version only)
+
+### C++ Implementation Details
+
+#### Parameter Processing
+```cpp
+GrapaRuleEvent* at = pInput->Head(2), * atDel = NULL;  // Third parameter (position)
+while (at && at->mValue.mToken == GrapaTokenType::PTR && at->vRulePointer) at = at->vRulePointer;
+if (at && (at->mValue.mToken == GrapaTokenType::OP)) at = atDel = vScriptExec->ProcessPlan(pNameSpace, at);
+while (at && at->mValue.mToken == GrapaTokenType::PTR && at->vRulePointer) at = at->vRulePointer;
+```
+
+#### Position-Based Insertion Logic
+```cpp
+if (at)
+    parameter->vQueue->Push(w3, at);  // Insert at specified position
+else
+    parameter->vQueue->PushTail(w3);  // Standard concatenation
+```
+
+#### Type-Specific Extensions
+- **Vectors**: `parameter->vVector->Extend(*r->vVector)`
+- **Widgets**: `parameter->vWidget->Extend(r->vWidget)`
+- **Collections**: Element-by-element copying with position support
 
 ## Advanced Capabilities Discovered
 

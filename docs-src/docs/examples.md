@@ -92,6 +92,7 @@ list.echo();
 arr1 = [1, 2, 3];
 arr2 = [4, 5, 6];
 arr1 ++= arr2;            /* Concatenate: [1,2,3,4,5,6] */
+arr1 ++= arr2 arr1[0];    /* Insert at beginning: [4,5,6,1,2,3] */
 arr1.echo();
 
 /* Search and filtering */
@@ -106,6 +107,7 @@ alice_users.echo();
 vec = [1, 2, 3, 4, 5];
 vec += 6;                 /* Add element */
 vec ++= [7, 8];           /* Extend vector */
+vec ++= [9, 10] vec[0];   /* Insert at beginning */
 
 /* Mathematical operations */
 vec1 = [1, 2, 3];

@@ -109,6 +109,12 @@ xml += <child>3</child> xml[0];            /* Add at specific position */
 ## `++=`
 Concatenate contents to source.
 
+### Syntax Variations
+The `++=` operator supports two syntax variations:
+
+1. **Standard Concatenation**: `target ++= value`
+2. **Position-Based Insertion**: `target ++= value position`
+
 ### Array/List Concatenation
 
 **Arrays (`$ARRAY`):**
@@ -116,6 +122,7 @@ Concatenate contents to source.
 arr1 = [1, 2, 3];
 arr2 = [4, 5, 6];
 arr1 ++= arr2;   /* Concatenate arrays: [1,2,3,4,5,6] */
+arr1 ++= arr2 arr1[0];  /* Insert at beginning: [4,5,6,1,2,3,4,5,6] */
 ```
 
 **Lists (`$LIST`):**
@@ -123,6 +130,7 @@ arr1 ++= arr2;   /* Concatenate arrays: [1,2,3,4,5,6] */
 list1 = {a:1, b:2};
 list2 = {c:3, d:4};
 list1 ++= list2; /* Concatenate lists: {"a":1,"b":2,"c":3,"d":4} */
+list1 ++= list2 list1[0];  /* Insert at beginning: {"c":3,"d":4,"a":1,"b":2} */
 ```
 
 **Vectors (`$VECTOR`):**
@@ -130,6 +138,7 @@ list1 ++= list2; /* Concatenate lists: {"a":1,"b":2,"c":3,"d":4} */
 vec1 = [1, 2, 3];
 vec2 = [4, 5, 6];
 vec1 ++= vec2;   /* Extend vector: [1,2,3,4,5,6] */
+vec1 ++= vec2 vec1[0];  /* Insert at beginning: [4,5,6,1,2,3] */
 ```
 
 **Widgets (`$WIDGET`):**
@@ -137,6 +146,7 @@ vec1 ++= vec2;   /* Extend vector: [1,2,3,4,5,6] */
 widget1 = {name:"button", type:"click"};
 widget2 = {name:"input", type:"text"};
 widget1 ++= widget2; /* Extend widget with another widget */
+widget1 ++= widget2 widget1[0];  /* Insert at beginning */
 ```
 
 **Rules:**
