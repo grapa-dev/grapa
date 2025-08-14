@@ -5,7 +5,7 @@ tags:
 ---
 # Unified Dot Notation System
 
-> **See also:** [Object Access Patterns](../obj/transform.md), [XML and HTML Processing](../type/xml.md)
+> **See also:** [Object Access Patterns](obj/transform.md), [XML and HTML Processing](type/xml.md)
 >
 > **Best Practices:**
 > - Use dot notation for simple property access
