@@ -331,7 +331,9 @@ result = mixed_data.json.users.map(op(user) {
 - ✅ **Cryptographic capabilities** - Prime generation, modular arithmetic, hash functions
 - ✅ **Unified path system** - Seamless file system and database navigation
 - ✅ **String interpolation** - Advanced template literal support with expressions and C++ implementation
-- ✅ **Enhanced assignment operators** - `*=`, `/=`, `%=`, `**=` for all types with position-based insertion
+- ✅ **Enhanced assignment operators** - `*=`, `/=`, `%=`, `**=` for numeric types with smart type promotion
+- ✅ **For loops** - Native loop syntax with consolidated smart handler supporting all variations
+- ✅ **Advanced control flow** - `foreach`, `do/while` integrated into for loop implementation
 - ✅ **XML/LIST integration** - Seamless embedding, unified dot notation, and `.list()` conversion
 - ✅ **Unified dot notation system** - Consistent access and assignment across all data types
 - ✅ **Advanced concurrency** - Structured parallel processing with callbacks
@@ -346,12 +348,6 @@ result = mixed_data.json.users.map(op(user) {
 - ⚠️ **Basic developer experience** - Limited tooling
 
 ### **Phase 1: Critical Features (Weeks 1-4)**
-- ✅ **For loops** - Native loop syntax (COMPLETED)
-  - **Features**: `for from/to`, `for from/to step`, `for in`, `foreach in`, `for (init;cond;inc)`, `do/while`
-  - **Implementation**: Smart consolidated handler with parameter detection and delayed evaluation
-- ✅ **Advanced control flow** - `foreach`, `do/while` (COMPLETED)
-  - **Status**: Integrated into consolidated for loop implementation
-- ✅ **Enhanced Assignment Operators** - C++ implementation of `*=`, `/=`, `%=`, `**=` operators (COMPLETED)
 - 📋 **List Comprehension** - C++ implementation based on `custom_function` proof of concept
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
