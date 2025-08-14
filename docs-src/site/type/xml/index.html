@@ -6,6 +6,8 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
+        <meta name="description" content="Comprehensive XML and HTML support with powerful querying capabilities">
+      
       
       
         <link rel="canonical" href="https://grapa-dev.github.io/grapa/type/xml/">
@@ -22,7 +24,7 @@
     
     
       
-        <title>XML - Grapa Documentation</title>
+        <title>XML and TAG Operations - Grapa Documentation</title>
       
     
     
@@ -108,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              XML
+              XML and TAG Operations
             
           </span>
         </div>
@@ -1324,27 +1326,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#creation" class="md-nav__link">
+  <a href="#xmlhtml-creation" class="md-nav__link">
     <span class="md-ellipsis">
-      Creation
+      XML/HTML Creation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#addition-operations" class="md-nav__link">
+  <a href="#type-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Addition Operations (+=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concatenation-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Concatenation Operations (++=)
+      Type Information
     </span>
   </a>
   
@@ -1356,19 +1349,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#xml-structure" class="md-nav__link">
+  <a href="#xml-structure-access" class="md-nav__link">
     <span class="md-ellipsis">
-      XML Structure
+      XML Structure Access
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="XML Structure">
+    <nav class="md-nav" aria-label="XML Structure Access">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#element-properties" class="md-nav__link">
+  <a href="#array-like-element-access" class="md-nav__link">
     <span class="md-ellipsis">
-      Element Properties
+      Array-like Element Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dot-notation-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dot Notation Access
     </span>
   </a>
   
@@ -1389,28 +1391,73 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#xml-navigation" class="md-nav__link">
+  <a href="#advanced-element-finding-findall" class="md-nav__link">
     <span class="md-ellipsis">
-      XML Navigation
+      Advanced Element Finding (.findall())
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="XML Navigation">
+    <nav class="md-nav" aria-label="Advanced Element Finding (.findall())">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#element-selection" class="md-nav__link">
+  <a href="#basic-queries" class="md-nav__link">
     <span class="md-ellipsis">
-      Element Selection
+      Basic Queries
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#element-traversal" class="md-nav__link">
+  <a href="#complex-attribute-queries" class="md-nav__link">
     <span class="md-ellipsis">
-      Element Traversal
+      Complex Attribute Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Content Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recursive-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recursive Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-findall-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with .findall() Results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#html-element-finding" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTML Element Finding
     </span>
   </a>
   
@@ -1422,37 +1469,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#xml-manipulation" class="md-nav__link">
+  <a href="#xml-to-list-conversion" class="md-nav__link">
     <span class="md-ellipsis">
-      XML Manipulation
+      XML to LIST Conversion
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="XML Manipulation">
+    <nav class="md-nav" aria-label="XML to LIST Conversion">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#adding-elements" class="md-nav__link">
+  <a href="#using-list-method" class="md-nav__link">
     <span class="md-ellipsis">
-      Adding Elements
+      Using .list() Method
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#removing-elements" class="md-nav__link">
+  <a href="#complex-structure-conversion" class="md-nav__link">
     <span class="md-ellipsis">
-      Removing Elements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#modifying-elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Modifying Elements
+      Complex Structure Conversion
     </span>
   </a>
   
@@ -1464,28 +1502,19 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#xml-processing" class="md-nav__link">
+  <a href="#string-output" class="md-nav__link">
     <span class="md-ellipsis">
-      XML Processing
+      String Output
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="XML Processing">
+    <nav class="md-nav" aria-label="String Output">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#content-extraction" class="md-nav__link">
+  <a href="#converting-to-string" class="md-nav__link">
     <span class="md-ellipsis">
-      Content Extraction
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#content-transformation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Content Transformation
+      Converting to String
     </span>
   </a>
   
@@ -1493,90 +1522,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#xml-serialization" class="md-nav__link">
-    <span class="md-ellipsis">
-      XML Serialization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="XML Serialization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#export-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Export Formats
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#import-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Import Formats
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Features
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#xpath-like-queries" class="md-nav__link">
-    <span class="md-ellipsis">
-      XPath-like Queries
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Template Processing
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-considerations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Considerations
-    </span>
-  </a>
   
 </li>
       
@@ -1608,10 +1553,52 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#xml-to-list-conversion" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
     <span class="md-ellipsis">
-      XML to LIST Conversion
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#element-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Element Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
     </span>
   </a>
   
@@ -3775,27 +3762,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#creation" class="md-nav__link">
+  <a href="#xmlhtml-creation" class="md-nav__link">
     <span class="md-ellipsis">
-      Creation
+      XML/HTML Creation
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#addition-operations" class="md-nav__link">
+  <a href="#type-information" class="md-nav__link">
     <span class="md-ellipsis">
-      Addition Operations (+=)
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#concatenation-operations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Concatenation Operations (++=)
+      Type Information
     </span>
   </a>
   
@@ -3807,19 +3785,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#xml-structure" class="md-nav__link">
+  <a href="#xml-structure-access" class="md-nav__link">
     <span class="md-ellipsis">
-      XML Structure
+      XML Structure Access
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="XML Structure">
+    <nav class="md-nav" aria-label="XML Structure Access">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#element-properties" class="md-nav__link">
+  <a href="#array-like-element-access" class="md-nav__link">
     <span class="md-ellipsis">
-      Element Properties
+      Array-like Element Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dot-notation-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dot Notation Access
     </span>
   </a>
   
@@ -3840,28 +3827,73 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#xml-navigation" class="md-nav__link">
+  <a href="#advanced-element-finding-findall" class="md-nav__link">
     <span class="md-ellipsis">
-      XML Navigation
+      Advanced Element Finding (.findall())
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="XML Navigation">
+    <nav class="md-nav" aria-label="Advanced Element Finding (.findall())">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#element-selection" class="md-nav__link">
+  <a href="#basic-queries" class="md-nav__link">
     <span class="md-ellipsis">
-      Element Selection
+      Basic Queries
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#element-traversal" class="md-nav__link">
+  <a href="#complex-attribute-queries" class="md-nav__link">
     <span class="md-ellipsis">
-      Element Traversal
+      Complex Attribute Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-operators" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical Operators
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Content Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recursive-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recursive Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-findall-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with .findall() Results
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#html-element-finding" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTML Element Finding
     </span>
   </a>
   
@@ -3873,37 +3905,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#xml-manipulation" class="md-nav__link">
+  <a href="#xml-to-list-conversion" class="md-nav__link">
     <span class="md-ellipsis">
-      XML Manipulation
+      XML to LIST Conversion
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="XML Manipulation">
+    <nav class="md-nav" aria-label="XML to LIST Conversion">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#adding-elements" class="md-nav__link">
+  <a href="#using-list-method" class="md-nav__link">
     <span class="md-ellipsis">
-      Adding Elements
+      Using .list() Method
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#removing-elements" class="md-nav__link">
+  <a href="#complex-structure-conversion" class="md-nav__link">
     <span class="md-ellipsis">
-      Removing Elements
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#modifying-elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      Modifying Elements
+      Complex Structure Conversion
     </span>
   </a>
   
@@ -3915,28 +3938,19 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#xml-processing" class="md-nav__link">
+  <a href="#string-output" class="md-nav__link">
     <span class="md-ellipsis">
-      XML Processing
+      String Output
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="XML Processing">
+    <nav class="md-nav" aria-label="String Output">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#content-extraction" class="md-nav__link">
+  <a href="#converting-to-string" class="md-nav__link">
     <span class="md-ellipsis">
-      Content Extraction
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#content-transformation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Content Transformation
+      Converting to String
     </span>
   </a>
   
@@ -3944,90 +3958,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#xml-serialization" class="md-nav__link">
-    <span class="md-ellipsis">
-      XML Serialization
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="XML Serialization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#export-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Export Formats
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#import-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Import Formats
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#advanced-features" class="md-nav__link">
-    <span class="md-ellipsis">
-      Advanced Features
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Advanced Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#xpath-like-queries" class="md-nav__link">
-    <span class="md-ellipsis">
-      XPath-like Queries
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#template-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      Template Processing
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#validation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validation
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#performance-considerations" class="md-nav__link">
-    <span class="md-ellipsis">
-      Performance Considerations
-    </span>
-  </a>
   
 </li>
       
@@ -4059,10 +3989,52 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#xml-to-list-conversion" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
     <span class="md-ellipsis">
-      XML to LIST Conversion
+      Performance Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#element-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      Element Access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
     </span>
   </a>
   
@@ -4096,350 +4068,250 @@
                 
                   
 
-  <nav class="md-tags" >
-    
-      
-      
-      
-        <span class="md-tag">highlevel</span>
-      
-    
-      
-      
-      
-        <span class="md-tag">user</span>
-      
-    
-  </nav>
-
 
 
 <h1 id="xml-and-tag-operations">XML and TAG Operations</h1>
-<p>Grapa provides comprehensive support for XML and TAG data types with specialized operations for document manipulation and processing.</p>
+<p>Grapa provides <strong>enterprise-grade</strong> XML and HTML support with sophisticated querying capabilities that rival XPath in many ways.</p>
 <h2 id="overview">Overview</h2>
-<p>XML and TAG types in Grapa are designed for structured document processing, web content generation, and data serialization. They support hierarchical structures with attributes, content, and nested elements.</p>
+<p>XML and TAG types in Grapa are designed for structured document processing and web content generation. They support hierarchical structures with attributes, content, and nested elements using <strong>unified dot notation</strong> and <strong>powerful query patterns</strong>.</p>
 <h2 id="basic-operations">Basic Operations</h2>
-<h3 id="creation">Creation</h3>
+<h3 id="xmlhtml-creation">XML/HTML Creation</h3>
 <div class="highlight"><pre><span></span><code>/* Create XML element */
-xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;
+xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
 
-/* Create TAG element */
-tag = &lt;div class=&quot;container&quot;&gt;&lt;p&gt;Hello World&lt;/p&gt;&lt;/div&gt;;
+/* Create HTML element */
+html = &lt;html&gt;&lt;head&gt;&lt;title&gt;Test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Hello&lt;/h1&gt;&lt;p&gt;World&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;;
 
 /* Create from string */
 xml_str = &quot;&lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;&quot;;
 xml = xml_str.xml();
-
-/* Create from list */
-data = {tag:&quot;root&quot;, children:[{tag:&quot;item&quot;, content:&quot;1&quot;}]};
-xml = data.to_xml();
 </code></pre></div>
-<h3 id="addition-operations">Addition Operations (<code>+=</code>)</h3>
+<h3 id="type-information">Type Information</h3>
 <div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;
-
-/* Add XML element */
-xml += &lt;newitem&gt;2&lt;/newitem&gt;;               /* Add element to end */
-
-/* Add at specific position */
-xml += &lt;child&gt;3&lt;/child&gt; xml[0];            /* Add before first element */
-
-/* Add with attributes */
-xml += &lt;item id=&quot;new&quot; class=&quot;highlight&quot;&gt;4&lt;/item&gt;;
+xml.type();                    /* Returns: $XML */
+xml[0].type();                 /* Returns: $TAG */
 </code></pre></div>
-<h3 id="concatenation-operations">Concatenation Operations (<code>++=</code>)</h3>
-<div class="highlight"><pre><span></span><code>xml1 = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;
-xml2 = &lt;root&gt;&lt;item&gt;2&lt;/item&gt;&lt;item&gt;3&lt;/item&gt;&lt;/root&gt;;
+<h2 id="xml-structure-access">XML Structure Access</h2>
+<h3 id="array-like-element-access">Array-like Element Access</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
 
-/* Concatenate XML documents */
-xml1 ++= xml2;                             /* Combine XML structures */
-</code></pre></div>
-<h2 id="xml-structure">XML Structure</h2>
-<h3 id="element-properties">Element Properties</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;div id=&quot;main&quot; class=&quot;container&quot;&gt;
-    &lt;h1&gt;Title&lt;/h1&gt;
-    &lt;p&gt;Content&lt;/p&gt;
-&lt;/div&gt;;
-
-/* Access element properties */
-tag_name = xml.tag;                        /* &quot;div&quot; */
-attributes = xml.attributes;                /* {id:&quot;main&quot;, class:&quot;container&quot;} */
-content = xml.content;                     /* Text content */
-children = xml.children;                   /* Child elements */
-</code></pre></div>
-<h3 id="attribute-access">Attribute Access</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;div id=&quot;main&quot; class=&quot;container&quot; data-value=&quot;123&quot;&gt;&lt;/div&gt;;
-
-/* Access attributes */
-id_value = xml.attributes.id;              /* &quot;main&quot; */
-class_value = xml.attributes.class;        /* &quot;container&quot; */
-data_value = xml.attributes[&quot;data-value&quot;]; /* &quot;123&quot; */
-
-/* Set attributes */
-xml.attributes.id = &quot;new_id&quot;;
-xml.attributes[&quot;data-value&quot;] = &quot;456&quot;;
-</code></pre></div>
-<h2 id="xml-navigation">XML Navigation</h2>
-<h3 id="element-selection">Element Selection</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;
-    &lt;header&gt;
-        &lt;title&gt;Page Title&lt;/title&gt;
-    &lt;/header&gt;
-    &lt;body&gt;
-        &lt;section&gt;
-            &lt;h1&gt;Section Title&lt;/h1&gt;
-            &lt;p&gt;Content&lt;/p&gt;
-        &lt;/section&gt;
-    &lt;/body&gt;
-&lt;/root&gt;;
-
-/* Find elements by tag name */
-titles = xml.find_all(&quot;title&quot;);            /* All title elements */
-headers = xml.find_all(&quot;header&quot;);          /* All header elements */
-
-/* Find element by ID */
-main_section = xml.find(&quot;#main&quot;);
-
-/* Find elements by class */
-highlighted = xml.find_all(&quot;.highlight&quot;);
-
-/* Find by path */
-section_title = xml.find(&quot;body/section/h1&quot;);
-</code></pre></div>
-<h3 id="element-traversal">Element Traversal</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;/root&gt;;
+/* Access root element (required for $XML) */
+xml[0]                         /* Returns: &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt; */
 
 /* Access child elements */
-first_item = xml.children[0];              /* First item */
-last_item = xml.children[-1];              /* Last item */
+xml[0][0]                      /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+xml[0][1]                      /* Returns: &lt;item id=&quot;2&quot;&gt;World&lt;/item&gt; */
 
-/* Get parent element */
-parent = xml.parent;
+/* Access element content */
+xml[0][0][0]                   /* Returns: &quot;Hello&quot; */
+xml[0][1][0]                   /* Returns: &quot;World&quot; */
 
-/* Get sibling elements */
-siblings = xml.siblings;
-
-/* Get next/previous sibling */
-next_sibling = xml.next_sibling;
-prev_sibling = xml.previous_sibling;
+/* Get element count */
+xml[0].len()                   /* Returns: 2 (number of child elements) */
+xml[0][0].len()                /* Returns: 1 (content count) */
 </code></pre></div>
-<h2 id="xml-manipulation">XML Manipulation</h2>
-<h3 id="adding-elements">Adding Elements</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;/root&gt;;
+<h3 id="dot-notation-access">Dot Notation Access</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
 
-/* Add child element */
-xml += &lt;item&gt;1&lt;/item&gt;;
+/* Direct dot notation access */
+xml.root                       /* Returns: &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt; */
+xml.root.item                  /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+xml.root.item[0]               /* Returns: &quot;Hello&quot; */
 
-/* Add element with attributes */
-xml += &lt;item id=&quot;new&quot; class=&quot;highlight&quot;&gt;2&lt;/item&gt;;
-
-/* Add at specific position */
-xml += &lt;header&gt;Title&lt;/header&gt; xml[0];      /* Add at beginning */
-
-/* Add multiple elements */
-xml += [&lt;item&gt;3&lt;/item&gt;, &lt;item&gt;4&lt;/item&gt;];
+/* Access nested structures */
+xml.root.item.attr             /* Returns: {&quot;id&quot;:&quot;1&quot;} */
+xml.root.item.attr.id          /* Returns: &quot;1&quot; */
 </code></pre></div>
-<h3 id="removing-elements">Removing Elements</h3>
+<h3 id="attribute-access">Attribute Access</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot; class=&quot;test&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
+
+/* Access all attributes of an element */
+xml[0][0].attr                 /* Returns: {&quot;id&quot;:&quot;1&quot;,&quot;class&quot;:&quot;test&quot;} */
+
+/* Access specific attributes */
+xml[0][0].attr.id              /* Returns: &quot;1&quot; */
+xml[0][0].attr.class           /* Returns: &quot;test&quot; */
+
+/* Access attributes via dot notation */
+xml.root.item.attr.id          /* Returns: &quot;1&quot; */
+xml.root.item.attr.class       /* Returns: &quot;test&quot; */
+</code></pre></div>
+<h2 id="advanced-element-finding-findall">Advanced Element Finding (.findall())</h2>
+<p>The <code>.findall()</code> method provides <strong>enterprise-grade querying capabilities</strong> with support for complex patterns and logical operations.</p>
+<h3 id="basic-queries">Basic Queries</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
+
+/* Find by tag name */
+xml.findall({name:&quot;item&quot;})     /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt; */
+
+/* Find by content value */
+xml.findall({value:&quot;Hello&quot;})   /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+
+/* Find by attributes */
+xml.findall({attr:{id:&quot;2&quot;}})   /* Returns: &lt;item id=&quot;2&quot;&gt;World&lt;/item&gt; */
+
+/* Find by tag name and attributes */
+xml.findall({name:&quot;item&quot;, attr:{id:&quot;1&quot;}}) /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+</code></pre></div>
+<h3 id="complex-attribute-queries">Complex Attribute Queries</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot; class=&quot;test&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot; class=&quot;prod&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
+
+/* Multiple attributes */
+xml.findall({attr:{id:&quot;1&quot;, class:&quot;test&quot;}}) /* Returns: &lt;item id=&quot;1&quot; class=&quot;test&quot;&gt;Hello&lt;/item&gt; */
+
+/* Tag name with multiple attributes */
+xml.findall({name:&quot;item&quot;, attr:{id:&quot;1&quot;, class:&quot;test&quot;}}) /* Returns: &lt;item id=&quot;1&quot; class=&quot;test&quot;&gt;Hello&lt;/item&gt; */
+</code></pre></div>
+<h3 id="logical-operators">Logical Operators</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;title&gt;Test&lt;/title&gt;&lt;/root&gt;;
+
+/* AND logic */
+xml.findall({and:[{name:&quot;item&quot;}, {attr:{id:&quot;1&quot;}}]}) /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+
+/* OR logic */
+xml.findall({or:[{name:&quot;item&quot;}, {name:&quot;title&quot;}]}) /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;title&gt;Test&lt;/title&gt; */
+
+/* NAND logic */
+xml.findall({nand:[{name:&quot;item&quot;}, {attr:{id:&quot;2&quot;}}]}) /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+</code></pre></div>
+<h3 id="content-matching">Content Matching</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
+
+/* Exact content match */
+xml.findall({value:&quot;Hello&quot;})   /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+
+/* Multiple content values */
+xml.findall({value:[&quot;Hello&quot;, &quot;World&quot;]}) /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt; */
+</code></pre></div>
+<h3 id="recursive-search">Recursive Search</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;header&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;/header&gt;&lt;body&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/body&gt;&lt;/root&gt;;
+
+/* Searches through ALL nested elements */
+xml.findall({name:&quot;item&quot;})     /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt; */
+</code></pre></div>
+<h3 id="working-with-findall-results">Working with .findall() Results</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;item id=&quot;3&quot;&gt;Another&lt;/item&gt;&lt;/root&gt;;
+
+/* Get all results */
+results = xml.findall({name:&quot;item&quot;});
+results.len()                  /* Returns: 3 */
+
+/* Access individual results */
+first = results[0];            /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+second = results[1];           /* Returns: &lt;item id=&quot;2&quot;&gt;World&lt;/item&gt; */
+
+/* Access attributes of results */
+first.attr                     /* Returns: {&quot;id&quot;:&quot;1&quot;} */
+first.attr.id                  /* Returns: &quot;1&quot; */
+first[0]                       /* Returns: &quot;Hello&quot; */
+</code></pre></div>
+<h3 id="html-element-finding">HTML Element Finding</h3>
+<div class="highlight"><pre><span></span><code>html = &lt;html&gt;&lt;head&gt;&lt;title&gt;Test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Hello&lt;/h1&gt;&lt;p&gt;World&lt;/p&gt;&lt;p&gt;Another&lt;/p&gt;&lt;div&gt;&lt;p&gt;Nested&lt;/p&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;;
+
+/* Find all paragraph elements (including nested) */
+html.findall({name:&quot;p&quot;})       /* Returns: &lt;p&gt;World&lt;/p&gt;&lt;p&gt;Another&lt;/p&gt;&lt;p&gt;Nested&lt;/p&gt; */
+
+/* Find all heading elements */
+html.findall({name:&quot;h1&quot;})      /* Returns: &lt;h1&gt;Hello&lt;/h1&gt; */
+
+/* Find elements by class */
+html.findall({name:&quot;div&quot;, attr:{class:&quot;container&quot;}})
+</code></pre></div>
+<h2 id="xml-to-list-conversion">XML to LIST Conversion</h2>
+<h3 id="using-list-method">Using .list() Method</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
+
+/* Convert XML to LIST structure */
+list = xml.list();             /* Returns: {{&quot;root&quot;:[{},[{&quot;item&quot;:[{&quot;id&quot;:&quot;1&quot;},[&quot;Hello&quot;]]},{&quot;item&quot;:[{&quot;id&quot;:&quot;2&quot;},[&quot;World&quot;]]}]]}} */
+
+/* Access converted data */
+list.root[1][0].item[1][0]     /* Returns: &quot;Hello&quot; */
+list.root[1][1].item[1][0]     /* Returns: &quot;World&quot; */
+</code></pre></div>
+<h3 id="complex-structure-conversion">Complex Structure Conversion</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;html&gt;&lt;head&gt;&lt;title&gt;Test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Hello&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;;
+
+/* Convert complex nested structure */
+list = xml.list();             /* Complex nested LIST structure */
+
+/* Access nested elements */
+list.html[1][0].head[1][0].title[1][0]  /* Returns: &quot;Test&quot; */
+list.html[1][1].body[1][0].h1[1][0]     /* Returns: &quot;Hello&quot; */
+</code></pre></div>
+<h2 id="string-output">String Output</h2>
+<h3 id="converting-to-string">Converting to String</h3>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt;;
+
+/* Get XML string representation */
+xml.echo();                    /* Outputs: &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt; */
+xml.str();                     /* Returns: &lt;root&gt;&lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;World&lt;/item&gt;&lt;/root&gt; */
+
+/* Get string representation of individual elements */
+xml[0][0].str();               /* Returns: &lt;item id=&quot;1&quot;&gt;Hello&lt;/item&gt; */
+</code></pre></div>
+<h2 id="integration-with-other-types">Integration with Other Types</h2>
+<h3 id="xml-and-arrays">XML and Arrays</h3>
 <div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;item&gt;3&lt;/item&gt;&lt;/root&gt;;
 
-/* Remove by index */
-xml -= xml[1];                             /* Remove second item */
-
-/* Remove by tag name */
-xml.remove_all(&quot;item&quot;);                    /* Remove all item elements */
-
-/* Remove by condition */
-xml.remove(op(element){
-    return element.content == &quot;2&quot;;
-});
+/* Iterate over elements */
+for (i = 0; i &lt; xml[0].len(); i++) {
+    xml[0][i].echo();          /* Output each item element */
+}
 </code></pre></div>
-<h3 id="modifying-elements">Modifying Elements</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;div class=&quot;old&quot;&gt;Content&lt;/div&gt;;
+<h3 id="xml-and-lists">XML and Lists</h3>
+<div class="highlight"><pre><span></span><code>/* XML elements behave like lists for attribute access */
+first_item = xml[0][0];        /* First item element */
+first_item.attr.id             /* Access attribute like a list property */
 
-/* Change tag name */
-xml.tag = &quot;span&quot;;
-
-/* Change content */
-xml.content = &quot;New Content&quot;;
-
-/* Change attributes */
-xml.attributes.class = &quot;new&quot;;
-xml.attributes.id = &quot;main&quot;;
-
-/* Add new attributes */
-xml.attributes[&quot;data-value&quot;] = &quot;123&quot;;
-</code></pre></div>
-<h2 id="xml-processing">XML Processing</h2>
-<h3 id="content-extraction">Content Extraction</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;article&gt;
-    &lt;title&gt;Article Title&lt;/title&gt;
-    &lt;content&gt;
-        &lt;p&gt;First paragraph&lt;/p&gt;
-        &lt;p&gt;Second paragraph&lt;/p&gt;
-    &lt;/content&gt;
-&lt;/article&gt;;
-
-/* Extract text content */
-title = xml.find(&quot;title&quot;).text();          /* &quot;Article Title&quot; */
-all_text = xml.text();                     /* All text content */
-
-/* Extract attribute values */
-class_values = xml.find_all(&quot;[class]&quot;).map(op(el){el.attributes.class;});
-</code></pre></div>
-<h3 id="content-transformation">Content Transformation</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;/root&gt;;
-
-/* Transform elements */
-xml.transform(op(element){
-    element.content = element.content.int() * 2;
-    return element;
-});
-
-/* Map over elements */
-doubled = xml.map(op(element){
-    return &lt;item&gt;{element.content.int() * 2}&lt;/item&gt;;
-});
-</code></pre></div>
-<h2 id="xml-serialization">XML Serialization</h2>
-<h3 id="export-formats">Export Formats</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;/root&gt;;
-
-/* Export to string */
-xml_string = xml.to_string();              /* XML string */
-pretty_string = xml.to_string(true);       /* Pretty-printed */
-
-/* Export to JSON */
-json_data = xml.to_json();                 /* Convert to JSON structure */
-
-/* Export to list */
-list_data = xml.to_list();                 /* Convert to list structure */
-</code></pre></div>
-<h3 id="import-formats">Import Formats</h3>
-<div class="highlight"><pre><span></span><code>/* Import from string */
-xml_str = &quot;&lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;&quot;;
-xml = xml_str.xml();
-
-/* Import from JSON */
-json_data = {tag:&quot;root&quot;, children:[{tag:&quot;item&quot;, content:&quot;1&quot;}]};
-xml = json_data.to_xml();
-
-/* Import from list */
-list_data = {tag:&quot;root&quot;, children:[{tag:&quot;item&quot;, content:&quot;1&quot;}]};
-xml = list_data.to_xml();
-</code></pre></div>
-<h2 id="advanced-features">Advanced Features</h2>
-<h3 id="xpath-like-queries">XPath-like Queries</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;
-    &lt;section id=&quot;main&quot;&gt;
-        &lt;h1&gt;Title&lt;/h1&gt;
-        &lt;p&gt;Content&lt;/p&gt;
-    &lt;/section&gt;
-    &lt;section id=&quot;sidebar&quot;&gt;
-        &lt;h2&gt;Sidebar&lt;/h2&gt;
-    &lt;/section&gt;
-&lt;/root&gt;;
-
-/* Query by path */
-main_content = xml.query(&quot;section[@id=&#39;main&#39;]&quot;);
-titles = xml.query(&quot;//h1|//h2&quot;);           /* All h1 and h2 elements */
-
-/* Query with conditions */
-highlighted = xml.query(&quot;//*[@class=&#39;highlight&#39;]&quot;);
-numbered = xml.query(&quot;//item[@id&gt;5]&quot;);
-</code></pre></div>
-<h3 id="template-processing">Template Processing</h3>
-<div class="highlight"><pre><span></span><code>/* XML template with placeholders */
-template = &lt;div class=&quot;user-card&quot;&gt;
-    &lt;h2&gt;{name}&lt;/h2&gt;
-    &lt;p&gt;Email: {email}&lt;/p&gt;
-    &lt;p&gt;Age: {age}&lt;/p&gt;
-&lt;/div&gt;;
-
-/* Fill template with data */
-user_data = {name:&quot;Alice&quot;, email:&quot;alice@example.com&quot;, age:30};
-filled_template = template.fill(user_data);
-</code></pre></div>
-<h3 id="validation">Validation</h3>
-<div class="highlight"><pre><span></span><code>xml = &lt;form&gt;
-    &lt;input type=&quot;text&quot; name=&quot;username&quot; required=&quot;true&quot;/&gt;
-    &lt;input type=&quot;email&quot; name=&quot;email&quot; required=&quot;true&quot;/&gt;
-    &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
-&lt;/form&gt;;
-
-/* Validate XML structure */
-is_valid = xml.validate();
-
-/* Validate against schema */
-schema = &lt;schema&gt;...&lt;/schema&gt;;
-is_valid = xml.validate(schema);
-
-/* Get validation errors */
-errors = xml.get_validation_errors();
+/* Convert XML to LIST for complex processing */
+list_data = xml.list();        /* Full LIST conversion */
 </code></pre></div>
 <h2 id="performance-considerations">Performance Considerations</h2>
 <ul>
-<li><strong>Lazy Parsing</strong>: XML is parsed only when accessed</li>
-<li><strong>Memory Efficiency</strong>: Optimized storage for large XML documents</li>
-<li><strong>Streaming Support</strong>: Processing of large XML files without loading entire document</li>
-<li><strong>Caching</strong>: Frequently accessed elements are cached for performance</li>
+<li><strong>Efficient Parsing</strong>: XML is parsed efficiently during creation</li>
+<li><strong>Array-like Access</strong>: Direct indexing provides fast element access</li>
+<li><strong>Powerful Finding</strong>: <code>.findall()</code> method supports complex queries with logical operators</li>
+<li><strong>Memory Efficient</strong>: Optimized storage for XML structures</li>
+<li><strong>Recursive Search</strong>: Efficient traversal of nested structures</li>
 </ul>
-<h2 id="integration-with-other-types">Integration with Other Types</h2>
-<h3 id="xml-and-arrays">XML and Arrays</h3>
-<div class="highlight"><pre><span></span><code>/* Convert array to XML */
-data = [1, 2, 3, 4, 5];
-xml = &lt;root&gt;{data.map(op(item){&lt;item&gt;{item}&lt;/item&gt;;})}&lt;/root&gt;;
+<h2 id="limitations">Limitations</h2>
+<p>The following features are <strong>not currently implemented or fully supported</strong>:
+- <strong><code>.find()</code> method</strong> - Use <code>findall()[0]</code> instead (not needed given <code>.findall()</code>'s power)
+- <strong><code>.tag</code> property</strong> - Tag names are embedded in string representation, direct <code>.tag</code> property is not available
+- <strong><code>.children</code> property</strong> - Use array indexing <code>[0]</code>, <code>[1]</code>, etc.
+- <strong><code>.parent</code> property</strong> - Not implemented
+- <strong><code>.siblings</code> property</strong> - Not implemented
+- <strong><code>.to_json()</code> method</strong> - Not implemented
+- <strong>XML manipulation operators</strong> (<code>+=</code>, <code>-=</code>, <code>++=</code>) - Not implemented</p>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="element-access">Element Access</h3>
+<div class="highlight"><pre><span></span><code>/* Use array indexing for direct access to children */
+xml[0][0]                      /* First child element */
 
-/* Convert XML to array */
-xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;item&gt;3&lt;/item&gt;&lt;/root&gt;;
-array = xml.children.map(op(child){child.content.int();});
+/* Use dot notation for direct access to named children */
+xml.root.item                  /* First &#39;item&#39; child of &#39;root&#39; */
+
+/* Use .findall() for complex queries and recursive searches */
+xml.findall({name:&quot;item&quot;, attr:{class:&quot;highlight&quot;}})
+
+/* Use .attr for attribute access */
+xml[0][0].attr.id              /* Access specific attribute */
 </code></pre></div>
-<h3 id="xml-and-lists">XML and Lists</h3>
-<div class="highlight"><pre><span></span><code>/* Convert list to XML */
-data = {name:&quot;Alice&quot;, age:30, city:&quot;New York&quot;};
-xml = &lt;person&gt;
-    &lt;name&gt;{data.name}&lt;/name&gt;
-    &lt;age&gt;{data.age}&lt;/age&gt;
-    &lt;city&gt;{data.city}&lt;/city&gt;
-&lt;/person&gt;;
-
-/* Convert XML to list using .list() method */
-xml = &lt;person&gt;&lt;name&gt;Alice&lt;/name&gt;&lt;age&gt;30&lt;/age&gt;&lt;/person&gt;;
-list = xml.list();  /* Converts XML to LIST structure */
-
-/* Convert XML to list manually */
-xml = &lt;person&gt;&lt;name&gt;Alice&lt;/name&gt;&lt;age&gt;30&lt;/age&gt;&lt;/person&gt;;
-list = {
-    name: xml.find(&quot;name&quot;).content,
-    age: xml.find(&quot;age&quot;).content.int()
-};
-</code></pre></div>
-<h3 id="xml-to-list-conversion">XML to LIST Conversion</h3>
-<p>The <code>.list()</code> method converts XML structures to LIST format:</p>
-<div class="highlight"><pre><span></span><code>/* Simple element conversion */
-xml = &lt;item&gt;test&lt;/item&gt;;
-list = xml.list();  /* {{&quot;item&quot;:[{},[&quot;test&quot;]]}} */
-
-/* Element with attributes */
-xml = &lt;div class=&quot;main&quot;&gt;content&lt;/div&gt;;
-list = xml.list();  /* {{&quot;div&quot;:[{&quot;class&quot;:&quot;main&quot;},[&quot;content&quot;]]}} */
-
-/* Complex nested structure */
-xml = &lt;html&gt;&lt;body&gt;&lt;div class=&quot;main&quot;&gt;&lt;h1&gt;Title&lt;/h1&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;;
-list = xml.list();  /* Complex nested LIST structure */
-
-/* Access converted data */
-xml = &lt;user&gt;&lt;name&gt;Alice&lt;/name&gt;&lt;age&gt;30&lt;/age&gt;&lt;/user&gt;;
-list = xml.list();
-user_name = list.user[1][0].name[1][0];  /* &quot;Alice&quot; */
-user_age = list.user[1][1].age[1][0];    /* &quot;30&quot; */
+<h3 id="error-handling">Error Handling</h3>
+<div class="highlight"><pre><span></span><code>/* Check for existence before accessing properties or elements */
+if (xml.root) {
+    if (xml.root.item) {
+        xml.root.item.echo();
+    }
+}
 </code></pre></div>
 <h2 id="see-also">See also</h2>
 <ul>
 <li><a href="../array/">$ARRAY object</a></li>
 <li><a href="../list/">$LIST object</a></li>
-<li><a href="../widget/">$WIDGET object</a></li>
+<li><a href="../tag/">$TAG object</a></li>
 <li><a href="../../operators/assignment/">Assignment Operators</a></li>
 <li><a href="../../obj/transform/">String Operations</a></li>
-<li><a href="../../unified_dot_notation/">Unified Dot Notation System</a></li>
 </ul>
 
 

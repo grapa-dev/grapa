@@ -1019,6 +1019,66 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#concatenation-and-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concatenation and Extension
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-element-finding-findall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Element Finding (.findall())
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Element Finding (.findall())">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex-nested-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Nested Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with Results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3548,6 +3608,66 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#concatenation-and-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concatenation and Extension
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-element-finding-findall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Element Finding (.findall())
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Element Finding (.findall())">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex-nested-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Nested Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with Results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3674,6 +3794,73 @@ list -= list[-1];        /* {} */
 list -= 2;               /* No effect - value-based removal not supported */
 list -= &quot;b&quot;;             /* No effect - direct string removal not supported */
 list -= list.b;          /* Error - trying to remove value, not key */
+</code></pre></div>
+<h3 id="concatenation-and-extension">Concatenation and Extension</h3>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
+
+/* Add elements */
+list += {d:4};                            /* {a:1, b:2, c:3, d:4} */
+
+/* Extend with multiple elements */
+list ++= {e:5, f:6};                      /* {a:1, b:2, c:3, d:4, e:5, f:6} */
+
+/* Insert at specific position */
+list ++= {g:7}, 2;                        /* Insert at position 2 */
+
+/* Remove elements */
+list -= {b:2};                            /* Remove element with key &quot;b&quot; */
+</code></pre></div>
+<h3 id="advanced-element-finding-findall">Advanced Element Finding (.findall())</h3>
+<p>The <code>.findall()</code> method provides <strong>enterprise-grade querying capabilities</strong> for LIST structures with support for complex patterns and logical operations.</p>
+<h4 id="basic-queries">Basic Queries</h4>
+<div class="highlight"><pre><span></span><code>data = {name:&quot;Alice&quot;, age:30, city:&quot;New York&quot;};
+
+/* Find by property existence */
+data.findall({has:{name:&quot;age&quot;}})          /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+
+/* Find by property value */
+data.findall({has:{name:&quot;name&quot;, value:&quot;Alice&quot;}}) /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+
+/* Find by value only */
+data.findall({has:{value:&quot;Alice&quot;}})       /* Returns: {&quot;data&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+</code></pre></div>
+<h4 id="complex-nested-queries">Complex Nested Queries</h4>
+<div class="highlight"><pre><span></span><code>nested = {user:{name:&quot;Alice&quot;, age:30}, admin:{name:&quot;Bob&quot;, age:25}};
+
+/* Find nested objects */
+nested.findall({has:{name:&quot;user&quot;}})       /* Returns: {&quot;nested&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30},&quot;admin&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25}}} */
+
+/* Find with nested criteria */
+nested.findall({has:{name:&quot;user&quot;, has:{name:&quot;name&quot;, value:&quot;Alice&quot;}}}) /* Returns: {&quot;nested&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30},&quot;admin&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25}}} */
+
+/* Find with multiple nested criteria */
+nested.findall({has:{name:&quot;user&quot;, has:{name:&quot;age&quot;, value:30}}}) /* Returns: {&quot;nested&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30},&quot;admin&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25}}} */
+</code></pre></div>
+<h4 id="logical-operations">Logical Operations</h4>
+<div class="highlight"><pre><span></span><code>data = {user:{name:&quot;Alice&quot;, role:&quot;admin&quot;}, guest:{name:&quot;Bob&quot;, role:&quot;user&quot;}};
+
+/* AND logic */
+data.findall({and:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;user&quot;, has:{name:&quot;role&quot;, value:&quot;admin&quot;}}}]}) /* Returns: {&quot;data&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;},&quot;guest&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}} */
+
+/* OR logic */
+data.findall({or:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;guest&quot;}}]}) /* Returns: {&quot;data&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;},&quot;guest&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}} */
+
+/* NAND logic */
+data.findall({nand:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;user&quot;, has:{name:&quot;role&quot;, value:&quot;user&quot;}}}]}) /* Returns: {&quot;data&quot;:{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;},&quot;guest&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}} */
+</code></pre></div>
+<h4 id="working-with-results">Working with Results</h4>
+<div class="highlight"><pre><span></span><code>data = {user:{name:&quot;Alice&quot;, age:30}, admin:{name:&quot;Bob&quot;, age:25}};
+
+/* Get all results */
+results = data.findall({has:{name:&quot;user&quot;}});
+results.len()                              /* Returns: 1 */
+
+/* Access individual results */
+first = results[0];                        /* Returns: {&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+
+/* Access nested properties of results */
+first.user.name                            /* Returns: &quot;Alice&quot; */
+first.user.age                             /* Returns: 30 */
 </code></pre></div>
 
 

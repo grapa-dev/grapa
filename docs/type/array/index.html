@@ -858,6 +858,66 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#concatenation-and-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concatenation and Extension
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-element-finding-findall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Element Finding (.findall())
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Element Finding (.findall())">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex-nested-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Nested Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with Results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3548,6 +3608,66 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#concatenation-and-extension" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concatenation and Extension
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-element-finding-findall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Element Finding (.findall())
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Element Finding (.findall())">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complex-nested-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Complex Nested Queries
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#logical-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Logical Operations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with Results
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3653,6 +3773,75 @@ arr -= arr[0];            /* [2,4] */
 /* These do NOT work: */
 arr -= 3;                 /* No effect - value-based removal not supported */
 arr -= &quot;2&quot;;               /* No effect - direct string removal not supported */
+</code></pre></div>
+<h3 id="concatenation-and-extension">Concatenation and Extension</h3>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3];
+
+/* Add elements */
+arr += 4;                                 /* [1, 2, 3, 4] */
+
+/* Extend with multiple elements */
+arr ++= 5, 6;                             /* [1, 2, 3, 4, 5, 6] */
+
+/* Insert at specific position */
+arr ++= 7, 2;                             /* Insert at position 2 */
+
+/* Remove elements */
+arr -= 3;                                 /* Remove element with value 3 */
+</code></pre></div>
+<h3 id="advanced-element-finding-findall">Advanced Element Finding (.findall())</h3>
+<p>The <code>.findall()</code> method provides <strong>enterprise-grade querying capabilities</strong> for ARRAY structures with support for complex patterns and logical operations.</p>
+<h4 id="basic-queries">Basic Queries</h4>
+<div class="highlight"><pre><span></span><code>arr = [{name:&quot;Alice&quot;}, {name:&quot;Bob&quot;}, {name:&quot;Charlie&quot;}];
+
+/* Find objects with specific properties */
+arr.findall({has:{name:&quot;name&quot;}})          /* Returns: [{&quot;name&quot;:&quot;Alice&quot;},{&quot;name&quot;:&quot;Bob&quot;},{&quot;name&quot;:&quot;Charlie&quot;}] */
+
+/* Find objects with specific property values */
+arr.findall({has:{name:&quot;name&quot;, value:&quot;Bob&quot;}}) /* Returns: [{&quot;name&quot;:&quot;Bob&quot;}] */
+
+/* Find by value only (for simple arrays) */
+simple_arr = [1, 2, 3, 4, 5];
+simple_arr.findall({has:{value:3}})       /* Returns: [] (not supported for simple values) */
+</code></pre></div>
+<h4 id="complex-nested-queries">Complex Nested Queries</h4>
+<div class="highlight"><pre><span></span><code>complex_arr = [{user:{name:&quot;Alice&quot;, role:&quot;admin&quot;}}, {user:{name:&quot;Bob&quot;, role:&quot;user&quot;}}];
+
+/* Find with nested criteria */
+complex_arr.findall({has:{name:&quot;user&quot;, has:{name:&quot;role&quot;, value:&quot;admin&quot;}}}) /* Returns: [{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;}}] */
+
+/* Find with multiple nested criteria */
+complex_arr.findall({has:{name:&quot;user&quot;, has:{name:&quot;name&quot;, value:&quot;Bob&quot;}}}) /* Returns: [{&quot;user&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}] */
+
+/* Find with deep nesting */
+deep_arr = [{level1:{level2:{level3:{value:&quot;deep&quot;}}}}];
+deep_arr.findall({has:{name:&quot;level1&quot;, has:{name:&quot;level2&quot;, has:{name:&quot;level3&quot;, has:{name:&quot;value&quot;, value:&quot;deep&quot;}}}}}) /* Returns: [{&quot;level1&quot;:{&quot;level2&quot;:{&quot;level3&quot;:{&quot;value&quot;:&quot;deep&quot;}}}}] */
+</code></pre></div>
+<h4 id="logical-operations">Logical Operations</h4>
+<div class="highlight"><pre><span></span><code>arr = [{user:{name:&quot;Alice&quot;, role:&quot;admin&quot;}}, {guest:{name:&quot;Bob&quot;, role:&quot;user&quot;}}];
+
+/* AND logic */
+arr.findall({and:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;user&quot;, has:{name:&quot;role&quot;, value:&quot;admin&quot;}}}]}) /* Returns: [{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;}}] */
+
+/* OR logic */
+arr.findall({or:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;guest&quot;}}]}) /* Returns: [{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;}},{&quot;guest&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}] */
+
+/* NAND logic */
+arr.findall({nand:[{has:{name:&quot;user&quot;}}, {has:{name:&quot;user&quot;, has:{name:&quot;role&quot;, value:&quot;user&quot;}}}]}) /* Returns: [{&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;role&quot;:&quot;admin&quot;}},{&quot;guest&quot;:{&quot;name&quot;:&quot;Bob&quot;,&quot;role&quot;:&quot;user&quot;}}] */
+</code></pre></div>
+<h4 id="working-with-results">Working with Results</h4>
+<div class="highlight"><pre><span></span><code>arr = [{user:{name:&quot;Alice&quot;, age:30}}, {admin:{name:&quot;Bob&quot;, age:25}}];
+
+/* Get all results */
+results = arr.findall({has:{name:&quot;user&quot;}});
+results.len()                              /* Returns: 1 */
+
+/* Access individual results */
+first = results[0];                        /* Returns: {&quot;user&quot;:{&quot;name&quot;:&quot;Alice&quot;,&quot;age&quot;:30}} */
+
+/* Access nested properties of results */
+first.user.name                            /* Returns: &quot;Alice&quot; */
+first.user.age                             /* Returns: 30 */
 </code></pre></div>
 <blockquote>
 <p><strong>Parallelism Note:</strong>
