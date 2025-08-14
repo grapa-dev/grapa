@@ -381,8 +381,8 @@ Multi-syntax data processing in Grapa provides a powerful approach to handling c
 This approach makes Grapa uniquely suited for modern data processing challenges where multiple data formats and sources need to be integrated seamlessly.
 
 ## See Also
-- [Multi-Syntax Programming](multi_syntax_programming.md)
+- [Multi-Syntax Programming](../multi_syntax_programming.md)
 - [ETL Data Engineering](etl_data_engineering.md)
 - [Database File System](database_file_system.md)
-- [Examples](examples.md)
-- [Advanced Topics](advanced_topics.md) 
+- [Examples](../examples.md)
+- [Advanced Topics](../advanced_topics.md) 
