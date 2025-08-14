@@ -1547,6 +1547,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="*=">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-multiplication-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Multiplication Assignment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1555,6 +1570,21 @@
       /=
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="/=">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-division-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Division Assignment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1565,6 +1595,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="%=">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-modulo-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Modulo Assignment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1573,6 +1618,21 @@
       **=
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="**=">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-power-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Power Assignment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3819,6 +3879,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="*=">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-multiplication-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Multiplication Assignment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3827,6 +3902,21 @@
       /=
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="/=">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-division-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Division Assignment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3837,6 +3927,21 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="%=">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-modulo-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Modulo Assignment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -3845,6 +3950,21 @@
       **=
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="**=">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#numeric-power-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numeric Power Assignment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -4093,12 +4213,72 @@ list -= list[1];         /* Remove by positive index: {&quot;a&quot;:1,&quot;c&q
 - <strong>String key removal</strong>: Direct string removal (e.g., <code>list -= "key"</code>) is <strong>not supported</strong></p>
 <h2 id="_4"><code>*=</code></h2>
 <p>Multiply and assign.</p>
+<h3 id="numeric-multiplication-assignment">Numeric Multiplication Assignment</h3>
+<div class="highlight"><pre><span></span><code>/* Integer multiplication */
+x = 10;
+x *= 3;                    /* 30 */
+
+/* Float multiplication */
+y = 5.5;
+y *= 2;                    /* 11.0 */
+
+/* Mixed type multiplication (promotes to float) */
+z = 10;
+z *= 2.5;                  /* 25.0 */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Note</strong>: Only numeric types are supported. String and other types will return $ERR.</p>
 <h2 id="_5"><code>/=</code></h2>
 <p>Divide and assign.</p>
+<h3 id="numeric-division-assignment">Numeric Division Assignment</h3>
+<div class="highlight"><pre><span></span><code>/* Integer division (promotes to float) */
+x = 10;
+x /= 2;                    /* 5.0 */
+
+/* Float division */
+y = 10.0;
+y /= 3;                    /* 3.333... */
+
+/* Mixed type division */
+z = 10;
+z /= 2.5;                  /* 4.0 */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Note</strong>: Division always promotes to float for precision. Only numeric types are supported.</p>
 <h2 id="_6"><code>%=</code></h2>
 <p>Modulo and assign.</p>
+<h3 id="numeric-modulo-assignment">Numeric Modulo Assignment</h3>
+<div class="highlight"><pre><span></span><code>/* Integer modulo */
+x = 10;
+x %= 3;                    /* 1 */
+
+/* Float modulo */
+y = 10.5;
+y %= 3;                    /* 1.5 */
+
+/* Mixed type modulo */
+z = 10;
+z %= 3.5;                  /* 3.0 */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Note</strong>: Only numeric types are supported. String and other types will return $ERR.</p>
 <h2 id="_7"><code>**=</code></h2>
 <p>Power and assign.</p>
+<h3 id="numeric-power-assignment">Numeric Power Assignment</h3>
+<div class="highlight"><pre><span></span><code>/* Integer power */
+x = 2;
+x **= 3;                   /* 8 */
+
+/* Float power */
+y = 2.5;
+y **= 2;                   /* 6.25 */
+
+/* Mixed type power (promotes to float) */
+z = 2;
+z **= 3.5;                 /* 11.313... */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Note</strong>: Only numeric types are supported. String and other types will return $ERR.</p>
 <h2 id="advanced-operations">Advanced Operations</h2>
 <h3 id="search-and-filter-operations">Search and Filter Operations</h3>
 <p>Grapa provides several methods for searching and filtering data:</p>

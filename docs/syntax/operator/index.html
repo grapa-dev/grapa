@@ -2610,6 +2610,42 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#multiply-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiply Assignment (*=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#divide-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Divide Assignment (/=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modulo-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modulo Assignment (%=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Power Assignment (**=)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4377,6 +4413,42 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#multiply-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Multiply Assignment (*=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#divide-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Divide Assignment (/=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modulo-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modulo Assignment (%=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Power Assignment (**=)
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4563,7 +4635,7 @@
 <h1 id="overview-complete-reference-operators">Overview &amp; Complete Reference: Operators</h1>
 <p><strong>See also:</strong> <a href="../precedence/">Operator Precedence Table</a></p>
 <h2 id="overview">Overview</h2>
-<p>Grapa provides 26 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.</p>
+<p>Grapa provides 30 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.</p>
 <h2 id="operator-categories">Operator Categories</h2>
 <h3 id="1-arithmetic-operators">1. Arithmetic Operators</h3>
 <p>Addition, subtraction, multiplication, division, modulo, exponentiation, and root operations with smart type promotion.</p>
@@ -4641,6 +4713,54 @@
 <td>❌</td>
 <td>❌</td>
 <td>Remove by index/key</td>
+</tr>
+<tr>
+<td><code>*=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Multiplication assignment</td>
+</tr>
+<tr>
+<td><code>/=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Division assignment</td>
+</tr>
+<tr>
+<td><code>%=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Modulo assignment</td>
+</tr>
+<tr>
+<td><code>**=</code></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>Power assignment</td>
 </tr>
 <tr>
 <td><code>*</code></td>
@@ -5450,6 +5570,86 @@ s -= &quot;world&quot;;              /* $ERR (STR not supported) */
 </code></pre></div>
 <p><strong>Type Support</strong>: INT, FLOAT, ARRAY<br />
 <strong>Gaps</strong>: 12 gaps identified (severely limited support)</p>
+<h3 id="multiply-assignment">Multiply Assignment (<code>*=</code>)</h3>
+<p>Performs multiplication assignment with numeric type support.</p>
+<div class="highlight"><pre><span></span><code>/* Integer multiplication */
+a = 10;
+a *= 3;                    /* 30 */
+
+/* Float multiplication */
+b = 5.5;
+b *= 2;                    /* 11.0 */
+
+/* Mixed type multiplication */
+c = 10;
+c *= 2.5;                  /* 25.0 (promoted to float) */
+
+/* Error cases */
+s = &quot;hello&quot;;
+s *= 3;                    /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Gaps</strong>: 14 gaps identified (numeric types only)</p>
+<h3 id="divide-assignment">Divide Assignment (<code>/=</code>)</h3>
+<p>Performs division assignment with smart type promotion.</p>
+<div class="highlight"><pre><span></span><code>/* Integer division */
+a = 10;
+a /= 2;                    /* 5.0 (promoted to float) */
+
+/* Float division */
+b = 10.0;
+b /= 3;                    /* 3.333... */
+
+/* Mixed type division */
+c = 10;
+c /= 2.5;                  /* 4.0 */
+
+/* Error cases */
+s = &quot;hello&quot;;
+s /= 2;                    /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Gaps</strong>: 14 gaps identified (numeric types only)</p>
+<h3 id="modulo-assignment">Modulo Assignment (<code>%=</code>)</h3>
+<p>Performs modulo assignment with numeric type support.</p>
+<div class="highlight"><pre><span></span><code>/* Integer modulo */
+a = 10;
+a %= 3;                    /* 1 */
+
+/* Float modulo */
+b = 10.5;
+b %= 3;                    /* 1.5 */
+
+/* Mixed type modulo */
+c = 10;
+c %= 3.5;                  /* 3.0 */
+
+/* Error cases */
+s = &quot;hello&quot;;
+s %= 3;                    /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Gaps</strong>: 14 gaps identified (numeric types only)</p>
+<h3 id="power-assignment">Power Assignment (<code>**=</code>)</h3>
+<p>Performs exponentiation assignment with smart type promotion.</p>
+<div class="highlight"><pre><span></span><code>/* Integer power */
+a = 2;
+a **= 3;                   /* 8 */
+
+/* Float power */
+b = 2.5;
+b **= 2;                   /* 6.25 */
+
+/* Mixed type power */
+c = 2;
+c **= 3.5;                 /* 11.313... (promoted to float) */
+
+/* Error cases */
+s = &quot;hello&quot;;
+s **= 2;                   /* $ERR (STR not supported) */
+</code></pre></div>
+<p><strong>Type Support</strong>: INT, FLOAT<br />
+<strong>Gaps</strong>: 14 gaps identified (numeric types only)</p>
 <h2 id="special-operators">Special Operators</h2>
 <h3 id="ternary">Ternary (<code>? :</code>)</h3>
 <p>Performs conditional expressions with implementation quirks.</p>
