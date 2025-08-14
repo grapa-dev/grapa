@@ -919,6 +919,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    List
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -930,6 +943,76 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-list-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced List Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced List Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addition-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Addition Operations (+=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concatenation-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concatenation Operations (++=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removal-operations-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removal Operations (-=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsupported-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsupported Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2303,6 +2386,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../advanced_concurrency_and_callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Concurrency and Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../multi_syntax_programming/" class="md-nav__link">
         
   
@@ -2378,6 +2484,52 @@
   
   <span class="md-ellipsis">
     Deep Expert Implementation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../xml_list_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    XML and LIST Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unified_dot_notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unified Dot Notation System
     
   </span>
   
@@ -3275,6 +3427,65 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-list-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced List Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced List Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addition-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Addition Operations (+=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concatenation-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concatenation Operations (++=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removal-operations-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removal Operations (-=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsupported-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsupported Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3338,6 +3549,47 @@
 </tr>
 </tbody>
 </table>
+<h3 id="advanced-list-operations">Advanced List Operations</h3>
+<h4 id="addition-operations">Addition Operations (<code>+=</code>)</h4>
+<div class="highlight"><pre><span></span><code>/* Add single key-value pair */
+list = {a:1, b:2};
+list += (c:3);           /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3} */
+
+/* Add multiple key-value pairs */
+list += {d:4, e:5};      /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4,&quot;e&quot;:5} */
+
+/* Insert at specific position */
+list += (f:6) list[0];   /* {&quot;f&quot;:6,&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4,&quot;e&quot;:5} */
+</code></pre></div>
+<h4 id="concatenation-operations">Concatenation Operations (<code>++=</code>)</h4>
+<div class="highlight"><pre><span></span><code>/* Concatenate two lists */
+list1 = {a:1, b:2};
+list2 = {c:3, d:4};
+list1 ++= list2;         /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3,&quot;d&quot;:4} */
+</code></pre></div>
+<h4 id="removal-operations-">Removal Operations (<code>-=</code>)</h4>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3, d:4};
+
+/* Remove by key reference */
+list -= list.c;          /* {&quot;a&quot;:1,&quot;b&quot;:2,&quot;d&quot;:4} */
+
+/* Remove by key string */
+list -= list[&quot;b&quot;];       /* {&quot;a&quot;:1,&quot;d&quot;:4} */
+
+/* Remove by positive index */
+list -= list[0];         /* {&quot;d&quot;:4} */
+
+/* Remove by negative index */
+list -= list[-1];        /* {} */
+</code></pre></div>
+<h4 id="unsupported-operations">Unsupported Operations</h4>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3};
+
+/* These do NOT work: */
+list -= 2;               /* No effect - value-based removal not supported */
+list -= &quot;b&quot;;             /* No effect - direct string removal not supported */
+list -= list.b;          /* Error - trying to remove value, not key */
+</code></pre></div>
 
 
 

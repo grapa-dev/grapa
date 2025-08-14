@@ -758,6 +758,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Array
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -769,6 +782,76 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#array-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Array Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addition-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Addition Operations (+=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concatenation-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concatenation Operations (++=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removal-operations-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removal Operations (-=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsupported-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsupported Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2303,6 +2386,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../advanced_concurrency_and_callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Concurrency and Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../multi_syntax_programming/" class="md-nav__link">
         
   
@@ -2378,6 +2484,52 @@
   
   <span class="md-ellipsis">
     Deep Expert Implementation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../xml_list_integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    XML and LIST Integration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../unified_dot_notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Unified Dot Notation System
     
   </span>
   
@@ -3275,6 +3427,65 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#array-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Operations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Array Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addition-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Addition Operations (+=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concatenation-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Concatenation Operations (++=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removal-operations-" class="md-nav__link">
+    <span class="md-ellipsis">
+      Removal Operations (-=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unsupported-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsupported Operations
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3329,6 +3540,44 @@
 {&quot;err&quot;:-1}
 </code></pre></div></p>
 <p>There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.</p>
+<h3 id="array-operations">Array Operations</h3>
+<h4 id="addition-operations">Addition Operations (<code>+=</code>)</h4>
+<div class="highlight"><pre><span></span><code>/* Add single element */
+arr = [1, 2, 3, 4, 5];
+arr += 6;                 /* [1,2,3,4,5,6] */
+
+/* Add multiple elements */
+arr += [7, 8, 9];         /* [1,2,3,4,5,6,7,8,9] */
+
+/* Insert at specific position */
+arr += 10 arr[0];         /* [10,1,2,3,4,5,6,7,8,9] */
+arr += 20 arr[2];         /* [10,1,20,2,3,4,5,6,7,8,9] */
+</code></pre></div>
+<h4 id="concatenation-operations">Concatenation Operations (<code>++=</code>)</h4>
+<div class="highlight"><pre><span></span><code>/* Concatenate two arrays */
+arr1 = [1, 2, 3];
+arr2 = [4, 5, 6];
+arr1 ++= arr2;            /* [1,2,3,4,5,6] */
+</code></pre></div>
+<h4 id="removal-operations-">Removal Operations (<code>-=</code>)</h4>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3, 4, 5];
+
+/* Remove by index */
+arr -= arr[2];            /* [1,2,4,5] */
+
+/* Remove by negative index */
+arr -= arr[-1];           /* [1,2,4] */
+
+/* Remove first element */
+arr -= arr[0];            /* [2,4] */
+</code></pre></div>
+<h4 id="unsupported-operations">Unsupported Operations</h4>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3, 4, 5];
+
+/* These do NOT work: */
+arr -= 3;                 /* No effect - value-based removal not supported */
+arr -= &quot;2&quot;;               /* No effect - direct string removal not supported */
+</code></pre></div>
 <blockquote>
 <p><strong>Parallelism Note:</strong>
 Array operations like <code>.map()</code> and <code>.filter()</code> are parallel by default and hardened for ETL/data processing workloads.</p>
