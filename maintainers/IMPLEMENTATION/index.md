@@ -54,6 +54,7 @@ Grapa's implementation is built on several key components:
 - [Array and List Operators Analysis](ARRAY_LIST_OPERATORS_ANALYSIS.md) - C++ implementation analysis of assignment operators (`+=`, `++=`, `-=`) with late-binding design patterns
 - [Unified Dot Notation System](UNIFIED_DOT_NOTATION_SYSTEM.md) - Unified dot notation system for accessing data across JSON, XML, HTML, and other complex structures
 - [Match Method Implementation](MATCH_METHOD_IMPLEMENTATION.md) - Boolean wrapper around grep functionality for pattern testing with full parameter support and error handling
+- [XML/HTML Capabilities Analysis](XML_HTML_CAPABILITIES_ANALYSIS.md) - Analysis of actual XML/HTML implementation with array-like access, attribute handling, and powerful .findall() method
 
 ### Research and Innovation
 - [LLM-Powered Dynamic IDE Concept](LLM_POWERED_DYNAMIC_IDE_CONCEPT.md) - Revolutionary IDE approach using LLMs to understand Grapa's dynamic syntax in real-time

@@ -353,7 +353,6 @@ result = mixed_data.json.users.map(op(user) {
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
 - 📋 **Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
-- 📋 **Property Access** - Improve attribute-style access for objects
 - 📋 **Line comments** - `//` and `#` support
 
 ### **Phase 3: Advanced Features (Weeks 9-12)**
@@ -366,6 +365,7 @@ result = mixed_data.json.users.map(op(user) {
 - 📋 **Advanced data structures** - Sets (unique collections), Maps (ordered/hash-based), Iterators (lazy evaluation), Priority queues, Deques, Enhanced collections
 - 📋 **Debugging tools** - Stack traces, profiling, hot reloading
 - 📋 **Module system** - Import/export capabilities
+- 📋 **Property Access** - Optional chaining (`?.`), property existence operators (`in`), property enumeration (`for...in`)
 - 📋 **Advanced language features** - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching, enhanced reflection
 
 ## Future Positioning

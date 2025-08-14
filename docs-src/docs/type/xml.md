@@ -1,383 +1,298 @@
 ---
-tags:
-  - user
-  - highlevel
+title: XML and TAG Operations
+description: Comprehensive XML and HTML support with powerful querying capabilities
 ---
+
 # XML and TAG Operations
 
-Grapa provides comprehensive support for XML and TAG data types with specialized operations for document manipulation and processing.
+Grapa provides **enterprise-grade** XML and HTML support with sophisticated querying capabilities that rival XPath in many ways.
 
 ## Overview
 
-XML and TAG types in Grapa are designed for structured document processing, web content generation, and data serialization. They support hierarchical structures with attributes, content, and nested elements.
+XML and TAG types in Grapa are designed for structured document processing and web content generation. They support hierarchical structures with attributes, content, and nested elements using **unified dot notation** and **powerful query patterns**.
 
 ## Basic Operations
 
-### Creation
+### XML/HTML Creation
 ```grapa
 /* Create XML element */
-xml = <root><item>1</item></root>;
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
 
-/* Create TAG element */
-tag = <div class="container"><p>Hello World</p></div>;
+/* Create HTML element */
+html = <html><head><title>Test</title></head><body><h1>Hello</h1><p>World</p></body></html>;
 
 /* Create from string */
 xml_str = "<root><item>1</item></root>";
 xml = xml_str.xml();
-
-/* Create from list */
-data = {tag:"root", children:[{tag:"item", content:"1"}]};
-xml = data.to_xml();
 ```
 
-### Addition Operations (`+=`)
+### Type Information
 ```grapa
 xml = <root><item>1</item></root>;
-
-/* Add XML element */
-xml += <newitem>2</newitem>;               /* Add element to end */
-
-/* Add at specific position */
-xml += <child>3</child> xml[0];            /* Add before first element */
-
-/* Add with attributes */
-xml += <item id="new" class="highlight">4</item>;
+xml.type();                    /* Returns: $XML */
+xml[0].type();                 /* Returns: $TAG */
 ```
 
-### Concatenation Operations (`++=`)
-```grapa
-xml1 = <root><item>1</item></root>;
-xml2 = <root><item>2</item><item>3</item></root>;
+## XML Structure Access
 
-/* Concatenate XML documents */
-xml1 ++= xml2;                             /* Combine XML structures */
+### Array-like Element Access
+```grapa
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
+
+/* Access root element (required for $XML) */
+xml[0]                         /* Returns: <root><item id="1">Hello</item><item id="2">World</item></root> */
+
+/* Access child elements */
+xml[0][0]                      /* Returns: <item id="1">Hello</item> */
+xml[0][1]                      /* Returns: <item id="2">World</item> */
+
+/* Access element content */
+xml[0][0][0]                   /* Returns: "Hello" */
+xml[0][1][0]                   /* Returns: "World" */
+
+/* Get element count */
+xml[0].len()                   /* Returns: 2 (number of child elements) */
+xml[0][0].len()                /* Returns: 1 (content count) */
 ```
 
-## XML Structure
-
-### Element Properties
+### Dot Notation Access
 ```grapa
-xml = <div id="main" class="container">
-    <h1>Title</h1>
-    <p>Content</p>
-</div>;
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
 
-/* Access element properties */
-tag_name = xml.tag;                        /* "div" */
-attributes = xml.attributes;                /* {id:"main", class:"container"} */
-content = xml.content;                     /* Text content */
-children = xml.children;                   /* Child elements */
+/* Direct dot notation access */
+xml.root                       /* Returns: <root><item id="1">Hello</item><item id="2">World</item></root> */
+xml.root.item                  /* Returns: <item id="1">Hello</item> */
+xml.root.item[0]               /* Returns: "Hello" */
+
+/* Access nested structures */
+xml.root.item.attr             /* Returns: {"id":"1"} */
+xml.root.item.attr.id          /* Returns: "1" */
 ```
 
 ### Attribute Access
 ```grapa
-xml = <div id="main" class="container" data-value="123"></div>;
+xml = <root><item id="1" class="test">Hello</item><item id="2">World</item></root>;
 
-/* Access attributes */
-id_value = xml.attributes.id;              /* "main" */
-class_value = xml.attributes.class;        /* "container" */
-data_value = xml.attributes["data-value"]; /* "123" */
+/* Access all attributes of an element */
+xml[0][0].attr                 /* Returns: {"id":"1","class":"test"} */
 
-/* Set attributes */
-xml.attributes.id = "new_id";
-xml.attributes["data-value"] = "456";
+/* Access specific attributes */
+xml[0][0].attr.id              /* Returns: "1" */
+xml[0][0].attr.class           /* Returns: "test" */
+
+/* Access attributes via dot notation */
+xml.root.item.attr.id          /* Returns: "1" */
+xml.root.item.attr.class       /* Returns: "test" */
 ```
 
-## XML Navigation
+## Advanced Element Finding (.findall())
 
-### Element Selection
+The `.findall()` method provides **enterprise-grade querying capabilities** with support for complex patterns and logical operations.
+
+### Basic Queries
 ```grapa
-xml = <root>
-    <header>
-        <title>Page Title</title>
-    </header>
-    <body>
-        <section>
-            <h1>Section Title</h1>
-            <p>Content</p>
-        </section>
-    </body>
-</root>;
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
 
-/* Find elements by tag name */
-titles = xml.find_all("title");            /* All title elements */
-headers = xml.find_all("header");          /* All header elements */
+/* Find by tag name */
+xml.findall({name:"item"})     /* Returns: <item id="1">Hello</item><item id="2">World</item> */
 
-/* Find element by ID */
-main_section = xml.find("#main");
+/* Find by content value */
+xml.findall({value:"Hello"})   /* Returns: <item id="1">Hello</item> */
+
+/* Find by attributes */
+xml.findall({attr:{id:"2"}})   /* Returns: <item id="2">World</item> */
+
+/* Find by tag name and attributes */
+xml.findall({name:"item", attr:{id:"1"}}) /* Returns: <item id="1">Hello</item> */
+```
+
+### Complex Attribute Queries
+```grapa
+xml = <root><item id="1" class="test">Hello</item><item id="2" class="prod">World</item></root>;
+
+/* Multiple attributes */
+xml.findall({attr:{id:"1", class:"test"}}) /* Returns: <item id="1" class="test">Hello</item> */
+
+/* Tag name with multiple attributes */
+xml.findall({name:"item", attr:{id:"1", class:"test"}}) /* Returns: <item id="1" class="test">Hello</item> */
+```
+
+### Logical Operators
+```grapa
+xml = <root><item id="1">Hello</item><title>Test</title></root>;
+
+/* AND logic */
+xml.findall({and:[{name:"item"}, {attr:{id:"1"}}]}) /* Returns: <item id="1">Hello</item> */
+
+/* OR logic */
+xml.findall({or:[{name:"item"}, {name:"title"}]}) /* Returns: <item id="1">Hello</item><title>Test</title> */
+
+/* NAND logic */
+xml.findall({nand:[{name:"item"}, {attr:{id:"2"}}]}) /* Returns: <item id="1">Hello</item> */
+```
+
+### Content Matching
+```grapa
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
+
+/* Exact content match */
+xml.findall({value:"Hello"})   /* Returns: <item id="1">Hello</item> */
+
+/* Multiple content values */
+xml.findall({value:["Hello", "World"]}) /* Returns: <item id="1">Hello</item><item id="2">World</item> */
+```
+
+### Recursive Search
+```grapa
+xml = <root><header><item id="1">Hello</item></header><body><item id="2">World</item></body></root>;
+
+/* Searches through ALL nested elements */
+xml.findall({name:"item"})     /* Returns: <item id="1">Hello</item><item id="2">World</item> */
+```
+
+### Working with .findall() Results
+```grapa
+xml = <root><item id="1">Hello</item><item id="2">World</item><item id="3">Another</item></root>;
+
+/* Get all results */
+results = xml.findall({name:"item"});
+results.len()                  /* Returns: 3 */
+
+/* Access individual results */
+first = results[0];            /* Returns: <item id="1">Hello</item> */
+second = results[1];           /* Returns: <item id="2">World</item> */
+
+/* Access attributes of results */
+first.attr                     /* Returns: {"id":"1"} */
+first.attr.id                  /* Returns: "1" */
+first[0]                       /* Returns: "Hello" */
+```
+
+### HTML Element Finding
+```grapa
+html = <html><head><title>Test</title></head><body><h1>Hello</h1><p>World</p><p>Another</p><div><p>Nested</p></div></body></html>;
+
+/* Find all paragraph elements (including nested) */
+html.findall({name:"p"})       /* Returns: <p>World</p><p>Another</p><p>Nested</p> */
+
+/* Find all heading elements */
+html.findall({name:"h1"})      /* Returns: <h1>Hello</h1> */
 
 /* Find elements by class */
-highlighted = xml.find_all(".highlight");
-
-/* Find by path */
-section_title = xml.find("body/section/h1");
+html.findall({name:"div", attr:{class:"container"}})
 ```
 
-### Element Traversal
+## XML to LIST Conversion
+
+### Using .list() Method
 ```grapa
-xml = <root><item>1</item><item>2</item></root>;
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
 
-/* Access child elements */
-first_item = xml.children[0];              /* First item */
-last_item = xml.children[-1];              /* Last item */
+/* Convert XML to LIST structure */
+list = xml.list();             /* Returns: {{"root":[{},[{"item":[{"id":"1"},["Hello"]]},{"item":[{"id":"2"},["World"]]}]]}} */
 
-/* Get parent element */
-parent = xml.parent;
-
-/* Get sibling elements */
-siblings = xml.siblings;
-
-/* Get next/previous sibling */
-next_sibling = xml.next_sibling;
-prev_sibling = xml.previous_sibling;
+/* Access converted data */
+list.root[1][0].item[1][0]     /* Returns: "Hello" */
+list.root[1][1].item[1][0]     /* Returns: "World" */
 ```
 
-## XML Manipulation
-
-### Adding Elements
+### Complex Structure Conversion
 ```grapa
-xml = <root></root>;
+xml = <html><head><title>Test</title></head><body><h1>Hello</h1></body></html>;
 
-/* Add child element */
-xml += <item>1</item>;
+/* Convert complex nested structure */
+list = xml.list();             /* Complex nested LIST structure */
 
-/* Add element with attributes */
-xml += <item id="new" class="highlight">2</item>;
-
-/* Add at specific position */
-xml += <header>Title</header> xml[0];      /* Add at beginning */
-
-/* Add multiple elements */
-xml += [<item>3</item>, <item>4</item>];
+/* Access nested elements */
+list.html[1][0].head[1][0].title[1][0]  /* Returns: "Test" */
+list.html[1][1].body[1][0].h1[1][0]     /* Returns: "Hello" */
 ```
 
-### Removing Elements
+## String Output
+
+### Converting to String
 ```grapa
-xml = <root><item>1</item><item>2</item><item>3</item></root>;
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
 
-/* Remove by index */
-xml -= xml[1];                             /* Remove second item */
+/* Get XML string representation */
+xml.echo();                    /* Outputs: <root><item id="1">Hello</item><item id="2">World</item></root> */
+xml.str();                     /* Returns: <root><item id="1">Hello</item><item id="2">World</item></root> */
 
-/* Remove by tag name */
-xml.remove_all("item");                    /* Remove all item elements */
-
-/* Remove by condition */
-xml.remove(op(element){
-    return element.content == "2";
-});
+/* Get string representation of individual elements */
+xml[0][0].str();               /* Returns: <item id="1">Hello</item> */
 ```
-
-### Modifying Elements
-```grapa
-xml = <div class="old">Content</div>;
-
-/* Change tag name */
-xml.tag = "span";
-
-/* Change content */
-xml.content = "New Content";
-
-/* Change attributes */
-xml.attributes.class = "new";
-xml.attributes.id = "main";
-
-/* Add new attributes */
-xml.attributes["data-value"] = "123";
-```
-
-## XML Processing
-
-### Content Extraction
-```grapa
-xml = <article>
-    <title>Article Title</title>
-    <content>
-        <p>First paragraph</p>
-        <p>Second paragraph</p>
-    </content>
-</article>;
-
-/* Extract text content */
-title = xml.find("title").text();          /* "Article Title" */
-all_text = xml.text();                     /* All text content */
-
-/* Extract attribute values */
-class_values = xml.find_all("[class]").map(op(el){el.attributes.class;});
-```
-
-### Content Transformation
-```grapa
-xml = <root><item>1</item><item>2</item></root>;
-
-/* Transform elements */
-xml.transform(op(element){
-    element.content = element.content.int() * 2;
-    return element;
-});
-
-/* Map over elements */
-doubled = xml.map(op(element){
-    return <item>{element.content.int() * 2}</item>;
-});
-```
-
-## XML Serialization
-
-### Export Formats
-```grapa
-xml = <root><item>1</item><item>2</item></root>;
-
-/* Export to string */
-xml_string = xml.to_string();              /* XML string */
-pretty_string = xml.to_string(true);       /* Pretty-printed */
-
-/* Export to JSON */
-json_data = xml.to_json();                 /* Convert to JSON structure */
-
-/* Export to list */
-list_data = xml.to_list();                 /* Convert to list structure */
-```
-
-### Import Formats
-```grapa
-/* Import from string */
-xml_str = "<root><item>1</item></root>";
-xml = xml_str.xml();
-
-/* Import from JSON */
-json_data = {tag:"root", children:[{tag:"item", content:"1"}]};
-xml = json_data.to_xml();
-
-/* Import from list */
-list_data = {tag:"root", children:[{tag:"item", content:"1"}]};
-xml = list_data.to_xml();
-```
-
-## Advanced Features
-
-### XPath-like Queries
-```grapa
-xml = <root>
-    <section id="main">
-        <h1>Title</h1>
-        <p>Content</p>
-    </section>
-    <section id="sidebar">
-        <h2>Sidebar</h2>
-    </section>
-</root>;
-
-/* Query by path */
-main_content = xml.query("section[@id='main']");
-titles = xml.query("//h1|//h2");           /* All h1 and h2 elements */
-
-/* Query with conditions */
-highlighted = xml.query("//*[@class='highlight']");
-numbered = xml.query("//item[@id>5]");
-```
-
-### Template Processing
-```grapa
-/* XML template with placeholders */
-template = <div class="user-card">
-    <h2>{name}</h2>
-    <p>Email: {email}</p>
-    <p>Age: {age}</p>
-</div>;
-
-/* Fill template with data */
-user_data = {name:"Alice", email:"alice@example.com", age:30};
-filled_template = template.fill(user_data);
-```
-
-### Validation
-```grapa
-xml = <form>
-    <input type="text" name="username" required="true"/>
-    <input type="email" name="email" required="true"/>
-    <button type="submit">Submit</button>
-</form>;
-
-/* Validate XML structure */
-is_valid = xml.validate();
-
-/* Validate against schema */
-schema = <schema>...</schema>;
-is_valid = xml.validate(schema);
-
-/* Get validation errors */
-errors = xml.get_validation_errors();
-```
-
-## Performance Considerations
-
-- **Lazy Parsing**: XML is parsed only when accessed
-- **Memory Efficiency**: Optimized storage for large XML documents
-- **Streaming Support**: Processing of large XML files without loading entire document
-- **Caching**: Frequently accessed elements are cached for performance
 
 ## Integration with Other Types
 
 ### XML and Arrays
 ```grapa
-/* Convert array to XML */
-data = [1, 2, 3, 4, 5];
-xml = <root>{data.map(op(item){<item>{item}</item>;})}</root>;
-
-/* Convert XML to array */
 xml = <root><item>1</item><item>2</item><item>3</item></root>;
-array = xml.children.map(op(child){child.content.int();});
+
+/* Iterate over elements */
+for (i = 0; i < xml[0].len(); i++) {
+    xml[0][i].echo();          /* Output each item element */
+}
 ```
 
 ### XML and Lists
 ```grapa
-/* Convert list to XML */
-data = {name:"Alice", age:30, city:"New York"};
-xml = <person>
-    <name>{data.name}</name>
-    <age>{data.age}</age>
-    <city>{data.city}</city>
-</person>;
+/* XML elements behave like lists for attribute access */
+first_item = xml[0][0];        /* First item element */
+first_item.attr.id             /* Access attribute like a list property */
 
-/* Convert XML to list using .list() method */
-xml = <person><name>Alice</name><age>30</age></person>;
-list = xml.list();  /* Converts XML to LIST structure */
-
-/* Convert XML to list manually */
-xml = <person><name>Alice</name><age>30</age></person>;
-list = {
-    name: xml.find("name").content,
-    age: xml.find("age").content.int()
-};
+/* Convert XML to LIST for complex processing */
+list_data = xml.list();        /* Full LIST conversion */
 ```
 
-### XML to LIST Conversion
-The `.list()` method converts XML structures to LIST format:
+## Performance Considerations
 
+- **Efficient Parsing**: XML is parsed efficiently during creation
+- **Array-like Access**: Direct indexing provides fast element access
+- **Powerful Finding**: `.findall()` method supports complex queries with logical operators
+- **Memory Efficient**: Optimized storage for XML structures
+- **Recursive Search**: Efficient traversal of nested structures
+
+## Limitations
+
+The following features are **not currently implemented or fully supported**:
+- **`.find()` method** - Use `findall()[0]` instead (not needed given `.findall()`'s power)
+- **`.tag` property** - Tag names are embedded in string representation, direct `.tag` property is not available
+- **`.children` property** - Use array indexing `[0]`, `[1]`, etc.
+- **`.parent` property** - Not implemented
+- **`.siblings` property** - Not implemented
+- **`.to_json()` method** - Not implemented
+- **XML manipulation operators** (`+=`, `-=`, `++=`) - Not implemented
+
+## Best Practices
+
+### Element Access
 ```grapa
-/* Simple element conversion */
-xml = <item>test</item>;
-list = xml.list();  /* {{"item":[{},["test"]]}} */
+/* Use array indexing for direct access to children */
+xml[0][0]                      /* First child element */
 
-/* Element with attributes */
-xml = <div class="main">content</div>;
-list = xml.list();  /* {{"div":[{"class":"main"},["content"]]}} */
+/* Use dot notation for direct access to named children */
+xml.root.item                  /* First 'item' child of 'root' */
 
-/* Complex nested structure */
-xml = <html><body><div class="main"><h1>Title</h1></div></body></html>;
-list = xml.list();  /* Complex nested LIST structure */
+/* Use .findall() for complex queries and recursive searches */
+xml.findall({name:"item", attr:{class:"highlight"}})
 
-/* Access converted data */
-xml = <user><name>Alice</name><age>30</age></user>;
-list = xml.list();
-user_name = list.user[1][0].name[1][0];  /* "Alice" */
-user_age = list.user[1][1].age[1][0];    /* "30" */
+/* Use .attr for attribute access */
+xml[0][0].attr.id              /* Access specific attribute */
+```
+
+### Error Handling
+```grapa
+/* Check for existence before accessing properties or elements */
+if (xml.root) {
+    if (xml.root.item) {
+        xml.root.item.echo();
+    }
+}
 ```
 
 ## See also
 - [$ARRAY object](array.md)
 - [$LIST object](list.md)
-- [$WIDGET object](widget.md)
+- [$TAG object](tag.md)
 - [Assignment Operators](../operators/assignment.md)
 - [String Operations](../obj/transform.md)
-- [Unified Dot Notation System](../unified_dot_notation.md)

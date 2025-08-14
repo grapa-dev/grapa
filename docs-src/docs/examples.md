@@ -191,14 +191,84 @@ form.children[2].style.color = "white";
 
 ### XML Operations
 ```grapa
-/* XML creation and manipulation */
-xml = <root><item>1</item></root>;
-xml += <item>2</item>;                    /* Add element */
-xml += <header>Title</header> xml[0];     /* Insert at position */
+/* XML creation and basic access */
+xml = <root><item id="1">Hello</item><item id="2">World</item></root>;
 
-/* XML navigation */
-items = xml.find_all("item");             /* Find all item elements */
-title = xml.find("header").content;       /* Get content */
+/* Array-like element access */
+xml[0]                                    /* Root element */
+xml[0][0]                                 /* First child element */
+xml[0][0][0]                              /* Element content: "Hello" */
+
+/* Dot notation access */
+xml.root                                  /* Root element */
+xml.root.item                             /* First item element */
+xml.root.item[0]                          /* Item content: "Hello" */
+
+/* Attribute access */
+xml[0][0].attr                            /* All attributes: {"id":"1"} */
+xml[0][0].attr.id                         /* Specific attribute: "1" */
+xml.root.item.attr.id                     /* Via dot notation: "1" */
+
+/* Advanced element finding with .findall() */
+xml.findall({name:"item"})                /* All item elements */
+xml.findall({name:"item", attr:{id:"2"}}) /* Items with id="2" */
+xml.findall({value:"Hello"})              /* Elements with content "Hello" */
+
+/* Complex queries with logical operators */
+xml.findall({and:[{name:"item"}, {attr:{id:"1"}}]}) /* AND logic */
+xml.findall({or:[{name:"item"}, {name:"title"}]})   /* OR logic */
+
+/* Working with results */
+results = xml.findall({name:"item"});
+results.len()                              /* Number of matches */
+results[0].attr.id                         /* First match's id attribute */
+
+/* HTML element finding */
+html = <html><body><h1>Title</h1><p>Content</p></body></html>;
+html.findall({name:"p"})                  /* All paragraph elements */
+
+/* XML to LIST conversion */
+list = xml.list();                        /* Convert to LIST structure */
+list.root[1][0].item[1][0]                /* Access converted data: "Hello" */
+```
+
+### LIST and ARRAY Operations with .findall()
+```grapa
+/* LIST findall capabilities */
+data = {name:"Alice", age:30, city:"New York"};
+
+/* Find by property existence */
+data.findall({has:{name:"age"}})          /* Returns: {"data":{"name":"Alice","age":30}} */
+
+/* Find by property value */
+data.findall({has:{name:"name", value:"Alice"}}) /* Returns: {"data":{"name":"Alice","age":30}} */
+
+/* Complex nested structures */
+nested = {user:{name:"Alice", age:30}, admin:{name:"Bob", age:25}};
+
+/* Find nested objects */
+nested.findall({has:{name:"user"}})       /* Returns: {"nested":{"user":{"name":"Alice","age":30},"admin":{"name":"Bob","age":25}}} */
+
+/* Find with nested criteria */
+nested.findall({has:{name:"user", has:{name:"name", value:"Alice"}}}) /* Returns: {"nested":{"user":{"name":"Alice","age":30},"admin":{"name":"Bob","age":25}}} */
+
+/* ARRAY findall capabilities */
+arr = [{name:"Alice"}, {name:"Bob"}, {name:"Charlie"}];
+
+/* Find objects with specific properties */
+arr.findall({has:{name:"name"}})          /* Returns: [{"name":"Alice"},{"name":"Bob"},{"name":"Charlie"}] */
+
+/* Find objects with specific property values */
+arr.findall({has:{name:"name", value:"Bob"}}) /* Returns: [{"name":"Bob"}] */
+
+/* Complex array queries */
+complex_arr = [{user:{name:"Alice", role:"admin"}}, {user:{name:"Bob", role:"user"}}];
+
+/* Find with nested criteria */
+complex_arr.findall({has:{name:"user", has:{name:"role", value:"admin"}}}) /* Returns: [{"user":{"name":"Alice","role":"admin"}}] */
+
+/* Logical operations with arrays */
+complex_arr.findall({or:[{has:{name:"user", has:{name:"role", value:"admin"}}}, {has:{name:"user", has:{name:"role", value:"user"}}}]}) /* Returns: [{"user":{"name":"Alice","role":"admin"}},{"user":{"name":"Bob","role":"user"}}] */
 ```
 
 ### String Interpolation

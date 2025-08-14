@@ -82,3 +82,82 @@ list -= 2;               /* No effect - value-based removal not supported */
 list -= "b";             /* No effect - direct string removal not supported */
 list -= list.b;          /* Error - trying to remove value, not key */
 ```
+
+### Concatenation and Extension
+```grapa
+list = {a:1, b:2, c:3};
+
+/* Add elements */
+list += {d:4};                            /* {a:1, b:2, c:3, d:4} */
+
+/* Extend with multiple elements */
+list ++= {e:5, f:6};                      /* {a:1, b:2, c:3, d:4, e:5, f:6} */
+
+/* Insert at specific position */
+list ++= {g:7}, 2;                        /* Insert at position 2 */
+
+/* Remove elements */
+list -= {b:2};                            /* Remove element with key "b" */
+```
+
+### Advanced Element Finding (.findall())
+
+The `.findall()` method provides **enterprise-grade querying capabilities** for LIST structures with support for complex patterns and logical operations.
+
+#### Basic Queries
+```grapa
+data = {name:"Alice", age:30, city:"New York"};
+
+/* Find by property existence */
+data.findall({has:{name:"age"}})          /* Returns: {"data":{"name":"Alice","age":30}} */
+
+/* Find by property value */
+data.findall({has:{name:"name", value:"Alice"}}) /* Returns: {"data":{"name":"Alice","age":30}} */
+
+/* Find by value only */
+data.findall({has:{value:"Alice"}})       /* Returns: {"data":{"name":"Alice","age":30}} */
+```
+
+#### Complex Nested Queries
+```grapa
+nested = {user:{name:"Alice", age:30}, admin:{name:"Bob", age:25}};
+
+/* Find nested objects */
+nested.findall({has:{name:"user"}})       /* Returns: {"nested":{"user":{"name":"Alice","age":30},"admin":{"name":"Bob","age":25}}} */
+
+/* Find with nested criteria */
+nested.findall({has:{name:"user", has:{name:"name", value:"Alice"}}}) /* Returns: {"nested":{"user":{"name":"Alice","age":30},"admin":{"name":"Bob","age":25}}} */
+
+/* Find with multiple nested criteria */
+nested.findall({has:{name:"user", has:{name:"age", value:30}}}) /* Returns: {"nested":{"user":{"name":"Alice","age":30},"admin":{"name":"Bob","age":25}}} */
+```
+
+#### Logical Operations
+```grapa
+data = {user:{name:"Alice", role:"admin"}, guest:{name:"Bob", role:"user"}};
+
+/* AND logic */
+data.findall({and:[{has:{name:"user"}}, {has:{name:"user", has:{name:"role", value:"admin"}}}]}) /* Returns: {"data":{"user":{"name":"Alice","role":"admin"},"guest":{"name":"Bob","role":"user"}}} */
+
+/* OR logic */
+data.findall({or:[{has:{name:"user"}}, {has:{name:"guest"}}]}) /* Returns: {"data":{"user":{"name":"Alice","role":"admin"},"guest":{"name":"Bob","role":"user"}}} */
+
+/* NAND logic */
+data.findall({nand:[{has:{name:"user"}}, {has:{name:"user", has:{name:"role", value:"user"}}}]}) /* Returns: {"data":{"user":{"name":"Alice","role":"admin"},"guest":{"name":"Bob","role":"user"}}} */
+```
+
+#### Working with Results
+```grapa
+data = {user:{name:"Alice", age:30}, admin:{name:"Bob", age:25}};
+
+/* Get all results */
+results = data.findall({has:{name:"user"}});
+results.len()                              /* Returns: 1 */
+
+/* Access individual results */
+first = results[0];                        /* Returns: {"user":{"name":"Alice","age":30}} */
+
+/* Access nested properties of results */
+first.user.name                            /* Returns: "Alice" */
+first.user.age                             /* Returns: 30 */
+```

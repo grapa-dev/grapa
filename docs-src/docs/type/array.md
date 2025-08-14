@@ -95,5 +95,86 @@ arr -= 3;                 /* No effect - value-based removal not supported */
 arr -= "2";               /* No effect - direct string removal not supported */
 ```
 
+### Concatenation and Extension
+```grapa
+arr = [1, 2, 3];
+
+/* Add elements */
+arr += 4;                                 /* [1, 2, 3, 4] */
+
+/* Extend with multiple elements */
+arr ++= 5, 6;                             /* [1, 2, 3, 4, 5, 6] */
+
+/* Insert at specific position */
+arr ++= 7, 2;                             /* Insert at position 2 */
+
+/* Remove elements */
+arr -= 3;                                 /* Remove element with value 3 */
+```
+
+### Advanced Element Finding (.findall())
+
+The `.findall()` method provides **enterprise-grade querying capabilities** for ARRAY structures with support for complex patterns and logical operations.
+
+#### Basic Queries
+```grapa
+arr = [{name:"Alice"}, {name:"Bob"}, {name:"Charlie"}];
+
+/* Find objects with specific properties */
+arr.findall({has:{name:"name"}})          /* Returns: [{"name":"Alice"},{"name":"Bob"},{"name":"Charlie"}] */
+
+/* Find objects with specific property values */
+arr.findall({has:{name:"name", value:"Bob"}}) /* Returns: [{"name":"Bob"}] */
+
+/* Find by value only (for simple arrays) */
+simple_arr = [1, 2, 3, 4, 5];
+simple_arr.findall({has:{value:3}})       /* Returns: [] (not supported for simple values) */
+```
+
+#### Complex Nested Queries
+```grapa
+complex_arr = [{user:{name:"Alice", role:"admin"}}, {user:{name:"Bob", role:"user"}}];
+
+/* Find with nested criteria */
+complex_arr.findall({has:{name:"user", has:{name:"role", value:"admin"}}}) /* Returns: [{"user":{"name":"Alice","role":"admin"}}] */
+
+/* Find with multiple nested criteria */
+complex_arr.findall({has:{name:"user", has:{name:"name", value:"Bob"}}}) /* Returns: [{"user":{"name":"Bob","role":"user"}}] */
+
+/* Find with deep nesting */
+deep_arr = [{level1:{level2:{level3:{value:"deep"}}}}];
+deep_arr.findall({has:{name:"level1", has:{name:"level2", has:{name:"level3", has:{name:"value", value:"deep"}}}}}) /* Returns: [{"level1":{"level2":{"level3":{"value":"deep"}}}}] */
+```
+
+#### Logical Operations
+```grapa
+arr = [{user:{name:"Alice", role:"admin"}}, {guest:{name:"Bob", role:"user"}}];
+
+/* AND logic */
+arr.findall({and:[{has:{name:"user"}}, {has:{name:"user", has:{name:"role", value:"admin"}}}]}) /* Returns: [{"user":{"name":"Alice","role":"admin"}}] */
+
+/* OR logic */
+arr.findall({or:[{has:{name:"user"}}, {has:{name:"guest"}}]}) /* Returns: [{"user":{"name":"Alice","role":"admin"}},{"guest":{"name":"Bob","role":"user"}}] */
+
+/* NAND logic */
+arr.findall({nand:[{has:{name:"user"}}, {has:{name:"user", has:{name:"role", value:"user"}}}]}) /* Returns: [{"user":{"name":"Alice","role":"admin"}},{"guest":{"name":"Bob","role":"user"}}] */
+```
+
+#### Working with Results
+```grapa
+arr = [{user:{name:"Alice", age:30}}, {admin:{name:"Bob", age:25}}];
+
+/* Get all results */
+results = arr.findall({has:{name:"user"}});
+results.len()                              /* Returns: 1 */
+
+/* Access individual results */
+first = results[0];                        /* Returns: {"user":{"name":"Alice","age":30}} */
+
+/* Access nested properties of results */
+first.user.name                            /* Returns: "Alice" */
+first.user.age                             /* Returns: 30 */
+```
+
 > **Parallelism Note:**
 > Array operations like `.map()` and `.filter()` are parallel by default and hardened for ETL/data processing workloads.
