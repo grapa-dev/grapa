@@ -42,6 +42,7 @@
   - **Template Syntax**: `${code}` for direct code execution, `$('script')` for script execution with custom rules
   - **Parameters**: `params` as `$LIST` (defaults to NULL), `rule` as `$RULE` (defaults to NULL)
   - **Advantage**: `$('script')` enables additional Grapa syntax modifications in the same running code context
+- **Native .match() Method** - 📋 **SIMPLE ADDITION NEEDED** - Add native regex matching method to complement existing `.grep()` and `.filter()` methods
 - **Basic SQL Syntax** - 🔄 **Next priority for completion** - Domain-specific processing using `custom_command` and `custom_function`
 
 **Phase 2 Focus:** C++ Implementation Based on Phase 1 Results
@@ -92,6 +93,12 @@
 **🚀 IMMEDIATE NEXT STEPS (Phase 1 - Custom Command/Function Implementation):**
 ✅ **PHASE 1 COMPLETED** - All syntax features implemented using `custom_command` and `custom_function`
 
+**📋 SIMPLE ENHANCEMENT NEEDED:**
+- **Native .match() Method** - Add simple regex matching method to complement existing `.grep()` and `.filter()` methods
+  - **Current Workaround**: `"string".grep(pattern, "x").len() > 0` for boolean regex matching
+  - **Proposed**: `"string".match(pattern)` returning boolean result
+  - **Implementation**: Simple addition to `$STR` class methods in `lib/grapa/$grapa.grc`
+
 **📋 PHASE 1 COMPLETION SUMMARY:**
 - **✅ For Loops** - Implemented using `custom_command` with `<$comp>` and `<$command>` patterns
 - **✅ Enhanced Assignment Operators** - Implemented using `custom_function` with `<$comp>` patterns (`*=`, `/=`, `%=`, `**=`)
@@ -108,13 +115,27 @@
 
 **🎯 PHASE 2 C++ IMPLEMENTATION TARGETS (3 remaining features):**
 1. **For Loops** - C++ implementation based on `custom_command` proof of concept
-2. **Enhanced Assignment Operators** - C++ operators based on `custom_function` implementations
+2. **Enhanced Assignment Operators** - C++ operators based on `custom_function` implementations (`*=`, `/=`, `%=`, `**=`)
 3. **List Comprehension** - C++ implementation based on `custom_function` proof of concept  
 4. **✅ String Interpolation** - **COMPLETED** - C++ method implemented in `GrapaLibraryRuleInterpolateEvent::Run` with full functionality:
-   - **Method Signature**: `string.interpolate()`, `string.interpolate(params)`, `string.interpolate(params, rule)`
-   - **Template Syntax**: `${code}` for direct code execution, `$('script')` for script execution with custom rules
-   - **Parameters**: `params` as `$LIST` (defaults to NULL), `rule` as `$RULE` (defaults to NULL)
+   - **Method Signature**: `string.interpolate()`, `string.interpolate(params)`
+   - **Template Syntax**: `${code}` for direct code execution, `${op()("script")()}` for script execution
+   - **Parameters**: `params` as `$LIST` (defaults to NULL)
    - **Implementation**: ✅ **COMPLETED** - Native C++ implementation working perfectly
+   - **Documentation**: ✅ **COMPLETED** - Full documentation added to docs-src
+
+**🔄 ADDITIONAL CAPABILITIES DISCOVERED AND DOCUMENTED:**
+- **✅ Array/List Operators Analysis** - **COMPLETED** - Comprehensive C++ implementation analysis completed
+- **✅ Position-Based Insertion** - **DOCUMENTED** - `+=` operator supports insertion at specific positions
+- **✅ Multiple Element Addition** - **DOCUMENTED** - `+=` operator supports adding arrays/lists of elements
+- **✅ Vector Operations** - **DOCUMENTED** - Specialized `+=` and `++=` operations for `$VECTOR` type
+- **✅ Widget Operations** - **DOCUMENTED** - Complex widget manipulation with hierarchical support
+- **✅ XML/TAG Operations** - **DOCUMENTED** - XML-specific handling with element manipulation
+- **✅ Search and Filter Operations** - **DOCUMENTED** - `filter()` for JSON/arrays, `grep()` for strings, `findall()` for complex structures
+- **✅ Unified Dot Notation System** - **DOCUMENTED** - Consistent access patterns across JSON, XML, HTML, and other data types
+- **✅ XML to LIST Conversion** - **DISCOVERED & DOCUMENTED** - `.list()` method for converting XML structures to LIST format
+- **✅ XML and LIST Integration** - **DISCOVERED & DOCUMENTED** - Seamless embedding and dot notation access between XML and LIST types
+- **✅ Late-Binding Design Analysis** - **DOCUMENTED** - Type-flexible operations without compile-time checking
 
 **🎯 PHASE 2 PREPARATION:**
 - **✅ Document all Phase 1 implementations** as specifications for C++ development
@@ -128,13 +149,47 @@
 **🚀 IMMEDIATE NEXT STEPS:**
 - **✅ Implement interpolate function** - C++ implementation in `GrapaLibraryRuleInterpolateEvent::Run` **COMPLETED**
 - **✅ Discover op() function integration** - Script execution via `${op()("script")()}` **COMPLETED**
+- **✅ Add interpolate documentation** - Full documentation added to docs-src **COMPLETED**
+- **✅ Document additional operator capabilities** - Position-based insertion, multiple element addition, vector/widget/XML operations **COMPLETED**
+- **✅ Analyze C++ implementation patterns** - Late-binding design, type flexibility, performance optimizations **COMPLETED**
 - **🔄 Complete Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
+- **🔄 Implement remaining C++ features** - For Loops, Enhanced Assignment Operators, List Comprehension
+- **🔄 Plan Enhanced Assignment Operators** - Follow same late-binding principles as existing operators
+
+**📋 ENHANCED ASSIGNMENT OPERATORS PLANNING:**
+
+**Current Status**: Ready for C++ implementation planning based on existing operator patterns
+
+**Target Operators**: `*=`, `/=`, `%=`, `**=` (power assignment)
+
+**Implementation Strategy**: Follow same late-binding principles as existing `+=`, `++=`, `-=` operators
+
+**C++ Implementation Pattern**:
+- **New Event Classes**: `GrapaLibraryRuleAssignMultiplyEvent`, `GrapaLibraryRuleAssignDivideEvent`, `GrapaLibraryRuleAssignModuloEvent`, `GrapaLibraryRuleAssignPowerEvent`
+- **Core Function**: Extend `ItemAssignRun()` to handle new operation types
+- **Type Support**: Support all existing types (ARRAY, LIST, VECTOR, WIDGET, XML, etc.)
+- **Late-Binding**: Runtime type checking and flexible parameter handling
+
+**Key Design Principles**:
+- **Type Flexibility**: Handle multiple data types without compile-time checking
+- **Position-Based Operations**: Support operations at specific positions
+- **Multiple Element Operations**: Support operations on arrays/lists of elements
+- **Performance Optimization**: Efficient memory management and pointer usage
+- **Error Handling**: Graceful degradation with proper error reporting
+
+**Implementation Approach**:
+1. **Extend `ItemAssignRun()`** - Add new operation types to switch statement
+2. **Add Event Classes** - Create new event classes for each operator
+3. **Type-Specific Logic** - Implement type-specific operations for each data type
+4. **Testing** - Comprehensive testing across all supported data types
+5. **Documentation** - Update user and maintainer documentation
+
+**Reference Implementation**: Use existing `+=`, `++=`, `-=` operators as templates for implementation patterns
 
 **📋 ENHANCED STRING INTERPOLATION SPECIFICATION:**
 - **Method Overloads**:
   - `string.interpolate()` - Default interpolation with current scope variables
   - `string.interpolate(params)` - Interpolation with additional `$LIST` parameters available
-  - `string.interpolate(params, rule)` - Interpolation with `$LIST` parameters and custom `$RULE` entry point
 - **Template Syntax**:
   - `${code}` - Direct code execution within current scope
   - `${op()("script")()}` - **PRIMARY APPROACH** - Script execution using existing `op()` function infrastructure
@@ -142,7 +197,6 @@
   - `${op(params)(script_var)()}` - **ADVANCED** - Dynamic script execution with variable references
 - **Parameter Types**:
   - `params` - `$LIST` type (variable storing list or direct list parameter), defaults to NULL
-  - `rule` - `$RULE` type (variable storing rule or direct rule parameter), defaults to NULL
 - **Advanced Features**:
   - **Multi-Level Parameter Passing**: Op-level parameters (`op(yy=8)`) and interpolation-level parameters (`{xx:4}`)
   - **Variable Script References**: Scripts stored in variables for dynamic execution
@@ -249,6 +303,7 @@
   - **Op() function integration discovered for script execution** ✅
   - **String interpolation design simplified and finalized** ✅
   - **Advanced string interpolation capabilities discovered** ✅
+  - **String interpolation documentation completed** ✅
 - **Current Investigation:** Grapa syntax enhancement implementation
 - **Next Focus:** Language adoption through improved syntax and developer experience
 

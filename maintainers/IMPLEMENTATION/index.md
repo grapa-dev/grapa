@@ -50,6 +50,9 @@ Grapa's implementation is built on several key components:
 - [Syntax Improvements Analysis](GRAPA_SYNTAX_IMPROVEMENTS_ANALYSIS.md) - Comprehensive analysis of grammar and C++ libraries for syntax enhancements
 - [Custom Command For Loop Implementation](CUSTOM_COMMAND_FOR_LOOP_IMPLEMENTATION.md) - For loop implementation using custom_command mechanism
 - [BNF-Based ETL Analysis](BNF_BASED_ETL_ANALYSIS.md) - How Grapa uses executable BNF for JSON, XML, and HTML processing
+- [OP Function Parameter Matching](OP_FUNCTION_PARAMETER_MATCHING.md) - Internal implementation of parameter matching, dual syntax support (= and :), and JSON integration
+- [Array and List Operators Analysis](ARRAY_LIST_OPERATORS_ANALYSIS.md) - C++ implementation analysis of assignment operators (`+=`, `++=`, `-=`) with late-binding design patterns
+- [Unified Dot Notation System](UNIFIED_DOT_NOTATION_SYSTEM.md) - Unified dot notation system for accessing data across JSON, XML, HTML, and other complex structures
 
 ### Research and Innovation
 - [LLM-Powered Dynamic IDE Concept](LLM_POWERED_DYNAMIC_IDE_CONCEPT.md) - Revolutionary IDE approach using LLMs to understand Grapa's dynamic syntax in real-time

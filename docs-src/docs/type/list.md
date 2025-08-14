@@ -13,3 +13,53 @@ Append | x = {a:1, b:2};</br>x ++= {c:3,d:4};</br>x; | </br></br>{"a":1, "b":2, 
 Insert | x = {a:1, b:2};</br>x += (c:3) x[0];</br>x; | </br></br>{"c":3,"a":1,"b":2}
 Count | {a:1, b:2, c:3}.len() | 3
 Remove | x = {a:1, b:2, c:3};</br>x -= x[1];</br>x; | </br></br>{"a":1, "c":3}
+
+### Advanced List Operations
+
+#### Addition Operations (`+=`)
+```grapa
+/* Add single key-value pair */
+list = {a:1, b:2};
+list += (c:3);           /* {"a":1,"b":2,"c":3} */
+
+/* Add multiple key-value pairs */
+list += {d:4, e:5};      /* {"a":1,"b":2,"c":3,"d":4,"e":5} */
+
+/* Insert at specific position */
+list += (f:6) list[0];   /* {"f":6,"a":1,"b":2,"c":3,"d":4,"e":5} */
+```
+
+#### Concatenation Operations (`++=`)
+```grapa
+/* Concatenate two lists */
+list1 = {a:1, b:2};
+list2 = {c:3, d:4};
+list1 ++= list2;         /* {"a":1,"b":2,"c":3,"d":4} */
+```
+
+#### Removal Operations (`-=`)
+```grapa
+list = {a:1, b:2, c:3, d:4};
+
+/* Remove by key reference */
+list -= list.c;          /* {"a":1,"b":2,"d":4} */
+
+/* Remove by key string */
+list -= list["b"];       /* {"a":1,"d":4} */
+
+/* Remove by positive index */
+list -= list[0];         /* {"d":4} */
+
+/* Remove by negative index */
+list -= list[-1];        /* {} */
+```
+
+#### Unsupported Operations
+```grapa
+list = {a:1, b:2, c:3};
+
+/* These do NOT work: */
+list -= 2;               /* No effect - value-based removal not supported */
+list -= "b";             /* No effect - direct string removal not supported */
+list -= list.b;          /* Error - trying to remove value, not key */
+```

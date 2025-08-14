@@ -1,440 +1,346 @@
+---
+tags:
+  - user
+  - highlevel
+---
 # $WIDGET
 
+A specialized type for GUI components and interactive elements in Grapa applications.
 
-To try test scripts, you can create custom GUI applications using the `$WIDGET` type in Grapa scripts.
+## Overview
 
-**Note:** The `-w` and `-wfile` CLI options have been removed from the main Grapa executable. GUI functionality is now available through the widget system in scripts.
+`$WIDGET` is a data type designed for creating and managing graphical user interface components. It provides a structured way to define UI elements with properties, behaviors, and hierarchical relationships.
 
-To speed up load time for widget scripts, compile them using `$sys().compile(infile, outfile)`. 
+## Basic Operations
 
-The $WIDGET type includes an initialization method $new that is called when the widget object is created, passing in the widget type name, the screen boundaries, an optional label, and an optional set of attributes. The design is an implementation of the FTLK library, and so references included to the related library documentation. 
+### Creation
+```grapa
+/* Create basic widget */
+button = {name:"button", type:"click", label:"Click Me"};
 
-All widgets are created using the following syntax, where label and attrlist are optional.
-- widgetname = name of the widget, such as "window" or "button"
-- x, y, w, h = coordinates and size of the widget
-- label = title for the widget
-- attrlist = initialization properties, wich could include definitions for child widgets and event handlers
+/* Create widget with properties */
+input = {name:"input", type:"text", placeholder:"Enter text", value:""};
 
-```
-w = $WIDGET(widgetname, x, y, w, h, label, attrlist)
-```
-
-To delete a widget, assign null to the variable holding the widget.
-
-If a variable holding a widget is assigned to another variable, both variables will point to the same widget. Take caution when doing this...or avoid doing this. 
-
-Several widgets support a group of widgets. There are 3 equivalent ways to create and add a widget to an existing one.
-```
-w = $WIDGET("double_window", 0, 0, 640, 320, "test");
-w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w.set({child:{b2:["button", 20, 40, 60, 20, "B2"]}});
-w.set({child:{b3:$WIDGET("button", 20, 50, 60, 20, "B3")}});
+/* Create widget with children */
+container = {name:"container", type:"div", children:[button, input]};
 ```
 
-See [$WIDGET attributes](widget/attributes.md) for a list of attributes that can be get or set for each widget type. 
+### Addition Operations (`+=`)
+```grapa
+widget = {name:"form", type:"form"};
 
-## widgetname
+/* Add widget with name and value */
+widget += ("button", "Submit");           /* Add button widget */
 
-### "window"
-[FTLK documentatin - Fl_Window](https://www.fltk.org/doc-1.3/classFl__Window.html)
+/* Add widget at specific position */
+widget += ("input", "text", widget[0]);   /* Add input before button */
 
-```
-w = $WIDGET("window", 0, 0, 640, 320, "test", {color: "BLUE"});
-w.show();
-```
-
-### "double_window"
-[FTLK documentatin - Fl_Double_Window](https://www.fltk.org/doc-1.3/classFl__Double__Window.html)
-
-Dobule buffering version of "window", so updates are smother. 
-
-```
-w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
-w.show();
+/* Add widget with complex properties */
+widget += ("label", {text:"Name:", for:"name"}, widget[1]);
 ```
 
-#### "hor_nice_slider"
-[FTLK documentatin - FL_Hor_Nice_Slider](https://www.fltk.org/doc-1.3/classFl__Hor__Nice__Slider.html)
+### Concatenation Operations (`++=`)
+```grapa
+form1 = {name:"login", type:"form"};
+form2 = {name:"register", type:"form"};
 
-```
-w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("hor_nice_slider", 20, 20, 600, 20, "", {scrollvalue:[30,5,0,100]}));
+/* Extend widget with another widget */
+form1 ++= form2;                          /* Combine form widgets */
 ```
 
-The above can also be initiated using the following.
-```
-w = $WIDGET("double_window", 0, 0, 640, 320, "test", {
-  color: "BLUE",
-  children: {
-    ns:$WIDGET("hor_nice_slider", 20, 20, 600, 20, "", {
-      scrollvalue:[30,5,0,100]
-      })
+## Widget Properties
+
+### Common Properties
+```grapa
+widget = {
+    name: "my_widget",           /* Unique identifier */
+    type: "button",              /* Widget type */
+    label: "Click Me",           /* Display text */
+    value: "default",            /* Current value */
+    enabled: true,               /* Interaction state */
+    visible: true,               /* Visibility state */
+    style: {                     /* Styling properties */
+        color: "blue",
+        size: "large",
+        position: "center"
+    },
+    events: {                    /* Event handlers */
+        click: op(){/* handler */},
+        change: op(){/* handler */}
     }
-  });
-w.show();
+};
 ```
 
+### Widget Types
+```grapa
+/* Button widgets */
+button = {name:"btn", type:"button", label:"Click"};
 
-#### "scrollbar"
-[FTLK documentatin - FL_Scrollbar](https://www.fltk.org/doc-1.3/classFl__Scrollbar.html)
+/* Input widgets */
+text_input = {name:"input", type:"text", placeholder:"Enter text"};
+number_input = {name:"num", type:"number", min:0, max:100};
+checkbox = {name:"check", type:"checkbox", checked:false};
 
-```
-w = $WIDGET("double_window", 0, 0, 640, 320, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("scrollbar", 600, 20, 20, 280, "", {scrollvalue:[30,5,0,100]}));
-```
+/* Container widgets */
+div = {name:"container", type:"div", children:[]};
+form = {name:"form", type:"form", method:"POST"};
+table = {name:"table", type:"table", rows:3, cols:2};
 
-#### "scroll"
-[FTLK documentatin - FL_Scroll](https://www.fltk.org/doc-1.3/classFl__Scroll.html)
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
-w.child("ns") += (tx:$WIDGET("text_display", 20, 20, 800, 340));
-w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
-w.redraw();
+/* Display widgets */
+label = {name:"label", type:"label", text:"Display text"};
+image = {name:"img", type:"image", src:"path/to/image.png"};
 ```
 
-#### "button"
-[FTLK documentatin - FL_Button](https://www.fltk.org/doc-1.3/classFl__Button.html)
+## Widget Hierarchy
 
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w += (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
-```
+### Parent-Child Relationships
+```grapa
+/* Create hierarchical widget structure */
+form = {name:"main_form", type:"form"};
 
-#### "radio_button"
-[FTLK documentatin - FL_Radio_Button](https://www.fltk.org/doc-1.3/classFl__Radio__Button.html)
+/* Add child widgets */
+form += ("name_input", "text", {placeholder:"Enter name"});
+form += ("email_input", "text", {placeholder:"Enter email"});
+form += ("submit_btn", "button", {label:"Submit"});
 
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (b1:$WIDGET("radio_button", 20, 20, 60, 20, "B1"));
-w += (b2:$WIDGET("radio_button", 20, 40, 60, 20, "B2"));
+/* Access child widgets */
+name_field = form.children[0];
+email_field = form.children[1];
+submit_button = form.children[2];
 ```
 
-#### "toggle_button"
-[FTLK documentatin - FL_Toggle_Button](https://www.fltk.org/doc-1.3/classFl__Toggle__Button.html)
+### Widget Navigation
+```grapa
+widget = {name:"container", type:"div"};
 
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (b1:$WIDGET("toggle_button", 20, 20, 60, 20, "B1"));
-w += (b2:$WIDGET("toggle_button", 20, 40, 60, 20, "B2"));
-```
+/* Find widget by name */
+button = widget.find("submit_button");
 
-#### "group"
-[FTLK documentatin - FL_Group](https://www.fltk.org/doc-1.3/classFl__Group.html)
+/* Find widget by type */
+buttons = widget.find_all("button");
 
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("group", 20, 20, 40, 60));
-w.child("ns") +=  (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w.child("ns") +=  (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+/* Get parent widget */
+parent = widget.parent;
+
+/* Get sibling widgets */
+siblings = widget.siblings;
 ```
 
-After the above, run the following to move the group.
+## Event Handling
 
-```
-r = w.child("ns").get(["x","y","w","h"]);
-w.child("ns").resize(r.x+10,r.y+10,r.w,r.h);
-```
-
-#### "pack"
-[FTLK documentatin - FL_Pack](https://www.fltk.org/doc-1.3/classFl__Pack.html)
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("pack", 20, 20, 40, 60, "", {spacing: 4}));
-w.child("ns") +=  (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w.child("ns") +=  (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
-```
-
-Horizontal version.
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("pack", 20, 20, 0, 20, "", {type: "horizontal", spacing: 4}));
-w.child("ns") +=  (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w.child("ns") +=  (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
+### Event Definition
+```grapa
+widget = {
+    name: "interactive_button",
+    type: "button",
+    label: "Click Me",
+    events: {
+        click: op(event){
+            "Button clicked!".echo();
+            event.target.value = "Clicked";
+        },
+        mouseover: op(event){
+            event.target.style.color = "red";
+        },
+        mouseout: op(event){
+            event.target.style.color = "black";
+        }
+    }
+};
 ```
 
-#### "text_editor"
-[FTLK documentatin - FL_Text_Editor](https://www.fltk.org/doc-1.3/classFl__Text__Editor.html)
+### Dynamic Event Binding
+```grapa
+widget = {name:"button", type:"button", label:"Click"};
 
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
-w.child("ns") +=  (tx:$WIDGET("text_editor", 20, 20, 800, 340));
-w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
-w.set({resizable: "ns"});
-w.redraw();
-```
+/* Bind event dynamically */
+widget.bind("click", op(event){
+    "Dynamic click handler".echo();
+});
 
-#### "text_display"
-[FTLK documentatin - FL_Text_Display](https://www.fltk.org/doc-1.3/classFl__Text__Display.html)
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
-w.child("ns") +=  (tx:$WIDGET("text_display", 20, 20, 800, 340));
-w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
-w.set({resizable: "ns"});
-w.redraw();
+/* Unbind event */
+widget.unbind("click");
 ```
 
-#### "menu_bar"
-[FTLK documentatin - FL_Menu_Bar](https://www.fltk.org/doc-1.3/classFl__Menu__Bar.html)
+## Widget Styling
 
-```
-w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
-w.show();
-w +=  (tx:$WIDGET("text_display", 20, 50, 300, 150));
-w.child("tx").set({text:"blank"});
-
-w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
-m1_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M1"});};
-w.child("menu") += (M1: {path: "&File/&M1", flags: ["DIVIDER"], shortcut: "^a", callback: m1_cb});
-m2_cb = op(o,cbdata,item) {o.parent().child("tx").set({text:"M2"});};
-w.child("menu") += (M2: {path: "&File/&M2", shortcut: "^b", callback: m2_cb});
-
-w.child("menu").get([ {"M1":["path","shortcut"]} ]);
-w.child("menu").get([ {"M1":["label","labelsize"]} ]);
-w.child("menu").set({child:{M1: {label: "M1X", "labelsize":18}}});
-w.child("menu").get([ {"M1":["label","labelsize"]} ]);
-
-```
-
-#### "widget"
-[FTLK documentatin - FL_Widget](https://www.fltk.org/doc-1.3/classFl__Widget.html)
-
-Widget that does nothing. Useful for inserting a spacer in a "pack". 
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("pack", 20, 20, 0, 20, "", {type: "horizontal", spacing: 4}));
-w.child("ns") +=  (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w.child("ns") +=  (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
-w.child("ns") +=  (s1:$WIDGET("widget", 20, 40, 20, 20));
-w.child("ns") +=  (b3:$WIDGET("button", 20, 40, 60, 20, "B3"));
-w.child("ns") +=  (b4:$WIDGET("button", 20, 40, 60, 20, "B4"));
+### Style Properties
+```grapa
+widget = {
+    name: "styled_widget",
+    type: "button",
+    label: "Styled Button",
+    style: {
+        /* Layout */
+        width: "200px",
+        height: "50px",
+        margin: "10px",
+        padding: "5px",
+        
+        /* Appearance */
+        background: "#007bff",
+        color: "white",
+        border: "1px solid #0056b3",
+        borderRadius: "5px",
+        
+        /* Typography */
+        fontSize: "16px",
+        fontWeight: "bold",
+        textAlign: "center",
+        
+        /* Position */
+        position: "relative",
+        top: "0px",
+        left: "0px"
+    }
+};
 ```
 
-#### "table_row"
-[FTLK documentatin - FL_Table_Row](https://www.fltk.org/doc-1.3/classFl__Table__Row.html)
+### Dynamic Styling
+```grapa
+widget = {name:"dynamic", type:"button", label:"Dynamic"};
 
-```
-w = $WIDGET("double_window", 20, 50, 440, 340, "test", {color: "BLUE"});
-w.show();
-w += (table: $WIDGET("table_row", 20, 20, 400, 300));
-w.child("table").set({vector:$file().ls().vector()});
-```
+/* Change style properties */
+widget.style.background = "red";
+widget.style.color = "white";
 
-## show ()
-Shows a widget.
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
+/* Apply style class */
+widget.add_class("highlighted");
+widget.remove_class("highlighted");
+widget.toggle_class("active");
 ```
 
-## hide ()
-Hides a widget.
+## Widget Validation
 
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w += (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
-w.child("b1").hide();
-```
-
-## redraw ()
-[FTLK documentatin - redraw()](https://www.fltk.org/doc-1.3/classFl__Widget.html#aa63ce68cbf4620cf8750b868368ea02b)
-
-A message can be sent to a widget to request a redraw, for situations where a change is made but the widget does not automatically update to reflect the change.
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (b1:$WIDGET("button", 20, 20, 60, 20, "B1"));
-w += (b2:$WIDGET("button", 20, 40, 60, 20, "B2"));
-w.child("b1").redraw();
+### Validation Rules
+```grapa
+input = {
+    name: "email_input",
+    type: "text",
+    placeholder: "Enter email",
+    validation: {
+        required: true,
+        pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+        message: "Please enter a valid email address",
+        validate: op(value){
+            return value.contains("@") && value.contains(".");
+        }
+    }
+};
 ```
 
-## resizable (resizewidget)
-[FTLK documentatin - resizable()](https://www.fltk.org/doc-1.3/classFl__Group.html#afd220e45e1ac817bde7d6a25fdf74e37)
+### Validation Methods
+```grapa
+widget = {name:"input", type:"text"};
 
-Binds the resizable definition for a widget to another widget. For example, a window may have both a text box and a button and resizing the window should result in resizing the text box but not the button. In this case, the resizable definition for the window should include the text box, but not the button. 
+/* Check if widget is valid */
+is_valid = widget.validate();
 
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w.resizable(w);
+/* Get validation errors */
+errors = widget.get_errors();
 
-w += (ns:$WIDGET("pack", 20, 20, 300, 180, "", {spacing: 4}));
-
-w.child("ns") += (bt:$WIDGET("pack", 20, 20, 0, 20, "", {type: "horizontal", spacing: 4}));
-w.child("ns").child("bt") +=  (bt1:$WIDGET("button", 20, 20, 40, 20, "btn1"));
-w.child("ns").child("bt") +=  (bt2:$WIDGET("button", 20, 20, 40, 20, "btn2"));
-
-w.child("ns") +=  (tx:$WIDGET("text_display", 20, 40, 300, 160));
-w.resizable(w.child("ns"));
-w.child("ns").resizable(w.child("ns").child("tx"));
-
-w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
+/* Clear validation state */
+widget.clear_validation();
 ```
 
-## resize (x, y, w, h)
-[FTLK documentatin - resize()](https://www.fltk.org/doc-1.3/classFl__Widget.html#aca98267e7a9b94f699ebd27d9f59e8bb)
+## Advanced Features
 
-```
-w = $WIDGET("double_window", 0, 0, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("scroll", 20, 20, 300, 180));
-w.child("ns") +=  (tx:$WIDGET("text_display", 20, 20, 800, 340));
-w.child("ns").child("tx").set({text:$sys().getenv('LICENCE')});
-w.set({resizable: "ns"});
-w.redraw();
+### Widget Templates
+```grapa
+/* Create reusable widget template */
+button_template = {
+    type: "button",
+    style: {
+        background: "#007bff",
+        color: "white",
+        padding: "10px 20px",
+        border: "none",
+        borderRadius: "5px"
+    }
+};
 
-r = w.get(["x","y","w","h"]);
-w.resize(r.x,r.y,r.w+50,r.h+100);
-```
+/* Use template to create widgets */
+primary_btn = button_template.copy();
+primary_btn.name = "primary";
+primary_btn.label = "Primary Action";
 
-## parent ()
-[FTLK documentatin - parent()](https://www.fltk.org/doc-1.3/classFl__Widget.html#a6f55261683ecaf68d70e424213d030b0)
-
-Parent widget...which will always be a "group" type of widget. Useful in handlers that get passed the widget for the handler, and the script needs to make a change to another widget that is relative to the target widget. An example would be a button that updates a text display. 
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
-w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({on_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}});
+secondary_btn = button_template.copy();
+secondary_btn.name = "secondary";
+secondary_btn.label = "Secondary Action";
+secondary_btn.style.background = "#6c757d";
 ```
 
-## child (name)
-[FTLK documentatin - child()](https://www.fltk.org/doc-1.3/classFl__Group.html#ab564b4b536ad8eb62885523220348d1f)
-
-Child of widget. Name can either be a string or a number. If number, than it is the n'th widget in the group.
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
-w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({on_release: op(o) {o.parent().child("tx").set({text:($TIME().utc()+$TIME().tz()).str()});}});
-```
-
-## next ()
-Next widget in the group. This is useful when an action with a widget in a group needs to modify the widget that follows in the group.
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("button", 20, 20, 40, 20, "time"));
-w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("ns").set({on_release: op(o) {o.next().set({text:($TIME().utc()+$TIME().tz()).str()});}});
+### Widget Composition
+```grapa
+/* Create complex widget from simpler ones */
+form_widget = {
+    name: "user_form",
+    type: "form",
+    children: [
+        {name:"name_label", type:"label", text:"Name:"},
+        {name:"name_input", type:"text", placeholder:"Enter name"},
+        {name:"email_label", type:"label", text:"Email:"},
+        {name:"email_input", type:"text", placeholder:"Enter email"},
+        {name:"submit_btn", type:"button", label:"Submit"}
+    ]
+};
 ```
 
-## focus ()
-[FTLK documentatin - focus()](https://www.fltk.org/doc-1.3/group__fl__events.html#ga7f0e9836db43268979e0b3a999583b7f)
+### Widget Serialization
+```grapa
+widget = {name:"my_widget", type:"button", label:"Click"};
 
-Get's the current widget in focus.
+/* Convert widget to JSON */
+json_data = widget.to_json();
 
-The following example has a menu item that will update the in focus text editor with the current time.
+/* Create widget from JSON */
+new_widget = widget.from_json(json_data);
 
-```
-w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
-w.show();
-w +=  (tx:$WIDGET("text_editor", 20, 50, 300, 75));
-w +=  (tx:$WIDGET("text_editor", 20, 125, 300, 75));
+/* Export widget configuration */
+config = widget.export_config();
 
-w += (menu: $WIDGET("menu_bar", 0, 0, 640, 30));
-m1_cb = op(o,cbdata,item) {o.focus().set({text:($TIME().utc()+$TIME().tz()).str()});};
-w.child("menu") += (Time: {path: "&File/&Time", shortcut: "^a", callback: m1_cb});
-```
-
-## get (attr_array)
-Gets a list of attributes as specified.
-
-See [$WIDGET attributes](widget/attributes.md).
-
-## set (attr_list)
-Sets a list of attributes as specified.
-
-See [$WIDGET attributes](widget/attributes.md).
-
-## handle (event)
-[FTLK documentatin - handle()](https://www.fltk.org/doc-1.3/classFl__Widget.html#a9cb17cc092697dfd05a3fab55856d218)
-
-In an event handler, such as "on_keydown", if the event is not processed by the "on_keydown" function, call handle(event).
-
-The following will process a text selection when Shift+Enter is pressed. If not pressed, than the default event handler is called for the widget.
-
-```
-on_keydown: op(o,event)
-{
-  $local.handled = 0;
-  if (((o.event_key() & (0x7f).int()) == 0x0d) && (o.event_key((0xffe1).int())))
-  {
-    $local.s = o.get("selection");
-    if (s==""||s.type()=="$ERR")
-      s = o.get("text");
-    if (s!="")
-    {
-      $local.t = s.post();
-    };
-    handled = 1;
-  }
-  else
-  {
-    handled = o.handle(event);
-  };
-  handled;
-}
+/* Import widget configuration */
+widget.import_config(config);
 ```
 
-## event_key (key)
-[FTLK documentatin - event_key()](https://www.fltk.org/doc-1.3/group__fl__events.html#ga1ac131e3cd5ca674cc022b1f77233449)
+## Performance Considerations
 
-Returns the key lasted pressed if key parameter not passed in. If key parameter passed in, returns true if key is pressed.
+- **Lazy Rendering**: Widgets are rendered only when needed
+- **Event Delegation**: Efficient event handling for large widget trees
+- **Memory Management**: Automatic cleanup of unused widgets
+- **Batch Updates**: Multiple property changes are batched for performance
 
-See "handle" example.
+## Integration with Other Types
 
-## append (data)
-Appends to text_display or text_editor widget.
+### Widget Arrays
+```grapa
+/* Create array of widgets */
+buttons = [
+    {name:"btn1", type:"button", label:"Button 1"},
+    {name:"btn2", type:"button", label:"Button 2"},
+    {name:"btn3", type:"button", label:"Button 3"}
+];
 
-```
-w = $WIDGET("double_window", 20, 50, 340, 220, "test", {color: "BLUE"});
-w.show();
-w += (tx:$WIDGET("text_display", 20, 50, 300, 150));
-w.child("tx").set({text:"blank"});
-
-w.child("tx").append("hi");
-```
-
-## post (postop, postparams, doneop)
-Runs postop in the widget thread with postparams. Runs doneop when done.
-
-```
-w = $WIDGET("double_window", 0, 0, 340, 260, "test", {color: "BLUE"});
-w.show();
-w += (ns:$WIDGET("button", 20, 20, 40, 20, "clear", {on_release: op(o){o.next().set({"text":""});} }));
-w += (tx:$WIDGET("text_display", 20, 40, 300, 200));
-w.child("tx").post(op(p){$self.set({text:p+" start\n"})},"test",op(p){$self.set({append:p+" end\n"})});
+/* Process widgets */
+buttons.map(op(widget){
+    widget.style.background = "blue";
+});
 ```
 
-## clear ()
-Removes all child elements from menu or group widget. 
+### Widget Lists
+```grapa
+/* Create list of widgets */
+widget_list = {
+    header: {name:"header", type:"header", text:"Application"},
+    sidebar: {name:"sidebar", type:"nav", items:["Home", "About", "Contact"]},
+    content: {name:"content", type:"main", children:[]},
+    footer: {name:"footer", type:"footer", text:"Copyright 2024"}
+};
+```
+
+## See also
+- [$ARRAY object](array.md)
+- [$LIST object](list.md)
+- [$VECTOR object](vector.md)
+- [Assignment Operators](../operators/assignment.md)
+- [Event Handling](../advanced_topics.md)

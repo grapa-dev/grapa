@@ -16492,7 +16492,6 @@ GrapaRuleEvent* GrapaLibraryRuleInterpolateEvent::Run(GrapaScriptExec* vScriptEx
 	GrapaRuleEvent* result = NULL;
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL); // input string
 	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL); // params ($LIST)
-	GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL); // rule ($RULE)
 
 	// Check if we have a valid input string
 	if (!r1.vVal || (r1.vVal->mValue.mToken != GrapaTokenType::STR && r1.vVal->mValue.mToken != GrapaTokenType::RAW))

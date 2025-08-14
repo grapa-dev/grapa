@@ -67,6 +67,60 @@ Commands | Results | Description
 
 Example: The op command is used for passing parameters into a function. When the op command is used, the name is replaced with an array where the first value is "op" and the second value is the function. This array is then followed by the parameter list. The parameters are used to initialize the namespace for the function.
 
+### Parameter Definition and Matching
+
+Grapa's `op` function supports flexible parameter definition and calling with both traditional programming syntax and JSON-style syntax.
+
+#### Parameter Definition
+```grapa
+/* Basic parameter definition */
+op(a,b){a*b}; | @<[op,@<mul,{@<var,{a}>,@<var,{b}>}>],{a,b}>
+
+/* Parameters with default values */
+op(a=1,b=2){b**a}; | @<[op,@<pow,{@<var,{b}>,@<var,{a}>}>],{"a":1,"b":2}>
+
+/* Mixed default and non-default parameters */
+op(a,b=10,c){a+b+c}; | @<[op,@<add,{@<add,{@<var,{a}>,@<var,{b}>}>,@<var,{c}>}>],{a,"b":10,c}>
+```
+
+#### Parameter Calling
+
+**Named Parameters (Traditional Syntax):**
+```grapa
+f = op(a=1, b=2) { b**a; };
+f(a=3, b=4);     /* → 64 */
+f(b=5, a=2);     /* → 25 */
+```
+
+**Named Parameters (JSON-Style Syntax):**
+```grapa
+f = op(a=1, b=2) { b**a; };
+f(a:3, b:4);     /* → 64 */
+f(b:5, a:2);     /* → 25 */
+```
+
+**Positional Parameters:**
+```grapa
+f = op(a=1, b=2) { b**a; };
+f(3, 4);         /* → 64 (a=3, b=4) */
+f(5, 2);         /* → 32 (a=5, b=2) */
+```
+
+**Mixed Named and Positional:**
+```grapa
+f = op(a=1, b=2, c=3) { a + b + c; };
+f(10, b:20);     /* → 33 (a=10, b=20, c=3) */
+f(c:30, 5);      /* → 37 (a=5, b=2, c=30) */
+```
+
+#### Parameter Matching Rules
+
+1. **Named Parameters**: Can use either `=` or `:` syntax
+2. **Positional Parameters**: Assigned in order of definition
+3. **Mixed Usage**: Named parameters can be specified in any order, positional parameters fill remaining slots
+4. **Default Values**: Used when parameters are not provided
+5. **JSON Compatibility**: `:` syntax allows seamless integration with JSON objects
+
 Commands | Results
 ------------ | -------------
 op(){1} | @<[op,1],{}>

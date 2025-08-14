@@ -143,7 +143,7 @@ result = "Hello ${name}".interpolate({name:"Alice"});
 result.echo();  /* Output: Hello Alice */
 ```
 
-> **See Also:** [String Interpolation Documentation](../obj/transform.md#interpolateparams-rule) for comprehensive documentation including advanced features like multi-level parameter passing and dynamic script execution.
+> **See Also:** [String Interpolation Documentation](../obj/transform.md#interpolateparams) for comprehensive documentation including advanced features like multi-level parameter passing and dynamic script execution.
 
 ### Dynamic Code Execution (Complex Cases)
 

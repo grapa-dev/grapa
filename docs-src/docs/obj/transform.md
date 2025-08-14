@@ -180,12 +180,11 @@ Replaces iteems.
 "testing".replace("t","g") -> "gesging"
 ```
 
-## interpolate([params], [rule])
+## interpolate([params])
 Performs string interpolation with embedded expressions and script execution. Supports variable substitution, expression evaluation, and dynamic script execution using the powerful `op()` function infrastructure.
 
 ### Parameters:
 - `params` (optional) - `$LIST` type providing additional variables for interpolation context
-- `rule` (optional) - `$RULE` type for custom entry point during interpolation
 
 ### Template Syntax:
 - `${code}` - Direct code execution within current scope

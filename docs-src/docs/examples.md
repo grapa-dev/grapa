@@ -72,6 +72,75 @@ sum = numbers.reduce(op(a, b) { a + b; }, 0);
 ("Sum: " + sum).echo();
 ```
 
+### Array and List Operations
+```grapa
+/* Array operations */
+arr = [1, 2, 3, 4, 5];
+arr += 6;                 /* Add element: [1,2,3,4,5,6] */
+arr += 10 arr[0];         /* Insert at position: [10,1,2,3,4,5,6] */
+arr -= arr[2];            /* Remove by index: [10,1,4,5,6] */
+arr.echo();
+
+/* List operations */
+list = {a:1, b:2, c:3};
+list += (d:4);            /* Add key-value: {"a":1,"b":2,"c":3,"d":4} */
+list += (e:5) list[0];    /* Insert at position: {"e":5,"a":1,"b":2,"c":3,"d":4} */
+list -= list.b;           /* Remove by key: {"e":5,"a":1,"c":3,"d":4} */
+list.echo();
+
+/* Concatenation */
+arr1 = [1, 2, 3];
+arr2 = [4, 5, 6];
+arr1 ++= arr2;            /* Concatenate: [1,2,3,4,5,6] */
+arr1.echo();
+
+/* Search and filtering */
+data = [{id:1, name:"Alice"}, {id:2, name:"Bob"}, {id:3, name:"Alice"}];
+alice_users = data.filter(op(item){item.name == "Alice";});  /* Find all Alice users */
+alice_users.echo();
+```
+
+### Vector Operations
+```grapa
+/* Vector creation and operations */
+vec = [1, 2, 3, 4, 5];
+vec += 6;                 /* Add element */
+vec ++= [7, 8];           /* Extend vector */
+
+/* Mathematical operations */
+vec1 = [1, 2, 3];
+vec2 = [4, 5, 6];
+sum = vec1 + vec2;        /* Element-wise addition: [5,7,9] */
+scaled = vec1 * 2;        /* Scale by scalar: [2,4,6] */
+sum.echo();
+scaled.echo();
+```
+
+### Widget Operations
+```grapa
+/* Widget creation and manipulation */
+form = {name:"login_form", type:"form"};
+form += ("username", "text", {placeholder:"Enter username"});
+form += ("password", "password", {placeholder:"Enter password"});
+form += ("submit", "button", {label:"Login"});
+
+/* Widget styling */
+form.children[2].style.background = "#007bff";
+form.children[2].style.color = "white";
+```
+
+### XML Operations
+```grapa
+/* XML creation and manipulation */
+xml = <root><item>1</item></root>;
+xml += <item>2</item>;                    /* Add element */
+xml += <header>Title</header> xml[0];     /* Insert at position */
+
+/* XML navigation */
+items = xml.find_all("item");             /* Find all item elements */
+title = xml.find("header").content;       /* Get content */
+```
+
 ### String Interpolation
 ```grapa
 /* Basic variable interpolation */
@@ -214,6 +283,29 @@ funcs["add"](10, 5).echo();  /* 15 */
 funcs["sub"](10, 5).echo();  /* 5 */
 funcs["mul"](10, 5).echo();  /* 50 */
 funcs["div"](10, 5).echo();  /* 2 */
+```
+
+### Parameter Matching Examples
+```grapa
+/* Function with default parameters */
+calculator = op(operation="add", x=0, y=0) {
+    if (operation == "add") { x + y; }
+    else if (operation == "multiply") { x * y; }
+    else if (operation == "power") { x**y; }
+    else { 0; }
+};
+
+/* Traditional named parameters */
+calculator(operation="multiply", x=5, y=3).echo();  /* 15 */
+
+/* JSON-style named parameters */
+calculator(operation:"power", x:2, y:8).echo();     /* 256 */
+
+/* Mixed named and positional */
+calculator(5, operation:"add", y:3).echo();         /* 8 */
+
+/* Positional parameters */
+calculator("multiply", 4, 6).echo();                /* 24 */
 ```
 
 ### Advanced String Interpolation

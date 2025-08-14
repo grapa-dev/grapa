@@ -2,6 +2,78 @@
 ## op
 Creating an $OP. See [$OP type](../type/op.md).
 
+### Parameter Definition and Matching
+
+Grapa's `op` function supports flexible parameter definition and calling with both traditional programming syntax and JSON-style syntax.
+
+#### Parameter Definition
+```grapa
+/* Basic parameter definition */
+f = op(a, b) { a + b; };
+
+/* Parameters with default values */
+f = op(a=1, b=2) { b**a; };
+
+/* Mixed default and non-default parameters */
+f = op(a, b=10, c) { a + b + c; };
+```
+
+#### Parameter Calling
+
+**Named Parameters (Traditional Syntax):**
+```grapa
+f = op(a=1, b=2) { b**a; };
+f(a=3, b=4);     /* → 64 */
+f(b=5, a=2);     /* → 25 */
+```
+
+**Named Parameters (JSON-Style Syntax):**
+```grapa
+f = op(a=1, b=2) { b**a; };
+f(a:3, b:4);     /* → 64 */
+f(b:5, a:2);     /* → 25 */
+```
+
+**Positional Parameters:**
+```grapa
+f = op(a=1, b=2) { b**a; };
+f(3, 4);         /* → 64 (a=3, b=4) */
+f(5, 2);         /* → 32 (a=5, b=2) */
+```
+
+**Mixed Named and Positional:**
+```grapa
+f = op(a=1, b=2, c=3) { a + b + c; };
+f(10, b:20);     /* → 33 (a=10, b=20, c=3) */
+f(c:30, 5);      /* → 37 (a=5, b=2, c=30) */
+```
+
+#### Parameter Matching Rules
+
+1. **Named Parameters**: Can use either `=` or `:` syntax
+2. **Positional Parameters**: Assigned in order of definition
+3. **Mixed Usage**: Named parameters can be specified in any order, positional parameters fill remaining slots
+4. **Default Values**: Used when parameters are not provided
+5. **JSON Compatibility**: `:` syntax allows seamless integration with JSON objects
+
+#### Examples
+
+```grapa
+/* Complex parameter example */
+calculator = op(operation="add", x=0, y=0) {
+    if (operation == "add") { x + y; }
+    else if (operation == "multiply") { x * y; }
+    else if (operation == "power") { x**y; }
+    else { 0; }
+};
+
+/* Various calling styles */
+calculator(5, 3);                    /* → 8 (add) */
+calculator(operation:"multiply", 5, 3); /* → 15 */
+calculator(x:10, y:2, operation:"power"); /* → 100 */
+calculator(operation="power", y:3, x:2);  /* → 8 */
+```
+
 ## class
 Creates a class that can be used to generate an instance of the class. The class definition is shared between all instances using the class. If information in the class is altered, a copy is made and the modified variable is added to the instance. The instance stores the class reference and any variables local to the instance. Classes can inherit 1 or more other classes. 
 
