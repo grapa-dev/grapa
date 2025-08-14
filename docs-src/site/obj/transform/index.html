@@ -2281,6 +2281,57 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matchpattern-options-delimiter-normalization-mode-num_workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      match(pattern, options, delimiter, normalization, mode, num_workers)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="match(pattern, options, delimiter, normalization, mode, num_workers)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-match-vs-grep" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use match() vs grep():
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling:
+    </span>
+  </a>
+  
+</li>
+        
           <li class="md-nav__item">
   <a href="#diacritic-insensitive-matching-d-option" class="md-nav__link">
     <span class="md-ellipsis">
@@ -4385,6 +4436,57 @@
   
 </li>
         
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matchpattern-options-delimiter-normalization-mode-num_workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      match(pattern, options, delimiter, normalization, mode, num_workers)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="match(pattern, options, delimiter, normalization, mode, num_workers)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#examples_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-match-vs-grep" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use match() vs grep():
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling:
+    </span>
+  </a>
+  
+</li>
+        
           <li class="md-nav__item">
   <a href="#diacritic-insensitive-matching-d-option" class="md-nav__link">
     <span class="md-ellipsis">
@@ -5005,6 +5107,45 @@ class_template.interpolate({class_name:&quot;User&quot;, field_type:&quot;String
 <p><strong>📖 For comprehensive Unicode grep documentation including advanced features, named groups, JSON output, and Unicode properties, see <a href="../../grep/">Unicode Grep Documentation</a>.</strong></p>
 <p><strong>💡 Tip</strong>: Use raw string literals (prefix with <code>r</code>) for better regex pattern readability. For example, <code>r"\w+"</code> instead of <code>"\\w+"</code>. Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string.</p>
 </blockquote>
+<h2 id="matchpattern-options-delimiter-normalization-mode-num_workers">match(pattern, options, delimiter, normalization, mode, num_workers)</h2>
+<p>Tests if a pattern matches in a string, returning a boolean value.</p>
+<p><strong>Returns</strong>: <code>$BOOL</code> - <code>true</code> if pattern is found, <code>false</code> if not found or invalid pattern</p>
+<h3 id="parameters_5">Parameters:</h3>
+<ul>
+<li><code>pattern</code> - Regex pattern to search for</li>
+<li><code>options</code> (optional) - Search options (same as grep)</li>
+<li><code>delimiter</code> (optional) - Line delimiter for multiline matching</li>
+<li><code>normalization</code> (optional) - Unicode normalization form</li>
+<li><code>mode</code> (optional) - Processing mode</li>
+<li><code>num_workers</code> (optional) - Number of parallel workers</li>
+</ul>
+<h3 id="examples_5">Examples:</h3>
+<div class="highlight"><pre><span></span><code>/* Basic pattern matching */
+&quot;hello world&quot;.match(&quot;hello&quot;);     /* true - pattern found */
+&quot;hello world&quot;.match(&quot;xyz&quot;);       /* false - pattern not found */
+&quot;hello world&quot;.match(&quot;a{&quot;);        /* false - invalid pattern handled gracefully */
+
+/* Case insensitive matching */
+&quot;hello world&quot;.match(&quot;HELLO&quot;, &quot;i&quot;); /* true - case insensitive match */
+&quot;Hello World&quot;.match(&quot;world&quot;, &quot;i&quot;); /* true - case insensitive match */
+
+/* With regex patterns */
+&quot;hello world&quot;.match(r&quot;\w+&quot;);      /* true - word characters found */
+&quot;hello world&quot;.match(r&quot;\d+&quot;);      /* false - no digits found */
+
+/* With all parameters */
+&quot;hello world&quot;.match(&quot;hello&quot;, &quot;i&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, 1); /* true - with all options */
+</code></pre></div>
+<h3 id="when-to-use-match-vs-grep">When to Use match() vs grep():</h3>
+<ul>
+<li><strong>Use <code>.match()</code></strong> when you only need to know if a pattern exists (boolean result)</li>
+<li><strong>Use <code>.grep()</code></strong> when you need the actual matches or match details</li>
+</ul>
+<h3 id="error-handling">Error Handling:</h3>
+<ul>
+<li>Invalid regex patterns return <code>false</code> (graceful degradation)</li>
+<li>All other errors from grep are propagated as <code>$ERR</code></li>
+</ul>
 <hr />
 <h3 id="diacritic-insensitive-matching-d-option">Diacritic-Insensitive Matching (<code>d</code> option)</h3>
 <p>The <code>d</code> option enables <strong>diacritic-insensitive matching</strong>. When enabled, both the input and the pattern are:

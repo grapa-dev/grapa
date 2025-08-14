@@ -809,6 +809,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#assignment-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Assignment Operations (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#addition-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Addition Operations (+=)
@@ -3444,6 +3453,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#assignment-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Assignment Operations (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#addition-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Addition Operations (+=)
@@ -3541,6 +3559,18 @@
 </code></pre></div></p>
 <p>There isn't currently built in support for searching for an $ARRAY or $LIST item within an $ARRAY. Currently, this would require an itterator to scan and compare, or the use of a hash of the contents as a key.</p>
 <h3 id="array-operations">Array Operations</h3>
+<h4 id="assignment-operations">Assignment Operations (<code>=</code>)</h4>
+<div class="highlight"><pre><span></span><code>/* Direct element assignment */
+arr = [3, 6, &quot;hi&quot;];
+arr[1] = &quot;by&quot;;            /* [3,&quot;by&quot;,&quot;hi&quot;] */
+
+/* Assignment by negative index */
+arr[-2] = &quot;good&quot;;         /* [3,&quot;good&quot;,&quot;hi&quot;] */
+
+/* Compound assignment on accessed elements */
+arr[-2] += &quot;dee&quot;;         /* [3,&quot;gooddee&quot;,&quot;hi&quot;] */
+arr[0] += 8;              /* [11,&quot;gooddee&quot;,&quot;hi&quot;] */
+</code></pre></div>
 <h4 id="addition-operations">Addition Operations (<code>+=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Add single element */
 arr = [1, 2, 3, 4, 5];

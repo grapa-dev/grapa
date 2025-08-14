@@ -4754,9 +4754,17 @@ arr = {a:5, b:&lt;div class=&#39;main&#39;&gt;&lt;h1&gt;Title&lt;/h1&gt;&lt;p&gt
 title = arr.b[0].h1[0];  /* &quot;Title&quot; */
 content = arr.b[0].p[0];  /* &quot;Content&quot; */
 
+/* Direct assignment to embedded XML */
+arr.b[0].h1[0] = &quot;New Title&quot;;  /* Modify embedded XML */
+arr.b[0].p[0] = &quot;New Content&quot;;  /* Modify embedded content */
+
 /* XML to LIST conversion */
 xml = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;item&gt;2&lt;/item&gt;&lt;/root&gt;;
 list = xml.list();  /* Convert to LIST structure */
+
+/* Unified dot notation across all types */
+data = {json:{users:[...]}, xml:&lt;config&gt;...&lt;/config&gt;};
+result = data.json.users[0].name + &quot; from &quot; + data.xml.config.setting;
 </code></pre></div></p>
 <h3 id="enhanced-assignment-operators"><strong>Enhanced Assignment Operators</strong> ⚡</h3>
 <p>Grapa provides comprehensive assignment operators for all data types:
@@ -4770,6 +4778,20 @@ x **= 2;  /* x = x ** 2 */
 arr += [4, 5];        /* Add elements */
 arr ++= [6, 7];       /* Concatenate arrays */
 arr -= [1, 2];        /* Remove elements */
+
+/* Position-based insertion */
+arr += 10 arr[0];     /* Insert at specific position */
+list += (key:value) list[2];  /* Insert key-value at position */
+
+/* Direct assignment to accessed elements */
+arr[0] = 100;         /* Direct array element assignment */
+list.key = &quot;value&quot;;   /* Direct object property assignment */
+list[&quot;key&quot;] = &quot;value&quot;; /* Bracket notation assignment */
+arr[-1] = 999;        /* Negative index assignment */
+
+/* Compound assignment on accessed elements */
+arr[0] += 50;         /* Add to accessed element */
+list.count += 1;      /* Increment accessed property */
 
 /* Vector operations */
 vec = #[1, 2, 3]#;
@@ -4856,6 +4878,10 @@ timestamp = $TIME().utc();  /* Nanosecond precision */
 text = &quot;Hello world\nGoodbye world&quot;;
 matches = text.grep(&quot;world&quot;, &quot;o&quot;);  /* Match-only output */
 unicode_text = &quot;café résumé&quot;.grep(&quot;cafe&quot;, &quot;d&quot;);  /* Diacritic-insensitive */
+
+/* Native boolean pattern matching */
+has_match = text.match(&quot;world&quot;);    /* true/false result */
+case_insensitive = text.match(&quot;WORLD&quot;, &quot;i&quot;);  /* Case-insensitive matching */
 </code></pre></div>
 <p><strong>Use Cases:</strong>
 - <strong>Text processing</strong> and analysis
@@ -5080,14 +5106,14 @@ result = mixed_data.json.users.map(op(user) {
 <li>✅ <strong>ETL capabilities</strong> - Data transformation pipelines</li>
 <li>✅ <strong>Database integration</strong> - Native table operations (ROW, COL, GROUP)</li>
 <li>✅ <strong>Unlimited precision</strong> - Arbitrary-precision arithmetic for all numeric types</li>
-<li>✅ <strong>Advanced pattern matching</strong> - 100% ripgrep compatible with Unicode support</li>
+<li>✅ <strong>Advanced pattern matching</strong> - 100% ripgrep compatible with Unicode support and native <code>.match()</code> method</li>
 <li>✅ <strong>Parallel processing</strong> - Built-in thread safety and concurrent operations</li>
 <li>✅ <strong>Cryptographic capabilities</strong> - Prime generation, modular arithmetic, hash functions</li>
 <li>✅ <strong>Unified path system</strong> - Seamless file system and database navigation</li>
-<li>✅ <strong>String interpolation</strong> - Advanced template literal support with expressions</li>
-<li>✅ <strong>Enhanced assignment operators</strong> - <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>**=</code> for all types</li>
-<li>✅ <strong>XML/LIST integration</strong> - Seamless embedding and unified dot notation</li>
-<li>✅ <strong>Unified dot notation system</strong> - Consistent access across all data types</li>
+<li>✅ <strong>String interpolation</strong> - Advanced template literal support with expressions and C++ implementation</li>
+<li>✅ <strong>Enhanced assignment operators</strong> - <code>*=</code>, <code>/=</code>, <code>%=</code>, <code>**=</code> for all types with position-based insertion</li>
+<li>✅ <strong>XML/LIST integration</strong> - Seamless embedding, unified dot notation, and <code>.list()</code> conversion</li>
+<li>✅ <strong>Unified dot notation system</strong> - Consistent access and assignment across all data types</li>
 <li>✅ <strong>Advanced concurrency</strong> - Structured parallel processing with callbacks</li>
 <li>✅ <strong>Execution tree metaprogramming</strong> - Human-readable, manipulable execution trees</li>
 <li>✅ <strong>Rich callback systems</strong> - Object references and sophisticated event handling</li>
@@ -5103,7 +5129,6 @@ result = mixed_data.json.users.map(op(user) {
 <ul>
 <li>🚧 <strong>Exception handling</strong> - <code>try/catch</code> blocks</li>
 <li>🚧 <strong>For loops</strong> - Native loop syntax</li>
-<li>📋 <strong>Native .match() method</strong> - Simple regex matching method (simple addition needed)</li>
 </ul>
 <h3 id="phase-2-developer-experience-weeks-5-8"><strong>Phase 2: Developer Experience (Weeks 5-8)</strong></h3>
 <ul>

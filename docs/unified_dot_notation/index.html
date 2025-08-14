@@ -4101,6 +4101,11 @@ user = {name:&quot;Alice&quot;, age:30, city:&quot;New York&quot;};
 user.name;      /* &quot;Alice&quot; */
 user[&quot;name&quot;];   /* &quot;Alice&quot; - bracket notation */
 user.age;       /* 30 */
+
+/* Object property assignment */
+user.name = &quot;Bob&quot;;          /* Change name to &quot;Bob&quot; */
+user[&quot;age&quot;] = 25;           /* Change age to 25 */
+user.city = &quot;Boston&quot;;       /* Change city to &quot;Boston&quot; */
 </code></pre></div>
 <h3 id="array-access">Array Access</h3>
 <div class="highlight"><pre><span></span><code>/* Array element access */
@@ -4108,6 +4113,11 @@ numbers = [1, 2, 3, 4, 5];
 numbers[0];     /* 1 */
 numbers[1];     /* 2 */
 numbers[-1];    /* 5 - negative indexing */
+
+/* Array element assignment */
+numbers[0] = 10;            /* Change first element to 10 */
+numbers[-1] = 50;           /* Change last element to 50 */
+numbers[2] = 30;            /* Change third element to 30 */
 </code></pre></div>
 <h3 id="xmlhtml-access">XML/HTML Access</h3>
 <div class="highlight"><pre><span></span><code>/* XML element access */

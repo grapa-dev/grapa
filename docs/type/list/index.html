@@ -970,6 +970,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#assignment-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Assignment Operations (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#addition-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Addition Operations (+=)
@@ -3444,6 +3453,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#assignment-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Assignment Operations (=)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#addition-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Addition Operations (+=)
@@ -3523,6 +3541,11 @@
 <td>1</br>1</br>3</td>
 </tr>
 <tr>
+<td>Assign</td>
+<td>x = {a:1, b:2, c:3};</br>x.b = "x";</br>x["b"] = "by";</br>x[-2] = 1234;</td>
+<td></br></br>{"a":1,"b":"x","c":3}</br>{"a":1,"b":"by","c":3}</br>{"a":1,"b":1234,"c":3}</td>
+</tr>
+<tr>
 <td>Append</td>
 <td>x = {a:1, b:2};</br>x += (c:3);</br>x;</td>
 <td></br></br>{"a":1, "b":2, "c":3}</td>
@@ -3550,6 +3573,22 @@
 </tbody>
 </table>
 <h3 id="advanced-list-operations">Advanced List Operations</h3>
+<h4 id="assignment-operations">Assignment Operations (<code>=</code>)</h4>
+<div class="highlight"><pre><span></span><code>/* Direct property assignment */
+list = {a:1, b:2, c:3};
+list.b = &quot;x&quot;;             /* {&quot;a&quot;:1,&quot;b&quot;:&quot;x&quot;,&quot;c&quot;:3} */
+list[&quot;b&quot;] = &quot;by&quot;;         /* {&quot;a&quot;:1,&quot;b&quot;:&quot;by&quot;,&quot;c&quot;:3} */
+
+/* Assignment by index */
+list[1] = 55;             /* {&quot;a&quot;:1,&quot;b&quot;:55,&quot;c&quot;:3} */
+
+/* Assignment by negative index */
+list[-2] = 1234;          /* {&quot;a&quot;:1,&quot;b&quot;:1234,&quot;c&quot;:3} */
+
+/* Compound assignment on accessed elements */
+list.b += &quot;dee&quot;;          /* {&quot;a&quot;:1,&quot;b&quot;:&quot;bydee&quot;,&quot;c&quot;:3} */
+list[0] += 8;             /* {&quot;a&quot;:9,&quot;b&quot;:&quot;bydee&quot;,&quot;c&quot;:3} */
+</code></pre></div>
 <h4 id="addition-operations">Addition Operations (<code>+=</code>)</h4>
 <div class="highlight"><pre><span></span><code>/* Add single key-value pair */
 list = {a:1, b:2};

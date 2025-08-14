@@ -1104,6 +1104,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pattern Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trimming-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Trimming Operations
@@ -3621,6 +3630,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pattern-matching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pattern Matching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#trimming-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Trimming Operations
@@ -3839,6 +3857,22 @@ pattern = r&quot;\w+\s+\d+&quot;;  /* No escaping needed for regex */
 </tr>
 </tbody>
 </table>
+<h3 id="pattern-matching">Pattern Matching</h3>
+<div class="highlight"><pre><span></span><code>/* Basic pattern matching */
+&quot;hello world&quot;.match(&quot;hello&quot;);     /* true - pattern found */
+&quot;hello world&quot;.match(&quot;xyz&quot;);       /* false - pattern not found */
+&quot;hello world&quot;.match(&quot;a{&quot;);        /* false - invalid pattern handled gracefully */
+
+/* Case insensitive matching */
+&quot;hello world&quot;.match(&quot;HELLO&quot;, &quot;i&quot;); /* true - case insensitive match */
+&quot;Hello World&quot;.match(&quot;world&quot;, &quot;i&quot;); /* true - case insensitive match */
+
+/* With all grep parameters */
+&quot;hello world&quot;.match(&quot;hello&quot;, &quot;i&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, 1); /* true - with all options */
+</code></pre></div>
+<blockquote>
+<p><strong>See Also:</strong> <a href="../../obj/transform/#grep">Grep Method Documentation</a> for comprehensive regex search capabilities including advanced options, Unicode support, and complex pattern matching.</p>
+</blockquote>
 <h3 id="trimming-operations">Trimming Operations</h3>
 <div class="highlight"><pre><span></span><code>/* Basic trimming */
 &quot;  hello world  &quot;.trim() -&gt; &quot;hello world&quot;

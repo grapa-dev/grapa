@@ -3909,10 +3909,21 @@ name = &quot;John&quot;;    /* String assignment */
 counter = 0;      /* Integer assignment */
 </code></pre></div>
 <h3 id="complex-assignment-arrayobject-access"><strong>Complex Assignment (Array/Object Access)</strong></h3>
-<div class="highlight"><pre><span></span><code>array[5] = 10;              /* Array element assignment */
-object.property = &quot;value&quot;;  /* Object property assignment */
+<div class="highlight"><pre><span></span><code>/* Array element assignment */
+array[5] = 10;              /* Direct index assignment */
+array[-1] = &quot;last&quot;;         /* Negative index assignment */
+
+/* Object property assignment */
+object.property = &quot;value&quot;;  /* Dot notation assignment */
+object[&quot;property&quot;] = &quot;value&quot;; /* Bracket notation assignment */
+
+/* Nested assignment */
 data[0].name = &quot;Alice&quot;;     /* Nested object assignment */
 config.database.host = &quot;localhost&quot;;  /* Deep property assignment */
+
+/* Compound assignment on accessed elements */
+array[0] += 5;              /* Add to accessed element */
+object.count += 1;          /* Increment accessed property */
 </code></pre></div>
 <p><strong>Performance Note:</strong> Simple variable assignments are optimized for speed, while complex assignments (array indexing, object properties) provide flexibility but may be slightly slower.</p>
 <h3 id="system-variable-assignment"><strong>System Variable Assignment</strong></h3>
