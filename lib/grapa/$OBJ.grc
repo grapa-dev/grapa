@@ -37,7 +37,8 @@
 	reverse = @<reverse,{@<this>}>; 
 	replace = @<[op,@<replace,{@<this>,@<var,{b}>,@<var,{c}>}>],{b:null,c:null}>;
     interpolate = @<[op,@<interpolate,{@<this>,@<var,{b}>}>],{b:null}>;
-	grep = @<[op,@<grep,{@<this>,@<var,{b}>,@<var,{c}>,@<var,{d}>,@<var,{e}>,@<var,{f}>,@<var,{g}>}>],{b:null,c:null,d:null,e:null,f:null,g:null}>;
+    grep = @<[op,@<grep,{@<this>,@<var,{b}>,@<var,{c}>,@<var,{d}>,@<var,{e}>,@<var,{f}>,@<var,{g}>}>],{b:null,c:null,d:null,e:null,f:null,g:null}>;
+    match = @<[op,@<match,{@<this>,@<var,{b}>,@<var,{c}>,@<var,{d}>,@<var,{e}>,@<var,{f}>,@<var,{g}>}>],{b:null,c:null,d:null,e:null,f:null,g:null}>;
 	split = @<[op,@<"split",{@<this>,@<var,{sep}>,@<var,{max}>,@<var,{axis}>}>],{"sep":null,"max":null,"axis":null}>;
 	join = @<[op,@<"join",{@<this>,@<var,{sep}>,@<var,{axis}>}>],{"sep":null,"axis":null}>;
 	identity = @<"identity",{@<this>}>; 

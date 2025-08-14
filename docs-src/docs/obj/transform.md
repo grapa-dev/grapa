@@ -413,6 +413,46 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
 
 > **💡 Tip**: Use raw string literals (prefix with `r`) for better regex pattern readability. For example, `r"\w+"` instead of `"\\w+"`. Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string.
 
+## match(pattern, options, delimiter, normalization, mode, num_workers)
+Tests if a pattern matches in a string, returning a boolean value.
+
+**Returns**: `$BOOL` - `true` if pattern is found, `false` if not found or invalid pattern
+
+### Parameters:
+- `pattern` - Regex pattern to search for
+- `options` (optional) - Search options (same as grep)
+- `delimiter` (optional) - Line delimiter for multiline matching
+- `normalization` (optional) - Unicode normalization form
+- `mode` (optional) - Processing mode
+- `num_workers` (optional) - Number of parallel workers
+
+### Examples:
+```grapa
+/* Basic pattern matching */
+"hello world".match("hello");     /* true - pattern found */
+"hello world".match("xyz");       /* false - pattern not found */
+"hello world".match("a{");        /* false - invalid pattern handled gracefully */
+
+/* Case insensitive matching */
+"hello world".match("HELLO", "i"); /* true - case insensitive match */
+"Hello World".match("world", "i"); /* true - case insensitive match */
+
+/* With regex patterns */
+"hello world".match(r"\w+");      /* true - word characters found */
+"hello world".match(r"\d+");      /* false - no digits found */
+
+/* With all parameters */
+"hello world".match("hello", "i", "", "", "", 1); /* true - with all options */
+```
+
+### When to Use match() vs grep():
+- **Use `.match()`** when you only need to know if a pattern exists (boolean result)
+- **Use `.grep()`** when you need the actual matches or match details
+
+### Error Handling:
+- Invalid regex patterns return `false` (graceful degradation)
+- All other errors from grep are propagated as `$ERR`
+
 ---
 
 ### Diacritic-Insensitive Matching (`d` option)

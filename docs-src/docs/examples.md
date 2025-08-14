@@ -79,6 +79,11 @@ arr = [1, 2, 3, 4, 5];
 arr += 6;                 /* Add element: [1,2,3,4,5,6] */
 arr += 10 arr[0];         /* Insert at position: [10,1,2,3,4,5,6] */
 arr -= arr[2];            /* Remove by index: [10,1,4,5,6] */
+
+/* Array assignment operations */
+arr[0] = 100;             /* Direct assignment: [100,1,4,5,6] */
+arr[-1] = 999;            /* Negative index assignment: [100,1,4,5,999] */
+arr[1] += 50;             /* Compound assignment: [100,51,4,5,999] */
 arr.echo();
 
 /* List operations */
@@ -86,6 +91,12 @@ list = {a:1, b:2, c:3};
 list += (d:4);            /* Add key-value: {"a":1,"b":2,"c":3,"d":4} */
 list += (e:5) list[0];    /* Insert at position: {"e":5,"a":1,"b":2,"c":3,"d":4} */
 list -= list.b;           /* Remove by key: {"e":5,"a":1,"c":3,"d":4} */
+
+/* List assignment operations */
+list.a = 10;              /* Dot notation assignment: {"e":5,"a":10,"c":3,"d":4} */
+list["c"] = 30;           /* Bracket notation assignment: {"e":5,"a":10,"c":30,"d":4} */
+list[-2] = 300;           /* Negative index assignment: {"e":5,"a":10,"c":300,"d":4} */
+list.a += 5;              /* Compound assignment: {"e":5,"a":15,"c":300,"d":4} */
 list.echo();
 
 /* Concatenation */

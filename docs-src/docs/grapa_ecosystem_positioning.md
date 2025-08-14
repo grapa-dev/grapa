@@ -70,9 +70,17 @@ arr = {a:5, b:<div class='main'><h1>Title</h1><p>Content</p></div>, c:'hi'};
 title = arr.b[0].h1[0];  /* "Title" */
 content = arr.b[0].p[0];  /* "Content" */
 
+/* Direct assignment to embedded XML */
+arr.b[0].h1[0] = "New Title";  /* Modify embedded XML */
+arr.b[0].p[0] = "New Content";  /* Modify embedded content */
+
 /* XML to LIST conversion */
 xml = <root><item>1</item><item>2</item></root>;
 list = xml.list();  /* Convert to LIST structure */
+
+/* Unified dot notation across all types */
+data = {json:{users:[...]}, xml:<config>...</config>};
+result = data.json.users[0].name + " from " + data.xml.config.setting;
 ```
 
 ### **Enhanced Assignment Operators** ⚡
@@ -88,6 +96,20 @@ x **= 2;  /* x = x ** 2 */
 arr += [4, 5];        /* Add elements */
 arr ++= [6, 7];       /* Concatenate arrays */
 arr -= [1, 2];        /* Remove elements */
+
+/* Position-based insertion */
+arr += 10 arr[0];     /* Insert at specific position */
+list += (key:value) list[2];  /* Insert key-value at position */
+
+/* Direct assignment to accessed elements */
+arr[0] = 100;         /* Direct array element assignment */
+list.key = "value";   /* Direct object property assignment */
+list["key"] = "value"; /* Bracket notation assignment */
+arr[-1] = 999;        /* Negative index assignment */
+
+/* Compound assignment on accessed elements */
+arr[0] += 50;         /* Add to accessed element */
+list.count += 1;      /* Increment accessed property */
 
 /* Vector operations */
 vec = #[1, 2, 3]#;
@@ -194,6 +216,10 @@ timestamp = $TIME().utc();  /* Nanosecond precision */
 text = "Hello world\nGoodbye world";
 matches = text.grep("world", "o");  /* Match-only output */
 unicode_text = "café résumé".grep("cafe", "d");  /* Diacritic-insensitive */
+
+/* Native boolean pattern matching */
+has_match = text.match("world");    /* true/false result */
+case_insensitive = text.match("WORLD", "i");  /* Case-insensitive matching */
 ```
 
 **Use Cases:**
@@ -300,14 +326,14 @@ result = mixed_data.json.users.map(op(user) {
 - ✅ **ETL capabilities** - Data transformation pipelines
 - ✅ **Database integration** - Native table operations (ROW, COL, GROUP)
 - ✅ **Unlimited precision** - Arbitrary-precision arithmetic for all numeric types
-- ✅ **Advanced pattern matching** - 100% ripgrep compatible with Unicode support
+- ✅ **Advanced pattern matching** - 100% ripgrep compatible with Unicode support and native `.match()` method
 - ✅ **Parallel processing** - Built-in thread safety and concurrent operations
 - ✅ **Cryptographic capabilities** - Prime generation, modular arithmetic, hash functions
 - ✅ **Unified path system** - Seamless file system and database navigation
-- ✅ **String interpolation** - Advanced template literal support with expressions
-- ✅ **Enhanced assignment operators** - `*=`, `/=`, `%=`, `**=` for all types
-- ✅ **XML/LIST integration** - Seamless embedding and unified dot notation
-- ✅ **Unified dot notation system** - Consistent access across all data types
+- ✅ **String interpolation** - Advanced template literal support with expressions and C++ implementation
+- ✅ **Enhanced assignment operators** - `*=`, `/=`, `%=`, `**=` for all types with position-based insertion
+- ✅ **XML/LIST integration** - Seamless embedding, unified dot notation, and `.list()` conversion
+- ✅ **Unified dot notation system** - Consistent access and assignment across all data types
 - ✅ **Advanced concurrency** - Structured parallel processing with callbacks
 - ✅ **Execution tree metaprogramming** - Human-readable, manipulable execution trees
 - ✅ **Rich callback systems** - Object references and sophisticated event handling
@@ -322,7 +348,6 @@ result = mixed_data.json.users.map(op(user) {
 ### **Phase 1: Critical Features (Weeks 1-4)**
 - 🚧 **Exception handling** - `try/catch` blocks
 - 🚧 **For loops** - Native loop syntax
-- 📋 **Native .match() method** - Simple regex matching method (simple addition needed)
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
 - 📋 **Module system** - Import/export capabilities

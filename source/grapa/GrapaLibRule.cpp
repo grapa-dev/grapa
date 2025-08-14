@@ -2127,6 +2127,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleGrep(GrapaCHAR& pName) { return new GrapaLibraryRuleGrepEvent(pName); }
 
+class GrapaLibraryRuleMatchEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleMatchEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleMatch(GrapaCHAR& pName) { return new GrapaLibraryRuleMatchEvent(pName); }
+
 class GrapaLibraryRuleSplitEvent : public GrapaLibraryEvent
 {
 public:
@@ -2773,7 +2781,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "reverse", &GrapaLibraryRuleEvent::HandleReverse },
 		{ "interpolate", &GrapaLibraryRuleEvent::HandleInterpolate },
 		{ "replace", &GrapaLibraryRuleEvent::HandleReplace },
-		{ "grep", &GrapaLibraryRuleEvent::HandleGrep },
+        { "grep", &GrapaLibraryRuleEvent::HandleGrep },
+        { "match", &GrapaLibraryRuleEvent::HandleMatch },
 		{ "split", &GrapaLibraryRuleEvent::HandleSplit },
 		{ "join", &GrapaLibraryRuleEvent::HandleJoin },
 		{ "shape", &GrapaLibraryRuleEvent::HandleShape },
@@ -16747,6 +16756,18 @@ GrapaRuleEvent* GrapaLibraryRuleGrepEvent::Run(GrapaScriptExec* vScriptExec, Gra
 
 
 	return result;
+}
+
+GrapaRuleEvent* GrapaLibraryRuleMatchEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent* result = NULL;
+    GrapaLibraryRuleGrepEvent rg(mName);
+    GrapaRuleEvent* grep_result = rg.Run(vScriptExec,pNameSpace,pOperation,pInput);
+    if (grep_result&&grep_result->mValue.mToken==GrapaTokenType::ERR ) return grep_result;
+    bool hasValue = (grep_result&&grep_result->mValue.mToken==GrapaTokenType::ARRAY&&grep_result->vQueue&&grep_result->vQueue->mCount);
+    grep_result->CLEAR();
+    delete grep_result;
+    return new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR::SetBool(hasValue));
 }
 
 GrapaRuleEvent* GrapaLibraryRuleSplitEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)

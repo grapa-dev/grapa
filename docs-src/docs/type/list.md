@@ -8,6 +8,7 @@ Action | Example | Result
 ------------ | ------------- | -------------
 Create | {a:1, b:2, c:3} | {"a":1,"b":2,"c":3}
 Access | {a:1, b:2, c:3}.a</br>{a:1, b:2, c:3}[1]</br>{a:1, b:2, c:3}[-1] | 1</br>1</br>3
+Assign | x = {a:1, b:2, c:3};</br>x.b = "x";</br>x["b"] = "by";</br>x[-2] = 1234; | </br></br>{"a":1,"b":"x","c":3}</br>{"a":1,"b":"by","c":3}</br>{"a":1,"b":1234,"c":3}
 Append | x = {a:1, b:2};</br>x += (c:3);</br>x; | </br></br>{"a":1, "b":2, "c":3}
 Append | x = {a:1, b:2};</br>x ++= {c:3,d:4};</br>x; | </br></br>{"a":1, "b":2, "c":3, "d":4}
 Insert | x = {a:1, b:2};</br>x += (c:3) x[0];</br>x; | </br></br>{"c":3,"a":1,"b":2}
@@ -15,6 +16,24 @@ Count | {a:1, b:2, c:3}.len() | 3
 Remove | x = {a:1, b:2, c:3};</br>x -= x[1];</br>x; | </br></br>{"a":1, "c":3}
 
 ### Advanced List Operations
+
+#### Assignment Operations (`=`)
+```grapa
+/* Direct property assignment */
+list = {a:1, b:2, c:3};
+list.b = "x";             /* {"a":1,"b":"x","c":3} */
+list["b"] = "by";         /* {"a":1,"b":"by","c":3} */
+
+/* Assignment by index */
+list[1] = 55;             /* {"a":1,"b":55,"c":3} */
+
+/* Assignment by negative index */
+list[-2] = 1234;          /* {"a":1,"b":1234,"c":3} */
+
+/* Compound assignment on accessed elements */
+list.b += "dee";          /* {"a":1,"b":"bydee","c":3} */
+list[0] += 8;             /* {"a":9,"b":"bydee","c":3} */
+```
 
 #### Addition Operations (`+=`)
 ```grapa

@@ -36,6 +36,20 @@ There isn't currently built in support for searching for an $ARRAY or $LIST item
 
 ### Array Operations
 
+#### Assignment Operations (`=`)
+```grapa
+/* Direct element assignment */
+arr = [3, 6, "hi"];
+arr[1] = "by";            /* [3,"by","hi"] */
+
+/* Assignment by negative index */
+arr[-2] = "good";         /* [3,"good","hi"] */
+
+/* Compound assignment on accessed elements */
+arr[-2] += "dee";         /* [3,"gooddee","hi"] */
+arr[0] += 8;              /* [11,"gooddee","hi"] */
+```
+
 #### Addition Operations (`+=`)
 ```grapa
 /* Add single element */

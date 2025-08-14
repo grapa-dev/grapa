@@ -234,7 +234,8 @@ public:
 	GrapaLibraryEvent* HandleReverse(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleReplace(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleInterpolate(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleGrep(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleGrep(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleMatch(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSplit(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleJoin(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleShape(GrapaCHAR& pName);

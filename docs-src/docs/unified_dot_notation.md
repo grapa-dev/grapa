@@ -25,6 +25,11 @@ user = {name:"Alice", age:30, city:"New York"};
 user.name;      /* "Alice" */
 user["name"];   /* "Alice" - bracket notation */
 user.age;       /* 30 */
+
+/* Object property assignment */
+user.name = "Bob";          /* Change name to "Bob" */
+user["age"] = 25;           /* Change age to 25 */
+user.city = "Boston";       /* Change city to "Boston" */
 ```
 
 ### Array Access
@@ -34,6 +39,11 @@ numbers = [1, 2, 3, 4, 5];
 numbers[0];     /* 1 */
 numbers[1];     /* 2 */
 numbers[-1];    /* 5 - negative indexing */
+
+/* Array element assignment */
+numbers[0] = 10;            /* Change first element to 10 */
+numbers[-1] = 50;           /* Change last element to 50 */
+numbers[2] = 30;            /* Change third element to 30 */
 ```
 
 ### XML/HTML Access

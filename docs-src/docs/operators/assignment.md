@@ -18,10 +18,21 @@ counter = 0;      /* Integer assignment */
 
 ### **Complex Assignment (Array/Object Access)**
 ```grapa
-array[5] = 10;              /* Array element assignment */
-object.property = "value";  /* Object property assignment */
+/* Array element assignment */
+array[5] = 10;              /* Direct index assignment */
+array[-1] = "last";         /* Negative index assignment */
+
+/* Object property assignment */
+object.property = "value";  /* Dot notation assignment */
+object["property"] = "value"; /* Bracket notation assignment */
+
+/* Nested assignment */
 data[0].name = "Alice";     /* Nested object assignment */
 config.database.host = "localhost";  /* Deep property assignment */
+
+/* Compound assignment on accessed elements */
+array[0] += 5;              /* Add to accessed element */
+object.count += 1;          /* Increment accessed property */
 ```
 
 **Performance Note:** Simple variable assignments are optimized for speed, while complex assignments (array indexing, object properties) provide flexibility but may be slightly slower.

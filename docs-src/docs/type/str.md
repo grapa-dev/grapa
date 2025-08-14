@@ -62,6 +62,23 @@ Commands | Results
 "this is a test".raw(); | 0x7468697320697320612074657374
 "this is a test".raw().int(); | 2361031878030638688519054699098996
 
+### Pattern Matching
+```grapa
+/* Basic pattern matching */
+"hello world".match("hello");     /* true - pattern found */
+"hello world".match("xyz");       /* false - pattern not found */
+"hello world".match("a{");        /* false - invalid pattern handled gracefully */
+
+/* Case insensitive matching */
+"hello world".match("HELLO", "i"); /* true - case insensitive match */
+"Hello World".match("world", "i"); /* true - case insensitive match */
+
+/* With all grep parameters */
+"hello world".match("hello", "i", "", "", "", 1); /* true - with all options */
+```
+
+> **See Also:** [Grep Method Documentation](../obj/transform.md#grep) for comprehensive regex search capabilities including advanced options, Unicode support, and complex pattern matching.
+
 ### Trimming Operations
 ```grapa
 /* Basic trimming */
