@@ -58,6 +58,8 @@ result = "Found ${count} items in ${count * 2} seconds".interpolate();
 /* Template literals with complex expressions */
 data = {"user": "Alice", "scores": [85, 92, 78]};
 report = "User: ${data.user}, Average: ${data.scores.reduce(op(a,b){a+b}, 0) / data.scores.len()}".interpolate();
+
+/* Note: String interpolation feature may not be working as documented in current version */
 ```
 
 ### **Unified Data Type Integration** 🔗
@@ -99,7 +101,8 @@ arr -= [1, 2];        /* Remove elements */
 
 /* Position-based insertion */
 arr += 10 arr[0];     /* Insert at specific position */
-list += (key:value) list[2];  /* Insert key-value at position */
+list += (g:55) list[2];  /* Insert key-value at position 2 */
+list += (h:66) list.b;   /* Insert key-value at position of 'b' */
 
 /* Direct assignment to accessed elements */
 arr[0] = 100;         /* Direct array element assignment */
@@ -116,8 +119,10 @@ vec = #[1, 2, 3]#;
 vec += #[4, 5, 6]#;   /* Vector addition */
 
 /* XML operations */
-xml += <newitem>content</newitem>;  /* Add XML element */
-xml ++= <root><item>1</item></root>;  /* Concatenate XML */
+/* Note: XML manipulation operators (+=, -=, ++=) are not implemented */
+/* Use direct assignment instead: */
+xml = xml + <newitem>content</newitem>;  /* Add XML element */
+xml = xml + <root><item>1</item></root>;  /* Concatenate XML */
 
 /* List comprehension */
 squares = [x*x for x in 5];  /* [0, 1, 4, 9, 16] */

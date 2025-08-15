@@ -28,42 +28,42 @@ Extend, remove, dot operations, and ternary conditional expressions.
 
 ## Type Support Matrix
 
-| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | Notes |
-|----------|-----|-------|-----|------|-------|------|-----|-----|-------|
-| `+` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | Smart type promotion |
-| `-` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | String difference calculation |
-| `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Append assignment |
-| `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Remove by index/key |
-| `*=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Multiplication assignment |
-| `/=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Division assignment |
-| `%=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo assignment |
-| `**=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Power assignment |
-| `*` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | Matrix multiplication support |
-| `/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Smart type promotion |
-| `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
-| `**` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Exponentiation |
-| `*/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Root operator (nth root) |
-| `==` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
-| `!=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
-| `<` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
-| `<=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
-| `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
-| `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
-| `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
-| `&&` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
-| `\|\|` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
-| `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
-| `&` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
-| `\|` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
-| `^` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
-| `~` | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Matrix inversion support |
-| `<<` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
-| `>>` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
-| `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
-| `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
-| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | Array/list extension |
-| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | Array/list removal |
-| `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | Dot product |
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | XML | TIME | RAW | Notes |
+|----------|-----|-------|-----|------|-------|------|-----|-----|-----|------|-----|-------|
+| `+` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | Smart type promotion |
+| `-` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | String difference calculation |
+| `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Append assignment |
+| `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Remove by index/key |
+| `*=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Multiplication assignment |
+| `/=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Division assignment |
+| `%=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo assignment |
+| `**=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Power assignment |
+| `*` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Matrix multiplication support |
+| `/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Smart type promotion |
+| `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
+| `**` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Exponentiation |
+| `*/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Root operator (nth root) |
+| `==` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
+| `!=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
+| `<` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | No type conversion |
+| `<=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | No type conversion |
+| `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | Unified type handling |
+| `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | Unified type handling |
+| `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | Unified type handling |
+| `&&` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `\|\|` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `&` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | Strict INT/RAW only |
+| `\|` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | Strict INT/RAW only |
+| `^` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | Strict INT/RAW only |
+| `~` | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Matrix inversion support |
+| `<<` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+| `>>` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+| `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
+| `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
+| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
+| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list removal |
+| `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Dot product |
 
 ## Arithmetic Operators
 
