@@ -743,7 +743,7 @@ key = obj.secret("EC");    /* Returns Elliptic Curve key */
 - This method is part of Grapa's cryptographic infrastructure
 - Requires proper key management and secure parameter handling
 - Should be used with appropriate error handling for production systems
-- See the [Cryptography Analysis](../maintainers/IMPLEMENTATION/SECRET_METHOD_ANALYSIS.md) for detailed implementation information
+- For advanced cryptographic operations, consider using `.encode()` and `.decode()` methods
 
 ### `.encode(method, params)`
 Encodes the object using the specified method.

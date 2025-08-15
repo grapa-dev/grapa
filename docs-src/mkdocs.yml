@@ -96,6 +96,7 @@ nav:
           - ID: type/id.md
           - Integer: type/int.md
           - List: type/list.md
+          - Object Methods: type/obj_methods.md
           - Operation: type/op.md
           - Raw: type/raw.md
           - Rule: type/rule.md
