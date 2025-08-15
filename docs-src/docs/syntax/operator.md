@@ -6,6 +6,28 @@
 
 Grapa provides 30 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.
 
+## New Data Types in Type Support Matrix
+
+The Type Support Matrix now includes several additional data types that extend Grapa's operator capabilities:
+
+### **VECTOR** and **TUPLE**
+- **VECTOR**: Mathematical vectors and matrices with element-wise operations
+- **TUPLE**: Immutable ordered collections similar to arrays but with different semantics
+- **Support**: Most arithmetic operators (`+`, `-`, `*`, `/`, `**`, `*/`), assignment operators, and logical operators
+- **Examples**: `[1,2,3] + [4,5,6]` (element-wise addition), `(1,2,3) * 2` (scalar multiplication)
+
+### **RULE**
+- **RULE**: Function definitions and executable code blocks
+- **Support**: Assignment (`=`), equality comparison (`==`, `!=`), and logical operators
+- **Examples**: `rule = op(x){x*2};`, `rule1 == rule2` (object ID comparison)
+
+### **XML/TAG** and **XML/EL**
+- **XML/TAG**: XML element tags with attributes and structure
+- **XML/EL**: XML element content and nested elements
+- **Support**: Equality comparison (`==`, `!=`), assignment (`=`), and logical operators
+- **Usage**: These types represent the internal structure of XML objects, where operators work on the XML content rather than the XML object itself
+- **Examples**: `xml1 == xml2` (object ID comparison), `tag1 = tag2` (assignment)
+
 ## Operator Categories
 
 ### 1. Arithmetic Operators
@@ -28,42 +50,46 @@ Extend, remove, dot operations, and ternary conditional expressions.
 
 ## Type Support Matrix
 
-| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | XML | TIME | RAW | Notes |
-|----------|-----|-------|-----|------|-------|------|-----|-----|-----|------|-----|-------|
-| `+` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | Smart type promotion |
-| `-` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | String difference calculation |
-| `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Append assignment |
-| `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Remove by index/key |
-| `*=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Multiplication assignment |
-| `/=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Division assignment |
-| `%=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo assignment |
-| `**=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Power assignment |
-| `*` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Matrix multiplication support |
-| `/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Smart type promotion |
-| `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
-| `**` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Exponentiation |
-| `*/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Root operator (nth root) |
-| `==` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
-| `!=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
-| `<` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | No type conversion |
-| `<=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | No type conversion |
-| `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | Unified type handling |
-| `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | Unified type handling |
-| `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | Unified type handling |
-| `&&` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
-| `\|\|` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
-| `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
-| `&` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | Strict INT/RAW only |
-| `\|` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | Strict INT/RAW only |
-| `^` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | Strict INT/RAW only |
-| `~` | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Matrix inversion support |
-| `<<` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
-| `>>` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
-| `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
-| `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
-| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
-| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list removal |
-| `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Dot product |
+<div style="overflow-x: auto;">
+
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | XML | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
+|:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
+| `+` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Smart type promotion |
+| `-` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | String difference calculation |
+| `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | Append assignment |
+| `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Remove by index/key |
+| `*=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Multiplication assignment |
+| `/=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Division assignment |
+| `%=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo assignment |
+| `**=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Power assignment |
+| `*` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Matrix multiplication support |
+| `/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Smart type promotion |
+| `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
+| `**` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Exponentiation |
+| `*/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Root operator (nth root) |
+| `==` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
+| `!=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
+| `<` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
+| `<=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
+| `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+| `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+| `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+| `&&` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `\|\|` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `&` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `\|` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `^` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `~` | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Matrix inversion support |
+| `<<` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+| `>>` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+| `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
+| `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
+| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
+| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list removal |
+| `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Dot product |
+
+</div>
 
 ## Arithmetic Operators
 
@@ -90,11 +116,19 @@ false + 3.14;             /* 3.14... (boolean converted to number) */
 [1,2,3] + [4,5,6];       /* [] (empty array - should concatenate) */
 [1,2,3] + 4;              /* [] (empty array - should append) */
 
+/* Vector operations */
+[1,2,3] + [4,5,6];       /* [5,7,9] (element-wise addition) */
+[1,2,3] + 5;              /* [6,7,8] (scalar addition) */
+
+/* Tuple operations */
+(1,2,3) + (4,5,6);       /* (5,7,9) (element-wise addition) */
+(1,2,3) + 5;              /* (6,7,8) (scalar addition) */
+
 /* Error handling */
 $ERR + 5;                 /* "ERR5" (error converted to string) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, ERR, VECTOR, TUPLE  
 **Gaps**: 12 gaps identified (asymmetric behavior, array operations)
 
 ### Subtraction (`-`)
@@ -144,9 +178,17 @@ Performs multiplication with matrix support and string repetition.
 matrix1 = [[1,2],[3,4]];
 matrix2 = [[5,6],[7,8]];
 matrix1 * matrix2;        /* [[19,22],[43,50]] (matrix multiplication) */
+
+/* Vector operations */
+[1,2,3] * [4,5,6];       /* [4,10,18] (element-wise multiplication) */
+[1,2,3] * 2;              /* [2,4,6] (scalar multiplication) */
+
+/* Tuple operations */
+(1,2,3) * (4,5,6);       /* (4,10,18) (element-wise multiplication) */
+(1,2,3) * 2;              /* (2,4,6) (scalar multiplication) */
 ```
 
-**Type Support**: INT, FLOAT, STR, ARRAY  
+**Type Support**: INT, FLOAT, STR, ARRAY, VECTOR, TUPLE  
 **Gaps**: 18 gaps identified (asymmetric behavior, missing type combinations)
 
 ### Division (`/`)
@@ -207,11 +249,19 @@ Performs exponentiation with smart type promotion.
 /* Array exponentiation */
 [1,2,3] ** 2;             /* [1,4,9] (element-wise exponentiation) */
 
+/* Vector operations */
+[1,2,3] ** 2;             /* [1,4,9] (element-wise exponentiation) */
+[1,2,3] ** [2,3,4];       /* [1,8,81] (element-wise exponentiation) */
+
+/* Tuple operations */
+(1,2,3) ** 2;             /* (1,4,9) (element-wise exponentiation) */
+(1,2,3) ** (2,3,4);       /* (1,8,81) (element-wise exponentiation) */
+
 /* Error cases */
 5 ** "hello";             /* $ERR (no string to number conversion) */
 ```
 
-**Type Support**: INT, FLOAT, ARRAY  
+**Type Support**: INT, FLOAT, ARRAY, VECTOR, TUPLE  
 **Gaps**: 15 gaps identified (most combinations return $ERR)
 
 ### Root (`*/`)
@@ -232,12 +282,16 @@ Performs nth root calculations with advanced mathematical support.
 vector = [1,2,3];
 vector */ 2;              /* [1,1.414...,1.732...] (element-wise square root) */
 
+/* Tuple operations */
+tuple = (1,2,3);
+tuple */ 2;               /* (1,1.414...,1.732...) (element-wise square root) */
+
 /* Error cases */
 "hello" */ 2;             /* $ERR (STR not supported) */
 true */ 3;                /* $ERR (BOOL not supported) */
 ```
 
-**Type Support**: INT, FLOAT, ARRAY  
+**Type Support**: INT, FLOAT, ARRAY, VECTOR, TUPLE  
 **Gaps**: 13 gaps identified (strict numeric types only)
 
 ## Comparison Operators
@@ -273,9 +327,18 @@ a == b;                   /* false (different objects) */
 
 /* Object equality */
 {a:1,b:2} == {a:1,b:2};  /* true (same object) */
+
+/* Vector/Tuple equality (object ID comparison) */
+[1,2,3] == [1,2,3];      /* true (same object) */
+(1,2,3) == (1,2,3);      /* true (same object) */
+
+/* XML/TAG/EL equality (object ID comparison) */
+xml1 = <root><item>1</item></root>;
+xml2 = <root><item>1</item></root>;
+xml1 == xml2;             /* false (different objects) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
 **Gaps**: 7 gaps identified (object ID vs content comparison)
 
 ### Inequality (`!=`)
@@ -298,7 +361,7 @@ b = [1,2,4];
 a != b;                   /* true (different objects) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
 **Gaps**: 7 gaps identified (object ID vs content comparison)
 
 ### Less Than (`<`)
@@ -442,7 +505,7 @@ false && (5/0);           /* false (short-circuits) */
 true && (5/0);            /* $ERR (evaluates second operand) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
 **Gaps**: 0 gaps (perfect implementation)
 
 ### Logical OR (`||`)
@@ -468,7 +531,7 @@ true || (5/0);            /* true (short-circuits) */
 false || (5/0);           /* $ERR (evaluates second operand) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
 **Gaps**: 0 gaps (perfect implementation)
 
 ### Logical NOT (`!`)
@@ -508,7 +571,7 @@ Performs logical NOT with comprehensive truthiness conversion across all data ty
 !null;                     /* true (null is falsy) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
 **Gaps**: 0 gaps (perfect implementation)
 
 ## Bitwise Operators
@@ -640,9 +703,16 @@ a = b = c = 5;             /* 5 (all variables set to 5) */
 
 /* Object assignment */
 obj = {name: "John", age: 30};  /* {name:"John", age:30} */
+
+/* Vector/Tuple assignment */
+vec = [1,2,3];                  /* [1,2,3] */
+tup = (1,2,3);                  /* (1,2,3) */
+
+/* Rule assignment */
+rule = op(x){x*2};              /* Function rule */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
 **Gaps**: 0 gaps (perfect implementation)
 
 ### Add Assignment (`+=`)
@@ -669,9 +739,15 @@ list += 4;                 /* [1,2,3,4] */
 /* Object append (nested) */
 obj = {name: "John"};
 obj += {age: 30};          /* {name:"John",{age:30}} */
+
+/* Vector/Tuple append */
+vec = [1,2,3];
+vec += 4;                  /* [1,2,3,4] */
+tup = (1,2,3);
+tup += 4;                  /* (1,2,3,4) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE  
 **Gaps**: 12 gaps identified (asymmetric behavior)
 
 ### Subtract Assignment (`-=`)
@@ -824,9 +900,13 @@ false ? "yes" : "no";      /* "no" */
 true ? : "yes";            /* "" (Form 1: inverted logic) */
 false ? : "yes";           /* "yes" (Form 1: inverted logic) */
 true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
+
+/* Vector/Tuple conditional */
+[1,2,3] ? "vector" : "empty";  /* "vector" (non-empty vector is truthy) */
+() ? "tuple" : "empty";        /* "empty" (empty tuple is falsy) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR  
+**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
 **Gaps**: 0 gaps (but has implementation quirks)
 
 ### Extend (`++`)
@@ -888,6 +968,12 @@ Performs dot product operations for vectors and matrices.
 /* Matrix dot product */
 [[1,2],[3,4]] .* [[5,6],[7,8]];  /* [[19,22],[43,50]] */
 
+/* Vector dot product */
+[1,2,3] .* [4,5,6];       /* 32 (1*4 + 2*5 + 3*6) */
+
+/* Tuple dot product */
+(1,2,3) .* (4,5,6);       /* 32 (1*4 + 2*5 + 3*6) */
+
 /* Scalar dot product */
 5 .* 3;                    /* 15 (scalar multiplication) */
 
@@ -896,7 +982,7 @@ Performs dot product operations for vectors and matrices.
 [1,2,3] .* 5;              /* $ERR (mixed types not supported) */
 ```
 
-**Type Support**: INT, FLOAT, ARRAY (vectors/matrices)  
+**Type Support**: INT, FLOAT, ARRAY, VECTOR, TUPLE (vectors/matrices)  
 **Gaps**: 11 gaps identified (strict numeric and array types only)
 
 ## Best Practices
