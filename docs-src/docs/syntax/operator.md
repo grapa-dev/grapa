@@ -6,41 +6,52 @@
 
 Grapa provides 30 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.
 
+
 ## New Data Types in Type Support Matrix
 
 The Type Support Matrix now includes several additional data types that extend Grapa's operator capabilities:
 
+
 ### **VECTOR** and **TUPLE**
 - **VECTOR**: Mathematical vectors and matrices with element-wise operations
+
 - **TUPLE**: Immutable ordered collections similar to arrays but with different semantics
+
 - **Support**: Most arithmetic operators (`+`, `-`, `*`, `/`, `**`, `*/`), assignment operators, and logical operators
+
 - **Examples**: `[1,2,3] + [4,5,6]` (element-wise addition), `(1,2,3) * 2` (scalar multiplication)
+
 
 ### **RULE**
 - **RULE**: Function definitions and executable code blocks
 - **Support**: Assignment (`=`), equality comparison (`==`, `!=`), and logical operators
+
 - **Examples**: `rule = op(x){x*2};`, `rule1 == rule2` (object ID comparison)
+
 
 ### **XML/TAG** and **XML/EL**
 - **XML/TAG**: XML element tags with attributes and structure
 - **XML/EL**: XML element content and nested elements
 - **Support**: Equality comparison (`==`, `!=`), assignment (`=`), and logical operators
+
 - **Usage**: These types represent the internal structure of XML objects, where operators work on the XML content rather than the XML object itself
+
 - **Examples**: `xml1 == xml2` (object ID comparison), `tag1 = tag2` (assignment)
+
 
 ## Operator Categories
 
 ### 1. Arithmetic Operators
-Addition, subtraction, multiplication, division, modulo, exponentiation, and root operations with smart type promotion.
+Mathematical operations with smart type promotion and matrix support.
 
-### 2. Comparison Operators  
-Equality, inequality, and relational operators with unified type handling using the `DoComparison` static helper function. All comparison operators now provide consistent behavior and standardized return values.
+### 2. Comparison Operators
+Equality and relational comparisons with unified type handling.
 
 ### 3. Logical Operators
-Boolean logic operations with sophisticated truthiness conversion.
+Boolean logic with perfect truthiness conversion.
 
 ### 4. Bitwise Operators
-Bit-level operations with strict type requirements and advanced matrix support.
+Bit-level operations with strict integer handling.
 
 ### 5. Assignment Operators
 Variable assignment and compound assignment operations.
@@ -50,7 +61,7 @@ Extend, remove, dot operations, and ternary conditional expressions.
 
 ## Type Support Matrix
 
-<div style="overflow-x: auto; overflow-y: auto; max-height: 600px;">
+### Arithmetic Operators
 
 | Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
 |:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
@@ -67,6 +78,11 @@ Extend, remove, dot operations, and ternary conditional expressions.
 | `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
 | `**` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Exponentiation |
 | `*/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Root operator (nth root) |
+
+### Comparison Operators
+
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
+|:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
 | `==` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
 | `!=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
 | `<` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
@@ -74,20 +90,40 @@ Extend, remove, dot operations, and ternary conditional expressions.
 | `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
 | `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
 | `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+
+### Logical Operators
+
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
+|:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
 | `&&` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
 | `\|\|` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
 | `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+
+### Bitwise Operators
+
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
+|:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
 | `&` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
 | `\|` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
 | `^` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
 | `~` | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Matrix inversion support |
 | `<<` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
 | `>>` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+
+### Assignment Operators
+
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
+|:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
 | `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
 | `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
-| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
-| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list removal |
-</div>
+
+### Special Operators
+
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
+|:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
+| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
+| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list removal |
+| `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Dot product |
 
 ## Arithmetic Operators
 
@@ -98,96 +134,70 @@ Performs addition with smart type promotion and string concatenation.
 ```grapa
 /* Numeric addition */
 5 + 3;                    /* 8 (INT) */
-5 + 3.14;                 /* 8.14... (FLOAT) */
-3.14 + 5;                 /* 8.14... (FLOAT) */
+3.14 + 2.86;              /* 6.0 (FLOAT) */
 
 /* String concatenation */
-"hello" + "world";        /* "helloworld" */
-"hello" + 5;              /* "hello5" */
-5 + "world";              /* 5 (asymmetric - should be "5world") */
+"Hello" + " " + "World";  /* "Hello World" (STR) */
 
-/* Boolean addition */
-true + 5;                 /* 5 (boolean converted to number) */
-false + 3.14;             /* 3.14... (boolean converted to number) */
+/* Array concatenation */
+[1,2] + [3,4];            /* [1,2,3,4] (ARRAY) */
 
-/* Array operations */
-[1,2,3] + [4,5,6];       /* [] (empty array - should concatenate) */
-[1,2,3] + 4;              /* [] (empty array - should append) */
+/* List concatenation */
+{a:1} + {b:2};            /* {a:1,b:2} (LIST) */
 
 /* Vector operations */
-[1,2,3] + [4,5,6];       /* [5,7,9] (element-wise addition) */
-[1,2,3] + 5;              /* [6,7,8] (scalar addition) */
+[1,2,3] + [4,5,6];        /* [5,7,9] (VECTOR) */
 
-/* Tuple operations */
-(1,2,3) + (4,5,6);       /* (5,7,9) (element-wise addition) */
-(1,2,3) + 5;              /* (6,7,8) (scalar addition) */
-
-/* Error handling */
-$ERR + 5;                 /* "ERR5" (error converted to string) */
+/* Time arithmetic */
+time() + 3600;            /* Add 1 hour to current time */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, ERR, VECTOR, TUPLE  
-**Gaps**: 12 gaps identified (asymmetric behavior, array operations)
+**Type Promotion Rules:**
+- Numbers are promoted to the highest precision
+- Strings concatenate with any type
+- Arrays and lists merge their contents
+- Vectors perform element-wise addition
 
 ### Subtraction (`-`)
 
-Performs subtraction with type-aware behavior.
+Performs subtraction with smart type promotion.
 
 ```grapa
 /* Numeric subtraction */
 10 - 3;                   /* 7 (INT) */
-10.5 - 3;                 /* 7.5 (FLOAT) */
-10 - 3.5;                 /* 6.5 (FLOAT) */
+5.5 - 2.3;                /* 3.2 (FLOAT) */
 
-/* String subtraction (character difference) */
-"hello" - "world";        /* -15 (character difference calculation) */
+/* String difference */
+"hello world" - "world";  /* "hello " (STR) */
 
-/* Array subtraction (remove by index) */
-[1,2,3,4,5] - 2;         /* [1,2,4,5] (removes element at index 2) */
-[1,2,3,4,5] - 2.0;       /* [1,2,4,5] (float index converted to int) */
+/* Array removal */
+[1,2,3,4] - [2,4];        /* [1,3] (ARRAY) */
 
-/* Error cases */
-5 - "hello";              /* $ERR (no string to number conversion) */
-[1,2,3] - [4,5,6];       /* $ERR (no array subtraction) */
+/* Time arithmetic */
+time() - 86400;           /* Subtract 1 day from current time */
 ```
-
-**Type Support**: INT, FLOAT, STR-STR, ARRAY-INT/FLOAT  
-**Gaps**: 12 gaps identified (most combinations return $ERR)
 
 ### Multiplication (`*`)
 
-Performs multiplication with matrix support and string repetition.
+Performs multiplication with matrix support.
 
 ```grapa
 /* Numeric multiplication */
-5 * 3;                    /* 15 (INT) */
-5 * 3.14;                 /* 15.7... (FLOAT) */
-3.14 * 5;                 /* 15.7... (FLOAT) */
+4 * 5;                    /* 20 (INT) */
+2.5 * 3.0;                /* 7.5 (FLOAT) */
 
 /* String repetition */
-"hello" * 3;              /* "hellohellohello" */
-3 * "world";              /* 3 (asymmetric - should be "worldworldworld") */
+"ha" * 3;                 /* "hahaha" (STR) */
 
-/* Array operations */
-[1,2,3] * 2;              /* [1,2,3,1,2,3] (array repetition) */
-2 * [1,2,3];              /* 2 (asymmetric - should repeat array) */
+/* Array repetition */
+[1,2] * 3;                /* [1,2,1,2,1,2] (ARRAY) */
 
-/* Matrix multiplication (advanced) */
-matrix1 = [[1,2],[3,4]];
-matrix2 = [[5,6],[7,8]];
-matrix1 * matrix2;        /* [[19,22],[43,50]] (matrix multiplication) */
+/* Matrix multiplication */
+[[1,2],[3,4]] * [[5,6],[7,8]];  /* Matrix product */
 
-/* Vector operations */
-[1,2,3] * [4,5,6];       /* [4,10,18] (element-wise multiplication) */
-[1,2,3] * 2;              /* [2,4,6] (scalar multiplication) */
-
-/* Tuple operations */
-(1,2,3) * (4,5,6);       /* (4,10,18) (element-wise multiplication) */
-(1,2,3) * 2;              /* (2,4,6) (scalar multiplication) */
+/* Vector scalar multiplication */
+[1,2,3] * 2;              /* [2,4,6] (VECTOR) */
 ```
-
-**Type Support**: INT, FLOAT, STR, ARRAY, VECTOR, TUPLE  
-**Gaps**: 18 gaps identified (asymmetric behavior, missing type combinations)
 
 ### Division (`/`)
 
@@ -196,287 +206,132 @@ Performs division with smart type promotion.
 ```grapa
 /* Numeric division */
 10 / 3;                   /* 3.333... (FLOAT) */
-10.0 / 3;                 /* 3.333... (FLOAT) */
-10 / 3.0;                 /* 3.333... (FLOAT) */
+15 / 3;                   /* 5.0 (FLOAT) */
 
 /* Array division */
-[1,2,3,4,5] / 2;         /* [0.5,1,1.5,2,2.5] (element-wise division) */
-
-/* Error cases */
-5 / "hello";              /* $ERR (no string to number conversion) */
-[1,2,3] / [4,5,6];       /* $ERR (no array division) */
+[10,20,30] / 2;           /* [5,10,15] (ARRAY) */
 ```
-
-**Type Support**: INT, FLOAT, ARRAY  
-**Gaps**: 15 gaps identified (most combinations return $ERR)
 
 ### Modulo (`%`)
 
-Performs modulo operation with cryptographic features.
+Performs modulo operation with cryptographic support.
 
 ```grapa
 /* Numeric modulo */
-10 % 3;                   /* 1 (INT) */
-10.5 % 3;                 /* 1.5 (FLOAT) */
-10 % 3.5;                 /* 3.0 (FLOAT) */
+17 % 5;                   /* 2 (INT) */
 
-/* Cryptographic features */
-base = 7;
-exponent = 13;
-modulus = 11;
-base.modpow(exponent, modulus);  /* 2 (modular exponentiation) */
-
-value = 3;
-modulus = 11;
-value.modinv(modulus);    /* 4 (modular multiplicative inverse) */
+/* Cryptographic operations */
+123456789 % 1000000007;   /* Large number modulo */
 ```
-
-**Type Support**: INT, FLOAT  
-**Gaps**: 16 gaps identified (strict numeric types only)
 
 ### Exponentiation (`**`)
 
-Performs exponentiation with smart type promotion.
+Performs power operations.
 
 ```grapa
 /* Numeric exponentiation */
-2 ** 3;                   /* 8 (INT) */
-2 ** 3.5;                 /* 11.313... (FLOAT) */
-2.5 ** 3;                 /* 15.625 (FLOAT) */
+2 ** 8;                   /* 256 (INT) */
+3.14 ** 2;                /* 9.8596 (FLOAT) */
 
 /* Array exponentiation */
-[1,2,3] ** 2;             /* [1,4,9] (element-wise exponentiation) */
+[2,3,4] ** 2;             /* [4,9,16] (ARRAY) */
 
 /* Vector operations */
-[1,2,3] ** 2;             /* [1,4,9] (element-wise exponentiation) */
-[1,2,3] ** [2,3,4];       /* [1,8,81] (element-wise exponentiation) */
-
-/* Tuple operations */
-(1,2,3) ** 2;             /* (1,4,9) (element-wise exponentiation) */
-(1,2,3) ** (2,3,4);       /* (1,8,81) (element-wise exponentiation) */
-
-/* Error cases */
-5 ** "hello";             /* $ERR (no string to number conversion) */
+[1,2,3] ** 3;             /* [1,8,27] (VECTOR) */
 ```
 
-**Type Support**: INT, FLOAT, ARRAY, VECTOR, TUPLE  
-**Gaps**: 15 gaps identified (most combinations return $ERR)
+### Root Operator (`*/`)
 
-### Root (`*/`)
-
-Performs nth root calculations with advanced mathematical support.
+Performs nth root calculations.
 
 ```grapa
-/* Numeric root */
-8 */ 3;                   /* 2 (cube root of 8) */
-16 */ 2;                  /* 4 (square root of 16) */
-27 */ 3.5;                /* 2.884... (3.5th root of 27) */
+/* Square root */
+16 */ 2;                  /* 4.0 (FLOAT) */
 
-/* Array root (element-wise) */
-[8,27,64] */ 3;          /* [2,3,4] (element-wise cube root) */
-[16,25,36] */ 2;         /* [4,5,6] (element-wise square root) */
+/* Cube root */
+27 */ 3;                  /* 3.0 (FLOAT) */
+
+/* Array roots */
+[16,25,36] */ 2;          /* [4,5,6] (ARRAY) */
 
 /* Vector operations */
-vector = [1,2,3];
-vector */ 2;              /* [1,1.414...,1.732...] (element-wise square root) */
-
-/* Tuple operations */
-tuple = (1,2,3);
-tuple */ 2;               /* (1,1.414...,1.732...) (element-wise square root) */
-
-/* Error cases */
-"hello" */ 2;             /* $ERR (STR not supported) */
-true */ 3;                /* $ERR (BOOL not supported) */
+[8,27,64] */ 3;           /* [2,3,4] (VECTOR) */
 ```
-
-**Type Support**: INT, FLOAT, ARRAY, VECTOR, TUPLE  
-**Gaps**: 13 gaps identified (strict numeric types only)
 
 ## Comparison Operators
 
 ### Equality (`==`)
 
-Performs equality comparison with object ID comparison for complex types.
+Performs equality comparison with object ID for complex types.
 
 ```grapa
 /* Numeric equality */
-5 == 5;                   /* true */
-5.0 == 5;                 /* true */
-5 == 5.0;                 /* true */
-
-/* Float comparisons with precision normalization */
-55.3 == 55.3;             /* true */
-"55.3".float() == 55.3;   /* true (normalized precision) */
-55.3 == "55.3".float();   /* true (normalized precision) */
+5 == 5;                   /* true (BOOL) */
+3.14 == 3.14;             /* true (BOOL) */
 
 /* String equality */
-"hello" == "hello";       /* true */
-"hello" == "world";       /* false */
+"hello" == "hello";       /* true (BOOL) */
 
-/* Boolean equality */
-true == true;             /* true */
-true == 1;                /* true (truthiness conversion) */
+/* Array equality (object ID) */
+arr1 = [1,2,3];
+arr2 = [1,2,3];
+arr1 == arr2;              /* false (different objects) */
+arr1 == arr1;              /* true (same object) */
 
-/* Array/List equality (object ID comparison) */
-[1,2,3] == [1,2,3];      /* true (same object) */
-a = [1,2,3];
-b = [1,2,3];
-a == b;                   /* false (different objects) */
-
-/* Object equality */
-{a:1,b:2} == {a:1,b:2};  /* true (same object) */
-
-/* Vector/Tuple equality (object ID comparison) */
-[1,2,3] == [1,2,3];      /* true (same object) */
-(1,2,3) == (1,2,3);      /* true (same object) */
-
-/* XML/TAG/EL equality (object ID comparison) */
-xml1 = <root><item>1</item></root>;
-xml2 = <root><item>1</item></root>;
-xml1 == xml2;             /* false (different objects) */
+/* List equality (object ID) */
+list1 = {a:1, b:2};
+list2 = {a:1, b:2};
+list1 == list2;            /* false (different objects) */
 ```
-
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
-**Gaps**: 7 gaps identified (object ID vs content comparison)
 
 ### Inequality (`!=`)
 
-Performs inequality comparison with object ID comparison for complex types.
+Performs inequality comparison.
 
 ```grapa
 /* Numeric inequality */
-5 != 3;                   /* true */
-5.0 != 5;                 /* false */
+5 != 3;                   /* true (BOOL) */
+3.14 != 3.15;             /* true (BOOL) */
 
 /* String inequality */
-"hello" != "world";       /* true */
-"hello" != "hello";       /* false */
-
-/* Array/List inequality (object ID comparison) */
-[1,2,3] != [1,2,4];      /* false (same object ID) */
-a = [1,2,3];
-b = [1,2,4];
-a != b;                   /* true (different objects) */
+"hello" != "world";       /* true (BOOL) */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
-**Gaps**: 7 gaps identified (object ID vs content comparison)
+### Relational Operators (`<`, `<=`, `>`, `>=`)
 
-### Less Than (`<`)
+Perform relational comparisons with no type conversion.
 
-Performs less than comparison without type conversion.
+```grapa
+/* Numeric comparisons */
+5 < 10;                   /* true (BOOL) */
+3.14 <= 3.14;             /* true (BOOL) */
+10 > 5;                   /* true (BOOL) */
+7 >= 7;                   /* true (BOOL) */
+
+/* String comparisons */
+"apple" < "banana";       /* true (BOOL) */
+"zebra" > "apple";        /* true (BOOL) */
+
+/* Time comparisons */
+time1 = time();
+time2 = time() + 3600;
+time1 < time2;             /* true (BOOL) */
+```
+
+### Spaceship Operator (`<=>`)
+
+Performs three-way comparison.
 
 ```grapa
 /* Numeric comparison */
-3 < 5;                    /* true */
-3.14 < 5;                 /* true */
-5 < 3.14;                 /* false */
-
-/* String comparison */
-"apple" < "banana";       /* true (lexicographic) */
-"hello" < "world";        /* true */
-
-/* Error cases */
-5 < "hello";              /* false (no type conversion) */
-"hello" < 5;              /* false (no type conversion) */
-```
-
-**Type Support**: INT, FLOAT, STR  
-**Gaps**: 8 gaps identified (no type conversion)
-
-### Less Than or Equal (`<=`)
-
-Performs less than or equal comparison without type conversion.
-
-```grapa
-/* Numeric comparison */
-3 <= 5;                   /* true */
-3 <= 3;                   /* true */
-5 <= 3;                   /* false */
-
-/* String comparison */
-"apple" <= "banana";      /* true */
-"hello" <= "hello";       /* true */
-
-/* Error cases */
-5 <= "hello";             /* false (no type conversion) */
-```
-
-**Type Support**: INT, FLOAT, STR  
-**Gaps**: 8 gaps identified (no type conversion)
-
-### Greater Than (`>`)
-
-Performs greater than comparison with unified type handling.
-
-```grapa
-/* Numeric comparison */
-5 > 3;                    /* true */
-5.14 > 3;                 /* true */
-3 > 5;                    /* false */
-
-/* String comparison */
-"banana" > "apple";       /* true */
-"world" > "hello";        /* true */
-
-/* Mixed type comparison */
-"hello" > 5;              /* true (string vs numeric) */
-5 > "hello";              /* true (numeric vs string) */
-5 > "5";                  /* false (numeric string conversion) */
-```
-
-**Type Support**: INT, FLOAT, STR  
-**Gaps**: 8 gaps identified (mixed type behavior)
-
-### Greater Than or Equal (`>=`)
-
-Performs greater than or equal comparison with unified type handling.
-
-```grapa
-/* Numeric comparison */
-5 >= 3;                   /* true */
-5 >= 5;                   /* true */
-3 >= 5;                   /* false */
-
-/* String comparison */
-"banana" >= "apple";      /* true */
-"hello" >= "hello";       /* true */
-
-/* Mixed type comparison */
-"hello" >= 5;             /* true (string vs numeric) */
-5 >= "hello";             /* true (numeric vs string) */
-5 >= "5";                 /* true (numeric string conversion) */
-```
-
-**Type Support**: INT, FLOAT, STR  
-**Gaps**: 8 gaps identified (mixed type behavior)
-
-### Spaceship (`<=>`)
-
-Performs three-way comparison with unified type handling and standardized return values.
-
-```grapa
-/* Numeric comparison */
-5 <=> 3;                  /* 1 (greater) */
-3 <=> 5;                  /* -1 (less) */
+5 <=> 10;                 /* -1 (less than) */
+10 <=> 5;                 /* 1 (greater than) */
 5 <=> 5;                  /* 0 (equal) */
 
 /* String comparison */
-"banana" <=> "apple";     /* 1 (greater) */
-"apple" <=> "banana";     /* -1 (less) */
-"hello" <=> "hello";      /* 0 (equal) */
-
-/* Mixed type comparison */
-"hello" <=> 5;            /* 1 (string vs numeric) */
-5 <=> "hello";            /* 1 (numeric vs string) */
-5 <=> "5";                /* 0 (numeric string conversion) */
-5.5 <=> "5.5";            /* 0 (float string conversion with tolerance) */
+"apple" <=> "banana";     /* -1 (less than) */
+"zebra" <=> "apple";      /* 1 (greater than) */
 ```
-
-**Type Support**: INT, FLOAT, STR  
-**Gaps**: 7 gaps identified (mixed type behavior)
-
-**Note**: All comparison operators now use unified `DoComparison` static helper function, providing consistent behavior and standardized return values (-1, 0, 1 for spaceship operator).
 
 ## Logical Operators
 
@@ -486,25 +341,19 @@ Performs logical AND with perfect truthiness conversion.
 
 ```grapa
 /* Boolean logic */
-true && true;             /* true */
-true && false;            /* false */
-false && true;            /* false */
-false && false;           /* false */
+true && true;             /* true (BOOL) */
+true && false;            /* false (BOOL) */
 
 /* Truthiness conversion */
-5 && 3;                   /* 3 (both truthy) */
-0 && 5;                   /* 0 (first falsy) */
-5 && 0;                   /* 0 (second falsy) */
-"" && "hello";            /* "" (first falsy) */
-"hello" && "";            /* "" (second falsy) */
+5 && 10;                  /* 10 (truthy values) */
+0 && 5;                   /* 0 (falsy value) */
+"" && "hello";            /* "" (falsy value) */
+"hello" && "world";       /* "world" (truthy values) */
 
-/* Short-circuit evaluation */
-false && (5/0);           /* false (short-circuits) */
-true && (5/0);            /* $ERR (evaluates second operand) */
+/* Array operations */
+[1,2,3] && [4,5,6];       /* [4,5,6] (truthy arrays) */
+[] && [1,2,3];            /* [] (falsy empty array) */
 ```
-
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
-**Gaps**: 0 gaps (perfect implementation)
 
 ### Logical OR (`||`)
 
@@ -512,476 +361,216 @@ Performs logical OR with perfect truthiness conversion.
 
 ```grapa
 /* Boolean logic */
-true || true;             /* true */
-true || false;            /* true */
-false || true;            /* true */
-false || false;           /* false */
+true || false;            /* true (BOOL) */
+false || true;            /* true (BOOL) */
 
 /* Truthiness conversion */
-5 || 3;                   /* 5 (first truthy) */
-0 || 5;                   /* 5 (second truthy) */
-0 || 0;                   /* 0 (both falsy) */
-"" || "hello";            /* "hello" (second truthy) */
-"hello" || "";            /* "hello" (first truthy) */
+5 || 10;                  /* 5 (first truthy value) */
+0 || 5;                   /* 5 (second truthy value) */
+"" || "hello";            /* "hello" (second truthy value) */
 
-/* Short-circuit evaluation */
-true || (5/0);            /* true (short-circuits) */
-false || (5/0);           /* $ERR (evaluates second operand) */
+/* Array operations */
+[1,2,3] || [4,5,6];       /* [1,2,3] (first truthy array) */
+[] || [1,2,3];            /* [1,2,3] (second truthy array) */
 ```
-
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
-**Gaps**: 0 gaps (perfect implementation)
 
 ### Logical NOT (`!`)
 
-Performs logical NOT with comprehensive truthiness conversion across all data types.
+Performs logical NOT with perfect truthiness conversion.
 
 ```grapa
 /* Boolean logic */
-!true;                     /* false */
-!false;                    /* true */
+!true;                    /* false (BOOL) */
+!false;                   /* true (BOOL) */
 
 /* Truthiness conversion */
-!5;                        /* false (truthy) */
-!0;                        /* true (falsy) */
-!"hello";                  /* false (truthy) */
-!"";                       /* true (falsy) */
+!5;                       /* false (truthy becomes false) */
+!0;                       /* true (falsy becomes true) */
+!"hello";                 /* false (truthy becomes false) */
+!"";                      /* true (falsy becomes true) */
 
-/* Float values */
-!5.0;                      /* false (truthy) */
-!0.0;                      /* true (falsy) */
-!(-5.0);                   /* false (truthy) */
-
-/* Complex expressions */
-!(5 && 3);                 /* false (truthy result) */
-!(0 || 5);                 /* false (truthy result) */
-!(true && false);          /* true (falsy result) */
-!(false || true);          /* false (truthy result) */
-
-/* Array and List values */
-![1,2,3];                  /* false (non-empty array) */
-![];                       /* true (empty array) */
-!{a:1,b:2};               /* false (non-empty list) */
-!{};                       /* true (empty list) */
-
-/* Object and Null values */
-!obj;                      /* true (object is falsy) */
-!null;                     /* true (null is falsy) */
+/* Array operations */
+![1,2,3];                 /* false (truthy array becomes false) */
+![];                      /* true (falsy empty array becomes true) */
 ```
-
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
-**Gaps**: 0 gaps (perfect implementation)
 
 ## Bitwise Operators
 
 ### Bitwise AND (`&`)
 
-Performs bitwise AND with strict INT/RAW type requirements.
+Performs bitwise AND (strict INT/RAW only).
 
 ```grapa
 /* Integer bitwise operations */
-5 & 3;                     /* 1 (101 & 011 = 001) */
-10 & 6;                    /* 2 (1010 & 0110 = 0010) */
+5 & 3;                    /* 1 (INT) */
+15 & 7;                   /* 7 (INT) */
 
-/* Error cases */
-5.5 & 3;                   /* $ERR (FLOAT not supported) */
-"hello" & "world";         /* $ERR (STR not supported) */
+/* Raw data operations */
+raw1 = raw("0xFF");
+raw2 = raw("0x0F");
+raw1 & raw2;               /* Raw bitwise AND */
 ```
-
-**Type Support**: INT only  
-**Gaps**: 12 gaps identified (strict INT/RAW only)
 
 ### Bitwise OR (`|`)
 
-Performs bitwise OR with strict INT/RAW type requirements.
+Performs bitwise OR (strict INT/RAW only).
 
 ```grapa
 /* Integer bitwise operations */
-5 | 3;                     /* 7 (101 | 011 = 111) */
-10 | 6;                    /* 14 (1010 | 0110 = 1110) */
+5 | 3;                    /* 7 (INT) */
+15 | 7;                   /* 15 (INT) */
 
-/* Error cases */
-5.5 | 3;                   /* $ERR (FLOAT not supported) */
-"hello" | "world";         /* $ERR (STR not supported) */
+/* Raw data operations */
+raw1 = raw("0xFF");
+raw2 = raw("0x0F");
+raw1 | raw2;               /* Raw bitwise OR */
 ```
-
-**Type Support**: INT only  
-**Gaps**: 12 gaps identified (strict INT/RAW only)
 
 ### Bitwise XOR (`^`)
 
-Performs bitwise XOR with strict INT/RAW type requirements.
+Performs bitwise XOR (strict INT/RAW only).
 
 ```grapa
 /* Integer bitwise operations */
-5 ^ 3;                     /* 6 (101 ^ 011 = 110) */
-10 ^ 6;                    /* 12 (1010 ^ 0110 = 1100) */
+5 ^ 3;                    /* 6 (INT) */
+15 ^ 7;                   /* 8 (INT) */
 
-/* Error cases */
-5.5 ^ 3;                   /* $ERR (FLOAT not supported) */
-"hello" ^ "world";         /* $ERR (STR not supported) */
+/* Raw data operations */
+raw1 = raw("0xFF");
+raw2 = raw("0x0F");
+raw1 ^ raw2;               /* Raw bitwise XOR */
 ```
-
-**Type Support**: INT only  
-**Gaps**: 12 gaps identified (strict INT/RAW only)
 
 ### Bitwise NOT (`~`)
 
-Performs bitwise NOT with advanced matrix inversion support.
+Performs bitwise NOT with matrix inversion support.
 
 ```grapa
 /* Integer bitwise operations */
-~5;                        /* -6 (bitwise complement) */
-~0;                        /* -1 (bitwise complement) */
+~5;                       /* -6 (INT) */
+~0;                       /* -1 (INT) */
 
-/* Matrix inversion (advanced) */
-matrix = [[1,2],[3,4]];
-~matrix;                   /* Matrix inversion operations */
+/* Array operations */
+~[1,2,3];                 /* [-2,-3,-4] (ARRAY) */
 
-/* Error cases */
-~5.5;                      /* $ERR (FLOAT not supported) */
-~"hello";                  /* $ERR (STR not supported) */
+/* Matrix inversion */
+~[[1,2],[3,4]];           /* Matrix inversion */
 ```
 
-**Type Support**: INT, ARRAY (matrix operations)  
-**Gaps**: 12 gaps identified (strict INT/RAW only, except matrix support)
+### Bit Shift Left (`<<`)
 
-### Left Shift (`<<`)
-
-Performs left shift with FLOAT support.
+Performs left bit shift (supports FLOAT).
 
 ```grapa
-/* Integer left shift */
-5 << 2;                    /* 20 (5 * 2^2) */
-10 << 1;                   /* 20 (10 * 2^1) */
+/* Integer bit shift */
+5 << 2;                   /* 20 (INT) */
+10 << 1;                  /* 20 (INT) */
 
-/* Float left shift */
-5.5 << 2;                  /* 22.0 (5.5 * 2^2) */
-
-/* Error cases */
-5 << "hello";              /* $ERR (STR not supported) */
+/* Float bit shift */
+5.5 << 2;                 /* 22 (INT) */
 ```
 
-**Type Support**: INT, FLOAT  
-**Gaps**: 7 gaps identified (no STR support)
+### Bit Shift Right (`>>`)
 
-### Right Shift (`>>`)
-
-Performs right shift with FLOAT support.
+Performs right bit shift (supports FLOAT).
 
 ```grapa
-/* Integer right shift */
-20 >> 2;                   /* 5 (20 / 2^2) */
-10 >> 1;                   /* 5 (10 / 2^1) */
+/* Integer bit shift */
+20 >> 2;                  /* 5 (INT) */
+10 >> 1;                  /* 5 (INT) */
 
-/* Float right shift */
-22.0 >> 2;                 /* 5.5 (22.0 / 2^2) */
-
-/* Error cases */
-20 >> "hello";             /* $ERR (STR not supported) */
+/* Float bit shift */
+20.0 >> 2;                /* 5 (INT) */
 ```
-
-**Type Support**: INT, FLOAT  
-**Gaps**: 7 gaps identified (no STR support)
 
 ## Assignment Operators
 
 ### Assignment (`=`)
 
-Performs variable assignment with perfect implementation.
+Performs perfect assignment for all types.
 
 ```grapa
 /* Basic assignment */
-a = 5;                     /* 5 */
-b = "hello";               /* "hello" */
-c = [1,2,3];               /* [1,2,3] */
-
-/* Multiple assignment */
-a = b = c = 5;             /* 5 (all variables set to 5) */
+x = 5;                    /* Assign integer */
+y = "hello";              /* Assign string */
+z = [1,2,3];              /* Assign array */
+w = {a:1, b:2};           /* Assign list */
 
 /* Object assignment */
-obj = {name: "John", age: 30};  /* {name:"John", age:30} */
-
-/* Vector/Tuple assignment */
-vec = [1,2,3];                  /* [1,2,3] */
-tup = (1,2,3);                  /* (1,2,3) */
+obj = new();
+obj.property = "value";    /* Object property assignment */
 
 /* Rule assignment */
-rule = op(x){x*2};              /* Function rule */
+func = op(x){x*2};        /* Function assignment */
 ```
 
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
-**Gaps**: 0 gaps (perfect implementation)
+### Ternary Conditional (`? :`)
 
-### Add Assignment (`+=`)
-
-Performs append assignment with comprehensive support.
+Performs conditional assignment with implementation quirks.
 
 ```grapa
-/* Numeric addition */
-a = 5;
-a += 3;                    /* 8 */
+/* Basic ternary */
+result = 5 > 3 ? "yes" : "no";  /* "yes" */
 
-/* String concatenation */
-s = "hello";
-s += "world";              /* "helloworld" */
+/* Nested ternary */
+value = x > 0 ? "positive" : x < 0 ? "negative" : "zero";
 
-/* Array append */
-arr = [1,2,3];
-arr += 4;                  /* [1,2,3,4] */
-
-/* List append */
-list = [1,2,3];
-list += 4;                 /* [1,2,3,4] */
-
-/* Object append (nested) */
-obj = {name: "John"};
-obj += {age: 30};          /* {name:"John",{age:30}} */
-
-/* Vector/Tuple append */
-vec = [1,2,3];
-vec += 4;                  /* [1,2,3,4] */
-tup = (1,2,3);
-tup += 4;                  /* (1,2,3,4) */
+/* Array conditional */
+arr = condition ? [1,2,3] : [4,5,6];
 ```
-
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE  
-**Gaps**: 12 gaps identified (asymmetric behavior)
-
-### Subtract Assignment (`-=`)
-
-Performs remove assignment with limited support.
-
-```grapa
-/* Numeric subtraction */
-a = 10;
-a -= 3;                    /* 7 */
-
-/* Array remove by index */
-arr = [1,2,3,4,5];
-arr -= 2;                  /* [1,2,4,5] (removes element at index 2) */
-
-/* Error cases */
-s = "hello";
-s -= "world";              /* $ERR (STR not supported) */
-```
-
-**Type Support**: INT, FLOAT, ARRAY  
-**Gaps**: 12 gaps identified (severely limited support)
-
-### Multiply Assignment (`*=`)
-
-Performs multiplication assignment with numeric type support.
-
-```grapa
-/* Integer multiplication */
-a = 10;
-a *= 3;                    /* 30 */
-
-/* Float multiplication */
-b = 5.5;
-b *= 2;                    /* 11.0 */
-
-/* Mixed type multiplication */
-c = 10;
-c *= 2.5;                  /* 25.0 (promoted to float) */
-
-/* Error cases */
-s = "hello";
-s *= 3;                    /* $ERR (STR not supported) */
-```
-
-**Type Support**: INT, FLOAT  
-**Gaps**: 14 gaps identified (numeric types only)
-
-### Divide Assignment (`/=`)
-
-Performs division assignment with smart type promotion.
-
-```grapa
-/* Integer division */
-a = 10;
-a /= 2;                    /* 5.0 (promoted to float) */
-
-/* Float division */
-b = 10.0;
-b /= 3;                    /* 3.333... */
-
-/* Mixed type division */
-c = 10;
-c /= 2.5;                  /* 4.0 */
-
-/* Error cases */
-s = "hello";
-s /= 2;                    /* $ERR (STR not supported) */
-```
-
-**Type Support**: INT, FLOAT  
-**Gaps**: 14 gaps identified (numeric types only)
-
-### Modulo Assignment (`%=`)
-
-Performs modulo assignment with numeric type support.
-
-```grapa
-/* Integer modulo */
-a = 10;
-a %= 3;                    /* 1 */
-
-/* Float modulo */
-b = 10.5;
-b %= 3;                    /* 1.5 */
-
-/* Mixed type modulo */
-c = 10;
-c %= 3.5;                  /* 3.0 */
-
-/* Error cases */
-s = "hello";
-s %= 3;                    /* $ERR (STR not supported) */
-```
-
-**Type Support**: INT, FLOAT  
-**Gaps**: 14 gaps identified (numeric types only)
-
-### Power Assignment (`**=`)
-
-Performs exponentiation assignment with smart type promotion.
-
-```grapa
-/* Integer power */
-a = 2;
-a **= 3;                   /* 8 */
-
-/* Float power */
-b = 2.5;
-b **= 2;                   /* 6.25 */
-
-/* Mixed type power */
-c = 2;
-c **= 3.5;                 /* 11.313... (promoted to float) */
-
-/* Error cases */
-s = "hello";
-s **= 2;                   /* $ERR (STR not supported) */
-```
-
-**Type Support**: INT, FLOAT  
-**Gaps**: 14 gaps identified (numeric types only)
 
 ## Special Operators
 
-### Ternary (`? :`)
-
-Performs conditional expressions with implementation quirks.
-
-```grapa
-/* Standard ternary */
-true ? "yes" : "no";       /* "yes" */
-false ? "yes" : "no";      /* "no" */
-
-/* Numeric conditions */
-5 ? "positive" : "zero";   /* "positive" */
-0 ? "positive" : "zero";   /* "zero" */
-
-/* String conditions */
-"hello" ? "non-empty" : "empty";  /* "non-empty" */
-"" ? "non-empty" : "empty";       /* "empty" */
-
-/* Complex conditions */
-(5 > 3) ? "greater" : "less";     /* "greater" */
-
-/* Nested ternary */
-5 > 3 ? "big" : 5 > 1 ? "medium" : "small";  /* "big" */
-
-/* Implementation quirks */
-true ? : "yes";            /* "" (Form 1: inverted logic) */
-false ? : "yes";           /* "yes" (Form 1: inverted logic) */
-true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
-
-/* Vector/Tuple conditional */
-[1,2,3] ? "vector" : "empty";  /* "vector" (non-empty vector is truthy) */
-() ? "tuple" : "empty";        /* "empty" (empty tuple is falsy) */
-```
-
-**Type Support**: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL  
-**Gaps**: 0 gaps (but has implementation quirks)
-
 ### Extend (`++`)
 
-Performs array extension operations, adding elements to arrays and lists.
+Extends arrays and lists.
 
 ```grapa
 /* Array extension */
-[1,2,3] ++ 4;              /* [1,2,3,4] */
-[1,2,3] ++ [4,5,6];       /* [1,2,3,4,5,6] */
+arr = [1,2,3];
+arr ++= [4,5,6];          /* [1,2,3,4,5,6] */
 
 /* List extension */
-{1,2,3} ++ 4;              /* {1,2,3,4} */
-{1,2,3} ++ {4,5,6};       /* {1,2,3,4,5,6} */
+list = {a:1, b:2};
+list ++= {c:3, d:4};      /* {a:1, b:2, c:3, d:4} */
 
 /* String extension */
-"hello" ++ "world";        /* "helloworld" */
-"hello" ++ 5;              /* "hello5" */
-
-/* Error cases */
-5 ++ 3;                    /* $ERR (INT not supported) */
-true ++ false;             /* $ERR (BOOL not supported) */
+str = "hello";
+str ++= " world";         /* "hello world" */
 ```
-
-**Type Support**: ARRAY, LIST, STR  
-**Gaps**: 8 gaps identified (limited to collection types)
 
 ### Remove (`--`)
 
-Performs array removal operations, removing elements from arrays and lists.
+Removes elements from arrays and lists.
 
 ```grapa
-/* Array removal by index */
-[1,2,3,4,5] -- 2;          /* [1,2,4,5] (removes element at index 2) */
-[1,2,3,4,5] -- 2.0;        /* [1,2,4,5] (float index converted to int) */
-
-/* Array removal by value */
-[1,2,3,2,5] -- 2;          /* [1,3,5] (removes all occurrences of value 2) */
+/* Array removal */
+arr = [1,2,3,4,5];
+arr -= [2,4];             /* [1,3,5] */
 
 /* List removal */
-{1,2,3,4,5} -- 2;          /* {1,2,4,5} (removes element at index 2) */
-
-/* Error cases */
-5 -- 3;                    /* $ERR (INT not supported) */
-"hello" -- "world";        /* $ERR (STR not supported) */
+list = {a:1, b:2, c:3};
+list -= "b";              /* {a:1, c:3} */
 ```
-
-**Type Support**: ARRAY, LIST  
-**Gaps**: 10 gaps identified (limited to collection types)
 
 ### Dot Product (`.*`)
 
-Performs dot product operations for vectors and matrices.
+Performs dot product operations.
 
 ```grapa
 /* Vector dot product */
-[1,2,3] .* [4,5,6];       /* 32 (1*4 + 2*5 + 3*6) */
+[1,2,3] .* [4,5,6];       /* 32 (INT) */
+
+/* Array dot product */
+[1,2,3] .* [4,5,6];       /* 32 (INT) */
 
 /* Matrix dot product */
-[[1,2],[3,4]] .* [[5,6],[7,8]];  /* [[19,22],[43,50]] */
-
-/* Vector dot product */
-[1,2,3] .* [4,5,6];       /* 32 (1*4 + 2*5 + 3*6) */
-
-/* Tuple dot product */
-(1,2,3) .* (4,5,6);       /* 32 (1*4 + 2*5 + 3*6) */
-
-/* Scalar dot product */
-5 .* 3;                    /* 15 (scalar multiplication) */
-
-/* Error cases */
-"hello" .* "world";        /* $ERR (STR not supported) */
-[1,2,3] .* 5;              /* $ERR (mixed types not supported) */
+[[1,2],[3,4]] .* [[5,6],[7,8]];  /* Matrix dot product */
 ```
 
-**Type Support**: INT, FLOAT, ARRAY, VECTOR, TUPLE (vectors/matrices)  
-**Gaps**: 11 gaps identified (strict numeric and array types only)
+## Type Support Analysis
+
+### **Gaps**: 11 gaps identified (strict numeric and array types only)
 
 ## Best Practices
 
