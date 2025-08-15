@@ -202,6 +202,28 @@ while (i < array.len()) {
 }
 ```
 
+### Number Method Calls and Dot Notation
+
+**⚠️ CRITICAL:** When calling methods on numbers using dot notation, you must enclose the number in parentheses to prevent the lexer from treating the dot as part of a float literal:
+
+```grapa
+/* ✅ Correct - Use parentheses for number method calls */
+(20).random();    /* Works: 20 is treated as integer, dot is available for method */
+(3.14).floor();   /* Works: 3.14 is treated as float, dot is available for method */
+(42).str();       /* Works: 42 is treated as integer, dot is available for method */
+
+/* ❌ Incorrect - Lexer consumes the dot as part of float literal */
+20.random();      /* Fails: Lexer sees "20." as float, no dot token for method */
+3.14.floor();     /* Fails: Lexer sees "3.14." as float, no dot token for method */
+42.str();         /* Fails: Lexer sees "42." as float, no dot token for method */
+```
+
+**Why this happens:**
+- The lexer processes `20.` as a float literal and consumes the dot
+- No dot token reaches the parser, so method calls fail
+- Parentheses force the lexer to treat the number as a complete token first
+- Then the dot becomes available for method calls
+
 ### Sequence Generation with .range()
 
 Use `.range()` to generate sequences of numbers:
@@ -223,6 +245,7 @@ squares = (1000000).range(0,1).map(op(x) { x * x; }, 8);  /* Limit to 8 threads 
 - Use `.range()` instead of manual while loops for sequence generation
 - Combine with `.map()`, `.filter()`, `.reduce()` for functional iteration
 - Specify thread count for large arrays to avoid too many threads
+- **Remember:** Always use parentheses for number method calls: `(10).range()` not `10.range()`
 
 ## Functional Programming Methods
 

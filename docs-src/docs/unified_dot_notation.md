@@ -254,6 +254,40 @@ users.map(op(user){
 });
 ```
 
+### ⚠️ Critical: Number Method Calls
+
+**IMPORTANT:** When calling methods on numbers using dot notation, you must enclose the number in parentheses:
+
+```grapa
+/* ✅ Correct - Use parentheses for number method calls */
+(20).random();    /* Works: Random number 0-19 */
+(3.14).floor();   /* Works: Floor to 3 */
+(42).str();       /* Works: Convert to string */
+
+/* ❌ Incorrect - Lexer consumes the dot as part of float literal */
+20.random();      /* Fails: Lexer sees "20." as float */
+3.14.floor();     /* Fails: Lexer sees "3.14." as float */
+42.str();         /* Fails: Lexer sees "42." as float */
+```
+
+**Why this happens:**
+- The lexer processes `20.` as a float literal and consumes the dot
+- No dot token reaches the parser, so method calls fail
+- Parentheses force the lexer to treat the number as a complete token first
+- Then the dot becomes available for method calls
+
+**Common patterns:**
+```grapa
+/* Working examples */
+result = (20).random();     /* Random number 0-19 */
+rounded = (3.14159).floor(); /* Floor: 3 */
+text = (42).str();          /* Convert to string: "42" */
+
+/* In functional programming */
+numbers = [(10).random(), (20).random(), (30).random()];
+text_numbers = [(1).str(), (2).str(), (3).str()];
+```
+
 ## Use Cases
 
 ### 1. Configuration Access
