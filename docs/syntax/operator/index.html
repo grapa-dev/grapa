@@ -2252,6 +2252,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#new-data-types-in-type-support-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      New Data Types in Type Support Matrix
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New Data Types in Type Support Matrix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vector-and-tuple" class="md-nav__link">
+    <span class="md-ellipsis">
+      VECTOR and TUPLE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      RULE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xmltag-and-xmlel" class="md-nav__link">
+    <span class="md-ellipsis">
+      XML/TAG and XML/EL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#operator-categories" class="md-nav__link">
     <span class="md-ellipsis">
       Operator Categories
@@ -4055,6 +4097,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#new-data-types-in-type-support-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      New Data Types in Type Support Matrix
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New Data Types in Type Support Matrix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vector-and-tuple" class="md-nav__link">
+    <span class="md-ellipsis">
+      VECTOR and TUPLE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      RULE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xmltag-and-xmlel" class="md-nav__link">
+    <span class="md-ellipsis">
+      XML/TAG and XML/EL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#operator-categories" class="md-nav__link">
     <span class="md-ellipsis">
       Operator Categories
@@ -4659,6 +4743,29 @@
 <p><strong>See also:</strong> <a href="../precedence/">Operator Precedence Table</a></p>
 <h2 id="overview">Overview</h2>
 <p>Grapa provides 30 operators across 6 categories, designed with a philosophy that programmers shouldn't have to care about type casting. Operators work intelligently with relevant data types, though some intentionally maintain mathematical purity by not converting types.</p>
+<h2 id="new-data-types-in-type-support-matrix">New Data Types in Type Support Matrix</h2>
+<p>The Type Support Matrix now includes several additional data types that extend Grapa's operator capabilities:</p>
+<h3 id="vector-and-tuple"><strong>VECTOR</strong> and <strong>TUPLE</strong></h3>
+<ul>
+<li><strong>VECTOR</strong>: Mathematical vectors and matrices with element-wise operations</li>
+<li><strong>TUPLE</strong>: Immutable ordered collections similar to arrays but with different semantics</li>
+<li><strong>Support</strong>: Most arithmetic operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>**</code>, <code>*/</code>), assignment operators, and logical operators</li>
+<li><strong>Examples</strong>: <code>[1,2,3] + [4,5,6]</code> (element-wise addition), <code>(1,2,3) * 2</code> (scalar multiplication)</li>
+</ul>
+<h3 id="rule"><strong>RULE</strong></h3>
+<ul>
+<li><strong>RULE</strong>: Function definitions and executable code blocks</li>
+<li><strong>Support</strong>: Assignment (<code>=</code>), equality comparison (<code>==</code>, <code>!=</code>), and logical operators</li>
+<li><strong>Examples</strong>: <code>rule = op(x){x*2};</code>, <code>rule1 == rule2</code> (object ID comparison)</li>
+</ul>
+<h3 id="xmltag-and-xmlel"><strong>XML/TAG</strong> and <strong>XML/EL</strong></h3>
+<ul>
+<li><strong>XML/TAG</strong>: XML element tags with attributes and structure</li>
+<li><strong>XML/EL</strong>: XML element content and nested elements</li>
+<li><strong>Support</strong>: Equality comparison (<code>==</code>, <code>!=</code>), assignment (<code>=</code>), and logical operators</li>
+<li><strong>Usage</strong>: These types represent the internal structure of XML objects, where operators work on the XML content rather than the XML object itself</li>
+<li><strong>Examples</strong>: <code>xml1 == xml2</code> (object ID comparison), <code>tag1 = tag2</code> (assignment)</li>
+</ul>
 <h2 id="operator-categories">Operator Categories</h2>
 <h3 id="1-arithmetic-operators">1. Arithmetic Operators</h3>
 <p>Addition, subtraction, multiplication, division, modulo, exponentiation, and root operations with smart type promotion.</p>
@@ -4673,537 +4780,47 @@
 <h3 id="6-special-operators">6. Special Operators</h3>
 <p>Extend, remove, dot operations, and ternary conditional expressions.</p>
 <h2 id="type-support-matrix">Type Support Matrix</h2>
-<table>
-<thead>
-<tr>
-<th>Operator</th>
-<th>INT</th>
-<th>FLOAT</th>
-<th>STR</th>
-<th>BOOL</th>
-<th>ARRAY</th>
-<th>LIST</th>
-<th>OBJ</th>
-<th>ERR</th>
-<th>XML</th>
-<th>TIME</th>
-<th>RAW</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>+</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
-<td>Smart type promotion</td>
-</tr>
-<tr>
-<td><code>-</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>String difference calculation</td>
-</tr>
-<tr>
-<td><code>+=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Append assignment</td>
-</tr>
-<tr>
-<td><code>-=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Remove by index/key</td>
-</tr>
-<tr>
-<td><code>*=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Multiplication assignment</td>
-</tr>
-<tr>
-<td><code>/=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Division assignment</td>
-</tr>
-<tr>
-<td><code>%=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Modulo assignment</td>
-</tr>
-<tr>
-<td><code>**=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Power assignment</td>
-</tr>
-<tr>
-<td><code>*</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Matrix multiplication support</td>
-</tr>
-<tr>
-<td><code>/</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Smart type promotion</td>
-</tr>
-<tr>
-<td><code>%</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Modulo with modpow/modinv</td>
-</tr>
-<tr>
-<td><code>**</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Exponentiation</td>
-</tr>
-<tr>
-<td><code>*/</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Root operator (nth root)</td>
-</tr>
-<tr>
-<td><code>==</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>Object ID for complex types</td>
-</tr>
-<tr>
-<td><code>!=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>Object ID for complex types</td>
-</tr>
-<tr>
-<td><code>&lt;</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>No type conversion</td>
-</tr>
-<tr>
-<td><code>&lt;=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>No type conversion</td>
-</tr>
-<tr>
-<td><code>&gt;</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>Unified type handling</td>
-</tr>
-<tr>
-<td><code>&gt;=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>Unified type handling</td>
-</tr>
-<tr>
-<td><code>&lt;=&gt;</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>Unified type handling</td>
-</tr>
-<tr>
-<td><code>&amp;&amp;</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>Perfect implementation</td>
-</tr>
-<tr>
-<td><code>\|\|</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>Perfect implementation</td>
-</tr>
-<tr>
-<td><code>!</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>Perfect implementation</td>
-</tr>
-<tr>
-<td><code>&amp;</code></td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>Strict INT/RAW only</td>
-</tr>
-<tr>
-<td><code>\|</code></td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>Strict INT/RAW only</td>
-</tr>
-<tr>
-<td><code>^</code></td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>Strict INT/RAW only</td>
-</tr>
-<tr>
-<td><code>~</code></td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Matrix inversion support</td>
-</tr>
-<tr>
-<td><code>&lt;&lt;</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>FLOAT support</td>
-</tr>
-<tr>
-<td><code>&gt;&gt;</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>FLOAT support</td>
-</tr>
-<tr>
-<td><code>=</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>Perfect assignment</td>
-</tr>
-<tr>
-<td><code>? :</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>✅</td>
-<td>Implementation quirks</td>
-</tr>
-<tr>
-<td><code>++</code></td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Array/list extension</td>
-</tr>
-<tr>
-<td><code>--</code></td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Array/list removal</td>
-</tr>
-<tr>
-<td><code>.*</code></td>
-<td>✅</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>✅</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>❌</td>
-<td>Dot product</td>
-</tr>
-</tbody>
-</table>
+<div style="overflow-x: auto;">
+
+| Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | XML | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
+|:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
+| `+` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Smart type promotion |
+| `-` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | String difference calculation |
+| `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | Append assignment |
+| `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Remove by index/key |
+| `*=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Multiplication assignment |
+| `/=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Division assignment |
+| `%=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo assignment |
+| `**=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Power assignment |
+| `*` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Matrix multiplication support |
+| `/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Smart type promotion |
+| `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
+| `**` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Exponentiation |
+| `*/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Root operator (nth root) |
+| `==` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
+| `!=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Object ID for complex types |
+| `<` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
+| `<=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | No type conversion |
+| `>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+| `>=` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+| `<=>` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Unified type handling |
+| `&&` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `\|\|` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `!` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect implementation |
+| `&` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `\|` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `^` | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | Strict INT/RAW only |
+| `~` | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Matrix inversion support |
+| `<<` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+| `>>` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | FLOAT support |
+| `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
+| `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
+| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
+| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list removal |
+| `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Dot product |
+
+</div>
+
 <h2 id="arithmetic-operators">Arithmetic Operators</h2>
 <h3 id="addition">Addition (<code>+</code>)</h3>
 <p>Performs addition with smart type promotion and string concatenation.</p>
@@ -5225,10 +4842,18 @@ false + 3.14;             /* 3.14... (boolean converted to number) */
 [1,2,3] + [4,5,6];       /* [] (empty array - should concatenate) */
 [1,2,3] + 4;              /* [] (empty array - should append) */
 
+/* Vector operations */
+[1,2,3] + [4,5,6];       /* [5,7,9] (element-wise addition) */
+[1,2,3] + 5;              /* [6,7,8] (scalar addition) */
+
+/* Tuple operations */
+(1,2,3) + (4,5,6);       /* (5,7,9) (element-wise addition) */
+(1,2,3) + 5;              /* (6,7,8) (scalar addition) */
+
 /* Error handling */
 $ERR + 5;                 /* &quot;ERR5&quot; (error converted to string) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, ERR, VECTOR, TUPLE<br />
 <strong>Gaps</strong>: 12 gaps identified (asymmetric behavior, array operations)</p>
 <h3 id="subtraction-">Subtraction (<code>-</code>)</h3>
 <p>Performs subtraction with type-aware behavior.</p>
@@ -5269,8 +4894,16 @@ $ERR + 5;                 /* &quot;ERR5&quot; (error converted to string) */
 matrix1 = [[1,2],[3,4]];
 matrix2 = [[5,6],[7,8]];
 matrix1 * matrix2;        /* [[19,22],[43,50]] (matrix multiplication) */
+
+/* Vector operations */
+[1,2,3] * [4,5,6];       /* [4,10,18] (element-wise multiplication) */
+[1,2,3] * 2;              /* [2,4,6] (scalar multiplication) */
+
+/* Tuple operations */
+(1,2,3) * (4,5,6);       /* (4,10,18) (element-wise multiplication) */
+(1,2,3) * 2;              /* (2,4,6) (scalar multiplication) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, ARRAY<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, ARRAY, VECTOR, TUPLE<br />
 <strong>Gaps</strong>: 18 gaps identified (asymmetric behavior, missing type combinations)</p>
 <h3 id="division">Division (<code>/</code>)</h3>
 <p>Performs division with smart type promotion.</p>
@@ -5317,10 +4950,18 @@ value.modinv(modulus);    /* 4 (modular multiplicative inverse) */
 /* Array exponentiation */
 [1,2,3] ** 2;             /* [1,4,9] (element-wise exponentiation) */
 
+/* Vector operations */
+[1,2,3] ** 2;             /* [1,4,9] (element-wise exponentiation) */
+[1,2,3] ** [2,3,4];       /* [1,8,81] (element-wise exponentiation) */
+
+/* Tuple operations */
+(1,2,3) ** 2;             /* (1,4,9) (element-wise exponentiation) */
+(1,2,3) ** (2,3,4);       /* (1,8,81) (element-wise exponentiation) */
+
 /* Error cases */
 5 ** &quot;hello&quot;;             /* $ERR (no string to number conversion) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, ARRAY<br />
+<p><strong>Type Support</strong>: INT, FLOAT, ARRAY, VECTOR, TUPLE<br />
 <strong>Gaps</strong>: 15 gaps identified (most combinations return $ERR)</p>
 <h3 id="root">Root (<code>*/</code>)</h3>
 <p>Performs nth root calculations with advanced mathematical support.</p>
@@ -5337,11 +4978,15 @@ value.modinv(modulus);    /* 4 (modular multiplicative inverse) */
 vector = [1,2,3];
 vector */ 2;              /* [1,1.414...,1.732...] (element-wise square root) */
 
+/* Tuple operations */
+tuple = (1,2,3);
+tuple */ 2;               /* (1,1.414...,1.732...) (element-wise square root) */
+
 /* Error cases */
 &quot;hello&quot; */ 2;             /* $ERR (STR not supported) */
 true */ 3;                /* $ERR (BOOL not supported) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, ARRAY<br />
+<p><strong>Type Support</strong>: INT, FLOAT, ARRAY, VECTOR, TUPLE<br />
 <strong>Gaps</strong>: 13 gaps identified (strict numeric types only)</p>
 <h2 id="comparison-operators">Comparison Operators</h2>
 <h3 id="equality">Equality (<code>==</code>)</h3>
@@ -5372,8 +5017,17 @@ a == b;                   /* false (different objects) */
 
 /* Object equality */
 {a:1,b:2} == {a:1,b:2};  /* true (same object) */
+
+/* Vector/Tuple equality (object ID comparison) */
+[1,2,3] == [1,2,3];      /* true (same object) */
+(1,2,3) == (1,2,3);      /* true (same object) */
+
+/* XML/TAG/EL equality (object ID comparison) */
+xml1 = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;
+xml2 = &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;
+xml1 == xml2;             /* false (different objects) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL<br />
 <strong>Gaps</strong>: 7 gaps identified (object ID vs content comparison)</p>
 <h3 id="inequality">Inequality (<code>!=</code>)</h3>
 <p>Performs inequality comparison with object ID comparison for complex types.</p>
@@ -5391,7 +5045,7 @@ a = [1,2,3];
 b = [1,2,4];
 a != b;                   /* true (different objects) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL<br />
 <strong>Gaps</strong>: 7 gaps identified (object ID vs content comparison)</p>
 <h3 id="less-than">Less Than (<code>&lt;</code>)</h3>
 <p>Performs less than comparison without type conversion.</p>
@@ -5503,7 +5157,7 @@ false &amp;&amp; false;           /* false */
 false &amp;&amp; (5/0);           /* false (short-circuits) */
 true &amp;&amp; (5/0);            /* $ERR (evaluates second operand) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL<br />
 <strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
 <h3 id="logical-or">Logical OR (<code>||</code>)</h3>
 <p>Performs logical OR with perfect truthiness conversion.</p>
@@ -5524,7 +5178,7 @@ false || false;           /* false */
 true || (5/0);            /* true (short-circuits) */
 false || (5/0);           /* $ERR (evaluates second operand) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL<br />
 <strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
 <h3 id="logical-not">Logical NOT (<code>!</code>)</h3>
 <p>Performs logical NOT with comprehensive truthiness conversion across all data types.</p>
@@ -5559,7 +5213,7 @@ false || (5/0);           /* $ERR (evaluates second operand) */
 !obj;                      /* true (object is falsy) */
 !null;                     /* true (null is falsy) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL<br />
 <strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
 <h2 id="bitwise-operators">Bitwise Operators</h2>
 <h3 id="bitwise-and">Bitwise AND (<code>&amp;</code>)</h3>
@@ -5655,8 +5309,15 @@ a = b = c = 5;             /* 5 (all variables set to 5) */
 
 /* Object assignment */
 obj = {name: &quot;John&quot;, age: 30};  /* {name:&quot;John&quot;, age:30} */
+
+/* Vector/Tuple assignment */
+vec = [1,2,3];                  /* [1,2,3] */
+tup = (1,2,3);                  /* (1,2,3) */
+
+/* Rule assignment */
+rule = op(x){x*2};              /* Function rule */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL<br />
 <strong>Gaps</strong>: 0 gaps (perfect implementation)</p>
 <h3 id="add-assignment">Add Assignment (<code>+=</code>)</h3>
 <p>Performs append assignment with comprehensive support.</p>
@@ -5679,8 +5340,14 @@ list += 4;                 /* [1,2,3,4] */
 /* Object append (nested) */
 obj = {name: &quot;John&quot;};
 obj += {age: 30};          /* {name:&quot;John&quot;,{age:30}} */
+
+/* Vector/Tuple append */
+vec = [1,2,3];
+vec += 4;                  /* [1,2,3,4] */
+tup = (1,2,3);
+tup += 4;                  /* (1,2,3,4) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE<br />
 <strong>Gaps</strong>: 12 gaps identified (asymmetric behavior)</p>
 <h3 id="subtract-assignment-">Subtract Assignment (<code>-=</code>)</h3>
 <p>Performs remove assignment with limited support.</p>
@@ -5803,8 +5470,12 @@ false ? &quot;yes&quot; : &quot;no&quot;;      /* &quot;no&quot; */
 true ? : &quot;yes&quot;;            /* &quot;&quot; (Form 1: inverted logic) */
 false ? : &quot;yes&quot;;           /* &quot;yes&quot; (Form 1: inverted logic) */
 true ? &quot;yes&quot; : &quot;no&quot; : &quot;maybe&quot;;  /* &quot;maybe&quot; (Form 3: unexpected) */
+
+/* Vector/Tuple conditional */
+[1,2,3] ? &quot;vector&quot; : &quot;empty&quot;;  /* &quot;vector&quot; (non-empty vector is truthy) */
+() ? &quot;tuple&quot; : &quot;empty&quot;;        /* &quot;empty&quot; (empty tuple is falsy) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR<br />
+<p><strong>Type Support</strong>: INT, FLOAT, STR, BOOL, ARRAY, LIST, OBJ, ERR, VECTOR, TUPLE, RULE, XML/TAG, XML/EL<br />
 <strong>Gaps</strong>: 0 gaps (but has implementation quirks)</p>
 <h3 id="extend">Extend (<code>++</code>)</h3>
 <p>Performs array extension operations, adding elements to arrays and lists.</p>
@@ -5852,6 +5523,12 @@ true ++ false;             /* $ERR (BOOL not supported) */
 /* Matrix dot product */
 [[1,2],[3,4]] .* [[5,6],[7,8]];  /* [[19,22],[43,50]] */
 
+/* Vector dot product */
+[1,2,3] .* [4,5,6];       /* 32 (1*4 + 2*5 + 3*6) */
+
+/* Tuple dot product */
+(1,2,3) .* (4,5,6);       /* 32 (1*4 + 2*5 + 3*6) */
+
 /* Scalar dot product */
 5 .* 3;                    /* 15 (scalar multiplication) */
 
@@ -5859,7 +5536,7 @@ true ++ false;             /* $ERR (BOOL not supported) */
 &quot;hello&quot; .* &quot;world&quot;;        /* $ERR (STR not supported) */
 [1,2,3] .* 5;              /* $ERR (mixed types not supported) */
 </code></pre></div>
-<p><strong>Type Support</strong>: INT, FLOAT, ARRAY (vectors/matrices)<br />
+<p><strong>Type Support</strong>: INT, FLOAT, ARRAY, VECTOR, TUPLE (vectors/matrices)<br />
 <strong>Gaps</strong>: 11 gaps identified (strict numeric and array types only)</p>
 <h2 id="best-practices">Best Practices</h2>
 <h3 id="type-conversion">Type Conversion</h3>
