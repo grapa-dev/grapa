@@ -931,6 +931,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../type/obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../type/op/" class="md-nav__link">
         
   
@@ -1651,9 +1674,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#table" class="md-nav__link">
+  <a href="#tabletype" class="md-nav__link">
     <span class="md-ellipsis">
-      table()
+      table([type])
     </span>
   </a>
   
@@ -1783,9 +1806,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#splitparts-name-path-delim-option" class="md-nav__link">
+  <a href="#splitcount-name-path-delim-option" class="md-nav__link">
     <span class="md-ellipsis">
-      split(parts, name, path, delim, option)
+      split(count, name, path, delim, option)
     </span>
   </a>
   
@@ -3783,9 +3806,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#table" class="md-nav__link">
+  <a href="#tabletype" class="md-nav__link">
     <span class="md-ellipsis">
-      table()
+      table([type])
     </span>
   </a>
   
@@ -3915,9 +3938,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#splitparts-name-path-delim-option" class="md-nav__link">
+  <a href="#splitcount-name-path-delim-option" class="md-nav__link">
     <span class="md-ellipsis">
-      split(parts, name, path, delim, option)
+      split(count, name, path, delim, option)
     </span>
   </a>
   
@@ -4154,11 +4177,16 @@ f.set(&quot;test.txt&quot;, &quot;Hello, World!&quot;);  /* Write a file */
 <div class="highlight"><pre><span></span><code>f.type();
 $file
 </code></pre></div></p>
-<h2 id="table">table()</h2>
+<h2 id="tabletype">table([type])</h2>
 <p>The table function creates an in-memory database. </p>
+<p><strong>Parameters</strong>:
+- <code>type</code> (optional): Database type ("DIR", "GROUP", "ROW", "COL")</p>
 <div class="highlight"><pre><span></span><code>t = f.table();
 t.type();
 $TABLE
+
+t = f.table(&quot;ROW&quot;);  /* Row-oriented storage */
+t = f.table(&quot;COL&quot;);  /* Column-oriented storage */
 </code></pre></div>
 <p><strong>Database Types</strong>: The table can be configured as either:
 - <strong>Row Store (RTABLE_TREE)</strong>: Traditional row-oriented storage, optimized for transactional workloads
@@ -4442,10 +4470,10 @@ while (i &lt; files.length()) {
 - Uses <code>FindFirstFileA()</code> on Windows systems
 - Works in both file system and database contexts
 - Essential for file management, storage monitoring, and data validation</p>
-<h2 id="splitparts-name-path-delim-option">split(parts, name, path, delim, option)</h2>
+<h2 id="splitcount-name-path-delim-option">split(count, name, path, delim, option)</h2>
 <p>Splits a large file into multiple smaller, manageable parts for processing, storage, or transfer.</p>
 <p><strong>Parameters</strong>:
-- <code>parts</code>: Number of files to split into (must be &gt; 0)
+- <code>count</code>: Number of files to split into (must be &gt; 0)
 - <code>name</code>: Input file name to split
 - <code>path</code>: Output directory path for the split files (created if needed)
 - <code>delim</code>: Delimiter to use for splitting (default: <code>"\n"</code>)

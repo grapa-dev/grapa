@@ -14,7 +14,7 @@
         <link rel="prev" href="../int/">
       
       
-        <link rel="next" href="../op/">
+        <link rel="next" href="../obj_methods/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -960,6 +960,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#list-vs-array-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      $LIST vs $ARRAY Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#advanced-list-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Advanced List Operations
@@ -1029,6 +1038,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#list-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Rotation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="List Rotation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#left-rotation-lrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Left Rotation (.lrot())
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#right-rotation-rrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Right Rotation (.rrot())
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#advanced-element-finding-findall" class="md-nav__link">
     <span class="md-ellipsis">
       Advanced Element Finding (.findall())
@@ -1083,6 +1125,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -3549,6 +3614,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#list-vs-array-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      $LIST vs $ARRAY Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#advanced-list-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Advanced List Operations
@@ -3614,6 +3688,39 @@
       Concatenation and Extension
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Rotation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="List Rotation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#left-rotation-lrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Left Rotation (.lrot())
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#right-rotation-rrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Right Rotation (.rrot())
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3686,7 +3793,46 @@
 
 <h1 id="list">$LIST</h1>
 <p>References:</p>
-<p>A $LIST is basically JSON, but extended to include all the various grapa data types. </p>
+<p><strong><code>$LIST</code></strong> = <code>{}</code> syntax (associative, with names/keys)</p>
+<p>An associative list that stores key-value pairs. Elements are accessed by their names (keys) rather than by position. This follows traditional terminology where lists are associative collections with named entries.</p>
+<h3 id="list-vs-array-comparison">$LIST vs $ARRAY Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>$LIST (<code>{}</code>)</th>
+<th>$ARRAY (<code>[]</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Syntax</strong></td>
+<td><code>{a:1, b:2, c:3}</code></td>
+<td><code>[1, 2, 3]</code></td>
+</tr>
+<tr>
+<td><strong>Access</strong></td>
+<td><code>list.a</code> or <code>list["a"]</code></td>
+<td><code>array[0]</code></td>
+</tr>
+<tr>
+<td><strong>Type</strong></td>
+<td>Associative</td>
+<td>Positional</td>
+</tr>
+<tr>
+<td><strong>Keys</strong></td>
+<td>Named keys</td>
+<td>Numeric indices</td>
+</tr>
+<tr>
+<td><strong>Order</strong></td>
+<td>Key-based</td>
+<td>Position-based</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> This differs from some other languages where <code>[]</code> is called a "list" and <code>{}</code> is called a "dictionary" or "object". Grapa follows traditional C terminology. </p>
 <table>
 <thead>
 <tr>
@@ -3810,6 +3956,25 @@ list ++= {g:7}, 2;                        /* Insert at position 2 */
 /* Remove elements */
 list -= {b:2};                            /* Remove element with key &quot;b&quot; */
 </code></pre></div>
+<h3 id="list-rotation">List Rotation</h3>
+<p>Lists support left and right rotation operations for reordering key-value pairs:</p>
+<h4 id="left-rotation-lrot">Left Rotation (.lrot())</h4>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3, d:4};
+
+list.lrot();                              /* {b:2, c:3, d:4, a:1} */
+list.lrot(2);                             /* {c:3, d:4, a:1, b:2} */
+list.lrot(0);                             /* {a:1, b:2, c:3, d:4} (no change) */
+</code></pre></div>
+<h4 id="right-rotation-rrot">Right Rotation (.rrot())</h4>
+<div class="highlight"><pre><span></span><code>list = {a:1, b:2, c:3, d:4};
+
+list.rrot();                              /* {d:4, a:1, b:2, c:3} */
+list.rrot(2);                             /* {c:3, d:4, a:1, b:2} */
+list.rrot(0);                             /* {a:1, b:2, c:3, d:4} (no change) */
+</code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> Rotation methods preserve all key-value pairs while reordering them. For empty lists or single-element lists, rotation has no effect.</p>
+</blockquote>
 <h3 id="advanced-element-finding-findall">Advanced Element Finding (.findall())</h3>
 <p>The <code>.findall()</code> method provides <strong>enterprise-grade querying capabilities</strong> for LIST structures with support for complex patterns and logical operations.</p>
 <h4 id="basic-queries">Basic Queries</h4>

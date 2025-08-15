@@ -799,6 +799,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#array-vs-list-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ARRAY vs $LIST Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#array-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Array Operations
@@ -864,6 +873,39 @@
       Concatenation and Extension
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Rotation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Array Rotation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#left-rotation-lrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Left Rotation (.lrot())
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#right-rotation-rrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Right Rotation (.rrot())
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1087,6 +1129,29 @@
   
   <span class="md-ellipsis">
     List
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
     
   </span>
   
@@ -3558,6 +3623,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#array-vs-list-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      $ARRAY vs $LIST Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#array-operations" class="md-nav__link">
     <span class="md-ellipsis">
       Array Operations
@@ -3623,6 +3697,39 @@
       Concatenation and Extension
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#array-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Array Rotation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Array Rotation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#left-rotation-lrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Left Rotation (.lrot())
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#right-rotation-rrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Right Rotation (.rrot())
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -3722,7 +3829,46 @@
 <p>References:
 - <a href="../list/">$LIST object</a>
 - <a href="../vector/">$VECTOR object</a></p>
-<p>Same as $LIST, but without the entry labels.</p>
+<p><strong><code>$ARRAY</code></strong> = <code>[]</code> syntax (positional, no names, indexed by position)</p>
+<p>A positional array that stores values without named keys. Elements are accessed by their position (index) rather than by name. This follows traditional C-style array terminology where arrays are indexed collections.</p>
+<h3 id="array-vs-list-comparison">$ARRAY vs $LIST Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>$ARRAY (<code>[]</code>)</th>
+<th>$LIST (<code>{}</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Syntax</strong></td>
+<td><code>[1, 2, 3]</code></td>
+<td><code>{a:1, b:2, c:3}</code></td>
+</tr>
+<tr>
+<td><strong>Access</strong></td>
+<td><code>array[0]</code></td>
+<td><code>list.a</code> or <code>list["a"]</code></td>
+</tr>
+<tr>
+<td><strong>Type</strong></td>
+<td>Positional</td>
+<td>Associative</td>
+</tr>
+<tr>
+<td><strong>Keys</strong></td>
+<td>Numeric indices</td>
+<td>Named keys</td>
+</tr>
+<tr>
+<td><strong>Order</strong></td>
+<td>Position-based</td>
+<td>Key-based</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> This differs from some other languages where <code>[]</code> is called a "list" and <code>{}</code> is called a "dictionary" or "object". Grapa follows traditional C terminology.</p>
 <p>Supports an offset search if the contents of the array are $ID or $STR or $ARRAY values.
 <div class="highlight"><pre><span></span><code>&gt; months = [&quot;JAN&quot;,&quot;FEB&quot;,&quot;MAR&quot;,&quot;APR&quot;,&quot;MAY&quot;,&quot;JUN&quot;,&quot;JUL&quot;,&quot;AUG&quot;,&quot;SEP&quot;,&quot;OCT&quot;,&quot;NOV&quot;,&quot;DEC&quot;];
 &gt; months[&quot;MAR&quot;];
@@ -3807,6 +3953,25 @@ arr ++= 7, 2;                             /* Insert at position 2 */
 /* Remove elements */
 arr -= 3;                                 /* Remove element with value 3 */
 </code></pre></div>
+<h3 id="array-rotation">Array Rotation</h3>
+<p>Arrays support left and right rotation operations for reordering elements:</p>
+<h4 id="left-rotation-lrot">Left Rotation (.lrot())</h4>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3, 4, 5];
+
+arr.lrot();                              /* [2, 3, 4, 5, 1] */
+arr.lrot(2);                             /* [3, 4, 5, 1, 2] */
+arr.lrot(0);                             /* [1, 2, 3, 4, 5] (no change) */
+</code></pre></div>
+<h4 id="right-rotation-rrot">Right Rotation (.rrot())</h4>
+<div class="highlight"><pre><span></span><code>arr = [1, 2, 3, 4, 5];
+
+arr.rrot();                              /* [5, 1, 2, 3, 4] */
+arr.rrot(2);                             /* [4, 5, 1, 2, 3] */
+arr.rrot(0);                             /* [1, 2, 3, 4, 5] (no change) */
+</code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> Rotation methods work with any array size. For empty arrays or single-element arrays, rotation has no effect.</p>
+</blockquote>
 <h3 id="advanced-element-finding-findall">Advanced Element Finding (.findall())</h3>
 <p>The <code>.findall()</code> method provides <strong>enterprise-grade querying capabilities</strong> for ARRAY structures with support for complex patterns and logical operations.</p>
 <h4 id="basic-queries">Basic Queries</h4>

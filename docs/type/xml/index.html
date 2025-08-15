@@ -935,6 +935,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../op/" class="md-nav__link">
         
   
@@ -1382,6 +1405,39 @@
       Attribute Access
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xml-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      XML Rotation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="XML Rotation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#left-rotation-lrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Left Rotation (.lrot())
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#right-rotation-rrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Right Rotation (.rrot())
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -3821,6 +3877,39 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#xml-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      XML Rotation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="XML Rotation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#left-rotation-lrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Left Rotation (.lrot())
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#right-rotation-rrot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Right Rotation (.rrot())
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4136,6 +4225,25 @@ xml[0][0].attr.class           /* Returns: &quot;test&quot; */
 xml.root.item.attr.id          /* Returns: &quot;1&quot; */
 xml.root.item.attr.class       /* Returns: &quot;test&quot; */
 </code></pre></div>
+<h3 id="xml-rotation">XML Rotation</h3>
+<p>XML structures support left and right rotation operations for reordering child elements:</p>
+<h4 id="left-rotation-lrot">Left Rotation (.lrot())</h4>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;First&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;Second&lt;/item&gt;&lt;item id=&quot;3&quot;&gt;Third&lt;/item&gt;&lt;/root&gt;;
+
+xml.lrot();                              /* &lt;root&gt;&lt;item id=&quot;2&quot;&gt;Second&lt;/item&gt;&lt;item id=&quot;3&quot;&gt;Third&lt;/item&gt;&lt;item id=&quot;1&quot;&gt;First&lt;/item&gt;&lt;/root&gt; */
+xml.lrot(2);                             /* &lt;root&gt;&lt;item id=&quot;3&quot;&gt;Third&lt;/item&gt;&lt;item id=&quot;1&quot;&gt;First&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;Second&lt;/item&gt;&lt;/root&gt; */
+xml.lrot(0);                             /* &lt;root&gt;&lt;item id=&quot;1&quot;&gt;First&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;Second&lt;/item&gt;&lt;item id=&quot;3&quot;&gt;Third&lt;/item&gt;&lt;/root&gt; (no change) */
+</code></pre></div>
+<h4 id="right-rotation-rrot">Right Rotation (.rrot())</h4>
+<div class="highlight"><pre><span></span><code>xml = &lt;root&gt;&lt;item id=&quot;1&quot;&gt;First&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;Second&lt;/item&gt;&lt;item id=&quot;3&quot;&gt;Third&lt;/item&gt;&lt;/root&gt;;
+
+xml.rrot();                              /* &lt;root&gt;&lt;item id=&quot;3&quot;&gt;Third&lt;/item&gt;&lt;item id=&quot;1&quot;&gt;First&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;Second&lt;/item&gt;&lt;/root&gt; */
+xml.rrot(2);                             /* &lt;root&gt;&lt;item id=&quot;2&quot;&gt;Second&lt;/item&gt;&lt;item id=&quot;3&quot;&gt;Third&lt;/item&gt;&lt;item id=&quot;1&quot;&gt;First&lt;/item&gt;&lt;/root&gt; */
+xml.rrot(0);                             /* &lt;root&gt;&lt;item id=&quot;1&quot;&gt;First&lt;/item&gt;&lt;item id=&quot;2&quot;&gt;Second&lt;/item&gt;&lt;item id=&quot;3&quot;&gt;Third&lt;/item&gt;&lt;/root&gt; (no change) */
+</code></pre></div>
+<blockquote>
+<p><strong>Note:</strong> Rotation methods preserve all child elements and their attributes while reordering them. For empty XML or single-element XML, rotation has no effect.</p>
+</blockquote>
 <h2 id="advanced-element-finding-findall">Advanced Element Finding (.findall())</h2>
 <p>The <code>.findall()</code> method provides <strong>enterprise-grade querying capabilities</strong> with support for complex patterns and logical operations.</p>
 <h3 id="basic-queries">Basic Queries</h3>

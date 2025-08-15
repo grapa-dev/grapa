@@ -1329,6 +1329,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#universal-object-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Universal Object Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Universal Object Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-method-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Method Categories
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1553,6 +1586,29 @@
   
   <span class="md-ellipsis">
     List
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../type/obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
     
   </span>
   
@@ -4620,6 +4676,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#universal-object-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Universal Object Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Universal Object Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-method-categories" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Method Categories
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quick-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Examples
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4678,6 +4767,7 @@
 <li><a href="#arraymatrix-operations">Array/Matrix Operations</a></li>
 <li><a href="#file-system">File System</a></li>
 <li><a href="#time-date">Time &amp; Date</a></li>
+<li><a href="#universal-object-methods">Universal Object Methods</a></li>
 </ul>
 <hr />
 <h2 id="core-language">Core Language</h2>
@@ -5147,6 +5237,37 @@ for (file in files) {
 formatted = now.format(&quot;%Y-%m-%d %H:%M:%S&quot;);
 tomorrow = now.add(86400);  /* Add 24 hours */
 </code></pre></div>
+<p><a href="#grapa-api-reference">Back to Top</a></p>
+<hr />
+<h2 id="universal-object-methods">Universal Object Methods</h2>
+<p>All Grapa objects support a comprehensive set of methods through the <code>$OBJ</code> class. These methods provide type conversion, manipulation, and utility functions that work on any data type.</p>
+<h3 id="key-method-categories">Key Method Categories</h3>
+<ul>
+<li><strong>Type Conversion</strong>: <code>.float()</code>, <code>.int()</code>, <code>.str()</code>, <code>.bool()</code>, <code>.base()</code></li>
+<li><strong>String Manipulation</strong>: <code>.left()</code>, <code>.right()</code>, <code>.mid()</code>, <code>.trim()</code>, <code>.replace()</code>, <code>.interpolate()</code></li>
+<li><strong>Array Operations</strong>: <code>.split()</code>, <code>.join()</code>, <code>.sort()</code>, <code>.unique()</code>, <code>.group()</code></li>
+<li><strong>Functional Programming</strong>: <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>, <code>.range()</code></li>
+<li><strong>Search &amp; Pattern</strong>: <code>.grep()</code>, <code>.match()</code>, <code>.findall()</code></li>
+<li><strong>Bit Manipulation</strong>: <code>.setbit()</code>, <code>.clearbit()</code>, <code>.genbits()</code></li>
+<li><strong>Cryptography</strong>: <code>.encode()</code>, <code>.decode()</code>, <code>.sign()</code>, <code>.verify()</code>, <code>.secret()</code></li>
+<li><strong>Utilities</strong>: <code>.echo()</code>, <code>.iferr()</code>, <code>.exec()</code>, <code>.getname()</code></li>
+</ul>
+<h3 id="quick-examples">Quick Examples</h3>
+<div class="highlight"><pre><span></span><code>/* Type conversion with precision */
+result = &quot;3.14159&quot;.float(4, 0).base(16);
+
+/* String processing pipeline */
+text = &quot;  Hello, World!  &quot;;
+processed = text.trim().upper().replace(&quot;WORLD&quot;, &quot;GRAPA&quot;);
+
+/* Functional array processing */
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+result = data
+    .filter(op(x) { x % 2 == 0; })
+    .map(op(x) { x * x; })
+    .reduce(op(acc, x) { acc + x; }, 0);
+</code></pre></div>
+<p>For complete documentation of all <code>$OBJ</code> methods with their parameters and examples, see <strong><a href="../type/obj_methods/">$OBJ Methods Reference</a></strong>.</p>
 <p><a href="#grapa-api-reference">Back to Top</a></p>
 
 

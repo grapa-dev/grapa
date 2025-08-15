@@ -931,6 +931,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../type/obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../type/op/" class="md-nav__link">
         
   
@@ -2303,6 +2326,15 @@
   <a href="#loop-examples" class="md-nav__link">
     <span class="md-ellipsis">
       Loop Examples
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#number-method-calls-and-dot-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Number Method Calls and Dot Notation
     </span>
   </a>
   
@@ -4444,6 +4476,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#number-method-calls-and-dot-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Number Method Calls and Dot Notation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#sequence-generation-with-range" class="md-nav__link">
     <span class="md-ellipsis">
       Sequence Generation with .range()
@@ -5483,6 +5524,23 @@ while (i &lt; array.len()) {
     i = i + 1;
 }
 </code></pre></div>
+<h3 id="number-method-calls-and-dot-notation">Number Method Calls and Dot Notation</h3>
+<p><strong>⚠️ CRITICAL:</strong> When calling methods on numbers using dot notation, you must enclose the number in parentheses to prevent the lexer from treating the dot as part of a float literal:</p>
+<div class="highlight"><pre><span></span><code>/* ✅ Correct - Use parentheses for number method calls */
+(20).random();    /* Works: 20 is treated as integer, dot is available for method */
+(3.14).floor();   /* Works: 3.14 is treated as float, dot is available for method */
+(42).str();       /* Works: 42 is treated as integer, dot is available for method */
+
+/* ❌ Incorrect - Lexer consumes the dot as part of float literal */
+20.random();      /* Fails: Lexer sees &quot;20.&quot; as float, no dot token for method */
+3.14.floor();     /* Fails: Lexer sees &quot;3.14.&quot; as float, no dot token for method */
+42.str();         /* Fails: Lexer sees &quot;42.&quot; as float, no dot token for method */
+</code></pre></div>
+<p><strong>Why this happens:</strong>
+- The lexer processes <code>20.</code> as a float literal and consumes the dot
+- No dot token reaches the parser, so method calls fail
+- Parentheses force the lexer to treat the number as a complete token first
+- Then the dot becomes available for method calls</p>
 <h3 id="sequence-generation-with-range">Sequence Generation with .range()</h3>
 <p>Use <code>.range()</code> to generate sequences of numbers:</p>
 <div class="highlight"><pre><span></span><code>/* Generate sequence 0 to 9 */
@@ -5501,6 +5559,7 @@ squares = (1000000).range(0,1).map(op(x) { x * x; }, 8);  /* Limit to 8 threads 
 <li>Use <code>.range()</code> instead of manual while loops for sequence generation</li>
 <li>Combine with <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code> for functional iteration</li>
 <li>Specify thread count for large arrays to avoid too many threads</li>
+<li><strong>Remember:</strong> Always use parentheses for number method calls: <code>(10).range()</code> not <code>10.range()</code></li>
 </ul>
 <h2 id="functional-programming-methods">Functional Programming Methods</h2>
 <p>Grapa provides powerful functional programming methods for array and list processing:</p>

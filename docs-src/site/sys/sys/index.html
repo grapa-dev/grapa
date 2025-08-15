@@ -931,6 +931,29 @@
   
   
     <li class="md-nav__item">
+      <a href="../../type/obj_methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Object Methods
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../type/op/" class="md-nav__link">
         
   
@@ -1739,22 +1762,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#getenvtype" class="md-nav__link">
+  <a href="#getenvname" class="md-nav__link">
     <span class="md-ellipsis">
-      getenv(type)
+      getenv(name)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#putenvtype-value" class="md-nav__link">
+  <a href="#putenvname-value" class="md-nav__link">
     <span class="md-ellipsis">
-      putenv(type, value)
+      putenv(name, value)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="putenv(type, value)">
+    <nav class="md-nav" aria-label="putenv(name, value)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1808,9 +1831,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sleepms" class="md-nav__link">
+  <a href="#sleepmilliseconds" class="md-nav__link">
     <span class="md-ellipsis">
-      sleep(ms)
+      sleep(milliseconds)
     </span>
   </a>
   
@@ -3673,22 +3696,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#getenvtype" class="md-nav__link">
+  <a href="#getenvname" class="md-nav__link">
     <span class="md-ellipsis">
-      getenv(type)
+      getenv(name)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#putenvtype-value" class="md-nav__link">
+  <a href="#putenvname-value" class="md-nav__link">
     <span class="md-ellipsis">
-      putenv(type, value)
+      putenv(name, value)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="putenv(type, value)">
+    <nav class="md-nav" aria-label="putenv(name, value)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3742,9 +3765,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sleepms" class="md-nav__link">
+  <a href="#sleepmilliseconds" class="md-nav__link">
     <span class="md-ellipsis">
-      sleep(ms)
+      sleep(milliseconds)
     </span>
   </a>
   
@@ -3893,10 +3916,10 @@ $ARRAY
 <p><strong>Parameters:</strong>
 - <code>object</code> - Any Grapa object</p>
 <p><strong>Returns:</strong> <code>$STR</code> - Detailed object description (when implemented)</p>
-<h3 id="getenvtype">getenv(type)</h3>
+<h3 id="getenvname">getenv(name)</h3>
 <p>Gets environment variables and system information.</p>
 <p><strong>Parameters:</strong>
-- <code>type</code> - Environment variable name or system constant</p>
+- <code>name</code> - Environment variable name or system constant</p>
 <p><strong>Returns:</strong> Value of the environment variable or system information</p>
 <p><strong>Supported Environment Types:</strong></p>
 <table>
@@ -3994,10 +4017,10 @@ $sys().getenv($ARGCIN);
 - <strong>Operating Systems:</strong> <code>__APPLE__</code>, <code>_WIN32</code>, <code>_WIN64</code>, <code>__linux__</code>, <code>__ANDROID__</code>
 - <strong>Compilers:</strong> <code>_MSC_VER</code>, <code>_MSC_FULL_VER</code>, <code>__GNUC__</code>, <code>__GNUC_MINOR__</code>, <code>__clang__</code>, <code>__MINGW32__</code>, <code>__MINGW64__</code>
 - <strong>Architectures:</strong> <code>__i386__</code>, <code>__x86_64__</code>, <code>__arm__</code>, <code>__ARM_ARCH_5T__</code>, <code>__ARM_ARCH_7A__</code>, <code>__powerpc64__</code>, <code>__aarch64__</code></p>
-<h3 id="putenvtype-value">putenv(type, value)</h3>
+<h3 id="putenvname-value">putenv(name, value)</h3>
 <p>Sets environment variables and system information.</p>
 <p><strong>Parameters:</strong>
-- <code>type</code> - Environment variable name or system constant
+- <code>name</code> - Environment variable name or system constant
 - <code>value</code> - New value to set</p>
 <p><strong>Returns:</strong> <code>$BOOL</code> - <code>true</code> if successful, <code>false</code> if failed</p>
 <p><strong>Example:</strong>
@@ -4114,10 +4137,10 @@ result = $sys().eval(compiled, {&quot;a&quot;: 10, &quot;b&quot;: 20});
 <div class="highlight"><pre><span></span><code>/* Correct method for .grz files */
 $file().get(&quot;file.grz&quot;).decode(&quot;ZIP-GRAPA&quot;)[&quot;op&quot;]();
 </code></pre></div></p>
-<h3 id="sleepms">sleep(ms)</h3>
+<h3 id="sleepmilliseconds">sleep(milliseconds)</h3>
 <p>Pauses execution for the specified number of milliseconds.</p>
 <p><strong>Parameters:</strong>
-- <code>ms</code> - Number of milliseconds to sleep (must be <code>$INT</code>)</p>
+- <code>milliseconds</code> - Number of milliseconds to sleep (must be <code>$INT</code>)</p>
 <p><strong>Returns:</strong> <code>null</code></p>
 <p><strong>Purpose:</strong> Useful for timing, rate limiting, and synchronization in multi-threaded applications.</p>
 <p><strong>Example:</strong>
