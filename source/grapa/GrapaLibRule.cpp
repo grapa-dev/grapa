@@ -18937,13 +18937,79 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
     GrapaInt current = startInt;
     actualVar->mValue.FROM(current.getBytes());
     
+    // Check for step 0 - this would cause infinite loop
+    if (stepInt == 0)
+    {
+        // Clean up start/end/step results
+        if (startResult) { startResult->CLEAR(); delete startResult; }
+        if (endResult) { endResult->CLEAR(); delete endResult; }
+        if (stepResult) { stepResult->CLEAR(); delete stepResult; }
+        
+        // Clean up temporary namespace
+        pNameSpace->GetNameQueue()->PopEvent(vLocals);
+        if (vLocals)
+        {
+            vLocals->CLEAR();
+            delete vLocals;
+        }
+        
+        if (pNameSpace->GetNameQueue()->PopEvent(operation))
+        {
+            operation->CLEAR();
+            delete operation;
+            operation = NULL;
+        }
+        
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // Check if we should execute the loop at all
+    // If step direction doesn't match start/end direction, don't execute
+    bool shouldExecute = false;
+    if (stepInt > 0 && startInt <= endInt)
+    {
+        shouldExecute = true;
+    }
+    else if (stepInt < 0 && startInt >= endInt)
+    {
+        shouldExecute = true;
+    }
+    
+    if (!shouldExecute)
+    {
+        // Clean up start/end/step results
+        if (startResult) { startResult->CLEAR(); delete startResult; }
+        if (endResult) { endResult->CLEAR(); delete endResult; }
+        if (stepResult) { stepResult->CLEAR(); delete stepResult; }
+        
+        // Clean up temporary namespace
+        pNameSpace->GetNameQueue()->PopEvent(vLocals);
+        if (vLocals)
+        {
+            vLocals->CLEAR();
+            delete vLocals;
+        }
+        
+        if (pNameSpace->GetNameQueue()->PopEvent(operation))
+        {
+            operation->CLEAR();
+            delete operation;
+            operation = NULL;
+        }
+        
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
     // Loop from start to end with step
     while (true)
     {
+        // Check if we've reached or passed the end value
         if ((stepInt > 0 && current > endInt) || (stepInt < 0 && current < endInt))
         {
             break;
         }
+        
+
         
         // Execute the loop body
         if (GrapaRuleEvent* bodyResult = vScriptExec->ProcessPlan(pNameSpace, bodyEvent))

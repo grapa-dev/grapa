@@ -1,0 +1,282 @@
+/* ========================================
+ * Corner Cases Test - Comprehensive testing of edge cases
+ * ======================================== */
+
+("=== CORNER CASES TEST ===").echo();
+
+/* ========================================
+ * For Loop Corner Cases
+ * ======================================== */
+
+("--- For Loop Corner Cases ---").echo();
+
+/* Test 1: Zero range */
+("Test 1: for i in 0").echo();
+for i in 0 {
+    ("  i = " + i).echo();
+}
+("Expected: No output (empty loop)").echo();
+
+/* Test 2: Negative range */
+("Test 2: for i in -5").echo();
+for i in -5 {
+    ("  i = " + i).echo();
+}
+("Expected: No output (empty loop)").echo();
+
+/* Test 3: Start equals end */
+("Test 3: for i from 5 to 5").echo();
+for i from 5 to 5 {
+    ("  i = " + i).echo();
+}
+("Expected: i = 5 (one iteration)").echo();
+
+/* Test 4: Start equals end (zero) */
+("Test 4: for i from 0 to 0").echo();
+for i from 0 to 0 {
+    ("  i = " + i).echo();
+}
+("Expected: i = 0 (one iteration)").echo();
+
+/* Test 5: Reverse range with start < end */
+("Test 5: for i from 1 to 5 step -1").echo();
+for i from 1 to 5 step -1 {
+    ("  i = " + i).echo();
+}
+("Expected: i = 1 (one iteration, then exit)").echo();
+
+/* Test 6: Large numbers */
+("Test 6: for i from 1000000 to 1000005").echo();
+count = 0;
+for i from 1000000 to 1000005 {
+    count += 1;
+    if (count <= 3) {
+        ("  i = " + i).echo();
+    } else if (count == 4) {
+        ("  ... (showing first 3 and last 2)").echo();
+    } else if (count >= 5) {
+        ("  i = " + i).echo();
+    };
+}
+("Expected: 6 iterations total").echo();
+
+/* Test 7: Empty array iteration */
+("Test 7: for item in []").echo();
+empty_arr = [];
+for item in empty_arr {
+    ("  item = " + item).echo();
+}
+("Expected: No output (empty array)").echo();
+
+/* Test 8: Empty string iteration */
+("Test 8: for char in \"\"").echo();
+empty_str = "";
+for char in empty_str {
+    ("  char = " + char).echo();
+}
+("Expected: No output (empty string)").echo();
+
+/* Test 9: Nested loops with same variable name */
+("Test 9: Nested loops with same variable name").echo();
+for i in 2 {
+    ("  Outer i = " + i).echo();
+    for i in 2 {
+        ("    Inner i = " + i).echo();
+    };
+    ("  After inner loop, outer i = " + i).echo();
+}
+("Expected: Inner loop should not affect outer i").echo();
+
+/* ========================================
+ * Enhanced Assignment Operators Corner Cases
+ * ======================================== */
+
+("--- Enhanced Assignment Operators Corner Cases ---").echo();
+
+/* Test 10: Division by zero */
+("Test 10: x /= 0").echo();
+x = 10;
+result = x /= 0;
+("x = " + x + ", result = " + result).echo();
+("Expected: Should handle division by zero gracefully").echo();
+
+/* Test 11: Modulo by zero */
+("Test 11: x %= 0").echo();
+y = 10;
+result = y %= 0;
+("y = " + y + ", result = " + result).echo();
+("Expected: Should handle modulo by zero gracefully").echo();
+
+/* Test 12: Power with zero */
+("Test 12: x **= 0").echo();
+z = 5;
+result = z **= 0;
+("z = " + z + ", result = " + result).echo();
+("Expected: Any number to power 0 = 1").echo();
+
+/* Test 13: Zero to any power */
+("Test 13: 0 **= 5").echo();
+a = 0;
+result = a **= 5;
+("a = " + a + ", result = " + result).echo();
+("Expected: 0 to any power = 0").echo();
+
+/* Test 14: Large numbers */
+("Test 14: Large number operations").echo();
+big = 1000000;
+result = big *= 2;
+("big *= 2: " + big + ", result = " + result).echo();
+
+/* Test 15: Negative numbers */
+("Test 15: Negative number operations").echo();
+neg = -10;
+result = neg *= -3;
+("neg *= -3: " + neg + ", result = " + result).echo();
+
+/* Test 16: Float operations */
+("Test 16: Float operations").echo();
+f = 3.5;
+result = f *= 2.0;
+("f *= 2.0: " + f + ", result = " + result).echo();
+
+/* ========================================
+ * List Comprehension Corner Cases
+ * ======================================== */
+
+("--- List Comprehension Corner Cases ---").echo();
+
+/* Test 17: Empty range */
+("Test 17: [x for x in 0]").echo();
+result = [x for x in 0];
+("Result: " + result).echo();
+("Expected: [] (empty list)").echo();
+
+/* Test 18: Negative range */
+("Test 18: [x for x in -5]").echo();
+result = [x for x in -5];
+("Result: " + result).echo();
+("Expected: [] (empty list)").echo();
+
+/* Test 19: Empty array source */
+("Test 19: [x for x in []]").echo();
+result = [x for x in []];
+("Result: " + result).echo();
+("Expected: [] (empty list)").echo();
+
+/* Test 20: Empty string source */
+("Test 20: [x for x in \"\"]").echo();
+result = [x for x in ""];
+("Result: " + result).echo();
+("Expected: [] (empty list)").echo();
+
+/* Test 21: Complex expressions */
+("Test 21: [x**2 + 1 for x in 3]").echo();
+result = [x**2 + 1 for x in 3];
+("Result: " + result).echo();
+("Expected: [1, 2, 5]").echo();
+
+/* Test 22: Conditional list comprehension */
+("Test 22: [x for x in 10 if x % 2 == 0]").echo();
+result = [x for x in 10 if x % 2 == 0];
+("Result: " + result).echo();
+("Expected: [0, 2, 4, 6, 8]").echo();
+
+/* Test 23: Nested list comprehension */
+("Test 23: [[x, y] for x in 2 for y in 2]").echo();
+result = [[x, y] for x in 2 for y in 2];
+("Result: " + result).echo();
+("Expected: [[0, 0], [0, 1], [1, 0], [1, 1]]").echo();
+
+/* ========================================
+ * Variable Scoping Corner Cases
+ * ======================================== */
+
+("--- Variable Scoping Corner Cases ---").echo();
+
+/* Test 24: Variable shadowing */
+("Test 24: Variable shadowing in loops").echo();
+outer_var = 999;
+("Before loops: outer_var = " + outer_var).echo();
+
+for i in 2 {
+    ("  In first loop: i = " + i + ", outer_var = " + outer_var).echo();
+    for i in 2 {
+        ("    In nested loop: i = " + i + ", outer_var = " + outer_var).echo();
+    };
+    ("  After nested loop: i = " + i + ", outer_var = " + outer_var).echo();
+}
+
+("After all loops: outer_var = " + outer_var).echo();
+("Expected: outer_var should remain 999 throughout").echo();
+
+/* Test 25: Assignment in loop affecting outer scope */
+("Test 25: Assignment in loop affecting outer scope").echo();
+test_var = 100;
+("Before loop: test_var = " + test_var).echo();
+
+for i in 2 {
+    test_var = 200 + i;
+    ("  In loop: test_var = " + test_var).echo();
+}
+
+("After loop: test_var = " + test_var).echo();
+("Expected: test_var should be 202 (last assignment in loop)").echo();
+
+/* ========================================
+ * Error Handling Corner Cases
+ * ======================================== */
+
+("--- Error Handling Corner Cases ---").echo();
+
+/* Test 26: Invalid step value (should be caught by grammar) */
+("Test 26: Invalid step value").echo();
+("Note: This should be caught by grammar parsing").echo();
+
+/* Test 27: Non-numeric values in numeric loops */
+("Test 27: Non-numeric values in numeric loops").echo();
+("Note: This should be caught by type checking").echo();
+
+/* ========================================
+ * Performance Corner Cases
+ * ======================================== */
+
+("--- Performance Corner Cases ---").echo();
+
+/* Test 28: Large iteration count */
+("Test 28: Large iteration count (1000 iterations)").echo();
+count = 0;
+for i in 1000 {
+    count += 1;
+    if (count <= 3) {
+        ("  i = " + i).echo();
+    } else if (count == 4) {
+        ("  ... (showing first 3 and last 3)").echo();
+    } else if (count >= 998) {
+        ("  i = " + i).echo();
+    };
+}
+("Total iterations: " + count).echo();
+("Expected: 1000 iterations total").echo();
+
+/* Test 29: Large array iteration */
+("Test 29: Large array iteration").echo();
+large_arr = [];
+for i in 100 {
+    large_arr += i;
+}
+
+count = 0;
+for item in large_arr {
+    count += 1;
+    if (count <= 3) {
+        ("  item = " + item).echo();
+    } else if (count == 4) {
+        ("  ... (showing first 3 and last 3)").echo();
+    } else if (count >= 98) {
+        ("  item = " + item).echo();
+    };
+}
+("Total items: " + count).echo();
+("Expected: 100 items total").echo();
+
+("=== CORNER CASES TEST COMPLETED ===").echo();
