@@ -2369,6 +2369,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#list-comprehension" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Comprehension
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#parallel-processing" class="md-nav__link">
     <span class="md-ellipsis">
       Parallel Processing
@@ -4495,6 +4504,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#list-comprehension" class="md-nav__link">
+    <span class="md-ellipsis">
+      List Comprehension
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#parallel-processing" class="md-nav__link">
     <span class="md-ellipsis">
       Parallel Processing
@@ -5544,6 +5562,33 @@ result = (10).range(0,1)
     .map(op(x) { x * x; })              /* [0, 4, 16, 36, 64] */
     .reduce(op(acc, x) { acc + x; }, 0); /* 120 */
 </code></pre></div>
+<h3 id="list-comprehension">List Comprehension</h3>
+<p>Grapa supports native list comprehension for creating arrays from expressions evaluated over iterables:</p>
+<div class="highlight"><pre><span></span><code>/* Basic list comprehension */
+[x for x in 3]           /* [0, 1, 2] */
+
+/* Complex expressions */
+[x*2 for x in 3]         /* [0, 2, 4] */
+[x+1 for x in 5]         /* [1, 2, 3, 4, 5] */
+
+/* Conditional filtering */
+[x for x in 5 if x &gt; 1]  /* [2, 3, 4] */
+[x for x in 10 if x % 2 == 0]  /* [0, 2, 4, 6, 8] */
+
+/* Collection iteration */
+arr = [10, 20, 30];
+[x*2 for x in arr]       /* [20, 40, 60] */
+
+/* String iteration */
+[x for x in &quot;abc&quot;]       /* [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;] */
+[x.upper() for x in &quot;abc&quot;]  /* [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;] */
+</code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong>Numeric ranges</strong>: <code>[x for x in 5]</code> iterates from 0 to 4
+- <strong>Collections</strong>: Works with arrays, lists, and strings
+- <strong>Complex expressions</strong>: Any valid Grapa expression can be used
+- <strong>Conditional filtering</strong>: Optional <code>if</code> clause for filtering
+- <strong>Variable scoping</strong>: Loop variables don't affect outer scope</p>
 <h3 id="parallel-processing">Parallel Processing</h3>
 <p>Functional methods support parallel processing for large datasets:</p>
 <div class="highlight"><pre><span></span><code>/* Large dataset processing */

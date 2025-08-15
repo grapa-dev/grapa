@@ -710,50 +710,8 @@
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#etl-and-data-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      ETL and Data Processing 📊
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#when-to-choose-grapa" class="md-nav__link">
-    <span class="md-ellipsis">
-      When to Choose Grapa
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="When to Choose Grapa">
+    <nav class="md-nav" aria-label="Enhanced Assignment Operators ⚡">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#grapa-is-ideal-for" class="md-nav__link">
-    <span class="md-ellipsis">
-      ✅ Grapa is Ideal For:
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="✅ Grapa is Ideal For:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-dynamic-language-creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Dynamic Language Creation
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#2-etl-and-data-processing-pipelines" class="md-nav__link">
@@ -4133,50 +4091,8 @@
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#etl-and-data-processing" class="md-nav__link">
-    <span class="md-ellipsis">
-      ETL and Data Processing 📊
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#when-to-choose-grapa" class="md-nav__link">
-    <span class="md-ellipsis">
-      When to Choose Grapa
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="When to Choose Grapa">
+    <nav class="md-nav" aria-label="Enhanced Assignment Operators ⚡">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#grapa-is-ideal-for" class="md-nav__link">
-    <span class="md-ellipsis">
-      ✅ Grapa is Ideal For:
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="✅ Grapa is Ideal For:">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#1-dynamic-language-creation" class="md-nav__link">
-    <span class="md-ellipsis">
-      1. Dynamic Language Creation
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#2-etl-and-data-processing-pipelines" class="md-nav__link">
@@ -4846,18 +4762,28 @@ vec += #[4, 5, 6]#;   /* Vector addition */
 /* XML operations */
 xml += &lt;newitem&gt;content&lt;/newitem&gt;;  /* Add XML element */
 xml ++= &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;  /* Concatenate XML */
-</code></pre></div></p>
-<h3 id="etl-and-data-processing"><strong>ETL and Data Processing</strong> 📊</h3>
-<p>Grapa excels at Extract, Transform, Load operations:
-- <strong>Built-in database integration</strong> with <code>$file().table()</code> (ROW, COL, GROUP storage types)
-- <strong>Binary data processing</strong> with advanced grep capabilities
-- <strong>Unicode support</strong> for international data
-- <strong>Execution trees</strong> for efficient data transformation
-- <strong>Parallel processing</strong> with built-in map/reduce/filter operations</p>
-<h2 id="when-to-choose-grapa">When to Choose Grapa</h2>
-<h3 id="grapa-is-ideal-for">✅ <strong>Grapa is Ideal For:</strong></h3>
-<h4 id="1-dynamic-language-creation"><strong>1. Dynamic Language Creation</strong></h4>
-<div class="highlight"><pre><span></span><code>/* Define custom syntax at runtime */
+
+/* List comprehension */
+squares = [x*x for x in 5];  /* [0, 1, 4, 9, 16] */
+evens = [x for x in 10 if x % 2 == 0];  /* [0, 2, 4, 6, 8] */
+doubled = [x*2 for x in [1, 2, 3]];  /* [2, 4, 6] */
+chars = [x.upper() for x in &quot;abc&quot;];  /* [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;] */
+
+### **ETL and Data Processing** 📊
+Grapa excels at Extract, Transform, Load operations:
+- **Built-in database integration** with `$file().table()` (ROW, COL, GROUP storage types)
+- **Binary data processing** with advanced grep capabilities
+- **Unicode support** for international data
+- **Execution trees** for efficient data transformation
+- **Parallel processing** with built-in map/reduce/filter operations
+
+## When to Choose Grapa
+
+### ✅ **Grapa is Ideal For:**
+
+#### **1. Dynamic Language Creation**
+```grapa
+/* Define custom syntax at runtime */
 @global[&quot;$custom_command&quot;] = rule for &#39;(&#39; &lt;$comp&gt; &#39;)&#39; &lt;$command&gt; {
     op(init:$3, body:$6){ /* Implementation */ }
 };
@@ -4866,7 +4792,7 @@ xml ++= &lt;root&gt;&lt;item&gt;1&lt;/item&gt;&lt;/root&gt;;  /* Concatenate XML
 for (i = 0; i &lt; 10; i++) {
     echo &quot;Count: &quot; + i;
 }
-</code></pre></div>
+</code></pre></div></p>
 <p><strong>Use Cases:</strong>
 - <strong>Configuration languages</strong> that need to evolve
 - <strong>Domain-specific languages</strong> for specialized domains
@@ -5175,7 +5101,7 @@ result = mixed_data.json.users.map(op(user) {
 </ul>
 <h3 id="phase-1-critical-features-weeks-1-4"><strong>Phase 1: Critical Features (Weeks 1-4)</strong></h3>
 <ul>
-<li>📋 <strong>List Comprehension</strong> - C++ implementation based on <code>custom_function</code> proof of concept</li>
+<li>✅ <strong>COMPLETED</strong> - All Phase 1 features implemented and moved to Current State (2025)</li>
 </ul>
 <h3 id="phase-2-developer-experience-weeks-5-8"><strong>Phase 2: Developer Experience (Weeks 5-8)</strong></h3>
 <ul>

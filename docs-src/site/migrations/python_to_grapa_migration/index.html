@@ -4260,7 +4260,7 @@
 </tr>
 <tr>
 <td><code>(x*2 for x in arr)</code></td>
-<td><code>arr.map(op(x) { x * 2; })</code> (Grapa is eager by default)</td>
+<td><code>arr.map(op(x) { x * 2; })</code> (Grapa is eager by default)<br><code>[x*2 for x in arr]</code> (list comprehension)</td>
 </tr>
 <tr>
 <td><code>with open() as f:</code></td>
@@ -4420,6 +4420,8 @@ value = obj.&quot;key&quot;;
 </code></pre></div>
 <strong>Grapa:</strong>
 <div class="highlight"><pre><span></span><code>squares = (10).range(0,1).map(op(x) { x * x; });
+/* Or using list comprehension */
+squares = [x*x for x in 10];
 </code></pre></div></p>
 <p><strong>Python:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Even numbers 0..9</span>
@@ -4427,6 +4429,8 @@ value = obj.&quot;key&quot;;
 </code></pre></div>
 <strong>Grapa:</strong>
 <div class="highlight"><pre><span></span><code>evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
+/* Or using list comprehension */
+evens = [x for x in 10 if x % 2 == 0];
 </code></pre></div></p>
 <p><strong>Python:</strong>
 <div class="highlight"><pre><span></span><code><span class="c1"># Error fallback</span>
