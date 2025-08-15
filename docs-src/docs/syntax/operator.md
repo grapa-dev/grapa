@@ -42,7 +42,7 @@ The Type Support Matrix now includes several additional data types that extend G
 ## Operator Categories
 
 ### 1. Arithmetic Operators
-Mathematical operations with smart type promotion and matrix support.
+Pure mathematical operations with smart type promotion and matrix support.
 
 ### 2. Comparison Operators
 Equality and relational comparisons with unified type handling.
@@ -57,7 +57,7 @@ Bit-level operations with strict integer handling.
 Variable assignment and compound assignment operations.
 
 ### 6. Special Operators
-Extend, remove, dot operations, and ternary conditional expressions.
+Conditional expressions, extension operations, and dot product.
 
 ## Type Support Matrix
 
@@ -67,12 +67,6 @@ Extend, remove, dot operations, and ternary conditional expressions.
 |:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
 | `+` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | Smart type promotion |
 | `-` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | String difference calculation |
-| `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | Append assignment |
-| `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Remove by index/key |
-| `*=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Multiplication assignment |
-| `/=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Division assignment |
-| `%=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo assignment |
-| `**=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Power assignment |
 | `*` | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Matrix multiplication support |
 | `/` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Smart type promotion |
 | `%` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo with modpow/modinv |
@@ -115,14 +109,19 @@ Extend, remove, dot operations, and ternary conditional expressions.
 | Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
 |:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
 | `=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Perfect assignment |
-| `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
+| `+=` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | Append assignment |
+| `-=` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Remove by index/key |
+| `*=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Multiplication assignment |
+| `/=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Division assignment |
+| `%=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Modulo assignment |
+| `**=` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Power assignment |
 
 ### Special Operators
 
 | Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
 |:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
-| `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
-| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list removal |
+| `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Conditional/ternary operator |
+| `++=` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
 | `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Dot product |
 
 ## Arithmetic Operators
@@ -504,9 +503,105 @@ obj.property = "value";    /* Object property assignment */
 func = op(x){x*2};        /* Function assignment */
 ```
 
+### Compound Assignment Operators
+
+#### Add Assignment (`+=`)
+
+Performs append assignment with comprehensive support.
+
+```grapa
+/* Numeric addition */
+a = 5;
+a += 3;                    /* 8 */
+
+/* String concatenation */
+s = "hello";
+s += "world";              /* "helloworld" */
+
+/* Array append */
+arr = [1,2,3];
+arr += 4;                  /* [1,2,3,4] */
+
+/* List append */
+list = {a:1, b:2};
+list += {c:3};             /* {a:1, b:2, c:3} */
+```
+
+#### Subtract Assignment (`-=`)
+
+Performs remove assignment with limited support.
+
+```grapa
+/* Numeric subtraction */
+a = 10;
+a -= 3;                    /* 7 */
+
+/* Array remove by index */
+arr = [1,2,3,4,5];
+arr -= 2;                  /* [1,2,4,5] (removes element at index 2) */
+```
+
+#### Multiply Assignment (`*=`)
+
+Performs multiplication assignment with numeric type support.
+
+```grapa
+/* Integer multiplication */
+a = 10;
+a *= 3;                    /* 30 */
+
+/* Float multiplication */
+b = 5.5;
+b *= 2;                    /* 11.0 */
+```
+
+#### Divide Assignment (`/=`)
+
+Performs division assignment with smart type promotion.
+
+```grapa
+/* Integer division */
+a = 10;
+a /= 2;                    /* 5.0 (promoted to float) */
+
+/* Float division */
+b = 10.0;
+b /= 3;                    /* 3.333... */
+```
+
+#### Modulo Assignment (`%=`)
+
+Performs modulo assignment with numeric type support.
+
+```grapa
+/* Integer modulo */
+a = 10;
+a %= 3;                    /* 1 */
+
+/* Float modulo */
+b = 10.5;
+b %= 3;                    /* 1.5 */
+```
+
+#### Power Assignment (`**=`)
+
+Performs exponentiation assignment with smart type promotion.
+
+```grapa
+/* Integer power */
+a = 2;
+a **= 3;                   /* 8 */
+
+/* Float power */
+b = 2.5;
+b **= 2;                   /* 6.25 */
+```
+
+## Special Operators
+
 ### Ternary Conditional (`? :`)
 
-Performs conditional assignment with implementation quirks.
+Performs conditional expressions with implementation quirks.
 
 ```grapa
 /* Basic ternary */
@@ -517,11 +612,14 @@ value = x > 0 ? "positive" : x < 0 ? "negative" : "zero";
 
 /* Array conditional */
 arr = condition ? [1,2,3] : [4,5,6];
+
+/* Implementation quirks */
+true ? : "yes";            /* "" (Form 1: inverted logic) */
+false ? : "yes";           /* "yes" (Form 1: inverted logic) */
+true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
 ```
 
-## Special Operators
-
-### Extend (`++`)
+### Extend (`++=`)
 
 Extends arrays and lists.
 
@@ -537,20 +635,6 @@ list ++= {c:3, d:4};      /* {a:1, b:2, c:3, d:4} */
 /* String extension */
 str = "hello";
 str ++= " world";         /* "hello world" */
-```
-
-### Remove (`--`)
-
-Removes elements from arrays and lists.
-
-```grapa
-/* Array removal */
-arr = [1,2,3,4,5];
-arr -= [2,4];             /* [1,3,5] */
-
-/* List removal */
-list = {a:1, b:2, c:3};
-list -= "b";              /* {a:1, c:3} */
 ```
 
 ### Dot Product (`.*`)
