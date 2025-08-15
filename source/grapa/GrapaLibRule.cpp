@@ -561,6 +561,16 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCreateArray(GrapaCHAR& pName) { return new GrapaLibraryRuleCreateArrayEvent(pName); }
 
+class GrapaLibraryRuleArrayCompEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleArrayCompEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+private:
+    GrapaRuleEvent* HandleListComprehension(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleQueue* pInput, bool hasCondition);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleArrayComp(GrapaCHAR& pName) { return new GrapaLibraryRuleArrayCompEvent(pName); }
+
 class GrapaLibraryRuleCreateTupleEvent : public GrapaLibraryEvent
 {
 public:
@@ -2676,7 +2686,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
         { "assigndiv", &GrapaLibraryRuleEvent::HandleAssignDiv },
         { "assignmod", &GrapaLibraryRuleEvent::HandleAssignMod },
         { "assignpow", &GrapaLibraryRuleEvent::HandleAssignPow },
-		{ "createarray", &GrapaLibraryRuleEvent::HandleCreateArray },
+        { "createarray", &GrapaLibraryRuleEvent::HandleCreateArray },
+        { "arraycomp", &GrapaLibraryRuleEvent::HandleArrayComp },
 		{ "createtuple", &GrapaLibraryRuleEvent::HandleCreateTuple },
 		{ "createlist", &GrapaLibraryRuleEvent::HandleCreateList },
 		{ "createxml", &GrapaLibraryRuleEvent::HandleCreateXml },
@@ -5600,6 +5611,292 @@ GrapaRuleEvent* GrapaLibraryRuleCreateArrayEvent::Optimize(GrapaScriptExec* vScr
 GrapaRuleEvent* GrapaLibraryRuleCreateArrayEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
 {
 	return ItemPrependRun(vScriptExec, pNameSpace, pOperation, pInput, GrapaCHAR("createarray"));
+}
+
+GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent* result = NULL;
+    
+    // List comprehension handler based on parameter count
+    switch (pInput->mCount)
+    {
+        case 3:
+            // [expression for variable in iterable]
+            // Parameters: [0]=expression, [1]=variable, [2]=iterable
+            return HandleListComprehension(vScriptExec, pNameSpace, pInput, false);
+            
+        case 4:
+            // [expression for variable in iterable if condition]
+            // Parameters: [0]=expression, [1]=variable, [2]=iterable, [3]=condition
+            return HandleListComprehension(vScriptExec, pNameSpace, pInput, true);
+            
+        default:
+            return Error(vScriptExec, pNameSpace, -1);
+    }
+}
+
+// Helper method for list comprehension
+GrapaRuleEvent* GrapaLibraryRuleArrayCompEvent::HandleListComprehension(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleQueue* pInput, bool hasCondition)
+{
+    GrapaRuleEvent* result = NULL;
+    
+    // Get variable name using GrapaLibraryParam (following ForEvent pattern)
+    GrapaLibraryParam varParam(vScriptExec, pNameSpace, pInput->Head(1));   // variable name
+    GrapaLibraryParam iterParam(vScriptExec, pNameSpace, pInput->Head(2));  // iterable
+    
+    if (!varParam.vVal || !iterParam.vVal)
+    {
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    GrapaCHAR varName = varParam.vVal->mValue;
+    
+    // Create result array
+    result = new GrapaRuleEvent(GrapaTokenType::ARRAY, 0, "", "");
+    result->vQueue = new GrapaRuleQueue();
+    
+    // Create temporary namespace for list comprehension (following EvalEvent/OpEvent pattern)
+    // This ensures loop variables don't affect the outer scope
+    GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
+    GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+    vLocals->mValue.mToken = GrapaTokenType::LIST;
+    vLocals->vQueue = new GrapaRuleQueue();
+    pNameSpace->GetNameQueue()->PushTail(vLocals);
+    GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
+    vLocals->vQueue->PushTail(actualVar);
+    
+    // Handle different iterable types (following ForEvent patterns)
+    
+    if (iterParam.vVal->mValue.mToken == GrapaTokenType::INT)
+    {
+        // Numeric range: iterate 0 to n-1 (following ForEvent pattern)
+        GrapaInt rangeInt;
+        rangeInt.FromBytes(iterParam.vVal->mValue);
+        GrapaInt current = 0;
+        
+        while (current < rangeInt)
+        {
+            
+            actualVar->mValue.FROM(current.getBytes());
+            
+            // Check condition if present (evaluate in loop like ForEvent does with body)
+            if (hasCondition)
+            {
+                GrapaRuleEvent* condResult = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(3));
+                bool conditionMet = false;
+                
+                if (condResult)
+                {
+                    GrapaRuleEvent* condVal = condResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                            condResult->vRulePointer : condResult;
+                    
+                    if (condVal && condVal->mValue.mLength && condVal->mValue.mBytes[0] && 
+                        condVal->mValue.mBytes[0] != '0' && !condVal->IsNull())
+                    {
+                        conditionMet = true;
+                    }
+                    
+                    condResult->CLEAR();
+                    delete condResult;
+                }
+                
+                if (!conditionMet)
+                {
+                    current += 1;
+                    continue;
+                }
+            }
+            
+            // Evaluate expression and add to result (evaluate in loop like ForEvent does with body)
+            GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
+            if (exprResult)
+            {
+
+                // Handle PTR tokens (dereference if needed) - following ForEvent pattern
+                GrapaRuleEvent* r1 = exprResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                   exprResult->vRulePointer : exprResult;
+
+                
+                // Debug: show the actual value
+                if (r1 && r1->mValue.mToken == GrapaTokenType::INT && r1->mValue.mLength > 0)
+                {
+                    GrapaInt val;
+                    val.FromBytes(r1->mValue);
+                }
+                
+                GrapaRuleEvent* copy = vScriptExec->CopyItem(r1);
+                result->vQueue->PushTail(copy);
+            }
+            
+            current += 1;
+        }
+    }
+    else if (iterParam.vVal->mValue.mToken == GrapaTokenType::LIST || 
+             iterParam.vVal->mValue.mToken == GrapaTokenType::ARRAY)
+    {
+        // Collection iteration (following ForEvent pattern)
+        GrapaInt length = iterParam.vVal->vQueue ? iterParam.vVal->vQueue->mCount : 0;
+        GrapaInt i = 1;
+        
+        while (i <= length)
+        {
+            // Get the current element (following ForEvent pattern)
+            GrapaRuleEvent* elementEvent = iterParam.vVal->vQueue->Head((u64)(i.LongValue() - 1));
+            if (elementEvent)
+            {
+                // Set the loop variable using PTR pattern (same as numeric ranges)
+                actualVar->mValue.FROM(elementEvent->mValue);
+
+                // Check condition if present (evaluate in loop like ForEvent does with body)
+                if (hasCondition)
+                {
+                    GrapaRuleEvent* condResult = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(3));
+                    bool conditionMet = false;
+                    
+                    if (condResult)
+                    {
+                        GrapaRuleEvent* condVal = condResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                                condResult->vRulePointer : condResult;
+                        
+                        if (condVal && condVal->mValue.mLength && condVal->mValue.mBytes[0] && 
+                            condVal->mValue.mBytes[0] != '0' && !condVal->IsNull())
+                        {
+                            conditionMet = true;
+                        }
+                        
+                        condResult->CLEAR();
+                        delete condResult;
+                    }
+                    
+                    if (!conditionMet)
+                    {
+                        i += 1;
+                        continue;
+                    }
+                }
+                
+                // Evaluate expression and add to result (evaluate in loop like ForEvent does with body)
+                GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
+                if (exprResult)
+                {
+
+                    
+                    // Handle PTR tokens (dereference if needed) - following ForEvent pattern
+                    GrapaRuleEvent* r1 = exprResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                       exprResult->vRulePointer : exprResult;
+
+                    
+                    // Debug: show the actual value
+                    if (r1 && r1->mValue.mToken == GrapaTokenType::INT && r1->mValue.mLength > 0)
+                    {
+                        GrapaInt val;
+                        val.FromBytes(r1->mValue);
+                    }
+                    
+                    GrapaRuleEvent* copy = vScriptExec->CopyItem(r1);
+                    result->vQueue->PushTail(copy);
+                    exprResult->CLEAR();
+                    delete exprResult;
+                }
+            }
+            
+            i += 1;
+        }
+    }
+    else if (iterParam.vVal->mValue.mToken == GrapaTokenType::STR)
+    {
+        // String iteration - character by character (following ForEvent pattern)
+        GrapaCHAR strValue = iterParam.vVal->mValue;
+        GrapaInt length = strValue.mLength;
+        GrapaInt i = 1;
+        
+        while (i <= length)
+        {
+            // Get the current character (following ForEvent pattern)
+            GrapaCHAR charValue;
+            charValue.FROM((char*)&strValue.mBytes[(int)(i.LongValue() - 1)], 1);
+            
+            // Set the loop variable using PTR pattern (same as numeric ranges)
+            actualVar->mValue.FROM(charValue);
+
+            // Check condition if present (evaluate in loop like ForEvent does with body)
+            if (hasCondition)
+            {
+                GrapaRuleEvent* condResult = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(3));
+                bool conditionMet = false;
+                
+                if (condResult)
+                {
+                    GrapaRuleEvent* condVal = condResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                            condResult->vRulePointer : condResult;
+                    
+                    if (condVal && condVal->mValue.mLength && condVal->mValue.mBytes[0] && 
+                        condVal->mValue.mBytes[0] != '0' && !condVal->IsNull())
+                    {
+                        conditionMet = true;
+                    }
+                    
+                    condResult->CLEAR();
+                    delete condResult;
+                }
+                
+                if (!conditionMet)
+                {
+                    i += 1;
+                    continue;
+                }
+            }
+            
+            // Evaluate expression and add to result (evaluate in loop like ForEvent does with body)
+            GrapaRuleEvent* exprResult = vScriptExec->ProcessPlan(pNameSpace, pInput->Head(0));
+            if (exprResult)
+            {
+
+                
+                // Handle PTR tokens (dereference if needed) - following ForEvent pattern
+                GrapaRuleEvent* r1 = exprResult->mValue.mToken == GrapaTokenType::PTR ? 
+                                   exprResult->vRulePointer : exprResult;
+
+                
+                // Debug: show the actual value
+                if (r1 && r1->mValue.mToken == GrapaTokenType::INT && r1->mValue.mLength > 0)
+                {
+                    GrapaInt val;
+                    val.FromBytes(r1->mValue);
+                }
+                
+                GrapaRuleEvent* copy = vScriptExec->CopyItem(r1);
+                result->vQueue->PushTail(copy);
+                exprResult->CLEAR();
+                delete exprResult;
+            }
+            
+            i += 1;
+        }
+    }
+    else
+    {
+        result->CLEAR();
+        delete result;
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // Clean up temporary namespace (following EvalEvent/OpEvent pattern)
+    pNameSpace->GetNameQueue()->PopEvent(vLocals);
+    if (vLocals)
+    {
+        vLocals->CLEAR();
+        delete vLocals;
+    }
+    
+    if (pNameSpace->GetNameQueue()->PopEvent(operation))
+    {
+        operation->CLEAR();
+        delete operation;
+        operation = NULL;
+    }
+    
+    return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleCreateTupleEvent::Optimize(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleEvent* pParam)

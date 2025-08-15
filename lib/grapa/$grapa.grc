@@ -480,6 +480,8 @@
 @global["$function"]
 	= rule '[' ']' {@<createarray,{}>}
 	| '[' <$array> ']'
+    | '[' <$comp> for $ID in <$comp> if <$comp> ']' {@<arraycomp,{$2,$4,$6,$8}>}
+    | '[' <$comp> for $ID in <$comp> ']' {@<arraycomp,{$2,$4,$6}>}
 	| '#' '[' ']' '#'  {@<vector,{}>}
 	| '#' '[' <$array> ']' '#'  {@<vector,{$3}>}
 	| '{' '}' {@<createlist,{}>}
