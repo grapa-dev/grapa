@@ -50,7 +50,7 @@ Extend, remove, dot operations, and ternary conditional expressions.
 
 ## Type Support Matrix
 
-<div style="overflow-x: auto;">
+<div style="overflow-x: auto; overflow-y: auto; max-height: 600px;">
 
 | Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | XML | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
 |:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
@@ -87,8 +87,6 @@ Extend, remove, dot operations, and ternary conditional expressions.
 | `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Implementation quirks |
 | `++` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
 | `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list removal |
-| `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Dot product |
-
 </div>
 
 ## Arithmetic Operators
