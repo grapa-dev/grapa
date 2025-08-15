@@ -1,4 +1,4 @@
-/* Simple test for for loop refactoring */
+/* Comprehensive test for for loop refactoring */
 
 ("=== Testing For-In Loops ===").echo();
 
@@ -6,21 +6,21 @@
 ("Testing for i in 3:").echo();
 for i in 3 {
     ("  i = " + i).echo();
-};
+}
 
 /* Test array iteration */
 ("Testing for item in array:").echo();
 arr = [10, 20, 30, 40];
 for item in arr {
     ("  item = " + item).echo();
-};
+}
 
 /* Test string iteration */
 ("Testing for char in string:").echo();
 text = "ABC";
 for char in text {
     ("  char = " + char).echo();
-};
+}
 
 ("=== Testing For-From Loops ===").echo();
 
@@ -28,13 +28,13 @@ for char in text {
 ("Testing for i from 1 to 5:").echo();
 for i from 1 to 5 {
     ("  i = " + i).echo();
-};
+}
 
 /* Test reverse range */
 ("Testing for i from 5 to 1 step -1:").echo();
 for i from 5 to 1 step -1 {
     ("  i = " + i).echo();
-};
+}
 
 ("=== Testing For-From-Step Loops ===").echo();
 
@@ -42,13 +42,13 @@ for i from 5 to 1 step -1 {
 ("Testing for i from 0 to 10 step 2:").echo();
 for i from 0 to 10 step 2 {
     ("  i = " + i).echo();
-};
+}
 
 /* Test step 3 */
 ("Testing for i from 1 to 10 step 3:").echo();
 for i from 1 to 10 step 3 {
     ("  i = " + i).echo();
-};
+}
 
 ("=== Testing Variable Scoping ===").echo();
 
@@ -60,8 +60,19 @@ outer_var = 999;
 for i in 2 {
     ("    Inside loop: i = " + i).echo();
     ("    Inside loop: outer_var = " + outer_var).echo();
-};
+}
 
 ("  After loop: outer_var = " + outer_var).echo();
 
-("=== All tests completed ===").echo(); 
+("=== Testing Simple Nested Loops ===").echo();
+
+/* Test simple nested loops */
+("Testing nested loops:").echo();
+for i in 2 {
+    ("  Outer loop i = " + i).echo();
+    for j in 2 {
+        ("    Inner loop j = " + j).echo();
+    }
+}
+
+("=== All tests completed ===").echo();

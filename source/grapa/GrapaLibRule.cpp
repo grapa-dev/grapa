@@ -18511,6 +18511,17 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     
     GrapaCHAR varName = varParam.vVal->mValue;
     
+    // Create temporary namespace for for loop (following ArrayCompEvent pattern)
+    GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
+    GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+    vLocals->mValue.mToken = GrapaTokenType::LIST;
+    vLocals->vQueue = new GrapaRuleQueue();
+    pNameSpace->GetNameQueue()->PushTail(vLocals);
+    
+    // Create the loop variable once (following ArrayCompEvent pattern)
+    GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
+    vLocals->vQueue->PushTail(actualVar);
+    
     // Evaluate the collection/range (it might be an expression)
     GrapaRuleEvent* collectionResult = vScriptExec->ProcessPlan(pNameSpace, collectionEvent);
     
@@ -18540,16 +18551,8 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
         
         while (current < rangeInt)
         {
-            // Set the loop variable
-            GrapaCHAR assignExpr;
-            assignExpr.Append("@");
-            assignExpr.Append(varName);
-            assignExpr.Append(" = ");
-            assignExpr.Append(current.ToString());
-            GrapaRuleEvent* assignEvent = new GrapaRuleEvent(0, GrapaCHAR(), assignExpr);
-            vScriptExec->ProcessPlan(pNameSpace, assignEvent);
-            assignEvent->CLEAR();
-            delete assignEvent;
+            // Update the loop variable value in place (following ArrayCompEvent pattern)
+            actualVar->mValue.FROM(current.getBytes());
             
             // Execute the loop body
             if (GrapaRuleEvent* bodyResult = vScriptExec->ProcessPlan(pNameSpace, bodyEvent))
@@ -18576,11 +18579,8 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
             GrapaRuleEvent* elementEvent = collectionVal->vQueue->Head((u64)(i.LongValue() - 1));
             if (elementEvent)
             {
-                // Set the loop variable to the current element
-                GrapaRuleEvent* setVarEvent = new GrapaRuleEvent(0, varName, elementEvent->mValue);
-                vScriptExec->ProcessPlan(pNameSpace, setVarEvent);
-                setVarEvent->CLEAR();
-                delete setVarEvent;
+                // Update the loop variable value in place (following ArrayCompEvent pattern)
+                actualVar->mValue.FROM(elementEvent->mValue);
                 
                 // Execute the loop body
                 if (GrapaRuleEvent* bodyResult = vScriptExec->ProcessPlan(pNameSpace, bodyEvent))
@@ -18608,11 +18608,8 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
             GrapaCHAR charValue;
             charValue.FROM((char*)&strValue.mBytes[(int)(i.LongValue() - 1)], 1);
             
-            // Set the loop variable to the current character
-            GrapaRuleEvent* setVarEvent = new GrapaRuleEvent(0, varName, charValue);
-            vScriptExec->ProcessPlan(pNameSpace, setVarEvent);
-            setVarEvent->CLEAR();
-            delete setVarEvent;
+            // Update the loop variable value in place (following ArrayCompEvent pattern)
+            actualVar->mValue.FROM(charValue);
             
             // Execute the loop body
             if (GrapaRuleEvent* bodyResult = vScriptExec->ProcessPlan(pNameSpace, bodyEvent))
@@ -18635,6 +18632,22 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForIn(GrapaScriptExec *vScriptEx
     
     collectionResult->CLEAR();
     delete collectionResult;
+    
+    // Clean up temporary namespace (following ArrayCompEvent pattern)
+    pNameSpace->GetNameQueue()->PopEvent(vLocals);
+    if (vLocals)
+    {
+        vLocals->CLEAR();
+        delete vLocals;
+    }
+    
+    if (pNameSpace->GetNameQueue()->PopEvent(operation))
+    {
+        operation->CLEAR();
+        delete operation;
+        operation = NULL;
+    }
+    
     return result;
 }
 
@@ -18671,6 +18684,18 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
     }
     
     GrapaCHAR varName = varParam.vVal->mValue;
+    
+    // Create temporary namespace for for loop (following ArrayCompEvent pattern)
+    GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
+    GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+    vLocals->mValue.mToken = GrapaTokenType::LIST;
+    vLocals->vQueue = new GrapaRuleQueue();
+    pNameSpace->GetNameQueue()->PushTail(vLocals);
+    
+    // Create the loop variable once (following ArrayCompEvent pattern)
+    GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
+    vLocals->vQueue->PushTail(actualVar);
+    
     GrapaInt current = 0;
     
     // Loop from start to end (inclusive)
@@ -18704,27 +18729,12 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
         startInt.FromBytes(startVal->mValue);
         endInt.FromBytes(endVal->mValue);
         
-        // Check if we should continue
-        if (current < startInt)
+        // Initialize current if needed
+        if (current == 0)
         {
-            // Initialize to start value using @ assignment
+            // Initialize to start value
             current = startInt;
-            GrapaCHAR assignExpr;
-            assignExpr.Append("@");
-            assignExpr.Append(varName);
-            assignExpr.Append(" = ");
-            assignExpr.Append(current.ToString());
-            GrapaRuleEvent* assignEvent = new GrapaRuleEvent(0, GrapaCHAR(), assignExpr);
-            vScriptExec->ProcessPlan(pNameSpace, assignEvent);
-            assignEvent->CLEAR();
-            delete assignEvent;
-        }
-        
-        if (current > endInt)
-        {
-            startResult->CLEAR(); delete startResult;
-            endResult->CLEAR(); delete endResult;
-            break;
+            actualVar->mValue.FROM(current.getBytes());
         }
         
         // Execute the loop body
@@ -18741,20 +18751,48 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFrom(GrapaScriptExec *vScript
             }
         }
         
-        // Increment the variable using @ assignment
-        current += 1;
-        GrapaCHAR assignExpr;
-        assignExpr.Append("@");
-        assignExpr.Append(varName);
-        assignExpr.Append(" = ");
-        assignExpr.Append(current.ToString());
-        GrapaRuleEvent* assignEvent = new GrapaRuleEvent(0, GrapaCHAR(), assignExpr);
-        vScriptExec->ProcessPlan(pNameSpace, assignEvent);
-        assignEvent->CLEAR();
-        delete assignEvent;
+        // Increment or decrement based on range direction
+        if (startInt <= endInt)
+        {
+            // Forward range: increment
+            current += 1;
+            if (current > endInt)
+            {
+                startResult->CLEAR(); delete startResult;
+                endResult->CLEAR(); delete endResult;
+                break;
+            }
+        }
+        else
+        {
+            // Reverse range: decrement
+            current -= 1;
+            if (current < endInt)
+            {
+                startResult->CLEAR(); delete startResult;
+                endResult->CLEAR(); delete endResult;
+                break;
+            }
+        }
+        actualVar->mValue.FROM(current.getBytes());
         
         startResult->CLEAR(); delete startResult;
         endResult->CLEAR(); delete endResult;
+    }
+    
+    // Clean up temporary namespace (following ArrayCompEvent pattern)
+    pNameSpace->GetNameQueue()->PopEvent(vLocals);
+    if (vLocals)
+    {
+        vLocals->CLEAR();
+        delete vLocals;
+    }
+    
+    if (pNameSpace->GetNameQueue()->PopEvent(operation))
+    {
+        operation->CLEAR();
+        delete operation;
+        operation = NULL;
     }
     
     return result;
@@ -18841,75 +18879,69 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
     }
     
     GrapaCHAR varName = varParam.vVal->mValue;
-    GrapaInt current = 0;
-    GrapaInt stepInt = 1;
+    
+    // Create temporary namespace for for loop (following ArrayCompEvent pattern)
+    GrapaRuleEvent* operation = vScriptExec->vScriptState->AddRuleOperation(pNameSpace->GetNameQueue(), "", "");
+    GrapaRuleEvent* vLocals = new GrapaRuleEvent();
+    vLocals->mValue.mToken = GrapaTokenType::LIST;
+    vLocals->vQueue = new GrapaRuleQueue();
+    pNameSpace->GetNameQueue()->PushTail(vLocals);
+    
+    // Create the loop variable once (following ArrayCompEvent pattern)
+    GrapaRuleEvent* actualVar = new GrapaRuleEvent(0, varName, GrapaCHAR());
+    vLocals->vQueue->PushTail(actualVar);
+    
+    // Evaluate start, end, and step conditions once before the loop
+    GrapaRuleEvent* startResult = vScriptExec->ProcessPlan(pNameSpace, startEvent);
+    GrapaRuleEvent* endResult = vScriptExec->ProcessPlan(pNameSpace, endEvent);
+    GrapaRuleEvent* stepResult = vScriptExec->ProcessPlan(pNameSpace, stepEvent);
+    
+    // Handle PTR tokens (dereference if needed)
+    GrapaRuleEvent* startVal = startResult ? (startResult->mValue.mToken == GrapaTokenType::PTR ? startResult->vRulePointer : startResult) : NULL;
+    GrapaRuleEvent* endVal = endResult ? (endResult->mValue.mToken == GrapaTokenType::PTR ? endResult->vRulePointer : endResult) : NULL;
+    GrapaRuleEvent* stepVal = stepResult ? (stepResult->mValue.mToken == GrapaTokenType::PTR ? stepResult->vRulePointer : stepResult) : NULL;
+    
+    if (!startVal || !endVal || !stepVal)
+    {
+        if (startResult) { startResult->CLEAR(); delete startResult; }
+        if (endResult) { endResult->CLEAR(); delete endResult; }
+        if (stepResult) { stepResult->CLEAR(); delete stepResult; }
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // Extract integer values
+    GrapaInt startInt, endInt, stepInt;
+    if (startVal->mValue.mToken != GrapaTokenType::INT || 
+        endVal->mValue.mToken != GrapaTokenType::INT ||
+        stepVal->mValue.mToken != GrapaTokenType::INT)
+    {
+        startResult->CLEAR(); delete startResult;
+        endResult->CLEAR(); delete endResult;
+        stepResult->CLEAR(); delete stepResult;
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    startInt.FromBytes(startVal->mValue);
+    endInt.FromBytes(endVal->mValue);
+    stepInt.FromBytes(stepVal->mValue);
+    
+    if (stepInt == 0)
+    {
+        startResult->CLEAR(); delete startResult;
+        endResult->CLEAR(); delete endResult;
+        stepResult->CLEAR(); delete stepResult;
+        return Error(vScriptExec, pNameSpace, -1);
+    }
+    
+    // Initialize current to start value
+    GrapaInt current = startInt;
+    actualVar->mValue.FROM(current.getBytes());
     
     // Loop from start to end with step
     while (true)
     {
-        // Evaluate start, end, and step conditions (they might be expressions)
-        GrapaRuleEvent* startResult = vScriptExec->ProcessPlan(pNameSpace, startEvent);
-        GrapaRuleEvent* endResult = vScriptExec->ProcessPlan(pNameSpace, endEvent);
-        GrapaRuleEvent* stepResult = vScriptExec->ProcessPlan(pNameSpace, stepEvent);
-        
-        // Handle PTR tokens (dereference if needed)
-        GrapaRuleEvent* startVal = startResult ? (startResult->mValue.mToken == GrapaTokenType::PTR ? startResult->vRulePointer : startResult) : NULL;
-        GrapaRuleEvent* endVal = endResult ? (endResult->mValue.mToken == GrapaTokenType::PTR ? endResult->vRulePointer : endResult) : NULL;
-        GrapaRuleEvent* stepVal = stepResult ? (stepResult->mValue.mToken == GrapaTokenType::PTR ? stepResult->vRulePointer : stepResult) : NULL;
-        
-        if (!startVal || !endVal || !stepVal)
-        {
-            if (startResult) { startResult->CLEAR(); delete startResult; }
-            if (endResult) { endResult->CLEAR(); delete endResult; }
-            if (stepResult) { stepResult->CLEAR(); delete stepResult; }
-            return Error(vScriptExec, pNameSpace, -1);
-        }
-        
-        // Extract integer values
-        GrapaInt startInt, endInt;
-        if (startVal->mValue.mToken != GrapaTokenType::INT || 
-            endVal->mValue.mToken != GrapaTokenType::INT ||
-            stepVal->mValue.mToken != GrapaTokenType::INT)
-        {
-            startResult->CLEAR(); delete startResult;
-            endResult->CLEAR(); delete endResult;
-            stepResult->CLEAR(); delete stepResult;
-            return Error(vScriptExec, pNameSpace, -1);
-        }
-        
-        startInt.FromBytes(startVal->mValue);
-        endInt.FromBytes(endVal->mValue);
-        stepInt.FromBytes(stepVal->mValue);
-        
-        if (stepInt == 0)
-        {
-            startResult->CLEAR(); delete startResult;
-            endResult->CLEAR(); delete endResult;
-            stepResult->CLEAR(); delete stepResult;
-            return Error(vScriptExec, pNameSpace, -1);
-        }
-        
-        // Check if we should continue
-        if (current < startInt)
-        {
-            // Initialize to start value using @ assignment
-            current = startInt;
-            GrapaCHAR assignExpr;
-            assignExpr.Append("@");
-            assignExpr.Append(varName);
-            assignExpr.Append(" = ");
-            assignExpr.Append(current.ToString());
-            GrapaRuleEvent* assignEvent = new GrapaRuleEvent(0, GrapaCHAR(), assignExpr);
-            vScriptExec->ProcessPlan(pNameSpace, assignEvent);
-            assignEvent->CLEAR();
-            delete assignEvent;
-        }
-        
         if ((stepInt > 0 && current > endInt) || (stepInt < 0 && current < endInt))
         {
-            startResult->CLEAR(); delete startResult;
-            endResult->CLEAR(); delete endResult;
-            stepResult->CLEAR(); delete stepResult;
             break;
         }
         
@@ -18921,28 +18953,33 @@ GrapaRuleEvent* GrapaLibraryRuleForEvent::HandleForFromStep(GrapaScriptExec *vSc
             delete bodyResult;
             if (isAbort) 
             {
-                startResult->CLEAR(); delete startResult;
-                endResult->CLEAR(); delete endResult;
-                stepResult->CLEAR(); delete stepResult;
                 break;
             }
         }
         
         // Increment by step
         current += stepInt;
-        GrapaCHAR assignExpr;
-        assignExpr.Append("@");
-        assignExpr.Append(varName);
-        assignExpr.Append(" = ");
-        assignExpr.Append(current.ToString());
-        GrapaRuleEvent* assignEvent = new GrapaRuleEvent(0, GrapaCHAR(), assignExpr);
-        vScriptExec->ProcessPlan(pNameSpace, assignEvent);
-        assignEvent->CLEAR();
-        delete assignEvent;
-        
-        startResult->CLEAR(); delete startResult;
-        endResult->CLEAR(); delete endResult;
-        stepResult->CLEAR(); delete stepResult;
+        actualVar->mValue.FROM(current.getBytes());
+    }
+    
+    // Clean up start/end/step results
+    if (startResult) { startResult->CLEAR(); delete startResult; }
+    if (endResult) { endResult->CLEAR(); delete endResult; }
+    if (stepResult) { stepResult->CLEAR(); delete stepResult; }
+    
+    // Clean up temporary namespace (following ArrayCompEvent pattern)
+    pNameSpace->GetNameQueue()->PopEvent(vLocals);
+    if (vLocals)
+    {
+        vLocals->CLEAR();
+        delete vLocals;
+    }
+    
+    if (pNameSpace->GetNameQueue()->PopEvent(operation))
+    {
+        operation->CLEAR();
+        delete operation;
+        operation = NULL;
     }
     
     return result;
