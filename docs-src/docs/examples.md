@@ -110,6 +110,12 @@ arr1.echo();
 data = [{id:1, name:"Alice"}, {id:2, name:"Bob"}, {id:3, name:"Alice"}];
 alice_users = data.filter(op(item){item.name == "Alice";});  /* Find all Alice users */
 alice_users.echo();
+
+/* List comprehension */
+squares = [x*x for x in 5];  /* [0, 1, 4, 9, 16] */
+evens = [x for x in 10 if x % 2 == 0];  /* [0, 2, 4, 6, 8] */
+doubled = [x*2 for x in [1, 2, 3]];  /* [2, 4, 6] */
+chars = [x for x in "hello"];  /* ["h", "e", "l", "l", "o"] */
 ```
 
 ### Truthy and Falsy Examples

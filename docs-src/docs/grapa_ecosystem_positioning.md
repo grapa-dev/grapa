@@ -118,7 +118,12 @@ vec += #[4, 5, 6]#;   /* Vector addition */
 /* XML operations */
 xml += <newitem>content</newitem>;  /* Add XML element */
 xml ++= <root><item>1</item></root>;  /* Concatenate XML */
-```
+
+/* List comprehension */
+squares = [x*x for x in 5];  /* [0, 1, 4, 9, 16] */
+evens = [x for x in 10 if x % 2 == 0];  /* [0, 2, 4, 6, 8] */
+doubled = [x*2 for x in [1, 2, 3]];  /* [2, 4, 6] */
+chars = [x.upper() for x in "abc"];  /* ["A", "B", "C"] */
 
 ### **ETL and Data Processing** 📊
 Grapa excels at Extract, Transform, Load operations:
@@ -348,7 +353,7 @@ result = mixed_data.json.users.map(op(user) {
 - ⚠️ **Basic developer experience** - Limited tooling
 
 ### **Phase 1: Critical Features (Weeks 1-4)**
-- 📋 **List Comprehension** - C++ implementation based on `custom_function` proof of concept
+- ✅ **COMPLETED** - All Phase 1 features implemented and moved to Current State (2025)
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
 - 📋 **Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`

@@ -78,7 +78,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `f"Hello {name}"` | `"Hello " + name` |
 | `if (x := f()) > 0:` | `x = f(); if (x > 0) { ... }` |
 | `async def f(): await g()` | Use Grapa's built-in parallelism: `data.map(op(x) { process(x); }, 8)` |
-| `(x*2 for x in arr)` | `arr.map(op(x) { x * 2; })` (Grapa is eager by default) |
+| `(x*2 for x in arr)` | `arr.map(op(x) { x * 2; })` (Grapa is eager by default)<br>`[x*2 for x in arr]` (list comprehension) |
 | `with open() as f:` | Use `$file()` methods directly: `content = $file().read("file.txt")` |
 | `@decorator` | Use function composition: `f = op() { decorator(original_func); }` |
 | `arr1 + arr2` | `arr1 += arr2` |
@@ -260,6 +260,8 @@ squares = [x*x for x in range(10)]
 **Grapa:**
 ```grapa
 squares = (10).range(0,1).map(op(x) { x * x; });
+/* Or using list comprehension */
+squares = [x*x for x in 10];
 ```
 
 **Python:**
@@ -270,6 +272,8 @@ evens = [x for x in range(10) if x % 2 == 0]
 **Grapa:**
 ```grapa
 evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
+/* Or using list comprehension */
+evens = [x for x in 10 if x % 2 == 0];
 ```
 
 **Python:**
