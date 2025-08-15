@@ -39,13 +39,19 @@ f.type();
 $file
 ```
 
-## table()
+## table([type])
 The table function creates an in-memory database. 
+
+**Parameters**:
+- `type` (optional): Database type ("DIR", "GROUP", "ROW", "COL")
 
 ```grapa
 t = f.table();
 t.type();
 $TABLE
+
+t = f.table("ROW");  /* Row-oriented storage */
+t = f.table("COL");  /* Column-oriented storage */
 ```
 
 **Database Types**: The table can be configured as either:
@@ -351,11 +357,11 @@ while (i < files.length()) {
 - Works in both file system and database contexts
 - Essential for file management, storage monitoring, and data validation
 
-## split(parts, name, path, delim, option)
+## split(count, name, path, delim, option)
 Splits a large file into multiple smaller, manageable parts for processing, storage, or transfer.
 
 **Parameters**:
-- `parts`: Number of files to split into (must be > 0)
+- `count`: Number of files to split into (must be > 0)
 - `name`: Input file name to split
 - `path`: Output directory path for the split files (created if needed)
 - `delim`: Delimiter to use for splitting (default: `"\n"`)

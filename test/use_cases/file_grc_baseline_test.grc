@@ -1,0 +1,161 @@
+/* Baseline test for $file.grc methods - all parameters */
+/* This test establishes baseline behavior before parameter name changes */
+
+("Starting $file.grc baseline test...").echo();
+
+/* Initialize file object */
+f = $file();
+
+("=== Testing table() method ===").echo();
+/* table(p) - p parameter controls database type */
+("Testing table() with default parameter:").echo();
+t1 = f.table();
+(t1.type()).echo();
+
+("Testing table() with 'DIR' parameter:").echo();
+t2 = f.table("DIR");
+(t2.type()).echo();
+
+("Testing table() with 'ROW' parameter:").echo();
+t3 = f.table("ROW");
+(t3.type()).echo();
+
+("Testing table() with 'COL' parameter:").echo();
+t4 = f.table("COL");
+(t4.type()).echo();
+
+("=== Testing cd() method ===").echo();
+/* cd(path) - path parameter for directory navigation */
+("Testing cd() with path parameter:").echo();
+f.cd("test_dir");
+(f.pwd()).echo();
+
+("Testing cd() with '..' parameter:").echo();
+f.cd("..");
+(f.pwd()).echo();
+
+("=== Testing chd() method ===").echo();
+/* chd(path) - path parameter for home directory change */
+("Testing chd() with path parameter:").echo();
+f.chd("/tmp");
+(f.pwd()).echo();
+
+("=== Testing ls() method ===").echo();
+/* ls(path, p) - path and p parameters for listing */
+("Testing ls() with path parameter:").echo();
+f.cd("/tmp");
+ls_result = f.ls(".");
+(ls_result).echo();
+
+("Testing ls() with path and p parameters:").echo();
+ls_result2 = f.ls(".", "DETAILS");
+(ls_result2).echo();
+
+("=== Testing mk() method ===").echo();
+/* mk(name, p) - name and p parameters for creation */
+("Testing mk() with name parameter:").echo();
+f.mk("test_mk_dir");
+(f.ls()).echo();
+
+("Testing mk() with name and p parameters:").echo();
+f.mk("test_mk_group", "GROUP");
+(f.ls()).echo();
+
+("=== Testing rm() method ===").echo();
+/* rm(name) - name parameter for removal */
+("Testing rm() with name parameter:").echo();
+f.rm("test_mk_dir");
+(f.ls()).echo();
+
+("=== Testing set() method ===").echo();
+/* set(name, p, d) - name, p, d parameters for setting data */
+("Testing set() with name and data parameters:").echo();
+f.set("test_file.txt", "Hello, World!");
+(f.ls()).echo();
+
+("Testing set() with name, p, and d parameters:").echo();
+f.set("test_file2.txt", "field_name", "field_value");
+(f.ls()).echo();
+
+("=== Testing get() method ===").echo();
+/* get(name, p) - name and p parameters for getting data */
+("Testing get() with name parameter:").echo();
+content = f.get("test_file.txt");
+(content).echo();
+
+("Testing get() with name and p parameters:").echo();
+content2 = f.get("test_file2.txt", "field_name");
+(content2).echo();
+
+("=== Testing info() method ===").echo();
+/* info(name, p) - name and p parameters for file info */
+("Testing info() with name parameter:").echo();
+info = f.info("test_file.txt");
+(info).echo();
+
+("Testing info() with name and p parameters:").echo();
+info2 = f.info("test_file2.txt", "DETAILS");
+(info2).echo();
+
+("=== Testing split() method ===").echo();
+/* split(parts, name, path, delim, option) - all parameters */
+("Testing split() with parts parameter:").echo();
+split_result = f.split(2);
+(split_result).echo();
+
+("Testing split() with parts and name parameters:").echo();
+split_result2 = f.split(2, "test_file.txt");
+(split_result2).echo();
+
+("Testing split() with parts, name, and path parameters:").echo();
+split_result3 = f.split(2, "test_file.txt", "split_output");
+(split_result3).echo();
+
+("Testing split() with parts, name, path, and delim parameters:").echo();
+split_result4 = f.split(2, "test_file.txt", "split_output", ",");
+(split_result4).echo();
+
+("Testing split() with all parameters:").echo();
+split_result5 = f.split(2, "test_file.txt", "split_output", ",", "start");
+(split_result5).echo();
+
+("=== Testing mkfield() method ===").echo();
+/* mkfield(o, p, d, e, f) - all parameters for field creation */
+("Testing mkfield() with name parameter:").echo();
+f.mkfield("test_field");
+(f.ls()).echo();
+
+("Testing mkfield() with name and fieldType parameters:").echo();
+f.mkfield("age_field", "INT");
+(f.ls()).echo();
+
+("Testing mkfield() with name, fieldType, and storeType parameters:").echo();
+f.mkfield("name_field", "STR", "VAR");
+(f.ls()).echo();
+
+("Testing mkfield() with name, fieldType, storeType, and storeSize parameters:").echo();
+f.mkfield("fixed_field", "INT", "FIX", 4);
+(f.ls()).echo();
+
+("Testing mkfield() with all parameters:").echo();
+f.mkfield("grow_field", "STR", "VAR", 100, 50);
+(f.ls()).echo();
+
+("=== Testing rmfield() method ===").echo();
+/* rmfield(p) - p parameter for field removal */
+("Testing rmfield() with name parameter:").echo();
+f.rmfield("test_field");
+(f.ls()).echo();
+
+("=== Testing debug() method ===").echo();
+/* debug(o, p) - o and p parameters for debugging */
+("Testing debug() with default parameters:").echo();
+debug_result = f.debug();
+(debug_result).echo();
+
+("Testing debug() with o and p parameters:").echo();
+debug_result2 = f.debug("VERBOSE", "DETAILS");
+(debug_result2).echo();
+
+("=== Test Complete ===").echo();
+("$file.grc baseline test completed!").echo();

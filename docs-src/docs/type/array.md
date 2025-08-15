@@ -8,7 +8,21 @@ References:
 - [$LIST object](list.md)
 - [$VECTOR object](vector.md)
 
-Same as $LIST, but without the entry labels.
+**`$ARRAY`** = `[]` syntax (positional, no names, indexed by position)
+
+A positional array that stores values without named keys. Elements are accessed by their position (index) rather than by name. This follows traditional C-style array terminology where arrays are indexed collections.
+
+### $ARRAY vs $LIST Comparison
+
+| Feature | $ARRAY (`[]`) | $LIST (`{}`) |
+|---------|---------------|--------------|
+| **Syntax** | `[1, 2, 3]` | `{a:1, b:2, c:3}` |
+| **Access** | `array[0]` | `list.a` or `list["a"]` |
+| **Type** | Positional | Associative |
+| **Keys** | Numeric indices | Named keys |
+| **Order** | Position-based | Key-based |
+
+**Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology.
 
 Supports an offset search if the contents of the array are $ID or $STR or $ARRAY values.
 ```
@@ -111,6 +125,30 @@ arr ++= 7, 2;                             /* Insert at position 2 */
 /* Remove elements */
 arr -= 3;                                 /* Remove element with value 3 */
 ```
+
+### Array Rotation
+
+Arrays support left and right rotation operations for reordering elements:
+
+#### Left Rotation (.lrot())
+```grapa
+arr = [1, 2, 3, 4, 5];
+
+arr.lrot();                              /* [2, 3, 4, 5, 1] */
+arr.lrot(2);                             /* [3, 4, 5, 1, 2] */
+arr.lrot(0);                             /* [1, 2, 3, 4, 5] (no change) */
+```
+
+#### Right Rotation (.rrot())
+```grapa
+arr = [1, 2, 3, 4, 5];
+
+arr.rrot();                              /* [5, 1, 2, 3, 4] */
+arr.rrot(2);                             /* [4, 5, 1, 2, 3] */
+arr.rrot(0);                             /* [1, 2, 3, 4, 5] (no change) */
+```
+
+> **Note:** Rotation methods work with any array size. For empty arrays or single-element arrays, rotation has no effect.
 
 ### Advanced Element Finding (.findall())
 

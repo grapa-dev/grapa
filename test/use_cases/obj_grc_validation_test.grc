@@ -1,0 +1,72 @@
+/* Proper validation test for $OBJ.grc methods */
+/* This test uses correct data types and parameters for each method */
+
+("Starting $OBJ.grc method validation test...").echo();
+
+/* Test data setup */
+test_str = "Hello, World!";
+test_array = [1, 2, 3, 4, 5];
+test_list = @<list,{1,2,3,4,5}>;
+test_xml = <root><item>Hello</item><item>World</item></root>;
+test_matrix = [[1,2,3],[4,5,6],[7,8,9]];
+
+("=== Testing String Rotation Methods ===").echo();
+
+/* Test lrot() and rrot() with arrays (they work with complex data types) */
+("Testing lrot() with array:").echo();
+(test_array.lrot(2)).echo();  /* Should rotate array left by 2 */
+
+("Testing rrot() with array:").echo();
+(test_array.rrot(2)).echo();  /* Should rotate array right by 2 */
+
+("Testing lrot() with list:").echo();
+(test_list.lrot(1)).echo();   /* Should rotate list left by 1 */
+
+("Testing rrot() with list:").echo();
+(test_list.rrot(1)).echo();   /* Should rotate list right by 1 */
+
+("=== Testing FindAll Method ===").echo();
+
+/* Test findall() with XML data */
+("Testing findall() with XML:").echo();
+(test_xml.findall({name:"item"})).echo();  /* Should find all item elements */
+
+/* Test findall() with list data */
+("Testing findall() with list:").echo();
+(test_list.findall({value:1})).echo();     /* Should find elements with value 1 */
+
+("=== Testing Diagonal Method ===").echo();
+
+/* Test diagonal() with proper matrix */
+("Testing diagonal() with matrix:").echo();
+(test_matrix.diagonal()).echo();           /* Should return main diagonal */
+
+("Testing diagonal() with offset:").echo();
+(test_matrix.diagonal(1)).echo();          /* Should return diagonal with offset 1 */
+
+("=== Testing Vector Methods ===").echo();
+
+/* Test vector() method */
+("Testing vector() method:").echo();
+(test_array.vector(2)).echo();             /* Should create 2D vector */
+
+("=== Testing Working Methods (Validation) ===").echo();
+
+/* Validate that working methods still work */
+("Testing float() with parameters:").echo();
+(test_str.float(2, 0)).echo();
+
+("Testing left() with parameters:").echo();
+(test_str.left(5)).echo();
+
+("Testing map() with parameters:").echo();
+(test_array.map(op(x) { x * 2; })).echo();
+
+("Testing filter() with parameters:").echo();
+(test_array.filter(op(x) { x > 2; })).echo();
+
+("Testing sort() with parameters:").echo();
+([3,1,4,1,5].sort()).echo();
+
+("=== Test Complete ===").echo();
+("$OBJ.grc method validation test completed!").echo();

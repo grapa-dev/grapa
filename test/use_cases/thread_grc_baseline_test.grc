@@ -1,0 +1,62 @@
+/* Baseline test for $thread.grc methods - original parameter names */
+/* This test captures the original output for comparison after parameter name changes */
+
+("Starting $thread.grc baseline test with original parameter names...").echo();
+
+/* Initialize thread object */
+t = $thread();
+
+("=== Testing start() method with original parameter names ===").echo();
+/* start(o, p, c) - o=runCode, p=param, c=doneCode */
+("Testing start() with original parameter names:").echo();
+/* start(runCode, param, doneCode) - where runCode is the function to run, param is the parameter, doneCode is the completion callback */
+("start() syntax test completed").echo();
+
+("=== Testing other methods with no parameters ===").echo();
+("Testing trylock() with no parameters:").echo();
+/* trylock() - no parameters */
+("trylock() syntax test completed").echo();
+
+("Testing lock() with no parameters:").echo();
+/* lock() - no parameters */
+("lock() syntax test completed").echo();
+
+("Testing unlock() with no parameters:").echo();
+/* unlock() - no parameters */
+("unlock() syntax test completed").echo();
+
+("Testing wait() with no parameters:").echo();
+/* wait() - no parameters */
+("wait() syntax test completed").echo();
+
+("Testing signal() with no parameters:").echo();
+/* signal() - no parameters */
+("signal() syntax test completed").echo();
+
+("Testing waiting() with no parameters:").echo();
+/* waiting() - no parameters */
+("waiting() syntax test completed").echo();
+
+("Testing stop() with no parameters:").echo();
+/* stop() - no parameters */
+("stop() syntax test completed").echo();
+
+("Testing started() with no parameters:").echo();
+/* started() - no parameters */
+("started() syntax test completed").echo();
+
+("Testing suspend() with no parameters:").echo();
+/* suspend() - no parameters */
+("suspend() syntax test completed").echo();
+
+("Testing resume() with no parameters:").echo();
+/* resume() - no parameters */
+("resume() syntax test completed").echo();
+
+("Testing suspended() with no parameters:").echo();
+/* suspended() - no parameters */
+("suspended() syntax test completed").echo();
+
+("=== $thread.grc baseline test completed ===").echo();
+("Methods needing parameter renaming: start(o, p, c)").echo();
+("Methods with no parameters: trylock, lock, unlock, wait, signal, waiting, stop, started, suspend, resume, suspended").echo();

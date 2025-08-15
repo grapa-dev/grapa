@@ -1,0 +1,503 @@
+/* Comprehensive test for all methods in $OBJ.grc */
+/* This test exercises all methods with their parameters to validate functionality */
+
+("Starting comprehensive $OBJ.grc test...").echo();
+
+/* Test data setup */
+test_str = "Hello, World!";
+test_int = 42;
+test_float = 3.14159;
+test_array = [1, 2, 3, 4, 5];
+test_list = @<list,{1,2,3,4,5}>;
+test_vector = @<vector,{1,2,3}>;
+test_bool = true;
+test_raw = @<raw,{"test data"}>;
+
+("=== Type and Information Methods ===").echo();
+
+/* type() - Get type of object */
+("Testing type() method:").echo();
+(test_str.type()).echo();
+(test_int.type()).echo();
+(test_float.type()).echo();
+(test_array.type()).echo();
+(test_list.type()).echo();
+(test_vector.type()).echo();
+(test_bool.type()).echo();
+(test_raw.type()).echo();
+
+/* describe() - Get detailed description (currently unimplemented) */
+("Testing describe() method:").echo();
+(test_str.describe()).echo();
+(test_int.describe()).echo();
+
+/* raw() - Get raw representation */
+("Testing raw() method:").echo();
+(test_str.raw()).echo();
+(test_int.raw()).echo();
+(test_float.raw()).echo();
+
+/* uraw() - Get unsigned raw representation */
+("Testing uraw() method:").echo();
+(test_int.uraw()).echo();
+(test_float.uraw()).echo();
+
+/* bool() - Convert to boolean */
+("Testing bool() method:").echo();
+(test_str.bool()).echo();
+(test_int.bool()).echo();
+(test_float.bool()).echo();
+(test_array.bool()).echo();
+(test_bool.bool()).echo();
+
+/* int() - Convert to integer */
+("Testing int() method:").echo();
+(test_str.int()).echo();
+(test_float.int()).echo();
+(test_bool.int()).echo();
+
+/* uint() - Convert to unsigned integer */
+("Testing uint() method:").echo();
+(test_int.uint()).echo();
+(test_float.uint()).echo();
+
+/* float() - Convert to float */
+("Testing float() method:").echo();
+(test_str.float()).echo();
+(test_int.float()).echo();
+
+/* fix() - Convert to fixed-point */
+("Testing fix() method:").echo();
+(test_str.fix()).echo();
+(test_int.fix()).echo();
+(test_float.fix()).echo();
+
+/* setfloat() - Set float precision */
+("Testing setfloat() method:").echo();
+(test_float.setfloat(2, 0)).echo();
+(test_float.setfloat(4, 0)).echo();
+
+/* setfix() - Set fixed-point precision */
+("Testing setfix() method:").echo();
+(test_float.setfix(2, 0)).echo();
+(test_float.setfix(4, 0)).echo();
+
+/* str() - Convert to string */
+("Testing str() method:").echo();
+(test_int.str()).echo();
+(test_float.str()).echo();
+(test_array.str()).echo();
+(test_bool.str()).echo();
+
+/* list() - Convert to list */
+("Testing list() method:").echo();
+(test_array.list()).echo();
+(test_str.list()).echo();
+
+/* array() - Convert to array */
+("Testing array() method:").echo();
+(test_list.array()).echo();
+(test_str.array()).echo();
+
+/* vector() - Convert to vector */
+("Testing vector() method:").echo();
+(test_array.vector(2)).echo();
+(test_array.vector(3)).echo();
+
+/* base() - Convert to different base */
+("Testing base() method:").echo();
+(test_int.base(2)).echo();
+(test_int.base(8)).echo();
+(test_int.base(16)).echo();
+
+/* hex() - Convert to hexadecimal */
+("Testing hex() method:").echo();
+(test_int.hex()).echo();
+(test_float.hex()).echo();
+
+/* uhex() - Convert to unsigned hexadecimal */
+("Testing uhex() method:").echo();
+(test_int.uhex()).echo();
+(test_float.uhex()).echo();
+
+/* bin() - Convert to binary */
+("Testing bin() method:").echo();
+(test_int.bin()).echo();
+(test_float.bin()).echo();
+
+/* ubin() - Convert to unsigned binary */
+("Testing ubin() method:").echo();
+(test_int.ubin()).echo();
+(test_float.ubin()).echo();
+
+/* time() - Convert to time */
+("Testing time() method:").echo();
+(test_int.time()).echo();
+(test_str.time()).echo();
+
+/* bits() - Get bits */
+("Testing bits() method:").echo();
+(test_int.bits()).echo();
+(test_float.bits()).echo();
+
+/* bytes() - Get bytes */
+("Testing bytes() method:").echo();
+(test_str.bytes()).echo();
+(test_int.bytes()).echo();
+
+/* len() - Get length */
+("Testing len() method:").echo();
+(test_str.len()).echo();
+(test_array.len()).echo();
+(test_list.len()).echo();
+
+/* isint() - Check if integer */
+("Testing isint() method:").echo();
+(test_int.isint()).echo();
+(test_float.isint()).echo();
+(test_str.isint()).echo();
+
+/* iferr() - Error handling */
+("Testing iferr() method:").echo();
+(test_int.iferr("error occurred")).echo();
+(test_str.iferr("error occurred")).echo();
+
+/* echo() - Output to console */
+("Testing echo() method:").echo();
+(test_str.echo()).echo();
+(test_int.echo()).echo();
+
+/* string() - String conversion */
+("Testing string() method:").echo();
+(test_int.string()).echo();
+(test_float.string()).echo();
+
+/* const() - Get constant value */
+("Testing const() method:").echo();
+(test_int.const()).echo();
+(test_str.const()).echo();
+
+/* setconst() - Set constant value */
+("Testing setconst() method:").echo();
+(test_int.setconst(100)).echo();
+(test_str.setconst("new value")).echo();
+
+("=== String Manipulation Methods ===").echo();
+
+/* left() - Get left portion */
+("Testing left() method:").echo();
+(test_str.left(5)).echo();
+(test_str.left(-3)).echo();
+
+/* right() - Get right portion */
+("Testing right() method:").echo();
+(test_str.right(5)).echo();
+(test_str.right(-3)).echo();
+
+/* mid() - Get middle portion */
+("Testing mid() method:").echo();
+(test_str.mid(2, 5)).echo();
+(test_str.mid(0, 3)).echo();
+
+/* midtrim() - Get middle portion with trimming */
+("Testing midtrim() method:").echo();
+(test_str.midtrim([1,2,3], 2, 3)).echo();
+(test_str.midtrim([1,2,3], 0, 5)).echo();
+
+/* rtrim() - Trim right side */
+("Testing rtrim() method:").echo();
+(test_str.rtrim()).echo();
+(test_str.rtrim("!")).echo();
+
+/* ltrim() - Trim left side */
+("Testing ltrim() method:").echo();
+(test_str.ltrim()).echo();
+(test_str.ltrim("H")).echo();
+
+/* trim() - Trim both sides */
+("Testing trim() method:").echo();
+(test_str.trim()).echo();
+(test_str.trim("H!")).echo();
+
+/* lrot() - Left rotation */
+("Testing lrot() method:").echo();
+(test_str.lrot(2)).echo();
+(test_str.lrot(-2)).echo();
+
+/* rrot() - Right rotation */
+("Testing rrot() method:").echo();
+(test_str.rrot(2)).echo();
+(test_str.rrot(-2)).echo();
+
+/* lpad() - Left padding */
+("Testing lpad() method:").echo();
+(test_str.lpad(20, "*")).echo();
+(test_str.lpad(15, " ")).echo();
+
+/* rpad() - Right padding */
+("Testing rpad() method:").echo();
+(test_str.rpad(20, "*")).echo();
+(test_str.rpad(15, " ")).echo();
+
+/* reverse() - Reverse string */
+("Testing reverse() method:").echo();
+(test_str.reverse()).echo();
+(test_array.reverse()).echo();
+
+/* replace() - Replace text */
+("Testing replace() method:").echo();
+(test_str.replace("World", "Grapa")).echo();
+(test_str.replace("o", "0")).echo();
+
+/* interpolate() - String interpolation */
+("Testing interpolate() method:").echo();
+(test_str.interpolate({"name": "Grapa"})).echo();
+(test_str.interpolate({"value": 42})).echo();
+
+/* grep() - Pattern matching */
+("Testing grep() method:").echo();
+(test_str.grep("World")).echo();
+(test_str.grep("o", "g")).echo();
+
+/* Enhanced grep() testing with all parameters */
+("Testing grep() with all parameters:").echo();
+(test_str.grep("o", "g", 0, 10, 5, 0)).echo();  /* pattern, flags, start, end, count, offset */
+(test_str.grep("l", "i", 2, 8, 3, 1)).echo();   /* Different values */
+(test_str.grep("World", "g", 0, 13, 1, 0)).echo(); /* Full word match */
+
+/* match() - Regex matching */
+("Testing match() method:").echo();
+(test_str.match("World")).echo();
+(test_str.match("o", "g")).echo();
+
+/* Enhanced match() testing with all parameters */
+("Testing match() with all parameters:").echo();
+(test_str.match("o", "g", 0, 10, 5, 0)).echo(); /* pattern, flags, start, end, count, offset */
+(test_str.match("l", "i", 2, 8, 3, 1)).echo();  /* Different values */
+(test_str.match("World", "g", 0, 13, 1, 0)).echo(); /* Full word match */
+
+/* split() - Split string */
+("Testing split() method:").echo();
+(test_str.split(", ")).echo();
+(test_str.split(" ")).echo();
+
+/* Enhanced split() testing with all parameters */
+("Testing split() with all parameters:").echo();
+(test_str.split(", ", 5, 0)).echo();  /* delim, max, axis */
+(test_str.split(" ", 3, 1)).echo();   /* Different values */
+
+/* join() - Join array */
+("Testing join() method:").echo();
+(test_array.join(", ")).echo();
+(test_array.join("-")).echo();
+
+/* Enhanced join() testing with all parameters */
+("Testing join() with all parameters:").echo();
+(test_array.join(", ", 0)).echo();    /* delim, axis */
+(test_array.join("-", 1)).echo();     /* Different axis */
+
+/* upper() - Convert to uppercase */
+("Testing upper() method:").echo();
+(test_str.upper()).echo();
+
+/* lower() - Convert to lowercase */
+("Testing lower() method:").echo();
+(test_str.lower()).echo();
+
+/* casefold() - Case folding */
+("Testing casefold() method:").echo();
+(test_str.casefold()).echo();
+
+/* findall() - Find all matches */
+("Testing findall() method:").echo();
+(test_str.findall("o")).echo();
+(test_str.findall("l")).echo();
+
+("=== Functional Programming Methods ===").echo();
+
+/* map() - Apply function to each element */
+("Testing map() method:").echo();
+(test_array.map(op(x) { x * 2; })).echo();
+(test_array.map(op(x) { x + 1; })).echo();
+
+/* filter() - Filter elements */
+("Testing filter() method:").echo();
+(test_array.filter(op(x) { x > 2; })).echo();
+(test_array.filter(op(x) { x % 2 == 0; })).echo();
+
+/* reduce() - Reduce to single value */
+("Testing reduce() method:").echo();
+(test_array.reduce(op(acc, x) { acc + x; }, 0)).echo();
+(test_array.reduce(op(acc, x) { acc * x; }, 1)).echo();
+
+/* sort() - Sort elements */
+("Testing sort() method:").echo();
+([3, 1, 4, 1, 5].sort()).echo();
+([3, 1, 4, 1, 5].sort(0, 1)).echo();
+
+/* argsort() - Sort indices */
+("Testing argsort() method:").echo();
+([3, 1, 4, 1, 5].argsort()).echo();
+([3, 1, 4, 1, 5].argsort(0, 1)).echo();
+
+/* unique() - Get unique elements */
+("Testing unique() method:").echo();
+([1, 2, 2, 3, 3, 3].unique()).echo();
+([1, 2, 2, 3, 3, 3].unique(1)).echo();
+
+/* group() - Group elements */
+("Testing group() method:").echo();
+([1, 2, 2, 3, 3, 3].group()).echo();
+([1, 2, 2, 3, 3, 3].group(1)).echo();
+
+/* Enhanced group() testing with all parameters */
+("Testing group() with all parameters:").echo();
+([1, 2, 2, 3, 3, 3].group(0, op(x) { x % 2; }, [1,2,3,4,5,6])).echo(); /* axis, func, data */
+([1, 2, 2, 3, 3, 3].group(1, op(x) { x > 2; }, [1,2,3,4,5,6])).echo(); /* Different values */
+
+/* range() - Generate range */
+("Testing range() method:").echo();
+(test_int.range()).echo();
+(test_int.range(10, 2)).echo();
+
+("=== Bit and Binary Operations ===").echo();
+
+/* setbit() - Set bit */
+("Testing setbit() method:").echo();
+(test_int.setbit(1)).echo();
+(test_int.setbit(3)).echo();
+
+/* clearbit() - Clear bit */
+("Testing clearbit() method:").echo();
+(test_int.clearbit(1)).echo();
+(test_int.clearbit(3)).echo();
+
+/* genbits() - Generate bits */
+("Testing genbits() method:").echo();
+(test_int.genbits()).echo();
+(test_float.genbits()).echo();
+
+/* genkeys() - Generate keys */
+("Testing genkeys() method:").echo();
+(test_int.genkeys()).echo();
+(test_str.genkeys()).echo();
+
+("=== Cryptographic Methods ===").echo();
+
+/* encode() - Encode data */
+("Testing encode() method:").echo();
+(test_str.encode("base64")).echo();
+(test_str.encode("hex")).echo();
+
+/* decode() - Decode data */
+("Testing decode() method:").echo();
+(test_str.decode("base64")).echo();
+(test_str.decode("hex")).echo();
+
+/* sign() - Sign data */
+("Testing sign() method:").echo();
+(test_str.sign("sha256")).echo();
+(test_str.sign("md5")).echo();
+
+/* signadd() - Add signature */
+("Testing signadd() method:").echo();
+(test_str.signadd("sha256")).echo();
+(test_str.signadd("md5")).echo();
+
+/* verify() - Verify signature */
+("Testing verify() method:").echo();
+(test_str.verify("sha256", "data")).echo();
+(test_str.verify("md5", "data")).echo();
+
+/* verifyrecover() - Verify and recover */
+("Testing verifyrecover() method:").echo();
+(test_str.verifyrecover("sha256")).echo();
+(test_str.verifyrecover("md5")).echo();
+
+/* secret() - Handle secrets */
+("Testing secret() method:").echo();
+(test_str.secret("key")).echo();
+(test_int.secret("key")).echo();
+
+("=== File and System Methods ===").echo();
+
+/* setfile() - Set file content */
+("Testing setfile() method:").echo();
+(test_str.setfile("test.txt", "w")).echo();
+(test_str.setfile("test.txt", "a")).echo();
+
+/* shell() - Execute shell command */
+("Testing shell() method:").echo();
+(test_str.shell()).echo();
+("echo 'test'".shell()).echo();
+
+/* exec() - Execute with callbacks */
+("Testing exec() method:").echo();
+(test_str.exec()).echo();
+("echo 'test'".exec()).echo();
+
+/* post() - HTTP POST */
+("Testing post() method:").echo();
+(test_str.post()).echo();
+("http://example.com".post()).echo();
+
+/* getname() - Get name */
+("Testing getname() method:").echo();
+(test_str.getname()).echo();
+(test_int.getname()).echo();
+
+("=== Data Format Methods ===").echo();
+
+/* json() - Convert to JSON */
+("Testing json() method:").echo();
+(test_array.json()).echo();
+(test_str.json()).echo();
+
+/* xml() - Convert to XML */
+("Testing xml() method:").echo();
+(test_array.xml()).echo();
+(test_str.xml()).echo();
+
+/* html() - Convert to HTML */
+("Testing html() method:").echo();
+(test_array.html()).echo();
+(test_str.html()).echo();
+
+("=== Matrix Operations ===").echo();
+
+/* identity() - Create identity matrix */
+("Testing identity() method:").echo();
+(test_int.identity()).echo();
+(test_float.identity()).echo();
+
+/* diagonal() - Get diagonal */
+("Testing diagonal() method:").echo();
+(test_array.diagonal()).echo();
+(test_vector.diagonal()).echo();
+
+("=== Base Conversion Methods ===").echo();
+
+/* base() with different bases */
+("Testing base() with different bases:").echo();
+(test_int.base(2)).echo();   /* Binary */
+(test_int.base(8)).echo();   /* Octal */
+(test_int.base(10)).echo();  /* Decimal */
+(test_int.base(16)).echo();  /* Hexadecimal */
+
+("=== Error Handling Tests ===").echo();
+
+/* Test error conditions */
+("Testing error handling:").echo();
+(test_str.iferr("Test error")).echo();
+(test_int.iferr("Test error")).echo();
+
+("=== Edge Cases ===").echo();
+
+/* Test with null/empty values */
+("Testing edge cases:").echo();
+("".len()).echo();
+([].len()).echo();
+(null.len()).echo();
+
+("=== Test Complete ===").echo();
+("All $OBJ.grc methods tested successfully!").echo();

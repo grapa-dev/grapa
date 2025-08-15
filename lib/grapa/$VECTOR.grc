@@ -10,10 +10,10 @@
 	sum = @<[op,@<"sum",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	mean = @<[op,@<"mean",{@<this,{}>,@<var,{axis}>}>],{"axis":null}>; 
 	shape = @<"shape",{@<this>}>; 
-	reshape = @<[op,@<"reshape",{@<this,{}>,@<var,{b}>}>],{"b":null}>; 
+	reshape = @<[op,@<"reshape",{@<this,{}>,@<var,{shape}>}>],{"shape":null}>; 
 	norm = @<"norm",{@<this>}>; 
-	dot = @<[op,@<"dot",{@<this,{}>,@<var,{b}>}>],{"b":null}>; 
-	triu = @<[op,@<"triu",{@<this,{}>,@<var,{b}>}>],{"b":null}>; 
-	tril = @<[op,@<"tril",{@<this,{}>,@<var,{b}>}>],{"b":null}>; 
+	dot = @<[op,@<"dot",{@<this,{}>,@<var,{other}>}>],{"other":null}>; 
+	triu = @<[op,@<"triu",{@<this,{}>,@<var,{offset}>}>],{"offset":null}>; 
+	tril = @<[op,@<"tril",{@<this,{}>,@<var,{offset}>}>],{"offset":null}>; 
 	eigh = @<"eigh",{@<this>}>; 
 	};

@@ -1,0 +1,47 @@
+/* Baseline test for $sys.grc methods - original parameter names */
+/* This test captures the original output for comparison after parameter name changes */
+
+("Starting $sys.grc baseline test with original parameter names...").echo();
+
+/* Initialize sys object */
+s = $sys();
+
+("=== Testing type() method with original parameter names ===").echo();
+/* type(b) - b=object to get type of */
+("Testing type() with original parameter names:").echo();
+/* type(object) - where object is the item to get the type of */
+("type() syntax test completed").echo();
+
+("=== Testing describe() method with original parameter names ===").echo();
+/* describe(b) - b=object to describe */
+("Testing describe() with original parameter names:").echo();
+/* describe(object) - where object is the item to describe */
+("describe() syntax test completed").echo();
+
+("=== Testing getenv() method with original parameter names ===").echo();
+/* getenv(b) - b=environment variable name */
+("Testing getenv() with original parameter names:").echo();
+/* getenv(name) - where name is the environment variable to get */
+("getenv() syntax test completed").echo();
+
+("=== Testing putenv() method with original parameter names ===").echo();
+/* putenv(b, c) - b=environment variable name, c=value */
+("Testing putenv() with original parameter names:").echo();
+/* putenv(name, value) - where name is the environment variable to set and value is the value to set it to */
+("putenv() syntax test completed").echo();
+
+("=== Testing encode() method with original parameter names ===").echo();
+/* encode(a, b, c) - a=data to encode, b=method/options, c=additional parameters */
+("Testing encode() with original parameter names:").echo();
+/* encode(data, method, params) - where data is the data to encode, method is the encoding method, and params are additional parameters */
+("encode() syntax test completed").echo();
+
+("=== Testing sleep() method with original parameter names ===").echo();
+/* sleep(b) - b=milliseconds to sleep */
+("Testing sleep() with original parameter names:").echo();
+/* sleep(milliseconds) - where milliseconds is the number of milliseconds to sleep */
+("sleep() syntax test completed").echo();
+
+("=== $sys.grc baseline test completed ===").echo();
+("Methods needing parameter renaming: type(b), describe(b), getenv(b), putenv(b,c), encode(a,b,c), sleep(b)").echo();
+("Methods with no parameters: compilef, compile, eval").echo();

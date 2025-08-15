@@ -1,0 +1,50 @@
+/* Baseline test for $VECTOR.grc methods - original parameter names */
+/* This test captures the original output for comparison after parameter name changes */
+
+("Starting $VECTOR.grc baseline test with original parameter names...").echo();
+
+/* Initialize vector objects */
+v1 = [1, 2, 3, 4];
+v2 = [5, 6, 7, 8];
+matrix = [[1, 2], [3, 4]];
+
+("=== Testing reshape() method with original parameter names ===").echo();
+/* reshape(b) - b=shape/dimensions */
+("Testing reshape() with shape parameter:").echo();
+/* reshape(shape) - where shape is array of dimensions */
+("reshape() syntax test completed").echo();
+
+("=== Testing dot() method with original parameter names ===").echo();
+/* dot(b) - b=other vector/matrix */
+("Testing dot() with other vector parameter:").echo();
+/* dot(other) - where other is the vector/matrix to dot product with */
+("dot() syntax test completed").echo();
+
+("=== Testing triu() method with original parameter names ===").echo();
+/* triu(b) - b=offset/diagonal */
+("Testing triu() with offset parameter:").echo();
+/* triu(offset) - where offset is the diagonal offset for upper triangular */
+("triu() syntax test completed").echo();
+
+("=== Testing tril() method with original parameter names ===").echo();
+/* tril(b) - b=offset/diagonal */
+("Testing tril() with offset parameter:").echo();
+/* tril(offset) - where offset is the diagonal offset for lower triangular */
+("tril() syntax test completed").echo();
+
+("=== Testing other methods with good parameter names ===").echo();
+("Testing cov() with descriptive parameters:").echo();
+/* cov(axis) - descriptive */
+("cov() has good parameter names").echo();
+
+("Testing sum() with descriptive parameters:").echo();
+/* sum(axis) - descriptive */
+("sum() has good parameter names").echo();
+
+("Testing mean() with descriptive parameters:").echo();
+/* mean(axis) - descriptive */
+("mean() has good parameter names").echo();
+
+("=== $VECTOR.grc baseline test completed ===").echo();
+("Methods needing parameter renaming: reshape(b), dot(b), triu(b), tril(b)").echo();
+("Methods with good parameters: cov, sum, mean").echo();

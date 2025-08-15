@@ -1,8 +1,21 @@
 # $LIST
 References:
 
+**`$LIST`** = `{}` syntax (associative, with names/keys)
 
-A $LIST is basically JSON, but extended to include all the various grapa data types. 
+An associative list that stores key-value pairs. Elements are accessed by their names (keys) rather than by position. This follows traditional terminology where lists are associative collections with named entries.
+
+### $LIST vs $ARRAY Comparison
+
+| Feature | $LIST (`{}`) | $ARRAY (`[]`) |
+|---------|--------------|---------------|
+| **Syntax** | `{a:1, b:2, c:3}` | `[1, 2, 3]` |
+| **Access** | `list.a` or `list["a"]` | `array[0]` |
+| **Type** | Associative | Positional |
+| **Keys** | Named keys | Numeric indices |
+| **Order** | Key-based | Position-based |
+
+**Note:** This differs from some other languages where `[]` is called a "list" and `{}` is called a "dictionary" or "object". Grapa follows traditional C terminology. 
 
 Action | Example | Result
 ------------ | ------------- | -------------
@@ -99,6 +112,30 @@ list ++= {g:7}, 2;                        /* Insert at position 2 */
 /* Remove elements */
 list -= {b:2};                            /* Remove element with key "b" */
 ```
+
+### List Rotation
+
+Lists support left and right rotation operations for reordering key-value pairs:
+
+#### Left Rotation (.lrot())
+```grapa
+list = {a:1, b:2, c:3, d:4};
+
+list.lrot();                              /* {b:2, c:3, d:4, a:1} */
+list.lrot(2);                             /* {c:3, d:4, a:1, b:2} */
+list.lrot(0);                             /* {a:1, b:2, c:3, d:4} (no change) */
+```
+
+#### Right Rotation (.rrot())
+```grapa
+list = {a:1, b:2, c:3, d:4};
+
+list.rrot();                              /* {d:4, a:1, b:2, c:3} */
+list.rrot(2);                             /* {c:3, d:4, a:1, b:2} */
+list.rrot(0);                             /* {a:1, b:2, c:3, d:4} (no change) */
+```
+
+> **Note:** Rotation methods preserve all key-value pairs while reordering them. For empty lists or single-element lists, rotation has no effect.
 
 ### Advanced Element Finding (.findall())
 

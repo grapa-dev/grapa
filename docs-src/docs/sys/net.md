@@ -167,7 +167,7 @@ n.host();
 {"url":":12345","host":"computer name","ip":"XX.XX.XX.XX","port":12345,"family":2,"connected":0,"bound":1}
 ```
 
-## send(message)
+## send(data)
 See example in onlisten.
 
 NOTE: If using SSL and the remote system breaks the connection, first send will return no error. The second send will return an error. This is not the case for read - where the first read after a broken connection will return an error and close the connection.

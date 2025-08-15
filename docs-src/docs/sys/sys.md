@@ -47,11 +47,11 @@ Will provide detailed information about objects beyond just their type. For exam
 
 **Returns:** `$STR` - Detailed object description (when implemented)
 
-### getenv(type)
+### getenv(name)
 Gets environment variables and system information.
 
 **Parameters:**
-- `type` - Environment variable name or system constant
+- `name` - Environment variable name or system constant
 
 **Returns:** Value of the environment variable or system information
 
@@ -96,11 +96,11 @@ $sys().getenv($ARGCIN);
 - **Compilers:** `_MSC_VER`, `_MSC_FULL_VER`, `__GNUC__`, `__GNUC_MINOR__`, `__clang__`, `__MINGW32__`, `__MINGW64__`
 - **Architectures:** `__i386__`, `__x86_64__`, `__arm__`, `__ARM_ARCH_5T__`, `__ARM_ARCH_7A__`, `__powerpc64__`, `__aarch64__`
 
-### putenv(type, value)
+### putenv(name, value)
 Sets environment variables and system information.
 
 **Parameters:**
-- `type` - Environment variable name or system constant
+- `name` - Environment variable name or system constant
 - `value` - New value to set
 
 **Returns:** `$BOOL` - `true` if successful, `false` if failed
@@ -252,11 +252,11 @@ result = $sys().eval(compiled, {"a": 10, "b": 20});
 $file().get("file.grz").decode("ZIP-GRAPA")["op"]();
 ```
 
-### sleep(ms)
+### sleep(milliseconds)
 Pauses execution for the specified number of milliseconds.
 
 **Parameters:**
-- `ms` - Number of milliseconds to sleep (must be `$INT`)
+- `milliseconds` - Number of milliseconds to sleep (must be `$INT`)
 
 **Returns:** `null`
 

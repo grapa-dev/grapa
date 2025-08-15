@@ -98,8 +98,33 @@
 - **Native .match() Method** - ✅ **COMPLETED** - Native regex matching method implemented and working perfectly
   - **Implementation**: `GrapaLibraryRuleMatchEvent::Run` in C++ with full grep parameter support
   - **Functionality**: `"string".match(pattern)` returning boolean result
+- **$file.grc Parameter Renaming** - ✅ **COMPLETED** - All ambiguous parameter names improved for clarity
+  - **Implementation**: Updated `lib/grapa/$file.grc` with descriptive parameter names
+  - **Documentation**: Updated `docs-src/docs/sys/file.md` to reflect new parameter names
+  - **Testing**: Comprehensive baseline and regression tests validate no functional changes
+  - **Changes**: `p` → `type`, `p` → `format`, `p` → `field`, `d` → `data`, `parts` → `count`, `o` → `name`, `e` → `size`, `f` → `growth`
   - **Features**: Supports all grep parameters, proper error handling, graceful degradation for invalid patterns
   - **Documentation**: Added to user docs and maintainer implementation docs
+- **$net.grc Parameter Renaming** - ✅ **COMPLETED** - All ambiguous parameter names improved for clarity
+  - **Implementation**: Updated `lib/grapa/$net.grc` with descriptive parameter names
+  - **Documentation**: Documentation already reflects new parameter names
+  - **Testing**: Comprehensive baseline and regression tests validate no functional changes
+  - **Changes**: `o` → `url`, `p` → `messageHandler`, `c` → `connectHandler`, `n` → `count`, `d` → `data`, `o` → `handler`
+- **$VECTOR.grc Parameter Renaming** - ✅ **COMPLETED** - All ambiguous parameter names improved for clarity
+  - **Implementation**: Updated `lib/grapa/$VECTOR.grc` with descriptive parameter names
+  - **Documentation**: Documentation already reflects new parameter names
+  - **Testing**: Comprehensive baseline and regression tests validate no functional changes
+  - **Changes**: `b` → `shape`, `b` → `other`, `b` → `offset`, `b` → `offset`
+- **$thread.grc Parameter Renaming** - ✅ **COMPLETED** - All ambiguous parameter names improved for clarity
+  - **Implementation**: Updated `lib/grapa/$thread.grc` with descriptive parameter names
+  - **Documentation**: Documentation already reflects new parameter names
+  - **Testing**: Comprehensive baseline and regression tests validate no functional changes
+  - **Changes**: `o` → `runCode`, `p` → `param`, `c` → `doneCode`
+- **$sys.grc Parameter Renaming** - ✅ **COMPLETED** - All ambiguous parameter names improved for clarity
+  - **Implementation**: Updated `lib/grapa/$sys.grc` with descriptive parameter names
+  - **Documentation**: Documentation updated to reflect new parameter names
+  - **Testing**: Comprehensive baseline and regression tests validate no functional changes
+  - **Changes**: `b` → `object`, `b` → `name`, `c` → `value`, `a` → `data`, `b` → `method`, `c` → `params`, `b` → `milliseconds`
 
 **📋 PHASE 1 CRITICAL FEATURES (Weeks 1-4):**
 - **✅ For loops** - Native loop syntax (COMPLETED)
@@ -306,6 +331,43 @@
 
 ---
 
+## ✅ **$OBJ.grc Parameter Name Improvements**
+
+**Status**: ✅ **COMPLETED** - All parameter names updated to be more intuitive and shorter
+
+**Implementation**: Updated all parameter names in `lib/grapa/$OBJ.grc` to follow user preferences for shorter, more intuitive names
+
+**Key Improvements**:
+- **Type Conversion**: `float(b, c)` → `float(precision, mode)`, `base(b)` → `base(radix)`
+- **String Manipulation**: `left(b)` → `left(count)`, `mid(b, c)` → `mid(start, count)`, `replace(b, c)` → `replace(old, new)`
+- **Search & Pattern**: `grep(b, c, d, e, f, g)` → `grep(pattern, flags, start, end, count, offset)`
+- **Functional Programming**: `map(callback, data, threads)` → `map(func, data, threads)`, `reduce(callback, first, data)` → `reduce(func, init, data)`
+- **Cryptography**: `encode(alg, data)` → `encode(method, data)`, `sign(alg, params)` → `sign(method, params)`
+- **Utilities**: `setconst(b)` → `setconst(value)`, `iferr(b)` → `iferr(error)`, `getname(b)` → `getname(index)`
+
+**Testing & Validation**:
+- **Regression Testing**: Created comprehensive test suite (`test/use_cases/obj_grc_safe_parameter_test.grc`)
+- **Identical Results**: Confirmed identical functionality before and after parameter name changes
+- **Segmentation Fault Analysis**: Identified and excluded problematic methods (e.g., `secret()`)
+- **Coverage**: 100% of safe methods tested with all parameters
+
+**Documentation**:
+- **Comprehensive Reference**: Created `docs-src/docs/type/obj_methods.md` with complete method documentation
+- **API Integration**: Updated `docs-src/docs/api_reference.md` with link to $OBJ methods reference
+- **Parameter Coverage**: All methods documented with examples and parameter descriptions
+- **Usage Examples**: Provided practical examples for common use cases
+- **Terminology Clarification**: Added clear distinction between `$ARRAY` (`[]`) and `$LIST` (`{}`) data types
+- **Method Corrections**: Fixed documentation for `.lrot()`, `.rrot()`, and `.findall()` methods with correct data type requirements
+- **Data Type Documentation**: Updated `array.md` and `list.md` with comparison tables and C-style terminology explanation
+
+**Impact**:
+- **Developer Experience**: More intuitive parameter names reduce learning curve
+- **Code Readability**: Self-documenting parameter names improve code clarity
+- **Maintainability**: Consistent naming patterns across all methods
+- **Documentation**: Complete reference documentation for all $OBJ methods
+
+---
+
 ## 📊 **Project Status Summary**
 
 ### **Current State**
@@ -330,10 +392,11 @@
   - **Historical context of `@` symbol evolution documented** ✅
   - **System namespace protection (`$` prefix) mechanism documented** ✅
   - **String interpolation C++ implementation completed** ✅
-  - **Op() function integration discovered for script execution** ✅
-  - **String interpolation design simplified and finalized** ✅
-  - **Advanced string interpolation capabilities discovered** ✅
-  - **String interpolation documentation completed** ✅
+- **Op() function integration discovered for script execution** ✅
+- **String interpolation design simplified and finalized** ✅
+- **Advanced string interpolation capabilities discovered** ✅
+- **String interpolation documentation completed** ✅
+- **$OBJ.grc parameter name improvements completed** ✅
 - **Current Investigation:** Grapa syntax enhancement implementation
 - **Next Focus:** Language adoption through improved syntax and developer experience
 - **Documentation Status:** ✅ **COMPREHENSIVE** - Advanced language features documented, type system enhanced, syntax features documented, enterprise-grade XML/HTML capabilities documented with unified query system

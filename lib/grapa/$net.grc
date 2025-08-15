@@ -7,7 +7,7 @@
 	connect = @<[op,@<net_connect,{this,@<var,{url}>,@<var,{cert}>,@<var,{proxy}>}>],{url,cert,proxy}>; 
 	bind = @<[op,@<net_bind,{this,@<var,{url}>}>],{url}>; 
 	listen = @<[op,@<net_listen,{this,@<var,{net}>}>],{net}>; 
-	onlisten = @<[op,@<net_onlisten,{this,@<var,{o}>,@<var,{p}>,@<var,{c}>,@<var,{n}>}>],{o,p,c,n:1}>; 
+	onlisten = @<[op,@<net_onlisten,{this,@<var,{url}>,@<var,{messageHandler}>,@<var,{connectHandler}>,@<var,{count}>}>],{url,messageHandler,connectHandler,count:1}>; 
 	disconnect = @<[op,@<net_disconnect,{this}>]>; 
 	proxy = @<[op,@<net_proxy,{this,@<var,{ptype}>,@<var,{pid}>,@<var,{ph}>}>],{ptype, pid, ph}>; 
 	certificate = @<[op,@<net_certificate,{this,@<var,{cert}>}>],{cert}>; 
@@ -16,10 +16,10 @@
 	verify = @<[op,@<net_verify,{this}>]>; 
 	chain = @<[op,@<net_chain,{this}>]>; 
 	host = @<[op,@<net_host,{this}>]>; 
-	send = @<[op,@<net_send,{this,@<var,{d}>}>],{d}>; 
+	send = @<[op,@<net_send,{this,@<var,{data}>}>],{data}>; 
 	receive = @<[op,@<net_receive,{this}>]>; 
 	pending = @<[op,@<net_pending,{this}>]>; 
-	onreceive = @<[op,@<net_onreceive,{this,@<var,{o}>}>],{o}>;
+	onreceive = @<[op,@<net_onreceive,{this,@<var,{handler}>}>],{handler}>;
 	httpread = @<[op,@<http_read,{this}>]>; 
 	httpsend = @<[op,@<http_send,{this,@<var,{method}>,@<var,{entity}>,@<var,{header}>,@<var,{body}>}>],{method,entity,header,body}>;
 	httpmessage = @<[op,@<http_message,{this,@<var,{raw}>}>],{raw:null}>; 

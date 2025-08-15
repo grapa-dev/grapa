@@ -1,0 +1,161 @@
+/* Regression test for $file.grc methods - new parameter names */
+/* This test validates that functionality remains identical after parameter name changes */
+
+("Starting $file.grc regression test with new parameter names...").echo();
+
+/* Initialize file object */
+f = $file();
+
+("=== Testing table() method with new parameter name ===").echo();
+/* table(type) - type parameter controls database type */
+("Testing table() with default parameter:").echo();
+t1 = f.table();
+(t1.type()).echo();
+
+("Testing table() with 'DIR' parameter:").echo();
+t2 = f.table("DIR");
+(t2.type()).echo();
+
+("Testing table() with 'ROW' parameter:").echo();
+t3 = f.table("ROW");
+(t3.type()).echo();
+
+("Testing table() with 'COL' parameter:").echo();
+t4 = f.table("COL");
+(t4.type()).echo();
+
+("=== Testing cd() method (no change) ===").echo();
+/* cd(path) - path parameter for directory navigation */
+("Testing cd() with path parameter:").echo();
+f.cd("test_dir");
+(f.pwd()).echo();
+
+("Testing cd() with '..' parameter:").echo();
+f.cd("..");
+(f.pwd()).echo();
+
+("=== Testing chd() method (no change) ===").echo();
+/* chd(path) - path parameter for home directory change */
+("Testing chd() with path parameter:").echo();
+f.chd("/tmp");
+(f.pwd()).echo();
+
+("=== Testing ls() method with new parameter name ===").echo();
+/* ls(path, format) - path and format parameters for listing */
+("Testing ls() with path parameter:").echo();
+f.cd("/tmp");
+ls_result = f.ls(".");
+(ls_result).echo();
+
+("Testing ls() with path and format parameters:").echo();
+ls_result2 = f.ls(".", "DETAILS");
+(ls_result2).echo();
+
+("=== Testing mk() method with new parameter name ===").echo();
+/* mk(name, type) - name and type parameters for creation */
+("Testing mk() with name parameter:").echo();
+f.mk("test_mk_dir");
+(f.ls()).echo();
+
+("Testing mk() with name and type parameters:").echo();
+f.mk("test_mk_group", "GROUP");
+(f.ls()).echo();
+
+("=== Testing rm() method (no change) ===").echo();
+/* rm(name) - name parameter for removal */
+("Testing rm() with name parameter:").echo();
+f.rm("test_mk_dir");
+(f.ls()).echo();
+
+("=== Testing set() method with new parameter names ===").echo();
+/* set(name, field, data) - name, field, data parameters for setting data */
+("Testing set() with name and data parameters:").echo();
+f.set("test_file.txt", "Hello, World!");
+(f.ls()).echo();
+
+("Testing set() with name, field, and data parameters:").echo();
+f.set("test_file2.txt", "field_name", "field_value");
+(f.ls()).echo();
+
+("=== Testing get() method with new parameter name ===").echo();
+/* get(name, field) - name and field parameters for getting data */
+("Testing get() with name parameter:").echo();
+content = f.get("test_file.txt");
+(content).echo();
+
+("Testing get() with name and field parameters:").echo();
+content2 = f.get("test_file2.txt", "field_name");
+(content2).echo();
+
+("=== Testing info() method with new parameter name ===").echo();
+/* info(name, format) - name and format parameters for file info */
+("Testing info() with name parameter:").echo();
+info = f.info("test_file.txt");
+(info).echo();
+
+("Testing info() with name and format parameters:").echo();
+info2 = f.info("test_file2.txt", "DETAILS");
+(info2).echo();
+
+("=== Testing split() method with new parameter name ===").echo();
+/* split(count, name, path, delim, option) - all parameters with new count name */
+("Testing split() with count parameter:").echo();
+split_result = f.split(2);
+(split_result).echo();
+
+("Testing split() with count and name parameters:").echo();
+split_result2 = f.split(2, "test_file.txt");
+(split_result2).echo();
+
+("Testing split() with count, name, and path parameters:").echo();
+split_result3 = f.split(2, "test_file.txt", "split_output");
+(split_result3).echo();
+
+("Testing split() with count, name, path, and delim parameters:").echo();
+split_result4 = f.split(2, "test_file.txt", "split_output", ",");
+(split_result4).echo();
+
+("Testing split() with all parameters:").echo();
+split_result5 = f.split(2, "test_file.txt", "split_output", ",", "start");
+(split_result5).echo();
+
+("=== Testing mkfield() method with new parameter names ===").echo();
+/* mkfield(name, type, storage, size, growth) - all parameters for field creation */
+("Testing mkfield() with name parameter:").echo();
+f.mkfield("test_field");
+(f.ls()).echo();
+
+("Testing mkfield() with name and type parameters:").echo();
+f.mkfield("age_field", "INT");
+(f.ls()).echo();
+
+("Testing mkfield() with name, type, and storage parameters:").echo();
+f.mkfield("name_field", "STR", "VAR");
+(f.ls()).echo();
+
+("Testing mkfield() with name, type, storage, and size parameters:").echo();
+f.mkfield("fixed_field", "INT", "FIX", 4);
+(f.ls()).echo();
+
+("Testing mkfield() with all parameters:").echo();
+f.mkfield("grow_field", "STR", "VAR", 100, 50);
+(f.ls()).echo();
+
+("=== Testing rmfield() method with new parameter name ===").echo();
+/* rmfield(name) - name parameter for field removal */
+("Testing rmfield() with name parameter:").echo();
+f.rmfield("test_field");
+(f.ls()).echo();
+
+("=== Testing debug() method with new parameter names ===").echo();
+/* debug(level, format) - level and format parameters for debugging */
+("Testing debug() with default parameters:").echo();
+debug_result = f.debug();
+(debug_result).echo();
+
+("Testing debug() with level and format parameters:").echo();
+debug_result2 = f.debug("VERBOSE", "DETAILS");
+(debug_result2).echo();
+
+("=== Test Complete ===").echo();
+("$file.grc regression test with new parameter names completed!").echo();

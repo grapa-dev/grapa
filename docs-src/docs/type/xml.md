@@ -85,6 +85,30 @@ xml.root.item.attr.id          /* Returns: "1" */
 xml.root.item.attr.class       /* Returns: "test" */
 ```
 
+### XML Rotation
+
+XML structures support left and right rotation operations for reordering child elements:
+
+#### Left Rotation (.lrot())
+```grapa
+xml = <root><item id="1">First</item><item id="2">Second</item><item id="3">Third</item></root>;
+
+xml.lrot();                              /* <root><item id="2">Second</item><item id="3">Third</item><item id="1">First</item></root> */
+xml.lrot(2);                             /* <root><item id="3">Third</item><item id="1">First</item><item id="2">Second</item></root> */
+xml.lrot(0);                             /* <root><item id="1">First</item><item id="2">Second</item><item id="3">Third</item></root> (no change) */
+```
+
+#### Right Rotation (.rrot())
+```grapa
+xml = <root><item id="1">First</item><item id="2">Second</item><item id="3">Third</item></root>;
+
+xml.rrot();                              /* <root><item id="3">Third</item><item id="1">First</item><item id="2">Second</item></root> */
+xml.rrot(2);                             /* <root><item id="2">Second</item><item id="3">Third</item><item id="1">First</item></root> */
+xml.rrot(0);                             /* <root><item id="1">First</item><item id="2">Second</item><item id="3">Third</item></root> (no change) */
+```
+
+> **Note:** Rotation methods preserve all child elements and their attributes while reordering them. For empty XML or single-element XML, rotation has no effect.
+
 ## Advanced Element Finding (.findall())
 
 The `.findall()` method provides **enterprise-grade querying capabilities** with support for complex patterns and logical operations.

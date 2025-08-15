@@ -25,6 +25,7 @@ tags:
 - [Array/Matrix Operations](#arraymatrix-operations)
 - [File System](#file-system)
 - [Time & Date](#time-date)
+- [Universal Object Methods](#universal-object-methods)
 
 ---
 
@@ -574,5 +575,44 @@ now = $time();
 formatted = now.format("%Y-%m-%d %H:%M:%S");
 tomorrow = now.add(86400);  /* Add 24 hours */
 ```
+
+[Back to Top](#grapa-api-reference)
+
+---
+
+## Universal Object Methods
+
+All Grapa objects support a comprehensive set of methods through the `$OBJ` class. These methods provide type conversion, manipulation, and utility functions that work on any data type.
+
+### Key Method Categories
+
+- **Type Conversion**: `.float()`, `.int()`, `.str()`, `.bool()`, `.base()`
+- **String Manipulation**: `.left()`, `.right()`, `.mid()`, `.trim()`, `.replace()`, `.interpolate()`
+- **Array Operations**: `.split()`, `.join()`, `.sort()`, `.unique()`, `.group()`
+- **Functional Programming**: `.map()`, `.filter()`, `.reduce()`, `.range()`
+- **Search & Pattern**: `.grep()`, `.match()`, `.findall()`
+- **Bit Manipulation**: `.setbit()`, `.clearbit()`, `.genbits()`
+- **Cryptography**: `.encode()`, `.decode()`, `.sign()`, `.verify()`, `.secret()`
+- **Utilities**: `.echo()`, `.iferr()`, `.exec()`, `.getname()`
+
+### Quick Examples
+
+```grapa
+/* Type conversion with precision */
+result = "3.14159".float(4, 0).base(16);
+
+/* String processing pipeline */
+text = "  Hello, World!  ";
+processed = text.trim().upper().replace("WORLD", "GRAPA");
+
+/* Functional array processing */
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+result = data
+    .filter(op(x) { x % 2 == 0; })
+    .map(op(x) { x * x; })
+    .reduce(op(acc, x) { acc + x; }, 0);
+```
+
+For complete documentation of all `$OBJ` methods with their parameters and examples, see **[$OBJ Methods Reference](type/obj_methods.md)**.
 
 [Back to Top](#grapa-api-reference)

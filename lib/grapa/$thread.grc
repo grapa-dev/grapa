@@ -8,7 +8,7 @@
 	wait = @<[op,@<thread_wait>]>; 
 	signal = @<[op,@<thread_signal>]>; 
 	waiting = @<[op,@<thread_waiting>]>; 
-	start = @<[op,@<thread_start,{null,@<var,{o}>,@<var,{p}>,@<var,{c}>}>],{o,p,c}>; 
+	start = @<[op,@<thread_start,{null,@<var,{runCode}>,@<var,{param}>,@<var,{doneCode}>}>],{runCode,param,doneCode}>; 
 	stop = @<[op,@<thread_stop>]>; 
 	started = @<[op,@<thread_started>]>; 
 	suspend = @<[op,@<thread_suspend>]>; 

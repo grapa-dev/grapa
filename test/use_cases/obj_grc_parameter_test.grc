@@ -1,0 +1,241 @@
+/* Focused test for methods with parameters that will be renamed */
+/* This test only includes methods that have parameters to change */
+
+("Starting parameter change test...").echo();
+
+/* Test data setup */
+test_str = "Hello, World!";
+test_int = 42;
+test_float = 3.14159;
+test_array = [1, 2, 3, 4, 5];
+
+("=== Testing Methods with Parameters to Rename ===").echo();
+
+/* Test float(b, c) -> float(precision, mode) */
+("Testing float() with parameters:").echo();
+(test_float.float(2, 0)).echo();
+(test_float.float(4, 0)).echo();
+
+/* Test fix(b, c) -> fix(precision, mode) */
+("Testing fix() with parameters:").echo();
+(test_float.fix(2, 0)).echo();
+(test_float.fix(4, 0)).echo();
+
+/* Test setfloat(b, c) -> setfloat(precision, mode) */
+("Testing setfloat() with parameters:").echo();
+(test_float.setfloat(2, 0)).echo();
+(test_float.setfloat(4, 0)).echo();
+
+/* Test setfix(b, c) -> setfix(precision, mode) */
+("Testing setfix() with parameters:").echo();
+(test_float.setfix(2, 0)).echo();
+(test_float.setfix(4, 0)).echo();
+
+/* Test vector(dim) -> vector(dim) */
+("Testing vector() with parameters:").echo();
+(test_array.vector(2)).echo();
+(test_array.vector(3)).echo();
+
+/* Test base(b) -> base(radix) */
+("Testing base() with parameters:").echo();
+(test_int.base(2)).echo();
+(test_int.base(8)).echo();
+(test_int.base(16)).echo();
+
+/* Test setconst(b) -> setconst(value) */
+("Testing setconst() with parameters:").echo();
+(test_int.setconst(100)).echo();
+(test_str.setconst("new value")).echo();
+
+/* Test left(b) -> left(count) */
+("Testing left() with parameters:").echo();
+(test_str.left(5)).echo();
+(test_str.left(-3)).echo();
+
+/* Test right(b) -> right(count) */
+("Testing right() with parameters:").echo();
+(test_str.right(5)).echo();
+(test_str.right(-3)).echo();
+
+/* Test mid(b, c) -> mid(start, count) */
+("Testing mid() with parameters:").echo();
+(test_str.mid(2, 5)).echo();
+(test_str.mid(0, 3)).echo();
+
+/* Test midtrim(items, offset, blocksize) -> midtrim(items, offset, size) */
+("Testing midtrim() with parameters:").echo();
+(test_str.midtrim([1,2,3], 2, 3)).echo();
+(test_str.midtrim([1,2,3], 0, 5)).echo();
+
+/* Test rtrim(b) -> rtrim(chars) */
+("Testing rtrim() with parameters:").echo();
+(test_str.rtrim()).echo();
+(test_str.rtrim("!")).echo();
+
+/* Test ltrim(b) -> ltrim(chars) */
+("Testing ltrim() with parameters:").echo();
+(test_str.ltrim()).echo();
+(test_str.ltrim("H")).echo();
+
+/* Test trim(b) -> trim(chars) */
+("Testing trim() with parameters:").echo();
+(test_str.trim()).echo();
+(test_str.trim("H!")).echo();
+
+/* Test lrot(b) -> lrot(count) */
+("Testing lrot() with parameters:").echo();
+(test_str.lrot(2)).echo();
+(test_str.lrot(-2)).echo();
+
+/* Test rrot(b) -> rrot(count) */
+("Testing rrot() with parameters:").echo();
+(test_str.rrot(2)).echo();
+(test_str.rrot(-2)).echo();
+
+/* Test lpad(b, c) -> lpad(width, char) */
+("Testing lpad() with parameters:").echo();
+(test_str.lpad(20, "*")).echo();
+(test_str.lpad(15, " ")).echo();
+
+/* Test rpad(b, c) -> rpad(width, char) */
+("Testing rpad() with parameters:").echo();
+(test_str.rpad(20, "*")).echo();
+(test_str.rpad(15, " ")).echo();
+
+/* Test replace(b, c) -> replace(old, new) */
+("Testing replace() with parameters:").echo();
+(test_str.replace("World", "Grapa")).echo();
+(test_str.replace("o", "0")).echo();
+
+/* Test interpolate(b) -> interpolate(vars) */
+("Testing interpolate() with parameters:").echo();
+(test_str.interpolate({"name": "Grapa"})).echo();
+(test_str.interpolate({"value": 42})).echo();
+
+/* Test split(sep, max, axis) -> split(delim, max, axis) */
+("Testing split() with parameters:").echo();
+(test_str.split(", ")).echo();
+(test_str.split(" ", 3, 0)).echo();
+
+/* Test join(sep, axis) -> join(delim, axis) */
+("Testing join() with parameters:").echo();
+(test_array.join(", ")).echo();
+(test_array.join("-", 0)).echo();
+
+/* Test findall(term) -> findall(pattern) */
+("Testing findall() with parameters:").echo();
+(test_str.findall("o")).echo();
+(test_str.findall("l")).echo();
+
+/* Test map(callback, data, threads) -> map(func, data, threads) */
+("Testing map() with parameters:").echo();
+(test_array.map(op(x) { x * 2; })).echo();
+(test_array.map(op(x) { x + 1; })).echo();
+
+/* Test filter(callback, data, threads) -> filter(func, data, threads) */
+("Testing filter() with parameters:").echo();
+(test_array.filter(op(x) { x > 2; })).echo();
+(test_array.filter(op(x) { x % 2 == 0; })).echo();
+
+/* Test reduce(callback, first, data) -> reduce(func, init, data) */
+("Testing reduce() with parameters:").echo();
+(test_array.reduce(op(acc, x) { acc + x; }, 0)).echo();
+(test_array.reduce(op(acc, x) { acc * x; }, 1)).echo();
+
+/* Test sort(axis, order, kind) -> sort(axis, order, kind) */
+("Testing sort() with parameters:").echo();
+([3, 1, 4, 1, 5].sort()).echo();
+([3, 1, 4, 1, 5].sort(0, 1)).echo();
+
+/* Test argsort(axis, order, kind) -> argsort(axis, order, kind) */
+("Testing argsort() with parameters:").echo();
+([3, 1, 4, 1, 5].argsort()).echo();
+([3, 1, 4, 1, 5].argsort(0, 1)).echo();
+
+/* Test unique(b) -> unique(axis) */
+("Testing unique() with parameters:").echo();
+([1, 2, 2, 3, 3, 3].unique()).echo();
+([1, 2, 2, 3, 3, 3].unique(1)).echo();
+
+/* Test range(stop, step) -> range(stop, step) */
+("Testing range() with parameters:").echo();
+(test_int.range()).echo();
+(test_int.range(10, 2)).echo();
+
+/* Test setbit(b) -> setbit(pos) */
+("Testing setbit() with parameters:").echo();
+(test_int.setbit(1)).echo();
+(test_int.setbit(3)).echo();
+
+/* Test clearbit(b) -> clearbit(pos) */
+("Testing clearbit() with parameters:").echo();
+(test_int.clearbit(1)).echo();
+(test_int.clearbit(3)).echo();
+
+/* Test genkeys(params) -> genkeys(params) */
+("Testing genkeys() with parameters:").echo();
+(test_int.genkeys()).echo();
+(test_str.genkeys()).echo();
+
+/* Test encode(alg, data) -> encode(method, data) */
+("Testing encode() with parameters:").echo();
+(test_str.encode("base64")).echo();
+(test_str.encode("hex")).echo();
+
+/* Test decode(alg, data) -> decode(method, data) */
+("Testing decode() with parameters:").echo();
+(test_str.decode("base64")).echo();
+(test_str.decode("hex")).echo();
+
+/* Test sign(alg, params) -> sign(method, params) */
+("Testing sign() with parameters:").echo();
+(test_str.sign("sha256")).echo();
+(test_str.sign("md5")).echo();
+
+/* Test signadd(alg, params) -> signadd(method, params) */
+("Testing signadd() with parameters:").echo();
+(test_str.signadd("sha256")).echo();
+(test_str.signadd("md5")).echo();
+
+/* Test verify(alg, data, params) -> verify(method, data, params) */
+("Testing verify() with parameters:").echo();
+(test_str.verify("sha256", "data")).echo();
+(test_str.verify("md5", "data")).echo();
+
+/* Test verifyrecover(alg, params) -> verifyrecover(method, params) */
+("Testing verifyrecover() with parameters:").echo();
+(test_str.verifyrecover("sha256")).echo();
+(test_str.verifyrecover("md5")).echo();
+
+/* Test secret(key) -> secret(key) */
+("Testing secret() with parameters:").echo();
+(test_str.secret("key")).echo();
+(test_int.secret("key")).echo();
+
+/* Test setfile(o, p, d) -> setfile(mode, path, data) */
+("Testing setfile() with parameters:").echo();
+(test_str.setfile("test.txt", "w")).echo();
+(test_str.setfile("test.txt", "a")).echo();
+
+/* Test exec(cb, set, get) -> exec(callback, set, get) */
+("Testing exec() with parameters:").echo();
+(test_str.exec()).echo();
+("echo 'test'".exec()).echo();
+
+/* Test getname(b) -> getname(index) */
+("Testing getname() with parameters:").echo();
+(test_str.getname()).echo();
+(test_int.getname()).echo();
+
+/* Test diagonal(b) -> diagonal(offset) */
+("Testing diagonal() with parameters:").echo();
+(test_array.diagonal()).echo();
+(test_array.diagonal(1)).echo();
+
+/* Test iferr(b) -> iferr(error) */
+("Testing iferr() with parameters:").echo();
+(test_int.iferr("error occurred")).echo();
+(test_str.iferr("error occurred")).echo();
+
+("=== Test Complete ===").echo();
+("Parameter change test completed!").echo();

@@ -1,0 +1,76 @@
+/* Corrected validation test for $OBJ.grc methods */
+/* This test uses proper data types and syntax for each method */
+
+("Starting corrected $OBJ.grc method validation test...").echo();
+
+/* Test data setup */
+test_str = "Hello, World!";
+test_array = [1, 2, 3, 4, 5];  /* $ARRAY - positional array */
+test_list = {a:1, b:2, c:3, d:4, e:5};  /* $LIST - associative list */
+test_xml = <root><item>Hello</item><item>World</item></root>;  /* $XML */
+test_matrix = [[1,2,3],[4,5,6],[7,8,9]];  /* $ARRAY of $ARRAY */
+
+("=== Testing String Rotation Methods ===").echo();
+
+/* Test lrot() and rrot() with $ARRAY and $LIST */
+("Testing lrot() with $ARRAY:").echo();
+(test_array.lrot(2)).echo();  /* Should rotate positional array left by 2 */
+
+("Testing rrot() with $ARRAY:").echo();
+(test_array.rrot(2)).echo();  /* Should rotate positional array right by 2 */
+
+("Testing lrot() with $LIST:").echo();
+(test_list.lrot(2)).echo();   /* Should rotate associative list left by 2 */
+
+("Testing rrot() with $LIST:").echo();
+(test_list.rrot(2)).echo();   /* Should rotate associative list right by 2 */
+
+("=== Testing FindAll Method ===").echo();
+
+/* Test findall() with $XML data */
+("Testing findall() with $XML:").echo();
+(test_xml.findall({name:"item"})).echo();  /* Should find all item elements */
+
+/* Test findall() with $LIST data */
+("Testing findall() with $LIST:").echo();
+(test_list.findall({has:{name:"a"}})).echo();     /* Should find elements with key "a" */
+
+/* Test findall() with $ARRAY data */
+("Testing findall() with $ARRAY:").echo();
+([{name:"Alice", age:30}, {name:"Bob", age:25}].findall({has:{name:"name"}})).echo();
+
+("=== Testing Diagonal Method ===").echo();
+
+/* Test diagonal() with proper matrix */
+("Testing diagonal() with matrix:").echo();
+(test_matrix.diagonal()).echo();           /* Should return main diagonal */
+
+("Testing diagonal() with offset:").echo();
+(test_matrix.diagonal(1)).echo();          /* Should return diagonal with offset 1 */
+
+("=== Testing Vector Methods ===").echo();
+
+/* Test vector() method */
+("Testing vector() method:").echo();
+(test_array.vector(2)).echo();             /* Should create 2D vector */
+
+("=== Testing Working Methods (Validation) ===").echo();
+
+/* Validate that working methods still work */
+("Testing float() with parameters:").echo();
+(test_str.float(2, 0)).echo();
+
+("Testing left() with parameters:").echo();
+(test_str.left(5)).echo();
+
+("Testing map() with parameters:").echo();
+(test_array.map(op(x) { x * 2; })).echo();
+
+("Testing filter() with parameters:").echo();
+(test_array.filter(op(x) { x > 2; })).echo();
+
+("Testing sort() with parameters:").echo();
+([3,1,4,1,5].sort()).echo();
+
+("=== Test Complete ===").echo();
+("Corrected $OBJ.grc method validation test completed!").echo();

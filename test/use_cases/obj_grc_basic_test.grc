@@ -1,0 +1,108 @@
+/* Basic test for $OBJ.grc methods */
+/* Testing core functionality without complex parameters */
+
+("Starting basic $OBJ.grc test...").echo();
+
+/* Test data setup */
+test_str = "Hello, World!";
+test_int = 42;
+test_float = 3.14159;
+test_array = [1, 2, 3, 4, 5];
+
+("=== Core Type Methods ===").echo();
+
+/* type() - Get type of object */
+("Testing type() method:").echo();
+(test_str.type()).echo();
+(test_int.type()).echo();
+(test_float.type()).echo();
+(test_array.type()).echo();
+
+/* describe() - Get detailed description */
+("Testing describe() method:").echo();
+(test_str.describe()).echo();
+(test_int.describe()).echo();
+
+/* raw() - Get raw representation */
+("Testing raw() method:").echo();
+(test_str.raw()).echo();
+(test_int.raw()).echo();
+
+/* bool() - Convert to boolean */
+("Testing bool() method:").echo();
+(test_str.bool()).echo();
+(test_int.bool()).echo();
+
+/* int() - Convert to integer */
+("Testing int() method:").echo();
+(test_str.int()).echo();
+(test_float.int()).echo();
+
+/* float() - Convert to float */
+("Testing float() method:").echo();
+(test_str.float()).echo();
+(test_int.float()).echo();
+
+/* str() - Convert to string */
+("Testing str() method:").echo();
+(test_int.str()).echo();
+(test_float.str()).echo();
+
+/* len() - Get length */
+("Testing len() method:").echo();
+(test_str.len()).echo();
+(test_array.len()).echo();
+
+/* echo() - Output to console */
+("Testing echo() method:").echo();
+(test_str.echo()).echo();
+(test_int.echo()).echo();
+
+("=== String Methods ===").echo();
+
+/* upper() - Convert to uppercase */
+("Testing upper() method:").echo();
+(test_str.upper()).echo();
+
+/* lower() - Convert to lowercase */
+("Testing lower() method:").echo();
+(test_str.lower()).echo();
+
+/* trim() - Trim both sides */
+("Testing trim() method:").echo();
+(test_str.trim()).echo();
+
+/* split() - Split string */
+("Testing split() method:").echo();
+(test_str.split(", ")).echo();
+
+/* replace() - Replace text */
+("Testing replace() method:").echo();
+(test_str.replace("World", "Grapa")).echo();
+
+("=== Array Methods ===").echo();
+
+/* reverse() - Reverse array */
+("Testing reverse() method:").echo();
+(test_array.reverse()).echo();
+
+/* join() - Join array */
+("Testing join() method:").echo();
+(test_array.join(", ")).echo();
+
+("=== Functional Methods ===").echo();
+
+/* map() - Apply function to each element */
+("Testing map() method:").echo();
+(test_array.map(op(x) { x * 2; })).echo();
+
+/* filter() - Filter elements */
+("Testing filter() method:").echo();
+(test_array.filter(op(x) { x > 2; })).echo();
+
+/* sort() - Sort elements */
+("Testing sort() method:").echo();
+([3, 1, 4, 1, 5].sort()).echo();
+
+("=== Test Complete ===").echo();
+("Basic $OBJ.grc methods tested!").echo();
