@@ -11,8 +11,8 @@ tags:
 **Document Status:** Phase 2D Implementation Complete ✅  
 **Created:** August 2025  
 **Last Updated:** August 2025  
-**Implementation Phase:** Phase 2D - Basic Functions Complete  
-**Next Phase:** Enhancement - Options Parameter Support  
+**Implementation Phase:** Phase 2D - Basic Functions Complete + Enhanced Options Support ✅  
+**Next Phase:** Additional Algorithms (Optional)  
 
 ## Overview
 
@@ -54,29 +54,21 @@ String distance functions measure how similar or different two strings are. They
 #### **3. Cosine Similarity** ✅ **IMPLEMENTED**
 - **Function**: `cosinesimilarity(other, options)`
 - **Return Type**: `FLOAT` (similarity score 0.0 to 1.0)
-- **Implementation**: Vector space model with TF-IDF weighting
+- **Implementation**: Vector space model with smart auto-detection (word frequency vs TF-IDF)
 - **Use Cases**: Document similarity, text analysis
 - **Examples**:
   ```grapa
-  "hello world".cosinesimilarity("hello there")  // Returns: 0.707
+  "hello world".cosinesimilarity("hello there")  // Returns: 0.999 (word frequency)
   "hello world".cosinesimilarity("hello world")  // Returns: 1.0
   ```
 
-### 📋 **PENDING** - Enhancement Features
+### ✅ **COMPLETED** - Enhanced Options Support
 
-#### **4. Options Parameter Support** 📋 **INCOMPLETE**
-- **Current Status**: Basic structure exists but object property access not working
-- **Issue**: `options.vVal->Get("case_sensitive")` fails - needs proper object property access
-- **Required Implementation**:
-  ```cpp
-  // Current (broken) approach:
-  GrapaRuleEvent* case_opt = options.vVal->Get("case_sensitive");
-  
-  // Needed approach:
-  u64 index;
-  GrapaRuleEvent* case_opt = options.vVal->vQueue ? 
-      options.vVal->vQueue->Search(GrapaCHAR("case_sensitive"), index) : NULL;
-  ```
+#### **4. Options Parameter Support** ✅ **IMPLEMENTED**
+- **Current Status**: Fully implemented with smart auto-detection
+- **Implementation**: Proper object property access using `Search()` method
+- **PTR Handling**: Follows `.findall()` pattern for handling PTR types
+- **Auto-Selection**: Automatically chooses TF-IDF when corpus provided, word frequency otherwise
 
 **Options Parameter Specification**:
 ```grapa
@@ -85,13 +77,23 @@ String distance functions measure how similar or different two strings are. They
 "Hello".jarowinkler("hello", {case_sensitive: false})  // Returns: 1.0
 "Hello".cosinesimilarity("hello", {case_sensitive: false})  // Returns: 1.0
 
+// Method selection for Cosine Similarity
+"hello world".cosinesimilarity("hello there", {method: "word_freq"})  // Force word frequency
+"hello world".cosinesimilarity("hello there", {method: "tfidf", corpus: documents})  // Force TF-IDF
+
+// Auto-selection (recommended)
+"hello world".cosinesimilarity("hello there")  // Uses word frequency (no corpus)
+"hello world".cosinesimilarity("hello there", {corpus: documents})  // Auto-uses TF-IDF
+
 // Default behavior (case-sensitive)
 "Hello".levenshtein("hello")  // Returns: 0 (identical)
 "Hello".jarowinkler("hello")  // Returns: 1.0 (identical)
 "Hello".cosinesimilarity("hello")  // Returns: 1.0 (identical)
 ```
 
-#### **5. Additional Algorithms** 📋 **PLANNED**
+### 📋 **OPTIONAL** - Additional Algorithms
+
+#### **5. Additional Algorithms** 📋 **PLANNED** (Optional Enhancement)
 - **Hamming Distance**: Character-by-character comparison for same-length strings
 - **N-gram Similarity**: N-gram based similarity for fuzzy matching
 - **Weighted Edit Distance**: Custom costs for insert/delete/substitute operations

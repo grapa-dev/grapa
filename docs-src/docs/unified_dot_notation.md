@@ -83,6 +83,14 @@ data["name"];   /* Bracket notation */
 data = {"user-name":"Alice", "age":30};
 data["user-name"];  /* Must use brackets for hyphens */
 data.age;           /* Works for simple names */
+
+/* ⚠️ IMPORTANT: Hyphens in property names require quotes */
+/* The hyphen (-) is interpreted as a subtraction operator */
+config = {ab:3, "a-b":4, a-b:5};  /* a-b becomes 5 (math operation) */
+config.ab;     /* 3 */
+config["a-b"]; /* 4 (correct) */
+config."a-b";  /* 4 (also correct) */
+/* config.a-b;  ❌ This would be interpreted as config.a - b (subtraction) */
 ```
 
 ### Dynamic Property Access

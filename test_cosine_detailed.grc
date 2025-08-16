@@ -1,0 +1,61 @@
+/* Detailed test to show differences between word frequency and TF-IDF */
+
+/* Test corpus with varied content */
+corpus = [
+    "the quick brown fox jumps over the lazy dog",
+    "a quick brown fox jumps over a lazy dog", 
+    "the lazy dog sleeps in the sun",
+    "a brown fox runs through the forest",
+    "the forest is full of trees and animals",
+    "animals live in the forest and mountains",
+    "the mountains are high and covered in snow",
+    "snow falls from the sky in winter",
+    "winter is cold and dark",
+    "the sun shines bright in summer"
+];
+
+/* Test documents */
+doc1 = "the quick brown fox";
+doc2 = "a quick brown fox";
+doc3 = "the lazy dog sleeps";
+doc4 = "animals in the forest";
+doc5 = "snow in winter";
+
+"=== Detailed Cosine Similarity Comparison ===".echo();
+"".echo();
+
+/* Compare same documents with different methods */
+"Comparing '${doc1}' vs '${doc2}':".interpolate().echo();
+"  Word Frequency: ${doc1.cosinesimilarity(doc2)}".interpolate().echo();
+"  TF-IDF: ${doc1.cosinesimilarity(doc2, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"".echo();
+
+"Comparing '${doc1}' vs '${doc3}':".interpolate().echo();
+"  Word Frequency: ${doc1.cosinesimilarity(doc3)}".interpolate().echo();
+"  TF-IDF: ${doc1.cosinesimilarity(doc3, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"".echo();
+
+"Comparing '${doc1}' vs '${doc4}':".interpolate().echo();
+"  Word Frequency: ${doc1.cosinesimilarity(doc4)}".interpolate().echo();
+"  TF-IDF: ${doc1.cosinesimilarity(doc4, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"".echo();
+
+"Comparing '${doc1}' vs '${doc5}':".interpolate().echo();
+"  Word Frequency: ${doc1.cosinesimilarity(doc5)}".interpolate().echo();
+"  TF-IDF: ${doc1.cosinesimilarity(doc5, {method: 'tfidf', corpus: corpus})}".interpolate().echo();
+"".echo();
+
+/* Test auto-selection */
+"".echo();
+"=== Auto-Selection Test ===".echo();
+"Auto-selection (no corpus): ${doc1.cosinesimilarity(doc2)}".interpolate().echo();
+"Auto-selection (with corpus): ${doc1.cosinesimilarity(doc2, {corpus: corpus})}".interpolate().echo();
+"".echo();
+
+/* Test case sensitivity */
+"=== Case Sensitivity Test ===".echo();
+"Case sensitive: ${'Hello World'.cosinesimilarity('hello world')}".interpolate().echo();
+"Case insensitive: ${'Hello World'.cosinesimilarity('hello world', {case_sensitive: false})}".interpolate().echo();
+"".echo();
+
+"=== Test completed ===".echo();

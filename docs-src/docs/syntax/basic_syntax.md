@@ -868,6 +868,14 @@ value = obj[1];             /* Returns 22 (index access) */
 value = obj["a"];           /* Returns 11 (key access) */
 value = obj.a;              /* Returns 11 (dot notation key access) */
 name = obj.getname(1);      /* Returns "b" (key name) */
+
+/* ⚠️ IMPORTANT: Hyphens in property names require quotes */
+/* The hyphen (-) is interpreted as a subtraction operator */
+config = {ab:3, "a-b":4, a-b:5};  /* a-b becomes 5 (math operation) */
+config.ab;     /* 3 */
+config["a-b"]; /* 4 (correct) */
+config."a-b";  /* 4 (also correct) */
+/* config.a-b;  ❌ This would be interpreted as config.a - b (subtraction) */
 ```
 
 - Use bracket and dot notation for `$LIST` and `$OBJ`.

@@ -63,22 +63,22 @@ inverse = value.modinv(modulus);  /* 4 */
 ### Prime Number Generation
 ```grapa
 /* Generate large prime numbers for mathematical research */
-prime_256 = 256.genprime();   /* 256-bit prime */
-prime_512 = 512.genprime();   /* 512-bit prime */
-prime_1024 = 1024.genprime(); /* 1024-bit prime */
+prime_256 = (256).genprime();   /* 256-bit prime */
+prime_512 = (512).genprime();   /* 512-bit prime */
+prime_1024 = (1024).genprime(); /* 1024-bit prime */
 
 ("Generated 256-bit prime: " + prime_256.str()).echo();
 
 /* Generate safe primes (p-1)/2 is also prime */
-safe_prime = 256.genprime(1);
+safe_prime = (256).genprime(1);
 ("Safe prime: " + safe_prime.str()).echo();
 ```
 
 ### Primality Testing
 ```grapa
 /* Test numbers for primality with high confidence */
-is_prime = 17.isprime();      /* true */
-is_prime = 100.isprime();     /* false */
+is_prime = (17).isprime();      /* true */
+is_prime = (100).isprime();     /* false */
 
 /* Test large numbers */
 large_number = 123456789012345678901234567890123456789;
@@ -86,7 +86,7 @@ is_large_prime = large_number.isprime();
 ("Is large number prime? " + is_large_prime.str()).echo();
 
 /* Test with custom confidence level */
-is_prime = 17.isprime(100);   /* Test with confidence 100 */
+is_prime = (17).isprime(100);   /* Test with confidence 100 */
 ```
 
 ### Greatest Common Divisor

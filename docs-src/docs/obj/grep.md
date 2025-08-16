@@ -345,7 +345,7 @@ The `mode` parameter controls how the input is processed:
 /* Result: ["Hello", "world"] - No need to escape backslashes */
 
 /* Complex patterns with raw strings */
-"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x");
+"file.txt".grep("^[a-zA-Z0-9_]+\\.txt$", "x");
 /* Result: ["file.txt"] - Much more readable than "\\^[a-zA-Z0-9_]\\+\\.txt\\$" */
 
 /* Raw strings preserve literal escape sequences */
@@ -403,11 +403,11 @@ For better readability of regex patterns, you can use raw string literals by pre
 /* Result: ["file.txt"] - Much cleaner! */
 
 /* Complex patterns benefit greatly */
-"user@domain.com".grep(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "x")
+"user@domain.com".grep("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", "x")
 /* Result: ["user@domain.com"] */
 
 /* Named groups with raw strings */
-"John Doe (30)".grep(r"(?P<first>\\w+) (?P<last>\\w+) \((?P<age>\\d+)\)", "oj")
+"John Doe (30)".grep("(?P<first>\\w+) (?P<last>\\w+) \\((?P<age>\\d+)\\)", "oj")
 /* Result: [{"match":"John Doe (30)","first":"John","last":"Doe","age":"30","offset":0,"line":1}] */
 ```
 

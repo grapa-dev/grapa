@@ -320,7 +320,7 @@ filter_data = op(p){p.len() > 10 ? p : null};
 ```grapa
 /* Data processing pipeline */
 clean_data = op(p){p.trim().lower()};
-validate_email = op(p){p.grep(/^[^@]+@[^@]+\.[^@]+$/)?p:null};
+validate_email = op(p){p.grep("^[^@]+@[^@]+\\.[^@]+$")?p:null};
 format_output = op(p){p.upper() + " - PROCESSED"};
 
 /* ETL grammar */

@@ -156,6 +156,25 @@ table_data = table.get("user1", "name");
 file_info = files[0];  /* May not work reliably */
 ```
 
+#### Property Names with Hyphens
+```grapa
+/* ⚠️ IMPORTANT: Hyphens in property names require quotes */
+/* The hyphen (-) is interpreted as a subtraction operator */
+
+/* ❌ Problem: Hyphen interpreted as subtraction */
+config = {ab:3, "a-b":4, a-b:5};  /* a-b becomes 5 (math operation) */
+config.a-b;  /* This is interpreted as config.a - b (subtraction) */
+
+/* ✅ Solution: Use quotes for hyphenated names */
+config = {ab:3, "a-b":4};
+config["a-b"];  /* 4 (correct) */
+config."a-b";   /* 4 (also correct) */
+
+/* ✅ Also works for function calls */
+config = {ab:3, "a-b":op(){44;}};
+config."a-b"();  /* 44 */
+```
+
 ## Debugging Techniques
 
 ### Check Object Types

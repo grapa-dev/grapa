@@ -34,6 +34,7 @@ limitations under the License.
 #include <cctype>
 #include <vector>
 #include <map>
+#include <set>
 #include <cmath>
 #include <algorithm>
 
@@ -18677,6 +18678,7 @@ GrapaRuleEvent* GrapaLibraryRuleCosineSimilarityEvent::Run(GrapaScriptExec *vScr
     GrapaRuleEvent *result = NULL;
     GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
     GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);
     
     if (r1.vVal && r2.vVal)
     {
@@ -18689,11 +18691,119 @@ GrapaRuleEvent* GrapaLibraryRuleCosineSimilarityEvent::Run(GrapaScriptExec *vScr
                 std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
                 std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
                 
-                // TODO: Add case-insensitive option support
-                // For now, always use case-sensitive comparison
+                                            // Parse options
+                            std::string method = "auto";  // Default to auto-selection
+                            std::vector<std::string> corpus;
+                            bool case_sensitive = true;   // Default to case-sensitive
+                            
+                            // printf("DEBUG: r3.vVal = %p, token = %d\n", r3.vVal, r3.vVal ? r3.vVal->mValue.mToken : -1);
+                            
+                            if (r3.vVal && (r3.vVal->mValue.mToken == GrapaTokenType::OBJ || r3.vVal->mValue.mToken == GrapaTokenType::LIST))
+                {
+                                                    // Parse method option
+                                s64 method_index = 0;
+                                GrapaRuleEvent* method_opt = r3.vVal->vQueue->Search(GrapaCHAR("method"), method_index);
+                                // printf("DEBUG: method_opt = %p\n", method_opt);
+                                if (method_opt && method_opt->mValue.mToken == GrapaTokenType::STR)
+                                            {
+                            std::string method_str(reinterpret_cast<const char*>(method_opt->mValue.mBytes), method_opt->mValue.mLength);
+                            // printf("DEBUG: method_str = '%s'\n", method_str.c_str());
+                            if (method_str == "word_freq" || method_str == "tfidf")
+                            {
+                                method = method_str;
+                                // printf("DEBUG: method set to '%s'\n", method.c_str());
+                            }
+                        }
+                    
+                                                    // Parse corpus option
+                                s64 corpus_index = 0;
+                                GrapaRuleEvent* corpus_opt = r3.vVal->vQueue->Search(GrapaCHAR("corpus"), corpus_index);
+                                // printf("DEBUG: corpus_opt = %p\n", corpus_opt);
+                                if (corpus_opt) {
+                                    // printf("DEBUG: corpus_opt token = %d (ARRAY=%d, LIST=%d)\n", 
+                                    //        corpus_opt->mValue.mToken, GrapaTokenType::ARRAY, GrapaTokenType::LIST);
+                                }
+                                // Handle PTR types like findall() does
+                                while (corpus_opt && corpus_opt->mValue.mToken == GrapaTokenType::PTR && corpus_opt->vRulePointer) 
+                                    corpus_opt = corpus_opt->vRulePointer;
+                                if (corpus_opt && (corpus_opt->mValue.mToken == GrapaTokenType::ARRAY || corpus_opt->mValue.mToken == GrapaTokenType::LIST || corpus_opt->vQueue != NULL))
+                    {
+                        // Extract corpus documents
+                                                            // printf("DEBUG: corpus_opt token = %d, vQueue = %p, count = %llu\n", 
+                                    //        corpus_opt->mValue.mToken, corpus_opt->vQueue, 
+                                    //        corpus_opt->vQueue ? corpus_opt->vQueue->mCount : 0);
+                                    if (corpus_opt->vQueue)
+                                    {
+                                        for (u64 i = 0; i < corpus_opt->vQueue->mCount; i++)
+                            {
+                                GrapaRuleEvent* doc = corpus_opt->vQueue->Head(i);
+                                if (doc && (doc->mValue.mToken == GrapaTokenType::STR || doc->mValue.mToken == GrapaTokenType::ID))
+                                {
+                                                                                    std::string doc_str(reinterpret_cast<const char*>(doc->mValue.mBytes), doc->mValue.mLength);
+                                                corpus.push_back(doc_str);
+                                                // printf("DEBUG: Added corpus doc: '%s'\n", doc_str.c_str());
+                                }
+                            }
+                        }
+                    }
+                    
+                                                    // Parse case_sensitive option
+                                s64 case_index = 0;
+                                GrapaRuleEvent* case_opt = r3.vVal->vQueue->Search(GrapaCHAR("case_sensitive"), case_index);
+                                // printf("DEBUG: case_opt = %p\n", case_opt);
+                                if (case_opt)
+                    {
+                        // printf("DEBUG: case_opt token = %d\n", case_opt->mValue.mToken);
+                        if (case_opt->mValue.mToken == GrapaTokenType::BOOL)
+                        {
+                            case_sensitive = (case_opt->mValue.mBytes && case_opt->mValue.mLength &&
+                                              case_opt->mValue.mBytes[0] && case_opt->mValue.mBytes[0] != '0');
+                            // printf("DEBUG: BOOL case_sensitive = %s\n", case_sensitive ? "true" : "false");
+                        }
+                        else if (case_opt->mValue.mToken == GrapaTokenType::STR)
+                        {
+                            std::string case_str(reinterpret_cast<const char*>(case_opt->mValue.mBytes), case_opt->mValue.mLength);
+                            case_sensitive = (case_str != "false" && case_str != "0");
+                            // printf("DEBUG: STR case_sensitive = %s (str='%s')\n", case_sensitive ? "true" : "false", case_str.c_str());
+                        }
+                        else
+                        {
+                            case_sensitive = !case_opt->IsZero();
+                            // printf("DEBUG: OTHER case_sensitive = %s\n", case_sensitive ? "true" : "false");
+                        }
+                    }
+                }
                 
-                // Calculate cosine similarity
-                double similarity = calculate_cosine_similarity(str1, str2);
+                // Auto-select method if not specified
+                if (method == "auto")
+                {
+                    if (!corpus.empty())
+                    {
+                        method = "tfidf";  // Use TF-IDF if corpus provided
+                    }
+                    else
+                    {
+                        method = "word_freq";  // Use word frequency otherwise
+                    }
+                }
+                
+                // Apply case sensitivity if needed
+                if (!case_sensitive)
+                {
+                    str1 = grapa_case_fold_string(str1);
+                    str2 = grapa_case_fold_string(str2);
+                }
+                
+                // Calculate similarity based on selected method
+                double similarity = 0.0;
+                if (method == "tfidf" && !corpus.empty())
+                {
+                    similarity = calculate_cosine_similarity_tfidf(str1, str2, corpus);
+                }
+                else
+                {
+                    similarity = calculate_cosine_similarity(str1, str2);
+                }
                 
                 // Return the similarity as a float using the double constructor
                 result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
@@ -20509,6 +20619,133 @@ double calculate_cosine_similarity(const std::string& str1, const std::string& s
     }
     
     for (const auto& pair : freq2) {
+        mag2 += pair.second * pair.second;
+    }
+    
+    mag1 = std::sqrt(mag1);
+    mag2 = std::sqrt(mag2);
+    
+    if (mag1 == 0.0 || mag2 == 0.0) return 0.0;
+    
+    return dot_product / (mag1 * mag2);
+}
+
+// Calculate cosine similarity between two strings using TF-IDF
+double calculate_cosine_similarity_tfidf(const std::string& str1, const std::string& str2, const std::vector<std::string>& corpus) {
+    if (str1.empty() && str2.empty()) return 1.0;
+    if (str1.empty() || str2.empty()) return 0.0;
+    if (corpus.empty()) return calculate_cosine_similarity(str1, str2);  // Fallback to word frequency
+    
+    // Split strings into words
+    std::vector<std::string> words1, words2;
+    
+    // Simple word extraction (split on whitespace)
+    std::string word;
+    for (char c : str1) {
+        if (std::isspace(c)) {
+            if (!word.empty()) {
+                words1.push_back(word);
+                word.clear();
+            }
+        } else {
+            word += c;
+        }
+    }
+    if (!word.empty()) words1.push_back(word);
+    
+    word.clear();
+    for (char c : str2) {
+        if (std::isspace(c)) {
+            if (!word.empty()) {
+                words2.push_back(word);
+                word.clear();
+            }
+        } else {
+            word += c;
+        }
+    }
+    if (!word.empty()) words2.push_back(word);
+    
+    // Build vocabulary from corpus
+    std::set<std::string> vocabulary;
+    std::vector<std::vector<std::string>> corpus_words;
+    
+    for (const auto& doc : corpus) {
+        std::vector<std::string> doc_words;
+        std::string doc_word;
+        for (char c : doc) {
+            if (std::isspace(c)) {
+                if (!doc_word.empty()) {
+                    doc_words.push_back(doc_word);
+                    vocabulary.insert(doc_word);
+                    doc_word.clear();
+                }
+            } else {
+                doc_word += c;
+            }
+        }
+        if (!doc_word.empty()) {
+            doc_words.push_back(doc_word);
+            vocabulary.insert(doc_word);
+        }
+        corpus_words.push_back(doc_words);
+    }
+    
+    // Add words from input strings to vocabulary
+    for (const auto& w : words1) vocabulary.insert(w);
+    for (const auto& w : words2) vocabulary.insert(w);
+    
+    // Calculate IDF for each word in vocabulary
+    std::map<std::string, double> idf;
+    double total_docs = static_cast<double>(corpus.size());
+    
+    for (const auto& word : vocabulary) {
+        int docs_containing_word = 0;
+        for (const auto& doc_words : corpus_words) {
+            for (const auto& doc_word : doc_words) {
+                if (doc_word == word) {
+                    docs_containing_word++;
+                    break;
+                }
+            }
+        }
+        // Add 1 to avoid log(0) and smooth IDF
+        idf[word] = std::log((total_docs + 1.0) / (docs_containing_word + 1.0));
+    }
+    
+    // Calculate TF-IDF vectors for input strings
+    std::map<std::string, double> tfidf1, tfidf2;
+    
+    // TF-IDF for str1
+    for (const auto& word : words1) {
+        tfidf1[word] += 1.0;  // TF (term frequency)
+    }
+    for (auto& pair : tfidf1) {
+        pair.second *= idf[pair.first];  // Multiply by IDF
+    }
+    
+    // TF-IDF for str2
+    for (const auto& word : words2) {
+        tfidf2[word] += 1.0;  // TF (term frequency)
+    }
+    for (auto& pair : tfidf2) {
+        pair.second *= idf[pair.first];  // Multiply by IDF
+    }
+    
+    // Calculate cosine similarity using TF-IDF vectors
+    double dot_product = 0.0;
+    double mag1 = 0.0;
+    double mag2 = 0.0;
+    
+    for (const auto& pair : tfidf1) {
+        mag1 += pair.second * pair.second;
+        auto it = tfidf2.find(pair.first);
+        if (it != tfidf2.end()) {
+            dot_product += pair.second * it->second;
+        }
+    }
+    
+    for (const auto& pair : tfidf2) {
         mag2 += pair.second * pair.second;
     }
     

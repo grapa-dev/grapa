@@ -30,10 +30,11 @@
 - **Lexical Processing System** - ✅ **ANALYZED** - `$&` flags and special lexer processing for complex formats
 - **BNF-Based ETL Analysis** - ✅ **DOCUMENTED** - Internal JSON/XML/HTML processing via `$function`, `$xmlcreate`, `$htmlcreate` rules
 
-**Current Focus:** ✅ **PHASE 2D COMPLETED & VERIFIED** - String distance functions implemented and tested
+**Current Focus:** ✅ **PHASE 2D COMPLETED & VERIFIED** - String distance functions with enhanced options support implemented and tested
 - **✅ Line Comments Implementation** - `/* */`, `/** */`, `//`, `///` support completed and verified working
 - **✅ String Interpolation Verification** - All interpolation features tested and working correctly
 - **✅ String Distance Functions** - `levenshtein()`, `jarowinkler()`, `cosinesimilarity()` implemented and tested
+- **✅ Enhanced Options Support** - Smart auto-detection, case sensitivity, method selection, corpus handling with PTR type support
 - **✅ String Distance Documentation** - Comprehensive implementation status and enhancement roadmap documented
 - **Next Focus:** Begin Phase 3 - Advanced Features and Performance Optimizations
 - **Documentation Status:** ✅ **COMPREHENSIVE** - Advanced language features documented, type system enhanced, syntax features documented, enterprise-grade XML/HTML capabilities documented with unified query system
@@ -67,6 +68,8 @@
 
 **Phase 2D Focus:** String Distance Functions (Weeks 12-13) - ✅ **COMPLETED**
 - **✅ String Distance Functions** - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity
+- **✅ Enhanced Options Support** - Smart auto-detection, case sensitivity, method selection, corpus handling
+- **✅ PTR Type Handling** - Proper options parsing following `.findall()` pattern for robust data access
 
 **Phase 3 Focus:** Advanced Features (Weeks 14-17)
 - **📋 Performance optimizations** - Compilation and execution improvements

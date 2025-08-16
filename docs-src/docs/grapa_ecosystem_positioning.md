@@ -207,7 +207,7 @@ result = process_all_formats(json_data, xml_data, sql_data);
 ```grapa
 /* Advanced binary pattern matching */
 binary_data = $file("data.bin").read();
-patterns = binary_data.grep(/pattern/, "b");
+patterns = binary_data.grep("pattern", "b");
 extracted = patterns.transform(extract_fields);
 ```
 
@@ -226,7 +226,7 @@ extracted = patterns.transform(extract_fields);
 /* Native database operations */
 db = $file("database.gdb");
 users = db.table("users");
-result = users.grep(age > 25).transform(format_user);
+result = users.grep("age > 25").transform(format_user);
 ```
 
 **Use Cases:**
@@ -243,7 +243,7 @@ result = users.grep(age > 25).transform(format_user);
 ```grapa
 /* Unlimited precision arithmetic */
 large_number = 123456789012345678901234567890 ** 123;
-prime = 256.genprime();  /* Cryptographic prime generation */
+prime = (256).genprime();  /* Cryptographic prime generation */
 timestamp = $TIME().utc();  /* Nanosecond precision */
 ```
 
@@ -484,6 +484,7 @@ The real gaps are features that would enhance Grapa's power while staying true t
 - ✅ **Database integration** - Native table operations (ROW, COL, GROUP)
 - ✅ **Unlimited precision** - Arbitrary-precision arithmetic for all numeric types
 - ✅ **Advanced pattern matching** - 100% ripgrep compatible with Unicode support and native `.match()` method
+- ✅ **String distance functions** - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity with smart auto-detection and options support
 - ✅ **Parallel processing** - Built-in thread safety and concurrent operations
 - ✅ **Cryptographic capabilities** - Prime generation, modular arithmetic, hash functions
 - ✅ **Unified path system** - Seamless file system and database navigation
@@ -518,18 +519,23 @@ The real gaps are features that would enhance Grapa's power while staying true t
 - ✅ **Operator precedence** - Improved string concatenation and method call precedence - **FULLY IMPLEMENTED**
 - ✅ **Nullish coalescing** - `.ifnull()` method for comprehensive nullish value handling - **FULLY IMPLEMENTED**
 
-### **Phase 3: Advanced Features (Weeks 9-12)**
+### **Phase 2D: String Distance Functions (Weeks 12-13)** - ✅ **COMPLETED**
+- ✅ **String Distance Functions** - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity
+- ✅ **Enhanced Options Support** - Smart auto-detection, case sensitivity, method selection, corpus handling
+- ✅ **PTR Type Handling** - Proper options parsing following `.findall()` pattern for robust data access
+
+### **Phase 3: Advanced Features (Weeks 14-17)**
 - 📋 **Performance optimizations** - Compilation and execution improvements
 - 📋 **Tooling enhancements** - Development environment improvements
-- ✅ **String Distance Functions** - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity
 
-### **Phase 4: Polish (Weeks 13-16)**
+### **Phase 4: Polish (Weeks 18-21)**
 - 📋 **Type system** - Type annotations and constraints
-- 📋 **Advanced data structures** - Sets (unique collections), Maps (ordered/hash-based), Iterators (lazy evaluation), Priority queues, Deques, Enhanced collections
+- 📋 **Advanced data structures** - Sets, Maps, Iterators, Priority queues, Deques, Enhanced collections
 - 📋 **Debugging tools** - Stack traces, profiling, hot reloading
 - 📋 **Module system** - Import/export capabilities
 - 📋 **Property Access** - Optional chaining (`?.`), property existence operators (`in`), property enumeration (`for...in`)
 - 📋 **Advanced language features** - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching, enhanced reflection
+- 📋 **Extension System** - Extending existing types with new methods (NEEDED - += syntax exists but doesn't add callable methods to system classes; requires C++ implementation for SYSID types in assignappend case; @global redefinition works but is unsafe)
 
 ## Future Positioning
 
@@ -642,7 +648,7 @@ import math
 
 # GrapaPy handles unlimited precision
 xy = grapapy.grapa()
-result = xy.eval("1000.factorial();")
+result = xy.eval("(1000).factorial();")
 print(result)  # Exact result, no overflow
 ```
 
@@ -854,17 +860,17 @@ matches.echo();  /* ["Hello world", "Goodbye world"] */
 
 /* Binary data support */
 binary_data = $file("data.bin").read();
-patterns = binary_data.grep(/pattern/, "b");
+patterns = binary_data.grep("pattern", "b");
 extracted = patterns.transform(extract_fields);
 
 /* Unicode and international support */
 unicode_text = "café résumé naïve";
-matches = unicode_text.grep(/[éèê]/u);
+matches = unicode_text.grep("[éèê]", "u");
 matches.echo();  /* ["café", "résumé", "naïve"] */
 
 /* Advanced regex features */
 text = "IP: 192.168.1.1, Port: 8080";
-ips = text.grep(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/);
+ips = text.grep("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b");
 ips.echo();  /* ["192.168.1.1"] */
 ```
 
@@ -876,33 +882,33 @@ ips.echo();  /* ["192.168.1.1"] */
 ```grapa
 /* Analyze binary files */
 binary_file = $file("executable.bin").read();
-strings = binary_file.grep(/[\x20-\x7E]{4,}/, "b");
-imports = binary_file.grep(/import.*dll/i, "b");
+strings = binary_file.grep("[\\x20-\\x7E]{4,}", "b");
+imports = binary_file.grep("import.*dll", "bi");
 ```
 
 **2. Log Analysis**
 ```grapa
 /* Process log files */
 log_data = $file("app.log").read();
-errors = log_data.grep(/ERROR.*/, "i");
-timestamps = log_data.grep(/\[\d{4}-\d{2}-\d{2}.*?\]/);
-ip_addresses = log_data.grep(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/);
+errors = log_data.grep("ERROR.*", "i");
+timestamps = log_data.grep("\\[\\d{4}-\\d{2}-\\d{2}.*?\\]");
+ip_addresses = log_data.grep("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b");
 ```
 
 **3. Data Extraction**
 ```grapa
 /* Extract structured data */
 csv_data = "name,age,city\nJohn,30,NY\nJane,25,CA";
-names = csv_data.grep(/^[^,]+/, "m");
-ages = csv_data.grep(/,(\d+),/, "o");
+names = csv_data.grep("^[^,]+", "m");
+ages = csv_data.grep(",(\\d+),", "o");
 ```
 
 **4. Protocol Analysis**
 ```grapa
 /* Parse network protocols */
 packet_data = $file("capture.pcap").read();
-http_requests = packet_data.grep(/GET.*HTTP/, "i");
-dns_queries = packet_data.grep(/DNS.*query/, "i");
+http_requests = packet_data.grep("GET.*HTTP", "i");
+dns_queries = packet_data.grep("DNS.*query", "i");
 ```
 
 ### **Grep Ecosystem Position**

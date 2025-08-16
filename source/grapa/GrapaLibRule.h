@@ -7,6 +7,7 @@
 
 #include "GrapaState.h"
 #include <string>
+#include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -308,6 +309,7 @@ public:
 int calculate_levenshtein_distance(const std::string& str1, const std::string& str2);
 double calculate_jaro_winkler_similarity(const std::string& str1, const std::string& str2);
 double calculate_cosine_similarity(const std::string& str1, const std::string& str2);
+double calculate_cosine_similarity_tfidf(const std::string& str1, const std::string& str2, const std::vector<std::string>& corpus);
 
 #endif //_GrapaLibRule_
 

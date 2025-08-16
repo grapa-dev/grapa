@@ -1,0 +1,56 @@
+/* Test data for Cosine Similarity with Options */
+
+/* Test corpus for TF-IDF */
+corpus = [
+    "the quick brown fox jumps over the lazy dog",
+    "a quick brown fox jumps over a lazy dog", 
+    "the lazy dog sleeps in the sun",
+    "a brown fox runs through the forest",
+    "the forest is full of trees and animals",
+    "animals live in the forest and mountains",
+    "the mountains are high and covered in snow",
+    "snow falls from the sky in winter",
+    "winter is cold and dark",
+    "the sun shines bright in summer"
+];
+
+/* Test documents */
+doc1 = "the quick brown fox";
+doc2 = "a quick brown fox";
+doc3 = "the lazy dog sleeps";
+doc4 = "animals in the forest";
+doc5 = "snow in winter";
+
+/* Test scenarios */
+"=== Testing Cosine Similarity with Auto-Selection ===".echo();
+
+/* Scenario 1: No options - should use word frequency */
+"Scenario 1: No options (word frequency)".echo();
+doc1.cosinesimilarity(doc2).echo();
+doc1.cosinesimilarity(doc3).echo();
+doc1.cosinesimilarity(doc4).echo();
+
+/* Scenario 2: With corpus - should auto-select TF-IDF */
+"Scenario 2: With corpus (auto TF-IDF)".echo();
+doc1.cosinesimilarity(doc2, {corpus: corpus}).echo();
+doc1.cosinesimilarity(doc3, {corpus: corpus}).echo();
+doc1.cosinesimilarity(doc4, {corpus: corpus}).echo();
+
+/* Scenario 3: Force word frequency */
+"Scenario 3: Force word frequency".echo();
+doc1.cosinesimilarity(doc2, {method: "word_freq"}).echo();
+doc1.cosinesimilarity(doc2, {method: "word_freq", corpus: corpus}).echo();
+
+/* Scenario 4: Force TF-IDF */
+"Scenario 4: Force TF-IDF".echo();
+doc1.cosinesimilarity(doc2, {method: "tfidf", corpus: corpus}).echo();
+doc1.cosinesimilarity(doc3, {method: "tfidf", corpus: corpus}).echo();
+
+/* Scenario 5: Edge cases */
+"Scenario 5: Edge cases".echo();
+"".cosinesimilarity("").echo();
+"".cosinesimilarity("hello").echo();
+"hello".cosinesimilarity("").echo();
+"hello".cosinesimilarity("hello").echo();
+
+"=== Test completed ===".echo();

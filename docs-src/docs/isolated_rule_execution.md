@@ -211,8 +211,8 @@ Parse network protocols and communication formats safely.
 **Advanced Pattern - Wrapper Functions in Rule Tokens:**
 ```grapa
 /* Define processing functions */
-validate_http = op(p){p.grep(/^[A-Z]+ /)?p:null};
-parse_headers = op(p){p.split("\n").filter(op(line){line.grep(/^[A-Za-z-]+: /)})};
+validate_http = op(p){p.grep("^[A-Z]+ ")?p:null};
+parse_headers = op(p){p.split("\n").filter(op(line){line.grep("^[A-Za-z-]+: ")})};
 extract_body = op(p){p.split("\r\n\r\n")[1] || ""};
 
 /* Use wrapper functions in isolated rules */

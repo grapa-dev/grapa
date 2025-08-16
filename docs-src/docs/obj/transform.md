@@ -379,14 +379,14 @@ Extracts matches from a string using PCRE2-powered regular expressions with full
   ] */
 
 /* Raw string literals for better readability */
-"file.txt".grep(r"^[a-zA-Z0-9_]+\.txt$", "x");
+"file.txt".grep("^[a-zA-Z0-9_]+\\.txt$", "x");
 /* → ["file.txt"] - No need to escape backslashes */
 
-"user@domain.com".grep(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", "x");
+"user@domain.com".grep("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", "x");
 /* → ["user@domain.com"] - Much cleaner than escaped version */
 
 /* Raw strings preserve literal escape sequences */
-"\\x45".grep(r"\x45", "o");
+"\\x45".grep("\\x45", "o");
 /* → ["\\x45"] - Literal string, not character "E" */
 
 /* Context lines */
@@ -598,23 +598,40 @@ Calculates **cosine similarity** using vector space model - treats strings as wo
 
 ### Implementation Notes
 
-#### Current Limitations
-- **Cosine Similarity**: Uses word frequency (Bag of Words) approach
-  - Good for: Small, domain-specific corpora (e.g., tweets about same topic)
-  - Limited for: General-purpose or larger corpora (may inflate similarity scores)
-  - **Why not TF-IDF?**: TF-IDF requires a larger corpus for meaningful IDF calculation
-- **Case Sensitivity**: All functions currently use case-sensitive comparison
-- **Options Parameter**: Not yet implemented
+#### Current Status ✅ **FULLY IMPLEMENTED**
+- **Cosine Similarity**: Now supports both word frequency and TF-IDF approaches
+  - **Auto-selection**: Automatically chooses TF-IDF when corpus is provided, word frequency otherwise
+  - **Manual selection**: Can force specific method using `{method: "word_freq"}` or `{method: "tfidf"}`
+  - **TF-IDF**: Uses corpus-based IDF calculation with smoothing to avoid log(0)
+  - **PTR Handling**: Properly handles Grapa's internal PTR types for corpus data
+- **Case Sensitivity**: Supports case-insensitive comparison via `{case_sensitive: false}`
+- **Options Parameter**: Fully implemented with auto-selection logic and robust parsing
 
-#### Future Enhancements
-- **TF-IDF for Cosine Similarity**: Better accuracy for general-purpose text analysis (requires corpus)
-- **Case-insensitive options**: Support for `{case_sensitive: false}` parameter
-- **Additional algorithms**: Hamming distance, N-gram similarity, weighted edit distance
+#### Auto-Selection Logic
+```grapa
+// No options → word frequency (backward compatible)
+"hello world".cosinesimilarity("hello there")
+
+// With corpus → automatically uses TF-IDF
+"hello world".cosinesimilarity("hello there", {corpus: my_documents})
+
+// Force specific method
+"hello world".cosinesimilarity("hello there", {method: "word_freq"})
+"hello world".cosinesimilarity("hello there", {method: "tfidf", corpus: my_documents})
+
+// Case-insensitive comparison
+"Hello World".cosinesimilarity("hello world", {case_sensitive: false})
+```
 
 #### When to Use Each Implementation
-- **Word Frequency (Current)**: Use for small, focused datasets where common words are meaningful
-- **TF-IDF (Future)**: Use for general-purpose text analysis with larger corpora to reduce noise from high-frequency words
+- **Word Frequency**: Use for small, focused datasets where common words are meaningful
+- **TF-IDF**: Use for general-purpose text analysis with larger corpora to reduce noise from high-frequency words
 - **Rule of Thumb**: For serious text analysis beyond toy data, TF-IDF is almost always better, but requires a meaningful corpus
+
+#### Future Enhancements (Optional)
+- **Additional algorithms**: Hamming distance, N-gram similarity, weighted edit distance
+- **Performance optimizations**: Caching for large corpora, parallel processing
+- **Advanced options**: Custom word weighting, stop word filtering, stemming
 
 ### Options Parameter (Future Enhancement)
 

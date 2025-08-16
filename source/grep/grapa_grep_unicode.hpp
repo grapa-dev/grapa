@@ -94,6 +94,7 @@ std::vector<std::string> extract_matches_with_lookaround(const std::string& inpu
 std::vector<std::string> split_input_for_parallel(const std::string& input, size_t num_chunks);
 std::vector<std::string> split_by_delimiter(const std::string& input, const std::string& delimiter);
 std::string remove_trailing_delimiter(const std::string& str, const std::string& delimiter);
+std::string grapa_case_fold_string(const std::string& input);
 
 // Test function
 std::vector<std::string> test_function();

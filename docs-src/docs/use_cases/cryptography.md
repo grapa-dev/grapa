@@ -17,15 +17,15 @@ Grapa provides comprehensive cryptographic capabilities through OpenSSL integrat
 
 ```grapa
 /* Generate a random 256-bit prime */
-prime = 256.genprime();
+prime = (256).genprime();
 ("Generated prime: " + prime.str() + "\n").echo();
 
 /* Generate a safe prime (p-1)/2 is also prime) */
-safe_prime = 256.genprime(1);
+safe_prime = (256).genprime(1);
 ("Safe prime: " + safe_prime.str() + "\n").echo();
 
 /* Get a predefined prime for testing (specific bit sizes only) */
-test_prime = 256.staticprime();
+test_prime = (256).staticprime();
 ("Test prime: " + test_prime.str() + "\n").echo();
 ```
 
@@ -35,11 +35,11 @@ test_prime = 256.staticprime();
 
 ```grapa
 /* Test if a number is prime */
-is_prime = 17.isprime();
+is_prime = (17).isprime();
 ("Is 17 prime? " + is_prime.str() + "\n").echo();
 
 /* Test with higher confidence (default is 64) */
-is_prime = 17.isprime(100);
+is_prime = (17).isprime(100);
 ("Is 17 prime with confidence 100? " + is_prime.str() + "\n").echo();
 
 /* Test large numbers */
@@ -232,7 +232,7 @@ decrypted = rsa_decrypt(encrypted, keys.get("private_key"));
 /* Diffie-Hellman key exchange */
 diffie_hellman_exchange = op() {
     /* Use a known safe prime and generator */
-    p = 256.staticprime();  /* Large prime */
+    p = (256).staticprime();  /* Large prime */
     g = 2;  /* Generator */
     
     /* Alice's private key (random) */
@@ -379,8 +379,8 @@ is_correct = verify_password(password, salt, stored_hash);
 /* Generate secure keys */
 generate_secure_keys = op() {
     /* Use sufficient key sizes */
-    p = 1024.genprime(1);  /* Safe prime */
-    q = 1024.genprime(1);  /* Safe prime */
+    p = (1024).genprime(1);  /* Safe prime */
+q = (1024).genprime(1);  /* Safe prime */
     
     /* Verify primality */
     p_prime = p.isprime(100);
@@ -490,7 +490,7 @@ sizes.range().each(op(i) {
 /* Monitor memory usage for large operations */
 large_operation = op() {
     /* Large prime generation */
-    large_prime = 2048.genprime();
+    large_prime = (2048).genprime();
     
     /* Large modular exponentiation */
     base = 123456789;

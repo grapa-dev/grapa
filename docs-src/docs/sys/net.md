@@ -53,7 +53,7 @@ For those familiar with using sockets in C++, the $net class is a representation
 n1 = $net();
 n1.bind(':12345');
 n2 = $net();
-n2.listen('@n1);
+n2.listen('@n1');
 ```
 
 ## onlisten(url,messageHandler [,connectHandler [,count:1]])
