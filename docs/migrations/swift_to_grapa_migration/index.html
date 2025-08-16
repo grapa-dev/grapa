@@ -2935,6 +2935,66 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#debugging-and-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging and Logging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debugging and Logging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enabling-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enabling Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-line-debug-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Debug Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-vs-swift-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug vs Swift Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-debug-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Debug Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3675,6 +3735,66 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#debugging-and-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging and Logging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debugging and Logging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enabling-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enabling Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-line-debug-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Debug Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-vs-swift-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug vs Swift Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-debug-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Debug Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -3970,7 +4090,7 @@
 <li><strong>Protocols</strong>: <code>protocol Baz {}</code> - No protocol system</li>
 <li><strong>Extensions</strong>: <code>extension Foo {}</code> - No extension system</li>
 <li><strong>Defer</strong>: <code>defer</code> - No defer mechanism</li>
-<li><strong>File/line macros</strong>: <code>#file</code>, <code>#line</code> - No file/line macros</li>
+<li><strong>File/line macros</strong>: <code>#file</code>, <code>#line</code> - Grapa provides <code>.debug()</code> method for sophisticated debugging and logging (outputs to stderr, can be redirected at CLI level)</li>
 <li><strong>Type aliases</strong>: <code>typealias Foo = Bar</code> - No type alias system</li>
 <li><strong>Any type</strong>: <code>Any</code> - No Any type system</li>
 <li><strong>Optional casting</strong>: <code>as?</code> - No optional casting</li>
@@ -3979,9 +4099,10 @@
 <li><strong>Annotations</strong>: <code>@escaping</code>, <code>@objc</code> - No annotation system</li>
 <li><strong>Generics</strong>: <code>&lt;T&gt;</code> - No generic system</li>
 <li><strong>Optionals</strong>: <code>Int?</code> - No optional type system</li>
-<li><strong>Optional chaining</strong>: <code>x?.doSomething()</code> - No optional chaining</li>
+<li><strong>Optional chaining</strong>: <code>x?.doSomething()</code> - Use <code>.iferr()</code> for superior safe property access: <code>x.doSomething.iferr("default")</code></li>
 <li><strong>Force unwrapping</strong>: <code>x!</code> - No force unwrapping</li>
-<li><strong>Nil coalescing</strong>: <code>x ?? 0</code> - No nil coalescing</li>
+<li><strong>Nil coalescing</strong>: <code>x ?? 0</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(0)</code></li>
+<li><strong>Method chaining</strong>: <code>"hello".uppercased() + " world".lowercased()</code> - Use string interpolation: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code></li>
 <li><strong>Lazy properties</strong>: <code>lazy var</code> - No lazy property system</li>
 <li><strong>Computed properties</strong>: - No computed property system</li>
 <li><strong>Property observers</strong>: - No property observer system</li>
@@ -4107,6 +4228,97 @@
 <div class="highlight"><pre><span></span><code>// Define a print function similar to Swift
 print = op(&quot;value&quot;=&quot;&quot;){value.echo();};
 print(&quot;Hello from Grapa!&quot;);
+</code></pre></div>
+<h2 id="debugging-and-logging">Debugging and Logging</h2>
+<p>Grapa provides sophisticated debugging capabilities that go beyond Swift's print and NSLog methods. While Grapa doesn't have <code>#file</code> and <code>#line</code> macros, it offers superior debugging through the <code>.debug()</code> method with component targeting and level control:</p>
+<h3 id="basic-debug-output">Basic Debug Output</h3>
+<div class="highlight"><pre><span></span><code>/* Standard output - equivalent to print() */
+&quot;Hello World&quot;.echo();
+
+/* Debug output with component targeting */
+&quot;Debug message&quot;.debug(1, &quot;component&quot;);
+
+/* Debug with different levels */
+&quot;Info message&quot;.debug(1, &quot;info&quot;);
+&quot;Warning message&quot;.debug(2, &quot;warning&quot;);
+&quot;Error message&quot;.debug(3, &quot;error&quot;);
+</code></pre></div>
+<h3 id="enabling-debug-mode">Enabling Debug Mode</h3>
+<div class="highlight"><pre><span></span><code>/* Enable debug mode for current session */
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_MODE&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_LEVEL&quot;, &quot;2&quot;);
+
+/* Enable debug for specific components */
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database,grep,vector&quot;);
+
+/* Enable all components at different levels */
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;grep:3,database:1,*:0&quot;);
+</code></pre></div>
+<h3 id="command-line-debug-options">Command Line Debug Options</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable debug mode from command line</span>
+./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
+
+<span class="c1"># Enable debug with specific components</span>
+<span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span><span class="s2">&quot;debug:1&quot;</span><span class="w"> </span>./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
+
+<span class="c1"># Enable debug with multiple components</span>
+<span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span><span class="s2">&quot;database:2,grep:1,vector:0&quot;</span><span class="w"> </span>./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
+</code></pre></div>
+<h3 id="debug-vs-swift-comparison">Debug vs Swift Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Swift</th>
+<th>Grapa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>print("Hello")</code></td>
+<td><code>"Hello".echo()</code></td>
+</tr>
+<tr>
+<td><code>print("Count: \(count)")</code></td>
+<td><code>"Count: ${count}".interpolate().echo()</code></td>
+</tr>
+<tr>
+<td><code>NSLog("Debug info")</code></td>
+<td><code>"Debug info".debug(1, "debug")</code></td>
+</tr>
+<tr>
+<td><code>print("Info message")</code></td>
+<td><code>"Info message".debug(1, "info")</code></td>
+</tr>
+<tr>
+<td><code>print("Warning")</code></td>
+<td><code>"Warning".debug(2, "warning")</code></td>
+</tr>
+<tr>
+<td><code>print("Error")</code></td>
+<td><code>"Error".debug(3, "error")</code></td>
+</tr>
+<tr>
+<td><code>print("Processing \(i)/\(total)")</code></td>
+<td><code>"Processing ${i}/${total}".interpolate().debug(1, "progress")</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="advanced-debug-patterns">Advanced Debug Patterns</h3>
+<div class="highlight"><pre><span></span><code>/* Debug with interpolation for clean output */
+&quot;Processing ${record_count} records...&quot;.debug(1, &quot;process&quot;);
+
+/* Debug with error handling */
+result = some_operation();
+if (result.type() == $ERR) {
+    &quot;Error occurred: ${result}&quot;.debug(3, &quot;error&quot;);
+} else {
+    &quot;Operation successful: ${result}&quot;.debug(1, &quot;info&quot;);
+};
+
+/* Debug with component-specific formatting */
+&quot;Database query: ${query}&quot;.debug(2, &quot;database&quot;);
+&quot;Network request: ${url}&quot;.debug(2, &quot;network&quot;);
+&quot;File operation: ${filename}&quot;.debug(2, &quot;filesystem&quot;);
 </code></pre></div>
 
 

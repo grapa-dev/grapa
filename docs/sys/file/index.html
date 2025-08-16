@@ -1833,9 +1833,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug" class="md-nav__link">
+  <a href="#dump" class="md-nav__link">
     <span class="md-ellipsis">
-      debug()
+      dump()
     </span>
   </a>
   
@@ -3965,9 +3965,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#debug" class="md-nav__link">
+  <a href="#dump" class="md-nav__link">
     <span class="md-ellipsis">
-      debug()
+      dump()
     </span>
   </a>
   
@@ -4576,9 +4576,9 @@ f.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
 <p>Deletes a field within the current working directory (database context).</p>
 <div class="highlight"><pre><span></span><code>f.rmfield(&quot;test&quot;);
 </code></pre></div>
-<h2 id="debug">debug()</h2>
+<h2 id="dump">dump()</h2>
 <p>Used for debugging the database during development. Displays the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).</p>
-<div class="highlight"><pre><span></span><code>f.debug();
+<div class="highlight"><pre><span></span><code>f.dump().echo();
 </code></pre></div>
 <h2 id="performance-considerations">Performance Considerations</h2>
 <h3 id="row-store-vs-column-store">Row Store vs Column Store</h3>
@@ -4615,8 +4615,8 @@ f.mkfield(&quot;name&quot;, &quot;STR&quot;, &quot;VAR&quot;);
 - <strong>Issue</strong>: High storage overhead
 - <strong>Solution</strong>: Use appropriate storage types and monitor growth parameters</p>
 <h3 id="debug-information">Debug Information</h3>
-<p>Use the <code>debug()</code> function to inspect database structure:
-<div class="highlight"><pre><span></span><code>f.debug();
+<p>Use the <code>dump()</code> function to inspect database structure:
+<div class="highlight"><pre><span></span><code>f.dump().echo();
 </code></pre></div></p>
 <p>This provides detailed information about:
 - Database type and structure

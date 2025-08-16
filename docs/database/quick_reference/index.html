@@ -4332,7 +4332,7 @@ f.pwd()  # Returns: /
 db_type = f.type()
 
 # Debug database structure
-f.debug()
+f.dump().echo()
 
 # Get file info
 info = f.info(&quot;filename&quot;)
@@ -4459,7 +4459,7 @@ try {
 </code></pre></div>
 <h3 id="debug-information">Debug Information</h3>
 <div class="highlight"><pre><span></span><code># Get detailed database information
-f.debug()
+f.dump().echo()
 
 # Check database structure
 f.ls()
@@ -4473,7 +4473,7 @@ f.info(&quot;field_name&quot;)
 <li><strong>Choose Right Database Type</strong>: Row vs Column based on workload</li>
 <li><strong>Use Appropriate Field Types</strong>: Match data types to storage needs</li>
 <li><strong>Optimize Storage Types</strong>: FIX for small data, VAR for variable data</li>
-<li><strong>Monitor Performance</strong>: Use debug() function regularly</li>
+<li><strong>Monitor Performance</strong>: Use dump() function regularly</li>
 <li><strong>Plan for Growth</strong>: Consider data growth patterns</li>
 </ol>
 <h3 id="memory-management">Memory Management</h3>

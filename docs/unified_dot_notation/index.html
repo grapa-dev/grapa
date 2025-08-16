@@ -2626,6 +2626,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#duplicate-key-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Duplicate Key Resolution
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3873,6 +3882,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#duplicate-key-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Duplicate Key Resolution
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4193,6 +4211,15 @@ user.age;       /* 30 */
 user.name = &quot;Bob&quot;;          /* Change name to &quot;Bob&quot; */
 user[&quot;age&quot;] = 25;           /* Change age to 25 */
 user.city = &quot;Boston&quot;;       /* Change city to &quot;Boston&quot; */
+
+/* Duplicate key resolution - last value wins */
+user2 = {name:&quot;Alice&quot;, age:30, name:&quot;Bob&quot;};
+user2.name;     /* &quot;Bob&quot; (last value) */
+
+user3 = {a:1, b:2, a:3, c:4, b:5};
+user3.a;        /* 3 (last value) */
+user3.b;        /* 5 (last value) */
+user3.c;        /* 4 (only value) */
 </code></pre></div>
 <h3 id="array-access">Array Access</h3>
 <div class="highlight"><pre><span></span><code>/* Array element access */
@@ -4241,6 +4268,24 @@ data[property];     /* &quot;Alice&quot; */
 properties = [&quot;name&quot;, &quot;age&quot;, &quot;city&quot;];
 properties.map(op(prop){data[prop];}).echo();
 </code></pre></div>
+<h3 id="duplicate-key-resolution">Duplicate Key Resolution</h3>
+<p>When objects contain duplicate keys, Grapa follows "last value wins" behavior:</p>
+<div class="highlight"><pre><span></span><code>/* Duplicate keys - last value wins */
+config = {debug: false, port: 8080, debug: true};
+config.debug;   /* true (last value) */
+config.port;    /* 8080 (only value) */
+
+/* Multiple duplicates */
+settings = {theme: &quot;dark&quot;, timeout: 30, theme: &quot;light&quot;, timeout: 60};
+settings.theme;    /* &quot;light&quot; (last value) */
+settings.timeout;  /* 60 (last value) */
+</code></pre></div>
+<p><strong>Key Points:</strong>
+- <strong>Search Order</strong>: Property resolution searches from tail to head (reverse order)
+- <strong>Last Value Wins</strong>: When duplicate keys exist, the last occurrence takes precedence
+- <strong>JSON Compatibility</strong>: Matches behavior of JSON in other programming languages
+- <strong>Index Access Unchanged</strong>: Array-style indexing (<code>obj[0]</code>, <code>obj[1]</code>) uses position-based access
+- <strong>Property Assignment</strong>: Assignment also targets the last occurrence of duplicate keys</p>
 <h2 id="xml-and-html-navigation">XML and HTML Navigation</h2>
 <h3 id="element-hierarchy">Element Hierarchy</h3>
 <p>XML and HTML structures can be navigated using the same indexing patterns:</p>

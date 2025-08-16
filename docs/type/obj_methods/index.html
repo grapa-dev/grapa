@@ -5773,9 +5773,14 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 <div class="highlight"><pre><span></span><code>obj.identity();            /* Returns identity matrix */
 </code></pre></div>
 <h3 id="sortaxis-order-kind"><code>.sort(axis, order, kind)</code></h3>
-<p>Sorts the elements of an array.</p>
-<div class="highlight"><pre><span></span><code>[3,1,4,1,5].sort();        /* Returns: [1,1,3,4,5] */
+<p>Sorts elements across multiple data types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
+<div class="highlight"><pre><span></span><code>/* Arrays and Tuples - sort by value */
+[3,1,4,1,5].sort();        /* Returns: [1,1,3,4,5] */
 [3,1,4,1,5].sort(0, 1);    /* Returns: [5,4,3,1,1] */
+(3,1,4,1,5).sort();        /* Returns: (1,1,3,4,5) */
+
+/* Lists and Objects - sort by key */
+{c:3,a:1,b:2}.sort();      /* Returns: {&quot;a&quot;:1,&quot;b&quot;:2,&quot;c&quot;:3} */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>axis</code> (default: null) - Axis to sort along
@@ -5791,9 +5796,14 @@ matrix.diagonal(-1);       /* Returns: [4,8] (lower diagonal) */
 - <code>order</code> (default: null) - Sort order (1 for descending)
 - <code>kind</code> (default: null) - Sort algorithm</p>
 <h3 id="uniqueaxis"><code>.unique(axis)</code></h3>
-<p>Returns unique elements from the array.</p>
-<div class="highlight"><pre><span></span><code>[1,2,2,3,3,3].unique();    /* Returns: [1,2,3] */
+<p>Returns unique elements across multiple data types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
+<div class="highlight"><pre><span></span><code>/* Arrays and Tuples - remove duplicate values */
+[1,2,2,3,3,3].unique();    /* Returns: [1,2,3] */
 [1,2,2,3,3,3].unique(1);   /* Returns: [1,2,3] */
+(1,2,2,3,3,3).unique();    /* Returns: (1,2,3) */
+
+/* Lists and Objects - remove duplicate keys, keeping last value */
+{a:1,b:2,a:3,c:4,b:5}.unique();  /* Returns: {&quot;a&quot;:3,&quot;b&quot;:5,&quot;c&quot;:4} */
 </code></pre></div>
 <p><strong>Parameters:</strong>
 - <code>axis</code> (default: null) - Axis for uniqueness</p>

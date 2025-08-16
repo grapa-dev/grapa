@@ -2783,6 +2783,66 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#debugging-and-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging and Logging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debugging and Logging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enabling-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enabling Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-line-debug-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Debug Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-vs-console-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug vs Console Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-debug-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Debug Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#work-in-progress-wip-items" class="md-nav__link">
     <span class="md-ellipsis">
       Work-in-Progress (WIP) Items
@@ -3853,6 +3913,66 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#debugging-and-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging and Logging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Debugging and Logging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-debug-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Debug Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enabling-debug-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Enabling Debug Mode
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#command-line-debug-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Command Line Debug Options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-vs-console-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug vs Console Comparison
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-debug-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Debug Patterns
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#work-in-progress-wip-items" class="md-nav__link">
     <span class="md-ellipsis">
       Work-in-Progress (WIP) Items
@@ -4166,8 +4286,8 @@
 <p>This guide helps JavaScript users transition to Grapa by mapping common JS idioms, patterns, and code to their Grapa equivalents.</p>
 <blockquote>
 <p><strong>Comment Style:</strong>
-- Only block comments (<code>/* ... */</code>) are supported in Grapa, and must always be on their own line.
-- <code>//</code> and <code>#</code> comments are not supported and will cause errors.</p>
+- ✅ <strong>Comprehensive comment support</strong>: <code>/* */</code> (block), <code>/** */</code> (doc block), <code>//</code> (line), <code>///</code> (doc line)
+- Comments work everywhere including at end of lines and inside code blocks</p>
 </blockquote>
 <h2 id="syntax-mapping-table">Syntax Mapping Table</h2>
 <table>
@@ -4180,7 +4300,7 @@
 <tbody>
 <tr>
 <td><code>for (let i=0; i&lt;arr.length; i++)</code></td>
-<td><code>i = 0; while (i &lt; arr.len()) { ...; i += 1; }</code><br><code>arr.map(op(x) { ... })</code><br><code>(n).range(0,1).map(op(i) { ... })</code></td>
+<td><code>for i in arr { ... }</code><br><code>i = 0; while (i &lt; arr.len()) { ...; i += 1; }</code><br><code>arr.map(op(x) { ... })</code><br><code>(n).range(0,1).map(op(i) { ... })</code></td>
 </tr>
 <tr>
 <td><code>if (cond) { ... }</code></td>
@@ -4212,7 +4332,7 @@
 </tr>
 <tr>
 <td><code>/* comment */</code></td>
-<td><code>/* comment */</code> (block only, own line)</td>
+<td><code>/* comment */</code> (block)<br><code>/** comment */</code> (doc block)<br><code>// comment</code> (line)<br><code>/// comment</code> (doc line)</td>
 </tr>
 <tr>
 <td><code>true/false</code></td>
@@ -4371,10 +4491,10 @@ value = table.get(&quot;user1&quot;, &quot;name&quot;);   /* Correct */
 <p>See <a href="../../syntax/basic_syntax/">Basic Syntax Guide</a> for empirical test results and future updates.</p>
 <h2 id="common-pitfalls">Common Pitfalls</h2>
 <ul>
-<li>No <code>for</code>/<code>foreach</code> loops—use <code>while</code> or <code>.range()</code>+functional methods (<code>.range()</code> is native: <code>(10).range()</code>)</li>
+<li>✅ <strong>For loops now supported</strong> - Use <code>for x in arr { ... }</code> for native iteration</li>
 <li>No <code>try/catch</code>—use <code>.iferr()</code> for fallback or check for <code>$ERR</code></li>
 <li>No <code>.push()</code>/<code>.pop()</code>—use <code>+=</code> and manual index for pop</li>
-<li>No <code>/* comment */</code> comments—only block comments (<code>/* ... */</code>), always on their own line</li>
+<li>✅ <strong>Line comments now supported</strong> - Use <code>// comment</code> or <code>/// doc comment</code> in addition to block comments</li>
 <li>No attribute-style access for object keys—use <code>[]</code>, or dot notation for <code>$LIST</code>/<code>$OBJ</code></li>
 <li>No implicit truthy/falsy—use explicit boolean checks</li>
 <li>All statements and blocks must end with a semicolon (<code>;</code>)</li>
@@ -4487,6 +4607,97 @@ console_log = op(&quot;value&quot;=&quot;&quot;){value.echo();};
 console_log(&quot;Hello from Grapa!&quot;);
 </code></pre></div>
 <p>This can make migration easier for those used to JavaScript's <code>console.log()</code> or similar functions.</p>
+<h2 id="debugging-and-logging">Debugging and Logging</h2>
+<p>Grapa provides sophisticated debugging capabilities that go beyond JavaScript's console methods. While Grapa doesn't have <code>__FILE__</code> and <code>__LINE__</code> macros, it offers superior debugging through the <code>.debug()</code> method with component targeting and level control:</p>
+<h3 id="basic-debug-output">Basic Debug Output</h3>
+<div class="highlight"><pre><span></span><code>/* Standard output - equivalent to console.log() */
+&quot;Hello World&quot;.echo();
+
+/* Debug output with component targeting */
+&quot;Debug message&quot;.debug(1, &quot;component&quot;);
+
+/* Debug with different levels */
+&quot;Info message&quot;.debug(1, &quot;info&quot;);
+&quot;Warning message&quot;.debug(2, &quot;warning&quot;);
+&quot;Error message&quot;.debug(3, &quot;error&quot;);
+</code></pre></div>
+<h3 id="enabling-debug-mode">Enabling Debug Mode</h3>
+<div class="highlight"><pre><span></span><code>/* Enable debug mode for current session */
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_MODE&quot;, &quot;1&quot;);
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_LEVEL&quot;, &quot;2&quot;);
+
+/* Enable debug for specific components */
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;database,grep,vector&quot;);
+
+/* Enable all components at different levels */
+$sys().putenv(&quot;GRAPA_SESSION_DEBUG_COMPONENTS&quot;, &quot;grep:3,database:1,*:0&quot;);
+</code></pre></div>
+<h3 id="command-line-debug-options">Command Line Debug Options</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable debug mode from command line</span>
+./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
+
+<span class="c1"># Enable debug with specific components</span>
+<span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span><span class="s2">&quot;debug:1&quot;</span><span class="w"> </span>./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
+
+<span class="c1"># Enable debug with multiple components</span>
+<span class="nv">GRAPA_SESSION_DEBUG_COMPONENTS</span><span class="o">=</span><span class="s2">&quot;database:2,grep:1,vector:0&quot;</span><span class="w"> </span>./grapa<span class="w"> </span>-d<span class="w"> </span>script.grc
+</code></pre></div>
+<h3 id="debug-vs-console-comparison">Debug vs Console Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>JavaScript</th>
+<th>Grapa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>console.log("Hello")</code></td>
+<td><code>"Hello".echo()</code></td>
+</tr>
+<tr>
+<td><code>console.debug("Debug info")</code></td>
+<td><code>"Debug info".debug(1, "debug")</code></td>
+</tr>
+<tr>
+<td><code>console.info("Info message")</code></td>
+<td><code>"Info message".debug(1, "info")</code></td>
+</tr>
+<tr>
+<td><code>console.warn("Warning")</code></td>
+<td><code>"Warning".debug(2, "warning")</code></td>
+</tr>
+<tr>
+<td><code>console.error("Error")</code></td>
+<td><code>"Error".debug(3, "error")</code></td>
+</tr>
+<tr>
+<td><code>console.log(\</code>Count: \${count}`)<code>|</code>"Count: ${count}".interpolate().echo()`</td>
+<td></td>
+</tr>
+<tr>
+<td><code>console.log(\</code>Processing \${i}/\${total}`)<code>|</code>"Processing ${i}/${total}".interpolate().debug(1, "progress")`</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="advanced-debug-patterns">Advanced Debug Patterns</h3>
+<div class="highlight"><pre><span></span><code>/* Debug with interpolation for clean output */
+&quot;Processing ${record_count} records...&quot;.debug(1, &quot;process&quot;);
+
+/* Debug with error handling */
+result = some_operation();
+if (result.type() == $ERR) {
+    &quot;Error occurred: ${result}&quot;.debug(3, &quot;error&quot;);
+} else {
+    &quot;Operation successful: ${result}&quot;.debug(1, &quot;info&quot;);
+};
+
+/* Debug with component-specific formatting */
+&quot;Database query: ${query}&quot;.debug(2, &quot;database&quot;);
+&quot;Network request: ${url}&quot;.debug(2, &quot;network&quot;);
+&quot;File operation: ${filename}&quot;.debug(2, &quot;filesystem&quot;);
+</code></pre></div>
 <blockquote>
 <p><strong>Advanced:</strong> Grapa also allows advanced users to customize or extend the language syntax using <code>$RULE</code> or by modifying <code>$global</code> rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.</p>
 </blockquote>
@@ -4497,7 +4708,7 @@ console_log(&quot;Hello from Grapa!&quot;);
 <ul>
 <li><strong>with statement</strong>: <code>with (obj)</code> - No with statement support</li>
 <li><strong>Labeled statements</strong>: <code>label: statement</code> - No labeled statement support</li>
-<li><strong>Debugger statement</strong>: - No debugger statement support</li>
+<li><strong>Debugger statement</strong>: - Grapa provides <code>.debug()</code> method for sophisticated debugging and logging (outputs to stderr, can be redirected at CLI level)</li>
 <li><strong>Strict mode</strong>: - Grapa is strict by default</li>
 <li><strong>Hoisting</strong>: - Grapa has different scoping rules</li>
 <li><strong>Closure scope</strong>: - Grapa has different scoping rules</li>
@@ -4618,11 +4829,12 @@ if (value.type() == $INT) {
 <h3 id="nice-to-have">Nice to Have</h3>
 <p>These would improve developer experience but aren't essential:</p>
 <ul>
-<li><strong>Template literals</strong>: <code>`Hello ${name}`</code> - Use string concatenation: <code>"Hello " + name</code> or see <a href="../../type/str/#string-templates-and-dynamic-construction">String Templates and Dynamic Construction</a> for advanced patterns</li>
+<li><strong>Template literals</strong>: <code>`Hello ${name}`</code> - Use <code>"Hello ${name}".interpolate()</code> (preferred) or string concatenation: <code>"Hello " + name</code> or see <a href="../../type/str/#string-templates-and-dynamic-construction">String Templates and Dynamic Construction</a> for advanced patterns</li>
+<li><strong>Method chaining</strong>: <code>"hello".toUpperCase() + " world".toLowerCase()</code> - Use string interpolation: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code></li>
 <li><strong>Destructuring</strong>: <code>const {a, b} = obj</code> - Use explicit property access: <code>a = obj.a; b = obj.b;</code></li>
 <li><strong>Spread operator</strong>: <code>[...arr1, ...arr2]</code> - Use <code>+=</code> operator: <code>arr1 += arr2</code></li>
-<li><strong>Optional chaining</strong>: <code>obj?.prop?.sub</code> - Use explicit null checks: <code>if (obj &amp;&amp; obj.prop) { obj.prop.sub; }</code></li>
-<li><strong>Nullish coalescing</strong>: <code>x ?? y</code> - Use explicit null checks: <code>if (x == null) { x = y; }</code></li>
+<li><strong>Optional chaining</strong>: <code>obj?.prop?.sub</code> - Use <code>.iferr()</code> for superior safe property access: <code>obj.prop.iferr(null).sub.iferr("default")</code></li>
+<li><strong>Nullish coalescing</strong>: <code>x ?? y</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(y)</code></li>
 <li><strong>Logical assignment</strong>: <code>x ||= y</code> - Use explicit assignment: <code>if (!x) { x = y; }</code> (no <code>||=</code> operator)</li>
 <li><strong>Class syntax</strong>: <code>class MyClass</code> - Use object constructors and functions</li>
 <li><strong>Private fields</strong>: <code>#private</code> - Use naming conventions like <code>_private</code></li>
@@ -4650,7 +4862,7 @@ if (value.type() == $INT) {
 <li><strong>Meta-programming</strong>: <code>eval()</code>, <code>Function()</code> - Use Grapa's built-in code generation</li>
 <li><strong>with statement</strong>: <code>with (obj)</code> - Use explicit property access</li>
 <li><strong>Labeled statements</strong>: <code>label: statement</code> - Use regular control flow</li>
-<li><strong>Debugger statement</strong>: - Use Grapa's debugging tools</li>
+<li><strong>Debugger statement</strong>: - Use Grapa's <code>.debug()</code> method: <code>"Debug info".debug(0)</code> (requires <code>-d</code> flag)</li>
 <li><strong>Strict mode</strong>: - Grapa is strict by default</li>
 <li><strong>Hoisting</strong>: - Grapa has different scoping rules</li>
 <li><strong>Closure scope</strong>: - Grapa has different scoping rules</li>

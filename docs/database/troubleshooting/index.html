@@ -4407,8 +4407,8 @@
 - Consider indexing strategies</p>
 <h2 id="debug-information">Debug Information</h2>
 <h3 id="using-the-debug-function">Using the Debug Function</h3>
-<p>The <code>debug()</code> function provides detailed information about database structure:</p>
-<div class="highlight"><pre><span></span><code>f.debug()
+<p>The <code>dump()</code> function provides detailed information about database structure:</p>
+<div class="highlight"><pre><span></span><code>f.dump().echo()
 </code></pre></div>
 <p><strong>Information Provided</strong>:
 - Database type and structure
@@ -4513,7 +4513,7 @@ f.mkfield(&quot;age&quot;, &quot;INT&quot;, &quot;FIX&quot;, 4)
 </ol>
 <h3 id="performance-monitoring">Performance Monitoring</h3>
 <ol>
-<li>Use <code>debug()</code> function regularly</li>
+<li>Use <code>dump()</code> function regularly</li>
 <li>Monitor storage efficiency</li>
 <li>Track query performance patterns</li>
 <li>Adjust parameters based on usage</li>
