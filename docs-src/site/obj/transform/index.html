@@ -2500,18 +2500,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#current-limitations" class="md-nav__link">
+  <a href="#current-status-fully-implemented" class="md-nav__link">
     <span class="md-ellipsis">
-      Current Limitations
+      Current Status ✅ FULLY IMPLEMENTED
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#future-enhancements" class="md-nav__link">
+  <a href="#auto-selection-logic" class="md-nav__link">
     <span class="md-ellipsis">
-      Future Enhancements
+      Auto-Selection Logic
     </span>
   </a>
   
@@ -2521,6 +2521,15 @@
   <a href="#when-to-use-each-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       When to Use Each Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-enhancements-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements (Optional)
     </span>
   </a>
   
@@ -4798,18 +4807,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#current-limitations" class="md-nav__link">
+  <a href="#current-status-fully-implemented" class="md-nav__link">
     <span class="md-ellipsis">
-      Current Limitations
+      Current Status ✅ FULLY IMPLEMENTED
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#future-enhancements" class="md-nav__link">
+  <a href="#auto-selection-logic" class="md-nav__link">
     <span class="md-ellipsis">
-      Future Enhancements
+      Auto-Selection Logic
     </span>
   </a>
   
@@ -4819,6 +4828,15 @@
   <a href="#when-to-use-each-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       When to Use Each Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-enhancements-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements (Optional)
     </span>
   </a>
   
@@ -5383,14 +5401,14 @@ class_template.interpolate({class_name:&quot;User&quot;, field_type:&quot;String
   ] */
 
 /* Raw string literals for better readability */
-&quot;file.txt&quot;.grep(r&quot;^[a-zA-Z0-9_]+\.txt$&quot;, &quot;x&quot;);
+&quot;file.txt&quot;.grep(&quot;^[a-zA-Z0-9_]+\\.txt$&quot;, &quot;x&quot;);
 /* → [&quot;file.txt&quot;] - No need to escape backslashes */
 
-&quot;user@domain.com&quot;.grep(r&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$&quot;, &quot;x&quot;);
+&quot;user@domain.com&quot;.grep(&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$&quot;, &quot;x&quot;);
 /* → [&quot;user@domain.com&quot;] - Much cleaner than escaped version */
 
 /* Raw strings preserve literal escape sequences */
-&quot;\\x45&quot;.grep(r&quot;\x45&quot;, &quot;o&quot;);
+&quot;\\x45&quot;.grep(&quot;\\x45&quot;, &quot;o&quot;);
 /* → [&quot;\\x45&quot;] - Literal string, not character &quot;E&quot; */
 
 /* Context lines */
@@ -5625,26 +5643,41 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 </tbody>
 </table>
 <h3 id="implementation-notes">Implementation Notes</h3>
-<h4 id="current-limitations">Current Limitations</h4>
+<h4 id="current-status-fully-implemented">Current Status ✅ <strong>FULLY IMPLEMENTED</strong></h4>
 <ul>
-<li><strong>Cosine Similarity</strong>: Uses word frequency (Bag of Words) approach</li>
-<li>Good for: Small, domain-specific corpora (e.g., tweets about same topic)</li>
-<li>Limited for: General-purpose or larger corpora (may inflate similarity scores)</li>
-<li><strong>Why not TF-IDF?</strong>: TF-IDF requires a larger corpus for meaningful IDF calculation</li>
-<li><strong>Case Sensitivity</strong>: All functions currently use case-sensitive comparison</li>
-<li><strong>Options Parameter</strong>: Not yet implemented</li>
+<li><strong>Cosine Similarity</strong>: Now supports both word frequency and TF-IDF approaches</li>
+<li><strong>Auto-selection</strong>: Automatically chooses TF-IDF when corpus is provided, word frequency otherwise</li>
+<li><strong>Manual selection</strong>: Can force specific method using <code>{method: "word_freq"}</code> or <code>{method: "tfidf"}</code></li>
+<li><strong>TF-IDF</strong>: Uses corpus-based IDF calculation with smoothing to avoid log(0)</li>
+<li><strong>PTR Handling</strong>: Properly handles Grapa's internal PTR types for corpus data</li>
+<li><strong>Case Sensitivity</strong>: Supports case-insensitive comparison via <code>{case_sensitive: false}</code></li>
+<li><strong>Options Parameter</strong>: Fully implemented with auto-selection logic and robust parsing</li>
 </ul>
-<h4 id="future-enhancements">Future Enhancements</h4>
-<ul>
-<li><strong>TF-IDF for Cosine Similarity</strong>: Better accuracy for general-purpose text analysis (requires corpus)</li>
-<li><strong>Case-insensitive options</strong>: Support for <code>{case_sensitive: false}</code> parameter</li>
-<li><strong>Additional algorithms</strong>: Hamming distance, N-gram similarity, weighted edit distance</li>
-</ul>
+<h4 id="auto-selection-logic">Auto-Selection Logic</h4>
+<div class="highlight"><pre><span></span><code>// No options → word frequency (backward compatible)
+&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;)
+
+// With corpus → automatically uses TF-IDF
+&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {corpus: my_documents})
+
+// Force specific method
+&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {method: &quot;word_freq&quot;})
+&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {method: &quot;tfidf&quot;, corpus: my_documents})
+
+// Case-insensitive comparison
+&quot;Hello World&quot;.cosinesimilarity(&quot;hello world&quot;, {case_sensitive: false})
+</code></pre></div>
 <h4 id="when-to-use-each-implementation">When to Use Each Implementation</h4>
 <ul>
-<li><strong>Word Frequency (Current)</strong>: Use for small, focused datasets where common words are meaningful</li>
-<li><strong>TF-IDF (Future)</strong>: Use for general-purpose text analysis with larger corpora to reduce noise from high-frequency words</li>
+<li><strong>Word Frequency</strong>: Use for small, focused datasets where common words are meaningful</li>
+<li><strong>TF-IDF</strong>: Use for general-purpose text analysis with larger corpora to reduce noise from high-frequency words</li>
 <li><strong>Rule of Thumb</strong>: For serious text analysis beyond toy data, TF-IDF is almost always better, but requires a meaningful corpus</li>
+</ul>
+<h4 id="future-enhancements-optional">Future Enhancements (Optional)</h4>
+<ul>
+<li><strong>Additional algorithms</strong>: Hamming distance, N-gram similarity, weighted edit distance</li>
+<li><strong>Performance optimizations</strong>: Caching for large corpora, parallel processing</li>
+<li><strong>Advanced options</strong>: Custom word weighting, stop word filtering, stemming</li>
 </ul>
 <h3 id="options-parameter-future-enhancement">Options Parameter (Future Enhancement)</h3>
 <p>All three functions will support an optional <code>options</code> parameter for advanced configuration:</p>

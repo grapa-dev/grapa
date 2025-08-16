@@ -4571,7 +4571,7 @@ filter_data = op(p){p.len() &gt; 10 ? p : null};
 <p><strong>Real-World ETL Example:</strong>
 <div class="highlight"><pre><span></span><code>/* Data processing pipeline */
 clean_data = op(p){p.trim().lower()};
-validate_email = op(p){p.grep(/^[^@]+@[^@]+\.[^@]+$/)?p:null};
+validate_email = op(p){p.grep(&quot;^[^@]+@[^@]+\\.[^@]+$&quot;)?p:null};
 format_output = op(p){p.upper() + &quot; - PROCESSED&quot;};
 
 /* ETL grammar */

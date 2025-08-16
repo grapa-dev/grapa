@@ -3862,20 +3862,20 @@ inverse = value.modinv(modulus);  /* 4 */
 <h2 id="number-theory-and-prime-numbers">Number Theory and Prime Numbers</h2>
 <h3 id="prime-number-generation">Prime Number Generation</h3>
 <div class="highlight"><pre><span></span><code>/* Generate large prime numbers for mathematical research */
-prime_256 = 256.genprime();   /* 256-bit prime */
-prime_512 = 512.genprime();   /* 512-bit prime */
-prime_1024 = 1024.genprime(); /* 1024-bit prime */
+prime_256 = (256).genprime();   /* 256-bit prime */
+prime_512 = (512).genprime();   /* 512-bit prime */
+prime_1024 = (1024).genprime(); /* 1024-bit prime */
 
 (&quot;Generated 256-bit prime: &quot; + prime_256.str()).echo();
 
 /* Generate safe primes (p-1)/2 is also prime */
-safe_prime = 256.genprime(1);
+safe_prime = (256).genprime(1);
 (&quot;Safe prime: &quot; + safe_prime.str()).echo();
 </code></pre></div>
 <h3 id="primality-testing">Primality Testing</h3>
 <div class="highlight"><pre><span></span><code>/* Test numbers for primality with high confidence */
-is_prime = 17.isprime();      /* true */
-is_prime = 100.isprime();     /* false */
+is_prime = (17).isprime();      /* true */
+is_prime = (100).isprime();     /* false */
 
 /* Test large numbers */
 large_number = 123456789012345678901234567890123456789;
@@ -3883,7 +3883,7 @@ is_large_prime = large_number.isprime();
 (&quot;Is large number prime? &quot; + is_large_prime.str()).echo();
 
 /* Test with custom confidence level */
-is_prime = 17.isprime(100);   /* Test with confidence 100 */
+is_prime = (17).isprime(100);   /* Test with confidence 100 */
 </code></pre></div>
 <h3 id="greatest-common-divisor">Greatest Common Divisor</h3>
 <div class="highlight"><pre><span></span><code>/* Find GCD of two numbers */

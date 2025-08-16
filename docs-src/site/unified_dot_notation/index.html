@@ -4256,6 +4256,14 @@ data[&quot;name&quot;];   /* Bracket notation */
 data = {&quot;user-name&quot;:&quot;Alice&quot;, &quot;age&quot;:30};
 data[&quot;user-name&quot;];  /* Must use brackets for hyphens */
 data.age;           /* Works for simple names */
+
+/* ⚠️ IMPORTANT: Hyphens in property names require quotes */
+/* The hyphen (-) is interpreted as a subtraction operator */
+config = {ab:3, &quot;a-b&quot;:4, a-b:5};  /* a-b becomes 5 (math operation) */
+config.ab;     /* 3 */
+config[&quot;a-b&quot;]; /* 4 (correct) */
+config.&quot;a-b&quot;;  /* 4 (also correct) */
+/* config.a-b;  ❌ This would be interpreted as config.a - b (subtraction) */
 </code></pre></div>
 <h3 id="dynamic-property-access">Dynamic Property Access</h3>
 <p>Bracket notation is essential for dynamic property names:</p>

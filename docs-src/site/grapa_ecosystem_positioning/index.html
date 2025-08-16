@@ -1058,18 +1058,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-3-advanced-features-weeks-9-12" class="md-nav__link">
+  <a href="#phase-2d-string-distance-functions-weeks-12-13-completed" class="md-nav__link">
     <span class="md-ellipsis">
-      Phase 3: Advanced Features (Weeks 9-12)
+      Phase 2D: String Distance Functions (Weeks 12-13) - ✅ COMPLETED
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-4-polish-weeks-13-16" class="md-nav__link">
+  <a href="#phase-3-advanced-features-weeks-14-17" class="md-nav__link">
     <span class="md-ellipsis">
-      Phase 4: Polish (Weeks 13-16)
+      Phase 3: Advanced Features (Weeks 14-17)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-polish-weeks-18-21" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4: Polish (Weeks 18-21)
     </span>
   </a>
   
@@ -4645,18 +4654,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-3-advanced-features-weeks-9-12" class="md-nav__link">
+  <a href="#phase-2d-string-distance-functions-weeks-12-13-completed" class="md-nav__link">
     <span class="md-ellipsis">
-      Phase 3: Advanced Features (Weeks 9-12)
+      Phase 2D: String Distance Functions (Weeks 12-13) - ✅ COMPLETED
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-4-polish-weeks-13-16" class="md-nav__link">
+  <a href="#phase-3-advanced-features-weeks-14-17" class="md-nav__link">
     <span class="md-ellipsis">
-      Phase 4: Polish (Weeks 13-16)
+      Phase 3: Advanced Features (Weeks 14-17)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-4-polish-weeks-18-21" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4: Polish (Weeks 18-21)
     </span>
   </a>
   
@@ -5235,7 +5253,7 @@ result = process_all_formats(json_data, xml_data, sql_data);
 <h4 id="3-binary-data-analysis"><strong>3. Binary Data Analysis</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Advanced binary pattern matching */
 binary_data = $file(&quot;data.bin&quot;).read();
-patterns = binary_data.grep(/pattern/, &quot;b&quot;);
+patterns = binary_data.grep(&quot;pattern&quot;, &quot;b&quot;);
 extracted = patterns.transform(extract_fields);
 </code></pre></div>
 <p><strong>Use Cases:</strong>
@@ -5250,7 +5268,7 @@ extracted = patterns.transform(extract_fields);
 <div class="highlight"><pre><span></span><code>/* Native database operations */
 db = $file(&quot;database.gdb&quot;);
 users = db.table(&quot;users&quot;);
-result = users.grep(age &gt; 25).transform(format_user);
+result = users.grep(&quot;age &gt; 25&quot;).transform(format_user);
 </code></pre></div>
 <p><strong>Use Cases:</strong>
 - <strong>Database administration</strong> and maintenance with unified navigation
@@ -5263,7 +5281,7 @@ result = users.grep(age &gt; 25).transform(format_user);
 <h4 id="5-high-precision-computing"><strong>5. High-Precision Computing</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Unlimited precision arithmetic */
 large_number = 123456789012345678901234567890 ** 123;
-prime = 256.genprime();  /* Cryptographic prime generation */
+prime = (256).genprime();  /* Cryptographic prime generation */
 timestamp = $TIME().utc();  /* Nanosecond precision */
 </code></pre></div>
 <p><strong>Use Cases:</strong>
@@ -5674,6 +5692,7 @@ result = mixed_data.json.users.map(op(user) {
 <li>✅ <strong>Database integration</strong> - Native table operations (ROW, COL, GROUP)</li>
 <li>✅ <strong>Unlimited precision</strong> - Arbitrary-precision arithmetic for all numeric types</li>
 <li>✅ <strong>Advanced pattern matching</strong> - 100% ripgrep compatible with Unicode support and native <code>.match()</code> method</li>
+<li>✅ <strong>String distance functions</strong> - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity with smart auto-detection and options support</li>
 <li>✅ <strong>Parallel processing</strong> - Built-in thread safety and concurrent operations</li>
 <li>✅ <strong>Cryptographic capabilities</strong> - Prime generation, modular arithmetic, hash functions</li>
 <li>✅ <strong>Unified path system</strong> - Seamless file system and database navigation</li>
@@ -5709,20 +5728,26 @@ result = mixed_data.json.users.map(op(user) {
 <li>✅ <strong>Operator precedence</strong> - Improved string concatenation and method call precedence - <strong>FULLY IMPLEMENTED</strong></li>
 <li>✅ <strong>Nullish coalescing</strong> - <code>.ifnull()</code> method for comprehensive nullish value handling - <strong>FULLY IMPLEMENTED</strong></li>
 </ul>
-<h3 id="phase-3-advanced-features-weeks-9-12"><strong>Phase 3: Advanced Features (Weeks 9-12)</strong></h3>
+<h3 id="phase-2d-string-distance-functions-weeks-12-13-completed"><strong>Phase 2D: String Distance Functions (Weeks 12-13)</strong> - ✅ <strong>COMPLETED</strong></h3>
+<ul>
+<li>✅ <strong>String Distance Functions</strong> - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity</li>
+<li>✅ <strong>Enhanced Options Support</strong> - Smart auto-detection, case sensitivity, method selection, corpus handling</li>
+<li>✅ <strong>PTR Type Handling</strong> - Proper options parsing following <code>.findall()</code> pattern for robust data access</li>
+</ul>
+<h3 id="phase-3-advanced-features-weeks-14-17"><strong>Phase 3: Advanced Features (Weeks 14-17)</strong></h3>
 <ul>
 <li>📋 <strong>Performance optimizations</strong> - Compilation and execution improvements</li>
 <li>📋 <strong>Tooling enhancements</strong> - Development environment improvements</li>
-<li>✅ <strong>String Distance Functions</strong> - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity</li>
 </ul>
-<h3 id="phase-4-polish-weeks-13-16"><strong>Phase 4: Polish (Weeks 13-16)</strong></h3>
+<h3 id="phase-4-polish-weeks-18-21"><strong>Phase 4: Polish (Weeks 18-21)</strong></h3>
 <ul>
 <li>📋 <strong>Type system</strong> - Type annotations and constraints</li>
-<li>📋 <strong>Advanced data structures</strong> - Sets (unique collections), Maps (ordered/hash-based), Iterators (lazy evaluation), Priority queues, Deques, Enhanced collections</li>
+<li>📋 <strong>Advanced data structures</strong> - Sets, Maps, Iterators, Priority queues, Deques, Enhanced collections</li>
 <li>📋 <strong>Debugging tools</strong> - Stack traces, profiling, hot reloading</li>
 <li>📋 <strong>Module system</strong> - Import/export capabilities</li>
 <li>📋 <strong>Property Access</strong> - Optional chaining (<code>?.</code>), property existence operators (<code>in</code>), property enumeration (<code>for...in</code>)</li>
 <li>📋 <strong>Advanced language features</strong> - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching, enhanced reflection</li>
+<li>📋 <strong>Extension System</strong> - Extending existing types with new methods (NEEDED - += syntax exists but doesn't add callable methods to system classes; requires C++ implementation for SYSID types in assignappend case; @global redefinition works but is unsafe)</li>
 </ul>
 <h2 id="future-positioning">Future Positioning</h2>
 <h3 id="expanded-use-cases-current-and-future"><strong>Expanded Use Cases (Current and Future)</strong></h3>
@@ -5821,7 +5846,7 @@ result = process_data(json, xml, sql);
 
 <span class="c1"># GrapaPy handles unlimited precision</span>
 <span class="n">xy</span> <span class="o">=</span> <span class="n">grapapy</span><span class="o">.</span><span class="n">grapa</span><span class="p">()</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;1000.factorial();&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">xy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;(1000).factorial();&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># Exact result, no overflow</span>
 </code></pre></div></p>
 <p><strong>2. Advanced Pattern Matching</strong>
@@ -6001,17 +6026,17 @@ matches.echo();  /* [&quot;Hello world&quot;, &quot;Goodbye world&quot;] */
 
 /* Binary data support */
 binary_data = $file(&quot;data.bin&quot;).read();
-patterns = binary_data.grep(/pattern/, &quot;b&quot;);
+patterns = binary_data.grep(&quot;pattern&quot;, &quot;b&quot;);
 extracted = patterns.transform(extract_fields);
 
 /* Unicode and international support */
 unicode_text = &quot;café résumé naïve&quot;;
-matches = unicode_text.grep(/[éèê]/u);
+matches = unicode_text.grep(&quot;[éèê]&quot;, &quot;u&quot;);
 matches.echo();  /* [&quot;café&quot;, &quot;résumé&quot;, &quot;naïve&quot;] */
 
 /* Advanced regex features */
 text = &quot;IP: 192.168.1.1, Port: 8080&quot;;
-ips = text.grep(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/);
+ips = text.grep(&quot;\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b&quot;);
 ips.echo();  /* [&quot;192.168.1.1&quot;] */
 </code></pre></div>
 <h3 id="when-to-use-grapa-grep"><strong>When to Use Grapa Grep</strong></h3>
@@ -6019,27 +6044,27 @@ ips.echo();  /* [&quot;192.168.1.1&quot;] */
 <p><strong>1. Binary Data Analysis</strong>
 <div class="highlight"><pre><span></span><code>/* Analyze binary files */
 binary_file = $file(&quot;executable.bin&quot;).read();
-strings = binary_file.grep(/[\x20-\x7E]{4,}/, &quot;b&quot;);
-imports = binary_file.grep(/import.*dll/i, &quot;b&quot;);
+strings = binary_file.grep(&quot;[\\x20-\\x7E]{4,}&quot;, &quot;b&quot;);
+imports = binary_file.grep(&quot;import.*dll&quot;, &quot;bi&quot;);
 </code></pre></div></p>
 <p><strong>2. Log Analysis</strong>
 <div class="highlight"><pre><span></span><code>/* Process log files */
 log_data = $file(&quot;app.log&quot;).read();
-errors = log_data.grep(/ERROR.*/, &quot;i&quot;);
-timestamps = log_data.grep(/\[\d{4}-\d{2}-\d{2}.*?\]/);
-ip_addresses = log_data.grep(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/);
+errors = log_data.grep(&quot;ERROR.*&quot;, &quot;i&quot;);
+timestamps = log_data.grep(&quot;\\[\\d{4}-\\d{2}-\\d{2}.*?\\]&quot;);
+ip_addresses = log_data.grep(&quot;\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b&quot;);
 </code></pre></div></p>
 <p><strong>3. Data Extraction</strong>
 <div class="highlight"><pre><span></span><code>/* Extract structured data */
 csv_data = &quot;name,age,city\nJohn,30,NY\nJane,25,CA&quot;;
-names = csv_data.grep(/^[^,]+/, &quot;m&quot;);
-ages = csv_data.grep(/,(\d+),/, &quot;o&quot;);
+names = csv_data.grep(&quot;^[^,]+&quot;, &quot;m&quot;);
+ages = csv_data.grep(&quot;,(\\d+),&quot;, &quot;o&quot;);
 </code></pre></div></p>
 <p><strong>4. Protocol Analysis</strong>
 <div class="highlight"><pre><span></span><code>/* Parse network protocols */
 packet_data = $file(&quot;capture.pcap&quot;).read();
-http_requests = packet_data.grep(/GET.*HTTP/, &quot;i&quot;);
-dns_queries = packet_data.grep(/DNS.*query/, &quot;i&quot;);
+http_requests = packet_data.grep(&quot;GET.*HTTP&quot;, &quot;i&quot;);
+dns_queries = packet_data.grep(&quot;DNS.*query&quot;, &quot;i&quot;);
 </code></pre></div></p>
 <h3 id="grep-ecosystem-position"><strong>Grep Ecosystem Position</strong></h3>
 <p><strong>Strengths:</strong>

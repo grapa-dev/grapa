@@ -3524,6 +3524,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#property-names-with-hyphens" class="md-nav__link">
+    <span class="md-ellipsis">
+      Property Names with Hyphens
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3958,6 +3967,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#property-names-with-hyphens" class="md-nav__link">
+    <span class="md-ellipsis">
+      Property Names with Hyphens
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4320,6 +4338,23 @@ table_data = table.get(&quot;user1&quot;, &quot;name&quot;);
 
 /* ❌ Avoid bracket notation for $file and $TABLE objects */
 file_info = files[0];  /* May not work reliably */
+</code></pre></div>
+<h4 id="property-names-with-hyphens">Property Names with Hyphens</h4>
+<div class="highlight"><pre><span></span><code>/* ⚠️ IMPORTANT: Hyphens in property names require quotes */
+/* The hyphen (-) is interpreted as a subtraction operator */
+
+/* ❌ Problem: Hyphen interpreted as subtraction */
+config = {ab:3, &quot;a-b&quot;:4, a-b:5};  /* a-b becomes 5 (math operation) */
+config.a-b;  /* This is interpreted as config.a - b (subtraction) */
+
+/* ✅ Solution: Use quotes for hyphenated names */
+config = {ab:3, &quot;a-b&quot;:4};
+config[&quot;a-b&quot;];  /* 4 (correct) */
+config.&quot;a-b&quot;;   /* 4 (also correct) */
+
+/* ✅ Also works for function calls */
+config = {ab:3, &quot;a-b&quot;:op(){44;}};
+config.&quot;a-b&quot;();  /* 44 */
 </code></pre></div>
 <h2 id="debugging-techniques">Debugging Techniques</h2>
 <h3 id="check-object-types">Check Object Types</h3>

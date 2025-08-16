@@ -4252,25 +4252,25 @@
 <h2 id="prime-number-operations">Prime Number Operations</h2>
 <h3 id="generating-prime-numbers">Generating Prime Numbers</h3>
 <div class="highlight"><pre><span></span><code>/* Generate a random 256-bit prime */
-prime = 256.genprime();
+prime = (256).genprime();
 (&quot;Generated prime: &quot; + prime.str() + &quot;\n&quot;).echo();
 
 /* Generate a safe prime (p-1)/2 is also prime) */
-safe_prime = 256.genprime(1);
+safe_prime = (256).genprime(1);
 (&quot;Safe prime: &quot; + safe_prime.str() + &quot;\n&quot;).echo();
 
 /* Get a predefined prime for testing (specific bit sizes only) */
-test_prime = 256.staticprime();
+test_prime = (256).staticprime();
 (&quot;Test prime: &quot; + test_prime.str() + &quot;\n&quot;).echo();
 </code></pre></div>
 <p><strong>Available staticprime() bit sizes</strong>: 2, 3, 4, 256, 512, 768, 1024, 1536, 2048, 3072, 4096</p>
 <h3 id="testing-primality">Testing Primality</h3>
 <div class="highlight"><pre><span></span><code>/* Test if a number is prime */
-is_prime = 17.isprime();
+is_prime = (17).isprime();
 (&quot;Is 17 prime? &quot; + is_prime.str() + &quot;\n&quot;).echo();
 
 /* Test with higher confidence (default is 64) */
-is_prime = 17.isprime(100);
+is_prime = (17).isprime(100);
 (&quot;Is 17 prime with confidence 100? &quot; + is_prime.str() + &quot;\n&quot;).echo();
 
 /* Test large numbers */
@@ -4456,7 +4456,7 @@ decrypted = rsa_decrypt(encrypted, keys.get(&quot;private_key&quot;));
 <div class="highlight"><pre><span></span><code>/* Diffie-Hellman key exchange */
 diffie_hellman_exchange = op() {
     /* Use a known safe prime and generator */
-    p = 256.staticprime();  /* Large prime */
+    p = (256).staticprime();  /* Large prime */
     g = 2;  /* Generator */
 
     /* Alice&#39;s private key (random) */
@@ -4590,8 +4590,8 @@ is_correct = verify_password(password, salt, stored_hash);
 <div class="highlight"><pre><span></span><code>/* Generate secure keys */
 generate_secure_keys = op() {
     /* Use sufficient key sizes */
-    p = 1024.genprime(1);  /* Safe prime */
-    q = 1024.genprime(1);  /* Safe prime */
+    p = (1024).genprime(1);  /* Safe prime */
+q = (1024).genprime(1);  /* Safe prime */
 
     /* Verify primality */
     p_prime = p.isprime(100);
@@ -4688,7 +4688,7 @@ sizes.range().each(op(i) {
 <div class="highlight"><pre><span></span><code>/* Monitor memory usage for large operations */
 large_operation = op() {
     /* Large prime generation */
-    large_prime = 2048.genprime();
+    large_prime = (2048).genprime();
 
     /* Large modular exponentiation */
     base = 123456789;

@@ -4310,8 +4310,8 @@ result = etl_pipeline(&quot;John,25,NY&quot;, &quot;csv&quot;, [&quot;uppercase&
 <p>Parse network protocols and communication formats safely.</p>
 <p><strong>Advanced Pattern - Wrapper Functions in Rule Tokens:</strong>
 <div class="highlight"><pre><span></span><code>/* Define processing functions */
-validate_http = op(p){p.grep(/^[A-Z]+ /)?p:null};
-parse_headers = op(p){p.split(&quot;\n&quot;).filter(op(line){line.grep(/^[A-Za-z-]+: /)})};
+validate_http = op(p){p.grep(&quot;^[A-Z]+ &quot;)?p:null};
+parse_headers = op(p){p.split(&quot;\n&quot;).filter(op(line){line.grep(&quot;^[A-Za-z-]+: &quot;)})};
 extract_body = op(p){p.split(&quot;\r\n\r\n&quot;)[1] || &quot;&quot;};
 
 /* Use wrapper functions in isolated rules */

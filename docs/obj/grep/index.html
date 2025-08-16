@@ -6036,7 +6036,7 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 /* Result: [&quot;Hello&quot;, &quot;world&quot;] - No need to escape backslashes */
 
 /* Complex patterns with raw strings */
-&quot;file.txt&quot;.grep(r&quot;^[a-zA-Z0-9_]+\.txt$&quot;, &quot;x&quot;);
+&quot;file.txt&quot;.grep(&quot;^[a-zA-Z0-9_]+\\.txt$&quot;, &quot;x&quot;);
 /* Result: [&quot;file.txt&quot;] - Much more readable than &quot;\\^[a-zA-Z0-9_]\\+\\.txt\\$&quot; */
 
 /* Raw strings preserve literal escape sequences */
@@ -6087,11 +6087,11 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 /* Result: [&quot;file.txt&quot;] - Much cleaner! */
 
 /* Complex patterns benefit greatly */
-&quot;user@domain.com&quot;.grep(r&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$&quot;, &quot;x&quot;)
+&quot;user@domain.com&quot;.grep(&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$&quot;, &quot;x&quot;)
 /* Result: [&quot;user@domain.com&quot;] */
 
 /* Named groups with raw strings */
-&quot;John Doe (30)&quot;.grep(r&quot;(?P&lt;first&gt;\\w+) (?P&lt;last&gt;\\w+) \((?P&lt;age&gt;\\d+)\)&quot;, &quot;oj&quot;)
+&quot;John Doe (30)&quot;.grep(&quot;(?P&lt;first&gt;\\w+) (?P&lt;last&gt;\\w+) \\((?P&lt;age&gt;\\d+)\\)&quot;, &quot;oj&quot;)
 /* Result: [{&quot;match&quot;:&quot;John Doe (30)&quot;,&quot;first&quot;:&quot;John&quot;,&quot;last&quot;:&quot;Doe&quot;,&quot;age&quot;:&quot;30&quot;,&quot;offset&quot;:0,&quot;line&quot;:1}] */
 </code></pre></div>
 <p><strong>Note</strong>: Raw strings suppress all escape sequences except for escaping the quote character used to enclose the string. This means <code>\x45</code> becomes the literal string <code>"\x45"</code> rather than the character <code>"E"</code>. If you need hex or Unicode escapes to be processed, use regular string literals.</p>

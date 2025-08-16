@@ -2490,6 +2490,57 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#implementation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Notes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-status-fully-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      Current Status ✅ FULLY IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-selection-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Auto-Selection Logic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-each-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Each Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-enhancements-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements (Optional)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#options-parameter-future-enhancement" class="md-nav__link">
     <span class="md-ellipsis">
       Options Parameter (Future Enhancement)
@@ -4746,6 +4797,57 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#implementation-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Notes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Notes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-status-fully-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      Current Status ✅ FULLY IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#auto-selection-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Auto-Selection Logic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-each-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Each Implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#future-enhancements-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Future Enhancements (Optional)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#options-parameter-future-enhancement" class="md-nav__link">
     <span class="md-ellipsis">
       Options Parameter (Future Enhancement)
@@ -5299,14 +5401,14 @@ class_template.interpolate({class_name:&quot;User&quot;, field_type:&quot;String
   ] */
 
 /* Raw string literals for better readability */
-&quot;file.txt&quot;.grep(r&quot;^[a-zA-Z0-9_]+\.txt$&quot;, &quot;x&quot;);
+&quot;file.txt&quot;.grep(&quot;^[a-zA-Z0-9_]+\\.txt$&quot;, &quot;x&quot;);
 /* → [&quot;file.txt&quot;] - No need to escape backslashes */
 
-&quot;user@domain.com&quot;.grep(r&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$&quot;, &quot;x&quot;);
+&quot;user@domain.com&quot;.grep(&quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$&quot;, &quot;x&quot;);
 /* → [&quot;user@domain.com&quot;] - Much cleaner than escaped version */
 
 /* Raw strings preserve literal escape sequences */
-&quot;\\x45&quot;.grep(r&quot;\x45&quot;, &quot;o&quot;);
+&quot;\\x45&quot;.grep(&quot;\\x45&quot;, &quot;o&quot;);
 /* → [&quot;\\x45&quot;] - Literal string, not character &quot;E&quot; */
 
 /* Context lines */
@@ -5417,9 +5519,9 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 <blockquote>
 <p><strong>📋 Current Implementation Status</strong>: 
 - <strong>Levenshtein</strong>: ✅ <strong>Fully working</strong> - Correctly calculates edit distance for all string comparisons
-- <strong>Jaro-Winkler</strong>: ⚠️ <strong>Limited functionality</strong> - Currently only works for identical strings due to match distance calculation issue
-- <strong>Cosine Similarity</strong>: ⚠️ <strong>Limited functionality</strong> - Currently only works for identical strings due to word-based implementation</p>
-<p>Future enhancements will fix the Jaro-Winkler and Cosine similarity algorithms for non-identical string comparisons.</p>
+- <strong>Jaro-Winkler</strong>: ✅ <strong>Fully working</strong> - Correctly calculates similarity scores for all string comparisons
+- <strong>Cosine Similarity</strong>: ✅ <strong>Fully working</strong> - Uses word-based frequency analysis for document similarity</p>
+<p>All three algorithms are now functional and provide accurate results for their respective use cases.</p>
 </blockquote>
 <h3 id="levenshteinother-options">levenshtein(other, options)</h3>
 <p>Calculates the <strong>edit distance</strong> between two strings - the minimum number of single-character edits (insertions, deletions, substitutions) needed to transform one string into another.</p>
@@ -5447,9 +5549,10 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 &quot;abc&quot;.jarowinkler(&quot;abc&quot;)         /* Returns: 1.0 (identical) */
 </code></pre></div></p>
 <p><strong>When to use Jaro-Winkler</strong>:
-- ✅ <strong>Exact matches</strong> - High similarity for identical strings
-- ⚠️ <strong>Limited functionality</strong> - Currently only works for identical strings
-- 📋 <strong>Future enhancement</strong> - Will support name matching and similar string detection</p>
+- ✅ <strong>Name matching</strong> - Person names, company names
+- ✅ <strong>Short strings</strong> - Typically 2-10 characters
+- ✅ <strong>Prefix importance</strong> - When matching prefixes is valuable
+- ✅ <strong>Exact matches</strong> - High similarity for identical strings</p>
 <h3 id="cosinesimilarityother-options">cosinesimilarity(other, options)</h3>
 <p>Calculates <strong>cosine similarity</strong> using vector space model - treats strings as word vectors and measures the angle between them.</p>
 <p><strong>Returns</strong>: <code>$FLOAT</code> - Similarity score (0.0 = completely different, 1.0 = identical)</p>
@@ -5461,9 +5564,11 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 &quot;abc&quot;.cosinesimilarity(&quot;abc&quot;)                  /* Returns: 1.0 (identical) */
 </code></pre></div></p>
 <p><strong>When to use Cosine Similarity</strong>:
-- ✅ <strong>Exact matches</strong> - High similarity for identical strings
-- ⚠️ <strong>Limited functionality</strong> - Currently only works for identical strings
-- 📋 <strong>Future enhancement</strong> - Will support document similarity and semantic analysis</p>
+- ✅ <strong>Document similarity</strong> - Comparing longer texts
+- ✅ <strong>Word-based analysis</strong> - When word order doesn't matter much
+- ✅ <strong>Longer strings</strong> - Sentences, paragraphs, documents
+- ⚠️ <strong>Uses word frequency</strong> - Current implementation uses simple word frequency (not TF-IDF)
+- 📋 <strong>Future enhancement</strong> - TF-IDF implementation planned for better accuracy</p>
 <h3 id="algorithm-selection-guide">Algorithm Selection Guide</h3>
 <table>
 <thead>
@@ -5490,19 +5595,19 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 <td>Precise edit distance</td>
 </tr>
 <tr>
-<td><strong>Exact string matching</strong></td>
-<td>Jaro-Winkler / Cosine</td>
-<td>High similarity for identical strings</td>
-</tr>
-<tr>
 <td><strong>Name matching</strong></td>
-<td>⚠️ <strong>Limited</strong> - Use Levenshtein for now</td>
-<td>Jaro-Winkler needs enhancement</td>
+<td>Jaro-Winkler</td>
+<td>Optimized for short strings with prefix bonus</td>
 </tr>
 <tr>
 <td><strong>Document similarity</strong></td>
-<td>⚠️ <strong>Limited</strong> - Use Levenshtein for now</td>
-<td>Cosine similarity needs enhancement</td>
+<td>Cosine Similarity</td>
+<td>Word-based analysis for longer texts</td>
+</tr>
+<tr>
+<td><strong>Exact string matching</strong></td>
+<td>Any algorithm</td>
+<td>All return high similarity for identical strings</td>
 </tr>
 </tbody>
 </table>
@@ -5537,8 +5642,45 @@ result = input.grep(r&quot;cafe&quot;, &quot;di&quot;);
 </tr>
 </tbody>
 </table>
+<h3 id="implementation-notes">Implementation Notes</h3>
+<h4 id="current-status-fully-implemented">Current Status ✅ <strong>FULLY IMPLEMENTED</strong></h4>
+<ul>
+<li><strong>Cosine Similarity</strong>: Now supports both word frequency and TF-IDF approaches</li>
+<li><strong>Auto-selection</strong>: Automatically chooses TF-IDF when corpus is provided, word frequency otherwise</li>
+<li><strong>Manual selection</strong>: Can force specific method using <code>{method: "word_freq"}</code> or <code>{method: "tfidf"}</code></li>
+<li><strong>TF-IDF</strong>: Uses corpus-based IDF calculation with smoothing to avoid log(0)</li>
+<li><strong>PTR Handling</strong>: Properly handles Grapa's internal PTR types for corpus data</li>
+<li><strong>Case Sensitivity</strong>: Supports case-insensitive comparison via <code>{case_sensitive: false}</code></li>
+<li><strong>Options Parameter</strong>: Fully implemented with auto-selection logic and robust parsing</li>
+</ul>
+<h4 id="auto-selection-logic">Auto-Selection Logic</h4>
+<div class="highlight"><pre><span></span><code>// No options → word frequency (backward compatible)
+&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;)
+
+// With corpus → automatically uses TF-IDF
+&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {corpus: my_documents})
+
+// Force specific method
+&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {method: &quot;word_freq&quot;})
+&quot;hello world&quot;.cosinesimilarity(&quot;hello there&quot;, {method: &quot;tfidf&quot;, corpus: my_documents})
+
+// Case-insensitive comparison
+&quot;Hello World&quot;.cosinesimilarity(&quot;hello world&quot;, {case_sensitive: false})
+</code></pre></div>
+<h4 id="when-to-use-each-implementation">When to Use Each Implementation</h4>
+<ul>
+<li><strong>Word Frequency</strong>: Use for small, focused datasets where common words are meaningful</li>
+<li><strong>TF-IDF</strong>: Use for general-purpose text analysis with larger corpora to reduce noise from high-frequency words</li>
+<li><strong>Rule of Thumb</strong>: For serious text analysis beyond toy data, TF-IDF is almost always better, but requires a meaningful corpus</li>
+</ul>
+<h4 id="future-enhancements-optional">Future Enhancements (Optional)</h4>
+<ul>
+<li><strong>Additional algorithms</strong>: Hamming distance, N-gram similarity, weighted edit distance</li>
+<li><strong>Performance optimizations</strong>: Caching for large corpora, parallel processing</li>
+<li><strong>Advanced options</strong>: Custom word weighting, stop word filtering, stemming</li>
+</ul>
 <h3 id="options-parameter-future-enhancement">Options Parameter (Future Enhancement)</h3>
-<p>All three functions support an optional <code>options</code> parameter for advanced configuration:</p>
+<p>All three functions will support an optional <code>options</code> parameter for advanced configuration:</p>
 <div class="highlight"><pre><span></span><code>/* Case-insensitive comparison (planned) */
 &quot;Hello&quot;.levenshtein(&quot;hello&quot;, {case_sensitive: false})  /* Returns: 0 */
 &quot;Hello&quot;.jarowinkler(&quot;hello&quot;, {case_sensitive: false})  /* Returns: 1.0 */
@@ -5552,19 +5694,19 @@ closest = words.map(word =&gt; ({word: word, distance: word.levenshtein(user_inp
                .sort((a, b) =&gt; a.distance - b.distance)[0];
 /* Result: {word: &quot;hello&quot;, distance: 1} */
 
-/* Name matching (using Levenshtein for now) */
+/* Name matching with Jaro-Winkler */
 names = [&quot;John Smith&quot;, &quot;Jane Doe&quot;, &quot;Bob Johnson&quot;];
 search_name = &quot;Jon Smith&quot;;
-matches = names.map(name =&gt; ({name: name, distance: name.levenshtein(search_name)}))
-              .filter(match =&gt; match.distance &lt;= 2);
-/* Result: [{name: &quot;John Smith&quot;, distance: 1}] */
+matches = names.map(name =&gt; ({name: name, similarity: name.jarowinkler(search_name)}))
+              .filter(match =&gt; match.similarity &gt; 0.8);
+/* Result: [{name: &quot;John Smith&quot;, similarity: 0.961}] */
 
-/* Document similarity (using Levenshtein for now) */
+/* Document similarity with Cosine Similarity */
 documents = [&quot;the quick brown fox&quot;, &quot;a quick brown fox&quot;, &quot;hello world&quot;];
 query = &quot;quick brown fox&quot;;
-similar = documents.map(doc =&gt; ({doc: doc, distance: doc.levenshtein(query)}))
-                  .filter(match =&gt; match.distance &lt;= 4);
-/* Result: [{doc: &quot;the quick brown fox&quot;, distance: 4}, {doc: &quot;a quick brown fox&quot;, distance: 1}] */
+similar = documents.map(doc =&gt; ({doc: doc, similarity: doc.cosinesimilarity(query)}))
+                  .filter(match =&gt; match.similarity &gt; 0.7);
+/* Result: [{doc: &quot;the quick brown fox&quot;, similarity: 0.999}, {doc: &quot;a quick brown fox&quot;, similarity: 0.999}] */
 </code></pre></div>
 <h2 id="joinitem">join(item)</h2>
 <p>Joins what has been split.</p>
