@@ -30,9 +30,9 @@
 - **Lexical Processing System** - ✅ **ANALYZED** - `$&` flags and special lexer processing for complex formats
 - **BNF-Based ETL Analysis** - ✅ **DOCUMENTED** - Internal JSON/XML/HTML processing via `$function`, `$xmlcreate`, `$htmlcreate` rules
 
-**Current Focus:** Language adoption through improved syntax and developer experience
-- **Current Investigation:** Grapa syntax enhancement implementation
-- **Next Focus:** Language adoption through improved syntax and developer experience
+**Current Focus:** Line comments implementation in lexer
+- **Current Investigation:** Line comments (`//` and `#`) implementation in C++ lexer
+- **Next Focus:** Complete Phase 2 with line comments, then move to Phase 3
 - **Documentation Status:** ✅ **COMPREHENSIVE** - Advanced language features documented, type system enhanced, syntax features documented, enterprise-grade XML/HTML capabilities documented with unified query system
 
 **Phase 2 Focus:** Developer Experience (Weeks 5-8)
@@ -41,7 +41,7 @@
 - **✅ List Comprehension** - C++ implementation completed
 - **✅ String Interpolation** - C++ implementation completed
 - **✅ Native .match() Method** - C++ implementation completed
-- **📋 Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
+
 - **📋 Line comments** - `//` and `#` support (requires C++ lexer changes)
 
 **Phase 3 Focus:** Advanced Features (Weeks 9-12)
@@ -59,7 +59,7 @@
 
 **Implementation Strategy:**
 - **Phase 1 (Weeks 1-4)**: ✅ **COMPLETED** - All Phase 1 features implemented
-- **Phase 2 (Weeks 5-8)**: ✅ **MOSTLY COMPLETED** - Developer experience features (5/7 items completed)
+- **Phase 2 (Weeks 5-8)**: ✅ **MOSTLY COMPLETED** - Developer experience features (6/7 items completed)
 - **Phase 3 (Weeks 9-12)**: 📋 **PENDING** - Advanced features and performance optimizations
 - **Phase 4 (Weeks 13-16)**: 📋 **PENDING** - Polish and advanced language features
 
@@ -89,15 +89,19 @@
 
 **🚀 IMMEDIATE NEXT STEPS (Phase 2 - Developer Experience):**
 ✅ **PHASE 1 COMPLETED** - All syntax features implemented using `custom_command` and `custom_function`
-✅ **PHASE 2 MOSTLY COMPLETED** - 5 out of 7 developer experience features implemented
+✅ **PHASE 2 MOSTLY COMPLETED** - 6 out of 7 developer experience features implemented
 📋 **REMAINING PHASE 2 ITEMS:**
-- **Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
+
 - **Line comments** - `//` and `#` support (requires C++ lexer changes)
 
 **✅ COMPLETED ENHANCEMENTS:**
 - **Native .match() Method** - ✅ **COMPLETED** - Native regex matching method implemented and working perfectly
   - **Implementation**: `GrapaLibraryRuleMatchEvent::Run` in C++ with full grep parameter support
   - **Functionality**: `"string".match(pattern)` returning boolean result
+- **Operator Documentation** - ✅ **COMPLETED** - Comprehensive operator documentation updated in `operator.md`
+  - **Added**: `++` and `--` expression operators with detailed examples and type support
+  - **Fixed**: Operator categorization (moved `? :` to Special, compound assignments to Assignment)
+  - **Enhanced**: Type support matrix with all data types and proper table rendering
 - **$file.grc Parameter Renaming** - ✅ **COMPLETED** - All ambiguous parameter names improved for clarity
   - **Implementation**: Updated `lib/grapa/$file.grc` with descriptive parameter names
   - **Documentation**: Updated `docs-src/docs/sys/file.md` to reflect new parameter names
@@ -189,7 +193,7 @@
 - **✅ Plan C++ integration strategy** for each feature
 - **✅ Complete technical analysis for interpolate function** - PTR-based implementation plan ready
 - **✅ Implement interpolate function** - C++ implementation in `GrapaLibraryRuleInterpolateEvent::Run` **COMPLETED**
-- **🔄 Complete Basic SQL Syntax** - Domain-specific processing using isolated rule execution
+
 
 **🚀 IMMEDIATE NEXT STEPS (Phase 2 Focus):**
 - **✅ String Interpolation** - **COMPLETED** - C++ implementation in `GrapaLibraryRuleInterpolateEvent::Run`
@@ -198,7 +202,7 @@
 - **✅ Implement Advanced control flow** - `foreach`, `do/while` implementation (COMPLETED)
 - **✅ Implement Enhanced Assignment Operators** - C++ operators (`*=`, `/=`, `%=`, `**=`) implementation (COMPLETED)
 - **✅ Implement List Comprehension** - C++ implementation based on `custom_function` proof of concept (COMPLETED)
-- **📋 Implement Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
+
 - **📋 Implement Line comments** - `//` and `#` support (requires C++ lexer changes)
 - **🔄 Investigate Dot Notation Error Handling** - Consider solutions for safer property access
 

@@ -208,17 +208,23 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ## 🔍 **INVESTIGATION ITEMS** (1 item)
 
 ### **SQL Syntax Injection Demo** 🔍 **INVESTIGATION NEEDED**
-- **Status**: Initial investigation complete, core issue identified
+- **Status**: Initial investigation complete, design concerns identified
 - **Focus**: Create working demonstration of custom SQL syntax injection using Grapa's grammar extension capabilities
 - **Context**: Educational demonstration showing how `custom_command` and `custom_function` can extend Grapa's syntax
 - **Current Issue**: Simple custom grammar rules work (e.g., `select $INT`), but complex SQL rules (e.g., `select $STR from $STR`) fail to parse properly
+- **Design Concerns**: 
+  - BNF rule design may not be optimal for SQL syntax
+  - `findall` function doesn't work on `$TABLE` objects (only XML/LIST/ARRAY/TUPLE)
+  - WHERE clause implementation would require manual iteration over `table.ls()`
+  - Leverage opportunities limited - would need significant new C++ code for WHERE conditions
 - **Progress**: 
   - ✅ Basic custom function demonstration working
   - ✅ Script compilation issues resolved
   - ✅ Core limitation identified (complex rule parsing)
-- **Next Steps**: Investigate rule syntax limitations, create working SQL demo or document limitations
+  - ✅ Database operation analysis complete (ls/get/set leverage possible, findall not available)
+- **Next Steps**: Reconsider BNF design approach, evaluate if SQL syntax is the right demonstration vehicle
 - **Reference**: [`test/use_cases/sql_syntax_injection_table_demo.grc`](../../test/use_cases/sql_syntax_injection_table_demo.grc) - Current test script
-- **Priority**: Low - educational/demonstration value
+- **Priority**: Low - educational/demonstration value, design reconsideration needed
 
 ---
 

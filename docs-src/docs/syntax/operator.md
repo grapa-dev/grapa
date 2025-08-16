@@ -57,7 +57,7 @@ Bit-level operations with strict integer handling.
 Variable assignment and compound assignment operations.
 
 ### 6. Special Operators
-Conditional expressions, extension operations, and dot product.
+Conditional expressions, array operations (extension/removal), and dot product.
 
 ## Type Support Matrix
 
@@ -121,7 +121,9 @@ Conditional expressions, extension operations, and dot product.
 | Operator | INT | FLOAT | STR | BOOL | ARRAY | LIST | OBJ | ERR | TIME | RAW | VECTOR | TUPLE | RULE | XML/TAG | XML/EL | Notes |
 |:---------|:---:|:-----:|:---:|:---:|:-----:|:----:|:---:|:---:|:----:|:---:|:------:|:-----:|:----:|:-------:|:------:|:------|
 | `? :` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Conditional/ternary operator |
-| `++=` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension |
+| `++` | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array extension (expression) |
+| `--` | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array removal (expression) |
+| `++=` | ❌ | ❌ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | Array/list extension (assignment) |
 | `.*` | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | Dot product |
 
 ## Arithmetic Operators
@@ -619,22 +621,60 @@ false ? : "yes";           /* "yes" (Form 1: inverted logic) */
 true ? "yes" : "no" : "maybe";  /* "maybe" (Form 3: unexpected) */
 ```
 
-### Extend (`++=`)
+### Array Extension (`++`)
 
-Extends arrays and lists.
+Extends arrays by concatenating elements from another array.
+
+```grapa
+/* Array extension */
+arr1 = [1,2,3];
+arr2 = [4,5,6];
+result = arr1 ++ arr2;    /* [1,2,3,4,5,6] */
+
+/* Chained extension */
+result = [1,2] ++ [3,4] ++ [5,6];  /* [1,2,3,4,5,6] */
+
+/* Expression-level operation (use variables for best results) */
+arr1 = [1,2,3];
+arr2 = [4,5];
+(arr1 ++ arr2).echo();  /* [1,2,3,4,5] */
+```
+
+### Array Removal (`--`)
+
+Removes elements from an array that match elements in another array.
+
+```grapa
+/* Array removal */
+arr1 = [1,2,3,4,5];
+arr2 = [2,4];
+result = arr1 -- arr2;    /* [1,3,5] */
+
+/* Remove multiple elements */
+result = [1,2,3,2,4,5] -- [2,4];  /* [1,3,5] */
+
+/* Expression-level operation (use variables for best results) */
+arr1 = [1,2,3,4,5];
+arr2 = [2,4];
+(arr1 -- arr2).echo();  /* [1,3,5] */
+```
+
+### Extend Assignment (`++=`)
+
+Extends arrays and lists by modifying the original.
 
 ```grapa
 /* Array extension */
 arr = [1,2,3];
-arr ++= [4,5,6];          /* [1,2,3,4,5,6] */
+arr ++= [4,5,6];          /* arr becomes [1,2,3,4,5,6] */
 
 /* List extension */
 list = {a:1, b:2};
-list ++= {c:3, d:4};      /* {a:1, b:2, c:3, d:4} */
+list ++= {c:3, d:4};      /* list becomes {a:1, b:2, c:3, d:4} */
 
 /* String extension */
 str = "hello";
-str ++= " world";         /* "hello world" */
+str ++= " world";         /* str becomes "hello world" */
 ```
 
 ### Dot Product (`.*`)

@@ -361,7 +361,7 @@ result = mixed_data.json.users.map(op(user) {
 - ✅ **COMPLETED** - All Phase 1 features implemented and moved to Current State (2025)
 
 ### **Phase 2: Developer Experience (Weeks 5-8)**
-- 📋 **Basic SQL Syntax** - Domain-specific processing using `custom_command` and `custom_function`
+
 - 📋 **Line comments** - `//` and `#` support
 
 ### **Phase 3: Advanced Features (Weeks 9-12)**
