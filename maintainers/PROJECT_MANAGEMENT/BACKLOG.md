@@ -19,7 +19,6 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ### **1. Grapa Syntax Improvements** - **LANGUAGE ADOPTION FOUNDATION** 🔥 **HIGHEST PRIORITY**
 - [ ] **Exception Handling**: try/catch blocks for structured error handling
 - [ ] **Control Flow Fixes**: Working return/break/continue statements
-- [ ] **Module System**: Design basic import/include system
 - [ ] **Property Access**: Improve attribute-style access for objects
 - **Reference**: [`GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md)
 - **Estimated Effort**: Major Release (3-6 months)
@@ -27,11 +26,12 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Priority**: Highest among major releases - foundational for language adoption
 
 ### **2. Enhanced Debug Mode** - **DEVELOPMENT EXPERIENCE** 🔥 **HIGH PRIORITY**
-- [ ] **Comprehensive Debug System**: Implement sophisticated debugging capabilities including execution tracing, variable inspection, performance profiling, and AST/bytecode dumping
+- [ ] **Comprehensive Debug System**: Implement sophisticated debugging capabilities including execution tracing, variable inspection, performance profiling, and execution tree dumping
 - [ ] **Debug Infrastructure**: Core debug system with configurable debug levels and thread-safe debug context management
 - [ ] **Execution Tracing**: Step-by-step execution tracking with variable state snapshots
-- [ ] **Performance Profiling**: Built-in performance timing and memory usage tracking
-- [ ] **AST/Bytecode Dumping**: Execution tree visualization and bytecode inspection
+- [ ] **Advanced Variable Inspection**: Interactive debugging with variable snapshots and scope examination
+- [ ] **Advanced Performance Profiling**: Memory usage tracking and detailed performance analysis (basic timing already available via `$TIME`)
+- [ ] **Execution Tree Dumping**: Execution tree visualization and inspection
 - [ ] **Debug CLI Integration**: Enhanced debug options and output formats
 - **Reference**: [`GRAPA_ENHANCED_DEBUG_MODE_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_ENHANCED_DEBUG_MODE_PLAN.md)
 - **Estimated Effort**: Major Release (6-12 months)

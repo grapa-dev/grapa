@@ -2,14 +2,14 @@
 
 /*
 Design Influences:
-Grapa's $OP and $CODE types are inspired by Lisp's list-based, lambda/bytecode execution model, enabling flexible, composable, and introspectable code structures. This design supports advanced meta-programming and dynamic language features, making Grapa inviting and usable for a broad audience—including Python users, educators, and language researchers. The overarching goal is to make Grapa (and GrapaPy) as accessible and powerful as possible for the widest range of users.
+Grapa's $OP and $CODE types are inspired by Lisp's list-based, lambda execution model, enabling flexible, composable, and introspectable code structures. This design supports advanced meta-programming and dynamic language features, making Grapa inviting and usable for a broad audience—including Python users, educators, and language researchers. The overarching goal is to make Grapa (and GrapaPy) as accessible and powerful as possible for the widest range of users.
 */
 
 **$OP is Grapa's core execution type** - it represents both compiled code and executable functions. Unlike traditional bytecode, $OP objects are human-readable execution trees that can be directly created, manipulated, and executed. This makes Grapa's dynamic code execution capabilities superior to most other languages.
 
 ## What is $OP?
 
-$OP is Grapa's equivalent of both a function and compiled bytecode, but represented as an executable tree structure. It's the foundation of Grapa's meta-programming capabilities, allowing you to:
+$OP is Grapa's equivalent of both a function and compiled code, but represented as an executable tree structure. It's the foundation of Grapa's meta-programming capabilities, allowing you to:
 
 - **Compile code at runtime**: `op()("script")` creates an executable $OP
 - **Execute dynamic code**: `$sys().eval("expression")` evaluates strings as code

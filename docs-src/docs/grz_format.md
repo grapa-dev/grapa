@@ -78,7 +78,7 @@ compilef = op(name1,name2){
 
 This function:
 1. Reads the source `.grc` file
-2. Compiles it to bytecode
+2. Compiles it to execution trees
 3. Adds version information
 4. Encodes using ZIP-GRAPA format
 5. Saves to the target `.grz` file
@@ -114,5 +114,5 @@ echo("Version:", version_info);
 ## File Structure
 
 A decoded GRZ file contains an array with:
-- **`op`**: The compiled script bytecode
+- **`op`**: The compiled script execution trees
 - **`version`**: The Grapa version used for compilation 

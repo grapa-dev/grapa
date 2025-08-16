@@ -484,7 +484,7 @@ func;  /* Shows: @<[op,@<add,{@<mul,{@<var,{x}>,2}>},1}>],{x}> */
 @<[op,@<add,{@<mul,{@<var,{x}>,2}>},1}>],{x}>(5);
 ```
 
-**JavaScript equivalent:** Not possible - bytecode is not human-readable
+**JavaScript equivalent:** Not possible - JavaScript bytecode is not human-readable
 
 #### **Built-in File System Integration**
 ```grapa
@@ -574,7 +574,7 @@ These would improve developer experience but aren't essential:
 - **Proxy**: - Use regular objects
 - **Reflect**: - Use direct property access
 - **Optional catch binding**: `catch {}` - Use explicit error handling
-- **Modules**: `import/export` - Use Grapa's file system and `$file()` operations
+- **Modules**: `import/export` - Use Grapa's include system and dynamic class loading
 - **Dynamic imports**: `import()` - Use `$file().read()` and `$sys().eval()`
 - **Top-level await**: - Use regular execution
 - **Class fields**: `class { field = 1 }` - Use constructor assignment

@@ -558,7 +558,7 @@ func;  /* Shows: @<[op,@<add,{@<mul,{@<var,{x}>,2}>},1}>],{x}> */
 @<[op,@<add,{@<mul,{@<var,{x}>,2}>},1}>],{x}>(5);
 ```
 
-**Python equivalent:** Not possible - bytecode is not human-readable
+**Python equivalent:** Not possible - Python bytecode is not human-readable
 
 #### **Built-in File System Integration**
 ```grapa
