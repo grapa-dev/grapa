@@ -464,7 +464,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **Optional chaining**: `obj?.user?.profile` - Use `.iferr()` for superior safe property access: `obj.user.iferr(null).profile.iferr("default")`
+- **Optional chaining**: `obj?.user?.profile` - Use `.iferr()` for superior safe property access with custom fallback values: `obj.user.iferr(null).profile.iferr("default")`
 - **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **F-strings**: `f"Hello {name}"` - Use string interpolation: `"Hello ${name}".interpolate()` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns
 - **Function chaining**: `"hello".upper() + " world".lower()` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`

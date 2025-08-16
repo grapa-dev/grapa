@@ -316,6 +316,13 @@ These represent fundamental language features that genuinely cannot be accomplis
 > - **Dynamic code execution** and meta-programming capabilities
 > - **Runtime type introspection** with `.type()` method
 > - **Flexible data processing** without compile-time type constraints
+> 
+> **Why Grapa Doesn't Need Static Type Annotations:**
+> Grapa's design philosophy prioritizes **runtime flexibility** over compile-time guarantees. Static type annotations would fundamentally change Grapa's nature and eliminate its core advantages:
+> - **Meta-programming**: Grapa can modify its own code structure at runtime, which static typing would prevent
+> - **Dynamic grammar changes**: Grapa's executable BNF system requires runtime type flexibility
+> - **System integration**: Grapa can work with any data format without predefined type definitions
+> - **Data processing**: Grapa's strength is handling diverse, changing data structures dynamically
 > - **System integration** that doesn't require type definitions
 > 
 > Grapa provides type safety through runtime checking and rich type introspection, which is often more flexible than static typing for data processing and system integration tasks.
@@ -380,9 +387,45 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **Optional chaining**: `obj?.user?.profile` - Use `.iferr()` for superior safe property access: `obj.user.iferr(null).profile.iferr("default")`
 - **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Interfaces**: `type MyInterface interface` - Use object composition and duck typing
+
+### Property Access and Safe Navigation
+
+**Why Grapa Doesn't Need Optional Chaining and Property Operators:**
+Grapa's property access mechanisms are superior to Go's approach:
+
+- **Optional Chaining**: Use `.iferr()` for superior safe property access with custom fallback values
+- **Property Existence**: Use `.type() != $ERR` for more explicit existence checking
+- **Property Enumeration**: Use manual key iteration for more controlled enumeration
+
+**Grapa's Superior Property Access:**
+```grapa
+/* Optional chaining equivalent - BETTER */
+/* Go: obj.User.Profile.Name (with nil checks) */
+name = obj.user.iferr(null).profile.iferr(null).name.iferr("default");
+
+/* Property existence equivalent - MORE EXPLICIT */
+/* Go: if user.Name != "" */
+if (user.name.type() != $ERR) {
+    /* Property exists and is accessible */
+}
+
+/* Property enumeration equivalent - MORE CONTROLLED */
+/* Go: for key, value := range obj */
+keys = ["name", "age", "city"];
+keys.map(op(key) {
+    value = user[key].iferr("not set");
+    (key + ": " + value.str()).echo();
+});
+```
+
+**Advantages over Go's Approach:**
+- **Custom fallback values** at each step (not just zero values)
+- **Explicit existence checking** with `.type()` method
+- **Controlled enumeration** without reflection complexity
+- **Functional programming patterns** over imperative loops
+- **Better error handling** with explicit fallback values
 - **Structs**: `type MyStruct struct` - Grapa has superior class system
   > **Note:** Grapa's class system provides full OOP capabilities including inheritance, polymorphism, methods, and runtime modification. See the "Important Note on Class System" section above for details and examples.
 - **Methods**: `func (r Receiver) Method()` - Grapa classes have methods
@@ -403,6 +446,43 @@ These would improve developer experience but aren't essential:
 - **Composition**: - Use object composition
 - **Inheritance**: - Grapa classes support inheritance
   > **Note:** Grapa classes support full inheritance hierarchies. See the "Important Note on Class System" section above for details and examples.
+
+### Data Structures and Collections
+
+**Why Grapa Doesn't Need Specialized Collections:**
+Grapa's unified data structure approach is superior to Go's specialized collections:
+
+- **Sets**: Use `.unique()` method on arrays: `[1, 2, 1, 3, 2].unique()` → `[1, 2, 3]`
+- **Maps**: Use `$LIST` objects: `{key1: "value1", key2: "value2"}`
+- **Slices**: Use `$ARRAY` with dynamic operations: `arr += new_element`
+- **Channels**: Use `$thread()` for concurrent processing
+- **Iterators**: Use functional methods (`.map()`, `.filter()`, `.reduce()`) which are thread-safe and parallel
+
+**Grapa's Superior Collection Capabilities:**
+```grapa
+/* Set-like behavior */
+set_like = [1, 2, 1, 3, 2].unique();  /* [1, 2, 3] */
+
+/* Map-like behavior */
+map_like = {key1: "value1", key2: "value2"};
+
+/* Slice-like operations */
+slice = [1, 2, 3];
+slice += 4;        /* Append */
+slice += 0 slice[0]; /* Prepend */
+
+/* Parallel functional operations */
+squares = numbers.map(op(x) { x * x });           /* Parallel processing */
+evens = numbers.filter(op(x) { x % 2 == 0 });     /* Thread-safe */
+sum = numbers.reduce(op(a, b) { a + b }, 0);      /* Sequential reduction */
+```
+
+**Advantages over Go's Collections:**
+- **Unified syntax** across all data types
+- **Parallel processing** built into functional methods
+- **Cross-format compatibility** (works on `$ARRAY`, `$LIST`, `$OBJ`, `$XML`, etc.)
+- **Simpler learning curve** - fewer specialized types to learn
+- **Better performance** - optimized for Grapa's execution model
 
 ### Rarely Used
 These are advanced features that most developers won't miss:

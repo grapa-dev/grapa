@@ -83,7 +83,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Annotations**: `@escaping`, `@objc` - No annotation system
 - **Generics**: `<T>` - No generic system
 - **Optionals**: `Int?` - No optional type system
-- **Optional chaining**: `x?.doSomething()` - Use `.iferr()` for superior safe property access: `x.doSomething.iferr("default")`
+- **Optional chaining**: `x?.doSomething()` - Use `.iferr()` for superior safe property access with custom fallback values: `x.doSomething.iferr("default")`
 - **Force unwrapping**: `x!` - No force unwrapping
 - **Nil coalescing**: `x ?? 0` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(0)`
 - **Method chaining**: `"hello".uppercased() + " world".lowercased()` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`

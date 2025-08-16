@@ -119,7 +119,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **Safe navigation**: `obj&.user&.profile` - Use `.iferr()` for superior safe property access: `obj.user.iferr(null).profile.iferr("default")`
+- **Safe navigation**: `obj&.user&.profile` - Use `.iferr()` for superior safe property access with custom fallback values: `obj.user.iferr(null).profile.iferr("default")`
 - **Nil coalescing**: `x || y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Class inheritance**: - Use object composition
 - **Method overriding**: - Use regular method definitions

@@ -563,7 +563,7 @@ These would improve developer experience but aren't essential:
 - **Method chaining**: `"hello".toUpperCase() + " world".toLowerCase()` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`
 - **Destructuring**: `const {a, b} = obj` - Use explicit property access: `a = obj.a; b = obj.b;`
 - **Spread operator**: `[...arr1, ...arr2]` - Use `+=` operator: `arr1 += arr2`
-- **Optional chaining**: `obj?.prop?.sub` - Use `.iferr()` for superior safe property access: `obj.prop.iferr(null).sub.iferr("default")`
+- **Optional chaining**: `obj?.prop?.sub` - Use `.iferr()` for superior safe property access with custom fallback values: `obj.prop.iferr(null).sub.iferr("default")`
 - **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Logical assignment**: `x ||= y` - Use explicit assignment: `if (!x) { x = y; }` (no `||=` operator)
 - **Class syntax**: `class MyClass` - Use object constructors and functions

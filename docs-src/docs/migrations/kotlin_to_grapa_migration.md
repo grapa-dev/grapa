@@ -63,7 +63,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Coroutines**: `coroutineScope { ... }` - No coroutine system
 - **Finally/ensure**: `finally` - No finally mechanism
 - **Null assertion**: `x!!` - No null assertion operator
-- **Safe call**: `x?.foo()` - Use `.iferr()` for superior safe property access: `x.foo.iferr("default")`
+- **Safe call**: `x?.foo()` - Use `.iferr()` for superior safe property access with custom fallback values: `x.foo.iferr("default")`
 - **Elvis operator**: `x ?: y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Method chaining**: `"hello".uppercase() + " world".lowercase()` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`
 - **Type checking**: `is` - No type checking operator

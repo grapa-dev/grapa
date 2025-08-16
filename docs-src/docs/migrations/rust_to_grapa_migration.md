@@ -290,6 +290,13 @@ These represent fundamental language features that genuinely cannot be accomplis
 > - **Dynamic code execution** and meta-programming capabilities
 > - **Runtime type introspection** with `.type()` method
 > - **Flexible data processing** without compile-time type constraints
+> 
+> **Why Grapa Doesn't Need Static Type Annotations:**
+> Grapa's design philosophy prioritizes **runtime flexibility** over compile-time guarantees. Static type annotations would fundamentally change Grapa's nature and eliminate its core advantages:
+> - **Meta-programming**: Grapa can modify its own code structure at runtime, which static typing would prevent
+> - **Dynamic grammar changes**: Grapa's executable BNF system requires runtime type flexibility
+> - **System integration**: Grapa can work with any data format without predefined type definitions
+> - **Data processing**: Grapa's strength is handling diverse, changing data structures dynamically
 > - **System integration** that doesn't require type definitions
 > 
 > Grapa provides type safety through runtime checking and rich type introspection, which is often more flexible than static typing for data processing and system integration tasks.
@@ -297,9 +304,46 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **Optional chaining**: `obj?.user?.profile` - Use `.iferr()` for superior safe property access: `obj.user.iferr(null).profile.iferr("default")`
 - **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Traits**: `trait MyTrait` - Use object composition and duck typing
+
+### Property Access and Safe Navigation
+
+**Why Grapa Doesn't Need Optional Chaining and Property Operators:**
+Grapa's property access mechanisms are superior to Rust's approach:
+
+- **Optional Chaining**: Use `.iferr()` for superior safe property access with custom fallback values
+- **Property Existence**: Use `.type() != $ERR` for more explicit existence checking
+- **Property Enumeration**: Use manual key iteration for more controlled enumeration
+
+**Grapa's Superior Property Access:**
+```grapa
+/* Optional chaining equivalent - BETTER */
+/* Rust: obj.user?.profile?.name */
+name = obj.user.iferr(null).profile.iferr(null).name.iferr("default");
+
+/* Property existence equivalent - MORE EXPLICIT */
+/* Rust: obj.contains_key("name") */
+if (obj.name.type() != $ERR) {
+    /* Property exists and is accessible */
+}
+
+/* Property enumeration equivalent - MORE CONTROLLED */
+/* Rust: for (key, value) in obj.iter() */
+keys = ["name", "age", "city"];
+keys.map(op(key) {
+    value = obj[key].iferr("not set");
+    (key + ": " + value.str()).echo();
+});
+```
+
+**Advantages over Rust's Approach:**
+- **Custom fallback values** at each step (not just `None`)
+- **Explicit existence checking** with `.type()` method
+- **Controlled enumeration** without ownership complexity
+- **Functional programming patterns** over imperative loops
+- **Better error handling** with explicit fallback values
+- **No ownership complexity** - automatic memory management
 - **Generics**: `<T>` - Grapa has dynamic typing
 - **Pattern matching**: `match x { Some(y) => y, None => 0 }` - Use `if/else` chains
 - **Result types**: `Result<T, E>` - Use `.iferr()` or explicit error checking
@@ -336,6 +380,44 @@ These are advanced features that most developers won't miss:
 - **Memory ordering**: - Use Grapa's memory model
 
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, Rust's ownership system is replaced by Grapa's automatic memory management, and Rust's async/await is replaced by Grapa's built-in parallel processing.
+
+### Data Structures and Collections
+
+**Why Grapa Doesn't Need Specialized Collections:**
+Grapa's unified data structure approach is superior to Rust's specialized collections:
+
+- **Sets**: Use `.unique()` method on arrays: `[1, 2, 1, 3, 2].unique()` → `[1, 2, 3]`
+- **Maps**: Use `$LIST` objects: `{key1: "value1", key2: "value2"}`
+- **Vectors**: Use `$ARRAY` with dynamic operations: `arr += new_element`
+- **HashMaps**: Use `$LIST` objects with key-value pairs
+- **Iterators**: Use functional methods (`.map()`, `.filter()`, `.reduce()`) which are thread-safe and parallel
+
+**Grapa's Superior Collection Capabilities:**
+```grapa
+/* Set-like behavior */
+set_like = [1, 2, 1, 3, 2].unique();  /* [1, 2, 3] */
+
+/* Map-like behavior */
+map_like = {key1: "value1", key2: "value2"};
+
+/* Vector-like operations */
+vector = [1, 2, 3];
+vector += 4;        /* Push */
+vector += 0 vector[0]; /* Insert at beginning */
+
+/* Parallel functional operations */
+squares = numbers.map(op(x) { x * x });           /* Parallel processing */
+evens = numbers.filter(op(x) { x % 2 == 0 });     /* Thread-safe */
+sum = numbers.reduce(op(a, b) { a + b }, 0);      /* Sequential reduction */
+```
+
+**Advantages over Rust's Collections:**
+- **Unified syntax** across all data types
+- **Parallel processing** built into functional methods
+- **Cross-format compatibility** (works on `$ARRAY`, `$LIST`, `$OBJ`, `$XML`, etc.)
+- **Simpler learning curve** - fewer specialized types to learn
+- **Better performance** - optimized for Grapa's execution model
+- **No ownership complexity** - automatic memory management
 
 ## See Also
 - [Basic Syntax Guide](../syntax/basic_syntax.md)
