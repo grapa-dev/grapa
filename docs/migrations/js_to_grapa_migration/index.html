@@ -4799,7 +4799,7 @@ func;  /* Shows: @&lt;[op,@&lt;add,{@&lt;mul,{@&lt;var,{x}&gt;,2}&gt;},1}&gt;],{
 /* 11 */
 @&lt;[op,@&lt;add,{@&lt;mul,{@&lt;var,{x}&gt;,2}&gt;},1}&gt;],{x}&gt;(5);
 </code></pre></div>
-<p><strong>JavaScript equivalent:</strong> Not possible - bytecode is not human-readable</p>
+<p><strong>JavaScript equivalent:</strong> Not possible - JavaScript bytecode is not human-readable</p>
 <h4 id="built-in-file-system-integration"><strong>Built-in File System Integration</strong></h4>
 <div class="highlight"><pre><span></span><code>/* Direct file system operations */
 $file().set(&quot;test.txt&quot;, &quot;Hello World&quot;);
@@ -4867,7 +4867,7 @@ if (value.type() == $INT) {
 <li><strong>Proxy</strong>: - Use regular objects</li>
 <li><strong>Reflect</strong>: - Use direct property access</li>
 <li><strong>Optional catch binding</strong>: <code>catch {}</code> - Use explicit error handling</li>
-<li><strong>Modules</strong>: <code>import/export</code> - Use Grapa's file system and <code>$file()</code> operations</li>
+<li><strong>Modules</strong>: <code>import/export</code> - Use Grapa's include system and dynamic class loading</li>
 <li><strong>Dynamic imports</strong>: <code>import()</code> - Use <code>$file().read()</code> and <code>$sys().eval()</code></li>
 <li><strong>Top-level await</strong>: - Use regular execution</li>
 <li><strong>Class fields</strong>: <code>class { field = 1 }</code> - Use constructor assignment</li>

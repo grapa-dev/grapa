@@ -3791,7 +3791,7 @@ $file().set(&quot;my_script.grz&quot;, compiled);
 </code></pre></div>
 <p>This function:
 1. Reads the source <code>.grc</code> file
-2. Compiles it to bytecode
+2. Compiles it to execution trees
 3. Adds version information
 4. Encodes using ZIP-GRAPA format
 5. Saves to the target <code>.grz</code> file</p>
@@ -3818,7 +3818,7 @@ echo(&quot;Version:&quot;, version_info);
 </code></pre></div>
 <h2 id="file-structure">File Structure</h2>
 <p>A decoded GRZ file contains an array with:
-- <strong><code>op</code></strong>: The compiled script bytecode
+- <strong><code>op</code></strong>: The compiled script execution trees
 - <strong><code>version</code></strong>: The Grapa version used for compilation </p>
 
 
