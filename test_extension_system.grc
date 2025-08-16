@@ -1,0 +1,24 @@
+/* Test Extension System */
+
+/* Test 1: User-defined object */
+"=== Testing User Object Extension ===".echo();
+user_obj = {a: 1, b: 2};
+user_obj += (custom_method: op(x) { "User method called with: " + x.str(); });
+"User object: ".echo();
+user_obj.echo();
+"Calling user method: ".echo();
+user_obj.custom_method("hello");
+
+/* Test 2: System class $ARRAY */
+"\n=== Testing System Class Extension ===".echo();
+$ARRAY += (test_method: op() { "System method called"; });
+"$ARRAY type: ".echo();
+$ARRAY.echo();
+
+/* Test 3: Try to use the method on an array instance */
+"\n=== Testing Array Instance ===".echo();
+test_array = [1, 2, 3];
+"Array instance: ".echo();
+test_array.echo();
+"Trying to call test_method on array instance...".echo();
+test_array.test_method();

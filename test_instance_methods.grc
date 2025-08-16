@@ -1,0 +1,36 @@
+/* Test Instance Method Calling */
+
+/* Test 1: Array instance */
+"=== Testing Array Instance ===".echo();
+arr = $ARRAY();
+arr.test_method();
+
+/* Test 2: List instance */
+"=== Testing List Instance ===".echo();
+lst = $LIST();
+lst.test_method();
+
+/* Test 3: Class instance */
+"=== Testing Class Instance ===".echo();
+cls = $CLASS();
+cls.test_method();
+
+/* Test 4: Object instance */
+"=== Testing Object Instance ===".echo();
+obj = $OBJ();
+obj.test_method();
+
+/* Test 5: String instance */
+"=== Testing String Instance ===".echo();
+str = $STR();
+str.test_method();
+
+/* Test 6: Integer instance */
+"=== Testing Integer Instance ===".echo();
+num = $INT();
+num.test_method();
+
+/* Test 7: Float instance */
+"=== Testing Float Instance ===".echo();
+flt = $FLOAT();
+flt.test_method();

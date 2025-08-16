@@ -259,6 +259,9 @@ public:
 	GrapaLibraryEvent* HandleLower(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleUpper(GrapaCHAR& pName);
     GrapaLibraryEvent* HandleCaseFold(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleLevenshtein(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleJaroWinkler(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleCosineSimilarity(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleUtc(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleTz(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleEq(GrapaCHAR& pName);

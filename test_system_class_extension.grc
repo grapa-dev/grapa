@@ -1,0 +1,38 @@
+/* Test System Class Extension Support */
+
+/* Test 1: $ARRAY */
+"=== Testing $ARRAY ===".echo();
+$ARRAY += (test_method: op() { "ARRAY method called"; });
+"$ARRAY extension completed".echo();
+
+/* Test 2: $LIST */
+"=== Testing $LIST ===".echo();
+$LIST += (test_method: op() { "LIST method called"; });
+"$LIST extension completed".echo();
+
+/* Test 3: $CLASS */
+"=== Testing $CLASS ===".echo();
+$CLASS += (test_method: op() { "CLASS method called"; });
+"$CLASS extension completed".echo();
+
+/* Test 4: $OBJ */
+"=== Testing $OBJ ===".echo();
+$OBJ += (test_method: op() { "OBJ method called"; });
+"$OBJ extension completed".echo();
+
+/* Test 5: $STR */
+"=== Testing $STR ===".echo();
+$STR += (test_method: op() { "STR method called"; });
+"$STR extension completed".echo();
+
+/* Test 6: $INT */
+"=== Testing $INT ===".echo();
+$INT += (test_method: op() { "INT method called"; });
+"$INT extension completed".echo();
+
+/* Test 7: $FLOAT */
+"=== Testing $FLOAT ===".echo();
+$FLOAT += (test_method: op() { "FLOAT method called"; });
+"$FLOAT extension completed".echo();
+
+"All system class extensions completed".echo();

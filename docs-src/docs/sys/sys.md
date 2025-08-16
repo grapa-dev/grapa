@@ -99,6 +99,45 @@ $sys().getenv($ARGCIN);
 ### putenv(name, value) / setenv(name, value)
 Sets environment variables and system information. Both `putenv()` and `setenv()` are aliases for the same functionality.
 
+### const(object)
+Returns a read-only copy of the specified object.
+
+**Parameters:**
+- `object` - Any Grapa object or value
+
+**Returns:** Read-only copy of the object
+
+**Example:**
+```grapa
+data = [1, 2, 3];
+readonly_data = $sys().const(data);
+/* readonly_data is now read-only */
+```
+
+### setconst(object, readonly)
+Makes an object read-only or writable.
+
+**Parameters:**
+- `object` - Any Grapa object or variable
+- `readonly` - Boolean: `true` to make read-only, `false` to make writable
+
+**Returns:** The modified object
+
+**Example:**
+```grapa
+my_variable = "important data";
+$sys().setconst(my_variable, true);  /* Make read-only */
+
+/* Attempting to modify will fail */
+my_variable = "new data";  /* Error: Cannot modify const variable */
+
+/* Make writable again */
+$sys().setconst(my_variable, false);
+my_variable = "new data";  /* Now works */
+```
+
+**Important**: This feature helps protect critical system components from unintended changes, but should be used carefully as it can prevent legitimate modifications.
+
 **Parameters:**
 - `name` - Environment variable name or system constant
 - `value` - New value to set

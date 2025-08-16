@@ -2328,6 +2328,30 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCaseFold(GrapaCHAR& pName) { return new GrapaLibraryRuleCaseFoldEvent(pName); }
 
+class GrapaLibraryRuleLevenshteinEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleLevenshteinEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleLevenshtein(GrapaCHAR& pName) { return new GrapaLibraryRuleLevenshteinEvent(pName); }
+
+class GrapaLibraryRuleJaroWinklerEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleJaroWinklerEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleJaroWinkler(GrapaCHAR& pName) { return new GrapaLibraryRuleJaroWinklerEvent(pName); }
+
+class GrapaLibraryRuleCosineSimilarityEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleCosineSimilarityEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleCosineSimilarity(GrapaCHAR& pName) { return new GrapaLibraryRuleCosineSimilarityEvent(pName); }
+
 class GrapaLibraryRuleUtcEvent : public GrapaLibraryEvent
 {
 public:
@@ -2879,6 +2903,9 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "lower", &GrapaLibraryRuleEvent::HandleLower },
         { "upper", &GrapaLibraryRuleEvent::HandleUpper },
         { "casefold", &GrapaLibraryRuleEvent::HandleCaseFold },
+        { "levenshtein", &GrapaLibraryRuleEvent::HandleLevenshtein },
+        { "jarowinkler", &GrapaLibraryRuleEvent::HandleJaroWinkler },
+        { "cosinesimilarity", &GrapaLibraryRuleEvent::HandleCosineSimilarity },
 		{ "eq", &GrapaLibraryRuleEvent::HandleEq },
 		{ "neq", &GrapaLibraryRuleEvent::HandleNEq },
 		{ "gteq", &GrapaLibraryRuleEvent::HandleGtEq },
@@ -18564,6 +18591,30 @@ GrapaRuleEvent* GrapaLibraryRuleCaseFoldEvent::Run(GrapaScriptExec *vScriptExec,
             break;
         }
     }
+    if (result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleLevenshteinEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent *result = NULL;
+    if (result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleJaroWinklerEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent *result = NULL;
+    if (result == NULL)
+        result = Error(vScriptExec, pNameSpace, -1);
+    return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleCosineSimilarityEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent *result = NULL;
     if (result == NULL)
         result = Error(vScriptExec, pNameSpace, -1);
     return(result);

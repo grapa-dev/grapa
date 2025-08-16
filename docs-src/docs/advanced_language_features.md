@@ -288,6 +288,63 @@ type = value.type();  /* Get type */
 - **Runtime Property Access** - Dynamic property access
 - **Type Introspection** - Detailed type information
 
+### **7. System Class Redefinition** ✅ **IMPLEMENTED**
+
+**Status**: Fully implemented but advanced feature
+**Current**: `@global` syntax for redefining system classes
+
+```grapa
+/* Redefine $ARRAY with custom methods */
+@global["$ARRAY"] = class ($LIST, $VECTOR) {
+    custom_method = op() { 
+        "Custom array method called".echo();
+        $this.len();  /* Access the array's length */
+    };
+};
+
+/* Use the new method on array instances */
+arr = [1, 2, 3];
+result = arr.custom_method();
+/* Output: "Custom array method called" */
+/* result: 3 */
+```
+
+**Capabilities:**
+- **System Class Extension** - Add methods to `$ARRAY`, `$LIST`, `$CLASS`, `$OBJ`, etc.
+- **Global Variable Redefinition** - Redefine any global variable or function
+- **Runtime Modification** - Change system behavior at runtime
+- **Method Preservation** - Keep existing methods while adding new ones
+
+**⚠️ Important Warnings:**
+- **System Dependencies**: Redefining system classes can break functionality that depends on them
+- **Side Effects**: Changes affect all existing and future instances of that class
+- **Testing Required**: Thorough testing needed before redefining system classes
+- **Documentation**: Always document your changes for future reference
+
+**Best Practices:**
+1. **Test thoroughly** before redefining system classes
+2. **Document your changes** for future reference
+3. **Consider alternatives** like creating new classes instead of redefining existing ones
+4. **Use in isolated environments** when possible
+5. **Use read-only protection** for critical system components
+
+**Read-Only Protection:**
+```grapa
+/* Make a variable read-only to prevent modification */
+my_variable = "important data";
+$sys().setconst(my_variable, true);
+
+/* Check if a variable is read-only */
+is_readonly = $sys().const(my_variable);
+```
+
+**Future Enhancement:**
+The `+=` operator will be enhanced to safely add methods to system classes:
+```grapa
+/* Future capability (not yet implemented) */
+$ARRAY += (custom_method: op() { $this.len(); });
+```
+
 ## Comparison with Other Languages
 
 | Feature | Grapa | Python | JavaScript | Rust |
