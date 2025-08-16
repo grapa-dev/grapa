@@ -50,6 +50,8 @@ public: enum {
 	TOKEN = 28,
 	WIDGET = 29,
 	TUPLE = 30,
+	COMMENT = 31,
+	DOC = 32,
 	X1 = 128,  // don't change above numbers
 	OTHER,
 	PTR,

@@ -304,6 +304,10 @@ void GrapaItemState::PushOutput(u8 pToken, const GrapaBYTE& pValue, char quote)
 		//	break;
 		//}
 		break;
+	case GrapaTokenType::COMMENT:
+	case GrapaTokenType::DOC:
+		sendRaw = false;
+		break;
 	default:
 		break;
 	}
@@ -558,7 +562,7 @@ void GrapaItemState::Running()
 	int isComment = 0;
 	int isCDATA = 0;
 	char* from;
-	class GrapaTokenItemType : public GrapaTokenType { public:enum{LEX_START = GrapaTokenType::MAX, STRING_COLLECT, ESCAPE, ESCAPEX, ESCAPEO, ESCAPEERR, NUMHEX, NUMBIN, SCOPE, EXP, IDDASH, ELESC, ELSTART };};
+	class GrapaTokenItemType : public GrapaTokenType { public:enum{LEX_START = GrapaTokenType::MAX, STRING_COLLECT, ESCAPE, ESCAPEX, ESCAPEO, ESCAPEERR, NUMHEX, NUMBIN, SCOPE, EXP, IDDASH, ELESC, ELSTART, COMMENT_COLLECT };};
 	u32 state = GrapaTokenItemType::START;
 	u32 sendState = GrapaTokenItemType::START, saveState = GrapaTokenItemType::START;
 	u64 maxPos = 0, savePos = 0;
@@ -630,6 +634,102 @@ void GrapaItemState::Running()
 					state = GrapaTokenType::ID;
 				else
 					state = GrapaTokenType::OTHER;
+				break;
+			case GrapaTokenType::COMMENT:
+				state = GrapaTokenItemType::COMMENT_COLLECT;
+				msgStr.SetLength(0);
+				nextValue->mMessage.mPos++;
+				maxPos = savePos = 0;
+				saveChar = 0;
+				saveState = 0;
+				isComment = 0;
+				break;
+			case GrapaTokenItemType::COMMENT_COLLECT:
+				if (msgStr.mLength == 0 && saveState ==0)
+				{
+					if (c == '/')
+					{
+						saveState = GrapaTokenType::COMMENT;
+						saveChar = '\n';
+					}
+					else if (c == '*')
+					{
+						saveState = GrapaTokenType::COMMENT;
+						saveChar = '*';
+					}
+					else
+					{
+						msgStr.FROM("/");
+						PushOutput(GrapaTokenType::SYM, msgStr, quote);
+						msgStr.SetLength(0);
+						state = GrapaTokenType::START;
+						break;
+					}
+					nextValue->mMessage.mPos++;
+					break;
+				}
+				if (msgStr.mLength == 0 && ((saveChar == '\n' && c == '/') || (saveChar == '*' && c == '*')))
+				{
+						saveState == GrapaTokenType::DOC;
+						nextValue->mMessage.mPos++;
+						break;
+				}
+				if (c == saveChar && saveChar == '\n')
+				{
+					if (msgStr.mLength)
+					{
+						if (msgStr.mBytes[msgStr.mLength - 1] == '\r')
+							msgStr.SetLength(msgStr.mLength - 1);
+						if (msgStr.mLength && msgStr.mBytes[msgStr.mLength - 1] == '$')
+						{
+							msgStr.SetLength(msgStr.mLength - 1);
+							PushOutput(saveState, msgStr, quote);
+							PushOutput(GrapaTokenType::SYSSYM, GrapaCHAR("\n"), quote);
+						}
+						else
+							PushOutput(saveState, msgStr, quote);
+					}
+					msgStr.SetLength(0);
+					state = GrapaTokenType::START;
+					maxPos = savePos = 0;
+					saveChar = 0;
+					saveState = 0;
+					nextValue->mMessage.mPos++;
+					break;
+				}
+				if (c == saveChar && saveChar == '*')
+				{
+					isComment = 1;
+					nextValue->mMessage.mPos++;
+					break;
+				}
+				if (isComment != 0)
+				{
+					if (c == '/' && saveChar == '*')
+					{
+						if (msgStr.mLength)
+						{
+							if (msgStr.mBytes[msgStr.mLength - 1] == '\r')
+								msgStr.SetLength(msgStr.mLength - 1);
+							PushOutput(saveState, msgStr, quote);
+						}
+						msgStr.SetLength(0);
+						state = GrapaTokenType::START;
+						maxPos = savePos = 0;
+						saveChar = 0;
+						saveState = 0;
+						isComment = 0;
+						nextValue->mMessage.mPos++;
+						break;
+					}
+					else
+					{
+						msgStr.GrapaBYTE::Append('*');
+						isComment = 0;
+					}
+				}
+				msgStr.GrapaBYTE::Append(c);
+				nextValue->mMessage.mPos++;
 				break;
 			case GrapaTokenType::STR:
 				quote = c;
@@ -1005,6 +1105,11 @@ void GrapaItemState::Running()
 				nextValue->mMessage.mPos++;
 				break;
 			case GrapaTokenType::SYM:
+				if (sendState == 0  && msgStr.mLength == 0 && c == '/')
+				{
+					state = GrapaTokenType::COMMENT;
+					break;
+				}
 				if (sendState == 0 && msgStr.mLength && strchr(mItemParams->mParam[GrapaItemEnum::SYS], ((char*)msgStr.mBytes)[msgStr.mLength - 1]) && ((strchr(mItemParams->mParam[GrapaItemEnum::DIG], c) || strchr(mItemParams->mParam[GrapaItemEnum::SYS], c))))
 				{
 					if (msgStr.mLength > 1)
