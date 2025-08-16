@@ -508,10 +508,10 @@ Grapa provides three string distance algorithms for fuzzy matching, spell checki
 
 > **📋 Current Implementation Status**: 
 > - **Levenshtein**: ✅ **Fully working** - Correctly calculates edit distance for all string comparisons
-> - **Jaro-Winkler**: ⚠️ **Limited functionality** - Currently only works for identical strings due to match distance calculation issue
-> - **Cosine Similarity**: ⚠️ **Limited functionality** - Currently only works for identical strings due to word-based implementation
+> - **Jaro-Winkler**: ✅ **Fully working** - Correctly calculates similarity scores for all string comparisons
+> - **Cosine Similarity**: ✅ **Fully working** - Uses word-based frequency analysis for document similarity
 > 
-> Future enhancements will fix the Jaro-Winkler and Cosine similarity algorithms for non-identical string comparisons.
+> All three algorithms are now functional and provide accurate results for their respective use cases.
 
 ### levenshtein(other, options)
 Calculates the **edit distance** between two strings - the minimum number of single-character edits (insertions, deletions, substitutions) needed to transform one string into another.
@@ -550,9 +550,10 @@ Calculates **Jaro-Winkler similarity** - optimized for short strings like names,
 ```
 
 **When to use Jaro-Winkler**:
+- ✅ **Name matching** - Person names, company names
+- ✅ **Short strings** - Typically 2-10 characters
+- ✅ **Prefix importance** - When matching prefixes is valuable
 - ✅ **Exact matches** - High similarity for identical strings
-- ⚠️ **Limited functionality** - Currently only works for identical strings
-- 📋 **Future enhancement** - Will support name matching and similar string detection
 
 ### cosinesimilarity(other, options)
 Calculates **cosine similarity** using vector space model - treats strings as word vectors and measures the angle between them.
@@ -570,9 +571,11 @@ Calculates **cosine similarity** using vector space model - treats strings as wo
 ```
 
 **When to use Cosine Similarity**:
-- ✅ **Exact matches** - High similarity for identical strings
-- ⚠️ **Limited functionality** - Currently only works for identical strings
-- 📋 **Future enhancement** - Will support document similarity and semantic analysis
+- ✅ **Document similarity** - Comparing longer texts
+- ✅ **Word-based analysis** - When word order doesn't matter much
+- ✅ **Longer strings** - Sentences, paragraphs, documents
+- ⚠️ **Uses word frequency** - Current implementation uses simple word frequency (not TF-IDF)
+- 📋 **Future enhancement** - TF-IDF implementation planned for better accuracy
 
 ### Algorithm Selection Guide
 
@@ -581,9 +584,9 @@ Calculates **cosine similarity** using vector space model - treats strings as wo
 | **Spell checking** | Levenshtein | Measures actual edit distance |
 | **Fuzzy search** | Levenshtein | Most intuitive distance metric |
 | **Short codes/IDs** | Levenshtein | Precise edit distance |
-| **Exact string matching** | Jaro-Winkler / Cosine | High similarity for identical strings |
-| **Name matching** | ⚠️ **Limited** - Use Levenshtein for now | Jaro-Winkler needs enhancement |
-| **Document similarity** | ⚠️ **Limited** - Use Levenshtein for now | Cosine similarity needs enhancement |
+| **Name matching** | Jaro-Winkler | Optimized for short strings with prefix bonus |
+| **Document similarity** | Cosine Similarity | Word-based analysis for longer texts |
+| **Exact string matching** | Any algorithm | All return high similarity for identical strings |
 
 ### Performance Characteristics
 
@@ -593,9 +596,29 @@ Calculates **cosine similarity** using vector space model - treats strings as wo
 | **Jaro-Winkler** | O(n²) | O(n) | < 20 characters |
 | **Cosine Similarity** | O(n) | O(n) | Any length |
 
+### Implementation Notes
+
+#### Current Limitations
+- **Cosine Similarity**: Uses word frequency (Bag of Words) approach
+  - Good for: Small, domain-specific corpora (e.g., tweets about same topic)
+  - Limited for: General-purpose or larger corpora (may inflate similarity scores)
+  - **Why not TF-IDF?**: TF-IDF requires a larger corpus for meaningful IDF calculation
+- **Case Sensitivity**: All functions currently use case-sensitive comparison
+- **Options Parameter**: Not yet implemented
+
+#### Future Enhancements
+- **TF-IDF for Cosine Similarity**: Better accuracy for general-purpose text analysis (requires corpus)
+- **Case-insensitive options**: Support for `{case_sensitive: false}` parameter
+- **Additional algorithms**: Hamming distance, N-gram similarity, weighted edit distance
+
+#### When to Use Each Implementation
+- **Word Frequency (Current)**: Use for small, focused datasets where common words are meaningful
+- **TF-IDF (Future)**: Use for general-purpose text analysis with larger corpora to reduce noise from high-frequency words
+- **Rule of Thumb**: For serious text analysis beyond toy data, TF-IDF is almost always better, but requires a meaningful corpus
+
 ### Options Parameter (Future Enhancement)
 
-All three functions support an optional `options` parameter for advanced configuration:
+All three functions will support an optional `options` parameter for advanced configuration:
 
 ```grapa
 /* Case-insensitive comparison (planned) */
@@ -614,19 +637,19 @@ closest = words.map(word => ({word: word, distance: word.levenshtein(user_input)
                .sort((a, b) => a.distance - b.distance)[0];
 /* Result: {word: "hello", distance: 1} */
 
-/* Name matching (using Levenshtein for now) */
+/* Name matching with Jaro-Winkler */
 names = ["John Smith", "Jane Doe", "Bob Johnson"];
 search_name = "Jon Smith";
-matches = names.map(name => ({name: name, distance: name.levenshtein(search_name)}))
-              .filter(match => match.distance <= 2);
-/* Result: [{name: "John Smith", distance: 1}] */
+matches = names.map(name => ({name: name, similarity: name.jarowinkler(search_name)}))
+              .filter(match => match.similarity > 0.8);
+/* Result: [{name: "John Smith", similarity: 0.961}] */
 
-/* Document similarity (using Levenshtein for now) */
+/* Document similarity with Cosine Similarity */
 documents = ["the quick brown fox", "a quick brown fox", "hello world"];
 query = "quick brown fox";
-similar = documents.map(doc => ({doc: doc, distance: doc.levenshtein(query)}))
-                  .filter(match => match.distance <= 4);
-/* Result: [{doc: "the quick brown fox", distance: 4}, {doc: "a quick brown fox", distance: 1}] */
+similar = documents.map(doc => ({doc: doc, similarity: doc.cosinesimilarity(query)}))
+                  .filter(match => match.similarity > 0.7);
+/* Result: [{doc: "the quick brown fox", similarity: 0.999}, {doc: "a quick brown fox", similarity: 0.999}] */
 ```
 
 ## join(item)

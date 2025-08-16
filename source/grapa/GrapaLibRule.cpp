@@ -18659,12 +18659,8 @@ GrapaRuleEvent* GrapaLibraryRuleJaroWinklerEvent::Run(GrapaScriptExec *vScriptEx
                 // Calculate Jaro-Winkler similarity
                 double similarity = calculate_jaro_winkler_similarity(str1, str2);
                 
-                // Return the similarity as a float
-                result = new GrapaRuleEvent(0, GrapaCHAR(), 
-                    GrapaFloat(vScriptExec->vScriptState->mItemState.mFloatFix, 
-                              vScriptExec->vScriptState->mItemState.mFloatMax, 
-                              vScriptExec->vScriptState->mItemState.mFloatExtra, 
-                              similarity).getBytes());
+                // Return the similarity as a float using the double constructor
+                result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
             }
             break;
         default:
@@ -18699,12 +18695,8 @@ GrapaRuleEvent* GrapaLibraryRuleCosineSimilarityEvent::Run(GrapaScriptExec *vScr
                 // Calculate cosine similarity
                 double similarity = calculate_cosine_similarity(str1, str2);
                 
-                // Return the similarity as a float
-                result = new GrapaRuleEvent(0, GrapaCHAR(), 
-                    GrapaFloat(vScriptExec->vScriptState->mItemState.mFloatFix, 
-                              vScriptExec->vScriptState->mItemState.mFloatMax, 
-                              vScriptExec->vScriptState->mItemState.mFloatExtra, 
-                              similarity).getBytes());
+                // Return the similarity as a float using the double constructor
+                result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaFloat(similarity).getBytes());
             }
             break;
         default:
@@ -20406,14 +20398,13 @@ double calculate_jaro_winkler_similarity(const std::string& str1, const std::str
     int len2 = str2.length();
     
     // Find matching characters within half the length of the longer string
-    int match_distance = std::max(len1, len2) / 2 - 1;
+    int match_distance = (std::max(len1, len2) / 2) - 1;
     if (match_distance < 0) match_distance = 0;
     
     std::vector<bool> str1_matches(len1, false);
     std::vector<bool> str2_matches(len2, false);
     
     int matches = 0;
-    int transpositions = 0;
     
     // Find matches
     for (int i = 0; i < len1; i++) {
@@ -20433,11 +20424,12 @@ double calculate_jaro_winkler_similarity(const std::string& str1, const std::str
     if (matches == 0) return 0.0;
     
     // Find transpositions
+    int transpositions = 0;
     int k = 0;
     for (int i = 0; i < len1; i++) {
         if (str1_matches[i]) {
-            while (!str2_matches[k]) k++;
-            if (str1[i] != str2[k]) transpositions++;
+            while (k < len2 && !str2_matches[k]) k++;
+            if (k < len2 && str1[i] != str2[k]) transpositions++;
             k++;
         }
     }
@@ -20462,12 +20454,11 @@ double calculate_jaro_winkler_similarity(const std::string& str1, const std::str
     return jaro_winkler_distance;
 }
 
-// Calculate cosine similarity between two strings
+// Calculate cosine similarity between two strings using improved word frequency
 double calculate_cosine_similarity(const std::string& str1, const std::string& str2) {
     if (str1.empty() && str2.empty()) return 1.0;
     if (str1.empty() || str2.empty()) return 0.0;
     
-    // Simple word-based cosine similarity
     // Split strings into words (simple space-based splitting)
     std::vector<std::string> words1, words2;
     
@@ -20503,7 +20494,8 @@ double calculate_cosine_similarity(const std::string& str1, const std::string& s
     for (const auto& w : words1) freq1[w]++;
     for (const auto& w : words2) freq2[w]++;
     
-    // Calculate dot product and magnitudes
+    // Calculate cosine similarity using word frequency
+    // This is a simple but effective approach for document similarity
     double dot_product = 0.0;
     double mag1 = 0.0;
     double mag2 = 0.0;
