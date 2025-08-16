@@ -140,7 +140,7 @@ f.pwd()  # Returns: /
 db_type = f.type()
 
 # Debug database structure
-f.debug()
+f.dump().echo()
 
 # Get file info
 info = f.info("filename")
@@ -280,7 +280,7 @@ try {
 ### Debug Information
 ```grapa
 # Get detailed database information
-f.debug()
+f.dump().echo()
 
 # Check database structure
 f.ls()
@@ -295,7 +295,7 @@ f.info("field_name")
 1. **Choose Right Database Type**: Row vs Column based on workload
 2. **Use Appropriate Field Types**: Match data types to storage needs
 3. **Optimize Storage Types**: FIX for small data, VAR for variable data
-4. **Monitor Performance**: Use debug() function regularly
+4. **Monitor Performance**: Use dump() function regularly
 5. **Plan for Growth**: Consider data growth patterns
 
 ### Memory Management

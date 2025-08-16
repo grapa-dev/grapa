@@ -3692,11 +3692,44 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-use-descriptive-test-names" class="md-nav__link">
+  <a href="#1-use-descriptive-test-names-and-clean-output" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Use Descriptive Test Names
+      1. Use Descriptive Test Names and Clean Output
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="1. Use Descriptive Test Names and Clean Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-interpolate-for-test-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use .interpolate() for Test Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#benefits-of-interpolate-in-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits of .interpolate() in Tests:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-test-output-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Test Output Patterns:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4097,11 +4130,44 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-use-descriptive-test-names" class="md-nav__link">
+  <a href="#1-use-descriptive-test-names-and-clean-output" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Use Descriptive Test Names
+      1. Use Descriptive Test Names and Clean Output
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="1. Use Descriptive Test Names and Clean Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-interpolate-for-test-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use .interpolate() for Test Output
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#benefits-of-interpolate-in-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits of .interpolate() in Tests:
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-test-output-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Test Output Patterns:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -4698,8 +4764,10 @@ test_validation_pipeline = op() {
 test_validation_pipeline();
 </code></pre></div>
 <h2 id="best-practices">Best Practices</h2>
-<h3 id="1-use-descriptive-test-names">1. Use Descriptive Test Names</h3>
-<div class="highlight"><pre><span></span><code>/* Good: Descriptive test name */
+<h3 id="1-use-descriptive-test-names-and-clean-output">1. Use Descriptive Test Names and Clean Output</h3>
+<h4 id="use-interpolate-for-test-output">Use <code>.interpolate()</code> for Test Output</h4>
+<p>For clean, readable test output, use <code>.interpolate()</code> instead of multiple <code>.echo()</code> calls or string concatenation:</p>
+<div class="highlight"><pre><span></span><code>/* Good: Using .interpolate() for clean output */
 test_array_doubling_function = op() {
     /* Test that array doubling function works correctly */
     test_data = [1, 2, 3];
@@ -4707,11 +4775,45 @@ test_array_doubling_function = op() {
     expected = [2, 4, 6];
 
     if (result.str() == expected.str()) {
-        &quot;Array doubling test passed&quot;.echo();
+        &quot;✓ Array doubling test passed\n&quot;.interpolate().echo();
     } else {
-        &quot;Array doubling test failed&quot;.echo();
+        &quot;✗ Array doubling test failed: expected ${expected}, got ${result}\n&quot;.interpolate().echo();
     };
 };
+
+/* Avoid: Multiple .echo() calls */
+&quot;Test result: &quot;.echo();
+result.echo();
+&quot;\n&quot;.echo();
+
+/* Prefer: Single .interpolate() call */
+&quot;Test result: ${result}\n&quot;.interpolate().echo();
+</code></pre></div>
+<h4 id="benefits-of-interpolate-in-tests">Benefits of <code>.interpolate()</code> in Tests:</h4>
+<ul>
+<li><strong>Cleaner code</strong>: Single line instead of multiple <code>.echo()</code> calls</li>
+<li><strong>Better readability</strong>: Clear variable substitution with <code>${variable}</code> syntax</li>
+<li><strong>Consistent formatting</strong>: All output uses the same pattern</li>
+<li><strong>Easier maintenance</strong>: Simpler to modify output format</li>
+<li><strong>Performance</strong>: More efficient than string concatenation</li>
+</ul>
+<h4 id="common-test-output-patterns">Common Test Output Patterns:</h4>
+<div class="highlight"><pre><span></span><code>/* Field value display */
+&quot;employee1.name: ${name1}\n&quot;.interpolate().echo();
+&quot;employee1.age: ${age1}\n&quot;.interpolate().echo();
+
+/* Status messages */
+&quot;Processing ${record_count} records...\n&quot;.interpolate().echo();
+
+/* Error messages */
+&quot;Error: ${error_message}\n&quot;.interpolate().echo();
+
+/* Debug output */
+&quot;Debug: ${variable} = ${value}\n&quot;.interpolate().echo();
+
+/* Test results with formatting */
+&quot;✓ Test passed: ${test_name}\n&quot;.interpolate().echo();
+&quot;✗ Test failed: ${test_name} - expected ${expected}, got ${actual}\n&quot;.interpolate().echo();
 </code></pre></div>
 <h3 id="2-test-edge-cases">2. Test Edge Cases</h3>
 <div class="highlight"><pre><span></span><code>/* Test edge cases */

@@ -534,9 +534,13 @@ test_validation_pipeline();
 
 ## Best Practices
 
-### 1. Use Descriptive Test Names
+### 1. Use Descriptive Test Names and Clean Output
+
+#### Use `.interpolate()` for Test Output
+For clean, readable test output, use `.interpolate()` instead of multiple `.echo()` calls or string concatenation:
+
 ```grapa
-/* Good: Descriptive test name */
+/* Good: Using .interpolate() for clean output */
 test_array_doubling_function = op() {
     /* Test that array doubling function works correctly */
     test_data = [1, 2, 3];
@@ -544,11 +548,46 @@ test_array_doubling_function = op() {
     expected = [2, 4, 6];
 
     if (result.str() == expected.str()) {
-        "Array doubling test passed".echo();
+        "✓ Array doubling test passed\n".interpolate().echo();
     } else {
-        "Array doubling test failed".echo();
+        "✗ Array doubling test failed: expected ${expected}, got ${result}\n".interpolate().echo();
     };
 };
+
+/* Avoid: Multiple .echo() calls */
+"Test result: ".echo();
+result.echo();
+"\n".echo();
+
+/* Prefer: Single .interpolate() call */
+"Test result: ${result}\n".interpolate().echo();
+```
+
+#### Benefits of `.interpolate()` in Tests:
+- **Cleaner code**: Single line instead of multiple `.echo()` calls
+- **Better readability**: Clear variable substitution with `${variable}` syntax
+- **Consistent formatting**: All output uses the same pattern
+- **Easier maintenance**: Simpler to modify output format
+- **Performance**: More efficient than string concatenation
+
+#### Common Test Output Patterns:
+```grapa
+/* Field value display */
+"employee1.name: ${name1}\n".interpolate().echo();
+"employee1.age: ${age1}\n".interpolate().echo();
+
+/* Status messages */
+"Processing ${record_count} records...\n".interpolate().echo();
+
+/* Error messages */
+"Error: ${error_message}\n".interpolate().echo();
+
+/* Debug output */
+"Debug: ${variable} = ${value}\n".interpolate().echo();
+
+/* Test results with formatting */
+"✓ Test passed: ${test_name}\n".interpolate().echo();
+"✗ Test failed: ${test_name} - expected ${expected}, got ${actual}\n".interpolate().echo();
 ```
 
 ### 2. Test Edge Cases

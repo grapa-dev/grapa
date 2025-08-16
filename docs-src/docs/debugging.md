@@ -166,6 +166,24 @@ if (error_condition) {
 "Login attempt from IP 192.168.1.1".debug(1, "auth");
 ```
 
+#### Using `.interpolate()` for Clean Output
+For clean, readable output in both general and debug contexts, use `.interpolate()` instead of multiple `.echo()` calls:
+
+```grapa
+/* Avoid: Multiple .echo() calls */
+"Processing item ".echo();
+item_count.echo();
+" of ".echo();
+total_items.echo();
+"\n".echo();
+
+/* Prefer: Single .interpolate() call */
+"Processing item ${item_count} of ${total_items}\n".interpolate().echo();
+
+/* Debug with interpolation */
+"Debug: Processing ${item_count} items, status: ${status}\n".interpolate().debug(1, "process");
+```
+
 ## Script-Based Debug Control
 
 ### System-Level Debug Control

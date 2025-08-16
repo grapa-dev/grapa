@@ -1771,13 +1771,13 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#putenvname-value" class="md-nav__link">
+  <a href="#putenvname-value-setenvname-value" class="md-nav__link">
     <span class="md-ellipsis">
-      putenv(name, value)
+      putenv(name, value) / setenv(name, value)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="putenv(name, value)">
+    <nav class="md-nav" aria-label="putenv(name, value) / setenv(name, value)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3705,13 +3705,13 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#putenvname-value" class="md-nav__link">
+  <a href="#putenvname-value-setenvname-value" class="md-nav__link">
     <span class="md-ellipsis">
-      putenv(name, value)
+      putenv(name, value) / setenv(name, value)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="putenv(name, value)">
+    <nav class="md-nav" aria-label="putenv(name, value) / setenv(name, value)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4017,18 +4017,22 @@ $sys().getenv($ARGCIN);
 - <strong>Operating Systems:</strong> <code>__APPLE__</code>, <code>_WIN32</code>, <code>_WIN64</code>, <code>__linux__</code>, <code>__ANDROID__</code>
 - <strong>Compilers:</strong> <code>_MSC_VER</code>, <code>_MSC_FULL_VER</code>, <code>__GNUC__</code>, <code>__GNUC_MINOR__</code>, <code>__clang__</code>, <code>__MINGW32__</code>, <code>__MINGW64__</code>
 - <strong>Architectures:</strong> <code>__i386__</code>, <code>__x86_64__</code>, <code>__arm__</code>, <code>__ARM_ARCH_5T__</code>, <code>__ARM_ARCH_7A__</code>, <code>__powerpc64__</code>, <code>__aarch64__</code></p>
-<h3 id="putenvname-value">putenv(name, value)</h3>
-<p>Sets environment variables and system information.</p>
+<h3 id="putenvname-value-setenvname-value">putenv(name, value) / setenv(name, value)</h3>
+<p>Sets environment variables and system information. Both <code>putenv()</code> and <code>setenv()</code> are aliases for the same functionality.</p>
 <p><strong>Parameters:</strong>
 - <code>name</code> - Environment variable name or system constant
 - <code>value</code> - New value to set</p>
 <p><strong>Returns:</strong> <code>$BOOL</code> - <code>true</code> if successful, <code>false</code> if failed</p>
 <p><strong>Example:</strong>
-<div class="highlight"><pre><span></span><code>$sys().putenv(&quot;CUSTOM_VAR&quot;, &quot;my_value&quot;);
-true
+<div class="highlight"><pre><span></span><code>// Both methods work identically
+$sys().putenv(&quot;CUSTOM_VAR&quot;, &quot;my_value&quot;);
+$sys().setenv(&quot;ANOTHER_VAR&quot;, &quot;another_value&quot;);
 
 $sys().getenv(&quot;CUSTOM_VAR&quot;);
 my_value
+
+$sys().getenv(&quot;ANOTHER_VAR&quot;);
+another_value
 </code></pre></div></p>
 <h4 id="debug-environment-variables">Debug Environment Variables</h4>
 <p><code>putenv()</code> supports special debug-related environment variables for controlling Grapa's debugging system:</p>

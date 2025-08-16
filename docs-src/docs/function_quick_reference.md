@@ -6,7 +6,7 @@ tags:
 # Grapa System Functions Quick Reference
 
 ## Core Language
-`rule`, `ruleval`, `ruleref`, `token`, `grammar`, `reset`, `shell`, `eval`, `exec`, `post`, `sleep`, `exit`, `getenv`, `putenv`, `include`
+`rule`, `ruleval`, `ruleref`, `token`, `grammar`, `reset`, `shell`, `eval`, `exec`, `post`, `sleep`, `exit`, `getenv`, `putenv`, `setenv`, `include`
 
 ## Variables & Scope
 `name`, `getname`, `lit`, `ref`, `setnull`, `var`, `assign`, `assignappend`, `assignextend`, `global`, `parent`, `this`, `local`, `static`, `const`, `setconst`
@@ -67,7 +67,7 @@ tags:
 ## File System
 **Navigation**: `file_pwd` (working dir), `file_cd` (change working dir), `file_phd` (home dir), `file_chd` (change home dir)
 **Operations**: `file_ls`, `file_mk`, `file_rm`, `file_set`, `file_get`, `file_info` (metadata: type, size, existence)
-**Database**: `file_table`, `file_mkfield`, `file_rmfield`, `file_split` (split large files), `file_debug`
+**Database**: `file_table`, `file_mkfield`, `file_rmfield`, `file_split` (split large files), `file_dump`
 
 ## Networking
 `net_mac`, `net_interfaces`, `net_connect`, `net_bind`, `net_listen`, `net_onlisten`, `net_disconnect`, `net_proxy`, `net_certificate`, `net_private`, `net_trusted`, `net_verify`, `net_chain`, `net_host`, `net_send`, `net_receive`, `net_pending`, `net_onreceive`

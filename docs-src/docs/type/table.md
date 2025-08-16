@@ -268,7 +268,7 @@ f.rmfield("old_field");
 ### Debug Information
 ```grapa
 /* Inspect database structure */
-f.debug();
+f.dump().echo();
 ```
 
 ## Best Practices

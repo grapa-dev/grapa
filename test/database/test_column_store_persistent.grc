@@ -141,10 +141,10 @@ f.phd().echo();
 
 "Debugging column store database structure...\n".echo();
 f.cd("../persistent_db");
-f.debug();
+f.dump().echo();
 
 "Debugging row store database structure...\n".echo();
 f.cd("../row_store_db");
-f.debug();
+f.dump().echo();
 
 "Test completed. Databases are now stored persistently on disk.\n".echo(); 

@@ -315,6 +315,80 @@ console_log("Hello from Grapa!");
 
 This can make migration easier for those used to JavaScript's `console.log()` or similar functions.
 
+## Debugging and Logging
+
+Grapa provides sophisticated debugging capabilities that go beyond JavaScript's console methods. While Grapa doesn't have `__FILE__` and `__LINE__` macros, it offers superior debugging through the `.debug()` method with component targeting and level control:
+
+### Basic Debug Output
+```grapa
+/* Standard output - equivalent to console.log() */
+"Hello World".echo();
+
+/* Debug output with component targeting */
+"Debug message".debug(1, "component");
+
+/* Debug with different levels */
+"Info message".debug(1, "info");
+"Warning message".debug(2, "warning");
+"Error message".debug(3, "error");
+```
+
+### Enabling Debug Mode
+```grapa
+/* Enable debug mode for current session */
+$sys().putenv("GRAPA_SESSION_DEBUG_MODE", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
+
+/* Enable debug for specific components */
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "database,grep,vector");
+
+/* Enable all components at different levels */
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "grep:3,database:1,*:0");
+```
+
+### Command Line Debug Options
+```bash
+# Enable debug mode from command line
+./grapa -d script.grc
+
+# Enable debug with specific components
+GRAPA_SESSION_DEBUG_COMPONENTS="debug:1" ./grapa -d script.grc
+
+# Enable debug with multiple components
+GRAPA_SESSION_DEBUG_COMPONENTS="database:2,grep:1,vector:0" ./grapa -d script.grc
+```
+
+### Debug vs Console Comparison
+
+| JavaScript | Grapa |
+|------------|-------|
+| `console.log("Hello")` | `"Hello".echo()` |
+| `console.debug("Debug info")` | `"Debug info".debug(1, "debug")` |
+| `console.info("Info message")` | `"Info message".debug(1, "info")` |
+| `console.warn("Warning")` | `"Warning".debug(2, "warning")` |
+| `console.error("Error")` | `"Error".debug(3, "error")` |
+| `console.log(\`Count: \${count}\`)` | `"Count: ${count}".interpolate().echo()` |
+| `console.log(\`Processing \${i}/\${total}\`)` | `"Processing ${i}/${total}".interpolate().debug(1, "progress")` |
+
+### Advanced Debug Patterns
+```grapa
+/* Debug with interpolation for clean output */
+"Processing ${record_count} records...".debug(1, "process");
+
+/* Debug with error handling */
+result = some_operation();
+if (result.type() == $ERR) {
+    "Error occurred: ${result}".debug(3, "error");
+} else {
+    "Operation successful: ${result}".debug(1, "info");
+};
+
+/* Debug with component-specific formatting */
+"Database query: ${query}".debug(2, "database");
+"Network request: ${url}".debug(2, "network");
+"File operation: ${filename}".debug(2, "filesystem");
+```
+
 > **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.
 
 ## Work-in-Progress (WIP) Items
@@ -326,7 +400,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 
 - **with statement**: `with (obj)` - No with statement support
 - **Labeled statements**: `label: statement` - No labeled statement support
-- **Debugger statement**: - No debugger statement support
+- **Debugger statement**: - Grapa provides `.debug()` method for sophisticated debugging and logging (outputs to stderr, can be redirected at CLI level)
 - **Strict mode**: - Grapa is strict by default
 - **Hoisting**: - Grapa has different scoping rules
 - **Closure scope**: - Grapa has different scoping rules

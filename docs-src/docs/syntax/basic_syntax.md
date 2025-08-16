@@ -101,6 +101,11 @@ String interpolation is the preferred approach for combining strings and values:
 /* ✅ Elegant function chaining */
 "${'Hello'.upper()} ${'World'.lower()}".interpolate().echo();  /* "HELLO world" */
 "Result: ${[1,2,3].filter(op(x){x>1}).str()}".interpolate().echo();  /* "Result: [2,3]" */
+
+/* ✅ Test script output */
+"✓ Test passed: ${test_name}\n".interpolate().echo();
+"✗ Test failed: expected ${expected}, got ${actual}\n".interpolate().echo();
+"Processing ${record_count} records...\n".interpolate().echo();
 ```
 
 **String concatenation (if needed):**
@@ -122,6 +127,7 @@ Always wrap string concatenation expressions in parentheses:
 - **Less error-prone** - No operator precedence issues
 - **More flexible** - Parameter passing and complex expressions
 - **Elegant function chaining** - Provides solution for complex method chaining across different object types
+- **Perfect for test scripts** - Clean output formatting without multiple `.echo()` calls
 
 ## Loops
 

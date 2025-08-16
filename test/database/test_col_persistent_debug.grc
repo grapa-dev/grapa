@@ -31,7 +31,7 @@ f.set("1", "city", "New York")
 f.set("1", "salary", 75000.50)
 
 echo("First record created")
-f.debug()
+f.dump().echo()
 echo("---")
 
 /* Create second record */
@@ -42,7 +42,7 @@ f.set("2", "city", "Los Angeles")
 f.set("2", "salary", 65000.75)
 
 echo("Second record created")
-f.debug()
+f.dump().echo()
 echo("---")
 
 /* Test getting field values */
@@ -72,7 +72,7 @@ echo("---")
 
 /* Final database state */
 echo("Final database state:")
-f.debug()
+f.dump().echo()
 echo("---")
 
 /* List database contents */

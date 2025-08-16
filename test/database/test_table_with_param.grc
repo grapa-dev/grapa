@@ -37,7 +37,7 @@ f3.set("1", "age", 30)
 echo("Record 1 name:", f3.get("1", "name"))
 echo("Record 1 age:", f3.get("1", "age"))
 
-f3.debug()
+f3.dump().echo()
 echo("---")
 
 echo("Test completed") 

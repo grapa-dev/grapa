@@ -6,7 +6,8 @@ $global["$sys"]
 	type = @<[op,@<type,{@<var,{object}>}>],{object}>;
 	describe = @<[op,@<describe,{@<var,{object}>}>],{object}>;
 	getenv = @<[op,@<getenv,{@<var,{name}>}>],{name}>;
-	putenv = @<[op,@<putenv,{@<var,{name}>,@<var,{value}>}>],{name,value}>;
-	encode = @<[op,@<encode,{@<var,{data}>,@<var,{method}>,@<var,{params}>}>],{data,method,params}>; 
+    putenv = @<[op,@<putenv,{@<var,{name}>,@<var,{value}>}>],{name,value}>;
+    setenv = @<[op,@<putenv,{@<var,{name}>,@<var,{value}>}>],{name,value}>;
+	encode = @<[op,@<encode,{@<var,{data}>,@<var,{method}>,@<var,{params}>}>],{data,method,params}>;
 	sleep = @<[op,@<sleep,{@<var,{milliseconds}>}>],{milliseconds}>;
 	};

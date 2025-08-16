@@ -74,7 +74,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Protocols**: `protocol Baz {}` - No protocol system
 - **Extensions**: `extension Foo {}` - No extension system
 - **Defer**: `defer` - No defer mechanism
-- **File/line macros**: `#file`, `#line` - No file/line macros
+- **File/line macros**: `#file`, `#line` - Grapa provides `.debug()` method for sophisticated debugging and logging (outputs to stderr, can be redirected at CLI level)
 - **Type aliases**: `typealias Foo = Bar` - No type alias system
 - **Any type**: `Any` - No Any type system
 - **Optional casting**: `as?` - No optional casting
@@ -159,4 +159,78 @@ If you prefer Swift-style function calls, you can define your own `print()` func
 // Define a print function similar to Swift
 print = op("value"=""){value.echo();};
 print("Hello from Grapa!");
+```
+
+## Debugging and Logging
+
+Grapa provides sophisticated debugging capabilities that go beyond Swift's print and NSLog methods. While Grapa doesn't have `#file` and `#line` macros, it offers superior debugging through the `.debug()` method with component targeting and level control:
+
+### Basic Debug Output
+```grapa
+/* Standard output - equivalent to print() */
+"Hello World".echo();
+
+/* Debug output with component targeting */
+"Debug message".debug(1, "component");
+
+/* Debug with different levels */
+"Info message".debug(1, "info");
+"Warning message".debug(2, "warning");
+"Error message".debug(3, "error");
+```
+
+### Enabling Debug Mode
+```grapa
+/* Enable debug mode for current session */
+$sys().putenv("GRAPA_SESSION_DEBUG_MODE", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
+
+/* Enable debug for specific components */
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "database,grep,vector");
+
+/* Enable all components at different levels */
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "grep:3,database:1,*:0");
+```
+
+### Command Line Debug Options
+```bash
+# Enable debug mode from command line
+./grapa -d script.grc
+
+# Enable debug with specific components
+GRAPA_SESSION_DEBUG_COMPONENTS="debug:1" ./grapa -d script.grc
+
+# Enable debug with multiple components
+GRAPA_SESSION_DEBUG_COMPONENTS="database:2,grep:1,vector:0" ./grapa -d script.grc
+```
+
+### Debug vs Swift Comparison
+
+| Swift | Grapa |
+|-------|-------|
+| `print("Hello")` | `"Hello".echo()` |
+| `print("Count: \(count)")` | `"Count: ${count}".interpolate().echo()` |
+| `NSLog("Debug info")` | `"Debug info".debug(1, "debug")` |
+| `print("Info message")` | `"Info message".debug(1, "info")` |
+| `print("Warning")` | `"Warning".debug(2, "warning")` |
+| `print("Error")` | `"Error".debug(3, "error")` |
+| `print("Processing \(i)/\(total)")` | `"Processing ${i}/${total}".interpolate().debug(1, "progress")` |
+
+### Advanced Debug Patterns
+```grapa
+/* Debug with interpolation for clean output */
+"Processing ${record_count} records...".debug(1, "process");
+
+/* Debug with error handling */
+result = some_operation();
+if (result.type() == $ERR) {
+    "Error occurred: ${result}".debug(3, "error");
+} else {
+    "Operation successful: ${result}".debug(1, "info");
+};
+
+/* Debug with component-specific formatting */
+"Database query: ${query}".debug(2, "database");
+"Network request: ${url}".debug(2, "network");
+"File operation: ${filename}".debug(2, "filesystem");
 ```

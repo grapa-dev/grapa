@@ -96,8 +96,8 @@ $sys().getenv($ARGCIN);
 - **Compilers:** `_MSC_VER`, `_MSC_FULL_VER`, `__GNUC__`, `__GNUC_MINOR__`, `__clang__`, `__MINGW32__`, `__MINGW64__`
 - **Architectures:** `__i386__`, `__x86_64__`, `__arm__`, `__ARM_ARCH_5T__`, `__ARM_ARCH_7A__`, `__powerpc64__`, `__aarch64__`
 
-### putenv(name, value)
-Sets environment variables and system information.
+### putenv(name, value) / setenv(name, value)
+Sets environment variables and system information. Both `putenv()` and `setenv()` are aliases for the same functionality.
 
 **Parameters:**
 - `name` - Environment variable name or system constant
@@ -107,11 +107,15 @@ Sets environment variables and system information.
 
 **Example:**
 ```grapa
+// Both methods work identically
 $sys().putenv("CUSTOM_VAR", "my_value");
-true
+$sys().setenv("ANOTHER_VAR", "another_value");
 
 $sys().getenv("CUSTOM_VAR");
 my_value
+
+$sys().getenv("ANOTHER_VAR");
+another_value
 ```
 
 #### Debug Environment Variables

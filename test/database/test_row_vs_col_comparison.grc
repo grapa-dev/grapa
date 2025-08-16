@@ -1,29 +1,29 @@
 /* Test comparing ROW vs COL table behavior */
 
-"=== Comparing ROW vs COL Tables ===".echo();
+"=== Comparing ROW vs COL Tables ===\n".echo();
 
 /* Create ROW table */
-"Creating ROW table...".echo();
+"Creating ROW table...\n".echo();
 frow = $file().table("ROW");
 frow.mkfield("name", "STR", "VAR");
 frow.mkfield("age", "INT", "FIX", 4);
 frow.mkfield("city", "STR", "VAR");
 
-"ROW table created".echo();
-"---".echo();
+"ROW table created\n".echo();
+"---\n".echo();
 
 /* Create COL table */
-"Creating COL table...".echo();
+"Creating COL table...\n".echo();
 fcol = $file().table("COL");
 fcol.mkfield("name", "STR", "VAR");
 fcol.mkfield("age", "INT", "FIX", 4);
 fcol.mkfield("city", "STR", "VAR");
 
-"COL table created".echo();
-"---".echo();
+"COL table created\n".echo();
+"---\n".echo();
 
 /* Add same data to both tables */
-"Adding data to ROW table...".echo();
+"Adding data to ROW table...\n".echo();
 frow.set("1", "name", "Alice");
 frow.set("1", "age", 30);
 frow.set("1", "city", "New York");
@@ -31,7 +31,7 @@ frow.set("2", "name", "Bob");
 frow.set("2", "age", 25);
 frow.set("2", "city", "Los Angeles");
 
-"Adding data to COL table...".echo();
+"Adding data to COL table...\n".echo();
 fcol.set("1", "name", "Alice");
 fcol.set("1", "age", 30);
 fcol.set("1", "city", "New York");
@@ -39,27 +39,31 @@ fcol.set("2", "name", "Bob");
 fcol.set("2", "age", 25);
 fcol.set("2", "city", "Los Angeles");
 
-"Data added to both tables".echo();
-"---".echo();
+"Data added to both tables\n".echo();
+"---\n".echo();
 
 /* Compare debug output */
-"ROW table debug output:".echo();
-frow.debug();
-"---".echo();
+"ROW table debug output:\n".echo();
+frow.dump().echo();
+"---\n".echo();
 
-"COL table debug output:".echo();
-fcol.debug();
-"---".echo();
+"COL table debug output:\n".echo();
+fcol.dump().echo();
+"---\n".echo();
 
 /* Test field operations */
-"Testing field operations...".echo();
+"Testing field operations...\n".echo();
 "ROW table - Record 1 name: ".echo();
 frow.get("1", "name").echo();
+"\n".echo();
 "COL table - Record 1 name: ".echo();
 fcol.get("1", "name").echo();
+"\n".echo();
 "ROW table - Record 2 age: ".echo();
 frow.get("2", "age").echo();
+"\n".echo();
 "COL table - Record 2 age: ".echo();
 fcol.get("2", "age").echo();
+"\n".echo();
 
-"Test completed".echo(); 
+"Test completed\n".echo(); 

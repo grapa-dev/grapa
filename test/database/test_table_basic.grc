@@ -149,11 +149,11 @@ col_contents.echo();
 "-------------------------\n".echo();
 
 "Getting field information from row store:\n".echo();
-f2.debug();
+f2.dump().echo();
 "\n".echo();
 
 "Getting field information from column store:\n".echo();
-f3.debug();
+f3.dump().echo();
 "\n".echo();
 
 /* Test 7: Error Handling */

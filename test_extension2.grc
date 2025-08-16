@@ -1,0 +1,11 @@
+/* Test extending $ARRAY with new methods */
+$ARRAY += op(x) { "Custom array method called with: " + x.str(); };
+
+/* Create a test array */
+test_array = [1, 2, 3];
+
+/* Try to call the new method */
+"About to call custom method...".echo();
+result = test_array.custom_method("hello");
+"Method result: ".echo();
+result.echo();

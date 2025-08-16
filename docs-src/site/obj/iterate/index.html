@@ -3591,42 +3591,55 @@ Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in parallel.
 <p>See <a href="../../operators/loop/#reduce">reduce in the Looping section</a> for full documentation, canonical examples, and troubleshooting.
 Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. </p>
 <h2 id="sortaxisorderop">sort([axis],[order],[op])</h2>
-<p>Sorts a $LIST.</p>
+<p>Sorts data structures across multiple types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
 <ul>
 <li>axis -&gt; 0 = row, 1 = col</li>
 <li>order -&gt; 0 = ascend, 1 = decend, or does selection if array if indexes passed in</li>
 <li>op -&gt; function for the compare</li>
 </ul>
-<div class="highlight"><pre><span></span><code>{z:1,m:2,p:3,b:4}.sort() -&gt; {&quot;b&quot;:4,&quot;m&quot;:2,&quot;p&quot;:3,&quot;z&quot;:1}
-</code></pre></div>
+<p><strong>Examples:</strong>
+<div class="highlight"><pre><span></span><code>/* Lists and Objects - sort by key */
+{z:1,m:2,p:3,b:4}.sort() -&gt; {&quot;b&quot;:4,&quot;m&quot;:2,&quot;p&quot;:3,&quot;z&quot;:1}
+
+/* Arrays and Tuples - sort by value */
+[3,1,4,1,5,9].sort() -&gt; [1,1,3,4,5,9]
+(3,1,4,1,5,9).sort() -&gt; (1,1,3,4,5,9)
+</code></pre></div></p>
 <p>Optionally pass in a compare routine.'''
 <div class="highlight"><pre><span></span><code>&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort()
 [&quot;A&quot;,&quot;B&quot;,&quot;a&quot;,&quot;b&quot;,&quot;b&quot;,&quot;c&quot;]
 
-&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){a.upper()&lt;= 3eb.upper();})
+&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){a.upper()&lt;=&gt;b.upper();})
 [&quot;a&quot;,&quot;A&quot;,&quot;B&quot;,&quot;b&quot;,&quot;b&quot;,&quot;c&quot;]
 
-&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){a.casefold()&lt;= 3eb.casefold();})
+&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){a.casefold()&lt;=&gt;b.casefold();})
 [&quot;a&quot;,&quot;A&quot;,&quot;B&quot;,&quot;b&quot;,&quot;b&quot;,&quot;c&quot;]
 
-&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){$local.c=a.upper()&lt;= 3eb.upper();if(c==0)c=a&lt;= 3eb;c;})
+&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,0,op(a,b){@local.c=@a.upper()&lt;=&gt;@b.upper();if(@c==0)c=@a&lt;=&gt;@b;@c;})
 [A,a,B,b,b,c]
 
 &gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].sort(0,[1,2])
 [&quot;a&quot;,&quot;B&quot;]
 </code></pre></div></p>
 <h2 id="uniqueop">unique([op])</h2>
-<p>Remove duplicates names.</p>
-<div class="highlight"><pre><span></span><code>{z:1,b:4,m:2,p:3,m:2,b:4}.unique() -&gt; {&quot;z&quot;:1,&quot;b&quot;:4,&quot;m&quot;:2,&quot;p&quot;:3}
+<p>Remove duplicates across multiple types: <code>$ARRAY</code>, <code>$TUPLE</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, <code>$TAG</code>, <code>$EL</code>, <code>$OP</code>, <code>$CODE</code>.</p>
+<p><strong>For Lists and Objects:</strong> Removes duplicate keys, keeping the last value for each key.
+<strong>For Arrays and Tuples:</strong> Removes duplicate values, keeping the last occurrence of each value.</p>
+<div class="highlight"><pre><span></span><code>/* Lists and Objects - remove duplicate keys */
+{z:1,b:4,m:2,p:3,m:2,b:4}.unique() -&gt; {&quot;z&quot;:1,&quot;b&quot;:4,&quot;m&quot;:2,&quot;p&quot;:3}
+
+/* Arrays and Tuples - remove duplicate values */
+[1,2,1,3,2,4].unique() -&gt; [1,2,3,4]
+(1,2,1,3,2,4).unique() -&gt; (1,2,3,4)
 </code></pre></div>
 <p>Optionally pass in a compare routine.'''
 <div class="highlight"><pre><span></span><code>&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].unique()
 [&quot;A&quot;,&quot;B&quot;,&quot;a&quot;,&quot;b&quot;,&quot;c&quot;]
 
-&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].unique(op(a,b){a.upper()&lt;= 3eb.upper();})
+&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].unique(op(a,b){a.upper()&lt;=&gt;b.upper();})
 [&quot;A&quot;,&quot;b&quot;,&quot;c&quot;]
 
-&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].unique(op(a,b){a.casefold()&lt;= 3eb.casefold();})
+&gt; [&quot;b&quot;,&quot;a&quot;,&quot;B&quot;,&quot;c&quot;,&quot;b&quot;,&quot;A&quot;].unique(op(a,b){a.casefold()&lt;=&gt;b.casefold();})
 [&quot;A&quot;,&quot;b&quot;,&quot;c&quot;]
 </code></pre></div></p>
 <h2 id="getnameindex">getname([index])</h2>

@@ -20,7 +20,7 @@ f.mkfield("salary", "FLOAT", "FIX", 8);
 f.mkfield("department", "STR", "VAR");
 
 "Database structure after field creation:\n".echo();
-f.debug();
+f.dump().echo();
 "\n".echo();
 
 /* Test 2: Create records and set field values */
@@ -34,7 +34,7 @@ f.set("employee1", 75000.50, "salary");
 f.set("employee1", "Engineering", "department");
 
 "Database structure after employee1:\n".echo();
-f.debug();
+f.dump().echo();
 "\n".echo();
 
 "Setting data for employee2...\n".echo();
@@ -44,7 +44,7 @@ f.set("employee2", 72000.25, "salary");
 f.set("employee2", "Marketing", "department");
 
 "Database structure after employee2:\n".echo();
-f.debug();
+f.dump().echo();
 "\n".echo();
 
 /* Test 3: Retrieve and verify field values */
@@ -57,21 +57,10 @@ age1 = f.get("employee1", "age");
 salary1 = f.get("employee1", "salary");
 dept1 = f.get("employee1", "department");
 
-"employee1.name: ".echo();
-name1.echo();
-"\n".echo();
-
-"employee1.age: ".echo();
-age1.echo();
-"\n".echo();
-
-"employee1.salary: ".echo();
-salary1.echo();
-"\n".echo();
-
-"employee1.department: ".echo();
-dept1.echo();
-"\n".echo();
+"employee1.name: ${name1}\n".interpolate().echo();
+"employee1.age: ${age1}\n".interpolate().echo();
+"employee1.salary: ${salary1}\n".interpolate().echo();
+"employee1.department: ${dept1}\n".interpolate().echo();
 
 "Retrieving employee2 data...\n".echo();
 name2 = f.get("employee2", "name");
@@ -79,21 +68,10 @@ age2 = f.get("employee2", "age");
 salary2 = f.get("employee2", "salary");
 dept2 = f.get("employee2", "department");
 
-"employee2.name: ".echo();
-name2.echo();
-"\n".echo();
-
-"employee2.age: ".echo();
-age2.echo();
-"\n".echo();
-
-"employee2.salary: ".echo();
-salary2.echo();
-"\n".echo();
-
-"employee2.department: ".echo();
-dept2.echo();
-"\n".echo();
+"employee2.name: ${name2}\n".interpolate().echo();
+"employee2.age: ${age2}\n".interpolate().echo();
+"employee2.salary: ${salary2}\n".interpolate().echo();
+"employee2.department: ${dept2}\n".interpolate().echo();
 
 /* Test 4: Test unset fields */
 "Test 4: Unset Fields\n".echo();
@@ -101,9 +79,7 @@ dept2.echo();
 
 "Testing unset field (should be empty)...\n".echo();
 unset_field = f.get("employee1", "id");
-"employee1.id (unset): ".echo();
-unset_field.echo();
-"\n".echo();
+"employee1.id (unset): ${unset_field}\n".interpolate().echo();
 
 /* Test 5: Update existing field */
 "Test 5: Field Update\n".echo();
@@ -112,12 +88,10 @@ unset_field.echo();
 "Updating employee1 salary...\n".echo();
 f.set("employee1", 80000.75, "salary");
 updated_salary = f.get("employee1", "salary");
-"employee1.salary (updated): ".echo();
-updated_salary.echo();
-"\n".echo();
+"employee1.salary (updated): ${updated_salary}\n".interpolate().echo();
 
 "Final database structure:\n".echo();
-f.debug();
+f.dump().echo();
 "\n".echo();
 
 "Test completed successfully!\n".echo(); 

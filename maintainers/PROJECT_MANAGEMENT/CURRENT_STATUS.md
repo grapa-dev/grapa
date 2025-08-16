@@ -57,12 +57,12 @@
 - **✅ Add truthy/falsy evaluation** - More intuitive conditionals (COMPLETED via .iferr() and .ifnull() documentation)
 
 **Phase 2C Focus:** Migration Guide Gaps - Critical Language Features (Weeks 10-12) - 📋 **IN PROGRESS**
-- **📋 File/Line Macros** - `__FILE__`, `__LINE__` for debugging and logging
-- **📋 Access Control** - Private, protected, public visibility modifiers
-- **📋 Protocol/Interface System** - Abstract contracts and interfaces
-- **📋 Extension System** - Extending existing types with new methods
+- **❌ File/Line Macros** - `__FILE__`, `__LINE__` for debugging and logging (NOT NEEDED)
+- **❌ Access Control** - Private, protected, public visibility modifiers (NOT NEEDED - not universal across languages)
+- **❌ Protocol/Interface System** - Abstract contracts and interfaces (NOT NEEDED - goes against late binding philosophy)
+- **📋 Extension System** - Extending existing types with new methods (NEEDED - += only appends to collections, doesn't add callable methods to system classes)
 - **📋 Guard Statements** - Early return and validation patterns
-- **📋 Meta-programming Capabilities** - Dynamic code generation and manipulation
+- **❌ Meta-programming Capabilities** - Dynamic code generation and manipulation (NOT NEEDED - Grapa already has superior capabilities)
 
 **Phase 3 Focus:** Advanced Features (Weeks 11-14)
 - **📋 Performance optimizations** - Compilation and execution improvements
@@ -433,6 +433,8 @@
   - **Historical context of `@` symbol evolution documented** ✅
   - **System namespace protection (`$` prefix) mechanism documented** ✅
   - **String interpolation C++ implementation completed** ✅
+  - **Debug output documentation updated across all migration guides** ✅
+  - **File/line macro references clarified to highlight Grapa's superior debugging capabilities** ✅
 - **Op() function integration discovered for script execution** ✅
 - **String interpolation design simplified and finalized** ✅
 - **Advanced string interpolation capabilities discovered** ✅

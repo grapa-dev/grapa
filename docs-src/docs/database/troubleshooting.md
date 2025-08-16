@@ -85,10 +85,10 @@
 ## Debug Information
 
 ### Using the Debug Function
-The `debug()` function provides detailed information about database structure:
+The `dump()` function provides detailed information about database structure:
 
 ```grapa
-f.debug()
+f.dump().echo()
 ```
 
 **Information Provided**:
@@ -207,7 +207,7 @@ f.mkfield("age", "INT", "FIX", 4)
 3. **Partitioned Fields**: Large data requiring partial updates
 
 ### Performance Monitoring
-1. Use `debug()` function regularly
+1. Use `dump()` function regularly
 2. Monitor storage efficiency
 3. Track query performance patterns
 4. Adjust parameters based on usage

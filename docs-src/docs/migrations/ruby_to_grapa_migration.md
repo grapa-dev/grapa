@@ -47,8 +47,8 @@
 | `alias :foo :bar`           | WIP                                               |
 | `undef :foo`                | WIP                                               |
 | `defined?(foo)`             | WIP                                               |
-| `__FILE__`                  | WIP                                               |
-| `__LINE__`                  | WIP                                               |
+| `__FILE__`                  | **Grapa has `.debug()` method for debugging** |
+| `__LINE__`                  | **Grapa has `.debug()` method for debugging** |
 
 ## Notes
 - See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
@@ -66,8 +66,8 @@
 | `alias :foo :bar`           | —                | **GAP**: Meta-programming not yet supported |
 | `undef :foo`                | —                | **GAP**: Meta-programming not yet supported |
 | `defined?(foo)`             | —                | **GAP**: Meta-programming not yet supported |
-| `__FILE__`                  | —                | **GAP**: No file macro |
-| `__LINE__`                  | —                | **GAP**: No line macro |
+| `__FILE__`                  | —                | **Grapa has `.debug()` method for debugging** |
+| `__LINE__`                  | —                | **Grapa has `.debug()` method for debugging** |
 | `yield`                     | —                | **GAP**: Block/yield not supported |
 | `block_given?`              | —                | **GAP**: Block/yield not supported |
 | `begin ... ensure ... end`  | —                | **GAP**: No ensure/finally |
@@ -96,7 +96,7 @@ Some Ruby idioms don't have direct Grapa equivalents yet. These are categorized 
 These represent fundamental language features that genuinely cannot be accomplished in Grapa:
 
 - **Meta-programming**: `alias`, `undef`, `defined?` - No meta-programming capabilities
-- **File/line macros**: `__FILE__`, `__LINE__` - No file/line macros
+- **File/line macros**: `__FILE__`, `__LINE__` - Grapa provides `.debug()` method for sophisticated debugging and logging (outputs to stderr, can be redirected at CLI level)
 - **Block/yield**: `yield`, `block_given?` - No block/yield mechanism
 - **Method chaining**: `"hello".upcase + " world".downcase` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`
 - **Ensure/finally**: `begin ... ensure ... end` - No ensure/finally mechanism
@@ -159,6 +159,80 @@ puts("Hello from Grapa!");
 ```
 
 This can make migration easier for those used to Ruby's `puts()` or similar functions.
+
+## Debugging and Logging
+
+Grapa provides sophisticated debugging capabilities that go beyond Ruby's puts and logger methods. While Grapa doesn't have `__FILE__` and `__LINE__` macros, it offers superior debugging through the `.debug()` method with component targeting and level control:
+
+### Basic Debug Output
+```grapa
+/* Standard output - equivalent to puts */
+"Hello World".echo();
+
+/* Debug output with component targeting */
+"Debug message".debug(1, "component");
+
+/* Debug with different levels */
+"Info message".debug(1, "info");
+"Warning message".debug(2, "warning");
+"Error message".debug(3, "error");
+```
+
+### Enabling Debug Mode
+```grapa
+/* Enable debug mode for current session */
+$sys().putenv("GRAPA_SESSION_DEBUG_MODE", "1");
+$sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
+
+/* Enable debug for specific components */
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "database,grep,vector");
+
+/* Enable all components at different levels */
+$sys().putenv("GRAPA_SESSION_DEBUG_COMPONENTS", "grep:3,database:1,*:0");
+```
+
+### Command Line Debug Options
+```bash
+# Enable debug mode from command line
+./grapa -d script.grc
+
+# Enable debug with specific components
+GRAPA_SESSION_DEBUG_COMPONENTS="debug:1" ./grapa -d script.grc
+
+# Enable debug with multiple components
+GRAPA_SESSION_DEBUG_COMPONENTS="database:2,grep:1,vector:0" ./grapa -d script.grc
+```
+
+### Debug vs Ruby Comparison
+
+| Ruby | Grapa |
+|------|-------|
+| `puts "Hello"` | `"Hello".echo()` |
+| `puts "Count: #{count}"` | `"Count: ${count}".interpolate().echo()` |
+| `p "Debug info"` | `"Debug info".debug(1, "debug")` |
+| `logger.info "Info message"` | `"Info message".debug(1, "info")` |
+| `logger.warn "Warning"` | `"Warning".debug(2, "warning")` |
+| `logger.error "Error"` | `"Error".debug(3, "error")` |
+| `puts "Processing #{i}/#{total}"` | `"Processing ${i}/${total}".interpolate().debug(1, "progress")` |
+
+### Advanced Debug Patterns
+```grapa
+/* Debug with interpolation for clean output */
+"Processing ${record_count} records...".debug(1, "process");
+
+/* Debug with error handling */
+result = some_operation();
+if (result.type() == $ERR) {
+    "Error occurred: ${result}".debug(3, "error");
+} else {
+    "Operation successful: ${result}".debug(1, "info");
+};
+
+/* Debug with component-specific formatting */
+"Database query: ${query}".debug(2, "database");
+"Network request: ${url}".debug(2, "network");
+"File operation: ${filename}".debug(2, "filesystem");
+```
 
 > **Advanced:** Grapa also allows advanced users to customize or extend the language syntax using `$RULE` or by modifying `$global` rules. This enables you to inject your own grammar or override built-in behaviors to match your preferred style. For most users, we recommend learning the canonical Grapa method syntax, but this flexibility is available if needed.
 

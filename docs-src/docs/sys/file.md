@@ -495,11 +495,11 @@ Deletes a field within the current working directory (database context).
 f.rmfield("test");
 ```
 
-## debug()
+## dump()
 Used for debugging the database during development. Displays the BTree structure of the data dictionary and fields and indexes for the current working directory when in a database (either in memory or on the file system).
 
 ```grapa
-f.debug();
+f.dump().echo();
 ```
 
 ## Performance Considerations
@@ -551,9 +551,9 @@ f.debug();
 
 ### Debug Information
 
-Use the `debug()` function to inspect database structure:
+Use the `dump()` function to inspect database structure:
 ```grapa
-f.debug();
+f.dump().echo();
 ```
 
 This provides detailed information about:
