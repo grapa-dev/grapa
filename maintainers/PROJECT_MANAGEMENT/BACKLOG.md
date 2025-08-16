@@ -17,9 +17,10 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ## 🚀 **MAJOR RELEASES** (6 items)
 
 ### **1. Grapa Syntax Improvements** - **LANGUAGE ADOPTION FOUNDATION** 🔥 **HIGHEST PRIORITY**
+- [ ] **Exception Handling**: try/catch blocks for structured error handling
+- [ ] **Control Flow Fixes**: Working return/break/continue statements
 - [ ] **Module System**: Design basic import/include system
 - [ ] **Property Access**: Improve attribute-style access for objects
-- **Note**: Core Control Flow Fixes (return/break) and Exception Handling (try/catch) are covered in Phase 4
 - **Reference**: [`GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_SYNTAX_IMPROVEMENTS_PLAN.md)
 - **Estimated Effort**: Major Release (3-6 months)
 - **Dependencies**: None (foundational work)
@@ -61,7 +62,16 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 
 
-### **6. Optimization Implementation** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
+### **6. Advanced Language Features** - **MODERN LANGUAGE PARITY** 🟡 **MEDIUM PRIORITY**
+- [ ] **Pattern Matching**: Destructuring and match expressions
+- [ ] **Decorators/Annotations**: Function and class decorators
+- [ ] **Enhanced Reflection**: Runtime code inspection and modification
+- [ ] **Extension System**: Extending existing types with new methods
+- **Estimated Effort**: Major Release (4-6 months)
+- **Dependencies**: Syntax Improvements (for error handling)
+- **Priority**: Medium - modern language parity features
+
+### **7. Optimization Implementation** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
 - [ ] **Performance improvements** for arithmetic, bitwise, comparison, and assignment operators
 - **Status**: Requires extensive testing and its own release cycle
 - **Reference**: [`GRAPA_OPTIMIZATION_BACKLOG.md`](../RESEARCH_AND_ANALYSIS/GRAPA_OPTIMIZATION_BACKLOG.md)
@@ -230,7 +240,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 # 📄 **Backlog Summary**
 
 - **Immediate Next Steps**: 0 items - all active work completed ✅
-- **Major Releases**: 5 items (prioritized by impact and dependencies)
+- **Major Releases**: 7 items (prioritized by impact and dependencies)
 - **New Initiatives**: 4 items (Wikipedia Article, Database Best Practices, Rules System Enhancement, LLM-Powered Dynamic IDE)
 - **Medium Priority**: 7 categories with multiple items each
 - **Low Priority**: 5 categories with experimental and future features
@@ -241,4 +251,5 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 2. **Enhanced Debug Mode** - Advanced development capabilities (depends on Syntax Improvements)
 3. **Distutils Removal and Shared Library Naming** - Critical for Python 3.13+ compatibility and build system consistency
 4. **GrapaDB Enhancements** - Database-specific improvements
-5. **Optimization Implementation** - Performance optimization after core features are stable 
+5. **Advanced Language Features** - Modern language parity features
+6. **Optimization Implementation** - Performance optimization after core features are stable 
