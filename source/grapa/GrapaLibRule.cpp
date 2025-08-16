@@ -32,6 +32,10 @@ limitations under the License.
 
 #include <thread>
 #include <cctype>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <algorithm>
 
 extern GrapaSystem* gSystem;
 
@@ -18599,6 +18603,34 @@ GrapaRuleEvent* GrapaLibraryRuleCaseFoldEvent::Run(GrapaScriptExec *vScriptExec,
 GrapaRuleEvent* GrapaLibraryRuleLevenshteinEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
     GrapaRuleEvent *result = NULL;
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    
+    if (r1.vVal && r2.vVal)
+    {
+        switch (r1.vVal->mValue.mToken)
+        {
+        case GrapaTokenType::STR:
+        case GrapaTokenType::ID:
+            {
+                // Get the two strings to compare
+                std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+                std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
+                
+                // TODO: Add case-insensitive option support
+                // For now, always use case-sensitive comparison
+                
+                // Calculate Levenshtein distance
+                int distance = calculate_levenshtein_distance(str1, str2);
+                
+                // Return the distance as an integer
+                result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaInt(distance).getBytes());
+            }
+            break;
+        default:
+            break;
+        }
+    }
     if (result == NULL)
         result = Error(vScriptExec, pNameSpace, -1);
     return(result);
@@ -18607,6 +18639,38 @@ GrapaRuleEvent* GrapaLibraryRuleLevenshteinEvent::Run(GrapaScriptExec *vScriptEx
 GrapaRuleEvent* GrapaLibraryRuleJaroWinklerEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
     GrapaRuleEvent *result = NULL;
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    
+    if (r1.vVal && r2.vVal)
+    {
+        switch (r1.vVal->mValue.mToken)
+        {
+        case GrapaTokenType::STR:
+        case GrapaTokenType::ID:
+            {
+                // Get the two strings to compare
+                std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+                std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
+                
+                // TODO: Add case-insensitive option support
+                // For now, always use case-sensitive comparison
+                
+                // Calculate Jaro-Winkler similarity
+                double similarity = calculate_jaro_winkler_similarity(str1, str2);
+                
+                // Return the similarity as a float
+                result = new GrapaRuleEvent(0, GrapaCHAR(), 
+                    GrapaFloat(vScriptExec->vScriptState->mItemState.mFloatFix, 
+                              vScriptExec->vScriptState->mItemState.mFloatMax, 
+                              vScriptExec->vScriptState->mItemState.mFloatExtra, 
+                              similarity).getBytes());
+            }
+            break;
+        default:
+            break;
+        }
+    }
     if (result == NULL)
         result = Error(vScriptExec, pNameSpace, -1);
     return(result);
@@ -18615,6 +18679,38 @@ GrapaRuleEvent* GrapaLibraryRuleJaroWinklerEvent::Run(GrapaScriptExec *vScriptEx
 GrapaRuleEvent* GrapaLibraryRuleCosineSimilarityEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
     GrapaRuleEvent *result = NULL;
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    
+    if (r1.vVal && r2.vVal)
+    {
+        switch (r1.vVal->mValue.mToken)
+        {
+        case GrapaTokenType::STR:
+        case GrapaTokenType::ID:
+            {
+                // Get the two strings to compare
+                std::string str1(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+                std::string str2(reinterpret_cast<const char*>(r2.vVal->mValue.mBytes), r2.vVal->mValue.mLength);
+                
+                // TODO: Add case-insensitive option support
+                // For now, always use case-sensitive comparison
+                
+                // Calculate cosine similarity
+                double similarity = calculate_cosine_similarity(str1, str2);
+                
+                // Return the similarity as a float
+                result = new GrapaRuleEvent(0, GrapaCHAR(), 
+                    GrapaFloat(vScriptExec->vScriptState->mItemState.mFloatFix, 
+                              vScriptExec->vScriptState->mItemState.mFloatMax, 
+                              vScriptExec->vScriptState->mItemState.mFloatExtra, 
+                              similarity).getBytes());
+            }
+            break;
+        default:
+            break;
+        }
+    }
     if (result == NULL)
         result = Error(vScriptExec, pNameSpace, -1);
     return(result);
@@ -20267,3 +20363,167 @@ GrapaRuleEvent* GrapaLibraryRuleWidgetClearEvent::Run(GrapaScriptExec* vScriptEx
 	return(result);
 };
 
+
+// String Distance Helper Functions
+
+// Calculate Levenshtein distance between two strings
+int calculate_levenshtein_distance(const std::string& str1, const std::string& str2) {
+    int len1 = str1.length();
+    int len2 = str2.length();
+    
+    // Create a 2D array to store distances
+    std::vector<std::vector<int>> dp(len1 + 1, std::vector<int>(len2 + 1));
+    
+    // Initialize first row and column
+    for (int i = 0; i <= len1; i++) {
+        dp[i][0] = i;
+    }
+    for (int j = 0; j <= len2; j++) {
+        dp[0][j] = j;
+    }
+    
+    // Fill the dp table
+    for (int i = 1; i <= len1; i++) {
+        for (int j = 1; j <= len2; j++) {
+            if (str1[i - 1] == str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = 1 + std::min({dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]});
+            }
+        }
+    }
+    
+    return dp[len1][len2];
+}
+
+// Calculate Jaro-Winkler similarity between two strings
+double calculate_jaro_winkler_similarity(const std::string& str1, const std::string& str2) {
+    if (str1.empty() && str2.empty()) return 1.0;
+    if (str1.empty() || str2.empty()) return 0.0;
+    
+    // Calculate Jaro distance
+    int len1 = str1.length();
+    int len2 = str2.length();
+    
+    // Find matching characters within half the length of the longer string
+    int match_distance = std::max(len1, len2) / 2 - 1;
+    if (match_distance < 0) match_distance = 0;
+    
+    std::vector<bool> str1_matches(len1, false);
+    std::vector<bool> str2_matches(len2, false);
+    
+    int matches = 0;
+    int transpositions = 0;
+    
+    // Find matches
+    for (int i = 0; i < len1; i++) {
+        int start = std::max(0, i - match_distance);
+        int end = std::min(len2, i + match_distance + 1);
+        
+        for (int j = start; j < end; j++) {
+            if (!str2_matches[j] && str1[i] == str2[j]) {
+                str1_matches[i] = true;
+                str2_matches[j] = true;
+                matches++;
+                break;
+            }
+        }
+    }
+    
+    if (matches == 0) return 0.0;
+    
+    // Find transpositions
+    int k = 0;
+    for (int i = 0; i < len1; i++) {
+        if (str1_matches[i]) {
+            while (!str2_matches[k]) k++;
+            if (str1[i] != str2[k]) transpositions++;
+            k++;
+        }
+    }
+    
+    double jaro_distance = (matches / (double)len1 + matches / (double)len2 + 
+                           (matches - transpositions / 2.0) / matches) / 3.0;
+    
+    // Apply Winkler modification for common prefixes
+    int prefix_length = 0;
+    int max_prefix = std::min(4, std::min(len1, len2));
+    for (int i = 0; i < max_prefix; i++) {
+        if (str1[i] == str2[i]) {
+            prefix_length++;
+        } else {
+            break;
+        }
+    }
+    
+    double winkler_weight = 0.1;
+    double jaro_winkler_distance = jaro_distance + prefix_length * winkler_weight * (1.0 - jaro_distance);
+    
+    return jaro_winkler_distance;
+}
+
+// Calculate cosine similarity between two strings
+double calculate_cosine_similarity(const std::string& str1, const std::string& str2) {
+    if (str1.empty() && str2.empty()) return 1.0;
+    if (str1.empty() || str2.empty()) return 0.0;
+    
+    // Simple word-based cosine similarity
+    // Split strings into words (simple space-based splitting)
+    std::vector<std::string> words1, words2;
+    
+    // Simple word extraction (split on whitespace)
+    std::string word;
+    for (char c : str1) {
+        if (std::isspace(c)) {
+            if (!word.empty()) {
+                words1.push_back(word);
+                word.clear();
+            }
+        } else {
+            word += c;
+        }
+    }
+    if (!word.empty()) words1.push_back(word);
+    
+    word.clear();
+    for (char c : str2) {
+        if (std::isspace(c)) {
+            if (!word.empty()) {
+                words2.push_back(word);
+                word.clear();
+            }
+        } else {
+            word += c;
+        }
+    }
+    if (!word.empty()) words2.push_back(word);
+    
+    // Create word frequency maps
+    std::map<std::string, int> freq1, freq2;
+    for (const auto& w : words1) freq1[w]++;
+    for (const auto& w : words2) freq2[w]++;
+    
+    // Calculate dot product and magnitudes
+    double dot_product = 0.0;
+    double mag1 = 0.0;
+    double mag2 = 0.0;
+    
+    for (const auto& pair : freq1) {
+        mag1 += pair.second * pair.second;
+        auto it = freq2.find(pair.first);
+        if (it != freq2.end()) {
+            dot_product += pair.second * it->second;
+        }
+    }
+    
+    for (const auto& pair : freq2) {
+        mag2 += pair.second * pair.second;
+    }
+    
+    mag1 = std::sqrt(mag1);
+    mag2 = std::sqrt(mag2);
+    
+    if (mag1 == 0.0 || mag2 == 0.0) return 0.0;
+    
+    return dot_product / (mag1 * mag2);
+}

@@ -2552,6 +2552,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#7-system-class-redefinition-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. System Class Redefinition ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3846,6 +3855,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#7-system-class-redefinition-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. System Class Redefinition ✅ IMPLEMENTED
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4147,6 +4165,52 @@ type = value.type();  /* Get type */
 - <strong>Method Reflection</strong> - Enumerate methods
 - <strong>Runtime Property Access</strong> - Dynamic property access
 - <strong>Type Introspection</strong> - Detailed type information</p>
+<h3 id="7-system-class-redefinition-implemented"><strong>7. System Class Redefinition</strong> ✅ <strong>IMPLEMENTED</strong></h3>
+<p><strong>Status</strong>: Fully implemented but advanced feature
+<strong>Current</strong>: <code>@global</code> syntax for redefining system classes</p>
+<div class="highlight"><pre><span></span><code>/* Redefine $ARRAY with custom methods */
+@global[&quot;$ARRAY&quot;] = class ($LIST, $VECTOR) {
+    custom_method = op() { 
+        &quot;Custom array method called&quot;.echo();
+        $this.len();  /* Access the array&#39;s length */
+    };
+};
+
+/* Use the new method on array instances */
+arr = [1, 2, 3];
+result = arr.custom_method();
+/* Output: &quot;Custom array method called&quot; */
+/* result: 3 */
+</code></pre></div>
+<p><strong>Capabilities:</strong>
+- <strong>System Class Extension</strong> - Add methods to <code>$ARRAY</code>, <code>$LIST</code>, <code>$CLASS</code>, <code>$OBJ</code>, etc.
+- <strong>Global Variable Redefinition</strong> - Redefine any global variable or function
+- <strong>Runtime Modification</strong> - Change system behavior at runtime
+- <strong>Method Preservation</strong> - Keep existing methods while adding new ones</p>
+<p><strong>⚠️ Important Warnings:</strong>
+- <strong>System Dependencies</strong>: Redefining system classes can break functionality that depends on them
+- <strong>Side Effects</strong>: Changes affect all existing and future instances of that class
+- <strong>Testing Required</strong>: Thorough testing needed before redefining system classes
+- <strong>Documentation</strong>: Always document your changes for future reference</p>
+<p><strong>Best Practices:</strong>
+1. <strong>Test thoroughly</strong> before redefining system classes
+2. <strong>Document your changes</strong> for future reference
+3. <strong>Consider alternatives</strong> like creating new classes instead of redefining existing ones
+4. <strong>Use in isolated environments</strong> when possible
+5. <strong>Use read-only protection</strong> for critical system components</p>
+<p><strong>Read-Only Protection:</strong>
+<div class="highlight"><pre><span></span><code>/* Make a variable read-only to prevent modification */
+my_variable = &quot;important data&quot;;
+$sys().setconst(my_variable, true);
+
+/* Check if a variable is read-only */
+is_readonly = $sys().const(my_variable);
+</code></pre></div></p>
+<p><strong>Future Enhancement:</strong>
+The <code>+=</code> operator will be enhanced to safely add methods to system classes:
+<div class="highlight"><pre><span></span><code>/* Future capability (not yet implemented) */
+$ARRAY += (custom_method: op() { $this.len(); });
+</code></pre></div></p>
 <h2 id="comparison-with-other-languages">Comparison with Other Languages</h2>
 <table>
 <thead>

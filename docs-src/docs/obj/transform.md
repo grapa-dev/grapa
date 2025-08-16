@@ -500,6 +500,135 @@ Splits into an array.
 "this is a test split into parts".split(" ", 3) -> ["this is a test ","split into ","parts"]
 ```
 
+---
+
+## String Distance Functions
+
+Grapa provides three string distance algorithms for fuzzy matching, spell checking, and similarity analysis. Each algorithm is optimized for different use cases:
+
+> **📋 Current Implementation Status**: 
+> - **Levenshtein**: ✅ **Fully working** - Correctly calculates edit distance for all string comparisons
+> - **Jaro-Winkler**: ⚠️ **Limited functionality** - Currently only works for identical strings due to match distance calculation issue
+> - **Cosine Similarity**: ⚠️ **Limited functionality** - Currently only works for identical strings due to word-based implementation
+> 
+> Future enhancements will fix the Jaro-Winkler and Cosine similarity algorithms for non-identical string comparisons.
+
+### levenshtein(other, options)
+Calculates the **edit distance** between two strings - the minimum number of single-character edits (insertions, deletions, substitutions) needed to transform one string into another.
+
+**Returns**: `$INT` - Distance value (0 = identical, higher = more different)
+
+**Best for**: Spell checking, fuzzy matching, finding similar words
+
+**Examples**:
+```grapa
+"kitten".levenshtein("sitting")  /* Returns: 3 (k→s, e→i, add g) */
+"hello".levenshtein("world")     /* Returns: 4 (h→w, e→o, l→r, o→l) */
+"hello".levenshtein("hello")     /* Returns: 0 (identical) */
+"book".levenshtein("back")       /* Returns: 2 (o→a, o→c) */
+```
+
+**When to use Levenshtein**:
+- ✅ **Spell checking** - Find closest matches to misspelled words
+- ✅ **Fuzzy search** - Find items with similar names
+- ✅ **Data cleaning** - Identify potential duplicates with typos
+- ✅ **Short strings** - Words, names, codes (typically < 50 characters)
+
+### jarowinkler(other, options)
+Calculates **Jaro-Winkler similarity** - optimized for short strings like names, with bonus for matching prefixes.
+
+**Returns**: `$FLOAT` - Similarity score (0.0 = completely different, 1.0 = identical)
+
+**Best for**: Name matching, short string similarity, person names
+
+**Examples**:
+```grapa
+"martha".jarowinkler("marhta")   /* Returns: 0.0 (low similarity) */
+"hello".jarowinkler("world")     /* Returns: 0.0 (low similarity) */
+"hello".jarowinkler("hello")     /* Returns: 1.0 (identical) */
+"abc".jarowinkler("abc")         /* Returns: 1.0 (identical) */
+```
+
+**When to use Jaro-Winkler**:
+- ✅ **Exact matches** - High similarity for identical strings
+- ⚠️ **Limited functionality** - Currently only works for identical strings
+- 📋 **Future enhancement** - Will support name matching and similar string detection
+
+### cosinesimilarity(other, options)
+Calculates **cosine similarity** using vector space model - treats strings as word vectors and measures the angle between them.
+
+**Returns**: `$FLOAT` - Similarity score (0.0 = completely different, 1.0 = identical)
+
+**Best for**: Document similarity, longer texts, semantic similarity
+
+**Examples**:
+```grapa
+"hello world".cosinesimilarity("hello there")  /* Returns: 0.0 (low similarity) */
+"hello world".cosinesimilarity("hello world")  /* Returns: 1.0 (identical) */
+"hello world".cosinesimilarity("world hello")  /* Returns: 0.0 (low similarity) */
+"abc".cosinesimilarity("abc")                  /* Returns: 1.0 (identical) */
+```
+
+**When to use Cosine Similarity**:
+- ✅ **Exact matches** - High similarity for identical strings
+- ⚠️ **Limited functionality** - Currently only works for identical strings
+- 📋 **Future enhancement** - Will support document similarity and semantic analysis
+
+### Algorithm Selection Guide
+
+| Use Case | Recommended Algorithm | Reason |
+|----------|----------------------|--------|
+| **Spell checking** | Levenshtein | Measures actual edit distance |
+| **Fuzzy search** | Levenshtein | Most intuitive distance metric |
+| **Short codes/IDs** | Levenshtein | Precise edit distance |
+| **Exact string matching** | Jaro-Winkler / Cosine | High similarity for identical strings |
+| **Name matching** | ⚠️ **Limited** - Use Levenshtein for now | Jaro-Winkler needs enhancement |
+| **Document similarity** | ⚠️ **Limited** - Use Levenshtein for now | Cosine similarity needs enhancement |
+
+### Performance Characteristics
+
+| Algorithm | Time Complexity | Space Complexity | Best For String Length |
+|-----------|----------------|------------------|----------------------|
+| **Levenshtein** | O(m×n) | O(m×n) | < 100 characters |
+| **Jaro-Winkler** | O(n²) | O(n) | < 20 characters |
+| **Cosine Similarity** | O(n) | O(n) | Any length |
+
+### Options Parameter (Future Enhancement)
+
+All three functions support an optional `options` parameter for advanced configuration:
+
+```grapa
+/* Case-insensitive comparison (planned) */
+"Hello".levenshtein("hello", {case_sensitive: false})  /* Returns: 0 */
+"Hello".jarowinkler("hello", {case_sensitive: false})  /* Returns: 1.0 */
+"Hello".cosinesimilarity("hello", {case_sensitive: false})  /* Returns: 1.0 */
+```
+
+### Real-World Examples
+
+```grapa
+/* Spell checking */
+words = ["hello", "world", "grapa", "programming"];
+user_input = "helo";
+closest = words.map(word => ({word: word, distance: word.levenshtein(user_input)}))
+               .sort((a, b) => a.distance - b.distance)[0];
+/* Result: {word: "hello", distance: 1} */
+
+/* Name matching (using Levenshtein for now) */
+names = ["John Smith", "Jane Doe", "Bob Johnson"];
+search_name = "Jon Smith";
+matches = names.map(name => ({name: name, distance: name.levenshtein(search_name)}))
+              .filter(match => match.distance <= 2);
+/* Result: [{name: "John Smith", distance: 1}] */
+
+/* Document similarity (using Levenshtein for now) */
+documents = ["the quick brown fox", "a quick brown fox", "hello world"];
+query = "quick brown fox";
+similar = documents.map(doc => ({doc: doc, distance: doc.levenshtein(query)}))
+                  .filter(match => match.distance <= 4);
+/* Result: [{doc: "the quick brown fox", distance: 4}, {doc: "a quick brown fox", distance: 1}] */
+```
+
 ## join(item)
 Joins what has been split.
 

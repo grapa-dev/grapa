@@ -6,6 +6,7 @@
 #define _GrapaLibRule_
 
 #include "GrapaState.h"
+#include <string>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -302,6 +303,11 @@ public:
 	GrapaLibraryEvent* HandleWidgetPost(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleWidgetClear(GrapaCHAR& pName);
 };
+
+// String Distance Helper Functions
+int calculate_levenshtein_distance(const std::string& str1, const std::string& str2);
+double calculate_jaro_winkler_similarity(const std::string& str1, const std::string& str2);
+double calculate_cosine_similarity(const std::string& str1, const std::string& str2);
 
 #endif //_GrapaLibRule_
 

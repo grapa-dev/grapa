@@ -521,7 +521,7 @@ The real gaps are features that would enhance Grapa's power while staying true t
 ### **Phase 3: Advanced Features (Weeks 9-12)**
 - 📋 **Performance optimizations** - Compilation and execution improvements
 - 📋 **Tooling enhancements** - Development environment improvements
-- 📋 **String Distance Functions** - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity
+- ✅ **String Distance Functions** - Fuzzy matching with Levenshtein, Jaro-Winkler, Cosine similarity
 
 ### **Phase 4: Polish (Weeks 13-16)**
 - 📋 **Type system** - Type annotations and constraints

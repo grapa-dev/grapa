@@ -1,0 +1,48 @@
+/* Test script for String Distance Functions - Phase 2D */
+
+"Testing String Distance Functions\n".echo();
+
+/* Test 1: Identical strings */
+"Test 1: Identical strings\n".echo();
+"hello".levenshtein("hello").echo();
+"hello".jarowinkler("hello").echo();
+"hello".cosinesimilarity("hello").echo();
+
+/* Test 2: Similar strings */
+"Test 2: Similar strings\n".echo();
+"hello".levenshtein("helo").echo();
+"hello".jarowinkler("helo").echo();
+"hello".cosinesimilarity("helo").echo();
+
+/* Test 3: Different strings */
+"Test 3: Different strings\n".echo();
+"hello".levenshtein("world").echo();
+"hello".jarowinkler("world").echo();
+"hello".cosinesimilarity("world").echo();
+
+/* Test 4: Classic Levenshtein examples */
+"Test 4: Classic Levenshtein examples\n".echo();
+"kitten".levenshtein("sitting").echo();
+"book".levenshtein("back").echo();
+
+/* Test 5: Jaro-Winkler examples */
+"Test 5: Jaro-Winkler examples\n".echo();
+"martha".jarowinkler("marhta").echo();
+"dwayne".jarowinkler("duane").echo();
+
+/* Test 6: Cosine similarity examples */
+"Test 6: Cosine similarity examples\n".echo();
+"hello world".cosinesimilarity("hello world").echo();
+"hello world".cosinesimilarity("world hello").echo();
+
+/* Test 7: Edge cases */
+"Test 7: Edge cases\n".echo();
+"".levenshtein("").echo();
+"".jarowinkler("").echo();
+"".cosinesimilarity("").echo();
+
+"a".levenshtein("").echo();
+"a".jarowinkler("").echo();
+"a".cosinesimilarity("").echo();
+
+"String Distance Functions test completed\n".echo();

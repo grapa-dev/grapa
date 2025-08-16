@@ -1777,7 +1777,25 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="putenv(name, value) / setenv(name, value)">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constobject" class="md-nav__link">
+    <span class="md-ellipsis">
+      const(object)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setconstobject-readonly" class="md-nav__link">
+    <span class="md-ellipsis">
+      setconst(object, readonly)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="setconst(object, readonly)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3711,7 +3729,25 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="putenv(name, value) / setenv(name, value)">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#constobject" class="md-nav__link">
+    <span class="md-ellipsis">
+      const(object)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setconstobject-readonly" class="md-nav__link">
+    <span class="md-ellipsis">
+      setconst(object, readonly)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="setconst(object, readonly)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4019,6 +4055,34 @@ $sys().getenv($ARGCIN);
 - <strong>Architectures:</strong> <code>__i386__</code>, <code>__x86_64__</code>, <code>__arm__</code>, <code>__ARM_ARCH_5T__</code>, <code>__ARM_ARCH_7A__</code>, <code>__powerpc64__</code>, <code>__aarch64__</code></p>
 <h3 id="putenvname-value-setenvname-value">putenv(name, value) / setenv(name, value)</h3>
 <p>Sets environment variables and system information. Both <code>putenv()</code> and <code>setenv()</code> are aliases for the same functionality.</p>
+<h3 id="constobject">const(object)</h3>
+<p>Returns a read-only copy of the specified object.</p>
+<p><strong>Parameters:</strong>
+- <code>object</code> - Any Grapa object or value</p>
+<p><strong>Returns:</strong> Read-only copy of the object</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>data = [1, 2, 3];
+readonly_data = $sys().const(data);
+/* readonly_data is now read-only */
+</code></pre></div></p>
+<h3 id="setconstobject-readonly">setconst(object, readonly)</h3>
+<p>Makes an object read-only or writable.</p>
+<p><strong>Parameters:</strong>
+- <code>object</code> - Any Grapa object or variable
+- <code>readonly</code> - Boolean: <code>true</code> to make read-only, <code>false</code> to make writable</p>
+<p><strong>Returns:</strong> The modified object</p>
+<p><strong>Example:</strong>
+<div class="highlight"><pre><span></span><code>my_variable = &quot;important data&quot;;
+$sys().setconst(my_variable, true);  /* Make read-only */
+
+/* Attempting to modify will fail */
+my_variable = &quot;new data&quot;;  /* Error: Cannot modify const variable */
+
+/* Make writable again */
+$sys().setconst(my_variable, false);
+my_variable = &quot;new data&quot;;  /* Now works */
+</code></pre></div></p>
+<p><strong>Important</strong>: This feature helps protect critical system components from unintended changes, but should be used carefully as it can prevent legitimate modifications.</p>
 <p><strong>Parameters:</strong>
 - <code>name</code> - Environment variable name or system constant
 - <code>value</code> - New value to set</p>

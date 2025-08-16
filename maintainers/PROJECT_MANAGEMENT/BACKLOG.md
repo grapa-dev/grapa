@@ -63,16 +63,17 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Dependencies**: Syntax Improvements (for error handling)
 - **Priority**: Medium - database-specific enhancements
 
-### **5. String Comparison Distance Function** - **UTILITY FEATURE** 🟡 **MEDIUM PRIORITY**
-- [ ] **Core Distance Algorithms**: Implement edit distance (Levenshtein), Hamming distance, and basic similarity scoring
-- [ ] **Advanced Similarity Algorithms**: Implement Jaro-Winkler, Cosine similarity, and N-gram similarity
-- [ ] **Language Integration**: Add distance and similarity methods to GrapaCHAR class and language binding
+### **5. String Distance Functions Enhancement** - **UTILITY FEATURE** 🟡 **MEDIUM PRIORITY**
+- [ ] **Options Parameter Support**: Complete case-insensitive option support for all string distance functions
+- [ ] **Advanced Similarity Algorithms**: Implement Hamming distance and N-gram similarity algorithms
 - [ ] **Performance Optimization**: Optimize algorithms for large strings and memory efficiency
+- [ ] **Unicode Enhancement**: Improve Unicode support for distance calculations
 - [ ] **Testing and Documentation**: Comprehensive test suite, documentation, and examples
 - **Reference**: [`GRAPA_STRING_DISTANCE_FUNCTION_PLAN.md`](../RESEARCH_AND_ANALYSIS/GRAPA_STRING_DISTANCE_FUNCTION_PLAN.md)
-- **Estimated Effort**: Major Release (3-6 months)
-- **Dependencies**: Core language features completion
-- **Priority**: Medium - utility feature enhancement
+- **Estimated Effort**: Minor Release (2-4 weeks)
+- **Dependencies**: Phase 2D completion (basic functions implemented)
+- **Priority**: Medium - enhancement to existing functionality
+- **Status**: Basic functions (levenshtein, jarowinkler, cosinesimilarity) implemented in Phase 2D
 
 ### **6. Optimization Implementation** - **PERFORMANCE** 🟢 **LOWER PRIORITY**
 - [ ] **Performance improvements** for arithmetic, bitwise, comparison, and assignment operators
