@@ -71,11 +71,14 @@
 - **✅ Enhanced Options Support** - Smart auto-detection, case sensitivity, method selection, corpus handling
 - **✅ PTR Type Handling** - Proper options parsing following `.findall()` pattern for robust data access
 
-**Phase 3 Focus:** Advanced Features (Weeks 14-17)
-- **📋 Performance optimizations** - Compilation and execution improvements
+**Phase 1 Focus:** Critical Language Gaps (Weeks 1-4)
+- **📋 Exception Handling** - try/catch blocks for structured error handling
+- **📋 Control Flow Fixes** - Working return/break/continue statements
 
-**Phase 4 Focus:** Polish (Weeks 13-16)
-- **📋 Advanced language features** - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching, enhanced reflection
+**Phase 2 Focus:** Advanced Language Features (Weeks 5-8)
+- **📋 Pattern Matching** - Destructuring and match expressions
+- **📋 Decorators/Annotations** - Function and class decorators
+- **📋 Enhanced Reflection** - Runtime code inspection and modification
 - **📋 Extension System** - Extending existing types with new methods (NEEDED - += syntax exists but doesn't add callable methods to system classes; requires C++ implementation for SYSID types in assignappend case; @global redefinition works but is unsafe)
 
 **Implementation Strategy:**
@@ -84,8 +87,8 @@
 - **Phase 2B (Weeks 8-10)**: ✅ **COMPLETED** - All user experience improvements implemented
 - **Phase 2C (Weeks 10-12)**: ✅ **COMPLETED** - Migration guide gaps and critical language features
 - **Phase 2D (Weeks 12-13)**: ✅ **COMPLETED** - String distance functions and fuzzy matching
-- **Phase 3 (Weeks 14-17)**: 📋 **PENDING** - Advanced features and performance optimizations
-- **Phase 4 (Weeks 18-21)**: 📋 **PENDING** - Polish and advanced language features
+- **Phase 1 (Weeks 1-4)**: 📋 **PENDING** - Critical language gaps (Exception Handling, Control Flow Fixes)
+- **Phase 2 (Weeks 5-8)**: 📋 **PENDING** - Advanced language features (Pattern Matching, Decorators, Reflection, Extension System)
 
 **Technical Details:**
 - **Phase 1 Files**: `test/use_cases/` (for proof of concept implementations), `docs-src/docs/examples/` (for user examples)
