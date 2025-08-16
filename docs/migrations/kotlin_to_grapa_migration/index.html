@@ -4116,7 +4116,7 @@
 <li><strong>Coroutines</strong>: <code>coroutineScope { ... }</code> - No coroutine system</li>
 <li><strong>Finally/ensure</strong>: <code>finally</code> - No finally mechanism</li>
 <li><strong>Null assertion</strong>: <code>x!!</code> - No null assertion operator</li>
-<li><strong>Safe call</strong>: <code>x?.foo()</code> - Use <code>.iferr()</code> for superior safe property access: <code>x.foo.iferr("default")</code></li>
+<li><strong>Safe call</strong>: <code>x?.foo()</code> - Use <code>.iferr()</code> for superior safe property access with custom fallback values: <code>x.foo.iferr("default")</code></li>
 <li><strong>Elvis operator</strong>: <code>x ?: y</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(y)</code></li>
 <li><strong>Method chaining</strong>: <code>"hello".uppercase() + " world".lowercase()</code> - Use string interpolation: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code></li>
 <li><strong>Type checking</strong>: <code>is</code> - No type checking operator</li>

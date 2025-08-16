@@ -4818,7 +4818,7 @@ if (result.type() == $ERR) {
 <h3 id="nice-to-have">Nice to Have</h3>
 <p>These would improve developer experience but aren't essential:</p>
 <ul>
-<li><strong>Optional chaining</strong>: <code>obj?.user?.profile</code> - Use <code>.iferr()</code> for superior safe property access: <code>obj.user.iferr(null).profile.iferr("default")</code></li>
+<li><strong>Optional chaining</strong>: <code>obj?.user?.profile</code> - Use <code>.iferr()</code> for superior safe property access with custom fallback values: <code>obj.user.iferr(null).profile.iferr("default")</code></li>
 <li><strong>Nullish coalescing</strong>: <code>x ?? y</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(y)</code></li>
 <li><strong>F-strings</strong>: <code>f"Hello {name}"</code> - Use string interpolation: <code>"Hello ${name}".interpolate()</code> or see <a href="../../type/str/#string-templates-and-dynamic-construction">String Templates and Dynamic Construction</a> for advanced patterns</li>
 <li><strong>Function chaining</strong>: <code>"hello".upper() + " world".lower()</code> - Use string interpolation: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code></li>

@@ -4213,7 +4213,7 @@
 <h3 id="nice-to-have_1">Nice to Have</h3>
 <p>These would improve developer experience but aren't essential:</p>
 <ul>
-<li><strong>Safe navigation</strong>: <code>obj&amp;.user&amp;.profile</code> - Use <code>.iferr()</code> for superior safe property access: <code>obj.user.iferr(null).profile.iferr("default")</code></li>
+<li><strong>Safe navigation</strong>: <code>obj&amp;.user&amp;.profile</code> - Use <code>.iferr()</code> for superior safe property access with custom fallback values: <code>obj.user.iferr(null).profile.iferr("default")</code></li>
 <li><strong>Nil coalescing</strong>: <code>x || y</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(y)</code></li>
 <li><strong>Class inheritance</strong>: - Use object composition</li>
 <li><strong>Method overriding</strong>: - Use regular method definitions</li>

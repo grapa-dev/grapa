@@ -2886,6 +2886,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#property-access-and-safe-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Property Access and Safe Navigation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-structures-and-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Structures and Collections
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#rarely-used" class="md-nav__link">
     <span class="md-ellipsis">
       Rarely Used
@@ -3824,6 +3842,24 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#property-access-and-safe-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Property Access and Safe Navigation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-structures-and-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Structures and Collections
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#rarely-used" class="md-nav__link">
     <span class="md-ellipsis">
       Rarely Used
@@ -4347,7 +4383,13 @@ if (match(&quot;hello world&quot;, &quot;world&quot;)) {
 Grapa's dynamic typing is a <strong>fundamental design choice</strong>, not a limitation. It enables Grapa's core strengths:
 - <strong>Dynamic code execution</strong> and meta-programming capabilities
 - <strong>Runtime type introspection</strong> with <code>.type()</code> method
-- <strong>Flexible data processing</strong> without compile-time type constraints
+- <strong>Flexible data processing</strong> without compile-time type constraints</p>
+<p><strong>Why Grapa Doesn't Need Static Type Annotations:</strong>
+Grapa's design philosophy prioritizes <strong>runtime flexibility</strong> over compile-time guarantees. Static type annotations would fundamentally change Grapa's nature and eliminate its core advantages:
+- <strong>Meta-programming</strong>: Grapa can modify its own code structure at runtime, which static typing would prevent
+- <strong>Dynamic grammar changes</strong>: Grapa's executable BNF system requires runtime type flexibility
+- <strong>System integration</strong>: Grapa can work with any data format without predefined type definitions
+- <strong>Data processing</strong>: Grapa's strength is handling diverse, changing data structures dynamically
 - <strong>System integration</strong> that doesn't require type definitions</p>
 <p>Grapa provides type safety through runtime checking and rich type introspection, which is often more flexible than static typing for data processing and system integration tasks.</p>
 <p><strong>Important Note on Class System:</strong>
@@ -4405,42 +4447,97 @@ myDog.fetch();  /* Outputs: Fetching... */
 <h3 id="nice-to-have">Nice to Have</h3>
 <p>These would improve developer experience but aren't essential:</p>
 <ul>
-<li><strong>Optional chaining</strong>: <code>obj?.user?.profile</code> - Use <code>.iferr()</code> for superior safe property access: <code>obj.user.iferr(null).profile.iferr("default")</code></li>
 <li><strong>Nullish coalescing</strong>: <code>x ?? y</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(y)</code></li>
 <li><strong>Interfaces</strong>: <code>type MyInterface interface</code> - Use object composition and duck typing</li>
-<li><strong>Structs</strong>: <code>type MyStruct struct</code> - Grapa has superior class system<blockquote>
-<p><strong>Note:</strong> Grapa's class system provides full OOP capabilities including inheritance, polymorphism, methods, and runtime modification. See the "Important Note on Class System" section above for details and examples.</p>
-</blockquote>
-</li>
-<li><strong>Methods</strong>: <code>func (r Receiver) Method()</code> - Grapa classes have methods<blockquote>
-<p><strong>Note:</strong> Grapa classes support methods with full OOP capabilities. See the "Important Note on Class System" section above for details and examples.</p>
-</blockquote>
-</li>
-<li><strong>Type assertions</strong>: <code>x.(string)</code> - Use <code>.type()</code> checks</li>
-<li><strong>Type switches</strong>: <code>switch x.(type)</code> - Use <code>switch</code> with <code>.type()</code><blockquote>
-<p><strong>Note:</strong> Grapa supports type switching using <code>switch</code> statements with <code>.type()</code> method. See the "Important Note on Switch Statements" section above for examples.</p>
-</blockquote>
-</li>
-<li><strong>Generics</strong>: <code>func F[T any](x T)</code> - Grapa has dynamic typing</li>
-<li><strong>Type constraints</strong>: <code>T comparable</code> - Use runtime checks</li>
-<li><strong>Type sets</strong>: <code>~int</code> - Use regular types</li>
-<li><strong>Union types</strong>: <code>int | string</code> - Use dynamic typing</li>
-<li><strong>Type inference</strong>: - Use explicit types</li>
-<li><strong>Method sets</strong>: - Grapa classes have method sets<blockquote>
-<p><strong>Note:</strong> Grapa classes support method sets for interface-like behavior. See the "Important Note on Class System" section above for details.</p>
-</blockquote>
-</li>
-<li><strong>Interface satisfaction</strong>: - Use duck typing</li>
-<li><strong>Embedding</strong>: - Grapa classes support inheritance<blockquote>
-<p><strong>Note:</strong> Grapa classes support inheritance which provides embedding-like functionality. See the "Important Note on Class System" section above for details.</p>
-</blockquote>
-</li>
-<li><strong>Composition</strong>: - Use object composition</li>
-<li><strong>Inheritance</strong>: - Grapa classes support inheritance<blockquote>
-<p><strong>Note:</strong> Grapa classes support full inheritance hierarchies. See the "Important Note on Class System" section above for details and examples.</p>
-</blockquote>
-</li>
 </ul>
+<h3 id="property-access-and-safe-navigation">Property Access and Safe Navigation</h3>
+<p><strong>Why Grapa Doesn't Need Optional Chaining and Property Operators:</strong>
+Grapa's property access mechanisms are superior to Go's approach:</p>
+<ul>
+<li><strong>Optional Chaining</strong>: Use <code>.iferr()</code> for superior safe property access with custom fallback values</li>
+<li><strong>Property Existence</strong>: Use <code>.type() != $ERR</code> for more explicit existence checking</li>
+<li><strong>Property Enumeration</strong>: Use manual key iteration for more controlled enumeration</li>
+</ul>
+<p><strong>Grapa's Superior Property Access:</strong>
+<div class="highlight"><pre><span></span><code>/* Optional chaining equivalent - BETTER */
+/* Go: obj.User.Profile.Name (with nil checks) */
+name = obj.user.iferr(null).profile.iferr(null).name.iferr(&quot;default&quot;);
+
+/* Property existence equivalent - MORE EXPLICIT */
+/* Go: if user.Name != &quot;&quot; */
+if (user.name.type() != $ERR) {
+    /* Property exists and is accessible */
+}
+
+/* Property enumeration equivalent - MORE CONTROLLED */
+/* Go: for key, value := range obj */
+keys = [&quot;name&quot;, &quot;age&quot;, &quot;city&quot;];
+keys.map(op(key) {
+    value = user[key].iferr(&quot;not set&quot;);
+    (key + &quot;: &quot; + value.str()).echo();
+});
+</code></pre></div></p>
+<p><strong>Advantages over Go's Approach:</strong>
+- <strong>Custom fallback values</strong> at each step (not just zero values)
+- <strong>Explicit existence checking</strong> with <code>.type()</code> method
+- <strong>Controlled enumeration</strong> without reflection complexity
+- <strong>Functional programming patterns</strong> over imperative loops
+- <strong>Better error handling</strong> with explicit fallback values
+- <strong>Structs</strong>: <code>type MyStruct struct</code> - Grapa has superior class system</p>
+<blockquote>
+<p><strong>Note:</strong> Grapa's class system provides full OOP capabilities including inheritance, polymorphism, methods, and runtime modification. See the "Important Note on Class System" section above for details and examples.
+- <strong>Methods</strong>: <code>func (r Receiver) Method()</code> - Grapa classes have methods
+<strong>Note:</strong> Grapa classes support methods with full OOP capabilities. See the "Important Note on Class System" section above for details and examples.
+- <strong>Type assertions</strong>: <code>x.(string)</code> - Use <code>.type()</code> checks
+- <strong>Type switches</strong>: <code>switch x.(type)</code> - Use <code>switch</code> with <code>.type()</code>
+<strong>Note:</strong> Grapa supports type switching using <code>switch</code> statements with <code>.type()</code> method. See the "Important Note on Switch Statements" section above for examples.
+- <strong>Generics</strong>: <code>func F[T any](x T)</code> - Grapa has dynamic typing
+- <strong>Type constraints</strong>: <code>T comparable</code> - Use runtime checks
+- <strong>Type sets</strong>: <code>~int</code> - Use regular types
+- <strong>Union types</strong>: <code>int | string</code> - Use dynamic typing
+- <strong>Type inference</strong>: - Use explicit types
+- <strong>Method sets</strong>: - Grapa classes have method sets
+<strong>Note:</strong> Grapa classes support method sets for interface-like behavior. See the "Important Note on Class System" section above for details.
+- <strong>Interface satisfaction</strong>: - Use duck typing
+- <strong>Embedding</strong>: - Grapa classes support inheritance
+<strong>Note:</strong> Grapa classes support inheritance which provides embedding-like functionality. See the "Important Note on Class System" section above for details.
+- <strong>Composition</strong>: - Use object composition
+- <strong>Inheritance</strong>: - Grapa classes support inheritance
+<strong>Note:</strong> Grapa classes support full inheritance hierarchies. See the "Important Note on Class System" section above for details and examples.</p>
+</blockquote>
+<h3 id="data-structures-and-collections">Data Structures and Collections</h3>
+<p><strong>Why Grapa Doesn't Need Specialized Collections:</strong>
+Grapa's unified data structure approach is superior to Go's specialized collections:</p>
+<ul>
+<li><strong>Sets</strong>: Use <code>.unique()</code> method on arrays: <code>[1, 2, 1, 3, 2].unique()</code> → <code>[1, 2, 3]</code></li>
+<li><strong>Maps</strong>: Use <code>$LIST</code> objects: <code>{key1: "value1", key2: "value2"}</code></li>
+<li><strong>Slices</strong>: Use <code>$ARRAY</code> with dynamic operations: <code>arr += new_element</code></li>
+<li><strong>Channels</strong>: Use <code>$thread()</code> for concurrent processing</li>
+<li><strong>Iterators</strong>: Use functional methods (<code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>) which are thread-safe and parallel</li>
+</ul>
+<p><strong>Grapa's Superior Collection Capabilities:</strong>
+<div class="highlight"><pre><span></span><code>/* Set-like behavior */
+set_like = [1, 2, 1, 3, 2].unique();  /* [1, 2, 3] */
+
+/* Map-like behavior */
+map_like = {key1: &quot;value1&quot;, key2: &quot;value2&quot;};
+
+/* Slice-like operations */
+slice = [1, 2, 3];
+slice += 4;        /* Append */
+slice += 0 slice[0]; /* Prepend */
+
+/* Parallel functional operations */
+squares = numbers.map(op(x) { x * x });           /* Parallel processing */
+evens = numbers.filter(op(x) { x % 2 == 0 });     /* Thread-safe */
+sum = numbers.reduce(op(a, b) { a + b }, 0);      /* Sequential reduction */
+</code></pre></div></p>
+<p><strong>Advantages over Go's Collections:</strong>
+- <strong>Unified syntax</strong> across all data types
+- <strong>Parallel processing</strong> built into functional methods
+- <strong>Cross-format compatibility</strong> (works on <code>$ARRAY</code>, <code>$LIST</code>, <code>$OBJ</code>, <code>$XML</code>, etc.)
+- <strong>Simpler learning curve</strong> - fewer specialized types to learn
+- <strong>Better performance</strong> - optimized for Grapa's execution model</p>
 <h3 id="rarely-used">Rarely Used</h3>
 <p>These are advanced features that most developers won't miss:</p>
 <ul>

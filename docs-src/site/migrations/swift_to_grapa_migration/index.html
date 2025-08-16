@@ -4099,7 +4099,7 @@
 <li><strong>Annotations</strong>: <code>@escaping</code>, <code>@objc</code> - No annotation system</li>
 <li><strong>Generics</strong>: <code>&lt;T&gt;</code> - No generic system</li>
 <li><strong>Optionals</strong>: <code>Int?</code> - No optional type system</li>
-<li><strong>Optional chaining</strong>: <code>x?.doSomething()</code> - Use <code>.iferr()</code> for superior safe property access: <code>x.doSomething.iferr("default")</code></li>
+<li><strong>Optional chaining</strong>: <code>x?.doSomething()</code> - Use <code>.iferr()</code> for superior safe property access with custom fallback values: <code>x.doSomething.iferr("default")</code></li>
 <li><strong>Force unwrapping</strong>: <code>x!</code> - No force unwrapping</li>
 <li><strong>Nil coalescing</strong>: <code>x ?? 0</code> - Use <code>.ifnull()</code> for superior nullish coalescing: <code>x.ifnull(0)</code></li>
 <li><strong>Method chaining</strong>: <code>"hello".uppercased() + " world".lowercased()</code> - Use string interpolation: <code>"${'hello'.upper()} ${'world'.lower()}".interpolate()</code></li>
