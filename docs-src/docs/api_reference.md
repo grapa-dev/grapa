@@ -206,6 +206,7 @@ func = op(x) {
 
 ### Basic Operations
 - `.echo()` - Output text to console (method on strings/values)
+- `.debug(level, component?)` - Output debug messages (requires `-d` flag)
 - `.\n` - Exit console (in interactive mode)
 - `sleep(seconds)` - Pause execution
 
@@ -593,7 +594,7 @@ All Grapa objects support a comprehensive set of methods through the `$OBJ` clas
 - **Search & Pattern**: `.grep()`, `.match()`, `.findall()`
 - **Bit Manipulation**: `.setbit()`, `.clearbit()`, `.genbits()`
 - **Cryptography**: `.encode()`, `.decode()`, `.sign()`, `.verify()`, `.secret()`
-- **Utilities**: `.echo()`, `.iferr()`, `.exec()`, `.getname()`
+- **Utilities**: `.echo()`, `.debug()`, `.iferr()`, `.exec()`, `.getname()`
 
 ### Quick Examples
 

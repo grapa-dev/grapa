@@ -670,7 +670,7 @@ void GrapaItemState::Running()
 				}
 				if (msgStr.mLength == 0 && ((saveChar == '\n' && c == '/') || (saveChar == '*' && c == '*')))
 				{
-						saveState == GrapaTokenType::DOC;
+						saveState = GrapaTokenType::DOC;
 						nextValue->mMessage.mPos++;
 						break;
 				}
@@ -6719,7 +6719,7 @@ GrapaScriptExecStateDebug::GrapaScriptExecStateDebug()
 	mSessionId = gSystem->GetNextSessionId();
 	
 	// Read session-specific environment variables for initial values
-	const char* sessionDebug = getenv("GRAPA_SESSION_DEBUG");
+	const char* sessionDebug = getenv("GRAPA_SESSION_DEBUG_MODE");
 	if (sessionDebug && strcmp(sessionDebug, "1") == 0) {
 		mSessionDebugOverride = true;
 	}
@@ -6745,7 +6745,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	// Create session-identified debug output
 	GrapaCHAR sessionDebugStr;
 	sessionDebugStr.SetLength(256 + strlen(pStr));
-	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-SESSION-%llu] %s\n", (unsigned long long)mSessionId, pStr);
+	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-%llu] %s\n", (unsigned long long)mSessionId, pStr);
 	sessionDebugStr.SetLength(len);
 	pNameSpace->GetResponse()->SendError(vScriptExec, pNameSpace, sessionDebugStr);
 };
@@ -6757,7 +6757,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	// Create session-identified debug output
 	GrapaCHAR sessionDebugStr;
 	sessionDebugStr.SetLength(256 + pValue.mLength);
-	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-SESSION-%llu] %s\n", (unsigned long long)mSessionId, (char*)pValue.mBytes);
+	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-%llu] %s\n", (unsigned long long)mSessionId, (char*)pValue.mBytes);
 	sessionDebugStr.SetLength(len);
 	pNameSpace->GetResponse()->SendError(vScriptExec, pNameSpace, sessionDebugStr);
 };
@@ -6838,7 +6838,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	// Create component and session-identified debug output
 	GrapaCHAR sessionDebugStr;
 	sessionDebugStr.SetLength(256 + strlen(pStr));
-	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-SESSION-%llu-%s] %s\n", (unsigned long long)mSessionId, component, pStr);
+	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-%llu-%s] %s\n", (unsigned long long)mSessionId, component, pStr);
 	sessionDebugStr.SetLength(len);
 	pNameSpace->GetResponse()->SendError(vScriptExec, pNameSpace, sessionDebugStr);
 }
@@ -6850,7 +6850,7 @@ void GrapaScriptExecStateDebug::DebugPrint(GrapaScriptExec* vScriptExec, GrapaNa
 	// Create component and session-identified debug output
 	GrapaCHAR sessionDebugStr;
 	sessionDebugStr.SetLength(256 + pValue.mLength);
-	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-SESSION-%llu-%s] %s\n", (unsigned long long)mSessionId, component, pValue.mBytes);
+	int len = snprintf((char*)sessionDebugStr.mBytes, sessionDebugStr.mLength, "[DEBUG-%llu-%s] %s\n", (unsigned long long)mSessionId, component, pValue.mBytes);
 	sessionDebugStr.SetLength(len);
 	pNameSpace->GetResponse()->SendError(vScriptExec, pNameSpace, sessionDebugStr);
 }

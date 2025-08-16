@@ -84,7 +84,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 
 ---
 
-## 🆕 **NEW INITIATIVES** (3 items)
+## 🆕 **NEW INITIATIVES** (4 items)
 
 ### **Wikipedia Article Creation** ✅ **READY TO IMPLEMENT**
 - **Status**: Article content prepared and ready for submission
@@ -98,6 +98,22 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Focus**: Debugging methodologies, testing strategies, implementation patterns
 - **Next Steps**: Review extracted content, identify integration opportunities, update documentation
 - **Reference**: [`../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md`](../RESEARCH_AND_ANALYSIS/DATABASE_ENGINEERING_BEST_PRACTICES.md)
+
+### **Data Type Access Standardization** 🔥 **HIGH PRIORITY**
+- **Status**: Identified as major user experience issue in Phase 2B analysis
+- **Problem**: Inconsistent access patterns across different data types causing user confusion
+- **Current Issues**:
+  - Arrays: `arr[0]` works, `arr.get(0)` fails
+  - Lists: `list["key"]` and `list.key` work, `list.get("key")` fails  
+  - Objects: `obj.property` and `obj["property"]` work, `obj.get("prop")` fails
+  - Files: `file.get(0)` works, `file[0]` fails
+  - Tables: `table.get("key", "field")` works, `table["key"]` fails
+- **Goal**: Unified access patterns across all data types for better developer experience
+- **Potential Solutions**: Unified bracket notation, unified dot notation, or unified .get() method
+- **Priority**: High - affects every data access operation in Grapa
+- **Estimated Effort**: Medium (2-4 weeks)
+- **Dependencies**: None
+- **Reference**: Phase 2B User Experience Analysis
 
 ### **Grapa Rules System Enhancement Roadmap** 🔧 **COMPREHENSIVE PLANNING**
 - **Status**: Comprehensive roadmap created with 12 major enhancements across 4 phases

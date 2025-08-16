@@ -48,3 +48,4 @@ matrix = [[1, 2], [3, 4]];
 ("=== $VECTOR.grc regression test completed ===").echo();
 ("Parameter renaming completed: reshape(b)→reshape(shape), dot(b)→dot(other), triu(b)→triu(offset), tril(b)→tril(offset)").echo();
 ("All functionality validated as identical to baseline").echo();
+

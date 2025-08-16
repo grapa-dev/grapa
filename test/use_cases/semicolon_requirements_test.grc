@@ -1,0 +1,69 @@
+/* Test current semicolon requirements in Grapa */
+
+/* Test 1: Basic statements - semicolons required */
+x = 10;
+y = 20;
+"Basic statements work".echo();
+
+/* Test 2: Block endings - semicolon after closing brace */
+if (x > 5) {
+    "x is greater than 5".echo();
+}; /* This semicolon is currently required */
+
+/* Test 3: If/else blocks - semicolon after else block */
+if (x > 5) {
+    "x is greater than 5".echo();
+} else {
+    "x is not greater than 5".echo();
+}; /* This semicolon is currently required */
+
+/* Test 4: Nested if/else inside blocks */
+{
+    if (x > 5) {
+        "nested if".echo();
+    } else {
+        "nested else".echo();
+    }; /* This semicolon is currently required */
+};
+
+/* Test 5: Multiple if/else chains */
+if (x > 10) {
+    "x > 10".echo();
+} else if (x > 5) {
+    "x > 5".echo();
+} else {
+    "x <= 5".echo();
+}; /* This semicolon is currently required */
+
+/* Test 6: For loops - semicolon after closing brace */
+for i in 5 {
+    ("Count: " + i).echo();
+}; /* This semicolon is currently required */
+
+/* Test 7: While loops - semicolon after closing brace */
+i = 0;
+while (i < 3) {
+    ("While count: " + i).echo();
+    i = i + 1;
+}; /* This semicolon is currently required */
+
+/* Test 8: Function definitions - semicolon after closing brace */
+myFunc = op() {
+    "Function called".echo();
+}; /* This semicolon is currently required */
+
+/* Test 9: Class definitions - semicolon after closing brace */
+MyClass = class {
+    myMethod = op() {
+        "Method called".echo();
+    };
+}; /* This semicolon is currently required */
+
+/* Test 10: Switch statements - semicolon after closing brace */
+switch (x) {
+    case 10: "x is 10".echo(); break;
+    case 20: "x is 20".echo(); break;
+    default: "x is something else".echo(); break;
+}; /* This semicolon is currently required */
+
+"All semicolon tests completed".echo();

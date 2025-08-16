@@ -1,0 +1,45 @@
+/* Test .ifnull() with edge cases */
+
+/* Test 1: $ERR */
+x = $ERR;
+result = x.ifnull("default");
+"Test 1 - $ERR: ".echo(); result.echo();
+
+/* Test 2: Empty array */
+x = [];
+result = x.ifnull("default");
+"Test 2 - empty array: ".echo(); result.echo();
+
+/* Test 3: Empty object */
+x = {};
+result = x.ifnull("default");
+"Test 3 - empty object: ".echo(); result.echo();
+
+/* Test 4: Non-empty array */
+x = [1, 2, 3];
+result = x.ifnull("default");
+"Test 4 - non-empty array: ".echo(); result.echo();
+
+/* Test 5: Non-empty object */
+x = {a: 1, b: 2};
+result = x.ifnull("default");
+"Test 5 - non-empty object: ".echo(); result.echo();
+
+/* Test 6: Check if these are considered nullish by IsNull() */
+"Test 6 - IsNull() checks: ".echo();
+err = $ERR;
+"$ERR.IsNull(): ".echo(); err.IsNull().echo();
+
+emptyArr = [];
+"emptyArr.IsNull(): ".echo(); emptyArr.IsNull().echo();
+
+emptyObj = {};
+"emptyObj.IsNull(): ".echo(); emptyObj.IsNull().echo();
+
+/* Test 7: Check if these are considered zero by IsZero() */
+"Test 7 - IsZero() checks: ".echo();
+"$ERR.IsZero(): ".echo(); err.IsZero().echo();
+"emptyArr.IsZero(): ".echo(); emptyArr.IsZero().echo();
+"emptyObj.IsZero(): ".echo(); emptyObj.IsZero().echo();
+
+"Edge case tests completed".echo();

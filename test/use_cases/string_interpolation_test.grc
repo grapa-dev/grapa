@@ -1,0 +1,16 @@
+/* Test string interpolation with comments */
+
+x = 10;
+y = 20;
+
+// Test basic string interpolation
+result = x + y;
+"Result: ${result}".echo(); // Should show: Result: 30
+
+/// Test string interpolation with doc comment
+message = "Hello World";
+"${message}".echo(); /// Should show: Hello World
+
+/* Test that comments don't interfere with interpolation */
+final_result = "All features working!";
+final_result.echo(); // Success message

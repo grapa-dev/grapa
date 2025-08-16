@@ -1,0 +1,13 @@
+x = 10;
+y = 20;
+result = x + y;
+
+// Test string interpolation using .interpolate() method
+"Result: ${result}".interpolate().echo();
+
+message = "Hello World";
+"${message}".interpolate().echo();
+
+// Test with comments
+final_result = "All features working!";
+final_result.echo(); // Success message

@@ -1,0 +1,38 @@
+/* Test $ERR handling specifically */
+
+/* Test 1: Direct $ERR */
+x = $ERR;
+"Test 1 - x = $ERR".echo();
+"x type: ".echo(); x.type().echo();
+"x.ifnull('default'): ".echo(); x.ifnull("default").echo();
+
+/* Test 2: Check token type */
+"Test 2 - Token type check".echo();
+"$ERR token type: ".echo(); $ERR.type().echo();
+
+/* Test 3: Compare with known error */
+"Test 3 - Compare with known error".echo();
+err = 1 / 0;  /* This should create an error */
+"err type: ".echo(); err.type().echo();
+"err.ifnull('default'): ".echo(); err.ifnull("default").echo();
+
+/* Test 4: Check if $ERR is actually GrapaTokenType::ERR */
+"Test 4 - Check if $ERR is ERR token".echo();
+"$ERR == GrapaTokenType::ERR: ".echo(); ($ERR.type() == 1).echo();  /* ERR = 1 */
+
+/* Test 5: Use $ERR() to create actual error */
+"Test 5 - Use $ERR()".echo();
+err2 = $ERR();
+"err2 type: ".echo(); err2.type().echo();
+"err2.ifnull('default'): ".echo(); err2.ifnull("default").echo();
+
+/* Test 6: Check if $ERR() creates ERR token */
+"Test 6 - Check if $ERR() creates ERR token".echo();
+"$ERR() == GrapaTokenType::ERR: ".echo(); ($ERR().type() == 1).echo();  /* ERR = 1 */
+
+/* Test 7: Direct token value check */
+"Test 7 - Direct token value check".echo();
+"$ERR().type() value: ".echo(); $ERR().type().echo();
+"1 / 0 type() value: ".echo(); (1 / 0).type().echo();
+
+"$ERR tests completed".echo();

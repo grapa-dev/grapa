@@ -67,3 +67,4 @@ n = $net();
 ("=== $net.grc regression test completed ===").echo();
 ("Parameter renaming completed: onlisten(o,p,c,n)→onlisten(url,messageHandler,connectHandler,count), send(d)→send(data), onreceive(o)→onreceive(handler)").echo();
 ("All functionality validated as identical to baseline").echo();
+

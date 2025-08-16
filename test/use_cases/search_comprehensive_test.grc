@@ -1,0 +1,63 @@
+/* Comprehensive test to verify search behavior change doesn't break fundamental functionality */
+
+echo("=== Comprehensive Search Behavior Test ===");
+
+/* Test 1: Basic object access (no duplicates) */
+obj1 = {name:"John", age:25, city:"NYC"};
+echo("obj1.name: "); obj1.name.echo();
+echo("obj1.age: "); obj1.age.echo();
+echo("obj1.city: "); obj1.city.echo();
+
+/* Test 2: Object with duplicates - should return last value */
+obj2 = {name:"Alice", age:30, name:"Bob", age:35};
+echo("obj2.name: "); obj2.name.echo();
+echo("obj2.age: "); obj2.age.echo();
+
+/* Test 3: Nested object access */
+nested = {outer:{inner:"value"}};
+echo("nested.outer.inner: "); nested.outer.inner.echo();
+
+/* Test 4: Array indexing (should be unchanged) */
+arr = [10, 20, 30, 40];
+echo("arr[0]: "); arr[0].echo();
+echo("arr[1]: "); arr[1].echo();
+echo("arr[2]: "); arr[2].echo();
+echo("arr[3]: "); arr[3].echo();
+
+/* Test 5: List indexing (should be unchanged) */
+list = ["a", "b", "c", "d"];
+echo("list[0]: "); list[0].echo();
+echo("list[1]: "); list[1].echo();
+echo("list[2]: "); list[2].echo();
+echo("list[3]: "); list[3].echo();
+
+/* Test 6: Mixed object with both unique and duplicate keys */
+mixed = {a:1, b:2, a:3, c:4, b:5, d:6};
+echo("mixed.a: "); mixed.a.echo();
+echo("mixed.b: "); mixed.b.echo();
+echo("mixed.c: "); mixed.c.echo();
+echo("mixed.d: "); mixed.d.echo();
+
+/* Test 7: Object with many duplicates */
+many_dups = {x:1, y:2, x:3, y:4, x:5, y:6, x:7, y:8};
+echo("many_dups.x: "); many_dups.x.echo();
+echo("many_dups.y: "); many_dups.y.echo();
+
+/* Test 8: Verify object still has correct length */
+echo("obj1 length: "); obj1.len().echo();
+echo("obj2 length: "); obj2.len().echo();
+echo("mixed length: "); mixed.len().echo();
+echo("many_dups length: "); many_dups.len().echo();
+
+/* Test 9: Iteration through object */
+echo("obj1 properties:");
+for (i = 0; i < obj1.len(); i++) {
+    echo("  Property "); i.echo(); echo(": "); obj1[i].echo();
+}
+
+echo("obj2 properties:");
+for (i = 0; i < obj2.len(); i++) {
+    echo("  Property "); i.echo(); echo(": "); obj2[i].echo();
+}
+
+echo("=== Test completed successfully ===");

@@ -19,6 +19,14 @@
 
 > **Important: Access Patterns for Data Types (Tested, v0.0.39)**
 >
+> **Recent Improvements (Phase 1 & 2):**
+> - ✅ **Native for loops**: `for x in arr { ... }` - Direct Python-like iteration
+> - ✅ **Comprehensive comments**: `/* */`, `/** */`, `//`, `///` - Full commenting support
+> - ✅ **String interpolation**: `"Hello ${name}".interpolate()` - Template literal support
+> - ✅ **Enhanced operators**: `*=`, `/=`, `%=`, `**=` - Compound assignment operators
+> - ✅ **List comprehension**: `[x*2 for x in arr]` - Native list comprehension
+> - ✅ **Regex matching**: `text.match(pattern)` - Boolean pattern matching
+>
 > | Type      | .get("key") | .get(index) | Bracket Notation | Dot Notation | .len() | .size() |
 > |-----------|:-----------:|:-----------:|:----------------:|:------------:|:------:|:-------:|
 > | $ARRAY    |      ❌      |     ❌      |       ✅         |      —       |   ✅   |    ❌   |
@@ -49,7 +57,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 
 | Python | Grapa |
 |--------|-------|
-| `for x in arr:` | `i = 0; while (i < arr.len()) { x = arr[i]; ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
+| `for x in arr:` | `for x in arr { ... }`<br>`i = 0; while (i < arr.len()) { x = arr[i]; ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
 | `if cond:` | `if (cond) { ... }` |
 | `def f(x): ...` | `f = op(x) { ... };` |
 | `list.append(x)` | `arr += x;` |
@@ -57,7 +65,7 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `list[index]` | `arr[index]`<br>`arr.get(index)` |
 | (file access) | `file.get("key")` |
 | `try: ... except:` | `result.iferr(fallback)`<br>`if (result.type() == $ERR) { ... }` |
-| `# comment` | `/* comment */` (block only, own line) |
+| `# comment` | `/* comment */` (block)<br>`/** comment */` (doc block)<br>`// comment` (line)<br>`/// comment` (doc line) |
 | `True/False` | `true/false` |
 | `None` | `null` |
 | `str(x)` | `x.str()` |
@@ -69,21 +77,30 @@ This guide helps Python users transition to Grapa by mapping common Python idiom
 | `reduce(f, arr, init)` | `arr.reduce(op(a, b) { f(a, b); }, init)` |
 | `re.findall(pattern, text)` | `text.grep(pattern, "o")` |
 | `len(re.findall(pattern, text))` | `text.grep(pattern, "c")[0].int()` |
+| `re.match(pattern, text)` | `text.match(pattern)` |
 | `range(n)` | `(n).range(0,1)` |
 | `x = x + 1` | `x = x + 1;`<br>`x += 1;` (preferred) |
+| `x = x * 2` | `x = x * 2;`<br>`x *= 2;` (preferred) |
+| `x = x / 2` | `x = x / 2;`<br>`x /= 2;` (preferred) |
+| `x = x % 3` | `x = x % 3;`<br>`x %= 3;` (preferred) |
+| `x = x ** 2` | `x = x ** 2;`<br>`x **= 2;` (preferred) |
 | `s = s + "x"` | `s = s + "x";`<br>`s += "x";` (preferred) |
 | `lambda x: x * 2` | `op(x) { x * 2; }` |
 | `def f(x=1): ...` | `f = op("x"=1) { ... };` |
 | `def f(*args): ...` | `f = op(args) { ... };` |
-| `f"Hello {name}"` | `"Hello " + name` |
+| `f"Hello {name}"` | `"Hello ${name}".interpolate()`<br>`"Hello " + name` (concatenation) |
 | `if (x := f()) > 0:` | `x = f(); if (x > 0) { ... }` |
 | `async def f(): await g()` | Use Grapa's built-in parallelism: `data.map(op(x) { process(x); }, 8)` |
-| `(x*2 for x in arr)` | `arr.map(op(x) { x * 2; })` (Grapa is eager by default)<br>`[x*2 for x in arr]` (list comprehension) |
+| `(x*2 for x in arr)` | `arr.map(op(x) { x * 2; })` (Grapa is eager by default)<br>`[x*2 for x in arr]` (list comprehension)<br>`[x*2 for x in arr]` (native list comprehension) |
 | `with open() as f:` | Use `$file()` methods directly: `content = $file().read("file.txt")` |
 | `@decorator` | Use function composition: `f = op() { decorator(original_func); }` |
 | `arr1 + arr2` | `arr1 += arr2` |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
+>
+> **String Interpolation:** For combining strings and values, use `"Hello ${name}".interpolate()` instead of `"Hello " + name`. String interpolation is more powerful and less error-prone than concatenation.
+>
+> **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of `value or "default"`. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
 
 > **Note:** `.get("key")` is only for `$file` (and possibly one other system object). For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` (and `arr.get(index)` if supported).
 
@@ -156,10 +173,10 @@ value = table.get("user1", "name");   /* Correct */
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
-- No `for`/`foreach` loops—use `while` or `.range()`+functional methods (`.range()` is native: `(10).range()`)
+- ✅ **For loops now supported** - Use `for x in arr { ... }` for native iteration
 - No `try/catch`—use `.iferr()` for fallback or check for `$ERR`
-- No `.get()`/`.set()` on lists/arrays—use `[]` for access (except for `$file`/`$TABLE`)
-- No `//` or `#` comments—only block comments (`/* ... */`), always on their own line
+- No `.get()`/`.set()` on lists/arrays—use `[]` for access (except for `$file`/$TABLE`)
+- ✅ **Line comments now supported** - Use `// comment` or `/// doc comment` in addition to block comments
 - No attribute-style access for dict/list keys—use `[]`, or dot notation for `$LIST`/`$OBJ`
 - No implicit truthy/falsy—use explicit boolean checks
 - All statements and blocks must end with a semicolon (`;`)
@@ -234,6 +251,13 @@ for i in range(10):
 ```
 **Grapa:**
 ```grapa
+/* Using native for loop (new!) */
+sum = 0;
+for i in 10 {
+    sum += i;
+};
+
+/* Or using functional approach */
 sum = (10).range(0,1).reduce(op(acc, x) { acc += x; }, 0);
 ```
 
@@ -247,9 +271,16 @@ for i in range(10):
 ```
 **Grapa:**
 ```grapa
-evens = (10).range(0,1).reduce(op(acc, x) {
-    if (x % 2 == 0) { acc += x; };
-}, []);
+/* Using native for loop (new!) */
+evens = [];
+for i in 10 {
+    if (i % 2 == 0) {
+        evens += i;
+    };
+};
+
+/* Or using functional approach */
+evens = (10).range(0,1).filter(op(x) { x % 2 == 0; });
 ```
 
 **Python:**
@@ -318,8 +349,8 @@ result = some_operation().iferr(0);
 > - If more objects support `.get()` in the future, this guide will be updated. 
 
 > **Comment Style:**
-> - Only block comments (`/* ... */`) are supported in Grapa, and must always be on their own line.
-> - `//` and `#` comments are not supported and will cause errors. 
+> - ✅ **Comprehensive comment support**: `/* */` (block), `/** */` (doc block), `//` (line), `///` (doc line)
+> - Comments work everywhere including at end of lines and inside code blocks 
 
 ## Customizing Grapa for Familiar Syntax
 
@@ -352,7 +383,10 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **F-strings**: `f"Hello {name}"` - Use string concatenation: `"Hello " + name` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns
+- **Optional chaining**: `obj?.user?.profile` - Use `.iferr()` for superior safe property access: `obj.user.iferr(null).profile.iferr("default")`
+- **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
+- **F-strings**: `f"Hello {name}"` - Use string interpolation: `"Hello ${name}".interpolate()` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns
+- **Function chaining**: `"hello".upper() + " world".lower()` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`
 - **Walrus operator**: `if (x := f()) > 0:` - Use separate assignment: `x = f(); if (x > 0) { ... }`
 - **Match statements**: `match x:` - Use `if/else` chains
 - **Structural pattern matching**: - Use explicit property access

@@ -60,3 +60,4 @@ t = $thread();
 ("=== $thread.grc regression test completed ===").echo();
 ("Parameter renaming completed: start(o,p,c)→start(runCode,param,doneCode)").echo();
 ("All functionality validated as identical to baseline").echo();
+

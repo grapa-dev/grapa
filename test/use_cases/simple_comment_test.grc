@@ -1,0 +1,12 @@
+/* This is a block comment */
+// This is a line comment
+/// This is a doc line comment
+
+x = 10;
+y = 20;
+
+/* Another block comment */
+// Another line comment
+
+result = x + y;
+result.echo();

@@ -1,0 +1,20 @@
+/* Test the .match() method for regex matching */
+
+// Test basic pattern matching
+"hello world".match("hello").echo(); // Should show: true
+"hello world".match("world").echo(); // Should show: true
+"hello world".match("xyz").echo(); // Should show: false
+
+// Test regex patterns
+"hello world".match("h.*d").echo(); // Should show: true
+"hello world".match("^h.*d$").echo(); // Should show: true
+"hello world".match("^world").echo(); // Should show: false
+
+// Test with variables
+text = "hello world";
+pattern = "hello";
+text.match(pattern).echo(); // Should show: true
+
+// Test edge cases
+"".match(".*").echo(); // Should show: true (empty string matches .*)
+"".match("^$").echo(); // Should show: true (empty string matches ^$)

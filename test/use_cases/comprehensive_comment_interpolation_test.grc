@@ -1,0 +1,37 @@
+/* 
+   Comprehensive test combining comments and string interpolation
+   This test verifies that all comment types work correctly
+   and that string interpolation functions properly with comments
+*/
+
+// Test basic variable interpolation with comments
+name = "Alice";
+age = 25;
+"Hello ${name}, you are ${age} years old!".interpolate().echo(); // Should show: Hello Alice, you are 25 years old!
+
+/// Test expression evaluation with doc comments
+x = 10;
+y = 5;
+"Sum: ${x + y}, Product: ${x * y}".interpolate().echo(); /// Should show: Sum: 15, Product: 50
+
+/* Test script execution with op() function */
+x = 10;
+"Value: ${op()(\"x\")()}".interpolate().echo(); // Should show: Value: 10
+
+/** Test parameterized script execution with doc comments */
+x = 10;
+"Value: ${op(v=x)(\"v + 2\")()}".interpolate().echo(); /** Should show: Value: 12 */
+
+// Test template string interpolation with parameters
+"Hello ${name}".interpolate({name:"Bob"}).echo(); // Should show: Hello Bob
+
+/// Test method chaining with doc comments
+"Hello ${name}".interpolate({name:"Charlie"}).upper().echo(); /// Should show: HELLO CHARLIE
+
+/* Test that comments don't interfere with complex interpolation */
+script = "xx*yy;";
+"${op(yy=8)(script)()}".interpolate({xx:4}).echo(); // Should show: 32
+
+/* Final validation - all features working together */
+final_message = "Comments and interpolation working perfectly!";
+final_message.echo(); // Success message

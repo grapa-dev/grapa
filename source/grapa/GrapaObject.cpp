@@ -159,8 +159,8 @@ GrapaObjectEvent* GrapaObjectQueue::SearchLower(const GrapaCHAR& pName, s64& pIn
 
 GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pIndex, bool pLower)
 {
-	GrapaObjectEvent* item = Head();
-	pIndex = 0;
+	GrapaObjectEvent* item = Tail();
+	pIndex = mCount - 1;
 	while (item)
 	{
 		if (item->mName.mLength && item->mValue.mToken != GrapaTokenType::EL)
@@ -262,8 +262,8 @@ GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pInd
 				break;
 			}
 		}
-		pIndex++;
-		item = item->Next();
+		pIndex--;
+		item = item->Prev();
 	}
 	pIndex = -1;
 	return(NULL);

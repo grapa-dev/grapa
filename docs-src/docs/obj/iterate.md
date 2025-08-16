@@ -20,14 +20,20 @@ See [reduce in the Looping section](../operators/loop.md#reduce) for full docume
 Iterates through a $LIST/$ARRAY calling an $OP. Processes each item in sequence as the intent is to combine results of each $OP. If "start" not provided, the first item of the list is used as the start. 
 
 ## sort([axis],[order],[op])
-Sorts a $LIST.
+Sorts data structures across multiple types: `$ARRAY`, `$TUPLE`, `$LIST`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 - axis -> 0 = row, 1 = col
 - order -> 0 = ascend, 1 = decend, or does selection if array if indexes passed in
 - op -> function for the compare
 
+**Examples:**
 ```
+/* Lists and Objects - sort by key */
 {z:1,m:2,p:3,b:4}.sort() -> {"b":4,"m":2,"p":3,"z":1}
+
+/* Arrays and Tuples - sort by value */
+[3,1,4,1,5,9].sort() -> [1,1,3,4,5,9]
+(3,1,4,1,5,9).sort() -> (1,1,3,4,5,9)
 ```
 
 Optionally pass in a compare routine.'''
@@ -35,13 +41,13 @@ Optionally pass in a compare routine.'''
 > ["b","a","B","c","b","A"].sort()
 ["A","B","a","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.upper()<= 3eb.upper();})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.upper()<=>b.upper();})
 ["a","A","B","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.casefold()<= 3eb.casefold();})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){a.casefold()<=>b.casefold();})
 ["a","A","B","b","b","c"]
 
-> ["b","a","B","c","b","A"].sort(0,0,op(a,b){$local.c=a.upper()<= 3eb.upper();if(c==0)c=a<= 3eb;c;})
+> ["b","a","B","c","b","A"].sort(0,0,op(a,b){@local.c=@a.upper()<=>@b.upper();if(@c==0)c=@a<=>@b;@c;})
 [A,a,B,b,b,c]
 
 > ["b","a","B","c","b","A"].sort(0,[1,2])
@@ -49,10 +55,18 @@ Optionally pass in a compare routine.'''
 ```
 
 ## unique([op])
-Remove duplicates names.
+Remove duplicates across multiple types: `$ARRAY`, `$TUPLE`, `$LIST`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
+
+**For Lists and Objects:** Removes duplicate keys, keeping the last value for each key.
+**For Arrays and Tuples:** Removes duplicate values, keeping the last occurrence of each value.
 
 ```
+/* Lists and Objects - remove duplicate keys */
 {z:1,b:4,m:2,p:3,m:2,b:4}.unique() -> {"z":1,"b":4,"m":2,"p":3}
+
+/* Arrays and Tuples - remove duplicate values */
+[1,2,1,3,2,4].unique() -> [1,2,3,4]
+(1,2,1,3,2,4).unique() -> (1,2,3,4)
 ```
 
 Optionally pass in a compare routine.'''
@@ -60,10 +74,10 @@ Optionally pass in a compare routine.'''
 > ["b","a","B","c","b","A"].unique()
 ["A","B","a","b","c"]
 
-> ["b","a","B","c","b","A"].unique(op(a,b){a.upper()<= 3eb.upper();})
+> ["b","a","B","c","b","A"].unique(op(a,b){a.upper()<=>b.upper();})
 ["A","b","c"]
 
-> ["b","a","B","c","b","A"].unique(op(a,b){a.casefold()<= 3eb.casefold();})
+> ["b","a","B","c","b","A"].unique(op(a,b){a.casefold()<=>b.casefold();})
 ["A","b","c"]
 ```
 

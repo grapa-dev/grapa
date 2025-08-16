@@ -944,6 +944,13 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIfErr(GrapaCHAR& pName) { return new GrapaLibraryRuleIfErrEvent(pName); }
 
+class GrapaLibraryRuleIfNullEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleIfNullEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleIfNull(GrapaCHAR& pName) { return new GrapaLibraryRuleIfNullEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1097,13 +1104,13 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleInclude(GrapaCHAR& pName) { return new GrapaLibraryRuleIncludeEvent(pName); }
 
-class GrapaLibraryRuleDebugEvent : public GrapaLibraryEvent
+class GrapaLibraryRuleDumpEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleDebugEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    GrapaLibraryRuleDumpEvent(GrapaCHAR& pName) { mName.FROM(pName); };
 	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
-GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDebug(GrapaCHAR& pName) { return new GrapaLibraryRuleDebugEvent(pName); }
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDump(GrapaCHAR& pName) { return new GrapaLibraryRuleDumpEvent(pName); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1436,10 +1443,18 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleString(GrapaCHAR& pName) { retur
 class GrapaLibraryRuleEchoEvent : public GrapaLibraryEvent
 {
 public:
-	GrapaLibraryRuleEchoEvent(GrapaCHAR& pName) { mName.FROM(pName); };
-	virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+    GrapaLibraryRuleEchoEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleEcho(GrapaCHAR& pName) { return new GrapaLibraryRuleEchoEvent(pName); }
+
+class GrapaLibraryRuleDebugEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleDebugEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleDebug(GrapaCHAR& pName) { return new GrapaLibraryRuleDebugEvent(pName); }
 
 class GrapaLibraryRuleConsoleEvent : public GrapaLibraryEvent
 {
@@ -2732,10 +2747,12 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "filter", &GrapaLibraryRuleEvent::HandleFilter },
 		{ "range", &GrapaLibraryRuleEvent::HandleRange },
 		{ "isint", &GrapaLibraryRuleEvent::HandleIsInt },
-		{ "iferr", &GrapaLibraryRuleEvent::HandleIfErr },
+        { "iferr", &GrapaLibraryRuleEvent::HandleIfErr },
+        { "ifnull", &GrapaLibraryRuleEvent::HandleIfNull },
 		{ "message", &GrapaLibraryRuleEvent::HandleMessage },
 		{ "string", &GrapaLibraryRuleEvent::HandleString },
-		{ "echo", &GrapaLibraryRuleEvent::HandleEcho },
+        { "echo", &GrapaLibraryRuleEvent::HandleEcho },
+        { "debug", &GrapaLibraryRuleEvent::HandleDebug },
 		{ "console", &GrapaLibraryRuleEvent::HandleConsole },
 		{ "prompt", &GrapaLibraryRuleEvent::HandlePrompt },
 		{ "genprime", &GrapaLibraryRuleEvent::HandleGenPrime },
@@ -2885,7 +2902,7 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "file_set", &GrapaLibraryRuleEvent::HandleSet },
 		{ "file_get", &GrapaLibraryRuleEvent::HandleGet },
 		{ "file_split", &GrapaLibraryRuleEvent::HandleFileSplit },
-		{ "file_debug", &GrapaLibraryRuleEvent::HandleDebug },
+		{ "file_dump", &GrapaLibraryRuleEvent::HandleDump },
 		{ "net_mac", &GrapaLibraryRuleEvent::HandleMac },
 		{ "net_interfaces", &GrapaLibraryRuleEvent::HandleInterfaces },
 		{ "net_connect", &GrapaLibraryRuleEvent::HandleConnect },
@@ -3466,7 +3483,7 @@ GrapaRuleEvent* GrapaLibraryRuleGetEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 			err = 0;
 			result = new GrapaRuleEvent(0, GrapaCHAR(), gSystem->mDebug.mDebugComponents);
 		}
-		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG") == 0)
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG_MODE") == 0)
 		{
 			err = 0;
 			if (vScriptExec && vScriptExec->vScriptState) {
@@ -3579,7 +3596,7 @@ GrapaRuleEvent* GrapaLibraryRulePutEnvEvent::Run(GrapaScriptExec* vScriptExec, G
 				gSystem->mDebug.mDebugComponents.FROM(r2.vVal->mValue);
 			}
 		}
-		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG") == 0)
+		else if (r1.vVal->mValue.Cmp("GRAPA_SESSION_DEBUG_MODE") == 0)
 		{
 			err = 0;
 			if (vScriptExec && vScriptExec->vScriptState) {
@@ -8393,44 +8410,86 @@ GrapaRuleEvent* GrapaLibraryRuleUniqueEvent::Run(GrapaScriptExec* vScriptExec, G
 					qsort(rq, i / 3, sizeof(GrapaRuleEvent*) * 3, GrapaLibraryItemSortEventCompareValue);
 				else
 					qsort(rq, i / 3, sizeof(GrapaRuleEvent*) * 3, GrapaLibraryItemSortEventCompareName);
-				GrapaRuleEvent* last = NULL;
-				while (i)
+				// For LIST and OBJ types, use post-processing to ensure "last value wins" behavior
+				if (result->mValue.mToken == GrapaTokenType::LIST || result->mValue.mToken == GrapaTokenType::OBJ)
 				{
-					i -= 3;
-					bool match = false;
-					if (last)
+					// Post-process: traverse in reverse order to keep last occurrence of each key
+					GrapaRuleQueue* tempQueue = new GrapaRuleQueue();
+					GrapaRuleEvent* last = NULL;
+					
+					// Traverse from end to beginning to keep last occurrence
+					for (u64 j = i; j > 0; j -= 3)
 					{
-						if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::OP)
+						u64 idx = j - 3;
+						bool match = false;
+						
+						if (last)
 						{
-							cs.ap->vRulePointer = last;
-							cs.bp->vRulePointer = (GrapaRuleEvent*)rq[i];
-							GrapaRuleEvent* temp = vScriptExec->ProcessPlan(pNameSpace, r2.vVal, params.Head());
-							if (temp)
-							{
-								if (temp->mValue.mToken == GrapaTokenType::INT)
-									match = temp->IsZero();
-								delete temp;
-							}
+							// For LIST/OBJ, compare only by name (simple string comparison)
+							match = (last->mName.StrCmp(rq[idx]->mName) == 0);
 						}
-						else if (result->mValue.mToken == GrapaTokenType::ARRAY || result->mValue.mToken == GrapaTokenType::TUPLE || result->mValue.mToken == GrapaTokenType::XML)
+						
+						if (!match)
 						{
-							match = (GrapaLibraryItemSortEventCompareValue(&last, &rq[i]) == 0);
+							// Keep this item (it's the last occurrence of its key)
+							tempQueue->PushHead((GrapaRuleEvent*)rq[idx]);
+							last = (GrapaRuleEvent*)rq[idx];
+							rq[idx] = NULL;
 						}
 						else
 						{
-							match = (GrapaLibraryItemSortEventCompareName(&last, &rq[i]) == 0);
+							// Remove this duplicate (earlier occurrence)
+							delete (GrapaRuleEvent*)rq[idx];
+							rq[idx] = NULL;
 						}
 					}
-					if (match)
+					
+					// Replace the original queue with our post-processed one
+					delete r;
+					result->vQueue = tempQueue;
+				}
+				else
+				{
+					// Original logic for other types (ARRAY, TUPLE, XML, etc.)
+					GrapaRuleEvent* last = NULL;
+					while (i)
 					{
-						delete (GrapaRuleEvent*)rq[i];
-						rq[i] = NULL;
-					}
-					else
-					{
-						r->PushHead((GrapaRuleEvent*)rq[i]);
-						last = (GrapaRuleEvent*)rq[i];
-						rq[i] = NULL;
+						i -= 3;
+						bool match = false;
+						if (last)
+						{
+							if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::OP)
+							{
+								cs.ap->vRulePointer = last;
+								cs.bp->vRulePointer = (GrapaRuleEvent*)rq[i];
+								GrapaRuleEvent* temp = vScriptExec->ProcessPlan(pNameSpace, r2.vVal, params.Head());
+								if (temp)
+								{
+									if (temp->mValue.mToken == GrapaTokenType::INT)
+										match = temp->IsZero();
+									delete temp;
+								}
+							}
+							else if (result->mValue.mToken == GrapaTokenType::ARRAY || result->mValue.mToken == GrapaTokenType::TUPLE || result->mValue.mToken == GrapaTokenType::XML)
+							{
+								match = (GrapaLibraryItemSortEventCompareValue(&last, &rq[i]) == 0);
+							}
+							else
+							{
+								match = (GrapaLibraryItemSortEventCompareName(&last, &rq[i]) == 0);
+							}
+						}
+						if (match)
+						{
+							delete (GrapaRuleEvent*)rq[i];
+							rq[i] = NULL;
+						}
+						else
+						{
+							r->PushHead((GrapaRuleEvent*)rq[i]);
+							last = (GrapaRuleEvent*)rq[i];
+							rq[i] = NULL;
+						}
 					}
 				}
 				GrapaMem::Delete(rq);
@@ -9976,6 +10035,66 @@ GrapaRuleEvent* GrapaLibraryRuleIfErrEvent::Run(GrapaScriptExec* vScriptExec, Gr
 	return(result);
 }
 
+GrapaRuleEvent* GrapaLibraryRuleIfNullEvent::Run(GrapaScriptExec* vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent* pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent* result = NULL;
+    GrapaLibraryParam obj(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
+    GrapaLibraryParam iftrue(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+    bool isNullish = false;
+    
+    // Check if the value is nullish (null, undefined, empty string, zero, or false)
+    if (!obj.vVal)
+    {
+        isNullish = true;
+    }
+    else
+    {
+        // Check if the value is null using the IsNull() method
+        if (obj.vVal->IsNull())
+        {
+            isNullish = true;
+        }
+        // Check if the value is zero using the IsZero() method
+        else if (obj.vVal->IsZero())
+        {
+            isNullish = true;
+        }
+        // Check for empty string explicitly
+        else if (obj.vVal->mValue.mToken == GrapaTokenType::STR && 
+                 obj.vVal->mValue.mLength == 0)
+        {
+            isNullish = true;
+        }
+        // Check for false boolean explicitly
+        else if (obj.vVal->mValue.mToken == GrapaTokenType::BOOL && 
+                 obj.vVal->mValue.mBytes && 
+                 obj.vVal->mValue.mBytes[0] == '0')
+        {
+            isNullish = true;
+        }
+        // Check for error token explicitly
+        else if (obj.vVal->mValue.mToken == GrapaTokenType::ERR)
+        {
+            isNullish = true;
+        }
+    }
+    
+    if (isNullish)
+    {
+        // Return the fallback value
+        if (iftrue.vVal)
+            result = vScriptExec->CopyItem(iftrue.vVal);
+    }
+    else
+    {
+        // Return the original value
+        if (obj.vVal)
+            result = vScriptExec->CopyItem(obj.vVal);
+    }
+    return(result);
+}
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //	GrapaInt a, b;
@@ -10856,7 +10975,7 @@ GrapaRuleEvent* GrapaLibraryRuleIncludeEvent::Run(GrapaScriptExec *vScriptExec, 
 	return(result);
 }
 
-GrapaRuleEvent* GrapaLibraryRuleDebugEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+GrapaRuleEvent* GrapaLibraryRuleDumpEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
 {
 	GrapaError err = -1;
 	GrapaRuleEvent* result = NULL;
@@ -12525,6 +12644,50 @@ GrapaRuleEvent* GrapaLibraryRuleEchoEvent::Run(GrapaScriptExec *vScriptExec, Gra
 		}
 	}
 	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleDebugEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent* result = NULL;
+    
+    // Extract parameters
+    GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);  // The string to debug
+    GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);  // Debug level (optional)
+    GrapaLibraryParam r3(vScriptExec, pNameSpace, pInput ? pInput->Head(2) : NULL);  // Component filter (optional)
+    
+    // Get debug level (default to 0 if not specified)
+    int debugLevel = 0;
+    if (r2.vVal && r2.vVal->mValue.mToken == GrapaTokenType::INT)
+    {
+        GrapaInt levelInt;
+        levelInt.FromBytes(r2.vVal->mValue);
+        debugLevel = (int)levelInt.LongValue();
+    }
+    
+    // Get component filter (default to "debug" if not specified)
+    const char* component = "debug";
+    if (r3.vVal && r3.vVal->mValue.mToken == GrapaTokenType::STR)
+    {
+        component = (const char*)r3.vVal->mValue.mBytes;
+    }
+    
+    // Use the session debug system (like other session DebugPrint calls)
+    // But also check global debug mode to ensure -d flag is required
+    if (r1.vVal && r1.vVal->mValue.mToken == GrapaTokenType::STR)
+    {
+        if (gSystem->mDebug.mDebugMode && vScriptExec->vScriptState->mDebug.ShouldDebug(component, debugLevel))
+        {
+            vScriptExec->vScriptState->mDebug.DebugPrint(vScriptExec, pNameSpace, component, (const char*)r1.vVal->mValue.mBytes, debugLevel);
+        }
+    }
+    
+    // Return the original string (like .echo() does)
+    if (r1.vVal)
+    {
+        result = vScriptExec->CopyItem(r1.vVal);
+    }
+    
+    return result;
 }
 
 GrapaRuleEvent* GrapaLibraryRuleConsoleEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)

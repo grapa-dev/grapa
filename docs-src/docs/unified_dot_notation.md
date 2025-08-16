@@ -30,6 +30,15 @@ user.age;       /* 30 */
 user.name = "Bob";          /* Change name to "Bob" */
 user["age"] = 25;           /* Change age to 25 */
 user.city = "Boston";       /* Change city to "Boston" */
+
+/* Duplicate key resolution - last value wins */
+user2 = {name:"Alice", age:30, name:"Bob"};
+user2.name;     /* "Bob" (last value) */
+
+user3 = {a:1, b:2, a:3, c:4, b:5};
+user3.a;        /* 3 (last value) */
+user3.b;        /* 5 (last value) */
+user3.c;        /* 4 (only value) */
 ```
 
 ### Array Access
@@ -89,6 +98,28 @@ data[property];     /* "Alice" */
 properties = ["name", "age", "city"];
 properties.map(op(prop){data[prop];}).echo();
 ```
+
+### Duplicate Key Resolution
+When objects contain duplicate keys, Grapa follows "last value wins" behavior:
+
+```grapa
+/* Duplicate keys - last value wins */
+config = {debug: false, port: 8080, debug: true};
+config.debug;   /* true (last value) */
+config.port;    /* 8080 (only value) */
+
+/* Multiple duplicates */
+settings = {theme: "dark", timeout: 30, theme: "light", timeout: 60};
+settings.theme;    /* "light" (last value) */
+settings.timeout;  /* 60 (last value) */
+```
+
+**Key Points:**
+- **Search Order**: Property resolution searches from tail to head (reverse order)
+- **Last Value Wins**: When duplicate keys exist, the last occurrence takes precedence
+- **JSON Compatibility**: Matches behavior of JSON in other programming languages
+- **Index Access Unchanged**: Array-style indexing (`obj[0]`, `obj[1]`) uses position-based access
+- **Property Assignment**: Assignment also targets the last occurrence of duplicate keys
 
 ## XML and HTML Navigation
 

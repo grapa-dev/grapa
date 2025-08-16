@@ -507,11 +507,16 @@ obj.identity();            /* Returns identity matrix */
 ```
 
 ### `.sort(axis, order, kind)`
-Sorts the elements of an array.
+Sorts elements across multiple data types: `$ARRAY`, `$TUPLE`, `$LIST`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 ```grapa
+/* Arrays and Tuples - sort by value */
 [3,1,4,1,5].sort();        /* Returns: [1,1,3,4,5] */
 [3,1,4,1,5].sort(0, 1);    /* Returns: [5,4,3,1,1] */
+(3,1,4,1,5).sort();        /* Returns: (1,1,3,4,5) */
+
+/* Lists and Objects - sort by key */
+{c:3,a:1,b:2}.sort();      /* Returns: {"a":1,"b":2,"c":3} */
 ```
 
 **Parameters:**
@@ -533,11 +538,16 @@ Returns the indices that would sort the array.
 - `kind` (default: null) - Sort algorithm
 
 ### `.unique(axis)`
-Returns unique elements from the array.
+Returns unique elements across multiple data types: `$ARRAY`, `$TUPLE`, `$LIST`, `$OBJ`, `$XML`, `$TAG`, `$EL`, `$OP`, `$CODE`.
 
 ```grapa
+/* Arrays and Tuples - remove duplicate values */
 [1,2,2,3,3,3].unique();    /* Returns: [1,2,3] */
 [1,2,2,3,3,3].unique(1);   /* Returns: [1,2,3] */
+(1,2,2,3,3,3).unique();    /* Returns: (1,2,3) */
+
+/* Lists and Objects - remove duplicate keys, keeping last value */
+{a:1,b:2,a:3,c:4,b:5}.unique();  /* Returns: {"a":3,"b":5,"c":4} */
 ```
 
 **Parameters:**

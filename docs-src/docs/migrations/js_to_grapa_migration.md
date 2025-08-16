@@ -43,14 +43,14 @@
 This guide helps JavaScript users transition to Grapa by mapping common JS idioms, patterns, and code to their Grapa equivalents.
 
 > **Comment Style:**
-> - Only block comments (`/* ... */`) are supported in Grapa, and must always be on their own line.
-> - `//` and `#` comments are not supported and will cause errors.
+> - ✅ **Comprehensive comment support**: `/* */` (block), `/** */` (doc block), `//` (line), `///` (doc line)
+> - Comments work everywhere including at end of lines and inside code blocks
 
 ## Syntax Mapping Table
 
 | JavaScript | Grapa |
 |------------|-------|
-| `for (let i=0; i<arr.length; i++)` | `i = 0; while (i < arr.len()) { ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
+| `for (let i=0; i<arr.length; i++)` | `for i in arr { ... }`<br>`i = 0; while (i < arr.len()) { ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
 | `if (cond) { ... }` | `if (cond) { ... }` |
 | `function f(x) { ... }` | `f = op(x) { ... };` |
 | `arr.push(x)` | `arr += x;` |
@@ -58,7 +58,7 @@ This guide helps JavaScript users transition to Grapa by mapping common JS idiom
 | `obj.key` | `obj["key"]`<br>`obj.key`<br>`obj."key"` |
 | (file access) | `file.get("key")` |
 | `try { ... } catch { ... }` | `result.iferr(fallback)`<br>`if (result.type() == $ERR) { ... }` |
-| `/* comment */` | `/* comment */` (block only, own line) |
+| `/* comment */` | `/* comment */` (block)<br>`/** comment */` (doc block)<br>`// comment` (line)<br>`/// comment` (doc line) |
 | `true/false` | `true/false` |
 | `null/undefined` | `null` |
 | `String(x)` | `x.str()` |
@@ -162,10 +162,10 @@ value = table.get("user1", "name");   /* Correct */
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
-- No `for`/`foreach` loops—use `while` or `.range()`+functional methods (`.range()` is native: `(10).range()`)
+- ✅ **For loops now supported** - Use `for x in arr { ... }` for native iteration
 - No `try/catch`—use `.iferr()` for fallback or check for `$ERR`
 - No `.push()`/`.pop()`—use `+=` and manual index for pop
-- No `/* comment */` comments—only block comments (`/* ... */`), always on their own line
+- ✅ **Line comments now supported** - Use `// comment` or `/// doc comment` in addition to block comments
 - No attribute-style access for object keys—use `[]`, or dot notation for `$LIST`/`$OBJ`
 - No implicit truthy/falsy—use explicit boolean checks
 - All statements and blocks must end with a semicolon (`;`)
@@ -485,11 +485,12 @@ if (value.type() == $INT) {
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
-- **Template literals**: `` `Hello ${name}` `` - Use string concatenation: `"Hello " + name` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns
+- **Template literals**: `` `Hello ${name}` `` - Use `"Hello ${name}".interpolate()` (preferred) or string concatenation: `"Hello " + name` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns
+- **Method chaining**: `"hello".toUpperCase() + " world".toLowerCase()` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`
 - **Destructuring**: `const {a, b} = obj` - Use explicit property access: `a = obj.a; b = obj.b;`
 - **Spread operator**: `[...arr1, ...arr2]` - Use `+=` operator: `arr1 += arr2`
-- **Optional chaining**: `obj?.prop?.sub` - Use explicit null checks: `if (obj && obj.prop) { obj.prop.sub; }`
-- **Nullish coalescing**: `x ?? y` - Use explicit null checks: `if (x == null) { x = y; }`
+- **Optional chaining**: `obj?.prop?.sub` - Use `.iferr()` for superior safe property access: `obj.prop.iferr(null).sub.iferr("default")`
+- **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Logical assignment**: `x ||= y` - Use explicit assignment: `if (!x) { x = y; }` (no `||=` operator)
 - **Class syntax**: `class MyClass` - Use object constructors and functions
 - **Private fields**: `#private` - Use naming conventions like `_private`
@@ -517,7 +518,7 @@ These are advanced features that most developers won't miss:
 - **Meta-programming**: `eval()`, `Function()` - Use Grapa's built-in code generation
 - **with statement**: `with (obj)` - Use explicit property access
 - **Labeled statements**: `label: statement` - Use regular control flow
-- **Debugger statement**: - Use Grapa's debugging tools
+- **Debugger statement**: - Use Grapa's `.debug()` method: `"Debug info".debug(0)` (requires `-d` flag)
 - **Strict mode**: - Grapa is strict by default
 - **Hoisting**: - Grapa has different scoping rules
 - **Closure scope**: - Grapa has different scoping rules

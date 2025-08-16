@@ -106,8 +106,8 @@ GrapaCHAR GrapaLink::Start(bool& needExit, bool& showConsole, bool& showWidget, 
 		} else if ((e->mValue.Cmp("-q") == 0) || (e->mValue.Cmp("--quiet") == 0)) {
 			suppressHeader = true;
 		} else if ((e->mValue.Cmp("-d") == 0) || (e->mValue.Cmp("--debug") == 0)) {
-			gSystem->mDebug.mDebugMode = true;
-			gSystem->mDebug.DebugPrint("Debug mode enabled");
+					gSystem->mDebug.mDebugMode = true;
+		gSystem->mDebug.DebugPrint("Debug mode enabled");
 		} else if (e->mValue.Cmp("--verbose") == 0) {
 			showVersion = true;
 			gSystem->mDebug.DebugPrint("Verbose mode enabled (showing version header)");

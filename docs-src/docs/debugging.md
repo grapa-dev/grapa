@@ -50,11 +50,129 @@ grapa -d -q script.grc
 grapa -d --verbose script.grc
 ```
 
+## Script-Based Debug Output
+
+### The `.debug()` Method
+
+Grapa provides a `.debug()` method for script-based debug output that integrates with the debug system. This method allows you to output debug messages from your scripts with component-specific level control.
+
+#### Basic Usage
+
+```grapa
+/* Basic debug output */
+"Processing user data".debug(0);
+
+/* Debug with custom component */
+"Database connection established".debug(1, "db");
+
+/* Debug with custom level and component */
+"API response received".debug(2, "api");
+```
+
+#### Syntax
+
+```grapa
+value.debug(level, component?)
+```
+
+- **`level`** (required): Debug level (0-9). Only shows if component's debug level >= this level
+- **`component`** (optional): Component name (defaults to "debug")
+
+#### Debug Level Behavior
+
+The `.debug()` method respects component-specific debug levels:
+
+```bash
+# Enable debug mode
+grapa -d script.grc
+
+# Enable specific component levels
+grapa -d -d "debug:1,db:2,api:3" script.grc
+```
+
+**Examples:**
+
+```grapa
+/* These will show with -d -d "debug:1" */
+"Basic info".debug(0);      /* Always shows with debug enabled */
+"Detailed info".debug(1);   /* Shows if debug component level >= 1 */
+
+/* These will show with -d -d "db:2" */
+"DB connection".debug(1, "db");  /* Shows if db component level >= 1 */
+"DB query".debug(2, "db");       /* Shows if db component level >= 2 */
+
+/* These will show with -d -d "api:3" */
+"API call".debug(1, "api");      /* Shows if api component level >= 1 */
+"API response".debug(3, "api");  /* Shows if api component level >= 3 */
+```
+
+#### Output Format
+
+Debug messages appear in the format:
+```
+[DEBUG-{session_id}-{component}] message
+```
+
+**Examples:**
+```
+[DEBUG-1-debug] Processing user data
+[DEBUG-1-db] Database connection established
+[DEBUG-1-api] API response received
+```
+
+#### Integration with Debug System
+
+The `.debug()` method integrates seamlessly with Grapa's debug system:
+
+- **Requires `-d` flag**: No output without debug mode enabled
+- **Respects component levels**: Only shows if component's debug level >= message level
+- **Session isolation**: Messages are tied to the current script session
+- **Component filtering**: Can be filtered using `-d -d "component:level"`
+
+#### Best Practices
+
+```grapa
+/* ✅ Good - Use meaningful levels */
+"Starting process".debug(0);
+"Processing step 1".debug(1);
+"Detailed calculation".debug(2);
+
+/* ✅ Good - Use descriptive components */
+"User login".debug(1, "auth");
+"Database query".debug(2, "db");
+"API request".debug(1, "api");
+
+/* ✅ Good - Use for troubleshooting */
+if (error_condition) {
+    "Error occurred: " + error_details.str().debug(1, "error");
+}
+
+/* ❌ Avoid - Too verbose for production */
+"Every step".debug(0);  /* Too noisy */
+```
+
+#### Comparison with `.echo()`
+
+| Method | Purpose | Debug Integration | Output Location |
+|--------|---------|-------------------|-----------------|
+| `.echo()` | General output | No | Standard output |
+| `.debug()` | Debug output | Yes | Debug stream (stderr) |
+
+```grapa
+/* General output */
+"User logged in successfully".echo();
+
+/* Debug output */
+"Login attempt from IP 192.168.1.1".debug(1, "auth");
+```
+
 ## Script-Based Debug Control
 
 ### System-Level Debug Control
 
 Enable or disable system-level debug settings that affect all sessions:
+
+> **Note:** System-level debug settings only affect new sessions. Existing sessions that are already running will not be affected by changes to system-level debug settings.
 
 ```grapa
 // Enable system-level debug
@@ -69,13 +187,20 @@ $sys().putenv("GRAPA_DEBUG_MODE", "0");
 
 Enable session-specific debug settings that override system settings for the current session:
 
+> **Note:** Session debug settings must be configured before the session starts. Setting environment variables during script execution will not affect the current session.
+
 ```grapa
-// Enable session-specific debug override
-$sys().putenv("GRAPA_SESSION_DEBUG", "1");
+// Enable session-specific debug override (set at script start)
+$sys().putenv("GRAPA_SESSION_DEBUG_MODE", "1");
 $sys().putenv("GRAPA_SESSION_DEBUG_LEVEL", "2");
 
 // Disable session-specific debug
-$sys().putenv("GRAPA_SESSION_DEBUG", "0");
+$sys().putenv("GRAPA_SESSION_DEBUG_MODE", "0");
+```
+
+**Alternative: Use command-line environment variables**
+```bash
+GRAPA_SESSION_DEBUG_MODE=1 GRAPA_SESSION_DEBUG_COMPONENTS="debug:1" ./grapa -d script.grc
 ```
 
 ### Component-Specific Debugging
@@ -122,7 +247,7 @@ $sys().putenv("GRAPA_DEBUG_COMPONENTS", "database:3,*:0");
 
 | Variable | Description | Values | Example |
 |----------|-------------|--------|---------|
-| `GRAPA_SESSION_DEBUG` | Enable session debug override | `"0"` or `"1"` | `"1"` |
+| `GRAPA_SESSION_DEBUG_MODE` | Enable session debug override | `"0"` or `"1"` | `"1"` |
 | `GRAPA_SESSION_DEBUG_LEVEL` | Session debug verbosity | `0-9` | `"2"` |
 | `GRAPA_SESSION_DEBUG_COMPONENTS` | Session debug components | Component list | `"vector,filesystem"` |
 | `GRAPA_SESSION_ID` | Current session ID (read-only) | Auto-generated | `"123"` |

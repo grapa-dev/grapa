@@ -1,0 +1,71 @@
+/* Test if/else blocks with semicolons */
+
+x = 10;
+
+/* Test 1: if/else followed by another statement - works without semicolon */
+if (x > 5) {
+    "x > 5".echo();
+} else {
+    "x <= 5".echo();
+}
+"Statement after if/else".echo();
+
+/* Test 2: if/else followed by another if/else - works without semicolon */
+if (x > 5) {
+    "x > 5".echo();
+} else {
+    "x <= 5".echo();
+}
+if (x > 8) {
+    "x > 8".echo();
+} else {
+    "x <= 8".echo();
+}
+
+/* Test 3: if/else followed by assignment - works without semicolon */
+if (x > 5) {
+    "x > 5".echo();
+} else {
+    "x <= 5".echo();
+}
+y = 20;
+
+/* Test 4: if/else followed by function call - works without semicolon */
+if (x > 5) {
+    "x > 5".echo();
+} else {
+    "x <= 5".echo();
+}
+"Function call after if/else".echo();
+
+/* Test 5: Nested if/else followed by statement - ADD SEMICOLON */
+if (x > 5) {
+    if (x > 8) {
+        "x > 8".echo();
+    } else {
+        "5 < x <= 8".echo();
+    }
+};
+"Statement after nested if/else".echo();
+
+/* Test 6: Multiple if/else blocks in sequence - ADD SEMICOLON */
+if (x > 10) {
+    "x > 10".echo();
+} else if (x > 5) {
+    "5 < x <= 10".echo();
+} else {
+    "x <= 5".echo();
+};
+"Statement after if/elseif/else".echo();
+
+/* Test 7: if/else inside block followed by statement - ADD SEMICOLON */
+{
+    if (x > 5) {
+        "x > 5".echo();
+    } else {
+        "x <= 5".echo();
+    }
+};
+"Statement after block with if/else".echo();
+
+"All tests completed".echo();

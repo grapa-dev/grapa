@@ -1,0 +1,28 @@
+/* Test to verify search behavior change from first match to last match */
+
+echo("Testing search behavior change...");
+
+/* Test 1: Object with duplicate keys */
+obj = {name:"Alice", age:30, name:"Bob"};
+echo("obj: "); obj.echo();
+echo("obj.name: "); obj.name.echo();
+
+/* Test 2: Object with multiple duplicate keys */
+obj2 = {a:1, b:2, a:3, c:4, b:5};
+echo("obj2: "); obj2.echo();
+echo("obj2.a: "); obj2.a.echo();
+echo("obj2.b: "); obj2.b.echo();
+
+/* Test 3: List with duplicate values */
+list = ["first", "second", "first", "third"];
+echo("list: "); list.echo();
+echo("list[0]: "); list[0].echo();
+echo("list[2]: "); list[2].echo();
+
+/* Test 4: Array with duplicate values */
+arr = [10, 20, 10, 30];
+echo("arr: "); arr.echo();
+echo("arr[0]: "); arr[0].echo();
+echo("arr[2]: "); arr[2].echo();
+
+echo("Search behavior test completed.");

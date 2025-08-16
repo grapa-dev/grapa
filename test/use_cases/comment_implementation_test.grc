@@ -1,0 +1,45 @@
+/* 
+   This is a block comment test
+   It should span multiple lines
+   and be properly parsed by the lexer
+*/
+
+/** 
+   This is a documentation block comment
+   It should also span multiple lines
+   and be treated as documentation
+*/
+
+// This is a single line comment
+/// This is a documentation single line comment
+
+/* Test that code works after comments */
+x = 10; // Set x to 10
+y = 20; /// Set y to 20
+
+/* Test that expressions work after comments */
+result = x + y; // Calculate sum
+"Result: ${result}".echo(); /// Display the result
+
+/* Test nested comments and edge cases */
+// This line should be ignored
+/// This line should also be ignored
+/* This block should be ignored */
+
+/* Test that semicolons work properly after comments */
+z = 30; // Another variable
+w = 40; /// Another variable
+
+/* Test string interpolation with comments */
+message = "Hello World"; // Define message
+"${message}".echo(); /// Display message
+
+/* Test that all comment types work in sequence */
+// Line comment 1
+/// Doc comment 1
+/* Block comment 1 */
+/** Doc block comment 1 */
+
+/* Test final validation */
+final_result = "All comment types working correctly!";
+final_result.echo(); // Should display the success message

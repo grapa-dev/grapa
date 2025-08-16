@@ -1,0 +1,49 @@
+/* Test edge cases for comment implementation */
+
+// Test comment at end of line
+x = 10; // This should work
+
+/// Test doc comment at end of line  
+y = 20; /// This should also work
+
+/* Test empty block comment */
+/* */
+
+/** Test empty doc block comment */
+/** */
+
+// Test multiple line comments in sequence
+// Line 1
+// Line 2
+// Line 3
+
+/// Test multiple doc comments in sequence
+/// Doc 1
+/// Doc 2
+/// Doc 3
+
+/* Test block comment with special characters */
+/* This comment has: !@#$%^&*()_+-=[]{}|;':",./<>? */
+
+/** Test doc block comment with special characters */
+/** This doc comment has: !@#$%^&*()_+-=[]{}|;':",./<>? */
+
+// Test comment with quotes inside
+// This comment has "quotes" and 'single quotes'
+
+/// Test doc comment with quotes inside
+/// This doc comment has "quotes" and 'single quotes'
+
+/* Test comment with code-like syntax */
+/* if (x > 10) { echo("test"); } */
+
+/** Test doc comment with code-like syntax */
+/** function test() { return true; } */
+
+// Test that code execution continues properly
+result = x + y;
+"Result: ".echo(); result.echo();
+
+/* Final test - comments should not affect execution */
+final_message = "Comments working perfectly!";
+final_message.echo(); // Success!

@@ -23,7 +23,8 @@
 | `coroutineScope { ... }`    | —                | **GAP**: No coroutine/async support |
 | `finally`                   | —                | **GAP**: No finally/ensure |
 | `x!!` (non-null assert)     | —                | **GAP**: No null assertion |
-| `x?.foo()` (safe call)      | —                | **GAP**: No safe call operator |
+| `x?.foo()` (safe call)      | `x.foo.iferr("default")` | **SOLVED**: Use `.iferr()` for superior safe property access |
+| `x ?: y` (Elvis operator)   | `x.ifnull(y)`            | **SOLVED**: Use `.ifnull()` for superior nullish coalescing |
 | `is` (type check)           | —                | **GAP**: No direct type check operator |
 | `as` (type cast)            | —                | **GAP**: No direct type cast operator |
 
@@ -62,7 +63,9 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Coroutines**: `coroutineScope { ... }` - No coroutine system
 - **Finally/ensure**: `finally` - No finally mechanism
 - **Null assertion**: `x!!` - No null assertion operator
-- **Safe call**: `x?.foo()` - No safe call operator
+- **Safe call**: `x?.foo()` - Use `.iferr()` for superior safe property access: `x.foo.iferr("default")`
+- **Elvis operator**: `x ?: y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
+- **Method chaining**: `"hello".uppercase() + " world".lowercase()` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`
 - **Type checking**: `is` - No type checking operator
 - **Type casting**: `as` - No type casting operator
 - **Sealed classes**: `sealed class` - No sealed class system

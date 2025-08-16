@@ -1,0 +1,221 @@
+/* Comment Token Verification Test */
+/* This test verifies that $COMMENT and $DOC tokens work correctly */
+
+"=== COMMENT TOKEN VERIFICATION TEST ===\n".echo();
+"Testing new $COMMENT and $DOC token implementation\n".echo();
+
+/* Test 1: Basic line comments */
+"Test 1: Basic line comments\n".echo();
+x = 5; // This is a line comment
+y = 10; // Another line comment
+("x = " + x + ", y = " + y + "\n").echo();
+"Expected: x = 5, y = 10\n".echo();
+"---\n".echo();
+
+/* Test 2: Basic block comments */
+"Test 2: Basic block comments\n".echo();
+a = 1; /* This is a block comment */
+b = 2; /* Another block comment */
+("a = " + a + ", b = " + b + "\n").echo();
+"Expected: a = 1, b = 2\n".echo();
+"---\n".echo();
+
+/* Test 3: Documentation comments */
+"Test 3: Documentation comments\n".echo();
+/// This is a documentation comment
+function1 = 100;
+/** This is a block documentation comment */
+function2 = 200;
+("function1 = " + function1 + ", function2 = " + function2 + "\n").echo();
+"Expected: function1 = 100, function2 = 200\n".echo();
+"---\n".echo();
+
+/* Test 4: Comments at end of lines */
+"Test 4: Comments at end of lines\n".echo();
+var1 = 15; // End of line comment
+var2 = 25; /* End of line block comment */
+var3 = 35; /// End of line doc comment
+("var1 = " + var1 + ", var2 = " + var2 + ", var3 = " + var3 + "\n").echo();
+"Expected: var1 = 15, var2 = 25, var3 = 35\n".echo();
+"---\n".echo();
+
+/* Test 5: Multi-line block comments */
+"Test 5: Multi-line block comments\n".echo();
+value1 = 50;
+/* This is a multi-line
+   block comment that spans
+   multiple lines */
+value2 = 60;
+("value1 = " + value1 + ", value2 = " + value2 + "\n").echo();
+"Expected: value1 = 50, value2 = 60\n".echo();
+"---\n".echo();
+
+/* Test 6: Multi-line documentation comments */
+"Test 6: Multi-line documentation comments\n".echo();
+doc1 = 70;
+/** This is a multi-line
+    documentation comment
+    that spans multiple lines */
+doc2 = 80;
+("doc1 = " + doc1 + ", doc2 = " + doc2 + "\n").echo();
+"Expected: doc1 = 70, doc2 = 80\n".echo();
+"---\n".echo();
+
+/* Test 7: Comments between statements */
+"Test 7: Comments between statements\n".echo();
+first = 90;
+// Comment between statements
+second = 100;
+/* Another comment between statements */
+third = 110;
+("first = " + first + ", second = " + second + ", third = " + third + "\n").echo();
+"Expected: first = 90, second = 100, third = 110\n".echo();
+"---\n".echo();
+
+/* Test 8: Standalone comments */
+"Test 8: Standalone comments\n".echo();
+// This is a standalone line comment
+/* This is a standalone block comment */
+/// This is a standalone documentation comment
+/** This is a standalone block documentation comment */
+result = "Standalone comments work";
+result.echo();
+"Expected: Standalone comments work\n".echo();
+"---\n".echo();
+
+/* Test 9: Comments in expressions */
+"Test 9: Comments in expressions\n".echo();
+expr1 = 5 + 10; // Comment after expression
+expr2 = 20 + 30; /* Comment after expression */
+expr3 = 40 + 50; /// Comment after expression
+("expr1 = " + expr1 + ", expr2 = " + expr2 + ", expr3 = " + expr3 + "\n").echo();
+"Expected: expr1 = 15, expr2 = 50, expr3 = 90\n".echo();
+"---\n".echo();
+
+/* Test 10: Comments with special characters */
+"Test 10: Comments with special characters\n".echo();
+special = 999;
+// Comment with special chars: !@#$%^&*()_+-=[]{}|;':",./<>?
+/* Block comment with special chars: !@#$%^&*()_+-=[]{}|;':",./<>? */
+/// Doc comment with special chars: !@#$%^&*()_+-=[]{}|;':",./<>?
+("special = " + special + "\n").echo();
+"Expected: special = 999\n".echo();
+"---\n".echo();
+
+/* Test 11: Comments with quotes */
+"Test 11: Comments with quotes\n".echo();
+quoted = 888;
+// Comment with "quotes" and 'apostrophes'
+/* Block comment with "quotes" and 'apostrophes' */
+/// Doc comment with "quotes" and 'apostrophes'
+("quoted = " + quoted + "\n").echo();
+"Expected: quoted = 888\n".echo();
+"---\n".echo();
+
+/* Test 12: Comments with backslashes */
+"Test 12: Comments with backslashes\n".echo();
+backslash = 777;
+// Comment with backslashes: \\ \n \t \r
+/* Block comment with backslashes: \\ \n \t \r */
+/// Doc comment with backslashes: \\ \n \t \r
+("backslash = " + backslash + "\n").echo();
+"Expected: backslash = 777\n".echo();
+"---\n".echo();
+
+/* Test 13: Comments with Unicode */
+"Test 13: Comments with Unicode\n".echo();
+unicode = 666;
+// Comment with Unicode: αβγδε 中文 русский español
+/* Block comment with Unicode: αβγδε 中文 русский español */
+/// Doc comment with Unicode: αβγδε 中文 русский español
+("unicode = " + unicode + "\n").echo();
+"Expected: unicode = 666\n".echo();
+"---\n".echo();
+
+/* Test 14: Comments with code-like content */
+"Test 14: Comments with code-like content\n".echo();
+code = 555;
+// Comment with code: x = 5; y = 10; z = x + y;
+/* Block comment with code: x = 5; y = 10; z = x + y; */
+/// Doc comment with code: x = 5; y = 10; z = x + y;
+("code = " + code + "\n").echo();
+"Expected: code = 555\n".echo();
+"---\n".echo();
+
+/* Test 15: Comments with nested comment-like text */
+"Test 15: Comments with nested comment-like text\n".echo();
+nested = 444;
+// Comment with /* nested comment-like text */
+/* Block comment with // nested comment-like text */
+/// Doc comment with /** nested comment-like text */
+("nested = " + nested + "\n").echo();
+"Expected: nested = 444\n".echo();
+"---\n".echo();
+
+/* Test 16: Comments at very beginning and end */
+"Test 16: Comments at very beginning and end\n".echo();
+// Comment at very beginning
+beginning = 333;
+end = 222;
+// Comment at very end
+("beginning = " + beginning + ", end = " + end + "\n").echo();
+"Expected: beginning = 333, end = 222\n".echo();
+"---\n".echo();
+
+/* Test 17: Mixed comment types */
+"Test 17: Mixed comment types\n".echo();
+mixed1 = 111;
+// Line comment
+mixed2 = 222;
+/* Block comment */
+mixed3 = 333;
+/// Doc comment
+mixed4 = 444;
+/** Block doc comment */
+mixed5 = 555;
+("mixed1 = " + mixed1 + ", mixed2 = " + mixed2 + ", mixed3 = " + mixed3 + ", mixed4 = " + mixed4 + ", mixed5 = " + mixed5 + "\n").echo();
+"Expected: mixed1 = 111, mixed2 = 222, mixed3 = 333, mixed4 = 444, mixed5 = 555\n".echo();
+"---\n".echo();
+
+/* Test 18: Comments with empty lines */
+"Test 18: Comments with empty lines\n".echo();
+empty1 = 11;
+
+// Comment with empty line above
+
+empty2 = 22;
+
+/* Block comment with empty lines */
+
+empty3 = 33;
+("empty1 = " + empty1 + ", empty2 = " + empty2 + ", empty3 = " + empty3 + "\n").echo();
+"Expected: empty1 = 11, empty2 = 22, empty3 = 33\n".echo();
+"---\n".echo();
+
+/* Test 19: Comments in function-like context */
+"Test 19: Comments in function-like context\n".echo();
+/// Function documentation comment
+function testFunction() {
+    // Function body comment
+    local_var = 99;
+    /* Another function body comment */
+    return local_var;
+}
+result = testFunction();
+("function result = " + result + "\n").echo();
+"Expected: function result = 99\n".echo();
+"---\n".echo();
+
+/* Test 20: Comments with mathematical expressions */
+"Test 20: Comments with mathematical expressions\n".echo();
+math1 = 10 + 20; // Addition: 10 + 20 = 30
+math2 = 50 - 10; /* Subtraction: 50 - 10 = 40 */
+math3 = 5 * 6; /// Multiplication: 5 * 6 = 30
+math4 = 100 / 4; /** Division: 100 / 4 = 25 */
+("math1 = " + math1 + ", math2 = " + math2 + ", math3 = " + math3 + ", math4 = " + math4 + "\n").echo();
+"Expected: math1 = 30, math2 = 40, math3 = 30, math4 = 25\n".echo();
+"---\n".echo();
+
+"=== COMMENT TOKEN VERIFICATION COMPLETE ===\n".echo();
+"All tests completed successfully!\n".echo();
+

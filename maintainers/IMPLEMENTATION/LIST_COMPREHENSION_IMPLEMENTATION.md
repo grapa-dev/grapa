@@ -279,3 +279,4 @@ Potential improvements:
 - Support for multiple conditions
 - Performance optimizations for large iterables
 - Integration with other Grapa features (lambdas, etc.)
+

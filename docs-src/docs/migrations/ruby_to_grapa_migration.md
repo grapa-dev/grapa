@@ -98,6 +98,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Meta-programming**: `alias`, `undef`, `defined?` - No meta-programming capabilities
 - **File/line macros**: `__FILE__`, `__LINE__` - No file/line macros
 - **Block/yield**: `yield`, `block_given?` - No block/yield mechanism
+- **Method chaining**: `"hello".upcase + " world".downcase` - Use string interpolation: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`
 - **Ensure/finally**: `begin ... ensure ... end` - No ensure/finally mechanism
 - **Symbols**: `:symbol` - No symbol type
 - **Method reflection**: `respond_to?`, `send` - Limited reflection capabilities
@@ -118,6 +119,8 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
+- **Safe navigation**: `obj&.user&.profile` - Use `.iferr()` for superior safe property access: `obj.user.iferr(null).profile.iferr("default")`
+- **Nil coalescing**: `x || y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Class inheritance**: - Use object composition
 - **Method overriding**: - Use regular method definitions
 - **Method super**: - Use regular method calls
@@ -137,7 +140,7 @@ These are advanced features that most developers won't miss:
 - **Ruby bundler**: - Use Grapa's dependency management
 - **Ruby rake**: - Use Grapa's build system
 - **Ruby irb**: - Use Grapa's REPL
-- **Ruby pry**: - Use Grapa's debugging tools
+- **Ruby pry**: - Use Grapa's `.debug()` method: `"Debug info".debug(0)` (requires `-d` flag)
 - **Ruby rspec**: - Use Grapa's testing framework
 - **Ruby minitest**: - Use Grapa's testing framework
 - **Ruby cucumber**: - Use Grapa's testing framework

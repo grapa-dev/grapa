@@ -64,12 +64,50 @@ echo("Hello World");
 echo("Result: " + value);
 ```
 
+### Debug Output
+
+Use the `.debug()` method for debug output that integrates with Grapa's debug system:
+
+```grapa
+/* ✅ Correct - Debug output */
+"Processing data".debug(0);
+"Database query".debug(1, "db");
+"API response".debug(2, "api");
+
+/* ❌ Incorrect */
+debug("Processing data");
+debug("Database query", 1);
+```
+
+**Note:** The `.debug()` method requires the `-d` flag to be enabled and respects component-specific debug levels. See [Debugging Guide](../debugging.md) for details.
+
 ### String Concatenation
 
+**⚠️ RECOMMENDED: Use string interpolation instead of concatenation**
+
+String interpolation is the preferred approach for combining strings and values:
+
+```grapa
+/* ✅ RECOMMENDED - String interpolation (preferred) */
+"Name: ${name}, Age: ${age.str()}".interpolate().echo();
+"File size: ${size} bytes".interpolate().echo();
+
+/* ✅ With parameters */
+"Name: ${name}, Age: ${age.str()}".interpolate({name:"Bob",age:23}).echo();
+
+/* ✅ Complex expressions */
+"Sum: ${x + y}, Product: ${x * y}".interpolate().echo();
+
+/* ✅ Elegant function chaining */
+"${'Hello'.upper()} ${'World'.lower()}".interpolate().echo();  /* "HELLO world" */
+"Result: ${[1,2,3].filter(op(x){x>1}).str()}".interpolate().echo();  /* "Result: [2,3]" */
+```
+
+**String concatenation (if needed):**
 Always wrap string concatenation expressions in parentheses:
 
 ```grapa
-/* ✅ Correct */
+/* ✅ Correct - but prefer interpolation */
 ("Name: " + name.str() + ", Age: " + age.str()).echo();
 ("File size: " + size + " bytes").echo();
 
@@ -77,6 +115,13 @@ Always wrap string concatenation expressions in parentheses:
 "Name: " + name.str() + ", Age: " + age.str().echo();
 "File size: " + size + " bytes".echo();
 ```
+
+**Why use interpolation?**
+- **More readable** - Template-style syntax is clearer
+- **More powerful** - Supports expressions and script execution  
+- **Less error-prone** - No operator precedence issues
+- **More flexible** - Parameter passing and complex expressions
+- **Elegant function chaining** - Provides solution for complex method chaining across different object types
 
 ## Loops
 
@@ -823,6 +868,131 @@ name = obj.getname(1);      /* Returns "b" (key name) */
 - $LIST supports both key access (obj["key"], obj.key) and index access (obj[2]).
 - `.get()` is not supported for `$LIST` or `$OBJ`.
 
+### Duplicate Key Resolution
+
+When objects have duplicate keys, Grapa follows "last value wins" behavior:
+
+```grapa
+obj = {name: "Alice", age: 30, name: "Bob"};
+obj.name;                  /* Returns "Bob" (last value) */
+
+obj2 = {a: 1, b: 2, a: 3, c: 4, b: 5};
+obj2.a;                    /* Returns 3 (last value) */
+obj2.b;                    /* Returns 5 (last value) */
+obj2.c;                    /* Returns 4 (only value) */
+```
+
+- **Search Order**: Property resolution searches from the end of the object (tail) to the beginning (head)
+- **Last Value Wins**: When duplicate keys exist, the last occurrence takes precedence
+- **JSON Compatibility**: This matches the behavior of JSON in other programming languages
+- **Index Access Unchanged**: Array-style indexing (`obj[0]`, `obj[1]`) is unaffected and still uses position-based access
+
+### Property Assignment with Duplicate Keys
+
+Property assignment also targets the last occurrence of duplicate keys:
+
+```grapa
+lst = {a: 1, b: 2, a: 3};
+lst.a;                     /* Returns 3 (last value) */
+lst.a = 6;                 /* Assigns to last occurrence of 'a' */
+lst;                       /* Returns {"a":1, "b":2, "a":6} */
+lst.a;                     /* Returns 6 (updated last value) */
+```
+
+- **Consistent Behavior**: Both property access and assignment work on the same key occurrence
+- **Predictable**: Reading and writing the same property affects the same key
+- **No Surprises**: Users can expect consistent behavior for duplicate keys
+
+### .sort() and .unique() Functions
+
+Both `.sort()` and `.unique()` support a comprehensive set of data types:
+
+**Supported Data Types:**
+- `$ARRAY` - Arrays: `[1, 2, 3]`
+- `$TUPLE` - Tuples: `(1, 2, 3)`
+- `$LIST` - Lists: `{a:1, b:2, c:3}`
+- `$OBJ` - Objects: `{a:1, b:2, c:3}`
+- `$XML` - XML structures: `<root><item>value</item></root>`
+- `$TAG` - HTML/TAG structures: `<div><p>text</p></div>`
+- `$EL` - Element structures
+- `$OP` - Operator objects
+- `$CODE` - Code objects
+
+#### .sort() Function
+
+Sorts elements in ascending order by default:
+
+```grapa
+/* Arrays and Tuples - sort by value */
+[3, 1, 4, 1, 5, 9].sort();                /* Returns [1, 1, 3, 4, 5, 9] */
+(3, 1, 4, 1, 5, 9).sort();                /* Returns (1, 1, 3, 4, 5, 9) */
+
+/* Lists and Objects - sort by key */
+{c:3, a:1, b:2}.sort();                   /* Returns {"a":1, "b":2, "c":3} */
+```
+
+**Advanced Sorting:**
+```grapa
+/* Custom comparison function */
+[3, 1, 4, 1, 5, 9].sort(op(a,b){@a<=>@b;});  /* Custom sort logic */
+
+/* Reverse sort */
+[3, 1, 4, 1, 5, 9].sort(0, 1);            /* Descending order */
+```
+
+#### .unique() Function
+
+Removes duplicates while preserving the "last value wins" principle:
+
+**For Objects (`$OBJ`) and Lists (`$LIST`):**
+```grapa
+{a: 1, b: 2, a: 3, c: 4, b: 5}.unique();  /* Returns {"a": 3, "b": 5, "c": 4} */
+```
+
+- Removes duplicate keys, keeping the last value for each key
+- Consistent with property access behavior
+
+**For Arrays (`$ARRAY`) and Tuples (`$TUPLE`):**
+```grapa
+[1, 2, 1, 3, 2, 4].unique();              /* Returns [1, 2, 3, 4] */
+['a', 1, 'a', 2, 1, 'b'].unique();        /* Returns [1, 2, "a", "b"] */
+```
+
+- Removes duplicate values, keeping the last occurrence of each value
+- Works with mixed data types
+
+**For XML and TAG structures:**
+```grapa
+<root><item>a</item><item>b</item><item>a</item></root>.unique();
+/* Removes duplicate elements, keeping last occurrence */
+```
+
+### Function Chaining Limitations and Solutions
+
+Grapa has limitations on chaining methods across different object types, but provides elegant solutions:
+
+**Limitation:**
+```grapa
+/* ❌ Doesn't work - can't chain different object types */
+"Hello".upper() + " World".lower().echo();  /* Error: can't chain + after .upper() */
+```
+
+**Solution - String Interpolation:**
+```grapa
+/* ✅ Works - use string interpolation for complex chaining */
+"${'Hello'.upper()} ${'World'.lower()}".interpolate().echo();  /* "HELLO world" */
+
+/* ✅ For complex operations, use intermediate variables */
+filtered = [1,2,3,4,5].filter(op(x){x>2});
+mapped = filtered.map(op(x){x*2});
+"Result: ${mapped.str()}".interpolate().echo();  /* "Result: [6,8,10]" */
+```
+
+**Key Points:**
+- **String interpolation** provides elegant solution for complex method chaining
+- **Intermediate variables** help break down complex operations
+- **`.interpolate()`** supports any valid Grapa expression inside `${}`
+
 ### $file and $TABLE Access
 
 For `$file` and `$TABLE` objects, always use `.get()` method:
@@ -941,60 +1111,64 @@ table_obj = $file().table("ROW");
 
 ## Comments
 
-Grapa only supports block comments (`/* ... */`). Line comments (`// ...`) are not supported.
+Grapa supports both block comments and line comments for comprehensive code documentation:
+
+### Comment Types
+
+#### Block Comments
+- **Standard block comments**: `/* ... */` - Multi-line comments
+- **Documentation block comments**: `/** ... */` - Multi-line documentation comments
+
+#### Line Comments  
+- **Standard line comments**: `// ...` - Single-line comments terminated by newline
+- **Documentation line comments**: `/// ...` - Single-line documentation comments terminated by newline
 
 ### Comment Rules
 
-#### Outside Code Blocks
-Comments can be placed at the end of lines when not inside `{}` blocks:
+#### General Usage
+All comment types can be used throughout your code:
 
 ```grapa
-/* This is a block comment */
-x = 5;  /* This works outside {} blocks */
-y = 10; /* This also works */
+/* This is a standard block comment */
+/** This is a documentation block comment */
+
+// This is a standard line comment
+/// This is a documentation line comment
+
+x = 5; // Comments can be at end of lines
+y = 10; /// Documentation comments too
 ```
 
 #### Inside Code Blocks (`{}`)
-When inside `{}` blocks, comments **must** be on their own line:
+Comments work the same way inside code blocks:
 
 ```grapa
-/* ✅ Correct: Comments on their own line */
+/* ✅ All comment types work in code blocks */
 if (condition) {
-    /* This comment is correct */
-    x = 5;
-    /* Another correct comment */
-    y = 10;
-}
-
-/* ❌ Incorrect: Comments at end of lines in {} blocks */
-if (condition) {
-    x = 5;  /* This will cause a syntax error */
-    y = 10; /* This will also cause a syntax error */
+    /* Standard block comment */
+    /** Documentation block comment */
+    x = 5; // Standard line comment
+    y = 10; /// Documentation line comment
 }
 ```
 
 #### Class and Function Definitions
-The same rule applies to class and function definitions:
+All comment types work in class and function definitions:
 
 ```grapa
-/* ✅ Correct */
+/* ✅ All comment types work in class definitions */
 MyClass = class {
-    /* Method definition */
+    /* Standard block comment */
+    /** Documentation block comment */
     myMethod = op() {
-        /* Method body */
-        "Hello".echo();
-    };
-};
-
-/* ❌ Incorrect */
-MyClass = class {
-    myMethod = op() {
-        "Hello".echo();  /* This will cause a syntax error */
+        // Standard line comment
+        /// Documentation line comment
+        "Hello".echo(); // Comments at end of lines work too
     };
 };
 ```
 
-> **Important:** Block comments (`/* ... */`) are **NOT supported inside class definitions** in Grapa. Any comment inside a `class { ... }` block will cause a syntax error. Place comments only outside class definitions or between top-level statements.
+> **Note:** All comment types (`/* */`, `/** */`, `//`, `///`) are fully supported throughout Grapa code, including inside class definitions, function bodies, and at the end of lines.
 
 ## Control Structures
 
@@ -1235,6 +1409,95 @@ value = months["FFF"].iferr(-1);  /* Returns -1 for invalid key */
 - Use `if (result.type() == $ERR)` for explicit error handling
 - `.iferr()` is preferred for simple fallback scenarios
 
+### Safe Property Access with .iferr()
+
+**✅ RECOMMENDED: Use .iferr() for safe property access instead of optional chaining**
+
+Grapa's `.iferr()` method provides superior functionality to optional chaining (`?.`) by allowing custom fallback values:
+
+```grapa
+/* Basic safe property access */
+obj = {a: 4};
+user = obj.user.iferr(null);  /* Returns null if user doesn't exist */
+
+/* Chained safe property access */
+profile = obj.user.iferr(null).profile.iferr("blank");  /* Returns "blank" if any step fails */
+
+/* Deep nested property access */
+nested = {level1: {level2: {level3: "deep value"}}};
+value = nested.level1.level2.missing.iferr("not found");  /* Returns "not found" */
+
+/* Array access with fallback */
+arr = [1, 2, 3];
+item = arr[10].iferr("out of bounds");  /* Returns "out of bounds" */
+
+/* Method calls with fallback */
+result = obj.missingMethod.iferr("no method");  /* Returns "no method" */
+
+/* Complex nested scenario */
+complex = {users: [{name: "Alice", profile: {age: 30}}]};
+age = complex.users[1].name.iferr("no user");  /* Returns "no user" */
+field = complex.users[0].profile.missing.iferr("no field");  /* Returns "no field" */
+```
+
+**Advantages over optional chaining (`?.`):**
+- **Custom fallback values** - Specify exactly what to return on error
+- **Chained fallbacks** - Different fallback values at each level
+- **Works with arrays** - Handles out-of-bounds access gracefully
+- **Works with methods** - Handles missing methods gracefully
+- **More explicit** - You choose the error handling behavior
+
+**Comparison with traditional null checking:**
+```grapa
+/* Traditional verbose approach */
+if (complex.users && complex.users[0] && complex.users[0].profile && complex.users[0].profile.age) {
+    age = complex.users[0].profile.age;
+} else {
+    age = "unknown";
+}
+
+/* .iferr() approach - much cleaner */
+age = complex.users[0].profile.age.iferr("unknown");
+```
+
+### Nullish Coalescing with .ifnull()
+
+**✅ RECOMMENDED: Use .ifnull() for nullish coalescing instead of `??` operator**
+
+Grapa's `.ifnull()` method provides superior functionality to nullish coalescing (`??`) by treating a broader range of values as "nullish":
+
+```grapa
+/* Basic nullish coalescing */
+x = null;
+result = x.ifnull("default");  /* Returns "default" */
+
+/* Number literals need parentheses */
+result = (0).ifnull("default");  /* Returns "default" */
+result = (42).ifnull("default"); /* Returns 42 */
+
+/* Complex scenarios */
+config = {port: 0, host: "", enabled: false};
+port = config.port.ifnull(8080);      /* Returns 8080 */
+host = config.host.ifnull("localhost"); /* Returns "localhost" */
+enabled = config.enabled.ifnull(true);  /* Returns true */
+```
+
+**Values treated as nullish:**
+- `null` values
+- Empty strings (`""`)
+- Zero integers (`0`)
+- Zero floats (`0.0`)
+- False booleans (`false`)
+- Empty arrays (`[]`)
+- Empty objects (`{}`)
+- Error tokens (`$ERR()`, division by zero, etc.)
+
+**Advantages over nullish coalescing (`??`):**
+- **Broader nullish detection** - Treats zeros, empty collections, and errors as nullish
+- **Custom fallback values** - Specify exactly what to return on nullish values
+- **Works with all data types** - Not just null/undefined
+- **More explicit control** - You choose what constitutes "nullish"
+
 ## Complete Example
 
 ```grapa
@@ -1397,17 +1660,20 @@ This guide covers the essential syntax patterns for writing correct Grapa code. 
 |------|---------|
 | Every statement ends with a semicolon (`;`) | `x = 5;` |
 | Every block (after `}`) ends with a semicolon | `if (x) { ... };` |
-| Use block comments only | `/* comment */` |
-| Do not use line comments (`// ...`) |  |
-| Within `{}` blocks, comments must be on their own line | `{ /* comment */ x = 5; }` |
-| Do not put comments at the end of lines in `{}` blocks | `{ x = 5; /* wrong */ }` |
+| Use block comments (`/* */`) or line comments (`//`) | `/* comment */`, `// comment` |
+| Documentation comments available (`/** */`, `///`) | `/** doc */`, `/// doc` |
+| Comments work everywhere including at end of lines | `x = 5; // comment` |
+| All comment types work in code blocks | `{ x = 5; // comment }` |
 | Append to arrays with `+=` | `arr += "foo";` |
 | No `.push()` or `.append()` |  |
 | Access arrays/lists with `[index]` | `arr[0];` |
 | Access object properties with dot or bracket notation | `obj.foo;`, `obj["foo"]` |
 | Use `.echo()` for output | `"Hello".echo();` |
 | Use `while` loops, not `for` | `while (cond) { ... };` |
-| Wrap string concatenations in parentheses | `(str1 + str2).echo();` |
+| Use string interpolation (preferred) | `"${var}".interpolate().echo();` |
+| Wrap string concatenations in parentheses (if needed) | `(str1 + str2).echo();` |
+| Use .iferr() for safe property access | `obj.property.iferr("default")` |
+| Use .ifnull() for nullish coalescing | `value.ifnull("default")` |
 | Increment or append with += | `v += 1;`, `s += "x";` |
 | Both = x + y and += y are valid | `v = v + 1;`, `v += 1;` |
 | No logical assignment (`||=`, `&&=`) | Use explicit `if` statements |

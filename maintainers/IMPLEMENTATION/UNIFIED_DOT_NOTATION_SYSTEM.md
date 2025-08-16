@@ -72,6 +72,51 @@ case GrapaTokenType::TAG:
     break;
 ```
 
+### Property Search Behavior
+
+**Location**: `source/grapa/GrapaObject.cpp` - `GrapaObjectQueue::SearchCase()`
+
+**Search Algorithm**: The property resolution system searches through `$LIST` objects in **reverse order** (tail to head):
+
+```cpp
+GrapaObjectEvent* GrapaObjectQueue::SearchCase(const GrapaCHAR& pName, s64& pIndex, bool pLower)
+{
+    GrapaObjectEvent* item = Tail();  // Start from TAIL (last element)
+    pIndex = mCount - 1;              // Start from last index
+    while (item)
+    {
+        // ... search logic ...
+        if (pLower && item->mName.StrLowerCmp(pName) == 0)
+            return(item);  // Return last match (first found when going backwards)
+        else if (!pLower && item->mName.StrCmp(pName) == 0)
+            return(item);  // Return last match (first found when going backwards)
+        // ...
+        pIndex--;
+        item = item->Prev();  // Move backward
+    }
+    return(NULL);
+}
+```
+
+**Key Characteristics**:
+- **Reverse Search Order**: Searches from tail to head (last to first)
+- **Last Value Wins**: When duplicate keys exist, the last occurrence takes precedence
+- **JSON Compatibility**: Matches behavior of JSON in other programming languages
+- **Index Access Unchanged**: Array-style indexing (`obj[0]`, `obj[1]`) uses position-based access
+
+**Example Behavior**:
+```grapa
+obj = {name: "Alice", age: 30, name: "Bob"};
+obj.name;  // Returns "Bob" (last value)
+
+obj2 = {a: 1, b: 2, a: 3, c: 4, b: 5};
+obj2.a;    // Returns 3 (last value)
+obj2.b;    // Returns 5 (last value)
+obj2.c;    // Returns 4 (only value)
+```
+
+**Implementation Date**: January 2025 - Changed from "first match" to "last match" behavior
+
 ## Internal Data Structure
 
 ### XML/HTML Internal Representation
@@ -332,6 +377,79 @@ if (r1Del) { r1Del->CLEAR(); delete r1Del; }
 - **Method Chaining**: Support for method chaining on accessed properties
 - **Type Inference**: Automatic type detection and conversion
 - **Validation**: Runtime validation of access patterns
+
+## .unique() Function Enhancement
+
+The `.unique()` function was enhanced to properly handle duplicate keys in objects while maintaining the "last value wins" principle.
+
+### Implementation Details
+
+**File:** `source/grapa/GrapaLibRule.cpp`  
+**Method:** `GrapaLibraryRuleUniqueEvent::Run` (lines 8336-8450)
+
+**Key Changes:**
+- **Post-Processing Approach**: Added special post-processing logic for `$LIST` and `$OBJ` types
+- **Sort Preservation**: Kept existing sort logic unchanged to avoid impacting `.sort()` behavior
+- **Reverse Traversal**: Post-processing traverses sorted items in reverse order to keep last occurrences
+- **Type-Specific Logic**: Different behavior for objects (key-based) vs lists (value-based)
+
+**Code Structure:**
+```cpp
+// For LIST and OBJ types, use post-processing to ensure "last value wins" behavior
+if (result->mValue.mToken == GrapaTokenType::LIST || result->mValue.mToken == GrapaTokenType::OBJ)
+{
+    // Post-process: traverse in reverse order to keep last occurrence of each key
+    GrapaRuleQueue* tempQueue = new GrapaRuleQueue();
+    GrapaRuleEvent* last = NULL;
+    
+    // Traverse from end to beginning to keep last occurrence
+    for (u64 j = i; j > 0; j -= 3)
+    {
+        u64 idx = j - 3;
+        bool match = false;
+        
+        if (last)
+        {
+            // For LIST/OBJ, compare only by name (simple string comparison)
+            match = (last->mName.StrCmp(rq[idx]->mName) == 0);
+        }
+        
+        if (!match)
+        {
+            // Keep this item (it's the last occurrence of its key)
+            tempQueue->PushHead((GrapaRuleEvent*)rq[idx]);
+            last = (GrapaRuleEvent*)rq[idx];
+            rq[idx] = NULL;
+        }
+        else
+        {
+            // Remove this duplicate (earlier occurrence)
+            delete (GrapaRuleEvent*)rq[idx];
+            rq[idx] = NULL;
+        }
+    }
+    
+    // Replace the original queue with our post-processed one
+    delete r;
+    result->vQueue = tempQueue;
+}
+```
+
+### Behavior
+
+**For Objects (`$OBJ`):**
+- Removes duplicate keys, keeping the last value for each key
+- Consistent with property access "last value wins" behavior
+- Example: `{a:1, b:2, a:3, c:4, b:5}.unique()` → `{"a":3, "b":5, "c":4}`
+
+**For Lists (`$LIST`):**
+- Removes duplicate values, keeping the last occurrence of each value
+- Works with mixed data types
+- Example: `[1, 2, 1, 3, 2, 4].unique()` → `[1, 2, 3, 4]`
+
+### Implementation Date
+
+This enhancement was implemented as part of the Phase 2B user experience improvements to fix the bug where `.unique()` was not properly removing duplicate keys in objects.
 
 ## See Also
 - [Rule System Architecture](RULE_SYSTEM_ARCHITECTURE.md)

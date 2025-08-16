@@ -93,6 +93,7 @@ public:
 	GrapaLibraryEvent* HandleRange(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleIsInt(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleIfErr(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleIfNull(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleTable(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandlePwd(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleCd(GrapaCHAR& pName);
@@ -108,7 +109,7 @@ public:
 	GrapaLibraryEvent* HandleGet(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleFileSplit(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleInclude(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleDebug(GrapaCHAR& pName);
+	GrapaLibraryEvent* HandleDump(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleMac(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleInterfaces(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleConnect(GrapaCHAR& pName);
@@ -148,7 +149,8 @@ public:
 	GrapaLibraryEvent* HandleSecret(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleMessage(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleString(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleEcho(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleEcho(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleDebug(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleConsole(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandlePrompt(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleAdd(GrapaCHAR& pName);

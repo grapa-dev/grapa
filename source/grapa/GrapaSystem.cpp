@@ -79,7 +79,7 @@ void GrapaDebug::DebugPrint(const char* pStr)
 	if (!mDebugMode) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	fprintf(stderr, "[DEBUG] %s\n", pStr);
+	fprintf(stderr, "[DEBUG-0-system] %s\n", pStr);
 	gSystem->mPrintLock.LeaveCritical();
 }
 
@@ -88,7 +88,7 @@ void GrapaDebug::DebugPrint(const GrapaCHAR& pValue)
 	if (!mDebugMode) return;
 
 	gSystem->mPrintLock.WaitCritical();
-	fprintf(stderr, "[DEBUG] %.*s\n", (int)pValue.mLength, (char*)pValue.mBytes);
+	fprintf(stderr, "[DEBUG-0-system] %.*s\n", (int)pValue.mLength, (char*)pValue.mBytes);
 	gSystem->mPrintLock.LeaveCritical();
 }
 

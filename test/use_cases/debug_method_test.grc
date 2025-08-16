@@ -1,0 +1,55 @@
+/* Test script for the new .debug() method */
+
+/* Test 1: Basic debug output with default component */
+"Basic debug test".debug(0);
+
+/* Test 2: Debug with custom component */
+"Database connection test".debug(1, "db");
+
+/* Test 3: Debug with different levels */
+"Level 0 message".debug(0);
+"Level 1 message".debug(1);
+"Level 2 message".debug(2);
+
+/* Test 4: Debug with custom components */
+"API request".debug(1, "api");
+"File operation".debug(2, "filesystem");
+"Network call".debug(1, "network");
+
+/* Test 5: Debug with variables */
+user_id = 12345;
+"Processing user: " + user_id.str().debug(1, "user");
+
+/* Test 6: Debug with complex expressions */
+result = [1, 2, 3, 4, 5].filter(op(x) { x > 2; }).map(op(x) { x * 2; });
+"Filtered and mapped result: " + result.str().debug(2, "data");
+
+/* Test 7: Debug in conditional blocks */
+if (true) {
+    "Inside conditional block".debug(1, "flow");
+}
+
+/* Test 8: Debug with error handling */
+error_condition = false;
+if (error_condition) {
+    "Error occurred".debug(0, "error");
+} else {
+    "No errors".debug(1, "status");
+}
+
+/* Test 9: Debug with different data types */
+"String debug".debug(0);
+(42).debug(1, "number");
+(true).debug(1, "boolean");
+([1, 2, 3]).debug(2, "array");
+
+/* Test 10: Debug with string interpolation */
+name = "Alice";
+age = 30;
+"User ${name} is ${age} years old".interpolate().debug(1, "user");
+
+/* Test 11: Debug with method chaining */
+"Hello World".upper().debug(1, "string");
+
+/* Final confirmation */
+"Debug method test completed".debug(0, "test");

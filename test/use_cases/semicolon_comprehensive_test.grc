@@ -1,0 +1,87 @@
+/* Comprehensive semicolon requirement test */
+
+/* Test 1: Basic statements - semicolons seem optional */
+x = 10
+y = 20
+"Basic statements work without semicolons".echo()
+
+/* Test 2: Block endings - semicolons seem optional */
+if (x > 5) {
+    "x is greater than 5".echo();
+}
+
+/* Test 3: If/else blocks - semicolons seem optional */
+if (x > 5) {
+    "x is greater than 5".echo();
+} else {
+    "x is not greater than 5".echo();
+}
+
+/* Test 4: For loops - semicolons seem optional */
+for i in 3 {
+    ("Count: " + i).echo();
+}
+
+/* Test 5: While loops - semicolons seem optional */
+i = 0
+while (i < 3) {
+    ("While count: " + i).echo();
+    i = i + 1;
+}
+
+/* Test 6: Function definitions - semicolons seem optional */
+myFunc = op() {
+    "Function called".echo();
+}
+
+/* Test 7: Class definitions - semicolons seem optional */
+MyClass = class {
+    myMethod = op() {
+        "Method called".echo();
+    };
+}
+
+/* Test 8: Switch statements - semicolons seem optional */
+switch (x) {
+    case 10: "x is 10".echo(); break;
+    case 20: "x is 20".echo(); break;
+    default: "x is something else".echo(); break;
+}
+
+/* Test 9: Multiple statements on same line - semicolons required */
+x = 10; y = 20; "Multiple statements need semicolons".echo()
+
+/* Test 10: Nested blocks - semicolons seem optional */
+{
+    if (x > 5) {
+        "nested if".echo();
+    } else {
+        "nested else".echo();
+    }
+}
+
+/* Test 11: If/else chains - semicolons seem optional */
+if (x > 10) {
+    "x > 10".echo();
+} else if (x > 5) {
+    "x > 5".echo();
+} else {
+    "x <= 5".echo();
+}
+
+/* Test 12: Do-while loops - semicolons seem optional */
+do {
+    "Do-while executed".echo();
+} while (false)
+
+/* Test 13: C-style for loops - semicolons seem optional */
+for (i = 0; i < 2; i = i + 1) {
+    ("C-style for: " + i).echo();
+}
+
+/* Test 14: Foreach loops - semicolons seem optional */
+for item in [1, 2, 3] {
+    ("Foreach item: " + item).echo();
+}
+
+"All comprehensive semicolon tests completed".echo()

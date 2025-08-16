@@ -36,10 +36,10 @@ This guide helps Go users transition to Grapa by mapping common Go idioms, patte
 | `arr[0]` | `arr[0]`<br>`arr.get(0)` |
 | `m := map[string]int{}` | `obj = {}` |
 | `m["key"]` | `obj["key"]`<br>`obj.key`<br>`obj."key"` |
-| `for i := 0; i < len(arr); i++ { ... }` | `i = 0; while (i < arr.len()) { ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
+| `for i := 0; i < len(arr); i++ { ... }` | `for i in arr { ... }`<br>`i = 0; while (i < arr.len()) { ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
 | `if cond { ... } else { ... }` | `if (cond) { ... } else { ... }` |
 | `func f(x int) int { ... }` | `f = op(x) { ... };` |
-| `/* comment */` (block only, own line) | `/* comment */` (block only, own line) |
+| `/* comment */` (block only, own line) | `/* comment */` (block)<br>`/** comment */` (doc block)<br>`// comment` (line)<br>`/// comment` (doc line) |
 | `nil` | `null` |
 | `len(arr)` | `arr.len()` |
 | `append(arr, x)` | `arr += x;` |
@@ -54,6 +54,10 @@ This guide helps Go users transition to Grapa by mapping common Go idioms, patte
 | `defer` | `// not directly supported` |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
+>
+> **String Interpolation:** For combining strings and values, use `"Hello ${name}".interpolate()` instead of `"Hello " + name`. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`.
+>
+> **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of Go's zero value handling. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
 
 > **Note:** `.get("key")` is only for `$file` and `$TABLE`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` or `arr.get(index)`.
 
@@ -126,9 +130,9 @@ value = table.get("user1", "name");   /* Correct */
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
-- No `for`/`range` loops—use `while` or `.range()`+functional methods (`.range()` is native: `(10).range()`)
+- ✅ **For loops now supported** - Use `for x in arr { ... }` for native iteration
 - No `.push()`/`.append()`—use `+=` for append
-- No `/* comment */` comments—only block comments (`/* ... */`), always on their own line
+- ✅ **Line comments now supported** - Use `// comment` or `/// doc comment` in addition to block comments
 - No implicit truthy/falsy—use explicit boolean checks
 - All statements and blocks must end with a semicolon (`;`)
 - Use `.map()`, `.reduce()`, `.filter()` as methods, not global functions
@@ -282,8 +286,8 @@ This is a handy workaround until Grapa adds a native `.match()` method.
 > - If more objects support `.get()` in the future, this guide will be updated.
 
 > **Comment Style:**
-> - Only block comments (`/* ... */`) are supported in Grapa, and must always be on their own line.
-> - `//` and `#` comments are not supported and will cause errors. 
+> - ✅ **Comprehensive comment support**: `/* */` (block), `/** */` (doc block), `//` (line), `///` (doc line)
+> - Comments work everywhere including at end of lines and inside code blocks 
 
 ## Work-in-Progress (WIP) Items
 
@@ -376,6 +380,8 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
+- **Optional chaining**: `obj?.user?.profile` - Use `.iferr()` for superior safe property access: `obj.user.iferr(null).profile.iferr("default")`
+- **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Interfaces**: `type MyInterface interface` - Use object composition and duck typing
 - **Structs**: `type MyStruct struct` - Grapa has superior class system
   > **Note:** Grapa's class system provides full OOP capabilities including inheritance, polymorphism, methods, and runtime modification. See the "Important Note on Class System" section above for details and examples.

@@ -36,10 +36,10 @@ This guide helps Rust users transition to Grapa by mapping common Rust idioms, p
 | `arr[0]` | `arr[0]`<br>`arr.get(0)` |
 | `let map = HashMap::new();` | `obj = {}` |
 | `map["key"]` | `obj["key"]`<br>`obj.key`<br>`obj."key"` |
-| `for x in arr { ... }` | `i = 0; while (i < arr.len()) { x = arr[i]; ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
+| `for x in arr { ... }` | `for x in arr { ... }`<br>`i = 0; while (i < arr.len()) { x = arr[i]; ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
 | `if cond { ... } else { ... }` | `if (cond) { ... } else { ... }` |
 | `fn f(x: i32) -> i32 { ... }` | `f = op(x) { ... };` |
-| `/* comment */` (block only, own line) | `/* comment */` (block only, own line) |
+| `/* comment */` (block only, own line) | `/* comment */` (block)<br>`/** comment */` (doc block)<br>`// comment` (line)<br>`/// comment` (doc line) |
 | `Some(x)` / `None` | `x` / `null` |
 | `Result<T, E>` | `value or $ERR` |
 | `match x { ... }` | `if/else` chain |
@@ -50,6 +50,10 @@ This guide helps Rust users transition to Grapa by mapping common Rust idioms, p
 | `format!("{} {}", a, b)` | `("" + a.str() + " " + b.str())` or see [String Templates and Dynamic Construction](../type/str.md#string-templates-and-dynamic-construction) for advanced patterns |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
+>
+> **String Interpolation:** For combining strings and values, use `"Hello ${name}".interpolate()` instead of `"Hello " + name`. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`.
+>
+> **Nullish Coalescing:** For providing default values, use `value.ifnull("default")` instead of Rust's `unwrap_or()` or `?` operator. The `.ifnull()` method treats a broader range of values as nullish (including zeros, empty collections, and errors).
 
 > **Note:** `.get("key")` is only for `$file` and `$TABLE`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` or `arr.get(index)`.
 
@@ -122,10 +126,10 @@ value = table.get("user1", "name");   /* Correct */
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
-- No `for`/`foreach` loops—use `while` or `.range()`+functional methods (`.range()` is native: `(10).range()`)
+- ✅ **For loops now supported** - Use `for x in arr { ... }` for native iteration
 - No `match`—use `if/else` chains
 - No `.push()`/`.append()`—use `+=` for append
-- No `/* comment */` comments—only block comments (`/* ... */`), always on their own line
+- ✅ **Line comments now supported** - Use `// comment` or `/// doc comment` in addition to block comments
 - No implicit truthy/falsy—use explicit boolean checks
 - All statements and blocks must end with a semicolon (`;`)
 - Use `.map()`, `.reduce()`, `.filter()` as methods, not global functions
@@ -259,8 +263,8 @@ This is a handy workaround until Grapa adds a native `.match()` method.
 > - If more objects support `.get()` in the future, this guide will be updated. 
 
 > **Comment Style:**
-> - Only block comments (`/* ... */`) are supported in Grapa, and must always be on their own line.
-> - `//` and `#` comments are not supported and will cause errors. 
+> - ✅ **Comprehensive comment support**: `/* */` (block), `/** */` (doc block), `//` (line), `///` (doc line)
+> - Comments work everywhere including at end of lines and inside code blocks 
 
 ## Work-in-Progress (WIP) Items
 
@@ -293,6 +297,8 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
+- **Optional chaining**: `obj?.user?.profile` - Use `.iferr()` for superior safe property access: `obj.user.iferr(null).profile.iferr("default")`
+- **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Traits**: `trait MyTrait` - Use object composition and duck typing
 - **Generics**: `<T>` - Grapa has dynamic typing
 - **Pattern matching**: `match x { Some(y) => y, None => 0 }` - Use `if/else` chains

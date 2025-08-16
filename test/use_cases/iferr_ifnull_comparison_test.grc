@@ -1,0 +1,21 @@
+/* Compare .iferr() and .ifnull() with error tokens */
+
+/* Test 1: $ERR() */
+err1 = $ERR();
+"Test 1 - $ERR()".echo();
+"err1.iferr('error fallback'): ".echo(); err1.iferr("error fallback").echo();
+"err1.ifnull('nullish fallback'): ".echo(); err1.ifnull("nullish fallback").echo();
+
+/* Test 2: Division by zero */
+err2 = 1 / 0;
+"Test 2 - 1 / 0".echo();
+"err2.iferr('error fallback'): ".echo(); err2.iferr("error fallback").echo();
+"err2.ifnull('nullish fallback'): ".echo(); err2.ifnull("nullish fallback").echo();
+
+/* Test 3: Non-error values */
+x = 42;
+"Test 3 - Non-error value (42)".echo();
+"x.iferr('error fallback'): ".echo(); x.iferr("error fallback").echo();
+"x.ifnull('nullish fallback'): ".echo(); x.ifnull("nullish fallback").echo();
+
+"Comparison tests completed".echo();

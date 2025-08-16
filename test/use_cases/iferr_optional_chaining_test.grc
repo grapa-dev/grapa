@@ -1,0 +1,52 @@
+/* Test .iferr() for optional chaining functionality */
+
+/* Test 1: Basic .iferr() usage */
+obj = {a: 4};
+"obj.a: ".echo(); obj.a.echo();
+"obj.user.iferr(null): ".echo(); obj.user.iferr(null).echo();
+
+/* Test 2: Chained .iferr() calls */
+"obj.user.iferr(null).profile.iferr('blank'): ".echo(); 
+obj.user.iferr(null).profile.iferr("blank").echo();
+
+/* Test 3: Deep nested property access */
+nested = {level1: {level2: {level3: "deep value"}}};
+"nested.level1.level2.level3: ".echo(); nested.level1.level2.level3.echo();
+"nested.level1.level2.missing.iferr('not found'): ".echo(); 
+nested.level1.level2.missing.iferr("not found").echo();
+
+/* Test 4: Array access with .iferr() */
+arr = [1, 2, 3];
+"arr[0]: ".echo(); arr[0].echo();
+"arr[10].iferr('out of bounds'): ".echo(); arr[10].iferr("out of bounds").echo();
+
+/* Test 5: Method calls with .iferr() */
+"obj.missingMethod.iferr('no method'): ".echo(); 
+obj.missingMethod.iferr("no method").echo();
+
+/* Test 6: Complex nested scenario */
+complex = {users: [{name: "Alice", profile: {age: 30}}]};
+"complex.users[0].name: ".echo(); complex.users[0].name.echo();
+"complex.users[1].name.iferr('no user'): ".echo(); 
+complex.users[1].name.iferr("no user").echo();
+"complex.users[0].profile.age: ".echo(); complex.users[0].profile.age.echo();
+"complex.users[0].profile.missing.iferr('no field'): ".echo(); 
+complex.users[0].profile.missing.iferr("no field").echo();
+
+/* Test 7: Comparison with traditional null checking */
+"Traditional approach: ".echo();
+if (complex.users && complex.users[0] && complex.users[0].profile && complex.users[0].profile.age) {
+    "Age found: ".echo(); complex.users[0].profile.age.echo();
+} else {
+    "Age not found".echo();
+}
+
+".iferr() approach: ".echo();
+age = complex.users[0].profile.age.iferr(null);
+if (age != null) {
+    "Age found: ".echo(); age.echo();
+} else {
+    "Age not found".echo();
+}
+
+"All .iferr() tests completed".echo();

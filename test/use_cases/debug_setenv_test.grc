@@ -1,0 +1,20 @@
+/* Test script for $sys().setenv() with session debug settings */
+
+/* Check initial values */
+"Initial debug mode: " + $sys().getenv("GRAPA_SESSION_DEBUG_MODE").echo();
+"Initial debug level: " + $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL").echo();
+"Initial debug components: " + $sys().getenv("GRAPA_SESSION_DEBUG_COMPONENTS").echo();
+
+/* Set debug settings */
+$sys().setenv("GRAPA_SESSION_DEBUG_MODE", "1");
+$sys().setenv("GRAPA_SESSION_DEBUG_LEVEL", "1");
+$sys().setenv("GRAPA_SESSION_DEBUG_COMPONENTS", "debug:1");
+
+/* Check values after setting */
+"After setting debug mode: " + $sys().getenv("GRAPA_SESSION_DEBUG_MODE").echo();
+"After setting debug level: " + $sys().getenv("GRAPA_SESSION_DEBUG_LEVEL").echo();
+"After setting debug components: " + $sys().getenv("GRAPA_SESSION_DEBUG_COMPONENTS").echo();
+
+/* Try debug output */
+"Testing debug(0): ".debug(0);
+"Testing debug(1): ".debug(1);

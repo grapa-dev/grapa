@@ -1,0 +1,37 @@
+/* Test optional semicolon behavior */
+
+/* Test 1: Basic statements without semicolons - should fail */
+x = 10
+y = 20
+"Basic statements without semicolons".echo()
+
+/* Test 2: Block endings without semicolons - should fail */
+if (x > 5) {
+    "x is greater than 5".echo();
+} /* Missing semicolon here */
+
+/* Test 3: If/else blocks without semicolons - should fail */
+if (x > 5) {
+    "x is greater than 5".echo();
+} else {
+    "x is not greater than 5".echo();
+} /* Missing semicolon here */
+
+/* Test 4: For loops without semicolons - should fail */
+for i in 3 {
+    ("Count: " + i).echo();
+} /* Missing semicolon here */
+
+/* Test 5: Function definitions without semicolons - should fail */
+myFunc = op() {
+    "Function called".echo();
+} /* Missing semicolon here */
+
+/* Test 6: Class definitions without semicolons - should fail */
+MyClass = class {
+    myMethod = op() {
+        "Method called".echo();
+    };
+} /* Missing semicolon here */
+
+"Tests completed".echo();

@@ -36,10 +36,10 @@ This guide helps TypeScript users transition to Grapa by mapping common TypeScri
 | `arr[0]` | `arr[0]`<br>`arr.get(0)` |
 | `let obj: {[key: string]: number} = {};` | `obj = {}` |
 | `obj["key"]` | `obj["key"]`<br>`obj.key`<br>`obj."key"` |
-| `for (let i=0; i<arr.length; i++)` | `i = 0; while (i < arr.len()) { ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
+| `for (let i=0; i<arr.length; i++)` | `for i in arr { ... }`<br>`i = 0; while (i < arr.len()) { ...; i += 1; }`<br>`arr.map(op(x) { ... })`<br>`(n).range(0,1).map(op(i) { ... })` |
 | `if (cond) { ... } else { ... }` | `if (cond) { ... } else { ... }` |
 | `function f(x: number): number { ... }` | `f = op(x) { ... };` |
-| `/* comment */` (block only, own line) | `/* comment */` (block only, own line) |
+| `/* comment */` (block only, own line) | `/* comment */` (block)<br>`/** comment */` (doc block)<br>`// comment` (line)<br>`/// comment` (doc line) |
 | `null/undefined` | `null` |
 | `arr.map(f)` | `arr.map(op(x) { f(x); })` |
 | `arr.filter(f)` | `arr.filter(op(x) { f(x); })` |
@@ -49,6 +49,8 @@ This guide helps TypeScript users transition to Grapa by mapping common TypeScri
 | `s = s + "x"` | `s = s + "x";`<br>`s += "x";` (preferred) |
 
 > **Note:** Both `x = x + 1;` and `x += 1;` (and `s = s + "x";` and `s += "x";`) are valid in Grapa. The `+=` form is idiomatic and preferred in most cases.
+>
+> **String Interpolation:** For combining strings and values, use `"Hello ${name}".interpolate()` instead of `"Hello " + name`. String interpolation is more powerful and less error-prone than concatenation. It also provides elegant solutions for complex method chaining: `"${'hello'.upper()} ${'world'.lower()}".interpolate()`.
 
 > **Note:** `.get("key")` is only for `$file` and `$TABLE`. For `$LIST`/`$OBJ`, use `obj["key"]`, `obj.key`, or `obj."key"`. For `$ARRAY`, use `arr[index]` or `arr.get(index)`.
 
@@ -121,9 +123,9 @@ value = table.get("user1", "name");   /* Correct */
 See [Basic Syntax Guide](../syntax/basic_syntax.md) for empirical test results and future updates.
 
 ## Common Pitfalls
-- No `for`/`foreach` loops—use `while` or `.range()`+functional methods (`.range()` is native: `(10).range()`)
+- ✅ **For loops now supported** - Use `for x in arr { ... }` for native iteration
 - No `.push()`/`.pop()`—use `+=` and manual index for pop
-- No `/* comment */` comments—only block comments (`/* ... */`), always on their own line
+- ✅ **Line comments now supported** - Use `// comment` or `/// doc comment` in addition to block comments
 - No implicit truthy/falsy—use explicit boolean checks
 - All statements and blocks must end with a semicolon (`;`)
 - Use `.map()`, `.reduce()`, `.filter()` as methods, not global functions
@@ -263,8 +265,8 @@ This is a handy workaround until Grapa adds a native `.match()` method.
 > - If more objects support `.get()` in the future, this guide will be updated. 
 
 > **Comment Style:**
-> - Only block comments (`/* ... */`) are supported in Grapa, and must always be on their own line.
-> - `//` and `#` comments are not supported and will cause errors. 
+> - ✅ **Comprehensive comment support**: `/* */` (block), `/** */` (doc block), `//` (line), `///` (doc line)
+> - Comments work everywhere including at end of lines and inside code blocks 
 
 ## Work-in-Progress (WIP) Items
 
@@ -314,6 +316,8 @@ These represent fundamental language features that genuinely cannot be accomplis
 ### Nice to Have
 These would improve developer experience but aren't essential:
 
+- **Optional chaining**: `obj?.prop?.sub` - Use `.iferr()` for superior safe property access: `obj.prop.iferr(null).sub.iferr("default")`
+- **Nullish coalescing**: `x ?? y` - Use `.ifnull()` for superior nullish coalescing: `x.ifnull(y)`
 - **Interfaces**: `interface MyInterface` - Use object composition and duck typing
 - **Generics**: `<T>` - Grapa has dynamic typing
 - **Type guards**: `x is string` - Use `.type()` checks

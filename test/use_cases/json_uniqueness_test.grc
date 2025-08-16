@@ -1,0 +1,65 @@
+/* Test JSON object key uniqueness */
+
+/* Test 1: Object with duplicate keys */
+"Test 1: Object with duplicate keys".echo();
+obj1 = {name: "Alice", age: 30, name: "Bob"};
+"obj1: ".echo(); obj1.echo();
+
+/* Test 2: Object with multiple duplicate keys */
+"Test 2: Object with multiple duplicate keys".echo();
+obj2 = {a: 1, b: 2, a: 3, c: 4, b: 5};
+"obj2: ".echo(); obj2.echo();
+
+/* Test 3: Check property access with duplicate keys */
+"Test 3: Check property access with duplicate keys".echo();
+"obj1.name: ".echo(); obj1.name.echo();
+"obj2.a: ".echo(); obj2.a.echo();
+"obj2.b: ".echo(); obj2.b.echo();
+
+/* Test 4: Check object length/count */
+"Test 4: Check object length/count".echo();
+"obj1 count: ".echo(); obj1.len().echo();
+"obj2 count: ".echo(); obj2.len().echo();
+
+/* Test 5: Iterate through object properties */
+"Test 5: Iterate through object properties".echo();
+"obj1 properties: ".echo();
+for (i = 0; i < obj1.len(); i++) {
+    "Property ".echo(); i.echo(); ": ".echo(); obj1[i].echo();
+}
+
+"obj2 properties: ".echo();
+for (i = 0; i < obj2.len(); i++) {
+    "Property ".echo(); i.echo(); ": ".echo(); obj2[i].echo();
+}
+
+/* Test 6: Check if keys are preserved */
+"Test 6: Check if keys are preserved".echo();
+"obj1 keys: ".echo();
+for (key in obj1) {
+    key.echo(); " ".echo();
+}
+"".echo();
+
+"obj2 keys: ".echo();
+for (key in obj2) {
+    key.echo(); " ".echo();
+}
+"".echo();
+
+/* Test 7: Object creation with explicit duplicates */
+"Test 7: Object creation with explicit duplicates".echo();
+obj3 = {};
+obj3.name = "First";
+obj3.age = 25;
+obj3.name = "Second";  /* Overwrite the same key */
+"obj3: ".echo(); obj3.echo();
+"obj3.name: ".echo(); obj3.name.echo();
+
+/* Test 8: Check if JSON parsing preserves duplicates */
+"Test 8: Check if JSON parsing preserves duplicates".echo();
+jsonStr = '{"name":"Alice","age":30,"name":"Bob"}';
+obj4 = jsonStr.json();
+"obj4 from JSON: ".echo(); obj4.echo();
+
+"JSON object uniqueness tests completed".echo();

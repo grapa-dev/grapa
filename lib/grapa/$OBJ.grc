@@ -66,12 +66,14 @@
 	unique = @<[op,@<unique,{@<this>,@<var,{axis}>}>],{axis}>;
 	group = @<[op,@<group,{@<this>,@<var,{axis}>,@<var,{func}>,@<var,{data}>}>],{axis:null,func:null,data:null}>;
 	isint = @<isint,{@<this>}>;
-	iferr = @<[op,@<iferr,{@<this>,@<var,{error}>}>],{error}>;
+    iferr = @<[op,@<iferr,{@<this>,@<var,{error}>}>],{error}>;
+    ifnull = @<[op,@<ifnull,{@<this>,@<var,{default}>}>],{default}>;
 	shell = @<shell,{@<this>}>;
 	exec = @<[op,@<exec,{@<this>,@<var,{callback}>,@<var,{set}>,@<var,{get}>}>],{callback:null,set:null,get:null}>;
 	post = @<post,{@<this>}>;
 	getname = @<[op,@<getname,{@<this>,@<var,{index}>}>],{index}>;
- 	echo = @<echo,{@<this>}>;
+    echo = @<echo,{@<this>}>;
+    debug = @<[op,@<"debug",{@<this>,@<var,{level}>,@<var,{component}>}>],{"level":null,"component":"debug"}>;
  	string = @<string,{@<this>}>;
  	const = @<const,{@<this>}>;
 	setconst = @<[op,@<setconst,{@<this>,@<var,{value}>}>],{value}>;

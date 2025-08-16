@@ -15,5 +15,5 @@
 	split = @<[op,@<"file_split",{this,@<var,{count}>,@<var,{name}>,@<var,{path}>,@<var,{delim}>,@<var,{option}>}>],{count:2,name:null,path:null,delim:null,option:null}>; 
 	mkfield = @<[op,@<"file_mkfield",{this,@<var,{name}>,@<var,{type}>,@<var,{storage}>,@<var,{size}>,@<var,{growth}>}>],{name,type,storage,size,growth}>; 
 	rmfield = @<[op,@<"file_rmfield",{this,@<var,{name}>}>],{name}>; 
-	debug = @<[op,@<"file_debug",{this,@<var,{level}>,@<var,{format}>}>],{level,format}>;
+	dump = @<[op,@<"file_dump",{this,@<var,{level}>,@<var,{format}>}>],{level,format}>;
 	};

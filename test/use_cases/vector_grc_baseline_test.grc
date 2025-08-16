@@ -48,3 +48,4 @@ matrix = [[1, 2], [3, 4]];
 ("=== $VECTOR.grc baseline test completed ===").echo();
 ("Methods needing parameter renaming: reshape(b), dot(b), triu(b), tril(b)").echo();
 ("Methods with good parameters: cov, sum, mean").echo();
+

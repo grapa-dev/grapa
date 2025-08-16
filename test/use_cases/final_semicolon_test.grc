@@ -1,0 +1,55 @@
+/* Final test to confirm semicolon requirements */
+
+x = 10;
+
+/* Scenario 1: Simple if/else - NO semicolon needed */
+if (x > 5) {
+    "x > 5".echo();
+} else {
+    "x <= 5".echo();
+}
+"Next statement works fine".echo();
+
+/* Scenario 2: Nested if/else - SEMICOLON REQUIRED */
+if (x > 5) {
+    if (x > 8) {
+        "x > 8".echo();
+    } else {
+        "5 < x <= 8".echo();
+    }
+};
+"Next statement after nested if/else".echo();
+
+/* Scenario 3: if/elseif/else - SEMICOLON REQUIRED */
+if (x > 10) {
+    "x > 10".echo();
+} else if (x > 5) {
+    "5 < x <= 10".echo();
+} else {
+    "x <= 5".echo();
+};
+"Next statement after if/elseif/else".echo();
+
+/* Scenario 4: Block with if/else - SEMICOLON REQUIRED */
+{
+    if (x > 5) {
+        "x > 5".echo();
+    } else {
+        "x <= 5".echo();
+    }
+};
+"Next statement after block".echo();
+
+/* Scenario 5: Multiple simple if/else blocks - NO semicolons needed */
+if (x > 5) {
+    "First if".echo();
+} else {
+    "First else".echo();
+}
+if (x > 8) {
+    "Second if".echo();
+} else {
+    "Second else".echo();
+}
+
+"Final test completed".echo();
