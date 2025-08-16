@@ -301,4 +301,3 @@ This system is more sophisticated than traditional import/export modules and pro
 
 - [Command Operators](operators/command.md) - Include syntax details
 - [System Functions](sys/sys.md) - Environment variable management
-- [Execution Trees](../maintainers/IMPLEMENTATION/EXECUTION_TREES.md) - Understanding the underlying execution model
