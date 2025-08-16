@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://grapa-dev.github.io/grapa/operators/condition/">
+        <link rel="canonical" href="https://grapa-dev.github.io/grapa/module_system/">
       
       
-        <link rel="prev" href="../compare/">
+        <link rel="prev" href="../unified_dot_notation/">
       
       
-        <link rel="next" href="../loop/">
+        <link rel="next" href="../migrations/python_to_grapa_migration/">
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
     
     
       
-        <title>Condition Operators - Grapa Documentation</title>
+        <title>Module System - Grapa Documentation</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -48,7 +48,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#condition-operators" class="md-skip">
+        <a href="#module-system" class="md-skip">
           Skip to content
         </a>
       
@@ -88,7 +88,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-header__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Condition Operators
+              Module System
             
           </span>
         </div>
@@ -205,7 +205,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../about/" class="md-tabs__link">
+      <a href="../about/" class="md-tabs__link">
         
   
   
@@ -224,7 +224,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
+      <a href=".." class="md-tabs__link">
         
   
   
@@ -245,7 +245,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting_started/" class="md-tabs__link">
+        <a href="../getting_started/" class="md-tabs__link">
           
   
   
@@ -263,7 +263,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../cli_quickstart/" class="md-tabs__link">
+      <a href="../cli_quickstart/" class="md-tabs__link">
         
   
   
@@ -286,7 +286,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../api_reference/" class="md-tabs__link">
+        <a href="../api_reference/" class="md-tabs__link">
           
   
   
@@ -313,7 +313,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../migrations/python_to_grapa_migration/" class="md-tabs__link">
+        <a href="../migrations/python_to_grapa_migration/" class="md-tabs__link">
           
   
   
@@ -336,7 +336,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../use_cases/" class="md-tabs__link">
+        <a href="../use_cases/" class="md-tabs__link">
           
   
   
@@ -356,7 +356,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../troubleshooting/" class="md-tabs__link">
+        <a href="../troubleshooting/" class="md-tabs__link">
           
   
   
@@ -390,7 +390,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
+    <a href=".." title="Grapa Documentation" class="md-nav__button md-logo" aria-label="Grapa Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -408,7 +408,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../about/" class="md-nav__link">
+      <a href="../about/" class="md-nav__link">
         
   
   
@@ -430,7 +430,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -493,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting_started/" class="md-nav__link">
+      <a href="../getting_started/" class="md-nav__link">
         
   
   
@@ -516,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli_integration/" class="md-nav__link">
+      <a href="../cli_integration/" class="md-nav__link">
         
   
   
@@ -539,7 +539,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../run/" class="md-nav__link">
+      <a href="../run/" class="md-nav__link">
         
   
   
@@ -562,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_integration/" class="md-nav__link">
+      <a href="../python_integration/" class="md-nav__link">
         
   
   
@@ -585,7 +585,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapa_ecosystem_positioning/" class="md-nav__link">
+      <a href="../grapa_ecosystem_positioning/" class="md-nav__link">
         
   
   
@@ -615,7 +615,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli_quickstart/" class="md-nav__link">
+      <a href="../cli_quickstart/" class="md-nav__link">
         
   
   
@@ -683,7 +683,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api_reference/" class="md-nav__link">
+      <a href="../api_reference/" class="md-nav__link">
         
   
   
@@ -747,7 +747,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/array/" class="md-nav__link">
+      <a href="../type/array/" class="md-nav__link">
         
   
   
@@ -770,7 +770,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/bool/" class="md-nav__link">
+      <a href="../type/bool/" class="md-nav__link">
         
   
   
@@ -793,7 +793,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/code/" class="md-nav__link">
+      <a href="../type/code/" class="md-nav__link">
         
   
   
@@ -816,7 +816,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/err/" class="md-nav__link">
+      <a href="../type/err/" class="md-nav__link">
         
   
   
@@ -839,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/float/" class="md-nav__link">
+      <a href="../type/float/" class="md-nav__link">
         
   
   
@@ -862,7 +862,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/id/" class="md-nav__link">
+      <a href="../type/id/" class="md-nav__link">
         
   
   
@@ -885,7 +885,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/int/" class="md-nav__link">
+      <a href="../type/int/" class="md-nav__link">
         
   
   
@@ -908,7 +908,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/list/" class="md-nav__link">
+      <a href="../type/list/" class="md-nav__link">
         
   
   
@@ -931,7 +931,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/obj_methods/" class="md-nav__link">
+      <a href="../type/obj_methods/" class="md-nav__link">
         
   
   
@@ -954,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/op/" class="md-nav__link">
+      <a href="../type/op/" class="md-nav__link">
         
   
   
@@ -977,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/raw/" class="md-nav__link">
+      <a href="../type/raw/" class="md-nav__link">
         
   
   
@@ -1000,7 +1000,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/rule/" class="md-nav__link">
+      <a href="../type/rule/" class="md-nav__link">
         
   
   
@@ -1023,7 +1023,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/str/" class="md-nav__link">
+      <a href="../type/str/" class="md-nav__link">
         
   
   
@@ -1046,7 +1046,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysid/" class="md-nav__link">
+      <a href="../type/sysid/" class="md-nav__link">
         
   
   
@@ -1069,7 +1069,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysint/" class="md-nav__link">
+      <a href="../type/sysint/" class="md-nav__link">
         
   
   
@@ -1092,7 +1092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/sysstr/" class="md-nav__link">
+      <a href="../type/sysstr/" class="md-nav__link">
         
   
   
@@ -1115,7 +1115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/table/" class="md-nav__link">
+      <a href="../type/table/" class="md-nav__link">
         
   
   
@@ -1138,7 +1138,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/tag/" class="md-nav__link">
+      <a href="../type/tag/" class="md-nav__link">
         
   
   
@@ -1161,7 +1161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/time/" class="md-nav__link">
+      <a href="../type/time/" class="md-nav__link">
         
   
   
@@ -1184,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/tuple/" class="md-nav__link">
+      <a href="../type/tuple/" class="md-nav__link">
         
   
   
@@ -1207,7 +1207,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/vector/" class="md-nav__link">
+      <a href="../type/vector/" class="md-nav__link">
         
   
   
@@ -1230,7 +1230,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/widget/" class="md-nav__link">
+      <a href="../type/widget/" class="md-nav__link">
         
   
   
@@ -1253,7 +1253,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/widget/attributes/" class="md-nav__link">
+      <a href="../type/widget/attributes/" class="md-nav__link">
         
   
   
@@ -1276,7 +1276,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../type/xml/" class="md-nav__link">
+      <a href="../type/xml/" class="md-nav__link">
         
   
   
@@ -1304,8 +1304,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1316,11 +1314,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
         
           
           <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
@@ -1336,7 +1334,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5_3">
             <span class="md-nav__icon md-icon"></span>
             Operators
@@ -1350,7 +1348,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../function/" class="md-nav__link">
+      <a href="../operators/function/" class="md-nav__link">
         
   
   
@@ -1373,7 +1371,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../assignment/" class="md-nav__link">
+      <a href="../operators/assignment/" class="md-nav__link">
         
   
   
@@ -1396,7 +1394,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../math/" class="md-nav__link">
+      <a href="../operators/math/" class="md-nav__link">
         
   
   
@@ -1419,7 +1417,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../bit/" class="md-nav__link">
+      <a href="../operators/bit/" class="md-nav__link">
         
   
   
@@ -1442,7 +1440,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../compare/" class="md-nav__link">
+      <a href="../operators/compare/" class="md-nav__link">
         
   
   
@@ -1462,32 +1460,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Condition Operators
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../operators/condition/" class="md-nav__link">
         
   
   
@@ -1498,62 +1474,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#if" class="md-nav__link">
-    <span class="md-ellipsis">
-      if
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#switch" class="md-nav__link">
-    <span class="md-ellipsis">
-      switch
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      ?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
-    <span class="md-ellipsis">
-      See also
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1566,7 +1486,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../loop/" class="md-nav__link">
+      <a href="../operators/loop/" class="md-nav__link">
         
   
   
@@ -1589,7 +1509,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../command/" class="md-nav__link">
+      <a href="../operators/command/" class="md-nav__link">
         
   
   
@@ -1612,7 +1532,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../constants/" class="md-nav__link">
+      <a href="../operators/constants/" class="md-nav__link">
         
   
   
@@ -1684,7 +1604,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/file/" class="md-nav__link">
+      <a href="../sys/file/" class="md-nav__link">
         
   
   
@@ -1707,7 +1627,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/math/" class="md-nav__link">
+      <a href="../sys/math/" class="md-nav__link">
         
   
   
@@ -1730,7 +1650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/net/" class="md-nav__link">
+      <a href="../sys/net/" class="md-nav__link">
         
   
   
@@ -1753,7 +1673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/sys/" class="md-nav__link">
+      <a href="../sys/sys/" class="md-nav__link">
         
   
   
@@ -1776,7 +1696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../sys/thread/" class="md-nav__link">
+      <a href="../sys/thread/" class="md-nav__link">
         
   
   
@@ -1799,7 +1719,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../function_quick_reference/" class="md-nav__link">
+      <a href="../function_quick_reference/" class="md-nav__link">
         
   
   
@@ -1871,7 +1791,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/document/" class="md-nav__link">
+      <a href="../obj/document/" class="md-nav__link">
         
   
   
@@ -1894,7 +1814,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/encode/" class="md-nav__link">
+      <a href="../obj/encode/" class="md-nav__link">
         
   
   
@@ -1917,7 +1837,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/grep/" class="md-nav__link">
+      <a href="../obj/grep/" class="md-nav__link">
         
   
   
@@ -1940,7 +1860,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/grep_python/" class="md-nav__link">
+      <a href="../obj/grep_python/" class="md-nav__link">
         
   
   
@@ -1963,7 +1883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/iterate/" class="md-nav__link">
+      <a href="../obj/iterate/" class="md-nav__link">
         
   
   
@@ -1986,7 +1906,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../obj/transform/" class="md-nav__link">
+      <a href="../obj/transform/" class="md-nav__link">
         
   
   
@@ -2058,7 +1978,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grep/" class="md-nav__link">
+      <a href="../grep/" class="md-nav__link">
         
   
   
@@ -2130,7 +2050,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/quick_reference/" class="md-nav__link">
+      <a href="../database/quick_reference/" class="md-nav__link">
         
   
   
@@ -2153,7 +2073,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/column_store/" class="md-nav__link">
+      <a href="../database/column_store/" class="md-nav__link">
         
   
   
@@ -2176,7 +2096,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../database/troubleshooting/" class="md-nav__link">
+      <a href="../database/troubleshooting/" class="md-nav__link">
         
   
   
@@ -2248,7 +2168,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/basic_syntax/" class="md-nav__link">
+      <a href="../syntax/basic_syntax/" class="md-nav__link">
         
   
   
@@ -2271,7 +2191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/operator/" class="md-nav__link">
+      <a href="../syntax/operator/" class="md-nav__link">
         
   
   
@@ -2294,7 +2214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/precedence/" class="md-nav__link">
+      <a href="../syntax/precedence/" class="md-nav__link">
         
   
   
@@ -2317,7 +2237,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../syntax/grammar_design/" class="md-nav__link">
+      <a href="../syntax/grammar_design/" class="md-nav__link">
         
   
   
@@ -2348,7 +2268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../debugging/" class="md-nav__link">
+      <a href="../debugging/" class="md-nav__link">
         
   
   
@@ -2371,7 +2291,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../execution_pipeline_overview/" class="md-nav__link">
+      <a href="../execution_pipeline_overview/" class="md-nav__link">
         
   
   
@@ -2394,7 +2314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_topics/" class="md-nav__link">
+      <a href="../advanced_topics/" class="md-nav__link">
         
   
   
@@ -2417,7 +2337,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_language_features/" class="md-nav__link">
+      <a href="../advanced_language_features/" class="md-nav__link">
         
   
   
@@ -2440,7 +2360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../advanced_concurrency_and_callbacks/" class="md-nav__link">
+      <a href="../advanced_concurrency_and_callbacks/" class="md-nav__link">
         
   
   
@@ -2463,7 +2383,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../multi_syntax_programming/" class="md-nav__link">
+      <a href="../multi_syntax_programming/" class="md-nav__link">
         
   
   
@@ -2486,7 +2406,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../language_design_with_executable_bnf/" class="md-nav__link">
+      <a href="../language_design_with_executable_bnf/" class="md-nav__link">
         
   
   
@@ -2509,7 +2429,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../isolated_rule_execution/" class="md-nav__link">
+      <a href="../isolated_rule_execution/" class="md-nav__link">
         
   
   
@@ -2532,7 +2452,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../deep_expert_implementation_overview/" class="md-nav__link">
+      <a href="../deep_expert_implementation_overview/" class="md-nav__link">
         
   
   
@@ -2555,7 +2475,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../xml_list_integration/" class="md-nav__link">
+      <a href="../xml_list_integration/" class="md-nav__link">
         
   
   
@@ -2578,7 +2498,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_dot_notation/" class="md-nav__link">
+      <a href="../unified_dot_notation/" class="md-nav__link">
         
   
   
@@ -2598,10 +2518,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../module_system/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Module System
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -2612,6 +2554,404 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#include-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Include System
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Include System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-include-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Include Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#source-files-grc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Source Files (.grc)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pre-compiled-files-grz" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pre-compiled Files (.grz)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-pre-compiled-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Pre-compiled Files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-class-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Class Loading
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Class Loading">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-class-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic Class Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-path-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search Path Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Search Path Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#path-environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      $PATH Environment Variable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lib-environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      $LIB Environment Variable
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search Order
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-class-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Class Library
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-custom-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Custom Classes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plugin-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Plugin System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development-vs-production-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development vs Production Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development vs Production Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#development-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development Environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Production Environment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-path-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Path Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conditional Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#library-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Library Organization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-type-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Type Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-path-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search Path Optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#missing-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Missing Classes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-loading-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Loading Errors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-include-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Include System
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-with-traditional-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comparison with Traditional Modules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Documentation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2713,7 +3053,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/python_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/python_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2736,7 +3076,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/js_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/js_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2759,7 +3099,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/rust_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/rust_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2782,7 +3122,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/typescript_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/typescript_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2805,7 +3145,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/go_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/go_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2828,7 +3168,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/ruby_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/ruby_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2851,7 +3191,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/kotlin_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2874,7 +3214,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../migrations/swift_to_grapa_migration/" class="md-nav__link">
+      <a href="../migrations/swift_to_grapa_migration/" class="md-nav__link">
         
   
   
@@ -2905,7 +3245,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -2928,7 +3268,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
+      <a href="../examples/" class="md-nav__link">
         
   
   
@@ -2951,7 +3291,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../python_use_cases/" class="md-nav__link">
+      <a href="../python_use_cases/" class="md-nav__link">
         
   
   
@@ -2974,7 +3314,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grc_scripts/" class="md-nav__link">
+      <a href="../grc_scripts/" class="md-nav__link">
         
   
   
@@ -2997,7 +3337,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grz_format/" class="md-nav__link">
+      <a href="../grz_format/" class="md-nav__link">
         
   
   
@@ -3020,7 +3360,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../grapapy_namespace_solution/" class="md-nav__link">
+      <a href="../grapapy_namespace_solution/" class="md-nav__link">
         
   
   
@@ -3043,7 +3383,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../directory_navigation/" class="md-nav__link">
+      <a href="../directory_navigation/" class="md-nav__link">
         
   
   
@@ -3066,7 +3406,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../unified_path_system/" class="md-nav__link">
+      <a href="../unified_path_system/" class="md-nav__link">
         
   
   
@@ -3137,7 +3477,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/" class="md-nav__link">
+      <a href="../use_cases/" class="md-nav__link">
         
   
   
@@ -3160,7 +3500,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/etl_data_engineering/" class="md-nav__link">
+      <a href="../use_cases/etl_data_engineering/" class="md-nav__link">
         
   
   
@@ -3183,7 +3523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/compiler_bnf_learning/" class="md-nav__link">
+      <a href="../use_cases/compiler_bnf_learning/" class="md-nav__link">
         
   
   
@@ -3206,7 +3546,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/high_precision_math/" class="md-nav__link">
+      <a href="../use_cases/high_precision_math/" class="md-nav__link">
         
   
   
@@ -3229,7 +3569,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/parallel_concurrent_programming/" class="md-nav__link">
+      <a href="../use_cases/parallel_concurrent_programming/" class="md-nav__link">
         
   
   
@@ -3252,7 +3592,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/web_data_scraping/" class="md-nav__link">
+      <a href="../use_cases/web_data_scraping/" class="md-nav__link">
         
   
   
@@ -3275,7 +3615,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/database_file_system/" class="md-nav__link">
+      <a href="../use_cases/database_file_system/" class="md-nav__link">
         
   
   
@@ -3298,7 +3638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/education_prototyping/" class="md-nav__link">
+      <a href="../use_cases/education_prototyping/" class="md-nav__link">
         
   
   
@@ -3321,7 +3661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/cryptography/" class="md-nav__link">
+      <a href="../use_cases/cryptography/" class="md-nav__link">
         
   
   
@@ -3344,7 +3684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/multi_syntax_data_processing/" class="md-nav__link">
+      <a href="../use_cases/multi_syntax_data_processing/" class="md-nav__link">
         
   
   
@@ -3367,7 +3707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../use_cases/language_design_and_dsls/" class="md-nav__link">
+      <a href="../use_cases/language_design_and_dsls/" class="md-nav__link">
         
   
   
@@ -3438,7 +3778,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+      <a href="../troubleshooting/" class="md-nav__link">
         
   
   
@@ -3461,7 +3801,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../testing/" class="md-nav__link">
+      <a href="../testing/" class="md-nav__link">
         
   
   
@@ -3511,36 +3851,378 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#if" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
-      if
+      Overview
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#switch" class="md-nav__link">
+  <a href="#include-system" class="md-nav__link">
     <span class="md-ellipsis">
-      switch
+      Include System
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Include System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-include-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Include Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#source-files-grc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Source Files (.grc)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pre-compiled-files-grz" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pre-compiled Files (.grz)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-pre-compiled-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Pre-compiled Files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-class-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Class Loading
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic Class Loading">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automatic-class-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Automatic Class Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-path-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search Path Management
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Search Path Management">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#path-environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      $PATH Environment Variable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lib-environment-variable" class="md-nav__link">
+    <span class="md-ellipsis">
+      $LIB Environment Variable
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search Order
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Practical Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-class-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom Class Library
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-custom-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Custom Classes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plugin-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Plugin System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#development-vs-production-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development vs Production Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development vs Production Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#development-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development Environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#production-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Production Environment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dynamic-path-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dynamic Path Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-loading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conditional Loading
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#library-organization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Library Organization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-type-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Type Selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-path-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search Path Optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Error Handling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Error Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#missing-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Missing Classes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-loading-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      File Loading Errors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-with-include-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration with Include System
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
-      ?
+      Best Practices
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
+  <a href="#comparison-with-traditional-modules" class="md-nav__link">
     <span class="md-ellipsis">
-      See also
+      Comparison with Traditional Modules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Documentation
     </span>
   </a>
   
@@ -3562,53 +4244,259 @@
 
 
 
-<h1 id="condition-operators">Condition Operators</h1>
-<h2 id="if">if</h2>
-<p>Syntax options:
-* if (bool) statement;
-* if (bool) statement; else statement;
-* if (bool) statement; elseif statement; else statement;</p>
-<p>Example:
-<div class="highlight"><pre><span></span><code>&gt; if (1==0) &quot;1==0\n&quot;.echo();  else &quot;none\n&quot;.echo();
-none
-
-&gt; if (1==0) &quot;1==0\n&quot;.echo(); elseif (2==2) &quot;2==2\n&quot;.echo(); else &quot;none\n&quot;.echo();
-2==2
-</code></pre></div></p>
-<h2 id="switch">switch</h2>
-<p>Syntax options:
-* swtich (item) {case item1: statement; item2 statement; etc...;};
-* swtich (item) {case item1: statement; item2 statement; etc...; default: statement;};</p>
-<p>The following is a way to use a switch in place of if/ifelse/else sequence. The switch will compare until if arrives at a true.</p>
-<div class="highlight"><pre><span></span><code>&gt; switch(true){case (1==0):&quot;1==0\n&quot;.echo(); case (2==2): &quot;2==2\n&quot;.echo(); default: &quot;none\n&quot;.echo();};
-2==2
+<h1 id="module-system">Module System</h1>
+<p>Grapa provides a sophisticated module system that combines compile-time includes with runtime dynamic class loading. This system is more flexible and powerful than traditional import/export mechanisms.</p>
+<h2 id="overview">Overview</h2>
+<p>Grapa's module system consists of two main components:</p>
+<ol>
+<li><strong>Include System</strong> - Compile-time file inclusion</li>
+<li><strong>Dynamic Class Loading</strong> - Runtime class resolution with search paths</li>
+</ol>
+<h2 id="include-system">Include System</h2>
+<h3 id="basic-include-syntax">Basic Include Syntax</h3>
+<div class="highlight"><pre><span></span><code>include &quot;lib/grapa/grapa.grc&quot;;
+include &quot;lib/custom/string_utils.grz&quot;;
 </code></pre></div>
-<h2 id="_1"><code>?</code></h2>
-<p>Syntax options:
-* bool ? statement for true;
-* bool ? statement for true : statement for false;
-* bool ? : statement for false;
-* (&lt;0)|(0)|(&gt;0) ? statement for -1 : statement for 0 : statement for 1;</p>
-<p>Example:
-<div class="highlight"><pre><span></span><code>&gt; 1?hi:by
-hi
+<h3 id="file-types">File Types</h3>
+<h4 id="source-files-grc">Source Files (.grc)</h4>
+<div class="highlight"><pre><span></span><code>/* Development - parsed and compiled during compilation */
+include &quot;lib/custom/string_utils.grc&quot;;
+</code></pre></div>
+<p><strong>Characteristics:</strong>
+- Parsed and compiled during compilation
+- Best for development and debugging
+- Full syntax checking and optimization
+- Slower compilation time</p>
+<h4 id="pre-compiled-files-grz">Pre-compiled Files (.grz)</h4>
+<div class="highlight"><pre><span></span><code>/* Production - loaded directly for speed */
+include &quot;lib/custom/string_utils.grz&quot;;
+</code></pre></div>
+<p><strong>Characteristics:</strong>
+- Loaded directly without parsing
+- Best for production deployment
+- Fast compilation time
+- Created using <code>$sys().compilef()</code></p>
+<h3 id="creating-pre-compiled-files">Creating Pre-compiled Files</h3>
+<div class="highlight"><pre><span></span><code>/* Compile a source file to pre-compiled format */
+$sys().compilef(&quot;lib/custom/string_utils.grc&quot;, &quot;lib/custom/string_utils.grz&quot;);
+</code></pre></div>
+<h2 id="dynamic-class-loading">Dynamic Class Loading</h2>
+<p>When you reference an undefined class, Grapa automatically searches for and loads class definitions.</p>
+<h3 id="automatic-class-loading">Automatic Class Loading</h3>
+<div class="highlight"><pre><span></span><code>/* Class will be automatically loaded from search paths */
+custom = $CUSTOM_CLASS();
+result = custom.some_method();
+</code></pre></div>
+<h3 id="search-path-management">Search Path Management</h3>
+<h4 id="path-environment-variable">$PATH Environment Variable</h4>
+<p>The <code>$PATH</code> variable contains a queue of search locations:</p>
+<div class="highlight"><pre><span></span><code>/* Set multiple search paths */
+$sys().putenv($PATH, [
+    &quot;lib/custom&quot;,           /* Custom libraries */
+    &quot;lib/extensions&quot;,       /* Extensions */
+    &quot;lib/plugins&quot;,          /* Plugins */
+    &quot;/usr/local/lib/grapa&quot;  /* System libraries */
+]);
 
-&gt; 0?hi:by
-by
+/* Add to existing path */
+current_path = $sys().getenv($PATH);
+new_path = current_path + [&quot;lib/new&quot;];
+$sys().putenv($PATH, new_path);
+</code></pre></div>
+<h4 id="lib-environment-variable">$LIB Environment Variable</h4>
+<p>The <code>$LIB</code> variable points to the main library directory:</p>
+<div class="highlight"><pre><span></span><code>/* Set the main library directory */
+$sys().putenv($LIB, &quot;/usr/local/lib/grapa&quot;);
 
-&gt; -55?hi:by:there
-hi
+/* Get current library directory */
+lib_dir = $sys().getenv($LIB);
+</code></pre></div>
+<h3 id="search-order">Search Order</h3>
+<p>When loading a class, Grapa searches in this order:</p>
+<ol>
+<li><strong>Current namespace</strong> - Check if class already exists</li>
+<li><strong>$PATH locations</strong> - Search each path in the queue</li>
+<li><strong>$LIB directory</strong> - Main library directory</li>
+<li><strong>Static library</strong> - Built-in classes</li>
+</ol>
+<h2 id="practical-examples">Practical Examples</h2>
+<h3 id="custom-class-library">Custom Class Library</h3>
+<div class="highlight"><pre><span></span><code>/* Create custom class */
+/* File: lib/custom/math_utils.grc */
+@global[&quot;$MATH_UTILS&quot;] = class {
+    add = op(x, y) { x + y; };
+    multiply = op(x, y) { x * y; };
+    factorial = op(n) { 
+        if (n &lt;= 1) 1 else n * factorial(n - 1);
+    };
+};
+</code></pre></div>
+<h3 id="using-custom-classes">Using Custom Classes</h3>
+<div class="highlight"><pre><span></span><code>/* Set up search path */
+$sys().putenv($PATH, [&quot;lib/custom&quot;]);
 
-&gt; (&quot;a&quot;&lt;=&gt;&quot;b&quot;)?a:e:b
-a
-</code></pre></div></p>
-<hr />
-<h2 id="see-also">See also</h2>
+/* Class will be automatically loaded */
+math = $MATH_UTILS();
+result = math.add(5, 3);  /* 8 */
+fact = math.factorial(5); /* 120 */
+</code></pre></div>
+<h3 id="plugin-system">Plugin System</h3>
+<div class="highlight"><pre><span></span><code>/* Dynamic plugin loading */
+plugin_paths = [
+    &quot;plugins/network&quot;,
+    &quot;plugins/database&quot;, 
+    &quot;plugins/ui&quot;
+];
+
+$sys().putenv($PATH, plugin_paths);
+
+/* Plugins are loaded on demand */
+network = $NETWORK_PLUGIN();
+db = $DATABASE_PLUGIN();
+ui = $UI_PLUGIN();
+</code></pre></div>
+<h3 id="development-vs-production-setup">Development vs Production Setup</h3>
+<h4 id="development-environment">Development Environment</h4>
+<div class="highlight"><pre><span></span><code>/* Use .grc files for easy debugging */
+$sys().putenv($PATH, [
+    &quot;lib/dev&quot;,
+    &quot;lib/custom&quot;
+]);
+</code></pre></div>
+<h4 id="production-environment">Production Environment</h4>
+<div class="highlight"><pre><span></span><code>/* Use .grz files for performance */
+$sys().putenv($PATH, [
+    &quot;lib/prod/optimized&quot;,
+    &quot;lib/prod/stable&quot;
+]);
+$sys().putenv($LIB, &quot;/opt/grapa/lib&quot;);
+</code></pre></div>
+<h2 id="advanced-usage">Advanced Usage</h2>
+<h3 id="dynamic-path-management">Dynamic Path Management</h3>
+<div class="highlight"><pre><span></span><code>/* Add paths dynamically */
+add_search_path = op(new_path) {
+    current = $sys().getenv($PATH);
+    updated = current + [new_path];
+    $sys().putenv($PATH, updated);
+};
+
+add_search_path(&quot;lib/new_feature&quot;);
+</code></pre></div>
+<h3 id="conditional-loading">Conditional Loading</h3>
+<div class="highlight"><pre><span></span><code>/* Load different libraries based on environment */
+if ($sys().getenv(&quot;DEBUG_MODE&quot;) == &quot;true&quot;) {
+    $sys().putenv($PATH, [&quot;lib/debug&quot;, &quot;lib/dev&quot;]);
+} else {
+    $sys().putenv($PATH, [&quot;lib/prod&quot;]);
+}
+</code></pre></div>
+<h3 id="library-organization">Library Organization</h3>
+<div class="highlight"><pre><span></span><code>/* Organize libraries by category */
+$sys().putenv($PATH, [
+    &quot;lib/core&quot;,           /* Core functionality */
+    &quot;lib/extensions&quot;,     /* Extensions */
+    &quot;lib/plugins&quot;,        /* Plugins */
+    &quot;lib/experimental&quot;    /* Experimental features */
+]);
+</code></pre></div>
+<h2 id="performance-considerations">Performance Considerations</h2>
+<h3 id="caching">Caching</h3>
 <ul>
-<li><a href="../../api_reference/">API Reference</a></li>
-<li><a href="../../examples/">Examples</a></li>
-<li><a href="../../use_cases/">Use Cases</a></li>
-<li><a href="../../syntax/basic_syntax/">Language Reference</a></li>
+<li>Classes are cached after first load</li>
+<li>Subsequent references use cached version</li>
+<li>No re-parsing or re-compilation needed</li>
+</ul>
+<h3 id="file-type-selection">File Type Selection</h3>
+<ul>
+<li><strong>Development</strong>: Use <code>.grc</code> files for debugging</li>
+<li><strong>Production</strong>: Use <code>.grz</code> files for speed</li>
+<li><strong>Mixed</strong>: Use <code>.grz</code> for stable libraries, <code>.grc</code> for active development</li>
+</ul>
+<h3 id="search-path-optimization">Search Path Optimization</h3>
+<div class="highlight"><pre><span></span><code>/* Optimize search order - most used first */
+$sys().putenv($PATH, [
+    &quot;lib/frequently_used&quot;,  /* Most common libraries */
+    &quot;lib/standard&quot;,         /* Standard libraries */
+    &quot;lib/rare&quot;              /* Rarely used libraries */
+]);
+</code></pre></div>
+<h2 id="error-handling">Error Handling</h2>
+<h3 id="missing-classes">Missing Classes</h3>
+<p>If a class cannot be found:
+1. Search through all <code>$PATH</code> locations
+2. Check <code>$LIB</code> directory
+3. Check static library
+4. Return error if not found</p>
+<h3 id="file-loading-errors">File Loading Errors</h3>
+<ul>
+<li>Invalid <code>.grz</code> files cause decompression errors</li>
+<li>Syntax errors in <code>.grc</code> files cause parsing errors</li>
+<li>Missing files are handled gracefully</li>
+</ul>
+<h2 id="integration-with-include-system">Integration with Include System</h2>
+<p>The include system and class loading work together:</p>
+<div class="highlight"><pre><span></span><code>/* Include system - compile time */
+include &quot;lib/core/grapa.grc&quot;;
+
+/* Class loading - runtime */
+custom = $CUSTOM_CLASS();  /* Searches $PATH automatically */
+</code></pre></div>
+<h2 id="best-practices">Best Practices</h2>
+<ol>
+<li><strong>Use $PATH for custom libraries and plugins</strong></li>
+<li><strong>Use $LIB for system-wide library directory</strong></li>
+<li><strong>Use .grc files during development</strong></li>
+<li><strong>Use .grz files in production</strong></li>
+<li><strong>Organize libraries by category</strong></li>
+<li><strong>Optimize search path order</strong></li>
+<li><strong>Cache frequently used libraries</strong></li>
+</ol>
+<h2 id="comparison-with-traditional-modules">Comparison with Traditional Modules</h2>
+<p>Grapa's module system is more flexible than traditional import/export:</p>
+<table>
+<thead>
+<tr>
+<th>Traditional Modules</th>
+<th>Grapa Module System</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Static imports</td>
+<td>Dynamic class loading</td>
+</tr>
+<tr>
+<td>Fixed dependencies</td>
+<td>Runtime path configuration</td>
+</tr>
+<tr>
+<td>Compile-time resolution</td>
+<td>Runtime resolution</td>
+</tr>
+<tr>
+<td>Limited flexibility</td>
+<td>High flexibility</td>
+</tr>
+<tr>
+<td>Single search location</td>
+<td>Multiple search paths</td>
+</tr>
+</tbody>
+</table>
+<h2 id="conclusion">Conclusion</h2>
+<p>Grapa's module system provides:</p>
+<ul>
+<li><strong>Compile-time includes</strong> for code organization</li>
+<li><strong>Runtime class loading</strong> with flexible search paths</li>
+<li><strong>Environment variable management</strong> for configuration</li>
+<li><strong>Performance optimization</strong> with pre-compiled files</li>
+<li><strong>Extensible architecture</strong> for custom search providers</li>
+</ul>
+<p>This system is more sophisticated than traditional import/export modules and provides greater flexibility for dynamic loading and configuration.</p>
+<h2 id="related-documentation">Related Documentation</h2>
+<ul>
+<li><a href="../operators/command/">Command Operators</a> - Include syntax details</li>
+<li><a href="../sys/sys/">System Functions</a> - Environment variable management</li>
 </ul>
 
 
@@ -3666,16 +4554,16 @@ a
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.suggest", "content.code.copy", "content.action.edit", "content.action.view", "content.tabs.link"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      <script src="../assets/javascripts/bundle.56ea9cef.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
       
-        <script src="../../javascripts/mermaid-init.js"></script>
+        <script src="../javascripts/mermaid-init.js"></script>
       
-        <script src="../../javascripts/search-fix.js"></script>
+        <script src="../javascripts/search-fix.js"></script>
       
     
   </body>
