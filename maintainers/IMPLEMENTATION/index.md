@@ -26,6 +26,7 @@ Grapa's implementation is built on several key components:
 - [Base Types](BASETYPES.md) - Core type system implementation
 - [Execution Trees](EXECUTION_TREES.md) - Execution model and compilation
 - [Include System](INCLUDE_SYSTEM.md) - Module system and code organization
+- [Module System Implementation](MODULE_SYSTEM_IMPLEMENTATION.md) - Complete module system with $PATH, $LIB, and class loading
 - [GRZ Format](GRZ_FORMAT.md) - Binary format specification
 - [Unicode Grep Status](UNICODE_GREP_STATUS.md) - Unicode implementation details
 - [CLI Implementation](GRAPA_CLI_IMPLEMENTATION.md) - Command line interface implementation and working functionality

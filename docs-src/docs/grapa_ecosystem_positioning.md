@@ -526,11 +526,8 @@ The real gaps are features that would enhance Grapa's power while staying true t
 
 ### **Phase 3: Advanced Features (Weeks 14-17)**
 - 📋 **Performance optimizations** - Compilation and execution improvements
-- 📋 **Tooling enhancements** - Development environment improvements
 
 ### **Phase 4: Polish (Weeks 18-21)**
-- 📋 **Debugging tools** - Stack traces, profiling, hot reloading
-- 📋 **Module system** - Import/export capabilities
 - 📋 **Advanced language features** - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching, enhanced reflection
 - 📋 **Extension System** - Extending existing types with new methods (NEEDED - += syntax exists but doesn't add callable methods to system classes; requires C++ implementation for SYSID types in assignappend case; @global redefinition works but is unsafe)
 

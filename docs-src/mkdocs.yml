@@ -158,6 +158,7 @@ nav:
       - Deep Expert Implementation: deep_expert_implementation_overview.md
       - XML and LIST Integration: xml_list_integration.md
       - Unified Dot Notation System: unified_dot_notation.md
+      - Module System: module_system.md
   - Guides:
       - Migration Guides:
           - Python: migrations/python_to_grapa_migration.md

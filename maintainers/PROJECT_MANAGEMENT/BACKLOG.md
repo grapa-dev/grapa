@@ -173,11 +173,22 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 ### **Development Tools**
 - [ ] **Create IDE plugins**
 - **Note**: Debugging tools and profiling capabilities are covered in "Enhanced Debug Mode" major release
+- **Note**: All tooling enhancements (IDE integration, debugging, profiling, AST dumping) are covered in this section and "Enhanced Debug Mode" major release
+- **Note**: All debugging tools (stack traces, profiling, hot reloading, AST dumping) are comprehensively covered in "Enhanced Debug Mode" major release
 
 ### **Experimental Features**
 - [ ] **Consider adding support for async/await patterns**
 - [ ] **Investigate adding support for coroutines**
 - [ ] **Explore adding support for metaprogramming features**
+
+### **Future Ecosystem Features** 🔮 **LOW PRIORITY**
+- [ ] **C++ Extension Mechanism** - System for developers to create and distribute C++ extensions to Grapa's Event libraries
+  - **Scope**: Mechanism for third-party C++ extensions that integrate with Grapa's core Event system
+  - **Distribution**: Future PyPI-like system for C++ extension distribution
+  - **Timeline**: Only when Grapa gains significant traction and ecosystem
+  - **Dependencies**: Requires significant user base and developer community
+  - **Complexity**: Major architectural feature requiring distribution infrastructure
+  - **Note**: This is a "nice to have" for future ecosystem growth, not a current priority
 
 ### **Integration**
 - [ ] **Add support for more external libraries**
@@ -222,7 +233,7 @@ This backlog tracks all future, long-term, and queued tasks for the Grapa projec
 - **Major Releases**: 5 items (prioritized by impact and dependencies)
 - **New Initiatives**: 4 items (Wikipedia Article, Database Best Practices, Rules System Enhancement, LLM-Powered Dynamic IDE)
 - **Medium Priority**: 7 categories with multiple items each
-- **Low Priority**: 4 categories with experimental and future features
+- **Low Priority**: 5 categories with experimental and future features
 - **Investigation Items**: 1 item (SQL Syntax Injection Demo)
 
 **Priority Order Rationale:**
