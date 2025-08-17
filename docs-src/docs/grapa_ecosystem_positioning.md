@@ -454,8 +454,6 @@ These features are actively being developed to address modern language parity:
 - **📋 Control Flow Fixes** - Working return/break/continue statements
 
 #### **Phase 2: Advanced Language Features (Weeks 5-8)**
-- **📋 Match Expressions Syntax** - `match value { pattern => result }` syntax (Grapa already has powerful pattern matching via switch statements and .findall())
-- **📋 Decorators/Annotations** - Function and class decorators
 - **📋 Enhanced Reflection** - Runtime code inspection and modification
 - **📋 Extension System** - Extending existing types with new methods
 

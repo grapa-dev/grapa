@@ -16412,7 +16412,398 @@ GrapaRuleEvent* GrapaLibraryRuleDescribeEvent::Run(GrapaScriptExec* vScriptExec,
 {
 	GrapaRuleEvent* result = NULL;
 	GrapaLibraryParam r1(vScriptExec, pNameSpace, pInput ? pInput->Head(0) : NULL);
-	result = Error(vScriptExec, pNameSpace, -1);
+	GrapaLibraryParam r2(vScriptExec, pNameSpace, pInput ? pInput->Head(1) : NULL);
+	
+	if (r1.vVal)
+	{
+		// Parse options with defaults
+		bool include_properties = true;
+		bool include_methods = true;
+		bool include_structure = false;
+		bool include_values = false;
+		std::string format = "text";
+		
+		// Parse options if provided
+		if (r2.vVal && (r2.vVal->mValue.mToken == GrapaTokenType::OBJ || r2.vVal->mValue.mToken == GrapaTokenType::LIST))
+		{
+			// Parse properties option
+			s64 properties_index = 0;
+			GrapaRuleEvent* properties_opt = r2.vVal->vQueue->Search(GrapaCHAR("properties"), properties_index);
+			// Handle PTR types like other functions do
+			while (properties_opt && properties_opt->mValue.mToken == GrapaTokenType::PTR && properties_opt->vRulePointer) 
+				properties_opt = properties_opt->vRulePointer;
+			if (properties_opt)
+			{
+				if (properties_opt->mValue.mToken == GrapaTokenType::BOOL)
+				{
+					include_properties = (properties_opt->mValue.mBytes && properties_opt->mValue.mLength &&
+										  properties_opt->mValue.mBytes[0] && properties_opt->mValue.mBytes[0] != '0');
+				}
+				else if (properties_opt->mValue.mToken == GrapaTokenType::STR)
+				{
+					std::string properties_str(reinterpret_cast<const char*>(properties_opt->mValue.mBytes), properties_opt->mValue.mLength);
+					include_properties = (properties_str != "false" && properties_str != "0");
+				}
+				else
+				{
+					include_properties = !properties_opt->IsZero();
+				}
+			}
+			
+			// Parse methods option
+			s64 methods_index = 0;
+			GrapaRuleEvent* methods_opt = r2.vVal->vQueue->Search(GrapaCHAR("methods"), methods_index);
+			// Handle PTR types like other functions do
+			while (methods_opt && methods_opt->mValue.mToken == GrapaTokenType::PTR && methods_opt->vRulePointer) 
+				methods_opt = methods_opt->vRulePointer;
+			if (methods_opt)
+			{
+				if (methods_opt->mValue.mToken == GrapaTokenType::BOOL)
+				{
+					include_methods = (methods_opt->mValue.mBytes && methods_opt->mValue.mLength &&
+									   methods_opt->mValue.mBytes[0] && methods_opt->mValue.mBytes[0] != '0');
+				}
+				else if (methods_opt->mValue.mToken == GrapaTokenType::STR)
+				{
+					std::string methods_str(reinterpret_cast<const char*>(methods_opt->mValue.mBytes), methods_opt->mValue.mLength);
+					include_methods = (methods_str != "false" && methods_str != "0");
+				}
+				else
+				{
+					include_methods = !methods_opt->IsZero();
+				}
+			}
+			
+			// Parse structure option
+			s64 structure_index = 0;
+			GrapaRuleEvent* structure_opt = r2.vVal->vQueue->Search(GrapaCHAR("structure"), structure_index);
+			// Handle PTR types like other functions do
+			while (structure_opt && structure_opt->mValue.mToken == GrapaTokenType::PTR && structure_opt->vRulePointer) 
+				structure_opt = structure_opt->vRulePointer;
+			if (structure_opt)
+			{
+				if (structure_opt->mValue.mToken == GrapaTokenType::BOOL)
+				{
+					include_structure = (structure_opt->mValue.mBytes && structure_opt->mValue.mLength &&
+										 structure_opt->mValue.mBytes[0] && structure_opt->mValue.mBytes[0] != '0');
+				}
+				else if (structure_opt->mValue.mToken == GrapaTokenType::STR)
+				{
+					std::string structure_str(reinterpret_cast<const char*>(structure_opt->mValue.mBytes), structure_opt->mValue.mLength);
+					include_structure = (structure_str != "false" && structure_str != "0");
+				}
+				else
+				{
+					include_structure = !structure_opt->IsZero();
+				}
+			}
+			
+			// Parse values option
+			s64 values_index = 0;
+			GrapaRuleEvent* values_opt = r2.vVal->vQueue->Search(GrapaCHAR("values"), values_index);
+			// Handle PTR types like other functions do
+			while (values_opt && values_opt->mValue.mToken == GrapaTokenType::PTR && values_opt->vRulePointer) 
+				values_opt = values_opt->vRulePointer;
+			if (values_opt)
+			{
+				if (values_opt->mValue.mToken == GrapaTokenType::BOOL)
+				{
+					include_values = (values_opt->mValue.mBytes && values_opt->mValue.mLength &&
+									  values_opt->mValue.mBytes[0] && values_opt->mValue.mBytes[0] != '0');
+				}
+				else if (values_opt->mValue.mToken == GrapaTokenType::STR)
+				{
+					std::string values_str(reinterpret_cast<const char*>(values_opt->mValue.mBytes), values_opt->mValue.mLength);
+					include_values = (values_str != "false" && values_str != "0");
+				}
+				else
+				{
+					include_values = !values_opt->IsZero();
+				}
+			}
+			
+			// Parse format option
+			s64 format_index = 0;
+			GrapaRuleEvent* format_opt = r2.vVal->vQueue->Search(GrapaCHAR("format"), format_index);
+			// Handle PTR types like other functions do
+			while (format_opt && format_opt->mValue.mToken == GrapaTokenType::PTR && format_opt->vRulePointer) 
+				format_opt = format_opt->vRulePointer;
+			if (format_opt && format_opt->mValue.mToken == GrapaTokenType::STR)
+			{
+				std::string format_str(reinterpret_cast<const char*>(format_opt->mValue.mBytes), format_opt->mValue.mLength);
+				if (format_str == "json" || format_str == "xml" || format_str == "text")
+				{
+					format = format_str;
+				}
+			}
+		}
+		
+		// Generate description based on object type
+		std::string description;
+		
+		switch (r1.vVal->mValue.mToken)
+		{
+		case GrapaTokenType::STR:
+		case GrapaTokenType::ID:
+			{
+				std::string str_val(reinterpret_cast<const char*>(r1.vVal->mValue.mBytes), r1.vVal->mValue.mLength);
+				if (format == "json")
+				{
+					description = "{\"type\":\"string\",\"length\":" + std::to_string(str_val.length());
+					if (include_values)
+					{
+						description += ",\"value\":\"" + str_val + "\"";
+					}
+					description += "}";
+				}
+				else
+				{
+					description = "String with length " + std::to_string(str_val.length());
+					if (include_values)
+					{
+						description += ": \"" + str_val + "\"";
+					}
+				}
+			}
+			break;
+			
+		case GrapaTokenType::INT:
+			{
+				GrapaInt int_val;
+				int_val.FromBytes(r1.vVal->mValue);
+				if (format == "json")
+				{
+					description = "{\"type\":\"integer\",\"value\":" + std::to_string(int_val.LongValue()) + "}";
+				}
+				else
+				{
+					description = "Integer: " + std::to_string(int_val.LongValue());
+				}
+			}
+			break;
+			
+		case GrapaTokenType::FLOAT:
+			{
+				GrapaFloat float_val(vScriptExec->vScriptState->mItemState.mFloatFix, vScriptExec->vScriptState->mItemState.mFloatMax, vScriptExec->vScriptState->mItemState.mFloatExtra, 0);
+				float_val.FromBytes(r1.vVal->mValue);
+				GrapaCHAR float_str = float_val.ToString();
+				std::string str_val(reinterpret_cast<const char*>(float_str.mBytes), float_str.mLength);
+				if (format == "json")
+				{
+					description = "{\"type\":\"float\",\"value\":\"" + str_val + "\"";
+					if (include_structure)
+					{
+						description += ",\"structure\":{\"sign\":" + std::string(float_val.mSigned ? "true" : "false") + 
+										",\"trunc\":" + std::string(float_val.mTrunc ? "true" : "false") + 
+										",\"fix\":" + std::string(float_val.mFix ? "true" : "false") + 
+										",\"exp\":" + std::to_string(float_val.mExp) + 
+										",\"max\":" + std::to_string(float_val.mMax) + 
+										",\"extra\":" + std::to_string(float_val.mExtra) + 
+										",\"data\":\"" + std::to_string(float_val.mData.LongValue()) + "\"}";
+					}
+					description += "}";
+				}
+				else
+				{
+					description = "Float: " + str_val;
+					if (include_structure)
+					{
+						description += " (sign:" + std::string(float_val.mSigned ? "true" : "false") + 
+										", trunc:" + std::string(float_val.mTrunc ? "true" : "false") + 
+										", fix:" + std::string(float_val.mFix ? "true" : "false") + 
+										", exp:" + std::to_string(float_val.mExp) + 
+										", max:" + std::to_string(float_val.mMax) + 
+										", extra:" + std::to_string(float_val.mExtra) + 
+										", data:" + std::to_string(float_val.mData.LongValue()) + ")";
+					}
+				}
+			}
+			break;
+			
+		case GrapaTokenType::ARRAY:
+			{
+				if (r1.vVal->vQueue)
+				{
+					u64 count = r1.vVal->vQueue->mCount;
+					if (format == "json")
+					{
+						description = "{\"type\":\"array\",\"length\":" + std::to_string(count);
+						if (include_structure && count > 0)
+						{
+							description += ",\"element_types\":[";
+							for (u64 i = 0; i < count && i < 5; i++) // Limit to first 5 elements
+							{
+								GrapaRuleEvent* elem = r1.vVal->vQueue->Head(i);
+								if (i > 0) description += ",";
+								switch (elem->mValue.mToken)
+								{
+								case GrapaTokenType::STR: description += "\"string\""; break;
+								case GrapaTokenType::INT: description += "\"integer\""; break;
+								case GrapaTokenType::FLOAT: description += "\"float\""; break;
+								case GrapaTokenType::ARRAY: description += "\"array\""; break;
+								case GrapaTokenType::LIST: description += "\"list\""; break;
+								default: description += "\"unknown\""; break;
+								}
+							}
+							if (count > 5) description += ",\"...\"";
+							description += "]";
+						}
+						description += "}";
+					}
+					else
+					{
+						description = "Array with " + std::to_string(count) + " elements";
+						if (include_structure && count > 0)
+						{
+							description += " (types: ";
+							for (u64 i = 0; i < count && i < 3; i++) // Limit to first 3 elements
+							{
+								GrapaRuleEvent* elem = r1.vVal->vQueue->Head(i);
+								if (i > 0) description += ", ";
+								switch (elem->mValue.mToken)
+								{
+								case GrapaTokenType::STR: description += "string"; break;
+								case GrapaTokenType::INT: description += "integer"; break;
+								case GrapaTokenType::FLOAT: description += "float"; break;
+								case GrapaTokenType::ARRAY: description += "array"; break;
+								case GrapaTokenType::LIST: description += "list"; break;
+								default: description += "unknown"; break;
+								}
+							}
+							if (count > 3) description += ", ...";
+							description += ")";
+						}
+					}
+				}
+				else
+				{
+					description = "Empty array";
+				}
+			}
+			break;
+			
+		case GrapaTokenType::LIST:
+			{
+				if (r1.vVal->vQueue)
+				{
+					u64 count = r1.vVal->vQueue->mCount;
+					// For LIST, count represents the number of key-value pairs
+					u64 property_count = count;
+					if (format == "json")
+					{
+						description = "{\"type\":\"list\",\"length\":" + std::to_string(count) + ",\"properties\":" + std::to_string(property_count);
+						if (include_properties && count > 0)
+						{
+							description += ",\"keys\":[";
+							// Extract keys by searching for them (like we do with options)
+							for (u64 i = 0; i < count && i < 5; i++)
+							{
+								GrapaRuleEvent* item = r1.vVal->vQueue->Head(i);
+								if (i > 0) description += ",";
+								// The item should have a name (key) and value
+								if (item && item->mName.mLength > 0)
+								{
+									std::string key_str(reinterpret_cast<const char*>(item->mName.mBytes), item->mName.mLength);
+									description += "\"" + key_str + "\"";
+								}
+							}
+							if (count > 5) description += ",\"...\"";
+							description += "]";
+						}
+						description += "}";
+					}
+					else
+					{
+						description = "List with " + std::to_string(property_count) + " properties";
+						if (include_properties && count > 0)
+						{
+							description += " (keys: ";
+							for (u64 i = 0; i < count && i < 3; i++)
+							{
+								GrapaRuleEvent* item = r1.vVal->vQueue->Head(i);
+								if (i > 0) description += ", ";
+								// The item should have a name (key) and value
+								if (item && item->mName.mLength > 0)
+								{
+									std::string key_str(reinterpret_cast<const char*>(item->mName.mBytes), item->mName.mLength);
+									description += key_str;
+								}
+							}
+							if (count > 3) description += ", ...";
+							description += ")";
+						}
+					}
+				}
+				else
+				{
+					description = "Empty list";
+				}
+			}
+			break;
+			
+		case GrapaTokenType::OP:
+			{
+				if (format == "json")
+				{
+					description = "{\"type\":\"function\"";
+					if (include_structure && r1.vVal->vQueue)
+					{
+						description += ",\"parameters\":\"dynamic\"";
+					}
+					description += "}";
+				}
+				else
+				{
+					description = "Function";
+					if (include_structure && r1.vVal->vQueue)
+					{
+						description += " (dynamic parameters)";
+					}
+				}
+			}
+			break;
+			
+		case GrapaTokenType::CLASS:
+			{
+				if (format == "json")
+				{
+					description = "{\"type\":\"class\"";
+					if (include_methods && r1.vVal->vQueue)
+					{
+						description += ",\"methods\":\"dynamic\"";
+					}
+					description += "}";
+				}
+				else
+				{
+					description = "Class";
+					if (include_methods && r1.vVal->vQueue)
+					{
+						description += " (dynamic methods)";
+					}
+				}
+			}
+			break;
+			
+		default:
+			{
+				if (format == "json")
+				{
+					description = "{\"type\":\"unknown\"}";
+				}
+				else
+				{
+					description = "Unknown type";
+				}
+			}
+			break;
+		}
+		
+		result = new GrapaRuleEvent(0, GrapaCHAR(), GrapaCHAR(description.c_str()));
+	}
+	
+	if (result == NULL)
+		result = Error(vScriptExec, pNameSpace, -1);
 	return(result);
 }
 

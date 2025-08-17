@@ -1,6 +1,6 @@
 @global["$OBJ"] = class {
 	type = @<"type",{@<this>}>; 
-	describe = @<"describe",{@<this>}>; 
+	describe = @<[op,@<describe,{@<this>,@<var,{options}>}>],{options}>;
 	raw = @<"raw",{@<this>}>; 
 	uraw = @<"raw",{@<this>,1}>; 
 	bool = @<"bool",{@<this>}>; 
