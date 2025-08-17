@@ -6,3 +6,7 @@ ar = [1,2,4];
 
 ./grapa -c '$ARRAY(); @$ARRAY ++= {f:op(){55},c:op(){$this.len();}}; ar = [1,2,4]; "[f: ${ar.f()}]\n[c: ${ar.c()}]\n".interpolate().echo();'
 
+@$ARRAY ++= [$OBJ];
+
+@$ARRAY ++= {f:op(){55}};
+@$ARRAY += (c:op(){$this.len();});
