@@ -679,19 +679,11 @@
     | <$comp> '*' '*' '=' <$comp> {@<assignpow,{$1,$5}>}
 	| <$comp>
 	;
-@global["$starcomment"]
-	= rule ('/' '*') <> ('*' '/')
-	;
 @global["$command_list"]
-	= rule <$command> <$starcomment> ';' <$command_list>
-	| <$command> <$starcomment> <$command_list>
-	| <$command> <$starcomment>
-	| <$command> ';' <$command_list>
+	= rule <$command> ';' <$command_list>
 	| <$command> <$command_list>
 	| <$command>
-	| <$starcomment> ';' <$command_list>
-	| <$starcomment> <$command_list>
-	| <$starcomment>
+	| ';' <$command_list>
 	;
 @global["$start"]
 	= rule <$command_list> $SYSID("BE")
