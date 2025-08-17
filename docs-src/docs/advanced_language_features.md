@@ -95,7 +95,47 @@ has_digits = text.match("\\d+");  /* true/false */
 - **Binary Pattern Matching** - Byte-exact matching
 - **Native `.match()` Method** - Boolean regex testing
 
-### **5. Superior Concurrency**
+### **5. Class and Object Extension System**
+
+Grapa provides a comprehensive extension system that allows developers to extend both individual objects and classes:
+
+```grapa
+/* Pattern 1: Extending individual objects */
+test1 = {n:0};
+test1 += (inc:op(inc:1){n+=inc;});
+test1.inc();      /* n becomes 1 */
+test1.inc(2);     /* n becomes 3 */
+
+/* Pattern 2: Creating custom classes */
+myclass = class ($LIST) {
+    n = 0; 
+    inc = op(inc:1){n+=inc;};
+};
+myclass ++= {
+    m:0, 
+    dec:op(dec:1){m=n; n-=dec;}
+};
+test2 = myclass();
+test2.inc();      /* n becomes 1 */
+test2.dec(5);     /* n becomes -4, m becomes 1 */
+
+/* Pattern 3: Extending system classes */
+$ARRAY();  /* Load system class */
+@$ARRAY ++= {f:op(){55}};
+@$ARRAY += (c:op(){$this.len();});
+ar = [1,2,4];
+ar.f();           /* Returns 55 */
+ar.c();           /* Returns 3 */
+```
+
+**Key Features:**
+- **Object Extension** - Add methods to individual objects with `+=`
+- **Class Extension** - Extend classes with `++=` for multiple additions
+- **System Class Extension** - Extend core language classes globally
+- **Inheritance Support** - Custom classes inherit from system classes
+- **Method Resolution** - Automatic method lookup through inheritance chain
+
+### **6. Superior Concurrency**
 
 Grapa's parallel-by-design architecture surpasses traditional async/await:
 

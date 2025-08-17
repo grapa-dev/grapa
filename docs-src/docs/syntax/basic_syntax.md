@@ -2202,6 +2202,71 @@ funcs["add"](5, 3).echo();  // 8
 funcs["mul"](5, 3).echo();  // 15
 ```
 
+## Object and Class Extension
+
+Grapa provides operators for extending objects and classes with new methods and properties:
+
+### Extension Operators
+
+- **`+=`** - Adds a **single item** to an object or class
+- **`++=`** - Adds a **$LIST of items** to an object or class
+
+**Note:** The `+=` operator is context-aware. When used on numeric types (`$INT`, `$FLOAT`), it performs addition. When used on collection types (`$ARRAY`, `$LIST`) or objects, it performs extension (adding methods/properties).
+
+### Extending Individual Objects
+
+```grapa
+/* Create an object and add a method */
+obj = {count: 0};
+obj += (increment: op(amount: 1) { count += amount; });
+
+/* Use the extended object */
+obj.increment();      /* count becomes 1 */
+obj.increment(5);     /* count becomes 6 */
+```
+
+### Extending Classes
+
+```grapa
+/* Define a custom class */
+MyClass = class ($LIST) {
+    value: 0;
+    add: op(x) { value += x; };
+};
+
+/* Extend the class with multiple methods */
+MyClass ++= {
+    subtract: op(x) { value -= x; },
+    getValue: op() { value; }
+};
+
+/* Create instances with extended functionality */
+instance = MyClass();
+instance.add(10);     /* value becomes 10 */
+instance.subtract(3); /* value becomes 7 */
+instance.getValue().echo(); /* outputs: 7 */
+```
+
+### Extending System Classes
+
+```grapa
+/* Load a system class into the namespace */
+$ARRAY();
+
+/* Extend the system class */
+@$ARRAY += (customMethod: op() { 42; });
+@$ARRAY ++= {
+    lengthMethod: op() { $this.len(); },
+    utilityMethod: op() { "Hello from extended array"; }
+};
+
+/* Use the extended system class */
+arr = [1, 2, 3];
+arr.customMethod().echo();    /* outputs: 42 */
+arr.lengthMethod().echo();    /* outputs: 3 */
+arr.utilityMethod().echo();   /* outputs: Hello from extended array */
+```
+
 ## Language Syntax Extension
 
 Grapa's dynamic code execution capabilities are complemented by its ability to extend the language syntax itself at runtime. You can define custom commands and functions that become part of the language grammar.

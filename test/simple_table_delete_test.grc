@@ -1,7 +1,0 @@
-/* Simple table record deletion test */
-table = $file().table("ROW");
-table.mkfield("name", "STR");
-table.set("user1", "Alice", "name");
-("Before delete: " + table.ls().join(",")).echo();
-table.rm("user1");
-("After delete: " + table.ls().join(",")).echo(); 

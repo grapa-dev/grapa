@@ -405,7 +405,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 - **Strict mode**: - Grapa is strict by default
 - **Hoisting**: - Grapa has different scoping rules
 - **Closure scope**: - Grapa has different scoping rules
-- **Prototype chain**: - No prototype system
+- **Prototype chain**: - Use `+=` for single item, `++=` for multiple items ($LIST)
 - **Function constructors**: - No function constructor support
 
 ### Advanced Meta-Programming (Available in Grapa)
@@ -597,7 +597,7 @@ These are advanced features that most developers won't miss:
 - **Strict mode**: - Grapa is strict by default
 - **Hoisting**: - Grapa has different scoping rules
 - **Closure scope**: - Grapa has different scoping rules
-- **Prototype chain**: - Use object composition
+- **Prototype chain**: - Use `+=` for single item, `++=` for multiple items ($LIST)
 - **Function constructors**: - Use regular functions
 
 > **Note:** Many "missing" features are actually available in Grapa through different mechanisms. For example, async/await patterns are replaced by Grapa's built-in parallel processing with `.map()` and `.filter()`.

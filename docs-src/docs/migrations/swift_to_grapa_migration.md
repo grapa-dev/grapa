@@ -22,7 +22,7 @@
 |-----------------------------|------------------|-------------|
 | `import Foundation`         | —                | **GAP**: No module/import system |
 | `protocol Baz {}`           | —                | **GAP**: No protocol/interface |
-| `extension Foo {}`          | —                | **GAP**: No extension support |
+| `extension Foo {}`          | `+=` (single item) or `++=` ($LIST of items) | Grapa supports object and class extension |
 | `defer`                     | —                | **GAP**: No defer/finally |
 | `#file`                     | —                | **GAP**: No file macro |
 | `#line`                     | —                | **GAP**: No line macro |
@@ -72,7 +72,7 @@ These represent fundamental language features that genuinely cannot be accomplis
 
 - **Module system**: `import Foundation` - No module system
 - **Protocols**: `protocol Baz {}` - No protocol system
-- **Extensions**: `extension Foo {}` - No extension system
+- **Extensions**: `extension Foo {}` - Use `+=` for single item, `++=` for multiple items ($LIST)
 - **Defer**: `defer` - No defer mechanism
 - **File/line macros**: `#file`, `#line` - Grapa provides `.debug()` method for sophisticated debugging and logging (outputs to stderr, can be redirected at CLI level)
 - **Type aliases**: `typealias Foo = Bar` - No type alias system
