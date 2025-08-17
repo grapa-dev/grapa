@@ -5932,6 +5932,21 @@ When <code>structure: true</code> is used with float values, the method reveals 
 <li><strong>data</strong> - The actual numeric data</li>
 </ol>
 <p>This provides complete introspection into Grapa's high-precision floating-point implementation.</p>
+<p><strong>Complementary Methods:</strong>
+For programmatic access to float components, Grapa also provides:
+- <strong><code>.decode("FLOAT")</code></strong> - Extract components into an object for manipulation
+- <strong><code>.encode("FLOAT")</code></strong> - Create a float from component values</p>
+<div class="highlight"><pre><span></span><code>/* Extract components for manipulation */
+components = (2.3).decode(&quot;FLOAT&quot;);
+/* Returns: {&quot;sign&quot;:false,&quot;trunc&quot;:false,&quot;fix&quot;:false,&quot;exp&quot;:1,&quot;max&quot;:184,&quot;extra&quot;:10,&quot;data&quot;:3689348814741910323} */
+
+/* Modify components and create new float */
+components.max = 300;
+components.extra = 20;
+new_float = components.encode(&quot;FLOAT&quot;);
+
+/* .describe() provides inspection, .decode()/.encode() provide manipulation */
+</code></pre></div>
 
 
 

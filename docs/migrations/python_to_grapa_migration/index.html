@@ -3038,6 +3038,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#access-control-and-visibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access Control and Visibility
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta-programming-and-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Meta-programming and Code Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guard-statements-and-early-returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Guard Statements and Early Returns
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4209,6 +4236,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#access-control-and-visibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access Control and Visibility
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta-programming-and-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Meta-programming and Code Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guard-statements-and-early-returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Guard Statements and Early Returns
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5027,6 +5081,90 @@ if (match(&quot;hello world&quot;, &quot;world&quot;)) {
 }
 </code></pre></div>
 <p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
+<h3 id="access-control-and-visibility">Access Control and Visibility</h3>
+<p><strong>Python:</strong>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Example</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">public_var</span> <span class="o">=</span> <span class="s2">&quot;public&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_protected_var</span> <span class="o">=</span> <span class="s2">&quot;protected&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__private_var</span> <span class="o">=</span> <span class="s2">&quot;private&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">public_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_var</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_protected_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_protected_var</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__private_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__private_var</span>
+</code></pre></div></p>
+<p><strong>Grapa:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapa doesn&#39;t need access modifiers - all properties are accessible */
+/* This aligns with Grapa&#39;s late-binding, dynamic philosophy */
+example = {
+    public_var: &quot;public&quot;,
+    protected_var: &quot;protected&quot;, 
+    private_var: &quot;private&quot;
+};
+
+/* All properties are accessible - Grapa trusts developers */
+example.public_var.echo();      /* &quot;public&quot; */
+example.protected_var.echo();   /* &quot;protected&quot; */
+example.private_var.echo();     /* &quot;private&quot; */
+</code></pre></div></p>
+<p><strong>Note:</strong> Grapa intentionally omits access control modifiers. This aligns with its late-binding philosophy where all properties are accessible, promoting transparency and reducing complexity.</p>
+<h3 id="meta-programming-and-code-generation">Meta-programming and Code Generation</h3>
+<p><strong>Python:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1"># eval() for dynamic code execution</span>
+<span class="n">code</span> <span class="o">=</span> <span class="s2">&quot;print(&#39;Hello, World!&#39;)&quot;</span>
+<span class="nb">eval</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+<span class="c1"># exec() for statement execution</span>
+<span class="n">exec</span><span class="p">(</span><span class="s2">&quot;x = 42&quot;</span><span class="p">)</span>
+
+<span class="c1"># Function creation</span>
+<span class="n">dynamic_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+</code></pre></div></p>
+<p><strong>Grapa:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapa has superior built-in meta-programming capabilities */
+/* Dynamic code execution via $sys().eval() */
+code = &quot;(&#39;Hello, World!&#39;).echo();&quot;;
+$sys().eval(code);
+
+/* Dynamic function creation via op() */
+dynamic_func = op(@&lt;x,{x * 2}&gt;);
+result = dynamic_func(21);  /* 42 */
+
+/* Rule-based code generation */
+rule = @&lt;pattern,{@&lt;action,{result}&gt;}&gt;;
+generated_code = rule(&quot;input&quot;);
+</code></pre></div></p>
+<p><strong>Note:</strong> Grapa's execution tree architecture provides superior meta-programming capabilities compared to traditional eval() approaches. The language is designed around dynamic code generation and manipulation.</p>
+<h3 id="guard-statements-and-early-returns">Guard Statements and Early Returns</h3>
+<p><strong>Python:</strong>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="c1"># Process data...</span>
+    <span class="k">return</span> <span class="n">processed_result</span>
+</code></pre></div></p>
+<p><strong>Grapa:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapa uses existing control flow for guard patterns */
+process_data = @&lt;data,{
+    iferr(data, return(null));
+    ifnull(data, return(null));
+
+    if(data.len() == 0, return([]));
+
+    /* Process data... */
+    return(processed_result);
+}&gt;;
+</code></pre></div></p>
+<p><strong>Note:</strong> Guard statements are just coding patterns using existing control flow. Grapa's <code>iferr()</code>, <code>ifnull()</code>, <code>if()</code>, and <code>return()</code> provide all the functionality needed for guard patterns without requiring special syntax.</p>
 <h2 id="notes_1">Notes</h2>
 <ul>
 <li>See <a href="../../syntax/operator/">Operators</a> and <a href="../../sys/sys/">System</a> docs for more details.</li>

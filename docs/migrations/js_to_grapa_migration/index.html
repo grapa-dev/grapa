@@ -3068,6 +3068,33 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#access-control-and-visibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access Control and Visibility
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta-programming-and-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Meta-programming and Code Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guard-statements-and-early-returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Guard Statements and Early Returns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#reflection-and-introspection" class="md-nav__link">
     <span class="md-ellipsis">
       Reflection and Introspection
@@ -4207,6 +4234,33 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#access-control-and-visibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access Control and Visibility
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta-programming-and-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Meta-programming and Code Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guard-statements-and-early-returns" class="md-nav__link">
+    <span class="md-ellipsis">
+      Guard Statements and Early Returns
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#reflection-and-introspection" class="md-nav__link">
     <span class="md-ellipsis">
       Reflection and Introspection
@@ -4946,6 +5000,105 @@ if (match(&quot;hello world&quot;, &quot;world&quot;)) {
 }
 </code></pre></div>
 <p>This is a handy workaround until Grapa adds a native <code>.match()</code> method.</p>
+<h3 id="access-control-and-visibility">Access Control and Visibility</h3>
+<p><strong>JavaScript:</strong>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nx">Example</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kr">constructor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">publicVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;public&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">_protectedVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;protected&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">#privateVar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">publicMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">publicVar</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">_protectedMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">_protectedVar</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">#privateMethod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">#privateVar</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Grapa:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapa doesn&#39;t need access modifiers - all properties are accessible */
+/* This aligns with Grapa&#39;s late-binding, dynamic philosophy */
+example = {
+    publicVar: &quot;public&quot;,
+    protectedVar: &quot;protected&quot;, 
+    privateVar: &quot;private&quot;
+};
+
+/* All properties are accessible - Grapa trusts developers */
+example.publicVar.echo();      /* &quot;public&quot; */
+example.protectedVar.echo();   /* &quot;protected&quot; */
+example.privateVar.echo();     /* &quot;private&quot; */
+</code></pre></div></p>
+<p><strong>Note:</strong> Grapa intentionally omits access control modifiers. This aligns with its late-binding philosophy where all properties are accessible, promoting transparency and reducing complexity.</p>
+<h3 id="meta-programming-and-code-generation">Meta-programming and Code Generation</h3>
+<p><strong>JavaScript:</strong>
+<div class="highlight"><pre><span></span><code><span class="c1">// eval() for dynamic code execution</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;console.log(&#39;Hello, World!&#39;)&quot;</span><span class="p">;</span>
+<span class="nb">eval</span><span class="p">(</span><span class="nx">code</span><span class="p">);</span>
+
+<span class="c1">// Function constructor</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">dynamicFunc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Function</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;return x * 2&#39;</span><span class="p">);</span>
+
+<span class="c1">// Dynamic property access</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">a</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span><span class="w"> </span><span class="nx">b</span><span class="o">:</span><span class="w"> </span><span class="mf">2</span><span class="w"> </span><span class="p">};</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;a&#39;</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">key</span><span class="p">]);</span>
+</code></pre></div></p>
+<p><strong>Grapa:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapa has superior built-in meta-programming capabilities */
+/* Dynamic code execution via $sys().eval() */
+code = &quot;(&#39;Hello, World!&#39;).echo();&quot;;
+$sys().eval(code);
+
+/* Dynamic function creation via op() */
+dynamicFunc = op(@&lt;x,{x * 2}&gt;);
+result = dynamicFunc(21);  /* 42 */
+
+/* Dynamic property access */
+obj = {a: 1, b: 2};
+key = &quot;a&quot;;
+obj[key].echo();  /* 1 */
+
+/* Rule-based code generation */
+rule = @&lt;pattern,{@&lt;action,{result}&gt;}&gt;;
+generated_code = rule(&quot;input&quot;);
+</code></pre></div></p>
+<p><strong>Note:</strong> Grapa's execution tree architecture provides superior meta-programming capabilities compared to traditional eval() approaches. The language is designed around dynamic code generation and manipulation.</p>
+<h3 id="guard-statements-and-early-returns">Guard Statements and Early Returns</h3>
+<p><strong>JavaScript:</strong>
+<div class="highlight"><pre><span></span><code><span class="kd">function</span><span class="w"> </span><span class="nx">processData</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Process data...</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">processedResult</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p><strong>Grapa:</strong>
+<div class="highlight"><pre><span></span><code>/* Grapa uses existing control flow for guard patterns */
+processData = @&lt;data,{
+    iferr(data, return(null));
+    ifnull(data, return(null));
+
+    if(data.len() == 0, return([]));
+
+    /* Process data... */
+    return(processedResult);
+}&gt;;
+</code></pre></div></p>
+<p><strong>Note:</strong> Guard statements are just coding patterns using existing control flow. Grapa's <code>iferr()</code>, <code>ifnull()</code>, <code>if()</code>, and <code>return()</code> provide all the functionality needed for guard patterns without requiring special syntax.</p>
 <h3 id="reflection-and-introspection">Reflection and Introspection</h3>
 <p><strong>JavaScript:</strong> <code>typeof</code>, <code>Object.keys()</code>, <code>Object.getOwnPropertyNames()</code>, <code>Reflect</code> API
 <strong>Grapa:</strong> Enhanced <code>.describe()</code> method with configurable options</p>
