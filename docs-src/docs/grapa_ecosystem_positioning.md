@@ -226,7 +226,7 @@ extracted = patterns.transform(extract_fields);
 /* Native database operations */
 db = $file("database.gdb");
 users = db.table("users");
-result = users.grep("age > 25").transform(format_user);
+result = users.grep("age > 25").map(format_user);
 ```
 
 **Use Cases:**
@@ -373,108 +373,7 @@ result = mixed_data.json.users.map(op(user) {
 
 **Choose Grapa when:** You need runtime flexibility, superior performance, and capabilities that DSL frameworks cannot provide.
 
-## Grapa's Modern Language Parity Analysis
 
-### **What Grapa Already Has (Modern Equivalents)** ✅
-
-Grapa's LISP-inspired, late-binding, code-as-data paradigm provides many modern language features in unique ways:
-
-#### **Meta-programming & Dynamic Code Generation**
-- **Superior to most languages**: Grapa's `op()`, `$sys().eval()`, execution tree manipulation
-- **Runtime grammar changes**: Modify language syntax dynamically
-- **Code-as-data**: Everything is JSON-like structures that can be manipulated
-- **Execution tree metaprogramming**: Human-readable, manipulable execution trees
-
-#### **Advanced Language Features**
-- **String interpolation**: `.interpolate()` method with expressions
-- **Debugging**: `.debug()` method with component targeting and level control
-- **Collections**: Arrays, lists, objects, tables, vectors with unified access
-- **Control flow**: `for`, `while`, `do/while` loops, `if` statements, ternary operator
-- **Assignment operators**: `*=`, `/=`, `%=`, `**=` for all data types
-- **List comprehension**: Native `[x for x in collection]` syntax
-- **Pattern matching**: `.match()` method for boolean regex matching
-- **Null handling**: `.ifnull()` method for comprehensive nullish value handling
-
-#### **Data Processing & Integration**
-- **Multi-syntax support**: JSON, XML, HTML (native), SQL (example scripts)
-- **Unified data types**: Seamless integration between different formats
-- **ETL capabilities**: Built-in data transformation pipelines
-- **Database integration**: Native table operations (ROW, COL, GROUP storage)
-- **Unified path system**: Seamless file system and database navigation
-
-#### **Advanced Capabilities**
-- **Unlimited precision**: Arbitrary-precision arithmetic for all numeric types
-- **Advanced pattern matching**: 100% ripgrep compatible with Unicode support
-- **Parallel processing**: Built-in thread safety and concurrent operations
-- **Cryptographic capabilities**: Prime generation, modular arithmetic, hash functions
-
-### **What Doesn't Fit Grapa's Paradigm** ❌
-
-Some "modern language features" don't align with Grapa's design philosophy:
-
-#### **Static Type Systems**
-- **Contradicts late-binding**: Grapa's dynamic nature makes static types unnecessary
-- **Code-as-data philosophy**: Everything is data that can be manipulated at runtime
-- **LISP-inspired design**: Type checking happens at runtime, not compile time
-
-#### **Traditional Module Systems**
-- **Dynamic nature**: Grapa's runtime flexibility makes static imports unnecessary
-- **Execution tree manipulation**: Code can be modified and executed dynamically
-- **Namespace management**: Grapa's approach is different from traditional modules
-
-#### **Traditional Exception Handling**
-- **Different error model**: Grapa's error handling is built into the execution model
-- **Late-binding philosophy**: Errors are handled contextually, not through static analysis
-
-#### **Traditional Property Access**
-- **Unified access patterns**: Grapa's dot notation and bracket access are consistent across types
-- **Dynamic nature**: Property access is resolved at runtime, not compile time
-
-### **What Actually Needs Modern Parity** 🔄
-
-The real gaps are features that would enhance Grapa's power while staying true to its paradigm:
-
-#### **Extension System** (Phase 4)
-- **Current state**: `+=` syntax exists but doesn't add callable methods to system classes
-- **Need**: Proper method extension for system classes like `$ARRAY`, `$LIST`, etc.
-- **Fits paradigm**: Extends Grapa's dynamic nature without contradicting design
-
-#### **Core Control Flow** (BACKLOG)
-- **Current state**: `return` and `break` statements are non-functional
-- **Need**: Working control flow for proper function and loop control
-- **Fits paradigm**: Essential for structured programming within Grapa's model
-
-#### **Exception Handling** (BACKLOG)
-- **Current state**: Basic error handling through execution model
-- **Need**: `try/catch` blocks for structured error handling
-- **Fits paradigm**: Runtime error handling aligns with late-binding philosophy
-
-#### **Module System** ✅ **COMPLETE**
-- **Current state**: Include system + dynamic class loading with $PATH/$LIB
-- **Capabilities**: Compile-time includes (.grc/.grz) + runtime class loading
-- **Superior to traditional**: More flexible than static import/export
-- **Missing**: C++ extensions (low priority, future ecosystem feature)
-
-#### **Data Type Access Standardization** (BACKLOG)
-- **Current state**: Inconsistent access patterns across data types
-- **Need**: Unified access patterns for better developer experience
-- **Fits paradigm**: Consistency without sacrificing flexibility
-
-### **Modern Language Parity Assessment**
-
-| Feature Category | Grapa Status | Modern Parity | Priority |
-|------------------|--------------|---------------|----------|
-| **Meta-programming** | ✅ Superior | Exceeds modern languages | N/A |
-| **String Interpolation** | ✅ Complete | On par with modern languages | N/A |
-| **Collections & Data Types** | ✅ Complete | On par with modern languages | N/A |
-| **Control Flow** | ⚠️ Partial | Needs `return`/`break` fixes | High |
-| **Extension System** | ⚠️ Partial | Needs proper method extension | Medium |
-| **Exception Handling** | ❌ Missing | Needs `try/catch` blocks | High |
-| **Module System** | ✅ Complete | Superior to traditional import/export | N/A |
-| **Type System** | ❌ Not needed | Contradicts paradigm | N/A |
-| **Static Analysis** | ❌ Not needed | Contradicts paradigm | N/A |
-
-**Key Insight**: Grapa's unique strengths in meta-programming, dynamic code generation, and multi-syntax processing often exceed modern language capabilities, while the missing features are primarily about developer experience and structured programming within Grapa's paradigm.
 
 ## Grapa's Capabilities vs Modern Languages
 
