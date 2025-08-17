@@ -3468,7 +3468,7 @@
 - Use <code>[]</code> for list/array access, not <code>.get()</code> (which is for objects/tables).
 - Use <code>.map()</code>, <code>.reduce()</code>, <code>.filter()</code> as methods on arrays/lists, not as global functions.
 - Every statement and block must end with a semicolon (<code>;</code>).
-- Only block comments (<code>/* ... */</code>) are supported—no <code>//</code> line comments.
+- Block comments (<code>/* ... */</code>) and line comments (<code>// ...</code>) are both supported. <code>#</code> comments are not supported.
 - Explicit type conversion is required for results (e.g., <code>.str()</code>, <code>.int()</code>, <code>.float()</code>).
 - No implicit truthy/falsy—use explicit boolean checks.
 - No attribute-style access for dict/list keys—use <code>[]</code> or <code>.get()</code> for objects.

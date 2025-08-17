@@ -3879,8 +3879,8 @@ grapa<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;my
 <h2 id="key-syntax-rules-read-this-first">Key Syntax Rules (Read This First!)</h2>
 <ul>
 <li>Every statement and every block (including after closing braces) must end with a semicolon (<code>;</code>).</li>
-<li>Use block comments (<code>/* ... */</code>), not line comments (<code>// ...</code>).</li>
-<li>Within <code>{}</code> blocks, comments must be on their own line, not at the end of a line.</li>
+<li>Use block comments (<code>/* ... */</code>) or line comments (<code>// ...</code>). <code>#</code> comments are not supported.</li>
+<li>Comments can be used anywhere in your code, including at the end of lines.</li>
 <li>To append to arrays, use the <code>+=</code> operator (not <code>.push()</code> or <code>.append()</code>).</li>
 <li>Grapa uses dynamic typing by design - types are determined at runtime for maximum flexibility.</li>
 <li>See <a href="../syntax/basic_syntax/">Syntax Quick Reference</a> for more.</li>
@@ -4067,9 +4067,9 @@ matches.echo();  /* [&quot;world&quot;, &quot;world&quot;] */
 <blockquote>
 <p><strong>Tip:</strong> Use <code>.range()</code> to generate arrays of numbers: <code>(n).range(start, step)</code>. </p>
 <p><strong>Comment Style:</strong>
-- Only block comments (<code>/* ... */</code>) are supported in Grapa, and must always be on their own line.
-- <code>//</code> and <code>#</code> comments are not supported and will cause errors.
-- Within <code>{}</code> blocks, comments must be on their own line, not at the end of a line.</p>
+- Block comments (<code>/* ... */</code>) and line comments (<code>// ...</code>) are both supported in Grapa.
+- Comments can be used anywhere in your code, including at the end of lines.
+- <code>#</code> comments are not supported and will cause syntax errors.</p>
 <p><strong>Did you know?</strong>
 Grapa's parallel ETL/data processing is a core, production-ready feature. Parallelism is well tested and ideal for real-world, high-throughput data tasks. </p>
 <p><strong>For Newcomers/Non-Python Users:</strong>

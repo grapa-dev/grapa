@@ -4796,11 +4796,10 @@
 <h2 id="core-language">Core Language</h2>
 <p>Essential language constructs for writing Grapa scripts.</p>
 <h3 id="comments">Comments</h3>
-<p>Grapa only supports block comments (<code>/* ... */</code>). Line comments (<code>// ...</code>) are not supported.</p>
+<p>Grapa supports both block comments (<code>/* ... */</code>) and line comments (<code>// ...</code>). <code>#</code> comments are not supported.</p>
 <p><strong>Comment Rules:</strong>
-- Outside <code>{}</code> blocks: Comments can be at the end of lines
-- Inside <code>{}</code> blocks: Comments must be on their own line
-- Class/function definitions: Comments must be on their own line</p>
+- Comments can be used anywhere in your code, including at the end of lines
+- Comments work inside <code>{}</code> blocks, class definitions, and function bodies</p>
 <div class="highlight"><pre><span></span><code>/* ✅ Correct */
 x = 5;  /* This works outside {} */
 
@@ -4942,7 +4941,7 @@ func = op(x) {
 </ul>
 <h3 id="comments_1">Comments</h3>
 <div class="highlight"><pre><span></span><code>/* This is a block comment */
-/* Line comments are not supported in Grapa */
+/* Both block and line comments are supported in Grapa */
 </code></pre></div>
 <p><a href="#grapa-api-reference">Back to Top</a></p>
 <h2 id="dynamic-code-execution">Dynamic Code Execution</h2>
