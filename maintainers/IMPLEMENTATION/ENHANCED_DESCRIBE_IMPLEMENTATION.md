@@ -203,6 +203,13 @@ When `structure: true` is used with float values, the method reveals the 7 inter
 
 This provides complete introspection into Grapa's high-precision floating-point implementation.
 
+**Complementary Methods:**
+For programmatic access to float components, Grapa also provides:
+- **`.decode("FLOAT")`** - Extract components into an object for manipulation
+- **`.encode("FLOAT")`** - Create a float from component values
+
+The `.describe()` method provides **inspection** capabilities, while `.decode("FLOAT")` and `.encode("FLOAT")` provide **manipulation** capabilities for working with float components programmatically.
+
 ## PTR Handling
 
 The implementation properly handles PTR types in options parsing, following the same pattern used in string distance functions:

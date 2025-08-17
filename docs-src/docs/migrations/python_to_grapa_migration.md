@@ -657,6 +657,108 @@ if (match("hello world", "world")) {
 
 This is a handy workaround until Grapa adds a native `.match()` method.
 
+### Access Control and Visibility
+
+**Python:**
+```python
+class Example:
+    def __init__(self):
+        self.public_var = "public"
+        self._protected_var = "protected"
+        self.__private_var = "private"
+    
+    def public_method(self):
+        return self.public_var
+    
+    def _protected_method(self):
+        return self._protected_var
+    
+    def __private_method(self):
+        return self.__private_var
+```
+
+**Grapa:**
+```grapa
+/* Grapa doesn't need access modifiers - all properties are accessible */
+/* This aligns with Grapa's late-binding, dynamic philosophy */
+example = {
+    public_var: "public",
+    protected_var: "protected", 
+    private_var: "private"
+};
+
+/* All properties are accessible - Grapa trusts developers */
+example.public_var.echo();      /* "public" */
+example.protected_var.echo();   /* "protected" */
+example.private_var.echo();     /* "private" */
+```
+
+**Note:** Grapa intentionally omits access control modifiers. This aligns with its late-binding philosophy where all properties are accessible, promoting transparency and reducing complexity.
+
+### Meta-programming and Code Generation
+
+**Python:**
+```python
+# eval() for dynamic code execution
+code = "print('Hello, World!')"
+eval(code)
+
+# exec() for statement execution
+exec("x = 42")
+
+# Function creation
+dynamic_func = lambda x: x * 2
+```
+
+**Grapa:**
+```grapa
+/* Grapa has superior built-in meta-programming capabilities */
+/* Dynamic code execution via $sys().eval() */
+code = "('Hello, World!').echo();";
+$sys().eval(code);
+
+/* Dynamic function creation via op() */
+dynamic_func = op(@<x,{x * 2}>);
+result = dynamic_func(21);  /* 42 */
+
+/* Rule-based code generation */
+rule = @<pattern,{@<action,{result}>}>;
+generated_code = rule("input");
+```
+
+**Note:** Grapa's execution tree architecture provides superior meta-programming capabilities compared to traditional eval() approaches. The language is designed around dynamic code generation and manipulation.
+
+### Guard Statements and Early Returns
+
+**Python:**
+```python
+def process_data(data):
+    if not data:
+        return None
+    
+    if len(data) == 0:
+        return []
+    
+    # Process data...
+    return processed_result
+```
+
+**Grapa:**
+```grapa
+/* Grapa uses existing control flow for guard patterns */
+process_data = @<data,{
+    iferr(data, return(null));
+    ifnull(data, return(null));
+    
+    if(data.len() == 0, return([]));
+    
+    /* Process data... */
+    return(processed_result);
+}>;
+```
+
+**Note:** Guard statements are just coding patterns using existing control flow. Grapa's `iferr()`, `ifnull()`, `if()`, and `return()` provide all the functionality needed for guard patterns without requiring special syntax.
+
 ## Notes
 - See [Operators](../syntax/operator.md) and [System](../sys/sys.md) docs for more details.
 - Grapa supports variable scoping with `$global`, `$local`, and `$root`.

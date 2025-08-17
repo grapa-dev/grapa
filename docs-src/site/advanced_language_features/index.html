@@ -4488,6 +4488,21 @@ user.describe({properties: true, format: &quot;json&quot;});
 5. <strong>max</strong> - Maximum bits
 6. <strong>extra</strong> - Extra precision bits
 7. <strong>data</strong> - The actual numeric data</p>
+<p><strong>Complementary Methods:</strong>
+For programmatic access to float components, Grapa also provides:
+- <strong><code>.decode("FLOAT")</code></strong> - Extract components into an object for manipulation
+- <strong><code>.encode("FLOAT")</code></strong> - Create a float from component values</p>
+<div class="highlight"><pre><span></span><code>/* Extract components for manipulation */
+components = (2.3).decode(&quot;FLOAT&quot;);
+/* Returns: {&quot;sign&quot;:false,&quot;trunc&quot;:false,&quot;fix&quot;:false,&quot;exp&quot;:1,&quot;max&quot;:184,&quot;extra&quot;:10,&quot;data&quot;:3689348814741910323} */
+
+/* Modify components and create new float */
+components.max = 300;
+components.extra = 20;
+new_float = components.encode(&quot;FLOAT&quot;);
+
+/* .describe() provides inspection, .decode()/.encode() provide manipulation */
+</code></pre></div>
 <h4 id="6d-output-formats-implemented"><strong>6d. Output Formats</strong> ✅ <strong>IMPLEMENTED</strong></h4>
 <p><strong>Status</strong>: Multiple output formats supported
 <strong>Grapa's Capabilities</strong>: Text and JSON output formats</p>

@@ -880,3 +880,21 @@ When `structure: true` is used with float values, the method reveals the 7 inter
 7. **data** - The actual numeric data
 
 This provides complete introspection into Grapa's high-precision floating-point implementation.
+
+**Complementary Methods:**
+For programmatic access to float components, Grapa also provides:
+- **`.decode("FLOAT")`** - Extract components into an object for manipulation
+- **`.encode("FLOAT")`** - Create a float from component values
+
+```grapa
+/* Extract components for manipulation */
+components = (2.3).decode("FLOAT");
+/* Returns: {"sign":false,"trunc":false,"fix":false,"exp":1,"max":184,"extra":10,"data":3689348814741910323} */
+
+/* Modify components and create new float */
+components.max = 300;
+components.extra = 20;
+new_float = components.encode("FLOAT");
+
+/* .describe() provides inspection, .decode()/.encode() provide manipulation */
+```

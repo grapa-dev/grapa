@@ -507,3 +507,118 @@ sum = numbers.reduce(op(a, b) { a + b }, 0);      /* Sequential reduction */
 - **Cross-format compatibility** (works on `$ARRAY`, `$LIST`, `$OBJ`, `$XML`, etc.)
 - **Simpler learning curve** - fewer specialized types to learn
 - **Better performance** - optimized for Grapa's execution model
+
+### Access Control and Visibility
+
+**TypeScript:**
+```typescript
+class Example {
+    public publicVar: string = "public";
+    protected protectedVar: string = "protected";
+    private privateVar: string = "private";
+    
+    public publicMethod(): string {
+        return this.publicVar;
+    }
+    
+    protected protectedMethod(): string {
+        return this.protectedVar;
+    }
+    
+    private privateMethod(): string {
+        return this.privateVar;
+    }
+}
+```
+
+**Grapa:**
+```grapa
+/* Grapa doesn't need access modifiers - all properties are accessible */
+/* This aligns with Grapa's late-binding, dynamic philosophy */
+example = {
+    publicVar: "public",
+    protectedVar: "protected", 
+    privateVar: "private"
+};
+
+/* All properties are accessible - Grapa trusts developers */
+example.publicVar.echo();      /* "public" */
+example.protectedVar.echo();   /* "protected" */
+example.privateVar.echo();     /* "private" */
+```
+
+**Note:** Grapa intentionally omits access control modifiers. This aligns with its late-binding philosophy where all properties are accessible, promoting transparency and reducing complexity.
+
+### Meta-programming and Code Generation
+
+**TypeScript:**
+```typescript
+// eval() for dynamic code execution (not recommended in TypeScript)
+const code = "console.log('Hello, World!')";
+eval(code);
+
+// Function constructor
+const dynamicFunc = new Function('x', 'return x * 2');
+
+// Dynamic property access
+const obj: any = { a: 1, b: 2 };
+const key = 'a';
+console.log(obj[key]);
+```
+
+**Grapa:**
+```grapa
+/* Grapa has superior built-in meta-programming capabilities */
+/* Dynamic code execution via $sys().eval() */
+code = "('Hello, World!').echo();";
+$sys().eval(code);
+
+/* Dynamic function creation via op() */
+dynamicFunc = op(@<x,{x * 2}>);
+result = dynamicFunc(21);  /* 42 */
+
+/* Dynamic property access */
+obj = {a: 1, b: 2};
+key = "a";
+obj[key].echo();  /* 1 */
+
+/* Rule-based code generation */
+rule = @<pattern,{@<action,{result}>}>;
+generated_code = rule("input");
+```
+
+**Note:** Grapa's execution tree architecture provides superior meta-programming capabilities compared to traditional eval() approaches. The language is designed around dynamic code generation and manipulation.
+
+### Guard Statements and Early Returns
+
+**TypeScript:**
+```typescript
+function processData(data: any[] | null): any[] | null {
+    if (!data) {
+        return null;
+    }
+    
+    if (data.length === 0) {
+        return [];
+    }
+    
+    // Process data...
+    return processedResult;
+}
+```
+
+**Grapa:**
+```grapa
+/* Grapa uses existing control flow for guard patterns */
+processData = @<data,{
+    iferr(data, return(null));
+    ifnull(data, return(null));
+    
+    if(data.len() == 0, return([]));
+    
+    /* Process data... */
+    return(processedResult);
+}>;
+```
+
+**Note:** Guard statements are just coding patterns using existing control flow. Grapa's `iferr()`, `ifnull()`, `if()`, and `return()` provide all the functionality needed for guard patterns without requiring special syntax.

@@ -636,6 +636,123 @@ if (match("hello world", "world")) {
 
 This is a handy workaround until Grapa adds a native `.match()` method.
 
+### Access Control and Visibility
+
+**JavaScript:**
+```javascript
+class Example {
+    constructor() {
+        this.publicVar = "public";
+        this._protectedVar = "protected";
+        this.#privateVar = "private";
+    }
+    
+    publicMethod() {
+        return this.publicVar;
+    }
+    
+    _protectedMethod() {
+        return this._protectedVar;
+    }
+    
+    #privateMethod() {
+        return this.#privateVar;
+    }
+}
+```
+
+**Grapa:**
+```grapa
+/* Grapa doesn't need access modifiers - all properties are accessible */
+/* This aligns with Grapa's late-binding, dynamic philosophy */
+example = {
+    publicVar: "public",
+    protectedVar: "protected", 
+    privateVar: "private"
+};
+
+/* All properties are accessible - Grapa trusts developers */
+example.publicVar.echo();      /* "public" */
+example.protectedVar.echo();   /* "protected" */
+example.privateVar.echo();     /* "private" */
+```
+
+**Note:** Grapa intentionally omits access control modifiers. This aligns with its late-binding philosophy where all properties are accessible, promoting transparency and reducing complexity.
+
+### Meta-programming and Code Generation
+
+**JavaScript:**
+```javascript
+// eval() for dynamic code execution
+const code = "console.log('Hello, World!')";
+eval(code);
+
+// Function constructor
+const dynamicFunc = new Function('x', 'return x * 2');
+
+// Dynamic property access
+const obj = { a: 1, b: 2 };
+const key = 'a';
+console.log(obj[key]);
+```
+
+**Grapa:**
+```grapa
+/* Grapa has superior built-in meta-programming capabilities */
+/* Dynamic code execution via $sys().eval() */
+code = "('Hello, World!').echo();";
+$sys().eval(code);
+
+/* Dynamic function creation via op() */
+dynamicFunc = op(@<x,{x * 2}>);
+result = dynamicFunc(21);  /* 42 */
+
+/* Dynamic property access */
+obj = {a: 1, b: 2};
+key = "a";
+obj[key].echo();  /* 1 */
+
+/* Rule-based code generation */
+rule = @<pattern,{@<action,{result}>}>;
+generated_code = rule("input");
+```
+
+**Note:** Grapa's execution tree architecture provides superior meta-programming capabilities compared to traditional eval() approaches. The language is designed around dynamic code generation and manipulation.
+
+### Guard Statements and Early Returns
+
+**JavaScript:**
+```javascript
+function processData(data) {
+    if (!data) {
+        return null;
+    }
+    
+    if (data.length === 0) {
+        return [];
+    }
+    
+    // Process data...
+    return processedResult;
+}
+```
+
+**Grapa:**
+```grapa
+/* Grapa uses existing control flow for guard patterns */
+processData = @<data,{
+    iferr(data, return(null));
+    ifnull(data, return(null));
+    
+    if(data.len() == 0, return([]));
+    
+    /* Process data... */
+    return(processedResult);
+}>;
+```
+
+**Note:** Guard statements are just coding patterns using existing control flow. Grapa's `iferr()`, `ifnull()`, `if()`, and `return()` provide all the functionality needed for guard patterns without requiring special syntax.
+
 ### Reflection and Introspection
 
 **JavaScript:** `typeof`, `Object.keys()`, `Object.getOwnPropertyNames()`, `Reflect` API

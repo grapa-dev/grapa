@@ -454,11 +454,8 @@ These features are actively being developed to address modern language parity:
 - **📋 Control Flow Fixes** - Working return/break/continue statements
 
 #### **Phase 2 Focus:** Language Gaps (Weeks 5-12)
-- **📋 Advanced language features** - Decorators/annotations, generics/templates, advanced control flow (try/catch, return/break/continue), destructuring/pattern matching
+- **📋 Advanced language features** - Decorators/annotations, generics/templates, destructuring/pattern matching
 - **📋 Extension System** - Extending existing types with new methods (NEEDED - += syntax exists but doesn't add callable methods to system classes; requires C++ implementation for SYSID types in assignappend case; @global redefinition works but is unsafe)
-- **📋 Access Control** - Public/private/protected visibility modifiers
-- **📋 Meta-programming Capabilities** - Code generation and manipulation
-- **📋 Guard Statements** - Precondition and postcondition guards
 
 ### **Developer Environment Gaps (Longer Term)** 🛠️
 
