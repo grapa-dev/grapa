@@ -79,7 +79,8 @@ public:
 	GrapaLibraryEvent* HandleConst(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleSetConst(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleReturn(GrapaCHAR& pName);
-	GrapaLibraryEvent* HandleBreak(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleBreak(GrapaCHAR& pName);
+    GrapaLibraryEvent* HandleContinue(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleIf(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleWhile(GrapaCHAR& pName);
 	GrapaLibraryEvent* HandleScope(GrapaCHAR& pName);

@@ -821,6 +821,14 @@ public:
 };
 GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleBreak(GrapaCHAR& pName) { return new GrapaLibraryRuleBreakEvent(pName); }
 
+class GrapaLibraryRuleContinueEvent : public GrapaLibraryEvent
+{
+public:
+    GrapaLibraryRuleContinueEvent(GrapaCHAR& pName) { mName.FROM(pName); };
+    virtual GrapaRuleEvent* Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput);
+};
+GrapaLibraryEvent* GrapaLibraryRuleEvent::HandleContinue(GrapaCHAR& pName) { return new GrapaLibraryRuleContinueEvent(pName); }
+
 class GrapaLibraryRuleIfEvent : public GrapaLibraryEvent
 {
 public:
@@ -2761,7 +2769,8 @@ GrapaLibraryEvent* GrapaLibraryRuleEvent::LoadLib(GrapaScriptExec *vScriptExec, 
 		{ "const", &GrapaLibraryRuleEvent::HandleConst },
 		{ "setconst", &GrapaLibraryRuleEvent::HandleSetConst },
 		{ "return", &GrapaLibraryRuleEvent::HandleReturn },
-		{ "break", &GrapaLibraryRuleEvent::HandleBreak },
+        { "break", &GrapaLibraryRuleEvent::HandleBreak },
+        { "continue", &GrapaLibraryRuleEvent::HandleContinue },
 		{ "if", &GrapaLibraryRuleEvent::HandleIf },
 		{ "while", &GrapaLibraryRuleEvent::HandleWhile },
 		{ "scope", &GrapaLibraryRuleEvent::HandleScope },
@@ -8998,6 +9007,12 @@ GrapaRuleEvent* GrapaLibraryRuleBreakEvent::Run(GrapaScriptExec *vScriptExec, Gr
 	GrapaRuleEvent* result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
 	result->mAbort = true;
 	return(result);
+}
+
+GrapaRuleEvent* GrapaLibraryRuleContinueEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
+{
+    GrapaRuleEvent* result = new GrapaRuleEvent(GrapaTokenType::START, 0, "", "");
+    return(result);
 }
 
 GrapaRuleEvent* GrapaLibraryRuleIfEvent::Run(GrapaScriptExec *vScriptExec, GrapaNames* pNameSpace, GrapaRuleEvent *pOperation, GrapaRuleQueue* pInput)
