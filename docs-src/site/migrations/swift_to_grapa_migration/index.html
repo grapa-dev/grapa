@@ -3920,8 +3920,8 @@
 </tr>
 <tr>
 <td><code>extension Foo {}</code></td>
-<td>—</td>
-<td><strong>GAP</strong>: No extension support</td>
+<td><code>+=</code> (single item) or <code>++=</code> ($LIST of items)</td>
+<td>Grapa supports object and class extension</td>
 </tr>
 <tr>
 <td><code>defer</code></td>
@@ -4111,7 +4111,7 @@
 <ul>
 <li><strong>Module system</strong>: <code>import Foundation</code> - No module system</li>
 <li><strong>Protocols</strong>: <code>protocol Baz {}</code> - No protocol system</li>
-<li><strong>Extensions</strong>: <code>extension Foo {}</code> - No extension system</li>
+<li><strong>Extensions</strong>: <code>extension Foo {}</code> - Use <code>+=</code> for single item, <code>++=</code> for multiple items ($LIST)</li>
 <li><strong>Defer</strong>: <code>defer</code> - No defer mechanism</li>
 <li><strong>File/line macros</strong>: <code>#file</code>, <code>#line</code> - Grapa provides <code>.debug()</code> method for sophisticated debugging and logging (outputs to stderr, can be redirected at CLI level)</li>
 <li><strong>Type aliases</strong>: <code>typealias Foo = Bar</code> - No type alias system</li>

@@ -2442,9 +2442,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-superior-concurrency" class="md-nav__link">
+  <a href="#5-class-and-object-extension-system" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Superior Concurrency
+      5. Class and Object Extension System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-superior-concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Superior Concurrency
     </span>
   </a>
   
@@ -3843,9 +3852,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#5-superior-concurrency" class="md-nav__link">
+  <a href="#5-class-and-object-extension-system" class="md-nav__link">
     <span class="md-ellipsis">
-      5. Superior Concurrency
+      5. Class and Object Extension System
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-superior-concurrency" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Superior Concurrency
     </span>
   </a>
   
@@ -4190,7 +4208,42 @@ has_digits = text.match(&quot;\\d+&quot;);  /* true/false */
 - <strong>Unicode Pattern Matching</strong> - Complete Unicode support
 - <strong>Binary Pattern Matching</strong> - Byte-exact matching
 - <strong>Native <code>.match()</code> Method</strong> - Boolean regex testing</p>
-<h3 id="5-superior-concurrency"><strong>5. Superior Concurrency</strong></h3>
+<h3 id="5-class-and-object-extension-system"><strong>5. Class and Object Extension System</strong></h3>
+<p>Grapa provides a comprehensive extension system that allows developers to extend both individual objects and classes:</p>
+<div class="highlight"><pre><span></span><code>/* Pattern 1: Extending individual objects */
+test1 = {n:0};
+test1 += (inc:op(inc:1){n+=inc;});
+test1.inc();      /* n becomes 1 */
+test1.inc(2);     /* n becomes 3 */
+
+/* Pattern 2: Creating custom classes */
+myclass = class ($LIST) {
+    n = 0; 
+    inc = op(inc:1){n+=inc;};
+};
+myclass ++= {
+    m:0, 
+    dec:op(dec:1){m=n; n-=dec;}
+};
+test2 = myclass();
+test2.inc();      /* n becomes 1 */
+test2.dec(5);     /* n becomes -4, m becomes 1 */
+
+/* Pattern 3: Extending system classes */
+$ARRAY();  /* Load system class */
+@$ARRAY ++= {f:op(){55}};
+@$ARRAY += (c:op(){$this.len();});
+ar = [1,2,4];
+ar.f();           /* Returns 55 */
+ar.c();           /* Returns 3 */
+</code></pre></div>
+<p><strong>Key Features:</strong>
+- <strong>Object Extension</strong> - Add methods to individual objects with <code>+=</code>
+- <strong>Class Extension</strong> - Extend classes with <code>++=</code> for multiple additions
+- <strong>System Class Extension</strong> - Extend core language classes globally
+- <strong>Inheritance Support</strong> - Custom classes inherit from system classes
+- <strong>Method Resolution</strong> - Automatic method lookup through inheritance chain</p>
+<h3 id="6-superior-concurrency"><strong>6. Superior Concurrency</strong></h3>
 <p>Grapa's parallel-by-design architecture surpasses traditional async/await:</p>
 <div class="highlight"><pre><span></span><code>/* Parallel processing with automatic thread management */
 data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];

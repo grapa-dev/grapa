@@ -7664,6 +7664,59 @@ while (i &lt; operations.len()) {
 funcs[&quot;add&quot;](5, 3).echo();  // 8
 funcs[&quot;mul&quot;](5, 3).echo();  // 15
 </code></pre></div>
+<h2 id="object-and-class-extension">Object and Class Extension</h2>
+<p>Grapa provides operators for extending objects and classes with new methods and properties:</p>
+<h3 id="extension-operators">Extension Operators</h3>
+<ul>
+<li><strong><code>+=</code></strong> - Adds a <strong>single item</strong> to an object or class</li>
+<li><strong><code>++=</code></strong> - Adds a <strong>$LIST of items</strong> to an object or class</li>
+</ul>
+<p><strong>Note:</strong> The <code>+=</code> operator is context-aware. When used on numeric types (<code>$INT</code>, <code>$FLOAT</code>), it performs addition. When used on collection types (<code>$ARRAY</code>, <code>$LIST</code>) or objects, it performs extension (adding methods/properties).</p>
+<h3 id="extending-individual-objects">Extending Individual Objects</h3>
+<div class="highlight"><pre><span></span><code>/* Create an object and add a method */
+obj = {count: 0};
+obj += (increment: op(amount: 1) { count += amount; });
+
+/* Use the extended object */
+obj.increment();      /* count becomes 1 */
+obj.increment(5);     /* count becomes 6 */
+</code></pre></div>
+<h3 id="extending-classes">Extending Classes</h3>
+<div class="highlight"><pre><span></span><code>/* Define a custom class */
+MyClass = class ($LIST) {
+    value: 0;
+    add: op(x) { value += x; };
+};
+
+/* Extend the class with multiple methods */
+MyClass ++= {
+    subtract: op(x) { value -= x; },
+    getValue: op() { value; }
+};
+
+/* Create instances with extended functionality */
+instance = MyClass();
+instance.add(10);     /* value becomes 10 */
+instance.subtract(3); /* value becomes 7 */
+instance.getValue().echo(); /* outputs: 7 */
+</code></pre></div>
+<h3 id="extending-system-classes">Extending System Classes</h3>
+<div class="highlight"><pre><span></span><code>/* Load a system class into the namespace */
+$ARRAY();
+
+/* Extend the system class */
+@$ARRAY += (customMethod: op() { 42; });
+@$ARRAY ++= {
+    lengthMethod: op() { $this.len(); },
+    utilityMethod: op() { &quot;Hello from extended array&quot;; }
+};
+
+/* Use the extended system class */
+arr = [1, 2, 3];
+arr.customMethod().echo();    /* outputs: 42 */
+arr.lengthMethod().echo();    /* outputs: 3 */
+arr.utilityMethod().echo();   /* outputs: Hello from extended array */
+</code></pre></div>
 <h2 id="language-syntax-extension">Language Syntax Extension</h2>
 <p>Grapa's dynamic code execution capabilities are complemented by its ability to extend the language syntax itself at runtime. You can define custom commands and functions that become part of the language grammar.</p>
 <p>For comprehensive documentation on syntax extension, including custom commands, custom functions, scoping, and dynamic compilation, see <a href="../../type/rule/#language-syntax-extension">Language Syntax Extension</a>.</p>
